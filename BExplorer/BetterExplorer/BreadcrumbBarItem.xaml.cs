@@ -97,19 +97,27 @@ namespace BetterExplorer
                 }
                 else
                 {
-                    ShellContainer con = (ShellContainer)obj;
-                    List<ShellObject> joe = new List<ShellObject>();
-                    foreach (ShellObject item in con)
+                    try
                     {
-                        if (item.IsFolder == true)
+                        ShellContainer con = (ShellContainer)obj;
+                        List<ShellObject> joe = new List<ShellObject>();
+                        foreach (ShellObject item in con)
                         {
-                            if (item.ParsingName.ToLower().EndsWith(".zip") == false && item.ParsingName.ToLower().EndsWith(".cab") == false)
+                            if (item.IsFolder == true)
                             {
-                                joe.Add(item);
+                                if (item.ParsingName.ToLower().EndsWith(".zip") == false && item.ParsingName.ToLower().EndsWith(".cab") == false)
+                                {
+                                    joe.Add(item);
+                                }
                             }
                         }
+                        SetChildren(joe.Count > 0);
                     }
-                    SetChildren(joe.Count > 0);
+                    catch
+                    {
+                        SetChildren(false);
+                    }
+                    
                 }
             }));
 
