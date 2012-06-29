@@ -1,0 +1,11 @@
+﻿<Window x:Class="IDSearchDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Search for ID" Height="142" Width="309">
+    <Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="12,12,0,0" Name="TextBlock1" Text="Select item with ID:" VerticalAlignment="Top" />
+        <TextBox Height="23" HorizontalAlignment="Left" Margin="12,34,0,0" Name="TextBox1" VerticalAlignment="Top" Width="263" />
+        <Button Content="Search" Height="23" HorizontalAlignment="Left" Margin="119,68,0,0" Name="Button1" VerticalAlignment="Top" Width="75" />
+        <Button Content="Cancel" Height="23" HorizontalAlignment="Left" Margin="200,68,0,0" Name="Button2" VerticalAlignment="Top" Width="75" />
+    </Grid>
+</Window>

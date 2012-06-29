@@ -1,0 +1,86 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+BExplorerTranslationConverter
+</name>
+</assembly>
+<members>
+<member name="M:BExplorerTranslationConverter.IDSearchDialog.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:BExplorerTranslationConverter.IDSearchDialog">
+	<summary>
+IDSearchDialog
+</summary>
+</member><member name="M:BExplorerTranslationConverter.MainWindow.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:BExplorerTranslationConverter.MainWindow">
+	<summary>
+MainWindow
+</summary>
+</member><member name="M:BExplorerTranslationConverter.ItemEditor.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:BExplorerTranslationConverter.ItemEditor">
+	<summary>
+ItemEditor
+</summary>
+</member><member name="M:BExplorerTranslationConverter.Application.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="M:BExplorerTranslationConverter.Application.Main">
+	<summary>
+Application Entry Point.
+</summary>
+</member><member name="T:BExplorerTranslationConverter.Application">
+	<summary>
+Application
+</summary>
+</member><member name="P:BExplorerTranslationConverter.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:BExplorerTranslationConverter.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="T:BExplorerTranslationConverter.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member><member name="P:BExplorerTranslationConverter.My.MyWpfExtension.Application">
+	<summary>
+ Returns the application object for the running application
+ </summary>
+</member><member name="P:BExplorerTranslationConverter.My.MyWpfExtension.Computer">
+	<summary>
+ Returns information about the host computer.
+ </summary>
+</member><member name="P:BExplorerTranslationConverter.My.MyWpfExtension.User">
+	<summary>
+ Returns information for the current user.  If you wish to run the application with the current 
+ Windows user credentials, call My.User.InitializeWithWindowsUser().
+ </summary>
+</member><member name="P:BExplorerTranslationConverter.My.MyWpfExtension.Log">
+	<summary>
+ Returns the application log. The listeners can be configured by the application's configuration file.
+ </summary>
+</member><member name="P:BExplorerTranslationConverter.My.MyWpfExtension.Windows">
+	<summary>
+ Returns the collection of Windows defined in the project.
+ </summary>
+</member><member name="T:BExplorerTranslationConverter.My.MyWpfExtension">
+	<summary>
+ Module used to define the properties that are available in the My Namespace for WPF
+ </summary>
+	<remarks></remarks>
+</member>
+</members>
+</doc>

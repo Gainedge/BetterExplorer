@@ -1,0 +1,1222 @@
+﻿<Ribbon:RibbonWindow x:Class="BetterExplorer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Ribbon="clr-namespace:Fluent;assembly=Fluent"
+        xmlns:local ="clr-namespace:BetterExplorer"
+        xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="Better Explorer" Loaded="Window_Loaded" WindowState="Maximized"  
+                     xmlns:ExploreBrowser="clr-namespace:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation;assembly=Microsoft.WindowsAPICodePack.Shell" Closing="RibbonWindow_Closing" Initialized="RibbonWindow_Initialized" Deactivated="RibbonWindow_Deactivated" mc:Ignorable="d" 
+                     d:DesignHeight="768" d:DesignWidth="852" ResizeMode="CanResizeWithGrip" Activated="RibbonWindow_Activated" xmlns:my2="http://schemas.microsoft.com/winfx/2006/xaml/presentation/ribbon" MouseMove="RibbonWindow_MouseMove" KeyUp="RibbonWindow_KeyUp" GotFocus="RibbonWindow_GotFocus" MouseUp="RibbonWindow_MouseUp_1" MouseRightButtonUp="RibbonWindow_MouseRightButtonUp" TextOptions.TextFormattingMode="Display">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Fluent;component/Themes/Office2010/Blue.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <ControlTemplate x:Key="HorizontalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
+                <Grid x:Name="Bg" SnapsToDevicePixels="True" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MaxWidth="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}}"/>
+                        <ColumnDefinition Width="1E-05*"/>
+                        <ColumnDefinition MaxWidth="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}}"/>
+                    </Grid.ColumnDefinitions>
+                    <RepeatButton IsEnabled="{TemplateBinding IsMouseOver}" Command="ScrollBar.LineLeftCommand" Microsoft_Windows_Themes:ScrollChrome.ScrollGlyph="LeftArrow">
+                        <RepeatButton.Style>
+                            <Style TargetType="{x:Type RepeatButton}">
+                                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                <Setter Property="Focusable" Value="False"/>
+                                <Setter Property="IsTabStop" Value="False"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                                            <Border Background="{x:Null}" Height="18" Width="18" >
+                                                <Path Data=" M 8 15 L 8 3 L 2 9 Z" Fill="Black" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </RepeatButton.Style>
+                    </RepeatButton>
+                    <RepeatButton IsEnabled="{TemplateBinding IsMouseOver}" Command="ScrollBar.LineRightCommand" Grid.Column="2" Microsoft_Windows_Themes:ScrollChrome.ScrollGlyph="RightArrow">
+                        <RepeatButton.Style>
+                            <Style TargetType="{x:Type RepeatButton}">
+                                <Setter Property="OverridesDefaultStyle" Value="True"/>
+                                <Setter Property="Focusable" Value="False"/>
+                                <Setter Property="IsTabStop" Value="False"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type RepeatButton}">
+                                            <Border Background="{x:Null}" Height="18" Width="18" >
+                                                <Path Data=" M 9 15 L 9 3 L 15 9 Z" Fill="Black" />
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </RepeatButton.Style>
+                    </RepeatButton>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Background" TargetName="Bg" Value="#FFF4F4F4"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+            <ControlTemplate x:Key="ScrollViewerTemplate" TargetType="{x:Type ScrollViewer}">
+                <Grid x:Name="Grid" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Rectangle x:Name="Corner" Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Column="1" Grid.Row="1"/>
+                    <ScrollBar x:Name="PART_HorizontalScrollBar" Cursor="Arrow" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Grid.Column="0" Grid.Row="0" Orientation="Horizontal" ViewportSize="{TemplateBinding ViewportWidth}" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" AutomationProperties.AutomationId="HorizontalScrollBar" Template="{DynamicResource HorizontalScrollBarTemplate}" />
+                    <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" Margin="0,2,0,0" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" Grid.Column="0" Grid.Row="0" CanContentScroll="{TemplateBinding CanContentScroll}" CanHorizontallyScroll="False" CanVerticallyScroll="False"/>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="ComputedHorizontalScrollBarVisibility" Value="Visible">
+                        <Setter Property="Margin" TargetName="PART_ScrollContentPresenter" Value="15,2,15,0"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+            <ControlTemplate x:Key="ScrollableTabControlTemplate" TargetType="{x:Type TabControl}">
+                <Grid ClipToBounds="True" SnapsToDevicePixels="True" KeyboardNavigation.TabNavigation="Local">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="ColumnDefinition0"/>
+                        <ColumnDefinition x:Name="ColumnDefinition1" Width="0"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition x:Name="RowDefinition0" Height="Auto"/>
+                        <RowDefinition x:Name="RowDefinition1" Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Border x:Name="ContentPanel" Margin="0,0,0,0" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="0,1,0,0" Grid.Column="0" Grid.Row="1" KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.TabIndex="2" KeyboardNavigation.TabNavigation="Local">
+                        <ContentPresenter x:Name="PART_SelectedContentHost" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Content="{TemplateBinding SelectedContent}" ContentSource="SelectedContent" ContentStringFormat="{TemplateBinding SelectedContentStringFormat}" ContentTemplate="{TemplateBinding SelectedContentTemplate}"/>
+                    </Border>
+
+                    <ScrollViewer Margin="0,0,0,-1" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" Template="{DynamicResource ScrollViewerTemplate}" PreviewMouseWheel="ScrollViewer_PreviewMouseWheel">
+                        <TabPanel x:Name="HeaderPanel" Margin="0,2,2,1" IsItemsHost="True"  KeyboardNavigation.TabIndex="1"/>
+                    </ScrollViewer>
+
+
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="TabStripPlacement" Value="Bottom">
+                        <Setter Property="Grid.Row" TargetName="HeaderPanel" Value="1"/>
+                        <Setter Property="Grid.Row" TargetName="ContentPanel" Value="0"/>
+                        <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                        <Setter Property="Height" TargetName="RowDefinition1" Value="Auto"/>
+                        <Setter Property="Margin" TargetName="HeaderPanel" Value="2,0,2,2"/>
+                    </Trigger>
+                    <Trigger Property="TabStripPlacement" Value="Left">
+                        <Setter Property="Grid.Row" TargetName="HeaderPanel" Value="0"/>
+                        <Setter Property="Grid.Row" TargetName="ContentPanel" Value="0"/>
+                        <Setter Property="Grid.Column" TargetName="HeaderPanel" Value="0"/>
+                        <Setter Property="Grid.Column" TargetName="ContentPanel" Value="1"/>
+                        <Setter Property="Width" TargetName="ColumnDefinition0" Value="Auto"/>
+                        <Setter Property="Width" TargetName="ColumnDefinition1" Value="*"/>
+                        <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                        <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                        <Setter Property="Margin" TargetName="HeaderPanel" Value="2,2,0,2"/>
+                    </Trigger>
+                    <Trigger Property="TabStripPlacement" Value="Right">
+                        <Setter Property="Grid.Row" TargetName="HeaderPanel" Value="0"/>
+                        <Setter Property="Grid.Row" TargetName="ContentPanel" Value="0"/>
+                        <Setter Property="Grid.Column" TargetName="HeaderPanel" Value="1"/>
+                        <Setter Property="Grid.Column" TargetName="ContentPanel" Value="0"/>
+                        <Setter Property="Width" TargetName="ColumnDefinition0" Value="*"/>
+                        <Setter Property="Width" TargetName="ColumnDefinition1" Value="Auto"/>
+                        <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
+                        <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
+                        <Setter Property="Margin" TargetName="HeaderPanel" Value="0,2,2,2"/>
+                    </Trigger>
+                    <Trigger Property="IsEnabled" Value="False">
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:MainWindow.RoutedNewTab}" Executed="ERNewTab"/>
+        <CommandBinding Command="{x:Static local:MainWindow.RoutedEnterInBreadCrumbCombo}" Executed="ERGoToBCCombo"/>
+        <CommandBinding Command="{x:Static local:MainWindow.RoutedChangeTab}" Executed="ChangeTab"/>
+        <CommandBinding Command="{x:Static local:MainWindow.RoutedCloseTab}" Executed="RCloseTab"/>
+
+    </Window.CommandBindings>
+
+
+    <Grid>
+
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" Name="rRibbon"/>
+            <RowDefinition Height="36" Name="rTabbar"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="513*" />
+            <RowDefinition Height="0" />
+            <RowDefinition Height="20" Name="rStatusbar"/>
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+
+        </Grid.Resources>
+
+        <Ribbon:StatusBar Name="TheStatusBar" Grid.Row="5" ContextMenuOpening="TheStatusBar_ContextMenuOpening" ContextMenuClosing="TheStatusBar_ContextMenuClosing" GotFocus="TheStatusBar_GotFocus">
+            <Ribbon:StatusBarItem Name="sbiItemsCount" HorizontalAlignment="Left" Content="0 items" Title="Items Count"/>
+            <Separator HorizontalAlignment="Left"/>
+            <Ribbon:StatusBarItem Name="sbiSelItemsCount" HorizontalAlignment="Left" Content="0 selected items" Title="Selected Items Count"/>
+            <Separator HorizontalAlignment="Left" Name="spSelItems"/>
+            
+            <Ribbon:StatusBarItem Title="Size Chart" HorizontalAlignment="Right" HorizontalContentAlignment="Right" VerticalAlignment="Stretch" VerticalContentAlignment="Stretch" >
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch">
+                    <Separator HorizontalAlignment="Left" Name="spSelItems3" Visibility="Visible"/>
+                    <Ribbon:Button Name="btnSizeChart" HorizontalAlignment="Left" VerticalContentAlignment="Top" Width="22" Height="18"  Click="btnSizeChart_Click" Icon="Images\jssize16.png" SizeDefinition="Small,Small,Small"/>
+                </StackPanel>
+            </Ribbon:StatusBarItem>
+            
+            <Separator HorizontalAlignment="Right" Name="spSelItems2"/>
+            <Ribbon:StatusBarItem Name="sbiView" HorizontalAlignment="Right" HorizontalContentAlignment="Right" VerticalAlignment="Top" Title="View Style">
+                <StackPanel Orientation="Horizontal">
+                    
+                    <Ribbon:ToggleButton SizeDefinition="Small,Small,Small" Width="18" Height="18" Icon="Images\medium16.png" Name="btnSbIcons" Click="btnSbIcons_Click" />
+                    <Ribbon:ToggleButton SizeDefinition="Small,Small,Small" Width="18" Height="18" Icon="Images\details16.png" Name="btnSbDetails" Click="btnSbDetails_Click" />
+                    <Ribbon:ToggleButton SizeDefinition="Small,Small,Small" Width="18" Height="18" Icon="Images\tiles16.png" Name="btnSbTiles" Click="btnSbTiles_Click" />
+                </StackPanel>
+            </Ribbon:StatusBarItem>
+            <Separator HorizontalAlignment="Right" Name="spSelItems4"/>
+            <Ribbon:StatusBarItem Title="Zoom" HorizontalAlignment="Right" >
+                <StackPanel Orientation="Horizontal" Height="18">
+                    <TextBlock Text="{Binding Value, ElementName=zoomSlider, StringFormat={}{0:0}}" VerticalAlignment="Center"/>
+                    <Slider x:Name="zoomSlider" Minimum="48" Maximum="256" IsDirectionReversed="False" Style="{DynamicResource ZoomSliderStyle}" Value="16" ValueChanged="zoomSlider_ValueChanged" Margin="3,0,0,0"/>
+                </StackPanel>
+            </Ribbon:StatusBarItem>
+  
+        </Ribbon:StatusBar>
+
+        <Ribbon:Ribbon Grid.ColumnSpan="3" Background="White" Name="TheRibbon" SizeChanged="TheRibbon_SizeChanged" CustomizeQuickAccessToolbar="TheRibbon_CustomizeQuickAccessToolbar" IsCollapsedChanged="TheRibbon_IsCollapsedChanged" >
+            <Ribbon:Ribbon.ToolBarItems>
+                <Ribbon:Button Ribbon:KeyTip.Keys="B" Icon="Images\about16.png" SizeDefinition="Small,Small,Small" Name="btnAbout" Click="btnAbout_Click" Visibility="Collapsed" />
+            </Ribbon:Ribbon.ToolBarItems>
+
+            <Ribbon:Ribbon.QuickAccessItems>
+                <Ribbon:QuickAccessMenuItem Target="{Binding ElementName=btnCut}" IsChecked="True"/>
+                <Ribbon:QuickAccessMenuItem Target="{Binding ElementName=btnCopy}"  IsChecked="True"/>
+                <Ribbon:QuickAccessMenuItem Target="{Binding ElementName=btnPaste}" IsChecked="True"/>
+                <Ribbon:QuickAccessMenuItem Target="{Binding ElementName=btnNewTab}" IsChecked="True"/>
+                <Ribbon:QuickAccessMenuItem Target="{Binding ElementName=btnTabClone}" IsChecked="True"/>
+                <Ribbon:QuickAccessMenuItem Target="{Binding ElementName=btnNewWindow}" IsChecked="False" />
+                <Ribbon:QuickAccessMenuItem Target="{Binding ElementName=btnNavigationPane}" IsChecked="False" />
+                <Ribbon:QuickAccessMenuItem Target="{Binding ElementName=btnPreviewPane}" IsChecked="False" />
+                <Ribbon:QuickAccessMenuItem Target="{Binding ElementName=btnInfoPane}" IsChecked="False" />
+            </Ribbon:Ribbon.QuickAccessItems>
+
+            <Ribbon:Ribbon.Menu>
+                <Ribbon:Backstage Ribbon:KeyTip.Keys="F" Background="DarkOrange" Name="backstage" FontStyle="Normal" FontWeight="Normal" FontStretch="Expanded" IsOpenChanged="backstage_IsOpenChanged">
+                    <Ribbon:BackstageTabControl>
+                        <Ribbon:Button Header="{StaticResource btnNewWindowCP}" Icon="Images\new_window.png" Content="New Window" Click="Button_Click_5" Name="btnNewWindow"  />
+                        <Ribbon:BackstageTabItem Header="{StaticResource btiInformationCP}" Visibility="Visible" >
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Ribbon:SeparatorTabItem Header="{StaticResource mmSupportCP}" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" VerticalAlignment="Top" Margin="15,10,10,0" />
+                                <Ribbon:Button Header="{StaticResource btnUpdateCheckCP}" HorizontalAlignment="Left" IsDefinitive="True" Ribbon:KeyTip.Keys="U" Ribbon:KeyTip.VerticalAlignment="Bottom" Click="Button_Click_6" LargeIcon="Images\updater32.png" Icon="Images\updater16.png"  Style="{DynamicResource ButtonBackstageStyle}" VerticalAlignment="Top" Margin="20,45,0,0" Name="btnUpdateCheck">
+                                    <Ribbon:Button.ToolTip>
+                                        <Ribbon:ScreenTip
+                                                 Title="{StaticResource btnUpdateCheckHCP}"
+                                                 Text="{StaticResource btnUpdateCheckICP}"
+                                                 DisableReason="Only one window of BetterExplorer can manage updates at any time. Another window may already be managing updates, and you can check for updates on that window. If no other window is open, open a new window to check for updates."
+                                                 Width="250"
+                                                 IsRibbonAligned ="false"/>
+                                    </Ribbon:Button.ToolTip>
+                                </Ribbon:Button>
+                                <Label Content="{StaticResource btnUpdateCheckHCP}" FontWeight="Bold" FontSize="12" Margin="105,45,10,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                <TextBlock Text="{StaticResource btnUpdateCheckICP}" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="110,75,10,0" Height="50" VerticalAlignment="Top" />
+                                <Ribbon:Button Header="{StaticResource btnOpenWebsite}" HorizontalAlignment="Left" IsDefinitive="True" Ribbon:KeyTip.Keys="W" Ribbon:KeyTip.VerticalAlignment="Bottom" Click="Button_Click_7" LargeIcon="Images\webconnect_32.png" Icon="Images\webconnect_16.png" Style="{DynamicResource ButtonBackstageStyle}" VerticalAlignment="Top" Margin="20,140,0,0" />
+                                <Label Content="{StaticResource btnOpenWebsiteHCP}" FontWeight="Bold" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="105,140,10,0" />
+                                <TextBlock Text="{StaticResource btnOpenWebsiteICP}" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="110,170,10,0" Height="50" VerticalAlignment="Top" />
+                                <Separator Grid.Column="0" HorizontalAlignment="Right"/>
+                                <Image Source="Images\bexplorerlogo.png" HorizontalAlignment="Left" VerticalAlignment="Top" Width="400" Height="100" Margin="10,20,0,0" Grid.Column="1" Stretch="Fill" />
+                                <StackPanel Grid.Column="1" Margin="20,110,10,0">
+                                    <Label Content="{StaticResource stUpdateNotAvailableCP}" Name="stiUpdate" Margin="0,25,50,0" FontSize="14" FontWeight="ExtraBold" />
+                                    <Ribbon:SeparatorTabItem Header="" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}"  Margin="0,-30,50,0" Foreground="#FFC71212" />
+                                    <Label Content="{StaticResource lblBetterExText}" FontWeight="Bold" Margin="0,2,50,0" />
+                                    <TextBlock Text="{StaticResource lblBetterExInfo}"  Margin="3,2,53,0" TextWrapping="Wrap" />
+                                    <Ribbon:SeparatorTabItem Header="{StaticResource lblDevTeamCP}" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,40,50,0"/>
+                                    <Label Content="{StaticResource lblDevelopersHeader}" FontWeight="Bold" Margin="0,2,50,0" />
+                                    <Label Content="Dimitar Tsenev" FontStyle="Italic" Margin="20,0,50,0" FontSize="14" FontWeight="Bold" />
+                                    <Label Content="Jayke R. Huempfner (JaykeBird)" FontStyle="Italic" Margin="20,0,50,0" FontSize="14" FontWeight="Bold" />
+                                    <Ribbon:SeparatorTabItem Header="{StaticResource lblAboutBEHeader}" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,40,50,0"/>
+                                    <Label Content="Version Info Data Put Here" Margin="20,0,50,0" FontSize="12" x:Name="verNumber" />
+                                    <Label Content="32-bit Version" Margin="20,0,0,0" FontSize="12" />
+                                    <Label Content="© 2012. All right reserved." Margin="20,0,0,0"/>
+                                    <Ribbon:SeparatorTabItem Header="Credits" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,40,50,0"/>
+                                    <Label Content="Fluent Ribbon Control Suite (fluent.codeplex.com)"/>
+                                    <!--<Label Content="Qttabbar - a great utility for Windows Explorer"/>-->
+                                    <Label Content="7-Zip - archiving utility (www.7-zip.org)"/>
+                                    <Label Content="7ZipSharp - a wrapper of 7Zip for .NET"/>
+                                    <Label Content="Some icons and ExplorerBrowser control are property of Microsoft® Corporation. All right reserved."/>
+                                    
+                                </StackPanel>
+                                
+                            </Grid>
+                        </Ribbon:BackstageTabItem>
+                        <Ribbon:BackstageTabItem Header="{StaticResource btiOptionsCP}" Ribbon:KeyTip.Keys="O">
+                            <TabControl Margin="20,5,20,5" Style="{DynamicResource InnerBackstageTabControlStyle}">
+                                <Ribbon:SeparatorTabItem Header="{StaticResource sepGeneral}" />
+                                <TabItem Header="{StaticResource tabShell}" Ribbon:KeyTip.Keys="S" IsSelected="True">
+                                    <StackPanel Name="ShellStack" Orientation="Vertical"  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="20,15,0,0" Focusable="True">
+                                        <Ribbon:SeparatorTabItem Header="{StaticResource sepStartup}" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                            <!--Ribbon:TextBox Name="txtPath" Width="200"/>
+                                            <Button Name="btnPathPick" Content="..." Width="22" HorizontalContentAlignment="Center" Height="22" Click="btnPathPick_Click" /-->
+                                            <Border BorderThickness="1" BorderBrush="#FF000000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                <Ribbon:Button Name="btnSetCurrentasStartup" Ribbon:KeyTip.Keys="S" Header="Libraries" Click="btnSetCurrentasStartup_Click" BorderBrush="Black" BorderThickness="1" CanAddToQuickAccessToolBar="True" Margin="0">
+                                                    <Ribbon:Button.ToolTip>
+                                                        <Ribbon:ScreenTip
+                                                            Title="{StaticResource btnSetCurrentasStartupHCP}"
+                                                            Text="{StaticResource btnSetCurrentasStartupICP}"
+                                                            Width="250"
+                                                            IsRibbonAligned ="false"/>
+                                                    </Ribbon:Button.ToolTip>
+                                                </Ribbon:Button>
+                                            </Border>
+                                            <Label  Content="{StaticResource btnSetCurrentasStartupDesc}" Margin="3,0,0,0"/>                                            
+                                        </StackPanel>
+                                        <Label Name="paddinglbl1" Content="         "/>
+                                        <Ribbon:SeparatorTabItem Header="Other Settings" Margin="0,0,0,15" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <Ribbon:CheckBox Name="chkIsDefault" Header="{StaticResource chkIsDefault}" Ribbon:KeyTip.Keys="V" Checked="chkIsDefault_Checked" Unchecked="chkIsDefault_Unchecked">
+                                                <Ribbon:CheckBox.ToolTip>
+                                                    <!--Title="{StaticResource chkIsDefaultHCP}"-->
+                                                    <Ribbon:ScreenTip
+                                                            Title="{StaticResource chkIsDefault}"
+                                                            Text="{StaticResource chkIsDefaultICP}"
+                                                            DisableReason="A missing entry in Windows Registry keeps BetterExplorer from knowing or changing this setting. BetterExplorer will continue to work normally."
+                                                            Width="250"
+                                                            Image="Images\uac48.png"
+                                                            IsRibbonAligned ="false"/>
+                                                </Ribbon:CheckBox.ToolTip>
+                                            </Ribbon:CheckBox>
+                                            <Image Source="Images\uac16.png" />
+                                        </StackPanel>
+                                        <Label Name="paddinglbl6" Content="         "/>
+                                        <Ribbon:CheckBox Name="chkIsTerraCopyEnabled" Header="{StaticResource chkIsTerraCopyEnabled}" Ribbon:KeyTip.Keys="T" Checked="chkIsTerraCopyEnabled_Checked" Unchecked="chkIsTerraCopyEnabled_Unchecked">
+                                            <Ribbon:CheckBox.ToolTip>
+                                                <!--Title="{StaticResource chkIsTerraCopyEnabledHCP}"-->
+                                                <Ribbon:ScreenTip
+                                                            Title="{StaticResource chkIsTerraCopyEnabled}"
+                                                            Text="{StaticResource chkIsTerraCopyEnabledICP}"
+                                                            Width="250"
+                                                            IsRibbonAligned ="false"/>
+                                            </Ribbon:CheckBox.ToolTip>
+                                        </Ribbon:CheckBox>
+                                        <Label Name="paddinglbl7" Content="         "/>
+                                        <!--<Ribbon:CheckBox Name="chkIsCompartibleRename" Header="{StaticResource chkIsCompartibleRename}" Ribbon:KeyTip.Keys="R" Checked="chkIsCompartibleRename_Checked" Unchecked="chkIsCompartibleRename_Unchecked">
+                                            <Ribbon:CheckBox.ToolTip>
+                                                <Ribbon:ScreenTip
+                                                            Title="{StaticResource chkIsCompartibleRenameHCP}"
+                                                            Text="{StaticResource chkIsCompartibleRenameICP}"
+                                                            Width="250"
+                                                            IsRibbonAligned ="false"/>
+                                            </Ribbon:CheckBox.ToolTip>
+                                        </Ribbon:CheckBox>
+                                        <Label Name="paddinglbl8" Content="         "/>-->
+                                        <Ribbon:CheckBox Name="chkIsRestoreTabs" Header="{StaticResource cbIsResttoreCP}" Ribbon:KeyTip.Keys="R" Checked="chkIsRestoreTabs_Checked" Unchecked="chkIsRestoreTabs_Unchecked">
+                                            <Ribbon:CheckBox.ToolTip>
+                                                <Ribbon:ScreenTip
+                                                            Title="{StaticResource cbIsResttoreCP}"
+                                                            Text="{StaticResource cbIsResttoreTTX}"
+                                                            Width="250"
+                                                            IsRibbonAligned ="false"/>
+                                            </Ribbon:CheckBox.ToolTip>
+                                        </Ribbon:CheckBox>
+                                        <Label Name="paddinglbl8" Content="         "/>
+                                        <Ribbon:CheckBox Name="chkLogHistory" Header="{StaticResource chkLogHistoryCP}" Ribbon:KeyTip.Keys="L" Checked="chkLogHistory_Checked" Unchecked="chkLogHistory_Unchecked">
+                                            <Ribbon:CheckBox.ToolTip>
+                                                <Ribbon:ScreenTip
+                                                            Title="{StaticResource chkLogHistoryCP}"
+                                                            Text="{StaticResource chkLogHistoryHCP}"
+                                                            Width="250"
+                                                            IsRibbonAligned ="false"/>
+                                            </Ribbon:CheckBox.ToolTip>
+                                        </Ribbon:CheckBox>
+                                        <Border BorderThickness="1" BorderBrush="#FF000000" HorizontalAlignment="Left">
+                                            <Ribbon:Button Name="btnShowLogs" Header="Show All Logs" Height="22" Width="125" Ribbon:KeyTip.Keys="H" Click="btnShowLogs_Click" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1" Icon="Images\open16.png" Margin="0" />
+                                        </Border>
+                                    </StackPanel>
+                                </TabItem>
+                                <TabItem Header="{StaticResource tabLanguageCP}" Visibility="Visible" Ribbon:KeyTip.Keys="L">
+                                    <StackPanel Orientation="Vertical" Margin="20,15,0,0">
+                                        <Ribbon:SeparatorTabItem Header="{StaticResource sepLanguageCP}" />
+                                        <Label Content="{StaticResource lblLanguageCP}" />
+                                        <Label Content="Depending on the language, not all commands have been translated." Visibility="Visible" />
+                                        <!--<TextBox Name="txtLocale" HorizontalAlignment="Left" Margin="0,5,0,0" Width="100" Height="23" />-->
+                                        <!--<Button Name="btnchangeLocale" Content="Change Locale" Width="90" HorizontalAlignment="Left" Margin="0,5,0,0" HorizontalContentAlignment="Center" Height="22" Click="btnchangeLocale_Click" />-->
+                                        <!--<Label Content="Supported codes:" Margin="0,5,0,0" />-->
+                                        <!--<Label Content="en-US - English(US)" Margin="0,0,0,0" />-->
+                                        <!--<Label Content="bg-BG - Bulgarian" Margin="0,0,0,0" />-->
+                                        <ComboBox Name="TranslationComboBox" SelectionChanged="TranslationComboBox_SelectionChanged" HorizontalAlignment="Left" Width="190" Height="42" Margin="0,5,0,0">
+                                            <local:TranslationComboBoxItem LanguageText="Bulgarian" LocaleCode="bg-BG" x:Name="bgBGLang" UsesRTL="False" />
+                                            <local:TranslationComboBoxItem LanguageText="Croatian" LocaleCode="hr-HR" x:Name="hrHRLang" UsesRTL="False" />
+                                            <local:TranslationComboBoxItem LanguageText="English" LocaleCode="en-US" x:Name="enUSLang" UsesRTL="False" />
+                                            <local:TranslationComboBoxItem LanguageText="Finnish" LocaleCode="fi-FI" x:Name="fiFILang" UsesRTL="False" />
+                                            <local:TranslationComboBoxItem LanguageText="French" LocaleCode="fr-FR" x:Name="frFRLang" UsesRTL="False" />
+                                            <local:TranslationComboBoxItem LanguageText="German" LocaleCode="de-DE" x:Name="deDELang" UsesRTL="False" />
+                                            <local:TranslationComboBoxItem LanguageText="Italian" LocaleCode="it-IT" x:Name="itITLang" UsesRTL="False" />
+                                            <local:TranslationComboBoxItem LanguageText="Portuguese" LocaleCode="pt-BR" x:Name="ptBRLang" UsesRTL="False" />
+                                            <local:TranslationComboBoxItem LanguageText="Spanish" LocaleCode="es-ES" x:Name="esESLang" UsesRTL="False" />
+                                            <local:TranslationComboBoxItem LanguageText="Turkish" LocaleCode="tr-TR" x:Name="trTRLang" UsesRTL="False" />
+                                        </ComboBox>
+                                        <Label Name="lblLocale"  Content="You must restart BetterExplorer for this change to take effect." Margin="0,5,0,0" FontWeight="Bold" Visibility="Hidden" />
+                                        <Label Content="   " />
+                                        <Ribbon:SeparatorTabItem Header="Help With Translating" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}"/>
+                                        <TextBlock Text="If anyone would like to help with translating, just go to this webpage here:" Margin="0,5,0,0" />
+                                        <Button Name="TranslationHelp" BorderBrush="#01000000" Background="#01000000" Foreground="#FFFF6E00" HorizontalAlignment="Left" Click="TranslationHelp_Click">
+                                            <TextBlock Name="TranslationURL" TextDecorations="Underline" Text="http://bexplorer.codeplex.com/wikipage?title=Translation%20Directory" />
+                                        </Button>
+                                        <TextBlock Text="Also, we wish to thank everyone who has helped everyone make translations so far." Margin="0,10,0,5" />
+                                        <TextBlock Text="English: JaykeBird (Jayke R. Huempfner) and Dimitar Tsenev"/>
+                                        <TextBlock Text="Bulgarian: Dimitar Tsenev" />
+                                        <TextBlock Text="Spanish: JMBolivar (José Miguel Bolivar)" />
+                                        <TextBlock Text="Portuguese: Cléverson" />
+                                        <TextBlock Text="Finnish: Osku598 (Oskar Bredin)" />
+                                        <TextBlock Text="Turkish: Cengiz Han Sitil" />
+                                        <TextBlock Text="German: Stefan (Stefan Klebs) and Daniel Will" />
+                                        <TextBlock Text="Croatian: Smeker (Danijel Levak)" />
+                                        <TextBlock Text="French: Pascal Huau and Neugrek" />
+                                        <TextBlock Text="Italian: Gianluigi Meraviglia and JaykeBird (Jayke R. Huempfner)" />
+                                        <!--<Ribbon:SeparatorTabItem Header="Remove Setting" Visibility="Hidden"/>
+                                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" Margin="0,0,60,0" Visibility="Hidden"
+                                                   Text="Because this build updates the Registry after installation, there would be a Registry error if
+this build were deleted and BetterExplorer uninstalled. Therefore, until the next release and this Registry setting is set during installation,
+this feature will be provided in case you wish to remove and uninstall BetterExplorer altogether. If you delete the Registry setting, it will be
+re-applied next time you start BetterExplorer. Only use this if you plan on uninstalling BetterExplorer after this." />
+                                        <Button Name="btnRemoveLangSetting" Margin="0,5,0,0" Content="Remove This Setting" Click="btnRemoveLangSetting_Click" HorizontalAlignment="Left" Width="120" Visibility="Hidden"/>-->
+                                    </StackPanel>
+                                </TabItem>
+                                <Ribbon:SeparatorTabItem Header="{StaticResource sepAppearanceCP}"/>
+                                <TabItem Header="{StaticResource tabRibbonCP}" HorizontalContentAlignment="Left" Ribbon:KeyTip.Keys="R">
+                                    <Grid Margin="20,15,0,0">
+                                        <Ribbon:SeparatorTabItem Header="{StaticResource sepRibbonColorCP}" VerticalAlignment="Top" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <StackPanel Name="RibbonStack" Orientation="Horizontal" Height="100" MaxHeight="100" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,20,0,0" Focusable="True">
+                                            <Ribbon:ToggleButton Name="btnSilver" Ribbon:KeyTip.Keys="S" Click="btnSilver_Click" Header="{StaticResource btnSilverCP}" SizeDefinition="Large" Foreground="Black" GroupName="RSkin" LargeIcon="Images\SilverTheme.png" IsChecked="False"/>
+                                            <Ribbon:ToggleButton Name="btnBlue" Ribbon:KeyTip.Keys="B" Click="btnBlue_Click" Header="{StaticResource btnBlueCP}" SizeDefinition="Large" Foreground="Black" GroupName="RSkin" LargeIcon="Images\BlueTheme.png" IsChecked="False"/>
+                                            <Ribbon:ToggleButton Name="btnBlack" Ribbon:KeyTip.Keys="L" Click="btnBlack_Click" Header="{StaticResource btnBlackCP}" SizeDefinition="Large" Foreground="Black" GroupName="RSkin" LargeIcon="Images\BlackTheme.png" IsChecked="False"/>
+                                            <Ribbon:ToggleButton Name="btnGreen" Ribbon:KeyTip.Keys="G" Header="{StaticResource btnGreenCP}" SizeDefinition="Large" Foreground="Black" GroupName="RSkin" LargeIcon="Images\BlueTheme.png" IsChecked="False" Click="btnGreen_Click"/>
+                                        </StackPanel>
+                                        <Ribbon:SeparatorTabItem Header="{StaticResource sepContextualTabsCP}" VerticalAlignment="Top" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,100,0,0" />
+                                        <TextBlock Text="{StaticResource lblAutoSwitchCP}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,135,0,0" />
+                                        <StackPanel Orientation="Vertical" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="6,150,0,0" >
+                                            <Ribbon:CheckBox Name="chkFolder" Header="{StaticResource ctgFolderToolsCP}" Checked="chkFolder_Checked" Unchecked="chkFolder_Unchecked" />
+                                            <Ribbon:CheckBox Name="chkDrive" Header="{StaticResource ctbDriveToolsCP}" Checked="chkDrive_Checked" Unchecked="chkDrive_Unchecked" IsEnabled="False" />
+                                            <Ribbon:CheckBox Name="chkArchive" Header="{StaticResource ctbArchiveToolsCP}" Checked="chkArchive_Checked"  Unchecked="chkArchive_Unchecked" />
+                                            <Ribbon:CheckBox Name="chkApp" Header="{StaticResource ctbApplicationsCP}" Checked="chkApp_Checked"  Unchecked="chkApp_Unchecked" />
+                                            <Ribbon:CheckBox Name="chkImage" Header="{StaticResource ctbImageToolsCP}" Checked="chkImage_Checked"  Unchecked="chkImage_Unchecked" />
+                                            <Ribbon:CheckBox Name="chkLibrary" Header="{StaticResource ctbLibrariesCP}" Checked="chkLibrary_Checked"  Unchecked="chkLibrary_Unchecked" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                </TabItem>
+                                <TabItem Header="{StaticResource tabPanesItemsCP}" HorizontalContentAlignment="Left" Ribbon:KeyTip.Keys="P">
+                                    <Grid Margin="20,15,0,0">
+                                        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                            <Ribbon:SeparatorTabItem Header="{StaticResource btnNavigationCP}" Margin="0,0,0,5"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Ribbon:CheckBox Name="chkTreeExpand" Header="{StaticResource chkTreeExpandCP}" Ribbon:KeyTip.Keys="T" Checked="chkTreeExpand_Checked" Unchecked="chkTreeExpand_Unchecked">
+                                                    <Ribbon:CheckBox.ToolTip>
+                                                        <Ribbon:ScreenTip
+                                                            Title="{StaticResource chkTreeExpandTCP}"
+                                                            Text="{StaticResource chkTreeExpandTTX}"
+                                                            Width="250"
+                                                            Image="Images\uac48.png"
+                                                            IsRibbonAligned ="false"/>
+                                                    </Ribbon:CheckBox.ToolTip>
+                                                </Ribbon:CheckBox>
+                                                <Image Source="Images\uac16.png" />
+                                            </StackPanel>
+                                            <Ribbon:SeparatorTabItem Header="{StaticResource sepOptionalCP}" Margin="0,0,0,5"/>
+                                            <Ribbon:CheckBox Name="chkIsFlyout" Header="Show Hover Flyout (incomplete, experimental feature)" Ribbon:KeyTip.Keys="H" Checked="chkIsFlyout_Checked" Unchecked="chkIsFlyout_Unchecked"  Margin="0,0,0,10" Visibility="Collapsed">
+                                                <Ribbon:CheckBox.ToolTip>
+                                                    <Ribbon:ScreenTip
+                                                            Title="Show Hover Flyout"
+                                                            Text="Display a small box as you move your mouse above files (this is part of a feature that has not been completed yet)"
+                                                            Width="250"
+                                                            IsRibbonAligned ="false"/>
+                                                </Ribbon:CheckBox.ToolTip>
+                                            </Ribbon:CheckBox>
+                                            <Ribbon:CheckBox Name="chkShowCheckBoxes" Header="{StaticResource chkShowCheckBoxesCP}" Ribbon:KeyTip.Keys="C" Checked="chkShowCheckBoxes_Checked" Unchecked="chkShowCheckBoxes_Unchecked">
+                                                <Ribbon:CheckBox.ToolTip>
+                                                    <Ribbon:ScreenTip
+                                                            Title="{StaticResource chkShowCheckBoxesCP}"
+                                                            Text="Displays a checkbox over items, allowing you to use these checkboxes to select multiple items"
+                                                            Width="250"
+                                                            IsRibbonAligned ="false"/>
+                                                </Ribbon:CheckBox.ToolTip>
+                                            </Ribbon:CheckBox>
+                                        </StackPanel>
+                                    </Grid>
+                                </TabItem>
+                            </TabControl>
+                        </Ribbon:BackstageTabItem>
+                        <Ribbon:Button Header="{StaticResource btnExitCP}" Icon="Images\exit16.png" LargeIcon="Images\exit32.png" Ribbon:KeyTip.Keys="X" Content="Exit" Click="Button_Click_8" Name="Exitbutton" />
+                    </Ribbon:BackstageTabControl>
+                </Ribbon:Backstage>
+            </Ribbon:Ribbon.Menu>
+            <Ribbon:Ribbon.ContextualGroups>
+                <Ribbon:RibbonContextualTabGroup x:Name="ctgLibraries" BorderBrush="Magenta" Background="Purple" Header="{StaticResource ctbLibrariesCP}" Visibility="Collapsed"/>
+                <Ribbon:RibbonContextualTabGroup x:Name="ctgDrive" BorderBrush="Blue" Background="LightBlue" Header="{StaticResource ctbDriveToolsCP}" Visibility="Collapsed"/>
+                <Ribbon:RibbonContextualTabGroup x:Name="ctgExe" BorderBrush="DarkRed" Background="Red" Header="{StaticResource ctbApplicationsCP}" Visibility="Collapsed"/>
+                <Ribbon:RibbonContextualTabGroup x:Name="ctgImage" BorderBrush="DarkOrange" Background="Orange" Header="{StaticResource ctbImageToolsCP}" Visibility="Collapsed"/>
+                <Ribbon:RibbonContextualTabGroup x:Name="ctgArchive" BorderBrush="DarkSlateBlue" Background="SlateBlue" Header="{StaticResource ctbArchiveToolsCP}" Visibility="Collapsed"/>
+                <Ribbon:RibbonContextualTabGroup x:Name="ctgFolderTools" BorderBrush="Peru" Background="Goldenrod" Header="{StaticResource ctgFolderToolsCP}" Visibility="Collapsed"/>
+                <Ribbon:RibbonContextualTabGroup x:Name="ctgSearch" BorderBrush="DarkGreen" Background="Green" Header="Search Tools" Visibility="Collapsed" IsVisibleChanged="ctgSearch_IsVisibleChanged" />
+            </Ribbon:Ribbon.ContextualGroups>
+
+            <Ribbon:RibbonTabItem Header="{StaticResource tbHomeCP}" Ribbon:KeyTip.Keys="H" ReduceOrder="Clipboard,Organize,Open,Tabs,Tabs,Select,Select,Select,Organize,Open,Clipboard,Organize,Open,Tabs" Indent="7" Name="HomeTab" GotFocus="TheStatusBar_GotFocus">
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgClipboardCP}" Name="Clipboard">
+                    <Ribbon:Button Header="{StaticResource btnCopyCP}" Name="btnCopy" Ribbon:KeyTip.Keys="CO" LargeIcon="Images\Copy32.png" Icon="Images\Copy16.png" Click="btnCopy_Click" IsEnabled="False" CanAddToQuickAccessToolBar="True">
+                        <Ribbon:Button.ToolTip>
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnCopyTCP}" 
+                                Text="{StaticResource btnCopyTTX}"
+                                Width="250"
+                                Image="Images\Copy48.png"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:Button.ToolTip>
+                        <!--"{StaticResource btnCopyTCP}"-->
+                    </Ribbon:Button>
+                    <Ribbon:Button Header="{StaticResource btnPasteCP}" Name="btnPaste" Ribbon:KeyTip.Keys="P" LargeIcon="Images\paste32.png" Icon="Images\paste16.png" IsEnabled="False" Click="btnPaste_Click" >
+                        <Ribbon:Button.ToolTip>
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnPasteTCP}"
+                                Text="{StaticResource btnPasteTTX}"
+                                
+                                Width="250"
+                                Image="Images\paste48.png"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:Button.ToolTip>
+                        <!--"{StaticResource btnPasteTCP}"-->
+                    </Ribbon:Button>
+                    <Ribbon:Button Header="{StaticResource btnCutCP}" Ribbon:KeyTip.Keys="CU" SizeDefinition="Middle,Middle,Small" Icon="Images\cut16.png" Name="btnCut" IsEnabled="False" Click="btnCut_Click" />
+                    <Ribbon:Button Header="{StaticResource btnCopyPathCP}" Ribbon:KeyTip.Keys="CP" SizeDefinition="Middle,Small,Small" Name="btnPathCopy" Click="btnPathCopy_Click" IsEnabled="True" Icon="Images\copypath16.png">
+                        <Ribbon:Button.ToolTip>
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnCopyPathCP}"
+                                Text="{StaticResource btnCopyPTTX}"
+                                Width="250"
+                                Image="Images\copypath32.png"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:Button.ToolTip>
+                    </Ribbon:Button>
+                    <Ribbon:SplitButton Header="{StaticResource btnPasteScCP}" Ribbon:KeyTip.Keys="SP" SizeDefinition="Middle,Small,Small" IsEnabled="False" Name="btnPasetShC" Icon="Images\pastet16.png" Click="btnPasetShC_Click" >
+                        <Ribbon:MenuItem Header="{StaticResource btnPasteScCP}" Icon="Images\pastet16.png" Click="btnPasetShC_Click"/>
+                        <Ribbon:MenuItem Header="Create symbolic link" Name="miCreateSymlink" Click="miCreateSymlink_Click" />
+                        <Ribbon:MenuItem Header="Create Junction Point" Name="miJunctionpoint" Click="miJunctionpoint_Click" />
+                    </Ribbon:SplitButton>
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgOrganizeCP}" Ribbon:KeyTip.Keys="OR" Name="Organize" >
+                    <Ribbon:SplitButton Header="{StaticResource btnCopyToCP}" Ribbon:KeyTip.Keys="CF" LargeIcon="Images\copyto32.png" Icon="Images\copyto16.png" IsEnabled="False" Name="btnCopyto" Click="btnCopyto_Click" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" GotFocus="btnCopyto_GotFocus" LostFocus="btnCopyto_LostFocus">
+                        <MenuItem Header="{StaticResource btnctDocumentsCP}" Ribbon:KeyTip.Keys="DO" Name="btnctDocuments" Click="btnctDocuments_Click" />
+                        <MenuItem Header="{StaticResource btnctDesktopCP}" Ribbon:KeyTip.Keys="DE" Name="btnctDesktop" Click="btnctDesktop_Click" />
+                        <MenuItem Header="{StaticResource btnctDownloadsCP}" Ribbon:KeyTip.Keys="DN" Name="btnctDounloads" Click="btnctDounloads_Click" />
+                        <Separator/>
+                        <MenuItem Header="{StaticResource miOtherDestCP}" Ribbon:KeyTip.Keys="O" Name="btnctOther" Click="btnctOther_Click" />
+                    </Ribbon:SplitButton>
+                    <Ribbon:SplitButton Header="{StaticResource btnMoveToCP}" Ribbon:KeyTip.Keys="M" LargeIcon="Images\moveto32.png" Icon="Images\moveto16.png" IsEnabled="False" Name="btnMoveto" Click="btnMoveto_Click" DropDownClosed="btnMoreColls_DropDownClosed" DropDownOpened="btnMoreColls_DropDownOpened" GotFocus="btnCopyto_GotFocus" LostFocus="btnCopyto_LostFocus">
+                        <MenuItem Header="{StaticResource btnctDocumentsCP}" Ribbon:KeyTip.Keys="DO" Name="btnmtDocuments" Click="btnmtDocuments_Click" />
+                        <MenuItem Header="{StaticResource btnctDesktopCP}" Ribbon:KeyTip.Keys="DE" Name="btnmtDesktop" Click="btnmtDesktop_Click" />
+                        <MenuItem Header="{StaticResource btnctDownloadsCP}" Ribbon:KeyTip.Keys="DN" Name="btnmtDounloads" Click="btnmtDounloads_Click" />
+                        <Separator/>
+                        <MenuItem Header="{StaticResource miOtherDestCP}" Ribbon:KeyTip.Keys="O" Name="btnmtOther" Click="btnmtOther_Click" />
+                    </Ribbon:SplitButton>
+                    <Separator/>
+                    <Ribbon:SplitButton Header="{StaticResource btnDeleteCP}" Ribbon:KeyTip.Keys="D" LargeIcon="Images\delete32.png" Icon="Images\delete16.png"  Click="SplitButton_Click" IsEnabled="False" Name="btnDelete" DropDownClosed="btnMoreColls_DropDownClosed" DropDownOpened="btnMoreColls_DropDownOpened" LostFocus="btnCopyto_LostFocus" GotFocus="btnCopyto_GotFocus">
+                        <MenuItem Header="{StaticResource miDeltoRB}" Ribbon:KeyTip.Keys="R" Click="MenuItem_Click" Icon="Images\delrb16.png"/>
+                        <MenuItem Header="{StaticResource miDeltoP}" Ribbon:KeyTip.Keys="P" Click="MenuItem_Click_1" Icon="Images\delete16.png"/>
+                    </Ribbon:SplitButton>
+                    <Ribbon:Button Header="{StaticResource btnRenameCP}" Ribbon:KeyTip.Keys="R" LargeIcon="Images\rename32.png" Icon="Images\rename16.png" Click="Button_Click_1" IsEnabled="False" Name="btnRename"/>
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgNewCP}" Ribbon:KeyTip.Keys="NG" Name="New">
+                    <Ribbon:Button TextOptions.TextFormattingMode="Display" Header="{StaticResource btnNewFolderCP}" Ribbon:KeyTip.Keys="N" LargeIcon="Images\folder_new32.png" Icon="Images\folder_new16.png" Click="Button_Click_2" Name="btnCreateFolder" SizeDefinition="Large">
+                        <Ribbon:Button.ToolTip>
+                            <Ribbon:ScreenTip
+                                Name="stNewFolder"
+                                Title="New Folder"
+                                Text="Creates a new folder in the current folder"
+                                Width="250"
+                                Image="Images\folder_new32.png"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:Button.ToolTip>
+                    </Ribbon:Button>
+                    <Ribbon:SplitButton Header="New item" Ribbon:KeyTip.Keys="CR" SizeDefinition="Middle,Small,Small" Name="btnNewItem" Click="btnNewItem_Click" Visibility="Collapsed" />
+                    <Ribbon:SplitButton Header="Easy Access" Ribbon:KeyTip.Keys="E" SizeDefinition="Middle,Small,Small" Visibility="Collapsed" />
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgOpenCP}" Name="Open" Ribbon:KeyTip.Keys="OP">
+                    <!--Properties button until functionality is added to "Clear Properties" button-->
+                    <Ribbon:Button Header="{StaticResource btnPropertiesCP}" Ribbon:KeyTip.Keys="I" LargeIcon="Images\prop32.png" Icon="Images\prop16.png" Name="btnProperties3" Click="btnProperties_Click" Visibility="Visible" />
+                    <!--This is the original properties button, hidden because the "Clear Properties" button does nothing right now-->
+                    <!--<Ribbon:SplitButton Header="{StaticResource btnPropertiesCP}" Ribbon:KeyTip.Keys="PR" LargeIcon="Images\prop32.png" Icon="Images\prop16.png" Name="btnProperties" Click="btnProperties_Click" Visibility="Collapsed" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed">
+                        <Ribbon:MenuItem Header="{StaticResource btnPropertiesCP}" Name="btnProperties2" Click="btnProperties_Click" Ribbon:KeyTip.Keys="PD"/>
+                        <Separator/>
+                        <Ribbon:MenuItem Header="Clear Properties" Ribbon:KeyTip.Keys="CP"/>
+                    </Ribbon:SplitButton>-->
+                    <Ribbon:SplitButton Header="{StaticResource btnOpenCP}" Ribbon:KeyTip.Keys="O" SizeDefinition="Middle,Middle,Small" Name="btnOpenWith" IsEnabled="False" Click="btnOpenWith_Click" Icon="Images\open16.png" DropDownClosed="btnMoreColls_DropDownClosed" DropDownOpened="btnMoreColls_DropDownOpened">
+                    </Ribbon:SplitButton>
+                    <Ribbon:Button Header="{StaticResource btnEditCP}" Ribbon:KeyTip.Keys="E" SizeDefinition="Middle,Middle,Small" Icon="Images\edit16.png" IsEnabled="False" Name="btnEdit" Click="btnEdit_Click" />
+                    <Ribbon:Button Header="{StaticResource btnHistoryCP}" Ribbon:KeyTip.Keys="H" SizeDefinition="Middle,Middle,Middle" Icon="Images\history16.png" IsEnabled="False" Name="btnHistory" Click="btnHistory_Click"  />
+                    <Ribbon:SplitButton Header="{StaticResource btnFavoritesCP}" Ribbon:KeyTip.Keys="F" SizeDefinition="Large, Middle, Middle" Icon="Images\favorites16.png" LargeIcon="Images\favorites32.png" Name="btnFavorites" Click="btnFavorites_Click" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" />
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgSelectCP}" Name="Select" Ribbon:KeyTip.Keys="SE"> <!-- DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed"> -->
+                    <Ribbon:Button Header="{StaticResource btnSelectAllCP}" Ribbon:KeyTip.Keys="SA" SizeDefinition="Middle,Middle,Middle" Name="btnSelAll" Click="btnSelAll_Click" Icon="Images\selectall16.png" />
+                    <Ribbon:Button Header="{StaticResource btnSelectNoneCP}" Ribbon:KeyTip.Keys="SN" SizeDefinition="Middle,Middle,Middle" Name="btnSelNone" Click="btnSelNone_Click" Icon="Images\selectnone16.png" IsEnabled="False"/>
+                    <Ribbon:Button Header="{StaticResource btnInvertSelectionCP}" Ribbon:KeyTip.Keys="SI" SizeDefinition="Middle,Middle,Middle" Name="btnInvSel" Icon="Images\invsel16.png" IsEnabled="True" Click="btnInvSel_Click" />
+                    <Ribbon:SplitButton Header="{StaticResource btnConditionalSelectCP}" Ribbon:KeyTip.Keys="SC" SizeDefinition="Large, Small, Small" Name="btnCondSel" Icon="Images\filter16.png" LargeIcon="Images\filter32.png" Click="btnCondSel_Click" Visibility="Visible" >
+                        <Ribbon:SplitButton.ToolTip>
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnConditionalSelectCP}"
+                                Text="Select files in this folder that meet certain conditions, such as containing a word in its name or being created before a certain date. (Note: Will not select folders, and might not work in Libraries or other locations.)"
+                                Image ="Images\filter48.png"
+                                Width="250"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:SplitButton.ToolTip>
+                        <MenuItem Header="{StaticResource miSelAllByTypeCP}" Name="miSelAllByType" Click="miSelAllByType_Click" Ribbon:KeyTip.Keys="T"/>
+                        <MenuItem Header="{StaticResource miSelAllByDateCP}" Name="miSelAllByDate" Click="miSelAllByDate_Click" Ribbon:KeyTip.Keys="D"/>
+                        <Separator />
+                        <MenuItem Header="{StaticResource miCondSelectCP}" Name="miCondSelect" Click="btnCondSel_Click" Ribbon:KeyTip.Keys="W" Icon="Images\filter16.png"/>
+                    </Ribbon:SplitButton>
+                    
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgTabsCP}" Name="Tabs" Ribbon:KeyTip.Keys="T" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed">
+                    <Ribbon:Button Header="{StaticResource btnNewTabCP}" Ribbon:KeyTip.Keys="T" Name="btnNewTab" LargeIcon="Images\newtab32.png" Icon="Images\newtab16.png" SizeDefinition="Large,Middle,Middle" Click="btnNewTab_Click">
+                        <Ribbon:Button.ToolTip>
+                            <!--"{StaticResource btnNewTabCP}"-->
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnNewTabTCP}"
+                                Text="{StaticResource btnNewTabTTX}"
+                                Image ="Images\newtab32.png"
+                                Width="250"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:Button.ToolTip>
+                    </Ribbon:Button>
+                    <Ribbon:Button Header="{StaticResource btnCloneTabCP}" Ribbon:KeyTip.Keys="CL" Name="btnTabClone" Click="btnTabClone_Click" SizeDefinition="Large,Middle,Middle" LargeIcon="Images\clonetab.png" Icon="Images\clonetab.png" ClickMode="Release" IsDefault="False" IsDefinitive="True" >
+                        <Ribbon:Button.ToolTip>
+                            <!--"{StaticResource btnCloneTabTCP}"-->
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnCloneTabCP}"
+                                Text="{StaticResource btnCloneTabTTX}"
+                                Image ="Images\clonetab.png"
+                                Width="250"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:Button.ToolTip>
+                    </Ribbon:Button>
+                    <Ribbon:Button Header="{StaticResource btnCloseTabCP}" Ribbon:KeyTip.Keys="CT" Name="btnTabCloseC" SizeDefinition="Large,Middle,Middle" LargeIcon="Images\closetab.png" Icon="Images\closetab.png" Click="btnTabCloseC_Click" />
+                </Ribbon:RibbonGroupBox>
+            </Ribbon:RibbonTabItem>
+            <Ribbon:RibbonTabItem Header="{StaticResource tbShareCP}" Ribbon:KeyTip.Keys="S" Visibility="Visible" Indent="7" ReduceOrder="Network,Network,Compress,Compress,Compress,Network" GotFocus="TheStatusBar_GotFocus">
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgCompressCP}" Ribbon:KeyTip.Keys="C" Name="Compress">
+                    <Ribbon:Button Header="{StaticResource btnMakeArchiveCP}" Ribbon:KeyTip.Keys="R" Name="btnCreateArchive" SizeDefinition="Large,Large,Large" LargeIcon="Images\archiver32.png" Icon="Images\archiver16.png" Click="btnCreateArchive_Click" >
+                        <Ribbon:Button.ToolTip>
+                            <!--Title="{StaticResource btnMakeArchiveHCP}"-->
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnMakeArchiveCP}"
+                                Text="{StaticResource btnMakeArchiveICP}"
+                                Image ="Images\archiver32.png"
+                                Width="250"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:Button.ToolTip>
+                    </Ribbon:Button>
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="" Ribbon:KeyTip.Keys="W" Name="Share">
+                    <Ribbon:Button Header="{StaticResource btnShareCP}" Ribbon:KeyTip.Keys="S" Name="btnShare" LargeIcon="Images\share32.png" Icon="Images\Share16.png" Click="Button_Click_4" IsEnabled="False" />
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgNetworkCP}" Ribbon:KeyTip.Keys="N" Name="Network" >
+                    <Ribbon:Button Header="{StaticResource btnMapDriveCP}" Ribbon:KeyTip.Keys="M" Name="btnMapDrive" SizeDefinition="Large,Middle,Middle" Click="btnMapDrive_Click" LargeIcon="Images\condrive32.png" Icon="Images\condrive16.png"/>
+                    <Ribbon:Button Header="{StaticResource btnDiscDriveCP}" Ribbon:KeyTip.Keys="D" Name="btnDisconectDrive" SizeDefinition="Large,Middle,Middle" Click="btnDisconectDrive_Click" LargeIcon="Images\disdrive32.png" Icon="Images\disdrive16.png"/>
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Ribbon:KeyTip.Keys="G">
+                    <Ribbon:Button x:Name="btnAdvancedSecurity" Ribbon:KeyTip.Keys="A" Click="btnAdvancedSecurity_Click" Header="{StaticResource btnAdvSecurityCP}" LargeIcon="Images\advsec32.png" Icon="Images\advsec16.png">
+                        <Ribbon:Button.ToolTip>
+                            <!--"{StaticResource btnAdvSecurityTCP}"-->
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnAdvSecurityCP}"
+                                Text="{StaticResource btnAdvSecurityTTX}"
+                                Image ="Images\advsec48.png"
+                                Width="250"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:Button.ToolTip>
+                    </Ribbon:Button>
+                </Ribbon:RibbonGroupBox>
+            </Ribbon:RibbonTabItem>
+            <Ribbon:RibbonTabItem Header="{StaticResource tbViewCP}" Ribbon:KeyTip.Keys="V" ReduceOrder="CurrentView,CurrentView,ShowHide,Layout,Layout,Layout,Panes,Panes,ShowHide,ShowHide,CurrentView,Panes" Indent="7" GotFocus="TheStatusBar_GotFocus">
+                <Ribbon:RibbonGroupBox x:Name="Panes" Header="{StaticResource tbPanesCP}" Ribbon:KeyTip.Keys="P">
+                    <Ribbon:ToggleButton Header="{StaticResource btnNavigationCP}" Ribbon:KeyTip.Keys="NP" Name="btnNavigationPane" Checked="btnNavigationPane_Checked" Unchecked="btnNavigationPane_Unchecked" LargeIcon="Images\navpane32.png" Icon="Images\navpane16.png" SizeDefinition="Large,Middle,Middle">
+                        <Ribbon:ToggleButton.ToolTip>
+                            <!--"{StaticResource btnNavigationTCP}"-->
+                            <Ribbon:ScreenTip
+                                    Title="{StaticResource btnNavigationCP}"
+                                    Text="{StaticResource btnNavigationTTX}"
+                                    Width="250"
+                                    Image="Images\navpane48.png"
+                                    IsRibbonAligned ="True"/>
+                         </Ribbon:ToggleButton.ToolTip>
+                    </Ribbon:ToggleButton>
+                    <Ribbon:ToggleButton Header="{StaticResource btnPreviewCP}" Ribbon:KeyTip.Keys="PP" Name="btnPreviewPane" LargeIcon="Images\prevpane32.png" Icon="Images\prevpane16.png" SizeDefinition="Middle,Middle,Middle" Checked="btnPreviewPane_Checked" Unchecked="btnPreviewPane_Unchecked">
+                        <Ribbon:ToggleButton.ToolTip>
+                            <!--"{StaticResource btnNavigationTCP}"-->
+                            <Ribbon:ScreenTip
+                                    Title="{StaticResource btnNavigationCP}"
+                                    Text="{StaticResource btnPreviewTTX}"
+                                    Width="250"
+                                    Image="Images\prevpane48.png"
+                                    IsRibbonAligned ="True"/>
+                        </Ribbon:ToggleButton.ToolTip>
+                    </Ribbon:ToggleButton>
+                    <Ribbon:ToggleButton Header="{StaticResource btnInfoCP}" Ribbon:KeyTip.Keys="IP" Name="btnInfoPane" LargeIcon="Images\detailpane32.png" Icon="Images\detailpane16.png" SizeDefinition="Middle,Middle,Middle" Unchecked="btnInfoPane_Unchecked" Checked="btnInfoPane_Checked">
+                        <Ribbon:ToggleButton.ToolTip>
+                            <!--"{StaticResource btnInfoTCP}"-->
+                            <Ribbon:ScreenTip
+                                    Title="{StaticResource btnInfoCP}"
+                                    Text="{StaticResource btnInfoTTX}"
+                                    Width="250"
+                                    Image="Images\detailpane48.png"
+                                    IsRibbonAligned ="True"/>
+                        </Ribbon:ToggleButton.ToolTip>
+                    </Ribbon:ToggleButton>
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgLayoutCP}" Ribbon:KeyTip.Keys="L" Name="Layout">
+                    <Ribbon:InRibbonGallery  x:Name="inRibbonGallery1" Header="View Mode" Ribbon:KeyTip.Keys="V" SelectedFilter="{Binding ElementName=galleryFilterAll}" ResizeMode="Both" MinItemsInRow="3" MaxItemsInRow="3" SizeDefinition="Large,Large,Large" Orientation="Horizontal"  ItemWidth="130" ItemHeight="20" GroupBy="Tag" CanCollapseToButton="True" MinItemsInDropDownRow="2" SelectionChanged="inRibbonGallery1_SelectionChanged" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed">
+                        <Ribbon:InRibbonGallery.Filters>
+                            <Ribbon:GalleryGroupFilter Title="All" Groups="Standard Views,Additional Views" x:Name="galleryFilterAll"/>
+                            <Ribbon:GalleryGroupFilter Title="Standard Views" Groups="Standard Views"/>
+                            <Ribbon:GalleryGroupFilter Title="Additional Views" Groups="Additional Views"/>
+                        </Ribbon:InRibbonGallery.Filters>
+                        <StackPanel Orientation="Horizontal" Tag="Standard Views" Name="ExtraLargeIconsPanel" Focusable="True">
+                            <Image Source="Images\elarge16.png" Stretch="None" Name="elarge"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{StaticResource btnExtraLargeICP}" Margin="2,0,0,0"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Tag="Standard Views" Focusable="True">
+                            <Image Source="Images\large16.png" Stretch="None"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{StaticResource btnLargeICP}" Margin="2,0,0,0"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Tag="Standard Views" Focusable="True">
+                            <Image Source="Images\medium16.png" Stretch="None"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{StaticResource btnMediumICP}" Margin="2,0,0,0"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Tag="Standard Views" Focusable="True">
+                            <Image Source="Images\small16.png" Stretch="None"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{StaticResource btnSmallICP}" Margin="2,0,0,0"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Tag="Standard Views" Focusable="True">
+                            <Image Source="Images\content16.png" Stretch="None"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{StaticResource btnListICP}" Margin="2,0,0,0"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Tag="Standard Views" Focusable="True">
+                            <Image Source="Images\details16.png" Stretch="None"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{StaticResource btnDetailsICP}" Margin="2,0,0,0"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Tag="Standard Views" Focusable="True">
+                            <Image Source="Images\tiles16.png" Stretch="None"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{StaticResource btnTilesICP}" Margin="2,0,0,0"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Tag="Standard Views" Focusable="True">
+                            <Image Source="Images\content16.png" Stretch="None"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{StaticResource btnContentICP}"></TextBlock>
+                        </StackPanel>
+                        <!--Slider Orientation="Horizontal" Tag="Additional Views" Interval="1" Minimum="48" Maximum="256" SmallChange="1" /-->
+                    </Ribbon:InRibbonGallery>
+
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgCurrentViewCP}" Name="CurrentView" Ribbon:KeyTip.Keys="CV">
+                    <Ribbon:DropDownButton Name="btnSort" Ribbon:KeyTip.Keys="S" Header="{StaticResource btnSortByCP}" SizeDefinition="Large,Large,Small" LargeIcon="Images\sort32.png" Icon="Images\sort16.png" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed">
+                        <Ribbon:DropDownButton.ToolTip>
+                            <!--"{StaticResource btnSortHCP}"-->
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnSortByCP}"
+                                Text="{StaticResource btnSortICP}"
+                                Width="250"
+                                Image="Images\sort32.png"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:DropDownButton.ToolTip>
+                    </Ribbon:DropDownButton>
+                    <Ribbon:DropDownButton Name="btnGroup" Ribbon:KeyTip.Keys="G" Header="{StaticResource btnGroupByCP}" SizeDefinition="Middle,Small,Small" Icon="Images\groupby16.png" DropDownClosed="btnMoreColls_DropDownClosed" DropDownOpened="btnMoreColls_DropDownOpened">
+                    </Ribbon:DropDownButton>
+                    <Ribbon:Button Header="{StaticResource btnAutoSizeColCP}" Ribbon:KeyTip.Keys="CA" SizeDefinition="Middle,Small,Small" Name="btnAutosizeColls" Click="btnAutosizeColls_Click" Icon="Images\ascol16.png">
+                        <Ribbon:Button.ToolTip>
+                            <!--"{StaticResource btnAutoSizeColHCP}"-->
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnAutoSizeColCP}"
+                                Text="{StaticResource btnAutoSizeColICP}"
+                                Width="250"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:Button.ToolTip>
+                    </Ribbon:Button>
+                    <Ribbon:SplitButton Header="{StaticResource btnMoreColCP}" Ribbon:KeyTip.Keys="CM" SizeDefinition="Middle,Small,Small" Name="btnMoreColls" Icon="Images\morecols16.png" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" Click="btnMoreColls_Click" />
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgShowHideCP}" Ribbon:KeyTip.Keys="SH" Name="ShowHide">
+                    <Ribbon:CheckBox Header="{StaticResource chkImagefilenameCP}" Ribbon:KeyTip.Keys="I" Name="chkImageNames" SizeDefinition="Middle,Middle,Small" IsChecked="True" IsEnabled="False" />
+                    <Ribbon:CheckBox Header="{StaticResource chkHiddenItemsCP}" Ribbon:KeyTip.Keys="D" Name="chkHiddenFiles" SizeDefinition="Middle,Middle,Small" Checked="chkHiddenFiles_Checked" Unchecked="chkHiddenFiles_Unchecked" />
+                    <Ribbon:CheckBox Header="{StaticResource chkExtensionsCP}" Ribbon:KeyTip.Keys="E" Name="chkExtensions" SizeDefinition="Middle,Middle,Small" Checked="chkExtensions_Checked" Unchecked="chkExtensions_Unchecked">
+                        <Ribbon:CheckBox.ToolTip>
+                            <!--Title="{StaticResource chkExtensionsHCP}"-->
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource chkExtensionsCP}"
+                                Text="{StaticResource chkExtensionsICP}"
+                                Width="250"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:CheckBox.ToolTip>
+                    </Ribbon:CheckBox>
+                    <Ribbon:SplitButton Header="{StaticResource btnHideSelCP}" Ribbon:KeyTip.Keys="H" Name="btnHideSelItems" SizeDefinition="Large,Small,Small" LargeIcon="Images\hideitems48.png" Icon="Images\hideitems16.png" Click="btnHideSelItems_Click">
+                        <Ribbon:MenuItem Header="{StaticResource miHideSelCP}" Ribbon:KeyTip.Keys="H" Click="btnHideSelItems_Click"/>
+                        <Ribbon:MenuItem Header="{StaticResource miHideItemsCP}" Ribbon:KeyTip.Keys="C" Name="miHideItems" Click="miHideItems_Click" />
+                    </Ribbon:SplitButton>
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="{StaticResource grpWindowsCP}" Ribbon:KeyTip.Keys="W">
+                    <Ribbon:Button Header="{StaticResource btnNewWindowCP}" Icon="Images\new_window.png" LargeIcon="Images\new_window32.png" Content="New Window" Click="Button_Click_5" Name="btnNewWin" />
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox>
+                    <Ribbon:Button Header="{StaticResource btnRefreshCP}" Ribbon:KeyTip.Keys="R" LargeIcon="Images\Refresh32.png" Click="Button_Click" SizeDefinition="Large"/>
+                </Ribbon:RibbonGroupBox>
+            </Ribbon:RibbonTabItem>
+            
+            <Ribbon:RibbonTabItem Header="{StaticResource tbManageCP}" ReduceOrder="ManageLibrary,ManageLibrary,ManageLibrary" Ribbon:KeyTip.Keys="M" Group="{Binding ElementName=ctgLibraries, Mode=OneWay}">
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgLibraryCP}" Name="ManageLibrary" Ribbon:KeyTip.Keys="L" IsLauncherVisible="False">
+                    <Ribbon:Button Header="{StaticResource btnManageLibCP}" Ribbon:KeyTip.Keys="M" Name="btnManageLib" SizeDefinition="Large" LargeIcon="Images\explorer32.png" Click="btnManageLib_Click" />
+                    <Ribbon:DropDownButton Header="{StaticResource btnDefSaveCP}" Ribbon:KeyTip.Keys="D" SizeDefinition="Large" Name="btnDefSave" LargeIcon="Images\libsaveloc32.png" Icon="Images\libsaveloc16.png" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" />
+                    <Ribbon:DropDownButton Header="{StaticResource btnOptimizeCP}" Ribbon:KeyTip.Keys="O" SizeDefinition="Middle,Middle,Small" Icon="Images\libtype16.png" DropDownClosed="btnMoreColls_DropDownClosed" DropDownOpened="btnMoreColls_DropDownOpened">
+                        <Ribbon:MenuItem Header="{StaticResource miGeneralCP}" Ribbon:KeyTip.Keys="G" Tag="gu" Name="btnOLIGtem" Click="btnOLItem_Click" />
+                        <Ribbon:MenuItem Header="{StaticResource miDocumentsCP}" Ribbon:KeyTip.Keys="D" Tag="doc" Click="btnOLItem_Click" Name="btnOLIDItem"/>
+                        <Ribbon:MenuItem Header="{StaticResource miMusicCP}" Ribbon:KeyTip.Keys="M" Tag="mu" Click="btnOLItem_Click" Name="btnOLIMItem"/>
+                        <Ribbon:MenuItem Header="{StaticResource miPicturesCP}" Ribbon:KeyTip.Keys="P" Tag="pic" Click="btnOLItem_Click" Name="btnOLIPItem"/>
+                        <Ribbon:MenuItem Header="{StaticResource miVideosCP}" Ribbon:KeyTip.Keys="V" Tag="vid" Click="btnOLItem_Click" Name="btnOLIVItem"/>
+                    </Ribbon:DropDownButton>
+                    <Ribbon:Button Header="{StaticResource btnChangeLibIconCP}" Ribbon:KeyTip.Keys="I" SizeDefinition="Middle,Middle,Small" Name="btnChangeLibIcon" Click="btnChangeLibIcon_Click" LargeIcon="Images\libicon32.png" Icon="Images\libicon16.png"/>
+                    <Ribbon:CheckBox Header="{StaticResource chkPinNavCP}" Ribbon:KeyTip.Keys="N" SizeDefinition="Middle,Middle,Small" Name="chkPinNav" Checked="chkPinNav_Checked" Unchecked="chkPinNav_Unchecked">
+                        <Ribbon:CheckBox.ToolTip>
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource chkPinNavHCP}"
+                                Text="{StaticResource chkPinNavICP}"
+                                Width="250"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:CheckBox.ToolTip>
+                    </Ribbon:CheckBox>
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="" Name="ResetLibrary" IsLauncherVisible="False">
+                    <Ribbon:Button Header="{StaticResource btnResetCP}" Ribbon:KeyTip.Keys="R" SizeDefinition="Large" LargeIcon="Images\resetlib32.png" Click="Button_Click_3"/>
+
+                </Ribbon:RibbonGroupBox>
+            </Ribbon:RibbonTabItem>
+            
+            <Ribbon:RibbonTabItem Header="{StaticResource tabDriveCP}" Ribbon:KeyTip.Keys="D" Group="{Binding ElementName=ctgDrive, Mode=OneWay}">
+                <Ribbon:RibbonGroupBox Header="{StaticResource tbManageCP}" Ribbon:KeyTip.Keys="M" IsLauncherVisible="False">
+                    <Ribbon:Button Name="btnFormatDrive" Ribbon:KeyTip.Keys="F" SizeDefinition="Large" Header="{StaticResource btnFormatDriveCP}" LargeIcon="Images\formatd.png"  Click="btnFormatDrive_Click" />
+                    <Ribbon:Button Name="btnCleanDrive" Ribbon:KeyTip.Keys="C" SizeDefinition="Large" Header="{StaticResource btnCleanDriveCP}" LargeIcon="Images\cleand32.png" Click="btnCleanDrive_Click" />
+                    <Ribbon:Button Name="btnDefragDrive" Ribbon:KeyTip.Keys="O" SizeDefinition="Large" Header="{StaticResource btnDefragDriveCP}" LargeIcon="Images\defrag32.png" Click="btnDefragDrive_Click" />
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="" Ribbon:KeyTip.Keys="S" IsLauncherVisible="False">
+                    <Ribbon:Button Header="{StaticResource btnDSizeChartCP}" Name="btnDSizeChart" Ribbon:KeyTip.Keys="Z" LargeIcon="Images\jssize32.png" Icon="Images\jssize16.png" Click="btnFSizeChart_Click" />
+                </Ribbon:RibbonGroupBox>
+            </Ribbon:RibbonTabItem>
+            
+            <Ribbon:RibbonTabItem Header="{StaticResource tabApplicationCP}" Ribbon:KeyTip.Keys="A" Group="{Binding ElementName=ctgExe, Mode=OneWay}">
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgRunCP}" Ribbon:KeyTip.Keys="R" IsLauncherVisible="False">
+                    <Ribbon:ToggleButton Name="btnPin" Ribbon:KeyTip.Keys="P" SizeDefinition="Large" Header="{StaticResource btnPinCP}" LargeIcon="Images\pint32.png" Click="btnPin_Click" />
+                    <Ribbon:Button Name="btnRunAsAdmin" Ribbon:KeyTip.Keys="A" SizeDefinition="Large" Header="{StaticResource btnRunAsAdminCP}" LargeIcon="Images\admin32.png" Click="btnRunAsAdmin_Click" />
+                </Ribbon:RibbonGroupBox>
+            </Ribbon:RibbonTabItem>
+
+            <Ribbon:RibbonTabItem Header="{StaticResource tbManageCP}" Ribbon:KeyTip.Keys="I" ReduceOrder="imgView,imgView,imgView,imgEdit" Group="{Binding ElementName=ctgImage, Mode=OneWay}">
+                <Ribbon:RibbonGroupBox Name="imgEdit" Header="{StaticResource tgImgEditCP}" Ribbon:KeyTip.Keys="O" IsLauncherVisible="False">
+                    <Ribbon:Button Name="btnRotateLeft" Ribbon:KeyTip.Keys="L" SizeDefinition="Large,Large,Large" Header="{StaticResource btnRotateLeftCP}" LargeIcon="Images\rl32.png" Icon="Images\rl16.png" Click="btnRotateLeft_Click" />
+                    <Ribbon:Button Name="btnRotateRight" Ribbon:KeyTip.Keys="R" SizeDefinition="Large,Large,Large" Header="{StaticResource btnRotateRightCP}" LargeIcon="Images\rr32.png" Icon="Images\rr16.png" Click="btnRotateRight_Click" />
+                    <Ribbon:Button Name="btnFlipX" Ribbon:KeyTip.Keys="X" SizeDefinition="Large,Middle,Middle" Header="{StaticResource btnFlipXCP}" Icon="Images\fh16.png" LargeIcon="Images\fh32.png" Click="btnFlipX_Click" />
+                    <Ribbon:Button Name="btnFlipY" Ribbon:KeyTip.Keys="Y" SizeDefinition="Large,Middle,Middle" Header="{StaticResource btnFlipYCP}" Icon="Images\fv16.png" LargeIcon="Images\fv32.png" Click="btnFlipY_Click" />
+                    <Ribbon:DropDownButton Name="btnConvertImage" Ribbon:KeyTip.Keys="C" SizeDefinition="Large,Middle,Middle" Header="{StaticResource btnConvertImageCP}" LargeIcon="Images\convert32.png" Icon="Images\convert16.png">
+                        <Ribbon:MenuItem Name="ConvertToJPG" Ribbon:KeyTip.Keys="J" Header="{StaticResource miJPGfCP}" Click="ConvertToJPG_Click" />
+                        <Ribbon:MenuItem Name="ConvertToPNG" Ribbon:KeyTip.Keys="P" Header="{StaticResource miPNGfCP}" Click="ConvertToPNG_Click" />
+                        <Ribbon:MenuItem Name="ConvertToGIF" Ribbon:KeyTip.Keys="G" Header="{StaticResource miGIFfCP}" Click="ConvertToGIF_Click" />
+                        <Ribbon:MenuItem Name="ConvertToBMP" Ribbon:KeyTip.Keys="G" Header="{StaticResource miBMPfCP}" Click="ConvertToBMP_Click" />
+                        <Ribbon:MenuItem Name="ConvertToWMF" Ribbon:KeyTip.Keys="W" Header="{StaticResource miWMFfCP}" Click="ConvertToWMF_Click" />
+                    </Ribbon:DropDownButton>
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Name="imgSize" Header="{StaticResource grpSizeCP}" Ribbon:KeyTip.Keys="S">
+                    <Ribbon:RibbonToolBar>
+                        <!--ToolBar Layout Definitions-->
+                        <Ribbon:RibbonToolBar.LayoutDefinitions>
+
+                            <!--Large Size of the RibbonToolBar-->
+                            <Ribbon:RibbonToolBarLayoutDefinition Size="Large">
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="imgSizeDisplay" />
+                                </Ribbon:RibbonToolBarRow>
+                            </Ribbon:RibbonToolBarLayoutDefinition>
+
+                            <!--Middle Size of the RibbonToolBar-->
+                            <Ribbon:RibbonToolBarLayoutDefinition Size="Middle">
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="imgSizeDisplay" />
+                                </Ribbon:RibbonToolBarRow>
+                                <!--<Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="imgWidth" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="imgdWidth" Width="50"/>
+                                </Ribbon:RibbonToolBarRow>
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="imgHeight" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="imgdHeight" Width="50"/>
+                                </Ribbon:RibbonToolBarRow>-->
+                            </Ribbon:RibbonToolBarLayoutDefinition>
+
+                            <!--Small Size of the RibbonToolBar-->
+                            <Ribbon:RibbonToolBarLayoutDefinition Size="Small">
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="imgSizeDisplay" />
+                                </Ribbon:RibbonToolBarRow>
+                            </Ribbon:RibbonToolBarLayoutDefinition>
+
+                        </Ribbon:RibbonToolBar.LayoutDefinitions>
+
+                        <!--ToolBar Controls-->
+                        <local:ImageSizeDisplay x:Name="imgSizeDisplay"  WidthName="{StaticResource lblWidthCP}" HeightName="{StaticResource lblHeightCP}" Margin="4,0,0,0" />
+                        <TextBlock x:Name="imgWidth" Text="{StaticResource lblWidthCP}" Margin="4,0,0,0" />
+                        <TextBlock x:Name="imgHeight" Text="{StaticResource lblHeightCP}" Margin="4,0,0,0" />
+                        <TextBox x:Name="imgdWidth"  IsReadOnly="True" IsReadOnlyCaretVisible="True" Background="#FFE0E0E0" Focusable="True" />
+                        <TextBox x:Name="imgdHeight" IsReadOnly="True" IsReadOnlyCaretVisible="True" Background="#FFE0E0E0" Focusable="True" />
+                    </Ribbon:RibbonToolBar>
+                    <Separator />
+                    <Ribbon:Button Name="btnResize" Header="{StaticResource btnResizeCP}" Ribbon:KeyTip.Keys="Z" SizeDefinition="Large" Click="btnResize_Click" LargeIcon="Images\resize32.png" Icon="Images\resize16.png" />
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Name="imgView" Header="{StaticResource tgImgViewCP}" Ribbon:KeyTip.Keys="V" IsLauncherVisible="False">
+                    <Ribbon:Button Name="btnSlideShow" Ribbon:KeyTip.Keys="H" SizeDefinition="Large" Header="{StaticResource btnSlideShowCP}" LargeIcon="Images\slideshow32.png" Visibility="Collapsed" />
+                    <Ribbon:SplitButton Name="btnWallpaper" Ribbon:KeyTip.Keys="W" SizeDefinition="Large" Header="{StaticResource btnWallpaperCP}" LargeIcon="Images\sawall32.png" Click="btnWallpaper_Click" >
+                        <Ribbon:MenuItem Name="miWallFill" Ribbon:KeyTip.Keys="L" Header="{StaticResource miWallFillCP}" Click="miWallFill_Click" />
+                        <Ribbon:MenuItem Name="miWallFit" Ribbon:KeyTip.Keys="F" Header="{StaticResource miWallFitCP}" Click="miWallFit_Click" />
+                        <Ribbon:MenuItem Name="miWallStretch" Ribbon:KeyTip.Keys="S" Header="{StaticResource miWallStretchCP}" Click="miWallStretch_Click" />
+                        <Ribbon:MenuItem Name="miWallTile" Ribbon:KeyTip.Keys="T" Header="{StaticResource miWallTileCP}" Click="miWallTile_Click" />
+                        <Ribbon:MenuItem Name="miWallCenter" Ribbon:KeyTip.Keys="C" Header="{StaticResource miWallCenterCP}" Click="miWallCenter_Click" />
+                    </Ribbon:SplitButton>
+                </Ribbon:RibbonGroupBox>
+            </Ribbon:RibbonTabItem>
+            
+            <Ribbon:RibbonTabItem Header="{StaticResource tbManageCP}" Ribbon:KeyTip.Keys="A" Group="{Binding ElementName=ctgArchive, Mode=OneWay}" ReduceOrder="grpExtract,grpManArchive,grpExtract,grpManArchive,grpManArchive">
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgExtractCP}" Ribbon:KeyTip.Keys="X" IsLauncherEnabled="False" IsLauncherVisible="False" Name="grpExtract">
+                    <Ribbon:Button Header="{StaticResource btnExtractHereCP}" Ribbon:KeyTip.Keys="H" Name="btnExtractHere" Icon="Images\zipeztract16.png" LargeIcon="Images\zipeztract32.png" SizeDefinition="Large" Click="miExtractHere_Click">
+                        <Ribbon:Button.ToolTip>
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnExtractHereHCP}"
+                                Text="{StaticResource btnExtractHereICP}"
+                                Width="250"
+                                IsRibbonAligned ="True"/>
+                        </Ribbon:Button.ToolTip>
+                    </Ribbon:Button>
+                    <Separator/>
+                    <Ribbon:RibbonToolBar>
+                        <!--ToolBar Layout Definitions-->
+                        <Ribbon:RibbonToolBar.LayoutDefinitions>
+
+                            <!--Large Size of the RibbonToolBar-->
+                            <Ribbon:RibbonToolBarLayoutDefinition Size="Large">
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="lblExtract" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="txtExtractLocation" Width="400"/>
+                                </Ribbon:RibbonToolBarRow>
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnChooseLocation" Size="Middle" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnExtractNow" Size="Middle" />
+                                </Ribbon:RibbonToolBarRow>
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="chkUseNewFolder" />
+                                    <!--<Ribbon:RibbonToolBarControlDefinition Target="chkOpenResults" />-->
+                                </Ribbon:RibbonToolBarRow>
+                            </Ribbon:RibbonToolBarLayoutDefinition>
+
+
+                            <!--Middle Size of the RibbonToolBar-->
+                            <Ribbon:RibbonToolBarLayoutDefinition Size="Middle">
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="lblExtract" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="txtExtractLocation" Width="300"/>
+                                </Ribbon:RibbonToolBarRow>
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnChooseLocation" Size="Middle" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnExtractNow" Size="Middle"/>
+                                </Ribbon:RibbonToolBarRow>
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="chkUseNewFolder" />
+                                    <!--<Ribbon:RibbonToolBarControlDefinition Target="chkOpenResults" />-->
+                                </Ribbon:RibbonToolBarRow>
+                            </Ribbon:RibbonToolBarLayoutDefinition>
+
+                            <!--Small Size of the RibbonToolBar-->
+                            <Ribbon:RibbonToolBarLayoutDefinition Size="Small">
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="lblExtract" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="txtExtractLocation" Width="200"/>
+                                </Ribbon:RibbonToolBarRow>
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnChooseLocation" Size="Middle" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnExtractNow" Size="Middle" />
+                                </Ribbon:RibbonToolBarRow>
+                                <Ribbon:RibbonToolBarRow>
+                                    <Ribbon:RibbonToolBarControlDefinition Target="chkUseNewFolder" />
+                                    <!--<Ribbon:RibbonToolBarControlDefinition Target="chkOpenResults" />-->
+                                </Ribbon:RibbonToolBarRow>
+                            </Ribbon:RibbonToolBarLayoutDefinition>
+
+                        </Ribbon:RibbonToolBar.LayoutDefinitions>
+
+                        <!--ToolBar Controls-->
+                        <TextBlock x:Name="lblExtract" Text="{StaticResource lblExtractCP}" Margin="4,0,0,0" />
+                        <TextBox x:Name="txtExtractLocation"/>
+                        <Ribbon:Button x:Name="btnChooseLocation" Header="{StaticResource btnChooseLocationCP}" Icon="Images\folder_new16.png" Click="btnChooseLocation_Click" />
+                        <Ribbon:Button x:Name="btnExtractNow" Header="{StaticResource btnExtractNowCP}" Icon="Images\archiver16.png" Click="btnExtractNow_Click" />
+                        <Ribbon:CheckBox x:Name="chkUseNewFolder" Header="{StaticResource chkUseNewFolderCP}" Ribbon:KeyTip.Keys="F" IsChecked="True" />
+                        <Ribbon:CheckBox x:Name="chkOpenResults" Header="{StaticResource chkOpenResultsCP}" Ribbon:KeyTip.Keys="D" IsChecked="False" />
+                    </Ribbon:RibbonToolBar>
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Name="grpManArchive" Header="{StaticResource tbManageCP}" Ribbon:KeyTip.Keys="A" IsLauncherVisible="False">
+                    <Ribbon:Button Header="{StaticResource btnCheckArchiveCP}" Ribbon:KeyTip.Keys="C" Name="btnCheckArchive" SizeDefinition="Large" Click="btnCheckArchive_Click" LargeIcon="Images\archivecheck32.png" Icon="Images\archivecheck16.png"/>
+                    <Ribbon:Button Header="{StaticResource btnViewArchiveCP}" Ribbon:KeyTip.Keys="V" Name="btnViewArchive" SizeDefinition="Large" Click="btnViewArchive_Click" LargeIcon="Images\archiveview32.png" Icon="Images\archiveview16.png"/>
+                </Ribbon:RibbonGroupBox>
+            </Ribbon:RibbonTabItem>
+            
+            <Ribbon:RibbonTabItem Header="{StaticResource tbManageCP}" Ribbon:KeyTip.Keys="M" Group="{Binding ElementName=ctgFolderTools, Mode=OneWay}">
+                <Ribbon:RibbonGroupBox Header="{StaticResource tgFolderIconCP}" IsLauncherVisible="False" Ribbon:KeyTip.Keys="I">
+                    <Ribbon:Button Header="{StaticResource btnChangeFIconCP}" Ribbon:KeyTip.Keys="C" Name="btnChangeFoldericon" Click="btnChangeFoldericon_Click" LargeIcon="Images\fcustc32.png" Icon="Images\fcustc16.png" />
+                    <Ribbon:Button Header="{StaticResource btnClearFIconCP}" Ribbon:KeyTip.Keys="R" Name="btnClearFoldericon" Click="btnClearFoldericon_Click" LargeIcon="Images\fcust32.png" Icon="Images\fcust16.png"/>
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="" IsLauncherVisible="False" Ribbon:KeyTip.Keys="S">
+                    <Ribbon:Button Header="{StaticResource btnFSizeChartCP}" Name="btnFSizeChart" Ribbon:KeyTip.Keys="Z" LargeIcon="Images\jssize32.png" Icon="Images\jssize16.png" Click="btnFSizeChart_Click" />
+                </Ribbon:RibbonGroupBox>
+            </Ribbon:RibbonTabItem>
+            
+            <Ribbon:RibbonTabItem Header="{StaticResource tabSearchCP}" Ribbon:KeyTip.Keys="S" ReduceOrder="tsgKind,tsgKind,tsgOther,tsgOther,tsgKind,tsgOther" Group="{Binding ElementName=ctgSearch, Mode=OneWay}" Name="tbSearch">
+                <!--<Ribbon:RibbonGroupBox Header="Modifiers" IsLauncherVisible="False" Name="tsgModifiers">
+                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="AND" Tag="AND" GroupName="b1" Visibility="Collapsed"/>
+                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="OR" Tag="OR" GroupName="b1"/>
+                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="NOT" Tag="NOT" GroupName="b1"/>
+                </Ribbon:RibbonGroupBox>-->
+                <Ribbon:RibbonGroupBox Header="{StaticResource tsgKindCP}" IsLauncherVisible="False" Name="tsgKind">
+                    <Ribbon:ToggleButton SizeDefinition="Large" Header="{StaticResource btnKindAllCP}" Tag=":null:" GroupName="k1" Click="ToggleButton_Click" IsChecked="True" LargeIcon="Images\jseverything32.png" Icon="Images\jseverything16.png"  />
+                    <Ribbon:ToggleButton SizeDefinition="Large,Middle,Middle" Header="{StaticResource btnKindDocsCP}" Tag="kind:docs" GroupName="k1" LargeIcon="Images\jsdocs32.png" Icon="Images\jsdocs16.png" Click="ToggleButton_Click"/>
+                    <Ribbon:ToggleButton SizeDefinition="Large,Middle,Middle" Header="{StaticResource btnKindPicsCP}" Tag="kind:pics" GroupName="k1" LargeIcon="Images\jsimages32.png" Icon="Images\jsimages16.png" Click="ToggleButton_Click" />
+                    <Ribbon:ToggleButton SizeDefinition="Large,Middle,Middle" Header="{StaticResource btnKindMusicCP}" Tag="kind:music" GroupName="k1" LargeIcon="Images\jsmusic32.png" Icon="Images\jsmusic16.png" Click="ToggleButton_Click" />
+                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="{StaticResource btnKindVideosCP}" Tag="kind:videos" GroupName="k1" LargeIcon="Images\jsvideos32.png" Icon="Images\jsvideos16.png" Click="ToggleButton_Click" />
+                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="{StaticResource btnKindFoldersCP}" Tag="kind:folders" GroupName="k1" LargeIcon="Images\jsfolders32.png" Icon="Images\jsfolders16.png" Click="ToggleButton_Click" />
+                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="{StaticResource btnKindProgramsCP}" Tag="kind:programs" GroupName="k1" LargeIcon="Images\jsprograms32.png" Icon="Images\jsprograms16.png" Click="ToggleButton_Click" />
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="{StaticResource tsgOtherCP}" IsLauncherVisible="False" Name="tsgOther">
+                    <Ribbon:SplitButton SizeDefinition="Large,Middle,Middle" IsCheckable="True" Header="{StaticResource btnOSizeCP}" LargeIcon="Images\jssize32.png" Icon="Images\jssize16.png" Name="scSize" Click="miCustomSize_Click">
+                        <Ribbon:MenuItem Header="{StaticResource miSizeVLargeCP}" Tag="size:&gt;128MB" GroupName="s1" Click="MenuItem_Click_5" IsCheckable="True" />
+                        <Ribbon:MenuItem Header="{StaticResource miSizeLargeCP}" Tag="size:1MB..128MB" GroupName="s1" Click="MenuItem_Click_5" IsCheckable="True"/>
+                        <Ribbon:MenuItem Header="{StaticResource miSizeMiddleCP}" Tag="size:100KB..1MB" GroupName="s1" Click="MenuItem_Click_5" IsCheckable="True"/>
+                        <Ribbon:MenuItem Header="{StaticResource miSizeSmallCP}" Tag="size:10KB..100KB" GroupName="s1" Click="MenuItem_Click_5" IsCheckable="True"/>
+                        <Ribbon:MenuItem Header="{StaticResource miSizeTinyCP}" Tag="size:&lt;10KB" GroupName="s1" Click="MenuItem_Click_5" IsCheckable="True"/>
+                        <Separator />
+                        <Ribbon:MenuItem Header="{StaticResource miCustomSizeCP}" Name="miCustomSize" Click="miCustomSize_Click" />
+                    </Ribbon:SplitButton>
+                    <Ribbon:SplitButton SizeDefinition="Large,Middle,Middle" Click="dcCustomTime_Click" Header="{StaticResource btnODateCCP}" IsCheckable="True" LargeIcon="Images\jsdc32.png" Icon="Images\jsdc16.png" Name="dcsplit">
+                        <Ribbon:MenuItem Header="{StaticResource miDateTodayCP}" Tag="date:today" GroupName="s2" Click="MenuItem_Click_4" IsCheckable="True"/>
+                        <Ribbon:MenuItem Header="{StaticResource miDateYesterdayCP}" Tag="date:yesterday" GroupName="s2" Click="MenuItem_Click_4" IsCheckable="True"/>
+                        <Ribbon:MenuItem Header="{StaticResource miDateThisWeekCP}" Tag="date:this week" GroupName="s2" Click="MenuItem_Click_4" IsCheckable="True"/>
+                        <Ribbon:MenuItem Header="{StaticResource miDateLastWeekCP}" Tag="date:last week" GroupName="s2" Click="MenuItem_Click_4" IsCheckable="True"/>
+                        <Ribbon:MenuItem Header="{StaticResource miPastMonthCP}" Tag="date:past month" GroupName="s2" Click="MenuItem_Click_4" IsCheckable="True"/>
+                        <Separator />
+                        <Ribbon:MenuItem Header="{StaticResource miDateCustomCP}" x:Name="dcCustomTime" Click="dcCustomTime_Click" />
+                    </Ribbon:SplitButton>
+                    <Ribbon:SplitButton SizeDefinition="Large,Middle,Middle" Click="dmCustomTime_Click" Header="{StaticResource btnODateModCP}" IsCheckable="True" LargeIcon="Images\jsdm32.png" Icon="Images\jsdm16.png" Name="dmsplit">
+                        <Ribbon:MenuItem Header="{StaticResource miDateTodayCP}" Tag="modified:today" GroupName="s3" Click="MenuItem_Click_3" IsCheckable="True"/>
+                        <Ribbon:MenuItem Header="{StaticResource miDateYesterdayCP}" Tag="modified:yesterday" GroupName="s3" Click="MenuItem_Click_3" IsCheckable="True"/>
+                        <Ribbon:MenuItem Header="{StaticResource miDateThisWeekCP}" Tag="modified:this week" GroupName="s3" Click="MenuItem_Click_3" IsCheckable="True"/>
+                        <Ribbon:MenuItem Header="{StaticResource miDateLastWeekCP}" Tag="modified:last week" GroupName="s3" Click="MenuItem_Click_3" IsCheckable="True"/>
+                        <Ribbon:MenuItem Header="{StaticResource miPastMonthCP}" Tag="modified:past month" GroupName="s3" Click="MenuItem_Click_3" IsCheckable="True"/>
+                        <Separator />
+                        <Ribbon:MenuItem Header="{StaticResource miDateCustomCP}" Name="dmCustomTime" Click="dmCustomTime_Click" />
+                    </Ribbon:SplitButton>
+                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="{StaticResource btnExtCP}" Tag="ext:" Click="ToggleButton_Click_1" Name="ExtToggle" Icon="Images\jsext16.png" LargeIcon="Images\jsext32.png" />
+                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="{StaticResource btnAuthorCP}" Tag="author:" LargeIcon="Images\jsauthor32.png" Icon="Images\jsauthor16.png" Name="AuthorToggle" Click="AuthorToggle_Click" />
+                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="{StaticResource btnSubjectCP}" Tag="subject:" Name="SubjectToggle" Click="SubjectToggle_Click" LargeIcon="Images\jssubject32.png" Icon="Images\jssubject16.png" />
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox>
+                    <Ribbon:Button Name="btnSearch" Header="{StaticResource btnSearchCP}" SizeDefinition="Large,Middle,Middle" Click="btnSearch_Click" LargeIcon="Images\jssearch32.png" Icon="Images\jssearch16.png" />
+                    <Ribbon:Button SizeDefinition="Large,Middle,Middle" Header="Advanced Search" LargeIcon="Images\searchadv32.png" Icon="Images\searchadv16.png" Visibility="Collapsed" />
+                </Ribbon:RibbonGroupBox>
+            </Ribbon:RibbonTabItem>
+        </Ribbon:Ribbon>
+        <Button Name="btnUpLevel" Width="21" Margin="88,8,0,0" Grid.Row="1" HorizontalAlignment="Left" Height="21" VerticalAlignment="Top" Click="btnUpLevel_Click" GotFocus="TheStatusBar_GotFocus">
+            <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid>
+                        <Image x:Name="Normal" Source="Images\upanormal.png" Visibility="Visible"/>
+                        <Image x:Name="Pressed" Source="Images\upahover.png" Visibility="Hidden"/>
+                        <Image x:Name="Over" Source="Images\upapressed.png" Visibility="Hidden"/>
+                        <Image x:Name="Disabled" Source="Images\upadisabled.png" Visibility="Hidden"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Over" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="False">
+                            <Setter TargetName="Over" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="Normal" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Pressed" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="Over" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled"  Value="False">
+                            <Setter TargetName="Pressed" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="Over" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="Disabled" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <TabControl Grid.ColumnSpan="3" Grid.Row="2" Height="30" Name="tabControl1" VerticalAlignment="Top" ItemsSource="{Binding itbl}" SelectionChanged="tabControl1_SelectionChanged" MouseUp="tabControl1_MouseUp" AllowDrop="False"  MouseDoubleClick="tabControl1_MouseDoubleClick" 
+                    Template="{DynamicResource ScrollableTabControlTemplate}" GotFocus="TheStatusBar_GotFocus" Panel.ZIndex="99">
+            <TabControl.ItemsPanel>
+
+                <ItemsPanelTemplate>
+
+                    <StackPanel Orientation="Horizontal" IsItemsHost="True"/>
+
+                </ItemsPanelTemplate>
+
+            </TabControl.ItemsPanel>
+        </TabControl>
+        <WindowsFormsHost Grid.Row="3" Name="ShellVView" Background="White" ClipToBounds="True" OpacityMask="White" MouseMove="ShellVView_MouseMove" Panel.ZIndex="1"></WindowsFormsHost>
+        
+        <Grid Grid.Row="1" Height="30" HorizontalAlignment="Left" Name="navBarGrid" VerticalAlignment="Top" Width="75" Margin="10,3,0,0" GotFocus="TheStatusBar_GotFocus">
+
+            <Grid.Background>
+                <ImageBrush x:Name="Normal" ImageSource="/BetterExplorer;component/Images/back.png" />
+            </Grid.Background>
+
+            <Button Content="Left" Name="leftNavBut" Margin="2,2,0,2" BorderBrush="#70000000" Background="{x:Null}" HorizontalAlignment="Left" Width="25" Click="leftNavBut_Click">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Image x:Name="Normal" Source="Images\left1.png" Visibility="Visible"/>
+                            <Image x:Name="Pressed" Source="Images\left2.png" Visibility="Hidden"/>
+                            <Image x:Name="Over" Source="Images\left3.png" Visibility="Hidden"/>
+                            <Image x:Name="Disabled" Source="Images\left4.png" Visibility="Hidden"/>
+
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Over" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter TargetName="Over" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Normal" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Pressed" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Over" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Pressed" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Over" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Disabled" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button  Margin="30,2,0,2" Name="rightNavBut"  Background="{x:Null}" HorizontalAlignment="Left" Width="25" Click="rightNavBut_Click">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Image x:Name="Normal" Source="Images\right1.png" Visibility="Visible"/>
+                            <Image x:Name="Pressed" Source="Images\right2.png" Visibility="Hidden"/>
+                            <Image x:Name="Over" Source="Images\right3.png" Visibility="Hidden"/>
+                            <Image x:Name="Disabled" Source="Images\right4.png" Visibility="Hidden"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Over" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter TargetName="Over" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Normal" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Pressed" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Over" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Pressed" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Over" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Disabled" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button  Margin="50,0,0,2" Name="downArrow"  Background="{x:Null}" HorizontalAlignment="Left" Width="24" Height="29" Click="downArrow_Click">
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <Image x:Name="Normal" Source="Images\downar1.png" Visibility="Visible"/>
+                            <Image x:Name="Pressed" Source="Images\downar2.png" Visibility="Hidden"/>
+                            <Image x:Name="Over" Source="Images\downar3.png" Visibility="Hidden"/>
+                            <Image x:Name="Disabled" Source="Images\downar4.png" Visibility="Hidden"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Over" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter TargetName="Over" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Normal" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Pressed" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="Normal" Property="Visibility" Value="Hidden"/>
+                                <Setter TargetName="Over" Property="Visibility" Value="Hidden"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+        </Grid>
+        <Grid Grid.Row="1" Height="24" Margin="118,6,5,0" Name="NavControlsGrid" VerticalAlignment="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="484*" />
+                <ColumnDefinition Width="219" Name="SearchBarColumn" />
+            </Grid.ColumnDefinitions>
+                <local:BreadcrumbBarControl x:Name="breadcrumbBarControl1" NavigateRequested="breadcrumbBarControl1_NavigateRequested" Width="Auto" />
+            
+            <!--my:SearchTextBox Margin="8,0,0,0" Name="searchTextBox1" HorizontalAlignment="Stretch" BorderBrush="Black" MinHeight="23" Search="searchTextBox1_Search" VerticalAlignment="Stretch" Grid.Column="1" PreviewMouseUp="searchTextBox1_PreviewMouseUp" MouseDown="searchTextBox1_MouseDown" GotFocus="searchTextBox1_GotFocus" IsKeyboardFocusedChanged="searchTextBox1_IsKeyboardFocusedChanged" LostFocus="searchTextBox1_LostFocus" LostKeyboardFocus="searchTextBox1_LostKeyboardFocus" GotKeyboardFocus="searchTextBox1_GotKeyboardFocus" MouseMove="searchTextBox1_MouseMove" MouseUp="searchTextBox1_MouseUp" /-->
+            <local:SearchBox Margin="8,0,0,0" x:Name="edtSearchBox" GotFocus="searchTextBox1_GotFocus" LostFocus="searchTextBox1_LostFocus" GotKeyboardFocus="searchTextBox1_GotKeyboardFocus" Grid.Column="1" LostKeyboardFocus="searchTextBox1_LostKeyboardFocus" KeyUp="edtSearchBox_KeyUp" BeginSearch="edtSearchBox_BeginSearch_1" FiltersCleared="edtSearchBox_FiltersCleared" RequestCriteriaChange="edtSearchBox_RequestCriteriaChange" />
+            <GridSplitter Name="gridSplitter1" Grid.Column="1" ResizeDirection="Columns" Width="8" HorizontalAlignment="Left" Background="#01000000" DragCompleted="gridSplitter1_DragCompleted" GotFocus="TheStatusBar_GotFocus">
+                <GridSplitter.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="{StaticResource SearchBarResetCP}" Name="SearchBarReset" Click="SearchBarReset_Click" />
+                    </ContextMenu>
+                </GridSplitter.ContextMenu>
+            </GridSplitter>
+        </Grid>
+    </Grid>
+
+</Ribbon:RibbonWindow>

@@ -1,0 +1,8 @@
+﻿<Window x:Class="BetterExplorer.ItemPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ItemPopup" Height="22" Width="22" ShowActivated="False" Background="#FFD11E1E" BorderBrush="Black" BorderThickness="1" ResizeMode="NoResize" Topmost="False" WindowStyle="None" ShowInTaskbar="False" Visibility="Hidden" MouseEnter="Window_MouseEnter" MouseLeave="Window_MouseLeave" PreviewMouseMove="Window_PreviewMouseMove" Focusable="False" Top="-50" Left="-50" PreviewMouseDown="Window_PreviewMouseDown">
+    <Grid>
+        
+    </Grid>
+</Window>

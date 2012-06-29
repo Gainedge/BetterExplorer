@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="BetterExplorer.PieChart.Legend"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local ="clr-namespace:BetterExplorer.PieChart"
+    Height="300" Width="300" SizeChanged="UserControl_SizeChanged">
+    
+    <UserControl.Resources>
+        <local:LegendConverter x:Key="legendConverter" />
+        <local:ColourConverter x:Key="colourConverter" />
+        <local:FileSizeConverter x:Key="fsConverter"/>
+        <Style TargetType="ListBoxItem">
+            <!-- override the default template to remove the default styling on the IsSelected property -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border x:Name="border" BorderBrush="Transparent" BorderThickness="1">
+                            <ContentPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border">
+                                    <Setter.Value>
+                                    <SolidColorBrush Color="Black"/>
+                                        </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <TextBlock TextAlignment="Center"  FontSize="20" FontWeight="Bold" VerticalAlignment="Top" Name="Head"/>
+            <ListBox Height="272" VerticalAlignment="Top" HorizontalContentAlignment="Stretch"  BorderThickness="0" IsSynchronizedWithCurrentItem="True" ItemsSource="{Binding}" Margin="0,0,0,0" Name="legend">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid HorizontalAlignment="Stretch" Margin="3">
+                            <Grid.Background>
+                                <SolidColorBrush Color="#EBEBEB"/>
+                            </Grid.Background>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+
+                            <!-- the colour key -->
+                            <Rectangle Grid.Column="0" Width="13" Height="13" Tag="{Binding}"
+                                       Fill="{Binding RelativeSource={RelativeSource Self}, Converter={StaticResource colourConverter}}"/>
+                             
+                            <!-- the name of this item -->
+                            <TextBlock Grid.Column="1" Margin="3" Text="{Binding Path=FolderSizeLoc}"/>
+
+                            <!-- the value of the item's property which this pie chart represents -->
+                            <!--<TextBlock Grid.Column="2" Margin="3" Tag="{Binding}"
+                                   Text="{Binding RelativeSource={RelativeSource Self},Converter={StaticResource legendConverter}}"/>-->
+                            <TextBlock Grid.Column="2" Margin="3" Tag="{Binding}"
+                                   Text="{Binding Path=FSize,Converter={StaticResource fsConverter}}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+    </Grid>
+</UserControl>

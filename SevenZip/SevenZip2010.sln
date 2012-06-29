@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZip2010", "SevenZip2010.csproj", "{4960DD14-3431-47EC-B9D9-9D2730A98DC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZipTest2010", "..\SevenZipTest\SevenZipTest2010.csproj", "{B87AD11B-B701-496B-B48E-D1D963F2A336}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZipTestWPF", "..\SevenZipTestWPF\SevenZipTestWPF.csproj", "{B6581047-3FBE-45E4-B4F8-F517FA3A6B6C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Debug|x86.Build.0 = Debug|Any CPU
+		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4960DD14-3431-47EC-B9D9-9D2730A98DC3}.Release|x86.ActiveCfg = Release|Any CPU
+		{B87AD11B-B701-496B-B48E-D1D963F2A336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B87AD11B-B701-496B-B48E-D1D963F2A336}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B87AD11B-B701-496B-B48E-D1D963F2A336}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B87AD11B-B701-496B-B48E-D1D963F2A336}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B87AD11B-B701-496B-B48E-D1D963F2A336}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B87AD11B-B701-496B-B48E-D1D963F2A336}.Debug|x86.Build.0 = Debug|Any CPU
+		{B87AD11B-B701-496B-B48E-D1D963F2A336}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B87AD11B-B701-496B-B48E-D1D963F2A336}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B87AD11B-B701-496B-B48E-D1D963F2A336}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B87AD11B-B701-496B-B48E-D1D963F2A336}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B87AD11B-B701-496B-B48E-D1D963F2A336}.Release|x86.ActiveCfg = Release|Any CPU
+		{B6581047-3FBE-45E4-B4F8-F517FA3A6B6C}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{B6581047-3FBE-45E4-B4F8-F517FA3A6B6C}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{B6581047-3FBE-45E4-B4F8-F517FA3A6B6C}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{B6581047-3FBE-45E4-B4F8-F517FA3A6B6C}.Debug|x86.ActiveCfg = Debug|x86
+		{B6581047-3FBE-45E4-B4F8-F517FA3A6B6C}.Debug|x86.Build.0 = Debug|x86
+		{B6581047-3FBE-45E4-B4F8-F517FA3A6B6C}.Release|Any CPU.ActiveCfg = Release|x86
+		{B6581047-3FBE-45E4-B4F8-F517FA3A6B6C}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{B6581047-3FBE-45E4-B4F8-F517FA3A6B6C}.Release|Mixed Platforms.Build.0 = Release|x86
+		{B6581047-3FBE-45E4-B4F8-F517FA3A6B6C}.Release|x86.ActiveCfg = Release|x86
+		{B6581047-3FBE-45E4-B4F8-F517FA3A6B6C}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NDepend) = preSolution
+		Project = ".\SevenZip2010.ndproj"
+	EndGlobalSection
+EndGlobal

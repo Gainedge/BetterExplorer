@@ -1,0 +1,34 @@
+﻿<Window x:Class="BetterExplorer.SizeSearchCriteriaDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Filter Search" Height="210" Width="332" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" xmlns:my="clr-namespace:BetterExplorer">
+    <Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="12,12,0,0" Name="textBlock1" Text="Filter by size:" VerticalAlignment="Top" />
+        <Button Content="Set" Height="23" HorizontalAlignment="Left" Margin="142,125,0,0" Name="button1" VerticalAlignment="Top" Width="75" Click="button1_Click" />
+        <Button Content="Cancel" Height="23" HorizontalAlignment="Left" Margin="223,125,0,0" Name="button2" VerticalAlignment="Top" Width="75" Click="button2_Click" />
+        <ComboBox Height="23" HorizontalAlignment="Left" IsEnabled="True" Margin="12,57,0,0" Name="sizefilter" SelectedIndex="2" VerticalAlignment="Top" Width="120" SelectionChanged="sizefilter_SelectionChanged">
+            <my:ConditionalSelectComboBoxItem IdentifyingName="LargerThan" Text="is larger than" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="SmallerThan" Text="is smaller than" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Equals" Text="is exactly" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Between" Text="is between" />
+        </ComboBox>
+        <TextBox Height="23" HorizontalAlignment="Left" IsEnabled="True" Margin="138,57,0,0" Name="sizequery1" VerticalAlignment="Top" Width="103" />
+        <TextBox Height="23" HorizontalAlignment="Left" IsEnabled="False" Margin="138,86,0,0" Name="sizequery2" VerticalAlignment="Top" Width="103" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="112,89,0,0" Name="textBlock4" Text="and" VerticalAlignment="Top" />
+        <ComboBox Height="23" HorizontalAlignment="Left" IsEnabled="True" Margin="247,57,0,0" Name="sizebox1" SelectedIndex="1" VerticalAlignment="Top" Width="45">
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Bytes" Text="B" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Kilobytes" Text="KB" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Megabytes" Text="MB" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Gigabytes" Text="GB" />
+        </ComboBox>
+        <ComboBox Height="23" HorizontalAlignment="Left" IsEnabled="False" Margin="247,86,0,0" Name="sizebox2" SelectedIndex="1" VerticalAlignment="Top" Width="45">
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Bytes" Text="B" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Kilobytes" Text="KB" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Megabytes" Text="MB" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Gigabytes" Text="GB" />
+        </ComboBox>
+        <TextBlock HorizontalAlignment="Left" Margin="12,34,0,0" Name="textBlock2" Text="Current value:" VerticalAlignment="Top" />
+        <TextBlock HorizontalAlignment="Left" Margin="91,34,0,0" Name="curval" VerticalAlignment="Top" />
+        <TextBlock HorizontalAlignment="Left" Margin="12,154,0,0" Name="textBlock3" Text="To remove filter, leave all values blank." VerticalAlignment="Top" />
+    </Grid>
+</Window>

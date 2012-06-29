@@ -1,0 +1,151 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SevenZip</RootNamespace>
+    <AssemblyName>SevenZipSharp</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>SevenZip.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;UNMANAGED, COMPRESS, LZMA_STREAM, DOTNET20</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <DocumentationFile>bin\Debug\SevenZipSharp.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;UNMANAGED, COMPRESS, LZMA_STREAM, DOTNET20</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <DocumentationFile>bin\Release\SevenZipSharp.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Deploy|AnyCPU' ">
+    <OutputPath>bin\Deploy\</OutputPath>
+    <DefineConstants>TRACE;UNMANAGED, COMPRESS, LZMA_STREAM, CS2</DefineConstants>
+    <DocumentationFile>bin\Release\SevenZip.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ArchiveEmulationStreamProxy.cs" />
+    <Compile Include="ArchiveExtractCallback.cs" />
+    <Compile Include="ArchiveOpenCallback.cs" />
+    <Compile Include="ArchiveUpdateCallback.cs" />
+    <Compile Include="Com.cs" />
+    <Compile Include="EventArgs.cs" />
+    <Compile Include="Exceptions.cs" />
+    <Compile Include="FileSignatureChecker.cs" />
+    <Compile Include="Formats.cs" />
+    <Compile Include="LibraryFeature.cs" />
+    <Compile Include="LibraryManager.cs" />
+    <Compile Include="Common.cs" />
+    <Compile Include="LzmaDecodeStream.cs" />
+    <Compile Include="LzmaEncodeStream.cs" />
+    <Compile Include="LzmaProgressCallback.cs" />
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="sdk\Common\CRC.cs" />
+    <Compile Include="sdk\Common\InBuffer.cs" />
+    <Compile Include="sdk\Common\OutBuffer.cs" />
+    <Compile Include="sdk\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="sdk\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="sdk\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="sdk\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="sdk\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="sdk\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="sdk\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="sdk\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="sdk\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="sdk\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="sdk\ICoder.cs" />
+    <Compile Include="SevenZipCompressor.cs" />
+    <Compile Include="SevenZipCompressorAsynchronous.cs" />
+    <Compile Include="SevenZipExtractor.cs" />
+    <Compile Include="SevenZipExtractorAsynchronous.cs" />
+    <Compile Include="SevenZipSfx.cs" />
+    <Compile Include="StreamWrappers.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sfx\7zS.sfx" />
+    <None Include="sfx\7zxSD_All.sfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="sfx\Configs.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="7z.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="7z64.dll" />
+    <Content Include="arch\Test.txt" />
+    <Content Include="sfx\Configs.xslt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sfx\7zSD.sfx" />
+    <None Include="sfx\7zxSD_Deflate.sfx" />
+    <None Include="sfx\7zxSD_LZMA.sfx" />
+    <None Include="sfx\7zxSD_PPMd.sfx" />
+    <EmbeddedResource Include="sfx\Configs.xsd" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="arch\Test.bzip2.7z" />
+    <EmbeddedResource Include="arch\Test.lzma.7z" />
+    <EmbeddedResource Include="arch\Test.lzma2.7z" />
+    <EmbeddedResource Include="arch\Test.ppmd.7z" />
+    <EmbeddedResource Include="arch\Test.rar" />
+    <EmbeddedResource Include="arch\Test.tar" />
+    <EmbeddedResource Include="arch\Test.txt.bz2" />
+    <EmbeddedResource Include="arch\Test.txt.gz" />
+    <EmbeddedResource Include="arch\Test.txt.xz" />
+    <EmbeddedResource Include="arch\Test.zip" />
+    <None Include="SevenZip.snk" />
+    <None Include="sfx\7z.sfx" />
+    <None Include="sfx\7zCon.sfx" />
+    <None Include="sfx\7zxSD_All_x64.sfx" />
+    <None Include="sfx\7zxSD_Deflate_x64.sfx" />
+    <None Include="sfx\7zxSD_LZMA2.sfx" />
+    <None Include="sfx\7zxSD_LZMA2_x64.sfx" />
+    <None Include="sfx\7zxSD_LZMA_x64.sfx" />
+    <None Include="sfx\7zxSD_PPMd_x64.sfx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

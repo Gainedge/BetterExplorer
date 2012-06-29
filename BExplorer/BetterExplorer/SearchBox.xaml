@@ -1,0 +1,13 @@
+﻿<UserControl x:Class="BetterExplorer.SearchBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" d:DesignWidth="250" xmlns:my="clr-namespace:Fluent;assembly=Fluent" Height="24" BorderBrush="Black" Background="White" BorderThickness="1" Focusable="True" LostFocus="UserControl_LostFocus">
+    <Grid>
+        <TextBox Name="SearchCriteriatext" BorderBrush="{x:Null}" BorderThickness="0" VerticalContentAlignment="Center" TextChanged="textBox1_TextChanged" LostFocus="textBox1_LostFocus" GotFocus="textBox1_GotFocus" LostKeyboardFocus="textBox1_LostKeyboardFocus" Margin="0,0,54,0" />
+        <my:DropDownButton Name="SFilters" Header="Filters" Icon="Images\filter16.png" Size="Small" SizeDefinition="Small,Small,Small" Width="30" Height="22" CanAddToQuickAccessToolBar="False" ToolTip="Filters" DropDownOpened="SFilters_DropDownOpened" HorizontalAlignment="Right" Margin="0,0,24,0" />
+        <my:Button Height="22" Name="SStartEnd" Size="Small" SizeDefinition="Small,Small,Small" Header="Search" Icon="Images\search.png" CanAddToQuickAccessToolBar="False" ToolTip="Search" Click="SStartEnd_Click" HorizontalAlignment="Right" Width="24" />
+        <TextBlock Name="lblDefault" Text="Search" Padding="6,3,0,2" FontStyle="Italic" MouseDown="textBlock1_MouseDown" Background="#01000000" Margin="0,0,54,0" />
+    </Grid>
+</UserControl>
