@@ -1561,12 +1561,13 @@ namespace BetterExplorer
                             ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
                             ctgExe.Visibility = System.Windows.Visibility.Collapsed;
                             if (Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder)
+                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder && Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
                             {
                                 ctgFolderTools.Visibility = System.Windows.Visibility.Visible;
                             }
                             else
                                 ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+
                             ctgImage.Visibility = System.Windows.Visibility.Collapsed;
 
                             // if the current viewing location is a Drive, show Drive Tools.
@@ -1587,6 +1588,7 @@ namespace BetterExplorer
                                     ctgFolderTools.Visibility = Visibility.Collapsed;
                                 }
                             }
+
                             if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName)
                             {
                                 ctgFolderTools.Visibility = Visibility.Collapsed;
