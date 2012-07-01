@@ -704,7 +704,9 @@ namespace BetterExplorer
                                         }
                                         else
                                         {
-                                            ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                            if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
+                                                ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                             isFuncAvail = true;
                                         }
                                         btnCopy.IsEnabled = IsChanged;
@@ -829,6 +831,12 @@ namespace BetterExplorer
                                             btnCreateFolder.LargeIcon = @"..\Images\folder_new32.png";
                                             btnCreateFolder.Icon = @"..\Images\folder_new16.png";
                                         }
+                                        if (Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                            !Explorer.NavigationLog.CurrentLocation.IsSearchFolder)
+                                        {
+                                           ctgFolderTools.Visibility = Visibility.Visible; 
+                                        }
+
                                         if (Explorer.NavigationLog.CurrentLocation.ParsingName.Contains(KnownFolders.Libraries.ParsingName) &&
                                             Explorer.NavigationLog.CurrentLocation.ParsingName != KnownFolders.Libraries.ParsingName)
                                         {
@@ -891,6 +899,10 @@ namespace BetterExplorer
                                             ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
                                             inDrive = false;
                                             //MessageBox.Show("Not In Drive");
+                                        }
+                                        if (isinLibraries)
+                                        {
+                                            ctgFolderTools.Visibility = Visibility.Collapsed;
                                         }
 
                                     }
@@ -1548,7 +1560,13 @@ namespace BetterExplorer
                             // hide contextual tabs
                             ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
                             ctgExe.Visibility = System.Windows.Visibility.Collapsed;
-                            ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                            if (Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder)
+                            {
+                                ctgFolderTools.Visibility = System.Windows.Visibility.Visible;
+                            }
+                            else
+                                ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                             ctgImage.Visibility = System.Windows.Visibility.Collapsed;
 
                             // if the current viewing location is a Drive, show Drive Tools.
@@ -1562,9 +1580,21 @@ namespace BetterExplorer
                             }
 
                             // if the current viewing location is a Library, show Library Tools.
+                            if (Explorer.NavigationLog.CurrentLocation.Parent != null)
+                            {
+                                if (Explorer.NavigationLog.CurrentLocation.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
+                                {
+                                    ctgFolderTools.Visibility = Visibility.Collapsed;
+                                }
+                            }
+                            if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName)
+                            {
+                                ctgFolderTools.Visibility = Visibility.Collapsed;
+                            }
 
                             if (inLibrary == true)
                             {
+                                ctgFolderTools.Visibility = Visibility.Collapsed;
                                 ctgLibraries.Visibility = System.Windows.Visibility.Visible;
                                 ShellLibrary lib =
                                     ShellLibrary.Load(Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default), false);
@@ -1781,13 +1811,17 @@ namespace BetterExplorer
                                     else
                                     {
                                         ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-                                        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                        if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
+                                            ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                     }
                                 }
                                 else
                                 {
                                     ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-                                    ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                    if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
+                                        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                 }
 
                                 // Library Tools
@@ -1849,7 +1883,9 @@ namespace BetterExplorer
                                 if (Archives.Contains(System.IO.Path.GetExtension(SelectedItem.ParsingName).ToLowerInvariant()))
                                 {
                                     ctgArchive.Visibility = System.Windows.Visibility.Visible;
-                                    ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                    if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
+                                        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                     selisfolder = false;
                                     txtExtractLocation.Text = new FileInfo(SelectedItem.ParsingName).DirectoryName;
                                     SelectedArchive = SelectedItem.ParsingName;
@@ -1881,7 +1917,9 @@ namespace BetterExplorer
                                     imgSizeDisplay.WidthData = cvt.Width.ToString();
                                     imgSizeDisplay.HeightData = cvt.Height.ToString();
                                     ctgImage.Visibility = System.Windows.Visibility.Visible;
-                                    ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                    if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
+                                        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                     if (asImage == true)
                                     {
                                         TheRibbon.SelectedTabItem = ctgImage.Items[0];
@@ -1914,7 +1952,9 @@ namespace BetterExplorer
                                     else
                                     {
                                         ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-                                        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                        if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
+                                            ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                     }
                                 }
                                 else
@@ -1937,7 +1977,9 @@ namespace BetterExplorer
                                 }
                                 else
                                 {
-                                    ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                    if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
+                                        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                 }
 
 
@@ -1976,7 +2018,9 @@ namespace BetterExplorer
                                 ctgExe.Visibility = System.Windows.Visibility.Collapsed;
                                 ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
                                 ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-                                ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
+                                    ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                 ctgLibraries.Visibility = System.Windows.Visibility.Collapsed;
 
                                 // Folder/Disk Tools
@@ -1996,18 +2040,23 @@ namespace BetterExplorer
                                     else
                                     {
                                         ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-                                        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                        if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
+                                         ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                     }
                                 }
                                 else
                                 {
                                     ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-                                    ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                    if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
+                                        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                 }
 
                                 // if the current viewing location is a Library, show Library Tools.
                                 if (inLibrary == true)
                                 {
+                                    ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                     ctgLibraries.Visibility = System.Windows.Visibility.Visible;
                                     ShellLibrary lib =
                     ShellLibrary.Load(Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default), false);
