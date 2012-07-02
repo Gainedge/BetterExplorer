@@ -278,7 +278,7 @@ namespace BetterExplorer
                                 }
                                 else
                                 {
-                                    sho = ShellObject.FromParsingName(args.CommandLineArgs[1]);
+                                    sho = ShellObject.FromParsingName(args.CommandLineArgs[1].Replace("\"",""));
                                 }
                             }
                             else
