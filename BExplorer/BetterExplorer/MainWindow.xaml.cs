@@ -2471,15 +2471,15 @@ namespace BetterExplorer
                 switch (filter)
                 {
                     case ConditionalSelectParameters.DateFilterTypes.EarlierThan:
-                        if (DateTime.Compare(data.CreationTimeUtc.Date, datetocompare) < 0)
+                        if (DateTime.Compare(data.CreationTimeUtc.Date, datetocompare.Date) < 0)
                             outshells.Add(item);
                         break;
                     case ConditionalSelectParameters.DateFilterTypes.LaterThan:
-                        if (DateTime.Compare(data.CreationTimeUtc.Date, datetocompare) > 0)
+                        if (DateTime.Compare(data.CreationTimeUtc.Date, datetocompare.Date) > 0)
                             outshells.Add(item);
                         break;
                     case ConditionalSelectParameters.DateFilterTypes.Equals:
-                        if (DateTime.Compare(data.CreationTimeUtc.Date, datetocompare) == 0)
+                        if (DateTime.Compare(data.CreationTimeUtc.Date, datetocompare.Date) == 0)
                             outshells.Add(item);
                         break;
                     default:
