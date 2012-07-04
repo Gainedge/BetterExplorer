@@ -1056,7 +1056,7 @@ namespace BetterExplorer
 
         void Explorer_LostFocus(object sender, EventArgs e)
         {
-            IsAfterRename = true;
+            IsAfterRename = false;
         }
 
         void Explorer_KeyUP(object sender, ExplorerKeyUPEventArgs e)
@@ -5153,9 +5153,11 @@ namespace BetterExplorer
 
         private void btnMoreColls_Click(object sender, RoutedEventArgs e)
         {
-            MoreColumns fMoreCollumns = new MoreColumns();
-            fMoreCollumns.PopulateAvailableColumns(Explorer.AvailableColumns(Explorer.GetShellView(), true),
-                Explorer, this.PointToScreen(Mouse.GetPosition(this)));
+            using (MoreColumns fMoreCollumns = new MoreColumns())
+            {
+                fMoreCollumns.PopulateAvailableColumns(Explorer.AvailableColumns(Explorer.GetShellView(), true), Explorer,
+                    this.PointToScreen(Mouse.GetPosition(this)));
+            }
         }
 
         void mig_Click(object sender, RoutedEventArgs e)
@@ -7357,22 +7359,6 @@ namespace BetterExplorer
             {
                 ShellObject o = ShellObject.FromParsingName(item);
                 items.Add(o);
-                //if (o.IsFolder)
-                //{
-                //    int res =
-                //        WindowsAPI.sendWindowsStringMessage(
-                //            (int) WindowsAPI.getWindowId(null, "BetterExplorerOperations"),
-                //            0, "0x88779", o.ParsingName.Replace(@"\\", @"\"),
-                //            PathForDrop + @"\" + o.GetDisplayName(DisplayNameType.Default), "", "", "", (int)WindowsAPI.SYMBOLIC_LINK_FLAG.Directory);
-                //}
-                //else
-                //{
-                //    int res =
-                //        WindowsAPI.sendWindowsStringMessage(
-                //            (int) WindowsAPI.getWindowId(null, "BetterExplorerOperations"),
-                //            0, "0x88779", o.ParsingName.Replace(@"\\", @"\"),
-                //            PathForDrop + @"\" + o.GetDisplayName(DisplayNameType.Default), "", "", "");    
-                //}
                 AddToLog("Created Symbolic Link at " + PathForDrop + @"\" + o.GetDisplayName(DisplayNameType.Default) + " linked to " + o.ParsingName);
             }
 
@@ -7383,39 +7369,26 @@ namespace BetterExplorer
             for (int val = 0; val < items.Count; val++)
             {
                 string source = items[val].ParsingName.Replace(@"\\", @"\");
-                string drop = PathForDrop + @"\" + items[val].GetDisplayName(DisplayNameType.Default);
-
-
-                //if (source.StartsWith("(f)"))
-                //{
-                //    WindowsHelper.WindowsAPI.CreateSymbolicLink(source.Substring(3), drop, WindowsAPI.SYMBOLIC_LINK_FLAG.Directory);
-                //}
-                //else
-                //{
-                //    WindowsHelper.WindowsAPI.CreateSymbolicLink(source, drop, WindowsAPI.SYMBOLIC_LINK_FLAG.File);
-                //}
+                string drop = String.Format(@"{0}\{1}", PathForDrop, items[val].GetDisplayName(DisplayNameType.Default));
             }
 
-            Process proc = new Process();
-            var psi = new ProcessStartInfo
+            using (Process proc = new Process())
             {
-                FileName = ExePath,
-                Verb = "runas",
-                UseShellExecute = true,
-                Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
-            };
-            proc.StartInfo = psi;
-            proc.Start();
+                var psi = new ProcessStartInfo 
+                { 
+                    FileName = ExePath, 
+                    Verb = "runas", 
+                    UseShellExecute = true, 
+                    Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath) 
+                };
 
-            Thread.Sleep(1000);
-
-            int res =
-                WindowsAPI.sendWindowsStringMessage(
-                (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"),
-                0, "0x88779", sources,
-                drops, "", "", "");
-
-            proc.WaitForExit();
+                proc.StartInfo = psi;
+                proc.Start();
+                Thread.Sleep(1000);
+                int res = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, 
+                    "0x88779", sources, drops, "", "", "");
+                proc.WaitForExit();
+            }
         }
 
         private void miJunctionpoint_Click(object sender, RoutedEventArgs e)
@@ -7555,7 +7528,7 @@ namespace BetterExplorer
 
         private string GetUseablePath(string path)
         {
-            if (path.StartsWith("::") == true)
+            if (path.StartsWith("::"))
             {
                 string lib = path.Substring(0, path.IndexOf("\\"));
                 string gp = GetDefaultFolderfromLibrary(lib);
