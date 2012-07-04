@@ -2229,6 +2229,12 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                 // Catch Left Mouse Click key
                 if ((m.Msg == (int)WindowsAPI.WndMsg.WM_LBUTTONDOWN))
                 {
+                    if (KeyUP != null)
+                    {
+                        ExplorerKeyUPEventArgs args = new ExplorerKeyUPEventArgs();
+                        args.Key = 778;
+                        KeyUP(this, args);
+                    }
                     //WindowsAPI.SetFocus(SysListViewHandle);
                     WindowsAPI.RECTW r = new WindowsAPI.RECTW();
                     WindowsAPI.GetWindowRect(SysListViewHandle, ref r);
@@ -2314,6 +2320,13 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                     // Catch ESC key
                     if (((int)m.WParam == 27))
                         OnEscKey();
+
+                    if (KeyUP != null)
+                    {
+                        ExplorerKeyUPEventArgs args = new ExplorerKeyUPEventArgs();
+                        args.Key = (int)m.WParam;
+                        KeyUP(this, args);
+                    }
 
                     if ((int)m.WParam == (int)Keys.ControlKey)
                     {
