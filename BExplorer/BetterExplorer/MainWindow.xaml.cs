@@ -4243,7 +4243,7 @@ namespace BetterExplorer
                                              //CloseAllTabsButThis((CloseableTabItem)tabControl1.SelectedItem);
                                          }
                                          else
-                                             Explorer.Navigate(ShellObject.FromParsingName(Application.Current.Properties["cmd"].ToString()));
+                                             Explorer.Navigate(ShellObject.FromParsingName(Application.Current.Properties["cmd"].ToString().Replace("\"","")));
                                      }
                                      else
                                          if (Tabs.Length == 0 || !IsrestoreTabs)
