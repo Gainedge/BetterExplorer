@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -17,7 +16,6 @@ using System.Reflection;
 using System.IO;
 using System.Drawing;
 using System.Threading;
-using ReparsePoints;
 using Clipboards = System.Windows.Forms.Clipboard;
 using MenuItem = Fluent.MenuItem;
 using System.Windows.Shell;
@@ -34,13 +32,8 @@ using System.Windows.Threading;
 using SevenZip;
 using ContextMenu = Fluent.ContextMenu;
 using System.ComponentModel.Composition;
-using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.CompilerServices;
-using AeroWizard;
 using System.Globalization;
 using NAppUpdate.Framework;
-using Timer = System.Windows.Forms.Timer;
-using System.Security.Permissions;
 using NAppUpdate.Framework.Tasks;
 using NAppUpdate.Framework.Conditions;
 
@@ -51,7 +44,7 @@ namespace BetterExplorer
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     [Export]
-    public partial class MainWindow : Fluent.RibbonWindow
+    public partial class MainWindow : RibbonWindow
     {
         #region Variables and Constants
         ExplorerBrowser Explorer = new ExplorerBrowser();
@@ -61,28 +54,28 @@ namespace BetterExplorer
         private int LastTabIndex = -1;
         private int BeforeLastTabIndex = -1;
         string StartUpLocation = KnownFolders.Libraries.ParsingName;
-        bool IsHFlyoutEnabled = false;
-        bool IsPreviewPaneEnabled = false;
-        bool IsInfoPaneEnabled = false;
-        bool IsNavigationPaneEnabled = false;
-        bool isCheckModeEnabled = false;
-        bool IsExtendedFileOpEnabled = false;
-        public bool IsrestoreTabs = false;
-        public bool isOnLoad = false;
+        bool IsHFlyoutEnabled;
+        bool IsPreviewPaneEnabled;
+        bool IsInfoPaneEnabled;
+        bool IsNavigationPaneEnabled;
+        bool isCheckModeEnabled;
+        bool IsExtendedFileOpEnabled;
+        public bool IsrestoreTabs;
+        public bool isOnLoad;
         JumpList AppJL = new JumpList();
-        public bool IsCalledFromLoading = false;
-        public bool IsCalledFromViewEnum = false;
-        bool ReadyToChangeLanguage = false;
+        public bool IsCalledFromLoading;
+        public bool IsCalledFromViewEnum;
+        bool ReadyToChangeLanguage;
         System.Windows.Forms.Timer FocusTimer = new System.Windows.Forms.Timer();
         IntPtr Handle;
         string EditComm = "";
         List<string> Archives = new List<string>(new string[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
         List<string> Images = new List<string>(new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
-        Fluent.MenuItem misa;
-        Fluent.MenuItem misd;
-        Fluent.MenuItem misag;
-        Fluent.MenuItem misdg;
-        Fluent.MenuItem misng;
+        MenuItem misa;
+        MenuItem misd;
+        MenuItem misag;
+        MenuItem misdg;
+        MenuItem misng;
         public static UpdateManager Updater;
         bool inLibrary = false;
         bool inDrive = false;
@@ -93,7 +86,7 @@ namespace BetterExplorer
         IProgressDialog pd;
         private string ICON_DLLPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
         bool IsAfterFolderCreate = false;
-        bool isGoingBackOrForward = false;
+        bool isGoingBackOrForward;
         bool asFolder = false;
         bool asImage = false;
         bool asArchive = false;
@@ -397,7 +390,7 @@ namespace BetterExplorer
                                     {
                                         try
                                         {
-                                            Fluent.MenuItem mic = new MenuItem();
+                                            MenuItem mic = new MenuItem();
                                             mic.Header = AllAvailColls[j].Name;
                                             mic.Tag = AllAvailColls[j].pkey;
                                             mic.Click += new RoutedEventHandler(mic_Click);
@@ -442,7 +435,7 @@ namespace BetterExplorer
 
                                     Separator sep = new Separator();
                                     btnMoreColls.Items.Add(sep);
-                                    Fluent.MenuItem micm = new MenuItem();
+                                    MenuItem micm = new MenuItem();
                                     micm.Header = "More Columns";
                                     micm.Tag = AllAvailColls;
                                     micm.Click += new RoutedEventHandler(micm_Click);
@@ -462,7 +455,7 @@ namespace BetterExplorer
 
                                         if (item != null)
                                         {
-                                            Fluent.MenuItem mi = new Fluent.MenuItem();
+                                            MenuItem mi = new MenuItem();
                                             mi.Header = item.Name;
                                             mi.Tag = item;
                                             mi.GroupName = "GR2";
@@ -478,7 +471,7 @@ namespace BetterExplorer
                                             mi.Click += new RoutedEventHandler(mi_Click);
                                             btnSort.Items.Add(mi);
 
-                                            Fluent.MenuItem mig = new Fluent.MenuItem();
+                                            MenuItem mig = new MenuItem();
                                             mig.Header = item.Name;
                                             mig.Tag = item;
                                             mig.GroupName = "GR3";
@@ -497,7 +490,7 @@ namespace BetterExplorer
                                     }
                                     Separator sp = new Separator();
                                     btnSort.Items.Add(sp);
-                                    misa = new Fluent.MenuItem();
+                                    misa = new MenuItem();
                                     misa.Click += new RoutedEventHandler(misa_Click);
                                     misa.Header = "Ascending";
                                     misa.IsCheckable = true;
@@ -505,7 +498,7 @@ namespace BetterExplorer
 
                                     misa.GroupName = "GR1";
 
-                                    misd = new Fluent.MenuItem();
+                                    misd = new MenuItem();
                                     misd.Header = "Descending";
                                     misd.IsCheckable = true;
                                     misd.Click += new RoutedEventHandler(misd_Click);
@@ -527,14 +520,14 @@ namespace BetterExplorer
                                     btnGroup.Items.Add(misng);
                                     Separator spg = new Separator();
                                     btnGroup.Items.Add(spg);
-                                    misag = new Fluent.MenuItem();
+                                    misag = new MenuItem();
                                     misag.Header = "Ascending";
                                     misag.IsCheckable = true;
 
 
                                     misag.GroupName = "GR4";
 
-                                    misdg = new Fluent.MenuItem();
+                                    misdg = new MenuItem();
                                     misdg.Header = "Descending";
                                     misdg.IsCheckable = true;
                                     misdg.GroupName = "GR4";
@@ -611,10 +604,10 @@ namespace BetterExplorer
         {
             foreach (object item in btnSort.Items)
             {
-                if (item is Fluent.MenuItem)
-                    if (((Fluent.MenuItem)item).IsChecked && ((Fluent.MenuItem)item != (sender as Fluent.MenuItem)))
+                if (item is MenuItem)
+                    if (((MenuItem)item).IsChecked && ((MenuItem)item != (sender as MenuItem)))
                     {
-                        Explorer.SetSortCollumn(((Collumns)((Fluent.MenuItem)item).Tag).pkey, ExplorerBrowser.SORT.DESCENDING);
+                        Explorer.SetSortCollumn(((Collumns)((MenuItem)item).Tag).pkey, ExplorerBrowser.SORT.DESCENDING);
                     }
             }
         }
@@ -623,10 +616,10 @@ namespace BetterExplorer
         {
             foreach (object item in btnSort.Items)
             {
-                if (item is Fluent.MenuItem)
-                    if (((Fluent.MenuItem)item).IsChecked && ((Fluent.MenuItem)item != (sender as Fluent.MenuItem)))
+                if (item is MenuItem)
+                    if (((MenuItem)item).IsChecked && ((MenuItem)item != (sender as MenuItem)))
                     {
-                        Explorer.SetSortCollumn(((Collumns)((Fluent.MenuItem)item).Tag).pkey, ExplorerBrowser.SORT.ASCENDING);
+                        Explorer.SetSortCollumn(((Collumns)((MenuItem)item).Tag).pkey, ExplorerBrowser.SORT.ASCENDING);
                     }
             }
         }
@@ -643,13 +636,13 @@ namespace BetterExplorer
         {
 
             MoreColumns fMoreCollumns = new MoreColumns();
-            fMoreCollumns.PopulateAvailableColumns((Collumns[])(sender as Fluent.MenuItem).Tag,
+            fMoreCollumns.PopulateAvailableColumns((Collumns[])(sender as MenuItem).Tag,
                 Explorer, this.PointToScreen(Mouse.GetPosition(this)));
         }
 
         void mic_Click(object sender, RoutedEventArgs e)
         {
-            Fluent.MenuItem mi = (sender as Fluent.MenuItem);
+            MenuItem mi = (sender as MenuItem);
             ExplorerBrowser.PROPERTYKEY pkey = (ExplorerBrowser.PROPERTYKEY)mi.Tag;
             Explorer.SetColInView(pkey, !mi.IsChecked);
         }
@@ -834,7 +827,7 @@ namespace BetterExplorer
                                         if (Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
                                             !Explorer.NavigationLog.CurrentLocation.IsSearchFolder)
                                         {
-                                           ctgFolderTools.Visibility = Visibility.Visible; 
+                                            ctgFolderTools.Visibility = Visibility.Visible;
                                         }
 
                                         if (Explorer.NavigationLog.CurrentLocation.ParsingName.Contains(KnownFolders.Libraries.ParsingName) &&
@@ -857,7 +850,7 @@ namespace BetterExplorer
                                                 IsFromSelectionOrNavigation = false;
                                                 foreach (ShellObject item in lib)
                                                 {
-                                                    Fluent.MenuItem miItem = new MenuItem();
+                                                    MenuItem miItem = new MenuItem();
                                                     miItem.Header = item.GetDisplayName(DisplayNameType.Default);
                                                     miItem.Tag = item;
                                                     item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
@@ -1509,7 +1502,7 @@ namespace BetterExplorer
                 TheRibbon.SelectedTabItem = HomeTab;
             }
 
-           
+
 
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
             {
@@ -1606,7 +1599,7 @@ namespace BetterExplorer
                                 IsFromSelectionOrNavigation = false;
                                 foreach (ShellObject item in lib)
                                 {
-                                    Fluent.MenuItem miItem = new MenuItem();
+                                    MenuItem miItem = new MenuItem();
                                     miItem.Header = item.GetDisplayName(DisplayNameType.Default);
                                     miItem.Tag = item;
                                     item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
@@ -1730,7 +1723,7 @@ namespace BetterExplorer
                                         //if (item != "firefox.exe" && item != "CompressedFolder")
                                         if (item != "CompressedFolder")
                                         {
-                                            Fluent.MenuItem mi = new MenuItem();
+                                            MenuItem mi = new MenuItem();
                                             string deffappname;
                                             String ExePath = "";
                                             ExePath = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify |
@@ -1839,7 +1832,7 @@ namespace BetterExplorer
                                     IsFromSelectionOrNavigation = false;
                                     foreach (ShellObject item in lib)
                                     {
-                                        Fluent.MenuItem miItem = new MenuItem();
+                                        MenuItem miItem = new MenuItem();
                                         miItem.Header = item.GetDisplayName(DisplayNameType.Default);
                                         miItem.Tag = item;
                                         item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
@@ -2045,7 +2038,7 @@ namespace BetterExplorer
                                         ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
                                         if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
                                                 !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
-                                         ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                            ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                                     }
                                 }
                                 else
@@ -2068,7 +2061,7 @@ namespace BetterExplorer
                                     IsFromSelectionOrNavigation = false;
                                     foreach (ShellObject item in lib)
                                     {
-                                        Fluent.MenuItem miItem = new MenuItem();
+                                        MenuItem miItem = new MenuItem();
                                         miItem.Header = item.GetDisplayName(DisplayNameType.Default);
                                         miItem.Tag = item.ParsingName;
                                         item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
@@ -2173,11 +2166,12 @@ namespace BetterExplorer
 
                 ShellObjectCollection CurrentLoc = ((ShellContainer)Explorer.NavigationLog.CurrentLocation).ToShellObjectCollection();
 
-                ShellObjectCollection selectable = FilterByCreateDate(CurrentLoc, cd, ConditionalSelectParameters.DateFilterTypes.Equals);
-
-                foreach (ShellObject item in selectable)
+                using (ShellObjectCollection selectable = FilterByCreateDate(CurrentLoc, cd, ConditionalSelectParameters.DateFilterTypes.Equals))
                 {
-                    Explorer.SelectItem(item);
+                    foreach (ShellObject item in selectable)
+                    {
+                        Explorer.SelectItem(item);
+                    }
                 }
             }
 
@@ -2586,13 +2580,13 @@ namespace BetterExplorer
 
         void miow_Click(object sender, RoutedEventArgs e)
         {
-            Fluent.MenuItem item = (sender as Fluent.MenuItem);
+            MenuItem item = (sender as MenuItem);
             Process.Start(item.Tag.ToString(), "\"" + Explorer.SelectedItems[0].ParsingName + "\"");
         }
 
         void mif_Click(object sender, RoutedEventArgs e)
         {
-            Fluent.MenuItem item = (sender as Fluent.MenuItem);
+            MenuItem item = (sender as MenuItem);
             ShellObject Path = ShellObject.FromParsingName(item.Tag.ToString());
             Explorer.Navigate(Path);
             Path.Dispose();
@@ -2922,20 +2916,8 @@ namespace BetterExplorer
 
         private void btnNewItem_Click(object sender, RoutedEventArgs e)
         {
-            WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
-            state.fShowAllObjects = 0;
+            WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE() { fShowAllObjects = 0 };
             WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
-            //Bitmap b = new Bitmap(@"E:\Pictures\Crysis\NanoSuit2_GC09_11.jpg");
-            //Explorer.BackgroundImage = b;
-            //List<string> NewContextItems = GetNewContextMenu();
-            //foreach (string item in NewContextItems)
-            //{
-            //    Fluent.MenuItem mi = new Fluent.MenuItem();
-            //    mi.Header = item;
-            //    btnNewItem.Items.Add(mi);
-            //}
-
-            //MessageBox.Show(GetAssoc("WORDPAD.EXE"));
         }
 
         private void btnOpenWith_Click(object sender, RoutedEventArgs e)
@@ -2958,7 +2940,7 @@ namespace BetterExplorer
                 main = EditComm.Substring(0, EditComm.IndexOf("%1"));
                 substr = "%1";
             }
-            Process.Start(main.TrimEnd(), substr.Replace("%1", "\"" + Explorer.SelectedItems[0].ParsingName + "\""));
+            Process.Start(main.TrimEnd(), substr.Replace("%1", String.Format("\"{0}\"", Explorer.SelectedItems[0].ParsingName)));
         }
 
         private void btnFormatDrive_Click(object sender, RoutedEventArgs e)
@@ -2974,19 +2956,6 @@ namespace BetterExplorer
         private void btnDefragDrive_Click(object sender, RoutedEventArgs e)
         {
             Explorer.DefragDrive();
-            //MessageBox.Show(KnownFolders.System.Path + "\\dfrgui.exe");
-            //Process.Start(KnownFolders.System.Path + "\\dfrgui.exe");
-
-            //Process proc = new Process();
-            //var psi = new ProcessStartInfo
-            //{
-            //    FileName = KnownFolders.System.Path + "\\dfrgui.exe",
-            //    //Verb = "runas",
-            //    UseShellExecute = true,
-            //    //Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
-            //};
-            //proc.StartInfo = psi;
-            //proc.Start();
         }
 
         private void btnRunAsAdmin_Click(object sender, RoutedEventArgs e)
@@ -3301,8 +3270,16 @@ namespace BetterExplorer
                     {
                         if (LastTabIndex != -1)
                         {
-                            tabControl1.SelectedItem = tabControl1.Items[LastTabIndex];
-                            CurrentTabIndex = LastTabIndex;
+                            try
+                            {
+                                tabControl1.SelectedItem = tabControl1.Items[LastTabIndex];
+                                CurrentTabIndex = LastTabIndex;
+                            }
+                            catch
+                            {
+                                 
+                               //Handle the exeption on using Close all tabs command since we dont need to keep any index just to close the app
+                            }
                         }
                     }
 
@@ -3476,19 +3453,19 @@ namespace BetterExplorer
 
         void CreateTabbarRKMenu(CloseableTabItem tabitem)
         {
-            tabitem.mnu = new Fluent.ContextMenu();
-            Fluent.MenuItem miclosecurrentr = new MenuItem();
+            tabitem.mnu = new ContextMenu();
+            MenuItem miclosecurrentr = new MenuItem();
             miclosecurrentr.Header = "Close current tab";
             miclosecurrentr.Tag = tabitem;
             miclosecurrentr.Click += new RoutedEventHandler(miclosecurrentr_Click);
             tabitem.mnu.Items.Add(miclosecurrentr);
 
-            Fluent.MenuItem miclosealltab = new MenuItem();
+            MenuItem miclosealltab = new MenuItem();
             miclosealltab.Header = "Close all tabs";
             miclosealltab.Click += new RoutedEventHandler(miclosealltab_Click);
             tabitem.mnu.Items.Add(miclosealltab);
 
-            Fluent.MenuItem miclosealltabbd = new MenuItem();
+            MenuItem miclosealltabbd = new MenuItem();
             miclosealltabbd.Header = "Close all other tabs";
             miclosealltabbd.Tag = tabitem;
             miclosealltabbd.Click += new RoutedEventHandler(miclosealltabbd_Click);
@@ -3496,7 +3473,7 @@ namespace BetterExplorer
 
             //tabitem.mnu.Items.Add(new Separator());
 
-            Fluent.MenuItem miopeninnew = new MenuItem();
+            MenuItem miopeninnew = new MenuItem();
             miopeninnew.Header = "Open in new window";
             miopeninnew.Tag = tabitem;
             miopeninnew.Click += new RoutedEventHandler(miopeninnew_Click);
@@ -3506,7 +3483,7 @@ namespace BetterExplorer
 
         void miopeninnew_Click(object sender, RoutedEventArgs e)
         {
-            Fluent.MenuItem mi = (sender as Fluent.MenuItem);
+            MenuItem mi = (sender as MenuItem);
             CloseableTabItem ti = mi.Tag as CloseableTabItem;
             Process.Start(Assembly.GetExecutingAssembly().GetName().Name, ti.Path.ParsingName + " /nw");
             CloseTab(ti);
@@ -3515,19 +3492,19 @@ namespace BetterExplorer
 
         void miclosealltabbd_Click(object sender, RoutedEventArgs e)
         {
-            Fluent.MenuItem mi = (sender as Fluent.MenuItem);
+            MenuItem mi = (sender as MenuItem);
             CloseableTabItem ti = mi.Tag as CloseableTabItem;
             CloseAllTabsButThis(ti);
         }
 
         void miclosealltab_Click(object sender, RoutedEventArgs e)
         {
-            CloseAllTabs(false);
+            CloseAllTabs(true);
         }
 
         void miclosecurrentr_Click(object sender, RoutedEventArgs e)
         {
-            Fluent.MenuItem mi = (sender as Fluent.MenuItem);
+            MenuItem mi = (sender as MenuItem);
             CloseableTabItem ti = mi.Tag as CloseableTabItem;
             CloseTab(ti);
         }
@@ -4957,7 +4934,7 @@ namespace BetterExplorer
             {
                 lib = ShellLibrary.Load(Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default), false);
             }
-            switch ((sender as Fluent.MenuItem).Tag.ToString())
+            switch ((sender as MenuItem).Tag.ToString())
             {
                 case "gu":
                     lib.LibraryType = LibraryFolderType.Generic;
@@ -5163,7 +5140,7 @@ namespace BetterExplorer
 
         void mig_Click(object sender, RoutedEventArgs e)
         {
-            Fluent.MenuItem item = (sender as Fluent.MenuItem);
+            MenuItem item = (sender as MenuItem);
             Explorer.SetGroupCollumn(((Collumns)item.Tag).pkey, true);
         }
 
@@ -5253,8 +5230,8 @@ namespace BetterExplorer
 
         void mi_Click(object sender, RoutedEventArgs e)
         {
-            Fluent.MenuItem item = (sender as Fluent.MenuItem);
-            Fluent.MenuItem ascitem = (Fluent.MenuItem)btnSort.Items[btnSort.Items.IndexOf(misa)];
+            MenuItem item = (sender as MenuItem);
+            MenuItem ascitem = (MenuItem)btnSort.Items[btnSort.Items.IndexOf(misa)];
             if (ascitem.IsChecked)
             {
                 Explorer.SetSortCollumn(((Collumns)item.Tag).pkey, ExplorerBrowser.SORT.ASCENDING);
@@ -5268,7 +5245,7 @@ namespace BetterExplorer
 
         void misng_Click(object sender, RoutedEventArgs e)
         {
-            Fluent.MenuItem item = (sender as Fluent.MenuItem);
+            MenuItem item = (sender as MenuItem);
             item.IsChecked = true;
             ExplorerBrowser.PROPERTYKEY pk = new ExplorerBrowser.PROPERTYKEY();
             pk.fmtid = new Guid("00000000-0000-0000-0000-000000000000");
@@ -7117,7 +7094,7 @@ namespace BetterExplorer
             {
                 try
                 {
-                    (item as Fluent.MenuItem).IsChecked = false;
+                    (item as MenuItem).IsChecked = false;
                 }
                 catch
                 {
@@ -7132,7 +7109,7 @@ namespace BetterExplorer
             {
                 try
                 {
-                    (item as Fluent.MenuItem).IsChecked = false;
+                    (item as MenuItem).IsChecked = false;
                 }
                 catch
                 {
@@ -7144,7 +7121,7 @@ namespace BetterExplorer
             {
                 try
                 {
-                    (item as Fluent.MenuItem).IsChecked = false;
+                    (item as MenuItem).IsChecked = false;
                 }
                 catch
                 {
