@@ -4324,7 +4324,7 @@ namespace BetterExplorer
                     Updater.UpdateFeedReader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
                     Updater.UpdateExecutableName = "Web Update.exe";
                     Updater.UpdateSource = new NAppUpdate.Framework.Sources.SimpleWebSource("http://sharobg.com/betterex/Update/update.xml");
-                    CheckForUpdate(false);
+                    //CheckForUpdate(false);
                 }
                 catch (IOException)
                 {
