@@ -596,6 +596,7 @@ namespace BetterExplorer
                                     }
                                 }
             ));
+            Explorer.ExplorerSetFocus();
             GC.WaitForFullGCComplete();
             GC.Collect();
         }
@@ -936,6 +937,8 @@ namespace BetterExplorer
                 //    MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bexplorer.codeplex.com/. \r\n\r\nHere is additional information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Additional Error Data", MessageBoxButton.OK, MessageBoxImage.Error);
                 //}
             }
+
+            Explorer.ExplorerSetFocus();
         }
 
         public string GetYesNoFromBoolean(bool value)
@@ -1336,7 +1339,7 @@ namespace BetterExplorer
             e.Cancel = IsCancel;
             if (IsAfterRename)
                 breadcrumbBarControl1.ExitEditMode();
-            WindowsAPI.SetFocus(ExplorerBrowser.SysListViewHandle);
+            Explorer.ExplorerSetFocus();
             if (Itmpop.Visibility == System.Windows.Visibility.Visible)
             {
                 Itmpop.Visibility = System.Windows.Visibility.Hidden;
@@ -4206,9 +4209,17 @@ namespace BetterExplorer
                                      }
                                      else
                                      {
-                                         btnSetCurrentasStartup.Header =
-                                            ShellObject.FromParsingName(StartUpLocation).GetDisplayName(DisplayNameType.Default);
-                                         btnSetCurrentasStartup.Icon = ShellObject.FromParsingName(StartUpLocation).Thumbnail.BitmapSource;
+                                         try
+                                         {
+                                             btnSetCurrentasStartup.Header =
+                                                                                 ShellObject.FromParsingName(StartUpLocation).GetDisplayName(DisplayNameType.Default);
+                                             btnSetCurrentasStartup.Icon = ShellObject.FromParsingName(StartUpLocation).Thumbnail.BitmapSource;
+                                         }
+                                         catch 
+                                         {
+                                             
+                                            // iF for some reason regkey is missing
+                                         }
                                      }
 
                                      //'set StartUp location
@@ -4228,7 +4239,14 @@ namespace BetterExplorer
                                              if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
                                                  Explorer.Navigate(ShellObject.FromParsingName("shell:" + StartUpLocation));
                                              else
-                                                 Explorer.Navigate(ShellObject.FromParsingName(StartUpLocation));
+                                                 try
+                                                 {
+                                                     Explorer.Navigate(ShellObject.FromParsingName(StartUpLocation));
+                                                 }
+                                                 catch
+                                                 {
+                                                     Explorer.Navigate((ShellObject)KnownFolders.Libraries);
+                                                 }
 
                                      //sets up Jump List
                                      AppJL.ShowRecentCategory = true;
