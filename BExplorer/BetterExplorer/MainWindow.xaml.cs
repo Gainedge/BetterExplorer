@@ -681,6 +681,16 @@ namespace BetterExplorer
                                             }
                                         }
 
+                                        if (e.NewLocation.IsFileSystemObject)
+	                                    {
+		                                    btnSizeChart.IsEnabled = true;
+	                                    }
+                                        else
+	                                    {
+                                            btnSizeChart.IsEnabled = false;
+	                                    }
+                                        
+
                                         btnAutosizeColls.IsEnabled =
                                             Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Details ?
                                               true : false;
