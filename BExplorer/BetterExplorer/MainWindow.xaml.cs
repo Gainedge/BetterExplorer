@@ -378,7 +378,7 @@ namespace BetterExplorer
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() =>
                                 {
                                     IsCalledFromViewEnum = true;
-                                    //zoomSlider.Value = Explorer.ContentOptions.ThumbnailSize;
+                                    zoomSlider.Value = Explorer.ContentOptions.ThumbnailSize;
                                     IsCalledFromViewEnum = false;
                                     IShellView isv = Explorer.GetShellView();
 

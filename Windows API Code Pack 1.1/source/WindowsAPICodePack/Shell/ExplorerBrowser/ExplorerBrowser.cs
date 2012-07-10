@@ -2304,6 +2304,31 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
                 }
 
+                if (m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSEWHEEL)
+                {
+                    int Wheel_delta = HiWord((int)m.WParam);
+                    if (LoWord((int)m.WParam) == 0x0008) //Ctrl is down
+                    {
+                        if (Wheel_delta < 0)
+                        {
+                            if (ContentOptions.ThumbnailSize > 34)
+                            {
+                                ContentOptions.ThumbnailSize = ContentOptions.ThumbnailSize - 10; 
+                            }
+                            
+                            
+                        }
+                        else
+                        {
+                            if (ContentOptions.ThumbnailSize < 255)
+                            {
+                                ContentOptions.ThumbnailSize = ContentOptions.ThumbnailSize + 10;
+                            }
+                            
+                        }
+                    }
+                }
+
                 if ((m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSE_ENTER))
                 {
                     //WindowsAPI.SetFocus(SysListViewHandle);
