@@ -3585,7 +3585,14 @@ namespace BetterExplorer
             if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
                 DefPath = ShellObject.FromParsingName("shell:" + StartUpLocation);
             else
-                DefPath = ShellObject.FromParsingName(StartUpLocation);
+                try
+                {
+                    DefPath = ShellObject.FromParsingName(StartUpLocation);
+                }
+                catch
+                {
+                    DefPath = (ShellObject)KnownFolders.Libraries;
+                }
             DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
             DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
             newt.Header = DefPath.GetDisplayName(DisplayNameType.Default);
@@ -4056,7 +4063,7 @@ namespace BetterExplorer
                                      isOnLoad = true;
                                      //'load from Registry
                                      RegistryKey rk = Registry.CurrentUser;
-                                     RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", false);
+                                     RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 
                                      switch (Convert.ToString(rks.GetValue(@"CurrentTheme", "Blue")))
                                      {
@@ -4155,6 +4162,12 @@ namespace BetterExplorer
 
                                      StartUpLocation =
                                           rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+
+                                     if (StartUpLocation == "")
+                                     {
+                                         rks.SetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName);
+                                         StartUpLocation = KnownFolders.Libraries.ParsingName;
+                                     }
                                      char[] delimiters = new char[] { ';' };
                                      string LastOpenedTabs = rks.GetValue(@"OpenedTabs", "").ToString();
                                      string[] Tabs = LastOpenedTabs.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
@@ -4218,7 +4231,7 @@ namespace BetterExplorer
                                          catch 
                                          {
                                              
-                                            // iF for some reason regkey is missing
+                                            
                                          }
                                      }
 

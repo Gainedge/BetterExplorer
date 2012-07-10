@@ -286,14 +286,28 @@ namespace BetterExplorer
                                     if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
                                         sho = ShellObject.FromParsingName("shell:" + StartUpLocation);
                                     else
-                                        sho = ShellObject.FromParsingName(StartUpLocation);
+                                        try
+                                        {
+                                            sho = ShellObject.FromParsingName(StartUpLocation);
+                                        }
+                                        catch
+                                        {
+                                            sho = (ShellObject)KnownFolders.Libraries;
+                                        }
                             }
                         }
                         else
                             if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
                                 sho = ShellObject.FromParsingName("shell:" + StartUpLocation);
                             else
-                                sho = ShellObject.FromParsingName(StartUpLocation);
+                                try
+                                {
+                                    sho = ShellObject.FromParsingName(StartUpLocation);
+                                }
+                                catch
+                                {
+                                    sho = (ShellObject)KnownFolders.Libraries;
+                                }
 
                         sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
                         sho.Thumbnail.CurrentSize = new Size(16, 16);
