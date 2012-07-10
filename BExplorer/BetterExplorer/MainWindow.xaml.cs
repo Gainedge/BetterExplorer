@@ -1907,10 +1907,11 @@ namespace BetterExplorer
                                 }
 
                                 // Image Tools
+                                System.Drawing.Bitmap cvt;
                                 if (//SelItemsCount > 0 &&
                                     Images.Contains(System.IO.Path.GetExtension(SelectedItem.ParsingName).ToLowerInvariant()))
                                 {
-                                    System.Drawing.Bitmap cvt = new Bitmap(SelectedItem.ParsingName);
+                                    cvt = new Bitmap(SelectedItem.ParsingName);
                                     //imgdHeight.Text = cvt.Height.ToString();
                                     //imgdWidth.Text = cvt.Width.ToString();
                                     imgSizeDisplay.WidthData = cvt.Width.ToString();
@@ -1923,6 +1924,7 @@ namespace BetterExplorer
                                     {
                                         TheRibbon.SelectedTabItem = ctgImage.Items[0];
                                     }
+                                    cvt.Dispose();
                                 }
                                 else
                                 {
@@ -4589,11 +4591,18 @@ namespace BetterExplorer
             if (backgroundSearchThread != null)
                 backgroundSearchThread.Abort();
 
-            if (BeforeSearchFolder == null)
+
+            if (Explorer.NavigationLog.CurrentLocation.IsSearchFolder)
+            {
+                if (BeforeSearchFolder == null)
+                {
+                    BeforeSearchFolder = Explorer.NavigationLog.CurrentLocation;
+                }
+            }
+            else
             {
                 BeforeSearchFolder = Explorer.NavigationLog.CurrentLocation;
             }
-            //StatusBar.UpdateLayout();
 
             if (SearchCriteria != "")
             {
@@ -4604,11 +4613,6 @@ namespace BetterExplorer
                 backgroundSearchThread.SetApartmentState(ApartmentState.STA);
                 backgroundSearchThread.Start(SearchCriteria);
 
-            }
-            else
-            {
-                Explorer.Navigate(BeforeSearchFolder);
-                BeforeSearchFolder = null;
             }
         }
         private void searchTextBox1_Search(object sender, RoutedEventArgs e)
@@ -5970,7 +5974,7 @@ namespace BetterExplorer
             {
                 Itmpop.Visibility = System.Windows.Visibility.Hidden;
             }
-            backstage.IsOpen = false;
+            //backstage.IsOpen = false;
             ExplorerBrowser.IsBool = true;
         }
 
