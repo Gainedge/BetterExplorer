@@ -6,7 +6,7 @@
              mc:Ignorable="d" Height="24" Width="300" SizeChanged="UserControl_SizeChanged">
     <Border Background="{x:Null}" BorderBrush="Black" BorderThickness="1">
         <Grid x:Name="grdMain">
-            <TextBox Name="HistoryCombo" Visibility="Visible" BorderBrush="{x:Null}" BorderThickness="0" GotFocus="HistoryCombo_GotFocus" LostFocus="HistoryCombo_LostFocus" MouseLeave="HistoryCombo_MouseLeave" MouseUp="HistoryCombo_MouseUp" KeyUp="HistoryCombo_KeyUp" Margin="0,0,15,0" TextChanged="HistoryCombo_TextChanged" VerticalContentAlignment="Center" Padding="4,1,1,1" LostKeyboardFocus="HistoryCombo_LostKeyboardFocus" />
+            <TextBox Name="HistoryCombo" Visibility="Visible" BorderBrush="{x:Null}" BorderThickness="0" GotFocus="HistoryCombo_GotFocus" LostFocus="HistoryCombo_LostFocus" MouseLeave="HistoryCombo_MouseLeave" MouseUp="HistoryCombo_MouseUp" KeyUp="HistoryCombo_KeyUp" Margin="0,0,15,0" TextChanged="HistoryCombo_TextChanged" VerticalContentAlignment="Center" Padding="4,1,1,1" LostKeyboardFocus="HistoryCombo_LostKeyboardFocus" GotKeyboardFocus="HistoryCombo_GotKeyboardFocus" />
             <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Margin="0,0,15,0" VerticalContentAlignment="Stretch" HorizontalAlignment="Left" FocusVisualStyle="{x:Null}"  Name="itemholder">
                 <StackPanel Name="stackPanel1" Orientation="Horizontal" MouseUp="stackPanel1_MouseUp" FocusVisualStyle="{x:Null}" VerticalAlignment="Stretch"></StackPanel>
             </ScrollViewer>

@@ -1057,7 +1057,11 @@ namespace BetterExplorer
 
         void Explorer_ExplorerGotFocus(object sender, EventArgs e)
         {
-
+            if (breadcrumbBarControl1.IsInEditMode)
+            {
+                breadcrumbBarControl1.ExitEditMode();
+            }
+            
         }
 
         void Explorer_LostFocus(object sender, EventArgs e)
@@ -1071,11 +1075,7 @@ namespace BetterExplorer
             if (e.Key == 27 || e.Key == 13 || e.Key == 777 || e.Key == 17 || e.Key == 778)
             {
                 IsAfterRename = true;
-            }
-            
-
-
-
+            }         
         }
 
         void Explorer_RenameFinished(object sender, EventArgs e)
@@ -1085,10 +1085,7 @@ namespace BetterExplorer
 
         void Explorer_GotFocus(object sender, EventArgs e)
         {
-            if (IsAfterRename)
-            {
-                //breadcrumbBarControl1.ExitEditMode();
-            }
+            
         }
 
         void FocusTimer_Tick(object sender, EventArgs e)
@@ -4048,6 +4045,7 @@ namespace BetterExplorer
                                      Explorer.ViewEnumerationComplete += new EventHandler(ExplorerBrowserControl_ViewEnumerationComplete);
                                      Explorer.NavigationPending += new EventHandler<NavigationPendingEventArgs>(Explorer_NavigationPending);
                                      Explorer.GotFocus += new EventHandler(Explorer_GotFocus);
+                                     Explorer.ExplorerGotFocus += new EventHandler(Explorer_ExplorerGotFocus);
                                      //Explorer.ExplorerGotFocus += new EventHandler(Explorer_ExplorerGotFocus);
                                      Explorer.RenameFinished += new EventHandler(Explorer_RenameFinished);
                                      Explorer.KeyUP += new EventHandler<ExplorerKeyUPEventArgs>(Explorer_KeyUP);
@@ -6599,9 +6597,14 @@ namespace BetterExplorer
             {
                 if (IsAfterRename)
                 {
-                    breadcrumbBarControl1.ExitEditMode();
+                    
                     Explorer.ExplorerSetFocus();
                 }
+            }
+
+            if (breadcrumbBarControl1.IsInEditMode)
+            {
+                breadcrumbBarControl1.ExitEditMode();
             }
         }
 
@@ -6848,7 +6851,10 @@ namespace BetterExplorer
 
         private void RibbonWindow_MouseUp(object sender, MouseButtonEventArgs e)
         {
-
+            if (breadcrumbBarControl1.IsInEditMode)
+            {
+                breadcrumbBarControl1.ExitEditMode();
+            }
         }
 
         private void TheRibbon_IsMinimizedChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -7581,6 +7587,14 @@ namespace BetterExplorer
 
         [DllImport("wininet.dll")]
         public static extern bool InternetGetConnectedState(int lpSFlags, int dwReserved);
+
+        private void RibbonWindow_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            if (breadcrumbBarControl1.IsInEditMode)
+            {
+                breadcrumbBarControl1.ExitEditMode();
+            }
+        }
 
 
     }

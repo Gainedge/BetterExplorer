@@ -8,7 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Title="Better Explorer" Loaded="Window_Loaded" WindowState="Maximized"  
                      xmlns:ExploreBrowser="clr-namespace:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation;assembly=Microsoft.WindowsAPICodePack.Shell" Closing="RibbonWindow_Closing" Initialized="RibbonWindow_Initialized" Deactivated="RibbonWindow_Deactivated" mc:Ignorable="d" 
-                     d:DesignHeight="768" d:DesignWidth="852" ResizeMode="CanResizeWithGrip" Activated="RibbonWindow_Activated" xmlns:my2="http://schemas.microsoft.com/winfx/2006/xaml/presentation/ribbon" MouseMove="RibbonWindow_MouseMove" KeyUp="RibbonWindow_KeyUp" GotFocus="RibbonWindow_GotFocus" MouseUp="RibbonWindow_MouseUp_1" MouseRightButtonUp="RibbonWindow_MouseRightButtonUp" TextOptions.TextFormattingMode="Display">
+                     d:DesignHeight="768" d:DesignWidth="852" ResizeMode="CanResizeWithGrip" Activated="RibbonWindow_Activated" xmlns:my2="http://schemas.microsoft.com/winfx/2006/xaml/presentation/ribbon" MouseMove="RibbonWindow_MouseMove" KeyUp="RibbonWindow_KeyUp" GotFocus="RibbonWindow_GotFocus" MouseUp="RibbonWindow_MouseUp_1" MouseRightButtonUp="RibbonWindow_MouseRightButtonUp" TextOptions.TextFormattingMode="Display" GotKeyboardFocus="RibbonWindow_GotKeyboardFocus">
 
     <Window.Resources>
         <ResourceDictionary>

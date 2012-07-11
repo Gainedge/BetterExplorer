@@ -2222,7 +2222,12 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                 // translate keyboard input
 
 
-                if (m.Msg == (int)WindowsAPI.WndMsg.WM_ACTIVATE)
+                if (m.Msg == (int)WindowsAPI.WndMsg.WM_ACTIVATEAPP)
+                {
+                    MessageBox.Show("Active");
+                }
+
+                if (m.Msg == (int)WindowsAPI.WndMsg.WM_SETFOCUS)
                 {
                     MessageBox.Show("Active");
                 }

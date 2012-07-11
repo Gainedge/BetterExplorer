@@ -336,6 +336,14 @@ namespace BetterExplorer
             
         }
 
+        public bool IsInEditMode
+        {
+            get
+            {
+                return stackPanel1.Visibility != System.Windows.Visibility.Visible;
+            }
+        }
+
         public void ExitEditMode()
         {
             stackPanel1.Visibility = System.Windows.Visibility.Visible;
@@ -459,6 +467,11 @@ namespace BetterExplorer
 
             }
             
+        }
+
+        private void HistoryCombo_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            e.Handled = true;
         }
 
     }
