@@ -2318,6 +2318,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                         {
                             if (ContentOptions.ThumbnailSize > 34)
                             {
+                                if (ContentOptions.ViewMode != ExplorerBrowserViewMode.Thumbnail)
+                                {
+                                    ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
+                                }
                                 ContentOptions.ThumbnailSize = ContentOptions.ThumbnailSize - 10; 
                             }
                             
@@ -2327,6 +2331,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                         {
                             if (ContentOptions.ThumbnailSize < 255)
                             {
+                                if (ContentOptions.ViewMode != ExplorerBrowserViewMode.Thumbnail)
+                                {
+                                    ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
+                                }
                                 ContentOptions.ThumbnailSize = ContentOptions.ThumbnailSize + 10;
                             }
                             
