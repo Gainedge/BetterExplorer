@@ -199,6 +199,7 @@
     <Compile Include="ResizeImage.xaml.cs">
       <DependentUpon>ResizeImage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SavedTabsList.cs" />
     <Compile Include="SDateSearchCriteriaDialog.xaml.cs">
       <DependentUpon>SDateSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
@@ -267,6 +268,12 @@
       <DependentUpon>StringSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SysImageList.cs" />
+    <Compile Include="TabListEditor.xaml.cs">
+      <DependentUpon>TabListEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TabListEditorItem.xaml.cs">
+      <DependentUpon>TabListEditorItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TranslationComboBoxItem.xaml.cs">
       <DependentUpon>TranslationComboBoxItem.xaml</DependentUpon>
     </Compile>
@@ -359,6 +366,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="StringSearchCriteriaDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TabListEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TabListEditorItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -611,6 +626,10 @@
     <Resource Include="Images\resize16.png" />
     <Resource Include="Images\resize32.png" />
     <Resource Include="Images\shell32-167.ico" />
+    <Resource Include="Images\cancel.png" />
+    <Resource Include="Images\check.png" />
+    <Resource Include="Images\edit.png" />
+    <Resource Include="Images\delete_16x16-4.png" />
     <Content Include="WebUpdater.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -799,7 +818,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4316,14 +4316,22 @@ namespace BetterExplorer
                                          int i = 0;
                                          foreach (string str in Tabs)
                                          {
-                                             i++;
-                                             if (i == Tabs.Length)
+                                             try
                                              {
-                                                 NewTab(str, true);
+                                                 i++;
+                                                 if (i == Tabs.Length)
+                                                 {
+                                                     NewTab(str, true);
+                                                 }
+                                                 else
+                                                 {
+                                                     NewTab(str, false);
+                                                 }
                                              }
-                                             else
+                                             catch
                                              {
-                                                 NewTab(str, false);
+                                                 MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
+                                                 NewTab();
                                              }
 
                                          }
