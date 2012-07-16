@@ -6,6 +6,8 @@ A Better Explorer filemanager repository
 
 How to build and test Better Explorer
 ======================================
+**You can also download a Milestone build to test new features.**
+
 Important: This process includes the installation of either Visual C# Express 2010 or SharpDevelop. Visual C# Express 2010 takes longer to install, but is 100% guaranteed to work with BetterExplorer.
 
 Anyway, here's how it's done (in just 3 steps!):
