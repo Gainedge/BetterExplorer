@@ -104,14 +104,30 @@ namespace BetterExplorerOperations
             if (!IsRemove)
             {
                 RegistryKey rk = Registry.ClassesRoot;
+                RegistryKey rksh = rk.OpenSubKey(@"Folder\shell", true);
                 RegistryKey rks = rk.OpenSubKey(@"Folder\shell\opennewwindow\command", true);
-                String CurrentexePath = 
+                RegistryKey rksobe = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer",true);
+                if (rksobe == null)
+                {
+                    rk.CreateSubKey(@"Folder\shell\openinbetterexplorer");
+                    rk.CreateSubKey(@"Folder\shell\openinbetterexplorer\command");
+                    rksobe = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer", true);
+                    rksobe.SetValue("", "Open In Better Explorer");
+                    RegistryKey rksobec = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer\command", true);
+                    String CurrentexePath = 
                     System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-                string dir = Path.GetDirectoryName(CurrentexePath);
-                string ExePath = Path.Combine(dir, @"BetterExplorer.exe");
-                rks.SetValue("", ExePath + " \"%1\"");
+                    string dir = Path.GetDirectoryName(CurrentexePath);
+                    string ExePath = Path.Combine(dir, @"BetterExplorer.exe");
+                    rksobec.SetValue("", ExePath + " \"%1\"");
+                    rksobec.Close();
+                    rksobe.Close();
+                }
+
+
+                rksh.SetValue("", "openinbetterexplorer");
                 rks.DeleteValue("DelegateExecute");
                 rks.Close();
+                rksh.Close();
                 rk.Close();
                 Close();
             }
@@ -119,8 +135,11 @@ namespace BetterExplorerOperations
             {
                 RegistryKey rk = Registry.ClassesRoot;
                 RegistryKey rks = rk.OpenSubKey(@"Folder\shell\opennewwindow\command", true);
+                RegistryKey rksh = rk.OpenSubKey(@"Folder\shell", true);
                 rks.SetValue("DelegateExecute", "{11dbb47c-a525-400b-9e80-a54615a090c0}", RegistryValueKind.String);
+                rksh.SetValue("", "");
                 rks.Close();
+                rksh.Close();
                 rk.Close();
                 Close();
             }

@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="24" d:DesignWidth="500" Height="24" MaxHeight="24" MinHeight="24" Loaded="UserControl_Loaded" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave">
+             d:DesignHeight="24" d:DesignWidth="500" Height="24" MaxHeight="24" MinHeight="24" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="105*" Name="TitCol" />

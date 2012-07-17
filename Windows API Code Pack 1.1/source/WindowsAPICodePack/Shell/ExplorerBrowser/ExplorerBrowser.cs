@@ -2107,8 +2107,25 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         #region ICommDlgBrowser
         HResult ICommDlgBrowser3.OnDefaultCommand(IntPtr ppshv)
         {
-            return HResult.False;
-            //return HResult.Ok;
+            if (!SelectedItems[0].IsFolder)
+            {
+                return HResult.False;
+            }
+            else
+            {
+
+                if (Path.GetExtension(SelectedItems[0].ParsingName).ToLowerInvariant() == ".zip")
+                {
+                    return HResult.False;
+                }
+                else
+                {
+                    Navigate(SelectedItems[0]);
+                    return HResult.Ok;
+                }
+            }
+            //return HResult.False;
+            
         }
 
         HResult ICommDlgBrowser3.OnStateChange(IntPtr ppshv, CommDlgBrowserStateChange uChange)
@@ -2850,7 +2867,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
             {
                 DriveLetter = NavigationLog.CurrentLocation.ParsingName;
             }
-            Process.Start("dfrgui.exe", "/u /v " + DriveLetter.Replace("\\", ""));
+            Process.Start(Path.Combine(Environment.SystemDirectory,"dfrgui.exe"), "/u /v " + DriveLetter.Replace("\\", ""));
         }
 
         public void RunExeAsAdmin(string ExePath)

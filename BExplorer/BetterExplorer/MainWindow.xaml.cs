@@ -43,7 +43,6 @@ namespace BetterExplorer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    [Export]
     public partial class MainWindow : RibbonWindow
     {
         #region Variables and Constants
@@ -3939,11 +3938,37 @@ namespace BetterExplorer
             img.Dispose();
         }
 
+
+        static public bool ExecuteControlPanelItem(String cmd)
+        {
+
+            // Discard control panel items
+            String cpName = @"::{26EE0668-A00A-44D7-9371-BEB064C98683}";
+            int cpIndex = cmd.IndexOf(cpName);
+            if (cpIndex != 0) return false;
+            if (cmd.IndexOf(@"\::", cpIndex + cpName.Length) <= 0 && cmd != cpName) return false;
+
+            String explorerPath = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+            explorerPath += @"\Explorer.exe";
+
+            System.Diagnostics.ProcessStartInfo procStartInfo =
+                new System.Diagnostics.ProcessStartInfo(explorerPath, cmd);
+
+            // Now we create a process, assign its ProcessStartInfo and start it
+            System.Diagnostics.Process proc = new System.Diagnostics.Process();
+            proc.StartInfo = procStartInfo;
+
+
+            proc.Start();
+            return true;
+
+        }
+
         #endregion
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
+            bool exitApp = false;
             try
             {
                 if (WindowsAPI.getOSInfo() == WindowsAPI.OsVersionInfo.Windows8)
@@ -3986,7 +4011,7 @@ namespace BetterExplorer
                 //' set up breadcrumb bar
                 breadcrumbBarControl1.SetDragHandlers(new DragEventHandler(bbi_DragEnter), new DragEventHandler(bbi_DragLeave), new DragEventHandler(bbi_DragOver), new DragEventHandler(bbi_Drop));
 
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
                                  (ThreadStart)(() =>
                                  {
                                      //PicturePreview = new PreviewMedia();
@@ -4188,8 +4213,8 @@ namespace BetterExplorer
                                      try
                                      {
                                          RegistryKey rkbe = Registry.ClassesRoot;
-                                         RegistryKey rksbe = rkbe.OpenSubKey(@"Folder\shell\opennewwindow\command", RegistryKeyPermissionCheck.ReadSubTree);
-                                         bool IsThereDefault = rksbe.GetValue("DelegateExecute", "-1").ToString() == "-1";
+                                         RegistryKey rksbe = rkbe.OpenSubKey(@"Folder\shell", RegistryKeyPermissionCheck.ReadSubTree);
+                                         bool IsThereDefault = rksbe.GetValue("", "-1").ToString() != "";
                                          chkIsDefault.IsChecked = IsThereDefault;
                                          chkIsDefault.IsEnabled = true;
                                          rksbe.Close();
@@ -4248,17 +4273,41 @@ namespace BetterExplorer
                                      //'set StartUp location
                                      if (Application.Current.Properties["cmd"] != null)
                                      {
-                                         if (Application.Current.Properties["cmd"].ToString().IndexOf("::") == 0)
+
+                                         String cmd = Application.Current.Properties["cmd"].ToString();
+
+                                         if (ExecuteControlPanelItem(cmd))
+                                         {
+                                             exitApp = true;
+                                             return;
+                                         }
+                                         else if (cmd.IndexOf("::") == 0)
                                          {
 
-                                             Explorer.Navigate(ShellObject.FromParsingName("shell:" + Application.Current.Properties["cmd"].ToString()));
+                                             Explorer.Navigate(ShellObject.FromParsingName("shell:" + cmd));
                                              //CloseAllTabsButThis((CloseableTabItem)tabControl1.SelectedItem);
                                          }
                                          else
-                                             Explorer.Navigate(ShellObject.FromParsingName(Application.Current.Properties["cmd"].ToString().Replace("\"","")));
+                                             Explorer.Navigate(ShellObject.FromParsingName(cmd.Replace("\"", "")));
+
+                                         
+                                         CloseableTabItem cti = new CloseableTabItem();
+                                         CreateTabbarRKMenu(cti);
+                                         Explorer.NavigationLog.CurrentLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+                                         cti.TabIcon = Explorer.NavigationLog.CurrentLocation.Thumbnail.BitmapSource;
+                                         cti.Header = Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default);
+                                         cti.Path = Explorer.NavigationLog.CurrentLocation;
+                                         cti.Index = 0;
+                                         cti.log.CurrentLocation = Explorer.NavigationLog.CurrentLocation;
+                                         cti.CloseTab += new RoutedEventHandler(cti_CloseTab);
+                                         tabControl1.Items.Add(cti);
+                                         tabControl1.SelectedIndex = 0;
+                                         CurrentTabIndex = tabControl1.SelectedIndex;
                                      }
                                      else
+                                     {
                                          if (Tabs.Length == 0 || !IsrestoreTabs)
+                                         {
                                              if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
                                                  Explorer.Navigate(ShellObject.FromParsingName("shell:" + StartUpLocation));
                                              else
@@ -4270,6 +4319,36 @@ namespace BetterExplorer
                                                  {
                                                      Explorer.Navigate((ShellObject)KnownFolders.Libraries);
                                                  }
+                                         }
+                                         if (IsrestoreTabs)
+                                         {
+                                             isOnLoad = true;
+                                             int i = 0;
+                                             foreach (string str in Tabs)
+                                             {
+                                                 try
+                                                 {
+                                                     i++;
+                                                     if (i == Tabs.Length)
+                                                     {
+                                                         NewTab(str, true);
+                                                     }
+                                                     else
+                                                     {
+                                                         NewTab(str, false);
+                                                     }
+                                                 }
+                                                 catch
+                                                 {
+                                                     MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
+                                                     //NewTab();
+                                                 }
+
+                                             }
+                                             isOnLoad = false;
+
+                                         }
+                                     }
 
                                      //sets up Jump List
                                      AppJL.ShowRecentCategory = true;
@@ -4310,38 +4389,18 @@ namespace BetterExplorer
                                          tabControl1.SelectedIndex = 0;
                                          CurrentTabIndex = tabControl1.SelectedIndex;
                                      }
-                                     if (IsrestoreTabs)
-                                     {
-                                         isOnLoad = true;
-                                         int i = 0;
-                                         foreach (string str in Tabs)
-                                         {
-                                             try
-                                             {
-                                                 i++;
-                                                 if (i == Tabs.Length)
-                                                 {
-                                                     NewTab(str, true);
-                                                 }
-                                                 else
-                                                 {
-                                                     NewTab(str, false);
-                                                 }
-                                             }
-                                             catch
-                                             {
-                                                 MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
-                                                 NewTab();
-                                             }
-
-                                         }
-                                         isOnLoad = false;
-
-                                     }
+                                     
 
 
                                  }
                ));
+
+                if (exitApp)
+                {
+
+                    Application.Current.Shutdown();
+                    return;
+                }
 
                 try
                 {
@@ -6946,9 +7005,12 @@ namespace BetterExplorer
 
         private void searchTextBox1_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-
             ctgSearch.Visibility = System.Windows.Visibility.Visible;
-            TheRibbon.SelectedTabItem = tbSearch;
+            if (!TheRibbon.IsMinimized)
+            { 
+                TheRibbon.SelectedTabItem = tbSearch;
+            }
+            
         }
 
         private void MenuItem_Checked(object sender, RoutedEventArgs e)
