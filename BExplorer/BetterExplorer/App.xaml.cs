@@ -126,30 +126,30 @@ namespace BetterExplorer
 
 
                 base.OnStartup(e);
+
+                
                 RegistryKey rk = Registry.CurrentUser;
-                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 
-                if (rks == null)
+                try
                 {
-                    rks = rk.CreateSubKey(@"Software\BExplorer");
+                    RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+
+                    if (rks == null)
+                    {
+                        rks = rk.CreateSubKey(@"Software\BExplorer");
+                    }
+
+                    Locale = rks.GetValue(@"Locale", "en-US").ToString();
+
+                    SelectCulture(Locale);
+
+                    rks.Close();
                 }
-
-                Locale = rks.GetValue(@"Locale", "en-US").ToString();
-
-                SelectCulture(Locale);
-
-                rks.Close();
+                catch
+                {
+        
+                }
                 rk.Close();
-
-                //MainWindow win = Compose();
-                //if (win!= null)
-                //{
-                //    win.Show();
-                //}
-                //else
-                //{
-                //    Shutdown();
-                //}
 
                
             }

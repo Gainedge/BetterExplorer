@@ -245,9 +245,9 @@ namespace BetterExplorer
                 }
 
                 
-                //duh.PreviewMouseWheel +=new MouseWheelEventHandler(ScrollViewer_PreviewMouseWheel);
+                
                 duh.NavigateRequested += new BreadcrumbBarItem.PathEventHandler(duh_NavigateRequested);
-                //duh.MouseDoubleClick += new EventHandler(duh_MouseDoubleClick);
+
                 this.stackPanel1.Children.Add(duh);
                 
                 if (thing == lastmanstanding)
@@ -261,7 +261,7 @@ namespace BetterExplorer
 
         void duh_MouseDoubleClick(object sender, EventArgs e)
         {
-            //EnterEditMode();
+
         }
 
         private string FixShellPathsInEditMode(string LastPath)
@@ -294,31 +294,14 @@ namespace BetterExplorer
 
         private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e)
         {
-            //stackPanel1.Visibility = System.Windows.Visibility.Visible;
-            //if (HistoryCombo.Text != "")
-            //{
-            //    LastPath = HistoryCombo.Text;
-            //}
-            //HistoryCombo.Text = "";
+
             e.Handled = true;
             ExitEditMode();
         }
 
         private void HistoryCombo_MouseLeave(object sender, MouseEventArgs e)
         {
-            //if (!HistoryCombo.IsDropDownOpen && !HistoryCombo.IsKeyboardFocusWithin)
-            //{
-            //    stackPanel1.Visibility = System.Windows.Visibility.Visible;
-            //    if (HistoryCombo.Text != "")
-            //    {
-            //        LastPath = HistoryCombo.Text;
-            //    }
-                
-            //    HistoryCombo.Text = "";
-            //    stackPanel1.Focusable = true;
-            //    stackPanel1.Focus();
-            //    stackPanel1.Focusable = false;
-            //}
+
         }
 
         private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e)
@@ -347,10 +330,10 @@ namespace BetterExplorer
         public void ExitEditMode()
         {
             stackPanel1.Visibility = System.Windows.Visibility.Visible;
-            if (HistoryCombo.Text != "")
-            {
-                LastPath = HistoryCombo.Text;
-            }
+            //if (HistoryCombo.Text != "")
+            //{
+            //    LastPath = HistoryCombo.Text;
+            //}
 
             HistoryCombo.Text = "";
             stackPanel1.Focusable = true;
@@ -399,18 +382,7 @@ namespace BetterExplorer
             }
             if (e.Key == Key.Escape)
             {
-                //stackPanel1.Visibility = System.Windows.Visibility.Visible;
-                //if (HistoryCombo.Text != "")
-                //{
-                //    LastPath = HistoryCombo.Text;
-                //}
 
-                //HistoryCombo.Text = "";
-                //stackPanel1.Focusable = true;
-                //stackPanel1.IsHitTestVisible = false;
-                //stackPanel1.Focus();
-                //stackPanel1.Focusable = false;
-                //stackPanel1.IsHitTestVisible = true;
                 ExitEditMode();
             }
         }
@@ -449,7 +421,23 @@ namespace BetterExplorer
 
         private void HistoryCombo_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //EnterEditMode();
+            if (IsInEditMode)
+            {
+                TextChange[] tc = e.Changes.ToArray();
+                if (tc[0].RemovedLength == 0 || tc[0].AddedLength > 0)
+                {
+                    foreach (string item in HistoryItems)
+                    {
+                        if (item.ToLowerInvariant().StartsWith(HistoryCombo.Text.ToLowerInvariant()))
+                        {
+                            int SelStart = HistoryCombo.Text.Length;
+                            HistoryCombo.Text = item;
+                            HistoryCombo.SelectionStart = SelStart;
+                            HistoryCombo.SelectionLength = item.Length - SelStart;
+                        }
+                    } 
+                }
+            }
         }
 
         private void HistoryCombo_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
