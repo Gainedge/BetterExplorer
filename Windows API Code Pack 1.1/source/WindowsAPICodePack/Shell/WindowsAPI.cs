@@ -972,84 +972,84 @@ namespace WindowsHelper
         [DllImport("user32.dll")]
         public static extern IntPtr GetMessageExtraInfo();
 
-        [ComImport]
-        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        [Guid("000214e4-0000-0000-c000-000000000046")]
-        public interface IContextMenu
-        {
+        //[ComImport]
+        //[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        //[Guid("000214e4-0000-0000-c000-000000000046")]
+        //public interface IContextMenu
+        //{
             
-            [PreserveSig]
-            HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
-                                     int idCmdLast, Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMF uFlags);
+        //    [PreserveSig]
+        //    HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
+        //                             int idCmdLast, Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMF uFlags);
 
-            void InvokeCommand(ref Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMINVOKECOMMANDINFO pici);
+        //    void InvokeCommand(ref Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMINVOKECOMMANDINFO pici);
 
-            [PreserveSig()]
-            Int32 GetCommandString(
-                uint idcmd,
-                GCS uflags,
-                uint reserved,
-                [MarshalAs(UnmanagedType.LPArray)]
-            byte[] commandstring,
-                int cch);
-        }
+        //    [PreserveSig()]
+        //    Int32 GetCommandString(
+        //        uint idcmd,
+        //        GCS uflags,
+        //        uint reserved,
+        //        [MarshalAs(UnmanagedType.LPArray)]
+        //    byte[] commandstring,
+        //        int cch);
+        //}
 
-        [Flags]
-        public enum GCS : uint
-        {
-            VERBA = 0,
-            HELPTEXTA = 1,
-            VALIDATEA = 2,
-            VERBW = 4,
-            HELPTEXTW = 5,
-            VALIDATEW = 6
-        }
+        //[Flags]
+        //public enum GCS : uint
+        //{
+        //    VERBA = 0,
+        //    HELPTEXTA = 1,
+        //    VALIDATEA = 2,
+        //    VERBW = 4,
+        //    HELPTEXTW = 5,
+        //    VALIDATEW = 6
+        //}
 
-        [ComImport]
-        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        [Guid("000214f4-0000-0000-c000-000000000046")]
-        public interface IContextMenu2 : IContextMenu
-        {
-            [PreserveSig]
-            new HResult QueryContextMenu(IntPtr hMenu, uint indexMenu,
-                int idCmdFirst, int idCmdLast,
-                Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMF uFlags);
+        //[ComImport]
+        //[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        //[Guid("000214f4-0000-0000-c000-000000000046")]
+        //public interface IContextMenu2 : IContextMenu
+        //{
+        //    [PreserveSig]
+        //    new HResult QueryContextMenu(IntPtr hMenu, uint indexMenu,
+        //        int idCmdFirst, int idCmdLast,
+        //        Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMF uFlags);
 
-            void InvokeCommand(ref Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMINVOKECOMMANDINFO_ByIndex pici);
+        //    void InvokeCommand(ref Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMINVOKECOMMANDINFO_ByIndex pici);
 
-            [PreserveSig]
-            new HResult GetCommandString(int idcmd, uint uflags, int reserved,
-                [MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
-                int cch);
+        //    [PreserveSig]
+        //    new HResult GetCommandString(int idcmd, uint uflags, int reserved,
+        //        [MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
+        //        int cch);
 
-            [PreserveSig]
-            HResult HandleMenuMsg(int uMsg, IntPtr wParam, IntPtr lParam);
-        }
+        //    [PreserveSig]
+        //    HResult HandleMenuMsg(int uMsg, IntPtr wParam, IntPtr lParam);
+        //}
 
-        [ComImport]
-        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        [Guid("bcfce0a0-ec17-11d0-8d10-00a0c90f2719")]
-        public interface IContextMenu3 : IContextMenu2
-        {
-            [PreserveSig]
-            new HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
-                                 int idCmdLast, Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMF uFlags);
+        //[ComImport]
+        //[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        //[Guid("bcfce0a0-ec17-11d0-8d10-00a0c90f2719")]
+        //public interface IContextMenu3 : IContextMenu2
+        //{
+        //    [PreserveSig]
+        //    new HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
+        //                         int idCmdLast, Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMF uFlags);
 
-            [PreserveSig]
-            new HResult InvokeCommand(ref Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMINVOKECOMMANDINFO pici);
+        //    [PreserveSig]
+        //    new HResult InvokeCommand(ref Microsoft.WindowsAPICodePack.Shell.ShellContextMenu.CMINVOKECOMMANDINFO pici);
 
-            [PreserveSig]
-            new HResult GetCommandString(int idcmd, uint uflags, int reserved,
-                [MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
-                int cch);
+        //    [PreserveSig]
+        //    new HResult GetCommandString(int idcmd, uint uflags, int reserved,
+        //        [MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
+        //        int cch);
 
-            [PreserveSig]
-            new HResult HandleMenuMsg(int uMsg, IntPtr wParam, IntPtr lParam);
+        //    [PreserveSig]
+        //    new HResult HandleMenuMsg(int uMsg, IntPtr wParam, IntPtr lParam);
 
-            [PreserveSig]
-            HResult HandleMenuMsg2(int uMsg, IntPtr wParam, IntPtr lParam,
-                out IntPtr plResult);
-        }
+        //    [PreserveSig]
+        //    HResult HandleMenuMsg2(int uMsg, IntPtr wParam, IntPtr lParam,
+        //        out IntPtr plResult);
+        //}
 
         public enum SVGIO {
           SVGIO_BACKGROUND       = 0x00000000,
@@ -2241,8 +2241,8 @@ namespace WindowsHelper
         public static extern int TrackPopupMenu(IntPtr hMenu, uint uFlags, int x, int y,
            int nReserved, IntPtr hWnd, IntPtr prcRect);
 
-        [DllImport("user32.dll")]
-        public static extern bool GetMenuItemInfo(IntPtr hMenu, uint uItem, bool fByPosition, ref ShellContextMenu.MENUITEMINFO lpmii);
+        //[DllImport("user32.dll")]
+        //public static extern bool GetMenuItemInfo(IntPtr hMenu, uint uItem, bool fByPosition, ref ShellContextMenu.MENUITEMINFO lpmii);
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
 

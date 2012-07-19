@@ -36,6 +36,7 @@ using System.Globalization;
 using NAppUpdate.Framework;
 using NAppUpdate.Framework.Tasks;
 using NAppUpdate.Framework.Conditions;
+using AndreasJohansson.Win32.Shell;
 
 
 namespace BetterExplorer
@@ -5227,6 +5228,12 @@ namespace BetterExplorer
         {
             Explorer.Navigate(Explorer.NavigationLog.CurrentLocation.Parent);
             WindowsAPI.SetFocus(ExplorerBrowser.SysListViewHandle);
+            //ShellContextMenu cm = new ShellContextMenu();
+            //FileInfo fi = new FileInfo(Explorer.SelectedItems[0].ParsingName);
+            //FileInfo[] fii = new FileInfo[1];
+            //fii[0] = fi;
+            //cm.ShowContextMenu(Handle, fii, GetMousePosition());
+            
 
 
         }
