@@ -1,4 +1,4 @@
-**Update:** Sorry we haven't updated anything recently. I myself have been busy with my video game (it's beta release is next week) and Dimitar has things in his personal life that need his attention. Don't worry; we'll be back when we can though! :D -JaykeBird
+**Update:** Sorry we haven't updated anything recently. I myself have been busy with my video game (its beta release is next week) and Dimitar has things in his personal life that need his attention. Don't worry; we'll be back when we can though! :D -JaykeBird
 
 BetterExplorer
 ==============
