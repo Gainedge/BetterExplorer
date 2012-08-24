@@ -117,7 +117,7 @@ namespace BetterExplorerOperations
                     String CurrentexePath = 
                     System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
                     string dir = Path.GetDirectoryName(CurrentexePath);
-                    string ExePath = Path.Combine(dir, @"BetterExplorer.exe");
+                    string ExePath = Path.Combine(dir, @"BetterExplorerShell.exe");
                     rksobec.SetValue("", ExePath + " \"%1\"");
                     rksobec.Close();
                     rksobe.Close();

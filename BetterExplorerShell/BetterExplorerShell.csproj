@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2AAB3F8C-A802-4986-A35D-3C6D0A6BA566}</ProjectGuid>
+    <ProjectGuid>{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BetterExplorerOperations</RootNamespace>
-    <AssemblyName>BetterExplorerOperations</AssemblyName>
+    <RootNamespace>BetterExplorerShell</RootNamespace>
+    <AssemblyName>BetterExplorerShell</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -23,26 +23,22 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\BExplorer\BetterExplorer\bin\Debug\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>BetterOperations.ico</ApplicationIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Management.Instrumentation" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,40 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ACL\Ace.cs" />
-    <Compile Include="ACL\AceAccess.cs" />
-    <Compile Include="ACL\Aces.cs" />
-    <Compile Include="ACL\Acl.cs" />
-    <Compile Include="ACL\Dacl.cs" />
-    <Compile Include="ACL\DisposableObject.cs" />
-    <Compile Include="ACL\Luid.cs" />
-    <Compile Include="ACL\MemoryMarshaler.cs" />
-    <Compile Include="ACL\Sacl.cs" />
-    <Compile Include="ACL\SecurityAttributes.cs" />
-    <Compile Include="ACL\SecurityAttributesMarshaler.cs" />
-    <Compile Include="ACL\SecurityDescriptor.cs" />
-    <Compile Include="ACL\SecurityDescriptorMarshaler.cs" />
-    <Compile Include="ACL\Sid.cs" />
-    <Compile Include="ACL\Sids.cs" />
-    <Compile Include="ACL\UnmanagedHeapAlloc.cs" />
-    <Compile Include="ACL\Win32Consts.cs" />
-    <Compile Include="ACL\Win32Enums.cs" />
-    <Compile Include="ACL\Win32Helpers.cs" />
-    <Compile Include="ACL\Win32Interop.cs" />
-    <Compile Include="ACL\Win32Structs.cs" />
-    <Compile Include="csSharing.cs" />
-    <Compile Include="Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PathStringCombiner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -107,13 +71,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\Shell.csproj">
-      <Project>{AA0C00CB-8699-4F37-BFAE-40CA87ACC06D}</Project>
-      <Name>Shell</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="BetterOperations.ico" />
+    <Content Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

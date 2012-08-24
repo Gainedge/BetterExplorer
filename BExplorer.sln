@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterExplorer", "BExplorer\BetterExplorer\BetterExplorer.csproj", "{BBD6B64A-5617-4F6C-A5CE-5156365BF33E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell", "Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\Shell.csproj", "{AA0C00CB-8699-4F37-BFAE-40CA87ACC06D}"
@@ -9,7 +9,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SevenZip2010", "SevenZip\Se
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterExplorerOperations", "BetterExplorerOperations\BetterExplorerOperations.csproj", "{2AAB3F8C-A802-4986-A35D-3C6D0A6BA566}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterExplorerShell", "BetterExplorerShell\BetterExplorerShell.csproj", "{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}"
+EndProject
 Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CodeAnalysisDebug|Any CPU = CodeAnalysisDebug|Any CPU
 		CodeAnalysisDebug|Mixed Platforms = CodeAnalysisDebug|Mixed Platforms
@@ -131,16 +137,36 @@ Global
 		{2AAB3F8C-A802-4986-A35D-3C6D0A6BA566}.Release|x64.ActiveCfg = Release|x86
 		{2AAB3F8C-A802-4986-A35D-3C6D0A6BA566}.Release|x86.ActiveCfg = Release|x86
 		{2AAB3F8C-A802-4986-A35D-3C6D0A6BA566}.Release|x86.Build.0 = Release|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.CodeAnalysisDebug|Mixed Platforms.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.CodeAnalysisDebug|Mixed Platforms.Build.0 = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.CodeAnalysisDebug|x64.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.CodeAnalysisDebug|x86.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.CodeAnalysisDebug|x86.Build.0 = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Debug|x64.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Debug|x86.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Debug|x86.Build.0 = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Deploy|Any CPU.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Deploy|Mixed Platforms.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Deploy|Mixed Platforms.Build.0 = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Deploy|x64.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Deploy|x86.ActiveCfg = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Deploy|x86.Build.0 = Debug|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Release|Any CPU.ActiveCfg = Release|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Release|Mixed Platforms.Build.0 = Release|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Release|x64.ActiveCfg = Release|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Release|x86.ActiveCfg = Release|x86
+		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .
-	EndGlobalSection
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\BFExplorer.ndproj"

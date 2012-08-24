@@ -2588,7 +2588,8 @@ namespace BetterExplorer
         {
             //BetterExplorer.MainWindow g = new MainWindow();
             //g.Show();
-            Process.Start(Assembly.GetExecutingAssembly().GetName().Name, "/nw");
+          var k = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            Process.Start(k, "/nw");
         }
 
 
@@ -3941,32 +3942,6 @@ namespace BetterExplorer
             img.Dispose();
         }
 
-
-        static public bool ExecuteControlPanelItem(String cmd)
-        {
-
-            // Discard control panel items
-            String cpName = @"::{26EE0668-A00A-44D7-9371-BEB064C98683}";
-            int cpIndex = cmd.IndexOf(cpName);
-            if (cpIndex != 0) return false;
-            if (cmd.IndexOf(@"\::", cpIndex + cpName.Length) <= 0 && cmd != cpName) return false;
-
-            String explorerPath = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
-            explorerPath += @"\Explorer.exe";
-
-            System.Diagnostics.ProcessStartInfo procStartInfo =
-                new System.Diagnostics.ProcessStartInfo(explorerPath, cmd);
-
-            // Now we create a process, assign its ProcessStartInfo and start it
-            System.Diagnostics.Process proc = new System.Diagnostics.Process();
-            proc.StartInfo = procStartInfo;
-
-
-            proc.Start();
-            return true;
-
-        }
-
         #endregion
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -4274,12 +4249,7 @@ namespace BetterExplorer
 
                                          String cmd = Application.Current.Properties["cmd"].ToString();
 
-                                         if (ExecuteControlPanelItem(cmd))
-                                         {
-                                             exitApp = true;
-                                             return;
-                                         }
-                                         else if (cmd.IndexOf("::") == 0)
+                                         if (cmd.IndexOf("::") == 0)
                                          {
 
                                              Explorer.Navigate(ShellObject.FromParsingName("shell:" + cmd));

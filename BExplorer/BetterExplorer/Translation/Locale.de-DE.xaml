@@ -250,7 +250,7 @@
     <system:String x:Key="miCustomSizeCP">Andere...</system:String>
     <system:String x:Key="btnODateCCP">Erstelldatum</system:String>
     <system:String x:Key="miDateTodayCP">Heute</system:String>
-    <system:String x:Key="miDateYesterdayCP">Gestern/system:String>
+    <system:String x:Key="miDateYesterdayCP">Gestern</system:String>
     <system:String x:Key="miDateThisWeekCP">Diese Woche</system:String>
     <system:String x:Key="miDateLastWeekCP">Letzte Woche</system:String>
     <system:String x:Key="miPastMonthCP">Letzter Monat</system:String>

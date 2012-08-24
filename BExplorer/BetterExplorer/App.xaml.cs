@@ -263,10 +263,7 @@ namespace BetterExplorer
                                     String cmd = args.CommandLineArgs[1];
                                     if (cmd.IndexOf("::") == 0)
                                     {
-                                        if (BetterExplorer.MainWindow.ExecuteControlPanelItem(cmd))
-                                            return;
-                                        else
-                                            sho = ShellObject.FromParsingName("shell:" + cmd);
+                                       sho = ShellObject.FromParsingName("shell:" + cmd);
                                     }
                                     else
                                         sho = ShellObject.FromParsingName(args.CommandLineArgs[1].Replace("\"", ""));
