@@ -174,7 +174,7 @@ namespace BetterExplorer
                 this.GlassBorderThickness = new Thickness(8, p.Y - 2, 8, 8);
                 try
                 {
-                    this.SetBlur(false);
+                    //this.SetBlur(false);
                 }
                 catch (Exception)
                 {
@@ -188,7 +188,7 @@ namespace BetterExplorer
                 this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
                 try
                 {
-                    this.SetBlur(true);
+                    //this.SetBlur(true);
                 }
                 catch (Exception)
                 {

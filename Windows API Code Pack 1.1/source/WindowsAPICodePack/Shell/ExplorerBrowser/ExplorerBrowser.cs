@@ -2305,7 +2305,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
                 if (m.Msg == (int)WindowsAPI.WndMsg.WM_XBUTTONUP)
                 {
-                    switch (HiWord((int)m.WParam))
+                    switch (HiWord((uint)m.WParam))
                     {
                         case 1:
                             NavigateLogLocation(NavigationLogDirection.Backward);
@@ -2328,8 +2328,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
                 if (m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSEWHEEL)
                 {
-                    int Wheel_delta = HiWord((int)m.WParam);
-                    if (LoWord((int)m.WParam) == 0x0008) //Ctrl is down
+                    Int64 Wheel_delta = HiWord((Int64)m.WParam);
+                    if (LoWord((Int64)m.WParam) == 0x0008) //Ctrl is down
                     {
                         if (Wheel_delta < 0)
                         {
@@ -2546,7 +2546,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                         Rectangle PopFR = new Rectangle(PopFX, PopFY, 22, 22);
                         if (recb.Contains(Cursor.Position))
                         {
-                            if (CurX != ((int)M.LParam & 0x0000FFFF) | CurY != HiWord((int)M.LParam))
+                            if (CurX != ((int)M.LParam & 0x0000FFFF) | CurY != HiWord((uint)M.LParam))
                             {
 
                                 try
@@ -2635,8 +2635,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                                     }
                                     //return 1;
                                 }
-                                CurX = LoWord((int)M.LParam);
-                                CurY = HiWord((int)M.LParam);
+                                CurX = (int)LoWord((uint)M.LParam);
+                                CurY = HiWord((uint)M.LParam);
 
                             }
                         }
@@ -2661,7 +2661,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
             return (hr == HResult.Ok);
         }
 
-        public static int HiWord(int number)
+        public static Int64 HiWord(Int64 number)
         {
             if ((number & 0x80000000) == 0x80000000)
                 return (number >> 16);
@@ -2669,7 +2669,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                 return (number >> 16) & 0xffff;
         }
 
-        public static int LoWord(int number)
+        public static Int64 LoWord(Int64 number)
         {
             return number & 0x0000FFFF;
         }
