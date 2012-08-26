@@ -167,10 +167,7 @@ namespace BetterExplorerOperations
         }
         private void SetSharing(string FolderPath, string Sharename, string Description)
         {
-            csSharing csh = new csSharing();
-            MessageBox.Show(FolderPath);
-            csh.ShareFolder(FolderPath, Sharename, Description,false);
-            csh = null;
+
         }
         private void CreateSymLink()
         {
@@ -212,10 +209,6 @@ namespace BetterExplorerOperations
                         if (shi.lpMsg == "Share")
                         {
 
-                            csSharing csh = new csSharing();
-
-                            csh.ShareFolder(shi.lpShare, shi.lpSharingName, shi.lpDescription, false);
-                            csh = null;
                         }
                         if (shi.lpMsg == "0x88775")
                         {
