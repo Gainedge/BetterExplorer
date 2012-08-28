@@ -37,6 +37,8 @@ using NAppUpdate.Framework;
 using NAppUpdate.Framework.Tasks;
 using NAppUpdate.Framework.Conditions;
 using AndreasJohansson.Win32.Shell;
+using BetterExplorerControls;
+using Commands;
 
 
 namespace BetterExplorer
@@ -133,13 +135,6 @@ namespace BetterExplorer
             return TheList;
         }
 
-        #endregion
-
-        #region RoutedCommandDefinition
-        public static RoutedCommand RoutedNewTab = new RoutedCommand();
-        public static RoutedCommand RoutedEnterInBreadCrumbCombo = new RoutedCommand();
-        public static RoutedCommand RoutedChangeTab = new RoutedCommand();
-        public static RoutedCommand RoutedCloseTab = new RoutedCommand();
         #endregion
 
         #region Events
@@ -300,10 +295,10 @@ namespace BetterExplorer
         private void RibbonWindow_Initialized(object sender, EventArgs e)
         {
 
-            RoutedNewTab.InputGestures.Add(new KeyGesture(Key.T, ModifierKeys.Control));
-            RoutedEnterInBreadCrumbCombo.InputGestures.Add(new KeyGesture(Key.E, ModifierKeys.Alt));
-            RoutedChangeTab.InputGestures.Add(new KeyGesture(Key.Tab, ModifierKeys.Control));
-            RoutedCloseTab.InputGestures.Add(new KeyGesture(Key.W, ModifierKeys.Control));
+            AppCommands.RoutedNewTab.InputGestures.Add(new KeyGesture(Key.T, ModifierKeys.Control));
+            AppCommands.RoutedEnterInBreadCrumbCombo.InputGestures.Add(new KeyGesture(Key.E, ModifierKeys.Alt));
+            AppCommands.RoutedChangeTab.InputGestures.Add(new KeyGesture(Key.Tab, ModifierKeys.Control));
+            AppCommands.RoutedCloseTab.InputGestures.Add(new KeyGesture(Key.W, ModifierKeys.Control));
             RegistryKey rk = Registry.CurrentUser;
             RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", false);
 
@@ -997,10 +992,10 @@ namespace BetterExplorer
                                     {
                                         try
                                         {
-                                            if (!(breadcrumbBarControl1.stackPanel1.Children[breadcrumbBarControl1.stackPanel1.Children.Count - 1] as BreadcrumbBarItem).HasDropDownMenu)
-                                            {
-                                                breadcrumbBarControl1.UpdateLastItem(1);
-                                            }
+                                            //if (!(breadcrumbBarControl1.elPanel.Children[breadcrumbBarControl1.elPanel.Children.Count - 1] as BreadcrumbBarItem).HasDropDownMenu)
+                                            //{
+                                            //    breadcrumbBarControl1.UpdateLastItem(1);
+                                            //}
                                         }
                                         catch
                                         {
@@ -1011,10 +1006,10 @@ namespace BetterExplorer
                                     {
                                         try
                                         {
-                                            if ((breadcrumbBarControl1.stackPanel1.Children[breadcrumbBarControl1.stackPanel1.Children.Count - 1] as BreadcrumbBarItem).HasDropDownMenu)
-                                            {
-                                                breadcrumbBarControl1.UpdateLastItem(0);
-                                            }
+                                            //if ((breadcrumbBarControl1.elPanel.Children[breadcrumbBarControl1.elPanel.Children.Count - 1] as BreadcrumbBarItem).HasDropDownMenu)
+                                            //{
+                                            //    breadcrumbBarControl1.UpdateLastItem(0);
+                                            //}
                                         }
                                         catch
                                         {
@@ -1036,10 +1031,10 @@ namespace BetterExplorer
                     {
                         Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() =>
                                     {
-                                        if (!(breadcrumbBarControl1.stackPanel1.Children[breadcrumbBarControl1.stackPanel1.Children.Count - 1] as BreadcrumbBarItem).HasDropDownMenu)
-                                        {
-                                            breadcrumbBarControl1.UpdateLastItem(1);
-                                        }
+                                        //if (!(breadcrumbBarControl1.elPanel.Children[breadcrumbBarControl1.elPanel.Children.Count - 1] as BreadcrumbBarItem).HasDropDownMenu)
+                                        //{
+                                        //    breadcrumbBarControl1.UpdateLastItem(1);
+                                        //}
                                     }));
                     }
                     catch
@@ -4490,6 +4485,14 @@ namespace BetterExplorer
 
         public MainWindow()
         {
+            CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, ERNewTab);
+            this.CommandBindings.Add(cbnewtab);
+            CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, ERGoToBCCombo);
+            this.CommandBindings.Add(cbGotoCombo);
+            CommandBinding cbCloseTab = new CommandBinding(AppCommands.RoutedCloseTab, RCloseTab);
+            this.CommandBindings.Add(cbCloseTab);
+            CommandBinding cbChangeTab= new CommandBinding(AppCommands.RoutedChangeTab, ChangeTab);
+            this.CommandBindings.Add(cbChangeTab);
             RegistryKey rk = Registry.CurrentUser;
             RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 

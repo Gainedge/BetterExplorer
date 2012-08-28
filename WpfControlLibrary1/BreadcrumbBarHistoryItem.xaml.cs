@@ -13,7 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Shell;
 
-namespace BetterExplorer
+namespace BetterExplorerControls
 {
     /// <summary>
     /// Interaction logic for BreadcrumbBarHistoryItem.xaml

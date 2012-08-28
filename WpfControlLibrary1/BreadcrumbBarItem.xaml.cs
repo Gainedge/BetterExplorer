@@ -18,7 +18,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using System.Threading;
 
-namespace BetterExplorer
+namespace BetterExplorerControls
 {
     /// <summary>
     /// Interaction logic for BreadcrumbBarItem.xaml

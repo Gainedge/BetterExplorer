@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace BetterExplorer
+namespace BetterExplorerControls
 {
     /// <summary>
     /// Interaction logic for ImageSizeDisplay.xaml

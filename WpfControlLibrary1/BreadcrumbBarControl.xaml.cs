@@ -14,7 +14,7 @@ using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Shell;
 using System.Threading;
 
-namespace BetterExplorer
+namespace BetterExplorerControls
 {
     /// <summary>
     /// Interaction logic for BreadcrumbBarControl.xaml
@@ -176,11 +176,11 @@ namespace BetterExplorer
 
         public void LoadDirectory(ShellObject currloc, bool loadDragEvents = true)
         {
-            this.stackPanel1.Children.Clear();
+            this.elPanel.Children.Clear();
             GetBreadCrumbItems(GetPaths(currloc));
             if (loadDragEvents == true)
             {
-                foreach (BreadcrumbBarItem item in this.stackPanel1.Children)
+                foreach (BreadcrumbBarItem item in this.elPanel.Children)
                 {
                     item.AllowDrop = true;
                     item.DragEnter += de;
@@ -195,7 +195,7 @@ namespace BetterExplorer
         {
             try
             {
-                return ((BreadcrumbBarItem)stackPanel1.InputHitTest(pt)).ShellObject;
+                return ((BreadcrumbBarItem)elPanel.InputHitTest(pt)).ShellObject;
             }
             catch (Exception)
             {
@@ -206,7 +206,7 @@ namespace BetterExplorer
         public void UpdateLastItem(int CurLocationCount)
         {
             BreadcrumbBarItem lastitem =
-                stackPanel1.Children[stackPanel1.Children.Count - 1] as BreadcrumbBarItem;
+                elPanel.Children[elPanel.Children.Count - 1] as BreadcrumbBarItem;
             lastitem.SetChildren(CurLocationCount > 0);
         }
 
@@ -248,7 +248,7 @@ namespace BetterExplorer
                 
                 duh.NavigateRequested += new BreadcrumbBarItem.PathEventHandler(duh_NavigateRequested);
 
-                this.stackPanel1.Children.Add(duh);
+                this.elPanel.Children.Add(duh);
                 
                 if (thing == lastmanstanding)
                 {
@@ -288,7 +288,7 @@ namespace BetterExplorer
         {
             e.Handled = true;
             FocusManager.SetIsFocusScope(this, true);
-            stackPanel1.Visibility = System.Windows.Visibility.Collapsed;
+            elPanel.Visibility = System.Windows.Visibility.Collapsed;
             HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
         }
 
@@ -307,7 +307,7 @@ namespace BetterExplorer
         private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e)
         {
             e.Handled = true;
-            stackPanel1.Visibility = System.Windows.Visibility.Collapsed;
+            elPanel.Visibility = System.Windows.Visibility.Collapsed;
             if (LastPath != "")
             {
                 HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
@@ -323,29 +323,29 @@ namespace BetterExplorer
         {
             get
             {
-                return stackPanel1.Visibility != System.Windows.Visibility.Visible;
+                return elPanel.Visibility != System.Windows.Visibility.Visible;
             }
         }
 
         public void ExitEditMode()
         {
-            stackPanel1.Visibility = System.Windows.Visibility.Visible;
+            elPanel.Visibility = System.Windows.Visibility.Visible;
             //if (HistoryCombo.Text != "")
             //{
             //    LastPath = HistoryCombo.Text;
             //}
 
             HistoryCombo.Text = "";
-            stackPanel1.Focusable = true;
-            stackPanel1.IsHitTestVisible = false;
-            stackPanel1.Focus();
-            stackPanel1.Focusable = false;
-            stackPanel1.IsHitTestVisible = true;
+            elPanel.Focusable = true;
+            elPanel.IsHitTestVisible = false;
+            elPanel.Focus();
+            elPanel.Focusable = false;
+            elPanel.IsHitTestVisible = true;
         }
 
         public void EnterEditMode()
         {
-            stackPanel1.Visibility = System.Windows.Visibility.Collapsed;
+            elPanel.Visibility = System.Windows.Visibility.Collapsed;
             if (LastPath != "")
             {
                 HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
@@ -410,13 +410,13 @@ namespace BetterExplorer
         {
             HistoryCombo.Focus();
             HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
-            stackPanel1.Visibility = System.Windows.Visibility.Collapsed;
+            elPanel.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         private void HistoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             HistoryCombo.Focus();
-            stackPanel1.Visibility = System.Windows.Visibility.Collapsed;
+            elPanel.Visibility = System.Windows.Visibility.Collapsed;
         }
 
         private void HistoryCombo_TextChanged(object sender, TextChangedEventArgs e)

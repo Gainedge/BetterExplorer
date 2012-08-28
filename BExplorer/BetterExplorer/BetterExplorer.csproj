@@ -175,15 +175,7 @@
     <Compile Include="ArchiveViewWindow.xaml.cs">
       <DependentUpon>ArchiveViewWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BreadcrumbBarControl.xaml.cs">
-      <DependentUpon>BreadcrumbBarControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="BreadcrumbBarHistoryItem.xaml.cs">
-      <DependentUpon>BreadcrumbBarHistoryItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="BreadcrumbBarItem.xaml.cs">
-      <DependentUpon>BreadcrumbBarItem.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="AppCommands.cs" />
     <Compile Include="ConditionalSelectClasses.cs" />
     <Compile Include="ConditionalSelectComboBoxItem.xaml.cs">
       <DependentUpon>ConditionalSelectComboBoxItem.xaml</DependentUpon>
@@ -192,9 +184,6 @@
       <DependentUpon>ConditionalSelectForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="FolderStructForSize.cs" />
-    <Compile Include="ImageSizeDisplay.xaml.cs">
-      <DependentUpon>ImageSizeDisplay.xaml</DependentUpon>
-    </Compile>
     <Compile Include="PathStringCombiner.cs" />
     <Compile Include="PieChart\BaseWPFHelpers.cs" />
     <Compile Include="PieChart\PieChart\ColourConverter.cs" />
@@ -275,9 +264,6 @@
     </Compile>
     <Compile Include="NetworkBrowser.cs" />
     <Compile Include="SafeThread.cs" />
-    <Compile Include="SearchBox.xaml.cs">
-      <DependentUpon>SearchBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ShareWizzard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -295,22 +281,7 @@
     <Compile Include="TabListEditorItem.xaml.cs">
       <DependentUpon>TabListEditorItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TranslationComboBoxItem.xaml.cs">
-      <DependentUpon>TranslationComboBoxItem.xaml</DependentUpon>
-    </Compile>
     <Page Include="ArchiveViewWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="BreadcrumbBarControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="BreadcrumbBarHistoryItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="BreadcrumbBarItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -319,10 +290,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ConditionalSelectForm.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ImageSizeDisplay.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -382,10 +349,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SearchBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="StringSearchCriteriaDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -401,10 +364,6 @@
     <Page Include="themes\generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="TranslationComboBoxItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Translation\Locale.nl-NL.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -515,6 +474,10 @@
     <ProjectReference Include="..\..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\Shell.csproj">
       <Project>{AA0C00CB-8699-4F37-BFAE-40CA87ACC06D}</Project>
       <Name>Shell</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WpfControlLibrary1\BetterExplorerControls.csproj">
+      <Project>{04270710-e358-46d4-83e5-eb7a9323cce7}</Project>
+      <Name>BetterExplorerControls</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
