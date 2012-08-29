@@ -41,7 +41,7 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>false</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -81,7 +81,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
@@ -100,10 +100,6 @@
   <ItemGroup>
     <Reference Include="AeroWizard">
       <HintPath>.\AeroWizard.dll</HintPath>
-    </Reference>
-    <Reference Include="Fluent, Version=2.1.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Visual Studio Components\fluent_0cdee8129810\Fluent\Fluent\bin\NET 4.0\Debug\Fluent.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -467,6 +463,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\fluent_0cdee8129810\Fluent\Fluent\Fluent dotNET 4.0.csproj">
+      <Project>{4C92FCF4-3561-499F-BC5B-F2F089863047}</Project>
+      <Name>Fluent dotNET 4.0</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj">
       <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
       <Name>SevenZip2010</Name>

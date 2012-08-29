@@ -38,7 +38,6 @@ using NAppUpdate.Framework.Tasks;
 using NAppUpdate.Framework.Conditions;
 using AndreasJohansson.Win32.Shell;
 using BetterExplorerControls;
-using Commands;
 
 
 namespace BetterExplorer
