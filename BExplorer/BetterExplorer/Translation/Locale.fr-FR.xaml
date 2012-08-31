@@ -192,11 +192,11 @@
     <system:String x:Key="btnPinCP">Pin to Taskbar</system:String>
     <system:String x:Key="btnRunAsAdminCP">Run as Administrator</system:String>
     <system:String x:Key="ctbImageToolsCP">Outils d’image</system:String>
-    <system:String x:Key="tgImgEditCP">Edit</system:String>
-    <system:String x:Key="btnRotateLeftCP">Rotate Left</system:String>
-    <system:String x:Key="btnRotateRightCP">Rotate Right</system:String>
-    <system:String x:Key="btnFlipXCP">Flip Horizontally</system:String>
-    <system:String x:Key="btnFlipYCP">Flip Vertically</system:String>
+    <system:String x:Key="tgImgEditCP">Editer</system:String>
+    <system:String x:Key="btnRotateLeftCP">Pivoter à gauche</system:String>
+    <system:String x:Key="btnRotateRightCP">Pivoter à droite</system:String>
+    <system:String x:Key="btnFlipXCP">Retourner horizontalement</system:String>
+    <system:String x:Key="btnFlipYCP">Retourner verticalement</system:String>
     <system:String x:Key="btnConvertImageCP">Convert</system:String>
     <system:String x:Key="miJPGfCP">To JPEG</system:String>
     <system:String x:Key="miPNGfCP">To PNG</system:String>
