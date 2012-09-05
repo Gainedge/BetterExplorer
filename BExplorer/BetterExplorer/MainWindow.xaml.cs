@@ -3370,8 +3370,7 @@ namespace BetterExplorer
                 isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
                 if (itb != null)
                 {
-                    //if (itb.IsNavigate)
-                    {
+
                         BeforeLastTabIndex = LastTabIndex;
 
                         tabControl1.SelectedIndex = itb.Index;
@@ -3394,7 +3393,6 @@ namespace BetterExplorer
                             }
 
                         }
-                    }
                     //'btnTabCloseC.IsEnabled = tabControl1.Items.Count > 1;
                     //'there's a bug that has this enabled when there's only one tab open, but why disable it
                     //'if it never crashes the program? Closing the last tab simply closes the program, so I
@@ -3402,8 +3400,8 @@ namespace BetterExplorer
                 }
             }
 
-
-
+            Explorer.ExplorerSetFocus();
+            Explorer.Focus();
         }
 
         void t_Tick(object sender, EventArgs e)

@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Shell;
 using Fluent;
+using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 
 namespace BetterExplorer
 {
