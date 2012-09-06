@@ -224,7 +224,7 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <Ribbon:SeparatorTabItem Header="{StaticResource mmSupportCP}" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" VerticalAlignment="Top" Margin="15,10,10,0" />
-                                <Ribbon:Button Header="{StaticResource btnUpdateCheckCP}" HorizontalAlignment="Left" IsDefinitive="True" Ribbon:KeyTip.Keys="U" Ribbon:KeyTip.VerticalAlignment="Bottom" Click="Button_Click_6" LargeIcon="Images\updater32.png" Icon="Images\updater16.png"  Style="{DynamicResource ButtonBackstageStyle}" VerticalAlignment="Top" Margin="20,45,0,0" Name="btnUpdateCheck">
+                                <Ribbon:Button Header="{StaticResource btnUpdateCheckCP}" HorizontalAlignment="Left" IsDefinitive="True" Ribbon:KeyTip.Keys="U" Ribbon:KeyTip.VerticalAlignment="Bottom" Click="Button_Click_6" LargeIcon="Images\updater32.png" Icon="Images\updater16.png"  Style="{DynamicResource ButtonBackstageStyle}" VerticalAlignment="Top" Margin="20,45,0,0" Name="btnUpdateCheck" Height="88">
                                     <Ribbon:Button.ToolTip>
                                         <Ribbon:ScreenTip
                                                  Title="{StaticResource btnUpdateCheckHCP}"
@@ -236,7 +236,7 @@
                                 </Ribbon:Button>
                                 <Label Content="{StaticResource btnUpdateCheckHCP}" FontWeight="Bold" FontSize="12" Margin="105,45,10,0" HorizontalAlignment="Left" VerticalAlignment="Top" />
                                 <TextBlock Text="{StaticResource btnUpdateCheckICP}" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="110,75,10,0" Height="50" VerticalAlignment="Top" />
-                                <Ribbon:Button Header="{StaticResource btnOpenWebsite}" HorizontalAlignment="Left" IsDefinitive="True" Ribbon:KeyTip.Keys="W" Ribbon:KeyTip.VerticalAlignment="Bottom" Click="Button_Click_7" LargeIcon="Images\webconnect_32.png" Icon="Images\webconnect_16.png" Style="{DynamicResource ButtonBackstageStyle}" VerticalAlignment="Top" Margin="20,140,0,0" />
+                                <Ribbon:Button Header="{StaticResource btnOpenWebsite}" HorizontalAlignment="Left" IsDefinitive="True" Ribbon:KeyTip.Keys="W" Ribbon:KeyTip.VerticalAlignment="Bottom" Click="Button_Click_7" LargeIcon="Images\webconnect_32.png" Icon="Images\webconnect_16.png" Style="{DynamicResource ButtonBackstageStyle}" VerticalAlignment="Top" Margin="20,140,0,0" Height="88"/>
                                 <Label Content="{StaticResource btnOpenWebsiteHCP}" FontWeight="Bold" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="105,140,10,0" />
                                 <TextBlock Text="{StaticResource btnOpenWebsiteICP}" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="110,170,10,0" Height="50" VerticalAlignment="Top" />
                                 <Separator Grid.Column="0" HorizontalAlignment="Right"/>

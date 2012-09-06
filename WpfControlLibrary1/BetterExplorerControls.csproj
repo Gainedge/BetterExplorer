@@ -147,6 +147,27 @@
       <Name>Shell</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\filter16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\filter32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\filter48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\search16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\search32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\search48.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
