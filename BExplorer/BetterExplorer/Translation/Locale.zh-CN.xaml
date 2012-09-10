@@ -254,7 +254,7 @@
     <system:String x:Key="miDateThisWeekCP">本周</system:String>
     <system:String x:Key="miDateLastWeekCP">上星期</system:String>
     <system:String x:Key="miPastMonthCP">上个月</system:String>
-    <system:String x:Key="miDateCustomCP"自定义日期范围...</system:String>
+    <system:String x:Key="miDateCustomCP">自定义日期范围...</system:String>
     <system:String x:Key="btnODateModCP">修改日期</system:String>
     <system:String x:Key="btnExtCP">类型</system:String>
     <system:String x:Key="btnAuthorCP">作者/艺术家</system:String>

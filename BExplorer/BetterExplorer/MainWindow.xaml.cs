@@ -198,87 +198,6 @@ namespace BetterExplorer
 
         }
 
-        private void RibbonWindow_Closing(object sender, CancelEventArgs e)
-        {
-            Explorer.automan.Dispose();
-            //if (PicturePreview != null)
-            //{
-            //    PicturePreview.Close(); 
-            //}
-            string OpenedTabs = "";
-            foreach (CloseableTabItem item in tabControl1.Items)
-            {
-                OpenedTabs += ";" + item.Path.ParsingName;
-            }
-            RegistryKey rk = Registry.CurrentUser;
-            RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-            rks.SetValue(@"LastWindowWidth", this.Width);
-            rks.SetValue(@"LastWindowHeight", this.Height);
-            rks.SetValue(@"LastWindowPosLeft", this.Left);
-            rks.SetValue(@"LastWindowPosTop", this.Top);
-            if (btnBlue.IsChecked == true)
-            {
-                rks.SetValue(@"CurrentTheme", "Blue");
-            }
-            else if (btnSilver.IsChecked == true)
-            {
-                rks.SetValue(@"CurrentTheme", "Silver");
-            }
-            else if (btnBlack.IsChecked == true)
-            {
-                rks.SetValue(@"CurrentTheme", "Black");
-            }
-            else if (btnGreen.IsChecked == true)
-            {
-                rks.SetValue(@"CurrentTheme", "Green");
-            }
-            switch (this.WindowState)
-            {
-                case System.Windows.WindowState.Maximized:
-                    rks.SetValue(@"LastWindowState", 2);
-                    break;
-                case System.Windows.WindowState.Minimized:
-                    rks.SetValue(@"LastWindowState", 1);
-                    break;
-                case System.Windows.WindowState.Normal:
-                    rks.SetValue(@"LastWindowState", 0);
-                    break;
-                default:
-                    rks.SetValue(@"LastWindowState", -1);
-                    break;
-            }
-            rks.SetValue(@"IsRibonMinimized", TheRibbon.IsMinimized);
-            rks.SetValue(@"OpenedTabs", OpenedTabs);
-
-            if (FlowDirection == System.Windows.FlowDirection.RightToLeft)
-            {
-                rks.SetValue(@"RTLMode", "true");
-            }
-            else
-            {
-                rks.SetValue(@"RTLMode", "false");
-            }
-
-                                     //asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
-                                     //asArchive = ((int)rks.GetValue(@"AutoSwitchArchiveTools", 1) == 1);
-                                     //asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
-                                     //asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
-                                     //asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
-                                     //asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 0) == 1);
-
-            rks.SetValue(@"AutoSwitchFolderTools", GetIntegerFromBoolean(asFolder));
-            rks.SetValue(@"AutoSwitchArchiveTools", GetIntegerFromBoolean(asArchive));
-            rks.SetValue(@"AutoSwitchImageTools", GetIntegerFromBoolean(asImage));
-            rks.SetValue(@"AutoSwitchApplicationTools", GetIntegerFromBoolean(asApplication));
-            rks.SetValue(@"AutoSwitchLibraryTools", GetIntegerFromBoolean(asLibrary));
-            rks.SetValue(@"AutoSwitchDriveTools", GetIntegerFromBoolean(asDrive));
-
-            rks.Close();
-
-            SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems);
-            AddToLog("Session Ended");
-        }
-
         private int GetIntegerFromBoolean(bool value)
         {
             if (value == true)
@@ -2826,7 +2745,7 @@ namespace BetterExplorer
 
         private void Button_Click_7(object sender, RoutedEventArgs e)
         {
-            Process.Start("http://bexplorer.codeplex.com/");
+            Process.Start("https://github.com/DimitarCC/BetterExplorer");
 
         }
 
@@ -4816,6 +4735,8 @@ namespace BetterExplorer
 
             string rtlused = Convert.ToString(rks.GetValue(@"RTLMode", "false"));
 
+            string tabba = Convert.ToString(rks.GetValue(@"TabBarAlignment", "top"));
+
             rks.Close();
             rk.Close();
 
@@ -4852,8 +4773,111 @@ namespace BetterExplorer
                 FlowDirection = System.Windows.FlowDirection.LeftToRight;
             }
 
+            if (tabba == "top")
+            {
+                TabbaTop.IsChecked = true;
+            }
+            else if (tabba == "bottom")
+            {
+                TabbaBottom.IsChecked = true;
+            }
+            else
+            {
+                TabbaTop.IsChecked = true;
+            }
+
             // allows user to change language
             ReadyToChangeLanguage = true;
+        }
+
+        private void RibbonWindow_Closing(object sender, CancelEventArgs e)
+        {
+            Explorer.automan.Dispose();
+            //if (PicturePreview != null)
+            //{
+            //    PicturePreview.Close(); 
+            //}
+            string OpenedTabs = "";
+            foreach (CloseableTabItem item in tabControl1.Items)
+            {
+                OpenedTabs += ";" + item.Path.ParsingName;
+            }
+            RegistryKey rk = Registry.CurrentUser;
+            RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+            rks.SetValue(@"LastWindowWidth", this.Width);
+            rks.SetValue(@"LastWindowHeight", this.Height);
+            rks.SetValue(@"LastWindowPosLeft", this.Left);
+            rks.SetValue(@"LastWindowPosTop", this.Top);
+            if (btnBlue.IsChecked == true)
+            {
+                rks.SetValue(@"CurrentTheme", "Blue");
+            }
+            else if (btnSilver.IsChecked == true)
+            {
+                rks.SetValue(@"CurrentTheme", "Silver");
+            }
+            else if (btnBlack.IsChecked == true)
+            {
+                rks.SetValue(@"CurrentTheme", "Black");
+            }
+            else if (btnGreen.IsChecked == true)
+            {
+                rks.SetValue(@"CurrentTheme", "Green");
+            }
+            switch (this.WindowState)
+            {
+                case System.Windows.WindowState.Maximized:
+                    rks.SetValue(@"LastWindowState", 2);
+                    break;
+                case System.Windows.WindowState.Minimized:
+                    rks.SetValue(@"LastWindowState", 1);
+                    break;
+                case System.Windows.WindowState.Normal:
+                    rks.SetValue(@"LastWindowState", 0);
+                    break;
+                default:
+                    rks.SetValue(@"LastWindowState", -1);
+                    break;
+            }
+            rks.SetValue(@"IsRibonMinimized", TheRibbon.IsMinimized);
+            rks.SetValue(@"OpenedTabs", OpenedTabs);
+
+            if (FlowDirection == System.Windows.FlowDirection.RightToLeft)
+            {
+                rks.SetValue(@"RTLMode", "true");
+            }
+            else
+            {
+                rks.SetValue(@"RTLMode", "false");
+            }
+
+                                     //asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
+                                     //asArchive = ((int)rks.GetValue(@"AutoSwitchArchiveTools", 1) == 1);
+                                     //asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
+                                     //asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
+                                     //asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
+                                     //asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 0) == 1);
+
+            rks.SetValue(@"AutoSwitchFolderTools", GetIntegerFromBoolean(asFolder));
+            rks.SetValue(@"AutoSwitchArchiveTools", GetIntegerFromBoolean(asArchive));
+            rks.SetValue(@"AutoSwitchImageTools", GetIntegerFromBoolean(asImage));
+            rks.SetValue(@"AutoSwitchApplicationTools", GetIntegerFromBoolean(asApplication));
+            rks.SetValue(@"AutoSwitchLibraryTools", GetIntegerFromBoolean(asLibrary));
+            rks.SetValue(@"AutoSwitchDriveTools", GetIntegerFromBoolean(asDrive));
+
+            if (this.TabbaBottom.IsChecked == true)
+            {
+                rks.SetValue(@"TabBarAlignment", "bottom");
+            }
+            else
+            {
+                rks.SetValue(@"TabBarAlignment", "top");
+            }
+
+            rks.Close();
+
+            SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems);
+            AddToLog("Session Ended");
         }
 
         #region Old Search Code
@@ -4933,7 +4957,7 @@ namespace BetterExplorer
         int CurrentProgressValue = 0;
         #endregion
 
-        #region Change Ribbon Color
+        #region Change Ribbon Color (Theme)
 
         public void ChangeRibbonThemeL(string ThemeName)
         {
@@ -7903,6 +7927,41 @@ namespace BetterExplorer
             }
         }
 
+        private void btnCondSel_DropDownOpened(object sender, EventArgs e)
+        {
+
+        }
+
+
+        #region Tab Controls
+
+        private void MoveTabBarToBottom()
+        {
+            Grid.SetRow(this.tabControl1, 4);
+            this.rTabbarTop.Height = new GridLength(0);
+            this.rTabbarBot.Height = new GridLength(25);
+            this.tabControl1.TabStripPlacement = Dock.Bottom;
+        }
+
+        private void MoveTabBarToTop()
+        {
+            Grid.SetRow(this.tabControl1, 2);
+            this.rTabbarTop.Height = new GridLength(25);
+            this.rTabbarBot.Height = new GridLength(0);
+            this.tabControl1.TabStripPlacement = Dock.Top;
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            MoveTabBarToTop();
+        }
+
+        private void RadioButton_Checked_1(object sender, RoutedEventArgs e)
+        {
+            MoveTabBarToBottom();
+        }
+
+        #endregion
 
     }
 

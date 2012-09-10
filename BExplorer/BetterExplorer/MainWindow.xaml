@@ -149,15 +149,15 @@
     
 
 
-    <Grid>
+    <Grid Name="grid1">
 
 
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" Name="rRibbon"/>
-            <RowDefinition Height="36" Name="rTabbar"/>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="36" Name="rCommands"/>
+            <RowDefinition Height="25" Name="rTabbarTop"/>
             <RowDefinition Height="513*" />
-            <RowDefinition Height="0" />
+            <RowDefinition Height="0" Name="rTabbarBot" />
             <RowDefinition Height="20" Name="rStatusbar"/>
         </Grid.RowDefinitions>
         <Grid.Resources>
@@ -363,12 +363,15 @@
                                         <ComboBox Name="TranslationComboBox" SelectionChanged="TranslationComboBox_SelectionChanged" HorizontalAlignment="Left" Width="190" Height="42" Margin="0,5,0,0">
                                             <controls:TranslationComboBoxItem LanguageText="Bulgarian" LocaleCode="bg-BG" x:Name="bgBGLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Croatian" LocaleCode="hr-HR" x:Name="hrHRLang" UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem LanguageText="Chinese (Simple)" LocaleCode="zh-CN" x:Name="zhCNLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="English" LocaleCode="en-US" x:Name="enUSLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Finnish" LocaleCode="fi-FI" x:Name="fiFILang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="French" LocaleCode="fr-FR" x:Name="frFRLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="German" LocaleCode="de-DE" x:Name="deDELang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Italian" LocaleCode="it-IT" x:Name="itITLang" UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem LanguageText="Polish" LocaleCode="pl-PL" x:Name="plPLLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Portuguese" LocaleCode="pt-BR" x:Name="ptBRLang" UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem LanguageText="Russian" LocaleCode="ru-RU" x:Name="ruRULang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Spanish" LocaleCode="es-ES" x:Name="esESLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Turkish" LocaleCode="tr-TR" x:Name="trTRLang" UsesRTL="False" />
                                         </ComboBox>
@@ -377,7 +380,7 @@
                                         <Ribbon:SeparatorTabItem Header="Help With Translating" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}"/>
                                         <TextBlock Text="If anyone would like to help with translating, just go to this webpage here:" Margin="0,5,0,0" />
                                         <Button Name="TranslationHelp" BorderBrush="#01000000" Background="#01000000" Foreground="#FFFF6E00" HorizontalAlignment="Left" Click="TranslationHelp_Click">
-                                            <TextBlock Name="TranslationURL" TextDecorations="Underline" Text="http://bexplorer.codeplex.com/wikipage?title=Translation%20Directory" />
+                                            <TextBlock Name="TranslationURL" TextDecorations="Underline" Text="https://github.com/JaykeBird/BExplorer_Translations" />
                                         </Button>
                                         <TextBlock Text="Also, we wish to thank everyone who has helped everyone make translations so far." Margin="0,10,0,5" />
                                         <TextBlock Text="English: JaykeBird (Jayke R. Huempfner) and Dimitar Tsenev"/>
@@ -385,11 +388,14 @@
                                         <TextBlock Text="Spanish: JMBolivar (José Miguel Bolivar)" />
                                         <TextBlock Text="Portuguese: Cléverson" />
                                         <TextBlock Text="Finnish: Osku598 (Oskar Bredin)" />
-                                        <TextBlock Text="Turkish: Cengiz Han Sitil" />
-                                        <TextBlock Text="German: Stefan (Stefan Klebs) and Daniel Will" />
+                                        <TextBlock Text="Turkish: Cengizhan and Loungedy" />
+                                        <TextBlock Text="German: Stefan (Stefan Klebs), Florian0901, and Daniel Will" />
                                         <TextBlock Text="Croatian: Smeker (Danijel Levak)" />
-                                        <TextBlock Text="French: Pascal Huau and Neugrek" />
+                                        <TextBlock Text="French: Pascal Huau and Neugrek (Xanax)" />
                                         <TextBlock Text="Italian: Gianluigi Meraviglia and JaykeBird (Jayke R. Huempfner)" />
+                                        <TextBlock Text="Russian: Loungedy" />
+                                        <TextBlock Text="Chinese: lrh3321" />
+                                        <TextBlock Text="Polish: VorbisMastah and Krzysztof" />
                                         <!--<Ribbon:SeparatorTabItem Header="Remove Setting" Visibility="Hidden"/>
                                         <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" Margin="0,0,60,0" Visibility="Hidden"
                                                    Text="Because this build updates the Registry after installation, there would be a Registry error if
@@ -407,7 +413,7 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                             <Ribbon:ToggleButton Name="btnSilver" Ribbon:KeyTip.Keys="S" Click="btnSilver_Click" Header="{StaticResource btnSilverCP}" SizeDefinition="Large" Foreground="Black" GroupName="RSkin" LargeIcon="Images\SilverTheme.png" IsChecked="False"/>
                                             <Ribbon:ToggleButton Name="btnBlue" Ribbon:KeyTip.Keys="B" Click="btnBlue_Click" Header="{StaticResource btnBlueCP}" SizeDefinition="Large" Foreground="Black" GroupName="RSkin" LargeIcon="Images\BlueTheme.png" IsChecked="False"/>
                                             <Ribbon:ToggleButton Name="btnBlack" Ribbon:KeyTip.Keys="L" Click="btnBlack_Click" Header="{StaticResource btnBlackCP}" SizeDefinition="Large" Foreground="Black" GroupName="RSkin" LargeIcon="Images\BlackTheme.png" IsChecked="False"/>
-                                            <Ribbon:ToggleButton Name="btnGreen" Ribbon:KeyTip.Keys="G" Header="{StaticResource btnGreenCP}" SizeDefinition="Large" Foreground="Black" GroupName="RSkin" LargeIcon="Images\BlueTheme.png" IsChecked="False" Click="btnGreen_Click"/>
+                                            <Ribbon:ToggleButton Name="btnGreen" Ribbon:KeyTip.Keys="G" Header="{StaticResource btnGreenCP}" SizeDefinition="Large" Foreground="Black" GroupName="RSkin" LargeIcon="Images\BlueTheme.png" IsChecked="False" Visibility="Collapsed" Click="btnGreen_Click"/>
                                         </StackPanel>
                                         <Ribbon:SeparatorTabItem Header="{StaticResource sepContextualTabsCP}" VerticalAlignment="Top" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,100,0,0" />
                                         <TextBlock Text="{StaticResource lblAutoSwitchCP}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,135,0,0" />
@@ -458,6 +464,16 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                                             IsRibbonAligned ="false"/>
                                                 </Ribbon:CheckBox.ToolTip>
                                             </Ribbon:CheckBox>
+                                        </StackPanel>
+                                    </Grid>
+                                </TabItem>
+                                <TabItem Header="{StaticResource tabTabsCP}" HorizontalContentAlignment="Left" Ribbon:KeyTip.Keys="T">
+                                    <Grid Margin="20,15,0,0">
+                                        <Ribbon:SeparatorTabItem Header="{StaticResource sepAlignmentCP}" VerticalAlignment="Top" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <StackPanel Orientation="Vertical" Margin="0,35,0,0">
+                                            <TextBlock Text="{StaticResource lblShowTabBarCP}" />
+                                            <RadioButton x:Name="TabbaTop" GroupName="tba" Content="{StaticResource chkTabBarTopCP}" Margin="5,5,0,0" Checked="RadioButton_Checked" />
+                                            <RadioButton x:Name="TabbaBottom" GroupName="tba" Content="{StaticResource chkTabBarBottomCP}" Margin="5,5,0,0" Checked="RadioButton_Checked_1" />
                                         </StackPanel>
                                     </Grid>
                                 </TabItem>
@@ -575,7 +591,7 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                     <Ribbon:Button Header="{StaticResource btnSelectAllCP}" Ribbon:KeyTip.Keys="SA" SizeDefinition="Middle,Middle,Middle" Name="btnSelAll" Click="btnSelAll_Click" Icon="Images\selectall16.png" />
                     <Ribbon:Button Header="{StaticResource btnSelectNoneCP}" Ribbon:KeyTip.Keys="SN" SizeDefinition="Middle,Middle,Middle" Name="btnSelNone" Click="btnSelNone_Click" Icon="Images\selectnone16.png" IsEnabled="False"/>
                     <Ribbon:Button Header="{StaticResource btnInvertSelectionCP}" Ribbon:KeyTip.Keys="SI" SizeDefinition="Middle,Middle,Middle" Name="btnInvSel" Icon="Images\invsel16.png" IsEnabled="True" Click="btnInvSel_Click" />
-                    <Ribbon:SplitButton Header="{StaticResource btnConditionalSelectCP}" Ribbon:KeyTip.Keys="SC" SizeDefinition="Large, Small, Small" Name="btnCondSel" Icon="Images\filter16.png" LargeIcon="Images\filter32.png" Click="btnCondSel_Click" Visibility="Visible" >
+                    <Ribbon:SplitButton Header="{StaticResource btnConditionalSelectCP}" Ribbon:KeyTip.Keys="SC" SizeDefinition="Large, Small, Small" Name="btnCondSel" Icon="Images\filter16.png" LargeIcon="Images\filter32.png" Click="btnCondSel_Click" Visibility="Visible" DropDownOpened="btnCondSel_DropDownOpened">
                         <Ribbon:SplitButton.ToolTip>
                             <Ribbon:ScreenTip
                                 Title="{StaticResource btnConditionalSelectCP}"
