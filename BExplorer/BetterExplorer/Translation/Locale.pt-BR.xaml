@@ -220,8 +220,8 @@
     <system:String x:Key="tgExtractCP">Extraír</system:String>
     <system:String x:Key="btnExtractHereCP">Extrair Aqui</system:String>
     <system:String x:Key="btnExtractHereHCP">Extrair Aqui</system:String>
-    <system:String x:Key="btnExtractHereICP">Colocar o conteudo desse arquivo aqui emu ma nova pasta.</system:String>
-    <system:String x:Key="lblExtractCP">Extraír:</system:String>
+    <system:String x:Key="btnExtractHereICP">Extrair o conteudo desse arquivo aqui em nova pasta.</system:String>
+    <system:String x:Key="lblExtractCP">Extrair:</system:String>
     <system:String x:Key="btnChooseLocationCP">Mudar pasta para onde extrair</system:String>
     <system:String x:Key="btnExtractNowCP">Extrair Arquivo</system:String>
     <system:String x:Key="chkUseNewFolderCP">Extrair em uma nova pasta</system:String>
