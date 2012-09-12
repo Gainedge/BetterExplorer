@@ -1,5 +1,3 @@
-**Update:** Sorry we haven't updated anything recently. I myself have been busy with my video game (its beta release is next week) and Dimitar has things in his personal life that need his attention. Don't worry; we'll be back when we can though! :D -JaykeBird
-
 BetterExplorer
 ==============
 
@@ -15,7 +13,7 @@ Important: This process includes the installation of either Visual C# Express 20
 Anyway, here's how it's done (in just 3 steps!):
 
 1. **Download the builder** Download and install Visual C# Express 2010 or SharpDevelop. (They can be found with a quick search online.)
-THe developers user Visual C# Express 2010 but the instructions are the same if you use SharpDevelop.
+The developers use Visual C# Express 2010, but the instructions are the same if you use SharpDevelop.
 
 2. **Get the source code**
 On the top of this page, click on the "ZIP" button to download the latest build in a zip file. Unzip the file into a new, empty folder.
