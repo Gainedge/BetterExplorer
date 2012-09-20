@@ -59,15 +59,27 @@ namespace BetterExplorer
             }
         }
 
-        public double TitleColumnWidth
+        public double TitleColumnWidthValue
         {
             get
             {
-                return TitCol.Width.Value;
+                return NameCol.Width.Value;
             }
             set
             {
-                TitCol.Width = new GridLength(value, GridUnitType.Star);
+                NameCol.Width = new GridLength(value, GridUnitType.Star);
+            }
+        }
+
+        public GridLength TitleColumnWidth
+        {
+            get
+            {
+                return NameCol.Width;
+            }
+            set
+            {
+                NameCol.Width = value;
             }
         }
 
@@ -89,12 +101,16 @@ namespace BetterExplorer
 
         private void EditApply_Click(object sender, RoutedEventArgs e)
         {
-            ied = false;
-            EditGrid.Visibility = System.Windows.Visibility.Collapsed;
+            CancelEditMode();
             Path = editpath.Text;
         }
 
         private void EditCancel_Click(object sender, RoutedEventArgs e)
+        {
+            CancelEditMode();
+        }
+
+        public void CancelEditMode()
         {
             ied = false;
             EditGrid.Visibility = System.Windows.Visibility.Collapsed;

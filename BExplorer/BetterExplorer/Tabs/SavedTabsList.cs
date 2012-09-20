@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace BetterExplorer
 {
@@ -9,9 +10,10 @@ namespace BetterExplorer
     /// <summary>
     /// Adds a new string to the tab collection. If a value already exists in the list, though, an ArgumentOutOfRangeException will be thrown.
     /// </summary>
-    class SavedTabsList : List<string>
+    public class SavedTabsList : List<string>
     {
-        public void Add(string loc)
+
+        public new void Add(string loc)
         {
             if (this.Contains(loc) == false)
             {
@@ -21,6 +23,27 @@ namespace BetterExplorer
             {
                 throw new ArgumentOutOfRangeException("loc", "This location already exists within this list.");
             }
+        }
+
+        public new void Remove(string loc)
+        {
+            if (this.Contains(loc) == false)
+            {
+                throw new ArgumentOutOfRangeException("loc", "This location does not exist in this list and cannot be removed.");
+            }
+            else
+            {
+                base.Remove(loc);
+            }
+        }
+
+        public void SwitchPlaces(int val1, int val2)
+        {
+            string o = this[val1];
+            string i = this[val2];
+
+            this[val2] = o;
+            this[val1] = i;
         }
 
         public string ListToString()
@@ -35,7 +58,7 @@ namespace BetterExplorer
                 }
                 else
                 {
-                    path = path + ";" + item;
+                    path = path + "|" + item;
                 }
 
             }
@@ -45,7 +68,7 @@ namespace BetterExplorer
         public static SavedTabsList CreateFromString(string values)
         {
             SavedTabsList o = new SavedTabsList();
-            string[] vals = values.Split(';');
+            string[] vals = values.Split('|');
             foreach (string item in vals)
             {
                 try
@@ -58,6 +81,30 @@ namespace BetterExplorer
                 }
             }
             return o;
+        }
+
+        public static SavedTabsList LoadTabList(string file)
+        {
+            string line;
+            using (StreamReader sr = new StreamReader(file))
+            {
+                line = sr.ReadLine();
+            }
+            return SavedTabsList.CreateFromString(line);
+        }
+
+        public static void SaveTabList(SavedTabsList locs, string file)
+        {
+
+            //if (Directory.Exists(sstdir) == false)
+            //{
+            //    Directory.CreateDirectory(sstdir);
+            //}
+
+            using (StreamWriter sw = new StreamWriter(file, true))
+            {
+                sw.WriteLine(locs);
+            }
         }
 
     }

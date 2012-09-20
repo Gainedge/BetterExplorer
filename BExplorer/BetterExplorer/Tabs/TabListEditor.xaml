@@ -20,7 +20,7 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="175*" />
+                <ColumnDefinition Width="175*" x:Name="NameCol" />
                 <ColumnDefinition Width="325*" />
             </Grid.ColumnDefinitions>
             <Rectangle Grid.Column="1" Name="rectangle1" Stroke="Black" HorizontalAlignment="Left" />

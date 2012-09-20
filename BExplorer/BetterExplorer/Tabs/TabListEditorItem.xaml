@@ -7,7 +7,7 @@
              d:DesignHeight="24" d:DesignWidth="500" Height="24" MaxHeight="24" MinHeight="24" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="105*" Name="TitCol" />
+            <ColumnDefinition Width="105*" Name="NameCol" />
             <ColumnDefinition Width="165*" Name="LocCol" />
         </Grid.ColumnDefinitions>
         <Label Content="Label" Grid.Column="1" Name="loc" VerticalContentAlignment="Center" Padding="4,1,1,1" />

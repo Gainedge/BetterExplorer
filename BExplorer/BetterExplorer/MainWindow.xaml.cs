@@ -97,6 +97,8 @@ namespace BetterExplorer
         bool canlogactions = false;
         string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
         string logdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_ActionLog\\";
+        string sstdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
+        bool OverwriteOnRotate = false;
 
         #endregion
 
@@ -4327,6 +4329,11 @@ namespace BetterExplorer
                                      chkLibrary.IsChecked = asLibrary;
                                      chkDrive.IsChecked = asDrive;
 
+                                     // load OverwriteOnImages setting (default is false)
+                                     int oor = (int)rks.GetValue(@"OverwriteImageWhileEditing", 0);
+                                     OverwriteOnRotate = (oor == 1);
+                                     chkOverwriteImages.IsChecked = (oor == 1);
+
                                      // set up history on breadcrumb bar (currently missing try-catch statement in order to catch error)
                                      try
                                      {
@@ -4752,7 +4759,7 @@ namespace BetterExplorer
                 }
             }
 
-            // gets size of search bar
+            // sets size of search bar
             this.SearchBarColumn.Width = new GridLength(sbw);
 
             // store 1st value
@@ -4773,6 +4780,7 @@ namespace BetterExplorer
                 FlowDirection = System.Windows.FlowDirection.LeftToRight;
             }
 
+            // sets tab bar alignment
             if (tabba == "top")
             {
                 TabbaTop.IsChecked = true;
@@ -6128,11 +6136,25 @@ namespace BetterExplorer
             //                    }));
             foreach (ShellObject item in Explorer.SelectedItems)
             {
-                System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-                cvt.RotateFlip(RotateFlipType.Rotate270FlipNone);
-                cvt.Save(item.ParsingName);
-                cvt.Dispose();
-                AddToLog("Rotated image " + item.ParsingName);
+                if (OverwriteOnRotate == true)
+                {
+                    System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+                    cvt.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    cvt.Save(item.ParsingName);
+                    cvt.Dispose();
+                    AddToLog("Rotated image " + item.ParsingName);
+                }
+                else
+                {
+                    System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+                    string ext = GetExtension(item.ParsingName);
+                    string name = item.ParsingName;
+                    string namen = RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
+                    cvt.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                    cvt.Save(namen + "_Rotated270" + ext);
+                    cvt.Dispose();
+                    AddToLog("Rotated image " + item.ParsingName);
+                }
             }
 
         }
@@ -6150,11 +6172,25 @@ namespace BetterExplorer
             //                    }));
             foreach (ShellObject item in Explorer.SelectedItems)
             {
-                System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-                cvt.RotateFlip(RotateFlipType.Rotate90FlipNone);
-                cvt.Save(item.ParsingName);
-                cvt.Dispose();
-                AddToLog("Rotated image " + item.ParsingName);
+                if (OverwriteOnRotate == true)
+                {
+                    System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+                    cvt.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    cvt.Save(item.ParsingName);
+                    cvt.Dispose();
+                    AddToLog("Rotated image " + item.ParsingName);
+                }
+                else
+                {
+                    System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+                    string ext = GetExtension(item.ParsingName);
+                    string name = item.ParsingName;
+                    string namen = RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
+                    cvt.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    cvt.Save(namen + "_Rotated90" + ext);
+                    cvt.Dispose();
+                    AddToLog("Rotated image " + item.ParsingName);
+                }
             }
         }
 
@@ -6222,11 +6258,25 @@ namespace BetterExplorer
         {
             foreach (ShellObject item in Explorer.SelectedItems)
             {
-                System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-                cvt.RotateFlip(RotateFlipType.RotateNoneFlipX);
-                cvt.Save(item.ParsingName);
-                cvt.Dispose();
-                AddToLog("Flipped image " + item.ParsingName);
+                if (OverwriteOnRotate == true)
+                {
+                    System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+                    cvt.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                    cvt.Save(item.ParsingName);
+                    cvt.Dispose();
+                    AddToLog("Flipped image " + item.ParsingName);
+                }
+                else
+                {
+                    System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+                    string ext = GetExtension(item.ParsingName);
+                    string name = item.ParsingName;
+                    string namen = RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
+                    cvt.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                    cvt.Save(namen + "_FlippedX" + ext);
+                    cvt.Dispose();
+                    AddToLog("Flipped image " + item.ParsingName);
+                }
             }
         }
 
@@ -6234,11 +6284,25 @@ namespace BetterExplorer
         {
             foreach (ShellObject item in Explorer.SelectedItems)
             {
-                System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-                cvt.RotateFlip(RotateFlipType.RotateNoneFlipY);
-                cvt.Save(item.ParsingName);
-                cvt.Dispose();
-                AddToLog("Flipped image " + item.ParsingName);
+                if (OverwriteOnRotate == true)
+                {
+                    System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+                    cvt.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                    cvt.Save(item.ParsingName);
+                    cvt.Dispose();
+                    AddToLog("Flipped image " + item.ParsingName);
+                }
+                else
+                {
+                    System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+                    string ext = GetExtension(item.ParsingName);
+                    string name = item.ParsingName;
+                    string namen = RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
+                    cvt.RotateFlip(RotateFlipType.RotateNoneFlipY);
+                    cvt.Save(namen + "_FlippedY" + ext);
+                    cvt.Dispose();
+                    AddToLog("Flipped image " + item.ParsingName);
+                }
             }
         }
 
@@ -6623,6 +6687,25 @@ namespace BetterExplorer
             }
         }
 
+        private void chkOverwriteImages_Checked(object sender, RoutedEventArgs e)
+        {
+            OverwriteOnRotate = true;
+            RegistryKey rk = Registry.CurrentUser;
+            RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+            rks.SetValue(@"OverwriteImageWhileEditing", 1);
+            rks.Close();
+            rk.Close();
+        }
+
+        private void chkOverwriteImages_Unchecked(object sender, RoutedEventArgs e)
+        {
+            OverwriteOnRotate = false;
+            RegistryKey rk = Registry.CurrentUser;
+            RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+            rks.SetValue(@"OverwriteImageWhileEditing", 0);
+            rks.Close();
+            rk.Close();
+        }
 
         private void chkLogHistory_Checked(object sender, RoutedEventArgs e)
         {
@@ -7961,7 +8044,18 @@ namespace BetterExplorer
             MoveTabBarToBottom();
         }
 
+        public List<string> LoadListOfTabListFiles()
+        {
+            List<string> o = new List<string>();
+            foreach (string item in Directory.GetFiles(sstdir))
+            {
+                o.Add(RemoveExtensionsFromFile(item, GetExtension(item)));
+            }
+            return o;
+        }
+
         #endregion
+
 
     }
 

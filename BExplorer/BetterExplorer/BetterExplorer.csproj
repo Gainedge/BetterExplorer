@@ -226,7 +226,7 @@
     <Compile Include="ResizeImage.xaml.cs">
       <DependentUpon>ResizeImage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SavedTabsList.cs" />
+    <Compile Include="Tabs\SavedTabsList.cs" />
     <Compile Include="SDateSearchCriteriaDialog.xaml.cs">
       <DependentUpon>SDateSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
@@ -292,10 +292,10 @@
       <DependentUpon>StringSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="SysImageList.cs" />
-    <Compile Include="TabListEditor.xaml.cs">
+    <Compile Include="Tabs\TabListEditor.xaml.cs">
       <DependentUpon>TabListEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TabListEditorItem.xaml.cs">
+    <Compile Include="Tabs\TabListEditorItem.xaml.cs">
       <DependentUpon>TabListEditorItem.xaml</DependentUpon>
     </Compile>
     <Page Include="ArchiveViewWindow.xaml">
@@ -370,11 +370,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TabListEditor.xaml">
+    <Page Include="Tabs\TabListEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TabListEditorItem.xaml">
+    <Page Include="Tabs\TabListEditorItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -838,7 +838,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
