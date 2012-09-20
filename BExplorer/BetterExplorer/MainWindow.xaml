@@ -345,8 +345,11 @@
                                                             IsRibbonAligned ="false"/>
                                             </Ribbon:CheckBox.ToolTip>
                                         </Ribbon:CheckBox>
-                                        <Ribbon:SeparatorTabItem Header="Image Editing" Margin="0,0,0,15" />
+                                        <Border BorderThickness="1" BorderBrush="#FF000000" HorizontalAlignment="Left">
+                                            <Ribbon:Button Name="btnShowLogs" Header="Show All Logs" Height="22" Width="125" Ribbon:KeyTip.Keys="H" Click="btnShowLogs_Click" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1" Icon="Images\open16.png" Margin="0" />
+                                        </Border>
                                         <Label Name="paddinglbl9" Content="         "/>
+                                        <Ribbon:SeparatorTabItem Header="Image Editing" Margin="0,0,0,15" />
                                         <Ribbon:CheckBox Name="chkOverwriteImages" Header="Overwrite original image when rotating or flipping" Ribbon:KeyTip.Keys="V" Checked="chkOverwriteImages_Checked" Unchecked="chkOverwriteImages_Unchecked">
                                             <Ribbon:CheckBox.ToolTip>
                                                 <Ribbon:ScreenTip
@@ -356,9 +359,6 @@
                                                             IsRibbonAligned ="false"/>
                                             </Ribbon:CheckBox.ToolTip>
                                         </Ribbon:CheckBox>
-                                        <Border BorderThickness="1" BorderBrush="#FF000000" HorizontalAlignment="Left">
-                                            <Ribbon:Button Name="btnShowLogs" Header="Show All Logs" Height="22" Width="125" Ribbon:KeyTip.Keys="H" Click="btnShowLogs_Click" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1" Icon="Images\open16.png" Margin="0" />
-                                        </Border>
                                     </StackPanel>
                                 </TabItem>
                                 <TabItem Header="{StaticResource tabLanguageCP}" Visibility="Visible" Ribbon:KeyTip.Keys="L">
@@ -384,6 +384,7 @@
                                             <controls:TranslationComboBoxItem LanguageText="Portuguese" LocaleCode="pt-BR" x:Name="ptBRLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Russian" LocaleCode="ru-RU" x:Name="ruRULang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Spanish" LocaleCode="es-ES" x:Name="esESLang" UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem LanguageText="Swedish" LocaleCode="sv-SV" x:Name="svSVLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Turkish" LocaleCode="tr-TR" x:Name="trTRLang" UsesRTL="False" />
                                         </ComboBox>
                                         <Label Name="lblLocale"  Content="You must restart BetterExplorer for this change to take effect." Margin="0,5,0,0" FontWeight="Bold" Visibility="Hidden" />
@@ -407,6 +408,7 @@
                                         <TextBlock Text="Russian: Loungedy" />
                                         <TextBlock Text="Chinese: lrh3321" />
                                         <TextBlock Text="Polish: VorbisMastah and Krzysztof" />
+                                        <TextBlock Text="Swedish: toando1" />
                                         <!--<Ribbon:SeparatorTabItem Header="Remove Setting" Visibility="Hidden"/>
                                         <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" Margin="0,0,60,0" Visibility="Hidden"
                                                    Text="Because this build updates the Registry after installation, there would be a Registry error if

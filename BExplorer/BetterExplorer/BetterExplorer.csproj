@@ -410,6 +410,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Translation\Locale.sv-SV.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Translation\Locale.tr-TR.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
