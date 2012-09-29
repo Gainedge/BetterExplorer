@@ -1710,49 +1710,49 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
                 if (recb.Contains(Cursor.Position))
                 {
-                    QTTabBarLib.Automation.AutomationManager automan = null;
-                    try
-                    {
-                        automan = new QTTabBarLib.Automation.AutomationManager();
-                        automan.DoQuery(factory =>
-                        {
-                            QTTabBarLib.Automation.AutomationElement el = factory.FromPoint(Cursor.Position);
-                            if (el != null)
-                            {
-                                string name = el.GetClassName();
-                                MessageBox.Show(name);
-                                if (el.GetClassName() == "UIItem")
-                                {
-                                   // MessageBox.Show(el.GetBoundingRect().Top.ToString() + "/" + el.GetBoundingRect().Left.ToString() + " - " + el.GetClassName());
-                                  //  vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), false);
-                                }
-                                else
-                                {
-                                    if (el.GetClassName() == "UIItemsView" || el.GetClassName() == "UIGroupItem")
-                                    {
-                                        vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), true, new Rectangle(0,0,0,0), new Rectangle(0,0,0,0));
-                                    }
-                                    else
-                                    {
-                                        vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(),true, new Rectangle(0, 0, 0, 0), new Rectangle(0, 0, 0, 0));
-                                    }
+                    //QTTabBarLib.Automation.AutomationManager automan = null;
+                    //try
+                    //{
+                    //    automan = new QTTabBarLib.Automation.AutomationManager();
+                    //    automan.DoQuery(factory =>
+                    //    {
+                    //        QTTabBarLib.Automation.AutomationElement el = factory.FromPoint(Cursor.Position);
+                    //        if (el != null)
+                    //        {
+                    //            string name = el.GetClassName();
+                    //            MessageBox.Show(name);
+                    //            if (el.GetClassName() == "UIItem")
+                    //            {
+                    //               // MessageBox.Show(el.GetBoundingRect().Top.ToString() + "/" + el.GetBoundingRect().Left.ToString() + " - " + el.GetClassName());
+                    //              //  vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), false);
+                    //            }
+                    //            else
+                    //            {
+                    //                if (el.GetClassName() == "UIItemsView" || el.GetClassName() == "UIGroupItem")
+                    //                {
+                    //                    vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), true, new Rectangle(0,0,0,0), new Rectangle(0,0,0,0));
+                    //                }
+                    //                else
+                    //                {
+                    //                    vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(),true, new Rectangle(0, 0, 0, 0), new Rectangle(0, 0, 0, 0));
+                    //                }
 
-                                }
-                                el.Dispose();
-                            }
+                    //            }
+                    //            el.Dispose();
+                    //        }
 
-                            return 0;
-                        });
-                        automan.Dispose();
-                    }
-                    catch (Exception ex)
-                    {
-                        if (automan != null)
-                        {
-                            automan.Dispose();
-                        }
-                        //return 1;
-                    }
+                    //        return 0;
+                    //    });
+                    //    automan.Dispose();
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    if (automan != null)
+                    //    {
+                    //        automan.Dispose();
+                    //    }
+                    //    //return 1;
+                    //}
                     
                 }
         }
@@ -2088,6 +2088,23 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                 NavigationComplete(this, args);
                 CurrentLocation = args.NewLocation;
             }
+            Collumns[] tempCollumns = null;
+            BeginInvoke(new MethodInvoker(
+            delegate
+            {
+                Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
+                IntPtr view = IntPtr.Zero;
+                HResult hrr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
+                if (view != IntPtr.Zero)
+                {
+                    IShellView isv = (IShellView)Marshal.GetObjectForIUnknown(view);
+                    tempCollumns = AvailableColumns(isv, false);
+                    Marshal.ReleaseComObject(isv);
+                    
+                }
+                
+            }));
+            AvailableVisibleColumns = tempCollumns;
             FlushMemory();
             return HResult.Ok;
         }
@@ -2225,7 +2242,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
         #region IMessageFilter Members
         bool Ctrl = false;
-        public QTTabBarLib.Automation.AutomationManager automan = new QTTabBarLib.Automation.AutomationManager();
+        //public QTTabBarLib.Automation.AutomationManager automan = new QTTabBarLib.Automation.AutomationManager();
         bool IsPressedLKButton = false;
         bool IsMouseClickOnHeader = false;
         bool IsMouseClickOutsideLV = true;
@@ -2513,21 +2530,21 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                     }
                     else
                     {
-                        BeginInvoke(new MethodInvoker(
-                        delegate
-                        {
-                            Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
-                            IntPtr view = IntPtr.Zero;
-                            HResult hrr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
-                            if (view != IntPtr.Zero)
-                            {
-                                IShellView isv = (IShellView)Marshal.GetObjectForIUnknown(view);
-                                AvailableVisibleColumns = AvailableColumns(isv, false);
-                                Marshal.ReleaseComObject(isv);
-                                
-                            }
-                            
-                        }));
+                        //BeginInvoke(new MethodInvoker(
+                        //delegate
+                        //{
+                        //    Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
+                        //    IntPtr view = IntPtr.Zero;
+                        //    HResult hrr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
+                        //    if (view != IntPtr.Zero)
+                        //    {
+                        //        IShellView isv = (IShellView)Marshal.GetObjectForIUnknown(view);
+                        //        AvailableVisibleColumns = AvailableColumns(isv, false);
+                        //        Marshal.ReleaseComObject(isv);
+                        //        
+                        //    }
+                        //    
+                        //}));
                     }
 
                     if (!reclv.Contains(Cursor.Position))
@@ -2536,111 +2553,111 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                             ExplorerBrowserMouseLeave.Invoke(this, null);
                     }
 
-                    BeginInvoke(new MethodInvoker(
-                    delegate
-                    {
+//                    BeginInvoke(new MethodInvoker(
+//                    delegate
+//                    {
 
-                        WindowsAPI.RECTW r = new WindowsAPI.RECTW();
-                        WindowsAPI.GetWindowRect(SysListViewHandle, ref r);
-                        Rectangle recb = r.ToRectangle();
-                        Rectangle PopFR = new Rectangle(PopFX, PopFY, 22, 22);
-                        if (recb.Contains(Cursor.Position))
-                        {
-                            if (CurX != ((int)M.LParam & 0x0000FFFF) | CurY != HiWord((uint)M.LParam))
-                            {
+//                        WindowsAPI.RECTW r = new WindowsAPI.RECTW();
+//                        WindowsAPI.GetWindowRect(SysListViewHandle, ref r);
+//                        Rectangle recb = r.ToRectangle();
+//                        Rectangle PopFR = new Rectangle(PopFX, PopFY, 22, 22);
+//                        if (recb.Contains(Cursor.Position))
+//                        {
+//                            if (CurX != ((int)M.LParam & 0x0000FFFF) | CurY != HiWord((uint)M.LParam))
+//                            {
 
-                                try
-                                {
+//                                try
+//                                {
 
-                                    if (!IsBool && !PopFR.Contains(Cursor.Position))
-                                    {
+//                                    if (!IsBool && !PopFR.Contains(Cursor.Position))
+//                                    {
 
 
-//                                        automan.DoQuery(factory =>
-//                                        {
-//                                            QTTabBarLib.Automation.AutomationElement el;
-//                                            try
-//                                            {
-//                                                el = factory.FromPoint(Cursor.Position);
-//                                            }
-//                                            catch
-//                                            {
-//
-//                                                el = null;
-//                                            }
-//
-//                                            if (el != null)
-//                                            {
-//                                                string name = el.GetClassName();
-//                                                string name2 = el.GetParent().GetClassName();
-//                                                if (name == "UIProperty" || name == "UIImage")
-//                                                {
-//                                                    el = el.GetParent();
-//                                                }
-//
-//                                                if (el.GetClassName() == "UIItem")
-//                                                {
-//                                                    //MessageBox.Show(el.GetBoundingRect().Top.ToString() + "/" + el.GetBoundingRect().Left.ToString() + " - " + el.GetClassName());
-//                                                    Rectangle ImageRecT = new Rectangle();
-//                                                    Rectangle TextRecT = new Rectangle();
-//
-//                                                    foreach (QTTabBarLib.Automation.AutomationElement elm in el.GetChildren())
-//                                                    {
-//                                                        //MessageBox.Show(elm.GetClassName());
-//                                                        if (elm.GetClassName() == "UIImage")
-//                                                        {
-//                                                            ImageRecT = elm.GetBoundingRect();
-//                                                        }
-//                                                        if (elm.GetClassName() == "UIProperty")
-//                                                        {
-//
-//                                                            TextRecT = new Rectangle(ImageRecT.Left,
-//                                                                ImageRecT.Top,
-//                                                                AvailableVisibleColumns[0].Width, elm.GetBoundingRect().Height);
-//                                                        }
-//                                                    }
-//
-//                                                    vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), false, ImageRecT, TextRecT);
-//                                                }
-//                                                else
-//                                                {
-//                                                    //MessageBox.Show(name);
-//                                                    if (el.GetClassName() == "UIItemsView" | el.GetClassName() == "UIGroupItem")
-//                                                    {
-//                                                        vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), true, new Rectangle(0, 0, 0, 0), new Rectangle(0, 0, 0, 0));
-//                                                    }
-//                                                    else
-//                                                    {
-//                                                        vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), true, new Rectangle(0, 0, 0, 0), new Rectangle(0, 0, 0, 0));
-//                                                    }
-//
-//                                                }
-//                                                el.Dispose();
-//                                            }
-//
-//                                            return 1;
-//                                        });
-                                    }
-                                    else
-                                    {
+////                                        automan.DoQuery(factory =>
+////                                        {
+////                                            QTTabBarLib.Automation.AutomationElement el;
+////                                            try
+////                                            {
+////                                                el = factory.FromPoint(Cursor.Position);
+////                                            }
+////                                            catch
+////                                            {
+////
+////                                                el = null;
+////                                            }
+////
+////                                            if (el != null)
+////                                            {
+////                                                string name = el.GetClassName();
+////                                                string name2 = el.GetParent().GetClassName();
+////                                                if (name == "UIProperty" || name == "UIImage")
+////                                                {
+////                                                    el = el.GetParent();
+////                                                }
+////
+////                                                if (el.GetClassName() == "UIItem")
+////                                                {
+////                                                    //MessageBox.Show(el.GetBoundingRect().Top.ToString() + "/" + el.GetBoundingRect().Left.ToString() + " - " + el.GetClassName());
+////                                                    Rectangle ImageRecT = new Rectangle();
+////                                                    Rectangle TextRecT = new Rectangle();
+////
+////                                                    foreach (QTTabBarLib.Automation.AutomationElement elm in el.GetChildren())
+////                                                    {
+////                                                        //MessageBox.Show(elm.GetClassName());
+////                                                        if (elm.GetClassName() == "UIImage")
+////                                                        {
+////                                                            ImageRecT = elm.GetBoundingRect();
+////                                                        }
+////                                                        if (elm.GetClassName() == "UIProperty")
+////                                                        {
+////
+////                                                            TextRecT = new Rectangle(ImageRecT.Left,
+////                                                                ImageRecT.Top,
+////                                                                AvailableVisibleColumns[0].Width, elm.GetBoundingRect().Height);
+////                                                        }
+////                                                    }
+////
+////                                                    vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), false, ImageRecT, TextRecT);
+////                                                }
+////                                                else
+////                                                {
+////                                                    //MessageBox.Show(name);
+////                                                    if (el.GetClassName() == "UIItemsView" | el.GetClassName() == "UIGroupItem")
+////                                                    {
+////                                                        vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), true, new Rectangle(0, 0, 0, 0), new Rectangle(0, 0, 0, 0));
+////                                                    }
+////                                                    else
+////                                                    {
+////                                                        vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), true, new Rectangle(0, 0, 0, 0), new Rectangle(0, 0, 0, 0));
+////                                                    }
+////
+////                                                }
+////                                                el.Dispose();
+////                                            }
+////
+////                                            return 1;
+////                                        });
+//                                    }
+//                                    else
+//                                    {
 
-                                    }
+//                                    }
 
-                                }
-                                catch (Exception ex)
-                                {
-                                    if (automan != null)
-                                    {
-                                        automan.Dispose();
-                                    }
-                                    //return 1;
-                                }
-                                CurX = (int)LoWord((uint)M.LParam);
-                                CurY = HiWord((uint)M.LParam);
+//                                }
+//                                catch (Exception ex)
+//                                {
+//                                    //if (automan != null)
+//                                    //{
+//                                    //    automan.Dispose();
+//                                    //}
+//                                    //return 1;
+//                                }
+//                                CurX = (int)LoWord((uint)M.LParam);
+//                                CurY = HiWord((uint)M.LParam);
 
-                            }
-                        }
-                    }));
+//                            }
+//                        }
+//                    }));
 
                 }
 

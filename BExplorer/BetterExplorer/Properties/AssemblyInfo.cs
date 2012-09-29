@@ -11,7 +11,7 @@ using System.Windows;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("(none)")]
-[assembly: AssemblyProduct("Better Explorer Beta 1")]
+[assembly: AssemblyProduct("Better Explorer")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -51,5 +51,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.1.016")]
-[assembly: AssemblyFileVersion("2.0.1.016")]
+[assembly: AssemblyVersion("2.0.2909.1308")]
+[assembly: AssemblyFileVersion("2.0.2909.1308")]
+[assembly: AssemblyInformationalVersion("2.0.290912.1308 Alpha 1")]

@@ -252,7 +252,7 @@
                                     <Label Content="Jayke R. Huempfner (JaykeBird)" FontStyle="Italic" Margin="20,0,50,0" FontSize="14" FontWeight="Bold" />
                                     <Ribbon:SeparatorTabItem Header="{StaticResource lblAboutBEHeader}" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,40,50,0"/>
                                     <Label Content="Version Info Data Put Here" Margin="20,0,50,0" FontSize="12" x:Name="verNumber" />
-                                    <Label Content="32-bit Version" Margin="20,0,0,0" FontSize="12" />
+                                    <Label x:Name="lblArchitecture" Content="32-bit Version" Margin="20,0,0,0" FontSize="12" />
                                     <Label Content="© 2012. All right reserved." Margin="20,0,0,0"/>
                                     <Ribbon:SeparatorTabItem Header="Credits" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,40,50,0"/>
                                     <Label Content="Fluent Ribbon Control Suite (fluent.codeplex.com)"/>
