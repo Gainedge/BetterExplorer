@@ -4939,7 +4939,7 @@ namespace BetterExplorer
         #endregion
 
         public MainWindow()
-        { 
+        {  
             CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, ERNewTab);
             this.CommandBindings.Add(cbnewtab);
             CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, ERGoToBCCombo);
