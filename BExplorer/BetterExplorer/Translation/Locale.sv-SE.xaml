@@ -209,7 +209,7 @@
     <system:String x:Key="btnResizeCP">Ändra storlek</system:String>
     <system:String x:Key="btnCropImageCP">Crop</system:String>
     <system:String x:Key="tgImgViewCP">Visa</system:String>
-    <system:String x:Key="btnSlideShowCP"Bildspel</system:String>
+    <system:String x:Key="btnSlideShowCP">Bildspel</system:String>
     <system:String x:Key="btnWallpaperCP">Använd som skrivbordunderlägg</system:String>
     <system:String x:Key="miWallFillCP">Full Skärm</system:String>
     <system:String x:Key="miWallFitCP">Anpassa till skärm</system:String>
