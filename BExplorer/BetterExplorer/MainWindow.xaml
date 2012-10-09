@@ -374,7 +374,8 @@
                                         <ComboBox Name="TranslationComboBox" SelectionChanged="TranslationComboBox_SelectionChanged" HorizontalAlignment="Left" Width="190" Height="42" Margin="0,5,0,0">
                                             <controls:TranslationComboBoxItem LanguageText="Bulgarian" LocaleCode="bg-BG" x:Name="bgBGLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Croatian" LocaleCode="hr-HR" x:Name="hrHRLang" UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem LanguageText="Chinese (Simple)" LocaleCode="zh-CN" x:Name="zhCNLang" UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem LanguageText="Chinese (Simplified)" LocaleCode="zh-CN" x:Name="zhCNLang" UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem LanguageText="Chinese (Traditional)" LocaleCode="zh-TW" x:Name="zhTWLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="English" LocaleCode="en-US" x:Name="enUSLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Finnish" LocaleCode="fi-FI" x:Name="fiFILang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="French" LocaleCode="fr-FR" x:Name="frFRLang" UsesRTL="False" />
@@ -384,7 +385,7 @@
                                             <controls:TranslationComboBoxItem LanguageText="Portuguese" LocaleCode="pt-BR" x:Name="ptBRLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Russian" LocaleCode="ru-RU" x:Name="ruRULang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Spanish" LocaleCode="es-ES" x:Name="esESLang" UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem LanguageText="Swedish" LocaleCode="sv-SV" x:Name="svSVLang" UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem LanguageText="Swedish" LocaleCode="sv-SE" x:Name="svSELang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Turkish" LocaleCode="tr-TR" x:Name="trTRLang" UsesRTL="False" />
                                         </ComboBox>
                                         <Label Name="lblLocale"  Content="You must restart BetterExplorer for this change to take effect." Margin="0,5,0,0" FontWeight="Bold" Visibility="Hidden" />
