@@ -54,7 +54,6 @@ namespace BetterExplorerShell {
 
       proc.Start();
       return true;
-
     }
   }
 }
