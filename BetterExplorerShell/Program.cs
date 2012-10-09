@@ -34,6 +34,7 @@ namespace BetterExplorerShell {
 
       // Discard control panel items
       String cpName = @"::{26EE0668-A00A-44D7-9371-BEB064C98683}";
+
       int cpIndex = cmd.IndexOf(cpName);
       if (cpIndex != 0) return false;
       //if (cmd.IndexOf(@"\::", cpIndex + cpName.Length) <= 0 && cmd != cpName) return false;
