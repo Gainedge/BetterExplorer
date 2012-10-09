@@ -43,6 +43,7 @@ namespace BetterExplorerShell {
       explorerPath += @"\Explorer.exe";
 
       cmd = cmd.Replace("Fonts", "::{BD84B380-8CA2-1069-AB1D-08000948F534}");
+
       System.Diagnostics.ProcessStartInfo procStartInfo =
           new System.Diagnostics.ProcessStartInfo(explorerPath, cmd);
 
