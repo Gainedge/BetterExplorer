@@ -31,7 +31,6 @@ namespace BetterExplorerShell {
     }
 
     static public bool ExecuteControlPanelItem(String cmd) {
-
       // Discard control panel items
       String cpName = @"::{26EE0668-A00A-44D7-9371-BEB064C98683}";
 
