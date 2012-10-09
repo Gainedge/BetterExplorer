@@ -19,8 +19,8 @@ namespace BetterExplorerShell {
         bexplorerPath += @"\BetterExplorer.exe";
 
         System.Diagnostics.ProcessStartInfo procStartInfo =
-            new System.Diagnostics.ProcessStartInfo(bexplorerPath, args[0]);
-
+            new System.Diagnostics.ProcessStartInfo(bexplorerPath, String.Format("\"{0}\"", args[0]));
+          
         // Now we create a process, assign its ProcessStartInfo and start it
         System.Diagnostics.Process proc = new System.Diagnostics.Process();
         proc.StartInfo = procStartInfo;
@@ -36,11 +36,13 @@ namespace BetterExplorerShell {
       String cpName = @"::{26EE0668-A00A-44D7-9371-BEB064C98683}";
       int cpIndex = cmd.IndexOf(cpName);
       if (cpIndex != 0) return false;
-      if (cmd.IndexOf(@"\::", cpIndex + cpName.Length) <= 0 && cmd != cpName) return false;
+      //if (cmd.IndexOf(@"\::", cpIndex + cpName.Length) <= 0 && cmd != cpName) return false;
+      if (!cmd.StartsWith(cpName)) return false;
 
       String explorerPath = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
       explorerPath += @"\Explorer.exe";
 
+      cmd = cmd.Replace("Fonts", "::{BD84B380-8CA2-1069-AB1D-08000948F534}");
       System.Diagnostics.ProcessStartInfo procStartInfo =
           new System.Diagnostics.ProcessStartInfo(explorerPath, cmd);
 
