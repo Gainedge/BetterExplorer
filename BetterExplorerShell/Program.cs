@@ -52,7 +52,6 @@ namespace BetterExplorerShell {
       System.Diagnostics.Process proc = new System.Diagnostics.Process();
       proc.StartInfo = procStartInfo;
 
-
       proc.Start();
       return true;
 
