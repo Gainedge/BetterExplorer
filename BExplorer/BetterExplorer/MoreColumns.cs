@@ -50,6 +50,10 @@ namespace BetterExplorer
             BrowserControl = ShellView;
             for (int i = 1; i < AvailableCols.Length; i++)
             {
+                if (AvailableCols[i].Name == null)
+                {
+                    MessageBox.Show("The More Columns dialog cannot be shown right now.", "More Columns", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
                 ListViewItem lvi = new ListViewItem(AvailableCols[i].Name);
                 lvi.Tag = AvailableCols[i].pkey;
                 foreach (Collumns collumn in ShellView.AvailableVisibleColumns)
