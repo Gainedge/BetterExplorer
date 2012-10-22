@@ -508,11 +508,13 @@ namespace BetterExplorer
                                                  }
                                                  catch
                                                  {
-                                                     MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
+                                                   AddToLog(String.Format("Unable to load {0} into a tab!", str));
+                                                     //MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
                                                      //NewTab();
                                                  }
 
                                              }
+                                             if (tabControl1.Items.Count == 0) { NewTab(); };
                                              isOnLoad = false;
 
                                          }
