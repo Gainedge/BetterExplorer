@@ -543,31 +543,31 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                 IsRibbonAligned ="True"/>
                         </Ribbon:Button.ToolTip>
                     </Ribbon:Button>
-                    <Ribbon:SplitButton Header="{StaticResource btnPasteScCP}" Ribbon:KeyTip.Keys="SP" SizeDefinition="Middle,Small,Small" IsEnabled="False" Name="btnPasetShC" Icon="Images\pastet16.png" Click="btnPasetShC_Click" >
-                        <Ribbon:MenuItem Header="{StaticResource btnPasteScCP}" Icon="Images\pastet16.png" Click="btnPasetShC_Click"/>
-                        <Ribbon:MenuItem Header="Create symbolic link" Name="miCreateSymlink" Click="miCreateSymlink_Click" />
-                        <Ribbon:MenuItem Header="Create Junction Point" Name="miJunctionpoint" Click="miJunctionpoint_Click" />
+                    <Ribbon:SplitButton Header="{StaticResource btnPasteScCP}" Ribbon:KeyTip.Keys="SP" SizeDefinition="Middle,Small,Small" IsEnabled="False" Name="btnPasetShC" Icon="Images\pastet16.png" Click="btnPasetShC_Click" ToolTipOpening="btn_ToolTipOpening">
+                    <Ribbon:MenuItem Header="{StaticResource btnPasteScCP}" Icon="Images\pastet16.png" Click="btnPasetShC_Click" Focusable="False"/>
+                    <Ribbon:MenuItem Header="Create symbolic link" Name="miCreateSymlink" Click="miCreateSymlink_Click" Focusable="False"/>
+                    <Ribbon:MenuItem Header="Create Junction Point" Name="miJunctionpoint" Click="miJunctionpoint_Click" Focusable="False"/>
                     </Ribbon:SplitButton>
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header="{StaticResource tgOrganizeCP}" Ribbon:KeyTip.Keys="OR" Name="Organize" >
-                    <Ribbon:SplitButton Header="{StaticResource btnCopyToCP}" Ribbon:KeyTip.Keys="CF" LargeIcon="Images\copyto32.png" Icon="Images\copyto16.png" IsEnabled="False" Name="btnCopyto" Click="btnCopyto_Click" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" GotFocus="btnCopyto_GotFocus" LostFocus="btnCopyto_LostFocus">
-                        <MenuItem Header="{StaticResource btnctDocumentsCP}" Ribbon:KeyTip.Keys="DO" Name="btnctDocuments" Click="btnctDocuments_Click" />
-                        <MenuItem Header="{StaticResource btnctDesktopCP}" Ribbon:KeyTip.Keys="DE" Name="btnctDesktop" Click="btnctDesktop_Click" />
-                        <MenuItem Header="{StaticResource btnctDownloadsCP}" Ribbon:KeyTip.Keys="DN" Name="btnctDounloads" Click="btnctDounloads_Click" />
-                        <Separator/>
-                        <MenuItem Header="{StaticResource miOtherDestCP}" Ribbon:KeyTip.Keys="O" Name="btnctOther" Click="btnctOther_Click" />
+                    <Ribbon:SplitButton Header="{StaticResource btnCopyToCP}" Ribbon:KeyTip.Keys="CF" LargeIcon="Images\copyto32.png" Icon="Images\copyto16.png" IsEnabled="False" Name="btnCopyto" Click="btnCopyto_Click" ToolTipOpening="btn_ToolTipOpening">
+                        <MenuItem Header="{StaticResource btnctDocumentsCP}" Ribbon:KeyTip.Keys="DO" Name="btnctDocuments" Click="btnctDocuments_Click" Focusable="False" />
+                        <MenuItem Header="{StaticResource btnctDesktopCP}" Ribbon:KeyTip.Keys="DE" Name="btnctDesktop" Click="btnctDesktop_Click" Focusable="False" />
+                        <MenuItem Header="{StaticResource btnctDownloadsCP}" Ribbon:KeyTip.Keys="DN" Name="btnctDounloads" Click="btnctDounloads_Click" Focusable="False"/>
+                        <Separator Focusable="False"/>
+                        <MenuItem Header="{StaticResource miOtherDestCP}" Ribbon:KeyTip.Keys="O" Name="btnctOther" Click="btnctOther_Click" Focusable="False"/>
                     </Ribbon:SplitButton>
-                    <Ribbon:SplitButton Header="{StaticResource btnMoveToCP}" Ribbon:KeyTip.Keys="M" LargeIcon="Images\moveto32.png" Icon="Images\moveto16.png" IsEnabled="False" Name="btnMoveto" Click="btnMoveto_Click" DropDownClosed="btnMoreColls_DropDownClosed" DropDownOpened="btnMoreColls_DropDownOpened" GotFocus="btnCopyto_GotFocus" LostFocus="btnCopyto_LostFocus">
-                        <MenuItem Header="{StaticResource btnctDocumentsCP}" Ribbon:KeyTip.Keys="DO" Name="btnmtDocuments" Click="btnmtDocuments_Click" />
-                        <MenuItem Header="{StaticResource btnctDesktopCP}" Ribbon:KeyTip.Keys="DE" Name="btnmtDesktop" Click="btnmtDesktop_Click" />
-                        <MenuItem Header="{StaticResource btnctDownloadsCP}" Ribbon:KeyTip.Keys="DN" Name="btnmtDounloads" Click="btnmtDounloads_Click" />
+                    <Ribbon:SplitButton Header="{StaticResource btnMoveToCP}" Ribbon:KeyTip.Keys="M" LargeIcon="Images\moveto32.png" Icon="Images\moveto16.png" IsEnabled="False" Name="btnMoveto" Click="btnMoveto_Click" DropDownClosed="btnMoreColls_DropDownClosed" DropDownOpened="btnMoreColls_DropDownOpened" GotFocus="btnCopyto_GotFocus" LostFocus="btnCopyto_LostFocus" ToolTipOpening="btn_ToolTipOpening">
+                        <MenuItem Header="{StaticResource btnctDocumentsCP}" Ribbon:KeyTip.Keys="DO" Name="btnmtDocuments" Click="btnmtDocuments_Click" Focusable="False"/>
+                        <MenuItem Header="{StaticResource btnctDesktopCP}" Ribbon:KeyTip.Keys="DE" Name="btnmtDesktop" Click="btnmtDesktop_Click" Focusable="False"/>
+                        <MenuItem Header="{StaticResource btnctDownloadsCP}" Ribbon:KeyTip.Keys="DN" Name="btnmtDounloads" Click="btnmtDounloads_Click" Focusable="False"/>
                         <Separator/>
                         <MenuItem Header="{StaticResource miOtherDestCP}" Ribbon:KeyTip.Keys="O" Name="btnmtOther" Click="btnmtOther_Click" />
                     </Ribbon:SplitButton>
                     <Separator/>
-                    <Ribbon:SplitButton Header="{StaticResource btnDeleteCP}" Ribbon:KeyTip.Keys="D" LargeIcon="Images\delete32.png" Icon="Images\delete16.png"  Click="SplitButton_Click" IsEnabled="False" Name="btnDelete" DropDownClosed="btnMoreColls_DropDownClosed" DropDownOpened="btnMoreColls_DropDownOpened" LostFocus="btnCopyto_LostFocus" GotFocus="btnCopyto_GotFocus">
-                        <MenuItem Header="{StaticResource miDeltoRB}" Ribbon:KeyTip.Keys="R" Click="MenuItem_Click" Icon="Images\delrb16.png"/>
-                        <MenuItem Header="{StaticResource miDeltoP}" Ribbon:KeyTip.Keys="P" Click="MenuItem_Click_1" Icon="Images\delete16.png"/>
+                    <Ribbon:SplitButton Header="{StaticResource btnDeleteCP}" Ribbon:KeyTip.Keys="D" LargeIcon="Images\delete32.png" Icon="Images\delete16.png"  Click="SplitButton_Click" IsEnabled="False" Name="btnDelete" DropDownClosed="btnMoreColls_DropDownClosed" DropDownOpened="btnMoreColls_DropDownOpened" LostFocus="btnCopyto_LostFocus" GotFocus="btnCopyto_GotFocus" ToolTipOpening="btn_ToolTipOpening">
+                        <MenuItem Header="{StaticResource miDeltoRB}" Ribbon:KeyTip.Keys="R" Click="MenuItem_Click" Icon="Images\delrb16.png" Focusable="False"/>
+                        <MenuItem Header="{StaticResource miDeltoP}" Ribbon:KeyTip.Keys="P" Click="MenuItem_Click_1" Icon="Images\delete16.png" Focusable="False"/>
                     </Ribbon:SplitButton>
                     <Ribbon:Button Header="{StaticResource btnRenameCP}" Ribbon:KeyTip.Keys="R" LargeIcon="Images\rename32.png" Icon="Images\rename16.png" Click="Button_Click_1" IsEnabled="False" Name="btnRename"/>
                 </Ribbon:RibbonGroupBox>
@@ -595,17 +595,17 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                         <Separator/>
                         <Ribbon:MenuItem Header="Clear Properties" Ribbon:KeyTip.Keys="CP"/>
                     </Ribbon:SplitButton>-->
-                    <Ribbon:SplitButton Header="{StaticResource btnOpenCP}" Ribbon:KeyTip.Keys="O" SizeDefinition="Middle,Middle,Small" Name="btnOpenWith" IsEnabled="False" Click="btnOpenWith_Click" Icon="Images\open16.png" DropDownClosed="btnMoreColls_DropDownClosed" DropDownOpened="btnMoreColls_DropDownOpened">
+                    <Ribbon:SplitButton Header="{StaticResource btnOpenCP}" Ribbon:KeyTip.Keys="O" SizeDefinition="Middle,Middle,Small" Name="btnOpenWith" IsEnabled="False" Click="btnOpenWith_Click" Icon="Images\open16.png" DropDownClosed="btnMoreColls_DropDownClosed" DropDownOpened="btnMoreColls_DropDownOpened" ToolTipOpening="btn_ToolTipOpening">
                     </Ribbon:SplitButton>
                     <Ribbon:Button Header="{StaticResource btnEditCP}" Ribbon:KeyTip.Keys="E" SizeDefinition="Middle,Middle,Small" Icon="Images\edit16.png" IsEnabled="False" Name="btnEdit" Click="btnEdit_Click" />
                     <Ribbon:Button Header="{StaticResource btnHistoryCP}" Ribbon:KeyTip.Keys="H" SizeDefinition="Middle,Middle,Middle" Icon="Images\history16.png" IsEnabled="False" Name="btnHistory" Click="btnHistory_Click"  />
-                    <Ribbon:SplitButton Header="{StaticResource btnFavoritesCP}" Ribbon:KeyTip.Keys="F" SizeDefinition="Large, Middle, Middle" Icon="Images\favorites16.png" LargeIcon="Images\favorites32.png" Name="btnFavorites" Click="btnFavorites_Click" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" />
+          <Ribbon:SplitButton Header="{StaticResource btnFavoritesCP}" Ribbon:KeyTip.Keys="F" SizeDefinition="Large, Middle, Middle" Icon="Images\favorites16.png" LargeIcon="Images\favorites32.png" Name="btnFavorites" Click="btnFavorites_Click" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" ToolTipOpening="btn_ToolTipOpening"/>
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header="{StaticResource tgSelectCP}" Name="Select" Ribbon:KeyTip.Keys="SE"> <!-- DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed"> -->
                     <Ribbon:Button Header="{StaticResource btnSelectAllCP}" Ribbon:KeyTip.Keys="SA" SizeDefinition="Middle,Middle,Middle" Name="btnSelAll" Click="btnSelAll_Click" Icon="Images\selectall16.png" />
                     <Ribbon:Button Header="{StaticResource btnSelectNoneCP}" Ribbon:KeyTip.Keys="SN" SizeDefinition="Middle,Middle,Middle" Name="btnSelNone" Click="btnSelNone_Click" Icon="Images\selectnone16.png" IsEnabled="False"/>
                     <Ribbon:Button Header="{StaticResource btnInvertSelectionCP}" Ribbon:KeyTip.Keys="SI" SizeDefinition="Middle,Middle,Middle" Name="btnInvSel" Icon="Images\invsel16.png" IsEnabled="True" Click="btnInvSel_Click" />
-                    <Ribbon:SplitButton Header="{StaticResource btnConditionalSelectCP}" Ribbon:KeyTip.Keys="SC" SizeDefinition="Large, Small, Small" Name="btnCondSel" Icon="Images\filter16.png" LargeIcon="Images\filter32.png" Click="btnCondSel_Click" Visibility="Visible" DropDownOpened="btnCondSel_DropDownOpened">
+                    <Ribbon:SplitButton Header="{StaticResource btnConditionalSelectCP}" Ribbon:KeyTip.Keys="SC" SizeDefinition="Large, Small, Small" Name="btnCondSel" Icon="Images\filter16.png" LargeIcon="Images\filter32.png" Click="btnCondSel_Click" Visibility="Visible" DropDownOpened="btnCondSel_DropDownOpened" ToolTipOpening="btn_ToolTipOpening">
                         <Ribbon:SplitButton.ToolTip>
                             <Ribbon:ScreenTip
                                 Title="{StaticResource btnConditionalSelectCP}"
@@ -614,10 +614,10 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                 Width="250"
                                 IsRibbonAligned ="True"/>
                         </Ribbon:SplitButton.ToolTip>
-                        <MenuItem Header="{StaticResource miSelAllByTypeCP}" Name="miSelAllByType" Click="miSelAllByType_Click" Ribbon:KeyTip.Keys="T"/>
-                        <MenuItem Header="{StaticResource miSelAllByDateCP}" Name="miSelAllByDate" Click="miSelAllByDate_Click" Ribbon:KeyTip.Keys="D"/>
+                        <MenuItem Header="{StaticResource miSelAllByTypeCP}" Name="miSelAllByType" Click="miSelAllByType_Click" Ribbon:KeyTip.Keys="T" Focusable="False"/>
+                        <MenuItem Header="{StaticResource miSelAllByDateCP}" Name="miSelAllByDate" Click="miSelAllByDate_Click" Ribbon:KeyTip.Keys="D" Focusable="False"/>
                         <Separator />
-                        <MenuItem Header="{StaticResource miCondSelectCP}" Name="miCondSelect" Click="btnCondSel_Click" Ribbon:KeyTip.Keys="W" Icon="Images\filter16.png"/>
+                        <MenuItem Header="{StaticResource miCondSelectCP}" Name="miCondSelect" Click="btnCondSel_Click" Ribbon:KeyTip.Keys="W" Icon="Images\filter16.png" Focusable="False"/>
                     </Ribbon:SplitButton>
                     
                 </Ribbon:RibbonGroupBox>
@@ -801,8 +801,8 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                         </Ribbon:CheckBox.ToolTip>
                     </Ribbon:CheckBox>
                     <Ribbon:SplitButton Header="{StaticResource btnHideSelCP}" Ribbon:KeyTip.Keys="H" Name="btnHideSelItems" SizeDefinition="Large,Small,Small" LargeIcon="Images\hideitems48.png" Icon="Images\hideitems16.png" Click="btnHideSelItems_Click">
-                        <Ribbon:MenuItem Header="{StaticResource miHideSelCP}" Ribbon:KeyTip.Keys="H" Click="btnHideSelItems_Click"/>
-                        <Ribbon:MenuItem Header="{StaticResource miHideItemsCP}" Ribbon:KeyTip.Keys="C" Name="miHideItems" Click="miHideItems_Click" />
+                    <Ribbon:MenuItem Header="{StaticResource miHideSelCP}" Ribbon:KeyTip.Keys="H" Click="btnHideSelItems_Click" Focusable="False"/>
+                    <Ribbon:MenuItem Header="{StaticResource miHideItemsCP}" Ribbon:KeyTip.Keys="C" Name="miHideItems" Click="miHideItems_Click" Focusable="False"/>
                     </Ribbon:SplitButton>
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header="{StaticResource grpWindowsCP}" Ribbon:KeyTip.Keys="W">

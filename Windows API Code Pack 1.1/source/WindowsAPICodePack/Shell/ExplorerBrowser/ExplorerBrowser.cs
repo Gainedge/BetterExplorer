@@ -1652,7 +1652,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         #endregion
 
         #region implementation
-        public bool IsAfterRename = false;
+        //public bool IsAfterRename = false;
         public static int PopFX = 0;
         public static int PopFY = 0;
         #region construction

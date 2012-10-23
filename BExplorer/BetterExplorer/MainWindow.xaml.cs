@@ -215,6 +215,7 @@ namespace BetterExplorer
                                                      so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
                                                      so.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
                                                      ImageSource icon = so.Thumbnail.BitmapSource;
+                                                     mi.Focusable = false;
                                                      mi.Icon = icon;
                                                      mi.Click += new RoutedEventHandler(mif_Click);
                                                      so.Dispose();
@@ -614,6 +615,8 @@ namespace BetterExplorer
 
         private void RibbonWindow_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
+          Explorer.Focus();
+          Explorer.ExplorerSetFocus();
             if (breadcrumbBarControl1.IsInEditMode)
             {
                 breadcrumbBarControl1.ExitEditMode();
@@ -879,6 +882,7 @@ namespace BetterExplorer
                                             mic.Header = AllAvailColls[j].Name;
                                             mic.Tag = AllAvailColls[j].pkey;
                                             mic.Click += new RoutedEventHandler(mic_Click);
+                                            mic.Focusable = false;
                                             mic.IsCheckable = true;
                                             foreach (Collumns col in Explorer.AvailableVisibleColumns)
                                             {
@@ -922,6 +926,7 @@ namespace BetterExplorer
                                     btnMoreColls.Items.Add(sep);
                                     MenuItem micm = new MenuItem();
                                     micm.Header = "More Columns";
+                                    micm.Focusable = false;
                                     micm.Tag = AllAvailColls;
                                     micm.Click += new RoutedEventHandler(micm_Click);
                                     btnMoreColls.Items.Add(micm);
@@ -929,13 +934,13 @@ namespace BetterExplorer
                                     btnSort.Items.Clear();
                                     btnGroup.Items.Clear();
 
-                                    Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.SORTCOLUMN sc;
+                                    ExplorerBrowser.SORTCOLUMN sc;
                                     Explorer.GetSortColInfo(out sc);
-                                    Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.PROPERTYKEY pkg;
+                                    ExplorerBrowser.PROPERTYKEY pkg;
                                     bool GroupDir;
                                     Explorer.GetGroupColInfo(out pkg, out GroupDir);
 
-                                    foreach (Microsoft.WindowsAPICodePack.Controls.WindowsForms.Collumns item in Explorer.AvailableVisibleColumns)
+                                    foreach (Collumns item in Explorer.AvailableVisibleColumns)
                                     {
 
                                         if (item != null)
@@ -944,6 +949,7 @@ namespace BetterExplorer
                                             mi.Header = item.Name;
                                             mi.Tag = item;
                                             mi.GroupName = "GR2";
+                                            mi.Focusable = false;
                                             mi.IsCheckable = true;
                                             if ((item.pkey.fmtid == sc.propkey.fmtid) && (item.pkey.pid == sc.propkey.pid))
                                             {
@@ -960,6 +966,7 @@ namespace BetterExplorer
                                             mig.Header = item.Name;
                                             mig.Tag = item;
                                             mig.GroupName = "GR3";
+                                            mig.Focusable = false;
                                             mig.IsCheckable = true;
                                             if ((item.pkey.fmtid == pkg.fmtid) && (item.pkey.pid == pkg.pid))
                                             {
@@ -974,9 +981,11 @@ namespace BetterExplorer
                                         }
                                     }
                                     Separator sp = new Separator();
+                                    sp.Focusable = false;
                                     btnSort.Items.Add(sp);
                                     misa = new MenuItem();
                                     misa.Click += new RoutedEventHandler(misa_Click);
+                                    misa.Focusable = false;
                                     misa.Header = "Ascending";
                                     misa.IsCheckable = true;
 
@@ -987,6 +996,7 @@ namespace BetterExplorer
                                     misd.Header = "Descending";
                                     misd.IsCheckable = true;
                                     misd.Click += new RoutedEventHandler(misd_Click);
+                                    misd.Focusable = false;
                                     misd.GroupName = "GR1";
                                     if (sc.direction == Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.SORT.ASCENDING)
                                     {
@@ -1000,12 +1010,14 @@ namespace BetterExplorer
                                     btnSort.Items.Add(misd);
                                     misng = new MenuItem();
                                     misng.Header = "(none)";
+                                    misng.Focusable = false;
                                     misng.GroupName = "GR4";
                                     misng.Click += new RoutedEventHandler(misng_Click);
                                     btnGroup.Items.Add(misng);
                                     Separator spg = new Separator();
                                     btnGroup.Items.Add(spg);
                                     misag = new MenuItem();
+                                    misag.Focusable = false;
                                     misag.Header = "Ascending";
                                     misag.IsCheckable = true;
 
@@ -1013,6 +1025,7 @@ namespace BetterExplorer
                                     misag.GroupName = "GR4";
 
                                     misdg = new MenuItem();
+                                    misdg.Focusable = false;
                                     misdg.Header = "Descending";
                                     misdg.IsCheckable = true;
                                     misdg.GroupName = "GR4";
@@ -3873,9 +3886,11 @@ namespace BetterExplorer
             btnMoveto.Items.Clear();
             btnCopyto.Items.Clear();
             MenuItem OtherLocationMove = new MenuItem();
+            OtherLocationMove.Focusable = false;
             OtherLocationMove.Header = FindResource("miOtherDestCP");
             OtherLocationMove.Click += new RoutedEventHandler(btnmtOther_Click);
             MenuItem OtherLocationCopy = new MenuItem();
+            OtherLocationCopy.Focusable = false;
             OtherLocationCopy.Header = FindResource("miOtherDestCP");
             OtherLocationCopy.Click += new RoutedEventHandler(btnctOther_Click);
 
@@ -3883,10 +3898,12 @@ namespace BetterExplorer
             ShellObject sod = (ShellObject)KnownFolders.Desktop;
             sod.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
             sod.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            mimDesktop.Focusable = false;
             mimDesktop.Icon = sod.Thumbnail.BitmapSource;
             mimDesktop.Header = FindResource("btnctDesktopCP");
             mimDesktop.Click += new RoutedEventHandler(btnmtDesktop_Click);
             MenuItem micDesktop = new MenuItem();
+            micDesktop.Focusable = false;
             micDesktop.Icon = sod.Thumbnail.BitmapSource;
             micDesktop.Header = FindResource("btnctDesktopCP");
             micDesktop.Click += new RoutedEventHandler(btnctDesktop_Click);
@@ -3896,10 +3913,12 @@ namespace BetterExplorer
             ShellObject sodc = (ShellObject)KnownFolders.Documents;
             sodc.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
             sodc.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            mimDocuments.Focusable = false;
             mimDocuments.Icon = sodc.Thumbnail.BitmapSource;
             mimDocuments.Header = FindResource("btnctDocumentsCP");
             mimDocuments.Click += new RoutedEventHandler(btnmtDocuments_Click);
             MenuItem micDocuments = new MenuItem();
+            micDocuments.Focusable = false;
             micDocuments.Icon = sodc.Thumbnail.BitmapSource;
             micDocuments.Header = FindResource("btnctDocumentsCP");
             micDocuments.Click += new RoutedEventHandler(btnctDocuments_Click);
@@ -3909,10 +3928,12 @@ namespace BetterExplorer
             ShellObject sodd = (ShellObject)KnownFolders.Downloads;
             sodd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
             sodd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            mimDownloads.Focusable = false;
             mimDownloads.Icon = sodd.Thumbnail.BitmapSource;
             mimDownloads.Header = FindResource("btnctDownloadsCP");
             mimDownloads.Click += new RoutedEventHandler(btnmtDounloads_Click);
             MenuItem micDownloads = new MenuItem();
+            micDownloads.Focusable = false;
             micDownloads.Icon = sodd.Thumbnail.BitmapSource;
             micDownloads.Header = FindResource("btnctDownloadsCP");
             micDownloads.Click += new RoutedEventHandler(btnctDounloads_Click);
@@ -3951,6 +3972,7 @@ namespace BetterExplorer
                     {
                         MenuItem mim = new MenuItem();
                         mim.Header = item.Path.GetDisplayName(DisplayNameType.Default);
+                        mim.Focusable = false;
                         mim.Tag = item.Path;
                         ShellObject so = ShellObject.FromParsingName(item.Path.ParsingName);
                         so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
@@ -3959,6 +3981,7 @@ namespace BetterExplorer
                         mim.Click += new RoutedEventHandler(mim_Click);
                         btnMoveto.Items.Add(mim);
                         MenuItem mic = new MenuItem();
+                        mic.Focusable = false;
                         mic.Header = item.Path.GetDisplayName(DisplayNameType.Default);
                         mic.Tag = item.Path;
                         mic.Icon = so.Thumbnail.BitmapSource;
@@ -8067,6 +8090,14 @@ namespace BetterExplorer
         }
 
         #endregion
+
+        private void btn_ToolTipOpening(object sender, ToolTipEventArgs e) {
+          if (sender is SplitButton) {
+            if ((sender as SplitButton).IsDropDownOpen) {
+              e.Handled = true;
+            }
+          }
+        }
 
 
     }
