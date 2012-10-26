@@ -150,6 +150,9 @@ namespace BetterExplorer
             this.RaiseEvent(new RoutedEventArgs(CloseTabEvent, this));
         }
 
+        /// <summary>
+        /// Contains information about the current location, as well as previously opened locations.
+        /// </summary>
         public NavigationLog log = new NavigationLog();
     }
 

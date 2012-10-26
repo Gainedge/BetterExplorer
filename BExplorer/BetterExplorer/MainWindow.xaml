@@ -602,9 +602,9 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
           <Ribbon:SplitButton Header="{StaticResource btnFavoritesCP}" Ribbon:KeyTip.Keys="F" SizeDefinition="Large, Middle, Middle" Icon="Images\favorites16.png" LargeIcon="Images\favorites32.png" Name="btnFavorites" Click="btnFavorites_Click" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" ToolTipOpening="btn_ToolTipOpening"/>
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header="{StaticResource tgSelectCP}" Name="Select" Ribbon:KeyTip.Keys="SE"> <!-- DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed"> -->
-                    <Ribbon:Button Header="{StaticResource btnSelectAllCP}" Ribbon:KeyTip.Keys="SA" SizeDefinition="Middle,Middle,Middle" Name="btnSelAll" Click="btnSelAll_Click" Icon="Images\selectall16.png" />
-                    <Ribbon:Button Header="{StaticResource btnSelectNoneCP}" Ribbon:KeyTip.Keys="SN" SizeDefinition="Middle,Middle,Middle" Name="btnSelNone" Click="btnSelNone_Click" Icon="Images\selectnone16.png" IsEnabled="False"/>
-                    <Ribbon:Button Header="{StaticResource btnInvertSelectionCP}" Ribbon:KeyTip.Keys="SI" SizeDefinition="Middle,Middle,Middle" Name="btnInvSel" Icon="Images\invsel16.png" IsEnabled="True" Click="btnInvSel_Click" />
+                    <Ribbon:Button Header="{StaticResource btnSelectAllCP}" Ribbon:KeyTip.Keys="SA" Size="Middle" SizeDefinition="Middle,Middle,Middle" Name="btnSelAll" Click="btnSelAll_Click" Icon="Images\selectall16.png" />
+                    <Ribbon:Button Header="{StaticResource btnSelectNoneCP}" Ribbon:KeyTip.Keys="SN" Size="Middle" SizeDefinition="Middle,Middle,Middle" Name="btnSelNone" Click="btnSelNone_Click" Icon="Images\selectnone16.png" IsEnabled="False"/>
+                    <Ribbon:Button Header="{StaticResource btnInvertSelectionCP}" Ribbon:KeyTip.Keys="SI" Size="Middle" SizeDefinition="Middle,Middle,Middle" Name="btnInvSel" Icon="Images\invsel16.png" IsEnabled="True" Click="btnInvSel_Click" />
                     <Ribbon:SplitButton Header="{StaticResource btnConditionalSelectCP}" Ribbon:KeyTip.Keys="SC" SizeDefinition="Large, Small, Small" Name="btnCondSel" Icon="Images\filter16.png" LargeIcon="Images\filter32.png" Click="btnCondSel_Click" Visibility="Visible" DropDownOpened="btnCondSel_DropDownOpened" ToolTipOpening="btn_ToolTipOpening">
                         <Ribbon:SplitButton.ToolTip>
                             <Ribbon:ScreenTip
@@ -633,7 +633,8 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                 IsRibbonAligned ="True"/>
                         </Ribbon:Button.ToolTip>
                     </Ribbon:Button>
-                    <Ribbon:Button Header="{StaticResource btnCloneTabCP}" Ribbon:KeyTip.Keys="CL" Name="btnTabClone" Click="btnTabClone_Click" SizeDefinition="Large,Middle,Middle" LargeIcon="Images\clonetab.png" Icon="Images\clonetab.png" ClickMode="Release" IsDefault="False" IsDefinitive="True" >
+                    <Ribbon:Button Header="{StaticResource btnCloseTabCP}" Ribbon:KeyTip.Keys="CT" Name="btnTabCloseC" SizeDefinition="Large,Middle,Middle" LargeIcon="Images\closetab.png" Icon="Images\closetab.png" Click="btnTabCloseC_Click" />
+                    <Ribbon:Button Header="{StaticResource btnCloneTabCP}" Ribbon:KeyTip.Keys="CL" Name="btnTabClone" Click="btnTabClone_Click" Size="Middle" SizeDefinition="Middle,Middle,Middle" LargeIcon="Images\clonetab.png" Icon="Images\clonetab.png" ClickMode="Release" IsDefault="False" IsDefinitive="True" >
                         <Ribbon:Button.ToolTip>
                             <!--"{StaticResource btnCloneTabTCP}"-->
                             <Ribbon:ScreenTip
@@ -644,7 +645,30 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                 IsRibbonAligned ="True"/>
                         </Ribbon:Button.ToolTip>
                     </Ribbon:Button>
-                    <Ribbon:Button Header="{StaticResource btnCloseTabCP}" Ribbon:KeyTip.Keys="CT" Name="btnTabCloseC" SizeDefinition="Large,Middle,Middle" LargeIcon="Images\closetab.png" Icon="Images\closetab.png" Click="btnTabCloseC_Click" />
+                    <Ribbon:DropDownButton Header="{StaticResource btnSavedTabsCP}" Ribbon:KeyTip.Keys="R" Name="btnSavedTabs" Size="Middle" SizeDefinition="Middle,Middle,Small" IsEnabled="False">
+                        <Ribbon:DropDownButton.ToolTip>
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnSavedTabsCP}"
+                                Text="{StaticResource btnSavedTabsHCP}"
+                                Width="250"
+                                IsRibbonAligned="True"/>
+                        </Ribbon:DropDownButton.ToolTip>
+                        <!--TODO: Add Saved Tabs gallery-->
+                        <Ribbon:MenuItem Header="Save Current Tabs" Ribbon:KeyTip.Keys="S" Name="miSaveCurTabs" Click="miSaveCurTabs_Click" />
+                    </Ribbon:DropDownButton>
+                    <Ribbon:SplitButton Header="{StaticResource btnUndoCloseCP}" Ribbon:KeyTip.Keys="UC" Name="btnUndoClose" Size="Middle" SizeDefinition="Middle,Middle,Small" Click="btnUndoClose_Click" DropDownOpened="btnUndoClose_DropDownOpened" IsEnabled="False">
+                        <Ribbon:SplitButton.ToolTip>
+                            <Ribbon:ScreenTip
+                                Title="{StaticResource btnUndoCloseCP}"
+                                Text="{StaticResource btnUndoCloseHCP}"
+                                Width="250"
+                                IsRibbonAligned="True"/>
+                        </Ribbon:SplitButton.ToolTip>
+                        <Ribbon:Gallery Name="rotGallery" Orientation="Vertical" SelectionChanged="rotGallery_SelectionChanged">
+                            <!--Items added programmatically-->
+                        </Ribbon:Gallery>
+                        <Ribbon:MenuItem Header="Clear List" Ribbon:KeyTip.Keys="C" Name="miClearUndoList" Click="miClearUndoList_Click" />
+                    </Ribbon:SplitButton>
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
             <Ribbon:RibbonTabItem Header="{StaticResource tbShareCP}" Ribbon:KeyTip.Keys="S" Visibility="Visible" Indent="7" ReduceOrder="Network,Network,Compress,Compress,Compress,Network" GotFocus="TheStatusBar_GotFocus">

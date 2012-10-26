@@ -98,6 +98,7 @@ namespace BetterExplorer
         string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
         string logdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_ActionLog\\";
         string sstdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
+        List<NavigationLog> reopenabletabs = new List<NavigationLog>();
         bool OverwriteOnRotate = false;
         NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
@@ -1999,7 +2000,7 @@ namespace BetterExplorer
                                         if (e.PendingLocation.IsFolder && !e.PendingLocation.IsDrive &&
                                             !e.PendingLocation.IsSearchFolder)
                                         {
-                                            ctgFolderTools.Visibility = Visibility.Visible;
+                                            //ctgFolderTools.Visibility = Visibility.Visible;
                                         }
 
                                         if (e.PendingLocation.ParsingName.Contains(KnownFolders.Libraries.ParsingName) &&
@@ -2327,13 +2328,7 @@ namespace BetterExplorer
                             // hide contextual tabs
                             ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
                             ctgExe.Visibility = System.Windows.Visibility.Collapsed;
-                            if (Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-                                !Explorer.NavigationLog.CurrentLocation.IsSearchFolder && Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
-                            {
-                                ctgFolderTools.Visibility = System.Windows.Visibility.Visible;
-                            }
-                            else
-                                ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                            ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
 
                             ctgImage.Visibility = System.Windows.Visibility.Collapsed;
 
@@ -4237,11 +4232,45 @@ namespace BetterExplorer
                 tabControl1.Items.RemoveAt(CurSelIndex - 1);
             }
             ConstructMoveToCopyToMenu();
+
+            reopenabletabs.Add(thetab.log);
+            btnUndoClose.IsEnabled = true;
         }
         void newt_CloseTab(object sender, RoutedEventArgs e)
         {
             CloseableTabItem curItem = e.Source as CloseableTabItem;
             CloseTab(curItem);
+        }
+
+        /// <summary>
+        /// Re-opens a previously closed tab using that tab's navigation log data.
+        /// </summary>
+        /// <param name="log">The navigation log data from the previously closed tab.</param>
+        public void ReOpenTab(NavigationLog log)
+        {
+            CloseableTabItem newt = new CloseableTabItem();
+            CreateTabbarRKMenu(newt);
+
+            ShellObject DefPath = log.CurrentLocation;
+            DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+            newt.Header = DefPath.GetDisplayName(DisplayNameType.Default);
+            newt.TabIcon = DefPath.Thumbnail.BitmapSource;
+            newt.Path = DefPath;
+            newt.IsNavigate = false;
+            newt.Index = tabControl1.Items.Count;
+            newt.AllowDrop = true;
+            newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
+            newt.DragEnter += new DragEventHandler(newt_DragEnter);
+            newt.DragOver += new DragEventHandler(newt_DragOver);
+            newt.Drop += new DragEventHandler(newt_Drop);
+
+            tabControl1.Items.Add(newt);
+            LastTabIndex = tabControl1.SelectedIndex;
+            newt.log.ImportData(log);
+
+            CurrentTabIndex = tabControl1.Items.Count - 1;
+            ConstructMoveToCopyToMenu();
         }
 
         System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
@@ -8097,6 +8126,67 @@ namespace BetterExplorer
               e.Handled = true;
             }
           }
+        }
+
+        private void btnSavedTabs_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void miSaveCurTabs_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnUndoClose_Click(object sender, RoutedEventArgs e)
+        {
+            ReOpenTab(reopenabletabs[reopenabletabs.Count - 1]);
+            reopenabletabs.RemoveAt(reopenabletabs.Count - 1);
+            if (reopenabletabs.Count == 0)
+            {
+                btnUndoClose.IsEnabled = false;
+            }
+        }
+
+        private void miClearUndoList_Click(object sender, RoutedEventArgs e)
+        {
+            reopenabletabs.Clear();
+            btnUndoClose.IsDropDownOpen = false;
+            btnUndoClose.IsEnabled = false;
+        }
+
+        private void btnUndoClose_DropDownOpened(object sender, EventArgs e)
+        {
+            rotGallery.Items.Clear();
+            foreach (NavigationLog item in reopenabletabs)
+            {
+                UndoCloseGalleryItem gli = new UndoCloseGalleryItem();
+                gli.LoadData(item);
+                gli.Click += new UndoCloseGalleryItem.NavigationLogEventHandler(gli_Click);
+                rotGallery.Items.Add(gli);
+            }
+        }
+
+        void gli_Click(object sender, NavigationLogEventArgs e)
+        {
+            ReOpenTab(e.NavigationLog);
+            reopenabletabs.Remove((sender as UndoCloseGalleryItem).nav);
+            if (reopenabletabs.Count == 0)
+            {
+                btnUndoClose.IsEnabled = false;
+            }
+        }
+
+        private void rotGallery_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                (e.AddedItems[0] as UndoCloseGalleryItem).PerformClickEvent();
+            }
+            catch
+            {
+
+            }
         }
 
 

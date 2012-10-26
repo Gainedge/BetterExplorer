@@ -15,8 +15,14 @@ namespace BetterExplorer
 
         public NavigationLog()
         {
-
             HistoryItems.Clear();
+        }
+
+        public void ImportData(NavigationLog log)
+        {
+            HistoryItems.Clear();
+            HistoryItems.AddRange(log.HistoryItemsList);
+            CurrentLocIndex = HistoryItems.LastIndexOf(log.CurrentLocation);
         }
 
         public void NavigateOnwards(ShellObject loc)
@@ -30,7 +36,16 @@ namespace BetterExplorer
 
             CurrentLocIndex--;
 
-            return HistoryItems[CurrentLocIndex];
+            try
+            {
+                return HistoryItems[CurrentLocIndex];
+            }
+            catch
+            {
+                CurrentLocIndex++;
+
+                return HistoryItems[CurrentLocIndex];
+            }
         }
 
         public ShellObject NavigateForward()

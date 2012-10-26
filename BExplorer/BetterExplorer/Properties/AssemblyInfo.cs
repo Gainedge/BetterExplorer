@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Better Explorer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A better file manager.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("(none)")]
-[assembly: AssemblyProduct("Better Explorer")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyCompany("Dimitar Tsenev / Jayke R. Huempfner")]
+[assembly: AssemblyProduct("Better Explorer Beta 2")]
+[assembly: AssemblyCopyright("Copyright ©  2012 Dimitar Tsenev and Jayke R. Huempfner")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,6 +51,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.2909.1308")]
-[assembly: AssemblyFileVersion("2.0.2909.1308")]
-[assembly: AssemblyInformationalVersion("2.0.290912.1308 Alpha 1")]
+[assembly: AssemblyVersion("2.0.2.14")]
+[assembly: AssemblyFileVersion("2.0.2.14")]
+[assembly: AssemblyInformationalVersion("2.0.290912.1401 Beta 2")]
