@@ -583,7 +583,8 @@ namespace BetterExplorer
                     Updater.UpdateFeedReader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
                     Updater.UpdateExecutableName = "Web Update.exe";
                     Updater.UpdateSource = new NAppUpdate.Framework.Sources.SimpleWebSource("http://better-explorer.com/onlineupdate/update.xml");
-                    CheckForUpdate(false);
+                    //TODO: reeable updates when there is site ready
+                    //CheckForUpdate(false);
                 }
                 catch (IOException)
                 {
@@ -616,12 +617,12 @@ namespace BetterExplorer
 
         private void RibbonWindow_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-          Explorer.Focus();
-          Explorer.ExplorerSetFocus();
-            if (breadcrumbBarControl1.IsInEditMode)
-            {
-                breadcrumbBarControl1.ExitEditMode();
-            }
+          //Explorer.Focus();
+          //Explorer.ExplorerSetFocus();
+          //  if (breadcrumbBarControl1.IsInEditMode)
+          //  {
+          //      breadcrumbBarControl1.ExitEditMode();
+          //  }
         }
 
         private void RibbonWindow_Closing(object sender, CancelEventArgs e)
