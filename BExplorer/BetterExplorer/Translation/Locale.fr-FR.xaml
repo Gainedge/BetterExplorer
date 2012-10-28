@@ -69,8 +69,8 @@
     <system:String x:Key="btnPasteTCP">Coller (CTRL + V)</system:String>
     <system:String x:Key="btnPasteTTX">Coller les fichiers du presse-papiers dans ce dossier</system:String>
     <system:String x:Key="btnCutCP">Couper</system:String>
-    <system:String x:Key="btnCopyPathCP">Copier le chemin d'accès</system:String>
-    <system:String x:Key="btnCopyPTTX">Copie le chemin d'accès des éléments sélectionnés ou du dossier actif si aucun fichier n'est sélectionné</system:String>
+    <system:String x:Key="btnCopyPathCP">Copier le chemin</system:String>
+    <system:String x:Key="btnCopyPTTX">Copie le chemin des éléments sélectionnés ou du dossier actif si aucun fichier n'est sélectionné</system:String>
     <system:String x:Key="btnPasteScCP">Coller le raccourci</system:String>
     <system:String x:Key="tgOrganizeCP">Organiser</system:String>
     <system:String x:Key="btnCopyToCP">Copier vers</system:String>
@@ -107,8 +107,8 @@
     <system:String x:Key="btnNewTabTCP">Nouvel onglet (CTRL + T)</system:String>
     <system:String x:Key="btnNewTabTTX">Créer un nouvel onglet, chargé avec le dossier par défaut</system:String>
     <system:String x:Key="btnCloneTabTTX">Créer un nouvel onglet, chargé avec le dossier courant</system:String>
-    <system:String x:Key="btnUndoCloseCP">Annuler la fermeture de l'onglet</system:String>
-    <system:String x:Key="btnUndoCloseHCP">Rouvrir le dernier onglet fermé </system:String>
+    <system:String x:Key="btnUndoCloseCP">Rouvrir l'onglet précédant</system:String>
+    <system:String x:Key="btnUndoCloseHCP">Rouvrir l'onglet précédemment fermé</system:String>
     <system:String x:Key="btnSavedTabsCP">Onglets sauvegardés</system:String>
     <system:String x:Key="btnSavedTabsHCP">Sauvegarder un groupe d'onglets préférés ou rouvrir un groupe d'onglets sauvegardés</system:String>
     <system:String x:Key="tbShareCP">Partager</system:String>

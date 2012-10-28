@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.pl-PL.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.zh-TW.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.sv-SE.xaml"/>
+                <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.nl-NL.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/DefaultLocale.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
