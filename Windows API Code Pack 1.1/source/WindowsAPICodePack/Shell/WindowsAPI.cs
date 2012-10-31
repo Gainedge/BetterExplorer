@@ -1167,6 +1167,31 @@ namespace WindowsHelper
 
         }
 
+        public static string LoadResourceString(string libraryName, uint ident, string defaultText) {
+          IntPtr libraryHandle = LoadLibrary(libraryName);
+          String Text = "";
+          if (libraryHandle != IntPtr.Zero) {
+            StringBuilder sb = new StringBuilder(1024);
+            int size = LoadString(libraryHandle, ident, sb, 1024);
+            if (size > 0)
+              Text =  sb.ToString();
+          }
+          Text = defaultText;
+          FreeLibrary(libraryHandle);
+          return Text;
+        }
+        [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
+        public static extern IntPtr LoadLibrary(string lpFileName);
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+        public static extern IntPtr GetModuleHandle(string lpModuleName);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        public static extern int LoadString(IntPtr hInstance, uint uID, StringBuilder lpBuffer, int nBufferMax);
+
+        [DllImport("kernel32.dll")]
+        public static extern bool FreeLibrary(IntPtr hModule);
+
 
 
         [DllImport("user32.dll")]

@@ -3441,7 +3441,9 @@ namespace BetterExplorer
 
         private void btnHistory_Click(object sender, RoutedEventArgs e)
         {
-            Explorer.ShowPropPage(this.Handle, Explorer.SelectedItems[0].ParsingName, "Previous Versions");
+
+            Explorer.ShowPropPage(this.Handle, Explorer.SelectedItems[0].ParsingName, 
+              WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SystemX86),"twext.dll"),1024,"Previous Versions"));
         }
 
         private void Button_Click_8(object sender, RoutedEventArgs e)
