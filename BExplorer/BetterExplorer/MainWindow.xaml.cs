@@ -3369,9 +3369,9 @@ namespace BetterExplorer
             foreach (string item in DropList)
             {
                 ShellObject o = ShellObject.FromParsingName(item);
-                JunctionPointUtils.JunctionPoint.Create(PathForDrop + @"\" + o.GetDisplayName(DisplayNameType.Default),
+                JunctionPointUtils.JunctionPoint.Create(String.Format(@"{0}\{1}", PathForDrop, o.GetDisplayName(DisplayNameType.Default)),
                                                         o.ParsingName, true);
-                AddToLog("Created Junction Point at " + PathForDrop + @"\" + o.GetDisplayName(DisplayNameType.Default) + " linked to " + o.ParsingName);
+                AddToLog(String.Format(@"Created Junction Point at {0}\{1} linked to {2}", PathForDrop, o.GetDisplayName(DisplayNameType.Default), o.ParsingName));
                 o.Dispose();
             }
         }
@@ -3395,7 +3395,7 @@ namespace BetterExplorer
             {
                 ShellObject o = ShellObject.FromParsingName(item);
                 items.Add(o);
-                AddToLog("Created Symbolic Link at " + PathForDrop + @"\" + o.GetDisplayName(DisplayNameType.Default) + " linked to " + o.ParsingName);
+                AddToLog(String.Format(@"Created Symbolic Link at {0}\{1} linked to {2}", PathForDrop, o.GetDisplayName(DisplayNameType.Default), o.ParsingName));
             }
 
             string sources = PathStringCombiner.CombinePaths(items, true);
@@ -3443,7 +3443,7 @@ namespace BetterExplorer
         {
 
             Explorer.ShowPropPage(this.Handle, Explorer.SelectedItems[0].ParsingName, 
-              WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.SystemX86),"twext.dll"),1024,"Previous Versions"));
+              WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),"twext.dll"),1024,"Previous Versions"));
         }
 
         private void Button_Click_8(object sender, RoutedEventArgs e)
@@ -3454,8 +3454,7 @@ namespace BetterExplorer
         // create new window
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
-            //BetterExplorer.MainWindow g = new MainWindow();
-            //g.Show();
+
           var k = System.Reflection.Assembly.GetExecutingAssembly().Location;
             Process.Start(k, "/nw");
         }
@@ -3464,7 +3463,7 @@ namespace BetterExplorer
         void miow_Click(object sender, RoutedEventArgs e)
         {
             MenuItem item = (sender as MenuItem);
-            Process.Start(item.Tag.ToString(), "\"" + Explorer.SelectedItems[0].ParsingName + "\"");
+            Process.Start(item.Tag.ToString(), String.Format("\"{0}\"", Explorer.SelectedItems[0].ParsingName));
         }
 
         void mif_Click(object sender, RoutedEventArgs e)
@@ -3478,7 +3477,7 @@ namespace BetterExplorer
 
         private void btnCopy_Click(object sender, RoutedEventArgs e)
         {
-            System.Collections.Specialized.StringCollection sc = new System.Collections.Specialized.StringCollection();
+            StringCollection sc = new StringCollection();
             foreach (ShellObject item in Explorer.SelectedItems)
             {
                 sc.Add(item.ParsingName);
@@ -3500,18 +3499,18 @@ namespace BetterExplorer
             {
                 PasteData.PathForDrop = Explorer.NavigationLog.CurrentLocation.ParsingName;
             }
-            AddToLog("Files Pasted at " + PasteData.PathForDrop + " Files pasted: " + PasteData.DropList.ToString());
-            Thread t = null;
+            AddToLog(String.Format("Files Pasted at {0} Files pasted: {1}", PasteData.PathForDrop, PasteData.DropList));
+            Thread pasteThread = null;
             if (Explorer.IsMoveClipboardOperation)
             {
-                t = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
+                pasteThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
             }
             else
             {
-                t = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
+                pasteThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
             }
-            t.SetApartmentState(ApartmentState.STA);
-            t.Start(PasteData);
+            pasteThread.SetApartmentState(ApartmentState.STA);
+            pasteThread.Start(PasteData);
         }
 
         private void SplitButton_Click(object sender, RoutedEventArgs e)

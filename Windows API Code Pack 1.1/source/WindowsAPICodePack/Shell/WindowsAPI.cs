@@ -1169,14 +1169,13 @@ namespace WindowsHelper
 
         public static string LoadResourceString(string libraryName, uint ident, string defaultText) {
           IntPtr libraryHandle = LoadLibrary(libraryName);
-          String Text = "";
+          String Text = defaultText;
           if (libraryHandle != IntPtr.Zero) {
             StringBuilder sb = new StringBuilder(1024);
             int size = LoadString(libraryHandle, ident, sb, 1024);
             if (size > 0)
-              Text =  sb.ToString();
+              Text = sb.ToString();
           }
-          Text = defaultText;
           FreeLibrary(libraryHandle);
           return Text;
         }
