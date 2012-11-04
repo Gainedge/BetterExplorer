@@ -114,13 +114,28 @@ namespace BetterExplorerOperations
                     rksobe = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer", true);
                     rksobe.SetValue("", "Open In Better Explorer");
                     RegistryKey rksobec = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer\command", true);
-                    String CurrentexePath = 
+                    String CurrentexePath =
                     System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
                     string dir = Path.GetDirectoryName(CurrentexePath);
                     string ExePath = Path.Combine(dir, @"BetterExplorerShell.exe");
                     rksobec.SetValue("", ExePath + " \"%1\"");
                     rksobec.Close();
                     rksobe.Close();
+                }
+                else
+                {
+                    RegistryKey rksobec = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer\command", true);
+                    if (rksobec == null)
+                    {
+                       RegistryKey rkcommand = rk.CreateSubKey(@"Folder\shell\openinbetterexplorer\command");
+                       String CurrentexePath =
+                        System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
+                       string dir = Path.GetDirectoryName(CurrentexePath);
+                       string ExePath = Path.Combine(dir, @"BetterExplorerShell.exe");
+                       rkcommand.SetValue("", ExePath + " \"%1\"");
+                       rkcommand.Close();
+                       rksobec.Close();
+                    }
                 }
 
 

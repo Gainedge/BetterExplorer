@@ -3910,66 +3910,92 @@ namespace BetterExplorer
         {
           var informalVersion = (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
           if (!informalVersion.ToLowerInvariant().Contains("alpha")) {
-            if (Updater.CheckForUpdates()) {
+              try
+              {
+                  if (Updater.CheckForUpdates())
+                  {
 
-              Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-                                          (Action)(() => {
-                                            string ver = "";
-                                            foreach (IUpdateTask item in Updater.UpdatesToApply) {
+                      Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                                                  (Action)(() =>
+                                                  {
+                                                      string ver = "";
+                                                      foreach (IUpdateTask item in Updater.UpdatesToApply)
+                                                      {
 
-                                              if ((item as FileUpdateTask).LocalPath.ToLowerInvariant() ==
-                                                  Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName).ToLowerInvariant()) {
+                                                          if ((item as FileUpdateTask).LocalPath.ToLowerInvariant() ==
+                                                              Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName).ToLowerInvariant())
+                                                          {
 
-                                                foreach (BooleanCondition.ConditionItem itemc in (item as FileUpdateTask).UpdateConditions.ChildConditions) {
-                                                  var fileVersion = itemc._Condition as FileVersionCondition;
-                                                  if (fileVersion != null) {
-                                                    ver = fileVersion.Version;
-                                                  }
-                                                }
-                                              }
-                                            }
-                                            stiUpdate.Content = FindResource("stUpdateAvailableCP").ToString().Replace("VER", ver);
-                                            stiUpdate.Foreground = System.Windows.Media.Brushes.Red;
+                                                              foreach (BooleanCondition.ConditionItem itemc in (item as FileUpdateTask).UpdateConditions.ChildConditions)
+                                                              {
+                                                                  var fileVersion = itemc._Condition as FileVersionCondition;
+                                                                  if (fileVersion != null)
+                                                                  {
+                                                                      ver = fileVersion.Version;
+                                                                  }
+                                                              }
+                                                          }
+                                                      }
+                                                      stiUpdate.Content = FindResource("stUpdateAvailableCP").ToString().Replace("VER", ver);
+                                                      stiUpdate.Foreground = System.Windows.Media.Brushes.Red;
 
-                                            if (MessageBox.Show("Updates are available. Do you want to update?", "Updates available",
-                                                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes) {
-                                              Updater.PrepareUpdatesAsync(finished => {
+                                                      if (MessageBox.Show("Updates are available. Do you want to update?", "Updates available",
+                                                          MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                                                      {
+                                                          Updater.PrepareUpdatesAsync(finished =>
+                                                          {
 
-                                                try {
-                                                  if (finished) {
-                                                    Updater.ApplyUpdates();
-                                                    // ApplyUpdates is a synchronous method by design. Make sure to save all user work before calling
-                                                    // it as it might restart your application
-                                                    // get out of the way so the console window isn't obstructed
-                                                    Dispatcher d = Application.Current.Dispatcher;
-                                                    d.BeginInvoke(new Action(() => this.Hide()));
-                                                    if (!Updater.ApplyUpdates(true, true, true)) {
-                                                      d.BeginInvoke(new Action(() => this.Show())); // this.WindowState = WindowState.Normal;
-                                                      MessageBox.Show("An error occurred while trying to install software updates");
-                                                    } else {
-                                                      d.BeginInvoke(new Action(() => this.Close()));
-                                                    }
-                                                    Updater.CleanUp();
-                                                    App.Current.Dispatcher.BeginInvoke(new Action(() => this.Close()));
-                                                  } else
-                                                    Updater.CleanUp();
-                                                } catch (System.Exception ex) {
-                                                  MessageBox.Show("Error", "There was a problem with the update: \n" + ex.Message);
-                                                }
+                                                              try
+                                                              {
+                                                                  if (finished)
+                                                                  {
+                                                                      Updater.ApplyUpdates();
+                                                                      // ApplyUpdates is a synchronous method by design. Make sure to save all user work before calling
+                                                                      // it as it might restart your application
+                                                                      // get out of the way so the console window isn't obstructed
+                                                                      Dispatcher d = Application.Current.Dispatcher;
+                                                                      d.BeginInvoke(new Action(() => this.Hide()));
+                                                                      if (!Updater.ApplyUpdates(true, true, true))
+                                                                      {
+                                                                          d.BeginInvoke(new Action(() => this.Show())); // this.WindowState = WindowState.Normal;
+                                                                          MessageBox.Show("An error occurred while trying to install software updates");
+                                                                      }
+                                                                      else
+                                                                      {
+                                                                          d.BeginInvoke(new Action(() => this.Close()));
+                                                                      }
+                                                                      Updater.CleanUp();
+                                                                      App.Current.Dispatcher.BeginInvoke(new Action(() => this.Close()));
+                                                                  }
+                                                                  else
+                                                                      Updater.CleanUp();
+                                                              }
+                                                              catch (System.Exception ex)
+                                                              {
+                                                                  MessageBox.Show("Error", "There was a problem with the update: \n" + ex.Message);
+                                                              }
 
-                                              });
-                                            }
+                                                          });
+                                                      }
 
-                                          }));
+                                                  }));
 
 
-            } else {
-              stiUpdate.Content = FindResource("stUpdateNotAvailableCP").ToString();
-              stiUpdate.Foreground = System.Windows.Media.Brushes.Black;
-              if (ShowNoUpdatesMessage)
-                MessageBox.Show("No updates are available.", "Updates available",
-                                                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
+                  }
+                  else
+                  {
+                      stiUpdate.Content = FindResource("stUpdateNotAvailableCP").ToString();
+                      stiUpdate.Foreground = System.Windows.Media.Brushes.Black;
+                      if (ShowNoUpdatesMessage)
+                          MessageBox.Show("No updates are available.", "Updates available",
+                                                              MessageBoxButton.OK, MessageBoxImage.Information);
+                  }
+              }
+              catch 
+              {
+
+                  MessageBox.Show("Update Server is not available at the moment! Try again later!");
+              }
           } else {
             if (ShowNoUpdatesMessage)
               MessageBox.Show("This is Alpha version and update is disabled!");
@@ -7491,124 +7517,28 @@ namespace BetterExplorer
                 return;
             }
 
-            int CurSelIndex = thetab.Index;
-            if (CurSelIndex == 0)
+
+            if (thetab.Index == 0 && tabControl1.Items.Count > 1)
             {
-                if (LastTabIndex != -1)
-                {
-                    try
-                    {
-                        tabControl1.SelectedItem = tabControl1.Items[LastTabIndex];
-                        CurrentTabIndex = LastTabIndex;
-                    }
-                    catch
-                    {
-
-                        tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-                        CurrentTabIndex = tabControl1.Items.Count - 1;
-                    }
-                }
-                else
-                {
-                    tabControl1.SelectedItem = tabControl1.Items[1];
-                    CurrentTabIndex = 0;
-                }
-
+                tabControl1.SelectedIndex = thetab.Index + 1;
+                tabControl1.Items.Remove(thetab);
+            }
+            else if (thetab.Index == tabControl1.Items.Count - 1)
+            {
+                tabControl1.SelectedIndex = thetab.Index - 1;
+                tabControl1.Items.Remove(thetab);
             }
             else
             {
-                if (CurSelIndex == tabControl1.Items.Count - 1)
+
+                for (int i = thetab.Index + 1; i < tabControl1.Items.Count; i++)
                 {
-                    if (CurSelIndex == LastTabIndex)
-                    {
-                        if (BeforeLastTabIndex != -1 && tabControl1.Items.Count >= BeforeLastTabIndex + 1)
-                        {
-                            tabControl1.SelectedItem = tabControl1.Items[BeforeLastTabIndex];
-                            CurrentTabIndex = BeforeLastTabIndex;
-                        }
-                        else
-                        {
-                            tabControl1.SelectedItem = tabControl1.Items[CurSelIndex - 1];
-                            CurrentTabIndex = CurSelIndex - 1;
-                            LastTabIndex = CurrentTabIndex;
-                        }
-
-                    }
-                    else
-                    {
-                        if (LastTabIndex != -1)
-                        {
-                            try
-                            {
-                                tabControl1.SelectedItem = tabControl1.Items[LastTabIndex];
-                                CurrentTabIndex = LastTabIndex;
-                            }
-                            catch
-                            {
-
-                                //Handle the exeption on using Close all tabs command since we dont need to keep any index just to close the app
-                            }
-                        }
-                    }
-
+                    CloseableTabItem tab = tabControl1.Items[i] as CloseableTabItem;
+                    tab.Index = tab.Index - 1;
                 }
-                else
-                {
-                    if (CurSelIndex == LastTabIndex)
-                    {
-                        if (BeforeLastTabIndex != -1 && tabControl1.Items.Count >= BeforeLastTabIndex + 1)
-                        {
-                            tabControl1.SelectedItem = tabControl1.Items[BeforeLastTabIndex];
-                            CurrentTabIndex = BeforeLastTabIndex;
-                        }
-                        else
-                        {
-                            tabControl1.SelectedItem = tabControl1.Items[CurSelIndex + 1];
-                            CurrentTabIndex = CurSelIndex + 1;
-                            LastTabIndex = CurrentTabIndex;
-                        }
-                    }
-                    else
-                    {
-                        if (LastTabIndex != -1)
-                        {
-                            try
-                            {
-                                tabControl1.SelectedItem = tabControl1.Items[LastTabIndex];
-                                CurrentTabIndex = LastTabIndex;
-                            }
-                            catch
-                            {
-                                if (LastTabIndex != 0)
-                                {
-                                    tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-                                    CurrentTabIndex = tabControl1.Items.Count - 1;
-                                }
-                                else
-                                {
-                                    tabControl1.SelectedItem = tabControl1.Items[0];
-                                    CurrentTabIndex = 0;
-                                }
-
-                            }
-                        }
-                    }
-                }
+                tabControl1.Items.Remove(thetab);
             }
-
-            for (int i = CurSelIndex + 1; i < tabControl1.Items.Count; i++)
-            {
-                CloseableTabItem tab = tabControl1.Items[i] as CloseableTabItem;
-                tab.Index = tab.Index - 1;
-            }
-            try
-            {
-                tabControl1.Items.RemoveAt(CurSelIndex);
-            }
-            catch
-            {
-                tabControl1.Items.RemoveAt(CurSelIndex - 1);
-            }
+            
             ConstructMoveToCopyToMenu();
 
             if (allowreopening == true)
