@@ -7356,6 +7356,49 @@ namespace BetterExplorer
         private void btnNewTab_Click(object sender, RoutedEventArgs e)
         {
             NewTab();
+            CloseableTabItem itb = tabControl1.SelectedItem as CloseableTabItem;
+
+            isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
+            if (itb != null)
+            {
+                try
+                {
+                    BeforeLastTabIndex = LastTabIndex;
+
+                    //tabControl1.SelectedIndex = itb.Index;
+                    //LastTabIndex = itb.Index;
+                    //CurrentTabIndex = LastTabIndex;
+                    if (itb.Path != Explorer.NavigationLog.CurrentLocation)
+                    {
+
+
+                        if (!Keyboard.IsKeyDown(Key.Tab))
+                        {
+                            Explorer.Navigate(itb.Path);
+                        }
+                        else
+                        {
+                            t.Interval = 500;
+                            t.Tag = itb.Path;
+                            t.Tick += new EventHandler(t_Tick);
+                            t.Start();
+                        }
+
+                    }
+                }
+                catch (StackOverflowException)
+                {
+
+                }
+                //'btnTabCloseC.IsEnabled = tabControl1.Items.Count > 1;
+                //'there's a bug that has this enabled when there's only one tab open, but why disable it
+                //'if it never crashes the program? Closing the last tab simply closes the program, so I
+                //'thought, what the heck... let's just keep it enabled. :) -JaykeBird
+            }
+
+
+            Explorer.ExplorerSetFocus();
+            Explorer.Focus();
         }
 
         private void btnTabClone_Click(object sender, RoutedEventArgs e)
