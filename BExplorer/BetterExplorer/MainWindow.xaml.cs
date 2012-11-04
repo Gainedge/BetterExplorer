@@ -8040,6 +8040,7 @@ namespace BetterExplorer
         void newt_Drop(object sender, DragEventArgs e)
         {
 
+            e.Handled = true;
             var tabItemTarget = e.Source as CloseableTabItem;
 
             var tabItemSource = e.Data.GetData(typeof(CloseableTabItem)) as CloseableTabItem;
@@ -8225,6 +8226,7 @@ namespace BetterExplorer
 
         void newt_DragEnter(object sender, DragEventArgs e)
         {
+            e.Handled = true;
             var tabItem = e.Source as CloseableTabItem;
 
             if (tabItem == null)
@@ -8459,37 +8461,43 @@ namespace BetterExplorer
             }
         }
 
-        private void TabItem_PreviewMouseMove(object sender, MouseEventArgs e)
+        private void tabControl1_Drop(object sender, DragEventArgs e)
         {
-            var tabItem = e.Source as TabItem;
-
-            if (tabItem == null)
-                return;
-
-            if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
+            //MessageBox.Show("Dropped here!");
+            String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string item in collection)
             {
-                DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
+                ShellObject obj = ShellObject.FromParsingName(item);
+                if (obj.IsFolder == true && obj.IsFileSystemObject)
+                {
+                    bool isarchive = false;
+                    foreach (string item2 in Archives)
+                    {
+                        if (item.Contains(item2) == true)
+                        {
+                            isarchive = true;
+                        }
+                    }
+
+                    if (isarchive == false)
+                    {
+                        NewTab(item);
+                    }
+                    else
+                    {
+                        MessageBox.Show("We see this is an archive. However, we're not able to open archives here. Try clicking on it and extracting it.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Hey... this isn't a folder! We can't make a new tab out of this file.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
+
+           
         }
-        private void TabItem_Drop(object sender, DragEventArgs e)
-        {
-            var tabItemTarget = e.Source as TabItem;
 
-            var tabItemSource = e.Data.GetData(typeof(TabItem)) as TabItem;
-
-            if (!tabItemTarget.Equals(tabItemSource))
-            {
-                var tabControl = tabItemTarget.Parent as TabControl;
-                int sourceIndex = tabControl.Items.IndexOf(tabItemSource);
-                int targetIndex = tabControl.Items.IndexOf(tabItemTarget);
-
-                tabControl.Items.Remove(tabItemSource);
-                tabControl.Items.Insert(targetIndex, tabItemSource);
-
-                tabControl.Items.Remove(tabItemTarget);
-                tabControl.Items.Insert(sourceIndex, tabItemTarget);
-            }
-        }
+        
 
 
     }
