@@ -9,7 +9,7 @@ namespace BetterExplorer
     class PathStringCombiner
     {
 
-        public static string CombinePaths(List<ShellObject> paths, bool checkforfolders = false)
+        public static string CombinePaths(List<ShellObject> paths, string separatorvalue = ";", bool checkforfolders = false)
         {
             string ret = "";
 
@@ -17,17 +17,17 @@ namespace BetterExplorer
             {
                 if (checkforfolders == false)
                 {
-                    ret += ";" + item.ParsingName.Replace(@"\\", @"\");
+                    ret += separatorvalue + item.ParsingName.Replace(@"\\", @"\");
                 }
                 else
                 {
                     if (item.IsFolder == true)
                     {
-                        ret += ";(f)" + item.ParsingName.Replace(@"\\", @"\");
+                        ret += separatorvalue + "(f)" + item.ParsingName.Replace(@"\\", @"\");
                     }
                     else
                     {
-                        ret += ";" + item.ParsingName.Replace(@"\\", @"\");
+                        ret += separatorvalue + item.ParsingName.Replace(@"\\", @"\");
                     }
                 }
             }

@@ -13,6 +13,7 @@ namespace BetterExplorer
     public class SavedTabsList : List<string>
     {
 
+
         public new void Add(string loc)
         {
             if (this.Contains(loc) == false)
@@ -101,9 +102,9 @@ namespace BetterExplorer
             //    Directory.CreateDirectory(sstdir);
             //}
 
-            using (StreamWriter sw = new StreamWriter(file, true))
+            using (StreamWriter sw = new StreamWriter(file, false))
             {
-                sw.WriteLine(locs);
+                sw.WriteLine(locs.ListToString());
             }
         }
 

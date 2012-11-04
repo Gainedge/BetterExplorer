@@ -942,45 +942,52 @@ namespace BetterExplorer
                                     bool GroupDir;
                                     Explorer.GetGroupColInfo(out pkg, out GroupDir);
 
-                                    foreach (Collumns item in Explorer.AvailableVisibleColumns)
+                                    try
                                     {
-
-                                        if (item != null)
+                                        foreach (Collumns item in Explorer.AvailableVisibleColumns)
                                         {
-                                            MenuItem mi = new MenuItem();
-                                            mi.Header = item.Name;
-                                            mi.Tag = item;
-                                            mi.GroupName = "GR2";
-                                            mi.Focusable = false;
-                                            mi.IsCheckable = true;
-                                            if ((item.pkey.fmtid == sc.propkey.fmtid) && (item.pkey.pid == sc.propkey.pid))
-                                            {
-                                                mi.IsChecked = true;
-                                            }
-                                            else
-                                            {
-                                                mi.IsChecked = false;
-                                            }
-                                            mi.Click += new RoutedEventHandler(mi_Click);
-                                            btnSort.Items.Add(mi);
 
-                                            MenuItem mig = new MenuItem();
-                                            mig.Header = item.Name;
-                                            mig.Tag = item;
-                                            mig.GroupName = "GR3";
-                                            mig.Focusable = false;
-                                            mig.IsCheckable = true;
-                                            if ((item.pkey.fmtid == pkg.fmtid) && (item.pkey.pid == pkg.pid))
+                                            if (item != null)
                                             {
-                                                mig.IsChecked = true;
+                                                MenuItem mi = new MenuItem();
+                                                mi.Header = item.Name;
+                                                mi.Tag = item;
+                                                mi.GroupName = "GR2";
+                                                mi.Focusable = false;
+                                                mi.IsCheckable = true;
+                                                if ((item.pkey.fmtid == sc.propkey.fmtid) && (item.pkey.pid == sc.propkey.pid))
+                                                {
+                                                    mi.IsChecked = true;
+                                                }
+                                                else
+                                                {
+                                                    mi.IsChecked = false;
+                                                }
+                                                mi.Click += new RoutedEventHandler(mi_Click);
+                                                btnSort.Items.Add(mi);
+
+                                                MenuItem mig = new MenuItem();
+                                                mig.Header = item.Name;
+                                                mig.Tag = item;
+                                                mig.GroupName = "GR3";
+                                                mig.Focusable = false;
+                                                mig.IsCheckable = true;
+                                                if ((item.pkey.fmtid == pkg.fmtid) && (item.pkey.pid == pkg.pid))
+                                                {
+                                                    mig.IsChecked = true;
+                                                }
+                                                else
+                                                {
+                                                    mig.IsChecked = false;
+                                                }
+                                                mig.Click += new RoutedEventHandler(mig_Click);
+                                                btnGroup.Items.Add(mig);
                                             }
-                                            else
-                                            {
-                                                mig.IsChecked = false;
-                                            }
-                                            mig.Click += new RoutedEventHandler(mig_Click);
-                                            btnGroup.Items.Add(mig);
                                         }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error); 
                                     }
                                     Separator sp = new Separator();
                                     sp.Focusable = false;
@@ -3398,7 +3405,7 @@ namespace BetterExplorer
                 AddToLog(String.Format(@"Created Symbolic Link at {0}\{1} linked to {2}", PathForDrop, o.GetDisplayName(DisplayNameType.Default), o.ParsingName));
             }
 
-            string sources = PathStringCombiner.CombinePaths(items, true);
+            string sources = PathStringCombiner.CombinePaths(items, ";", true);
             string drops = PathStringCombiner.CombinePathsWithSinglePath(PathForDrop + @"\", items, false);
 
 
@@ -3792,7 +3799,7 @@ namespace BetterExplorer
 
         private void btnCut_Click(object sender, RoutedEventArgs e)
         {
-            AddToLog("Files cut: " + PathStringCombiner.CombinePaths(Explorer.SelectedItems.ToList(), false));
+            AddToLog("Files cut: " + PathStringCombiner.CombinePaths(Explorer.SelectedItems.ToList(), ";", false));
             Explorer.DoCut();
         }
 
@@ -3870,909 +3877,6 @@ namespace BetterExplorer
                 link.Save(KnownFolders.Links.ParsingName + @"\" +
                     Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default) + ".lnk");
                 link.Dispose();
-            }
-
-        }
-
-        #endregion
-
-        #region Tabs
-
-        private void ConstructMoveToCopyToMenu()
-        {
-            btnMoveto.Items.Clear();
-            btnCopyto.Items.Clear();
-            MenuItem OtherLocationMove = new MenuItem();
-            OtherLocationMove.Focusable = false;
-            OtherLocationMove.Header = FindResource("miOtherDestCP");
-            OtherLocationMove.Click += new RoutedEventHandler(btnmtOther_Click);
-            MenuItem OtherLocationCopy = new MenuItem();
-            OtherLocationCopy.Focusable = false;
-            OtherLocationCopy.Header = FindResource("miOtherDestCP");
-            OtherLocationCopy.Click += new RoutedEventHandler(btnctOther_Click);
-
-            MenuItem mimDesktop = new MenuItem();
-            ShellObject sod = (ShellObject)KnownFolders.Desktop;
-            sod.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-            sod.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-            mimDesktop.Focusable = false;
-            mimDesktop.Icon = sod.Thumbnail.BitmapSource;
-            mimDesktop.Header = FindResource("btnctDesktopCP");
-            mimDesktop.Click += new RoutedEventHandler(btnmtDesktop_Click);
-            MenuItem micDesktop = new MenuItem();
-            micDesktop.Focusable = false;
-            micDesktop.Icon = sod.Thumbnail.BitmapSource;
-            micDesktop.Header = FindResource("btnctDesktopCP");
-            micDesktop.Click += new RoutedEventHandler(btnctDesktop_Click);
-            sod.Dispose();
-
-            MenuItem mimDocuments = new MenuItem();
-            ShellObject sodc = (ShellObject)KnownFolders.Documents;
-            sodc.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-            sodc.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-            mimDocuments.Focusable = false;
-            mimDocuments.Icon = sodc.Thumbnail.BitmapSource;
-            mimDocuments.Header = FindResource("btnctDocumentsCP");
-            mimDocuments.Click += new RoutedEventHandler(btnmtDocuments_Click);
-            MenuItem micDocuments = new MenuItem();
-            micDocuments.Focusable = false;
-            micDocuments.Icon = sodc.Thumbnail.BitmapSource;
-            micDocuments.Header = FindResource("btnctDocumentsCP");
-            micDocuments.Click += new RoutedEventHandler(btnctDocuments_Click);
-            sodc.Dispose();
-
-            MenuItem mimDownloads = new MenuItem();
-            ShellObject sodd = (ShellObject)KnownFolders.Downloads;
-            sodd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-            sodd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-            mimDownloads.Focusable = false;
-            mimDownloads.Icon = sodd.Thumbnail.BitmapSource;
-            mimDownloads.Header = FindResource("btnctDownloadsCP");
-            mimDownloads.Click += new RoutedEventHandler(btnmtDounloads_Click);
-            MenuItem micDownloads = new MenuItem();
-            micDownloads.Focusable = false;
-            micDownloads.Icon = sodd.Thumbnail.BitmapSource;
-            micDownloads.Header = FindResource("btnctDownloadsCP");
-            micDownloads.Click += new RoutedEventHandler(btnctDounloads_Click);
-            sodd.Dispose();
-
-            btnMoveto.Items.Add(mimDocuments);
-            btnMoveto.Items.Add(mimDownloads);
-            btnMoveto.Items.Add(mimDesktop);
-            btnMoveto.Items.Add(new Separator());
-
-            btnCopyto.Items.Add(micDocuments);
-            btnCopyto.Items.Add(micDownloads);
-            btnCopyto.Items.Add(micDesktop);
-            btnCopyto.Items.Add(new Separator());
-
-            foreach (CloseableTabItem item in tabControl1.Items)
-            {
-                bool IsAdditem = true;
-                foreach (object mii in btnCopyto.Items)
-                {
-                    if (mii is MenuItem)
-                    {
-                        if ((mii as MenuItem).Tag != null)
-                        {
-                            if (((mii as MenuItem).Tag as ShellObject) == item.Path)
-                            {
-                                IsAdditem = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (IsAdditem && item.Path.IsFileSystemObject)
-                {
-                    try
-                    {
-                        MenuItem mim = new MenuItem();
-                        mim.Header = item.Path.GetDisplayName(DisplayNameType.Default);
-                        mim.Focusable = false;
-                        mim.Tag = item.Path;
-                        ShellObject so = ShellObject.FromParsingName(item.Path.ParsingName);
-                        so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                        so.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-                        mim.Icon = so.Thumbnail.BitmapSource;
-                        mim.Click += new RoutedEventHandler(mim_Click);
-                        btnMoveto.Items.Add(mim);
-                        MenuItem mic = new MenuItem();
-                        mic.Focusable = false;
-                        mic.Header = item.Path.GetDisplayName(DisplayNameType.Default);
-                        mic.Tag = item.Path;
-                        mic.Icon = so.Thumbnail.BitmapSource;
-                        mic.Click += new RoutedEventHandler(mimc_Click);
-                        btnCopyto.Items.Add(mic);
-                        so.Dispose();
-                    }
-                    catch
-                    {
-                        //Do nothing if ShellObject is not available anymore and close the problematic item
-                        CloseTab(item);
-                    }
-                }
-            }
-            btnMoveto.Items.Add(new Separator());
-            btnMoveto.Items.Add(OtherLocationMove);
-            btnCopyto.Items.Add(new Separator());
-            btnCopyto.Items.Add(OtherLocationCopy);
-
-        }
-
-        void mimc_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem mi = sender as MenuItem;
-            DropData dd = new DropData();
-            dd.Shellobjects = Explorer.SelectedItems;
-            dd.PathForDrop = (mi.Tag as ShellObject).ParsingName;
-            Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
-            CopyThread.SetApartmentState(ApartmentState.STA);
-            CopyThread.Start(dd);
-        }
-
-        void mim_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem mi = sender as MenuItem;
-            DropData dd = new DropData();
-            dd.Shellobjects = Explorer.SelectedItems;
-            dd.PathForDrop = (mi.Tag as ShellObject).ParsingName;
-            Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
-            CopyThread.SetApartmentState(ApartmentState.STA);
-            CopyThread.Start(dd);
-        }
-
-        private void btnNewTab_Click(object sender, RoutedEventArgs e)
-        {
-            NewTab();
-        }
-
-        private void btnTabClone_Click(object sender, RoutedEventArgs e)
-        {
-            CloneTab(tabControl1.Items[CurrentTabIndex] as CloseableTabItem);
-        }
-
-        private void btnTabCloseC_Click(object sender, RoutedEventArgs e)
-        {
-            if (tabControl1.SelectedIndex == 0 && tabControl1.Items.Count == 1)
-            {
-                Close();
-                return;
-            }
-            int CurSelIndex = tabControl1.SelectedIndex;
-            if (tabControl1.SelectedIndex == 0)
-            {
-                tabControl1.SelectedItem = tabControl1.Items[1];
-                CurrentTabIndex = 0;
-            }
-            else
-            {
-                tabControl1.SelectedItem = tabControl1.Items[CurSelIndex - 1];
-                CurrentTabIndex = CurSelIndex - 1;
-            }
-
-
-            tabControl1.Items.RemoveAt(CurSelIndex);
-
-        }
-
-        //'close tab
-        void cti_CloseTab(object sender, RoutedEventArgs e)
-        {
-            CloseableTabItem curItem = e.Source as CloseableTabItem;
-
-            CloseTab(curItem);
-        }
-
-        public void CloneTab(CloseableTabItem CurTab)
-        {
-            CloseableTabItem newt = new CloseableTabItem();
-            CreateTabbarRKMenu(newt);
-            newt.Header = CurTab.Header;
-            newt.TabIcon = CurTab.TabIcon;
-            newt.Path = CurTab.Path;
-            newt.Index = tabControl1.Items.Count;
-            newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
-            newt.DragEnter += new DragEventHandler(newt_DragEnter);
-            newt.DragLeave += new DragEventHandler(newt_DragLeave);
-            newt.DragOver += new DragEventHandler(newt_DragOver);
-            newt.Drop += new DragEventHandler(newt_Drop);
-            newt.AllowDrop = true;
-            newt.log.CurrentLocation = CurTab.Path;
-            tabControl1.Items.Add(newt);
-            tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
-            tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-            LastTabIndex = CurrentTabIndex;
-            CurrentTabIndex = tabControl1.Items.Count - 1;
-            ConstructMoveToCopyToMenu();
-        }
-
-        private void ERNewTab(object sender, ExecutedRoutedEventArgs e)
-        {
-            NewTab();
-        }
-
-        void SelectTab(int Index)
-        {
-            int selIndex = 0;
-            if (CurrentTabIndex == tabControl1.Items.Count - 1)
-            {
-                selIndex = 0;
-            }
-            else
-            {
-                selIndex = Index;
-            }
-            tabControl1.SelectedItem = tabControl1.Items[selIndex];
-            CurrentTabIndex = selIndex;
-        }
-
-        void CloseTab(CloseableTabItem thetab)
-        {
-            if (thetab.Index == 0 && tabControl1.Items.Count == 1)
-            {
-                Close();
-                return;
-            }
-
-            int CurSelIndex = thetab.Index;
-            if (CurSelIndex == 0)
-            {
-                if (LastTabIndex != -1)
-                {
-                    try
-                    {
-                        tabControl1.SelectedItem = tabControl1.Items[LastTabIndex];
-                        CurrentTabIndex = LastTabIndex;
-                    }
-                    catch
-                    {
-
-                        tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-                        CurrentTabIndex = tabControl1.Items.Count - 1;
-                    }
-                }
-                else
-                {
-                    tabControl1.SelectedItem = tabControl1.Items[1];
-                    CurrentTabIndex = 0;
-                }
-
-            }
-            else
-            {
-                if (CurSelIndex == tabControl1.Items.Count - 1)
-                {
-                    if (CurSelIndex == LastTabIndex)
-                    {
-                        if (BeforeLastTabIndex != -1 && tabControl1.Items.Count >= BeforeLastTabIndex + 1)
-                        {
-                            tabControl1.SelectedItem = tabControl1.Items[BeforeLastTabIndex];
-                            CurrentTabIndex = BeforeLastTabIndex;
-                        }
-                        else
-                        {
-                            tabControl1.SelectedItem = tabControl1.Items[CurSelIndex - 1];
-                            CurrentTabIndex = CurSelIndex - 1;
-                            LastTabIndex = CurrentTabIndex;
-                        }
-
-                    }
-                    else
-                    {
-                        if (LastTabIndex != -1)
-                        {
-                            try
-                            {
-                                tabControl1.SelectedItem = tabControl1.Items[LastTabIndex];
-                                CurrentTabIndex = LastTabIndex;
-                            }
-                            catch
-                            {
-                                 
-                               //Handle the exeption on using Close all tabs command since we dont need to keep any index just to close the app
-                            }
-                        }
-                    }
-
-                }
-                else
-                {
-                    if (CurSelIndex == LastTabIndex)
-                    {
-                        if (BeforeLastTabIndex != -1 && tabControl1.Items.Count >= BeforeLastTabIndex + 1)
-                        {
-                            tabControl1.SelectedItem = tabControl1.Items[BeforeLastTabIndex];
-                            CurrentTabIndex = BeforeLastTabIndex;
-                        }
-                        else
-                        {
-                            tabControl1.SelectedItem = tabControl1.Items[CurSelIndex + 1];
-                            CurrentTabIndex = CurSelIndex + 1;
-                            LastTabIndex = CurrentTabIndex;
-                        }
-                    }
-                    else
-                    {
-                        if (LastTabIndex != -1)
-                        {
-                            try
-                            {
-                                tabControl1.SelectedItem = tabControl1.Items[LastTabIndex];
-                                CurrentTabIndex = LastTabIndex;
-                            }
-                            catch
-                            {
-                                if (LastTabIndex != 0)
-                                {
-                                    tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-                                    CurrentTabIndex = tabControl1.Items.Count - 1;
-                                }
-                                else
-                                {
-                                    tabControl1.SelectedItem = tabControl1.Items[0];
-                                    CurrentTabIndex = 0;
-                                }
-
-                            }
-                        }
-                    }
-                }
-            }
-
-            for (int i = CurSelIndex + 1; i < tabControl1.Items.Count; i++)
-            {
-                CloseableTabItem tab = tabControl1.Items[i] as CloseableTabItem;
-                tab.Index = tab.Index - 1;
-            }
-            try
-            {
-                tabControl1.Items.RemoveAt(CurSelIndex);
-            }
-            catch
-            {
-                tabControl1.Items.RemoveAt(CurSelIndex - 1);
-            }
-            ConstructMoveToCopyToMenu();
-
-            reopenabletabs.Add(thetab.log);
-            btnUndoClose.IsEnabled = true;
-        }
-        void newt_CloseTab(object sender, RoutedEventArgs e)
-        {
-            CloseableTabItem curItem = e.Source as CloseableTabItem;
-            CloseTab(curItem);
-        }
-
-        /// <summary>
-        /// Re-opens a previously closed tab using that tab's navigation log data.
-        /// </summary>
-        /// <param name="log">The navigation log data from the previously closed tab.</param>
-        public void ReOpenTab(NavigationLog log)
-        {
-            CloseableTabItem newt = new CloseableTabItem();
-            CreateTabbarRKMenu(newt);
-
-            ShellObject DefPath = log.CurrentLocation;
-            DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-            DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-            newt.Header = DefPath.GetDisplayName(DisplayNameType.Default);
-            newt.TabIcon = DefPath.Thumbnail.BitmapSource;
-            newt.Path = DefPath;
-            newt.IsNavigate = false;
-            newt.Index = tabControl1.Items.Count;
-            newt.AllowDrop = true;
-            newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
-            newt.DragEnter += new DragEventHandler(newt_DragEnter);
-            newt.DragOver += new DragEventHandler(newt_DragOver);
-            newt.Drop += new DragEventHandler(newt_Drop);
-
-            tabControl1.Items.Add(newt);
-            LastTabIndex = tabControl1.SelectedIndex;
-            newt.log.ImportData(log);
-
-            CurrentTabIndex = tabControl1.Items.Count - 1;
-            ConstructMoveToCopyToMenu();
-        }
-
-        System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-        private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-            if (e.AddedItems.Count > 0)
-            {
-
-                CloseableTabItem itb = e.AddedItems[0] as CloseableTabItem;
-
-                isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
-                if (itb != null)
-                {
-
-                        BeforeLastTabIndex = LastTabIndex;
-
-                        tabControl1.SelectedIndex = itb.Index;
-                        LastTabIndex = tabControl1.SelectedIndex;
-                        CurrentTabIndex = itb.Index;
-                        if (itb.Path != Explorer.NavigationLog.CurrentLocation)
-                        {
-
-
-                            if (!Keyboard.IsKeyDown(Key.Tab))
-                            {
-                                Explorer.Navigate(itb.Path);
-                            }
-                            else
-                            {
-                                t.Interval = 500;
-                                t.Tag = itb.Path;
-                                t.Tick += new EventHandler(t_Tick);
-                                t.Start();
-                            }
-
-                        }
-                    //'btnTabCloseC.IsEnabled = tabControl1.Items.Count > 1;
-                    //'there's a bug that has this enabled when there's only one tab open, but why disable it
-                    //'if it never crashes the program? Closing the last tab simply closes the program, so I
-                    //'thought, what the heck... let's just keep it enabled. :) -JaykeBird
-                }
-            }
-
-            Explorer.ExplorerSetFocus();
-            Explorer.Focus();
-        }
-
-        void t_Tick(object sender, EventArgs e)
-        {
-            if (!Keyboard.IsKeyDown(Key.Tab))
-            {
-
-                Explorer.Navigate((sender as System.Windows.Forms.Timer).Tag as ShellObject);
-                WindowsAPI.SetFocus(ExplorerBrowser.SysListViewHandle);
-                (sender as System.Windows.Forms.Timer).Stop();
-            }
-        }
-
-        private void tabControl1_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Middle)
-            {
-                CloneTab(tabControl1.SelectedItem as CloseableTabItem);
-            }
-        }
-
-        private void RCloseTab(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (tabControl1.SelectedIndex == 0 && tabControl1.Items.Count == 1)
-            {
-                Close();
-                return;
-            }
-            int CurSelIndex = tabControl1.SelectedIndex;
-            if (tabControl1.SelectedIndex == 0)
-            {
-                tabControl1.SelectedItem = tabControl1.Items[1];
-                CurrentTabIndex = 0;
-            }
-            else
-            {
-                tabControl1.SelectedItem = tabControl1.Items[CurSelIndex - 1];
-                CurrentTabIndex = CurSelIndex - 1;
-            }
-
-
-            tabControl1.Items.RemoveAt(CurSelIndex);
-        }
-
-        private void ChangeTab(object sender, ExecutedRoutedEventArgs e)
-        {
-            t.Stop();
-            SelectTab(CurrentTabIndex + 1);
-        }
-
-        private void ERGoToBCCombo(object sender, ExecutedRoutedEventArgs e)
-        {
-            breadcrumbBarControl1.EnterEditMode();
-        }
-
-
-        void CreateTabbarRKMenu(CloseableTabItem tabitem)
-        {
-            tabitem.mnu = new ContextMenu();
-            MenuItem miclosecurrentr = new MenuItem();
-            miclosecurrentr.Header = "Close current tab";
-            miclosecurrentr.Tag = tabitem;
-            miclosecurrentr.Click += new RoutedEventHandler(miclosecurrentr_Click);
-            tabitem.mnu.Items.Add(miclosecurrentr);
-
-            MenuItem miclosealltab = new MenuItem();
-            miclosealltab.Header = "Close all tabs";
-            miclosealltab.Click += new RoutedEventHandler(miclosealltab_Click);
-            tabitem.mnu.Items.Add(miclosealltab);
-
-            MenuItem miclosealltabbd = new MenuItem();
-            miclosealltabbd.Header = "Close all other tabs";
-            miclosealltabbd.Tag = tabitem;
-            miclosealltabbd.Click += new RoutedEventHandler(miclosealltabbd_Click);
-            tabitem.mnu.Items.Add(miclosealltabbd);
-
-            //tabitem.mnu.Items.Add(new Separator());
-
-            MenuItem miopeninnew = new MenuItem();
-            miopeninnew.Header = "Open in new window";
-            miopeninnew.Tag = tabitem;
-            miopeninnew.Click += new RoutedEventHandler(miopeninnew_Click);
-            //tabitem.mnu.Items.Add(miopeninnew);
-
-        }
-
-        void miopeninnew_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem mi = (sender as MenuItem);
-            CloseableTabItem ti = mi.Tag as CloseableTabItem;
-            Process.Start(Assembly.GetExecutingAssembly().GetName().Name, ti.Path.ParsingName + " /nw");
-            CloseTab(ti);
-            //throw new NotImplementedException();
-        }
-
-        void miclosealltabbd_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem mi = (sender as MenuItem);
-            CloseableTabItem ti = mi.Tag as CloseableTabItem;
-            CloseAllTabsButThis(ti);
-        }
-
-        void miclosealltab_Click(object sender, RoutedEventArgs e)
-        {
-            CloseAllTabs(true);
-        }
-
-        void miclosecurrentr_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem mi = (sender as MenuItem);
-            CloseableTabItem ti = mi.Tag as CloseableTabItem;
-            CloseTab(ti);
-        }
-
-        void CloseAllTabs(bool CloseFirstTab)
-        {
-            List<CloseableTabItem> tabs = new List<CloseableTabItem>();
-            foreach (object item in tabControl1.Items)
-            {
-                CloseableTabItem it = item as CloseableTabItem;
-                tabs.Add(it);
-            }
-
-            if (CloseFirstTab)
-            {
-                foreach (CloseableTabItem item in tabs)
-                {
-
-                    CloseTab(item);
-                }
-            }
-            else
-            {
-                foreach (CloseableTabItem item in tabs)
-                {
-
-                    if (item.Index != 0)
-                    {
-                        CloseTab(item);
-                    }
-
-                }
-            }
-
-            tabs = null;
-
-        }
-
-
-        void CloseAllTabsButThis(CloseableTabItem tabitem)
-        {
-            List<CloseableTabItem> tabs = new List<CloseableTabItem>();
-            foreach (object item in tabControl1.Items)
-            {
-                CloseableTabItem it = item as CloseableTabItem;
-                tabs.Add(it);
-            }
-
-
-            foreach (CloseableTabItem item in tabs)
-            {
-
-                if (true)
-                {
-                    if (item != tabitem)
-                    {
-                        CloseTab(item);
-                    }
-
-                }
-
-            }
-
-            tabs = null;
-            ConstructMoveToCopyToMenu();
-
-        }
-
-        public void NewTab(bool IsNavigate = true)
-        {
-            CloseableTabItem newt = new CloseableTabItem();
-            CreateTabbarRKMenu(newt);
-
-            ShellObject DefPath;
-            if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
-                DefPath = ShellObject.FromParsingName("shell:" + StartUpLocation);
-            else
-                try
-                {
-                    DefPath = ShellObject.FromParsingName(StartUpLocation);
-                }
-                catch
-                {
-                    DefPath = (ShellObject)KnownFolders.Libraries;
-                }
-            DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-            DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-            newt.Header = DefPath.GetDisplayName(DisplayNameType.Default);
-            newt.TabIcon = DefPath.Thumbnail.BitmapSource;
-            newt.Path = DefPath;
-            newt.IsNavigate = IsNavigate;
-            newt.Index = tabControl1.Items.Count;
-            newt.AllowDrop = true;
-            newt.log.CurrentLocation = DefPath;
-
-            newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
-            newt.DragEnter += new DragEventHandler(newt_DragEnter);
-            newt.DragOver += new DragEventHandler(newt_DragOver);
-            newt.Drop += new DragEventHandler(newt_Drop);
-            tabControl1.Items.Add(newt);
-            LastTabIndex = tabControl1.SelectedIndex;
-            tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
-            tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-
-            CurrentTabIndex = tabControl1.Items.Count - 1;
-            ConstructMoveToCopyToMenu();
-        }
-
-        public void NewTab(string Location, bool IsNavigate = false)
-        {
-            CloseableTabItem newt = new CloseableTabItem();
-            CreateTabbarRKMenu(newt);
-
-            ShellObject DefPath;
-            if (Location.IndexOf("::") == 0 && Location.IndexOf(@"\") == -1)
-                DefPath = ShellObject.FromParsingName("shell:" + Location);
-            else
-                DefPath = ShellObject.FromParsingName(Location);
-            DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-            DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-            newt.Header = DefPath.GetDisplayName(DisplayNameType.Default);
-            newt.TabIcon = DefPath.Thumbnail.BitmapSource;
-            newt.Path = DefPath;
-            newt.IsNavigate = IsNavigate;
-            newt.Index = tabControl1.Items.Count;
-            newt.AllowDrop = true;
-            newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
-            newt.DragEnter += new DragEventHandler(newt_DragEnter);
-            newt.DragOver += new DragEventHandler(newt_DragOver);
-            newt.Drop += new DragEventHandler(newt_Drop);
-
-            tabControl1.Items.Add(newt);
-            LastTabIndex = tabControl1.SelectedIndex;
-            if (IsNavigate)
-            {
-                //IsCancel = true;
-
-                tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
-                tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-                //IsCancel = false;
-            }
-            else
-            {
-                newt.log.CurrentLocation = DefPath;
-            }
-
-            CurrentTabIndex = tabControl1.Items.Count - 1;
-            ConstructMoveToCopyToMenu();
-        }
-
-        void newt_Drop(object sender, DragEventArgs e)
-        {
-
-
-            System.Windows.Point pt = e.GetPosition(sender as IInputElement);
-
-
-            if ((sender as CloseableTabItem).Path.IsFileSystemObject)
-            {
-                if ((e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey)
-                {
-                    e.Effects = DragDropEffects.Copy;
-                    if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                    {
-                        DropData PasteData = new DropData();
-                        String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
-                        StringCollection scol = new StringCollection();
-                        scol.AddRange(collection);
-                        PasteData.DropList = scol;
-                        PasteData.PathForDrop = (sender as CloseableTabItem).Path.ParsingName;
-                        Thread t = null;
-                        t = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
-                        t.SetApartmentState(ApartmentState.STA);
-                        t.Start(PasteData);
-                    }
-                }
-                else
-                {
-                    //if (Path.GetPathRoot((sender as CloseableTabItem).Path.ParsingName) ==
-                    //    Path.GetPathRoot(Explorer.NavigationLog.CurrentLocation.ParsingName))
-                    //{
-                    e.Effects = DragDropEffects.Move;
-                    if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                    {
-                        DropData PasteData = new DropData();
-                        String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
-                        StringCollection scol = new StringCollection();
-                        scol.AddRange(collection);
-                        PasteData.DropList = scol;
-                        PasteData.PathForDrop = (sender as CloseableTabItem).Path.ParsingName;
-                        Thread t = null;
-                        t = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
-                        t.SetApartmentState(ApartmentState.STA);
-                        t.Start(PasteData);
-                    }
-
-                    //}
-                    //else
-                    //{
-                    //    e.Effects = DragDropEffects.Copy;
-                    //    if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                    //    {
-                    //        DropData PasteData = new DropData();
-                    //        String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
-                    //        StringCollection scol = new StringCollection();
-                    //        scol.AddRange(collection);
-                    //        PasteData.DropList = scol;
-                    //        PasteData.PathForDrop = (sender as CloseableTabItem).Path.ParsingName;
-                    //        Thread t = null;
-                    //        t = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
-                    //        t.SetApartmentState(ApartmentState.STA);
-                    //        t.Start(PasteData);
-                    //    }
-
-                    //}
-                }
-            }
-            else
-            {
-                e.Effects = DragDropEffects.None;
-            }
-
-
-            DropTargetHelper.Drop(e.Data, pt, e.Effects);
-        }
-
-        void newt_DragOver(object sender, DragEventArgs e)
-        {
-            e.Handled = true;
-
-            if ((sender as CloseableTabItem).Path.IsFileSystemObject)
-            {
-                if ((e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey)
-                {
-                    e.Effects = DragDropEffects.Copy;
-
-                }
-                else
-                {
-                    //if (Path.GetPathRoot((sender as CloseableTabItem).Path.ParsingName) ==
-                    //    Path.GetPathRoot(Explorer.NavigationLog.CurrentLocation.ParsingName))
-                    //{
-                    //    e.Effects = DragDropEffects.Move;
-
-
-                    //}
-                    //else
-                    //{
-                    //    e.Effects = DragDropEffects.Copy;
-
-                    //}
-
-                    // I decided just to have it do a move because it will avoid errors with special shell folders.
-                    // Besides, if a person wants to copy something, they should know how to press Ctrl to copy.
-                    e.Effects = DragDropEffects.Move;
-                }
-            }
-            else
-            {
-                e.Effects = DragDropEffects.None;
-            }
-
-            Win32Point ptw = new Win32Point();
-            GetCursorPos(ref ptw);
-            //e.Handled = true;
-            DropTargetHelper.DragOver(new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
-        }
-
-        void newt_DragLeave(object sender, DragEventArgs e)
-        {
-            DropTargetHelper.DragLeave();
-        }
-
-        void newt_DragEnter(object sender, DragEventArgs e)
-        {
-
-
-            if ((sender as CloseableTabItem).Path.IsFileSystemObject)
-            {
-                if ((e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey)
-                {
-                    e.Effects = DragDropEffects.Copy;
-
-                }
-                else
-                {
-                    //if (Path.GetPathRoot((sender as CloseableTabItem).Path.ParsingName) ==
-                    //    Path.GetPathRoot(Explorer.NavigationLog.CurrentLocation.ParsingName))
-                    //{
-                    //    e.Effects = DragDropEffects.Move;
-
-
-                    //}
-                    //else
-                    //{
-                    //    e.Effects = DragDropEffects.Copy;
-
-                    //}
-
-                    // I decided just to have it do a move because it will avoid errors with special shell folders.
-                    // Besides, if a person wants to copy something, they should know how to press Ctrl to copy.
-                    e.Effects = DragDropEffects.Move;
-                }
-            }
-            else
-            {
-                e.Effects = DragDropEffects.None;
-            }
-
-
-            Win32Point ptw = new Win32Point();
-            GetCursorPos(ref ptw);
-            e.Effects = DragDropEffects.None;
-            DropTargetHelper.DragEnter(this, e.Data, new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
-        }
-
-        private void tabControl1_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-
-            string h = sender.GetType().Name.ToString();
-
-            hitTestList = new List<DependencyObject>();
-
-            System.Windows.Point pt = e.GetPosition(sender as IInputElement);
-
-            VisualTreeHelper.HitTest(
-                sender as Visual, null,
-                CollectAllVisuals_Callback,
-                new PointHitTestParameters(pt));
-
-            hitTestList.Reverse();
-
-            //DependencyObject elementToFind = null;
-
-            if (hitTestList[0].GetType().Name.Equals("ScrollViewer") && hitTestList.Count == 2)
-            {
-                NewTab();
-            }
-            else if (hitTestList.Count == 3)
-            {
-                if (hitTestList[2].GetType().Name == "Grid")
-                {
-                    NewTab();
-                }
             }
 
         }
@@ -8082,6 +7186,1046 @@ namespace BetterExplorer
 
         #endregion
 
+        #region Tabs
+
+        private void ConstructMoveToCopyToMenu()
+        {
+            btnMoveto.Items.Clear();
+            btnCopyto.Items.Clear();
+            MenuItem OtherLocationMove = new MenuItem();
+            OtherLocationMove.Focusable = false;
+            OtherLocationMove.Header = FindResource("miOtherDestCP");
+            OtherLocationMove.Click += new RoutedEventHandler(btnmtOther_Click);
+            MenuItem OtherLocationCopy = new MenuItem();
+            OtherLocationCopy.Focusable = false;
+            OtherLocationCopy.Header = FindResource("miOtherDestCP");
+            OtherLocationCopy.Click += new RoutedEventHandler(btnctOther_Click);
+
+            MenuItem mimDesktop = new MenuItem();
+            ShellObject sod = (ShellObject)KnownFolders.Desktop;
+            sod.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+            sod.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            mimDesktop.Focusable = false;
+            mimDesktop.Icon = sod.Thumbnail.BitmapSource;
+            mimDesktop.Header = FindResource("btnctDesktopCP");
+            mimDesktop.Click += new RoutedEventHandler(btnmtDesktop_Click);
+            MenuItem micDesktop = new MenuItem();
+            micDesktop.Focusable = false;
+            micDesktop.Icon = sod.Thumbnail.BitmapSource;
+            micDesktop.Header = FindResource("btnctDesktopCP");
+            micDesktop.Click += new RoutedEventHandler(btnctDesktop_Click);
+            sod.Dispose();
+
+            MenuItem mimDocuments = new MenuItem();
+            ShellObject sodc = (ShellObject)KnownFolders.Documents;
+            sodc.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+            sodc.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            mimDocuments.Focusable = false;
+            mimDocuments.Icon = sodc.Thumbnail.BitmapSource;
+            mimDocuments.Header = FindResource("btnctDocumentsCP");
+            mimDocuments.Click += new RoutedEventHandler(btnmtDocuments_Click);
+            MenuItem micDocuments = new MenuItem();
+            micDocuments.Focusable = false;
+            micDocuments.Icon = sodc.Thumbnail.BitmapSource;
+            micDocuments.Header = FindResource("btnctDocumentsCP");
+            micDocuments.Click += new RoutedEventHandler(btnctDocuments_Click);
+            sodc.Dispose();
+
+            MenuItem mimDownloads = new MenuItem();
+            ShellObject sodd = (ShellObject)KnownFolders.Downloads;
+            sodd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+            sodd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            mimDownloads.Focusable = false;
+            mimDownloads.Icon = sodd.Thumbnail.BitmapSource;
+            mimDownloads.Header = FindResource("btnctDownloadsCP");
+            mimDownloads.Click += new RoutedEventHandler(btnmtDounloads_Click);
+            MenuItem micDownloads = new MenuItem();
+            micDownloads.Focusable = false;
+            micDownloads.Icon = sodd.Thumbnail.BitmapSource;
+            micDownloads.Header = FindResource("btnctDownloadsCP");
+            micDownloads.Click += new RoutedEventHandler(btnctDounloads_Click);
+            sodd.Dispose();
+
+            btnMoveto.Items.Add(mimDocuments);
+            btnMoveto.Items.Add(mimDownloads);
+            btnMoveto.Items.Add(mimDesktop);
+            btnMoveto.Items.Add(new Separator());
+
+            btnCopyto.Items.Add(micDocuments);
+            btnCopyto.Items.Add(micDownloads);
+            btnCopyto.Items.Add(micDesktop);
+            btnCopyto.Items.Add(new Separator());
+
+            foreach (CloseableTabItem item in tabControl1.Items)
+            {
+                bool IsAdditem = true;
+                foreach (object mii in btnCopyto.Items)
+                {
+                    if (mii is MenuItem)
+                    {
+                        if ((mii as MenuItem).Tag != null)
+                        {
+                            if (((mii as MenuItem).Tag as ShellObject) == item.Path)
+                            {
+                                IsAdditem = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (IsAdditem && item.Path.IsFileSystemObject)
+                {
+                    try
+                    {
+                        MenuItem mim = new MenuItem();
+                        mim.Header = item.Path.GetDisplayName(DisplayNameType.Default);
+                        mim.Focusable = false;
+                        mim.Tag = item.Path;
+                        ShellObject so = ShellObject.FromParsingName(item.Path.ParsingName);
+                        so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                        so.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+                        mim.Icon = so.Thumbnail.BitmapSource;
+                        mim.Click += new RoutedEventHandler(mim_Click);
+                        btnMoveto.Items.Add(mim);
+                        MenuItem mic = new MenuItem();
+                        mic.Focusable = false;
+                        mic.Header = item.Path.GetDisplayName(DisplayNameType.Default);
+                        mic.Tag = item.Path;
+                        mic.Icon = so.Thumbnail.BitmapSource;
+                        mic.Click += new RoutedEventHandler(mimc_Click);
+                        btnCopyto.Items.Add(mic);
+                        so.Dispose();
+                    }
+                    catch
+                    {
+                        //Do nothing if ShellObject is not available anymore and close the problematic item
+                        CloseTab(item);
+                    }
+                }
+            }
+            btnMoveto.Items.Add(new Separator());
+            btnMoveto.Items.Add(OtherLocationMove);
+            btnCopyto.Items.Add(new Separator());
+            btnCopyto.Items.Add(OtherLocationCopy);
+
+        }
+
+        void mimc_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = sender as MenuItem;
+            DropData dd = new DropData();
+            dd.Shellobjects = Explorer.SelectedItems;
+            dd.PathForDrop = (mi.Tag as ShellObject).ParsingName;
+            Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
+            CopyThread.SetApartmentState(ApartmentState.STA);
+            CopyThread.Start(dd);
+        }
+
+        void mim_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = sender as MenuItem;
+            DropData dd = new DropData();
+            dd.Shellobjects = Explorer.SelectedItems;
+            dd.PathForDrop = (mi.Tag as ShellObject).ParsingName;
+            Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
+            CopyThread.SetApartmentState(ApartmentState.STA);
+            CopyThread.Start(dd);
+        }
+
+        private void btnNewTab_Click(object sender, RoutedEventArgs e)
+        {
+            NewTab();
+        }
+
+        private void btnTabClone_Click(object sender, RoutedEventArgs e)
+        {
+            CloneTab(tabControl1.Items[CurrentTabIndex] as CloseableTabItem);
+        }
+
+        private void btnTabCloseC_Click(object sender, RoutedEventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 0 && tabControl1.Items.Count == 1)
+            {
+                Close();
+                return;
+            }
+            int CurSelIndex = tabControl1.SelectedIndex;
+            if (tabControl1.SelectedIndex == 0)
+            {
+                tabControl1.SelectedItem = tabControl1.Items[1];
+                CurrentTabIndex = 0;
+            }
+            else
+            {
+                tabControl1.SelectedItem = tabControl1.Items[CurSelIndex - 1];
+                CurrentTabIndex = CurSelIndex - 1;
+            }
+
+
+            tabControl1.Items.RemoveAt(CurSelIndex);
+
+        }
+
+        //'close tab
+        void cti_CloseTab(object sender, RoutedEventArgs e)
+        {
+            CloseableTabItem curItem = e.Source as CloseableTabItem;
+
+            CloseTab(curItem);
+        }
+
+        public void CloneTab(CloseableTabItem CurTab)
+        {
+            CloseableTabItem newt = new CloseableTabItem();
+            CreateTabbarRKMenu(newt);
+            newt.Header = CurTab.Header;
+            newt.TabIcon = CurTab.TabIcon;
+            newt.Path = CurTab.Path;
+            newt.Index = tabControl1.Items.Count;
+            newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
+            newt.DragEnter += new DragEventHandler(newt_DragEnter);
+            newt.DragLeave += new DragEventHandler(newt_DragLeave);
+            newt.DragOver += new DragEventHandler(newt_DragOver);
+            newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
+            newt.Drop += new DragEventHandler(newt_Drop);
+            newt.AllowDrop = true;
+            newt.log.CurrentLocation = CurTab.Path;
+            tabControl1.Items.Add(newt);
+            tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
+            tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
+            LastTabIndex = CurrentTabIndex;
+            CurrentTabIndex = tabControl1.Items.Count - 1;
+            ConstructMoveToCopyToMenu();
+        }
+
+        private void ERNewTab(object sender, ExecutedRoutedEventArgs e)
+        {
+            NewTab();
+        }
+
+        void SelectTab(int Index)
+        {
+            int selIndex = 0;
+            if (CurrentTabIndex == tabControl1.Items.Count - 1)
+            {
+                selIndex = 0;
+            }
+            else
+            {
+                selIndex = Index;
+            }
+            tabControl1.SelectedItem = tabControl1.Items[selIndex];
+            CurrentTabIndex = selIndex;
+        }
+
+        void CloseTab(CloseableTabItem thetab, bool allowreopening = true)
+        {
+            if (thetab.Index == 0 && tabControl1.Items.Count == 1)
+            {
+                Close();
+                return;
+            }
+
+            int CurSelIndex = thetab.Index;
+            if (CurSelIndex == 0)
+            {
+                if (LastTabIndex != -1)
+                {
+                    try
+                    {
+                        tabControl1.SelectedItem = tabControl1.Items[LastTabIndex];
+                        CurrentTabIndex = LastTabIndex;
+                    }
+                    catch
+                    {
+
+                        tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
+                        CurrentTabIndex = tabControl1.Items.Count - 1;
+                    }
+                }
+                else
+                {
+                    tabControl1.SelectedItem = tabControl1.Items[1];
+                    CurrentTabIndex = 0;
+                }
+
+            }
+            else
+            {
+                if (CurSelIndex == tabControl1.Items.Count - 1)
+                {
+                    if (CurSelIndex == LastTabIndex)
+                    {
+                        if (BeforeLastTabIndex != -1 && tabControl1.Items.Count >= BeforeLastTabIndex + 1)
+                        {
+                            tabControl1.SelectedItem = tabControl1.Items[BeforeLastTabIndex];
+                            CurrentTabIndex = BeforeLastTabIndex;
+                        }
+                        else
+                        {
+                            tabControl1.SelectedItem = tabControl1.Items[CurSelIndex - 1];
+                            CurrentTabIndex = CurSelIndex - 1;
+                            LastTabIndex = CurrentTabIndex;
+                        }
+
+                    }
+                    else
+                    {
+                        if (LastTabIndex != -1)
+                        {
+                            try
+                            {
+                                tabControl1.SelectedItem = tabControl1.Items[LastTabIndex];
+                                CurrentTabIndex = LastTabIndex;
+                            }
+                            catch
+                            {
+
+                                //Handle the exeption on using Close all tabs command since we dont need to keep any index just to close the app
+                            }
+                        }
+                    }
+
+                }
+                else
+                {
+                    if (CurSelIndex == LastTabIndex)
+                    {
+                        if (BeforeLastTabIndex != -1 && tabControl1.Items.Count >= BeforeLastTabIndex + 1)
+                        {
+                            tabControl1.SelectedItem = tabControl1.Items[BeforeLastTabIndex];
+                            CurrentTabIndex = BeforeLastTabIndex;
+                        }
+                        else
+                        {
+                            tabControl1.SelectedItem = tabControl1.Items[CurSelIndex + 1];
+                            CurrentTabIndex = CurSelIndex + 1;
+                            LastTabIndex = CurrentTabIndex;
+                        }
+                    }
+                    else
+                    {
+                        if (LastTabIndex != -1)
+                        {
+                            try
+                            {
+                                tabControl1.SelectedItem = tabControl1.Items[LastTabIndex];
+                                CurrentTabIndex = LastTabIndex;
+                            }
+                            catch
+                            {
+                                if (LastTabIndex != 0)
+                                {
+                                    tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
+                                    CurrentTabIndex = tabControl1.Items.Count - 1;
+                                }
+                                else
+                                {
+                                    tabControl1.SelectedItem = tabControl1.Items[0];
+                                    CurrentTabIndex = 0;
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (int i = CurSelIndex + 1; i < tabControl1.Items.Count; i++)
+            {
+                CloseableTabItem tab = tabControl1.Items[i] as CloseableTabItem;
+                tab.Index = tab.Index - 1;
+            }
+            try
+            {
+                tabControl1.Items.RemoveAt(CurSelIndex);
+            }
+            catch
+            {
+                tabControl1.Items.RemoveAt(CurSelIndex - 1);
+            }
+            ConstructMoveToCopyToMenu();
+
+            if (allowreopening == true)
+            {
+                reopenabletabs.Add(thetab.log);
+                btnUndoClose.IsEnabled = true;
+            }
+        }
+        void newt_CloseTab(object sender, RoutedEventArgs e)
+        {
+            CloseableTabItem curItem = e.Source as CloseableTabItem;
+            CloseTab(curItem);
+        }
+
+        /// <summary>
+        /// Re-opens a previously closed tab using that tab's navigation log data.
+        /// </summary>
+        /// <param name="log">The navigation log data from the previously closed tab.</param>
+        public void ReOpenTab(NavigationLog log)
+        {
+            CloseableTabItem newt = new CloseableTabItem();
+            CreateTabbarRKMenu(newt);
+
+            ShellObject DefPath = log.CurrentLocation;
+            DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+            newt.Header = DefPath.GetDisplayName(DisplayNameType.Default);
+            newt.TabIcon = DefPath.Thumbnail.BitmapSource;
+            newt.Path = DefPath;
+            newt.IsNavigate = false;
+            newt.Index = tabControl1.Items.Count;
+            newt.AllowDrop = true;
+            newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
+            newt.DragEnter += new DragEventHandler(newt_DragEnter);
+            newt.DragOver += new DragEventHandler(newt_DragOver);
+            newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
+            newt.Drop += new DragEventHandler(newt_Drop);
+
+            tabControl1.Items.Add(newt);
+            LastTabIndex = tabControl1.SelectedIndex;
+            newt.log.ImportData(log);
+
+            CurrentTabIndex = tabControl1.Items.Count - 1;
+            ConstructMoveToCopyToMenu();
+        }
+
+        System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
+        private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            if (e.AddedItems.Count > 0)
+            {
+
+                CloseableTabItem itb = e.AddedItems[0] as CloseableTabItem;
+
+                isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
+                if (itb != null)
+                {
+                    try
+                    {
+                        BeforeLastTabIndex = LastTabIndex;
+
+                        //tabControl1.SelectedIndex = itb.Index;
+                        LastTabIndex = tabControl1.SelectedIndex;
+                        CurrentTabIndex = itb.Index;
+                        if (itb.Path != Explorer.NavigationLog.CurrentLocation)
+                        {
+
+
+                            if (!Keyboard.IsKeyDown(Key.Tab))
+                            {
+                                Explorer.Navigate(itb.Path);
+                            }
+                            else
+                            {
+                                t.Interval = 500;
+                                t.Tag = itb.Path;
+                                t.Tick += new EventHandler(t_Tick);
+                                t.Start();
+                            }
+
+                        }
+                    }
+                    catch (StackOverflowException)
+                    {
+
+                    }
+                    //'btnTabCloseC.IsEnabled = tabControl1.Items.Count > 1;
+                    //'there's a bug that has this enabled when there's only one tab open, but why disable it
+                    //'if it never crashes the program? Closing the last tab simply closes the program, so I
+                    //'thought, what the heck... let's just keep it enabled. :) -JaykeBird
+                }
+            }
+
+            Explorer.ExplorerSetFocus();
+            Explorer.Focus();
+        }
+
+        void t_Tick(object sender, EventArgs e)
+        {
+            if (!Keyboard.IsKeyDown(Key.Tab))
+            {
+
+                Explorer.Navigate((sender as System.Windows.Forms.Timer).Tag as ShellObject);
+                WindowsAPI.SetFocus(ExplorerBrowser.SysListViewHandle);
+                (sender as System.Windows.Forms.Timer).Stop();
+            }
+        }
+
+        private void tabControl1_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Middle)
+            {
+                CloneTab(tabControl1.SelectedItem as CloseableTabItem);
+            }
+        }
+
+        private void RCloseTab(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 0 && tabControl1.Items.Count == 1)
+            {
+                Close();
+                return;
+            }
+            int CurSelIndex = tabControl1.SelectedIndex;
+            if (tabControl1.SelectedIndex == 0)
+            {
+                tabControl1.SelectedItem = tabControl1.Items[1];
+                CurrentTabIndex = 0;
+            }
+            else
+            {
+                tabControl1.SelectedItem = tabControl1.Items[CurSelIndex - 1];
+                CurrentTabIndex = CurSelIndex - 1;
+            }
+
+
+            tabControl1.Items.RemoveAt(CurSelIndex);
+        }
+
+        private void ChangeTab(object sender, ExecutedRoutedEventArgs e)
+        {
+            t.Stop();
+            SelectTab(CurrentTabIndex + 1);
+        }
+
+        private void ERGoToBCCombo(object sender, ExecutedRoutedEventArgs e)
+        {
+            breadcrumbBarControl1.EnterEditMode();
+        }
+
+
+        void CreateTabbarRKMenu(CloseableTabItem tabitem)
+        {
+            tabitem.mnu = new ContextMenu();
+            MenuItem miclosecurrentr = new MenuItem();
+            miclosecurrentr.Header = "Close current tab";
+            miclosecurrentr.Tag = tabitem;
+            miclosecurrentr.Click += new RoutedEventHandler(miclosecurrentr_Click);
+            tabitem.mnu.Items.Add(miclosecurrentr);
+
+            MenuItem miclosealltab = new MenuItem();
+            miclosealltab.Header = "Close all tabs";
+            miclosealltab.Click += new RoutedEventHandler(miclosealltab_Click);
+            tabitem.mnu.Items.Add(miclosealltab);
+
+            MenuItem miclosealltabbd = new MenuItem();
+            miclosealltabbd.Header = "Close all other tabs";
+            miclosealltabbd.Tag = tabitem;
+            miclosealltabbd.Click += new RoutedEventHandler(miclosealltabbd_Click);
+            tabitem.mnu.Items.Add(miclosealltabbd);
+
+            tabitem.mnu.Items.Add(new Separator());
+
+            MenuItem mimoveleft = new MenuItem();
+            mimoveleft.Header = "Move Tab Left";
+            mimoveleft.Tag = tabitem;
+            mimoveleft.Click += new RoutedEventHandler(mimoveleft_Click);
+            tabitem.mnu.Items.Add(mimoveleft);
+
+            MenuItem mimoveright = new MenuItem();
+            mimoveright.Header = "Move Tab Right";
+            mimoveright.Tag = tabitem;
+            mimoveright.Click += new RoutedEventHandler(mimoveright_Click);
+            tabitem.mnu.Items.Add(mimoveright);
+
+            //tabitem.mnu.Items.Add(new Separator());
+
+            MenuItem miopeninnew = new MenuItem();
+            miopeninnew.Header = "Open in new window";
+            miopeninnew.Tag = tabitem;
+            miopeninnew.Click += new RoutedEventHandler(miopeninnew_Click);
+            //tabitem.mnu.Items.Add(miopeninnew);
+
+        }
+
+        void mimoveright_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = (sender as MenuItem);
+            CloseableTabItem ti = mi.Tag as CloseableTabItem;
+            MoveTabRight(ti);
+        }
+
+        void mimoveleft_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = (sender as MenuItem);
+            CloseableTabItem ti = mi.Tag as CloseableTabItem;
+            MoveTabLeft(ti);
+        }
+
+        void miopeninnew_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = (sender as MenuItem);
+            CloseableTabItem ti = mi.Tag as CloseableTabItem;
+            Process.Start(Assembly.GetExecutingAssembly().GetName().Name, ti.Path.ParsingName + " /nw");
+            CloseTab(ti);
+            //throw new NotImplementedException();
+        }
+
+        void miclosealltabbd_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = (sender as MenuItem);
+            CloseableTabItem ti = mi.Tag as CloseableTabItem;
+            CloseAllTabsButThis(ti);
+        }
+
+        void miclosealltab_Click(object sender, RoutedEventArgs e)
+        {
+            CloseAllTabs(true);
+        }
+
+        void miclosecurrentr_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = (sender as MenuItem);
+            CloseableTabItem ti = mi.Tag as CloseableTabItem;
+            CloseTab(ti);
+        }
+
+        void CloseAllTabs(bool CloseFirstTab)
+        {
+            List<CloseableTabItem> tabs = new List<CloseableTabItem>();
+            foreach (object item in tabControl1.Items)
+            {
+                CloseableTabItem it = item as CloseableTabItem;
+                tabs.Add(it);
+            }
+
+            if (CloseFirstTab)
+            {
+                foreach (CloseableTabItem item in tabs)
+                {
+
+                    CloseTab(item);
+                }
+            }
+            else
+            {
+                foreach (CloseableTabItem item in tabs)
+                {
+
+                    if (item.Index != 0)
+                    {
+                        CloseTab(item);
+                    }
+
+                }
+            }
+
+            tabs = null;
+
+        }
+
+
+        void CloseAllTabsButThis(CloseableTabItem tabitem)
+        {
+            List<CloseableTabItem> tabs = new List<CloseableTabItem>();
+            foreach (object item in tabControl1.Items)
+            {
+                CloseableTabItem it = item as CloseableTabItem;
+                tabs.Add(it);
+            }
+
+
+            foreach (CloseableTabItem item in tabs)
+            {
+
+                if (true)
+                {
+                    if (item != tabitem)
+                    {
+                        CloseTab(item);
+                    }
+
+                }
+
+            }
+
+            tabs = null;
+            ConstructMoveToCopyToMenu();
+
+        }
+
+        public void NewTab(bool IsNavigate = true)
+        {
+            CloseableTabItem newt = new CloseableTabItem();
+            CreateTabbarRKMenu(newt);
+
+            ShellObject DefPath;
+            if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
+                DefPath = ShellObject.FromParsingName("shell:" + StartUpLocation);
+            else
+                try
+                {
+                    DefPath = ShellObject.FromParsingName(StartUpLocation);
+                }
+                catch
+                {
+                    DefPath = (ShellObject)KnownFolders.Libraries;
+                }
+            DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+            newt.Header = DefPath.GetDisplayName(DisplayNameType.Default);
+            newt.TabIcon = DefPath.Thumbnail.BitmapSource;
+            newt.Path = DefPath;
+            newt.IsNavigate = IsNavigate;
+            newt.Index = tabControl1.Items.Count;
+            newt.AllowDrop = true;
+            newt.log.CurrentLocation = DefPath;
+
+            newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
+            newt.DragEnter += new DragEventHandler(newt_DragEnter);
+            newt.DragOver += new DragEventHandler(newt_DragOver);
+            newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
+            newt.Drop += new DragEventHandler(newt_Drop);
+            tabControl1.Items.Add(newt);
+            LastTabIndex = tabControl1.SelectedIndex;
+            tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
+            tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
+
+            CurrentTabIndex = tabControl1.Items.Count - 1;
+            ConstructMoveToCopyToMenu();
+        }
+
+        public void NewTab(string Location, bool IsNavigate = false)
+        {
+            CloseableTabItem newt = new CloseableTabItem();
+            CreateTabbarRKMenu(newt);
+
+            ShellObject DefPath;
+            if (Location.IndexOf("::") == 0 && Location.IndexOf(@"\") == -1)
+                DefPath = ShellObject.FromParsingName("shell:" + Location);
+            else
+                DefPath = ShellObject.FromParsingName(Location);
+            DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+            newt.Header = DefPath.GetDisplayName(DisplayNameType.Default);
+            newt.TabIcon = DefPath.Thumbnail.BitmapSource;
+            newt.Path = DefPath;
+            newt.IsNavigate = IsNavigate;
+            newt.Index = tabControl1.Items.Count;
+            newt.AllowDrop = true;
+            newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
+            newt.DragEnter += new DragEventHandler(newt_DragEnter);
+            newt.DragOver += new DragEventHandler(newt_DragOver);
+            newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
+            newt.Drop += new DragEventHandler(newt_Drop);
+
+            tabControl1.Items.Add(newt);
+            LastTabIndex = tabControl1.SelectedIndex;
+            if (IsNavigate)
+            {
+                //IsCancel = true;
+
+                tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
+                tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
+                //IsCancel = false;
+            }
+            else
+            {
+                newt.log.CurrentLocation = DefPath;
+            }
+
+            CurrentTabIndex = tabControl1.Items.Count - 1;
+            ConstructMoveToCopyToMenu();
+        }
+
+        void newt_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            //var tabItem = e.Source as CloseableTabItem;
+
+            //if (tabItem == null)
+            //    return;
+
+            //if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
+            //{
+            //    DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
+            //}
+        }
+
+        void newt_Drop(object sender, DragEventArgs e)
+        {
+
+
+            System.Windows.Point pt = e.GetPosition(sender as IInputElement);
+
+            //if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            //{
+                if ((sender as CloseableTabItem).Path.IsFileSystemObject)
+                {
+                    if ((e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey)
+                    {
+                        e.Effects = DragDropEffects.Copy;
+                        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                        {
+                            DropData PasteData = new DropData();
+                            String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
+                            StringCollection scol = new StringCollection();
+                            scol.AddRange(collection);
+                            PasteData.DropList = scol;
+                            PasteData.PathForDrop = (sender as CloseableTabItem).Path.ParsingName;
+                            Thread t = null;
+                            t = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
+                            t.SetApartmentState(ApartmentState.STA);
+                            t.Start(PasteData);
+                        }
+                    }
+                    else
+                    {
+                        //if (Path.GetPathRoot((sender as CloseableTabItem).Path.ParsingName) ==
+                        //    Path.GetPathRoot(Explorer.NavigationLog.CurrentLocation.ParsingName))
+                        //{
+                        e.Effects = DragDropEffects.Move;
+                        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                        {
+                            DropData PasteData = new DropData();
+                            String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
+                            StringCollection scol = new StringCollection();
+                            scol.AddRange(collection);
+                            PasteData.DropList = scol;
+                            PasteData.PathForDrop = (sender as CloseableTabItem).Path.ParsingName;
+                            Thread t = null;
+                            t = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
+                            t.SetApartmentState(ApartmentState.STA);
+                            t.Start(PasteData);
+                        }
+
+                        //}
+                        //else
+                        //{
+                        //    e.Effects = DragDropEffects.Copy;
+                        //    if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                        //    {
+                        //        DropData PasteData = new DropData();
+                        //        String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
+                        //        StringCollection scol = new StringCollection();
+                        //        scol.AddRange(collection);
+                        //        PasteData.DropList = scol;
+                        //        PasteData.PathForDrop = (sender as CloseableTabItem).Path.ParsingName;
+                        //        Thread t = null;
+                        //        t = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
+                        //        t.SetApartmentState(ApartmentState.STA);
+                        //        t.Start(PasteData);
+                        //    }
+
+                        //}
+                    }
+                }
+                else
+                {
+                    e.Effects = DragDropEffects.None;
+                }
+                DropTargetHelper.Drop(e.Data, pt, e.Effects);
+            // attempt at making drag-and-drop tabs a possibility
+            //}
+            //else
+            //{
+            //    if (e.Data.GetDataPresent(typeof(CloseableTabItem)))
+            //    {
+            //        var tabItemTarget = e.Source as CloseableTabItem;
+
+            //        var tabItemSource = e.Data.GetData(typeof(CloseableTabItem)) as CloseableTabItem;
+            //        if (!tabItemTarget.Equals(tabItemSource))
+            //        {
+            //            var tabControl = tabItemTarget.Parent as TabControl;
+            //            int sourceIndex = tabControl.Items.IndexOf(tabItemSource);
+            //            int targetIndex = tabControl.Items.IndexOf(tabItemTarget);
+
+            //            tabControl.Items.Remove(tabItemSource);
+            //            tabControl.Items.Insert(targetIndex, tabItemSource);
+
+            //            tabControl.Items.Remove(tabItemTarget);
+            //            tabControl.Items.Insert(targetIndex, tabItemTarget);
+            //        }
+            //    }
+            //    else
+            //    {
+
+            //    }
+            //}
+                
+        }
+
+        void newt_DragOver(object sender, DragEventArgs e)
+        {
+            e.Handled = true;
+
+            if ((sender as CloseableTabItem).Path.IsFileSystemObject)
+            {
+                if ((e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey)
+                {
+                    e.Effects = DragDropEffects.Copy;
+
+                }
+                else
+                {
+                    //if (Path.GetPathRoot((sender as CloseableTabItem).Path.ParsingName) ==
+                    //    Path.GetPathRoot(Explorer.NavigationLog.CurrentLocation.ParsingName))
+                    //{
+                    //    e.Effects = DragDropEffects.Move;
+
+
+                    //}
+                    //else
+                    //{
+                    //    e.Effects = DragDropEffects.Copy;
+
+                    //}
+
+                    // I decided just to have it do a move because it will avoid errors with special shell folders.
+                    // Besides, if a person wants to copy something, they should know how to press Ctrl to copy.
+                    e.Effects = DragDropEffects.Move;
+                }
+            }
+            else
+            {
+                e.Effects = DragDropEffects.None;
+            }
+
+            Win32Point ptw = new Win32Point();
+            GetCursorPos(ref ptw);
+            //e.Handled = true;
+            DropTargetHelper.DragOver(new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
+        }
+
+        void newt_DragLeave(object sender, DragEventArgs e)
+        {
+            DropTargetHelper.DragLeave();
+        }
+
+        void newt_DragEnter(object sender, DragEventArgs e)
+        {
+
+            //if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            //{
+                if ((sender as CloseableTabItem).Path.IsFileSystemObject)
+                {
+                    if ((e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey)
+                    {
+                        e.Effects = DragDropEffects.Copy;
+
+                    }
+                    else
+                    {
+                        //if (Path.GetPathRoot((sender as CloseableTabItem).Path.ParsingName) ==
+                        //    Path.GetPathRoot(Explorer.NavigationLog.CurrentLocation.ParsingName))
+                        //{
+                        //    e.Effects = DragDropEffects.Move;
+
+
+                        //}
+                        //else
+                        //{
+                        //    e.Effects = DragDropEffects.Copy;
+
+                        //}
+
+                        // I decided just to have it do a move because it will avoid errors with special shell folders.
+                        // Besides, if a person wants to copy something, they should know how to press Ctrl to copy.
+                        e.Effects = DragDropEffects.Move;
+                    }
+                }
+                else
+                {
+                    e.Effects = DragDropEffects.None;
+                }
+
+
+                Win32Point ptw = new Win32Point();
+                GetCursorPos(ref ptw);
+                e.Effects = DragDropEffects.None;
+                DropTargetHelper.DragEnter(this, e.Data, new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
+            //}
+            //else
+            //{
+            //    if (e.Data.GetDataPresent(typeof(CloseableTabItem)))
+            //    {
+            //        e.Effects = DragDropEffects.Move;
+            //    }
+            //}
+
+        }
+
+        private void tabControl1_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
+            string h = sender.GetType().Name.ToString();
+
+            hitTestList = new List<DependencyObject>();
+
+            System.Windows.Point pt = e.GetPosition(sender as IInputElement);
+
+            VisualTreeHelper.HitTest(
+                sender as Visual, null,
+                CollectAllVisuals_Callback,
+                new PointHitTestParameters(pt));
+
+            hitTestList.Reverse();
+
+            //DependencyObject elementToFind = null;
+
+            if (hitTestList[0].GetType().Name.Equals("ScrollViewer") && hitTestList.Count == 2)
+            {
+                NewTab();
+            }
+            else if (hitTestList.Count == 3)
+            {
+                if (hitTestList[2].GetType().Name == "Grid")
+                {
+                    NewTab();
+                }
+            }
+
+        }
+
+        void MoveTabRight(CloseableTabItem item)
+        {
+            int curindex = item.Index;
+            //try
+            //{
+            tabControl1.Items.Remove(item);
+                //tabControl1.Items.RemoveAt(curindex);
+            try
+            {
+                tabControl1.Items.Insert(curindex + 1, item);
+            }
+            catch
+            {
+                tabControl1.Items.Insert(curindex, item);
+            }
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("We are unable to move the tab any further right.", "Right End", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            //    //tabControl1.Items.Insert(curindex, item);
+            //}
+        }
+
+        void MoveTabLeft(CloseableTabItem item)
+        {
+            int curindex = item.Index;
+            //try
+            //{
+            tabControl1.Items.Remove(item);
+                //tabControl1.Items.RemoveAt(curindex);
+            try
+            {
+                tabControl1.Items.Insert(curindex - 1, item);
+            }
+            catch
+            {
+                tabControl1.Items.Insert(curindex, item);
+            }
+            //}
+            //catch
+            //{
+            //    MessageBox.Show("We are unable to move the tab any further left.", "Left End", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            //    //tabControl1.Items.Insert(curindex, item);
+            //}
+        }
+
+        #endregion
+
         #region Tab Controls
 
         private void MoveTabBarToBottom()
@@ -8130,14 +8274,26 @@ namespace BetterExplorer
           }
         }
 
-        private void btnSavedTabs_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void miSaveCurTabs_Click(object sender, RoutedEventArgs e)
         {
+            List<ShellObject> objs = new List<ShellObject>();
+            foreach (CloseableTabItem item in tabControl1.Items)
+            {
+                objs.Add(item.log.CurrentLocation);
+            }
+            String str = PathStringCombiner.CombinePaths(objs, "|");
+            SavedTabsList list = SavedTabsList.CreateFromString(str);
 
+            BetterExplorer.Tabs.NameTabList ntl = new BetterExplorer.Tabs.NameTabList();
+            ntl.ShowDialog();
+            if (ntl.dialogresult == true)
+            {
+                if (System.IO.Directory.Exists(sstdir) == false)
+                {
+                    System.IO.Directory.CreateDirectory(sstdir);
+                }
+                SavedTabsList.SaveTabList(list, sstdir + ntl.textBox1.Text + ".txt");
+            }
         }
 
         private void btnUndoClose_Click(object sender, RoutedEventArgs e)

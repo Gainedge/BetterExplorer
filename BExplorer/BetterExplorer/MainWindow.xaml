@@ -647,7 +647,7 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                 IsRibbonAligned ="True"/>
                         </Ribbon:Button.ToolTip>
                     </Ribbon:Button>
-                    <Ribbon:DropDownButton Header="{StaticResource btnSavedTabsCP}" Ribbon:KeyTip.Keys="R" Name="btnSavedTabs" Size="Middle" SizeDefinition="Middle,Middle,Small" IsEnabled="False">
+                    <Ribbon:DropDownButton Header="{StaticResource btnSavedTabsCP}" Ribbon:KeyTip.Keys="R" Name="btnSavedTabs" Size="Middle" SizeDefinition="Middle,Middle,Small">
                         <Ribbon:DropDownButton.ToolTip>
                             <Ribbon:ScreenTip
                                 Title="{StaticResource btnSavedTabsCP}"
@@ -839,7 +839,7 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
             
-            <Ribbon:RibbonTabItem Header="{StaticResource tbManageCP}" ReduceOrder="ManageLibrary,ManageLibrary,ManageLibrary" Ribbon:KeyTip.Keys="M" Group="{Binding ElementName=ctgLibraries, Mode=OneWay}">
+            <Ribbon:RibbonTabItem Header="{StaticResource tbManageCP}" ReduceOrder="ManageLibrary,ManageLibrary,ManageLibrary" Ribbon:KeyTip.Keys="L" Group="{Binding ElementName=ctgLibraries, Mode=OneWay}">
                 <Ribbon:RibbonGroupBox Header="{StaticResource tgLibraryCP}" Name="ManageLibrary" Ribbon:KeyTip.Keys="L" IsLauncherVisible="False">
                     <Ribbon:Button Header="{StaticResource btnManageLibCP}" Ribbon:KeyTip.Keys="M" Name="btnManageLib" SizeDefinition="Large" LargeIcon="Images\explorer32.png" Click="btnManageLib_Click" />
                     <Ribbon:DropDownButton Header="{StaticResource btnDefSaveCP}" Ribbon:KeyTip.Keys="D" SizeDefinition="Large" Name="btnDefSave" LargeIcon="Images\libsaveloc32.png" Icon="Images\libsaveloc16.png" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" />
