@@ -7945,7 +7945,7 @@ namespace BetterExplorer
 
         void newt_Drop(object sender, DragEventArgs e)
         {
-
+            e.Handled = true;
 
             System.Windows.Point pt = e.GetPosition(sender as IInputElement);
 
@@ -8095,7 +8095,7 @@ namespace BetterExplorer
 
         void newt_DragEnter(object sender, DragEventArgs e)
         {
-
+            e.Handled = true;
             //if (e.Data.GetDataPresent(DataFormats.FileDrop))
             //{
                 if ((sender as CloseableTabItem).Path.IsFileSystemObject)
@@ -8344,6 +8344,40 @@ namespace BetterExplorer
             catch
             {
 
+            }
+        }
+
+        private void tabControl1_Drop(object sender, DragEventArgs e)
+        {
+            //MessageBox.Show("Dropped here!");
+            String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string item in collection)
+            {
+                ShellObject obj = ShellObject.FromParsingName(item);
+                if (obj.IsFolder == true && obj.IsFileSystemObject)
+                {
+                    bool isarchive = false;
+                    foreach (string item2 in Archives)
+                    {
+                        if (item.Contains(item2) == true)
+                        {
+                            isarchive = true;
+                        }
+                    }
+
+                    if (isarchive == false)
+                    {
+                        NewTab(item);
+                    }
+                    else
+                    {
+                        MessageBox.Show("We see this is an archive. However, we're not able to open archives here. Try clicking on it and extracting it.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Hey... this isn't a folder! We can't make a new tab out of this file.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
         }
 
