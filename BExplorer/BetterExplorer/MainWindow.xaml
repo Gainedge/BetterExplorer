@@ -1135,16 +1135,12 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <TabControl Grid.ColumnSpan="3" Grid.Row="2" Height="30" Name="tabControl1" VerticalAlignment="Top" ItemsSource="{Binding itbl}" SelectionChanged="tabControl1_SelectionChanged" MouseUp="tabControl1_MouseUp" AllowDrop="False"  MouseDoubleClick="tabControl1_MouseDoubleClick" 
+        <TabControl Grid.ColumnSpan="3" Grid.Row="2" Height="30" Name="tabControl1" VerticalAlignment="Top" ItemsSource="{Binding itbl}" SelectionChanged="tabControl1_SelectionChanged" MouseUp="tabControl1_MouseUp"  MouseDoubleClick="tabControl1_MouseDoubleClick" 
                     Template="{DynamicResource ScrollableTabControlTemplate}" GotFocus="TheStatusBar_GotFocus" Panel.ZIndex="99">
             <TabControl.ItemsPanel>
-
                 <ItemsPanelTemplate>
-
                     <StackPanel Orientation="Horizontal" IsItemsHost="True"/>
-
                 </ItemsPanelTemplate>
-
             </TabControl.ItemsPanel>
         </TabControl>
         <WindowsFormsHost Grid.Row="3" Name="ShellVView" Background="White" ClipToBounds="True" OpacityMask="White" MouseMove="ShellVView_MouseMove" Panel.ZIndex="1"></WindowsFormsHost>

@@ -60,14 +60,44 @@ namespace BetterExplorer
                 new FrameworkPropertyMetadata(typeof(CloseableTabItem)));
         }
 
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            if (e.Source == this || !this.IsSelected)
+                return;
+
+            base.OnMouseLeftButtonDown(e);
+        }
+
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            if (e.Source == this || !this.IsSelected)
+            {
+                //base.OnMouseLeftButtonDown(e); // OR just this.Focus(); OR this.IsSeleded = true;
+                this.RaiseEvent(new RoutedEventArgs(TabSelectedEvent, this));
+                this.IsSelected = true;
+            }
+
+            base.OnMouseLeftButtonUp(e);
+        }
+
         public static readonly RoutedEvent CloseTabEvent =
             EventManager.RegisterRoutedEvent("CloseTab", RoutingStrategy.Bubble,
+                typeof(RoutedEventHandler), typeof(CloseableTabItem));
+
+        public static readonly RoutedEvent TabSelectedEvent =
+            EventManager.RegisterRoutedEvent("TabSelected", RoutingStrategy.Bubble,
                 typeof(RoutedEventHandler), typeof(CloseableTabItem));
 
         public event RoutedEventHandler CloseTab
         {
             add { AddHandler(CloseTabEvent, value); }
             remove { RemoveHandler(CloseTabEvent, value); }
+        }
+
+        public event RoutedEventHandler TabSelected
+        {
+            add { AddHandler(TabSelectedEvent, value); }
+            remove { RemoveHandler(TabSelectedEvent, value); }
         }
 
         public static readonly DependencyProperty IconProperty =
@@ -124,15 +154,26 @@ namespace BetterExplorer
             }
         }
         public Fluent.ContextMenu mnu = null;
+        private System.Windows.Controls.Button CloseButton;
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
             System.Windows.Controls.Button closeButton = base.GetTemplateChild("PART_Close") as System.Windows.Controls.Button;
             if (closeButton != null)
-                closeButton.Click += new System.Windows.RoutedEventHandler(closeButton_Click);
+            {
+                CloseButton = closeButton;
+                closeButton.PreviewMouseLeftButtonDown += closeButton_PreviewMouseDown; // Click += new System.Windows.RoutedEventHandler(closeButton_Click);
+            }
             this.MouseRightButtonUp += new MouseButtonEventHandler(CloseableTabItem_MouseRightButtonUp);
         }
+
+        void closeButton_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.RaiseEvent(new RoutedEventArgs(CloseTabEvent, this));
+        }
+
+
 
         void CloseableTabItem_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -145,10 +186,6 @@ namespace BetterExplorer
             
         }
 
-        void closeButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            this.RaiseEvent(new RoutedEventArgs(CloseTabEvent, this));
-        }
 
         /// <summary>
         /// Contains information about the current location, as well as previously opened locations.
