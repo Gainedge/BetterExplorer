@@ -8506,38 +8506,50 @@ namespace BetterExplorer
 
         private void tabControl1_Drop(object sender, DragEventArgs e)
         {
-            //MessageBox.Show("Dropped here!");
-            String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
-            foreach (string item in collection)
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                ShellObject obj = ShellObject.FromParsingName(item);
-                if (obj.IsFolder == true && obj.IsFileSystemObject)
+                //MessageBox.Show("Dropped here!");
+                String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
+                foreach (string item in collection)
                 {
-                    bool isarchive = false;
-                    foreach (string item2 in Archives)
+                    ShellObject obj = ShellObject.FromParsingName(item);
+                    if (obj.IsFolder == true && obj.IsFileSystemObject)
                     {
-                        if (item.Contains(item2) == true)
+                        bool isarchive = false;
+                        foreach (string item2 in Archives)
                         {
-                            isarchive = true;
+                            if (item.Contains(item2) == true)
+                            {
+                                isarchive = true;
+                            }
                         }
-                    }
 
-                    if (isarchive == false)
-                    {
-                        NewTab(item);
+                        if (isarchive == false)
+                        {
+                            NewTab(item);
+                        }
+                        else
+                        {
+                            MessageBox.Show("We see this is an archive. However, we're not able to open archives here. Try clicking on it and extracting it.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("We see this is an archive. However, we're not able to open archives here. Try clicking on it and extracting it.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Hey... this isn't a folder! We can't make a new tab out of this file.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
                     }
+                }
+            }
+            else
+            {
+                if (e.Data.GetDataPresent(typeof(CloseableTabItem)))
+                {
+
                 }
                 else
                 {
-                    MessageBox.Show("Hey... this isn't a folder! We can't make a new tab out of this file.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("It appears that you tried to drag something to the blank area of the tab bar, and that something was not a folder. Drag a folder here to open it in a new tab.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
             }
-
-           
         }
 
         

@@ -246,15 +246,17 @@
                                     <Ribbon:SeparatorTabItem Header="" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}"  Margin="0,-30,50,0" Foreground="#FFC71212" />
                                     <Label Content="{StaticResource lblBetterExText}" FontWeight="Bold" Margin="0,2,50,0" />
                                     <TextBlock Text="{StaticResource lblBetterExInfo}"  Margin="3,2,53,0" TextWrapping="Wrap" />
-                                    <Ribbon:SeparatorTabItem Header="{StaticResource lblDevTeamCP}" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,40,50,0"/>
+                                    <Ribbon:SeparatorTabItem Header="{StaticResource lblDevTeamCP}" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,20,50,0"/>
                                     <Label Content="{StaticResource lblDevelopersHeader}" FontWeight="Bold" Margin="0,2,50,0" />
-                                    <Label Content="Dimitar Tsenev" FontStyle="Italic" Margin="20,0,50,0" FontSize="14" FontWeight="Bold" />
-                                    <Label Content="Jayke R. Huempfner (JaykeBird)" FontStyle="Italic" Margin="20,0,50,0" FontSize="14" FontWeight="Bold" />
-                                    <Ribbon:SeparatorTabItem Header="{StaticResource lblAboutBEHeader}" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,40,50,0"/>
+                                    <Label Content="Dimitar Tsenev" FontStyle="Italic" Margin="20,0,40,0" FontSize="14" FontWeight="Bold" />
+                                    <Label Content="Jayke R. Huempfner (JaykeBird)" FontStyle="Italic" Margin="20,0,40,0" FontSize="14" FontWeight="Bold" />
+                                    <Label Content="Sebastien Kerguen" FontStyle="Italic" Margin="20,0,40,0" FontSize="14" FontWeight="Bold" />
+                                    <Label Content="Markus Lang" FontStyle="Italic" Margin="20,0,40,0" FontSize="14" FontWeight="Bold" />
+                                    <Ribbon:SeparatorTabItem Header="{StaticResource lblAboutBEHeader}" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,20,50,0"/>
                                     <Label Content="Version Info Data Put Here" Margin="20,0,50,0" FontSize="12" x:Name="verNumber" />
                                     <Label x:Name="lblArchitecture" Content="32-bit Version" Margin="20,0,0,0" FontSize="12" />
                                     <Label Content="© 2012. All right reserved." Margin="20,0,0,0"/>
-                                    <Ribbon:SeparatorTabItem Header="Credits" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,40,50,0"/>
+                                    <Ribbon:SeparatorTabItem Header="Credits" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,20,50,0"/>
                                     <Label Content="Fluent Ribbon Control Suite (fluent.codeplex.com)"/>
                                     <!--<Label Content="Qttabbar - a great utility for Windows Explorer"/>-->
                                     <Label Content="7-Zip - archiving utility (www.7-zip.org)"/>
@@ -814,7 +816,6 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                     <Ribbon:SplitButton Header="{StaticResource btnMoreColCP}" Ribbon:KeyTip.Keys="CM" SizeDefinition="Middle,Small,Small" Name="btnMoreColls" Icon="Images\morecols16.png" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" Click="btnMoreColls_Click" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header="{StaticResource tgShowHideCP}" Ribbon:KeyTip.Keys="SH" Name="ShowHide">
-                    <Ribbon:CheckBox Header="{StaticResource chkImagefilenameCP}" Ribbon:KeyTip.Keys="I" Name="chkImageNames" SizeDefinition="Middle,Middle,Small" IsChecked="True" IsEnabled="False" />
                     <Ribbon:CheckBox Header="{StaticResource chkHiddenItemsCP}" Ribbon:KeyTip.Keys="D" Name="chkHiddenFiles" SizeDefinition="Middle,Middle,Small" Checked="chkHiddenFiles_Checked" Unchecked="chkHiddenFiles_Unchecked" />
                     <Ribbon:CheckBox Header="{StaticResource chkExtensionsCP}" Ribbon:KeyTip.Keys="E" Name="chkExtensions" SizeDefinition="Middle,Middle,Small" Checked="chkExtensions_Checked" Unchecked="chkExtensions_Unchecked">
                         <Ribbon:CheckBox.ToolTip>
