@@ -266,13 +266,14 @@ namespace BetterExplorerControls
 
         private string FixShellPathsInEditMode(string LastPath)
         {
-            string LLastPath = LastPath;
-                   
-            foreach (ShellObject item in KnownFolders.All)
-            {
-                LLastPath = LLastPath.Replace(item.ParsingName, item.GetDisplayName(DisplayNameType.Default));
-            }
-
+          string LLastPath = LastPath;
+          Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
+                  (ThreadStart)(() => {
+                                                    
+                    foreach (ShellObject item in KnownFolders.All) {
+                      LLastPath = LLastPath.Replace(item.ParsingName, item.GetDisplayName(DisplayNameType.Default));
+                    }
+                  }));
             return LLastPath.Replace(".library-ms","");
         }
 
@@ -306,7 +307,7 @@ namespace BetterExplorerControls
 
         private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = true;
+            //e.Handled = true;
             elPanel.Visibility = System.Windows.Visibility.Collapsed;
             if (LastPath != "")
             {
@@ -421,23 +422,37 @@ namespace BetterExplorerControls
 
         private void HistoryCombo_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (IsInEditMode)
-            {
-                TextChange[] tc = e.Changes.ToArray();
-                if (tc[0].RemovedLength == 0 || tc[0].AddedLength > 0)
-                {
-                    foreach (string item in HistoryItems)
-                    {
-                        if (item.ToLowerInvariant().StartsWith(HistoryCombo.Text.ToLowerInvariant()))
-                        {
-                            int SelStart = HistoryCombo.Text.Length;
-                            HistoryCombo.Text = item;
-                            HistoryCombo.SelectionStart = SelStart;
-                            HistoryCombo.SelectionLength = item.Length - SelStart;
-                        }
-                    } 
-                }
-            }
+          //if (IsInEditMode) {
+          //  hl = new List<string>(HistoryItems.Where(c => c.Contains(HistoryCombo.Text)).ToArray());
+          //  if (hl.Count > 0) {
+          //    mnu = new System.Windows.Controls.ContextMenu();
+          //    foreach (var item in hl) {
+          //      mnu.Items.Add(item);
+          //    }
+
+          //    mnu.IsOpen = true;
+          //  }
+          //}
+         //HistoryItems = new List<string>(HistoryItems.Where(c => c.Contains(HistoryCombo.Text)).ToArray());
+         // e.Handled = true;
+          //e.Handled = true;
+          //  if (IsInEditMode)
+          //  {
+          //      TextChange[] tc = e.Changes.ToArray();
+          //      if (tc[0].RemovedLength == 0 || tc[0].AddedLength > 0)
+          //      {
+          //          foreach (string item in HistoryItems)
+          //          {
+          //              if (item.ToLowerInvariant().StartsWith(HistoryCombo.Text.ToLowerInvariant()))
+          //              {
+          //                  int SelStart = HistoryCombo.Text.Length;
+          //                  HistoryCombo.Text = item;
+          //                  HistoryCombo.SelectionStart = SelStart;
+          //                  HistoryCombo.SelectionLength = item.Length - SelStart;
+          //              }
+          //          } 
+          //      }
+          //  }
         }
 
         private void HistoryCombo_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
