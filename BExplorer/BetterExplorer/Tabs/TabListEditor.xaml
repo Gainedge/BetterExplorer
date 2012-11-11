@@ -7,11 +7,10 @@
              d:DesignHeight="298" d:DesignWidth="500">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25*" />
+            <RowDefinition Height="25" />
             <RowDefinition Height="273*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="1" Name="stackPanel1" Orientation="Vertical">
-        </StackPanel>
+        <StackPanel Grid.Row="1" Name="stackPanel1" Orientation="Vertical"></StackPanel>
         <Grid Name="grid1">
             <Grid.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

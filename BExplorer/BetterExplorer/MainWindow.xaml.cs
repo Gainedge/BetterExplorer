@@ -978,12 +978,12 @@ namespace BetterExplorer
             //        itisLibraries = false;
             //    }
 
-            //    //if (MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bexplorer.codeplex.com/. \r\n\r\nHere is some information about the folder being loaded:\r\n\r\nName: " + ne.GetDisplayName(DisplayNameType.Default) + "\r\nLocation: " + ne.ParsingName +
+            //    //if (MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is some information about the folder being loaded:\r\n\r\nName: " + ne.GetDisplayName(DisplayNameType.Default) + "\r\nLocation: " + ne.ParsingName +
             //    //    "\r\n\r\nFolder, Drive, or Library: " + GetYesNoFromBoolean(ne.IsFolder) + "\r\nDrive: " + GetYesNoFromBoolean(ne.IsDrive) + "\r\nNetwork Drive: " + GetYesNoFromBoolean(ne.IsNetDrive) + "\r\nRemovable: " + GetYesNoFromBoolean(ne.IsRemovable) +
             //    //    "\r\nSearch Folder: " + GetYesNoFromBoolean(ne.IsSearchFolder) + "\r\nShared: " + GetYesNoFromBoolean(ne.IsShared) + "\r\nShortcut: " + GetYesNoFromBoolean(ne.IsLink) + "\r\nLibrary: " + GetYesNoFromBoolean(isinLibraries) + "\r\nLibraries Folder: " + GetYesNoFromBoolean(itisLibraries) +
             //    //    "\r\n\r\n Would you like to see additional information? Click No to try continuing the program.", "Error Occurred on Completing Navigation", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
             //    //{
-            //    //    MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bexplorer.codeplex.com/. \r\n\r\nHere is additional information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Additional Error Data", MessageBoxButton.OK, MessageBoxImage.Error);
+            //    //    MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is additional information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Additional Error Data", MessageBoxButton.OK, MessageBoxImage.Error);
             //    //}
             }
 
@@ -1640,12 +1640,12 @@ namespace BetterExplorer
                     itisLibraries = false;
                 }
 
-                //if (MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bexplorer.codeplex.com/. \r\n\r\nHere is some information about the folder being loaded:\r\n\r\nName: " + ne.GetDisplayName(DisplayNameType.Default) + "\r\nLocation: " + ne.ParsingName +
+                //if (MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is some information about the folder being loaded:\r\n\r\nName: " + ne.GetDisplayName(DisplayNameType.Default) + "\r\nLocation: " + ne.ParsingName +
                 //    "\r\n\r\nFolder, Drive, or Library: " + GetYesNoFromBoolean(ne.IsFolder) + "\r\nDrive: " + GetYesNoFromBoolean(ne.IsDrive) + "\r\nNetwork Drive: " + GetYesNoFromBoolean(ne.IsNetDrive) + "\r\nRemovable: " + GetYesNoFromBoolean(ne.IsRemovable) +
                 //    "\r\nSearch Folder: " + GetYesNoFromBoolean(ne.IsSearchFolder) + "\r\nShared: " + GetYesNoFromBoolean(ne.IsShared) + "\r\nShortcut: " + GetYesNoFromBoolean(ne.IsLink) + "\r\nLibrary: " + GetYesNoFromBoolean(isinLibraries) + "\r\nLibraries Folder: " + GetYesNoFromBoolean(itisLibraries) +
                 //    "\r\n\r\n Would you like to see additional information? Click No to try continuing the program.", "Error Occurred on Completing Navigation", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
                 //{
-                //    MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bexplorer.codeplex.com/. \r\n\r\nHere is additional information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Additional Error Data", MessageBoxButton.OK, MessageBoxImage.Error);
+                //    MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is additional information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Additional Error Data", MessageBoxButton.OK, MessageBoxImage.Error);
                 //}
             }
 
@@ -1816,7 +1816,8 @@ namespace BetterExplorer
                 TheRibbon.SelectedTabItem = HomeTab;
             }
 
-
+            // Just hide it. Hide it now.
+            ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
 
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
             {
@@ -1868,9 +1869,10 @@ namespace BetterExplorer
                             // hide contextual tabs
                             ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
                             ctgExe.Visibility = System.Windows.Visibility.Collapsed;
-                            ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-
                             ctgImage.Visibility = System.Windows.Visibility.Collapsed;
+
+                            // already hidden
+                            //ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
 
                             // if the current viewing location is a Drive, show Drive Tools.
                             if (inDrive == true)
@@ -1883,13 +1885,13 @@ namespace BetterExplorer
                             }
 
                             // if the current viewing location is a Library, show Library Tools.
-                            if (Explorer.NavigationLog.CurrentLocation.Parent != null)
-                            {
-                                if (Explorer.NavigationLog.CurrentLocation.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
-                                {
-                                    ctgFolderTools.Visibility = Visibility.Collapsed;
-                                }
-                            }
+                            //if (Explorer.NavigationLog.CurrentLocation.Parent != null)
+                            //{
+                            //    if (Explorer.NavigationLog.CurrentLocation.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
+                            //    {
+                            //        ctgFolderTools.Visibility = Visibility.Collapsed;
+                            //    }
+                            //}
 
                             if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName)
                             {
@@ -3733,7 +3735,7 @@ namespace BetterExplorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while trying to load the theme data from the Registry. \n\r \n\r" + ex.Message + "\n\r \n\rPlease let us know of this issue at http://bexplorer.codeplex.com/", "RibbonTheme Error - " + ex.ToString());
+                MessageBox.Show("An error occurred while trying to load the theme data from the Registry. \n\r \n\r" + ex.Message + "\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", "RibbonTheme Error - " + ex.ToString());
                 //MessageBox.Show("There was exception during reg read! Please report on http:\\bexplorer.codeplex.com");
             }
 
@@ -3758,7 +3760,7 @@ namespace BetterExplorer
             }
             catch (Exception ex)
             {
-                MessageBox.Show("An error occurred while trying to load the locale data from the Registry. \n\r \n\r" + ex.Message + "\n\r \n\rPlease let us know of this issue at http://bexplorer.codeplex.com/", "RibbonTheme Error - " + ex.ToString());
+                MessageBox.Show("An error occurred while trying to load the locale data from the Registry. \n\r \n\r" + ex.Message + "\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", "RibbonTheme Error - " + ex.ToString());
                 //MessageBox.Show("There was exception during reg read! Please report on http:\\bexplorer.codeplex.com");
             }
 
@@ -4310,13 +4312,14 @@ namespace BetterExplorer
             }
             catch (Exception exe)
             {
-                MessageBox.Show("An error occurred while loading the window. Please report this issue at http://bexplorer.codeplex.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
         }
 
         void Explorer_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
         {
+            //MessageBox.Show("Gary, Indiana!");
             switch (e.Effect)
             {
                 case System.Windows.Forms.DragDropEffects.All:
@@ -6202,7 +6205,7 @@ namespace BetterExplorer
             }
             catch (Exception exe)
             {
-                MessageBox.Show("An error occurred while writing to the log file. This error can be avoided if you disable the action logging feature. Please report this issue at http://bexplorer.codeplex.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Writing to Log", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("An error occurred while writing to the log file. This error can be avoided if you disable the action logging feature. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Writing to Log", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -6216,10 +6219,12 @@ namespace BetterExplorer
                 }
 
                 NewTab(logdir);
+
+                this.backstage.IsOpen = false;
             }
             catch (Exception exe)
             {
-                MessageBox.Show("An error occurred while trying to open the logs folder. Please report this issue at http://bexplorer.codeplex.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Opening Log Folder", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("An error occurred while trying to open the logs folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Opening Log Folder", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -7656,7 +7661,6 @@ namespace BetterExplorer
                 //'if it never crashes the program? Closing the last tab simply closes the program, so I
                 //'thought, what the heck... let's just keep it enabled. :) -JaykeBird
             }
-
 
             Explorer.ExplorerSetFocus();
             Explorer.Focus();

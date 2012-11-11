@@ -116,7 +116,7 @@ namespace BetterExplorer
             }
             catch
             {
-                MessageBox.Show("There was an error in the startup procedure related to consolidating multiple instances. Please let us know of this issue at http://bexplorer.codeplex.com/", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("There was an error in the startup procedure related to consolidating multiple instances. Please let us know of this issue at http://bugtracker.better-explorer.com/", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             string Locale = "";
@@ -156,7 +156,7 @@ namespace BetterExplorer
             catch 
             {
 
-                MessageBox.Show("A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n " + Locale + "\r\n \r\nPlease report this issue at http://bexplorer.codeplex.com/.");
+                MessageBox.Show("A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n " + Locale + "\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.");
                 Shutdown();
             }
 

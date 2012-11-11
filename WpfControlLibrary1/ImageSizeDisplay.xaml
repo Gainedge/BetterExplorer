@@ -8,7 +8,7 @@
         <StackPanel Orientation="Horizontal">
             <Grid>
                 <TextBlock HorizontalAlignment="Left" Margin="2,4,0,0" Name="textBlock1" Text="Width:" VerticalAlignment="Top" />
-                <TextBlock HorizontalAlignment="Left" Margin="2,26,0,0" Name="textBlock2" Text="Height:" VerticalAlignment="Top" />
+                <TextBlock HorizontalAlignment="Left" Margin="2,29,0,0" Name="textBlock2" Text="Height:" VerticalAlignment="Top" />
             </Grid>
             <Grid>
                 <TextBox Height="23" HorizontalAlignment="Left" Margin="2,1,0,0" Name="textBox1" VerticalAlignment="Top" Width="70" IsReadOnly="True" Background="Gainsboro" />

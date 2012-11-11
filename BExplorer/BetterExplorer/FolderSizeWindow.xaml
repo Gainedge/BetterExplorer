@@ -26,5 +26,6 @@
             </my:PieChartLayout.ColorSelector>
         </my:PieChartLayout>
         <ProgressBar Height="12" Name="progressBar1" VerticalAlignment="Bottom" />
+        <TextBlock HorizontalAlignment="Center" Name="textBlock1" Text="Getting size of subfolders..." VerticalAlignment="Bottom" Margin="0,0,0,15" />
     </Grid>
 </Window>
