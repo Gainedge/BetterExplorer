@@ -1112,11 +1112,13 @@ namespace BetterExplorer
         void Explorer_KeyUP(object sender, ExplorerKeyUPEventArgs e)
         {
 
-            if (e.Key == 27 || e.Key == 13 || e.Key == 777 || e.Key == 17 || e.Key == 778)
+            if (e.Key == 27 || e.Key == 13 || e.Key == 17)
             {
                 IsAfterRename = true;
                 breadcrumbBarControl1.ExitEditMode();
-            }         
+            } else if (e.Key == 777 || e.Key == 778) {
+              IsAfterRename = true;
+            }      
         }
 
         void Explorer_RenameFinished(object sender, EventArgs e)
@@ -8454,10 +8456,12 @@ namespace BetterExplorer
         public List<string> LoadListOfTabListFiles()
         {
             List<string> o = new List<string>();
-            foreach (string item in Directory.GetFiles(sstdir))
-            {
+
+            if (Directory.Exists(sstdir)) {
+              foreach (string item in Directory.GetFiles(sstdir)) {
                 ShellObject obj = ShellObject.FromParsingName(item);
                 o.Add(RemoveExtensionsFromFile(obj.GetDisplayName(DisplayNameType.Default), GetExtension(item)));
+              } 
             }
             return o;
         }
