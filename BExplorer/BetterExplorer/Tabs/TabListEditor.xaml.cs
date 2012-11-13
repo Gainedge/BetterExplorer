@@ -28,6 +28,7 @@ namespace BetterExplorer
         {
             foreach(string item in list)
             {
+                //MessageBox.Show(item);
                 TabListEditorItem g = new TabListEditorItem(item);
                 g.TitleColumnWidth = NameCol.Width;
                 g.Width = this.Width;
@@ -51,6 +52,22 @@ namespace BetterExplorer
                 o.Add(g.Path);
             }
             return o;
+        }
+
+        private void gridSplitter1_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            foreach (TabListEditorItem item in stackPanel1.Children)
+            {
+                item.TitleColumnWidth = this.NameCol.Width;
+            }
+        }
+
+        private void gridSplitter1_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        {
+            foreach (TabListEditorItem item in stackPanel1.Children)
+            {
+                item.TitleColumnWidth = this.NameCol.Width;
+            }
         }
 
     }

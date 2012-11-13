@@ -266,6 +266,7 @@ namespace BetterExplorer
         private void RibbonWindow_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             IsAfterRename = true;
+            breadcrumbBarControl1.ExitEditMode();
         }
 
         private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1114,12 +1115,14 @@ namespace BetterExplorer
             if (e.Key == 27 || e.Key == 13 || e.Key == 777 || e.Key == 17 || e.Key == 778)
             {
                 IsAfterRename = true;
+                breadcrumbBarControl1.ExitEditMode();
             }         
         }
 
         void Explorer_RenameFinished(object sender, EventArgs e)
         {
             IsAfterRename = true;
+            breadcrumbBarControl1.ExitEditMode();
         }
 
         void Explorer_GotFocus(object sender, EventArgs e)
@@ -1384,8 +1387,8 @@ namespace BetterExplorer
                 fsw_AC.Dispose();
 
             e.Cancel = IsCancel;
-            if (IsAfterRename)
-                breadcrumbBarControl1.ExitEditMode();
+            //if (IsAfterRename)
+            //    breadcrumbBarControl1.ExitEditMode();
 
             try
             {
@@ -1807,7 +1810,7 @@ namespace BetterExplorer
 
             if (IsAfterRename)
             {
-                breadcrumbBarControl1.ExitEditMode();
+                //breadcrumbBarControl1.ExitEditMode();
                 Explorer.Focus();
             }
             if (ctgSearch.Visibility == System.Windows.Visibility.Visible)
@@ -2062,24 +2065,37 @@ namespace BetterExplorer
                                                 deffappname = andeffappname;
                                             }
 
+                                            bool isDuplicate = false;
 
-                                            try
+                                            foreach (MenuItem mei in btnOpenWith.Items)
                                             {
-                                                ShellObject obj = ShellObject.FromParsingName(ExePath);
-                                                mi.Header = deffappname;
-                                                mi.Tag = ExePath;
-                                                mi.Click += new RoutedEventHandler(miow_Click);
-                                                obj.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                                                obj.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-                                                mi.Icon = obj.Thumbnail.BitmapSource;
-                                                obj.Dispose();
-                                            }
-                                            catch (Exception)
-                                            {
-
+                                                if ((mei.Tag as string) == ExePath)
+                                                {
+                                                    isDuplicate = true;
+                                                    //MessageBox.Show(ExePath,"Duplicate Found");
+                                                }
                                             }
 
-                                            btnOpenWith.Items.Add(mi);
+                                            if (isDuplicate == false)
+                                            {
+                                                try
+                                                {
+                                                    ShellObject obj = ShellObject.FromParsingName(ExePath);
+                                                    mi.Header = deffappname;
+                                                    mi.Tag = ExePath;
+                                                    mi.Click += new RoutedEventHandler(miow_Click);
+                                                    obj.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                                                    obj.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+                                                    mi.Icon = obj.Thumbnail.BitmapSource;
+                                                    mi.ToolTip = ExePath;
+                                                    obj.Dispose();
+                                                }
+                                                catch (Exception)
+                                                {
+
+                                                }
+                                                btnOpenWith.Items.Add(mi);
+                                            }
                                         }
                                     }
                                 }
@@ -2857,7 +2873,7 @@ namespace BetterExplorer
 
         #endregion
 
-        #region ClickEvents
+        #region Size Chart
 
         private void btnFSizeChart_Click(object sender, RoutedEventArgs e)
         {
@@ -2899,9 +2915,11 @@ namespace BetterExplorer
             FolderSizeWindow fsw = new FolderSizeWindow(Explorer.NavigationLog.CurrentLocation.ParsingName);
             fsw.Owner = this;
             fsw.Show();
-
-
         }
+
+        #endregion
+
+        #region Home Tab
 
         private void miJunctionpoint_Click(object sender, RoutedEventArgs e)
         {
@@ -2966,18 +2984,6 @@ namespace BetterExplorer
                     "0x88779", sources, drops, "", "", "");
                 proc.WaitForExit();
             }
-        }
-
-        private void Button_Click_6(object sender, RoutedEventArgs e)
-        {
-            CheckForUpdate();
-            backstage.IsOpen = true;
-        }
-
-        private void Button_Click_7(object sender, RoutedEventArgs e)
-        {
-          Process.Start("http://better-explorer.com/");
-
         }
 
         private void btnHistory_Click(object sender, RoutedEventArgs e)
@@ -3054,16 +3060,17 @@ namespace BetterExplorer
             pasteThread.Start(PasteData);
         }
 
+        // Delete
         private void SplitButton_Click(object sender, RoutedEventArgs e)
         {
             MenuItem_Click(sender, e);
         }
 
+        // Rename
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             IsAfterRename = false;
             Explorer.DoRename();
-
         }
 
         private void btnPathCopy_Click(object sender, RoutedEventArgs e)
@@ -3143,6 +3150,7 @@ namespace BetterExplorer
             return path;
         }
 
+        // Delete > Send to Recycle Bin
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             //KeepFocusOnExplorer = true;
@@ -3150,6 +3158,7 @@ namespace BetterExplorer
             Explorer.DeleteToRB();
         }
 
+        // Delete > Permanently Delete
         private void MenuItem_Click_1(object sender, RoutedEventArgs e)
         {
             //KeepFocusOnExplorer = true;
@@ -3163,7 +3172,7 @@ namespace BetterExplorer
         public bool IsCompartibleRename = false;
         public bool IsAfterRename = false;
 
-
+        // New Folder/Library
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             string path = "";
@@ -3404,31 +3413,6 @@ namespace BetterExplorer
             Process.Start(main.TrimEnd(), substr.Replace("%1", String.Format("\"{0}\"", Explorer.SelectedItems[0].ParsingName)));
         }
 
-        private void btnFormatDrive_Click(object sender, RoutedEventArgs e)
-        {
-            Explorer.FormatDrive();
-        }
-
-        private void btnCleanDrive_Click(object sender, RoutedEventArgs e)
-        {
-            Explorer.CleanupDrive();
-        }
-
-        private void btnDefragDrive_Click(object sender, RoutedEventArgs e)
-        {
-            Explorer.DefragDrive();
-        }
-
-        private void btnRunAsAdmin_Click(object sender, RoutedEventArgs e)
-        {
-            Explorer.RunExeAsAdmin(Explorer.SelectedItems[0].ParsingName);
-        }
-
-        private void btnPin_Click(object sender, RoutedEventArgs e)
-        {
-            WindowsAPI.PinUnpinToTaskbar(Explorer.SelectedItems[0].ParsingName);
-        }
-
         private void btnFavorites_Click(object sender, RoutedEventArgs e)
         {
             if (Explorer.GetSelectedItemsCount() == 1)
@@ -3455,7 +3439,111 @@ namespace BetterExplorer
 
         #endregion
 
-        #region HelperFunctions
+        #region Drive Tools
+
+        private void btnFormatDrive_Click(object sender, RoutedEventArgs e)
+        {
+            Explorer.FormatDrive();
+        }
+
+        private void btnCleanDrive_Click(object sender, RoutedEventArgs e)
+        {
+            Explorer.CleanupDrive();
+        }
+
+        private void btnDefragDrive_Click(object sender, RoutedEventArgs e)
+        {
+            Explorer.DefragDrive();
+        }
+
+        #endregion
+
+        #region Application Tools
+
+        private void btnRunAsAdmin_Click(object sender, RoutedEventArgs e)
+        {
+            Explorer.RunExeAsAdmin(Explorer.SelectedItems[0].ParsingName);
+        }
+
+        private void btnPin_Click(object sender, RoutedEventArgs e)
+        {
+            WindowsAPI.PinUnpinToTaskbar(Explorer.SelectedItems[0].ParsingName);
+        }
+
+        #endregion
+
+        #region Backstage - Information Tab
+
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            CheckForUpdate();
+            backstage.IsOpen = true;
+        }
+
+        private void Button_Click_7(object sender, RoutedEventArgs e)
+        {
+            Process.Start("http://better-explorer.com/");
+
+        }
+
+        #endregion
+
+        #region Path to String HelperFunctions
+
+        private string RemoveExtensionsFromFile(string file, string ext)
+        {
+            if (file.EndsWith(ext) == true)
+            {
+                return file.Remove(file.LastIndexOf(ext), ext.Length);
+            }
+            else
+            {
+                return file;
+            }
+        }
+
+        private string GetExtension(string file)
+        {
+            return file.Substring(file.LastIndexOf("."));
+        }
+
+        private string GetUseablePath(string path)
+        {
+            if (path.StartsWith("::"))
+            {
+                string lib = path.Substring(0, path.IndexOf("\\"));
+                string gp = GetDefaultFolderfromLibrary(lib);
+                if (gp == lib)
+                {
+                    return path;
+                }
+                else
+                {
+                    return gp + path.Substring(path.IndexOf("\\") + 1);
+                }
+            }
+            else
+            {
+                return path;
+            }
+        }
+
+        private string GetDefaultFolderfromLibrary(string library)
+        {
+            try
+            {
+                ShellLibrary lib = ShellLibrary.Load(library, true);
+                return lib.DefaultSaveFolder;
+            }
+            catch
+            {
+                return library;
+            }
+        }
+
+        #endregion
+
+        #region Updates / Other HelperFunctions
 
         public void CheckForUpdate(bool ShowNoUpdatesMessage = true)
         {
@@ -3590,40 +3678,6 @@ namespace BetterExplorer
           return false;
         }
 
-        private string GetUseablePath(string path)
-        {
-            if (path.StartsWith("::"))
-            {
-                string lib = path.Substring(0, path.IndexOf("\\"));
-                string gp = GetDefaultFolderfromLibrary(lib);
-                if (gp == lib)
-                {
-                    return path;
-                }
-                else
-                {
-                    return gp + path.Substring(path.IndexOf("\\") + 1);
-                }
-            }
-            else
-            {
-                return path;
-            }
-        }
-
-        private string GetDefaultFolderfromLibrary(string library)
-        {
-            try
-            {
-                ShellLibrary lib = ShellLibrary.Load(library, true);
-                return lib.DefaultSaveFolder;
-            }
-            catch
-            {
-                return library;
-            }
-        }
-
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetCursorPos(ref Win32Point pt);
@@ -3669,30 +3723,6 @@ namespace BetterExplorer
         {
             //if (args == null) return;
             //Application.Current.Properties["cmd2"] = args[0];
-        }
-
-        private ImageFormat GetImageFormat(string FileName)
-        {
-            using (Bitmap bitmap = new Bitmap(FileName))
-            {
-                return bitmap.RawFormat;
-            }
-        }
-
-
-        private void RotateAndSaveImage(String input, String output, ImageFormat format, RotateFlipType type)
-        {
-            //create an object that we can use to examine an image file
-            System.Drawing.Image img = System.Drawing.Image.FromFile(input);
-
-            //rotate the picture by 90 degrees
-            img.RotateFlip(type);
-
-            //re-save the picture
-            img.Save(output, format);
-
-            //tidy up after we've finished
-            img.Dispose();
         }
 
         #endregion
@@ -4315,36 +4345,6 @@ namespace BetterExplorer
                 MessageBox.Show("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-        }
-
-        void Explorer_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
-        {
-            //MessageBox.Show("Gary, Indiana!");
-            switch (e.Effect)
-            {
-                case System.Windows.Forms.DragDropEffects.All:
-                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
-                    break;
-                case System.Windows.Forms.DragDropEffects.Copy:
-                    AddToLog("The following data was copied into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
-                    break;
-                case System.Windows.Forms.DragDropEffects.Link:
-                    AddToLog("The following data was linked into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
-                    break;
-                case System.Windows.Forms.DragDropEffects.Move:
-                    AddToLog("The following data was moved into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
-                    break;
-                case System.Windows.Forms.DragDropEffects.None:
-                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
-                    break;
-                case System.Windows.Forms.DragDropEffects.Scroll:
-                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
-                    break;
-                default:
-                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
-                    break;
-            }
-            //throw new NotImplementedException();
         }
 
         #region Old Search Code
@@ -5514,16 +5514,27 @@ namespace BetterExplorer
 
         #region Image Editing
 
-        private string RemoveExtensionsFromFile(string file, string ext)
+        private ImageFormat GetImageFormat(string FileName)
         {
-            if (file.EndsWith(ext) == true)
+            using (Bitmap bitmap = new Bitmap(FileName))
             {
-                return file.Remove(file.LastIndexOf(ext), ext.Length);
+                return bitmap.RawFormat;
             }
-            else
-            {
-                return file;
-            }
+        }
+
+        private void RotateAndSaveImage(String input, String output, ImageFormat format, RotateFlipType type)
+        {
+            //create an object that we can use to examine an image file
+            System.Drawing.Image img = System.Drawing.Image.FromFile(input);
+
+            //rotate the picture by 90 degrees
+            img.RotateFlip(type);
+
+            //re-save the picture
+            img.Save(output, format);
+
+            //tidy up after we've finished
+            img.Dispose();
         }
 
         private void ConvertImage(ImageFormat format, string name, string extension)
@@ -5780,11 +5791,6 @@ namespace BetterExplorer
                 cvt.Dispose();
                 cst.Dispose();
             }
-        }
-
-        private string GetExtension(string file)
-        {
-            return file.Substring(file.LastIndexOf("."));
         }
 
         private Bitmap ChangeImageSize(Bitmap img, int width, int height)
@@ -6457,10 +6463,10 @@ namespace BetterExplorer
 
         private void TheStatusBar_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (IsAfterRename)
-            {
-                breadcrumbBarControl1.ExitEditMode();
-            }
+            //if (IsAfterRename)
+            //{
+            //    breadcrumbBarControl1.ExitEditMode();
+            //}
         }
 
         private void RibbonWindow_GotFocus(object sender, RoutedEventArgs e)
@@ -6767,6 +6773,36 @@ namespace BetterExplorer
             fAbout.Closed += new EventHandler(fAbout_Closed);
             ExplorerBrowser.IsBool = true;
             fAbout.ShowDialog();
+        }
+
+        void Explorer_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
+        {
+            //MessageBox.Show("Gary, Indiana!");
+            switch (e.Effect)
+            {
+                case System.Windows.Forms.DragDropEffects.All:
+                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    break;
+                case System.Windows.Forms.DragDropEffects.Copy:
+                    AddToLog("The following data was copied into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    break;
+                case System.Windows.Forms.DragDropEffects.Link:
+                    AddToLog("The following data was linked into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    break;
+                case System.Windows.Forms.DragDropEffects.Move:
+                    AddToLog("The following data was moved into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    break;
+                case System.Windows.Forms.DragDropEffects.None:
+                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    break;
+                case System.Windows.Forms.DragDropEffects.Scroll:
+                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    break;
+                default:
+                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    break;
+            }
+            //throw new NotImplementedException();
         }
 
         #endregion
@@ -8420,12 +8456,11 @@ namespace BetterExplorer
             List<string> o = new List<string>();
             foreach (string item in Directory.GetFiles(sstdir))
             {
-                o.Add(RemoveExtensionsFromFile(item, GetExtension(item)));
+                ShellObject obj = ShellObject.FromParsingName(item);
+                o.Add(RemoveExtensionsFromFile(obj.GetDisplayName(DisplayNameType.Default), GetExtension(item)));
             }
             return o;
         }
-
-        #endregion
 
         private void btn_ToolTipOpening(object sender, ToolTipEventArgs e) {
           if (sender is SplitButton) {
@@ -8556,8 +8591,45 @@ namespace BetterExplorer
             }
         }
 
-        
+        private void stGallery_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                (e.AddedItems[0] as SavedTabsListGalleryItem).PerformClickEvent();
+            }
+            catch
+            {
 
+            }
+        }
+
+        private void btnSavedTabs_DropDownOpened(object sender, EventArgs e)
+        {
+            stGallery.Items.Clear();
+            foreach (string item in LoadListOfTabListFiles())
+            {
+                SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item);
+                gli.Click += new SavedTabsListGalleryItem.PathStringEventHandler(gli_Click);
+                stGallery.Items.Add(gli);
+            }
+        }
+
+        void gli_Click(object sender, PathStringEventArgs e)
+        {
+            SavedTabsList list = SavedTabsList.LoadTabList(sstdir + e.PathString + ".txt");
+            
+            //MessageBox.Show(sstdir + e.PathString + ".txt");
+            //throw new NotImplementedException();
+        }
+
+        private void miTabManager_Click(object sender, RoutedEventArgs e)
+        {
+            BetterExplorer.Tabs.TabManager man = new Tabs.TabManager();
+            man.Show();
+            this.WindowState = System.Windows.WindowState.Minimized;
+        }
+
+        #endregion
 
     }
 

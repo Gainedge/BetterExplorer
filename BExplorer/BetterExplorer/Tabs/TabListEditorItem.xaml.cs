@@ -29,6 +29,7 @@ namespace BetterExplorer
 
         public TabListEditorItem(string path)
         {
+            InitializeComponent();
             Path = path;
         }
 

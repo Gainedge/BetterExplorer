@@ -19,13 +19,13 @@
                 </LinearGradientBrush>
             </Grid.Background>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="175*" x:Name="NameCol" />
+                <ColumnDefinition Width="180" x:Name="NameCol" />
                 <ColumnDefinition Width="325*" />
             </Grid.ColumnDefinitions>
-            <Rectangle Grid.Column="1" Name="rectangle1" Stroke="Black" HorizontalAlignment="Left" />
-            <GridSplitter Grid.Column="1" Name="gridSplitter1" HorizontalAlignment="Left" Width="4" Foreground="{x:Null}" Background="#03000000"></GridSplitter>
+            <Rectangle Name="rectangle1" Stroke="Black" HorizontalAlignment="Right" />
             <Label Content="Name" Name="label1" Padding="4,0,0,0" VerticalContentAlignment="Center" />
             <Label Content="Path" Name="label2" Padding="4,0,0,0" VerticalContentAlignment="Center" Grid.Column="1" />
+            <GridSplitter Name="gridSplitter1" HorizontalAlignment="Right" Width="4" Foreground="{x:Null}" Background="#03000000" Margin="0" DragCompleted="gridSplitter1_DragCompleted" DragDelta="gridSplitter1_DragDelta"></GridSplitter>
         </Grid>
     </Grid>
 </UserControl>

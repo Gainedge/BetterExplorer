@@ -134,6 +134,7 @@ namespace BetterExplorer
             progressBar1.Value = progressBar1.Maximum;
             progressBar1.Visibility = System.Windows.Visibility.Collapsed;
             textBlock1.Visibility = System.Windows.Visibility.Collapsed;
+            textBlock1wfx.Visibility = System.Windows.Visibility.Collapsed;
             FInfo = new ObservableCollection<FolderSizeInfoClass>(FSI);
             this.DataContext = FInfo;
         }

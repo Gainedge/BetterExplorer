@@ -196,7 +196,7 @@
   
         </Ribbon:StatusBar>
 
-        <Ribbon:Ribbon Grid.ColumnSpan="3" Background="White" Name="TheRibbon" SizeChanged="TheRibbon_SizeChanged" CustomizeQuickAccessToolbar="TheRibbon_CustomizeQuickAccessToolbar" IsCollapsedChanged="TheRibbon_IsCollapsedChanged" >
+        <Ribbon:Ribbon Grid.ColumnSpan="3" Background="White" Name="TheRibbon" SizeChanged="TheRibbon_SizeChanged" CustomizeQuickAccessToolbar="TheRibbon_CustomizeQuickAccessToolbar" IsCollapsedChanged="TheRibbon_IsCollapsedChanged" GotFocus="TheStatusBar_GotFocus" >
             <Ribbon:Ribbon.ToolBarItems>
                 <Ribbon:Button Ribbon:KeyTip.Keys="B" Icon="Images\about16.png" SizeDefinition="Small,Small,Small" Name="btnAbout" Click="btnAbout_Click" Visibility="Collapsed" />
             </Ribbon:Ribbon.ToolBarItems>
@@ -511,7 +511,7 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgSearch" BorderBrush="DarkGreen" Background="Green" Header="Search Tools" Visibility="Collapsed" IsVisibleChanged="ctgSearch_IsVisibleChanged" />
             </Ribbon:Ribbon.ContextualGroups>
 
-            <Ribbon:RibbonTabItem Header="{StaticResource tbHomeCP}" Ribbon:KeyTip.Keys="H" ReduceOrder="Clipboard,Organize,Open,Tabs,Tabs,Select,Select,Select,Organize,Open,Clipboard,Organize,Open,Tabs" Indent="7" Name="HomeTab" GotFocus="TheStatusBar_GotFocus">
+            <Ribbon:RibbonTabItem Header="{StaticResource tbHomeCP}" Ribbon:KeyTip.Keys="H" ReduceOrder="Clipboard,Organize,Open,Tabs,Select,Select,Select,Organize,Open,Organize,Clipboard,Tabs,Open,Tabs" Indent="7" Name="HomeTab">
                 <Ribbon:RibbonGroupBox Header="{StaticResource tgClipboardCP}" Name="Clipboard">
                     <Ribbon:Button Header="{StaticResource btnCopyCP}" Name="btnCopy" Ribbon:KeyTip.Keys="CO" LargeIcon="Images\Copy32.png" Icon="Images\Copy16.png" Click="btnCopy_Click" IsEnabled="False" CanAddToQuickAccessToolBar="True">
                         <Ribbon:Button.ToolTip>
@@ -603,7 +603,7 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                     </Ribbon:SplitButton>
                     <Ribbon:Button Header="{StaticResource btnEditCP}" Ribbon:KeyTip.Keys="E" SizeDefinition="Middle,Middle,Small" Icon="Images\edit16.png" IsEnabled="False" Name="btnEdit" Click="btnEdit_Click" />
                     <Ribbon:Button Header="{StaticResource btnHistoryCP}" Ribbon:KeyTip.Keys="H" SizeDefinition="Middle,Middle,Middle" Icon="Images\history16.png" IsEnabled="False" Name="btnHistory" Click="btnHistory_Click"  />
-          <Ribbon:SplitButton Header="{StaticResource btnFavoritesCP}" Ribbon:KeyTip.Keys="F" SizeDefinition="Large, Middle, Middle" Icon="Images\favorites16.png" LargeIcon="Images\favorites32.png" Name="btnFavorites" Click="btnFavorites_Click" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" ToolTipOpening="btn_ToolTipOpening"/>
+                    <Ribbon:SplitButton Header="{StaticResource btnFavoritesCP}" Ribbon:KeyTip.Keys="F" SizeDefinition="Large, Middle, Middle" Icon="Images\favorites16.png" LargeIcon="Images\favorites32.png" Name="btnFavorites" Click="btnFavorites_Click" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed" ToolTipOpening="btn_ToolTipOpening"/>
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header="{StaticResource tgSelectCP}" Name="Select" Ribbon:KeyTip.Keys="SE"> <!-- DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed"> -->
                     <Ribbon:Button Header="{StaticResource btnSelectAllCP}" Ribbon:KeyTip.Keys="SA" Size="Middle" SizeDefinition="Middle,Middle,Middle" Name="btnSelAll" Click="btnSelAll_Click" Icon="Images\selectall16.png" />
@@ -623,7 +623,6 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                         <Separator />
                         <MenuItem Header="{StaticResource miCondSelectCP}" Name="miCondSelect" Click="btnCondSel_Click" Ribbon:KeyTip.Keys="W" Icon="Images\filter16.png" Focusable="False"/>
                     </Ribbon:SplitButton>
-                    
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header="{StaticResource tgTabsCP}" Name="Tabs" Ribbon:KeyTip.Keys="T" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed">
                     <Ribbon:Button Header="{StaticResource btnNewTabCP}" Ribbon:KeyTip.Keys="T" Name="btnNewTab" LargeIcon="Images\newtab32.png" Icon="Images\newtab16.png" SizeDefinition="Large,Middle,Middle" Click="btnNewTab_Click">
@@ -649,7 +648,7 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                 IsRibbonAligned ="True"/>
                         </Ribbon:Button.ToolTip>
                     </Ribbon:Button>
-                    <Ribbon:DropDownButton Header="{StaticResource btnSavedTabsCP}" Ribbon:KeyTip.Keys="R" Name="btnSavedTabs" Size="Middle" SizeDefinition="Middle,Middle,Small">
+                    <Ribbon:DropDownButton Header="{StaticResource btnSavedTabsCP}" Ribbon:KeyTip.Keys="R" Name="btnSavedTabs" Size="Middle" SizeDefinition="Middle,Middle,Small" DropDownOpened="btnSavedTabs_DropDownOpened">
                         <Ribbon:DropDownButton.ToolTip>
                             <Ribbon:ScreenTip
                                 Title="{StaticResource btnSavedTabsCP}"
@@ -658,7 +657,12 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                 IsRibbonAligned="True"/>
                         </Ribbon:DropDownButton.ToolTip>
                         <!--TODO: Add Saved Tabs gallery-->
+                        <Ribbon:Gallery Name="stGallery" Orientation="Vertical" SelectionChanged="stGallery_SelectionChanged">
+                            <!--Items added programmatically-->
+                        </Ribbon:Gallery>
                         <Ribbon:MenuItem Header="Save Current Tabs" Ribbon:KeyTip.Keys="S" Name="miSaveCurTabs" Click="miSaveCurTabs_Click" />
+                        <Separator />
+                        <Ribbon:MenuItem Header="{StaticResource sepSavedTabsCP}" Ribbon:KeyTip.Keys="M" Name="miTabManager" Click="miTabManager_Click" />
                     </Ribbon:DropDownButton>
                     <Ribbon:SplitButton Header="{StaticResource btnUndoCloseCP}" Ribbon:KeyTip.Keys="UC" Name="btnUndoClose" Size="Middle" SizeDefinition="Middle,Middle,Small" Click="btnUndoClose_Click" DropDownOpened="btnUndoClose_DropDownOpened" IsEnabled="False">
                         <Ribbon:SplitButton.ToolTip>
@@ -675,7 +679,8 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                     </Ribbon:SplitButton>
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
-            <Ribbon:RibbonTabItem Header="{StaticResource tbShareCP}" Ribbon:KeyTip.Keys="S" Visibility="Visible" Indent="7" ReduceOrder="Network,Network,Compress,Compress,Compress,Network" GotFocus="TheStatusBar_GotFocus">
+            
+            <Ribbon:RibbonTabItem Header="{StaticResource tbShareCP}" Ribbon:KeyTip.Keys="S" Visibility="Visible" Indent="7" ReduceOrder="Network,Network,Compress,Compress,Compress,Network" >
                 <Ribbon:RibbonGroupBox Header="{StaticResource tgCompressCP}" Ribbon:KeyTip.Keys="C" Name="Compress">
                     <Ribbon:Button Header="{StaticResource btnMakeArchiveCP}" Ribbon:KeyTip.Keys="R" Name="btnCreateArchive" SizeDefinition="Large,Large,Large" LargeIcon="Images\archiver32.png" Icon="Images\archiver16.png" Click="btnCreateArchive_Click" >
                         <Ribbon:Button.ToolTip>
@@ -710,7 +715,8 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                     </Ribbon:Button>
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
-            <Ribbon:RibbonTabItem Header="{StaticResource tbViewCP}" Ribbon:KeyTip.Keys="V" ReduceOrder="CurrentView,CurrentView,ShowHide,Layout,Layout,Layout,Panes,Panes,ShowHide,ShowHide,CurrentView,Panes" Indent="7" GotFocus="TheStatusBar_GotFocus">
+            
+            <Ribbon:RibbonTabItem Header="{StaticResource tbViewCP}" Ribbon:KeyTip.Keys="V" ReduceOrder="CurrentView,CurrentView,ShowHide,Layout,Layout,Layout,Panes,Panes,ShowHide,ShowHide,CurrentView,Panes" Indent="7" >
                 <Ribbon:RibbonGroupBox x:Name="Panes" Header="{StaticResource tbPanesCP}" Ribbon:KeyTip.Keys="P">
                     <Ribbon:ToggleButton Header="{StaticResource btnNavigationCP}" Ribbon:KeyTip.Keys="NP" Name="btnNavigationPane" Checked="btnNavigationPane_Checked" Unchecked="btnNavigationPane_Unchecked" LargeIcon="Images\navpane32.png" Icon="Images\navpane16.png" SizeDefinition="Large,Middle,Middle">
                         <Ribbon:ToggleButton.ToolTip>
@@ -787,7 +793,6 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                         </StackPanel>
                         <!--Slider Orientation="Horizontal" Tag="Additional Views" Interval="1" Minimum="48" Maximum="256" SmallChange="1" /-->
                     </Ribbon:InRibbonGallery>
-
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header="{StaticResource tgCurrentViewCP}" Name="CurrentView" Ribbon:KeyTip.Keys="CV">
                     <Ribbon:DropDownButton Name="btnSort" Ribbon:KeyTip.Keys="S" Header="{StaticResource btnSortByCP}" SizeDefinition="Large,Large,Small" LargeIcon="Images\sort32.png" Icon="Images\sort16.png" DropDownOpened="btnMoreColls_DropDownOpened" DropDownClosed="btnMoreColls_DropDownClosed">

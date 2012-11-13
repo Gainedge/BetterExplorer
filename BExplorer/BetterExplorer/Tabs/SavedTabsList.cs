@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Windows;
 
 namespace BetterExplorer
 {
@@ -75,6 +76,7 @@ namespace BetterExplorer
                 try
                 {
                     o.Add(item);
+                    //MessageBox.Show(item);
                 }
                 catch
                 {
