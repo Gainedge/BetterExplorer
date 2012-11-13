@@ -6783,25 +6783,25 @@ namespace BetterExplorer
             switch (e.Effect)
             {
                 case System.Windows.Forms.DragDropEffects.All:
-                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                AddToLog(String.Format("The following data was dragged into {0}: {1}", Explorer.NavigationLog.CurrentLocation, e.Data.GetData(DataFormats.FileDrop)));
                     break;
                 case System.Windows.Forms.DragDropEffects.Copy:
-                    AddToLog("The following data was copied into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    AddToLog(String.Format("The following data was copied into {0}: {1}", Explorer.NavigationLog.CurrentLocation, e.Data.GetData(DataFormats.FileDrop)));
                     break;
                 case System.Windows.Forms.DragDropEffects.Link:
-                    AddToLog("The following data was linked into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    AddToLog(String.Format("The following data was linked into {0}: {1}", Explorer.NavigationLog.CurrentLocation, e.Data.GetData(DataFormats.FileDrop)));
                     break;
                 case System.Windows.Forms.DragDropEffects.Move:
-                    AddToLog("The following data was moved into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    AddToLog(String.Format("The following data was moved into {0}: {1}", Explorer.NavigationLog.CurrentLocation, e.Data.GetData(DataFormats.FileDrop)));
                     break;
                 case System.Windows.Forms.DragDropEffects.None:
-                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    AddToLog(String.Format("The following data was dragged into {0}: {1}", Explorer.NavigationLog.CurrentLocation, e.Data.GetData(DataFormats.FileDrop)));
                     break;
                 case System.Windows.Forms.DragDropEffects.Scroll:
-                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    AddToLog(String.Format("The following data was dragged into {0}: {1}", Explorer.NavigationLog.CurrentLocation, e.Data.GetData(DataFormats.FileDrop)));
                     break;
                 default:
-                    AddToLog("The following data was dragged into " + Explorer.NavigationLog.CurrentLocation + ": " + e.Data.GetData(DataFormats.FileDrop));
+                    AddToLog(String.Format("The following data was dragged into {0}: {1}", Explorer.NavigationLog.CurrentLocation, e.Data.GetData(DataFormats.FileDrop)));
                     break;
             }
             //throw new NotImplementedException();
@@ -8492,7 +8492,7 @@ namespace BetterExplorer
                 {
                     System.IO.Directory.CreateDirectory(sstdir);
                 }
-                SavedTabsList.SaveTabList(list, sstdir + ntl.textBox1.Text + ".txt");
+                SavedTabsList.SaveTabList(list, String.Format("{0}{1}.txt", sstdir, ntl.textBox1.Text));
             }
         }
 
