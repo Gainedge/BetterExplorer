@@ -660,9 +660,9 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                         <Ribbon:Gallery Name="stGallery" Orientation="Vertical" SelectionChanged="stGallery_SelectionChanged">
                             <!--Items added programmatically-->
                         </Ribbon:Gallery>
-                        <Ribbon:MenuItem Header="Save Current Tabs" Ribbon:KeyTip.Keys="S" Name="miSaveCurTabs" Click="miSaveCurTabs_Click" />
+                        <Ribbon:MenuItem Header="Save Current Tabs" Ribbon:KeyTip.Keys="S" Name="miSaveCurTabs" Click="miSaveCurTabs_Click" Focusable="False"/>
                         <Separator />
-                        <Ribbon:MenuItem Header="{StaticResource sepSavedTabsCP}" Ribbon:KeyTip.Keys="M" Name="miTabManager" Click="miTabManager_Click" />
+                        <Ribbon:MenuItem Header="{StaticResource sepSavedTabsCP}" Ribbon:KeyTip.Keys="M" Name="miTabManager" Click="miTabManager_Click" Focusable="False"/>
                     </Ribbon:DropDownButton>
                     <Ribbon:SplitButton Header="{StaticResource btnUndoCloseCP}" Ribbon:KeyTip.Keys="UC" Name="btnUndoClose" Size="Middle" SizeDefinition="Middle,Middle,Small" Click="btnUndoClose_Click" DropDownOpened="btnUndoClose_DropDownOpened" IsEnabled="False">
                         <Ribbon:SplitButton.ToolTip>
@@ -675,7 +675,7 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                         <Ribbon:Gallery Name="rotGallery" Orientation="Vertical" SelectionChanged="rotGallery_SelectionChanged">
                             <!--Items added programmatically-->
                         </Ribbon:Gallery>
-                        <Ribbon:MenuItem Header="Clear List" Ribbon:KeyTip.Keys="C" Name="miClearUndoList" Click="miClearUndoList_Click" />
+                        <Ribbon:MenuItem Header="Clear List" Ribbon:KeyTip.Keys="C" Name="miClearUndoList" Click="miClearUndoList_Click" Focusable="False"/>
                     </Ribbon:SplitButton>
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
