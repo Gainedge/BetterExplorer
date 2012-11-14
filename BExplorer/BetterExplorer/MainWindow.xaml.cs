@@ -1112,13 +1112,10 @@ namespace BetterExplorer
         void Explorer_KeyUP(object sender, ExplorerKeyUPEventArgs e)
         {
 
-            if (e.Key == 27 || e.Key == 13 || e.Key == 17)
+            if (e.Key == 27 || e.Key == 13 || e.Key == 17 || e.Key == 777 || e.Key == 778)
             {
-                IsAfterRename = true;
-                breadcrumbBarControl1.ExitEditMode();
-            } else if (e.Key == 777 || e.Key == 778) {
               IsAfterRename = true;
-            }      
+            } 
         }
 
         void Explorer_RenameFinished(object sender, EventArgs e)
