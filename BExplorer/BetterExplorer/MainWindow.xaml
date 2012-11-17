@@ -648,7 +648,7 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                 IsRibbonAligned ="True"/>
                         </Ribbon:Button.ToolTip>
                     </Ribbon:Button>
-                    <Ribbon:DropDownButton Header="{StaticResource btnSavedTabsCP}" Ribbon:KeyTip.Keys="R" Name="btnSavedTabs" Size="Middle" SizeDefinition="Middle,Middle,Small" DropDownOpened="btnSavedTabs_DropDownOpened">
+                    <Ribbon:DropDownButton Header="{StaticResource btnSavedTabsCP}" Ribbon:KeyTip.Keys="R" Name="btnSavedTabs" Size="Middle" LargeIcon="Images\savetabs32.png" Icon="Images\savetabs16.png" SizeDefinition="Middle,Middle,Small" DropDownOpened="btnSavedTabs_DropDownOpened">
                         <Ribbon:DropDownButton.ToolTip>
                             <Ribbon:ScreenTip
                                 Title="{StaticResource btnSavedTabsCP}"
@@ -664,7 +664,7 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                         <Separator />
                         <Ribbon:MenuItem Header="{StaticResource sepSavedTabsCP}" Ribbon:KeyTip.Keys="M" Name="miTabManager" Click="miTabManager_Click" Focusable="False"/>
                     </Ribbon:DropDownButton>
-                    <Ribbon:SplitButton Header="{StaticResource btnUndoCloseCP}" Ribbon:KeyTip.Keys="UC" Name="btnUndoClose" Size="Middle" SizeDefinition="Middle,Middle,Small" Click="btnUndoClose_Click" DropDownOpened="btnUndoClose_DropDownOpened" IsEnabled="False">
+                    <Ribbon:SplitButton Header="{StaticResource btnUndoCloseCP}" Ribbon:KeyTip.Keys="UC" Name="btnUndoClose" Size="Middle" LargeIcon="Images\undotab32.png" Icon="Images\undotab16.png" SizeDefinition="Middle,Middle,Small" Click="btnUndoClose_Click" DropDownOpened="btnUndoClose_DropDownOpened" IsEnabled="False">
                         <Ribbon:SplitButton.ToolTip>
                             <Ribbon:ScreenTip
                                 Title="{StaticResource btnUndoCloseCP}"

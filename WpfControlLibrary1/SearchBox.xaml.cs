@@ -25,6 +25,7 @@ namespace BetterExplorerControls
             ShowFilterMenu();
         }
 
+        private string _CurrentPathName;
         public static readonly RoutedEvent BeginSearchEvent = EventManager.RegisterRoutedEvent(
         "BeginSearch", RoutingStrategy.Direct, typeof(SearchEventHandler), typeof(SearchBox));
 
@@ -66,6 +67,18 @@ namespace BetterExplorerControls
             if (FiltersCleared != null)
                 FiltersCleared(this, e);
         }
+
+
+        public string CurrentPathName
+        {
+            get { return _CurrentPathName; }
+            set
+            {
+                _CurrentPathName = value;
+                lblDefault.Text = "Search " + value;
+            }
+        }
+        
 
         public string FullSearchTerms
         {
@@ -511,23 +524,15 @@ namespace BetterExplorerControls
             }
         }
 
-        private void textBlock1_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            lblDefault.Visibility = System.Windows.Visibility.Hidden;
-            this.Focus();
-            SearchCriteriatext.IsEnabled = true;
-            SearchCriteriatext.Focus();
-        }
-
         private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (SearchCriteriatext.Text.Length == 0)
             {
-                lblDefault.Visibility = System.Windows.Visibility.Visible;
+                SStartEnd.IsEnabled = false;
             }
             else
             {
-                lblDefault.Visibility = System.Windows.Visibility.Hidden;
+                SStartEnd.IsEnabled = true;
             }
         }
 
@@ -566,6 +571,15 @@ namespace BetterExplorerControls
         {
             SetUpFiltersMenu();
         }
+
+        private void lblDefault_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            lblDefault.Visibility = System.Windows.Visibility.Hidden;
+            this.Focus();
+            SearchCriteriatext.IsEnabled = true;
+            SearchCriteriatext.Focus();
+        }
+
     }
 }
 

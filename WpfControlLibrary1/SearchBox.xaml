@@ -7,7 +7,7 @@
     <Grid>
         <TextBox Name="SearchCriteriatext" BorderBrush="{x:Null}" BorderThickness="0" VerticalContentAlignment="Center" TextChanged="textBox1_TextChanged" LostFocus="textBox1_LostFocus" GotFocus="textBox1_GotFocus" LostKeyboardFocus="textBox1_LostKeyboardFocus" Margin="0,0,54,0" />
         <my:DropDownButton Name="SFilters" Header="Filters" Icon="Images\filter16.png" Size="Small" SizeDefinition="Small,Small,Small" Width="30" Height="22" CanAddToQuickAccessToolBar="False" ToolTip="Filters" DropDownOpened="SFilters_DropDownOpened" HorizontalAlignment="Right" Margin="0,0,24,0" />
-        <my:Button Height="22" Name="SStartEnd" Size="Small" SizeDefinition="Small,Small,Small" Header="Search" Icon="Images\search.png" CanAddToQuickAccessToolBar="False" ToolTip="Search" Click="SStartEnd_Click" HorizontalAlignment="Right" Width="24" />
-        <TextBlock Name="lblDefault" Text="Search" Padding="6,3,0,2" FontStyle="Italic" MouseDown="textBlock1_MouseDown" Background="#01000000" Margin="0,0,54,0" />
+        <my:Button Height="22" Name="SStartEnd" Size="Small" SizeDefinition="Small,Small,Small" Header="Search" Icon="Images\search.png" CanAddToQuickAccessToolBar="False" ToolTip="Search" Click="SStartEnd_Click" HorizontalAlignment="Right" Width="24" IsEnabled="False"/>
+        <TextBox Name="lblDefault" Text="Search" VerticalAlignment="Center" Padding="6,0,0,0" IsReadOnly="True" FontStyle="Italic" Background="#01000000" Margin="0,0,54,0" BorderBrush="{x:Null}" BorderThickness="0" PreviewMouseLeftButtonDown="lblDefault_PreviewMouseLeftButtonDown" />
     </Grid>
 </UserControl>

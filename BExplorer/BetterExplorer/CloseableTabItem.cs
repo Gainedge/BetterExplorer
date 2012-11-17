@@ -153,6 +153,7 @@ namespace BetterExplorer
                 _IsNavigate = value;
             }
         }
+
         public Fluent.ContextMenu mnu = null;
         private System.Windows.Controls.Button CloseButton;
         public override void OnApplyTemplate()
