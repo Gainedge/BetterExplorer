@@ -266,7 +266,8 @@ namespace BetterExplorer
 		private void RibbonWindow_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
 		{
 			IsAfterRename = true;
-			breadcrumbBarControl1.ExitEditMode();
+			if (breadcrumbBarControl1.IsInEditMode)
+				breadcrumbBarControl1.ExitEditMode();
 		}
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -7491,9 +7492,8 @@ namespace BetterExplorer
 			CopyThread.Start(dd);
 		}
 
-		private void btnNewTab_Click(object sender, RoutedEventArgs e)
+		private void NavigateAfterTabChange()
 		{
-			NewTab();
 			CloseableTabItem itb = tabControl1.SelectedItem as CloseableTabItem;
 
 			isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
@@ -7533,6 +7533,11 @@ namespace BetterExplorer
 				//'if it never crashes the program? Closing the last tab simply closes the program, so I
 				//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
 			}
+		}
+		private void btnNewTab_Click(object sender, RoutedEventArgs e)
+		{
+			NewTab();
+			NavigateAfterTabChange();
 
 
 			Explorer.ExplorerSetFocus();
@@ -7604,6 +7609,7 @@ namespace BetterExplorer
 		private void ERNewTab(object sender, ExecutedRoutedEventArgs e)
 		{
 			NewTab();
+			NavigateAfterTabChange();
 		}
 
 		void SelectTab(int Index)
@@ -7739,6 +7745,7 @@ namespace BetterExplorer
 
 			CurrentTabIndex = tabControl1.Items.Count - 1;
 			ConstructMoveToCopyToMenu();
+			NavigateAfterTabChange();
 		}
 
 		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
@@ -7867,7 +7874,7 @@ namespace BetterExplorer
 			miclosealltabbd.Click += new RoutedEventHandler(miclosealltabbd_Click);
 			tabitem.mnu.Items.Add(miclosealltabbd);
 
-			tabitem.mnu.Items.Add(new Separator());
+			//tabitem.mnu.Items.Add(new Separator());
 
 
 			//tabitem.mnu.Items.Add(new Separator());
