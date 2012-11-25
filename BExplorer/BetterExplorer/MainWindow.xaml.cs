@@ -1950,7 +1950,7 @@ namespace BetterExplorer
 							// enable (most) buttons
 							btnCopy.IsEnabled = true;
 							btnCut.IsEnabled = true;
-							btnRename.IsEnabled = true;
+							btnRename.IsEnabled = Explorer.SelectedItems.Count() == 1;
 							btnCopyto.IsEnabled = true;
 							btnMoveto.IsEnabled = true;
 							btnSelNone.IsEnabled = true;
@@ -4344,7 +4344,7 @@ namespace BetterExplorer
 			}
 			catch (Exception exe)
 			{
-				MessageBox.Show("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 
 		}
@@ -4895,13 +4895,13 @@ namespace BetterExplorer
 		private void leftNavBut_Click(object sender, RoutedEventArgs e)
 		{
 			isGoingBackOrForward = true;
-			Explorer.Navigate((tabControl1.Items[CurrentTabIndex] as CloseableTabItem).log.NavigateBack());
+			Explorer.Navigate((tabControl1.SelectedItem as CloseableTabItem).log.NavigateBack());
 		}
 
 		private void rightNavBut_Click(object sender, RoutedEventArgs e)
 		{
 			isGoingBackOrForward = true;
-			Explorer.Navigate((tabControl1.Items[CurrentTabIndex] as CloseableTabItem).log.NavigateForward());
+			Explorer.Navigate((tabControl1.SelectedItem as CloseableTabItem).log.NavigateForward());
 		}
 
 		private void downArrow_Click(object sender, RoutedEventArgs e)
@@ -7751,53 +7751,6 @@ namespace BetterExplorer
 		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
 		private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-
-			//if (e.AddedItems.Count > 0)
-			//{
-
-			//    CloseableTabItem itb = e.AddedItems[0] as CloseableTabItem;
-
-			//    isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
-			//    if (itb != null)
-			//    {
-			//        try
-			//        {
-			//            BeforeLastTabIndex = LastTabIndex;
-
-			//            //tabControl1.SelectedIndex = itb.Index;
-			//            LastTabIndex = itb.Index;
-			//            CurrentTabIndex = LastTabIndex;
-			//            if (itb.Path != Explorer.NavigationLog.CurrentLocation)
-			//            {
-
-
-			//                if (!Keyboard.IsKeyDown(Key.Tab))
-			//                {
-			//                    Explorer.Navigate((tabControl1.SelectedItem as CloseableTabItem).Path);//itb.Path);
-			//                }
-			//                else
-			//                {
-			//                    t.Interval = 500;
-			//                    t.Tag = itb.Path;
-			//                    t.Tick += new EventHandler(t_Tick);
-			//                    t.Start();
-			//                }
-
-			//            }
-			//        }
-			//        catch (StackOverflowException)
-			//        {
-
-			//        }
-			//        //'btnTabCloseC.IsEnabled = tabControl1.Items.Count > 1;
-			//        //'there's a bug that has this enabled when there's only one tab open, but why disable it
-			//        //'if it never crashes the program? Closing the last tab simply closes the program, so I
-			//        //'thought, what the heck... let's just keep it enabled. :) -JaykeBird
-			//    }
-			//}
-
-			//Explorer.ExplorerSetFocus();
-			//Explorer.Focus();
 		}
 
 		void t_Tick(object sender, EventArgs e)
