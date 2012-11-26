@@ -1,8 +1,6 @@
 [Setup]
-
 #define use_dotnetfx40
 #define use_vc2010
-
 #define AppName "Better Explorer"
 AppName={#AppName}
 AppVersion=2.0.2
@@ -13,9 +11,9 @@ ArchitecturesInstallIn64BitMode=x64
 MinVersion=0,6.1.7600
 AppVerName=2.0.2
 DefaultGroupName={#AppName}
-
+ShowLanguageDialog=auto
+LanguageDetectionMethod=locale
 #include "scripts\products.iss"
-
 #include "scripts\products\stringversion.iss"
 #include "scripts\products\winversion.iss"
 #include "scripts\products\fileversion.iss"
@@ -28,11 +26,21 @@ DefaultGroupName={#AppName}
 #endif
 
 [Files]
-Source: "C:\Program Files (x86)\Inno Setup 5\iswin7.dll"; DestDir: "{tmp}"; Flags: dontcopy
+Source: "C:\Projects\BetterExplorer\Installer\bin\iswin7.dll"; DestDir: "{tmp}"; Flags: dontcopy
 
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "de"; MessagesFile: "compiler:Languages\German.isl"
+Name: "bulgarian"; MessagesFile: "compiler:Languages\Bulgarian.isl"
+Name: "czech"; MessagesFile: "compiler:Languages\Czech.isl"
+Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
+Name: "french"; MessagesFile: "compiler:Languages\French.isl"
+Name: "greek"; MessagesFile: "compiler:Languages\Greek.isl"
+Name: "italian"; MessagesFile: "compiler:Languages\Italian.isl"
+Name: "japanese"; MessagesFile: "compiler:Languages\Japanese.isl"
+Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
+Name: "slovenian"; MessagesFile: "compiler:Languages\Slovenian.isl"
+Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Code]
 procedure iswin7_add_glass(Handle:HWND; Left, Top, Right, Bottom : Integer; GDIPLoadMode: boolean);

@@ -99,3 +99,10 @@ BExplorer/BetterExplorer/BetterExplorerShell.pdb
 x64/Debug/BEH.dll
 x64/Debug/BEH.ilk
 x64/Debug/BEH.pdb
+BEApi/x64/Debug/BEH.dll.intermediate.manifest
+BEApi/x64/Debug/mt.command.1.tlog
+BEApi/x64/Debug/mt.read.1.tlog
+BEApi/x64/Debug/mt.write.1.tlog
+BEApi/x64/Debug/vc100.idb
+BEApi/x64/Debug/vc100.pdb
+ipch/beapi-8987a04a/beh-46f78cb9.ipch
