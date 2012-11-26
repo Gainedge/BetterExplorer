@@ -17,7 +17,7 @@
             <my:TabListEditor x:Name="tabListEditor1" Grid.Column="1" Margin="0,31,0,0" />
             <StackPanel Name="stackPanel1" Margin="0,31,4,0" />
             <GridSplitter Name="gridSplitter1" HorizontalAlignment="Right" Width="4" Background="#FFEEEEEE" />
-            <Button Content="Save" Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="button3" VerticalAlignment="Top" Width="75" />
+            <Button Content="Save" Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="button3" VerticalAlignment="Top" Width="75" Click="button3_Click" />
             <Button Content="New" Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="button4" VerticalAlignment="Top" Width="58" />
             <Button Content="Add Tab" Height="23" HorizontalAlignment="Right" Margin="0,6,6,0" Name="button5" VerticalAlignment="Top" Width="75" Grid.Column="1" />
             <Button Content="Delete" Height="23" HorizontalAlignment="Left" Margin="70,6,0,0" Name="button6" VerticalAlignment="Top" Width="58" />

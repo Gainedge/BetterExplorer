@@ -80,5 +80,10 @@ namespace BetterExplorer.Tabs
             //throw new NotImplementedException();
         }
 
+        private void button3_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
     }
 }
