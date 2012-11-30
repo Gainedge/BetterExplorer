@@ -19,7 +19,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\BExplorer\BetterExplorer\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -125,12 +125,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BetterOperations.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\Shell.csproj">
-      <Project>{aa0c00cb-8699-4f37-bfae-40ca87acc06d}</Project>
-      <Name>Shell</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

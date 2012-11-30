@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using System.IO;
-using WindowsHelper;
 
 namespace BetterExplorerOperations
 {
@@ -189,14 +184,6 @@ namespace BetterExplorerOperations
                 Close();
             }
         }
-        private void SetSharing(string FolderPath, string Sharename, string Description)
-        {
-
-        }
-        private void CreateSymLink()
-        {
-            
-        }
 
         private List<string> ListPaths(string str)
         {
@@ -257,11 +244,11 @@ namespace BetterExplorerOperations
                                 if (source.StartsWith("(f)"))
                                 {
 
-                                    WindowsHelper.WindowsAPI.CreateSymbolicLink(drop, source.Substring(3), WindowsAPI.SYMBOLIC_LINK_FLAG.Directory);
+                                    CreateSymbolicLink(drop, source.Substring(3), SYMBOLIC_LINK_FLAG.Directory);
                                 }
                                 else
                                 {
-                                    WindowsHelper.WindowsAPI.CreateSymbolicLink(drop, source, WindowsAPI.SYMBOLIC_LINK_FLAG.File);
+                                    CreateSymbolicLink(drop, source, SYMBOLIC_LINK_FLAG.File);
                                 }
                             }
 
@@ -277,5 +264,15 @@ namespace BetterExplorerOperations
             }
             base.WndProc(ref m);
         }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]
+        public static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
+
+        public enum SYMBOLIC_LINK_FLAG {
+          File = 0,
+          Directory = 1
+        }
     }
+  
 }

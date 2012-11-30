@@ -3649,36 +3649,10 @@ namespace BetterExplorer
 		{
 			int lngFlags = 0;
 
-			return InternetGetConnectedState(lngFlags, 0);
+			return WindowsAPI.InternetGetConnectedState(lngFlags, 0);
 		}
 
-		[DllImport("wininet.dll")]
-		public static extern bool InternetGetConnectedState(int lpSFlags, int dwReserved);
-
-		public static bool IsThis64bitProcess() {
-		  return (IntPtr.Size == 8);
-		}
-
-		public static bool Is64bitProcess(Process proc) {
-		  return !Is32bitProcess(proc);
-		}
-
-		public static bool Is32bitProcess(Process proc) {
-		  if (!IsThis64bitProcess()) return true; // we're in 32bit mode, so all are 32bit
-
-		  foreach (ProcessModule module in proc.Modules) {
-			try {
-			  string fname = Path.GetFileName(module.FileName).ToLowerInvariant();
-			  if (fname.Contains("wow64")) {
-				return true;
-			  }
-			} catch {
-			  // wtf
-			}
-		  }
-
-		  return false;
-		}
+		
 
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -4332,7 +4306,7 @@ namespace BetterExplorer
 				}
 
 				verNumber.Content = "Version " + (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
-				lblArchitecture.Content = Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
+				lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
 				if (!TheRibbon.IsMinimized)
 				{
 					TheRibbon.SelectedTabItem = HomeTab;
@@ -4971,11 +4945,9 @@ namespace BetterExplorer
 
 		private void btnMoreColls_Click(object sender, RoutedEventArgs e)
 		{
-			using (MoreColumns fMoreCollumns = new MoreColumns())
-			{
-				fMoreCollumns.PopulateAvailableColumns(Explorer.AvailableColumns(Explorer.GetShellView(), true), Explorer,
-					this.PointToScreen(Mouse.GetPosition(this)));
-			}
+      MoreColumns fMoreCollumns = new MoreColumns();
+			fMoreCollumns.PopulateAvailableColumns(Explorer.AvailableColumns(Explorer.GetShellView(), true), Explorer,
+			  this.PointToScreen(Mouse.GetPosition(this)));
 		}
 
 		void mig_Click(object sender, RoutedEventArgs e)
@@ -7492,7 +7464,7 @@ namespace BetterExplorer
 			CopyThread.Start(dd);
 		}
 
-		private void NavigateAfterTabChange()
+		public void NavigateAfterTabChange()
 		{
 			CloseableTabItem itb = tabControl1.SelectedItem as CloseableTabItem;
 

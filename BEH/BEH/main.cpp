@@ -9,7 +9,7 @@ extern "C"
 {
   __declspec(dllexport) int DisplayHelloFromDLL()
   {
-    return 1;
+	return 1;
   }
 
   __declspec(dllexport) void GetColumnbyIndex(IShellView* view, bool isAll, int index, PROPERTYKEY &res)
@@ -69,7 +69,7 @@ extern "C"
 	  columns->SetColumns(&keys[0], (UINT)keys.size());
   }
 
-    __declspec(dllexport) void SetSortColumns(IFolderView2* view , int count, SORTCOLUMN sc[])
+	__declspec(dllexport) void SetSortColumns(IFolderView2* view , int count, SORTCOLUMN sc[])
   {
 	 
 	  std::vector<SORTCOLUMN> keys;

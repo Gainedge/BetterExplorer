@@ -12,6 +12,7 @@ using Microsoft.WindowsAPICodePack.Shell;
 using System.IO;
 using Microsoft.Win32;
 using System.Security;
+using System.Diagnostics;
 
 namespace WindowsHelper
 {
@@ -549,6 +550,34 @@ namespace WindowsHelper
         }
         #endregion
 
+
+        [DllImport("wininet.dll")]
+        public static extern bool InternetGetConnectedState(int lpSFlags, int dwReserved);
+
+        public static bool IsThis64bitProcess() {
+          return (IntPtr.Size == 8);
+        }
+
+        public static bool Is64bitProcess(Process proc) {
+          return !Is32bitProcess(proc);
+        }
+
+        public static bool Is32bitProcess(Process proc) {
+          if (!IsThis64bitProcess()) return true; // we're in 32bit mode, so all are 32bit
+
+          foreach (ProcessModule module in proc.Modules) {
+            try {
+              string fname = Path.GetFileName(module.FileName).ToLowerInvariant();
+              if (fname.Contains("wow64")) {
+                return true;
+              }
+            } catch {
+              // wtf
+            }
+          }
+
+          return false;
+        }
 
         [DllImport("kernel32.dll",SetLastError = true)]
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]

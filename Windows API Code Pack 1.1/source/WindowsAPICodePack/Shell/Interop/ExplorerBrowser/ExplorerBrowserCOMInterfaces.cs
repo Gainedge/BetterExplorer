@@ -9,6 +9,8 @@ using System.Text;
 using Microsoft.WindowsAPICodePack.Shell.Interop;
 using System.Collections;
 using WindowsHelper;
+using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
+using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 
 namespace Microsoft.WindowsAPICodePack.Controls
 {
@@ -587,18 +589,11 @@ namespace Microsoft.WindowsAPICodePack.Controls
     [ComImport]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid(ExplorerBrowserIIDGuid.IColumnManager)]
-    public unsafe interface IColumnManager
+    public interface IColumnManager
     {
-
-        void SetColumnInfo([In] ref Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.PROPERTYKEY propkey, [In] ref IntPtr pcmci);
-
-        void GetColumnInfo(ref Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.PROPERTYKEY propkey, out IntPtr pcmci);
-
         void GetColumnCount(CM_ENUM_FLAGS dwFlags, out uint puCount);
 
-        void GetColumns(CM_ENUM_FLAGS dwFlags, out Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.PROPERTYKEY* rgkeyOrder, uint cColumns);
-
-        void SetColumns(ArrayList rgkeyOrder, uint cVisible);
+        void GetColumns(CM_ENUM_FLAGS dwFlags, [Out] [MarshalAs(UnmanagedType.LPArray)] PropertyKey[] rgkeyOrder, uint cColumns);
     }
 
     #region Unused - Keeping for debugging bug #885228

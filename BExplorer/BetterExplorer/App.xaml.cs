@@ -138,8 +138,11 @@ namespace BetterExplorer
                     {
                         rks = rk.CreateSubKey(@"Software\BExplorer");
                     }
-
-                    Locale = rks.GetValue(@"Locale", "en-US").ToString();
+                    var regLocale = rks.GetValue(@"Locale", "").ToString();
+                    if (String.IsNullOrEmpty(regLocale))
+                      Locale = CultureInfo.CurrentUICulture.EnglishName;
+                    else
+                      Locale = regLocale;
 
                     SelectCulture(Locale);
 
@@ -304,6 +307,7 @@ namespace BetterExplorer
                         newt.TabIcon = sho.Thumbnail.BitmapSource;
                         newt.Path = sho;
                         win.CloneTab(newt);
+                        win.NavigateAfterTabChange();
                         
                         IntPtr MainWinHandle = WindowsHelper.WindowsAPI.FindWindow(null, Process.GetCurrentProcess().MainWindowTitle);
                         if (win.WindowState == WindowState.Minimized)
