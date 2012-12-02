@@ -507,7 +507,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 						{
 								Collumns col = new Collumns();
 								PROPERTYKEY pk;
-								CM_COLUMNINFO cmi;
+								CM_COLUMNINFO cmi = new CM_COLUMNINFO();
+                                IntPtr ii = Marshal.AllocCoTaskMem(Marshal.SizeOf(cmi));
 
 								try
 								{

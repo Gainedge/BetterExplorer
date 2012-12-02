@@ -591,7 +591,13 @@ namespace Microsoft.WindowsAPICodePack.Controls
     [Guid(ExplorerBrowserIIDGuid.IColumnManager)]
     public interface IColumnManager
     {
+        void SetColumnInfo([In] ref ExplorerBrowser.PROPERTYKEY propkey, [In] ref IntPtr pcmci);
+
+        void GetColumnInfo(ref ExplorerBrowser.PROPERTYKEY propkey, out IntPtr pcmci);
+
         void GetColumnCount(CM_ENUM_FLAGS dwFlags, out uint puCount);
+
+        void SetColumns(ArrayList rgkeyOrder, uint cVisible);
 
         void GetColumns(CM_ENUM_FLAGS dwFlags, [Out] [MarshalAs(UnmanagedType.LPArray)] PropertyKey[] rgkeyOrder, uint cColumns);
     }
