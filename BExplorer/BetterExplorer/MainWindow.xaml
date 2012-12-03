@@ -378,12 +378,14 @@
                                             <controls:TranslationComboBoxItem LanguageText="Croatian" LocaleCode="hr-HR" x:Name="hrHRLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Chinese (Simplified)" LocaleCode="zh-CN" x:Name="zhCNLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Chinese (Traditional)" LocaleCode="zh-TW" x:Name="zhTWLang" UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem LanguageText="Czech" LocaleCode="cs-CS" x:Name="csCSLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Dutch" LocaleCode="nl-NL" x:Name="nlNLLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="English" LocaleCode="en-US" x:Name="enUSLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Finnish" LocaleCode="fi-FI" x:Name="fiFILang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="French" LocaleCode="fr-FR" x:Name="frFRLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="German" LocaleCode="de-DE" x:Name="deDELang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Italian" LocaleCode="it-IT" x:Name="itITLang" UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem LanguageText="Japanese" LocaleCode="ja-JA" x:Name="jaJALang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Polish" LocaleCode="pl-PL" x:Name="plPLLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Portuguese" LocaleCode="pt-BR" x:Name="ptBRLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Russian" LocaleCode="ru-RU" x:Name="ruRULang" UsesRTL="False" />
@@ -414,6 +416,8 @@
                                         <TextBlock Text="Polish: VorbisMastah and Krzysztof" />
                                         <TextBlock Text="Swedish: toando1 and masterjaz" />
                                         <TextBlock Text="Dutch: Pink-ET" />
+                                        <TextBlock Text="Japanse: Kensuke Sasaki" />
+                                        <TextBlock Text="Czech: Stanislav Pokorný" />
                                         <!--<Ribbon:SeparatorTabItem Header="Remove Setting" Visibility="Hidden"/>
                                         <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" Margin="0,0,60,0" Visibility="Hidden"
                                                    Text="Because this build updates the Registry after installation, there would be a Registry error if
@@ -660,7 +664,7 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                         <Ribbon:Gallery Name="stGallery" Orientation="Vertical" SelectionChanged="stGallery_SelectionChanged">
                             <!--Items added programmatically-->
                         </Ribbon:Gallery>
-                        <Ribbon:MenuItem Header="Save Current Tabs" Ribbon:KeyTip.Keys="S" Name="miSaveCurTabs" Click="miSaveCurTabs_Click" Focusable="False"/>
+                        <Ribbon:MenuItem Header="Save Current Tabs" Ribbon:KeyTip.Keys="S" Name="miSaveCurTabs" Icon="Images\Save.png" Click="miSaveCurTabs_Click" Focusable="False"/>
                         <Separator />
                         <Ribbon:MenuItem Header="{StaticResource sepSavedTabsCP}" Ribbon:KeyTip.Keys="M" Name="miTabManager" Click="miTabManager_Click" Focusable="False"/>
                     </Ribbon:DropDownButton>

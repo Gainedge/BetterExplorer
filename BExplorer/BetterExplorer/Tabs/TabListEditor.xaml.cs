@@ -26,6 +26,7 @@ namespace BetterExplorer
 
         public void ImportSavedTabList(SavedTabsList list)
         {
+            stackPanel1.Children.Clear();
             foreach(string item in list)
             {
                 //MessageBox.Show(item);
@@ -68,6 +69,17 @@ namespace BetterExplorer
             {
                 item.TitleColumnWidth = this.NameCol.Width;
             }
+        }
+
+        public void AddTab(string loc)
+        {
+            TabListEditorItem g = new TabListEditorItem(loc);
+            g.TitleColumnWidth = NameCol.Width;
+            g.Width = this.Width;
+            g.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            g.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+            g.DeleteRequested += new RoutedEventHandler(g_DeleteRequested);
+            stackPanel1.Children.Add(g);
         }
 
     }

@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
 using Microsoft.WindowsAPICodePack.Shell;
+using Microsoft.Win32;
 
 namespace BetterExplorer.Tabs
 {
@@ -20,9 +21,18 @@ namespace BetterExplorer.Tabs
     /// </summary>
     public partial class TabManager : Window
     {
+        string selfile;
+        
         public TabManager()
         {
             InitializeComponent();
+        }
+
+        private string GetDefaultLocation()
+        {
+            RegistryKey rk = Registry.CurrentUser;
+            RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
+            return rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
         }
 
         private string GetExtension(string file)
@@ -57,12 +67,37 @@ namespace BetterExplorer.Tabs
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            RefreshList();
+        }
+
+        private void RefreshList()
+        {
             stackPanel1.Children.Clear();
             foreach (string item in LoadListOfTabListFiles())
             {
                 SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item);
                 gli.Click += new SavedTabsListGalleryItem.PathStringEventHandler(gli_Click);
                 stackPanel1.Children.Add(gli);
+            }
+        }
+
+        private void RefreshListAndLoad(string loc)
+        {
+            stackPanel1.Children.Clear();
+            foreach (string item in LoadListOfTabListFiles())
+            {
+                if (item == loc)
+                {
+                    SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item, true);
+                    gli.Click += new SavedTabsListGalleryItem.PathStringEventHandler(gli_Click);
+                    stackPanel1.Children.Add(gli);
+                }
+                else
+                {
+                    SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item, false);
+                    gli.Click += new SavedTabsListGalleryItem.PathStringEventHandler(gli_Click);
+                    stackPanel1.Children.Add(gli);
+                }
             }
         }
 
@@ -74,15 +109,57 @@ namespace BetterExplorer.Tabs
 	        }
 
             (sender as SavedTabsListGalleryItem).SetSelected();
-            SavedTabsList list = SavedTabsList.LoadTabList(sstdir + e.PathString + ".txt");
-            tabListEditor1.ImportSavedTabList(list);
+            tabListEditor1.ImportSavedTabList(SavedTabsList.LoadTabList(sstdir + e.PathString + ".txt"));
+            selfile = sstdir + e.PathString + ".txt";
             //MessageBox.Show(sstdir + e.PathString + ".txt");
             //throw new NotImplementedException();
         }
 
         private void button3_Click(object sender, RoutedEventArgs e)
         {
+            SavedTabsList.SaveTabList(tabListEditor1.ExportSavedTabList(), selfile);
+            tabListEditor1.ImportSavedTabList(SavedTabsList.LoadTabList(selfile));
+        }
 
+        private void button5_Click(object sender, RoutedEventArgs e)
+        {
+            tabListEditor1.AddTab(GetDefaultLocation());
+        }
+
+        private void button4_Click(object sender, RoutedEventArgs e)
+        {
+            NameTabList o = new NameTabList();
+            o.ShowDialog();
+            if (o.dialogresult == true)
+            {
+                SavedTabsList.SaveTabList(SavedTabsList.CreateFromString(GetDefaultLocation()), sstdir + o.textBox1.Text + ".txt");
+                RefreshListAndLoad(sstdir + o.textBox1.Text + ".txt");
+            }
+        }
+
+        private void button7_Click(object sender, RoutedEventArgs e)
+        {
+            NameTabList o = new NameTabList();
+            o.ShowDialog();
+            if (o.dialogresult == true)
+            {
+                SavedTabsList.SaveTabList(tabListEditor1.ExportSavedTabList(), sstdir + o.textBox1.Text + ".txt");
+                RefreshListAndLoad(sstdir + o.textBox1.Text + ".txt");
+            }
+        }
+
+        private void button6_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to delete this tab collection?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes)
+            {
+                System.IO.File.Delete(selfile);
+                RefreshList();
+            }
+        }
+
+        private void button2_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
 
     }

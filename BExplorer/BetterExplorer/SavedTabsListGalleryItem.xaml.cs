@@ -30,6 +30,20 @@ namespace BetterExplorer
             tabTitle.Text = loc;
         }
 
+        public SavedTabsListGalleryItem(string loc, bool selected)
+        {
+            InitializeComponent();
+            tabTitle.Text = loc;
+            if (selected == true)
+            {
+                SetSelected();
+            }
+            else
+            {
+                SetDeselected();
+            }
+        }
+
         public string Location
         {
             get { return tabTitle.Text; }
@@ -63,11 +77,13 @@ namespace BetterExplorer
         public void SetSelected()
         {
             this.Background = new SolidColorBrush(Color.FromRgb(0, 50, 255));
+            this.tabTitle.Foreground = new SolidColorBrush(Colors.White);
         }
 
         public void SetDeselected()
         {
             this.Background = new SolidColorBrush(Color.FromArgb(1, 255, 255, 255));
+            this.tabTitle.Foreground = new SolidColorBrush(Colors.Black);
         }
 
     }

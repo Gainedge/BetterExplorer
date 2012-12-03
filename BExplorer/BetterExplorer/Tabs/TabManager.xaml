@@ -17,13 +17,33 @@
             <my:TabListEditor x:Name="tabListEditor1" Grid.Column="1" Margin="0,31,0,0" />
             <StackPanel Name="stackPanel1" Margin="0,31,4,0" />
             <GridSplitter Name="gridSplitter1" HorizontalAlignment="Right" Width="4" Background="#FFEEEEEE" />
-            <Button Content="Save" Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="button3" VerticalAlignment="Top" Width="75" Click="button3_Click" />
-            <Button Content="New" Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="button4" VerticalAlignment="Top" Width="58" />
-            <Button Content="Add Tab" Height="23" HorizontalAlignment="Right" Margin="0,6,6,0" Name="button5" VerticalAlignment="Top" Width="75" Grid.Column="1" />
-            <Button Content="Delete" Height="23" HorizontalAlignment="Left" Margin="70,6,0,0" Name="button6" VerticalAlignment="Top" Width="58" />
-            <Button Content="Save As" Height="23" HorizontalAlignment="Left" Margin="87,6,0,0" Name="button7" VerticalAlignment="Top" Width="75" Grid.Column="1" />
+            <Button Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="button3" VerticalAlignment="Top" Width="75" Click="button3_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Images\save.png" Stretch="Fill" />
+                    <TextBlock Text="Save" Margin="5,0,0,0" />
+                </StackPanel>
+            </Button>
+            <Button Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="button4" VerticalAlignment="Top" Width="58" Click="button4_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Images\new.png" Stretch="None" /> 
+                    <TextBlock Text="New" Margin="5,0,0,0" />
+                </StackPanel>
+            </Button>
+            <Button Height="23" HorizontalAlignment="Right" Margin="0,6,6,0" Name="button5" VerticalAlignment="Top" Width="75" Grid.Column="1" Click="button5_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Images\add_item.png" Stretch="None" />
+                    <TextBlock Text="Add Tab" Margin="5,0,0,0" />
+                </StackPanel>
+            </Button>
+            <Button Height="23" HorizontalAlignment="Left" Margin="70,6,0,0" Name="button6" VerticalAlignment="Top" Width="58" Click="button6_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="Images\delete_item.png" Stretch="None" />
+                    <TextBlock Text="Delete" Margin="2,0,0,0" />
+                </StackPanel>
+            </Button>
+            <Button Content="Save As" Height="23" HorizontalAlignment="Left" Margin="87,6,0,0" Name="button7" VerticalAlignment="Top" Width="75" Grid.Column="1" Click="button7_Click" />
         </Grid>
-        <Button Content="Open Folder" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="12,0,0,8" Name="button1" VerticalAlignment="Bottom" Width="90" />
-        <Button Content="Close" Height="23" HorizontalAlignment="Right" Margin="0,0,12,8" Name="button2" VerticalAlignment="Bottom" Grid.Row="1" Width="60" />
+        <Button Content="Open Folder" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="12,0,0,8" Name="button1" VerticalAlignment="Bottom" Width="90" IsEnabled="False" />
+        <Button Content="Close" Height="23" HorizontalAlignment="Right" Margin="0,0,12,8" Name="button2" VerticalAlignment="Bottom" Grid.Row="1" Width="60" Click="button2_Click" />
     </Grid>
 </Window>

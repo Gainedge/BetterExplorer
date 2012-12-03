@@ -20,8 +20,8 @@
             <Image Source="/BetterExplorer;component/Images/edit.png" Height="16" Width="16" />
         </Button>
         <Grid Grid.ColumnSpan="2" Background="White" Name="EditGrid" Visibility="Collapsed" >
-            <TextBox Name="editpath" BorderBrush="Black" Margin="0,0,100,0" />
-            <Button Content="Browse..." Height="26" HorizontalAlignment="Right" Margin="0,-1,43,0" Name="button1" VerticalAlignment="Top" Width="57" />
+            <TextBox Name="editpath" BorderBrush="Black" Margin="0,0,100,0" KeyUp="editpath_KeyUp" />
+            <Button Content="Browse..." Height="26" HorizontalAlignment="Right" Margin="0,-1,43,0" Name="button1" VerticalAlignment="Top" Width="57" Click="button1_Click" />
             <Button Height="26" Margin="0,-1,21,0" Name="EditApply" VerticalAlignment="Top" HorizontalAlignment="Right" Width="23" Click="EditApply_Click">
                 <Image Source="/BetterExplorer;component/Images/check.png" Width="16" Height="16" />
             </Button>

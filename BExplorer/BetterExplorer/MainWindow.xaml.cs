@@ -8561,7 +8561,7 @@ namespace BetterExplorer
 		{
 			BetterExplorer.Tabs.TabManager man = new Tabs.TabManager();
 			man.Show();
-			this.WindowState = System.Windows.WindowState.Minimized;
+			//this.WindowState = System.Windows.WindowState.Minimized;
 		}
 
 		#endregion
