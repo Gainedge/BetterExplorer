@@ -378,14 +378,14 @@
                                             <controls:TranslationComboBoxItem LanguageText="Croatian" LocaleCode="hr-HR" x:Name="hrHRLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Chinese (Simplified)" LocaleCode="zh-CN" x:Name="zhCNLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Chinese (Traditional)" LocaleCode="zh-TW" x:Name="zhTWLang" UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem LanguageText="Czech" LocaleCode="cs-CS" x:Name="csCSLang" UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem LanguageText="Czech" LocaleCode="cs-CZ" x:Name="csCSLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Dutch" LocaleCode="nl-NL" x:Name="nlNLLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="English" LocaleCode="en-US" x:Name="enUSLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Finnish" LocaleCode="fi-FI" x:Name="fiFILang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="French" LocaleCode="fr-FR" x:Name="frFRLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="German" LocaleCode="de-DE" x:Name="deDELang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Italian" LocaleCode="it-IT" x:Name="itITLang" UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem LanguageText="Japanese" LocaleCode="ja-JA" x:Name="jaJALang" UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem LanguageText="日本語" LocaleCode="ja-JP" x:Name="jaJALang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Polish" LocaleCode="pl-PL" x:Name="plPLLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Portuguese" LocaleCode="pt-BR" x:Name="ptBRLang" UsesRTL="False" />
                                             <controls:TranslationComboBoxItem LanguageText="Russian" LocaleCode="ru-RU" x:Name="ruRULang" UsesRTL="False" />

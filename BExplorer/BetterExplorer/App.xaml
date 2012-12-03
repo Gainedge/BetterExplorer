@@ -20,8 +20,8 @@
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.zh-TW.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.sv-SE.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.nl-NL.xaml"/>
-                <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.cs-CS.xaml"/>
-                <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.ja-JA.xaml"/>
+                <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.cs-CZ.xaml"/>
+                <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.ja-JP.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/DefaultLocale.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
