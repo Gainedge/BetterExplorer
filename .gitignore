@@ -144,3 +144,5 @@ Installer/Explorer.png
 Installer/installer.ico
 Installer/InstallerMulti.iss
 Installer/Output/BetterExplorerWebSetup.exe
+Installer/BEH_32.dll
+Installer/config.xml
