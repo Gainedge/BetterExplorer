@@ -146,3 +146,17 @@ Installer/InstallerMulti.iss
 Installer/Output/BetterExplorerWebSetup.exe
 Installer/BEH_32.dll
 Installer/config.xml
+BEApi/x64/Release/BEApi.lastbuildstate
+BEApi/x64/Release/BEApi.write.1.tlog
+BEApi/x64/Release/BEH.dll.intermediate.manifest
+BEApi/x64/Release/cl.command.1.tlog
+BEApi/x64/Release/CL.read.1.tlog
+BEApi/x64/Release/CL.write.1.tlog
+BEApi/x64/Release/link.command.1.tlog
+BEApi/x64/Release/link.read.1.tlog
+BEApi/x64/Release/link.write.1.tlog
+BEApi/x64/Release/main.obj
+BEApi/x64/Release/mt.command.1.tlog
+BEApi/x64/Release/mt.read.1.tlog
+BEApi/x64/Release/mt.write.1.tlog
+BEApi/x64/Release/vc100.pdb
