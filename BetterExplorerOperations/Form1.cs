@@ -19,7 +19,48 @@ namespace BetterExplorerOperations
             ChangeWindowMessageFilterEx(Handle, 0x4A, ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
         }
 
-        #region API
+        #region Shell API
+
+        public enum SYMBOLIC_LINK_FLAG {
+          File = 0,
+          Directory = 1
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]
+        public static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct SymLinkInfo
+        {
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
+            public string lpDestination;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
+            public string lpTarget;
+            public int SymType;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
+            public string lpMsg;
+
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct COPYDATASTRUCT
+        {
+            public IntPtr dwData;
+            public int cbData;
+            public IntPtr lpData;
+            //[MarshalAs(UnmanagedType.LPStr)]
+            //public string lpUserName;
+            //[MarshalAs(UnmanagedType.LPStr)]
+            //public string lpDomain;
+            //[MarshalAs(UnmanagedType.LPStr)]
+            //public string lpShare;
+            //[MarshalAs(UnmanagedType.LPStr)]
+            //public string lpSharingName;
+            //[MarshalAs(UnmanagedType.LPStr)]
+            //public string lpDescription;
+            //public int IsSetPermisions;
+        }
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
         public enum MessageFilterInfo : uint
@@ -44,25 +85,6 @@ namespace BetterExplorerOperations
         #endregion
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct COPYDATASTRUCT
-        {
-            public IntPtr dwData;
-            public int cbData;
-            public IntPtr lpData;
-            //[MarshalAs(UnmanagedType.LPStr)]
-            //public string lpUserName;
-            //[MarshalAs(UnmanagedType.LPStr)]
-            //public string lpDomain;
-            //[MarshalAs(UnmanagedType.LPStr)]
-            //public string lpShare;
-            //[MarshalAs(UnmanagedType.LPStr)]
-            //public string lpSharingName;
-            //[MarshalAs(UnmanagedType.LPStr)]
-            //public string lpDescription;
-            //public int IsSetPermisions;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
         public struct ShareInfo
         {
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
@@ -76,19 +98,6 @@ namespace BetterExplorerOperations
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
             public string lpDescription;
             public int IsSetPermisions;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
-            public string lpMsg;
-
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct SymLinkInfo
-        {
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
-            public string lpDestination;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
-            public string lpTarget;
-            public int SymType;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 255)]
             public string lpMsg;
 
@@ -263,15 +272,6 @@ namespace BetterExplorerOperations
                 Close();
             }
             base.WndProc(ref m);
-        }
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]
-        public static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
-
-        public enum SYMBOLIC_LINK_FLAG {
-          File = 0,
-          Directory = 1
         }
     }
   
