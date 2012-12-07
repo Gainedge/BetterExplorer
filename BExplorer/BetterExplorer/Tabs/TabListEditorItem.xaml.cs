@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Shell;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace BetterExplorer
 {
@@ -145,6 +146,25 @@ namespace BetterExplorer
         private void DeleteBtn_Click(object sender, RoutedEventArgs e)
         {
             OnDeleteRequested(e);
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog dlg = new CommonOpenFileDialog();
+            dlg.IsFolderPicker = true;
+            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                editpath.Text = dlg.FileName;
+            }
+        }
+
+        private void editpath_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                CancelEditMode();
+                Path = editpath.Text;
+            }
         }
 
     }

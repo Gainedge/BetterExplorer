@@ -89,7 +89,7 @@
     <system:String x:Key="tgOpenCP">Ouvrir</system:String>
     <system:String x:Key="btnPropertiesCP">Propriétés</system:String>
     <system:String x:Key="btnOpenCP">Ouvrir</system:String>
-    <system:String x:Key="btnEditCP">Editer</system:String>
+    <system:String x:Key="btnEditCP">Modifier</system:String>
     <system:String x:Key="btnHistoryCP">Historique</system:String>
     <system:String x:Key="btnFavoritesCP">Favoris</system:String>
     <system:String x:Key="tgSelectCP">Sélectionner</system:String>
@@ -111,11 +111,11 @@
     <system:String x:Key="btnUndoCloseHCP">Rouvrir l'onglet précédemment fermé</system:String>
     <system:String x:Key="btnSavedTabsCP">Onglets sauvegardés</system:String>
     <system:String x:Key="btnSavedTabsHCP">Sauvegarder un groupe d'onglets préférés ou rouvrir un groupe d'onglets sauvegardés</system:String>
-    <system:String x:Key="tbShareCP">Partager</system:String>
+    <system:String x:Key="tbShareCP">Partage</system:String>
     <system:String x:Key="tgCompressCP">Compresser</system:String>
     <system:String x:Key="btnMakeArchiveCP">Créer une archive</system:String>
     <system:String x:Key="btnMakeArchiveICP">Ouvre l’assistant de création d’archive (fichier compressé), lequel vous aide à créer une archive avec les fichiers sélectionnés.</system:String>
-    <system:String x:Key="btnShareCP">Partager</system:String>
+    <system:String x:Key="btnShareCP">Partage</system:String>
     <system:String x:Key="tgNetworkCP">Réseau</system:String>
     <system:String x:Key="btnMapDriveCP">Carte de lecteur réseau</system:String>
     <system:String x:Key="btnDiscDriveCP">Déconnecter le lecteur réseau</system:String>
@@ -125,12 +125,12 @@
     <system:String x:Key="tgShowHideCP">Afficher/Masquer</system:String>
     <system:String x:Key="tbPanesCP">Volets</system:String>
     <system:String x:Key="btnNavigationCP">Volet de navigation</system:String>
-    <system:String x:Key="btnNavigationTCP">Volet de navigation</system:String>
+    <system:String x:Key="btnNavigationTCP">Affiche le volet de navigation</system:String>
     <system:String x:Key="btnNavigationTTX">Affiche le volet de navigation sur le côté gauche de la fenêtre et liste les dossiers, bibliothèques et disques.</system:String>
-    <system:String x:Key="btnInfoCP">Afficher le volet de détails</system:String>
+    <system:String x:Key="btnInfoCP">Volet de détails</system:String>
     <system:String x:Key="btnInfoTCP">Afficher le volet de détails</system:String>
     <system:String x:Key="btnInfoTTX">Afficher le volet de détails, ce qui vous permet de voir des informations détaillées sur les éléments sélectionnés.</system:String>
-    <system:String x:Key="btnPreviewCP">Afficher le volet de visualisation</system:String>
+    <system:String x:Key="btnPreviewCP">Volet de visualisation</system:String>
     <system:String x:Key="btnPreviewTCP">Afficher le volet de visualisation</system:String>
     <system:String x:Key="btnPreviewTTX">Afficher le volet de visualisation sur le côté gauche de la fenêtre, ce qui vous permet de voir le contenu d'un fichier sans l'ouvrir, mais seulement si votre système le permet.</system:String>
     <system:String x:Key="btnExtraLargeICP">Très grandes icônes</system:String>
@@ -145,7 +145,7 @@
     <system:String x:Key="tgCurrentViewCP">Affichage actuel</system:String>
     <system:String x:Key="btnSortByCP">Trier par</system:String>
     <system:String x:Key="btnSortICP">Change la façon dont le contenu du dossier est trié, et par quelle catégorie le trier</system:String>
-    <system:String x:Key="btnGroupByCP">Grouper selon</system:String>
+    <system:String x:Key="btnGroupByCP">Grouper par</system:String>
     <system:String x:Key="btnAutoSizeColCP">Ajuster la taille des colonnes</system:String>
     <system:String x:Key="btnAutoSizeColICP">Ajuste la largeur des colonnes à leur contenu</system:String>
     <system:String x:Key="btnMoreColCP">Ajouter des colonnes</system:String>

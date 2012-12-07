@@ -7949,7 +7949,7 @@ namespace BetterExplorer
 
 		
 
-		public void NewTab(string Location, bool IsNavigate = false)
+		public CloseableTabItem NewTab(string Location, bool IsNavigate = false)
 		{
 			CloseableTabItem newt = new CloseableTabItem();
 			CreateTabbarRKMenu(newt);
@@ -7991,6 +7991,7 @@ namespace BetterExplorer
 
 			CurrentTabIndex = tabControl1.Items.Count - 1;
 			ConstructMoveToCopyToMenu();
+      return newt;
 		}
 
 		void newt_TabSelected(object sender, RoutedEventArgs e)
@@ -8551,8 +8552,13 @@ namespace BetterExplorer
 
 		void gli_Click(object sender, PathStringEventArgs e)
 		{
-			SavedTabsList list = SavedTabsList.LoadTabList(sstdir + e.PathString + ".txt");
-			
+      SavedTabsList list = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", sstdir, e.PathString));
+      for (int i = 0; i < list.Count; i++) {
+        var tabitem = NewTab(list[i]);
+        if (i == list.Count - 1)
+          tabControl1.SelectedItem = tabitem;
+      }
+      NavigateAfterTabChange();
 			//MessageBox.Show(sstdir + e.PathString + ".txt");
 			//throw new NotImplementedException();
 		}
@@ -8561,7 +8567,7 @@ namespace BetterExplorer
 		{
 			BetterExplorer.Tabs.TabManager man = new Tabs.TabManager();
 			man.Show();
-			this.WindowState = System.Windows.WindowState.Minimized;
+			//this.WindowState = System.Windows.WindowState.Minimized;
 		}
 
 		#endregion

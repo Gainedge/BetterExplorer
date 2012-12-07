@@ -407,6 +407,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Translation\Locale.cs-CZ.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Translation\Locale.ja-JP.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Translation\Locale.nl-NL.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -691,6 +699,11 @@
     <Resource Include="Images\savetabs32.png" />
     <Resource Include="Images\undotab16.png" />
     <Resource Include="Images\undotab32.png" />
+    <Resource Include="Tabs\Images\New.png" />
+    <Resource Include="Images\Save.png" />
+    <Resource Include="Tabs\Images\add_item.png" />
+    <Resource Include="Tabs\Images\delete_item.png" />
+    <Resource Include="Tabs\Images\Save.png" />
     <Content Include="WebUpdater.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -876,6 +889,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
