@@ -97,7 +97,8 @@ namespace BetterExplorer
 		bool canlogactions = false;
 		string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
 		string logdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_ActionLog\\";
-		string sstdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
+        string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
+		string sstdir;
 		List<NavigationLog> reopenabletabs = new List<NavigationLog>();
 		bool OverwriteOnRotate = false;
 		NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -4027,6 +4028,12 @@ namespace BetterExplorer
 
 									 canlogactions = (LogActions == 1);
 									 chkLogHistory.IsChecked = canlogactions;
+                                     if (LogActions == 1)
+                                     {
+                                         chkLogHistory.Visibility = System.Windows.Visibility.Visible;
+                                         ShowLogsBorder.Visibility = System.Windows.Visibility.Visible;
+                                         paddinglbl8.Visibility = System.Windows.Visibility.Visible;
+                                     }
 
 									 // load settings for auto-switch to contextual tab
 									 asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
@@ -4047,6 +4054,11 @@ namespace BetterExplorer
 									 int oor = (int)rks.GetValue(@"OverwriteImageWhileEditing", 0);
 									 OverwriteOnRotate = (oor == 1);
 									 chkOverwriteImages.IsChecked = (oor == 1);
+
+                                     // load Saved Tabs Directory location (if different from default)
+                                     string tdir = Convert.ToString(rks.GetValue(@"SavedTabsDirectory", satdir));
+                                     txtDefSaveTabs.Text = tdir;
+                                     sstdir = tdir;
 
 									 // set up history on breadcrumb bar (currently missing try-catch statement in order to catch error)
 									 try

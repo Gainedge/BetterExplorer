@@ -277,7 +277,7 @@
                                             <!--Ribbon:TextBox Name="txtPath" Width="200"/>
                                             <Button Name="btnPathPick" Content="..." Width="22" HorizontalContentAlignment="Center" Height="22" Click="btnPathPick_Click" /-->
                                             <Border BorderThickness="1" BorderBrush="#FF000000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                                <Ribbon:Button Name="btnSetCurrentasStartup" Ribbon:KeyTip.Keys="S" Header="Libraries" Click="btnSetCurrentasStartup_Click" BorderBrush="Black" BorderThickness="1" CanAddToQuickAccessToolBar="True" Margin="0">
+                                                <Ribbon:Button Name="btnSetCurrentasStartup" Ribbon:KeyTip.Keys="S" Header="Libraries" Click="btnSetCurrentasStartup_Click" BorderBrush="Black" BorderThickness="1" Width="Auto" Padding="5,0,5,0" CanAddToQuickAccessToolBar="True" Margin="0">
                                                     <Ribbon:Button.ToolTip>
                                                         <Ribbon:ScreenTip
                                                             Title="{StaticResource btnSetCurrentasStartupHCP}"
@@ -337,8 +337,8 @@
                                                             IsRibbonAligned ="false"/>
                                             </Ribbon:CheckBox.ToolTip>
                                         </Ribbon:CheckBox>
-                                        <Label Name="paddinglbl8" Content="         "/>
-                                        <Ribbon:CheckBox Name="chkLogHistory" Header="{StaticResource chkLogHistoryCP}" Ribbon:KeyTip.Keys="L" Checked="chkLogHistory_Checked" Unchecked="chkLogHistory_Unchecked">
+                                        <Label Name="paddinglbl8" Content="         " Visibility="Collapsed" />
+                                        <Ribbon:CheckBox Name="chkLogHistory" Header="{StaticResource chkLogHistoryCP}" Ribbon:KeyTip.Keys="L" Checked="chkLogHistory_Checked" Visibility="Collapsed"  Unchecked="chkLogHistory_Unchecked">
                                             <Ribbon:CheckBox.ToolTip>
                                                 <Ribbon:ScreenTip
                                                             Title="{StaticResource chkLogHistoryCP}"
@@ -347,7 +347,7 @@
                                                             IsRibbonAligned ="false"/>
                                             </Ribbon:CheckBox.ToolTip>
                                         </Ribbon:CheckBox>
-                                        <Border BorderThickness="1" BorderBrush="#FF000000" HorizontalAlignment="Left">
+                                        <Border BorderThickness="1" x:Name="ShowLogsBorder" Visibility="Collapsed" BorderBrush="#FF000000" HorizontalAlignment="Left">
                                             <Ribbon:Button Name="btnShowLogs" Header="Show All Logs" Height="22" Width="125" Ribbon:KeyTip.Keys="H" Click="btnShowLogs_Click" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1" Icon="Images\open16.png" Margin="0" />
                                         </Border>
                                         <Label Name="paddinglbl9" Content="         "/>
@@ -427,6 +427,18 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                         <Button Name="btnRemoveLangSetting" Margin="0,5,0,0" Content="Remove This Setting" Click="btnRemoveLangSetting_Click" HorizontalAlignment="Left" Width="120" Visibility="Hidden"/>-->
                                     </StackPanel>
                                 </TabItem>
+                                <TabItem Header="Updates" HorizontalContentAlignment="Left" Ribbon:KeyTip.Keys="U">
+                                    <Grid Margin="20,15,0,0">
+                                        <Ribbon:SeparatorTabItem Header="Auto Update" VerticalAlignment="Top" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <Ribbon:CheckBox Margin="5,30,0,0" VerticalAlignment="Top" Header="Check for updates" />
+                                        <Ribbon:CheckBox Margin="5,50,0,0" VerticalAlignment="Top" Header="Check for updates upon startup" />
+                                        <TextBlock Margin="5,80,0,0" VerticalAlignment="Top" Text="When an update is available:" />
+                                        <Ribbon:RadioButton Margin="5,100,0,0" VerticalAlignment="Top" Header="Notify me only" GroupName="uas" />
+                                        <Ribbon:RadioButton Margin="5,120,0,0" VerticalAlignment="Top" Header="Download, but do not install" GroupName="uas" />
+                                        <Ribbon:RadioButton Margin="5,140,0,0" VerticalAlignment="Top" Header="Download and install update" GroupName="uas" />
+                                    </Grid>
+                                    <!--TODO: Finish Updates tab -->
+                                </TabItem>
                                 <Ribbon:SeparatorTabItem Header="{StaticResource sepAppearanceCP}"/>
                                 <TabItem Header="{StaticResource tabRibbonCP}" HorizontalContentAlignment="Left" Ribbon:KeyTip.Keys="R">
                                     <Grid Margin="20,15,0,0">
@@ -497,6 +509,13 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                             <RadioButton x:Name="TabbaTop" GroupName="tba" Content="{StaticResource chkTabBarTopCP}" Margin="5,5,0,0" Checked="RadioButton_Checked" />
                                             <RadioButton x:Name="TabbaBottom" GroupName="tba" Content="{StaticResource chkTabBarBottomCP}" Margin="5,5,0,0" Checked="RadioButton_Checked_1" />
                                         </StackPanel>
+                                        <Ribbon:SeparatorTabItem Header="{StaticResource sepSavedTabsCP}" VerticalAlignment="Top" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" Margin="0,100,0,0" />
+                                        <Border BorderThickness="1" BorderBrush="#FF000000" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,135,0,0">
+                                            <Ribbon:Button Name="btnShowTabManager" Header="{StaticResource btnShowTabManagerCP}" Height="22" Width="Auto" Padding="5,0,5,0" Ribbon:KeyTip.Keys="T" Click="miTabManager_Click" HorizontalAlignment="Left" BorderBrush="Black" BorderThickness="1" Icon="Images\open16.png" Margin="0" />
+                                        </Border>
+                                        <TextBlock Text="{StaticResource lblDefSavedTabsLocCP}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="5,165,0,0" />
+                                        <TextBox x:Name="txtDefSaveTabs" Text="" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300" Margin="10,180,0,0" />
+                                        <TextBlock Text="lblSavedTabsWarningCP" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,200,0,0" />
                                     </Grid>
                                 </TabItem>
                             </TabControl>
