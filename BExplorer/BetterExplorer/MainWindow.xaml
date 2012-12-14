@@ -436,8 +436,17 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                         <Ribbon:RadioButton Margin="5,100,0,0" VerticalAlignment="Top" Header="Notify me only" GroupName="uas" />
                                         <Ribbon:RadioButton Margin="5,120,0,0" VerticalAlignment="Top" Header="Download, but do not install" GroupName="uas" />
                                         <Ribbon:RadioButton Margin="5,140,0,0" VerticalAlignment="Top" Header="Download and install update" GroupName="uas" />
+                                        <Ribbon:SeparatorTabItem Header="Update Channels" VerticalAlignment="Top" Margin="0,170,0,0" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <Ribbon:RadioButton Margin="5,200,0,0" VerticalAlignment="Top" Header="Releases only (recommended)" GroupName="uach" />
+                                        <Ribbon:RadioButton Margin="5,220,0,0" VerticalAlignment="Top" Header="Releases and test builds" GroupName="uach" />
+                                        <TextBlock Margin="15,240,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="30" Text="Warning! Test builds can be unstable at times, but you can use it to test new features early." />
+                                        <Expander Margin="5,270,0,0" VerticalAlignment="Top" Width="250" HorizontalAlignment="Left" Header="Advanced Settings">
+                                            <Grid>
+                                                <TextBlock HorizontalAlignment="Left" Margin="12,12,0,0" Text="Update Check URL" VerticalAlignment="Top" />
+                                                <TextBox Height="23" Margin="12,34,12,0" Name="updURL" VerticalAlignment="Top" />
+                                            </Grid>
+                                        </Expander>
                                     </Grid>
-                                    <!--TODO: Finish Updates tab -->
                                 </TabItem>
                                 <Ribbon:SeparatorTabItem Header="{StaticResource sepAppearanceCP}"/>
                                 <TabItem Header="{StaticResource tabRibbonCP}" HorizontalContentAlignment="Left" Ribbon:KeyTip.Keys="R">

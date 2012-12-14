@@ -311,6 +311,12 @@
       <DependentUpon>UndoCloseGalleryItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Updater.cs" />
+    <Compile Include="UpdateWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpdateWizard.Designer.cs">
+      <DependentUpon>UpdateWizard.cs</DependentUpon>
+    </Compile>
     <Page Include="ArchiveViewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -529,6 +535,9 @@
     <EmbeddedResource Include="ShareWizzard.resx">
       <DependentUpon>ShareWizzard.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UpdateWizard.resx">
+      <DependentUpon>UpdateWizard.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="Images\jsdm32.pdn" />
     <None Include="NLog.config">
@@ -704,6 +713,7 @@
     <Resource Include="Tabs\Images\add_item.png" />
     <Resource Include="Tabs\Images\delete_item.png" />
     <Resource Include="Tabs\Images\Save.png" />
+    <Resource Include="Images\options.png" />
     <Content Include="WebUpdater.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -893,7 +903,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

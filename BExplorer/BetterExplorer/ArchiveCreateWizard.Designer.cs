@@ -71,6 +71,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.wizardControl1)).BeginInit();
             this.wizardPage1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -112,7 +113,7 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button3.Location = new System.Drawing.Point(108, 231);
+            this.button3.Location = new System.Drawing.Point(108, 229);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(99, 28);
             this.button3.TabIndex = 2;
@@ -123,7 +124,7 @@
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button2.Location = new System.Drawing.Point(3, 231);
+            this.button2.Location = new System.Drawing.Point(3, 229);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(99, 28);
             this.button2.TabIndex = 1;
@@ -212,6 +213,7 @@
             // 
             // wizardPage2
             // 
+            this.wizardPage2.Controls.Add(this.checkBox2);
             this.wizardPage2.Controls.Add(this.radioButton6);
             this.wizardPage2.Controls.Add(this.label7);
             this.wizardPage2.Controls.Add(this.radioButton5);
@@ -221,6 +223,7 @@
             this.wizardPage2.Controls.Add(this.radioButton1);
             this.wizardPage2.Controls.Add(this.label6);
             this.wizardPage2.Name = "wizardPage2";
+            this.wizardPage2.NextPage = this.wizardPage4;
             this.wizardPage2.Size = new System.Drawing.Size(587, 258);
             this.wizardPage2.TabIndex = 1;
             this.wizardPage2.Text = "Archive Format";
@@ -329,7 +332,7 @@
             this.wizardPage3.Controls.Add(this.label3);
             this.wizardPage3.Name = "wizardPage3";
             this.wizardPage3.NextPage = this.wizardPage4;
-            this.wizardPage3.Size = new System.Drawing.Size(537, 258);
+            this.wizardPage3.Size = new System.Drawing.Size(587, 258);
             this.wizardPage3.TabIndex = 2;
             this.wizardPage3.Text = "Compression Speed";
             // 
@@ -516,6 +519,18 @@
             this.openFileDialog1.Multiselect = true;
             this.openFileDialog1.Title = "Add File to Archive";
             // 
+            // checkBox2
+            // 
+            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(17, 238);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(234, 19);
+            this.checkBox2.TabIndex = 1;
+            this.checkBox2.Text = "Change compression speed (advanced)";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
             // ArchiveCreateWizard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -587,5 +602,6 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.RadioButton radioButton6;
+        private System.Windows.Forms.CheckBox checkBox2;
     }
 }

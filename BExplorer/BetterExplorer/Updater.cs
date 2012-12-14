@@ -128,6 +128,10 @@ namespace BetterExplorer
             {
                 OnUpdaterDownloadProgressChanged(e);
             }
+            else
+            {
+                OnPackageDownloadProgressChanged(e);
+            }
         }
 
         /// <summary>
@@ -271,6 +275,17 @@ namespace BetterExplorer
         {
             if (UpdaterDownloadProgressChanged != null)
                 UpdaterDownloadProgressChanged(this, e);
+        }
+
+        // An event that clients can use to be notified whenever the
+        // elements of the list change:
+        public event System.Net.DownloadProgressChangedEventHandler PackageDownloadProgressChanged;
+
+        // Invoke the Changed event; called whenever list changes:
+        protected virtual void OnPackageDownloadProgressChanged(System.Net.DownloadProgressChangedEventArgs e)
+        {
+            if (PackageDownloadProgressChanged != null)
+                PackageDownloadProgressChanged(this, e);
         }
 
         #endregion

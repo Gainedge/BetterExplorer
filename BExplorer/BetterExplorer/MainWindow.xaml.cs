@@ -8584,6 +8584,11 @@ namespace BetterExplorer
 
 		#endregion
 
+        private void btnAdvancedUpdateSettings_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
 	}
 
 	#region Helper External Classes

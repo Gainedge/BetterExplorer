@@ -317,5 +317,17 @@ namespace BetterExplorer
             }
         }
 
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox2.Checked == true)
+            {
+                wizardPage2.NextPage = wizardPage3;
+            }
+            else
+            {
+                wizardPage2.NextPage = wizardPage4;
+            }
+        }
+
     }
 }
