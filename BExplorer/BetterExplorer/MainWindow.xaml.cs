@@ -97,11 +97,12 @@ namespace BetterExplorer
 		bool canlogactions = false;
 		string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
 		string logdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_ActionLog\\";
-        string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
+				string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
 		string sstdir;
 		List<NavigationLog> reopenabletabs = new List<NavigationLog>();
 		bool OverwriteOnRotate = false;
 		NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		BackgroundWorker UpdaterWorker;
 
 		#endregion
 
@@ -150,12 +151,12 @@ namespace BetterExplorer
 
 		private void RibbonWindow_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 		{
-		  //Explorer.Focus();
-		  //Explorer.ExplorerSetFocus();
-		  //  if (breadcrumbBarControl1.IsInEditMode)
-		  //  {
-		  //      breadcrumbBarControl1.ExitEditMode();
-		  //  }
+			//Explorer.Focus();
+			//Explorer.ExplorerSetFocus();
+			//  if (breadcrumbBarControl1.IsInEditMode)
+			//  {
+			//      breadcrumbBarControl1.ExitEditMode();
+			//  }
 		}
 
 		private void RibbonWindow_Closing(object sender, CancelEventArgs e)
@@ -724,13 +725,13 @@ namespace BetterExplorer
 			//                            }
 
 			//                            if (e.NewLocation.IsFileSystemObject)
-			   //                         {
-				  //                          btnSizeChart.IsEnabled = true;
-			   //                         }
+				 //                         {
+					//                          btnSizeChart.IsEnabled = true;
+				 //                         }
 			//                            else
-			   //                         {
+				 //                         {
 			//                                btnSizeChart.IsEnabled = false;
-			   //                         }
+				 //                         }
 			//                            
 
 			//                            btnAutosizeColls.IsEnabled =
@@ -746,7 +747,7 @@ namespace BetterExplorer
 										{
 											isFuncAvail = (Explorer.SelectedItems[0].IsFileSystemObject) ||
 												Explorer.NavigationLog.CurrentLocation.ParsingName ==
-												  KnownFolders.Libraries.ParsingName;
+													KnownFolders.Libraries.ParsingName;
 										}
 										else
 										{
@@ -1153,7 +1154,7 @@ namespace BetterExplorer
 
 			if (e.Key == 27 || e.Key == 13 || e.Key == 17 || e.Key == 777 || e.Key == 778)
 			{
-			  IsAfterRename = true;
+				IsAfterRename = true;
 			} 
 		}
 
@@ -1198,7 +1199,7 @@ namespace BetterExplorer
 		{
 			int ItemsCount = Explorer.GetItemsCount();
 			sbiItemsCount.Content = ItemsCount == 1 ? ItemsCount.ToString() + " item" : ItemsCount.ToString() +
-										  " items";
+											" items";
 
 			if (IsAfterRename)
 				Explorer.ExplorerSetFocus();
@@ -1506,12 +1507,12 @@ namespace BetterExplorer
 												Marshal.FreeCoTaskMem(pIDL);
 										}
 
-									   
+										 
 										bool isinLibraries = false;
 										if (e.PendingLocation.Parent != null)
 										{
 											if (e.PendingLocation.Parent.ParsingName ==
-												  KnownFolders.Libraries.ParsingName)
+													KnownFolders.Libraries.ParsingName)
 											{
 												isinLibraries = true;
 											}
@@ -2108,7 +2109,7 @@ namespace BetterExplorer
 									KnownFolders.Libraries.ParsingName);
 								btnOpenWith.IsEnabled = (isFuncAvail &&
 									System.IO.Path.GetExtension(SelectedItem.ParsingName) != ""
-									  && (iiii.Count > 0 || (defapp != "" && defapp != "\"%1\"")));
+										&& (iiii.Count > 0 || (defapp != "" && defapp != "\"%1\"")));
 
 								btnEdit.IsEnabled = isFuncAvail && isEditAvailable;
 								btnHistory.IsEnabled = true;
@@ -2891,7 +2892,7 @@ namespace BetterExplorer
 				else
 				{
 					if ((Explorer.NavigationLog.CurrentLocation.IsFolder || Explorer.NavigationLog.CurrentLocation.IsDrive)
-						  && Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
+							&& Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
 					{
 						FolderSizeWindow fsw = new FolderSizeWindow(Explorer.NavigationLog.CurrentLocation.ParsingName);
 						fsw.Owner = this;
@@ -2903,7 +2904,7 @@ namespace BetterExplorer
 			else
 			{
 				if ((Explorer.NavigationLog.CurrentLocation.IsFolder || Explorer.NavigationLog.CurrentLocation.IsDrive)
-										  && Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
+											&& Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
 				{
 					FolderSizeWindow fsw = new FolderSizeWindow(Explorer.NavigationLog.CurrentLocation.ParsingName);
 					fsw.Owner = this;
@@ -2993,7 +2994,7 @@ namespace BetterExplorer
 		{
 
 			Explorer.ShowPropPage(this.Handle, Explorer.SelectedItems[0].ParsingName, 
-			  WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),"twext.dll"),1024,"Previous Versions"));
+				WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),"twext.dll"),1024,"Previous Versions"));
 		}
 
 		private void Button_Click_8(object sender, RoutedEventArgs e)
@@ -3005,7 +3006,7 @@ namespace BetterExplorer
 		private void Button_Click_5(object sender, RoutedEventArgs e)
 		{
 
-		  var k = System.Reflection.Assembly.GetExecutingAssembly().Location;
+			var k = System.Reflection.Assembly.GetExecutingAssembly().Location;
 			Process.Start(k, "/nw");
 		}
 
@@ -3204,7 +3205,7 @@ namespace BetterExplorer
 			{
 				WindowsAPI.SHChangeNotify(WindowsAPI.HChangeNotifyEventID.SHCNE_MKDIR,
 				WindowsAPI.HChangeNotifyFlags.SHCNF_PATHW | WindowsAPI.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT,
-				  Marshal.StringToHGlobalAuto(path.Replace(@"\\", @"\")), IntPtr.Zero);
+					Marshal.StringToHGlobalAuto(path.Replace(@"\\", @"\")), IntPtr.Zero);
 			}
 
 
@@ -3550,98 +3551,120 @@ namespace BetterExplorer
 
 		public void CheckForUpdate(bool ShowNoUpdatesMessage = true)
 		{
-		  var informalVersion = (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
-		  if (!informalVersion.ToLowerInvariant().Contains("alpha")) {
-			  try
-			  {
-				  if (Updater.CheckForUpdates())
-				  {
+			this.UpdaterWorker = new BackgroundWorker();
+			this.UpdaterWorker.WorkerSupportsCancellation = true;
+			this.UpdaterWorker.WorkerReportsProgress = true;
+			this.UpdaterWorker.DoWork += new DoWorkEventHandler(UpdaterWorker_DoWork);
 
-					  Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-												  (Action)(() =>
-												  {
-													  string ver = "";
-													  foreach (IUpdateTask item in Updater.UpdatesToApply)
-													  {
+			if (!this.UpdaterWorker.IsBusy)
+				this.UpdaterWorker.RunWorkerAsync(ShowNoUpdatesMessage);
+			else
+				MessageBox.Show("Update in progress! Please wait!");
 
-														  if ((item as FileUpdateTask).LocalPath.ToLowerInvariant() ==
-															  Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName).ToLowerInvariant())
-														  {
+		 // var informalVersion = (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
+		 // if (!informalVersion.ToLowerInvariant().Contains("alpha")) {
+			//  try
+			//  {
+			//	  if (Updater.CheckForUpdates())
+			//	  {
 
-															  foreach (BooleanCondition.ConditionItem itemc in (item as FileUpdateTask).UpdateConditions.ChildConditions)
-															  {
-																  var fileVersion = itemc._Condition as FileVersionCondition;
-																  if (fileVersion != null)
-																  {
-																	  ver = fileVersion.Version;
-																  }
-															  }
-														  }
-													  }
-													  stiUpdate.Content = FindResource("stUpdateAvailableCP").ToString().Replace("VER", ver);
-													  stiUpdate.Foreground = System.Windows.Media.Brushes.Red;
+			//		  Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+			//									  (Action)(() =>
+			//									  {
+			//										  string ver = "";
+			//										  foreach (IUpdateTask item in Updater.UpdatesToApply)
+			//										  {
 
-													  if (MessageBox.Show("Updates are available. Do you want to update?", "Updates available",
-														  MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-													  {
-														  Updater.PrepareUpdatesAsync(finished =>
-														  {
+			//											  if ((item as FileUpdateTask).LocalPath.ToLowerInvariant() ==
+			//												  Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName).ToLowerInvariant())
+			//											  {
 
-															  try
-															  {
-																  if (finished)
-																  {
-																	  Updater.ApplyUpdates();
-																	  // ApplyUpdates is a synchronous method by design. Make sure to save all user work before calling
-																	  // it as it might restart your application
-																	  // get out of the way so the console window isn't obstructed
-																	  Dispatcher d = Application.Current.Dispatcher;
-																	  d.BeginInvoke(new Action(() => this.Hide()));
-																	  if (!Updater.ApplyUpdates(true, true, true))
-																	  {
-																		  d.BeginInvoke(new Action(() => this.Show())); // this.WindowState = WindowState.Normal;
-																		  MessageBox.Show("An error occurred while trying to install software updates");
-																	  }
-																	  else
-																	  {
-																		  d.BeginInvoke(new Action(() => this.Close()));
-																	  }
-																	  Updater.CleanUp();
-																	  App.Current.Dispatcher.BeginInvoke(new Action(() => this.Close()));
-																  }
-																  else
-																	  Updater.CleanUp();
-															  }
-															  catch (System.Exception ex)
-															  {
-																  MessageBox.Show("Error", "There was a problem with the update: \n" + ex.Message);
-															  }
+			//												  foreach (BooleanCondition.ConditionItem itemc in (item as FileUpdateTask).UpdateConditions.ChildConditions)
+			//												  {
+			//													  var fileVersion = itemc._Condition as FileVersionCondition;
+			//													  if (fileVersion != null)
+			//													  {
+			//														  ver = fileVersion.Version;
+			//													  }
+			//												  }
+			//											  }
+			//										  }
+			//										  stiUpdate.Content = FindResource("stUpdateAvailableCP").ToString().Replace("VER", ver);
+			//										  stiUpdate.Foreground = System.Windows.Media.Brushes.Red;
 
-														  });
-													  }
+			//										  if (MessageBox.Show("Updates are available. Do you want to update?", "Updates available",
+			//											  MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+			//										  {
+			//											  Updater.PrepareUpdatesAsync(finished =>
+			//											  {
 
-												  }));
+			//												  try
+			//												  {
+			//													  if (finished)
+			//													  {
+			//														  Updater.ApplyUpdates();
+			//														  // ApplyUpdates is a synchronous method by design. Make sure to save all user work before calling
+			//														  // it as it might restart your application
+			//														  // get out of the way so the console window isn't obstructed
+			//														  Dispatcher d = Application.Current.Dispatcher;
+			//														  d.BeginInvoke(new Action(() => this.Hide()));
+			//														  if (!Updater.ApplyUpdates(true, true, true))
+			//														  {
+			//															  d.BeginInvoke(new Action(() => this.Show())); // this.WindowState = WindowState.Normal;
+			//															  MessageBox.Show("An error occurred while trying to install software updates");
+			//														  }
+			//														  else
+			//														  {
+			//															  d.BeginInvoke(new Action(() => this.Close()));
+			//														  }
+			//														  Updater.CleanUp();
+			//														  App.Current.Dispatcher.BeginInvoke(new Action(() => this.Close()));
+			//													  }
+			//													  else
+			//														  Updater.CleanUp();
+			//												  }
+			//												  catch (System.Exception ex)
+			//												  {
+			//													  MessageBox.Show("Error", "There was a problem with the update: \n" + ex.Message);
+			//												  }
+
+			//											  });
+			//										  }
+
+			//									  }));
 
 
-				  }
-				  else
-				  {
-					  stiUpdate.Content = FindResource("stUpdateNotAvailableCP").ToString();
-					  stiUpdate.Foreground = System.Windows.Media.Brushes.Black;
-					  if (ShowNoUpdatesMessage)
-						  MessageBox.Show("No updates are available.", "Updates available",
-															  MessageBoxButton.OK, MessageBoxImage.Information);
-				  }
-			  }
-			  catch 
-			  {
+			//	  }
+			//	  else
+			//	  {
+			//		  stiUpdate.Content = FindResource("stUpdateNotAvailableCP").ToString();
+			//		  stiUpdate.Foreground = System.Windows.Media.Brushes.Black;
+			//		  if (ShowNoUpdatesMessage)
+			//			  MessageBox.Show("No updates are available.", "Updates available",
+			//												  MessageBoxButton.OK, MessageBoxImage.Information);
+			//	  }
+			//  }
+			//  catch 
+			//  {
 
-				  MessageBox.Show("Update Server is not available at the moment! Try again later!");
-			  }
-		  } else {
-			if (ShowNoUpdatesMessage)
-			  MessageBox.Show("This is Alpha version and update is disabled!");
-		  }
+			//	  MessageBox.Show("Update Server is not available at the moment! Try again later!");
+			//  }
+		 // } else {
+			//if (ShowNoUpdatesMessage)
+			//  MessageBox.Show("This is Alpha version and update is disabled!");
+		 // }
+		}
+
+		void UpdaterWorker_DoWork(object sender, DoWorkEventArgs e) {
+			Updater updater = new Updater("http://update.better-explorer.com/update.xml", 5);
+			if (updater.LoadUpdateFile()){
+        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                      (Action)(() => {
+				                UpdateWizard updateWizzard = new UpdateWizard(updater);
+        
+                        updateWizzard.ShowDialog(this.GetWin32Window());
+                      }));
+			}
 		}
 
 		//Code source - Codeplex User Salysle
@@ -3852,6 +3875,8 @@ namespace BetterExplorer
 				//Itmpop.Owner = this;
 				//Itmpop.Show();
 
+
+
 				//'sets up FileSystemWatcher for Favorites folder
 				String FavPath = "";
 				try
@@ -4028,12 +4053,12 @@ namespace BetterExplorer
 
 									 canlogactions = (LogActions == 1);
 									 chkLogHistory.IsChecked = canlogactions;
-                                     if (LogActions == 1)
-                                     {
-                                         chkLogHistory.Visibility = System.Windows.Visibility.Visible;
-                                         ShowLogsBorder.Visibility = System.Windows.Visibility.Visible;
-                                         paddinglbl8.Visibility = System.Windows.Visibility.Visible;
-                                     }
+																		 if (LogActions == 1)
+																		 {
+																				 chkLogHistory.Visibility = System.Windows.Visibility.Visible;
+																				 ShowLogsBorder.Visibility = System.Windows.Visibility.Visible;
+																				 paddinglbl8.Visibility = System.Windows.Visibility.Visible;
+																		 }
 
 									 // load settings for auto-switch to contextual tab
 									 asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
@@ -4055,10 +4080,10 @@ namespace BetterExplorer
 									 OverwriteOnRotate = (oor == 1);
 									 chkOverwriteImages.IsChecked = (oor == 1);
 
-                                     // load Saved Tabs Directory location (if different from default)
-                                     string tdir = Convert.ToString(rks.GetValue(@"SavedTabsDirectory", satdir));
-                                     txtDefSaveTabs.Text = tdir;
-                                     sstdir = tdir;
+																		 // load Saved Tabs Directory location (if different from default)
+																		 string tdir = Convert.ToString(rks.GetValue(@"SavedTabsDirectory", satdir));
+																		 txtDefSaveTabs.Text = tdir;
+																		 sstdir = tdir;
 
 									 // set up history on breadcrumb bar (currently missing try-catch statement in order to catch error)
 									 try
@@ -4074,7 +4099,7 @@ namespace BetterExplorer
 									 AddToLog("Session Began");
 
 									 StartUpLocation =
-										  rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+											rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
 
 									 if (StartUpLocation == "")
 									 {
@@ -4138,7 +4163,7 @@ namespace BetterExplorer
 										 try
 										 {
 											 btnSetCurrentasStartup.Header =
-												  ShellObject.FromParsingName(StartUpLocation).GetDisplayName(DisplayNameType.Default);
+													ShellObject.FromParsingName(StartUpLocation).GetDisplayName(DisplayNameType.Default);
 
 											 btnSetCurrentasStartup.Icon = ShellObject.FromParsingName(StartUpLocation).Thumbnail.BitmapSource;
 										 }
@@ -4292,7 +4317,7 @@ namespace BetterExplorer
 
 
 								 }
-			   ));
+				 ));
 
 				if (exitApp)
 				{
@@ -4304,10 +4329,10 @@ namespace BetterExplorer
 				try
 				{
 
-					Updater = UpdateManager.Instance;
-					Updater.UpdateFeedReader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
-					Updater.UpdateExecutableName = "Web Update.exe";
-					Updater.UpdateSource = new NAppUpdate.Framework.Sources.SimpleWebSource("http://better-explorer.com/onlineupdate/update.xml");
+					//Updater = UpdateManager.Instance;
+					//Updater.UpdateFeedReader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
+					//Updater.UpdateExecutableName = "Web Update.exe";
+					//Updater.UpdateSource = new NAppUpdate.Framework.Sources.SimpleWebSource("http://better-explorer.com/onlineupdate/update.xml");
 					//TODO: reeable updates when there is site ready
 					//CheckForUpdate(false);
 				}
@@ -4347,8 +4372,8 @@ namespace BetterExplorer
 
 
 			Dispatcher.Invoke(
-				  System.Windows.Threading.DispatcherPriority.Normal,
-				  new Action(
+					System.Windows.Threading.DispatcherPriority.Normal,
+					new Action(
 					delegate()
 					{
 						Explorer.Navigate(searchFolder);
@@ -4606,9 +4631,9 @@ namespace BetterExplorer
 			var selectedItems = new List<string>() { archive };
 
 			var archiveProcressScreen = new ArchiveProcressScreen(selectedItems,
-							   output,
-							   ArchiveAction.Extract,
-							   "");
+								 output,
+								 ArchiveAction.Extract,
+								 "");
 			archiveProcressScreen.ExtractionCompleted += new ArchiveProcressScreen.ExtractionCompleteEventHandler(ExtractionHasCompleted);
 
 			AddToLog("Archive Extracted to " + output + " from source " + archive);
@@ -4647,8 +4672,8 @@ namespace BetterExplorer
 		private void miExtractHere_Click(object sender, RoutedEventArgs e)
 		{
 			Dispatcher.BeginInvoke(
-							  System.Windows.Threading.DispatcherPriority.Background,
-							  new ThreadStart(
+								System.Windows.Threading.DispatcherPriority.Background,
+								new ThreadStart(
 								delegate()
 								{
 
@@ -4957,9 +4982,9 @@ namespace BetterExplorer
 
 		private void btnMoreColls_Click(object sender, RoutedEventArgs e)
 		{
-      MoreColumns fMoreCollumns = new MoreColumns();
+			MoreColumns fMoreCollumns = new MoreColumns();
 			fMoreCollumns.PopulateAvailableColumns(Explorer.AvailableColumns(Explorer.GetShellView(), true), Explorer,
-			  this.PointToScreen(Mouse.GetPosition(this)));
+				this.PointToScreen(Mouse.GetPosition(this)));
 		}
 
 		void mig_Click(object sender, RoutedEventArgs e)
@@ -5010,7 +5035,7 @@ namespace BetterExplorer
 			if (!IsCalledFromLoading && !IsCalledFromViewEnum)
 			{
 				Dispatcher.BeginInvoke(
-							  new Action(
+								new Action(
 								delegate()
 								{
 									Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
@@ -5126,7 +5151,7 @@ namespace BetterExplorer
 			if (!IsCalledFromLoading)
 			{
 				Dispatcher.BeginInvoke(
-							  new Action(
+								new Action(
 								delegate()
 								{
 									WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
@@ -5143,7 +5168,7 @@ namespace BetterExplorer
 			if (!IsCalledFromLoading)
 			{
 				Dispatcher.BeginInvoke(
-							  new Action(
+								new Action(
 								delegate()
 								{
 									WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
@@ -5161,7 +5186,7 @@ namespace BetterExplorer
 			if (!IsCalledFromLoading)
 			{
 				Dispatcher.BeginInvoke(
-							  new Action(
+								new Action(
 								delegate()
 								{
 									WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
@@ -5178,7 +5203,7 @@ namespace BetterExplorer
 			if (!IsCalledFromLoading)
 			{
 				Dispatcher.BeginInvoke(
-							  new Action(
+								new Action(
 								delegate()
 								{
 									WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
@@ -8003,7 +8028,7 @@ namespace BetterExplorer
 
 			CurrentTabIndex = tabControl1.Items.Count - 1;
 			ConstructMoveToCopyToMenu();
-      return newt;
+			return newt;
 		}
 
 		void newt_TabSelected(object sender, RoutedEventArgs e)
@@ -8402,20 +8427,20 @@ namespace BetterExplorer
 			List<string> o = new List<string>();
 
 			if (Directory.Exists(sstdir)) {
-			  foreach (string item in Directory.GetFiles(sstdir)) {
+				foreach (string item in Directory.GetFiles(sstdir)) {
 				ShellObject obj = ShellObject.FromParsingName(item);
 				o.Add(RemoveExtensionsFromFile(obj.GetDisplayName(DisplayNameType.Default), GetExtension(item)));
-			  } 
+				} 
 			}
 			return o;
 		}
 
 		private void btn_ToolTipOpening(object sender, ToolTipEventArgs e) {
-		  if (sender is SplitButton) {
+			if (sender is SplitButton) {
 			if ((sender as SplitButton).IsDropDownOpen) {
-			  e.Handled = true;
+				e.Handled = true;
 			}
-		  }
+			}
 		}
 
 		private void miSaveCurTabs_Click(object sender, RoutedEventArgs e)
@@ -8564,13 +8589,13 @@ namespace BetterExplorer
 
 		void gli_Click(object sender, PathStringEventArgs e)
 		{
-      SavedTabsList list = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", sstdir, e.PathString));
-      for (int i = 0; i < list.Count; i++) {
-        var tabitem = NewTab(list[i]);
-        if (i == list.Count - 1)
-          tabControl1.SelectedItem = tabitem;
-      }
-      NavigateAfterTabChange();
+			SavedTabsList list = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", sstdir, e.PathString));
+			for (int i = 0; i < list.Count; i++) {
+				var tabitem = NewTab(list[i]);
+				if (i == list.Count - 1)
+					tabControl1.SelectedItem = tabitem;
+			}
+			NavigateAfterTabChange();
 			//MessageBox.Show(sstdir + e.PathString + ".txt");
 			//throw new NotImplementedException();
 		}
@@ -8584,10 +8609,10 @@ namespace BetterExplorer
 
 		#endregion
 
-        private void btnAdvancedUpdateSettings_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
+				private void btnAdvancedUpdateSettings_Click(object sender, RoutedEventArgs e)
+				{
+						
+				}
 
 	}
 

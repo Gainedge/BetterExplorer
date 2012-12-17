@@ -1,6 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.Collections.Generic;
+using System.Xml;
+using System.Reflection;
 
 namespace BetterExplorer
 {
@@ -18,6 +21,8 @@ namespace BetterExplorer
         #endregion
 
         #region Properties
+        public List<Update> AvailableUpdates { get; set; }
+        public int CheckingInterval { get; set; }
         /// <summary>
         /// The remote location of a file that is used to check if an update exists.
         /// </summary>
@@ -65,24 +70,40 @@ namespace BetterExplorer
 
         #endregion
 
-        private string LoadTextFile(string file)
+
+        public Boolean LoadUpdateFile()
         {
-            string line;
-            using (StreamReader sr = new StreamReader(file))
-            {
-                line = sr.ReadLine();
-            }
-            return line;
+          this.AvailableUpdates.Clear();
+          XmlDocument updateXML = new XmlDocument();
+          updateXML.Load(this.ServerCheckLocation);
+          foreach (XmlNode updateNode in updateXML.DocumentElement.ChildNodes) {
+            Update update = new Update();
+            update.Name = updateNode.Attributes["Name"].Value;
+            update.Version = updateNode.ChildNodes[0].InnerText;
+            update.Type = (UpdateTypes)Convert.ToInt32(updateNode.ChildNodes[1].InnerText);
+            update.RequiredVersion = updateNode.ChildNodes[2].InnerText;
+            update.UpdaterFilePath = updateNode.ChildNodes[3].InnerText;
+            this.AvailableUpdates.Add(update);
+          }
+          return (this.AvailableUpdates.Count > 0 && this.AvailableUpdates[0].Version != CurrentVersion);
         }
 
         /// <summary>
         /// Create a new updater to handle checking for and downloading updates.
         /// </summary>
-        public Updater()
+        public Updater(String xmlLocation, int checkingInterval)
         {
             updchk.DownloadProgressChanged += updchk_DownloadProgressChanged;
             updchk.DownloadFileCompleted += updchk_DownloadFileCompleted;
+            if (!Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BetterExplorerDownloads")))
+              Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BetterExplorerDownloads"));
+            this.LocalUpdaterLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "BetterExplorerDownloads");
+            this.ServerCheckLocation = xmlLocation;
+            this.CheckingInterval = checkingInterval;
+            this.AvailableUpdates = new List<Update>();
+            this.CurrentVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
+
 
         private void updchk_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
@@ -92,7 +113,7 @@ namespace BetterExplorer
                 {
                     try
                     {
-                        if (LoadTextFile(LocalCheckLocation) != CurrentVersion)
+                        if (LoadUpdateFile())
                         {
                             OnUpdateAvailable(EventArgs.Empty);
                             // update available
@@ -137,21 +158,11 @@ namespace BetterExplorer
         /// <summary>
         /// Start downloading the updater program.
         /// </summary>
-        public void DownloadUpdater()
-        {
-            upd = false;
-            OnDownloadUpdaterBegan(EventArgs.Empty);
-            updchk.DownloadFileAsync(new Uri(ServerUpdaterLocation), LocalUpdaterLocation);
-        }
+        public void DownloadUpdater(String location, String DestinationName) {
+          upd = false;
+          OnDownloadUpdaterBegan(EventArgs.Empty);
+          updchk.DownloadFileAsync(new Uri(location), Path.Combine(LocalUpdaterLocation, DestinationName));
 
-        /// <summary>
-        /// Download the update data file and check for updates.
-        /// </summary>
-        public void CheckForUpdates()
-        {
-            upd = true;
-            OnCheckForUpdatesBegan(EventArgs.Empty);
-            updchk.DownloadFileAsync(new Uri(ServerCheckLocation), LocalCheckLocation);
         }
 
         #region Events
@@ -289,5 +300,21 @@ namespace BetterExplorer
         }
 
         #endregion
+    }
+
+    public class Update {
+      public String Name { get; set; }
+      public String Version { get; set; }
+      public UpdateTypes Type { get; set; }
+      public String RequiredVersion { get; set; }
+      public String UpdaterFilePath { get; set; }
+    }
+
+    public enum UpdateTypes : int {
+      Nightly = 1,
+      Alpha,
+      Beta,
+      ReleaseCandidate,
+      Release
     }
 }
