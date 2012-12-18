@@ -11,11 +11,11 @@ Imports System.Windows
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("BExplorerTranslationConverter")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("")> 
-<Assembly: AssemblyProduct("BExplorerTranslationConverter")> 
-<Assembly: AssemblyCopyright("Copyright @  2012")> 
+<Assembly: AssemblyTitle("JaykeBird's Translation Manager")> 
+<Assembly: AssemblyDescription("The translation manager for BetterExplorer")> 
+<Assembly: AssemblyCompany("JaykeBird Media")> 
+<Assembly: AssemblyProduct("JaykeBird's Translation Manager")> 
+<Assembly: AssemblyCopyright("Copyright @ 2012 Jayke R. Huempfner (JaykeBird)")> 
 <Assembly: AssemblyTrademark("")> 
 <Assembly: ComVisible(false)>
 
@@ -55,5 +55,5 @@ Imports System.Windows
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.0.0")> 
-<Assembly: AssemblyFileVersion("1.0.0.0")> 
+<Assembly: AssemblyVersion("2.1.0.0")> 
+<Assembly: AssemblyFileVersion("2.1.0.0")> 
