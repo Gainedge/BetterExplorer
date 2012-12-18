@@ -6,29 +6,13 @@ BExplorerTranslationConverter
 </name>
 </assembly>
 <members>
-<member name="M:BExplorerTranslationConverter.IDSearchDialog.InitializeComponent">
-	<summary>
-InitializeComponent
-</summary>
-</member><member name="T:BExplorerTranslationConverter.IDSearchDialog">
-	<summary>
-IDSearchDialog
-</summary>
-</member><member name="M:BExplorerTranslationConverter.MainWindow.InitializeComponent">
+<member name="M:BExplorerTranslationConverter.MainWindow.InitializeComponent">
 	<summary>
 InitializeComponent
 </summary>
 </member><member name="T:BExplorerTranslationConverter.MainWindow">
 	<summary>
 MainWindow
-</summary>
-</member><member name="M:BExplorerTranslationConverter.ItemEditor.InitializeComponent">
-	<summary>
-InitializeComponent
-</summary>
-</member><member name="T:BExplorerTranslationConverter.ItemEditor">
-	<summary>
-ItemEditor
 </summary>
 </member><member name="M:BExplorerTranslationConverter.Application.InitializeComponent">
 	<summary>
@@ -41,6 +25,22 @@ Application Entry Point.
 </member><member name="T:BExplorerTranslationConverter.Application">
 	<summary>
 Application
+</summary>
+</member><member name="M:BExplorerTranslationConverter.ItemEditor.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:BExplorerTranslationConverter.ItemEditor">
+	<summary>
+ItemEditor
+</summary>
+</member><member name="M:BExplorerTranslationConverter.IDSearchDialog.InitializeComponent">
+	<summary>
+InitializeComponent
+</summary>
+</member><member name="T:BExplorerTranslationConverter.IDSearchDialog">
+	<summary>
+IDSearchDialog
 </summary>
 </member><member name="P:BExplorerTranslationConverter.My.Resources.Resources.ResourceManager">
 	<summary>

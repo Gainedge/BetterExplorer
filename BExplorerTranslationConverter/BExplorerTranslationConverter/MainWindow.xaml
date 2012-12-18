@@ -1,21 +1,22 @@
 ﻿<Window x:Class="MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Translation Manager" Height="344" Width="447">
+    Title="JaykeBird's Translation Manager" Height="344" Width="500">
     <Grid>
-        <TextBlock HorizontalAlignment="Left" Margin="14,14,0,0" Name="TextBlock1" Text="Entries:" VerticalAlignment="Top" />
-        <ListBox Margin="14,36,12,81" Name="ListBox1" />
+        <TextBlock HorizontalAlignment="Left" Margin="14,14,0,0" Name="TextBlock1" Text="Entries:" VerticalAlignment="Top" Visibility="Collapsed" />
+        <ListBox Margin="14,12,12,81" Name="ListBox1" />
         <Button Content="Edit Value..." Height="23" HorizontalAlignment="Left" Margin="14,0,0,27" Name="Button1" VerticalAlignment="Bottom" Width="75" />
         <Button Content="Add Value..." Height="23" HorizontalAlignment="Left" Margin="95,0,0,27" Name="Button2" VerticalAlignment="Bottom" Width="75" />
-        <Button Content="Delete..." Height="23" HorizontalAlignment="Left" Margin="176,0,0,27" Name="Button3" VerticalAlignment="Bottom" Width="75" />
-        <Button Content="Load..." Height="23" Margin="14,0,0,52" Name="Button4" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="75" />
+        <Button Content="Delete" Height="23" HorizontalAlignment="Left" Margin="176,0,0,27" Name="Button3" VerticalAlignment="Bottom" Width="75" />
+        <Button Content="Load TXT..." Height="23" Margin="14,0,0,52" Name="Button4" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="75" />
         <Button Content="Load XML..." Height="23" HorizontalAlignment="Left" Margin="95,0,0,52" Name="Button5" VerticalAlignment="Bottom" Width="75" />
-        <Button Content="Save..." Height="23" HorizontalAlignment="Left" Margin="176,0,0,52" Name="Button6" VerticalAlignment="Bottom" Width="75" />
+        <Button Content="Save TXT..." Height="23" HorizontalAlignment="Left" Margin="176,0,0,52" Name="Button6" VerticalAlignment="Bottom" Width="75" />
         <Button Content="Save XML..." Height="23" HorizontalAlignment="Left" Margin="257,0,0,52" Name="Button7" VerticalAlignment="Bottom" Width="75" />
-        <Button Content="Default..." Height="23" HorizontalAlignment="Left" Margin="257,0,0,27" Name="Button8" VerticalAlignment="Bottom" Width="75" />
-        <Button Content="Refresh" Height="23" HorizontalAlignment="Right" Margin="0,7,14,0" Name="Button9" VerticalAlignment="Top" Width="75" />
-        <Button Content="Def XML..." Height="23" HorizontalAlignment="Left" Margin="338,0,0,52" Name="Button10" VerticalAlignment="Bottom" Width="75" />
-        <Button Content="Search..." Height="23" HorizontalAlignment="Left" Margin="338,0,0,27" Name="Button11" VerticalAlignment="Bottom" Width="75" />
-        <TextBlock HorizontalAlignment="Left" Margin="14,0,0,6" Name="TextBlock2" Text="Made by Jayke R. Huempfner (JaykeBird) - June 25, 2012" VerticalAlignment="Bottom" />
+        <Button Content="Open Template..." Height="23" HorizontalAlignment="Right" Margin="0,0,12,52" Name="Button8" VerticalAlignment="Bottom" Width="95" />
+        <Button Content="Refresh" Height="23" HorizontalAlignment="Right" Margin="0,7,14,0" Name="Button9" VerticalAlignment="Top" Width="75" Visibility="Collapsed" />
+        <Button Content="Save Template..." Height="23" HorizontalAlignment="Right" Margin="0,0,12,27" Name="Button10" VerticalAlignment="Bottom" Width="95" />
+        <Button Content="Search..." Height="23" HorizontalAlignment="Left" Margin="257,0,0,27" Name="Button11" VerticalAlignment="Bottom" Width="75" />
+        <TextBlock HorizontalAlignment="Left" Margin="14,0,0,6" Name="TextBlock2" Text="Made by Jayke R. Huempfner (JaykeBird) - December 18, 2012" VerticalAlignment="Bottom" />
+        <CheckBox Content="Multi-select" Height="16" HorizontalAlignment="Right" Margin="0,0,12,6" Name="CheckBox1" VerticalAlignment="Bottom" />
     </Grid>
 </Window>

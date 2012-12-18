@@ -91,11 +91,16 @@ Class MainWindow
 
     Private Sub Button3_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles Button3.Click
         Dim o As Integer = ListBox1.SelectedIndex
+        Dim g As New List(Of TranslationEntry)
         Try
             For Each item As TranslationEntry In translations
-                If item.ToString = ListBox1.SelectedValue Then
-                    translations.Remove(item)
+                If ListBox1.SelectedItems.Contains(item.ToString) Then
+                    g.Add(item)
                 End If
+            Next
+
+            For Each item As TranslationEntry In g
+                translations.Remove(item)
             Next
             'LoadTranslationsIntoListBox()
         Catch ex As Exception
@@ -155,6 +160,18 @@ Class MainWindow
             Button1_Click(sender, New RoutedEventArgs(e.RoutedEvent))
         ElseIf e.Key = Key.Delete Then
             Button3_Click(sender, New RoutedEventArgs(e.RoutedEvent))
+        ElseIf e.Key = Key.F5 Then
+            LoadTranslationsIntoListBox()
+        End If
+    End Sub
+
+    Private Sub CheckBox1_Click(sender As System.Object, e As System.Windows.RoutedEventArgs) Handles CheckBox1.Click
+        If CheckBox1.IsChecked = True Then
+            ListBox1.SelectionMode = Controls.SelectionMode.Multiple
+            Button1.IsEnabled = False
+        Else
+            ListBox1.SelectionMode = Controls.SelectionMode.Single
+            Button1.IsEnabled = True
         End If
     End Sub
 End Class

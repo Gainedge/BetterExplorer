@@ -12,10 +12,14 @@
         Dim trans As New List(Of TranslationData)
         For Each item As String In items
             If item.StartsWith("    <system:String") Then
-                Dim entry As New TranslationData
-                entry.name = item.Substring(item.IndexOf("""") + 1, item.LastIndexOf("""") - (item.IndexOf("""") + 1))
-                entry.value = item.Substring(item.IndexOf(">") + 1, item.LastIndexOf("</") - (item.IndexOf(">") + 1))
-                trans.Add(entry)
+                Try
+                    Dim entry As New TranslationData
+                    entry.name = item.Substring(item.IndexOf("""") + 1, item.LastIndexOf("""") - (item.IndexOf("""") + 1))
+                    entry.value = item.Substring(item.IndexOf(">") + 1, item.LastIndexOf("</") - (item.IndexOf(">") + 1))
+                    trans.Add(entry)
+                Catch ex As Exception
+                    MessageBox.Show("An error occurred while trying to parse this line:" + vbCrLf + vbCrLf + item, "Invalid Format", MessageBoxButton.OK, MessageBoxImage.Error)
+                End Try
             End If
         Next
         Return trans
@@ -28,12 +32,16 @@
         Dim trans As New List(Of TranslationEntry)
         For Each item As String In items
             If item.StartsWith("    <system:String") Then
-                Dim entry As New TranslationEntry
-                entry.Name = item.Substring(item.IndexOf("""") + 1, item.LastIndexOf("""") - (item.IndexOf("""") + 1))
-                entry.DefaultValue = item.Substring(item.IndexOf(">") + 1, item.LastIndexOf("</") - (item.IndexOf(">") + 1))
-                entry.Definition = ""
-                entry.Translation = ""
-                trans.Add(entry)
+                Try
+                    Dim entry As New TranslationEntry
+                    entry.Name = item.Substring(item.IndexOf("""") + 1, item.LastIndexOf("""") - (item.IndexOf("""") + 1))
+                    entry.DefaultValue = item.Substring(item.IndexOf(">") + 1, item.LastIndexOf("</") - (item.IndexOf(">") + 1))
+                    entry.Definition = ""
+                    entry.Translation = ""
+                    trans.Add(entry)
+                Catch ex As Exception
+                    MessageBox.Show("An error occurred while trying to parse this line:" + vbCrLf + vbCrLf + item, "Invalid Format", MessageBoxButton.OK, MessageBoxImage.Error)
+                End Try
             End If
         Next
         Return trans
