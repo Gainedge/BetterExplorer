@@ -239,9 +239,13 @@
                                 <Ribbon:Button Header="{StaticResource btnOpenWebsite}" HorizontalAlignment="Left" IsDefinitive="True" Ribbon:KeyTip.Keys="W" Ribbon:KeyTip.VerticalAlignment="Bottom" Click="Button_Click_7" LargeIcon="Images\webconnect_32.png" Icon="Images\webconnect_16.png" Style="{DynamicResource ButtonBackstageStyle}" VerticalAlignment="Top" Margin="20,140,0,0" Height="88"/>
                                 <Label Content="{StaticResource btnOpenWebsiteHCP}" FontWeight="Bold" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="105,140,10,0" />
                                 <TextBlock Text="{StaticResource btnOpenWebsiteICP}" TextWrapping="Wrap" HorizontalAlignment="Left" Margin="110,170,10,0" Height="50" VerticalAlignment="Top" />
+                                <Ribbon:Button Header="Report a problem" HorizontalAlignment="Left" IsDefinitive="True" Ribbon:KeyTip.Keys="RP" Ribbon:KeyTip.VerticalAlignment="Bottom" LargeIcon="Images\bugtrac_32.png" Icon="Images\bugtrac_16.png" Style="{DynamicResource ButtonBackstageStyle}" VerticalAlignment="Top" Margin="20,235,0,0" Height="88" Click="btnBugtracker_Click" />
+                                <Label Content="Report a problem, bug or feuture request" FontWeight="Bold" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="105,235,10,0" />
+                                <TextBlock Text="This redirects you to the bugtracker website where you can post issues." TextWrapping="Wrap" HorizontalAlignment="Left" Margin="110,265,10,0" Height="50" VerticalAlignment="Top" />
                                 <Separator Grid.Column="0" HorizontalAlignment="Right"/>
                                 <Image Source="Images\bexplorerlogo.png" HorizontalAlignment="Left" VerticalAlignment="Top" Width="400" Height="100" Margin="10,20,0,0" Grid.Column="1" Stretch="Fill" />
-                                <StackPanel Grid.Column="1" Margin="20,110,10,0">
+                                <ScrollViewer Grid.Column="1" Margin="20,110,10,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                  <StackPanel>
                                     <Label Content="{StaticResource stUpdateNotAvailableCP}" Name="stiUpdate" Margin="0,25,50,0" FontSize="14" FontWeight="ExtraBold" />
                                     <Ribbon:SeparatorTabItem Header="" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}"  Margin="0,-30,50,0" Foreground="#FFC71212" />
                                     <Label Content="{StaticResource lblBetterExText}" FontWeight="Bold" Margin="0,2,50,0" />
@@ -262,9 +266,10 @@
                                     <Label Content="7-Zip - archiving utility (www.7-zip.org)"/>
                                     <Label Content="7ZipSharp - a wrapper of 7Zip for .NET"/>
                                     <Label Content="Some icons and ExplorerBrowser control are property of Microsoft® Corporation. All right reserved."/>
-                                    
-                                </StackPanel>
-                                
+
+                                  </StackPanel>
+                                </ScrollViewer>
+
                             </Grid>
                         </Ribbon:BackstageTabItem>
                         <Ribbon:BackstageTabItem Header="{StaticResource btiOptionsCP}" Ribbon:KeyTip.Keys="O">

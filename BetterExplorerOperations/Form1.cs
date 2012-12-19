@@ -10,6 +10,7 @@ namespace BetterExplorerOperations
 {
     public partial class Form1 : Form
     {
+      public int errorCode = 0;
         public Form1()
         {
             InitializeComponent();
@@ -269,7 +270,8 @@ namespace BetterExplorerOperations
             }
             catch
             {
-                Close();
+              errorCode = -1;
+              Close();
             }
             base.WndProc(ref m);
         }

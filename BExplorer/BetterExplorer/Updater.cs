@@ -83,6 +83,7 @@ namespace BetterExplorer
             update.Type = (UpdateTypes)Convert.ToInt32(updateNode.ChildNodes[1].InnerText);
             update.RequiredVersion = updateNode.ChildNodes[2].InnerText;
             update.UpdaterFilePath = updateNode.ChildNodes[3].InnerText;
+            update.UpdaterFilePath64 = updateNode.ChildNodes[4].InnerText;
             this.AvailableUpdates.Add(update);
           }
           return (this.AvailableUpdates.Count > 0 && this.AvailableUpdates[0].Version != CurrentVersion);
@@ -308,6 +309,7 @@ namespace BetterExplorer
       public UpdateTypes Type { get; set; }
       public String RequiredVersion { get; set; }
       public String UpdaterFilePath { get; set; }
+      public String UpdaterFilePath64 { get; set; }
     }
 
     public enum UpdateTypes : int {

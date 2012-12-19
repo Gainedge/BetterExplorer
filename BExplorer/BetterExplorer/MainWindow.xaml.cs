@@ -97,7 +97,7 @@ namespace BetterExplorer
 		bool canlogactions = false;
 		string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
 		string logdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_ActionLog\\";
-				string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
+		string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
 		string sstdir;
 		List<NavigationLog> reopenabletabs = new List<NavigationLog>();
 		bool OverwriteOnRotate = false;
@@ -143,6 +143,10 @@ namespace BetterExplorer
 		#endregion
 
 		#region Events
+
+    private void btnBugtracker_Click(object sender, RoutedEventArgs e) {
+      Process.Start("http:\\bugtracker.better-explorer.com");
+    }
 
 		private void btnCondSel_DropDownOpened(object sender, EventArgs e)
 		{
@@ -2982,11 +2986,15 @@ namespace BetterExplorer
 				};
 
 				proc.StartInfo = psi;
-				proc.Start();
+        proc.Start();
+        proc.WaitForExit();
 				Thread.Sleep(1000);
 				int res = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, 
 					"0x88779", sources, drops, "", "", "");
 				proc.WaitForExit();
+        if (proc.ExitCode == -1)
+          MessageBox.Show("Error in creating symlink", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+
 			}
 		}
 
@@ -5941,10 +5949,9 @@ namespace BetterExplorer
 			}
 		}
 
+
 		private void chkIsDefault_Checked(object sender, RoutedEventArgs e)
 		{
-
-
 			if (!isOnLoad)
 			{
 				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
@@ -5965,6 +5972,12 @@ namespace BetterExplorer
 				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"),
 					0, "0x77654");
 				proc.WaitForExit();
+        if (proc.ExitCode == -1) {
+          isOnLoad = true;
+          (sender as Fluent.CheckBox).IsChecked = false;
+          isOnLoad = false;
+          MessageBox.Show("Can't set Better Explorer as default!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
 			}
 
 		}
@@ -5990,6 +6003,12 @@ namespace BetterExplorer
 				WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"),
 					 0, "0x77655");
 				proc.WaitForExit();
+        if (proc.ExitCode == -1) {
+          isOnLoad = true;
+          (sender as Fluent.CheckBox).IsChecked = true;
+          isOnLoad = false;
+          MessageBox.Show("Can't restore default filemanager!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
 			}
 		}
 

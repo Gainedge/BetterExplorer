@@ -11,11 +11,13 @@ namespace BetterExplorerOperations
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static int Main(string[] arguments)
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Form1 mainform = new Form1();
+            Application.Run(mainform);
+            return mainform.errorCode;
         }
     }
 }

@@ -3,6 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterExplorer", "BExplorer\BetterExplorer\BetterExplorer.csproj", "{BBD6B64A-5617-4F6C-A5CE-5156365BF33E}"
 	ProjectSection(ProjectDependencies) = postProject
+		{CD67B349-73BF-44A3-A2F2-569926A3A499} = {CD67B349-73BF-44A3-A2F2-569926A3A499}
 		{8E530855-904A-4051-A84A-EF6F21242AA8} = {8E530855-904A-4051-A84A-EF6F21242AA8}
 		{2AAB3F8C-A802-4986-A35D-3C6D0A6BA566} = {2AAB3F8C-A802-4986-A35D-3C6D0A6BA566}
 		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64} = {CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}
@@ -21,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fluent dotNET 4.0", "fluent_0cdee8129810\Fluent\Fluent\Fluent dotNET 4.0.csproj", "{4C92FCF4-3561-499F-BC5B-F2F089863047}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BEApi", "BEApi\BEApi.vcxproj", "{8E530855-904A-4051-A84A-EF6F21242AA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.csproj", "{CD67B349-73BF-44A3-A2F2-569926A3A499}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -308,6 +311,34 @@ Global
 		{8E530855-904A-4051-A84A-EF6F21242AA8}.Release|x64.ActiveCfg = Release|Win32
 		{8E530855-904A-4051-A84A-EF6F21242AA8}.Release|x86.ActiveCfg = Release|Win32
 		{8E530855-904A-4051-A84A-EF6F21242AA8}.Release|x86.Build.0 = Release|Win32
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.CodeAnalysisDebug|Mixed Platforms.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.CodeAnalysisDebug|Mixed Platforms.Build.0 = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.CodeAnalysisDebug|Win32.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.CodeAnalysisDebug|x64.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.CodeAnalysisDebug|x86.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.CodeAnalysisDebug|x86.Build.0 = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Debug|Win32.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Debug|x64.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Debug|x86.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Debug|x86.Build.0 = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Deploy|Any CPU.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Deploy|Mixed Platforms.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Deploy|Mixed Platforms.Build.0 = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Deploy|Win32.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Deploy|x64.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Deploy|x86.ActiveCfg = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Deploy|x86.Build.0 = Debug|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Release|Any CPU.ActiveCfg = Release|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Release|Mixed Platforms.Build.0 = Release|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Release|Win32.ActiveCfg = Release|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Release|x64.ActiveCfg = Release|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Release|x86.ActiveCfg = Release|x86
+		{CD67B349-73BF-44A3-A2F2-569926A3A499}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
