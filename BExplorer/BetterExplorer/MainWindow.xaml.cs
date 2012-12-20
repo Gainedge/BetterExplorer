@@ -62,6 +62,9 @@ namespace BetterExplorer
 		bool isCheckModeEnabled;
 		bool IsExtendedFileOpEnabled;
 		public bool IsrestoreTabs;
+		bool IsUpdateCheck;
+    bool IsUpdateCheckStartup;
+    int UpdateCheckType;
 		public bool isOnLoad;
 		JumpList AppJL = new JumpList();
 		public bool IsCalledFromLoading;
@@ -103,6 +106,9 @@ namespace BetterExplorer
 		bool OverwriteOnRotate = false;
 		NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		BackgroundWorker UpdaterWorker;
+		System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
+		DateTime LastUpdateCheck;
+		Int32 UpdateCheckInterval;
 
 		#endregion
 
@@ -144,9 +150,9 @@ namespace BetterExplorer
 
 		#region Events
 
-    private void btnBugtracker_Click(object sender, RoutedEventArgs e) {
-      Process.Start("http:\\bugtracker.better-explorer.com");
-    }
+		private void btnBugtracker_Click(object sender, RoutedEventArgs e) {
+			Process.Start("http:\\bugtracker.better-explorer.com");
+		}
 
 		private void btnCondSel_DropDownOpened(object sender, EventArgs e)
 		{
@@ -2986,14 +2992,14 @@ namespace BetterExplorer
 				};
 
 				proc.StartInfo = psi;
-        proc.Start();
-        proc.WaitForExit();
+				proc.Start();
+				proc.WaitForExit();
 				Thread.Sleep(1000);
 				int res = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, 
 					"0x88779", sources, drops, "", "", "");
 				proc.WaitForExit();
-        if (proc.ExitCode == -1)
-          MessageBox.Show("Error in creating symlink", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				if (proc.ExitCode == -1)
+					MessageBox.Show("Error in creating symlink", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
 			}
 		}
@@ -3274,7 +3280,7 @@ namespace BetterExplorer
 					shortcut.Description = o.GetDisplayName(DisplayNameType.Default);
 					shortcut.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 					shortcut.Save(PathForDrop + "\\" + o.GetDisplayName(DisplayNameType.Default) + ".lnk");
-					AddToLog("Shortcut created at " + PathForDrop + "\\" + o.GetDisplayName(DisplayNameType.Default) + " from source " + item);
+					AddToLog(String.Format("Shortcut created at {0}\\{1} from source {2}", PathForDrop, o.GetDisplayName(DisplayNameType.Default), item));
 					o.Dispose();
 				}
 			}
@@ -3289,7 +3295,7 @@ namespace BetterExplorer
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
 			CopyThread.SetApartmentState(ApartmentState.STA);
 			CopyThread.Start(dd);
-			AddToLog("The following files have been copied to " + dd.PathForDrop + ": " + PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " "));
+			AddToLog(String.Format("The following files have been copied to {0}: {1}", dd.PathForDrop, PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " ")));
 		}
 
 		private void btnctDesktop_Click(object sender, RoutedEventArgs e)
@@ -3300,7 +3306,7 @@ namespace BetterExplorer
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
 			CopyThread.SetApartmentState(ApartmentState.STA);
 			CopyThread.Start(dd);
-			AddToLog("The following files have been copied to " + dd.PathForDrop + ": " + PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " "));
+			AddToLog(String.Format("The following files have been copied to {0}: {1}", dd.PathForDrop, PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " ")));
 		}
 
 		private void btnctDounloads_Click(object sender, RoutedEventArgs e)
@@ -3311,7 +3317,7 @@ namespace BetterExplorer
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
 			CopyThread.SetApartmentState(ApartmentState.STA);
 			CopyThread.Start(dd);
-			AddToLog("The following files have been copied to " + dd.PathForDrop + ": " + PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " "));
+			AddToLog(String.Format("The following files have been copied to {0}: {1}", dd.PathForDrop, PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " ")));
 		}
 
 		private void btnmtDocuments_Click(object sender, RoutedEventArgs e)
@@ -3322,7 +3328,7 @@ namespace BetterExplorer
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
 			CopyThread.SetApartmentState(ApartmentState.STA);
 			CopyThread.Start(dd);
-			AddToLog("The following files have been moved to " + dd.PathForDrop + ": " + PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " "));
+			AddToLog(String.Format("The following files have been moved to {0}: {1}", dd.PathForDrop, PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " ")));
 		}
 
 		private void btnmtDesktop_Click(object sender, RoutedEventArgs e)
@@ -3333,7 +3339,7 @@ namespace BetterExplorer
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
 			CopyThread.SetApartmentState(ApartmentState.STA);
 			CopyThread.Start(dd);
-			AddToLog("The following files have been moved to " + dd.PathForDrop + ": " + PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " "));
+			AddToLog(String.Format("The following files have been moved to {0}: {1}", dd.PathForDrop, PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " ")));
 		}
 
 		private void btnmtDounloads_Click(object sender, RoutedEventArgs e)
@@ -3344,7 +3350,7 @@ namespace BetterExplorer
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
 			CopyThread.SetApartmentState(ApartmentState.STA);
 			CopyThread.Start(dd);
-			AddToLog("The following files have been moved to " + dd.PathForDrop + ": " + PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " "));
+			AddToLog(String.Format("The following files have been moved to {0}: {1}", dd.PathForDrop, PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " ")));
 		}
 
 		private void btnmtOther_Click(object sender, RoutedEventArgs e)
@@ -3359,7 +3365,7 @@ namespace BetterExplorer
 				Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
 				CopyThread.SetApartmentState(ApartmentState.STA);
 				CopyThread.Start(dd);
-				AddToLog("The following files have been moved to " + dd.PathForDrop + ": " + PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " "));
+				AddToLog(String.Format("The following files have been moved to {0}: {1}", dd.PathForDrop, PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " ")));
 			}
 		}
 
@@ -3375,7 +3381,7 @@ namespace BetterExplorer
 				Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
 				CopyThread.SetApartmentState(ApartmentState.STA);
 				CopyThread.Start(dd);
-				AddToLog("The following files have been copied to " + dd.PathForDrop + ": " + PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " "));
+				AddToLog(String.Format("The following files have been copied to {0}: {1}", dd.PathForDrop, PathStringCombiner.CombinePaths(dd.Shellobjects.ToList(), " ")));
 			}
 			Explorer.Focus();
 		}
@@ -3404,7 +3410,7 @@ namespace BetterExplorer
 
 		private void btnOpenWith_Click(object sender, RoutedEventArgs e)
 		{
-			Process.Start("\"" + Explorer.SelectedItems[0].ParsingName + "\"");
+			Process.Start(String.Format("\"{0}\"", Explorer.SelectedItems[0].ParsingName));
 		}
 
 		private void btnEdit_Click(object sender, RoutedEventArgs e)
@@ -3557,7 +3563,7 @@ namespace BetterExplorer
 
 		#region Updates / Other HelperFunctions
 
-		public void CheckForUpdate(bool ShowNoUpdatesMessage = true)
+		public void CheckForUpdate(bool ShowUpdateUI = true)
 		{
 			this.UpdaterWorker = new BackgroundWorker();
 			this.UpdaterWorker.WorkerSupportsCancellation = true;
@@ -3565,114 +3571,45 @@ namespace BetterExplorer
 			this.UpdaterWorker.DoWork += new DoWorkEventHandler(UpdaterWorker_DoWork);
 
 			if (!this.UpdaterWorker.IsBusy)
-				this.UpdaterWorker.RunWorkerAsync(ShowNoUpdatesMessage);
-			else
-				MessageBox.Show("Update in progress! Please wait!");
-
+				this.UpdaterWorker.RunWorkerAsync(ShowUpdateUI);
+			else {
+				if (ShowUpdateUI)
+					MessageBox.Show("Update in progress! Please wait!");
+			}
 		 // var informalVersion = (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
-		 // if (!informalVersion.ToLowerInvariant().Contains("alpha")) {
-			//  try
-			//  {
-			//	  if (Updater.CheckForUpdates())
-			//	  {
-
-			//		  Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-			//									  (Action)(() =>
-			//									  {
-			//										  string ver = "";
-			//										  foreach (IUpdateTask item in Updater.UpdatesToApply)
-			//										  {
-
-			//											  if ((item as FileUpdateTask).LocalPath.ToLowerInvariant() ==
-			//												  Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName).ToLowerInvariant())
-			//											  {
-
-			//												  foreach (BooleanCondition.ConditionItem itemc in (item as FileUpdateTask).UpdateConditions.ChildConditions)
-			//												  {
-			//													  var fileVersion = itemc._Condition as FileVersionCondition;
-			//													  if (fileVersion != null)
-			//													  {
-			//														  ver = fileVersion.Version;
-			//													  }
-			//												  }
-			//											  }
-			//										  }
-			//										  stiUpdate.Content = FindResource("stUpdateAvailableCP").ToString().Replace("VER", ver);
-			//										  stiUpdate.Foreground = System.Windows.Media.Brushes.Red;
-
-			//										  if (MessageBox.Show("Updates are available. Do you want to update?", "Updates available",
-			//											  MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-			//										  {
-			//											  Updater.PrepareUpdatesAsync(finished =>
-			//											  {
-
-			//												  try
-			//												  {
-			//													  if (finished)
-			//													  {
-			//														  Updater.ApplyUpdates();
-			//														  // ApplyUpdates is a synchronous method by design. Make sure to save all user work before calling
-			//														  // it as it might restart your application
-			//														  // get out of the way so the console window isn't obstructed
-			//														  Dispatcher d = Application.Current.Dispatcher;
-			//														  d.BeginInvoke(new Action(() => this.Hide()));
-			//														  if (!Updater.ApplyUpdates(true, true, true))
-			//														  {
-			//															  d.BeginInvoke(new Action(() => this.Show())); // this.WindowState = WindowState.Normal;
-			//															  MessageBox.Show("An error occurred while trying to install software updates");
-			//														  }
-			//														  else
-			//														  {
-			//															  d.BeginInvoke(new Action(() => this.Close()));
-			//														  }
-			//														  Updater.CleanUp();
-			//														  App.Current.Dispatcher.BeginInvoke(new Action(() => this.Close()));
-			//													  }
-			//													  else
-			//														  Updater.CleanUp();
-			//												  }
-			//												  catch (System.Exception ex)
-			//												  {
-			//													  MessageBox.Show("Error", "There was a problem with the update: \n" + ex.Message);
-			//												  }
-
-			//											  });
-			//										  }
-
-			//									  }));
-
-
-			//	  }
-			//	  else
-			//	  {
-			//		  stiUpdate.Content = FindResource("stUpdateNotAvailableCP").ToString();
-			//		  stiUpdate.Foreground = System.Windows.Media.Brushes.Black;
-			//		  if (ShowNoUpdatesMessage)
-			//			  MessageBox.Show("No updates are available.", "Updates available",
-			//												  MessageBoxButton.OK, MessageBoxImage.Information);
-			//	  }
-			//  }
-			//  catch 
-			//  {
-
-			//	  MessageBox.Show("Update Server is not available at the moment! Try again later!");
-			//  }
-		 // } else {
-			//if (ShowNoUpdatesMessage)
-			//  MessageBox.Show("This is Alpha version and update is disabled!");
-		 // }
 		}
 
 		void UpdaterWorker_DoWork(object sender, DoWorkEventArgs e) {
-			Updater updater = new Updater("http://update.better-explorer.com/update.xml", 5);
-			if (updater.LoadUpdateFile()){
-        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-                      (Action)(() => {
-				                UpdateWizard updateWizzard = new UpdateWizard(updater);
-        
-                        updateWizzard.ShowDialog(this.GetWin32Window());
-                      }));
+			Updater updater = new Updater("http://update.better-explorer.com/update.xml", 5, this.UpdateCheckType == 1);
+			if (updater.LoadUpdateFile()) {
+				if ((bool)e.Argument) {
+					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+												(Action)(() => {
+													UpdateWizard updateWizzard = new UpdateWizard(updater);
+
+													updateWizzard.ShowDialog(this.GetWin32Window());
+												}));
+				} else {
+					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+												(Action)(() => {
+													stiUpdate.Content = FindResource("stUpdateAvailableCP").ToString().Replace("VER", updater.AvailableUpdates[0].Version);
+													stiUpdate.Foreground = System.Windows.Media.Brushes.Red;
+												}));
+				}
+			} else {
+				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+												(Action)(() => {
+																stiUpdate.Content = FindResource("stUpdateNotAvailableCP").ToString();
+																stiUpdate.Foreground = System.Windows.Media.Brushes.Black;
+												}));
 			}
+
+      RegistryKey rk = Registry.CurrentUser;
+      RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+      rks.SetValue(@"LastUpdateCheck", DateTime.Now.ToBinary(), RegistryValueKind.QWord);
+      LastUpdateCheck = DateTime.Now;
+      rks.Close();
+      rk.Close();
 		}
 
 		//Code source - Codeplex User Salysle
@@ -3883,6 +3820,9 @@ namespace BetterExplorer
 				//Itmpop.Owner = this;
 				//Itmpop.Show();
 
+				
+
+				
 
 
 				//'sets up FileSystemWatcher for Favorites folder
@@ -4014,7 +3954,43 @@ namespace BetterExplorer
 											 btnBlue.IsChecked = true;
 											 break;
 									 }
+									 LastUpdateCheck = DateTime.FromBinary(Convert.ToInt64(rks.GetValue(@"LastUpdateCheck", 0)));
+
+                   UpdateCheckInterval = (int)rks.GetValue(@"CheckInterval", 7);
+
+                   switch (UpdateCheckInterval) {
+                     case 1:
+                       rbDaily.IsChecked = true;
+                       break;
+                     case 7:
+                       rbWeekly.IsChecked = true;
+                       break;
+                     case 30:
+                       rbMonthly.IsChecked = true;
+                       break;
+                   }
+
+                   UpdateCheckType = (int)rks.GetValue(@"UpdateCheckType", 0);
+
+                   switch (UpdateCheckType) {
+                     case 0:
+                       rbReleases.IsChecked = true;
+                       break;
+                     case 1:
+                       rbReleasTest.IsChecked = true;
+                       break;
+                    
+                   }
+
 									 int HFlyoutEnabled = (int)rks.GetValue(@"HFlyoutEnabled", 0);
+
+									 int UpdateCheck = (int)rks.GetValue(@"CheckForUpdates", 1);
+									 IsUpdateCheck = (UpdateCheck == 1);
+									 chkUpdateCheck.IsChecked = IsUpdateCheck;
+
+                   int UpdateCheckStartup = (int)rks.GetValue(@"CheckForUpdatesStartup", 1);
+                   IsUpdateCheckStartup = (UpdateCheckStartup == 1);
+                   chkUpdateStartupCheck.IsChecked = IsUpdateCheckStartup;
 
 									 IsHFlyoutEnabled = (HFlyoutEnabled == 1);
 									 chkIsFlyout.IsChecked = IsHFlyoutEnabled;
@@ -4322,7 +4298,29 @@ namespace BetterExplorer
 									 //} 
 									 #endregion
 
-
+                   try {
+                     if (IsUpdateCheck) {
+                       updateCheckTimer.Interval = 3600000 * 3;
+                       updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
+                       updateCheckTimer.Start();
+                     } else {
+                       updateCheckTimer.Stop();
+                     }
+                     if (IsUpdateCheckStartup) {
+                       if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
+                         CheckForUpdate(false);
+                       }
+                     }
+                     //Updater = UpdateManager.Instance;
+                     //Updater.UpdateFeedReader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
+                     //Updater.UpdateExecutableName = "Web Update.exe";
+                     //Updater.UpdateSource = new NAppUpdate.Framework.Sources.SimpleWebSource("http://better-explorer.com/onlineupdate/update.xml");
+                     //TODO: reeable updates when there is site ready
+                     //CheckForUpdate(false);
+                   } catch (IOException) {
+                     this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
+                     this.btnUpdateCheck.IsEnabled = false;
+                   }
 
 								 }
 				 ));
@@ -4334,21 +4332,7 @@ namespace BetterExplorer
 					return;
 				}
 
-				try
-				{
 
-					//Updater = UpdateManager.Instance;
-					//Updater.UpdateFeedReader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
-					//Updater.UpdateExecutableName = "Web Update.exe";
-					//Updater.UpdateSource = new NAppUpdate.Framework.Sources.SimpleWebSource("http://better-explorer.com/onlineupdate/update.xml");
-					//TODO: reeable updates when there is site ready
-					//CheckForUpdate(false);
-				}
-				catch (IOException)
-				{
-					this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
-					this.btnUpdateCheck.IsEnabled = false;
-				}
 
 				verNumber.Content = "Version " + (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
 				lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
@@ -4366,6 +4350,12 @@ namespace BetterExplorer
 				MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 
+		}
+
+		void updateCheckTimer_Tick(object sender, EventArgs e) {
+			if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
+				CheckForUpdate(false);
+			}
 		}
 
 		#region Old Search Code
@@ -5972,12 +5962,12 @@ namespace BetterExplorer
 				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"),
 					0, "0x77654");
 				proc.WaitForExit();
-        if (proc.ExitCode == -1) {
-          isOnLoad = true;
-          (sender as Fluent.CheckBox).IsChecked = false;
-          isOnLoad = false;
-          MessageBox.Show("Can't set Better Explorer as default!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+				if (proc.ExitCode == -1) {
+					isOnLoad = true;
+					(sender as Fluent.CheckBox).IsChecked = false;
+					isOnLoad = false;
+					MessageBox.Show("Can't set Better Explorer as default!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				}
 			}
 
 		}
@@ -6003,12 +5993,12 @@ namespace BetterExplorer
 				WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"),
 					 0, "0x77655");
 				proc.WaitForExit();
-        if (proc.ExitCode == -1) {
-          isOnLoad = true;
-          (sender as Fluent.CheckBox).IsChecked = true;
-          isOnLoad = false;
-          MessageBox.Show("Can't restore default filemanager!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+				if (proc.ExitCode == -1) {
+					isOnLoad = true;
+					(sender as Fluent.CheckBox).IsChecked = true;
+					isOnLoad = false;
+					MessageBox.Show("Can't restore default filemanager!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				}
 			}
 		}
 
@@ -8632,6 +8622,70 @@ namespace BetterExplorer
 				{
 						
 				}
+
+				private void CheckBox_Checked(object sender, RoutedEventArgs e) {
+					if (!isOnLoad) {
+						RegistryKey rk = Registry.CurrentUser;
+						RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+						rks.SetValue(@"CheCkForUpdates", 1);
+						IsUpdateCheck = true;
+						rks.Close();
+						rk.Close();
+            updateCheckTimer.Interval = 3600000 * 3;
+            updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
+            updateCheckTimer.Start();
+
+            if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
+              CheckForUpdate(false);
+            }
+					}
+				}
+
+				private void CheckBox_Unchecked(object sender, RoutedEventArgs e) {
+					if (!isOnLoad) {
+						RegistryKey rk = Registry.CurrentUser;
+						RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+						rks.SetValue(@"CheckForUpdates", 0);
+						IsUpdateCheck = false;
+						rks.Close();
+						rk.Close();
+					}
+				}
+
+        private void rbCheckInterval_Click(object sender, RoutedEventArgs e) {
+          RegistryKey rk = Registry.CurrentUser;
+          RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+          if (rbDaily.IsChecked.Value) {
+            rks.SetValue(@"CheckInterval", 1);
+            UpdateCheckInterval = 1;
+          } else if (rbMonthly.IsChecked.Value) {
+            rks.SetValue(@"CheckInterval", 30);
+            UpdateCheckInterval = 30;
+          } else {
+            rks.SetValue(@"CheckInterval", 7);
+            UpdateCheckInterval = 7;
+          }
+          rks.Close();
+          rk.Close();
+        }
+
+        private void chkUpdateStartupCheck_Click(object sender, RoutedEventArgs e) {
+          RegistryKey rk = Registry.CurrentUser;
+          RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+          rks.SetValue(@"CheckForUpdatesStartup", chkUpdateStartupCheck.IsChecked.Value?1:0);
+          IsUpdateCheckStartup = chkUpdateStartupCheck.IsChecked.Value;
+          rks.Close();
+          rk.Close();
+        }
+
+        private void UpdateTypeCheck_Click(object sender, RoutedEventArgs e) {
+          RegistryKey rk = Registry.CurrentUser;
+          RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+          rks.SetValue(@"UpdateCheckType", rbReleases.IsChecked.Value ? 0 : 1);
+          UpdateCheckType = rbReleases.IsChecked.Value ? 0 : 1;
+          rks.Close();
+          rk.Close();
+        }
 
 	}
 

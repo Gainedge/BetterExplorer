@@ -434,18 +434,26 @@ re-applied next time you start BetterExplorer. Only use this if you plan on unin
                                 </TabItem>
                                 <TabItem Header="Updates" HorizontalContentAlignment="Left" Ribbon:KeyTip.Keys="U">
                                     <Grid Margin="20,15,0,0">
-                                        <Ribbon:SeparatorTabItem Header="Auto Update" VerticalAlignment="Top" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Ribbon:CheckBox Margin="5,30,0,0" VerticalAlignment="Top" Header="Check for updates" />
-                                        <Ribbon:CheckBox Margin="5,50,0,0" VerticalAlignment="Top" Header="Check for updates upon startup" />
-                                        <TextBlock Margin="5,80,0,0" VerticalAlignment="Top" Text="When an update is available:" />
-                                        <Ribbon:RadioButton Margin="5,100,0,0" VerticalAlignment="Top" Header="Notify me only" GroupName="uas" />
-                                        <Ribbon:RadioButton Margin="5,120,0,0" VerticalAlignment="Top" Header="Download, but do not install" GroupName="uas" />
-                                        <Ribbon:RadioButton Margin="5,140,0,0" VerticalAlignment="Top" Header="Download and install update" GroupName="uas" />
+                                        <Ribbon:SeparatorTabItem Header="Auto Update Check" VerticalAlignment="Top" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <Ribbon:CheckBox x:Name="chkUpdateCheck" Margin="5,30,0,0" VerticalAlignment="Top" Header="Check for updates" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" />
+                                        <Ribbon:CheckBox x:Name="chkUpdateStartupCheck" Margin="5,50,0,0" VerticalAlignment="Top" Header="Check for updates upon startup" Click="chkUpdateStartupCheck_Click" />
+                                        <TextBlock Margin="5,80,0,0" VerticalAlignment="Top" Text="When an update is available:" Visibility="Collapsed"/>
+                                        <StackPanel Orientation="Vertical" Margin="5,100,0,0" VerticalAlignment="Top" Visibility="Collapsed">
+                                          <Ribbon:RadioButton  Header="Notify me only" GroupName="uas" />
+                                          <Ribbon:RadioButton  Header="Download, but do not install" GroupName="uas" />
+                                          <Ribbon:RadioButton  Header="Download and install update" GroupName="uas" />
+                                        </StackPanel>
+                                        <TextBlock Margin="5,80,0,0" VerticalAlignment="Top" Text="Auto Update check interval:" />
+                                        <StackPanel Orientation="Vertical" Margin="5,100,0,0" VerticalAlignment="Top">
+                                          <Ribbon:RadioButton x:Name="rbDaily" Header="Daily" GroupName="uasi" Click="rbCheckInterval_Click" />
+                                          <Ribbon:RadioButton x:Name="rbWeekly" Header="Weekly" GroupName="uasi" Click="rbCheckInterval_Click"/>
+                                          <Ribbon:RadioButton x:Name="rbMonthly" Header="Monthly" GroupName="uasi" Click="rbCheckInterval_Click"/>
+                                        </StackPanel>
                                         <Ribbon:SeparatorTabItem Header="Update Channels" VerticalAlignment="Top" Margin="0,170,0,0" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Ribbon:RadioButton Margin="5,200,0,0" VerticalAlignment="Top" Header="Releases only (recommended)" GroupName="uach" />
-                                        <Ribbon:RadioButton Margin="5,220,0,0" VerticalAlignment="Top" Header="Releases and test builds" GroupName="uach" />
+                                        <Ribbon:RadioButton x:Name="rbReleases" Margin="5,200,0,0" VerticalAlignment="Top" Header="Releases only (recommended)" GroupName="uach" Click="UpdateTypeCheck_Click" />
+                                        <Ribbon:RadioButton x:Name="rbReleasTest"  Margin="5,220,0,0" VerticalAlignment="Top" Header="Releases and test builds" GroupName="uach" Click="UpdateTypeCheck_Click"/>
                                         <TextBlock Margin="15,240,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Height="30" Text="Warning! Test builds can be unstable at times, but you can use it to test new features early." />
-                                        <Expander Margin="5,270,0,0" VerticalAlignment="Top" Width="250" HorizontalAlignment="Left" Header="Advanced Settings">
+                                        <Expander Margin="5,270,0,0" VerticalAlignment="Top" Width="250" HorizontalAlignment="Left" Header="Advanced Settings" Visibility="Collapsed">
                                             <Grid>
                                                 <TextBlock HorizontalAlignment="Left" Margin="12,12,0,0" Text="Update Check URL" VerticalAlignment="Top" />
                                                 <TextBox Height="23" Margin="12,34,12,0" Name="updURL" VerticalAlignment="Top" />

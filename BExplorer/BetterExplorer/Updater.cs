@@ -18,6 +18,7 @@ namespace BetterExplorer
         string curr = ""; // version of this build
         string tis = ""; // online location of program that will update software
         string tid = ""; // local location of the program that will update software
+        Boolean IsCheckForTestBuilds= false;
         #endregion
 
         #region Properties
@@ -73,26 +74,45 @@ namespace BetterExplorer
 
         public Boolean LoadUpdateFile()
         {
-          this.AvailableUpdates.Clear();
-          XmlDocument updateXML = new XmlDocument();
-          updateXML.Load(this.ServerCheckLocation);
-          foreach (XmlNode updateNode in updateXML.DocumentElement.ChildNodes) {
-            Update update = new Update();
-            update.Name = updateNode.Attributes["Name"].Value;
-            update.Version = updateNode.ChildNodes[0].InnerText;
-            update.Type = (UpdateTypes)Convert.ToInt32(updateNode.ChildNodes[1].InnerText);
-            update.RequiredVersion = updateNode.ChildNodes[2].InnerText;
-            update.UpdaterFilePath = updateNode.ChildNodes[3].InnerText;
-            update.UpdaterFilePath64 = updateNode.ChildNodes[4].InnerText;
-            this.AvailableUpdates.Add(update);
+          try {
+            this.AvailableUpdates.Clear();
+            XmlDocument updateXML = new XmlDocument();
+            updateXML.Load(this.ServerCheckLocation);
+            foreach (XmlNode updateNode in updateXML.DocumentElement.ChildNodes) {
+              var updateType = (UpdateTypes)Convert.ToInt32(updateNode.ChildNodes[1].InnerText);
+              if (updateType != UpdateTypes.Nightly & updateType != UpdateTypes.Alpha & updateType != UpdateTypes.Beta) {
+                Update update = new Update();
+                update.Name = updateNode.Attributes["Name"].Value;
+                update.Version = updateNode.ChildNodes[0].InnerText;
+                update.Type = (UpdateTypes)Convert.ToInt32(updateNode.ChildNodes[1].InnerText);
+                update.RequiredVersion = updateNode.ChildNodes[2].InnerText;
+                update.UpdaterFilePath = updateNode.ChildNodes[3].InnerText;
+                update.UpdaterFilePath64 = updateNode.ChildNodes[4].InnerText;
+                this.AvailableUpdates.Add(update);
+              } else if (IsCheckForTestBuilds) {
+                Update update = new Update();
+                update.Name = updateNode.Attributes["Name"].Value;
+                update.Version = updateNode.ChildNodes[0].InnerText;
+                update.Type = (UpdateTypes)Convert.ToInt32(updateNode.ChildNodes[1].InnerText);
+                update.RequiredVersion = updateNode.ChildNodes[2].InnerText;
+                update.UpdaterFilePath = updateNode.ChildNodes[3].InnerText;
+                update.UpdaterFilePath64 = updateNode.ChildNodes[4].InnerText;
+                this.AvailableUpdates.Add(update);
+              }
+            }
+            Version vCurrent = new Version(CurrentVersion);
+            Version vOnline = new Version(this.AvailableUpdates[0].Version);
+            return (this.AvailableUpdates.Count > 0 && vOnline > vCurrent);
+          } catch (Exception) {
+
+            return false;
           }
-          return (this.AvailableUpdates.Count > 0 && this.AvailableUpdates[0].Version != CurrentVersion);
         }
 
         /// <summary>
         /// Create a new updater to handle checking for and downloading updates.
         /// </summary>
-        public Updater(String xmlLocation, int checkingInterval)
+        public Updater(String xmlLocation, int checkingInterval, bool IsCheckForTestBuilds)
         {
             updchk.DownloadProgressChanged += updchk_DownloadProgressChanged;
             updchk.DownloadFileCompleted += updchk_DownloadFileCompleted;
@@ -102,6 +122,7 @@ namespace BetterExplorer
             this.ServerCheckLocation = xmlLocation;
             this.CheckingInterval = checkingInterval;
             this.AvailableUpdates = new List<Update>();
+            this.IsCheckForTestBuilds = IsCheckForTestBuilds;
             this.CurrentVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
