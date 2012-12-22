@@ -309,6 +309,7 @@ namespace BetterExplorer
                         win.CloneTab(newt);
                         win.NavigateAfterTabChange();
                         
+                        
                         IntPtr MainWinHandle = WindowsHelper.WindowsAPI.FindWindow(null, Process.GetCurrentProcess().MainWindowTitle);
                         if (win.WindowState == WindowState.Minimized)
                         {

@@ -63,8 +63,8 @@ namespace BetterExplorer
 		bool IsExtendedFileOpEnabled;
 		public bool IsrestoreTabs;
 		bool IsUpdateCheck;
-    bool IsUpdateCheckStartup;
-    int UpdateCheckType;
+	bool IsUpdateCheckStartup;
+	int UpdateCheckType;
 		public bool isOnLoad;
 		JumpList AppJL = new JumpList();
 		public bool IsCalledFromLoading;
@@ -3604,12 +3604,12 @@ namespace BetterExplorer
 												}));
 			}
 
-      RegistryKey rk = Registry.CurrentUser;
-      RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-      rks.SetValue(@"LastUpdateCheck", DateTime.Now.ToBinary(), RegistryValueKind.QWord);
-      LastUpdateCheck = DateTime.Now;
-      rks.Close();
-      rk.Close();
+	  RegistryKey rk = Registry.CurrentUser;
+	  RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+	  rks.SetValue(@"LastUpdateCheck", DateTime.Now.ToBinary(), RegistryValueKind.QWord);
+	  LastUpdateCheck = DateTime.Now;
+	  rks.Close();
+	  rk.Close();
 		}
 
 		//Code source - Codeplex User Salysle
@@ -3956,31 +3956,31 @@ namespace BetterExplorer
 									 }
 									 LastUpdateCheck = DateTime.FromBinary(Convert.ToInt64(rks.GetValue(@"LastUpdateCheck", 0)));
 
-                   UpdateCheckInterval = (int)rks.GetValue(@"CheckInterval", 7);
+									UpdateCheckInterval = (int)rks.GetValue(@"CheckInterval", 7);
 
-                   switch (UpdateCheckInterval) {
-                     case 1:
-                       rbDaily.IsChecked = true;
-                       break;
-                     case 7:
-                       rbWeekly.IsChecked = true;
-                       break;
-                     case 30:
-                       rbMonthly.IsChecked = true;
-                       break;
-                   }
+									switch (UpdateCheckInterval) {
+										case 1:
+										rbDaily.IsChecked = true;
+										break;
+										case 7:
+										rbWeekly.IsChecked = true;
+										break;
+										case 30:
+										rbMonthly.IsChecked = true;
+										break;
+									}
 
-                   UpdateCheckType = (int)rks.GetValue(@"UpdateCheckType", 0);
+									UpdateCheckType = (int)rks.GetValue(@"UpdateCheckType", 0);
 
-                   switch (UpdateCheckType) {
-                     case 0:
-                       rbReleases.IsChecked = true;
-                       break;
-                     case 1:
-                       rbReleasTest.IsChecked = true;
-                       break;
-                    
-                   }
+									switch (UpdateCheckType) {
+										case 0:
+										rbReleases.IsChecked = true;
+										break;
+										case 1:
+										rbReleasTest.IsChecked = true;
+										break;
+					
+									}
 
 									 int HFlyoutEnabled = (int)rks.GetValue(@"HFlyoutEnabled", 0);
 
@@ -3988,9 +3988,9 @@ namespace BetterExplorer
 									 IsUpdateCheck = (UpdateCheck == 1);
 									 chkUpdateCheck.IsChecked = IsUpdateCheck;
 
-                   int UpdateCheckStartup = (int)rks.GetValue(@"CheckForUpdatesStartup", 1);
-                   IsUpdateCheckStartup = (UpdateCheckStartup == 1);
-                   chkUpdateStartupCheck.IsChecked = IsUpdateCheckStartup;
+									int UpdateCheckStartup = (int)rks.GetValue(@"CheckForUpdatesStartup", 1);
+									IsUpdateCheckStartup = (UpdateCheckStartup == 1);
+									chkUpdateStartupCheck.IsChecked = IsUpdateCheckStartup;
 
 									 IsHFlyoutEnabled = (HFlyoutEnabled == 1);
 									 chkIsFlyout.IsChecked = IsHFlyoutEnabled;
@@ -4298,29 +4298,29 @@ namespace BetterExplorer
 									 //} 
 									 #endregion
 
-                   try {
-                     if (IsUpdateCheck) {
-                       updateCheckTimer.Interval = 3600000 * 3;
-                       updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
-                       updateCheckTimer.Start();
-                     } else {
-                       updateCheckTimer.Stop();
-                     }
-                     if (IsUpdateCheckStartup) {
-                       if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
-                         CheckForUpdate(false);
-                       }
-                     }
-                     //Updater = UpdateManager.Instance;
-                     //Updater.UpdateFeedReader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
-                     //Updater.UpdateExecutableName = "Web Update.exe";
-                     //Updater.UpdateSource = new NAppUpdate.Framework.Sources.SimpleWebSource("http://better-explorer.com/onlineupdate/update.xml");
-                     //TODO: reeable updates when there is site ready
-                     //CheckForUpdate(false);
-                   } catch (IOException) {
-                     this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
-                     this.btnUpdateCheck.IsEnabled = false;
-                   }
+				                   try {
+					                 if (IsUpdateCheck) {
+					                   updateCheckTimer.Interval = 3600000 * 3;
+					                   updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
+					                   updateCheckTimer.Start();
+					                 } else {
+					                   updateCheckTimer.Stop();
+					                 }
+					                 if (IsUpdateCheckStartup) {
+					                   if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
+						                 CheckForUpdate(false);
+					                   }
+					                 }
+					                 //Updater = UpdateManager.Instance;
+					                 //Updater.UpdateFeedReader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
+					                 //Updater.UpdateExecutableName = "Web Update.exe";
+					                 //Updater.UpdateSource = new NAppUpdate.Framework.Sources.SimpleWebSource("http://better-explorer.com/onlineupdate/update.xml");
+					                 //TODO: reeable updates when there is site ready
+					                 //CheckForUpdate(false);
+				                   } catch (IOException) {
+					                 this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
+					                 this.btnUpdateCheck.IsEnabled = false;
+				                   }
 
 								 }
 				 ));
@@ -4349,6 +4349,8 @@ namespace BetterExplorer
 			{
 				MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
+            if (tabControl1.Items.Count == 1)
+                tabControl1.SelectedIndex = 0;
 
 		}
 
@@ -7617,8 +7619,7 @@ namespace BetterExplorer
 			newt.AllowDrop = true;
 			newt.log.CurrentLocation = CurTab.Path;
 			tabControl1.Items.Add(newt);
-			tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
-			tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
+			tabControl1.SelectedItem = newt;
 			LastTabIndex = CurrentTabIndex;
 			CurrentTabIndex = tabControl1.Items.Count - 1;
 			ConstructMoveToCopyToMenu();
@@ -8631,13 +8632,13 @@ namespace BetterExplorer
 						IsUpdateCheck = true;
 						rks.Close();
 						rk.Close();
-            updateCheckTimer.Interval = 3600000 * 3;
-            updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
-            updateCheckTimer.Start();
+			updateCheckTimer.Interval = 3600000 * 3;
+			updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
+			updateCheckTimer.Start();
 
-            if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
-              CheckForUpdate(false);
-            }
+			if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
+			  CheckForUpdate(false);
+			}
 					}
 				}
 
@@ -8652,40 +8653,40 @@ namespace BetterExplorer
 					}
 				}
 
-        private void rbCheckInterval_Click(object sender, RoutedEventArgs e) {
-          RegistryKey rk = Registry.CurrentUser;
-          RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-          if (rbDaily.IsChecked.Value) {
-            rks.SetValue(@"CheckInterval", 1);
-            UpdateCheckInterval = 1;
-          } else if (rbMonthly.IsChecked.Value) {
-            rks.SetValue(@"CheckInterval", 30);
-            UpdateCheckInterval = 30;
-          } else {
-            rks.SetValue(@"CheckInterval", 7);
-            UpdateCheckInterval = 7;
-          }
-          rks.Close();
-          rk.Close();
-        }
+		private void rbCheckInterval_Click(object sender, RoutedEventArgs e) {
+		  RegistryKey rk = Registry.CurrentUser;
+		  RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+		  if (rbDaily.IsChecked.Value) {
+			rks.SetValue(@"CheckInterval", 1);
+			UpdateCheckInterval = 1;
+		  } else if (rbMonthly.IsChecked.Value) {
+			rks.SetValue(@"CheckInterval", 30);
+			UpdateCheckInterval = 30;
+		  } else {
+			rks.SetValue(@"CheckInterval", 7);
+			UpdateCheckInterval = 7;
+		  }
+		  rks.Close();
+		  rk.Close();
+		}
 
-        private void chkUpdateStartupCheck_Click(object sender, RoutedEventArgs e) {
-          RegistryKey rk = Registry.CurrentUser;
-          RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-          rks.SetValue(@"CheckForUpdatesStartup", chkUpdateStartupCheck.IsChecked.Value?1:0);
-          IsUpdateCheckStartup = chkUpdateStartupCheck.IsChecked.Value;
-          rks.Close();
-          rk.Close();
-        }
+		private void chkUpdateStartupCheck_Click(object sender, RoutedEventArgs e) {
+		  RegistryKey rk = Registry.CurrentUser;
+		  RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+		  rks.SetValue(@"CheckForUpdatesStartup", chkUpdateStartupCheck.IsChecked.Value?1:0);
+		  IsUpdateCheckStartup = chkUpdateStartupCheck.IsChecked.Value;
+		  rks.Close();
+		  rk.Close();
+		}
 
-        private void UpdateTypeCheck_Click(object sender, RoutedEventArgs e) {
-          RegistryKey rk = Registry.CurrentUser;
-          RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-          rks.SetValue(@"UpdateCheckType", rbReleases.IsChecked.Value ? 0 : 1);
-          UpdateCheckType = rbReleases.IsChecked.Value ? 0 : 1;
-          rks.Close();
-          rk.Close();
-        }
+		private void UpdateTypeCheck_Click(object sender, RoutedEventArgs e) {
+		  RegistryKey rk = Registry.CurrentUser;
+		  RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+		  rks.SetValue(@"UpdateCheckType", rbReleases.IsChecked.Value ? 0 : 1);
+		  UpdateCheckType = rbReleases.IsChecked.Value ? 0 : 1;
+		  rks.Close();
+		  rk.Close();
+		}
 
 	}
 

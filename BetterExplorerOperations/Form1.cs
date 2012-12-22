@@ -14,10 +14,17 @@ namespace BetterExplorerOperations
         public Form1()
         {
             InitializeComponent();
-            CHANGEFILTERSTRUCT filterStatus = new CHANGEFILTERSTRUCT();
-            filterStatus.size = (uint)Marshal.SizeOf(filterStatus);
-            filterStatus.info = 0;
-            ChangeWindowMessageFilterEx(Handle, 0x4A, ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+            try
+            {
+                CHANGEFILTERSTRUCT filterStatus = new CHANGEFILTERSTRUCT();
+                filterStatus.size = (uint)Marshal.SizeOf(filterStatus);
+                filterStatus.info = 0;
+                ChangeWindowMessageFilterEx(Handle, 0x4A, ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+            }
+            catch (Exception)
+            {
+                Close();
+            }
         }
 
         #region Shell API
@@ -112,6 +119,13 @@ namespace BetterExplorerOperations
                 RegistryKey rksh = rk.OpenSubKey(@"Folder\shell", true);
                 RegistryKey rks = rk.OpenSubKey(@"Folder\shell\opennewwindow\command", true);
                 RegistryKey rksobe = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer",true);
+                RegistryKey rksobecnw = rk.OpenSubKey(@"Folder\shell\opennewwindow\command", true);
+                String CurrentexePath =
+                    System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
+                string dir = Path.GetDirectoryName(CurrentexePath);
+                string ExePath = Path.Combine(dir, @"BetterExplorerShell.exe");
+                rksobecnw.SetValue("", ExePath + " \"%1\"");
+                rksobecnw.Close();
                 if (rksobe == null)
                 {
                     rk.CreateSubKey(@"Folder\shell\openinbetterexplorer");
@@ -119,11 +133,10 @@ namespace BetterExplorerOperations
                     rksobe = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer", true);
                     rksobe.SetValue("", "Open In Better Explorer");
                     RegistryKey rksobec = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer\command", true);
-                    String CurrentexePath =
-                    System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-                    string dir = Path.GetDirectoryName(CurrentexePath);
-                    string ExePath = Path.Combine(dir, @"BetterExplorerShell.exe");
+                    
+                    
                     rksobec.SetValue("", ExePath + " \"%1\"");
+                    
                     rksobec.Close();
                     rksobe.Close();
                 }
@@ -133,26 +146,16 @@ namespace BetterExplorerOperations
                     if (rksobec == null)
                     {
                         RegistryKey rkcommand = rk.CreateSubKey(@"Folder\shell\openinbetterexplorer\command");
-                        String CurrentexePath =
-                         System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-                        string dir = Path.GetDirectoryName(CurrentexePath);
-                        string ExePath = Path.Combine(dir, @"BetterExplorerShell.exe");
                         rkcommand.SetValue("", ExePath + " \"%1\"");
                         rkcommand.Close();
                         rksobec.Close();
                     }
                     else
                     {
-                        String CurrentexePath =
-                                                 System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-                        string dir = Path.GetDirectoryName(CurrentexePath);
-                        string ExePath = Path.Combine(dir, @"BetterExplorerShell.exe");
                         rksobec.SetValue("", ExePath + " \"%1\"");
                         rksobec.Close();
                     }
                 }
-
-
                 rksh.SetValue("", "openinbetterexplorer");
                 rks.DeleteValue("DelegateExecute");
                 rks.Close();
@@ -214,57 +217,64 @@ namespace BetterExplorerOperations
                 {
 
                     case WM_COPYDATA:
-                        COPYDATASTRUCT cd = (COPYDATASTRUCT)Marshal.PtrToStructure(m.LParam, typeof(COPYDATASTRUCT));
-                        ShareInfo shi;
+                        try
+                        {
+                            COPYDATASTRUCT cd = (COPYDATASTRUCT)Marshal.PtrToStructure(m.LParam, typeof(COPYDATASTRUCT));
+                            ShareInfo shi;
 
-                        shi = (ShareInfo)Marshal.PtrToStructure(cd.lpData, typeof(ShareInfo));
+                            shi = (ShareInfo)Marshal.PtrToStructure(cd.lpData, typeof(ShareInfo));
 
-                        if (shi.lpMsg == "0x77654")
-                        {
-                            SetExplorerAsDefault(false, false);
-                        }
-                        if (shi.lpMsg == "0x77655")
-                        {
-                            SetExplorerAsDefault(false, true);
-                        }
-                        if (shi.lpMsg == "Share")
-                        {
-
-                        }
-                        if (shi.lpMsg == "0x88775")
-                        {
-                            SetExpandFolderTreeOnNavigate(false);
-                        }
-                        if (shi.lpMsg == "0x88776")
-                        {
-                            SetExpandFolderTreeOnNavigate(true);
-                        }
-                        if (shi.lpMsg == "0x88779")
-                        {
-                            List<string> sources = ListPaths(shi.lpShare);
-                            List<string> drops = ListPaths(shi.lpSharingName);
-
-                            for (int val = 0; val < sources.Count; val++)
+                            if (shi.lpMsg == "0x77654")
                             {
-                                string source = sources[val];
-                                string drop = drops[val];
-
-
-
-                                if (source.StartsWith("(f)"))
-                                {
-
-                                    CreateSymbolicLink(drop, source.Substring(3), SYMBOLIC_LINK_FLAG.Directory);
-                                }
-                                else
-                                {
-                                    CreateSymbolicLink(drop, source, SYMBOLIC_LINK_FLAG.File);
-                                }
+                                SetExplorerAsDefault(false, false);
                             }
+                            if (shi.lpMsg == "0x77655")
+                            {
+                                SetExplorerAsDefault(false, true);
+                            }
+                            if (shi.lpMsg == "Share")
+                            {
 
-                            //WindowsHelper.WindowsAPI.CreateSymbolicLink(shi.lpSharingName, shi.lpShare, (WindowsAPI.SYMBOLIC_LINK_FLAG)shi.IsSetPermisions);
+                            }
+                            if (shi.lpMsg == "0x88775")
+                            {
+                                SetExpandFolderTreeOnNavigate(false);
+                            }
+                            if (shi.lpMsg == "0x88776")
+                            {
+                                SetExpandFolderTreeOnNavigate(true);
+                            }
+                            if (shi.lpMsg == "0x88779")
+                            {
+                                List<string> sources = ListPaths(shi.lpShare);
+                                List<string> drops = ListPaths(shi.lpSharingName);
+
+                                for (int val = 0; val < sources.Count; val++)
+                                {
+                                    string source = sources[val];
+                                    string drop = drops[val];
+
+
+
+                                    if (source.StartsWith("(f)"))
+                                    {
+
+                                        CreateSymbolicLink(drop, source.Substring(3), SYMBOLIC_LINK_FLAG.Directory);
+                                    }
+                                    else
+                                    {
+                                        CreateSymbolicLink(drop, source, SYMBOLIC_LINK_FLAG.File);
+                                    }
+                                }
+
+                                //WindowsHelper.WindowsAPI.CreateSymbolicLink(shi.lpSharingName, shi.lpShare, (WindowsAPI.SYMBOLIC_LINK_FLAG)shi.IsSetPermisions);
+                            }
+                            Close();
                         }
-                        Close();
+                        catch (Exception)
+                        {
+                            Close();
+                        }
                         break;
                 }
             }
@@ -273,6 +283,7 @@ namespace BetterExplorerOperations
               errorCode = -1;
               Close();
             }
+
             base.WndProc(ref m);
         }
     }
