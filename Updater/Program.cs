@@ -15,7 +15,7 @@ namespace Updater {
 
     private static string SevenZDllPath {
       get {
-        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), WindowsAPI.Is64bitProcess(Process.GetCurrentProcess())?"7z_64.dll":"7z.dll");
+        return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), WindowsAPI.Is64bitProcess(Process.GetCurrentProcess())?"7z.dll":"7z.dll");
       }
   }
     /// <summary>

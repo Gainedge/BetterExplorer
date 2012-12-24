@@ -3970,7 +3970,7 @@ namespace BetterExplorer
 										break;
 									}
 
-									UpdateCheckType = (int)rks.GetValue(@"UpdateCheckType", 0);
+									UpdateCheckType = (int)rks.GetValue(@"UpdateCheckType", 1);
 
 									switch (UpdateCheckType) {
 										case 0:
@@ -4100,8 +4100,8 @@ namespace BetterExplorer
 									 try
 									 {
 										 RegistryKey rkbe = Registry.ClassesRoot;
-										 RegistryKey rksbe = rkbe.OpenSubKey(@"Folder\shell", RegistryKeyPermissionCheck.ReadSubTree);
-										 bool IsThereDefault = rksbe.GetValue("", "-1").ToString() != "";
+										 RegistryKey rksbe = rkbe.OpenSubKey(@"Folder\shell\open\command", RegistryKeyPermissionCheck.ReadSubTree);
+                                         bool IsThereDefault = rksbe.GetValue("DelegateExecute", "-1").ToString() == "-1";
 										 chkIsDefault.IsChecked = IsThereDefault;
 										 chkIsDefault.IsEnabled = true;
 										 rksbe.Close();

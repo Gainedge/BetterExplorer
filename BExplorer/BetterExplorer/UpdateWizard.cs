@@ -48,7 +48,7 @@ namespace BetterExplorer
 					lvi.SubItems.Add(item.Type.ToString());
 					lvi.SubItems.Add(item.RequiredVersion);
 					lvi.SubItems.Add(item.UpdaterFilePath);
-          lvi.SubItems.Add(item.UpdaterFilePath64);
+                    lvi.SubItems.Add(item.UpdaterFilePath64);
 					this.lvAvailableUpdates.Items.Add(lvi);
 				}
 			}
@@ -73,30 +73,33 @@ namespace BetterExplorer
 			}
 
 			private void wizardControl1_SelectedPageChanged(object sender, EventArgs e) {
+                //if (wizardControl1.SelectedPage == pgAvailableUpdates)
+
 				if (wizardControl1.SelectedPage == pgDownload) {
 					pgDownload.AllowNext = false;
 					CurrentUpdater.UpdaterDownloadComplete += new Updater.PathEventHandler(CurrentUpdater_UpdaterDownloadComplete);
 					CurrentUpdater.UpdaterDownloadProgressChanged += new System.Net.DownloadProgressChangedEventHandler(CurrentUpdater_UpdaterDownloadProgressChanged);
 					pbTotalProgress.Maximum = this.lvAvailableUpdates.CheckedItems.Count;
 					lblTotalProgress.Text = String.Format("{0}/{1} updates downloaded.", 0, pbTotalProgress.Maximum);
-          this.UpdateLocalPaths.Clear();
+                    this.UpdateLocalPaths.Clear();
+
 					for (int i = this.lvAvailableUpdates.CheckedItems.Count - 1; i >= 0; i--) {
 						pbFileDownload.Value = 0;
 						var item = this.lvAvailableUpdates.CheckedItems[i];
 						lblCurrentDownload.Text = String.Format("Downloading {0}", item.SubItems[0].Text);
 						CurrentUpdater.DownloadUpdater(item.SubItems[4].Text, Path.GetFileName(item.SubItems[4].Text));
-            this.UpdateLocalPaths.Add(Path.Combine(CurrentUpdater.LocalUpdaterLocation, Path.GetFileName(item.SubItems[4].Text)));
-            if (WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()))
-              this.UpdateLocalPaths.Add(Path.Combine(CurrentUpdater.LocalUpdaterLocation, Path.GetFileName(item.SubItems[5].Text)));
+                        this.UpdateLocalPaths.Add(Path.Combine(CurrentUpdater.LocalUpdaterLocation, Path.GetFileName(item.SubItems[4].Text)));
+                        if (WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()))
+                          this.UpdateLocalPaths.Add(Path.Combine(CurrentUpdater.LocalUpdaterLocation, Path.GetFileName(item.SubItems[5].Text)));
 					}
 				}
 
-        if (wizardControl1.SelectedPage.IsFinishPage) {
-          wizardControl1.FinishButtonText = "Install";
-          wizardControl1.NextButtonShieldEnabled = true;
-        } else {
-          wizardControl1.NextButtonShieldEnabled = false;
-        }
+                if (wizardControl1.SelectedPage.IsFinishPage) {
+                  wizardControl1.FinishButtonText = "Install";
+                  wizardControl1.NextButtonShieldEnabled = true;
+                } else {
+                  wizardControl1.NextButtonShieldEnabled = false;
+                }
 			}
 
 			void CurrentUpdater_UpdaterDownloadProgressChanged(object sender, System.Net.DownloadProgressChangedEventArgs e) {

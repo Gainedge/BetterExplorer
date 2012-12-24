@@ -115,65 +115,57 @@ namespace BetterExplorerOperations
         {
             if (!IsRemove)
             {
-                RegistryKey rk = Registry.ClassesRoot;
-                RegistryKey rksh = rk.OpenSubKey(@"Folder\shell", true);
-                RegistryKey rks = rk.OpenSubKey(@"Folder\shell\opennewwindow\command", true);
-                RegistryKey rksobe = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer",true);
-                RegistryKey rksobecnw = rk.OpenSubKey(@"Folder\shell\opennewwindow\command", true);
+
+
                 String CurrentexePath =
                     System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-                string dir = Path.GetDirectoryName(CurrentexePath);
+                                string dir = Path.GetDirectoryName(CurrentexePath);
+
                 string ExePath = Path.Combine(dir, @"BetterExplorerShell.exe");
-                rksobecnw.SetValue("", ExePath + " \"%1\"");
-                rksobecnw.Close();
-                if (rksobe == null)
-                {
-                    rk.CreateSubKey(@"Folder\shell\openinbetterexplorer");
-                    rk.CreateSubKey(@"Folder\shell\openinbetterexplorer\command");
-                    rksobe = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer", true);
-                    rksobe.SetValue("", "Open In Better Explorer");
-                    RegistryKey rksobec = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer\command", true);
-                    
-                    
-                    rksobec.SetValue("", ExePath + " \"%1\"");
-                    
-                    rksobec.Close();
-                    rksobe.Close();
-                }
-                else
-                {
-                    RegistryKey rksobec = rk.OpenSubKey(@"Folder\shell\openinbetterexplorer\command", true);
-                    if (rksobec == null)
-                    {
-                        RegistryKey rkcommand = rk.CreateSubKey(@"Folder\shell\openinbetterexplorer\command");
-                        rkcommand.SetValue("", ExePath + " \"%1\"");
-                        rkcommand.Close();
-                        rksobec.Close();
-                    }
-                    else
-                    {
-                        rksobec.SetValue("", ExePath + " \"%1\"");
-                        rksobec.Close();
-                    }
-                }
-                rksh.SetValue("", "openinbetterexplorer");
+                RegistryKey rk = Registry.ClassesRoot;
+                RegistryKey rks = rk.OpenSubKey(@"Folder\shell\opennewwindow\command", true);
                 rks.DeleteValue("DelegateExecute");
+                rks.SetValue("", ExePath + " \"%1\"", RegistryValueKind.String);
                 rks.Close();
-                rksh.Close();
-                rk.Close();
+
+                RegistryKey rksho = rk.OpenSubKey(@"Folder\shell\open\command", true);
+                rksho.DeleteValue("DelegateExecute");
+                rksho.SetValue("", ExePath + " \"%1\"", RegistryValueKind.String);
+                rksho.Close();
+
+                RegistryKey rkshe = rk.OpenSubKey(@"Folder\shell\explore\command", true);
+                rkshe.DeleteValue("DelegateExecute");
+                rkshe.SetValue("", ExePath + " \"%1\"", RegistryValueKind.String);
+                rkshe.Close();
+
+                RegistryKey rkshop = rk.OpenSubKey(@"Folder\shell\opennewprocess\command", true);
+                rkshop.DeleteValue("DelegateExecute");
+                rkshop.SetValue("", ExePath + " \"%1\"", RegistryValueKind.String);
+                rkshop.Close();
                 Close();
             }
             else
             {
                 RegistryKey rk = Registry.ClassesRoot;
                 RegistryKey rks = rk.OpenSubKey(@"Folder\shell\opennewwindow\command", true);
-                RegistryKey rksh = rk.OpenSubKey(@"Folder\shell", true);
                 rks.SetValue("DelegateExecute", "{11dbb47c-a525-400b-9e80-a54615a090c0}", RegistryValueKind.String);
-                rksh.SetValue("", "");
+                rks.SetValue("", "", RegistryValueKind.String);
                 rks.Close();
-                rksh.Close();
-                rk.Close();
-                Close();
+
+                RegistryKey rksho = rk.OpenSubKey(@"Folder\shell\open\command", true);
+                rksho.SetValue("DelegateExecute", "{11dbb47c-a525-400b-9e80-a54615a090c0}", RegistryValueKind.String);
+                rksho.SetValue("", @"%SystemRoot%\Explorer.exe", RegistryValueKind.String);
+                rksho.Close();
+
+                RegistryKey rkshe = rk.OpenSubKey(@"Folder\shell\explore\command", true);
+                rkshe.SetValue("DelegateExecute", "{11dbb47c-a525-400b-9e80-a54615a090c0}", RegistryValueKind.String);
+                rkshe.SetValue("", "", RegistryValueKind.String);
+                rkshe.Close();
+
+                RegistryKey rkshop = rk.OpenSubKey(@"Folder\shell\opennewprocess\command", true);
+                rkshop.SetValue("DelegateExecute", "{11dbb47c-a525-400b-9e80-a54615a090c0}", RegistryValueKind.String);
+                rkshop.SetValue("", "", RegistryValueKind.String);
+                rkshop.Close();
             }
         }
         private void SetExpandFolderTreeOnNavigate(bool IsRemove)
