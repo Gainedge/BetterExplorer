@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:system="clr-namespace:System;assembly=mscorlib">
 
-   <!-- String resource that can be localized -->
+    <!--  String resource that can be localized  -->
     <system:String x:Key="btiInformationCP">Информация</system:String>
     <system:String x:Key="mmSupportCP">Поддержка</system:String>
     <system:String x:Key="btnUpdateCheckCP">Проверить сейчас</system:String>
@@ -177,7 +177,7 @@
     <system:String x:Key="chkImagefilenameCP">Имена файлов изображений</system:String>
     <system:String x:Key="chkHiddenItemsCP">Скрытые пункты</system:String>
     <system:String x:Key="chkExtensionsCP">Расширения файлов</system:String>
-    <system:String x:Key="chkExtensionsICP">Выберите, показывать расширение файла в конце или нет. Расширения определяют тип файла. К примеру, текстовый документ имеет.txt расширение, отождествляя себя с текстовым документом. Будьте осторожны при переименовании файлов, поскольку изменение их расширений могут вызвать проблемы с файлами или программами для их отображения или воспроизведения.  </system:String>
+    <system:String x:Key="chkExtensionsICP">Выберите, показывать расширение файла в конце или нет. Расширения определяют тип файла. К примеру, текстовый документ имеет.txt расширение, отождествляя себя с текстовым документом. Будьте осторожны при переименовании файлов, поскольку изменение их расширений могут вызвать проблемы с файлами или программами для их отображения или воспроизведения.</system:String>
     <system:String x:Key="btnHideSelCP">Скрыть выбранные элементы</system:String>
     <system:String x:Key="miHideSelCP">Скрыть выбранные элементы</system:String>
     <system:String x:Key="miHideItemsCP">Скрыть выбранные элементы, и все наследованные элемнты</system:String>
@@ -293,7 +293,7 @@
     <system:String x:Key="btnOpenFolder">Открыть папку</system:String>
     <system:String x:Key="txtName">Имя</system:String>
     <system:String x:Key="txtPath">Путь</system:String>
-    <system:String x:Key="txtChooseName">Выберать имя для этой коллекции вкладок </system:String>
+    <system:String x:Key="txtChooseName">Выберать имя для этой коллекции вкладок</system:String>
     <system:String x:Key="txtOverwriteSavedTabs">Если это имя уже существует, старые коллекции будут заменены.</system:String>
     <system:String x:Key="txtIllegalCharacters">Недопустимые символы: \ / : * ? &lt; &gt; |</system:String>
     <system:String x:Key="txtConfirmDelete">Вы уверены, что хотите удалить эту коллекцию вкладок?</system:String>
@@ -330,10 +330,10 @@
     <system:String x:Key="txtDateAccessed">Дата обращения</system:String>
     <system:String x:Key="txtAnd">и</system:String>
     <system:String x:Key="txtIsBefore">до</system:String>
-    <system:String x:Key="txtIsAfter">после/system:String>
+    <system:String x:Key="txtIsAfter">после</system:String>
     <system:String x:Key="txtDateIs">такой же, как</system:String>
     <system:String x:Key="txtRemoveFilter">Чтобы удалить фильтр, оставьте все значения пустыми</system:String>
-    <system:String x:Key="txtSetFilter"Установить фильтр (VAL):</system:String>
+    <system:String x:Key="txtSetFilter">Установить фильтр (VAL):</system:String>
     <system:String x:Key="txtCurrentValue">Текущее значение:</system:String>
     <system:String x:Key="txtSelect">Выбрать</system:String>
     <system:String x:Key="txtCancel">Отмена</system:String>
