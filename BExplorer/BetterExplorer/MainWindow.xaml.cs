@@ -151,7 +151,7 @@ namespace BetterExplorer
 		#region Events
 
 		private void btnBugtracker_Click(object sender, RoutedEventArgs e) {
-			Process.Start("http:\\bugtracker.better-explorer.com");
+			Process.Start("http://bugtracker.better-explorer.com");
 		}
 
 		private void btnCondSel_DropDownOpened(object sender, EventArgs e)
@@ -176,6 +176,9 @@ namespace BetterExplorer
 			//{
 			//    PicturePreview.Close(); 
 			//}
+      if (ctrlConsole.IsProcessRunning)
+        ctrlConsole.StopProcess();
+
 			string OpenedTabs = "";
 			foreach (CloseableTabItem item in tabControl1.Items)
 			{
@@ -751,6 +754,8 @@ namespace BetterExplorer
 			//                            this.breadcrumbBarControl1.LoadDirectory(e.NewLocation);
 			//                            this.breadcrumbBarControl1.LastPath = e.NewLocation.ParsingName;
 			//                            //}));
+                    
+                    
 										bool IsChanged = (Explorer.GetSelectedItemsCount() > 0);
 										bool isFuncAvail;
 										if (Explorer.SelectedItems.Count == 1)
@@ -1001,7 +1006,7 @@ namespace BetterExplorer
 
 									}
 								));
-
+        ctrlConsole.WriteInput(String.Format("cd {0}", e.NewLocation.ParsingName), System.Drawing.Color.Red, false);
 				GC.WaitForPendingFinalizers();
 				GC.Collect();
 			}
@@ -4444,7 +4449,9 @@ namespace BetterExplorer
 				}
 
 
-
+        ctrlConsole.StartProcess("cmd.exe", null);
+        ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+        ctrlConsole.ClearOutput();
 				verNumber.Content = "Version " + (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
 				lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
 				if (!TheRibbon.IsMinimized)
@@ -4464,6 +4471,14 @@ namespace BetterExplorer
                 tabControl1.SelectedIndex = 0;
 
 		}
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+    private const int WM_VSCROLL = 277;
+    private const int SB_PAGEBOTTOM = 7;
+
+    void InternalRichTextBox_TextChanged(object sender, EventArgs e) {
+      ctrlConsole.ScrollToBottom();
+    }
 
 		#region Old Search Code
 		private ShellObject BeforeSearchFolder;
@@ -8513,7 +8528,7 @@ namespace BetterExplorer
 
 		private void MoveTabBarToBottom()
 		{
-			Grid.SetRow(this.tabControl1, 4);
+			Grid.SetRow(this.tabControl1, 6);
 			this.rTabbarTop.Height = new GridLength(0);
 			this.rTabbarBot.Height = new GridLength(25);
 			this.tabControl1.TabStripPlacement = Dock.Bottom;
@@ -8723,6 +8738,10 @@ namespace BetterExplorer
 		}
 
 		#endregion
+
+    private void ctrlConsole_OnConsoleInput(object sender, ConsoleControl.ConsoleEventArgs args) {
+
+    }
 
 	}
 

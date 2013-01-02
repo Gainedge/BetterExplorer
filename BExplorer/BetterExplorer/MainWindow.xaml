@@ -8,6 +8,7 @@
                      xmlns:local="clr-namespace:BetterExplorer"
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                      xmlns:my2="http://schemas.microsoft.com/winfx/2006/xaml/presentation/ribbon"
+                     xmlns:console="clr-namespace:ConsoleControl;assembly=ConsoleControl"
                      Title="Better Explorer"
                      Activated="RibbonWindow_Activated"
                      Closing="RibbonWindow_Closing"
@@ -225,20 +226,25 @@
 
 
     <Grid Name="grid1">
-
-
         <Grid.RowDefinitions>
             <RowDefinition Name="rRibbon" Height="Auto" />
             <RowDefinition Name="rCommands" Height="36" />
             <RowDefinition Name="rTabbarTop" Height="25" />
-            <RowDefinition Height="513*" />
+            <RowDefinition Height="*" />
+            <RowDefinition  Height="Auto"/>
+            <RowDefinition Name="rCommandPrompt" Height="*"/>
             <RowDefinition Name="rTabbarBot" Height="0" />
             <RowDefinition Name="rStatusbar" Height="20" />
         </Grid.RowDefinitions>
         <Grid.Resources />
-
+        
+        <GridSplitter Grid.Row="4" Height="4" HorizontalAlignment="Stretch">
+        </GridSplitter>
+        <WindowsFormsHost x:Name="ctrlConsoleHost" Grid.Row="5" VerticalAlignment="Stretch" Background="Black">
+          <console:ConsoleControl x:Name="ctrlConsole" SendKeyboardCommandsToProcess="True" BackColor="Black" OnConsoleInput="ctrlConsole_OnConsoleInput" />
+        </WindowsFormsHost>
         <Ribbon:StatusBar Name="TheStatusBar"
-                          Grid.Row="5"
+                          Grid.Row="7"
                           ContextMenuClosing="TheStatusBar_ContextMenuClosing"
                           ContextMenuOpening="TheStatusBar_ContextMenuOpening"
                           GotFocus="TheStatusBar_GotFocus">
@@ -1741,7 +1747,15 @@
                                               Text="{StaticResource btnInfoTTX}" />
                         </Ribbon:ToggleButton.ToolTip>
                     </Ribbon:ToggleButton>
-                </Ribbon:RibbonGroupBox>
+                    <Ribbon:ToggleButton Name="btnConsolePane"
+                                                   Header="Console"
+                                                   Icon="Images\prevpane16.png"
+                                                   LargeIcon="Images\prevpane32.png"
+                                                   Ribbon:KeyTip.Keys="PC"
+                                                   SizeDefinition="Middle,Middle,Middle">
+                      
+                    </Ribbon:ToggleButton>
+        </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Name="Layout"
                                        Header="{StaticResource tgLayoutCP}"
                                        Ribbon:KeyTip.Keys="L">
@@ -2728,7 +2742,7 @@
                           Background="White"
                           ClipToBounds="True"
                           MouseMove="ShellVView_MouseMove"
-                          OpacityMask="White" />
+                          OpacityMask="White"/>
 
         <Grid Name="navBarGrid"
               Grid.Row="1"
