@@ -231,7 +231,7 @@
             <RowDefinition Name="rCommands" Height="36" />
             <RowDefinition Name="rTabbarTop" Height="25" />
             <RowDefinition Height="*" />
-            <RowDefinition  Height="Auto"/>
+            <RowDefinition Name="spCommandPrompt" Height="Auto"/>
             <RowDefinition Name="rCommandPrompt" Height="*"/>
             <RowDefinition Name="rTabbarBot" Height="0" />
             <RowDefinition Name="rStatusbar" Height="20" />
@@ -1752,7 +1752,7 @@
                                                    Icon="Images\prevpane16.png"
                                                    LargeIcon="Images\prevpane32.png"
                                                    Ribbon:KeyTip.Keys="PC"
-                                                   SizeDefinition="Middle,Middle,Middle">
+                                                   SizeDefinition="Middle,Middle,Middle" Click="btnConsolePane_Click">
                       
                     </Ribbon:ToggleButton>
         </Ribbon:RibbonGroupBox>

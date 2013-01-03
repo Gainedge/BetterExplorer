@@ -63,8 +63,9 @@ namespace BetterExplorer
 		bool IsExtendedFileOpEnabled;
 		public bool IsrestoreTabs;
 		bool IsUpdateCheck;
-	bool IsUpdateCheckStartup;
-	int UpdateCheckType;
+	  bool IsUpdateCheckStartup;
+    bool IsConsoleShown;
+	  int UpdateCheckType;
 		public bool isOnLoad;
 		JumpList AppJL = new JumpList();
 		public bool IsCalledFromLoading;
@@ -109,6 +110,7 @@ namespace BetterExplorer
 		System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
 		DateTime LastUpdateCheck;
 		Int32 UpdateCheckInterval;
+    Double CommandPromptWinHeight;
 
 		#endregion
 
@@ -176,8 +178,8 @@ namespace BetterExplorer
 			//{
 			//    PicturePreview.Close(); 
 			//}
-      if (ctrlConsole.IsProcessRunning)
-        ctrlConsole.StopProcess();
+      //if (ctrlConsole.IsProcessRunning)
+      //  ctrlConsole.StopProcess();
 
 			string OpenedTabs = "";
 			foreach (CloseableTabItem item in tabControl1.Items)
@@ -246,6 +248,9 @@ namespace BetterExplorer
 			rks.SetValue(@"AutoSwitchApplicationTools", GetIntegerFromBoolean(asApplication));
 			rks.SetValue(@"AutoSwitchLibraryTools", GetIntegerFromBoolean(asLibrary));
 			rks.SetValue(@"AutoSwitchDriveTools", GetIntegerFromBoolean(asDrive));
+      if (this.IsConsoleShown)
+        rks.SetValue(@"CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
+      rks.SetValue(@"IsConsoleShown", this.IsConsoleShown ? 1 : 0);
 
 			if (this.TabbaBottom.IsChecked == true)
 			{
@@ -388,6 +393,23 @@ namespace BetterExplorer
 			}
 
 			TheRibbon.IsMinimized = Convert.ToBoolean(rks.GetValue(@"IsRibonMinimized", false));
+      
+      //CommandPrompt window size
+      this.CommandPromptWinHeight = Convert.ToDouble(rks.GetValue(@"CmdWinHeight", 100));
+      rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
+
+      if ((int)rks.GetValue(@"IsConsoleShown", 0) == 1) {
+        rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
+        spCommandPrompt.Height = GridLength.Auto;
+        if (!ctrlConsole.IsProcessRunning) {
+          ctrlConsole.StartProcess("cmd.exe", null);
+          ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+          ctrlConsole.ClearOutput();
+        }
+      } else {
+        rCommandPrompt.Height = new GridLength(0);
+        spCommandPrompt.Height = new GridLength(0);
+      }
 
 			rks.Close();
 		}
@@ -1006,7 +1028,9 @@ namespace BetterExplorer
 
 									}
 								));
-        ctrlConsole.WriteInput(String.Format("cd {0}", e.NewLocation.ParsingName), System.Drawing.Color.Red, false);
+        if (e.NewLocation.IsFileSystemObject) {
+          ctrlConsole.WriteInput(String.Format("cd \"{0}\"", e.NewLocation.ParsingName), System.Drawing.Color.Red, false);
+        }
 				GC.WaitForPendingFinalizers();
 				GC.Collect();
 			}
@@ -3625,6 +3649,8 @@ namespace BetterExplorer
 												(Action)(() => {
 																stiUpdate.Content = FindResource("stUpdateNotAvailableCP").ToString();
 																stiUpdate.Foreground = System.Windows.Media.Brushes.Black;
+                                if ((bool)e.Argument)
+                                  MessageBox.Show(FindResource("stUpdateNotAvailableCP").ToString());
 												}));
 			}
 
@@ -4098,299 +4124,307 @@ namespace BetterExplorer
 					
 									}
 
-									 int HFlyoutEnabled = (int)rks.GetValue(@"HFlyoutEnabled", 0);
+									int HFlyoutEnabled = (int)rks.GetValue(@"HFlyoutEnabled", 0);
 
-									 int UpdateCheck = (int)rks.GetValue(@"CheckForUpdates", 1);
-									 IsUpdateCheck = (UpdateCheck == 1);
-									 chkUpdateCheck.IsChecked = IsUpdateCheck;
+									int UpdateCheck = (int)rks.GetValue(@"CheckForUpdates", 1);
+									IsUpdateCheck = (UpdateCheck == 1);
+									chkUpdateCheck.IsChecked = IsUpdateCheck;
 
 									int UpdateCheckStartup = (int)rks.GetValue(@"CheckForUpdatesStartup", 1);
 									IsUpdateCheckStartup = (UpdateCheckStartup == 1);
 									chkUpdateStartupCheck.IsChecked = IsUpdateCheckStartup;
 
-									 IsHFlyoutEnabled = (HFlyoutEnabled == 1);
-									 chkIsFlyout.IsChecked = IsHFlyoutEnabled;
+                  int isConsoleShown = (int)rks.GetValue(@"IsConsoleShown", 0);
+                  IsConsoleShown = (isConsoleShown == 1);
+                  btnConsolePane.IsChecked = this.IsConsoleShown;
 
-									 int InfoPaneEnabled = (int)rks.GetValue(@"InfoPaneEnabled", 0);
+                  
 
-									 IsInfoPaneEnabled = (InfoPaneEnabled == 1);
-									 btnInfoPane.IsChecked = IsInfoPaneEnabled;
+									IsHFlyoutEnabled = (HFlyoutEnabled == 1);
+									chkIsFlyout.IsChecked = IsHFlyoutEnabled;
 
-									 int PreviewPaneEnabled = (int)rks.GetValue(@"PreviewPaneEnabled", 0);
+									int InfoPaneEnabled = (int)rks.GetValue(@"InfoPaneEnabled", 0);
 
-									 IsPreviewPaneEnabled = (PreviewPaneEnabled == 1);
-									 btnPreviewPane.IsChecked = IsPreviewPaneEnabled;
+									IsInfoPaneEnabled = (InfoPaneEnabled == 1);
+									btnInfoPane.IsChecked = IsInfoPaneEnabled;
 
-									 int NavigationPaneEnabled = (int)rks.GetValue(@"NavigationPaneEnabled", 1);
+									int PreviewPaneEnabled = (int)rks.GetValue(@"PreviewPaneEnabled", 0);
 
-									 IsNavigationPaneEnabled = (NavigationPaneEnabled == 1);
-									 btnNavigationPane.IsChecked = IsNavigationPaneEnabled;
+									IsPreviewPaneEnabled = (PreviewPaneEnabled == 1);
+									btnPreviewPane.IsChecked = IsPreviewPaneEnabled;
 
-									 int CheckBoxesEnabled = (int)rks.GetValue(@"CheckModeEnabled", 0);
+									int NavigationPaneEnabled = (int)rks.GetValue(@"NavigationPaneEnabled", 1);
 
-									 isCheckModeEnabled = (CheckBoxesEnabled == 1);
-									 chkShowCheckBoxes.IsChecked = isCheckModeEnabled;
+									IsNavigationPaneEnabled = (NavigationPaneEnabled == 1);
+									btnNavigationPane.IsChecked = IsNavigationPaneEnabled;
 
-									 int ExFileOpEnabled = (int)rks.GetValue(@"FileOpExEnabled", 0);
+									int CheckBoxesEnabled = (int)rks.GetValue(@"CheckModeEnabled", 0);
 
-									 IsExtendedFileOpEnabled = (ExFileOpEnabled == 1);
-									 Explorer.IsExFileOpEnabled = IsExtendedFileOpEnabled;
-									 chkIsTerraCopyEnabled.IsChecked = IsExtendedFileOpEnabled;
+									isCheckModeEnabled = (CheckBoxesEnabled == 1);
+									chkShowCheckBoxes.IsChecked = isCheckModeEnabled;
 
-									 int CompartibleRename = (int)rks.GetValue(@"CompartibleRename", 1);
+									int ExFileOpEnabled = (int)rks.GetValue(@"FileOpExEnabled", 0);
 
-									 IsCompartibleRename = (CompartibleRename == 1);
+									IsExtendedFileOpEnabled = (ExFileOpEnabled == 1);
+									Explorer.IsExFileOpEnabled = IsExtendedFileOpEnabled;
+									chkIsTerraCopyEnabled.IsChecked = IsExtendedFileOpEnabled;
 
-									 //chkIsCompartibleRename.IsChecked = IsCompartibleRename;
+									int CompartibleRename = (int)rks.GetValue(@"CompartibleRename", 1);
 
-									 int RestoreTabs = (int)rks.GetValue(@"IsRestoreTabs", 1);
+									IsCompartibleRename = (CompartibleRename == 1);
 
-									 IsrestoreTabs = (RestoreTabs == 1);
+									//chkIsCompartibleRename.IsChecked = IsCompartibleRename;
 
-									 chkIsRestoreTabs.IsChecked = IsrestoreTabs;
+									int RestoreTabs = (int)rks.GetValue(@"IsRestoreTabs", 1);
 
-									 int LogActions = (int)rks.GetValue(@"EnableActionLog", 0);
+									IsrestoreTabs = (RestoreTabs == 1);
 
-									 canlogactions = (LogActions == 1);
-									 chkLogHistory.IsChecked = canlogactions;
-																		 if (LogActions == 1)
-																		 {
-																				 chkLogHistory.Visibility = System.Windows.Visibility.Visible;
-																				 ShowLogsBorder.Visibility = System.Windows.Visibility.Visible;
-																				 paddinglbl8.Visibility = System.Windows.Visibility.Visible;
-																		 }
+									chkIsRestoreTabs.IsChecked = IsrestoreTabs;
 
-									 // load settings for auto-switch to contextual tab
-									 asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
-									 asArchive = ((int)rks.GetValue(@"AutoSwitchArchiveTools", 1) == 1);
-									 asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
-									 asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
-									 asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
-									 asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 0) == 1);
+									int LogActions = (int)rks.GetValue(@"EnableActionLog", 0);
 
-									 chkFolder.IsChecked = asFolder;
-									 chkArchive.IsChecked = asArchive;
-									 chkImage.IsChecked = asImage;
-									 chkApp.IsChecked = asApplication;
-									 chkLibrary.IsChecked = asLibrary;
-									 chkDrive.IsChecked = asDrive;
+									canlogactions = (LogActions == 1);
+									chkLogHistory.IsChecked = canlogactions;
+									if (LogActions == 1)
+									{
+											chkLogHistory.Visibility = System.Windows.Visibility.Visible;
+											ShowLogsBorder.Visibility = System.Windows.Visibility.Visible;
+											paddinglbl8.Visibility = System.Windows.Visibility.Visible;
+									}
 
-									 // load OverwriteOnImages setting (default is false)
-									 int oor = (int)rks.GetValue(@"OverwriteImageWhileEditing", 0);
-									 OverwriteOnRotate = (oor == 1);
-									 chkOverwriteImages.IsChecked = (oor == 1);
+									// load settings for auto-switch to contextual tab
+									asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
+									asArchive = ((int)rks.GetValue(@"AutoSwitchArchiveTools", 1) == 1);
+									asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
+									asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
+									asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
+									asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 0) == 1);
 
-																		 // load Saved Tabs Directory location (if different from default)
-																		 string tdir = Convert.ToString(rks.GetValue(@"SavedTabsDirectory", satdir));
-																		 txtDefSaveTabs.Text = tdir;
-																		 sstdir = tdir;
+                   
 
-									 // set up history on breadcrumb bar (currently missing try-catch statement in order to catch error)
-									 try
-									 {
-										 breadcrumbBarControl1.ClearHistory();
-										 breadcrumbBarControl1.HistoryItems = ReadHistoryFromFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt");
-									 }
-									 catch (FileNotFoundException)
-									 {
-										 logger.Warn(String.Format("History file not found at location:{0}\\history.txt", Environment.SpecialFolder.LocalApplicationData));
-									 }
+									chkFolder.IsChecked = asFolder;
+									chkArchive.IsChecked = asArchive;
+									chkImage.IsChecked = asImage;
+									chkApp.IsChecked = asApplication;
+									chkLibrary.IsChecked = asLibrary;
+									chkDrive.IsChecked = asDrive;
 
-									 AddToLog("Session Began");
+									// load OverwriteOnImages setting (default is false)
+									int oor = (int)rks.GetValue(@"OverwriteImageWhileEditing", 0);
+									OverwriteOnRotate = (oor == 1);
+									chkOverwriteImages.IsChecked = (oor == 1);
 
-									 StartUpLocation =
-											rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+									// load Saved Tabs Directory location (if different from default)
+									string tdir = Convert.ToString(rks.GetValue(@"SavedTabsDirectory", satdir));
+									txtDefSaveTabs.Text = tdir;
+									sstdir = tdir;
 
-									 if (StartUpLocation == "")
-									 {
-										 rks.SetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName);
-										 StartUpLocation = KnownFolders.Libraries.ParsingName;
-									 }
-									 char[] delimiters = new char[] { ';' };
-									 string LastOpenedTabs = rks.GetValue(@"OpenedTabs", "").ToString();
-									 string[] Tabs = LastOpenedTabs.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+									// set up history on breadcrumb bar (currently missing try-catch statement in order to catch error)
+									try
+									{
+										breadcrumbBarControl1.ClearHistory();
+										breadcrumbBarControl1.HistoryItems = ReadHistoryFromFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt");
+									}
+									catch (FileNotFoundException)
+									{
+										logger.Warn(String.Format("History file not found at location:{0}\\history.txt", Environment.SpecialFolder.LocalApplicationData));
+									}
 
-									 rks.Close();
-									 rk.Close();
+									AddToLog("Session Began");
 
-									 try
-									 {
-										 RegistryKey rkbe = Registry.ClassesRoot;
-										 RegistryKey rksbe = rkbe.OpenSubKey(@"Folder\shell\open\command", RegistryKeyPermissionCheck.ReadSubTree);
-                                         bool IsThereDefault = rksbe.GetValue("DelegateExecute", "-1").ToString() == "-1";
-										 chkIsDefault.IsChecked = IsThereDefault;
-										 chkIsDefault.IsEnabled = true;
-										 rksbe.Close();
-										 rkbe.Close();
-									 }
-									 catch (Exception)
-									 {
-										 chkIsDefault.IsChecked = false;
-										 chkIsDefault.IsEnabled = false;
-									 }
+									StartUpLocation =
+										rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
 
-									 RegistryKey rkfe = Registry.CurrentUser;
-									 RegistryKey rksfe = rk.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", RegistryKeyPermissionCheck.ReadSubTree);
-									 chkTreeExpand.IsChecked = (int)rksfe.GetValue("NavPaneExpandToCurrentFolder", 0) == 1;
-									 rksfe.Close();
-									 rkfe.Close();
+									if (StartUpLocation == "")
+									{
+										rks.SetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName);
+										StartUpLocation = KnownFolders.Libraries.ParsingName;
+									}
+									char[] delimiters = new char[] { ';' };
+									string LastOpenedTabs = rks.GetValue(@"OpenedTabs", "").ToString();
+									string[] Tabs = LastOpenedTabs.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
 
-									 isOnLoad = false;
+									rks.Close();
+									rk.Close();
 
+									try
+									{
+										RegistryKey rkbe = Registry.ClassesRoot;
+										RegistryKey rksbe = rkbe.OpenSubKey(@"Folder\shell\open\command", RegistryKeyPermissionCheck.ReadSubTree);
+                                        bool IsThereDefault = rksbe.GetValue("DelegateExecute", "-1").ToString() == "-1";
+										chkIsDefault.IsChecked = IsThereDefault;
+										chkIsDefault.IsEnabled = true;
+										rksbe.Close();
+										rkbe.Close();
+									}
+									catch (Exception)
+									{
+										chkIsDefault.IsChecked = false;
+										chkIsDefault.IsEnabled = false;
+									}
 
-									 //'Rest of the setup of Explorer control. We have to set up that here after 
-									 //the initialization of registry settings
-									 Explorer.NavigationOptions.PaneVisibility.Preview =
-										 IsPreviewPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
-									 Explorer.NavigationOptions.PaneVisibility.Details =
-										 IsInfoPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
+									RegistryKey rkfe = Registry.CurrentUser;
+									RegistryKey rksfe = rk.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", RegistryKeyPermissionCheck.ReadSubTree);
+									chkTreeExpand.IsChecked = (int)rksfe.GetValue("NavPaneExpandToCurrentFolder", 0) == 1;
+									rksfe.Close();
+									rkfe.Close();
 
-									 Explorer.NavigationOptions.PaneVisibility.Navigation =
-										 IsNavigationPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
+									isOnLoad = false;
 
 
+									//'Rest of the setup of Explorer control. We have to set up that here after 
+									//the initialization of registry settings
+									Explorer.NavigationOptions.PaneVisibility.Preview =
+										IsPreviewPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
+									Explorer.NavigationOptions.PaneVisibility.Details =
+										IsInfoPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
 
-									 Explorer.ContentOptions.CheckSelect = isCheckModeEnabled;
-
-									 if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
-									 {
-										 btnSetCurrentasStartup.Header =
-											ShellObject.FromParsingName("Shell:" + StartUpLocation).GetDisplayName(DisplayNameType.Default);
-										 btnSetCurrentasStartup.Icon = ShellObject.FromParsingName("Shell:" + StartUpLocation).Thumbnail.BitmapSource;
-									 }
-									 else
-									 {
-										 try
-										 {
-											 btnSetCurrentasStartup.Header =
-													ShellObject.FromParsingName(StartUpLocation).GetDisplayName(DisplayNameType.Default);
-
-											 btnSetCurrentasStartup.Icon = ShellObject.FromParsingName(StartUpLocation).Thumbnail.BitmapSource;
-										 }
-										 catch
-										 {
+									Explorer.NavigationOptions.PaneVisibility.Navigation =
+										IsNavigationPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
 
 
-										 }
-									 }
 
-									 //'set StartUp location
-									 if (Application.Current.Properties["cmd"] != null)
-									 {
+									Explorer.ContentOptions.CheckSelect = isCheckModeEnabled;
 
-										 String cmd = Application.Current.Properties["cmd"].ToString();
+									if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
+									{
+										btnSetCurrentasStartup.Header =
+										ShellObject.FromParsingName("Shell:" + StartUpLocation).GetDisplayName(DisplayNameType.Default);
+										btnSetCurrentasStartup.Icon = ShellObject.FromParsingName("Shell:" + StartUpLocation).Thumbnail.BitmapSource;
+									}
+									else
+									{
+										try
+										{
+											btnSetCurrentasStartup.Header =
+												ShellObject.FromParsingName(StartUpLocation).GetDisplayName(DisplayNameType.Default);
 
-										 if (cmd.IndexOf("::") == 0)
-										 {
-
-											 Explorer.Navigate(ShellObject.FromParsingName("shell:" + cmd));
-										 }
-										 else
-											 Explorer.Navigate(ShellObject.FromParsingName(cmd.Replace("\"", "")));
+											btnSetCurrentasStartup.Icon = ShellObject.FromParsingName(StartUpLocation).Thumbnail.BitmapSource;
+										}
+										catch
+										{
 
 
-										 CloseableTabItem cti = new CloseableTabItem();
-										 CreateTabbarRKMenu(cti);
-										 Explorer.NavigationLog.CurrentLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-										 cti.TabIcon = Explorer.NavigationLog.CurrentLocation.Thumbnail.BitmapSource;
-										 cti.Header = Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default);
-										 cti.Path = Explorer.NavigationLog.CurrentLocation;
-										 cti.Index = 0;
-										 cti.log.CurrentLocation = Explorer.NavigationLog.CurrentLocation;
-										 cti.CloseTab += new RoutedEventHandler(cti_CloseTab);
-										 tabControl1.Items.Add(cti);
-										 //tabControl1.SelectedIndex = 0;
-										 //CurrentTabIndex = tabControl1.SelectedIndex;
-									 }
-									 else
-									 {
-										 if (Tabs.Length == 0 || !IsrestoreTabs)
-										 {
-											 if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
-												 Explorer.Navigate(ShellObject.FromParsingName("shell:" + StartUpLocation));
-											 else
-												 try
-												 {
-													 Explorer.Navigate(ShellObject.FromParsingName(StartUpLocation));
-												 }
-												 catch
-												 {
-													 Explorer.Navigate((ShellObject)KnownFolders.Libraries);
-												 }
-										 }
-										 if (IsrestoreTabs)
-										 {
-											 isOnLoad = true;
-											 int i = 0;
-											 foreach (string str in Tabs)
-											 {
-												 try
-												 {
-													 i++;
-													 if (i == Tabs.Length)
-													 {
-														 NewTab(str, true);
-													 }
-													 else
-													 {
-														 NewTab(str, false);
-													 }
-													 if (i == Tabs.Count())
-													 {
-														 if (str.IndexOf("::") == 0)
-														 {
+										}
+									}
 
-															 Explorer.Navigate(ShellObject.FromParsingName("shell:" + str));
-														 }
-														 else
-															 Explorer.Navigate(ShellObject.FromParsingName(str.Replace("\"", "")));
-														 (tabControl1.SelectedItem as CloseableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
-													 }
-												 }
-												 catch
-												 {
-													 //AddToLog(String.Format("Unable to load {0} into a tab!", str));
-													 MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
-													 //NewTab();
-												 }
+									//'set StartUp location
+									if (Application.Current.Properties["cmd"] != null)
+									{
 
-											 }
-											 if (tabControl1.Items.Count == 0)
-											 {
-												 NewTab();
-												 if (StartUpLocation.IndexOf("::") == 0)
-												 {
+										String cmd = Application.Current.Properties["cmd"].ToString();
 
-													 Explorer.Navigate(ShellObject.FromParsingName("shell:" + StartUpLocation));
-												 }
-												 else
-													 Explorer.Navigate(ShellObject.FromParsingName(StartUpLocation.Replace("\"", "")));
-												 (tabControl1.SelectedItem as CloseableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
-											 };
-											 isOnLoad = false;
+										if (cmd.IndexOf("::") == 0)
+										{
 
-										 }
-									 }
+											Explorer.Navigate(ShellObject.FromParsingName("shell:" + cmd));
+										}
+										else
+											Explorer.Navigate(ShellObject.FromParsingName(cmd.Replace("\"", "")));
 
-									 //sets up Jump List
-									 AppJL.ShowRecentCategory = true;
-									 AppJL.ShowFrequentCategory = true;
-									 JumpList.SetJumpList(Application.Current, AppJL);
-									 JumpTask newTab = new JumpTask();
-									 newTab.ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-									 newTab.Arguments = "t";
-									 newTab.Title = "Open Tab";
-									 newTab.Description = "Opens new tab with default location";
 
-									 JumpTask newWindow = new JumpTask();
-									 newWindow.ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-									 newWindow.Arguments = "/nw";
-									 newWindow.Title = "New Window";
-									 newWindow.Description = "Creates a new window with default location";
+										CloseableTabItem cti = new CloseableTabItem();
+										CreateTabbarRKMenu(cti);
+										Explorer.NavigationLog.CurrentLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+										cti.TabIcon = Explorer.NavigationLog.CurrentLocation.Thumbnail.BitmapSource;
+										cti.Header = Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default);
+										cti.Path = Explorer.NavigationLog.CurrentLocation;
+										cti.Index = 0;
+										cti.log.CurrentLocation = Explorer.NavigationLog.CurrentLocation;
+										cti.CloseTab += new RoutedEventHandler(cti_CloseTab);
+										tabControl1.Items.Add(cti);
+										//tabControl1.SelectedIndex = 0;
+										//CurrentTabIndex = tabControl1.SelectedIndex;
+									}
+									else
+									{
+										if (Tabs.Length == 0 || !IsrestoreTabs)
+										{
+											if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
+												Explorer.Navigate(ShellObject.FromParsingName("shell:" + StartUpLocation));
+											else
+												try
+												{
+													Explorer.Navigate(ShellObject.FromParsingName(StartUpLocation));
+												}
+												catch
+												{
+													Explorer.Navigate((ShellObject)KnownFolders.Libraries);
+												}
+										}
+										if (IsrestoreTabs)
+										{
+											isOnLoad = true;
+											int i = 0;
+											foreach (string str in Tabs)
+											{
+												try
+												{
+													i++;
+													if (i == Tabs.Length)
+													{
+														NewTab(str, true);
+													}
+													else
+													{
+														NewTab(str, false);
+													}
+													if (i == Tabs.Count())
+													{
+														if (str.IndexOf("::") == 0)
+														{
 
-									 AppJL.JumpItems.Add(newTab);
-									 AppJL.JumpItems.Add(newWindow);
-									 AppJL.Apply();
+															Explorer.Navigate(ShellObject.FromParsingName("shell:" + str));
+														}
+														else
+															Explorer.Navigate(ShellObject.FromParsingName(str.Replace("\"", "")));
+														(tabControl1.SelectedItem as CloseableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
+													}
+												}
+												catch
+												{
+													//AddToLog(String.Format("Unable to load {0} into a tab!", str));
+													MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
+													//NewTab();
+												}
+
+											}
+											if (tabControl1.Items.Count == 0)
+											{
+												NewTab();
+												if (StartUpLocation.IndexOf("::") == 0)
+												{
+
+													Explorer.Navigate(ShellObject.FromParsingName("shell:" + StartUpLocation));
+												}
+												else
+													Explorer.Navigate(ShellObject.FromParsingName(StartUpLocation.Replace("\"", "")));
+												(tabControl1.SelectedItem as CloseableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
+											};
+											isOnLoad = false;
+
+										}
+									}
+
+									//sets up Jump List
+									AppJL.ShowRecentCategory = true;
+									AppJL.ShowFrequentCategory = true;
+									JumpList.SetJumpList(Application.Current, AppJL);
+									JumpTask newTab = new JumpTask();
+									newTab.ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+									newTab.Arguments = "t";
+									newTab.Title = "Open Tab";
+									newTab.Description = "Opens new tab with default location";
+
+									JumpTask newWindow = new JumpTask();
+									newWindow.ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+									newWindow.Arguments = "/nw";
+									newWindow.Title = "New Window";
+									newWindow.Description = "Creates a new window with default location";
+
+									AppJL.JumpItems.Add(newTab);
+									AppJL.JumpItems.Add(newWindow);
+									AppJL.Apply();
 
 
 									 //Setup Clipboard monitor
@@ -4414,29 +4448,29 @@ namespace BetterExplorer
 									 //} 
 									 #endregion
 
-				                   try {
-					                 if (IsUpdateCheck) {
-					                   updateCheckTimer.Interval = 3600000 * 3;
-					                   updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
-					                   updateCheckTimer.Start();
-					                 } else {
-					                   updateCheckTimer.Stop();
-					                 }
-					                 if (IsUpdateCheckStartup) {
-					                   if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
-						                 CheckForUpdate(false);
-					                   }
-					                 }
-					                 //Updater = UpdateManager.Instance;
-					                 //Updater.UpdateFeedReader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
-					                 //Updater.UpdateExecutableName = "Web Update.exe";
-					                 //Updater.UpdateSource = new NAppUpdate.Framework.Sources.SimpleWebSource("http://better-explorer.com/onlineupdate/update.xml");
-					                 //TODO: reeable updates when there is site ready
-					                 //CheckForUpdate(false);
-				                   } catch (IOException) {
-					                 this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
-					                 this.btnUpdateCheck.IsEnabled = false;
-				                   }
+				          try {
+					        if (IsUpdateCheck) {
+					          updateCheckTimer.Interval = 3600000 * 3;
+					          updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
+					          updateCheckTimer.Start();
+					        } else {
+					          updateCheckTimer.Stop();
+					        }
+					        if (IsUpdateCheckStartup) {
+					          if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
+						        CheckForUpdate(false);
+					          }
+					        }
+					        //Updater = UpdateManager.Instance;
+					        //Updater.UpdateFeedReader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
+					        //Updater.UpdateExecutableName = "Web Update.exe";
+					        //Updater.UpdateSource = new NAppUpdate.Framework.Sources.SimpleWebSource("http://better-explorer.com/onlineupdate/update.xml");
+					        //TODO: reeable updates when there is site ready
+					        //CheckForUpdate(false);
+				          } catch (IOException) {
+					        this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
+					        this.btnUpdateCheck.IsEnabled = false;
+				          }
 
 								 }
 				 ));
@@ -4449,9 +4483,11 @@ namespace BetterExplorer
 				}
 
 
-        ctrlConsole.StartProcess("cmd.exe", null);
-        ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
-        ctrlConsole.ClearOutput();
+        if (this.IsConsoleShown) {
+          ctrlConsole.StartProcess("cmd.exe", null);
+          ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+          ctrlConsole.ClearOutput(); 
+        }
 				verNumber.Content = "Version " + (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
 				lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
 				if (!TheRibbon.IsMinimized)
@@ -7969,13 +8005,13 @@ namespace BetterExplorer
 			//tabitem.mnu.Items.Add(new Separator());
 
 
-			//tabitem.mnu.Items.Add(new Separator());
+			tabitem.mnu.Items.Add(new Separator());
 
 			MenuItem miopeninnew = new MenuItem();
 			miopeninnew.Header = "Open in new window";
 			miopeninnew.Tag = tabitem;
 			miopeninnew.Click += new RoutedEventHandler(miopeninnew_Click);
-			//tabitem.mnu.Items.Add(miopeninnew);
+		  tabitem.mnu.Items.Add(miopeninnew);
 
 		}
 
@@ -8741,6 +8777,25 @@ namespace BetterExplorer
 
     private void ctrlConsole_OnConsoleInput(object sender, ConsoleControl.ConsoleEventArgs args) {
 
+    }
+
+    private void btnConsolePane_Click(object sender, RoutedEventArgs e) {
+      if (btnConsolePane.IsChecked.Value) {
+        this.IsConsoleShown = true;
+        rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
+        spCommandPrompt.Height = GridLength.Auto;
+        if (!ctrlConsole.IsProcessRunning) {
+          ctrlConsole.StartProcess("cmd.exe", Explorer.NavigationLog.CurrentLocation.IsFileSystemObject?String.Format("/K \"{0}\"",Explorer.NavigationLog.CurrentLocation.ParsingName.TrimEnd(new[] { '/', '\\' })):null);
+          ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+          ctrlConsole.ClearOutput();
+        }
+      } else {
+        this.IsConsoleShown = false;
+        rCommandPrompt.Height = new GridLength(0);
+        spCommandPrompt.Height = new GridLength(0);
+        if (ctrlConsole.IsProcessRunning)
+          ctrlConsole.StopProcess();
+      }
     }
 
 	}

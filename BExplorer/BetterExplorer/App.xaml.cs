@@ -239,6 +239,8 @@ namespace BetterExplorer
             rk.Close();
 
             if (args == null || Dispatcher == null) return;
+
+
             Action<bool> d = (bool x) =>
             {
                 var win = MainWindow as MainWindow;
@@ -251,14 +253,22 @@ namespace BetterExplorer
                     ShellObject sho = null;
                     if (args != null && args.CommandLineArgs != null)
                     {
+                      
                         if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null)
                         {
+                          
                             if (args.CommandLineArgs[1] != "t")
                             {
                                 if (args.CommandLineArgs[1] == "nw")
                                 {
                                     BetterExplorer.MainWindow g = new MainWindow();
                                     g.Show();
+                                    //String cmd = args.CommandLineArgs[2];
+
+                                    //if (cmd.IndexOf("::") == 0) {
+                                    //  sho = ShellObject.FromParsingName("shell:" + cmd);
+                                    //} else
+                                    //  sho = ShellObject.FromParsingName(args.CommandLineArgs[2].Replace("\"", ""));
                                     return;
                                 }
                                 else
