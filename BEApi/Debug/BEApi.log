@@ -1,7 +1,10 @@
-﻿Build started 12/28/2012 12:03:57 AM.
-     1>Project "C:\Users\Jayke\Documents\GitHub\BetterExplorer\BEApi\BEApi.vcxproj" on node 3 (Build target(s)).
+﻿Build started 1/4/2013 2:46:50 AM.
+     1>Project "C:\Users\Jayke\Documents\GitHub\BetterExplorer\BEApi\BEApi.vcxproj" on node 2 (Build target(s)).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.CppBuild.targets(346,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
-     1>Link:
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _WINDLL /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt ..\BEH\BEH\main.cpp
+         main.cpp
+       Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Jayke\Documents\GitHub\BetterExplorer\BExplorer\BetterExplorer\BEH.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Jayke\Documents\GitHub\BetterExplorer\BExplorer\BetterExplorer\BEH.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Jayke\Documents\GitHub\BetterExplorer\BExplorer\BetterExplorer\BEH.lib" /MACHINE:X86 /DLL Debug\main.obj
             Creating library C:\Users\Jayke\Documents\GitHub\BetterExplorer\BExplorer\BetterExplorer\BEH.lib and object C:\Users\Jayke\Documents\GitHub\BetterExplorer\BExplorer\BetterExplorer\BEH.exp
          BEApi.vcxproj -> C:\Users\Jayke\Documents\GitHub\BetterExplorer\BExplorer\BetterExplorer\BEH.dll
@@ -9,4 +12,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.97
+Time Elapsed 00:00:15.82

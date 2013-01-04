@@ -135,6 +135,7 @@ BExplorer/BetterExplorer/Microsoft.WindowsAPICodePack.Shell.xml
 BExplorer/BetterExplorer/Microsoft.WindowsAPICodePack.Shell.pdb
 BExplorer/BetterExplorer/Updater.exe
 BExplorer/BetterExplorer/Updater.pdb
+BExplorer/BetterExplorer/*.pdb
 Installer/BetterExplorer-cache/cacheIndex.txt
 Installer/BetterExplorer-cache/part1/output-info.ini
 Installer/BetterExplorer-cache/part14/output-info.ini
