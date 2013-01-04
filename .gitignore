@@ -124,10 +124,17 @@ BEApi/Debug/mt.read.1.tlog
 BEApi/Debug/mt.write.1.tlog
 BEApi/Debug/vc100.idb
 BEApi/Debug/vc100.pdb
+BEApi/Debug/BEApi.log
 BExplorer/BetterExplorer/BEH.exp
 BExplorer/BetterExplorer/BEH.ilk
 BExplorer/BetterExplorer/BEH.lib
 BExplorer/BetterExplorer/BEH.pdb
+BExplorer/BetterExplorer/BEH.dll
+BExplorer/BetterExplorer/Microsoft.WindowsAPICodePack.Shell.dll
+BExplorer/BetterExplorer/Microsoft.WindowsAPICodePack.Shell.xml
+BExplorer/BetterExplorer/Microsoft.WindowsAPICodePack.Shell.pdb
+BExplorer/BetterExplorer/Updater.exe
+BExplorer/BetterExplorer/Updater.pdb
 Installer/BetterExplorer-cache/cacheIndex.txt
 Installer/BetterExplorer-cache/part1/output-info.ini
 Installer/BetterExplorer-cache/part14/output-info.ini
