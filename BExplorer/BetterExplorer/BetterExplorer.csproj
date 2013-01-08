@@ -720,6 +720,14 @@
     <Resource Include="Images\options.png" />
     <Resource Include="Images\bugtrac_16.png" />
     <Resource Include="Images\bugtrac_32.png" />
+    <Resource Include="Images\console16.png" />
+    <Resource Include="Images\console32.png" />
+    <Resource Include="Images\console48.png" />
+    <Resource Include="Images\Archive-icon.png" />
+    <Resource Include="Images\docs16.png" />
+    <Resource Include="Images\icon_folder_edit.png" />
+    <Resource Include="Images\icon_folder1.png" />
+    <Resource Include="Images\pics16.png" />
     <Content Include="Updater.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -912,7 +920,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1749,8 +1749,8 @@
                     </Ribbon:ToggleButton>
                     <Ribbon:ToggleButton Name="btnConsolePane"
                                                    Header="Console"
-                                                   Icon="Images\prevpane16.png"
-                                                   LargeIcon="Images\prevpane32.png"
+                                                   Icon="Images\console16.png"
+                                                   LargeIcon="Images\console32.png"
                                                    Ribbon:KeyTip.Keys="PC"
                                                    SizeDefinition="Middle,Middle,Middle" Click="btnConsolePane_Click">
                       
