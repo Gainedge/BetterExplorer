@@ -675,14 +675,14 @@
                                                            Ribbon:KeyTip.Keys="H" />
                                         </Border>
                                         <Label Name="paddinglbl9" Content="         " />
-                                        <Ribbon:SeparatorTabItem Margin="0,0,0,15" Header="Image Editing" />
+                                        <Ribbon:SeparatorTabItem Margin="0,0,0,15" Header="{StaticResource txtImageEditing}" />
                                         <Ribbon:CheckBox Name="chkOverwriteImages"
                                                          Checked="chkOverwriteImages_Checked"
-                                                         Header="Overwrite original image when rotating or flipping"
+                                                         Header="{StaticResource chkEditOverwrite}"
                                                          Ribbon:KeyTip.Keys="V"
                                                          Unchecked="chkOverwriteImages_Unchecked">
                                             <Ribbon:CheckBox.ToolTip>
-                                                <Ribbon:ScreenTip Title="Overwrite original image when rotating or flipping"
+                                                <Ribbon:ScreenTip Title="{StaticResource chkEditOverwrite}"
                                                                   Width="250"
                                                                   IsRibbonAligned="false"
                                                                   Text="When you rotate or flip an image, BetterExplorer saves the rotated or flipped image as a new file by default. If this is checked, BetterExplorer will instead overwrite this file, causing you to lose all previous data associated with it." />
@@ -787,8 +787,8 @@
                                                FontWeight="Bold"
                                                Visibility="Hidden" />
                                         <Label Content="   " />
-                                        <Ribbon:SeparatorTabItem Header="Help With Translating" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <TextBlock Margin="0,5,0,0" Text="If anyone would like to help with translating, just go to this webpage here:" />
+                                        <Ribbon:SeparatorTabItem Header="{StaticResource txtTranslationHelp}" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <TextBlock Margin="0,5,0,0" Text="{StaticResource txtHelpWebpage}" />
                                         <Button Name="TranslationHelp"
                                                 HorizontalAlignment="Left"
                                                 Background="#01000000"
@@ -799,7 +799,7 @@
                                                        Text="http://better-explorer.com/help-with-translating/"
                                                        TextDecorations="Underline" />
                                         </Button>
-                                        <TextBlock Margin="0,10,0,5" Text="Also, we wish to thank everyone who has helped everyone make translations so far." />
+                                        <TextBlock Margin="0,10,0,5" Text="{StaticResource txtTranslationCredits}" />
                                         <TextBlock Text="English: JaykeBird (Jayke R. Huempfner) and Dimitar Tsenev" />
                                         <TextBlock Text="Bulgarian: Dimitar Tsenev" />
                                         <TextBlock Text="Spanish: JMBolivar (José Miguel Bolivar)" />
@@ -829,11 +829,11 @@
                                     </StackPanel>
                                 </TabItem>
                                 <TabItem HorizontalContentAlignment="Left"
-                                         Header="Updates"
+                                         Header="{StaticResource tabUpdateCP}"
                                          Ribbon:KeyTip.Keys="U">
                                     <Grid Margin="20,15,0,0">
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top"
-                                                                 Header="Auto Update Check"
+                                                                 Header="{StaticResource txtAutoUpdate}"
                                                                  Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
                                         <Ribbon:CheckBox x:Name="chkUpdateCheck"
                                                          Margin="5,30,0,0"
@@ -845,7 +845,7 @@
                                                          Margin="5,50,0,0"
                                                          VerticalAlignment="Top"
                                                          Click="chkUpdateStartupCheck_Click"
-                                                         Header="Check for updates upon startup" />
+                                                         Header="{StaticResource chkAutoCheck}" />
                                         <TextBlock Margin="5,80,0,0"
                                                    VerticalAlignment="Top"
                                                    Text="When an update is available:"
@@ -860,55 +860,55 @@
                                         </StackPanel>
                                         <TextBlock Margin="5,80,0,0"
                                                    VerticalAlignment="Top"
-                                                   Text="Auto Update check interval:" />
+                                                   Text="{StaticResource txtCheckHowOften}" />
                                         <StackPanel Margin="5,100,0,0"
                                                     VerticalAlignment="Top"
                                                     Orientation="Vertical">
                                             <Ribbon:RadioButton x:Name="rbDaily"
                                                                 Click="rbCheckInterval_Click"
                                                                 GroupName="uasi"
-                                                                Header="Daily" />
+                                                                Header="{StaticResource chkEveryday}" />
                                             <Ribbon:RadioButton x:Name="rbWeekly"
                                                                 Click="rbCheckInterval_Click"
                                                                 GroupName="uasi"
-                                                                Header="Weekly" />
+                                                                Header="{StaticResource chkEveryweek}" />
                                             <Ribbon:RadioButton x:Name="rbMonthly"
                                                                 Click="rbCheckInterval_Click"
                                                                 GroupName="uasi"
-                                                                Header="Monthly" />
+                                                                Header="{StaticResource chkEverymonth}" />
                                         </StackPanel>
                                         <Ribbon:SeparatorTabItem Margin="0,170,0,0"
                                                                  VerticalAlignment="Top"
-                                                                 Header="Update Channels"
+                                                                 Header="{StaticResource txtUpdateChannel}"
                                                                  Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
                                         <Ribbon:RadioButton x:Name="rbReleases"
                                                             Margin="5,200,0,0"
                                                             VerticalAlignment="Top"
                                                             Click="UpdateTypeCheck_Click"
                                                             GroupName="uach"
-                                                            Header="Releases only (recommended)" />
+                                                            Header="{StaticResource chkReleasesChannel}" />
                                         <Ribbon:RadioButton x:Name="rbReleasTest"
                                                             Margin="5,220,0,0"
                                                             VerticalAlignment="Top"
                                                             Click="UpdateTypeCheck_Click"
                                                             GroupName="uach"
-                                                            Header="Releases and test builds" />
+                                                            Header="{StaticResource chkDevChannel}" />
                                         <TextBlock Height="30"
                                                    Margin="15,240,0,0"
                                                    HorizontalAlignment="Left"
                                                    VerticalAlignment="Top"
-                                                   Text="Warning! Test builds can be unstable at times, but you can use it to test new features early." />
+                                                   Text="{StaticResource txtTestBuildWarning}" />
                                         <Expander Width="250"
                                                   Margin="5,270,0,0"
                                                   HorizontalAlignment="Left"
                                                   VerticalAlignment="Top"
-                                                  Header="Advanced Settings"
+                                                  Header="{StaticResource txtAdvancedUpdateSettings}"
                                                   Visibility="Collapsed">
                                             <Grid>
                                                 <TextBlock Margin="12,12,0,0"
                                                            HorizontalAlignment="Left"
                                                            VerticalAlignment="Top"
-                                                           Text="Update Check URL" />
+                                                           Text="{StaticResource txtUpdateURL}" />
                                                 <TextBox Name="updURL"
                                                          Height="23"
                                                          Margin="12,34,12,0"
@@ -1576,7 +1576,7 @@
                         <Ribbon:MenuItem Name="miSaveCurTabs"
                                          Click="miSaveCurTabs_Click"
                                          Focusable="False"
-                                         Header="Save Current Tabs"
+                                         Header="{StaticResource miSaveTabs}"
                                          Icon="Images\Save.png"
                                          Ribbon:KeyTip.Keys="S" />
                         <Separator />
