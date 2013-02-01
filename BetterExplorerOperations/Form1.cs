@@ -124,22 +124,39 @@ namespace BetterExplorerOperations
                 string ExePath = Path.Combine(dir, @"BetterExplorerShell.exe");
                 RegistryKey rk = Registry.ClassesRoot;
                 RegistryKey rks = rk.OpenSubKey(@"Folder\shell\opennewwindow\command", true);
-                rks.DeleteValue("DelegateExecute");
+
+                try {
+                  rks.DeleteValue("DelegateExecute");
+                } catch (Exception) {
+                  //Value not found
+                }
                 rks.SetValue("", ExePath + " \"%1\"", RegistryValueKind.String);
                 rks.Close();
-
+                
                 RegistryKey rksho = rk.OpenSubKey(@"Folder\shell\open\command", true);
-                rksho.DeleteValue("DelegateExecute");
+                try {
+                  rksho.DeleteValue("DelegateExecute");
+                } catch (Exception) {
+                  //Value not found
+                }
                 rksho.SetValue("", ExePath + " \"%1\"", RegistryValueKind.String);
                 rksho.Close();
 
                 RegistryKey rkshe = rk.OpenSubKey(@"Folder\shell\explore\command", true);
-                rkshe.DeleteValue("DelegateExecute");
+                try {
+                  rkshe.DeleteValue("DelegateExecute");
+                } catch (Exception) {
+                  //Value not found
+                }
                 rkshe.SetValue("", ExePath + " \"%1\"", RegistryValueKind.String);
                 rkshe.Close();
 
                 RegistryKey rkshop = rk.OpenSubKey(@"Folder\shell\opennewprocess\command", true);
-                rkshop.DeleteValue("DelegateExecute");
+                try {
+                  rkshop.DeleteValue("DelegateExecute");
+                } catch (Exception) {
+                  //Value not found
+                }
                 rkshop.SetValue("", ExePath + " \"%1\"", RegistryValueKind.String);
                 rkshop.Close();
                 Close();

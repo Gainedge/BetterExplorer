@@ -579,6 +579,18 @@ namespace WindowsHelper
           return false;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct NMHDR {
+          // 12/24
+          public IntPtr hwndFrom;
+          public IntPtr idFrom;
+          public int code;
+        }
+
+        public static T PtrToStructure<T>(IntPtr p) {
+          return (T)Marshal.PtrToStructure(p, typeof(T));
+        }
+
         [DllImport("kernel32.dll",SetLastError = true)]
         [return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]
         public static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
@@ -4333,6 +4345,35 @@ namespace WindowsHelper
             return operatingSystem;
         } 
         #endregion
+    }
+
+    static class WNM {
+      const int NM_FIRST = 0;
+      public const int NM_KILLFOCUS = (NM_FIRST - 8);
+      public const int NM_CUSTOMDRAW = (NM_FIRST - 12);
+
+      const int TTN_FIRST = -520;
+      public const int TTN_SHOW = (TTN_FIRST - 1);
+      public const int TTN_GETDISPINFOW = (TTN_FIRST - 10);
+
+      const int RBN_FIRST = -831;
+      public const int RBN_HEIGHTCHANGE = (RBN_FIRST - 0);
+      public const int RBN_BEGINDRAG = (RBN_FIRST - 4);
+      public const int RBN_ENDDRAG = (RBN_FIRST - 5);
+
+      const int LVN_FIRST = -100;
+      public const int LVN_ITEMCHANGED = (LVN_FIRST - 1);
+      public const int LVN_DELETEITEM = (LVN_FIRST - 3);
+      public const int LVN_BEGINDRAG = (LVN_FIRST - 9);
+      public const int LVN_BEGINRDRAG = (LVN_FIRST - 11);
+      public const int LVN_ITEMACTIVATE = (LVN_FIRST - 14);
+      public const int LVN_ODSTATECHANGED = (LVN_FIRST - 15);
+      public const int LVN_HOTTRACK = (LVN_FIRST - 21);
+      public const int LVN_KEYDOWN = (LVN_FIRST - 55);
+      public const int LVN_GETINFOTIP = (LVN_FIRST - 58);
+
+      const int UDN_FIRST = -721;        // updown
+      public const int UDN_DELTAPOS = (UDN_FIRST - 1);
     }
 
     #region ChangeWallpaper

@@ -11,6 +11,7 @@ using System.Collections;
 using WindowsHelper;
 using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
+using System.Security;
 
 namespace Microsoft.WindowsAPICodePack.Controls
 {
@@ -749,6 +750,209 @@ namespace Microsoft.WindowsAPICodePack.Controls
         HResult TranslateAcceleratorIO(ref System.Windows.Forms.Message pMsg);
 
     };
+
+    //--------------------------------------------------------------------------
+    //
+    // Interface:   IShellBrowser
+    //
+    //  IShellBrowser interface is the interface that is provided by the shell
+    // explorer/folder frame window. When it creates the 'contents pane' of
+    // a shell folder (which provides IShellFolder interface), it calls its
+    // CreateViewObject member function to create an IShellView object. Then,
+    // it calls its CreateViewWindow member to create the 'contents pane'
+    // window. The pointer to the IShellBrowser interface is passed to
+    // the IShellView object as a parameter to this CreateViewWindow member
+    // function call.
+    //
+    //    +--------------------------+  <-- Explorer window
+    //    | [] Explorer              |
+    //    |--------------------------+       IShellBrowser
+    //    | File Edit View ..        |
+    //    |--------------------------|
+    //    |        |                 |
+    //    |        |              <-------- Content pane
+    //    |        |                 |
+    //    |        |                 |       IShellView
+    //    |        |                 |
+    //    |        |                 |
+    //    +--------------------------+
+    //
+    //
+    //
+    // [Member functions]
+    //
+    //
+    // IShellBrowser::GetWindow(phwnd)
+    //
+    //   Inherited from IOleWindow::GetWindow.
+    //
+    //
+    // IShellBrowser::ContextSensitiveHelp(fEnterMode)
+    //
+    //   Inherited from IOleWindow::ContextSensitiveHelp.
+    //
+    //
+    // IShellBrowser::InsertMenusSB(hmenuShared, lpMenuWidths)
+    //
+    //   Similar to the IOleInPlaceFrame::InsertMenus. The explorer will put
+    //  'File' and 'Edit' pulldown in the File menu group, 'View' and 'Tools'
+    //  in the Container menu group and 'Help' in the Window menu group. Each
+    //  pulldown menu will have a uniqu ID, FCIDM_MENU_FILE/EDIT/VIEW/TOOLS/HELP
+    //  The view is allowed to insert menuitems into those sub-menus by those
+    //  IDs must be between FCIDM_SHVIEWFIRST and FCIDM_SHVIEWLAST.
+    //
+    //
+    // IShellBrowser::SetMenuSB(hmenuShared, holemenu, hwndActiveObject)
+    //
+    //   Similar to the IOleInPlaceFrame::SetMenu. The explorer ignores the
+    //  holemenu parameter (reserved for future enhancement)  and performs
+    //  menu-dispatch based on the menuitem IDs (see the description above).
+    //  It is important to note that the explorer will add different
+    //  set of menuitems depending on whether the view has a focus or not.
+    //  Therefore, it is very important to call ISB::OnViewWindowActivate
+    //  whenever the view window (or its children) gets the focus.
+    //
+    //
+    // IShellBrowser::RemoveMenusSB(hmenuShared)
+    //
+    //   Same as the IOleInPlaceFrame::RemoveMenus.
+    //
+    //
+    // IShellBrowser::SetStatusTextSB(pszStatusText)
+    //
+    //   Same as the IOleInPlaceFrame::SetStatusText. It is also possible to
+    //  send messages directly to the status window via SendControlMsg.
+    //
+    //
+    // IShellBrowser::EnableModelessSB(fEnable)
+    //
+    //   Same as the IOleInPlaceFrame::EnableModeless.
+    //
+    //
+    // IShellBrowser::TranslateAcceleratorSB(lpmsg, wID)
+    //
+    //   Same as the IOleInPlaceFrame::TranslateAccelerator, but will be
+    //  never called because we don't support EXEs (i.e., the explorer has
+    //  the message loop). This member function is defined here for possible
+    //  future enhancement.
+    //
+    //
+    // IShellBrowser::BrowseObject(pidl, wFlags)")
+    //
+    //   The view calls this member to let shell explorer browse to another")
+    //  folder. The pidl and wFlags specifies the folder to be browsed.")
+    //
+    //  Following three flags specifies whether it creates another window or not.
+    //   SBSP_SAMEBROWSER  -- Browse to another folder with the same window.
+    //   SBSP_NEWBROWSER   -- Creates another window for the specified folder.
+    //   SBSP_DEFBROWSER   -- Default behavior (respects the view option).
+    //
+    //  Following three flags specifies open, explore, or default mode. These   .
+    //  are ignored if SBSP_SAMEBROWSER or (SBSP_DEFBROWSER && (single window   .
+    //  browser || explorer)).                                                  .
+    //   SBSP_OPENMODE     -- Use a normal folder window
+    //   SBSP_EXPLOREMODE  -- Use an explorer window
+    //   SBSP_DEFMODE      -- Use the same as the current window
+    //
+    //  Following three flags specifies the pidl.
+    //   SBSP_ABSOLUTE -- pidl is an absolute pidl (relative from desktop)
+    //   SBSP_RELATIVE -- pidl is relative from the current folder.
+    //   SBSP_PARENT   -- Browse the parent folder (ignores the pidl)
+    //   SBSP_NAVIGATEBACK    -- Navigate back (ignores the pidl)
+    //   SBSP_NAVIGATEFORWARD -- Navigate forward (ignores the pidl)
+    //
+    //  Following two flags control history manipulation as result of navigate
+    //   SBSP_WRITENOHISTORY -- write no history (shell folder) entry
+    //   SBSP_NOAUTOSELECT -- suppress selection in history pane
+    //
+    // IShellBrowser::GetViewStateStream(grfMode, ppstm)
+    //
+    //   The browser returns an IStream interface as the storage for view
+    //  specific state information.
+    //
+    //   grfMode -- Specifies the read/write access (STGM_READ/WRITE/READWRITE)
+    //   ppstm   -- Specifies the IStream *variable to be filled.
+    //
+    //
+    // IShellBrowser::GetControlWindow(id, phwnd)
+    //
+    //   The shell view may call this member function to get the window handle
+    //  of Explorer controls (toolbar or status winodw -- FCW_TOOLBAR or
+    //  FCW_STATUS).
+    //
+    //
+    // IShellBrowser::SendControlMsg(id, uMsg, wParam, lParam, pret)
+    //
+    //   The shell view calls this member function to send control messages to
+    //  one of Explorer controls (toolbar or status window -- FCW_TOOLBAR or
+    //  FCW_STATUS).
+    //
+    //
+    // IShellBrowser::QueryActiveShellView(IShellView * ppshv)
+    //
+    //   This member returns currently activated (displayed) shellview object.
+    //  A shellview never need to call this member function.
+    //
+    //
+    // IShellBrowser::OnViewWindowActive(pshv)
+    //
+    //   The shell view window calls this member function when the view window
+    //  (or one of its children) got the focus. It MUST call this member before
+    //  calling IShellBrowser::InsertMenus, because it will insert different
+    //  set of menu items depending on whether the view has the focus or not.
+    //
+    //
+    // IShellBrowser::SetToolbarItems(lpButtons, nButtons, uFlags)
+    //
+    //   The view calls this function to add toolbar items to the exporer's
+    //  toolbar. 'lpButtons' and 'nButtons' specifies the array of toolbar
+    //  items. 'uFlags' must be one of FCT_MERGE, FCT_CONFIGABLE, FCT_ADDTOEND.
+    //
+    //-------------------------------------------------------------------------
+
+    [ComImport, Guid(ExplorerBrowserIIDGuid.IShellBrowser)]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown), SuppressUnmanagedCodeSecurity]
+    public interface IShellBrowser {
+      [PreserveSig]
+      int GetWindow(out IntPtr hwnd);
+      [PreserveSig]
+      int ContextSensitiveHelp(int fEnterMode);
+
+      [PreserveSig]
+      int InsertMenusSB(IntPtr hmenuShared, IntPtr lpMenuWidths);
+      [PreserveSig]
+      int SetMenuSB(IntPtr hmenuShared, IntPtr holemenuRes, IntPtr hwndActiveObject);
+      [PreserveSig]
+      int RemoveMenusSB(IntPtr hmenuShared);
+      [PreserveSig]
+      int SetStatusTextSB(IntPtr pszStatusText);
+      [PreserveSig]
+      int EnableModelessSB(bool fEnable);
+      [PreserveSig]
+      int TranslateAcceleratorSB(IntPtr pmsg, short wID);
+      [PreserveSig]
+      int BrowseObject(IntPtr pidl, [MarshalAs(UnmanagedType.U4)] uint wFlags);
+      [PreserveSig]
+      int GetViewStateStream(uint grfMode, IntPtr ppStrm);
+      [PreserveSig]
+      int GetControlWindow(uint id, out IntPtr phwnd);
+      [PreserveSig]
+      int SendControlMsg(uint id, uint uMsg, uint wParam, uint lParam, IntPtr pret);
+      [PreserveSig]
+      int QueryActiveShellView([MarshalAs(UnmanagedType.Interface)] ref IShellView ppshv);
+      [PreserveSig]
+      int OnViewWindowActive([MarshalAs(UnmanagedType.Interface)] IShellView pshv);
+      [PreserveSig]
+      int SetToolbarItems(IntPtr lpButtons, uint nButtons, uint uFlags);
+    }
+
+    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("6d5140c1-7436-11ce-8034-00aa006009fa"), SuppressUnmanagedCodeSecurity]
+    public interface _IServiceProvider {
+      void QueryService(
+              [In, MarshalAs(UnmanagedType.LPStruct)] Guid guid,
+              [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
+              [MarshalAs(UnmanagedType.Interface)] out object Obj);
+    }
 
     [ComImport,
      Guid(ExplorerBrowserIIDGuid.IShellView),

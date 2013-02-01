@@ -1828,7 +1828,7 @@ namespace BetterExplorer
 									 btnFavorites.Items.Add(mi);
 								 }
 							 }));
-			WindowsAPI.SetFocus(ExplorerBrowser.SysListViewHandle);
+			WindowsAPI.SetFocus(Explorer.SysListViewHandle);
 		}
 
 
@@ -3814,8 +3814,8 @@ namespace BetterExplorer
 
 		#endregion
 
-		public MainWindow()
-		{  
+		public MainWindow() {
+      //ExplorerBrowser.IsOldSysListView = true;
 			CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, ERNewTab);
 			this.CommandBindings.Add(cbnewtab);
 			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, ERGoToBCCombo);
@@ -5120,7 +5120,7 @@ namespace BetterExplorer
 		private void btnUpLevel_Click(object sender, RoutedEventArgs e)
 		{
 			Explorer.Navigate(Explorer.NavigationLog.CurrentLocation.Parent);
-			WindowsAPI.SetFocus(ExplorerBrowser.SysListViewHandle);
+			WindowsAPI.SetFocus(Explorer.SysListViewHandle);
 			//ShellContextMenu cm = new ShellContextMenu();
 			//FileInfo fi = new FileInfo(Explorer.SelectedItems[0].ParsingName);
 			//FileInfo[] fii = new FileInfo[1];
@@ -7934,7 +7934,7 @@ namespace BetterExplorer
 			{
 
 				Explorer.Navigate((sender as System.Windows.Forms.Timer).Tag as ShellObject);
-				WindowsAPI.SetFocus(ExplorerBrowser.SysListViewHandle);
+				WindowsAPI.SetFocus(Explorer.SysListViewHandle);
 				(sender as System.Windows.Forms.Timer).Stop();
 			}
 		}

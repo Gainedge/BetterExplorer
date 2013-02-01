@@ -27,6 +27,7 @@ using Message = System.Windows.Forms.Message;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 using System.Diagnostics;
 using ZiadSpace.Util;
+using System.Windows.Automation;
 
 
 namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
@@ -41,6 +42,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				IExplorerPaneVisibility,
 				IExplorerBrowserEvents,
 				ICommDlgBrowser3,
+        //IShellBrowser,
 				IMessageFilter  
 		{
 				#region Settings
@@ -50,7 +52,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				
 				public bool ISDisablesubclass = false;
 				public bool IsExFileOpEnabled = false;
-				//public QTTabBarLib.Automation.AutomationManager automan = new QTTabBarLib.Automation.AutomationManager();
+
 				#region Imports
 				[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
 				public static extern IShellItem SHCreateItemWithParent(
@@ -1824,9 +1826,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 								// sets up ExplorerBrowser view connection point events
 								viewEvents = new ExplorerBrowserViewEvents(this);
+                WindowsAPI.IFolderViewOptions fvo = (WindowsAPI.IFolderViewOptions)explorerBrowserControl;
 								if (IsOldSysListView)
 								{
-										WindowsAPI.IFolderViewOptions fvo = (WindowsAPI.IFolderViewOptions)explorerBrowserControl;
 										fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.VISTALAYOUT, WindowsAPI.FOLDERVIEWOPTIONS.VISTALAYOUT);
 								}
 								
@@ -1858,6 +1860,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 												antecreationNavigationTarget = null;
 										//}));
 								}
+
+
 						}
 
 								Application.AddMessageFilter(this);
@@ -2257,6 +2261,21 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 								// translate keyboard input
 
 
+              if (m.Msg == (int)WindowsAPI.WndMsg.WM_NOTIFY + (int)WindowsAPI.WndMsg.WM_REFLECT) {
+
+                  WindowsAPI.NMHDR nmhdr = WindowsAPI.PtrToStructure<WindowsAPI.NMHDR>(m.LParam);
+                  switch (nmhdr.code) {
+                    case WNM.TTN_GETDISPINFOW:
+
+                      // try to start preview seaquence by tooltip
+                      // we can not distinguish tooltip by mouse from by keyboard here for 7.
+
+                      //if (Config.Get(Scts.Preview) > 0 && !Config.Bool(Scts.PreviewStop) && (!Config.Bool(Scts.PreviewWithShiftKeyDown) ^ Control.ModifierKeys == Keys.Shift)) {
+                      
+                      //}
+                      break;
+                  }
+                }
 								if (m.Msg == (int)WindowsAPI.WndMsg.WM_ACTIVATEAPP)
 								{
 										MessageBox.Show("Active");
@@ -2554,112 +2573,18 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 														ExplorerBrowserMouseLeave.Invoke(this, null);
 										}
 
-//                    BeginInvoke(new MethodInvoker(
-//                    delegate
-//                    {
 
-//                        WindowsAPI.RECTW r = new WindowsAPI.RECTW();
-//                        WindowsAPI.GetWindowRect(SysListViewHandle, ref r);
-//                        Rectangle recb = r.ToRectangle();
-//                        Rectangle PopFR = new Rectangle(PopFX, PopFY, 22, 22);
-//                        if (recb.Contains(Cursor.Position))
-//                        {
-//                            if (CurX != ((int)M.LParam & 0x0000FFFF) | CurY != HiWord((uint)M.LParam))
-//                            {
-
-//                                try
-//                                {
-
-//                                    if (!IsBool && !PopFR.Contains(Cursor.Position))
-//                                    {
-
-
-////                                        automan.DoQuery(factory =>
-////                                        {
-////                                            QTTabBarLib.Automation.AutomationElement el;
-////                                            try
-////                                            {
-////                                                el = factory.FromPoint(Cursor.Position);
-////                                            }
-////                                            catch
-////                                            {
-////
-////                                                el = null;
-////                                            }
-////
-////                                            if (el != null)
-////                                            {
-////                                                string name = el.GetClassName();
-////                                                string name2 = el.GetParent().GetClassName();
-////                                                if (name == "UIProperty" || name == "UIImage")
-////                                                {
-////                                                    el = el.GetParent();
-////                                                }
-////
-////                                                if (el.GetClassName() == "UIItem")
-////                                                {
-////                                                    //MessageBox.Show(el.GetBoundingRect().Top.ToString() + "/" + el.GetBoundingRect().Left.ToString() + " - " + el.GetClassName());
-////                                                    Rectangle ImageRecT = new Rectangle();
-////                                                    Rectangle TextRecT = new Rectangle();
-////
-////                                                    foreach (QTTabBarLib.Automation.AutomationElement elm in el.GetChildren())
-////                                                    {
-////                                                        //MessageBox.Show(elm.GetClassName());
-////                                                        if (elm.GetClassName() == "UIImage")
-////                                                        {
-////                                                            ImageRecT = elm.GetBoundingRect();
-////                                                        }
-////                                                        if (elm.GetClassName() == "UIProperty")
-////                                                        {
-////
-////                                                            TextRecT = new Rectangle(ImageRecT.Left,
-////                                                                ImageRecT.Top,
-////                                                                AvailableVisibleColumns[0].Width, elm.GetBoundingRect().Height);
-////                                                        }
-////                                                    }
-////
-////                                                    vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), false, ImageRecT, TextRecT);
-////                                                }
-////                                                else
-////                                                {
-////                                                    //MessageBox.Show(name);
-////                                                    if (el.GetClassName() == "UIItemsView" | el.GetClassName() == "UIGroupItem")
-////                                                    {
-////                                                        vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), true, new Rectangle(0, 0, 0, 0), new Rectangle(0, 0, 0, 0));
-////                                                    }
-////                                                    else
-////                                                    {
-////                                                        vItemHot(el.GetClassName(), el.GetItemName(), el.GetBoundingRect(), el.GetItemIndex(), true, new Rectangle(0, 0, 0, 0), new Rectangle(0, 0, 0, 0));
-////                                                    }
-////
-////                                                }
-////                                                el.Dispose();
-////                                            }
-////
-////                                            return 1;
-////                                        });
-//                                    }
-//                                    else
-//                                    {
-
-//                                    }
-
-//                                }
-//                                catch (Exception ex)
-//                                {
-//                                    //if (automan != null)
-//                                    //{
-//                                    //    automan.Dispose();
-//                                    //}
-//                                    //return 1;
-//                                }
-//                                CurX = (int)LoWord((uint)M.LParam);
-//                                CurY = HiWord((uint)M.LParam);
-
-//                            }
-//                        }
-//                    }));
-
+                    if (reclv.Contains(Cursor.Position)) 
+                    {
+                      AutomationElement ae = AutomationElement.FromPoint(new System.Windows.Point(Cursor.Position.X, Cursor.Position.Y));
+                      if (ae.Current.ClassName == "UIItem") {
+                        //MessageBox.Show(GetItemPath(Convert.ToInt32(ae.Current.AutomationId)));
+                      } else if (ae.Current.ClassName == "UIProperty") {
+                        AutomationElement aeParent = TreeWalker.ContentViewWalker.GetParent(ae);
+                        //MessageBox.Show(GetItemPath(Convert.ToInt32(aeParent.Current.AutomationId)));
+                      }
+                      
+                    }
 								}
 
 								if (m.Msg == (int)WindowsAPI.WndMsg.WM_PAINT)
@@ -3353,14 +3278,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 						return IsItemFolder(ifv2, iIndex);
 				}
 
-				public static IntPtr SysListViewHandle;
+        public IntPtr SysListViewHandle { get; set; }
 				public static bool IsBool;
-				public static IntPtr VScrollHandle;
-				public static WindowsAPI.IDropTarget SysListviewDT;
-				public static IFolderView2 ifv2;
+        public IntPtr VScrollHandle { get; set; }
+        public WindowsAPI.IDropTarget SysListviewDT { get; set; }
+        public IFolderView2 ifv2 { get; set; }
 				private bool IsSecondSubclass = false;
 				BackgroundWorker bgw = new BackgroundWorker();
-				public static IShellView isvv;
+        public IShellView isvv { get; set; }
+        
 				internal void FireContentEnumerationComplete()
 				{
 						if (ViewEnumerationComplete != null)
@@ -3369,8 +3295,17 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 								//BeginInvoke(new MethodInvoker(
 								//    delegate
 								//    {
-												IntPtr n = WindowsAPI.FindWindowEx(this.Handle, IntPtr.Zero, "ExplorerBrowserControl", null);
-												IntPtr z = WindowsAPI.FindWindowEx(n, IntPtr.Zero, "DUIViewWndClassName", null);
+                        Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
+                        IntPtr view = IntPtr.Zero;
+                        HResult hr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
+                        IShellView isv = (IShellView)Marshal.GetObjectForIUnknown(view);
+                        _IServiceProvider isp = (_IServiceProvider)isv;
+                        object IShellBrowserObject;
+                        isp.QueryService(Guid.Parse(ExplorerBrowserIIDGuid.IShellBrowser), Guid.Parse("00000000-0000-0000-C000-000000000046"), out IShellBrowserObject);
+                        IShellBrowser isbr = (IShellBrowser)IShellBrowserObject;
+                        IntPtr explorerBrowserContainerHandle = IntPtr.Zero;
+                        isbr.GetWindow(out explorerBrowserContainerHandle);
+												IntPtr z = WindowsAPI.FindWindowEx(explorerBrowserContainerHandle, IntPtr.Zero, "DUIViewWndClassName", null);
 												IntPtr o = WindowsAPI.FindWindowEx(z, IntPtr.Zero, "DirectUIHWND", null);
 												IntPtr s1 = WindowsAPI.FindWindowEx(o, IntPtr.Zero, "CtrlNotifySink", null);
 												IntPtr s2 = WindowsAPI.FindWindowEx(o, s1, "CtrlNotifySink", null);
@@ -3386,17 +3321,13 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 												VScrollHandle = WindowsAPI.FindWindowEx(s5, IntPtr.Zero, "ScrollBar", null);
 												WindowsAPI.RECTW rscroll = new WindowsAPI.RECTW();
 												WindowsAPI.GetWindowRect(VScrollHandle, ref rscroll);
-												Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
-												IntPtr view = IntPtr.Zero;
-												HResult hr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
-												IShellView isv = (IShellView)Marshal.GetObjectForIUnknown(view);
-
+												
 												AvailableVisibleColumns = AvailableColumns(isv, false);
 												SysListviewDT = (WindowsAPI.IDropTarget)isv;
 
 												Marshal.ReleaseComObject(isv);
 												WindowsAPI.RevokeDragDrop(SysListViewHandle);
-												ShellViewDragDrop DropTarget = new ShellViewDragDrop();
+                        ShellViewDragDrop DropTarget = new ShellViewDragDrop(SysListviewDT);
 												WindowsAPI.RegisterDragDrop(SysListViewHandle, DropTarget);
 												
 												GC.WaitForPendingFinalizers();
@@ -3449,7 +3380,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				internal void vItemHot(string classname, string itemname, Rectangle rec, int index, bool Isback, Rectangle ImageRec, Rectangle TextRec)
 				{
 						
-						if (ItemHot != null)
+						//if (ItemHot != null)
 						{
 								ExplorerAUItemEventArgs e = new ExplorerAUItemEventArgs();
 								e.ElementClass = classname;
@@ -3509,15 +3440,19 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				{
 						throw new NotImplementedException();
 				}
-		}
+
+
+    }
 
 		/// <summary>
 		/// Custom DragDrop handler class
 		/// </summary>
 		public class ShellViewDragDrop : WindowsAPI.IDropTarget
 		{
-				public ShellViewDragDrop()
+      private WindowsAPI.IDropTarget _oldDropTarget;
+				public ShellViewDragDrop(WindowsAPI.IDropTarget oldTarget)
 				{
+          _oldDropTarget = oldTarget;
 				}
 
 				[StructLayout(LayoutKind.Sequential)]
@@ -3547,7 +3482,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 						AsyncDataObject pADataObject = new AsyncDataObject(pDataObj);
 						pADataObject.SetAsyncMode(true);
-						ExplorerBrowser.SysListviewDT.DragEnter(pADataObject, grfKeyState, pt, ref pdwEffect);
+            _oldDropTarget.DragEnter(pADataObject, grfKeyState, pt, ref pdwEffect);
 						
 
 				}
@@ -3555,15 +3490,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 		 
 				public void DragOver(int grfKeyState, Point pt, ref int pdwEffect)
 				{
-						
-						ExplorerBrowser.SysListviewDT.DragOver(grfKeyState, pt, ref pdwEffect);
+
+          _oldDropTarget.DragOver(grfKeyState, pt, ref pdwEffect);
 
 				}
 
 				public void DragLeave()
 				{
 
-						ExplorerBrowser.SysListviewDT.DragLeave();
+          _oldDropTarget.DragLeave();
 
 				}
 				
@@ -3692,7 +3627,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				{
 						AsyncDataObject pADataObject = new AsyncDataObject(pDataObj);
 						pADataObject.SetAsyncMode(true);
-						ExplorerBrowser.SysListviewDT.Drop(pADataObject, grfKeyState, pt, ref pdwEffect);
+            _oldDropTarget.Drop(pADataObject, grfKeyState, pt, ref pdwEffect);
 				}
 
 				void mi_Click(object sender, EventArgs e)

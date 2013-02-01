@@ -22,6 +22,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
         internal const string ICommDlgBrowser3 = "c8ad25a1-3294-41ee-8165-71174bd01c57";
         internal const string IDataObject = "0000010E-0000-0000-C000-000000000046";
         internal const string IShellFolderView = "37A378C0-F82D-11CE-AE65-08002B2E1262";
+        internal const string IShellBrowser = "000214e2-0000-0000-c000-000000000046";
 
     }
 

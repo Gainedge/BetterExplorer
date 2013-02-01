@@ -461,6 +461,21 @@ namespace Microsoft.WindowsAPICodePack.Shell
             }
         }
 
+        public bool IsHidden {
+          get {
+            try {
+              ShellNativeMethods.ShellFileGetAttributesOptions sfgao;
+              NativeShellItem.GetAttributes(ShellNativeMethods.ShellFileGetAttributesOptions.Hidden, out sfgao);
+              return (sfgao & ShellNativeMethods.ShellFileGetAttributesOptions.Hidden) != 0;
+            } catch (FileNotFoundException) {
+              return false;
+            } catch (NullReferenceException) {
+              // NativeShellItem is null
+              return false;
+            }
+          }
+        }
+
         public bool IsShared
         {
             get

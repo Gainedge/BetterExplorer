@@ -169,7 +169,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\BExplorer\BetterExplorer\Microsoft.WindowsAPICodePack.dll</HintPath>
+      <HintPath>bin\Debug\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -188,6 +188,8 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationClient" />
+    <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -196,17 +198,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Automation\AutomationElement.cs" />
-    <Compile Include="Automation\AutomationElementFactory.cs" />
-    <Compile Include="Automation\AutomationManager.cs" />
-    <Compile Include="Automation\IUIAutomation.cs" />
-    <Compile Include="Automation\IUIAutomationElement.cs" />
-    <Compile Include="Automation\IUIAutomationGridPattern.cs" />
-    <Compile Include="Automation\IUIAutomationRegistrar.cs" />
-    <Compile Include="Automation\IUIAutomationScrollPattern.cs" />
-    <Compile Include="Automation\IUIAutomationSelectionItemPattern.cs" />
-    <Compile Include="Automation\IUIAutomationTreeWalker.cs" />
-    <Compile Include="Automation\UIAutomationPropertyInfo.cs" />
     <Compile Include="BitHelper.cs" />
     <Compile Include="Common\EnumUnknown.cs" />
     <Compile Include="Common\EventHandlerExtensionMethods.cs" />
@@ -454,6 +445,7 @@
   <ItemGroup>
     <CodeAnalysisDictionary Include="CustomDictionary.xml" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
