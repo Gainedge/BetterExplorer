@@ -3098,10 +3098,10 @@
   </Style>
   <ControlTemplate x:Key="BackstageTabItemControlTemplate" TargetType="{x:Type Fluent:BackstageTabItem}">
     <Grid Background="#00000000">
-      <Border x:Name="hoverBorder" Margin="0,0,1,0" Background="{Binding Background,&#xA;                                         RelativeSource={RelativeSource FindAncestor,&#xA;                                                                        AncestorType={x:Type Fluent:BackstageTabControl}}}" BorderBrush="{x:Null}" BorderThickness="0" Visibility="Collapsed">
+      <Border x:Name="hoverBorder" Margin="0,0,1,0" Background="{Binding Background,&#xD;&#xA;                                         RelativeSource={RelativeSource FindAncestor,&#xD;&#xA;                                                                        AncestorType={x:Type Fluent:BackstageTabControl}}}" BorderBrush="{x:Null}" BorderThickness="0" Visibility="Collapsed">
         <Border Background="#BFFFFFFF" BorderBrush="#4C000000" BorderThickness="0,1" />
       </Border>
-      <Border x:Name="selectedBorder" Margin="0" Background="{Binding Background,&#xA;                                         RelativeSource={RelativeSource FindAncestor,&#xA;                                                                        AncestorType={x:Type Fluent:BackstageTabControl}}}" BorderBrush="#FF000463" BorderThickness="0" Visibility="Collapsed">
+      <Border x:Name="selectedBorder" Margin="0" Background="{Binding Background,&#xD;&#xA;                                         RelativeSource={RelativeSource FindAncestor,&#xD;&#xA;                                                                        AncestorType={x:Type Fluent:BackstageTabControl}}}" BorderBrush="#FF000463" BorderThickness="0" Visibility="Collapsed">
         <Grid Width="Auto" Margin="0" HorizontalAlignment="Stretch">
           <Border BorderBrush="#7F000000" BorderThickness="0,1">
             <Border.Background>
@@ -3155,7 +3155,7 @@
     <Setter Property="Template" Value="{StaticResource BackstageTabItemControlTemplate}" />
     <Setter Property="FocusVisualStyle" Value="{StaticResource ControlStyleEmptyFocus}" />
     <Setter Property="Height" Value="37" />
-    <Setter Property="Background" Value="{Binding Background,&#xA;                                RelativeSource={RelativeSource FindAncestor,&#xA;                                                               AncestorType={x:Type Fluent:BackstageTabControl}}}" />
+    <Setter Property="Background" Value="{Binding Background,&#xD;&#xA;                                RelativeSource={RelativeSource FindAncestor,&#xD;&#xA;                                                               AncestorType={x:Type Fluent:BackstageTabControl}}}" />
     <Setter Property="Margin" Value="0,1" />
   </Style>
   <ControlTemplate x:Key="ButtonBackstageControlTemplate" TargetType="{x:Type Fluent:Button}">

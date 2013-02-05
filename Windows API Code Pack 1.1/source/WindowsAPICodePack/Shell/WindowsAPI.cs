@@ -550,6 +550,8 @@ namespace WindowsHelper
         }
         #endregion
 
+        [DllImport("shell32.dll")]
+        public static extern int SHGetIDListFromObject([MarshalAs(UnmanagedType.IUnknown)] object punk, out IntPtr ppidl);
 
         [DllImport("wininet.dll")]
         public static extern bool InternetGetConnectedState(int lpSFlags, int dwReserved);

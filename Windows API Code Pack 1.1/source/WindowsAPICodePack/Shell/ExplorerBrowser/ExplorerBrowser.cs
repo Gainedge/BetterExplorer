@@ -269,10 +269,13 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 				private ShellObjectCollection itemsCollection;
 
-				public string GetItemPath(int Index)
+				public ShellObject GetItem(int Index)
 				{
-						IFolderView2 ifv2 = GetFolderView2();
-						return Marshal.PtrToStringAuto(GetItemName(ifv2, Index));
+				  IFolderView2 ifv2 = GetFolderView2();
+          IShellItem pPIDL = null;
+          Guid ishellItemGuid = Guid.Parse(ShellIIDGuid.IShellItem);
+          ifv2.GetItem(Index,ref ishellItemGuid, out pPIDL);
+          return ShellObjectFactory.Create(pPIDL);
 
 				}
 				/// <summary>
@@ -1003,8 +1006,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 								try
 								{
-										uint iAttribute;
-										SHParseDisplayName(pathNew, IntPtr.Zero, out pIDL, (uint)0, out iAttribute);
+                  var item = Items.Where(c => c.ParsingName.ToLowerInvariant().Replace(@"\\", @"\") == pathNew.ToLowerInvariant().Replace(@"\\", @"\")).SingleOrDefault();
+                  if (item != null)
+                    WindowsAPI.SHGetIDListFromObject(item.NativeShellItem, out pIDL);
 
 										if (pIDL != IntPtr.Zero)
 										{
@@ -1032,12 +1036,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 								try
 								{
-										uint iAttribute;
-										ShellLibrary ll = ShellLibrary.Load(pathNew, false);
+										ShellLibrary libraryFolder = ShellLibrary.Load(pathNew, false);
 
-										if (ll.PIDL != IntPtr.Zero)
+										if (libraryFolder.PIDL != IntPtr.Zero)
 										{
-												IntPtr pIDLRltv = ILFindLastID(ll.PIDL);
+												IntPtr pIDLRltv = ILFindLastID(libraryFolder.PIDL);
 												if (pIDLRltv != IntPtr.Zero)
 												{
 														shv.SelectItem(pIDLRltv, WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS |
@@ -1057,68 +1060,62 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 						
 				}
 
+        public void DoRename(IntPtr apidl) {
+
+          IntPtr pIDL = IntPtr.Zero;
+          IShellView shv = GetShellView();
+
+          try {
+            uint iAttribute;
+
+            if (apidl != IntPtr.Zero) {
+              IntPtr pIDLRltv = ILFindLastID(apidl);
+              if (pIDLRltv != IntPtr.Zero) {
+                shv.SelectItem(pIDLRltv, WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS |
+                     WindowsAPI.SVSIF.SVSI_ENSUREVISIBLE | WindowsAPI.SVSIF.SVSI_EDIT);
+              }
+            }
+          } finally {
+            if (shv != null)
+              Marshal.ReleaseComObject(shv);
+
+            if (pIDL != IntPtr.Zero)
+              Marshal.FreeCoTaskMem(pIDL);
+          }
+
+        }
+
 				public void SelectItem(ShellObject Item)
 				{
+          IntPtr pPIDL = IntPtr.Zero;
+					IShellView shv = GetShellView();
+            
+					try
+					{
+                    
+              WindowsAPI.SHGetIDListFromObject(Item.NativeShellItem, out pPIDL);
 
+							if (pPIDL != IntPtr.Zero)
+							{
+									IntPtr pIDLRltv = ILFindLastID(pPIDL);
+									if (pIDLRltv != IntPtr.Zero)
+									{
+											shv.SelectItem(pIDLRltv, WindowsAPI.SVSIF.SVSI_SELECT);
+									}
+							}
+					}
+					finally
+					{
+							if (shv != null)
+									Marshal.ReleaseComObject(shv);
 
-								IntPtr pIDL = IntPtr.Zero;
-								IShellView shv = GetShellView();
-
-								try
-								{
-										uint iAttribute;
-										SHParseDisplayName(Item.ParsingName.Replace(@"\\", @"\"), IntPtr.Zero, out pIDL, (uint)0, out iAttribute);
-
-										if (pIDL != IntPtr.Zero)
-										{
-												IntPtr pIDLRltv = ILFindLastID(pIDL);
-												if (pIDLRltv != IntPtr.Zero)
-												{
-														shv.SelectItem(pIDLRltv, WindowsAPI.SVSIF.SVSI_SELECT);
-												}
-										}
-								}
-								finally
-								{
-										if (shv != null)
-												Marshal.ReleaseComObject(shv);
-
-										if (pIDL != IntPtr.Zero)
-												Marshal.FreeCoTaskMem(pIDL);
-								}
+							if (pPIDL != IntPtr.Zero)
+									Marshal.FreeCoTaskMem(pPIDL);
+					}
 
 				}
 
-				public void DoRename(IntPtr apidl)
-				{
-
-						IntPtr pIDL = IntPtr.Zero;
-						IShellView shv = GetShellView();
-
-						try
-						{
-								uint iAttribute;
-
-								if (apidl != IntPtr.Zero)
-								{
-										IntPtr pIDLRltv = ILFindLastID(apidl);
-										if (pIDLRltv != IntPtr.Zero)
-										{
-												shv.SelectItem(pIDLRltv, WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS |
-														 WindowsAPI.SVSIF.SVSI_ENSUREVISIBLE | WindowsAPI.SVSIF.SVSI_EDIT);
-										}
-								}
-						}
-						finally
-						{
-								if (shv != null)
-										Marshal.ReleaseComObject(shv);
-
-								if (pIDL != IntPtr.Zero)
-										Marshal.FreeCoTaskMem(pIDL);
-						}
-
-				}
+				
 
 				void OnEscKey()
 				{
@@ -2252,6 +2249,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				bool IsMouseClickOnHeader = false;
 				bool IsMouseClickOutsideLV = true;
 				bool IsGetHWnd = false;
+        Rectangle LastItemRect = new Rectangle();
 				bool IMessageFilter.PreFilterMessage(ref Message m)
 				{
 						HResult hr = HResult.False;
@@ -2572,16 +2570,25 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 												if (ExplorerBrowserMouseLeave != null)
 														ExplorerBrowserMouseLeave.Invoke(this, null);
 										}
-
-
+                    //MessageBox.Show(LastItemRect.X.ToString() + "/" + LastItemRect.Location.Y + " - " + Cursor.Position.ToString());
                     if (reclv.Contains(Cursor.Position)) 
                     {
-                      AutomationElement ae = AutomationElement.FromPoint(new System.Windows.Point(Cursor.Position.X, Cursor.Position.Y));
-                      if (ae.Current.ClassName == "UIItem") {
-                        //MessageBox.Show(GetItemPath(Convert.ToInt32(ae.Current.AutomationId)));
-                      } else if (ae.Current.ClassName == "UIProperty") {
-                        AutomationElement aeParent = TreeWalker.ContentViewWalker.GetParent(ae);
-                        //MessageBox.Show(GetItemPath(Convert.ToInt32(aeParent.Current.AutomationId)));
+                      //MessageBox.Show(LastItemRect.ToString() + " - " + Cursor.Position.ToString());
+                      if (!((LastItemRect.X < Cursor.Position.X && LastItemRect.Y < Cursor.Position.Y)
+                          && (LastItemRect.Right > Cursor.Position.X && LastItemRect.Bottom > Cursor.Position.Y))) 
+                      {
+                        AutomationElement ae = AutomationElement.FromPoint(new System.Windows.Point(Cursor.Position.X, Cursor.Position.Y));
+
+                        LastItemRect = new Rectangle((int)ae.Current.BoundingRectangle.Location.X, (int)ae.Current.BoundingRectangle.Location.Y, (int)ae.Current.BoundingRectangle.Width, (int)ae.Current.BoundingRectangle.Height);
+                        if (ae.Current.ClassName == "UIItem") {
+                          var item = GetItem(Convert.ToInt32(ae.Current.AutomationId));
+                          vItemHot(ae.Current.ClassName, item, ae.Current.BoundingRectangle, Convert.ToInt32(ae.Current.AutomationId), false);
+                        } else if (ae.Current.ClassName == "UIProperty") {
+                          AutomationElement aeParent = TreeWalker.ContentViewWalker.GetParent(ae);
+                          var item = GetItem(Convert.ToInt32(aeParent.Current.AutomationId));
+                          LastItemRect = new Rectangle((int)aeParent.Current.BoundingRectangle.Location.X, (int)aeParent.Current.BoundingRectangle.Location.Y, (int)aeParent.Current.BoundingRectangle.Width, (int)aeParent.Current.BoundingRectangle.Height);
+                          vItemHot(aeParent.Current.ClassName, item, aeParent.Current.BoundingRectangle, Convert.ToInt32(aeParent.Current.AutomationId), false);
+                        }
                       }
                       
                     }
@@ -3377,18 +3384,16 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 						}
 				}
 
-				internal void vItemHot(string classname, string itemname, Rectangle rec, int index, bool Isback, Rectangle ImageRec, Rectangle TextRec)
+				internal void vItemHot(string classname, ShellObject item, System.Windows.Rect rec, int index, bool Isback)
 				{
 						
-						//if (ItemHot != null)
+						if (ItemHot != null)
 						{
 								ExplorerAUItemEventArgs e = new ExplorerAUItemEventArgs();
+                e.Item = item;
 								e.ElementClass = classname;
-								e.ElementName = itemname;
 								e.ElementRectangle = rec;
 								e.Elementindex = index;
-								e.ImageRec = ImageRec;
-								e.TextRec = TextRec;
 								e.IsElementBackground = Isback;
 								ItemHot.Invoke(this, e);
 						}

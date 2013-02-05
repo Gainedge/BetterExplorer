@@ -509,7 +509,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
         void GetSortColumns(out IntPtr rgSortColumns, int cColumns);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void GetItem(int iItem, ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out UIntPtr ppv);
+        void GetItem(int iItem, ref Guid riid, out IShellItem ppv);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void GetVisibleItem(int iStart, bool fPrevious, out int piItem);

@@ -1245,13 +1245,8 @@ namespace BetterExplorer
 
 			if (IsAfterFolderCreate)
 			{
-
-				if (!IsCompartibleRename)
-				{
-					Explorer.DoRename(LastPath.Replace(@"\\", @"\"), IsLibW);
-				}
+				Explorer.DoRename(LastPath.Replace(@"\\", @"\"), IsLibW);
 				IsAfterFolderCreate = false;
-
 			}
 
 
@@ -1265,169 +1260,6 @@ namespace BetterExplorer
 			//}
 		}
 
-		void Explorer_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
-		{
-			MessageBox.Show("over");
-		}
-
-		System.Windows.Forms.Timer thumbtimer = new System.Windows.Forms.Timer();
-		Boolean isPreviewShown = false;
-		int LastSelectedItemIndex = -2;
-		//PreviewMedia PicturePreview;
-		Rectangle ElRectangle;
-		string IIPath;
-
-		//ItemPopup Itmpop;
-		//void Explorer_ItemHot(object sender, ExplorerAUItemEventArgs e)
-		//{
-		//    //MessageBox.Show(Explorer.AvailableVisibleColumns[0].Width.ToString());
-		//    if (IsHFlyoutEnabled)
-		//    {
-		//        Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-		//                            (ThreadStart)(() =>
-		//                            {
-
-		//                                if (!e.IsElementBackground & e.Elementindex != -1)
-		//                                {
-		//                                    ElRectangle = e.ElementRectangle;
-		//                                    //MessageBox.Show(e.Elementindex.ToString());
-		//                                    string IPath = Explorer.GetItemPath(e.Elementindex);
-		//                                    IIPath = IPath;
-		//                                    string ext = Path.GetExtension(IPath);
-		//                                    System.Windows.Media.Brush ItemPopBGBrush;
-		//                                    if (Explorer.ItemIsFolder(e.Elementindex))
-		//                                    {
-		//                                        ItemPopBGBrush = System.Windows.Media.Brushes.Blue;
-		//                                    }
-		//                                    else
-		//                                    {
-		//                                        ItemPopBGBrush = System.Windows.Media.Brushes.Red;
-		//                                    }
-		//                                    if ((LastSelectedItemIndex != e.Elementindex && LastSelectedItemIndex != -2))
-		//                                    {
-
-		//                                        if (Itmpop != null)
-		//                                        {
-		//                                            //Itmpop.Close();
-		//                                            //Itmpop = null;
-		//                                            Itmpop.Visibility = System.Windows.Visibility.Hidden;
-		//                                            //Itmpop = new ItemPopup();
-		//                                            ExplorerBrowser.PopFX = e.ElementRectangle.Right;
-		//                                            ExplorerBrowser.PopFY = e.ElementRectangle.Top;
-		//                                            Itmpop.Owner = this;
-		//                                            if (Explorer.ContentOptions.ViewMode != ExplorerBrowserViewMode.Details)
-		//                                            {
-
-		//                                                Itmpop.ShowAtPosition(new System.Windows.Point(e.ImageRec.Right, e.ImageRec.Bottom),
-		//                                                    ItemPopBGBrush);
-		//                                            }
-		//                                            else
-		//                                            {
-
-		//                                                Itmpop.ShowAtPosition(new System.Windows.Point(e.TextRec.Left +
-		//                                                    Explorer.AvailableVisibleColumns[0].Width - 22, e.TextRec.Bottom),
-		//                                                      ItemPopBGBrush);
-		//                                            }
-		//                                        }
-
-		//                                    }
-
-		//                                    //if (ext.ToLowerInvariant() == ".jpg")
-		//                                    //{
-
-		//                                    //    if ((LastSelectedItemIndex == e.Elementindex || LastSelectedItemIndex == -2))
-		//                                    //    {
-		//                                    //        //if (PicturePreview != null)
-		//                                    //        //{
-		//                                    //        //    PicturePreview.Disposeimg();
-		//                                    //        //    PicturePreview.Dispose();
-		//                                    //        //    isPreviewShown = false;
-		//                                    //        //}
-		//                                    //        if (PicturePreview == null)
-		//                                    //        {
-		//                                    //            PicturePreview = new PreviewMedia();
-
-		//                                    //            PicturePreview.SetImage(IPath);
-		//                                    //            //Thread.Sleep(400);
-		//                                    //            //PicturePreview.LoadPreview(new System.Drawing.Point(e.ElementRectangle.Left, e.ElementRectangle.Bottom));
-
-		//                                    //            isPreviewShown = false;
-
-		//                                    //            thumbtimer.Start();
-		//                                    //        }
-
-
-		//                                    //        GC.WaitForPendingFinalizers();
-		//                                    //        GC.Collect();
-		//                                    //    }
-		//                                    //    else
-		//                                    //    {
-		//                                    //        thumbtimer.Stop();
-		//                                    //        if (PicturePreview != null)
-		//                                    //        {
-		//                                    //            PicturePreview.Disposeimg();
-		//                                    //            PicturePreview.Dispose();
-		//                                    //        }
-		//                                    //        PicturePreview = new PreviewMedia();
-		//                                    //        PicturePreview.SetImage(IPath);
-
-		//                                    //        //PicturePreview.LoadPreview(new System.Drawing.Point(e.ElementRectangle.Left, e.ElementRectangle.Bottom));
-
-		//                                    //        //isPreviewShown = true;
-
-		//                                    //        isPreviewShown = false;
-		//                                    //        thumbtimer.Start();
-		//                                    //        GC.WaitForPendingFinalizers();
-		//                                    //        GC.Collect();
-
-		//                                    //    }
-
-
-		//                                    //}
-		//                                    //else
-		//                                    //{
-		//                                    //    thumbtimer.Stop();
-		//                                    //    if (PicturePreview != null)
-		//                                    //    {
-		//                                    //        PicturePreview.Disposeimg();
-		//                                    //        PicturePreview.Dispose();
-		//                                    //        isPreviewShown = false;
-
-		//                                    //    }
-		//                                    //    GC.WaitForPendingFinalizers();
-		//                                    //    GC.Collect();
-
-		//                                    //}
-
-		//                                }
-		//                                else
-		//                                {
-		//                                    //thumbtimer.Stop();
-		//                                    //if (PicturePreview != null)
-		//                                    //{
-		//                                    //    PicturePreview.Disposeimg();
-		//                                    //    PicturePreview.Dispose(); 
-
-		//                                    //    isPreviewShown = false;
-		//                                    //}
-		//                                    //GC.WaitForPendingFinalizers();
-		//                                    //GC.Collect();
-		//                                    if (Itmpop != null)
-		//                                    {
-		//                                        //Itmpop.Close();
-		//                                        //Itmpop = null;
-		//                                        Itmpop.Visibility = System.Windows.Visibility.Hidden;
-		//                                        GC.WaitForPendingFinalizers();
-		//                                        GC.Collect();
-		//                                    }
-
-		//                                }
-		//                                LastSelectedItemIndex = e.Elementindex;
-		//                            }));
-		//    }
-
-		//}
-
 		public static bool IsFocusedItemHost()
 		{
 			UIElement elementWithFocus = Keyboard.FocusedElement as UIElement;
@@ -1435,28 +1267,7 @@ namespace BetterExplorer
 			return elementWithFocus.IsKeyboardFocused;
 		}
 
-		void thumbtimer_Tick(object sender, EventArgs e)
-		{
-			//Win32Point p = new Win32Point();
-			//GetCursorPos(ref p);
-			////WindowsAPI.SetParent(PicturePreview.Handle, this.Handle);
-			//WindowsAPI.ShowWindow((int)PicturePreview.Handle, 4);// PicturePreview.Show();
-			//PicturePreview.Left = p.X + 5;
-
-			//PicturePreview.Top = p.Y + 5;
-			//PicturePreview.Opacity = 100;
-			(sender as System.Windows.Forms.Timer).Stop();
-			if (!isPreviewShown)
-			{
-				//PicturePreview.LoadPreview(new System.Drawing.Point(ElRectangle.Left, ElRectangle.Bottom));
-
-				isPreviewShown = true;
-			}
-
-			GC.WaitForPendingFinalizers();
-			GC.Collect();
-		}
-
+		
 		bool IsCancel = false;
 		void Explorer_NavigationPending(object sender, NavigationPendingEventArgs e)
 		{
@@ -3253,7 +3064,7 @@ namespace BetterExplorer
 
 
 			IsAfterRename = false;
-			Explorer.DoRename(LastPath.Replace(@"\\", @"\"), IsLib);
+			//Explorer.DoRename(LastPath.Replace(@"\\", @"\"), IsLib);
 
 
 
@@ -4063,9 +3874,9 @@ namespace BetterExplorer
 									 Explorer.ClientSizeChanged += new EventHandler(ExplorerBrowserControl_ClientSizeChanged);
 									 Explorer.Paint += new System.Windows.Forms.PaintEventHandler(ExplorerBrowserControl_Paint);
 									 Explorer.ViewChanged += new EventHandler<ViewChangedEventArgs>(Explorer_ViewChanged);
-									 //Explorer.ItemHot += new EventHandler<ExplorerAUItemEventArgs>(Explorer_ItemHot);
+                   Explorer.ItemHot += Explorer_ItemHot;
 									 Explorer.ExplorerBrowserMouseLeave += new EventHandler(Explorer_ExplorerBrowserMouseLeave);
-									 Explorer.MouseMove += new System.Windows.Forms.MouseEventHandler(Explorer_MouseMove);
+
 									 Explorer.DragDrop += new System.Windows.Forms.DragEventHandler(Explorer_DragDrop);
 									 IsCalledFromLoading = true;
 									 WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
@@ -4507,6 +4318,10 @@ namespace BetterExplorer
                 tabControl1.SelectedIndex = 0;
 
 		}
+
+    void Explorer_ItemHot(object sender, ExplorerAUItemEventArgs e) {
+     // MessageBox.Show(e.Item.ParsingName);
+    }
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
     private const int WM_VSCROLL = 277;
@@ -6519,9 +6334,9 @@ namespace BetterExplorer
 			Explorer.ClientSizeChanged += new EventHandler(ExplorerBrowserControl_ClientSizeChanged);
 			Explorer.Paint += new System.Windows.Forms.PaintEventHandler(ExplorerBrowserControl_Paint);
 			Explorer.ViewChanged += new EventHandler<ViewChangedEventArgs>(Explorer_ViewChanged);
-			//Explorer.ItemHot += new EventHandler<ExplorerAUItemEventArgs>(Explorer_ItemHot);
+			Explorer.ItemHot += new EventHandler<ExplorerAUItemEventArgs>(Explorer_ItemHot);
 			Explorer.ExplorerBrowserMouseLeave += new EventHandler(Explorer_ExplorerBrowserMouseLeave);
-			Explorer.MouseMove += new System.Windows.Forms.MouseEventHandler(Explorer_MouseMove);
+
 
 			isGoingBackOrForward = true;
 

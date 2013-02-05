@@ -61,12 +61,10 @@ namespace Microsoft.WindowsAPICodePack.Controls
     {
         
         public string ElementClass { get; set; }
-        public string ElementName { get; set; }
-        public Rectangle ElementRectangle { get; set; }
+        public System.Windows.Rect ElementRectangle { get; set; }
+        public ShellObject Item { get; set; }
         public int Elementindex { get; set; }
         public bool IsElementBackground { get; set; }
-        public Rectangle ImageRec { get; set; }
-        public Rectangle TextRec { get; set; }
 
     }
 }
