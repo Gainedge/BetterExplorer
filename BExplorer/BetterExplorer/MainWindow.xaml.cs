@@ -2324,11 +2324,12 @@ namespace BetterExplorer
 			ShellContainer CurrentLoc = (ShellContainer)Explorer.NavigationLog.CurrentLocation;
 			if (FirstSelItem != null)
 			{
-				string pth = Path.GetExtension(FirstSelItem.ParsingName).ToLowerInvariant();
+				//string pth = Path.GetExtension(FirstSelItem.ParsingName).ToLowerInvariant();
+        string pth = FirstSelItem.Properties.System.ItemTypeText.Value.ToLowerInvariant();
 				foreach (ShellObject item in CurrentLoc)
 				{
-					if (Path.GetExtension(item.ParsingName).ToLowerInvariant() ==
-						pth)
+					//if (Path.GetExtension(item.ParsingName).ToLowerInvariant() == pth)
+          if (item.Properties.System.ItemTypeText.Value.ToLowerInvariant() == pth)
 					{
 						Explorer.SelectItem(item);
 					}
@@ -4158,17 +4159,8 @@ namespace BetterExplorer
 									{
 										if (Tabs.Length == 0 || !IsrestoreTabs)
 										{
-											if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
-												Explorer.Navigate(ShellObject.FromParsingName("shell:" + StartUpLocation));
-											else
-												try
-												{
-													Explorer.Navigate(ShellObject.FromParsingName(StartUpLocation));
-												}
-												catch
-												{
-													Explorer.Navigate((ShellObject)KnownFolders.Libraries);
-												}
+                      ShellObject sho = GetShellObjectFromLocation(StartUpLocation);
+                      Explorer.Navigate(sho);
 										}
 										if (IsrestoreTabs)
 										{
@@ -4189,13 +4181,8 @@ namespace BetterExplorer
 													}
 													if (i == Tabs.Count())
 													{
-														if (str.IndexOf("::") == 0)
-														{
-
-															Explorer.Navigate(ShellObject.FromParsingName("shell:" + str));
-														}
-														else
-															Explorer.Navigate(ShellObject.FromParsingName(str.Replace("\"", "")));
+                            ShellObject sho = GetShellObjectFromLocation(str);
+                            Explorer.Navigate(sho);
 														(tabControl1.SelectedItem as CloseableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
 													}
 												}
@@ -4348,6 +4335,9 @@ namespace BetterExplorer
         } catch {
           sho = (ShellObject)KnownFolders.Libraries;
         }
+      if (Path.GetExtension(Location).ToLowerInvariant() == ".library-ms") {
+        sho = (ShellObject)ShellLibrary.Load(Path.GetFileNameWithoutExtension(Location), true);
+      }
       return sho;
     }
 
@@ -7996,11 +7986,7 @@ namespace BetterExplorer
 			CloseableTabItem newt = new CloseableTabItem();
 			CreateTabbarRKMenu(newt);
 
-			ShellObject DefPath;
-			if (Location.IndexOf("::") == 0 && Location.IndexOf(@"\") == -1)
-				DefPath = ShellObject.FromParsingName("shell:" + Location);
-			else
-				DefPath = ShellObject.FromParsingName(Location);
+      ShellObject DefPath = GetShellObjectFromLocation(Location);
 			DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 			DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			newt.Header = DefPath.GetDisplayName(DisplayNameType.Default);

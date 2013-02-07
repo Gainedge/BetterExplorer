@@ -235,7 +235,10 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DesktopWindowManager\GlassWindow.cs" />
+    <Compile Include="ExplorerBrowser\BHID.cs" />
+    <Compile Include="ExplorerBrowser\Collumns.cs" />
     <Compile Include="ExplorerBrowser\CommonControlException.cs" />
+    <Compile Include="ExplorerBrowser\DropData.cs" />
     <Compile Include="ExplorerBrowser\ExplorerBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -251,6 +254,7 @@
     <Compile Include="ExplorerBrowser\NavigationLogEnums.cs" />
     <Compile Include="ExplorerBrowser\NavigationLogEvents.cs" />
     <Compile Include="ExplorerBrowser\NavigationOptions.cs" />
+    <Compile Include="ExplorerBrowser\ShellViewDragDrop.cs" />
     <Compile Include="FileOperation.cs" />
     <Compile Include="FileOperationFlags.cs" />
     <Compile Include="FileOperationProgressSink.cs" />
