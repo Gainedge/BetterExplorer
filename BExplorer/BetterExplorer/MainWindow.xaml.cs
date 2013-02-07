@@ -61,6 +61,7 @@ namespace BetterExplorer
 		bool IsNavigationPaneEnabled;
 		bool isCheckModeEnabled;
 		bool IsExtendedFileOpEnabled;
+    bool IsCloseLastTabCloseApp;
 		public bool IsrestoreTabs;
 		bool IsUpdateCheck;
 	  bool IsUpdateCheckStartup;
@@ -248,6 +249,7 @@ namespace BetterExplorer
 			rks.SetValue(@"AutoSwitchApplicationTools", GetIntegerFromBoolean(asApplication));
 			rks.SetValue(@"AutoSwitchLibraryTools", GetIntegerFromBoolean(asLibrary));
 			rks.SetValue(@"AutoSwitchDriveTools", GetIntegerFromBoolean(asDrive));
+      rks.SetValue(@"IsLastTabCloseApp", GetIntegerFromBoolean(this.IsCloseLastTabCloseApp));
       if (this.IsConsoleShown)
         rks.SetValue(@"CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
       rks.SetValue(@"IsConsoleShown", this.IsConsoleShown ? 1 : 0);
@@ -558,7 +560,8 @@ namespace BetterExplorer
 									}
 									catch (Exception ex)
 									{
-										MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error); 
+                    //FIXME: I disable this message becasue of strange null after filter
+										//MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error); 
 									}
 									Separator sp = new Separator();
 									sp.Focusable = false;
@@ -3992,6 +3995,10 @@ namespace BetterExplorer
 
 									chkIsRestoreTabs.IsChecked = IsrestoreTabs;
 
+                  int IsLastTabCloseApp = (int)rks.GetValue(@"IsLastTabCloseApp", 1);
+                  IsCloseLastTabCloseApp = (IsLastTabCloseApp == 1);
+                  this.chkIsLastTabCloseApp.IsChecked = IsCloseLastTabCloseApp;
+
 									int LogActions = (int)rks.GetValue(@"EnableActionLog", 0);
 
 									canlogactions = (LogActions == 1);
@@ -4329,6 +4336,19 @@ namespace BetterExplorer
 
     void InternalRichTextBox_TextChanged(object sender, EventArgs e) {
       ctrlConsole.ScrollToBottom();
+    }
+
+    public ShellObject GetShellObjectFromLocation(string Location) {
+      ShellObject sho;
+      if (Location.IndexOf("::") == 0 && Location.IndexOf(@"\") == -1)
+        sho = ShellObject.FromParsingName("shell:" + Location);
+      else
+        try {
+          sho = ShellObject.FromParsingName(Location);
+        } catch {
+          sho = (ShellObject)KnownFolders.Libraries;
+        }
+      return sho;
     }
 
 		#region Old Search Code
@@ -7621,7 +7641,11 @@ namespace BetterExplorer
 		{
 			if (thetab.Index == 0 && tabControl1.Items.Count == 1)
 			{
-				Close();
+        if (this.IsCloseLastTabCloseApp)
+          Close();
+        else {
+          Explorer.Navigate(this.GetShellObjectFromLocation(this.StartUpLocation));
+        }
 				return;
 			}
 
@@ -8611,6 +8635,10 @@ namespace BetterExplorer
         if (ctrlConsole.IsProcessRunning)
           ctrlConsole.StopProcess();
       }
+    }
+
+    private void chkIsLastTabCloseApp_Click(object sender, RoutedEventArgs e) {
+      this.IsCloseLastTabCloseApp = this.chkIsLastTabCloseApp.IsChecked.Value;
     }
 
 	}

@@ -1087,6 +1087,7 @@
                                                          Content="{StaticResource chkTabBarBottomCP}"
                                                          GroupName="tba" />
                                         </StackPanel>
+                                        
                                         <Ribbon:SeparatorTabItem Margin="0,100,0,0"
                                                                  VerticalAlignment="Top"
                                                                  Header="{StaticResource sepSavedTabsCP}"
@@ -1123,6 +1124,10 @@
                                                    HorizontalAlignment="Left"
                                                    VerticalAlignment="Top"
                                                    Text="lblSavedTabsWarningCP" />
+                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,230,0,0"
+                                                                 Header="Actions"
+                                                                 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <Ribbon:CheckBox x:Name="chkIsLastTabCloseApp" Click="chkIsLastTabCloseApp_Click"  Header="Closing last Tab closes Application" Margin="7,265,0,0" VerticalAlignment="Top" Height="22"/>
                                     </Grid>
                                 </TabItem>
                             </TabControl>

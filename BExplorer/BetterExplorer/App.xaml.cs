@@ -221,6 +221,7 @@ namespace BetterExplorer
         }
 
 
+        
         /// <summary>
         /// Single instance callback handler.
         /// </summary>
@@ -284,31 +285,11 @@ namespace BetterExplorer
                             }
                             else
                             {
-                                    if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
-                                        sho = ShellObject.FromParsingName("shell:" + StartUpLocation);
-                                    else
-                                        try
-                                        {
-                                            sho = ShellObject.FromParsingName(StartUpLocation);
-                                        }
-                                        catch
-                                        {
-                                            sho = (ShellObject)KnownFolders.Libraries;
-                                        }
+                              sho = win.GetShellObjectFromLocation(StartUpLocation);
                             }
                         }
                         else
-                            if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
-                                sho = ShellObject.FromParsingName("shell:" + StartUpLocation);
-                            else
-                                try
-                                {
-                                    sho = ShellObject.FromParsingName(StartUpLocation);
-                                }
-                                catch
-                                {
-                                    sho = (ShellObject)KnownFolders.Libraries;
-                                }
+                          sho = win.GetShellObjectFromLocation(StartUpLocation);
 
                         sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
                         sho.Thumbnail.CurrentSize = new Size(16, 16);
