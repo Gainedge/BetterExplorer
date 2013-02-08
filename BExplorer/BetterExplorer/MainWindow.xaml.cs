@@ -1855,114 +1855,94 @@ namespace BetterExplorer
 
 								// set up Open With button
 								List<string> iiii = new List<string>();
-								if (isFuncAvail)
-								{
+                if (isFuncAvail) {
 
-									string extension =
-										System.IO.Path.GetExtension(SelectedItem.ParsingName);
-									iiii = Explorer.RecommendedPrograms(extension);
-									MenuItem mid = new MenuItem();
-									defapp = WindowsAPI.GetAssoc(extension, WindowsAPI.AssocF.Verify,
-														WindowsAPI.AssocStr.Executable);
-									if (defapp != "" && defapp != "\"%1\"" && extension != "")
-									{
+                  string extension =
+                    System.IO.Path.GetExtension(SelectedItem.ParsingName);
+                  iiii = Explorer.RecommendedPrograms(extension);
+                  
+                    MenuItem mid = new MenuItem();
+                    defapp = WindowsAPI.GetAssoc(extension, WindowsAPI.AssocF.Verify,
+                              WindowsAPI.AssocStr.Executable);
+                    if (File.Exists(defapp) && defapp.ToLowerInvariant() != Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),"shell32.dll").ToLowerInvariant()) {
 
-										string DefAppName = WindowsAPI.GetAssoc(extension, WindowsAPI.AssocF.Verify,
-																								WindowsAPI.AssocStr.FriendlyAppName);
-										try
-										{
-											ShellObject objd = ShellObject.FromParsingName(defapp);
-											mid.Header = DefAppName;
-											mid.Tag = defapp;
-											mid.Click += new RoutedEventHandler(miow_Click);
-											objd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-											objd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-											mid.Icon = objd.Thumbnail.BitmapSource;
-											objd.Dispose();
-											btnOpenWith.Items.Add(mid);
-										}
-										catch (Exception)
-										{
+                      if (defapp != "" && defapp != "\"%1\"" && extension != "") {
 
-										}
-									}
+                        string DefAppName = WindowsAPI.GetAssoc(extension, WindowsAPI.AssocF.Verify,
+                                                    WindowsAPI.AssocStr.FriendlyAppName);
+                        try {
+                          ShellObject objd = ShellObject.FromParsingName(defapp);
+                          mid.Header = DefAppName;
+                          mid.Tag = defapp;
+                          mid.Click += new RoutedEventHandler(miow_Click);
+                          objd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                          objd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+                          mid.Icon = objd.Thumbnail.BitmapSource;
+                          mid.Focusable = false;
+                          objd.Dispose();
+                          btnOpenWith.Items.Add(mid);
+                        } catch (Exception) {
 
-									foreach (string item in iiii)
-									{
-										// we'll see if it works without checking for "firefox.exe"
-										//if (item != "firefox.exe" && item != "CompressedFolder")
-										if (item != "CompressedFolder")
-										{
-											MenuItem mi = new MenuItem();
-											string deffappname;
-											String ExePath = "";
-											ExePath = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify |
-												WindowsAPI.AssocF.Open_ByExeName, WindowsAPI.AssocStr.Executable);
-											deffappname = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify |
-												WindowsAPI.AssocF.Open_ByExeName, WindowsAPI.AssocStr.FriendlyAppName);
-											if (!File.Exists(ExePath))
-											{
-												ExePath = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify,
-													 WindowsAPI.AssocStr.Executable);
-											}
+                        }
+                      }
 
-											string andeffappname = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify,
-												WindowsAPI.AssocStr.FriendlyAppName);
+                    }
+                    if (iiii.Count > 0) {
+                    foreach (string item in iiii) {
+                      // we'll see if it works without checking for "firefox.exe"
+                      //if (item != "firefox.exe" && item != "CompressedFolder")
+                      if (item != "CompressedFolder") {
+                        MenuItem mi = new MenuItem();
+                        string deffappname;
+                        String ExePath = "";
+                        ExePath = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify |
+                          WindowsAPI.AssocF.Open_ByExeName, WindowsAPI.AssocStr.Executable);
+                        deffappname = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify |
+                          WindowsAPI.AssocF.Open_ByExeName, WindowsAPI.AssocStr.FriendlyAppName);
+                        if (!File.Exists(ExePath)) {
+                          ExePath = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify,
+                             WindowsAPI.AssocStr.Executable);
+                          deffappname = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify, WindowsAPI.AssocStr.FriendlyAppName);
+                        }
 
-											if (deffappname == "")
-											{
-												deffappname = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify,
-													WindowsAPI.AssocStr.FriendlyAppName);
-											}
+                        bool isDuplicate = false;
 
-											if (andeffappname != "" && Char.IsLetterOrDigit(andeffappname, 1) && !Char.IsLetterOrDigit(deffappname, 1)
-																							&& (System.IO.Path.GetExtension(ExePath).ToLowerInvariant() == ".exe" ||
-																								System.IO.Path.GetExtension(ExePath).ToLowerInvariant() == ".dll"))
-											{
-												deffappname = andeffappname;
-											}
+                        foreach (MenuItem mei in btnOpenWith.Items) {
+                          if ((mei.Tag as string) == ExePath) {
+                            isDuplicate = true;
+                            //MessageBox.Show(ExePath,"Duplicate Found");
+                          }
+                        }
 
-											bool isDuplicate = false;
+                        if (isDuplicate == false) {
+                          try {
+                            ShellObject obj = ShellObject.FromParsingName(ExePath);
+                            mi.Header = deffappname;
+                            mi.Tag = ExePath;
+                            mi.Click += new RoutedEventHandler(miow_Click);
+                            obj.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                            obj.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+                            mi.Icon = obj.Thumbnail.BitmapSource;
+                            mi.ToolTip = ExePath;
+                            mi.Focusable = false;
+                            obj.Dispose();
+                          } catch (Exception) {
 
-											foreach (MenuItem mei in btnOpenWith.Items)
-											{
-												if ((mei.Tag as string) == ExePath)
-												{
-													isDuplicate = true;
-													//MessageBox.Show(ExePath,"Duplicate Found");
-												}
-											}
-
-											if (isDuplicate == false)
-											{
-												try
-												{
-													ShellObject obj = ShellObject.FromParsingName(ExePath);
-													mi.Header = deffappname;
-													mi.Tag = ExePath;
-													mi.Click += new RoutedEventHandler(miow_Click);
-													obj.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-													obj.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-													mi.Icon = obj.Thumbnail.BitmapSource;
-													mi.ToolTip = ExePath;
-													obj.Dispose();
-												}
-												catch (Exception)
-												{
-
-												}
-												btnOpenWith.Items.Add(mi);
-											}
-										}
-									}
-								}
+                          }
+                          if (!String.IsNullOrEmpty(defapp))
+                            btnOpenWith.Items.Add(mi);
+                        }
+                      }
+                    }
+                  }
+                }
 
 								// enable buttons
 								btnDelete.IsEnabled = (isFuncAvail || Explorer.NavigationLog.CurrentLocation.ParsingName ==
 									KnownFolders.Libraries.ParsingName);
 								btnOpenWith.IsEnabled = (isFuncAvail &&
 									System.IO.Path.GetExtension(SelectedItem.ParsingName) != ""
-										&& (iiii.Count > 0 || (defapp != "" && defapp != "\"%1\"")));
+										&& (btnOpenWith.Items.Count > 0));
 
 								btnEdit.IsEnabled = isFuncAvail && isEditAvailable;
 								btnHistory.IsEnabled = true;
