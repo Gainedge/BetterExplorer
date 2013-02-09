@@ -28,11 +28,11 @@ namespace BetterExplorer
             daquery.SelectedDate = DateTime.Today;
             sizequery1.Text = "0";
             sizequery2.Text = "0";
-            namequery.Text = "Filename";
+            namequery.Text = (FindResource("txtFilename") as string);
             ci = System.Threading.Thread.CurrentThread.CurrentCulture;
         }
 
-        public bool CancelAction = false;
+        public bool CancelAction = true;
         public ConditionalSelectData csd;
 
         private void checkBox1_Checked(object sender, RoutedEventArgs e)
@@ -244,7 +244,7 @@ namespace BetterExplorer
         {
             if (namequery.IsKeyboardFocused)
             {
-                if (namequery.Text == "Filename")
+                if (namequery.Text == (FindResource("txtFilename") as string))
                 {
                     namequery.Text = "";
                 }
@@ -253,9 +253,14 @@ namespace BetterExplorer
             {
                 if (namequery.Text == "")
                 {
-                    namequery.Text = "Filename";
+                    namequery.Text = (FindResource("txtFilename") as string);
                 }
             }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show((FindResource("txtSelectFiles") as string), "Resource String");
         }
 
     }

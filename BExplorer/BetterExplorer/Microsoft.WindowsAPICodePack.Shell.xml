@@ -2128,6 +2128,16 @@
             Fires when the availability of Glass effect changes.
             </summary>
         </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsForms.BHID">
+            <summary>
+            BHID class
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsForms.Collumns">
+            <summary>
+            Class containing definition for columns
+            </summary>
+        </member>
         <member name="T:Microsoft.WindowsAPICodePack.Controls.CommonControlException">
             <summary>
             An exception thrown when an error occurs while dealing with Control objects.
@@ -2171,6 +2181,11 @@
             </summary>
             <param name="info"></param>
             <param name="context"></param>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsForms.DropData">
+            <summary>
+            DropData class
+            </summary>
         </member>
         <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser">
             <summary>
@@ -2428,6 +2443,739 @@
         </member>
         <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.CM_COLUMNINFO.wszName">
             WCHAR[]
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser">
+            <summary>
+            Interaction logic for ExplorerBrowser.xaml
+            </summary>
+            <summary>
+            ExplorerBrowser
+            </summary>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.#ctor">
+            <summary>
+            Hosts the ExplorerBrowser WinForms wrapper in this control
+            </summary>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ExplorerBrowser_Loaded(System.Object,System.Windows.RoutedEventArgs)">
+            <summary>
+            To avoid the 'Dispatcher processing has been suspended' InvalidOperationException on Win7,
+            the ExplorerBorwser native control is initialized after this control is fully loaded.
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.UpdateDependencyPropertiesFromCLRPRoperties(System.Object,System.EventArgs)">
+            <summary>
+            Map changes to the CLR flags to the dependency properties
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationLogChanged(System.Object,Microsoft.WindowsAPICodePack.Controls.NavigationLogEventArgs)">
+            <summary>
+            Synchronize NavigationLog collection to dependency collection
+            </summary>
+            <param name="sender"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.SelectionChanged(System.Object,System.EventArgs)">
+            <summary>
+            Synchronize SelectedItems collection to dependency collection
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ItemsProperty">
+            <summary>
+            The items in the ExplorerBrowser window
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationLogProperty">
+            <summary>
+            The NavigationLog
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.SelectedItemsProperty">
+            <summary>
+            The selected items in the ExplorerBrowser window
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationTargetProperty">
+            <summary>
+            The DependencyProperty for the NavigationTarget property
+            </summary>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.Dispose">
+            <summary>
+            Disposes the class
+            </summary>        
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.Dispose(System.Boolean)">
+            <summary>
+            Disposes the browser.
+            </summary>
+            <param name="disposed"></param>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ExplorerBrowserControl">
+            <summary>
+            The underlying WinForms control
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.Items">
+            <summary>
+            The items in the ExplorerBrowser window
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.SelectedItems">
+            <summary>
+            The selected items in the ExplorerBrowser window
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationLog">
+            <summary>
+            The selected items in the ExplorerBrowser window
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationTarget">
+            <summary>
+            The location the explorer browser is navigating to
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.AlignLeft">
+            <summary>
+            The view should be left-aligned. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.AutoArrange">
+            <summary>
+            Automatically arrange the elements in the view. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.CheckSelect">
+            <summary>
+            Turns on check mode for the view
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ExtendedTiles">
+            <summary>
+            When the view is in "tile view mode" the layout of a single item should be extended to the width of the view.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.FullRowSelect">
+            <summary>
+            When an item is selected, the item and all its sub-items are highlighted.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.HideFileNames">
+            <summary>
+            The view should not display file names
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NoBrowserViewState">
+            <summary>
+            The view should not save view state in the browser.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NoColumnHeader">
+            <summary>
+            Do not display a column header in the view in any view mode.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NoHeaderInAllViews">
+            <summary>
+            Only show the column header in details view mode.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NoIcons">
+            <summary>
+            The view should not display icons. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NoSubfolders">
+            <summary>
+            Do not show subfolders. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.SingleClickActivate">
+            <summary>
+            Navigate with a single click
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.SingleSelection">
+            <summary>
+            Do not allow more than a single item to be selected.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ThumbnailSize">
+            <summary>
+            The size of the thumbnails in the explorer browser
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ViewMode">
+            <summary>
+            The various view modes of the explorer browser control
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.AlwaysNavigate">
+            <summary>
+            Always navigate, even if you are attempting to navigate to the current folder.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigateOnce">
+            <summary>
+            Do not navigate further than the initial navigation.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.AdvancedQueryPane">
+            <summary>
+            Show/Hide the AdvancedQuery pane on subsequent navigation
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.CommandsPane">
+            <summary>
+            Show/Hide the Commands pane on subsequent navigation
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.CommandsOrganizePane">
+            <summary>
+            Show/Hide the Organize menu in the Commands pane on subsequent navigation
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.CommandsViewPane">
+            <summary>
+            Show/Hide the View menu in the Commands pane on subsequent navigation
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.DetailsPane">
+            <summary>
+            Show/Hide the Details pane on subsequent navigation
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationPane">
+            <summary>
+            Show/Hide the Navigation pane on subsequent navigation
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.PreviewPane">
+            <summary>
+            Show/Hide the Preview pane on subsequent navigation
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.QueryPane">
+            <summary>
+            Show/Hide the Query pane on subsequent navigation
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationLogIndex">
+            <summary>
+            Navigation log index
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions">
+            <summary>
+            These options control how the content of the Explorer Browser 
+            is rendered.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.ViewMode">
+            <summary>
+            The viewing mode of the Explorer Browser
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.Flags">
+            <summary>
+            The binary representation of the ExplorerBrowser content flags
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.AlignLeft">
+            <summary>
+            The view should be left-aligned. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.AutoArrange">
+            <summary>
+            Automatically arrange the elements in the view. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.CheckSelect">
+            <summary>
+            Turns on check mode for the view
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.ExtendedTiles">
+            <summary>
+            When the view is in "tile view mode" the layout of a single item should be extended to the width of the view.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.FullRowSelect">
+            <summary>
+            When an item is selected, the item and all its sub-items are highlighted.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.HideFileNames">
+            <summary>
+            The view should not display file names
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.NoBrowserViewState">
+            <summary>
+            The view should not save view state in the browser.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.NoColumnHeader">
+            <summary>
+            Do not display a column header in the view in any view mode.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.NoHeaderInAllViews">
+            <summary>
+            Only show the column header in details view mode.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.NoIcons">
+            <summary>
+            The view should not display icons. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.NoSubfolders">
+            <summary>
+            Do not show subfolders. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.SingleClickActivate">
+            <summary>
+            Navigate with a single click
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.SingleSelection">
+            <summary>
+            Do not allow more than a single item to be selected.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.ThumbnailSize">
+            <summary>
+            The size of the thumbnails in pixels
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.NavigationPendingEventArgs">
+            <summary>
+            Event argument for The NavigationPending event
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationPendingEventArgs.PendingLocation">
+            <summary>
+            The location being navigated to
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationPendingEventArgs.Cancel">
+            <summary>
+            Set to 'True' to cancel the navigation.
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.NavigationCompleteEventArgs">
+            <summary>
+            Event argument for The NavigationComplete event
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationCompleteEventArgs.NewLocation">
+            <summary>
+            The new location of the explorer browser
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.NavigationFailedEventArgs">
+            <summary>
+            Event argument for the NavigatinoFailed event
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationFailedEventArgs.FailedLocation">
+            <summary>
+            The location the the browser would have navigated to.
+            </summary>
+        </member>
+        <member name="T:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents">
+            <summary>
+            This provides a connection point container compatible dispatch interface for
+            hooking into the ExplorerBrowser view.
+            </summary>    
+        </member>
+        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.#ctor">
+            <summary>
+            Default constructor for ExplorerBrowserViewEvents
+            </summary>
+        </member>
+        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.ViewSelectionChanged">
+            <summary>
+            The view selection has changed
+            </summary>
+        </member>
+        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.ViewContentsChanged">
+            <summary>
+            The contents of the view have changed
+            </summary>
+        </member>
+        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.ViewFileListEnumDone">
+            <summary>
+            The enumeration of files in the view is complete
+            </summary>
+        </member>
+        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.ViewSelectedItemChanged">
+            <summary>
+            The selected item in the view has changed (not the same as the selection has changed)
+            </summary>
+        </member>
+        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.Finalize">
+            <summary>
+            Finalizer for ExplorerBrowserViewEvents
+            </summary>
+        </member>
+        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.Dispose">
+            <summary>
+            Disconnects and disposes object.
+            </summary>        
+        </member>
+        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.Dispose(System.Boolean)">
+            <summary>
+            Disconnects and disposes object.
+            </summary>
+            <param name="disposed"></param>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog">
+            <summary>
+            The navigation log is a history of the locations visited by the explorer browser. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.ClearLog">
+            <summary>
+            Clears the contents of the navigation log.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.pendingNavigation">
+            <summary>
+            The pending navigation log action. null if the user is not navigating 
+            via the navigation log.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.currentLocationIndex">
+            <summary>
+            The index into the Locations collection. -1 if the Locations colleciton 
+            is empty.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.CanNavigateForward">
+            <summary>
+            Indicates the presence of locations in the log that can be 
+            reached by calling Navigate(Forward)
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.CanNavigateBackward">
+            <summary>
+            Indicates the presence of locations in the log that can be 
+            reached by calling Navigate(Backward)
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.Locations">
+            <summary>
+            The navigation log
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.CurrentLocationIndex">
+            <summary>
+            An index into the Locations collection. The ShellObject pointed to 
+            by this index is the current location of the ExplorerBrowser.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.CurrentLocation">
+            <summary>
+            Gets the shell object in the Locations collection pointed to
+            by CurrentLocationIndex.
+            </summary>
+        </member>
+        <member name="E:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.NavigationLogChanged">
+            <summary>
+            Fires when the navigation log changes or 
+            the current navigation position changes
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.PendingNavigation">
+            <summary>
+            A navigation traversal request
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode">
+            <summary>
+            Indicates the viewing mode of the explorer browser
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Auto">
+            <summary>
+            Choose the best view mode for the folder
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Content">
+            <summary>
+            (New for Windows7)
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Details">
+            <summary>
+            Object names and other selected information, such as the size or date last updated, are shown.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Icon">
+            <summary>
+            The view should display medium-size icons.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.List">
+            <summary>
+            Object names are displayed in a list view.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.SmallIcon">
+            <summary>
+            The view should display small icons. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Thumbnail">
+            <summary>
+            The view should display thumbnail icons. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.ThumbStrip">
+            <summary>
+            The view should display icons in a filmstrip format.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Tile">
+            <summary>
+            The view should display large icons. 
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigateOptions">
+            <summary>
+            Specifies the options that control subsequent navigation.
+            Typically use one, or a bitwise combination of these
+            flags to specify how the explorer browser navigates.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigateOptions.AlwaysNavigate">
+            <summary>
+            Always navigate, even if you are attempting to navigate to the current folder.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigateOptions.NavigateOnce">
+            <summary>
+            Do not navigate further than the initial navigation.
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions">
+            <summary>
+            Indicates the content options of the explorer browser.
+            Typically use one, or a bitwise combination of these
+            flags to specify how conent should appear in the
+            explorer browser control
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.None">
+            <summary>
+            No options.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.AlignLeft">
+            <summary>
+            The view should be left-aligned. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.AutoArrange">
+            <summary>
+            Automatically arrange the elements in the view. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.CheckSelect">
+            <summary>
+            Turns on check mode for the view
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.ExtendedTiles">
+            <summary>
+            When the view is set to "Tile" the layout of a single item should be extended to the width of the view.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.FullRowSelect">
+            <summary>
+            When an item is selected, the item and all its sub-items are highlighted.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.HideFileNames">
+            <summary>
+            The view should not display file names
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.NoBrowserViewState">
+            <summary>
+            The view should not save view state in the browser.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.NoColumnHeader">
+            <summary>
+            Do not display a column header in the view in any view mode.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.NoHeaderInAllViews">
+            <summary>
+            Only show the column header in details view mode.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.NoIcons">
+            <summary>
+            The view should not display icons. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.NoSubfolders">
+            <summary>
+            Do not show subfolders. 
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.SingleClickActivate">
+            <summary>
+            Navigate with a single click
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.SingleSelection">
+            <summary>
+            Do not allow more than a single item to be selected.
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.PaneVisibilityState">
+            <summary>
+            Indicates the visibility state of an ExplorerBrowser pane
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.PaneVisibilityState.DoNotCare">
+            <summary>
+            Allow the explorer browser to determine if this pane is displayed.
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.PaneVisibilityState.Hide">
+            <summary>
+            Hide the pane
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.PaneVisibilityState.Show">
+            <summary>
+            Show the pane
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility">
+            <summary>
+            Controls the visibility of the various ExplorerBrowser panes on subsequent navigation
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.Navigation">
+            <summary>
+            The pane on the left side of the Windows Explorer window that hosts the folders tree and Favorites.
+            </summary>        
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.Commands">
+            <summary>
+            Commands module along the top of the Windows Explorer window.
+            </summary>        
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.CommandsOrganize">
+            <summary>
+            Organize menu within the commands module.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.CommandsView">
+            <summary>
+            View menu within the commands module.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.Details">
+            <summary>
+            Pane showing metadata along the bottom of the Windows Explorer window.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.Preview">
+            <summary>
+            Pane on the right of the Windows Explorer window that shows a large reading preview of the file.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.Query">
+            <summary>
+            Quick filter buttons to aid in a search.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.AdvancedQuery">
+            <summary>
+            Additional fields and options to aid in a search.
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.NavigationLogDirection">
+            <summary>
+            The direction argument for Navigate
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.NavigationLogDirection.Forward">
+            <summary>
+            Navigates forward through the navigation log
+            </summary>
+        </member>
+        <member name="F:Microsoft.WindowsAPICodePack.Controls.NavigationLogDirection.Backward">
+            <summary>
+            Navigates backward through the travel log
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.NavigationLogEventArgs">
+            <summary>
+            The event argument for NavigationLogChangedEvent
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationLogEventArgs.CanNavigateForwardChanged">
+            <summary>
+            Indicates CanNavigateForward has changed
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationLogEventArgs.CanNavigateBackwardChanged">
+            <summary>
+            Indicates CanNavigateBackward has changed
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationLogEventArgs.LocationsChanged">
+            <summary>
+            Indicates the Locations collection has changed
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationOptions">
+            <summary>
+            These options control the results subsequent navigations of the ExplorerBrowser
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationOptions.Flags">
+            <summary>
+            The binary flags that are passed to the explorer browser control's GetOptions/SetOptions methods
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationOptions.NavigateOnce">
+            <summary>
+            Do not navigate further than the initial navigation.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationOptions.AlwaysNavigate">
+            <summary>
+            Always navigate, even if you are attempting to navigate to the current folder.
+            </summary>
+        </member>
+        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationOptions.PaneVisibility">
+            <summary>
+            Controls the visibility of the various ExplorerBrowser panes on subsequent navigation
+            </summary>
         </member>
         <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ShellViewDragDrop">
             <summary>
@@ -4239,752 +4987,15 @@
             If non-zero, minimize/restore animation is enabled, otherwise disabled.
             </summary>
         </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsForms.Collumns">
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ShellViewDragDrop.#ctor(WindowsHelper.WindowsAPI.IDropTarget)">
             <summary>
-            Class containing definition for columns
+            Constructor for the ShellView Drop Target
             </summary>
+            <param name="oldTarget">The original IDropTarget hooked from the IExplorerBrowser interface</param>
         </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsForms.BHID">
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ShellViewDragDrop.DragLeave">
             <summary>
-            BHID class
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsForms.DropData">
-            <summary>
-            DropData class
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser">
-            <summary>
-            Interaction logic for ExplorerBrowser.xaml
-            </summary>
-            <summary>
-            ExplorerBrowser
-            </summary>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.#ctor">
-            <summary>
-            Hosts the ExplorerBrowser WinForms wrapper in this control
-            </summary>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ExplorerBrowser_Loaded(System.Object,System.Windows.RoutedEventArgs)">
-            <summary>
-            To avoid the 'Dispatcher processing has been suspended' InvalidOperationException on Win7,
-            the ExplorerBorwser native control is initialized after this control is fully loaded.
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.UpdateDependencyPropertiesFromCLRPRoperties(System.Object,System.EventArgs)">
-            <summary>
-            Map changes to the CLR flags to the dependency properties
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationLogChanged(System.Object,Microsoft.WindowsAPICodePack.Controls.NavigationLogEventArgs)">
-            <summary>
-            Synchronize NavigationLog collection to dependency collection
-            </summary>
-            <param name="sender"></param>
-            <param name="args"></param>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.SelectionChanged(System.Object,System.EventArgs)">
-            <summary>
-            Synchronize SelectedItems collection to dependency collection
-            </summary>
-            <param name="sender"></param>
-            <param name="e"></param>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ItemsProperty">
-            <summary>
-            The items in the ExplorerBrowser window
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationLogProperty">
-            <summary>
-            The NavigationLog
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.SelectedItemsProperty">
-            <summary>
-            The selected items in the ExplorerBrowser window
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationTargetProperty">
-            <summary>
-            The DependencyProperty for the NavigationTarget property
-            </summary>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.Dispose">
-            <summary>
-            Disposes the class
-            </summary>        
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.Dispose(System.Boolean)">
-            <summary>
-            Disposes the browser.
-            </summary>
-            <param name="disposed"></param>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.InitializeComponent">
-            <summary>
-            InitializeComponent
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ExplorerBrowserControl">
-            <summary>
-            The underlying WinForms control
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.Items">
-            <summary>
-            The items in the ExplorerBrowser window
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.SelectedItems">
-            <summary>
-            The selected items in the ExplorerBrowser window
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationLog">
-            <summary>
-            The selected items in the ExplorerBrowser window
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationTarget">
-            <summary>
-            The location the explorer browser is navigating to
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.AlignLeft">
-            <summary>
-            The view should be left-aligned. 
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.AutoArrange">
-            <summary>
-            Automatically arrange the elements in the view. 
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.CheckSelect">
-            <summary>
-            Turns on check mode for the view
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ExtendedTiles">
-            <summary>
-            When the view is in "tile view mode" the layout of a single item should be extended to the width of the view.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.FullRowSelect">
-            <summary>
-            When an item is selected, the item and all its sub-items are highlighted.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.HideFileNames">
-            <summary>
-            The view should not display file names
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NoBrowserViewState">
-            <summary>
-            The view should not save view state in the browser.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NoColumnHeader">
-            <summary>
-            Do not display a column header in the view in any view mode.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NoHeaderInAllViews">
-            <summary>
-            Only show the column header in details view mode.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NoIcons">
-            <summary>
-            The view should not display icons. 
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NoSubfolders">
-            <summary>
-            Do not show subfolders. 
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.SingleClickActivate">
-            <summary>
-            Navigate with a single click
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.SingleSelection">
-            <summary>
-            Do not allow more than a single item to be selected.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ThumbnailSize">
-            <summary>
-            The size of the thumbnails in the explorer browser
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.ViewMode">
-            <summary>
-            The various view modes of the explorer browser control
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.AlwaysNavigate">
-            <summary>
-            Always navigate, even if you are attempting to navigate to the current folder.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigateOnce">
-            <summary>
-            Do not navigate further than the initial navigation.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.AdvancedQueryPane">
-            <summary>
-            Show/Hide the AdvancedQuery pane on subsequent navigation
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.CommandsPane">
-            <summary>
-            Show/Hide the Commands pane on subsequent navigation
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.CommandsOrganizePane">
-            <summary>
-            Show/Hide the Organize menu in the Commands pane on subsequent navigation
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.CommandsViewPane">
-            <summary>
-            Show/Hide the View menu in the Commands pane on subsequent navigation
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.DetailsPane">
-            <summary>
-            Show/Hide the Details pane on subsequent navigation
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationPane">
-            <summary>
-            Show/Hide the Navigation pane on subsequent navigation
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.PreviewPane">
-            <summary>
-            Show/Hide the Preview pane on subsequent navigation
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.QueryPane">
-            <summary>
-            Show/Hide the Query pane on subsequent navigation
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser.NavigationLogIndex">
-            <summary>
-            Navigation log index
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions">
-            <summary>
-            These options control how the content of the Explorer Browser 
-            is rendered.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.ViewMode">
-            <summary>
-            The viewing mode of the Explorer Browser
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.Flags">
-            <summary>
-            The binary representation of the ExplorerBrowser content flags
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.AlignLeft">
-            <summary>
-            The view should be left-aligned. 
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.AutoArrange">
-            <summary>
-            Automatically arrange the elements in the view. 
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.CheckSelect">
-            <summary>
-            Turns on check mode for the view
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.ExtendedTiles">
-            <summary>
-            When the view is in "tile view mode" the layout of a single item should be extended to the width of the view.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.FullRowSelect">
-            <summary>
-            When an item is selected, the item and all its sub-items are highlighted.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.HideFileNames">
-            <summary>
-            The view should not display file names
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.NoBrowserViewState">
-            <summary>
-            The view should not save view state in the browser.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.NoColumnHeader">
-            <summary>
-            Do not display a column header in the view in any view mode.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.NoHeaderInAllViews">
-            <summary>
-            Only show the column header in details view mode.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.NoIcons">
-            <summary>
-            The view should not display icons. 
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.NoSubfolders">
-            <summary>
-            Do not show subfolders. 
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.SingleClickActivate">
-            <summary>
-            Navigate with a single click
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.SingleSelection">
-            <summary>
-            Do not allow more than a single item to be selected.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentOptions.ThumbnailSize">
-            <summary>
-            The size of the thumbnails in pixels
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.NavigationPendingEventArgs">
-            <summary>
-            Event argument for The NavigationPending event
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationPendingEventArgs.PendingLocation">
-            <summary>
-            The location being navigated to
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationPendingEventArgs.Cancel">
-            <summary>
-            Set to 'True' to cancel the navigation.
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.NavigationCompleteEventArgs">
-            <summary>
-            Event argument for The NavigationComplete event
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationCompleteEventArgs.NewLocation">
-            <summary>
-            The new location of the explorer browser
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.NavigationFailedEventArgs">
-            <summary>
-            Event argument for the NavigatinoFailed event
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationFailedEventArgs.FailedLocation">
-            <summary>
-            The location the the browser would have navigated to.
-            </summary>
-        </member>
-        <member name="T:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents">
-            <summary>
-            This provides a connection point container compatible dispatch interface for
-            hooking into the ExplorerBrowser view.
-            </summary>    
-        </member>
-        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.#ctor">
-            <summary>
-            Default constructor for ExplorerBrowserViewEvents
-            </summary>
-        </member>
-        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.ViewSelectionChanged">
-            <summary>
-            The view selection has changed
-            </summary>
-        </member>
-        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.ViewContentsChanged">
-            <summary>
-            The contents of the view have changed
-            </summary>
-        </member>
-        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.ViewFileListEnumDone">
-            <summary>
-            The enumeration of files in the view is complete
-            </summary>
-        </member>
-        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.ViewSelectedItemChanged">
-            <summary>
-            The selected item in the view has changed (not the same as the selection has changed)
-            </summary>
-        </member>
-        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.Finalize">
-            <summary>
-            Finalizer for ExplorerBrowserViewEvents
-            </summary>
-        </member>
-        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.Dispose">
-            <summary>
-            Disconnects and disposes object.
-            </summary>        
-        </member>
-        <member name="M:MS.WindowsAPICodePack.Internal.ExplorerBrowserViewEvents.Dispose(System.Boolean)">
-            <summary>
-            Disconnects and disposes object.
-            </summary>
-            <param name="disposed"></param>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog">
-            <summary>
-            The navigation log is a history of the locations visited by the explorer browser. 
-            </summary>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.ClearLog">
-            <summary>
-            Clears the contents of the navigation log.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.pendingNavigation">
-            <summary>
-            The pending navigation log action. null if the user is not navigating 
-            via the navigation log.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.currentLocationIndex">
-            <summary>
-            The index into the Locations collection. -1 if the Locations colleciton 
-            is empty.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.CanNavigateForward">
-            <summary>
-            Indicates the presence of locations in the log that can be 
-            reached by calling Navigate(Forward)
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.CanNavigateBackward">
-            <summary>
-            Indicates the presence of locations in the log that can be 
-            reached by calling Navigate(Backward)
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.Locations">
-            <summary>
-            The navigation log
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.CurrentLocationIndex">
-            <summary>
-            An index into the Locations collection. The ShellObject pointed to 
-            by this index is the current location of the ExplorerBrowser.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.CurrentLocation">
-            <summary>
-            Gets the shell object in the Locations collection pointed to
-            by CurrentLocationIndex.
-            </summary>
-        </member>
-        <member name="E:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationLog.NavigationLogChanged">
-            <summary>
-            Fires when the navigation log changes or 
-            the current navigation position changes
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.PendingNavigation">
-            <summary>
-            A navigation traversal request
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode">
-            <summary>
-            Indicates the viewing mode of the explorer browser
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Auto">
-            <summary>
-            Choose the best view mode for the folder
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Content">
-            <summary>
-            (New for Windows7)
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Details">
-            <summary>
-            Object names and other selected information, such as the size or date last updated, are shown.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Icon">
-            <summary>
-            The view should display medium-size icons.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.List">
-            <summary>
-            Object names are displayed in a list view.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.SmallIcon">
-            <summary>
-            The view should display small icons. 
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Thumbnail">
-            <summary>
-            The view should display thumbnail icons. 
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.ThumbStrip">
-            <summary>
-            The view should display icons in a filmstrip format.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserViewMode.Tile">
-            <summary>
-            The view should display large icons. 
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigateOptions">
-            <summary>
-            Specifies the options that control subsequent navigation.
-            Typically use one, or a bitwise combination of these
-            flags to specify how the explorer browser navigates.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigateOptions.AlwaysNavigate">
-            <summary>
-            Always navigate, even if you are attempting to navigate to the current folder.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigateOptions.NavigateOnce">
-            <summary>
-            Do not navigate further than the initial navigation.
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions">
-            <summary>
-            Indicates the content options of the explorer browser.
-            Typically use one, or a bitwise combination of these
-            flags to specify how conent should appear in the
-            explorer browser control
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.None">
-            <summary>
-            No options.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.AlignLeft">
-            <summary>
-            The view should be left-aligned. 
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.AutoArrange">
-            <summary>
-            Automatically arrange the elements in the view. 
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.CheckSelect">
-            <summary>
-            Turns on check mode for the view
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.ExtendedTiles">
-            <summary>
-            When the view is set to "Tile" the layout of a single item should be extended to the width of the view.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.FullRowSelect">
-            <summary>
-            When an item is selected, the item and all its sub-items are highlighted.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.HideFileNames">
-            <summary>
-            The view should not display file names
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.NoBrowserViewState">
-            <summary>
-            The view should not save view state in the browser.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.NoColumnHeader">
-            <summary>
-            Do not display a column header in the view in any view mode.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.NoHeaderInAllViews">
-            <summary>
-            Only show the column header in details view mode.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.NoIcons">
-            <summary>
-            The view should not display icons. 
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.NoSubfolders">
-            <summary>
-            Do not show subfolders. 
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.SingleClickActivate">
-            <summary>
-            Navigate with a single click
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserContentSectionOptions.SingleSelection">
-            <summary>
-            Do not allow more than a single item to be selected.
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.PaneVisibilityState">
-            <summary>
-            Indicates the visibility state of an ExplorerBrowser pane
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.PaneVisibilityState.DoNotCare">
-            <summary>
-            Allow the explorer browser to determine if this pane is displayed.
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.PaneVisibilityState.Hide">
-            <summary>
-            Hide the pane
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.PaneVisibilityState.Show">
-            <summary>
-            Show the pane
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility">
-            <summary>
-            Controls the visibility of the various ExplorerBrowser panes on subsequent navigation
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.Navigation">
-            <summary>
-            The pane on the left side of the Windows Explorer window that hosts the folders tree and Favorites.
-            </summary>        
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.Commands">
-            <summary>
-            Commands module along the top of the Windows Explorer window.
-            </summary>        
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.CommandsOrganize">
-            <summary>
-            Organize menu within the commands module.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.CommandsView">
-            <summary>
-            View menu within the commands module.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.Details">
-            <summary>
-            Pane showing metadata along the bottom of the Windows Explorer window.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.Preview">
-            <summary>
-            Pane on the right of the Windows Explorer window that shows a large reading preview of the file.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.Query">
-            <summary>
-            Quick filter buttons to aid in a search.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserPaneVisibility.AdvancedQuery">
-            <summary>
-            Additional fields and options to aid in a search.
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.NavigationLogDirection">
-            <summary>
-            The direction argument for Navigate
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.NavigationLogDirection.Forward">
-            <summary>
-            Navigates forward through the navigation log
-            </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.NavigationLogDirection.Backward">
-            <summary>
-            Navigates backward through the travel log
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.NavigationLogEventArgs">
-            <summary>
-            The event argument for NavigationLogChangedEvent
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationLogEventArgs.CanNavigateForwardChanged">
-            <summary>
-            Indicates CanNavigateForward has changed
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationLogEventArgs.CanNavigateBackwardChanged">
-            <summary>
-            Indicates CanNavigateBackward has changed
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.NavigationLogEventArgs.LocationsChanged">
-            <summary>
-            Indicates the Locations collection has changed
-            </summary>
-        </member>
-        <member name="T:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationOptions">
-            <summary>
-            These options control the results subsequent navigations of the ExplorerBrowser
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationOptions.Flags">
-            <summary>
-            The binary flags that are passed to the explorer browser control's GetOptions/SetOptions methods
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationOptions.NavigateOnce">
-            <summary>
-            Do not navigate further than the initial navigation.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationOptions.AlwaysNavigate">
-            <summary>
-            Always navigate, even if you are attempting to navigate to the current folder.
-            </summary>
-        </member>
-        <member name="P:Microsoft.WindowsAPICodePack.Controls.ExplorerBrowserNavigationOptions.PaneVisibility">
-            <summary>
-            Controls the visibility of the various ExplorerBrowser panes on subsequent navigation
+            Drag Leave event for the custom IDroptarget
             </summary>
         </member>
         <member name="T:Microsoft.WindowsAPICodePack.Shell.AccessModes">

@@ -1,55 +1,55 @@
 ﻿<Window xmlns:my="clr-namespace:BetterExplorer"  x:Class="BetterExplorer.ConditionalSelectForm"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Conditionally Select Files" Height="470" Width="350" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+        Title="{StaticResource txtConditionalSelect}" Height="470" Width="350" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Icon="Images/filter16.png">
     <Grid>
-        <TextBlock Height="23" HorizontalAlignment="Left" Margin="12,12,0,0" Name="textBlock1" Text="Select files in this folder that meet these conditions:" VerticalAlignment="Top" />
-        <Button Content="Cancel" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="button1" VerticalAlignment="Bottom" Width="75" Click="button1_Click" />
-        <Button Content="Select" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="button2" VerticalAlignment="Bottom" Width="75" Click="button2_Click" />
-        <CheckBox Content="Filename" Height="16" HorizontalAlignment="Left" Margin="16,44,0,0" Name="namecheck" VerticalAlignment="Top" Checked="checkBox1_Checked" Unchecked="checkBox1_Unchecked" IsChecked="True" />
+        <TextBlock Height="23" HorizontalAlignment="Left" Margin="12,12,0,0" Name="textBlock1" Text="{StaticResource txtSelectFiles}" VerticalAlignment="Top" />
+        <Button Content="{StaticResource txtCancel}" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="button1" VerticalAlignment="Bottom" Width="75" Click="button1_Click" />
+        <Button Content="{StaticResource txtSelect}" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="button2" VerticalAlignment="Bottom" Width="75" Click="button2_Click" />
+        <CheckBox Content="{StaticResource txtFilename}" Height="16" HorizontalAlignment="Left" Margin="16,44,0,0" Name="namecheck" VerticalAlignment="Top" Checked="checkBox1_Checked" Unchecked="checkBox1_Unchecked" IsChecked="True" />
         <ComboBox Height="23" HorizontalAlignment="Left" Margin="34,66,0,0" Name="namefilter" VerticalAlignment="Top" Width="120" SelectedIndex="0">
-            <my:ConditionalSelectComboBoxItem Text="contains" IdentifyingName="Contains" />
-            <my:ConditionalSelectComboBoxItem Text="starts with" IdentifyingName="StartsWith" />
-            <my:ConditionalSelectComboBoxItem Text="ends with" IdentifyingName="EndsWith" />
-            <my:ConditionalSelectComboBoxItem Text="equals" IdentifyingName="Equals" />
-            <my:ConditionalSelectComboBoxItem Text="does not contain" IdentifyingName="DoesNotContain" />
-            <my:ConditionalSelectComboBoxItem Text="is not" IdentifyingName="NotEqualTo" />
+            <my:ConditionalSelectComboBoxItem Text="{StaticResource txtContains}" IdentifyingName="Contains" />
+            <my:ConditionalSelectComboBoxItem Text="{StaticResource txtStartsWith}" IdentifyingName="StartsWith" />
+            <my:ConditionalSelectComboBoxItem Text="{StaticResource txtEndsWith}" IdentifyingName="EndsWith" />
+            <my:ConditionalSelectComboBoxItem Text="{StaticResource txtIs}" IdentifyingName="Equals" />
+            <my:ConditionalSelectComboBoxItem Text="{StaticResource txtDoesNotContain}" IdentifyingName="DoesNotContain" />
+            <my:ConditionalSelectComboBoxItem Text="{StaticResource txtIsNot}" IdentifyingName="NotEqualTo" />
         </ComboBox>
         <TextBox Height="23" HorizontalAlignment="Left" Margin="160,66,0,0" Name="namequery" VerticalAlignment="Top" Width="156" IsKeyboardFocusedChanged="namequery_IsKeyboardFocusedChanged" />
-        <CheckBox Content="File Size" Height="16" HorizontalAlignment="Left" Margin="16,120,0,0" Name="sizecheck" VerticalAlignment="Top" Checked="sizecheck_Checked" Unchecked="sizecheck_Unchecked" IsChecked="False" />
+        <CheckBox Content="{StaticResource txtFileSize}" Height="16" HorizontalAlignment="Left" Margin="16,120,0,0" Name="sizecheck" VerticalAlignment="Top" Checked="sizecheck_Checked" Unchecked="sizecheck_Unchecked" IsChecked="False" />
         <ComboBox Height="23" HorizontalAlignment="Left" Margin="34,142,0,0" Name="sizefilter" SelectedIndex="0" VerticalAlignment="Top" Width="120" SelectionChanged="sizefilter_SelectionChanged" IsEnabled="False">
-            <my:ConditionalSelectComboBoxItem IdentifyingName="LargerThan" Text="is larger than" />
-            <my:ConditionalSelectComboBoxItem IdentifyingName="SmallerThan" Text="is smaller than" />
-            <my:ConditionalSelectComboBoxItem IdentifyingName="Equals" Text="is exactly" />
-            <my:ConditionalSelectComboBoxItem IdentifyingName="Between" Text="is between" />
-            <my:ConditionalSelectComboBoxItem IdentifyingName="NotEqualTo" Text="is not" />
-            <my:ConditionalSelectComboBoxItem IdentifyingName="NotBetween" Text="is not between" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="LargerThan" Text="{StaticResource txtLargerThan}" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="SmallerThan" Text="{StaticResource txtSmallerThan}" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Equals" Text="{StaticResource txtExactly}" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Between" Text="{StaticResource txtIsBetween}" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="NotEqualTo" Text="{StaticResource txtIsNot}" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="NotBetween" Text="{StaticResource txtIsNotBetween}" />
         </ComboBox>
         <TextBox Height="23" HorizontalAlignment="Left" Margin="160,142,0,0" Name="sizequery1" VerticalAlignment="Top" Width="103" IsEnabled="False" />
         <TextBox Height="23" HorizontalAlignment="Left" Margin="160,171,0,0" Name="sizequery2" VerticalAlignment="Top" Width="103" IsEnabled="False" />
-        <TextBlock Height="23" HorizontalAlignment="Left" Margin="134,174,0,0" Name="textBlock4" Text="and" VerticalAlignment="Top" />
-        <CheckBox Content="Date Created" Height="16" HorizontalAlignment="Left" Margin="16,206,0,0" Name="dccheck" VerticalAlignment="Top" Checked="dccheck_Checked" Unchecked="dccheck_Unchecked" IsChecked="False" />
+        <TextBlock Height="23" HorizontalAlignment="Right" Margin="0,174,190,0" Name="textBlock4" Text="{StaticResource txtAnd}" VerticalAlignment="Top" />
+        <CheckBox Content="{StaticResource btnODateCCP}" Height="16" HorizontalAlignment="Left" Margin="16,206,0,0" Name="dccheck" VerticalAlignment="Top" Checked="dccheck_Checked" Unchecked="dccheck_Unchecked" IsChecked="False" />
         <ComboBox Height="23" HorizontalAlignment="Left" Margin="34,228,0,0" Name="dcfilter" SelectedIndex="0" VerticalAlignment="Top" Width="120" IsEnabled="False">
-            <my:ConditionalSelectComboBoxItem IdentifyingName="EarlierThan" Text="is before" />
-            <my:ConditionalSelectComboBoxItem IdentifyingName="LaterThan" Text="is after" />
-            <my:ConditionalSelectComboBoxItem IdentifyingName="Equals" Text="is the same as" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="EarlierThan" Text="{StaticResource txtIsBefore}" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="LaterThan" Text="{StaticResource txtIsAfter}" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Equals" Text="{StaticResource txtDateIs}" />
         </ComboBox>
         <DatePicker Height="23" HorizontalAlignment="Left" Margin="160,228,0,0" Name="dcquery" VerticalAlignment="Top" Width="154" IsEnabled="False" />
-        <CheckBox Content="Date Modified" Height="16" HorizontalAlignment="Left" Margin="16,267,0,0" Name="dmcheck" VerticalAlignment="Top" Checked="dmcheck_Checked" Unchecked="dmcheck_Unchecked" IsChecked="False" />
+        <CheckBox Content="{StaticResource btnODateModCP}" Height="16" HorizontalAlignment="Left" Margin="16,267,0,0" Name="dmcheck" VerticalAlignment="Top" Checked="dmcheck_Checked" Unchecked="dmcheck_Unchecked" IsChecked="False" />
         <ComboBox Height="23" HorizontalAlignment="Left" Margin="34,289,0,0" Name="dmfilter" SelectedIndex="0" VerticalAlignment="Top" Width="120" IsEnabled="False">
-            <my:ConditionalSelectComboBoxItem IdentifyingName="EarlierThan" Text="is before" />
-            <my:ConditionalSelectComboBoxItem IdentifyingName="LaterThan" Text="is after" />
-            <my:ConditionalSelectComboBoxItem IdentifyingName="Equals" Text="is the same as" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="EarlierThan" Text="{StaticResource txtIsBefore}" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="LaterThan" Text="{StaticResource txtIsAfter}" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Equals" Text="{StaticResource txtDateIs}" />
         </ComboBox>
         <DatePicker Height="23" HorizontalAlignment="Left" Margin="160,289,0,0" Name="dmquery" VerticalAlignment="Top" Width="154" IsEnabled="False" />
-        <CheckBox Content="Date Accessed" Height="16" HorizontalAlignment="Left" Margin="16,328,0,0" Name="dacheck" VerticalAlignment="Top" Checked="dacheck_Checked" Unchecked="dacheck_Unchecked" IsChecked="False" />
+        <CheckBox Content="{StaticResource txtDateAccessed}" Height="16" HorizontalAlignment="Left" Margin="16,328,0,0" Name="dacheck" VerticalAlignment="Top" Checked="dacheck_Checked" Unchecked="dacheck_Unchecked" IsChecked="False" />
         <ComboBox Height="23" HorizontalAlignment="Left" Margin="34,350,0,0" Name="dafilter" SelectedIndex="0" VerticalAlignment="Top" Width="120" IsEnabled="False">
-            <my:ConditionalSelectComboBoxItem IdentifyingName="EarlierThan" Text="is before" />
-            <my:ConditionalSelectComboBoxItem IdentifyingName="LaterThan" Text="is after" />
-            <my:ConditionalSelectComboBoxItem IdentifyingName="Equals" Text="is the same as" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="EarlierThan" Text="{StaticResource txtIsBefore}" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="LaterThan" Text="{StaticResource txtIsAfter}" />
+            <my:ConditionalSelectComboBoxItem IdentifyingName="Equals" Text="{StaticResource txtDateIs}" />
         </ComboBox>
         <DatePicker Height="23" HorizontalAlignment="Left" Margin="160,350,0,0" Name="daquery" VerticalAlignment="Top" Width="154" IsEnabled="False" />
-        <CheckBox Content="Match case" Height="16" HorizontalAlignment="Left" Margin="160,95,0,0" Name="namecase" VerticalAlignment="Top" />
+        <CheckBox Content="{StaticResource txtMatchCase}" Height="16" HorizontalAlignment="Left" Margin="160,95,0,0" Name="namecase" VerticalAlignment="Top" />
         <ComboBox Height="23" HorizontalAlignment="Left" IsEnabled="False" Margin="269,142,0,0" Name="sizebox1" SelectedIndex="1" VerticalAlignment="Top" Width="45">
             <my:ConditionalSelectComboBoxItem IdentifyingName="Bytes" Text="B" />
             <my:ConditionalSelectComboBoxItem IdentifyingName="Kilobytes" Text="KB" />
