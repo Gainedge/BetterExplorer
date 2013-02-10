@@ -674,7 +674,7 @@ namespace BetterExplorer
 								}
 			));
             });
-            t.IsBackground = true;
+            //t.IsBackground = true;
             t.Start();
 
 			Explorer.ExplorerSetFocus();
@@ -1073,7 +1073,7 @@ namespace BetterExplorer
 			//    //}
 			}
             });
-            t.IsBackground = true;
+            //t.IsBackground = true;
             t.Start();
 			Explorer.ExplorerSetFocus();
 		}
@@ -1529,7 +1529,7 @@ namespace BetterExplorer
 				    //}
 			    }
             });
-            t.IsBackground = true;
+            //t.IsBackground = true;
             t.Start();
 
 			Explorer.ExplorerSetFocus();
@@ -1547,61 +1547,64 @@ namespace BetterExplorer
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
                          (ThreadStart)(() =>
                          {
-                             if (e.ThumbnailSize == 256)
+                             if (IsViewSelection)
                              {
-                                 inRibbonGallery1.SelectedIndex = 0;
+                                 if (e.ThumbnailSize == 256)
+                                 {
+                                     inRibbonGallery1.SelectedIndex = 0;
 
-                             }
-                             if (e.ThumbnailSize == 96)
-                             {
-                                 inRibbonGallery1.SelectedIndex = 1;
+                                 }
+                                 if (e.ThumbnailSize == 96)
+                                 {
+                                     inRibbonGallery1.SelectedIndex = 1;
 
-                             }
-                             if (e.ThumbnailSize == 64)
-                             {
-                                 inRibbonGallery1.SelectedIndex = 2;
+                                 }
+                                 if (e.ThumbnailSize == 64)
+                                 {
+                                     inRibbonGallery1.SelectedIndex = 2;
 
-                             }
-                             if (e.ThumbnailSize == 48 & e.View == ExplorerBrowserViewMode.Icon)
-                             {
-                                 inRibbonGallery1.SelectedIndex = 3;
-                                 btnSbIcons.IsChecked = true;
-                             }
-                             else
-                             {
-                                 btnSbIcons.IsChecked = false;
-                             }
-                             if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.List)
-                             {
-                                 inRibbonGallery1.SelectedIndex = 4;
-                             }
-                             if (e.View == ExplorerBrowserViewMode.Details)
-                             {
-                                 inRibbonGallery1.SelectedIndex = 5;
-                                 btnSbDetails.IsChecked = true;
-                             }
-                             else
-                             {
-                                 btnSbDetails.IsChecked = false;
-                             }
-                             if (e.View == ExplorerBrowserViewMode.Tile)
-                             {
-                                 inRibbonGallery1.SelectedIndex = 6;
-                                 btnSbTiles.IsChecked = true;
-                             }
-                             else
-                             {
-                                 btnSbTiles.IsChecked = false;
-                             }
-                             if (e.View == ExplorerBrowserViewMode.Content)
-                             {
-                                 inRibbonGallery1.SelectedIndex = 7;
-                             }
-                             IsCalledFromViewEnum = true;
-                             zoomSlider.Value = e.ThumbnailSize;
-                             IsCalledFromViewEnum = false;
+                                 }
+                                 if (e.ThumbnailSize == 48 & e.View == ExplorerBrowserViewMode.Icon)
+                                 {
+                                     inRibbonGallery1.SelectedIndex = 3;
+                                     btnSbIcons.IsChecked = true;
+                                 }
+                                 else
+                                 {
+                                     btnSbIcons.IsChecked = false;
+                                 }
+                                 if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.List)
+                                 {
+                                     inRibbonGallery1.SelectedIndex = 4;
+                                 }
+                                 if (e.View == ExplorerBrowserViewMode.Details)
+                                 {
+                                     inRibbonGallery1.SelectedIndex = 5;
+                                     btnSbDetails.IsChecked = true;
+                                 }
+                                 else
+                                 {
+                                     btnSbDetails.IsChecked = false;
+                                 }
+                                 if (e.View == ExplorerBrowserViewMode.Tile)
+                                 {
+                                     inRibbonGallery1.SelectedIndex = 6;
+                                     btnSbTiles.IsChecked = true;
+                                 }
+                                 else
+                                 {
+                                     btnSbTiles.IsChecked = false;
+                                 }
+                                 if (e.View == ExplorerBrowserViewMode.Content)
+                                 {
+                                     inRibbonGallery1.SelectedIndex = 7;
+                                 }
+                                 IsCalledFromViewEnum = true;
+                                 zoomSlider.Value = e.ThumbnailSize;
+                                 IsCalledFromViewEnum = false;
 
-                             btnAutosizeColls.IsEnabled = e.View == ExplorerBrowserViewMode.Details ? true : false;
+                                 btnAutosizeColls.IsEnabled = e.View == ExplorerBrowserViewMode.Details ? true : false;
+                             }
                          }));
 
 		}
@@ -1690,23 +1693,26 @@ namespace BetterExplorer
 		void ExplorerBrowserControl_SelectionChanged(object sender, EventArgs e)
 		{
 
-
-			if (IsAfterRename)
+            Thread t = new Thread(() => 
+            {
+            Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() =>
 			{
-				//breadcrumbBarControl1.ExitEditMode();
-				Explorer.Focus();
-			}
-			if (ctgSearch.Visibility == System.Windows.Visibility.Visible && !Explorer.NavigationLog.CurrentLocation.IsSearchFolder)
-			{
-				ctgSearch.Visibility = System.Windows.Visibility.Collapsed;
-				TheRibbon.SelectedTabItem = HomeTab;
-			}
+                Thread.Sleep(100);
+			    if (IsAfterRename)
+			    {
+				    //breadcrumbBarControl1.ExitEditMode();
+				    Explorer.Focus();
+			    }
+			    if (ctgSearch.Visibility == System.Windows.Visibility.Visible && !Explorer.NavigationLog.CurrentLocation.IsSearchFolder)
+			    {
+				    ctgSearch.Visibility = System.Windows.Visibility.Collapsed;
+				    TheRibbon.SelectedTabItem = HomeTab;
+			    }
 
-			// Just hide it. Hide it now.
-			ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+			    // Just hide it. Hide it now.
+			    //ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
 
-			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
-			{
+			
 
 				if (!IsSelectionRized)
 				{
@@ -1779,7 +1785,7 @@ namespace BetterExplorer
 							//    }
 							//}
 
-							if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName)
+                            if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName || Explorer.NavigationLog.CurrentLocation.IsDrive)
 							{
 								ctgFolderTools.Visibility = Visibility.Collapsed;
 							}
@@ -2288,8 +2294,12 @@ namespace BetterExplorer
 
 					}
 				}
+                
   
 			}));
+            });
+            //t.IsBackground = true;
+            t.Start();
 
 			IsSelectionRized = false;
 
@@ -5084,43 +5094,47 @@ namespace BetterExplorer
 
 		private void inRibbonGallery1_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+            //if (IsViewSelection)
+            IsViewSelection = true;
+            {
+                switch (inRibbonGallery1.SelectedIndex)
+                {
+                    case 0:
+                        Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
+                        Explorer.ContentOptions.ThumbnailSize = 256;
+                        break;
+                    case 1:
+                        Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
+                        Explorer.ContentOptions.ThumbnailSize = 96;
+                        break;
+                    case 2:
+                        Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
+                        Explorer.ContentOptions.ThumbnailSize = 64;
+                        break;
+                    case 3:
+                        Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
+                        Explorer.ContentOptions.ThumbnailSize = 48;
+                        break;
+                    case 4:
 
-			switch (inRibbonGallery1.SelectedIndex)
-			{
-				case 0:
-					Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
-					Explorer.ContentOptions.ThumbnailSize = 256;
-					break;
-				case 1:
-					Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
-					Explorer.ContentOptions.ThumbnailSize = 96;
-					break;
-				case 2:
-					Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
-					Explorer.ContentOptions.ThumbnailSize = 64;
-					break;
-				case 3:
-					Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
-					Explorer.ContentOptions.ThumbnailSize = 48;
-					break;
-				case 4:
+                        Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.List;
+                        break;
+                    case 5:
 
-					Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.List;
-					break;
-				case 5:
+                        Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Details;
+                        break;
+                    case 6:
 
-					Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Details;
-					break;
-				case 6:
-
-					Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Tile;
-					break;
-				case 7:
-					Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Content;
-					break;
-				default:
-					break;
-			}
+                        Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Tile;
+                        break;
+                    case 7:
+                        Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Content;
+                        break;
+                    default:
+                        break;
+                }
+                IsViewSelection = false;
+            }
 
 		}
 
@@ -8617,6 +8631,11 @@ namespace BetterExplorer
 
     private void chkIsLastTabCloseApp_Click(object sender, RoutedEventArgs e) {
       this.IsCloseLastTabCloseApp = this.chkIsLastTabCloseApp.IsChecked.Value;
+    }
+    bool IsViewSelection = false;
+    private void inRibbonGallery1_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        
     }
 
 	}

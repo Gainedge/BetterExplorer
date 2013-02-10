@@ -1780,7 +1780,7 @@
                                             Ribbon:KeyTip.Keys="V"
                                             SelectedFilter="{Binding ElementName=galleryFilterAll}"
                                             SelectionChanged="inRibbonGallery1_SelectionChanged"
-                                            SizeDefinition="Large,Large,Large">
+                                            SizeDefinition="Large,Large,Large" PreviewMouseLeftButtonDown="inRibbonGallery1_PreviewMouseLeftButtonDown">
                         <Ribbon:InRibbonGallery.Filters>
                             <Ribbon:GalleryGroupFilter x:Name="galleryFilterAll"
                                                        Title="All"
