@@ -745,9 +745,8 @@ namespace BetterExplorer
 
 
 
-				Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
+				Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() =>
 									{
-                                        Thread.Sleep(250);
                                         this.Title = "Better Explorer - " + e.NewLocation.GetDisplayName(DisplayNameType.Default);
 			                            ConstructMoveToCopyToMenu();
 			                            if (e.NewLocation.IsFileSystemObject || e.NewLocation.IsNetDrive || e.NewLocation.ParsingName.StartsWith(@"\\"))
@@ -780,8 +779,7 @@ namespace BetterExplorer
 			                                Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Details ?
 			                                  true : false;
 
-			                            this.breadcrumbBarControl1.LoadDirectory(e.NewLocation);
-			                            this.breadcrumbBarControl1.LastPath = e.NewLocation.ParsingName;
+			                            
 			                            //}));
                     
                     
@@ -1288,6 +1286,8 @@ namespace BetterExplorer
 				fsw_AC.Dispose();
 
 			e.Cancel = IsCancel;
+            this.breadcrumbBarControl1.LoadDirectory(e.PendingLocation);
+            this.breadcrumbBarControl1.LastPath = e.PendingLocation.ParsingName;
    //         ShellObject ePendingLocation = e.PendingLocation;
 			////if (IsAfterRename)
 			////    breadcrumbBarControl1.ExitEditMode();
