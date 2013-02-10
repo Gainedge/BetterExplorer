@@ -19,15 +19,19 @@ namespace BetterExplorer
         bool cos = false;
         bool hsa = false;
 
+        public MainWindow win;
+
         public ArchiveCreateWizard()
         {
             InitializeComponent();
+            //LoadStrings();
             radioButton1.Checked = true;
         }
 
         public ArchiveCreateWizard(ShellObjectCollection list)
         {
             InitializeComponent();
+            //LoadStrings();
             radioButton1.Checked = true;
             ListFilesToBeAdded(list);
         }
@@ -35,10 +39,23 @@ namespace BetterExplorer
         public ArchiveCreateWizard(ShellObjectCollection list, string output_folder)
         {
             InitializeComponent();
+            //LoadStrings();
             radioButton1.Checked = true;
             ListFilesToBeAdded(list);
             this.txtOutput.Text = output_folder;
             this.openFileDialog1.InitialDirectory = output_folder;
+        }
+
+        public void LoadStrings()
+        {
+            wizardPage1.Text = (win.FindResource("txtReviewFiles") as string);
+            wizardPage2.Text = (win.FindResource("txtArchiveFormat") as string);
+            wizardPage3.Text = (win.FindResource("txtArchiveSpeed") as string);
+            wizardPage4.Text = (win.FindResource("txtNamePassword") as string);
+            button2.Text = (win.FindResource("txtAddFiles") as string);
+            button3.Text = (win.FindResource("txtRemoveFiles") as string);
+            checkBox1.Text = (win.FindResource("chkProtectArchive") as string);
+            label13.Text = (win.FindResource("txtPassword") as string);
         }
 
         public void ListFilesToBeAdded(ShellObjectCollection list)

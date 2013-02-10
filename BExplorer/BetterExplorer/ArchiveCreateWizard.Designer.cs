@@ -42,6 +42,7 @@
             this.lblCount = new System.Windows.Forms.Label();
             this.lblSize = new System.Windows.Forms.Label();
             this.wizardPage2 = new AeroWizard.WizardPage();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.radioButton6 = new System.Windows.Forms.RadioButton();
             this.label7 = new System.Windows.Forms.Label();
             this.radioButton5 = new System.Windows.Forms.RadioButton();
@@ -50,12 +51,6 @@
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
-            this.wizardPage3 = new AeroWizard.WizardPage();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.label3 = new System.Windows.Forms.Label();
             this.wizardPage4 = new AeroWizard.WizardPage();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
@@ -68,17 +63,22 @@
             this.button1 = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
+            this.wizardPage3 = new AeroWizard.WizardPage();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.label3 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.wizardControl1)).BeginInit();
             this.wizardPage1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.wizardPage2.SuspendLayout();
+            this.wizardPage4.SuspendLayout();
             this.wizardPage3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            this.wizardPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // wizardControl1
@@ -113,7 +113,7 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button3.Location = new System.Drawing.Point(108, 229);
+            this.button3.Location = new System.Drawing.Point(108, 230);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(99, 28);
             this.button3.TabIndex = 2;
@@ -124,7 +124,7 @@
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button2.Location = new System.Drawing.Point(3, 229);
+            this.button2.Location = new System.Drawing.Point(3, 230);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(99, 28);
             this.button2.TabIndex = 1;
@@ -228,6 +228,18 @@
             this.wizardPage2.TabIndex = 1;
             this.wizardPage2.Text = "Archive Format";
             // 
+            // checkBox2
+            // 
+            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Location = new System.Drawing.Point(17, 238);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(234, 19);
+            this.checkBox2.TabIndex = 1;
+            this.checkBox2.Text = "Change compression speed (advanced)";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            // 
             // radioButton6
             // 
             this.radioButton6.AutoSize = true;
@@ -322,67 +334,6 @@
             this.label6.TabIndex = 1;
             this.label6.Text = "Select the format to use:\r\n\r\nEach format has their own advantages and disadvantag" +
     "es, depending upon what you might need.";
-            // 
-            // wizardPage3
-            // 
-            this.wizardPage3.Controls.Add(this.label9);
-            this.wizardPage3.Controls.Add(this.label8);
-            this.wizardPage3.Controls.Add(this.label4);
-            this.wizardPage3.Controls.Add(this.trackBar1);
-            this.wizardPage3.Controls.Add(this.label3);
-            this.wizardPage3.Name = "wizardPage3";
-            this.wizardPage3.NextPage = this.wizardPage4;
-            this.wizardPage3.Size = new System.Drawing.Size(587, 258);
-            this.wizardPage3.TabIndex = 2;
-            this.wizardPage3.Text = "Compression Speed";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(215, 91);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(52, 30);
-            this.label9.TabIndex = 1;
-            this.label9.Text = "Normal\r\n(default)";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(384, 91);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(87, 30);
-            this.label8.TabIndex = 3;
-            this.label8.Text = "Slower\r\nSmaller file size";
-            this.label8.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(13, 91);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(81, 30);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "Faster\r\nLarger file size";
-            // 
-            // trackBar1
-            // 
-            this.trackBar1.LargeChange = 1;
-            this.trackBar1.Location = new System.Drawing.Point(16, 53);
-            this.trackBar1.Maximum = 2;
-            this.trackBar1.Minimum = -2;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(449, 45);
-            this.trackBar1.TabIndex = 1;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 14);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(302, 15);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Select a compression speed/level to use while archiving.";
             // 
             // wizardPage4
             // 
@@ -508,6 +459,67 @@
             this.label10.TabIndex = 0;
             this.label10.Text = "Folder to create archive in:";
             // 
+            // wizardPage3
+            // 
+            this.wizardPage3.Controls.Add(this.label9);
+            this.wizardPage3.Controls.Add(this.label8);
+            this.wizardPage3.Controls.Add(this.label4);
+            this.wizardPage3.Controls.Add(this.trackBar1);
+            this.wizardPage3.Controls.Add(this.label3);
+            this.wizardPage3.Name = "wizardPage3";
+            this.wizardPage3.NextPage = this.wizardPage4;
+            this.wizardPage3.Size = new System.Drawing.Size(587, 258);
+            this.wizardPage3.TabIndex = 2;
+            this.wizardPage3.Text = "Compression Speed";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(215, 91);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(52, 30);
+            this.label9.TabIndex = 1;
+            this.label9.Text = "Normal\r\n(default)";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(384, 91);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(87, 30);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "Slower\r\nSmaller file size";
+            this.label8.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(13, 91);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(81, 30);
+            this.label4.TabIndex = 2;
+            this.label4.Text = "Faster\r\nLarger file size";
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.LargeChange = 1;
+            this.trackBar1.Location = new System.Drawing.Point(16, 53);
+            this.trackBar1.Maximum = 2;
+            this.trackBar1.Minimum = -2;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(449, 45);
+            this.trackBar1.TabIndex = 1;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(13, 14);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(302, 15);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Select a compression speed/level to use while archiving.";
+            // 
             // folderBrowserDialog1
             // 
             this.folderBrowserDialog1.Description = "Choose the folder to create the archive in.";
@@ -518,18 +530,6 @@
             this.openFileDialog1.Filter = "All Files|*.*";
             this.openFileDialog1.Multiselect = true;
             this.openFileDialog1.Title = "Add File to Archive";
-            // 
-            // checkBox2
-            // 
-            this.checkBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(17, 238);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(234, 19);
-            this.checkBox2.TabIndex = 1;
-            this.checkBox2.Text = "Change compression speed (advanced)";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // ArchiveCreateWizard
             // 
@@ -550,11 +550,11 @@
             this.tableLayoutPanel1.PerformLayout();
             this.wizardPage2.ResumeLayout(false);
             this.wizardPage2.PerformLayout();
+            this.wizardPage4.ResumeLayout(false);
+            this.wizardPage4.PerformLayout();
             this.wizardPage3.ResumeLayout(false);
             this.wizardPage3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            this.wizardPage4.ResumeLayout(false);
-            this.wizardPage4.PerformLayout();
             this.ResumeLayout(false);
 
         }

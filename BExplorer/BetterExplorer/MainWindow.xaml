@@ -1625,7 +1625,8 @@
                                   Indent="7"
                                   ReduceOrder="Network,Network,Compress,Compress,Compress,Network"
                                   Ribbon:KeyTip.Keys="S"
-                                  Visibility="Visible">
+                                  Visibility="Visible"
+                                  x:Name="tbShare">
                 <Ribbon:RibbonGroupBox Name="Compress"
                                        Header="{StaticResource tgCompressCP}"
                                        Ribbon:KeyTip.Keys="C">
@@ -1697,7 +1698,8 @@
             <Ribbon:RibbonTabItem Header="{StaticResource tbViewCP}"
                                   Indent="7"
                                   ReduceOrder="CurrentView,CurrentView,ShowHide,Layout,Layout,Layout,Panes,Panes,ShowHide,ShowHide,CurrentView,Panes"
-                                  Ribbon:KeyTip.Keys="V">
+                                  Ribbon:KeyTip.Keys="V"
+                                  x:Name="tbView">
                 <Ribbon:RibbonGroupBox x:Name="Panes"
                                        Header="{StaticResource tbPanesCP}"
                                        Ribbon:KeyTip.Keys="P">

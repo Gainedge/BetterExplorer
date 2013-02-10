@@ -4754,6 +4754,8 @@ namespace BetterExplorer
 		private void btnCreateArchive_Click(object sender, RoutedEventArgs e)
 		{
 			ArchiveCreateWizard acw = new ArchiveCreateWizard(Explorer.SelectedItems, Explorer.NavigationLog.CurrentLocation.ParsingName);
+            acw.win = this;
+            acw.LoadStrings();
 			acw.Show();
 			AddToLog("Archive Creation Wizard begun. Current location: " + Explorer.NavigationLog.CurrentLocation.ParsingName);
 		}
@@ -5500,6 +5502,8 @@ namespace BetterExplorer
 			if (ReadyToChangeLanguage == true)
 			{
 				ChangeLocale(((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
+                //InitializeComponent();
+                //ChangeStrings();
 				lblLocale.Visibility = Visibility.Visible;
 			}
 		}
@@ -5519,6 +5523,23 @@ namespace BetterExplorer
 		{
 			Process.Start(TranslationURL.Text);
 		}
+
+        private void ChangeStrings()
+        {
+            btnBlack.Header = FindResource("btnBlackCP");
+            btnBlue.Header = FindResource("btnBlueCP");
+            btnSilver.Header = FindResource("btnSilverCP");
+            btnGreen.Header = FindResource("btnGreenCP");
+            btnFormatDrive.Header = FindResource("btnFormatDriveCP");
+            btnFlipX.Header = FindResource("btnFlipXCP");
+            btnFlipY.Header = FindResource("btnFlipYCP");
+            btnFavorites.Header = FindResource("btnFavoritesCP");
+            HomeTab.Header = FindResource("tbHomeCP");
+            btnShare.Header = FindResource("btnShareCP");
+            tbShare.Header = FindResource("tbShareCP");
+            tbView.Header = FindResource("tbViewCP");
+            ctgDrive.Header = (FindResource("ctbDriveToolsCP") as string);
+        }
 
 		#endregion
 

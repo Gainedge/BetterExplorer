@@ -290,7 +290,7 @@ namespace BetterExplorerControls
             e.Handled = true;
             FocusManager.SetIsFocusScope(this, true);
             elPanel.Visibility = System.Windows.Visibility.Collapsed;
-            HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
+            HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
         }
 
         private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e)
@@ -308,11 +308,12 @@ namespace BetterExplorerControls
         private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e)
         {
             //e.Handled = true;
-            elPanel.Visibility = System.Windows.Visibility.Collapsed;
-            if (LastPath != "")
-            {
-                HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
-            }
+            //elPanel.Visibility = System.Windows.Visibility.Collapsed;
+            //if (LastPath != "")
+            //{
+            //    HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
+            //}
+            EnterEditMode();
         }
 
         private void stackPanel1_MouseUp(object sender, MouseButtonEventArgs e)
@@ -349,11 +350,11 @@ namespace BetterExplorerControls
             elPanel.Visibility = System.Windows.Visibility.Collapsed;
             if (LastPath != "")
             {
-                HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
+                HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
             }
             else
             {
-                HistoryCombo.Text = FixShellPathsInEditMode(furthestrightitem.ShellObject.ParsingName);
+                HistoryCombo.Text = furthestrightitem.ShellObject.ParsingName; //FixShellPathsInEditMode(furthestrightitem.ShellObject.ParsingName);
             }
             HistoryCombo.Focus();
         }
