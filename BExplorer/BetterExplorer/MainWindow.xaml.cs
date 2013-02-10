@@ -1500,7 +1500,7 @@ namespace BetterExplorer
                                                 bool isinLibraries = false;
                                                 bool itisLibraries = false;
 
-                                                if (ne.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
+                                                if (ne.Parent != null && ne.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
                                                 {
                                                     isinLibraries = true;
                                                 }
