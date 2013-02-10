@@ -20,7 +20,7 @@
                      Loaded="Window_Loaded"
                      MouseMove="RibbonWindow_MouseMove"
                      MouseRightButtonUp="RibbonWindow_MouseRightButtonUp"
-                     MouseUp="RibbonWindow_MouseUp_1"
+                     
                      ResizeMode="CanResizeWithGrip"
                      TextOptions.TextFormattingMode="Display"
                      WindowState="Maximized"

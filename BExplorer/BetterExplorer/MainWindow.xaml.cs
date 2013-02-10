@@ -51,7 +51,6 @@ namespace BetterExplorer
 		ExplorerBrowser Explorer = new ExplorerBrowser();
 		ClipboardMonitor cbm = new ClipboardMonitor();
 		ContextMenu cmHistory = new ContextMenu();
-		private int CurrentTabIndex;
 		private int LastTabIndex = -1;
 		private int BeforeLastTabIndex = -1;
 		string StartUpLocation = KnownFolders.Libraries.ParsingName;
@@ -279,12 +278,6 @@ namespace BetterExplorer
 			}
 		}
 
-		private void RibbonWindow_MouseUp_1(object sender, MouseButtonEventArgs e)
-		{
-
-			//IsAfterRename = true;
-		}
-
 		private void RibbonWindow_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
 		{
 			IsAfterRename = true;
@@ -396,22 +389,22 @@ namespace BetterExplorer
 
 			TheRibbon.IsMinimized = Convert.ToBoolean(rks.GetValue(@"IsRibonMinimized", false));
       
-      //CommandPrompt window size
-      this.CommandPromptWinHeight = Convert.ToDouble(rks.GetValue(@"CmdWinHeight", 100));
-      rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
+            //CommandPrompt window size
+            this.CommandPromptWinHeight = Convert.ToDouble(rks.GetValue(@"CmdWinHeight", 100));
+            rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
 
-      if ((int)rks.GetValue(@"IsConsoleShown", 0) == 1) {
-        rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
-        spCommandPrompt.Height = GridLength.Auto;
-        if (!ctrlConsole.IsProcessRunning) {
-          ctrlConsole.StartProcess("cmd.exe", null);
-          ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
-          ctrlConsole.ClearOutput();
-        }
-      } else {
-        rCommandPrompt.Height = new GridLength(0);
-        spCommandPrompt.Height = new GridLength(0);
-      }
+            if ((int)rks.GetValue(@"IsConsoleShown", 0) == 1) {
+            rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
+            spCommandPrompt.Height = GridLength.Auto;
+            if (!ctrlConsole.IsProcessRunning) {
+                ctrlConsole.StartProcess("cmd.exe", null);
+                ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+                ctrlConsole.ClearOutput();
+            }
+            } else {
+            rCommandPrompt.Height = new GridLength(0);
+            spCommandPrompt.Height = new GridLength(0);
+            }
 
 			rks.Close();
 		}
@@ -438,7 +431,7 @@ namespace BetterExplorer
 
 			searchcicles++;
 			//BeforeSearcCicles = searchcicles;
-			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() =>
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
 								{
 									IsCalledFromViewEnum = true;
 									zoomSlider.Value = Explorer.ContentOptions.ThumbnailSize;
@@ -560,7 +553,7 @@ namespace BetterExplorer
 									}
 									catch (Exception ex)
 									{
-                    //FIXME: I disable this message becasue of strange null after filter
+                                        //FIXME: I disable this message becasue of strange null after filter
 										//MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error); 
 									}
 									Separator sp = new Separator();
@@ -743,7 +736,7 @@ namespace BetterExplorer
 
 
 
-				Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() =>
+				Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
 									{
 			//                            ConstructMoveToCopyToMenu();
 			//                            if (e.NewLocation.IsFileSystemObject || e.NewLocation.IsNetDrive || e.NewLocation.ParsingName.StartsWith(@"\\"))
@@ -1031,9 +1024,9 @@ namespace BetterExplorer
 
 									}
 								));
-        if (e.NewLocation.IsFileSystemObject) {
-          ctrlConsole.WriteInput(String.Format("cd \"{0}\"", e.NewLocation.ParsingName), System.Drawing.Color.Red, false);
-        }
+                if (e.NewLocation.IsFileSystemObject) {
+                    ctrlConsole.WriteInput(String.Format("cd \"{0}\"", e.NewLocation.ParsingName), System.Drawing.Color.Red, false);
+                }
 				GC.WaitForPendingFinalizers();
 				GC.Collect();
 			}
@@ -1289,7 +1282,7 @@ namespace BetterExplorer
 
 
 
-				Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() =>
+				Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
 									{
 										ConstructMoveToCopyToMenu();
 										if (e.PendingLocation.IsFileSystemObject || e.PendingLocation.IsNetDrive || e.PendingLocation.ParsingName.StartsWith(@"\\"))
@@ -1345,7 +1338,7 @@ namespace BetterExplorer
 											}
 											JumpTask JTask = new JumpTask();
 											JTask.ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-											JTask.Arguments = "\"" + e.PendingLocation.ParsingName + "\"";
+                                            JTask.Arguments = String.Format("\"{0}\"", e.PendingLocation.ParsingName);
 											JTask.Title = e.PendingLocation.GetDisplayName(DisplayNameType.Default);
 											JTask.IconResourcePath = sfi.szDisplayName;
 											JTask.IconResourceIndex = sfi.iIcon;
@@ -1402,6 +1395,11 @@ namespace BetterExplorer
 										{
 											//ctgFolderTools.Visibility = Visibility.Visible;
 										}
+
+                                        if (e.PendingLocation.IsSearchFolder)
+                                        {
+                                            ctgSearch.Visibility = Visibility.Visible;
+                                        }
 
 										if (e.PendingLocation.ParsingName.Contains(KnownFolders.Libraries.ParsingName) &&
 											e.PendingLocation.ParsingName != KnownFolders.Libraries.ParsingName)
@@ -1521,62 +1519,65 @@ namespace BetterExplorer
 
 		void Explorer_ViewChanged(object sender, ViewChangedEventArgs e)
 		{
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                         (ThreadStart)(() =>
+                         {
+                             if (e.ThumbnailSize == 256)
+                             {
+                                 inRibbonGallery1.SelectedIndex = 0;
 
-			if (e.ThumbnailSize == 256)
-			{
-				inRibbonGallery1.SelectedIndex = 0;
+                             }
+                             if (e.ThumbnailSize == 96)
+                             {
+                                 inRibbonGallery1.SelectedIndex = 1;
 
-			}
-			if (e.ThumbnailSize == 96)
-			{
-				inRibbonGallery1.SelectedIndex = 1;
+                             }
+                             if (e.ThumbnailSize == 64)
+                             {
+                                 inRibbonGallery1.SelectedIndex = 2;
 
-			}
-			if (e.ThumbnailSize == 64)
-			{
-				inRibbonGallery1.SelectedIndex = 2;
+                             }
+                             if (e.ThumbnailSize == 48 & e.View == ExplorerBrowserViewMode.Icon)
+                             {
+                                 inRibbonGallery1.SelectedIndex = 3;
+                                 btnSbIcons.IsChecked = true;
+                             }
+                             else
+                             {
+                                 btnSbIcons.IsChecked = false;
+                             }
+                             if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.List)
+                             {
+                                 inRibbonGallery1.SelectedIndex = 4;
+                             }
+                             if (e.View == ExplorerBrowserViewMode.Details)
+                             {
+                                 inRibbonGallery1.SelectedIndex = 5;
+                                 btnSbDetails.IsChecked = true;
+                             }
+                             else
+                             {
+                                 btnSbDetails.IsChecked = false;
+                             }
+                             if (e.View == ExplorerBrowserViewMode.Tile)
+                             {
+                                 inRibbonGallery1.SelectedIndex = 6;
+                                 btnSbTiles.IsChecked = true;
+                             }
+                             else
+                             {
+                                 btnSbTiles.IsChecked = false;
+                             }
+                             if (e.View == ExplorerBrowserViewMode.Content)
+                             {
+                                 inRibbonGallery1.SelectedIndex = 7;
+                             }
+                             IsCalledFromViewEnum = true;
+                             zoomSlider.Value = e.ThumbnailSize;
+                             IsCalledFromViewEnum = false;
 
-			}
-			if (e.ThumbnailSize == 48 & e.View == ExplorerBrowserViewMode.Icon)
-			{
-				inRibbonGallery1.SelectedIndex = 3;
-				btnSbIcons.IsChecked = true;
-			}
-			else
-			{
-				btnSbIcons.IsChecked = false;
-			}
-			if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.List)
-			{
-				inRibbonGallery1.SelectedIndex = 4;
-			}
-			if (e.View == ExplorerBrowserViewMode.Details)
-			{
-				inRibbonGallery1.SelectedIndex = 5;
-				btnSbDetails.IsChecked = true;
-			}
-			else
-			{
-				btnSbDetails.IsChecked = false;
-			}
-			if (e.View == ExplorerBrowserViewMode.Tile)
-			{
-				inRibbonGallery1.SelectedIndex = 6;
-				btnSbTiles.IsChecked = true;
-			}
-			else
-			{
-				btnSbTiles.IsChecked = false;
-			}
-			if (e.View == ExplorerBrowserViewMode.Content)
-			{
-				inRibbonGallery1.SelectedIndex = 7;
-			}
-			IsCalledFromViewEnum = true;
-			zoomSlider.Value = e.ThumbnailSize;
-			IsCalledFromViewEnum = false;
-
-			btnAutosizeColls.IsEnabled = e.View == ExplorerBrowserViewMode.Details ? true : false;
+                             btnAutosizeColls.IsEnabled = e.View == ExplorerBrowserViewMode.Details ? true : false;
+                         }));
 
 		}
 
@@ -1670,7 +1671,7 @@ namespace BetterExplorer
 				//breadcrumbBarControl1.ExitEditMode();
 				Explorer.Focus();
 			}
-			if (ctgSearch.Visibility == System.Windows.Visibility.Visible)
+			if (ctgSearch.Visibility == System.Windows.Visibility.Visible && !Explorer.NavigationLog.CurrentLocation.IsSearchFolder)
 			{
 				ctgSearch.Visibility = System.Windows.Visibility.Collapsed;
 				TheRibbon.SelectedTabItem = HomeTab;
@@ -1679,7 +1680,7 @@ namespace BetterExplorer
 			// Just hide it. Hide it now.
 			ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
 
-			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (Action)(() =>
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
 			{
 
 				if (!IsSelectionRized)
@@ -1855,87 +1856,87 @@ namespace BetterExplorer
 
 								// set up Open With button
 								List<string> iiii = new List<string>();
-                if (isFuncAvail) {
+                                if (isFuncAvail) {
 
-                  string extension =
-                    System.IO.Path.GetExtension(SelectedItem.ParsingName);
-                  iiii = Explorer.RecommendedPrograms(extension);
+                                  string extension =
+                                    System.IO.Path.GetExtension(SelectedItem.ParsingName);
+                                  iiii = Explorer.RecommendedPrograms(extension);
                   
-                    MenuItem mid = new MenuItem();
-                    defapp = WindowsAPI.GetAssoc(extension, WindowsAPI.AssocF.Verify,
-                              WindowsAPI.AssocStr.Executable);
-                    if (File.Exists(defapp) && defapp.ToLowerInvariant() != Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),"shell32.dll").ToLowerInvariant()) {
+                                    MenuItem mid = new MenuItem();
+                                    defapp = WindowsAPI.GetAssoc(extension, WindowsAPI.AssocF.Verify,
+                                              WindowsAPI.AssocStr.Executable);
+                                    if (File.Exists(defapp) && defapp.ToLowerInvariant() != Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),"shell32.dll").ToLowerInvariant()) {
 
-                      if (defapp != "" && defapp != "\"%1\"" && extension != "") {
+                                      if (defapp != "" && defapp != "\"%1\"" && extension != "") {
 
-                        string DefAppName = WindowsAPI.GetAssoc(extension, WindowsAPI.AssocF.Verify,
-                                                    WindowsAPI.AssocStr.FriendlyAppName);
-                        try {
-                          ShellObject objd = ShellObject.FromParsingName(defapp);
-                          mid.Header = DefAppName;
-                          mid.Tag = defapp;
-                          mid.Click += new RoutedEventHandler(miow_Click);
-                          objd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                          objd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-                          mid.Icon = objd.Thumbnail.BitmapSource;
-                          mid.Focusable = false;
-                          objd.Dispose();
-                          btnOpenWith.Items.Add(mid);
-                        } catch (Exception) {
+                                        string DefAppName = WindowsAPI.GetAssoc(extension, WindowsAPI.AssocF.Verify,
+                                                                    WindowsAPI.AssocStr.FriendlyAppName);
+                                        try {
+                                          ShellObject objd = ShellObject.FromParsingName(defapp);
+                                          mid.Header = DefAppName;
+                                          mid.Tag = defapp;
+                                          mid.Click += new RoutedEventHandler(miow_Click);
+                                          objd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                                          objd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+                                          mid.Icon = objd.Thumbnail.BitmapSource;
+                                          mid.Focusable = false;
+                                          objd.Dispose();
+                                          btnOpenWith.Items.Add(mid);
+                                        } catch (Exception) {
 
-                        }
-                      }
+                                        }
+                                      }
 
-                    }
-                    if (iiii.Count > 0) {
-                    foreach (string item in iiii) {
-                      // we'll see if it works without checking for "firefox.exe"
-                      //if (item != "firefox.exe" && item != "CompressedFolder")
-                      if (item != "CompressedFolder") {
-                        MenuItem mi = new MenuItem();
-                        string deffappname;
-                        String ExePath = "";
-                        ExePath = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify |
-                          WindowsAPI.AssocF.Open_ByExeName, WindowsAPI.AssocStr.Executable);
-                        deffappname = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify |
-                          WindowsAPI.AssocF.Open_ByExeName, WindowsAPI.AssocStr.FriendlyAppName);
-                        if (!File.Exists(ExePath)) {
-                          ExePath = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify,
-                             WindowsAPI.AssocStr.Executable);
-                          deffappname = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify, WindowsAPI.AssocStr.FriendlyAppName);
-                        }
+                                    }
+                                    if (iiii.Count > 0) {
+                                    foreach (string item in iiii) {
+                                      // we'll see if it works without checking for "firefox.exe"
+                                      //if (item != "firefox.exe" && item != "CompressedFolder")
+                                      if (item != "CompressedFolder") {
+                                        MenuItem mi = new MenuItem();
+                                        string deffappname;
+                                        String ExePath = "";
+                                        ExePath = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify |
+                                          WindowsAPI.AssocF.Open_ByExeName, WindowsAPI.AssocStr.Executable);
+                                        deffappname = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify |
+                                          WindowsAPI.AssocF.Open_ByExeName, WindowsAPI.AssocStr.FriendlyAppName);
+                                        if (!File.Exists(ExePath)) {
+                                          ExePath = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify,
+                                             WindowsAPI.AssocStr.Executable);
+                                          deffappname = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify, WindowsAPI.AssocStr.FriendlyAppName);
+                                        }
 
-                        bool isDuplicate = false;
+                                        bool isDuplicate = false;
 
-                        foreach (MenuItem mei in btnOpenWith.Items) {
-                          if ((mei.Tag as string) == ExePath) {
-                            isDuplicate = true;
-                            //MessageBox.Show(ExePath,"Duplicate Found");
-                          }
-                        }
+                                        foreach (MenuItem mei in btnOpenWith.Items) {
+                                          if ((mei.Tag as string) == ExePath) {
+                                            isDuplicate = true;
+                                            //MessageBox.Show(ExePath,"Duplicate Found");
+                                          }
+                                        }
 
-                        if (isDuplicate == false) {
-                          try {
-                            ShellObject obj = ShellObject.FromParsingName(ExePath);
-                            mi.Header = deffappname;
-                            mi.Tag = ExePath;
-                            mi.Click += new RoutedEventHandler(miow_Click);
-                            obj.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                            obj.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-                            mi.Icon = obj.Thumbnail.BitmapSource;
-                            mi.ToolTip = ExePath;
-                            mi.Focusable = false;
-                            obj.Dispose();
-                          } catch (Exception) {
+                                        if (isDuplicate == false) {
+                                          try {
+                                            ShellObject obj = ShellObject.FromParsingName(ExePath);
+                                            mi.Header = deffappname;
+                                            mi.Tag = ExePath;
+                                            mi.Click += new RoutedEventHandler(miow_Click);
+                                            obj.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                                            obj.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+                                            mi.Icon = obj.Thumbnail.BitmapSource;
+                                            mi.ToolTip = ExePath;
+                                            mi.Focusable = false;
+                                            obj.Dispose();
+                                          } catch (Exception) {
 
-                          }
-                          if (!String.IsNullOrEmpty(defapp))
-                            btnOpenWith.Items.Add(mi);
-                        }
-                      }
-                    }
-                  }
-                }
+                                          }
+                                          if (!String.IsNullOrEmpty(defapp))
+                                            btnOpenWith.Items.Add(mi);
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
 
 								// enable buttons
 								btnDelete.IsEnabled = (isFuncAvail || Explorer.NavigationLog.CurrentLocation.ParsingName ==
@@ -2220,7 +2221,7 @@ namespace BetterExplorer
 									ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
 									ctgLibraries.Visibility = System.Windows.Visibility.Visible;
 									ShellLibrary lib =
-					ShellLibrary.Load(Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default), false);
+					                    ShellLibrary.Load(Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default), false);
 									IsFromSelectionOrNavigation = true;
 									chkPinNav.IsChecked = lib.IsPinnedToNavigationPane;
 									IsFromSelectionOrNavigation = false;
@@ -3757,11 +3758,6 @@ namespace BetterExplorer
 				//Itmpop.Owner = this;
 				//Itmpop.Show();
 
-				
-
-				
-
-
 				//'sets up FileSystemWatcher for Favorites folder
 				String FavPath = "";
 				try
@@ -3782,7 +3778,7 @@ namespace BetterExplorer
 				//' set up breadcrumb bar
 				breadcrumbBarControl1.SetDragHandlers(new DragEventHandler(bbi_DragEnter), new DragEventHandler(bbi_DragLeave), new DragEventHandler(bbi_DragOver), new DragEventHandler(bbi_Drop));
 
-				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
 								 (ThreadStart)(() =>
 								 {
 									 //PicturePreview = new PreviewMedia();
@@ -3858,7 +3854,7 @@ namespace BetterExplorer
 									 Explorer.ClientSizeChanged += new EventHandler(ExplorerBrowserControl_ClientSizeChanged);
 									 Explorer.Paint += new System.Windows.Forms.PaintEventHandler(ExplorerBrowserControl_Paint);
 									 Explorer.ViewChanged += new EventHandler<ViewChangedEventArgs>(Explorer_ViewChanged);
-                   Explorer.ItemHot += Explorer_ItemHot;
+                                     Explorer.ItemHot += Explorer_ItemHot;
 									 Explorer.ExplorerBrowserMouseLeave += new EventHandler(Explorer_ExplorerBrowserMouseLeave);
 
 									 Explorer.DragDrop += new System.Windows.Forms.DragEventHandler(Explorer_DragDrop);
@@ -3929,9 +3925,9 @@ namespace BetterExplorer
 									IsUpdateCheckStartup = (UpdateCheckStartup == 1);
 									chkUpdateStartupCheck.IsChecked = IsUpdateCheckStartup;
 
-                  int isConsoleShown = (int)rks.GetValue(@"IsConsoleShown", 0);
-                  IsConsoleShown = (isConsoleShown == 1);
-                  btnConsolePane.IsChecked = this.IsConsoleShown;
+                                    int isConsoleShown = (int)rks.GetValue(@"IsConsoleShown", 0);
+                                    IsConsoleShown = (isConsoleShown == 1);
+                                    btnConsolePane.IsChecked = this.IsConsoleShown;
 
                   
 
@@ -3976,9 +3972,9 @@ namespace BetterExplorer
 
 									chkIsRestoreTabs.IsChecked = IsrestoreTabs;
 
-                  int IsLastTabCloseApp = (int)rks.GetValue(@"IsLastTabCloseApp", 1);
-                  IsCloseLastTabCloseApp = (IsLastTabCloseApp == 1);
-                  this.chkIsLastTabCloseApp.IsChecked = IsCloseLastTabCloseApp;
+                                    int IsLastTabCloseApp = (int)rks.GetValue(@"IsLastTabCloseApp", 1);
+                                    IsCloseLastTabCloseApp = (IsLastTabCloseApp == 1);
+                                    this.chkIsLastTabCloseApp.IsChecked = IsCloseLastTabCloseApp;
 
 									int LogActions = (int)rks.GetValue(@"EnableActionLog", 0);
 
@@ -4139,8 +4135,8 @@ namespace BetterExplorer
 									{
 										if (Tabs.Length == 0 || !IsrestoreTabs)
 										{
-                      ShellObject sho = GetShellObjectFromLocation(StartUpLocation);
-                      Explorer.Navigate(sho);
+                                            ShellObject sho = GetShellObjectFromLocation(StartUpLocation);
+                                            Explorer.Navigate(sho);
 										}
 										if (IsrestoreTabs)
 										{
@@ -4161,8 +4157,8 @@ namespace BetterExplorer
 													}
 													if (i == Tabs.Count())
 													{
-                            ShellObject sho = GetShellObjectFromLocation(str);
-                            Explorer.Navigate(sho);
+                                                        ShellObject sho = GetShellObjectFromLocation(str);
+                                                        Explorer.Navigate(sho);
 														(tabControl1.SelectedItem as CloseableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
 													}
 												}
@@ -4233,29 +4229,23 @@ namespace BetterExplorer
 									 //} 
 									 #endregion
 
-				          try {
-					        if (IsUpdateCheck) {
-					          updateCheckTimer.Interval = 3600000 * 3;
-					          updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
-					          updateCheckTimer.Start();
-					        } else {
-					          updateCheckTimer.Stop();
-					        }
-					        if (IsUpdateCheckStartup) {
-					          if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
-						        CheckForUpdate(false);
-					          }
-					        }
-					        //Updater = UpdateManager.Instance;
-					        //Updater.UpdateFeedReader = new NAppUpdate.Framework.FeedReaders.NauXmlFeedReader();
-					        //Updater.UpdateExecutableName = "Web Update.exe";
-					        //Updater.UpdateSource = new NAppUpdate.Framework.Sources.SimpleWebSource("http://better-explorer.com/onlineupdate/update.xml");
-					        //TODO: reeable updates when there is site ready
-					        //CheckForUpdate(false);
-				          } catch (IOException) {
-					        this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
-					        this.btnUpdateCheck.IsEnabled = false;
-				          }
+				                      try {
+					                    if (IsUpdateCheck) {
+					                      updateCheckTimer.Interval = 3600000 * 3;
+					                      updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
+					                      updateCheckTimer.Start();
+					                    } else {
+					                      updateCheckTimer.Stop();
+					                    }
+					                    if (IsUpdateCheckStartup) {
+					                      if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
+						                    CheckForUpdate(false);
+					                      }
+					                    }
+				                      } catch (IOException) {
+					                    this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
+					                    this.btnUpdateCheck.IsEnabled = false;
+				                      }
 
 								 }
 				 ));
@@ -4268,11 +4258,11 @@ namespace BetterExplorer
 				}
 
 
-        if (this.IsConsoleShown) {
-          ctrlConsole.StartProcess("cmd.exe", null);
-          ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
-          ctrlConsole.ClearOutput(); 
-        }
+                if (this.IsConsoleShown) {
+                  ctrlConsole.StartProcess("cmd.exe", null);
+                  ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+                  ctrlConsole.ClearOutput(); 
+                }
 				verNumber.Content = "Version " + (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
 				lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
 				if (!TheRibbon.IsMinimized)
@@ -4296,6 +4286,7 @@ namespace BetterExplorer
     void Explorer_ItemHot(object sender, ExplorerAUItemEventArgs e) {
      // MessageBox.Show(e.Item.ParsingName);
     }
+
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
     private const int WM_VSCROLL = 277;
@@ -4915,7 +4906,7 @@ namespace BetterExplorer
 			if (item != null)
 			{
 				isGoingBackOrForward = true;
-				NavigationLog nl = (tabControl1.Items[CurrentTabIndex] as CloseableTabItem).log;
+				NavigationLog nl = (tabControl1.Items[tabControl1.SelectedIndex] as CloseableTabItem).log;
 				(sender as MenuItem).IsChecked = true;
 				nl.CurrentLocPos = cmHistory.Items.IndexOf((sender as MenuItem));
 				Explorer.Navigate(item);
@@ -7527,7 +7518,8 @@ namespace BetterExplorer
 
 		private void btnTabClone_Click(object sender, RoutedEventArgs e)
 		{
-			CloneTab(tabControl1.Items[CurrentTabIndex] as CloseableTabItem);
+			CloneTab(tabControl1.Items[tabControl1.SelectedIndex] as CloseableTabItem);
+            
 		}
 
 		private void btnTabCloseC_Click(object sender, RoutedEventArgs e)
@@ -7541,12 +7533,10 @@ namespace BetterExplorer
 			if (tabControl1.SelectedIndex == 0)
 			{
 				tabControl1.SelectedItem = tabControl1.Items[1];
-				CurrentTabIndex = 0;
 			}
 			else
 			{
 				tabControl1.SelectedItem = tabControl1.Items[CurSelIndex - 1];
-				CurrentTabIndex = CurSelIndex - 1;
 			}
 
 
@@ -7581,8 +7571,7 @@ namespace BetterExplorer
 			newt.log.CurrentLocation = CurTab.Path;
 			tabControl1.Items.Add(newt);
 			tabControl1.SelectedItem = newt;
-			LastTabIndex = CurrentTabIndex;
-			CurrentTabIndex = tabControl1.Items.Count - 1;
+			LastTabIndex = tabControl1.SelectedIndex;
 			ConstructMoveToCopyToMenu();
 		}
 
@@ -7595,7 +7584,7 @@ namespace BetterExplorer
 		void SelectTab(int Index)
 		{
 			int selIndex = 0;
-			if (CurrentTabIndex == tabControl1.Items.Count - 1)
+			if (tabControl1.SelectedIndex == tabControl1.Items.Count - 1)
 			{
 				selIndex = 0;
 			}
@@ -7604,7 +7593,6 @@ namespace BetterExplorer
 				selIndex = Index;
 			}
 			tabControl1.SelectedItem = tabControl1.Items[selIndex];
-			CurrentTabIndex = selIndex;
 		}
 
 		void CloseTab(CloseableTabItem thetab, bool allowreopening = true)
@@ -7727,7 +7715,6 @@ namespace BetterExplorer
 			LastTabIndex = tabControl1.SelectedIndex;
 			newt.log.ImportData(log);
 
-			CurrentTabIndex = tabControl1.Items.Count - 1;
 			ConstructMoveToCopyToMenu();
 			NavigateAfterTabChange();
 		}
@@ -7767,12 +7754,11 @@ namespace BetterExplorer
 			if (tabControl1.SelectedIndex == 0)
 			{
 				tabControl1.SelectedItem = tabControl1.Items[1];
-				CurrentTabIndex = 0;
+
 			}
 			else
 			{
 				tabControl1.SelectedItem = tabControl1.Items[CurSelIndex - 1];
-				CurrentTabIndex = CurSelIndex - 1;
 			}
 
 
@@ -7782,7 +7768,8 @@ namespace BetterExplorer
 		private void ChangeTab(object sender, ExecutedRoutedEventArgs e)
 		{
 			t.Stop();
-			SelectTab(CurrentTabIndex + 1);
+			SelectTab(tabControl1.SelectedIndex + 1);
+            NavigateAfterTabChange();
 		}
 
 		private void ERGoToBCCombo(object sender, ExecutedRoutedEventArgs e)
@@ -7955,7 +7942,6 @@ namespace BetterExplorer
 			tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
 			tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
 
-			CurrentTabIndex = tabControl1.Items.Count - 1;
 			ConstructMoveToCopyToMenu();
 		}
 
@@ -7997,7 +7983,6 @@ namespace BetterExplorer
 				newt.log.CurrentLocation = DefPath;
 			}
 
-			CurrentTabIndex = tabControl1.Items.Count - 1;
 			ConstructMoveToCopyToMenu();
 			return newt;
 		}
