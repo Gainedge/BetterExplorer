@@ -1031,12 +1031,12 @@ namespace BetterExplorer
 			//                            {
 			//                                ctgFolderTools.Visibility = Visibility.Collapsed;
 			//                            }
-
+                                        if (e.NewLocation.IsFileSystemObject) {
+                                                            ctrlConsole.WriteInput(String.Format("cd \"{0}\"", e.NewLocation.ParsingName), System.Drawing.Color.Red, false);
+                                                        }
 									}
 								));
-                if (e.NewLocation.IsFileSystemObject) {
-                    ctrlConsole.WriteInput(String.Format("cd \"{0}\"", e.NewLocation.ParsingName), System.Drawing.Color.Red, false);
-                }
+                
 				GC.WaitForPendingFinalizers();
 				GC.Collect();
 			}
@@ -1491,27 +1491,34 @@ namespace BetterExplorer
 			    }
 			    catch (Exception exe)
 			    {
-				    ShellObject ne = e.PendingLocation;
-				    bool isinLibraries = false;
-				    bool itisLibraries = false;
+                    Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
+                                        {
+                                            Thread.Sleep(400);
+                                            ShellObject ne = e.PendingLocation;
+                                            if (ne != null)
+                                            {
+                                                bool isinLibraries = false;
+                                                bool itisLibraries = false;
 
-				    if (ne.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
-				    {
-					    isinLibraries = true;
-				    }
-				    else
-				    {
-					    isinLibraries = false;
-				    }
+                                                if (ne.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
+                                                {
+                                                    isinLibraries = true;
+                                                }
+                                                else
+                                                {
+                                                    isinLibraries = false;
+                                                }
 
-				    if (ne.ParsingName == KnownFolders.Libraries.ParsingName)
-				    {
-					    itisLibraries = true;
-				    }
-				    else
-				    {
-					    itisLibraries = false;
-				    }
+                                                if (ne.ParsingName == KnownFolders.Libraries.ParsingName)
+                                                {
+                                                    itisLibraries = true;
+                                                }
+                                                else
+                                                {
+                                                    itisLibraries = false;
+                                                }
+                                            }
+                                        }));
 
 				    //if (MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is some information about the folder being loaded:\r\n\r\nName: " + ne.GetDisplayName(DisplayNameType.Default) + "\r\nLocation: " + ne.ParsingName +
 				    //    "\r\n\r\nFolder, Drive, or Library: " + GetYesNoFromBoolean(ne.IsFolder) + "\r\nDrive: " + GetYesNoFromBoolean(ne.IsDrive) + "\r\nNetwork Drive: " + GetYesNoFromBoolean(ne.IsNetDrive) + "\r\nRemovable: " + GetYesNoFromBoolean(ne.IsRemovable) +
