@@ -808,42 +808,42 @@ namespace BetterExplorer
 										btnSelNone.IsEnabled = IsChanged;
 										btnUpLevel.IsEnabled = !(Explorer.NavigationLog.CurrentLocation.Parent == null);
 
-										try
-										{
+										//try
+										//{
 
-											//CloseableTabItem it = new CloseableTabItem();
-											//CreateTabbarRKMenu(it);
-											e.NewLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-											e.NewLocation.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-											(tabControl1.SelectedItem as CloseableTabItem).Header = e.NewLocation.GetDisplayName(DisplayNameType.Default);
-											(tabControl1.SelectedItem as CloseableTabItem).TabIcon = e.NewLocation.Thumbnail.BitmapSource;
-											(tabControl1.SelectedItem as CloseableTabItem).Path = e.NewLocation;
-											if (!isGoingBackOrForward)
-											{
-												(tabControl1.SelectedItem as CloseableTabItem).log.CurrentLocation = e.NewLocation;
-											}
+										//	//CloseableTabItem it = new CloseableTabItem();
+										//	//CreateTabbarRKMenu(it);
+										//	e.NewLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+										//	e.NewLocation.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+										//	(tabControl1.SelectedItem as CloseableTabItem).Header = e.NewLocation.GetDisplayName(DisplayNameType.Default);
+										//	(tabControl1.SelectedItem as CloseableTabItem).TabIcon = e.NewLocation.Thumbnail.BitmapSource;
+										//	(tabControl1.SelectedItem as CloseableTabItem).Path = e.NewLocation;
+										//	if (!isGoingBackOrForward)
+										//	{
+										//		(tabControl1.SelectedItem as CloseableTabItem).log.CurrentLocation = e.NewLocation;
+										//	}
 
-											isGoingBackOrForward = false;
+										//	isGoingBackOrForward = false;
 
-											leftNavBut.IsEnabled = (tabControl1.SelectedItem as CloseableTabItem).log.CanNavigateBackwards;
-											rightNavBut.IsEnabled = (tabControl1.SelectedItem as CloseableTabItem).log.CanNavigateForwards;
+										//	leftNavBut.IsEnabled = (tabControl1.SelectedItem as CloseableTabItem).log.CanNavigateBackwards;
+										//	rightNavBut.IsEnabled = (tabControl1.SelectedItem as CloseableTabItem).log.CanNavigateForwards;
 
-											//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).DragEnter += new DragEventHandler(newt_DragEnter);
-											//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).DragLeave += new DragEventHandler(newt_DragLeave);
-											//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).DragOver += new DragEventHandler(newt_DragOver);
-											//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).Drop += new DragEventHandler(newt_Drop);
-											//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).AllowDrop = true;
-											//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).Index = CurrentTabIndex;
-											//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).CloseTab += new RoutedEventHandler(cti_CloseTab);
-											//tabControl1.Items[CurrentTabIndex] = it;
-											//tabControl1.SelectedIndex = CurrentTabIndex;
-											edtSearchBox.CurrentPathName = e.NewLocation.GetDisplayName(DisplayNameType.Default);
+										//	//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).DragEnter += new DragEventHandler(newt_DragEnter);
+										//	//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).DragLeave += new DragEventHandler(newt_DragLeave);
+										//	//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).DragOver += new DragEventHandler(newt_DragOver);
+										//	//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).Drop += new DragEventHandler(newt_Drop);
+										//	//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).AllowDrop = true;
+										//	//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).Index = CurrentTabIndex;
+										//	//(tabControl1.Items[CurrentTabIndex] as CloseableTabItem).CloseTab += new RoutedEventHandler(cti_CloseTab);
+										//	//tabControl1.Items[CurrentTabIndex] = it;
+										//	//tabControl1.SelectedIndex = CurrentTabIndex;
+										//	edtSearchBox.CurrentPathName = e.NewLocation.GetDisplayName(DisplayNameType.Default);
 
-										}
-										catch (Exception)
-										{
+										//}
+										//catch (Exception)
+										//{
 
-										}
+										//}
 
 			                            IntPtr pIDL = IntPtr.Zero;
 
