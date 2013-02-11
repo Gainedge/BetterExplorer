@@ -2577,13 +2577,21 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
                         LastItemRect = new Rectangle((int)ae.Current.BoundingRectangle.Location.X, (int)ae.Current.BoundingRectangle.Location.Y, (int)ae.Current.BoundingRectangle.Width, (int)ae.Current.BoundingRectangle.Height);
                         if (ae.Current.ClassName == "UIItem") {
-                          var item = GetItem(Convert.ToInt32(ae.Current.AutomationId));
-                          vItemHot(ae.Current.ClassName, item, ae.Current.BoundingRectangle, Convert.ToInt32(ae.Current.AutomationId), false);
+                          int AutomationID = -1;
+                          bool isNumber = int.TryParse(ae.Current.AutomationId, out AutomationID);
+                          if (isNumber) {
+                            var item = GetItem(AutomationID);
+                            vItemHot(ae.Current.ClassName, item, ae.Current.BoundingRectangle, AutomationID, false); 
+                          }
                         } else if (ae.Current.ClassName == "UIProperty") {
                           AutomationElement aeParent = TreeWalker.ContentViewWalker.GetParent(ae);
-                          var item = GetItem(Convert.ToInt32(aeParent.Current.AutomationId));
-                          LastItemRect = new Rectangle((int)aeParent.Current.BoundingRectangle.Location.X, (int)aeParent.Current.BoundingRectangle.Location.Y, (int)aeParent.Current.BoundingRectangle.Width, (int)aeParent.Current.BoundingRectangle.Height);
-                          vItemHot(aeParent.Current.ClassName, item, aeParent.Current.BoundingRectangle, Convert.ToInt32(aeParent.Current.AutomationId), false);
+                          int AutomationID = -1;
+                          bool isNumber = int.TryParse(aeParent.Current.AutomationId, out AutomationID);
+                          if (isNumber) {
+                            var item = GetItem(AutomationID);
+                            LastItemRect = new Rectangle((int)aeParent.Current.BoundingRectangle.Location.X, (int)aeParent.Current.BoundingRectangle.Location.Y, (int)aeParent.Current.BoundingRectangle.Width, (int)aeParent.Current.BoundingRectangle.Height);
+                            vItemHot(aeParent.Current.ClassName, item, aeParent.Current.BoundingRectangle, AutomationID, false); 
+                          }
                         }
                       }
                       
