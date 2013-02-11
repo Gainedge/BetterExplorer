@@ -7591,24 +7591,7 @@ namespace BetterExplorer
 
 		private void btnTabCloseC_Click(object sender, RoutedEventArgs e)
 		{
-			if (tabControl1.SelectedIndex == 0 && tabControl1.Items.Count == 1)
-			{
-				Close();
-				return;
-			}
-			int CurSelIndex = tabControl1.SelectedIndex;
-			if (tabControl1.SelectedIndex == 0)
-			{
-				tabControl1.SelectedItem = tabControl1.Items[1];
-			}
-			else
-			{
-				tabControl1.SelectedItem = tabControl1.Items[CurSelIndex - 1];
-			}
-
-
-			tabControl1.Items.RemoveAt(CurSelIndex);
-
+      CloseTab(tabControl1.SelectedItem as CloseableTabItem);
 		}
 
 		//'close tab
