@@ -96,6 +96,8 @@ BExplorer/BetterExplorer/BEH.lib
 BExplorer/BetterExplorer/BEH.pdb
 BExplorer/BetterExplorer/BetterExplorerOperations.pdb
 BExplorer/BetterExplorer/BetterExplorerShell.pdb
+BExplorer/BetterExplorer/Updater.exe
+BExplorer/BetterExplorer/Microsoft.WindowsAPICodePack.Shell.dll
 x64/Debug/BEH.dll
 x64/Debug/BEH.ilk
 x64/Debug/BEH.pdb
