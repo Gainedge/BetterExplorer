@@ -15,6 +15,7 @@ using System.ComponentModel.Composition;
 using Fluent;
 using System.Globalization;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace BetterExplorer
 {
@@ -296,6 +297,8 @@ namespace BetterExplorer
                         CloseableTabItem newt = new CloseableTabItem();
                         newt.Header = sho.GetDisplayName(DisplayNameType.Default);
                         newt.TabIcon = sho.Thumbnail.BitmapSource;
+                        newt.PreviewMouseMove += newt_PreviewMouseMove;
+                        newt.TabSelected +=  win.newt_TabSelected;
                         newt.Path = sho;
                         win.CloneTab(newt);
                         win.NavigateAfterTabChange();
@@ -315,6 +318,19 @@ namespace BetterExplorer
                 }
             };
             Dispatcher.BeginInvoke(d, true);
+        }
+
+        
+
+        void newt_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e) {
+          var tabItem = e.Source as CloseableTabItem;
+
+          if (tabItem == null)
+            return;
+
+          if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed) {
+            DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
+          }
         }
 
        

@@ -2304,7 +2304,6 @@ namespace BetterExplorer
 
 			        }));
             });
-            //t.IsBackground = true;
             t.Start();
 
 			IsSelectionRized = false;
@@ -4169,18 +4168,19 @@ namespace BetterExplorer
 										cti.Header = Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default);
 										cti.Path = Explorer.NavigationLog.CurrentLocation;
 										cti.Index = 0;
+                    cti.TabSelected += newt_TabSelected;
+                    cti.PreviewMouseMove += newt_PreviewMouseMove;
 										cti.log.CurrentLocation = Explorer.NavigationLog.CurrentLocation;
 										cti.CloseTab += new RoutedEventHandler(cti_CloseTab);
 										tabControl1.Items.Add(cti);
-										//tabControl1.SelectedIndex = 0;
-										//CurrentTabIndex = tabControl1.SelectedIndex;
+                    NavigateAfterTabChange();
 									}
 									else
 									{
 										if (Tabs.Length == 0 || !IsrestoreTabs)
 										{
-                                            ShellObject sho = GetShellObjectFromLocation(StartUpLocation);
-                                            Explorer.Navigate(sho);
+                        ShellObject sho = GetShellObjectFromLocation(StartUpLocation);
+                        Explorer.Navigate(sho);
 										}
 										if (IsrestoreTabs)
 										{
@@ -4201,8 +4201,8 @@ namespace BetterExplorer
 													}
 													if (i == Tabs.Count())
 													{
-                                                        ShellObject sho = GetShellObjectFromLocation(str);
-                                                        Explorer.Navigate(sho);
+                            ShellObject sho = GetShellObjectFromLocation(str);
+                            Explorer.Navigate(sho);
 														(tabControl1.SelectedItem as CloseableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
 													}
 												}
@@ -4210,7 +4210,6 @@ namespace BetterExplorer
 												{
 													//AddToLog(String.Format("Unable to load {0} into a tab!", str));
 													MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
-													//NewTab();
 												}
 
 											}
@@ -4236,13 +4235,13 @@ namespace BetterExplorer
 									AppJL.ShowFrequentCategory = true;
 									JumpList.SetJumpList(Application.Current, AppJL);
 									JumpTask newTab = new JumpTask();
-									newTab.ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+									newTab.ApplicationPath = Process.GetCurrentProcess().MainModule.FileName;
 									newTab.Arguments = "t";
 									newTab.Title = "Open Tab";
 									newTab.Description = "Opens new tab with default location";
 
 									JumpTask newWindow = new JumpTask();
-									newWindow.ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+									newWindow.ApplicationPath = Process.GetCurrentProcess().MainModule.FileName;
 									newWindow.Arguments = "/nw";
 									newWindow.Title = "New Window";
 									newWindow.Description = "Creates a new window with default location";
@@ -4253,7 +4252,7 @@ namespace BetterExplorer
 
 
 									 //Setup Clipboard monitor
-									 cbm.ClipboardChanged += new EventHandler<ClipboardChangedEventArgs>(cbm_ClipboardChanged);
+									cbm.ClipboardChanged += new EventHandler<ClipboardChangedEventArgs>(cbm_ClipboardChanged);
 
 									 #region unneeded code
 									 //if (Tabs.Length == 0 || !IsrestoreTabs)
@@ -4273,23 +4272,23 @@ namespace BetterExplorer
 									 //} 
 									 #endregion
 
-				                      try {
-					                    if (IsUpdateCheck) {
-					                      updateCheckTimer.Interval = 3600000 * 3;
-					                      updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
-					                      updateCheckTimer.Start();
-					                    } else {
-					                      updateCheckTimer.Stop();
-					                    }
-					                    if (IsUpdateCheckStartup) {
-					                      if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
-						                    CheckForUpdate(false);
-					                      }
-					                    }
-				                      } catch (IOException) {
-					                    this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
-					                    this.btnUpdateCheck.IsEnabled = false;
-				                      }
+				          try {
+					          if (IsUpdateCheck) {
+					            updateCheckTimer.Interval = 3600000 * 3;
+					            updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
+					            updateCheckTimer.Start();
+					          } else {
+					            updateCheckTimer.Stop();
+					          }
+					          if (IsUpdateCheckStartup) {
+					            if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
+						          CheckForUpdate(false);
+					            }
+					          }
+				          } catch (IOException) {
+					          this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
+					          this.btnUpdateCheck.IsEnabled = false;
+				          }
 
 								 }
 				 ));
@@ -4305,11 +4304,11 @@ namespace BetterExplorer
 				}
 
 
-                if (this.IsConsoleShown) {
-                  ctrlConsole.StartProcess("cmd.exe", null);
-                  ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
-                  ctrlConsole.ClearOutput(); 
-                }
+        if (this.IsConsoleShown) {
+          ctrlConsole.StartProcess("cmd.exe", null);
+          ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+          ctrlConsole.ClearOutput(); 
+        }
 				verNumber.Content = "Version " + (System.Reflection.Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
 				lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
 				if (!TheRibbon.IsMinimized)
@@ -4317,8 +4316,6 @@ namespace BetterExplorer
 					TheRibbon.SelectedTabItem = HomeTab;
 					this.TheRibbon.SelectedTabIndex = 0;
 				}
-
-
 				//MessageBox.Show(TheRibbon.SelectedTabIndex.ToString(), "SelectedTabIndex Should be 0", MessageBoxButton.OK, MessageBoxImage.Information);
 			}
 			catch (Exception exe)
@@ -8037,7 +8034,7 @@ namespace BetterExplorer
 			return newt;
 		}
 
-		void newt_TabSelected(object sender, RoutedEventArgs e)
+		public void newt_TabSelected(object sender, RoutedEventArgs e)
 		{
 			CloseableTabItem itb = sender as CloseableTabItem;
 
@@ -8057,6 +8054,7 @@ namespace BetterExplorer
 
 							if (!Keyboard.IsKeyDown(Key.Tab))
 							{
+
 								Explorer.Navigate(itb.Path);
 							}
 							else
