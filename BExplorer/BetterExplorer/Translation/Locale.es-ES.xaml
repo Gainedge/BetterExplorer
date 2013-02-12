@@ -320,7 +320,7 @@
     <system:String x:Key="txtIs">es</system:String>
     <system:String x:Key="txtDoesNotContain">no contiene</system:String>
     <system:String x:Key="txtIsNot">no es</system:String>
-    <system:String x:Key="txtMatchCase">Hacer coincidir mayúsculas y minúsculas</system:String>
+    <system:String x:Key="txtMatchCase">Coincidir mayúsc./minúsc.</system:String>
     <system:String x:Key="txtFileSize">Tamaño de Archivo</system:String>
     <system:String x:Key="txtLargerThan">es mayor de</system:String>
     <system:String x:Key="txtSmallerThan">es menor de</system:String>

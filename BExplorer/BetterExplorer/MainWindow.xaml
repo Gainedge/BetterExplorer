@@ -2420,7 +2420,7 @@
                                    Icon="Images\archiveview16.png"
                                    LargeIcon="Images\archiveview32.png"
                                    Ribbon:KeyTip.Keys="V"
-                                   SizeDefinition="Large" />
+                                   SizeDefinition="Large" Visibility="Collapsed" />
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 
