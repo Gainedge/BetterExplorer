@@ -1052,18 +1052,7 @@
                                                                       Text="Display a small box as you move your mouse above files (this is part of a feature that has not been completed yet)" />
                                                 </Ribbon:CheckBox.ToolTip>
                                             </Ribbon:CheckBox>
-                                            <Ribbon:CheckBox Name="chkShowCheckBoxes"
-                                                             Checked="chkShowCheckBoxes_Checked"
-                                                             Header="{StaticResource chkShowCheckBoxesCP}"
-                                                             Ribbon:KeyTip.Keys="C"
-                                                             Unchecked="chkShowCheckBoxes_Unchecked">
-                                                <Ribbon:CheckBox.ToolTip>
-                                                    <Ribbon:ScreenTip Title="{StaticResource chkShowCheckBoxesCP}"
-                                                                      Width="250"
-                                                                      IsRibbonAligned="false"
-                                                                      Text="Displays a checkbox over items, allowing you to use these checkboxes to select multiple items" />
-                                                </Ribbon:CheckBox.ToolTip>
-                                            </Ribbon:CheckBox>
+                                            
                                         </StackPanel>
                                     </Grid>
                                 </TabItem>
@@ -1920,6 +1909,18 @@
                 <Ribbon:RibbonGroupBox Name="ShowHide"
                                        Header="{StaticResource tgShowHideCP}"
                                        Ribbon:KeyTip.Keys="SH">
+                    <Ribbon:CheckBox Name="chkShowCheckBoxes"
+                            Checked="chkShowCheckBoxes_Checked"
+                            Header="{StaticResource chkShowCheckBoxesCP}"
+                            Ribbon:KeyTip.Keys="C"
+                            Unchecked="chkShowCheckBoxes_Unchecked">
+                        <Ribbon:CheckBox.ToolTip>
+                            <Ribbon:ScreenTip Title="{StaticResource chkShowCheckBoxesCP}"
+                                Width="250"
+                                IsRibbonAligned="false"
+                                Text="Displays a checkbox over items, allowing you to use these checkboxes to select multiple items" />
+                        </Ribbon:CheckBox.ToolTip>
+                    </Ribbon:CheckBox>
                     <Ribbon:CheckBox Name="chkHiddenFiles"
                                      Checked="chkHiddenFiles_Checked"
                                      Header="{StaticResource chkHiddenItemsCP}"
