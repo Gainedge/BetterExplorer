@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace Microsoft.WindowsAPICodePack.Shell
 {
-    internal static class ShellObjectFactory
+    public static class ShellObjectFactory
     {
         /// <summary>
         /// Creates a ShellObject given a native IShellItem interface
@@ -188,7 +188,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
         /// </summary>
         /// <param name="idListPtr"></param>
         /// <returns></returns>
-        internal static ShellObject Create(IntPtr idListPtr)
+        public static ShellObject Create(IntPtr idListPtr)
         {
             // Throw exception if not running on Win7 or newer.
             CoreHelpers.ThrowIfNotVista();

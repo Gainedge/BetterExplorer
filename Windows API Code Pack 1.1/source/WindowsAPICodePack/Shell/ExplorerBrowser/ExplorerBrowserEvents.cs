@@ -67,4 +67,8 @@ namespace Microsoft.WindowsAPICodePack.Controls
         public bool IsElementBackground { get; set; }
 
     }
+
+    public class ExplorerMouseEventArgs : EventArgs {
+      public ShellObject Item { get; set; }
+    }
 }

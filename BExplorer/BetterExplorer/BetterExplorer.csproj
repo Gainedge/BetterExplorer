@@ -201,6 +201,7 @@
       <DependentUpon>ConditionalSelectForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="FolderStructForSize.cs" />
+    <Compile Include="HookLibManager.cs" />
     <Compile Include="PathStringCombiner.cs" />
     <Compile Include="PieChart\BaseWPFHelpers.cs" />
     <Compile Include="PieChart\PieChart\ColourConverter.cs" />
@@ -705,6 +706,9 @@
     <Resource Include="Images\check.png" />
     <Resource Include="Images\edit.png" />
     <Resource Include="Images\delete_16x16-4.png" />
+    <Content Include="BEHookLib64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="BetterExplorerShell.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -920,7 +924,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

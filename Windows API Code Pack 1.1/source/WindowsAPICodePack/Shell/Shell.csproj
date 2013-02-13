@@ -248,6 +248,8 @@
     <Compile Include="ExplorerBrowser\ExplorerBrowserContentOptions.cs" />
     <Compile Include="ExplorerBrowser\ExplorerBrowserEvents.cs" />
     <Compile Include="ExplorerBrowser\ExplorerBrowserViewEvents.cs" />
+    <Compile Include="ExplorerBrowser\HookLibManager.cs" />
+    <Compile Include="ExplorerBrowser\NativeWindowController.cs" />
     <Compile Include="ExplorerBrowser\NavigationLog.cs" />
     <Compile Include="ExplorerBrowser\ExplorerBrowserEnums.cs" />
     <Compile Include="ExplorerBrowser\ExplorerBrowserPaneVisibility.cs" />
@@ -255,6 +257,7 @@
     <Compile Include="ExplorerBrowser\NavigationLogEvents.cs" />
     <Compile Include="ExplorerBrowser\NavigationOptions.cs" />
     <Compile Include="ExplorerBrowser\ShellViewDragDrop.cs" />
+    <Compile Include="ExplorerBrowser\TreeViewWrapper.cs" />
     <Compile Include="FileOperation.cs" />
     <Compile Include="FileOperationFlags.cs" />
     <Compile Include="FileOperationProgressSink.cs" />

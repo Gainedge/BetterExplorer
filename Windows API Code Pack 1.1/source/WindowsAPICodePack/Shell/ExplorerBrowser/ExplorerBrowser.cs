@@ -25,6 +25,8 @@ using Message = System.Windows.Forms.Message;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 using System.Diagnostics;
 using System.Windows.Automation;
+using System.Security;
+using Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser;
 
 
 namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
@@ -48,6 +50,28 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				
 				public bool ISDisablesubclass = false;
 				public bool IsExFileOpEnabled = false;
+        ShellObject antecreationNavigationTarget;
+        ExplorerBrowserViewEvents viewEvents;
+        private IntPtr hHook_Msg;
+        private WindowsHelper.WindowsAPI.HookProc hookProc_GetMsg;
+        public TreeViewWrapper SysTreeView { get; set; }
+        private readonly uint WM_NEWTREECONTROL = WindowsAPI.RegisterWindowMessage("QTTabBar_NewTreeControl");
+        bool Ctrl = false;
+        bool IsPressedLKButton = false;
+        bool IsMouseClickOnHeader = false;
+        bool IsMouseClickOutsideLV = true;
+        bool IsGetHWnd = false;
+        Rectangle LastItemRect = new Rectangle();
+        public IntPtr SysListViewHandle { get; set; }
+        public IntPtr SysTreeViewHandle { get; set; }
+        public IntPtr SysTreeViewCHandle { get; set; }
+        public static bool IsBool;
+        public IntPtr VScrollHandle { get; set; }
+        public WindowsAPI.IDropTarget SysListviewDT { get; set; }
+        public IFolderView2 ifv2 { get; set; }
+        private bool IsSecondSubclass = false;
+        BackgroundWorker bgw = new BackgroundWorker();
+        public IShellView isvv { get; set; }
 
 				#region Imports
 				[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
@@ -1643,6 +1667,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				public event EventHandler<ViewChangedEventArgs> ViewChanged;
 
 				public event EventHandler<ExplorerAUItemEventArgs> ItemHot;
+        public event EventHandler<ExplorerMouseEventArgs> ItemMouseMiddleClick;
 				public static System.Windows.Forms.Timer Checktmr = new System.Windows.Forms.Timer();
 
 				#endregion
@@ -1793,9 +1818,6 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 						base.OnPaint(e);
 				}
 
-				ShellObject antecreationNavigationTarget;
-				ExplorerBrowserViewEvents viewEvents;
-
 				/// <summary>
 				/// Creates and initializes the native ExplorerBrowser control
 				/// </summary>
@@ -1856,10 +1878,68 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 
 						}
+            HookLibManager.Initialize();
+            hookProc_GetMsg = new WindowsHelper.WindowsAPI.HookProc(CallbackGetMsgProc);
+            int currentThreadId = WindowsAPI.GetCurrentThreadId();
+            hHook_Msg = WindowsAPI.SetWindowsHookEx(3, hookProc_GetMsg, IntPtr.Zero, currentThreadId);
 
 								Application.AddMessageFilter(this);
 				}
 
+        
+        private IntPtr CallbackGetMsgProc(int nCode, IntPtr wParam, IntPtr lParam) {
+          if (nCode >= 0) {
+            WindowsAPI.Message msg = (WindowsAPI.Message)Marshal.PtrToStructure(lParam, typeof(WindowsAPI.Message));
+            try {
+              
+              if (msg.message == WM_NEWTREECONTROL) {
+                object obj = Marshal.GetObjectForIUnknown(msg.wParam);
+                try {
+                  if (obj != null) {
+                    WindowsAPI.IOleWindow window = obj as WindowsAPI.IOleWindow;
+                    if (window != null) {
+                      IntPtr hwnd;
+                      window.GetWindow(out hwnd);
+                      if (hwnd != IntPtr.Zero && WindowsAPI.IsChild(this.Handle, hwnd)) {
+                        hwnd = WindowsAPI.FindChildWindow(hwnd,
+                                child => WindowsAPI.GetClassName(child) == "SysTreeView32");
+                        if (hwnd != IntPtr.Zero) {
+                          WindowsAPI.INameSpaceTreeControl control = obj as WindowsAPI.INameSpaceTreeControl;
+                          if (control != null) {
+                            if (SysTreeView != null) {
+                              SysTreeView.Dispose();
+                            }
+                            SysTreeView = new TreeViewWrapper(hwnd, control);
+                            SysTreeView.TreeViewClicked += SysTreeView_TreeViewClicked;
+                            obj = null; // Release the object only if we didn't get this far.
+                          }
+                        }
+                      }
+                    }
+                  }
+                } finally {
+                  if (obj != null) {
+                    Marshal.ReleaseComObject(obj);
+                  }
+                }
+                return WindowsAPI.CallNextHookEx(hHook_Msg, nCode, wParam, lParam);
+
+              }
+            } catch (Exception ex) {
+              //QTUtility2.MakeErrorLog(ex, String.Format("Message: {0:x4}", msg.message));
+            }
+          }
+          return WindowsAPI.CallNextHookEx(hHook_Msg, nCode, wParam, lParam);
+        }
+
+      public ShellObject GetShellObjectFromObject(ShellObject obj){
+        return ShellObjectFactory.Create(obj.nativeShellItem);
+      }
+
+        bool SysTreeView_TreeViewClicked(ShellObject item, Keys modkeys, bool middle) {
+          vMouseItemMiddleClick(item);
+          return true;
+        }
 				/// <summary>
 				/// Sizes the native control to match the WinForms control wrapper.
 				/// </summary>
@@ -2239,13 +2319,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				#endregion
 
 				#region IMessageFilter Members
-				bool Ctrl = false;
-				//public QTTabBarLib.Automation.AutomationManager automan = new QTTabBarLib.Automation.AutomationManager();
-				bool IsPressedLKButton = false;
-				bool IsMouseClickOnHeader = false;
-				bool IsMouseClickOutsideLV = true;
-				bool IsGetHWnd = false;
-        Rectangle LastItemRect = new Rectangle();
+
 				bool IMessageFilter.PreFilterMessage(ref Message m)
 				{
 						HResult hr = HResult.False;
@@ -2606,6 +2680,28 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 										}
 
 								}
+
+                if (m.Msg == (int)WindowsAPI.WndMsg.WM_MBUTTONUP) {
+                  AutomationElement ae = AutomationElement.FromPoint(new System.Windows.Point(Cursor.Position.X, Cursor.Position.Y));
+                  ShellObject item = null;
+                  if (ae.Current.ClassName == "UIItem") {
+                    int AutomationID = -1;
+                    bool isNumber = int.TryParse(ae.Current.AutomationId, out AutomationID);
+                    if (isNumber) {
+                      item = GetItem(AutomationID);
+                    }
+                  } else if (ae.Current.ClassName == "UIProperty") {
+                    AutomationElement aeParent = TreeWalker.ContentViewWalker.GetParent(ae);
+                    int AutomationID = -1;
+                    bool isNumber = int.TryParse(aeParent.Current.AutomationId, out AutomationID);
+                    if (isNumber) {
+                      item = GetItem(AutomationID);
+                    }
+                  }
+                  if (item != null) {
+                    vMouseItemMiddleClick(item);
+                  }
+                }
 								Invoke(new MethodInvoker(
 										delegate
 										{
@@ -3174,13 +3270,41 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				{
 						SetWindowLong(hWnd, GWL_WNDPROC, oldWndProc);
 				}
-				
+
+        
+
 
 				Rectangle rec = new Rectangle();
 				// this is the new wndproc, just show a messagebox on left button down:
 				private int MyWndProc(IntPtr hWnd, int Msg, int wParam, int lParam)
 				{
-						
+
+          if (Msg == (int)WindowsAPI.WndMsg.WM_MBUTTONUP) {
+
+            //IShellItem item = null;
+            //try {
+            //  INameSpaceTreeControl con = this.SysTreeView;
+            //  TVHITTESTINFO structure = new TVHITTESTINFO { pt = Cursor.Position };
+            //  IntPtr ptr = WindowsAPI.SendMessage(SysTreeViewHandle, 0x1111, IntPtr.Zero, ref structure);
+            //  if (ptr != IntPtr.Zero) {
+            //    if ((structure.flags & 0x10) == 0 && (structure.flags & 0x80) == 0) {
+            //      con.HitTest(Cursor.Position, out item);
+            //      if (item != null) {
+            //        ShellObject o = ShellObjectFactory.Create(item);
+            //        MessageBox.Show(o.GetDisplayName(DisplayNameType.Default));
+            //      }
+            //    }
+            //  }
+            //} finally {
+            //  if (item != null) {
+            //    Marshal.ReleaseComObject(item);
+            //  }
+            //}
+
+          }
+            
+
+          
 						
 						// Catch Mouse move event
 						//if ((Msg == (int)WindowsAPI.WndMsg.WM_MOUSEMOVE))
@@ -3289,15 +3413,6 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 						return IsItemFolder(ifv2, iIndex);
 				}
 
-        public IntPtr SysListViewHandle { get; set; }
-				public static bool IsBool;
-        public IntPtr VScrollHandle { get; set; }
-        public WindowsAPI.IDropTarget SysListviewDT { get; set; }
-        public IFolderView2 ifv2 { get; set; }
-				private bool IsSecondSubclass = false;
-				BackgroundWorker bgw = new BackgroundWorker();
-        public IShellView isvv { get; set; }
-        
 				internal void FireContentEnumerationComplete()
 				{
 						if (ViewEnumerationComplete != null)
@@ -3320,6 +3435,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 												IntPtr o = WindowsAPI.FindWindowEx(z, IntPtr.Zero, "DirectUIHWND", null);
 												IntPtr s1 = WindowsAPI.FindWindowEx(o, IntPtr.Zero, "CtrlNotifySink", null);
 												IntPtr s2 = WindowsAPI.FindWindowEx(o, s1, "CtrlNotifySink", null);
+                        //SysTreeViewCHandle = WindowsAPI.FindWindowEx(s2, IntPtr.Zero, "NamespaceTreeControl", "Namespace Tree Control");
+                        //SysTreeViewHandle = WindowsAPI.FindWindowEx(SysTreeViewCHandle, IntPtr.Zero, "SysTreeView32", "Tree View");
 												IntPtr s3 = WindowsAPI.FindWindowEx(o, s2, "CtrlNotifySink", null);
 												IntPtr k = WindowsAPI.FindWindowEx(s3, IntPtr.Zero, "SHELLDLL_DefView", null);
 												SysListViewHandle = WindowsAPI.FindWindowEx(k, IntPtr.Zero, "SysListView32", null);
@@ -3402,6 +3519,14 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 								ItemHot.Invoke(this, e);
 						}
 				}
+        internal void vMouseItemMiddleClick(ShellObject item) {
+
+          if (ItemMouseMiddleClick != null) {
+            ExplorerMouseEventArgs e = new ExplorerMouseEventArgs();
+            e.Item = item;
+            ItemMouseMiddleClick.Invoke(this, e);
+          }
+        }
 				#endregion
 				#endregion  
     }

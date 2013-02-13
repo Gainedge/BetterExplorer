@@ -367,7 +367,9 @@ namespace WindowsHelper
 
         #region SendMessage
         [DllImport("User32.dll")]
-        private static extern int RegisterWindowMessage(string lpString);
+        public static extern uint RegisterWindowMessage(string lpString);
+        [DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
+        public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
 
         //For use with WM_COPYDATA and COPYDATASTRUCT
         [DllImport("User32.dll", EntryPoint = "SendMessage")]
@@ -1804,7 +1806,86 @@ namespace WindowsHelper
         {
             get { return new Guid("00000122-0000-0000-C000-000000000046"); }
         }
+        public static Point PointFromLPARAM(IntPtr lParam) {
+          return new Point(
+              (short)(((int)lParam) & 0xffff),
+              (short)((((int)lParam) >> 0x10) & 0xffff));
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        public struct TVHITTESTINFO {
+          public Point pt;
+          public int flags;
+          public IntPtr hItem;
+        }
 
+        [ComImport, SuppressUnmanagedCodeSecurity, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("028212A3-B627-47e9-8856-C14265554E4F")]
+        public interface INameSpaceTreeControl {
+          [PreserveSig]
+          int Initialize(IntPtr hwndParent, ref WindowsHelper.WindowsAPI.RECT prc, int nsctsFlags);
+          [PreserveSig]
+          int TreeAdvise(IntPtr punk, out int pdwCookie);
+          [PreserveSig]
+          int TreeUnadvise(int dwCookie);
+          [PreserveSig]
+          int AppendRoot(IShellItem psiRoot, int grfEnumFlags, int grfRootStyle, /*IShellItemFilter*/ IntPtr pif);
+          [PreserveSig]
+          int InsertRoot(int iIndex, IShellItem psiRoot, int grfEnumFlags, int grfRootStyle, /*IShellItemFilter*/ IntPtr pif);
+          [PreserveSig]
+          int RemoveRoot(IShellItem psiRoot);
+          [PreserveSig]
+          int RemoveAllRoots();
+          [PreserveSig]
+          int GetRootItems(out /*IShellItemArray*/ IntPtr ppsiaRootItems);
+          [PreserveSig]
+          int SetItemState(IShellItem psi, int nstcisMask, int nstcisFlags);
+          [PreserveSig]
+          int GetItemState(IShellItem psi, int nstcisMask, out int pnstcisFlags);
+          [PreserveSig]
+          int GetSelectedItems(out /*IShellItemArray*/ IntPtr psiaItems);
+          [PreserveSig]
+          int GetItemCustomState(IShellItem psi, out int piStateNumber);
+          [PreserveSig]
+          int SetItemCustomState(IShellItem psi, int iStateNumber);
+          [PreserveSig]
+          int EnsureItemVisible(IShellItem psi);
+          [PreserveSig]
+          int SetTheme(string pszTheme);
+          [PreserveSig]
+          int GetNextItem(IShellItem psi, int nstcgi, out IShellItem ppsiNext);
+          [PreserveSig]
+          int HitTest([In] ref Point ppt, out IShellItem ppsiOut);
+          [PreserveSig]
+          int GetItemRect(IShellItem psi, out WindowsHelper.WindowsAPI.RECT prect);
+          [PreserveSig]
+          int CollapseAll();
+        }
+
+      [StructLayout(LayoutKind.Sequential)]
+        public struct Message {
+          public IntPtr hwnd;
+          public uint message;
+          public IntPtr wParam;
+          public IntPtr lParam;
+          public uint time;
+          public Microsoft.WindowsAPICodePack.Controls.POINT pt;
+        }
+
+        [ComImport, SuppressUnmanagedCodeSecurity, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("00000114-0000-0000-C000-000000000046")]
+        public interface IOleWindow {
+          [PreserveSig]
+          int GetWindow(out IntPtr phwnd);
+          [PreserveSig]
+          int ContextSensitiveHelp(bool fEnterMode);
+        }
+        [DllImport("shell32.dll")]
+        public static extern IntPtr ILFindLastID(IntPtr pidl);
+        [DllImport("user32.dll")]
+        public static extern bool ScreenToClient(IntPtr hwnd, ref Point lpPoint);
+        public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
+        [DllImport("kernel32.dll")]
+        public static extern int GetCurrentThreadId();
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hInstance, int dwThreadId);
         [DllImport("shell32.dll", SetLastError = true)]
         public static extern int SHMultiFileProperties(System.Runtime.InteropServices.ComTypes.IDataObject pdtobj, int flags);
 
@@ -1812,6 +1893,46 @@ namespace WindowsHelper
         public static extern int SendMessage(IntPtr handle, int messg, int wparam, int lparam);
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr handle, int messg, IntPtr wparam, IntPtr lparam);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+        public static IntPtr FindChildWindow(IntPtr parent, Predicate<IntPtr> pred) {
+          IntPtr ret = IntPtr.Zero;
+          EnumChildWindows(parent, (hwnd, lParam) => {
+            if (pred(hwnd)) {
+              ret = hwnd;
+              return false;
+            }
+            return true;
+          }, IntPtr.Zero);
+          return ret;
+        }
+        [DllImport("user32.dll")]
+        public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+        public static string GetClassName(IntPtr hwnd) {
+          StringBuilder lpClassName = new StringBuilder(260);
+          GetClassName(hwnd, lpClassName, lpClassName.Capacity);
+          return lpClassName.ToString();
+        }
+        public static IntPtr SendMessage<T>(IntPtr hWnd, uint Msg, IntPtr wParam, ref T lParam) {
+          IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(lParam));
+          try {
+            Marshal.StructureToPtr(lParam, ptr, false);
+            IntPtr ret = SendMessage(hWnd, Msg, wParam, ptr);
+            lParam = (T)Marshal.PtrToStructure(ptr, typeof(T));
+            return ret;
+          } finally {
+            if (ptr != IntPtr.Zero) Marshal.FreeHGlobal(ptr);
+          }
+        }
+
+        [DllImport("oleacc.dll")]
+        public static extern int AccessibleObjectFromWindow(
+             IntPtr hwnd,
+             uint id,
+             ref Guid iid,
+             [In, Out, MarshalAs(UnmanagedType.IUnknown)] ref object ppvObject);   
 
         [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern bool CreateProcessAsUser(
@@ -2554,10 +2675,10 @@ namespace WindowsHelper
         public const int LWA_ALPHA = 0x2;
         public const int LWA_COLORKEY = 0x1;
 
-        public delegate bool Win32Callback(IntPtr hwnd, IntPtr lParam);
-        [DllImport("user32.Dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool EnumChildWindows(IntPtr parentHandle, Win32Callback callback, IntPtr lParam);
+        //public delegate bool Win32Callback(IntPtr hwnd, IntPtr lParam);
+        //[DllImport("user32.Dll")]
+        //[return: MarshalAs(UnmanagedType.Bool)]
+        //public static extern bool EnumChildWindows(IntPtr parentHandle, Win32Callback callback, IntPtr lParam);
 
         public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
         /// <summary>
