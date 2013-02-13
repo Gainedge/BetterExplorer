@@ -3897,7 +3897,8 @@ namespace BetterExplorer
 									 Explorer.ClientSizeChanged += new EventHandler(ExplorerBrowserControl_ClientSizeChanged);
 									 Explorer.Paint += new System.Windows.Forms.PaintEventHandler(ExplorerBrowserControl_Paint);
 									 Explorer.ViewChanged += new EventHandler<ViewChangedEventArgs>(Explorer_ViewChanged);
-                                     Explorer.ItemHot += Explorer_ItemHot;
+                   Explorer.ItemHot += Explorer_ItemHot;
+                   Explorer.ItemMouseMiddleClick += Explorer_ItemMouseMiddleClick;
 									 Explorer.ExplorerBrowserMouseLeave += new EventHandler(Explorer_ExplorerBrowserMouseLeave);
 
 									 Explorer.DragDrop += new System.Windows.Forms.DragEventHandler(Explorer_DragDrop);
@@ -6385,6 +6386,7 @@ namespace BetterExplorer
 			Explorer.Paint += new System.Windows.Forms.PaintEventHandler(ExplorerBrowserControl_Paint);
 			Explorer.ViewChanged += new EventHandler<ViewChangedEventArgs>(Explorer_ViewChanged);
 			Explorer.ItemHot += new EventHandler<ExplorerAUItemEventArgs>(Explorer_ItemHot);
+      Explorer.ItemMouseMiddleClick += Explorer_ItemMouseMiddleClick;
 			Explorer.ExplorerBrowserMouseLeave += new EventHandler(Explorer_ExplorerBrowserMouseLeave);
 
 
@@ -6395,6 +6397,10 @@ namespace BetterExplorer
 			Explorer.Navigate(lastLoc);
 			ShellVView.Child = Explorer;
 		}
+
+    void Explorer_ItemMouseMiddleClick(object sender, ExplorerMouseEventArgs e) {
+      NewTab(e.Item);
+    }
 
 		private void btnNavigationPane_Checked(object sender, RoutedEventArgs e)
 		{
@@ -7547,7 +7553,7 @@ namespace BetterExplorer
 					//tabControl1.SelectedIndex = itb.Index;
 					//LastTabIndex = itb.Index;
 					//CurrentTabIndex = LastTabIndex;
-					if (itb.Path != Explorer.NavigationLog.CurrentLocation)
+					if (itb.Path.ParsingName != Explorer.NavigationLog.CurrentLocation.ParsingName)
 					{
 
 
@@ -7991,6 +7997,39 @@ namespace BetterExplorer
 
 			ConstructMoveToCopyToMenu();
 		}
+
+    public void NewTab(ShellObject location, bool IsNavigate = false) {
+      CloseableTabItem newt = new CloseableTabItem();
+      CreateTabbarRKMenu(newt);
+
+      ShellObject DefPath = ShellObjectFactory.Create(location.PIDL);
+      DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+      DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+      newt.PreviewMouseMove += newt_PreviewMouseMove;
+      newt.Header = DefPath.GetDisplayName(DisplayNameType.Default);
+      newt.TabIcon = DefPath.Thumbnail.BitmapSource;
+      newt.Path = DefPath;
+      newt.IsNavigate = IsNavigate;
+      newt.Index = tabControl1.Items.Count;
+      newt.AllowDrop = true;
+      newt.log.CurrentLocation = DefPath;
+
+      newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
+      newt.DragEnter += new DragEventHandler(newt_DragEnter);
+      newt.DragOver += new DragEventHandler(newt_DragOver);
+      newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
+      newt.Drop += new DragEventHandler(newt_Drop);
+      newt.TabSelected += newt_TabSelected;
+      tabControl1.Items.Add(newt);
+      LastTabIndex = tabControl1.SelectedIndex;
+      if (IsNavigate) {
+        tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
+        tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
+        NavigateAfterTabChange();
+      }
+
+      ConstructMoveToCopyToMenu();
+    }
 
 		
 

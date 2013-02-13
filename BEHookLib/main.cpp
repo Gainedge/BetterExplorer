@@ -141,15 +141,15 @@ int Initialize(CallbackStruct* cb) {
     callbacks = *cb;
 
     // Register the messages.
-    WM_REGISTERDRAGDROP = RegisterWindowMessageA("QTTabBar_RegisterDragDrop");
-    WM_NEWTREECONTROL   = RegisterWindowMessageA("QTTabBar_NewTreeControl");
-    WM_BROWSEOBJECT     = RegisterWindowMessageA("QTTabBar_BrowseObject");
-    WM_HEADERINALLVIEWS = RegisterWindowMessageA("QTTabBar_HeaderInAllViews");
-    WM_LISTREFRESHED    = RegisterWindowMessageA("QTTabBar_ListRefreshed");
-    WM_ISITEMSVIEW      = RegisterWindowMessageA("QTTabBar_IsItemsView");
-    WM_ACTIVATESEL      = RegisterWindowMessageA("QTTabBar_ActivateSelection");
-    WM_BREADCRUMBDPA    = RegisterWindowMessageA("QTTabBar_BreadcrumbDPA");
-    WM_CHECKPULSE       = RegisterWindowMessageA("QTTabBar_CheckPulse");
+    WM_REGISTERDRAGDROP = RegisterWindowMessageA("BE_RegisterDragDrop");
+    WM_NEWTREECONTROL   = RegisterWindowMessageA("BE_NewTreeControl");
+    WM_BROWSEOBJECT     = RegisterWindowMessageA("BE_BrowseObject");
+    WM_HEADERINALLVIEWS = RegisterWindowMessageA("BE_HeaderInAllViews");
+    WM_LISTREFRESHED    = RegisterWindowMessageA("BE_ListRefreshed");
+    WM_ISITEMSVIEW      = RegisterWindowMessageA("BE_IsItemsView");
+    WM_ACTIVATESEL      = RegisterWindowMessageA("BE_ActivateSelection");
+    WM_BREADCRUMBDPA    = RegisterWindowMessageA("BE_BreadcrumbDPA");
+    WM_CHECKPULSE       = RegisterWindowMessageA("BE_CheckPulse");
 
     // Create and enable the CoCreateInstance, RegisterDragDrop, and SHCreateShellFolderView hooks.
     CREATE_HOOK(&CoCreateInstance, CoCreateInstance);

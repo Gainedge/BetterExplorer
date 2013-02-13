@@ -55,7 +55,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         private IntPtr hHook_Msg;
         private WindowsHelper.WindowsAPI.HookProc hookProc_GetMsg;
         public TreeViewWrapper SysTreeView { get; set; }
-        private readonly uint WM_NEWTREECONTROL = WindowsAPI.RegisterWindowMessage("QTTabBar_NewTreeControl");
+        private readonly uint WM_NEWTREECONTROL = WindowsAPI.RegisterWindowMessage("BE_NewTreeControl");
         bool Ctrl = false;
         bool IsPressedLKButton = false;
         bool IsMouseClickOnHeader = false;
