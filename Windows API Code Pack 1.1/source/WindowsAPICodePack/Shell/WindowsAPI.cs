@@ -13,6 +13,7 @@ using System.IO;
 using Microsoft.Win32;
 using System.Security;
 using System.Diagnostics;
+using Microsoft.WindowsAPICodePack.Controls;
 
 namespace WindowsHelper
 {
@@ -1860,6 +1861,47 @@ namespace WindowsHelper
           int CollapseAll();
         }
 
+        [Serializable]
+        public struct PROPERTYKEY {
+          public Guid fmtid;
+          public uint pid;
+        }
+        public enum SORT {
+          DESCENDING = -1,
+          ASCENDING = 1
+        }
+        [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        public struct CM_COLUMNINFO {
+
+          /// DWORD->unsigned int
+          public int cbSize;
+
+          /// DWORD->unsigned int
+          public int dwMask;
+
+          /// DWORD->unsigned int
+          public int dwState;
+
+          /// UINT->unsigned int
+          public uint uWidth;
+
+          /// UINT->unsigned int
+          public uint uDefaultWidth;
+
+          /// UINT->unsigned int
+          public uint uIdealWidth;
+
+          /// WCHAR[]
+          [MarshalAsAttribute(UnmanagedType.ByValTStr, SizeConst = 256)]
+          public string wszName;
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        [Serializable]
+        public struct SORTCOLUMN {
+          public PROPERTYKEY propkey;
+          public SORT direction;
+        }
+
       [StructLayout(LayoutKind.Sequential)]
         public struct Message {
           public IntPtr hwnd;
@@ -1877,6 +1919,34 @@ namespace WindowsHelper
           [PreserveSig]
           int ContextSensitiveHelp(bool fEnterMode);
         }
+
+        public enum ERROR {
+          SUCCESS,
+          FILE_EXISTS = 80,
+          BAD_PATHNAME = 161,
+          ALREADY_EXISTS = 183,
+          FILENAME_EXCED_RANGE = 206,
+          CANCELLED = 1223,
+        }
+
+        [DllImport("Ntshrui.dll")]
+        public static extern HResult ShowShareFolderUI(IntPtr hwndParent, IntPtr pszPath);
+
+
+        public const uint SHOP_FILEPATH = 0x2;
+        [DllImport("shell32.dll", SetLastError = true)]
+        public static extern bool SHObjectProperties(IntPtr hwnd, uint shopObjectType, [MarshalAs(UnmanagedType.LPWStr)] string pszObjectName, [MarshalAs(UnmanagedType.LPWStr)] string pszPropertyPage);
+
+
+        [DllImport("shell32.dll", EntryPoint = "#165", CharSet = CharSet.Unicode)]
+        public static extern ERROR SHCreateDirectory(IShellView hwnd, string pszPath);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+        private static extern IntPtr ILCreateFromPath([MarshalAs(UnmanagedType.LPTStr)] string pszPath);
+
+        [DllImport("shell32.dll")]
+        public static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, [Out()] out IntPtr pidl, uint sfgaoIn, [Out()] out uint psfgaoOut);
+
         [DllImport("shell32.dll")]
         public static extern IntPtr ILFindLastID(IntPtr pidl);
         [DllImport("user32.dll")]

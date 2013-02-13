@@ -170,38 +170,39 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ApplicationInstanceManager.cs" />
-    <Compile Include="ArchiveCreateWizard.cs">
+    <Compile Include="Application\ApplicationInstanceManager.cs" />
+    <Compile Include="ArchiveView\ArchiveCreateWizard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ArchiveCreateWizard.Designer.cs">
+    <Compile Include="ArchiveView\ArchiveCreateWizard.Designer.cs">
       <DependentUpon>ArchiveCreateWizard.cs</DependentUpon>
     </Compile>
-    <Compile Include="ArchiveDetailView.cs">
+    <Compile Include="ArchiveView\ArchiveDetailView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ArchiveDetailView.designer.cs">
+    <Compile Include="ArchiveView\ArchiveDetailView.designer.cs">
       <DependentUpon>ArchiveDetailView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ArchiveProcressScreen.cs">
+    <Compile Include="ArchiveView\ArchiveProcressScreen.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ArchiveProcressScreen.designer.cs">
+    <Compile Include="ArchiveView\ArchiveProcressScreen.designer.cs">
       <DependentUpon>ArchiveProcressScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="ArchiveViewWindow.xaml.cs">
+    <Compile Include="ArchiveView\ArchiveViewWindow.xaml.cs">
       <DependentUpon>ArchiveViewWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppCommands.cs" />
-    <Compile Include="ConditionalSelectClasses.cs" />
-    <Compile Include="ConditionalSelectComboBoxItem.xaml.cs">
+    <Compile Include="Application\AppCommands.cs" />
+    <Compile Include="ConditionalSelect\ConditionalSelectClasses.cs" />
+    <Compile Include="ConditionalSelect\ConditionalSelectComboBoxItem.xaml.cs">
       <DependentUpon>ConditionalSelectComboBoxItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ConditionalSelectForm.xaml.cs">
+    <Compile Include="ConditionalSelect\ConditionalSelectForm.xaml.cs">
       <DependentUpon>ConditionalSelectForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FolderStructForSize.cs" />
-    <Compile Include="PathStringCombiner.cs" />
+    <Compile Include="HelperClasses\FolderStructForSize.cs" />
+    <Compile Include="IconClasses\IconUtilities.cs" />
+    <Compile Include="HelperClasses\PathStringCombiner.cs" />
     <Compile Include="PieChart\BaseWPFHelpers.cs" />
     <Compile Include="PieChart\PieChart\ColourConverter.cs" />
     <Compile Include="PieChart\PieChart\IColorSelector.cs" />
@@ -226,34 +227,34 @@
     <Compile Include="ResizeImage.xaml.cs">
       <DependentUpon>ResizeImage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SavedTabsListGalleryItem.xaml.cs">
+    <Compile Include="Tabs\SavedTabsListGalleryItem.xaml.cs">
       <DependentUpon>SavedTabsListGalleryItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tabs\NameTabList.xaml.cs">
       <DependentUpon>NameTabList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tabs\SavedTabsList.cs" />
-    <Compile Include="SDateSearchCriteriaDialog.xaml.cs">
+    <Compile Include="Tabs\SDateSearchCriteriaDialog.xaml.cs">
       <DependentUpon>SDateSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SizeSearchCriteriaDialog.xaml.cs">
+    <Compile Include="ConditionalSelect\SizeSearchCriteriaDialog.xaml.cs">
       <DependentUpon>SizeSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CreateArchive.cs">
+    <Compile Include="ArchiveView\CreateArchive.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CreateArchive.designer.cs">
+    <Compile Include="ArchiveView\CreateArchive.designer.cs">
       <DependentUpon>CreateArchive.cs</DependentUpon>
     </Compile>
-    <Compile Include="DragDropLib.cs" />
-    <Compile Include="FileIcon.cs" />
+    <Compile Include="HelperClasses\DragDropLib.cs" />
+    <Compile Include="IconClasses\FileIcon.cs" />
     <Compile Include="fmAbout.xaml.cs">
       <DependentUpon>fmAbout.xaml</DependentUpon>
     </Compile>
     <Compile Include="FolderSizeWindow.xaml.cs">
       <DependentUpon>FolderSizeWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FriendlySizeConverter.cs" />
+    <Compile Include="HelperClasses\FriendlySizeConverter.cs" />
     <Compile Include="ItemPop.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -263,41 +264,41 @@
     <Compile Include="ItemPopup.xaml.cs">
       <DependentUpon>ItemPopup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NavigationLog.cs" />
+    <Compile Include="HelperClasses\NavigationLog.cs" />
     <Compile Include="PreviewMedia.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="PreviewMedia.Designer.cs">
       <DependentUpon>PreviewMedia.cs</DependentUpon>
     </Compile>
-    <Compile Include="IconFile.cs" />
-    <Compile Include="IconReader.cs" />
-    <Compile Include="IconView.cs">
+    <Compile Include="IconClasses\IconFile.cs" />
+    <Compile Include="IconClasses\IconReader.cs" />
+    <Compile Include="IconClasses\IconView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="IconView.Designer.cs">
+    <Compile Include="IconClasses\IconView.Designer.cs">
       <DependentUpon>IconView.cs</DependentUpon>
     </Compile>
-    <Compile Include="InstanceProxy.cs" />
+    <Compile Include="Application\InstanceProxy.cs" />
     <Compile Include="MoreColumns.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MoreColumns.Designer.cs">
       <DependentUpon>MoreColumns.cs</DependentUpon>
     </Compile>
-    <Compile Include="NetworkBrowser.cs" />
-    <Compile Include="SafeThread.cs" />
+    <Compile Include="HelperClasses\NetworkBrowser.cs" />
+    <Compile Include="HelperClasses\SafeThread.cs" />
     <Compile Include="ShareWizzard.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ShareWizzard.Designer.cs">
       <DependentUpon>ShareWizzard.cs</DependentUpon>
     </Compile>
-    <Compile Include="ShellLink.cs" />
-    <Compile Include="StringSearchCriteriaDialog.xaml.cs">
+    <Compile Include="HelperClasses\ShellLink.cs" />
+    <Compile Include="ConditionalSelect\StringSearchCriteriaDialog.xaml.cs">
       <DependentUpon>StringSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SysImageList.cs" />
+    <Compile Include="HelperClasses\SysImageList.cs" />
     <Compile Include="Tabs\TabListEditor.xaml.cs">
       <DependentUpon>TabListEditor.xaml</DependentUpon>
     </Compile>
@@ -307,25 +308,27 @@
     <Compile Include="Tabs\TabManager.xaml.cs">
       <DependentUpon>TabManager.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UndoCloseGalleryItem.xaml.cs">
+    <Compile Include="Tabs\UndoCloseGalleryItem.xaml.cs">
       <DependentUpon>UndoCloseGalleryItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Updater.cs" />
-    <Compile Include="UpdateWizard.cs">
+    <Compile Include="Updater\Updater.cs" />
+    <Compile Include="Updater\UpdateWizard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UpdateWizard.Designer.cs">
+    <Compile Include="Updater\UpdateWizard.Designer.cs">
       <DependentUpon>UpdateWizard.cs</DependentUpon>
     </Compile>
-    <Page Include="ArchiveViewWindow.xaml">
+    <Compile Include="HelperClasses\WindowExtensions.cs" />
+    <Compile Include="HelperClasses\Wpf32Window.cs" />
+    <Page Include="ArchiveView\ArchiveViewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ConditionalSelectComboBoxItem.xaml">
+    <Page Include="ConditionalSelect\ConditionalSelectComboBoxItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ConditionalSelectForm.xaml">
+    <Page Include="ConditionalSelect\ConditionalSelectForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -349,15 +352,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SavedTabsListGalleryItem.xaml">
+    <Page Include="Tabs\SavedTabsListGalleryItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SDateSearchCriteriaDialog.xaml">
+    <Page Include="Tabs\SDateSearchCriteriaDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SizeSearchCriteriaDialog.xaml">
+    <Page Include="ConditionalSelect\SizeSearchCriteriaDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -381,15 +384,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ClipBoardMonitor.cs">
+    <Compile Include="HelperClasses\ClipBoardMonitor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CloseableTabItem.cs" />
+    <Compile Include="Tabs\CloseableTabItem.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="StringSearchCriteriaDialog.xaml">
+    <Page Include="ConditionalSelect\StringSearchCriteriaDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -485,7 +488,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="UndoCloseGalleryItem.xaml">
+    <Page Include="Tabs\UndoCloseGalleryItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -504,16 +507,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="ArchiveCreateWizard.resx">
+    <EmbeddedResource Include="ArchiveView\ArchiveCreateWizard.resx">
       <DependentUpon>ArchiveCreateWizard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ArchiveDetailView.resx">
+    <EmbeddedResource Include="ArchiveView\ArchiveDetailView.resx">
       <DependentUpon>ArchiveDetailView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ArchiveProcressScreen.resx">
+    <EmbeddedResource Include="ArchiveView\ArchiveProcressScreen.resx">
       <DependentUpon>ArchiveProcressScreen.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CreateArchive.resx">
+    <EmbeddedResource Include="ArchiveView\CreateArchive.resx">
       <DependentUpon>CreateArchive.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ItemPop.resx">
@@ -522,7 +525,7 @@
     <EmbeddedResource Include="PreviewMedia.resx">
       <DependentUpon>PreviewMedia.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="IconView.resx">
+    <EmbeddedResource Include="IconClasses\IconView.resx">
       <DependentUpon>IconView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MoreColumns.resx">
@@ -535,7 +538,7 @@
     <EmbeddedResource Include="ShareWizzard.resx">
       <DependentUpon>ShareWizzard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UpdateWizard.resx">
+    <EmbeddedResource Include="Updater\UpdateWizard.resx">
       <DependentUpon>UpdateWizard.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.manifest" />
@@ -732,9 +735,6 @@
     <Resource Include="Images\icon_folder1.png" />
     <Resource Include="Images\pics16.png" />
     <Content Include="Updater.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="WebUpdater.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Images\libicon16.png" />

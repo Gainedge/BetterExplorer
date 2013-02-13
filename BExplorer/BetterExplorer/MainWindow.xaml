@@ -18,7 +18,7 @@
                      Initialized="RibbonWindow_Initialized"
                      KeyUp="RibbonWindow_KeyUp"
                      Loaded="Window_Loaded"
-                     MouseMove="RibbonWindow_MouseMove"
+                     
                      MouseRightButtonUp="RibbonWindow_MouseRightButtonUp"
                      
                      ResizeMode="CanResizeWithGrip"
@@ -246,7 +246,7 @@
         <Ribbon:StatusBar Name="TheStatusBar"
                           Grid.Row="7"
                           ContextMenuClosing="TheStatusBar_ContextMenuClosing"
-                          ContextMenuOpening="TheStatusBar_ContextMenuOpening"
+                          
                           GotFocus="TheStatusBar_GotFocus">
             <Ribbon:StatusBarItem Name="sbiItemsCount"
                                   Title="Items Count"
@@ -1771,7 +1771,7 @@
                                             Ribbon:KeyTip.Keys="V"
                                             SelectedFilter="{Binding ElementName=galleryFilterAll}"
                                             SelectionChanged="inRibbonGallery1_SelectionChanged"
-                                            SizeDefinition="Large,Large,Large" PreviewMouseLeftButtonDown="inRibbonGallery1_PreviewMouseLeftButtonDown">
+                                            SizeDefinition="Large,Large,Large" >
                         <Ribbon:InRibbonGallery.Filters>
                             <Ribbon:GalleryGroupFilter x:Name="galleryFilterAll"
                                                        Title="All"
@@ -2749,7 +2749,7 @@
                           Panel.ZIndex="1"
                           Background="White"
                           ClipToBounds="True"
-                          MouseMove="ShellVView_MouseMove"
+                          
                           OpacityMask="White"/>
 
         <Grid Name="navBarGrid"

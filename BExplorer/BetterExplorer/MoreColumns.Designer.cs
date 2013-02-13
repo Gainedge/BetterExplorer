@@ -47,7 +47,7 @@
             this.lvColumns.UseCompatibleStateImageBehavior = false;
             this.lvColumns.View = System.Windows.Forms.View.Details;
             this.lvColumns.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvColumns_ItemChecked);
-            this.lvColumns.MouseLeave += new System.EventHandler(this.lvColumns_MouseLeave);
+            
             // 
             // columnHeader1
             // 

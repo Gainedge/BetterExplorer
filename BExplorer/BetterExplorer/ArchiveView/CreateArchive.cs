@@ -200,12 +200,10 @@ namespace BetterExplorer
 
         private void CreateArchive_Load(object sender, EventArgs e)
         {
-            ExplorerBrowser.IsBool = true;
         }
 
         private void CreateArchive_FormClosed(object sender, FormClosedEventArgs e)
         {
-            ExplorerBrowser.IsBool = false;
         }
 
     }

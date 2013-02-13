@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using WindowsHelper;
 
 namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
   /// <summary>
@@ -8,7 +9,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
   /// </summary>
   [Serializable]
   public class Collumns {
-    public ExplorerBrowser.PROPERTYKEY pkey;
+    public WindowsAPI.PROPERTYKEY pkey;
     public string Name;
     public int Width;
   }

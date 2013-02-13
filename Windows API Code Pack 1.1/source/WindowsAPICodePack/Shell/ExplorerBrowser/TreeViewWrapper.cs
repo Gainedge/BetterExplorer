@@ -8,9 +8,28 @@ using System.Windows.Forms;
 using WindowsHelper;
 
 namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
+  /// <summary>
+  /// A warper over the INameSpaceTreeControl present in windows explorer
+  /// </summary>
   public class TreeViewWrapper : IDisposable {
+    /// <summary>
+    /// Delegate for middle mouse click handling
+    /// </summary>
+    /// <param name="item">The IshellItem that is under cursor</param>
     public delegate void TreeViewMiddleClickedHandler(IShellItem item);
+
+    /// <summary>
+    /// Folder click handler
+    /// </summary>
+    /// <param name="item">The item that is clicked</param>
+    /// <param name="modkeys">Modify keys</param>
+    /// <param name="middle">Is middle click</param>
+    /// <returns></returns>
     public delegate bool FolderClickedHandler(ShellObject item, Keys modkeys, bool middle);
+
+    /// <summary>
+    /// Folder clicked event
+    /// </summary>
     public event FolderClickedHandler TreeViewClicked;
 
     private bool fDisposed;
@@ -19,6 +38,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
     private NativeWindowController parentController;
     private bool fPreventSelChange;
 
+    /// <summary>
+    /// Main constructor
+    /// </summary>
+    /// <param name="hwnd">Handle of the control parent</param>
+    /// <param name="treeControl">The real Treeview object</param>
     public TreeViewWrapper(IntPtr hwnd, WindowsAPI.INameSpaceTreeControl treeControl) {
       this.treeControl = treeControl;
       treeController = new NativeWindowController(hwnd);

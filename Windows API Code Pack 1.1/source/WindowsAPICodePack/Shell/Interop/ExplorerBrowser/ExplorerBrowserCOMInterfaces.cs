@@ -476,7 +476,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
         void SetGroupBy(IntPtr key, bool fAscending);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void GetGroupBy(out Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.PROPERTYKEY pkey, out bool pfAscending);
+        void GetGroupBy(out WindowsAPI.PROPERTYKEY pkey, out bool pfAscending);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void SetViewProperty(IntPtr pidl, IntPtr propkey, object propvar);
@@ -581,20 +581,21 @@ namespace Microsoft.WindowsAPICodePack.Controls
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         HResult OnNavigationFailed(IntPtr pidlFolder);
     }
+
     public enum CM_ENUM_FLAGS
     {
         CM_ENUM_ALL = 0x00000001,
         CM_ENUM_VISIBLE = 0x00000002
-    } ;
+    };
 
     [ComImport]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid(ExplorerBrowserIIDGuid.IColumnManager)]
     public interface IColumnManager
     {
-        void SetColumnInfo([In] ref ExplorerBrowser.PROPERTYKEY propkey, [In] ref IntPtr pcmci);
+        void SetColumnInfo([In] ref WindowsAPI.PROPERTYKEY propkey, [In] ref IntPtr pcmci);
 
-        void GetColumnInfo(ref ExplorerBrowser.PROPERTYKEY propkey, out IntPtr pcmci);
+        void GetColumnInfo(ref WindowsAPI.PROPERTYKEY propkey, out IntPtr pcmci);
 
         void GetColumnCount(CM_ENUM_FLAGS dwFlags, out uint puCount);
 

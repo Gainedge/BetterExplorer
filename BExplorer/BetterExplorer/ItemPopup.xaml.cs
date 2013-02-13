@@ -37,17 +37,17 @@ namespace BetterExplorer
 
         private void Window_MouseEnter(object sender, MouseEventArgs e)
         {
-            ExplorerBrowser.IsBool = true;
+
         }
 
         private void Window_MouseLeave(object sender, MouseEventArgs e)
         {
-            ExplorerBrowser.IsBool = false;
+
         }
 
         private void Window_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            ExplorerBrowser.IsBool = true;
+
         }
 
         private void Window_PreviewMouseDown(object sender, MouseButtonEventArgs e)
