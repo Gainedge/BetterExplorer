@@ -9,39 +9,49 @@
         </Grid.RowDefinitions>
         
         <Grid Grid.RowSpan="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="138*" />
+                <ColumnDefinition Width="150" />
                 <ColumnDefinition Width="440*" />
             </Grid.ColumnDefinitions>
             
-            <my:TabListEditor x:Name="tabListEditor1" Grid.Column="1" Margin="0,31,0,0" />
-            <StackPanel Name="stackPanel1" Margin="0,31,4,0" />
-            <GridSplitter Name="gridSplitter1" HorizontalAlignment="Right" Width="4" Background="#FFEEEEEE" />
-            <Button Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="button3" VerticalAlignment="Top" Width="75" Click="button3_Click">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="Images\save.png" Stretch="Fill" />
-                    <TextBlock Text="{StaticResource btnSave}" Margin="5,0,0,0" />
-                </StackPanel>
-            </Button>
-            <Button Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="button4" VerticalAlignment="Top" Width="58" Click="button4_Click">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="Images\new.png" Stretch="None" />
-                    <TextBlock Text="{StaticResource tgNewCP}" Margin="5,0,0,0" />
-                </StackPanel>
-            </Button>
-            <Button Height="23" HorizontalAlignment="Right" Margin="0,6,6,0" Name="button5" VerticalAlignment="Top" Width="75" Grid.Column="1" Click="button5_Click">
+            <my:TabListEditor x:Name="tabListEditor1" Grid.Column="1" Grid.Row="1" />
+            <ScrollViewer Margin="0,0,4,0" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                <StackPanel Name="stackPanel1" />
+            </ScrollViewer>
+            <StackPanel Orientation="Horizontal" Margin="0,0,4,0" >
+                <Button Height="23" Margin="3,4,0,3" Padding="2,1,2,1" Name="button4" Click="button4_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Images\new.png" Stretch="None" />
+                        <TextBlock Text="{StaticResource tgNewCP}" Margin="5,0,0,0" />
+                    </StackPanel>
+                </Button>
+                <Button Height="23" Margin="3,4,0,3" Padding="2,1,2,1" Name="button6" Click="button6_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Images\delete_item.png" Stretch="None" />
+                        <TextBlock Text="{StaticResource btnDeleteCP}" Margin="2,0,0,0" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <GridSplitter Name="gridSplitter1" HorizontalAlignment="Right" Width="4" Background="#FFEEEEEE" Grid.RowSpan="2" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="6,4,0,3" Name="button3" VerticalAlignment="Top" Padding="2,1,2,1" Click="button3_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="Images\save.png" Stretch="Fill" />
+                        <TextBlock Text="{StaticResource btnSave}" Margin="5,1,0,0" />
+                    </StackPanel>
+                </Button>
+                <Button Content="{StaticResource btnSaveAs}" Height="23" HorizontalAlignment="Left" Margin="3,4,0,3" Name="button7" VerticalAlignment="Top" Padding="8,1,8,1" Grid.Column="1" Click="button7_Click" />
+            </StackPanel>
+            <Button Height="23" HorizontalAlignment="Right" Margin="0,4,6,0" x:Name="button5" VerticalAlignment="Top" Width="Auto" Padding="2,1,2,1" Grid.Column="1" Click="button5_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Images\add_item.png" Stretch="None" />
                     <TextBlock Text="{StaticResource btnAddTab}" Margin="5,0,0,0" />
                 </StackPanel>
             </Button>
-            <Button Height="23" HorizontalAlignment="Left" Margin="70,6,0,0" Name="button6" VerticalAlignment="Top" Width="58" Click="button6_Click">
-                <StackPanel Orientation="Horizontal">
-                    <Image Source="Images\delete_item.png" Stretch="None" />
-                    <TextBlock Text="{StaticResource btnDeleteCP}" Margin="2,0,0,0" />
-                </StackPanel>
-            </Button>
-            <Button Content="{StaticResource btnSaveAs}" Height="23" HorizontalAlignment="Left" Margin="87,6,0,0" Name="button7" VerticalAlignment="Top" Width="75" Grid.Column="1" Click="button7_Click" />
         </Grid>
         <Button Content="{StaticResource btnOpenFolder}" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="12,0,0,8" Name="button1" VerticalAlignment="Bottom" Width="Auto" Padding="8,1,8,1" IsEnabled="False" />
         <Button Content="{StaticResource btnClose}" Height="23" HorizontalAlignment="Right" Margin="0,0,12,8" Name="button2" VerticalAlignment="Bottom" Grid.Row="1" Width="Auto" Click="button2_Click" Padding="8,1,8,1" />
