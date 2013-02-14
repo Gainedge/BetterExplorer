@@ -1,7 +1,7 @@
 ﻿<Window x:Class="BetterExplorer.Tabs.TabManager"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Tab Manager" Height="400" Width="600" xmlns:my="clr-namespace:BetterExplorer" Loaded="Window_Loaded">
+        Title="{StaticResource txtTabManager}" Height="400" Width="600" xmlns:my="clr-namespace:BetterExplorer" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="320*" />
@@ -20,30 +20,30 @@
             <Button Grid.Column="1" Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="button3" VerticalAlignment="Top" Width="75" Click="button3_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Images\save.png" Stretch="Fill" />
-                    <TextBlock Text="Save" Margin="5,0,0,0" />
+                    <TextBlock Text="{StaticResource btnSave}" Margin="5,0,0,0" />
                 </StackPanel>
             </Button>
             <Button Height="23" HorizontalAlignment="Left" Margin="6,6,0,0" Name="button4" VerticalAlignment="Top" Width="58" Click="button4_Click">
                 <StackPanel Orientation="Horizontal">
-                    <Image Source="Images\new.png" Stretch="None" /> 
-                    <TextBlock Text="New" Margin="5,0,0,0" />
+                    <Image Source="Images\new.png" Stretch="None" />
+                    <TextBlock Text="{StaticResource tgNewCP}" Margin="5,0,0,0" />
                 </StackPanel>
             </Button>
             <Button Height="23" HorizontalAlignment="Right" Margin="0,6,6,0" Name="button5" VerticalAlignment="Top" Width="75" Grid.Column="1" Click="button5_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Images\add_item.png" Stretch="None" />
-                    <TextBlock Text="Add Tab" Margin="5,0,0,0" />
+                    <TextBlock Text="{StaticResource btnAddTab}" Margin="5,0,0,0" />
                 </StackPanel>
             </Button>
             <Button Height="23" HorizontalAlignment="Left" Margin="70,6,0,0" Name="button6" VerticalAlignment="Top" Width="58" Click="button6_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="Images\delete_item.png" Stretch="None" />
-                    <TextBlock Text="Delete" Margin="2,0,0,0" />
+                    <TextBlock Text="{StaticResource btnDeleteCP}" Margin="2,0,0,0" />
                 </StackPanel>
             </Button>
-            <Button Content="Save As" Height="23" HorizontalAlignment="Left" Margin="87,6,0,0" Name="button7" VerticalAlignment="Top" Width="75" Grid.Column="1" Click="button7_Click" />
+            <Button Content="{StaticResource btnSaveAs}" Height="23" HorizontalAlignment="Left" Margin="87,6,0,0" Name="button7" VerticalAlignment="Top" Width="75" Grid.Column="1" Click="button7_Click" />
         </Grid>
-        <Button Content="Open Folder" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="12,0,0,8" Name="button1" VerticalAlignment="Bottom" Width="90" IsEnabled="False" />
-        <Button Content="Close" Height="23" HorizontalAlignment="Right" Margin="0,0,12,8" Name="button2" VerticalAlignment="Bottom" Grid.Row="1" Width="60" Click="button2_Click" />
+        <Button Content="{StaticResource btnOpenFolder}" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="12,0,0,8" Name="button1" VerticalAlignment="Bottom" Width="Auto" Padding="8,1,8,1" IsEnabled="False" />
+        <Button Content="{StaticResource btnClose}" Height="23" HorizontalAlignment="Right" Margin="0,0,12,8" Name="button2" VerticalAlignment="Bottom" Grid.Row="1" Width="Auto" Click="button2_Click" Padding="8,1,8,1" />
     </Grid>
 </Window>

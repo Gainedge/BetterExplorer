@@ -1039,7 +1039,8 @@ namespace BetterExplorer
 			                                if (Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
 			                                    !Explorer.NavigationLog.CurrentLocation.IsSearchFolder)
 			                                {
-			                                    ctgFolderTools.Visibility = Visibility.Visible;
+                                                //MessageBox.Show("3");
+			                                    //ctgFolderTools.Visibility = Visibility.Visible;
 			                                }
 
 			                                if (Explorer.NavigationLog.CurrentLocation.ParsingName.Contains(KnownFolders.Libraries.ParsingName) &&
@@ -2067,6 +2068,7 @@ namespace BetterExplorer
 									        else if (!SelectedItem.IsNetDrive)
 									        {
 										        ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
+                                                //MessageBox.Show("1");
 										        ctgFolderTools.Visibility = System.Windows.Visibility.Visible;
 										        selisfolder = true;
 									        }
@@ -2148,6 +2150,7 @@ namespace BetterExplorer
 									        if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
 												        !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
 										        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                            ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
 									        selisfolder = false;
 									        txtExtractLocation.Text = new FileInfo(SelectedItem.ParsingName).DirectoryName;
 									        SelectedArchive = SelectedItem.ParsingName;
@@ -2233,6 +2236,7 @@ namespace BetterExplorer
 
 								        if (selisfolder == true && Explorer.SelectedItems[0].IsFolder)
 								        {
+                                            //MessageBox.Show("2");
 									        ctgFolderTools.Visibility = System.Windows.Visibility.Visible;
 									        if (asFolder == true)
 									        {
@@ -2244,6 +2248,7 @@ namespace BetterExplorer
 									        if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
 												        !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
 										        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                                            ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
 								        }
 
 

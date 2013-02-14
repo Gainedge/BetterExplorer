@@ -150,7 +150,7 @@ namespace BetterExplorer.Tabs
 
         private void button6_Click(object sender, RoutedEventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to delete this tab collection?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes)
+            if (MessageBox.Show((FindResource("txtConfirmDelete") as string) + "?", "Confirm Delete", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) == MessageBoxResult.Yes)
             {
                 System.IO.File.Delete(selfile);
                 RefreshList();

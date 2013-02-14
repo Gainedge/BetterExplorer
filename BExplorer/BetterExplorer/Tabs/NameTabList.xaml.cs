@@ -27,8 +27,15 @@ namespace BetterExplorer.Tabs
 
         private void button2_Click(object sender, RoutedEventArgs e)
         {
-            dialogresult = true;
-            this.Close();
+            if (textBox1.Text.Contains("\\") || textBox1.Text.Contains("/") || textBox1.Text.Contains(":") || textBox1.Text.Contains("?") || textBox1.Text.Contains("*") || textBox1.Text.Contains("<") || textBox1.Text.Contains(">") || textBox1.Text.Contains("|"))
+            {
+                MessageBox.Show(FindResource("txtIllegalCharacters") as string, "Choose a new name", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                dialogresult = true;
+                this.Close();
+            }
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)

@@ -234,7 +234,7 @@
       <DependentUpon>NameTabList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tabs\SavedTabsList.cs" />
-    <Compile Include="Tabs\SDateSearchCriteriaDialog.xaml.cs">
+    <Compile Include="ConditionalSelect\SDateSearchCriteriaDialog.xaml.cs">
       <DependentUpon>SDateSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ConditionalSelect\SizeSearchCriteriaDialog.xaml.cs">
@@ -356,7 +356,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tabs\SDateSearchCriteriaDialog.xaml">
+    <Page Include="ConditionalSelect\SDateSearchCriteriaDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -923,7 +923,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
