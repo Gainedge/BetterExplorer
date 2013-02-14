@@ -3809,6 +3809,7 @@ namespace BetterExplorer
 			double sbw = Convert.ToDouble(rks.GetValue(@"SearchBarWidth", "220"));
 
 			string rtlused = Convert.ToString(rks.GetValue(@"RTLMode", "false"));
+            string ovrtl = Convert.ToString(rks.GetValue(@"OverrideRTLDefault", "false"));
 
 			string tabba = Convert.ToString(rks.GetValue(@"TabBarAlignment", "top"));
 
@@ -3829,7 +3830,17 @@ namespace BetterExplorer
 
             if ((this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL == true)
             {
-                rtlused = "true";
+                if (ovrtl != "true")
+                {
+                    rtlused = "true";
+                }
+            }
+            else
+            {
+                if (ovrtl != "true")
+                {
+                    rtlused = "false";
+                }
             }
 
 			// sets size of search bar
