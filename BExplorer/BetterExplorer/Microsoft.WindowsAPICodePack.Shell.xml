@@ -2192,6 +2192,98 @@
             This class is a wrapper around the Windows Explorer Browser control.
             </summary>
         </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.ParseShellIDListArray(System.Runtime.InteropServices.ComTypes.IDataObject)">
+            <summary>
+            Return the Shellobject collection from IDataObject interface
+            </summary>
+            <param name="pDataObj">IDataObject interface of data</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetIShellFolder(Microsoft.WindowsAPICodePack.Shell.ShellObject)">
+            <summary>
+            Returns the IShellFolder interface from IShellItem
+            </summary>
+            <param name="sitem">The IShellItem represented like ShellObject</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetIShellFolder(Microsoft.WindowsAPICodePack.Shell.IShellItem)">
+            <summary>
+            Returns the IShellFolder interface from IShellItem
+            </summary>
+            <param name="sitem">The IShellItem</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.CreateItemWithParent(Microsoft.WindowsAPICodePack.Shell.IShellFolder,System.IntPtr)">
+            <summary>
+            Returns IShellItem from parent item and pidl
+            </summary>
+            <param name="parent">The parent folder</param>
+            <param name="pidl">the PIDL of the item</param>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetItemsArray">
+            <summary>
+            Gets the items in the ExplorerBrowser as an IShellItemArray
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetFolderView2">
+            <summary>
+            Gets the IFolderView2 interface from the explorer browser.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetSelectedItemsArray">
+            <summary>
+            Gets the selected items in the explorer browser as an IShellItemArray
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetItemsCount">
+            <summary>
+            Returns the number of the items in current view
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetSelectedItemsCount">
+            <summary>
+            Returns the number of selected items in current view
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetCurrentViewMode">
+            <summary>
+            Returns the current view mode of the browser
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetCurrentthumbSize">
+            <summary>
+            Returns the curent View Thumb size
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.SetSortCollumn(WindowsHelper.WindowsAPI.PROPERTYKEY,WindowsHelper.WindowsAPI.SORT)">
+            <summary>
+            Sets the column in which will be sorted
+            </summary>
+            <param name="pk">The propertykey that identifies column</param>
+            <param name="Order">The sort order</param>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.SetSortCollumn(System.Collections.Generic.List{WindowsHelper.WindowsAPI.PROPERTYKEY},System.Collections.Generic.List{WindowsHelper.WindowsAPI.SORT})">
+            <summary>
+            Sets the column in which will be sorted
+            </summary>
+            <param name="pk">The propertykey list that identifies columns</param>
+            <param name="Order">The sort order list</param>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.SetGroupCollumn(WindowsHelper.WindowsAPI.PROPERTYKEY,System.Boolean)">
+            <summary>
+            Sets the column in which current view will be grouped
+            </summary>
+            <param name="pk">The propertykey that identifies column</param>
+            <param name="Asc">true-ascesing order; false- descesing order</param>
+        </member>
         <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.Navigate(Microsoft.WindowsAPICodePack.Shell.ShellObject)">
             <summary>
             Clears the Explorer Browser of existing content, fills it with
@@ -2259,98 +2351,6 @@
             </summary>
             <param name="explorerPane">a guid identifying the pane</param>
             <param name="peps">the pane state desired</param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetCurrentViewMode">
-            <summary>
-            Returns the current view mode of the browser
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetCurrentthumbSize">
-            <summary>
-            Returns the curent View Thumb size
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.SetSortCollumn(Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.PROPERTYKEY,Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.SORT)">
-            <summary>
-            Sets the column in which will be sorted
-            </summary>
-            <param name="pk">The propertykey that identifies column</param>
-            <param name="Order">The sort order</param>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.SetSortCollumn(System.Collections.Generic.List{Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.PROPERTYKEY},System.Collections.Generic.List{Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.SORT})">
-            <summary>
-            Sets the column in which will be sorted
-            </summary>
-            <param name="pk">The propertykey list that identifies columns</param>
-            <param name="Order">The sort order list</param>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetFolderView2">
-            <summary>
-            Gets the IFolderView2 interface from the explorer browser.
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetSelectedItemsArray">
-            <summary>
-            Gets the selected items in the explorer browser as an IShellItemArray
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetItemsCount">
-            <summary>
-            Returns the number of the items in current view
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetSelectedItemsCount">
-            <summary>
-            Returns the number of selected items in current view
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.SetGroupCollumn(Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.PROPERTYKEY,System.Boolean)">
-            <summary>
-            Sets the column in which current view will be grouped
-            </summary>
-            <param name="pk">The propertykey that identifies column</param>
-            <param name="Asc">true-ascesing order; false- descesing order</param>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetItemsArray">
-            <summary>
-            Gets the items in the ExplorerBrowser as an IShellItemArray
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.CreateItemWithParent(Microsoft.WindowsAPICodePack.Shell.IShellFolder,System.IntPtr)">
-            <summary>
-            Returns IShellItem from parent item and pidl
-            </summary>
-            <param name="parent">The parent folder</param>
-            <param name="pidl">the PIDL of the item</param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetIShellFolder(Microsoft.WindowsAPICodePack.Shell.IShellItem)">
-            <summary>
-            Returns the IShellFolder interface from IShellItem
-            </summary>
-            <param name="sitem">The IShellItem</param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetIShellFolder(Microsoft.WindowsAPICodePack.Shell.ShellObject)">
-            <summary>
-            Returns the IShellFolder interface from IShellItem
-            </summary>
-            <param name="sitem">The IShellItem represented like ShellObject</param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.ParseShellIDListArray(System.Runtime.InteropServices.ComTypes.IDataObject)">
-            <summary>
-            Return the Shellobject collection from IDataObject interface
-            </summary>
-            <param name="pDataObj">IDataObject interface of data</param>
             <returns></returns>
         </member>
         <member name="P:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.NavigationOptions">
@@ -2422,27 +2422,6 @@
             Fires when the item selected in the view has changed (i.e., a rename ).
             This is not the same as SelectionChanged.
             </summary>
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.CM_COLUMNINFO.cbSize">
-            DWORD->unsigned int
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.CM_COLUMNINFO.dwMask">
-            DWORD->unsigned int
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.CM_COLUMNINFO.dwState">
-            DWORD->unsigned int
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.CM_COLUMNINFO.uWidth">
-            UINT->unsigned int
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.CM_COLUMNINFO.uDefaultWidth">
-            UINT->unsigned int
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.CM_COLUMNINFO.uIdealWidth">
-            UINT->unsigned int
-        </member>
-        <member name="F:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.CM_COLUMNINFO.wszName">
-            WCHAR[]
         </member>
         <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation.ExplorerBrowser">
             <summary>
@@ -3765,6 +3744,27 @@
             LVS_EX_HEADERINALLVIEWS
             </summary>
         </member>
+        <member name="F:WindowsHelper.WindowsAPI.CM_COLUMNINFO.cbSize">
+            DWORD->unsigned int
+        </member>
+        <member name="F:WindowsHelper.WindowsAPI.CM_COLUMNINFO.dwMask">
+            DWORD->unsigned int
+        </member>
+        <member name="F:WindowsHelper.WindowsAPI.CM_COLUMNINFO.dwState">
+            DWORD->unsigned int
+        </member>
+        <member name="F:WindowsHelper.WindowsAPI.CM_COLUMNINFO.uWidth">
+            UINT->unsigned int
+        </member>
+        <member name="F:WindowsHelper.WindowsAPI.CM_COLUMNINFO.uDefaultWidth">
+            UINT->unsigned int
+        </member>
+        <member name="F:WindowsHelper.WindowsAPI.CM_COLUMNINFO.uIdealWidth">
+            UINT->unsigned int
+        </member>
+        <member name="F:WindowsHelper.WindowsAPI.CM_COLUMNINFO.wszName">
+            WCHAR[]
+        </member>
         <member name="T:WindowsHelper.WindowsAPI.SPI">
             <summary>
             SPI_ System-wide parameter - Used in SystemParametersInfo function
@@ -4997,6 +4997,38 @@
             <summary>
             Drag Leave event for the custom IDroptarget
             </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser.TreeViewWrapper">
+            <summary>
+            A warper over the INameSpaceTreeControl present in windows explorer
+            </summary>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser.TreeViewWrapper.#ctor(System.IntPtr,WindowsHelper.WindowsAPI.INameSpaceTreeControl)">
+            <summary>
+            Main constructor
+            </summary>
+            <param name="hwnd">Handle of the control parent</param>
+            <param name="treeControl">The real Treeview object</param>
+        </member>
+        <member name="E:Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser.TreeViewWrapper.TreeViewClicked">
+            <summary>
+            Folder clicked event
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser.TreeViewWrapper.TreeViewMiddleClickedHandler">
+            <summary>
+            Delegate for middle mouse click handling
+            </summary>
+            <param name="item">The IshellItem that is under cursor</param>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser.TreeViewWrapper.FolderClickedHandler">
+            <summary>
+            Folder click handler
+            </summary>
+            <param name="item">The item that is clicked</param>
+            <param name="modkeys">Modify keys</param>
+            <param name="middle">Is middle click</param>
+            <returns></returns>
         </member>
         <member name="T:Microsoft.WindowsAPICodePack.Shell.AccessModes">
             <summary>
