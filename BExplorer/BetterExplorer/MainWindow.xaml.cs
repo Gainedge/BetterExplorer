@@ -3753,19 +3753,19 @@ namespace BetterExplorer
 				switch (Convert.ToString(rks.GetValue(@"CurrentTheme", "Blue")))
 				{
 					case "Blue":
-						ChangeRibbonThemeL("Blue");
+						ChangeRibbonTheme("Blue");
 						break;
 					case "Silver":
-						ChangeRibbonThemeL("Silver");
+						ChangeRibbonTheme("Silver");
 						break;
 					case "Black":
-						ChangeRibbonThemeL("Black");
+						ChangeRibbonTheme("Black");
 						break;
 					case "Green":
-						ChangeRibbonThemeL("Green");
+						ChangeRibbonTheme("Green");
 						break;
 					default:
-						ChangeRibbonThemeL("Blue");
+						ChangeRibbonTheme("Blue");
 						break;
 				}
 
@@ -4466,7 +4466,7 @@ namespace BetterExplorer
 			{
 
 				Resources.BeginInit();
-				Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Office2010/" + ThemeName + ".xaml") });
+        Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Office2010/{0}.xaml", ThemeName)) });
 				Resources.MergedDictionaries.RemoveAt(0);
 				Resources.EndInit();
 			}));
@@ -4474,7 +4474,7 @@ namespace BetterExplorer
 
 		private void btnSilver_Click(object sender, RoutedEventArgs e)
 		{
-			ChangeRibbonThemeL("Silver");
+			ChangeRibbonTheme("Silver");
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 			rks.SetValue(@"CurrentTheme", "Silver");
@@ -4482,20 +4482,24 @@ namespace BetterExplorer
 			KeepBackstageOpen = true;
 		}
 
-		public void ChangeRibbonTheme(string ThemeName)
+    public void ChangeRibbonTheme(string ThemeName, bool IsMetro = false)
 		{
 			Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() =>
 			{
 				Application.Current.Resources.BeginInit();
-				Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Office2010/" + ThemeName + ".xaml") });
 				Application.Current.Resources.MergedDictionaries.RemoveAt(0);
+        if (IsMetro) {
+          Application.Current.Resources.MergedDictionaries.Insert(0, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Metro/{0}.xaml", "White")) });
+        } else {
+          Application.Current.Resources.MergedDictionaries.Insert(0, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Office2010/{0}.xaml", ThemeName)) });
+        }
 				Application.Current.Resources.EndInit();
 			}));
 		}
 
 		private void btnBlue_Click(object sender, RoutedEventArgs e)
 		{
-			ChangeRibbonThemeL("Blue");
+			ChangeRibbonTheme("Blue");
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 			rks.SetValue(@"CurrentTheme", "Blue");
@@ -4505,7 +4509,7 @@ namespace BetterExplorer
 
 		private void btnBlack_Click(object sender, RoutedEventArgs e)
 		{
-			ChangeRibbonThemeL("Black");
+			ChangeRibbonTheme("Black");
 			btnBlack.IsChecked = true;
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);

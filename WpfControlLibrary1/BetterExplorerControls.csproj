@@ -159,8 +159,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\fluent_0cdee8129810\Fluent\Fluent\Fluent dotNET 4.0.csproj">
-      <Project>{4C92FCF4-3561-499F-BC5B-F2F089863047}</Project>
+    <ProjectReference Include="..\fluent_72f5e3ec252b\Fluent\Fluent\Fluent dotNET 4.0.csproj">
+      <Project>{4c92fcf4-3561-499f-bc5b-f2f089863047}</Project>
       <Name>Fluent dotNET 4.0</Name>
     </ProjectReference>
     <ProjectReference Include="..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\Shell.csproj">

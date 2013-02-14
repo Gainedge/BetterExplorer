@@ -18,7 +18,7 @@
                      Initialized="RibbonWindow_Initialized"
                      KeyUp="RibbonWindow_KeyUp"
                      Loaded="Window_Loaded"
-                     
+                     Background="{DynamicResource WindowBackgroundBrush}"
                      MouseRightButtonUp="RibbonWindow_MouseRightButtonUp"
                      
                      ResizeMode="CanResizeWithGrip"
@@ -30,10 +30,6 @@
 
     <Window.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Fluent;component/Themes/Office2010/Blue.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-
             <ControlTemplate x:Key="HorizontalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
                 <Grid x:Name="Bg"
                       Background="Transparent"
@@ -251,12 +247,14 @@
             <Ribbon:StatusBarItem Name="sbiItemsCount"
                                   Title="Items Count"
                                   HorizontalAlignment="Left"
-                                  Content="0 items" />
+                                  Content="0 items" 
+                                  Foreground="{DynamicResource BackstageFontBrush}"/>
             <Separator HorizontalAlignment="Left" />
             <Ribbon:StatusBarItem Name="sbiSelItemsCount"
                                   Title="Selected Items Count"
                                   HorizontalAlignment="Left"
-                                  Content="0 selected items" />
+                                  Content="0 selected items" 
+                                  Foreground="{DynamicResource BackstageFontBrush}"/>
             <Separator Name="spSelItems" HorizontalAlignment="Left" />
 
             <Ribbon:StatusBarItem Title="Size Chart"
@@ -310,7 +308,7 @@
             <Separator Name="spSelItems4" HorizontalAlignment="Right" />
             <Ribbon:StatusBarItem Title="Zoom" HorizontalAlignment="Right">
                 <StackPanel Height="18" Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="{Binding Value, ElementName=zoomSlider, StringFormat={}{0:0}}" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Value, ElementName=zoomSlider, StringFormat={}{0:0}}" Foreground="{DynamicResource BackstageFontBrush}"/>
                     <Slider x:Name="zoomSlider"
                             Margin="3,0,0,0"
                             IsDirectionReversed="False"
@@ -1136,38 +1134,45 @@
                                                  Background="Purple"
                                                  BorderBrush="Magenta"
                                                  Header="{StaticResource ctbLibrariesCP}"
-                                                 Visibility="Collapsed" />
+                                                 Visibility="Collapsed" 
+                                                 MinWidth="100"/>
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgDrive"
                                                  Background="LightBlue"
                                                  BorderBrush="Blue"
                                                  Header="{StaticResource ctbDriveToolsCP}"
-                                                 Visibility="Collapsed" />
+                                                 Visibility="Collapsed" 
+                                                 MinWidth="100"/>
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgExe"
                                                  Background="Red"
                                                  BorderBrush="DarkRed"
                                                  Header="{StaticResource ctbApplicationsCP}"
-                                                 Visibility="Collapsed" />
+                                                 Visibility="Collapsed" 
+                                                 MinWidth="100"/>
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgImage"
                                                  Background="Orange"
                                                  BorderBrush="DarkOrange"
                                                  Header="{StaticResource ctbImageToolsCP}"
-                                                 Visibility="Collapsed" />
+                                                 Visibility="Collapsed" 
+                                                 MinWidth="100"/>
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgArchive"
                                                  Background="SlateBlue"
                                                  BorderBrush="DarkSlateBlue"
                                                  Header="{StaticResource ctbArchiveToolsCP}"
-                                                 Visibility="Collapsed" />
+                                                 Visibility="Collapsed" 
+                                                 MinWidth="100"/>
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgFolderTools"
                                                  Background="Goldenrod"
                                                  BorderBrush="Peru"
                                                  Header="{StaticResource ctgFolderToolsCP}"
-                                                 Visibility="Collapsed" />
+                                                 Visibility="Collapsed"
+                                                 MinWidth="100"/>
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgSearch"
                                                  Background="Green"
                                                  BorderBrush="DarkGreen"
                                                  Header="Search Tools"
                                                  IsVisibleChanged="ctgSearch_IsVisibleChanged"
-                                                 Visibility="Collapsed" />
+                                                 Visibility="Collapsed" 
+                                                 MinWidth="100"/>
             </Ribbon:Ribbon.ContextualGroups>
 
             <Ribbon:RibbonTabItem Name="HomeTab"

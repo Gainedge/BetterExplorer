@@ -43,29 +43,29 @@
     <Grid x:Name="Base">
         <Border BorderBrush="#013C7FB1" BorderThickness="1" Name="PathBorder" Margin="0,0,14,0">
             <Grid>
-                <Grid Name="SelectionBackground" Visibility="Hidden">
-                    <Grid.Background>
+                <Grid Name="SelectionBackground" Visibility="Hidden" Background="{DynamicResource RibbonBackgoundBrush}">
+                    <!--<Grid.Background>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                             <GradientStop Color="#FFEAF6FD" Offset="0" />
                             <GradientStop Color="#FFA6D9F4" Offset="1" />
                         </LinearGradientBrush>
-                    </Grid.Background>
+                    </Grid.Background>-->
                 </Grid>
                 <Grid MouseUp="Grid_MouseUp" MouseDown="Grid_MouseDown" PreviewMouseDown="Grid_PreviewMouseDown">
-                    <Image Height="16" HorizontalAlignment="Left" Margin="2,0,0,0" Name="PathImage" Stretch="Fill" VerticalAlignment="Center" Width="16" />
+                    <Image Height="16" HorizontalAlignment="Left" Margin="2,0,0,0" Name="PathImage" Stretch="Fill" Width="16" />
                     <TextBlock HorizontalAlignment="Stretch" Margin="19,0,3,0" Name="pathName" Text="Your path here" VerticalAlignment="Center" />
                 </Grid>
             </Grid>
         </Border>
         <Border BorderThickness="1" BorderBrush="#013C7FB1" Name="MenuBorder" Width="15" HorizontalAlignment="Right">
             <Grid Name="grid1">
-                <Grid Name="MenuBackground" Visibility="Hidden">
-                    <Grid.Background>
+                <Grid Name="MenuBackground" Visibility="Hidden" Background="{DynamicResource RibbonBackgoundBrush}">
+                    <!--<Grid.Background>
                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                             <GradientStop Color="#FFEAF6FD" Offset="0" />
                             <GradientStop Color="#FFA6D9F4" Offset="1" />
                         </LinearGradientBrush>
-                    </Grid.Background>
+                    </Grid.Background>-->
                 </Grid>
                 <Button x:Name="btnDropDown" Click="Button_Click" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="0" MouseDown="btnDropDown_MouseDown" MouseUp="btnDropDown_MouseUp">
                     <Grid>

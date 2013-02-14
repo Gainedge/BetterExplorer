@@ -4,6 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" d:DesignWidth="250" xmlns:my="clr-namespace:Fluent;assembly=Fluent" Height="24" BorderBrush="Black" Background="White" BorderThickness="1" Focusable="True" LostFocus="UserControl_LostFocus">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <TextBox Name="SearchCriteriatext" BorderBrush="{x:Null}" BorderThickness="0" VerticalContentAlignment="Center" TextChanged="textBox1_TextChanged" LostFocus="textBox1_LostFocus" GotFocus="textBox1_GotFocus" LostKeyboardFocus="textBox1_LostKeyboardFocus" Margin="0,0,54,0" />
         <my:DropDownButton Name="SFilters" Header="Filters" Icon="Images\filter16.png" Size="Small" SizeDefinition="Small,Small,Small" Width="30" Height="22" CanAddToQuickAccessToolBar="False" ToolTip="Filters" DropDownOpened="SFilters_DropDownOpened" HorizontalAlignment="Right" Margin="0,0,24,0" />
