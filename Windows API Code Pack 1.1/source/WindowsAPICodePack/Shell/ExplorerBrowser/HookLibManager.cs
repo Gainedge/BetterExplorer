@@ -16,14 +16,20 @@
 //    along with QTTabBar.  If not, see <http://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
+using FileOperations;
+using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
+using Microsoft.WindowsAPICodePack.Shell;
 using WindowsHelper;
 
 namespace Microsoft.WindowsAPICodePack.Controls {
     static class HookLibManager {
+      public static bool IsCustomDialog = false;
         private static IntPtr hHookLib;
         private static int[] hookStatus = Enumerable.Repeat(-1, Enum.GetNames(typeof(Hooks)).Length).ToArray();
         
@@ -31,18 +37,35 @@ namespace Microsoft.WindowsAPICodePack.Controls {
         private delegate void HookLibCallback(int hookId, int retcode);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate bool NewWindowCallback(IntPtr pIDL);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        private delegate bool CopyItemCallback(IntPtr SourceItems, IntPtr DestinationFolder);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        private delegate bool MoveItemCallback(IntPtr SourceItems, IntPtr DestinationFolder);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        private delegate bool RenameItemCallback(IntPtr SourceItems, String DestinationName);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        private delegate bool DeleteItemCallback(IntPtr SourceItems);
 
         [StructLayout(LayoutKind.Sequential)]
         private struct CallbackStruct {
             public HookLibCallback cbHookResult;
             public NewWindowCallback cbNewWindow;
+            public CopyItemCallback cbCopyItem;
+            public CopyItemCallback cbMoveItem;
+            public RenameItemCallback cbRenameItem;
+            public DeleteItemCallback cbDeleteItem;
+            
             // TODO: NewTreeView should probably also go here.
             // Using PostThreadMessage has a small chance of causing a memory leak.
         }
 
         private static readonly CallbackStruct callbackStruct = new CallbackStruct() {
             cbHookResult = HookResult,
-           // cbNewWindow = NewWindow
+            cbCopyItem = CopyItem,
+            cbMoveItem = MoveItem,
+            cbRenameItem = RenameItem,
+            cbDeleteItem = DeleteItem,
+            
         };
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -72,6 +95,10 @@ namespace Microsoft.WindowsAPICodePack.Controls {
             SetNavigationState,             // Breadcrumb Bar Middle-click
             ShowWindow,                     // New Explorer window capturing
             UpdateWindowList,               // Compatibility with SHOpenFolderAndSelectItems
+            DeleteItem,
+            RenameItem,
+            MoveItem,
+            CopyItem,
         }
 
         public static void Initialize() {
@@ -109,67 +136,54 @@ namespace Microsoft.WindowsAPICodePack.Controls {
             }
         }
 
-        // We need to use a callback rather than a message for window capturing,
-        // since the main instance could be in another process.
-        //private static bool NewWindow(IntPtr pIDL) {
-        //    byte[] IDL;
-        //    using(IDLWrapper wrapper = new IDLWrapper(PInvoke.ILClone(pIDL))) {
-        //        if(!Config.Window.CaptureNewWindows
-        //                || InstanceManager.GetTotalInstanceCount() == 0
-        //                || QTUtility2.IsShellPathButNotFileSystem(wrapper.Path)
-        //                || wrapper.Path.PathEquals(QTUtility.PATH_SEARCHFOLDER)
-        //                || QTUtility.NoCapturePathsList.Any(path => wrapper.Path.PathEquals(path))
-        //                || (Control.ModifierKeys & Keys.Control) != Keys.None) {
-        //            return false;
-        //        }
-        //        IDL = wrapper.IDL;
-        //    }
-        //    InstanceManager.BeginInvokeMain(tabbar => {
-        //        using(IDLWrapper wrapper = new IDLWrapper(IDL)) {
-        //            tabbar.OpenNewTabOrWindow(wrapper, true);
-        //        }
-        //    });
-        //    return true;
-        //}
+      private static bool CopyItem(IntPtr SourceItems,IntPtr DestinationFolder) {
+        object destinationObject = Marshal.GetObjectForIUnknown(DestinationFolder);
+        object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
 
-        //public static void InitShellBrowserHook(IShellBrowser shellBrowser) {
-        //    lock(typeof(HookLibManager)) {
-        //        if(fShellBrowserIsHooked || hHookLib == IntPtr.Zero) return;
-        //        IntPtr pFunc = PInvoke.GetProcAddress(hHookLib, "InitShellBrowserHook");
-        //        if(pFunc == IntPtr.Zero) return;
-        //        InitShellBrowserHookDelegate initShellBrowserHook = (InitShellBrowserHookDelegate)
-        //                Marshal.GetDelegateForFunctionPointer(pFunc, typeof(InitShellBrowserHookDelegate));
-        //        IntPtr pShellBrowser = Marshal.GetComInterfaceForObject(shellBrowser, typeof(IShellBrowser));
-        //        if(pShellBrowser == IntPtr.Zero) return;
-        //        int retcode = -1;
-        //        try {
-        //            retcode = initShellBrowserHook(pShellBrowser);
-        //        }
-        //        catch(Exception e) {
-        //            QTUtility2.MakeErrorLog(e, "");
-        //        }
-        //        finally {
-        //            Marshal.Release(pShellBrowser);
-        //        }
-        //        if(retcode != 0) {
-        //            QTUtility2.MakeErrorLog(null, "InitShellBrowserHook failed: " + retcode);
+        //IntPtr z = IntPtr.Zero;
+        //Guid j = new Guid("0000010E-0000-0000-C000-000000000046");
+        //Marshal.QueryInterface(item,ref j,out z);
 
-        //            MessageForm.Show(IntPtr.Zero,
-        //                String.Format(
-        //                    "{0}: {1} {2}",
-        //                    QTUtility.TextResourcesDic["ErrorDialogs"][4],
-        //                    QTUtility.TextResourcesDic["ErrorDialogs"][6],
-        //                    QTUtility.TextResourcesDic["ErrorDialogs"][7]
-        //                ),
-        //                QTUtility.TextResourcesDic["ErrorDialogs"][1],
-        //                MessageBoxIcon.Hand, 30000, false, true
-        //            );
-        //        }
-        //        else {
-        //            fShellBrowserIsHooked = true;
-        //        }
-        //    }
-        //}
+        var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
+        var DestinationLocation = ShellObjectFactory.Create((IShellItem)destinationObject);
+        return IsCustomDialog;
+      }
+
+      private static bool MoveItem(IntPtr SourceItems, IntPtr DestinationFolder) {
+        object destinationObject = Marshal.GetObjectForIUnknown(DestinationFolder);
+        object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
+
+        //IntPtr z = IntPtr.Zero;
+        //Guid j = new Guid("0000010E-0000-0000-C000-000000000046");
+        //Marshal.QueryInterface(item,ref j,out z);
+
+        var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
+        var DestinationLocation = ShellObjectFactory.Create((IShellItem)destinationObject);
+        return IsCustomDialog;
+      }
+
+      private static bool RenameItem(IntPtr SourceItems, String DestinationName) {
+        object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
+
+        //IntPtr z = IntPtr.Zero;
+        //Guid j = new Guid("0000010E-0000-0000-C000-000000000046");
+        //Marshal.QueryInterface(item,ref j,out z);
+
+        var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
+        return IsCustomDialog;
+      }
+
+      private static bool DeleteItem(IntPtr SourceItems) {
+        object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
+
+        //IntPtr z = IntPtr.Zero;
+        //Guid j = new Guid("0000010E-0000-0000-C000-000000000046");
+        //Marshal.QueryInterface(item,ref j,out z);
+
+        var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
+        return IsCustomDialog;
+      }
+        
 
         public static void CheckHooks() {
             //TODO:

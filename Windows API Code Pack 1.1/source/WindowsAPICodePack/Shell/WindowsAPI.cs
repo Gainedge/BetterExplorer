@@ -14,6 +14,7 @@ using Microsoft.Win32;
 using System.Security;
 using System.Diagnostics;
 using Microsoft.WindowsAPICodePack.Controls;
+using System.Collections.Generic;
 
 namespace WindowsHelper
 {
@@ -552,6 +553,98 @@ namespace WindowsHelper
             public const int NOSCROLLTIPS = 0x20;
         }
         #endregion
+
+        /// <summary>
+        /// Returns the IShellFolder interface from IShellItem
+        /// </summary>
+        /// <param name="sitem">The IShellItem represented like ShellObject</param>
+        /// <returns></returns>
+        public static IShellFolder GetIShellFolder(ShellObject sitem) {
+          IShellFolder result;
+          ((IShellItem2)sitem.nativeShellItem).BindToHandler(IntPtr.Zero,
+              BHID.SFObject, typeof(IShellFolder).GUID, out result);
+          return result;
+        }
+
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
+        public static extern IShellItem SHCreateItemWithParent(
+            [In] IntPtr pidlParent,
+            [In] IShellFolder psfParent,
+            [In] IntPtr pidl,
+            [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+        /// <summary>
+        /// Returns IShellItem from parent item and pidl
+        /// </summary>
+        /// <param name="parent">The parent folder</param>
+        /// <param name="pidl">the PIDL of the item</param>
+        /// <returns></returns>
+        public static IShellItem CreateItemWithParent(IShellFolder parent, IntPtr pidl) {
+
+          return SHCreateItemWithParent(IntPtr.Zero,
+                                        parent, pidl, typeof(IShellItem).GUID);
+        }
+
+
+        public static ShellObject[] ParseShellIDListArray(System.Runtime.InteropServices.ComTypes.IDataObject pDataObj) {
+          List<ShellObject> result = new List<ShellObject>();
+          FORMATETC format = new FORMATETC();
+          STGMEDIUM medium = new STGMEDIUM();
+
+          format.cfFormat = (short)RegisterClipboardFormat("Shell IDList Array");
+          format.dwAspect = DVASPECT.DVASPECT_CONTENT;
+          format.lindex = 0;
+          format.ptd = IntPtr.Zero;
+          format.tymed = TYMED.TYMED_HGLOBAL;
+
+          pDataObj.GetData(ref format, out medium);
+          GlobalLock(medium.unionmember);
+          ShellObject parentFolder = null;
+          try {
+
+            int count = Marshal.ReadInt32(medium.unionmember);
+            int offset = 4;
+
+            for (int n = 0; n <= count; ++n) {
+              int pidlOffset = Marshal.ReadInt32(medium.unionmember, offset);
+              int pidlAddress = (int)medium.unionmember + pidlOffset;
+
+              if (n == 0) {
+                parentFolder = ShellObjectFactory.Create(new IntPtr(pidlAddress));
+              } else {
+                result.Add(ShellObjectFactory.Create(WindowsAPI.CreateItemWithParent(WindowsAPI.GetIShellFolder(parentFolder.NativeShellItem), new IntPtr(pidlAddress))));
+              }
+
+              offset += 4;
+            }
+          } finally {
+            Marshal.FreeHGlobal(medium.unionmember);
+          }
+
+          return result.ToArray();
+        }
+        /// <summary>
+        /// Returns the IShellFolder interface from IShellItem
+        /// </summary>
+        /// <param name="sitem">The IShellItem</param>
+        /// <returns></returns>
+        public static IShellFolder GetIShellFolder(IShellItem sitem) {
+          IShellFolder result;
+          ((IShellItem2)sitem).BindToHandler(IntPtr.Zero,
+              BHID.SFObject, typeof(IShellFolder).GUID, out result);
+          return result;
+        }
+
+        [DllImport("user32.dll")]
+        public static extern uint RegisterClipboardFormat(string lpszFormat);
+        [DllImport("kernel32.dll")]
+        public static extern IntPtr GlobalLock(IntPtr hMem);
+
+        [DllImport("shell32.dll", PreserveSig = false)]
+        public static extern void SHCreateItemFromIDList(
+            [In] IntPtr pidl,
+            [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
+            [Out, MarshalAs(UnmanagedType.Interface, IidParameterIndex = 2)] out IShellItem ppv);
 
         [DllImport("shell32.dll")]
         public static extern int SHGetIDListFromObject([MarshalAs(UnmanagedType.IUnknown)] object punk, out IntPtr ppidl);

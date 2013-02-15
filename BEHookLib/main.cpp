@@ -69,7 +69,7 @@ public:
 };
 
 // Hooks
-DECLARE_HOOK( 0, HRESULT, CoCreateInstance, (REFCLSID rclsid, LPUNKNOWN pUnkOuter, DWORD dwClsContext, REFIID riid, LPVOID FAR* ppv))
+DECLARE_HOOK( 0, HRESULT, CoCreateInstance, (REFCLSID rclsid, LPUNKNOWN pUnkOuter, DWORD dwClsContext, REFIID riid, LPVOID *ppv))
 DECLARE_HOOK( 1, HRESULT, RegisterDragDrop, (HWND hwnd, LPDROPTARGET pDropTarget))
 DECLARE_HOOK( 2, HRESULT, SHCreateShellFolderView, (const SFV_CREATE* pcsfv, IShellView** ppsv))
 DECLARE_HOOK( 3, HRESULT, BrowseObject, (IShellBrowser* _this, PCUIDLIST_RELATIVE pidl, UINT wFlags))
@@ -83,6 +83,10 @@ DECLARE_HOOK(10, HRESULT, SetNavigationState, (IShellNavigationBand* _this, unsi
 DECLARE_HOOK(11, HRESULT, ShowWindow_Vista, (IExplorerFactory* _this, PCIDLIST_ABSOLUTE pidl, DWORD flags, DWORD mystery1, DWORD mystery2, POINT pt))
 DECLARE_HOOK(11, HRESULT, ShowWindow_7, (ICommonExplorerHost* _this, PCIDLIST_ABSOLUTE pidl, DWORD flags, POINT pt, DWORD mystery))
 DECLARE_HOOK(12, HRESULT, UpdateWindowList, (/*IShellBrowserService*/ IUnknown* _this))
+DECLARE_HOOK(13, HRESULT, DeleteItem, (IFileOperation *pThis, IShellItem *psiItem))
+DECLARE_HOOK(14, HRESULT, RenameItem, (IFileOperation *pThis, IShellItem *psiItem, LPCWSTR pszNewName))
+DECLARE_HOOK(15, HRESULT, MoveItem, (IFileOperation *pThis, IShellItem *psiItem, IShellItem *psiDestinationFolder))
+DECLARE_HOOK(16, HRESULT, CopyItem, (IFileOperation *pThis, IShellItem *psiItem, IShellItem *psiDestinationFolder))
 
 // Messages
 unsigned int WM_REGISTERDRAGDROP;
@@ -94,11 +98,16 @@ unsigned int WM_ISITEMSVIEW;
 unsigned int WM_ACTIVATESEL;
 unsigned int WM_BREADCRUMBDPA;
 unsigned int WM_CHECKPULSE;
+unsigned int WM_FILEOPERATION;
 
 // Callback struct
 struct CallbackStruct {
     void (*fpHookResult)(int hookId, int retcode);
     bool (*fpNewWindow)(LPCITEMIDLIST pIDL);
+	bool (*fpCopyItem)(IShellItem* ifrom, IShellItem* ito);
+	bool (*fpMoveItem)(IShellItem* ifrom, IShellItem* ito);
+	bool (*fpRenameItem)(IShellItem* ifrom, LPCWSTR pszNewName);
+	bool (*fpDeleteItem)(IShellItem* ifrom);
 };
 CallbackStruct callbacks;
 
@@ -150,11 +159,13 @@ int Initialize(CallbackStruct* cb) {
     WM_ACTIVATESEL      = RegisterWindowMessageA("BE_ActivateSelection");
     WM_BREADCRUMBDPA    = RegisterWindowMessageA("BE_BreadcrumbDPA");
     WM_CHECKPULSE       = RegisterWindowMessageA("BE_CheckPulse");
+	WM_FILEOPERATION	= RegisterWindowMessageA("BE_FileOperation");
 
     // Create and enable the CoCreateInstance, RegisterDragDrop, and SHCreateShellFolderView hooks.
     CREATE_HOOK(&CoCreateInstance, CoCreateInstance);
     CREATE_HOOK(&RegisterDragDrop, RegisterDragDrop);
     CREATE_HOOK(&SHCreateShellFolderView, SHCreateShellFolderView);
+	//CREATE_HOOK(&Copyf, SHCreateShellFolderView);
 
     // Create and enable the UiaReturnRawElementProvider hook (maybe)
     hModAutomation = LoadLibraryA("UIAutomationCore.dll");
@@ -235,6 +246,15 @@ int Dispose() {
     return S_OK;
 }
 
+PVOID GetInterfaceMethod(PVOID intf, DWORD methodIndex)
+{
+	#if defined(_WIN64)
+		return *(PVOID*)(*(DWORD_PTR*)intf + methodIndex*8);
+	#elif defined(_WIN32)
+		return *(PVOID*)(*(DWORD_PTR*)intf + methodIndex*4);
+	#endif
+}
+
 //////////////////////////////
 // Detour Functions
 //////////////////////////////
@@ -242,10 +262,19 @@ int Dispose() {
 // The purpose of this hook is to intercept the creation of the NameSpaceTreeControl object, and 
 // send a reference to the control to QTTabBar.  We can use this reference to hit test the
 // control, which is how opening new tabs from middle-click works.
-HRESULT WINAPI DetourCoCreateInstance(REFCLSID rclsid, LPUNKNOWN pUnkOuter, DWORD dwClsContext, REFIID riid, LPVOID FAR* ppv) {
+HRESULT WINAPI DetourCoCreateInstance(REFCLSID rclsid, LPUNKNOWN pUnkOuter, DWORD dwClsContext, REFIID riid, LPVOID *ppv) {
     HRESULT ret = fpCoCreateInstance(rclsid, pUnkOuter, dwClsContext, riid, ppv);
-    if(SUCCEEDED(ret) && IsEqualIID(rclsid, CLSID_NamespaceTreeControl)) {
-        PostThreadMessage(GetCurrentThreadId(), WM_NEWTREECONTROL, (WPARAM)(*ppv), NULL);
+    if(SUCCEEDED(ret)) {
+		if (IsEqualIID(rclsid, CLSID_NamespaceTreeControl)){
+			PostThreadMessage(GetCurrentThreadId(), WM_NEWTREECONTROL, (WPARAM)(*ppv), NULL);
+		}
+		if (IsEqualIID(rclsid, CLSID_FileOperation)){
+			//CREATE_COM_HOOK(GetInterfaceMethod(*ppv, 12),13,CopyItem);
+			CREATE_HOOK(GetInterfaceMethod(*ppv, 17),CopyItem);
+			CREATE_HOOK(GetInterfaceMethod(*ppv, 15),MoveItem);
+			CREATE_HOOK(GetInterfaceMethod(*ppv, 12),RenameItem);
+			CREATE_HOOK(GetInterfaceMethod(*ppv, 19),DeleteItem);
+		}
     }  
     return ret;
 }
@@ -256,6 +285,21 @@ HRESULT WINAPI DetourRegisterDragDrop(IN HWND hwnd, IN LPDROPTARGET pDropTarget)
     LPDROPTARGET* ppDropTarget = &pDropTarget;
     SendMessage(hwnd, WM_REGISTERDRAGDROP, (WPARAM)ppDropTarget, NULL);
     return fpRegisterDragDrop(hwnd, *ppDropTarget);
+}
+
+HRESULT STDMETHODCALLTYPE DetourRenameItem(IFileOperation *pThis, IShellItem *psiItem, LPCWSTR pszNewName){
+	return callbacks.fpRenameItem(psiItem, pszNewName)? S_FALSE : fpRenameItem(pThis,psiItem,pszNewName);
+}
+
+HRESULT STDMETHODCALLTYPE DetourDeleteItem(IFileOperation *pThis, IShellItem *psiItem){
+	return callbacks.fpDeleteItem(psiItem) ? S_FALSE : fpDeleteItem(pThis,psiItem);
+}
+
+HRESULT STDMETHODCALLTYPE DetourCopyItem(IFileOperation *pThis, IShellItem *psiItem, IShellItem *psiDestinationFolder){
+	return callbacks.fpCopyItem(psiItem, psiDestinationFolder)? S_FALSE : fpCopyItem(pThis,psiItem,psiDestinationFolder);
+}
+HRESULT STDMETHODCALLTYPE DetourMoveItem(IFileOperation *pThis, IShellItem *psiItem, IShellItem *psiDestinationFolder){
+	return callbacks.fpMoveItem(psiItem, psiDestinationFolder) ? S_FALSE : fpMoveItem(pThis,psiItem,psiDestinationFolder);
 }
 
 // The purpose of this hook is just to set other hooks.  It is disabled once the other hooks are set.

@@ -54,6 +54,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       private ShellObjectCollection itemsCollection;
       public TreeViewWrapper SysTreeView { get; set; }
       private readonly uint WM_NEWTREECONTROL = WindowsAPI.RegisterWindowMessage("BE_NewTreeControl");
+      private readonly uint WM_FILEOPERATION = WindowsAPI.RegisterWindowMessage("BE_FileOperation");
       bool Ctrl = false;
       bool IsPressedLKButton = false;
       bool IsMouseClickOnHeader = false;
@@ -68,6 +69,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       private IShellItemArray selectedShellItemsArray;
       Collumns[] _Collumns = new Collumns[0];
       short mHotKeyId = 0;  
+      public static bool IsCustomDialogs = false;
       #endregion
 
 			#region Imports
@@ -299,98 +301,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					fv2.GetSelectedItem(0, out iIndex);
 					return IsItemFolder(ifv2, iIndex);
 			}
-
-			/// <summary>
-			/// Return the Shellobject collection from IDataObject interface
-			/// </summary>
-			/// <param name="pDataObj">IDataObject interface of data</param>
-			/// <returns></returns>
-			ShellObject[] ParseShellIDListArray(System.Runtime.InteropServices.ComTypes.IDataObject pDataObj)
-			{
-					List<ShellObject> result = new List<ShellObject>();
-					FORMATETC format = new FORMATETC();
-					STGMEDIUM medium = new STGMEDIUM();
-
-					format.cfFormat = (short)RegisterClipboardFormat("Shell IDList Array");
-					format.dwAspect = DVASPECT.DVASPECT_CONTENT;
-					format.lindex = 0;
-					format.ptd = IntPtr.Zero;
-					format.tymed = TYMED.TYMED_HGLOBAL;
-
-					pDataObj.GetData(ref format, out medium);
-					GlobalLock(medium.unionmember);
-					ShellObject parentFolder = null;
-					try
-					{
-								
-							int count = Marshal.ReadInt32(medium.unionmember);
-							int offset = 4;
-
-							for (int n = 0; n <= count; ++n)
-							{
-									int pidlOffset = Marshal.ReadInt32(medium.unionmember, offset);
-									int pidlAddress = (int)medium.unionmember + pidlOffset;
-
-									if (n == 0)
-									{
-											parentFolder = ShellObjectFactory.Create(new IntPtr(pidlAddress));
-									}
-									else
-									{
-											result.Add(ShellObjectFactory.Create(CreateItemWithParent(GetIShellFolder(parentFolder.NativeShellItem), new IntPtr(pidlAddress))));
-									}
-
-									offset += 4;
-							}
-					}
-					finally
-					{
-							Marshal.FreeHGlobal(medium.unionmember);
-					}
-
-					return result.ToArray();
-			}
-
-			/// <summary>
-			/// Returns the IShellFolder interface from IShellItem
-			/// </summary>
-			/// <param name="sitem">The IShellItem represented like ShellObject</param>
-			/// <returns></returns>
-			public IShellFolder GetIShellFolder(ShellObject sitem)
-			{
-					IShellFolder result;
-					((IShellItem2)sitem.nativeShellItem).BindToHandler(IntPtr.Zero,
-							BHID.SFObject, typeof(IShellFolder).GUID, out result);
-					return result;
-			}
-
-			/// <summary>
-			/// Returns the IShellFolder interface from IShellItem
-			/// </summary>
-			/// <param name="sitem">The IShellItem</param>
-			/// <returns></returns>
-			public IShellFolder GetIShellFolder(IShellItem sitem)
-			{
-					IShellFolder result;
-					((IShellItem2)sitem).BindToHandler(IntPtr.Zero,
-							BHID.SFObject, typeof(IShellFolder).GUID, out result);
-					return result;
-			}
-
-			/// <summary>
-			/// Returns IShellItem from parent item and pidl
-			/// </summary>
-			/// <param name="parent">The parent folder</param>
-			/// <param name="pidl">the PIDL of the item</param>
-			/// <returns></returns>
-			public static IShellItem CreateItemWithParent(IShellFolder parent, IntPtr pidl)
-			{
-
-					return SHCreateItemWithParent(IntPtr.Zero,
-																				parent, pidl, typeof(IShellItem).GUID);
-			}
-
-			/// <summary>
+      		/// <summary>
 			/// Gets the items in the ExplorerBrowser as an IShellItemArray
 			/// </summary>
 			/// <returns></returns>
@@ -2031,6 +1942,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				}
 
         //Initialize the hooks needed by ExplorerBrowser
+        HookLibManager.IsCustomDialog = IsCustomDialogs;
         HookLibManager.Initialize();
         hookProc_GetMsg = new WindowsHelper.WindowsAPI.HookProc(CallbackGetMsgProc);
         int currentThreadId = WindowsAPI.GetCurrentThreadId();
@@ -2045,7 +1957,13 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         if (nCode >= 0) {
           WindowsAPI.Message msg = (WindowsAPI.Message)Marshal.PtrToStructure(lParam, typeof(WindowsAPI.Message));
           try {
-              
+
+            if (msg.message == WM_FILEOPERATION) {
+              object obj = Marshal.GetObjectForIUnknown(msg.lParam);
+              IShellItem item = (IShellItem)obj;
+              ShellObject o = ShellObjectFactory.Create(msg.lParam);
+              MessageBox.Show(o.ParsingName);
+            }
             if (msg.message == WM_NEWTREECONTROL) {
               object obj = Marshal.GetObjectForIUnknown(msg.wParam);
               try {
@@ -2642,7 +2560,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 									{
 											Ctrl = true;
 									}
-									if (!IsExFileOpEnabled)
+									if (!IsExFileOpEnabled && !IsCustomDialogs)
 									{
 											if ((int)m.WParam == (int)Keys.X && Ctrl)
 											{
@@ -2719,7 +2637,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 									{
 											Ctrl = false;
 									}
-									if (!IsExFileOpEnabled)
+									if (!IsExFileOpEnabled && !IsCustomDialogs)
 									{
 											if ((int)m.WParam == (int)Keys.V && Ctrl)
 											{
@@ -3015,9 +2933,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					SysListviewDT = (WindowsAPI.IDropTarget)isv;
 
 					Marshal.ReleaseComObject(isv);
-					WindowsAPI.RevokeDragDrop(SysListViewHandle);
-          ShellViewDragDrop DropTarget = new ShellViewDragDrop(SysListviewDT);
-					WindowsAPI.RegisterDragDrop(SysListViewHandle, DropTarget);
+          if (!IsCustomDialogs) {
+            WindowsAPI.RevokeDragDrop(SysListViewHandle);
+            ShellViewDragDrop DropTarget = new ShellViewDragDrop(SysListviewDT);
+            WindowsAPI.RegisterDragDrop(SysListViewHandle, DropTarget);
+          }
 												
 					GC.WaitForPendingFinalizers();
 					GC.Collect();
