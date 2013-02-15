@@ -3802,7 +3802,7 @@ namespace BetterExplorer
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("An error occurred while trying to load the locale data from the Registry. \n\r \n\r" + ex.Message + "\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", "RibbonTheme Error - " + ex);
+				MessageBox.Show("An error occurred while trying to load the locale data from the Registry. \n\r \n\r" + ex.Message + "\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", "Locale Load Error - " + ex);
 			}
 
 			// gets values from registry to be applied after initialization
@@ -3810,6 +3810,7 @@ namespace BetterExplorer
 			double sbw = Convert.ToDouble(rks.GetValue(@"SearchBarWidth", "220"));
 
 			string rtlused = Convert.ToString(rks.GetValue(@"RTLMode", "false"));
+            string ovrtl = Convert.ToString(rks.GetValue(@"OverrideRTLDefault", "false"));
 
 			string tabba = Convert.ToString(rks.GetValue(@"TabBarAlignment", "top"));
 
@@ -3827,6 +3828,21 @@ namespace BetterExplorer
 					this.TranslationComboBox.SelectedItem = item;
 				}
 			}
+
+            if ((this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL == true)
+            {
+                if (ovrtl != "true")
+                {
+                    rtlused = "true";
+                }
+            }
+            else
+            {
+                if (ovrtl != "true")
+                {
+                    rtlused = "false";
+                }
+            }
 
 			// sets size of search bar
 			this.SearchBarColumn.Width = new GridLength(sbw);
