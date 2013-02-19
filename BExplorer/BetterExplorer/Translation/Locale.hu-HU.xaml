@@ -169,7 +169,7 @@
     <system:String x:Key="btnSortByCP">Rendezés</system:String>
     <system:String x:Key="btnSortICP">A mappa tartalmának kategória szerinti rendezésének beállítása</system:String>
     <system:String x:Key="miDescending">Csökkenő</system:String>
-    <system:String x:Key="miAscending"Növekvő</system:String>
+    <system:String x:Key="miAscending">Növekvő</system:String>
     <system:String x:Key="btnGroupByCP">Csoportosítás</system:String>
     <system:String x:Key="btnAutoSizeColCP">Oszlopok automata méretezése</system:String>
     <system:String x:Key="btnAutoSizeColICP">Az oszlopok szélességének megadása a tartalmuk szerint</system:String>

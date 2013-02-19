@@ -333,7 +333,7 @@
     <system:String x:Key="txtIsAfter">sau</system:String>
     <system:String x:Key="txtDateIs">cũng giống như</system:String>
     <system:String x:Key="txtRemoveFilter">Để loại bỏ bộ lọc, để trống tất cả các giá trị</system:String>
-    <system:String x:Key="txtSetFilter">Thiết lập <giá trị> bộ lọc:</system:String>
+    <system:String x:Key="txtSetFilter">Thiết lập (giá trị) bộ lọc:</system:String>
     <system:String x:Key="txtCurrentValue">Giá trị Hiện tại:</system:String>
     <system:String x:Key="txtSelect">Chọn</system:String>
     <system:String x:Key="txtCancel">Hủy</system:String>
