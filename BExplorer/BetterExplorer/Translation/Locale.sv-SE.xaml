@@ -291,10 +291,10 @@
     <system:String x:Key="txtTabManager">Flikhanterare</system:String>
     <system:String x:Key="btnClose">Stäng</system:String>
     <system:String x:Key="btnOpenFolder">Öppna Mapp</system:String>
-    <system:String x:Key="txtName">Namn˂/system:String>
+    <system:String x:Key="txtName">Namn</system:String>
     <system:String x:Key="txtPath">Sökväg</system:String>
     <system:String x:Key="txtChooseName">Välj Fliksamlingens Namn</system:String>
-    <system:String x:Key="txtOverwriteSavedTabs">Om en Flik har samma namn, blir den äldre överskriven˂/system:String>
+    <system:String x:Key="txtOverwriteSavedTabs">Om en Flik har samma namn, blir den äldre överskriven</system:String>
     <system:String x:Key="txtIllegalCharacters">Namn kan inte innehålla följande tecken: \ / : * ? &lt; &gt; |</system:String>
     <system:String x:Key="txtConfirmDelete">Vill verkligen du RADERA denna Fliksamling</system:String>
     <system:String x:Key="txtSizeChart">Folder/Drive Size Chart</system:String>
