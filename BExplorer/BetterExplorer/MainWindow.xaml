@@ -778,6 +778,14 @@
                                                                               LanguageText="Turkish"
                                                                               LocaleCode="tr-TR"
                                                                               UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem x:Name="ukUALang"
+                                                                              LanguageText="Ukrainian"
+                                                                              LocaleCode="uk-UA"
+                                                                              UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem x:Name="viVILang"
+                                                                              LanguageText="Vietnamese"
+                                                                              LocaleCode="vi-VI"
+                                                                              UsesRTL="False" />
                                         </ComboBox>
                                         <Label Name="lblLocale"
                                                Margin="0,5,0,0"
