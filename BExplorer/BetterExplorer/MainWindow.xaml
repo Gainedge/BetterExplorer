@@ -782,10 +782,10 @@
                                                                               LanguageText="Ukrainian"
                                                                               LocaleCode="uk-UA"
                                                                               UsesRTL="False" />
-                                            <!--<controls:TranslationComboBoxItem x:Name="viVILang"
+                                            <controls:TranslationComboBoxItem x:Name="viVNLang"
                                                                               LanguageText="Vietnamese"
-                                                                              LocaleCode="vi-VI"
-                                                                              UsesRTL="False" />-->
+                                                                              LocaleCode="vi-VN"
+                                                                              UsesRTL="False" />
                                         </ComboBox>
                                         <Label Name="lblLocale"
                                                Margin="0,5,0,0"
