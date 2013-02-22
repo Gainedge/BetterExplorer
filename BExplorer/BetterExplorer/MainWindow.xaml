@@ -672,20 +672,6 @@
                                                            Icon="Images\open16.png"
                                                            Ribbon:KeyTip.Keys="H" />
                                         </Border>
-                                        <Label Name="paddinglbl9" Content="         " />
-                                        <Ribbon:SeparatorTabItem Margin="0,0,0,15" Header="{StaticResource txtImageEditing}" />
-                                        <Ribbon:CheckBox Name="chkOverwriteImages"
-                                                         Checked="chkOverwriteImages_Checked"
-                                                         Header="{StaticResource chkEditOverwrite}"
-                                                         Ribbon:KeyTip.Keys="V"
-                                                         Unchecked="chkOverwriteImages_Unchecked">
-                                            <Ribbon:CheckBox.ToolTip>
-                                                <Ribbon:ScreenTip Title="{StaticResource chkEditOverwrite}"
-                                                                  Width="250"
-                                                                  IsRibbonAligned="false"
-                                                                  Text="When you rotate or flip an image, BetterExplorer saves the rotated or flipped image as a new file by default. If this is checked, BetterExplorer will instead overwrite this file, causing you to lose all previous data associated with it." />
-                                            </Ribbon:CheckBox.ToolTip>
-                                        </Ribbon:CheckBox>
                                     </StackPanel>
                                 </TabItem>
                                 <TabItem Header="{StaticResource tabLanguageCP}"
@@ -1043,7 +1029,7 @@
                                                 </Ribbon:CheckBox>
                                                 <Image Source="Images\uac16.png" />
                                             </StackPanel>
-                                            <Ribbon:SeparatorTabItem Margin="0,0,0,5" Header="{StaticResource sepOptionalCP}" />
+                                            <Ribbon:SeparatorTabItem Margin="0,0,0,5" Header="{StaticResource sepOptionalCP}" Visibility="Collapsed" />
                                             <Ribbon:CheckBox Name="chkIsFlyout"
                                                              Margin="0,0,0,10"
                                                              Checked="chkIsFlyout_Checked"
@@ -1058,7 +1044,20 @@
                                                                       Text="Display a small box as you move your mouse above files (this is part of a feature that has not been completed yet)" />
                                                 </Ribbon:CheckBox.ToolTip>
                                             </Ribbon:CheckBox>
-                                            
+                                            <Ribbon:SeparatorTabItem Margin="0,0,0,5" Header="{StaticResource txtImageEditing}" />
+                                            <Ribbon:CheckBox Name="chkOverwriteImages"
+                                                         Checked="chkOverwriteImages_Checked"
+                                                         Header="{StaticResource chkEditOverwrite}"
+                                                         Ribbon:KeyTip.Keys="V"
+                                                         Margin="0,0,0,10"
+                                                         Unchecked="chkOverwriteImages_Unchecked">
+                                                <Ribbon:CheckBox.ToolTip>
+                                                    <Ribbon:ScreenTip Title="{StaticResource chkEditOverwrite}"
+                                                                  Width="250"
+                                                                  IsRibbonAligned="false"
+                                                                  Text="When you rotate or flip an image, BetterExplorer saves the rotated or flipped image as a new file by default. If this is checked, BetterExplorer will instead overwrite this file, causing you to lose all previous data associated with it." />
+                                                </Ribbon:CheckBox.ToolTip>
+                                            </Ribbon:CheckBox>
                                         </StackPanel>
                                     </Grid>
                                 </TabItem>

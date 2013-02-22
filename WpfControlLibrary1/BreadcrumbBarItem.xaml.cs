@@ -146,6 +146,30 @@ namespace BetterExplorerControls
 
         // An event that clients can use to be notified whenever the
         // elements of the list change:
+        public event PathEventHandler ContextMenuRequested;
+        //public event EventHandler MouseDoubleClick;
+
+        // Invoke the Changed event; called whenever list changes:
+        protected virtual void OnContextMenuRequested(PathEventArgs e)
+        {
+            if (ContextMenuRequested != null)
+                ContextMenuRequested(this, e);
+        }
+
+        // An event that clients can use to be notified whenever the
+        // elements of the list change:
+        public event MouseButtonEventHandler ButtonClick;
+        //public event EventHandler MouseDoubleClick;
+
+        // Invoke the Changed event; called whenever list changes:
+        protected virtual void OnButtonClick(MouseButtonEventArgs e)
+        {
+            if (ButtonClick != null)
+                ButtonClick(this, e);
+        }
+
+        // An event that clients can use to be notified whenever the
+        // elements of the list change:
         public event EventHandler MenuOpened;
 
         // Invoke the Changed event; called whenever list changes:
@@ -257,13 +281,21 @@ namespace BetterExplorerControls
 
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = true;
-            OnNavigateRequested(new PathEventArgs(this.ShellObject));
+            //e.Handled = true;
+            OnButtonClick(e);
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                OnNavigateRequested(new PathEventArgs(this.ShellObject));
+            }
+            else if (e.ChangedButton == MouseButton.Right)
+            {
+                OnContextMenuRequested(new PathEventArgs(this.ShellObject));
+            }
         }
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            e.Handled = true;
+            //e.Handled = true;
         }
 
 
