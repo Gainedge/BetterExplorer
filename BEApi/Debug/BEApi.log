@@ -1,4 +1,4 @@
-﻿Build started 2/14/2013 2:14:26 AM.
+﻿Build started 2/25/2013 2:53:16 AM.
      1>Project "C:\Users\Jayke\Documents\GitHub\BetterExplorer\BEApi\BEApi.vcxproj" on node 4 (Build target(s)).
      1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V110\Microsoft.CppBuild.targets(346,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
      1>ClCompile:
@@ -12,4 +12,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:07.79
+Time Elapsed 00:00:30.06

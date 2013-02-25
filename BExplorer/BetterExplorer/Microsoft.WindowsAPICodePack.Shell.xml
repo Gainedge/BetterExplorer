@@ -2192,35 +2192,6 @@
             This class is a wrapper around the Windows Explorer Browser control.
             </summary>
         </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.ParseShellIDListArray(System.Runtime.InteropServices.ComTypes.IDataObject)">
-            <summary>
-            Return the Shellobject collection from IDataObject interface
-            </summary>
-            <param name="pDataObj">IDataObject interface of data</param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetIShellFolder(Microsoft.WindowsAPICodePack.Shell.ShellObject)">
-            <summary>
-            Returns the IShellFolder interface from IShellItem
-            </summary>
-            <param name="sitem">The IShellItem represented like ShellObject</param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetIShellFolder(Microsoft.WindowsAPICodePack.Shell.IShellItem)">
-            <summary>
-            Returns the IShellFolder interface from IShellItem
-            </summary>
-            <param name="sitem">The IShellItem</param>
-            <returns></returns>
-        </member>
-        <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.CreateItemWithParent(Microsoft.WindowsAPICodePack.Shell.IShellFolder,System.IntPtr)">
-            <summary>
-            Returns IShellItem from parent item and pidl
-            </summary>
-            <param name="parent">The parent folder</param>
-            <param name="pidl">the PIDL of the item</param>
-            <returns></returns>
-        </member>
         <member name="M:Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser.GetItemsArray">
             <summary>
             Gets the items in the ExplorerBrowser as an IShellItemArray
@@ -3166,6 +3137,28 @@
         </member>
         <member name="F:WindowsHelper.WindowsAPI.MAX_TYPE">
             <summary>Maximal Length of unmanaged Typename</summary>
+        </member>
+        <member name="M:WindowsHelper.WindowsAPI.GetIShellFolder(Microsoft.WindowsAPICodePack.Shell.ShellObject)">
+            <summary>
+            Returns the IShellFolder interface from IShellItem
+            </summary>
+            <param name="sitem">The IShellItem represented like ShellObject</param>
+            <returns></returns>
+        </member>
+        <member name="M:WindowsHelper.WindowsAPI.CreateItemWithParent(Microsoft.WindowsAPICodePack.Shell.IShellFolder,System.IntPtr)">
+            <summary>
+            Returns IShellItem from parent item and pidl
+            </summary>
+            <param name="parent">The parent folder</param>
+            <param name="pidl">the PIDL of the item</param>
+            <returns></returns>
+        </member>
+        <member name="M:WindowsHelper.WindowsAPI.GetIShellFolder(Microsoft.WindowsAPICodePack.Shell.IShellItem)">
+            <summary>
+            Returns the IShellFolder interface from IShellItem
+            </summary>
+            <param name="sitem">The IShellItem</param>
+            <returns></returns>
         </member>
         <member name="M:WindowsHelper.WindowsAPI.SHChangeNotify(WindowsHelper.WindowsAPI.HChangeNotifyEventID,WindowsHelper.WindowsAPI.HChangeNotifyFlags,System.IntPtr,System.IntPtr)">
             <summary>

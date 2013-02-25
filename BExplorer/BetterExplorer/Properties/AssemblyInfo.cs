@@ -12,7 +12,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dimitar Tsenev / Jayke R. Huempfner")]
 [assembly: AssemblyProduct("Better Explorer Beta 2")]
-[assembly: AssemblyCopyright("Copyright ©  2012 Dimitar Tsenev and Jayke R. Huempfner")]
+[assembly: AssemblyCopyright("Copyright © 2012-2013 Dimitar Tsenev and Jayke R. Huempfner")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,6 +51,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.0.3.21220")]
-[assembly: AssemblyFileVersion("2.0.3.21220")]
-[assembly: AssemblyInformationalVersion("2.0.3.201212.21220 Beta 2")]
+[assembly: AssemblyVersion("2.0.3.22110")]
+[assembly: AssemblyFileVersion("2.0.3.22110")]
+[assembly: AssemblyInformationalVersion("2.0.3.011303.22110 Beta 2 Update 1")]

@@ -53,7 +53,7 @@
                 </StackPanel>
             </Button>
         </Grid>
-        <Button Content="{StaticResource btnOpenFolder}" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="12,0,0,8" Name="button1" VerticalAlignment="Bottom" Width="Auto" Padding="8,1,8,1" IsEnabled="False" />
+        <Button Content="{StaticResource btnOpenFolder}" Grid.Row="1" Height="23" HorizontalAlignment="Left" Margin="12,0,0,8" Name="button1" VerticalAlignment="Bottom" Width="Auto" Padding="8,1,8,1" Click="button1_Click" />
         <Button Content="{StaticResource btnClose}" Height="23" HorizontalAlignment="Right" Margin="0,0,12,8" Name="button2" VerticalAlignment="Bottom" Grid.Row="1" Width="Auto" Click="button2_Click" Padding="8,1,8,1" />
     </Grid>
 </Window>

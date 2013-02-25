@@ -708,7 +708,7 @@
                                                                               LanguageText="Chinese (Traditional)"
                                                                               LocaleCode="zh-TW"
                                                                               UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="csCSLang"
+                                            <controls:TranslationComboBoxItem x:Name="csCZLang"
                                                                               LanguageText="Czech"
                                                                               LocaleCode="cs-CZ"
                                                                               UsesRTL="False" />
@@ -731,6 +731,10 @@
                                             <controls:TranslationComboBoxItem x:Name="deDELang"
                                                                               LanguageText="German"
                                                                               LocaleCode="de-DE"
+                                                                              UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem x:Name="huHULang"
+                                                                              LanguageText="Hungarian"
+                                                                              LocaleCode="hu-HU"
                                                                               UsesRTL="False" />
                                             <controls:TranslationComboBoxItem x:Name="itITLang"
                                                                               LanguageText="Italian"
@@ -1107,21 +1111,33 @@
                                         <TextBlock Margin="5,165,0,0"
                                                    HorizontalAlignment="Left"
                                                    VerticalAlignment="Top"
-                                                   Text="{StaticResource lblDefSavedTabsLocCP}" />
-                                        <TextBox x:Name="txtDefSaveTabs"
-                                                 Width="300"
-                                                 Margin="10,180,0,0"
-                                                 HorizontalAlignment="Left"
-                                                 VerticalAlignment="Top"
-                                                 Text="" />
-                                        <TextBlock Margin="10,200,0,0"
+                                                   Text="{StaticResource lblDefSavedTabsLocCP}"
+                                                   Visibility="Collapsed" />
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,180,0,0">
+                                            <Ribbon:TextBox x:Name="txtDefSaveTabs"
+                                                     Width="450"
+                                                     IsReadOnly="True"
+                                                     Header="{StaticResource lblDefSavedTabsLocCP}"
+                                                     Text="" />
+                                            <Ribbon:Button Name="btnChangeTabsFolder"
+                                                           Width="Auto"
+                                                           Height="22"
+                                                           BorderBrush="Black"
+                                                           BorderThickness="1"
+                                                           Click="btnChangeTabsFolder_Click"
+                                                           Header="{StaticResource txtBrowse}"
+                                                           Icon="Images\browsefldr16.png"
+                                                           Padding="5,0,5,0"
+                                                           Ribbon:KeyTip.Keys="T" />
+                                        </StackPanel>
+                                        <TextBlock Margin="10,210,0,0"
                                                    HorizontalAlignment="Left"
                                                    VerticalAlignment="Top"
-                                                   Text="lblSavedTabsWarningCP" />
-                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,230,0,0"
+                                                   Text="{StaticResource lblSavedTabsWarningCP}" />
+                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,240,0,0"
                                                                  Header="Actions"
                                                                  Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Ribbon:CheckBox x:Name="chkIsLastTabCloseApp" Click="chkIsLastTabCloseApp_Click"  Header="Closing last Tab closes Application" Margin="7,265,0,0" VerticalAlignment="Top" Height="22"/>
+                                        <Ribbon:CheckBox x:Name="chkIsLastTabCloseApp" Click="chkIsLastTabCloseApp_Click"  Header="Closing last Tab closes Application" Margin="7,275,0,0" VerticalAlignment="Top" Height="22"/>
                                     </Grid>
                                 </TabItem>
                             </TabControl>
