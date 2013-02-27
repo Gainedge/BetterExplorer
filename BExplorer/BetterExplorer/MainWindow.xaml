@@ -796,23 +796,26 @@
                                                        TextDecorations="Underline" />
                                         </Button>
                                         <TextBlock Margin="0,10,0,5" Text="{StaticResource txtTranslationCredits}" />
-                                        <TextBlock Text="English: JaykeBird (Jayke R. Huempfner) and Dimitar Tsenev" />
                                         <TextBlock Text="Bulgarian: Dimitar Tsenev" />
-                                        <TextBlock Text="Spanish: JMBolivar (José Miguel Bolivar)" />
-                                        <TextBlock Text="Portuguese: Cléverson" />
-                                        <TextBlock Text="Finnish: Osku598 (Oskar Bredin)" />
-                                        <TextBlock Text="Turkish: Cengizhan and Loungedy" />
-                                        <TextBlock Text="German: Stefan (Stefan Klebs), Florian0901, and Daniel Will" />
+                                        <TextBlock Text="Chinese: Robin Zhang, Diluka W, lrh3321, ky911223" />
                                         <TextBlock Text="Croatian: Smeker (Danijel Levak)" />
-                                        <TextBlock Text="French: Pascal Huau and Xanax" />
-                                        <TextBlock Text="Italian: Gianluigi Meraviglia and JaykeBird (Jayke R. Huempfner)" />
-                                        <TextBlock Text="Russian: Loungedy" />
-                                        <TextBlock Text="Chinese: lrh3321 and ky911223" />
-                                        <TextBlock Text="Polish: VorbisMastah and Krzysztof" />
-                                        <TextBlock Text="Swedish: toando1 and masterjaz" />
-                                        <TextBlock Text="Dutch: Pink-ET" />
-                                        <TextBlock Text="Japanse: Kensuke Sasaki" />
                                         <TextBlock Text="Czech: Stanislav Pokorný" />
+                                        <TextBlock Text="Dutch: Pink-ET" />
+                                        <TextBlock Text="English: JaykeBird (Jayke R. Huempfner), Dimitar Tsenev" />
+                                        <TextBlock Text="Finnish: Osku598 (Oskar Bredin)" />
+                                        <TextBlock Text="French: Xanax (Sebastien Kerguen), Pascal Huau, reno2012" />
+                                        <TextBlock Text="German: Stefan (Stefan Klebs), Markus Lang, Florian0901, Piotrex, Daniel Will" />
+                                        <TextBlock Text="Hungarian: lostprophet (Brechler Zsolt)" />
+                                        <TextBlock Text="Italian: Gianluigi Meraviglia, eagleman, inshilon, JaykeBird (Jayke R. Huempfner)" />
+                                        <TextBlock Text="Japanse: Kensuke Sasaki" />
+                                        <TextBlock Text="Polish: VorbisMastah, Krzysztof, pbl3" />
+                                        <TextBlock Text="Portuguese: Cléverson, brenochamie, unforgiving" />
+                                        <TextBlock Text="Russian: Loungedy, olerapx" />
+                                        <TextBlock Text="Spanish: JMBolivar (José Miguel Bolivar)" />
+                                        <TextBlock Text="Swedish: toando1, masterjaz, samosante" />
+                                        <TextBlock Text="Turkish: Cengizhan, Loungedy" />
+                                        <TextBlock Text="Ukrainian: Venorme" />
+                                        <TextBlock Text="Vietnamese: 7on7off" />
                                         <!--
                                             <Ribbon:SeparatorTabItem Header="Remove Setting" Visibility="Hidden"/>
                                             <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" Margin="0,0,60,0" Visibility="Hidden"

@@ -40,29 +40,10 @@ namespace BetterExplorer
         {
             InitializeComponent();
 
-            textBlock1.Text = "Image Name: " + file.GetDisplayName(DisplayNameType.Default);
+            textBlock1.Text = FindResource("txtFilename") + ": " + file.GetDisplayName(DisplayNameType.Default);
             cvt = new Bitmap(file.ParsingName);
-            textBlock2.Text = "Height: " + cvt.Height.ToString();
-            textBlock3.Text = "Width: " + cvt.Width.ToString();
-
-            spinner1.Value = 100;
-
-                        percsetting = true;
-
-            textBox1.Text = cvt.Width.ToString();
-            textBox2.Text = cvt.Height.ToString();
-
-            percsetting = false;
-        }
-
-        public ResizeImage(ShellObject file, string height, string width, string imagename)
-        {
-            InitializeComponent();
-
-            textBlock1.Text = imagename + ": " + file.GetDisplayName(DisplayNameType.Default);
-            cvt = new Bitmap(file.ParsingName);
-            textBlock2.Text = height + ": " + cvt.Height.ToString();
-            textBlock3.Text = width + ": " + cvt.Width.ToString();
+            textBlock2.Text = FindResource("lblHeightCP") + ": " + cvt.Height.ToString();
+            textBlock3.Text = FindResource("lblWidthCP") + ": " + cvt.Width.ToString();
 
             spinner1.Value = 100;
 
@@ -73,6 +54,25 @@ namespace BetterExplorer
 
             percsetting = false;
         }
+
+        //public ResizeImage(ShellObject file, string height, string width, string imagename)
+        //{
+        //    InitializeComponent();
+
+        //    textBlock1.Text = imagename + ": " + file.GetDisplayName(DisplayNameType.Default);
+        //    cvt = new Bitmap(file.ParsingName);
+        //    textBlock2.Text = height + ": " + cvt.Height.ToString();
+        //    textBlock3.Text = width + ": " + cvt.Width.ToString();
+
+        //    spinner1.Value = 100;
+
+        //    percsetting = true;
+
+        //    textBox1.Text = cvt.Width.ToString();
+        //    textBox2.Text = cvt.Height.ToString();
+
+        //    percsetting = false;
+        //}
 
         private void spinner1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {

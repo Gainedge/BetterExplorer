@@ -7135,7 +7135,7 @@ namespace BetterExplorer
 		{
 			SizeSearchCriteriaDialog dat = new SizeSearchCriteriaDialog();
 			string sd = GetValueOnly("size", edtSearchBox.SizeCondition);
-			dat.curval.Text = sd;
+            dat.UpdateCurrentValue(sd);
 
 			dat.ShowDialog();
 

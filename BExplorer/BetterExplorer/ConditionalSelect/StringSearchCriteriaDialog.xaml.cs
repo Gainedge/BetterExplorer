@@ -28,7 +28,7 @@ namespace BetterExplorer
         public StringSearchCriteriaDialog(string property, string value)
         {
             InitializeComponent();
-            textBlock1.Text = textBlock1.Text.Replace("<category>", property);
+            textBlock2.Text = property;
             textBox1.Text = GetValueOnly(property, value);
             textBox1.Focus();
         }

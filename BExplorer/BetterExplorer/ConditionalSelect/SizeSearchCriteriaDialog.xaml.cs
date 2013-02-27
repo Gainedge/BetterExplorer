@@ -46,6 +46,11 @@ namespace BetterExplorer
             //textBox1.Focus();
         }
 
+        public void UpdateCurrentValue(string value)
+        {
+            curval.Text = FindResource("txtCurrentValue") + ": " + value;
+        }
+
         private void button1_Click(object sender, RoutedEventArgs e)
         {
             Confirm = true;
