@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="Microsoft.WindowsAPICodePack.Shell.FileOperations.CollisionItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="80" d:DesignWidth="500">
+    <Border BorderThickness="0,0,0,1" BorderBrush="LightGray">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="{Binding Path=ItemName}" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="22,0,0,0" Grid.Column="1" Grid.ColumnSpan="3"/>
+            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                <CheckBox x:Name="chkFirst" Margin="5" IsChecked="{Binding Path=IsChecked}"/>
+                <Image x:Name="imgFirst" Source="{Binding Path=ItemImage}" Margin="5" Width="64" Height="64"/>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Path=ItemSize}"/>
+                    <TextBlock Text="{Binding Path=ItemDmodif}"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1">
+                <CheckBox x:Name="chkSecond" Margin="5" IsChecked="{Binding Path=IsCheckedC}"/>
+                <Image x:Name="imgSecond" Source="{Binding Path=ItemImageC}" Margin="5" Width="64" Height="64"/>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Path=ItemSizeC}"/>
+                    <TextBlock Text="{Binding Path=ItemDmodifC}"/>
+                </StackPanel>
+            </StackPanel>
+            
+        </Grid>
+    </Border>
+</UserControl>

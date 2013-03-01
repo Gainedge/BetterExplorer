@@ -1756,7 +1756,7 @@
                                                    SizeDefinition="Middle,Middle,Middle" Click="btnConsolePane_Click">
                       
                     </Ribbon:ToggleButton>
-        </Ribbon:RibbonGroupBox>
+                </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Name="Layout"
                                        Header="{StaticResource tgLayoutCP}"
                                        Ribbon:KeyTip.Keys="L">
@@ -1776,7 +1776,7 @@
                                             Ribbon:KeyTip.Keys="V"
                                             SelectedFilter="{Binding ElementName=galleryFilterAll}"
                                             SelectionChanged="inRibbonGallery1_SelectionChanged"
-                                            SizeDefinition="Large,Large,Large" >
+                                            SizeDefinition="Large,Large,Large" PreviewMouseDown="inRibbonGallery1_PreviewMouseDown">
                         <Ribbon:InRibbonGallery.Filters>
                             <Ribbon:GalleryGroupFilter x:Name="galleryFilterAll"
                                                        Title="All"

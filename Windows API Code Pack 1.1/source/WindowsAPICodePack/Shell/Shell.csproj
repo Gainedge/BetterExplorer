@@ -228,6 +228,13 @@
     </Compile>
     <Compile Include="CopyEngineResult.cs" />
     <Compile Include="csSharing.cs" />
+    <Compile Include="FileOperations\CollisionDialog.xaml.cs">
+      <DependentUpon>CollisionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileOperations\CollisionItem.xaml.cs">
+      <DependentUpon>CollisionItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileOperations\CustomFileOperations.cs" />
     <Compile Include="DelRecycleBin.cs" />
     <Compile Include="DesktopWindowManager\DesktopWindowManagerNativeMethods.cs" />
     <Compile Include="DesktopWindowManager\GlassEvents.cs" />
@@ -261,6 +268,12 @@
     <Compile Include="FileOperation.cs" />
     <Compile Include="FileOperationFlags.cs" />
     <Compile Include="FileOperationProgressSink.cs" />
+    <Compile Include="FileOperations\FileOperation.xaml.cs">
+      <DependentUpon>FileOperation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileOperations\FileOperationDialog.xaml.cs">
+      <DependentUpon>FileOperationDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IFileOperation.cs" />
     <Compile Include="IFileOperationProgressSink.cs" />
@@ -420,6 +433,22 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FileOperations\CollisionDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileOperations\CollisionItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileOperations\FileOperation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileOperations\FileOperationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

@@ -473,19 +473,20 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       /// Returns the current view mode of the browser
       /// </summary>
       /// <returns></returns>
-      internal FolderViewMode GetCurrentViewMode() {
+      internal ExplorerBrowserViewMode GetCurrentViewMode() {
         IFolderView2 ifv2 = GetFolderView2();
-        uint viewMode = 0;
+        int viewMode = 0;
+        int iconSize = 0;
         if (ifv2 != null) {
           try {
-            HResult hr = ifv2.GetCurrentViewMode(out viewMode);
+            HResult hr = ifv2.GetViewModeAndIconSize(out viewMode, out iconSize);
             if (hr != HResult.Ok) { throw new ShellException(hr); }
           } finally {
             Marshal.ReleaseComObject(ifv2);
             ifv2 = null;
           }
         }
-        return (FolderViewMode)viewMode;
+        return (ExplorerBrowserViewMode)viewMode;
       }
 
       /// <summary>
@@ -828,41 +829,40 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			}
 			public Collumns[] AvailableColumns(bool All)
 			{
-				Guid iid = new Guid(ExplorerBrowserIIDGuid.IColumnManager);
-				IntPtr view = IntPtr.Zero;
-        IntPtr Ishellv = Marshal.GetComInterfaceForObject(GetShellView(), typeof(IShellView));
-				Marshal.QueryInterface(Ishellv, ref iid, out view);
-				IColumnManager cm = (IColumnManager)Marshal.GetObjectForIUnknown(view);
-				uint HeaderColsCount = 0;
-				cm.GetColumnCount(All?CM_ENUM_FLAGS.CM_ENUM_ALL:CM_ENUM_FLAGS.CM_ENUM_VISIBLE, out HeaderColsCount);
-				Collumns[] ci = new Collumns[HeaderColsCount];
-				for (int i = 0; i < HeaderColsCount; i++)
-				{
-					Collumns col = new Collumns();
-          WindowsAPI.PROPERTYKEY pk;
-          WindowsAPI.CM_COLUMNINFO cmi = new WindowsAPI.CM_COLUMNINFO();
-                          IntPtr ii = Marshal.AllocCoTaskMem(Marshal.SizeOf(cmi));
+        try {
+          Guid iid = new Guid(ExplorerBrowserIIDGuid.IColumnManager);
+          IntPtr view = IntPtr.Zero;
+          IntPtr Ishellv = Marshal.GetComInterfaceForObject(GetShellView(), typeof(IShellView));
+          Marshal.QueryInterface(Ishellv, ref iid, out view);
+          IColumnManager cm = (IColumnManager)Marshal.GetObjectForIUnknown(view);
+          uint HeaderColsCount = 0;
+          cm.GetColumnCount(All ? CM_ENUM_FLAGS.CM_ENUM_ALL : CM_ENUM_FLAGS.CM_ENUM_VISIBLE, out HeaderColsCount);
+          Collumns[] ci = new Collumns[HeaderColsCount];
+          for (int i = 0; i < HeaderColsCount; i++) {
+            Collumns col = new Collumns();
+            WindowsAPI.PROPERTYKEY pk;
+            WindowsAPI.CM_COLUMNINFO cmi = new WindowsAPI.CM_COLUMNINFO();
+            IntPtr ii = Marshal.AllocCoTaskMem(Marshal.SizeOf(cmi));
 
-					try
-					{
-						GetColumnbyIndex(GetShellView(), All, i, out pk);
-						GetColumnInfobyIndex(GetShellView(), All, i, out cmi);
-						col.pkey = pk;
-						col.Name = cmi.wszName;
-						col.Width = (int)cmi.uWidth;
-						ci[i] = col;
+            try {
+              GetColumnbyIndex(GetShellView(), All, i, out pk);
+              GetColumnInfobyIndex(GetShellView(), All, i, out cmi);
+              col.pkey = pk;
+              col.Name = cmi.wszName;
+              col.Width = (int)cmi.uWidth;
+              ci[i] = col;
 
-					}
-					catch 
-					{
+            } catch {
 
 
-					}
+            }
 
-				}
+          }
+          return ci;
+        } catch (Exception) {
 
-
-				return ci;
+          return new Collumns[0];
+        }
 			}
 			public void SetAutoSizeColumns()
 			{
@@ -872,7 +872,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 			public void DoCopy(object Data)
 			{
-					DropData DataDrop = (DropData)Data;
+					FileOperationsData DataDrop = (FileOperationsData)Data;
 
 					if (DataDrop.ItemsForDrop != null)
 					{
@@ -973,7 +973,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 			public void DoMove(object Data)
 			{
-					DropData DataDrop = (DropData)Data;
+					FileOperationsData DataDrop = (FileOperationsData)Data;
 
 					if (DataDrop.ItemsForDrop != null)
 					{
@@ -1894,7 +1894,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			protected override void OnCreateControl()
 			{
 				base.OnCreateControl();
-
+        //Initialize the hooks needed by ExplorerBrowser
+        
 				if (this.DesignMode == false)
 				{
 					explorerBrowserControl = new ExplorerBrowserClass();
@@ -1941,15 +1942,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 				}
 
-        //Initialize the hooks needed by ExplorerBrowser
-        HookLibManager.IsCustomDialog = IsCustomDialogs;
-        HookLibManager.Initialize();
         hookProc_GetMsg = new WindowsHelper.WindowsAPI.HookProc(CallbackGetMsgProc);
         int currentThreadId = WindowsAPI.GetCurrentThreadId();
         hHook_Msg = WindowsAPI.SetWindowsHookEx(3, hookProc_GetMsg, IntPtr.Zero, currentThreadId);
 
         //Add MessageFilter for the IShellView
         Application.AddMessageFilter(this);
+        HookLibManager.IsCustomDialog = IsCustomDialogs;
+        //HookLibManager.Browser = this;
+        HookLibManager.Initialize();
 			}
 
       //Callback procedure used by the window hook
@@ -1959,10 +1960,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
           try {
 
             if (msg.message == WM_FILEOPERATION) {
-              object obj = Marshal.GetObjectForIUnknown(msg.lParam);
-              IShellItem item = (IShellItem)obj;
-              ShellObject o = ShellObjectFactory.Create(msg.lParam);
-              MessageBox.Show(o.ParsingName);
+              //object obj = Marshal.GetObjectForIUnknown(msg.lParam);
+              //IShellItem item = (IShellItem)obj;
+              //ShellObject o = ShellObjectFactory.Create(msg.lParam);
+              //
             }
             if (msg.message == WM_NEWTREECONTROL) {
               object obj = Marshal.GetObjectForIUnknown(msg.wParam);
@@ -1976,7 +1977,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                       hwnd = WindowsAPI.FindChildWindow(hwnd,
                               child => WindowsAPI.GetClassName(child) == "SysTreeView32");
                       if (hwnd != IntPtr.Zero) {
-                        WindowsAPI.INameSpaceTreeControl control = obj as WindowsAPI.INameSpaceTreeControl;
+                        WindowsAPI.INameSpaceTreeControl2 control = obj as WindowsAPI.INameSpaceTreeControl2;
                         if (control != null) {
                           if (SysTreeView != null) {
                             SysTreeView.Dispose();
@@ -2222,9 +2223,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			{
 					IsPressedLKButton = false;
 					// view mode may change 
-					ContentOptions.folderSettings.Options |= FolderOptions.SnapToGrid;
-					ContentOptions.folderSettings.Options |= FolderOptions.AutoArrange;
-					ContentOptions.folderSettings.ViewMode = GetCurrentViewMode();
+					//ContentOptions.folderSettings.Options |= FolderOptions.SnapToGrid;
+					//ContentOptions.folderSettings.Options |= FolderOptions.AutoArrange;
+					ContentOptions.ViewMode = GetCurrentViewMode();
 					//ContentOptions.ThumbnailSize = GetCurrentthumbSize();
 						
 					if (NavigationComplete != null)
@@ -2395,7 +2396,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					if (explorerBrowserControl != null)
 					{
 							// translate keyboard input
-
+    
 
             if (m.Msg == (int)WindowsAPI.WndMsg.WM_NOTIFY + (int)WindowsAPI.WndMsg.WM_REFLECT) {
 
@@ -2592,7 +2593,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 																	if (sho != null)
 																	{
 																			sho.Dispose();
-																			DropData PasteData = new DropData();
+																			FileOperationsData PasteData = new FileOperationsData();
 																			PasteData.DropList = System.Windows.Forms.Clipboard.GetFileDropList();
 																			if (SelectedItems.Count > 0 & SelectedItems.Count < 2)
 																			{

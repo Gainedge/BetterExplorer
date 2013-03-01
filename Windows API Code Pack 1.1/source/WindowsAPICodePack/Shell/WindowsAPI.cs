@@ -15,6 +15,7 @@ using System.Security;
 using System.Diagnostics;
 using Microsoft.WindowsAPICodePack.Controls;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace WindowsHelper
 {
@@ -618,11 +619,50 @@ namespace WindowsHelper
               offset += 4;
             }
           } finally {
-            Marshal.FreeHGlobal(medium.unionmember);
+            //Marshal.FreeCoTaskMem(medium.unionmember);// FreeHGlobal(medium.unionmember);
           }
 
           return result.ToArray();
         }
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
+        public static extern void SHCreateShellItemArrayFromDataObject(
+            [In] System.Runtime.InteropServices.ComTypes.IDataObject pdo,
+            [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
+            [Out, MarshalAs(UnmanagedType.LPArray)] IShellItemArray ppv);
+
+        public enum SIATTRIBFLAGS {
+          SIATTRIBFLAGS_AND = 1,
+          SIATTRIBFLAGS_APPCOMPAT = 3,
+          SIATTRIBFLAGS_OR = 2
+        }
+        [ComImport, Guid("B63EA76D-1F85-456F-A19C-48159EFA858B"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+        public interface IShellItemArray {
+          // Not supported: IBindCtx
+          [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+          void BindToHandler([In, MarshalAs(UnmanagedType.Interface)] IntPtr pbc, [In] ref Guid rbhid,
+                  [In] ref Guid riid, out IntPtr ppvOut);
+
+          [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+          void GetPropertyStore([In] int Flags, [In] ref Guid riid, out IntPtr ppv);
+
+          [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+          void GetPropertyDescriptionList([In] ref PROPERTYKEY keyType, [In] ref Guid riid, out IntPtr ppv);
+
+          [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+          void GetAttributes([In] SIATTRIBFLAGS dwAttribFlags, [In] uint sfgaoMask, out uint psfgaoAttribs);
+
+          [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+          void GetCount(out uint pdwNumItems);
+
+          [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+          void GetItemAt([In] uint dwIndex, [MarshalAs(UnmanagedType.Interface)] out IShellItem ppsi);
+
+          // Not supported: IEnumShellItems (will use GetCount and GetItemAt instead)
+          [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+          void EnumItems([MarshalAs(UnmanagedType.Interface)] out IntPtr ppenumShellItems);
+        }
+
+
         /// <summary>
         /// Returns the IShellFolder interface from IShellItem
         /// </summary>
@@ -685,6 +725,23 @@ namespace WindowsHelper
           public int code;
         }
 
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
+
+        public enum MessageFilterInfo : uint {
+          None = 0, AlreadyAllowed = 1, AlreadyDisAllowed = 2, AllowedHigher = 3
+        };
+
+        public enum ChangeWindowMessageFilterExAction : uint {
+          Reset = 0, Allow = 1, DisAllow = 2
+        };
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct CHANGEFILTERSTRUCT {
+          public uint size;
+          public MessageFilterInfo info;
+        }
+
         public static T PtrToStructure<T>(IntPtr p) {
           return (T)Marshal.PtrToStructure(p, typeof(T));
         }
@@ -732,6 +789,23 @@ namespace WindowsHelper
             public IntPtr lParam;
         }
 
+        [DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
+        public static extern long StrFormatByteSize(
+                long fileSize
+                , [MarshalAs(UnmanagedType.LPTStr)] StringBuilder buffer
+                , int bufferSize);
+
+
+        /// <summary>
+        /// Converts a numeric value into a string that represents the number expressed as a size value in bytes, kilobytes, megabytes, or gigabytes, depending on the size.
+        /// </summary>
+        /// <param name="filelength">The numeric value to be converted.</param>
+        /// <returns>the converted string</returns>
+        public static string StrFormatByteSize(long filesize) {
+          StringBuilder sb = new StringBuilder(11);
+          StrFormatByteSize(filesize, sb, sb.Capacity);
+          return sb.ToString();
+        }
 
         #region enum HChangeNotifyEventID
         /// <summary>
@@ -1912,6 +1986,49 @@ namespace WindowsHelper
           public IntPtr hItem;
         }
 
+        public enum NSTCSTYLE2 {
+          NSTCS2_DEFAULT = 0,
+          NSTCS2_INTERRUPTNOTIFICATIONS = 0x1,
+          NSTCS2_SHOWNULLSPACEMENU = 0x2,
+          NSTCS2_DISPLAYPADDING = 0x4,
+          NSTCS2_DISPLAYPINNEDONLY = 0x8,
+          NTSCS2_NOSINGLETONAUTOEXPAND = 0x10,
+          NTSCS2_NEVERINSERTNONENUMERATED = 0x20
+        } 
+
+        public enum NSTCSTYLE { 
+          NSTCS_HASEXPANDOS          = 0x00000001,
+          NSTCS_HASLINES             = 0x00000002,
+          NSTCS_SINGLECLICKEXPAND    = 0x00000004,
+          NSTCS_FULLROWSELECT        = 0x00000008,
+          NSTCS_SPRINGEXPAND         = 0x00000010,
+          NSTCS_HORIZONTALSCROLL     = 0x00000020,
+          NSTCS_ROOTHASEXPANDO       = 0x00000040,
+          NSTCS_SHOWSELECTIONALWAYS  = 0x00000080,
+          NSTCS_NOINFOTIP            = 0x00000200,
+          NSTCS_EVENHEIGHT           = 0x00000400,
+          NSTCS_NOREPLACEOPEN        = 0x00000800,
+          NSTCS_DISABLEDRAGDROP      = 0x00001000,
+          NSTCS_NOORDERSTREAM        = 0x00002000,
+          NSTCS_RICHTOOLTIP          = 0x00004000,
+          NSTCS_BORDER               = 0x00008000,
+          NSTCS_NOEDITLABELS         = 0x00010000,
+          NSTCS_TABSTOP              = 0x00020000,
+          NSTCS_FAVORITESMODE        = 0x00080000,
+          NSTCS_AUTOHSCROLL          = 0x00100000,
+          NSTCS_FADEINOUTEXPANDOS    = 0x00200000,
+          NSTCS_EMPTYTEXT            = 0x00400000,
+          NSTCS_CHECKBOXES           = 0x00800000,
+          NSTCS_PARTIALCHECKBOXES    = 0x01000000,
+          NSTCS_EXCLUSIONCHECKBOXES  = 0x02000000,
+          NSTCS_DIMMEDCHECKBOXES     = 0x04000000,
+          NSTCS_NOINDENTCHECKS       = 0x08000000,
+          NSTCS_ALLOWJUNCTIONS       = 0x10000000,
+          NSTCS_SHOWTABSBUTTON       = 0x20000000,
+          NSTCS_SHOWDELETEBUTTON     = 0x40000000,
+          NSTCS_SHOWREFRESHBUTTON    = unchecked((int)0x80000000)
+        }
+
         [ComImport, SuppressUnmanagedCodeSecurity, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("028212A3-B627-47e9-8856-C14265554E4F")]
         public interface INameSpaceTreeControl {
           [PreserveSig]
@@ -1952,6 +2069,18 @@ namespace WindowsHelper
           int GetItemRect(IShellItem psi, out WindowsHelper.WindowsAPI.RECT prect);
           [PreserveSig]
           int CollapseAll();
+        }
+
+        [ComImport, SuppressUnmanagedCodeSecurity, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("7cc7aed8-290e-49bc-8945-c1401cc9306c")]
+        public interface INameSpaceTreeControl2 : INameSpaceTreeControl {
+          [PreserveSig]
+          int GetControlStyle(NSTCSTYLE nstcsMask, out NSTCSTYLE pnstcsStyle);
+          [PreserveSig]
+          int GetControlStyle2(NSTCSTYLE2 nstcsMask, out NSTCSTYLE2 pnstcsStyle);
+          [PreserveSig]
+          int SetControlStyle(NSTCSTYLE nstcsMask, NSTCSTYLE nstcsStyle);
+          [PreserveSig]
+          int SetControlStyle2(NSTCSTYLE2 nstcsMask, NSTCSTYLE2 nstcsStyle);
         }
 
         [Serializable]
@@ -4312,7 +4441,7 @@ namespace WindowsHelper
         public static extern bool CloseHandle(IntPtr hObject);
 
         [DllImport("user32")]
-        public static extern bool ShowWindow(int hwnd, int nCmdShow);
+        public static extern bool ShowWindow(IntPtr hwnd, int nCmdShow);
 
         public enum SW
         {

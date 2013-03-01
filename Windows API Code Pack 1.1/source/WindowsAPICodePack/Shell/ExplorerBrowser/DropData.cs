@@ -9,7 +9,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
   /// <summary>
   /// DropData class
   /// </summary>
-  public class DropData : IDisposable {
+  public class FileOperationsData : IDisposable {
     public void Dispose() {
       Dispose(true);
       GC.SuppressFinalize(this);
@@ -21,7 +21,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
           Shellobjects = null;
         }
     }
-    ~DropData() {
+    ~FileOperationsData() {
       Dispose(false);
     }
     public ShellObject[] ItemsForDrop;

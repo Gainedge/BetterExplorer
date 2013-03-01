@@ -307,7 +307,7 @@ namespace BetterExplorer
                         IntPtr MainWinHandle = WindowsHelper.WindowsAPI.FindWindow(null, Process.GetCurrentProcess().MainWindowTitle);
                         if (win.WindowState == WindowState.Minimized)
                         {
-                            WindowsHelper.WindowsAPI.ShowWindow((int)MainWinHandle, 
+                            WindowsHelper.WindowsAPI.ShowWindow(MainWinHandle, 
                                 (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
                         }
                         WindowsHelper.WindowsAPI.BringWindowToTop(MainWinHandle);

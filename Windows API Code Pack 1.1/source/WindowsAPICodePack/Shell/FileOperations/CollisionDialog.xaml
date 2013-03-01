@@ -1,0 +1,48 @@
+﻿<Window x:Class="Microsoft.WindowsAPICodePack.Shell.FileOperations.CollisionDialog"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             Title="Collisions"
+             mc:Ignorable="d"  MaxHeight="530" Height="500" Width="600" ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" SizeToContent="Height">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="20" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Whcich files do you want to keep?" Grid.Row="0" FontSize="16" FontWeight="Bold" Foreground="#FF486CCB" Margin="10,0,0,0" VerticalAlignment="Center"/>
+        <TextBlock Text="If you select both version, there will be a number after the name of copied files." Grid.Row="1" Margin="10,0,0,0" VerticalAlignment="Center"/>
+        <Border BorderThickness="0,0,0,1" BorderBrush="Gray" Grid.Row="2">
+            <Grid x:Name="grdHeader" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition x:Name="clSpace" Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                    <CheckBox x:Name="chkFirst" Margin="5" IsChecked="{Binding Path=IsChecked}" Click="chkFirst_Click"/>
+                    <TextBlock Text="Files from " VerticalAlignment="Center"/>
+                    <TextBlock x:Name="lblFromfolder" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Grid.Column="3">
+                    <CheckBox x:Name="chkSecond" Margin="5" Click="chkSecond_Click" />
+                    <TextBlock Text="Files already in " VerticalAlignment="Center"/>
+                    <TextBlock x:Name="lblTofolder" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <StackPanel x:Name="pnlContainer" Orientation="Vertical" Grid.Row="3" CanVerticallyScroll="False">
+            <ScrollViewer x:Name="svScroll" Height="Auto" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" MaxHeight="300" SizeChanged="svScroll_SizeChanged">
+                <ItemsControl x:Name="icItems" ItemsSource="{Binding Path=Contents}" SizeChanged="icItems_SizeChanged">
+                </ItemsControl>
+            </ScrollViewer>
+        </StackPanel>
+        <Button x:Name="btnContinue" Grid.Row="4" HorizontalAlignment="Right" Content="Continue" Padding="10,0,10,0" Margin="10,5,90,5" Width="75" Click="btnContinue_Click"/>
+        <Button x:Name="btnCancel" Grid.Row="4" HorizontalAlignment="Right" Content="Cancel" Padding="10,0,10,0" Margin="10,5,10,5" Width="75" Click="btnCancel_Click"/>
+    </Grid>
+</Window>

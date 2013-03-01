@@ -83,10 +83,10 @@ DECLARE_HOOK(10, HRESULT, SetNavigationState, (IShellNavigationBand* _this, unsi
 DECLARE_HOOK(11, HRESULT, ShowWindow_Vista, (IExplorerFactory* _this, PCIDLIST_ABSOLUTE pidl, DWORD flags, DWORD mystery1, DWORD mystery2, POINT pt))
 DECLARE_HOOK(11, HRESULT, ShowWindow_7, (ICommonExplorerHost* _this, PCIDLIST_ABSOLUTE pidl, DWORD flags, POINT pt, DWORD mystery))
 DECLARE_HOOK(12, HRESULT, UpdateWindowList, (/*IShellBrowserService*/ IUnknown* _this))
-DECLARE_HOOK(13, HRESULT, DeleteItem, (IFileOperation *pThis, IShellItem *psiItem))
-DECLARE_HOOK(14, HRESULT, RenameItem, (IFileOperation *pThis, IShellItem *psiItem, LPCWSTR pszNewName))
-DECLARE_HOOK(15, HRESULT, MoveItem, (IFileOperation *pThis, IShellItem *psiItem, IShellItem *psiDestinationFolder))
-DECLARE_HOOK(16, HRESULT, CopyItem, (IFileOperation *pThis, IShellItem *psiItem, IShellItem *psiDestinationFolder))
+DECLARE_HOOK(13, HRESULT, DeleteItem, (IFileOperation *pThis, IUnknown *psiItem))
+DECLARE_HOOK(14, HRESULT, RenameItem, (IFileOperation *pThis, IUnknown *psiItem, LPCWSTR pszNewName, IFileOperationProgressSink *pfopsItem))
+DECLARE_HOOK(15, HRESULT, MoveItem, (IFileOperation *pThis, IUnknown *psiItem, IShellItem *psiDestinationFolder))
+DECLARE_HOOK(16, HRESULT, CopyItem, (IFileOperation *pThis, IUnknown *psiItem, IShellItem *psiDestinationFolder, IUnknown *sinc))
 
 // Messages
 unsigned int WM_REGISTERDRAGDROP;
@@ -104,10 +104,10 @@ unsigned int WM_FILEOPERATION;
 struct CallbackStruct {
     void (*fpHookResult)(int hookId, int retcode);
     bool (*fpNewWindow)(LPCITEMIDLIST pIDL);
-	bool (*fpCopyItem)(IShellItem* ifrom, IShellItem* ito);
-	bool (*fpMoveItem)(IShellItem* ifrom, IShellItem* ito);
-	bool (*fpRenameItem)(IShellItem* ifrom, LPCWSTR pszNewName);
-	bool (*fpDeleteItem)(IShellItem* ifrom);
+	bool (*fpCopyItem)(IUnknown* ifrom, IShellItem* ito);
+	bool (*fpMoveItem)(IUnknown* ifrom, IShellItem* ito);
+	bool (*fpRenameItem)(IUnknown* ifrom, LPCWSTR pszNewName);
+	bool (*fpDeleteItem)(IUnknown *ifrom);
 };
 CallbackStruct callbacks;
 
@@ -163,76 +163,33 @@ int Initialize(CallbackStruct* cb) {
 
     // Create and enable the CoCreateInstance, RegisterDragDrop, and SHCreateShellFolderView hooks.
     CREATE_HOOK(&CoCreateInstance, CoCreateInstance);
-    CREATE_HOOK(&RegisterDragDrop, RegisterDragDrop);
-    CREATE_HOOK(&SHCreateShellFolderView, SHCreateShellFolderView);
-	//CREATE_HOOK(&Copyf, SHCreateShellFolderView);
+    //CREATE_HOOK(&RegisterDragDrop, RegisterDragDrop);
+    //CREATE_HOOK(&SHCreateShellFolderView, SHCreateShellFolderView);
 
-    // Create and enable the UiaReturnRawElementProvider hook (maybe)
-    hModAutomation = LoadLibraryA("UIAutomationCore.dll");
-    if(hModAutomation != NULL) {
-        fpRealRREP = GetProcAddress(hModAutomation, "UiaReturnRawElementProvider");
-        if(fpRealRREP != NULL) {
-            CREATE_HOOK(fpRealRREP, UiaReturnRawElementProvider);
-        }
-    }
-    
+
     // Create an instance of the breadcrumb bar so we can hook it.
-    CComPtr<IShellNavigationBand> psnb;
-    if(psnb.Create(__uuidof(CBreadcrumbBar), CLSCTX_INPROC_SERVER)) {
-        CREATE_COM_HOOK(psnb, 4, SetNavigationState)
-    }
+    //CComPtr<IShellNavigationBand> psnb;
+    //if(psnb.Create(__uuidof(CBreadcrumbBar), CLSCTX_INPROC_SERVER)) {
+    //    CREATE_COM_HOOK(psnb, 4, SetNavigationState)
+    //}
 
 
     // Create an instance of CExplorerFactoryServer so we can hook it.
     // The interface in question is different on Vista and 7.
-    CComPtr<IUnknown> punk;
-    if(punk.Create(__uuidof(CExplorerFactoryServer), CLSCTX_INPROC_SERVER)) {
-        CComPtr<ICommonExplorerHost> pceh;
-        CComPtr<IExplorerFactory> pef;
-        if(pceh.QueryFrom(punk)) {
-            CREATE_COM_HOOK(pceh, 3, ShowWindow_7)
-        }
-        else if(pef.QueryFrom(punk)) {
-            CREATE_COM_HOOK(pef, 3, ShowWindow_Vista)
-        }
-    }
+    //CComPtr<IUnknown> punk;
+    //if(punk.Create(__uuidof(CExplorerFactoryServer), CLSCTX_INPROC_SERVER)) {
+    //    CComPtr<ICommonExplorerHost> pceh;
+    //    CComPtr<IExplorerFactory> pef;
+    //    if(pceh.QueryFrom(punk)) {
+    //        CREATE_COM_HOOK(pceh, 3, ShowWindow_7)
+    //    }
+    //    else if(pef.QueryFrom(punk)) {
+    //        CREATE_COM_HOOK(pef, 3, ShowWindow_Vista)
+    //    }
+    //}
     return MH_OK;
 }
 
-int InitShellBrowserHook(IShellBrowser* psb) {
-    volatile static long initialized;
-    if(InterlockedIncrement(&initialized) != 1) {
-        // Return if another thread has beaten us here.
-        initialized = 1;
-        return MH_OK;
-    }
-
-    // Create the BrowseObject hook
-    CREATE_COM_HOOK(psb, 11, BrowseObject);
-
-    // Vista and 7 have different IShellBrowserService interfaces.
-    // Hook UpdateWindowList in whichever one we have, and get the TravelLog.
-    CComPtr<IShellBrowserService_7> psbs7;
-    CComPtr<IShellBrowserService_Vista> psbsv;
-    CComPtr<ITravelLog> ptl;
-    if(psbs7.QueryFrom(psb)) {
-        CREATE_COM_HOOK(psbs7, 10, UpdateWindowList);
-        psbs7->GetTravelLog(&ptl);
-    }
-    else if(psbsv.QueryFrom(psb)) {
-        CREATE_COM_HOOK(psbsv, 17, UpdateWindowList);
-        psbsv->GetTravelLog(&ptl);
-    }
-
-    // Hook ITravelLogEx::TravelToEntry to catch the Search band navigation
-    if(ptl != NULL) {
-        CComPtr<ITravelLogEx> ptlex;
-        if(ptlex.QueryFrom(ptl)) {
-            CREATE_COM_HOOK(ptlex, 11, TravelToEntry);
-        }
-    }
-    return MH_OK;
-}
 
 int Dispose() {
     // Uninitialize MinHook.
@@ -248,6 +205,7 @@ int Dispose() {
 
 PVOID GetInterfaceMethod(PVOID intf, DWORD methodIndex)
 {
+
 	#if defined(_WIN64)
 		return *(PVOID*)(*(DWORD_PTR*)intf + methodIndex*8);
 	#elif defined(_WIN32)
@@ -269,6 +227,7 @@ HRESULT WINAPI DetourCoCreateInstance(REFCLSID rclsid, LPUNKNOWN pUnkOuter, DWOR
 			PostThreadMessage(GetCurrentThreadId(), WM_NEWTREECONTROL, (WPARAM)(*ppv), NULL);
 		}
 		if (IsEqualIID(rclsid, CLSID_FileOperation)){
+			//PostThreadMessage(GetCurrentThreadId(), WM_FILEOPERATION, (WPARAM)(*ppv), NULL);
 			//CREATE_COM_HOOK(GetInterfaceMethod(*ppv, 12),13,CopyItem);
 			CREATE_HOOK(GetInterfaceMethod(*ppv, 17),CopyItem);
 			CREATE_HOOK(GetInterfaceMethod(*ppv, 15),MoveItem);
@@ -279,191 +238,21 @@ HRESULT WINAPI DetourCoCreateInstance(REFCLSID rclsid, LPUNKNOWN pUnkOuter, DWOR
     return ret;
 }
 
-// The purpose of this hook is to allow QTTabBar to insert its IDropTarget wrapper in place of
-// the real IDropTarget.  This is much more reliable than using the GetProp method.
-HRESULT WINAPI DetourRegisterDragDrop(IN HWND hwnd, IN LPDROPTARGET pDropTarget) {
-    LPDROPTARGET* ppDropTarget = &pDropTarget;
-    SendMessage(hwnd, WM_REGISTERDRAGDROP, (WPARAM)ppDropTarget, NULL);
-    return fpRegisterDragDrop(hwnd, *ppDropTarget);
+
+
+HRESULT WINAPI DetourRenameItem(IFileOperation *pThis, IUnknown *psiItem, LPCWSTR pszNewName, IFileOperationProgressSink *pfopsItem){
+	return callbacks.fpRenameItem(psiItem, pszNewName)? S_OK : fpRenameItem(pThis,psiItem,pszNewName,pfopsItem);
 }
 
-HRESULT STDMETHODCALLTYPE DetourRenameItem(IFileOperation *pThis, IShellItem *psiItem, LPCWSTR pszNewName){
-	return callbacks.fpRenameItem(psiItem, pszNewName)? S_FALSE : fpRenameItem(pThis,psiItem,pszNewName);
+HRESULT WINAPI DetourDeleteItem(IFileOperation *pThis, IUnknown *psiItem){
+	return callbacks.fpDeleteItem(psiItem) ? S_OK : fpDeleteItem(pThis,psiItem);
 }
 
-HRESULT STDMETHODCALLTYPE DetourDeleteItem(IFileOperation *pThis, IShellItem *psiItem){
-	return callbacks.fpDeleteItem(psiItem) ? S_FALSE : fpDeleteItem(pThis,psiItem);
+HRESULT WINAPI DetourCopyItem(IFileOperation *pThis, IUnknown *psiItem, IShellItem *psiDestinationFolder, IUnknown *sinc){
+	callbacks.fpCopyItem(psiItem, psiDestinationFolder);
+	return S_OK;
+}
+HRESULT WINAPI DetourMoveItem(IFileOperation *pThis, IUnknown *psiItem, IShellItem *psiDestinationFolder){
+	return callbacks.fpMoveItem(psiItem, psiDestinationFolder) ? S_OK : fpMoveItem(pThis,psiItem,psiDestinationFolder);
 }
 
-HRESULT STDMETHODCALLTYPE DetourCopyItem(IFileOperation *pThis, IShellItem *psiItem, IShellItem *psiDestinationFolder){
-	return callbacks.fpCopyItem(psiItem, psiDestinationFolder)? S_FALSE : fpCopyItem(pThis,psiItem,psiDestinationFolder);
-}
-HRESULT STDMETHODCALLTYPE DetourMoveItem(IFileOperation *pThis, IShellItem *psiItem, IShellItem *psiDestinationFolder){
-	return callbacks.fpMoveItem(psiItem, psiDestinationFolder) ? S_FALSE : fpMoveItem(pThis,psiItem,psiDestinationFolder);
-}
-
-// The purpose of this hook is just to set other hooks.  It is disabled once the other hooks are set.
-HRESULT WINAPI DetourSHCreateShellFolderView(const SFV_CREATE* pcsfv, IShellView** ppsv) {
-    HRESULT ret = fpSHCreateShellFolderView(pcsfv, ppsv);
-    CComPtr<IShellView> psv(*ppsv);
-    if(SUCCEEDED(ret) && psv.Implements(IID_CDefView)) {
-
-        CREATE_COM_HOOK(pcsfv->psfvcb, 3, MessageSFVCB);
-
-        CComPtr<IShellView3> psv3;
-        if(psv3.QueryFrom(psv)) {
-            CREATE_COM_HOOK(psv3, 20, CreateViewWindow3);
-        }
-
-        CComPtr<IListControlHost> plch;
-        if(plch.QueryFrom(psv)) {
-            CREATE_COM_HOOK(plch, 3, OnActivateSelection);
-        }
-
-        // Disable this hook, no need for it anymore.
-        MH_DisableHook(&SHCreateShellFolderView);
-    }
-    return ret;
-}
-
-// The purpose of this hook is to work around Explorer's BeforeNavigate2 bug.  It allows QTTabBar
-// to be notified of navigations before they occur and have the chance to veto them.
-HRESULT WINAPI DetourBrowseObject(IShellBrowser* _this, PCUIDLIST_RELATIVE pidl, UINT wFlags) {
-    HWND hwnd;
-    LRESULT result = 0;
-    if(SUCCEEDED(_this->GetWindow(&hwnd))) {
-        HWND parent = GetParent(hwnd);
-        if(parent != 0) hwnd = parent;
-        result = SendMessage(hwnd, WM_BROWSEOBJECT, (WPARAM)(&wFlags), (LPARAM)pidl);
-    } 
-    return result == 0 ? fpBrowseObject(_this, pidl, wFlags) : S_FALSE;
-}
-
-// The purpose of this hook is to enable the Header In All Views functionality, if the user has 
-// opted to use it.
-HRESULT WINAPI DetourCreateViewWindow3(IShellView3* _this, IShellBrowser* psbOwner, IShellView* psvPrev, SV3CVW3_FLAGS dwViewFlags, FOLDERFLAGS dwMask, FOLDERFLAGS dwFlags, FOLDERVIEWMODE fvMode, const SHELLVIEWID* pvid, const RECT* prcView, HWND* phwndView) {
-    HWND hwnd;
-    LRESULT result = 0;
-    if(psbOwner != NULL && SUCCEEDED(psbOwner->GetWindow(&hwnd))) {
-        HWND parent = GetParent(hwnd);
-        if(parent != 0) hwnd = parent;
-        if(SendMessage(hwnd, WM_HEADERINALLVIEWS, 0, 0) != 0) {
-            dwMask |= FWF_NOHEADERINALLVIEWS;
-            dwFlags &= ~FWF_NOHEADERINALLVIEWS;
-        }
-    }
-    return fpCreateViewWindow3(_this, psbOwner, psvPrev, dwViewFlags, dwMask, dwFlags, fvMode, pvid, prcView, phwndView);
-}
-
-// The purpose of this hook is to notify QTTabBar whenever an Explorer refresh occurs.  This allows
-// the search box to be cleared.
-HRESULT WINAPI DetourMessageSFVCB(IShellFolderViewCB* _this, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    if(uMsg == 0x11 /* SFVM_LISTREFRESHED */ && wParam != 0) {
-        PostThreadMessage(GetCurrentThreadId(), WM_LISTREFRESHED, NULL, NULL);
-    }
-    return fpMessageSFVCB(_this, uMsg, wParam, lParam);
-}
-
-// The purpose of this hook is just to set another hook.  It is disabled once the other hook is set.
-LRESULT WINAPI DetourUiaReturnRawElementProvider(HWND hwnd, WPARAM wParam, LPARAM lParam, IRawElementProviderSimple* el) {
-    if(fpQueryInterface == NULL && (LONG)lParam == OBJID_CLIENT && SendMessage(hwnd, WM_ISITEMSVIEW, 0, 0) == 1) {
-        CREATE_COM_HOOK(el, 0, QueryInterface);
-        // Disable this hook, no need for it anymore.
-        MH_DisableHook(fpRealRREP);
-    }
-    return fpUiaReturnRawElementProvider(hwnd, wParam, lParam, el);
-}
-
-// The purpose of this hook is to work around kb2462524, aka the scrolling lag bug.
-HRESULT WINAPI DetourQueryInterface(IRawElementProviderSimple* _this, REFIID riid, void** ppvObject) {
-    return IsEqualIID(riid, __uuidof(IRawElementProviderAdviseEvents))
-            ? E_NOINTERFACE
-            : fpQueryInterface(_this, riid, ppvObject);
-}
-
-// The purpose of this hook is to make clearing a search go back to the original directory.
-HRESULT WINAPI DetourTravelToEntry(ITravelLogEx* _this, IUnknown* punk, ITravelLogEntry* ptle) {
-    CComPtr<IShellBrowser> psb;
-    LRESULT result = 0;
-    if(punk != NULL && psb.QueryFrom(punk)) {
-        HWND hwnd;
-        if(SUCCEEDED(psb->GetWindow(&hwnd))) {
-            HWND parent = GetParent(hwnd);
-            if(parent != 0) hwnd = parent;
-            UINT wFlags = SBSP_NAVIGATEBACK | SBSP_SAMEBROWSER;
-            result = SendMessage(parent, WM_BROWSEOBJECT, (WPARAM)(&wFlags), NULL);
-        }
-    }
-    return result == 0 ? fpTravelToEntry(_this, punk, ptle) : S_OK;
-}
-
-// The purpose of this hook is let QTTabBar handle activating the selection, so that recently
-// opened files can be logged (among other features).
-HRESULT WINAPI DetourOnActivateSelection(IListControlHost* _this, DWORD dwModifierKeys) {
-    CComPtr<IShellView> psv;
-    LRESULT result = 0;
-    if(psv.QueryFrom(_this)) {
-        HWND hwnd;
-        if(SUCCEEDED(psv->GetWindow(&hwnd))) {
-            result = SendMessage(hwnd, WM_ACTIVATESEL, (WPARAM)(&dwModifierKeys), 0);
-        }
-    }
-    return result == 0 ? fpOnActivateSelection(_this, dwModifierKeys) : S_OK;
-}
-
-// The purpose of this hook is to send the Breadcrumb Bar's internal DPA handle to QTTabBar,
-// so that we can use it map the buttons to their corresponding IDLs.  This allows middle-click
-// on the breadcrumb bar to work.  The DPA handle changes whenever this function is called.
-HRESULT WINAPI DetourSetNavigationState(IShellNavigationBand* _this, unsigned long state) {
-	HRESULT ret = fpSetNavigationState(_this, state);
-    // I find the idea of reading an internal private variable of an undocumented class to
-    // be quite unsettling.  Unfortunately, I see no way around it.  It's been in the same
-    // location since the first Vista release, so I guess it should be safe...
-    HDPA hdpa = (HDPA)(((void**)_this)[6]);
-    CComPtr<IOleWindow> pow;
-    if(pow.QueryFrom(_this)) {
-        HWND hwnd;
-        if(SUCCEEDED(pow->GetWindow(&hwnd))) {
-            SendMessage(hwnd, WM_BREADCRUMBDPA, NULL, (LPARAM)hdpa);
-        }
-    }
-    return ret;
-}
-
-// The purpose of this hook is to alert QTTabBar that a new window is opening, so that we can 
-// intercept it if the user has enabled the appropriate option.  The hooked function is different
-// on Vista and 7.
-HRESULT WINAPI DetourShowWindow_7(ICommonExplorerHost* _this, PCIDLIST_ABSOLUTE pidl, DWORD flags, POINT pt, DWORD mystery) {
-    return callbacks.fpNewWindow(pidl) ? S_OK : fpShowWindow_7(_this, pidl, flags, pt, mystery);
-}
-HRESULT WINAPI DetourShowWindow_Vista(IExplorerFactory* _this, PCIDLIST_ABSOLUTE pidl, DWORD flags, DWORD mystery1, DWORD mystery2, POINT pt) {
-    return callbacks.fpNewWindow(pidl) ? S_OK : fpShowWindow_Vista(_this, pidl, flags, mystery1, mystery2, pt);
-}
-
-// The SHOpenFolderAndSelectItems function opens an Explorer window and waits for a New Window
-// notification from IShellWindows.  The purpose of this hook is to wake up those threads by
-// faking such a notification.  It's important that it happens after IShellBrowser::OnNavigate is
-// called by the real Explorer window, which happens in IShellBrowserService::UpdateWindowList.
-HRESULT WINAPI DetourUpdateWindowList(/* IShellBrowserService */ IUnknown* _this) {
-    HRESULT hr = fpUpdateWindowList(_this);
-    CComPtr<IShellBrowser> psb;
-    LRESULT result = 0;
-    if(psb.QueryFrom(_this)) {
-        HWND hwnd;
-        if(SUCCEEDED(psb->GetWindow(&hwnd))) {
-            HWND parent = GetParent(hwnd);
-            if(parent != 0) hwnd = parent;
-            CComPtr<IDispatch> pdisp;
-            if(SendMessage(parent, WM_CHECKPULSE, NULL, (WPARAM)(&pdisp)) != 0 && pdisp != NULL) {
-                CComPtr<IShellWindows> psw;
-                if(psw.Create(CLSID_ShellWindows, CLSCTX_ALL)) {
-                    long cookie;
-                    if(SUCCEEDED(psw->Register(pdisp, (long)hwnd, SWC_EXPLORER, &cookie))) {
-                        psw->Revoke(cookie);
-                    }
-                }
-            }
-        }
-    }
-    return hr;
-}

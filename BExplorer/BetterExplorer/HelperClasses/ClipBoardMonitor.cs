@@ -92,7 +92,7 @@ namespace BetterExplorer
             {
                 // Swallow or pop-up, not sure
                 // Trace.Write(e.ToString());
-                MessageBox.Show(e.ToString());
+                //MessageBox.Show(e.ToString());
             }
         }
     }

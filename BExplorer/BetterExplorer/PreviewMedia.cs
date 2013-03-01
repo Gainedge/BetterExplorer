@@ -46,7 +46,7 @@ namespace BetterExplorer
             }
             try
             {
-                WindowsAPI.ShowWindow((int)this.Handle, 4);
+                WindowsAPI.ShowWindow(this.Handle, 4);
                 WindowsAPI.SetWindowPos(this.Handle, WindowsAPI.HWND_TOPMOST, Xpos + 2, Ypos + 2, 0, 0,
                                 WindowsAPI.SWP_NOSIZE | WindowsAPI.SWP_NOACTIVATE);
             }

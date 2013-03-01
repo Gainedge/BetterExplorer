@@ -41,7 +41,9 @@ namespace Microsoft.WindowsAPICodePack.Controls
 
                 if (eb.explorerBrowserControl != null)
                 {
+                    int intThumbnailSize = ThumbnailSize;
                     eb.explorerBrowserControl.SetFolderSettings(folderSettings);
+                    eb.ContentOptions.ThumbnailSize = intThumbnailSize;
                     eb.vViewChanged();
                 }
             }
@@ -260,16 +262,41 @@ namespace Microsoft.WindowsAPICodePack.Controls
 
         private void SetFlag(ExplorerBrowserContentSectionOptions flag, bool value)
         {
-            if (value)
-                folderSettings.Options |= (FolderOptions)flag;
-            else
-                folderSettings.Options = folderSettings.Options & ~(FolderOptions)flag;
 
-            if (eb.explorerBrowserControl != null)
-                eb.explorerBrowserControl.SetFolderSettings(folderSettings);
+          if (value) {
+            folderSettings.Options |= (FolderOptions)flag;
+          } else {
+            folderSettings.Options = folderSettings.Options & ~(FolderOptions)flag;
+          }
+          if (eb.explorerBrowserControl != null) {
+            eb.explorerBrowserControl.SetFolderSettings(folderSettings);
+
+          }
         }
 
         #endregion
+
+        private FolderViewMode CurrentView {
+          get {
+            int iconSize = 0;
+            int fvm = 0;
+            IFolderView2 iFV2 = eb.GetFolderView2();
+            if (iFV2 != null) {
+              try {
+                
+                HResult hr = iFV2.GetViewModeAndIconSize(out fvm, out iconSize);
+                if (hr != HResult.Ok) {
+                  throw new CommonControlException(LocalizedMessages.ExplorerBrowserIconSize, hr);
+                }
+              } finally {
+                Marshal.ReleaseComObject(iFV2);
+                iFV2 = null;
+              }
+            }
+
+            return (FolderViewMode)fvm;
+          }
+        }
 
         #region thumbnail size
         /// <summary>

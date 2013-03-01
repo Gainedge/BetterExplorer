@@ -33,7 +33,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
     public event FolderClickedHandler TreeViewClicked;
 
     private bool fDisposed;
-    private WindowsAPI.INameSpaceTreeControl treeControl;
+    private WindowsAPI.INameSpaceTreeControl2 treeControl;
     private NativeWindowController treeController;
     private NativeWindowController parentController;
     private bool fPreventSelChange;
@@ -43,7 +43,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
     /// </summary>
     /// <param name="hwnd">Handle of the control parent</param>
     /// <param name="treeControl">The real Treeview object</param>
-    public TreeViewWrapper(IntPtr hwnd, WindowsAPI.INameSpaceTreeControl treeControl) {
+    public TreeViewWrapper(IntPtr hwnd, WindowsAPI.INameSpaceTreeControl2 treeControl) {
       this.treeControl = treeControl;
       treeController = new NativeWindowController(hwnd);
       treeController.MessageCaptured += TreeControl_MessageCaptured;

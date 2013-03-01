@@ -34,6 +34,7 @@ using ContextMenu = Fluent.ContextMenu;
 using System.Globalization;
 using NAppUpdate.Framework;
 using BetterExplorerControls;
+using Microsoft.WindowsAPICodePack.Shell.FileOperations;
 
 
 namespace BetterExplorer
@@ -513,7 +514,6 @@ namespace BetterExplorer
 			//timerv.Interval = new TimeSpan(0, 0, 7);
 			//timerv.IsEnabled = true;
 			//timerv.Tick += new EventHandler(timerv_Tick);
-
 			searchcicles++;
 			//BeforeSearcCicles = searchcicles;
             Thread t = new Thread(() =>
@@ -704,7 +704,7 @@ namespace BetterExplorer
 
 									btnGroup.Items.Add(misag);
 									btnGroup.Items.Add(misdg);
-
+                  IsViewSelection = false;
 									int i = Explorer.ContentOptions.ThumbnailSize;
 									if (Explorer.ContentOptions.ThumbnailSize == 256)
 									{
@@ -756,13 +756,16 @@ namespace BetterExplorer
 									{
 										inRibbonGallery1.SelectedIndex = 7;
 									}
+                  IsViewSelection = true;
 								}
+                
 			));
             });
             //t.IsBackground = true;
             t.Start();
             Explorer.ContentOptions.CheckSelect = this.isCheckModeEnabled;
-			Explorer.ExplorerSetFocus();
+      if (this.OwnedWindows.OfType<FileOperationDialog>().Count() == 0)
+			  Explorer.ExplorerSetFocus();
 			GC.WaitForFullGCComplete();
 			GC.Collect();
 		}
@@ -822,6 +825,7 @@ namespace BetterExplorer
 		FileSystemWatcher fsw_AC;
 		void ExplorerBrowserControl_NavigationComplete(object sender, NavigationCompleteEventArgs e)
 		{
+
       Thread t = new Thread(() => 
       {
 			    try
@@ -1312,7 +1316,8 @@ namespace BetterExplorer
 											" items";
 
 			if (IsAfterRename)
-				Explorer.ExplorerSetFocus();
+        if (this.OwnedWindows.OfType<FileOperationDialog>().Count() == 0)
+				  Explorer.ExplorerSetFocus();
 
 			if (IsAfterFolderCreate)
 			{
@@ -1620,7 +1625,8 @@ namespace BetterExplorer
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
                          (ThreadStart)(() =>
                          {
-                             if (IsViewSelection)
+                             //if (IsViewSelection)
+                           IsViewSelection = false;
                              {
                                  if (e.ThumbnailSize == 256)
                                  {
@@ -1678,6 +1684,7 @@ namespace BetterExplorer
 
                                  btnAutosizeColls.IsEnabled = e.View == ExplorerBrowserViewMode.Details ? true : false;
                              }
+                             IsViewSelection = true;
                          }));
 
 		}
@@ -1773,7 +1780,8 @@ namespace BetterExplorer
 			            if (IsAfterRename)
 			            {
 				            //breadcrumbBarControl1.ExitEditMode();
-				            Explorer.Focus();
+                    if (this.OwnedWindows.OfType<FileOperationDialog>().Count() == 0)
+				              Explorer.Focus();
 			            }
 			            if (ctgSearch.Visibility == System.Windows.Visibility.Visible && !Explorer.NavigationLog.CurrentLocation.IsSearchFolder)
 			            {
@@ -2371,7 +2379,8 @@ namespace BetterExplorer
 					        }
 				        }
                 if (IsAfterRename)
-                  Explorer.ExplorerSetFocus();
+                  if (this.OwnedWindows.OfType<FileOperationDialog>().Count() == 0)
+                    Explorer.ExplorerSetFocus();
 
 			        }));
             });
@@ -2380,7 +2389,8 @@ namespace BetterExplorer
 			IsSelectionRized = false;
 
 			if (IsAfterRename)
-				Explorer.ExplorerSetFocus();
+        if (this.OwnedWindows.OfType<FileOperationDialog>().Count() == 0)
+				  Explorer.ExplorerSetFocus();
 
 		}
 		bool IsFromSelectionOrNavigation = false;
@@ -2991,7 +3001,7 @@ namespace BetterExplorer
 
 		private void btnPaste_Click(object sender, RoutedEventArgs e)
 		{
-			DropData PasteData = new DropData();
+      FileOperationsData PasteData = new FileOperationsData();
 			PasteData.DropList = System.Windows.Forms.Clipboard.GetFileDropList();
 			if (Explorer.SelectedItems.Count > 0 & Explorer.SelectedItems.Count < 2)
 			{
@@ -3227,7 +3237,7 @@ namespace BetterExplorer
 
 		private void btnctDocuments_Click(object sender, RoutedEventArgs e)
 		{
-			DropData dd = new DropData();
+			FileOperationsData dd = new FileOperationsData();
 			dd.Shellobjects = Explorer.SelectedItems;
 			dd.PathForDrop = KnownFolders.Documents.ParsingName;
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
@@ -3238,7 +3248,7 @@ namespace BetterExplorer
 
 		private void btnctDesktop_Click(object sender, RoutedEventArgs e)
 		{
-			DropData dd = new DropData();
+			FileOperationsData dd = new FileOperationsData();
 			dd.Shellobjects = Explorer.SelectedItems;
 			dd.PathForDrop = KnownFolders.Desktop.ParsingName;
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
@@ -3249,7 +3259,7 @@ namespace BetterExplorer
 
 		private void btnctDounloads_Click(object sender, RoutedEventArgs e)
 		{
-			DropData dd = new DropData();
+			FileOperationsData dd = new FileOperationsData();
 			dd.Shellobjects = Explorer.SelectedItems;
 			dd.PathForDrop = KnownFolders.Downloads.ParsingName;
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
@@ -3260,7 +3270,7 @@ namespace BetterExplorer
 
 		private void btnmtDocuments_Click(object sender, RoutedEventArgs e)
 		{
-			DropData dd = new DropData();
+			FileOperationsData dd = new FileOperationsData();
 			dd.Shellobjects = Explorer.SelectedItems;
 			dd.PathForDrop = KnownFolders.Documents.ParsingName;
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
@@ -3271,7 +3281,7 @@ namespace BetterExplorer
 
 		private void btnmtDesktop_Click(object sender, RoutedEventArgs e)
 		{
-			DropData dd = new DropData();
+			FileOperationsData dd = new FileOperationsData();
 			dd.Shellobjects = Explorer.SelectedItems;
 			dd.PathForDrop = KnownFolders.Desktop.ParsingName;
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
@@ -3282,7 +3292,7 @@ namespace BetterExplorer
 
 		private void btnmtDounloads_Click(object sender, RoutedEventArgs e)
 		{
-			DropData dd = new DropData();
+			FileOperationsData dd = new FileOperationsData();
 			dd.Shellobjects = Explorer.SelectedItems;
 			dd.PathForDrop = KnownFolders.Downloads.ParsingName;
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
@@ -3297,7 +3307,7 @@ namespace BetterExplorer
 			dlg.IsFolderPicker = true;
 			if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
 			{
-				DropData dd = new DropData();
+				FileOperationsData dd = new FileOperationsData();
 				dd.Shellobjects = Explorer.SelectedItems;
 				dd.PathForDrop = dlg.FileName;
 				Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
@@ -3313,7 +3323,7 @@ namespace BetterExplorer
 			dlg.IsFolderPicker = true;
 			if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
 			{
-				DropData dd = new DropData();
+				FileOperationsData dd = new FileOperationsData();
 				dd.Shellobjects = Explorer.SelectedItems;
 				dd.PathForDrop = dlg.FileName;
 				Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
@@ -3741,7 +3751,7 @@ namespace BetterExplorer
 
 	  public MainWindow() {
 
-      //ExplorerBrowser.IsCustomDialogs = true;
+      ExplorerBrowser.IsCustomDialogs = true;
 			CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, ERNewTab);
 			this.CommandBindings.Add(cbnewtab);
 			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, ERGoToBCCombo);
@@ -5154,8 +5164,7 @@ namespace BetterExplorer
 
 		private void inRibbonGallery1_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-            //if (IsViewSelection)
-            IsViewSelection = true;
+            if (IsViewSelection)
             {
                 switch (inRibbonGallery1.SelectedIndex)
                 {
@@ -5193,7 +5202,6 @@ namespace BetterExplorer
                     default:
                         break;
                 }
-                IsViewSelection = false;
             }
 
 		}
@@ -6632,7 +6640,7 @@ namespace BetterExplorer
 					e.Effects = DragDropEffects.Copy;
 					if (e.Data.GetDataPresent(DataFormats.FileDrop))
 					{
-						DropData PasteData = new DropData();
+						FileOperationsData PasteData = new FileOperationsData();
 						String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
 						StringCollection scol = new StringCollection();
 						scol.AddRange(collection);
@@ -6653,7 +6661,7 @@ namespace BetterExplorer
 					e.Effects = DragDropEffects.Move;
 					if (e.Data.GetDataPresent(DataFormats.FileDrop))
 					{
-						DropData PasteData = new DropData();
+						FileOperationsData PasteData = new FileOperationsData();
 						String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
 						StringCollection scol = new StringCollection();
 						scol.AddRange(collection);
@@ -6672,7 +6680,7 @@ namespace BetterExplorer
 					//    e.Effects = DragDropEffects.Copy;
 					//    if (e.Data.GetDataPresent(DataFormats.FileDrop))
 					//    {
-					//        DropData PasteData = new DropData();
+					//        FileOperationsData PasteData = new FileOperationsData();
 					//        String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
 					//        StringCollection scol = new StringCollection();
 					//        scol.AddRange(collection);
@@ -7452,7 +7460,7 @@ namespace BetterExplorer
 		void mimc_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem mi = sender as MenuItem;
-			DropData dd = new DropData();
+			FileOperationsData dd = new FileOperationsData();
 			dd.Shellobjects = Explorer.SelectedItems;
 			dd.PathForDrop = (mi.Tag as ShellObject).ParsingName;
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
@@ -7463,7 +7471,7 @@ namespace BetterExplorer
 		void mim_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem mi = sender as MenuItem;
-			DropData dd = new DropData();
+			FileOperationsData dd = new FileOperationsData();
 			dd.Shellobjects = Explorer.SelectedItems;
 			dd.PathForDrop = (mi.Tag as ShellObject).ParsingName;
 			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
@@ -8116,7 +8124,7 @@ namespace BetterExplorer
 						e.Effects = DragDropEffects.Copy;
 						if (e.Data.GetDataPresent(DataFormats.FileDrop))
 						{
-							DropData PasteData = new DropData();
+							FileOperationsData PasteData = new FileOperationsData();
 							String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
 							StringCollection scol = new StringCollection();
 							scol.AddRange(collection);
@@ -8136,7 +8144,7 @@ namespace BetterExplorer
 						e.Effects = DragDropEffects.Move;
 						if (e.Data.GetDataPresent(DataFormats.FileDrop))
 						{
-							DropData PasteData = new DropData();
+							FileOperationsData PasteData = new FileOperationsData();
 							String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
 							StringCollection scol = new StringCollection();
 							scol.AddRange(collection);
@@ -8154,7 +8162,7 @@ namespace BetterExplorer
 						//    e.Effects = DragDropEffects.Copy;
 						//    if (e.Data.GetDataPresent(DataFormats.FileDrop))
 						//    {
-						//        DropData PasteData = new DropData();
+						//        FileOperationsData PasteData = new FileOperationsData();
 						//        String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
 						//        StringCollection scol = new StringCollection();
 						//        scol.AddRange(collection);
@@ -8583,6 +8591,10 @@ namespace BetterExplorer
 		}
 
 		#endregion
+
+    private void inRibbonGallery1_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
+      IsViewSelection = true;
+    }
 
 	}
 }

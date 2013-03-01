@@ -21,15 +21,19 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Interop;
 using FileOperations;
 using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 using Microsoft.WindowsAPICodePack.Shell;
+using Microsoft.WindowsAPICodePack.Shell.FileOperations;
 using WindowsHelper;
 
 namespace Microsoft.WindowsAPICodePack.Controls {
-    static class HookLibManager {
+    class HookLibManager {
       public static bool IsCustomDialog = false;
+      //public static ExplorerBrowser Browser;
         private static IntPtr hHookLib;
         private static int[] hookStatus = Enumerable.Repeat(-1, Enum.GetNames(typeof(Hooks)).Length).ToArray();
         
@@ -54,9 +58,6 @@ namespace Microsoft.WindowsAPICodePack.Controls {
             public CopyItemCallback cbMoveItem;
             public RenameItemCallback cbRenameItem;
             public DeleteItemCallback cbDeleteItem;
-            
-            // TODO: NewTreeView should probably also go here.
-            // Using PostThreadMessage has a small chance of causing a memory leak.
         }
 
         private static readonly CallbackStruct callbackStruct = new CallbackStruct() {
@@ -69,21 +70,16 @@ namespace Microsoft.WindowsAPICodePack.Controls {
         };
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-        private delegate int InitShellBrowserHookDelegate(IntPtr shellBrowser);
-        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate int InitHookLibDelegate(CallbackStruct fpHookResult);
 
         public enum HookCheckPoint{
             Initial,
-            ShellBrowser,
-            NewWindow,
-            Automation,
         }
 
         // Unmarked hooks exist only to set other hooks.
         private enum Hooks {
-            CoCreateInstance = 0,           // Treeview Middle-click
-            RegisterDragDrop,               // DragDrop into SubDirTips
+            CoCreateInstance = 0,           // Treeview Middle-click; FileCopyOperations
+            RegisterDragDrop,               // DragDrop
             SHCreateShellFolderView,
             BrowseObject,                   // Control Panel dialog OK/Cancel buttons
             CreateViewWindow3,              // Header in all Views
@@ -136,52 +132,162 @@ namespace Microsoft.WindowsAPICodePack.Controls {
             }
         }
 
+
+        private static void DoCopy(object Data) {
+          FileOperationsData FileData = (FileOperationsData)Data;
+          if (FileData.ItemsForDrop != null) {
+            using (FileOperations.FileOperation fileOp = new FileOperations.FileOperation()) {
+              foreach (ShellObject item in FileData.ItemsForDrop) {
+
+                string New_Name = "";
+                if (Path.GetExtension(item.ParsingName) == "") {
+
+                  New_Name = item.GetDisplayName(DisplayNameType.Default);
+                } else {
+                  New_Name = Path.GetFileName(item.ParsingName);
+                }
+                fileOp.CopyItem(item.ParsingName, FileData.PathForDrop, New_Name);
+              }
+
+              fileOp.PerformOperations();
+            }
+          }
+        }
+
+        private static void DoMove(object Data) {
+          FileOperationsData FileData = (FileOperationsData)Data;
+          if (FileData.ItemsForDrop != null) {
+            using (FileOperations.FileOperation fileOp = new FileOperations.FileOperation()) {
+              foreach (ShellObject item in FileData.ItemsForDrop) {
+
+                string New_Name = "";
+                if (Path.GetExtension(item.ParsingName) == "") {
+
+                  New_Name = item.GetDisplayName(DisplayNameType.Default);
+                } else {
+                  New_Name = Path.GetFileName(item.ParsingName);
+                }
+                fileOp.MoveItem(item.ParsingName, FileData.PathForDrop, New_Name);
+              }
+
+              fileOp.PerformOperations();
+            }
+          }
+        }
+
       private static bool CopyItem(IntPtr SourceItems,IntPtr DestinationFolder) {
+        if (!IsCustomDialog)
+          return false;
+
         object destinationObject = Marshal.GetObjectForIUnknown(DestinationFolder);
         object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
-
-        //IntPtr z = IntPtr.Zero;
-        //Guid j = new Guid("0000010E-0000-0000-C000-000000000046");
-        //Marshal.QueryInterface(item,ref j,out z);
-
         var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
         var DestinationLocation = ShellObjectFactory.Create((IShellItem)destinationObject);
-        return IsCustomDialog;
+        Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation tempWindow = new Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation(SourceItemsCollection, DestinationLocation);
+        var currentDialog = System.Windows.Application.Current.MainWindow.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
+        if (currentDialog == null) {
+          currentDialog = new FileOperationDialog();
+          tempWindow.ParentContents = currentDialog;
+          currentDialog.Owner = System.Windows.Application.Current.MainWindow;
+          tempWindow.Visibility = System.Windows.Visibility.Collapsed;
+          currentDialog.Contents.Add(tempWindow);
+        } else {
+          tempWindow.ParentContents = currentDialog;
+          tempWindow.Visibility = System.Windows.Visibility.Collapsed;
+          currentDialog.Contents.Add(tempWindow);
+        }
+        return true;
+      }
+
+      private static void ThreadStartingPoint(object parameter) {
+        //var parameters = (Tuple<ShellObject[], ShellObject>)parameter;
+        //FileOperationDialog tempWindow = new FileOperationDialog();
+        //tempWindow.SourceItemsCollection = parameters.Item1;
+        //tempWindow.DestinationLocation = parameters.Item2;
+        //tempWindow.Show();
+        //System.Windows.Threading.Dispatcher.Run();
       }
 
       private static bool MoveItem(IntPtr SourceItems, IntPtr DestinationFolder) {
+        if (!IsCustomDialog)
+          return false;
+
         object destinationObject = Marshal.GetObjectForIUnknown(DestinationFolder);
         object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
-
-        //IntPtr z = IntPtr.Zero;
-        //Guid j = new Guid("0000010E-0000-0000-C000-000000000046");
-        //Marshal.QueryInterface(item,ref j,out z);
-
         var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
         var DestinationLocation = ShellObjectFactory.Create((IShellItem)destinationObject);
-        return IsCustomDialog;
+        Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation tempWindow = new Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation(SourceItemsCollection, DestinationLocation,OperationType.Move);
+        var currentDialog = System.Windows.Application.Current.MainWindow.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
+        if (currentDialog == null) {
+          currentDialog = new FileOperationDialog();
+          currentDialog.Owner = System.Windows.Application.Current.MainWindow;
+          currentDialog.Contents.Add(tempWindow);
+        } else {
+          currentDialog.Contents.Add(tempWindow);
+        }
+        return true;
       }
 
       private static bool RenameItem(IntPtr SourceItems, String DestinationName) {
-        object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
+        //object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
 
         //IntPtr z = IntPtr.Zero;
         //Guid j = new Guid("0000010E-0000-0000-C000-000000000046");
         //Marshal.QueryInterface(item,ref j,out z);
 
-        var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
-        return IsCustomDialog;
+        //var SourceItem = ShellObjectFactory.Create((IShellItem)sourceObject);
+
+        //if (SourceItem.IsFolder && SourceItem.Properties.System.FileExtension.Value == null) {
+        //  Directory.Move(SourceItem.ParsingName, Path.Combine(SourceItem.Parent.ParsingName, DestinationName));
+        //} else {
+        //  File.Move(SourceItem.ParsingName, Path.Combine(SourceItem.Parent.ParsingName, DestinationName));
+        //}
+        //
+        return false;
       }
 
       private static bool DeleteItem(IntPtr SourceItems) {
-        object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
+        //if (!IsCustomDialog)
+        //  return false;
+        //object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
 
         //IntPtr z = IntPtr.Zero;
         //Guid j = new Guid("0000010E-0000-0000-C000-000000000046");
         //Marshal.QueryInterface(item,ref j,out z);
 
-        var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
-        return IsCustomDialog;
+        //var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
+        //if (Control.ModifierKeys == Keys.Shift) {
+        //  Thread MoveThread = new Thread(new ParameterizedThreadStart(DoDelete));
+        //  MoveThread.SetApartmentState(ApartmentState.STA);
+        //  MoveThread.Start(SourceItemsCollection);
+        //} else {
+        //  DeleteToRecycleBin(SourceItemsCollection);
+        //}
+        return false;//IsCustomDialog;
+      }
+
+      public static void DeleteToRecycleBin(ShellObject[] SelectedItems) {
+        string Files = "";
+        foreach (ShellObject selectedItem in SelectedItems) {
+          if (Files == "") {
+            Files = selectedItem.ParsingName;
+          } else
+            Files = String.Format("{0}\0{1}", Files, selectedItem.ParsingName);
+        }
+        RecybleBin.Send(Files);
+      }
+
+      public static void DoDelete(object Data) {
+        ShellObject[] DataDelete = (ShellObject[])Data;
+
+        using (FileOperations.FileOperation fileOp = new FileOperations.FileOperation()) {
+          foreach (ShellObject item in DataDelete) {
+            fileOp.DeleteItem(item.ParsingName);
+          }
+
+          fileOp.PerformOperations();
+        }
+
       }
         
 
