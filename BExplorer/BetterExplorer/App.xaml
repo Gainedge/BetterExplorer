@@ -23,6 +23,9 @@
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.nl-NL.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.cs-CZ.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.ja-JP.xaml"/>
+                <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.hu-HU.xaml"/>
+                <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.vi-VN.xaml"/>
+                <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.uk-UA.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/DefaultLocale.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

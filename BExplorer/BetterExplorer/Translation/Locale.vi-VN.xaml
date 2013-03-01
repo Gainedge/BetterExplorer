@@ -151,7 +151,7 @@
     <system:String x:Key="btnNavigationTCP">Khung điều hướng</system:String>
     <system:String x:Key="btnNavigationTTX">Hiển thị hoặc ẩn khung điều hướng ở phía bên trái của khung, trong đó liệt kê các thư mục, thư viện, và ổ đĩa.</system:String>
     <system:String x:Key="btnInfoCP">Khung Chi tiết</system:String>
-    <system:String x:Key="btnInfoTCP"Khung Chi tiết </system:String>
+    <system:String x:Key="btnInfoTCP">Khung Chi tiết</system:String>
     <system:String x:Key="btnInfoTTX">Hiển thị hoặc ẩn khung chi tiết, hiển thị thêm thông tin về các mục đã chọn.</system:String>
     <system:String x:Key="btnPreviewCP">Xem trước Khung</system:String>
     <system:String x:Key="btnPreviewTCP"> Xem trước Khung</system:String>
@@ -333,7 +333,7 @@
     <system:String x:Key="txtIsAfter">sau</system:String>
     <system:String x:Key="txtDateIs">cũng giống như</system:String>
     <system:String x:Key="txtRemoveFilter">Để loại bỏ bộ lọc, để trống tất cả các giá trị</system:String>
-    <system:String x:Key="txtSetFilter">Thiết lập <giá trị> bộ lọc:</system:String>
+    <system:String x:Key="txtSetFilter">Thiết lập (giá trị) bộ lọc:</system:String>
     <system:String x:Key="txtCurrentValue">Giá trị Hiện tại:</system:String>
     <system:String x:Key="txtSelect">Chọn</system:String>
     <system:String x:Key="txtCancel">Hủy</system:String>

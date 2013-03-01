@@ -672,20 +672,6 @@
                                                            Icon="Images\open16.png"
                                                            Ribbon:KeyTip.Keys="H" />
                                         </Border>
-                                        <Label Name="paddinglbl9" Content="         " />
-                                        <Ribbon:SeparatorTabItem Margin="0,0,0,15" Header="{StaticResource txtImageEditing}" />
-                                        <Ribbon:CheckBox Name="chkOverwriteImages"
-                                                         Checked="chkOverwriteImages_Checked"
-                                                         Header="{StaticResource chkEditOverwrite}"
-                                                         Ribbon:KeyTip.Keys="V"
-                                                         Unchecked="chkOverwriteImages_Unchecked">
-                                            <Ribbon:CheckBox.ToolTip>
-                                                <Ribbon:ScreenTip Title="{StaticResource chkEditOverwrite}"
-                                                                  Width="250"
-                                                                  IsRibbonAligned="false"
-                                                                  Text="When you rotate or flip an image, BetterExplorer saves the rotated or flipped image as a new file by default. If this is checked, BetterExplorer will instead overwrite this file, causing you to lose all previous data associated with it." />
-                                            </Ribbon:CheckBox.ToolTip>
-                                        </Ribbon:CheckBox>
                                     </StackPanel>
                                 </TabItem>
                                 <TabItem Header="{StaticResource tabLanguageCP}"
@@ -722,7 +708,7 @@
                                                                               LanguageText="Chinese (Traditional)"
                                                                               LocaleCode="zh-TW"
                                                                               UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="csCSLang"
+                                            <controls:TranslationComboBoxItem x:Name="csCZLang"
                                                                               LanguageText="Czech"
                                                                               LocaleCode="cs-CZ"
                                                                               UsesRTL="False" />
@@ -745,6 +731,10 @@
                                             <controls:TranslationComboBoxItem x:Name="deDELang"
                                                                               LanguageText="German"
                                                                               LocaleCode="de-DE"
+                                                                              UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem x:Name="huHULang"
+                                                                              LanguageText="Hungarian"
+                                                                              LocaleCode="hu-HU"
                                                                               UsesRTL="False" />
                                             <controls:TranslationComboBoxItem x:Name="itITLang"
                                                                               LanguageText="Italian"
@@ -778,6 +768,14 @@
                                                                               LanguageText="Turkish"
                                                                               LocaleCode="tr-TR"
                                                                               UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem x:Name="ukUALang"
+                                                                              LanguageText="Ukrainian"
+                                                                              LocaleCode="uk-UA"
+                                                                              UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem x:Name="viVNLang"
+                                                                              LanguageText="Vietnamese"
+                                                                              LocaleCode="vi-VN"
+                                                                              UsesRTL="False" />
                                         </ComboBox>
                                         <Label Name="lblLocale"
                                                Margin="0,5,0,0"
@@ -798,23 +796,26 @@
                                                        TextDecorations="Underline" />
                                         </Button>
                                         <TextBlock Margin="0,10,0,5" Text="{StaticResource txtTranslationCredits}" />
-                                        <TextBlock Text="English: JaykeBird (Jayke R. Huempfner) and Dimitar Tsenev" />
                                         <TextBlock Text="Bulgarian: Dimitar Tsenev" />
-                                        <TextBlock Text="Spanish: JMBolivar (José Miguel Bolivar)" />
-                                        <TextBlock Text="Portuguese: Cléverson" />
-                                        <TextBlock Text="Finnish: Osku598 (Oskar Bredin)" />
-                                        <TextBlock Text="Turkish: Cengizhan and Loungedy" />
-                                        <TextBlock Text="German: Stefan (Stefan Klebs), Florian0901, and Daniel Will" />
+                                        <TextBlock Text="Chinese: Robin Zhang, Diluka W, lrh3321, ky911223" />
                                         <TextBlock Text="Croatian: Smeker (Danijel Levak)" />
-                                        <TextBlock Text="French: Pascal Huau and Xanax" />
-                                        <TextBlock Text="Italian: Gianluigi Meraviglia and JaykeBird (Jayke R. Huempfner)" />
-                                        <TextBlock Text="Russian: Loungedy" />
-                                        <TextBlock Text="Chinese: lrh3321 and ky911223" />
-                                        <TextBlock Text="Polish: VorbisMastah and Krzysztof" />
-                                        <TextBlock Text="Swedish: toando1 and masterjaz" />
-                                        <TextBlock Text="Dutch: Pink-ET" />
-                                        <TextBlock Text="Japanse: Kensuke Sasaki" />
                                         <TextBlock Text="Czech: Stanislav Pokorný" />
+                                        <TextBlock Text="Dutch: Pink-ET" />
+                                        <TextBlock Text="English: JaykeBird (Jayke R. Huempfner), Dimitar Tsenev" />
+                                        <TextBlock Text="Finnish: Osku598 (Oskar Bredin)" />
+                                        <TextBlock Text="French: Xanax (Sebastien Kerguen), Pascal Huau, reno2012" />
+                                        <TextBlock Text="German: Stefan (Stefan Klebs), Markus Lang, Florian0901, Piotrex, Daniel Will" />
+                                        <TextBlock Text="Hungarian: lostprophet (Brechler Zsolt)" />
+                                        <TextBlock Text="Italian: Gianluigi Meraviglia, eagleman, inshilon, JaykeBird (Jayke R. Huempfner)" />
+                                        <TextBlock Text="Japanse: Kensuke Sasaki" />
+                                        <TextBlock Text="Polish: VorbisMastah, Krzysztof, pbl3" />
+                                        <TextBlock Text="Portuguese: Cléverson, brenochamie, unforgiving" />
+                                        <TextBlock Text="Russian: Loungedy, olerapx" />
+                                        <TextBlock Text="Spanish: JMBolivar (José Miguel Bolivar)" />
+                                        <TextBlock Text="Swedish: toando1, masterjaz, samosante" />
+                                        <TextBlock Text="Turkish: Cengizhan, Loungedy" />
+                                        <TextBlock Text="Ukrainian: Venorme" />
+                                        <TextBlock Text="Vietnamese: 7on7off" />
                                         <!--
                                             <Ribbon:SeparatorTabItem Header="Remove Setting" Visibility="Hidden"/>
                                             <TextBlock TextWrapping="Wrap" HorizontalAlignment="Left" Margin="0,0,60,0" Visibility="Hidden"
@@ -1035,7 +1036,7 @@
                                                 </Ribbon:CheckBox>
                                                 <Image Source="Images\uac16.png" />
                                             </StackPanel>
-                                            <Ribbon:SeparatorTabItem Margin="0,0,0,5" Header="{StaticResource sepOptionalCP}" />
+                                            <Ribbon:SeparatorTabItem Margin="0,0,0,5" Header="{StaticResource sepOptionalCP}" Visibility="Collapsed" />
                                             <Ribbon:CheckBox Name="chkIsFlyout"
                                                              Margin="0,0,0,10"
                                                              Checked="chkIsFlyout_Checked"
@@ -1050,7 +1051,20 @@
                                                                       Text="Display a small box as you move your mouse above files (this is part of a feature that has not been completed yet)" />
                                                 </Ribbon:CheckBox.ToolTip>
                                             </Ribbon:CheckBox>
-                                            
+                                            <Ribbon:SeparatorTabItem Margin="0,0,0,5" Header="{StaticResource txtImageEditing}" />
+                                            <Ribbon:CheckBox Name="chkOverwriteImages"
+                                                         Checked="chkOverwriteImages_Checked"
+                                                         Header="{StaticResource chkEditOverwrite}"
+                                                         Ribbon:KeyTip.Keys="V"
+                                                         Margin="0,0,0,10"
+                                                         Unchecked="chkOverwriteImages_Unchecked">
+                                                <Ribbon:CheckBox.ToolTip>
+                                                    <Ribbon:ScreenTip Title="{StaticResource chkEditOverwrite}"
+                                                                  Width="250"
+                                                                  IsRibbonAligned="false"
+                                                                  Text="When you rotate or flip an image, BetterExplorer saves the rotated or flipped image as a new file by default. If this is checked, BetterExplorer will instead overwrite this file, causing you to lose all previous data associated with it." />
+                                                </Ribbon:CheckBox.ToolTip>
+                                            </Ribbon:CheckBox>
                                         </StackPanel>
                                     </Grid>
                                 </TabItem>
@@ -1100,21 +1114,33 @@
                                         <TextBlock Margin="5,165,0,0"
                                                    HorizontalAlignment="Left"
                                                    VerticalAlignment="Top"
-                                                   Text="{StaticResource lblDefSavedTabsLocCP}" />
-                                        <TextBox x:Name="txtDefSaveTabs"
-                                                 Width="300"
-                                                 Margin="10,180,0,0"
-                                                 HorizontalAlignment="Left"
-                                                 VerticalAlignment="Top"
-                                                 Text="" />
-                                        <TextBlock Margin="10,200,0,0"
+                                                   Text="{StaticResource lblDefSavedTabsLocCP}"
+                                                   Visibility="Collapsed" />
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5,180,0,0">
+                                            <Ribbon:TextBox x:Name="txtDefSaveTabs"
+                                                     Width="450"
+                                                     IsReadOnly="True"
+                                                     Header="{StaticResource lblDefSavedTabsLocCP}"
+                                                     Text="" />
+                                            <Ribbon:Button Name="btnChangeTabsFolder"
+                                                           Width="Auto"
+                                                           Height="22"
+                                                           BorderBrush="Black"
+                                                           BorderThickness="1"
+                                                           Click="btnChangeTabsFolder_Click"
+                                                           Header="{StaticResource txtBrowse}"
+                                                           Icon="Images\browsefldr16.png"
+                                                           Padding="5,0,5,0"
+                                                           Ribbon:KeyTip.Keys="T" />
+                                        </StackPanel>
+                                        <TextBlock Margin="10,210,0,0"
                                                    HorizontalAlignment="Left"
                                                    VerticalAlignment="Top"
-                                                   Text="lblSavedTabsWarningCP" />
-                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,230,0,0"
+                                                   Text="{StaticResource lblSavedTabsWarningCP}" />
+                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,240,0,0"
                                                                  Header="Actions"
                                                                  Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Ribbon:CheckBox x:Name="chkIsLastTabCloseApp" Click="chkIsLastTabCloseApp_Click"  Header="Closing last Tab closes Application" Margin="7,265,0,0" VerticalAlignment="Top" Height="22"/>
+                                        <Ribbon:CheckBox x:Name="chkIsLastTabCloseApp" Click="chkIsLastTabCloseApp_Click"  Header="Closing last Tab closes Application" Margin="7,275,0,0" VerticalAlignment="Top" Height="22"/>
                                     </Grid>
                                 </TabItem>
                             </TabControl>

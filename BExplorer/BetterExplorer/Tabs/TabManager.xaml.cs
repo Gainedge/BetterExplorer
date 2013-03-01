@@ -28,11 +28,26 @@ namespace BetterExplorer.Tabs
             InitializeComponent();
         }
 
+        public MainWindow MainForm;
+
         private string GetDefaultLocation()
         {
             RegistryKey rk = Registry.CurrentUser;
             RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
-            return rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+            string df = rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+            rk.Close();
+            rks.Close();
+            return df;
+        }
+
+        private string GetSavedTabsLocation()
+        {
+            RegistryKey rk = Registry.CurrentUser;
+            RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
+            string df = rks.GetValue(@"SavedTabsDirectory", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\").ToString();
+            rk.Close();
+            rks.Close();
+            return df;
         }
 
         private string GetExtension(string file)
@@ -57,7 +72,7 @@ namespace BetterExplorer.Tabs
         public List<string> LoadListOfTabListFiles()
         {
             List<string> o = new List<string>();
-            foreach (string item in Directory.GetFiles(sstdir))
+            foreach (string item in Directory.GetFiles(GetSavedTabsLocation()))
             {
                 ShellObject obj = ShellObject.FromParsingName(item);
                 o.Add(RemoveExtensionsFromFile(obj.GetDisplayName(DisplayNameType.Default), GetExtension(item)));
@@ -109,8 +124,8 @@ namespace BetterExplorer.Tabs
 	        }
 
             (sender as SavedTabsListGalleryItem).SetSelected();
-            tabListEditor1.ImportSavedTabList(SavedTabsList.LoadTabList(sstdir + e.PathString + ".txt"));
-            selfile = sstdir + e.PathString + ".txt";
+            tabListEditor1.ImportSavedTabList(SavedTabsList.LoadTabList(GetSavedTabsLocation() + e.PathString + ".txt"));
+            selfile = GetSavedTabsLocation() + e.PathString + ".txt";
             //MessageBox.Show(sstdir + e.PathString + ".txt");
             //throw new NotImplementedException();
         }
@@ -132,7 +147,7 @@ namespace BetterExplorer.Tabs
             o.ShowDialog();
             if (o.dialogresult == true)
             {
-                SavedTabsList.SaveTabList(SavedTabsList.CreateFromString(GetDefaultLocation()), sstdir + o.textBox1.Text + ".txt");
+                SavedTabsList.SaveTabList(SavedTabsList.CreateFromString(GetDefaultLocation()), GetSavedTabsLocation() + o.textBox1.Text + ".txt");
                 RefreshListAndLoad(sstdir + o.textBox1.Text + ".txt");
             }
         }
@@ -143,7 +158,7 @@ namespace BetterExplorer.Tabs
             o.ShowDialog();
             if (o.dialogresult == true)
             {
-                SavedTabsList.SaveTabList(tabListEditor1.ExportSavedTabList(), sstdir + o.textBox1.Text + ".txt");
+                SavedTabsList.SaveTabList(tabListEditor1.ExportSavedTabList(), GetSavedTabsLocation() + o.textBox1.Text + ".txt");
                 RefreshListAndLoad(sstdir + o.textBox1.Text + ".txt");
             }
         }
@@ -160,6 +175,12 @@ namespace BetterExplorer.Tabs
         private void button2_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            MainForm.NewTab(GetSavedTabsLocation());
+            MainForm.Focus();
         }
 
     }
