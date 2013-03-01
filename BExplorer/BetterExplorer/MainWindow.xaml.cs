@@ -8586,6 +8586,7 @@ namespace BetterExplorer
 		private void miTabManager_Click(object sender, RoutedEventArgs e)
 		{
 			BetterExplorer.Tabs.TabManager man = new Tabs.TabManager();
+            man.MainForm = this;
 			man.Show();
 			//this.WindowState = System.Windows.WindowState.Minimized;
 		}
@@ -8594,6 +8595,22 @@ namespace BetterExplorer
 
     private void inRibbonGallery1_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
       IsViewSelection = true;
+    }
+
+    private void btnChangeTabsFolder_Click(object sender, RoutedEventArgs e)
+    {
+            CommonOpenFileDialog ctf = new CommonOpenFileDialog("Change Tab Folder");
+            ctf.IsFolderPicker = true;
+            ctf.Multiselect = false;
+            ctf.InitialDirectory = new DirectoryInfo(sstdir).Parent.FullName;
+            if (ctf.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
+                rks.SetValue(@"SavedTabsDirectory", ctf.FileName + "\\");
+                txtDefSaveTabs.Text = ctf.FileName + "\\";
+                sstdir = ctf.FileName + "\\";
+            }
     }
 
 	}
