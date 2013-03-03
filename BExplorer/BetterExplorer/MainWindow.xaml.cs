@@ -3751,7 +3751,7 @@ namespace BetterExplorer
 
 	  public MainWindow() {
 
-      ExplorerBrowser.IsCustomDialogs = true;
+            ExplorerBrowser.IsCustomDialogs = false;
 			CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, ERNewTab);
 			this.CommandBindings.Add(cbnewtab);
 			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, ERGoToBCCombo);

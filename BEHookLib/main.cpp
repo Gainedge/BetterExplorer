@@ -104,7 +104,7 @@ unsigned int WM_FILEOPERATION;
 struct CallbackStruct {
     void (*fpHookResult)(int hookId, int retcode);
     bool (*fpNewWindow)(LPCITEMIDLIST pIDL);
-	bool (*fpCopyItem)(IUnknown* ifrom, IShellItem* ito);
+	bool (*fpCopyItem)(IFileOperation *pThis, IUnknown* ifrom, IShellItem* ito);
 	bool (*fpMoveItem)(IUnknown* ifrom, IShellItem* ito);
 	bool (*fpRenameItem)(IUnknown* ifrom, LPCWSTR pszNewName);
 	bool (*fpDeleteItem)(IUnknown *ifrom);
@@ -249,8 +249,7 @@ HRESULT WINAPI DetourDeleteItem(IFileOperation *pThis, IUnknown *psiItem){
 }
 
 HRESULT WINAPI DetourCopyItem(IFileOperation *pThis, IUnknown *psiItem, IShellItem *psiDestinationFolder, IUnknown *sinc){
-	callbacks.fpCopyItem(psiItem, psiDestinationFolder);
-	return S_OK;
+	return callbacks.fpCopyItem(pThis, psiItem, psiDestinationFolder)?S_OK:fpCopyItem(pThis,psiItem,psiDestinationFolder,sinc);
 }
 HRESULT WINAPI DetourMoveItem(IFileOperation *pThis, IUnknown *psiItem, IShellItem *psiDestinationFolder){
 	return callbacks.fpMoveItem(psiItem, psiDestinationFolder) ? S_OK : fpMoveItem(pThis,psiItem,psiDestinationFolder);

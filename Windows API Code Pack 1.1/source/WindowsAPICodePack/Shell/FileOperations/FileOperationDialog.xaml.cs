@@ -38,7 +38,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       if (!IsShown) {
         if (LoadTimer == null) {
           LoadTimer = new System.Windows.Forms.Timer();
-          LoadTimer.Interval = 2500;
+          LoadTimer.Interval = 1500;
           LoadTimer.Tick += LoadTimer_Tick;
           LoadTimer.Start();
         }

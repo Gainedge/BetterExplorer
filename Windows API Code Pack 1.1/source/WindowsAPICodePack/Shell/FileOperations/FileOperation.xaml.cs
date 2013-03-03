@@ -40,7 +40,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       this.SourceItemsCollection = _SourceItems;
       this.DestinationLocation = _DestinationItem;
       this.OperationType = _opType;
-      this.LoadTimer.Interval = 2000;
+      this.LoadTimer.Interval = 1000;
       this.LoadTimer.Tick += LoadTimer_Tick;
       this.LoadTimer.Start();
       
@@ -219,8 +219,13 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 	      {
 		      case OperationType.Copy:
             if (!CustomFileOperations.FileOperationCopy(file, CopyFileOptions.None, CopyCallback, itemIndex, colissions)) {
-              prFileProgress.Foreground = Brushes.Red;
-              prOverallProgress.Foreground = Brushes.Red;
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                 (Action)(() =>
+                 {
+                     CloseCurrentTask();
+                     prFileProgress.Foreground = Brushes.Red;
+                     prOverallProgress.Foreground = Brushes.Red;
+                 }));
             };
            break;
           case OperationType.Move:
@@ -282,7 +287,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                }));
     }
     private void btnStop_Click(object sender, RoutedEventArgs e) {
-      CloseCurrentTask();
+        this.Cancel = true;
     }
 
     private void UserControl_Unloaded_1(object sender, RoutedEventArgs e) {

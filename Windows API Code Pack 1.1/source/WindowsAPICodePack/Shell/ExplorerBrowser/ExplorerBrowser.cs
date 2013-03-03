@@ -1942,15 +1942,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 				}
 
-        hookProc_GetMsg = new WindowsHelper.WindowsAPI.HookProc(CallbackGetMsgProc);
-        int currentThreadId = WindowsAPI.GetCurrentThreadId();
-        hHook_Msg = WindowsAPI.SetWindowsHookEx(3, hookProc_GetMsg, IntPtr.Zero, currentThreadId);
+                hookProc_GetMsg = new WindowsHelper.WindowsAPI.HookProc(CallbackGetMsgProc);
+                int currentThreadId = WindowsAPI.GetCurrentThreadId();
+                hHook_Msg = WindowsAPI.SetWindowsHookEx(3, hookProc_GetMsg, IntPtr.Zero, currentThreadId);
 
-        //Add MessageFilter for the IShellView
-        Application.AddMessageFilter(this);
-        HookLibManager.IsCustomDialog = IsCustomDialogs;
-        //HookLibManager.Browser = this;
-        HookLibManager.Initialize();
+                //Add MessageFilter for the IShellView
+                Application.AddMessageFilter(this);
+                HookLibManager.IsCustomDialog = IsCustomDialogs;
+                //HookLibManager.Browser = this;
+                HookLibManager.Initialize();
 			}
 
       //Callback procedure used by the window hook
@@ -2934,11 +2934,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					SysListviewDT = (WindowsAPI.IDropTarget)isv;
 
 					Marshal.ReleaseComObject(isv);
-          if (!IsCustomDialogs) {
-            WindowsAPI.RevokeDragDrop(SysListViewHandle);
-            ShellViewDragDrop DropTarget = new ShellViewDragDrop(SysListviewDT);
-            WindowsAPI.RegisterDragDrop(SysListViewHandle, DropTarget);
-          }
+                    if (!IsCustomDialogs) {
+                        WindowsAPI.RevokeDragDrop(SysListViewHandle);
+                        ShellViewDragDrop DropTarget = new ShellViewDragDrop(SysListviewDT);
+                        WindowsAPI.RegisterDragDrop(SysListViewHandle, DropTarget);
+                    }
 												
 					GC.WaitForPendingFinalizers();
 					GC.Collect();

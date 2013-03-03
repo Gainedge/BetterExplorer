@@ -42,7 +42,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate bool NewWindowCallback(IntPtr pIDL);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
-        private delegate bool CopyItemCallback(IntPtr SourceItems, IntPtr DestinationFolder);
+        private delegate bool CopyItemCallback(IFileOperation pThis, IntPtr SourceItems, IntPtr DestinationFolder);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         private delegate bool MoveItemCallback(IntPtr SourceItems, IntPtr DestinationFolder);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
@@ -55,7 +55,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
             public HookLibCallback cbHookResult;
             public NewWindowCallback cbNewWindow;
             public CopyItemCallback cbCopyItem;
-            public CopyItemCallback cbMoveItem;
+            public MoveItemCallback cbMoveItem;
             public RenameItemCallback cbRenameItem;
             public DeleteItemCallback cbDeleteItem;
         }
@@ -175,9 +175,12 @@ namespace Microsoft.WindowsAPICodePack.Controls {
           }
         }
 
-      private static bool CopyItem(IntPtr SourceItems,IntPtr DestinationFolder) {
-        if (!IsCustomDialog)
-          return false;
+      private static bool CopyItem(IFileOperation pthis, IntPtr SourceItems,IntPtr DestinationFolder) {
+          if (!IsCustomDialog)
+          {
+              return false;
+          }
+          
 
         object destinationObject = Marshal.GetObjectForIUnknown(DestinationFolder);
         object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
@@ -247,8 +250,8 @@ namespace Microsoft.WindowsAPICodePack.Controls {
       }
 
       private static bool DeleteItem(IntPtr SourceItems) {
-        //if (!IsCustomDialog)
-        //  return false;
+        if (!IsCustomDialog)
+          return false;
         //object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
 
         //IntPtr z = IntPtr.Zero;
