@@ -53,12 +53,18 @@ namespace FileOperation {
       
       _pipeServer = new PipeServer();
       _pipeServer.PipeMessage += new DelegateMessage(PipesMessageHandler);
+      //_pipeServer.PipeFinished += _pipeServer_PipeFinished;
       _pipeServer.Listen("CCH" + SourceHandle.ToString());
 
+      
+      //_pipeClient.PipeFinished += _pipeClient_PipeFinished;
+
+
+    }
+
+    void _pipeServer_PipeFinished(object sender, EventArgs e) {
       _pipeClient = new PipeClient();
-      _pipeClient.PipeFinished += _pipeClient_PipeFinished;
-
-
+      _pipeClient.Send("PIPEDrain", "DATACH" + SourceHandle.ToString());
     }
 
     void _pipeClient_PipeFinished(object sender, EventArgs e) {
@@ -75,6 +81,7 @@ namespace FileOperation {
        // _pipeClient.Send(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString(), "DATACH" + SourceHandle.ToString());
        // if (IsShown) {
           //if (totalBytesTransferred - OldBytes >= 1024 * 1024 * 100) {
+            _pipeClient = new PipeClient();
             _pipeClient.Send(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString(), "DATACH" + SourceHandle.ToString());
             OldBytes = totalBytesTransferred;
             _block2.Reset();
@@ -98,7 +105,7 @@ namespace FileOperation {
 
     private void PipesMessageHandler(string message) {
 
-     // try {
+      try {
         
         if (this.InvokeRequired) {
           this.Invoke(new NewMessageDelegate(PipesMessageHandler), message);
@@ -106,7 +113,7 @@ namespace FileOperation {
           char unicodeSeparator = (char)0x00;
           var lastChar = message.IndexOf(unicodeSeparator);
           var newMessage = message.Remove(lastChar);
-          if (newMessage.StartsWith("OP|COPY")) {
+          if (newMessage.StartsWith("END FO INIT|COPY")) {
             this.OPType = OperationType.Copy;
           }
           if (newMessage.StartsWith("INPUT|")) {
@@ -114,9 +121,8 @@ namespace FileOperation {
             SourceItemsCollection.Add(new Tuple<string, string>(parts[0].Trim(), parts[1].Trim()));
            
           }
-          if (message.StartsWith("MM")) {
-            label1.Text = "MMMMMM";
-            IsShown = true;
+          if (message.StartsWith("PIPEDrain")) {
+            _block2.Set();
           }
           if (newMessage.StartsWith("END FO INIT")) {
             _block.Set();
@@ -135,6 +141,7 @@ namespace FileOperation {
             switch (realMessage) {
               case "STOP":
                 this.Cancel = true;
+                
                 break;
               case "PAUSE":
                 _block.Reset();
@@ -150,12 +157,12 @@ namespace FileOperation {
             }
           }
           label1.Text = message;
-          _block2.Set();
+          
         }
-     // } catch (Exception ex) {
+      } catch (Exception ex) {
 
-     //   Debug.WriteLine(ex.Message);
-     // }
+        Debug.WriteLine(ex.Message);
+      }
 
 
     }
@@ -168,10 +175,11 @@ namespace FileOperation {
         if (this.OPType == OperationType.Copy) {
           if (!CustomFileOperations.CopyFile(ShellObject.FromParsingName(item.Item1), item.Item2, CopyFileOptions.None, CopyCallback)) {
             int error = Marshal.GetLastWin32Error();
-            if (error == 1225) {
-              this.Cancel = true;
+            if (error == 1225 || error == 1235) {
+              Cancel = true;
               CopyThread.Abort();
-              Close();
+              Environment.Exit(5);
+              break;
             }
           }
         }

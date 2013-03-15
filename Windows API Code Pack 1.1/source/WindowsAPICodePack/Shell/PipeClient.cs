@@ -21,11 +21,25 @@ namespace PipesClient
 
                 // The connect function will indefinitely wait for the pipe to become available
                 // If that is not acceptable specify a maximum waiting time (in ms)
-                  pipeStream.Connect();
-                  Debug.WriteLine("[Client] Pipe connection established");
 
-                  byte[] _buffer = Encoding.Unicode.GetBytes(SendStr);
-                  pipeStream.BeginWrite(_buffer, 0, _buffer.Length, AsyncSend, pipeStream);
+                int i = 0;
+                  while (!pipeStream.IsConnected) {
+                    try {
+                      pipeStream.Connect(100);
+                      Debug.WriteLine("[Client] Pipe connection established");
+
+                      byte[] _buffer = Encoding.Unicode.GetBytes(SendStr);
+                      pipeStream.BeginWrite(_buffer, 0, _buffer.Length, AsyncSend, pipeStream);
+                      break;
+                    } catch (Exception) {
+
+                    }
+                    if (i >= 10)
+                      break;
+                    i++;
+                  }
+    
+                 
                
             }
             catch (TimeoutException oEX)
