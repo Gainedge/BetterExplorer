@@ -281,8 +281,11 @@
     <Compile Include="Interop\Common\IntPtrExtensions.cs" />
     <Compile Include="Interop\Common\ShellNativeStructs.cs" />
     <Compile Include="Interop\ShellObjectWatcher\ShellObjectWatcherNativeMethods.cs" />
+    <Compile Include="IPC.cs" />
     <Compile Include="IProgressDialog.cs" />
     <Compile Include="JunctionPoint.cs" />
+    <Compile Include="PipeClient.cs" />
+    <Compile Include="PipeServer.cs" />
     <Compile Include="PropertySystem\PropertySystemException.cs" />
     <Compile Include="Interop\StockIcons\StockIconsNativeMethods.cs" />
     <Compile Include="Interop\Common\WindowUtilities.cs" />
@@ -481,7 +484,6 @@
   <ItemGroup>
     <CodeAnalysisDictionary Include="CustomDictionary.xml" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

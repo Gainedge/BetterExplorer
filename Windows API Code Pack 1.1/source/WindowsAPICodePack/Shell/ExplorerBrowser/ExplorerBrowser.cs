@@ -1101,6 +1101,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 							fileOp.PerformOperations();
 					}
+          DataDelete.Dispose();
 						
 			}
 

@@ -1928,6 +1928,32 @@
         <member name="M:Microsoft.WindowsAPICodePack.Shell.csSharing.CreateAccessControlEntry(System.Management.ManagementObject,System.Boolean)">
             <returns></returns>
         </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Shell.FileOperations.CollisionDialog">
+            <summary>
+            Interaction logic for CollisionDialog.xaml
+            </summary>
+            <summary>
+            CollisionDialog
+            </summary>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Shell.FileOperations.CollisionDialog.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="T:Microsoft.WindowsAPICodePack.Shell.FileOperations.CollisionItem">
+            <summary>
+            Interaction logic for CollisionItem.xaml
+            </summary>
+            <summary>
+            CollisionItem
+            </summary>
+        </member>
+        <member name="M:Microsoft.WindowsAPICodePack.Shell.FileOperations.CollisionItem.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
         <member name="T:Microsoft.WindowsAPICodePack.Controls.WindowsForms.RecybleBin">
             <summary>
             Send files directly to the recycle bin.
@@ -3159,6 +3185,13 @@
             </summary>
             <param name="sitem">The IShellItem</param>
             <returns></returns>
+        </member>
+        <member name="M:WindowsHelper.WindowsAPI.StrFormatByteSize(System.Int64)">
+            <summary>
+            Converts a numeric value into a string that represents the number expressed as a size value in bytes, kilobytes, megabytes, or gigabytes, depending on the size.
+            </summary>
+            <param name="filelength">The numeric value to be converted.</param>
+            <returns>the converted string</returns>
         </member>
         <member name="M:WindowsHelper.WindowsAPI.SHChangeNotify(WindowsHelper.WindowsAPI.HChangeNotifyEventID,WindowsHelper.WindowsAPI.HChangeNotifyFlags,System.IntPtr,System.IntPtr)">
             <summary>

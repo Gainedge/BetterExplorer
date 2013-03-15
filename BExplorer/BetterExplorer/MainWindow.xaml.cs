@@ -520,7 +520,7 @@ namespace BetterExplorer
             {
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
 								{
-                                    Thread.Sleep(250);
+                  Thread.Sleep(250);
 									IsCalledFromViewEnum = true;
 									zoomSlider.Value = Explorer.ContentOptions.ThumbnailSize;
 									IsCalledFromViewEnum = false;
@@ -2946,7 +2946,7 @@ namespace BetterExplorer
 				int res = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, 
 					"0x88779", sources, drops, "", "", "");
 				proc.WaitForExit();
-				if (proc.ExitCode == -1)
+				if (proc.ExitCode == 1)
 					MessageBox.Show("Error in creating symlink", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 
 			}
@@ -3751,7 +3751,7 @@ namespace BetterExplorer
 
 	  public MainWindow() {
 
-            ExplorerBrowser.IsCustomDialogs = false;
+      ExplorerBrowser.IsCustomDialogs = true;
 			CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, ERNewTab);
 			this.CommandBindings.Add(cbnewtab);
 			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, ERGoToBCCombo);

@@ -16,6 +16,8 @@ using System.Diagnostics;
 using Microsoft.WindowsAPICodePack.Controls;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
+using System.Xml;
 
 namespace WindowsHelper
 {
@@ -399,17 +401,6 @@ namespace WindowsHelper
             public IntPtr dwData;
             public int cbData;
             public IntPtr lpData;
-            //[MarshalAs(UnmanagedType.LPStr)]
-            //public string lpUserName;
-            //[MarshalAs(UnmanagedType.LPStr)]
-            //public string lpDomain;
-            //[MarshalAs(UnmanagedType.LPStr)]
-            //public string lpShare;
-            //[MarshalAs(UnmanagedType.LPStr)]
-            //public string lpSharingName;
-            //[MarshalAs(UnmanagedType.LPStr)]
-            //public string lpDescription;
-            //public int IsSetPermisions;
         }
 
         [StructLayout(LayoutKind.Sequential)]
@@ -1180,10 +1171,63 @@ namespace WindowsHelper
             AddOverlays = 0x000000020,
             /// <summary>Get the index of the overlay in the upper 8 bits of the iIcon</summary>
             OverlayIndex = 0x000000040,
-        }   
+        }
+
+        [Flags]
+        internal enum CLSCTX {
+          CLSCTX_INPROC_SERVER = 0x1,
+          CLSCTX_INPROC_HANDLER = 0x2,
+          CLSCTX_LOCAL_SERVER = 0x4,
+          CLSCTX_REMOTE_SERVER = 0x10,
+          CLSCTX_NO_CODE_DOWNLOAD = 0x400,
+          CLSCTX_NO_CUSTOM_MARSHAL = 0x1000,
+          CLSCTX_ENABLE_CODE_DOWNLOAD = 0x2000,
+          CLSCTX_NO_FAILURE_LOG = 0x4000,
+          CLSCTX_DISABLE_AAA = 0x8000,
+          CLSCTX_ENABLE_AAA = 0x10000,
+          CLSCTX_FROM_DEFAULT_CONTEXT = 0x20000,
+          CLSCTX_INPROC = CLSCTX_INPROC_SERVER | CLSCTX_INPROC_HANDLER,
+          CLSCTX_SERVER = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER,
+          CLSCTX_ALL = CLSCTX_SERVER | CLSCTX_INPROC_HANDLER
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct BIND_OPTS3 {
+          internal uint cbStruct;
+          internal uint grfFlags;
+          internal uint grfMode;
+          internal uint dwTickCountDeadline;
+          internal uint dwTrackFlags;
+          internal uint dwClassContext;
+          internal uint locale;
+          object pServerInfo; // will be passing null, so type doesn't matter
+          internal IntPtr hwnd;
+        }
 
         [DllImport("user32.dll")]
         public static extern IntPtr GetMessageExtraInfo();
+
+        [DllImport("ole32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = false)]
+        [return: MarshalAs(UnmanagedType.Interface)]
+        internal static extern object CoGetObject(
+           string pszName,
+           [In] ref BIND_OPTS3 pBindOptions,
+           [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+
+        [return: MarshalAs(UnmanagedType.Interface)]
+        public static object LaunchElevatedCOMObject(Guid Clsid, Guid InterfaceID) {
+          string CLSID = Clsid.ToString("B"); // B formatting directive: returns {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx} 
+          string monikerName = "Elevation:Administrator!new:" + CLSID;
+
+          BIND_OPTS3 bo = new BIND_OPTS3();
+          bo.cbStruct = (uint)Marshal.SizeOf(bo);
+          bo.hwnd = IntPtr.Zero;
+          bo.dwClassContext = (int)CLSCTX.CLSCTX_LOCAL_SERVER;
+
+          object retVal = CoGetObject(monikerName, ref bo, InterfaceID);
+
+          return (retVal);
+        }
 
         //[ComImport]
         //[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -4593,6 +4637,57 @@ namespace WindowsHelper
             }
         }
 
+        public static string Serialize<T>(T value) {
+
+          if (value == null) {
+            return null;
+          }
+
+          XmlSerializer serializer = new XmlSerializer(typeof(T));
+
+          XmlWriterSettings settings = new XmlWriterSettings();
+          settings.Encoding = Encoding.UTF8; //new UnicodeEncoding(false, false); // no BOM in a .NET string
+          settings.Indent = false;
+          settings.OmitXmlDeclaration = false;
+
+          using (StringWriter textWriter = new StringWriter()) {
+            using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, settings)) {
+              serializer.Serialize(xmlWriter, value);
+            }
+            return textWriter.ToString();
+          }
+        }
+
+        public static T Deserialize<T>(string xml) {
+
+          if (string.IsNullOrEmpty(xml)) {
+            return default(T);
+          }
+
+          XmlSerializer serializer = new XmlSerializer(typeof(T));
+
+          XmlReaderSettings settings = new XmlReaderSettings();
+          // No settings need modifying here
+
+          using (TextReader textReader = new StringReader(xml)) {
+            using (XmlReader xmlReader = XmlReader.Create(textReader, settings)) {
+              return (T)serializer.Deserialize(xmlReader);
+            }
+          }
+        }
+
+        [Serializable]
+        public struct FileCopyResultInfo {
+          public long FileProgressValue;
+          public long OveralProgressValue;
+        }
+
+        [Serializable]
+        public struct FileCopySourceInfo {
+          public string[] SourceFileNames;
+          public string DestinationName;
+        }
+
         #region WindowsVersion
         public enum OsVersionInfo
         {
@@ -4791,6 +4886,12 @@ namespace WindowsHelper
       public const int UDN_DELTAPOS = (UDN_FIRST - 1);
     }
 
+    public class FileInfoPair {
+      public ShellObject source { get; set; }
+      public string PathDestination { get; set; }
+      public string PathDestinationRenamed { get; set; }
+    }
+
     #region ChangeWallpaper
     public class Wallpaper
     {
@@ -4858,4 +4959,6 @@ namespace WindowsHelper
         }
     } 
     #endregion
+
+
 }

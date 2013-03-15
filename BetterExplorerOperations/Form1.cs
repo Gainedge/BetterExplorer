@@ -289,11 +289,16 @@ namespace BetterExplorerOperations
             }
             catch
             {
-              errorCode = -1;
-              Close();
+              ExitApplication(1);
             }
 
             base.WndProc(ref m);
+        }
+
+        public void ExitApplication(int exitCode)
+        {
+            errorCode = exitCode;
+            Application.Exit();
         }
     }
   

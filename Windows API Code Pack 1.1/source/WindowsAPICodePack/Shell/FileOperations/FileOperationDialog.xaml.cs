@@ -35,6 +35,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
       //set window background
       var result = SetClassLong(handle, GCL_HBRBACKGROUND, GetSysColorBrush(COLOR_WINDOW));
+
       if (!IsShown) {
         if (LoadTimer == null) {
           LoadTimer = new System.Windows.Forms.Timer();
@@ -45,6 +46,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       }
 
     }
+
     public static IntPtr SetClassLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong) {
       //check for x64
       if (IntPtr.Size > 4)

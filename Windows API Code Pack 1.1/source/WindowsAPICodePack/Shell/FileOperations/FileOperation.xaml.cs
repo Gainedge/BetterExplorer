@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -11,10 +13,14 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
+using PipesClient;
+using PipesServer;
 using WindowsHelper;
 
 namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
@@ -28,15 +34,28 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
     public Boolean Cancel = false;
     public OperationType OperationType { get; set; }
     private ManualResetEvent _block;
-    public IntPtr Handle;
+    public Guid Handle;
     private int CurrentStatus = -1;
     private bool IsShown = false;
     Thread CopyThread;
+    public delegate void NewMessageDelegate(string NewMessage);
+    private Boolean IsAdminFO = false;
+    private PipeServer _pipeServer;
+    private PipeClient _pipeClient;
     System.Windows.Forms.Timer LoadTimer = new System.Windows.Forms.Timer();
+    uint WM_FOWINC = WindowsAPI.RegisterWindowMessage("BE_FOWINC");
+    uint WM_FOBEGIN = WindowsAPI.RegisterWindowMessage("BE_FOBEGIN");
+    uint WM_FOEND = WindowsAPI.RegisterWindowMessage("BE_FOEND");
+    uint WM_FOPAUSE = WindowsAPI.RegisterWindowMessage("BE_FOPAUSE");
+    uint WM_FOSTOP = WindowsAPI.RegisterWindowMessage("BE_FOSTOP");
 
     public FileOperation(ShellObject[] _SourceItems, ShellObject _DestinationItem, OperationType _opType = OperationType.Copy) {
       _block = new ManualResetEvent(false);
       _block.Set();
+
+      _pipeServer = new PipeServer();
+      _pipeServer.PipeMessage += new DelegateMessage(PipesMessageHandler);
+      _pipeServer.PipeFinished += _pipeServer_PipeFinished;
       this.SourceItemsCollection = _SourceItems;
       this.DestinationLocation = _DestinationItem;
       this.OperationType = _opType;
@@ -50,6 +69,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       CopyThread.Join(1);
       Thread.Sleep(1);
       InitializeComponent();
+      this.Handle = Guid.NewGuid();
+      _pipeServer.Listen("DATACH" + Handle.ToString());
       switch (_opType) {
         case OperationType.Copy:
           lblOperation.Text = "Copying ";
@@ -74,6 +95,24 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       }
       lblFrom.Text = SourceItemsCollection[0].Parent.GetDisplayName(DisplayNameType.Default);
       lblTo.Text = DestinationLocation.GetDisplayName(DisplayNameType.Default);
+      
+    }
+
+    void _pipeServer_PipeFinished(object sender, EventArgs e) {
+      _pipeClient = new PipeClient();
+      _pipeClient.Send("PIPEDrain", "CCH" + Handle.ToString());
+    }
+
+
+    void ComponentDispatcher_ThreadFilterMessage(ref MSG msg, ref bool handled) {
+      if (!handled) {
+        if (msg.message == WM_FOWINC) {
+
+          //WindowsAPI.COPYDATASTRUCT mystr = new WindowsAPI.COPYDATASTRUCT();
+          //Marshal.PtrToStructure(msg.lParam, mystr);
+          MessageBox.Show("bla");
+        }
+      }
     }
 
     void LoadTimer_Tick(object sender, EventArgs e) {
@@ -88,16 +127,23 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                  (Action)(() => {
 
                    if (totalBytesTransferred > 0) {
-                     prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize),0);
+                     if (totalBytesTransferred - oldbyteVlaue > 0)
+                       totaltransfered += (totalBytesTransferred - oldbyteVlaue);
+                     oldbyteVlaue = totalBytesTransferred;
+                     prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
                      if (totalBytesTransferred == totalFileSize) {
-                       prOverallProgress.Value++;
+                       procCompleted++;
                      }
-                     lblProgress.Text = Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
-                     if (prOverallProgress.Value == prOverallProgress.Maximum || Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 0) == 100)
+                     prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
+                     lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
+                     if (procCompleted == CopyItemsCount) {
                        CloseCurrentTask();
-                   } else
+                     }
+                   } else {
+                     oldbyteVlaue = 0;
                      if (prFileProgress != null)
                        prFileProgress.Value = 0;
+                   }
                  }));
 
       if (Cancel)
@@ -105,8 +151,9 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
       return CopyFileCallbackAction.Continue;
     }
-    
 
+    ulong totalSize = 0;
+    int CopyItemsCount = 0;
     void CopyFiles() {
 
       CurrentStatus = 1;
@@ -135,7 +182,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
           } while (Directory.Exists(newDestination) || File.Exists(newDestination));
         }
       }
-      ulong totalSize = 0;
+      totalSize = 0;
       int index = 0;
       List<CollisionInfo> colissions = new List<CollisionInfo>();
       string newdestinationname = String.Empty;
@@ -202,9 +249,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       foreach (var itemIndexRemove in itemsForSkip.OrderByDescending(c => c)) {
         CopyItems.RemoveAt(itemIndexRemove);
       }
+      CopyItemsCount = CopyItems.Count();
       Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                (Action)(() => {
-                 prOverallProgress.Maximum = CopyItems.Count();
+                 //prOverallProgress.Maximum = CopyItems.Count();
                  lblItemsCount.Text = CopyItems.Count().ToString();
                }));
       if (CopyItems.Count == 0) {
@@ -214,18 +262,70 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                  (Action)(() => {
                    this.prOverallProgress.IsIndeterminate = false;
                  }));
+      int counter = 0;
       foreach (var file in CopyItems) {
         switch (this.OperationType)
 	      {
 		      case OperationType.Copy:
             if (!CustomFileOperations.FileOperationCopy(file, CopyFileOptions.None, CopyCallback, itemIndex, colissions)) {
+              int error = Marshal.GetLastWin32Error();
+              if (error == 5) {
+                if (!isProcess) {
+                  String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
+                  string dir = System.IO.Path.GetDirectoryName(CurrentexePath);
+                  string ExePath = System.IO.Path.Combine(dir, @"FileOperation.exe");
+                  
+                  using (Process proc = new Process()) {
+                    var psi = new ProcessStartInfo {
+                      FileName = ExePath,
+                      Verb = "runas",
+                      UseShellExecute = true,
+                      Arguments = String.Format("/env /user:Administrator \"{0}\" ID:{1}", ExePath, Handle)
+                    };
+
+                    proc.StartInfo = psi;
+                    proc.Start();
+                  }
+                  this.IsAdminFO = true;
+                  Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                     (Action)(() => {
+                       prFileProgress.Foreground = Brushes.Blue;
+                       prOverallProgress.Foreground = Brushes.Blue;
+                     }));
+                  _pipeClient = new PipeClient();
+                  _pipeClient.Send("OP|COPY", "CCH" + Handle.ToString());
+                  
+                  isProcess = true;
+                }
+                var currentItem = colissions.Where(c => c.item == file.Item1).SingleOrDefault();
+                var destPath = "";
+                if (currentItem != null) {
+                if (!currentItem.IsCheckedC && currentItem.IsChecked) {
+                  destPath = file.Item2;
+                } else if (currentItem.IsCheckedC && currentItem.IsChecked) {
+                  destPath = file.Item3;
+                }
+                } else {
+                destPath = file.Item3;
+                }
+                _pipeClient = new PipeClient();
+                _pipeClient.Send("INPUT|" + file.Item1.ParsingName + "|" + destPath, "CCH" + Handle.ToString());
+                if (itemIndex == CopyItems.Count - 1) {
+                  _pipeClient.Send("END FO INIT", "CCH" + Handle.ToString());
+                }
+                break;
+
+              } else {
                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                 (Action)(() =>
-                 {
+                 (Action)(() => {
+                   if (error == 1225)
                      CloseCurrentTask();
+                   else {
                      prFileProgress.Foreground = Brushes.Red;
                      prOverallProgress.Foreground = Brushes.Red;
+                   }
                  }));
+              }
             };
            break;
           case OperationType.Move:
@@ -253,18 +353,27 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       }
 
     }
-
+    bool isProcess = false;
     private void btnPause_Click(object sender, RoutedEventArgs e) {
       if (CurrentStatus == 1) {
         _block.Reset();
+        _pipeClient = new PipeClient();
+        _pipeClient.Send("COMMAND|PAUSE", "CCH" + Handle.ToString());
         prFileProgress.Foreground = Brushes.Orange;
         prOverallProgress.Foreground = Brushes.Orange;
         CurrentStatus = 2;
       } else {
         _block.Set();
+        _pipeClient = new PipeClient();
+        _pipeClient.Send("COMMAND|CONTINUE", "CCH" + Handle.ToString());
         CurrentStatus = 1;
-        prFileProgress.Foreground = new SolidColorBrush(Color.FromRgb(0x01, 0xD3, 0x28));
-        prOverallProgress.Foreground = new SolidColorBrush(Color.FromRgb(0x01, 0xD3, 0x28));
+        if (this.IsAdminFO) {
+          prFileProgress.Foreground = Brushes.Blue;
+          prOverallProgress.Foreground = Brushes.Blue;
+        } else {
+          prFileProgress.Foreground = new SolidColorBrush(Color.FromRgb(0x01, 0xD3, 0x28));
+          prOverallProgress.Foreground = new SolidColorBrush(Color.FromRgb(0x01, 0xD3, 0x28));
+        }
       }
     }
 
@@ -288,11 +397,58 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
     }
     private void btnStop_Click(object sender, RoutedEventArgs e) {
         this.Cancel = true;
+        _pipeClient = new PipeClient();
+        _pipeClient.Send("COMMAND|STOP", "CCH" + Handle.ToString());
     }
 
+    long totaltransfered = 0;
+    long oldbyteVlaue = 0;
+    int procCompleted = 0;
+    private void PipesMessageHandler(string message) {
+      try {
+        
+        Dispatcher.Invoke(new NewMessageDelegate((PipesMessageHandler) => {
+          char unicodeSeparator = (char)0x00;
+          var lastChar = message.IndexOf(unicodeSeparator);
+          var newMessage = message.Remove(lastChar);
+          var data = newMessage.Split(Char.Parse("|"));
+          var totalBytesTransferred = Convert.ToInt64(data[0]);
+          var totalFileSize = Convert.ToInt64(data[1]);
+          if (totalBytesTransferred > 0) {
+            if (totalBytesTransferred - oldbyteVlaue > 0)
+              totaltransfered += (totalBytesTransferred - oldbyteVlaue);
+            oldbyteVlaue = totalBytesTransferred;
+            prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
+            if (totalBytesTransferred == totalFileSize) {
+              procCompleted++;
+            }
+            prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
+            lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M,2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
+            if (procCompleted == CopyItemsCount) {
+              CloseCurrentTask();
+            }
+          } else {
+            oldbyteVlaue = 0;
+            if (prFileProgress != null)
+              prFileProgress.Value = 0;
+          }
+        }), message);
+       
+      } catch (Exception ex) {
+
+        Debug.WriteLine(ex.Message);
+      }
+
+    }
+
+
     private void UserControl_Unloaded_1(object sender, RoutedEventArgs e) {
+      _pipeServer.PipeMessage -= new DelegateMessage(PipesMessageHandler);
+      _pipeServer = null;
       this.Cancel = true;
       this.CopyThread.Abort();
+      _pipeClient = new PipeClient();
+      _pipeClient.Send("COMMAND|CLOSE", "CCH" + Handle.ToString());
     }
   }
 
@@ -304,4 +460,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
     Decomress,
     Compress
   }
+
+ 
 }

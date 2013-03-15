@@ -28,19 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // Form1
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(578, 356);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Name = "Form1";
-            this.Opacity = 0D;
-            this.ShowInTaskbar = false;
-            this.Text = "BetterExplorerOperations";
-            this.ResumeLayout(false);
+      this.SuspendLayout();
+      // 
+      // Form1
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ClientSize = new System.Drawing.Size(578, 356);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+      this.Name = "Form1";
+      this.Opacity = 0D;
+      this.ShowInTaskbar = false;
+      this.Text = "BetterExplorerOperations";
+      
+      this.ResumeLayout(false);
 
         }
 

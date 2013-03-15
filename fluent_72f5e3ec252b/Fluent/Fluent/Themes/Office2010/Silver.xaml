@@ -3115,10 +3115,10 @@
   </Style>
   <ControlTemplate x:Key="BackstageTabItemControlTemplate" TargetType="{x:Type Fluent:BackstageTabItem}">
     <Grid Background="#00000000">
-      <Border x:Name="hoverBorder" Margin="0,0,1,0" Background="{Binding Background,&#xA;                                         RelativeSource={RelativeSource FindAncestor,&#xA;                                                                        AncestorType={x:Type Fluent:BackstageTabControl}}}" BorderBrush="{x:Null}" BorderThickness="0" Visibility="Collapsed">
+      <Border x:Name="hoverBorder" Margin="0,0,1,0" Background="{Binding Background,&#xD;&#xA;                                         RelativeSource={RelativeSource FindAncestor,&#xD;&#xA;                                                                        AncestorType={x:Type Fluent:BackstageTabControl}}}" BorderBrush="{x:Null}" BorderThickness="0" Visibility="Collapsed">
         <Border Background="#BFFFFFFF" BorderBrush="#4C000000" BorderThickness="0,1" />
       </Border>
-      <Border x:Name="selectedBorder" Margin="0" Background="{Binding Background,&#xA;                                         RelativeSource={RelativeSource FindAncestor,&#xA;                                                                        AncestorType={x:Type Fluent:BackstageTabControl}}}" BorderBrush="#FF000463" BorderThickness="0" Visibility="Collapsed">
+      <Border x:Name="selectedBorder" Margin="0" Background="{Binding Background,&#xD;&#xA;                                         RelativeSource={RelativeSource FindAncestor,&#xD;&#xA;                                                                        AncestorType={x:Type Fluent:BackstageTabControl}}}" BorderBrush="#FF000463" BorderThickness="0" Visibility="Collapsed">
         <Grid Width="Auto" Margin="0" HorizontalAlignment="Stretch">
           <Border BorderBrush="#7F000000" BorderThickness="0,1">
             <Border.Background>
@@ -3172,7 +3172,7 @@
     <Setter Property="Template" Value="{StaticResource BackstageTabItemControlTemplate}" />
     <Setter Property="FocusVisualStyle" Value="{StaticResource ControlStyleEmptyFocus}" />
     <Setter Property="Height" Value="37" />
-    <Setter Property="Background" Value="{Binding Background,&#xA;                                RelativeSource={RelativeSource FindAncestor,&#xA;                                                               AncestorType={x:Type Fluent:BackstageTabControl}}}" />
+    <Setter Property="Background" Value="{Binding Background,&#xD;&#xA;                                RelativeSource={RelativeSource FindAncestor,&#xD;&#xA;                                                               AncestorType={x:Type Fluent:BackstageTabControl}}}" />
     <Setter Property="Margin" Value="0,1" />
   </Style>
   <ControlTemplate x:Key="ButtonBackstageControlTemplate" TargetType="{x:Type Fluent:Button}">
@@ -4437,7 +4437,7 @@
                 <TextBlock Text="{TemplateBinding Header}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="5,0,0,0" x:Name="textBlock" />
               </StackPanel>
               <Border Height="Auto" BorderThickness="1,1,1,1" BorderBrush="{StaticResource TextBoxBorderBrush}" x:Name="PART_ContentBorder" Background="{StaticResource TextBoxBackgroundBrush}" Grid.Column="1" Grid.ColumnSpan="1" Width="{TemplateBinding InputWidth}" HorizontalAlignment="Right">
-                <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextWrapping="NoWrap" BorderThickness="0,0,0,0" x:Name="PART_TextBox" Background="{StaticResource TextBoxBackgroundBrush}" />
+                <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" TextWrapping="NoWrap" BorderThickness="0,0,0,0" x:Name="PART_TextBox" Background="{StaticResource TextBoxBackgroundBrush}" />
               </Border>
             </Grid>
           </Border>
@@ -8217,7 +8217,7 @@
       </Grid>
       <Grid Margin="0" VerticalAlignment="Stretch" Background="{TemplateBinding ItemsPanelBackground}">
         <Border HorizontalAlignment="Right" Margin="0" Width="6" Height="Auto" BorderBrush="{StaticResource RibbonTopBorderBrush}" BorderThickness="0,0,1,0" Background="{StaticResource BackstagePanelShadowBackgroundBrush}" />
-        <StackPanel Margin="0,5,0,0" Height="Auto" IsItemsHost="True" />
+        <ItemsPresenter Margin="0,5,0,0" Height="Auto" />
       </Grid>
       <Border Margin="0" VerticalAlignment="Top" Height="2" Grid.ColumnSpan="2" Background="{TemplateBinding Background}" OpacityMask="{StaticResource BackstageTopOpacityBrush}">
         <Rectangle Stroke="{x:Null}" StrokeThickness="0" Fill="{StaticResource BackstageTopBackgroundBrush}" />
@@ -8328,7 +8328,6 @@
     <Setter Property="CaptionHeight" Value="50" />
     <Setter Property="Foreground" Value="#FF000000" />
     <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}" />
-    <Setter Property="Fluent:FrameworkHelper.UseLayoutRounding" Value="True" />
     <Style.Triggers>
       <Trigger Property="IsCollapsed" Value="True">
         <Setter Property="GlassBorderThickness" Value="8,30,8,8" />
@@ -8530,6 +8529,7 @@
     <Setter Property="FocusManager.IsFocusScope" Value="False" />
     <Setter Property="VerticalAlignment" Value="Top" />
     <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="Fluent:FrameworkHelper.UseLayoutRounding" Value="True" />
   </Style>
   <Style x:Key="{x:Type Fluent:DropDownButton}" TargetType="{x:Type Fluent:DropDownButton}" BasedOn="{StaticResource RibbonDropDownButtonStyle}" />
   <Style x:Key="{x:Type Fluent:SplitButton}" TargetType="{x:Type Fluent:SplitButton}" BasedOn="{StaticResource RibbonSplitButtonStyle}" />
