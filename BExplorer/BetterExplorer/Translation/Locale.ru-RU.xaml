@@ -330,10 +330,10 @@
     <system:String x:Key="txtDateAccessed">Дата обращения</system:String>
     <system:String x:Key="txtAnd">и</system:String>
     <system:String x:Key="txtIsBefore">до</system:String>
-    <system:String x:Key="txtIsAfter">после</system:String>
+    <system:String x:Key="txtIsAfter">после/system:String>
     <system:String x:Key="txtDateIs">такой же, как</system:String>
     <system:String x:Key="txtRemoveFilter">Чтобы удалить фильтр, оставьте все значения пустыми</system:String>
-    <system:String x:Key="txtSetFilter">Установить фильтр (VAL):</system:String>
+    <system:String x:Key="txtSetFilter"Установить фильтр (VAL):</system:String>
     <system:String x:Key="txtCurrentValue">Текущее значение:</system:String>
     <system:String x:Key="txtSelect">Выбрать</system:String>
     <system:String x:Key="txtCancel">Отмена</system:String>
