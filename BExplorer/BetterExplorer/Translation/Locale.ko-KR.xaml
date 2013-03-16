@@ -333,7 +333,7 @@
     <system:String x:Key="txtIsAfter">이후에 있음</system:String>
     <system:String x:Key="txtDateIs">같음</system:String>
     <system:String x:Key="txtRemoveFilter">필터를 없애려면 모든 값을 비워 두시오.</system:String>
-    <system:String x:Key="txtSetFilter">필터 <값> 설정:</system:String>
+    <system:String x:Key="txtSetFilter">필터 (값) 설정:</system:String>
     <system:String x:Key="txtCurrentValue">현재 값:</system:String>
     <system:String x:Key="txtSelect">선택</system:String>
     <system:String x:Key="txtCancel">취소</system:String>
