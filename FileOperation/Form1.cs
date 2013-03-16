@@ -36,9 +36,23 @@ namespace FileOperation {
     private int CurrentStatus = -1;
     private bool IsShown = true;
     Thread CopyThread;
+    public IntPtr MessageReceiverHandle;
+    uint WM_FOWINC = WindowsAPI.RegisterWindowMessage("BE_FOWINC");
 
     public Form1() {
       InitializeComponent();
+      try
+      {
+          WindowsHelper.WindowsAPI.CHANGEFILTERSTRUCT filterStatus = new WindowsHelper.WindowsAPI.CHANGEFILTERSTRUCT();
+          filterStatus.size = (uint)Marshal.SizeOf(filterStatus);
+          filterStatus.info = 0;
+          WindowsAPI.ChangeWindowMessageFilterEx(Handle, 0x4A, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+          WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOWINC, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+      }
+      catch (Exception)
+      {
+          Close();
+      }
       _block = new ManualResetEvent(false);
       _block2 = new ManualResetEvent(false);
       
@@ -49,14 +63,15 @@ namespace FileOperation {
 
       }
       Text = String.Format("FO{0}", SourceHandle);
-      
+
+      MessageReceiverHandle = WindowsAPI.FindWindow(null, "FOMR" + SourceHandle);
+      label1.Text = MessageReceiverHandle.ToString();
       
       _pipeServer = new PipeServer();
       _pipeServer.PipeMessage += new DelegateMessage(PipesMessageHandler);
       //_pipeServer.PipeFinished += _pipeServer_PipeFinished;
       _pipeServer.Listen("CCH" + SourceHandle.ToString());
 
-      
       //_pipeClient.PipeFinished += _pipeClient_PipeFinished;
 
 
@@ -81,11 +96,13 @@ namespace FileOperation {
        // _pipeClient.Send(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString(), "DATACH" + SourceHandle.ToString());
        // if (IsShown) {
           //if (totalBytesTransferred - OldBytes >= 1024 * 1024 * 100) {
-            _pipeClient = new PipeClient();
-            _pipeClient.Send(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString(), "DATACH" + SourceHandle.ToString());
+          byte[] data = System.Text.Encoding.Unicode.GetBytes(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString());
+          WindowsAPI.SendStringMessage(MessageReceiverHandle, data, 0, data.Length);
+            //_pipeClient = new PipeClient();
+            //_pipeClient.Send(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString(), "DATACH" + SourceHandle.ToString());
             OldBytes = totalBytesTransferred;
-            _block2.Reset();
-            _block2.WaitOne();
+            //_block2.Reset();
+           // _block2.WaitOne();
          // }
          IsShown = false;
       //  }

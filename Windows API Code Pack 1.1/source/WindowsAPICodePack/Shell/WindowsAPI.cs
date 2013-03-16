@@ -559,6 +559,20 @@ namespace WindowsHelper
         }
 
 
+        public static IntPtr SendStringMessage(IntPtr hWnd, byte[] array, int startIndex, int length)
+        {
+            IntPtr ptr = Marshal.AllocHGlobal(IntPtr.Size * 3 + length);
+            Marshal.WriteIntPtr(ptr, 0, IntPtr.Zero);
+            Marshal.WriteIntPtr(ptr, IntPtr.Size, (IntPtr)length);
+            IntPtr dataPtr = new IntPtr(ptr.ToInt64() + IntPtr.Size * 3);
+            Marshal.WriteIntPtr(ptr, IntPtr.Size * 2, dataPtr);
+            Marshal.Copy(array, startIndex, dataPtr, length);
+            IntPtr result = SendMessage(hWnd, WM_COPYDATA, IntPtr.Zero, ptr);
+            Marshal.FreeHGlobal(ptr);
+            return result;
+        }
+
+
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
         public static extern IShellItem SHCreateItemWithParent(
             [In] IntPtr pidlParent,
@@ -2228,7 +2242,7 @@ namespace WindowsHelper
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SendMessage(IntPtr handle, int messg, int wparam, int lparam);
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern int SendMessage(IntPtr handle, int messg, IntPtr wparam, IntPtr lparam);
+        public static extern IntPtr SendMessage(IntPtr handle, int messg, IntPtr wparam, IntPtr lparam);
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]

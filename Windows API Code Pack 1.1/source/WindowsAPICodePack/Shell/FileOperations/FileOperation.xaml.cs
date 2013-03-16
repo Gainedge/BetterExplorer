@@ -290,8 +290,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     proc.Start();
                   }
                   this.IsAdminFO = true;
+                  
                   Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                      (Action)(() => {
+                         MessageReceiver mr = new MessageReceiver("FOMR" + this.Handle.ToString());
+                         mr.OnMessageReceived += mr_OnMessageReceived;
                        prFileProgress.Foreground = Brushes.Blue;
                        prOverallProgress.Foreground = Brushes.Blue;
                      }));
@@ -312,6 +315,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 } else {
                 destPath = file.Item3;
                 }
+
                 _pipeClient = new PipeClient();
                 _pipeClient.Send("INPUT|" + file.Item1.ParsingName + "|" + destPath, "CCH" + Handle.ToString());
                 //Thread.CurrentThread.Join(1000);
@@ -365,6 +369,46 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       }
 
     }
+
+    void mr_OnMessageReceived(object sender, MessageEventArgs e)
+    {
+        Dispatcher.Invoke(new Action(() =>
+        {
+            char unicodeSeparator = (char)0x00;
+            var lastChar = e.Message.IndexOf(unicodeSeparator);
+            var newMessage = e.Message;
+            if (!newMessage.Contains("PIPEDrain"))
+            {
+                var data = newMessage.Split(Char.Parse("|"));
+                var totalBytesTransferred = Convert.ToInt64(data[0]);
+                var totalFileSize = Convert.ToInt64(data[1]);
+                if (totalBytesTransferred > 0)
+                {
+                    if (totalBytesTransferred - oldbyteVlaue > 0)
+                        totaltransfered += (totalBytesTransferred - oldbyteVlaue);
+                    oldbyteVlaue = totalBytesTransferred;
+                    prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
+                    if (totalBytesTransferred == totalFileSize)
+                    {
+                        procCompleted++;
+                    }
+                    prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
+                    lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
+                    if (procCompleted == CopyItemsCount)
+                    {
+                        CloseCurrentTask();
+                    }
+                }
+                else
+                {
+                    oldbyteVlaue = 0;
+                    if (prFileProgress != null)
+                        prFileProgress.Value = 0;
+                }
+            }
+        }));
+    }
+
     bool isProcess = false;
     private void btnPause_Click(object sender, RoutedEventArgs e) {
       if (CurrentStatus == 1) {
