@@ -40,8 +40,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
     Thread CopyThread;
     public delegate void NewMessageDelegate(string NewMessage);
     private Boolean IsAdminFO = false;
-    private PipeServer _pipeServer;
-    private PipeClient _pipeClient;
+    IntPtr CorrespondingWinHandle = IntPtr.Zero;
     System.Windows.Forms.Timer LoadTimer = new System.Windows.Forms.Timer();
     uint WM_FOWINC = WindowsAPI.RegisterWindowMessage("BE_FOWINC");
     uint WM_FOBEGIN = WindowsAPI.RegisterWindowMessage("BE_FOBEGIN");
@@ -54,11 +53,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       _block = new ManualResetEvent(false);
       _block2 = new ManualResetEvent(false);
       _block.Set();
-      _block2.Set();
 
-      _pipeServer = new PipeServer();
-      _pipeServer.PipeMessage += new DelegateMessage(PipesMessageHandler);
-      _pipeServer.PipeFinished += _pipeServer_PipeFinished;
       this.SourceItemsCollection = _SourceItems;
       this.DestinationLocation = _DestinationItem;
       this.OperationType = _opType;
@@ -73,7 +68,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       Thread.Sleep(1);
       InitializeComponent();
       this.Handle = Guid.NewGuid();
-      _pipeServer.Listen("DATACH" + Handle.ToString());
+
       switch (_opType) {
         case OperationType.Copy:
           lblOperation.Text = "Copying ";
@@ -99,23 +94,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       lblFrom.Text = SourceItemsCollection[0].Parent.GetDisplayName(DisplayNameType.Default);
       lblTo.Text = DestinationLocation.GetDisplayName(DisplayNameType.Default);
       
-    }
-
-    void _pipeServer_PipeFinished(object sender, EventArgs e) {
-      _pipeClient = new PipeClient();
-      _pipeClient.Send("PIPEDrain", "CCH" + Handle.ToString());
-    }
-
-
-    void ComponentDispatcher_ThreadFilterMessage(ref MSG msg, ref bool handled) {
-      if (!handled) {
-        if (msg.message == WM_FOWINC) {
-
-          //WindowsAPI.COPYDATASTRUCT mystr = new WindowsAPI.COPYDATASTRUCT();
-          //Marshal.PtrToStructure(msg.lParam, mystr);
-          MessageBox.Show("bla");
-        }
-      }
     }
 
     void LoadTimer_Tick(object sender, EventArgs e) {
@@ -172,9 +150,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                  }));
 
       collection = CustomFileOperations.GetCopyDataAll(SourceItemsCollection, DestinationLocation.ParsingName);
-      //for (int i = 0; i < SourceItemsCollection.Count(); i++) {
-      //  CustomFileOperations.GetCopyData(SourceItemsCollection[i], DestinationLocation.ParsingName);
-      //}
+
       if (SourceItemsCollection[0].IsFolder && SourceItemsCollection[0].Properties.System.FileExtension.Value == null) {
         if (DestinationLocation == SourceItemsCollection[0].Parent) {
           int suffix = 0;
@@ -266,6 +242,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                    this.prOverallProgress.IsIndeterminate = false;
                  }));
       int counter = 0;
+      
       foreach (var file in CopyItems) {
         switch (this.OperationType)
 	      {
@@ -295,6 +272,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                      (Action)(() => {
                          MessageReceiver mr = new MessageReceiver("FOMR" + this.Handle.ToString());
                          mr.OnMessageReceived += mr_OnMessageReceived;
+                         mr.OnInitAdminOP += mr_OnInitAdminOP;
                        prFileProgress.Foreground = Brushes.Blue;
                        prOverallProgress.Foreground = Brushes.Blue;
                      }));
@@ -302,7 +280,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
                   
                   isProcess = true;
-                  Thread.Sleep(1000);
+                  _block2.WaitOne();
+                  CorrespondingWinHandle = WindowsAPI.FindWindow(null, "FO" + this.Handle.ToString());
                 }
                 var currentItem = colissions.Where(c => c.item == file.Item1).SingleOrDefault();
                 var destPath = "";
@@ -315,19 +294,12 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 } else {
                 destPath = file.Item3;
                 }
-
-                _pipeClient = new PipeClient();
-                _pipeClient.Send("INPUT|" + file.Item1.ParsingName + "|" + destPath, "CCH" + Handle.ToString());
-                //Thread.CurrentThread.Join(1000);
-                //_block2.Reset();
-                //_block2.WaitOne();
+                byte[] data = System.Text.Encoding.Unicode.GetBytes("INPUT|" + file.Item1.ParsingName + "|" + destPath);
+                WindowsAPI.SendStringMessage(CorrespondingWinHandle, data, 0, data.Length);
                 
                 if (itemIndex == CopyItems.Count - 1) {
-                  _pipeClient = new PipeClient();
-                  _pipeClient.Send("END FO INIT|COPY", "CCH" + Handle.ToString());
-                  //_pipeClient = new PipeClient();
-                  //_pipeClient.Send("OP|COPY", "CCH" + Handle.ToString());
-       
+                  byte[] data2 = System.Text.Encoding.Unicode.GetBytes("END FO INIT|COPY");
+                  WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
                 }
                 break;
 
@@ -370,6 +342,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
     }
 
+    void mr_OnInitAdminOP(object sender, MessageEventArgs e) {
+      _block2.Set();
+    }
+
     void mr_OnMessageReceived(object sender, MessageEventArgs e)
     {
         Dispatcher.Invoke(new Action(() =>
@@ -377,7 +353,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             char unicodeSeparator = (char)0x00;
             var lastChar = e.Message.IndexOf(unicodeSeparator);
             var newMessage = e.Message;
-            if (!newMessage.Contains("PIPEDrain"))
+            if (Char.IsDigit(newMessage[0]))
             {
                 var data = newMessage.Split(Char.Parse("|"));
                 var totalBytesTransferred = Convert.ToInt64(data[0]);
@@ -414,8 +390,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       if (CurrentStatus == 1) {
         _block.Reset();
         if (this.IsAdminFO) {
-          _pipeClient = new PipeClient();
-          _pipeClient.Send("COMMAND|PAUSE", "CCH" + Handle.ToString());
+          byte[] data2 = System.Text.Encoding.Unicode.GetBytes("COMMAND|PAUSE");
+          WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
         }
         prFileProgress.Foreground = Brushes.Orange;
         prOverallProgress.Foreground = Brushes.Orange;
@@ -427,8 +403,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
         if (this.IsAdminFO) {
           prFileProgress.Foreground = Brushes.Blue;
           prOverallProgress.Foreground = Brushes.Blue;
-          _pipeClient = new PipeClient();
-          _pipeClient.Send("COMMAND|CONTINUE", "CCH" + Handle.ToString());
+          byte[] data2 = System.Text.Encoding.Unicode.GetBytes("COMMAND|CONTINUE");
+          WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
         } else {
           prFileProgress.Foreground = new SolidColorBrush(Color.FromRgb(0x01, 0xD3, 0x28));
           prOverallProgress.Foreground = new SolidColorBrush(Color.FromRgb(0x01, 0xD3, 0x28));
@@ -457,8 +433,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
     private void btnStop_Click(object sender, RoutedEventArgs e) {
         this.Cancel = true;
         if (this.IsAdminFO) {
-          _pipeClient = new PipeClient();
-          _pipeClient.Send("COMMAND|STOP", "CCH" + Handle.ToString());
+          byte[] data2 = System.Text.Encoding.Unicode.GetBytes("COMMAND|STOP");
+          WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
           CloseCurrentTask();
         }
     }
@@ -466,54 +442,14 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
     long totaltransfered = 0;
     long oldbyteVlaue = 0;
     int procCompleted = 0;
-    private void PipesMessageHandler(string message) {
-      try {
-        
-        Dispatcher.Invoke(new NewMessageDelegate((PipesMessageHandler) => {
-          char unicodeSeparator = (char)0x00;
-          var lastChar = message.IndexOf(unicodeSeparator);
-          var newMessage = message.Remove(lastChar);
-          if (!newMessage.Contains("PIPEDrain")){
-            var data = newMessage.Split(Char.Parse("|"));
-            var totalBytesTransferred = Convert.ToInt64(data[0]);
-            var totalFileSize = Convert.ToInt64(data[1]);
-            if (totalBytesTransferred > 0) {
-              if (totalBytesTransferred - oldbyteVlaue > 0)
-                totaltransfered += (totalBytesTransferred - oldbyteVlaue);
-              oldbyteVlaue = totalBytesTransferred;
-              prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
-              if (totalBytesTransferred == totalFileSize) {
-                procCompleted++;
-              }
-              prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
-              lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M,2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
-              if (procCompleted == CopyItemsCount) {
-                CloseCurrentTask();
-              }
-            } else {
-              oldbyteVlaue = 0;
-              if (prFileProgress != null)
-                prFileProgress.Value = 0;
-            }
-          }
-        }), message);
-        _block2.Set();
-      } catch (Exception ex) {
-
-        Debug.WriteLine(ex.Message);
-      }
-
-    }
 
 
     private void UserControl_Unloaded_1(object sender, RoutedEventArgs e) {
-      _pipeServer.PipeMessage -= new DelegateMessage(PipesMessageHandler);
-      _pipeServer = null;
       this.Cancel = true;
       this.CopyThread.Abort();
       if (this.IsAdminFO) {
-        _pipeClient = new PipeClient();
-        _pipeClient.Send("COMMAND|CLOSE", "CCH" + Handle.ToString());
+        byte[] data2 = System.Text.Encoding.Unicode.GetBytes("COMMAND|CLOSE");
+        WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
       }
     }
   }

@@ -14,6 +14,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations
     public partial class MessageReceiver : Form
     {
         public event EventHandler<MessageEventArgs> OnMessageReceived;
+      public event EventHandler<MessageEventArgs> OnInitAdminOP;
         uint WM_FOWINC = WindowsAPI.RegisterWindowMessage("BE_FOWINC");
         public MessageReceiver(string title)
         {
@@ -26,7 +27,9 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations
         {
             if (m.Msg == WM_FOWINC)
             {
-                MessageBox.Show("B");
+
+              if (OnInitAdminOP != null)
+                OnInitAdminOP.Invoke(this, new MessageEventArgs(m.LParam.ToString()));
             }
             if (m.Msg == WindowsAPI.WM_COPYDATA)
             {

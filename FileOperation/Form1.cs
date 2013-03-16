@@ -32,14 +32,18 @@ namespace FileOperation {
 
     private ManualResetEvent _block;
     private ManualResetEvent _block2;
-    public IntPtr Handle;
     private int CurrentStatus = -1;
     private bool IsShown = true;
     Thread CopyThread;
     public IntPtr MessageReceiverHandle;
     uint WM_FOWINC = WindowsAPI.RegisterWindowMessage("BE_FOWINC");
+    uint WM_FOBEGIN = WindowsAPI.RegisterWindowMessage("BE_FOBEGIN");
+    uint WM_FOEND = WindowsAPI.RegisterWindowMessage("BE_FOEND");
+    uint WM_FOPAUSE = WindowsAPI.RegisterWindowMessage("BE_FOPAUSE");
+    uint WM_FOSTOP = WindowsAPI.RegisterWindowMessage("BE_FOSTOP");
 
     public Form1() {
+      
       InitializeComponent();
       try
       {
@@ -48,6 +52,10 @@ namespace FileOperation {
           filterStatus.info = 0;
           WindowsAPI.ChangeWindowMessageFilterEx(Handle, 0x4A, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
           WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOWINC, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+          WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOBEGIN, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+          WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOEND, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+          WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOPAUSE, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+          WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOSTOP, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
       }
       catch (Exception)
       {
@@ -62,126 +70,26 @@ namespace FileOperation {
       } catch (Exception) {
 
       }
-      Text = String.Format("FO{0}", SourceHandle);
 
+      Text = String.Format("FO{0}", SourceHandle);
       MessageReceiverHandle = WindowsAPI.FindWindow(null, "FOMR" + SourceHandle);
       label1.Text = MessageReceiverHandle.ToString();
-      
-      _pipeServer = new PipeServer();
-      _pipeServer.PipeMessage += new DelegateMessage(PipesMessageHandler);
-      //_pipeServer.PipeFinished += _pipeServer_PipeFinished;
-      _pipeServer.Listen("CCH" + SourceHandle.ToString());
-
-      //_pipeClient.PipeFinished += _pipeClient_PipeFinished;
-
-
-    }
-
-    void _pipeServer_PipeFinished(object sender, EventArgs e) {
-      _pipeClient = new PipeClient();
-      _pipeClient.Send("PIPEDrain", "DATACH" + SourceHandle.ToString());
-    }
-
-    void _pipeClient_PipeFinished(object sender, EventArgs e) {
-      CurrentStatus = 0;
-      _block2.Set();
+      WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOWINC, IntPtr.Zero, IntPtr.Zero);
     }
     long OldBytes = 0;
     CopyFileCallbackAction CopyCallback(ShellObject src, String dst, object state, long totalFileSize, long totalBytesTransferred) {
-      //Console.WriteLine("{0}\t{1}", totalFileSize, totalBytesTransferred);
       _block.WaitOne();
       
       if (totalBytesTransferred > 0) {
-
-       // _pipeClient.Send(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString(), "DATACH" + SourceHandle.ToString());
-       // if (IsShown) {
-          //if (totalBytesTransferred - OldBytes >= 1024 * 1024 * 100) {
           byte[] data = System.Text.Encoding.Unicode.GetBytes(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString());
           WindowsAPI.SendStringMessage(MessageReceiverHandle, data, 0, data.Length);
-            //_pipeClient = new PipeClient();
-            //_pipeClient.Send(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString(), "DATACH" + SourceHandle.ToString());
-            OldBytes = totalBytesTransferred;
-            //_block2.Reset();
-           // _block2.WaitOne();
-         // }
-         IsShown = false;
-      //  }
-
-        //if (totalBytesTransferred == totalFileSize) {
-        //  _pipeClient.Send(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString(), "DATACH" + SourceHandle.ToString());
-        //  Thread.Sleep(10);
-        //}
-          
+          OldBytes = totalBytesTransferred;
       } 
 
       if (Cancel)
         return CopyFileCallbackAction.Cancel;
 
       return CopyFileCallbackAction.Continue;
-    }
-
-    private void PipesMessageHandler(string message) {
-
-      try {
-        
-        if (this.InvokeRequired) {
-          this.Invoke(new NewMessageDelegate(PipesMessageHandler), message);
-        } else {
-          char unicodeSeparator = (char)0x00;
-          var lastChar = message.IndexOf(unicodeSeparator);
-          var newMessage = message.Remove(lastChar);
-          if (newMessage.StartsWith("END FO INIT|COPY")) {
-            this.OPType = OperationType.Copy;
-          }
-          if (newMessage.StartsWith("INPUT|")) {
-            var parts = newMessage.Replace("INPUT|", "").Split(Char.Parse("|"));
-            SourceItemsCollection.Add(new Tuple<string, string>(parts[0].Trim(), parts[1].Trim()));
-           
-          }
-          if (message.StartsWith("PIPEDrain")) {
-            _block2.Set();
-          }
-          if (newMessage.StartsWith("END FO INIT")) {
-            _block.Set();
-
-            CopyThread = new Thread(new ThreadStart(CopyFiles));
-            CopyThread.IsBackground = false;
-            CopyThread.Start();
-            CopyThread.Join(1);
-
-            
-            
-            //MessageBox.Show(SourceItemsCollection.Count.ToString());
-          }
-          if (message.StartsWith("COMMAND|")) {
-            var realMessage = newMessage.Replace("COMMAND|", String.Empty);
-            switch (realMessage) {
-              case "STOP":
-                this.Cancel = true;
-                
-                break;
-              case "PAUSE":
-                _block.Reset();
-                break;
-              case "CONTINUE":
-                _block.Set();
-                break;
-              case "CLOSE":
-                Close();
-                break;
-              default:
-                break;
-            }
-          }
-          label1.Text = message;
-          
-        }
-      } catch (Exception ex) {
-
-        Debug.WriteLine(ex.Message);
-      }
-
-
     }
 
     void CopyFiles() {
@@ -204,6 +112,50 @@ namespace FileOperation {
     }
 
     protected override void WndProc(ref Message m) {
+
+      if (m.Msg == WindowsAPI.WM_COPYDATA){
+        byte[] b = new Byte[Marshal.ReadInt32(m.LParam, IntPtr.Size)];
+        IntPtr dataPtr = Marshal.ReadIntPtr(m.LParam, IntPtr.Size * 2);
+        Marshal.Copy(dataPtr, b, 0, b.Length);
+        string newMessage = System.Text.Encoding.Unicode.GetString(b);
+          if (newMessage.StartsWith("END FO INIT|COPY")) {
+            this.OPType = OperationType.Copy;
+          }
+          if (newMessage.StartsWith("INPUT|")) {
+            var parts = newMessage.Replace("INPUT|", "").Split(Char.Parse("|"));
+            SourceItemsCollection.Add(new Tuple<string, string>(parts[0].Trim(), parts[1].Trim()));
+           
+          }
+          if (newMessage.StartsWith("END FO INIT")) {
+            _block.Set();
+
+            CopyThread = new Thread(new ThreadStart(CopyFiles));
+            CopyThread.IsBackground = false;
+            CopyThread.Start();
+            CopyThread.Join(1);
+          }
+          if (newMessage.StartsWith("COMMAND|")) {
+            var realMessage = newMessage.Replace("COMMAND|", String.Empty);
+            switch (realMessage) {
+              case "STOP":
+                this.Cancel = true;
+                _block.Set();
+                _block2.Set();
+                break;
+              case "PAUSE":
+                _block.Reset();
+                break;
+              case "CONTINUE":
+                _block.Set();
+                break;
+              case "CLOSE":
+                Close();
+                break;
+              default:
+                break;
+            }
+          } 
+        }
       base.WndProc(ref m);
     }
   }
