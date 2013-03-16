@@ -116,7 +116,7 @@
     <system:String x:Key="tgSelectCP">Kijelölés</system:String>
     <system:String x:Key="btnSelectAllCP">Mindent kijelöl</system:String>
     <system:String x:Key="btnSelectNoneCP">Egyiket sem</system:String>
-    <system:String x:Key="btnInvertSelectionCP">Kijelölés megfordítása</system:String></system:String>
+    <system:String x:Key="btnInvertSelectionCP">Kijelölés megfordítása</system:String>
     <system:String x:Key="btnConditionalSelectCP">Feltételes kijelölés</system:String>
     <system:String x:Key="miSelAllByTypeCP">Összes azonos típus kijelölése</system:String>
     <system:String x:Key="miSelAllByDateCP">Összes azonos napon létrehozott fájl kijelölése</system:String>
@@ -185,7 +185,7 @@
     <system:String x:Key="btnNewWindowCP">Új ablak</system:String>
     <system:String x:Key="btnRefreshCP">Frissítés</system:String>
     <system:String x:Key="ctbLibrariesCP">Könyvtárak</system:String>
-    <system:String x:Key="tbManageCP">Kezelés</system:String></system:String>
+    <system:String x:Key="tbManageCP">Kezelés</system:String>
     <system:String x:Key="tgLibraryCP">Könyvtár</system:String>
     <system:String x:Key="btnManageLibCP">Könyvtár kezelése</system:String>
     <system:String x:Key="btnDefSaveCP">Alapértelmezett mentési hely</system:String>
