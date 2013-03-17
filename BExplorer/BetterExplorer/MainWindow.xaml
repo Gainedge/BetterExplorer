@@ -744,6 +744,10 @@
                                                                               LanguageText="日本語"
                                                                               LocaleCode="ja-JP"
                                                                               UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem x:Name="koKRLang"
+                                                                              LanguageText="Korean"
+                                                                              LocaleCode="ko-KR"
+                                                                              UsesRTL="False" />
                                             <controls:TranslationComboBoxItem x:Name="plPLLang"
                                                                               LanguageText="Polish"
                                                                               LocaleCode="pl-PL"

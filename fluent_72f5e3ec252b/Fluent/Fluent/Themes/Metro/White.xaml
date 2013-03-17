@@ -2658,7 +2658,7 @@
     <Setter Property="Template" Value="{StaticResource BackstageTabItemControlTemplate}" />
     <Setter Property="FocusVisualStyle" Value="{StaticResource ControlStyleEmptyFocus}" />
     <Setter Property="Height" Value="37" />
-    <Setter Property="Background" Value="{Binding Background,&#xD;&#xA;                                RelativeSource={RelativeSource FindAncestor,&#xD;&#xA;                                                               AncestorType={x:Type Fluent:BackstageTabControl}}}" />
+    <Setter Property="Background" Value="{Binding Background,&#xA;                                RelativeSource={RelativeSource FindAncestor,&#xA;                                                               AncestorType={x:Type Fluent:BackstageTabControl}}}" />
     <Setter Property="Margin" Value="0,1" />
   </Style>
   <ControlTemplate x:Key="ButtonBackstageControlTemplate" TargetType="{x:Type Fluent:Button}">
