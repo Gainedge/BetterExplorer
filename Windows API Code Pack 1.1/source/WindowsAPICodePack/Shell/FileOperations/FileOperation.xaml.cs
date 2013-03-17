@@ -34,6 +34,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
     public Boolean Cancel = false;
     public OperationType OperationType { get; set; }
     private ManualResetEvent _block;
+    private MessageReceiver mr;
     public Guid Handle;
     private int CurrentStatus = -1;
     private bool IsShown = false;
@@ -270,7 +271,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                   
                   Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                      (Action)(() => {
-                         MessageReceiver mr = new MessageReceiver("FOMR" + this.Handle.ToString());
+                         mr = new MessageReceiver("FOMR" + this.Handle.ToString());
                          mr.OnMessageReceived += mr_OnMessageReceived;
                          mr.OnInitAdminOP += mr_OnInitAdminOP;
                        prFileProgress.Foreground = Brushes.Blue;
@@ -428,10 +429,14 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                    if (ParentContents.Contents.Count == 0)
                      ParentContents.Close();
                  }
+                 if (mr != null)
+                     mr.Close();
                }));
     }
     private void btnStop_Click(object sender, RoutedEventArgs e) {
         this.Cancel = true;
+        _block.Set();
+        _block2.Set();
         if (this.IsAdminFO) {
           byte[] data2 = System.Text.Encoding.Unicode.GetBytes("COMMAND|STOP");
           WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);

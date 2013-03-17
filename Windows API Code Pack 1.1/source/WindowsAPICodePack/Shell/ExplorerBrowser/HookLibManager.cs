@@ -222,11 +222,15 @@ namespace Microsoft.WindowsAPICodePack.Controls {
         Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation tempWindow = new Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation(SourceItemsCollection, DestinationLocation,OperationType.Move);
         var currentDialog = System.Windows.Application.Current.MainWindow.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
         if (currentDialog == null) {
-          currentDialog = new FileOperationDialog();
-          currentDialog.Owner = System.Windows.Application.Current.MainWindow;
-          currentDialog.Contents.Add(tempWindow);
+            currentDialog = new FileOperationDialog();
+            tempWindow.ParentContents = currentDialog;
+            currentDialog.Owner = System.Windows.Application.Current.MainWindow;
+            tempWindow.Visibility = System.Windows.Visibility.Collapsed;
+            currentDialog.Contents.Add(tempWindow);
         } else {
-          currentDialog.Contents.Add(tempWindow);
+            tempWindow.ParentContents = currentDialog;
+            tempWindow.Visibility = System.Windows.Visibility.Collapsed;
+            currentDialog.Contents.Add(tempWindow);
         }
         return true;
       }

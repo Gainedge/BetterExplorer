@@ -3900,8 +3900,17 @@ namespace BetterExplorer
 			{
 				if (WindowsAPI.getOSInfo() == WindowsAPI.OsVersionInfo.Windows8)
 				{
-					TheStatusBar.Visibility = System.Windows.Visibility.Collapsed;
-					rStatusbar.Height = new GridLength(0);
+					//TheStatusBar.Visibility = System.Windows.Visibility.Collapsed;
+					//rStatusbar.Height = new GridLength(0);
+                    WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
+                    WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, false);
+                    if (state.fShowStatusBar == 1)
+                    {
+                        state.fShowStatusBar = 0;
+                        WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, true);
+                    }
+                    //state.fShowInfoTip = 1;
+                    //WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWINFOTIP, true);
 				}
 
 				Handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
@@ -4300,8 +4309,8 @@ namespace BetterExplorer
 													  }
 													  if (i == Tabs.Count())
 													  {
-                              ShellObject sho = GetShellObjectFromLocation(str);
-                              Explorer.Navigate(sho);
+                                                          ShellObject sho = GetShellObjectFromLocation(str);
+                                                          Explorer.Navigate(sho);
 														  (tabControl1.SelectedItem as CloseableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
 													  }
 												  }

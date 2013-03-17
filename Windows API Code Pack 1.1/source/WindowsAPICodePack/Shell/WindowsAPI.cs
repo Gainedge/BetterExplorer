@@ -1553,7 +1553,8 @@ namespace WindowsHelper
             SSF_SEPPROCESS = 0x00080000,
             SSF_NONETCRAWLING = 0x00100000,
             SSF_STARTPANELON = 0x00200000,
-            SSF_SHOWSTARTPAGE = 0x00400000
+            SSF_SHOWSTARTPAGE = 0x00400000,
+            SSF_SHOWSTATUSBAR = 0x04000000
         }
         #endregion
 
@@ -1604,6 +1605,7 @@ namespace WindowsHelper
             ///fShowStartPage : 1
             ///fSpareFlags : 13
             public uint bitvector2;
+            public uint bitvector3;
 
             public uint fShowAllObjects
             {
@@ -1877,6 +1879,20 @@ namespace WindowsHelper
                 set
                 {
                     this.bitvector2 = ((uint)(((value * 4)
+                                | this.bitvector2)));
+                }
+            }
+
+            public uint fShowStatusBar
+            {
+                get
+                {
+                    return ((uint)(((this.bitvector2 & 64u)
+                                / 64)));
+                }
+                set
+                {
+                    this.bitvector2 = ((uint)(((value * 64)
                                 | this.bitvector2)));
                 }
             }

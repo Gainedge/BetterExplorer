@@ -2326,7 +2326,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			HResult ICommDlgBrowser3.IncludeObject(IntPtr ppshv, IntPtr pidl)
 			{
 					// items in the view have changed, so the collections need updating
-					FireContentChanged();
+                BeginInvoke(new MethodInvoker(delegate()
+                {
+                    FireContentChanged();
+                }));
+					
 
 					return HResult.Ok;
 			}
@@ -2692,36 +2696,36 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 											if (ExplorerBrowserMouseLeave != null)
 													ExplorerBrowserMouseLeave.Invoke(this, null);
 									}
-                  //MessageBox.Show(LastItemRect.X.ToString() + "/" + LastItemRect.Location.Y + " - " + Cursor.Position.ToString());
-                  if (reclv.Contains(Cursor.Position)) 
-                  {
-                    //MessageBox.Show(LastItemRect.ToString() + " - " + Cursor.Position.ToString());
-                    if (!((LastItemRect.X < Cursor.Position.X && LastItemRect.Y < Cursor.Position.Y)
-                        && (LastItemRect.Right > Cursor.Position.X && LastItemRect.Bottom > Cursor.Position.Y))) 
-                    {
-                      AutomationElement ae = AutomationElement.FromPoint(new System.Windows.Point(Cursor.Position.X, Cursor.Position.Y));
+                                //MessageBox.Show(LastItemRect.X.ToString() + "/" + LastItemRect.Location.Y + " - " + Cursor.Position.ToString());
+                                if (reclv.Contains(Cursor.Position)) 
+                                {
+                                    //MessageBox.Show(LastItemRect.ToString() + " - " + Cursor.Position.ToString());
+                                    if (!((LastItemRect.X < Cursor.Position.X && LastItemRect.Y < Cursor.Position.Y)
+                                        && (LastItemRect.Right > Cursor.Position.X && LastItemRect.Bottom > Cursor.Position.Y))) 
+                                    {
+                                        AutomationElement ae = AutomationElement.FromPoint(new System.Windows.Point(Cursor.Position.X, Cursor.Position.Y));
 
-                      LastItemRect = new Rectangle((int)ae.Current.BoundingRectangle.Location.X, (int)ae.Current.BoundingRectangle.Location.Y, (int)ae.Current.BoundingRectangle.Width, (int)ae.Current.BoundingRectangle.Height);
-                      if (ae.Current.ClassName == "UIItem") {
-                        int AutomationID = -1;
-                        bool isNumber = int.TryParse(ae.Current.AutomationId, out AutomationID);
-                        if (isNumber) {
-                          var item = GetItem(AutomationID);
-                          vItemHot(ae.Current.ClassName, item, ae.Current.BoundingRectangle, AutomationID, false); 
-                        }
-                      } else if (ae.Current.ClassName == "UIProperty") {
-                        AutomationElement aeParent = TreeWalker.ContentViewWalker.GetParent(ae);
-                        int AutomationID = -1;
-                        bool isNumber = int.TryParse(aeParent.Current.AutomationId, out AutomationID);
-                        if (isNumber) {
-                          var item = GetItem(AutomationID);
-                          LastItemRect = new Rectangle((int)aeParent.Current.BoundingRectangle.Location.X, (int)aeParent.Current.BoundingRectangle.Location.Y, (int)aeParent.Current.BoundingRectangle.Width, (int)aeParent.Current.BoundingRectangle.Height);
-                          vItemHot(aeParent.Current.ClassName, item, aeParent.Current.BoundingRectangle, AutomationID, false); 
-                        }
-                      }
-                    }
+                                        LastItemRect = new Rectangle((int)ae.Current.BoundingRectangle.Location.X, (int)ae.Current.BoundingRectangle.Location.Y, (int)ae.Current.BoundingRectangle.Width, (int)ae.Current.BoundingRectangle.Height);
+                                        if (ae.Current.ClassName == "UIItem") {
+                                        int AutomationID = -1;
+                                        bool isNumber = int.TryParse(ae.Current.AutomationId, out AutomationID);
+                                        if (isNumber) {
+                                            var item = GetItem(AutomationID);
+                                            vItemHot(ae.Current.ClassName, item, ae.Current.BoundingRectangle, AutomationID, false); 
+                                        }
+                                        } else if (ae.Current.ClassName == "UIProperty") {
+                                        AutomationElement aeParent = TreeWalker.ContentViewWalker.GetParent(ae);
+                                        int AutomationID = -1;
+                                        bool isNumber = int.TryParse(aeParent.Current.AutomationId, out AutomationID);
+                                        if (isNumber) {
+                                            var item = GetItem(AutomationID);
+                                            LastItemRect = new Rectangle((int)aeParent.Current.BoundingRectangle.Location.X, (int)aeParent.Current.BoundingRectangle.Location.Y, (int)aeParent.Current.BoundingRectangle.Width, (int)aeParent.Current.BoundingRectangle.Height);
+                                            vItemHot(aeParent.Current.ClassName, item, aeParent.Current.BoundingRectangle, AutomationID, false); 
+                                        }
+                                        }
+                                    }
                       
-                  }
+                                }
 							}
 
 							if (m.Msg == (int)WindowsAPI.WndMsg.WM_PAINT)
