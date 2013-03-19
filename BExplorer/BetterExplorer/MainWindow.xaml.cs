@@ -3906,8 +3906,9 @@ namespace BetterExplorer
                     WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, false);
                     if (state.fShowStatusBar == 1)
                     {
-                        state.fShowStatusBar = 0;
-                        WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, true);
+                        WindowsAPI.SHELLSTATE newState = new WindowsAPI.SHELLSTATE();
+                        newState.fShowStatusBar = 0;
+                        WindowsAPI.SHGetSetSettings(ref newState, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, true);
                     }
                     //state.fShowInfoTip = 1;
                     //WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWINFOTIP, true);
