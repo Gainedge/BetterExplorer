@@ -420,6 +420,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Translation\Locale.hi-IN.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Translation\Locale.hu-HU.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -755,6 +759,30 @@
     <Content Include="FileOperation.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Translation\Flags\BG.gif" />
+    <Resource Include="Translation\Flags\BR.gif" />
+    <Resource Include="Translation\Flags\CN.gif" />
+    <Resource Include="Translation\Flags\CZ.gif" />
+    <Resource Include="Translation\Flags\DE.gif" />
+    <Resource Include="Translation\Flags\ES.gif" />
+    <Resource Include="Translation\Flags\FI.gif" />
+    <Resource Include="Translation\Flags\FR.gif" />
+    <Resource Include="Translation\Flags\HR.gif" />
+    <Resource Include="Translation\Flags\HU.gif" />
+    <Resource Include="Translation\Flags\IN.gif" />
+    <Resource Include="Translation\Flags\IT.gif" />
+    <Resource Include="Translation\Flags\JP.gif" />
+    <Resource Include="Translation\Flags\KR.gif" />
+    <Resource Include="Translation\Flags\NL.gif" />
+    <Resource Include="Translation\Flags\PL.gif" />
+    <Resource Include="Translation\Flags\RU.gif" />
+    <Resource Include="Translation\Flags\SE.gif" />
+    <Resource Include="Translation\Flags\TR.gif" />
+    <Resource Include="Translation\Flags\TW.gif" />
+    <Resource Include="Translation\Flags\UA.gif" />
+    <Resource Include="Translation\Flags\US.gif" />
+    <Resource Include="Translation\Flags\VI.gif" />
+    <Resource Include="Translation\Flags\VN.gif" />
     <Content Include="Updater.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -944,7 +972,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

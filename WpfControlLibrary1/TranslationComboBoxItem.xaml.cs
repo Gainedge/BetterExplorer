@@ -62,5 +62,17 @@ namespace BetterExplorerControls
             }
         }
 
+        public ImageSource CountryFlag
+        {
+            get
+            {
+                return this.LangFlag.Source;
+            }
+            set
+            {
+                this.LangFlag.Source = value;
+            }
+        }
+
     }
 }

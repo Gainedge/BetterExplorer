@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Height="40" Width="150">
+             mc:Ignorable="d" Height="40" Width="Auto">
     <Grid>
         <TextBlock HorizontalAlignment="Left" Margin="6,3,0,0" Name="LanguageTextBlock" Text="Language (i.e. English)" FontWeight="Bold" Height="16" VerticalAlignment="Top" />
         <TextBlock Margin="6,20,0,0" Name="LocaleTextBlock" Text="Locale Code (i.e. en-US)" VerticalAlignment="Top" HorizontalAlignment="Left" Width="125" />
+        <Image HorizontalAlignment="Right" x:Name="LangFlag" Height="11" Width="16" Margin="0,5,5,0" VerticalAlignment="Top" />
     </Grid>
 </UserControl>

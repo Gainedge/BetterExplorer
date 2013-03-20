@@ -8623,5 +8623,10 @@ namespace BetterExplorer
             }
     }
 
+    private void TranslationComboBox_DropDownClosed_1(object sender, EventArgs e)
+    {
+        backstage.IsOpen = true;
+    }
+
 	}
 }
