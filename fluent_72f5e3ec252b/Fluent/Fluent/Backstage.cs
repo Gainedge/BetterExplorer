@@ -81,10 +81,10 @@ namespace Fluent
             }
 
             // Invoke the event
-            if (backstage.IsOpenChanged != null)
-            {
-                backstage.IsOpenChanged(backstage, e);
+            if (backstage.IsOpenChanged != null) {
+              backstage.IsOpenChanged(backstage, e);
             }
+            
         }
 
         #endregion

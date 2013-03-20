@@ -3,10 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Height="40" Width="Auto">
+             mc:Ignorable="d" Height="40" Width="170">
     <Grid>
-        <TextBlock HorizontalAlignment="Left" Margin="6,3,0,0" Name="LanguageTextBlock" Text="Language (i.e. English)" FontWeight="Bold" Height="16" VerticalAlignment="Top" />
-        <TextBlock Margin="6,20,0,0" Name="LocaleTextBlock" Text="Locale Code (i.e. en-US)" VerticalAlignment="Top" HorizontalAlignment="Left" Width="125" />
-        <Image HorizontalAlignment="Right" x:Name="LangFlag" Height="11" Width="16" Margin="0,5,5,0" VerticalAlignment="Top" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="17"/>
+            <RowDefinition Height="17"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" Margin="6,0,0,0" Name="LanguageTextBlock" Text="Language (i.e. English)" FontWeight="Bold" Height="16" VerticalAlignment="Center" />
+        <TextBlock Grid.Column="0" Grid.Row="1" Margin="6,0,0,0" Name="LocaleTextBlock" Text="Locale Code (i.e. en-US)" VerticalAlignment="Center" HorizontalAlignment="Left" Width="125" />
+        <Image Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" x:Name="LangFlag" Height="11" Width="16"/>
     </Grid>
 </UserControl>

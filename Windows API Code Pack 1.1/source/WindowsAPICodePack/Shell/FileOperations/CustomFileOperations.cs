@@ -29,10 +29,10 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
         return CopyFile(source, destination, options, callback, null);
 		}
-    public static void MoveFile(ShellObject source, String destination,
+    public static Boolean MoveFile(ShellObject source, String destination,
       MoveFileFlags options, CopyFileCallback callback) {
 
-      MoveFile(source, destination, options, callback, null);
+      return MoveFile(source, destination, options, callback, null);
     }
 
 
@@ -69,17 +69,19 @@ namespace Microsoft.WindowsAPICodePack.Shell {
       return result;
     }
 
-    public static void FileOperationMove(Tuple<ShellObject, String, String, Int32> source, MoveFileFlags options, CopyFileCallback callback, int itemIndex, List<CollisionInfo> colissions) {
+    public static Boolean FileOperationMove(Tuple<ShellObject, String, String, Int32> source, MoveFileFlags options, CopyFileCallback callback, int itemIndex, List<CollisionInfo> colissions) {
       var currentItem = colissions.Where(c => c.item == source.Item1).SingleOrDefault();
+      bool result = false;
       if (currentItem != null) {
         if (!currentItem.IsCheckedC && currentItem.IsChecked) {
-          MoveFile(source.Item1, source.Item2, options, callback);
+          result = MoveFile(source.Item1, source.Item2, options, callback);
         } else if (currentItem.IsCheckedC && currentItem.IsChecked) {
-          MoveFile(source.Item1, source.Item3, options, callback);
+          result = MoveFile(source.Item1, source.Item3, options, callback);
         }
       } else {
-        MoveFile(source.Item1, source.Item3, options, callback);
+        result = MoveFile(source.Item1, source.Item3, options, callback);
       }
+      return result;
     }
 
 
@@ -110,7 +112,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
       return CopyFileEx(source.ParsingName, destination, cpr, IntPtr.Zero, ref cancel, (int)options);
 		}
 
-    public static void MoveFile(ShellObject source, String destination,
+    public static Boolean MoveFile(ShellObject source, String destination,
       MoveFileFlags options, CopyFileCallback callback, object state) {
       if (source == null) throw new ArgumentNullException("source");
       if (destination == null)
@@ -133,10 +135,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
         source, destination, callback, state).CallbackHandler));
 
       bool cancel = false;
-      if (!MoveFileWithProgress(source.ParsingName, destination, cpr,
-        IntPtr.Zero, options)) {
-        throw new IOException(new Win32Exception().Message);
-      }
+      return MoveFileWithProgress(source.ParsingName, destination, cpr, IntPtr.Zero, options);
     }
 
 		private class CopyProgressData

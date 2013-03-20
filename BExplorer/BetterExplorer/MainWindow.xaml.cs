@@ -359,8 +359,8 @@ namespace BetterExplorer
 		{
 			if (KeepBackstageOpen == true)
 			{
-				KeepBackstageOpen = false;
-				//backstage.IsOpen = true;
+				backstage.IsOpen = true;
+        KeepBackstageOpen = false;
 			}
 		}
 
@@ -8625,7 +8625,8 @@ namespace BetterExplorer
 
     private void TranslationComboBox_DropDownClosed_1(object sender, EventArgs e)
     {
-        backstage.IsOpen = true;
+      //KeepBackstageOpen = true;
+      //backstage.IsOpen = true;
     }
 
 	}

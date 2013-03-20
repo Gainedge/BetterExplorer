@@ -357,7 +357,7 @@
                                   FontStyle="Normal"
                                   FontWeight="Normal"
                                   IsOpenChanged="backstage_IsOpenChanged"
-                                  Ribbon:KeyTip.Keys="F">
+                                  Ribbon:KeyTip.Keys="F" Focusable="False">
                     <Ribbon:BackstageTabControl>
                         <Ribbon:Button Name="btnNewWindow"
                                        Click="Button_Click_5"
@@ -687,14 +687,14 @@
                                         <!--  <Label Content="en-US - English(US)" Margin="0,0,0,0" />  -->
                                         <!--  <Label Content="bg-BG - Bulgarian" Margin="0,0,0,0" />  -->
                                         <Ribbon:ComboBox Name="TranslationComboBox"
-                                                  Width="190"
+                                                  Width="200"
                                                   Height="40"
                                                   Margin="0,5,0,0"
                                                   HorizontalAlignment="Left"
                                                   Style="{DynamicResource ComboBoxBackstageStyle}"
                                                   HorizontalContentAlignment="Stretch"
                                                   DropDownClosed="TranslationComboBox_DropDownClosed_1"
-                                                  SelectionChanged="TranslationComboBox_SelectionChanged">
+                                                  SelectionChanged="TranslationComboBox_SelectionChanged" CanAddToQuickAccessToolBar="False" >
                                             <controls:TranslationComboBoxItem x:Name="bgBGLang"
                                                                               LanguageText="Bulgarian"
                                                                               LocaleCode="bg-BG"
@@ -729,7 +729,7 @@
                                                                               LanguageText="English"
                                                                               LocaleCode="en-US"
                                                                               CountryFlag="Translation\Flags\US.gif"
-                                                                              UsesRTL="False" />
+                                                                              UsesRTL="False"/>
                                             <controls:TranslationComboBoxItem x:Name="fiFILang"
                                                                               LanguageText="Finnish"
                                                                               LocaleCode="fi-FI"

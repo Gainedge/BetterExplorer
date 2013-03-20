@@ -143,7 +143,7 @@ namespace Fluent
         {
             if (e.ChangedButton == MouseButton.Left || e.ChangedButton == MouseButton.Right)
             {
-                if (Mouse.Captured == sender)
+                if (Mouse.Captured == sender && !(sender is Fluent.ComboBox))
                 {
                     RaiseDismissPopupEvent(sender, DismissPopupMode.MouseNotOver);
                 }
