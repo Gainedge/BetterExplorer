@@ -184,78 +184,78 @@
     <system:String x:Key="grpWindowsCP">Windows</system:String>
     <system:String x:Key="btnNewWindowCP">नई विंडो</system:String>
     <system:String x:Key="btnRefreshCP">ताज़ा</system:String>
-    <!--<system:String x:Key="ctbLibrariesCP">Libraries</system:String> <system:String x:Key="ctbLibrariesCP"> पुस्तकालय </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="tbManageCP">Manage</system:String> <system:String x:Key="tbManageCP"> </ प्रणाली: स्ट्रिंग> प्रबंधन
-    <system:String x:Key="tgLibraryCP">Library</system:String> <system:String x:Key="tgLibraryCP"> पुस्तकालय </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnManageLibCP">Manage Library</system:String> <system:String x:Key="btnManageLibCP"> </ प्रणाली: स्ट्रिंग> पुस्तकालय प्रबंधन
-    <system:String x:Key="btnDefSaveCP">Default save location</system:String> <system:String x:Key="btnDefSaveCP"> मूलभूत स्थान </ सिस्टम: स्ट्रिंग> बचाने के
-    <system:String x:Key="btnOptimizeCP">Optimize library</system:String> <system:String x:Key="btnOptimizeCP"> ऑप्टिमाइज़ पुस्तकालय </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miGeneralCP">General Use</system:String> <system:String x:Key="miGeneralCP"> सामान्य उपयोग </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miDocumentsCP">Documents</system:String> <system:String दस्तावेज़ x:Key="miDocumentsCP"> </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miMusicCP">Music</system:String> <system:String x:Key="miMusicCP"> संगीत </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miPicturesCP">Pictures</system:String> <system:String x:Key="miPicturesCP"> तस्वीर </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miVideosCP">Videos</system:String> <system:String x:Key="miVideosCP"> वीडियो </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnChangeLibIconCP">Change Icon</system:String> <system:String x:Key="btnChangeLibIconCP"> बदलें चिह्न </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="chkPinNavCP">Show in navigation pane</system:String> नेविगेशन फलक में <system:String x:Key="chkPinNavCP"> दिखाएँ </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="chkPinNavHCP">Show library in navigation pane</system:String> <system:String x:Key="chkPinNavHCP"> नेविगेशन फलक में दिखाएँ पुस्तकालय </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="chkPinNavICP">Choose whether to show this library in the pane on the left side of the window. <system:String x:Key="chkPinNavICP"> चुनें कि फलक में विंडो के बाईं ओर पर इस पुस्तकालय को दिखाने के लिए. This library can still be accessed through the Libraries folder if it is not in the navigation pane.</system:String> इस पुस्तकालय में अभी भी पुस्तकालय फ़ोल्डर के माध्यम से पहुँचा जा सकता है अगर यह नेविगेशन फलक में नहीं है </ प्रणाली: स्ट्रिंग>.
-    <system:String x:Key="btnResetCP">Reset to default</system:String> <system:String x:Key="btnResetCP"> डिफ़ॉल्ट </ प्रणाली: स्ट्रिंग> रीसेट
-    <system:String x:Key="ctgFolderToolsCP">Folder Tools</system:String> <system:String x:Key="ctgFolderToolsCP"> फ़ोल्डर </ प्रणाली: स्ट्रिंग> उपकरण
-    <system:String x:Key="tgFolderIconCP">Icon</system:String> <system:String x:Key="tgFolderIconCP"> चिह्न </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnChangeFIconCP">Change Folder Icon</system:String> <system:String x:Key="btnChangeFIconCP"> बदलें फ़ोल्डर चिह्न </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnClearFIconCP">Clear Folder Icon</system:String> <system:String x:Key="btnClearFIconCP"> साफ फ़ोल्डर चिह्न </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnFSizeChartCP">Folder Size Chart</system:String> <system:String x:Key="btnFSizeChartCP"> फ़ोल्डर आकार चार्ट </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="ctbDriveToolsCP">Drive Tools</system:String> <system:String x:Key="ctbDriveToolsCP"> ड्राइव उपकरण </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="tabDriveCP">Drive</system:String> <system:String x:Key="tabDriveCP"> ड्राइव </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnFormatDriveCP">Format Drive</system:String> <system:String x:Key="btnFormatDriveCP"> प्रारूप ड्राइव </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnCleanDriveCP">Clean Up Drive</system:String> <system:String x:Key="btnCleanDriveCP"> ड्राइव </ प्रणाली: स्ट्रिंग> साफ
-    <system:String x:Key="btnDefragDriveCP">Optimize Drive</system:String> <system:String x:Key="btnDefragDriveCP"> ऑप्टिमाइज़ ड्राइव </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnDSizeChartCP">Drive Size Chart</system:String> <system:String x:Key="btnDSizeChartCP"> ड्राइव आकार चार्ट </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="ctbApplicationsCP">Application Tools</system:String> <system:String x:Key="ctbApplicationsCP"> अनुप्रयोग </ प्रणाली: स्ट्रिंग> उपकरण
-    <system:String x:Key="tabApplicationCP">Application</system:String> <system:String x:Key="tabApplicationCP"> आवेदन </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="tgRunCP">Run</system:String> <system:String x:Key="tgRunCP"> </ प्रणाली: स्ट्रिंग> चलाएँ
-    <system:String x:Key="btnPinCP">Pin to Taskbar</system:String> टास्कबार <system:String x:Key="btnPinCP"> पिन </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnRunAsAdminCP">Run as Administrator</system:String> <system:String x:Key="btnRunAsAdminCP"> प्रशासक </ प्रणाली: स्ट्रिंग> के रूप में चलाएँ
-    <system:String x:Key="ctbImageToolsCP">Image Tools</system:String> <system:String x:Key="ctbImageToolsCP"> छवि </ प्रणाली: स्ट्रिंग> उपकरण
-    <system:String x:Key="tgImgEditCP">Edit</system:String> <system:String x:Key="tgImgEditCP"> संपादित करें </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnRotateLeftCP">Rotate Left</system:String> <system:String x:Key="btnRotateLeftCP"> घुमाएँ </ प्रणाली: स्ट्रिंग> वाम
-    <system:String x:Key="btnRotateRightCP">Rotate Right</system:String> <system:String x:Key="btnRotateRightCP"> सही </ प्रणाली: स्ट्रिंग> घुमाएँ
-    <system:String x:Key="btnFlipXCP">Flip Horizontally</system:String> <system:String x:Key="btnFlipXCP"> आड़ापलटें </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnFlipYCP">Flip Vertically</system:String> <system:String x:Key="btnFlipYCP"> फ्लिप को लम्बाकार में </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnConvertImageCP">Convert</system:String> <system:String x:Key="btnConvertImageCP"> </ प्रणाली: स्ट्रिंग परिवर्तित>
-    <system:String x:Key="miJPGfCP">To JPEG</system:String> <system:String JPEG x:Key="miJPGfCP"> </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miPNGfCP">To PNG</system:String> : <system:String PNG x:Key="miPNGfCP"> </ प्रणाली स्ट्रिंग>
-    <system:String x:Key="miGIFfCP">To GIF</system:String> <system:String GIF x:Key="miGIFfCP"> </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miBMPfCP">To BMP</system:String> <system:String बीएमपी x:Key="miBMPfCP"> </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miWMFfCP">To WMF</system:String> : <system:String WMF x:Key="miWMFfCP"> </ प्रणाली स्ट्रिंग>
-    <system:String x:Key="grpSizeCP">Size</system:String> <system:String x:Key="grpSizeCP"> साइज </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="lblWidthCP">Width:</system:String> <system:String x:Key="lblWidthCP"> चौड़ाई: </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="lblHeightCP">Height:</system:String> <system:String x:Key="lblHeightCP"> लंबाई: </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnResizeCP">Resize</system:String> <system:String x:Key="btnResizeCP"> का आकार बदलें </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnCropImageCP">Crop</system:String> <system:String x:Key="btnCropImageCP"> फसल </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="tgImgViewCP">View</system:String> <system:String x:Key="tgImgViewCP"> देखें </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnSlideShowCP">Slide Show</system:String> <system:String x:Key="btnSlideShowCP"> स्लाइड शो </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnWallpaperCP">Set as Wallpaper</system:String> <system:String x:Key="btnWallpaperCP"> वॉलपेपर के रूप में </ प्रणाली: स्ट्रिंग> सेट
-    <system:String x:Key="miWallFillCP">Fill Screen</system:String> <system:String x:Key="miWallFillCP"> स्क्रीन </ प्रणाली: स्ट्रिंग> भरें
-    <system:String x:Key="miWallFitCP">Fit Within Screen</system:String> <system:String x:Key="miWallFitCP"> फ़िट स्क्रीन के अंदर </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miWallStretchCP">Stretched</system:String> <system:String x:Key="miWallStretchCP"> </ प्रणाली: स्ट्रिंग> तनी
-    <system:String x:Key="miWallTileCP">Tiled</system:String> <system:String x:Key="miWallTileCP"> टाइलों </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miWallCenterCP">Centered</system:String> <system:String केंद्रित x:Key="miWallCenterCP"> </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="ctbArchiveToolsCP">Archive Tools</system:String> <system:String x:Key="ctbArchiveToolsCP"> आर्काइव उपकरण </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="tgExtractCP">Extract</system:String> <system:String x:Key="tgExtractCP"> निकालें </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnExtractHereCP">Extract Here</system:String> <system:String x:Key="btnExtractHereCP"> निकालें </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnExtractHereHCP">Extract Here</system:String> <system:String x:Key="btnExtractHereHCP"> निकालें </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnExtractHereICP">Places the contents of this archive here in a new folder.</system:String> <system:String x:Key="btnExtractHereICP"> इस संग्रह की सामग्री को यहाँ एक नया फ़ोल्डर में </ प्रणाली: स्ट्रिंग> देता है.
-    <system:String x:Key="lblExtractCP">Extract to:</system:String> <system:String x:Key="lblExtractCP"> निकालें: </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnChooseLocationCP">Change Output Folder</system:String> <system:String x:Key="btnChooseLocationCP"> बदले उत्पादन फ़ोल्डर </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnExtractNowCP">Extract Archive</system:String> <system:String x:Key="btnExtractNowCP"> निकालें Archive </ सिस्टम: स्ट्रिंग>
-    <system:String x:Key="chkUseNewFolderCP">Extract in new folder</system:String> नए फ़ोल्डर में <system:String x:Key="chkUseNewFolderCP"> निकालें </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="chkOpenResultsCP">Show Files when Done</system:String> <system:String x:Key="chkOpenResultsCP"> दिखाएँ फ़ाइलें जब </ प्रणाली: स्ट्रिंग> करेंकिया गया
-    <system:String x:Key="btnCheckArchiveCP">Check Integrity</system:String> <system:String x:Key="btnCheckArchiveCP"> </ प्रणाली: स्ट्रिंग> अखंडता की जाँच
-    <system:String x:Key="btnViewArchiveCP">View Archive</system:String> <system:String x:Key="btnViewArchiveCP"> पुराने लेख देखें </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnExitCP">Exit</system:String> <system:String x:Key="btnExitCP"> बाहर निकलें </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="SearchBarResetCP">Reset Size</system:String> <system:String x:Key="SearchBarResetCP"> रीसेट साइज </ सिस्टम: स्ट्रिंग>
-    <system:String x:Key="ctbSearchToolsCP">Search Tools</system:String> <system:String x:Key="ctbSearchToolsCP"> खोज उपकरण </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="ctbLibrariesCP">पुस्तकालय</system:String>
+    <system:String x:Key="tbManageCP">प्रबंधन</system:String>
+    <system:String x:Key="tgLibraryCP">पुस्तकालय</system:String>
+    <system:String x:Key="btnManageLibCP">पुस्तकालय प्रबंधन</system:String>
+    <system:String x:Key="btnDefSaveCP">मूलभूत स्थान बचाने के</system:String>
+    <system:String x:Key="btnOptimizeCP">ऑप्टिमाइज़ पुस्तकालय</system:String>
+    <system:String x:Key="miGeneralCP">सामान्य उपयोग</system:String>
+    <system:String x:Key="miDocumentsCP">दस्तावेज़</system:String>
+    <system:String x:Key="miMusicCP">संगीत</system:String>
+    <system:String x:Key="miPicturesCP">तस्वीर</system:String>
+    <system:String x:Key="miVideosCP">वीडियो</system:String>
+    <system:String x:Key="btnChangeLibIconCP">बदलें चिह्न</system:String>
+    <system:String x:Key="chkPinNavCP">नेविगेशन फलक में दिखाएँ</system:String>
+    <system:String x:Key="chkPinNavHCP">नेविगेशन फलक में दिखाएँ पुस्तकालय</system:String>
+    <system:String x:Key="chkPinNavICP">चुनें कि फलक में विंडो के बाईं ओर पर इस पुस्तकालय को दिखाने के लिए. इस पुस्तकालय में अभी भी पुस्तकालय फ़ोल्डर के माध्यम से पहुँचा जा सकता है अगर यह नेविगेशन फलक में नहीं है</system:String>
+    <system:String x:Key="btnResetCP">डिफ़ॉल्ट रीसेट</system:String>
+    <system:String x:Key="ctgFolderToolsCP">फ़ोल्डर उपकरण</system:String>
+    <system:String x:Key="tgFolderIconCP">चिह्न</system:String>
+    <system:String x:Key="btnChangeFIconCP">बदलें फ़ोल्डर चिह्न</system:String>
+    <system:String x:Key="btnClearFIconCP">साफ फ़ोल्डर चिह्न</system:String>
+    <system:String x:Key="btnFSizeChartCP">फ़ोल्डर आकार चार्ट</system:String>
+    <system:String x:Key="ctbDriveToolsCP">ड्राइव उपकरण</system:String>
+    <system:String x:Key="tabDriveCP">ड्राइव</system:String>
+    <system:String x:Key="btnFormatDriveCP">प्रारूप ड्राइव</system:String>
+    <system:String x:Key="btnCleanDriveCP">ड्राइव साफ</system:String>
+    <system:String x:Key="btnDefragDriveCP">ऑप्टिमाइज़ ड्राइव</system:String>
+    <system:String x:Key="btnDSizeChartCP">ड्राइव आकार चार्ट</system:String>
+    <system:String x:Key="ctbApplicationsCP">अनुप्रयोग उपकरण</system:String>
+    <system:String x:Key="tabApplicationCP">आवेदन</system:String>
+    <system:String x:Key="tgRunCP">चलाएँ</system:String>
+    <system:String x:Key="btnPinCP">टास्कबार पिन</system:String>
+    <system:String x:Key="btnRunAsAdminCP">प्रशासक के रूप में चलाएँ</system:String>
+    <system:String x:Key="ctbImageToolsCP">छवि उपकरण</system:String>
+    <system:String x:Key="tgImgEditCP">संपादित करें</system:String>
+    <system:String x:Key="btnRotateLeftCP">घुमाएँ वाम</system:String>
+    <system:String x:Key="btnRotateRightCP">सही घुमाएँ</system:String>
+    <system:String x:Key="btnFlipXCP">आड़ापलटें</system:String>
+    <system:String x:Key="btnFlipYCP">फ्लिप को लम्बाकार में</system:String>
+    <system:String x:Key="btnConvertImageCP">परिवर्तित</system:String>
+    <system:String x:Key="miJPGfCP">To JPEG</system:String> 
+    <system:String x:Key="miPNGfCP">To PNG</system:String>
+    <system:String x:Key="miGIFfCP">To GIF</system:String>
+    <system:String x:Key="miBMPfCP">To BMP बीएमपी</system:String>
+    <system:String x:Key="miWMFfCP">To WMF</system:String>
+    <system:String x:Key="grpSizeCP">साइज</system:String>
+    <system:String x:Key="lblWidthCP">चौड़ाई:</system:String>
+    <system:String x:Key="lblHeightCP">लंबाई:</system:String>
+    <system:String x:Key="btnResizeCP">का आकार बदलें</system:String>
+    <system:String x:Key="btnCropImageCP">फसल</system:String>
+    <system:String x:Key="tgImgViewCP">देखें</system:String>
+    <system:String x:Key="btnSlideShowCP">स्लाइड शो</system:String>
+    <system:String x:Key="btnWallpaperCP">वॉलपेपर के रूप में सेट</system:String>
+    <system:String x:Key="miWallFillCP">स्क्रीन भरें</system:String>
+    <system:String x:Key="miWallFitCP">फ़िट स्क्रीन के अंदर</system:String>
+    <system:String x:Key="miWallStretchCP">तनी</system:String>
+    <system:String x:Key="miWallTileCP">टाइलों</system:String>
+    <system:String  x:Key="miWallCenterCP">केंद्रित</system:String>
+    <system:String x:Key="ctbArchiveToolsCP">आर्काइव उपकरण</system:String>
+    <system:String x:Key="tgExtractCP">निकालें</system:String>
+    <system:String x:Key="btnExtractHereCP">निकालें</system:String>
+    <system:String x:Key="btnExtractHereHCP">निकालें</system:String>
+    <system:String x:Key="btnExtractHereICP">इस संग्रह की सामग्री को यहाँ एक नया फ़ोल्डर में देता है.</system:String>
+    <system:String x:Key="lblExtractCP">निकालें:</system:String>
+    <system:String x:Key="btnChooseLocationCP">बदले उत्पादन फ़ोल्डर</system:String>
+    <system:String x:Key="btnExtractNowCP">निकालें Archive</system:String>
+    <system:String x:Key="chkUseNewFolderCP">नए फ़ोल्डर में निकालें</system:String>
+    <system:String x:Key="chkOpenResultsCP">दिखाएँ फ़ाइलें जब करेंकिया गया</system:String>
+    <system:String x:Key="btnCheckArchiveCP">अखंडता की जाँच</system:String>
+    <system:String x:Key="btnViewArchiveCP">पुराने लेख देखें</system:String>
+    <system:String x:Key="btnExitCP">बाहर निकलें</system:String>
+    <system:String x:Key="SearchBarResetCP">रीसेट साइज</system:String>
+    <!--<system:String x:Key="ctbSearchToolsCP">Search Tools</system:String> <system:String x:Key="ctbSearchToolsCP"> खोज उपकरण </ प्रणाली: स्ट्रिंग>
     <system:String x:Key="tabSearchCP">Search</system:String> <system:String x:Key="tabSearchCP"> खोज </ प्रणाली: स्ट्रिंग>
     <system:String x:Key="tsgKindCP">Kind</system:String> <system:String x:Key="tsgKindCP"> तरह </ प्रणाली: स्ट्रिंग>
     <system:String x:Key="btnKindAllCP">All Types</system:String> <system:String x:Key="btnKindAllCP"> सभी </ प्रणाली: स्ट्रिंग> प्रकार
