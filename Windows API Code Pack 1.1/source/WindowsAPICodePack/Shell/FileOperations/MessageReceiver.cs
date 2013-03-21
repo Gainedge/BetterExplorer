@@ -14,8 +14,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations
     public partial class MessageReceiver : Form
     {
         public event EventHandler<MessageEventArgs> OnMessageReceived;
-      public event EventHandler<MessageEventArgs> OnInitAdminOP;
+        public event EventHandler<MessageEventArgs> OnInitAdminOP;
+        public event EventHandler<MessageEventArgs> OnErrorReceived;
         uint WM_FOWINC = WindowsAPI.RegisterWindowMessage("BE_FOWINC");
+        uint WM_FOERROR = WindowsAPI.RegisterWindowMessage("BE_FOERROR");
         public MessageReceiver(string title)
         {
             InitializeComponent();
@@ -30,6 +32,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations
 
               if (OnInitAdminOP != null)
                 OnInitAdminOP.Invoke(this, new MessageEventArgs(m.LParam.ToString()));
+            }
+            if (m.Msg == WM_FOERROR) {
+              if (OnErrorReceived != null)
+                OnErrorReceived.Invoke(this, new MessageEventArgs(m.LParam.ToString()));
             }
             if (m.Msg == WindowsAPI.WM_COPYDATA)
             {

@@ -48,6 +48,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
     uint WM_FOEND = WindowsAPI.RegisterWindowMessage("BE_FOEND");
     uint WM_FOPAUSE = WindowsAPI.RegisterWindowMessage("BE_FOPAUSE");
     uint WM_FOSTOP = WindowsAPI.RegisterWindowMessage("BE_FOSTOP");
+    uint WM_FOERROR = WindowsAPI.RegisterWindowMessage("BE_FOERROR");
     private ManualResetEvent _block2;
 
     public FileOperation(ShellObject[] _SourceItems, ShellObject _DestinationItem, OperationType _opType = OperationType.Copy) {
@@ -274,6 +275,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                          mr = new MessageReceiver("FOMR" + this.Handle.ToString());
                          mr.OnMessageReceived += mr_OnMessageReceived;
                          mr.OnInitAdminOP += mr_OnInitAdminOP;
+                         mr.OnErrorReceived += mr_OnErrorReceived;
                        prFileProgress.Foreground = Brushes.Blue;
                        prOverallProgress.Foreground = Brushes.Blue;
                      }));
@@ -295,7 +297,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 } else {
                 destPath = file.Item3;
                 }
-                byte[] data = System.Text.Encoding.Unicode.GetBytes("INPUT|" + file.Item1.ParsingName + "|" + destPath);
+                byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("INPUT|{0}|{1}", file.Item1.ParsingName, destPath));
                 WindowsAPI.SendStringMessage(CorrespondingWinHandle, data, 0, data.Length);
                 
                 if (itemIndex == CopyItems.Count - 1) {
@@ -318,7 +320,75 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             };
            break;
           case OperationType.Move:
-           CustomFileOperations.FileOperationMove(file, Microsoft.WindowsAPICodePack.Shell.CustomFileOperations.MoveFileFlags.MOVEFILE_COPY_ALLOWED | CustomFileOperations.MoveFileFlags.MOVEFILE_WRITE_THROUGH, CopyCallback, itemIndex, colissions);
+            if (!CustomFileOperations.FileOperationMove(file, Microsoft.WindowsAPICodePack.Shell.CustomFileOperations.MoveFileFlags.MOVEFILE_COPY_ALLOWED | CustomFileOperations.MoveFileFlags.MOVEFILE_WRITE_THROUGH, CopyCallback, itemIndex, colissions)) {
+              int error = Marshal.GetLastWin32Error();
+              if (error == 5) {
+                if (!isProcess) {
+                  String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
+                  string dir = System.IO.Path.GetDirectoryName(CurrentexePath);
+                  string ExePath = System.IO.Path.Combine(dir, @"FileOperation.exe");
+                  
+                  using (Process proc = new Process()) {
+                    var psi = new ProcessStartInfo {
+                      FileName = ExePath,
+                      Verb = "runas",
+                      UseShellExecute = true,
+                      Arguments = String.Format("/env /user:Administrator \"{0}\" ID:{1}", ExePath, Handle)
+                    };
+
+                    proc.StartInfo = psi;
+                    proc.Start();
+                  }
+                  this.IsAdminFO = true;
+                  
+                  Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                     (Action)(() => {
+                         mr = new MessageReceiver("FOMR" + this.Handle.ToString());
+                         mr.OnMessageReceived += mr_OnMessageReceived;
+                         mr.OnInitAdminOP += mr_OnInitAdminOP;
+                         mr.OnErrorReceived += mr_OnErrorReceived;
+                       prFileProgress.Foreground = Brushes.Blue;
+                       prOverallProgress.Foreground = Brushes.Blue;
+                     }));
+                  
+
+                  
+                  isProcess = true;
+                  _block2.WaitOne();
+                  CorrespondingWinHandle = WindowsAPI.FindWindow(null, "FO" + this.Handle);
+                }
+                var currentItem = colissions.Where(c => c.item == file.Item1).SingleOrDefault();
+                var destPath = "";
+                if (currentItem != null) {
+                if (!currentItem.IsCheckedC && currentItem.IsChecked) {
+                  destPath = file.Item2;
+                } else if (currentItem.IsCheckedC && currentItem.IsChecked) {
+                  destPath = file.Item3;
+                }
+                } else {
+                destPath = file.Item3;
+                }
+                byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("INPUT|{0}|{1}", file.Item1.ParsingName, destPath));
+                WindowsAPI.SendStringMessage(CorrespondingWinHandle, data, 0, data.Length);
+                
+                if (itemIndex == CopyItems.Count - 1) {
+                  byte[] data2 = Encoding.Unicode.GetBytes("END FO INIT|MOVE");
+                  WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
+                }
+                break;
+
+              } else {
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                 (Action)(() => {
+                   if (error == 1235)
+                     CloseCurrentTask();
+                   else {
+                     prFileProgress.Foreground = Brushes.Red;
+                     prOverallProgress.Foreground = Brushes.Red;
+                   }
+                 }));
+              }
+            };
            break;
           case OperationType.Delete:
            break;
@@ -341,6 +411,15 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
           CloseCurrentTask();
       }
 
+    }
+
+
+    void mr_OnErrorReceived(object sender, MessageEventArgs e) {
+      Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                 (Action)(() => {
+                   prFileProgress.Foreground = Brushes.Red;
+                   prOverallProgress.Foreground = Brushes.Red;
+                 }));
     }
 
     void mr_OnInitAdminOP(object sender, MessageEventArgs e) {

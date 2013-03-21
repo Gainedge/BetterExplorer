@@ -41,6 +41,7 @@ namespace FileOperation {
     uint WM_FOEND = WindowsAPI.RegisterWindowMessage("BE_FOEND");
     uint WM_FOPAUSE = WindowsAPI.RegisterWindowMessage("BE_FOPAUSE");
     uint WM_FOSTOP = WindowsAPI.RegisterWindowMessage("BE_FOSTOP");
+    uint WM_FOERROR = WindowsAPI.RegisterWindowMessage("BE_FOERROR");
 
     public Form1() {
       
@@ -56,6 +57,7 @@ namespace FileOperation {
           WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOEND, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
           WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOPAUSE, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
           WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOSTOP, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+          WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOERROR, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
       }
       catch (Exception)
       {
@@ -105,6 +107,23 @@ namespace FileOperation {
               CopyThread.Abort();
               Environment.Exit(5);
               break;
+            } else {
+              WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
+              Environment.Exit(5);
+            }
+          }
+        }
+        if (this.OPType == OperationType.Move) {
+          if (!CustomFileOperations.MoveFile(ShellObject.FromParsingName(item.Item1), item.Item2, CustomFileOperations.MoveFileFlags.MOVEFILE_COPY_ALLOWED | CustomFileOperations.MoveFileFlags.MOVEFILE_WRITE_THROUGH, CopyCallback)) {
+            int error = Marshal.GetLastWin32Error();
+            if (error == 1225 || error == 1235) {
+              Cancel = true;
+              CopyThread.Abort();
+              Environment.Exit(5);
+              break;
+            } else {
+              WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
+              Environment.Exit(5);
             }
           }
         }
@@ -120,6 +139,9 @@ namespace FileOperation {
         string newMessage = System.Text.Encoding.Unicode.GetString(b);
           if (newMessage.StartsWith("END FO INIT|COPY")) {
             this.OPType = OperationType.Copy;
+          }
+          if (newMessage.StartsWith("END FO INIT|MOVE")) {
+            this.OPType = OperationType.Move;
           }
           if (newMessage.StartsWith("INPUT|")) {
             var parts = newMessage.Replace("INPUT|", "").Split(Char.Parse("|"));

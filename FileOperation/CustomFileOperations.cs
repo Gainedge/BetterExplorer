@@ -30,10 +30,10 @@ namespace FileOperation {
 
         return CopyFile(source, destination, options, callback, null);
 		}
-    public static void MoveFile(ShellObject source, String destination,
+    public static Boolean MoveFile(ShellObject source, String destination,
       MoveFileFlags options, CopyFileCallback callback) {
 
-      MoveFile(source, destination, options, callback, null);
+      return MoveFile(source, destination, options, callback, null);
     }
 
 
@@ -111,7 +111,7 @@ namespace FileOperation {
       return CopyFileEx(source.ParsingName, destination, cpr, IntPtr.Zero, ref cancel, (int)options);
 		}
 
-    public static void MoveFile(ShellObject source, String destination,
+    public static Boolean MoveFile(ShellObject source, String destination,
       MoveFileFlags options, CopyFileCallback callback, object state) {
       if (source == null) throw new ArgumentNullException("source");
       if (destination == null)
@@ -134,10 +134,8 @@ namespace FileOperation {
         source, destination, callback, state).CallbackHandler));
 
       bool cancel = false;
-      if (!MoveFileWithProgress(source.ParsingName, destination, cpr,
-        IntPtr.Zero, options)) {
-        throw new IOException(new Win32Exception().Message);
-      }
+      return MoveFileWithProgress(source.ParsingName, destination, cpr,
+        IntPtr.Zero, options);
     }
 
 		private class CopyProgressData
