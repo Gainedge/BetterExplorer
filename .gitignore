@@ -98,6 +98,14 @@ BExplorer/BetterExplorer/BetterExplorerOperations.pdb
 BExplorer/BetterExplorer/BetterExplorerShell.pdb
 BExplorer/BetterExplorer/Updater.exe
 BExplorer/BetterExplorer/Microsoft.WindowsAPICodePack.Shell.dll
+BExplorer/BetterExplorer/BEH.dll
+BExplorer/BetterExplorer/BEHookLib64.dll
+BExplorer/BetterExplorer/BEHookLib64.exp
+BExplorer/BetterExplorer/BEHookLib64.lib
+BExplorer/BetterExplorer/BetterExplorerOperations.exe
+BExplorer/BetterExplorer/BetterExplorerShell.exe
+BExplorer/BetterExplorer/FileOperation.exe
+BExplorer/BetterExplorer/Microsoft.WindowsAPICodePack.Shell.dll
 x64/Debug/BEH.dll
 x64/Debug/BEH.ilk
 x64/Debug/BEH.pdb
@@ -201,3 +209,8 @@ fluent_0cdee8129810/Fluent/Fluent/Themes/Generic.xaml
 fluent_0cdee8129810/Fluent/Fluent/Themes/Office2010/Black.xaml
 fluent_0cdee8129810/Fluent/Fluent/Themes/Office2010/Blue.xaml
 fluent_0cdee8129810/Fluent/Fluent/Themes/Office2010/Silver.xaml
+fluent_72f5e3ec252b/Fluent/Fluent/Themes/Generic.xaml
+fluent_72f5e3ec252b/Fluent/Fluent/Themes/Office2010/Black.xaml
+fluent_72f5e3ec252b/Fluent/Fluent/Themes/Office2010/Blue.xaml
+fluent_72f5e3ec252b/Fluent/Fluent/Themes/Office2010/Silver.xaml
+fluent_72f5e3ec252b/Fluent/Fluent/Themes/Metro/White.xaml
