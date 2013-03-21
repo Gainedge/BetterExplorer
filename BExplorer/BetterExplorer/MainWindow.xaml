@@ -693,6 +693,7 @@
                                                   HorizontalAlignment="Left"
                                                   Style="{DynamicResource ComboBoxBackstageStyle}"
                                                   HorizontalContentAlignment="Stretch"
+                                                  DropDownHeight="200"
                                                   DropDownClosed="TranslationComboBox_DropDownClosed_1"
                                                   SelectionChanged="TranslationComboBox_SelectionChanged" CanAddToQuickAccessToolBar="False" >
                                             <controls:TranslationComboBoxItem x:Name="bgBGLang"
