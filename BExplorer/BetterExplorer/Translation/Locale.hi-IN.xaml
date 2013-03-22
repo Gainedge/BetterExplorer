@@ -255,59 +255,59 @@
     <system:String x:Key="btnViewArchiveCP">पुराने लेख देखें</system:String>
     <system:String x:Key="btnExitCP">बाहर निकलें</system:String>
     <system:String x:Key="SearchBarResetCP">रीसेट साइज</system:String>
-    <!--<system:String x:Key="ctbSearchToolsCP">Search Tools</system:String> <system:String x:Key="ctbSearchToolsCP"> खोज उपकरण </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="tabSearchCP">Search</system:String> <system:String x:Key="tabSearchCP"> खोज </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="tsgKindCP">Kind</system:String> <system:String x:Key="tsgKindCP"> तरह </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnKindAllCP">All Types</system:String> <system:String x:Key="btnKindAllCP"> सभी </ प्रणाली: स्ट्रिंग> प्रकार
-    <system:String x:Key="btnKindDocsCP">Documents</system:String> <system:String दस्तावेज़ x:Key="btnKindDocsCP"> </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnKindPicsCP">Pictures</system:String> <system:String x:Key="btnKindPicsCP"> तस्वीर </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnKindMusicCP">Music</system:String> <system:String x:Key="btnKindMusicCP"> संगीत </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnKindVideosCP">Videos</system:String> <system:String x:Key="btnKindVideosCP"> वीडियो </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnKindFoldersCP">Folders</system:String> <system:String x:Key="btnKindFoldersCP"> फ़ोल्डर </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnKindProgramsCP">Programs</system:String> <system:String x:Key="btnKindProgramsCP"> कार्यक्रम </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="tsgOtherCP">Other Conditions</system:String> <system:String x:Key="tsgOtherCP"> अन्य </ प्रणाली: स्ट्रिंग> स्थितियां
-    <system:String x:Key="btnOSizeCP">Size</system:String> <system:String x:Key="btnOSizeCP"> साइज </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miSizeVLargeCP">Very Large</system:String> <system:String x:Key="miSizeVLargeCP"> वैरी लार्ज </ सिस्टम: स्ट्रिंग>
-    <system:String x:Key="miSizeLargeCP">Large</system:String> <system:String x:Key="miSizeLargeCP"> बड़े </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miSizeMiddleCP">Middle-Sized</system:String> मध्यम आकार <<system:String: स्ट्रिंग / प्रणाली> x:Key="miSizeMiddleCP">
-    <system:String x:Key="miSizeSmallCP">Small</system:String> <system:String x:Key="miSizeSmallCP"> लघु </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miSizeTinyCP">Tiny</system:String> <system:String x:Key="miSizeTinyCP"> टिनी </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miCustomSizeCP">Custom...</system:String> <system:String x:Key="miCustomSizeCP"> ... </ प्रणाली: स्ट्रिंग> कस्टम
-    <system:String x:Key="btnODateCCP">Date Created</system:String> <system:String x:Key="btnODateCCP"> तारीख </ प्रणाली: स्ट्रिंग> बनाया
-    <system:String x:Key="miDateTodayCP">Today</system:String> <system:String x:Key="miDateTodayCP"> आज </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miDateYesterdayCP">Yesterday</system:String> <system:String x:Key="miDateYesterdayCP"> कल </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miDateThisWeekCP">This Week</system:String> <system:String x:Key="miDateThisWeekCP"> इस सप्ताह </ ​​प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miDateLastWeekCP">Last Week</system:String> <system:String x:Key="miDateLastWeekCP"> पिछले हफ्ते </ सिस्टम: स्ट्रिंग>
-    <system:String x:Key="miPastMonthCP">Past Month</system:String> <system:String x:Key="miPastMonthCP"> गत महीने </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="miDateCustomCP">Custom Time Range...</system:String> <system:String x:Key="miDateCustomCP"> कस्टम समय सीमा ... </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnODateModCP">Date Modified</system:String> <system:String x:Key="btnODateModCP"> तारीख </ प्रणाली: स्ट्रिंग> संशोधित
-    <system:String x:Key="btnExtCP">Extension</system:String> <system:String x:Key="btnExtCP"> एक्सटेंशन </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnAuthorCP">Author/Artist</system:String> <system:String x:Key="btnAuthorCP"> लेखक / कलाकार </ सिस्टम: स्ट्रिंग>
-    <system:String x:Key="btnSubjectCP">Subject</system:String> <system:String x:Key="btnSubjectCP"> विषय </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnSearchCP">Search Now</system:String> अब <system:String x:Key="btnSearchCP"> खोज </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnSave">Save</system:String> <system:String x:Key="btnSave"> सहेजें </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnSaveAs">Save As</system:String> <system:String - x:Key="btnSaveAs"> </ प्रणाली: स्ट्रिंग> के रूप में सहेजें
-    <system:String x:Key="btnAddTab">Add Tab</system:String> x:Key="btnAddTab"> जोडे टैब </ प्रणाली: स्ट्रिंग> <system:String
-    <system:String x:Key="txtTabManager">Tab Manager</system:String> <system:String x:Key="txtTabManager"> टैब प्रबंधक </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnClose">Close</system:String> <system:String x:Key="btnClose"> बंद </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="btnOpenFolder">Open Folder</system:String> <system:String x:Key="btnOpenFolder"> ओपन फ़ोल्डर </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="txtName">Name</system:String> <system:String x:Key="txtName"> नाम </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="txtPath">Path</system:String> <system:String x:Key="txtPath"> पथ </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="txtChooseName">Choose a name for this tab collection</system:String> <system:String x:Key="txtChooseName"> इस टैब संग्रह </ प्रणाली: स्ट्रिंग> के लिए एक नाम चुनें
-    <system:String x:Key="txtOverwriteSavedTabs">If this name already exists, the old collection will be replaced</system:String> x:Key="txtOverwriteSavedTabs"> <system:String यदि इस नाम पहले से ही मौजूद है, पुराने संग्रह </ सिस्टम: स्ट्रिंग> प्रतिस्थापित किया जाएगा
-    <system:String x:Key="txtIllegalCharacters">Cannot contain these characters: \ / : * ? <system:String x:Key="txtIllegalCharacters"> इन वर्ण नहीं हो सकते: \ /: *? &lt; &gt; |</system:String> <> | </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="txtConfirmDelete">Are you sure you want to delete this tab collection</system:String> <system:String x:Key="txtConfirmDelete"> क्या आप वाकई इस टैब </ प्रणाली: स्ट्रिंग संग्रह को नष्ट करना चाहते हैं.
-    <system:String x:Key="txtSizeChart">Folder/Drive Size Chart</system:String> फ़ोल्डर / ड्राइव <system:String x:Key="txtSizeChart"> साइज चार्ट </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="txtLoadingSizeChart">Getting size of subfolders...</system:String> <system:String x:Key="txtLoadingSizeChart"> subfolders के आकार ... </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="txtResizeImage">Resize Image</system:String> <system:String x:Key="txtResizeImage"> आकार छवि </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="txtPercentage">Set percentage</system:String> <system:String x:Key="txtPercentage"> सेट प्रतिशत </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="txtSpecificSize">Or set specific size:</system:String> <system:String x:Key="txtSpecificSize"> या विशिष्ट आकार निर्धारित करने के लिए: </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="txtArchiveWizard">Create Archive</system:String> <system:String x:Key="txtArchiveWizard"> बनाएँ पुरालेख </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="txtReviewFiles">Review Files</system:String> <system:String x:Key="txtReviewFiles"> समीक्षा </ प्रणाली: स्ट्रिंग> फ़ाइलें
-    <system:String x:Key="txtAddFiles">Add Files</system:String> x:Key="txtAddFiles"> फ़ाइलें जोड़ें </ प्रणाली: स्ट्रिंग> <system:String
-    <system:String x:Key="txtRemoveFiles">Remove Files</system:String> फ़ाइलें <system:String x:Key="txtRemoveFiles"> </ प्रणाली: स्ट्रिंग> निकालें
-    <system:String x:Key="txtArchiveFormat">Archive Format</system:String> <system:String x:Key="txtArchiveFormat"> पुरालेख स्वरूप </ प्रणाली: स्ट्रिंग>
-    <system:String x:Key="txtArchiveSpeed">Compression Speed</system:String> <system:String x:Key="txtArchiveSpeed"> संपीड़न गति </ प्रणाली: स्ट्रिंग>
+    <system:String x:Key="ctbSearchToolsCP">खोज उपकरण</system:String>
+    <system:String x:Key="tabSearchCP">खोज</system:String>
+    <system:String x:Key="tsgKindCP">तरह</system:String>
+    <system:String x:Key="btnKindAllCP">सभी प्रकार</system:String>
+    <system:String x:Key="btnKindDocsCP">दस्तावेज़</system:String>
+    <system:String x:Key="btnKindPicsCP">तस्वीर</system:String>
+    <system:String x:Key="btnKindMusicCP">संगीत</system:String>
+    <system:String x:Key="btnKindVideosCP">वीडियो</system:String>
+    <system:String x:Key="btnKindFoldersCP">फ़ोल्डर</system:String>
+    <system:String x:Key="btnKindProgramsCP">कार्यक्रम</system:String>
+    <system:String x:Key="tsgOtherCP">अन्य स्थितियां</system:String>
+    <system:String x:Key="btnOSizeCP">साइज</system:String>
+    <system:String x:Key="miSizeVLargeCP">वैरी लार्ज</system:String>
+    <system:String x:Key="miSizeLargeCP">बड़े</system:String>
+    <system:String x:Key="miSizeMiddleCP">मध्यम आकार</system:String>
+    <system:String x:Key="miSizeSmallCP">लघु</system:String>
+    <system:String x:Key="miSizeTinyCP">टिनी</system:String>
+    <system:String x:Key="miCustomSizeCP">... कस्टम</system:String>
+    <system:String x:Key="btnODateCCP">तारीख बनाया</system:String>
+    <system:String x:Key="miDateTodayCP">आज</system:String>
+    <system:String x:Key="miDateYesterdayCP"> कल</system:String>
+    <system:String x:Key="miDateThisWeekCP">इस सप्ताह</system:String>
+    <system:String x:Key="miDateLastWeekCP">पिछले हफ्ते</system:String>
+    <system:String x:Key="miPastMonthCP">गत महीने</system:String>
+    <system:String x:Key="miDateCustomCP">कस्टम समय सीमा ...</system:String>
+    <system:String x:Key="btnODateModCP">तारीख संशोधित</system:String>
+    <system:String x:Key="btnExtCP">एक्सटेंशन</system:String>
+    <system:String x:Key="btnAuthorCP">लेखक / कलाकार</system:String>
+    <system:String x:Key="btnSubjectCP">विषय</system:String>
+    <system:String x:Key="btnSearchCP">अब खोज</system:String>
+    <system:String x:Key="btnSave">सहेजें</system:String>
+    <system:String x:Key="btnSaveAs">के रूप में सहेजें</system:String>
+    <system:String x:Key="btnAddTab">जोडे टैब</system:String>
+    <system:String x:Key="txtTabManager">टैब प्रबंधक</system:String>
+    <system:String x:Key="btnClose">बंद</system:String>
+    <system:String x:Key="btnOpenFolder">ओपन फ़ोल्डर</system:String>
+    <system:String x:Key="txtName">नाम</system:String>
+    <system:String x:Key="txtPath">पथ</system:String>
+    <system:String x:Key="txtChooseName">इस टैब संग्रह के लिए एक नाम चुनें</system:String>
+    <system:String x:Key="txtOverwriteSavedTabs">यदि इस नाम पहले से ही मौजूद है, पुराने संग्रह प्रतिस्थापित किया जाएगा</system:String>
+    <system:String x:Key="txtIllegalCharacters">इन वर्ण नहीं हो सकते: \ / : * ? &lt; &gt; |</system:String>
+    <system:String x:Key="txtConfirmDelete">क्या आप वाकई इस टैब संग्रह को नष्ट करना चाहते हैं.</system:String>
+    <system:String x:Key="txtSizeChart">फ़ोल्डर / ड्राइव साइज चार्ट</system:String>
+    <system:String x:Key="txtLoadingSizeChart">subfolders के आकार ...</system:String>
+    <system:String x:Key="txtResizeImage">आकार छवि</system:String>
+    <system:String x:Key="txtPercentage">सेट प्रतिशत</system:String>
+    <system:String x:Key="txtSpecificSize">या विशिष्ट आकार निर्धारित करने के लिए:</system:String>
+    <system:String x:Key="txtArchiveWizard">बनाएँ पुरालेख</system:String>
+    <system:String x:Key="txtReviewFiles">समीक्षा फ़ाइलें</system:String>
+    <system:String x:Key="txtAddFiles">फ़ाइलें जोड़ें</system:String>
+    <system:String x:Key="txtRemoveFiles">फ़ाइलें निकालें</system:String>
+    <system:String x:Key="txtArchiveFormat">पुरालेख स्वरूप</system:String>
+    <!--<system:String x:Key="txtArchiveSpeed">Compression Speed</system:String> <system:String x:Key="txtArchiveSpeed"> संपीड़न गति </ प्रणाली: स्ट्रिंग>
     <system:String x:Key="txtNamePassword">Archive Name / Password</system:String> <system:String x:Key="txtNamePassword"> पुरालेख नाम / पासवर्ड </ सिस्टम: स्ट्रिंग>
     <system:String x:Key="chkProtectArchive">Password-protect this archive:</system:String> </ प्रणाली: स्ट्रिंग> <system:String x:Key="chkProtectArchive"> इस संग्रह पासवर्ड की रक्षा
     <system:String x:Key="txtPassword">Password:</system:String> <system:String x:Key="txtPassword"> पासवर्ड: </ प्रणाली: स्ट्रिंग>

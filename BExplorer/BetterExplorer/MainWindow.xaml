@@ -1227,7 +1227,7 @@
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgSearch"
                                                  Background="Green"
                                                  BorderBrush="DarkGreen"
-                                                 Header="Search Tools"
+                                                 Header="{StaticResource ctbSearchToolsCP}"
                                                  IsVisibleChanged="ctgSearch_IsVisibleChanged"
                                                  Visibility="Collapsed" 
                                                  MinWidth="100"/>
