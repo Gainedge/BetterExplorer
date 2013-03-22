@@ -98,6 +98,7 @@ BExplorer/BetterExplorer/BetterExplorerOperations.pdb
 BExplorer/BetterExplorer/BetterExplorerShell.pdb
 BExplorer/BetterExplorer/Updater.exe
 BExplorer/BetterExplorer/Microsoft.WindowsAPICodePack.Shell.dll
+BExplorer/BetterExplorer/Microsoft.WindowsAPICodePack.Shell.xml
 BExplorer/BetterExplorer/BEH.dll
 BExplorer/BetterExplorer/BEHookLib64.dll
 BExplorer/BetterExplorer/BEHookLib64.exp
@@ -105,7 +106,6 @@ BExplorer/BetterExplorer/BEHookLib64.lib
 BExplorer/BetterExplorer/BetterExplorerOperations.exe
 BExplorer/BetterExplorer/BetterExplorerShell.exe
 BExplorer/BetterExplorer/FileOperation.exe
-BExplorer/BetterExplorer/Microsoft.WindowsAPICodePack.Shell.dll
 x64/Debug/BEH.dll
 x64/Debug/BEH.ilk
 x64/Debug/BEH.pdb
