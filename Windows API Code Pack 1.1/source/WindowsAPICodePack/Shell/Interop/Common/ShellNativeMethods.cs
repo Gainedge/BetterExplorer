@@ -514,6 +514,12 @@ namespace Microsoft.WindowsAPICodePack.Shell
             [MarshalAs(UnmanagedType.Interface)] out IShellItemArray iShellItemArray);
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        internal static extern int SHCreateShellItemArrayFromShellItem(
+            IShellItem pdo,
+            ref Guid riid,
+            [MarshalAs(UnmanagedType.Interface)] out IShellItemArray iShellItemArray);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern int SHCreateItemFromParsingName(
             [MarshalAs(UnmanagedType.LPWStr)] string path,
             // The following parameter is not used - binding context.

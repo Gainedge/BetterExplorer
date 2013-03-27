@@ -326,6 +326,7 @@
                        Grid.ColumnSpan="3"
                        Background="White"
                        CustomizeQuickAccessToolbar="TheRibbon_CustomizeQuickAccessToolbar"
+                       Focusable="False"
                        GotFocus="TheStatusBar_GotFocus"
                        IsCollapsedChanged="TheRibbon_IsCollapsedChanged"
                        SizeChanged="TheRibbon_SizeChanged">
@@ -1411,6 +1412,7 @@
                                    Header="{StaticResource btnRenameCP}"
                                    Icon="Images\rename16.png"
                                    IsEnabled="False"
+                                   Focusable="False"
                                    LargeIcon="Images\rename32.png"
                                    Ribbon:KeyTip.Keys="R" />
                 </Ribbon:RibbonGroupBox>
@@ -1424,7 +1426,7 @@
                                    LargeIcon="Images\folder_new32.png"
                                    Ribbon:KeyTip.Keys="N"
                                    SizeDefinition="Large"
-                                   TextOptions.TextFormattingMode="Display">
+                                   TextOptions.TextFormattingMode="Display" Focusable="False">
                         <Ribbon:Button.ToolTip>
                             <Ribbon:ScreenTip Name="stNewFolder"
                                               Title="New Folder"

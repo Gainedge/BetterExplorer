@@ -67,8 +67,18 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
   }
 
   public class CollisionInfo {
-    public ShellObject item { get; set; }
-    public ShellObject Correspondingitem { get; set; }
+    public String itemPath { get; set; }
+    public String CorrespondingItemPath { get; set; }
+    private ShellObject item { 
+        get {
+        return ShellObject.FromParsingName(itemPath);
+      }
+    }
+    private ShellObject Correspondingitem {
+      get {
+        return ShellObject.FromParsingName(CorrespondingItemPath);
+      }
+    }
     public int index { get; set; }
     public ImageSource ItemImage {
       get {

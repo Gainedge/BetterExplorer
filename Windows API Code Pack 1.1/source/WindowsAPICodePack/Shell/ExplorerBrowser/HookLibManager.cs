@@ -17,11 +17,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
+using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using FileOperations;
@@ -31,10 +33,11 @@ using Microsoft.WindowsAPICodePack.Shell.FileOperations;
 using WindowsHelper;
 
 namespace Microsoft.WindowsAPICodePack.Controls {
-    class HookLibManager {
+  class HookLibManager {
       public static bool IsCustomDialog = false;
       //public static ExplorerBrowser Browser;
         private static IntPtr hHookLib;
+        public static SynchronizationContext SyncContext;
         private static int[] hookStatus = Enumerable.Repeat(-1, Enum.GetNames(typeof(Hooks)).Length).ToArray();
         
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -180,25 +183,34 @@ namespace Microsoft.WindowsAPICodePack.Controls {
           {
               return false;
           }
-          
 
         object destinationObject = Marshal.GetObjectForIUnknown(DestinationFolder);
         object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
-        var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
-        var DestinationLocation = ShellObjectFactory.Create((IShellItem)destinationObject);
-        Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation tempWindow = new Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation(SourceItemsCollection, DestinationLocation);
-        var currentDialog = System.Windows.Application.Current.MainWindow.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
-        if (currentDialog == null) {
-          currentDialog = new FileOperationDialog();
-          tempWindow.ParentContents = currentDialog;
-          currentDialog.Owner = System.Windows.Application.Current.MainWindow;
-          tempWindow.Visibility = System.Windows.Visibility.Collapsed;
-          currentDialog.Contents.Add(tempWindow);
-        } else {
-          tempWindow.ParentContents = currentDialog;
-          tempWindow.Visibility = System.Windows.Visibility.Collapsed;
-          currentDialog.Contents.Add(tempWindow);
-        }
+        var u = SyncContext;
+        var shellobj = ShellObjectFactory.Create((IShellItem)destinationObject);
+        var DestinationLocation = shellobj.ParsingName;
+        shellobj.Dispose();
+        u.Post((o) => {
+          var SourceItemsCollection = ShellObjectCollection.FromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject).Select(c => c.ParsingName).ToArray();
+          var win = System.Windows.Application.Current.MainWindow;
+
+          Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation tempWindow = new Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation(SourceItemsCollection, DestinationLocation);
+          FileOperationDialog currentDialog = win.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
+
+          if (currentDialog == null) {
+            currentDialog = new FileOperationDialog();
+            tempWindow.ParentContents = currentDialog;
+            currentDialog.Owner = win;
+
+            tempWindow.Visibility = Visibility.Collapsed;
+            currentDialog.Contents.Add(tempWindow);
+          } else {
+            tempWindow.ParentContents = currentDialog;
+            tempWindow.Visibility = Visibility.Collapsed;
+            currentDialog.Contents.Add(tempWindow);
+          }
+          
+        }, null);
         return true;
       }
 
@@ -217,21 +229,23 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 
         object destinationObject = Marshal.GetObjectForIUnknown(DestinationFolder);
         object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
-        var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
-        var DestinationLocation = ShellObjectFactory.Create((IShellItem)destinationObject);
-        Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation tempWindow = new Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation(SourceItemsCollection, DestinationLocation,OperationType.Move);
-        var currentDialog = System.Windows.Application.Current.MainWindow.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
-        if (currentDialog == null) {
+        var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject).Select(c => c.ParsingName).ToArray();
+        var DestinationLocation = ShellObjectFactory.Create((IShellItem)destinationObject).ParsingName;
+        SyncContext.Post((o) => {
+          Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation tempWindow = new Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation(SourceItemsCollection, DestinationLocation, OperationType.Move);
+          var currentDialog = System.Windows.Application.Current.MainWindow.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
+          if (currentDialog == null) {
             currentDialog = new FileOperationDialog();
             tempWindow.ParentContents = currentDialog;
             currentDialog.Owner = System.Windows.Application.Current.MainWindow;
             tempWindow.Visibility = System.Windows.Visibility.Collapsed;
             currentDialog.Contents.Add(tempWindow);
-        } else {
+          } else {
             tempWindow.ParentContents = currentDialog;
             tempWindow.Visibility = System.Windows.Visibility.Collapsed;
             currentDialog.Contents.Add(tempWindow);
-        }
+          }
+        }, null);
         return true;
       }
 

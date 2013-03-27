@@ -12,50 +12,52 @@ using Microsoft.WindowsAPICodePack.Shell.FileOperations;
 namespace Microsoft.WindowsAPICodePack.Shell {
   public class CustomFileOperations {
 
-    public static void CopyFile(ShellObject source, String destination)
+    public static void CopyFile(String source, String destination)
 		{
 			CopyFile(source, destination, CopyFileOptions.None);
 		}
 
-    public static void CopyFile(ShellObject source, String destination, 
+    public static void CopyFile(String source, String destination, 
 			CopyFileOptions options)
 		{
 			CopyFile(source, destination, options, null);
 		}
 
-    public static bool CopyFile(ShellObject source, String destination, 
+    public static bool CopyFile(String source, String destination, 
 			CopyFileOptions options, CopyFileCallback callback)
 		{
 
         return CopyFile(source, destination, options, callback, null);
 		}
-    public static Boolean MoveFile(ShellObject source, String destination,
+    public static Boolean MoveFile(String source, String destination,
       MoveFileFlags options, CopyFileCallback callback) {
 
       return MoveFile(source, destination, options, callback, null);
     }
 
 
-    public static void GetCopyData(ShellObject sourceObject, string destDirName, ref List<KeyValuePair<ShellObject, String>> Items) {
-      if (sourceObject.IsFolder && sourceObject.Properties.System.FileExtension.Value == null) {
-        foreach (var item in (ShellContainer)sourceObject) {
-          var tempDestination = Path.Combine(destDirName, sourceObject.GetDisplayName(DisplayNameType.Default));
-            GetCopyData(item,tempDestination, ref Items);
+    public static void GetCopyData(String sourceObject, string destDirName, ref List<KeyValuePair<String, String>> Items) {
+      var sourceObj = ShellObject.FromParsingName(sourceObject);
+      if (sourceObj.IsFolder && sourceObj.Properties.System.FileExtension.Value == null) {
+        foreach (var item in (ShellContainer)sourceObj) {
+          var tempDestination = Path.Combine(destDirName, sourceObj.GetDisplayName(DisplayNameType.Default));
+            GetCopyData(item.ParsingName,tempDestination, ref Items);
         }
       } else {
-        Items.Add(new KeyValuePair<ShellObject, string>(sourceObject, Path.Combine(destDirName, Path.GetFileName(sourceObject.ParsingName))));
+        Items.Add(new KeyValuePair<String, string>(sourceObject, Path.Combine(destDirName, Path.GetFileName(sourceObject))));
       }
     }
 
-    public static List<KeyValuePair<ShellObject, String>> GetCopyDataAll(ShellObject[] objects, String destination) {
-      List<KeyValuePair<ShellObject, String>> result = new List<KeyValuePair<ShellObject, string>>();
+    public static List<KeyValuePair<String, String>> GetCopyDataAll(String[] objects, String destination) {
+      List<KeyValuePair<String, String>> result = new List<KeyValuePair<String, string>>();
       for (int i = 0; i < objects.Count(); i++) {
         CustomFileOperations.GetCopyData(objects[i], destination, ref result);
       }
       return result;
     }
-    public static bool FileOperationCopy(Tuple<ShellObject, String, String, Int32> source, CopyFileOptions options, CopyFileCallback callback, int itemIndex, List<CollisionInfo> colissions) {
-      var currentItem = colissions.Where(c => c.item == source.Item1).SingleOrDefault();
+    public static bool FileOperationCopy(Tuple<String, String, String, Int32> source, CopyFileOptions options, CopyFileCallback callback, int itemIndex, List<CollisionInfo> colissions) {
+
+      var currentItem = colissions.Where(c => c.itemPath == source.Item1).SingleOrDefault();
       var result = false;
       if (currentItem != null) {
         if (!currentItem.IsCheckedC && currentItem.IsChecked) {
@@ -69,8 +71,9 @@ namespace Microsoft.WindowsAPICodePack.Shell {
       return result;
     }
 
-    public static Boolean FileOperationMove(Tuple<ShellObject, String, String, Int32> source, MoveFileFlags options, CopyFileCallback callback, int itemIndex, List<CollisionInfo> colissions) {
-      var currentItem = colissions.Where(c => c.item == source.Item1).SingleOrDefault();
+    public static Boolean FileOperationMove(Tuple<String, String, String, Int32> source, MoveFileFlags options, CopyFileCallback callback, int itemIndex, List<CollisionInfo> colissions) {
+
+      var currentItem = colissions.Where(c => c.itemPath == source.Item1).SingleOrDefault();
       bool result = false;
       if (currentItem != null) {
         if (!currentItem.IsCheckedC && currentItem.IsChecked) {
@@ -85,7 +88,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
     }
 
 
-    public static bool CopyFile(ShellObject source, String destination, 
+    public static bool CopyFile(String source, String destination, 
 			CopyFileOptions options, CopyFileCallback callback, object state)
 		{
 			if (source == null) throw new ArgumentNullException("source");
@@ -100,7 +103,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
       } 
  
       new FileIOPermission(
-        FileIOPermissionAccess.Read, source.ParsingName).Demand();
+        FileIOPermissionAccess.Read, source).Demand();
       new FileIOPermission(
         FileIOPermissionAccess.Write, destination).Demand();
 
@@ -109,10 +112,10 @@ namespace Microsoft.WindowsAPICodePack.Shell {
         source, destination, callback, state).CallbackHandler));
 
       bool cancel = false;
-      return CopyFileEx(source.ParsingName, destination, cpr, IntPtr.Zero, ref cancel, (int)options);
+      return CopyFileEx(source, destination, cpr, IntPtr.Zero, ref cancel, (int)options);
 		}
 
-    public static Boolean MoveFile(ShellObject source, String destination,
+    public static Boolean MoveFile(String source, String destination,
       MoveFileFlags options, CopyFileCallback callback, object state) {
       if (source == null) throw new ArgumentNullException("source");
       if (destination == null)
@@ -126,7 +129,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
       }
 
       new FileIOPermission(
-        FileIOPermissionAccess.Read, source.ParsingName).Demand();
+        FileIOPermissionAccess.Read, source).Demand();
       new FileIOPermission(
         FileIOPermissionAccess.Write, destination).Demand();
 
@@ -135,17 +138,17 @@ namespace Microsoft.WindowsAPICodePack.Shell {
         source, destination, callback, state).CallbackHandler));
 
       bool cancel = false;
-      return MoveFileWithProgress(source.ParsingName, destination, cpr, IntPtr.Zero, options);
+      return MoveFileWithProgress(source, destination, cpr, IntPtr.Zero, options);
     }
 
 		private class CopyProgressData
 		{
-      private ShellObject _source = null;
+      private String _source = null;
       private String _destination = null;
 			private CopyFileCallback _callback = null;
 			private object _state = null;
 
-      public CopyProgressData(ShellObject source, String destination, 
+      public CopyProgressData(String source, String destination, 
 				CopyFileCallback callback, object state)
 			{
 				_source = source; 
@@ -197,7 +200,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
 
 
-  public delegate CopyFileCallbackAction CopyFileCallback(ShellObject source, String destination, object state, long totalFileSize, long totalBytesTransferred);
+  public delegate CopyFileCallbackAction CopyFileCallback(String source, String destination, object state, long totalFileSize, long totalBytesTransferred);
 
 	public enum CopyFileCallbackAction
 	{

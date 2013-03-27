@@ -609,7 +609,7 @@ namespace WindowsHelper
           try {
 
             int count = Marshal.ReadInt32(medium.unionmember);
-            int offset = 4;
+            int offset = sizeof(UInt32);
 
             for (int n = 0; n <= count; ++n) {
               int pidlOffset = Marshal.ReadInt32(medium.unionmember, offset);
@@ -629,6 +629,17 @@ namespace WindowsHelper
 
           return result.ToArray();
         }
+
+        /// <summary>
+        /// Converts an item identifier list to a file system path. (Note: SHGetPathFromIDList calls the ANSI version, must call SHGetPathFromIDListW for .NET)
+        /// </summary>
+        /// <param name="pidl">Address of an item identifier list that specifies a file or directory location relative to the root of the namespace (the desktop).</param>
+        /// <param name="pszPath">Address of a buffer to receive the file system path. This buffer must be at least MAX_PATH characters in size.</param>
+        /// <returns>Returns TRUE if successful, or FALSE otherwise. </returns>
+        [DllImport("shell32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SHGetPathFromIDList(IntPtr pidl, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder pszPath);
+
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
         public static extern void SHCreateShellItemArrayFromDataObject(
             [In] System.Runtime.InteropServices.ComTypes.IDataObject pdo,

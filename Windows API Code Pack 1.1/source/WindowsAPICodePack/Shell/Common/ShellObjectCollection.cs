@@ -63,6 +63,13 @@ namespace Microsoft.WindowsAPICodePack.Shell
             return new ShellObjectCollection(shellItemArray, true);
         }
 
+        public static ShellObjectCollection FromShellItem(IShellItem dataObject) {
+          IShellItemArray shellItemArray;
+          Guid iid = new Guid(ShellIIDGuid.IShellItemArray);
+          ShellNativeMethods.SHCreateShellItemArrayFromShellItem(dataObject, ref iid, out shellItemArray);
+          return new ShellObjectCollection(shellItemArray, true);
+        }
+
         /// <summary>
         /// Constructs an empty ShellObjectCollection
         /// </summary>

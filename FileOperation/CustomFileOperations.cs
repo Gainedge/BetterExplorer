@@ -13,24 +13,24 @@ using Microsoft.WindowsAPICodePack.Shell.FileOperations;
 namespace FileOperation {
   public class CustomFileOperations {
 
-    public static void CopyFile(ShellObject source, String destination)
+    public static void CopyFile(String source, String destination)
 		{
 			CopyFile(source, destination, CopyFileOptions.None);
 		}
 
-    public static void CopyFile(ShellObject source, String destination, 
+    public static void CopyFile(String source, String destination, 
 			CopyFileOptions options)
 		{
 			CopyFile(source, destination, options, null);
 		}
 
-    public static bool CopyFile(ShellObject source, String destination, 
+    public static bool CopyFile(String source, String destination, 
 			CopyFileOptions options, CopyFileCallback callback)
 		{
 
         return CopyFile(source, destination, options, callback, null);
 		}
-    public static Boolean MoveFile(ShellObject source, String destination,
+    public static Boolean MoveFile(String source, String destination,
       MoveFileFlags options, CopyFileCallback callback) {
 
       return MoveFile(source, destination, options, callback, null);
@@ -55,8 +55,8 @@ namespace FileOperation {
       }
       return result;
     }
-    public static bool FileOperationCopy(Tuple<ShellObject, String, String, Int32> source, CopyFileOptions options, CopyFileCallback callback, int itemIndex, List<CollisionInfo> colissions) {
-      var currentItem = colissions.Where(c => c.item == source.Item1).SingleOrDefault();
+    public static bool FileOperationCopy(Tuple<String, String, String, Int32> source, CopyFileOptions options, CopyFileCallback callback, int itemIndex, List<CollisionInfo> colissions) {
+      var currentItem = colissions.Where(c => c.itemPath == source.Item1).SingleOrDefault();
       var result = false;
       if (currentItem != null) {
         if (!currentItem.IsCheckedC && currentItem.IsChecked) {
@@ -70,8 +70,8 @@ namespace FileOperation {
       return result;
     }
 
-    public static void FileOperationMove(Tuple<ShellObject, String, String, Int32> source, MoveFileFlags options, CopyFileCallback callback, int itemIndex, List<CollisionInfo> colissions) {
-      var currentItem = colissions.Where(c => c.item == source.Item1).SingleOrDefault();
+    public static void FileOperationMove(Tuple<String, String, String, Int32> source, MoveFileFlags options, CopyFileCallback callback, int itemIndex, List<CollisionInfo> colissions) {
+      var currentItem = colissions.Where(c => c.itemPath == source.Item1).SingleOrDefault();
       if (currentItem != null) {
         if (!currentItem.IsCheckedC && currentItem.IsChecked) {
           MoveFile(source.Item1, source.Item2, options, callback);
@@ -84,7 +84,7 @@ namespace FileOperation {
     }
 
 
-    public static bool CopyFile(ShellObject source, String destination, 
+    public static bool CopyFile(String source, String destination, 
 			CopyFileOptions options, CopyFileCallback callback, object state)
 		{
 			if (source == null) throw new ArgumentNullException("source");
@@ -99,7 +99,7 @@ namespace FileOperation {
       } 
  
       new FileIOPermission(
-        FileIOPermissionAccess.Read, source.ParsingName).Demand();
+        FileIOPermissionAccess.Read, source).Demand();
       new FileIOPermission(
         FileIOPermissionAccess.Write, destination).Demand();
 
@@ -108,10 +108,10 @@ namespace FileOperation {
         source, destination, callback, state).CallbackHandler));
 
       bool cancel = false;
-      return CopyFileEx(source.ParsingName, destination, cpr, IntPtr.Zero, ref cancel, (int)options);
+      return CopyFileEx(source, destination, cpr, IntPtr.Zero, ref cancel, (int)options);
 		}
 
-    public static Boolean MoveFile(ShellObject source, String destination,
+    public static Boolean MoveFile(String source, String destination,
       MoveFileFlags options, CopyFileCallback callback, object state) {
       if (source == null) throw new ArgumentNullException("source");
       if (destination == null)
@@ -125,7 +125,7 @@ namespace FileOperation {
       }
 
       new FileIOPermission(
-        FileIOPermissionAccess.Read, source.ParsingName).Demand();
+        FileIOPermissionAccess.Read, source).Demand();
       new FileIOPermission(
         FileIOPermissionAccess.Write, destination).Demand();
 
@@ -134,18 +134,18 @@ namespace FileOperation {
         source, destination, callback, state).CallbackHandler));
 
       bool cancel = false;
-      return MoveFileWithProgress(source.ParsingName, destination, cpr,
+      return MoveFileWithProgress(source, destination, cpr,
         IntPtr.Zero, options);
     }
 
 		private class CopyProgressData
 		{
-      private ShellObject _source = null;
+      private String _source = null;
       private String _destination = null;
 			private CopyFileCallback _callback = null;
 			private object _state = null;
 
-      public CopyProgressData(ShellObject source, String destination, 
+      public CopyProgressData(String source, String destination, 
 				CopyFileCallback callback, object state)
 			{
 				_source = source; 
@@ -197,7 +197,7 @@ namespace FileOperation {
 
 
 
-  public delegate CopyFileCallbackAction CopyFileCallback(ShellObject source, String destination, object state, long totalFileSize, long totalBytesTransferred);
+  public delegate CopyFileCallbackAction CopyFileCallback(String source, String destination, object state, long totalFileSize, long totalBytesTransferred);
 
 	public enum CopyFileCallbackAction
 	{

@@ -196,6 +196,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
             Guid guid = new Guid(ShellIIDGuid.IShellItem2);
 
             IShellItem2 nativeShellItem;
+
             int retCode = ShellNativeMethods.SHCreateItemFromIDList(idListPtr, ref guid, out nativeShellItem);
 
             if (!CoreErrorHelper.Succeeded(retCode)) { return null; }

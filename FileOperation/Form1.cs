@@ -79,7 +79,7 @@ namespace FileOperation {
       WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOWINC, IntPtr.Zero, IntPtr.Zero);
     }
     long OldBytes = 0;
-    CopyFileCallbackAction CopyCallback(ShellObject src, String dst, object state, long totalFileSize, long totalBytesTransferred) {
+    CopyFileCallbackAction CopyCallback(String src, String dst, object state, long totalFileSize, long totalBytesTransferred) {
       _block.WaitOne();
       
       if (totalBytesTransferred > 0) {
@@ -100,7 +100,7 @@ namespace FileOperation {
       foreach (var item in SourceItemsCollection) {
         OldBytes = 0;
         if (this.OPType == OperationType.Copy) {
-          if (!CustomFileOperations.CopyFile(ShellObject.FromParsingName(item.Item1), item.Item2, CopyFileOptions.None, CopyCallback)) {
+          if (!CustomFileOperations.CopyFile(item.Item1, item.Item2, CopyFileOptions.None, CopyCallback)) {
             int error = Marshal.GetLastWin32Error();
             if (error == 1225 || error == 1235) {
               Cancel = true;
@@ -114,7 +114,7 @@ namespace FileOperation {
           }
         }
         if (this.OPType == OperationType.Move) {
-          if (!CustomFileOperations.MoveFile(ShellObject.FromParsingName(item.Item1), item.Item2, CustomFileOperations.MoveFileFlags.MOVEFILE_COPY_ALLOWED | CustomFileOperations.MoveFileFlags.MOVEFILE_WRITE_THROUGH, CopyCallback)) {
+          if (!CustomFileOperations.MoveFile(item.Item1, item.Item2, CustomFileOperations.MoveFileFlags.MOVEFILE_COPY_ALLOWED | CustomFileOperations.MoveFileFlags.MOVEFILE_WRITE_THROUGH, CopyCallback)) {
             int error = Marshal.GetLastWin32Error();
             if (error == 1225 || error == 1235) {
               Cancel = true;

@@ -676,11 +676,6 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 			#region operations
 
-			public void ExplorerSetFocus()
-			{
-					WindowsAPI.SetFocus(SysListViewHandle);
-			}
-
 			public void FlushMemory()
 			{
 					GC.Collect();
@@ -1320,6 +1315,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 						
 			}
 
+      public void SetExplorerFocus() {
+        WindowsAPI.SetFocus(SysListViewHandle);
+      }
+
       public void DoRename(IntPtr apidl) {
 
         IntPtr pIDL = IntPtr.Zero;
@@ -1949,6 +1948,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
                 //Add MessageFilter for the IShellView
                 Application.AddMessageFilter(this);
+                HookLibManager.SyncContext = SynchronizationContext.Current;
                 HookLibManager.IsCustomDialog = IsCustomDialogs;
                 //HookLibManager.Browser = this;
                 HookLibManager.Initialize();
