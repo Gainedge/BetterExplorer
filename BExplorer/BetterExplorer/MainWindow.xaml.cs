@@ -1830,8 +1830,8 @@ namespace BetterExplorer
               ctgExe.Visibility = System.Windows.Visibility.Collapsed;
               ctgImage.Visibility = System.Windows.Visibility.Collapsed;
 
-              // already hidden
-              //ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+              // already hidden (not)
+              ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
 
               // if the current viewing location is a Drive, show Drive Tools.
               if (inDrive == true) {
@@ -1839,6 +1839,9 @@ namespace BetterExplorer
               } else {
                 ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
               }
+
+              miSelAllByType.IsEnabled = false;
+              miSelAllByDate.IsEnabled = false;
 
               // if the current viewing location is a Library, show Library Tools.
               //if (Explorer.NavigationLog.CurrentLocation.Parent != null)
@@ -1899,6 +1902,9 @@ namespace BetterExplorer
               btnSelNone.IsEnabled = true;
               btnAdvancedSecurity.IsEnabled = false;
               btnDefSave.Items.Clear();
+
+              miSelAllByType.IsEnabled = true;
+              miSelAllByDate.IsEnabled = true;
 
               if (SelItemsCount == 1) {
                 // IF ONE ITEM IS SELECTED
@@ -2324,23 +2330,47 @@ namespace BetterExplorer
 
 		private void miSelAllByType_Click(object sender, RoutedEventArgs e)
 		{
-			ShellObject FirstSelItem = Explorer.SelectedItems.Count > 0 ? Explorer.SelectedItems[0] : null;
 
-			ShellContainer CurrentLoc = (ShellContainer)Explorer.NavigationLog.CurrentLocation;
-			if (FirstSelItem != null)
-			{
-				//string pth = Path.GetExtension(FirstSelItem.ParsingName).ToLowerInvariant();
-        string pth = FirstSelItem.Properties.System.ItemTypeText.Value.ToLowerInvariant();
-				foreach (ShellObject item in CurrentLoc)
-				{
-					//if (Path.GetExtension(item.ParsingName).ToLowerInvariant() == pth)
-          if (item.Properties.System.ItemTypeText.Value.ToLowerInvariant() == pth)
-					{
-						Explorer.SelectItem(item);
-					}
+            if (Explorer.SelectedItems.Count > 0)
+            {
+                List<string> flt = new List<string>();
 
-				}
-			}
+                foreach (ShellObject item in Explorer.SelectedItems)
+                {
+                    flt.Add(item.Properties.System.ItemTypeText.Value.ToLowerInvariant());
+                }
+
+                ShellContainer CurrentLoc = (ShellContainer)Explorer.NavigationLog.CurrentLocation;
+                foreach (ShellObject item in CurrentLoc)
+                {
+                    if (flt.Contains(item.Properties.System.ItemTypeText.Value.ToLowerInvariant()))
+                    {
+                        Explorer.SelectItem(item);
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
+
+        //    ShellObject FirstSelItem = Explorer.SelectedItems.Count > 0 ? Explorer.SelectedItems[0] : null;
+
+        //    ShellContainer CurrentLoc = (ShellContainer)Explorer.NavigationLog.CurrentLocation;
+        //    if (FirstSelItem != null)
+        //    {
+        //        //string pth = Path.GetExtension(FirstSelItem.ParsingName).ToLowerInvariant();
+        //string pth = FirstSelItem.Properties.System.ItemTypeText.Value.ToLowerInvariant();
+        //        foreach (ShellObject item in CurrentLoc)
+        //        {
+        //            //if (Path.GetExtension(item.ParsingName).ToLowerInvariant() == pth)
+        //  if (item.Properties.System.ItemTypeText.Value.ToLowerInvariant() == pth)
+        //            {
+        //                Explorer.SelectItem(item);
+        //            }
+
+        //        }
+        //    }
 
 			btnCondSel.IsDropDownOpen = false;
 			Explorer.Focus();
@@ -2349,22 +2379,51 @@ namespace BetterExplorer
 
 		private void miSelAllByDate_Click(object sender, RoutedEventArgs e)
 		{
-			ShellObject FirstSelItem = Explorer.SelectedItems.Count > 0 ? Explorer.SelectedItems[0] : null;
+            if (Explorer.SelectedItems.Count > 0)
+            {
+                List<DateTime> flt = new List<DateTime>();
 
-			if (FirstSelItem != null)
-			{
-				DateTime cd = new FileInfo(FirstSelItem.ParsingName).CreationTimeUtc;
+                foreach (ShellObject item in Explorer.SelectedItems)
+                {
+                    if (item.Properties.System.DateCreated.Value.HasValue == true)
+                    {
+                        flt.Add(item.Properties.System.DateCreated.Value.Value);
+                    }
+                }
 
-				ShellObjectCollection CurrentLoc = ((ShellContainer)Explorer.NavigationLog.CurrentLocation).ToShellObjectCollection();
+                ShellContainer CurrentLoc = (ShellContainer)Explorer.NavigationLog.CurrentLocation;
+                foreach (ShellObject item in CurrentLoc)
+                {
+                    if (item.Properties.System.DateCreated.Value.HasValue == true)
+                    {
+                        if (flt.Contains(item.Properties.System.DateCreated.Value.Value))
+                        {
+                            Explorer.SelectItem(item);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
 
-				using (ShellObjectCollection selectable = FilterByCreateDate(CurrentLoc, cd, ConditionalSelectParameters.DateFilterTypes.Equals))
-				{
-					foreach (ShellObject item in selectable)
-					{
-						Explorer.SelectItem(item);
-					}
-				}
-			}
+            //ShellObject FirstSelItem = Explorer.SelectedItems.Count > 0 ? Explorer.SelectedItems[0] : null;
+
+            //if (FirstSelItem != null)
+            //{
+            //    DateTime cd = new FileInfo(FirstSelItem.ParsingName).CreationTimeUtc;
+
+            //    ShellObjectCollection CurrentLoc = ((ShellContainer)Explorer.NavigationLog.CurrentLocation).ToShellObjectCollection();
+
+            //    using (ShellObjectCollection selectable = FilterByCreateDate(CurrentLoc, cd, ConditionalSelectParameters.DateFilterTypes.Equals))
+            //    {
+            //        foreach (ShellObject item in selectable)
+            //        {
+            //            Explorer.SelectItem(item);
+            //        }
+            //    }
+            //}
 
 			btnCondSel.IsDropDownOpen = false;
 			Explorer.Focus();
@@ -2379,9 +2438,9 @@ namespace BetterExplorer
 			if (csf.CancelAction == false)
 			{
 				ConditionallySelectFiles(csf.csd);
-
+                Explorer.Focus();
 			}
-
+            Explorer.Focus();
 		}
 
 		private void ConditionallySelectFiles(ConditionalSelectData csd)
