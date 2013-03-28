@@ -4,6 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" Height="129" Width="388" Unloaded="UserControl_Unloaded_1">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Button}" x:Key="ControlBtnStyle">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <!--<Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="Transparent" />
+                </Trigger>
+            </Style.Triggers>-->
+        </Style>
+    </UserControl.Resources>
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10"/>
@@ -34,8 +46,12 @@
             <TextBlock x:Name="lblTo" VerticalAlignment="Center"/>
         </StackPanel>
         <TextBlock x:Name="lblProgress" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="3" FontSize="16" Text="0% complete" VerticalAlignment="Center"/>
-        <Button x:Name="btnPause" Grid.Column="3" Grid.Row="3" Height="16" VerticalAlignment="Center" Width="16" Click="btnPause_Click"/>
-        <Button x:Name="btnStop" Grid.Column="5" Grid.Row="3" Height="16" VerticalAlignment="Center" Width="16" Click="btnStop_Click"/>
+        <Button x:Name="btnPause" Grid.Column="3" Grid.Row="3" Height="16" VerticalAlignment="Center" Width="16" Style="{StaticResource ControlBtnStyle}" Click="btnPause_Click" >
+            <Image Source="Images/pause.png" />
+        </Button>
+        <Button x:Name="btnStop" Grid.Column="5" Grid.Row="3" Height="16" VerticalAlignment="Center" Width="16" Style="{StaticResource ControlBtnStyle}" Click="btnStop_Click" >
+            <Image Source="Images/stop.png" />
+        </Button>
         <ProgressBar x:Name="prFileProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="5" Height="16"/>
         <ProgressBar x:Name="prOverallProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="7" Height="16"/>
     </Grid>
