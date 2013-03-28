@@ -260,6 +260,13 @@ namespace BetterExplorer
 
 		private void RibbonWindow_Closing(object sender, CancelEventArgs e)
 		{
+      if (this.OwnedWindows.OfType<FileOperationDialog>().Count() > 0) {
+        
+        if (MessageBox.Show("Are you sure you want to cancel all running file operation tasks?", "", MessageBoxButton.YesNo) == MessageBoxResult.No) {
+          e.Cancel = true;
+          return;
+        }
+      }
 			//Explorer.automan.Dispose();
 			//if (PicturePreview != null)
 			//{
@@ -2117,7 +2124,9 @@ namespace BetterExplorer
                     ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                   ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
                   selisfolder = false;
-                  txtExtractLocation.Text = new FileInfo(SelectedItem.ParsingName).DirectoryName;
+                  var sectedFileInfo = new FileInfo(SelectedItem.ParsingName);
+                  txtExtractLocation.Text = sectedFileInfo.DirectoryName;
+                  sectedFileInfo = null;
                   SelectedArchive = SelectedItem.ParsingName;
                   if (System.IO.Path.GetExtension(SelectedItem.ParsingName).ToLowerInvariant().EndsWith(".zip")) {
                     btnViewArchive.IsEnabled = true;

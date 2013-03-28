@@ -1081,6 +1081,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                 Files = String.Format("{0}\0{1}", Files, selectedItem.ParsingName);
 					}
 					RecybleBin.Send(Files);
+          GC.WaitForPendingFinalizers();
+          GC.Collect();
 			}
 
 			public void DoDelete(object Data)

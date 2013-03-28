@@ -167,6 +167,7 @@
   <ItemGroup>
     <Reference Include="CustomMarshalers" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Microsoft.WindowsAPICodePack.dll</HintPath>
@@ -492,11 +493,6 @@
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="CustomDictionary.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="FileOperations\Images\pause.png" />
-    <Content Include="FileOperations\Images\resume.png" />
-    <Content Include="FileOperations\Images\stop.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

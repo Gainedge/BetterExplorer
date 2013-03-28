@@ -678,6 +678,9 @@ namespace WindowsHelper
           void EnumItems([MarshalAs(UnmanagedType.Interface)] out IntPtr ppenumShellItems);
         }
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool DeleteFile(string lpFileName);
 
         /// <summary>
         /// Returns the IShellFolder interface from IShellItem

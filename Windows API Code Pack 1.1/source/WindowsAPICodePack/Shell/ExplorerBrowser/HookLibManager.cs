@@ -28,6 +28,7 @@ using System.Windows.Forms;
 using System.Windows.Interop;
 using FileOperations;
 using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Shell.FileOperations;
 using WindowsHelper;
@@ -229,7 +230,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 
         object destinationObject = Marshal.GetObjectForIUnknown(DestinationFolder);
         object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
-        var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject).Select(c => c.ParsingName).ToArray();
+        var SourceItemsCollection = ShellObjectCollection.FromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject).Select(c => c.ParsingName).ToArray();
         var DestinationLocation = ShellObjectFactory.Create((IShellItem)destinationObject).ParsingName;
         SyncContext.Post((o) => {
           Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation tempWindow = new Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation(SourceItemsCollection, DestinationLocation, OperationType.Move);
@@ -270,13 +271,35 @@ namespace Microsoft.WindowsAPICodePack.Controls {
       private static bool DeleteItem(IntPtr SourceItems) {
         if (!IsCustomDialog)
           return false;
-        //object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
+        TaskDialog dlg = new TaskDialog();
+        dlg.Icon = TaskDialogStandardIcon.SecurityShieldBlue;
+        dlg.Text = "test";
+        dlg.Show();
+          object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
 
-        //IntPtr z = IntPtr.Zero;
-        //Guid j = new Guid("0000010E-0000-0000-C000-000000000046");
-        //Marshal.QueryInterface(item,ref j,out z);
+          //IntPtr z = IntPtr.Zero;
+          //Guid j = new Guid("0000010E-0000-0000-C000-000000000046");
+          //Marshal.QueryInterface(item,ref j,out z);
 
-        //var SourceItemsCollection = WindowsAPI.ParseShellIDListArray((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject);
+          var SourceItemsCollection = ShellObjectCollection.FromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject).Select(c => c.ParsingName).ToArray();
+          var win = System.Windows.Application.Current.MainWindow;
+
+          Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation tempWindow = new Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation(SourceItemsCollection, String.Empty, OperationType.Delete, Control.ModifierKeys != Keys.Shift);
+          FileOperationDialog currentDialog = win.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
+
+          if (currentDialog == null) {
+            currentDialog = new FileOperationDialog();
+            tempWindow.ParentContents = currentDialog;
+            currentDialog.Owner = win;
+
+            tempWindow.Visibility = Visibility.Collapsed;
+            currentDialog.Contents.Add(tempWindow);
+          } else {
+            tempWindow.ParentContents = currentDialog;
+            tempWindow.Visibility = Visibility.Collapsed;
+            currentDialog.Contents.Add(tempWindow);
+          }
+
         //if (Control.ModifierKeys == Keys.Shift) {
         //  Thread MoveThread = new Thread(new ParameterizedThreadStart(DoDelete));
         //  MoveThread.SetApartmentState(ApartmentState.STA);
@@ -284,7 +307,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
         //} else {
         //  DeleteToRecycleBin(SourceItemsCollection);
         //}
-        return false;//IsCustomDialog;
+        return true;//IsCustomDialog;
       }
 
       public static void DeleteToRecycleBin(ShellObject[] SelectedItems) {

@@ -14,7 +14,6 @@ extern "C"
 
   __declspec(dllexport) void GetColumnbyIndex(IShellView* view, bool isAll, int index, PROPERTYKEY &res)
   {
-	 
 	  IColumnManager* columns;
 	  view->QueryInterface(&columns);
 	  UINT count;
