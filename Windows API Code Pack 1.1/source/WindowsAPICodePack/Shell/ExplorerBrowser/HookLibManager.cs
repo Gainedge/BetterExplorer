@@ -310,6 +310,8 @@ namespace Microsoft.WindowsAPICodePack.Controls {
         return true;//IsCustomDialog;
       }
 
+      
+
       public static void DeleteToRecycleBin(ShellObject[] SelectedItems) {
         string Files = "";
         foreach (ShellObject selectedItem in SelectedItems) {

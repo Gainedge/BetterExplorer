@@ -7427,7 +7427,7 @@ namespace BetterExplorer
 			btnCopyto.Items.Add(micDesktop);
 			btnCopyto.Items.Add(new Separator());
 
-			foreach (CloseableTabItem item in tabControl1.Items)
+			foreach (var item in tabControl1.Items.OfType<CloseableTabItem>().ToList())
 			{
 				bool IsAdditem = true;
 				foreach (object mii in btnCopyto.Items)
