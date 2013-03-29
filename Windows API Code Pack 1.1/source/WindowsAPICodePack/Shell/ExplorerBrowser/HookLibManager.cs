@@ -271,34 +271,63 @@ namespace Microsoft.WindowsAPICodePack.Controls {
       private static bool DeleteItem(IntPtr SourceItems) {
         if (!IsCustomDialog)
           return false;
-        TaskDialog dlg = new TaskDialog();
-        dlg.Icon = TaskDialogStandardIcon.SecurityShieldBlue;
-        dlg.Text = "test";
-        dlg.Show();
+        //TaskDialog dlg = new TaskDialog();
+        //dlg.Icon = TaskDialogStandardIcon.;
+        //dlg.Text = "Are you sure you want to move ";
+        //dlg.Show();
           object sourceObject = Marshal.GetObjectForIUnknown(SourceItems);
 
           //IntPtr z = IntPtr.Zero;
           //Guid j = new Guid("0000010E-0000-0000-C000-000000000046");
           //Marshal.QueryInterface(item,ref j,out z);
-
+          FODeleteDialog confirmationDialog = new FODeleteDialog();
+          confirmationDialog.MessageCaption = "Removal confirmation";
           var SourceItemsCollection = ShellObjectCollection.FromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject).Select(c => c.ParsingName).ToArray();
           var win = System.Windows.Application.Current.MainWindow;
+          if (SourceItemsCollection.Count() == 1)
+          {
+            ShellObject item = ShellObject.FromParsingName(SourceItemsCollection[0]);
+            item.Thumbnail.CurrentSize = new Size(96, 96);
+            confirmationDialog.MessageIcon = item.Thumbnail.BitmapSource;
+            confirmationDialog.MessageText = Control.ModifierKeys != Keys.Shift
+                                               ? "Are you sure you want to move " +
+                                                 item.GetDisplayName(DisplayNameType.Default) + " to Recycle Bin?"
+                                               : "Are you sure you want to remove " +
+                                                 item.GetDisplayName(DisplayNameType.Default) + " permanently?";
+          }
+          else
+          {
+            confirmationDialog.MessageText = Control.ModifierKeys != Keys.Shift
+                                               ? "Are you sure you want to move selected " +
+                                                 SourceItemsCollection.Count() + " items to Recycle Bin?"
+                                               : "Are you sure you want to remove selected " +
+                                                 SourceItemsCollection.Count() + " items permanently?";
+          }
 
-          Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation tempWindow = new Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation(SourceItemsCollection, String.Empty, OperationType.Delete, Control.ModifierKeys != Keys.Shift);
+        confirmationDialog.Owner = win;
+        if (confirmationDialog.ShowDialog() == true){
+          Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation tempWindow =
+            new Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation(SourceItemsCollection, String.Empty,
+                                                                                OperationType.Delete,
+                                                                                Control.ModifierKeys != Keys.Shift);
           FileOperationDialog currentDialog = win.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
 
-          if (currentDialog == null) {
+          if (currentDialog == null)
+          {
             currentDialog = new FileOperationDialog();
             tempWindow.ParentContents = currentDialog;
             currentDialog.Owner = win;
 
             tempWindow.Visibility = Visibility.Collapsed;
             currentDialog.Contents.Add(tempWindow);
-          } else {
+          }
+          else
+          {
             tempWindow.ParentContents = currentDialog;
             tempWindow.Visibility = Visibility.Collapsed;
             currentDialog.Contents.Add(tempWindow);
           }
+        }
 
         //if (Control.ModifierKeys == Keys.Shift) {
         //  Thread MoveThread = new Thread(new ParameterizedThreadStart(DoDelete));

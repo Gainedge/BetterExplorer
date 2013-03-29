@@ -128,6 +128,26 @@ namespace FileOperation {
           }
         }
       }
+      if (this.OPType == OperationType.Move)
+      {
+          foreach (var dir in this.SourceItemsCollection.Select(c => ShellObject.FromParsingName(c.Item1)).ToArray().Where(c => c.IsFolder)) {
+            DeleteFolderRecursive(new DirectoryInfo(dir.ParsingName));
+          }
+          GC.WaitForPendingFinalizers();
+          GC.Collect();
+      }
+    }
+
+    private void DeleteFolderRecursive(DirectoryInfo baseDir) {
+      baseDir.Attributes = FileAttributes.Normal;
+      foreach (var childDir in baseDir.GetDirectories()) {
+        DeleteFolderRecursive(childDir);
+      }
+      baseDir.Delete();
+      //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+      //               (Action)(() => {
+      //                 prOverallProgress.Value++;
+      //               }));
     }
 
     protected override void WndProc(ref Message m) {

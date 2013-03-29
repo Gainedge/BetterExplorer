@@ -360,7 +360,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     }
                     this.IsAdminFO = true;
 
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                    Dispatcher.Invoke(DispatcherPriority.Background,
                        (Action)(() => {
                          mr = new MessageReceiver("FOMR" + this.Handle.ToString());
                          mr.OnMessageReceived += mr_OnMessageReceived;
@@ -409,9 +409,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 }
               };
               break;
-            case OperationType.Delete:
-             
-              break;
             case OperationType.Rename:
               break;
             case OperationType.Decomress:
@@ -423,6 +420,15 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
           }
 
           itemIndex++;
+        }
+        if (this.OperationType == OperationType.Move)
+        {
+          foreach (var dir in this.SourceItemsCollection.Select(ShellObject.FromParsingName).ToArray().Where(c => c.IsFolder))
+          {
+            DeleteFolderRecursive(new DirectoryInfo(dir.ParsingName), false);
+          }
+          GC.WaitForPendingFinalizers();
+          GC.Collect();
         }
       } else {
          Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
@@ -448,7 +454,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 _block.WaitOne();
                 try {
                   var itemObj = ShellObject.FromParsingName(item);
-                  if (!itemObj.IsFolder) {
+
+                  if (!itemObj.IsFolder || (itemObj.Properties.System.FileExtension.Value != null && itemObj.Properties.System.FileExtension.Value.ToLowerInvariant() == ".zip")) {
                     var itemInfo = new FileInfo(item);
                     if (itemInfo.IsReadOnly)
                       File.SetAttributes(item, FileAttributes.Normal);
@@ -474,7 +481,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
                 } catch (Exception) {
                   isError = true;
-                  Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                  Dispatcher.Invoke(DispatcherPriority.Background,
                    (Action)(() => {
                      prOverallProgress.Foreground = Brushes.Red;
                    }));
@@ -486,7 +493,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       }
 
       //If we have MoveOperation to same volume it is basically a rename opearion that happend immediately so we close the window
-      if (OperationType == FileOperations.OperationType.Move) {
+      if (OperationType == OperationType.Move) {
         if (System.IO.Path.GetPathRoot(CopyItems[0].Item1) == System.IO.Path.GetPathRoot(DestinationLocation))
           CloseCurrentTask();
       }
@@ -586,16 +593,18 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
      }
     }
 
-    private void DeleteFolderRecursive(DirectoryInfo baseDir) {
+    private void DeleteFolderRecursive(DirectoryInfo baseDir, Boolean isNotAfterMove = true) {
       baseDir.Attributes = FileAttributes.Normal;
       foreach (var childDir in baseDir.GetDirectories()) {
         DeleteFolderRecursive(childDir);
       }
       baseDir.Delete();
-      Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                     (Action)(() => {
-                       prOverallProgress.Value++;
-                     }));
+      if (isNotAfterMove){
+        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                          (Action) (() => {
+                                            prOverallProgress.Value++;
+                          }));
+      }
     }
 
     private void CloseCurrentTask() {

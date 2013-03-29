@@ -275,6 +275,9 @@
     <Compile Include="FileOperations\FileOperationDialog.xaml.cs">
       <DependentUpon>FileOperationDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FileOperations\FODeleteDialog.xaml.cs">
+      <DependentUpon>FODeleteDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FileOperations\MessageReceiver.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -457,6 +460,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FileOperations\FileOperationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FileOperations\FODeleteDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
