@@ -588,7 +588,7 @@ namespace BetterExplorer
 									Separator sep = new Separator();
 									btnMoreColls.Items.Add(sep);
 									MenuItem micm = new MenuItem();
-									micm.Header = "More Columns";
+									micm.Header = FindResource("btnMoreColCP");
 									micm.Focusable = false;
 									micm.Tag = AllAvailColls;
 									micm.Click += new RoutedEventHandler(micm_Click);
@@ -649,7 +649,7 @@ namespace BetterExplorer
 									catch (Exception ex)
 									{
                                         //FIXME: I disable this message becasue of strange null after filter
-										//MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error); 
+										MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error); 
 									}
 									Separator sp = new Separator();
 									sp.Focusable = false;
@@ -657,14 +657,12 @@ namespace BetterExplorer
 									misa = new MenuItem();
 									misa.Click += new RoutedEventHandler(misa_Click);
 									misa.Focusable = false;
-									misa.Header = "Ascending";
+									misa.Header = FindResource("miAscending");
+                                    misa.GroupName = "GR1";
 									misa.IsCheckable = true;
 
-
-									misa.GroupName = "GR1";
-
 									misd = new MenuItem();
-									misd.Header = "Descending";
+									misd.Header = FindResource("miDescending");
 									misd.IsCheckable = true;
 									misd.Click += new RoutedEventHandler(misd_Click);
 									misd.Focusable = false;
@@ -689,7 +687,7 @@ namespace BetterExplorer
 									btnGroup.Items.Add(spg);
 									misag = new MenuItem();
 									misag.Focusable = false;
-									misag.Header = "Ascending";
+                                    misag.Header = FindResource("miAscending");
 									misag.IsCheckable = true;
 
 
@@ -697,7 +695,7 @@ namespace BetterExplorer
 
 									misdg = new MenuItem();
 									misdg.Focusable = false;
-									misdg.Header = "Descending";
+                                    misdg.Header = FindResource("miDescending");
 									misdg.IsCheckable = true;
 									misdg.GroupName = "GR4";
 									if (GroupDir)
@@ -3841,8 +3839,7 @@ namespace BetterExplorer
 			string lohc = Convert.ToString(rks.GetValue(@"Locale", ":null:"));
 			double sbw = Convert.ToDouble(rks.GetValue(@"SearchBarWidth", "220"));
 
-			string rtlused = Convert.ToString(rks.GetValue(@"RTLMode", "false"));
-            string ovrtl = Convert.ToString(rks.GetValue(@"OverrideRTLDefault", "false"));
+			string rtlused = Convert.ToString(rks.GetValue(@"RTLMode", "notset"));
 
 			string tabba = Convert.ToString(rks.GetValue(@"TabBarAlignment", "top"));
 
@@ -3861,16 +3858,19 @@ namespace BetterExplorer
 				}
 			}
 
-            if ((this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL == true)
+            bool rtlset = false;
+
+            if (rtlused != "notset")
             {
-                if (ovrtl != "true")
-                {
-                    rtlused = "true";
-                }
+                rtlset = true;
             }
             else
             {
-                if (ovrtl != "true")
+                if ((this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL == true)
+                {
+                    rtlused = "true";
+                }
+                else
                 {
                     rtlused = "false";
                 }
@@ -3896,6 +3896,11 @@ namespace BetterExplorer
 			{
 				FlowDirection = System.Windows.FlowDirection.LeftToRight;
 			}
+
+            if (rtlset == true)
+            {
+                rtlused = "notset";
+            }
 
 			// sets tab bar alignment
 			if (tabba == "top")
@@ -8582,7 +8587,9 @@ namespace BetterExplorer
 			foreach (string item in LoadListOfTabListFiles())
 			{
 				SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item);
+                gli.Directory = sstdir;
 				gli.Click += new SavedTabsListGalleryItem.PathStringEventHandler(gli_Click);
+                gli.SetUpTooltip((FindResource("tabTabsCP") as string));
 				stGallery.Items.Add(gli);
 			}
 		}

@@ -1636,7 +1636,7 @@
                                          Click="miSaveCurTabs_Click"
                                          Focusable="False"
                                          Header="{StaticResource miSaveTabs}"
-                                         Icon="Images\Save.png"
+                                         Icon="Images\savetabs16.png"
                                          Ribbon:KeyTip.Keys="S" />
                         <Separator />
                         <Ribbon:MenuItem Name="miTabManager"

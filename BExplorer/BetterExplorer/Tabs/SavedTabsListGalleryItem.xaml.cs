@@ -27,13 +27,13 @@ namespace BetterExplorer
         public SavedTabsListGalleryItem(string loc)
         {
             InitializeComponent();
-            tabTitle.Text = loc;
+            Location = loc;
         }
 
         public SavedTabsListGalleryItem(string loc, bool selected)
         {
             InitializeComponent();
-            tabTitle.Text = loc;
+            Location = loc;
             if (selected == true)
             {
                 SetSelected();
@@ -48,6 +48,29 @@ namespace BetterExplorer
         {
             get { return tabTitle.Text; }
             set { tabTitle.Text = value; }
+        }
+
+        private string dir = "";
+
+        public string Directory
+        {
+            get { return dir; }
+            set { dir = value; }
+        }
+
+        private SavedTabsList lst;
+
+        public void SetUpTooltip(string tabs)
+        {
+            lst = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", dir, Location));
+            StringBuilder blah = new StringBuilder(lst.Count);
+            foreach (string item in lst)
+            {
+                blah.AppendLine(item);
+            }
+            string de = (String.Format("{0}: {1}\n\r", tabs, lst.Count.ToString()) + blah);
+
+            this.ToolTip = de.Remove(de.Length - 2);
         }
 
         public delegate void PathStringEventHandler(object sender, PathStringEventArgs e);
