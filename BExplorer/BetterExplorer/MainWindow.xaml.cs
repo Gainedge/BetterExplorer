@@ -8403,7 +8403,8 @@ namespace BetterExplorer
 
 		private void MoveTabBarToBottom()
 		{
-			Grid.SetRow(this.tabControl1, 6);
+			Grid.SetRow(this.tabControl1, 7);
+			divNav.Visibility = Visibility.Visible;
 			this.rTabbarTop.Height = new GridLength(0);
 			this.rTabbarBot.Height = new GridLength(25);
 			this.tabControl1.TabStripPlacement = Dock.Bottom;
@@ -8411,7 +8412,8 @@ namespace BetterExplorer
 
 		private void MoveTabBarToTop()
 		{
-			Grid.SetRow(this.tabControl1, 2);
+			Grid.SetRow(this.tabControl1, 3);
+			divNav.Visibility = Visibility.Hidden;
 			this.rTabbarTop.Height = new GridLength(25);
 			this.rTabbarBot.Height = new GridLength(0);
 			this.tabControl1.TabStripPlacement = Dock.Top;
