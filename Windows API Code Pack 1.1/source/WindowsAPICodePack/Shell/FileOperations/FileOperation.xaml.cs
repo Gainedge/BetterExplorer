@@ -339,7 +339,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
               };
               break;
             case OperationType.Move:
-              if (!CustomFileOperations.FileOperationMove(file, Microsoft.WindowsAPICodePack.Shell.CustomFileOperations.MoveFileFlags.MOVEFILE_COPY_ALLOWED | CustomFileOperations.MoveFileFlags.MOVEFILE_WRITE_THROUGH, CopyCallback, itemIndex, colissions)) {
+              if (!CustomFileOperations.FileOperationMove(file, CustomFileOperations.MoveFileFlags.MOVEFILE_COPY_ALLOWED | CustomFileOperations.MoveFileFlags.MOVEFILE_WRITE_THROUGH, CopyCallback, itemIndex, colissions)) {
                 int error = Marshal.GetLastWin32Error();
                 if (error == 5) {
                   if (!isProcess) {
@@ -376,7 +376,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     _block2.WaitOne();
                     CorrespondingWinHandle = WindowsAPI.FindWindow(null, "FO" + this.Handle);
                   }
-                  var currentItem = colissions.Where(c => c.itemPath == file.Item1).SingleOrDefault();
+                  var currentItem = colissions.SingleOrDefault(c => c.itemPath == file.Item1);
                   var destPath = "";
                   if (currentItem != null) {
                     if (!currentItem.IsCheckedC && currentItem.IsChecked) {
@@ -387,7 +387,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                   } else {
                     destPath = file.Item3;
                   }
-                  byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("INPUT|{0}|{1}", file.Item1, destPath));
+                  byte[] data = Encoding.Unicode.GetBytes(String.Format("INPUT|{0}|{1}", file.Item1, destPath));
                   WindowsAPI.SendStringMessage(CorrespondingWinHandle, data, 0, data.Length);
 
                   if (itemIndex == CopyItems.Count - 1) {
@@ -397,7 +397,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                   break;
 
                 } else {
-                  Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                  Dispatcher.Invoke(DispatcherPriority.Background,
                    (Action)(() => {
                      if (error == 1235)
                        CloseCurrentTask();
@@ -414,8 +414,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             case OperationType.Decomress:
               break;
             case OperationType.Compress:
-              break;
-            default:
               break;
           }
 
@@ -459,8 +457,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     var itemInfo = new FileInfo(item);
                     if (itemInfo.IsReadOnly)
                       File.SetAttributes(item, FileAttributes.Normal);
-                    itemInfo = null;
-                    if (this.DeleteToRB)
+                      if (this.DeleteToRB)
                       Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(item, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
                     else
                       File.Delete(item);
@@ -502,7 +499,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
 
     void mr_OnErrorReceived(object sender, MessageEventArgs e) {
-      Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+      Dispatcher.Invoke(DispatcherPriority.Background,
                  (Action)(() => {
                    prFileProgress.Foreground = Brushes.Red;
                    prOverallProgress.Foreground = Brushes.Red;
