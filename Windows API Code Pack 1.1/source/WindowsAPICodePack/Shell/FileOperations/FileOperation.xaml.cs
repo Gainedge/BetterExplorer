@@ -120,7 +120,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                      }
                      prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
                      lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
-                     if (procCompleted == CopyItemsCount || prOverallProgress.Value == prOverallProgress.Maximum) {
+                     if (totaltransfered == (long)totalSize)
+                     {
                        CloseCurrentTask();
                      }
                    } else {
@@ -153,69 +154,18 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                    lblProgress.Text = "Counting Files";
                  }));
       if (this.OperationType != FileOperations.OperationType.Delete) {
-        collection = CustomFileOperations.GetCopyDataAll(SourceItemsCollection, DestinationLocation);
-
-        ShellObject firstShellObject = ShellObject.FromParsingName(SourceItemsCollection[0]);
-        ShellObject destinationShellObject = ShellObject.FromParsingName(DestinationLocation);
-        if (firstShellObject.IsFolder && firstShellObject.Properties.System.FileExtension.Value == null) {
-          if (destinationShellObject == firstShellObject.Parent) {
-            int suffix = 0;
-            newDestination = System.IO.Path.Combine(DestinationLocation, System.IO.Path.GetFileName(SourceItemsCollection[0]));
-
-            do {
-              newDestination = String.Format("{0} - Copy ({1})", System.IO.Path.Combine(DestinationLocation, System.IO.Path.GetFileName(SourceItemsCollection[0])), ++suffix);
-            } while (Directory.Exists(newDestination) || File.Exists(newDestination));
-          }
-        }
-        totalSize = 0;
-        int index = 0;
-
-        string newdestinationname = String.Empty;
-        string oldDestinationName = String.Empty;
-        foreach (var item in collection) {
-          ShellObject keyShellObject = ShellObject.FromParsingName(item.Key);
-          if (destinationShellObject == keyShellObject.Parent) {
-            int suffix = 0;
-            newDestination = System.IO.Path.Combine(DestinationLocation, System.IO.Path.GetFileNameWithoutExtension(item.Key));
-
-            do {
-              newDestination = String.Format("{0} - Copy ({1})", System.IO.Path.Combine(DestinationLocation, System.IO.Path.GetFileNameWithoutExtension(item.Key)), ++suffix);
-            } while (Directory.Exists(newDestination) || File.Exists(newDestination + System.IO.Path.GetExtension(item.Key)));
-          } else {
-
-
-            if (!keyShellObject.IsFolder || keyShellObject.Properties.System.FileExtension.Value != null) {
-              oldDestinationName = String.IsNullOrEmpty(newDestination) ? item.Value : item.Value.Replace(System.IO.Path.Combine(DestinationLocation, System.IO.Path.GetFileNameWithoutExtension(SourceItemsCollection[0])), newDestination);
-              newdestinationname = oldDestinationName;
-              if (File.Exists(newdestinationname)) {
-                colissions.Add(new CollisionInfo() { itemPath = item.Key, index = index, CorrespondingItemPath = newdestinationname });
-                int suffix = 0;
-                newdestinationname = oldDestinationName.Remove(oldDestinationName.LastIndexOf("."));
-
-                do {
-                  newdestinationname = String.Format("{0} - Copy ({1})", oldDestinationName.Remove(oldDestinationName.LastIndexOf(".")), ++suffix);
-                } while (File.Exists(newdestinationname + System.IO.Path.GetExtension(item.Key)));
-
-
-              } else {
-                newdestinationname = string.Empty;
+          totalSize = 0;
+          foreach (var item in SourceItemsCollection)
+          {
+              var shellobj = ShellObject.FromParsingName(item);
+              if (shellobj.IsFolder)
+                CopyFolder(item, DestinationLocation, ref CopyItems, ref colissions);
+              else
+              {
+                  CopyFiles(item, DestinationLocation, ref CopyItems, ref colissions);
               }
-            }
+              shellobj.Dispose();
           }
-
-          totalSize += keyShellObject.Properties.System.Size.Value.HasValue ? keyShellObject.Properties.System.Size.Value.Value : 0;
-          firstShellObject.Dispose();
-          keyShellObject.Dispose();
-          Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                   (Action)(() => {
-                     lblProgress.Text = "Counting Files - " + WindowsAPI.StrFormatByteSize((long)totalSize);
-                   }));
-
-
-          CopyItems.Add(new Tuple<String, String, String, Int32>(item.Key, item.Value, String.IsNullOrEmpty(newdestinationname) ? String.IsNullOrEmpty(newDestination) ? item.Value : oldDestinationName : newdestinationname + System.IO.Path.GetExtension(item.Key), 0));
-          index++;
-        }
-
 
         if (colissions.Count > 0) {
           Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
@@ -496,6 +446,79 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       }
 
     }
+
+    public void CopyFiles(string sourceFile, string destFolder, ref List<Tuple<String, String, String, Int32>> CopyItems, ref List<CollisionInfo> collisions)
+    {
+        string name = System.IO.Path.GetFileName(sourceFile);
+        string dest = System.IO.Path.Combine(destFolder, name);
+        string newName = String.Empty;
+        if (File.Exists(dest))
+        {
+            collisions.Add(new CollisionInfo() { itemPath = sourceFile, index = 0, CorrespondingItemPath = dest });
+            int suffix = 0;
+            newName = dest.Remove(dest.LastIndexOf("."));
+
+            do
+            {
+                newName = String.Format("{0} - Copy ({1})", dest.Remove(dest.LastIndexOf(".")), ++suffix);
+            } while (File.Exists(newName + System.IO.Path.GetExtension(sourceFile)));
+        }
+        CopyItems.Add(new Tuple<string, string, string, int>(sourceFile, dest, newName == String.Empty ? dest : newName + System.IO.Path.GetExtension(sourceFile), 0));
+        var shellObj = ShellObject.FromParsingName(sourceFile);
+        totalSize += shellObj.Properties.System.Size.Value.HasValue ? shellObj.Properties.System.Size.Value.Value : 0;
+        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                 (Action)(() =>
+                 {
+                     lblProgress.Text = "Counting Files - " + WindowsAPI.StrFormatByteSize((long)totalSize);
+                 }));
+        shellObj.Dispose();
+    }
+
+    public void CopyFolder(string sourceFolder, string destFolder, ref List<Tuple<String,String,String,Int32>> CopyItems, ref List<CollisionInfo> collisions)
+    {
+        var destinationDirBase = System.IO.Path.Combine(destFolder, System.IO.Path.GetFileName(sourceFolder));
+        if (!Directory.Exists(destFolder))
+            Directory.CreateDirectory(destFolder);
+
+        if (!Directory.Exists(destinationDirBase))
+            Directory.CreateDirectory(destinationDirBase);
+
+        string[] files = Directory.GetFiles(sourceFolder);
+        foreach (string file in files)
+        {
+            string name = System.IO.Path.GetFileName(file);
+            string dest = System.IO.Path.Combine(destinationDirBase, name);
+            string newName = String.Empty;
+            if (File.Exists(dest))
+            {
+                collisions.Add(new CollisionInfo() { itemPath = file, index = 0, CorrespondingItemPath = dest });
+                int suffix = 0;
+                newName = dest.Remove(dest.LastIndexOf("."));
+
+                do
+                {
+                    newName = String.Format("{0} - Copy ({1})", dest.Remove(dest.LastIndexOf(".")), ++suffix);
+                } while (File.Exists(newName + System.IO.Path.GetExtension(file)));
+            }
+            CopyItems.Add(new Tuple<string, string, string, int>(file, dest, newName == String.Empty ? dest : newName + System.IO.Path.GetExtension(file), 0));
+            var shellObj = ShellObject.FromParsingName(file);
+            totalSize += shellObj.Properties.System.Size.Value.HasValue ? shellObj.Properties.System.Size.Value.Value : 0;
+              Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                       (Action)(() => {
+                         lblProgress.Text = "Counting Files - " + WindowsAPI.StrFormatByteSize((long)totalSize);
+                       }));
+              shellObj.Dispose();
+        }
+        string[] folders = Directory.GetDirectories(sourceFolder);
+        foreach (string folder in folders)
+        {
+            string name = System.IO.Path.GetFileName(folder);
+            string dest = System.IO.Path.Combine(destinationDirBase, name);
+            CopyFolder(folder, destinationDirBase, ref CopyItems, ref collisions);
+        }
+    }
+
+
 
 
     void mr_OnErrorReceived(object sender, MessageEventArgs e) {

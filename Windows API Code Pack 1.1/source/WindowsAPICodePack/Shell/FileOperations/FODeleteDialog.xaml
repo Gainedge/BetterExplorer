@@ -21,7 +21,7 @@
         </Grid.ColumnDefinitions>
         <Image Source="{Binding Path=MessageIcon}" Grid.Column="1" Margin="10,10,10,0" Stretch="None"></Image>
         <TextBlock Grid.Column="2" Margin="0,0,10,0" Grid.ColumnSpan="4" VerticalAlignment="Center" Text="{Binding Path=MessageText}" TextWrapping="Wrap"></TextBlock>
-        <Button Grid.Column="3" Grid.Row="1" Margin="0,5,0,5" Click="Button_Click_1">Yes</Button>
-        <Button Grid.Column="5" Grid.Row="1" Margin="0,5,0,5" Click="Button_Click_2">No</Button>
+        <Button Grid.Column="3" Grid.Row="1" Margin="0,5,0,5" Click="Button_Click_1" IsDefault="True">Yes</Button>
+        <Button Grid.Column="5" Grid.Row="1" Margin="0,5,0,5" Click="Button_Click_2" IsCancel="True">No</Button>
     </Grid>
 </Window>
