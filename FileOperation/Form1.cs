@@ -22,7 +22,7 @@ using WindowsHelper;
 namespace FileOperation {
   public partial class Form1 : Form {
     public static Guid SourceHandle = Guid.Empty;
-    public List<Tuple<String,String>> SourceItemsCollection { get; set; }
+    public List<Tuple<String,String, int>> SourceItemsCollection { get; set; }
     public string DestinationLocation { get; set; }
     private PipeClient _pipeClient;
     private PipeServer _pipeServer;
@@ -66,7 +66,7 @@ namespace FileOperation {
       _block = new ManualResetEvent(false);
       _block2 = new ManualResetEvent(false);
       
-      SourceItemsCollection = new List<Tuple<string, string>>();
+      SourceItemsCollection = new List<Tuple<string, string,int>>();
       try {
         SourceHandle = Guid.Parse(Environment.GetCommandLineArgs().Where(c => c.StartsWith("ID:")).Single().Substring(3));
       } catch (Exception) {
@@ -79,14 +79,21 @@ namespace FileOperation {
       WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOWINC, IntPtr.Zero, IntPtr.Zero);
     }
     long OldBytes = 0;
+    long totaltransfered;
     CopyFileCallbackAction CopyCallback(String src, String dst, object state, long totalFileSize, long totalBytesTransferred) {
       _block.WaitOne();
       
       if (totalBytesTransferred > 0) {
-          byte[] data = System.Text.Encoding.Unicode.GetBytes(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString());
-          WindowsAPI.SendStringMessage(MessageReceiverHandle, data, 0, data.Length);
-          OldBytes = totalBytesTransferred;
-      } 
+        if (totalBytesTransferred - OldBytes > 0)
+          totaltransfered += (totalBytesTransferred - OldBytes);
+        OldBytes = totalBytesTransferred;
+
+        byte[] data = System.Text.Encoding.Unicode.GetBytes(totalBytesTransferred.ToString() + "|" + totalFileSize.ToString() + "|" + totaltransfered.ToString());
+        WindowsAPI.SendStringMessage(MessageReceiverHandle, data, 0, data.Length);
+
+      } else {
+        OldBytes = 0;
+      }
 
       if (Cancel)
         return CopyFileCallbackAction.Cancel;
@@ -97,7 +104,7 @@ namespace FileOperation {
     void CopyFiles() {
       CurrentStatus = 1;
       _block.WaitOne();
-      foreach (var item in SourceItemsCollection) {
+      foreach (var item in SourceItemsCollection.Where(c => c.Item3 == 0)) {
         OldBytes = 0;
         if (this.OPType == OperationType.Copy) {
           if (!CustomFileOperations.CopyFile(item.Item1, item.Item2, CopyFileOptions.None, CopyCallback)) {
@@ -108,7 +115,7 @@ namespace FileOperation {
               Environment.Exit(5);
               break;
             } else {
-              WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
+              WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, (IntPtr)error);
               Environment.Exit(5);
             }
           }
@@ -165,7 +172,7 @@ namespace FileOperation {
           }
           if (newMessage.StartsWith("INPUT|")) {
             var parts = newMessage.Replace("INPUT|", "").Split(Char.Parse("|"));
-            SourceItemsCollection.Add(new Tuple<string, string>(parts[0].Trim(), parts[1].Trim()));
+            SourceItemsCollection.Add(new Tuple<string, string, int>(parts[0].Trim(), parts[1].Trim(), Convert.ToInt32(parts[2].Trim())));
            
           }
           if (newMessage.StartsWith("END FO INIT")) {

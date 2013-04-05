@@ -99,7 +99,11 @@ namespace Microsoft.WindowsAPICodePack.Shell {
       //string dirName = String.Empty;
 
       if (!Directory.Exists(Path.GetDirectoryName(destination))) {
-        Directory.CreateDirectory(Path.GetDirectoryName(destination));
+        try {
+          Directory.CreateDirectory(Path.GetDirectoryName(destination));
+        } catch (UnauthorizedAccessException) {
+          return false;
+        }
       } 
  
       new FileIOPermission(

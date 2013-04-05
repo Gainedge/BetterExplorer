@@ -3125,7 +3125,11 @@ namespace BetterExplorer
 		{
 			//KeepFocusOnExplorer = true;
 			AddToLog(String.Format("The following files have been moved to the Recycle Bin: {0}", ListAllSelectedItems()));
-			Explorer.DeleteToRecycleBin();
+      if (!ExplorerBrowser.IsCustomDialogs)
+        Explorer.DeleteToRecycleBin();
+      else {
+        //TODO: implement custom FO delete
+      }
 		}
 
 		// Delete > Permanently Delete
