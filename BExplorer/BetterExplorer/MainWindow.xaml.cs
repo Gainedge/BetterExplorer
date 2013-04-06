@@ -525,9 +525,9 @@ namespace BetterExplorer
 			//BeforeSearcCicles = searchcicles;
             Thread t = new Thread(() =>
             {
-			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
+			    Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
 								{
-                  Thread.Sleep(250);
+                                    Thread.Sleep(250);
 									IsCalledFromViewEnum = true;
 									zoomSlider.Value = Explorer.ContentOptions.ThumbnailSize;
 									IsCalledFromViewEnum = false;
@@ -597,9 +597,9 @@ namespace BetterExplorer
 									btnSort.Items.Clear();
 									btnGroup.Items.Clear();
 
-                  WindowsAPI.SORTCOLUMN sc;
+                                    WindowsAPI.SORTCOLUMN sc;
 									Explorer.GetSortColInfo(out sc);
-                  WindowsAPI.PROPERTYKEY pkg;
+                                    WindowsAPI.PROPERTYKEY pkg;
 									bool GroupDir;
 									Explorer.GetGroupColInfo(out pkg, out GroupDir);
 
@@ -680,7 +680,9 @@ namespace BetterExplorer
 									misng = new MenuItem();
 									misng.Header = "(none)";
 									misng.Focusable = false;
-									misng.GroupName = "GR4";
+									misng.GroupName = "GR3";
+								    misng.IsCheckable = true;
+								    misng.IsChecked = pkg.fmtid == Guid.Empty;
 									misng.Click += new RoutedEventHandler(misng_Click);
 									btnGroup.Items.Add(misng);
 									Separator spg = new Separator();
@@ -709,7 +711,7 @@ namespace BetterExplorer
 
 									btnGroup.Items.Add(misag);
 									btnGroup.Items.Add(misdg);
-                  IsViewSelection = false;
+                                    IsViewSelection = false;
 									int i = Explorer.ContentOptions.ThumbnailSize;
 									if (Explorer.ContentOptions.ThumbnailSize == 256)
 									{
