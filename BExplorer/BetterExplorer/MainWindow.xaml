@@ -26,7 +26,7 @@
                      WindowState="Maximized"
                      d:DesignHeight="768"
                      d:DesignWidth="852"
-                     mc:Ignorable="d">
+                     mc:Ignorable="d" SizeChanged="RibbonWindow_SizeChanged_1">
 
 	<Window.Resources>
 		<ResourceDictionary>
@@ -167,7 +167,7 @@
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
 					</Border>
 
-					<ScrollViewer Margin="0,0,0,-1"
+					<ScrollViewer x:Name="svTabBar" Margin="0,0,0,-1"
                                   HorizontalScrollBarVisibility="Auto"
                                   PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                                   Template="{DynamicResource ScrollViewerTemplate}"
@@ -605,7 +605,6 @@
                                                   Style="{DynamicResource ComboBoxBackstageStyle}"
                                                   HorizontalContentAlignment="Stretch"
                                                   DropDownHeight="200"
-                                                  DropDownClosed="TranslationComboBox_DropDownClosed_1"
                                                   SelectionChanged="TranslationComboBox_SelectionChanged" CanAddToQuickAccessToolBar="False" >
 											<controls:TranslationComboBoxItem x:Name="bgBGLang"
                                                                               LanguageText="Bulgarian"

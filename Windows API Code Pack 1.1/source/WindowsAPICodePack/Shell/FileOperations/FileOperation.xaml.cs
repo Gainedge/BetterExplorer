@@ -148,53 +148,71 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
         string dir = System.IO.Path.GetDirectoryName(currentexePath);
         string exePath = System.IO.Path.Combine(dir, @"FileOperation.exe");
 
-        using (Process proc = new Process()) {
-          var psi = new ProcessStartInfo {
-            FileName = exePath,
-            Verb = "runas",
-            UseShellExecute = true,
-            Arguments = String.Format("/env /user:Administrator \"{0}\" ID:{1}", exePath, Handle)
-          };
+        try
+        {
+            using (Process proc = new Process())
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    Verb = "runas",
+                    UseShellExecute = true,
+                    Arguments = String.Format("/env /user:Administrator \"{0}\" ID:{1}", exePath, Handle)
+                };
 
-          proc.StartInfo = psi;
-          proc.Start();
-        }
-        this.IsAdminFO = true;
-
-        Dispatcher.Invoke(DispatcherPriority.Background,
-           (Action)(() => {
-             mr = new MessageReceiver("FOMR" + this.Handle.ToString());
-             mr.OnMessageReceived += mr_OnMessageReceived;
-             mr.OnInitAdminOP += mr_OnInitAdminOP;
-             mr.OnErrorReceived += mr_OnErrorReceived;
-             prFileProgress.Foreground = Brushes.Blue;
-             prOverallProgress.Foreground = Brushes.Blue;
-           }));
-
-
-
-        isProcess = true;
-        _block2.WaitOne();
-        CorrespondingWinHandle = WindowsAPI.FindWindow(null, "FO" + this.Handle.ToString());
-        for (int j = 0; j < CopyItems.Count; j++) {
-          var currentItem = colissions.Where(c => c.itemPath == CopyItems[j].Item1).SingleOrDefault();
-          var destPath = "";
-          if (currentItem != null) {
-            if (!currentItem.IsCheckedC && currentItem.IsChecked) {
-              destPath = CopyItems[j].Item2;
-            } else if (currentItem.IsCheckedC && currentItem.IsChecked) {
-              destPath = CopyItems[j].Item3;
+                proc.StartInfo = psi;
+                proc.Start();
             }
-          } else {
-            destPath = CopyItems[j].Item3;
-          }
-          byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("INPUT|{0}|{1}|{2}", CopyItems[j].Item1, destPath, CopyItems[j].Item4));
-          WindowsAPI.SendStringMessage(CorrespondingWinHandle, data, 0, data.Length);
+            this.IsAdminFO = true;
 
-          if (j == CopyItems.Count - 1) {
-            byte[] data2 = Encoding.Unicode.GetBytes("END FO INIT|COPY");
-            WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
-          }
+            Dispatcher.Invoke(DispatcherPriority.Background,
+               (Action)(() =>
+               {
+                   mr = new MessageReceiver("FOMR" + this.Handle.ToString());
+                   mr.OnMessageReceived += mr_OnMessageReceived;
+                   mr.OnInitAdminOP += mr_OnInitAdminOP;
+                   mr.OnErrorReceived += mr_OnErrorReceived;
+                   prFileProgress.Foreground = Brushes.Blue;
+                   prOverallProgress.Foreground = Brushes.Blue;
+               }));
+
+
+
+            isProcess = true;
+            _block2.WaitOne();
+            CorrespondingWinHandle = WindowsAPI.FindWindow(null, "FO" + this.Handle.ToString());
+            for (int j = 0; j < CopyItems.Count; j++)
+            {
+                var currentItem = colissions.Where(c => c.itemPath == CopyItems[j].Item1).SingleOrDefault();
+                var destPath = "";
+                if (currentItem != null)
+                {
+                    if (!currentItem.IsCheckedC && currentItem.IsChecked)
+                    {
+                        destPath = CopyItems[j].Item2;
+                    }
+                    else if (currentItem.IsCheckedC && currentItem.IsChecked)
+                    {
+                        destPath = CopyItems[j].Item3;
+                    }
+                }
+                else
+                {
+                    destPath = CopyItems[j].Item3;
+                }
+                byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("INPUT|{0}|{1}|{2}", CopyItems[j].Item1, destPath, CopyItems[j].Item4));
+                WindowsAPI.SendStringMessage(CorrespondingWinHandle, data, 0, data.Length);
+
+                if (j == CopyItems.Count - 1)
+                {
+                    byte[] data2 = Encoding.Unicode.GetBytes("END FO INIT|COPY");
+                    WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            
         }
       }
     }

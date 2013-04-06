@@ -90,12 +90,12 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
     public static bool CopyFile(String source, String destination, 
 			CopyFileOptions options, CopyFileCallback callback, object state)
-		{
-			if (source == null) throw new ArgumentNullException("source");
-			if (destination == null) 
-				throw new ArgumentNullException("destination");
-			if ((options & ~CopyFileOptions.All) != 0) 
-				throw new ArgumentOutOfRangeException("options");
+	{
+	    if (source == null) throw new ArgumentNullException("source");
+	    if (destination == null) 
+		    throw new ArgumentNullException("destination");
+	    if ((options & ~CopyFileOptions.All) != 0) 
+		    throw new ArgumentOutOfRangeException("options");
       //string dirName = String.Empty;
 
       if (!Directory.Exists(Path.GetDirectoryName(destination))) {
@@ -104,7 +104,11 @@ namespace Microsoft.WindowsAPICodePack.Shell {
         } catch (UnauthorizedAccessException) {
           return false;
         }
-      } 
+      }
+
+        FileInfo fi = new FileInfo(destination);
+        if (fi.IsReadOnly)
+            fi.IsReadOnly = false;
  
       new FileIOPermission(
         FileIOPermissionAccess.Read, source).Demand();
@@ -117,7 +121,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
       bool cancel = false;
       return CopyFileEx(source, destination, cpr, IntPtr.Zero, ref cancel, (int)options);
-		}
+	}
 
     public static Boolean MoveFile(String source, String destination,
       MoveFileFlags options, CopyFileCallback callback, object state) {

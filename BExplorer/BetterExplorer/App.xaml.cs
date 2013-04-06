@@ -294,14 +294,13 @@ namespace BetterExplorer
 
                         sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
                         sho.Thumbnail.CurrentSize = new Size(16, 16);
-                        CloseableTabItem newt = new CloseableTabItem();
+                        ClosableTabItem newt = new ClosableTabItem();
                         newt.Header = sho.GetDisplayName(DisplayNameType.Default);
                         newt.TabIcon = sho.Thumbnail.BitmapSource;
                         newt.PreviewMouseMove += newt_PreviewMouseMove;
                         newt.TabSelected +=  win.newt_TabSelected;
                         newt.Path = sho;
                         win.CloneTab(newt);
-                        win.NavigateAfterTabChange();
                         
                         
                         IntPtr MainWinHandle = WindowsHelper.WindowsAPI.FindWindow(null, Process.GetCurrentProcess().MainWindowTitle);
@@ -323,7 +322,7 @@ namespace BetterExplorer
         
 
         void newt_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e) {
-          var tabItem = e.Source as CloseableTabItem;
+          var tabItem = e.Source as ClosableTabItem;
 
           if (tabItem == null)
             return;

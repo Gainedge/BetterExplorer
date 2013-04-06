@@ -47,17 +47,17 @@ namespace BetterExplorer
     /// Go ahead and use your control in the XAML file. Note that Intellisense in the
     /// XML editor does not currently work on custom controls and its child elements.
     ///
-    ///     <MyNamespace:CloseableTabItem/>
+    ///     <MyNamespace:ClosableTabItem/>
     ///
     /// </summary>
-    public class CloseableTabItem : TabItem
+    public class ClosableTabItem : TabItem
     {
-        static CloseableTabItem()
+        static ClosableTabItem()
         {
             //This OverrideMetadata call tells the system that this element wants to provide a style that is different than its base class.
             //This style is defined in themes\generic.xaml
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(CloseableTabItem),
-                new FrameworkPropertyMetadata(typeof(CloseableTabItem)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ClosableTabItem),
+                new FrameworkPropertyMetadata(typeof(ClosableTabItem)));
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -82,11 +82,11 @@ namespace BetterExplorer
 
         public static readonly RoutedEvent CloseTabEvent =
             EventManager.RegisterRoutedEvent("CloseTab", RoutingStrategy.Bubble,
-                typeof(RoutedEventHandler), typeof(CloseableTabItem));
+                typeof(RoutedEventHandler), typeof(ClosableTabItem));
 
         public static readonly RoutedEvent TabSelectedEvent =
             EventManager.RegisterRoutedEvent("TabSelected", RoutingStrategy.Bubble,
-                typeof(RoutedEventHandler), typeof(CloseableTabItem));
+                typeof(RoutedEventHandler), typeof(ClosableTabItem));
 
         public event RoutedEventHandler CloseTab
         {
@@ -101,7 +101,7 @@ namespace BetterExplorer
         }
 
         public static readonly DependencyProperty IconProperty =
-                                DependencyProperty.Register("TabIcon", typeof(ImageSource), typeof(CloseableTabItem),
+                                DependencyProperty.Register("TabIcon", typeof(ImageSource), typeof(ClosableTabItem),
                                 new FrameworkPropertyMetadata(null,
                                       FrameworkPropertyMetadataOptions.AffectsRender |
                                       FrameworkPropertyMetadataOptions.AffectsParentMeasure));
