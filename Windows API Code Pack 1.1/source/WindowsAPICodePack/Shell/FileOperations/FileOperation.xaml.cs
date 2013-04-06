@@ -340,8 +340,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
               };
               break;
             case OperationType.Move:
-              if (!CustomFileOperations.FileOperationMove(file, CustomFileOperations.MoveFileFlags.MOVEFILE_COPY_ALLOWED | CustomFileOperations.MoveFileFlags.MOVEFILE_WRITE_THROUGH, CopyCallback, itemIndex, colissions)) {
-                int error = Marshal.GetLastWin32Error();
+              if (!CustomFileOperations.FileOperationMove(file, CustomFileOperations.MoveFileFlags.MOVEFILE_COPY_ALLOWED | CustomFileOperations.MoveFileFlags.MOVEFILE_REPLACE_EXISTING, CopyCallback, itemIndex, colissions)) {
+                int error = Marshal.GetLastWin32Error(); 
                 if (error == 5) {
                   if (!isProcess) {
                     String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;

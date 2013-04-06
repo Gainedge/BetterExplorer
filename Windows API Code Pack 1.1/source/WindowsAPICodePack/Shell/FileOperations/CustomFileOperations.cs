@@ -107,7 +107,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
       }
 
         FileInfo fi = new FileInfo(destination);
-        if (fi.IsReadOnly)
+        if (fi.Exists && fi.IsReadOnly)
             fi.IsReadOnly = false;
  
       new FileIOPermission(
