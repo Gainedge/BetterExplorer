@@ -357,7 +357,7 @@
 								<Label Margin="105,235,10,0"
                                        HorizontalAlignment="Left"
                                        VerticalAlignment="Top"
-                                       Content="Report a problem, bug or feuture request"
+                                       Content="Report a problem, bug or feature request"
                                        FontSize="12"
                                        FontWeight="Bold" />
 								<TextBlock Height="50"
