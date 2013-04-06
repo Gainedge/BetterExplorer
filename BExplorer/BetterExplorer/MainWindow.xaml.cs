@@ -4324,8 +4324,11 @@ namespace BetterExplorer
 									  {
 										  if (Tabs.Length == 0 || !IsrestoreTabs)
 										  {
-                          ShellObject sho = GetShellObjectFromLocation(StartUpLocation);
-                          Explorer.Navigate(sho);
+                                              ShellObject sho = GetShellObjectFromLocation(StartUpLocation);
+                                              if (tabControl1.Items.OfType<ClosableTabItem>().Count() == 0)
+                                                  NewTab(sho,true);
+                                              else
+                                                Explorer.Navigate(sho);
 										  }
 										  if (IsrestoreTabs)
 										  {
@@ -7531,7 +7534,7 @@ namespace BetterExplorer
 					//tabControl1.SelectedIndex = itb.Index;
 					//LastTabIndex = itb.Index;
 					//CurrentTabIndex = LastTabIndex;
-					if (itb.Path.ParsingName != Explorer.NavigationLog.CurrentLocation.ParsingName)
+					if (Explorer.NavigationLog.CurrentLocation == null || itb.Path.ParsingName != Explorer.NavigationLog.CurrentLocation.ParsingName)
 					{
 
 
