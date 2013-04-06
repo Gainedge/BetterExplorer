@@ -176,16 +176,32 @@ namespace ConsoleControl
                 {
                     e.SuppressKeyPress = true;
                 }
+
+                if (e.KeyData == (Keys.C | Keys.ControlKey))
+                    MessageBox.Show("CTRL");
+                //if (e.KeyCode == Keys.C)
+                //{
+                //    MessageBox.Show(richTextBoxConsole.SelectedText);
+                //    Clipboard.SetText(richTextBoxConsole.SelectedText);
+                //}
             }
 
             //  Is it the return key?
             if (e.KeyCode == Keys.Return)
             {
                 //  Get the input.
-                string input = richTextBoxConsole.Text.Substring(inputStart, (richTextBoxConsole.SelectionStart) - inputStart);
+                try
+                {
+                    string input = richTextBoxConsole.Text.Substring(inputStart,
+                                                                     (richTextBoxConsole.SelectionStart) - inputStart);
 
-                //  Write the input (without echoing).
-                WriteInput(input, Color.White, false);
+                    //  Write the input (without echoing).
+                    WriteInput(input, Color.White, false);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    //Catch the argument out of range
+                }
             }
         }
 
