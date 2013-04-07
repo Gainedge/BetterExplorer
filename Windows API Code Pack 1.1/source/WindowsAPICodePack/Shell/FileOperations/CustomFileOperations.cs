@@ -141,6 +141,10 @@ namespace Microsoft.WindowsAPICodePack.Shell {
       new FileIOPermission(
         FileIOPermissionAccess.Write, destination).Demand();
 
+      FileInfo sourceFI = new FileInfo(source);
+        if (sourceFI.IsReadOnly)
+            sourceFI.IsReadOnly = false;
+
       CopyProgressRoutine cpr = (callback == null ?
         null : new CopyProgressRoutine(new CopyProgressData(
         source, destination, callback, state).CallbackHandler));
