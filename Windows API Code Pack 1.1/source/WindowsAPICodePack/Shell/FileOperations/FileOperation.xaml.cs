@@ -24,6 +24,7 @@ using PipesClient;
 using PipesServer;
 using WindowsHelper;
 using Microsoft.VisualBasic;
+using System.Threading.Tasks;
 
 namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
   /// <summary>
@@ -105,6 +106,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
     }
 
     private string lastFile = String.Empty;
+
+    long totaltransfered = 0;
+    long oldbyteVlaue = 0;
+    int procCompleted = 0;
+    Dictionary<String, long> oldbyteVlaues = new Dictionary<string, long>();
     CopyFileCallbackAction CopyCallback(String src, String dst, object state, long totalFileSize, long totalBytesTransferred) {
       //Console.WriteLine("{0}\t{1}", totalFileSize, totalBytesTransferred);
       _block.WaitOne();
@@ -113,10 +119,19 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                  (Action)(() => {
 
                    if (totalBytesTransferred > 0) {
-                     if (totalBytesTransferred - oldbyteVlaue > 0)
-                       totaltransfered += (totalBytesTransferred - oldbyteVlaue);
-                     oldbyteVlaue = totalBytesTransferred;
-                     prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
+                    long oldvalbefore = 0;
+                    oldbyteVlaues.TryGetValue(src, out oldvalbefore);
+
+                    if (totalBytesTransferred - oldvalbefore > 0)
+                        totaltransfered += (totalBytesTransferred - oldvalbefore);
+
+                    long oldval = 0;
+                    if (oldbyteVlaues.TryGetValue(src, out oldval))
+                        oldbyteVlaues[src] = totalBytesTransferred;
+                    else
+                        oldbyteVlaues.Add(src, totalBytesTransferred);
+
+                     //prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
                      if (totalBytesTransferred == totalFileSize) {
                        procCompleted++;
                          if (OperationType == OperationType.Move)
@@ -325,182 +340,196 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       var isBreak = false;
       if (this.OperationType != FileOperations.OperationType.Delete) {
         var collectionArray = CopyItems.ToArray().OrderByDescending(c => c.Item4);
-        foreach (var file in collectionArray) {
-          switch (this.OperationType) {
-            case OperationType.Copy:
-              if (file.Item4 == 1) {
-                if (!Directory.Exists(file.Item2))
-                  try {
-                    Directory.CreateDirectory(file.Item2);
-                  } catch (UnauthorizedAccessException) {
-                    StartAdminProcess(CopyItems, colissions, itemIndex, file);
-                    isBreak = true;
+        Parallel.ForEach(collectionArray, file =>
+        {
+            switch (this.OperationType)
+            {
+                case OperationType.Copy:
+                    if (file.Item4 == 1)
+                    {
+                        if (!Directory.Exists(file.Item2))
+                            try
+                            {
+                                Directory.CreateDirectory(file.Item2);
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                StartAdminProcess(CopyItems, colissions, itemIndex, file);
+                                isBreak = true;
+                                break;
+                            }
+                    }
+                    else
+                    {
+                        if (!CustomFileOperations.FileOperationCopy(file, CopyFileOptions.None, CopyCallback, itemIndex, colissions))
+                        {
+                            int error = Marshal.GetLastWin32Error();
+                            if (error == 5)
+                            {
+                                StartAdminProcess(CopyItems, colissions, itemIndex, file);
+                                isBreak = true;
+                                break;
+                            }
+                            else
+                            {
+                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                                 (Action)(() =>
+                                 {
+                                     if (error == 1235)
+                                         CloseCurrentTask();
+                                     else
+                                     {
+                                         prFileProgress.Foreground = Brushes.Red;
+                                         prOverallProgress.Foreground = Brushes.Red;
+                                     }
+                                 }));
+                            }
+                        }
+                    };
                     break;
-                  }
-              } else {
-                if (!CustomFileOperations.FileOperationCopy(file, CopyFileOptions.None, CopyCallback, itemIndex, colissions)) {
-                  int error = Marshal.GetLastWin32Error();
-                  if (error == 5) {
-                    StartAdminProcess(CopyItems, colissions, itemIndex, file);
-                    isBreak = true;
+                case OperationType.Move:
+                    if (file.Item4 == 0)
+                    {
+                        if (System.IO.Path.GetPathRoot(CopyItems[0].Item1) ==
+                            System.IO.Path.GetPathRoot(DestinationLocation))
+                        {
+                            if (!CustomFileOperations.FileOperationMove(file, CustomFileOperations.MoveFileFlags.NONE,
+                                                                        CopyCallback, itemIndex, colissions))
+                            {
+                                int error = Marshal.GetLastWin32Error();
+                                if (error == 5)
+                                {
+                                    if (!isProcess)
+                                    {
+                                        String CurrentexePath =
+                                            System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0]
+                                                .FullyQualifiedName;
+                                        string dir = System.IO.Path.GetDirectoryName(CurrentexePath);
+                                        string ExePath = System.IO.Path.Combine(dir, @"FileOperation.exe");
+
+                                        using (Process proc = new Process())
+                                        {
+                                            var psi = new ProcessStartInfo
+                                                {
+                                                    FileName = ExePath,
+                                                    Verb = "runas",
+                                                    UseShellExecute = true,
+                                                    Arguments =
+                                                        String.Format("/env /user:Administrator \"{0}\" ID:{1}", ExePath,
+                                                                      Handle)
+                                                };
+
+                                            proc.StartInfo = psi;
+                                            proc.Start();
+                                        }
+                                        this.IsAdminFO = true;
+
+                                        Dispatcher.Invoke(DispatcherPriority.Background,
+                                                          (Action)(() =>
+                                                              {
+                                                                  mr = new MessageReceiver("FOMR" + this.Handle.ToString());
+                                                                  mr.OnMessageReceived += mr_OnMessageReceived;
+                                                                  mr.OnInitAdminOP += mr_OnInitAdminOP;
+                                                                  mr.OnErrorReceived += mr_OnErrorReceived;
+                                                                  prFileProgress.Foreground = Brushes.Blue;
+                                                                  prOverallProgress.Foreground = Brushes.Blue;
+                                                              }));
+
+
+
+                                        isProcess = true;
+                                        _block2.WaitOne();
+                                        CorrespondingWinHandle = WindowsAPI.FindWindow(null, "FO" + this.Handle);
+                                    }
+                                    var currentItemM = colissions.SingleOrDefault(c => c.itemPath == file.Item1);
+                                    var destPathM = "";
+                                    if (currentItemM != null)
+                                    {
+                                        if (!currentItemM.IsCheckedC && currentItemM.IsChecked)
+                                        {
+                                            destPathM = file.Item2;
+                                        }
+                                        else if (currentItemM.IsCheckedC && currentItemM.IsChecked)
+                                        {
+                                            destPathM = file.Item3;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        destPathM = file.Item3;
+                                    }
+                                    byte[] dataM =
+                                        Encoding.Unicode.GetBytes(String.Format("INPUT|{0}|{1}", file.Item1, destPathM));
+                                    WindowsAPI.SendStringMessage(CorrespondingWinHandle, dataM, 0, dataM.Length);
+
+                                    if (itemIndex == CopyItems.Count - 1)
+                                    {
+                                        byte[] data2 = Encoding.Unicode.GetBytes("END FO INIT|MOVE");
+                                        WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
+                                    }
+                                    break;
+
+                                }
+                                else
+                                {
+                                    Dispatcher.Invoke(DispatcherPriority.Background,
+                                                      (Action)(() =>
+                                                          {
+                                                              if (error == 1235)
+                                                                  CloseCurrentTask();
+                                                              else
+                                                              {
+                                                                  prFileProgress.Foreground = Brushes.Red;
+                                                                  prOverallProgress.Foreground = Brushes.Red;
+                                                              }
+                                                          }));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (!CustomFileOperations.FileOperationCopy(file, CopyFileOptions.None, CopyCallback,
+                                                                        itemIndex, colissions))
+                            {
+                                int error = Marshal.GetLastWin32Error();
+                                if (error == 5)
+                                {
+                                    StartAdminProcess(CopyItems, colissions, itemIndex, file);
+                                    isBreak = true;
+                                    break;
+                                }
+                                else
+                                {
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                                                      (Action)(() =>
+                                                          {
+                                                              if (error == 1235)
+                                                                  CloseCurrentTask();
+                                                              else
+                                                              {
+                                                                  prFileProgress.Foreground = Brushes.Red;
+                                                                  prOverallProgress.Foreground = Brushes.Red;
+                                                              }
+                                                          }));
+                                }
+                            }
+
+                        }
+                    }
+                    ;
                     break;
-                  } else {
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                     (Action)(() => {
-                       if (error == 1235)
-                         CloseCurrentTask();
-                       else {
-                         prFileProgress.Foreground = Brushes.Red;
-                         prOverallProgress.Foreground = Brushes.Red;
-                       }
-                     }));
-                  }
-                }
-              };
-              break;
-            case OperationType.Move:
-                  if (file.Item4 == 0)
-                  {
-                      if (System.IO.Path.GetPathRoot(CopyItems[0].Item1) ==
-                          System.IO.Path.GetPathRoot(DestinationLocation))
-                      {
-                          if (!CustomFileOperations.FileOperationMove(file, CustomFileOperations.MoveFileFlags.NONE,
-                                                                      CopyCallback, itemIndex, colissions))
-                          {
-                              int error = Marshal.GetLastWin32Error();
-                              if (error == 5)
-                              {
-                                  if (!isProcess)
-                                  {
-                                      String CurrentexePath =
-                                          System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0]
-                                              .FullyQualifiedName;
-                                      string dir = System.IO.Path.GetDirectoryName(CurrentexePath);
-                                      string ExePath = System.IO.Path.Combine(dir, @"FileOperation.exe");
+                case OperationType.Rename:
+                    break;
+                case OperationType.Decomress:
+                    break;
+                case OperationType.Compress:
+                    break;
+            }
 
-                                      using (Process proc = new Process())
-                                      {
-                                          var psi = new ProcessStartInfo
-                                              {
-                                                  FileName = ExePath,
-                                                  Verb = "runas",
-                                                  UseShellExecute = true,
-                                                  Arguments =
-                                                      String.Format("/env /user:Administrator \"{0}\" ID:{1}", ExePath,
-                                                                    Handle)
-                                              };
-
-                                          proc.StartInfo = psi;
-                                          proc.Start();
-                                      }
-                                      this.IsAdminFO = true;
-
-                                      Dispatcher.Invoke(DispatcherPriority.Background,
-                                                        (Action) (() =>
-                                                            {
-                                                                mr = new MessageReceiver("FOMR" + this.Handle.ToString());
-                                                                mr.OnMessageReceived += mr_OnMessageReceived;
-                                                                mr.OnInitAdminOP += mr_OnInitAdminOP;
-                                                                mr.OnErrorReceived += mr_OnErrorReceived;
-                                                                prFileProgress.Foreground = Brushes.Blue;
-                                                                prOverallProgress.Foreground = Brushes.Blue;
-                                                            }));
-
-
-
-                                      isProcess = true;
-                                      _block2.WaitOne();
-                                      CorrespondingWinHandle = WindowsAPI.FindWindow(null, "FO" + this.Handle);
-                                  }
-                                  var currentItemM = colissions.SingleOrDefault(c => c.itemPath == file.Item1);
-                                  var destPathM = "";
-                                  if (currentItemM != null)
-                                  {
-                                      if (!currentItemM.IsCheckedC && currentItemM.IsChecked)
-                                      {
-                                          destPathM = file.Item2;
-                                      }
-                                      else if (currentItemM.IsCheckedC && currentItemM.IsChecked)
-                                      {
-                                          destPathM = file.Item3;
-                                      }
-                                  }
-                                  else
-                                  {
-                                      destPathM = file.Item3;
-                                  }
-                                  byte[] dataM =
-                                      Encoding.Unicode.GetBytes(String.Format("INPUT|{0}|{1}", file.Item1, destPathM));
-                                  WindowsAPI.SendStringMessage(CorrespondingWinHandle, dataM, 0, dataM.Length);
-
-                                  if (itemIndex == CopyItems.Count - 1)
-                                  {
-                                      byte[] data2 = Encoding.Unicode.GetBytes("END FO INIT|MOVE");
-                                      WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
-                                  }
-                                  break;
-
-                              }
-                              else
-                              {
-                                  Dispatcher.Invoke(DispatcherPriority.Background,
-                                                    (Action) (() =>
-                                                        {
-                                                            if (error == 1235)
-                                                                CloseCurrentTask();
-                                                            else
-                                                            {
-                                                                prFileProgress.Foreground = Brushes.Red;
-                                                                prOverallProgress.Foreground = Brushes.Red;
-                                                            }
-                                                        }));
-                              }
-                          }
-                      }
-                      else
-                      {
-                          if (!CustomFileOperations.FileOperationCopy(file, CopyFileOptions.None, CopyCallback,
-                                                                      itemIndex, colissions))
-                          {
-                              int error = Marshal.GetLastWin32Error();
-                              if (error == 5)
-                              {
-                                  StartAdminProcess(CopyItems, colissions, itemIndex, file);
-                                  isBreak = true;
-                                  break;
-                              }
-                              else
-                              {
-                                  Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                                                    (Action) (() =>
-                                                        {
-                                                            if (error == 1235)
-                                                                CloseCurrentTask();
-                                                            else
-                                                            {
-                                                                prFileProgress.Foreground = Brushes.Red;
-                                                                prOverallProgress.Foreground = Brushes.Red;
-                                                            }
-                                                        }));
-                              }
-                          }
-                          
-                      }
-                  }
-                  ;
-              break;
-            case OperationType.Rename:
-              break;
-            case OperationType.Decomress:
-              break;
-            case OperationType.Compress:
-              break;
-          }
-
-          itemIndex++;
-          if (isBreak)
-            break;
-        }
+            itemIndex++;
+            //if (isBreak)
+            //    break;
+        });
         if (!IsAdminFO)
           CloseCurrentTask();
       } else {
@@ -800,11 +829,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
           CloseCurrentTask();
         }
     }
-
-    long totaltransfered = 0;
-    long oldbyteVlaue = 0;
-    int procCompleted = 0;
-
 
     private void UserControl_Unloaded_1(object sender, RoutedEventArgs e) {
       this.Cancel = true;
