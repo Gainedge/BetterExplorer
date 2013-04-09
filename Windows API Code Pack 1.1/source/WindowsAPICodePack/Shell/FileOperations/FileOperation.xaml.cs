@@ -122,14 +122,15 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     long oldvalbefore = 0;
                     oldbyteVlaues.TryGetValue(src, out oldvalbefore);
 
-                    if (totalBytesTransferred - oldvalbefore > 0)
-                        totaltransfered += (totalBytesTransferred - oldvalbefore);
 
                     long oldval = 0;
                     if (oldbyteVlaues.TryGetValue(src, out oldval))
                         oldbyteVlaues[src] = totalBytesTransferred;
                     else
                         oldbyteVlaues.Add(src, totalBytesTransferred);
+
+                    if (totalBytesTransferred - oldvalbefore > 0)
+                        totaltransfered += (totalBytesTransferred - oldvalbefore);
 
                      //prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
                      if (totalBytesTransferred == totalFileSize) {
@@ -144,9 +145,9 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                      }
                      prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
                      lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
-                     if (totaltransfered == (long)totalSize)
+                     if (Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2) == 100)
                      {
-                       
+                       CloseCurrentTask();
                        if (OperationType == OperationType.Move)
                        {
                            foreach (var dir in this.SourceItemsCollection.Select(ShellObject.FromParsingName).ToArray().Where(c => c.IsFolder))
@@ -157,7 +158,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                            GC.WaitForPendingFinalizers();
                            GC.Collect();
                        }
-                       CloseCurrentTask();
+                       
                      }
                    } else {
                      oldbyteVlaue = 0;
@@ -829,15 +830,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
           WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
           CloseCurrentTask();
         }
-    }
-
-    private void UserControl_Unloaded_1(object sender, RoutedEventArgs e) {
-      this.Cancel = true;
-      this.CopyThread.Abort();
-      if (this.IsAdminFO) {
-        byte[] data2 = System.Text.Encoding.Unicode.GetBytes("COMMAND|CLOSE");
-        WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
-      }
     }
   }
 
