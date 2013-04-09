@@ -146,7 +146,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                      lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
                      if (totaltransfered == (long)totalSize)
                      {
-                       CloseCurrentTask();
+                       
                        if (OperationType == OperationType.Move)
                        {
                            foreach (var dir in this.SourceItemsCollection.Select(ShellObject.FromParsingName).ToArray().Where(c => c.IsFolder))
@@ -157,6 +157,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                            GC.WaitForPendingFinalizers();
                            GC.Collect();
                        }
+                       CloseCurrentTask();
                      }
                    } else {
                      oldbyteVlaue = 0;
@@ -270,7 +271,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
           foreach (var item in SourceItemsCollection)
           {
               var shellobj = ShellObject.FromParsingName(item);
-              if (shellobj.IsFolder) {
+              if (shellobj.IsFolder && shellobj.Properties.System.FileExtension == null) {
                 var newName = String.Empty;
                 if (shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName) {
                   var dest = System.IO.Path.Combine(DestinationLocation, System.IO.Path.GetFileName(item));
@@ -530,8 +531,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             //if (isBreak)
             //    break;
         });
-        if (!IsAdminFO)
-          CloseCurrentTask();
+        //if (!IsAdminFO)
+        //  CloseCurrentTask();
       } else {
          Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                    (Action)(() => {
@@ -539,7 +540,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                      if (!this.DeleteToRB) {
                        foreach (var item in this.SourceItemsCollection) {
                          var itemObj = ShellObject.FromParsingName(item);
-                         if (itemObj.IsFolder) {
+                         if (itemObj.IsFolder && itemObj.Properties.System.FileExtension == null) {
                            DirectoryInfo di = new DirectoryInfo(item);
                            count += di.GetDirectories("*", SearchOption.AllDirectories).Count() + di.GetFiles("*.*", SearchOption.AllDirectories).Count();
                            count++;
@@ -793,10 +794,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                (Action)(() => {
                  try {
                    
-                   this.Cancel = true;
+                   
                    _block.Set();
                    _block2.Set();
-                   
+                   //this.Cancel = true;
                    FileOperationDialog parentWindow = (FileOperationDialog)Window.GetWindow(this);
                    if (parentWindow != null) {
                      parentWindow.Contents.Remove(this);
