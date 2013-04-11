@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Height="129" Width="388" >
+             mc:Ignorable="d" Height="143" Width="388" >
     <UserControl.Resources>
         <Style TargetType="{x:Type Button}" x:Key="ControlBtnStyle" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Template">
@@ -43,9 +43,9 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="0"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="1">
             <TextBlock x:Name="lblOperation" Text="Copying " VerticalAlignment="Center"/>
@@ -62,7 +62,11 @@
         <Button x:Name="btnStop" Grid.Column="5" Grid.Row="3" Height="16" VerticalAlignment="Center" Width="16" Style="{StaticResource ControlBtnStyle}" Click="btnStop_Click" >
             <Image Source="pack://application:,,,/BetterExplorer;Component/Images/stop.png" Width="12" Height="12"/>
         </Button>
-        <ProgressBar x:Name="prFileProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="5" Height="16" Visibility="Collapsed"/>
+        <ProgressBar x:Name="prFileProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="5" Height="16" Visibility="Visible"/>
         <ProgressBar x:Name="prOverallProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="7" Height="16"/>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8" Margin="0,5,0,0" Height="15" VerticalAlignment="Top">
+            <TextBlock Text="Speed:" VerticalAlignment="Center"/>
+            <TextBlock Name="lblSpeed" Margin="10,0,0,0" Text="0 MB/s"/>
+        </StackPanel>
     </Grid>
 </UserControl>

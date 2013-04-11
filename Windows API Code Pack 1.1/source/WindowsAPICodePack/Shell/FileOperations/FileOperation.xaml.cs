@@ -25,6 +25,7 @@ using PipesServer;
 using WindowsHelper;
 using Microsoft.VisualBasic;
 using System.Threading.Tasks;
+using Microsoft.Win32.SafeHandles;
 
 namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
   /// <summary>
@@ -70,7 +71,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       CopyThread = new Thread(new ThreadStart(CopyFiles));
       CopyThread.IsBackground = false;
       CopyThread.Start();
-      CopyThread.Join(1);
+      //CopyThread.Join(1);
+      //CopyFiles();
       Thread.Sleep(1);
 
       this.Handle = Guid.NewGuid();
@@ -111,63 +113,87 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
     long oldbyteVlaue = 0;
     int procCompleted = 0;
     Dictionary<String, long> oldbyteVlaues = new Dictionary<string, long>();
+    DateTime LastMeasuredTime = DateTime.Now;
+    long lastTotalTransfered = 0;
     CopyFileCallbackAction CopyCallback(String src, String dst, object state, long totalFileSize, long totalBytesTransferred) {
       //Console.WriteLine("{0}\t{1}", totalFileSize, totalBytesTransferred);
-      _block.WaitOne();
-
-      Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                 (Action)(() => {
-
-                   if (totalBytesTransferred > 0) {
-                    long oldvalbefore = 0;
-                    oldbyteVlaues.TryGetValue(src, out oldvalbefore);
+        _block.WaitOne();
+        Thread.Sleep(1);
+        if (totalBytesTransferred > 0) {
+        long oldvalbefore = 0;
+        oldbyteVlaues.TryGetValue(src, out oldvalbefore);
 
 
-                    long oldval = 0;
-                    if (oldbyteVlaues.TryGetValue(src, out oldval))
-                        oldbyteVlaues[src] = totalBytesTransferred;
-                    else
-                        oldbyteVlaues.Add(src, totalBytesTransferred);
+        long oldval = 0;
+        if (oldbyteVlaues.TryGetValue(src, out oldval))
+            oldbyteVlaues[src] = totalBytesTransferred;
+        else
+            oldbyteVlaues.Add(src, totalBytesTransferred);
 
-                    if (totalBytesTransferred - oldvalbefore > 0)
-                        totaltransfered += (totalBytesTransferred - oldvalbefore);
+        if (totalBytesTransferred - oldvalbefore > 0)
+            totaltransfered += (totalBytesTransferred - oldvalbefore);
 
-                     //prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
-                     if (totalBytesTransferred == totalFileSize) {
-                       procCompleted++;
-                         if (OperationType == OperationType.Move)
-                         {
-                             FileInfo fi = new FileInfo(src);
-                             if (fi.IsReadOnly)
-                                 fi.IsReadOnly = false;
-                             fi.Delete();
-                         }
-                     }
-                     prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
-                     lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
-                     if (Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2) == 100)
-                     {
-                       CloseCurrentTask();
-                       if (OperationType == OperationType.Move)
-                       {
-                           foreach (var dir in this.SourceItemsCollection.Select(ShellObject.FromParsingName).ToArray().Where(c => c.IsFolder))
-                           {
-                               DeleteAllFilesFromDir(new DirectoryInfo(dir.ParsingName), false);
-                               DeleteFolderRecursive(new DirectoryInfo(dir.ParsingName), false);
-                           }
-                           GC.WaitForPendingFinalizers();
-                           GC.Collect();
-                       }
+            //prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
+            if (totalBytesTransferred == totalFileSize) {
+            procCompleted++;
+                if (OperationType == OperationType.Move)
+                {
+                    FileInfo fi = new FileInfo(src);
+                    if (fi.IsReadOnly)
+                        fi.IsReadOnly = false;
+                    fi.Delete();
+                }
+            }
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+            (Action)(() =>
+            {
+                prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
+            }));
+            var dt = DateTime.Now;
+            if (dt.Subtract(LastMeasuredTime).Seconds >= 2)
+            {
+                var diff = totaltransfered - lastTotalTransfered;
+                var speed = diff / 2;
+                var speedInMB = WindowsAPI.StrFormatByteSize(speed);
+                LastMeasuredTime = dt;
+                lastTotalTransfered = totaltransfered;
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                (Action)(() =>
+                {
+                    lblSpeed.Text = speedInMB + "/s";
+                }));
+            }
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+            (Action)(() =>
+            {
+                lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
+            }));
+            if (Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2) == 100)
+            {
+            CloseCurrentTask();
+            if (OperationType == OperationType.Move)
+            {
+                foreach (var dir in this.SourceItemsCollection.Select(ShellObject.FromParsingName).ToArray().Where(c => c.IsFolder))
+                {
+                    DeleteAllFilesFromDir(new DirectoryInfo(dir.ParsingName), false);
+                    DeleteFolderRecursive(new DirectoryInfo(dir.ParsingName), false);
+                }
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+            }
                        
-                     }
-                   } else {
-                     oldbyteVlaue = 0;
-                     if (prFileProgress != null)
-                       prFileProgress.Value = 0;
-                     if (totalFileSize == 0)
-                       CloseCurrentTask();
-                   }
-                 }));
+            }
+        } else {
+            oldbyteVlaue = 0;
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+            (Action)(() =>
+            {
+                if (prFileProgress != null)
+                    prFileProgress.Value = 0;
+            }));
+            if (totalFileSize == 0)
+            CloseCurrentTask();
+        }
 
       if (Cancel)
         return CopyFileCallbackAction.Cancel;
@@ -344,8 +370,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       var isBreak = false;
       if (this.OperationType != FileOperations.OperationType.Delete) {
         var collectionArray = CopyItems.ToArray().OrderByDescending(c => c.Item4);
-        Parallel.ForEach(collectionArray, file =>
+        //Parallel.ForEach(collectionArray, file =>
+        foreach (var file in collectionArray)
         {
+            if (this.Cancel)
+                break;
             switch (this.OperationType)
             {
                 case OperationType.Copy:
@@ -365,32 +394,68 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     }
                     else
                     {
-                        if (!CustomFileOperations.FileOperationCopy(file, CopyFileOptions.None, CopyCallback, itemIndex, colissions))
+                        //if (!CustomFileOperations.FileOperationCopy(file, CopyFileOptions.None, CopyCallback, itemIndex, colissions))
+                        var currentItem = colissions.Where(c => c.itemPath == file.Item1).SingleOrDefault();
+                        try
                         {
-                            int error = Marshal.GetLastWin32Error();
-                            if (error == 5)
+                            if (currentItem != null)
                             {
-
-                                //StartAdminProcess(CopyItems, colissions, itemIndex, file, false);
-                                IsNeedAdminFO = true;
-                                isBreak = true;
-                                break;
+                                if (!currentItem.IsCheckedC && currentItem.IsChecked)
+                                {
+                                    CopyFileS(file.Item1, file.Item2);
+                                }
+                                else if (currentItem.IsCheckedC && currentItem.IsChecked)
+                                {
+                                    CopyFileS(file.Item1, file.Item3);
+                                }
                             }
                             else
                             {
-                                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                                 (Action)(() =>
-                                 {
-                                     if (error == 1235)
-                                         CloseCurrentTask();
-                                     else
-                                     {
-                                         prFileProgress.Foreground = Brushes.Red;
-                                         prOverallProgress.Foreground = Brushes.Red;
-                                     }
-                                 }));
+                                CopyFileS(file.Item1, file.Item3);
                             }
                         }
+                        catch (UnauthorizedAccessException)
+                        {
+                            IsNeedAdminFO = true;
+                            isBreak = true;
+                            break;
+                        }
+                        catch (Exception)
+                        {
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                                 (Action)(() =>
+                                 {
+                                         prFileProgress.Foreground = Brushes.Red;
+                                         prOverallProgress.Foreground = Brushes.Red;
+                                 }));
+                        }
+                        
+                        //if (false)
+                        //{
+                        //    int error = Marshal.GetLastWin32Error();
+                        //    if (error == 5)
+                        //    {
+
+                        //        //StartAdminProcess(CopyItems, colissions, itemIndex, file, false);
+                        //        IsNeedAdminFO = true;
+                        //        isBreak = true;
+                        //        break;
+                        //    }
+                        //    else
+                        //    {
+                        //        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                        //         (Action)(() =>
+                        //         {
+                        //             if (error == 1235)
+                        //                 CloseCurrentTask();
+                        //             else
+                        //             {
+                        //                 prFileProgress.Foreground = Brushes.Red;
+                        //                 prOverallProgress.Foreground = Brushes.Red;
+                        //             }
+                        //         }));
+                        //    }
+                        //}
                     };
                     break;
                 case OperationType.Move:
@@ -467,7 +532,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             }
 
             itemIndex++;
-        });
+        }//);
           if (IsNeedAdminFO)
               StartAdminProcess(CopyItems, colissions, OperationType == FileOperations.OperationType.Move);
       } else {
@@ -764,6 +829,158 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
           WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
           CloseCurrentTask();
         }
+    }
+
+
+    private const uint FILE_FLAG_NO_BUFFERING = 0x20000000;
+    private const uint FILE_FLAG_SEQUENTIAL_SCAN = 0x08000000;
+    private const uint FILE_FLAG_OVERLAPPED = 0x40000000;
+
+
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern Microsoft.Win32.SafeHandles.SafeFileHandle CreateFile(
+        [In] [MarshalAs(UnmanagedType.LPWStr)] string lpFileName,
+        uint dwDesiredAccess, uint dwShareMode,
+        [In] IntPtr lpSecurityAttributes,
+        uint dwCreationDisposition,
+        uint dwFlagsAndAttributes,
+        [In] IntPtr hTemplateFile);
+
+
+    public void CopyFileS(string src, string dst)
+    {
+        int size = 2048 * 1024 * 1;	//buffer size
+        int current_read_buffer = 0; //pointer to current read buffer
+        int last_bytes_read = 0; //number of bytes last read
+
+        byte[][] buffer = new byte[2][];
+        buffer[0] = new byte[size];
+        buffer[1] = new byte[size];
+
+        using (var r = new System.IO.FileStream(src, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite, size * 2, System.IO.FileOptions.SequentialScan | System.IO.FileOptions.Asynchronous))
+        {
+            //Microsoft.Win32.SafeHandles.SafeFileHandle hDst = CreateFile(dst, (uint)System.IO.FileAccess.Write, (uint)System.IO.FileShare.None, IntPtr.Zero, (uint)System.IO.FileMode.Create, FILE_FLAG_NO_BUFFERING | FILE_FLAG_SEQUENTIAL_SCAN | FILE_FLAG_OVERLAPPED, IntPtr.Zero);
+            var z = new FileStream(dst, FileMode.Create, FileAccess.Write, FileShare.None, size*2,
+                                          FileOptions.WriteThrough | FileFlagNoBuffering | FileOptions.SequentialScan);
+            z.Close();
+            z.Dispose();
+            using (var w = new System.IO.FileStream(dst, FileMode.Open, System.IO.FileAccess.Write, FileShare.ReadWrite, size * 2, true))
+            {
+                current_read_buffer = 0;
+                last_bytes_read = r.Read(buffer[current_read_buffer], 0, size); //synchronously read the first buffer
+                long l = r.Length;
+                //w.SetLength(l);
+                long i = 0;
+                while (i < l)
+                {
+                    _block.WaitOne();
+                    if (Cancel)
+                    {
+                        CloseCurrentTask();
+                        break;
+                    }
+                    IAsyncResult aw = w.BeginWrite(buffer[current_read_buffer], 0, last_bytes_read, new AsyncCallback(CopyFileCallback), 0);
+                    current_read_buffer = current_read_buffer == 0 ? 1 : 0;
+                    Thread.CurrentThread.Join(2);
+                    IAsyncResult ar = r.BeginRead(buffer[current_read_buffer], 0, last_bytes_read, new AsyncCallback(CopyFileCallback), 0);
+                    i += last_bytes_read;
+
+                    if (i > 0)
+                    {
+                        long oldvalbefore = 0;
+                        oldbyteVlaues.TryGetValue(src, out oldvalbefore);
+
+
+                        long oldval = 0;
+                        if (oldbyteVlaues.TryGetValue(src, out oldval))
+                            oldbyteVlaues[src] = i;
+                        else
+                            oldbyteVlaues.Add(src, i);
+
+                        if (i - oldvalbefore > 0)
+                            totaltransfered += (i - oldvalbefore);
+
+                        
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                        (Action)(() =>
+                        {
+                            prFileProgress.Value = Math.Round((double)(i * 100 / l), 0);
+                        }));
+                        if (i == l)
+                        {
+                            procCompleted++;
+                            if (OperationType == OperationType.Move)
+                            {
+                                FileInfo fi = new FileInfo(src);
+                                if (fi.IsReadOnly)
+                                    fi.IsReadOnly = false;
+                                fi.Delete();
+                            }
+                        }
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                        (Action)(() =>
+                        {
+                            prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
+                        }));
+                        var dt = DateTime.Now;
+                        if (dt.Subtract(LastMeasuredTime).Seconds >= 2)
+                        {
+                            var diff = totaltransfered - lastTotalTransfered;
+                            var speed = diff / 2;
+                            var speedInMB = WindowsAPI.StrFormatByteSize(speed);
+                            LastMeasuredTime = dt;
+                            lastTotalTransfered = totaltransfered;
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                            (Action)(() =>
+                            {
+                                lblSpeed.Text = speedInMB + "/s";
+                            }));
+                        }
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                        (Action)(() =>
+                        {
+                            lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
+                        }));
+                        if (Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2) == 100)
+                        {
+                            CloseCurrentTask();
+                            if (OperationType == OperationType.Move)
+                            {
+                                foreach (var dir in this.SourceItemsCollection.Select(ShellObject.FromParsingName).ToArray().Where(c => c.IsFolder))
+                                {
+                                    DeleteAllFilesFromDir(new DirectoryInfo(dir.ParsingName), false);
+                                    DeleteFolderRecursive(new DirectoryInfo(dir.ParsingName), false);
+                                }
+                                GC.WaitForPendingFinalizers();
+                                GC.Collect();
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        oldbyteVlaue = 0;
+                        oldbyteVlaues[src] = 0;
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                        (Action)(() =>
+                        {
+                            if (prFileProgress != null)
+                                prFileProgress.Value = 0;
+                        }));
+                        if (l == 0)
+                            CloseCurrentTask();
+                    }
+
+                    last_bytes_read = r.EndRead(ar);
+                    Thread.Sleep(1);
+                    w.EndWrite(aw);
+                }
+            }
+        }
+    }
+    const FileOptions FileFlagNoBuffering = (FileOptions)0x20000000;
+    public void CopyFileCallback(IAsyncResult ar)
+    {
     }
   }
 

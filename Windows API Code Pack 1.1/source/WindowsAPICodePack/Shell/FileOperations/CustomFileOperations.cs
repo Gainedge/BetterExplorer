@@ -226,9 +226,10 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	public enum CopyFileOptions
 	{
 		None = 0x0,
+        Unbuffered = 0x00001000,
 		FailIfDestinationExists = 0x1,
 		Restartable = 0x2,
 		AllowDecryptedDestination = 0x8,
-		All = FailIfDestinationExists | Restartable | AllowDecryptedDestination
+		All = FailIfDestinationExists | Restartable | AllowDecryptedDestination |Unbuffered
 	}
 }
