@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Height="143" Width="388" >
+             mc:Ignorable="d" Height="159" Width="388" >
     <UserControl.Resources>
         <Style TargetType="{x:Type Button}" x:Key="ControlBtnStyle" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Template">
@@ -68,5 +68,7 @@
             <TextBlock Text="Speed:" VerticalAlignment="Center"/>
             <TextBlock Name="lblSpeed" Margin="10,0,0,0" Text="0 MB/s"/>
         </StackPanel>
+        <TextBlock Name="lblTime" Margin="10,5,0,0" Text="0 MB/s" Grid.Column="3" Grid.Row="8" VerticalAlignment="Top"/>
+        <TextBlock Name="lblTimeLeft" Margin="10,25,0,0" Text="0 MB/s" Grid.Column="3" Grid.Row="8" VerticalAlignment="Top"/>
     </Grid>
 </UserControl>
