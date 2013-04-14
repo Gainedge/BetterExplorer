@@ -26,6 +26,7 @@ using FileOperations;
 using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 using Microsoft.WindowsAPICodePack.Shell.FileOperations;
 using WindowsHelper;
+using System.Windows.Input;
 
 namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
   class HookLibManager {
@@ -210,7 +211,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
         if (!IsCustomDialog)
           return false;
 
-          var isMoveToRB = Control.ModifierKeys != Keys.Shift;
+        var isMoveToRB = Keyboard.Modifiers != ModifierKeys.Shift;
 
           var sourceObject = Marshal.GetObjectForIUnknown(sourceItems);
 
@@ -241,9 +242,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
         confirmationDialog.Owner = win;
         if (confirmationDialog.ShowDialog() == true){
           var tempWindow =
-            new Shell.FileOperations.FileOperation(sourceItemsCollection, String.Empty,
-                                                                                OperationType.Delete,
-                                                                                isMoveToRB);
+            new Shell.FileOperations.FileOperation(sourceItemsCollection, String.Empty, OperationType.Delete, isMoveToRB);
           var currentDialog = win.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
 
           if (currentDialog == null)

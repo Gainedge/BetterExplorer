@@ -1291,20 +1291,23 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					IntPtr pIDL = IntPtr.Zero;
 					IShellView shv = GetShellView();
 
-					try
-					{
-							ShellLibrary libraryFolder = ShellLibrary.Load(pathNew, false);
+                    try
+                    {
+                        ShellLibrary libraryFolder = ShellLibrary.Load(pathNew, false);
 
-							if (libraryFolder.PIDL != IntPtr.Zero)
-							{
-									IntPtr pIDLRltv = WindowsAPI.ILFindLastID(libraryFolder.PIDL);
-									if (pIDLRltv != IntPtr.Zero)
-									{
-											shv.SelectItem(pIDLRltv, WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS |
-														WindowsAPI.SVSIF.SVSI_ENSUREVISIBLE | WindowsAPI.SVSIF.SVSI_EDIT);
-									}
-							}
-					}
+                        if (libraryFolder.PIDL != IntPtr.Zero)
+                        {
+                            IntPtr pIDLRltv = WindowsAPI.ILFindLastID(libraryFolder.PIDL);
+                            if (pIDLRltv != IntPtr.Zero)
+                            {
+                                shv.SelectItem(pIDLRltv, WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS |
+                                            WindowsAPI.SVSIF.SVSI_ENSUREVISIBLE | WindowsAPI.SVSIF.SVSI_EDIT);
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                    }
 					finally
 					{
 							if (shv != null)

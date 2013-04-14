@@ -932,6 +932,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             int current_read_buffer = 0; //pointer to current read buffer
             int last_bytes_read = 0; //number of bytes last read
 
+            if (!Directory.Exists(System.IO.Path.GetDirectoryName(dst)))
+                Directory.CreateDirectory(System.IO.Path.GetDirectoryName(dst));
 
             buffer[0] = new byte[size];
             buffer[1] = new byte[size];
