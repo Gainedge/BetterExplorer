@@ -68,7 +68,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>bin\$(Configuration)\</OutDir>
+    <OutDir>$(SolutionDir)BExplorer\BetterExplorer</OutDir>
     <IntDir>obj\$(PlatformName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)32</TargetName>
   </PropertyGroup>
@@ -181,9 +181,9 @@
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <Target Name="AfterBuild">
-    <MSBuild Condition="'$(Platform)'=='Win32'" Projects="..\MinHook\libMinHook.vcxproj;..\QTHookLib\QTHookLib.vcxproj" Properties="Configuration=$(Configuration);Platform=x64" BuildInParallel="False" />
+    <MSBuild Condition="'$(Platform)'=='Win32'" Projects="..\MinHook\libMinHook.vcxproj;..\BEHookLib\QTHookLib.vcxproj" Properties="Configuration=$(Configuration);Platform=x64" BuildInParallel="False" />
   </Target>
   <Target Name="AfterClean">
-    <MSBuild Condition="'$(Platform)'=='Win32'" Projects="..\MinHook\libMinHook.vcxproj;..\QTHookLib\QTHookLib.vcxproj" Properties="Configuration=$(Configuration);Platform=x64" Targets="Clean" BuildInParallel="False" />
+    <MSBuild Condition="'$(Platform)'=='Win32'" Projects="..\MinHook\libMinHook.vcxproj;..\BEHookLib\QTHookLib.vcxproj" Properties="Configuration=$(Configuration);Platform=x64" Targets="Clean" BuildInParallel="False" />
   </Target>
 </Project>

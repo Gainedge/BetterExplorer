@@ -222,3 +222,8 @@ BEApi/Debug/BEApi.log
 BEApi/Debug/vc110.idb
 BEApi/Debug/vc110.pdb
 BExplorer/BetterExplorer/Updater.exe
+BExplorer/BetterExplorer/BEHookLib32.dll
+BExplorer/BetterExplorer/BEHookLib32.exp
+BExplorer/BetterExplorer/BEHookLib32.ilk
+BExplorer/BetterExplorer/BEHookLib32.lib
+BExplorer/BetterExplorer/Updater.exe
