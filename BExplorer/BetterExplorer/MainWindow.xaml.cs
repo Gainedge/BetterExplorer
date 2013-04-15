@@ -1294,12 +1294,14 @@ namespace BetterExplorer
 			if (e.Key == 27 || e.Key == 13 || e.Key == 17 || e.Key == 777 || e.Key == 778)
 			{
 				IsAfterRename = true;
+                IsAfterFolderCreate = false;
 			} 
 		}
 
 		void Explorer_RenameFinished(object sender, EventArgs e)
 		{
 			IsAfterRename = true;
+            IsAfterFolderCreate = false;
 			breadcrumbBarControl1.ExitEditMode();
 		}
 
@@ -2309,9 +2311,11 @@ namespace BetterExplorer
 
 
 			IsSelectionRized = false;
+            if (!IsAfterFolderCreate)
+                Explorer.SetExplorerFocus();
 		}
 		bool IsFromSelectionOrNavigation = false;
-
+        
 		// background worker code removed. hopefully we don't need it still... Lol.
 
 		void cbm_ClipboardChanged(object sender, ClipboardChangedEventArgs e)
@@ -6665,6 +6669,7 @@ namespace BetterExplorer
 			//{
 			//    breadcrumbBarControl1.ExitEditMode();
 			//}
+            Explorer.SetExplorerFocus();
 		}
 
 		private void RibbonWindow_GotFocus(object sender, RoutedEventArgs e)
@@ -6674,6 +6679,8 @@ namespace BetterExplorer
 			{
 				breadcrumbBarControl1.ExitEditMode();
 			}
+
+            Explorer.SetExplorerFocus();
 		}
 
 		private void SaveHistoryToFile(string relativepath, List<String> history)

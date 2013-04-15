@@ -250,15 +250,15 @@
 			</Ribbon:Ribbon.ToolBarItems>
 
 			<Ribbon:Ribbon.QuickAccessItems>
-				<Ribbon:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=btnCut}" />
-				<Ribbon:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=btnCopy}" />
-				<Ribbon:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=btnPaste}" />
-				<Ribbon:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=btnNewTab}" />
-				<Ribbon:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=btnTabClone}" />
-				<Ribbon:QuickAccessMenuItem IsChecked="False" Target="{Binding ElementName=btnNewWindow}" />
-				<Ribbon:QuickAccessMenuItem IsChecked="False" Target="{Binding ElementName=btnNavigationPane}" />
-				<Ribbon:QuickAccessMenuItem IsChecked="False" Target="{Binding ElementName=btnPreviewPane}" />
-				<Ribbon:QuickAccessMenuItem IsChecked="False" Target="{Binding ElementName=btnInfoPane}" />
+				<Ribbon:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=btnCut}" Focusable="False"/>
+                <Ribbon:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=btnCopy}" Focusable="False"/>
+                <Ribbon:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=btnPaste}" Focusable="False"/>
+                <Ribbon:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=btnNewTab}" Focusable="False"/>
+                <Ribbon:QuickAccessMenuItem IsChecked="True" Target="{Binding ElementName=btnTabClone}" Focusable="False"/>
+                <Ribbon:QuickAccessMenuItem IsChecked="False" Target="{Binding ElementName=btnNewWindow}" Focusable="False"/>
+                <Ribbon:QuickAccessMenuItem IsChecked="False" Target="{Binding ElementName=btnNavigationPane}" Focusable="False"/>
+                <Ribbon:QuickAccessMenuItem IsChecked="False" Target="{Binding ElementName=btnPreviewPane}" Focusable="False"/>
+                <Ribbon:QuickAccessMenuItem IsChecked="False" Target="{Binding ElementName=btnInfoPane}" Focusable="False"/>
 			</Ribbon:Ribbon.QuickAccessItems>
 
 			<Ribbon:Ribbon.Menu>
