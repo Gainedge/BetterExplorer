@@ -3127,21 +3127,14 @@ namespace BetterExplorer
 		{
 			//KeepFocusOnExplorer = true;
 			AddToLog(String.Format("The following files have been moved to the Recycle Bin: {0}", ListAllSelectedItems()));
-      if (!ExplorerBrowser.IsCustomDialogs)
-        Explorer.DeleteToRecycleBin();
-      else {
-        //TODO: implement custom FO delete
-      }
+            SetDeleteOperation(true);
 		}
 
 		// Delete > Permanently Delete
 		private void MenuItem_Click_1(object sender, RoutedEventArgs e)
 		{
 			//KeepFocusOnExplorer = true;
-			AddToLog(String.Format("The following files have been permanently deleted: {0}", ListAllSelectedItems()));
-			Thread MoveThread = new Thread(new ParameterizedThreadStart(Explorer.DoDelete));
-			MoveThread.SetApartmentState(ApartmentState.STA);
-			MoveThread.Start(Explorer.SelectedItems);
+            SetDeleteOperation(false);
 		}
 
 		string LastPath = "";
@@ -3248,32 +3241,32 @@ namespace BetterExplorer
 
 		private void btnctDocuments_Click(object sender, RoutedEventArgs e)
 		{
-      SetFOperation(KnownFolders.Documents.ParsingName, OperationType.Copy);
+            SetFOperation(KnownFolders.Documents.ParsingName, OperationType.Copy);
 		}
 
 		private void btnctDesktop_Click(object sender, RoutedEventArgs e)
 		{
-      SetFOperation(KnownFolders.Desktop.ParsingName, OperationType.Copy);
+            SetFOperation(KnownFolders.Desktop.ParsingName, OperationType.Copy);
 		}
 
 		private void btnctDounloads_Click(object sender, RoutedEventArgs e)
 		{
-      SetFOperation(KnownFolders.Downloads.ParsingName, OperationType.Copy);
+            SetFOperation(KnownFolders.Downloads.ParsingName, OperationType.Copy);
 		}
 
 		private void btnmtDocuments_Click(object sender, RoutedEventArgs e)
 		{
-      SetFOperation(KnownFolders.Documents.ParsingName, OperationType.Move);
+            SetFOperation(KnownFolders.Documents.ParsingName, OperationType.Move);
 		}
 
 		private void btnmtDesktop_Click(object sender, RoutedEventArgs e)
 		{
-      SetFOperation(KnownFolders.Desktop.ParsingName, OperationType.Move);
+            SetFOperation(KnownFolders.Desktop.ParsingName, OperationType.Move);
 		}
 
 		private void btnmtDounloads_Click(object sender, RoutedEventArgs e)
 		{
-      SetFOperation(KnownFolders.Downloads.ParsingName, OperationType.Move);
+            SetFOperation(KnownFolders.Downloads.ParsingName, OperationType.Move);
 		}
 
 		private void btnmtOther_Click(object sender, RoutedEventArgs e)
@@ -3282,7 +3275,7 @@ namespace BetterExplorer
 			dlg.IsFolderPicker = true;
 			if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
 			{
-        SetFOperation(dlg.FileName, OperationType.Move);
+                SetFOperation(dlg.FileName, OperationType.Move);
 			}
 		}
 
@@ -3347,6 +3340,65 @@ namespace BetterExplorer
           currentDialog.Contents.Add(tempWindow);
         }
       }
+    }
+    private void SetDeleteOperation(bool isMoveToRB)
+    {
+        if (!ExplorerBrowser.IsCustomDialogs)
+        {
+            if (isMoveToRB)
+            {
+                Explorer.DeleteToRecycleBin();
+            }
+            else
+            {
+                Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoDelete));
+                CopyThread.SetApartmentState(ApartmentState.STA);
+                CopyThread.Start(Explorer.SelectedItems);
+            }
+        }
+        else
+        {
+            var confirmationDialog = new FODeleteDialog();
+            confirmationDialog.MessageCaption = "Removal confirmation";
+
+            if (Explorer.GetSelectedItemsCount() == 1)
+            {
+                ShellObject item = Explorer.SelectedItems[0];
+                item.Thumbnail.CurrentSize = new System.Windows.Size(96, 96);
+                confirmationDialog.MessageIcon = item.Thumbnail.BitmapSource;
+                confirmationDialog.MessageText = "Are you sure you want to move " + item.GetDisplayName(DisplayNameType.Default) + " to Recycle Bin?";
+            }
+            else
+            {
+                confirmationDialog.MessageText = "Are you sure you want to move selected " + Explorer.GetSelectedItemsCount() + " items to Recycle Bin?";
+            }
+
+            confirmationDialog.Owner = this;
+            if (confirmationDialog.ShowDialog() == true)
+            {
+                var SourceItemsCollection = Explorer.SelectedItems.Select(c => c.ParsingName).ToArray();
+
+                FileOperation tempWindow = new FileOperation(SourceItemsCollection, null, OperationType.Delete, isMoveToRB);
+                FileOperationDialog currentDialog = this.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
+
+                if (currentDialog == null)
+                {
+                    currentDialog = new FileOperationDialog();
+                    tempWindow.ParentContents = currentDialog;
+                    currentDialog.Owner = this;
+
+                    tempWindow.Visibility = Visibility.Collapsed;
+                    currentDialog.Contents.Add(tempWindow);
+                }
+                else
+                {
+                    tempWindow.ParentContents = currentDialog;
+                    tempWindow.Visibility = Visibility.Collapsed;
+                    currentDialog.Contents.Add(tempWindow);
+                }
+            }
+            
+        }
     }
     private void btnctOther_Click(object sender, RoutedEventArgs e)
 		{
@@ -7500,24 +7552,14 @@ namespace BetterExplorer
 
 		void mimc_Click(object sender, RoutedEventArgs e)
 		{
-			MenuItem mi = sender as MenuItem;
-			FileOperationsData dd = new FileOperationsData();
-			dd.Shellobjects = Explorer.SelectedItems;
-			dd.PathForDrop = (mi.Tag as ShellObject).ParsingName;
-			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
-			CopyThread.SetApartmentState(ApartmentState.STA);
-			CopyThread.Start(dd);
+            MenuItem mi = sender as MenuItem;
+            SetFOperation((mi.Tag as ShellObject), OperationType.Copy);
 		}
 
 		void mim_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem mi = sender as MenuItem;
-			FileOperationsData dd = new FileOperationsData();
-			dd.Shellobjects = Explorer.SelectedItems;
-			dd.PathForDrop = (mi.Tag as ShellObject).ParsingName;
-			Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
-			CopyThread.SetApartmentState(ApartmentState.STA);
-			CopyThread.Start(dd);
+            SetFOperation((mi.Tag as ShellObject), OperationType.Move);
 		}
 
 		public void NavigateAfterTabChange()

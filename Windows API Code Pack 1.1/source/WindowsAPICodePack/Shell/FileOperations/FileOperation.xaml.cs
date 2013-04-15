@@ -807,6 +807,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 }
                 prFileProgress.Foreground = Brushes.Orange;
                 prOverallProgress.Foreground = Brushes.Orange;
+                lblProgress.Text = "Paused - " + lblProgress.Text;
                 CurrentStatus = 2;
             }
             else
@@ -938,6 +939,12 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             buffer[0] = new byte[size];
             buffer[1] = new byte[size];
 
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                            (Action)(() =>
+                            {
+                                lblFileName.Text = System.IO.Path.GetFileNameWithoutExtension(src);
+                            }));
+
             using (var r = new System.IO.FileStream(src, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite, size * 2, System.IO.FileOptions.SequentialScan | System.IO.FileOptions.Asynchronous))
             {
                 //Microsoft.Win32.SafeHandles.SafeFileHandle hDst = CreateFile(dst, (uint)System.IO.FileAccess.Write, (uint)System.IO.FileShare.None, IntPtr.Zero, (uint)System.IO.FileMode.Create, FILE_FLAG_NO_BUFFERING | FILE_FLAG_SEQUENTIAL_SCAN | FILE_FLAG_OVERLAPPED, IntPtr.Zero);
@@ -1039,7 +1046,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                             (Action)(() =>
                             {
-                                lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
+
+                                lblProgress.Text = (CurrentStatus == 2 ? "Paused - " : String.Empty) + Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
                             }));
                             if (totaltransfered == (long)totalSize)
                             {
@@ -1310,6 +1318,18 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             return 1;
         } 
         #endregion
+
+        private void UserControl_Unloaded_1(object sender, RoutedEventArgs e)
+        {
+            if (this.IsAdminFO)
+            {
+                byte[] data2 = System.Text.Encoding.Unicode.GetBytes("COMMAND|CLOSE");
+                WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
+            }
+
+            this.Cancel = true;
+            this.CopyThread.Abort();
+        }
 
     }
 

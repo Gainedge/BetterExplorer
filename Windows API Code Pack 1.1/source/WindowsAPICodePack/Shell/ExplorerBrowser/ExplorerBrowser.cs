@@ -1073,32 +1073,32 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					string Files = "";
 					foreach (ShellObject selectedItem in SelectedItems)
 					{
-							if (Files == "")
-							{
-									Files = selectedItem.ParsingName;
-							}
-							else
-                Files = String.Format("{0}\0{1}", Files, selectedItem.ParsingName);
+						if (Files == "")
+						{
+								Files = selectedItem.ParsingName;
+						}
+						else
+                         Files = String.Format("{0}\0{1}", Files, selectedItem.ParsingName);
 					}
 					RecybleBin.Send(Files);
-          GC.WaitForPendingFinalizers();
-          GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
 			}
 
 			public void DoDelete(object Data)
 			{
-					ShellObjectCollection DataDelete = (ShellObjectCollection)Data;
+				ShellObjectCollection DataDelete = (ShellObjectCollection)Data;
 
-					using (FileOperation fileOp = new FileOperation())
-					{
-							foreach (ShellObject item in DataDelete)
-							{
-									fileOp.DeleteItem(item.ParsingName);
-							}
+				using (FileOperation fileOp = new FileOperation())
+				{
+						foreach (ShellObject item in DataDelete)
+						{
+								fileOp.DeleteItem(item.ParsingName);
+						}
 
-							fileOp.PerformOperations();
-					}
-          DataDelete.Dispose();
+						fileOp.PerformOperations();
+				}
+                DataDelete.Dispose();
 						
 			}
 
