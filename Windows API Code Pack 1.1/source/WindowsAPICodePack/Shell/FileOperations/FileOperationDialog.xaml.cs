@@ -90,7 +90,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       }));
     }
 
-    private void Window_Closed_1(object sender, EventArgs e) {
+    private void Window_Closed(object sender, EventArgs e) {
       foreach (FileOperation item in this.Contents) {
         item.Cancel = true;
       }

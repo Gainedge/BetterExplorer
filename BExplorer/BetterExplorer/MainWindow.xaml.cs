@@ -251,7 +251,7 @@ namespace BetterExplorer
 		private void RibbonWindow_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 		{
 			//Explorer.Focus();
-			//Explorer.ExplorerSetFocus();
+			Explorer.SetExplorerFocus();
 			//  if (breadcrumbBarControl1.IsInEditMode)
 			//  {
 			//      breadcrumbBarControl1.ExitEditMode();
@@ -1284,6 +1284,7 @@ namespace BetterExplorer
 
 		void Explorer_LostFocus(object sender, EventArgs e)
 		{
+            Explorer.SetExplorerFocus();
 			IsAfterRename = false;
 		}
 
