@@ -228,10 +228,13 @@ namespace BetterExplorerOperations
                     case WM_COPYDATA:
                         try
                         {
+                            //MessageBox.Show("WM_COPYDATA");
                             COPYDATASTRUCT cd = (COPYDATASTRUCT)Marshal.PtrToStructure(m.LParam, typeof(COPYDATASTRUCT));
+                            //MessageBox.Show("CD");
                             ShareInfo shi;
 
                             shi = (ShareInfo)Marshal.PtrToStructure(cd.lpData, typeof(ShareInfo));
+                            //MessageBox.Show("SHI");
 
                             if (shi.lpMsg == "0x77654")
                             {
@@ -262,8 +265,6 @@ namespace BetterExplorerOperations
                                 {
                                     string source = sources[val];
                                     string drop = drops[val];
-
-
 
                                     if (source.StartsWith("(f)"))
                                     {

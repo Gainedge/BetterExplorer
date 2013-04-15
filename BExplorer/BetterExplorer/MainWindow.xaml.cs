@@ -2910,7 +2910,6 @@ namespace BetterExplorer
 
 				proc.StartInfo = psi;
 				proc.Start();
-				proc.WaitForExit();
 				Thread.Sleep(1000);
 				int res = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, 
 					"0x88779", sources, drops, "", "", "");
