@@ -34,7 +34,7 @@
             <my:ConditionalSelectComboBoxItem IdentifyingName="LaterThan" Text="{StaticResource txtIsAfter}" />
             <my:ConditionalSelectComboBoxItem IdentifyingName="Equals" Text="{StaticResource txtDateIs}" />
         </ComboBox>
-        <DatePicker Height="23" HorizontalAlignment="Left" Margin="160,236,0,0" Name="dcquery" VerticalAlignment="Top" Width="154" IsEnabled="False" />
+        <DatePicker Height="23" HorizontalAlignment="Left" Margin="160,236,0,0" Name="dcquery" VerticalAlignment="Top" Width="154" IsEnabled="False" SelectedDateFormat="Short" />
         <CheckBox Content="{StaticResource btnODateModCP}" Height="16" HorizontalAlignment="Left" Margin="16,275,0,0" Name="dmcheck" VerticalAlignment="Top" Checked="dmcheck_Checked" Unchecked="dmcheck_Unchecked" IsChecked="False" />
         <ComboBox Height="23" HorizontalAlignment="Left" Margin="34,297,0,0" Name="dmfilter" SelectedIndex="0" VerticalAlignment="Top" Width="120" IsEnabled="False">
             <my:ConditionalSelectComboBoxItem IdentifyingName="EarlierThan" Text="{StaticResource txtIsBefore}" />

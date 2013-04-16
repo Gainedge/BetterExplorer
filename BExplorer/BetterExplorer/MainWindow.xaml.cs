@@ -251,7 +251,8 @@ namespace BetterExplorer
 		private void RibbonWindow_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 		{
 			//Explorer.Focus();
-			Explorer.SetExplorerFocus();
+       //     if (!backstage.IsOpen)
+			    //Explorer.SetExplorerFocus();
 			//  if (breadcrumbBarControl1.IsInEditMode)
 			//  {
 			//      breadcrumbBarControl1.ExitEditMode();
@@ -1284,7 +1285,8 @@ namespace BetterExplorer
 
 		void Explorer_LostFocus(object sender, EventArgs e)
 		{
-            Explorer.SetExplorerFocus();
+            if (!backstage.IsOpen)
+                Explorer.SetExplorerFocus();
 			IsAfterRename = false;
 		}
 
@@ -1355,14 +1357,14 @@ namespace BetterExplorer
 			if (fsw_AC != null)
 				fsw_AC.Dispose();
 
-			e.Cancel = IsCancel;
-      this.breadcrumbBarControl1.LoadDirectory(e.PendingLocation);
-      this.breadcrumbBarControl1.LastPath = e.PendingLocation.ParsingName;
-      this.Title = "Better Explorer - " + e.PendingLocation.GetDisplayName(DisplayNameType.Default);
-      e.PendingLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-      e.PendingLocation.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-      (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).Header = e.PendingLocation.GetDisplayName(DisplayNameType.Default);
-      (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).TabIcon = e.PendingLocation.Thumbnail.BitmapSource;
+			    e.Cancel = IsCancel;
+          this.breadcrumbBarControl1.LoadDirectory(e.PendingLocation);
+          this.breadcrumbBarControl1.LastPath = e.PendingLocation.ParsingName;
+          this.Title = "Better Explorer - " + e.PendingLocation.GetDisplayName(DisplayNameType.Default);
+          e.PendingLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+          e.PendingLocation.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+          (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).Header = e.PendingLocation.GetDisplayName(DisplayNameType.Default);
+          (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).TabIcon = e.PendingLocation.Thumbnail.BitmapSource;
    //         ShellObject ePendingLocation = e.PendingLocation;
 			////if (IsAfterRename)
 			////    breadcrumbBarControl1.ExitEditMode();
@@ -2311,7 +2313,7 @@ namespace BetterExplorer
 
 
 			IsSelectionRized = false;
-            if (!IsAfterFolderCreate)
+            if (!IsAfterFolderCreate && !backstage.IsOpen)
                 Explorer.SetExplorerFocus();
 		}
 		bool IsFromSelectionOrNavigation = false;
@@ -6669,7 +6671,8 @@ namespace BetterExplorer
 			//{
 			//    breadcrumbBarControl1.ExitEditMode();
 			//}
-            Explorer.SetExplorerFocus();
+            if (!backstage.IsOpen)
+                Explorer.SetExplorerFocus();
 		}
 
 		private void RibbonWindow_GotFocus(object sender, RoutedEventArgs e)
@@ -6680,7 +6683,8 @@ namespace BetterExplorer
 				breadcrumbBarControl1.ExitEditMode();
 			}
 
-            Explorer.SetExplorerFocus();
+            if (!backstage.IsOpen)
+                Explorer.SetExplorerFocus();
 		}
 
 		private void SaveHistoryToFile(string relativepath, List<String> history)
