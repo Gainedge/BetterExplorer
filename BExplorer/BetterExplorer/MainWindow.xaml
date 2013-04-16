@@ -636,8 +636,13 @@
                                                                               LocaleCode="nl-NL"
                                                                               CountryFlag="Translation\Flags\NL.gif"
                                                                               UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem x:Name="enGBLang"
+                                                                              LanguageText="English (UK)"
+                                                                              LocaleCode="en-GB"
+                                                                              CountryFlag="Translation\Flags\GB.gif"
+                                                                              UsesRTL="False"/>
 											<controls:TranslationComboBoxItem x:Name="enUSLang"
-                                                                              LanguageText="English"
+                                                                              LanguageText="English (US)"
                                                                               LocaleCode="en-US"
                                                                               CountryFlag="Translation\Flags\US.gif"
                                                                               UsesRTL="False"/>

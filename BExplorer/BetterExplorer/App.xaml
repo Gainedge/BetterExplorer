@@ -27,7 +27,7 @@
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.vi-VN.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.uk-UA.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.ko-KR.xaml"/>
-                <!--<ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.hi-IN.xaml"/>--> <!--enable when it is syntactically correct-->
+                <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.en-GB.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/DefaultLocale.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
