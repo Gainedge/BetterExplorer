@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" SizeToContent="WidthAndHeight" MinWidth="400" MaxWidth="600" MinHeight="130" Title="{Binding Path=MessageCaption}" ShowInTaskbar="False" ResizeMode="CanMinimize" WindowStartupLocation="CenterOwner">
     <Grid Margin="5">
-           <Grid.RowDefinitions>
+        <Grid.RowDefinitions>
                <RowDefinition Height="*"/>
                <RowDefinition Height="32"/>
                <RowDefinition Height="5"/>

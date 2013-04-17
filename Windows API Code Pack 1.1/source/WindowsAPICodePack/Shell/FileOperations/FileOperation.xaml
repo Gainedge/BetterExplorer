@@ -47,7 +47,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="1">
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="1">
             <TextBlock x:Name="lblOperation" Text="Copying " VerticalAlignment="Center"/>
             <TextBlock x:Name="lblItemsCount" VerticalAlignment="Center"/>
             <TextBlock Text=" items from " VerticalAlignment="Center"/>

@@ -57,12 +57,12 @@ namespace BetterExplorer
 		bool IsNavigationPaneEnabled;
 		bool isCheckModeEnabled;
 		bool IsExtendedFileOpEnabled;
-    bool IsCloseLastTabCloseApp;
+        bool IsCloseLastTabCloseApp;
 		public bool IsrestoreTabs;
 		bool IsUpdateCheck;
-	  bool IsUpdateCheckStartup;
-    bool IsConsoleShown;
-	  int UpdateCheckType;
+	    bool IsUpdateCheckStartup;
+        bool IsConsoleShown;
+	    int UpdateCheckType;
 		public bool isOnLoad;
 		JumpList AppJL = new JumpList();
 		public bool IsCalledFromLoading;

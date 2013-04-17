@@ -67,10 +67,12 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             this.LoadTimer.Start();
             InitializeComponent();
             ShellObject firstSourceItem = ShellObject.FromParsingName(SourceItemsCollection[0]);
+            ShellObject destinationObject = ShellObject.FromParsingName(DestinationLocation);
             lblFrom.Text = firstSourceItem.Parent.GetDisplayName(DisplayNameType.Default);
-            lblTo.Text = System.IO.Path.GetFileNameWithoutExtension(DestinationLocation);
+            lblTo.Text = destinationObject.GetDisplayName(DisplayNameType.Default);
             firstSourceItem.Parent.Dispose();
             firstSourceItem.Dispose();
+            destinationObject.Dispose();
             CopyThread = new Thread(new ThreadStart(CopyFiles));
             CopyThread.IsBackground = false;
             CopyThread.Start();
@@ -503,67 +505,42 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                         case OperationType.Move:
                             if (file.Item4 == 0)
                             {
-                                if (System.IO.Path.GetPathRoot(CopyItems[0].Item1) ==
-                                    System.IO.Path.GetPathRoot(DestinationLocation))
+                                var currentItem = colissions.Where(c => c.itemPath == file.Item1).SingleOrDefault();
+                                try
                                 {
-                                    if (!CustomFileOperations.FileOperationMove(file, CustomFileOperations.MoveFileFlags.NONE,
-                                                                                CopyCallback, itemIndex, colissions))
+                                    if (currentItem != null)
                                     {
-                                        int error = Marshal.GetLastWin32Error();
-                                        if (error == 5)
+                                        if (!currentItem.IsCheckedC && currentItem.IsChecked)
                                         {
-                                            StartAdminProcess(CopyItems, colissions, true);
-                                            isBreak = true;
-                                            break;
-
+                                            CopyFileS(file.Item1, file.Item2);
                                         }
-                                        else
+                                        else if (currentItem.IsCheckedC && currentItem.IsChecked)
                                         {
-                                            Dispatcher.Invoke(DispatcherPriority.Background,
-                                                              (Action)(() =>
-                                                                  {
-                                                                      if (error == 1235)
-                                                                          CloseCurrentTask();
-                                                                      else
-                                                                      {
-                                                                          prFileProgress.Foreground = Brushes.Red;
-                                                                          prOverallProgress.Foreground = Brushes.Red;
-                                                                      }
-                                                                  }));
+                                            CopyFileS(file.Item1, file.Item3);
                                         }
+                                    }
+                                    else
+                                    {
+                                        CopyFileS(file.Item1, file.Item3);
                                     }
                                 }
-                                else
+                                catch (UnauthorizedAccessException)
                                 {
-                                    if (!CustomFileOperations.FileOperationCopy(file, CopyFileOptions.None, CopyCallback,
-                                                                                itemIndex, colissions))
-                                    {
-                                        int error = Marshal.GetLastWin32Error();
-                                        if (error == 5)
-                                        {
-                                            StartAdminProcess(CopyItems, colissions, true);
-                                            isBreak = true;
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                                                              (Action)(() =>
-                                                                  {
-                                                                      if (error == 1235)
-                                                                          CloseCurrentTask();
-                                                                      else
-                                                                      {
-                                                                          prFileProgress.Foreground = Brushes.Red;
-                                                                          prOverallProgress.Foreground = Brushes.Red;
-                                                                      }
-                                                                  }));
-                                        }
-                                    }
-
+                                    IsNeedAdminFO = true;
+                                    isBreak = true;
+                                    break;
+                                }
+                                catch (Exception)
+                                {
+                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                                         (Action)(() =>
+                                         {
+                                             prFileProgress.Foreground = Brushes.Red;
+                                             prOverallProgress.Foreground = Brushes.Red;
+                                         }));
                                 }
                             }
-                            ;
+                            
                             break;
                         case OperationType.Rename:
                             break;
@@ -999,6 +976,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                 procCompleted++;
                                 if (OperationType == OperationType.Move)
                                 {
+                                    r.Close();
+                                    r.Dispose();
                                     FileInfo fi = new FileInfo(src);
                                     if (fi.IsReadOnly)
                                         fi.IsReadOnly = false;
@@ -1047,11 +1026,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                             (Action)(() =>
                             {
 
-                                lblProgress.Text = (CurrentStatus == 2 ? "Paused - " : String.Empty) + Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
+                                lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2)); //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
                             }));
                             if (totaltransfered == (long)totalSize)
                             {
-                                CloseCurrentTask();
+                                
                                 if (OperationType == OperationType.Move)
                                 {
                                     foreach (var dir in this.SourceItemsCollection.Select(ShellObject.FromParsingName).ToArray().Where(c => c.IsFolder))
@@ -1062,6 +1041,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                     GC.WaitForPendingFinalizers();
                                     GC.Collect();
                                 }
+                                CloseCurrentTask();
 
                             }
                         }
