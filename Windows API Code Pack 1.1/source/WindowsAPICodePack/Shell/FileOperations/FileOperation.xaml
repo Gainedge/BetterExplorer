@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Height="172.5" Width="388" Unloaded="UserControl_Unloaded_1" >
+             mc:Ignorable="d" Height="172.5" Width="388" Unloaded="FO_Unloaded" >
     <UserControl.Resources>
         <Style TargetType="{x:Type Button}" x:Key="ControlBtnStyle" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Template">
@@ -69,20 +69,20 @@
         </Button>
         <ProgressBar x:Name="prFileProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="5" Height="16" Visibility="Visible"/>
         <ProgressBar x:Name="prOverallProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="7" Height="16"/>
-        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8" Margin="0,5,202,0" Height="18" VerticalAlignment="Top">
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8" Margin="0,5,195,0" Height="18" VerticalAlignment="Top">
             <TextBlock Text="Speed:" VerticalAlignment="Center" Visibility="Visible"/>
             <Image Source="pack://application:,,,/BetterExplorer;Component/Images/speed16.png" Width="24" Height="24" ToolTip="Speed" VerticalAlignment="Center" Visibility="Collapsed"/>
-            <TextBlock Name="lblSpeed" Margin="5,1,0,1" Text="0 MB/s" VerticalAlignment="Center" ToolTip="Speed" Width="63"/>
+            <TextBlock Name="lblSpeed" Margin="5,1,0,1" Text="Calculating..." VerticalAlignment="Center" ToolTip="Speed" Width="73"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8" Margin="0,5,0,0" Height="18" VerticalAlignment="Top" Grid.ColumnSpan="5" HorizontalAlignment="Right" Width="124" ToolTip="Time Elapsed">
             <TextBlock Text="Time Elapsed:" VerticalAlignment="Center" Visibility="Visible"/>
             <Image Source="pack://application:,,,/BetterExplorer;Component/Images/timeelapsed24.png" Width="18" Height="18" Visibility="Collapsed"/>
-            <TextBlock Name="lblTime" Text="0 MB/s" Margin="3,1,0,1" Grid.Column="2" Grid.Row="8" VerticalAlignment="Center" Grid.ColumnSpan="4" HorizontalAlignment="Right" Width="49" />
+            <TextBlock Name="lblTime" Text="00:00:00" Margin="3,1,0,1" Grid.Column="2" Grid.Row="8" VerticalAlignment="Center" Grid.ColumnSpan="4" HorizontalAlignment="Right" Width="49" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8" Margin="0,25,0,0" Height="18" VerticalAlignment="Top" Grid.ColumnSpan="5" HorizontalAlignment="Right" Width="140" ToolTip="Time Remaining">
             <TextBlock Text="Time Remaining:" VerticalAlignment="Center" Visibility="Visible"/>
             <Image Source="pack://application:,,,/BetterExplorer;Component/Images/timeremaining24.png" Width="18" Height="18" Visibility="Collapsed"/>
-            <TextBlock Name="lblTimeLeft" Margin="3,0,0,0" Text="0 MB/s" Grid.Column="2" Grid.Row="8" VerticalAlignment="Top" Grid.ColumnSpan="4" HorizontalAlignment="Right" Width="49" Height="18"/>
+            <TextBlock Name="lblTimeLeft" Margin="3,0,0,0" Text="-- : -- : --" Grid.Column="2" Grid.Row="8" VerticalAlignment="Top" Grid.ColumnSpan="4" HorizontalAlignment="Right" Width="49" Height="18"/>
         </StackPanel>
         
     </Grid>

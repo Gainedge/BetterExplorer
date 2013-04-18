@@ -236,7 +236,6 @@
     <Compile Include="FileOperations\CollisionItem.xaml.cs">
       <DependentUpon>CollisionItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileOperations\CustomFileOperations.cs" />
     <Compile Include="DelRecycleBin.cs" />
     <Compile Include="DesktopWindowManager\DesktopWindowManagerNativeMethods.cs" />
     <Compile Include="DesktopWindowManager\GlassEvents.cs" />

@@ -1,31 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using PipesClient;
-using PipesServer;
 using WindowsHelper;
-using Microsoft.VisualBasic;
-using System.Threading.Tasks;
-using Microsoft.Win32.SafeHandles;
 
 namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
   /// <summary>
@@ -42,7 +27,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
         private MessageReceiver mr;
         public Guid Handle;
         private int CurrentStatus = -1;
-        private bool IsShown = false;
+        const FileOptions FileFlagNoBuffering = (FileOptions)0x20000000;
         private bool DeleteToRB { get; set; }
         Thread CopyThread;
         public delegate void NewMessageDelegate(string NewMessage);
@@ -51,6 +36,16 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
         System.Windows.Forms.Timer LoadTimer = new System.Windows.Forms.Timer();
         private ManualResetEvent _block2;
         DateTime OperationStartTime = DateTime.Now;
+        long totaltransfered = 0;
+        long oldbyteVlaue = 0;
+        int procCompleted = 0;
+        Dictionary<String, long> oldbyteVlaues = new Dictionary<string, long>();
+        DateTime LastMeasuredTime = DateTime.Now;
+        long lastTotalTransfered = 0;
+        ulong totalSize = 0;
+        int CopyItemsCount = 0;
+        Boolean IsNeedAdminFO = false;
+        bool isProcess = false;
 
         public FileOperation(String[] _SourceItems, String _DestinationItem, OperationType _opType = OperationType.Copy, Boolean _deleteToRB = false)
         {
@@ -67,17 +62,19 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             this.LoadTimer.Start();
             InitializeComponent();
             ShellObject firstSourceItem = ShellObject.FromParsingName(SourceItemsCollection[0]);
-            ShellObject destinationObject = ShellObject.FromParsingName(DestinationLocation);
             lblFrom.Text = firstSourceItem.Parent.GetDisplayName(DisplayNameType.Default);
-            lblTo.Text = destinationObject.GetDisplayName(DisplayNameType.Default);
+            if (!String.IsNullOrEmpty(this.DestinationLocation))
+            {
+                ShellObject destinationObject = ShellObject.FromParsingName(DestinationLocation);
+                lblTo.Text = destinationObject.GetDisplayName(DisplayNameType.Default);
+                destinationObject.Dispose();
+            }
             firstSourceItem.Parent.Dispose();
             firstSourceItem.Dispose();
-            destinationObject.Dispose();
-            CopyThread = new Thread(new ThreadStart(CopyFiles));
-            CopyThread.IsBackground = false;
+            
+            CopyThread = new Thread(StartOperation) { IsBackground = false };
             CopyThread.Start();
-            //CopyThread.Join(1);
-            //CopyFiles();
+            CopyThread.Join(1);
             Thread.Sleep(1);
 
             this.Handle = Guid.NewGuid();
@@ -107,6 +104,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             }
 
         }
+        public FileOperation()
+        {
+            
+        }
 
         void LoadTimer_Tick(object sender, EventArgs e)
         {
@@ -114,115 +115,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             LoadTimer.Stop();
         }
 
-        private string lastFile = String.Empty;
-
-        long totaltransfered = 0;
-        long oldbyteVlaue = 0;
-        int procCompleted = 0;
-        Dictionary<String, long> oldbyteVlaues = new Dictionary<string, long>();
-        DateTime LastMeasuredTime = DateTime.Now;
-        long lastTotalTransfered = 0;
-        CopyFileCallbackAction CopyCallback(String src, String dst, object state, long totalFileSize, long totalBytesTransferred)
-        {
-            //Console.WriteLine("{0}\t{1}", totalFileSize, totalBytesTransferred);
-            _block.WaitOne();
-            Thread.Sleep(1);
-            if (totalBytesTransferred > 0)
-            {
-                long oldvalbefore = 0;
-                oldbyteVlaues.TryGetValue(src, out oldvalbefore);
-
-
-                long oldval = 0;
-                if (oldbyteVlaues.TryGetValue(src, out oldval))
-                    oldbyteVlaues[src] = totalBytesTransferred;
-                else
-                    oldbyteVlaues.Add(src, totalBytesTransferred);
-
-                if (totalBytesTransferred - oldvalbefore > 0)
-                    totaltransfered += (totalBytesTransferred - oldvalbefore);
-
-                //prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
-                if (totalBytesTransferred == totalFileSize)
-                {
-                    procCompleted++;
-                    if (OperationType == OperationType.Move)
-                    {
-                        FileInfo fi = new FileInfo(src);
-                        if (fi.IsReadOnly)
-                            fi.IsReadOnly = false;
-                        fi.Delete();
-                    }
-                }
-                
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                (Action)(() =>
-                {
-                    prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
-                }));
-                var dt = DateTime.Now;
-                if (dt.Subtract(LastMeasuredTime).Seconds >= 2)
-                {
-                    var diff = totaltransfered - lastTotalTransfered;
-                    var speed = diff / 2;
-                    var speedInMB = WindowsAPI.StrFormatByteSize(speed);
-                    LastMeasuredTime = dt;
-                    lastTotalTransfered = totaltransfered;
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                    (Action)(() =>
-                    {
-                        lblSpeed.Text = speedInMB + "/s";
-                    }));
-                }
-
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                (Action)(() =>
-                {
-                    lblTime.Text = new DateTime(DateTime.Now.Subtract(OperationStartTime).Ticks).ToString("HH:mm:ss");
-                }));
-                
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                (Action)(() =>
-                {
-                    lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
-                }));
-                if (Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2) == 100)
-                {
-                    CloseCurrentTask();
-                    if (OperationType == OperationType.Move)
-                    {
-                        foreach (var dir in this.SourceItemsCollection.Select(ShellObject.FromParsingName).ToArray().Where(c => c.IsFolder))
-                        {
-                            DeleteAllFilesFromDir(new DirectoryInfo(dir.ParsingName), false);
-                            DeleteFolderRecursive(new DirectoryInfo(dir.ParsingName), false);
-                        }
-                        GC.WaitForPendingFinalizers();
-                        GC.Collect();
-                    }
-
-                }
-            }
-            else
-            {
-                oldbyteVlaue = 0;
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                (Action)(() =>
-                {
-                    if (prFileProgress != null)
-                        prFileProgress.Value = 0;
-                }));
-                if (totalFileSize == 0)
-                    CloseCurrentTask();
-            }
-
-            if (Cancel)
-                return CopyFileCallbackAction.Cancel;
-
-            return CopyFileCallbackAction.Continue;
-        }
-
-        ulong totalSize = 0;
-        int CopyItemsCount = 0;
+        
         private void StartAdminProcess(List<Tuple<String, String, String, Int32>> CopyItems, List<CollisionInfo> colissions, bool isMove)
         {
             if (IsNeedAdminFO)
@@ -300,17 +193,14 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 }
             }
         }
-        Boolean IsNeedAdminFO = false;
-        void CopyFiles()
+        
+        void StartOperation()
         {
-
             CurrentStatus = 1;
             _block.WaitOne();
             List<KeyValuePair<String, String>> collection = new List<KeyValuePair<String, string>>();
             List<Tuple<String, String, String, Int32>> CopyItems = new List<Tuple<String, String, String, Int32>>();
             List<CollisionInfo> colissions = new List<CollisionInfo>();
-            List<String> Directories = new List<string>();
-            string newDestination = String.Empty;
             int itemIndex = 0;
             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                        (Action)(() =>
@@ -394,11 +284,24 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             {
                 foreach (var item in SourceItemsCollection)
                 {
+                    var count = 0;
                     var itemObj = ShellObject.FromParsingName(item);
-                    totalSize += itemObj.Properties.System.Size.Value.HasValue ? itemObj.Properties.System.Size.Value.Value : 0;
+                    if (itemObj.IsFolder && itemObj.Properties.System.FileExtension.Value == null)
+                    {
+                        FileInfo[] files = new DirectoryInfo(item).GetFiles("*.*", SearchOption.AllDirectories);
+                        count += files.Count();
+                        totalSize += (ulong)files.Sum(c => c.Length);
+                    }
+                    else
+                    {
+                        count++;
+                        totalSize += itemObj.Properties.System.Size.Value.HasValue ? itemObj.Properties.System.Size.Value.Value : 0;
+                    }
+                    
                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                              (Action)(() =>
                              {
+                                 lblItemsCount.Text = count.ToString();
                                  lblProgress.Text = String.Format("Counting Files - {0}", WindowsAPI.StrFormatByteSize((long)totalSize));
                              }));
                     itemObj.Dispose();
@@ -438,7 +341,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                             }
                             else
                             {
-                                //if (!CustomFileOperations.FileOperationCopy(file, CopyFileOptions.None, CopyCallback, itemIndex, colissions))
                                 var currentItem = colissions.Where(c => c.itemPath == file.Item1).SingleOrDefault();
                                 try
                                 {
@@ -446,16 +348,16 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                     {
                                         if (!currentItem.IsCheckedC && currentItem.IsChecked)
                                         {
-                                            CopyFileS(file.Item1, file.Item2);
+                                            ProcessItems(file.Item1, file.Item2);
                                         }
                                         else if (currentItem.IsCheckedC && currentItem.IsChecked)
                                         {
-                                            CopyFileS(file.Item1, file.Item3);
+                                            ProcessItems(file.Item1, file.Item3);
                                         }
                                     }
                                     else
                                     {
-                                        CopyFileS(file.Item1, file.Item3);
+                                        ProcessItems(file.Item1, file.Item3);
                                     }
                                 }
                                 catch (UnauthorizedAccessException)
@@ -473,33 +375,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                              prOverallProgress.Foreground = Brushes.Red;
                                          }));
                                 }
-
-                                //if (false)
-                                //{
-                                //    int error = Marshal.GetLastWin32Error();
-                                //    if (error == 5)
-                                //    {
-
-                                //        //StartAdminProcess(CopyItems, colissions, itemIndex, file, false);
-                                //        IsNeedAdminFO = true;
-                                //        isBreak = true;
-                                //        break;
-                                //    }
-                                //    else
-                                //    {
-                                //        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                                //         (Action)(() =>
-                                //         {
-                                //             if (error == 1235)
-                                //                 CloseCurrentTask();
-                                //             else
-                                //             {
-                                //                 prFileProgress.Foreground = Brushes.Red;
-                                //                 prOverallProgress.Foreground = Brushes.Red;
-                                //             }
-                                //         }));
-                                //    }
-                                //}
                             };
                             break;
                         case OperationType.Move:
@@ -512,16 +387,16 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                     {
                                         if (!currentItem.IsCheckedC && currentItem.IsChecked)
                                         {
-                                            CopyFileS(file.Item1, file.Item2);
+                                            ProcessItems(file.Item1, file.Item2);
                                         }
                                         else if (currentItem.IsCheckedC && currentItem.IsChecked)
                                         {
-                                            CopyFileS(file.Item1, file.Item3);
+                                            ProcessItems(file.Item1, file.Item3);
                                         }
                                     }
                                     else
                                     {
-                                        CopyFileS(file.Item1, file.Item3);
+                                        ProcessItems(file.Item1, file.Item3);
                                     }
                                 }
                                 catch (UnauthorizedAccessException)
@@ -637,12 +512,12 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     CloseCurrentTask();
             }
 
-            //If we have MoveOperation to same volume it is basically a rename opearion that happend immediately so we close the window
-            if (OperationType == OperationType.Move)
-            {
-                if (System.IO.Path.GetPathRoot(CopyItems[0].Item1) == System.IO.Path.GetPathRoot(DestinationLocation))
-                    CloseCurrentTask();
-            }
+            ////If we have MoveOperation to same volume it is basically a rename opearion that happend immediately so we close the window
+            //if (OperationType == OperationType.Move)
+            //{
+            //    if (System.IO.Path.GetPathRoot(CopyItems[0].Item1) == System.IO.Path.GetPathRoot(DestinationLocation))
+            //        CloseCurrentTask();
+            //}
 
         }
 
@@ -715,9 +590,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             }
         }
 
-
-
-
         void mr_OnErrorReceived(object sender, MessageEventArgs e)
         {
             Dispatcher.Invoke(DispatcherPriority.Background,
@@ -770,7 +642,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             }));
         }
 
-        bool isProcess = false;
         private void btnPause_Click(object sender, RoutedEventArgs e)
         {
             if (CurrentStatus == 1)
@@ -806,89 +677,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 }
             }
         }
-
-        private void DeleteAllFilesFromDir(DirectoryInfo baseDir, bool isNotAfterMove = true)
-        {
-            FileInfo[] files = baseDir.GetFiles("*.*", SearchOption.AllDirectories);
-            foreach (var item in files)
-            {
-                if (item.IsReadOnly)
-                    item.IsReadOnly = false;
-                item.Delete();
-                if (isNotAfterMove)
-                {
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                                      (Action)(() =>
-                                          {
-                                              prOverallProgress.Value++;
-                                          }));
-                }
-            }
-        }
-
-        private void DeleteFolderRecursive(DirectoryInfo baseDir, Boolean isNotAfterMove = true)
-        {
-            baseDir.Attributes = FileAttributes.Normal;
-            foreach (var childDir in baseDir.GetDirectories())
-            {
-                DeleteFolderRecursive(childDir, isNotAfterMove);
-            }
-            baseDir.Delete(!isNotAfterMove);
-            if (isNotAfterMove)
-            {
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                                  (Action)(() =>
-                                  {
-                                      prOverallProgress.Value++;
-                                  }));
-            }
-        }
-
-        private void CloseCurrentTask()
-        {
-            if (this.IsAdminFO)
-            {
-                byte[] data2 = System.Text.Encoding.Unicode.GetBytes("COMMAND|CLOSE");
-                WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
-            }
-            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                     (Action)(() =>
-                     {
-                         try
-                         {
-
-
-                             _block.Set();
-                             _block2.Set();
-                             //this.Cancel = true;
-                             FileOperationDialog parentWindow = (FileOperationDialog)Window.GetWindow(this);
-                             if (parentWindow != null)
-                             {
-                                 parentWindow.Contents.Remove(this);
-
-                                 if (parentWindow.Contents.Count == 0)
-                                     parentWindow.Close();
-                             }
-                             else
-                             {
-                                 ParentContents.Contents.Remove(this);
-                                 if (ParentContents.Contents.Count == 0)
-                                     ParentContents.Close();
-                             }
-                             if (mr != null)
-                                 mr.Close();
-                             Thread.Sleep(100);
-
-                         }
-                         catch (Exception)
-                         {
-
-                         }
-                         this.CopyThread.Abort();
-
-                     }));
-
-        }
+        
         private void btnStop_Click(object sender, RoutedEventArgs e)
         {
             _block.Set();
@@ -902,9 +691,157 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             }
         }
 
-        byte[][] buffer = new byte[2][];
-     
-        public void CopyFileS(string src, string dst)
+        int itemsProcessed = 0;
+        int lastItemsProcessed = 0;
+        private void DeleteAllFilesFromDir(DirectoryInfo baseDir, bool isNotAfterMove = true)
+        {
+            FileInfo[] files = baseDir.GetFiles("*.*", SearchOption.AllDirectories);
+            foreach (var item in files)
+            {
+                _block.WaitOne();
+                if (Cancel)
+                {
+                    CloseCurrentTask();
+                    break;
+                }
+                if (item.IsReadOnly)
+                    item.IsReadOnly = false;
+                item.Delete();
+                itemsProcessed++;
+                if (isNotAfterMove)
+                {
+                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                                      (Action)(() =>
+                                          {
+                                              
+                                              prOverallProgress.Value++;
+                                              lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((prOverallProgress.Value / prOverallProgress.Maximum) * 100D, 2));
+                                              var et = DateTime.Now.Subtract(OperationStartTime);
+                                              lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
+                                              try
+                                              {
+                                                  lblTimeLeft.Text = new DateTime((TimeSpan.FromSeconds((int)(et.TotalSeconds / prOverallProgress.Value * (prOverallProgress.Maximum - prOverallProgress.Value)))).Ticks).ToString("HH:mm:ss");
+                                              }
+                                              catch (Exception)
+                                              {
+
+                                              }
+                                          }));
+                    var dt = DateTime.Now;
+                    var secs = dt.Subtract(LastMeasuredTime).Seconds;
+                    if (secs >= 2)
+                    {
+                        var diff = itemsProcessed - lastItemsProcessed;
+                        var speed = diff / secs;
+                        lastItemsProcessed = itemsProcessed;
+                        LastMeasuredTime = dt;
+ 
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                        (Action)(() =>
+                        {
+                            lblSpeed.Text = diff + " items/s";
+                        }));
+                    }
+                }
+            }
+        }
+
+        private void DeleteFolderRecursive(DirectoryInfo baseDir, Boolean isNotAfterMove = true)
+        {
+            baseDir.Attributes = FileAttributes.Normal;
+            foreach (var childDir in baseDir.GetDirectories())
+            {
+                _block.WaitOne();
+                if (Cancel)
+                {
+                    CloseCurrentTask();
+                    break;
+                }
+                DeleteFolderRecursive(childDir, isNotAfterMove);
+            }
+
+            baseDir.Delete(!isNotAfterMove);
+            if (isNotAfterMove)
+            {
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                                  (Action)(() =>
+                                  {
+                                      prOverallProgress.Value++;
+                                      lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((prOverallProgress.Value / prOverallProgress.Maximum) * 100D, 2));
+                                      var et = DateTime.Now.Subtract(OperationStartTime);
+                                      lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
+                                      try
+                                      {
+                                          lblTimeLeft.Text = new DateTime((TimeSpan.FromSeconds((int)(et.TotalSeconds / prOverallProgress.Value * (prOverallProgress.Maximum - prOverallProgress.Value)))).Ticks).ToString("HH:mm:ss");
+                                      }
+                                      catch (Exception)
+                                      {
+
+                                      }
+                                  }));
+                var dt = DateTime.Now;
+                var secs = dt.Subtract(LastMeasuredTime).Seconds;
+                if (secs >= 2)
+                {
+                    var diff = itemsProcessed - lastItemsProcessed;
+                    var speed = diff / secs;
+                    lastItemsProcessed = itemsProcessed;
+                    LastMeasuredTime = dt;
+
+                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                    (Action)(() =>
+                    {
+                        lblSpeed.Text = diff + " items/s";
+                    }));
+                }
+            }
+        }
+
+        private void CloseCurrentTask()
+        {
+            if (this.IsAdminFO)
+            {
+                byte[] data2 = System.Text.Encoding.Unicode.GetBytes("COMMAND|CLOSE");
+                WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
+            }
+            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+            (Action)(() =>
+            {
+                try
+                {
+                    _block.Set();
+                    _block2.Set();
+                    //this.Cancel = true;
+                    FileOperationDialog parentWindow = (FileOperationDialog)Window.GetWindow(this);
+                    if (parentWindow != null)
+                    {
+                        parentWindow.Contents.Remove(this);
+
+                        if (parentWindow.Contents.Count == 0)
+                            parentWindow.Close();
+                    }
+                    else
+                    {
+                        ParentContents.Contents.Remove(this);
+                        if (ParentContents.Contents.Count == 0)
+                            ParentContents.Close();
+                    }
+                    if (mr != null)
+                        mr.Close();
+                    Thread.Sleep(100);
+
+                }
+                catch (Exception)
+                {
+
+                }
+                this.CopyThread.Abort();
+
+            }));
+
+        }
+
+        public void ProcessItems(string src, string dst)
         {
             int size = 2048 * 1024 * 2;	//buffer size
             int current_read_buffer = 0; //pointer to current read buffer
@@ -913,6 +850,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             if (!Directory.Exists(System.IO.Path.GetDirectoryName(dst)))
                 Directory.CreateDirectory(System.IO.Path.GetDirectoryName(dst));
 
+            byte[][] buffer = new byte[2][];
             buffer[0] = new byte[size];
             buffer[1] = new byte[size];
 
@@ -1009,7 +947,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                             (Action)(() =>
                             {
                                 lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
-                                //lblTimeLeft.Text = new DateTime(TimeSpan.FromMilliseconds((double)et.Milliseconds * ((long)totalSize - totaltransfered) / totaltransfered).Ticks).ToString("HH:mm:ss");
                                 try
                                 {
                                     lblTimeLeft.Text = new DateTime((TimeSpan.FromSeconds((int)(et.TotalSeconds / prOverallProgress.Value * (prOverallProgress.Maximum - prOverallProgress.Value)))).Ticks).ToString("HH:mm:ss");
@@ -1066,240 +1003,13 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 }
             }
         }
-        const FileOptions FileFlagNoBuffering = (FileOptions)0x20000000;
+        
         public void CopyFileCallback(IAsyncResult ar)
         {
         }
 
-        #region Test
-        //file names
-        private string _inputfile;
-        private string _outputfile;
-        //syncronization object
-        private readonly object Locker1 = new object();
-        //buffer size
-        public int CopyBufferSize = 0;
-        private long _infilesize = 0;
-        //buffer read
-        public byte[] Buffer1;
-        private int _bytesRead1;
-        //buffer overlap
-        public byte[] Buffer2;
-        private bool _buffer2Dirty;
-        private int _bytesRead2;
-        //buffer write
-        public byte[] Buffer3;
-        //total bytes read
-        private long _totalbytesread;
-        private long _totalbyteswritten;
-        //filestreams
-        private FileStream _infile;
-        private FileStream _outfile;
-        //secret sauce for unbuffered IO
 
-        private void AsyncReadFile()
-        {
-            //open input file
-            _infile = new FileStream(_inputfile, FileMode.Open, FileAccess.Read, FileShare.None, CopyBufferSize,
-            FileFlagNoBuffering);
-            //if we have data read it
-            while (_totalbytesread < _infilesize)
-            {
-                _bytesRead1 = _infile.Read(Buffer1, 0, CopyBufferSize);
-                lock (Locker1)
-                {
-                    while (_buffer2Dirty) Monitor.Wait(Locker1);
-                    Buffer.BlockCopy(Buffer1, 0, Buffer2, 0, _bytesRead1);
-                    _buffer2Dirty = true;
-                    Monitor.PulseAll(Locker1);
-                    _bytesRead2 = _bytesRead1;
-                    _totalbytesread = _totalbytesread + _bytesRead1;
-                }
-            }
-            //clean up open handle
-            _infile.Close();
-            _infile.Dispose();
-        }
-
-        private void UpdateUI()
-        {
-            if (_totalbyteswritten > 0)
-            {
-                long oldvalbefore = 0;
-                oldbyteVlaues.TryGetValue(_inputfile, out oldvalbefore);
-
-
-                long oldval = 0;
-                if (oldbyteVlaues.TryGetValue(_inputfile, out oldval))
-                    oldbyteVlaues[_inputfile] = _totalbyteswritten;
-                else
-                    oldbyteVlaues.Add(_inputfile, _totalbyteswritten);
-
-                if (_totalbyteswritten - oldvalbefore > 0)
-                    totaltransfered += (_totalbyteswritten - oldvalbefore);
-
-
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                (Action)(() =>
-                {
-                    prFileProgress.Value = Math.Round((double)(_totalbyteswritten * 100 / _infilesize), 0);
-                }));
-                if (_totalbyteswritten == _infilesize)
-                {
-                    procCompleted++;
-                    if (OperationType == OperationType.Move)
-                    {
-                        FileInfo fi = new FileInfo(_inputfile);
-                        if (fi.IsReadOnly)
-                            fi.IsReadOnly = false;
-                        fi.Delete();
-                    }
-                }
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                (Action)(() =>
-                {
-                    prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
-                }));
-                var dt = DateTime.Now;
-                if (dt.Subtract(LastMeasuredTime).Seconds >= 2)
-                {
-                    var diff = totaltransfered - lastTotalTransfered;
-                    var speed = diff / 2;
-                    var speedInMB = WindowsAPI.StrFormatByteSize(speed);
-                    LastMeasuredTime = dt;
-                    lastTotalTransfered = totaltransfered;
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                    (Action)(() =>
-                    {
-                        lblSpeed.Text = speedInMB + "/s";
-                    }));
-                }
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                (Action)(() =>
-                {
-                    lblProgress.Text = Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
-                }));
-                if (Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2) == 100)
-                {
-                    CloseCurrentTask();
-                    if (OperationType == OperationType.Move)
-                    {
-                        foreach (var dir in this.SourceItemsCollection.Select(ShellObject.FromParsingName).ToArray().Where(c => c.IsFolder))
-                        {
-                            DeleteAllFilesFromDir(new DirectoryInfo(dir.ParsingName), false);
-                            DeleteFolderRecursive(new DirectoryInfo(dir.ParsingName), false);
-                        }
-                        GC.WaitForPendingFinalizers();
-                        GC.Collect();
-                    }
-
-                }
-            }
-            else
-            {
-                oldbyteVlaue = 0;
-                oldbyteVlaues[_inputfile] = 0;
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                (Action)(() =>
-                {
-                    if (prFileProgress != null)
-                        prFileProgress.Value = 0;
-                }));
-                if (_infilesize == 0)
-                    CloseCurrentTask();
-            }
-        }
-
-        private void AsyncWriteFile()
-        {
-            //open output file set length to prevent growth and file fragmentation and close it.
-            //We have to do it this way so we can do unbuffered writes to it later
-            _outfile = new FileStream(_outputfile, FileMode.Create, FileAccess.Write, FileShare.None, CopyBufferSize,
-            FileOptions.WriteThrough);
-            _outfile.SetLength(_infilesize);
-            _outfile.Close();
-            _outfile.Dispose();
-            //_bytesRead2 = 0;
-            //open file for write unbuffered
-            _outfile = new FileStream(_outputfile, FileMode.Open, FileAccess.Write, FileShare.None, CopyBufferSize,
-            FileOptions.WriteThrough | FileFlagNoBuffering);
-            while (_totalbyteswritten < _infilesize - CopyBufferSize)
-            {
-                lock (Locker1)
-                {
-                    while (!_buffer2Dirty) Monitor.Wait(Locker1);
-
-                    Buffer.BlockCopy(Buffer2, 0, Buffer3, 0, CopyBufferSize);
-                    _buffer2Dirty = false;
-                    Monitor.PulseAll(Locker1);
-
-                }
-                _outfile.Write(Buffer3, 0, CopyBufferSize);
-                _totalbyteswritten = _totalbyteswritten + CopyBufferSize;
-                UpdateUI();
-            }
-            //close the file handle that was using unbuffered and write through
-            _outfile.Close();
-            _outfile.Dispose();
-            lock (Locker1)
-            {
-                while (!_buffer2Dirty) Monitor.Wait(Locker1);
-                //open file for write buffered We do this so we can write the tail of the file
-                //it is a cludge but hey you get what you get in C#
-                _outfile = new FileStream(_outputfile, FileMode.Open, FileAccess.Write, FileShare.None, CopyBufferSize,
-                FileOptions.WriteThrough);
-                //this should always be true but I haven't run all the edge cases yet
-                if (_buffer2Dirty)
-                {
-                    //go to the right position in the file
-                    if (_infilesize - _bytesRead2 >= 0)
-                    {
-                        _outfile.Seek(_infilesize - _bytesRead2, 0);
-                        //flush the last buffer syncronus and buffered.
-                        _outfile.Write(Buffer2, 0, _bytesRead2);
-                    }
-                }
-            }
-            UpdateUI();
-            //close the file handle that was using unbuffered and write through
-            _outfile.Close();
-            _outfile.Dispose();
-        }
-
-        public int CopyFileAsync(string inputfile, string outputfile, int buffersize = 16)
-        {
-            //set file name globals
-            _inputfile = inputfile;
-            _outputfile = outputfile;
-            //setup single buffer size, remember this will be x3.
-            CopyBufferSize = buffersize * 1024 * 1024;
-            //buffer read
-            Buffer1 = new byte[CopyBufferSize];
-            //buffer overlap
-            Buffer2 = new byte[CopyBufferSize];
-            //buffer write
-            Buffer3 = new byte[CopyBufferSize];
-            //get input file size for later use
-            var f = new FileInfo(_inputfile);
-            long s1 = f.Length;
-            _infilesize = s1;
-
-            //create read thread and start it.
-            var readfile = new Thread(AsyncReadFile) { Name = "ReadThread", IsBackground = false };
-            readfile.Start();
-
-            //create write thread and start it.
-            var writefile = new Thread(AsyncWriteFile) { Name = "WriteThread", IsBackground = false };
-            writefile.Start();
-
-            //wait for threads to finish
-            readfile.Join();
-            writefile.Join();
-            return 1;
-        } 
-        #endregion
-
-        private void UserControl_Unloaded_1(object sender, RoutedEventArgs e)
+        private void FO_Unloaded(object sender, RoutedEventArgs e)
         {
             if (this.IsAdminFO)
             {
