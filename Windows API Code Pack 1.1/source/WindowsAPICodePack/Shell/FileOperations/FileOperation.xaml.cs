@@ -321,7 +321,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 foreach (var file in collectionArray)
                 {
                     if (this.Cancel)
+                    {
+                        CloseCurrentTask();
                         break;
+                    }
                     switch (this.OperationType)
                     {
                         case OperationType.Copy:
@@ -683,6 +686,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             _block.Set();
             _block2.Set();
             this.Cancel = true;
+            //CopyThread.Abort();
+            //CloseCurrentTask();
             if (this.IsAdminFO)
             {
                 byte[] data2 = System.Text.Encoding.Unicode.GetBytes("COMMAND|STOP");
