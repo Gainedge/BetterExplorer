@@ -206,7 +206,7 @@ namespace FileOperation {
                         if (i - oldvalbefore > 0)
                             totaltransfered += (i - oldvalbefore);
 
-                        byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("{0}|{1}|{2}", i, l, totaltransfered));
+                        byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("{0}|{1}|{2}|{3}", i, l, totaltransfered, src));
                         WindowsAPI.SendStringMessage(MessageReceiverHandle, data, 0, data.Length);
                         if (i == l)
                         {

@@ -621,25 +621,79 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     var totalBytesTransferred = Convert.ToInt64(data[0]);
                     var totalFileSize = Convert.ToInt64(data[1]);
                     var totaltransfered = Convert.ToInt64(data[2]);
-                    if (totalBytesTransferred > 0)
+                    var src = data[3].ToString();
+                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                            (Action)(() =>
+                            {
+                                lblFileName.Text = System.IO.Path.GetFileNameWithoutExtension(src);
+                            }));
+
+
+                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                    (Action)(() =>
                     {
                         prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
-                        if (totalBytesTransferred == totalFileSize)
-                        {
-                            procCompleted++;
-                        }
-                        prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
-                        lblProgress.Text = Math.Round((totaltransfered / (decimal)totalSize) * 100M, 2).ToString("F2") + " % complete"; //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
-                        if (totaltransfered == (long)totalSize)
-                        {
-                            CloseCurrentTask();
-                        }
-                    }
-                    else
+                    }));
+                    if (totalBytesTransferred == totalFileSize)
                     {
-                        oldbyteVlaue = 0;
-                        if (prFileProgress != null)
-                            prFileProgress.Value = 0;
+                        procCompleted++;
+                        //if (OperationType == OperationType.Move)
+                        //{
+                        //    r.Close();
+                        //    r.Dispose();
+                        //    FileInfo fi = new FileInfo(src);
+                        //    if (fi.IsReadOnly)
+                        //        fi.IsReadOnly = false;
+                        //    fi.Delete();
+                        //}
+                    }
+                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                    (Action)(() =>
+                    {
+                        prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
+                    }));
+                    var dt = DateTime.Now;
+                    var secs = dt.Subtract(LastMeasuredTime).Seconds;
+                    if (secs >= 2)
+                    {
+                        var diff = totaltransfered - lastTotalTransfered;
+                        var speed = diff / secs;
+                        var speedInMB = WindowsAPI.StrFormatByteSize(speed);
+                        LastMeasuredTime = DateTime.Now;
+                        lastTotalTransfered = totaltransfered;
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                        (Action)(() =>
+                        {
+                            lblSpeed.Text = speedInMB + "/s";
+                        }));
+                    }
+                    var et = DateTime.Now.Subtract(OperationStartTime);
+                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                    (Action)(() =>
+                    {
+                        lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
+                        try
+                        {
+                            lblTimeLeft.Text = new DateTime((TimeSpan.FromSeconds((int)(et.TotalSeconds / prOverallProgress.Value * (prOverallProgress.Maximum - prOverallProgress.Value)))).Ticks).ToString("HH:mm:ss");
+                        }
+                        catch (Exception)
+                        {
+
+                        }
+                    }));
+
+
+
+                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                    (Action)(() =>
+                    {
+
+                        lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2)); //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
+                    }));
+
+                    if (totaltransfered == (long)totalSize)
+                    {
+                        CloseCurrentTask();
                     }
                 }
             }));
