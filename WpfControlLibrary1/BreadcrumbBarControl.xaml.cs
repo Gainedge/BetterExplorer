@@ -16,467 +16,462 @@ using System.Threading;
 
 namespace BetterExplorerControls
 {
-    /// <summary>
-    /// Interaction logic for BreadcrumbBarControl.xaml
-    /// </summary>
-    public partial class BreadcrumbBarControl : UserControl
-    {
-        public BreadcrumbBarControl()
-        {
-            InitializeComponent();
-        }
+	/// <summary>
+	/// Interaction logic for BreadcrumbBarControl.xaml
+	/// </summary>
+	public partial class BreadcrumbBarControl : UserControl
+	{
+		public BreadcrumbBarControl()
+		{
+			InitializeComponent();
+		}
 
-        private List<string> hl = new List<string>();
-
-
-        private void Grid_MouseEnter(object sender, MouseEventArgs e)
-        {
-            ddGrid.Background = new SolidColorBrush(Colors.PowderBlue);
-            //ddBorder.BorderBrush = new SolidColorBrush(Colors.LightBlue);
-        }
-
-        private void Grid_MouseLeave(object sender, MouseEventArgs e)
-        {
-            ddGrid.Background = new SolidColorBrush(Colors.White);
-            //ddBorder.BorderBrush = new SolidColorBrush(Colors.White);
-        }
+		private List<string> hl = new List<string>();
 
 
-        private ContextMenu CreateHistoryMenu()
-        {
-            ContextMenu hm = new ContextMenu();
+		private void Grid_MouseEnter(object sender, MouseEventArgs e)
+		{
+			ddGrid.Background = new SolidColorBrush(Colors.PowderBlue);
+			//ddBorder.BorderBrush = new SolidColorBrush(Colors.LightBlue);
+		}
 
-            foreach (string item in hl)
-            {
-                MenuItem g = new MenuItem();
-                g.Header = item;
-                g.Width = grdMain.ActualWidth - 4;
-                g.Click += new RoutedEventHandler(g_Click);
-                hm.Items.Add(g);
-            }
+		private void Grid_MouseLeave(object sender, MouseEventArgs e)
+		{
+			ddGrid.Background = new SolidColorBrush(Colors.White);
+			//ddBorder.BorderBrush = new SolidColorBrush(Colors.White);
+		}
 
-            return hm;
-        }
 
-        void g_Click(object sender, RoutedEventArgs e)
-        {
-            HistoryCombo.Text = (string)(sender as MenuItem).Header;
-            //throw new NotImplementedException();
-        }
-        ContextMenu mnu;
-        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            ddGrid.Background = new SolidColorBrush(Colors.SkyBlue);
-            //ddBorder.BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue);
-            EnterEditMode();
-            mnu = CreateHistoryMenu();
-            mnu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-            mnu.PlacementTarget = this;
-            mnu.IsOpen = true;
-        }
+		private ContextMenu CreateHistoryMenu()
+		{
+			ContextMenu hm = new ContextMenu();
 
-        private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            e.Handled = true;
-            ddGrid.Background = new SolidColorBrush(Colors.PowderBlue);
-            //ddBorder.BorderBrush = new SolidColorBrush(Colors.LightBlue);
-        }
+			foreach (string item in hl)
+			{
+				MenuItem g = new MenuItem();
+				g.Header = item;
+				g.Width = grdMain.ActualWidth - 4;
+				g.Click += new RoutedEventHandler(g_Click);
+				hm.Items.Add(g);
+			}
 
-        private BreadcrumbBarItem furthestrightitem;
+			return hm;
+		}
 
-        private bool writetohistory = true;
+		void g_Click(object sender, RoutedEventArgs e)
+		{
+			HistoryCombo.Text = (string)(sender as MenuItem).Header;
+			//throw new NotImplementedException();
+		}
+		ContextMenu mnu;
+		private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			ddGrid.Background = new SolidColorBrush(Colors.SkyBlue);
+			//ddBorder.BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue);
+			EnterEditMode();
+			mnu = CreateHistoryMenu();
+			mnu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+			mnu.PlacementTarget = this;
+			mnu.IsOpen = true;
+		}
 
-        public void ClearHistory()
-        {
-            hl.Clear();
-        }
+		private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			e.Handled = true;
+			ddGrid.Background = new SolidColorBrush(Colors.PowderBlue);
+			//ddBorder.BorderBrush = new SolidColorBrush(Colors.LightBlue);
+		}
 
-        public List<string> HistoryItems
-        {
-            get
-            {
-                List<string> hilist = new List<string>();
+		private BreadcrumbBarItem furthestrightitem;
 
-                foreach (string item in hl)
-                {
-                    hilist.Add(item);
-                }
+		private bool writetohistory = true;
 
-                return hilist;
-            }
-            set
-            {
-                foreach (string item in value)
-                {
-                    hl.Add(item);
-                }
-            }
-        }
+		public void ClearHistory()
+		{
+			hl.Clear();
+		}
 
-        private DragEventHandler de;
-        private DragEventHandler dl;
-        private DragEventHandler dm;
-        private DragEventHandler dp;
+		public List<string> HistoryItems
+		{
+			get
+			{
+				List<string> hilist = new List<string>();
 
-        public delegate void PathEventHandler(object sender, PathEventArgs e);
+				foreach (string item in hl)
+				{
+					hilist.Add(item);
+				}
 
-        // An event that clients can use to be notified whenever the
-        // elements of the list change:
-        public event PathEventHandler NavigateRequested;
+				return hilist;
+			}
+			set
+			{
+				foreach (string item in value)
+				{
+					hl.Add(item);
+				}
+			}
+		}
 
-        // Invoke the Changed event; called whenever list changes:
-        protected virtual void OnNavigateRequested(PathEventArgs e)
-        {
-            if (NavigateRequested != null)
-                NavigateRequested(this, e);
-        }
+		private DragEventHandler de;
+		private DragEventHandler dl;
+		private DragEventHandler dm;
+		private DragEventHandler dp;
 
-        public void SetDragHandlers(DragEventHandler dragenter, DragEventHandler dragleave, DragEventHandler dragover, DragEventHandler drop)
-        {
-            de = dragenter;
-            dl = dragleave;
-            dm = dragover;
-            dp = drop;
-        }
+		public delegate void PathEventHandler(object sender, PathEventArgs e);
 
-        public bool RecordHistory
-        {
-            get
-            {
-                return writetohistory;
-            }
-            set
-            {
-                writetohistory = value;
-            }
-        }
+		// An event that clients can use to be notified whenever the
+		// elements of the list change:
+		public event PathEventHandler NavigateRequested;
 
-        private List<ShellObject> GetPaths(ShellObject currloc)
-        {
-            List<ShellObject> res = new List<ShellObject>();
-            ShellObject subject = currloc;
+		// Invoke the Changed event; called whenever list changes:
+		protected virtual void OnNavigateRequested(PathEventArgs e)
+		{
+			if (NavigateRequested != null)
+				NavigateRequested(this, e);
+		}
 
-            bool apf = false;
+		public void SetDragHandlers(DragEventHandler dragenter, DragEventHandler dragleave, DragEventHandler dragover, DragEventHandler drop)
+		{
+			de = dragenter;
+			dl = dragleave;
+			dm = dragover;
+			dp = drop;
+		}
 
-            while (apf == false)
-            {
-                res.Add(subject);
-                if (subject.Parent != null)
-                {
-                    subject = subject.Parent;
-                }
-                else
-                {
-                    apf = true;
-                }
-            }
+		public bool RecordHistory
+		{
+			get
+			{
+				return writetohistory;
+			}
+			set
+			{
+				writetohistory = value;
+			}
+		}
 
-            return res;
-        }
+		private List<ShellObject> GetPaths(ShellObject currloc)
+		{
+			List<ShellObject> res = new List<ShellObject>();
+			ShellObject subject = currloc;
 
-        public void LoadDirectory(ShellObject currloc, bool loadDragEvents = true)
-        {
-            this.elPanel.Children.Clear();
-            GetBreadCrumbItems(GetPaths(currloc));
-            if (loadDragEvents == true)
-            {
-                foreach (BreadcrumbBarItem item in this.elPanel.Children)
-                {
-                    item.AllowDrop = true;
-                    item.DragEnter += de;
-                    item.DragLeave += dl;
-                    item.DragOver += dm;
-                    item.Drop += dp;
-                }
-            }
-        }
+			bool apf = false;
 
-        public ShellObject GetDirectoryAtPoint(Point pt)
-        {
-            try
-            {
-                return ((BreadcrumbBarItem)elPanel.InputHitTest(pt)).ShellObject;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
+			while (apf == false)
+			{
+				res.Add(subject);
+				if (subject.Parent != null)
+				{
+					subject = subject.Parent;
+				}
+				else
+				{
+					apf = true;
+				}
+			}
 
-        public void UpdateLastItem(int CurLocationCount)
-        {
-            BreadcrumbBarItem lastitem =
-                elPanel.Children[elPanel.Children.Count - 1] as BreadcrumbBarItem;
-            lastitem.SetChildren(CurLocationCount > 0);
-        }
+			return res;
+		}
 
-        private void GetBreadCrumbItems(List<ShellObject> items)
-        {
-            ShellObject lastmanstanding = items[0];
-            items.Reverse();
-            
+		public void LoadDirectory(ShellObject currloc, bool loadDragEvents = true)
+		{
+			this.elPanel.Children.Clear();
+			GetBreadCrumbItems(GetPaths(currloc));
+			if (loadDragEvents == true)
+			{
+				foreach (BreadcrumbBarItem item in this.elPanel.Children)
+				{
+					item.AllowDrop = true;
+					item.DragEnter += de;
+					item.DragLeave += dl;
+					item.DragOver += dm;
+					item.Drop += dp;
+				}
+			}
+		}
 
-            foreach (ShellObject thing in items)
-            {
-                bool isSearch = false;
-                try 
-	            {
-                    isSearch = thing.IsSearchFolder;
-	            }
-	            catch 
-	            {
-		            isSearch = false;
-	            }
-                BreadcrumbBarItem duh = new BreadcrumbBarItem();
-                if (!isSearch)
-                {
-                    duh.LoadDirectory(thing);
-                    
-                }
-                else
-                {
-                    thing.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                    thing.Thumbnail.CurrentSize = new Size(16, 16);
-                    duh.pathName.Text = thing.GetDisplayName(DisplayNameType.Default);
-                    duh.PathImage.Source = thing.Thumbnail.BitmapSource;
-                    duh.MenuBorder.Visibility = System.Windows.Visibility.Collapsed;
-                    duh.grid1.Visibility = System.Windows.Visibility.Collapsed;
-                    
-                }
+		public ShellObject GetDirectoryAtPoint(Point pt)
+		{
+			try
+			{
+				return ((BreadcrumbBarItem)elPanel.InputHitTest(pt)).ShellObject;
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
 
-                
-                
-                duh.NavigateRequested += new BreadcrumbBarItem.PathEventHandler(duh_NavigateRequested);
+		public void UpdateLastItem(int CurLocationCount)
+		{
+			BreadcrumbBarItem lastitem =
+					elPanel.Children[elPanel.Children.Count - 1] as BreadcrumbBarItem;
+			lastitem.SetChildren(CurLocationCount > 0);
+		}
 
-                this.elPanel.Children.Add(duh);
-                
-                if (thing == lastmanstanding)
-                {
-                    furthestrightitem = duh;
-                    duh.BringIntoView();
-                }
-               
-            }
-        }
+		private void GetBreadCrumbItems(List<ShellObject> items)
+		{
+			ShellObject lastmanstanding = items[0];
+			items.Reverse();
 
-        void duh_MouseDoubleClick(object sender, EventArgs e)
-        {
+			foreach (ShellObject thing in items)
+			{
+				bool isSearch = false;
+				try
+				{
+					isSearch = thing.IsSearchFolder;
+				}
+				catch
+				{
+					isSearch = false;
+				}
+				BreadcrumbBarItem duh = new BreadcrumbBarItem();
+				if (!isSearch)
+				{
+					duh.LoadDirectory(thing);
+				}
+				else
+				{
+					thing.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+					thing.Thumbnail.CurrentSize = new Size(16, 16);
+					duh.pathName.Text = thing.GetDisplayName(DisplayNameType.Default);
+					duh.PathImage.Source = thing.Thumbnail.BitmapSource;
+					duh.MenuBorder.Visibility = System.Windows.Visibility.Collapsed;
+					duh.grid1.Visibility = System.Windows.Visibility.Collapsed;
+				}
 
-        }
+				duh.NavigateRequested += new BreadcrumbBarItem.PathEventHandler(duh_NavigateRequested);
 
-        private string FixShellPathsInEditMode(string LastPath)
-        {
-          string LLastPath = LastPath;
-          Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
-                  (ThreadStart)(() => {
-                                                    
-                    foreach (ShellObject item in KnownFolders.All) {
-                      LLastPath = LLastPath.Replace(item.ParsingName, item.GetDisplayName(DisplayNameType.Default));
-                    }
-                  }));
-            return LLastPath.Replace(".library-ms","");
-        }
+				this.elPanel.Children.Add(duh);
 
-        void duh_NavigateRequested(object sender, PathEventArgs e)
-        {
-            OnNavigateRequested(e);
-            LastPath = e.ShellObject.ParsingName;
-        }
+				if (thing == lastmanstanding)
+				{
+					furthestrightitem = duh;
+					duh.BringIntoView();
+				}
+			}
+		}
 
-        public string LastPath = "";
+		void duh_MouseDoubleClick(object sender, EventArgs e)
+		{
+		}
 
-        private void HistoryCombo_GotFocus(object sender, RoutedEventArgs e)
-        {
-            e.Handled = true;
-            FocusManager.SetIsFocusScope(this, true);
-            elPanel.Visibility = System.Windows.Visibility.Collapsed;
-            HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
-        }
+		private string FixShellPathsInEditMode(string LastPath)
+		{
+			string LLastPath = LastPath;
+			Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
+							(ThreadStart)(() =>
+							{
 
-        private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e)
-        {
+								foreach (ShellObject item in KnownFolders.All)
+								{
+									LLastPath = LLastPath.Replace(item.ParsingName, item.GetDisplayName(DisplayNameType.Default));
+								}
+							}));
+			return LLastPath.Replace(".library-ms", "");
+		}
 
-            e.Handled = true;
-            ExitEditMode();
-        }
+		void duh_NavigateRequested(object sender, PathEventArgs e)
+		{
+			OnNavigateRequested(e);
+			LastPath = e.ShellObject.ParsingName;
+		}
 
-        private void HistoryCombo_MouseLeave(object sender, MouseEventArgs e)
-        {
+		public string LastPath = "";
 
-        }
+		private void HistoryCombo_GotFocus(object sender, RoutedEventArgs e)
+		{
+			e.Handled = true;
+			FocusManager.SetIsFocusScope(this, true);
+			elPanel.Visibility = System.Windows.Visibility.Collapsed;
+			HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
+		}
 
-        private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            //e.Handled = true;
-            //elPanel.Visibility = System.Windows.Visibility.Collapsed;
-            //if (LastPath != "")
-            //{
-            //    HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
-            //}
-            EnterEditMode();
-        }
+		private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e)
+		{
 
-        private void stackPanel1_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            
-        }
+			e.Handled = true;
+			ExitEditMode();
+		}
 
-        public bool IsInEditMode
-        {
-            get
-            {
-                return elPanel.Visibility != System.Windows.Visibility.Visible;
-            }
-        }
+		private void HistoryCombo_MouseLeave(object sender, MouseEventArgs e)
+		{
 
-        public void ExitEditMode()
-        {
-            elPanel.Visibility = System.Windows.Visibility.Visible;
-            //if (HistoryCombo.Text != "")
-            //{
-            //    LastPath = HistoryCombo.Text;
-            //}
+		}
 
-            HistoryCombo.Text = "";
-            elPanel.Focusable = true;
-            elPanel.IsHitTestVisible = false;
-            elPanel.Focus();
-            elPanel.Focusable = false;
-            elPanel.IsHitTestVisible = true;
-        }
+		private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e)
+		{
+			//e.Handled = true;
+			//elPanel.Visibility = System.Windows.Visibility.Collapsed;
+			//if (LastPath != "")
+			//{
+			//    HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
+			//}
+			EnterEditMode();
+		}
 
-        public void EnterEditMode()
-        {
-            elPanel.Visibility = System.Windows.Visibility.Collapsed;
-            if (LastPath != "")
-            {
-                HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
-            }
-            else
-            {
-                HistoryCombo.Text = furthestrightitem.ShellObject.ParsingName; //FixShellPathsInEditMode(furthestrightitem.ShellObject.ParsingName);
-            }
-            HistoryCombo.Focus();
-        }
+		private void stackPanel1_MouseUp(object sender, MouseButtonEventArgs e)
+		{
 
-        private void HistoryCombo_KeyUp(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;
-            if (e.Key == Key.Enter)
-            {
-                try
-                {
-                    PathEventArgs ea = new PathEventArgs(ShellObject.FromParsingName(HistoryCombo.Text));
-                    OnNavigateRequested(ea);
-                    if (writetohistory == true)
-                    {
-                        if (hl.Contains(HistoryCombo.Text) == false)
-                        {
-                            hl.Add(HistoryCombo.Text);
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    
-                    // For now just handle the exception. later will be fixed to navigate correct path.
-                }
-            }
-            if (e.Key == Key.Escape)
-            {
+		}
 
-                ExitEditMode();
-            }
-        }
+		public bool IsInEditMode
+		{
+			get
+			{
+				return elPanel.Visibility != System.Windows.Visibility.Visible;
+			}
+		}
 
-        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            try
-            {
-                furthestrightitem.BringIntoView();
-            }
-            catch (NullReferenceException)
-            {
-                
-                //throw;
-            }
-        }
+		public void ExitEditMode()
+		{
+			elPanel.Visibility = System.Windows.Visibility.Visible;
+			//if (HistoryCombo.Text != "")
+			//{
+			//    LastPath = HistoryCombo.Text;
+			//}
 
-        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            //MessageBox.Show(e.Delta.ToString(), "Mouse Wheel Change");
-            //itemholder.ScrollToHorizontalOffset(0);
-        }
+			HistoryCombo.Text = "";
+			elPanel.Focusable = true;
+			elPanel.IsHitTestVisible = false;
+			elPanel.Focus();
+			elPanel.Focusable = false;
+			elPanel.IsHitTestVisible = true;
+		}
 
-        private void HistoryCombo_DropDownOpened(object sender, EventArgs e)
-        {
-            HistoryCombo.Focus();
-            HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
-            elPanel.Visibility = System.Windows.Visibility.Collapsed;
-        }
+		public void EnterEditMode()
+		{
+			elPanel.Visibility = System.Windows.Visibility.Collapsed;
+			if (LastPath != "")
+			{
+				HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
+			}
+			else
+			{
+				HistoryCombo.Text = furthestrightitem.ShellObject.ParsingName; //FixShellPathsInEditMode(furthestrightitem.ShellObject.ParsingName);
+			}
+			HistoryCombo.Focus();
+		}
 
-        private void HistoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            HistoryCombo.Focus();
-            elPanel.Visibility = System.Windows.Visibility.Collapsed;
-        }
+		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e)
+		{
+			e.Handled = true;
+			if (e.Key == Key.Enter)
+			{
+				try
+				{
+					PathEventArgs ea = new PathEventArgs(ShellObject.FromParsingName(HistoryCombo.Text));
+					OnNavigateRequested(ea);
+					if (writetohistory == true)
+					{
+						if (hl.Contains(HistoryCombo.Text) == false)
+						{
+							hl.Add(HistoryCombo.Text);
+						}
+					}
+				}
+				catch (Exception)
+				{
 
-        private void HistoryCombo_TextChanged(object sender, TextChangedEventArgs e)
-        {
-          //if (IsInEditMode) {
-          //  hl = new List<string>(HistoryItems.Where(c => c.Contains(HistoryCombo.Text)).ToArray());
-          //  if (hl.Count > 0) {
-          //    mnu = new System.Windows.Controls.ContextMenu();
-          //    foreach (var item in hl) {
-          //      mnu.Items.Add(item);
-          //    }
+					// For now just handle the exception. later will be fixed to navigate correct path.
+				}
+			}
+			if (e.Key == Key.Escape)
+			{
 
-          //    mnu.IsOpen = true;
-          //  }
-          //}
-         //HistoryItems = new List<string>(HistoryItems.Where(c => c.Contains(HistoryCombo.Text)).ToArray());
-         // e.Handled = true;
-          //e.Handled = true;
-          //  if (IsInEditMode)
-          //  {
-          //      TextChange[] tc = e.Changes.ToArray();
-          //      if (tc[0].RemovedLength == 0 || tc[0].AddedLength > 0)
-          //      {
-          //          foreach (string item in HistoryItems)
-          //          {
-          //              if (item.ToLowerInvariant().StartsWith(HistoryCombo.Text.ToLowerInvariant()))
-          //              {
-          //                  int SelStart = HistoryCombo.Text.Length;
-          //                  HistoryCombo.Text = item;
-          //                  HistoryCombo.SelectionStart = SelStart;
-          //                  HistoryCombo.SelectionLength = item.Length - SelStart;
-          //              }
-          //          } 
-          //      }
-          //  }
-        }
+				ExitEditMode();
+			}
+		}
 
-        private void HistoryCombo_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            e.Handled = true;
-            try
-            {
-                if (!mnu.IsOpen)
-                {
-                    ExitEditMode();
-                }
-            }
-            catch
-            {
+		private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+		{
+			try
+			{
+				furthestrightitem.BringIntoView();
+			}
+			catch (NullReferenceException)
+			{
 
-            }
-            
-        }
+				//throw;
+			}
+		}
 
-        private void HistoryCombo_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            e.Handled = true;
-        }
+		private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+		{
+			//MessageBox.Show(e.Delta.ToString(), "Mouse Wheel Change");
+			//itemholder.ScrollToHorizontalOffset(0);
+		}
 
-    }
+		private void HistoryCombo_DropDownOpened(object sender, EventArgs e)
+		{
+			HistoryCombo.Focus();
+			HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
+			elPanel.Visibility = System.Windows.Visibility.Collapsed;
+		}
+
+		private void HistoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			HistoryCombo.Focus();
+			elPanel.Visibility = System.Windows.Visibility.Collapsed;
+		}
+
+		private void HistoryCombo_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			//if (IsInEditMode) {
+			//  hl = new List<string>(HistoryItems.Where(c => c.Contains(HistoryCombo.Text)).ToArray());
+			//  if (hl.Count > 0) {
+			//    mnu = new System.Windows.Controls.ContextMenu();
+			//    foreach (var item in hl) {
+			//      mnu.Items.Add(item);
+			//    }
+
+			//    mnu.IsOpen = true;
+			//  }
+			//}
+			//HistoryItems = new List<string>(HistoryItems.Where(c => c.Contains(HistoryCombo.Text)).ToArray());
+			// e.Handled = true;
+			//e.Handled = true;
+			//  if (IsInEditMode)
+			//  {
+			//      TextChange[] tc = e.Changes.ToArray();
+			//      if (tc[0].RemovedLength == 0 || tc[0].AddedLength > 0)
+			//      {
+			//          foreach (string item in HistoryItems)
+			//          {
+			//              if (item.ToLowerInvariant().StartsWith(HistoryCombo.Text.ToLowerInvariant()))
+			//              {
+			//                  int SelStart = HistoryCombo.Text.Length;
+			//                  HistoryCombo.Text = item;
+			//                  HistoryCombo.SelectionStart = SelStart;
+			//                  HistoryCombo.SelectionLength = item.Length - SelStart;
+			//              }
+			//          } 
+			//      }
+			//  }
+		}
+
+		private void HistoryCombo_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+		{
+			e.Handled = true;
+			try
+			{
+				if (!mnu.IsOpen)
+				{
+					ExitEditMode();
+				}
+			}
+			catch
+			{
+
+			}
+
+		}
+
+		private void HistoryCombo_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+		{
+			e.Handled = true;
+		}
+
+	}
 }
