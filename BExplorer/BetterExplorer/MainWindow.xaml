@@ -27,7 +27,7 @@
                      WindowState="Maximized"
                      d:DesignHeight="768"
                      d:DesignWidth="852"
-                     mc:Ignorable="d" SizeChanged="RibbonWindow_SizeChanged_1">
+                     mc:Ignorable="d" SizeChanged="RibbonWindow_SizeChanged_1" xmlns:my="clr-namespace:System;assembly=mscorlib">
 
     <Ribbon:RibbonWindow.Resources>
         <ResourceDictionary>
@@ -214,7 +214,7 @@
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
-        </ResourceDictionary>
+		</ResourceDictionary>
     </Ribbon:RibbonWindow.Resources>
 
     <Grid x:Name="grid1">
@@ -2648,11 +2648,11 @@
                 Grid.Row="1"
                 Width="21"
                 Height="21"
-                Margin="88,8,0,0"
+                Margin="88,6,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Click="btnUpLevel_Click"
-                GotFocus="TheStatusBar_GotFocus">
+                GotFocus="TheStatusBar_GotFocus" ToolTip="{StaticResource txtLevelUp}">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Grid>
@@ -2713,7 +2713,7 @@
                     Background="{x:Null}"
                     BorderBrush="#70000000"
                     Click="leftNavBut_Click"
-                    Content="Left">
+                    Content="Left" ToolTip="{StaticResource txtBack}">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Grid>
@@ -2760,7 +2760,7 @@
                     Margin="30,2,0,2"
                     HorizontalAlignment="Left"
                     Background="{x:Null}"
-                    Click="rightNavBut_Click">
+                    Click="rightNavBut_Click" ToolTip="{StaticResource txtForward}">
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Grid>
