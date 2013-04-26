@@ -343,4 +343,5 @@
   <system:String x:Key="txtBack">Back</system:String>
   <system:String x:Key="txtForward">Forward</system:String>
 	<system:String x:Key="txtLevelUp">Level Up</system:String>
+	<system:String x:Key="txtSearchLabel">Search:</system:String>
 </ResourceDictionary>

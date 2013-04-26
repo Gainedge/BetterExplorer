@@ -343,5 +343,5 @@
 	<system:String x:Key="txtBack">Назад</system:String>
 	<system:String x:Key="txtForward">Вперёд</system:String>
 	<system:String x:Key="txtLevelUp">На уровень выше</system:String>
-
+	<system:String x:Key="txtSearchLabel">Поиск:</system:String>
 </ResourceDictionary>
