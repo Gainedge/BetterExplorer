@@ -27,7 +27,7 @@
                      WindowState="Maximized"
                      d:DesignHeight="768"
                      d:DesignWidth="852"
-                     mc:Ignorable="d" SizeChanged="RibbonWindow_SizeChanged_1" xmlns:my="clr-namespace:System;assembly=mscorlib">
+                     mc:Ignorable="d" SizeChanged="RibbonWindow_SizeChanged_1">
 
     <Ribbon:RibbonWindow.Resources>
         <ResourceDictionary>
