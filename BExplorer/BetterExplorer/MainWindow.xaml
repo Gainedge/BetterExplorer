@@ -2648,7 +2648,7 @@
                 Grid.Row="1"
                 Width="21"
                 Height="21"
-                Margin="88,6,0,0"
+                Margin="88,7,0,0"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Top"
                 Click="btnUpLevel_Click"
