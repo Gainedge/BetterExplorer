@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // 05/05/08
 // Updated 04/18/2010 for x64
 
-namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
+namespace FileOperation
 {
     /// <summary>
     /// Send files directly to the recycle bin.

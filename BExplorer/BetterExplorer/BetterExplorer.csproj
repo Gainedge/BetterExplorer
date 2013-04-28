@@ -211,6 +211,12 @@
     <Compile Include="HelperClasses\FolderStructForSize.cs" />
     <Compile Include="IconClasses\IconUtilities.cs" />
     <Compile Include="HelperClasses\PathStringCombiner.cs" />
+    <Compile Include="MessageReceiver.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageReceiver.Designer.cs">
+      <DependentUpon>MessageReceiver.cs</DependentUpon>
+    </Compile>
     <Compile Include="PieChart\BaseWPFHelpers.cs" />
     <Compile Include="PieChart\PieChart\ColourConverter.cs" />
     <Compile Include="PieChart\PieChart\IColorSelector.cs" />
@@ -550,6 +556,9 @@
     <EmbeddedResource Include="ItemPop.resx">
       <DependentUpon>ItemPop.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MessageReceiver.resx">
+      <DependentUpon>MessageReceiver.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PreviewMedia.resx">
       <DependentUpon>PreviewMedia.cs</DependentUpon>
     </EmbeddedResource>
@@ -846,6 +855,10 @@
     <Resource Include="Images\flipx32.png" />
     <Resource Include="Images\flipy16.png" />
     <Resource Include="Images\flipy32.png" />
+    <Resource Include="Images\RecycleBinEmpty16.png" />
+    <Resource Include="Images\RecycleBinEmpty32.png" />
+    <Resource Include="Images\RecycleBinFull16.png" />
+    <Resource Include="Images\RecycleBinFull32.png" />
     <Content Include="Ionic.Zip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -990,7 +1003,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

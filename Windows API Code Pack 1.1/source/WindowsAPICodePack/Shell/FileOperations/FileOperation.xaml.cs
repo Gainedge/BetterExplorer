@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -116,7 +117,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
         }
 
         
-        private void StartAdminProcess(List<Tuple<String, String, String, Int32>> CopyItems, List<CollisionInfo> colissions, bool isMove)
+        private void StartAdminProcess(List<Tuple<String, String, String, Int32>> CopyItems, List<CollisionInfo> colissions, bool isMove, bool isDelete = false, bool isDeleteToRB = false)
         {
             if (IsNeedAdminFO)
             {
@@ -158,32 +159,50 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     isProcess = true;
                     _block2.WaitOne();
                     CorrespondingWinHandle = WindowsAPI.FindWindow(null, "FO" + this.Handle.ToString());
-                    for (int j = 0; j < CopyItems.Count; j++)
+                    if (!isDelete)
                     {
-                        var currentItem = colissions.Where(c => c.itemPath == CopyItems[j].Item1).SingleOrDefault();
-                        var destPath = "";
-                        if (currentItem != null)
+                        for (int j = 0; j < CopyItems.Count; j++)
                         {
-                            if (!currentItem.IsCheckedC && currentItem.IsChecked)
+                            var currentItem = colissions.Where(c => c.itemPath == CopyItems[j].Item1).SingleOrDefault();
+                            var destPath = "";
+                            if (currentItem != null)
                             {
-                                destPath = CopyItems[j].Item2;
+                                if (!currentItem.IsCheckedC && currentItem.IsChecked)
+                                {
+                                    destPath = CopyItems[j].Item2;
+                                }
+                                else if (currentItem.IsCheckedC && currentItem.IsChecked)
+                                {
+                                    destPath = CopyItems[j].Item3;
+                                }
                             }
-                            else if (currentItem.IsCheckedC && currentItem.IsChecked)
+                            else
                             {
                                 destPath = CopyItems[j].Item3;
                             }
-                        }
-                        else
-                        {
-                            destPath = CopyItems[j].Item3;
-                        }
-                        byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("INPUT|{0}|{1}|{2}", CopyItems[j].Item1, destPath, CopyItems[j].Item4));
-                        WindowsAPI.SendStringMessage(CorrespondingWinHandle, data, 0, data.Length);
+                            byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("INPUT|{0}|{1}|{2}", CopyItems[j].Item1, destPath, CopyItems[j].Item4));
+                            WindowsAPI.SendStringMessage(CorrespondingWinHandle, data, 0, data.Length);
 
-                        if (j == CopyItems.Count - 1)
+                            if (j == CopyItems.Count - 1)
+                            {
+                                byte[] data2 = Encoding.Unicode.GetBytes(isMove ? "END FO INIT|MOVE" : "END FO INIT|COPY");
+                                WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int j = 0; j < CopyItems.Count; j++)
                         {
-                            byte[] data2 = Encoding.Unicode.GetBytes(isMove ? "END FO INIT|MOVE" : "END FO INIT|COPY");
-                            WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
+
+                            byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("INPUT|{0}|{1}|{2}", CopyItems[j].Item1, isDeleteToRB?"DeleteTORB":String.Empty, 0));
+                            WindowsAPI.SendStringMessage(CorrespondingWinHandle, data, 0, data.Length);
+
+                            if (j == CopyItems.Count - 1)
+                            {
+                                byte[] data2 = Encoding.Unicode.GetBytes("END FO INIT|DELETE");
+                                WindowsAPI.SendStringMessage(CorrespondingWinHandle, data2, 0, data2.Length);
+                            }
                         }
                     }
                 }
@@ -473,7 +492,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                             if (itemInfo.IsReadOnly)
                                 File.SetAttributes(item, FileAttributes.Normal);
                             if (this.DeleteToRB)
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(item, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                RecycleBin.SendSilent(item);
                             else
                                 File.Delete(item);
                             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
@@ -486,7 +505,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                         {
                             if (this.DeleteToRB)
                             {
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(item, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                RecycleBin.SendSilent(item);
                             }
                             else
                             {
@@ -498,7 +517,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     }
                     catch (UnauthorizedAccessException)
                     {
-
+                        IsNeedAdminFO = true;
+                        break;
                     }
                     catch (Exception)
                     {
@@ -509,6 +529,14 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                              prOverallProgress.Foreground = Brushes.Red;
                          }));
                         _block.Reset();
+                    }
+                }
+                if (IsNeedAdminFO)
+                {
+                    if (OperationType == FileOperations.OperationType.Delete)
+                    {
+                        var CopyItemsForDelete = this.SourceItemsCollection.Select(c => new Tuple<string, string, string, int>(c, String.Empty, string.Empty, 0)).ToList();
+                        StartAdminProcess(CopyItemsForDelete, null, false, true, this.DeleteToRB);
                     }
                 }
                 if (!isError)
@@ -628,73 +656,113 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                 lblFileName.Text = System.IO.Path.GetFileNameWithoutExtension(src);
                             }));
 
-
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                    (Action)(() =>
+                    if (OperationType != FileOperations.OperationType.Delete)
                     {
-                        prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
-                    }));
-                    if (totalBytesTransferred == totalFileSize)
-                    {
-                        procCompleted++;
-                        //if (OperationType == OperationType.Move)
-                        //{
-                        //    r.Close();
-                        //    r.Dispose();
-                        //    FileInfo fi = new FileInfo(src);
-                        //    if (fi.IsReadOnly)
-                        //        fi.IsReadOnly = false;
-                        //    fi.Delete();
-                        //}
-                    }
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                    (Action)(() =>
-                    {
-                        prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
-                    }));
-                    var dt = DateTime.Now;
-                    var secs = dt.Subtract(LastMeasuredTime).Seconds;
-                    if (secs >= 2)
-                    {
-                        var diff = totaltransfered - lastTotalTransfered;
-                        var speed = diff / secs;
-                        var speedInMB = WindowsAPI.StrFormatByteSize(speed);
-                        LastMeasuredTime = DateTime.Now;
-                        lastTotalTransfered = totaltransfered;
                         Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                         (Action)(() =>
                         {
-                            lblSpeed.Text = speedInMB + "/s";
+                            prFileProgress.Value = Math.Round((double)(totalBytesTransferred * 100 / totalFileSize), 0);
                         }));
-                    }
-                    var et = DateTime.Now.Subtract(OperationStartTime);
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                    (Action)(() =>
-                    {
-                        lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
-                        try
+                        if (totalBytesTransferred == totalFileSize)
                         {
-                            lblTimeLeft.Text = new DateTime((TimeSpan.FromSeconds((int)(et.TotalSeconds / prOverallProgress.Value * (prOverallProgress.Maximum - prOverallProgress.Value)))).Ticks).ToString("HH:mm:ss");
+                            procCompleted++;
+                            //if (OperationType == OperationType.Move)
+                            //{
+                            //    r.Close();
+                            //    r.Dispose();
+                            //    FileInfo fi = new FileInfo(src);
+                            //    if (fi.IsReadOnly)
+                            //        fi.IsReadOnly = false;
+                            //    fi.Delete();
+                            //}
                         }
-                        catch (Exception)
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                        (Action)(() =>
                         {
-
+                            prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
+                        }));
+                        var dt = DateTime.Now;
+                        var secs = dt.Subtract(LastMeasuredTime).Seconds;
+                        if (secs >= 2)
+                        {
+                            var diff = totaltransfered - lastTotalTransfered;
+                            var speed = diff / secs;
+                            var speedInMB = WindowsAPI.StrFormatByteSize(speed);
+                            LastMeasuredTime = DateTime.Now;
+                            lastTotalTransfered = totaltransfered;
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                            (Action)(() =>
+                            {
+                                lblSpeed.Text = speedInMB + "/s";
+                            }));
                         }
-                    }));
+                        var et = DateTime.Now.Subtract(OperationStartTime);
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                        (Action)(() =>
+                        {
+                            lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
+                            try
+                            {
+                                lblTimeLeft.Text = new DateTime((TimeSpan.FromSeconds((int)(et.TotalSeconds / prOverallProgress.Value * (prOverallProgress.Maximum - prOverallProgress.Value)))).Ticks).ToString("HH:mm:ss");
+                            }
+                            catch (Exception)
+                            {
 
+                            }
+                        }));
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                        (Action)(() =>
+                        {
+                            lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2)); //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
+                        }));
 
-
-                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                    (Action)(() =>
-                    {
-
-                        lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((totaltransfered / (Decimal)totalSize) * 100M, 2)); //Math.Round((prOverallProgress.Value * 100 / prOverallProgress.Maximum) + prFileProgress.Value / prOverallProgress.Maximum, 2).ToString("F2") + " % complete";
-                    }));
-
-                    if (totaltransfered == (long)totalSize)
-                    {
-                        CloseCurrentTask();
+                        if (totaltransfered == (long)totalSize)
+                        {
+                            CloseCurrentTask();
+                        }
                     }
+                    else
+                    {
+                        Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                                      (Action)(() =>
+                                      {
+
+                                          prOverallProgress.Value++;
+                                          lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((prOverallProgress.Value / prOverallProgress.Maximum) * 100D, 2));
+                                          var et = DateTime.Now.Subtract(OperationStartTime);
+                                          lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
+                                          try
+                                          {
+                                              lblTimeLeft.Text = new DateTime((TimeSpan.FromSeconds((int)(et.TotalSeconds / prOverallProgress.Value * (prOverallProgress.Maximum - prOverallProgress.Value)))).Ticks).ToString("HH:mm:ss");
+                                          }
+                                          catch (Exception)
+                                          {
+
+                                          }
+                                      }));
+                        var dt = DateTime.Now;
+                        var secs = dt.Subtract(LastMeasuredTime).Seconds;
+                        if (secs >= 2)
+                        {
+                            var diff = itemsProcessed - lastItemsProcessed;
+                            var speed = diff / secs;
+                            lastItemsProcessed = itemsProcessed;
+                            LastMeasuredTime = dt;
+
+                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                            (Action)(() =>
+                            {
+                                lblSpeed.Text = diff + " items/s";
+                            }));
+                        }
+
+                        if (prOverallProgress.Value == prOverallProgress.Maximum)
+                        {
+                            CloseCurrentTask();
+                        }
+                    }
+
+                    
                 }
             }));
         }

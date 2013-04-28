@@ -274,7 +274,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
           } else
             Files = String.Format("{0}\0{1}", Files, selectedItem.ParsingName);
         }
-        RecybleBin.Send(Files);
+        RecycleBin.Send(Files);
       }
         public static void CheckHooks() {
             //TODO:

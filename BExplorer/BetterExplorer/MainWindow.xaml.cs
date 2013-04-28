@@ -35,6 +35,8 @@ using System.Globalization;
 using NAppUpdate.Framework;
 using BetterExplorerControls;
 using Microsoft.WindowsAPICodePack.Shell.FileOperations;
+using wyDay.Controls;
+using System.Security.Principal;
 
 
 namespace BetterExplorer
@@ -109,7 +111,7 @@ namespace BetterExplorer
 		Int32 UpdateCheckInterval;
     Double CommandPromptWinHeight;
     bool IsViewSelection = false;
-
+    private ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
 		#endregion
 
 		#region Properties
@@ -261,6 +263,12 @@ namespace BetterExplorer
 
 		private void RibbonWindow_Closing(object sender, CancelEventArgs e)
 		{
+
+      if (r != null)
+      {
+        r.Close();
+      }
+
       if (this.OwnedWindows.OfType<FileOperationDialog>().Count() > 0) {
         
         if (MessageBox.Show("Are you sure you want to cancel all running file operation tasks?", "", MessageBoxButton.YesNo) == MessageBoxResult.No) {
@@ -365,10 +373,13 @@ namespace BetterExplorer
 
 		private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
+            autoUpdater.Visibility = System.Windows.Visibility.Visible;
+            autoUpdater.UpdateLayout();
+
 			if (KeepBackstageOpen == true)
 			{
 				backstage.IsOpen = true;
-        KeepBackstageOpen = false;
+                KeepBackstageOpen = false;
 			}
 		}
 
@@ -3372,11 +3383,11 @@ namespace BetterExplorer
                 ShellObject item = Explorer.SelectedItems[0];
                 item.Thumbnail.CurrentSize = new System.Windows.Size(96, 96);
                 confirmationDialog.MessageIcon = item.Thumbnail.BitmapSource;
-                confirmationDialog.MessageText = "Are you sure you want to move " + item.GetDisplayName(DisplayNameType.Default) + " to Recycle Bin?";
+                confirmationDialog.MessageText = String.Format("Are you sure you want to move {0} to Recycle Bin?", item.GetDisplayName(DisplayNameType.Default));
             }
             else
             {
-                confirmationDialog.MessageText = "Are you sure you want to move selected " + Explorer.GetSelectedItemsCount() + " items to Recycle Bin?";
+                confirmationDialog.MessageText = String.Format("Are you sure you want to move selected {0} items to Recycle Bin?", Explorer.GetSelectedItemsCount());
             }
 
             confirmationDialog.Owner = this;
@@ -3524,8 +3535,38 @@ namespace BetterExplorer
 
 		private void Button_Click_6(object sender, RoutedEventArgs e)
 		{
-			CheckForUpdate();
-			backstage.IsOpen = true;
+            backstage.IsOpen = true;
+			//CheckForUpdate();
+            
+            switch (autoUpdater.UpdateStepOn)
+            {
+                case UpdateStepOn.Checking:
+                case UpdateStepOn.DownloadingUpdate:
+                case UpdateStepOn.ExtractingUpdate:
+                    autoUpdater.Visibility = System.Windows.Visibility.Visible;
+                    autoUpdater.UpdateLayout();
+                    autoUpdater.Cancel();
+                    break;
+
+                case UpdateStepOn.UpdateReadyToInstall:
+                case UpdateStepOn.UpdateAvailable:
+                    autoUpdater.Visibility = System.Windows.Visibility.Visible;
+                    autoUpdater.UpdateLayout();
+                    break;
+                case UpdateStepOn.UpdateDownloaded:
+                    autoUpdater.Visibility = System.Windows.Visibility.Visible;
+                    autoUpdater.UpdateLayout();
+                    autoUpdater.InstallNow();
+                    break;
+
+                default:
+
+                    autoUpdater.Visibility = System.Windows.Visibility.Visible;
+                    autoUpdater.UpdateLayout();
+                    autoUpdater.ForceCheckForUpdate(true);
+                    break;
+            }
+			
 		}
 
 		private void Button_Click_7(object sender, RoutedEventArgs e)
@@ -3868,7 +3909,7 @@ namespace BetterExplorer
 						ChangeRibbonTheme("Blue");
 						break;
 				}
-
+        
 			}
 			catch (Exception ex)
 			{
@@ -3912,6 +3953,8 @@ namespace BetterExplorer
 
 			//Main Initialization routine
 			InitializeComponent();
+
+
 
 			// sets up ComboBox to select the current UI language
 			foreach (TranslationComboBoxItem item in this.TranslationComboBox.Items)
@@ -3983,10 +4026,18 @@ namespace BetterExplorer
 			// allows user to change language
 			ReadyToChangeLanguage = true;
 		}
-
+    MessageReceiver r;
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+      r = new MessageReceiver();
+      r.OnMessageReceived += r_OnMessageReceived;
+      r.Show();
+
 			bool exitApp = false;
+
+
+      UpdateRecycleBinInfos();
+
 			try
 			{
 				if (WindowsAPI.getOSInfo() == WindowsAPI.OsVersionInfo.Windows8)
@@ -4460,18 +4511,16 @@ namespace BetterExplorer
 
 									   //Setup Clipboard monitor
 									  cbm.ClipboardChanged += new EventHandler<ClipboardChangedEventArgs>(cbm_ClipboardChanged);
-
+                    autoUpdater.DaysBetweenChecks = this.UpdateCheckInterval;
 				            try {
 					            if (IsUpdateCheck) {
-					              updateCheckTimer.Interval = 3600000 * 3;
-					              updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
-					              updateCheckTimer.Start();
+                        autoUpdater.UpdateType = UpdateType.OnlyCheck;
 					            } else {
-					              updateCheckTimer.Stop();
+					              autoUpdater.UpdateType = UpdateType.DoNothing;
 					            }
 					            if (IsUpdateCheckStartup) {
 					              if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
-						            CheckForUpdate(false);
+                          autoUpdater.ForceCheckForUpdate(true);
 					              }
 					            }
 				            } catch (IOException) {
@@ -4483,6 +4532,8 @@ namespace BetterExplorer
 				 ));
         });
         t.Start();
+
+        
 
 				if (exitApp)
 				{
@@ -4514,6 +4565,21 @@ namespace BetterExplorer
                 tabControl1.SelectedIndex = 0;
 
 		}
+
+    void r_OnMessageReceived(object sender, EventArgs e)
+    {
+      UpdateRecycleBinInfos();
+    }
+
+    void watcher_Changed(object sender, FileSystemEventArgs e)
+    {
+      throw new NotImplementedException();
+    }
+
+    void watcher_Created(object sender, FileSystemEventArgs e)
+    {
+      throw new NotImplementedException();
+    }
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
@@ -8711,7 +8777,7 @@ namespace BetterExplorer
                 }
         }
 
-        private void RibbonWindow_SizeChanged_1(object sender, SizeChangedEventArgs e)
+        private void RibbonWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (tabControl1.SelectedItem != null)
             {
@@ -8719,7 +8785,32 @@ namespace BetterExplorer
             }
         }
 
+        public void UpdateRecycleBinInfos()
+        {
+          var rb = (ShellContainer)KnownFolders.RecycleBin;
+          var count = rb.Count();
+          var size = (long)rb.Where(c => c.IsFolder == false || c.Properties.System.FileExtension.Value != null).Sum(c => c.Properties.System.Size.Value == null ? 0 : (long)c.Properties.System.Size.Value);
+          if (rb.Count() == 0)
+          {
+            btnRecycleBin.LargeIcon = @"..\Images\RecycleBinEmpty32.png";
+            btnRecycleBin.Icon = @"..\Images\RecycleBinEmpty16.png";
+            lblRBItems.Text = "0 Items";
+            lblRBSize.Text = "0 bytes";
+          }
+          else
+          {
+            btnRecycleBin.LargeIcon = @"..\Images\RecycleBinFull32.png";
+            btnRecycleBin.Icon = @"..\Images\RecycleBinFull16.png";
+            btnRecycleBin.UpdateLayout();
+            lblRBItems.Text = String.Format("{0} Items", count);
+            lblRBSize.Text = WindowsAPI.StrFormatByteSize(size);
+          }
+        }
 
+        private void MenuItem_Click_6(object sender, RoutedEventArgs e)
+        {
+          WindowsAPI.SHEmptyRecycleBin(this.Handle, string.Empty, 0);
+        }
 
 	}
 }

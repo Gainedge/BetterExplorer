@@ -101,6 +101,7 @@ namespace FileOperation {
                         }
                         catch (UnauthorizedAccessException)
                         {
+                            WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
                             Environment.Exit(5);
                         }
                 }
@@ -112,6 +113,7 @@ namespace FileOperation {
                     }
                     catch (Exception)
                     {
+                        WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
                         Environment.Exit(5);
                     }
 
@@ -129,6 +131,7 @@ namespace FileOperation {
                     }
                     catch (Exception)
                     {
+                        WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
                         Environment.Exit(5);
                     }
                 }
@@ -139,6 +142,48 @@ namespace FileOperation {
                 }
                 GC.WaitForPendingFinalizers();
                 GC.Collect();
+            }
+
+            if (this.OPType == OperationType.Delete)
+            {
+                foreach (var entry in this.SourceItemsCollection)
+                {
+                    _block.WaitOne();
+                    try
+                    {
+
+                        if (!Directory.Exists(entry.Item1) || (Path.GetExtension(entry.Item1).ToLowerInvariant() == ".zip"))
+                        {
+                            var itemInfo = new FileInfo(entry.Item1);
+                            if (itemInfo.IsReadOnly)
+                                File.SetAttributes(entry.Item1, FileAttributes.Normal);
+                            if (this.DeleteToRB)
+                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(entry.Item1, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                            else
+                                File.Delete(entry.Item1);
+
+                                byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("{0}|{1}|{2}|{3}", 1, 0, totaltransfered, entry.Item1));
+                                WindowsAPI.SendStringMessage(MessageReceiverHandle, data, 0, data.Length);
+                        }
+                        else
+                        {
+                            if (this.DeleteToRB)
+                            {
+                                RecycleBin.SendSilent(entry.Item1);
+                            }
+                            else
+                            {
+                                DeleteAllFilesFromDir(new DirectoryInfo(entry.Item1));
+                                DeleteFolderRecursive(new DirectoryInfo(entry.Item1));
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
+                        Environment.Exit(5);
+                    }
+                }
             }
         }
     }
@@ -296,6 +341,7 @@ namespace FileOperation {
         }
     }
 
+    bool DeleteToRB = false;
     protected override void WndProc(ref Message m) {
 
       if (m.Msg == WindowsAPI.WM_COPYDATA){
@@ -309,6 +355,13 @@ namespace FileOperation {
           if (newMessage.StartsWith("END FO INIT|MOVE")) {
             this.OPType = OperationType.Move;
           }
+          if (newMessage.StartsWith("END FO INIT|DELETE"))
+          {
+              this.OPType = OperationType.Delete;
+          }
+          if (newMessage.Contains("DeleteTORB"))
+              this.DeleteToRB = true;
+
           if (newMessage.StartsWith("INPUT|")) {
             var parts = newMessage.Replace("INPUT|", "").Split(Char.Parse("|"));
             SourceItemsCollection.Add(new Tuple<string, string, int>(parts[0].Trim(), parts[1].Trim(), Convert.ToInt32(parts[2].Trim())));

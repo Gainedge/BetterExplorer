@@ -369,7 +369,38 @@ namespace WindowsHelper
         };
         #endregion
 
+        #region RecycleBin
+        // Structure used by SHQueryRecycleBin.
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+        public struct SHQUERYRBINFO
+        {
+          public Int32 cbSize;
+          public UInt64 i64Size;
+          public UInt64 i64NumItems;
+        }
 
+        // Get information from recycle bin.
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        public static extern int SHQueryRecycleBin(string pszRootPath, ref SHQUERYRBINFO pSHQueryRBInfo);
+
+        // Empty the recycle bin.
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        public static extern int SHEmptyRecycleBin(IntPtr hWnd, string pszRootPath, uint dwFlags);
+
+        // Return the number of items in the recycle bin.
+
+        // Note: In Windows 2000, you need to supply the root directory to
+        // the call to SHQueryRecycleBin so to get the total number of
+        // files in the recycle you must add up the results for each disk. See:
+        // www.pinvoke.net/default.aspx/shell32/SHQueryRecycleBin.html
+        public static Tuple<long,long> RecycleBinItemsInfo()
+        {
+          SHQUERYRBINFO sqrbi = new SHQUERYRBINFO();
+          sqrbi.cbSize = Marshal.SizeOf(typeof(SHQUERYRBINFO));
+          int hresult = SHQueryRecycleBin(@"J:", ref sqrbi);
+          return  new Tuple<long,long>((long)sqrbi.i64NumItems, (long)sqrbi.i64Size);
+        }
+        #endregion
         #region SendMessage
         [DllImport("User32.dll")]
         public static extern uint RegisterWindowMessage(string lpString);

@@ -27,7 +27,7 @@
                      WindowState="Maximized"
                      d:DesignHeight="768"
                      d:DesignWidth="852"
-                     mc:Ignorable="d" SizeChanged="RibbonWindow_SizeChanged_1">
+                     mc:Ignorable="d" SizeChanged="RibbonWindow_SizeChanged" >
 
     <Ribbon:RibbonWindow.Resources>
         <ResourceDictionary>
@@ -378,12 +378,12 @@
                                               HorizontalScrollBarVisibility="Auto"
                                               VerticalScrollBarVisibility="Auto">
                                     <StackPanel Margin="1,0,0,1">
-                                        <Controls:AutomaticUpdater Height="100" WaitBeforeCheckSecs="20" Width="100"/>
+                                        <Controls:AutomaticUpdater x:Name="autoUpdater" Margin="0,15,50,10" HorizontalAlignment="Left" UpdateType="OnlyCheck" Animate="True" Panel.ZIndex="100" Focusable="False" KeepExpanded="True" DaysBetweenChecks="7"/>
                                         <Label x:Name="stiUpdate"
                                                Margin="0,25,50,0"
                                                Content="{StaticResource stUpdateNotAvailableCP}"
                                                FontSize="14"
-                                               FontWeight="ExtraBold" />
+                                               FontWeight="ExtraBold" Visibility="Collapsed"/>
                                         <Ribbon:SeparatorTabItem Margin="0,-30,50,0"
                                                                  Foreground="#FFC71212"
                                                                  Header=""
@@ -1585,6 +1585,16 @@
                                          Header="Clear List"
                                          Ribbon:KeyTip.Keys="C" />
                     </Ribbon:SplitButton>
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox x:Name="RecycleBin" Header="Recycle Bin">
+                  <Ribbon:SplitButton x:Name="btnRecycleBin" SizeDefinition="Large, Small, Small" Header="Recycle Bin" LargeIcon="Images/RecycleBinEmpty32.png" Icon="Images/RecycleBinEmpty16.png">
+                    <Ribbon:MenuItem Header="Empty Recycle Bin" Click="MenuItem_Click_6"/>
+                    <Ribbon:MenuItem Header="Open Recycle Bin"/>
+                    <Ribbon:MenuItem Header="Restore selected item"/>
+                    <Ribbon:MenuItem Header="Restore all items"/>
+                  </Ribbon:SplitButton>
+                  <Ribbon:TwoLineLabel x:Name="lblRBItems" Text="0 Items" HasTwoLines="False" Margin="10,15,0,0"/>
+                  <Ribbon:TwoLineLabel x:Name="lblRBSize" Text="0 bytes" HasTwoLines="False" Margin="10,10,0,0"/>
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 

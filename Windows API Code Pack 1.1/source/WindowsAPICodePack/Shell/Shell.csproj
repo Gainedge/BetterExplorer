@@ -294,6 +294,7 @@
     <Compile Include="IPC.cs" />
     <Compile Include="IProgressDialog.cs" />
     <Compile Include="JunctionPoint.cs" />
+    <Compile Include="Notifications.cs" />
     <Compile Include="PipeClient.cs" />
     <Compile Include="PipeServer.cs" />
     <Compile Include="PropertySystem\PropertySystemException.cs" />
