@@ -41,7 +41,7 @@
     <system:String x:Key="lblLanguageCP">Choisir quelle langue utiliser dans BetterExplorer (requiert un redémarrage)</system:String>
     <system:String x:Key="txtTranslationHelp">Aider à la traduction</system:String>
     <system:String x:Key="txtHelpWebpage">Si vous souhaitez aider à traduire le programme, veuillez consulter cette page (écrite en Anglais)</system:String>
-    <system:String x:Key="txtTranslationCredits">Nous souhaitons également remercier toutes les personnes qui ont aidées à traduire BetterExplorer.</system:String>
+    <system:String x:Key="txtTranslationCredits">Nous souhaitons également remercier toutes les personnes qui ont aidé à traduire BetterExplorer.</system:String>
     <system:String x:Key="tabUpdateCP">Mises-à-jour</system:String>
     <system:String x:Key="txtAutoUpdate">Mise-à-jour automatique</system:String>
     <system:String x:Key="chkAutoCheck">Vérifier automatiquement les mises-à-jour</system:String>

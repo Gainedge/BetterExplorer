@@ -9,7 +9,7 @@
     <system:String x:Key="btnUpdateCheckHCP">アップデートをチェック</system:String>
     <system:String x:Key="btnUpdateCheckICP">お使いのバージョンが最新版かどうかチェックします。</system:String>
     <system:String x:Key="stUpdateAvailableCP">利用可能な更新があります。</system:String>
-    <system:String x:Key="stUpdateNotAvailableCP">お使いバージョンは最新版です。</system:String>
+    <system:String x:Key="stUpdateNotAvailableCP">お使いのバージョンは最新版です。</system:String>
     <system:String x:Key="btnOpenWebsite">サイトを開く</system:String>
     <system:String x:Key="btnOpenWebsiteHCP">BetterExplorerのウェブサイトを開く</system:String>
     <system:String x:Key="btnOpenWebsiteICP">このサイトでは最新のβ版をダウンロードしたり、バグを報告したりできます。</system:String>
@@ -32,8 +32,8 @@
     <system:String x:Key="chkIsTerraCopyEnabledICP">TeraCopyなどのプログラムがWindows標準の機能にかわってコピーや移動などを行うことを許可します。（要本プログラムの再起動）</system:String>
     <system:String x:Key="cbIsResttoreCP">BetterExplorerの起動時タブを復元</system:String>
     <system:String x:Key="cbIsResttoreTTX">最後に開いていた場所とタブを復元します。</system:String>
-    <system:String x:Key="txtImageEditing">Image Editing</system:String>
-    <system:String x:Key="chkEditOverwrite">Overwrite original image when editing</system:String>
+    <system:String x:Key="txtImageEditing">画像編集</system:String>
+    <system:String x:Key="chkEditOverwrite">画像を回転・編集した際にオリジナルを上書きする</system:String>
     <system:String x:Key="chkLogHistoryCP">操作のログを取る</system:String>
     <system:String x:Key="chkLogHistoryHCP">移動、リネーム、削除などの操作をログに記録します。 1ウィンドウにつき1つのログファイルが作成されます。</system:String>
     <system:String x:Key="tabLanguageCP">言語</system:String>
@@ -251,7 +251,7 @@
     <system:String x:Key="btnExtractNowCP">解凍</system:String>
     <system:String x:Key="chkUseNewFolderCP">新しいフォルダを作って解凍</system:String>
     <system:String x:Key="chkOpenResultsCP">解凍したら解凍先を開く</system:String>
-    <system:String x:Key="btnCheckArchiveCP">Check Integrity</system:String>
+    <system:String x:Key="btnCheckArchiveCP">書庫の正当性を検査</system:String>
     <system:String x:Key="btnViewArchiveCP">内容を見る</system:String>
     <system:String x:Key="btnExitCP">終了</system:String>
     <system:String x:Key="SearchBarResetCP">サイズをリセット</system:String>
@@ -309,7 +309,7 @@
     <system:String x:Key="txtArchiveFormat">アーカイブ形式</system:String>
     <system:String x:Key="txtArchiveSpeed">圧縮率</system:String>
     <system:String x:Key="txtNamePassword">ファイル名とパスワード</system:String>
-    <system:String x:Key="chkProtectArchive">アーカイブをパスワード保護:</system:String>
+    <system:String x:Key="chkProtectArchive">アーカイブをパスワードで保護:</system:String>
     <system:String x:Key="txtPassword">パスワード:</system:String>
     <system:String x:Key="txtConditionalSelect">条件で選択</system:String>
     <system:String x:Key="txtSelectFiles">条件に合致するファイルとフォルダを選択:</system:String>
