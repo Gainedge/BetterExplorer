@@ -37,6 +37,7 @@ using BetterExplorerControls;
 using Microsoft.WindowsAPICodePack.Shell.FileOperations;
 using wyDay.Controls;
 using System.Security.Principal;
+using Shell32;
 
 
 namespace BetterExplorer
@@ -59,12 +60,12 @@ namespace BetterExplorer
 		bool IsNavigationPaneEnabled;
 		bool isCheckModeEnabled;
 		bool IsExtendedFileOpEnabled;
-        bool IsCloseLastTabCloseApp;
+    bool IsCloseLastTabCloseApp;
 		public bool IsrestoreTabs;
 		bool IsUpdateCheck;
-	    bool IsUpdateCheckStartup;
-        bool IsConsoleShown;
-	    int UpdateCheckType;
+	  bool IsUpdateCheckStartup;
+    bool IsConsoleShown;
+	  int UpdateCheckType;
 		public bool isOnLoad;
 		JumpList AppJL = new JumpList();
 		public bool IsCalledFromLoading;
@@ -264,10 +265,10 @@ namespace BetterExplorer
 		private void RibbonWindow_Closing(object sender, CancelEventArgs e)
 		{
 
-      if (r != null)
-      {
-        r.Close();
-      }
+      //if (r != null)
+      //{
+      //  r.Close();
+      //}
 
       if (this.OwnedWindows.OfType<FileOperationDialog>().Count() > 0) {
         
@@ -369,6 +370,9 @@ namespace BetterExplorer
 
 			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems);
 			AddToLog("Session Ended");
+      e.Cancel = true;
+      this.WindowState = System.Windows.WindowState.Minimized;
+      this.Visibility = System.Windows.Visibility.Hidden;
 		}
 
 		private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -884,8 +888,23 @@ namespace BetterExplorer
 
 			                            
 			                                //}));
-                    
-                    
+
+                        if (e.NewLocation.ParsingName == KnownFolders.RecycleBin.ParsingName)
+                        {
+
+                          if (Explorer.GetItemsCount() > 0)
+                          {
+                            miEmptyRB.Visibility = System.Windows.Visibility.Visible;
+                            miEmptyRB.Visibility = System.Windows.Visibility.Visible;
+                            miRestoreALLRB.Visibility = System.Windows.Visibility.Visible;
+                          }
+                        }
+                        else
+                        {
+                          miOpenRB.Visibility = System.Windows.Visibility.Visible;
+                          miEmptyRB.Visibility = System.Windows.Visibility.Collapsed;
+                          miRestoreALLRB.Visibility = System.Windows.Visibility.Collapsed;
+                        }
 										    bool IsChanged = (Explorer.GetSelectedItemsCount() > 0);
 										    bool isFuncAvail;
 										    if (Explorer.SelectedItems.Count == 1)
@@ -1846,7 +1865,7 @@ namespace BetterExplorer
               btnEdit.IsEnabled = false;
               btnHistory.IsEnabled = false;
               btnAdvancedSecurity.IsEnabled = false;
-
+              miRestoreRBItems.Visibility = System.Windows.Visibility.Collapsed;
 
               // hide contextual tabs
               ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
@@ -1933,7 +1952,10 @@ namespace BetterExplorer
                 // IF ONE ITEM IS SELECTED
                 ShellObject SelectedItem = Explorer.SelectedItems[0];
                 //MessageBox.Show("One Item Selected \r\n" + SelectedItem.ParsingName);
-
+                if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.RecycleBin.ParsingName)
+                {
+                  miRestoreRBItems.Visibility = System.Windows.Visibility.Visible;
+                }
                 // set up status bar
                 sbiSelItemsCount.Content = "1 item selected";
 
@@ -4029,6 +4051,14 @@ namespace BetterExplorer
     MessageReceiver r;
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
+
+      if (App.isStartMinimized)
+      {
+        this.Visibility = System.Windows.Visibility.Hidden;
+        this.WindowState = System.Windows.WindowState.Minimized;
+        //this.ShowInTaskbar = false;
+      }
+
       r = new MessageReceiver();
       r.OnMessageReceived += r_OnMessageReceived;
       r.Show();
@@ -4036,7 +4066,7 @@ namespace BetterExplorer
 			bool exitApp = false;
 
 
-      UpdateRecycleBinInfos();
+      
 
 			try
 			{
@@ -4081,8 +4111,8 @@ namespace BetterExplorer
 				  Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
 								 (ThreadStart)(() =>
 								 {
-                                    Thread.Sleep(500);
-
+                    Thread.Sleep(500);
+                    UpdateRecycleBinInfos();
 									 //'set up Favorites menu (note that BetterExplorer does not support links to a Control Panel. lol -JaykeBird)
 									 //'I will probably use a modification to this code in the new breadcrumbbar
 									 if (FavPath != "")
@@ -4401,9 +4431,9 @@ namespace BetterExplorer
 
                                   
 									  //'set StartUp location
-									  if (Application.Current.Properties["cmd"] != null)
+                    if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized")
 									  {
-
+                      MessageBox.Show(Application.Current.Properties["cmd"].ToString());
 										  String cmd = Application.Current.Properties["cmd"].ToString();
 
 										  if (cmd.IndexOf("::") == 0)
@@ -4568,7 +4598,13 @@ namespace BetterExplorer
 
     void r_OnMessageReceived(object sender, EventArgs e)
     {
-      UpdateRecycleBinInfos();
+      Thread t = new Thread(() =>
+      {
+        Thread.Sleep(500);
+        UpdateRecycleBinInfos();
+      });
+
+      t.Start();
     }
 
     void watcher_Changed(object sender, FileSystemEventArgs e)
@@ -8792,25 +8828,102 @@ namespace BetterExplorer
           var size = (long)rb.Where(c => c.IsFolder == false || c.Properties.System.FileExtension.Value != null).Sum(c => c.Properties.System.Size.Value == null ? 0 : (long)c.Properties.System.Size.Value);
           if (rb.Count() == 0)
           {
-            btnRecycleBin.LargeIcon = @"..\Images\RecycleBinEmpty32.png";
-            btnRecycleBin.Icon = @"..\Images\RecycleBinEmpty16.png";
-            lblRBItems.Text = "0 Items";
-            lblRBSize.Text = "0 bytes";
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                 (ThreadStart)(() =>
+                 {
+                   miEmptyRB.Visibility = System.Windows.Visibility.Collapsed;
+                   miRestoreALLRB.Visibility = System.Windows.Visibility.Collapsed;
+                   miRestoreRBItems.Visibility = System.Windows.Visibility.Collapsed;
+                   btnRecycleBin.LargeIcon = @"..\Images\RecycleBinEmpty32.png";
+                   btnRecycleBin.Icon = @"..\Images\RecycleBinEmpty16.png";
+                   lblRBItems.Text = "0 Items";
+                   lblRBItems.Visibility = System.Windows.Visibility.Collapsed;
+                   lblRBSize.Text = "0 bytes";
+                   lblRBSize.Visibility = System.Windows.Visibility.Collapsed;
+                 }));
           }
           else
           {
-            btnRecycleBin.LargeIcon = @"..\Images\RecycleBinFull32.png";
-            btnRecycleBin.Icon = @"..\Images\RecycleBinFull16.png";
-            btnRecycleBin.UpdateLayout();
-            lblRBItems.Text = String.Format("{0} Items", count);
-            lblRBSize.Text = WindowsAPI.StrFormatByteSize(size);
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                 (ThreadStart)(() =>
+                 {
+                   miRestoreALLRB.Visibility = System.Windows.Visibility.Visible;
+                   miEmptyRB.Visibility = System.Windows.Visibility.Visible;
+                   btnRecycleBin.LargeIcon = @"..\Images\RecycleBinFull32.png";
+                   btnRecycleBin.Icon = @"..\Images\RecycleBinFull16.png";
+                   btnRecycleBin.UpdateLayout();
+                   lblRBItems.Visibility = System.Windows.Visibility.Visible;
+                   lblRBItems.Text = String.Format("{0} Items", count);
+                   lblRBSize.Text = WindowsAPI.StrFormatByteSize(size);
+                   lblRBSize.Visibility = System.Windows.Visibility.Visible;
+                 }));
           }
         }
 
-        private void MenuItem_Click_6(object sender, RoutedEventArgs e)
+        private void miEmptyRB_Click(object sender, RoutedEventArgs e)
         {
-          WindowsAPI.SHEmptyRecycleBin(this.Handle, string.Empty, 0);
+            WindowsAPI.SHEmptyRecycleBin(this.Handle, string.Empty, 0);
+            miEmptyRB.Visibility = System.Windows.Visibility.Collapsed;
         }
+
+        private void miOpenRB_Click(object sender, RoutedEventArgs e)
+        {
+          Explorer.Navigate((ShellObject)KnownFolders.RecycleBin);
+        }
+
+        private void miRestoreRBItems_Click(object sender, RoutedEventArgs e)
+        {
+          foreach (ShellObject item in Explorer.SelectedItems.ToArray())
+          {
+            RestoreFromRB(item.Name);
+          }
+        }
+
+        private bool RestoreAllFromRB()
+        {
+          var Shl = new Shell();
+          Folder Recycler = Shl.NameSpace(10);
+
+          for (int i = 0; i < Recycler.Items().Count; i++)
+          {
+            FolderItem FI = Recycler.Items().Item(i);
+            DoVerb(FI, "ESTORE");
+            return true;
+          }
+          return false;
+        }
+
+        private bool RestoreFromRB(string Item) {
+          var Shl = new Shell();
+          Folder Recycler = Shl.NameSpace(10);
+          for (int i = 0; i < Recycler.Items().Count; i++) {
+            FolderItem FI = Recycler.Items().Item(i);
+            string FileName = Recycler.GetDetailsOf(FI, 0);
+            if (Path.GetExtension(FileName) == "") FileName += Path.GetExtension(FI.Path);
+            //Necessary for systems with hidden file extensions.
+            string FilePath = Recycler.GetDetailsOf(FI, 1);
+            if (Item == Path.Combine(FilePath, FileName)) {
+              DoVerb(FI, "ESTORE");
+              return true;
+            }
+          }
+          return false;
+        }
+        private bool DoVerb(FolderItem Item, string Verb) {
+          foreach (FolderItemVerb FIVerb in Item.Verbs()) {
+            if (FIVerb.Name.ToUpper().Contains(Verb.ToUpper())) {
+              FIVerb.DoIt();
+              return true;
+            }
+          }
+          return false;
+        }
+
+        private void miRestoreALLRB_Click(object sender, RoutedEventArgs e)
+        {
+          RestoreAllFromRB();
+        }
+ 
 
 	}
 }

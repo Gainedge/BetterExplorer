@@ -28,20 +28,21 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.SuspendLayout();
-            // 
-            // MessageReceiver
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(124, 0);
-            this.Location = new System.Drawing.Point(-50, -50);
-            this.Name = "MessageReceiver";
-            this.Opacity = 0D;
-            this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "MessageReceiver";
-            this.ResumeLayout(false);
+      this.SuspendLayout();
+      // 
+      // MessageReceiver
+      // 
+      this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+      this.ClientSize = new System.Drawing.Size(124, 0);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+      this.Location = new System.Drawing.Point(-50, -50);
+      this.Name = "MessageReceiver";
+      this.Opacity = 0D;
+      this.ShowInTaskbar = false;
+      this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+      this.Text = "MessageReceiver";
+      this.ResumeLayout(false);
 
         }
 

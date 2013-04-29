@@ -16,6 +16,7 @@ using Fluent;
 using System.Globalization;
 using System.Diagnostics;
 using System.Windows.Input;
+using System.Windows.Interop;
 
 namespace BetterExplorer
 {
@@ -26,6 +27,7 @@ namespace BetterExplorer
     {
         private CompositionContainer container;
         private AggregateCatalog catalog;
+        public static bool isStartMinimized = false;
 
         //[Import("MainWindow")]
         //public new Window MainWindow
@@ -88,17 +90,24 @@ namespace BetterExplorer
                     }
                     else
                     {
+                      if (e.Args[0] != "-minimized")
+                      {
                         //if (e.Args != null && e.Args.Count() > 0)
                         //{
-                            this.Properties["cmd"] = e.Args[0];
-                            if (e.Args.Count() > 1)
-                            {
-                                if (e.Args[1] == "/nw")
-                                {
-                                    dmi = false;
-                                }
-                            }
+                        this.Properties["cmd"] = e.Args[0];
+                        if (e.Args.Count() > 1)
+                        {
+                          if (e.Args[1] == "/nw")
+                          {
+                            dmi = false;
+                          }
+                        }
                         //}
+                      }
+                      else
+                      {
+                          isStartMinimized = true;
+                      }
 
                         if (dmi == true)
                         {
@@ -124,8 +133,7 @@ namespace BetterExplorer
 
             try
             {
-
-
+              
                 base.OnStartup(e);
 
                 
@@ -247,50 +255,57 @@ namespace BetterExplorer
             {
                 var win = MainWindow as MainWindow;
                 if (win == null) return;
-
+                var hwnd = (HwndSource.FromVisual(win) as HwndSource).Handle;
                 win.ApendArgs(args.CommandLineArgs);
-                //win.Activate(x);
+
                 if (x)
                 {
                     ShellObject sho = null;
                     if (args != null && args.CommandLineArgs != null)
                     {
-                      
-                        if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null)
-                        {
-                          
-                            if (args.CommandLineArgs[1] != "t")
-                            {
-                                if (args.CommandLineArgs[1] == "nw")
-                                {
-                                    BetterExplorer.MainWindow g = new MainWindow();
-                                    g.Show();
-                                    //String cmd = args.CommandLineArgs[2];
 
-                                    //if (cmd.IndexOf("::") == 0) {
-                                    //  sho = ShellObject.FromParsingName("shell:" + cmd);
-                                    //} else
-                                    //  sho = ShellObject.FromParsingName(args.CommandLineArgs[2].Replace("\"", ""));
-                                    return;
-                                }
-                                else
-                                {
-                                    String cmd = args.CommandLineArgs[1];
-                                    if (cmd.IndexOf("::") == 0)
-                                    {
-                                       sho = ShellObject.FromParsingName("shell:" + cmd);
-                                    }
-                                    else
-                                        sho = ShellObject.FromParsingName(args.CommandLineArgs[1].Replace("\"", ""));
-                                }
+                      if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null && args.CommandLineArgs[1] != "-minimized")
+                      {
+
+                        if (args.CommandLineArgs[1] != "t")
+                        {
+                          if (args.CommandLineArgs[1] == "nw")
+                          {
+                            MainWindow g = new MainWindow();
+                            g.Show();
+                            return;
+                          }
+                          else
+                          {
+                            win.Visibility = Visibility.Visible;
+                            WindowsHelper.WindowsAPI.ShowWindow(hwnd,
+                                (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
+
+                            String cmd = args.CommandLineArgs[1];
+                            if (cmd.IndexOf("::") == 0)
+                            {
+                              sho = ShellObject.FromParsingName("shell:" + cmd);
                             }
                             else
-                            {
-                              sho = win.GetShellObjectFromLocation(StartUpLocation);
-                            }
+                              sho = ShellObject.FromParsingName(args.CommandLineArgs[1].Replace("\"", ""));
+                          }
                         }
                         else
+                        {
+                          win.Visibility = Visibility.Visible;
+                          WindowsHelper.WindowsAPI.ShowWindow(hwnd,
+                              (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
                           sho = win.GetShellObjectFromLocation(StartUpLocation);
+                        }
+                      }
+                      else
+                      {
+                        
+                        win.Visibility = Visibility.Visible;
+                        WindowsHelper.WindowsAPI.ShowWindow(hwnd,
+                            (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
+                        sho = win.GetShellObjectFromLocation(StartUpLocation);
+                      }
 
                         sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
                         sho.Thumbnail.CurrentSize = new Size(16, 16);
@@ -302,16 +317,10 @@ namespace BetterExplorer
                         newt.Path = sho;
                         win.CloneTab(newt);
                         
+                        //WindowsHelper.WindowsAPI.BringWindowToTop(hwnd);
+                        //WindowsHelper.WindowsAPI.SetForegroundWindow(hwnd);
                         
-                        IntPtr MainWinHandle = WindowsHelper.WindowsAPI.FindWindow(null, Process.GetCurrentProcess().MainWindowTitle);
-                        if (win.WindowState == WindowState.Minimized)
-                        {
-                            WindowsHelper.WindowsAPI.ShowWindow(MainWinHandle, 
-                                (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
-                        }
-                        WindowsHelper.WindowsAPI.BringWindowToTop(MainWinHandle);
-                        WindowsHelper.WindowsAPI.SetForegroundWindow(MainWinHandle);
-                        win.Activate();
+                        win.Activate(true);
 
                     }
                 }

@@ -1587,11 +1587,11 @@
                     </Ribbon:SplitButton>
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox x:Name="RecycleBin" Header="Recycle Bin">
-                  <Ribbon:SplitButton x:Name="btnRecycleBin" SizeDefinition="Large, Small, Small" Header="Recycle Bin" LargeIcon="Images/RecycleBinEmpty32.png" Icon="Images/RecycleBinEmpty16.png">
-                    <Ribbon:MenuItem Header="Empty Recycle Bin" Click="MenuItem_Click_6"/>
-                    <Ribbon:MenuItem Header="Open Recycle Bin"/>
-                    <Ribbon:MenuItem Header="Restore selected item"/>
-                    <Ribbon:MenuItem Header="Restore all items"/>
+                  <Ribbon:SplitButton x:Name="btnRecycleBin" SizeDefinition="Large, Small, Small" Header="Recycle Bin" LargeIcon="Images/RecycleBinEmpty32.png" Icon="Images/RecycleBinEmpty16.png" Click="miOpenRB_Click">
+                    <Ribbon:MenuItem x:Name="miEmptyRB" Header="Empty Recycle Bin" Click="miEmptyRB_Click"/>
+                    <Ribbon:MenuItem x:Name="miOpenRB" Header="Open Recycle Bin" Click="miOpenRB_Click"/>
+                    <Ribbon:MenuItem x:Name="miRestoreRBItems" Header="Restore selected item" Click="miRestoreRBItems_Click"/>
+                    <Ribbon:MenuItem x:Name="miRestoreALLRB" Header="Restore all items" Click="miRestoreALLRB_Click"/>
                   </Ribbon:SplitButton>
                   <Ribbon:TwoLineLabel x:Name="lblRBItems" Text="0 Items" HasTwoLines="False" Margin="10,15,0,0"/>
                   <Ribbon:TwoLineLabel x:Name="lblRBSize" Text="0 bytes" HasTwoLines="False" Margin="10,10,0,0"/>
