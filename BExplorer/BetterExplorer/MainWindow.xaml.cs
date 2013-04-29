@@ -891,7 +891,6 @@ namespace BetterExplorer
 
                         if (e.NewLocation.ParsingName == KnownFolders.RecycleBin.ParsingName)
                         {
-
                           if (Explorer.GetItemsCount() > 0)
                           {
                             miEmptyRB.Visibility = System.Windows.Visibility.Visible;
