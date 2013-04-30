@@ -278,8 +278,11 @@ namespace BetterExplorer
                           else
                           {
                             win.Visibility = Visibility.Visible;
-                            WindowsHelper.WindowsAPI.ShowWindow(hwnd,
-                                (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
+                            if (win.WindowState == WindowState.Minimized)
+                            {
+                              WindowsHelper.WindowsAPI.ShowWindow(hwnd,
+                                  (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
+                            }
 
                             String cmd = args.CommandLineArgs[1];
                             if (cmd.IndexOf("::") == 0)
@@ -293,8 +296,11 @@ namespace BetterExplorer
                         else
                         {
                           win.Visibility = Visibility.Visible;
-                          WindowsHelper.WindowsAPI.ShowWindow(hwnd,
-                              (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
+                          if (win.WindowState == WindowState.Minimized)
+                          {
+                            WindowsHelper.WindowsAPI.ShowWindow(hwnd,
+                                (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
+                          }
                           sho = win.GetShellObjectFromLocation(StartUpLocation);
                         }
                       }
@@ -302,8 +308,11 @@ namespace BetterExplorer
                       {
                         
                         win.Visibility = Visibility.Visible;
-                        WindowsHelper.WindowsAPI.ShowWindow(hwnd,
-                            (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
+                        if (win.WindowState == WindowState.Minimized)
+                        {
+                          WindowsHelper.WindowsAPI.ShowWindow(hwnd,
+                              (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
+                        }
                         sho = win.GetShellObjectFromLocation(StartUpLocation);
                       }
 

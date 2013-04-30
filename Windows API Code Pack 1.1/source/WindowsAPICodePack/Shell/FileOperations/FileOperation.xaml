@@ -68,7 +68,7 @@
             <Image Source="pack://application:,,,/BetterExplorer;Component/Images/stop.png" Width="12" Height="12"/>
         </Button>
         <ProgressBar x:Name="prFileProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="5" Height="16" Visibility="Visible"/>
-        <ProgressBar x:Name="prOverallProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="7" Height="16"/>
+        <ProgressBar x:Name="prOverallProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="7" Height="16" ValueChanged="prOverallProgress_ValueChanged"/>
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8" Margin="0,5,195,0" Height="18" VerticalAlignment="Top">
             <TextBlock Text="Speed:" VerticalAlignment="Center" Visibility="Visible"/>
             <Image Source="pack://application:,,,/BetterExplorer;Component/Images/speed16.png" Width="24" Height="24" ToolTip="Speed" VerticalAlignment="Center" Visibility="Collapsed"/>

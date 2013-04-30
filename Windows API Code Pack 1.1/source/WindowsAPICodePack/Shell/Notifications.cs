@@ -550,7 +550,7 @@ namespace ShellNotifications
 			info.Item1 = GetPathFromPidl(shNotify.dwItem1);
 			info.Item2 = GetPathFromPidl(shNotify.dwItem2);
 
-      if (!info.Item1.ToUpperInvariant().Contains("$RECYCLE.BIN"))
+      if (!info.Item1.ToUpperInvariant().Contains("$RECYCLE.BIN") && !info.Item1.ToUpperInvariant().Contains("DESKTOP"))
         return false;
 
 			// Was this notification in the received notifications ?

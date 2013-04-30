@@ -366,36 +366,40 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                 var currentItem = colissions.Where(c => c.itemPath == file.Item1).SingleOrDefault();
                                 try
                                 {
-                                    if (currentItem != null)
+                                  if (currentItem != null)
+                                  {
+                                    if (!currentItem.IsCheckedC && currentItem.IsChecked)
                                     {
-                                        if (!currentItem.IsCheckedC && currentItem.IsChecked)
-                                        {
-                                            ProcessItems(file.Item1, file.Item2);
-                                        }
-                                        else if (currentItem.IsCheckedC && currentItem.IsChecked)
-                                        {
-                                            ProcessItems(file.Item1, file.Item3);
-                                        }
+                                      ProcessItems(file.Item1, file.Item2);
                                     }
-                                    else
+                                    else if (currentItem.IsCheckedC && currentItem.IsChecked)
                                     {
-                                        ProcessItems(file.Item1, file.Item3);
+                                      ProcessItems(file.Item1, file.Item3);
                                     }
+                                  }
+                                  else
+                                  {
+                                    ProcessItems(file.Item1, file.Item3);
+                                  }
                                 }
                                 catch (UnauthorizedAccessException)
                                 {
-                                    IsNeedAdminFO = true;
-                                    isBreak = true;
-                                    break;
+                                  IsNeedAdminFO = true;
+                                  isBreak = true;
+                                  break;
                                 }
-                                catch (Exception)
+                                catch (ThreadAbortException)
                                 {
-                                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                                         (Action)(() =>
-                                         {
-                                             prFileProgress.Foreground = Brushes.Red;
-                                             prOverallProgress.Foreground = Brushes.Red;
-                                         }));
+                                }
+                                catch (Exception ex)
+                                {
+                                  Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                                       (Action)(() =>
+                                       {
+                                         prFileProgress.Foreground = Brushes.Red;
+                                         prOverallProgress.Foreground = Brushes.Red;
+                                         Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
+                                       }));
                                 }
                             };
                             break;
@@ -427,13 +431,17 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                     isBreak = true;
                                     break;
                                 }
-                                catch (Exception)
+                                catch (ThreadAbortException)
+                                {
+                                }
+                                catch (Exception ex)
                                 {
                                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                                          (Action)(() =>
                                          {
                                              prFileProgress.Foreground = Brushes.Red;
                                              prOverallProgress.Foreground = Brushes.Red;
+                                             Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
                                          }));
                                 }
                             }
@@ -520,13 +528,17 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                         IsNeedAdminFO = true;
                         break;
                     }
-                    catch (Exception)
+                    catch (ThreadAbortException)
+                    {
+                    }
+                    catch (Exception ex)
                     {
                         isError = true;
                         Dispatcher.Invoke(DispatcherPriority.Background,
                          (Action)(() =>
                          {
                              prOverallProgress.Foreground = Brushes.Red;
+                             Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
                          }));
                         _block.Reset();
                     }
@@ -628,6 +640,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                        {
                            prFileProgress.Foreground = Brushes.Red;
                            prOverallProgress.Foreground = Brushes.Red;
+                           Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
                        }));
         }
 
@@ -679,7 +692,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                         Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                         (Action)(() =>
                         {
-                            prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
+                            prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D); 
                         }));
                         var dt = DateTime.Now;
                         var secs = dt.Subtract(LastMeasuredTime).Seconds;
@@ -728,6 +741,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                       {
 
                                           prOverallProgress.Value++;
+                                          
                                           lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((prOverallProgress.Value / prOverallProgress.Maximum) * 100D, 2));
                                           var et = DateTime.Now.Subtract(OperationStartTime);
                                           lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
@@ -780,6 +794,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 }
                 prFileProgress.Foreground = Brushes.Orange;
                 prOverallProgress.Foreground = Brushes.Orange;
+                Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Paused);
                 lblProgress.Text = "Paused - " + lblProgress.Text;
                 CurrentStatus = 2;
             }
@@ -800,6 +815,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     prFileProgress.Foreground = new SolidColorBrush(Color.FromRgb(0x01, 0xD3, 0x28));
                     prOverallProgress.Foreground = new SolidColorBrush(Color.FromRgb(0x01, 0xD3, 0x28));
                 }
+                Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Normal);
             }
         }
         
@@ -842,6 +858,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                           {
                                               
                                               prOverallProgress.Value++;
+                                              
                                               lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((prOverallProgress.Value / prOverallProgress.Maximum) * 100D, 2));
                                               var et = DateTime.Now.Subtract(OperationStartTime);
                                               lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
@@ -894,6 +911,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                   (Action)(() =>
                                   {
                                       prOverallProgress.Value++;
+                                      
                                       lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((prOverallProgress.Value / prOverallProgress.Maximum) * 100D, 2));
                                       var et = DateTime.Now.Subtract(OperationStartTime);
                                       lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
@@ -945,13 +963,19 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                         parentWindow.Contents.Remove(this);
 
                         if (parentWindow.Contents.Count == 0)
-                            parentWindow.Close();
+                        {
+                          parentWindow.Close();
+                          Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.NoProgress);
+                        }
                     }
                     else
                     {
                         ParentContents.Contents.Remove(this);
                         if (ParentContents.Contents.Count == 0)
-                            ParentContents.Close();
+                        {
+                          ParentContents.Close();
+                          Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.NoProgress);
+                        }
                     }
                     if (mr != null)
                         mr.Close();
@@ -1053,6 +1077,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                             (Action)(() =>
                             {
                                 prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
+                                
                             }));
                             var dt = DateTime.Now;
                             var secs = dt.Subtract(LastMeasuredTime).Seconds; 
@@ -1146,6 +1171,29 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
             this.Cancel = true;
             this.CopyThread.Abort();
+        }
+        private int oldTotalvalue = 0;
+        private void prOverallProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+          try
+          {
+            var fodialog = Window.GetWindow(this) as FileOperationDialog;
+            if (prOverallProgress.Maximum == 100)
+            {
+              fodialog.OveralProgress += (int)prOverallProgress.Value - oldTotalvalue;
+              oldTotalvalue = (int)prOverallProgress.Value;
+            }
+            else
+            {
+              fodialog.OveralProgress += (int)(prOverallProgress.Value * 100 / prOverallProgress.Maximum) - oldTotalvalue;
+              oldTotalvalue = (int)(prOverallProgress.Value * 100 / prOverallProgress.Maximum);
+            }
+            fodialog.SetTaskbarProgress();
+          }
+          catch (Exception)
+          {
+
+          }
         }
 
     }

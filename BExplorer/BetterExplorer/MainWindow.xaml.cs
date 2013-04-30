@@ -370,9 +370,12 @@ namespace BetterExplorer
 
 			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems);
 			AddToLog("Session Ended");
-      e.Cancel = true;
-      this.WindowState = System.Windows.WindowState.Minimized;
-      this.Visibility = System.Windows.Visibility.Hidden;
+      if (App.isStartMinimized)
+      {
+        e.Cancel = true;
+        this.WindowState = System.Windows.WindowState.Minimized;
+        this.Visibility = System.Windows.Visibility.Hidden;
+      }
 		}
 
 		private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -1309,6 +1312,7 @@ namespace BetterExplorer
 			{
 				breadcrumbBarControl1.ExitEditMode();
 			}
+      IsAfterRename = false;
 			
 		}
 
@@ -2345,7 +2349,7 @@ namespace BetterExplorer
 
 
 			IsSelectionRized = false;
-            if (!IsAfterFolderCreate && !backstage.IsOpen)
+            if (!IsAfterFolderCreate && !backstage.IsOpen && IsAfterRename)
                 Explorer.SetExplorerFocus();
 		}
 		bool IsFromSelectionOrNavigation = false;
@@ -4432,7 +4436,7 @@ namespace BetterExplorer
 									  //'set StartUp location
                     if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized")
 									  {
-                      MessageBox.Show(Application.Current.Properties["cmd"].ToString());
+
 										  String cmd = Application.Current.Properties["cmd"].ToString();
 
 										  if (cmd.IndexOf("::") == 0)
@@ -4599,22 +4603,13 @@ namespace BetterExplorer
     {
       Thread t = new Thread(() =>
       {
-        Thread.Sleep(500);
+        Thread.Sleep(1000);
         UpdateRecycleBinInfos();
       });
 
       t.Start();
     }
 
-    void watcher_Changed(object sender, FileSystemEventArgs e)
-    {
-      throw new NotImplementedException();
-    }
-
-    void watcher_Created(object sender, FileSystemEventArgs e)
-    {
-      throw new NotImplementedException();
-    }
 
     [DllImport("user32.dll", CharSet = CharSet.Auto)]
     private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
@@ -6710,7 +6705,8 @@ namespace BetterExplorer
 
 		private void RibbonWindow_Activated(object sender, EventArgs e)
 		{
-
+      if (!backstage.IsOpen)
+        Explorer.SetExplorerFocus();
 		}
 
 		void fAbout_Closed(object sender, EventArgs e)
@@ -8824,7 +8820,7 @@ namespace BetterExplorer
         {
           var rb = (ShellContainer)KnownFolders.RecycleBin;
           var count = rb.Count();
-          var size = (long)rb.Where(c => c.IsFolder == false || c.Properties.System.FileExtension.Value != null).Sum(c => c.Properties.System.Size.Value == null ? 0 : (long)c.Properties.System.Size.Value);
+          
           if (rb.Count() == 0)
           {
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
@@ -8843,6 +8839,7 @@ namespace BetterExplorer
           }
           else
           {
+            var size = (long)rb.Where(c => c.IsFolder == false || c.Properties.System.FileExtension.Value != null).Sum(c => c.Properties.System.Size.Value == null ? 0 : (long)c.Properties.System.Size.Value);
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
                  (ThreadStart)(() =>
                  {
@@ -8863,6 +8860,7 @@ namespace BetterExplorer
         {
             WindowsAPI.SHEmptyRecycleBin(this.Handle, string.Empty, 0);
             miEmptyRB.Visibility = System.Windows.Visibility.Collapsed;
+            UpdateRecycleBinInfos();
         }
 
         private void miOpenRB_Click(object sender, RoutedEventArgs e)
@@ -8876,6 +8874,7 @@ namespace BetterExplorer
           {
             RestoreFromRB(item.Name);
           }
+          UpdateRecycleBinInfos();
         }
 
         private bool RestoreAllFromRB()
@@ -8921,6 +8920,7 @@ namespace BetterExplorer
         private void miRestoreALLRB_Click(object sender, RoutedEventArgs e)
         {
           RestoreAllFromRB();
+          UpdateRecycleBinInfos();
         }
  
 

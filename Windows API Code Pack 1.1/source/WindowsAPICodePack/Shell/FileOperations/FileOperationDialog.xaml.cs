@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WindowsHelper;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
   /// <summary>
@@ -24,17 +25,20 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
   public partial class FileOperationDialog : Window {
 
     private bool IsShown = false;
+    public int OveralProgress { get; set; }
     public ObservableCollection<FileOperation> Contents { get; set; }
     System.Windows.Forms.Timer LoadTimer;
     public FileOperationDialog() {
       this.DataContext = this;
       Contents = new ObservableCollection<FileOperation>();
+      Contents.CollectionChanged += Contents_CollectionChanged;
       InitializeComponent();
       //ensure win32 handle is created
       var handle = new WindowInteropHelper(this).EnsureHandle();
 
       //set window background
       var result = SetClassLong(handle, GCL_HBRBACKGROUND, GetSysColorBrush(COLOR_WINDOW));
+
 
       if (!IsShown) {
         if (LoadTimer == null) {
@@ -45,6 +49,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
         }
       }
 
+    }
+
+    void Contents_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+      this.Title = String.Format("{0} tasks running", this.Contents.Count);
     }
 
     public static IntPtr SetClassLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong) {
@@ -90,10 +99,19 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       }));
     }
 
+    public void SetTaskbarProgress()
+    {
+      Taskbar.TaskbarManager.Instance.SetProgressValue(this.OveralProgress/this.Contents.Count, 100);
+      
+    }
+
     private void Window_Closed(object sender, EventArgs e) {
       foreach (FileOperation item in this.Contents) {
         item.Cancel = true;
       }
+      Taskbar.TaskbarManager.Instance.SetProgressValue(0, 100);
+      Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.NoProgress);
     }
+
   }
 }
