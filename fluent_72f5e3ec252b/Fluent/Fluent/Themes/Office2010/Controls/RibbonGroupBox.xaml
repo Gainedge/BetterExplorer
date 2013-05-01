@@ -9,7 +9,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Separator">
-          <Border Width="3" Height="55" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,5,2,10" BorderThickness="1,0" BorderBrush="{DynamicResource GroupBoxSeparatorBorderBrush}" Background="{DynamicResource GroupBoxSeparatorBackgroundBrush}"/>
+          <Border Width="3" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,5,2,10" BorderThickness="1,0" BorderBrush="{DynamicResource GroupBoxSeparatorBorderBrush}" Background="{DynamicResource GroupBoxSeparatorBackgroundBrush}"/>
           
         </ControlTemplate>
       </Setter.Value>
@@ -18,7 +18,7 @@
   <Style x:Key="RibbonGroupBoxStyle" TargetType="{x:Type Fluent:RibbonGroupBox}">
     <Setter Property="Template" Value="{DynamicResource RibbonGroupBoxControlTemplate}"/>
     <Setter Property="Width" Value="Auto"/>
-    <Setter Property="Height" Value="85"/>
+    <Setter Property="Height" Value="90"/>
     <Setter Property="FontFamily" Value="{DynamicResource DefaultFontFamily}"/>
     <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}"/>
     <Setter Property="Foreground" Value="{DynamicResource DefaultFontBrush}"/>
@@ -127,7 +127,7 @@
             </Rectangle.Fill>
           </Rectangle>
           <Border x:Name="border" Height="Auto" Grid.RowSpan="1" Background="{DynamicResource RibbonBackgoundBrush}" BorderBrush="{DynamicResource RibbonTopBorderBrush}" BorderThickness="1" CornerRadius="1" d:LayoutOverrides="Width">
-            <Grid x:Name="PART_ParentPanel" Margin="0,1,0,2" Grid.RowSpan="2" Height="85">
+            <Grid x:Name="PART_ParentPanel" Margin="0,1,0,2" Grid.RowSpan="2" Height="90">
               <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="17"/>
@@ -228,7 +228,7 @@
       </Grid>
       <ContentControl x:Name="border1"
                       Focusable="False">
-      <Grid x:Name="PART_ParentPanel" Margin="0,1,0,2" Grid.RowSpan="2" Height="85">
+      <Grid x:Name="PART_ParentPanel" Margin="0,1,0,2" Grid.RowSpan="2" Height="90">
             <Grid.RowDefinitions>
         <RowDefinition Height="*"/>
         <RowDefinition Height="17"/>

@@ -381,7 +381,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="24" />
                             <RowDefinition x:Name="rowDefinition"
-                                           Height="86" />
+                                           Height="91" />
                             <RowDefinition x:Name="rowDefinition1"
                                            Height="{TemplateBinding ContentGapHeight}" />
                         </Grid.RowDefinitions>
@@ -561,7 +561,7 @@
                                   Height="Auto"
                                   Margin="0,20">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="86" />
+                                    <RowDefinition Height="91" />
                                     <RowDefinition Height="5" />
                                 </Grid.RowDefinitions>
                                 <Border Height="Auto"
