@@ -1092,7 +1092,7 @@
                             </TabControl>
                         </Ribbon:BackstageTabItem>
                         <Ribbon:Button x:Name="Exitbutton"
-                                       Click="Button_Click_8"
+                                       Click="btnBackstageExit_Click"
                                        Content="Exit"
                                        Header="{StaticResource btnExitCP}"
                                        Icon="Images\exit16.png"

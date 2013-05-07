@@ -390,6 +390,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                 }
                                 catch (ThreadAbortException)
                                 {
+                                  CloseCurrentTask();
                                 }
                                 catch (Exception ex)
                                 {
@@ -433,6 +434,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                 }
                                 catch (ThreadAbortException)
                                 {
+                                  CloseCurrentTask();
                                 }
                                 catch (Exception ex)
                                 {
@@ -530,6 +532,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     }
                     catch (ThreadAbortException)
                     {
+                      CloseCurrentTask();
                     }
                     catch (Exception ex)
                     {

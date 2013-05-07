@@ -326,8 +326,8 @@ namespace BetterExplorer
                         newt.Path = sho;
                         win.CloneTab(newt);
                         
-                        //WindowsHelper.WindowsAPI.BringWindowToTop(hwnd);
-                        //WindowsHelper.WindowsAPI.SetForegroundWindow(hwnd);
+                        WindowsHelper.WindowsAPI.BringWindowToTop(hwnd);
+                        WindowsHelper.WindowsAPI.SetForegroundWindow(hwnd);
                         
                         win.Activate(true);
 

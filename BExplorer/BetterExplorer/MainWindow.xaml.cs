@@ -38,6 +38,7 @@ using Microsoft.WindowsAPICodePack.Shell.FileOperations;
 using wyDay.Controls;
 using System.Security.Principal;
 using Shell32;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 
 namespace BetterExplorer
@@ -67,7 +68,7 @@ namespace BetterExplorer
     bool IsConsoleShown;
 	  int UpdateCheckType;
 		public bool isOnLoad;
-		JumpList AppJL = new JumpList();
+		System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
 		public bool IsCalledFromLoading;
 		public bool IsCalledFromViewEnum;
 		bool ReadyToChangeLanguage;
@@ -265,10 +266,13 @@ namespace BetterExplorer
 		private void RibbonWindow_Closing(object sender, CancelEventArgs e)
 		{
 
-      //if (r != null)
-      //{
-      //  r.Close();
-      //}
+      if (!App.isStartMinimized)
+      {
+        if (r != null)
+        {
+          r.Close();
+        }
+      }
 
       if (this.OwnedWindows.OfType<FileOperationDialog>().Count() > 0) {
         
@@ -999,7 +1003,7 @@ namespace BetterExplorer
 			                                    JTask.Title = Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default);
 			                                    JTask.IconResourcePath = sfi.szDisplayName;
 			                                    JTask.IconResourceIndex = sfi.iIcon;
-			                                    JumpList.AddToRecentCategory(JTask);
+			                                    System.Windows.Shell.JumpList.AddToRecentCategory(JTask);
 			                                    AppJL.Apply();
 
 			                                }
@@ -2969,9 +2973,10 @@ namespace BetterExplorer
 				WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),"twext.dll"),1024,"Previous Versions"));
 		}
 
-		private void Button_Click_8(object sender, RoutedEventArgs e)
+		private void btnBackstageExit_Click(object sender, RoutedEventArgs e)
 		{
-			this.Close();
+      //! We call Shutdown() so to explisit shutdown the app regardless of windows closing cancel flag.
+      Application.Current.Shutdown();
 		}
 
 		// create new window
@@ -3899,7 +3904,7 @@ namespace BetterExplorer
 
 	  public MainWindow() {
 
-      
+      TaskbarManager.Instance.ApplicationId = "{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}";
 			CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, ERNewTab);
 			this.CommandBindings.Add(cbnewtab);
 			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, ERGoToBCCombo);
@@ -3975,6 +3980,7 @@ namespace BetterExplorer
 
 			rks.Close();
 			rk.Close();
+
 
 			//Main Initialization routine
 			InitializeComponent();
@@ -4523,7 +4529,7 @@ namespace BetterExplorer
 									  //sets up Jump List
 									  AppJL.ShowRecentCategory = true;
 									  AppJL.ShowFrequentCategory = true;
-									  JumpList.SetJumpList(Application.Current, AppJL);
+									  System.Windows.Shell.JumpList.SetJumpList(Application.Current, AppJL);
                     JumpTask newTab = new JumpTask() { 
                       ApplicationPath = Process.GetCurrentProcess().MainModule.FileName, 
                       Arguments = "t", 
@@ -4589,6 +4595,7 @@ namespace BetterExplorer
 					this.TheRibbon.SelectedTabIndex = 0;
 				}
 				//MessageBox.Show(TheRibbon.SelectedTabIndex.ToString(), "SelectedTabIndex Should be 0", MessageBoxButton.OK, MessageBoxImage.Information);
+        this.Activate(true);
 			}
 			catch (Exception exe)
 			{
@@ -6780,8 +6787,8 @@ namespace BetterExplorer
 				breadcrumbBarControl1.ExitEditMode();
 			}
 
-            if (!backstage.IsOpen)
-                Explorer.SetExplorerFocus();
+      if (!backstage.IsOpen)
+          Explorer.SetExplorerFocus();
 		}
 
 		private void SaveHistoryToFile(string relativepath, List<String> history)
