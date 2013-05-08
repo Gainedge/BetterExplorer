@@ -266,7 +266,7 @@ namespace BetterExplorer
 		private void RibbonWindow_Closing(object sender, CancelEventArgs e)
 		{
 
-      if (!App.isStartMinimized)
+      if (App.isStartNewWindows)
       {
         if (r != null)
         {
@@ -374,7 +374,7 @@ namespace BetterExplorer
 
 			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems);
 			AddToLog("Session Ended");
-      if (App.isStartMinimized)
+      if (!App.isStartNewWindows)
       {
         e.Cancel = true;
         this.WindowState = System.Windows.WindowState.Minimized;

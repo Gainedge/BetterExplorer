@@ -28,6 +28,7 @@ namespace BetterExplorer
         private CompositionContainer container;
         private AggregateCatalog catalog;
         public static bool isStartMinimized = false;
+        public static bool isStartNewWindows = false;
 
         //[Import("MainWindow")]
         //public new Window MainWindow
@@ -99,6 +100,7 @@ namespace BetterExplorer
                         {
                           if (e.Args[1] == "/nw")
                           {
+
                             dmi = false;
                           }
                         }
@@ -109,12 +111,17 @@ namespace BetterExplorer
                           isStartMinimized = true;
                       }
 
-                        if (dmi == true)
-                        {
-                            if (!ApplicationInstanceManager.CreateSingleInstance(
-                            Assembly.GetExecutingAssembly().GetName().Name,
-                            SingleInstanceCallback)) return; // exit, if same app. is running
-                        }
+                      if (dmi == true)
+                      {
+                        isStartNewWindows = false;
+                        if (!ApplicationInstanceManager.CreateSingleInstance(
+                        Assembly.GetExecutingAssembly().GetName().Name,
+                        SingleInstanceCallback)) return; // exit, if same app. is running
+                      }
+                      else
+                      {
+                        isStartNewWindows = true;
+                      }
                     }
                 }
                 else
