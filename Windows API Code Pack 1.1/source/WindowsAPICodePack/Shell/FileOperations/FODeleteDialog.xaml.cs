@@ -12,33 +12,36 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
-  /// <summary>
-  /// Interaction logic for FODeleteDialog.xaml
-  /// </summary>
-  public partial class FODeleteDialog : Window {
+namespace Microsoft.WindowsAPICodePack.Shell.FileOperations
+{
+	/// <summary>
+	/// Interaction logic for FODeleteDialog.xaml
+	/// </summary>
+	public partial class FODeleteDialog : FOWindow
+	{
+		public String MessageText { get; set; }
+		public String MessageCaption { get; set; }
+		public ImageSource MessageIcon { get; set; }
 
-    public String MessageText { get; set; }
-    public String MessageCaption { get; set; }
-    public ImageSource MessageIcon { get; set; }
+		/// <summary>
+		/// Main Constructor
+		/// </summary>
+		public FODeleteDialog()
+		{
+			InitializeComponent();
+			DataContext = this;
+		}
 
+		private void Button_Click_1(object sender, RoutedEventArgs e)
+		{
+			DialogResult = true;
+			Close();
+		}
 
-    /// <summary>
-    /// Main Constructor
-    /// </summary>
-    public FODeleteDialog() {
-      InitializeComponent();
-      this.DataContext = this;
-    }
-
-    private void Button_Click_1(object sender, RoutedEventArgs e) {
-      this.DialogResult = true;
-      Close();
-    }
-
-    private void Button_Click_2(object sender, RoutedEventArgs e) {
-      this.DialogResult = false;
-      Close();
-    }
-  }
+		private void Button_Click_2(object sender, RoutedEventArgs e)
+		{
+			DialogResult = false;
+			Close();
+		}
+	}
 }
