@@ -180,6 +180,7 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -284,6 +285,7 @@
     <Compile Include="FileOperations\MessageReceiver.Designer.cs">
       <DependentUpon>MessageReceiver.cs</DependentUpon>
     </Compile>
+    <Compile Include="FileOperations\Theme.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IFileOperation.cs" />
     <Compile Include="IFileOperationProgressSink.cs" />
