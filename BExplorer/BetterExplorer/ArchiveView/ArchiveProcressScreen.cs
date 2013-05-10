@@ -50,7 +50,7 @@ namespace BetterExplorer
         /// <param name="compresstionlevel">How strong must the compression be (only for compression)</param>
         public ArchiveProcressScreen(IList<String> fileAndDirectoryFullPaths, string archivefullPath,ArchiveAction action, string archivename = null , OutArchiveFormat format = OutArchiveFormat.SevenZip, bool fastcompression = false, string password = null, CompressionLevel compresstionlevel = CompressionLevel.Normal)
         {
-            SevenZipBase.SetLibraryPath(LIBRARY_PATH);
+            SevenZipBase.SetLibraryPath(IntPtr.Size == 8? "7z64.dll" : "7z32.dll");
             InitializeComponent();
             _fileAndDirectoryFullPaths = fileAndDirectoryFullPaths;
             _archivePath = archivefullPath;
@@ -442,10 +442,10 @@ namespace BetterExplorer
 
             IsCancel = true;
 
-            while (!_thread.IsAlive)
-            {
-                Dispose(true);
-            }
+            //while (!_thread.IsAlive)
+            //{
+            //    Dispose(true);
+            //}
              
         }
 

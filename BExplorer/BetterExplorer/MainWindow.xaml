@@ -537,6 +537,16 @@
                                             </Ribbon:CheckBox>
                                             <Label Name="paddinglbl8" Content="         "/>
                                         -->
+                                        <Ribbon:CheckBox Name="chkIsCFO" Header="Use custom file operations dialog" Ribbon:KeyTip.Keys="CFO" Click="chkIsCFO_Click">
+                                          <Ribbon:CheckBox.ToolTip>
+                                            <Ribbon:ScreenTip
+                                                                Title="Custom file operations dialog"
+                                                                Text="Enables different copy/move/delete dialogs"
+                                                                Width="250"
+                                                                IsRibbonAligned ="false"/>
+                                          </Ribbon:CheckBox.ToolTip>
+                                        </Ribbon:CheckBox>
+                                        <Label Name="paddinglbl9" Content="         "/>
                                         <Ribbon:CheckBox x:Name="chkIsRestoreTabs"
                                                          Checked="chkIsRestoreTabs_Checked"
                                                          Header="{StaticResource cbIsResttoreCP}"
@@ -1107,7 +1117,7 @@
                                                  BorderBrush="Magenta"
                                                  Header="{StaticResource ctbLibrariesCP}"
                                                  Visibility="Collapsed" 
-                                                 MinWidth="100"/>
+                                                 MinWidth="120"/>
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgDrive"
                                                  Background="LightBlue"
                                                  BorderBrush="Blue"

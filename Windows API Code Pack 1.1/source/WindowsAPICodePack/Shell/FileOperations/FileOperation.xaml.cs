@@ -394,6 +394,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                 }
                                 catch (Exception ex)
                                 {
+                                  
                                   Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                                        (Action)(() =>
                                        {
@@ -401,6 +402,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                          prOverallProgress.Foreground = Brushes.Red;
                                          Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
                                        }));
+                                  MessageBox.Show(ex.Message);
                                 }
                             };
                             break;
@@ -445,6 +447,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                              prOverallProgress.Foreground = Brushes.Red;
                                              Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
                                          }));
+                                    MessageBox.Show(ex.Message);
                                 }
                             }
                             
@@ -544,6 +547,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                              Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
                          }));
                         _block.Reset();
+                        MessageBox.Show(ex.Message);
                     }
                 }
                 if (IsNeedAdminFO)
@@ -609,11 +613,12 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 {
                     collisions.Add(new CollisionInfo() { itemPath = file, index = 0, CorrespondingItemPath = dest });
                     int suffix = 0;
-                    newName = dest.Remove(dest.LastIndexOf("."));
+                    var indexDot = dest.LastIndexOf(".");
+                    newName = indexDot == -1 ? dest : dest.Remove(indexDot);
 
                     do
                     {
-                        newName = String.Format("{0} - Copy ({1})", dest.Remove(dest.LastIndexOf(".")), ++suffix);
+                      newName = String.Format("{0} - Copy ({1})", indexDot == -1 ? dest : dest.Remove(indexDot), ++suffix);
                     } while (File.Exists(newName + System.IO.Path.GetExtension(file)));
                 }
                 CopyItems.Add(new Tuple<string, string, string, int>(file, dest, newName == String.Empty ? dest : newName + System.IO.Path.GetExtension(file), 0));
