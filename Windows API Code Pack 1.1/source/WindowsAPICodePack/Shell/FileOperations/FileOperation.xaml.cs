@@ -581,11 +581,12 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 if (!isSame)
                     collisions.Add(new CollisionInfo() { itemPath = sourceFile, index = 0, CorrespondingItemPath = dest });
                 int suffix = 0;
-                newName = dest.Remove(dest.LastIndexOf("."));
+                var dotIndex = dest.LastIndexOf(".");
+                newName = dotIndex == -1 ? dest : dest.Remove(dotIndex);
 
                 do
                 {
-                    newName = String.Format("{0} - Copy ({1})", dest.Remove(dest.LastIndexOf(".")), ++suffix);
+                  newName = String.Format("{0} - Copy ({1})", dotIndex == -1 ? dest : dest.Remove(dotIndex), ++suffix);
                 } while (File.Exists(newName + System.IO.Path.GetExtension(sourceFile)));
             }
             CopyItems.Add(new Tuple<string, string, string, int>(sourceFile, dest, newName == String.Empty ? dest : newName + System.IO.Path.GetExtension(sourceFile), 0));

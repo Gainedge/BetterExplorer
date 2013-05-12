@@ -550,7 +550,7 @@ namespace BetterExplorer
             {
 			    Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
 								{
-                                    Thread.Sleep(250);
+                                    //Thread.Sleep(250);
 									IsCalledFromViewEnum = true;
 									zoomSlider.Value = Explorer.ContentOptions.ThumbnailSize;
 									IsCalledFromViewEnum = false;
@@ -858,7 +858,7 @@ namespace BetterExplorer
 			    try
           {
 
-				    Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() =>
+				    Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() =>
 									    {
                                        
 			                  ConstructMoveToCopyToMenu();
@@ -1471,7 +1471,7 @@ namespace BetterExplorer
 		{
 
       Thread t = new Thread(() => {
-        Dispatcher.BeginInvoke(DispatcherPriority.ContextIdle, (ThreadStart)(() => {
+        Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
         //if (IsAfterRename) {
         //  //breadcrumbBarControl1.ExitEditMode();
         //  if (this.OwnedWindows.OfType<FileOperationDialog>().Count() == 0)
@@ -2630,6 +2630,9 @@ namespace BetterExplorer
 		private void btnBackstageExit_Click(object sender, RoutedEventArgs e)
 		{
       //! We call Shutdown() so to explisit shutdown the app regardless of windows closing cancel flag.
+      if (r != null)
+        r.Close();
+
       Application.Current.Shutdown();
 		}
 
@@ -2681,10 +2684,10 @@ namespace BetterExplorer
         }
         Thread pasteThread = null;
         if (Explorer.IsMoveClipboardOperation) {
-          pasteThread = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
+          pasteThread = new Thread(Explorer.DoMove);
           AddToLog(String.Format("The following files have been pasted at {0}: {1}", PasteData.PathForDrop, GetStringsFromCollection(PasteData.DropList)));
         } else {
-          pasteThread = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
+          pasteThread = new Thread(Explorer.DoCopy);
         }
         pasteThread.SetApartmentState(ApartmentState.STA);
         pasteThread.Start(PasteData);
@@ -2760,7 +2763,7 @@ namespace BetterExplorer
 					}
 					else
 					{
-						path = path + "\r\n" + item.ParsingName;
+            path = String.Format("{0}\r\n{1}", path, item.ParsingName);
 					}
 
 				}
@@ -2816,7 +2819,7 @@ namespace BetterExplorer
 				}
 				else
 				{
-					path = path + " " + item.ParsingName;
+          path = String.Format("{0} {1}", path, item.ParsingName);
 				}
 
 			}
