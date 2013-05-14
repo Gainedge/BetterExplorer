@@ -1,28 +1,34 @@
-﻿<fileOperations:FOWindow x:Class="Microsoft.WindowsAPICodePack.Shell.FileOperations.FODeleteDialog"
+﻿<Window x:Class="Microsoft.WindowsAPICodePack.Shell.FileOperations.FODeleteDialog"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:fileOperations="clr-namespace:Microsoft.WindowsAPICodePack.Shell.FileOperations"
-					mc:Ignorable="d" SizeToContent="WidthAndHeight" MinWidth="400" MaxWidth="600" MinHeight="130" Title="{Binding Path=MessageCaption}" ShowInTaskbar="False" ResizeMode="CanMinimize" WindowStartupLocation="CenterOwner">
-    <Grid Margin="5">
-        <Grid.RowDefinitions>
-               <RowDefinition Height="*"/>
-               <RowDefinition Height="32"/>
-               <RowDefinition Height="5"/>
-        </Grid.RowDefinitions> 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="80"/>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="80"/>
-            <ColumnDefinition Width="5"/>
-        </Grid.ColumnDefinitions>
-        <Image Source="{Binding Path=MessageIcon}" Grid.Column="1" Margin="10,10,10,0" Stretch="None"></Image>
-        <TextBlock Grid.Column="2" Margin="0,0,10,0" Grid.ColumnSpan="4" VerticalAlignment="Center" Text="{Binding Path=MessageText}" TextWrapping="Wrap"></TextBlock>
-        <Button Grid.Column="3" Grid.Row="1" Margin="0,5,0,5" Click="Button_Click_1" IsDefault="True">Yes</Button>
-        <Button Grid.Column="5" Grid.Row="1" Margin="0,5,0,5" Click="Button_Click_2" IsCancel="True">No</Button>
-    </Grid>
-</fileOperations:FOWindow>
+					mc:Ignorable="d" SizeToContent="WidthAndHeight" MinWidth="400" MaxWidth="600" MinHeight="130" 
+												 Title="{Binding Path=MessageCaption}" 
+												 ShowInTaskbar="False" 
+												 WindowStartupLocation="CenterOwner"
+		ResizeMode="{Binding Source={x:Static fileOperations:Theme.ResizeMode}}"
+		Background="{Binding Source={x:Static fileOperations:Theme.Background}}"
+				>
+	<Grid Margin="5">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="32"/>
+			<RowDefinition Height="5"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="5"/>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="80"/>
+			<ColumnDefinition Width="5"/>
+			<ColumnDefinition Width="80"/>
+			<ColumnDefinition Width="5"/>
+		</Grid.ColumnDefinitions>
+		<Image Source="{Binding Path=MessageIcon}" Grid.Column="1" Margin="10,10,10,0" Stretch="None"></Image>
+		<TextBlock Grid.Column="2" Margin="0,0,10,0" Grid.ColumnSpan="4" VerticalAlignment="Center" Text="{Binding Path=MessageText}" TextWrapping="Wrap"></TextBlock>
+		<Button Grid.Column="3" Grid.Row="1" Margin="0,5,0,5" Click="Button_Click_1" IsDefault="True">Yes</Button>
+		<Button Grid.Column="5" Grid.Row="1" Margin="0,5,0,5" Click="Button_Click_2" IsCancel="True">No</Button>
+	</Grid>
+</Window>

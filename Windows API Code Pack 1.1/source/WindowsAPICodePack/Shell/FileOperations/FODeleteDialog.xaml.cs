@@ -17,7 +17,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations
 	/// <summary>
 	/// Interaction logic for FODeleteDialog.xaml
 	/// </summary>
-	public partial class FODeleteDialog : FOWindow
+	public partial class FODeleteDialog : Window
 	{
 		public String MessageText { get; set; }
 		public String MessageCaption { get; set; }

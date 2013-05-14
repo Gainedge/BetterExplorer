@@ -8,25 +8,27 @@ using System.Windows.Media;
 
 namespace Microsoft.WindowsAPICodePack.Shell.FileOperations
 {
-	static class Theme
+	static public class Theme
 	{
+		private static bool isWin7
+		{
+			get { return Name == "Windows 7"; }
+		}
+
 		public static string Name { get; set; }
+		public static ResizeMode ResizeMode
+		{
+			get { return isWin7 ? ResizeMode.NoResize : ResizeMode.CanMinimize; }
+		}
+		public static Brush Background
+		{
+			get { return isWin7 ? Brushes.WhiteSmoke : Brushes.White; }
+		}
 
 		static Theme()
 		{
 			Name = ConfigurationManager.AppSettings["FileOperationStyle"] ??
 						 (Environment.OSVersion.Version.ToString().StartsWith("6.1") ? "Windows 7" : "Windows 8");
-		}
-	}
-
-	public class FOWindow : Window
-	{
-		public FOWindow()
-		{
-			if (Theme.Name == "Windows 7")
-			{
-				Background = Brushes.WhiteSmoke;
-			}
 		}
 	}
 }
