@@ -27,7 +27,7 @@
                      WindowState="Maximized"
                      d:DesignHeight="768"
                      d:DesignWidth="852"
-                     mc:Ignorable="d" SizeChanged="RibbonWindow_SizeChanged" >
+                     mc:Ignorable="d" SizeChanged="RibbonWindow_SizeChanged" MinWidth="640" MinHeight="480" >
 
     <Ribbon:RibbonWindow.Resources>
         <ResourceDictionary>

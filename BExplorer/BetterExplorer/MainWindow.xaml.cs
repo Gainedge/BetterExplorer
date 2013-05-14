@@ -6424,6 +6424,7 @@ namespace BetterExplorer
 
 		private void breadcrumbBarControl1_NavigateRequested(object sender, PathEventArgs e)
 		{
+     
 			Explorer.Navigate(e.ShellObject != null ? e.ShellObject : ShellObject.FromParsingName(e.Path));
 		}
 

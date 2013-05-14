@@ -361,7 +361,19 @@ namespace BetterExplorerControls
 			{
 				try
 				{
-					PathEventArgs ea = new PathEventArgs(ShellObject.FromParsingName(HistoryCombo.Text));
+          PathEventArgs ea = null;
+          var path = String.Empty;
+          if (HistoryCombo.Text.Trim().StartsWith("%"))
+          {
+            path = Environment.ExpandEnvironmentVariables(HistoryCombo.Text);
+          }
+          else
+          {
+            path = HistoryCombo.Text;
+          }
+
+          ea = new PathEventArgs(ShellObject.FromParsingName(path));
+          
 					OnNavigateRequested(ea);
 					if (writetohistory == true)
 					{
@@ -376,6 +388,7 @@ namespace BetterExplorerControls
 
 					// For now just handle the exception. later will be fixed to navigate correct path.
 				}
+        ExitEditMode();
 			}
 			if (e.Key == Key.Escape)
 			{
