@@ -82,9 +82,12 @@ namespace BetterExplorer
             get
             {
                 List<ShellObject> _BackEntries = new List<ShellObject>();
-                for (int i = 0; i < CurrentLocIndex; i++)
+                if (CurrentLocIndex != -1)
                 {
+                  for (int i = 0; i < CurrentLocIndex; i++)
+                  {
                     _BackEntries.Add(HistoryItems[i]);
+                  }
                 }
                 //_BackEntries.Reverse();
                 return _BackEntries;
@@ -96,13 +99,23 @@ namespace BetterExplorer
             get
             {
                 List<ShellObject> _ForwardEntries = new List<ShellObject>();
-                for (int i = CurrentLocIndex; i < HistoryItems.Count; i++)
+                if (CurrentLocIndex != -1)
                 {
+                  for (int i = CurrentLocIndex; i < HistoryItems.Count; i++)
+                  {
                     _ForwardEntries.Add(HistoryItems[i]);
+                  }
                 }
                 //_BackEntries.Reverse();
                 return _ForwardEntries;
             }
+        }
+        public void ClearForwardItems()
+        {
+          for (int i = HistoryItems.ToArray().Count() - 1; i > CurrentLocIndex; i--)
+          {
+            HistoryItems.RemoveAt(i);
+          }
         }
 
         public bool CanNavigateBackwards
