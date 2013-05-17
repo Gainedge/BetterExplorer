@@ -7449,6 +7449,7 @@ namespace BetterExplorer
 			newt.TabSelected += newt_TabSelected;
 			newt.AllowDrop = true;
 			newt.log.CurrentLocation = CurTab.Path;
+      newt.log.ImportData(CurTab.log);
 			tabControl1.Items.Add(newt);
 			tabControl1.SelectedItem = newt;
 			LastTabIndex = tabControl1.SelectedIndex;
