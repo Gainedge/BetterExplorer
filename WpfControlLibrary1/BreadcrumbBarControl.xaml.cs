@@ -21,6 +21,7 @@ namespace BetterExplorerControls
 	/// </summary>
 	public partial class BreadcrumbBarControl : UserControl
 	{
+    bool ShouldUpdateDropDown = false;
 		public BreadcrumbBarControl()
 		{
 			InitializeComponent();
@@ -42,11 +43,19 @@ namespace BetterExplorerControls
 		}
 
 
-		private ContextMenu CreateHistoryMenu()
+		private ContextMenu CreateHistoryMenu(bool isFiltered = false)
 		{
 			ContextMenu hm = new ContextMenu();
-
-			foreach (string item in hl)
+      List<string> items = null;
+      if (isFiltered)
+      {
+        items = hl.Where(c => c.ToLowerInvariant().Contains(HistoryCombo.Text.ToLowerInvariant())).ToList();
+      }
+      else
+      {
+        items = hl;
+      }
+			foreach (string item in items)
 			{
 				MenuItem g = new MenuItem();
 				g.Header = item;
@@ -61,6 +70,9 @@ namespace BetterExplorerControls
 		void g_Click(object sender, RoutedEventArgs e)
 		{
 			HistoryCombo.Text = (string)(sender as MenuItem).Header;
+      PathEventArgs args = new PathEventArgs(ShellObject.FromParsingName(HistoryCombo.Text));
+      OnNavigateRequested(args);
+      ExitEditMode();
 			//throw new NotImplementedException();
 		}
 		ContextMenu mnu;
@@ -284,8 +296,12 @@ namespace BetterExplorerControls
 		{
 			e.Handled = true;
 			FocusManager.SetIsFocusScope(this, true);
-			elPanel.Visibility = System.Windows.Visibility.Collapsed;
+      
 			HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
+      if (elPanel.Visibility == System.Windows.Visibility.Visible)
+      {
+        ExitEditMode();
+      }
 		}
 
 		private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e)
@@ -316,16 +332,18 @@ namespace BetterExplorerControls
 
 		}
 
-		public bool IsInEditMode
-		{
-			get
-			{
-				return elPanel.Visibility != System.Windows.Visibility.Visible;
-			}
-		}
+    public bool IsInEditMode
+    {
+      get;
+      set;
+    }
 
 		public void ExitEditMode()
 		{
+
+      if (mnu != null)
+        mnu.IsOpen = false;
+      IsInEditMode = false;
 			elPanel.Visibility = System.Windows.Visibility.Visible;
 			//if (HistoryCombo.Text != "")
 			//{
@@ -338,10 +356,12 @@ namespace BetterExplorerControls
 			elPanel.Focus();
 			elPanel.Focusable = false;
 			elPanel.IsHitTestVisible = true;
+
 		}
 
 		public void EnterEditMode()
 		{
+      IsInEditMode = true;
 			elPanel.Visibility = System.Windows.Visibility.Collapsed;
 			if (LastPath != "")
 			{
@@ -352,6 +372,7 @@ namespace BetterExplorerControls
 				HistoryCombo.Text = furthestrightitem.ShellObject.ParsingName; //FixShellPathsInEditMode(furthestrightitem.ShellObject.ParsingName);
 			}
 			HistoryCombo.Focus();
+      
 		}
 
 		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e)
@@ -431,37 +452,46 @@ namespace BetterExplorerControls
 
 		private void HistoryCombo_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			//if (IsInEditMode) {
-			//  hl = new List<string>(HistoryItems.Where(c => c.Contains(HistoryCombo.Text)).ToArray());
-			//  if (hl.Count > 0) {
-			//    mnu = new System.Windows.Controls.ContextMenu();
-			//    foreach (var item in hl) {
-			//      mnu.Items.Add(item);
-			//    }
+      if (IsInEditMode)
+      {
 
-			//    mnu.IsOpen = true;
-			//  }
-			//}
-			//HistoryItems = new List<string>(HistoryItems.Where(c => c.Contains(HistoryCombo.Text)).ToArray());
-			// e.Handled = true;
-			//e.Handled = true;
-			//  if (IsInEditMode)
-			//  {
-			//      TextChange[] tc = e.Changes.ToArray();
-			//      if (tc[0].RemovedLength == 0 || tc[0].AddedLength > 0)
-			//      {
-			//          foreach (string item in HistoryItems)
-			//          {
-			//              if (item.ToLowerInvariant().StartsWith(HistoryCombo.Text.ToLowerInvariant()))
-			//              {
-			//                  int SelStart = HistoryCombo.Text.Length;
-			//                  HistoryCombo.Text = item;
-			//                  HistoryCombo.SelectionStart = SelStart;
-			//                  HistoryCombo.SelectionLength = item.Length - SelStart;
-			//              }
-			//          } 
-			//      }
-			//  }
+        ContextMenu mnuTemp = CreateHistoryMenu(true);
+        if (mnuTemp.Items.Count == 0)
+        {
+          if (mnu != null && mnu.IsOpen)
+            mnu.IsOpen = false;
+        }
+        if (mnu == null)
+          mnu = mnuTemp;
+        else
+        {
+          if (mnuTemp.Items.Count > 0)
+            mnu.Items.Clear();
+          foreach (var item in mnuTemp.Items)
+          {
+            MenuItem g = new MenuItem();
+            g.Header = (item as MenuItem).Header;
+            g.Focusable = false;
+            g.Width = grdMain.ActualWidth - 4;
+            g.Click += new RoutedEventHandler(g_Click);
+            mnu.Items.Add(g);
+          }
+        }
+        mnu.Focusable = false;
+        mnu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+        mnu.PlacementTarget = this;
+        if (mnuTemp.Items.Count > 0)
+        {
+          mnu.IsOpen = true;
+        }
+        else
+        {
+          if (mnu.IsOpen)
+            mnu.IsOpen = false;
+        }
+
+        mnuTemp = null;
+      }
 		}
 
 		private void HistoryCombo_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -485,6 +515,13 @@ namespace BetterExplorerControls
 		{
 			e.Handled = true;
 		}
+
+    private void HistoryCombo_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+      if (!IsInEditMode)
+        EnterEditMode();
+      //e.Handled = true;
+    }
 
 	}
 }

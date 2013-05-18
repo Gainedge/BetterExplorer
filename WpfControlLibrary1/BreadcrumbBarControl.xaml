@@ -6,9 +6,9 @@
              mc:Ignorable="d" Height="24" Width="300" SizeChanged="UserControl_SizeChanged">
     <Border x:Name="borderas" Background="{x:Null}" BorderBrush="Black" BorderThickness="1">
         <Grid x:Name="grdMain">
-            <TextBox Name="HistoryCombo" Visibility="Visible" BorderBrush="{x:Null}" BorderThickness="0" GotFocus="HistoryCombo_GotFocus" LostFocus="HistoryCombo_LostFocus" MouseLeave="HistoryCombo_MouseLeave" MouseUp="HistoryCombo_MouseUp" KeyUp="HistoryCombo_KeyUp" Margin="0,0,15,0" TextChanged="HistoryCombo_TextChanged" VerticalContentAlignment="Center" Padding="4,1,1,1" LostKeyboardFocus="HistoryCombo_LostKeyboardFocus" GotKeyboardFocus="HistoryCombo_GotKeyboardFocus" />
+            <TextBox Name="HistoryCombo" Visibility="Visible" BorderBrush="{x:Null}" BorderThickness="0" GotFocus="HistoryCombo_GotFocus" LostFocus="HistoryCombo_LostFocus" MouseLeave="HistoryCombo_MouseLeave" MouseUp="HistoryCombo_MouseUp" KeyUp="HistoryCombo_KeyUp" Margin="0,0,15,0" TextChanged="HistoryCombo_TextChanged" VerticalContentAlignment="Center" Padding="4,1,1,1" LostKeyboardFocus="HistoryCombo_LostKeyboardFocus" GotKeyboardFocus="HistoryCombo_GotKeyboardFocus" PreviewMouseLeftButtonDown="HistoryCombo_PreviewMouseLeftButtonDown"  />
             <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Margin="0,0,15,0" VerticalContentAlignment="Stretch" HorizontalAlignment="Left" FocusVisualStyle="{x:Null}"  Name="itemholder">
-                <StackPanel x:Name="elPanel" Orientation="Horizontal" MouseUp="stackPanel1_MouseUp" FocusVisualStyle="{x:Null}" VerticalAlignment="Stretch"></StackPanel>
+                <StackPanel x:Name="elPanel" Orientation="Horizontal" MouseUp="stackPanel1_MouseUp" FocusVisualStyle="{x:Null}" VerticalAlignment="Stretch" ></StackPanel>
             </ScrollViewer>
             <Grid x:Name="ddGrid" MouseDown="Grid_MouseDown" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" MouseUp="Grid_MouseUp" HorizontalAlignment="Right" Width="14" Background="White">
                 <Path Data="M 5 10 L 7 13 L 9 10 Z" Fill="Black" Name="ddArrow" Stroke="Black" StrokeLineJoin="Miter" StrokeThickness="1" />
