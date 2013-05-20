@@ -4917,7 +4917,11 @@ namespace BetterExplorer
 
 		private void btnUpLevel_Click(object sender, RoutedEventArgs e)
 		{
-			Explorer.Navigate(Explorer.NavigationLog.CurrentLocation.Parent);
+      if (Explorer.NavigationLog.CurrentLocation.Parent != null)
+        Explorer.Navigate(Explorer.NavigationLog.CurrentLocation.Parent);
+      else
+        btnUpLevel.IsEnabled = false;
+
 			WindowsAPI.SetFocus(Explorer.SysListViewHandle);
 			//ShellContextMenu cm = new ShellContextMenu();
 			//FileInfo fi = new FileInfo(Explorer.SelectedItems[0].ParsingName);
