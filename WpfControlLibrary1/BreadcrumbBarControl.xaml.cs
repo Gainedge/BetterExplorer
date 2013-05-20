@@ -523,5 +523,10 @@ namespace BetterExplorerControls
       //e.Handled = true;
     }
 
+    private void UserControl_GotFocus(object sender, RoutedEventArgs e)
+    {
+      itemholder.Focus();
+    }
+
 	}
 }

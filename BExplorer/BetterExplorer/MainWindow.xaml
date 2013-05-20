@@ -2923,7 +2923,7 @@
                     MouseUp="tabControl1_MouseUp"
                     SelectedIndex="0"
                     SelectionChanged="tabControl1_SelectionChanged"
-                    Template="{DynamicResource ScrollableTabControlTemplate}">
+                    Template="{DynamicResource ScrollableTabControlTemplate}" MouseEnter="tabControl1_MouseEnter" MouseLeave="tabControl1_MouseLeave">
             <TabControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel IsItemsHost="True" Orientation="Horizontal" />
@@ -2936,7 +2936,7 @@
                           Panel.ZIndex="1"
                           Background="White"
                           ClipToBounds="True"
-                          OpacityMask="White"/>
+                          OpacityMask="White" />
 
         <GridSplitter Grid.Row="5" Height="4" HorizontalAlignment="Stretch"/>
 

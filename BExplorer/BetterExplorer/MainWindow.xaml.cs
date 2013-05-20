@@ -7598,6 +7598,10 @@ namespace BetterExplorer
 		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
 		private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+      if (e.AddedItems.Count > 0 && (e.AddedItems[0] as ClosableTabItem).Index == tabControl1.Items.Count - 1)
+      {
+        tabControl1.Items.OfType<ClosableTabItem>().Last().BringIntoView();
+      }
 		}
 
 		void t_Tick(object sender, EventArgs e)
@@ -8641,6 +8645,22 @@ namespace BetterExplorer
             rks.Close();
             rk.Close();
           }
+        }
+
+        private void tabControl1_MouseEnter(object sender, MouseEventArgs e)
+        {
+          tabControl1.Focusable = true;
+          //tabControl1.Focus();
+          e.Handled = true;
+          tabControl1.Focus();
+          tabControl1.Focusable = false;
+        }
+
+        private void tabControl1_MouseLeave(object sender, MouseEventArgs e)
+        {
+          e.Handled = true;
+          Explorer.SetExplorerFocus();
+          
         }
  
 

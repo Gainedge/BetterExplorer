@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Height="24" Width="300" SizeChanged="UserControl_SizeChanged">
+             mc:Ignorable="d" Height="24" Width="300" SizeChanged="UserControl_SizeChanged" GotFocus="UserControl_GotFocus">
     <Border x:Name="borderas" Background="{x:Null}" BorderBrush="Black" BorderThickness="1">
         <Grid x:Name="grdMain">
             <TextBox Name="HistoryCombo" Visibility="Visible" BorderBrush="{x:Null}" BorderThickness="0" GotFocus="HistoryCombo_GotFocus" LostFocus="HistoryCombo_LostFocus" MouseLeave="HistoryCombo_MouseLeave" MouseUp="HistoryCombo_MouseUp" KeyUp="HistoryCombo_KeyUp" Margin="0,0,15,0" TextChanged="HistoryCombo_TextChanged" VerticalContentAlignment="Center" Padding="4,1,1,1" LostKeyboardFocus="HistoryCombo_LostKeyboardFocus" GotKeyboardFocus="HistoryCombo_GotKeyboardFocus" PreviewMouseLeftButtonDown="HistoryCombo_PreviewMouseLeftButtonDown"  />
