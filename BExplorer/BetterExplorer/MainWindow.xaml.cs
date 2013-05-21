@@ -379,7 +379,7 @@ namespace BetterExplorer
         e.Cancel = true;
         App.isStartMinimized = true;
         this.WindowState = System.Windows.WindowState.Minimized;
-        this.Visibility = System.Windows.Visibility.Hidden;
+        this.Visibility = System.Windows.Visibility.Hidden; 
       }
 		}
 
