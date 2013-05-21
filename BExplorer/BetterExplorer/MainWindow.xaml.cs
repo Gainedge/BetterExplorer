@@ -8352,12 +8352,28 @@ namespace BetterExplorer
 				foreach (string item in collection)
 				{
 					ShellObject obj = ShellObject.FromParsingName(item);
-					if (obj.IsFolder && obj.IsFileSystemObject)
+					if ((obj.IsFolder || obj.IsLink) && obj.IsFileSystemObject)
 					{
 						bool isarchive = false;
+            string itemPath = String.Empty;
+            if (obj.IsLink)
+            {
+              using (ShellLink link = new ShellLink(item))
+              {
+                itemPath = link.Target;
+                ShellObject linkobj = ShellObject.FromParsingName(link.Target);
+                if (!(linkobj.IsFolder && obj.IsFileSystemObject))
+                  MessageBox.Show("Hey... this isn't a folder! We can't make a new tab out of this file.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
+              }
+              
+            }
+            else
+            {
+              itemPath = item;
+            }
 						foreach (string item2 in Archives)
 						{
-							if (item.Contains(item2))
+							if (itemPath.Contains(item2))
 							{
 								isarchive = true;
 							}
@@ -8365,7 +8381,7 @@ namespace BetterExplorer
 
 						if (isarchive == false)
 						{
-							NewTab(item);
+							NewTab(itemPath);
 						}
 						else
 						{
