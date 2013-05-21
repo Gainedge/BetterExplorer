@@ -322,6 +322,8 @@ namespace BetterExplorer
                         }
                         sho = win.GetShellObjectFromLocation(StartUpLocation);
                       }
+                      if (!isStartMinimized || win.tabControl1.Items.Count == 0)
+                      {
 
                         sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
                         sho.Thumbnail.CurrentSize = new Size(16, 16);
@@ -329,9 +331,10 @@ namespace BetterExplorer
                         newt.Header = sho.GetDisplayName(DisplayNameType.Default);
                         newt.TabIcon = sho.Thumbnail.BitmapSource;
                         newt.PreviewMouseMove += newt_PreviewMouseMove;
-                        newt.TabSelected +=  win.newt_TabSelected;
+                        newt.TabSelected += win.newt_TabSelected;
                         newt.Path = sho;
-                        win.CloneTab(newt);
+                        win.CloneTab(newt); 
+                      }
                         
                         WindowsHelper.WindowsAPI.BringWindowToTop(hwnd);
                         WindowsHelper.WindowsAPI.SetForegroundWindow(hwnd);
