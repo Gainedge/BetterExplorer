@@ -1947,16 +1947,17 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 				}
 
-                hookProc_GetMsg = new WindowsHelper.WindowsAPI.HookProc(CallbackGetMsgProc);
-                int currentThreadId = WindowsAPI.GetCurrentThreadId();
-                hHook_Msg = WindowsAPI.SetWindowsHookEx(3, hookProc_GetMsg, IntPtr.Zero, currentThreadId);
+                //hookProc_GetMsg = new WindowsHelper.WindowsAPI.HookProc(CallbackGetMsgProc);
+                //int currentThreadId = WindowsAPI.GetCurrentThreadId();
+                //hHook_Msg = WindowsAPI.SetWindowsHookEx(3, hookProc_GetMsg, IntPtr.Zero, currentThreadId);
 
                 //Add MessageFilter for the IShellView
-                Application.AddMessageFilter(this);
+                
                 HookLibManager.SyncContext = SynchronizationContext.Current;
                 HookLibManager.IsCustomDialog = IsCustomDialogs;
                 //HookLibManager.Browser = this;
                 HookLibManager.Initialize();
+                Application.AddMessageFilter(this);
 			}
 
       //Callback procedure used by the window hook
@@ -1964,13 +1965,6 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         if (nCode >= 0) {
           WindowsAPI.Message msg = (WindowsAPI.Message)Marshal.PtrToStructure(lParam, typeof(WindowsAPI.Message));
           try {
-
-            if (msg.message == WM_FILEOPERATION) {
-              //object obj = Marshal.GetObjectForIUnknown(msg.lParam);
-              //IShellItem item = (IShellItem)obj;
-              //ShellObject o = ShellObjectFactory.Create(msg.lParam);
-              //
-            }
             if (msg.message == WM_NEWTREECONTROL) {
               object obj = Marshal.GetObjectForIUnknown(msg.wParam);
               try {
@@ -2310,7 +2304,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					}
 					if (uChange == CommDlgBrowserStateChange.SetFocus)
 					{
-							ExplorerGotFocusRaized();
+							//ExplorerGotFocusRaized();
 					}
 					if (uChange == CommDlgBrowserStateChange.Rename)
 					{
@@ -2361,8 +2355,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			HResult ICommDlgBrowser3.GetViewFlags(out uint pdwFlags)
 			{
 					//var flags = CommDlgBrowser2ViewFlags.NoSelectVerb;
-					//Marshal.WriteInt32(pdwFlags, 0);
-					pdwFlags = (uint)CommDlgBrowser2ViewFlags.ShowAllFiles;
+					//Marshal.WriteInt64((IntPtr)pdwFlags, 0);
+					pdwFlags = (uint)CommDlgBrowser2ViewFlags.NoSelectVerb;
 					return HResult.Ok;
 			}
 
@@ -2406,8 +2400,50 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					if (explorerBrowserControl != null)
 					{
 							// translate keyboard input
-    
 
+
+            if (M.Msg == WM_NEWTREECONTROL)
+            {
+              object obj = Marshal.GetObjectForIUnknown(M.WParam);
+              try
+              {
+                if (obj != null)
+                {
+                  WindowsAPI.IOleWindow window = obj as WindowsAPI.IOleWindow;
+                  if (window != null)
+                  {
+                    IntPtr hwnd;
+                    window.GetWindow(out hwnd);
+                    if (hwnd != IntPtr.Zero && WindowsAPI.IsChild(this.Handle, hwnd))
+                    {
+                      hwnd = WindowsAPI.FindChildWindow(hwnd,
+                              child => WindowsAPI.GetClassName(child) == "SysTreeView32");
+                      if (hwnd != IntPtr.Zero)
+                      {
+                        WindowsAPI.INameSpaceTreeControl2 control = obj as WindowsAPI.INameSpaceTreeControl2;
+                        if (control != null)
+                        {
+                          if (SysTreeView != null)
+                          {
+                            SysTreeView.Dispose();
+                          }
+                          SysTreeView = new TreeViewWrapper(hwnd, control);
+                          SysTreeView.TreeViewClicked += SysTreeView_TreeViewClicked;
+                          obj = null; // Release the object only if we didn't get this far.
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              finally
+              {
+                if (obj != null)
+                {
+                  Marshal.ReleaseComObject(obj);
+                }
+              }
+            }
             if (m.Msg == (int)WindowsAPI.WndMsg.WM_NOTIFY + (int)WindowsAPI.WndMsg.WM_REFLECT) {
 
                 WindowsAPI.NMHDR nmhdr = WindowsAPI.PtrToStructure<WindowsAPI.NMHDR>(m.LParam);
@@ -2675,8 +2711,6 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 									if (m.WParam.ToInt32() == 0x0001 && !IsMouseClickOnHeader && !IsMouseClickOutsideLV)
 									{
 
-											ShellObject s;
-												
 											if (rscroll.Height > 0)
 													if (!rec2.Contains(Cursor.Position))
 													{
@@ -2696,41 +2730,47 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 													}
 									}
 
-									if (!reclv.Contains(Cursor.Position))
-									{
-											if (ExplorerBrowserMouseLeave != null)
-													ExplorerBrowserMouseLeave.Invoke(this, null);
-									}
-                                //MessageBox.Show(LastItemRect.X.ToString() + "/" + LastItemRect.Location.Y + " - " + Cursor.Position.ToString());
-                                if (reclv.Contains(Cursor.Position)) 
-                                {
-                                    //MessageBox.Show(LastItemRect.ToString() + " - " + Cursor.Position.ToString());
-                                    if (!((LastItemRect.X < Cursor.Position.X && LastItemRect.Y < Cursor.Position.Y)
-                                        && (LastItemRect.Right > Cursor.Position.X && LastItemRect.Bottom > Cursor.Position.Y))) 
-                                    {
-                                        AutomationElement ae = AutomationElement.FromPoint(new System.Windows.Point(Cursor.Position.X, Cursor.Position.Y));
+                  if (!reclv.Contains(Cursor.Position))
+                  {
+                    if (ExplorerBrowserMouseLeave != null)
+                      ExplorerBrowserMouseLeave.Invoke(this, null);
+                  }
+                  //MessageBox.Show(LastItemRect.X.ToString() + "/" + LastItemRect.Location.Y + " - " + Cursor.Position.ToString());
+                  if (reclv.Contains(Cursor.Position))
+                  {
+                    //MessageBox.Show(LastItemRect.ToString() + " - " + Cursor.Position.ToString());
+                    if (!((LastItemRect.X < Cursor.Position.X && LastItemRect.Y < Cursor.Position.Y)
+                        && (LastItemRect.Right > Cursor.Position.X && LastItemRect.Bottom > Cursor.Position.Y)))
+                    {
+                      AutomationElement ae = AutomationElement.FromPoint(new System.Windows.Point(Cursor.Position.X, Cursor.Position.Y));
 
-                                        LastItemRect = new Rectangle((int)ae.Current.BoundingRectangle.Location.X, (int)ae.Current.BoundingRectangle.Location.Y, (int)ae.Current.BoundingRectangle.Width, (int)ae.Current.BoundingRectangle.Height);
-                                        if (ae.Current.ClassName == "UIItem") {
-                                        int AutomationID = -1;
-                                        bool isNumber = int.TryParse(ae.Current.AutomationId, out AutomationID);
-                                        if (isNumber) {
-                                            var item = GetItem(AutomationID);
-                                            vItemHot(ae.Current.ClassName, item, ae.Current.BoundingRectangle, AutomationID, false); 
-                                        }
-                                        } else if (ae.Current.ClassName == "UIProperty") {
-                                        AutomationElement aeParent = TreeWalker.ContentViewWalker.GetParent(ae);
-                                        int AutomationID = -1;
-                                        bool isNumber = int.TryParse(aeParent.Current.AutomationId, out AutomationID);
-                                        if (isNumber) {
-                                            var item = GetItem(AutomationID);
-                                            LastItemRect = new Rectangle((int)aeParent.Current.BoundingRectangle.Location.X, (int)aeParent.Current.BoundingRectangle.Location.Y, (int)aeParent.Current.BoundingRectangle.Width, (int)aeParent.Current.BoundingRectangle.Height);
-                                            vItemHot(aeParent.Current.ClassName, item, aeParent.Current.BoundingRectangle, AutomationID, false); 
-                                        }
-                                        }
-                                    }
-                      
-                                }
+                      LastItemRect = new Rectangle((int)ae.Current.BoundingRectangle.Location.X, (int)ae.Current.BoundingRectangle.Location.Y, (int)ae.Current.BoundingRectangle.Width, (int)ae.Current.BoundingRectangle.Height);
+                      if (ae.Current.ClassName == "UIItem")
+                      {
+                        int AutomationID = -1;
+                        bool isNumber = int.TryParse(ae.Current.AutomationId, out AutomationID);
+                        if (isNumber)
+                        {
+                          var item = GetItem(AutomationID);
+                          vItemHot(ae.Current.ClassName, item, ae.Current.BoundingRectangle, AutomationID, false);
+                        }
+                      }
+                      else if (ae.Current.ClassName == "UIProperty")
+                      {
+                        AutomationElement aeParent = TreeWalker.ContentViewWalker.GetParent(ae);
+                        int AutomationID = -1;
+                        bool isNumber = int.TryParse(aeParent.Current.AutomationId, out AutomationID);
+                        if (isNumber)
+                        {
+                          var item = GetItem(AutomationID);
+                          LastItemRect = new Rectangle((int)aeParent.Current.BoundingRectangle.Location.X, (int)aeParent.Current.BoundingRectangle.Location.Y, (int)aeParent.Current.BoundingRectangle.Width, (int)aeParent.Current.BoundingRectangle.Height);
+                          vItemHot(aeParent.Current.ClassName, item, aeParent.Current.BoundingRectangle, AutomationID, false);
+                        }
+                      }
+                    }
+
+                  }
+
 							}
 
 							if (m.Msg == (int)WindowsAPI.WndMsg.WM_PAINT)
@@ -2911,48 +2951,53 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			{
 				if (ViewEnumerationComplete != null)
 				{
-          Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
-          IntPtr view = IntPtr.Zero;
-          HResult hr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
-          IShellView isv = (IShellView)Marshal.GetObjectForIUnknown(view);
-          _IServiceProvider isp = (_IServiceProvider)isv;
-          object IShellBrowserObject;
-          isp.QueryService(Guid.Parse(ExplorerBrowserIIDGuid.IShellBrowser), Guid.Parse("00000000-0000-0000-C000-000000000046"), out IShellBrowserObject);
-          IShellBrowser isbr = (IShellBrowser)IShellBrowserObject;
-          IntPtr explorerBrowserContainerHandle = IntPtr.Zero;
-          isbr.GetWindow(out explorerBrowserContainerHandle);
-					IntPtr z = WindowsAPI.FindWindowEx(explorerBrowserContainerHandle, IntPtr.Zero, "DUIViewWndClassName", null);
-					IntPtr o = WindowsAPI.FindWindowEx(z, IntPtr.Zero, "DirectUIHWND", null);
-					IntPtr s1 = WindowsAPI.FindWindowEx(o, IntPtr.Zero, "CtrlNotifySink", null);
-					IntPtr s2 = WindowsAPI.FindWindowEx(o, s1, "CtrlNotifySink", null);
-          //SysTreeViewCHandle = WindowsAPI.FindWindowEx(s2, IntPtr.Zero, "NamespaceTreeControl", "Namespace Tree Control");
-          //SysTreeViewHandle = WindowsAPI.FindWindowEx(SysTreeViewCHandle, IntPtr.Zero, "SysTreeView32", "Tree View");
-					IntPtr s3 = WindowsAPI.FindWindowEx(o, s2, "CtrlNotifySink", null);
-					IntPtr k = WindowsAPI.FindWindowEx(s3, IntPtr.Zero, "SHELLDLL_DefView", null);
-					SysListViewHandle = WindowsAPI.FindWindowEx(k, IntPtr.Zero, "SysListView32", null);
-					if (SysListViewHandle == IntPtr.Zero)
-					{
-							SysListViewHandle = WindowsAPI.FindWindowEx(k, IntPtr.Zero, "DirectUIHWND", null);
-					}
-					IntPtr s4 = WindowsAPI.FindWindowEx(SysListViewHandle, IntPtr.Zero, "CtrlNotifySink", null);
-					IntPtr s5 = WindowsAPI.FindWindowEx(SysListViewHandle, s4, "CtrlNotifySink", null);
-					VScrollHandle = WindowsAPI.FindWindowEx(s5, IntPtr.Zero, "ScrollBar", null);
-					WindowsAPI.RECTW rscroll = new WindowsAPI.RECTW();
-					WindowsAPI.GetWindowRect(VScrollHandle, ref rscroll);
-												
-					AvailableVisibleColumns = AvailableColumns(false);
-					SysListviewDT = (WindowsAPI.IDropTarget)isv;
+          try
+          {
+            Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
+            IntPtr view = IntPtr.Zero;
+            HResult hr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
+            IShellView isv = (IShellView)Marshal.GetObjectForIUnknown(view);
+            _IServiceProvider isp = (_IServiceProvider)isv;
+            object IShellBrowserObject;
+            isp.QueryService(Guid.Parse(ExplorerBrowserIIDGuid.IShellBrowser), Guid.Parse("00000000-0000-0000-C000-000000000046"), out IShellBrowserObject);
+            IShellBrowser isbr = (IShellBrowser)IShellBrowserObject;
+            IntPtr explorerBrowserContainerHandle = IntPtr.Zero;
+            isbr.GetWindow(out explorerBrowserContainerHandle);
+            IntPtr z = WindowsAPI.FindWindowEx(explorerBrowserContainerHandle, IntPtr.Zero, "DUIViewWndClassName", null);
+            IntPtr o = WindowsAPI.FindWindowEx(z, IntPtr.Zero, "DirectUIHWND", null);
+            IntPtr s1 = WindowsAPI.FindWindowEx(o, IntPtr.Zero, "CtrlNotifySink", null);
+            IntPtr s2 = WindowsAPI.FindWindowEx(o, s1, "CtrlNotifySink", null);
+            //SysTreeViewCHandle = WindowsAPI.FindWindowEx(s2, IntPtr.Zero, "NamespaceTreeControl", "Namespace Tree Control");
+            //SysTreeViewHandle = WindowsAPI.FindWindowEx(SysTreeViewCHandle, IntPtr.Zero, "SysTreeView32", "Tree View");
+            IntPtr s3 = WindowsAPI.FindWindowEx(o, s2, "CtrlNotifySink", null);
+            IntPtr k = WindowsAPI.FindWindowEx(s3, IntPtr.Zero, "SHELLDLL_DefView", null);
+            SysListViewHandle = WindowsAPI.FindWindowEx(k, IntPtr.Zero, "SysListView32", null);
+            if (SysListViewHandle == IntPtr.Zero)
+            {
+              SysListViewHandle = WindowsAPI.FindWindowEx(k, IntPtr.Zero, "DirectUIHWND", null);
+            }
+            IntPtr s4 = WindowsAPI.FindWindowEx(SysListViewHandle, IntPtr.Zero, "CtrlNotifySink", null);
+            IntPtr s5 = WindowsAPI.FindWindowEx(SysListViewHandle, s4, "CtrlNotifySink", null);
+            VScrollHandle = WindowsAPI.FindWindowEx(s5, IntPtr.Zero, "ScrollBar", null);
+            WindowsAPI.RECTW rscroll = new WindowsAPI.RECTW();
+            WindowsAPI.GetWindowRect(VScrollHandle, ref rscroll);
 
-					Marshal.ReleaseComObject(isv);
-                    if (!IsCustomDialogs) {
-                        WindowsAPI.RevokeDragDrop(SysListViewHandle);
-                        ShellViewDragDrop DropTarget = new ShellViewDragDrop(SysListviewDT);
-                        WindowsAPI.RegisterDragDrop(SysListViewHandle, DropTarget);
-                    }
+            AvailableVisibleColumns = AvailableColumns(false);
+            SysListviewDT = (WindowsAPI.IDropTarget)isv;
+
+            Marshal.ReleaseComObject(isv);
+            if (!IsCustomDialogs)
+            {
+              WindowsAPI.RevokeDragDrop(SysListViewHandle);
+              ShellViewDragDrop DropTarget = new ShellViewDragDrop(SysListviewDT);
+              WindowsAPI.RegisterDragDrop(SysListViewHandle, DropTarget);
+            }
+          }
+          catch (Exception)
+          {
+
+          }
 												
-					GC.WaitForPendingFinalizers();
-					GC.Collect();
-								
 					ViewEnumerationComplete.Invoke(this, EventArgs.Empty);
 				}
 			}

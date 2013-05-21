@@ -548,7 +548,7 @@ namespace BetterExplorer
 			//BeforeSearcCicles = searchcicles;
             Thread t = new Thread(() =>
             {
-              Thread.Sleep(250);
+
 			            Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
 								        {
                                             //Thread.Sleep(250);
@@ -791,8 +791,7 @@ namespace BetterExplorer
 								        }
                 
 			        ));
-                  GC.WaitForFullGCComplete();
-                  GC.Collect();
+
             });
             //t.IsBackground = true;
             t.Start();
@@ -859,8 +858,8 @@ namespace BetterExplorer
       {
 			    try
           {
-            Thread.Sleep(250);
-				    Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
+
+				    Dispatcher.Invoke(DispatcherPriority.Send, (Action)(() =>
 									    {
                                        
 			                  ConstructMoveToCopyToMenu();
@@ -915,43 +914,6 @@ namespace BetterExplorer
 										    btnMoveto.IsEnabled = IsChanged;
 										    btnSelNone.IsEnabled = IsChanged;
 										    btnUpLevel.IsEnabled = !(Explorer.NavigationLog.CurrentLocation.Parent == null);
-
-										    //try
-										    //{
-
-										    //	//ClosableTabItem it = new ClosableTabItem();
-										    //	//CreateTabbarRKMenu(it);
-										    //	e.NewLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-										    //	e.NewLocation.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-										    //	(tabControl1.SelectedItem as ClosableTabItem).Header = e.NewLocation.GetDisplayName(DisplayNameType.Default);
-										    //	(tabControl1.SelectedItem as ClosableTabItem).TabIcon = e.NewLocation.Thumbnail.BitmapSource;
-										    //	(tabControl1.SelectedItem as ClosableTabItem).Path = e.NewLocation;
-										    //	if (!isGoingBackOrForward)
-										    //	{
-										    //		(tabControl1.SelectedItem as ClosableTabItem).log.CurrentLocation = e.NewLocation;
-										    //	}
-
-										    //	isGoingBackOrForward = false;
-
-										    //	leftNavBut.IsEnabled = (tabControl1.SelectedItem as ClosableTabItem).log.CanNavigateBackwards;
-										    //	rightNavBut.IsEnabled = (tabControl1.SelectedItem as ClosableTabItem).log.CanNavigateForwards;
-
-										    //	//(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).DragEnter += new DragEventHandler(newt_DragEnter);
-										    //	//(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).DragLeave += new DragEventHandler(newt_DragLeave);
-										    //	//(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).DragOver += new DragEventHandler(newt_DragOver);
-										    //	//(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).Drop += new DragEventHandler(newt_Drop);
-										    //	//(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).AllowDrop = true;
-										    //	//(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).Index = CurrentTabIndex;
-										    //	//(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).CloseTab += new RoutedEventHandler(cti_CloseTab);
-										    //	//tabControl1.Items[CurrentTabIndex] = it;
-										    //	//tabControl1.SelectedIndex = CurrentTabIndex;
-										    //	edtSearchBox.CurrentPathName = e.NewLocation.GetDisplayName(DisplayNameType.Default);
-
-										    //}
-										    //catch (Exception)
-										    //{
-
-										    //}
 
 			                    IntPtr pIDL = IntPtr.Zero;
 
@@ -1021,18 +983,6 @@ namespace BetterExplorer
 
                               leftNavBut.IsEnabled = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CanNavigateBackwards;
                               rightNavBut.IsEnabled = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CanNavigateForwards;
-
-			                        //(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).DragEnter += new DragEventHandler(newt_DragEnter);
-			                        //(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).DragLeave += new DragEventHandler(newt_DragLeave);
-			                        //(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).DragOver += new DragEventHandler(newt_DragOver);
-			                        //(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).Drop += new DragEventHandler(newt_Drop);
-			                        //(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).AllowDrop = true;
-			                        //(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).Index = CurrentTabIndex;
-			                        //(tabControl1.Items[CurrentTabIndex] as ClosableTabItem).CloseTab += new RoutedEventHandler(cti_CloseTab);
-			                        //tabControl1.Items[CurrentTabIndex] = it;
-			   
-
-
 			                    }
 			                    catch (Exception)
 			                    {
@@ -1167,8 +1117,7 @@ namespace BetterExplorer
 									    }
 								    ));
                 
-				    GC.WaitForPendingFinalizers();
-				    GC.Collect();
+
 			    }
 			    catch (Exception exe)
 			    {
@@ -1202,7 +1151,7 @@ namespace BetterExplorer
 			        //    "\r\nSearch Folder: " + GetYesNoFromBoolean(ne.IsSearchFolder) + "\r\nShared: " + GetYesNoFromBoolean(ne.IsShared) + "\r\nShortcut: " + GetYesNoFromBoolean(ne.IsLink) + "\r\nLibrary: " + GetYesNoFromBoolean(isinLibraries) + "\r\nLibraries Folder: " + GetYesNoFromBoolean(itisLibraries) +
 			        //    "\r\n\r\n Would you like to see additional information? Click No to try continuing the program.", "Error Occurred on Completing Navigation", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
 			        //{
-			        //    MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is additional information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Additional Error Data", MessageBoxButton.OK, MessageBoxImage.Error);
+			           // MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is additional information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Additional Error Data", MessageBoxButton.OK, MessageBoxImage.Error);
 			        //}
 			    }
       });
@@ -1488,8 +1437,8 @@ namespace BetterExplorer
 		{
 
       Thread t = new Thread(() => {
-        Thread.Sleep(250);
-        Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+        Thread.Sleep(50);
+        Dispatcher.BeginInvoke(DispatcherPriority.Send, (ThreadStart)(() => {
         //if (IsAfterRename) {
         //  //breadcrumbBarControl1.ExitEditMode();
         //  if (this.OwnedWindows.OfType<FileOperationDialog>().Count() == 0)
@@ -3789,14 +3738,14 @@ namespace BetterExplorer
 					FavPath = "";
 				}
 
-        UpdateRecycleBinInfos();
+        //UpdateRecycleBinInfos();
 				//' set up breadcrumb bar
 				breadcrumbBarControl1.SetDragHandlers(new DragEventHandler(bbi_DragEnter), new DragEventHandler(bbi_DragLeave), new DragEventHandler(bbi_DragOver), new DragEventHandler(bbi_Drop));
-                Thread t = new Thread(() => {
-				  Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
-								 (ThreadStart)(() =>
-								 {
-                   Thread.Sleep(100);
+      //          Thread t = new Thread(() => {
+				  //Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+						//		 (ThreadStart)(() =>
+						//		 {
+                   //Thread.Sleep(100);
                     
 									 //'set up Favorites menu (note that BetterExplorer does not support links to a Control Panel. lol -JaykeBird)
 									 //'I will probably use a modification to this code in the new breadcrumbbar
@@ -3870,10 +3819,10 @@ namespace BetterExplorer
 									 Explorer.ExplorerBrowserMouseLeave += new EventHandler(Explorer_ExplorerBrowserMouseLeave);
 									 Explorer.DragDrop += new System.Windows.Forms.DragEventHandler(Explorer_DragDrop);
 									 IsCalledFromLoading = true;
-									 WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
-									 WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS | WindowsAPI.SSF.SSF_SHOWEXTENSIONS, false);
-									 chkHiddenFiles.IsChecked = (state.fShowAllObjects == 1);
-									 chkExtensions.IsChecked = (state.fShowExtensions == 1);
+									 WindowsAPI.SHELLSTATE statef = new WindowsAPI.SHELLSTATE();
+                   WindowsAPI.SHGetSetSettings(ref statef, WindowsAPI.SSF.SSF_SHOWALLOBJECTS | WindowsAPI.SSF.SSF_SHOWEXTENSIONS, false);
+                   chkHiddenFiles.IsChecked = (statef.fShowAllObjects == 1);
+                   chkExtensions.IsChecked = (statef.fShowExtensions == 1);
 									 IsCalledFromLoading = false;
 									 isOnLoad = true;
 									 //'load from Registry
@@ -4243,19 +4192,17 @@ namespace BetterExplorer
 					              autoUpdater.UpdateType = UpdateType.DoNothing;
 					            }
 					            if (IsUpdateCheckStartup) {
-					              if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
-                          autoUpdater.ForceCheckForUpdate(true);
-					              }
+                          autoUpdater.ForceCheckForUpdate();
 					            }
 				            } catch (IOException) {
 					            this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
 					            this.btnUpdateCheck.IsEnabled = false;
 				            }
 
-								 }
-				 ));
-        });
-        t.Start();
+								 //}
+				 //));
+     //   });
+     //   t.Start();
 
         
 
