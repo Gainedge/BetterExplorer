@@ -3035,14 +3035,20 @@ namespace BetterExplorer
 
             if (Explorer.GetSelectedItemsCount() == 1)
             {
-                ShellObject item = Explorer.SelectedItems[0];
-                item.Thumbnail.CurrentSize = new System.Windows.Size(96, 96);
-                confirmationDialog.MessageIcon = item.Thumbnail.BitmapSource;
+              ShellObject item = Explorer.SelectedItems[0];
+              item.Thumbnail.CurrentSize = new System.Windows.Size(96, 96);
+              confirmationDialog.MessageIcon = item.Thumbnail.BitmapSource;
+              if (isMoveToRB)
                 confirmationDialog.MessageText = String.Format("Are you sure you want to move {0} to Recycle Bin?", item.GetDisplayName(DisplayNameType.Default));
+              else
+                confirmationDialog.MessageText = String.Format("Are you sure you want to move {0} permanently?", item.GetDisplayName(DisplayNameType.Default));
             }
             else
             {
+              if (isMoveToRB)
                 confirmationDialog.MessageText = String.Format("Are you sure you want to move selected {0} items to Recycle Bin?", Explorer.GetSelectedItemsCount());
+              else
+                confirmationDialog.MessageText = String.Format("Are you sure you want to move selected {0} items permanently?", Explorer.GetSelectedItemsCount());
             }
 
             confirmationDialog.Owner = this;
@@ -3541,7 +3547,7 @@ namespace BetterExplorer
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 
-      ExplorerBrowser.IsCustomDialogs = Convert.ToInt32(rks.GetValue(@"IsCustomFO", 0)) == 1 ? true : false;
+      ExplorerBrowser.SetCustomDialogs(Convert.ToInt32(rks.GetValue(@"IsCustomFO", 0)) == 1 ? true : false);
 
 			// loads current Ribbon color theme
 			try
@@ -8597,7 +8603,7 @@ namespace BetterExplorer
         {
           if (chkIsCFO.IsChecked.Value)
           {
-            ExplorerBrowser.IsCustomDialogs = true;
+            ExplorerBrowser.SetCustomDialogs(true);
             RegistryKey rk = Registry.CurrentUser;
             RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
             rks.SetValue(@"IsCustomFO", 1, RegistryValueKind.DWord);
@@ -8606,7 +8612,7 @@ namespace BetterExplorer
           }
           else
           {
-            ExplorerBrowser.IsCustomDialogs = false;
+            ExplorerBrowser.SetCustomDialogs(false);
             RegistryKey rk = Registry.CurrentUser;
             RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
             rks.SetValue(@"IsCustomFO", 0, RegistryValueKind.DWord);

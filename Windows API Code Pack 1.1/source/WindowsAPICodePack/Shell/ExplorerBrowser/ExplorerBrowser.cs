@@ -68,8 +68,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       public IShellView isvv { get; set; }
       private IShellItemArray selectedShellItemsArray;
       Collumns[] _Collumns = new Collumns[0];
-      short mHotKeyId = 0;  
-      public static bool IsCustomDialogs = false;
+      short mHotKeyId = 0;
+      public static bool IsCustomDialogs { get; set; }
       #endregion
 
 	#region Imports
@@ -1959,6 +1959,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                 HookLibManager.Initialize();
                 Application.AddMessageFilter(this);
 			}
+
+      public static void SetCustomDialogs(Boolean isSet){
+        IsCustomDialogs = isSet;
+        HookLibManager.IsCustomDialog = isSet;
+      }
 
       //Callback procedure used by the window hook
       private IntPtr CallbackGetMsgProc(int nCode, IntPtr wParam, IntPtr lParam) {
