@@ -27,6 +27,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations
           {
             if (Notifications.NotificationReceipt(m.WParam, m.LParam))
             {
+
               OnMessageReceived.Invoke(this, new EventArgs());
             }
 

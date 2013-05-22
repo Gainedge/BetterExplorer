@@ -3685,7 +3685,7 @@ namespace BetterExplorer
     MessageReceiver r;
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-
+      UpdateRecycleBinInfos();
       if (App.isStartMinimized)
       {
         this.Visibility = System.Windows.Visibility.Hidden;

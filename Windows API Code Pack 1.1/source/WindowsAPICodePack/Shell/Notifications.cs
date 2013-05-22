@@ -447,6 +447,7 @@ namespace ShellNotifications
 		/// <returns></returns>
 		public ulong RegisterChangeNotify(IntPtr hWnd, CSIDL FolderID, bool Recursively)
 		{
+
 			if(notifyid != 0) return(0);
 			SHChangeNotifyEntry changeentry = new SHChangeNotifyEntry();
       IntPtr ppidl = IntPtr.Zero;
@@ -462,6 +463,7 @@ namespace ShellNotifications
 				ref changeentry);
 			return(notifyid);
 		}
+
     [DllImport("shell32.dll")]
     static extern int SHGetFolderLocation(IntPtr hwndOwner, CSIDL nFolder,
        IntPtr hToken, uint dwReserved, out IntPtr ppidl);
@@ -549,16 +551,22 @@ namespace ShellNotifications
       
 			info.Item1 = GetPathFromPidl(shNotify.dwItem1);
 			info.Item2 = GetPathFromPidl(shNotify.dwItem2);
-      var ui = info.Item1.ToUpperInvariant();
-      if (!info.Item1.ToUpperInvariant().Contains("$RECYCLE.BIN"))
+
+      if (info.Item1.ToUpperInvariant().Contains("$RECYCLE.BIN") || info.Item2.ToUpperInvariant().Contains("$RECYCLE.BIN"))
+      {
+        // Was this notification in the received notifications ?
+        if (NotificationsReceived.Contains(info)) return (false);
+        NotificationsReceived.Add(info);
+        return (true);
+      }
+      else
+      {
         return false;
+      }
       //if (info.Notification != SHCNE.SHCNE_DELETE)
       //  return false;
 
-			// Was this notification in the received notifications ?
-			if(NotificationsReceived.Contains(info)) return(false);
-			NotificationsReceived.Add(info);
-			return(true);
+			
 			//DisplayName1 = GetDisplayNameFromPidl(shNotify.dwItem1);
 			//DisplayName2 = GetDisplayNameFromPidl(shNotify.dwItem2);
 		}
