@@ -2870,8 +2870,8 @@
               Margin="118,6,5,0"
               VerticalAlignment="Top">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="484*" />
-                <ColumnDefinition x:Name="SearchBarColumn" Width="219" />
+                <ColumnDefinition Width="484*" MinWidth="200"/>
+                <ColumnDefinition x:Name="SearchBarColumn" Width="219" MinWidth="150" />
             </Grid.ColumnDefinitions>
             <controls:BreadcrumbBarControl x:Name="breadcrumbBarControl1"
                                            Width="Auto"
