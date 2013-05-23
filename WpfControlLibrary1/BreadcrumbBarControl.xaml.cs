@@ -13,6 +13,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Shell;
 using System.Threading;
+using System.IO;
+using GongSolutions.Shell;
+using WindowsHelper;
+using System.Runtime.InteropServices;
+
 
 namespace BetterExplorerControls
 {
@@ -254,6 +259,7 @@ namespace BetterExplorerControls
 				}
 
 				duh.NavigateRequested += new BreadcrumbBarItem.PathEventHandler(duh_NavigateRequested);
+        duh.ContextMenuRequested += duh_ContextMenuRequested;
 
 				this.elPanel.Children.Add(duh);
 
@@ -264,6 +270,49 @@ namespace BetterExplorerControls
 				}
 			}
 		}
+
+    /// <summary>
+    /// Struct representing a point.
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct POINT
+    {
+      public int X;
+      public int Y;
+
+      public static implicit operator Point(POINT point)
+      {
+        return new Point(point.X, point.Y);
+      }
+    }
+
+    /// <summary>
+    /// Retrieves the cursor's position, in screen coordinates.
+    /// </summary>
+    /// <see>See MSDN documentation for further information.</see>
+    [DllImport("user32.dll")]
+    public static extern bool GetCursorPos(out POINT lpPoint);
+
+    public static Point GetCursorPosition()
+    {
+      POINT lpPoint;
+      GetCursorPos(out lpPoint);
+      //bool success = User32.GetCursorPos(out lpPoint);
+      // if (!success)
+
+      return lpPoint;
+    }
+
+    void duh_ContextMenuRequested(object sender, PathEventArgs e)
+    {
+      ShellContextMenu cm = new ShellContextMenu(e.ShellObject);
+      ShellObject[] dirs = new ShellObject[1];
+      dirs[0] = e.ShellObject;
+      Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow)
+                          .Transform(new Point(0, 0));
+      Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
+      cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
+    }
 
 		void duh_MouseDoubleClick(object sender, EventArgs e)
 		{
