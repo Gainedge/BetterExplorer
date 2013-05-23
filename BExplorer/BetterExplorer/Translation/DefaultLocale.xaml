@@ -344,4 +344,8 @@
   <system:String x:Key="txtForward">Forward</system:String>
 	<system:String x:Key="txtLevelUp">Level Up</system:String>
 	<system:String x:Key="txtSearchLabel">Search:</system:String>
+	<system:String x:Key="txtShortcut">Shortcut</system:String>
+	<system:String x:Key="txtFolder">Folder</system:String>
+	<system:String x:Key="txtFile">File</system:String>
+	<system:String x:Key="txtSeveralItems">several items</system:String>
 </ResourceDictionary>

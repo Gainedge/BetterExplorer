@@ -33,6 +33,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       Contents = new ObservableCollection<FileOperation>();
       Contents.CollectionChanged += Contents_CollectionChanged;
       InitializeComponent();
+	    Background = Theme.Background;
       //ensure win32 handle is created
       var handle = new WindowInteropHelper(this).EnsureHandle();
 
