@@ -228,6 +228,17 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			return false;
 		}
 
+		static string UppercaseFirst(string s)
+		{
+			if (string.IsNullOrEmpty(s))
+			{
+				return string.Empty;
+			}
+			char[] a = s.ToCharArray();
+			a[0] = char.ToUpper(a[0]);
+			return new string(a);
+		}
+
 		private static bool DeleteItem(IntPtr sourceItems)
 		{
 			if (!IsCustomDialog)
@@ -247,23 +258,34 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			{
 				ShellObject item = ShellObject.FromParsingName(sourceItemsCollection[0]);
 				item.Thumbnail.CurrentSize = new Size(96, 96);
-				header += win.FindResource((item.IsLink? "txtShortcut" : item.IsFolder? "txtFolder" : "txtFile"));
-				Trace.WriteLine(item.IsLink);
+				var itemName = win.FindResource((item.IsLink? "txtShortcut" : item.IsFolder? "txtFolder" : "txtFile")) as string;
+				if (!Theme.IsWin7)
+				{
+					itemName = UppercaseFirst(itemName);
+				}
+				header += itemName;
 				confirmationDialog.MessageIcon = item.Thumbnail.BitmapSource;
 				confirmationDialog.MessageText = isMoveToRB
-																					 ? "Are you sure you want to move " +
-																						 item.GetDisplayName(DisplayNameType.Default) + " to Recycle Bin?"
-																					 : "Are you sure you want to remove " +
-																						 item.GetDisplayName(DisplayNameType.Default) + " permanently?";
+																					 ? string.Format((string) win.FindResource("txtConfirmDeleteObject"), itemName)
+																					 : string.Format((string) win.FindResource("txtConfirmRemoveObject"), itemName);
+				confirmationDialog.FileInfo = item.Name + "\n";
+				if (item.IsFolder)
+				{
+					confirmationDialog.FileInfo += string.Format("{0}: {1} ", win.FindResource("txtCreationDate") as string, item.Properties.GetProperty("System.DateCreated"));
+				}
+				else if (item.IsLink)
+				{
+					var targetPath = item.Properties.GetProperty("System.Link.TargetParsingPath").ValueAsObject as string;
+					confirmationDialog.FileInfo += string.Format("{0}: {1} ({2}) ", 
+						win.FindResource("txtLocation") as string, Path.GetFileNameWithoutExtension(targetPath), Path.GetDirectoryName(targetPath));
+				}
 			}
 			else
 			{
 				header += win.FindResource("txtSeveralItems");
 				confirmationDialog.MessageText = isMoveToRB
-																				 ? "Are you sure you want to move selected " +
-																					 sourceItemsCollection.Count() + " items to Recycle Bin?"
-																				 : "Are you sure you want to remove selected " +
-																					 sourceItemsCollection.Count() + " items permanently?";
+																				 ? string.Format((string) win.FindResource("txtConfirmDeleteObjects"), sourceItemsCollection.Count())
+																				 : string.Format((string) win.FindResource("txtConfirmRemoveObjects"), sourceItemsCollection.Count());
 			}
 			confirmationDialog.MessageCaption = header;
 

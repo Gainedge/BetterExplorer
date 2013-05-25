@@ -344,8 +344,14 @@
   <system:String x:Key="txtForward">Forward</system:String>
 	<system:String x:Key="txtLevelUp">Level Up</system:String>
 	<system:String x:Key="txtSearchLabel">Search:</system:String>
-	<system:String x:Key="txtShortcut">Shortcut</system:String>
-	<system:String x:Key="txtFolder">Folder</system:String>
-	<system:String x:Key="txtFile">File</system:String>
+	<system:String x:Key="txtShortcut">shortcut</system:String>
+	<system:String x:Key="txtFolder">folder</system:String>
+	<system:String x:Key="txtFile">file</system:String>
 	<system:String x:Key="txtSeveralItems">several items</system:String>
+	<system:String x:Key="txtConfirmDeleteObject">Are you sure you want to move this {0} to Recycle Bin?</system:String>
+	<system:String x:Key="txtConfirmRemoveObject">Are you sure you want to remove this {0} permanently?</system:String>
+	<system:String x:Key="txtConfirmDeleteObjects">Are you sure you want to move these objects ({0} items) to Recycle Bin?</system:String>
+	<system:String x:Key="txtConfirmRemoveObjects">Are you sure you want to remove these objects ({0} items) permanently?</system:String>
+	<system:String x:Key="txtCreationDate">Creation date</system:String>
+	<system:String x:Key="txtLocation">Location</system:String>
 </ResourceDictionary>

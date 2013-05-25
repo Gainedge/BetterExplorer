@@ -10,7 +10,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations
 {
 	static public class Theme
 	{
-		private static bool isWin7
+		public static bool IsWin7
 		{
 			get { return Name == "Windows 7"; }
 		}
@@ -18,11 +18,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations
 		public static string Name { get; set; }
 		public static ResizeMode ResizeMode
 		{
-			get { return isWin7 ? ResizeMode.NoResize : ResizeMode.CanMinimize; }
+			get { return IsWin7 ? ResizeMode.NoResize : ResizeMode.CanMinimize; }
 		}
 		public static Brush Background
 		{
-			get { return isWin7 ? Brushes.WhiteSmoke : Brushes.White; }
+			get { return IsWin7 ? Brushes.WhiteSmoke : Brushes.White; }
 		}
 
 		static Theme()

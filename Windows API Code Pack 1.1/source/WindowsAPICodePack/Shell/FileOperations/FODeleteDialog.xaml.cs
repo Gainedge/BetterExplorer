@@ -20,6 +20,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations
 	public partial class FODeleteDialog : Window
 	{
 		public String MessageText { get; set; }
+		public String FileInfo { get; set; }
 		public String MessageCaption { get; set; }
 		public ImageSource MessageIcon { get; set; }
 
