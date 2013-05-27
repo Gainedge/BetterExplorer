@@ -91,7 +91,7 @@
             <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1,1,1,0" >
               <DockPanel x:Name="ContentPanel">
                                 <Image x:Name="Icon" DockPanel.Dock="Left" Width="19" Height="16" 
-                                                                    HorizontalAlignment="Right" VerticalAlignment="Center" Source="{Binding Path=(TabIcon),
+                                                                    HorizontalAlignment="Right" VerticalAlignment="Center" Stretch="None"  Source="{Binding Path=(TabIcon),
                                                                      RelativeSource={RelativeSource FindAncestor,
                                                                        AncestorType={x:Type local:ClosableTabItem}}}"/>
                                 <Button x:Name="PART_Close" HorizontalAlignment="Center" Margin="3,0,3,0" VerticalAlignment="Center" Width="16" Height="16" DockPanel.Dock="Right" Style="{DynamicResource CloseableTabItemButtonStyle}" ToolTip="Close Tab">

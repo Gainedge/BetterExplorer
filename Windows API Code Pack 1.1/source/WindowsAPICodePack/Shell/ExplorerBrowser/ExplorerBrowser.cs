@@ -62,6 +62,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       bool IsGetHWnd = false;
       Rectangle LastItemRect = new Rectangle();
       public IntPtr SysListViewHandle { get; set; }
+      public IntPtr ShellSysListViewHandle { get; set; }
       public IntPtr VScrollHandle { get; set; }
       public WindowsAPI.IDropTarget SysListviewDT { get; set; }
       public IFolderView2 ifv2 { get; set; }
@@ -286,7 +287,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       #endregion
 
       #region properties
-			public bool IsOldSysListView = false;
+			public bool IsOldSysListView = true;
 
 			public bool ItemIsFolder(int Index)
 			{
@@ -2406,7 +2407,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					{
 							// translate keyboard input
 
-
+            if (m.Msg == (int)WindowsAPI.WndMsg.WM_DESTROY)
+            {
+              DeSubClass(ShellSysListViewHandle);
+            }
             if (M.Msg == WM_NEWTREECONTROL)
             {
               object obj = Marshal.GetObjectForIUnknown(M.WParam);
@@ -2449,11 +2453,12 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                 }
               }
             }
-            if (m.Msg == (int)WindowsAPI.WndMsg.WM_NOTIFY + (int)WindowsAPI.WndMsg.WM_REFLECT) {
+            if (m.Msg == 78)
+            {
 
                 WindowsAPI.NMHDR nmhdr = WindowsAPI.PtrToStructure<WindowsAPI.NMHDR>(m.LParam);
                 switch (nmhdr.code) {
-                  case WNM.TTN_GETDISPINFOW:
+                  case WNM.LVN_GETINFOTIP:
 
                     // try to start preview seaquence by tooltip
                     // we can not distinguish tooltip by mouse from by keyboard here for 7.
@@ -2511,6 +2516,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 									{
 											IsMouseClickOutsideLV = false;
 									}
+                  if (IsOldSysListView)
+                  {
+                    WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
+                  }
 										
 							}
 
@@ -2526,6 +2535,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 											args.Key = 777;
 											KeyUP(this, args);
 									}
+                  if (IsOldSysListView)
+                  {
+                    WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
+                  }
 							}
 
 							if (m.Msg == (int)WindowsAPI.WndMsg.WM_XBUTTONUP)
@@ -2558,14 +2571,19 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 									{
 											if (Wheel_delta < 0)
 											{
-													if (ContentOptions.ThumbnailSize > 34)
-													{
-															if (ContentOptions.ViewMode != ExplorerBrowserViewMode.Thumbnail)
-															{
-																	ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
-															}
-															ContentOptions.ThumbnailSize = ContentOptions.ThumbnailSize - 10; 
-													}
+
+                        if (ContentOptions.ThumbnailSize > 34)
+                        {
+                          if (ContentOptions.ViewMode != ExplorerBrowserViewMode.Thumbnail)
+                          {
+                            ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
+                          }
+                          ContentOptions.ThumbnailSize = ContentOptions.ThumbnailSize - 10;
+                        }
+                        else
+                        {
+                          ContentOptions.ViewMode = ExplorerBrowserViewMode.Details;
+                        }
 														
 														
 											}
@@ -2675,6 +2693,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 											}
 
 									}
+                  if (IsOldSysListView)
+                  {
+                    WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
+                  }
 							}
 							if (m.Msg == (int)WindowsAPI.WndMsg.WM_KEYUP)
 							{
@@ -2696,44 +2718,46 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 													return true;
 											}
 									}
+                  if (IsOldSysListView)
+                  {
+                    WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
+                  }
 										
 							}
 
 
-
 							if ((m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSEMOVE))
 							{
-									WindowsAPI.RECTW rscroll = new WindowsAPI.RECTW();
-									WindowsAPI.GetWindowRect(VScrollHandle, ref rscroll);
+								
 									WindowsAPI.RECTW rr = new WindowsAPI.RECTW();
 									WindowsAPI.GetWindowRect(SysListViewHandle, ref rr);
 									Rectangle reclv = rr.ToRectangle();
-									Rectangle rec2 = new Rectangle(reclv.X + 1, rscroll.Top + 30, reclv.Width - 3,
-											rscroll.Bottom - rscroll.Top - 5 - 30);
+									Rectangle rec2 = new Rectangle(reclv.X + 1, reclv.Y + 30, reclv.Width - 3,
+											reclv.Height - 5 - 30);
 
 									//ExplorerBrowser.Checktmr.Start();
 									//A workarownd to ugly AutoScroll bug in IExplorerBrowsers
-									if (m.WParam.ToInt32() == 0x0001 && !IsMouseClickOnHeader && !IsMouseClickOutsideLV)
+									if ((m.WParam.ToInt32() == 0x0001 || m.WParam.ToInt32() == 0x0009) && !IsMouseClickOnHeader && !IsMouseClickOutsideLV)
 									{
 
-											if (rscroll.Height > 0)
-													if (!rec2.Contains(Cursor.Position))
-													{
+                      if (!rec2.Contains(Cursor.Position))
+                      {
 
-															if (Cursor.Position.Y <= rec2.Y)
-															{
-																	Cursor.Position = new Point(Cursor.Position.X, rec2.Top);
-																	return true;
-															}
-															if (Cursor.Position.Y >= rec2.Bottom)
-															{
+                        if (Cursor.Position.Y <= rec2.Y)
+                        {
+                          Cursor.Position = new Point(Cursor.Position.X, rec2.Top);
+                          return true;
+                        }
+                        if (Cursor.Position.Y >= rec2.Bottom)
+                        {
 
-																	Cursor.Position = new Point(Cursor.Position.X, rec2.Bottom - 1);
-																	return true;
-															}
+                          Cursor.Position = new Point(Cursor.Position.X, rec2.Bottom - 1);
+                          return true;
+                        }
 
-													}
+                      }
 									}
+
 
                   if (!reclv.Contains(Cursor.Position))
                   {
@@ -2778,11 +2802,12 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 							}
 
-							if (m.Msg == (int)WindowsAPI.WndMsg.WM_PAINT)
+              if (m.Msg == (int)WindowsAPI.WndMsg.WM_PAINT || m.Msg == (int)WindowsAPI.WndMsg.WM_CREATE)
 							{
 									if (IsOldSysListView)
 									{
-											WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
+                    
+										WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
 									}
 
 							}
@@ -2921,6 +2946,21 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			// this is the new wndproc, just show a messagebox on left button down:
 			private int MyWndProc(IntPtr hWnd, int Msg, int wParam, int lParam)
 			{
+        if (Msg == 78)
+        {
+          WindowsHelper.WindowsAPI.NMHDR nmhdr = WindowsHelper.WindowsAPI.PtrToStructure<WindowsHelper.WindowsAPI.NMHDR>((IntPtr)lParam);
+          switch (nmhdr.code)
+          {
+            case WNM.LVN_GETINFOTIP:
+
+              // try to start preview seaquence by tooltip
+              // we can not distinguish tooltip by mouse from by keyboard here for 7.
+
+
+              break;
+          }
+
+        }
 					return CallWindowProc(oldWndProc, hWnd, Msg, wParam, lParam);
 			}
 
@@ -2975,11 +3015,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
             //SysTreeViewCHandle = WindowsAPI.FindWindowEx(s2, IntPtr.Zero, "NamespaceTreeControl", "Namespace Tree Control");
             //SysTreeViewHandle = WindowsAPI.FindWindowEx(SysTreeViewCHandle, IntPtr.Zero, "SysTreeView32", "Tree View");
             IntPtr s3 = WindowsAPI.FindWindowEx(o, s2, "CtrlNotifySink", null);
-            IntPtr k = WindowsAPI.FindWindowEx(s3, IntPtr.Zero, "SHELLDLL_DefView", null);
-            SysListViewHandle = WindowsAPI.FindWindowEx(k, IntPtr.Zero, "SysListView32", null);
+            IntPtr ShellSysListViewHandle = WindowsAPI.FindWindowEx(s3, IntPtr.Zero, "SHELLDLL_DefView", null);
+            SysListViewHandle = WindowsAPI.FindWindowEx(ShellSysListViewHandle, IntPtr.Zero, "SysListView32", null);
             if (SysListViewHandle == IntPtr.Zero)
             {
-              SysListViewHandle = WindowsAPI.FindWindowEx(k, IntPtr.Zero, "DirectUIHWND", null);
+              SysListViewHandle = WindowsAPI.FindWindowEx(ShellSysListViewHandle, IntPtr.Zero, "DirectUIHWND", null);
             }
             IntPtr s4 = WindowsAPI.FindWindowEx(SysListViewHandle, IntPtr.Zero, "CtrlNotifySink", null);
             IntPtr s5 = WindowsAPI.FindWindowEx(SysListViewHandle, s4, "CtrlNotifySink", null);
@@ -2989,7 +3029,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
             AvailableVisibleColumns = AvailableColumns(false);
             SysListviewDT = (WindowsAPI.IDropTarget)isv;
-
+            SubclassHWnd(ShellSysListViewHandle);
             Marshal.ReleaseComObject(isv);
             if (!IsCustomDialogs)
             {
@@ -3002,7 +3042,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
           {
 
           }
-												
+          				
 					ViewEnumerationComplete.Invoke(this, EventArgs.Empty);
 				}
 			}
