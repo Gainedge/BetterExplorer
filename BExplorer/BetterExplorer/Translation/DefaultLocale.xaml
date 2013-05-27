@@ -355,4 +355,7 @@
 	<system:String x:Key="txtConfirmRemoveObjects">Are you sure you want to remove these objects ({0} items) permanently?</system:String>
 	<system:String x:Key="txtCreationDate">Creation date</system:String>
 	<system:String x:Key="txtLocation">Location</system:String>
+	<system:String x:Key="txtType">Type</system:String>
+	<system:String x:Key="txtAuthors">Authors</system:String>
+	<system:String x:Key="txtModificationDate">Modification date</system:String>
 </ResourceDictionary>

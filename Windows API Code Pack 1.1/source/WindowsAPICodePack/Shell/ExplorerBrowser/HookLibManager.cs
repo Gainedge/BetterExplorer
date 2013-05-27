@@ -257,13 +257,13 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			{
 				ShellObject item = ShellObject.FromParsingName(sourceItemsCollection[0]);
 				item.Thumbnail.CurrentSize = new Size(96, 96);
-				confirmationDialog.MessageCaption = string.Format("{0} {1}", win.FindResource("btnDeleteCP"), 
-					win.FindResource((item.IsLink? "txtShortcut" : item.IsFolder? "txtAccusativeFolder" : "txtFile")) as string);
-				var itemTypeName = win.FindResource((item.IsLink? "txtShortcut" : item.IsFolder? "txtAccusativeFolder" : "txtFile")) as string;
+				confirmationDialog.MessageCaption = string.Format("{0} {1}", win.FindResource("btnDeleteCP"),
+					win.FindResource((item.IsLink ? "txtShortcut" : item.IsFolder ? "txtAccusativeFolder" : "txtFile")) as string);
+				var itemTypeName = win.FindResource((item.IsLink ? "txtShortcut" : item.IsFolder ? "txtAccusativeFolder" : "txtFile")) as string;
 				confirmationDialog.MessageIcon = item.Thumbnail.BitmapSource;
 				confirmationDialog.MessageText = isMoveToRB
-																					 ? string.Format((string) win.FindResource("txtConfirmDeleteObject"), itemTypeName)
-																					 : string.Format((string) win.FindResource("txtConfirmRemoveObject"), itemTypeName);
+																					 ? string.Format((string)win.FindResource("txtConfirmDeleteObject"), itemTypeName)
+																					 : string.Format((string)win.FindResource("txtConfirmRemoveObject"), itemTypeName);
 				confirmationDialog.FileInfo = item.Name + "\n";
 				if (item.IsFolder)
 				{
@@ -278,15 +278,30 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 				}
 				else // file
 				{
-					
+					var fileInfo = string.Format("{0}: {1}\n", win.FindResource("txtType"), item.Properties.System.ItemTypeText.ValueAsObject);
+					fileInfo += string.Format("{0}: {1}\n", win.FindResource("txtAuthors"), string.Join(",", (string[])item.Properties.System.ItemAuthors.ValueAsObject));
+					string[] sizes = { "B", "KB", "MB", "GB" };
+					var len = (ulong)item.Properties.System.Size.ValueAsObject;
+					int order = 0;
+					while (len >= 1024 && order + 1 < sizes.Length)
+					{
+						order++;
+						len = len / 1024;
+					}
+					// Adjust the format string to your preferences. For example "{0:0.#}{1}" would
+					// show a single decimal place, and no space.
+					string result = String.Format("{0:0.##} {1}", len, sizes[order]);
+					fileInfo += string.Format("{0}: {1}\n", win.FindResource("txtFileSize"), result);
+					fileInfo += string.Format("{0}: {1}\n", win.FindResource("txtModificationDate") as string, item.Properties.GetProperty("System.DateModified").ValueAsObject);
+					confirmationDialog.FileInfo += fileInfo;
 				}
 			}
 			else
 			{
 				confirmationDialog.MessageCaption = win.FindResource("txtDeleteSeveralItems") as string;
 				confirmationDialog.MessageText = isMoveToRB
-																				 ? string.Format((string) win.FindResource("txtConfirmDeleteObjects"), sourceItemsCollection.Count())
-																				 : string.Format((string) win.FindResource("txtConfirmRemoveObjects"), sourceItemsCollection.Count());
+																				 ? string.Format((string)win.FindResource("txtConfirmDeleteObjects"), sourceItemsCollection.Count())
+																				 : string.Format((string)win.FindResource("txtConfirmRemoveObjects"), sourceItemsCollection.Count());
 			}
 
 			confirmationDialog.Owner = win;
