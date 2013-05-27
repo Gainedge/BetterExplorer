@@ -253,41 +253,41 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			var confirmationDialog = new FODeleteDialog();
 			var sourceItemsCollection = ShellObjectCollection.FromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject).Select(c => c.ParsingName).ToArray();
 			var win = System.Windows.Application.Current.MainWindow;
-			var header = win.FindResource("btnDeleteCP") as string + " ";
 			if (sourceItemsCollection.Count() == 1)
 			{
 				ShellObject item = ShellObject.FromParsingName(sourceItemsCollection[0]);
 				item.Thumbnail.CurrentSize = new Size(96, 96);
-				var itemName = win.FindResource((item.IsLink? "txtShortcut" : item.IsFolder? "txtFolder" : "txtFile")) as string;
-				if (!Theme.IsWin7)
-				{
-					itemName = UppercaseFirst(itemName);
-				}
-				header += itemName;
+				confirmationDialog.MessageCaption = string.Format("{0} {1}", win.FindResource("btnDeleteCP"), 
+					win.FindResource((item.IsLink? "txtShortcut" : item.IsFolder? "txtAccusativeFolder" : "txtFile")) as string);
+				var itemTypeName = win.FindResource((item.IsLink? "txtShortcut" : item.IsFolder? "txtAccusativeFolder" : "txtFile")) as string;
 				confirmationDialog.MessageIcon = item.Thumbnail.BitmapSource;
 				confirmationDialog.MessageText = isMoveToRB
-																					 ? string.Format((string) win.FindResource("txtConfirmDeleteObject"), itemName)
-																					 : string.Format((string) win.FindResource("txtConfirmRemoveObject"), itemName);
+																					 ? string.Format((string) win.FindResource("txtConfirmDeleteObject"), itemTypeName)
+																					 : string.Format((string) win.FindResource("txtConfirmRemoveObject"), itemTypeName);
 				confirmationDialog.FileInfo = item.Name + "\n";
 				if (item.IsFolder)
 				{
-					confirmationDialog.FileInfo += string.Format("{0}: {1} ", win.FindResource("txtCreationDate") as string, item.Properties.GetProperty("System.DateCreated"));
+					confirmationDialog.FileInfo += string.Format("{0}: {1} ", win.FindResource("txtCreationDate") as string, item.Properties.GetProperty("System.DateCreated").ValueAsObject);
 				}
 				else if (item.IsLink)
 				{
 					var targetPath = item.Properties.GetProperty("System.Link.TargetParsingPath").ValueAsObject as string;
-					confirmationDialog.FileInfo += string.Format("{0}: {1} ({2}) ", 
-						win.FindResource("txtLocation") as string, Path.GetFileNameWithoutExtension(targetPath), Path.GetDirectoryName(targetPath));
+					confirmationDialog.FileInfo += string.Format("{0}: {1}\n({2}) ",
+																											 win.FindResource("txtLocation") as string, Path.GetFileNameWithoutExtension(targetPath),
+																											 Path.GetDirectoryName(targetPath));
+				}
+				else // file
+				{
+					
 				}
 			}
 			else
 			{
-				header += win.FindResource("txtSeveralItems");
+				confirmationDialog.MessageCaption = win.FindResource("txtDeleteSeveralItems") as string;
 				confirmationDialog.MessageText = isMoveToRB
 																				 ? string.Format((string) win.FindResource("txtConfirmDeleteObjects"), sourceItemsCollection.Count())
 																				 : string.Format((string) win.FindResource("txtConfirmRemoveObjects"), sourceItemsCollection.Count());
 			}
-			confirmationDialog.MessageCaption = header;
 
 			confirmationDialog.Owner = win;
 			if (confirmationDialog.ShowDialog() == true)
