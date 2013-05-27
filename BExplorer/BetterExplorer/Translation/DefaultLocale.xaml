@@ -346,6 +346,7 @@
 	<system:String x:Key="txtSearchLabel">Search:</system:String>
 	<system:String x:Key="txtShortcut">shortcut</system:String>
 	<system:String x:Key="txtFolder">folder</system:String>
+	<system:String x:Key="txtAccusativeFolder">folder</system:String>
 	<system:String x:Key="txtFile">file</system:String>
 	<system:String x:Key="txtSeveralItems">several items</system:String>
 	<system:String x:Key="txtConfirmDeleteObject">Are you sure you want to move this {0} to Recycle Bin?</system:String>
