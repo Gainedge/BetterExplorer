@@ -344,4 +344,20 @@
 	<system:String x:Key="txtForward">Вперёд</system:String>
 	<system:String x:Key="txtLevelUp">На уровень выше</system:String>
 	<system:String x:Key="txtSearchLabel">Поиск:</system:String>
+	<system:String x:Key="txtShortcut">ярлык</system:String>
+	<system:String x:Key="txtFolder">папка</system:String>
+	<system:String x:Key="txtAccusativeFolder">папку</system:String>
+	<system:String x:Key="txtFile">файл</system:String>
+	<system:String x:Key="txtSeveralItems">несколько элементов</system:String>
+	<system:String x:Key="txtConfirmDeleteObject">Вы действительно хотите переместить {0} в корзину?</system:String>
+	<system:String x:Key="txtConfirmRemoveObject">Вы действительно хотите безвовзратно удалить {0}?</system:String>
+	<system:String x:Key="txtConfirmDeleteObjects">Вы действительно хотите переместить эти объекты ({0} шт.) в корзину?</system:String>
+	<system:String x:Key="txtConfirmRemoveObjects">Вы действительно хотите безвозвратно удалить эти объекты ({0} шт.)?</system:String>
+	<system:String x:Key="txtCreationDate">Дата создания</system:String>
+	<system:String x:Key="txtLocation">Расположение</system:String>
+	<system:String x:Key="txtType">Тип</system:String>
+	<system:String x:Key="txtAuthors">Авторы</system:String>
+	<system:String x:Key="txtModificationDate">Дата изменения</system:String>
+	<system:String x:Key="txtYes">Да</system:String>
+	<system:String x:Key="txtNo">Нет</system:String>
 </ResourceDictionary>

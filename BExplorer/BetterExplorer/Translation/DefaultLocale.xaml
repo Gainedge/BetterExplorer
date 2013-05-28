@@ -358,4 +358,6 @@
 	<system:String x:Key="txtType">Type</system:String>
 	<system:String x:Key="txtAuthors">Authors</system:String>
 	<system:String x:Key="txtModificationDate">Modification date</system:String>
+	<system:String x:Key="txtYes">Yes</system:String>
+	<system:String x:Key="txtNo">No</system:String>
 </ResourceDictionary>
