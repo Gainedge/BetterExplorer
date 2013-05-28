@@ -7477,6 +7477,19 @@ namespace BetterExplorer
 			{
 				reopenabletabs.Add(thetab.log);
 				btnUndoClose.IsEnabled = true;
+                foreach (ClosableTabItem item in this.tabControl1.Items)
+                {
+                    foreach (FrameworkElement m in item.mnu.Items)
+                    {
+                        if (m.Tag != null)
+                        {
+                            if (m.Tag.ToString() == "UCTI")
+                            {
+                                (m as MenuItem).IsEnabled = true;
+                            }
+                        }
+                    }
+                }
 			}
 
 
@@ -7619,6 +7632,7 @@ namespace BetterExplorer
 
 		void CreateTabbarRKMenu(ClosableTabItem tabitem)
 		{
+
 			tabitem.mnu = new ContextMenu();
 			MenuItem miclosecurrentr = new MenuItem();
 			miclosecurrentr.Header = "Close current tab";
@@ -7637,10 +7651,40 @@ namespace BetterExplorer
 			miclosealltabbd.Click += new RoutedEventHandler(miclosealltabbd_Click);
 			tabitem.mnu.Items.Add(miclosealltabbd);
 
-			//tabitem.mnu.Items.Add(new Separator());
-
-
 			tabitem.mnu.Items.Add(new Separator());
+
+            
+            MenuItem minewtabr = new MenuItem();
+            minewtabr.Header = "New tab";
+            minewtabr.Tag = tabitem;
+            minewtabr.Click += new RoutedEventHandler(minewtabr_Click);
+            tabitem.mnu.Items.Add(minewtabr);
+
+            
+            MenuItem miclonecurrentr = new MenuItem();
+            miclonecurrentr.Header = "Clone tab";
+            miclonecurrentr.Tag = tabitem;
+            miclonecurrentr.Click += new RoutedEventHandler(miclonecurrentr_Click);
+            tabitem.mnu.Items.Add(miclonecurrentr);
+
+            tabitem.mnu.Items.Add(new Separator());
+
+            
+            MenuItem miundocloser = new MenuItem();
+            miundocloser.Header = "Undo close tab";
+            if (btnUndoClose.IsEnabled == true)
+            {
+                miundocloser.IsEnabled = true;
+            }
+            else
+            {
+                miundocloser.IsEnabled = false;
+            }
+            miundocloser.Tag = "UCTI";
+            miundocloser.Click += new RoutedEventHandler(miundocloser_Click);
+            tabitem.mnu.Items.Add(miundocloser);
+
+            tabitem.mnu.Items.Add(new Separator());
 
 			MenuItem miopeninnew = new MenuItem();
 			miopeninnew.Header = "Open in new window";
@@ -7677,6 +7721,30 @@ namespace BetterExplorer
 			ClosableTabItem ti = mi.Tag as ClosableTabItem;
 			CloseTab(ti);
 		}
+
+        void minewtabr_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = (sender as MenuItem);
+            ClosableTabItem ti = mi.Tag as ClosableTabItem;
+            NewTab();
+        }
+
+        void miclonecurrentr_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = (sender as MenuItem);
+            ClosableTabItem ti = mi.Tag as ClosableTabItem;
+            CloneTab(ti);
+        }
+
+        void miundocloser_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem mi = (sender as MenuItem);
+            
+            if (btnUndoClose.IsEnabled == true)
+            {
+                btnUndoClose_Click(this, e);
+            }
+        }
 
 		void CloseAllTabs(bool CloseFirstTab)
 		{
@@ -8307,6 +8375,19 @@ namespace BetterExplorer
 			if (reopenabletabs.Count == 0)
 			{
 				btnUndoClose.IsEnabled = false;
+                foreach (ClosableTabItem item in this.tabControl1.Items)
+                {
+                    foreach (FrameworkElement m in item.mnu.Items)
+                    {
+                        if (m.Tag != null)
+                        {
+                            if (m.Tag.ToString() == "UCTI")
+                            {
+                                (m as MenuItem).IsEnabled = false;
+                            }
+                        }
+                    }
+                }
 			}
 		}
 
@@ -8315,6 +8396,19 @@ namespace BetterExplorer
 			reopenabletabs.Clear();
 			btnUndoClose.IsDropDownOpen = false;
 			btnUndoClose.IsEnabled = false;
+            foreach (ClosableTabItem item in this.tabControl1.Items)
+            {
+                foreach (FrameworkElement m in item.mnu.Items)
+                {
+                    if (m.Tag != null)
+                    {
+                        if (m.Tag.ToString() == "UCTI")
+                        {
+                            (m as MenuItem).IsEnabled = false;
+                        }
+                    }
+                }
+            }
 		}
 
 		private void btnUndoClose_DropDownOpened(object sender, EventArgs e)
