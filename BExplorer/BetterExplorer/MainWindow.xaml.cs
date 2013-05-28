@@ -40,7 +40,6 @@ using System.Security.Principal;
 using Shell32;
 using Microsoft.WindowsAPICodePack.Taskbar;
 
-
 namespace BetterExplorer
 {
 	/// <summary>
@@ -5418,6 +5417,12 @@ namespace BetterExplorer
                 //InitializeComponent();
                 //ChangeStrings();
 				lblLocale.Visibility = Visibility.Visible;
+                Process pr = Process.GetCurrentProcess();
+                Process.Start("StartIt.exe", pr.MainModule.FileName);
+                if (r != null)
+                    r.Close();
+
+                App.Current.Shutdown();
 			}
 		}
 

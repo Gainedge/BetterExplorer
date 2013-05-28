@@ -2,7 +2,16 @@
 Module Module1
 
     Sub Main()
-        Console.WriteLine("Waiting 1 second")
+        Console.WriteLine("Waiting 5 seconds")
+        Console.WriteLine("5")
+        Wait.Wait(1)
+        Console.WriteLine("4")
+        Wait.Wait(1)
+        Console.WriteLine("3")
+        Wait.Wait(1)
+        Console.WriteLine("2")
+        Wait.Wait(1)
+        Console.WriteLine("1")
         Wait.Wait(1)
         Dim a As System.Collections.ObjectModel.Collection(Of String) = Nothing
         Dim o As String = ""
