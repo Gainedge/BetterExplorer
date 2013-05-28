@@ -2453,22 +2453,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                 }
               }
             }
-            if (m.Msg == 78)
-            {
 
-                WindowsAPI.NMHDR nmhdr = WindowsAPI.PtrToStructure<WindowsAPI.NMHDR>(m.LParam);
-                switch (nmhdr.code) {
-                  case WNM.LVN_GETINFOTIP:
-
-                    // try to start preview seaquence by tooltip
-                    // we can not distinguish tooltip by mouse from by keyboard here for 7.
-
-                    //if (Config.Get(Scts.Preview) > 0 && !Config.Bool(Scts.PreviewStop) && (!Config.Bool(Scts.PreviewWithShiftKeyDown) ^ Control.ModifierKeys == Keys.Shift)) {
-                      
-                    //}
-                    break;
-                }
-              }
 							if (m.Msg == (int)WindowsAPI.WndMsg.WM_ACTIVATEAPP)
 							{
 									MessageBox.Show("Active");
@@ -2481,41 +2466,45 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 							// Catch Left Mouse Click key
 							if ((m.Msg == (int)WindowsAPI.WndMsg.WM_LBUTTONDOWN))
 							{
-									if (KeyUP != null)
-									{
-											ExplorerKeyUPEventArgs args = new ExplorerKeyUPEventArgs();
-											args.Key = 778;
-											KeyUP(this, args);
-									}
-									//WindowsAPI.SetFocus(SysListViewHandle);
-									WindowsAPI.RECTW r = new WindowsAPI.RECTW();
-									WindowsAPI.GetWindowRect(SysListViewHandle, ref r);
-									Rectangle reclv = r.ToRectangle();
-									if (Cursor.Position.Y >= reclv.Top && Cursor.Position.Y <= reclv.Top + 29)
-									{
-											IsMouseClickOnHeader = true;
-									}
-									else
-									{
-											IsMouseClickOnHeader = false;
-									}
-									if (reclv.Contains(Cursor.Position))
-									{
-											IsPressedLKButton = true;
-									}
-									else
-									{
-											IsPressedLKButton = false;
-									}
-									//MessageBox.Show(Cursor.Position.Y.ToString() + @"\" + reclv.Top.ToString());
-									if (Cursor.Position.Y <= reclv.Top || Cursor.Position.Y >= reclv.Bottom)
-									{
-											IsMouseClickOutsideLV = true;
-									}
-									else
-									{
-											IsMouseClickOutsideLV = false;
-									}
+                
+                  if (KeyUP != null)
+                  {
+                    ExplorerKeyUPEventArgs args = new ExplorerKeyUPEventArgs();
+                    args.Key = 778;
+                    KeyUP(this, args);
+                  }
+                  if (!IsOldSysListView)
+                  {
+                  //WindowsAPI.SetFocus(SysListViewHandle);
+                  WindowsAPI.RECTW r = new WindowsAPI.RECTW();
+                  WindowsAPI.GetWindowRect(SysListViewHandle, ref r);
+                  Rectangle reclv = r.ToRectangle();
+                  if (Cursor.Position.Y >= reclv.Top && Cursor.Position.Y <= reclv.Top + 29)
+                  {
+                    IsMouseClickOnHeader = true;
+                  }
+                  else
+                  {
+                    IsMouseClickOnHeader = false;
+                  }
+                  if (reclv.Contains(Cursor.Position))
+                  {
+                    IsPressedLKButton = true;
+                  }
+                  else
+                  {
+                    IsPressedLKButton = false;
+                  }
+                  //MessageBox.Show(Cursor.Position.Y.ToString() + @"\" + reclv.Top.ToString());
+                  if (Cursor.Position.Y <= reclv.Top || Cursor.Position.Y >= reclv.Bottom)
+                  {
+                    IsMouseClickOutsideLV = true;
+                  }
+                  else
+                  {
+                    IsMouseClickOutsideLV = false;
+                  } 
+                }
                   if (IsOldSysListView)
                   {
                     WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
@@ -2737,8 +2726,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 									//ExplorerBrowser.Checktmr.Start();
 									//A workarownd to ugly AutoScroll bug in IExplorerBrowsers
-									if ((m.WParam.ToInt32() == 0x0001 || m.WParam.ToInt32() == 0x0009) && !IsMouseClickOnHeader && !IsMouseClickOutsideLV)
-									{
+                  if (!IsOldSysListView)
+                  {
+                    if ((m.WParam.ToInt32() == 0x0001 || m.WParam.ToInt32() == 0x0009) && !IsMouseClickOnHeader && !IsMouseClickOutsideLV)
+                    {
 
                       if (!rec2.Contains(Cursor.Position))
                       {
@@ -2756,7 +2747,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                         }
 
                       }
-									}
+                    }
+                  }
 
 
                   if (!reclv.Contains(Cursor.Position))
@@ -2998,6 +2990,14 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				{
           try
           {
+            try
+            {
+              DeSubClass(ShellSysListViewHandle);
+            }
+            catch (Exception)
+            {
+
+            }
             Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
             IntPtr view = IntPtr.Zero;
             HResult hr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
@@ -3015,7 +3015,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
             //SysTreeViewCHandle = WindowsAPI.FindWindowEx(s2, IntPtr.Zero, "NamespaceTreeControl", "Namespace Tree Control");
             //SysTreeViewHandle = WindowsAPI.FindWindowEx(SysTreeViewCHandle, IntPtr.Zero, "SysTreeView32", "Tree View");
             IntPtr s3 = WindowsAPI.FindWindowEx(o, s2, "CtrlNotifySink", null);
-            IntPtr ShellSysListViewHandle = WindowsAPI.FindWindowEx(s3, IntPtr.Zero, "SHELLDLL_DefView", null);
+            ShellSysListViewHandle = WindowsAPI.FindWindowEx(s3, IntPtr.Zero, "SHELLDLL_DefView", null);
             SysListViewHandle = WindowsAPI.FindWindowEx(ShellSysListViewHandle, IntPtr.Zero, "SysListView32", null);
             if (SysListViewHandle == IntPtr.Zero)
             {
@@ -3026,9 +3026,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
             VScrollHandle = WindowsAPI.FindWindowEx(s5, IntPtr.Zero, "ScrollBar", null);
             WindowsAPI.RECTW rscroll = new WindowsAPI.RECTW();
             WindowsAPI.GetWindowRect(VScrollHandle, ref rscroll);
-
+            
             AvailableVisibleColumns = AvailableColumns(false);
             SysListviewDT = (WindowsAPI.IDropTarget)isv;
+            
             SubclassHWnd(ShellSysListViewHandle);
             Marshal.ReleaseComObject(isv);
             if (!IsCustomDialogs)
