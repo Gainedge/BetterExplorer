@@ -5419,10 +5419,7 @@ namespace BetterExplorer
 				lblLocale.Visibility = Visibility.Visible;
                 Process pr = Process.GetCurrentProcess();
                 Process.Start("StartIt.exe", pr.MainModule.FileName);
-                if (r != null)
-                    r.Close();
-
-                App.Current.Shutdown();
+                btnBackstageExit_Click(sender, e);
 			}
 		}
 
