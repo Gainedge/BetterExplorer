@@ -1316,7 +1316,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			}
 
       public void SetExplorerFocus() {
-        WindowsAPI.SetFocus(SysListViewHandle);
+          WindowsAPI.SetFocus(SysListViewHandle);
+
       }
 
       public void DoRename(IntPtr apidl) {

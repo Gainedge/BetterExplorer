@@ -291,9 +291,9 @@
     <system:String x:Key="txtTabManager">標籤管理器</system:String>
     <system:String x:Key="btnClose">關閉</system:String>
     <system:String x:Key="btnOpenFolder">打開文件夾</system:String>
-    <system:String x:Key="txtName">名稱</sy​​stem:String>
+    <system:String x:Key="txtName">名稱</system:String>
     <system:String x:Key="txtPath">路徑</system:String>
-    <system:String x:Key="txtChooseName">為標籤組設置名稱</sy​​stem:String>
+    <system:String x:Key="txtChooseName">為標籤組設置名稱</system:String>
     <system:String x:Key="txtOverwriteSavedTabs">如果這個名稱已經存在，那麼舊的組將會被覆蓋。 </system:String>
     <system:String x:Key="txtIllegalCharacters">不能包含以下字符： \ / : * ? &lt; &gt; |</system:String>
     <system:String x:Key="txtConfirmDelete">您確定要刪除這個標籤組嗎？ </system:String>

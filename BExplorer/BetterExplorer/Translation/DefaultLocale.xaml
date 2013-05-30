@@ -360,4 +360,5 @@
 	<system:String x:Key="txtModificationDate">Modification date</system:String>
 	<system:String x:Key="txtYes">Yes</system:String>
 	<system:String x:Key="txtNo">No</system:String>
+  <system:String x:Key="txtDeleteSeveralItems">Delete items</system:String>
 </ResourceDictionary>
