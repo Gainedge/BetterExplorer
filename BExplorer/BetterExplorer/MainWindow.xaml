@@ -170,7 +170,7 @@
                                   HorizontalScrollBarVisibility="Auto"
                                   PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                                   Template="{DynamicResource ScrollViewerTemplate}"
-                                  VerticalScrollBarVisibility="Disabled">
+                                  VerticalScrollBarVisibility="Disabled" MouseWheel="svTabBar_MouseWheel">
                         <TabPanel x:Name="HeaderPanel"
                                   Margin="0,2,2,1"
                                   IsItemsHost="True"
@@ -2928,7 +2928,7 @@
                     MouseUp="tabControl1_MouseUp"
                     SelectedIndex="0"
                     SelectionChanged="tabControl1_SelectionChanged"
-                    Template="{DynamicResource ScrollableTabControlTemplate}" MouseEnter="tabControl1_MouseEnter" MouseLeave="tabControl1_MouseLeave">
+                    Template="{DynamicResource ScrollableTabControlTemplate}" MouseEnter="tabControl1_MouseEnter" MouseLeave="tabControl1_MouseLeave" MouseWheel="tabControl1_MouseWheel" PreviewMouseWheel="tabControl1_PreviewMouseWheel_1">
             <TabControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel IsItemsHost="True" Orientation="Horizontal" />

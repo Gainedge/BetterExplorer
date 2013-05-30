@@ -1131,10 +1131,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                 
                                 if (OperationType == OperationType.Move)
                                 {
-                                    foreach (var dir in this.SourceItemsCollection.Select(ShellObject.FromParsingName).ToArray().Where(c => c.IsFolder))
+                                    foreach (var dir in this.SourceItemsCollection.ToArray().Where(c => Directory.Exists(c)))
                                     {
-                                        DeleteAllFilesFromDir(new DirectoryInfo(dir.ParsingName), false);
-                                        DeleteFolderRecursive(new DirectoryInfo(dir.ParsingName), false);
+                                        DeleteAllFilesFromDir(new DirectoryInfo(dir), false);
+                                        DeleteFolderRecursive(new DirectoryInfo(dir), false);
                                     }
                                     GC.WaitForPendingFinalizers();
                                     GC.Collect();

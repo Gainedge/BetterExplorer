@@ -29,6 +29,15 @@ namespace Microsoft.WindowsAPICodePack.Controls
         public int Key { get; set; }
     }
 
+    public class ExplorerMoiseWheelArgs : EventArgs
+    {
+      public Int64 Delta { get; set; }
+      public bool IsCTRL { get; set; }
+      public Point MouseLocation { get; set; }
+      public bool IsOutsideExplorer { get; set; }
+      public bool Handled { get; set; }
+    }
+
     /// <summary>
     /// Event argument for The NavigationComplete event
     /// </summary>

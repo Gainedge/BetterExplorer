@@ -271,6 +271,7 @@ namespace BetterExplorer
         {
           r.Close();
         }
+        Explorer.DesubclassShellViewWin();
       }
 
       if (this.OwnedWindows.OfType<FileOperationDialog>().Count() > 0) {
@@ -3805,6 +3806,7 @@ namespace BetterExplorer
 									 //'set up Explorer control
 									 Explorer.SelectionChanged += new EventHandler(ExplorerBrowserControl_SelectionChanged);
 									 Explorer.NavigationComplete += new EventHandler<NavigationCompleteEventArgs>(ExplorerBrowserControl_NavigationComplete);
+                   Explorer.MouseWheel += Explorer_MouseWheel;
 									 Explorer.ViewEnumerationComplete += new EventHandler(ExplorerBrowserControl_ViewEnumerationComplete);
 									 Explorer.NavigationPending += new EventHandler<NavigationPendingEventArgs>(Explorer_NavigationPending);
 									 Explorer.GotFocus += new EventHandler(Explorer_GotFocus);
@@ -4243,6 +4245,16 @@ namespace BetterExplorer
                 tabControl1.SelectedIndex = 0;
 
 		}
+
+    void Explorer_MouseWheel(object sender, ExplorerMoiseWheelArgs e)
+    {
+      if (e.IsOutsideExplorer)
+      {
+        e.Handled = true;
+        var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
+        scroll.ScrollToHorizontalOffset(scroll.HorizontalOffset - e.Delta);
+      }
+    }
 
     void r_OnMessageReceived(object sender, EventArgs e)
     {
@@ -5767,6 +5779,7 @@ namespace BetterExplorer
 
 		private void btnSetCurrentasStartup_Click(object sender, RoutedEventArgs e)
 		{
+      backstage.IsOpen = true;
 			string CurrentLocString = Explorer.NavigationLog.CurrentLocation.ParsingName;
 			StartUpLocation = CurrentLocString;
 			btnSetCurrentasStartup.Header = Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default);
@@ -5776,7 +5789,7 @@ namespace BetterExplorer
 			rks.SetValue(@"StartUpLoc", CurrentLocString);
 			rks.Close();
 			rk.Close();
-			KeepBackstageOpen = true;
+
 		}
 
 		private void RibbonWindow_Deactivated(object sender, EventArgs e)
@@ -6280,6 +6293,7 @@ namespace BetterExplorer
 
 			Explorer.SelectionChanged += new EventHandler(ExplorerBrowserControl_SelectionChanged);
 			Explorer.NavigationComplete += new EventHandler<NavigationCompleteEventArgs>(ExplorerBrowserControl_NavigationComplete);
+      Explorer.MouseWheel += Explorer_MouseWheel;
 			Explorer.ViewEnumerationComplete += new EventHandler(ExplorerBrowserControl_ViewEnumerationComplete);
 			Explorer.NavigationPending += new EventHandler<NavigationPendingEventArgs>(Explorer_NavigationPending);
 			Explorer.GotFocus += new EventHandler(Explorer_GotFocus);
@@ -8719,18 +8733,45 @@ namespace BetterExplorer
 
         private void tabControl1_MouseEnter(object sender, MouseEventArgs e)
         {
-          tabControl1.Focusable = true;
-          //tabControl1.Focus();
-          e.Handled = true;
-          tabControl1.Focus();
-          tabControl1.Focusable = false;
+          //if (!Explorer.IsRenameStarted || IsAfterFolderCreate)
+          //{
+          //  tabControl1.Focusable = true;
+          //  //tabControl1.Focus();
+          //  e.Handled = true;
+          //  tabControl1.Focus();
+          //  tabControl1.Focusable = false;
+          //}
         }
 
         private void tabControl1_MouseLeave(object sender, MouseEventArgs e)
         {
-          e.Handled = true;
-          Explorer.SetExplorerFocus();
+          //e.Handled = true;
+          //if (!Explorer.IsRenameStarted || IsAfterFolderCreate)
+          //{
+          //  Explorer.SetExplorerFocus();
+          //}
           
+        }
+
+        private void tabControl1_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+
+        }
+
+        private void svTabBar_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+          
+        }
+
+        private void tabControl1_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+          var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
+        }
+
+        private void tabControl1_PreviewMouseWheel_1(object sender, MouseWheelEventArgs e)
+        {
+           
+          var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
         }
  
 

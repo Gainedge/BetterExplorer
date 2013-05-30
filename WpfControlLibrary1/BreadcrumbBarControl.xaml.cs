@@ -367,13 +367,14 @@ namespace BetterExplorerControls
 
 		private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-			//e.Handled = true;
+			e.Handled = true;
 			//elPanel.Visibility = System.Windows.Visibility.Collapsed;
 			//if (LastPath != "")
 			//{
 			//    HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
 			//}
-			EnterEditMode();
+      if (e.LeftButton == MouseButtonState.Pressed)
+			  EnterEditMode();
 		}
 
 		private void stackPanel1_MouseUp(object sender, MouseButtonEventArgs e)

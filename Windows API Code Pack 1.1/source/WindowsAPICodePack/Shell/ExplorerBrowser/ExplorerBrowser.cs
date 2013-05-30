@@ -67,6 +67,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       public WindowsAPI.IDropTarget SysListviewDT { get; set; }
       public IFolderView2 ifv2 { get; set; }
       public IShellView isvv { get; set; }
+      public bool IsRenameStarted { get; set; }
       private IShellItemArray selectedShellItemsArray;
       Collumns[] _Collumns = new Collumns[0];
       short mHotKeyId = 0;
@@ -1237,22 +1238,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			}
 
       public void DoRename() {
-        IFolderView2 fv2 = GetFolderView2();
-        int iIndex = -1;
-        fv2.GetSelectedItem(0, out iIndex);
-        DoRename(iIndex);
-      }
-      public void DoRename(int Index) {
-        IFolderView2 ifv2 = GetFolderView2();
         IShellView shv = GetShellView();
-        IntPtr pidl;
-        ifv2.Item(Index, out pidl);
-        shv.SelectItem(pidl, WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS |
+
+        IsRenameStarted = true;
+        shv.SelectItem(WindowsAPI.ILFindLastID(SelectedItems[0].PIDL), WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS |
             WindowsAPI.SVSIF.SVSI_EDIT);
 
         Marshal.ReleaseComObject(shv);
-        Marshal.ReleaseComObject(ifv2);
       }
+
 
 			public void DoRename(string pathNew, bool IsLiB)
 			{
@@ -1787,6 +1781,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 			public event EventHandler RenameFinished;
 			public event EventHandler<ExplorerKeyUPEventArgs>  KeyUP;
+      public event EventHandler<ExplorerMoiseWheelArgs>  MouseWheel;
 
 			/// <summary>
 			/// Fires when the Items colection changes. 
@@ -1956,10 +1951,25 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                 
                 HookLibManager.SyncContext = SynchronizationContext.Current;
                 HookLibManager.IsCustomDialog = IsCustomDialogs;
+                HookLibManager.explorer = this;
                 //HookLibManager.Browser = this;
                 HookLibManager.Initialize();
                 Application.AddMessageFilter(this);
 			}
+
+      public bool IsInEditMode()
+      {
+        if (SelectedItems.Count == 0)
+          return false;
+        IFolderView2 fv2 = GetFolderView2();
+        WindowsAPI.SVSIF svsif;
+        fv2.GetSelectionState(WindowsAPI.ILFindLastID(SelectedItems[0].PIDL), out svsif);
+        if (svsif == (WindowsAPI.SVSIF)17)
+        {
+          IsRenameStarted = true;
+        }
+        return svsif == (WindowsAPI.SVSIF)17;
+      }
 
       public static void SetCustomDialogs(Boolean isSet){
         IsCustomDialogs = isSet;
@@ -2316,6 +2326,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					{
 							if (RenameFinished != null)
 							{
+                IsRenameStarted = false;
 									RenameFinished(this, EventArgs.Empty);
 							}
 					}
@@ -2555,8 +2566,32 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 							if (m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSEWHEEL)
 							{
-									Int64 Wheel_delta = HiWord((Int64)m.WParam);
-									if (LoWord((Int64)m.WParam) == 0x0008) //Ctrl is down
+                Int64 Wheel_delta = HiWord((Int64)m.WParam);
+                var buttonPressed = LoWord((Int64)m.WParam);
+                if (MouseWheel != null)
+                {
+                  WindowsAPI.RECTW rr = new WindowsAPI.RECTW();
+                  WindowsAPI.GetWindowRect(SysListViewHandle, ref rr);
+                  Rectangle reclv = rr.ToRectangle();
+
+                  ExplorerMoiseWheelArgs args = new ExplorerMoiseWheelArgs();
+                  args.Delta = Wheel_delta;
+                  args.IsCTRL = buttonPressed == 0x0008;
+                  args.IsOutsideExplorer = !reclv.Contains(Cursor.Position);
+                  args.MouseLocation = Cursor.Position;
+                  MouseWheel.Invoke(this, args);
+                  foreach (Delegate del in MouseWheel.GetInvocationList())
+                  {
+                    del.DynamicInvoke(new object[] { this, args });
+                    if (args.Handled)
+                    {
+                      return true;
+                    }
+                  }
+                  
+                }
+
+                if (buttonPressed == 0x0008) //Ctrl is down
 									{
 											if (Wheel_delta < 0)
 											{
@@ -2928,10 +2963,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					IsGetHWnd = false;
 						
 			}
-			void DeSubClass(IntPtr hWnd)
+			public void DeSubClass(IntPtr hWnd)
 			{
 					SetWindowLong(hWnd, GWL_WNDPROC, oldWndProc);
 			}
+
+      public void DesubclassShellViewWin()
+      {
+        DeSubClass(ShellSysListViewHandle);
+      }
 
 
 			Rectangle rec = new Rectangle();

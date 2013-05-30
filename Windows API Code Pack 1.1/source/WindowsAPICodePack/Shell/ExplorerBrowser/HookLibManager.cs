@@ -36,6 +36,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 		public static bool IsCustomDialog = false;
 		//public static ExplorerBrowser Browser;
 		private static IntPtr _hHookLib;
+    public static Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser explorer;
 		public static SynchronizationContext SyncContext;
 		private static readonly int[] HookStatus = Enumerable.Repeat(-1, Enum.GetNames(typeof(Hooks)).Length).ToArray();
 
@@ -225,6 +226,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 
 		private static bool RenameItem(IntPtr SourceItems, String DestinationName)
 		{
+      explorer.IsRenameStarted = false;
 			return false;
 		}
 
