@@ -686,7 +686,7 @@
                                                                               CountryFlag="Translation\Flags\IT.gif"
                                                                               UsesRTL="False" />
                                             <controls:TranslationComboBoxItem x:Name="jaJALang"
-                                                                              LanguageText="日本語"
+                                                                              LanguageText="Japanese (日本語)"
                                                                               LocaleCode="ja-JP"
                                                                               CountryFlag="Translation\Flags\JP.gif"
                                                                               UsesRTL="False" />

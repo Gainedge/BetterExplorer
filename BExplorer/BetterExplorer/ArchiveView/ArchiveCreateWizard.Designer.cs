@@ -113,9 +113,9 @@
             // button3
             // 
             this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button3.Location = new System.Drawing.Point(108, 230);
+            this.button3.Location = new System.Drawing.Point(130, 231);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(99, 28);
+            this.button3.Size = new System.Drawing.Size(125, 28);
             this.button3.TabIndex = 2;
             this.button3.Text = "Remove Files";
             this.button3.UseVisualStyleBackColor = true;
@@ -124,9 +124,9 @@
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button2.Location = new System.Drawing.Point(3, 230);
+            this.button2.Location = new System.Drawing.Point(3, 231);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(99, 28);
+            this.button2.Size = new System.Drawing.Size(125, 28);
             this.button2.TabIndex = 1;
             this.button2.Text = "Add Files...";
             this.button2.UseVisualStyleBackColor = true;
