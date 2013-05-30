@@ -43,8 +43,9 @@ namespace Microsoft.WindowsAPICodePack.Controls
                 {
                     int intThumbnailSize = ThumbnailSize;
                     eb.explorerBrowserControl.SetFolderSettings(folderSettings);
-                    //eb.ContentOptions.ThumbnailSize = intThumbnailSize;
-                    eb.vViewChanged();
+                  if (folderSettings.ViewMode == FolderViewMode.First)
+                    eb.ContentOptions.ThumbnailSize = intThumbnailSize;
+                  eb.vViewChanged();
                 }
             }
         }
