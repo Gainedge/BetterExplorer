@@ -2927,6 +2927,7 @@
                     MouseDoubleClick="tabControl1_MouseDoubleClick"
                     MouseUp="tabControl1_MouseUp"
                     SelectedIndex="0"
+                    SnapsToDevicePixels="True"
                     SelectionChanged="tabControl1_SelectionChanged"
                     Template="{DynamicResource ScrollableTabControlTemplate}" MouseEnter="tabControl1_MouseEnter" MouseLeave="tabControl1_MouseLeave" MouseWheel="tabControl1_MouseWheel" PreviewMouseWheel="tabControl1_PreviewMouseWheel_1">
             <TabControl.ItemsPanel>
