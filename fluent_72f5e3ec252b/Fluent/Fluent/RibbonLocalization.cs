@@ -683,7 +683,7 @@ namespace Fluent
                 case "no": LoadNorwegian(); break;
                 case "tr": LoadTurkish(); break;
                 case "he": LoadHebrew(); break;
-                case "ge": LoadGreek(); break;
+                case "el": LoadGreek(); break;
                 case "ko": LoadKorean(); break;
                 case "vi": LoadVietnamese(); break;
                 case "si": LoadSinhala(); break;

@@ -675,6 +675,11 @@
                                                                               LocaleCode="de-DE"
                                                                               CountryFlag="Translation\Flags\DE.gif"
                                                                               UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem x:Name="elGRLang"
+                                                                              LanguageText="Greek"
+                                                                              LocaleCode="el-GR"
+                                                                              CountryFlag="Translation\Flags\GR.gif"
+                                                                              UsesRTL="False" />
                                             <controls:TranslationComboBoxItem x:Name="huHULang"
                                                                               LanguageText="Hungarian"
                                                                               LocaleCode="hu-HU"
@@ -764,6 +769,7 @@
                                         <TextBlock Text="Finnish: Osku598 (Oskar Bredin)" />
                                         <TextBlock Text="French: Xanax (Sebastien Kerguen), Pascal Huau, reno2012" />
                                         <TextBlock Text="German: Stefan (Stefan Klebs), Markus Lang, Florian0901, Piotrex, Daniel Will" />
+                                        <TextBlock Text="Greek: lovegreek" />
                                         <TextBlock Text="Hindi: Animesh Prasad" />
                                         <TextBlock Text="Hungarian: lostprophet (Brechler Zsolt)" />
                                         <TextBlock Text="Italian: Gianluigi Meraviglia, eagleman, inshilon, JaykeBird (Jayke R. Huempfner)" />

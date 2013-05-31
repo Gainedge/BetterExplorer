@@ -333,7 +333,7 @@
     <system:String x:Key="txtIsAfter">після</system:String>
     <system:String x:Key="txtDateIs">така ж, як</system:String>
     <system:String x:Key="txtRemoveFilter">Щоб очистити фільтр залиште всі поля порожніми</system:String>
-    <system:String x:Key="txtSetFilter">Встановити фільтр:</system:String>
+    <system:String x:Key="txtSetFilter">Встановити фільтр ((VAL)):</system:String>
     <system:String x:Key="txtCurrentValue">Поточне значення:</system:String>
     <system:String x:Key="txtSelect">Вибрати</system:String>
     <system:String x:Key="txtCancel">Скасувати</system:String>

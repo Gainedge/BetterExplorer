@@ -25,6 +25,18 @@ namespace BetterExplorer
             InitializeComponent();
         }
 
+        public SDateSearchCriteriaDialog(string displayname)
+        {
+            InitializeComponent();
+            SetFilterName(displayname);
+        }
+
+        public void SetFilterName(string name)
+        {
+            string title = FindResource("txtSetFilter") as string;
+            textBlock1.Text = title.Replace("(VAL)", name);
+        }
+
         public string GetDateCriteria(string str, DateTime? par1, DateTime? par2)
         {
 

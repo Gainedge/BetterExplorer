@@ -23,6 +23,7 @@ namespace BetterExplorer
         public SizeSearchCriteriaDialog()
         {
             InitializeComponent();
+            SetFilterName(FindResource("btnOSizeCP") as string);
         }
 
         public SizeSearchCriteriaDialog(string property, string value)
@@ -49,6 +50,12 @@ namespace BetterExplorer
         public void UpdateCurrentValue(string value)
         {
             curval.Text = FindResource("txtCurrentValue") + ": " + value;
+        }
+
+        public void SetFilterName(string name)
+        {
+            string title = FindResource("txtSetFilter") as string;
+            textBlock1.Text = title.Replace("(VAL)", name);
         }
 
         private void button1_Click(object sender, RoutedEventArgs e)

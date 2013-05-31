@@ -333,7 +333,7 @@
     <system:String x:Key="txtIsAfter">é depois</system:String>
     <system:String x:Key="txtDateIs">é o mesmo que</system:String>
     <system:String x:Key="txtRemoveFilter">Para remover o filtro, deixa todos os valores em branco</system:String>
-    <system:String x:Key="txtSetFilter">Definir Filtro (Valor):</system:String>
+    <system:String x:Key="txtSetFilter">Definir Filtro (VAL):</system:String>
     <system:String x:Key="txtCurrentValue">Valor Atual:</system:String>
     <system:String x:Key="txtSelect">Selecionar</system:String>
     <system:String x:Key="txtCancel">Cancelar</system:String>

@@ -333,7 +333,7 @@
     <system:String x:Key="txtIsAfter">is after</system:String> <system:String x:Key="txtIsAfter"> </ प्रणाली: स्ट्रिंग> के बाद है
     <system:String x:Key="txtDateIs">is the same as</system:String> <system:String x:Key="txtDateIs"> </ प्रणाली: स्ट्रिंग> रूप में ही है
     <system:String x:Key="txtRemoveFilter">To remove filter, leave all values blank</system:String> </ सिस्टम: स्ट्रिंग> फ़िल्टर को हटाने x:Key="txtRemoveFilter"> <system:String, सभी रिक्त मानों छोड़
-    <system:String x:Key="txtSetFilter">Set <value> filter:</system:String> <system:String x:Key="txtSetFilter"> सेट <value> फिल्टर: </ सिस्टम: स्ट्रिंग>
+    <system:String x:Key="txtSetFilter">Set <value> filter:</system:String> <system:String x:Key="]Filter"> सेट <value> फिल्टर: </ सिस्टम: स्ट्रिंग>
     <system:String x:Key="txtCurrentValue">Current Value:</system:String> <system:String x:Key="txtCurrentValue"> वर्तमान मूल्य: </ प्रणाली: स्ट्रिंग>
     <system:String x:Key="txtSelect">Select</system:String> <system:String x:Key="txtSelect"> का चयन करें </ प्रणाली: स्ट्रिंग>
     <system:String x:Key="txtCancel">Cancel</system:String> <system:String x:Key="txtCancel"> रद्द </ प्रणाली: स्ट्रिंग>

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="BetterExplorer.SDateSearchCriteriaDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Search Criteria" Height="208" Width="329" xmlns:my="clr-namespace:BetterExplorer" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+        Title="Search Criteria" Height="221" Width="329" xmlns:my="clr-namespace:BetterExplorer" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
     <Grid>
         <ComboBox Height="23" HorizontalAlignment="Left" Margin="12,55,0,0" Name="dcfilter" SelectedIndex="0" VerticalAlignment="Top" Width="120" SelectionChanged="dcfilter_SelectionChanged">
             <my:ConditionalSelectComboBoxItem IdentifyingName="Earlier" Text="{StaticResource txtIsBefore}" />
@@ -17,6 +17,6 @@
         <TextBlock HorizontalAlignment="Left" Margin="12,33,0,0" VerticalAlignment="Top" Name="CurVal" />
         <DatePicker Height="23" HorizontalAlignment="Left" Margin="141,84,0,0" Name="datePicker2" VerticalAlignment="Top" Width="154" IsEnabled="False" />
         <TextBlock HorizontalAlignment="Right" Margin="0,88,200,0" Name="textBlock2" Text="{StaticResource txtAnd}" VerticalAlignment="Top" />
-        <TextBlock HorizontalAlignment="Left" Margin="12,151,0,0" Name="textBlock3" Text="{StaticResource txtRemoveFilter}" VerticalAlignment="Top" />
+        <TextBlock Margin="12,151,10,0" Name="textBlock3" Text="{StaticResource txtRemoveFilter}" VerticalAlignment="Top" Height="36" TextWrapping="Wrap" />
     </Grid>
 </Window>

@@ -333,7 +333,7 @@
     <system:String x:Key="txtIsAfter">より後</system:String>
     <system:String x:Key="txtDateIs">一致する</system:String>
     <system:String x:Key="txtRemoveFilter">フィルターを無効にするには全ての項目を空白にして下さい</system:String>
-    <system:String x:Key="txtSetFilter">フィルターをセット:</system:String>
+    <system:String x:Key="txtSetFilter">フィルターをセット ((VAL)):</system:String>
     <system:String x:Key="txtCurrentValue">現在の値:</system:String>
     <system:String x:Key="txtSelect">選択</system:String>
     <system:String x:Key="txtCancel">キャンセル</system:String>

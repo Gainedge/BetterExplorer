@@ -25,10 +25,10 @@ namespace BetterExplorer
             InitializeComponent();
         }
 
-        public StringSearchCriteriaDialog(string property, string value)
+        public StringSearchCriteriaDialog(string property, string value, string displayname)
         {
             InitializeComponent();
-            textBlock2.Text = property;
+            SetFilterName(displayname);
             textBox1.Text = GetValueOnly(property, value);
             textBox1.Focus();
         }
@@ -37,6 +37,12 @@ namespace BetterExplorer
         {
             Confirm = true;
             this.Close();
+        }
+
+        public void SetFilterName(string name)
+        {
+            string title = FindResource("txtSetFilter") as string;
+            textBlock1.Text = title.Replace("(VAL)", name);
         }
 
         private string GetValueOnly(string property, string value)

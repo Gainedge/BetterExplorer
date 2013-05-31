@@ -333,7 +333,7 @@
     <system:String x:Key="txtIsAfter">jest po</system:String>
     <system:String x:Key="txtDateIs">to dokładnie</system:String>
     <system:String x:Key="txtRemoveFilter">Aby usunąć filtr, pozostaw wszystkie pola puste</system:String>
-    <system:String x:Key="txtSetFilter">Ustaw filtr (wartość):</system:String>
+    <system:String x:Key="txtSetFilter">Ustaw filtr (VAL):</system:String>
     <system:String x:Key="txtCurrentValue">Obecna wartość:</system:String>
     <system:String x:Key="txtSelect">Wybierz</system:String>
     <system:String x:Key="txtCancel">Anuluj</system:String>

@@ -434,6 +434,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Translation\Locale.el-GR.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Translation\Locale.hi-IN.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -627,6 +631,7 @@
     <Content Include="7z64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Translation\Flags\GR.gif" />
     <Resource Include="Images\bexplorerscr.png" />
     <Resource Include="Images\bexplorerlogo.png" />
     <Resource Include="Images\update64.png" />

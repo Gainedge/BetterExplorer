@@ -333,7 +333,7 @@
     <system:String x:Key="txtIsAfter">晚於</system:String>
     <system:String x:Key="txtDateIs">相同</system:String>
     <system:String x:Key="txtRemoveFilter">留空即可移除過濾條件</system:String>
-    <system:String x:Key="txtSetFilter">設置(值)過濾條件：</system:String>
+    <system:String x:Key="txtSetFilter">設置(VAL)過濾條件：</system:String>
     <system:String x:Key="txtCurrentValue">當前值：</system:String>
     <system:String x:Key="txtSelect">選擇</system:String>
     <system:String x:Key="txtCancel">取消</system:String>

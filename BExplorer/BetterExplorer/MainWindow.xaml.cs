@@ -6886,7 +6886,7 @@ namespace BetterExplorer
 
 		private void ToggleButton_Click_1(object sender, RoutedEventArgs e)
 		{
-			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("ext", edtSearchBox.ExtensionCondition);
+			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("ext", edtSearchBox.ExtensionCondition, FindResource("btnExtCP") as string);
 			dat.ShowDialog();
 			if (dat.Confirm == true)
 			{
@@ -6958,7 +6958,7 @@ namespace BetterExplorer
 
 		private void AuthorToggle_Click(object sender, RoutedEventArgs e)
 		{
-			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("author", edtSearchBox.AuthorCondition);
+			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("author", edtSearchBox.AuthorCondition, FindResource("btnAuthorCP") as string);
 			dat.ShowDialog();
 			if (dat.Confirm == true)
 			{
@@ -6987,7 +6987,7 @@ namespace BetterExplorer
 
 		private void SubjectToggle_Click(object sender, RoutedEventArgs e)
 		{
-			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("subject", edtSearchBox.SubjectCondition);
+			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("subject", edtSearchBox.SubjectCondition, FindResource("btnSubjectCP") as string);
 			dat.ShowDialog();
 			if (dat.Confirm == true)
 			{
@@ -7098,10 +7098,10 @@ namespace BetterExplorer
 
 		private void dcCustomTime_Click(object sender, RoutedEventArgs e)
 		{
-			SDateSearchCriteriaDialog star = new SDateSearchCriteriaDialog();
+            SDateSearchCriteriaDialog star = new SDateSearchCriteriaDialog(FindResource("btnODateCCP") as string);
 
 			star.DateCriteria = GetValueOnly("date", edtSearchBox.DateCondition);
-			star.textBlock1.Text = "Set Date Created Filter";
+			//star.textBlock1.Text = "Set Date Created Filter";
 			star.ShowDialog();
 
 			if (star.Confirm == true)
@@ -7121,10 +7121,10 @@ namespace BetterExplorer
 
 		private void dmCustomTime_Click(object sender, RoutedEventArgs e)
 		{
-			SDateSearchCriteriaDialog star = new SDateSearchCriteriaDialog();
+			SDateSearchCriteriaDialog star = new SDateSearchCriteriaDialog(FindResource("btnODateModCP") as string);
 
 			star.DateCriteria = GetValueOnly("modified", edtSearchBox.ModifiedCondition);
-			star.textBlock1.Text = "Set Date Modified Filter";
+			//star.textBlock1.Text = "Set Date Modified Filter";
 			star.ShowDialog();
 
 			if (star.Confirm == true)
