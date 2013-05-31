@@ -72,12 +72,19 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       Collumns[] _Collumns = new Collumns[0];
       short mHotKeyId = 0;
       public static bool IsCustomDialogs { get; set; }
+      private IntPtr BEHDLL { get; set; }
+      public GetItemName _GetItemName;
+      public GetItemLocation _GetItemLocation;
+      public SetColumnInShellView _SetColumnInShellView;
+      public SetSortColumns _SetSortColumns;
+      public GetColumnInfobyIndex _GetColumnInfobyIndex;
+      public GetColumnInfobyPK _GetColumnInfobyPK;
+      public GetSortColumns _GetSortColumns;
+      public GetColumnbyIndex _GetColumnbyIndex;
       #endregion
 
 	    #region Imports
 
-			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-			    private static extern bool IsItemFolder(IFolderView2 view, int index);
 			    [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
 			    public static extern IShellItem SHCreateItemWithParent(
 					    [In] IntPtr pidlParent,
@@ -91,29 +98,29 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			    [DllImport("kernel32.dll")]
 			    public static extern IntPtr GlobalLock(IntPtr hMem);
 
-			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-          private static extern void GetColumnbyIndex(IShellView view, bool isAll, int index, out WindowsAPI.PROPERTYKEY res);
+          [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+          public delegate void GetColumnbyIndex(IShellView view, bool isAll, int index, out WindowsAPI.PROPERTYKEY res);
 
-			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-			    private static extern IntPtr GetItemName(IFolderView2 view, int index);
+          [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+          public delegate IntPtr GetItemName(IFolderView2 view, int index);
 
-			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-			    private static extern void GetItemLocation(IShellView view, int index, out int pointx, out int pointy);
+          [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+          public delegate void GetItemLocation(IShellView view, int index, out int pointx, out int pointy);
 
-			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-          private static extern void SetColumnInShellView(IShellView view, int count, [MarshalAs(UnmanagedType.LPArray)] WindowsAPI.PROPERTYKEY[] pk);
+          [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+          public delegate void SetColumnInShellView(IShellView view, int count, [MarshalAs(UnmanagedType.LPArray)] WindowsAPI.PROPERTYKEY[] pk);
 
-			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-          private static extern void SetSortColumns(IFolderView2 view, int count, [MarshalAs(UnmanagedType.LPArray)] WindowsAPI.SORTCOLUMN[] pk);
+          [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+          public delegate void SetSortColumns(IFolderView2 view, int count, [MarshalAs(UnmanagedType.LPArray)] WindowsAPI.SORTCOLUMN[] pk);
 
-			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-          public static extern int GetColumnInfobyIndex(IShellView view, bool isAll, int index, out WindowsAPI.CM_COLUMNINFO res);
+          [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+          public delegate int GetColumnInfobyIndex(IShellView view, bool isAll, int index, out WindowsAPI.CM_COLUMNINFO res);
 
-			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-          private static extern int GetColumnInfobyPK(IShellView view, bool isAll, WindowsAPI.PROPERTYKEY pk, out WindowsAPI.CM_COLUMNINFO res);
+          [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+          public delegate int GetColumnInfobyPK(IShellView view, bool isAll, WindowsAPI.PROPERTYKEY pk, out WindowsAPI.CM_COLUMNINFO res);
 
-			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-          private static extern void GetSortColumns(IShellView view, int index, out WindowsAPI.SORTCOLUMN sc);
+          [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+          public delegate void GetSortColumns(IShellView view, int index, out WindowsAPI.SORTCOLUMN sc);
 
 			    [Guid("00000101-0000-0000-C000-000000000046")]
 			    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -290,19 +297,6 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       #region properties
 			public bool IsOldSysListView = true;
 
-			public bool ItemIsFolder(int Index)
-			{
-					IFolderView2 ifv2 = GetFolderView2();
-					return IsItemFolder(ifv2, Index);
-			}
-				
-			public bool ItemIsFolder()
-			{
-					IFolderView2 fv2 = GetFolderView2();
-					int iIndex = -1;
-					fv2.GetSelectedItem(0, out iIndex);
-					return IsItemFolder(ifv2, iIndex);
-			}
       		/// <summary>
 			/// Gets the items in the ExplorerBrowser as an IShellItemArray
 			/// </summary>
@@ -543,7 +537,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
           scl[i] = sc;
         }
 
-        SetSortColumns(ifv2, pk.Count, scl);
+        _SetSortColumns(ifv2, pk.Count, scl);
       }
 
 			public IShellView GetShellView()
@@ -769,7 +763,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 							ifv2.GetSortColumnCount(out SortColsCount);
 							if (SortColsCount > 0)
 							{
-									GetSortColumns(GetShellView(), 0, out sc); 
+									_GetSortColumns(GetShellView(), 0, out sc); 
 							}
 							ci = sc;
 					}
@@ -801,7 +795,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 							pkk[AvailableVisibleColumns.Length] = pk;
 
-							SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length + 1, pkk);
+							_SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length + 1, pkk);
 
 							AvailableVisibleColumns = AvailableColumns(false);
 					}
@@ -819,7 +813,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 										
 							}
 
-							SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length - 1, pkk);
+							_SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length - 1, pkk);
 
 							AvailableVisibleColumns = AvailableColumns(false);
 					}
@@ -842,8 +836,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
             IntPtr ii = Marshal.AllocCoTaskMem(Marshal.SizeOf(cmi));
 
             try {
-              GetColumnbyIndex(GetShellView(), All, i, out pk);
-              GetColumnInfobyIndex(GetShellView(), All, i, out cmi);
+              _GetColumnbyIndex(GetShellView(), All, i, out pk);
+              _GetColumnInfobyIndex(GetShellView(), All, i, out cmi);
               col.pkey = pk;
               col.Name = cmi.wszName;
               col.Width = (int)cmi.uWidth;
@@ -1717,7 +1711,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				IntPtr view = IntPtr.Zero;
 				HResult hr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
 				IShellView isv = (IShellView)Marshal.GetObjectForIUnknown(view);
-				GetColumnInfobyIndex(isv, false, index, out cmi);
+				_GetColumnInfobyIndex(isv, false, index, out cmi);
 				return (int)cmi.uWidth;
 			}
 
@@ -1897,7 +1891,39 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			{
 				base.OnCreateControl();
         //Initialize the hooks needed by ExplorerBrowser
+        BEHDLL = WindowsAPI.LoadLibrary(WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "BEH64.dll" : "BEH32.dll");
+
+        IntPtr GetItemNameP = WindowsAPI.GetProcAddress(BEHDLL, "GetItemName");
+        _GetItemName = (GetItemName)Marshal.GetDelegateForFunctionPointer(GetItemNameP,typeof(GetItemName));
+
+        IntPtr GetItemLocationP = WindowsAPI.GetProcAddress(BEHDLL, "GetItemLocation");
+        _GetItemLocation = (GetItemLocation)Marshal.GetDelegateForFunctionPointer(GetItemLocationP, typeof(GetItemLocation));
+
+
+        IntPtr SetColumnInShellViewP = WindowsAPI.GetProcAddress(BEHDLL, "SetColumnInShellView");
+        _SetColumnInShellView = (SetColumnInShellView)Marshal.GetDelegateForFunctionPointer(SetColumnInShellViewP, typeof(SetColumnInShellView));
+
+
+        IntPtr SetSortColumnsP = WindowsAPI.GetProcAddress(BEHDLL, "SetSortColumns");
+        _SetSortColumns = (SetSortColumns)Marshal.GetDelegateForFunctionPointer(SetSortColumnsP, typeof(SetSortColumns));
+
+
+        IntPtr GetColumnInfobyIndexP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnInfobyIndex");
+        _GetColumnInfobyIndex = (GetColumnInfobyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyIndexP, typeof(GetColumnInfobyIndex));
+
+
+        IntPtr GetColumnInfobyPKP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnInfobyPK");
+        _GetColumnInfobyPK = (GetColumnInfobyPK)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyPKP, typeof(GetColumnInfobyPK));
+
+        IntPtr GetSortColumnsP = WindowsAPI.GetProcAddress(BEHDLL, "GetSortColumns");
+        _GetSortColumns = (GetSortColumns)Marshal.GetDelegateForFunctionPointer(GetSortColumnsP, typeof(GetSortColumns));
+
+        IntPtr GetColumnbyIndexP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnbyIndex");
+        _GetColumnbyIndex = (GetColumnbyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnbyIndexP, typeof(GetColumnbyIndex));
+
         
+
+
 				if (this.DesignMode == false)
 				{
 					explorerBrowserControl = new ExplorerBrowserClass();
@@ -2056,6 +2082,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					if (explorerBrowserControl != null)
 					{
             DesubclassShellViewWin();
+
+            WindowsAPI.FreeLibrary(BEHDLL);
 							// unhook events
 							viewEvents.DisconnectFromView();
 							explorerBrowserControl.Unadvise(eventsCookie);

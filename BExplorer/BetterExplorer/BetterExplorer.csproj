@@ -746,6 +746,11 @@
     <Resource Include="Images\edit.png" />
     <Resource Include="Images\delete_16x16-4.png" />
     <Content Include="AutomaticUpdaterWPF.dll" />
+    <Content Include="BEH32.dll" />
+    <Content Include="BEH64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BEHookLib32.dll" />
     <Content Include="BEHookLib64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -863,9 +868,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="TAFactory.IconPack.dll" />
-    <Content Include="BEH.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Images\sawall16.png" />
     <Resource Include="Images\sawall32.png" />
     <Resource Include="Images\rl16.png" />
@@ -1014,7 +1016,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
