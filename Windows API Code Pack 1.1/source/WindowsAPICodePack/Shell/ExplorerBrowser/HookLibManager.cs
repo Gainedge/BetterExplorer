@@ -243,8 +243,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 
 		private static bool DeleteItem(IntPtr sourceItems)
 		{
+      
 			if (!IsCustomDialog)
 			{
+        explorer.SetExplorerFocus();
 				return false;
 			}
 
@@ -281,7 +283,9 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 				else // file
 				{
 					var fileInfo = string.Format("{0}: {1}\n", win.FindResource("txtType"), item.Properties.System.ItemTypeText.ValueAsObject);
-					fileInfo += string.Format("{0}: {1}\n", win.FindResource("txtAuthors"), string.Join(",", (string[])item.Properties.System.ItemAuthors.ValueAsObject));
+
+          if (item.Properties.System.ItemAuthors.Value != null)
+					  fileInfo += string.Format("{0}: {1}\n", win.FindResource("txtAuthors"), string.Join(",", item.Properties.System.ItemAuthors.Value));
 					string[] sizes = { "B", "KB", "MB", "GB" };
 					var len = (ulong)item.Properties.System.Size.ValueAsObject;
 					int order = 0;
@@ -329,6 +333,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 					currentDialog.Contents.Add(tempWindow);
 				}
 			}
+      explorer.SetExplorerFocus();
 			return true;
 		}
 

@@ -27,6 +27,7 @@ namespace Updater {
       String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
 			string dir = Path.GetDirectoryName(CurrentexePath);
       foreach (var item in updateFiles) {
+        MessageBox.Show(item);
         ListOrExtract(item, dir, true);
       }
     }

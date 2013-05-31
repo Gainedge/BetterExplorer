@@ -1975,8 +1975,8 @@ namespace BetterExplorer
 
 
 			IsSelectionRized = false;
-            if (!IsAfterFolderCreate && !backstage.IsOpen && IsAfterRename)
-                Explorer.SetExplorerFocus();
+            //if (!IsAfterFolderCreate && !backstage.IsOpen && IsAfterRename)
+            //    Explorer.SetExplorerFocus();
 		}
 		bool IsFromSelectionOrNavigation = false;
         
@@ -2816,6 +2816,7 @@ namespace BetterExplorer
 		// New Folder/Library
 		private void Button_Click_2(object sender, RoutedEventArgs e)
 		{
+      Explorer.SetExplorerFocus();
 			string path = "";
 
 			bool IsLib = false;
@@ -2833,17 +2834,17 @@ namespace BetterExplorer
 
 			LastPath = path;
 
-			if (IsCompartibleRename)
-			{
-				Explorer.RefreshExplorer();
+			//if (IsCompartibleRename)
+			//{
+			//	Explorer.RefreshExplorer();
 
-			}
-			else
-			{
+			//}
+			//else
+			//{
 				WindowsAPI.SHChangeNotify(WindowsAPI.HChangeNotifyEventID.SHCNE_MKDIR,
 				WindowsAPI.HChangeNotifyFlags.SHCNF_PATHW | WindowsAPI.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT,
 					Marshal.StringToHGlobalAuto(path.Replace(@"\\", @"\")), IntPtr.Zero);
-			}
+			//}
 
 
 			IsAfterRename = false;
@@ -2853,10 +2854,6 @@ namespace BetterExplorer
 
 			IsLibW = IsLib;
 			IsAfterFolderCreate = true;
-
-
-			Explorer.Focus();
-
 
 		}
 
@@ -3692,21 +3689,13 @@ namespace BetterExplorer
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
       UpdateRecycleBinInfos();
-      if (App.isStartMinimized)
-      {
-        this.Visibility = System.Windows.Visibility.Hidden;
-        this.WindowState = System.Windows.WindowState.Minimized;
-        //this.ShowInTaskbar = false;
-      }
 
+     
       r = new MessageReceiver();
       r.OnMessageReceived += r_OnMessageReceived;
       r.Show();
 
 			bool exitApp = false;
-
-
-      
 
 			try
 			{
@@ -3744,7 +3733,6 @@ namespace BetterExplorer
 
 					FavPath = "";
 				}
-
         //UpdateRecycleBinInfos();
 				//' set up breadcrumb bar
 				breadcrumbBarControl1.SetDragHandlers(new DragEventHandler(bbi_DragEnter), new DragEventHandler(bbi_DragLeave), new DragEventHandler(bbi_DragOver), new DragEventHandler(bbi_Drop));
@@ -3855,6 +3843,7 @@ namespace BetterExplorer
 											 btnBlue.IsChecked = true;
 											 break;
 									 }
+                   
 									 LastUpdateCheck = DateTime.FromBinary(Convert.ToInt64(rks.GetValue(@"LastUpdateCheck", 0)));
 
 									  UpdateCheckInterval = (int)rks.GetValue(@"CheckInterval", 7);
@@ -4189,30 +4178,48 @@ namespace BetterExplorer
 									  AppJL.JumpItems.Add(newTab);
 									  AppJL.JumpItems.Add(newWindow);
 									  AppJL.Apply();
-
+                    
 									   //Setup Clipboard monitor
 									  cbm.ClipboardChanged += new EventHandler<ClipboardChangedEventArgs>(cbm_ClipboardChanged);
+                    
                     autoUpdater.DaysBetweenChecks = this.UpdateCheckInterval;
-				            try {
-					            if (IsUpdateCheck) {
+                    try
+                    {
+                      if (IsUpdateCheck)
+                      {
                         autoUpdater.UpdateType = UpdateType.OnlyCheck;
-					            } else {
-					              autoUpdater.UpdateType = UpdateType.DoNothing;
-					            }
-					            if (IsUpdateCheckStartup) {
-                          autoUpdater.ForceCheckForUpdate();
-					            }
-				            } catch (IOException) {
-					            this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
-					            this.btnUpdateCheck.IsEnabled = false;
-				            }
+                      }
+                      else
+                      {
+                        autoUpdater.UpdateType = UpdateType.DoNothing;
+                      }
+                      if (IsUpdateCheckStartup)
+                      {
+                        autoUpdater.ForceCheckForUpdate();
+                      }
+                    }
+                    catch (IOException)
+                    {
+                      this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
+                      this.btnUpdateCheck.IsEnabled = false;
+                    }
+
+                    if (App.isStartMinimized)
+                    {
+                      this.Visibility = System.Windows.Visibility.Hidden;
+                      this.WindowState = System.Windows.WindowState.Minimized;
+                      //this.ShowInTaskbar = false;
+                    }
+
+                   
 
 								 //}
 				 //));
      //   });
      //   t.Start();
 
-        
+                   
+
 
 				if (exitApp)
 				{

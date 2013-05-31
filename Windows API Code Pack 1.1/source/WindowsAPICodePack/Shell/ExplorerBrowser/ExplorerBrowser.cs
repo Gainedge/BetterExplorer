@@ -74,207 +74,207 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       public static bool IsCustomDialogs { get; set; }
       #endregion
 
-	#region Imports
+	    #region Imports
 
-			[DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-			private static extern bool IsItemFolder(IFolderView2 view, int index);
-			[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
-			public static extern IShellItem SHCreateItemWithParent(
-					[In] IntPtr pidlParent,
-					[In] IShellFolder psfParent,
-					[In] IntPtr pidl,
-					[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
+			    private static extern bool IsItemFolder(IFolderView2 view, int index);
+			    [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
+			    public static extern IShellItem SHCreateItemWithParent(
+					    [In] IntPtr pidlParent,
+					    [In] IShellFolder psfParent,
+					    [In] IntPtr pidl,
+					    [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
 
-			[DllImport("user32.dll")]
-			public static extern uint RegisterClipboardFormat(string lpszFormat);
+			    [DllImport("user32.dll")]
+			    public static extern uint RegisterClipboardFormat(string lpszFormat);
 
-			[DllImport("kernel32.dll")]
-			public static extern IntPtr GlobalLock(IntPtr hMem);
+			    [DllImport("kernel32.dll")]
+			    public static extern IntPtr GlobalLock(IntPtr hMem);
 
-			[DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-      private static extern void GetColumnbyIndex(IShellView view, bool isAll, int index, out WindowsAPI.PROPERTYKEY res);
+			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
+          private static extern void GetColumnbyIndex(IShellView view, bool isAll, int index, out WindowsAPI.PROPERTYKEY res);
 
-			[DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-			private static extern IntPtr GetItemName(IFolderView2 view, int index);
+			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
+			    private static extern IntPtr GetItemName(IFolderView2 view, int index);
 
-			[DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-			private static extern void GetItemLocation(IShellView view, int index, out int pointx, out int pointy);
+			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
+			    private static extern void GetItemLocation(IShellView view, int index, out int pointx, out int pointy);
 
-			[DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-      private static extern void SetColumnInShellView(IShellView view, int count, [MarshalAs(UnmanagedType.LPArray)] WindowsAPI.PROPERTYKEY[] pk);
+			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
+          private static extern void SetColumnInShellView(IShellView view, int count, [MarshalAs(UnmanagedType.LPArray)] WindowsAPI.PROPERTYKEY[] pk);
 
-			[DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-      private static extern void SetSortColumns(IFolderView2 view, int count, [MarshalAs(UnmanagedType.LPArray)] WindowsAPI.SORTCOLUMN[] pk);
+			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
+          private static extern void SetSortColumns(IFolderView2 view, int count, [MarshalAs(UnmanagedType.LPArray)] WindowsAPI.SORTCOLUMN[] pk);
 
-			[DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-      public static extern int GetColumnInfobyIndex(IShellView view, bool isAll, int index, out WindowsAPI.CM_COLUMNINFO res);
+			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
+          public static extern int GetColumnInfobyIndex(IShellView view, bool isAll, int index, out WindowsAPI.CM_COLUMNINFO res);
 
-			[DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-      private static extern int GetColumnInfobyPK(IShellView view, bool isAll, WindowsAPI.PROPERTYKEY pk, out WindowsAPI.CM_COLUMNINFO res);
+			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
+          private static extern int GetColumnInfobyPK(IShellView view, bool isAll, WindowsAPI.PROPERTYKEY pk, out WindowsAPI.CM_COLUMNINFO res);
 
-			[DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
-      private static extern void GetSortColumns(IShellView view, int index, out WindowsAPI.SORTCOLUMN sc);
+			    [DllImport("BEH.dll", CallingConvention = CallingConvention.Cdecl)]
+          private static extern void GetSortColumns(IShellView view, int index, out WindowsAPI.SORTCOLUMN sc);
 
-			[Guid("00000101-0000-0000-C000-000000000046")]
-			[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-			[ComImport]
-			public interface IEnumString
-			{
-					void Clone(out IEnumString ppenum);
-					int Next(int celt, String[] rgelt, out int pceltFetched);
-					int Reset();
-					int Skip(int celt);
+			    [Guid("00000101-0000-0000-C000-000000000046")]
+			    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+			    [ComImport]
+			    public interface IEnumString
+			    {
+					    void Clone(out IEnumString ppenum);
+					    int Next(int celt, String[] rgelt, out int pceltFetched);
+					    int Reset();
+					    int Skip(int celt);
 
-			}; // class IEnumString
-			[Guid("00000010-0000-0000-C000-000000000046")]
-			[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-			[ComImport]
-			public interface IRunningObjectTable
-			{
-					void EnumRunning(out IEnumMoniker ppenumMoniker);
-					void GetObject(IMoniker pmkObjectName, out Object ppunkObject);
-					void GetTimeOfLastChange(IMoniker pmkObjectName,
-																		out FILETIME pfiletime);
-					void IsRunning(IMoniker pmkObjectName);
-					void NoteChangeTime(int dwRegister, ref FILETIME pfiletime);
-					void Register(int grfFlags, Object punkObject, IMoniker pmkObjectName,
-												out int pdwRegister);
-					void Revoke(int dwRegister);
+			    }; // class IEnumString
+			    [Guid("00000010-0000-0000-C000-000000000046")]
+			    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+			    [ComImport]
+			    public interface IRunningObjectTable
+			    {
+					    void EnumRunning(out IEnumMoniker ppenumMoniker);
+					    void GetObject(IMoniker pmkObjectName, out Object ppunkObject);
+					    void GetTimeOfLastChange(IMoniker pmkObjectName,
+																		    out FILETIME pfiletime);
+					    void IsRunning(IMoniker pmkObjectName);
+					    void NoteChangeTime(int dwRegister, ref FILETIME pfiletime);
+					    void Register(int grfFlags, Object punkObject, IMoniker pmkObjectName,
+												    out int pdwRegister);
+					    void Revoke(int dwRegister);
 
-			}; // class IRunningObjectTable
-			[Guid("0000000e-0000-0000-C000-000000000046")]
-			[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-			[ComImport]
-			public interface IBindCtx
-			{
-					void EnumObjectParam(out IEnumString ppenum);
-					void GetBindOptions(ref BIND_OPTS pbindopts);
-					void GetObjectParam(String pszKey, out Object ppunk);
-					void GetRunningObjectTable(out IRunningObjectTable pprot);
-					void RegisterObjectBound(Object punk);
-					void RegisterObjectParam(String pszKey, Object punk);
-					void ReleaseBoundObjects();
-					void RevokeObjectBound(Object punk);
-					void RevokeObjectParam(String pszKey);
-					void SetBindOptions(ref BIND_OPTS pbindopts);
+			    }; // class IRunningObjectTable
+			    [Guid("0000000e-0000-0000-C000-000000000046")]
+			    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+			    [ComImport]
+			    public interface IBindCtx
+			    {
+					    void EnumObjectParam(out IEnumString ppenum);
+					    void GetBindOptions(ref BIND_OPTS pbindopts);
+					    void GetObjectParam(String pszKey, out Object ppunk);
+					    void GetRunningObjectTable(out IRunningObjectTable pprot);
+					    void RegisterObjectBound(Object punk);
+					    void RegisterObjectParam(String pszKey, Object punk);
+					    void ReleaseBoundObjects();
+					    void RevokeObjectBound(Object punk);
+					    void RevokeObjectParam(String pszKey);
+					    void SetBindOptions(ref BIND_OPTS pbindopts);
 
-			}; // class IBindCtx
-			[ComImport]
+			    }; // class IBindCtx
+			    [ComImport]
 
-			[Guid("3D8B0590-F691-11d2-8EA9-006097DF5BD4")]
+			    [Guid("3D8B0590-F691-11d2-8EA9-006097DF5BD4")]
 
-			[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+			    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 
-			public interface IAsyncOperation
-			{
+			    public interface IAsyncOperation
+			    {
 
-					[PreserveSig]
+					    [PreserveSig]
 
-					Int32 SetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] Boolean DoOpAsync);
+					    Int32 SetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] Boolean DoOpAsync);
 
-					[PreserveSig]
+					    [PreserveSig]
 
-					Int32 GetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] out Boolean IsOpAsync);
+					    Int32 GetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] out Boolean IsOpAsync);
 
-					[PreserveSig]
+					    [PreserveSig]
 
-					Int32 StartOperation(IBindCtx bcReserved);
+					    Int32 StartOperation(IBindCtx bcReserved);
 
-					[PreserveSig]
+					    [PreserveSig]
 
-					Int32 InOperation([MarshalAs(UnmanagedType.VariantBool)] out Boolean InAsyncOp);
+					    Int32 InOperation([MarshalAs(UnmanagedType.VariantBool)] out Boolean InAsyncOp);
 
-					[PreserveSig]
+					    [PreserveSig]
 
-					Int32 EndOperation(UInt32 hResult, IBindCtx bcReserved, DragDropEffects Effects);
+					    Int32 EndOperation(UInt32 hResult, IBindCtx bcReserved, DragDropEffects Effects);
 
-			}
-			[Guid("0000000f-0000-0000-C000-000000000046")]
-			[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-			[ComImport]
-			public interface IMoniker
-			{
-					void BindToObject(IBindCtx pbc, IMoniker pmkToLeft,
-														ref Guid riidResult, out Object ppvResult);
-					void BindToStorage(IBindCtx pbc, IMoniker pmkToLeft,
-															ref Guid riidResult, out Object ppvResult);
-					void CommonPrefixWith(IMoniker pmkOther, out IMoniker ppmkPrefix);
-					void ComposeWith(IMoniker pmkRight, bool fOnlyIfNotGeneric,
-														out IMoniker ppmkComposite);
-					void Enum(bool fForward, out IEnumMoniker ppenumMoniker);
-					void GetClassID(out Guid pClassID);
-					void GetDisplayName(IBindCtx pbc, IMoniker pmkToLeft,
-															out String ppszDisplayName);
-					void GetSizeMax(out long pcbSize);
-					void GetTimeOfLastChange(IBindCtx pbc, IMoniker pmkToLeft,
-																		out FILETIME pFileTime);
-					void Hash(out int pdwHash);
-					void Inverse(out IMoniker ppmk);
-					int IsDirty();
-					void IsEqual(IMoniker pmkOtherMoniker);
-					void IsRunning(IBindCtx pbc, IMoniker pmkToLeft,
-													IMoniker pmkNewlyRunning);
-					void IsSystemMoniker(out int pdwMksys);
-					void Load(IStream pStm);
-					void ParseDisplayName(IBindCtx pbc, IMoniker pmkToLeft,
-																String pszDisplayName, out int pcbEaten,
-																out IMoniker ppmkOut);
-					void Reduce(IBindCtx pbc, int dwReduceHowFar,
-											ref IMoniker ppmkToLeft, out IMoniker ppmkReduced);
-					void RelativePathTo(IMoniker pmkOther, out IMoniker ppmkRelPath);
-					void Save(IStream pStm, bool fClearDirty);
+			    }
+			    [Guid("0000000f-0000-0000-C000-000000000046")]
+			    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+			    [ComImport]
+			    public interface IMoniker
+			    {
+					    void BindToObject(IBindCtx pbc, IMoniker pmkToLeft,
+														    ref Guid riidResult, out Object ppvResult);
+					    void BindToStorage(IBindCtx pbc, IMoniker pmkToLeft,
+															    ref Guid riidResult, out Object ppvResult);
+					    void CommonPrefixWith(IMoniker pmkOther, out IMoniker ppmkPrefix);
+					    void ComposeWith(IMoniker pmkRight, bool fOnlyIfNotGeneric,
+														    out IMoniker ppmkComposite);
+					    void Enum(bool fForward, out IEnumMoniker ppenumMoniker);
+					    void GetClassID(out Guid pClassID);
+					    void GetDisplayName(IBindCtx pbc, IMoniker pmkToLeft,
+															    out String ppszDisplayName);
+					    void GetSizeMax(out long pcbSize);
+					    void GetTimeOfLastChange(IBindCtx pbc, IMoniker pmkToLeft,
+																		    out FILETIME pFileTime);
+					    void Hash(out int pdwHash);
+					    void Inverse(out IMoniker ppmk);
+					    int IsDirty();
+					    void IsEqual(IMoniker pmkOtherMoniker);
+					    void IsRunning(IBindCtx pbc, IMoniker pmkToLeft,
+													    IMoniker pmkNewlyRunning);
+					    void IsSystemMoniker(out int pdwMksys);
+					    void Load(IStream pStm);
+					    void ParseDisplayName(IBindCtx pbc, IMoniker pmkToLeft,
+																    String pszDisplayName, out int pcbEaten,
+																    out IMoniker ppmkOut);
+					    void Reduce(IBindCtx pbc, int dwReduceHowFar,
+											    ref IMoniker ppmkToLeft, out IMoniker ppmkReduced);
+					    void RelativePathTo(IMoniker pmkOther, out IMoniker ppmkRelPath);
+					    void Save(IStream pStm, bool fClearDirty);
 
-			}; // class IMoniker
+			    }; // class IMoniker
 
-			[Guid("0000000c-0000-0000-C000-000000000046")]
-			[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-			[ComImport]
-			public interface IStream
-			{
-					void Clone(out IStream ppstm);
-					void Commit(int grfCommitFlags);
-					void CopyTo(IStream pstm, long cb, IntPtr pcbRead, IntPtr pcbWritten);
-					void LockRegion(long libOffset, long cb, int dwLockType);
-					void Read(byte[] pv, int cb, IntPtr pcbRead);
-					void Revert();
-					void Seek(long dlibMove, int dwOrigin, IntPtr plibNewPosition);
-					void SetSize(long libNewSize);
-					void Stat(out STATSTG pstatstg, int grfStatFlag);
-					void UnlockRegion(long libOffset, long cb, int dwLockType);
-					void Write(byte[] pv, int cb, IntPtr pcbWritten);
+			    [Guid("0000000c-0000-0000-C000-000000000046")]
+			    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+			    [ComImport]
+			    public interface IStream
+			    {
+					    void Clone(out IStream ppstm);
+					    void Commit(int grfCommitFlags);
+					    void CopyTo(IStream pstm, long cb, IntPtr pcbRead, IntPtr pcbWritten);
+					    void LockRegion(long libOffset, long cb, int dwLockType);
+					    void Read(byte[] pv, int cb, IntPtr pcbRead);
+					    void Revert();
+					    void Seek(long dlibMove, int dwOrigin, IntPtr plibNewPosition);
+					    void SetSize(long libNewSize);
+					    void Stat(out STATSTG pstatstg, int grfStatFlag);
+					    void UnlockRegion(long libOffset, long cb, int dwLockType);
+					    void Write(byte[] pv, int cb, IntPtr pcbWritten);
 
-			}; // class IStream
+			    }; // class IStream
 
-			[Guid("00000102-0000-0000-C000-000000000046")]
-			[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-			[ComImport]
-			public interface IEnumMoniker
-			{
-					void Clone(out IEnumMoniker ppenum);
-					int Next(int celt, IMoniker[] rgelt, out int pceltFetched);
-					int Reset();
-					int Skip(int celt);
+			    [Guid("00000102-0000-0000-C000-000000000046")]
+			    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+			    [ComImport]
+			    public interface IEnumMoniker
+			    {
+					    void Clone(out IEnumMoniker ppenum);
+					    int Next(int celt, IMoniker[] rgelt, out int pceltFetched);
+					    int Reset();
+					    int Skip(int celt);
 
-			}; // class IEnumMoniker
+			    }; // class IEnumMoniker
 
-			[ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("0000010E-0000-0000-C000-000000000046")]
-			public interface IDataObject
-			{
-					void GetData([In] ref FORMATETC format, out STGMEDIUM medium);
-					void GetDataHere([In] ref FORMATETC format, ref STGMEDIUM medium);
-					[PreserveSig]
-					int QueryGetData([In] ref FORMATETC format);
-					[PreserveSig]
-					int GetCanonicalFormatEtc([In] ref FORMATETC formatIn, out FORMATETC formatOut);
-					void SetData([In] ref FORMATETC formatIn, [In] ref STGMEDIUM medium, [MarshalAs(UnmanagedType.Bool)] bool release);
-					IEnumFORMATETC EnumFormatEtc(DATADIR direction);
-					[PreserveSig]
-					int DAdvise([In] ref FORMATETC pFormatetc, ADVF advf, IAdviseSink adviseSink, out int connection);
-					void DUnadvise(int connection);
-					[PreserveSig]
-					int EnumDAdvise(out IEnumSTATDATA enumAdvise);
-			}
-			#endregion
+			    [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("0000010E-0000-0000-C000-000000000046")]
+			    public interface IDataObject
+			    {
+					    void GetData([In] ref FORMATETC format, out STGMEDIUM medium);
+					    void GetDataHere([In] ref FORMATETC format, ref STGMEDIUM medium);
+					    [PreserveSig]
+					    int QueryGetData([In] ref FORMATETC format);
+					    [PreserveSig]
+					    int GetCanonicalFormatEtc([In] ref FORMATETC formatIn, out FORMATETC formatOut);
+					    void SetData([In] ref FORMATETC formatIn, [In] ref STGMEDIUM medium, [MarshalAs(UnmanagedType.Bool)] bool release);
+					    IEnumFORMATETC EnumFormatEtc(DATADIR direction);
+					    [PreserveSig]
+					    int DAdvise([In] ref FORMATETC pFormatetc, ADVF advf, IAdviseSink adviseSink, out int connection);
+					    void DUnadvise(int connection);
+					    [PreserveSig]
+					    int EnumDAdvise(out IEnumSTATDATA enumAdvise);
+			    }
+			    #endregion
 
       #region Public Methods
 
@@ -2055,6 +2055,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			{
 					if (explorerBrowserControl != null)
 					{
+            DesubclassShellViewWin();
 							// unhook events
 							viewEvents.DisconnectFromView();
 							explorerBrowserControl.Unadvise(eventsCookie);
@@ -2107,11 +2108,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 							// This interface is incorrectly marshaled back to unmanaged, and causes an exception.
 							// There is a bug for this, I have not figured the underlying cause.
 							// Remove this comment and uncomment the following code to enable the ICommDlgBrowser2 interface
-							//else if (riid.CompareTo(new Guid(ExplorerBrowserIIDGuid.ICommDlgBrowser2)) == 0)
-							//{
-							//    ppvObject = Marshal.GetComInterfaceForObject(this, typeof(ICommDlgBrowser3));
-							//    hr = HResult.Ok;                    
-							//}
+							else if (riid.CompareTo(new Guid(ExplorerBrowserIIDGuid.ICommDlgBrowser2)) == 0)
+							{
+							    ppvObject = Marshal.GetComInterfaceForObject(this, typeof(ICommDlgBrowser3));
+							    hr = HResult.Ok;                    
+							}
 							else if (riid.CompareTo(new Guid(ExplorerBrowserIIDGuid.ICommDlgBrowser3)) == 0)
 							{
 									ppvObject = Marshal.GetComInterfaceForObject(this, typeof(ICommDlgBrowser3));
@@ -2418,11 +2419,6 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					if (explorerBrowserControl != null)
 					{
 							// translate keyboard input
-
-            if (m.Msg == (int)WindowsAPI.WndMsg.WM_DESTROY)
-            {
-              DeSubClass(ShellSysListViewHandle);
-            }
             if (M.Msg == WM_NEWTREECONTROL)
             {
               object obj = Marshal.GetObjectForIUnknown(M.WParam);
