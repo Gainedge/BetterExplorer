@@ -4,8 +4,8 @@ Custom rules (this are custom rules; they apply prior to the CDDL):
 Definition of "us"; "our": The Better Explorer Team
 Definition of "official page": http://better-explorer.com/ with any sub-directories like http://better-explorer.com/downloads
 Definition of "Downloaders": a piece of software d that downloads the main setup executable or the better explorer files in binary or source form.
-Definition of "Better Explorer": The Better Explorer Project; including binaries (compiled code) and sources
-Definition of "Download Providers": A Site that distributes Better Explorer in source, binary or setup form; a site that offers software for paid or free download
+Definition of "Better Explorer": The Better Explorer  Project; including binaries (compiled code) and sources
+Definition of "Download Providers": A Site that distributes Better Explorer in source, binary or setup form; A site that offers software for paid or free download
 
 1. Download Hosting and Providing
 
@@ -13,9 +13,9 @@ Definition of "Download Providers": A Site that distributes Better Explorer in s
                 
         1.2 The download link at your download-site >has to< link to our site. Mirroring is forbidden without asking us or being contacted by us.
 
-        1.3 "Downloaders", in any form, are forbidden.
+        1.3 "Downloaders", in any form,  are forbidden.
 
-        1.4 Distributing Better Explorer [in binary or source form] without our permission is forbidden.
+        1.4 Distributing Better Explorer  [in binary or source form or on magazine-disks] without our permission is forbidden.
 
 
 2. Commercial Use
@@ -29,9 +29,9 @@ Definition of "Download Providers": A Site that distributes Better Explorer in s
 
         3.2 The Program in your custom Package has to be delivered "as it is" with no modifications in the code or the executables.
 
-        3.3 Your program or project has to be freeware and open-source and should be available to download for everyone without registration.
+        3.3 Your program or prokect has to be freeware and open-source and should be available to download for everyone without registration.
 
-        3.4 If you use your custom Better Explorer on your private envoirment [pc(s)], please remove the updater (It might cause overwriting of your customized version if we release an update)
+        3.4 If you use your custom Better Explorer on your private envourment [pc(s)], please remove the updater (It mightcause overwriting of your customized version if we release an update)
 
 
 
