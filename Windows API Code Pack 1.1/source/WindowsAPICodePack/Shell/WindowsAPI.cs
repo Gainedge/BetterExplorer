@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 using System.Xml;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace WindowsHelper
 {
@@ -818,11 +820,11 @@ namespace WindowsHelper
         public interface IDropTarget
         {
             void DragEnter(System.Runtime.InteropServices.ComTypes.IDataObject pDataObj, int grfKeyState,
-                           Point pt, ref int pdwEffect);
-            void DragOver(int grfKeyState, Point pt, ref int pdwEffect);
+                           System.Drawing.Point pt, ref int pdwEffect);
+            void DragOver(int grfKeyState, System.Drawing.Point pt, ref int pdwEffect);
             void DragLeave();
             void Drop(System.Runtime.InteropServices.ComTypes.IDataObject pDataObj, int grfKeyState,
-                     Point pt, ref int pdwEffect);
+                     System.Drawing.Point pt, ref int pdwEffect);
         }
 
         [StructLayoutAttribute(LayoutKind.Sequential)]
@@ -1393,7 +1395,7 @@ namespace WindowsHelper
         public static extern DriveType GetDriveType([MarshalAs(UnmanagedType.LPStr)] string lpRootPathName);
 
         private const int LVM_FIRST = 0x1000;
-
+        public const int LVM_SETICONSPACING = LVM_FIRST + 53;
         private const int LVM_SETBKIMAGE = (LVM_FIRST + 138);
         private const int LVM_GETBKIMAGE = (LVM_FIRST + 139);
 
@@ -2093,14 +2095,14 @@ namespace WindowsHelper
         {
             get { return new Guid("00000122-0000-0000-C000-000000000046"); }
         }
-        public static Point PointFromLPARAM(IntPtr lParam) {
-          return new Point(
+        public static System.Drawing.Point PointFromLPARAM(IntPtr lParam) {
+          return new System.Drawing.Point(
               (short)(((int)lParam) & 0xffff),
               (short)((((int)lParam) >> 0x10) & 0xffff));
         }
         [StructLayout(LayoutKind.Sequential)]
         public struct TVHITTESTINFO {
-          public Point pt;
+          public System.Drawing.Point pt;
           public int flags;
           public IntPtr hItem;
         }
@@ -2183,7 +2185,7 @@ namespace WindowsHelper
           [PreserveSig]
           int GetNextItem(IShellItem psi, int nstcgi, out IShellItem ppsiNext);
           [PreserveSig]
-          int HitTest([In] ref Point ppt, out IShellItem ppsiOut);
+          int HitTest([In] ref System.Drawing.Point ppt, out IShellItem ppsiOut);
           [PreserveSig]
           int GetItemRect(IShellItem psi, out WindowsHelper.WindowsAPI.RECT prect);
           [PreserveSig]
@@ -2291,7 +2293,7 @@ namespace WindowsHelper
         [DllImport("shell32.dll")]
         public static extern IntPtr ILFindLastID(IntPtr pidl);
         [DllImport("user32.dll")]
-        public static extern bool ScreenToClient(IntPtr hwnd, ref Point lpPoint);
+        public static extern bool ScreenToClient(IntPtr hwnd, ref System.Drawing.Point lpPoint);
         public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
         [DllImport("kernel32.dll")]
         public static extern int GetCurrentThreadId();
@@ -2985,9 +2987,9 @@ namespace WindowsHelper
 
             public int Height { get { return Bottom - Top; } }
             public int Width { get { return Right - Left; } }
-            public System.Drawing.Size Size { get { return new Size(Width, Height); } }
+            public System.Drawing.Size Size { get { return new System.Drawing.Size(Width, Height); } }
 
-            public Point Location { get { return new Point(Left, Top); } }
+            public System.Drawing.Point Location { get { return new System.Drawing.Point(Left, Top); } }
 
             // Handy method for converting to a System.Drawing.Rectangle
             public Rectangle ToRectangle()
@@ -4932,6 +4934,61 @@ namespace WindowsHelper
         #endregion
     }
 
+    public static class SystemWindows
+    {
+      #region Constants
+
+      const UInt32 SWP_NOSIZE = 0x0001;
+      const UInt32 SWP_NOMOVE = 0x0002;
+      const UInt32 SWP_SHOWWINDOW = 0x0040;
+
+      #endregion
+
+      /// <summary>
+      /// Activate a window from anywhere by attaching to the foreground window
+      /// </summary>
+      public static void GlobalActivate(this Window w)
+      {
+        //Get the process ID for this window's thread
+        var interopHelper = new WindowInteropHelper(w);
+        var thisWindowThreadId = GetWindowThreadProcessId(interopHelper.Handle, IntPtr.Zero);
+
+        //Get the process ID for the foreground window's thread
+        var currentForegroundWindow = GetForegroundWindow();
+        var currentForegroundWindowThreadId = GetWindowThreadProcessId(currentForegroundWindow, IntPtr.Zero);
+
+        //Attach this window's thread to the current window's thread
+        AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, true);
+
+        //Set the window position
+        SetWindowPos(interopHelper.Handle, new IntPtr(0), 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
+
+        //Detach this window's thread from the current window's thread
+        AttachThreadInput(currentForegroundWindowThreadId, thisWindowThreadId, false);
+
+        //Show and activate the window
+        if (w.WindowState == WindowState.Minimized) w.WindowState = WindowState.Normal;
+        w.Show();
+        w.Activate();
+      }
+
+      #region Imports
+
+      [DllImport("user32.dll")]
+      private static extern IntPtr GetForegroundWindow();
+
+      [DllImport("user32.dll")]
+      private static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
+
+      [DllImport("user32.dll")]
+      private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+      [DllImport("user32.dll")]
+      public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+      #endregion
+    }
+
     static class WNM {
       const int NM_FIRST = 0;
       public const int NM_KILLFOCUS = (NM_FIRST - 8);
@@ -4966,6 +5023,8 @@ namespace WindowsHelper
       public string PathDestination { get; set; }
       public string PathDestinationRenamed { get; set; }
     }
+
+    
 
     #region ChangeWallpaper
     public class Wallpaper

@@ -5433,12 +5433,21 @@ namespace BetterExplorer
 			if (ReadyToChangeLanguage == true)
 			{
 				ChangeLocale(((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
-                //InitializeComponent();
-                //ChangeStrings();
+
 				lblLocale.Visibility = Visibility.Visible;
-                Process pr = Process.GetCurrentProcess();
-                Process.Start("StartIt.exe", pr.MainModule.FileName);
-                btnBackstageExit_Click(sender, e);
+        Process pr = Process.GetCurrentProcess();
+
+        Process startIt = new Process();
+
+        // Stop the process from opening a new window
+        startIt.StartInfo.RedirectStandardOutput = true;
+        startIt.StartInfo.UseShellExecute = false;
+        startIt.StartInfo.CreateNoWindow = true;
+        startIt.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+        startIt.StartInfo.FileName = "StartIt.exe";
+        startIt.StartInfo.Arguments = pr.MainModule.FileName;
+        startIt.Start();
+        btnBackstageExit_Click(sender, e);
 			}
 		}
 

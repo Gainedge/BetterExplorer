@@ -2,13 +2,7 @@
 Module Module1
 
     Sub Main()
-        Console.WriteLine("Waiting 5 seconds")
-        Console.WriteLine("5")
-        Wait.Wait(1)
-        Console.WriteLine("4")
-        Wait.Wait(1)
-        Console.WriteLine("3")
-        Wait.Wait(1)
+    Console.WriteLine("Waiting 2 seconds")
         Console.WriteLine("2")
         Wait.Wait(1)
         Console.WriteLine("1")

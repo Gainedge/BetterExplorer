@@ -626,7 +626,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="7z.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="7z64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -641,7 +641,6 @@
     <Resource Include="Images\fv16.png" />
     <Resource Include="Images\fv32.png" />
     <Resource Include="Images\fv48.png" />
-    <Content Include="AppLimit.NetSparkle.Net40.dll" />
     <Resource Include="Images\fcust16.png" />
     <Resource Include="Images\fcust32.png" />
     <Resource Include="Images\fcust48.png" />
@@ -750,14 +749,20 @@
     <Resource Include="Images\check.png" />
     <Resource Include="Images\edit.png" />
     <Resource Include="Images\delete_16x16-4.png" />
-    <Content Include="AutomaticUpdaterWPF.dll" />
-    <Content Include="BEH32.dll" />
-    <Content Include="BEH64.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="AutomaticUpdaterWPF.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="BEHookLib32.dll" />
+    <Content Include="BEH32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BEH64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="BEHookLib32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="BEHookLib64.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="BetterExplorerShell.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -785,7 +790,7 @@
     <Resource Include="Images\browsefldr16.png" />
     <Resource Include="Images\browsefldr32.png" />
     <Content Include="FileOperation.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Translation\Flags\BG.gif" />
     <Resource Include="Translation\Flags\BR.gif" />
@@ -872,7 +877,12 @@
     <Content Include="Ionic.Zip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="TAFactory.IconPack.dll" />
+    <Content Include="StartIt.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TAFactory.IconPack.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Images\sawall16.png" />
     <Resource Include="Images\sawall32.png" />
     <Resource Include="Images\rl16.png" />
@@ -901,8 +911,12 @@
     <Resource Include="Images\right3.png" />
     <Resource Include="Images\right4.png" />
     <Resource Include="Images\downar1.png" />
-    <Content Include="Odyssey.dll" />
-    <Content Include="SevenZipSharp.dll" />
+    <Content Include="Odyssey.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SevenZipSharp.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Images\cleand16.png" />
     <Resource Include="Images\cleand32.png" />
     <Resource Include="Images\formatd.png" />
@@ -1021,7 +1035,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

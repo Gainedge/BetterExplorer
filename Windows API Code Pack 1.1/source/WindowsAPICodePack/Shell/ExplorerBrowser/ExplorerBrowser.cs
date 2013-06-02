@@ -1944,6 +1944,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					if (IsOldSysListView)
 					{
 							fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.VISTALAYOUT, WindowsAPI.FOLDERVIEWOPTIONS.VISTALAYOUT);
+              fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMORDERING, WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMORDERING);
+              fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMPOSITION, WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMPOSITION);
 					}
 
 					NativeRect rect = new NativeRect();
@@ -2940,6 +2942,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					return makeLong;
 			}
 
+      public int MakeLong2(short lowPart, short highPart)
+      {
+        return (int)(((ushort)lowPart) | (uint)(highPart << 16));
+      }
+
 			protected const int WM_CHANGEUISTATE = 0x00000127;
 			protected const int UIS_SET = 1;
 			protected const int UIS_CLEAR = 2;
@@ -3094,6 +3101,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
             
             AvailableVisibleColumns = AvailableColumns(false);
             SysListviewDT = (WindowsAPI.IDropTarget)isv;
+
+            
             
             SubclassHWnd(ShellSysListViewHandle);
             Marshal.ReleaseComObject(isv);
@@ -3118,6 +3127,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					{
 							ViewSelectedItemChanged.Invoke(this, EventArgs.Empty);
 					}
+          
 			}
 
 			internal void vViewChanged()

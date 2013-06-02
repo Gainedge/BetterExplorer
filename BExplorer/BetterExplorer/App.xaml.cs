@@ -17,6 +17,7 @@ using System.Globalization;
 using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Interop;
+using WindowsHelper;
 
 namespace BetterExplorer
 {
@@ -252,8 +253,7 @@ namespace BetterExplorer
             StartUpLocation =
                  rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
 
-            rks.Close();
-            rk.Close();
+            
 
             if (args == null || Dispatcher == null) return;
 
@@ -287,8 +287,8 @@ namespace BetterExplorer
                             win.Visibility = Visibility.Visible;
                             if (win.WindowState == WindowState.Minimized)
                             {
-                              WindowsHelper.WindowsAPI.ShowWindow(hwnd,
-                                  (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
+                              WindowsAPI.ShowWindow(hwnd,
+                                  (int)WindowsAPI.ShowCommands.SW_RESTORE);
                             }
 
                             String cmd = args.CommandLineArgs[1];
@@ -305,8 +305,8 @@ namespace BetterExplorer
                           win.Visibility = Visibility.Visible;
                           if (win.WindowState == WindowState.Minimized)
                           {
-                            WindowsHelper.WindowsAPI.ShowWindow(hwnd,
-                                (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
+                            WindowsAPI.ShowWindow(hwnd,
+                                (int)WindowsAPI.ShowCommands.SW_RESTORE);
                           }
                           sho = win.GetShellObjectFromLocation(StartUpLocation);
                         }
@@ -317,8 +317,8 @@ namespace BetterExplorer
                         win.Visibility = Visibility.Visible;
                         if (win.WindowState == WindowState.Minimized)
                         {
-                          WindowsHelper.WindowsAPI.ShowWindow(hwnd,
-                              (int)WindowsHelper.WindowsAPI.ShowCommands.SW_RESTORE);
+                          WindowsAPI.ShowWindow(hwnd,
+                              (int)WindowsAPI.ShowCommands.SW_RESTORE);
                         }
                         sho = win.GetShellObjectFromLocation(StartUpLocation);
                       }
@@ -333,13 +333,33 @@ namespace BetterExplorer
                         newt.PreviewMouseMove += newt_PreviewMouseMove;
                         newt.TabSelected += win.newt_TabSelected;
                         newt.Path = sho;
-                        win.CloneTab(newt); 
+                        win.CloneTab(newt);
+                      }
+                      else
+                      {
+                        int RestoreTabs = (int)rks.GetValue(@"IsRestoreTabs", 1);
+                        if (RestoreTabs == 0)
+                        {
+                          win.tabControl1.Items.Clear();
+                          sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                          sho.Thumbnail.CurrentSize = new Size(16, 16);
+                          ClosableTabItem newt = new ClosableTabItem();
+                          newt.Header = sho.GetDisplayName(DisplayNameType.Default);
+                          newt.TabIcon = sho.Thumbnail.BitmapSource;
+                          newt.PreviewMouseMove += newt_PreviewMouseMove;
+                          newt.TabSelected += win.newt_TabSelected;
+                          newt.Path = sho;
+                          win.CloneTab(newt);
+                        }
                       }
                         
-                        WindowsHelper.WindowsAPI.BringWindowToTop(hwnd);
-                        WindowsHelper.WindowsAPI.SetForegroundWindow(hwnd);
-                        
-                        win.Activate(true);
+                      rks.Close();
+                      rk.Close();
+
+                      win.Activate();
+                      win.Topmost = true;  // important
+                      win.Topmost = false; // important
+                      win.Focus();         // important
 
                     }
                 }
