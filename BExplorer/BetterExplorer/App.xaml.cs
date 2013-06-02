@@ -322,6 +322,7 @@ namespace BetterExplorer
                         }
                         sho = win.GetShellObjectFromLocation(StartUpLocation);
                       }
+
                       if (!isStartMinimized || win.tabControl1.Items.Count == 0)
                       {
 
@@ -341,6 +342,26 @@ namespace BetterExplorer
                         if (RestoreTabs == 0)
                         {
                           win.tabControl1.Items.Clear();
+                          sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                          sho.Thumbnail.CurrentSize = new Size(16, 16);
+                          ClosableTabItem newt = new ClosableTabItem();
+                          newt.Header = sho.GetDisplayName(DisplayNameType.Default);
+                          newt.TabIcon = sho.Thumbnail.BitmapSource;
+                          newt.PreviewMouseMove += newt_PreviewMouseMove;
+                          newt.TabSelected += win.newt_TabSelected;
+                          newt.Path = sho;
+                          win.CloneTab(newt);
+                        }
+                        if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null)
+                        {
+                          String cmd = args.CommandLineArgs[1];
+                          if (cmd.IndexOf("::") == 0)
+                          {
+                            sho = ShellObject.FromParsingName("shell:" + cmd);
+                          }
+                          else
+                            sho = ShellObject.FromParsingName(args.CommandLineArgs[1].Replace("\"", ""));
+
                           sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
                           sho.Thumbnail.CurrentSize = new Size(16, 16);
                           ClosableTabItem newt = new ClosableTabItem();

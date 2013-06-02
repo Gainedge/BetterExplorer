@@ -2319,24 +2319,24 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			#region ICommDlgBrowser
 			HResult ICommDlgBrowser3.OnDefaultCommand(IntPtr ppshv)
 			{
-					//if (!SelectedItems[0].IsFolder)
-					//{
-					//		return HResult.False;
-					//}
-					//else
-					//{
+					if (!SelectedItems[0].IsFolder)
+					{
+							return HResult.False;
+					}
+					else
+					{
 
-					//		if (Path.GetExtension(SelectedItems[0].ParsingName).ToLowerInvariant() == ".zip")
-					//		{
-					//				return HResult.False;
-					//		}
-					//		else
-					//		{
-					//				Navigate(SelectedItems[0]);
-					//				return HResult.Ok;
-					//		}
-					//}
-					return HResult.False;
+							if (Path.GetExtension(SelectedItems[0].ParsingName).ToLowerInvariant() == ".zip")
+							{
+									return HResult.False;
+							}
+							else
+							{
+									Navigate(SelectedItems[0]);
+									return HResult.Ok;
+							}
+					}
+					//return HResult.False;
 						
 			}
 
