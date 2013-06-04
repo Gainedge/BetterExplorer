@@ -130,7 +130,7 @@ namespace BetterExplorer
                 RibbonItemListDisplay rils = new RibbonItemListDisplay();
                 if (item.Icon != null)
                 {
-                    rils.Icon = new BitmapImage(new Uri(@"/ScrollingEyeEditor;component/" + item.Icon.ToString(), UriKind.Relative));
+                    rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
                 }
                 rils.Header = (item.Header as string);
                 rils.SourceControl = item;
@@ -148,7 +148,7 @@ namespace BetterExplorer
                 RibbonItemListDisplay rils = new RibbonItemListDisplay();
                 if (item.Icon != null)
                 {
-                    rils.Icon = new BitmapImage(new Uri(@"/ScrollingEyeEditor;component/" + item.Icon.ToString(), UriKind.Relative));
+                  rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
                 }
                 rils.Header = (item.Header as string);
                 rils.SourceControl = item;
@@ -195,7 +195,7 @@ namespace BetterExplorer
                     RibbonItemListDisplay rils = new RibbonItemListDisplay();
                     if (thing.Icon != null)
                     {
-                        rils.Icon = new BitmapImage(new Uri(@"/ScrollingEyeEditor;component/" + thing.Icon.ToString(), UriKind.Relative));
+                      rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + thing.Icon.ToString(), UriKind.Relative));
                     }
                     rils.Header = (thing.Header as string);
                     rils.SourceControl = thing;
@@ -237,7 +237,7 @@ namespace BetterExplorer
                     RibbonItemListDisplay rils = new RibbonItemListDisplay();
                     if (thing.Icon != null)
                     {
-                        rils.Icon = new BitmapImage(new Uri(@"/ScrollingEyeEditor;component/" + thing.Icon.ToString(), UriKind.Relative));
+                      rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + thing.Icon.ToString(), UriKind.Relative));
                     }
                     rils.Header = (thing.Header as string);
                     rils.SourceControl = thing;
@@ -349,7 +349,7 @@ namespace BetterExplorer
                 RibbonItemListDisplay rils = new RibbonItemListDisplay();
                 if (item.Icon != null)
                 {
-                    rils.Icon = new BitmapImage(new Uri(@"/ScrollingEyeEditor;component/" + item.Icon.ToString(), UriKind.Relative));
+                  rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
                 }
                 rils.Header = (item.Header as string);
                 rils.SourceControl = item;

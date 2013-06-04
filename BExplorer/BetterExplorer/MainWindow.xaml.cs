@@ -4164,26 +4164,35 @@ namespace BetterExplorer
 									  }
 
 									  //sets up Jump List
-									  AppJL.ShowRecentCategory = true;
-									  AppJL.ShowFrequentCategory = true;
-									  System.Windows.Shell.JumpList.SetJumpList(Application.Current, AppJL);
-                    JumpTask newTab = new JumpTask() { 
-                      ApplicationPath = Process.GetCurrentProcess().MainModule.FileName, 
-                      Arguments = "t", 
-                      Title = "Open Tab", 
-                      Description = "Opens new tab with default location" 
-                    };
+                    try
+                    {
+                      AppJL.ShowRecentCategory = true;
+                      AppJL.ShowFrequentCategory = true;
+                      System.Windows.Shell.JumpList.SetJumpList(Application.Current, AppJL);
+                      JumpTask newTab = new JumpTask()
+                      {
+                        ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
+                        Arguments = "t",
+                        Title = "Open Tab",
+                        Description = "Opens new tab with default location"
+                      };
 
-                    JumpTask newWindow = new JumpTask() { 
-                      ApplicationPath = Process.GetCurrentProcess().MainModule.FileName, 
-                      Arguments = "/nw", 
-                      Title = "New Window", 
-                      Description = "Creates a new window with default location" 
-                    };
+                      JumpTask newWindow = new JumpTask()
+                      {
+                        ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
+                        Arguments = "/nw",
+                        Title = "New Window",
+                        Description = "Creates a new window with default location"
+                      };
 
-									  AppJL.JumpItems.Add(newTab);
-									  AppJL.JumpItems.Add(newWindow);
-									  AppJL.Apply();
+                      AppJL.JumpItems.Add(newTab);
+                      AppJL.JumpItems.Add(newWindow);
+                      AppJL.Apply();
+                    }
+                    catch 
+                    {
+
+                    }
                     
 									   //Setup Clipboard monitor
 									  cbm.ClipboardChanged += new EventHandler<ClipboardChangedEventArgs>(cbm_ClipboardChanged);
@@ -8617,7 +8626,7 @@ namespace BetterExplorer
                 RibbonItemListDisplay rils = new RibbonItemListDisplay();
                 if (item.Icon != null)
                 {
-                    rils.Icon = new BitmapImage(new Uri(@"/ScrollingEyeEditor;component/" + item.Icon.ToString(), UriKind.Relative));
+                    rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" +  item.Icon.ToString(), UriKind.Relative));
                 }
                 rils.Header = (item.Header as string);
                 rils.SourceControl = item;
@@ -8635,7 +8644,7 @@ namespace BetterExplorer
                 RibbonItemListDisplay rils = new RibbonItemListDisplay();
                 if (item.Icon != null)
                 {
-                    rils.Icon = new BitmapImage(new Uri(@"/ScrollingEyeEditor;component/" + item.Icon.ToString(), UriKind.Relative));
+                  rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
                 }
                 rils.Header = (item.Header as string);
                 rils.SourceControl = item;
