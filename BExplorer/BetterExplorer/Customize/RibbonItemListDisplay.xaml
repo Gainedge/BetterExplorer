@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="BetterExplorer.RibbonItemListDisplay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="20" d:DesignWidth="100">
+    <Grid>
+        <Image Width="16" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="tIcon" Margin="2,2,2,2" />
+        <TextBlock x:Name="tText" Margin="20,2,12,2" VerticalAlignment="Center" />
+        <Grid HorizontalAlignment="Right" x:Name="MenuArrow" Margin="0,0,3,0">
+            <Path x:Name="expandArrow" Data="M 5 7 L 8 10 L 5 13 Z" Visibility="Visible"
+          StrokeThickness="1" 
+          StrokeLineJoin="Miter" 
+          Stroke="Black" 
+          Fill="Black" />
+        </Grid>
+    </Grid>
+</UserControl>

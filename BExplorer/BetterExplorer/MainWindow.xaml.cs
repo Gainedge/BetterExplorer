@@ -60,12 +60,12 @@ namespace BetterExplorer
 		bool IsNavigationPaneEnabled;
 		bool isCheckModeEnabled;
 		bool IsExtendedFileOpEnabled;
-    bool IsCloseLastTabCloseApp;
+        bool IsCloseLastTabCloseApp;
 		public bool IsrestoreTabs;
 		bool IsUpdateCheck;
-	  bool IsUpdateCheckStartup;
-    bool IsConsoleShown;
-	  int UpdateCheckType;
+	    bool IsUpdateCheckStartup;
+        bool IsConsoleShown;
+	    int UpdateCheckType;
 		public bool isOnLoad;
 		System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
 		public bool IsCalledFromLoading;
@@ -110,9 +110,11 @@ namespace BetterExplorer
 		System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
 		DateTime LastUpdateCheck;
 		Int32 UpdateCheckInterval;
-    Double CommandPromptWinHeight;
-    bool IsViewSelection = false;
-    private ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
+        Double CommandPromptWinHeight;
+        bool IsViewSelection = false;
+        private ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
+        public List<string> QatItems = new List<string>();
+        UIElement curitem = null;
 		#endregion
 
 		#region Properties
@@ -438,7 +440,7 @@ namespace BetterExplorer
 
 		private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e)
 		{
-
+            OpenCustomizeQAT();
 		}
 
 		private int GetIntegerFromBoolean(bool value)
@@ -1796,9 +1798,9 @@ namespace BetterExplorer
                   sectedFileInfo = null;
                   SelectedArchive = SelectedItem.ParsingName;
                   if (System.IO.Path.GetExtension(SelectedItem.ParsingName).ToLowerInvariant().EndsWith(".zip")) {
-                    btnViewArchive.IsEnabled = true;
+                    //btnViewArchive.IsEnabled = true;
                   } else {
-                    btnViewArchive.IsEnabled = false;
+                    //btnViewArchive.IsEnabled = false;
                   }
                   if (asArchive == true) {
                     TheRibbon.SelectedTabItem = ctgArchive.Items[0];
@@ -3530,7 +3532,7 @@ namespace BetterExplorer
 
 #endregion
 
-	  public MainWindow() {
+	public MainWindow() {
 
       TaskbarManager.Instance.ApplicationId = "{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}";
 			CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, ERNewTab);
@@ -3684,9 +3686,13 @@ namespace BetterExplorer
 
 			// allows user to change language
 			ReadyToChangeLanguage = true;
+
+            LoadInternalList();
 		}
+
     MessageReceiver r;
-		private void Window_Loaded(object sender, RoutedEventArgs e)
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
       UpdateRecycleBinInfos();
 
@@ -8590,6 +8596,370 @@ namespace BetterExplorer
 		}
 
 		#endregion
+
+        #region Customize Quick Access Toolbar
+
+        public void OpenCustomizeQAT()
+        {
+            CustomizeQAT qal = new CustomizeQAT();
+            qal.Owner = this;
+
+            Refresh(qal);
+
+            qal.MainForm = this;
+            qal.ShowDialog();
+        }
+
+        public void Refresh(CustomizeQAT qal)
+        {
+            foreach (IRibbonControl item in GetNonQATButtons())
+            {
+                RibbonItemListDisplay rils = new RibbonItemListDisplay();
+                if (item.Icon != null)
+                {
+                    rils.Icon = new BitmapImage(new Uri(@"/ScrollingEyeEditor;component/" + item.Icon.ToString(), UriKind.Relative));
+                }
+                rils.Header = (item.Header as string);
+                rils.SourceControl = item;
+                rils.ItemName = (item as FrameworkElement).Name;
+                rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+                if (item is Fluent.DropDownButton || item is Fluent.SplitButton)
+                {
+                    rils.ShowMenuArrow = true;
+                }
+                qal.AllControls.Items.Add(rils);
+            }
+
+            foreach (IRibbonControl item in GetRibbonControlsFromNames(QatItems))
+            {
+                RibbonItemListDisplay rils = new RibbonItemListDisplay();
+                if (item.Icon != null)
+                {
+                    rils.Icon = new BitmapImage(new Uri(@"/ScrollingEyeEditor;component/" + item.Icon.ToString(), UriKind.Relative));
+                }
+                rils.Header = (item.Header as string);
+                rils.SourceControl = item;
+                rils.ItemName = (item as FrameworkElement).Name;
+                rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+                if (item is Fluent.DropDownButton || item is Fluent.SplitButton)
+                {
+                    rils.ShowMenuArrow = true;
+                }
+                qal.QATControls.Items.Add(rils);
+            }
+        }
+
+        #region Helper Functions
+
+        public List<IRibbonControl> SortNames(List<IRibbonControl> items, List<string> headers)
+        {
+            List<IRibbonControl> rb = new List<IRibbonControl>();
+
+            foreach (string item in headers)
+            {
+                bool found = false;
+                foreach (IRibbonControl thing in items)
+                {
+                    if (found == false)
+                    {
+                        if (thing.Header as string == item)
+                        {
+                            rb.Add(thing);
+                            found = true;
+                        }
+                    }
+                }
+            }
+
+            return rb;
+        }
+
+        public List<string> GetNamesFromRibbonControls(List<IRibbonControl> input)
+        {
+            List<string> o = new List<string>();
+
+            foreach (IRibbonControl item in input)
+            {
+                o.Add((item as FrameworkElement).Name);
+            }
+
+            return o;
+        }
+
+        public void LoadInternalList()
+        {
+            QatItems.Clear();
+            QatItems = GetNamesFromRibbonControls(GetQATButtons());
+        }
+
+        public void PutItemsOnQAT(List<string> names)
+        {
+            this.TheRibbon.ClearQuickAccessToolBar();
+            Dictionary<string, IRibbonControl> items = GetAllButtonsAsDictionary();
+            foreach (string item in names)
+            {
+                IRibbonControl blah;
+                if (items.TryGetValue(item, out blah))
+                {
+                    curitem = (blah as UIElement);
+                    this.TheRibbon.AddToQuickAccessToolBar(blah as UIElement);
+                    curitem = null;
+                }
+
+            }
+            LoadInternalList();
+        }
+
+        #endregion
+
+        #region Get Buttons Helper Functions
+
+        public Dictionary<string, IRibbonControl> GetAllButtonsAsDictionary()
+        {
+            Dictionary<string, Fluent.IRibbonControl> rb = new Dictionary<string, Fluent.IRibbonControl>();
+
+            foreach (RibbonTabItem item in TheRibbon.Tabs)
+            {
+                foreach (RibbonGroupBox itg in item.Groups)
+                {
+                    foreach (object ic in itg.Items)
+                    {
+                        if (ic is IRibbonControl)
+                        {
+                            rb.Add((ic as FrameworkElement).Name, (ic as IRibbonControl));
+                        }
+                    }
+                }
+            }
+
+
+
+            return rb;
+        }
+
+        public Tuple<string, IRibbonControl> AddOtherButtonForDictionary(IRibbonControl item, Dictionary<string, IRibbonControl> dict)
+        {
+            Tuple<string, IRibbonControl> blah = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
+            dict.Add(blah.Item1, blah.Item2);
+            return blah;
+        }
+
+        public Tuple<string, IRibbonControl> AddOtherButtonForLists(IRibbonControl item, List<IRibbonControl> rb, List<string> rs)
+        {
+            Tuple<string, IRibbonControl> blah = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
+            rb.Add(item);
+            rs.Add(item.Header as string);
+            return blah;
+        }
+
+        public Tuple<string, IRibbonControl> RemoveOtherButtonForLists(IRibbonControl item, List<IRibbonControl> rb, List<string> rs)
+        {
+            Tuple<string, IRibbonControl> blah = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
+            rb.Remove(item);
+            rs.Remove(item.Header as string);
+            return blah;
+        }
+
+        public List<Fluent.IRibbonControl> GetAllButtons()
+        {
+            List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
+            List<string> rs = new List<string>();
+
+            foreach (QuickAccessMenuItem item in TheRibbon.QuickAccessItems)
+            {
+                rb.Add(item.Target as IRibbonControl);
+                rs.Add((item.Target as IRibbonControl).Header as string);
+            }
+
+            foreach (RibbonTabItem item in TheRibbon.Tabs)
+            {
+                foreach (RibbonGroupBox itg in item.Groups)
+                {
+                    foreach (object ic in itg.Items)
+                    {
+                        if (ic is IRibbonControl)
+                        {
+                            rb.Add(ic as IRibbonControl);
+                            rs.Add((ic as IRibbonControl).Header as string);
+                        }
+                    }
+                }
+            }
+
+            rs.Sort();
+
+            return SortNames(rb, rs);
+        }
+
+        public List<Fluent.IRibbonControl> GetNonQATButtons()
+        {
+            List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
+            List<string> rs = new List<string>();
+
+            foreach (QuickAccessMenuItem item in TheRibbon.QuickAccessItems)
+            {
+                if (!(TheRibbon.IsInQuickAccessToolBar((item.Target) as UIElement)))
+                {
+                    //if ((item.Target.Tag as string) == "Spc")
+                    //{
+                        rb.Add(item.Target as IRibbonControl);
+                        rs.Add((item.Target as IRibbonControl).Header as string);
+                    //}
+                }
+            }
+
+            foreach (RibbonTabItem item in TheRibbon.Tabs)
+            {
+                foreach (RibbonGroupBox itg in item.Groups)
+                {
+                    foreach (object ic in itg.Items)
+                    {
+                        if (ic is IRibbonControl)
+                        {
+                            if (!(TheRibbon.IsInQuickAccessToolBar(ic as UIElement)))
+                            {
+                                rb.Add(ic as IRibbonControl);
+                                rs.Add((ic as IRibbonControl).Header as string);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+
+            rs.Sort();
+
+            return SortNames(rb, rs);
+        }
+
+        public void AddOtherButton(IRibbonControl item, bool test, List<IRibbonControl> rb, List<string> rs)
+        {
+            if (TheRibbon.IsInQuickAccessToolBar(item as UIElement) == test)
+            {
+                rb.Add(item);
+                rs.Add(item.Header as string);
+            }
+        }
+
+        public List<Fluent.IRibbonControl> GetQATButtonsSorted()
+        {
+            List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
+            List<string> rs = new List<string>();
+
+            foreach (QuickAccessMenuItem item in TheRibbon.QuickAccessItems)
+            {
+                if (TheRibbon.IsInQuickAccessToolBar((item.Target) as UIElement))
+                {
+                    //if ((item.Target.Tag as string) == "Spc")
+                    //{
+                        rb.Add(item.Target as IRibbonControl);
+                        rs.Add((item.Target as IRibbonControl).Header as string);
+                    //}
+                }
+            }
+
+            foreach (RibbonTabItem item in TheRibbon.Tabs)
+            {
+                foreach (RibbonGroupBox itg in item.Groups)
+                {
+                    foreach (object ic in itg.Items)
+                    {
+                        if (ic is IRibbonControl)
+                        {
+                            if (TheRibbon.IsInQuickAccessToolBar(ic as UIElement))
+                            {
+                                rb.Add(ic as IRibbonControl);
+                                rs.Add((ic as IRibbonControl).Header as string);
+                            }
+                        }
+                    }
+                }
+            }
+
+            //rb.Sort(SortNames);
+            //rb.Sort(SortNames);
+
+            rs.Sort();
+            return SortNames(rb, rs);
+        }
+
+        public List<IRibbonControl> GetQATButtons()
+        {
+            List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
+
+            foreach (UIElement item in TheRibbon.quickAccessElements.Keys)
+            {
+                rb.Add(item as IRibbonControl);
+            }
+
+            return rb;
+        }
+
+        public List<IRibbonControl> GetRibbonControlsFromNames(List<string> input)
+        {
+            List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
+            Dictionary<string, IRibbonControl> dic = GetAllButtonsAsDictionary();
+
+            foreach (string name in input)
+            {
+                IRibbonControl ri;
+                if (dic.TryGetValue(name, out ri))
+                {
+                    rb.Add(ri);
+                }
+                else
+                {
+
+                }
+            }
+            //RemoveOtherButtonForLists(this.tlbrFind, rb, input);
+            //rb.Sort(SortCompNames);
+
+            return rb;
+        }
+
+        public void AddIfMatchesName(IRibbonControl input, List<IRibbonControl> rb, string name)
+        {
+            if ((input as FrameworkElement).Name == name)
+            {
+                rb.Add(input);
+            }
+        }
+
+        public void AddIfInList(IRibbonControl input, List<IRibbonControl> rb, List<string> rs)
+        {
+            if (rs.Contains((input as FrameworkElement).Name))
+            {
+                rb.Add(input);
+            }
+        }
+
+        #endregion
+
+        #region Add/Remove Event Handlers
+
+        private void TheRibbon_ItemAddedToQuickAccessToolbar(object sender, Ribbon.UIElementEventArgs e)
+        {
+            if (curitem == null)
+            {
+                Debug.WriteLine("Item being added: " + (e.Item as FrameworkElement).Name);
+                QatItems.Add((e.Item as FrameworkElement).Name);
+            }
+        }
+
+        private void TheRibbon_ItemRemovedToQuickAccessToolbar(object sender, Ribbon.UIElementEventArgs e)
+        {
+            if (curitem == null)
+            {
+                Debug.WriteLine("Item being removed: " + (e.Item as FrameworkElement).Name);
+                QatItems.Remove((e.Item as FrameworkElement).Name);
+            }
+        }
+
+        #endregion
+
+        #endregion
 
         private void inRibbonGallery1_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
           IsViewSelection = true;

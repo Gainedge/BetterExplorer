@@ -237,7 +237,7 @@
                        Focusable="False"
                        GotFocus="TheStatusBar_GotFocus"
                        IsCollapsedChanged="TheRibbon_IsCollapsedChanged"
-                       SizeChanged="TheRibbon_SizeChanged">
+                       SizeChanged="TheRibbon_SizeChanged" ItemAddedToQuickAccessToolbar="TheRibbon_ItemAddedToQuickAccessToolbar" ItemRemovedToQuickAccessToolbar="TheRibbon_ItemRemovedToQuickAccessToolbar" CanCustomizeQuickAccessToolBar="True">
             <Ribbon:Ribbon.ToolBarItems>
                 <Ribbon:Button x:Name="btnAbout"
                                Click="btnAbout_Click"
@@ -767,9 +767,9 @@
                                         <TextBlock Text="Dutch: Pink-ET" />
                                         <TextBlock Text="English: JaykeBird (Jayke R. Huempfner), Dimitar Tsenev" />
                                         <TextBlock Text="Finnish: Osku598 (Oskar Bredin)" />
-                                        <TextBlock Text="French: Xanax (Sebastien Kerguen), Pascal Huau, reno2012" />
-                                        <TextBlock Text="German: Stefan (Stefan Klebs), Markus Lang, Florian0901, Piotrex, Daniel Will" />
-                                        <TextBlock Text="Greek: lovegreek" />
+                                        <TextBlock Text="French: Sebastien Kerguen, Pascal Huau, reno2012" />
+                                        <TextBlock Text="German: Stefan Klebs, Markus Lang, Florian0901, Piotrex, Daniel Will" />
+                                        <TextBlock Text="Greek: Ιωάννης Τσιμπέρης" />
                                         <TextBlock Text="Hindi: Animesh Prasad" />
                                         <TextBlock Text="Hungarian: lostprophet (Brechler Zsolt)" />
                                         <TextBlock Text="Italian: Gianluigi Meraviglia, eagleman, inshilon, JaykeBird (Jayke R. Huempfner)" />
@@ -1370,16 +1370,16 @@
                                               Text="Creates a new folder in the current folder" />
                         </Ribbon:Button.ToolTip>
                     </Ribbon:Button>
-                    <Ribbon:SplitButton x:Name="btnNewItem"
+                    <!--<Ribbon:SplitButton x:Name="btnNewItem"
                                         Click="btnNewItem_Click"
                                         Header="New item"
                                         Ribbon:KeyTip.Keys="CR"
                                         SizeDefinition="Middle,Small,Small"
                                         Visibility="Collapsed" />
-                    <Ribbon:SplitButton Header="Easy Access"
+                    <Ribbon:SplitButton x:Name="btnEasyAccess" Header="Easy Access"
                                         Ribbon:KeyTip.Keys="E"
                                         SizeDefinition="Middle,Small,Small"
-                                        Visibility="Collapsed" />
+                                        Visibility="Collapsed" />-->
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox x:Name="Open"
                                        Header="{StaticResource tgOpenCP}"
@@ -1975,7 +1975,8 @@
                                    LargeIcon="Images\new_window32.png" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox>
-                    <Ribbon:Button Click="Button_Click"
+                    <Ribbon:Button x:Name="btnRefresh"
+                                   Click="Button_Click"
                                    Header="{StaticResource btnRefreshCP}"
                                    LargeIcon="Images\Refresh32.png"
                                    Ribbon:KeyTip.Keys="R"
@@ -2061,7 +2062,8 @@
                 <Ribbon:RibbonGroupBox x:Name="ResetLibrary"
                                        Header=""
                                        IsLauncherVisible="False">
-                    <Ribbon:Button Click="Button_Click_3"
+                    <Ribbon:Button x:Name="btnResetLibrary"
+                                   Click="Button_Click_3"
                                    Header="{StaticResource btnResetCP}"
                                    LargeIcon="Images\resetlib32.png"
                                    Ribbon:KeyTip.Keys="R"
@@ -2195,7 +2197,7 @@
                 <Ribbon:RibbonGroupBox x:Name="imgSize"
                                        Header="{StaticResource grpSizeCP}"
                                        Ribbon:KeyTip.Keys="S">
-                    <Ribbon:RibbonToolBar>
+                    <Ribbon:RibbonToolBar x:Name="tlbrImageSize">
                         <!--  ToolBar Layout Definitions  -->
                         <Ribbon:RibbonToolBar.LayoutDefinitions>
 
@@ -2267,12 +2269,12 @@
                                        Header="{StaticResource tgImgViewCP}"
                                        IsLauncherVisible="False"
                                        Ribbon:KeyTip.Keys="V">
-                    <Ribbon:Button x:Name="btnSlideShow"
+                    <!--<Ribbon:Button x:Name="btnSlideShow"
                                    Header="{StaticResource btnSlideShowCP}"
                                    LargeIcon="Images\slideshow32.png"
                                    Ribbon:KeyTip.Keys="H"
                                    SizeDefinition="Large"
-                                   Visibility="Collapsed" />
+                                   Visibility="Collapsed" />-->
                     <Ribbon:SplitButton x:Name="btnWallpaper"
                                         Click="btnWallpaper_Click"
                                         Header="{StaticResource btnWallpaperCP}"
@@ -2327,7 +2329,7 @@
                         </Ribbon:Button.ToolTip>
                     </Ribbon:Button>
                     <Separator />
-                    <Ribbon:RibbonToolBar>
+                    <Ribbon:RibbonToolBar x:Name="tlbrExtract">
                         <!--  ToolBar Layout Definitions  -->
                         <Ribbon:RibbonToolBar.LayoutDefinitions>
 
@@ -2416,13 +2418,13 @@
                                    LargeIcon="Images\archivecheck32.png"
                                    Ribbon:KeyTip.Keys="C"
                                    SizeDefinition="Large" />
-                    <Ribbon:Button x:Name="btnViewArchive"
+                    <!--<Ribbon:Button x:Name="btnViewArchive"
                                    Click="btnViewArchive_Click"
                                    Header="{StaticResource btnViewArchiveCP}"
                                    Icon="Images\archiveview16.png"
                                    LargeIcon="Images\archiveview32.png"
                                    Ribbon:KeyTip.Keys="V"
-                                   SizeDefinition="Large" Visibility="Collapsed" />
+                                   SizeDefinition="Large" Visibility="Collapsed" />-->
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 
@@ -2472,7 +2474,8 @@
                 <Ribbon:RibbonGroupBox x:Name="tsgKind"
                                        Header="{StaticResource tsgKindCP}"
                                        IsLauncherVisible="False">
-                    <Ribbon:ToggleButton Click="ToggleButton_Click"
+                    <Ribbon:ToggleButton x:Name="btnSearchEverything"
+                                         Click="ToggleButton_Click"
                                          GroupName="k1"
                                          Header="{StaticResource btnKindAllCP}"
                                          Icon="Images\jseverything16.png"
@@ -2480,42 +2483,48 @@
                                          LargeIcon="Images\jseverything32.png"
                                          SizeDefinition="Large"
                                          Tag=":null:" />
-                    <Ribbon:ToggleButton Click="ToggleButton_Click"
+                    <Ribbon:ToggleButton x:Name="btnSearchDocuments"
+                                         Click="ToggleButton_Click"
                                          GroupName="k1"
                                          Header="{StaticResource btnKindDocsCP}"
                                          Icon="Images\jsdocs16.png"
                                          LargeIcon="Images\jsdocs32.png"
                                          SizeDefinition="Large,Middle,Middle"
                                          Tag="kind:docs" />
-                    <Ribbon:ToggleButton Click="ToggleButton_Click"
+                    <Ribbon:ToggleButton x:Name="btnSearchPictures"
+                                         Click="ToggleButton_Click"
                                          GroupName="k1"
                                          Header="{StaticResource btnKindPicsCP}"
                                          Icon="Images\jsimages16.png"
                                          LargeIcon="Images\jsimages32.png"
                                          SizeDefinition="Large,Middle,Middle"
                                          Tag="kind:pics" />
-                    <Ribbon:ToggleButton Click="ToggleButton_Click"
+                    <Ribbon:ToggleButton x:Name="btnSearchMusic"
+                                         Click="ToggleButton_Click"
                                          GroupName="k1"
                                          Header="{StaticResource btnKindMusicCP}"
                                          Icon="Images\jsmusic16.png"
                                          LargeIcon="Images\jsmusic32.png"
                                          SizeDefinition="Large,Middle,Middle"
                                          Tag="kind:music" />
-                    <Ribbon:ToggleButton Click="ToggleButton_Click"
+                    <Ribbon:ToggleButton x:Name="btnSearchVideos" 
+                                         Click="ToggleButton_Click"
                                          GroupName="k1"
                                          Header="{StaticResource btnKindVideosCP}"
                                          Icon="Images\jsvideos16.png"
                                          LargeIcon="Images\jsvideos32.png"
                                          SizeDefinition="Middle"
                                          Tag="kind:videos" />
-                    <Ribbon:ToggleButton Click="ToggleButton_Click"
+                    <Ribbon:ToggleButton x:Name="btnSearchFolders"
+                                         Click="ToggleButton_Click"
                                          GroupName="k1"
                                          Header="{StaticResource btnKindFoldersCP}"
                                          Icon="Images\jsfolders16.png"
                                          LargeIcon="Images\jsfolders32.png"
                                          SizeDefinition="Middle"
                                          Tag="kind:folders" />
-                    <Ribbon:ToggleButton Click="ToggleButton_Click"
+                    <Ribbon:ToggleButton x:Name="btnSearchPrograms"
+                                         Click="ToggleButton_Click"
                                          GroupName="k1"
                                          Header="{StaticResource btnKindProgramsCP}"
                                          Icon="Images\jsprograms16.png"
@@ -2666,11 +2675,11 @@
                                    Icon="Images\jssearch16.png"
                                    LargeIcon="Images\jssearch32.png"
                                    SizeDefinition="Large,Middle,Middle" />
-                    <Ribbon:Button Header="Advanced Search"
+                    <!--<Ribbon:Button Header="Advanced Search"
                                    Icon="Images\searchadv16.png"
                                    LargeIcon="Images\searchadv32.png"
                                    SizeDefinition="Large,Middle,Middle"
-                                   Visibility="Collapsed" />
+                                   Visibility="Collapsed" />-->
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
         </Ribbon:Ribbon>

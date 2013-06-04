@@ -38,6 +38,18 @@ namespace Fluent
         /// </summary>
         public event NotifyCollectionChangedEventHandler ItemsChanged = delegate { };
 
+        public event RoutedEventHandler RequestCustomize;
+
+        /// <summary>
+        /// Handles "Customize Quick Access Toolbar" click
+        /// </summary>
+        /// <param name="e"></param>
+        protected virtual void OnRequestCustomize(object sender, RoutedEventArgs e)
+        {
+            if (RequestCustomize != null)
+                RequestCustomize(sender, e);
+        }
+
         #endregion
 
         #region Fields
@@ -51,6 +63,9 @@ namespace Fluent
 
         // Show below menu item
         private MenuItem showBelow;
+
+        // Customize menu item
+        private MenuItem tbCustomize;
 
         // Items of quick access menu
         private ObservableCollection<QuickAccessMenuItem> quickAccessItems;
@@ -354,8 +369,14 @@ namespace Fluent
                 this.showBelow.Click -= this.OnShowBelowClick;
             }
 
+            if (this.tbCustomize != null)
+            {
+                this.tbCustomize.Click -= this.OnRequestCustomize;
+            }
+
             this.showAbove = this.GetTemplateChild("PART_ShowAbove") as MenuItem;
             this.showBelow = this.GetTemplateChild("PART_ShowBelow") as MenuItem;
+            this.tbCustomize = this.GetTemplateChild("PART_Customize") as MenuItem;
 
             if (this.showAbove != null)
             {
@@ -365,6 +386,11 @@ namespace Fluent
             if (this.showBelow != null)
             {
                 this.showBelow.Click += this.OnShowBelowClick;
+            }
+
+            if (this.tbCustomize != null)
+            {
+                this.tbCustomize.Click += this.OnRequestCustomize;
             }
 
             if (this.menuDownButton != null)
@@ -613,5 +639,6 @@ namespace Fluent
         }
 
         #endregion
+
     }
 }

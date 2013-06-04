@@ -208,6 +208,8 @@
     <Compile Include="ConditionalSelect\ConditionalSelectForm.xaml.cs">
       <DependentUpon>ConditionalSelectForm.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Customize\CustomizeQAT.xaml.cs" />
+    <Compile Include="Customize\RibbonItemListDisplay.xaml.cs" />
     <Compile Include="HelperClasses\FolderStructForSize.cs" />
     <Compile Include="IconClasses\IconUtilities.cs" />
     <Compile Include="HelperClasses\PathStringCombiner.cs" />
@@ -345,6 +347,14 @@
     <Page Include="ConditionalSelect\ConditionalSelectForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Customize\CustomizeQAT.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Customize\RibbonItemListDisplay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="PieChart\PieChart\Legend.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1035,7 +1045,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

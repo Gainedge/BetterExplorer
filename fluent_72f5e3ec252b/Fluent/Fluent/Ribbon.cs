@@ -391,7 +391,7 @@ namespace Fluent
         private ObservableCollection<QuickAccessMenuItem> quickAccessItems;
 
         // Currently added in QAT items
-        readonly Dictionary<UIElement, UIElement> quickAccessElements = new Dictionary<UIElement, UIElement>();
+        public readonly Dictionary<UIElement, UIElement> quickAccessElements = new Dictionary<UIElement, UIElement>();
 
         // Stream to save quickaccesselements on aplytemplate
         MemoryStream quickAccessStream;
@@ -1513,6 +1513,8 @@ namespace Fluent
                 quickAccessElements.Add(element, control);
                 quickAccessToolBar.Items.Add(control);
                 quickAccessToolBar.InvalidateMeasure();
+
+                this.OnItemAddedToQuickAccessToolbar(new UIElementEventArgs(element));
             }
         }
 
@@ -1541,6 +1543,8 @@ namespace Fluent
                 quickAccessElements.Remove(element);
                 quickAccessToolBar.Items.Remove(quickAccessItem);
                 quickAccessToolBar.InvalidateMeasure();
+
+                this.OnItemRemovedToQuickAccessToolbar(new UIElementEventArgs(element));
             }
 
         }
@@ -1553,6 +1557,75 @@ namespace Fluent
             quickAccessElements.Clear();
             if (quickAccessToolBar != null) quickAccessToolBar.Items.Clear();
         }
+
+        #endregion
+
+        #region Additional Quick Access Items commands
+
+        private void QuickAccessToolbarRequestCustomize(object sender, RoutedEventArgs e)
+        {
+            if (this.CustomizeQuickAccessToolbar != null) this.CustomizeQuickAccessToolbar(sender, EventArgs.Empty);
+        }
+
+        #region Add to/Remove from Quick Access Toolbar Events
+
+        /// <summary>
+        /// The event handler for UIElement-related events.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public delegate void UIElementEventHandler(object sender, UIElementEventArgs e);
+
+        /// <summary>
+        /// Occurs when a UIElement is added to the Quick Access Toolbar
+        /// </summary>
+        public event UIElementEventHandler ItemAddedToQuickAccessToolbar;
+
+        // Invoke the Changed event; called whenever list changes:
+        protected virtual void OnItemAddedToQuickAccessToolbar(UIElementEventArgs e)
+        {
+            if (ItemAddedToQuickAccessToolbar != null)
+                ItemAddedToQuickAccessToolbar(this, e);
+        }
+
+        /// <summary>
+        /// Occurs when a UIElement is removed from the Quick Access Toolbar
+        /// </summary>
+        public event UIElementEventHandler ItemRemovedToQuickAccessToolbar;
+
+        // Invoke the Changed event; called whenever list changes:
+        protected virtual void OnItemRemovedToQuickAccessToolbar(UIElementEventArgs e)
+        {
+            if (ItemRemovedToQuickAccessToolbar != null)
+                ItemRemovedToQuickAccessToolbar(this, e);
+        }
+
+        /// <summary>
+        /// Event args for UIElement-related events.
+        /// </summary>
+        public class UIElementEventArgs
+        {
+            UIElement _item;
+
+            /// <summary>
+            /// Create a new UIElementEventArgs object.
+            /// </summary>
+            /// <param name="item">The UIElement to be passed in the event.</param>
+            public UIElementEventArgs(UIElement item)
+            {
+                _item = item;
+            }
+
+            public UIElement Item
+            {
+                get
+                {
+                    return _item;
+                }
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -1829,6 +1902,8 @@ namespace Fluent
                 this.InitialLoadState();
                 return;
             }
+
+            this.quickAccessToolBar.RequestCustomize += QuickAccessToolbarRequestCustomize;
 
             if (!this.IsStateLoaded)
             {

@@ -1,0 +1,23 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:avalondock="http://avalondock.codeplex.com" xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent" x:Class="BetterExplorer.CustomizeQAT"
+        Title="Customize Quick Access Toolbar" Height="350" MinHeight="200" Width="650" MinWidth="610" MaxWidth="750" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" ResizeMode="CanResizeWithGrip" >
+    <Grid>
+        <ListBox HorizontalAlignment="Left" x:Name="AllControls" Margin="30,30,0,55" Width="200"/>
+        <ListBox x:Name="QATControls" Margin="0,30,90,55" HorizontalAlignment="Right" Width="200"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,9,0,0" TextWrapping="Wrap" Text="Add or remove items from the Quick Access Toolbar:" VerticalAlignment="Top"/>
+        <Grid Margin="0,0,60,25" HorizontalAlignment="Center" VerticalAlignment="Center" Width="70">
+            <Button Content="Add »" x:Name="btnAdd" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Click="Button_Click_1"/>
+            <Button Content="« Remove" x:Name="btnRemove" Margin="0,27,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Click="Button_Click_2"/>
+        </Grid>
+        <Grid Margin="0,0,10,25" HorizontalAlignment="Right" VerticalAlignment="Center" Width="70">
+            <Button Content="Move Up" x:Name="btnMoveUp" Margin="0,0,0,28" Click="btnMoveUp_Click" />
+            <Button Content="Move Down" x:Name="btnMoveDown" Margin="0,28,0,0" VerticalAlignment="Top" Click="btnMoveDown_Click" />
+        </Grid>
+        <Button Content="Cancel" HorizontalAlignment="Right" Margin="0,0,10,20" VerticalAlignment="Bottom" Width="75" Click="Button_Click_3"/>
+        <Button Content="Apply" HorizontalAlignment="Right" Margin="0,0,90,20" VerticalAlignment="Bottom" Width="75" Click="Button_Click_5"/>
+        <Button Content="OK" HorizontalAlignment="Right" Margin="0,0,170,20" VerticalAlignment="Bottom" Width="75" Click="Button_Click_6"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,281,0,0" TextWrapping="Wrap" Text="Note: This feature is still experimental." VerticalAlignment="Top"/>
+    </Grid>
+</Window>

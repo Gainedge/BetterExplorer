@@ -460,6 +460,8 @@
                     <StackPanel x:Name="PART_MenuPanel" />
                     <Separator x:Name="menuSeparator"
                                Style="{DynamicResource MenuSeparatorStyle}" />
+                    <Fluent:MenuItem x:Name="PART_Customize"
+                                     Header="More Commands..." />
                     <Fluent:MenuItem x:Name="PART_ShowBelow"
                                      Header="{Binding Source={x:Static Fluent:Ribbon.Localization}, Path=QuickAccessToolBarMenuShowBelow, Mode=OneWay}" />
                     <Fluent:MenuItem x:Name="PART_ShowAbove"

@@ -241,7 +241,7 @@
     <system:String x:Key="miWallStretchCP">Extendido</system:String>
     <system:String x:Key="miWallTileCP">Mosaico</system:String>
     <system:String x:Key="miWallCenterCP">Centrado</system:String>
-    <system:String x:Key="ctbArchiveToolsCP">Herramientas de Aplicación</system:String>
+    <system:String x:Key="ctbArchiveToolsCP">Herramientas de Archivo</system:String>
     <system:String x:Key="tgExtractCP">Extraer</system:String>
     <system:String x:Key="btnExtractHereCP">Extraer Aquí</system:String>
     <system:String x:Key="btnExtractHereHCP">Extraer Aquí</system:String>
