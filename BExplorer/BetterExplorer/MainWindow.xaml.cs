@@ -5025,7 +5025,8 @@ namespace BetterExplorer
 		void mi_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem item = (sender as MenuItem);
-			MenuItem ascitem = (MenuItem)btnSort.Items[btnSort.Items.IndexOf(misa)];
+      var parentButton = item.Parent as DropDownButton;
+      MenuItem ascitem = (MenuItem)parentButton.Items[parentButton.Items.IndexOf(misa)];
 			if (ascitem.IsChecked)
 			{
         Explorer.SetSortCollumn(((Collumns)item.Tag).pkey, WindowsAPI.SORT.ASCENDING);
