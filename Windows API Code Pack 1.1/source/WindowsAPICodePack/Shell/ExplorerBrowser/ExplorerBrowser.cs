@@ -3042,67 +3042,43 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
               {
                 var nmlvcd = WindowsAPI.PtrToStructure<WindowsAPI.NMLVCUSTOMDRAW>((IntPtr)lParam);
                 var index = (int)nmlvcd.nmcd.dwItemSpec;
-                var fOdd = true;// index % 2 == 0;	// index is zero based!
                 var hdc = nmlvcd.nmcd.hdc;
+
+                Guid IIFV2 = typeof(IShellItem).GUID;
+                IFolderView2 fv2 = GetFolderView2();
+                IShellItem item = null;
+                try
+                {
+                  fv2.GetItem(index, ref IIFV2, out item);
+                }
+                catch (Exception)
+                {
+                  
+                }
+
+                object ext = null;
+                if (item != null)
+                {
+                  ShellObject itemobj = ShellObjectFactory.Create(item);
+
+                  ext = itemobj.Properties.System.FileExtension.Value;
+                } 
+
+                Color textColor = Color.Black;
+                if (ext != null && ext.ToString() == ".rar")
+                {
+                  textColor = Color.Red;
+                }
 
                 switch (nmlvcd.nmcd.dwDrawStage)
                 {
-                  //case CDDS_PREPAINT:
-                  //  // start of custom drawing.
-                  //  this.selectecColumnCustomDraw = (int)PInvoke.SendMessage(this.hwndListView, WM.LVM.GETSELECTEDCOLUMN, 0, 0);
-                  //  this.widthViewCustomDraw = PInvoke.GetWindowRect(this.hwndListView).Width;
-
-                  //  // get column header formats for later use.
-                  //  this.columnFormatsCustomDraw = new List<int>();
-                  //  IntPtr hwndHeader = PInvoke.SendMessage(this.hwndListView, WM.LVM.GETHEADER, 0, 0);
-                  //  if (hwndHeader != IntPtr.Zero)
-                  //  {
-                  //    HDITEM hditem = new HDITEM
-                  //    {
-                  //      mask = WM.HDM.HDI_FORMAT
-                  //    };
-                  //    IntPtr phdi = PInvoke.AllocStructure(hditem);
-                  //    int c = (int)PInvoke.SendMessage(hwndHeader, WM.HDM.GETITEMCOUNT, 0, 0);
-                  //    for (int i = 0; i < c; i++)
-                  //    {
-                  //      PInvoke.SendMessage(hwndHeader, WM.HDM.GETITEMW, (IntPtr)i, phdi);
-                  //      hditem = PInvoke.PtrToStructure<HDITEM>(phdi);
-                  //      this.columnFormatsCustomDraw.Add(hditem.fmt);
-                  //    }
-                  //    Marshal.FreeCoTaskMem(phdi);
-                  //  }
-                  //  msg.Result = (IntPtr)W32.CDRF_NOTIFYITEMDRAW;
-                  //  break;
-
                   case CDDS_ITEMPREPAINT:
-                    // if row to draw, proceed.						
-                    if (fOdd)
-                    {
                       // call default procedure in case system might do custom drawing and set special colors
                       CallWindowProc(oldWndProc, hWnd, Msg, wParam, lParam);
-
-                      // draw outside of item region in the row
-                        //using (Graphics g = Graphics.FromHdc(hdc))
-                        //{
-                        //  using (SolidBrush sb = new SolidBrush(fOdd ? Color.LightGray : Color.Wheat))
-                        //  {
-                        //    var rctItem = nmlvcd.nmcd.rc.ToRectangle();
-                        //    rctItem.Width = 500;
-
-                        //    g.FillRectangle(sb, rctItem);
-                        //  }
-                        //}
-                      nmlvcd.clrText = ColorTranslator.ToWin32(fOdd ? Color.Green : Color.Beige);
+                      nmlvcd.clrText = ColorTranslator.ToWin32(textColor);
                       Marshal.StructureToPtr(nmlvcd, (IntPtr)lParam, false);
                       return CDRF_NEWFONT;
-                      //return CDRF_NOTIFYSUBITEMDRAW;
-
-                    }
-                    else
-                    {
-                      return CDRF_DODEFAULT;
-                    }
-
+                 
                   case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
                     // before a subitem drawn
                     if ((nmlvcd.nmcd.uItemState & (WindowsAPI.CDIS.HOT | WindowsAPI.CDIS.DROPHILITED)) != 0 || 0 != WindowsAPI.SendMessage(this.SysListViewHandle, WindowsAPI.LVM.GETITEMSTATE, index, (int)WindowsAPI.LVIS.LVIS_SELECTED))
@@ -3126,94 +3102,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                     }
                     else
                     {
-                      nmlvcd.clrText = ColorTranslator.ToWin32(fOdd ? Color.Green : Color.Beige);
+                      nmlvcd.clrText = ColorTranslator.ToWin32(textColor);
                       Marshal.StructureToPtr(nmlvcd, (IntPtr)lParam, false);
                       return CDRF_NEWFONT;
                     }
                     break;
-
-
-                  //case CDDS_ITEMPOSTPAINT | CDDS_SUBITEM:
-                  //  // overwrite the row
-                  //  WindowsAPI.LVITEM lvi = new WindowsAPI.LVITEM
-                  //  {
-                  //    pszText = Marshal.AllocCoTaskMem(520),
-                  //    cchTextMax = 260,
-                  //    iItem = index,
-                  //    iSubItem = nmlvcd.iSubItem,
-                  //    mask = WindowsAPI.LVM.LVIF_TEXT | WindowsAPI.LVM.LVIF_STATE,
-                  //    stateMask = (uint)WindowsAPI.LVIS.LVIS_FOCUSED
-                  //  };
-                  //  IntPtr plvi = WindowsAPI.AllocStructure(lvi);
-                  //  WindowsAPI.SendMessage(this.SysListViewHandle, WindowsAPI.LVM.GETITEMW, IntPtr.Zero, plvi);
-
-                    // Note:
-                    //			the listview is mirrored for RTL windows.
-                    //			nmlvcd.nmcd.rc value is the same as in LTR case but measuered from right-top point of screen.
-                    //			Graphics.FillRectangle misinterpret this value...
-
-                    //var rct = nmlvcd.nmcd.rc;
-                    //if (nmlvcd.iSubItem == 0)
-                    //{
-                    //  // icon width
-                    //  rct.left += 16;
-                    //}
-
-                      //using (Graphics g = Graphics.FromHdc(hdc))
-                      //{
-                      //  // draw background color
-                      //  using (var sb = new SolidBrush(fOdd ? Color.LightGray : Color.LightCyan))
-                      //  {
-                      //    g.FillRectangle(sb, rct.ToRectangle());
-                      //  }
-
-                      //  // draw dotted focus rectangle
-                      //  // how to know which subitem has focus?
-
-                      //  //if( lvi.state.HasFlag( LVIS.FOCUSED ) )
-                      //  //{
-                      //  //    int w = rct.Width;
-                      //  //    if( Config.Bool( Scts.ViewNoFullRowSelect ) )
-                      //  //    {
-                      //  //        w = 4 + (int)PInvoke.SendMessage( hwndListView, WM.LVM.GETSTRINGWIDTHW, IntPtr.Zero, lvi.pszText );
-                      //  //        if( w > rct.Width )
-                      //  //        {
-                      //  //            w = rct.Width;
-                      //  //        }
-                      //  //    }
-                      //  //    ControlPaint.DrawFocusRectangle( g, new Rectangle( rct.left + 1, rct.top + 1, w, rct.Height - 1 ) );
-                      //  //}
-                      //}
-
-
-                    // draw text
-                   // TextFormatFlags textFormat = TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix | TextFormatFlags.EndEllipsis;
-
-                    //if (nmlvcd.iSubItem == 0)
-                    //{
-                    //  // shrink for name column
-                    //  rct.left += 2;
-                    //  rct.right -= 2;
-                    //}
-                    //else
-                    //{
-                    //  rct.left += 6;
-                    //  rct.right -= 6;
-                    //}
-
-                    //int color;
-                    //color = ColorTranslator.ToWin32(fOdd ? Color.Red : Color.Beige);
-
-                    //int oldColor = WindowsAPI.SetTextColor(hdc, color);
-                    //WindowsAPI.DrawTextExW(hdc, lvi.pszText, -1, ref rct, (int)textFormat, IntPtr.Zero);
-                    //WindowsAPI.SetTextColor(hdc, oldColor);
-
-                    // note: hdc background mode seems to be already 1 (TRANSPARENT).
-
-                    // post process
-                    //Marshal.FreeCoTaskMem(lvi.pszText);
-                    //Marshal.FreeCoTaskMem(plvi);
-                    //break;
                 }
               }
               break;
