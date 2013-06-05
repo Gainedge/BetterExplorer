@@ -1922,7 +1922,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         IntPtr GetColumnbyIndexP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnbyIndex");
         _GetColumnbyIndex = (GetColumnbyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnbyIndexP, typeof(GetColumnbyIndex));
 
-        
+
+        this.LVItemsColorCodes = new List<LVItemColor>();
+        this.LVItemsColorCodes.Add(new LVItemColor(".zip;.rar;.7z",Color.Red));
+        this.LVItemsColorCodes.Add(new LVItemColor(".jpg;.jpeg;.png", Color.Brown));
 
 
 				if (this.DesignMode == false)
@@ -3072,7 +3075,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                     var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(ext.ToString())).Count() > 0;
                     if (extItemsAvailable)
                     {
-                      var color = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(ext.ToString())).Select(c => c.TextColor).SingleOrDefault();
+                      var color = this.LVItemsColorCodes.Where(c => c.ExtensionList.ToLowerInvariant().Contains(ext.ToString().ToLowerInvariant())).Select(c => c.TextColor).SingleOrDefault();
                       textColor = color == null ? Color.Black : color;
                     }
                   }
