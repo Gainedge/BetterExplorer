@@ -232,6 +232,7 @@
     </Compile>
     <Compile Include="CopyEngineResult.cs" />
     <Compile Include="csSharing.cs" />
+    <Compile Include="ExplorerBrowser\HelperClasses.cs" />
     <Compile Include="FileOperations\CollisionDialog.xaml.cs">
       <DependentUpon>CollisionDialog.xaml</DependentUpon>
     </Compile>

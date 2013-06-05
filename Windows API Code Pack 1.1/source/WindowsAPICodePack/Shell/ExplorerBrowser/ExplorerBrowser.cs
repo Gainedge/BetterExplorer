@@ -81,6 +81,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       public GetColumnInfobyPK _GetColumnInfobyPK;
       public GetSortColumns _GetSortColumns;
       public GetColumnbyIndex _GetColumnbyIndex;
+      public List<LVItemColor> LVItemsColorCodes { get; set; }
       #endregion
 
 	    #region Imports
@@ -3062,12 +3063,19 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                   ShellObject itemobj = ShellObjectFactory.Create(item);
 
                   ext = itemobj.Properties.System.FileExtension.Value;
-                } 
-
+                }
                 Color textColor = Color.Black;
-                if (ext != null && ext.ToString() == ".rar")
+                if (this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0)
                 {
-                  textColor = Color.Red;
+                  if (ext != null)
+                  {
+                    var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(ext.ToString())).Count() > 0;
+                    if (extItemsAvailable)
+                    {
+                      var color = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(ext.ToString())).Select(c => c.TextColor).SingleOrDefault();
+                      textColor = color == null ? Color.Black : color;
+                    }
+                  }
                 }
 
                 switch (nmlvcd.nmcd.dwDrawStage)
