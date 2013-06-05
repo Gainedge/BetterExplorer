@@ -8614,13 +8614,14 @@ namespace BetterExplorer
             CustomizeQAT qal = new CustomizeQAT();
             qal.Owner = this;
 
-            Refresh(qal);
+            LoadInternalList();
+            RefreshQATDialog(qal);
 
             qal.MainForm = this;
             qal.ShowDialog();
         }
 
-        public void Refresh(CustomizeQAT qal)
+        public void RefreshQATDialog(CustomizeQAT qal)
         {
             foreach (IRibbonControl item in GetNonQATButtons())
             {
@@ -8633,7 +8634,7 @@ namespace BetterExplorer
                 rils.SourceControl = item;
                 rils.ItemName = (item as FrameworkElement).Name;
                 rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                if (item is Fluent.DropDownButton || item is Fluent.SplitButton)
+                if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery)
                 {
                     rils.ShowMenuArrow = true;
                 }
@@ -8651,7 +8652,7 @@ namespace BetterExplorer
                 rils.SourceControl = item;
                 rils.ItemName = (item as FrameworkElement).Name;
                 rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                if (item is Fluent.DropDownButton || item is Fluent.SplitButton)
+                if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery)
                 {
                     rils.ShowMenuArrow = true;
                 }
@@ -8708,11 +8709,11 @@ namespace BetterExplorer
             Dictionary<string, IRibbonControl> items = GetAllButtonsAsDictionary();
             foreach (string item in names)
             {
-                IRibbonControl blah;
-                if (items.TryGetValue(item, out blah))
+                IRibbonControl ctrl;
+                if (items.TryGetValue(item, out ctrl))
                 {
-                    curitem = (blah as UIElement);
-                    this.TheRibbon.AddToQuickAccessToolBar(blah as UIElement);
+                    curitem = (ctrl as UIElement);
+                    this.TheRibbon.AddToQuickAccessToolBar(ctrl as UIElement);
                     curitem = null;
                 }
 
@@ -8749,37 +8750,31 @@ namespace BetterExplorer
 
         public Tuple<string, IRibbonControl> AddOtherButtonForDictionary(IRibbonControl item, Dictionary<string, IRibbonControl> dict)
         {
-            Tuple<string, IRibbonControl> blah = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
-            dict.Add(blah.Item1, blah.Item2);
-            return blah;
+            Tuple<string, IRibbonControl> entry = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
+            dict.Add(entry.Item1, entry.Item2);
+            return entry;
         }
 
         public Tuple<string, IRibbonControl> AddOtherButtonForLists(IRibbonControl item, List<IRibbonControl> rb, List<string> rs)
         {
-            Tuple<string, IRibbonControl> blah = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
+            Tuple<string, IRibbonControl> entry = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
             rb.Add(item);
             rs.Add(item.Header as string);
-            return blah;
+            return entry;
         }
 
         public Tuple<string, IRibbonControl> RemoveOtherButtonForLists(IRibbonControl item, List<IRibbonControl> rb, List<string> rs)
         {
-            Tuple<string, IRibbonControl> blah = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
+            Tuple<string, IRibbonControl> entry = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
             rb.Remove(item);
             rs.Remove(item.Header as string);
-            return blah;
+            return entry;
         }
 
         public List<Fluent.IRibbonControl> GetAllButtons()
         {
             List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
             List<string> rs = new List<string>();
-
-            foreach (QuickAccessMenuItem item in TheRibbon.QuickAccessItems)
-            {
-                rb.Add(item.Target as IRibbonControl);
-                rs.Add((item.Target as IRibbonControl).Header as string);
-            }
 
             foreach (RibbonTabItem item in TheRibbon.Tabs)
             {
@@ -8806,18 +8801,6 @@ namespace BetterExplorer
             List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
             List<string> rs = new List<string>();
 
-            foreach (QuickAccessMenuItem item in TheRibbon.QuickAccessItems)
-            {
-                if (!(TheRibbon.IsInQuickAccessToolBar((item.Target) as UIElement)))
-                {
-                    //if ((item.Target.Tag as string) == "Spc")
-                    //{
-                        rb.Add(item.Target as IRibbonControl);
-                        rs.Add((item.Target as IRibbonControl).Header as string);
-                    //}
-                }
-            }
-
             foreach (RibbonTabItem item in TheRibbon.Tabs)
             {
                 foreach (RibbonGroupBox itg in item.Groups)
@@ -8835,8 +8818,6 @@ namespace BetterExplorer
                     }
                 }
             }
-
-
 
             rs.Sort();
 
@@ -8857,18 +8838,6 @@ namespace BetterExplorer
             List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
             List<string> rs = new List<string>();
 
-            foreach (QuickAccessMenuItem item in TheRibbon.QuickAccessItems)
-            {
-                if (TheRibbon.IsInQuickAccessToolBar((item.Target) as UIElement))
-                {
-                    //if ((item.Target.Tag as string) == "Spc")
-                    //{
-                        rb.Add(item.Target as IRibbonControl);
-                        rs.Add((item.Target as IRibbonControl).Header as string);
-                    //}
-                }
-            }
-
             foreach (RibbonTabItem item in TheRibbon.Tabs)
             {
                 foreach (RibbonGroupBox itg in item.Groups)
@@ -8886,9 +8855,6 @@ namespace BetterExplorer
                     }
                 }
             }
-
-            //rb.Sort(SortNames);
-            //rb.Sort(SortNames);
 
             rs.Sort();
             return SortNames(rb, rs);
@@ -8923,26 +8889,8 @@ namespace BetterExplorer
 
                 }
             }
-            //RemoveOtherButtonForLists(this.tlbrFind, rb, input);
-            //rb.Sort(SortCompNames);
 
             return rb;
-        }
-
-        public void AddIfMatchesName(IRibbonControl input, List<IRibbonControl> rb, string name)
-        {
-            if ((input as FrameworkElement).Name == name)
-            {
-                rb.Add(input);
-            }
-        }
-
-        public void AddIfInList(IRibbonControl input, List<IRibbonControl> rb, List<string> rs)
-        {
-            if (rs.Contains((input as FrameworkElement).Name))
-            {
-                rb.Add(input);
-            }
         }
 
         #endregion

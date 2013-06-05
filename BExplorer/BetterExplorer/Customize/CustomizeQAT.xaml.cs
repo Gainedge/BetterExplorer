@@ -47,7 +47,7 @@ namespace BetterExplorer
         {
             AllControls.Items.Clear();
             QATControls.Items.Clear();
-            MainForm.Refresh(this);
+            MainForm.RefreshQATDialog(this);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -415,6 +415,7 @@ namespace BetterExplorer
             MoveDown();
         }
 
+        // Apply button
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
             List<string> list = new List<string>();
@@ -424,9 +425,10 @@ namespace BetterExplorer
             }
 
             MainForm.PutItemsOnQAT(list);
-            MainForm.LoadInternalList();
+            //MainForm.LoadInternalList();
         }
 
+        // OK button
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {
             List<string> list = new List<string>();
@@ -436,7 +438,7 @@ namespace BetterExplorer
             }
 
             MainForm.PutItemsOnQAT(list);
-            MainForm.LoadInternalList();
+            //MainForm.LoadInternalList();
             this.Close();
         }
 
