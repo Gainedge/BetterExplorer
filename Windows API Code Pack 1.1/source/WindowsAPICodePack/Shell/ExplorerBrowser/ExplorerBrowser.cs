@@ -26,6 +26,9 @@ using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 using System.Diagnostics;
 using System.Windows.Automation;
 using Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Linq;
+using System.Xml;
 
 
 namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
@@ -1193,7 +1196,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
           if (pPIDL != IntPtr.Zero) {
             IntPtr pIDLRltv = WindowsAPI.ILFindLastID(pPIDL);
             if (pIDLRltv != IntPtr.Zero) {
-              shv.SelectItem(pIDLRltv, WindowsAPI.SVSIF.SVSI_SELECT);
+              shv.SelectItem(pIDLRltv, WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_ENSUREVISIBLE | WindowsAPI.SVSIF.SVSI_FOCUSED);
             }
           }
         } finally {
@@ -1224,7 +1227,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 									IntPtr pIDLRltv = WindowsAPI.ILFindLastID(pIDL);
 									if (pIDLRltv != IntPtr.Zero)
 									{
-											PIDLArray.SetValue((int)pIDLRltv,i);
+											PIDLArray.SetValue((uint)pIDLRltv,i);
 									}
 							}
 						
@@ -1922,10 +1925,31 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         IntPtr GetColumnbyIndexP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnbyIndex");
         _GetColumnbyIndex = (GetColumnbyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnbyIndexP, typeof(GetColumnbyIndex));
 
+        string itemColorSettingsLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"BExplorer\itemcolors.cfg");
 
-        this.LVItemsColorCodes = new List<LVItemColor>();
-        this.LVItemsColorCodes.Add(new LVItemColor(".zip;.rar;.7z",Color.Red));
-        this.LVItemsColorCodes.Add(new LVItemColor(".jpg;.jpeg;.png", Color.Brown));
+        if (File.Exists(itemColorSettingsLocation))
+        {
+          //this.LVItemsColorCodes = WindowsAPI.DeserializeFromXmlFile<List<LVItemColor>>(itemColorSettingsLocation);
+          XDocument docs = XDocument.Load(itemColorSettingsLocation);
+
+          this.LVItemsColorCodes = docs.Root.Elements("ItemColorRow")
+                             .Select(element => new LVItemColor(element.Elements().ToArray()[0].Value, Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value))))
+                             .ToList();
+        }
+
+        //this.LVItemsColorCodes = new List<LVItemColor>();
+        //LVItemsColorCodes.Add(new LVItemColor(".jpeg;.jpg;.bmp", Color.Red));
+        //LVItemsColorCodes.Add(new LVItemColor(".zip;.rar;.7z", Color.Orange));
+        //XDocument doc = new XDocument();
+        //
+        //var xEle = new XElement("Colors",
+        //        from clr in LVItemsColorCodes
+        //        select new XElement("ItemColorRow",
+        //                     new XElement("EXT", clr.ExtensionList),
+        //                     new XElement("COLOR", clr.TextColor.ToArgb())
+        //                   ));
+
+        //xEle.Save(itemColorSettingsLocation);
 
 
 				if (this.DesignMode == false)
@@ -2142,11 +2166,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 							// This interface is incorrectly marshaled back to unmanaged, and causes an exception.
 							// There is a bug for this, I have not figured the underlying cause.
 							// Remove this comment and uncomment the following code to enable the ICommDlgBrowser2 interface
-							else if (riid.CompareTo(new Guid(ExplorerBrowserIIDGuid.ICommDlgBrowser2)) == 0)
-							{
-							    ppvObject = Marshal.GetComInterfaceForObject(this, typeof(ICommDlgBrowser3));
-							    hr = HResult.Ok;                    
-							}
+							//else if (riid.CompareTo(new Guid(ExplorerBrowserIIDGuid.ICommDlgBrowser2)) == 0)
+							//{
+							//    ppvObject = Marshal.GetComInterfaceForObject(this, typeof(ICommDlgBrowser3));
+							//    hr = HResult.Ok;                    
+							//}
 							else if (riid.CompareTo(new Guid(ExplorerBrowserIIDGuid.ICommDlgBrowser3)) == 0)
 							{
 									ppvObject = Marshal.GetComInterfaceForObject(this, typeof(ICommDlgBrowser3));

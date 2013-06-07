@@ -1116,6 +1116,16 @@ namespace BetterExplorer
                           {
                               // catch all expetions for illigal path
                           }
+                          var itb = tabControl1.SelectedItem as ClosableTabItem;
+                          if (itb.SelectedItems != null)
+                          {
+                            foreach (var item in itb.SelectedItems)
+                            {
+                              Explorer.SelectItem(ShellObject.FromParsingName(item));
+                            }
+                            Explorer.SetExplorerFocus();
+                            //Explorer.SelectItems(itb.SelectedItems.Select(c => ShellObject.FromParsingName(c)).ToArray());
+                          }
 
 									    }
 								    ));
@@ -4101,7 +4111,7 @@ namespace BetterExplorer
 										  cti.log.CurrentLocation = Explorer.NavigationLog.CurrentLocation;
 										  cti.CloseTab += new RoutedEventHandler(cti_CloseTab);
 										  tabControl1.Items.Add(cti);
-                                          NavigateAfterTabChange();
+                      NavigateAfterTabChange();
 									  }
 									  else
 									  {
@@ -7400,7 +7410,8 @@ namespace BetterExplorer
 						}
 
 					}
-                    itb.BringIntoView();
+
+          itb.BringIntoView();
                     
 				}
 				catch (StackOverflowException)
@@ -7455,6 +7466,7 @@ namespace BetterExplorer
 			newt.TabSelected += newt_TabSelected;
 			newt.AllowDrop = true;
 			newt.log.CurrentLocation = CurTab.Path;
+      newt.SelectedItems = CurTab.SelectedItems;
       newt.log.ImportData(CurTab.log);
 			tabControl1.Items.Add(newt);
 			tabControl1.SelectedItem = newt;
@@ -7617,6 +7629,11 @@ namespace BetterExplorer
 		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
 		private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+      if (e.RemovedItems.Count > 0)
+      {
+        var item = tabControl1.Items.OfType<ClosableTabItem>().Where(c => c == e.RemovedItems[0]).Single();
+        item.SelectedItems = Explorer.SelectedItems.Select(c => c.ParsingName).ToArray();
+      }
       if (e.AddedItems.Count > 0 && (e.AddedItems[0] as ClosableTabItem).Index == tabControl1.Items.Count - 1)
       {
         tabControl1.Items.OfType<ClosableTabItem>().Last().BringIntoView();
@@ -8009,6 +8026,10 @@ namespace BetterExplorer
 							}
 
 						}
+
+            
+
+            itb.BringIntoView();
 					}
 					catch (StackOverflowException)
 					{
@@ -8020,7 +8041,7 @@ namespace BetterExplorer
 					//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
 				}
 
-			Explorer.Focus();
+        Explorer.SetExplorerFocus();
 		}
 
 		void newt_PreviewMouseMove(object sender, MouseEventArgs e)

@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
 using System.Xml;
+using System.Xml.Linq;
 using System.Windows;
 using System.Windows.Interop;
 
@@ -378,6 +379,7 @@ namespace WindowsHelper
           public const int GETSELECTEDCOLUMN = (FIRST + 174);		// LVM_GETSELECTEDCOLUMN
           public const int SETCOLUMNWIDTH = (FIRST + 30);		// LVM_SETCOLUMNWIDTH
           public const int GETCOLUMNWIDTH = (FIRST + 29);		// LVM_GETCOLUMNWIDTH
+          public const int ENSUREVISIBLE = (FIRST + 19);
 
           public const int LVIR_BOUNDS = 0;
           public const int LVIR_ICON = 1;
@@ -4880,7 +4882,7 @@ namespace WindowsHelper
             return null;
           }
 
-          XmlSerializer serializer = new XmlSerializer(typeof(T));
+          XmlSerializer serializer = new XmlSerializer(value.GetType());
 
           XmlWriterSettings settings = new XmlWriterSettings();
           settings.Encoding = Encoding.UTF8; //new UnicodeEncoding(false, false); // no BOM in a .NET string
@@ -4912,6 +4914,28 @@ namespace WindowsHelper
             }
           }
         }
+
+        public static void SerializeToXmlFile<T>(T obj, string fileName)
+        {
+          using (var fileStream = new FileStream(fileName, FileMode.Create))
+          {
+            var ser = new XmlSerializer(obj.GetType());
+            ser.Serialize(fileStream, obj);
+          }
+        }
+
+        public static T DeserializeFromXmlFile<T>(string xml)
+        {
+          T result;
+          var ser = new XmlSerializer(typeof(T));
+          using (var tr = new StringReader(xml))
+          {
+            result = (T)ser.Deserialize(tr);
+          }
+          return result;
+        }
+
+     
 
         [Serializable]
         public struct FileCopyResultInfo {
