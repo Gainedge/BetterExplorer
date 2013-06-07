@@ -35,6 +35,7 @@ using System.Globalization;
 using NAppUpdate.Framework;
 using BetterExplorerControls;
 using Microsoft.WindowsAPICodePack.Shell.FileOperations;
+using Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser;
 using wyDay.Controls;
 using System.Security.Principal;
 using Shell32;
@@ -3039,54 +3040,11 @@ namespace BetterExplorer
         }
         else
         {
-            var confirmationDialog = new FODeleteDialog();
-            confirmationDialog.MessageCaption = "Removal confirmation";
-
-            if (Explorer.GetSelectedItemsCount() == 1)
-            {
-              ShellObject item = Explorer.SelectedItems[0];
-              item.Thumbnail.CurrentSize = new System.Windows.Size(96, 96);
-              confirmationDialog.MessageIcon = item.Thumbnail.BitmapSource;
-              if (isMoveToRB)
-                confirmationDialog.MessageText = String.Format("Are you sure you want to move {0} to Recycle Bin?", item.GetDisplayName(DisplayNameType.Default));
-              else
-                confirmationDialog.MessageText = String.Format("Are you sure you want to move {0} permanently?", item.GetDisplayName(DisplayNameType.Default));
-            }
-            else
-            {
-              if (isMoveToRB)
-                confirmationDialog.MessageText = String.Format("Are you sure you want to move selected {0} items to Recycle Bin?", Explorer.GetSelectedItemsCount());
-              else
-                confirmationDialog.MessageText = String.Format("Are you sure you want to move selected {0} items permanently?", Explorer.GetSelectedItemsCount());
-            }
-
-            confirmationDialog.Owner = this;
-            if (confirmationDialog.ShowDialog() == true)
-            {
-                var SourceItemsCollection = Explorer.SelectedItems.Select(c => c.ParsingName).ToArray();
-
-                FileOperation tempWindow = new FileOperation(SourceItemsCollection, null, OperationType.Delete, isMoveToRB);
-                FileOperationDialog currentDialog = this.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
-
-                if (currentDialog == null)
-                {
-                    currentDialog = new FileOperationDialog();
-                    tempWindow.ParentContents = currentDialog;
-                    currentDialog.Owner = this;
-
-                    tempWindow.Visibility = Visibility.Collapsed;
-                    currentDialog.Contents.Add(tempWindow);
-                }
-                else
-                {
-                    tempWindow.ParentContents = currentDialog;
-                    tempWindow.Visibility = Visibility.Collapsed;
-                    currentDialog.Contents.Add(tempWindow);
-                }
-            }
-            
+					var sourceItemsCollection = Explorer.SelectedItems.Select(c => c.ParsingName).ToArray();
+	        HookLibManager.ShowDeleteDialog(sourceItemsCollection, this, isMoveToRB);
         }
     }
+
     private void btnctOther_Click(object sender, RoutedEventArgs e)
 		{
       CommonOpenFileDialog dlg = new CommonOpenFileDialog();
