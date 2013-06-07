@@ -865,6 +865,15 @@ namespace BetterExplorer
 
 				    Dispatcher.Invoke(DispatcherPriority.Send, (Action)(() =>
 									    {
+                        var itb = tabControl1.SelectedItem as ClosableTabItem;
+                        if (itb.SelectedItems != null)
+                        {
+                          foreach (var item in itb.SelectedItems)
+                          {
+                            Explorer.SelectItem(ShellObject.FromParsingName(item));
+                          }
+                          Explorer.SetExplorerFocus();
+                        }
                                        
 			                  ConstructMoveToCopyToMenu();
 
@@ -1117,16 +1126,7 @@ namespace BetterExplorer
                           {
                               // catch all expetions for illigal path
                           }
-                          var itb = tabControl1.SelectedItem as ClosableTabItem;
-                          if (itb.SelectedItems != null)
-                          {
-                            foreach (var item in itb.SelectedItems)
-                            {
-                              Explorer.SelectItem(ShellObject.FromParsingName(item));
-                            }
-                            Explorer.SetExplorerFocus();
-                            //Explorer.SelectItems(itb.SelectedItems.Select(c => ShellObject.FromParsingName(c)).ToArray());
-                          }
+                          
 
 									    }
 								    ));
