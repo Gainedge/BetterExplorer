@@ -36,6 +36,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 		public static bool IsCustomDialog = false;
 		//public static ExplorerBrowser Browser;
 		private static IntPtr _hHookLib;
+    private static IntPtr Hookptr;
     public static Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser explorer;
 		public static SynchronizationContext SyncContext;
 		private static readonly int[] HookStatus = Enumerable.Repeat(-1, Enum.GetNames(typeof(Hooks)).Length).ToArray();
@@ -75,7 +76,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 		};
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		private delegate int InitHookLibDelegate(CallbackStruct fpHookResult);
+		private delegate int InitHookLibDelegate(IntPtr fpHookResult);
 
 		public enum HookCheckPoint
 		{
@@ -125,7 +126,9 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 									Marshal.GetDelegateForFunctionPointer(pFunc, typeof(InitHookLibDelegate));
 					try
 					{
-						retcode = initialize(callbackStruct);
+            Hookptr = Marshal.AllocCoTaskMem(Marshal.SizeOf(callbackStruct));
+            Marshal.StructureToPtr(callbackStruct, Hookptr, true);
+            retcode = initialize(Hookptr);
 					}
 					catch (Exception e)
 					{
@@ -369,5 +372,13 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 		{
 			//TODO:
 		}
+
+    public static void ClearHookMemmmory()
+    {
+      if (Hookptr != IntPtr.Zero)
+      {
+        Marshal.FreeCoTaskMem(Hookptr);
+      }
+    }
 	}
 }

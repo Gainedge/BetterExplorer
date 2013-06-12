@@ -34,19 +34,19 @@ namespace ShellNotifications
 		#endregion
 
 		#region DllImports
-		[DllImport("shell32.dll", EntryPoint="#2", CharSet=CharSet.Auto)]
-		private static extern uint SHChangeNotifyRegister(
-			IntPtr hWnd,
-			int fSources,
-			long fEvents,
-			uint wMsg,
-			int cEntries,
-			ref SHChangeNotifyEntry pFsne);
+    [DllImport("shell32.dll", SetLastError = true, EntryPoint = "#2", CharSet = CharSet.Auto)]
+    private static extern UInt32 SHChangeNotifyRegister(
+                IntPtr hWnd,
+                SHCNRF fSources,
+                SHCNE fEvents,
+                uint wMsg,
+                int cEntries,
+                ref SHChangeNotifyEntry pFsne);
 
 		[DllImport("shell32.dll", EntryPoint="#4", CharSet=CharSet.Auto)]
 		[return:MarshalAs(UnmanagedType.Bool)]
 		private static extern Boolean SHChangeNotifyUnregister(
-			ulong hNotify);
+			UInt32 hNotify);
 
 		[DllImport("shell32.dll", CharSet=CharSet.Auto)]
 		private static extern int SHGetFileInfoA(
@@ -337,6 +337,7 @@ namespace ShellNotifications
 			CSIDL_FLAG_MASK                 = 0xFF00,
 		}
 		#endregion
+
 		#region SHNCF Enum
 		public enum SHCNF
 		{
@@ -351,6 +352,18 @@ namespace ShellNotifications
 			SHCNF_FLUSHNOWAIT = 0x2000
 		}
 		#endregion
+
+    #region SHCNRF Enum
+    [Flags]
+    enum SHCNRF
+    {
+      InterruptLevel = 0x1,
+      ShellLevel = 0x2,
+      RecursiveInterrupt = 0x1000,
+      NewDelivery = 0x8000,
+    } 
+    #endregion
+
 		#region SHCNE Enum
 		public enum SHCNE :uint
 		{
@@ -381,6 +394,7 @@ namespace ShellNotifications
 			SHCNE_INTERRUPT           = 0x80000000,
 		}
 		#endregion
+
 		#region SHGFI Enum
 		public enum SHGFI :uint
 		{
@@ -405,6 +419,7 @@ namespace ShellNotifications
 													   // in the upper 8 bits of the 
 		}
 		#endregion
+
 		#region SHGetFolderLocationReturnValues Enum
 		public enum SHGetFolderLocationReturnValues :uint
 		{
@@ -456,8 +471,8 @@ namespace ShellNotifications
 			changeentry.Recursively = Recursively;
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
-        0x0001 | 0x0002,
-				(long)SHCNE.SHCNE_ALLEVENTS,
+        SHCNRF.InterruptLevel | SHCNRF.ShellLevel,
+				SHCNE.SHCNE_ALLEVENTS,
 				WM_SHNOTIFY,
 				1,
 				ref changeentry);
@@ -482,6 +497,7 @@ namespace ShellNotifications
 			return(false);
 		}
 		#endregion
+
 		#region Pidl functions
 		/// <summary>
 		/// Get the path from a Pidl value
@@ -527,6 +543,7 @@ namespace ShellNotifications
 			return(pIdl);
 		}
 		#endregion
+
 		#region Notification Function
 		/// <summary>
 		/// Message received from the WndProc of a registered form

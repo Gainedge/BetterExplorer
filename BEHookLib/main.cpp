@@ -102,8 +102,8 @@ unsigned int WM_FILEOPERATION;
 
 // Callback struct
 struct CallbackStruct {
-    void (*fpHookResult)(int hookId, int retcode);
-    bool (*fpNewWindow)(LPCITEMIDLIST pIDL);
+  void (*fpHookResult)(int hookId, int retcode);
+  bool (*fpNewWindow)(LPCITEMIDLIST pIDL);
 	bool (*fpCopyItem)(IFileOperation *pThis, IUnknown* ifrom, IShellItem* ito);
 	bool (*fpMoveItem)(IUnknown* ifrom, IShellItem* ito);
 	bool (*fpRenameItem)(IUnknown* ifrom, LPCWSTR pszNewName);
@@ -150,43 +150,12 @@ int Initialize(CallbackStruct* cb) {
     callbacks = *cb;
 
     // Register the messages.
-    WM_REGISTERDRAGDROP = RegisterWindowMessageA("BE_RegisterDragDrop");
     WM_NEWTREECONTROL   = RegisterWindowMessageA("BE_NewTreeControl");
-    WM_BROWSEOBJECT     = RegisterWindowMessageA("BE_BrowseObject");
-    WM_HEADERINALLVIEWS = RegisterWindowMessageA("BE_HeaderInAllViews");
-    WM_LISTREFRESHED    = RegisterWindowMessageA("BE_ListRefreshed");
-    WM_ISITEMSVIEW      = RegisterWindowMessageA("BE_IsItemsView");
-    WM_ACTIVATESEL      = RegisterWindowMessageA("BE_ActivateSelection");
-    WM_BREADCRUMBDPA    = RegisterWindowMessageA("BE_BreadcrumbDPA");
-    WM_CHECKPULSE       = RegisterWindowMessageA("BE_CheckPulse");
-	WM_FILEOPERATION	= RegisterWindowMessageA("BE_FileOperation");
+
 
     // Create and enable the CoCreateInstance, RegisterDragDrop, and SHCreateShellFolderView hooks.
     CREATE_HOOK(&CoCreateInstance, CoCreateInstance);
-    //CREATE_HOOK(&RegisterDragDrop, RegisterDragDrop);
-    //CREATE_HOOK(&SHCreateShellFolderView, SHCreateShellFolderView);
 
-
-    // Create an instance of the breadcrumb bar so we can hook it.
-    //CComPtr<IShellNavigationBand> psnb;
-    //if(psnb.Create(__uuidof(CBreadcrumbBar), CLSCTX_INPROC_SERVER)) {
-    //    CREATE_COM_HOOK(psnb, 4, SetNavigationState)
-    //}
-
-
-    // Create an instance of CExplorerFactoryServer so we can hook it.
-    // The interface in question is different on Vista and 7.
-    //CComPtr<IUnknown> punk;
-    //if(punk.Create(__uuidof(CExplorerFactoryServer), CLSCTX_INPROC_SERVER)) {
-    //    CComPtr<ICommonExplorerHost> pceh;
-    //    CComPtr<IExplorerFactory> pef;
-    //    if(pceh.QueryFrom(punk)) {
-    //        CREATE_COM_HOOK(pceh, 3, ShowWindow_7)
-    //    }
-    //    else if(pef.QueryFrom(punk)) {
-    //        CREATE_COM_HOOK(pef, 3, ShowWindow_Vista)
-    //    }
-    //}
     return MH_OK;
 }
 
@@ -227,8 +196,6 @@ HRESULT WINAPI DetourCoCreateInstance(REFCLSID rclsid, LPUNKNOWN pUnkOuter, DWOR
 			PostThreadMessage(GetCurrentThreadId(), WM_NEWTREECONTROL, (WPARAM)(*ppv), NULL);
 		}
 		if (IsEqualIID(rclsid, CLSID_FileOperation)){
-			//PostThreadMessage(GetCurrentThreadId(), WM_FILEOPERATION, (WPARAM)(*ppv), NULL);
-			//CREATE_COM_HOOK(GetInterfaceMethod(*ppv, 12),13,CopyItem);
 			CREATE_HOOK(GetInterfaceMethod(*ppv, 17),CopyItem);
 			CREATE_HOOK(GetInterfaceMethod(*ppv, 15),MoveItem);
 			CREATE_HOOK(GetInterfaceMethod(*ppv, 12),RenameItem);

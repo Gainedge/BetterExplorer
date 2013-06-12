@@ -2127,6 +2127,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 							explorerBrowserControl = null;
 					}
 
+          HookLibManager.ClearHookMemmmory();
 					base.OnHandleDestroyed(e);
 			}
 			#endregion
@@ -3091,7 +3092,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
                   ext = itemobj.Properties.System.FileExtension.Value;
                 }
-                Color textColor = Color.Black;
+                Color? textColor = null;
                 if (this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0)
                 {
                   if (ext != null)
@@ -3100,7 +3101,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                     if (extItemsAvailable)
                     {
                       var color = this.LVItemsColorCodes.Where(c => c.ExtensionList.ToLowerInvariant().Contains(ext.ToString().ToLowerInvariant())).Select(c => c.TextColor).SingleOrDefault();
-                      textColor = color == null ? Color.Black : color;
+                      textColor = color;
                     }
                   }
                 }
@@ -3110,9 +3111,16 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                   case CDDS_ITEMPREPAINT:
                       // call default procedure in case system might do custom drawing and set special colors
                       CallWindowProc(oldWndProc, hWnd, Msg, wParam, lParam);
-                      nmlvcd.clrText = ColorTranslator.ToWin32(textColor);
-                      Marshal.StructureToPtr(nmlvcd, (IntPtr)lParam, false);
-                      return CDRF_NEWFONT;
+                      if (textColor != null)
+                      {
+                        nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
+                        Marshal.StructureToPtr(nmlvcd, (IntPtr)lParam, false);
+                        return CDRF_NEWFONT;
+                      }
+                      else
+                      {
+                        return CDRF_DODEFAULT;
+                      }
                  
                   case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
                     // before a subitem drawn
@@ -3137,9 +3145,16 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                     }
                     else
                     {
-                      nmlvcd.clrText = ColorTranslator.ToWin32(textColor);
-                      Marshal.StructureToPtr(nmlvcd, (IntPtr)lParam, false);
-                      return CDRF_NEWFONT;
+                      if (textColor != null)
+                      {
+                        nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
+                        Marshal.StructureToPtr(nmlvcd, (IntPtr)lParam, false);
+                        return CDRF_NEWFONT;
+                      }
+                      else
+                      {
+                        return CDRF_DODEFAULT;
+                      }
                     }
                     break;
                 }

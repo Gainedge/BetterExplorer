@@ -470,15 +470,9 @@ namespace BetterExplorerControls
 
 		private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
-			try
-			{
+      if (furthestrightitem != null)
 				furthestrightitem.BringIntoView();
-			}
-			catch (NullReferenceException)
-			{
-
-				//throw;
-			}
+			
 		}
 
 		private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)

@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  *  MinHook - Minimalistic API Hook Library	
  *  Copyright (C) 2009 Tsuda Kageyu. All rights reserved.
  *  
@@ -76,10 +76,10 @@ namespace MinHook
 
 	void UninitializeBuffer()
 	{
-		for (std::vector<MEMORY_BLOCK>::iterator block = gMemoryBlocks.begin();
-			block != gMemoryBlocks.end(); block++)
+		for (size_t i = 0, count = gMemoryBlocks.size(); i < count; ++i)
 		{
-			VirtualFree(block->pAddress, 0, MEM_RELEASE);
+			MEMORY_BLOCK& block = gMemoryBlocks[i];
+			VirtualFree(block.pAddress, 0, MEM_RELEASE);
 		}
 
 		std::vector<MEMORY_BLOCK> v;
@@ -102,27 +102,27 @@ namespace MinHook
 
 	void RollbackBuffer()
 	{
-		for (std::vector<MEMORY_BLOCK>::iterator block = gMemoryBlocks.begin();
-			block != gMemoryBlocks.end(); block++)
+		for (size_t i = 0, count = gMemoryBlocks.size(); i < count; ++i)
 		{
-			block->usedSize = block->fixedSize;
+			MEMORY_BLOCK& block = gMemoryBlocks[i];
+			block.usedSize = block.fixedSize;
 		}
 	}
 
 	void CommitBuffer()
 	{
-		for (std::vector<MEMORY_BLOCK>::iterator block = gMemoryBlocks.begin();
-			block != gMemoryBlocks.end(); block++)
+		for (size_t i = 0, count = gMemoryBlocks.size(); i < count; ++i)
 		{
-			if (block->usedSize == block->fixedSize)
+			MEMORY_BLOCK& block = gMemoryBlocks[i];
+			if (block.usedSize == block.fixedSize)
 			{
 				continue;
 			}
 
-			void* pBuffer = reinterpret_cast<char*>(block->pAddress) + block->fixedSize;
-			size_t size = block->usedSize - block->fixedSize;
+			void* pBuffer = reinterpret_cast<char*>(block.pAddress) + block.fixedSize;
+			size_t size = block.usedSize - block.fixedSize;
 			DWORD op;
-			VirtualProtect(pBuffer, size, block->protect, &op);
+			VirtualProtect(pBuffer, size, block.protect, &op);
 		}
 	}
 }
@@ -134,7 +134,7 @@ namespace MinHook { namespace
 		assert(("AllocateBuffer", (protect == PAGE_EXECUTE_READ || protect == PAGE_READONLY)));
 		assert(("AllocateBuffer", (size > 0)));
 
-		// �A���C�����g���E�ɐ؂�グ
+		// ѓAѓ‰ѓCѓЃѓ“ѓg‹«ЉE‚ЙђШ‚иЏг‚°
 		size = (size + TYPE_ALIGNMENT(void*) - 1) & ~(TYPE_ALIGNMENT(void*) - 1);
 
 		MEMORY_BLOCK* pBlock = GetMemoryBlock(pOrigin, protect, size);
@@ -172,13 +172,13 @@ namespace MinHook { namespace
 		intptr_t maxAddr = gMaxAddress; 
 		if (pOrigin != NULL)
 		{
-			// pOrigin �} 512MB �͈̔� 
+			// pOrigin Ѓ} 512MB ‚М”Н€Н 
 			minAddr = std::max<intptr_t>(minAddr, reinterpret_cast<intptr_t>(pOrigin) - 0x20000000);
 			maxAddr = std::min<intptr_t>(maxAddr, reinterpret_cast<intptr_t>(pOrigin) + 0x20000000);
 		}
 #endif
 
-		// ���łɓo�^�ς݂̗̈�̒�����g�p�\�Ȃ��̂�������΁A�����Ԃ�
+		// ‚·‚Е‚Й“o^ЌП‚Э‚М—М€ж‚М’†‚©‚зЋg—p‰В”\‚И‚а‚М‚ЄЊ©‚В‚©‚к‚ОЃA‚»‚к‚р•Ф‚·
 		MEMORY_BLOCK* pBlock = NULL;
 		{
 			mb_iter ib = gMemoryBlocks.begin();
@@ -186,7 +186,7 @@ namespace MinHook { namespace
 #if defined _M_X64
 			if (pOrigin != NULL)
 			{
-				// �����O�ɃA�h���X�͈͂ōi�荞��
+				// ЊџЌх‘O‚ЙѓAѓhѓЊѓX”Н€Н‚ЕЌi‚иЌћ‚Э
 				ib = std::lower_bound(ib, ie, minAddr);
 				ie = std::lower_bound(ib, ie, maxAddr);
 			}
@@ -200,12 +200,12 @@ namespace MinHook { namespace
 			}
 		}
 
-		// ������Ȃ���΁A�V���ȃA�h���X�̈���m��
+		// Њ©‚В‚©‚з‚И‚Ї‚к‚ОЃAђV‚Ѕ‚ИѓAѓhѓЊѓX—М€ж‚рЉm•Ы
 		void* pAlloc = NULL;
 #if defined _M_X64
 		if (pOrigin != NULL)
 		{
-			// �����͈͂̒��S����O���֋󂫗̈��T���Ă���
+			// ЊџЌх”Н€Н‚М’†ђS‚©‚зЉO‘¤‚Ц‹у‚«—М€ж‚р’T‚µ‚Д‚ў‚­
 			intptr_t min = minAddr / BlockSize;
 			intptr_t max = maxAddr / BlockSize;
 			int rel = 0;
@@ -226,7 +226,7 @@ namespace MinHook { namespace
 			}
 		}
 		else
-#endif		// X86���[�h�ł́A�A�h���X�͖��ɂȂ�Ȃ�
+#endif		// X86ѓ‚Ѓ[ѓh‚Е‚НЃAѓAѓhѓЊѓX‚Н–в‘и‚Й‚И‚з‚И‚ў
 		{
 			pAlloc = VirtualAlloc(NULL, BlockSize, MEM_RESERVE, protect);
 		}
