@@ -3034,29 +3034,27 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         DeSubClass(ShellSysListViewHandle);
       }
 
-
-			Rectangle rec = new Rectangle();
-      public const int CDRF_DODEFAULT = 0x00000000;
-      public const int CDRF_NEWFONT = 0x00000002;
-      //public const int CDRF_SKIPDEFAULT		= 0x00000004;
-      //public const int CDRF_DOERASE			= 0x00000008; // draw the background
-      public const int CDRF_NOTIFYPOSTPAINT = 0x00000010;
-      public const int CDRF_NOTIFYITEMDRAW = 0x00000020;
+      public const int CDRF_DODEFAULT         = 0x00000000;
+      public const int CDRF_NEWFONT           = 0x00000002;
+      public const int CDRF_SKIPDEFAULT		    = 0x00000004;
+      public const int CDRF_DOERASE			      = 0x00000008; // draw the background
+      public const int CDRF_NOTIFYPOSTPAINT   = 0x00000010;
+      public const int CDRF_NOTIFYITEMDRAW    = 0x00000020;
       public const int CDRF_NOTIFYSUBITEMDRAW = 0x00000020;
 
-      public const int CDDS_PREPAINT = 0x00000001;
-      public const int CDDS_POSTPAINT = 0x00000002;
-      public const int CDDS_ITEM = 0x00010000;
-      public const int CDDS_SUBITEM = 0x00020000;
-      public const int CDDS_ITEMPREPAINT = (CDDS_ITEM | CDDS_PREPAINT);
-      public const int CDDS_ITEMPOSTPAINT = (CDDS_ITEM | CDDS_POSTPAINT);
+      public const int CDDS_PREPAINT          = 0x00000001;
+      public const int CDDS_POSTPAINT         = 0x00000002;
+      public const int CDDS_ITEM              = 0x00010000;
+      public const int CDDS_SUBITEM           = 0x00020000;
+      public const int CDDS_ITEMPREPAINT      = (CDDS_ITEM | CDDS_PREPAINT);
+      public const int CDDS_ITEMPOSTPAINT     = (CDDS_ITEM | CDDS_POSTPAINT);
 
       // this is the new wndproc, just show a messagebox on left button down:
 			private int MyWndProc(IntPtr hWnd, int Msg, int wParam, int lParam)
 			{
         if (Msg == 78)
         {
-          WindowsHelper.WindowsAPI.NMHDR nmhdr = WindowsHelper.WindowsAPI.PtrToStructure<WindowsHelper.WindowsAPI.NMHDR>((IntPtr)lParam);
+          WindowsAPI.NMHDR nmhdr = WindowsAPI.PtrToStructure<WindowsHelper.WindowsAPI.NMHDR>((IntPtr)lParam);
           switch (nmhdr.code)
           {
             case WNM.LVN_GETINFOTIP:

@@ -421,7 +421,9 @@ namespace BetterExplorerControls
 			{
 				HistoryCombo.Text = furthestrightitem.ShellObject.ParsingName; //FixShellPathsInEditMode(furthestrightitem.ShellObject.ParsingName);
 			}
-			HistoryCombo.Focus();
+      
+			//HistoryCombo.Focus();
+
       
 		}
 
@@ -564,6 +566,19 @@ namespace BetterExplorerControls
     {
       if (!IsInEditMode)
         EnterEditMode();
+      TextBox tb = (sender as TextBox);
+
+      if (tb == null)
+      {
+        return;
+      }
+
+      if (!tb.IsKeyboardFocusWithin)
+      {
+        tb.SelectAll();
+        e.Handled = true;
+        tb.Focus();
+      }
       //e.Handled = true;
     }
 
