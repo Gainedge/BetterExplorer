@@ -3131,7 +3131,11 @@ namespace BetterExplorer
 
 		private void btnFormatDrive_Click(object sender, RoutedEventArgs e)
 		{
-			Explorer.FormatDrive();
+      Thread formatDriveThread = new Thread(() =>
+      {
+        Explorer.FormatDrive(IntPtr.Zero);
+      });
+      formatDriveThread.Start();
 		}
 
 		private void btnCleanDrive_Click(object sender, RoutedEventArgs e)

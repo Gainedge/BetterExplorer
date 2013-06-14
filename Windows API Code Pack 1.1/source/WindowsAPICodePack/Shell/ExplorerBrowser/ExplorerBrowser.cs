@@ -701,7 +701,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			}
 
 
-      public void FormatDrive() {
+      public void FormatDrive(IntPtr handle) {
         string DriveLetter = "";
         if (SelectedItems.Count > 0) {
           if (Directory.GetLogicalDrives().Contains(SelectedItems[0].ParsingName)) {
@@ -712,7 +712,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         } else {
           DriveLetter = NavigationLog.CurrentLocation.ParsingName;
         }
-        WindowsAPI.FormatDrive(SysListViewHandle, DriveLetter);
+        WindowsAPI.FormatDrive(handle, DriveLetter);
       }
 
       public void CleanupDrive() {
