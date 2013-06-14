@@ -21,7 +21,7 @@ namespace SingleInstanceApplication
 		public static bool CreateSingleInstance(string name, EventHandler<InstanceCallbackEventArgs> callback)
 		{
 			EventWaitHandle eventWaitHandle = null;
-			string eventName = string.Format("{0}-{1}", Environment.MachineName, name);
+			string eventName = string.Format("{0}-{1}-{2}", Environment.MachineName, name, Environment.UserName);
 
 			InstanceProxy.IsFirstInstance = false;
 			InstanceProxy.CommandLineArgs = Environment.GetCommandLineArgs();
@@ -78,7 +78,7 @@ namespace SingleInstanceApplication
 			// get shared object from other process
 			var proxy =
 				Activator.GetObject(typeof(InstanceProxy), 
-				string.Format("ipc://{0}{1}/{1}", Environment.MachineName, uri)) as InstanceProxy;
+				string.Format("ipc://{0}{1}{2}/{1}", Environment.MachineName, uri, Environment.UserName)) as InstanceProxy;
 
 			// pass current command line args to proxy
 			if (proxy != null)
@@ -95,7 +95,7 @@ namespace SingleInstanceApplication
 		private static void RegisterRemoteType(string uri)
 		{
 			// register remote channel (net-pipes)
-			var serverChannel = new IpcServerChannel(Environment.MachineName + uri);
+			var serverChannel = new IpcServerChannel(Environment.MachineName + uri + Environment.UserName);
 			ChannelServices.RegisterChannel(serverChannel, true);
 
 			// register shared type

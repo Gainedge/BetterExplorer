@@ -134,7 +134,7 @@ namespace BetterExplorer
             }
             catch
             {
-                MessageBox.Show("There was an error in the startup procedure related to consolidating multiple instances. Please let us know of this issue at http://bugtracker.better-explorer.com/", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                //MessageBox.Show("There was an error in the startup procedure related to consolidating multiple instances. Please let us know of this issue at http://bugtracker.better-explorer.com/", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             string Locale = "";

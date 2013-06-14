@@ -233,9 +233,9 @@
 
     <ni:TaskbarIcon x:Name="beNotifyIcon"
                     Visibility="Visible"
-                    ToolTipText="Fallback ToolTip for Windows xp"
+                    ToolTipText="Better Explorer (A better filemanager for windows)"
                     IconSource="Explorer.ico"
-                    MenuActivation="LeftOrRightClick"
+                    MenuActivation="RightClick"
                     PopupActivation="DoubleClick" TrayMouseDoubleClick="beNotifyIcon_TrayMouseDoubleClick"
       />
     <Ribbon:Ribbon x:Name="TheRibbon"

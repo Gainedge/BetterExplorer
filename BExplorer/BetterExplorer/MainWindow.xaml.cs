@@ -1290,8 +1290,15 @@ namespace BetterExplorer
                            this.Title = "Better Explorer - " + e.PendingLocation.GetDisplayName(DisplayNameType.Default);
                            e.PendingLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
                            e.PendingLocation.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                           (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).Header = e.PendingLocation.GetDisplayName(DisplayNameType.Default);
-                           (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).TabIcon = e.PendingLocation.Thumbnail.BitmapSource;
+                           try
+                           {
+                             (tabControl1.SelectedItem as ClosableTabItem).Header = e.PendingLocation.GetDisplayName(DisplayNameType.Default);
+                             (tabControl1.SelectedItem as ClosableTabItem).TabIcon = e.PendingLocation.Thumbnail.BitmapSource;
+                           }
+                           catch (Exception)
+                           {
+
+                           }
                          }));
 		}
 
