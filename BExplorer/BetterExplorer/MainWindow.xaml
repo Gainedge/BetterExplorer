@@ -231,13 +231,21 @@
             <RowDefinition x:Name="rStatusbar" Height="20" />
         </Grid.RowDefinitions>
 
-    <ni:TaskbarIcon x:Name="beNotifyIcon"
+        <ni:TaskbarIcon x:Name="beNotifyIcon"
                     Visibility="Visible"
                     ToolTipText="Better Explorer (A better filemanager for windows)"
                     IconSource="Explorer.ico"
                     MenuActivation="RightClick"
-                    PopupActivation="DoubleClick" TrayMouseDoubleClick="beNotifyIcon_TrayMouseDoubleClick"
-      />
+                    PopupActivation="DoubleClick" TrayMouseDoubleClick="beNotifyIcon_TrayMouseDoubleClick">
+
+            <ni:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Show Window" Click="beNotifyIcon_TrayMouseDoubleClick"  />
+                    <MenuItem Header="Exit" Click="btnBackstageExit_Click" />
+                </ContextMenu>
+            </ni:TaskbarIcon.ContextMenu>
+    </ni:TaskbarIcon>
+        
     <Ribbon:Ribbon x:Name="TheRibbon"
                        Grid.ColumnSpan="3"
                        Background="White"
