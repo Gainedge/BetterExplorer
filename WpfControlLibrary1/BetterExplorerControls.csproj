@@ -161,6 +161,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AutoCompleteTextBox\AutocompleteTextBox.vbproj">
+      <Project>{d010f52c-140c-410d-b897-c1091b81aa13}</Project>
+      <Name>AutocompleteTextBox</Name>
+    </ProjectReference>
     <ProjectReference Include="..\fluent_72f5e3ec252b\Fluent\Fluent\Fluent dotNET 4.0.csproj">
       <Project>{4c92fcf4-3561-499f-bc5b-f2f089863047}</Project>
       <Name>Fluent dotNET 4.0</Name>

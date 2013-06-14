@@ -9132,6 +9132,21 @@ namespace BetterExplorer
            
           var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
         }
+
+        private void beNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+          this.Visibility = Visibility.Visible;
+          if (this.WindowState == WindowState.Minimized)
+          {
+            WindowsAPI.ShowWindow(Handle,
+                (int)WindowsAPI.ShowCommands.SW_RESTORE);
+          }
+
+          this.Activate();
+          this.Topmost = true;  // important
+          this.Topmost = false; // important
+          this.Focus();         // important
+        }
  
 
 	}

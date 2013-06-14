@@ -8,6 +8,7 @@
                      xmlns:local="clr-namespace:BetterExplorer"
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                      xmlns:my2="http://schemas.microsoft.com/winfx/2006/xaml/presentation/ribbon"
+                     xmlns:ni="http://www.hardcodet.net/taskbar"
                      xmlns:console="clr-namespace:ConsoleControl;assembly=ConsoleControl"
                      xmlns:Controls="clr-namespace:wyDay.Controls;assembly=AutomaticUpdaterWPF" x:Class="BetterExplorer.MainWindow"
                      Title="Better Explorer"
@@ -230,7 +231,14 @@
             <RowDefinition x:Name="rStatusbar" Height="20" />
         </Grid.RowDefinitions>
 
-        <Ribbon:Ribbon x:Name="TheRibbon"
+    <ni:TaskbarIcon x:Name="beNotifyIcon"
+                    Visibility="Visible"
+                    ToolTipText="Fallback ToolTip for Windows xp"
+                    IconSource="Explorer.ico"
+                    MenuActivation="LeftOrRightClick"
+                    PopupActivation="DoubleClick" TrayMouseDoubleClick="beNotifyIcon_TrayMouseDoubleClick"
+      />
+    <Ribbon:Ribbon x:Name="TheRibbon"
                        Grid.ColumnSpan="3"
                        Background="White"
                        CustomizeQuickAccessToolbar="TheRibbon_CustomizeQuickAccessToolbar"
