@@ -417,7 +417,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
         void SelectItem(int iItem, uint dwFlags);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void SelectAndPositionItems(uint cidl, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] IntPtr[] apidl, ref NativePoint apt, uint dwFlags);
+        void SelectAndPositionItems(uint cidl, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] apidl, ref NativePoint apt, WindowsHelper.WindowsAPI.SVSIF dwFlags);
     }
 
     [ComImport,

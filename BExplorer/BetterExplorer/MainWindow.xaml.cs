@@ -1988,8 +1988,8 @@ namespace BetterExplorer
 
 
 			IsSelectionRized = false;
-            //if (!IsAfterFolderCreate && !backstage.IsOpen && IsAfterRename)
-            //    Explorer.SetExplorerFocus();
+            if (!IsAfterFolderCreate && !backstage.IsOpen && IsAfterRename)
+                Explorer.SetExplorerFocus();
 		}
 		bool IsFromSelectionOrNavigation = false;
         
@@ -2032,6 +2032,7 @@ namespace BetterExplorer
                 }
 
                 ShellContainer CurrentLoc = (ShellContainer)Explorer.NavigationLog.CurrentLocation;
+
                 foreach (ShellObject item in CurrentLoc)
                 {
                     if (flt.Contains(item.Properties.System.ItemTypeText.Value.ToLowerInvariant()))
@@ -5429,8 +5430,9 @@ namespace BetterExplorer
         startIt.StartInfo.CreateNoWindow = true;
         startIt.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
         startIt.StartInfo.FileName = "StartIt.exe";
-        startIt.StartInfo.Arguments = pr.MainModule.FileName;
+        startIt.StartInfo.Arguments = String.Format("\"{0}\"", pr.MainModule.FileName);
         startIt.Start();
+
         btnBackstageExit_Click(sender, e);
 			}
 		}
@@ -6373,6 +6375,7 @@ namespace BetterExplorer
 		{
       if (!backstage.IsOpen)
         Explorer.SetExplorerFocus();
+      
 		}
 
 		void fAbout_Closed(object sender, EventArgs e)
@@ -7231,43 +7234,72 @@ namespace BetterExplorer
 			micDesktop.Click += new RoutedEventHandler(btnctDesktop_Click);
 			sod.Dispose();
 
-			MenuItem mimDocuments = new MenuItem();
-			ShellObject sodc = (ShellObject)KnownFolders.Documents;
-			sodc.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			sodc.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-			mimDocuments.Focusable = false;
-			mimDocuments.Icon = sodc.Thumbnail.BitmapSource;
-			mimDocuments.Header = FindResource("btnctDocumentsCP");
-			mimDocuments.Click += new RoutedEventHandler(btnmtDocuments_Click);
-			MenuItem micDocuments = new MenuItem();
-			micDocuments.Focusable = false;
-			micDocuments.Icon = sodc.Thumbnail.BitmapSource;
-			micDocuments.Header = FindResource("btnctDocumentsCP");
-			micDocuments.Click += new RoutedEventHandler(btnctDocuments_Click);
-			sodc.Dispose();
+      MenuItem mimDocuments = new MenuItem();
+      MenuItem micDocuments = new MenuItem();
+      try
+      {
+        ShellObject sodc = (ShellObject)KnownFolders.Documents;
+        sodc.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+        sodc.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+        mimDocuments.Focusable = false;
+        mimDocuments.Icon = sodc.Thumbnail.BitmapSource;
+        mimDocuments.Header = FindResource("btnctDocumentsCP");
+        mimDocuments.Click += new RoutedEventHandler(btnmtDocuments_Click);
+        
+        micDocuments.Focusable = false;
+        micDocuments.Icon = sodc.Thumbnail.BitmapSource;
+        micDocuments.Header = FindResource("btnctDocumentsCP");
+        micDocuments.Click += new RoutedEventHandler(btnctDocuments_Click);
+        sodc.Dispose();
+      }
+      catch (Exception)
+      {
+        mimDocuments = null;
+        micDocuments = null;
+        //ctach the exception in case the user deleted that basic folder somehow
+      }
 
-			MenuItem mimDownloads = new MenuItem();
-			ShellObject sodd = (ShellObject)KnownFolders.Downloads;
-			sodd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			sodd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-			mimDownloads.Focusable = false;
-			mimDownloads.Icon = sodd.Thumbnail.BitmapSource;
-			mimDownloads.Header = FindResource("btnctDownloadsCP");
-			mimDownloads.Click += new RoutedEventHandler(btnmtDounloads_Click);
-			MenuItem micDownloads = new MenuItem();
-			micDownloads.Focusable = false;
-			micDownloads.Icon = sodd.Thumbnail.BitmapSource;
-			micDownloads.Header = FindResource("btnctDownloadsCP");
-			micDownloads.Click += new RoutedEventHandler(btnctDounloads_Click);
-			sodd.Dispose();
+      MenuItem mimDownloads = new MenuItem();
+      MenuItem micDownloads = new MenuItem();
+      try
+      {
+        
+        ShellObject sodd = (ShellObject)KnownFolders.Downloads;
+        sodd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+        sodd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+        mimDownloads.Focusable = false;
+        mimDownloads.Icon = sodd.Thumbnail.BitmapSource;
+        mimDownloads.Header = FindResource("btnctDownloadsCP");
+        mimDownloads.Click += new RoutedEventHandler(btnmtDounloads_Click);
+        
+        micDownloads.Focusable = false;
+        micDownloads.Icon = sodd.Thumbnail.BitmapSource;
+        micDownloads.Header = FindResource("btnctDownloadsCP");
+        micDownloads.Click += new RoutedEventHandler(btnctDounloads_Click);
+        sodd.Dispose();
+      }
+      catch (Exception)
+      {
+        micDownloads = null;
+        mimDownloads = null;
+        //ctach the exception in case the user deleted that basic folder somehow
+      }
 
-			btnMoveto.Items.Add(mimDocuments);
-			btnMoveto.Items.Add(mimDownloads);
+      if (mimDocuments != null)
+			  btnMoveto.Items.Add(mimDocuments);
+
+      if (mimDownloads != null)
+			  btnMoveto.Items.Add(mimDownloads);
+
 			btnMoveto.Items.Add(mimDesktop);
 			btnMoveto.Items.Add(new Separator());
 
-			btnCopyto.Items.Add(micDocuments);
-			btnCopyto.Items.Add(micDownloads);
+      if (micDocuments != null)
+			  btnCopyto.Items.Add(micDocuments);
+
+      if (micDownloads != null)
+			  btnCopyto.Items.Add(micDownloads);
+
 			btnCopyto.Items.Add(micDesktop);
 			btnCopyto.Items.Add(new Separator());
 

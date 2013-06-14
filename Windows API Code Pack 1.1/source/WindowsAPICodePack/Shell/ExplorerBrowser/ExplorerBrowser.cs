@@ -1207,6 +1207,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
             Marshal.FreeCoTaskMem(pPIDL);
         }
 
+        this.SetExplorerFocus();
+
       }
 
 			public void SelectItems(ShellObject[] ShellObjectArray)
@@ -1214,7 +1216,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				IntPtr pIDL = IntPtr.Zero;
 				IFolderView ifv = GetFolderView();
 
-				Array PIDLArray = new Array[ShellObjectArray.Length];
+        IntPtr[] PIDLArray = new IntPtr[ShellObjectArray.Length];
 				int i = 0;
 
 				foreach (ShellObject item in ShellObjectArray)
@@ -1224,15 +1226,17 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 							if (pIDL != IntPtr.Zero)
 							{
-									IntPtr pIDLRltv = WindowsAPI.ILFindLastID(pIDL);
+									IntPtr pIDLRltv = WindowsAPI.ILFindLastID(item.PIDL);
 									if (pIDLRltv != IntPtr.Zero)
 									{
-											PIDLArray.SetValue((uint)pIDLRltv,i);
+                    PIDLArray[i] = pIDLRltv;
 									}
 							}
 						
 							i++;
 				}
+        NativePoint pt = new NativePoint(0,0);
+        ifv.SelectAndPositionItems((uint)ShellObjectArray.Length, PIDLArray, ref pt, WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_ENSUREVISIBLE | WindowsAPI.SVSIF.SVSI_FOCUSED | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS);
 			}
 
       public void DoRename() {
