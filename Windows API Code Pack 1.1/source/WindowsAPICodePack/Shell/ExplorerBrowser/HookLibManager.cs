@@ -278,12 +278,12 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 					win.FindResource((item.IsLink ? "txtShortcut" : item.IsFolder ? "txtAccusativeFolder" : "txtFile")) as string;
 				confirmationDialog.MessageIcon = item.Thumbnail.BitmapSource;
 				confirmationDialog.MessageText = isMoveToRB
-																					 ? string.Format((string) win.FindResource("txtConfirmDeleteObject"), itemTypeName)
+                                                                                     ? string.Format((string)win.FindResource("txtConfirmDeleteObject"), itemTypeName, win.FindResource("txtRecycleBin"))
 																					 : string.Format((string) win.FindResource("txtConfirmRemoveObject"), itemTypeName);
 				confirmationDialog.FileInfo = item.Name + "\n";
 				if (item.IsFolder)
 				{
-					confirmationDialog.FileInfo += string.Format("{0}: {1} ", win.FindResource("txtCreationDate") as string,
+                    confirmationDialog.FileInfo += string.Format("{0}: {1} ", win.FindResource("btnODateCCP") as string,
 																											 item.Properties.GetProperty("System.DateCreated").ValueAsObject);
 				}
 				else if (item.IsLink)
@@ -300,22 +300,22 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 
 					if (item.Properties.System.ItemAuthors.Value != null)
 					{
-						fileInfo += string.Format("{0}: {1}\n", win.FindResource("txtAuthors"),
-																			string.Join(",", item.Properties.System.ItemAuthors.Value));
+                        fileInfo += string.Format("{0}: {1}\n", win.FindResource("btnAuthorCP"),
+																			string.Join(";", item.Properties.System.ItemAuthors.Value));
 					}
 					string[] sizes = {"B", "KB", "MB", "GB"};
 					var len = (ulong) item.Properties.System.Size.ValueAsObject;
 					int order = 0;
-					while (len >= 1024 && order + 1 < sizes.Length)
+					while (len >= 1000 && order + 1 < sizes.Length) // using SI system, not IEC
 					{
 						order++;
-						len = len/1024;
+						len = len/1000;
 					}
 					// Adjust the format string to your preferences. For example "{0:0.#}{1}" would
 					// show a single decimal place, and no space.
 					string result = String.Format("{0:0.##} {1}", len, sizes[order]);
 					fileInfo += string.Format("{0}: {1}\n", win.FindResource("txtFileSize"), result);
-					fileInfo += string.Format("{0}: {1}\n", win.FindResource("txtModificationDate") as string,
+                    fileInfo += string.Format("{0}: {1}\n", win.FindResource("btnODateModCP") as string,
 																		item.Properties.GetProperty("System.DateModified").ValueAsObject);
 					confirmationDialog.FileInfo += fileInfo;
 				}
