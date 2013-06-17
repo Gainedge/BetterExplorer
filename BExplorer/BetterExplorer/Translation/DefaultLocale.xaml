@@ -379,7 +379,7 @@
        <system:String x:Key="txtEmptyRBin">Empty Recycle Bin</system:String>
 	<system:String x:Key="txtYes">Yes</system:String>
 	<system:String x:Key="txtNo">No</system:String>
-	<system:String x:Key="txtType">Type</system:String> <!-- (file type) --->
+	<system:String x:Key="txtType">Type</system:String> <!-- (file type) -->
 	<system:String x:Key="txtFile">file</system:String>
 	<system:String x:Key="txtShortcut">shortcut</system:String>
 	<system:String x:Key="txtFolder">folder</system:String> <!-- (The folder is empty. (subject)) -->
