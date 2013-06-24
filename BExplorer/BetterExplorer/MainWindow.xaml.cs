@@ -6225,8 +6225,11 @@ namespace BetterExplorer
 		{
 
 			ShellObject lastLoc = Explorer.NavigationLog.CurrentLocation;
-			//Explorer.automan.Dispose();
-			Explorer.Dispose();
+
+      Explorer.DesubclassShellViewWin();
+
+      Explorer = null;
+
 			Explorer = new ExplorerBrowser();
 
 			switch (PaneForChange)
@@ -6302,7 +6305,7 @@ namespace BetterExplorer
 					break;
 			}
 
-
+      
 
 			Explorer.SelectionChanged += new EventHandler(ExplorerBrowserControl_SelectionChanged);
 			Explorer.NavigationComplete += new EventHandler<NavigationCompleteEventArgs>(ExplorerBrowserControl_NavigationComplete);
@@ -6310,27 +6313,30 @@ namespace BetterExplorer
 			Explorer.ViewEnumerationComplete += new EventHandler(ExplorerBrowserControl_ViewEnumerationComplete);
 			Explorer.NavigationPending += new EventHandler<NavigationPendingEventArgs>(Explorer_NavigationPending);
 			Explorer.GotFocus += new EventHandler(Explorer_GotFocus);
-
+			Explorer.ExplorerGotFocus += new EventHandler(Explorer_ExplorerGotFocus);
+			Explorer.RenameFinished += new EventHandler(Explorer_RenameFinished);
+			Explorer.KeyUP += new EventHandler<ExplorerKeyUPEventArgs>(Explorer_KeyUP);
+			Explorer.LostFocus += new EventHandler(Explorer_LostFocus);
 			Explorer.NavigationOptions.PaneVisibility.Commands = PaneVisibilityState.Hide;
 			Explorer.NavigationOptions.PaneVisibility.CommandsOrganize = PaneVisibilityState.Hide;
 			Explorer.NavigationOptions.PaneVisibility.CommandsView = PaneVisibilityState.Hide;
 			Explorer.ItemsChanged += new EventHandler(Explorer_ItemsChanged);
 			Explorer.ContentOptions.FullRowSelect = true;
-			//Explorer.ContentOptions.CheckSelect = false;
 			Explorer.ClientSizeChanged += new EventHandler(ExplorerBrowserControl_ClientSizeChanged);
 			Explorer.Paint += new System.Windows.Forms.PaintEventHandler(ExplorerBrowserControl_Paint);
 			Explorer.ViewChanged += new EventHandler<ViewChangedEventArgs>(Explorer_ViewChanged);
-			Explorer.ItemHot += new EventHandler<ExplorerAUItemEventArgs>(Explorer_ItemHot);
+      Explorer.ItemHot += Explorer_ItemHot;
       Explorer.ItemMouseMiddleClick += Explorer_ItemMouseMiddleClick;
 			Explorer.ExplorerBrowserMouseLeave += new EventHandler(Explorer_ExplorerBrowserMouseLeave);
+			Explorer.DragDrop += new System.Windows.Forms.DragEventHandler(Explorer_DragDrop);
 
 
 			isGoingBackOrForward = true;
 
-			Explorer.Width = (int)ShellVView.Width;
-			Explorer.Height = (int)ShellVView.Height;
-			Explorer.Navigate(lastLoc);
-			ShellVView.Child = Explorer;
+      Explorer.Width = (int)ShellVView.Width;
+      Explorer.Height = (int)ShellVView.Height;
+      Explorer.Navigate(lastLoc);
+      ShellVView.Child = Explorer;
 		}
 
     void Explorer_ItemMouseMiddleClick(object sender, ExplorerMouseEventArgs e) {
@@ -7630,14 +7636,25 @@ namespace BetterExplorer
 		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
 		private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-      if (e.RemovedItems.Count > 0)
+      try
       {
-        var item = tabControl1.Items.OfType<ClosableTabItem>().Where(c => c == e.RemovedItems[0]).Single();
-        item.SelectedItems = Explorer.SelectedItems.Select(c => c.ParsingName).ToArray();
+        if (e.RemovedItems.Count > 0)
+        {
+          var item = tabControl1.Items.OfType<ClosableTabItem>().Where(c => c == e.RemovedItems[0]).SingleOrDefault();
+          if (item != null)
+            item.SelectedItems = Explorer.SelectedItems.Select(c => c.ParsingName).ToArray();
+        }
+        if (e.AddedItems.Count > 0 && (e.AddedItems[0] as ClosableTabItem).Index == tabControl1.Items.Count - 1)
+        {
+          tabControl1.Items.OfType<ClosableTabItem>().Last().BringIntoView();
+        }
       }
-      if (e.AddedItems.Count > 0 && (e.AddedItems[0] as ClosableTabItem).Index == tabControl1.Items.Count - 1)
+      catch (Exception ex)
       {
-        tabControl1.Items.OfType<ClosableTabItem>().Last().BringIntoView();
+        //Catch eventual exceptions
+        Exception lastException = ex;
+        NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        logger.Warn(lastException);
       }
 		}
 
