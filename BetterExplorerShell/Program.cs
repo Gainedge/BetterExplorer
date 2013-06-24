@@ -38,6 +38,8 @@ namespace BetterExplorerShell {
 
       if (cpIndex != 0) return false;
 
+
+
       //if (cmd.IndexOf(@"\::", cpIndex + cpName.Length) <= 0 && cmd != cpName) return false;
       if (!cmd.StartsWith(cpName)) return false;
 
@@ -47,7 +49,7 @@ namespace BetterExplorerShell {
       cmd = cmd.Replace("Fonts", "::{BD84B380-8CA2-1069-AB1D-08000948F534}");
 
       System.Diagnostics.ProcessStartInfo procStartInfo =
-          new System.Diagnostics.ProcessStartInfo(explorerPath, cmd);
+          new System.Diagnostics.ProcessStartInfo(explorerPath, String.Format("shell:{0}", cmd));
 
       // Now we create a process, assign its ProcessStartInfo and start it
       System.Diagnostics.Process proc = new System.Diagnostics.Process();
