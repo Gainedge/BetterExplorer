@@ -112,8 +112,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
         void LoadTimer_Tick(object sender, EventArgs e)
         {
+          
             this.Visibility = System.Windows.Visibility.Visible;
             LoadTimer.Stop();
+            isloaded = true;
         }
 
         
@@ -224,7 +226,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                        (Action)(() =>
                        {
-                           this.prOverallProgress.IsIndeterminate = true;
+                           //this.prOverallProgress.IsIndeterminate = true;
                            lblProgress.Text = "Counting Files";
                        }));
             if (this.OperationType != FileOperations.OperationType.Delete)
@@ -296,7 +298,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                            (Action)(() =>
                            {
-                               this.prOverallProgress.IsIndeterminate = false;
+                               //this.prOverallProgress.IsIndeterminate = false;
                            }));
             }
             else
@@ -328,7 +330,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                            (Action)(() =>
                            {
-                               this.prOverallProgress.IsIndeterminate = false;
+                               //this.prOverallProgress.IsIndeterminate = false;
                            }));
             }
             int counter = 0;
@@ -1003,7 +1005,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
         public void ProcessItems(string src, string dst)
         {
-            int size = 2048 * 1024 * 2;	//buffer size
+            int size = 1024 * 1024 * 4;	//buffer size
             int current_read_buffer = 0; //pointer to current read buffer
             int last_bytes_read = 0; //number of bytes last read
 
@@ -1068,6 +1070,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                             (Action)(() =>
                             {
                                 prFileProgress.Value = Math.Round((double)(i * 100 / l), 0);
+                              if (isloaded)
+                                prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D, 2); 
                             }));
                             if (i == l)
                             {
@@ -1082,15 +1086,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                     fi.Delete();
                                 }
                             }
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                            (Action)(() =>
-                            {
-                                prOverallProgress.Value = Math.Round((totaltransfered / (double)totalSize) * 100D);
-                                
-                            }));
+
                             var dt = DateTime.Now;
+                            var val = Math.Round((totaltransfered / (double)totalSize) * 100D,2);  
                             var secs = dt.Subtract(LastMeasuredTime).Seconds; 
-                            if (secs >= 2)
+                            if (secs > 0)
                             {
                                 var diff = totaltransfered - lastTotalTransfered;
                                 var speed = diff / secs;
@@ -1100,6 +1100,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                                 (Action)(() =>
                                 {
+                                  if (isloaded)
+                                  {
+                                    prOverallProgress.Rate = speed == prOverallProgress.Rate ? speed + 0.0001 : speed;
+                                    prOverallProgress.Caption = speedInMB + "/s";
+                                  }
                                     lblSpeed.Text = speedInMB + "/s";
                                 }));
                             }
@@ -1203,6 +1208,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
           {
 
           }
+        }
+        private bool isloaded = false;
+        private void prOverallProgress_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
 
     }

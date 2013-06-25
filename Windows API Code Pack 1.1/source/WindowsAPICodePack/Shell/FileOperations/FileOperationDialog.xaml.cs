@@ -93,6 +93,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
               this.ShowActivated = false;
             else
               this.ShowActivated = true;
+            
             this.Show();
           } else
             this.Close();
