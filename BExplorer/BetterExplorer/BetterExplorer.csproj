@@ -219,6 +219,13 @@
     <Compile Include="MessageReceiver.Designer.cs">
       <DependentUpon>MessageReceiver.cs</DependentUpon>
     </Compile>
+    <Compile Include="Networks\AddServer.xaml.cs">
+      <DependentUpon>AddServer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Networks\AccountData.cs" />
+    <Compile Include="Networks\ServerItem.xaml.cs">
+      <DependentUpon>ServerItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PieChart\BaseWPFHelpers.cs" />
     <Compile Include="PieChart\PieChart\ColourConverter.cs" />
     <Compile Include="PieChart\PieChart\IColorSelector.cs" />
@@ -355,6 +362,14 @@
     <Page Include="Customize\RibbonItemListDisplay.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Networks\AddServer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Networks\ServerItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PieChart\PieChart\Legend.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -888,9 +903,12 @@
     <Resource Include="Images\RecycleBinEmpty32.png" />
     <Resource Include="Images\RecycleBinFull16.png" />
     <Resource Include="Images\RecycleBinFull32.png" />
+    <Resource Include="Images\add16.png" />
+    <Resource Include="Images\add32.png" />
     <Content Include="Ionic.Zip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Networks\add.ico" />
     <Content Include="StartIt.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1049,7 +1067,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -30,6 +30,7 @@ namespace BetterExplorer
         private AggregateCatalog catalog;
         public static bool isStartMinimized = false;
         public static bool isStartNewWindows = false;
+        public static bool isStartWithStartupTab = false;
 
         //[Import("MainWindow")]
         //public new Window MainWindow
@@ -90,39 +91,62 @@ namespace BetterExplorer
                     {
                         dmi = false;
                     }
+                    else if (e.Args[0] == "/norestore")
+                    {
+                        isStartWithStartupTab = true;
+                    }
                     else
                     {
-                      if (e.Args[0] != "-minimized")
-                      {
-                        //if (e.Args != null && e.Args.Count() > 0)
-                        //{
-                        this.Properties["cmd"] = e.Args[0];
-                        if (e.Args.Count() > 1)
+                        if (e.Args[0] != "-minimized")
                         {
-                          if (e.Args[1] == "/nw")
-                          {
+                            //if (e.Args != null && e.Args.Count() > 0)
+                            //{
+                            this.Properties["cmd"] = e.Args[0];
+                            if (e.Args.Count() > 1)
+                            {
+                                if (e.Args[1] == "/nw")
+                                {
+                                    dmi = false;
 
-                            dmi = false;
-                          }
+                                    if (e.Args.Count() > 2)
+                                    {
+                                        if (e.Args[2] == "/norestore")
+                                        {
+                                            isStartWithStartupTab = true;
+                                        }
+                                    }
+                                }
+                                else if (e.Args[1] == "/norestore")
+                                {
+                                    isStartWithStartupTab = true;
+
+                                    if (e.Args.Count() > 2)
+                                    {
+                                        if (e.Args[2] == "/nw")
+                                        {
+                                            dmi = false;
+                                        }
+                                    }
+                                }
+                            }
+                            //}
                         }
-                        //}
-                      }
-                      else
-                      {
-                          isStartMinimized = true;
-                      }
+                        else
+                        {
+                            isStartMinimized = true;
+                        }
 
-                      if (dmi == true)
-                      {
-                        isStartNewWindows = false;
-                        if (!ApplicationInstanceManager.CreateSingleInstance(
-                        Assembly.GetExecutingAssembly().GetName().Name,
-                        SingleInstanceCallback)) return; // exit, if same app. is running
-                      }
-                      else
-                      {
-                        isStartNewWindows = true;
-                      }
+                        if (dmi == true)
+                        {
+                            isStartNewWindows = false;
+                            if (!ApplicationInstanceManager.CreateSingleInstance(
+                            Assembly.GetExecutingAssembly().GetName().Name,
+                            SingleInstanceCallback)) return; // exit, if same app. is running
+                        }
+                        else
+                        {
+                            isStartNewWindows = true;
+                        }
                     }
                 }
                 else

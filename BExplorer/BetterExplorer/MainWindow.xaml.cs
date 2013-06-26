@@ -3918,6 +3918,12 @@ namespace BetterExplorer
 									  IsrestoreTabs = (RestoreTabs == 1);
 
 									  chkIsRestoreTabs.IsChecked = IsrestoreTabs;
+                                        
+                                      //if this instance has the /norestore switch, do not load tabs from previous session, even if it is set in the Registry
+                                      if (App.isStartWithStartupTab == true)
+                                      {
+                                          IsrestoreTabs = false;
+                                      }
 
                                       int IsLastTabCloseApp = (int)rks.GetValue(@"IsLastTabCloseApp", 1);
                                       IsCloseLastTabCloseApp = (IsLastTabCloseApp == 1);
@@ -9170,6 +9176,17 @@ namespace BetterExplorer
           this.Topmost = true;  // important
           this.Topmost = false; // important
           this.Focus();         // important
+        }
+
+        private void btnAddWebServer_Click(object sender, RoutedEventArgs e)
+        {
+            Networks.AddServer asw = new Networks.AddServer();
+            asw.Owner = this;
+            asw.ShowDialog();
+            if (asw.yep == true)
+            {
+                // TODO: Add code for adding server
+            }
         }
  
 

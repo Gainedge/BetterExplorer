@@ -1,0 +1,22 @@
+﻿<UserControl x:Class="BetterExplorer.Networks.ServerItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" Height="100" d:DesignWidth="300">
+    <Grid>
+        <TextBlock HorizontalAlignment="Left" x:Name="txtDisplayName" Margin="10,10,0,0" TextWrapping="Wrap" Text="Server Display Name" VerticalAlignment="Top" FontWeight="Bold"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,30,0,0">
+            <Grid>
+                <TextBlock HorizontalAlignment="Left" Margin="0,0,0,0" Name="lblAddress" Text="Address:" VerticalAlignment="Top" />
+                <TextBlock HorizontalAlignment="Left" Margin="0,20,0,0" Name="lblType" Text="Type:" VerticalAlignment="Top" />
+                <TextBlock HorizontalAlignment="Left" Margin="0,40,0,0" Name="lblUsername" Text="Username:" VerticalAlignment="Top" />
+            </Grid>
+            <Grid>
+                <TextBlock HorizontalAlignment="Left" Margin="2,0,0,0" Name="txtAddress" Text="Server address" VerticalAlignment="Top" />
+                <TextBlock HorizontalAlignment="Left" Margin="2,20,0,0" Name="txtType" Text="FTP, FTPS or WebDAV" VerticalAlignment="Top" />
+                <TextBlock HorizontalAlignment="Left" Margin="2,40,0,0" Name="txtUsername" Text="Password not shown" VerticalAlignment="Top" />
+            </Grid>
+        </StackPanel>
+    </Grid>
+</UserControl>

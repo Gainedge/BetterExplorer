@@ -110,6 +110,8 @@ BExplorer/BetterExplorer/BEH64.dll
 BExplorer/BetterExplorer/StartIt.xml
 BExplorer/BetterExplorer/StartIt.exe
 BExplorer/BetterExplorer/FileOperation.exe
+BExplorer/BetterExplorer/RateBar.dll
+BExplorer/BetterExplorer/BetterExplorer.csproj.user
 x64/Debug/BEH.dll
 x64/Debug/BEH.ilk
 x64/Debug/BEH.pdb

@@ -287,9 +287,10 @@
                         <Ribbon:Button x:Name="btnNewWindow"
                                        Click="Button_Click_5"
                                        Content="New Window"
+                                       Ribbon:KeyTip.Keys="N"
                                        Header="{StaticResource btnNewWindowCP}"
                                        Icon="Images\new_window.png" />
-                        <Ribbon:BackstageTabItem Header="{StaticResource btiInformationCP}" Visibility="Visible">
+                        <Ribbon:BackstageTabItem Header="{StaticResource btiInformationCP}" Ribbon:KeyTip.Keys="I"  Visibility="Visible">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="2*" />
@@ -310,7 +311,9 @@
                                                IsDefinitive="True"
                                                LargeIcon="Images\updater32.png"
                                                Ribbon:KeyTip.Keys="U"
+                                               Ribbon:KeyTip.AutoPlacement="False"
                                                Ribbon:KeyTip.VerticalAlignment="Bottom"
+                                               Ribbon:KeyTip.HorizontalAlignment="Center"
                                                Style="{DynamicResource ButtonBackstageStyle}">
                                     <Ribbon:Button.ToolTip>
                                         <Ribbon:ScreenTip Title="{StaticResource btnUpdateCheckHCP}"
@@ -342,7 +345,9 @@
                                                IsDefinitive="True"
                                                LargeIcon="Images\webconnect_32.png"
                                                Ribbon:KeyTip.Keys="W"
+                                               Ribbon:KeyTip.AutoPlacement="False"
                                                Ribbon:KeyTip.VerticalAlignment="Bottom"
+                                               Ribbon:KeyTip.HorizontalAlignment="Center"
                                                Style="{DynamicResource ButtonBackstageStyle}" />
                                 <Label Margin="105,140,10,0"
                                        HorizontalAlignment="Left"
@@ -365,8 +370,10 @@
                                                Icon="Images\bugtrac_16.png"
                                                IsDefinitive="True"
                                                LargeIcon="Images\bugtrac_32.png"
-                                               Ribbon:KeyTip.Keys="RP"
+                                               Ribbon:KeyTip.Keys="R"
+                                               Ribbon:KeyTip.AutoPlacement="False"
                                                Ribbon:KeyTip.VerticalAlignment="Bottom"
+                                               Ribbon:KeyTip.HorizontalAlignment="Center"
                                                Style="{DynamicResource ButtonBackstageStyle}" />
                                 <Label Margin="105,235,10,0"
                                        HorizontalAlignment="Left"
@@ -476,7 +483,7 @@
                                          IsSelected="True"
                                          Ribbon:KeyTip.Keys="S">
                                     <StackPanel x:Name="ShellStack"
-                                                Margin="20,15,0,0"
+                                                Margin="20,5,0,0"
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Top"
                                                 Focusable="True"
@@ -558,7 +565,7 @@
                                             </Ribbon:CheckBox>
                                             <Label Name="paddinglbl8" Content="         "/>
                                         -->
-                                        <Ribbon:CheckBox Name="chkIsCFO" Header="Use custom file operations dialog" Ribbon:KeyTip.Keys="CFO" Click="chkIsCFO_Click">
+                                        <Ribbon:CheckBox Name="chkIsCFO" Header="Use custom file operations dialog" Ribbon:KeyTip.Keys="C" Click="chkIsCFO_Click">
                                           <Ribbon:CheckBox.ToolTip>
                                             <Ribbon:ScreenTip
                                                                 Title="Custom file operations dialog"
@@ -618,7 +625,7 @@
                                 <TabItem Header="{StaticResource tabLanguageCP}"
                                          Ribbon:KeyTip.Keys="L"
                                          Visibility="Visible">
-                                    <StackPanel Margin="20,15,0,0" Orientation="Vertical">
+                                    <StackPanel Margin="20,5,0,0" Orientation="Vertical">
                                         <Ribbon:SeparatorTabItem Header="{StaticResource sepLanguageCP}" />
                                         <Label Content="{StaticResource lblLanguageCP}" />
                                         <Label Content="Depending on the language, not all commands have been translated." Visibility="Collapsed" />
@@ -813,7 +820,7 @@
                                 <TabItem HorizontalContentAlignment="Left"
                                          Header="{StaticResource tabUpdateCP}"
                                          Ribbon:KeyTip.Keys="U">
-                                    <Grid Margin="20,15,0,0">
+                                    <Grid Margin="20,5,0,0">
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top"
                                                                  Header="{StaticResource txtAutoUpdate}"
                                                                  Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
@@ -903,7 +910,7 @@
                                 <TabItem HorizontalContentAlignment="Left"
                                          Header="{StaticResource tabRibbonCP}"
                                          Ribbon:KeyTip.Keys="R">
-                                    <Grid Margin="20,15,0,0">
+                                    <Grid Margin="20,5,0,0">
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top"
                                                                  Header="{StaticResource sepRibbonColorCP}"
                                                                  Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
@@ -998,7 +1005,7 @@
                                 <TabItem HorizontalContentAlignment="Left"
                                          Header="{StaticResource tabPanesItemsCP}"
                                          Ribbon:KeyTip.Keys="P">
-                                    <Grid Margin="20,15,0,0">
+                                    <Grid Margin="20,5,0,0">
                                         <StackPanel HorizontalAlignment="Stretch"
                                                     VerticalAlignment="Stretch"
                                                     Orientation="Vertical">
@@ -1054,21 +1061,23 @@
                                 <TabItem HorizontalContentAlignment="Left"
                                          Header="{StaticResource tabTabsCP}"
                                          Ribbon:KeyTip.Keys="T">
-                                    <Grid Margin="20,15,0,0">
+                                    <Grid Margin="20,5,0,0">
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top"
                                                                  Header="{StaticResource sepAlignmentCP}"
                                                                  Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
                                         <StackPanel Margin="0,35,0,0" Orientation="Vertical">
                                             <TextBlock Text="{StaticResource lblShowTabBarCP}" />
-                                            <RadioButton x:Name="TabbaTop"
+                                            <Ribbon:RadioButton x:Name="TabbaTop"
                                                          Margin="5,5,0,0"
                                                          Checked="RadioButton_Checked"
-                                                         Content="{StaticResource chkTabBarTopCP}"
+                                                         Header="{StaticResource chkTabBarTopCP}"
+                                                         Ribbon:KeyTip.Keys="TT"
                                                          GroupName="tba" />
-                                            <RadioButton x:Name="TabbaBottom"
+                                            <Ribbon:RadioButton x:Name="TabbaBottom"
                                                          Margin="5,5,0,0"
                                                          Checked="RadioButton_Checked_1"
-                                                         Content="{StaticResource chkTabBarBottomCP}"
+                                                         Header="{StaticResource chkTabBarBottomCP}"
+                                                         Ribbon:KeyTip.Keys="TB"
                                                          GroupName="tba" />
                                         </StackPanel>
 
@@ -1126,6 +1135,56 @@
                                         <Ribbon:CheckBox x:Name="chkIsLastTabCloseApp" Click="chkIsLastTabCloseApp_Click"  Header="Closing last Tab closes Application" Margin="7,275,0,0" VerticalAlignment="Top" Height="22"/>
                                     </Grid>
                                 </TabItem>
+                                <Ribbon:SeparatorTabItem Header="Accounts" />
+                                <TabItem Header="Online Storage"
+                                         IsSelected="True"
+                                         Ribbon:KeyTip.Keys="O">
+                                    <Grid Margin="20,5,0,0">
+                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
+                                                                 Header="Connected Online Storage Accounts"
+                                                                 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <Ribbon:DropDownButton x:Name="btnAddStorageService"
+                                               Height="88"
+                                               Margin="0,35,0,0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Top"
+                                               Header="Add Account"
+                                               Icon="Images\add16.png"
+                                               LargeIcon="Images\add32.png"
+                                               Ribbon:KeyTip.Keys="A"
+                                               Ribbon:KeyTip.AutoPlacement="False"
+                                               Ribbon:KeyTip.VerticalAlignment="Bottom"
+                                               Ribbon:KeyTip.HorizontalAlignment="Center"
+                                               Style="{DynamicResource DropDownButtonBackstageStyle}">
+                                            <MenuItem Header="Dropbox" />
+                                            <MenuItem Header="Box.net" />
+                                        </Ribbon:DropDownButton>
+                                    </Grid>
+                                </TabItem>
+                                <TabItem Header="FTP / WebDAV"
+                                         IsSelected="True"
+                                         Ribbon:KeyTip.Keys="F">
+                                    <Grid Margin="20,5,0,0">
+                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
+                                                                 Header="FTP / WebDAV Servers"
+                                                                 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <Ribbon:Button x:Name="btnAddWebServer"
+                                               Height="88"
+                                               Margin="0,35,0,0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Top"
+                                               Header="Add Server"
+                                               Icon="Images\add16.png"
+                                               IsDefinitive="True"
+                                               LargeIcon="Images\add32.png"
+                                               Ribbon:KeyTip.Keys="A"
+                                               Ribbon:KeyTip.AutoPlacement="False"
+                                               Ribbon:KeyTip.VerticalAlignment="Bottom"
+                                               Ribbon:KeyTip.HorizontalAlignment="Center"
+                                               Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddWebServer_Click">
+                                        </Ribbon:Button>
+                                    </Grid>
+                                </TabItem>
                             </TabControl>
                         </Ribbon:BackstageTabItem>
                         <Ribbon:Button x:Name="Exitbutton"
@@ -1144,7 +1203,7 @@
                                                  BorderBrush="Magenta"
                                                  Header="{StaticResource ctbLibrariesCP}"
                                                  Visibility="Collapsed" 
-                                                 MinWidth="120"/>
+                                                 MinWidth="100"/>
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgDrive"
                                                  Background="LightBlue"
                                                  BorderBrush="Blue"
