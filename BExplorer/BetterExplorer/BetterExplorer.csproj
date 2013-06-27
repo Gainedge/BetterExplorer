@@ -226,6 +226,7 @@
     <Compile Include="Networks\FileSystem\Directory.cs" />
     <Compile Include="Networks\FileSystem\File.cs" />
     <Compile Include="Networks\FileSystem\FileSystemObject.cs" />
+    <Compile Include="Networks\FileSystem\FTPServerFileSystem.cs" />
     <Compile Include="Networks\FileSystem\NetworkFileSystem.cs" />
     <Compile Include="Networks\FileSystem\SymbolicLink.cs" />
     <Compile Include="Networks\FTPServer.cs" />
@@ -626,6 +627,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\AlexFTPS\FTPSClient.csproj">
+      <Project>{8271707d-0c08-460d-a332-6fdb8d0bb6d1}</Project>
+      <Name>FTPSClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ConsoleControl\ConsoleControl.csproj">
       <Project>{737CC7F2-EC7C-4800-B7EB-72637E892C42}</Project>
       <Name>ConsoleControl</Name>

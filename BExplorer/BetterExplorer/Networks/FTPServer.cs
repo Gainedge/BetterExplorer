@@ -11,11 +11,69 @@ namespace BetterExplorer.Networks
     public class FTPServer : NetworkItem
     {
 
-        // TODO: Add FTPSClient code for connecting to FTP server and handing to file system manager
 
-        public FTPServer()
+        /// <summary>
+        /// Creates a new instance of an FTP server.
+        /// </summary>
+        /// <param name="displayname">The name to display for this FTP server.</param>
+        /// <param name="hostname">The address of this server.</param>
+        /// <param name="port">The port to use for this FTP server. (usually 21)</param>
+        /// <param name="username">The username to connect to this server with.</param>
+        /// <param name="password">The password to connect to this server with.</param>
+        /// <param name="anonlogin">If true, connect to this server anonymously (without a username and password).</param>
+        /// <param name="passivemode">If true, connect in passive mode. If false, connect in active mode.</param>
+        public FTPServer(string displayname, string hostname, int port, string username, string password, bool anonlogin, bool passivemode)
         {
-
+            _displayname = displayname;
+            _server = hostname;
+            _port = port;
+            _username = username;
+            _password = password;
+            _service = AccountData.AccountService.FTP;
+            _type = AccountData.AccountType.Server;
+            _anon = anonlogin;
+            _passive = passivemode;
         }
+
+        private bool _anon = false;
+        private bool _passive = false;
+
+        public bool AnonymousLogin
+        {
+            get
+            {
+                return _anon;
+            }
+        }
+
+        public bool PassiveMode
+        {
+            get
+            {
+                return _passive;
+            }
+        }
+
+        public override FileSystem.NetworkFileSystem CreateConnection()
+        {
+            FTPSClient ftps = new FTPSClient();
+            EDataConnectionMode edc;
+            if (_passive == true)
+            {
+                edc = EDataConnectionMode.Passive;
+            }
+            else
+            {
+                edc = EDataConnectionMode.Active;
+            }
+
+            ftps.Connect(_server, _port, new System.Net.NetworkCredential(_username, _password), ESSLSupportMode.ClearText, null, null, 0, 0, 0, 120, true, edc);
+
+            FileSystem.FTPServerFileSystem fs = new FileSystem.FTPServerFileSystem();
+            fs.FTPSClient = ftps;
+
+            return fs;
+        }
+
     }
 }

@@ -12,7 +12,7 @@ namespace BetterExplorer.Networks
     /// <summary>
     /// This class manages all account-related information for Better Explorer.
     /// </summary>
-    class AccountData
+    public class AccountData
     {
         // this class will be used to manage the account information file, including anything security-related,
         // and will be a point of communication between the main UI and this information

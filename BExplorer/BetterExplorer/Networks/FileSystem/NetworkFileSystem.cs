@@ -17,49 +17,54 @@ namespace BetterExplorer.Networks.FileSystem
 
         // TODO: Add child classes for FTP and WebDAV
 
-        public bool UploadFile(string localdir, string localname, Directory remotedir, string remotename)
+        public virtual bool UploadFile(string localdir, string localname, Directory remotedir, string remotename)
         {
             return false;
         }
 
-        public bool DownloadFile(File remotefile, string localdir, string localname)
+        public virtual bool DownloadFile(File remotefile, string localdir, string localname)
         {
             return false;
         }
 
-        public bool RenameFile(File file, string newname)
+        public virtual bool RenameFile(File file, string newname)
         {
             return false;
         }
 
-        public bool DeleteFile(File file)
+        public virtual bool DeleteFile(File file)
         {
             return false;
         }
 
-        public bool CreateDirectory(Directory dir)
+        public virtual bool CreateDirectory(Directory dir)
         {
             return false;
         }
 
-        public bool RenameDirectory(Directory dir, string name)
+        public virtual bool RenameDirectory(Directory dir, string name)
         {
             return false;
         }
 
-        public bool DeleteDirectory(Directory dir)
+        public virtual bool DeleteDirectory(Directory dir)
         {
             return false;
         }
 
-        public Directory GetDirectory(string path)
+        public virtual Directory GetDirectory(string path)
         {
             return null;
         }
 
-        public List<FileSystemObject> GetChildren(Directory dir)
+        public virtual List<FileSystemObject> GetChildren(Directory dir)
         {
             return null;
+        }
+
+        public virtual void CloseConnection()
+        {
+
         }
 
     }

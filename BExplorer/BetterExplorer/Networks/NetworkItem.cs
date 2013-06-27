@@ -15,6 +15,7 @@ namespace BetterExplorer.Networks
         protected string _password = "";
         protected string _appkey = "";
         protected string _appsecret = "";
+        protected string _server = "";
         protected int _port = -1;
 
         protected FileSystem.NetworkFileSystem _fs;
@@ -75,6 +76,14 @@ namespace BetterExplorer.Networks
             }
         }
 
+        public string Server
+        {
+            get
+            {
+                return _server;
+            }
+        }
+
         public int Port
         {
             get
@@ -83,12 +92,9 @@ namespace BetterExplorer.Networks
             }
         }
 
-        public FileSystem.NetworkFileSystem FileSystem
+        public virtual FileSystem.NetworkFileSystem CreateConnection()
         {
-            get
-            {
-                return _fs;
-            }
+            return null;
         }
 
     }

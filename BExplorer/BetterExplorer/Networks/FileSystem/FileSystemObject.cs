@@ -16,9 +16,6 @@ namespace BetterExplorer.Networks.FileSystem
         protected DateTime _timeCreated;
         protected FileSystemObjectType _type;
 
-        // Needed to connect the file system objects to the file system manager.
-        public NetworkFileSystem FileSystem;
-
         /// <summary>
         /// The path of this file system object.
         /// </summary>
