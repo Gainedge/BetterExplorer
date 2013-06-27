@@ -39,6 +39,40 @@ namespace BetterExplorer.Networks
             this.Close();
         }
 
+        private void expSecurity_Expanded(object sender, RoutedEventArgs e)
+        {
+            this.Height = 600;
+        }
+
+        private void expSecurity_Collapsed(object sender, RoutedEventArgs e)
+        {
+            this.Height = 500;
+        }
+
+        private void ServerType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            switch (ServerType.SelectedIndex)
+            {
+                case 0:
+                    txtPort.Text = "21";
+                    expSecurity.IsExpanded = false;
+                    expSecurity.IsEnabled = false;
+                    break;
+                case 1:
+                    txtPort.Text = "990";
+                    expSecurity.IsEnabled = true;
+                    break;
+                case 2:
+                    txtPort.Text = "";
+                    expSecurity.IsExpanded = false;
+                    expSecurity.IsEnabled = false;
+                    break;
+                default:
+                    //ServerType.SelectedIndex = 0;
+                    break;
+            }
+        }
+
 
     }
 }

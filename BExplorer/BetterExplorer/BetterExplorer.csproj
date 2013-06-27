@@ -223,6 +223,13 @@
       <DependentUpon>AddServer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Networks\AccountData.cs" />
+    <Compile Include="Networks\FileSystem\Directory.cs" />
+    <Compile Include="Networks\FileSystem\File.cs" />
+    <Compile Include="Networks\FileSystem\FileSystemObject.cs" />
+    <Compile Include="Networks\FileSystem\NetworkFileSystem.cs" />
+    <Compile Include="Networks\FileSystem\SymbolicLink.cs" />
+    <Compile Include="Networks\FTPServer.cs" />
+    <Compile Include="Networks\NetworkItem.cs" />
     <Compile Include="Networks\ServerItem.xaml.cs">
       <DependentUpon>ServerItem.xaml</DependentUpon>
     </Compile>

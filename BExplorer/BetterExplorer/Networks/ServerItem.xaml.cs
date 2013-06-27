@@ -75,5 +75,34 @@ namespace BetterExplorer.Networks
                 _pass = value;
             }
         }
+
+        private bool _useanon;
+
+        public bool UseAnonymousLogin
+        {
+            get
+            {
+                return _useanon;
+            }
+            set
+            {
+                _useanon = value;
+            }
+        }
+
+        private bool _passive;
+
+        public bool UsePassiveMode
+        {
+            get
+            {
+                return _passive;
+            }
+            set
+            {
+                _passive = value;
+            }
+        }
+
     }
 }
