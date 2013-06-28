@@ -31,7 +31,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       this.lblFromfolder.Text = SourceDestination.GetDisplayName(DisplayNameType.Default);
       this.lblTofolder.Text = Destination.GetDisplayName(DisplayNameType.Default);
       this.DataContext = this;
-      
     }
 
     private void btnContinue_Click(object sender, RoutedEventArgs e) {

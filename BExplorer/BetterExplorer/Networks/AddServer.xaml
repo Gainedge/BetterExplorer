@@ -22,7 +22,7 @@
             <TextBlock Text="WebDAV" />
         </ComboBox>
         <TextBlock x:Name="lblPort" HorizontalAlignment="Left" Margin="20,190,0,0" TextWrapping="Wrap" Text="Port" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtPort" HorizontalAlignment="Left" Height="23" Margin="80,187,0,0" Text="TextBox" VerticalAlignment="Top" Width="300"/>
+        <TextBox x:Name="txtPort" HorizontalAlignment="Left" Height="23" Margin="80,187,0,0" Text="Port" VerticalAlignment="Top" Width="300"/>
         <TextBlock HorizontalAlignment="Left" Margin="85,213,0,0" TextWrapping="Wrap" Text="21" VerticalAlignment="Top" FontStyle="Italic" Foreground="Gray"/>
         <TextBlock x:Name="lblUsername"  HorizontalAlignment="Left" Margin="20,240,0,0" TextWrapping="Wrap" Text="Username" VerticalAlignment="Top"/>
         <TextBox x:Name="txtUsername" HorizontalAlignment="Left" Height="23" Margin="80,237,0,0" Text="TextBox" VerticalAlignment="Top" Width="300"/>

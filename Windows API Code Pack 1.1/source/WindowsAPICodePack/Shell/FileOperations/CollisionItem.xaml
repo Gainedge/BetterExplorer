@@ -20,22 +20,22 @@
             </Grid.RowDefinitions>
 
             <TextBlock Text="{Binding Path=ItemName}" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="22,0,0,0" Grid.Column="1" Grid.ColumnSpan="3"/>
-            <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+            <VirtualizingStackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
                 <CheckBox x:Name="chkFirst" Margin="5" IsChecked="{Binding Path=IsChecked}"/>
                 <Image x:Name="imgFirst" Source="{Binding Path=ItemImage}" Margin="5" Width="64" Height="64"/>
-                <StackPanel Orientation="Vertical">
+                <VirtualizingStackPanel Orientation="Vertical">
                     <TextBlock Text="{Binding Path=ItemSize}"/>
                     <TextBlock Text="{Binding Path=ItemDmodif}"/>
-                </StackPanel>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1">
+                </VirtualizingStackPanel>
+            </VirtualizingStackPanel>
+            <VirtualizingStackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1">
                 <CheckBox x:Name="chkSecond" Margin="5" IsChecked="{Binding Path=IsCheckedC}"/>
                 <Image x:Name="imgSecond" Source="{Binding Path=ItemImageC}" Margin="5" Width="64" Height="64"/>
-                <StackPanel Orientation="Vertical">
+                <VirtualizingStackPanel Orientation="Vertical">
                     <TextBlock Text="{Binding Path=ItemSizeC}"/>
                     <TextBlock Text="{Binding Path=ItemDmodifC}"/>
-                </StackPanel>
-            </StackPanel>
+                </VirtualizingStackPanel>
+            </VirtualizingStackPanel>
             
         </Grid>
     </Border>

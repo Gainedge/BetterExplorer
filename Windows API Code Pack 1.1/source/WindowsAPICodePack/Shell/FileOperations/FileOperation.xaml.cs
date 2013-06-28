@@ -884,7 +884,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                           }));
                     var dt = DateTime.Now;
                     var secs = dt.Subtract(LastMeasuredTime).Seconds;
-                    if (secs >= 2)
+                    if (secs > 0)
                     {
                         var diff = itemsProcessed - lastItemsProcessed;
                         var speed = diff / secs;
@@ -894,7 +894,9 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                         Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                         (Action)(() =>
                         {
-                            lblSpeed.Text = diff + " items/s";
+                          prOverallProgress.Rate = diff == prOverallProgress.Rate ? diff + 0.0001 : diff;
+                          lblSpeed.Text = diff + " items/s";
+                          prOverallProgress.Caption = String.Format("Speed: {0} items/s", diff);
                         }));
                     }
                 }
@@ -937,7 +939,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                   }));
                 var dt = DateTime.Now;
                 var secs = dt.Subtract(LastMeasuredTime).Seconds;
-                if (secs >= 2)
+                if (secs > 0)
                 {
                     var diff = itemsProcessed - lastItemsProcessed;
                     var speed = diff / secs;
@@ -947,7 +949,9 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                     Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                     (Action)(() =>
                     {
-                        lblSpeed.Text = diff + " items/s";
+                      prOverallProgress.Rate = diff == prOverallProgress.Rate ? diff + 0.0001 : diff;
+                      lblSpeed.Text = diff + " items/s";
+                      prOverallProgress.Caption = String.Format("Speed: {0} items/s", diff);
                     }));
                 }
             }
@@ -1017,10 +1021,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             buffer[1] = new byte[size];
 
             Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                            (Action)(() =>
-                            {
-                                lblFileName.Text = System.IO.Path.GetFileNameWithoutExtension(src);
-                            }));
+            (Action)(() =>
+            {
+                lblFileName.Text = System.IO.Path.GetFileNameWithoutExtension(src);
+            }));
 
             using (var r = new System.IO.FileStream(src, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite, size * 2, System.IO.FileOptions.SequentialScan | System.IO.FileOptions.Asynchronous))
             {

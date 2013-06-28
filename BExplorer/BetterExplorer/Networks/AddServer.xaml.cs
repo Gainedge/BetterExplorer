@@ -23,6 +23,26 @@ namespace BetterExplorer.Networks
         public AddServer()
         {
             InitializeComponent();
+            switch (ServerType.SelectedIndex)
+            {
+              case 0:
+                txtPort.Text = "21";
+                expSecurity.IsExpanded = false;
+                expSecurity.IsEnabled = false;
+                break;
+              case 1:
+                txtPort.Text = "990";
+                expSecurity.IsEnabled = true;
+                break;
+              case 2:
+                txtPort.Text = "";
+                expSecurity.IsExpanded = false;
+                expSecurity.IsEnabled = false;
+                break;
+              default:
+                //ServerType.SelectedIndex = 0;
+                break;
+            }
         }
 
         public bool yep = false;
@@ -51,26 +71,33 @@ namespace BetterExplorer.Networks
 
         private void ServerType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+          try
+          {
             switch (ServerType.SelectedIndex)
             {
-                case 0:
-                    txtPort.Text = "21";
-                    expSecurity.IsExpanded = false;
-                    expSecurity.IsEnabled = false;
-                    break;
-                case 1:
-                    txtPort.Text = "990";
-                    expSecurity.IsEnabled = true;
-                    break;
-                case 2:
-                    txtPort.Text = "";
-                    expSecurity.IsExpanded = false;
-                    expSecurity.IsEnabled = false;
-                    break;
-                default:
-                    //ServerType.SelectedIndex = 0;
-                    break;
+              case 0:
+                txtPort.Text = "21";
+                expSecurity.IsExpanded = false;
+                expSecurity.IsEnabled = false;
+                break;
+              case 1:
+                txtPort.Text = "990";
+                expSecurity.IsEnabled = true;
+                break;
+              case 2:
+                txtPort.Text = "";
+                expSecurity.IsExpanded = false;
+                expSecurity.IsEnabled = false;
+                break;
+              default:
+                //ServerType.SelectedIndex = 0;
+                break;
             }
+          }
+          catch (Exception)
+          {
+
+          }
         }
 
 

@@ -36,12 +36,17 @@
                 </StackPanel>
             </Grid>
         </Border>
-        <StackPanel x:Name="pnlContainer" Orientation="Vertical" Grid.Row="3" CanVerticallyScroll="False">
+        <VirtualizingStackPanel x:Name="pnlContainer" Orientation="Vertical" Grid.Row="3" CanVerticallyScroll="False">
             <ScrollViewer x:Name="svScroll" Height="Auto" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" MaxHeight="300" SizeChanged="svScroll_SizeChanged">
                 <ItemsControl x:Name="icItems" ItemsSource="{Binding Path=Contents}" SizeChanged="icItems_SizeChanged">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
                 </ItemsControl>
             </ScrollViewer>
-        </StackPanel>
+        </VirtualizingStackPanel>
         <Button x:Name="btnContinue" Grid.Row="4" HorizontalAlignment="Right" Content="Continue" Padding="10,0,10,0" Margin="10,5,90,5" Width="75" Click="btnContinue_Click"/>
         <Button x:Name="btnCancel" Grid.Row="4" HorizontalAlignment="Right" Content="Cancel" Padding="10,0,10,0" Margin="10,5,10,5" Width="75" Click="btnCancel_Click"/>
     </Grid>
