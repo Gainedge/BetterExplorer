@@ -40,6 +40,7 @@ using wyDay.Controls;
 using System.Security.Principal;
 using Shell32;
 using Microsoft.WindowsAPICodePack.Taskbar;
+using BetterExplorer.Networks;
 
 namespace BetterExplorer
 {
@@ -117,6 +118,7 @@ namespace BetterExplorer
     public List<string> QatItems = new List<string>();
     UIElement curitem = null;
     Boolean IsGlassOnRibonMinimized { get; set; }
+    NetworkAccountManager benam = new NetworkAccountManager();
 		#endregion
 
 		#region Properties

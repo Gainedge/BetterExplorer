@@ -29,8 +29,8 @@ namespace BetterExplorer.Networks
             _port = port;
             _username = username;
             _password = password;
-            _service = AccountData.AccountService.FTP;
-            _type = AccountData.AccountType.Server;
+            _service = NetworkAccountManager.AccountService.FTP;
+            _type = NetworkAccountManager.AccountType.Server;
             _anon = anonlogin;
             _passive = passivemode;
         }

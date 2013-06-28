@@ -12,13 +12,12 @@ namespace BetterExplorer.Networks
     /// <summary>
     /// This class manages all account-related information for Better Explorer.
     /// </summary>
-    public class AccountData
+    public class NetworkAccountManager : List<NetworkItem>
     {
         // this class will be used to manage the account information file, including anything security-related,
         // and will be a point of communication between the main UI and this information
 
         // TODO: Add code for storing and retrieving from file
-        // TODO: Add classes for servers and online ports, and a list here to list them all
         // TODO: Decide upon an encryption service (DES, Rjindael, etc.) and add code for
         //       "decrypt file to memory" and "encrypt memory to file".
 

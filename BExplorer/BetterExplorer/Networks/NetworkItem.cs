@@ -8,8 +8,8 @@ namespace BetterExplorer.Networks
     public abstract class NetworkItem
     {
         protected string _displayname;
-        protected AccountData.AccountService _service;
-        protected AccountData.AccountType _type;
+        protected NetworkAccountManager.AccountService _service;
+        protected NetworkAccountManager.AccountType _type;
 
         protected string _username = "";
         protected string _password = "";
@@ -28,7 +28,7 @@ namespace BetterExplorer.Networks
             }
         }
 
-        public AccountData.AccountService AccountService
+        public NetworkAccountManager.AccountService AccountService
         {
             get
             {
@@ -36,7 +36,7 @@ namespace BetterExplorer.Networks
             }
         }
 
-        public AccountData.AccountType Type
+        public NetworkAccountManager.AccountType Type
         {
             get
             {
