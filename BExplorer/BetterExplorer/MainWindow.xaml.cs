@@ -61,12 +61,12 @@ namespace BetterExplorer
 		bool IsNavigationPaneEnabled;
 		bool isCheckModeEnabled;
 		bool IsExtendedFileOpEnabled;
-        bool IsCloseLastTabCloseApp;
+    bool IsCloseLastTabCloseApp;
 		public bool IsrestoreTabs;
 		bool IsUpdateCheck;
-	    bool IsUpdateCheckStartup;
-        bool IsConsoleShown;
-	    int UpdateCheckType;
+	  bool IsUpdateCheckStartup;
+    bool IsConsoleShown;
+	  int UpdateCheckType;
 		public bool isOnLoad;
 		System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
 		public bool IsCalledFromLoading;
@@ -111,11 +111,12 @@ namespace BetterExplorer
 		System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
 		DateTime LastUpdateCheck;
 		Int32 UpdateCheckInterval;
-        Double CommandPromptWinHeight;
-        bool IsViewSelection = false;
-        private ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
-        public List<string> QatItems = new List<string>();
-        UIElement curitem = null;
+    Double CommandPromptWinHeight;
+    bool IsViewSelection = false;
+    private ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
+    public List<string> QatItems = new List<string>();
+    UIElement curitem = null;
+    Boolean IsGlassOnRibonMinimized { get; set; }
 		#endregion
 
 		#region Properties
@@ -409,12 +410,15 @@ namespace BetterExplorer
 		{
 			if (TheRibbon.IsMinimized)
 			{
-				System.Windows.Point p =
-				ShellVView.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-				this.GlassBorderThickness = new Thickness(8, p.Y - 2, 8, 8);
+        if (this.IsGlassOnRibonMinimized)
+        {
+          System.Windows.Point p =
+          ShellVView.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+          this.GlassBorderThickness = new Thickness(8, this.WindowState == System.Windows.WindowState.Maximized ? p.Y : p.Y - 2, 8, 8); ;
+        }
 				try
 				{
-					//this.SetBlur(false);
+					this.SetBlur(false);
 				}
 				catch (Exception)
 				{
@@ -424,11 +428,11 @@ namespace BetterExplorer
 			}
 			else
 			{
-				System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-				this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
+        System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+        this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight + 2, 8, 8);
 				try
 				{
-					//this.SetBlur(true);
+					this.SetBlur(true);
 				}
 				catch (Exception)
 				{
@@ -507,24 +511,28 @@ namespace BetterExplorer
 					break;
 			}
 
+      int isGlassOnRibonMinimized = (int)rks.GetValue(@"RibbonMinimizedGlass", 1);
+      this.IsGlassOnRibonMinimized = isGlassOnRibonMinimized == 1;
+      chkRibbonMinimizedGlass.IsChecked = this.IsGlassOnRibonMinimized;
+
 			TheRibbon.IsMinimized = Convert.ToBoolean(rks.GetValue(@"IsRibonMinimized", false));
       
-            //CommandPrompt window size
-            this.CommandPromptWinHeight = Convert.ToDouble(rks.GetValue(@"CmdWinHeight", 100));
-            rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
+      //CommandPrompt window size
+      this.CommandPromptWinHeight = Convert.ToDouble(rks.GetValue(@"CmdWinHeight", 100));
+      rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
 
-            if ((int)rks.GetValue(@"IsConsoleShown", 0) == 1) {
-            rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
-            spCommandPrompt.Height = GridLength.Auto;
-            if (!ctrlConsole.IsProcessRunning) {
-                ctrlConsole.StartProcess("cmd.exe", null);
-                ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
-                ctrlConsole.ClearOutput();
-            }
-            } else {
-            rCommandPrompt.Height = new GridLength(0);
-            spCommandPrompt.Height = new GridLength(0);
-            }
+      if ((int)rks.GetValue(@"IsConsoleShown", 0) == 1) {
+        rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
+        spCommandPrompt.Height = GridLength.Auto;
+        if (!ctrlConsole.IsProcessRunning) {
+            ctrlConsole.StartProcess("cmd.exe", null);
+            ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+            ctrlConsole.ClearOutput();
+        }
+      } else {
+        rCommandPrompt.Height = new GridLength(0);
+        spCommandPrompt.Height = new GridLength(0);
+      }
 
 			rks.Close();
 		}
@@ -3857,6 +3865,8 @@ namespace BetterExplorer
 										  break;
 					
 									  }
+
+                    
 
 									  int HFlyoutEnabled = (int)rks.GetValue(@"HFlyoutEnabled", 0);
 
@@ -9187,6 +9197,39 @@ namespace BetterExplorer
             {
                 // TODO: Add code for adding server
             }
+        }
+
+        private void chkRibbonMinimizedGlass_Click(object sender, RoutedEventArgs e)
+        {
+          if (chkRibbonMinimizedGlass.IsChecked.Value)
+          {
+            this.IsGlassOnRibonMinimized = true;
+            RegistryKey rk = Registry.CurrentUser;
+            RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+            rks.SetValue(@"RibbonMinimizedGlass", 1, RegistryValueKind.DWord);
+            rks.Close();
+            rk.Close();
+            if (TheRibbon.IsMinimized)
+            {
+              System.Windows.Point p =
+                  ShellVView.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+              this.GlassBorderThickness = new Thickness(8, p.Y, 8, 8);
+            }
+          }
+          else
+          {
+            this.IsGlassOnRibonMinimized = false;
+            RegistryKey rk = Registry.CurrentUser;
+            RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+            rks.SetValue(@"RibbonMinimizedGlass", 0, RegistryValueKind.DWord);
+            rks.Close();
+            rk.Close();
+            if (TheRibbon.IsMinimized)
+            {
+              System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+              this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
+            }
+          }
         }
  
 

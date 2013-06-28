@@ -215,7 +215,7 @@
                     </Trigger>
                 </ControlTemplate.Triggers>
             </ControlTemplate>
-		</ResourceDictionary>
+		    </ResourceDictionary>
     </Ribbon:RibbonWindow.Resources>
 
     <Grid x:Name="grid1">
@@ -999,6 +999,19 @@
                                                              Header="{StaticResource ctbLibrariesCP}"
                                                              Unchecked="chkLibrary_Unchecked" />
                                         </StackPanel>
+
+                                        <Ribbon:SeparatorTabItem Margin="0,300,0,0"
+                                                                 VerticalAlignment="Top"
+                                                                 Header="Visual Settings"
+                                                                 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                      
+                                      <Ribbon:CheckBox x:Name="chkRibbonMinimizedGlass"
+                                                             Header="Enable glass when ribbon is minimized."
+                                                             Margin="6,330,0,0"
+                                                             HorizontalAlignment="Left"
+                                                             VerticalAlignment="Top" Click="chkRibbonMinimizedGlass_Click"
+                                                             />
+
                                     </Grid>
 
                                 </TabItem>
@@ -3011,6 +3024,7 @@
                     VerticalAlignment="Top"
                     Panel.ZIndex="99"
                     AllowDrop="True"
+                    Padding="0,0,-2,0"
                     Drop="tabControl1_Drop"
                     GotFocus="TheStatusBar_GotFocus"
                     ItemsSource="{Binding itbl}"

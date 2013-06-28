@@ -27,6 +27,7 @@ namespace Fluent
     using System.ComponentModel;
     using System.Linq;
     using Fluent.Internal;
+  using System.Windows.Shapes;
 
     internal static class DpiHelper
     {
@@ -101,6 +102,7 @@ namespace Fluent
 
             return new Size(pt.X, pt.Y);
         }
+
     }
 
     /// <summary>
@@ -1565,5 +1567,25 @@ namespace Fluent
         }
 
         #endregion
+
+        public void SetBlur(bool HideBlur)
+        {
+          Visibility visibility;
+          Visibility visibility1;
+          Visibility visibility2;
+          Rectangle templateChild = base.GetTemplateChild("rectangle") as Rectangle;
+          Rectangle rectangle = base.GetTemplateChild("rectangle1") as Rectangle;
+          Rectangle templateChild1 = base.GetTemplateChild("rectangle2") as Rectangle;
+          base.GetTemplateChild("grid");
+          Rectangle rectangle1 = templateChild;
+          visibility = (HideBlur ? Visibility.Visible : Visibility.Collapsed);
+          rectangle1.Visibility = visibility;
+          Rectangle rectangle2 = templateChild1;
+          visibility1 = (HideBlur ? Visibility.Visible : Visibility.Collapsed);
+          rectangle2.Visibility = visibility1;
+          Rectangle rectangle3 = rectangle;
+          visibility2 = (HideBlur ? Visibility.Visible : Visibility.Collapsed);
+          rectangle3.Visibility = visibility2;
+        }
     }
 }

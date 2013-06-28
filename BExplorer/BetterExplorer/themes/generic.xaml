@@ -139,7 +139,7 @@
                 <Condition Property="IsSelected" Value="true"/>
                 <Condition Property="TabStripPlacement" Value="Top"/>
               </MultiTrigger.Conditions>
-              <Setter Property="Margin" Value="-2,-2,-2,-1"/>
+              <Setter Property="Margin" Value="0,-2,-2,-1"/>
               <Setter Property="Margin" TargetName="ContentPanel" Value="0,-1,0,1"/>
             </MultiTrigger>
             <MultiTrigger>
@@ -147,7 +147,7 @@
                 <Condition Property="IsSelected" Value="true"/>
                 <Condition Property="TabStripPlacement" Value="Bottom"/>
               </MultiTrigger.Conditions>
-              <Setter Property="Margin" Value="-2,-1,-2,-2"/>
+              <Setter Property="Margin" Value="0,-1,-2,-2"/>
               <Setter Property="Margin" TargetName="ContentPanel" Value="0,1,0,0"/>
             </MultiTrigger>
             <MultiTrigger>
