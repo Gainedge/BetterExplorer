@@ -25,23 +25,32 @@ namespace BetterExplorer.Networks
             InitializeComponent();
             switch (ServerType.SelectedIndex)
             {
-              case 0:
-                txtPort.Text = "21";
-                expSecurity.IsExpanded = false;
-                expSecurity.IsEnabled = false;
-                break;
-              case 1:
-                txtPort.Text = "990";
-                expSecurity.IsEnabled = true;
-                break;
-              case 2:
-                txtPort.Text = "";
-                expSecurity.IsExpanded = false;
-                expSecurity.IsEnabled = false;
-                break;
-              default:
-                //ServerType.SelectedIndex = 0;
-                break;
+                case 0:
+                    txtPort.Text = "21";
+                    txtPort.IsEnabled = true;
+                    expSecurity.IsExpanded = false;
+                    expSecurity.IsEnabled = false;
+                    chkAnonymous.IsEnabled = true;
+                    chkPassive.IsEnabled = true;
+                    break;
+                case 1:
+                    txtPort.Text = "990";
+                    txtPort.IsEnabled = true;
+                    expSecurity.IsEnabled = true;
+                    chkAnonymous.IsEnabled = true;
+                    chkPassive.IsEnabled = true;
+                    break;
+                case 2:
+                    txtPort.Text = "";
+                    txtPort.IsEnabled = false;
+                    expSecurity.IsExpanded = false;
+                    expSecurity.IsEnabled = false;
+                    chkAnonymous.IsEnabled = false;
+                    chkPassive.IsEnabled = false;
+                    break;
+                default:
+                    //ServerType.SelectedIndex = 0;
+                    break;
             }
         }
 
@@ -71,35 +80,101 @@ namespace BetterExplorer.Networks
 
         private void ServerType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-          try
-          {
-            switch (ServerType.SelectedIndex)
+            try
             {
-              case 0:
-                txtPort.Text = "21";
-                expSecurity.IsExpanded = false;
-                expSecurity.IsEnabled = false;
-                break;
-              case 1:
-                txtPort.Text = "990";
-                expSecurity.IsEnabled = true;
-                break;
-              case 2:
-                txtPort.Text = "";
-                expSecurity.IsExpanded = false;
-                expSecurity.IsEnabled = false;
-                break;
-              default:
-                //ServerType.SelectedIndex = 0;
-                break;
+                switch (ServerType.SelectedIndex)
+                {
+                    case 0:
+                        txtPort.Text = "21";
+                        txtPort.IsEnabled = true;
+                        expSecurity.IsExpanded = false;
+                        expSecurity.IsEnabled = false;
+                        chkAnonymous.IsEnabled = true;
+                        chkPassive.IsEnabled = true;
+                        break;
+                    case 1:
+                        txtPort.Text = "990";
+                        txtPort.IsEnabled = true;
+                        expSecurity.IsEnabled = true;
+                        chkAnonymous.IsEnabled = true;
+                        chkPassive.IsEnabled = true;
+                        break;
+                    case 2:
+                        txtPort.Text = "";
+                        txtPort.IsEnabled = false;
+                        expSecurity.IsExpanded = false;
+                        expSecurity.IsEnabled = false;
+                        chkAnonymous.IsEnabled = false;
+                        chkPassive.IsEnabled = false;
+                        break;
+                    default:
+                        //ServerType.SelectedIndex = 0;
+                        break;
+                }
             }
-          }
-          catch (Exception)
-          {
+            catch (Exception)
+            {
 
-          }
+            }
         }
 
+        public NetworkItem GetNetworkItem()
+        {
+            switch (ServerType.SelectedIndex)
+            {
+                case 0:
+                    return GetFTPServer();
+                case 1:
+                    return GetFTPSServer();
+                case 2:
+                    return GetWebDAVServer();
+                default:
+                    return null;
+            }
+        }
+
+        private FTPServer GetFTPServer()
+        {
+            return new FTPServer(txtDisplayName.Text, txtAddress.Text, Convert.ToInt32(txtPort.Text), txtUsername.Text, txtPassword.Text, chkAnonymous.IsChecked.Value, chkPassive.IsChecked.Value);
+        }
+
+        private FTPSServer GetFTPSServer()
+        {
+            return new FTPSServer(txtDisplayName.Text, txtAddress.Text, Convert.ToInt32(txtPort.Text), txtUsername.Text, txtPassword.Text, chkAnonymous.IsChecked.Value, chkPassive.IsChecked.Value, AlexPilotti.FTPS.Client.ESSLSupportMode.DataChannelRequested);
+        }
+
+        private WebDAVserver GetWebDAVServer()
+        {
+            return new WebDAVserver(txtDisplayName.Text, txtAddress.Text, txtUsername.Text, txtPassword.Text);
+        }
+
+        public void ImportNetworkItem(NetworkItem item)
+        {
+            txtDisplayName.Text = item.DisplayName;
+            txtAddress.Text = item.ServerAddress;
+            txtUsername.Text = item.Username;
+            txtPassword.Text = item.Password;
+            chkAnonymous.IsChecked = item.AnonymousLogin;
+
+            switch (item.AccountService)
+            {
+                case AccountService.FTP:
+                    ServerType.SelectedIndex = 0;
+                    chkPassive.IsChecked = (item as FTPServer).PassiveMode;
+                    txtPort.Text = item.Port.ToString();
+                    break;
+                case AccountService.FTPS:
+                    ServerType.SelectedIndex = 1;
+                    chkPassive.IsChecked = (item as FTPSServer).PassiveMode;
+                    txtPort.Text = item.Port.ToString();
+                    break;
+                case AccountService.WebDAV:
+                    ServerType.SelectedIndex = 2;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("item", "This is not a valid type of Network item.");
+            }
+        }
 
     }
 }

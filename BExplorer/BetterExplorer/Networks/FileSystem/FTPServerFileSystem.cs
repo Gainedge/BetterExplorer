@@ -13,6 +13,11 @@ namespace BetterExplorer.Networks.FileSystem
 
         private FTPSClient _client;
 
+        public FTPServerFileSystem(FTPSClient handler)
+        {
+            _client = handler;
+        }
+
         public FTPSClient FTPSClient
         {
             get
@@ -82,18 +87,15 @@ namespace BetterExplorer.Networks.FileSystem
             {
                 if (li.IsDirectory)
                 {
-                    Directory di = new Directory(li.Name, dir.Path + "/" + li.Name, null);
-                    fsi.Add(di);
+                    fsi.Add(new Directory(li.Name, dir.Path + "/" + li.Name, dir, null));
                 }
                 else if (li.IsSymLink)
                 {
-                    SymbolicLink sl = new SymbolicLink(li.Name, dir.Path + "/" + li.Name, li.CreationTime, li.SymLinkTargetPath);
-                    fsi.Add(sl);
+                    fsi.Add(new SymbolicLink(li.Name, dir.Path + "/" + li.Name, dir, li.CreationTime, li.SymLinkTargetPath));
                 }
                 else //file
                 {
-                    File fi = new File(li.Name, dir.Path + "/" + li.Name, li.CreationTime, Convert.ToInt64(li.Size));
-                    fsi.Add(fi);
+                    fsi.Add(new File(li.Name, dir.Path + "/" + li.Name, dir, li.CreationTime, Convert.ToInt64(li.Size)));
                 }
             }
 
@@ -104,7 +106,14 @@ namespace BetterExplorer.Networks.FileSystem
         {
             _client.SetCurrentDirectory(path);
             string gcd = _client.GetCurrentDirectory();
-            return new Directory(gcd.Substring(gcd.LastIndexOf("/")), gcd, null);
+            return new Directory(gcd.Substring(gcd.LastIndexOf("/")), gcd, null, null);
+        }
+
+        public override Directory GetRootDirectory()
+        {
+            _client.SetCurrentDirectory("/");
+            return new Directory("..", "/", null, null);
+            //return base.GetRootDirectory();
         }
 
         public override bool RenameDirectory(Directory dir, string name)

@@ -18,10 +18,11 @@ namespace BetterExplorer.Networks.FileSystem
         /// <param name="path">The path of the symbolic link in the file system.</param>
         /// <param name="creationdate">The date the symbolic link was created.</param>
         /// <param name="target">The target path of the symbolic link.</param>
-        public Directory(string name, string path, DateTime? creationdate)
+        public Directory(string name, string path, Directory parent, DateTime? creationdate)
         {
             _name = name;
             _path = path;
+            _parent = parent;
             _type = FileSystemObjectType.Directory;
             if (creationdate.HasValue)
             {
@@ -29,6 +30,7 @@ namespace BetterExplorer.Networks.FileSystem
             }
         }
 
+        /*
         /// <summary>
         /// Return all file system objects (directories, files, etc.) in a directory.
         /// </summary>
@@ -38,6 +40,7 @@ namespace BetterExplorer.Networks.FileSystem
             // TODO: Add code for building and then making accessible the sub items of a directory.
             return new List<FileSystemObject>();
         }
+         */
 
     }
 }

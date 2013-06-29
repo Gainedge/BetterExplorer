@@ -2,8 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" Height="100" d:DesignWidth="300">
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:Ribbon="clr-namespace:Fluent;assembly=Fluent"
+             mc:Ignorable="d" Height="120" d:DesignWidth="300">
     <Grid>
         <TextBlock HorizontalAlignment="Left" x:Name="txtDisplayName" Margin="10,10,0,0" TextWrapping="Wrap" Text="Server Display Name" VerticalAlignment="Top" FontWeight="Bold"/>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,30,0,0">
@@ -15,8 +16,10 @@
             <Grid>
                 <TextBlock HorizontalAlignment="Left" Margin="2,0,0,0" Name="txtAddress" Text="Server address" VerticalAlignment="Top" />
                 <TextBlock HorizontalAlignment="Left" Margin="2,20,0,0" Name="txtType" Text="FTP, FTPS or WebDAV" VerticalAlignment="Top" />
-                <TextBlock HorizontalAlignment="Left" Margin="2,40,0,0" Name="txtUsername" Text="Password not shown" VerticalAlignment="Top" />
+                <TextBlock HorizontalAlignment="Left" Margin="2,40,0,0" Name="txtUsername" Text="Your name here" VerticalAlignment="Top" />
             </Grid>
         </StackPanel>
+        <Ribbon:Button x:Name="btnEdit" Width="100"  Height="24" BorderBrush="Black" BorderThickness="1" Header="Edit" Icon="..\Images\edit.png" Padding="5,0,5,0" Ribbon:KeyTip.Keys="T" Margin="0,0,115,5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="btnEdit_Click" />
+        <Ribbon:Button x:Name="btnRemove" Width="100"  Height="24" BorderBrush="Black" BorderThickness="1" Header="Remove" Icon="..\Images\delete16.png"  Padding="5,0,5,0" Ribbon:KeyTip.Keys="T" Margin="0,0,10,5" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="btnRemove_Click" />
     </Grid>
 </UserControl>

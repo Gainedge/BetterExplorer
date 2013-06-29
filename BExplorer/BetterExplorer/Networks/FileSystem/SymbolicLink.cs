@@ -19,11 +19,12 @@ namespace BetterExplorer.Networks.FileSystem
         /// <param name="path">The path of the symbolic link in the file system.</param>
         /// <param name="creationdate">The date the symbolic link was created.</param>
         /// <param name="target">The target path of the symbolic link.</param>
-        public SymbolicLink(string name, string path, DateTime? creationdate, string target)
+        public SymbolicLink(string name, string path, Directory parent, DateTime? creationdate, string target)
         {
             _name = name;
             _path = path;
             _target = target;
+            _parent = parent;
             _type = FileSystemObjectType.SymbolicLink;
             if (creationdate.HasValue)
             {

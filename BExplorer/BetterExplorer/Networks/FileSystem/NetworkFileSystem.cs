@@ -11,11 +11,9 @@ namespace BetterExplorer.Networks.FileSystem
     public abstract class NetworkFileSystem
     {
         /// <summary>
-        /// The top directory of the file system.
+        /// The maximum file size (in bytes) that most servers will allow for upload and download size (for those with such limits). A warning should occur if a file size is above this number.
         /// </summary>
-        protected Directory _topdir;
-
-        // TODO: Add child classes for FTP and WebDAV
+        public const int MaxSafeFileSize = 524288000;
 
         public virtual bool UploadFile(string localdir, string localname, Directory remotedir, string remotename)
         {
@@ -53,6 +51,11 @@ namespace BetterExplorer.Networks.FileSystem
         }
 
         public virtual Directory GetDirectory(string path)
+        {
+            return null;
+        }
+
+        public virtual Directory GetRootDirectory()
         {
             return null;
         }

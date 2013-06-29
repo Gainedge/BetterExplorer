@@ -1169,8 +1169,8 @@
                                                Ribbon:KeyTip.VerticalAlignment="Bottom"
                                                Ribbon:KeyTip.HorizontalAlignment="Center"
                                                Style="{DynamicResource DropDownButtonBackstageStyle}">
-                                            <MenuItem Header="Dropbox" />
-                                            <MenuItem Header="Box.net" />
+                                            <MenuItem Header="Dropbox" x:Name="mnuAddDropbox" Click="mnuAddDropbox_Click" />
+                                            <MenuItem Header="Box.net" x:Name="mnuAddBoxNet" />
                                         </Ribbon:DropDownButton>
                                     </Grid>
                                 </TabItem>
@@ -1196,6 +1196,11 @@
                                                Ribbon:KeyTip.HorizontalAlignment="Center"
                                                Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddWebServer_Click">
                                         </Ribbon:Button>
+                                        <ScrollViewer Margin="20,135,20,20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
+                                            <StackPanel x:Name="pnlServers">
+                                                
+                                            </StackPanel>
+                                        </ScrollViewer>
                                     </Grid>
                                 </TabItem>
                             </TabControl>

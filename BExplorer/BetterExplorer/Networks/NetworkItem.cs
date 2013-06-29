@@ -8,8 +8,8 @@ namespace BetterExplorer.Networks
     public abstract class NetworkItem
     {
         protected string _displayname;
-        protected NetworkAccountManager.AccountService _service;
-        protected NetworkAccountManager.AccountType _type;
+        protected AccountService _service;
+        protected AccountType _type;
 
         protected string _username = "";
         protected string _password = "";
@@ -17,6 +17,7 @@ namespace BetterExplorer.Networks
         protected string _appsecret = "";
         protected string _server = "";
         protected int _port = -1;
+        protected bool _anon = false;
 
         protected FileSystem.NetworkFileSystem _fs;
 
@@ -28,7 +29,7 @@ namespace BetterExplorer.Networks
             }
         }
 
-        public NetworkAccountManager.AccountService AccountService
+        public AccountService AccountService
         {
             get
             {
@@ -36,7 +37,7 @@ namespace BetterExplorer.Networks
             }
         }
 
-        public NetworkAccountManager.AccountType Type
+        public AccountType Type
         {
             get
             {
@@ -76,7 +77,7 @@ namespace BetterExplorer.Networks
             }
         }
 
-        public string Server
+        public string ServerAddress
         {
             get
             {
@@ -89,6 +90,14 @@ namespace BetterExplorer.Networks
             get
             {
                 return _port;
+            }
+        }
+
+        public bool AnonymousLogin
+        {
+            get
+            {
+                return _anon;
             }
         }
 

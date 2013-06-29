@@ -223,17 +223,25 @@
       <DependentUpon>AddServer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Networks\AccountData.cs" />
+    <Compile Include="Networks\AuthWindow.xaml.cs">
+      <DependentUpon>AuthWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Networks\Common.cs" />
+    <Compile Include="Networks\DropBoxAccount.cs" />
+    <Compile Include="Networks\FileSystem\SharpBoxFileSystem.cs" />
+    <Compile Include="Networks\FTPSserver.cs" />
     <Compile Include="Networks\FileSystem\Directory.cs" />
     <Compile Include="Networks\FileSystem\File.cs" />
     <Compile Include="Networks\FileSystem\FileSystemObject.cs" />
     <Compile Include="Networks\FileSystem\FTPServerFileSystem.cs" />
     <Compile Include="Networks\FileSystem\NetworkFileSystem.cs" />
     <Compile Include="Networks\FileSystem\SymbolicLink.cs" />
-    <Compile Include="Networks\FTPServer.cs" />
+    <Compile Include="Networks\FTPserver.cs" />
     <Compile Include="Networks\NetworkItem.cs" />
     <Compile Include="Networks\ServerItem.xaml.cs">
       <DependentUpon>ServerItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Networks\WebDAVserver.cs" />
     <Compile Include="PieChart\BaseWPFHelpers.cs" />
     <Compile Include="PieChart\PieChart\ColourConverter.cs" />
     <Compile Include="PieChart\PieChart\IColorSelector.cs" />
@@ -258,6 +266,7 @@
     <Compile Include="ResizeImage.xaml.cs">
       <DependentUpon>ResizeImage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SystemMenu.cs" />
     <Compile Include="Tabs\SavedTabsListGalleryItem.xaml.cs">
       <DependentUpon>SavedTabsListGalleryItem.xaml</DependentUpon>
     </Compile>
@@ -372,6 +381,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Networks\AddServer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Networks\AuthWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -646,6 +659,10 @@
     <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj">
       <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
       <Name>SevenZip2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpBox\SharpBox2010.csproj">
+      <Project>{5b779ae9-72b6-4b7e-88b7-47227b92112a}</Project>
+      <Name>SharpBox2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\Shell.csproj">
       <Project>{aa0c00cb-8699-4f37-bfae-40ca87acc06d}</Project>
@@ -1079,7 +1096,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -19,10 +19,11 @@ namespace BetterExplorer.Networks.FileSystem
         /// <param name="path">The path to access the file.</param>
         /// <param name="creationdate">The date the file was created.</param>
         /// <param name="size">The size, in bytes, of the file.</param>
-        public File(string name, string path, DateTime? creationdate, long? size)
+        public File(string name, string path, Directory parent, DateTime? creationdate, long? size)
         {
             _name = name;
             _path = path;
+            _parent = parent;
             _type = FileSystemObjectType.File;
             if (size.HasValue)
             {

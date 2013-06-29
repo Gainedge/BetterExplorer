@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace BetterExplorer.Networks
 {
-    
+
     /// <summary>
     /// This class manages all account-related information for Better Explorer.
     /// </summary>
@@ -29,58 +29,6 @@ namespace BetterExplorer.Networks
          * "
          * 
         */
-
-        /// <summary>
-        /// What service is connected to a given NetworkAccount instance.
-        /// </summary>
-        public enum AccountService
-        {
-            /// <summary>
-            /// An FTP server.
-            /// </summary>
-            FTP = 0,
-
-            /// <summary>
-            /// An FTPS server.
-            /// </summary>
-            FTPS = 1,
-
-            /// <summary>
-            /// A WebDAV server.
-            /// </summary>
-            WebDAV = 2,
-
-            /// <summary>
-            /// A Dropbox account.
-            /// </summary>
-            Dropbox = 3,
-
-            /// <summary>
-            /// A Box.net account.
-            /// </summary>
-            BoxDotNet = 4,
-        }
-
-        /// <summary>
-        /// The type of this NetworkAccount (i.e. server, online storage, or social media) which also defines what is allowed in terms of capabilities.
-        /// </summary>
-        public enum AccountType
-        {
-            /// <summary>
-            /// A FTP or WebDAV server. It allows uploading files, and viewing/downloading files.
-            /// </summary>
-            Server = 0,
-
-            /// <summary>
-            /// An online storage service. It allows uploading files, and viewing/downloading files.
-            /// </summary>
-            OnlineStorage = 1,
-
-            /// <summary>
-            /// A social media service. It allows uploading files.
-            /// </summary>
-            SocialMedia = 2,
-        }
 
         private string _PassFile;
         private string _DataFile;

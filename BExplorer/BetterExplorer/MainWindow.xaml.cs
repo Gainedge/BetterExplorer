@@ -41,6 +41,8 @@ using System.Security.Principal;
 using Shell32;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using BetterExplorer.Networks;
+using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
+using AppLimit.CloudComputing.SharpBox;
 
 namespace BetterExplorer
 {
@@ -104,6 +106,7 @@ namespace BetterExplorer
 		string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
 		string logdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_ActionLog\\";
 		string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
+        string naddir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_Accounts\\";
 		string sstdir;
 		List<NavigationLog> reopenabletabs = new List<NavigationLog>();
 		bool OverwriteOnRotate = false;
@@ -118,7 +121,7 @@ namespace BetterExplorer
     public List<string> QatItems = new List<string>();
     UIElement curitem = null;
     Boolean IsGlassOnRibonMinimized { get; set; }
-    NetworkAccountManager benam = new NetworkAccountManager();
+    NetworkAccountManager nam = new NetworkAccountManager();
 		#endregion
 
 		#region Properties
@@ -8548,6 +8551,22 @@ namespace BetterExplorer
 			}
 		}
 
+        private void btnChangeTabsFolder_Click(object sender, RoutedEventArgs e)
+        {
+            CommonOpenFileDialog ctf = new CommonOpenFileDialog("Change Tab Folder");
+            ctf.IsFolderPicker = true;
+            ctf.Multiselect = false;
+            ctf.InitialDirectory = new DirectoryInfo(sstdir).Parent.FullName;
+            if (ctf.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
+                rks.SetValue(@"SavedTabsDirectory", ctf.FileName + "\\");
+                txtDefSaveTabs.Text = ctf.FileName + "\\";
+                sstdir = ctf.FileName + "\\";
+            }
+        }
+
 		private void tabControl1_Drop(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -8661,6 +8680,58 @@ namespace BetterExplorer
             }
 		    //this.WindowState = System.Windows.WindowState.Minimized;
 		}
+
+        private void RibbonWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (tabControl1.SelectedItem != null)
+            {
+                (tabControl1.SelectedItem as ClosableTabItem).BringIntoView();
+            }
+        }
+
+
+        private void tabControl1_MouseEnter(object sender, MouseEventArgs e)
+        {
+            //if (!Explorer.IsRenameStarted || IsAfterFolderCreate)
+            //{
+            //  tabControl1.Focusable = true;
+            //  //tabControl1.Focus();
+            //  e.Handled = true;
+            //  tabControl1.Focus();
+            //  tabControl1.Focusable = false;
+            //}
+        }
+
+        private void tabControl1_MouseLeave(object sender, MouseEventArgs e)
+        {
+            //e.Handled = true;
+            //if (!Explorer.IsRenameStarted || IsAfterFolderCreate)
+            //{
+            //  Explorer.SetExplorerFocus();
+            //}
+
+        }
+
+        private void tabControl1_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+
+        }
+
+        private void svTabBar_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+
+        }
+
+        private void tabControl1_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
+        }
+
+        private void tabControl1_PreviewMouseWheel_1(object sender, MouseWheelEventArgs e)
+        {
+
+            var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
+        }
 
 		#endregion
 
@@ -8980,29 +9051,7 @@ namespace BetterExplorer
           IsViewSelection = true;
         }
 
-        private void btnChangeTabsFolder_Click(object sender, RoutedEventArgs e)
-        {
-                CommonOpenFileDialog ctf = new CommonOpenFileDialog("Change Tab Folder");
-                ctf.IsFolderPicker = true;
-                ctf.Multiselect = false;
-                ctf.InitialDirectory = new DirectoryInfo(sstdir).Parent.FullName;
-                if (ctf.ShowDialog() == CommonFileDialogResult.Ok)
-                {
-                    RegistryKey rk = Registry.CurrentUser;
-                    RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
-                    rks.SetValue(@"SavedTabsDirectory", ctf.FileName + "\\");
-                    txtDefSaveTabs.Text = ctf.FileName + "\\";
-                    sstdir = ctf.FileName + "\\";
-                }
-        }
-
-        private void RibbonWindow_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (tabControl1.SelectedItem != null)
-            {
-                (tabControl1.SelectedItem as ClosableTabItem).BringIntoView();
-            }
-        }
+        #region Recycle Bin
 
         public void UpdateRecycleBinInfos()
         {
@@ -9110,69 +9159,61 @@ namespace BetterExplorer
           UpdateRecycleBinInfos();
         }
 
+        #endregion
+
         private void chkIsCFO_Click(object sender, RoutedEventArgs e)
         {
-          if (chkIsCFO.IsChecked.Value)
-          {
-            ExplorerBrowser.SetCustomDialogs(true);
-            RegistryKey rk = Registry.CurrentUser;
-            RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-            rks.SetValue(@"IsCustomFO", 1, RegistryValueKind.DWord);
-            rks.Close();
-            rk.Close();
-          }
-          else
-          {
-            ExplorerBrowser.SetCustomDialogs(false);
-            RegistryKey rk = Registry.CurrentUser;
-            RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-            rks.SetValue(@"IsCustomFO", 0, RegistryValueKind.DWord);
-            rks.Close();
-            rk.Close();
-          }
+            if (chkIsCFO.IsChecked.Value)
+            {
+                ExplorerBrowser.SetCustomDialogs(true);
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"IsCustomFO", 1, RegistryValueKind.DWord);
+                rks.Close();
+                rk.Close();
+            }
+            else
+            {
+                ExplorerBrowser.SetCustomDialogs(false);
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"IsCustomFO", 0, RegistryValueKind.DWord);
+                rks.Close();
+                rk.Close();
+            }
         }
 
-        private void tabControl1_MouseEnter(object sender, MouseEventArgs e)
+        private void chkRibbonMinimizedGlass_Click(object sender, RoutedEventArgs e)
         {
-          //if (!Explorer.IsRenameStarted || IsAfterFolderCreate)
-          //{
-          //  tabControl1.Focusable = true;
-          //  //tabControl1.Focus();
-          //  e.Handled = true;
-          //  tabControl1.Focus();
-          //  tabControl1.Focusable = false;
-          //}
-        }
-
-        private void tabControl1_MouseLeave(object sender, MouseEventArgs e)
-        {
-          //e.Handled = true;
-          //if (!Explorer.IsRenameStarted || IsAfterFolderCreate)
-          //{
-          //  Explorer.SetExplorerFocus();
-          //}
-          
-        }
-
-        private void tabControl1_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-
-        }
-
-        private void svTabBar_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-          
-        }
-
-        private void tabControl1_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-          var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
-        }
-
-        private void tabControl1_PreviewMouseWheel_1(object sender, MouseWheelEventArgs e)
-        {
-           
-          var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
+            if (chkRibbonMinimizedGlass.IsChecked.Value)
+            {
+                this.IsGlassOnRibonMinimized = true;
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"RibbonMinimizedGlass", 1, RegistryValueKind.DWord);
+                rks.Close();
+                rk.Close();
+                if (TheRibbon.IsMinimized)
+                {
+                    System.Windows.Point p =
+                        ShellVView.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+                    this.GlassBorderThickness = new Thickness(8, p.Y, 8, 8);
+                }
+            }
+            else
+            {
+                this.IsGlassOnRibonMinimized = false;
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"RibbonMinimizedGlass", 0, RegistryValueKind.DWord);
+                rks.Close();
+                rk.Close();
+                if (TheRibbon.IsMinimized)
+                {
+                    System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+                    this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
+                }
+            }
         }
 
         private void beNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
@@ -9190,6 +9231,8 @@ namespace BetterExplorer
           this.Focus();         // important
         }
 
+        #region Networks and Accounts ("Sharing Options")
+
         private void btnAddWebServer_Click(object sender, RoutedEventArgs e)
         {
             Networks.AddServer asw = new Networks.AddServer();
@@ -9197,43 +9240,88 @@ namespace BetterExplorer
             asw.ShowDialog();
             if (asw.yep == true)
             {
-                // TODO: Add code for adding server
+                NetworkItem ni = asw.GetNetworkItem();
+                nam.Add(ni);
+                ServerItem ui = new ServerItem();
+                ui.RequestRemove += ui_RequestRemove;
+                ui.RequestEdit += ui_RequestEdit;
+                ui.LoadFromNetworkItem(ni);
+                pnlServers.Children.Add(ui);
             }
+
         }
 
-        private void chkRibbonMinimizedGlass_Click(object sender, RoutedEventArgs e)
+        void ui_RequestEdit(object sender, NetworkItemEventArgs e)
         {
-          if (chkRibbonMinimizedGlass.IsChecked.Value)
-          {
-            this.IsGlassOnRibonMinimized = true;
-            RegistryKey rk = Registry.CurrentUser;
-            RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-            rks.SetValue(@"RibbonMinimizedGlass", 1, RegistryValueKind.DWord);
-            rks.Close();
-            rk.Close();
-            if (TheRibbon.IsMinimized)
+            Networks.AddServer asw = new Networks.AddServer();
+            asw.Owner = this;
+            asw.ImportNetworkItem(e.NetworkItem);
+            asw.ShowDialog();
+            if (asw.yep == true)
             {
-              System.Windows.Point p =
-                  ShellVView.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-              this.GlassBorderThickness = new Thickness(8, p.Y, 8, 8);
+                nam.Remove(e.NetworkItem);
+                pnlServers.Children.Remove(sender as ServerItem);
+                NetworkItem ni = asw.GetNetworkItem();
+                nam.Add(ni);
+                ServerItem ui = new ServerItem();
+                ui.RequestRemove += ui_RequestRemove;
+                ui.RequestEdit += ui_RequestEdit;
+                ui.LoadFromNetworkItem(ni);
+                pnlServers.Children.Add(ui);
             }
-          }
-          else
-          {
-            this.IsGlassOnRibonMinimized = false;
-            RegistryKey rk = Registry.CurrentUser;
-            RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-            rks.SetValue(@"RibbonMinimizedGlass", 0, RegistryValueKind.DWord);
-            rks.Close();
-            rk.Close();
-            if (TheRibbon.IsMinimized)
-            {
-              System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-              this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
-            }
-          }
         }
- 
 
-	}
+        void ui_RequestRemove(object sender, NetworkItemEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to remove this account?", "Remove Server", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                nam.Remove(e.NetworkItem);
+                pnlServers.Children.Remove(sender as ServerItem);
+            }
+        }
+
+        #endregion
+
+        private DropBoxConfiguration _UsedConfig = null;
+        private DropBoxRequestToken _CurrentRequestToken = null;
+        private ICloudStorageAccessToken _GeneratedToken = null;
+
+        private void SetUpDropbox()
+        {
+            _UsedConfig = DropBoxConfiguration.GetStandardConfiguration();
+            _UsedConfig.AuthorizationCallBack = new Uri("http://better-explorer.com/");
+            _UsedConfig.APIVersion = DropBoxAPIVersion.V1;
+            _CurrentRequestToken = DropBoxStorageProviderTools.GetDropBoxRequestToken(_UsedConfig, Networks.DropBoxAuth.Key, Networks.DropBoxAuth.Secret);
+            string AuthUrl = DropBoxStorageProviderTools.GetDropBoxAuthorizationUrl(_UsedConfig, _CurrentRequestToken);
+            AuthWindow authwin = new AuthWindow();
+            authwin.Navigated += authwin_Navigated;
+            authwin.NavigateTo(AuthUrl);
+            authwin.Show();
+        }
+
+        private void authwin_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        {
+            if (_GeneratedToken == null && e.Uri.ToString().StartsWith(_UsedConfig.AuthorizationCallBack.ToString()))
+            {
+                _GeneratedToken = DropBoxStorageProviderTools.ExchangeDropBoxRequestTokenIntoAccessToken(_UsedConfig, Networks.DropBoxAuth.Key, Networks.DropBoxAuth.Secret, _CurrentRequestToken);
+
+                (sender as Window).Close();
+
+                CloudStorage cs = new CloudStorage();
+                cs.Open(_UsedConfig, _GeneratedToken);
+
+                MessageBox.Show(cs.IsOpened.ToString());
+
+                cs.Close();
+            }
+            //throw new NotImplementedException();
+        }
+
+        private void mnuAddDropbox_Click(object sender, RoutedEventArgs e)
+        {
+            SetUpDropbox();
+        }
+
+
+    }
 }

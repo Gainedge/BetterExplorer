@@ -15,6 +15,7 @@ namespace BetterExplorer.Networks.FileSystem
         protected string _name;
         protected DateTime _timeCreated;
         protected FileSystemObjectType _type;
+        protected Directory _parent;
 
         /// <summary>
         /// The path of this file system object.
@@ -35,6 +36,17 @@ namespace BetterExplorer.Networks.FileSystem
             get
             {
                 return _name;
+            }
+        }
+
+        /// <summary>
+        /// The parent directory of this file system object. If this is the root directory, the parent will be itself.
+        /// </summary>
+        public Directory Parent
+        {
+            get
+            {
+                return _parent;
             }
         }
 

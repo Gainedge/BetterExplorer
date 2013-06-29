@@ -29,22 +29,13 @@ namespace BetterExplorer.Networks
             _port = port;
             _username = username;
             _password = password;
-            _service = NetworkAccountManager.AccountService.FTP;
-            _type = NetworkAccountManager.AccountType.Server;
+            _service = AccountService.FTP;
+            _type = AccountType.Server;
             _anon = anonlogin;
             _passive = passivemode;
         }
 
-        private bool _anon = false;
         private bool _passive = false;
-
-        public bool AnonymousLogin
-        {
-            get
-            {
-                return _anon;
-            }
-        }
 
         public bool PassiveMode
         {
@@ -67,10 +58,15 @@ namespace BetterExplorer.Networks
                 edc = EDataConnectionMode.Active;
             }
 
-            ftps.Connect(_server, _port, new System.Net.NetworkCredential(_username, _password), ESSLSupportMode.ClearText, null, null, 0, 0, 0, 120, true, edc);
+            System.Net.NetworkCredential creds = null;
+            if (_anon == false)
+            {
+                creds = new System.Net.NetworkCredential(_username, _password);
+            }
 
-            FileSystem.FTPServerFileSystem fs = new FileSystem.FTPServerFileSystem();
-            fs.FTPSClient = ftps;
+            ftps.Connect(_server, _port, creds, ESSLSupportMode.ClearText, null, null, 0, 0, 0, 120, true, edc);
+
+            FileSystem.FTPServerFileSystem fs = new FileSystem.FTPServerFileSystem(ftps);
 
             return fs;
         }

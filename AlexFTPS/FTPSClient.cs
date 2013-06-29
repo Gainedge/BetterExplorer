@@ -204,7 +204,7 @@ namespace AlexPilotti.FTPS.Client
         string hostname;
 
         const string anonUsername = "anonymous";
-        const string anonPassword = "anonymous@FTPSClient.org"; // dummy password
+        const string anonPassword = "anonymouslogin@better-explorer.com"; // dummy password
 
         const string clntName = "AlexFTPS";
 

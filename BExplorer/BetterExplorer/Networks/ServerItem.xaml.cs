@@ -26,82 +26,75 @@ namespace BetterExplorer.Networks
             InitializeComponent();
         }
 
-        public string ServerDisplayName
+        // An event that clients can use to be notified whenever the
+        // elements of the list change:
+        /// <summary>
+        /// Called when a user requests to remove the NetworkItem this control represents.
+        /// </summary>
+        public event NetworkItemEventHandler RequestRemove;
+
+        // Invoke the Changed event; called whenever list changes:
+        protected virtual void OnRequestRemove(NetworkItemEventArgs e)
         {
-            get
-            {
-                return txtDisplayName.Text;
-            }
-            set
-            {
-                txtDisplayName.Text = value;
-            }
+            if (RequestRemove != null)
+                RequestRemove(this, e);
         }
 
-        public string ServerAddress
+        // An event that clients can use to be notified whenever the
+        // elements of the list change:
+        /// <summary>
+        /// Called when a user requests to edit the NetworkItem this control represents.
+        /// </summary>
+        public event NetworkItemEventHandler RequestEdit;
+
+        // Invoke the Changed event; called whenever list changes:
+        protected virtual void OnRequestEdit(NetworkItemEventArgs e)
         {
-            get
-            {
-                return txtAddress.Text;
-            }
-            set
-            {
-                txtAddress.Text = value;
-            }
+            if (RequestEdit != null)
+                RequestEdit(this, e);
         }
 
-        public string Username
+        private NetworkItem _item;
+
+        public void LoadFromNetworkItem(NetworkItem item)
         {
-            get
+            txtDisplayName.Text = item.DisplayName;
+            txtAddress.Text = item.ServerAddress;
+            switch (item.AccountService)
+	        {
+		        case AccountService.FTP:
+                    txtType.Text = "FTP";
+                    break;
+                case AccountService.FTPS:
+                    txtType.Text = "FTPS";
+                    break;
+                case AccountService.WebDAV:
+                    txtType.Text = "WebDAV";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("item", "This is not a valid type of Network item.");
+	        }
+
+            if (item.AnonymousLogin == true)
             {
-                return txtUsername.Text;
+                txtUsername.Text = "Anonymous";
             }
-            set
+            else
             {
-                txtUsername.Text = value;
+                txtUsername.Text = item.Username;
             }
+
+            _item = item;
         }
 
-        private string _pass;
-
-        public string Password
+        private void btnRemove_Click(object sender, RoutedEventArgs e)
         {
-            get
-            {
-                return _pass;
-            }
-            set
-            {
-                _pass = value;
-            }
+            OnRequestRemove(new NetworkItemEventArgs(_item));
         }
 
-        private bool _useanon;
-
-        public bool UseAnonymousLogin
+        private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
-            get
-            {
-                return _useanon;
-            }
-            set
-            {
-                _useanon = value;
-            }
-        }
-
-        private bool _passive;
-
-        public bool UsePassiveMode
-        {
-            get
-            {
-                return _passive;
-            }
-            set
-            {
-                _passive = value;
-            }
+            OnRequestEdit(new NetworkItemEventArgs(_item));
         }
 
     }
