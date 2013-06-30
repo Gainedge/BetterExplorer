@@ -433,8 +433,11 @@ namespace BetterExplorer
 			}
 			else
 			{
-        System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-        this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight + 2, 8, 8);
+        if (this.IsGlassOnRibonMinimized)
+        {
+          System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+          this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight + 2, 8, 8);
+        }
 				try
 				{
 					this.SetBlur(true);
