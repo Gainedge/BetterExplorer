@@ -9297,12 +9297,17 @@ namespace BetterExplorer
             _CurrentRequestToken = DropBoxStorageProviderTools.GetDropBoxRequestToken(_UsedConfig, Networks.DropBoxAuth.Key, Networks.DropBoxAuth.Secret);
             string AuthUrl = DropBoxStorageProviderTools.GetDropBoxAuthorizationUrl(_UsedConfig, _CurrentRequestToken);
             AuthWindow authwin = new AuthWindow();
-            authwin.Navigated += authwin_Navigated;
+            authwin.Navigated += HandleDropboxAuth;
             authwin.NavigateTo(AuthUrl);
             authwin.Show();
         }
 
-        private void authwin_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        private void SetUpSkyDrive()
+        {
+
+        }
+
+        private void HandleDropboxAuth(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             if (_GeneratedToken == null && e.Uri.ToString().StartsWith(_UsedConfig.AuthorizationCallBack.ToString()))
             {

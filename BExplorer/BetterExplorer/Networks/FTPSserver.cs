@@ -13,11 +13,11 @@ namespace BetterExplorer.Networks
     {
 
         /// <summary>
-        /// Creates a new instance of an FTP server.
+        /// Creates a new instance of an FTPS server.
         /// </summary>
-        /// <param name="displayname">The name to display for this FTP server.</param>
+        /// <param name="displayname">The name to display for this FTPS server.</param>
         /// <param name="hostname">The address of this server.</param>
-        /// <param name="port">The port to use for this FTP server. (usually 21)</param>
+        /// <param name="port">The port to use for this FTPS server. (usually 21 or 990)</param>
         /// <param name="username">The username to connect to this server with.</param>
         /// <param name="password">The password to connect to this server with.</param>
         /// <param name="anonlogin">If true, connect to this server anonymously (without a username and password).</param>

@@ -14,24 +14,41 @@ namespace BetterExplorer.Networks
         private DropBoxRequestToken _CurrentRequestToken = null;
         private ICloudStorageAccessToken _GeneratedToken = null;
 
-        public DropBoxAccount(string displayname, string username, string password, string appkey, string secret)
+        private string _tokenloc;
+
+        public DropBoxAccount(string displayname, string tokenlocation)
         {
             _displayname = displayname;
-            _username = username;
-            _password = password;
             _type = AccountType.OnlineStorage;
             _service = AccountService.Dropbox;
-            _appkey = appkey;
-            _appsecret = secret;
+            _tokenloc = tokenlocation;
+        }
+
+        public string TokenLocation
+        {
+            get
+            {
+                return _tokenloc;
+            }
+            set
+            {
+                _tokenloc = value;
+            }
         }
 
         public override FileSystem.NetworkFileSystem CreateConnection()
         {
+            DropBoxConfiguration config = DropBoxConfiguration.GetStandardConfiguration();
 
-            DropBoxConfiguration config = new DropBoxConfiguration();
+            config.APIVersion = DropBoxAPIVersion.V1;
 
-            return new FileSystem.SharpBoxFileSystem(null);
-            //return base.CreateConnection();
+            CloudStorage cs = new CloudStorage();
+
+            ICloudStorageAccessToken tok = cs.DeserializeSecurityTokenEx(_tokenloc);
+
+            cs.Open(config, tok);
+
+            return new FileSystem.SharpBoxFileSystem(cs);
         }
     }
 }

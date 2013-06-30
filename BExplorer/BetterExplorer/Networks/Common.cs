@@ -28,6 +28,25 @@ namespace BetterExplorer.Networks
         public static string Secret = "a00lskhbpcow9tw"; 
     }
 
+    public class SkyDriveAuth
+    {
+        /*
+         * A note to developers that plan to use this code. 
+         * Please provide your own app key and secret to use.
+         * 
+         * The biggest reason is so that we don't have other
+         * software projects posing as us. (Besides, users that
+         * are asked to authorize your app will be confused when
+         * it says "Better Explorer" instead of your app's name.)
+         * 
+         * It's free and easy to apply for an app at
+         * https://account.live.com/developers/applications/.
+         */
+        public static string Key = "000000004C0F9074";
+        public static string Secret = "RV-kb8qkoDiif4bdhlCTDBIcjvAIKRHM";
+        public static string[] scopes = new string[] { "wl.basic", "wl.photos", "wl.skydrive_update" };
+    }
+
     /// <summary>
     /// What service is connected to a given NetworkAccount instance.
     /// </summary>
@@ -57,6 +76,11 @@ namespace BetterExplorer.Networks
         /// A Box.net account.
         /// </summary>
         BoxDotNet = 4,
+
+        /// <summary>
+        /// A SkyDrive account.
+        /// </summary>
+        SkyDrive = 5,
     }
 
     /// <summary>
