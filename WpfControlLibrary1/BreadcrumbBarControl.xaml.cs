@@ -305,13 +305,17 @@ namespace BetterExplorerControls
 
     void duh_ContextMenuRequested(object sender, PathEventArgs e)
     {
-      ShellContextMenu cm = new ShellContextMenu(e.ShellObject);
+      
+      
+      //ShellContextMenu cm = new ShellContextMenu(e.ShellObject);
       ShellObject[] dirs = new ShellObject[1];
       dirs[0] = e.ShellObject;
       Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow)
                           .Transform(new Point(0, 0));
       Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
-      cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
+      GongShellContextMenu cm1 = new GongShellContextMenu(dirs);
+      cm1.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
+      //cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
     }
 
 		void duh_MouseDoubleClick(object sender, EventArgs e)

@@ -1929,17 +1929,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         IntPtr GetColumnbyIndexP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnbyIndex");
         _GetColumnbyIndex = (GetColumnbyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnbyIndexP, typeof(GetColumnbyIndex));
 
-        string itemColorSettingsLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"BExplorer\itemcolors.cfg");
-
-        if (File.Exists(itemColorSettingsLocation))
-        {
-          //this.LVItemsColorCodes = WindowsAPI.DeserializeFromXmlFile<List<LVItemColor>>(itemColorSettingsLocation);
-          XDocument docs = XDocument.Load(itemColorSettingsLocation);
-
-          this.LVItemsColorCodes = docs.Root.Elements("ItemColorRow")
-                             .Select(element => new LVItemColor(element.Elements().ToArray()[0].Value, Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value))))
-                             .ToList();
-        }
+        
 
         //this.LVItemsColorCodes = new List<LVItemColor>();
         //LVItemsColorCodes.Add(new LVItemColor(".jpeg;.jpg;.bmp", Color.Red));
@@ -2385,7 +2375,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					}
 					if (uChange == CommDlgBrowserStateChange.SetFocus)
 					{
-							//ExplorerGotFocusRaized();
+							ExplorerGotFocusRaized();
 					}
 					if (uChange == CommDlgBrowserStateChange.Rename)
 					{
@@ -2920,6 +2910,14 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                   vMouseItemMiddleClick(item);
                 }
               }
+
+              if (m.Msg == (int)WindowsAPI.WndMsg.WM_CONTEXTMENU)
+              {
+                return false;
+              }
+              if (m.Msg == (int)WindowsAPI.WndMsg.WM_MENUCOMMAND)
+              {
+              }
 							Invoke(new MethodInvoker(
 									delegate
 									{
@@ -3052,10 +3050,34 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       public const int CDDS_SUBITEM           = 0x00020000;
       public const int CDDS_ITEMPREPAINT      = (CDDS_ITEM | CDDS_PREPAINT);
       public const int CDDS_ITEMPOSTPAINT     = (CDDS_ITEM | CDDS_POSTPAINT);
+      [DllImport("user32.dll")]
+      public static extern bool GetCursorPos(out POINT lpPoint);
 
+      public static Point GetCursorPosition()
+      {
+        POINT lpPoint;
+        GetCursorPos(out lpPoint);
+        //bool success = User32.GetCursorPos(out lpPoint);
+        // if (!success)
+
+        return new Point((int)lpPoint.x, (int)lpPoint.y);
+      }
       // this is the new wndproc, just show a messagebox on left button down:
 			private int MyWndProc(IntPtr hWnd, int Msg, int wParam, int lParam)
 			{
+        if (Msg == (int)WindowsAPI.WndMsg.WM_CONTEXTMENU)
+        {
+          this.IsRenameStarted = true;
+          ShellObject[] dirs = this.SelectedItems.ToArray();
+          GongShellContextMenu cm1 = new GongShellContextMenu(this, this.SelectedItems.Count > 0 ? ShellViewGetItemObject.Selection : ShellViewGetItemObject.Background);
+          cm1.ShowContextMenu(Cursor.Position);//new System.Drawing.Point(GetCursorPosition().X, GetCursorPosition().Y));
+          return 0;
+        }
+        if (Msg == (int)WindowsAPI.WndMsg.WM_EXITMENULOOP)
+        {
+          //this.IsRenameStarted = false;
+        }
+        
         if (Msg == 78)
         {
           WindowsAPI.NMHDR nmhdr = WindowsAPI.PtrToStructure<WindowsHelper.WindowsAPI.NMHDR>((IntPtr)lParam);

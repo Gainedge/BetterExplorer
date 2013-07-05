@@ -188,6 +188,7 @@ namespace GongSolutions.Shell
         INCLUDESTATIC = 0x00000040,
         EXTENDEDVERBS = 0x00000100,
         RESERVED = 0xffff0000,
+        DISABLEDVERBS = 0x00000200,
       }
 
       [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -231,7 +232,7 @@ namespace GongSolutions.Shell
 
         [PreserveSig]
         HResult GetCommandString(int idcmd, uint uflags, int reserved,
-            [MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
+            [MarshalAs(UnmanagedType.LPArray)] byte[] commandstring,
             int cch);
       }
 
@@ -266,7 +267,7 @@ namespace GongSolutions.Shell
                              int idCmdLast, CMF uFlags);
 
         [PreserveSig]
-        new HResult InvokeCommand(ref CMINVOKECOMMANDINFO pici);
+        new HResult InvokeCommand(ref Microsoft.WindowsAPICodePack.Shell.GongShellContextMenu.CMINVOKECOMMANDINFOEX pici);
 
         [PreserveSig]
         new HResult GetCommandString(int idcmd, uint uflags, int reserved,

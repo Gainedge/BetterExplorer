@@ -1048,8 +1048,8 @@ namespace Microsoft.WindowsAPICodePack.Controls
     }
 
     public struct POINT {
-      long x;
-      long y;
+      public long x;
+      public long y;
     }
     [ComImport,
     Guid("88E39E80-3578-11CF-AE69-08002B2E1262"),

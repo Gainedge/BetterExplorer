@@ -43,6 +43,7 @@ using Microsoft.WindowsAPICodePack.Taskbar;
 using BetterExplorer.Networks;
 using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
 using AppLimit.CloudComputing.SharpBox;
+using System.Xml.Linq;
 
 namespace BetterExplorer
 {
@@ -122,6 +123,7 @@ namespace BetterExplorer
     UIElement curitem = null;
     Boolean IsGlassOnRibonMinimized { get; set; }
     NetworkAccountManager nam = new NetworkAccountManager();
+    List<LVItemColor> LVItemsColor { get; set; }
 		#endregion
 
 		#region Properties
@@ -543,6 +545,19 @@ namespace BetterExplorer
       }
 
 			rks.Close();
+
+      string itemColorSettingsLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"BExplorer\itemcolors.cfg");
+
+      if (File.Exists(itemColorSettingsLocation))
+      {
+        //this.LVItemsColorCodes = WindowsAPI.DeserializeFromXmlFile<List<LVItemColor>>(itemColorSettingsLocation);
+        XDocument docs = XDocument.Load(itemColorSettingsLocation);
+
+        this.LVItemsColor = docs.Root.Elements("ItemColorRow")
+                           .Select(element => new LVItemColor(element.Elements().ToArray()[0].Value, System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value))))
+                           .ToList();
+        
+      }
 		}
 
 		/// <summary>
@@ -1226,6 +1241,7 @@ namespace BetterExplorer
 				breadcrumbBarControl1.ExitEditMode();
 			}
       IsAfterRename = false;
+      Explorer.IsRenameStarted = false;
 			
 		}
 
@@ -1250,6 +1266,7 @@ namespace BetterExplorer
 		{
 			IsAfterRename = true;
       IsAfterFolderCreate = false;
+      Explorer.IsRenameStarted = false;
 			breadcrumbBarControl1.ExitEditMode();
 		}
 
@@ -2011,8 +2028,8 @@ namespace BetterExplorer
 
 
 			IsSelectionRized = false;
-            if (!IsAfterFolderCreate && !backstage.IsOpen && IsAfterRename)
-                Explorer.SetExplorerFocus();
+      if (!IsAfterFolderCreate && !backstage.IsOpen && IsAfterRename && !Explorer.IsRenameStarted)
+          Explorer.SetExplorerFocus();
 		}
 		bool IsFromSelectionOrNavigation = false;
         
@@ -3792,7 +3809,7 @@ namespace BetterExplorer
 									 {
 										 btnFavorites.Visibility = System.Windows.Visibility.Collapsed;
 									 }
-
+                   Explorer.LVItemsColorCodes = this.LVItemsColor;
 									 //'set up Explorer control
 									 Explorer.SelectionChanged += new EventHandler(ExplorerBrowserControl_SelectionChanged);
 									 Explorer.NavigationComplete += new EventHandler<NavigationCompleteEventArgs>(ExplorerBrowserControl_NavigationComplete);
@@ -6329,8 +6346,8 @@ namespace BetterExplorer
 					break;
 			}
 
-      
 
+      Explorer.LVItemsColorCodes = this.LVItemsColor;
 			Explorer.SelectionChanged += new EventHandler(ExplorerBrowserControl_SelectionChanged);
 			Explorer.NavigationComplete += new EventHandler<NavigationCompleteEventArgs>(ExplorerBrowserControl_NavigationComplete);
       Explorer.MouseWheel += Explorer_MouseWheel;
@@ -9328,6 +9345,17 @@ namespace BetterExplorer
         private void mnuAddDropbox_Click(object sender, RoutedEventArgs e)
         {
             SetUpDropbox();
+        }
+
+        private void btnNewItem_DropDownOpened(object sender, EventArgs e)
+        {
+
+          GongShellContextMenu mnu = new GongShellContextMenu(Explorer, true);
+          var controlPos = btnNewItem.TransformToAncestor(Application.Current.MainWindow)
+                          .Transform(new System.Windows.Point(0, 0));
+          var tempPoint = PointToScreen(new System.Windows.Point(controlPos.X, controlPos.Y));
+          mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnNewItem.ActualHeight),true);
+          btnNewItem.IsDropDownOpen = false;
         }
 
 

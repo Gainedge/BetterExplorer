@@ -1463,16 +1463,16 @@
                                               Text="Creates a new folder in the current folder" />
                         </Ribbon:Button.ToolTip>
                     </Ribbon:Button>
-                    <!--<Ribbon:SplitButton x:Name="btnNewItem"
+                    <Ribbon:SplitButton x:Name="btnNewItem"
                                         Click="btnNewItem_Click"
                                         Header="New item"
                                         Ribbon:KeyTip.Keys="CR"
                                         SizeDefinition="Middle,Small,Small"
-                                        Visibility="Collapsed" />
+                                        Visibility="Visible" DropDownOpened="btnNewItem_DropDownOpened" />
                     <Ribbon:SplitButton x:Name="btnEasyAccess" Header="Easy Access"
                                         Ribbon:KeyTip.Keys="E"
                                         SizeDefinition="Middle,Small,Small"
-                                        Visibility="Collapsed" />-->
+                                        Visibility="Collapsed" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox x:Name="Open"
                                        Header="{StaticResource tgOpenCP}"

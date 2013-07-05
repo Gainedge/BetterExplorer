@@ -290,6 +290,7 @@
     </Compile>
     <Compile Include="FileOperations\Theme.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="GongShellMenu.cs" />
     <Compile Include="IFileOperation.cs" />
     <Compile Include="IFileOperationProgressSink.cs" />
     <Compile Include="Interop\Common\IAsyncDataObject.cs" />
