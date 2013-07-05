@@ -75,6 +75,55 @@ namespace BetterExplorer
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         }
 
+        /// <summary>
+        /// Sets the UI language
+        /// </summary>
+        /// <param name="culture">Language code (ex. "en-EN")</param>
+        /// <param name="filename">The file to load the resources from</param>
+        public static void SelectCulture(string culture, string filename)
+        {
+            // List all our resources      
+            List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>();
+            foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries)
+            {
+                dictionaryList.Add(dictionary);
+            }
+
+            ResourceDictionary resourceDictionary = ResDictionaryLoader.Load(filename);
+            if (resourceDictionary == null)
+            {
+                // if not found, then try from the application's resources
+                string requestedCulture = string.Format("Locale.{0}.xaml", culture);
+                resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
+                if (resourceDictionary == null)
+                {
+                    // If not found, we select our default language        
+                    //        
+                    requestedCulture = "DefaultLocale.xaml";
+                    resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
+                }
+            }
+
+            // If we have the requested resource, remove it from the list and place at the end.\      
+            // Then this language will be our string table to use.      
+            if (resourceDictionary != null)
+            {
+                try
+                {
+                    Application.Current.Resources.MergedDictionaries.Remove(resourceDictionary);
+                }
+                catch
+                {
+
+                }
+
+                Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+            }
+            // Inform the threads of the new culture      
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(culture);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
 
