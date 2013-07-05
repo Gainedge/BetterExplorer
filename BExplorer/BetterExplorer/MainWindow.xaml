@@ -587,6 +587,18 @@
                                                                   Text="{StaticResource cbIsResttoreTTX}" />
                                             </Ribbon:CheckBox.ToolTip>
                                         </Ribbon:CheckBox>
+                                        <Label Name="paddinglbl10" Content="         "/>
+                                        <Ribbon:CheckBox x:Name="chkOldSysListView"
+                                                         Checked="chkIsVistaStyleListView_Checked"
+                                                         Ribbon:KeyTip.Keys="V"
+                                                         Unchecked="chkIsVistaStyleListView_Unchecked" Header="{DynamicResource txtIsVistaStyleListView}">
+                                            <Ribbon:CheckBox.ToolTip>
+                                                <Ribbon:ScreenTip Title="{StaticResource txtIsVistaStyleListView}"
+                                                                  Width="250"
+                                                                  IsRibbonAligned="false"
+                                                                  Text="{DynamicResource txtIsVistaStyleListViewTTX}" />
+                                            </Ribbon:CheckBox.ToolTip>
+                                        </Ribbon:CheckBox>
                                         <Label x:Name="paddinglbl8"
                                                Content="         "
                                                Visibility="Collapsed" />

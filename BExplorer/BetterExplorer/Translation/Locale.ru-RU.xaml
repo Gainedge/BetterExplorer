@@ -360,4 +360,7 @@
 	<system:String x:Key="txtModificationDate">Дата изменения</system:String>
 	<system:String x:Key="txtYes">Да</system:String>
 	<system:String x:Key="txtNo">Нет</system:String>
+	<system:String x:Key="txtExperimental">Экспериментальная фича</system:String>
+	<system:String x:Key="txtIsVistaStyleListView">Использовать Vista стиль для вида списка</system:String>
+	<system:String x:Key="txtIsVistaStyleListViewTTX">Если отключить, некоторые фичи, такие как цвет файлов и водяные знаки на папках, будут недоступны. При изменении этой опции, приложение будет автоматически перезапущено.</system:String>
 </ResourceDictionary>

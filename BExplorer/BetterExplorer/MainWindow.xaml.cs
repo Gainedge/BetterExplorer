@@ -3559,7 +3559,8 @@ namespace BetterExplorer
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 
-      ExplorerBrowser.SetCustomDialogs(Convert.ToInt32(rks.GetValue(@"IsCustomFO", 0)) == 1 ? true : false);
+			ExplorerBrowser.SetCustomDialogs(Convert.ToInt32(rks.GetValue(@"IsCustomFO", 0)) == 1);
+			ExplorerBrowser.IsOldSysListView = Convert.ToInt32(rks.GetValue(@"IsVistaStyleListView", 1)) == 1;
 
 			// loads current Ribbon color theme
 			try
@@ -3628,7 +3629,9 @@ namespace BetterExplorer
 			//Main Initialization routine
 			InitializeComponent();
 
-
+			isOnLoad = true;
+			chkOldSysListView.IsChecked = ExplorerBrowser.IsOldSysListView;
+			isOnLoad = false;
 
 			// sets up ComboBox to select the current UI language
 			foreach (TranslationComboBoxItem item in this.TranslationComboBox.Items)
@@ -5470,23 +5473,24 @@ namespace BetterExplorer
 			if (ReadyToChangeLanguage == true)
 			{
 				ChangeLocale(((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
-
 				lblLocale.Visibility = Visibility.Visible;
-        Process pr = Process.GetCurrentProcess();
-
-        Process startIt = new Process();
-
-        // Stop the process from opening a new window
-        startIt.StartInfo.RedirectStandardOutput = true;
-        startIt.StartInfo.UseShellExecute = false;
-        startIt.StartInfo.CreateNoWindow = true;
-        startIt.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-        startIt.StartInfo.FileName = "StartIt.exe";
-        startIt.StartInfo.Arguments = String.Format("\"{0}\"", pr.MainModule.FileName);
-        startIt.Start();
-
-        btnBackstageExit_Click(sender, e);
+				Restart();
 			}
+		}
+
+		private void Restart()
+		{
+			Process pr = Process.GetCurrentProcess();
+			Process startIt = new Process();
+			// Stop the process from opening a new window
+			startIt.StartInfo.RedirectStandardOutput = true;
+			startIt.StartInfo.UseShellExecute = false;
+			startIt.StartInfo.CreateNoWindow = true;
+			startIt.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+			startIt.StartInfo.FileName = "StartIt.exe";
+			startIt.StartInfo.Arguments = String.Format("\"{0}\"", pr.MainModule.FileName);
+			startIt.Start();
+			btnBackstageExit_Click(null, null);
 		}
 
 		private void btnRemoveLangSetting_Click(object sender, RoutedEventArgs e)
@@ -6065,6 +6069,32 @@ namespace BetterExplorer
 			rks.SetValue(@"IsRestoreTabs", 0);
 			rks.Close();
 			rk.Close();
+		}
+
+		private void chkIsVistaStyleListView_Checked(object sender, RoutedEventArgs e)
+		{
+			if (!isOnLoad)
+			{
+				RegistryKey rk = Registry.CurrentUser;
+				RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+				rks.SetValue(@"IsVistaStyleListView", 1);
+				rks.Close();
+				rk.Close();
+				Restart();
+			}
+		}
+
+		private void chkIsVistaStyleListView_Unchecked(object sender, RoutedEventArgs e)
+		{
+			if (!isOnLoad)
+			{
+				RegistryKey rk = Registry.CurrentUser;
+				RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+				rks.SetValue(@"IsVistaStyleListView", 0);
+				rks.Close();
+				rk.Close();
+				Restart();
+			}
 		}
 
 		private void gridSplitter1_DragCompleted(object sender, DragCompletedEventArgs e)

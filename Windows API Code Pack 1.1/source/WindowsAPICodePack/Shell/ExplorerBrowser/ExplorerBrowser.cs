@@ -299,7 +299,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       #endregion
 
       #region properties
-			public bool IsOldSysListView = true;
+			public static bool IsOldSysListView = true;
 
       		/// <summary>
 			/// Gets the items in the ExplorerBrowser as an IShellItemArray
@@ -660,14 +660,14 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			{
 					get
 					{
-            if (this.IsOldSysListView)
+            if (ExplorerBrowser.IsOldSysListView)
               return WindowsAPI.GetListViewBackgroundImage(SysListViewHandle);
             else
               return null;
 					}
 					set
 					{
-            if (this.IsOldSysListView)
+            if (ExplorerBrowser.IsOldSysListView)
 							SetBackgroundImage(value);
 					}
 			}
@@ -1750,7 +1750,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 			void OnEscKey()
 			{
-				if (this.IsOldSysListView)
+				if (ExplorerBrowser.IsOldSysListView)
 				{
 					int itemCount = WindowsAPI.SendMessage(SysListViewHandle,
 									WindowsAPI.MSG.LVM_GETITEMCOUNT, 0, 0);
