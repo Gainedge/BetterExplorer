@@ -41,8 +41,6 @@ using System.Security.Principal;
 using Shell32;
 using Microsoft.WindowsAPICodePack.Taskbar;
 using BetterExplorer.Networks;
-using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
-using AppLimit.CloudComputing.SharpBox;
 using System.Xml.Linq;
 
 namespace BetterExplorer
@@ -6270,6 +6268,61 @@ namespace BetterExplorer
 			rk.Close();
 		}
 
+                private void chkIsCFO_Click(object sender, RoutedEventArgs e)
+        {
+            if (chkIsCFO.IsChecked.Value)
+            {
+                ExplorerBrowser.SetCustomDialogs(true);
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"IsCustomFO", 1, RegistryValueKind.DWord);
+                rks.Close();
+                rk.Close();
+            }
+            else
+            {
+                ExplorerBrowser.SetCustomDialogs(false);
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"IsCustomFO", 0, RegistryValueKind.DWord);
+                rks.Close();
+                rk.Close();
+            }
+        }
+
+        private void chkRibbonMinimizedGlass_Click(object sender, RoutedEventArgs e)
+        {
+            if (chkRibbonMinimizedGlass.IsChecked.Value)
+            {
+                this.IsGlassOnRibonMinimized = true;
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"RibbonMinimizedGlass", 1, RegistryValueKind.DWord);
+                rks.Close();
+                rk.Close();
+                if (TheRibbon.IsMinimized)
+                {
+                    System.Windows.Point p =
+                        ShellVView.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+                    this.GlassBorderThickness = new Thickness(8, p.Y, 8, 8);
+                }
+            }
+            else
+            {
+                this.IsGlassOnRibonMinimized = false;
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"RibbonMinimizedGlass", 0, RegistryValueKind.DWord);
+                rks.Close();
+                rk.Close();
+                if (TheRibbon.IsMinimized)
+                {
+                    System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+                    this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
+                }
+            }
+        }
+
 		private void chkLogHistory_Checked(object sender, RoutedEventArgs e)
 		{
 			canlogactions = true;
@@ -9150,6 +9203,21 @@ namespace BetterExplorer
           IsViewSelection = true;
         }
 
+        private void beNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            this.Visibility = Visibility.Visible;
+            if (this.WindowState == WindowState.Minimized)
+            {
+                WindowsAPI.ShowWindow(Handle,
+                    (int)WindowsAPI.ShowCommands.SW_RESTORE);
+            }
+
+            this.Activate();
+            this.Topmost = true;  // important
+            this.Topmost = false; // important
+            this.Focus();         // important
+        }
+
         #region Recycle Bin
 
         public void UpdateRecycleBinInfos()
@@ -9260,76 +9328,6 @@ namespace BetterExplorer
 
         #endregion
 
-        private void chkIsCFO_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkIsCFO.IsChecked.Value)
-            {
-                ExplorerBrowser.SetCustomDialogs(true);
-                RegistryKey rk = Registry.CurrentUser;
-                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-                rks.SetValue(@"IsCustomFO", 1, RegistryValueKind.DWord);
-                rks.Close();
-                rk.Close();
-            }
-            else
-            {
-                ExplorerBrowser.SetCustomDialogs(false);
-                RegistryKey rk = Registry.CurrentUser;
-                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-                rks.SetValue(@"IsCustomFO", 0, RegistryValueKind.DWord);
-                rks.Close();
-                rk.Close();
-            }
-        }
-
-        private void chkRibbonMinimizedGlass_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkRibbonMinimizedGlass.IsChecked.Value)
-            {
-                this.IsGlassOnRibonMinimized = true;
-                RegistryKey rk = Registry.CurrentUser;
-                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-                rks.SetValue(@"RibbonMinimizedGlass", 1, RegistryValueKind.DWord);
-                rks.Close();
-                rk.Close();
-                if (TheRibbon.IsMinimized)
-                {
-                    System.Windows.Point p =
-                        ShellVView.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-                    this.GlassBorderThickness = new Thickness(8, p.Y, 8, 8);
-                }
-            }
-            else
-            {
-                this.IsGlassOnRibonMinimized = false;
-                RegistryKey rk = Registry.CurrentUser;
-                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-                rks.SetValue(@"RibbonMinimizedGlass", 0, RegistryValueKind.DWord);
-                rks.Close();
-                rk.Close();
-                if (TheRibbon.IsMinimized)
-                {
-                    System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-                    this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
-                }
-            }
-        }
-
-        private void beNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
-        {
-          this.Visibility = Visibility.Visible;
-          if (this.WindowState == WindowState.Minimized)
-          {
-            WindowsAPI.ShowWindow(Handle,
-                (int)WindowsAPI.ShowCommands.SW_RESTORE);
-          }
-
-          this.Activate();
-          this.Topmost = true;  // important
-          this.Topmost = false; // important
-          this.Focus();         // important
-        }
-
         #region Networks and Accounts ("Sharing Options")
 
         private void btnAddWebServer_Click(object sender, RoutedEventArgs e)
@@ -9372,59 +9370,22 @@ namespace BetterExplorer
 
         void ui_RequestRemove(object sender, NetworkItemEventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to remove this account?", "Remove Server", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            if (MessageBox.Show("Are you sure you want to remove this account?", "Remove Account", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 nam.Remove(e.NetworkItem);
                 pnlServers.Children.Remove(sender as ServerItem);
             }
         }
 
+        private void btnAddStorageService_Click(object sender, RoutedEventArgs e)
+        {
+            AccountAuthWindow aaw = new AccountAuthWindow();
+            aaw.LoadStorageServices();
+            aaw.Owner = this;
+            aaw.ShowDialog();
+        }
+
         #endregion
-
-        private DropBoxConfiguration _UsedConfig = null;
-        private DropBoxRequestToken _CurrentRequestToken = null;
-        private ICloudStorageAccessToken _GeneratedToken = null;
-
-        private void SetUpDropbox()
-        {
-            _UsedConfig = DropBoxConfiguration.GetStandardConfiguration();
-            _UsedConfig.AuthorizationCallBack = new Uri("http://better-explorer.com/");
-            _UsedConfig.APIVersion = DropBoxAPIVersion.V1;
-            _CurrentRequestToken = DropBoxStorageProviderTools.GetDropBoxRequestToken(_UsedConfig, Networks.DropBoxAuth.Key, Networks.DropBoxAuth.Secret);
-            string AuthUrl = DropBoxStorageProviderTools.GetDropBoxAuthorizationUrl(_UsedConfig, _CurrentRequestToken);
-            AuthWindow authwin = new AuthWindow();
-            authwin.Navigated += HandleDropboxAuth;
-            authwin.NavigateTo(AuthUrl);
-            authwin.Show();
-        }
-
-        private void SetUpSkyDrive()
-        {
-
-        }
-
-        private void HandleDropboxAuth(object sender, System.Windows.Navigation.NavigationEventArgs e)
-        {
-            if (_GeneratedToken == null && e.Uri.ToString().StartsWith(_UsedConfig.AuthorizationCallBack.ToString()))
-            {
-                _GeneratedToken = DropBoxStorageProviderTools.ExchangeDropBoxRequestTokenIntoAccessToken(_UsedConfig, Networks.DropBoxAuth.Key, Networks.DropBoxAuth.Secret, _CurrentRequestToken);
-
-                (sender as Window).Close();
-
-                CloudStorage cs = new CloudStorage();
-                cs.Open(_UsedConfig, _GeneratedToken);
-
-                MessageBox.Show(cs.IsOpened.ToString());
-
-                cs.Close();
-            }
-            //throw new NotImplementedException();
-        }
-
-        private void mnuAddDropbox_Click(object sender, RoutedEventArgs e)
-        {
-            SetUpDropbox();
-        }
 
         private void btnNewItem_DropDownOpened(object sender, EventArgs e)
         {

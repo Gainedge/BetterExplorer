@@ -1168,22 +1168,21 @@
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
                                                                  Header="Connected Online Storage Accounts"
                                                                  Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Ribbon:DropDownButton x:Name="btnAddStorageService"
+                                        <Ribbon:Button x:Name="btnAddStorageService"
                                                Height="88"
                                                Margin="0,35,0,0"
                                                HorizontalAlignment="Left"
                                                VerticalAlignment="Top"
                                                Header="Add Account"
                                                Icon="Images\add16.png"
+                                               IsDefinitive="True"
                                                LargeIcon="Images\add32.png"
                                                Ribbon:KeyTip.Keys="A"
                                                Ribbon:KeyTip.AutoPlacement="False"
                                                Ribbon:KeyTip.VerticalAlignment="Bottom"
                                                Ribbon:KeyTip.HorizontalAlignment="Center"
-                                               Style="{DynamicResource DropDownButtonBackstageStyle}">
-                                            <MenuItem Header="Dropbox" x:Name="mnuAddDropbox" Click="mnuAddDropbox_Click" />
-                                            <MenuItem Header="Box.net" x:Name="mnuAddBoxNet" />
-                                        </Ribbon:DropDownButton>
+                                               Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddStorageService_Click" >
+                                        </Ribbon:Button>
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="FTP / WebDAV"

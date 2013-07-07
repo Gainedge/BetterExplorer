@@ -1,0 +1,34 @@
+﻿<Window x:Class="BetterExplorer.Networks.AccountAuthWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:BE="clr-namespace:BetterExplorer.Networks"
+        Title="Add an Account" Icon="add.ico" Height="500" Width="600" Closing="Window_Closing"  >
+    <Grid>
+        <Grid x:Name="MainMenu">
+            <TextBlock HorizontalAlignment="Left" Margin="20,45,0,0" TextWrapping="Wrap" Text="Add an Account" VerticalAlignment="Top" FontSize="24"/>
+            <TextBlock HorizontalAlignment="Left" Margin="20,80,0,0" TextWrapping="Wrap" Text="Select which service you'd like to connect to Better Explorer." VerticalAlignment="Top"/>
+            <ScrollViewer HorizontalAlignment="Left" Height="300" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Margin="30,120,0,0" VerticalAlignment="Top" Width="500">
+                <StackPanel x:Name="pnlServices" Orientation="Vertical" />
+            </ScrollViewer>
+            <Button Content="Cancel" x:Name="btnCancel" Click="btnCancel_Click" HorizontalAlignment="Left" Margin="507,438,0,0" VerticalAlignment="Top" Width="75"/>
+        </Grid>
+        <Grid x:Name="BrowserFrame" Visibility="Collapsed">
+            <WebBrowser x:Name="wBrowser" Margin="0,40,0,0" Navigated="wBrowser_Navigated" />
+            <BE:BackButton HorizontalAlignment="Left" VerticalAlignment="Top" Click="BackButton_Click" />
+            <Rectangle Fill="Transparent" HorizontalAlignment="Left" Height="30" Margin="100,5,0,0" Stroke="Black" StrokeThickness="1" VerticalAlignment="Top" Width="1">
+            </Rectangle>
+            <TextBlock HorizontalAlignment="Left" Margin="110,10,0,0" VerticalAlignment="Top" TextWrapping="Wrap" Text="Allow Better Explorer to connect to your account" x:Name="txtTitle" FontSize="16" />
+        </Grid>
+        <Grid x:Name="ThankYou" Visibility="Collapsed" >
+            <Grid VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Image VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="32" Height="32" Margin="10,10,10,0" x:Name="SuccessImage" Source="/BetterExplorer;component/Images/confirm32.png" />
+                <Image VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="32" Height="32" Margin="10,10,10,0" x:Name="FailureImage" Source="/BetterExplorer;component/Images/cancel32.png" />
+                <TextBlock VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="Auto" MaxWidth="420" Height="45" Margin="10,50,10,80" x:Name="ReportText" FontSize="16" Text="Better Explorer was able to connect to this service:" TextWrapping="Wrap" TextAlignment="Center" />
+                <TextBlock VerticalAlignment="Top" HorizontalAlignment="Stretch" Width="Auto" Height="24" TextAlignment="Center" Margin="10,100,10,20" x:Name="ServiceText" FontSize="16" Text="Service" />
+                <Button VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,5" Click="Button_Click" >
+                    <TextBlock Margin="12,3,12,3" Text="Close" />
+                </Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

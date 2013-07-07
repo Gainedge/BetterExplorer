@@ -219,6 +219,12 @@
     <Compile Include="MessageReceiver.Designer.cs">
       <DependentUpon>MessageReceiver.cs</DependentUpon>
     </Compile>
+    <Compile Include="Networks\AccountAuthWindow.xaml.cs">
+      <DependentUpon>AccountAuthWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Networks\AddAccountEntry.xaml.cs">
+      <DependentUpon>AddAccountEntry.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Networks\AddServer.xaml.cs">
       <DependentUpon>AddServer.xaml</DependentUpon>
     </Compile>
@@ -227,6 +233,9 @@
       <DependentUpon>AuthWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Networks\Common.cs" />
+    <Compile Include="Networks\BackButton.xaml.cs">
+      <DependentUpon>BackButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Networks\DropBoxAccount.cs" />
     <Compile Include="Networks\FileSystem\SharpBoxFileSystem.cs" />
     <Compile Include="Networks\FTPSserver.cs" />
@@ -382,6 +391,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Networks\AccountAuthWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Networks\AddAccountEntry.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Networks\AddServer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -389,6 +406,10 @@
     <Page Include="Networks\AuthWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Networks\BackButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Networks\ServerItem.xaml">
       <SubType>Designer</SubType>
@@ -936,10 +957,15 @@
     <Resource Include="Images\RecycleBinFull32.png" />
     <Resource Include="Images\add16.png" />
     <Resource Include="Images\add32.png" />
+    <Resource Include="Images\cancel16.png" />
+    <Resource Include="Images\cancel32.png" />
+    <Resource Include="Images\confirm16.png" />
+    <Resource Include="Images\confirm32.png" />
     <Content Include="Ionic.Zip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Networks\add.ico" />
+    <Resource Include="Networks\back.png" />
     <Content Include="StartIt.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1098,7 +1124,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
