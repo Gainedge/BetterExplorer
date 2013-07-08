@@ -4255,9 +4255,6 @@ namespace BetterExplorer
      //   });
      //   t.Start();
 
-                   
-
-
 				if (exitApp)
 				{
 
