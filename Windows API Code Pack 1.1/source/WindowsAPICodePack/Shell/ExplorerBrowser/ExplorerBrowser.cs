@@ -2627,7 +2627,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                   ExplorerMoiseWheelArgs args = new ExplorerMoiseWheelArgs();
                   args.Delta = Wheel_delta;
                   args.IsCTRL = buttonPressed == 0x0008;
-                  args.IsOutsideExplorer = !reclv.Contains(Cursor.Position);
+                  args.IsOutsideExplorer = (Cursor.Position.Y < reclv.Y) || (Cursor.Position.Y > (reclv.Y + reclv.Height));// !reclv.Contains(Cursor.Position);
                   args.MouseLocation = Cursor.Position;
                   MouseWheel.Invoke(this, args);
                   foreach (Delegate del in MouseWheel.GetInvocationList())

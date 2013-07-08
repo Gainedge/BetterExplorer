@@ -77,7 +77,6 @@ namespace BetterExplorerControls
       PathEventArgs args = new PathEventArgs(ShellObject.FromParsingName(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text));
       OnNavigateRequested(args);
       ExitEditMode();
-			//throw new NotImplementedException();
 		}
 		ContextMenu mnu;
 		private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
@@ -357,7 +356,6 @@ namespace BetterExplorerControls
 
 		private void HistoryCombo_MouseLeave(object sender, MouseEventArgs e)
 		{
-
 		}
 
 		private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e)
@@ -374,7 +372,6 @@ namespace BetterExplorerControls
 
 		private void stackPanel1_MouseUp(object sender, MouseButtonEventArgs e)
 		{
-
 		}
 
     public bool IsInEditMode
