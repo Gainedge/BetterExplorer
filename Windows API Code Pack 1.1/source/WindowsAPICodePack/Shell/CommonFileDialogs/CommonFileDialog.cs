@@ -86,7 +86,7 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
         internal abstract void PopulateWithFileNames(Collection<string> names);
         internal abstract void PopulateWithIShellItems(Collection<IShellItem> shellItems);
         internal abstract void CleanUpNativeFileDialog();
-        internal abstract ShellNativeMethods.FileOpenOptions GetDerivedOptionFlags(ShellNativeMethods.FileOpenOptions flags);
+        internal abstract FileOpenOptions GetDerivedOptionFlags(FileOpenOptions flags);
 
         #region Public API
 
@@ -457,7 +457,7 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
             // Add the shellitem to the places list
             if (nativeDialog != null)
             {
-                nativeDialog.AddPlace(place.NativeShellItem, (ShellNativeMethods.FileDialogAddPlacement)location);
+                nativeDialog.AddPlace(place.NativeShellItem, (FileDialogAddPlacement)location);
             }
         }
 
@@ -493,7 +493,7 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
             // Add the shellitem to the places list
             if (nativeDialog != null)
             {
-                nativeDialog.AddPlace(nativeShellItem, (ShellNativeMethods.FileDialogAddPlacement)location);
+                nativeDialog.AddPlace(nativeShellItem, (FileDialogAddPlacement)location);
             }
         }
 
@@ -768,12 +768,12 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
             dialog.SetFileName(DefaultFileName);
         }
 
-        private ShellNativeMethods.FileOpenOptions CalculateNativeDialogOptionFlags()
+        private FileOpenOptions CalculateNativeDialogOptionFlags()
         {
             // We start with only a few flags set by default, 
             // then go from there based on the current state
             // of the managed dialog's property values.
-            ShellNativeMethods.FileOpenOptions flags = ShellNativeMethods.FileOpenOptions.NoTestFileCreate;
+            FileOpenOptions flags = FileOpenOptions.NoTestFileCreate;
 
             // Call to derived (concrete) dialog to 
             // set dialog-specific flags.
@@ -782,39 +782,39 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
             // Apply other optional flags.
             if (ensureFileExists)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.FileMustExist;
+                flags |= FileOpenOptions.FileMustExist;
             }
             if (ensurePathExists)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.PathMustExist;
+                flags |= FileOpenOptions.PathMustExist;
             }
             if (!ensureValidNames)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.NoValidate;
+                flags |= FileOpenOptions.NoValidate;
             }
             if (!EnsureReadOnly)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.NoReadOnlyReturn;
+                flags |= FileOpenOptions.NoReadOnlyReturn;
             }
             if (restoreDirectory)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.NoChangeDirectory;
+                flags |= FileOpenOptions.NoChangeDirectory;
             }
             if (!showPlacesList)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.HidePinnedPlaces;
+                flags |= FileOpenOptions.HidePinnedPlaces;
             }
             if (!addToMruList)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.DontAddToRecent;
+                flags |= FileOpenOptions.DontAddToRecent;
             }
             if (showHiddenItems)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.ForceShowHidden;
+                flags |= FileOpenOptions.ForceShowHidden;
             }
             if (!navigateToShortcut)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.NoDereferenceLinks;
+                flags |= FileOpenOptions.NoDereferenceLinks;
             }
             return flags;
         }
@@ -898,32 +898,32 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
             }
             else if (propertyName == "Visible" && (dialogControl = control as CommonFileDialogControl) != null)
             {
-                ShellNativeMethods.ControlState state;
+                ControlState state;
                 customize.GetControlState(control.Id, out state);
 
                 if (dialogControl.Visible == true)
                 {
-                    state |= ShellNativeMethods.ControlState.Visible;
+                    state |= ControlState.Visible;
                 }
                 else if (dialogControl.Visible == false)
                 {
-                    state &= ~ShellNativeMethods.ControlState.Visible;
+                    state &= ~ControlState.Visible;
                 }
 
                 customize.SetControlState(control.Id, state);
             }
             else if (propertyName == "Enabled" && dialogControl != null)
             {
-                ShellNativeMethods.ControlState state;
+                ControlState state;
                 customize.GetControlState(control.Id, out state);
 
                 if (dialogControl.Enabled == true)
                 {
-                    state |= ShellNativeMethods.ControlState.Enable;
+                    state |= ControlState.Enable;
                 }
                 else if (dialogControl.Enabled == false)
                 {
-                    state &= ~ShellNativeMethods.ControlState.Enable;
+                    state &= ~ControlState.Enable;
                 }
 
                 customize.SetControlState(control.Id, state);
@@ -1013,7 +1013,7 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
         {
             string filename = null;
             IntPtr pszString = IntPtr.Zero;
-            HResult hr = item.GetDisplayName(ShellNativeMethods.ShellItemDesignNameOptions.DesktopAbsoluteParsing, out pszString);
+            HResult hr = item.GetDisplayName(ShellItemDesignNameOptions.DesktopAbsoluteParsing, out pszString);
             if (hr == HResult.Ok && pszString != IntPtr.Zero)
             {
                 filename = Marshal.PtrToStringAuto(pszString);
@@ -1223,12 +1223,12 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
             public void OnShareViolation(
                 IFileDialog pfd,
                 IShellItem psi,
-                out ShellNativeMethods.FileDialogEventShareViolationResponse pResponse)
+                out FileDialogEventShareViolationResponse pResponse)
             {
                 // Do nothing: we will ignore share violations, 
                 // and don't register
                 // for them, so this method should never be called.
-                pResponse = ShellNativeMethods.FileDialogEventShareViolationResponse.Accept;
+                pResponse = FileDialogEventShareViolationResponse.Accept;
             }
 
             public void OnTypeChange(IFileDialog pfd)
@@ -1236,10 +1236,10 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
                 parent.OnFileTypeChanged(EventArgs.Empty);
             }
 
-            public void OnOverwrite(IFileDialog pfd, IShellItem psi, out ShellNativeMethods.FileDialogEventOverwriteResponse pResponse)
+            public void OnOverwrite(IFileDialog pfd, IShellItem psi, out FileDialogEventOverwriteResponse pResponse)
             {
                 // Don't accept or reject the dialog, keep default settings
-                pResponse = ShellNativeMethods.FileDialogEventOverwriteResponse.Default;
+                pResponse = FileDialogEventOverwriteResponse.Default;
             }
 
             public void OnItemSelected(IFileDialogCustomize pfdc, int dwIDCtl, int dwIDItem)

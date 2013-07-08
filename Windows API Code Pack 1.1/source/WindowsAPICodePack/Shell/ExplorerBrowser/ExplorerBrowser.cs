@@ -3069,7 +3069,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         {
           this.IsRenameStarted = true;
           ShellObject[] dirs = this.SelectedItems.ToArray();
-          GongShellContextMenu cm1 = new GongShellContextMenu(this, this.SelectedItems.Count > 0 ? ShellViewGetItemObject.Selection : ShellViewGetItemObject.Background);
+          ContextShellMenu cm1 = new ContextShellMenu(this, this.SelectedItems.Count > 0 ? ShellViewGetItemObject.Selection : ShellViewGetItemObject.Background);
           cm1.ShowContextMenu(Cursor.Position);//new System.Drawing.Point(GetCursorPosition().X, GetCursorPosition().Y));
           return 0;
         }

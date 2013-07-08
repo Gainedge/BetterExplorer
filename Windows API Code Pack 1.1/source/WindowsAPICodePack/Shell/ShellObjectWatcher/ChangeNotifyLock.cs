@@ -33,7 +33,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
                         notifyStruct.item1, ref guid, out nativeShellItem)))
                     {
                         string name;
-                        nativeShellItem.GetDisplayName(ShellNativeMethods.ShellItemDesignNameOptions.FileSystemPath,
+                        nativeShellItem.GetDisplayName(ShellItemDesignNameOptions.FileSystemPath,
                             out name);                        
                         ItemName = name;
 
@@ -52,7 +52,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
                         notifyStruct.item2, ref guid, out nativeShellItem)))
                     {                        
                         string name;
-                        nativeShellItem.GetDisplayName(ShellNativeMethods.ShellItemDesignNameOptions.FileSystemPath,
+                        nativeShellItem.GetDisplayName(ShellItemDesignNameOptions.FileSystemPath,
                             out name);
                         ItemName2 = name;
 

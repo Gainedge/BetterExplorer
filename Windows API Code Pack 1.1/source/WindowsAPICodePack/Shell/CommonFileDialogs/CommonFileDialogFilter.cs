@@ -137,7 +137,7 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
         /// </summary>
         /// <returns>Filter specification for this filter</returns>
         /// 
-        internal ShellNativeMethods.FilterSpec GetFilterSpec()
+        internal FilterSpec GetFilterSpec()
         {
             StringBuilder filterList = new StringBuilder();
             foreach (string extension in extensions)
@@ -148,7 +148,7 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
                 filterList.Append(extension);
 
             }
-            return new ShellNativeMethods.FilterSpec(DisplayName, filterList.ToString());
+            return new FilterSpec(DisplayName, filterList.ToString());
         }
 
         /// <summary>

@@ -203,7 +203,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
                 if (_internalName == null && NativeShellItem != null)
                 {
                     IntPtr pszString = IntPtr.Zero;
-                    HResult hr = NativeShellItem.GetDisplayName(ShellNativeMethods.ShellItemDesignNameOptions.Normal, out pszString);
+                    HResult hr = NativeShellItem.GetDisplayName(ShellItemDesignNameOptions.Normal, out pszString);
                     if (hr == HResult.Ok && pszString != IntPtr.Zero)
                     {
                         _internalName = Marshal.PtrToStringAuto(pszString);
@@ -299,7 +299,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
             if (NativeShellItem2 != null)
             {
-                hr = NativeShellItem2.GetDisplayName((ShellNativeMethods.ShellItemDesignNameOptions)displayNameType, out returnValue);
+                hr = NativeShellItem2.GetDisplayName((ShellItemDesignNameOptions)displayNameType, out returnValue);
             }
 
             if (hr != HResult.Ok)
@@ -319,9 +319,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
             {
                 try
                 {
-                    ShellNativeMethods.ShellFileGetAttributesOptions sfgao;
-                    NativeShellItem.GetAttributes(ShellNativeMethods.ShellFileGetAttributesOptions.Link, out sfgao);
-                    return (sfgao & ShellNativeMethods.ShellFileGetAttributesOptions.Link) != 0;
+                    ShellFileGetAttributesOptions sfgao;
+                    NativeShellItem.GetAttributes(ShellFileGetAttributesOptions.Link, out sfgao);
+                    return (sfgao & ShellFileGetAttributesOptions.Link) != 0;
                 }
                 catch (FileNotFoundException)
                 {
@@ -341,9 +341,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
             {
                 try
                 {
-                    ShellNativeMethods.ShellFileGetAttributesOptions sfgao;
-                    NativeShellItem.GetAttributes(ShellNativeMethods.ShellFileGetAttributesOptions.Removable, out sfgao);
-                    return (sfgao & ShellNativeMethods.ShellFileGetAttributesOptions.Removable) != 0;
+                    ShellFileGetAttributesOptions sfgao;
+                    NativeShellItem.GetAttributes(ShellFileGetAttributesOptions.Removable, out sfgao);
+                    return (sfgao & ShellFileGetAttributesOptions.Removable) != 0;
                 }
                 catch (FileNotFoundException)
                 {
@@ -421,9 +421,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
             {
                 try
                 {
-                    ShellNativeMethods.ShellFileGetAttributesOptions sfgao;
-                    NativeShellItem.GetAttributes(ShellNativeMethods.ShellFileGetAttributesOptions.FileSystem, out sfgao);
-                    return (sfgao & ShellNativeMethods.ShellFileGetAttributesOptions.FileSystem) != 0;
+                    ShellFileGetAttributesOptions sfgao;
+                    NativeShellItem.GetAttributes(ShellFileGetAttributesOptions.FileSystem, out sfgao);
+                    return (sfgao & ShellFileGetAttributesOptions.FileSystem) != 0;
                 }
                 catch (FileNotFoundException)
                 {
@@ -445,9 +445,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
             {
                 try
                 {
-                    ShellNativeMethods.ShellFileGetAttributesOptions sfgao;
-                    NativeShellItem.GetAttributes(ShellNativeMethods.ShellFileGetAttributesOptions.Folder, out sfgao);
-                    return (sfgao & ShellNativeMethods.ShellFileGetAttributesOptions.Folder) != 0;
+                    ShellFileGetAttributesOptions sfgao;
+                    NativeShellItem.GetAttributes(ShellFileGetAttributesOptions.Folder, out sfgao);
+                    return (sfgao & ShellFileGetAttributesOptions.Folder) != 0;
                 }
                 catch (FileNotFoundException)
                 {
@@ -464,9 +464,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
         public bool IsHidden {
           get {
             try {
-              ShellNativeMethods.ShellFileGetAttributesOptions sfgao;
-              NativeShellItem.GetAttributes(ShellNativeMethods.ShellFileGetAttributesOptions.Hidden, out sfgao);
-              return (sfgao & ShellNativeMethods.ShellFileGetAttributesOptions.Hidden) != 0;
+              ShellFileGetAttributesOptions sfgao;
+              NativeShellItem.GetAttributes(ShellFileGetAttributesOptions.Hidden, out sfgao);
+              return (sfgao & ShellFileGetAttributesOptions.Hidden) != 0;
             } catch (FileNotFoundException) {
               return false;
             } catch (NullReferenceException) {
@@ -482,9 +482,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
             {
                 try
                 {
-                    ShellNativeMethods.ShellFileGetAttributesOptions sfgao;
-                    NativeShellItem.GetAttributes(ShellNativeMethods.ShellFileGetAttributesOptions.Share, out sfgao);
-                    return (sfgao & ShellNativeMethods.ShellFileGetAttributesOptions.Share) != 0;
+                    ShellFileGetAttributesOptions sfgao;
+                    NativeShellItem.GetAttributes(ShellFileGetAttributesOptions.Share, out sfgao);
+                    return (sfgao & ShellFileGetAttributesOptions.Share) != 0;
                 }
                 catch (FileNotFoundException)
                 {

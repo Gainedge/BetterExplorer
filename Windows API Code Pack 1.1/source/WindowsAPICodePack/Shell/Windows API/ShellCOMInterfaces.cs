@@ -26,6 +26,83 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
     #region COM Interfaces
 
+      #region IContextMenu
+      [ComImport]
+      [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+      [Guid("000214e4-0000-0000-c000-000000000046")]
+      public interface IContextMenu
+      {
+        [PreserveSig]
+        HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
+                                 int idCmdLast, CMF uFlags);
+
+        void InvokeCommand(ref CMINVOKECOMMANDINFO pici);
+
+        [PreserveSig]
+        HResult GetCommandString(int idcmd, uint uflags, int reserved,
+            [MarshalAs(UnmanagedType.LPArray)] byte[] commandstring,
+            int cch);
+      }
+
+      [ComImport]
+      [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+      [Guid("000214f4-0000-0000-c000-000000000046")]
+      public interface IContextMenu2 : IContextMenu
+      {
+        [PreserveSig]
+        new HResult QueryContextMenu(IntPtr hMenu, uint indexMenu,
+            int idCmdFirst, int idCmdLast,
+            CMF uFlags);
+
+        void InvokeCommand(ref CMINVOKECOMMANDINFO_ByIndex pici);
+
+        [PreserveSig]
+        new HResult GetCommandString(int idcmd, uint uflags, int reserved,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
+            int cch);
+
+        [PreserveSig]
+        HResult HandleMenuMsg(int uMsg, IntPtr wParam, IntPtr lParam);
+      }
+
+      [ComImport]
+      [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+      [Guid("bcfce0a0-ec17-11d0-8d10-00a0c90f2719")]
+      public interface IContextMenu3 : IContextMenu2
+      {
+        [PreserveSig]
+        new HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
+                             int idCmdLast, CMF uFlags);
+
+        [PreserveSig]
+        new HResult InvokeCommand(ref CMINVOKECOMMANDINFOEX pici);
+
+        [PreserveSig]
+        new HResult GetCommandString(int idcmd, uint uflags, int reserved,
+            [MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
+            int cch);
+
+        [PreserveSig]
+        new HResult HandleMenuMsg(int uMsg, IntPtr wParam, IntPtr lParam);
+
+        [PreserveSig]
+        HResult HandleMenuMsg2(int uMsg, IntPtr wParam, IntPtr lParam,
+            out IntPtr plResult);
+      }
+      #endregion
+
+    [ComImport()]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [GuidAttribute("000214e8-0000-0000-c000-000000000046")]
+    public interface IShellExtInit
+    {
+      [PreserveSig()]
+      int Initialize(
+          IntPtr pidlFolder,
+          IntPtr lpdobj,
+          uint hKeyProgID);
+    }
+
     [ComImport(),
     Guid(ShellIIDGuid.IModalWindow),
     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -56,11 +133,11 @@ namespace Microsoft.WindowsAPICodePack.Shell
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         HResult GetDisplayName(
-            [In] ShellNativeMethods.ShellItemDesignNameOptions sigdnName,
+            [In] ShellItemDesignNameOptions sigdnName,
             out IntPtr ppszName);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void GetAttributes([In] ShellNativeMethods.ShellFileGetAttributesOptions sfgaoMask, out ShellNativeMethods.ShellFileGetAttributesOptions psfgaoAttribs);
+        void GetAttributes([In] ShellFileGetAttributesOptions sfgaoMask, out ShellFileGetAttributesOptions psfgaoAttribs);
 
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -91,11 +168,11 @@ namespace Microsoft.WindowsAPICodePack.Shell
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         HResult GetDisplayName(
-            [In] ShellNativeMethods.ShellItemDesignNameOptions sigdnName,
+            [In] ShellItemDesignNameOptions sigdnName,
             [MarshalAs(UnmanagedType.LPWStr)] out string ppszName);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void GetAttributes([In] ShellNativeMethods.ShellFileGetAttributesOptions sfgaoMask, out ShellNativeMethods.ShellFileGetAttributesOptions psfgaoAttribs);
+        void GetAttributes([In] ShellFileGetAttributesOptions sfgaoMask, out ShellFileGetAttributesOptions psfgaoAttribs);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void Compare(
@@ -105,15 +182,15 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime), PreserveSig]
         int GetPropertyStore(
-            [In] ShellNativeMethods.GetPropertyStoreOptions Flags,
+            [In] GetPropertyStoreOptions Flags,
             [In] ref Guid riid,
             [Out, MarshalAs(UnmanagedType.Interface)] out IPropertyStore ppv);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void GetPropertyStoreWithCreateObject([In] ShellNativeMethods.GetPropertyStoreOptions Flags, [In, MarshalAs(UnmanagedType.IUnknown)] object punkCreateObject, [In] ref Guid riid, out IntPtr ppv);
+        void GetPropertyStoreWithCreateObject([In] GetPropertyStoreOptions Flags, [In, MarshalAs(UnmanagedType.IUnknown)] object punkCreateObject, [In] ref Guid riid, out IntPtr ppv);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void GetPropertyStoreForKeys([In] ref PropertyKey rgKeys, [In] uint cKeys, [In] ShellNativeMethods.GetPropertyStoreOptions Flags, [In] ref Guid riid, [Out, MarshalAs(UnmanagedType.IUnknown)] out IPropertyStore ppv);
+        void GetPropertyStoreForKeys([In] ref PropertyKey rgKeys, [In] uint cKeys, [In] GetPropertyStoreOptions Flags, [In] ref Guid riid, [Out, MarshalAs(UnmanagedType.IUnknown)] out IPropertyStore ppv);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void GetPropertyDescriptionList([In] ref PropertyKey keyType, [In] ref Guid riid, out IntPtr ppv);
@@ -178,9 +255,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         HResult GetAttributes(
-            [In] ShellNativeMethods.ShellItemAttributeOptions dwAttribFlags,
-            [In] ShellNativeMethods.ShellFileGetAttributesOptions sfgaoMask,
-            out ShellNativeMethods.ShellFileGetAttributesOptions psfgaoAttribs);
+            [In] ShellItemAttributeOptions dwAttribFlags,
+            [In] ShellFileGetAttributesOptions sfgaoMask,
+            out ShellFileGetAttributesOptions psfgaoAttribs);
 
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -223,7 +300,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         HResult GetFolders(
-            [In] ShellNativeMethods.LibraryFolderFilter lff,
+            [In] LibraryFolderFilter lff,
             [In] ref Guid riid,
             [MarshalAs(UnmanagedType.Interface)] out IShellItemArray ppv);
 
@@ -236,23 +313,23 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void GetDefaultSaveFolder(
-            [In] ShellNativeMethods.DefaultSaveFolderType dsft,
+            [In] DefaultSaveFolderType dsft,
             [In] ref Guid riid,
             [MarshalAs(UnmanagedType.Interface)] out IShellItem ppv);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void SetDefaultSaveFolder(
-            [In] ShellNativeMethods.DefaultSaveFolderType dsft,
+            [In] DefaultSaveFolderType dsft,
             [In, MarshalAs(UnmanagedType.Interface)] IShellItem si);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void GetOptions(
-            out ShellNativeMethods.LibraryOptions lofOptions);
+            out LibraryOptions lofOptions);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void SetOptions(
-            [In] ShellNativeMethods.LibraryOptions lofMask,
-            [In] ShellNativeMethods.LibraryOptions lofOptions);
+            [In] LibraryOptions lofMask,
+            [In] LibraryOptions lofOptions);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void GetFolderType(out Guid ftid);
@@ -273,14 +350,14 @@ namespace Microsoft.WindowsAPICodePack.Shell
         void Save(
             [In, MarshalAs(UnmanagedType.Interface)] IShellItem folderToSaveIn,
             [In, MarshalAs(UnmanagedType.LPWStr)] string libraryName,
-            [In] ShellNativeMethods.LibrarySaveOptions lsf,
+            [In] LibrarySaveOptions lsf,
             [MarshalAs(UnmanagedType.Interface)] out IShellItem2 savedTo);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void SaveInKnownFolder(
             [In] ref Guid kfidToSaveIn,
             [In, MarshalAs(UnmanagedType.LPWStr)] string libraryName,
-            [In] ShellNativeMethods.LibrarySaveOptions lsf,
+            [In] LibrarySaveOptions lsf,
             [MarshalAs(UnmanagedType.Interface)] out IShellItem2 savedTo);
     };
 
@@ -292,7 +369,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
         [PreserveSig]
         HResult GetImage(
         [In, MarshalAs(UnmanagedType.Struct)] CoreNativeMethods.Size size,
-        [In] ShellNativeMethods.SIIGBF flags,
+        [In] SIIGBF flags,
         [Out] out IntPtr phbm);
     }
 
@@ -303,15 +380,15 @@ namespace Microsoft.WindowsAPICodePack.Shell
     {
         void GetThumbnail([In] IShellItem pShellItem,
         [In] uint cxyRequestedThumbSize,
-        [In] Microsoft.WindowsAPICodePack.Shell.ShellNativeMethods.ThumbnailOptions flags,
+        [In] ThumbnailOptions flags,
         [Out] out ISharedBitmap ppvThumb,
-        [Out] out Microsoft.WindowsAPICodePack.Shell.ShellNativeMethods.ThumbnailCacheOptions pOutFlags,
-        [Out] Microsoft.WindowsAPICodePack.Shell.ShellNativeMethods.ThumbnailId pThumbnailID);
+        [Out] out ThumbnailCacheOptions pOutFlags,
+        [Out] ThumbnailId pThumbnailID);
 
-        void GetThumbnailByID([In] Microsoft.WindowsAPICodePack.Shell.ShellNativeMethods.ThumbnailId thumbnailID,
+        void GetThumbnailByID([In] ThumbnailId thumbnailID,
         [In] uint cxyRequestedThumbSize,
         [Out] out ISharedBitmap ppvThumb,
-        [Out] out Microsoft.WindowsAPICodePack.Shell.ShellNativeMethods.ThumbnailCacheOptions pOutFlags);
+        [Out] out ThumbnailCacheOptions pOutFlags);
     }
 
     [ComImport,
@@ -325,43 +402,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
         void InitializeBitmap([In] IntPtr hbm, [In] ThumbnailAlphaType wtsAT);
         void Detach([Out] out IntPtr phbm);
     }
-    [Flags]
-    public enum SFGAO : uint
-    {
-      BROWSABLE = 0x8000000,
-      CANCOPY = 1,
-      CANDELETE = 0x20,
-      CANLINK = 4,
-      CANMONIKER = 0x400000,
-      CANMOVE = 2,
-      CANRENAME = 0x10,
-      CAPABILITYMASK = 0x177,
-      COMPRESSED = 0x4000000,
-      CONTENTSMASK = 0x80000000,
-      DISPLAYATTRMASK = 0xfc000,
-      DROPTARGET = 0x100,
-      ENCRYPTED = 0x2000,
-      FILESYSANCESTOR = 0x10000000,
-      FILESYSTEM = 0x40000000,
-      FOLDER = 0x20000000,
-      GHOSTED = 0x8000,
-      HASPROPSHEET = 0x40,
-      HASSTORAGE = 0x400000,
-      HASSUBFOLDER = 0x80000000,
-      HIDDEN = 0x80000,
-      ISSLOW = 0x4000,
-      LINK = 0x10000,
-      NEWCONTENT = 0x200000,
-      NONENUMERATED = 0x100000,
-      READONLY = 0x40000,
-      REMOVABLE = 0x2000000,
-      SHARE = 0x20000,
-      STORAGE = 8,
-      STORAGEANCESTOR = 0x800000,
-      STORAGECAPMASK = 0x70c50008,
-      STREAM = 0x400000,
-      VALIDATE = 0x1000000
-    }
+    
     [ComImport,
     Guid(ShellIIDGuid.IShellFolder),
     InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
@@ -379,7 +420,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
                 ref SFGAO pdwAttributes);
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        HResult EnumObjects([In] IntPtr hwnd, [In] ShellNativeMethods.ShellFolderEnumerationOptions grfFlags, [MarshalAs(UnmanagedType.Interface)] out IEnumIDList ppenumIDList);
+        HResult EnumObjects([In] IntPtr hwnd, [In] ShellFolderEnumerationOptions grfFlags, [MarshalAs(UnmanagedType.Interface)] out IEnumIDList ppenumIDList);
 
         [PreserveSig]
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -421,7 +462,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
         void ParseDisplayName([In] IntPtr hwnd, [In, MarshalAs(UnmanagedType.Interface)] IBindCtx pbc, [In, MarshalAs(UnmanagedType.LPWStr)] string pszDisplayName, [In, Out] ref uint pchEaten, [Out] IntPtr ppidl, [In, Out] ref uint pdwAttributes);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        void EnumObjects([In] IntPtr hwnd, [In] ShellNativeMethods.ShellFolderEnumerationOptions grfFlags, [MarshalAs(UnmanagedType.Interface)] out IEnumIDList ppenumIDList);
+        void EnumObjects([In] IntPtr hwnd, [In] ShellFolderEnumerationOptions grfFlags, [MarshalAs(UnmanagedType.Interface)] out IEnumIDList ppenumIDList);
 
         [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
         void BindToObject([In] IntPtr pidl, /*[In, MarshalAs(UnmanagedType.Interface)] IBindCtx*/ IntPtr pbc, [In] ref Guid riid, [Out, MarshalAs(UnmanagedType.Interface)] out IShellFolder ppv);

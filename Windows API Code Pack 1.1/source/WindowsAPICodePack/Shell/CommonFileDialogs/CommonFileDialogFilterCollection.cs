@@ -14,9 +14,9 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
         // collection by themselves.
         internal CommonFileDialogFilterCollection() { }
 
-        internal ShellNativeMethods.FilterSpec[] GetAllFilterSpecs()
+        internal FilterSpec[] GetAllFilterSpecs()
         {
-            ShellNativeMethods.FilterSpec[] filterSpecs = new ShellNativeMethods.FilterSpec[this.Count];
+            FilterSpec[] filterSpecs = new FilterSpec[this.Count];
 
             for (int i = 0; i < this.Count; i++)
             {

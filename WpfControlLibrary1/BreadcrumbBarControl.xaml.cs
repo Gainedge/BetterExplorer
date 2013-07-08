@@ -14,7 +14,6 @@ using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Shell;
 using System.Threading;
 using System.IO;
-using GongSolutions.Shell;
 using WindowsHelper;
 using System.Runtime.InteropServices;
 
@@ -75,7 +74,7 @@ namespace BetterExplorerControls
 		void g_Click(object sender, RoutedEventArgs e)
 		{
 			HistoryCombo.Text = (string)(sender as MenuItem).Header;
-      PathEventArgs args = new PathEventArgs(ShellObject.FromParsingName(HistoryCombo.Text));
+      PathEventArgs args = new PathEventArgs(ShellObject.FromParsingName(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text));
       OnNavigateRequested(args);
       ExitEditMode();
 			//throw new NotImplementedException();
@@ -305,22 +304,14 @@ namespace BetterExplorerControls
 
     void duh_ContextMenuRequested(object sender, PathEventArgs e)
     {
-      
-      
-      //ShellContextMenu cm = new ShellContextMenu(e.ShellObject);
       ShellObject[] dirs = new ShellObject[1];
       dirs[0] = e.ShellObject;
       Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow)
                           .Transform(new Point(0, 0));
       Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
-      GongShellContextMenu cm1 = new GongShellContextMenu(dirs);
-      cm1.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
-      //cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
+      ContextShellMenu cm = new ContextShellMenu(dirs);
+      cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
     }
-
-		void duh_MouseDoubleClick(object sender, EventArgs e)
-		{
-		}
 
 		private string FixShellPathsInEditMode(string LastPath)
 		{

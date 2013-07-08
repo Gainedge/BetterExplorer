@@ -167,24 +167,24 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
             }
         }
 
-        internal override ShellNativeMethods.FileOpenOptions GetDerivedOptionFlags(ShellNativeMethods.FileOpenOptions flags)
+        internal override FileOpenOptions GetDerivedOptionFlags(FileOpenOptions flags)
         {
             if (multiselect)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.AllowMultiSelect;
+                flags |= FileOpenOptions.AllowMultiSelect;
             }
             if (isFolderPicker)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.PickFolders;
+                flags |= FileOpenOptions.PickFolders;
             }
             
             if (!allowNonFileSystem)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.ForceFilesystem;
+                flags |= FileOpenOptions.ForceFilesystem;
             }
             else if (allowNonFileSystem)
             {
-                flags |= ShellNativeMethods.FileOpenOptions.AllNonStorageItems;
+                flags |= FileOpenOptions.AllNonStorageItems;
             }
 
             return flags;

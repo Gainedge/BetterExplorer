@@ -33,7 +33,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
             throw new NotSupportedException();
         }
 
-        public HResult GetAttributes(ShellNativeMethods.ShellItemAttributeOptions dwAttribFlags, ShellNativeMethods.ShellFileGetAttributesOptions sfgaoMask, out ShellNativeMethods.ShellFileGetAttributesOptions psfgaoAttribs)
+        public HResult GetAttributes(ShellItemAttributeOptions dwAttribFlags, ShellFileGetAttributesOptions sfgaoMask, out ShellFileGetAttributesOptions psfgaoAttribs)
         {
             throw new NotSupportedException();
         }

@@ -108,9 +108,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
             this.Name = libraryName;
             Guid guid = new Guid(ShellKFIDGuid.Libraries);
 
-            ShellNativeMethods.LibrarySaveOptions flags = overwrite ?
-                    ShellNativeMethods.LibrarySaveOptions.OverrideExisting :
-                    ShellNativeMethods.LibrarySaveOptions.FailIfThere;
+            LibrarySaveOptions flags = overwrite ?
+                    LibrarySaveOptions.OverrideExisting :
+                    LibrarySaveOptions.FailIfThere;
 
             nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
             nativeShellLibrary.SaveInKnownFolder(ref guid, libraryName, flags, out nativeShellItem);
@@ -136,9 +136,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
             this.Name = libraryName;
             Guid guid = knownFolder.FolderId;
 
-            ShellNativeMethods.LibrarySaveOptions flags = overwrite ?
-                    ShellNativeMethods.LibrarySaveOptions.OverrideExisting :
-                    ShellNativeMethods.LibrarySaveOptions.FailIfThere;
+            LibrarySaveOptions flags = overwrite ?
+                    LibrarySaveOptions.OverrideExisting :
+                    LibrarySaveOptions.FailIfThere;
 
             nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
             nativeShellLibrary.SaveInKnownFolder(ref guid, libraryName, flags, out nativeShellItem);
@@ -166,9 +166,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
             this.Name = libraryName;
 
-            ShellNativeMethods.LibrarySaveOptions flags = overwrite ?
-                    ShellNativeMethods.LibrarySaveOptions.OverrideExisting :
-                    ShellNativeMethods.LibrarySaveOptions.FailIfThere;
+            LibrarySaveOptions flags = overwrite ?
+                    LibrarySaveOptions.OverrideExisting :
+                    LibrarySaveOptions.FailIfThere;
 
             Guid guid = new Guid(ShellIIDGuid.IShellItem);
 
@@ -285,7 +285,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
                 IShellItem saveFolderItem;
 
                 nativeShellLibrary.GetDefaultSaveFolder(
-                    ShellNativeMethods.DefaultSaveFolderType.Detect,
+                    DefaultSaveFolderType.Detect,
                     ref guid,
                     out saveFolderItem);
 
@@ -311,7 +311,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
                 ShellNativeMethods.SHCreateItemFromParsingName(fullPath, IntPtr.Zero, ref guid, out saveFolderItem);
 
                 nativeShellLibrary.SetDefaultSaveFolder(
-                    ShellNativeMethods.DefaultSaveFolderType.Detect,
+                    DefaultSaveFolderType.Detect,
                     saveFolderItem);
 
                 nativeShellLibrary.Commit();
@@ -326,28 +326,28 @@ namespace Microsoft.WindowsAPICodePack.Shell
         {
             get
             {
-                ShellNativeMethods.LibraryOptions flags = ShellNativeMethods.LibraryOptions.PinnedToNavigationPane;
+                LibraryOptions flags = LibraryOptions.PinnedToNavigationPane;
 
                 nativeShellLibrary.GetOptions(out flags);
 
                 return (
-                    (flags & ShellNativeMethods.LibraryOptions.PinnedToNavigationPane) ==
-                    ShellNativeMethods.LibraryOptions.PinnedToNavigationPane);
+                    (flags & LibraryOptions.PinnedToNavigationPane) ==
+                    LibraryOptions.PinnedToNavigationPane);
             }
             set
             {
-                ShellNativeMethods.LibraryOptions flags = ShellNativeMethods.LibraryOptions.Default;
+                LibraryOptions flags = LibraryOptions.Default;
 
                 if (value)
                 {
-                    flags |= ShellNativeMethods.LibraryOptions.PinnedToNavigationPane;
+                    flags |= LibraryOptions.PinnedToNavigationPane;
                 }
                 else
                 {
-                    flags &= ~ShellNativeMethods.LibraryOptions.PinnedToNavigationPane;
+                    flags &= ~LibraryOptions.PinnedToNavigationPane;
                 }
 
-                nativeShellLibrary.SetOptions(ShellNativeMethods.LibraryOptions.PinnedToNavigationPane, flags);
+                nativeShellLibrary.SetOptions(LibraryOptions.PinnedToNavigationPane, flags);
                 nativeShellLibrary.Commit();
             }
         }
@@ -546,8 +546,8 @@ namespace Microsoft.WindowsAPICodePack.Shell
                     title,
                     instruction,
                     allowAllLocations ?
-                       ShellNativeMethods.LibraryManageDialogOptions.NonIndexableLocationWarning :
-                       ShellNativeMethods.LibraryManageDialogOptions.Default);
+                       LibraryManageDialogOptions.NonIndexableLocationWarning :
+                       LibraryManageDialogOptions.Default);
             });
 
             staWorker.SetApartmentState(ApartmentState.STA);
@@ -741,7 +741,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
             Guid shellItemArrayGuid = new Guid(ShellIIDGuid.IShellItemArray);
 
-            HResult hr = nativeShellLibrary.GetFolders(ShellNativeMethods.LibraryFolderFilter.AllItems, ref shellItemArrayGuid, out itemArray);
+            HResult hr = nativeShellLibrary.GetFolders(LibraryFolderFilter.AllItems, ref shellItemArrayGuid, out itemArray);
 
             if (!CoreErrorHelper.Succeeded(hr)) { return list; }
 

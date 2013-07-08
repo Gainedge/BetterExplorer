@@ -1,10 +1,155 @@
-﻿using System;
+﻿using Microsoft.WindowsAPICodePack.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Microsoft.WindowsAPICodePack.Shell
 {
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    internal struct FilterSpec
+    {
+      [MarshalAs(UnmanagedType.LPWStr)]
+      internal string Name;
+      [MarshalAs(UnmanagedType.LPWStr)]
+      internal string Spec;
+
+      internal FilterSpec(string name, string spec)
+      {
+        Name = name;
+        Spec = spec;
+      }
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    internal struct ThumbnailId
+    {
+      [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 16)]
+      byte rgbKey;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    public struct CMINVOKECOMMANDINFO
+    {
+      public int cbSize;
+      public int fMask;
+      public IntPtr hwnd;
+      public string lpVerb;
+      public string lpParameters;
+      public string lpDirectory;
+      public int nShow;
+      public int dwHotKey;
+      public IntPtr hIcon;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    public struct CMINVOKECOMMANDINFO_ByIndex
+    {
+      public int cbSize;
+      public int fMask;
+      public IntPtr hwnd;
+      public int iVerb;
+      public string lpParameters;
+      public string lpDirectory;
+      public int nShow;
+      public int dwHotKey;
+      public IntPtr hIcon;
+    }
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct CMINVOKECOMMANDINFOEX
+    {
+      public int Size;
+
+      public CMIC Mask;
+
+      public IntPtr Hwnd;
+
+      public IntPtr Verb;
+
+      [MarshalAs(UnmanagedType.LPStr)]
+      public string Parameters;
+
+      [MarshalAs(UnmanagedType.LPStr)]
+      public string Directory;
+
+      public SW ShowType;
+
+      public int HotKey;
+
+      public IntPtr hIcon;
+
+      [MarshalAs(UnmanagedType.LPStr)]
+      public string Title;
+
+      public IntPtr VerbW;
+
+      [MarshalAs(UnmanagedType.LPWStr)]
+      public string ParametersW;
+
+      [MarshalAs(UnmanagedType.LPWStr)]
+      public string DirectoryW;
+
+      [MarshalAs(UnmanagedType.LPWStr)]
+      public string TitleW;
+
+      public POINT InvokePoint;
+    }
+
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MENUINFO
+    {
+      public int cbSize;
+      public MIM fMask;
+      public int dwStyle;
+      public int cyMax;
+      public IntPtr hbrBack;
+      public int dwContextHelpID;
+      public int dwMenuData;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MENUITEMINFO
+    {
+      public uint cbSize;
+      public uint fMask;
+      public uint fType;
+      public uint fState;
+      public uint wID;
+      public IntPtr hSubMenu;
+      public IntPtr hbmpChecked;
+      public IntPtr hbmpUnchecked;
+      public IntPtr dwItemData;
+      public string dwTypeData;
+      public uint cch;
+      public IntPtr hbmpItem;
+
+      // return the size of the structure
+      public static uint sizeOf
+      {
+        get { return (uint)Marshal.SizeOf(typeof(MENUITEMINFO)); }
+      }
+    }
+
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    struct TVITEMW
+    {
+      public TVIF mask;
+      public IntPtr hItem;
+      public TVIS state;
+      public TVIS stateMask;
+      public string pszText;
+      public int cchTextMax;
+      public int iImage;
+      public int iSelectedImage;
+      public int cChildren;
+      public int lParam;
+    }
+
     /// <summary>
     /// The STGM constants are flags that indicate 
     /// conditions for creating and deleting the object and access modes 

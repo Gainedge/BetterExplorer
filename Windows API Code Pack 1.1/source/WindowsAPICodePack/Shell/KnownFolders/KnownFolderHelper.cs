@@ -86,11 +86,11 @@ namespace Microsoft.WindowsAPICodePack.Shell
             // If we have a valid IShellItem, try to get the FileSystem attribute.
             if (shellItem != null)
             {
-                ShellNativeMethods.ShellFileGetAttributesOptions sfgao;
-                shellItem.GetAttributes(ShellNativeMethods.ShellFileGetAttributesOptions.FileSystem, out sfgao);
+                ShellFileGetAttributesOptions sfgao;
+                shellItem.GetAttributes(ShellFileGetAttributesOptions.FileSystem, out sfgao);
 
                 // Is this item a FileSystem item?
-                isFileSystem = (sfgao & ShellNativeMethods.ShellFileGetAttributesOptions.FileSystem) != 0;
+                isFileSystem = (sfgao & ShellFileGetAttributesOptions.FileSystem) != 0;
             }
 
             // If it's FileSystem, create a FileSystemKnownFolder, else NonFileSystemKnownFolder

@@ -9390,7 +9390,7 @@ namespace BetterExplorer
         private void btnNewItem_DropDownOpened(object sender, EventArgs e)
         {
 
-          GongShellContextMenu mnu = new GongShellContextMenu(Explorer, true);
+          ContextShellMenu mnu = new ContextShellMenu(Explorer, true);
           var controlPos = btnNewItem.TransformToAncestor(Application.Current.MainWindow)
                           .Transform(new System.Windows.Point(0, 0));
           var tempPoint = PointToScreen(new System.Windows.Point(controlPos.X, controlPos.Y));

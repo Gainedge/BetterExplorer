@@ -37,14 +37,14 @@ namespace Microsoft.WindowsAPICodePack.Shell
             if (!string.IsNullOrEmpty(itemType)) { itemType = itemType.ToUpperInvariant(); }
 
             // Get some IShellItem attributes
-            ShellNativeMethods.ShellFileGetAttributesOptions sfgao;
-            nativeShellItem2.GetAttributes(ShellNativeMethods.ShellFileGetAttributesOptions.FileSystem | ShellNativeMethods.ShellFileGetAttributesOptions.Folder, out sfgao);
+            ShellFileGetAttributesOptions sfgao;
+            nativeShellItem2.GetAttributes(ShellFileGetAttributesOptions.FileSystem | ShellFileGetAttributesOptions.Folder, out sfgao);
 
             // Is this item a FileSystem item?
-            bool isFileSystem = (sfgao & ShellNativeMethods.ShellFileGetAttributesOptions.FileSystem) != 0;
+            bool isFileSystem = (sfgao & ShellFileGetAttributesOptions.FileSystem) != 0;
 
             // Is this item a Folder?
-            bool isFolder = (sfgao & ShellNativeMethods.ShellFileGetAttributesOptions.Folder) != 0;
+            bool isFolder = (sfgao & ShellFileGetAttributesOptions.Folder) != 0;
 
             // Shell Library
             ShellLibrary shellLibrary = null;

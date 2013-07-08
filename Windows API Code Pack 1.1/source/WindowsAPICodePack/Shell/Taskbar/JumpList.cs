@@ -403,7 +403,7 @@ namespace Microsoft.WindowsAPICodePack.Taskbar
             if (customCategoriesCollection != null)
             {
                 IntPtr pszString = IntPtr.Zero;
-                HResult hr = item.GetDisplayName(ShellNativeMethods.ShellItemDesignNameOptions.FileSystemPath, out pszString);
+                HResult hr = item.GetDisplayName(ShellItemDesignNameOptions.FileSystemPath, out pszString);
                 if (hr == HResult.Ok && pszString != IntPtr.Zero)
                 {
                     path = Marshal.PtrToStringAuto(pszString);

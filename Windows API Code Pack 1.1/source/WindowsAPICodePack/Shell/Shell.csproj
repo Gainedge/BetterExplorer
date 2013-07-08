@@ -290,12 +290,12 @@
     </Compile>
     <Compile Include="FileOperations\Theme.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="GongShellMenu.cs" />
+    <Compile Include="ContextShellMenu.cs" />
     <Compile Include="IFileOperation.cs" />
     <Compile Include="IFileOperationProgressSink.cs" />
-    <Compile Include="Interop\Common\IAsyncDataObject.cs" />
+    <Compile Include="Windows API\IAsyncDataObject.cs" />
     <Compile Include="Interop\Common\IntPtrExtensions.cs" />
-    <Compile Include="Interop\Common\ShellNativeStructs.cs" />
+    <Compile Include="Windows API\ShellNativeStructs.cs" />
     <Compile Include="Interop\ShellObjectWatcher\ShellObjectWatcherNativeMethods.cs" />
     <Compile Include="IPC.cs" />
     <Compile Include="IProgressDialog.cs" />
@@ -307,7 +307,7 @@
     <Compile Include="Interop\StockIcons\StockIconsNativeMethods.cs" />
     <Compile Include="Interop\Common\WindowUtilities.cs" />
     <Compile Include="KnownFolders\IKnownFolder.cs" />
-    <Compile Include="Interop\Common\ShellCOMClasses.cs" />
+    <Compile Include="Windows API\ShellCOMClasses.cs" />
     <Compile Include="Interop\ExplorerBrowser\ExplorerBrowserCOMGuids.cs">
     </Compile>
     <Compile Include="Interop\ExplorerBrowser\ExplorerBrowserCOMInterfaces.cs" />
@@ -325,7 +325,7 @@
     <Compile Include="KnownFolders\RedirectionCapabilities.cs" />
     <Compile Include="KnownFolders\RetrievalOptions.cs" />
     <Compile Include="Common\ShellSearchConnector.cs" />
-    <Compile Include="Common\ShellEnums.cs" />
+    <Compile Include="Windows API\ShellEnums.cs" />
     <Compile Include="Common\ShellLibrary.cs" />
     <Compile Include="Common\ShellObject.cs" />
     <Compile Include="CommonFileDialogs\CommonFileDialog.cs" />
@@ -378,7 +378,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="ShellContextMenu.cs" />
     <Compile Include="ShellObjectWatcher\ChangeNotifyEventManager.cs" />
     <Compile Include="ShellObjectWatcher\ChangeNotifyLock.cs" />
     <Compile Include="ShellObjectWatcher\MessageListener.cs" />
@@ -409,9 +408,9 @@
     <Compile Include="PropertySystem\ShellPropertyDescription.cs" />
     <Compile Include="PropertySystem\ShellPropertyDescriptionsCache.cs" />
     <Compile Include="Interop\Dialogs\DialogsCOMClasses.cs" />
-    <Compile Include="Interop\Common\ShellCOMGuids.cs" />
-    <Compile Include="Interop\Common\ShellNativeMethods.cs" />
-    <Compile Include="Interop\Common\ShellCOMInterfaces.cs" />
+    <Compile Include="Windows API\ShellCOMGuids.cs" />
+    <Compile Include="Windows API\ShellNativeMethods.cs" />
+    <Compile Include="Windows API\ShellCOMInterfaces.cs" />
     <Compile Include="Interop\Dialogs\DialogsCOMInterfaces.cs" />
     <Compile Include="Common\ShellSavedSearchCollection.cs" />
     <Compile Include="PropertySystem\ShellProperty.cs" />

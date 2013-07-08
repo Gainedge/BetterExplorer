@@ -28,7 +28,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem
             try
             {
                 int hr = ParentShellObject.NativeShellItem2.GetPropertyStore(
-                        ShellNativeMethods.GetPropertyStoreOptions.ReadWrite,
+                        GetPropertyStoreOptions.ReadWrite,
                         ref guid,
                         out writablePropStore);
 

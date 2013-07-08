@@ -21,7 +21,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
             string path = null;
 
             IntPtr pszPath = IntPtr.Zero;
-            HResult hr = shellItem.GetDisplayName(ShellNativeMethods.ShellItemDesignNameOptions.DesktopAbsoluteParsing, out pszPath);
+            HResult hr = shellItem.GetDisplayName(ShellItemDesignNameOptions.DesktopAbsoluteParsing, out pszPath);
 
             if (hr != HResult.Ok && hr != HResult.InvalidArguments)
             {
@@ -66,9 +66,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
         {
             IntPtr pidl;
 
-            ShellNativeMethods.ShellFileGetAttributesOptions sfgao;
+            ShellFileGetAttributesOptions sfgao;
             int retCode = ShellNativeMethods.SHParseDisplayName(
-                name, IntPtr.Zero, out pidl, (ShellNativeMethods.ShellFileGetAttributesOptions)0,
+                name, IntPtr.Zero, out pidl, (ShellFileGetAttributesOptions)0,
                 out sfgao);
 
             return (CoreErrorHelper.Succeeded(retCode) ? pidl : IntPtr.Zero);

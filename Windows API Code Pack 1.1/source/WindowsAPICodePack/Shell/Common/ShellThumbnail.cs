@@ -254,31 +254,31 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
         #region Private Methods
 
-        private ShellNativeMethods.SIIGBF CalculateFlags()
+        private SIIGBF CalculateFlags()
         {
-            ShellNativeMethods.SIIGBF flags = 0x0000;
+            SIIGBF flags = 0x0000;
 
             if (AllowBiggerSize)
             {
-                flags |= ShellNativeMethods.SIIGBF.BiggerSizeOk;
+                flags |= SIIGBF.BiggerSizeOk;
             }
 
             if (RetrievalOption == ShellThumbnailRetrievalOption.CacheOnly)
             {
-                flags |= ShellNativeMethods.SIIGBF.InCacheOnly;
+                flags |= SIIGBF.InCacheOnly;
             }
             else if (RetrievalOption == ShellThumbnailRetrievalOption.MemoryOnly)
             {
-                flags |= ShellNativeMethods.SIIGBF.MemoryOnly;
+                flags |= SIIGBF.MemoryOnly;
             }
 
             if (FormatOption == ShellThumbnailFormatOption.IconOnly)
             {
-                flags |= ShellNativeMethods.SIIGBF.IconOnly;
+                flags |= SIIGBF.IconOnly;
             }
             else if (FormatOption == ShellThumbnailFormatOption.ThumbnailOnly)
             {
-                flags |= ShellNativeMethods.SIIGBF.ThumbnailOnly;
+                flags |= SIIGBF.ThumbnailOnly;
             }
 
             return flags;
@@ -318,7 +318,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
         public static Bitmap CopyHBitmapToBitmap(IntPtr nativeHBitmap)
         {
             // Get width, height and the address of the pixel data for the native HBitmap
-            ShellNativeMethods.BITMAP bitmapStruct = new ShellNativeMethods.BITMAP();
+            BITMAP bitmapStruct = new BITMAP();
             ShellNativeMethods.GetObjectBitmap(nativeHBitmap, Marshal.SizeOf(bitmapStruct), ref bitmapStruct);
             
             // Create a managed bitmap that has its pixel data pointing to the pixel data of the native HBitmap
