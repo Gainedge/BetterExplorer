@@ -4287,7 +4287,6 @@ namespace BetterExplorer
 			}
             if (tabControl1.Items.Count == 1)
                 tabControl1.SelectedIndex = 0;
-
 		}
 
     void Explorer_MouseWheel(object sender, ExplorerMoiseWheelArgs e)
