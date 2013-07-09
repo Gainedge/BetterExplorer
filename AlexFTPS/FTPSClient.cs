@@ -309,7 +309,7 @@ namespace AlexPilotti.FTPS.Client
         /// <summary>
         /// The server X.509 certificate used by the current connection
         /// </summary>
-        /// <values><c>null</c> if the connection is not encrypted</value>
+        /// <remarks><c>null</c> if the connection is not encrypted</remarks>
         public X509Certificate RemoteCertificate
         {
             get

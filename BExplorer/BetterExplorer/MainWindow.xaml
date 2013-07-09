@@ -1161,6 +1161,30 @@
                                     </Grid>
                                 </TabItem>
                                 <Ribbon:SeparatorTabItem Header="Accounts" />
+                                <TabItem Header="Social Media"
+                                         IsSelected="True"
+                                         Ribbon:KeyTip.Keys="M">
+                                    <Grid Margin="20,5,0,0">
+                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
+                                                                 Header="Connected Social Media Accounts"
+                                                                 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <Ribbon:Button x:Name="btnAddSocialMedia"
+                                               Height="88"
+                                               Margin="0,35,0,0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Top"
+                                               Header="Add Account"
+                                               Icon="Images\add16.png"
+                                               IsDefinitive="True"
+                                               LargeIcon="Images\add32.png"
+                                               Ribbon:KeyTip.Keys="A"
+                                               Ribbon:KeyTip.AutoPlacement="False"
+                                               Ribbon:KeyTip.VerticalAlignment="Bottom"
+                                               Ribbon:KeyTip.HorizontalAlignment="Center"
+                                               Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddSocialMedia_Click" >
+                                        </Ribbon:Button>
+                                    </Grid>
+                                </TabItem>
                                 <TabItem Header="Online Storage"
                                          IsSelected="True"
                                          Ribbon:KeyTip.Keys="O">
