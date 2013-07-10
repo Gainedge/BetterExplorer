@@ -6,7 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="300" Height="60" Focusable="True" MouseEnter="UserControl_MouseEnter" MouseLeave="UserControl_MouseLeave" MouseDown="UserControl_MouseDown" KeyUp="UserControl_KeyUp" LostKeyboardFocus="UserControl_LostKeyboardFocus" GotKeyboardFocus="UserControl_GotKeyboardFocus" Background="White" >
     <Grid>
         <Image HorizontalAlignment="Left" Height="32" VerticalAlignment="Stretch" Width="32" Margin="10,14,0,14" x:Name="imgIcon" />
-        <TextBlock HorizontalAlignment="Left" Margin="47,20,0,20" TextWrapping="Wrap" Text="TextBlock" x:Name="txtTitle" FontSize="16" />
+        <TextBlock HorizontalAlignment="Left" Margin="47,18,0,18" Text="TextBlock" x:Name="txtTitle" FontSize="16" TextTrimming="CharacterEllipsis" />
 
     </Grid>
 </UserControl>

@@ -9381,6 +9381,14 @@ namespace BetterExplorer
             aaw.ShowDialog();
         }
 
+        private void btnAddSocialMedia_Click(object sender, RoutedEventArgs e)
+        {
+            AccountAuthWindow aaw = new AccountAuthWindow();
+            aaw.LoadSocialMediaServices();
+            aaw.Owner = this;
+            aaw.ShowDialog();
+        }
+
         #endregion
 
         private void btnNewItem_DropDownOpened(object sender, EventArgs e)

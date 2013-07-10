@@ -25,19 +25,35 @@ namespace BetterExplorer.Networks
         public AccountAuthWindow()
         {
             InitializeComponent();
+            this.Left = 50;
+            this.Top = 50;
         }
 
         public bool yep = false;
+        private bool AllowClose = true;
 
         public string AddedService = "";
         public object Parameter = null;
 
         private string _datadir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\NetworkAccounts\\";
 
+        public string DataDirectory
+        {
+            get
+            {
+                return _datadir;
+            }
+            set
+            {
+                _datadir = value;
+            }
+        }
+
         public void LoadStorageServices()
         {
             AddAccountEntry aa1 = new AddAccountEntry();
             aa1.Text = "Dropbox";
+            aa1.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/Networks/Icons/dropbox32.png", UriKind.Relative));
             aa1.ItemSelected += Dropbox_ItemSelected;
             pnlServices.Children.Add(aa1);
 
@@ -63,25 +79,53 @@ namespace BetterExplorer.Networks
             AddAccountEntry aa4 = new AddAccountEntry();
             aa4.Text = "Twitter (not yet added)";
             pnlServices.Children.Add(aa4);
+
+            AddAccountEntry aa5 = new AddAccountEntry();
+            aa5.Text = "Pastebin.com";
+            aa5.ItemSelected += Pastebin_ItemSelected;
+            pnlServices.Children.Add(aa5);
         }
+
+        #region Pastebin
+
+        void Pastebin_ItemSelected(object sender, EventArgs e)
+        {
+            lblLogin.Text = "Login to Pastebin";
+            BeginLogin += Pastebin_BeginLogin;
+            MainMenu.Visibility = System.Windows.Visibility.Collapsed;
+            LoginFrame.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        void Pastebin_BeginLogin(object sender, AccountAuthWindow.LoginRoutedEventArgs e)
+        {
+            try
+            {
+                PastebinClient li = new PastebinClient(e.Username, e.Password);
+
+                if (li.UserKey != null)
+                {
+                    Complete(true, "Pastebin");
+                }
+            }
+            catch (System.Net.WebException ex)
+            {
+                if (MessageBox.Show("Pastebin rejected the login with the following message: \n\n" + ex.Message + "\n \nWould you like to retry after entering new information?", "Login Failed", MessageBoxButton.YesNo, MessageBoxImage.Error, MessageBoxResult.Yes) == MessageBoxResult.Yes)
+                {
+
+                }
+                else
+                {
+                    Complete(false, "Pastebin");
+                }
+            }
+        }
+        #endregion
+
+        #region Dropbox
 
         private DropBoxConfiguration _UsedConfig = null;
         private DropBoxRequestToken _CurrentRequestToken = null;
         private ICloudStorageAccessToken _GeneratedToken = null;
-
-        public string DataDirectory
-        {
-            get
-            {
-                return _datadir;
-            }
-            set
-            {
-                _datadir = value;
-            }
-        }
-
-        #region Dropbox
 
         void Dropbox_ItemSelected(object sender, EventArgs e)
         {
@@ -90,6 +134,7 @@ namespace BetterExplorer.Networks
 
         private void SetUpDropbox()
         {
+            AllowClose = false;
             _UsedConfig = DropBoxConfiguration.GetStandardConfiguration();
             _UsedConfig.AuthorizationCallBack = new Uri("http://better-explorer.com/");
             _UsedConfig.APIVersion = DropBoxAPIVersion.V1;
@@ -98,8 +143,8 @@ namespace BetterExplorer.Networks
             this.Navigated += HandleDropboxAuth;
             this.NavigateTo(AuthUrl);
             MainMenu.Visibility = System.Windows.Visibility.Collapsed;
-            this.Width = 800;
-            this.Height = 600;
+            this.Width = 900;
+            this.Height = 650;
             BrowserFrame.Visibility = System.Windows.Visibility.Visible;
         }
 
@@ -148,25 +193,37 @@ namespace BetterExplorer.Networks
             BrowserFrame.Visibility = System.Windows.Visibility.Collapsed;
             MainMenu.Visibility = System.Windows.Visibility.Collapsed;
             ThankYou.Visibility = System.Windows.Visibility.Visible;
+            AllowClose = true;
         }
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             yep = false;
+            AllowClose = true;
             this.Close();
         }
 
-
+        // BrowserFrame
         private void BackButton_Click(object sender, EventArgs e)
         {
             RemoveRoutedEventHandlers(this, NavigatedEvent);
             NavigateTo("about:blank");
             BrowserFrame.Visibility = System.Windows.Visibility.Collapsed;
             MainMenu.Visibility = System.Windows.Visibility.Visible;
+            AllowClose = true;
+        }
+
+        // LoginFrame
+        private void BackButton_Click_1(object sender, EventArgs e)
+        {
+            RemoveRoutedEventHandlers(this, BeginLoginEvent);
+            LoginFrame.Visibility = System.Windows.Visibility.Collapsed;
+            MainMenu.Visibility = System.Windows.Visibility.Visible;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            AllowClose = true;
             this.Close();
         }
 
@@ -291,9 +348,106 @@ namespace BetterExplorer.Networks
         }
         #endregion
 
+        #region BeginLogin Event
+
+        public delegate void LoginRoutedEventHandler(object sender, LoginRoutedEventArgs e);
+
+        // Create a custom routed event by first registering a RoutedEventID 
+        // This event uses the bubbling routing strategy 
+        public static readonly RoutedEvent BeginLoginEvent = EventManager.RegisterRoutedEvent(
+            "BeginLogin", RoutingStrategy.Bubble, typeof(LoginRoutedEventHandler), typeof(AccountAuthWindow));
+
+        // Provide CLR accessors for the event 
+        public event LoginRoutedEventHandler BeginLogin
+        {
+            add { AddHandler(BeginLoginEvent, value); }
+            remove { RemoveHandler(BeginLoginEvent, value); }
+        }
+
+        // This method raises the Tap event 
+        void RaiseBeginLoginEvent(string username, string password)
+        {
+            LoginRoutedEventArgs newEventArgs = new LoginRoutedEventArgs(AccountAuthWindow.NavigatedEvent, username, password);
+            newEventArgs.Source = this;
+            RaiseEvent(newEventArgs);
+        }
+
+        public class LoginRoutedEventArgs : RoutedEventArgs
+        {
+            private string _user;
+            private string _pass;
+
+            public LoginRoutedEventArgs(RoutedEvent RoutedEvent, string username, string password)
+            {
+                base.RoutedEvent = RoutedEvent;
+                _user = username;
+                _pass = password;
+            }
+
+            public string Username
+            {
+                get
+                {
+                    return _user;
+                }
+            }
+
+            public string Password
+            {
+                get
+                {
+                    return _pass;
+                }
+            }
+
+            public RoutedEvent RoutedEvent
+            {
+                get
+                {
+                    return base.RoutedEvent;
+                }
+                set
+                {
+                    base.RoutedEvent = value;
+                }
+            }
+
+            public object Source
+            {
+                get
+                {
+                    return base.Source;
+                }
+                set
+                {
+                    base.Source = value;
+                }
+            }
+
+            public object OriginalSource
+            {
+                get
+                {
+                    return base.OriginalSource;
+                }
+            }
+
+        }
+
+        #endregion
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            
+            if (AllowClose == false)
+            {
+                e.Cancel = true;
+                AllowClose = true;
+            }
+        }
+
+        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        {
+            RaiseBeginLoginEvent(txtUsername.Text, txtPassword.Password);
         }
 
     }

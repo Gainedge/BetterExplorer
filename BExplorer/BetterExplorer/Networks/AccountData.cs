@@ -34,6 +34,19 @@ namespace BetterExplorer.Networks
         private string _DataFile;
         private bool _MasterUsed;
         private SecureString _MasterPW;
+        private string _dataloc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\NetworkAccounts\\";
+
+        public string DataLocation
+        {
+            get
+            {
+                return _dataloc;
+            }
+            set
+            {
+                _dataloc = value;
+            }
+        }
 
         // Call this function to remove the key from memory after use for security.
         [System.Runtime.InteropServices.DllImport("KERNEL32.DLL", EntryPoint="RtlZeroMemory")]

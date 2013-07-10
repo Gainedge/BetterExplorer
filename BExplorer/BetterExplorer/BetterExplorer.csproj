@@ -126,6 +126,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\AutomaticUpdaterWPF.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Microsoft.WindowsAPICodePack.dll</HintPath>
@@ -201,6 +202,7 @@
       <DependentUpon>ArchiveViewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Application\AppCommands.cs" />
+    <Compile Include="AutoUpload.cs" />
     <Compile Include="ConditionalSelect\ConditionalSelectClasses.cs" />
     <Compile Include="ConditionalSelect\ConditionalSelectComboBoxItem.xaml.cs">
       <DependentUpon>ConditionalSelectComboBoxItem.xaml</DependentUpon>
@@ -251,6 +253,7 @@
       <DependentUpon>ServerItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Networks\SkyDriveAccount.cs" />
+    <Compile Include="Networks\SocialMedia\Pastebin.cs" />
     <Compile Include="Networks\WebDAVserver.cs" />
     <Compile Include="PieChart\BaseWPFHelpers.cs" />
     <Compile Include="PieChart\PieChart\ColourConverter.cs" />
@@ -966,6 +969,8 @@
     </Content>
     <Resource Include="Networks\add.ico" />
     <Resource Include="Networks\back.png" />
+    <Resource Include="Networks\Icons\dropbox.png" />
+    <Resource Include="Networks\Icons\pastebin.png" />
     <Content Include="StartIt.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1115,6 +1120,7 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <!-- <ItemGroup>
     <Page Include="App.xaml">
       <SubType>Designer</SubType>
@@ -1124,7 +1130,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
