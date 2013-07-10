@@ -4224,7 +4224,7 @@ namespace BetterExplorer
                     {
                       if (IsUpdateCheck)
                       {
-                        autoUpdater.UpdateType = UpdateType.OnlyCheck;
+                        autoUpdater.UpdateType = UpdateType.Automatic;
                       }
                       else
                       {

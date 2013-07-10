@@ -75,8 +75,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             
             CopyThread = new Thread(StartOperation) { IsBackground = false };
             CopyThread.Start();
-            CopyThread.Join(1);
-            Thread.Sleep(1);
+            CopyThread.Join(2);
 
             this.Handle = Guid.NewGuid();
 
@@ -230,7 +229,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                            //this.prOverallProgress.IsIndeterminate = true;
                            lblProgress.Text = "Counting Files";
                        }));
-            if (this.OperationType != FileOperations.OperationType.Delete && (OperationType != FileOperations.OperationType.Move && (!String.IsNullOrEmpty(DestinationLocation) && Path.GetPathRoot(SourceItemsCollection[0]) != Path.GetPathRoot(DestinationLocation))))
+            if (this.OperationType != FileOperations.OperationType.Delete && !(OperationType == FileOperations.OperationType.Move && (!String.IsNullOrEmpty(DestinationLocation) && Path.GetPathRoot(SourceItemsCollection[0]) != Path.GetPathRoot(DestinationLocation))))
             {
                 totalSize = 0;
                 foreach (var item in SourceItemsCollection)
