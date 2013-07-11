@@ -1351,44 +1351,46 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			public void DoCut()
 			{
 
-				if (IsOldSysListView)
-				{
-					StringCollection sc = new StringCollection();
-					foreach (ShellObject item in SelectedItems)
-					{
-							sc.Add(item.ParsingName);
-					}
-					Clipboard.SetFileDropList(sc);
-					IsMoveClipboardOperation = true;
-					WindowsAPI.SetFocus(SysListViewHandle);
-					int itemCount = WindowsAPI.SendMessage(SysListViewHandle,
-							WindowsAPI.MSG.LVM_GETITEMCOUNT, 0, 0);
+				//if (IsOldSysListView)
+				//{
+				//	//StringCollection sc = new StringCollection();
+				//	//foreach (ShellObject item in SelectedItems)
+				//	//{
+				//	//		sc.Add(item.ParsingName);
+				//	//}
+				//	//Clipboard.SetFileDropList(sc);
+    //      SendKeys.SendWait("^x");
+				//	IsMoveClipboardOperation = true;
+				//	WindowsAPI.SetFocus(SysListViewHandle);
+				//	//int itemCount = WindowsAPI.SendMessage(SysListViewHandle,
+				//	//		WindowsAPI.MSG.LVM_GETITEMCOUNT, 0, 0);
 
-					for (int n = 0; n < itemCount; ++n)
-					{
-							WindowsAPI.LVITEMA item = new WindowsAPI.LVITEMA();
-							item.mask = WindowsAPI.LVIF.LVIF_STATE;
-							item.iItem = n;
-							item.stateMask = WindowsAPI.LVIS.LVIS_SELECTED;
-							WindowsAPI.SendMessage(SysListViewHandle, WindowsAPI.MSG.LVM_GETITEMA,
-									0, ref item);
+				//	//for (int n = 0; n < itemCount; ++n)
+				//	//{
+				//	//		WindowsAPI.LVITEMA item = new WindowsAPI.LVITEMA();
+				//	//		item.mask = WindowsAPI.LVIF.LVIF_STATE;
+				//	//		item.iItem = n;
+				//	//		item.stateMask = WindowsAPI.LVIS.LVIS_SELECTED;
+				//	//		WindowsAPI.SendMessage(SysListViewHandle, WindowsAPI.MSG.LVM_GETITEMA,
+				//	//				0, ref item);
 
-							if (item.state != 0)
-							{
-									WindowsAPI.LVITEMA lvItem = new WindowsAPI.LVITEMA();
-									lvItem.stateMask = WindowsAPI.LVIS.LVIS_CUT;
-									lvItem.state = WindowsAPI.LVIS.LVIS_CUT;
-									WindowsAPI.SendMessage(SysListViewHandle, WindowsAPI.MSG.LVM_SETITEMSTATE, n, ref lvItem);
+				//	//		if (item.state != 0)
+				//	//		{
+				//	//				WindowsAPI.LVITEMA lvItem = new WindowsAPI.LVITEMA();
+				//	//				lvItem.stateMask = WindowsAPI.LVIS.LVIS_CUT;
+				//	//				lvItem.state = WindowsAPI.LVIS.LVIS_CUT;
+				//	//				WindowsAPI.SendMessage(SysListViewHandle, WindowsAPI.MSG.LVM_SETITEMSTATE, n, ref lvItem);
 
 
-							}
-					} 
-				}
-				else
-				{
-						WindowsAPI.SetFocus(SysListViewHandle);
-						SendKeys.SendWait("^x");
-				}
+				//	//		}
+				//	//} 
+				//}
+				//else
+				//{
+        IsMoveClipboardOperation = true;
+				WindowsAPI.SetFocus(SysListViewHandle);
+				SendKeys.SendWait("^x");
+				//}
 						
 			}
 	 
@@ -2704,16 +2706,19 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 									{
 											Ctrl = true;
 									}
+
+                  if ((int)m.WParam == (int)Keys.X && Ctrl)
+                  {
+                    IsMoveClipboardOperation = true;
+                  }
+                  if ((int)m.WParam == (int)Keys.C && Ctrl)
+                  {
+                    IsMoveClipboardOperation = false;
+                  }
+
 									if (!IsExFileOpEnabled && !IsCustomDialogs)
 									{
-											if ((int)m.WParam == (int)Keys.X && Ctrl)
-											{
-													IsMoveClipboardOperation = true;
-											}
-											if ((int)m.WParam == (int)Keys.C && Ctrl)
-											{
-													IsMoveClipboardOperation = false;
-											}
+											
 
 											if ((int)m.WParam == (int)Keys.V && Ctrl)
 											{

@@ -279,6 +279,8 @@ namespace Microsoft.WindowsAPICodePack.Shell
           {
             if (info == "rename")
               Explorer.DoRename();
+            else if (info == "cut")
+              Explorer.DoCut();
             else
               InvokeCommand(command - m_CmdFirst);
           }

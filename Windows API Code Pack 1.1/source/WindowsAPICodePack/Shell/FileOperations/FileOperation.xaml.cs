@@ -343,6 +343,71 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                 }
                 CloseCurrentTask();
               } else {
+                foreach (var item in SourceItemsCollection)
+                {
+                  var shellobj = ShellObject.FromParsingName(item);
+                  if (shellobj.IsFolder && shellobj.Properties.System.FileExtension.Value == null)
+                  {
+                    var newName = String.Empty;
+                    if (shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName)
+                    {
+                      var dest = System.IO.Path.Combine(DestinationLocation, System.IO.Path.GetFileName(item));
+                      if (Directory.Exists(dest))
+                      {
+                        int suffix = 0;
+                        newName = dest;
+
+                        do
+                        {
+                          newName = String.Format("{0} - Copy ({1})", dest, ++suffix);
+                        } while (Directory.Exists(newName));
+                      }
+                    }
+                    CopyFolder(item, newName == String.Empty ? DestinationLocation : newName, ref CopyItems, ref colissions, newName != String.Empty);
+                  }
+                  else
+                  {
+
+                    CopyFiles(item, DestinationLocation, ref CopyItems, ref colissions, shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName);
+                  }
+                  shellobj.Dispose();
+                }
+
+                if (colissions.Count > 0)
+                {
+                  Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                           (Action)(() =>
+                           {
+                             CollisionDialog dlg = new CollisionDialog(colissions, ShellObject.FromParsingName(SourceItemsCollection[0]).Parent, ShellObject.FromParsingName(DestinationLocation));
+
+                             dlg.Owner = ParentContents;
+
+                             if (dlg.ShowDialog() == true)
+                             {
+                               colissions = dlg.collisions;
+                             }
+                             else
+                             {
+                               CopyItems.Clear();
+                               colissions.Clear();
+                             }
+                           }));
+                }
+                itemIndex = 0;
+                var itemsForSkip = colissions.Where(c => (!c.IsChecked & !c.IsCheckedC) || (!c.IsChecked & c.IsCheckedC)).Select(c => c.index).ToArray();
+                foreach (var itemIndexRemove in itemsForSkip.OrderByDescending(c => c))
+                {
+                  CopyItems.RemoveAt(itemIndexRemove);
+                }
+                CopyItemsCount = CopyItems.Where(c => c.Item4 == 0).Count();
+                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                         (Action)(delegate { lblItemsCount.Text = CopyItems.Count().ToString(CultureInfo.InvariantCulture); }));
+
+                if (CopyItems.Count == 0)
+                {
+                  CloseCurrentTask();
+                }
+
                 var collectionArray = CopyItems.ToArray().OrderByDescending(c => c.Item4);
                 //Parallel.ForEach(collectionArray, file =>
                 foreach (var file in collectionArray)
