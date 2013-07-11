@@ -882,7 +882,6 @@ namespace BetterExplorer
 		[DllImport("shell32.dll")]
 		public static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, [Out()] out IntPtr pidl, uint sfgaoIn, [Out()] out uint psfgaoOut);
 
-
 		FileSystemWatcher fsw_AC;
 		void ExplorerBrowserControl_NavigationComplete(object sender, NavigationCompleteEventArgs e)
 		{
@@ -899,7 +898,15 @@ namespace BetterExplorer
                         {
                           foreach (var item in itb.SelectedItems)
                           {
-                            Explorer.SelectItem(ShellObject.FromParsingName(item));
+                            try
+                            {
+                              Explorer.SelectItem(ShellObject.FromParsingName(item));
+                            }
+                            catch (Exception)
+                            {
+                              
+                              //! Sometimes there can be malformed or invalid string on some systems so we have to catch this error.
+                            }
                           }
                           Explorer.SetExplorerFocus();
                         }

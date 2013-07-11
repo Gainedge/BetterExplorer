@@ -39,8 +39,13 @@ namespace RateBar
                 CompilerParameters cp = new CompilerParameters();
                 cp.GenerateInMemory = true;
                 foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                  if (!assembly.IsDynamic)
+                  {
                     if (System.IO.File.Exists(assembly.Location))
-                        cp.ReferencedAssemblies.Add(assembly.Location);
+                      cp.ReferencedAssemblies.Add(assembly.Location);
+                  }
+                }
 
                 // Compile the delegate that we can use for evaluation of the bindings
                 CompilerResults results = (new Microsoft.JScript.JScriptCodeProvider()).CompileAssemblyFromSource(cp, source);

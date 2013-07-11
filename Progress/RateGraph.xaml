@@ -1,5 +1,6 @@
 ﻿<rb:RateBase x:Class="RateBar.RateGraph" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:rb="clr-namespace:RateBar" mc:Ignorable="d">
     <RangeBase.Resources>
+      
         <rb:JScriptConverter x:Key="JScript" TrapExceptions="False"/>
         <ControlTemplate x:Key="rateGraphTemplate" TargetType="{x:Type rb:RateBase}">
             <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

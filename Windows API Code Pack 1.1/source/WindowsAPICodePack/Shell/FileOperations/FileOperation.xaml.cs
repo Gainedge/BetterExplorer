@@ -229,9 +229,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                            //this.prOverallProgress.IsIndeterminate = true;
                            lblProgress.Text = "Counting Files";
                        }));
-            if (this.OperationType != FileOperations.OperationType.Delete && !(OperationType == FileOperations.OperationType.Move && (!String.IsNullOrEmpty(DestinationLocation) && Path.GetPathRoot(SourceItemsCollection[0]) != Path.GetPathRoot(DestinationLocation))))
+            totalSize = 0;
+            if (this.OperationType == FileOperations.OperationType.Copy)
             {
-                totalSize = 0;
+                
                 foreach (var item in SourceItemsCollection)
                 {
                     var shellobj = ShellObject.FromParsingName(item);
@@ -259,6 +260,25 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
                         CopyFiles(item, DestinationLocation, ref CopyItems, ref colissions, shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName);
                     }
+                    //var count = 0;
+                    //if (shellobj.IsFolder && shellobj.Properties.System.FileExtension.Value == null)
+                    //{
+                    //  FileInfo[] files = new DirectoryInfo(item).GetFiles("*.*", SearchOption.AllDirectories);
+                    //  count += files.Count();
+                    //  totalSize += (ulong)files.Sum(c => c.Length);
+                    //}
+                    //else
+                    //{
+                    //  count++;
+                    //  totalSize += shellobj.Properties.System.Size.Value.HasValue ? shellobj.Properties.System.Size.Value.Value : 0;
+                    //}
+
+                    //Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                    //          (Action)(() =>
+                    //          {
+                    //            lblItemsCount.Text = count.ToString();
+                    //            lblProgress.Text = String.Format("Counting Files - {0}", WindowsAPI.StrFormatByteSize((long)totalSize));
+                    //          }));
                     shellobj.Dispose();
                 }
 
@@ -301,39 +321,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                                //this.prOverallProgress.IsIndeterminate = false;
                            }));
             }
-            else if (OperationType == FileOperations.OperationType.Delete)
-            {
-              foreach (var item in SourceItemsCollection)
-              {
-                var count = 0;
-                var itemObj = ShellObject.FromParsingName(item);
-                if (itemObj.IsFolder && itemObj.Properties.System.FileExtension.Value == null)
-                {
-                  FileInfo[] files = new DirectoryInfo(item).GetFiles("*.*", SearchOption.AllDirectories);
-                  count += files.Count();
-                  totalSize += (ulong)files.Sum(c => c.Length);
-                }
-                else
-                {
-                  count++;
-                  totalSize += itemObj.Properties.System.Size.Value.HasValue ? itemObj.Properties.System.Size.Value.Value : 0;
-                }
-
-                Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                          (Action)(() =>
-                          {
-                            lblItemsCount.Text = count.ToString();
-                            lblProgress.Text = String.Format("Counting Files - {0}", WindowsAPI.StrFormatByteSize((long)totalSize));
-                          }));
-                itemObj.Dispose();
-              }
-              Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                          (Action)(() =>
-                          {
-                            //this.prOverallProgress.IsIndeterminate = false;
-                          }));
-            }
-            else if (OperationType == FileOperations.OperationType.Move)
+            
+            if (OperationType == FileOperations.OperationType.Move)
             {
               if (Path.GetPathRoot(SourceItemsCollection[0]) == Path.GetPathRoot(DestinationLocation))
               {
@@ -370,6 +359,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
                     CopyFiles(item, DestinationLocation, ref CopyItems, ref colissions, shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName);
                   }
+                  
                   shellobj.Dispose();
                 }
 
@@ -456,6 +446,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                       }
                   }
                 }
+
+
               }
             }
             int counter = 0;
@@ -534,8 +526,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                             };
                             break;
                         case OperationType.Move:
-                            
-                            
                             break;
                         case OperationType.Rename:
                             break;
@@ -552,100 +542,130 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             }
             else
             {
+              foreach (var item in SourceItemsCollection)
+              {
+                var count = 0;
+                var itemObj = ShellObject.FromParsingName(item);
+                if (itemObj.IsFolder && itemObj.Properties.System.FileExtension.Value == null)
+                {
+                  FileInfo[] files = new DirectoryInfo(item).GetFiles("*.*", SearchOption.AllDirectories);
+                  count += files.Count();
+                  totalSize += (ulong)files.Sum(c => c.Length);
+                }
+                else
+                {
+                  count++;
+                  totalSize += itemObj.Properties.System.Size.Value.HasValue ? itemObj.Properties.System.Size.Value.Value : 0;
+                }
+
                 Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
                           (Action)(() =>
                           {
-                              var count = 0;
-                              if (!this.DeleteToRB)
-                              {
-                                  foreach (var item in this.SourceItemsCollection)
-                                  {
-                                      var itemObj = ShellObject.FromParsingName(item);
-                                      if (itemObj.IsFolder && itemObj.Properties.System.FileExtension.Value == null)
-                                      {
-                                          DirectoryInfo di = new DirectoryInfo(item);
-                                          count += di.GetDirectories("*", SearchOption.AllDirectories).Count() + di.GetFiles("*.*", SearchOption.AllDirectories).Count();
-                                          count++;
-                                      }
-                                      else
-                                      {
-                                          count++;
-                                      }
-                                  }
-                              }
-                              prFileProgress.Visibility = System.Windows.Visibility.Collapsed;
-                              prOverallProgress.Maximum = this.DeleteToRB ? this.SourceItemsCollection.Count() : count;
+                            lblItemsCount.Text = count.ToString();
+                            lblProgress.Text = String.Format("Counting Files - {0}", WindowsAPI.StrFormatByteSize((long)totalSize));
                           }));
-                var isError = false;
-                foreach (var item in this.SourceItemsCollection)
+                itemObj.Dispose();
+              }
+              Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                          (Action)(() =>
+                          {
+                            //this.prOverallProgress.IsIndeterminate = false;
+                          }));
+              Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                                   (Action)(() =>
+                                   {
+                                     var count = 0;
+                                     if (!this.DeleteToRB)
+                                     {
+                                       foreach (var item in this.SourceItemsCollection)
+                                       {
+                                         var itemObj = ShellObject.FromParsingName(item);
+                                         if (itemObj.IsFolder && itemObj.Properties.System.FileExtension.Value == null)
+                                         {
+                                           DirectoryInfo di = new DirectoryInfo(item);
+                                           count += di.GetDirectories("*", SearchOption.AllDirectories).Count() + di.GetFiles("*.*", SearchOption.AllDirectories).Count();
+                                           count++;
+                                         }
+                                         else
+                                         {
+                                           count++;
+                                         }
+                                       }
+                                     }
+                                     prFileProgress.Visibility = System.Windows.Visibility.Collapsed;
+                                     prOverallProgress.Maximum = this.DeleteToRB ? this.SourceItemsCollection.Count() : count;
+                                   }));
+              var isError = false;
+              foreach (var item in this.SourceItemsCollection)
+              {
+                _block.WaitOne();
+                try
                 {
-                    _block.WaitOne();
-                    try
-                    {
-                        var itemObj = ShellObject.FromParsingName(item);
+                  var itemObj = ShellObject.FromParsingName(item);
 
-                        if (!itemObj.IsFolder || (itemObj.Properties.System.FileExtension.Value != null && itemObj.Properties.System.FileExtension.Value.ToLowerInvariant() == ".zip"))
-                        {
-                            var itemInfo = new FileInfo(item);
-                            if (itemInfo.IsReadOnly)
-                                File.SetAttributes(item, FileAttributes.Normal);
-                            if (this.DeleteToRB)
-                                RecycleBin.SendSilent(item);
-                            else
-                                File.Delete(item);
-                            Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-                             (Action)(() =>
-                             {
-                                 prOverallProgress.Value++;
-                             }));
-                        }
-                        else
-                        {
-                            if (this.DeleteToRB)
-                            {
-                                RecycleBin.SendSilent(item);
-                            }
-                            else
-                            {
-                                DeleteAllFilesFromDir(new DirectoryInfo(item));
-                                DeleteFolderRecursive(new DirectoryInfo(item));
-                            }
-                        }
-                        itemObj.Dispose();
-                    }
-                    catch (UnauthorizedAccessException)
+                  if (!itemObj.IsFolder || (itemObj.Properties.System.FileExtension.Value != null && itemObj.Properties.System.FileExtension.Value.ToLowerInvariant() == ".zip"))
+                  {
+                    var itemInfo = new FileInfo(item);
+                    if (itemInfo.IsReadOnly)
+                      File.SetAttributes(item, FileAttributes.Normal);
+                    if (this.DeleteToRB)
+                      RecycleBin.SendSilent(item);
+                    else
+                      File.Delete(item);
+                    Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+                     (Action)(() =>
+                     {
+                       prOverallProgress.Value++;
+                     }));
+                  }
+                  else
+                  {
+                    if (this.DeleteToRB)
                     {
-                        IsNeedAdminFO = true;
-                        break;
+                      RecycleBin.SendSilent(item);
                     }
-                    catch (ThreadAbortException)
+                    else
                     {
-                      CloseCurrentTask();
+                      DeleteAllFilesFromDir(new DirectoryInfo(item));
+                      DeleteFolderRecursive(new DirectoryInfo(item));
                     }
-                    catch (Exception ex)
-                    {
-                        isError = true;
-                        Dispatcher.Invoke(DispatcherPriority.Background,
-                         (Action)(() =>
-                         {
-                             prOverallProgress.Foreground = Brushes.Red;
-                             Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
-                         }));
-                        _block.Reset();
-                        MessageBox.Show(ex.Message);
-                    }
+                  }
+                  itemObj.Dispose();
                 }
-                if (IsNeedAdminFO)
+                catch (UnauthorizedAccessException)
                 {
-                    if (OperationType == FileOperations.OperationType.Delete)
-                    {
-                        var CopyItemsForDelete = this.SourceItemsCollection.Select(c => new Tuple<string, string, string, int>(c, String.Empty, string.Empty, 0)).ToList();
-                        StartAdminProcess(CopyItemsForDelete, null, false, true, this.DeleteToRB);
-                    }
+                  IsNeedAdminFO = true;
+                  break;
                 }
-                if (!isError)
-                    CloseCurrentTask();
+                catch (ThreadAbortException)
+                {
+                  CloseCurrentTask();
+                }
+                catch (Exception ex)
+                {
+                  isError = true;
+                  Dispatcher.Invoke(DispatcherPriority.Background,
+                   (Action)(() =>
+                   {
+                     prOverallProgress.Foreground = Brushes.Red;
+                     Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
+                   }));
+                  _block.Reset();
+                  MessageBox.Show(ex.Message);
+                }
+              }
+              if (IsNeedAdminFO)
+              {
+                if (OperationType == FileOperations.OperationType.Delete)
+                {
+                  var CopyItemsForDelete = this.SourceItemsCollection.Select(c => new Tuple<string, string, string, int>(c, String.Empty, string.Empty, 0)).ToList();
+                  StartAdminProcess(CopyItemsForDelete, null, false, true, this.DeleteToRB);
+                }
+              }
+              if (!isError)
+                CloseCurrentTask(); 
             }
+
 
             ////If we have MoveOperation to same volume it is basically a rename opearion that happend immediately so we close the window
             //if (OperationType == OperationType.Move)
@@ -1324,6 +1344,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
             fs.fFlags = WindowsAPI.FileOperationFlags.FOF_ALLOWUNDO | WindowsAPI.FileOperationFlags.FOF_SILENT;
             WindowsAPI.SHFileOperation_x86(ref fs);
           }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+          this.isloaded = true;
         }
 
     }
