@@ -9485,7 +9485,7 @@ namespace BetterExplorer
 
         void mli_Click(object sender, RoutedEventArgs e)
         {
-            ShellLibrary lib = (ShellLibrary)(sender as Fluent.MenuItem).Tag;
+          ShellLibrary lib = ShellLibrary.Load(((ShellObject)(sender as Fluent.MenuItem).Tag).GetDisplayName(DisplayNameType.Default),false);
             if (Explorer.SelectedItems[0].IsFolder)
             {
                 lib.Add(Explorer.SelectedItems[0].ParsingName);
@@ -9502,6 +9502,8 @@ namespace BetterExplorer
                 {
                     Fluent.MenuItem mli = new MenuItem();
                     mli.Header = lib.GetDisplayName(DisplayNameType.Default);
+                    lib.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+                    mli.Icon = lib.Thumbnail.BitmapSource;
                     mli.Tag = ShellLibrary.FromParsingName(lib.ParsingName);
                     mli.Click += mli_Click;
                     mnuIncludeInLibrary.Items.Add(mli);
