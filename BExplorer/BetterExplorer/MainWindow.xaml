@@ -1160,10 +1160,9 @@
                                         <Ribbon:CheckBox x:Name="chkIsLastTabCloseApp" Click="chkIsLastTabCloseApp_Click"  Header="Closing last Tab closes Application" Margin="7,275,0,0" VerticalAlignment="Top" Height="22"/>
                                     </Grid>
                                 </TabItem>
-                                <Ribbon:SeparatorTabItem Header="Accounts" />
+                                <Ribbon:SeparatorTabItem Header="Accounts" Visibility="Collapsed" />
                                 <TabItem Header="Social Media"
-                                         IsSelected="True"
-                                         Ribbon:KeyTip.Keys="M">
+                                         Ribbon:KeyTip.Keys="M" Visibility="Collapsed">
                                     <Grid Margin="20,5,0,0">
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
                                                                  Header="Connected Social Media Accounts"
@@ -1186,8 +1185,7 @@
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="Online Storage"
-                                         IsSelected="True"
-                                         Ribbon:KeyTip.Keys="O">
+                                         Ribbon:KeyTip.Keys="O" Visibility="Collapsed">
                                     <Grid Margin="20,5,0,0">
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
                                                                  Header="Connected Online Storage Accounts"
@@ -1210,8 +1208,7 @@
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="FTP / WebDAV"
-                                         IsSelected="True"
-                                         Ribbon:KeyTip.Keys="F">
+                                         Ribbon:KeyTip.Keys="F" Visibility="Collapsed">
                                     <Grid Margin="20,5,0,0">
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
                                                                  Header="FTP / WebDAV Servers"
@@ -1504,10 +1501,17 @@
                                         Ribbon:KeyTip.Keys="CR"
                                         SizeDefinition="Middle,Small,Small"
                                         Visibility="Visible" DropDownOpened="btnNewItem_DropDownOpened" />
-                    <Ribbon:SplitButton x:Name="btnEasyAccess" Header="Easy Access"
+                    <Ribbon:DropDownButton x:Name="btnEasyAccess" Header="Easy Access"
                                         Ribbon:KeyTip.Keys="E"
                                         SizeDefinition="Middle,Small,Small"
-                                        Visibility="Collapsed" />
+                                        Visibility="Visible"
+                                        DropDownOpened="btnEasyAccess_DropDownOpened">
+                        <Ribbon:MenuItem Header="Pin to Start&gt;All Programs" x:Name="mnuPinToStart" Click="mnuPinToStart_Click" />
+                        <Ribbon:MenuItem Header="Include in library" x:Name="mnuIncludeInLibrary" Visibility="Visible" DropDownOpened="mnuIncludeInLibrary_DropDownOpened" SubmenuOpened="mnuIncludeInLibrary_SubmenuOpened" >
+                            <Ribbon:MenuItem Header="Create New Library..." />
+                        </Ribbon:MenuItem>
+                        <Ribbon:MenuItem Header="Add to Favorites" x:Name="mnuAddFavorites" Click="btnFavorites_Click" />
+                    </Ribbon:DropDownButton>
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox x:Name="Open"
                                        Header="{StaticResource tgOpenCP}"
@@ -2243,18 +2247,22 @@
                 <Ribbon:RibbonGroupBox Header="{StaticResource tgRunCP}"
                                        IsLauncherVisible="False"
                                        Ribbon:KeyTip.Keys="R">
-                    <Ribbon:ToggleButton x:Name="btnPin"
+                    <Ribbon:SplitButton x:Name="btnPin"
                                          Click="btnPin_Click"
                                          Header="{StaticResource btnPinCP}"
                                          LargeIcon="Images\pint32.png"
                                          Ribbon:KeyTip.Keys="P"
-                                         SizeDefinition="Large" />
+                                         SizeDefinition="Large">
+                        <Ribbon:MenuItem x:Name="btnPinToStart" Header="Pin to Start" Click="btnPinToStart_Click" />
+                    </Ribbon:SplitButton>
+                    <Separator />
                     <Ribbon:Button x:Name="btnRunAsAdmin"
                                    Click="btnRunAsAdmin_Click"
                                    Header="{StaticResource btnRunAsAdminCP}"
                                    LargeIcon="Images\admin32.png"
                                    Ribbon:KeyTip.Keys="A"
                                    SizeDefinition="Large" />
+                    <Ribbon:Button x:Name="btnRunAs" Header="Run As Another User" SizeDefinition="Large" Click="btnRunAs_Click" />
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 

@@ -217,6 +217,9 @@
     <Compile Include="MessageReceiver.Designer.cs">
       <DependentUpon>MessageReceiver.cs</DependentUpon>
     </Compile>
+    <Compile Include="RunExeAsUser.xaml.cs">
+      <DependentUpon>RunExeAsUser.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Networks\AccountAuthWindow.xaml.cs">
       <DependentUpon>AccountAuthWindow.xaml</DependentUpon>
     </Compile>
@@ -383,6 +386,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Customize\RibbonItemListDisplay.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="RunExeAsUser.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

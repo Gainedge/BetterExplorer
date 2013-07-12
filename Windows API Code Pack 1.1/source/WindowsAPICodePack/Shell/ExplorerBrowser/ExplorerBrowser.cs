@@ -742,6 +742,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         Process.Start(Path.Combine(Environment.SystemDirectory, "dfrgui.exe"), "/u /v " + DriveLetter.Replace("\\", ""));
       }
 
+      /// <summary>
+      /// Runs an application as an administrator.
+      /// </summary>
+      /// <param name="ExePath">The path of the application.</param>
       public void RunExeAsAdmin(string ExePath) {
         var psi = new ProcessStartInfo {
           FileName = ExePath,
@@ -750,6 +754,24 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
           Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
         };
         Process.Start(psi);
+
+      }
+
+      /// <summary>
+      /// Runs an application as an another user.
+      /// </summary>
+      /// <param name="ExePath">The path of the application.</param>
+      /// <param name="username">The path of the username to use.</param>
+      public void RunExeAsAnotherUser(string ExePath, string username)
+      {
+          var psi = new ProcessStartInfo
+          {
+              FileName = ExePath,
+              Verb = "runas",
+              UseShellExecute = true,
+              Arguments = String.Format("/env /user:{0} \"{1}\"", username, ExePath),
+          };
+          Process.Start(psi);
 
       }
 
@@ -1492,42 +1514,43 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					return endname;
 			}
 
-			public string CreateNewLibrary()
+			public ShellLibrary CreateNewLibrary()
 			{
-				string name = "New Library";
-				int suffix = 0;
-				ShellLibrary lib = null;
-				try
-				{
-						lib = ShellLibrary.Load(name, true);
-				}
-				catch
-				{
-          //TODO: add log here
-				}
-				if (lib != null)
-				{
-					do
-					{
-						name = String.Format("New Library ({0})",
-								++suffix);
-						try
-						{
-								lib = ShellLibrary.Load(name, true);
-						}
-						catch
-						{
-								lib = null;
-						}
-					} while (lib != null); 
-				}
+          //      string name = "New Library";
+          //      int suffix = 0;
+          //      ShellLibrary lib = null;
+          //      try
+          //      {
+          //              lib = ShellLibrary.Load(name, true);
+          //      }
+          //      catch
+          //      {
+          ////TODO: add log here
+          //      }
+          //      if (lib != null)
+          //      {
+          //          do
+          //          {
+          //              name = String.Format("New Library ({0})",
+          //                      ++suffix);
+          //              try
+          //              {
+          //                      lib = ShellLibrary.Load(name, true);
+          //              }
+          //              catch
+          //              {
+          //                      lib = null;
+          //              }
+          //          } while (lib != null); 
+          //      }
 
-				ShellLibrary libcreate = new ShellLibrary(name, false);
+          //      ShellLibrary libcreate = new ShellLibrary(name, false);
 
-				return libcreate.GetDisplayName(DisplayNameType.Default);
+          //      return libcreate.GetDisplayName(DisplayNameType.Default);
+                return CreateNewLibrary("New Library");
 			}
 
-			public string CreateNewLibrary(string name)
+			public ShellLibrary CreateNewLibrary(string name)
 			{
 				string endname = name;
 				int suffix = 0;
@@ -1557,9 +1580,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					} while (lib != null);
 				}
 
-				ShellLibrary libcreate = new ShellLibrary(endname, false);
+				return new ShellLibrary(endname, false);
 
-				return libcreate.GetDisplayName(DisplayNameType.Default);
+				//return libcreate.GetDisplayName(DisplayNameType.Default);
 			}
 
 			public List<string> RecommendedPrograms(string ext)

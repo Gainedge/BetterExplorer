@@ -125,6 +125,89 @@ namespace WindowsHelper
         [DllImport("user32")]
         public static extern int ReleaseCapture();
 
+        #region Credentials
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        public struct CREDUI_INFO
+        {
+            public int cbSize;
+            public IntPtr hwndParent;
+            public string pszMessageText;
+            public string pszCaptionText;
+            public IntPtr hbmBanner;
+        }
+
+        [Flags]
+        public enum CREDUI_FLAGS
+        {
+            INCORRECT_PASSWORD = 0x1,
+            DO_NOT_PERSIST = 0x2,
+            REQUEST_ADMINISTRATOR = 0x4,
+            EXCLUDE_CERTIFICATES = 0x8,
+            REQUIRE_CERTIFICATE = 0x10,
+            SHOW_SAVE_CHECK_BOX = 0x40,
+            ALWAYS_SHOW_UI = 0x80,
+            REQUIRE_SMARTCARD = 0x100,
+            PASSWORD_ONLY_OK = 0x200,
+            VALIDATE_USERNAME = 0x400,
+            COMPLETE_USERNAME = 0x800,
+            PERSIST = 0x1000,
+            SERVER_CREDENTIAL = 0x4000,
+            EXPECT_CONFIRMATION = 0x20000,
+            GENERIC_CREDENTIALS = 0x40000,
+            USERNAME_TARGET_CREDENTIALS = 0x80000,
+            KEEP_USERNAME = 0x100000,
+        }
+
+        public enum CredUIReturnCodes
+        {
+            NO_ERROR = 0,
+            ERROR_CANCELLED = 1223,
+            ERROR_NO_SUCH_LOGON_SESSION = 1312,
+            ERROR_NOT_FOUND = 1168,
+            ERROR_INVALID_ACCOUNT_NAME = 1315,
+            ERROR_INSUFFICIENT_BUFFER = 122,
+            ERROR_INVALID_PARAMETER = 87,
+            ERROR_INVALID_FLAGS = 1004,
+        }
+
+        [DllImport("credui")]
+        public static extern CredUIReturnCodes CredUIPromptForCredentials(ref CREDUI_INFO creditUR,
+          string targetName,
+          IntPtr reserved1,
+          int iError,
+          StringBuilder userName,
+          int maxUserName,
+          StringBuilder password,
+          int maxPassword,
+          [MarshalAs(UnmanagedType.Bool)] ref bool pfSave,
+          CREDUI_FLAGS flags);
+
+        public static void RunProcesssAsUser(String processPath)
+        {
+            // Setup the flags and variables
+            StringBuilder userPassword = new StringBuilder(), userID = new StringBuilder();
+            CREDUI_INFO credUI = new CREDUI_INFO();
+            credUI.cbSize = Marshal.SizeOf(credUI);
+            bool save = false;
+            CREDUI_FLAGS flags = CREDUI_FLAGS.EXCLUDE_CERTIFICATES | CREDUI_FLAGS.PERSIST;
+
+            // Prompt the user
+            CredUIReturnCodes returnCode = CredUIPromptForCredentials(ref credUI, ShellObject.FromParsingName(processPath).GetDisplayName(DisplayNameType.Default), IntPtr.Zero, 0, userID, 100, userPassword, 100, ref save, flags);
+
+            SecureString pass = new SecureString();
+            foreach (char _char in userPassword.ToString().ToCharArray())
+	        {
+                pass.AppendChar(_char);
+	        }
+
+            if (returnCode == CredUIReturnCodes.NO_ERROR)
+            {
+                Process.Start(processPath,userID.ToString(), pass ,Environment.UserDomainName);
+            }
+
+        }
+        #endregion
+
         #region Enums
         public enum ShowCommands : int
         {
@@ -2979,10 +3062,11 @@ namespace WindowsHelper
         }
 
 
-        public static readonly string UserPinnedItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
+        public static readonly string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
+        public static readonly string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\Start Menu\\";
         public static bool IsPinnedToTaskbar(string executablePath)
         {
-            foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk"))
+            foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedTaskbarItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk"))
             {
 
                 var shortcut = new ShellLinkApi(pinnedShortcut);
@@ -2992,17 +3076,31 @@ namespace WindowsHelper
 
             return false;
         }
+
+        public static bool IsPinnedToStartMenu(string executablePath)
+        {
+            foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedStartMenuItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk"))
+            {
+
+                //               var shortcut = new ShellLinkClass.ShellLink(pinnedShortcut);
+                //              if (shortcut.Target == executablePath)
+                //                 return true;
+            }
+
+            return false;
+        }
+
         public static void PinUnpinToTaskbar(string filePath)
         {
-            PinUnpin(filePath, !IsPinnedToTaskbar(filePath));
+            PinUnpinTaskbar(filePath, !IsPinnedToTaskbar(filePath));
         }
 
         public static void UnpinFromTaskbar(string filePath)
         {
-            PinUnpin(filePath, false);
+            PinUnpinTaskbar(filePath, false);
         }
 
-        private static void PinUnpin(string filePath, bool pin)
+        private static void PinUnpinTaskbar(string filePath, bool pin)
         {
             if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
 
@@ -3023,6 +3121,46 @@ namespace WindowsHelper
 
                 if ((pin && verbName.Equals(WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5386, "pin to taskbar").Replace(@"&", string.Empty).ToLower()))
                 || (!pin && verbName.Equals(WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5387, "unpin from taskbar").Replace(@"&", string.Empty).ToLower()))
+                )
+                {
+                    verb.DoIt();
+                }
+            }
+
+            shellApplication = null;
+        }
+
+        public static void PinUnpinToStartMenu(string filePath)
+        {
+            PinUnpinStartMenu(filePath, !IsPinnedToTaskbar(filePath));
+        }
+
+        public static void UnpinFromStartMenu(string filePath)
+        {
+            PinUnpinStartMenu(filePath, false);
+        }
+
+        private static void PinUnpinStartMenu(string filePath, bool pin)
+        {
+            if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
+
+            // create the shell application object
+            dynamic shellApplication = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"));
+
+            string path = Path.GetDirectoryName(filePath);
+            string fileName = Path.GetFileName(filePath);
+
+            dynamic directory = shellApplication.NameSpace(path);
+            dynamic link = directory.ParseName(fileName);
+
+            dynamic verbs = link.Verbs();
+            for (int i = 0; i < verbs.Count(); i++)
+            {
+                dynamic verb = verbs.Item(i);
+                string verbName = verb.Name.Replace(@"&", string.Empty).ToLower();
+
+                if ((pin && verbName.Equals("pin to start menu"))
+                || (!pin && verbName.Equals("unpin from start menu"))
                 )
                 {
                     verb.DoIt();

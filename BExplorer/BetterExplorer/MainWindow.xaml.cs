@@ -2881,7 +2881,7 @@ namespace BetterExplorer
 			bool IsLib = false;
 			if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName)
 			{
-				path = Explorer.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString());
+                path = Explorer.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString()).GetDisplayName(DisplayNameType.Default);
 				AddToLog("Library created");
 				IsLib = true;
 			}
@@ -3206,6 +3206,32 @@ namespace BetterExplorer
 		{
 			WindowsAPI.PinUnpinToTaskbar(Explorer.SelectedItems[0].ParsingName);
 		}
+
+        private void btnPinToStart_Click(object sender, RoutedEventArgs e)
+        {
+            WindowsAPI.PinUnpinToStartMenu(Explorer.SelectedItems[0].ParsingName);
+            //if (Explorer.GetSelectedItemsCount() == 1)
+            //{
+            //    ShellLink link = new ShellLink();
+            //    link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
+            //    link.Target = Explorer.SelectedItems[0].ParsingName;
+            //    link.Save(KnownFolders.StartMenu.ParsingName + @"\" +
+            //        Explorer.SelectedItems[0].GetDisplayName(DisplayNameType.Default) + ".lnk");
+            //    link.Dispose();
+            //}
+        }
+
+        private void btnRunAs_Click(object sender, RoutedEventArgs e)
+        {
+            //RunExeAsUser reu = new RunExeAsUser();
+            //reu.ShowDialog();
+
+            //if (reu.dialogresult == true)
+            //{
+            //    Explorer.RunExeAsAnotherUser(Explorer.SelectedItems[0].ParsingName, reu.textBox1.Text);
+            //}
+            WindowsAPI.RunProcesssAsUser(Explorer.SelectedItems[0].ParsingName);
+        }
 
 		#endregion
 
@@ -9409,6 +9435,86 @@ namespace BetterExplorer
           btnNewItem.IsDropDownOpen = false;
         }
 
+        private void mnuPinToStart_Click(object sender, RoutedEventArgs e)
+        {
+            if (Explorer.GetSelectedItemsCount() == 1)
+            {
+                string loc = KnownFolders.StartMenu.ParsingName + @"\" +
+                    Explorer.SelectedItems[0].GetDisplayName(DisplayNameType.Default) + ".lnk";
+                ShellLinkApi link = new ShellLinkApi();
+                link.DisplayMode = ShellLinkApi.LinkDisplayMode.edmNormal;
+                link.Target = Explorer.SelectedItems[0].ParsingName;
+                link.Save(loc);
+                link.Dispose();
+
+                WindowsAPI.PinUnpinToStartMenu(loc);
+            }
+
+            if (Explorer.GetSelectedItemsCount() == 0)
+            {
+                string loc = KnownFolders.StartMenu.ParsingName + @"\" +
+                    Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default) + ".lnk";
+                ShellLinkApi link = new ShellLinkApi();
+                link.DisplayMode = ShellLinkApi.LinkDisplayMode.edmNormal;
+                link.Target = Explorer.NavigationLog.CurrentLocation.ParsingName;
+                link.Save(loc);
+                link.Dispose();
+
+                WindowsAPI.PinUnpinToStartMenu(loc);
+            }
+        }
+
+        private void mnuIncludeInLibrary_DropDownOpened(object sender, EventArgs e)
+        {
+
+        }
+
+        private void mnuIncludeInLibrary_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            //mnuIncludeInLibrary_DropDownOpened(sender, e);
+        }
+
+        void mln_Click(object sender, RoutedEventArgs e)
+        {
+            ShellLibrary lib = Explorer.CreateNewLibrary(Explorer.SelectedItems[0].GetDisplayName(DisplayNameType.Default));
+            if (Explorer.SelectedItems[0].IsFolder)
+            {
+                lib.Add(Explorer.SelectedItems[0].ParsingName);
+            }
+        }
+
+        void mli_Click(object sender, RoutedEventArgs e)
+        {
+            ShellLibrary lib = (ShellLibrary)(sender as Fluent.MenuItem).Tag;
+            if (Explorer.SelectedItems[0].IsFolder)
+            {
+                lib.Add(Explorer.SelectedItems[0].ParsingName);
+            }
+        }
+
+        private void btnEasyAccess_DropDownOpened(object sender, EventArgs e)
+        {
+            if (Explorer.SelectedItems.Count == 1)
+            {
+                mnuIncludeInLibrary.Items.Clear();
+
+                foreach (ShellObject lib in (ShellContainer)KnownFolders.Libraries)
+                {
+                    Fluent.MenuItem mli = new MenuItem();
+                    mli.Header = lib.GetDisplayName(DisplayNameType.Default);
+                    mli.Tag = ShellLibrary.FromParsingName(lib.ParsingName);
+                    mli.Click += mli_Click;
+                    mnuIncludeInLibrary.Items.Add(mli);
+                }
+
+                mnuIncludeInLibrary.Items.Add(new Separator());
+
+                Fluent.MenuItem mln = new MenuItem();
+                mln.Header = "Create new library";
+                mln.Click += mln_Click;
+                mnuIncludeInLibrary.Items.Add(mln);
+            }
+        }
 
     }
 }
