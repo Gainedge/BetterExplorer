@@ -14,7 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Drawing;
 
 
-namespace BetterExplorer {
+namespace Microsoft.WindowsAPICodePack.Shell
+{
   /// <summary>
   /// Converts Icon to ImageSource
   /// </summary>

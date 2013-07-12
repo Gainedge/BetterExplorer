@@ -193,6 +193,9 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="TAFactory.IconPack">
+      <HintPath>..\..\..\..\BExplorer\BetterExplorer\TAFactory.IconPack.dll</HintPath>
+    </Reference>
     <Reference Include="UIAutomationClient" />
     <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase">
@@ -291,10 +294,15 @@
     <Compile Include="FileOperations\Theme.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ContextShellMenu.cs" />
+    <Compile Include="Icons\FileIcon.cs" />
+    <Compile Include="Icons\IconFile.cs" />
+    <Compile Include="Icons\IconReader.cs" />
+    <Compile Include="Icons\IconUtilities.cs" />
     <Compile Include="IFileOperation.cs" />
     <Compile Include="IFileOperationProgressSink.cs" />
     <Compile Include="Windows API\IAsyncDataObject.cs" />
     <Compile Include="Interop\Common\IntPtrExtensions.cs" />
+    <Compile Include="Windows API\ShellLink.cs" />
     <Compile Include="Windows API\ShellNativeStructs.cs" />
     <Compile Include="Interop\ShellObjectWatcher\ShellObjectWatcherNativeMethods.cs" />
     <Compile Include="IPC.cs" />

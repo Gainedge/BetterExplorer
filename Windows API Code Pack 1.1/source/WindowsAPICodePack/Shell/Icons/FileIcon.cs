@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Drawing;
 
-namespace BetterExplorer
+namespace Microsoft.WindowsAPICodePack.Shell
 {
     /// <summary>
     /// Enables extraction of icons for any file type from

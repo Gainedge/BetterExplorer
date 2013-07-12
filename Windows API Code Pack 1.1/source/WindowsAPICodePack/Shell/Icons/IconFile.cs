@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace BetterExplorer
+namespace Microsoft.WindowsAPICodePack.Shell
 {
     public class IconFile
     {

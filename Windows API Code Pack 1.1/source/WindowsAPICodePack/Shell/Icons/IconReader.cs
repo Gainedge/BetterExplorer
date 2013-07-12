@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using TAFactory.IconPack;
 
-namespace BetterExplorer
+namespace Microsoft.WindowsAPICodePack.Shell
 {
     public class IconReader
     {

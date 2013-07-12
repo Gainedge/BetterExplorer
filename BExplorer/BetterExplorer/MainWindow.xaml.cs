@@ -1315,7 +1315,7 @@ namespace BetterExplorer
 		bool IsCancel = false;
 		void Explorer_NavigationPending(object sender, NavigationPendingEventArgs e)
 		{
-
+      
 			if (fsw_AC != null)
 				fsw_AC.Dispose();
 
@@ -1420,7 +1420,7 @@ namespace BetterExplorer
 						 {
 							 foreach (MenuItem item in btnFavorites.Items)
 							 {
-								 ShellLink lnk = new ShellLink(e.FullPath);
+                 ShellLinkApi lnk = new ShellLinkApi(e.FullPath);
 								 if (item.Tag.ToString() == lnk.Target)
 								 {
 									 item.Header = Path.GetFileNameWithoutExtension(e.Name);
@@ -1461,7 +1461,7 @@ namespace BetterExplorer
 									 ShellObject so = ShellObject.FromParsingName(e.FullPath);
 									 MenuItem mi = new MenuItem();
 									 mi.Header = so.GetDisplayName(DisplayNameType.Default);
-									 ShellLink lnk = new ShellLink(so.ParsingName);
+                   ShellLinkApi lnk = new ShellLinkApi(so.ParsingName);
 									 mi.Tag = lnk.Target;
 									 lnk.Dispose();
 									 so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
@@ -2952,13 +2952,13 @@ namespace BetterExplorer
 			string PathForDrop = Explorer.NavigationLog.CurrentLocation.ParsingName;
 			foreach (string item in DropList)
 			{
-				using (ShellLink shortcut = new ShellLink())
+        using (ShellLinkApi shortcut = new ShellLinkApi())
 				{
 					ShellObject o = ShellObject.FromParsingName(item);
 					shortcut.Target = item;
 					shortcut.WorkingDirectory = System.IO.Path.GetDirectoryName(item);
 					shortcut.Description = o.GetDisplayName(DisplayNameType.Default);
-					shortcut.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
+          shortcut.DisplayMode = ShellLinkApi.LinkDisplayMode.edmNormal;
 					shortcut.Save(PathForDrop + "\\" + o.GetDisplayName(DisplayNameType.Default) + ".lnk");
 					AddToLog(String.Format("Shortcut created at {0}\\{1} from source {2}", PathForDrop, o.GetDisplayName(DisplayNameType.Default), item));
 					o.Dispose();
@@ -3150,8 +3150,8 @@ namespace BetterExplorer
 		{
 			if (Explorer.GetSelectedItemsCount() == 1)
 			{
-				ShellLink link = new ShellLink();
-				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
+        ShellLinkApi link = new ShellLinkApi();
+        link.DisplayMode = ShellLinkApi.LinkDisplayMode.edmNormal;
 				link.Target = Explorer.SelectedItems[0].ParsingName;
 				link.Save(KnownFolders.Links.ParsingName + @"\" +
 					Explorer.SelectedItems[0].GetDisplayName(DisplayNameType.Default) + ".lnk");
@@ -3160,8 +3160,8 @@ namespace BetterExplorer
 
 			if (Explorer.GetSelectedItemsCount() == 0)
 			{
-				ShellLink link = new ShellLink();
-				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
+        ShellLinkApi link = new ShellLinkApi();
+        link.DisplayMode = ShellLinkApi.LinkDisplayMode.edmNormal;
 				link.Target = Explorer.NavigationLog.CurrentLocation.ParsingName;
 				link.Save(KnownFolders.Links.ParsingName + @"\" +
 					Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default) + ".lnk");
@@ -3784,7 +3784,7 @@ namespace BetterExplorer
 													 ShellObject so = ShellObject.FromParsingName(item.FullName);
 													 MenuItem mi = new MenuItem();
 													 mi.Header = so.GetDisplayName(DisplayNameType.Default);
-													 ShellLink lnk = new ShellLink(so.ParsingName);
+                           ShellLinkApi lnk = new ShellLinkApi(so.ParsingName);
 													 string Target = lnk.Target;
 													 if (Target.Contains("::"))
 													 {
@@ -8737,7 +8737,7 @@ namespace BetterExplorer
             string itemPath = String.Empty;
             if (obj.IsLink)
             {
-              using (ShellLink link = new ShellLink(item))
+              using (ShellLinkApi link = new ShellLinkApi(item))
               {
                 itemPath = link.Target;
                 ShellObject linkobj = ShellObject.FromParsingName(link.Target);

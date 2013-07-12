@@ -2985,9 +2985,9 @@ namespace WindowsHelper
             foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk"))
             {
 
- //               var shortcut = new ShellLinkClass.ShellLink(pinnedShortcut);
-  //              if (shortcut.Target == executablePath)
-   //                 return true;
+                var shortcut = new ShellLinkApi(pinnedShortcut);
+                if (shortcut.Target == executablePath)
+                    return true;
             }
 
             return false;
@@ -3021,8 +3021,8 @@ namespace WindowsHelper
                 dynamic verb = verbs.Item(i);
                 string verbName = verb.Name.Replace(@"&", string.Empty).ToLower();
 
-                if ((pin && verbName.Equals("pin to taskbar"))
-                || (!pin && verbName.Equals("unpin from taskbar"))
+                if ((pin && verbName.Equals(WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5386, "pin to taskbar").Replace(@"&", string.Empty).ToLower()))
+                || (!pin && verbName.Equals(WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5387, "unpin from taskbar").Replace(@"&", string.Empty).ToLower()))
                 )
                 {
                     verb.DoIt();

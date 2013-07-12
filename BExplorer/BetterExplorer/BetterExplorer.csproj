@@ -157,9 +157,6 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="TAFactory.IconPack">
-      <HintPath>.\TAFactory.IconPack.dll</HintPath>
-    </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
@@ -213,7 +210,6 @@
     <Compile Include="Customize\CustomizeQAT.xaml.cs" />
     <Compile Include="Customize\RibbonItemListDisplay.xaml.cs" />
     <Compile Include="HelperClasses\FolderStructForSize.cs" />
-    <Compile Include="IconClasses\IconUtilities.cs" />
     <Compile Include="HelperClasses\PathStringCombiner.cs" />
     <Compile Include="MessageReceiver.cs">
       <SubType>Form</SubType>
@@ -301,7 +297,6 @@
       <DependentUpon>CreateArchive.cs</DependentUpon>
     </Compile>
     <Compile Include="HelperClasses\DragDropLib.cs" />
-    <Compile Include="IconClasses\FileIcon.cs" />
     <Compile Include="fmAbout.xaml.cs">
       <DependentUpon>fmAbout.xaml</DependentUpon>
     </Compile>
@@ -325,8 +320,6 @@
     <Compile Include="PreviewMedia.Designer.cs">
       <DependentUpon>PreviewMedia.cs</DependentUpon>
     </Compile>
-    <Compile Include="IconClasses\IconFile.cs" />
-    <Compile Include="IconClasses\IconReader.cs" />
     <Compile Include="IconClasses\IconView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -348,7 +341,6 @@
     <Compile Include="ShareWizzard.Designer.cs">
       <DependentUpon>ShareWizzard.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses\ShellLink.cs" />
     <Compile Include="ConditionalSelect\StringSearchCriteriaDialog.xaml.cs">
       <DependentUpon>StringSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
@@ -1130,7 +1122,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

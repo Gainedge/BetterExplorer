@@ -6,13 +6,13 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace BetterExplorer
+namespace Microsoft.WindowsAPICodePack.Shell
 {
     #region ShellLink Object
    /// <summary>
    /// Summary description for ShellLink.
    /// </summary>
-   public class ShellLink : IDisposable
+   public class ShellLinkApi : IDisposable
    {
       #region ComInterop for IShellLink
 
@@ -426,7 +426,7 @@ namespace BetterExplorer
       /// <summary>
       /// Creates an instance of the Shell Link object.
       /// </summary>
-      public ShellLink()
+      public ShellLinkApi()
       {
          if (System.Environment.OSVersion.Platform == PlatformID.Win32NT)
          {
@@ -443,7 +443,7 @@ namespace BetterExplorer
       /// from the specified link file
       /// </summary>
       /// <param name="linkFile">The Shortcut file to open</param>
-      public ShellLink(string linkFile) : this()
+      public ShellLinkApi(string linkFile) : this()
       {
          Open(linkFile);
       }
@@ -453,7 +453,7 @@ namespace BetterExplorer
       /// <summary>
       /// Call dispose just in case it hasn't happened yet
       /// </summary>
-      ~ShellLink()
+      ~ShellLinkApi()
       {
          Dispose();
       }
