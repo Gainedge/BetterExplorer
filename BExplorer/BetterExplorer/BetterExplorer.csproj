@@ -963,6 +963,13 @@
     <Resource Include="Images\cancel32.png" />
     <Resource Include="Images\confirm16.png" />
     <Resource Include="Images\confirm32.png" />
+    <Resource Include="Images\users16.png" />
+    <Resource Include="Images\users32.png" />
+    <Resource Include="Images\users48.png" />
+    <Resource Include="Images\newitems16.png" />
+    <Resource Include="Images\easyacc16.png" />
+    <Resource Include="Images\check16.png" />
+    <Resource Include="Images\formatd16.png" />
     <Content Include="Ionic.Zip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -25,6 +25,7 @@ namespace BetterExplorer
         {
             InitializeComponent();
             ShowMenuArrow = false;
+            ShowCheck = false;
         }
 
         public IRibbonControl source;
@@ -68,6 +69,34 @@ namespace BetterExplorer
                 }
             }
         }
+
+        [Category("Common")]
+        public Boolean ShowCheck
+        {
+            get
+            {
+                if (CheckBox.Visibility == System.Windows.Visibility.Visible)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            set
+            {
+                if (value == true)
+                {
+                    CheckBox.Visibility = System.Windows.Visibility.Visible;
+                }
+                else
+                {
+                    CheckBox.Visibility = System.Windows.Visibility.Collapsed;
+                }
+            }
+        }
+
 
         [Category("Common")]
         public string Header

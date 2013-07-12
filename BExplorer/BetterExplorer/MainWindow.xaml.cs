@@ -1553,6 +1553,10 @@ namespace BetterExplorer
               btnHistory.IsEnabled = false;
               btnAdvancedSecurity.IsEnabled = false;
               miRestoreRBItems.Visibility = System.Windows.Visibility.Collapsed;
+              mnuIncludeInLibrary.IsEnabled = false;
+
+              // this still has functionality when there are no items selected
+              btnEasyAccess.IsEnabled = true;
 
               // hide contextual tabs
               ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
@@ -1635,6 +1639,9 @@ namespace BetterExplorer
               miSelAllByType.IsEnabled = true;
               miSelAllByDate.IsEnabled = true;
 
+              // Disable in case the selection is not a folder, or there's more than one selected item
+              mnuIncludeInLibrary.IsEnabled = false;
+
               if (SelItemsCount == 1) {
                 // IF ONE ITEM IS SELECTED
                 ShellObject SelectedItem = Explorer.SelectedItems[0];
@@ -1647,6 +1654,8 @@ namespace BetterExplorer
                 sbiSelItemsCount.Content = "1 item selected";
 
                 // set variables
+
+                btnEasyAccess.IsEnabled = true;
 
                 btnShare.IsEnabled = SelectedItem.IsFolder && SelectedItem.IsFileSystemObject;
                 btnAdvancedSecurity.IsEnabled = SelectedItem.IsFileSystemObject;
@@ -1780,7 +1789,9 @@ namespace BetterExplorer
                   } else if (!SelectedItem.IsNetDrive) {
                     ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
                     //MessageBox.Show("1");
+                    // Is Folder
                     ctgFolderTools.Visibility = System.Windows.Visibility.Visible;
+                    mnuIncludeInLibrary.IsEnabled = true;
                     selisfolder = true;
                   } else {
                     ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
@@ -1952,6 +1963,7 @@ namespace BetterExplorer
                 btnOpenWith.IsEnabled = false;
                 btnEdit.IsEnabled = false;
                 btnHistory.IsEnabled = false;
+                btnEasyAccess.IsEnabled = false;
 
                 // hide contextual tabs
                 ctgImage.Visibility = System.Windows.Visibility.Collapsed;
@@ -9464,15 +9476,15 @@ namespace BetterExplorer
             }
         }
 
-        private void mnuIncludeInLibrary_DropDownOpened(object sender, EventArgs e)
-        {
+        //private void mnuIncludeInLibrary_DropDownOpened(object sender, EventArgs e)
+        //{
 
-        }
+        //}
 
-        private void mnuIncludeInLibrary_SubmenuOpened(object sender, RoutedEventArgs e)
-        {
-            //mnuIncludeInLibrary_DropDownOpened(sender, e);
-        }
+        //private void mnuIncludeInLibrary_SubmenuOpened(object sender, RoutedEventArgs e)
+        //{
+        //    //mnuIncludeInLibrary_DropDownOpened(sender, e);
+        //}
 
         void mln_Click(object sender, RoutedEventArgs e)
         {

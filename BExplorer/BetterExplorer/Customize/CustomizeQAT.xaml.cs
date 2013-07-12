@@ -140,6 +140,11 @@ namespace BetterExplorer
                 {
                     rils.ShowMenuArrow = true;
                 }
+
+                if (item is Fluent.CheckBox)
+                {
+                    rils.ShowCheck = true;
+                }
                 this.QATControls.Items.Add(rils);
             }
             else
@@ -158,6 +163,11 @@ namespace BetterExplorer
                 {
                     rils.ShowMenuArrow = true;
                 }
+
+                if (item is Fluent.CheckBox)
+                {
+                    rils.ShowCheck = true;
+                }
                 this.AllControls.Items.Add(rils);
             }
         }
@@ -166,24 +176,6 @@ namespace BetterExplorer
         {
             if (DirectConfigMode == true)
             {
-                //int sel = QATControls.SelectedIndex;
-                //RemoveFromQAT((QATControls.SelectedItem as RibbonItemListDisplay).SourceControl);
-                //if (sel != 0)
-                //{
-                //    QATControls.SelectedIndex = sel - 1;
-                //}
-                //else
-                //{
-                //    if (QATControls.Items.Count != 0)
-                //    {
-                //        QATControls.SelectedIndex = 0;
-                //    }
-                //    else
-                //    {
-                //        btnRemove.IsEnabled = false;
-                //        btnAdd.IsEnabled = true;
-                //    }
-                //}
                 int sel = QATControls.SelectedIndex;
                 RibbonItemListDisplay item = QATControls.SelectedValue as RibbonItemListDisplay;
                 QATControls.Items.Remove(item);
@@ -204,6 +196,11 @@ namespace BetterExplorer
                     if (thing is Fluent.DropDownButton || thing is Fluent.SplitButton)
                     {
                         rils.ShowMenuArrow = true;
+                    }
+
+                    if (thing is Fluent.CheckBox)
+                    {
+                        rils.ShowCheck = true;
                     }
                     this.AllControls.Items.Add(rils);
                 }
@@ -246,6 +243,11 @@ namespace BetterExplorer
                     if (thing is Fluent.DropDownButton || thing is Fluent.SplitButton)
                     {
                         rils.ShowMenuArrow = true;
+                    }
+
+                    if (thing is Fluent.CheckBox)
+                    {
+                        rils.ShowCheck = true;
                     }
                     this.AllControls.Items.Add(rils);
                 }
@@ -358,6 +360,11 @@ namespace BetterExplorer
                 if (item is Fluent.DropDownButton || item is Fluent.SplitButton)
                 {
                     rils.ShowMenuArrow = true;
+                }
+
+                if (item is Fluent.CheckBox)
+                {
+                    rils.ShowCheck = true;
                 }
                 this.AllControls.Items.Add(rils);
             }

@@ -1500,17 +1500,19 @@
                                         Header="New item"
                                         Ribbon:KeyTip.Keys="CR"
                                         SizeDefinition="Middle,Small,Small"
+                                        Icon="Images\newitems16.png"
                                         Visibility="Visible" DropDownOpened="btnNewItem_DropDownOpened" />
                     <Ribbon:DropDownButton x:Name="btnEasyAccess" Header="Easy Access"
                                         Ribbon:KeyTip.Keys="E"
                                         SizeDefinition="Middle,Small,Small"
                                         Visibility="Visible"
+                                        Icon="Images\easyacc16.png"
                                         DropDownOpened="btnEasyAccess_DropDownOpened">
                         <Ribbon:MenuItem Header="Pin to Start&gt;All Programs" x:Name="mnuPinToStart" Click="mnuPinToStart_Click" />
-                        <Ribbon:MenuItem Header="Include in library" x:Name="mnuIncludeInLibrary" Visibility="Visible" DropDownOpened="mnuIncludeInLibrary_DropDownOpened" SubmenuOpened="mnuIncludeInLibrary_SubmenuOpened" >
-                            <Ribbon:MenuItem Header="Create New Library..." />
+                        <Ribbon:MenuItem Header="Include in library" x:Name="mnuIncludeInLibrary" IsEnabled="False" Icon="Images\explorer16.png" >
+                            <Ribbon:MenuItem Header="Create New Library..." Icon="Images\newlib16.png" />
                         </Ribbon:MenuItem>
-                        <Ribbon:MenuItem Header="Add to Favorites" x:Name="mnuAddFavorites" Click="btnFavorites_Click" />
+                        <Ribbon:MenuItem Header="Add to Favorites" x:Name="mnuAddFavorites" Click="btnFavorites_Click" Icon="Images\favorites16.png" />
                     </Ribbon:DropDownButton>
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox x:Name="Open"
@@ -2110,6 +2112,7 @@
                     <Ribbon:Button x:Name="btnRefresh"
                                    Click="Button_Click"
                                    Header="{StaticResource btnRefreshCP}"
+                                   Icon="Images\refresh16.png"
                                    LargeIcon="Images\Refresh32.png"
                                    Ribbon:KeyTip.Keys="R"
                                    SizeDefinition="Large" />
@@ -2213,18 +2216,21 @@
                     <Ribbon:Button x:Name="btnFormatDrive"
                                    Click="btnFormatDrive_Click"
                                    Header="{StaticResource btnFormatDriveCP}"
+                                   Icon="Images\formatd16.png"
                                    LargeIcon="Images\formatd.png"
                                    Ribbon:KeyTip.Keys="F"
                                    SizeDefinition="Large" />
                     <Ribbon:Button x:Name="btnCleanDrive"
                                    Click="btnCleanDrive_Click"
                                    Header="{StaticResource btnCleanDriveCP}"
+                                   Icon="Images\cleand16.png"
                                    LargeIcon="Images\cleand32.png"
                                    Ribbon:KeyTip.Keys="C"
                                    SizeDefinition="Large" />
                     <Ribbon:Button x:Name="btnDefragDrive"
                                    Click="btnDefragDrive_Click"
                                    Header="{StaticResource btnDefragDriveCP}"
+                                   Icon="Images\defrag16.png"
                                    LargeIcon="Images\defrag32.png"
                                    Ribbon:KeyTip.Keys="O"
                                    SizeDefinition="Large" />
@@ -2250,6 +2256,7 @@
                     <Ribbon:SplitButton x:Name="btnPin"
                                          Click="btnPin_Click"
                                          Header="{StaticResource btnPinCP}"
+                                         Icon="Images\pint16.png"
                                          LargeIcon="Images\pint32.png"
                                          Ribbon:KeyTip.Keys="P"
                                          SizeDefinition="Large">
@@ -2259,10 +2266,11 @@
                     <Ribbon:Button x:Name="btnRunAsAdmin"
                                    Click="btnRunAsAdmin_Click"
                                    Header="{StaticResource btnRunAsAdminCP}"
+                                   Icon="Images\admin16.png"
                                    LargeIcon="Images\admin32.png"
                                    Ribbon:KeyTip.Keys="A"
                                    SizeDefinition="Large" />
-                    <Ribbon:Button x:Name="btnRunAs" Header="Run As Another User" SizeDefinition="Large" Click="btnRunAs_Click" />
+                    <Ribbon:Button x:Name="btnRunAs" Header="Run As Another User" SizeDefinition="Large" Click="btnRunAs_Click" Icon="Images\users16.png" LargeIcon="Images\users32.png" />
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 

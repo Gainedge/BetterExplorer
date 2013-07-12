@@ -15,5 +15,11 @@
           Stroke="Black" 
           Fill="Black" />
         </Grid>
+        <Grid HorizontalAlignment="Left" x:Name="CheckBox" Margin="2,2,2,2">
+            <Path x:Name="check" Data="M 1 8 L 4 12 L 9 4" Visibility="Visible"
+          StrokeThickness="2" 
+          StrokeLineJoin="Miter"
+          Stroke="Black" />
+        </Grid>
     </Grid>
 </UserControl>
