@@ -154,6 +154,19 @@ namespace Microsoft.WindowsAPICodePack.Shell
             }
         }
 
+        public System.IO.DriveInfo GetDriveInfo()
+        {
+
+            if (IsDrive == true || IsNetDrive == true)
+            {
+                return new DriveInfo(ParsingName);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         #endregion
 
         #region Public Properties

@@ -2232,12 +2232,30 @@
                                    Header="{StaticResource btnDefragDriveCP}"
                                    Icon="Images\defrag16.png"
                                    LargeIcon="Images\defrag32.png"
+                                   Ribbon:KeyTip.Keys="D"
+                                   SizeDefinition="Large" />
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="Removable Drive" x:Name="grpDriveDisk"
+                                       IsLauncherVisible="False">
+                    <Ribbon:Button x:Name="btnOpenTray"
+                                   Header="Open Tray"
+                                   Click="btnOpenTray_Click"
                                    Ribbon:KeyTip.Keys="O"
+                                   SizeDefinition="Large" />
+                    <Ribbon:Button x:Name="btnCloseTray"
+                                   Header="Close Tray"
+                                   Click="btnCloseTray_Click"
+                                   Ribbon:KeyTip.Keys="T"
+                                   SizeDefinition="Large" />
+                    <Separator />
+                    <Ribbon:Button x:Name="btnEjectDevice"
+                                   Header="Eject"
+                                   Click="btnEjectDevice_Click"
+                                   Ribbon:KeyTip.Keys="E"
                                    SizeDefinition="Large" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header=""
-                                       IsLauncherVisible="False"
-                                       Ribbon:KeyTip.Keys="S">
+                                       IsLauncherVisible="False">
                     <Ribbon:Button x:Name="btnDSizeChart"
                                    Click="btnFSizeChart_Click"
                                    Header="{StaticResource btnDSizeChartCP}"

@@ -3051,7 +3051,7 @@ namespace WindowsHelper
         /// </summary>
         /// <param name="DriveLetter">The Drive letter</param>
         /// <returns>Error or Success Code</returns>
-        public static uint FormatDrive(IntPtr Handle ,string DriveLetter)
+        public static uint FormatDrive(IntPtr Handle, string DriveLetter)
         {
             DriveInfo drive = new DriveInfo(DriveLetter);
             byte[] bytes = Encoding.ASCII.GetBytes(drive.Name.ToCharArray());
