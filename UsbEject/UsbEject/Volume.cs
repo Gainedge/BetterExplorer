@@ -36,7 +36,7 @@ namespace BetterExplorer.UsbEject
                 if (_volumeName == null)
                 {
                     StringBuilder sb = new StringBuilder(1024);
-                    if (!Native.GetVolumeNameForVolumeMountPoint(Path + "\\", sb, sb.Capacity))
+                    if (!Native.GetVolumeNameForVolumeMountPoint(Path + "\\", sb, (uint)sb.Capacity))
                     {
                         // throw new Win32Exception(Marshal.GetLastWin32Error());
                         

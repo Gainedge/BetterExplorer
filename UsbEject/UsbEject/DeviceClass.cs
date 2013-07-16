@@ -100,7 +100,15 @@ namespace BetterExplorer.UsbEject
 
                         IntPtr buffer = Marshal.AllocHGlobal(size);
                         Native.SP_DEVICE_INTERFACE_DETAIL_DATA detailData = new Native.SP_DEVICE_INTERFACE_DETAIL_DATA();
-                        detailData.cbSize = Marshal.SizeOf(typeof(Native.SP_DEVICE_INTERFACE_DETAIL_DATA));
+                        if (IntPtr.Size == 8) // for 64 bit operating systems
+                        {
+                            detailData.cbSize = 8;
+                        }
+                        else
+                        {
+                            detailData.cbSize = 4 + Marshal.SystemDefaultCharSize; // for 32 bit systems
+                        }
+                        //detailData.cbSize = Marshal.SizeOf(typeof(Native.SP_DEVICE_INTERFACE_DETAIL_DATA));
                         Marshal.StructureToPtr(detailData, buffer, false);
 
                         if (!Native.SetupDiGetDeviceInterfaceDetail(_deviceInfoSet, interfaceData, buffer, size, ref size, devData))

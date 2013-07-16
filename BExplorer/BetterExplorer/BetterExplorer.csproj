@@ -159,9 +159,6 @@
     </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
-    <Reference Include="UsbEject">
-      <HintPath>..\..\UsbEject\bin\Debug\UsbEject.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -692,6 +689,10 @@
       <Project>{5b779ae9-72b6-4b7e-88b7-47227b92112a}</Project>
       <Name>SharpBox2010</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\UsbEject\UsbEject.csproj">
+      <Project>{ae269158-dfa5-4dd7-8afc-f45faf2b958c}</Project>
+      <Name>UsbEject</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\Shell.csproj">
       <Project>{aa0c00cb-8699-4f37-bfae-40ca87acc06d}</Project>
       <Name>Shell</Name>
@@ -973,6 +974,10 @@
     <Resource Include="Images\easyacc16.png" />
     <Resource Include="Images\check16.png" />
     <Resource Include="Images\formatd16.png" />
+    <Resource Include="Images\cdtray16.png" />
+    <Resource Include="Images\cdtray32.png" />
+    <Resource Include="Images\removeusb16.png" />
+    <Resource Include="Images\removeusb32.png" />
     <Content Include="Ionic.Zip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1139,7 +1144,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

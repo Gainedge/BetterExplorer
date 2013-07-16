@@ -43,6 +43,7 @@ using Microsoft.WindowsAPICodePack.Taskbar;
 using BetterExplorer.Networks;
 using System.Xml.Linq;
 using System.Text;
+using BetterExplorer.UsbEject;
 
 namespace BetterExplorer
 {
@@ -3307,11 +3308,21 @@ namespace BetterExplorer
 
         private void EjectDisk(char DriveLetter)
         {
-            //VolumeDeviceClass vdc = new VolumeDeviceClass();
-            //foreach (Device item in vdc.Devices)
-            //{
-            //    MessageBox.Show(item.Path);
-            //}
+            Thread t = new Thread(() =>
+            {
+                Thread.Sleep(10);
+                VolumeDeviceClass vdc = new VolumeDeviceClass();
+                foreach (Volume item in vdc.Devices)
+                {
+                    //MessageBox.Show(item.LogicalDrive);
+                    if (GetDriveLetterFromDrivePath(item.LogicalDrive) == DriveLetter)
+                    {
+                        item.Eject(true);
+                        break;
+                    }
+                }
+            });
+            t.Start();
         }
 
         private void btnEjectDevice_Click(object sender, RoutedEventArgs e)

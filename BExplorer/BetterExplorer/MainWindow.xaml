@@ -2235,22 +2235,25 @@
                                    Ribbon:KeyTip.Keys="D"
                                    SizeDefinition="Large" />
                 </Ribbon:RibbonGroupBox>
-                <Ribbon:RibbonGroupBox Header="Removable Drive" x:Name="grpDriveDisk"
+                <Ribbon:RibbonGroupBox Header="Removable Media" x:Name="grpDriveDisk"
                                        IsLauncherVisible="False">
                     <Ribbon:Button x:Name="btnOpenTray"
                                    Header="Open Tray"
                                    Click="btnOpenTray_Click"
                                    Ribbon:KeyTip.Keys="O"
+                                   LargeIcon="Images\cdtray32.png"
+                                   Icon="Images\cdtray16.png"
                                    SizeDefinition="Large" />
                     <Ribbon:Button x:Name="btnCloseTray"
                                    Header="Close Tray"
-                                   Click="btnCloseTray_Click"
-                                   Ribbon:KeyTip.Keys="T"
-                                   SizeDefinition="Large" />
+                                   Ribbon:KeyTip.Keys="C"
+                                   Click="btnCloseTray_Click" />
                     <Separator />
                     <Ribbon:Button x:Name="btnEjectDevice"
                                    Header="Eject"
                                    Click="btnEjectDevice_Click"
+                                   LargeIcon="Images\removeusb32.png"
+                                   Icon="Images\removeusb16.png"
                                    Ribbon:KeyTip.Keys="E"
                                    SizeDefinition="Large" />
                 </Ribbon:RibbonGroupBox>

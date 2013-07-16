@@ -23,7 +23,7 @@ namespace BetterExplorer.UsbEject
             foreach(string drive in Environment.GetLogicalDrives())
             {
                 StringBuilder sb = new StringBuilder(1024);
-                if (Native.GetVolumeNameForVolumeMountPoint(drive, sb, sb.Capacity))
+                if (Native.GetVolumeNameForVolumeMountPoint(drive, sb, (uint)sb.Capacity))
                 {
                     _logicalDrives[sb.ToString()] = drive.Replace("\\", "");
                 }

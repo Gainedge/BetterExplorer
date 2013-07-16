@@ -23,7 +23,7 @@ namespace BetterExplorer.UsbEject
         internal static extern bool GetVolumeNameForVolumeMountPoint(
             string volumeName,
             StringBuilder uniqueVolumeName,
-            int uniqueNameBufferCapacity);
+            uint uniqueNameBufferCapacity);
 
         [DllImport("Kernel32.dll", SetLastError = true)]
         internal static extern IntPtr CreateFile(string lpFileName, int dwDesiredAccess, int dwShareMode, IntPtr lpSecurityAttributes, int dwCreationDisposition, int dwFlagsAndAttributes, IntPtr hTemplateFile);
@@ -119,10 +119,10 @@ namespace BetterExplorer.UsbEject
 			internal int cbSize = Marshal.SizeOf(typeof(SP_DEVINFO_DATA));
 			internal Guid classGuid = Guid.Empty; // temp
 			internal int devInst = 0; // dumy
-			internal int reserved = 0;
+			internal IntPtr reserved = IntPtr.Zero;
 		}
 
-		[StructLayout(LayoutKind.Sequential, Pack = 2)]
+		[StructLayout(LayoutKind.Sequential)]
 		internal struct SP_DEVICE_INTERFACE_DETAIL_DATA
 		{
 			internal int cbSize;
@@ -135,7 +135,7 @@ namespace BetterExplorer.UsbEject
 			internal int cbSize = Marshal.SizeOf(typeof(SP_DEVICE_INTERFACE_DATA));
 			internal Guid interfaceClassGuid = Guid.Empty; // temp
 			internal int flags = 0;
-			internal int reserved = 0;
+			internal IntPtr reserved = IntPtr.Zero;
 		}
 
         [DllImport("setupapi.dll")]

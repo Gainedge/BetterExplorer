@@ -2,5 +2,4 @@
 
 Find it online at http://www.codeproject.com/Articles/13530/Eject-USB-disks-using-C
 
-Modified by Jayke R. Huempfner to work for modern computers
-(based on this comment: http://www.codeproject.com/Articles/13530/Eject-USB-disks-using-C?msg=4269170#xx4269170xx )
+Modified by Jayke R. Huempfner and Dimitar Tsenev to work for modern computers
