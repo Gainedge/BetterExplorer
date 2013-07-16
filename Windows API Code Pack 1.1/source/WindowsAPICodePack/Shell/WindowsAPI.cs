@@ -182,28 +182,92 @@ namespace WindowsHelper
           [MarshalAs(UnmanagedType.Bool)] ref bool pfSave,
           CREDUI_FLAGS flags);
 
+        [DllImport("credui.dll", CharSet = CharSet.Auto)]
+        public static extern bool CredUnPackAuthenticationBuffer(int dwFlags,
+                                                                   IntPtr pAuthBuffer,
+                                                                   uint cbAuthBuffer,
+                                                                   StringBuilder pszUserName,
+                                                                   ref int pcchMaxUserName,
+                                                                   StringBuilder pszDomainName,
+                                                                   ref int pcchMaxDomainame,
+                                                                   StringBuilder pszPassword,
+                                                                   ref int pcchMaxPassword);
+
+        [DllImport("credui.dll", CharSet = CharSet.Auto)]
+        public static extern int CredUIPromptForWindowsCredentials(ref CREDUI_INFO notUsedHere,
+                                                                     int authError,
+                                                                     ref uint authPackage,
+                                                                     IntPtr InAuthBuffer,
+                                                                     uint InAuthBufferSize,
+                                                                     out IntPtr refOutAuthBuffer,
+                                                                     out uint refOutAuthBufferSize,
+                                                                     ref bool fSave,
+                                                                     int flags);
+
+
+
         public static void RunProcesssAsUser(String processPath)
         {
             // Setup the flags and variables
             StringBuilder userPassword = new StringBuilder(), userID = new StringBuilder();
             CREDUI_INFO credUI = new CREDUI_INFO();
+            credUI.pszCaptionText = "Please enter the credentails for " + ShellObject.FromParsingName(processPath).GetDisplayName(DisplayNameType.Default);
+            credUI.pszMessageText = "DisplayedMessage";
             credUI.cbSize = Marshal.SizeOf(credUI);
+            uint authPackage = 0;
+            IntPtr outCredBuffer = new IntPtr();
+            uint outCredSize;
             bool save = false;
-            CREDUI_FLAGS flags = CREDUI_FLAGS.EXCLUDE_CERTIFICATES | CREDUI_FLAGS.PERSIST;
+            int result = CredUIPromptForWindowsCredentials(ref credUI,
+                                                       0,
+                                                       ref authPackage,
+                                                       IntPtr.Zero,
+                                                       0,
+                                                       out outCredBuffer,
+                                                       out outCredSize,
+                                                       ref save,
+                                                       1 /* Generic */);
 
-            // Prompt the user
-            CredUIReturnCodes returnCode = CredUIPromptForCredentials(ref credUI, ShellObject.FromParsingName(processPath).GetDisplayName(DisplayNameType.Default), IntPtr.Zero, 0, userID, 100, userPassword, 100, ref save, flags);
+            var usernameBuf = new StringBuilder(100);
+            var passwordBuf = new StringBuilder(100);
+            var domainBuf = new StringBuilder(100);
 
-            SecureString pass = new SecureString();
-            foreach (char _char in userPassword.ToString().ToCharArray())
-	        {
-                pass.AppendChar(_char);
-	        }
-
-            if (returnCode == CredUIReturnCodes.NO_ERROR)
+            int maxUserName = 100;
+            int maxDomain = 100;
+            int maxPassword = 100;
+            if (result == 0)
             {
-                Process.Start(processPath,userID.ToString(), pass ,Environment.UserDomainName);
+              if (CredUnPackAuthenticationBuffer(0, outCredBuffer, outCredSize, usernameBuf, ref maxUserName,
+                                                 domainBuf, ref maxDomain, passwordBuf, ref maxPassword))
+              {
+                //TODO: ms documentation says we should call this but i can't get it to work
+                //SecureZeroMem(outCredBuffer, outCredSize);
+
+                //clear the memory allocated by CredUIPromptForWindowsCredentials 
+                CoTaskMemFree(outCredBuffer);
+
+                SecureString pass = new SecureString();
+                foreach (char _char in passwordBuf.ToString().ToCharArray())
+                {
+                  pass.AppendChar(_char);
+                }
+
+                using (Process p = new Process())
+                {
+                  p.StartInfo.UseShellExecute = false;
+                  p.StartInfo.WorkingDirectory = Path.GetDirectoryName(processPath);
+                  p.StartInfo.FileName = processPath;
+                  p.StartInfo.Verb = "runas";
+                  p.StartInfo.UserName = usernameBuf.ToString();
+                  p.StartInfo.Password = pass;
+                  p.StartInfo.Domain = domainBuf.ToString();
+                  p.Start();
+                }
+              }
             }
+          
+          
+            
 
         }
         #endregion

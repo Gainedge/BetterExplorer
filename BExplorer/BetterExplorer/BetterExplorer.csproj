@@ -677,6 +677,10 @@
       <Project>{4c92fcf4-3561-499f-bc5b-f2f089863047}</Project>
       <Name>Fluent dotNET 4.0</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ImDiskNet\ImDiskNet.vbproj">
+      <Project>{3efcb6f8-ef7e-4f60-a0de-bb197240fcc9}</Project>
+      <Name>ImDiskNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\NotifyIcon\NotifyIconWpf\NotifyIconWpf.csproj">
       <Project>{7ac63864-7638-41c4-969c-d3197ef2bed9}</Project>
       <Name>NotifyIconWpf</Name>
@@ -1144,7 +1148,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

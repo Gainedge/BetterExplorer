@@ -259,9 +259,14 @@ namespace BetterExplorerControls
 				thing.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 				thing.Thumbnail.CurrentSize = new Size(16, 16);
 				pan.Icon = thing.Thumbnail.BitmapSource;
-				pan.Header = thing.GetDisplayName(DisplayNameType.Default);
+        var header = thing.GetDisplayName(DisplayNameType.Default);
+        var posunderscore = header.IndexOf("_");
+        if (posunderscore != -1)
+          header = header.Insert(posunderscore, "_");
+        pan.Header = header;
 				pan.Height = 23;
 				pan.Tag = thing;
+        
 				pan.Click += new RoutedEventHandler(MenuItemClicked);
 				this.DropDownMenu.Items.Add(pan);
 			}
@@ -271,6 +276,8 @@ namespace BetterExplorerControls
 				DropDownMenu.PlacementTarget = Base;
 				DropDownMenu.IsOpen = true;
 			}
+
+
 
 		}
 

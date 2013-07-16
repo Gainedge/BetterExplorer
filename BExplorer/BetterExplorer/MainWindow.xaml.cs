@@ -44,6 +44,8 @@ using BetterExplorer.Networks;
 using System.Xml.Linq;
 using System.Text;
 using BetterExplorer.UsbEject;
+using LTR.IO;
+using LTR.IO.ImDisk;
 
 namespace BetterExplorer
 {
@@ -3736,6 +3738,10 @@ namespace BetterExplorer
 			ExplorerBrowser.SetCustomDialogs(Convert.ToInt32(rks.GetValue(@"IsCustomFO", 0)) == 1);
 			ExplorerBrowser.IsOldSysListView = Convert.ToInt32(rks.GetValue(@"IsVistaStyleListView", 1)) == 1;
 
+      //TODO: add the code for mounting images with ImDisk. look the example below!
+      //var freeDriveLetter = String.Format("{0}:", ImDiskAPI.FindFreeDriveLetter());
+      //ImDiskAPI.CreateDevice(0, 0, 0, 0, 0, ImDiskFlags.Auto, @"J:\Downloads\SomeISO.iso", false, freeDriveLetter, IntPtr.Zero);
+
 			// loads current Ribbon color theme
 			try
 			{
@@ -4400,7 +4406,7 @@ namespace BetterExplorer
                     {
                       if (IsUpdateCheck)
                       {
-                        autoUpdater.UpdateType = UpdateType.Automatic;
+                        autoUpdater.UpdateType = UpdateType.OnlyCheck;
                       }
                       else
                       {
