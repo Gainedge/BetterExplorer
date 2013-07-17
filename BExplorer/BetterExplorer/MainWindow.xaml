@@ -1266,6 +1266,12 @@
                                                  Header="{StaticResource ctbApplicationsCP}"
                                                  Visibility="Collapsed" 
                                                  MinWidth="100"/>
+                <Ribbon:RibbonContextualTabGroup x:Name="ctgVirtualDisk"
+                                                 Background="Coral"
+                                                 BorderBrush="Coral"
+                                                 Header="Virtual Disk Tools"
+                                                 Visibility="Collapsed"
+                                                 MinWidth="100" />
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgImage"
                                                  Background="Orange"
                                                  BorderBrush="DarkOrange"
@@ -2292,6 +2298,14 @@
                                    Ribbon:KeyTip.Keys="A"
                                    SizeDefinition="Large" />
                     <Ribbon:Button x:Name="btnRunAs" Header="Run As Another User" SizeDefinition="Large" Click="btnRunAs_Click" Icon="Images\users16.png" LargeIcon="Images\users32.png" Visibility="Visible" />
+                </Ribbon:RibbonGroupBox>
+            </Ribbon:RibbonTabItem>
+        
+            <Ribbon:RibbonTabItem Group="{Binding ElementName=ctgVirtualDisk, Mode=OneWay}"
+                                  Header="{StaticResource tbManageCP}"
+                                  Ribbon:KeyTip.Keys="V">
+                <Ribbon:RibbonGroupBox Header="Open">
+                    <Ribbon:Button Header="Mount as Drive" x:Name="btnMountIso" SizeDefinition="Large" Click="btnMountIso_Click" />
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 

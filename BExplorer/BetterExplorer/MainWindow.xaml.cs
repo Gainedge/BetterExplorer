@@ -83,6 +83,7 @@ namespace BetterExplorer
 		string EditComm = "";
 		List<string> Archives = new List<string>(new string[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
 		List<string> Images = new List<string>(new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
+        List<string> VirDisks = new List<string>(new string[] { ".iso", ".bin", ".vhd" });
 		MenuItem misa;
 		MenuItem misd;
 		MenuItem misag;
@@ -1090,6 +1091,7 @@ namespace BetterExplorer
 			                        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
 			                        ctgImage.Visibility = System.Windows.Visibility.Collapsed;
 			                        ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
+                                    ctgVirtualDisk.Visibility = System.Windows.Visibility.Collapsed;
 			                        ctgExe.Visibility = System.Windows.Visibility.Collapsed;
 			                        inLibrary = true;
 
@@ -1567,6 +1569,7 @@ namespace BetterExplorer
 
                 // hide contextual tabs
                 ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
+                ctgVirtualDisk.Visibility = System.Windows.Visibility.Collapsed;
                 ctgExe.Visibility = System.Windows.Visibility.Collapsed;
                 ctgImage.Visibility = System.Windows.Visibility.Collapsed;
 
@@ -1931,6 +1934,16 @@ namespace BetterExplorer
                         ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
                     }
 
+                    // Virtual Disk Tools
+                    if (VirDisks.Contains(System.IO.Path.GetExtension(SelectedItem.ParsingName).ToLowerInvariant()))
+                    {
+                        ctgVirtualDisk.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    else
+                    {
+                        ctgVirtualDisk.Visibility = System.Windows.Visibility.Collapsed;
+                    }
+
                     // Image Tools
                     System.Drawing.Bitmap cvt;
                     if (//SelItemsCount > 0 &&
@@ -2027,6 +2040,7 @@ namespace BetterExplorer
                 ctgImage.Visibility = System.Windows.Visibility.Collapsed;
                 ctgExe.Visibility = System.Windows.Visibility.Collapsed;
                 ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
+                ctgVirtualDisk.Visibility = System.Windows.Visibility.Collapsed;
                 ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
                 if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
                         !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
@@ -3737,10 +3751,6 @@ namespace BetterExplorer
 
 			ExplorerBrowser.SetCustomDialogs(Convert.ToInt32(rks.GetValue(@"IsCustomFO", 0)) == 1);
 			ExplorerBrowser.IsOldSysListView = Convert.ToInt32(rks.GetValue(@"IsVistaStyleListView", 1)) == 1;
-
-      //TODO: add the code for mounting images with ImDisk. look the example below!
-      //var freeDriveLetter = String.Format("{0}:", ImDiskAPI.FindFreeDriveLetter());
-      //ImDiskAPI.CreateDevice(0, 0, 0, 0, 0, ImDiskFlags.Auto, @"J:\Downloads\SomeISO.iso", false, freeDriveLetter, IntPtr.Zero);
 
 			// loads current Ribbon color theme
 			try
@@ -9664,6 +9674,20 @@ namespace BetterExplorer
                 mln.Header = "Create new library";
                 mln.Click += mln_Click;
                 mnuIncludeInLibrary.Items.Add(mln);
+            }
+        }
+
+        private void btnMountIso_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //TODO: add the code for mounting images with ImDisk. look the example below!
+                var freeDriveLetter = String.Format("{0}:", ImDiskAPI.FindFreeDriveLetter());
+                ImDiskAPI.CreateDevice(0, 0, 0, 0, 0, ImDiskFlags.Auto, Explorer.SelectedItems[0].ParsingName, false, freeDriveLetter, IntPtr.Zero);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while trying to mount this file. /n/n" + ex.Message, ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
