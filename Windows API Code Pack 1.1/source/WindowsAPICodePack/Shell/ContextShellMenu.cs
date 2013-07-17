@@ -210,7 +210,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
     {
       RemoveShellMenuItems(menu);
       m_ComInterface.QueryContextMenu(menu.Handle, 0,
-          m_CmdFirst, int.MaxValue, CMF.EXPLORE | CMF.CANRENAME);
+          m_CmdFirst, int.MaxValue, CMF.EXPLORE | CMF.CANRENAME | ((Control.ModifierKeys & Keys.Shift) != 0 ? CMF.EXTENDEDVERBS : 0));
     }
 
     /// <summary>

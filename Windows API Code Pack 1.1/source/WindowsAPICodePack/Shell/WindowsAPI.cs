@@ -254,13 +254,13 @@ namespace WindowsHelper
 
                 using (Process p = new Process())
                 {
-                  p.StartInfo.UseShellExecute = false;
+                  p.StartInfo.UseShellExecute = true;
                   p.StartInfo.WorkingDirectory = Path.GetDirectoryName(processPath);
                   p.StartInfo.FileName = processPath;
-                  p.StartInfo.Verb = "runas";
                   p.StartInfo.UserName = usernameBuf.ToString();
                   p.StartInfo.Password = pass;
                   p.StartInfo.Domain = domainBuf.ToString();
+                  p.StartInfo.UseShellExecute = false;
                   p.Start();
                 }
               }

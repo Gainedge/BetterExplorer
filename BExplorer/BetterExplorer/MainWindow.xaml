@@ -2291,7 +2291,7 @@
                                    LargeIcon="Images\admin32.png"
                                    Ribbon:KeyTip.Keys="A"
                                    SizeDefinition="Large" />
-                    <Ribbon:Button x:Name="btnRunAs" Header="Run As Another User" SizeDefinition="Large" Click="btnRunAs_Click" Icon="Images\users16.png" LargeIcon="Images\users32.png" Visibility="Collapsed" />
+                    <Ribbon:Button x:Name="btnRunAs" Header="Run As Another User" SizeDefinition="Large" Click="btnRunAs_Click" Icon="Images\users16.png" LargeIcon="Images\users32.png" Visibility="Visible" />
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 
