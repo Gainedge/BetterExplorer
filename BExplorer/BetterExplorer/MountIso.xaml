@@ -1,0 +1,51 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent" x:Class="BetterExplorer.MountIso"
+        Title="Mount as Drive" Height="470" Width="390" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
+    <Grid>
+        <GroupBox Header="Drive Letter" HorizontalAlignment="Left" Height="80" Margin="20,20,0,0" VerticalAlignment="Top" Width="340">
+            <Grid>
+                <RadioButton Content="First available letter" GroupName="blah" IsChecked="True" x:Name="chkPreselect" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" />
+                <RadioButton Content="Select a letter:" GroupName="blah" Checked="RadioButton_Checked" Unchecked="RadioButton_Unchecked" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,35,0,0" />
+                <ComboBox HorizontalAlignment="Left" x:Name="cbbLetter" Margin="110,33,0,0" VerticalAlignment="Top" Width="70" IsEnabled="False" />
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Drive Type" HorizontalAlignment="Left" Height="60" Margin="20,100,0,0" VerticalAlignment="Top" Width="340">
+            <Grid>
+                <ComboBox x:Name="cbbType" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="90" SelectedIndex="1" >
+                    <TextBlock Text="Hard Drive" />
+                    <TextBlock Text="CD/DVD" />
+                    <TextBlock Text="Floppy Disk" />
+                    <TextBlock Text="Raw Data" />
+                </ComboBox>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Image Memory" HorizontalAlignment="Left" Height="100" Margin="20,160,0,0" VerticalAlignment="Top" Width="340">
+            <Grid>
+                <ComboBox x:Name="cbbAccess" HorizontalAlignment="Left" Margin="20,10,0,0" VerticalAlignment="Top" Width="300" SelectedIndex="0" >
+                    <TextBlock Text="Access image file directly" />
+                    <TextBlock Text="Copy image to memory, do not change image file" />
+                </ComboBox>
+                <TextBlock HorizontalAlignment="Left" Margin="20,37,0,0" TextWrapping="Wrap" Text="When 'Copy image to memory' is selected, any changes made to virtual disk will not be made to image file." VerticalAlignment="Top" Height="31" Width="300"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Drive Size" HorizontalAlignment="Left" Height="80" Margin="20,260,0,0" VerticalAlignment="Top" Width="340">
+            <Grid>
+                <RadioButton Content="Size of image file" GroupName="size" IsChecked="True" x:Name="chkPresized" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" />
+                <RadioButton Content="Enter size (bytes):" GroupName="size" Checked="RadioButton_Checked_1" Unchecked="RadioButton_Unchecked_1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,35,0,0" />
+                <TextBox x:Name="txtSize" IsEnabled="False" HorizontalAlignment="Left" Height="23" Margin="130,32,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Other Settings" HorizontalAlignment="Left" Height="60" Margin="20,340,0,0" VerticalAlignment="Top" Width="340">
+            <Grid>
+                <CheckBox x:Name="chkRemovable" Content="Mark as Removable Media" HorizontalAlignment="Left" Margin="25,10,0,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="chkReadOnly" Content="Read-Only Media" HorizontalAlignment="Left" Margin="200,10,0,0" VerticalAlignment="Top"/>
+
+            </Grid>
+        </GroupBox>
+        <Button Content="Mount" HorizontalAlignment="Left" Margin="220,410,0,0" Click="Button_Click" VerticalAlignment="Top" Width="75"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="300,410,0,0" Click="Button_Click_1" VerticalAlignment="Top" Width="75"/>
+
+    </Grid>
+</Window>

@@ -217,6 +217,9 @@
     <Compile Include="MessageReceiver.Designer.cs">
       <DependentUpon>MessageReceiver.cs</DependentUpon>
     </Compile>
+    <Compile Include="MountIso.xaml.cs">
+      <DependentUpon>MountIso.xaml</DependentUpon>
+    </Compile>
     <Compile Include="RunExeAsUser.xaml.cs">
       <DependentUpon>RunExeAsUser.xaml</DependentUpon>
     </Compile>
@@ -388,6 +391,10 @@
     <Page Include="Customize\RibbonItemListDisplay.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MountIso.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="RunExeAsUser.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1148,7 +1155,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

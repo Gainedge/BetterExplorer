@@ -127,6 +127,7 @@ namespace BetterExplorer
         Boolean IsGlassOnRibonMinimized { get; set; }
         NetworkAccountManager nam = new NetworkAccountManager();
         List<LVItemColor> LVItemsColor { get; set; }
+        uint SelectedDriveID = 0;
 		#endregion
 
 		#region Properties
@@ -1563,6 +1564,7 @@ namespace BetterExplorer
                 btnOpenTray.IsEnabled = false;
                 btnCloseTray.IsEnabled = false;
                 btnEjectDevice.IsEnabled = false;
+                btnUnmountDrive.IsEnabled = false;
 
                 // this still has functionality when there are no items selected
                 btnEasyAccess.IsEnabled = true;
@@ -1826,6 +1828,24 @@ namespace BetterExplorer
                                 btnCloseTray.IsEnabled = false;
                                 btnEjectDevice.IsEnabled = false;
                             }
+
+                            try
+                            {
+                                if (GetLettersOfVirtualDrives(false).Contains(GetDriveLetterFromDrivePath(SelectedItem.ParsingName)) == true)
+                                {
+                                    btnUnmountDrive.IsEnabled = true;
+                                    SelectedDriveID = GetDeviceNumberForDriveLetter(GetDriveLetterFromDrivePath(SelectedItem.ParsingName));
+                                }
+                                else
+                                {
+                                    btnUnmountDrive.IsEnabled = false;
+                                }
+                            }
+                            catch (System.DllNotFoundException)
+                            {
+                                btnUnmountDrive.IsEnabled = false;
+                            }
+
                         } 
                         else if (!SelectedItem.IsNetDrive) 
                         {
@@ -1834,6 +1854,7 @@ namespace BetterExplorer
                             btnOpenTray.IsEnabled = false;
                             btnCloseTray.IsEnabled = false;
                             btnEjectDevice.IsEnabled = false;
+                            btnUnmountDrive.IsEnabled = false;
                             //MessageBox.Show("1");
                             ctgFolderTools.Visibility = System.Windows.Visibility.Visible;
                             mnuIncludeInLibrary.IsEnabled = true;
@@ -1846,6 +1867,7 @@ namespace BetterExplorer
                             btnOpenTray.IsEnabled = false;
                             btnCloseTray.IsEnabled = false;
                             btnEjectDevice.IsEnabled = false;
+                            btnUnmountDrive.IsEnabled = false;
                             if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
                                 !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
                                 ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
@@ -1858,6 +1880,7 @@ namespace BetterExplorer
                         btnOpenTray.IsEnabled = false;
                         btnCloseTray.IsEnabled = false;
                         btnEjectDevice.IsEnabled = false;
+                        btnUnmountDrive.IsEnabled = false;
                         if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
                             !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
                             ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
@@ -2035,6 +2058,7 @@ namespace BetterExplorer
                 btnOpenTray.IsEnabled = false;
                 btnCloseTray.IsEnabled = false;
                 btnEjectDevice.IsEnabled = false;
+                btnUnmountDrive.IsEnabled = false;
 
                 // hide contextual tabs
                 ctgImage.Visibility = System.Windows.Visibility.Collapsed;
@@ -3256,7 +3280,7 @@ namespace BetterExplorer
 
 		#endregion
 
-		#region Drive Tools
+		#region Drive Tools / Virtual Disk Tools
 
 		private void btnFormatDrive_Click(object sender, RoutedEventArgs e)
 		{
@@ -3350,6 +3374,211 @@ namespace BetterExplorer
                     EjectDisk(GetDriveLetterFromDrivePath(Explorer.SelectedItems[0].ParsingName));
                 }
             }
+        }
+
+        // Virtual Disk Tools
+
+        private bool CheckImDiskInstalled()
+        {
+            bool installed = true;
+
+            try
+            {
+                ImDiskAPI.GetDeviceList();
+            }
+            catch (System.DllNotFoundException)
+            {
+                installed = false;
+            }
+
+            return installed;
+        }
+
+        public void ShowInstallImDiskMessage()
+        {
+            if (MessageBox.Show("It appears you do not have the ImDisk Virtual Disk Driver installed. This driver is used to power Better Explorer's ISO-mounting features. \n\nWould you like to visit ImDisk's website to install the product? (http://www.ltr-data.se/opencode.html/)", "ImDisk Not Found", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+            {
+                Process.Start("http://www.ltr-data.se/opencode.html/#ImDisk");
+            }
+        }
+
+        private void btnAdvMountIso_Click(object sender, RoutedEventArgs e)
+        {
+            if (CheckImDiskInstalled() == false)
+            {
+                ShowInstallImDiskMessage();
+                return;
+            }
+
+            MountIso mi = new MountIso();
+            mi.Owner = this;
+            mi.ShowDialog();
+            if (mi.yep == true)
+            {
+                string DriveLetter;
+                if (mi.chkPreselect.IsChecked == true)
+                {
+                    DriveLetter = String.Format("{0}:", ImDiskAPI.FindFreeDriveLetter());
+                }
+                else
+                {
+                    DriveLetter = String.Format("{0}:", (char)mi.cbbLetter.SelectedItem);
+                }
+
+                long size = 0;
+                if (mi.chkPresized.IsChecked == false)
+                {
+                    size = Convert.ToInt64(mi.txtSize.Text);
+                }
+
+                ImDiskFlags imflags;
+
+                switch (mi.cbbType.SelectedIndex)
+                {
+                    case 0:
+                    //Hard Drive
+                        imflags = ImDiskFlags.DeviceTypeHD;
+                        break;
+                    case 1:
+                    // CD/DVD
+                        imflags = ImDiskFlags.DeviceTypeCD;
+                        break;
+                    case 2:
+                    // Floppy Disk
+                        imflags = ImDiskFlags.DeviceTypeFD;
+                        break;
+                    case 3:
+                    // Raw Data
+                        imflags = ImDiskFlags.DeviceTypeRAW;
+                        break;
+                    default:
+                        imflags = ImDiskFlags.DeviceTypeCD;
+                        break;
+                }
+
+                switch (mi.cbbAccess.SelectedIndex)
+	            {
+                    case 0:
+                        // Access directly
+                        imflags |= ImDiskFlags.FileTypeDirect;
+                        break;
+                    case 1:
+                        // Copy to memory
+                        imflags |= ImDiskFlags.FileTypeAwe;
+                        break;
+                    default:
+                        imflags |= ImDiskFlags.FileTypeDirect;
+                        break;
+	            }
+
+                if (mi.chkRemovable.IsChecked == true)
+                {
+                    imflags |= ImDiskFlags.Removable;
+                }
+
+                if (mi.chkReadOnly.IsChecked == true)
+                {
+                    imflags |= ImDiskFlags.ReadOnly;
+                }
+
+                ImDiskAPI.CreateDevice(size, 0, 0, 0, 0, imflags, Explorer.SelectedItems[0].ParsingName, false, DriveLetter, IntPtr.Zero);
+            }
+        }
+
+        private void btnMountIso_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                //TODO: add the code for mounting images with ImDisk. look the example below!
+                var freeDriveLetter = String.Format("{0}:", ImDiskAPI.FindFreeDriveLetter());
+                ImDiskAPI.CreateDevice(0, 0, 0, 0, 0, ImDiskFlags.Auto, Explorer.SelectedItems[0].ParsingName, false, freeDriveLetter, IntPtr.Zero);
+            }
+            catch (System.DllNotFoundException)
+            {
+                ShowInstallImDiskMessage();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error occurred while trying to mount this file. \n\n" + ex.Message, ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnWriteIso_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "isoburn.exe"),
+                string.Format("\"{0}\"", Explorer.SelectedItems[0].ParsingName));
+        }
+
+        private List<char> GetLettersOfVirtualDrives(bool threaded = true)
+        {
+            if (threaded == true)
+            {
+                List<char> drives = new List<char>();
+                Thread t = new Thread(() =>
+                {
+                    Thread.Sleep(10);
+                    List<int> list = ImDiskAPI.GetDeviceList();
+                    foreach (int item in list)
+                    {
+                        drives.Add(ImDiskAPI.QueryDevice(Convert.ToUInt32(item)).DriveLetter);
+                    }
+                });
+                t.Start();
+                return drives;
+            }
+            else
+            {
+                List<char> drives = new List<char>();
+                List<int> list = ImDiskAPI.GetDeviceList();
+                foreach (int item in list)
+                {
+                    try
+                    {
+                        drives.Add(ImDiskAPI.QueryDevice(Convert.ToUInt32(item)).DriveLetter);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+                return drives;
+            }
+        }
+
+        private uint GetDeviceNumberForDriveLetter(char letter)
+        {
+            List<int> list = ImDiskAPI.GetDeviceList();
+            foreach (int item in list)
+            {
+                if (ImDiskAPI.QueryDevice(Convert.ToUInt32(item)).DriveLetter == letter)
+                {
+                    return Convert.ToUInt32(item);
+                }
+            }
+            return 0;
+        }
+
+        private void btnUnmountDrive_Click(object sender, RoutedEventArgs e)
+        {
+            if (CheckImDiskInstalled() == false)
+            {
+                ShowInstallImDiskMessage();
+                return;
+            }
+
+            try
+            {
+                ImDiskAPI.RemoveDevice(SelectedDriveID);
+            }
+            catch
+            {
+                if (MessageBox.Show("The drive could not be removed. Would you like to try to force a removal?", "Remove Drive Failed", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+                {
+                    ImDiskAPI.ForceRemoveDevice(SelectedDriveID);
+                }
+            }
+            Explorer.RefreshExplorer();
+            ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
         }
 
 		#endregion
@@ -3817,10 +4046,10 @@ namespace BetterExplorer
 
 
 			//Main Initialization routine
-			InitializeComponent();
+            InitializeComponent();
 
 			isOnLoad = true;
-			chkOldSysListView.IsChecked = ExplorerBrowser.IsOldSysListView;
+			//chkOldSysListView.IsChecked = ExplorerBrowser.IsOldSysListView;
 			isOnLoad = false;
 
 			// sets up ComboBox to select the current UI language
@@ -5709,6 +5938,7 @@ namespace BetterExplorer
 			{
 				ChangeLocale(((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
 				lblLocale.Visibility = Visibility.Visible;
+                //ReInitializeComponent();
 				Restart();
 			}
 		}
@@ -5743,23 +5973,6 @@ namespace BetterExplorer
 		{
 			Process.Start(TranslationURL.Text);
 		}
-
-        private void ChangeStrings()
-        {
-            btnBlack.Header = FindResource("btnBlackCP");
-            btnBlue.Header = FindResource("btnBlueCP");
-            btnSilver.Header = FindResource("btnSilverCP");
-            btnGreen.Header = FindResource("btnGreenCP");
-            btnFormatDrive.Header = FindResource("btnFormatDriveCP");
-            btnFlipX.Header = FindResource("btnFlipXCP");
-            btnFlipY.Header = FindResource("btnFlipYCP");
-            btnFavorites.Header = FindResource("btnFavoritesCP");
-            HomeTab.Header = FindResource("tbHomeCP");
-            btnShare.Header = FindResource("btnShareCP");
-            tbShare.Header = FindResource("tbShareCP");
-            tbView.Header = FindResource("tbViewCP");
-            ctgDrive.Header = (FindResource("ctbDriveToolsCP") as string);
-        }
 
 		#endregion
 
@@ -6116,68 +6329,6 @@ namespace BetterExplorer
 			}
 		}
 
-		private void chkIsInfoPane_Checked(object sender, RoutedEventArgs e)
-		{
-			if (!isOnLoad)
-			{
-				RegistryKey rk = Registry.CurrentUser;
-				RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-				rks.SetValue(@"InfoPaneEnabled", 1);
-				IsInfoPaneEnabled = true;
-				ChangePaneVisibility(0x1, true);
-				//Explorer.Navigate(Explorer.NavigationLog.CurrentLocation);
-				rks.Close();
-				rk.Close();
-			}
-		}
-
-		private void chkIsInfoPane_Unchecked(object sender, RoutedEventArgs e)
-		{
-			if (!isOnLoad)
-			{
-				RegistryKey rk = Registry.CurrentUser;
-				RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-				rks.SetValue(@"InfoPaneEnabled", 0);
-				IsInfoPaneEnabled = false;
-				Explorer.NavigationOptions.PaneVisibility.Details = PaneVisibilityState.Hide;
-				//Explorer.Navigate(Explorer.NavigationLog.CurrentLocation);
-				rks.Close();
-				rk.Close();
-			}
-		}
-
-		private void chkIsPreviewPane_Unchecked(object sender, RoutedEventArgs e)
-		{
-			if (!isOnLoad)
-			{
-				RegistryKey rk = Registry.CurrentUser;
-				RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-				rks.SetValue(@"PreviewPaneEnabled", 0);
-				IsPreviewPaneEnabled = false;
-				Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
-				//Explorer.Navigate(Explorer.NavigationLog.CurrentLocation);
-				rks.Close();
-				rk.Close();
-			}
-		}
-
-		private void chkIsPreviewPane_Checked(object sender, RoutedEventArgs e)
-		{
-			if (!isOnLoad)
-			{
-				RegistryKey rk = Registry.CurrentUser;
-				RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-				rks.SetValue(@"PreviewPaneEnabled", 1);
-				IsPreviewPaneEnabled = true;
-				Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Show;
-				//Explorer.SetState();
-				//Explorer.Navigate(Explorer.NavigationLog.CurrentLocation);
-				rks.Close();
-				rk.Close();
-			}
-		}
-
-
 		private void chkIsDefault_Checked(object sender, RoutedEventArgs e)
 		{
 			if (!isOnLoad)
@@ -6456,7 +6607,7 @@ namespace BetterExplorer
 			rk.Close();
 		}
 
-                private void chkIsCFO_Click(object sender, RoutedEventArgs e)
+        private void chkIsCFO_Click(object sender, RoutedEventArgs e)
         {
             if (chkIsCFO.IsChecked.Value)
             {
@@ -6739,6 +6890,69 @@ namespace BetterExplorer
 			if (!isOnLoad)
 				ChangePaneVisibility(0x1, true);
 		}
+
+        // Legacy Pane Code
+        private void chkIsInfoPane_Checked(object sender, RoutedEventArgs e)
+        {
+            if (!isOnLoad)
+            {
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"InfoPaneEnabled", 1);
+                IsInfoPaneEnabled = true;
+                ChangePaneVisibility(0x1, true);
+                //Explorer.Navigate(Explorer.NavigationLog.CurrentLocation);
+                rks.Close();
+                rk.Close();
+            }
+        }
+
+        private void chkIsInfoPane_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (!isOnLoad)
+            {
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"InfoPaneEnabled", 0);
+                IsInfoPaneEnabled = false;
+                Explorer.NavigationOptions.PaneVisibility.Details = PaneVisibilityState.Hide;
+                //Explorer.Navigate(Explorer.NavigationLog.CurrentLocation);
+                rks.Close();
+                rk.Close();
+            }
+        }
+
+        private void chkIsPreviewPane_Unchecked(object sender, RoutedEventArgs e)
+        {
+            if (!isOnLoad)
+            {
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"PreviewPaneEnabled", 0);
+                IsPreviewPaneEnabled = false;
+                Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
+                //Explorer.Navigate(Explorer.NavigationLog.CurrentLocation);
+                rks.Close();
+                rk.Close();
+            }
+        }
+
+        private void chkIsPreviewPane_Checked(object sender, RoutedEventArgs e)
+        {
+            if (!isOnLoad)
+            {
+                RegistryKey rk = Registry.CurrentUser;
+                RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                rks.SetValue(@"PreviewPaneEnabled", 1);
+                IsPreviewPaneEnabled = true;
+                Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Show;
+                //Explorer.SetState();
+                //Explorer.Navigate(Explorer.NavigationLog.CurrentLocation);
+                rks.Close();
+                rk.Close();
+            }
+        }
+
 
 		#endregion
 
@@ -9623,16 +9837,6 @@ namespace BetterExplorer
             }
         }
 
-        //private void mnuIncludeInLibrary_DropDownOpened(object sender, EventArgs e)
-        //{
-
-        //}
-
-        //private void mnuIncludeInLibrary_SubmenuOpened(object sender, RoutedEventArgs e)
-        //{
-        //    //mnuIncludeInLibrary_DropDownOpened(sender, e);
-        //}
-
         void mln_Click(object sender, RoutedEventArgs e)
         {
             ShellLibrary lib = Explorer.CreateNewLibrary(Explorer.SelectedItems[0].GetDisplayName(DisplayNameType.Default));
@@ -9674,20 +9878,6 @@ namespace BetterExplorer
                 mln.Header = "Create new library";
                 mln.Click += mln_Click;
                 mnuIncludeInLibrary.Items.Add(mln);
-            }
-        }
-
-        private void btnMountIso_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                //TODO: add the code for mounting images with ImDisk. look the example below!
-                var freeDriveLetter = String.Format("{0}:", ImDiskAPI.FindFreeDriveLetter());
-                ImDiskAPI.CreateDevice(0, 0, 0, 0, 0, ImDiskFlags.Auto, Explorer.SelectedItems[0].ParsingName, false, freeDriveLetter, IntPtr.Zero);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("An error occurred while trying to mount this file. /n/n" + ex.Message, ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

@@ -587,18 +587,20 @@
                                                                   Text="{StaticResource cbIsResttoreTTX}" />
                                             </Ribbon:CheckBox.ToolTip>
                                         </Ribbon:CheckBox>
-                                        <Label Name="paddinglbl10" Content="         "/>
-                                        <Ribbon:CheckBox x:Name="chkOldSysListView"
+                                        <!--(This is a hidden setting. Use the "IsVistaStyleListView" Registry key to change this setting.)-->
+                                        <Label Name="paddinglbl10" Content="         " Visibility="Collapsed"/>
+                                        <!--<Ribbon:CheckBox x:Name="chkOldSysListView"
                                                          Checked="chkIsVistaStyleListView_Checked"
                                                          Ribbon:KeyTip.Keys="V"
-                                                         Unchecked="chkIsVistaStyleListView_Unchecked" Header="{DynamicResource txtIsVistaStyleListView}">
+                                                         Unchecked="chkIsVistaStyleListView_Unchecked" Header="{DynamicResource txtIsVistaStyleListView}"
+                                                         Visibility="Collapsed">
                                             <Ribbon:CheckBox.ToolTip>
                                                 <Ribbon:ScreenTip Title="{StaticResource txtIsVistaStyleListView}"
                                                                   Width="250"
                                                                   IsRibbonAligned="false"
                                                                   Text="{DynamicResource txtIsVistaStyleListViewTTX}" />
                                             </Ribbon:CheckBox.ToolTip>
-                                        </Ribbon:CheckBox>
+                                        </Ribbon:CheckBox>-->
                                         <Label x:Name="paddinglbl8"
                                                Content="         "
                                                Visibility="Collapsed" />
@@ -2241,19 +2243,19 @@
                                    Ribbon:KeyTip.Keys="D"
                                    SizeDefinition="Large" />
                 </Ribbon:RibbonGroupBox>
-                <Ribbon:RibbonGroupBox Header="Removable Media" x:Name="grpDriveDisk"
+                <Ribbon:RibbonGroupBox Header="Remove" x:Name="grpDriveDisk"
                                        IsLauncherVisible="False">
-                    <Ribbon:Button x:Name="btnOpenTray"
+                    <Ribbon:SplitButton x:Name="btnOpenTray"
                                    Header="Open Tray"
                                    Click="btnOpenTray_Click"
                                    Ribbon:KeyTip.Keys="O"
                                    LargeIcon="Images\cdtray32.png"
                                    Icon="Images\cdtray16.png"
-                                   SizeDefinition="Large" />
-                    <Ribbon:Button x:Name="btnCloseTray"
+                                   SizeDefinition="Large">
+                    <Ribbon:MenuItem x:Name="btnCloseTray"
                                    Header="Close Tray"
-                                   Ribbon:KeyTip.Keys="C"
                                    Click="btnCloseTray_Click" />
+                    </Ribbon:SplitButton>
                     <Separator />
                     <Ribbon:Button x:Name="btnEjectDevice"
                                    Header="Eject"
@@ -2261,6 +2263,13 @@
                                    LargeIcon="Images\removeusb32.png"
                                    Icon="Images\removeusb16.png"
                                    Ribbon:KeyTip.Keys="E"
+                                   SizeDefinition="Large" />
+                </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox Header="Virtual">
+                    <Ribbon:Button x:Name="btnUnmountDrive"
+                                   Header="Unmount"
+                                   Click="btnUnmountDrive_Click"
+                                   Ribbon:KeyTip.Keys="U"
                                    SizeDefinition="Large" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header=""
@@ -2305,7 +2314,10 @@
                                   Header="{StaticResource tbManageCP}"
                                   Ribbon:KeyTip.Keys="V">
                 <Ribbon:RibbonGroupBox Header="Open">
-                    <Ribbon:Button Header="Mount as Drive" x:Name="btnMountIso" SizeDefinition="Large" Click="btnMountIso_Click" />
+                    <Ribbon:Button Header="Mount as Drive" x:Name="btnAdvMountIso" SizeDefinition="Large" Click="btnAdvMountIso_Click" />
+                    <Ribbon:Button Header="Quick Mount as Drive" x:Name="btnMountIso" SizeDefinition="Large" Click="btnMountIso_Click" />
+                    <Separator />
+                    <Ribbon:Button Header="Burn to Disk" x:Name="btnWriteIso" SizeDefinition="Large" Click="btnWriteIso_Click" />
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 
