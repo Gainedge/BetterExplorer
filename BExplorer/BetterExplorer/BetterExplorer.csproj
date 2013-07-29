@@ -989,6 +989,18 @@
     <Resource Include="Images\cdtray32.png" />
     <Resource Include="Images\removeusb16.png" />
     <Resource Include="Images\removeusb32.png" />
+    <Resource Include="Images\burn16.png" />
+    <Resource Include="Images\burn32.png" />
+    <Resource Include="Images\burn48.png" />
+    <Resource Include="Images\mount16.png" />
+    <Resource Include="Images\mount32.png" />
+    <Resource Include="Images\mount48.png" />
+    <Resource Include="Images\unmount16.png" />
+    <Resource Include="Images\unmount32.png" />
+    <Resource Include="Images\unmount48.png" />
+    <Resource Include="Images\qmount16.png" />
+    <Resource Include="Images\qmount32.png" />
+    <Resource Include="Images\qmount48.png" />
     <Content Include="Ionic.Zip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1155,7 +1167,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -212,7 +212,6 @@ namespace BetterExplorer
 
 		void Explorer_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
 		{
-			//MessageBox.Show("Gary, Indiana!");
 			switch (e.Effect)
 			{
 				case System.Windows.Forms.DragDropEffects.All:
@@ -237,7 +236,6 @@ namespace BetterExplorer
 					AddToLog(String.Format("The following data was dragged into {0}: {1}", Explorer.NavigationLog.CurrentLocation, e.Data.GetData(DataFormats.FileDrop)));
 					break;
 			}
-			//throw new NotImplementedException();
 		}
 
 
@@ -3490,6 +3488,7 @@ namespace BetterExplorer
             try
             {
                 //TODO: add the code for mounting images with ImDisk. look the example below!
+
                 var freeDriveLetter = String.Format("{0}:", ImDiskAPI.FindFreeDriveLetter());
                 ImDiskAPI.CreateDevice(0, 0, 0, 0, 0, ImDiskFlags.Auto, Explorer.SelectedItems[0].ParsingName, false, freeDriveLetter, IntPtr.Zero);
             }
@@ -3568,7 +3567,15 @@ namespace BetterExplorer
 
             try
             {
+              var currentDeviceInfo = ImDiskAPI.QueryDevice(SelectedDriveID);
+              if ((currentDeviceInfo.Flags & ImDiskFlags.DeviceTypeCD) != 0)
+              {
+                ImDiskAPI.ForceRemoveDevice(SelectedDriveID);
+              }
+              else
+              {
                 ImDiskAPI.RemoveDevice(SelectedDriveID);
+              }
             }
             catch
             {
@@ -4030,7 +4037,7 @@ namespace BetterExplorer
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("An error occurred while trying to load the locale data from the Registry. \n\r \n\r" + ex.Message + "\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", "Locale Load Error - " + ex);
+        MessageBox.Show(String.Format("An error occurred while trying to load the locale data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "Locale Load Error - " + ex);
 			}
 
 			// gets values from registry to be applied after initialization
@@ -6693,7 +6700,7 @@ namespace BetterExplorer
 						Directory.CreateDirectory(logdir);
 					}
 
-					using (StreamWriter sw = new StreamWriter(logdir + sessionid + ".txt", true))
+          using (StreamWriter sw = new StreamWriter(String.Format("{0}{1}.txt", logdir, sessionid), true))
 					{
 						sw.WriteLine(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " : " + value);
 					}
@@ -9056,19 +9063,19 @@ namespace BetterExplorer
 			reopenabletabs.Clear();
 			btnUndoClose.IsDropDownOpen = false;
 			btnUndoClose.IsEnabled = false;
-            foreach (ClosableTabItem item in this.tabControl1.Items)
+      foreach (ClosableTabItem item in this.tabControl1.Items)
+      {
+        foreach (FrameworkElement m in item.mnu.Items)
+        {
+          if (m.Tag != null)
+          {
+            if (m.Tag.ToString() == "UCTI")
             {
-                foreach (FrameworkElement m in item.mnu.Items)
-                {
-                    if (m.Tag != null)
-                    {
-                        if (m.Tag.ToString() == "UCTI")
-                        {
-                            (m as MenuItem).IsEnabled = false;
-                        }
-                    }
-                }
+                (m as MenuItem).IsEnabled = false;
             }
+          }
+        }
+      }
 		}
 
 		private void btnUndoClose_DropDownOpened(object sender, EventArgs e)
@@ -9204,7 +9211,7 @@ namespace BetterExplorer
 			{
 				SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item);
                 gli.Directory = sstdir;
-				gli.Click += new SavedTabsListGalleryItem.PathStringEventHandler(gli_Click);
+                gli.Click += gli_Click;
                 gli.SetUpTooltip((FindResource("tabTabsCP") as string));
 				stGallery.Items.Add(gli);
 			}

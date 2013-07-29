@@ -2269,6 +2269,8 @@
                     <Ribbon:Button x:Name="btnUnmountDrive"
                                    Header="Unmount"
                                    Click="btnUnmountDrive_Click"
+                                   LargeIcon="Images/unmount32.png" 
+                                   Icon="Images/unmount16.png"
                                    Ribbon:KeyTip.Keys="U"
                                    SizeDefinition="Large" />
                 </Ribbon:RibbonGroupBox>
@@ -2313,11 +2315,11 @@
             <Ribbon:RibbonTabItem Group="{Binding ElementName=ctgVirtualDisk, Mode=OneWay}"
                                   Header="{StaticResource tbManageCP}"
                                   Ribbon:KeyTip.Keys="V">
-                <Ribbon:RibbonGroupBox Header="Open">
-                    <Ribbon:Button Header="Mount as Drive" x:Name="btnAdvMountIso" SizeDefinition="Large" Click="btnAdvMountIso_Click" />
-                    <Ribbon:Button Header="Quick Mount as Drive" x:Name="btnMountIso" SizeDefinition="Large" Click="btnMountIso_Click" />
+                <Ribbon:RibbonGroupBox Header="">
+                    <Ribbon:Button Header="Mount as Drive" x:Name="btnAdvMountIso" SizeDefinition="Large" Click="btnAdvMountIso_Click" LargeIcon="Images/mount32.png" Icon="Images/mount16.png"/>
+                    <Ribbon:Button Header="Quick Mount as Drive" x:Name="btnMountIso" SizeDefinition="Large" Click="btnMountIso_Click" LargeIcon="Images/qmount32.png" Icon="Images/qmount16.png"/>
                     <Separator />
-                    <Ribbon:Button Header="Burn to Disk" x:Name="btnWriteIso" SizeDefinition="Large" Click="btnWriteIso_Click" />
+                    <Ribbon:Button Header="Burn to Disk" x:Name="btnWriteIso" SizeDefinition="Large" Click="btnWriteIso_Click" LargeIcon="Images/burn32.png" Icon="Images/burn16.png"/>
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 
