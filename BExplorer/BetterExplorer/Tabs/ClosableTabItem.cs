@@ -138,9 +138,15 @@ namespace BetterExplorer
             set
             {
                 _Path = value;
+                this.PathText = _Path.ParsingName;
             }
         }
 
+        public string PathText
+        {
+          get;
+          set;
+        }
         bool _IsNavigate = true;
         public bool IsNavigate
         {

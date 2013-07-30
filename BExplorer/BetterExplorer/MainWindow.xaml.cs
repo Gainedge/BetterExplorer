@@ -3352,10 +3352,74 @@ namespace BetterExplorer
                 VolumeDeviceClass vdc = new VolumeDeviceClass();
                 foreach (Volume item in vdc.Devices)
                 {
-                    //MessageBox.Show(item.LogicalDrive);
                     if (GetDriveLetterFromDrivePath(item.LogicalDrive) == DriveLetter)
                     {
-                        item.Eject(true);
+                        var veto = item.Eject(false);
+                        if (veto != BetterExplorer.UsbEject.Native.PNP_VETO_TYPE.TypeUnknown)
+                        {
+                          if (veto == BetterExplorer.UsbEject.Native.PNP_VETO_TYPE.Ok)
+                          {
+                            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                              (Action)(() =>
+                              {
+                                this.beNotifyIcon.ShowBalloonTip("Information", String.Format("It is safe to remove {0}", item.LogicalDrive), Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
+                                var tabsForRemove = tabControl1.Items.OfType<ClosableTabItem>()
+                                                               .Where(w => w.Path.IsFileSystemObject && 
+                                                                           Path.GetPathRoot(w.Path.ParsingName).ToLowerInvariant() == 
+                                                                           String.Format("{0}:\\", DriveLetter).ToLowerInvariant()).ToArray();
+
+                                foreach (ClosableTabItem tab in tabsForRemove)
+                                {
+                                  CloseTab(tab, false);
+                                }
+                              }));
+                          }
+                          else
+                          {
+                            var message = String.Empty;
+                            var obj = ShellObject.FromParsingName(item.LogicalDrive);
+                            switch (veto)
+                            {
+                              case Native.PNP_VETO_TYPE.Ok:
+                                break;
+                              case Native.PNP_VETO_TYPE.TypeUnknown:
+                                break;
+                              case Native.PNP_VETO_TYPE.LegacyDevice:
+                                break;
+                              case Native.PNP_VETO_TYPE.PendingClose:
+                                break;
+                              case Native.PNP_VETO_TYPE.WindowsApp:
+                                break;
+                              case Native.PNP_VETO_TYPE.WindowsService:
+                                break;
+                              case Native.PNP_VETO_TYPE.OutstandingOpen:
+                                message = String.Format("The device {0} can not be disconnected becasue is in use!", obj.GetDisplayName(DisplayNameType.Default));
+                                break;
+                              case Native.PNP_VETO_TYPE.Device:
+                                break;
+                              case Native.PNP_VETO_TYPE.Driver:
+                                break;
+                              case Native.PNP_VETO_TYPE.IllegalDeviceRequest:
+                                break;
+                              case Native.PNP_VETO_TYPE.InsufficientPower:
+                                break;
+                              case Native.PNP_VETO_TYPE.NonDisableable:
+                                message = String.Format("The device {0} does not support disconnecting!", obj.GetDisplayName(DisplayNameType.Default));
+                                break;
+                              case Native.PNP_VETO_TYPE.LegacyDriver:
+                                break;
+                              default:
+                                break;
+                            }
+                            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+                              (Action)(() =>
+                              {
+                                this.beNotifyIcon.ShowBalloonTip("Error", message, Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Error);
+                                
+                              }));
+                            obj.Dispose();
+                          }
+                        }
                         break;
                     }
                 }

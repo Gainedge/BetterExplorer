@@ -237,7 +237,7 @@ namespace BetterExplorer.UsbEject
         /// </summary>
         /// <param name="allowUI">Pass true to allow the Windows shell to display any related UI element, false otherwise.</param>
         /// <returns>null if no error occured, otherwise a contextual text.</returns>
-        public string Eject(bool allowUI)
+        public Native.PNP_VETO_TYPE Eject(bool allowUI)
         {
             foreach (Device device in RemovableDevices)
             {
@@ -252,15 +252,14 @@ namespace BetterExplorer.UsbEject
 
                     Native.PNP_VETO_TYPE veto;
                     int hr = Native.CM_Request_Device_Eject(device.InstanceHandle, out veto, sb, sb.Capacity, 0);
-                    if (hr != 0)
-                        throw new Win32Exception(hr);
+                    //if (hr != 0)
+                    //    throw new Win32Exception(hr);
 
-                    if (veto != Native.PNP_VETO_TYPE.Ok)
-                        return veto.ToString();
+                      return veto;
                 }
 
             }
-            return null;
+            return Native.PNP_VETO_TYPE.TypeUnknown;
         }
 
         /// <summary>

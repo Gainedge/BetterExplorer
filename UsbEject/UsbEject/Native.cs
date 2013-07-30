@@ -7,7 +7,7 @@ using System.Text;
 
 namespace BetterExplorer.UsbEject
 {
-	internal sealed class Native
+	public sealed class Native
 	{
         // from winuser.h
         internal const int WM_DEVICECHANGE = 0x0219;
@@ -53,7 +53,7 @@ namespace BetterExplorer.UsbEject
 		}
 
         // from cfg.h
-        internal enum PNP_VETO_TYPE
+        public enum PNP_VETO_TYPE
         {
             Ok,
 

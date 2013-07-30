@@ -124,11 +124,19 @@ namespace BetterExplorer
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
         }
 
+        protected override void OnSessionEnding(SessionEndingCancelEventArgs e)
+        {
+          Application.Current.Shutdown();
+          base.OnSessionEnding(e);
+        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
 
             Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
+            SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
 
             try
             {
@@ -249,13 +257,23 @@ namespace BetterExplorer
             catch 
             {
 
-                MessageBox.Show("A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n " + Locale + "\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.");
-                Shutdown();
+              MessageBox.Show(String.Format("A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {0}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.", Locale));
+              Shutdown();
             }
 
             
             
 
+        }
+
+        void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+          //TODO: add code for sleep, resume, etc. modes
+        }
+
+        void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
+        {
+          //TODO: Add code for lock and other reasons
         }
 
         void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
