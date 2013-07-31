@@ -16,6 +16,7 @@ using System.Threading;
 using System.IO;
 using WindowsHelper;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 
 namespace BetterExplorerControls
@@ -25,51 +26,53 @@ namespace BetterExplorerControls
 	/// </summary>
 	public partial class BreadcrumbBarControl : UserControl
 	{
-    bool ShouldUpdateDropDown = false;
+    private List<string> hl { get; set; }
+    private TextBox Undertextbox;
+    private bool Needfilter;
+    private bool IsFiltered;
+    private bool IsEcsPressed;
+
 		public BreadcrumbBarControl()
 		{
 			InitializeComponent();
+      this.hl = new List<string>();
+      this.Loaded += BreadcrumbBarControl_Loaded;
 		}
 
-		private List<string> hl = new List<string>();
+    void BreadcrumbBarControl_Loaded(object sender, RoutedEventArgs e)
+    {
+      Undertextbox = (TextBox)HistoryCombo.Template.FindName("PART_EditableTextBox", HistoryCombo);
+      Undertextbox.AddHandler(TextBox.TextInputEvent,
+                   new TextCompositionEventHandler(Undertextbox_TextInput),
+                   true);
 
+    }
 
-		private void Grid_MouseEnter(object sender, MouseEventArgs e)
-		{
-			ddGrid.Background = new SolidColorBrush(Colors.PowderBlue);
-			//ddBorder.BorderBrush = new SolidColorBrush(Colors.LightBlue);
-		}
-
-		private void Grid_MouseLeave(object sender, MouseEventArgs e)
-		{
-			ddGrid.Background = new SolidColorBrush(Colors.White);
-			//ddBorder.BorderBrush = new SolidColorBrush(Colors.White);
-		}
-
-
-		private ContextMenu CreateHistoryMenu(bool isFiltered = false)
-		{
-			ContextMenu hm = new ContextMenu();
-      List<string> items = null;
-      if (isFiltered)
+    void Undertextbox_TextInput(object sender, TextCompositionEventArgs e)
+    {
+      if ((e.Text.All(Char.IsLetterOrDigit) || e.Text.All(Char.IsSymbol) || e.Text.All(Char.IsWhiteSpace)) && e.Text != "\r")
       {
-        items = hl.Where(c => c.ToLowerInvariant().Contains(HistoryCombo.Text.ToLowerInvariant())).ToList();
+        
+        if (!HistoryCombo.IsDropDownOpen)
+          Needfilter = true;
+        HistoryCombo.IsDropDownOpen = true;
+        if (!String.IsNullOrEmpty(Undertextbox.Text) && Needfilter)
+        {
+          HistoryCombo.Items.Filter += a =>
+          {
+            if (a.ToString().ToLower().StartsWith(Undertextbox.Text.ToLower()))
+            {
+              return true;
+            }
+            return false;
+          };
+          IsFiltered = true;
+        }
       }
-      else
-      {
-        items = hl;
-      }
-			foreach (string item in items)
-			{
-				MenuItem g = new MenuItem();
-				g.Header = item;
-				g.Width = grdMain.ActualWidth - 4;
-				g.Click += new RoutedEventHandler(g_Click);
-				hm.Items.Add(g);
-			}
-
-			return hm;
-		}
+      Undertextbox.SelectionLength = 0;
+      Undertextbox.SelectionStart = Undertextbox.Text.Length;
+      Undertextbox.SelectedText = "";
+    }
 
 		void g_Click(object sender, RoutedEventArgs e)
 		{
@@ -77,24 +80,6 @@ namespace BetterExplorerControls
       PathEventArgs args = new PathEventArgs(ShellObject.FromParsingName(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text));
       OnNavigateRequested(args);
       ExitEditMode();
-		}
-		ContextMenu mnu;
-		private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
-		{
-			ddGrid.Background = new SolidColorBrush(Colors.SkyBlue);
-			//ddBorder.BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue);
-			EnterEditMode();
-			mnu = CreateHistoryMenu();
-			mnu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-			mnu.PlacementTarget = this;
-			mnu.IsOpen = true;
-		}
-
-		private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
-		{
-			e.Handled = true;
-			ddGrid.Background = new SolidColorBrush(Colors.PowderBlue);
-			//ddBorder.BorderBrush = new SolidColorBrush(Colors.LightBlue);
 		}
 
 		private BreadcrumbBarItem furthestrightitem;
@@ -125,6 +110,7 @@ namespace BetterExplorerControls
 				{
 					hl.Add(item);
 				}
+        HistoryCombo.ItemsSource = hl;
 			}
 		}
 
@@ -295,9 +281,6 @@ namespace BetterExplorerControls
     {
       POINT lpPoint;
       GetCursorPos(out lpPoint);
-      //bool success = User32.GetCursorPos(out lpPoint);
-      // if (!success)
-
       return lpPoint;
     }
 
@@ -341,37 +324,31 @@ namespace BetterExplorerControls
 			FocusManager.SetIsFocusScope(this, true);
       
 			HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
-      if (elPanel.Visibility == System.Windows.Visibility.Visible)
-      {
-        ExitEditMode();
-      }
+
+      EnterEditMode();
 		}
 
 		private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e)
 		{
 
 			e.Handled = true;
-			ExitEditMode();
+      if (IsInEditMode)
+			  ExitEditMode();
 		}
 
-		private void HistoryCombo_MouseLeave(object sender, MouseEventArgs e)
-		{
-		}
 
 		private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e)
 		{
 			e.Handled = true;
-			//elPanel.Visibility = System.Windows.Visibility.Collapsed;
-			//if (LastPath != "")
-			//{
-			//    HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
-			//}
-      if (e.LeftButton == MouseButtonState.Pressed)
-			  EnterEditMode();
-		}
 
-		private void stackPanel1_MouseUp(object sender, MouseButtonEventArgs e)
-		{
+      if (e.LeftButton == MouseButtonState.Released)
+      {
+        IsEcsPressed = false;
+        if (!IsInEditMode)
+          EnterEditMode();
+        Needfilter = false;
+
+      }
 		}
 
     public bool IsInEditMode
@@ -382,46 +359,39 @@ namespace BetterExplorerControls
 
 		public void ExitEditMode()
 		{
-
-      if (mnu != null)
-        mnu.IsOpen = false;
+      //FocusManager.SetIsFocusScope(this, false);
       IsInEditMode = false;
-			elPanel.Visibility = System.Windows.Visibility.Visible;
-			//if (HistoryCombo.Text != "")
-			//{
-			//    LastPath = HistoryCombo.Text;
-			//}
-
-			HistoryCombo.Text = "";
-			elPanel.Focusable = true;
-			elPanel.IsHitTestVisible = false;
-			elPanel.Focus();
-			elPanel.Focusable = false;
-			elPanel.IsHitTestVisible = true;
-
+      elPanel.Visibility = System.Windows.Visibility.Visible;
+      
+      if (Undertextbox != null)
+        Undertextbox.Visibility = System.Windows.Visibility.Hidden;
 		}
 
 		public void EnterEditMode()
 		{
-      IsInEditMode = true;
-			elPanel.Visibility = System.Windows.Visibility.Collapsed;
-			if (LastPath != "")
-			{
-				HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
-			}
-			else
-			{
-				HistoryCombo.Text = furthestrightitem.ShellObject.ParsingName; //FixShellPathsInEditMode(furthestrightitem.ShellObject.ParsingName);
-			}
-      
-			//HistoryCombo.Focus();
-
-      
+        IsInEditMode = true;
+        elPanel.Visibility = System.Windows.Visibility.Collapsed;
+        elPanel.Focusable = false;
+        if (Undertextbox != null)
+        {
+          Undertextbox.Visibility = System.Windows.Visibility.Visible;
+          //Undertextbox.SelectAll();
+        }
+        if (LastPath != "")
+        {
+          HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
+        }
+        else
+        {
+          HistoryCombo.Text = furthestrightitem.ShellObject.ParsingName; //FixShellPathsInEditMode(furthestrightitem.ShellObject.ParsingName);
+        }
+        FocusManager.SetIsFocusScope(this, true);
 		}
 
 		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e)
 		{
 			e.Handled = true;
+      IsEcsPressed = false;
 			if (e.Key == Key.Enter)
 			{
 				try
@@ -457,7 +427,7 @@ namespace BetterExplorerControls
 			}
 			if (e.Key == Key.Escape)
 			{
-
+        IsEcsPressed = true;
 				ExitEditMode();
 			}
 		}
@@ -469,75 +439,13 @@ namespace BetterExplorerControls
 			
 		}
 
-		private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-		{
-			//MessageBox.Show(e.Delta.ToString(), "Mouse Wheel Change");
-			//itemholder.ScrollToHorizontalOffset(0);
-		}
-
-		private void HistoryCombo_DropDownOpened(object sender, EventArgs e)
-		{
-			HistoryCombo.Focus();
-			HistoryCombo.Text = FixShellPathsInEditMode(LastPath);
-			elPanel.Visibility = System.Windows.Visibility.Collapsed;
-		}
-
-		private void HistoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			HistoryCombo.Focus();
-			elPanel.Visibility = System.Windows.Visibility.Collapsed;
-		}
-
-		private void HistoryCombo_TextChanged(object sender, TextChangedEventArgs e)
-		{
-      if (IsInEditMode)
-      {
-
-        ContextMenu mnuTemp = CreateHistoryMenu(true);
-        if (mnuTemp.Items.Count == 0)
-        {
-          if (mnu != null && mnu.IsOpen)
-            mnu.IsOpen = false;
-        }
-        if (mnu == null)
-          mnu = mnuTemp;
-        else
-        {
-          if (mnuTemp.Items.Count > 0)
-            mnu.Items.Clear();
-          foreach (var item in mnuTemp.Items)
-          {
-            MenuItem g = new MenuItem();
-            g.Header = (item as MenuItem).Header;
-            g.Focusable = false;
-            g.Width = grdMain.ActualWidth - 4;
-            g.Click += new RoutedEventHandler(g_Click);
-            mnu.Items.Add(g);
-          }
-        }
-        mnu.Focusable = false;
-        mnu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-        mnu.PlacementTarget = this;
-        if (mnuTemp.Items.Count > 0)
-        {
-          mnu.IsOpen = true;
-        }
-        else
-        {
-          if (mnu.IsOpen)
-            mnu.IsOpen = false;
-        }
-
-        mnuTemp = null;
-      }
-		}
-
 		private void HistoryCombo_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 		{
 			e.Handled = true;
+
 			try
 			{
-				if (!mnu.IsOpen)
+				if (HistoryCombo.IsDropDownOpen)
 				{
 					ExitEditMode();
 				}
@@ -552,32 +460,52 @@ namespace BetterExplorerControls
 		private void HistoryCombo_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 		{
 			e.Handled = true;
+      FocusManager.SetIsFocusScope(this, true);
+      if (!IsInEditMode && !IsEcsPressed)
+      {
+        EnterEditMode();
+        Undertextbox.Focus();
+        Undertextbox.SelectAll();
+      }
 		}
 
-    private void HistoryCombo_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-    {
-      if (!IsInEditMode)
-        EnterEditMode();
-      TextBox tb = (sender as TextBox);
-
-      if (tb == null)
-      {
-        return;
-      }
-
-      if (!tb.IsKeyboardFocusWithin)
-      {
-        tb.SelectAll();
-        e.Handled = true;
-        tb.Focus();
-      }
-      //e.Handled = true;
-    }
+  
 
     private void UserControl_GotFocus(object sender, RoutedEventArgs e)
     {
       itemholder.Focus();
     }
 
+    private void HistoryCombo_DropDownClosed(object sender, EventArgs e)
+    {
+      Needfilter = true;
+    }
+
+    private void HistoryCombo_DropDownOpened(object sender, EventArgs e)
+    {
+      if (IsFiltered)
+      {
+        HistoryCombo.Items.Filter += a =>
+        {
+          return true;
+        };
+        IsFiltered = false;
+      }
+      if (!IsInEditMode)
+        EnterEditMode();
+      Undertextbox.Focus();
+
+      if (HistoryCombo.Items.Count == 0)
+      {
+        HistoryCombo.IsDropDownOpen = false;
+      }
+     
+    }
+
+    private void HistoryCombo_KeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.Escape)
+        IsEcsPressed = true;
+    }
 	}
 }

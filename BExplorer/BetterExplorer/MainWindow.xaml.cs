@@ -275,7 +275,87 @@ namespace BetterExplorer
 			//  }
 		}
 
-		private void RibbonWindow_Closing(object sender, CancelEventArgs e)
+    private void SaveSettings(String openedTabs)
+    {
+      RegistryKey rk = Registry.CurrentUser;
+      RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+      rks.SetValue(@"LastWindowWidth", this.Width);
+      rks.SetValue(@"LastWindowHeight", this.Height);
+      rks.SetValue(@"LastWindowPosLeft", this.Left);
+      rks.SetValue(@"LastWindowPosTop", this.Top);
+      if (btnBlue.IsChecked == true)
+      {
+        rks.SetValue(@"CurrentTheme", "Blue");
+      }
+      else if (btnSilver.IsChecked == true)
+      {
+        rks.SetValue(@"CurrentTheme", "Silver");
+      }
+      else if (btnBlack.IsChecked == true)
+      {
+        rks.SetValue(@"CurrentTheme", "Black");
+      }
+      else if (btnGreen.IsChecked == true)
+      {
+        rks.SetValue(@"CurrentTheme", "Green");
+      }
+      switch (this.WindowState)
+      {
+        case System.Windows.WindowState.Maximized:
+          rks.SetValue(@"LastWindowState", 2);
+          break;
+        case System.Windows.WindowState.Minimized:
+          rks.SetValue(@"LastWindowState", 1);
+          break;
+        case System.Windows.WindowState.Normal:
+          rks.SetValue(@"LastWindowState", 0);
+          break;
+        default:
+          rks.SetValue(@"LastWindowState", -1);
+          break;
+      }
+      rks.SetValue(@"IsRibonMinimized", TheRibbon.IsMinimized);
+      rks.SetValue(@"OpenedTabs", openedTabs);
+
+      if (FlowDirection == System.Windows.FlowDirection.RightToLeft)
+      {
+        rks.SetValue(@"RTLMode", "true");
+      }
+      else
+      {
+        rks.SetValue(@"RTLMode", "false");
+      }
+
+      //asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
+      //asArchive = ((int)rks.GetValue(@"AutoSwitchArchiveTools", 1) == 1);
+      //asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
+      //asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
+      //asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
+      //asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 0) == 1);
+
+      rks.SetValue(@"AutoSwitchFolderTools", GetIntegerFromBoolean(asFolder));
+      rks.SetValue(@"AutoSwitchArchiveTools", GetIntegerFromBoolean(asArchive));
+      rks.SetValue(@"AutoSwitchImageTools", GetIntegerFromBoolean(asImage));
+      rks.SetValue(@"AutoSwitchApplicationTools", GetIntegerFromBoolean(asApplication));
+      rks.SetValue(@"AutoSwitchLibraryTools", GetIntegerFromBoolean(asLibrary));
+      rks.SetValue(@"AutoSwitchDriveTools", GetIntegerFromBoolean(asDrive));
+      rks.SetValue(@"IsLastTabCloseApp", GetIntegerFromBoolean(this.IsCloseLastTabCloseApp));
+      if (this.IsConsoleShown)
+        rks.SetValue(@"CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
+      rks.SetValue(@"IsConsoleShown", this.IsConsoleShown ? 1 : 0);
+
+      if (this.TabbaBottom.IsChecked == true)
+      {
+        rks.SetValue(@"TabBarAlignment", "bottom");
+      }
+      else
+      {
+        rks.SetValue(@"TabBarAlignment", "top");
+      }
+
+      rks.Close();
+    }
+    private void RibbonWindow_Closing(object sender, CancelEventArgs e)
 		{
 
       if (App.isStartNewWindows)
@@ -307,83 +387,9 @@ namespace BetterExplorer
 			{
 				OpenedTabs += ";" + item.Path.ParsingName;
 			}
-			RegistryKey rk = Registry.CurrentUser;
-			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-			rks.SetValue(@"LastWindowWidth", this.Width);
-			rks.SetValue(@"LastWindowHeight", this.Height);
-			rks.SetValue(@"LastWindowPosLeft", this.Left);
-			rks.SetValue(@"LastWindowPosTop", this.Top);
-			if (btnBlue.IsChecked == true)
-			{
-				rks.SetValue(@"CurrentTheme", "Blue");
-			}
-			else if (btnSilver.IsChecked == true)
-			{
-				rks.SetValue(@"CurrentTheme", "Silver");
-			}
-			else if (btnBlack.IsChecked == true)
-			{
-				rks.SetValue(@"CurrentTheme", "Black");
-			}
-			else if (btnGreen.IsChecked == true)
-			{
-				rks.SetValue(@"CurrentTheme", "Green");
-			}
-			switch (this.WindowState)
-			{
-				case System.Windows.WindowState.Maximized:
-					rks.SetValue(@"LastWindowState", 2);
-					break;
-				case System.Windows.WindowState.Minimized:
-					rks.SetValue(@"LastWindowState", 1);
-					break;
-				case System.Windows.WindowState.Normal:
-					rks.SetValue(@"LastWindowState", 0);
-					break;
-				default:
-					rks.SetValue(@"LastWindowState", -1);
-					break;
-			}
-			rks.SetValue(@"IsRibonMinimized", TheRibbon.IsMinimized);
-			rks.SetValue(@"OpenedTabs", OpenedTabs);
 
-			if (FlowDirection == System.Windows.FlowDirection.RightToLeft)
-			{
-				rks.SetValue(@"RTLMode", "true");
-			}
-			else
-			{
-				rks.SetValue(@"RTLMode", "false");
-			}
-
-									 //asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
-									 //asArchive = ((int)rks.GetValue(@"AutoSwitchArchiveTools", 1) == 1);
-									 //asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
-									 //asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
-									 //asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
-									 //asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 0) == 1);
-
-			rks.SetValue(@"AutoSwitchFolderTools", GetIntegerFromBoolean(asFolder));
-			rks.SetValue(@"AutoSwitchArchiveTools", GetIntegerFromBoolean(asArchive));
-			rks.SetValue(@"AutoSwitchImageTools", GetIntegerFromBoolean(asImage));
-			rks.SetValue(@"AutoSwitchApplicationTools", GetIntegerFromBoolean(asApplication));
-			rks.SetValue(@"AutoSwitchLibraryTools", GetIntegerFromBoolean(asLibrary));
-			rks.SetValue(@"AutoSwitchDriveTools", GetIntegerFromBoolean(asDrive));
-      rks.SetValue(@"IsLastTabCloseApp", GetIntegerFromBoolean(this.IsCloseLastTabCloseApp));
-      if (this.IsConsoleShown)
-        rks.SetValue(@"CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
-      rks.SetValue(@"IsConsoleShown", this.IsConsoleShown ? 1 : 0);
-
-			if (this.TabbaBottom.IsChecked == true)
-			{
-				rks.SetValue(@"TabBarAlignment", "bottom");
-			}
-			else
-			{
-				rks.SetValue(@"TabBarAlignment", "top");
-			}
-
-			rks.Close();
+      if (this.WindowState != System.Windows.WindowState.Minimized)
+        SaveSettings(OpenedTabs);
 
 			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems);
 			AddToLog("Session Ended");
@@ -457,7 +463,7 @@ namespace BetterExplorer
 
 		private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e)
 		{
-            OpenCustomizeQAT();
+      OpenCustomizeQAT();
 		}
 
 		private int GetIntegerFromBoolean(bool value)
@@ -709,7 +715,7 @@ namespace BetterExplorer
 									        }
 									        catch (Exception ex)
 									        {
-                                                //FIXME: I disable this message becasue of strange null after filter
+                            //FIXME: I disable this message becasue of strange null after filter
 										        MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error); 
 									        }
 									        Separator sp = new Separator();
@@ -725,7 +731,7 @@ namespace BetterExplorer
 									        misd = new MenuItem();
 									        misd.Header = FindResource("miDescending");
 									        misd.IsCheckable = true;
-									        misd.Click += new RoutedEventHandler(misd_Click);
+                          misd.Click += misd_Click;
 									        misd.Focusable = false;
 									        misd.GroupName = "GR1";
 									        if (sc.direction == WindowsAPI.SORT.ASCENDING)
@@ -744,7 +750,7 @@ namespace BetterExplorer
 									        misng.GroupName = "GR3";
 								            misng.IsCheckable = true;
 								            misng.IsChecked = pkg.fmtid == Guid.Empty;
-									        misng.Click += new RoutedEventHandler(misng_Click);
+                            misng.Click += misng_Click;
 									        btnGroup.Items.Add(misng);
 									        Separator spg = new Separator();
 									        btnGroup.Items.Add(spg);
@@ -871,9 +877,10 @@ namespace BetterExplorer
 		void micm_Click(object sender, RoutedEventArgs e)
 		{
 
-			MoreColumns fMoreCollumns = new MoreColumns();
-			fMoreCollumns.PopulateAvailableColumns((Collumns[])(sender as MenuItem).Tag,
-				Explorer, this.PointToScreen(Mouse.GetPosition(this)));
+      using (MoreColumns fMoreCollumns = new MoreColumns())
+      {
+        fMoreCollumns.PopulateAvailableColumns((Collumns[])(sender as MenuItem).Tag, Explorer, this.PointToScreen(Mouse.GetPosition(this)));
+      }
 		}
 
 		void mic_Click(object sender, RoutedEventArgs e)
@@ -4707,7 +4714,9 @@ namespace BetterExplorer
                     {
 
                     }
-                    
+
+                    breadcrumbBarControl1.ExitEditMode();
+                    Explorer.SetExplorerFocus();
 									   //Setup Clipboard monitor
 									  cbm.ClipboardChanged += new EventHandler<ClipboardChangedEventArgs>(cbm_ClipboardChanged);
                     
@@ -7135,11 +7144,12 @@ namespace BetterExplorer
 			//}
 
 			// Write each entry to a file. (the "false" parameter makes sure the file is overwritten.)
-			using (StreamWriter sw = new StreamWriter(relativepath, false))
+			using (StreamWriter sw = new StreamWriter(relativepath, false, Encoding.UTF8))
 			{
 				foreach (string item in history)
 				{
-					sw.WriteLine(item);
+          if (!String.IsNullOrEmpty(item.Replace("\0",String.Empty)))
+					  sw.WriteLine(item);
 				}
 			}
 
@@ -7149,11 +7159,12 @@ namespace BetterExplorer
 		{
 			string line = "";
 			List<string> hl = new List<string>();
-			using (StreamReader sr = new StreamReader(relativepath))
+			using (StreamReader sr = new StreamReader(relativepath,Encoding.UTF8))
 			{
 				while ((line = sr.ReadLine()) != null)
 				{
-					hl.Add(line);
+          if (!String.IsNullOrEmpty(line.Replace("\0", String.Empty)))
+					  hl.Add(line);
 				}
 			}
 

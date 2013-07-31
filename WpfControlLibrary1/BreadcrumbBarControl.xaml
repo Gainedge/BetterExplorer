@@ -2,17 +2,15 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:fluent="clr-namespace:Fluent;assembly=Fluent"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" Height="24" Width="300" SizeChanged="UserControl_SizeChanged" GotFocus="UserControl_GotFocus">
     <Border x:Name="borderas" Background="{x:Null}" BorderBrush="Black" BorderThickness="1">
         <Grid x:Name="grdMain">
-            <TextBox Name="HistoryCombo" Visibility="Visible" BorderBrush="{x:Null}" BorderThickness="0" GotFocus="HistoryCombo_GotFocus" LostFocus="HistoryCombo_LostFocus" MouseLeave="HistoryCombo_MouseLeave" MouseUp="HistoryCombo_MouseUp" KeyUp="HistoryCombo_KeyUp" Margin="0,0,15,0" TextChanged="HistoryCombo_TextChanged" VerticalContentAlignment="Center" Padding="4,1,1,1" LostKeyboardFocus="HistoryCombo_LostKeyboardFocus" GotKeyboardFocus="HistoryCombo_GotKeyboardFocus" PreviewMouseLeftButtonDown="HistoryCombo_PreviewMouseLeftButtonDown"  />
+            <ComboBox IsEditable="True" IsTextSearchEnabled="False" Name="HistoryCombo" Visibility="Visible" FocusVisualStyle="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" GotFocus="HistoryCombo_GotFocus" LostFocus="HistoryCombo_LostFocus" MouseUp="HistoryCombo_MouseUp" KeyUp="HistoryCombo_KeyUp" Margin="0,0,0,0" VerticalContentAlignment="Center" Padding="4,1,1,1" LostKeyboardFocus="HistoryCombo_LostKeyboardFocus" GotKeyboardFocus="HistoryCombo_GotKeyboardFocus"  DropDownClosed="HistoryCombo_DropDownClosed" DropDownOpened="HistoryCombo_DropDownOpened" KeyDown="HistoryCombo_KeyDown"/>
             <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" Margin="0,0,15,0" VerticalContentAlignment="Stretch" HorizontalAlignment="Left" FocusVisualStyle="{x:Null}"  Name="itemholder">
-                <StackPanel x:Name="elPanel" Orientation="Horizontal" MouseUp="stackPanel1_MouseUp" FocusVisualStyle="{x:Null}" VerticalAlignment="Stretch" ></StackPanel>
+                <StackPanel x:Name="elPanel" Orientation="Horizontal" FocusVisualStyle="{x:Null}" VerticalAlignment="Stretch" ></StackPanel>
             </ScrollViewer>
-            <Grid x:Name="ddGrid" MouseDown="Grid_MouseDown" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave" MouseUp="Grid_MouseUp" HorizontalAlignment="Right" Width="14" Background="White">
-                <Path Data="M 5 10 L 7 13 L 9 10 Z" Fill="Black" Name="ddArrow" Stroke="Black" StrokeLineJoin="Miter" StrokeThickness="1" />
-            </Grid>
         </Grid>
     </Border>
 </UserControl>
