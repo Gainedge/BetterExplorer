@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Shell;
 using System.Threading;
-using System.IO;
-using WindowsHelper;
 using System.Runtime.InteropServices;
-using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 
 namespace BetterExplorerControls
@@ -26,7 +17,7 @@ namespace BetterExplorerControls
 	/// </summary>
 	public partial class BreadcrumbBarControl : UserControl
 	{
-    private List<string> hl { get; set; }
+    private ObservableCollection<BreadcrumbBarFSItem> hl { get; set; }
     private TextBox Undertextbox;
     private bool Needfilter;
     private bool IsFiltered;
@@ -35,7 +26,7 @@ namespace BetterExplorerControls
 		public BreadcrumbBarControl()
 		{
 			InitializeComponent();
-      this.hl = new List<string>();
+      this.hl = new ObservableCollection<BreadcrumbBarFSItem>();
       this.Loaded += BreadcrumbBarControl_Loaded;
 		}
 
@@ -45,7 +36,13 @@ namespace BetterExplorerControls
       Undertextbox.AddHandler(TextBox.TextInputEvent,
                    new TextCompositionEventHandler(Undertextbox_TextInput),
                    true);
+      Undertextbox.TextChanged += Undertextbox_TextChanged;
 
+    }
+
+    void Undertextbox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        
     }
 
     void Undertextbox_TextInput(object sender, TextCompositionEventArgs e)
@@ -60,7 +57,7 @@ namespace BetterExplorerControls
         {
           HistoryCombo.Items.Filter += a =>
           {
-            if (a.ToString().ToLower().StartsWith(Undertextbox.Text.ToLower()))
+            if (((BreadcrumbBarFSItem)a).RealPath.ToLower().StartsWith(Undertextbox.Text.ToLower()) || ((BreadcrumbBarFSItem)a).DisplayName.ToLower().StartsWith(Undertextbox.Text.ToLower()))
             {
               return true;
             }
@@ -91,13 +88,13 @@ namespace BetterExplorerControls
 			hl.Clear();
 		}
 
-		public List<string> HistoryItems
+		public ObservableCollection<BreadcrumbBarFSItem> HistoryItems
 		{
 			get
 			{
-				List<string> hilist = new List<string>();
+        ObservableCollection<BreadcrumbBarFSItem> hilist = new ObservableCollection<BreadcrumbBarFSItem>();
 
-				foreach (string item in hl)
+				foreach (var item in hl)
 				{
 					hilist.Add(item);
 				}
@@ -106,7 +103,7 @@ namespace BetterExplorerControls
 			}
 			set
 			{
-				foreach (string item in value)
+				foreach (var item in value)
 				{
 					hl.Add(item);
 				}
@@ -294,22 +291,6 @@ namespace BetterExplorerControls
       ContextShellMenu cm = new ContextShellMenu(dirs);
       cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
     }
-
-		private string FixShellPathsInEditMode(string LastPath)
-		{
-			string LLastPath = LastPath;
-			Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Normal,
-							(ThreadStart)(() =>
-							{
-
-								foreach (ShellObject item in KnownFolders.All)
-								{
-									LLastPath = LLastPath.Replace(item.ParsingName, item.GetDisplayName(DisplayNameType.Default));
-								}
-							}));
-			return LLastPath.Replace(".library-ms", "");
-		}
-
 		void duh_NavigateRequested(object sender, PathEventArgs e)
 		{
 			OnNavigateRequested(e);
@@ -323,7 +304,7 @@ namespace BetterExplorerControls
 			e.Handled = true;
 			FocusManager.SetIsFocusScope(this, true);
       
-			HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
+			//HistoryCombo.Text = LastPath; 
 
       EnterEditMode();
 		}
@@ -377,46 +358,63 @@ namespace BetterExplorerControls
           Undertextbox.Visibility = System.Windows.Visibility.Visible;
           //Undertextbox.SelectAll();
         }
-        if (LastPath != "")
+        var obj = furthestrightitem.ShellObject;
+
+        if (obj.ParsingName.StartsWith(":"))
         {
-          HistoryCombo.Text = LastPath; //FixShellPathsInEditMode(LastPath);
+          var correctItems = KnownFolders.All.Where(w => obj.ParsingName.Contains(w.ParsingName)).ToArray();
+          foreach (var item in correctItems)
+          {
+            ShellObject realItem = (ShellObject)item;
+            HistoryCombo.Text = obj.ParsingName.Replace(realItem.ParsingName, realItem.GetDisplayName(DisplayNameType.Default)).Replace(".library-ms", "");
+            realItem.Dispose();
+          }
+          
         }
         else
         {
-          HistoryCombo.Text = furthestrightitem.ShellObject.ParsingName; //FixShellPathsInEditMode(furthestrightitem.ShellObject.ParsingName);
+          HistoryCombo.Text = furthestrightitem.ShellObject.ParsingName;
         }
         FocusManager.SetIsFocusScope(this, true);
 		}
 
-		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e)
+    private void RequestNavigation(String Path)
+    {
+      PathEventArgs ea = null;
+      var path = String.Empty;
+      BreadcrumbBarFSItem item = null;
+      if (Path.Trim().StartsWith("%"))
+      {
+        path = Environment.ExpandEnvironmentVariables(Path);
+        item = new BreadcrumbBarFSItem(Path, path);
+      }
+      else
+      {
+        path = Path;
+        item = new BreadcrumbBarFSItem(ShellObject.FromParsingName(Path.StartsWith(":") ? "shell:" + Path : Path));
+      }
+
+      ea = new PathEventArgs(ShellObject.FromParsingName(path));
+
+      OnNavigateRequested(ea);
+      if (writetohistory == true)
+      {
+        if (hl.Select(s => s.RealPath).Contains(Path) == false)
+        {
+          hl.Add(item);
+        }
+      }
+    }
+    private void HistoryCombo_KeyUp(object sender, KeyEventArgs e)
 		{
 			e.Handled = true;
       IsEcsPressed = false;
 			if (e.Key == Key.Enter)
 			{
+        IsEcsPressed = true;
 				try
 				{
-          PathEventArgs ea = null;
-          var path = String.Empty;
-          if (HistoryCombo.Text.Trim().StartsWith("%"))
-          {
-            path = Environment.ExpandEnvironmentVariables(HistoryCombo.Text);
-          }
-          else
-          {
-            path = HistoryCombo.Text;
-          }
-
-          ea = new PathEventArgs(ShellObject.FromParsingName(path));
-          
-					OnNavigateRequested(ea);
-					if (writetohistory == true)
-					{
-						if (hl.Contains(HistoryCombo.Text) == false)
-						{
-							hl.Add(HistoryCombo.Text);
-						}
-					}
+          RequestNavigation(HistoryCombo.Text);
 				}
 				catch (Exception)
 				{
@@ -506,6 +504,20 @@ namespace BetterExplorerControls
     {
       if (e.Key == Key.Escape)
         IsEcsPressed = true;
+    }
+
+    private void HistoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      try
+      {
+        RequestNavigation((e.AddedItems[0] as BreadcrumbBarFSItem).RealPath);
+        IsEcsPressed = true;
+      }
+      catch (Exception)
+      {
+        //For now just handle the exception. later will be fixed to navigate correct path.
+      }
+      ExitEditMode();
     }
 	}
 }

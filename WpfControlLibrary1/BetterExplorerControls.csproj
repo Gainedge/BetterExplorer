@@ -96,6 +96,7 @@
     <Compile Include="BreadcrumbBarControl.xaml.cs">
       <DependentUpon>BreadcrumbBarControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BreadcrumbBarFSItem.cs" />
     <Compile Include="BreadcrumbBarHistoryItem.xaml.cs">
       <DependentUpon>BreadcrumbBarHistoryItem.xaml</DependentUpon>
     </Compile>

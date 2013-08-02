@@ -46,6 +46,7 @@ using System.Text;
 using BetterExplorer.UsbEject;
 using LTR.IO;
 using LTR.IO.ImDisk;
+using System.Collections.ObjectModel;
 
 namespace BetterExplorer
 {
@@ -391,7 +392,7 @@ namespace BetterExplorer
       if (this.WindowState != System.Windows.WindowState.Minimized)
         SaveSettings(OpenedTabs);
 
-			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems);
+			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems.Select(s => s.DisplayName).ToList());
 			AddToLog("Session Ended");
       if (!App.isStartNewWindows)
       {
@@ -901,6 +902,24 @@ namespace BetterExplorer
       {
 			    try
           {
+            Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+                        (ThreadStart)(() =>
+                        {
+                          this.breadcrumbBarControl1.LoadDirectory(e.NewLocation);
+                          this.breadcrumbBarControl1.LastPath = e.NewLocation.ParsingName;
+                          this.Title = "Better Explorer - " + e.NewLocation.GetDisplayName(DisplayNameType.Default);
+                          e.NewLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+                          e.NewLocation.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                          try
+                          {
+                            (tabControl1.SelectedItem as ClosableTabItem).Header = e.NewLocation.GetDisplayName(DisplayNameType.Default);
+                            (tabControl1.SelectedItem as ClosableTabItem).TabIcon = e.NewLocation.Thumbnail.BitmapSource;
+                          }
+                          catch (Exception)
+                          {
+
+                          }
+                        }));
 
 				    Dispatcher.Invoke(DispatcherPriority.Send, (Action)(() =>
 									    {
@@ -1332,24 +1351,7 @@ namespace BetterExplorer
 				fsw_AC.Dispose();
 
 			e.Cancel = IsCancel;
-      Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
-                         (ThreadStart)(() =>
-                         {
-                           this.breadcrumbBarControl1.LoadDirectory(e.PendingLocation);
-                           this.breadcrumbBarControl1.LastPath = e.PendingLocation.ParsingName;
-                           this.Title = "Better Explorer - " + e.PendingLocation.GetDisplayName(DisplayNameType.Default);
-                           e.PendingLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-                           e.PendingLocation.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                           try
-                           {
-                             (tabControl1.SelectedItem as ClosableTabItem).Header = e.PendingLocation.GetDisplayName(DisplayNameType.Default);
-                             (tabControl1.SelectedItem as ClosableTabItem).TabIcon = e.PendingLocation.Thumbnail.BitmapSource;
-                           }
-                           catch (Exception)
-                           {
-
-                           }
-                         }));
+     
 		}
 
 
@@ -7155,16 +7157,28 @@ namespace BetterExplorer
 
 		}
 
-		private List<string> ReadHistoryFromFile(string relativepath)
+		private ObservableCollection<BreadcrumbBarFSItem> ReadHistoryFromFile(string relativepath)
 		{
 			string line = "";
-			List<string> hl = new List<string>();
+      ObservableCollection<BreadcrumbBarFSItem> hl = new ObservableCollection<BreadcrumbBarFSItem>();
 			using (StreamReader sr = new StreamReader(relativepath,Encoding.UTF8))
 			{
 				while ((line = sr.ReadLine()) != null)
 				{
           if (!String.IsNullOrEmpty(line.Replace("\0", String.Empty)))
-					  hl.Add(line);
+          {
+            BreadcrumbBarFSItem item = null;
+            if (line.Trim().StartsWith("%"))
+            {
+              var path = Environment.ExpandEnvironmentVariables(line);
+              item = new BreadcrumbBarFSItem(line, path);
+            }
+            else
+            {
+              item = new BreadcrumbBarFSItem(ShellObject.FromParsingName(line.StartsWith(":") ? "shell:" + line : line));
+            }
+            hl.Add(item);
+          }
 				}
 			}
 
