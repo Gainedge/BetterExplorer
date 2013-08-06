@@ -5875,7 +5875,7 @@ namespace BetterExplorer
 
 		private void btnMapDrive_Click(object sender, RoutedEventArgs e)
 		{
-			WindowsAPI.WNetConnectionDialog(this.Handle, 1);
+      WindowsAPI.MapDrive(this.Handle, Explorer.SelectedItems.Count == 1 ? Explorer.SelectedItems[0].ParsingName : String.Empty);
 		}
 
 		private void btnDisconectDrive_Click(object sender, RoutedEventArgs e)
@@ -5885,11 +5885,6 @@ namespace BetterExplorer
 
 		private void Button_Click_4(object sender, RoutedEventArgs e)
 		{
-			//ShareWizzard sw = new ShareWizzard();
-			//sw.CurrentPath = Explorer.SelectedItems[0].ParsingName;
-			//sw.SetIcon(Explorer.SelectedItems[0]);
-			//sw.ShowDialog(this.GetWin32Window());
-			//sw.Close();
 			Explorer.OpenShareUI();
 		}
 

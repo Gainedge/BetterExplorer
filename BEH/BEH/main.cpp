@@ -3,6 +3,7 @@
 #include <vector>
 #include <Objbase.h>
 #include <string.h>
+#include <winnetwk.h>
 
 
 extern "C"
@@ -128,5 +129,4 @@ extern "C"
 	  pointx = p.x;
 	  pointy = p.y;
   }
-
 }
