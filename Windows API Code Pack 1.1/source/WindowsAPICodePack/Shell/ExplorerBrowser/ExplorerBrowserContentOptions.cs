@@ -33,7 +33,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
         {
             get
             {
-                return (ExplorerBrowserViewMode)folderSettings.ViewMode;
+              return eb.GetCurrentViewMode();
             }
             set
             {
@@ -41,12 +41,12 @@ namespace Microsoft.WindowsAPICodePack.Controls
 
                 if (eb.explorerBrowserControl != null)
                 {
-                    int intThumbnailSize = ThumbnailSize;
-                    eb.explorerBrowserControl.SetFolderSettings(folderSettings);
-                  if (folderSettings.ViewMode == FolderViewMode.First)
-                    eb.ContentOptions.ThumbnailSize = intThumbnailSize;
-                  eb.vViewChanged();
+                  int intThumbnailSize = ThumbnailSize;
+                  var hre = eb.explorerBrowserControl.SetFolderSettings(folderSettings);
+                  //if (folderSettings.ViewMode == FolderViewMode.First)
+                  //  eb.ContentOptions.ThumbnailSize = intThumbnailSize;
                 }
+                eb.vViewChanged();
             }
         }
         #endregion
@@ -265,7 +265,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
         {
 
           if (value) {
-            folderSettings.Options |= (FolderOptions)flag;
+            folderSettings.Options |= (FolderOptions)flag | FolderOptions.AutoArrange | FolderOptions.SnapToGrid;
           } else {
             folderSettings.Options = folderSettings.Options & ~(FolderOptions)flag;
           }

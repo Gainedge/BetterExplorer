@@ -5,6 +5,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using MS.WindowsAPICodePack.Internal;
+using System.Threading;
+using System.Windows;
 
 namespace Microsoft.WindowsAPICodePack.Shell
 {
@@ -26,7 +28,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
             HResult hr = nativeShellFolder.NativeShellFolder.EnumObjects(
                 IntPtr.Zero,
-                ShellFolderEnumerationOptions.Folders | ShellFolderEnumerationOptions.NonFolders | ShellFolderEnumerationOptions.IncludeHidden,
+                ShellFolderEnumerationOptions.Folders | ShellFolderEnumerationOptions.NonFolders | ShellFolderEnumerationOptions.IncludeHidden  | ShellFolderEnumerationOptions.EnableAsync | ShellFolderEnumerationOptions.InitializeOnFirstNext,
                 out nativeEnumIdList);
 
 

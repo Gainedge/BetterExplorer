@@ -66,7 +66,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
     internal enum FolderViewMode
     {
         Auto = -1,
-        First = 1,
+        //First = 1,
         Icon = 1,
         SmallIcon = 2,
         List = 3,

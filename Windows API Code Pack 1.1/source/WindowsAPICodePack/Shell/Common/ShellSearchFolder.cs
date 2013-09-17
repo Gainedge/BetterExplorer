@@ -115,7 +115,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
             }
         }
 
-        internal override IShellItem NativeShellItem
+        public override IShellItem NativeShellItem
         {
             get
             {

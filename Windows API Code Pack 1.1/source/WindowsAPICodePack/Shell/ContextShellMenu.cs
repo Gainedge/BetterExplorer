@@ -88,10 +88,13 @@ namespace Microsoft.WindowsAPICodePack.Shell
       Initialize(this.Explorer.GetShellView(), items);
     }
 
-    public ContextShellMenu(Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser explorer, Boolean isNew)
+    public ContextShellMenu(Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser explorer, Boolean isOpenWith)
     {
       this.Explorer = explorer;
-      Initialize(this.Explorer.NavigationLog.CurrentLocation);
+      if (isOpenWith)
+        Initialize(this.Explorer.SelectedItems[0], isOpenWith);
+      else
+        Initialize(this.Explorer.NavigationLog.CurrentLocation);
     }
 
     /// <summary>
@@ -394,10 +397,13 @@ namespace Microsoft.WindowsAPICodePack.Shell
       m_MessageWindow = new MessageWindow(this);
     }
 
-    void Initialize(ShellObject dirItem)
+    void Initialize(ShellObject dirItem, bool isOpenWith = false)
     {
       object iContextMenu = null;
-      GetNewContextMenu(dirItem, out iContextMenu, out m_ComInterface);
+      if (isOpenWith)
+        GetOpenWithContextMenu(dirItem, out iContextMenu, out m_ComInterface);
+      else
+        GetNewContextMenu(dirItem, out iContextMenu, out m_ComInterface);
 
       m_ComInterface2 = m_ComInterface as IContextMenu2;
       m_ComInterface3 = m_ComInterface as IContextMenu3;
@@ -463,6 +469,68 @@ namespace Microsoft.WindowsAPICodePack.Shell
           finally
           {
             
+          }
+        }
+        else
+        {
+          if (iContextMenu != null)
+          {
+            Marshal.ReleaseComObject(iContextMenu);
+            iContextMenu = null;
+          }
+
+          if (iContextMenuPtr != null)
+          {
+            Marshal.ReleaseComObject(iContextMenuPtr);
+            iContextMenuPtr = null;
+          }
+
+          return false;
+        }
+      }
+      else
+      {
+        iContextMenuPtr = IntPtr.Zero;
+        iContextMenu = null;
+        return false;
+      }
+    }
+
+    public bool GetOpenWithContextMenu(ShellObject item, out object iContextMenuPtr, out IContextMenu iContextMenu)
+    {
+      Guid CLSID_OpenWith = new Guid( 0x09799AFB, 0xAD67, 0x11d1, 0xAB, 0xCD, 0x00, 0xC0, 0x4F, 0xC3, 0x09, 0x36);
+      Guid iicm = typeof(IContextMenu).GUID;
+      Guid iise = typeof(IShellExtInit).GUID;
+      if (WindowsAPI.CoCreateInstance(
+              ref CLSID_OpenWith,
+              IntPtr.Zero,
+              0x1,
+              ref iicm,
+              out iContextMenuPtr) == (int)HResult.Ok)
+      {
+        iContextMenu = iContextMenuPtr as IContextMenu;
+
+        IntPtr iShellExtInitPtr;
+        if (Marshal.QueryInterface(
+            Marshal.GetIUnknownForObject(iContextMenuPtr),
+            ref iise,
+            out iShellExtInitPtr) == (int)HResult.Ok)
+        {
+          IShellExtInit iShellExtInit = Marshal.GetTypedObjectForIUnknown(
+              iShellExtInitPtr, typeof(IShellExtInit)) as IShellExtInit;
+
+          try
+          {
+            iShellExtInit.Initialize(item.PIDL, IntPtr.Zero, 0);
+
+            Marshal.ReleaseComObject(iShellExtInit);
+            Marshal.Release(iShellExtInitPtr);
+
+            return true;
+          }
+          finally
+          {
+
           }
         }
         else

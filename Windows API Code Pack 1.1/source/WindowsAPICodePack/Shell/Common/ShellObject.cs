@@ -9,6 +9,7 @@ using Microsoft.WindowsAPICodePack.Shell.PropertySystem;
 using Microsoft.WindowsAPICodePack.Shell.Resources;
 using MS.WindowsAPICodePack.Internal;
 using System.Runtime.InteropServices.ComTypes;
+using System.Drawing;
 
 namespace Microsoft.WindowsAPICodePack.Shell
 {
@@ -116,7 +117,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
         /// <summary>
         /// Return the native ShellFolder object
         /// </summary>
-        virtual internal IShellItem NativeShellItem
+        virtual public IShellItem NativeShellItem
         {
             get { return NativeShellItem2; }
         }
@@ -186,6 +187,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
                 return properties;
             }
         }
+
 
         /// <summary>
         /// Gets the parsing name for this ShellItem.
@@ -323,6 +325,31 @@ namespace Microsoft.WindowsAPICodePack.Shell
             return returnValue;
         }
 
+        public object GetPropertyValue(PropertyKey propertyKey)
+        {
+          using (PropVariant propVar = new PropVariant())
+          {
+            if (this.NativePropertyStore != null)
+            {
+              // If there is a valid property store for this shell object, then use it.
+              this.NativePropertyStore.GetValue(ref propertyKey, propVar);
+            }
+            else if (this != null)
+            {
+              // Use IShellItem2.GetProperty instead of creating a new property store
+              // The file might be locked. This is probably quicker, and sufficient for what we need
+              this.NativeShellItem2.GetProperty(ref propertyKey, propVar);
+            }
+            else if (NativePropertyStore != null)
+            {
+              NativePropertyStore.GetValue(ref propertyKey, propVar);
+            }
+
+            //Get the value
+            return propVar.Value;
+          }
+        }
+
         /// <summary>
         /// Gets a value that determines if this ShellObject is a link or shortcut.
         /// </summary>
@@ -386,6 +413,28 @@ namespace Microsoft.WindowsAPICodePack.Shell
                 }
 
             }
+        }
+
+        public bool IsNetworkPath
+        {
+          get
+          {
+            if (!ParsingName.StartsWith("::"))
+            {
+              if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\"))
+              {
+                string rootPath = System.IO.Path.GetPathRoot(ParsingName); // get drive's letter
+                System.IO.DriveInfo driveInfo = new System.IO.DriveInfo(rootPath); // get info about the drive
+                return driveInfo.DriveType == DriveType.Network; // return true if a network drive
+              }
+
+              return true; // is a UNC path 
+            }
+            else
+            {
+              return false;
+            }
+          }
         }
 
         public bool IsNetDrive
@@ -459,8 +508,8 @@ namespace Microsoft.WindowsAPICodePack.Shell
                 try
                 {
                     ShellFileGetAttributesOptions sfgao;
-                    NativeShellItem.GetAttributes(ShellFileGetAttributesOptions.Folder, out sfgao);
-                    return (sfgao & ShellFileGetAttributesOptions.Folder) != 0;
+                    NativeShellItem.GetAttributes(ShellFileGetAttributesOptions.Folder | ShellFileGetAttributesOptions.Stream, out sfgao);
+                    return (sfgao & ShellFileGetAttributesOptions.Folder) != 0 && (sfgao & ShellFileGetAttributesOptions.Stream) == 0;
                 }
                 catch (FileNotFoundException)
                 {
@@ -555,6 +604,14 @@ namespace Microsoft.WindowsAPICodePack.Shell
                 if (thumbnail == null) { thumbnail = new ShellThumbnail(this); }
                 return thumbnail;
             }
+        }
+
+        public Bitmap GetShellThumbnail(int Size, bool OnlyIcon = false, bool OnlyCache = false)
+        {
+          this.Thumbnail.RetrievalOption = OnlyCache ? ShellThumbnailRetrievalOption.CacheOnly : ShellThumbnailRetrievalOption.Default;
+          this.Thumbnail.FormatOption = OnlyIcon ? ShellThumbnailFormatOption.IconOnly : ShellThumbnailFormatOption.Default;
+          this.Thumbnail.CurrentSize = new System.Windows.Size(Size, Size);
+          return this.Thumbnail.Bitmap;
         }
 
         private ShellObject parentShellObject;

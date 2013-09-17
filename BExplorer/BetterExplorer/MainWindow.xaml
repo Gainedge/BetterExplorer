@@ -1904,7 +1904,7 @@
                 <Ribbon:RibbonGroupBox x:Name="Layout"
                                        Header="{StaticResource tgLayoutCP}"
                                        Ribbon:KeyTip.Keys="L">
-                    <Ribbon:InRibbonGallery x:Name="inRibbonGallery1"
+                    <Ribbon:InRibbonGallery x:Name="ViewGallery"
                                             CanCollapseToButton="True"
                                             DropDownClosed="btnMoreColls_DropDownClosed"
                                             DropDownOpened="btnMoreColls_DropDownOpened"
@@ -1920,7 +1920,7 @@
                                             Ribbon:KeyTip.Keys="V"
                                             SelectedFilter="{Binding ElementName=galleryFilterAll}"
                                             SelectionChanged="inRibbonGallery1_SelectionChanged"
-                                            SizeDefinition="Large,Large,Large" PreviewMouseDown="inRibbonGallery1_PreviewMouseDown">
+                                            SizeDefinition="Large,Large,Large" PreviewMouseDown="inRibbonGallery1_PreviewMouseDown" MouseLeftButtonDown="inRibbonGallery1_MouseLeftButtonDown" PreviewMouseLeftButtonUp="inRibbonGallery1_PreviewMouseLeftButtonUp">
                         <Ribbon:InRibbonGallery.Filters>
                             <Ribbon:GalleryGroupFilter x:Name="galleryFilterAll"
                                                        Title="All"
@@ -1928,80 +1928,96 @@
                             <Ribbon:GalleryGroupFilter Title="Standard Views" Groups="Standard Views" />
                             <Ribbon:GalleryGroupFilter Title="Additional Views" Groups="Additional Views" />
                         </Ribbon:InRibbonGallery.Filters>
-                        <StackPanel x:Name="ExtraLargeIconsPanel"
-                                    Focusable="True"
-                                    Orientation="Horizontal"
-                                    Tag="Standard Views">
+                        <Ribbon:GalleryItem PreviewMouseLeftButtonUp="ExtraLarge_GalleryItem_MouseLeftButtonUp" Tag="Standard Views">
+                          <StackPanel x:Name="ExtraLargeIconsPanel"
+                                                Focusable="True"
+                                                Orientation="Horizontal"
+                                                Tag="Standard Views">
                             <Image x:Name="elarge"
-                                   Source="Images\elarge16.png"
-                                   Stretch="None" />
+                                               Source="Images\elarge16.png"
+                                               Stretch="None" />
                             <TextBlock Margin="2,0,0,0"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Text="{StaticResource btnExtraLargeICP}" />
-                        </StackPanel>
-                        <StackPanel Focusable="True"
-                                    Orientation="Horizontal"
-                                    Tag="Standard Views">
-                            <Image Source="Images\large16.png" Stretch="None" />
-                            <TextBlock Margin="2,0,0,0"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Text="{StaticResource btnLargeICP}" />
-                        </StackPanel>
-                        <StackPanel Focusable="True"
-                                    Orientation="Horizontal"
-                                    Tag="Standard Views">
-                            <Image Source="Images\medium16.png" Stretch="None" />
-                            <TextBlock Margin="2,0,0,0"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Text="{StaticResource btnMediumICP}" />
-                        </StackPanel>
-                        <StackPanel Focusable="True"
-                                    Orientation="Horizontal"
-                                    Tag="Standard Views">
-                            <Image Source="Images\small16.png" Stretch="None" />
-                            <TextBlock Margin="2,0,0,0"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Text="{StaticResource btnSmallICP}" />
-                        </StackPanel>
-                        <StackPanel Focusable="True"
-                                    Orientation="Horizontal"
-                                    Tag="Standard Views">
-                            <Image Source="Images\content16.png" Stretch="None" />
-                            <TextBlock Margin="2,0,0,0"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Text="{StaticResource btnListICP}" />
-                        </StackPanel>
-                        <StackPanel Focusable="True"
-                                    Orientation="Horizontal"
-                                    Tag="Standard Views">
-                            <Image Source="Images\details16.png" Stretch="None" />
-                            <TextBlock Margin="2,0,0,0"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Text="{StaticResource btnDetailsICP}" />
-                        </StackPanel>
-                        <StackPanel Focusable="True"
-                                    Orientation="Horizontal"
-                                    Tag="Standard Views">
-                            <Image Source="Images\tiles16.png" Stretch="None" />
-                            <TextBlock Margin="2,0,0,0"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Text="{StaticResource btnTilesICP}" />
-                        </StackPanel>
-                        <StackPanel Focusable="True"
-                                    Orientation="Horizontal"
-                                    Tag="Standard Views">
-                            <Image Source="Images\content16.png" Stretch="None" />
-                            <TextBlock HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       Text="{StaticResource btnContentICP}" />
-                        </StackPanel>
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"
+                                                   Text="{StaticResource btnExtraLargeICP}" />
+                          </StackPanel>
+                        </Ribbon:GalleryItem>
+                        <Ribbon:GalleryItem Tag="Standard Views">
+                          <StackPanel Focusable="True"
+                                      Orientation="Horizontal"
+                                      Tag="Standard Views">
+                              <Image Source="Images\large16.png" Stretch="None" />
+                              <TextBlock Margin="2,0,0,0"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Text="{StaticResource btnLargeICP}" />
+                          </StackPanel>
+                        </Ribbon:GalleryItem>
+                        <Ribbon:GalleryItem Tag="Standard Views">
+                          <StackPanel Focusable="True"
+                                      Orientation="Horizontal"
+                                      Tag="Standard Views">
+                              <Image Source="Images\medium16.png" Stretch="None" />
+                              <TextBlock Margin="2,0,0,0"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Text="{StaticResource btnMediumICP}" />
+                          </StackPanel>
+                        </Ribbon:GalleryItem>
+                        <Ribbon:GalleryItem Tag="Standard Views" PreviewMouseLeftButtonUp="GalleryItem_PreviewMouseLeftButtonUp">
+                          <StackPanel Focusable="True"
+                                      Orientation="Horizontal"
+                                      Tag="Standard Views">
+                              <Image Source="Images\small16.png" Stretch="None" />
+                              <TextBlock Margin="2,0,0,0"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Text="{StaticResource btnSmallICP}" />
+                          </StackPanel>
+                        </Ribbon:GalleryItem>
+                        <Ribbon:GalleryItem Tag="Standard Views">
+                          <StackPanel Focusable="True"
+                                      Orientation="Horizontal"
+                                      Tag="Standard Views">
+                              <Image Source="Images\content16.png" Stretch="None" />
+                              <TextBlock Margin="2,0,0,0"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Text="{StaticResource btnListICP}" />
+                          </StackPanel>
+                        </Ribbon:GalleryItem>
+                        <Ribbon:GalleryItem Tag="Standard Views">
+                          <StackPanel Focusable="True"
+                                      Orientation="Horizontal"
+                                      Tag="Standard Views">
+                              <Image Source="Images\details16.png" Stretch="None" />
+                              <TextBlock Margin="2,0,0,0"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Text="{StaticResource btnDetailsICP}" />
+                          </StackPanel>
+                        </Ribbon:GalleryItem>
+                        <Ribbon:GalleryItem Tag="Standard Views">
+                          <StackPanel Focusable="True"
+                                      Orientation="Horizontal"
+                                      Tag="Standard Views">
+                              <Image Source="Images\tiles16.png" Stretch="None" />
+                              <TextBlock Margin="2,0,0,0"
+                                         HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Text="{StaticResource btnTilesICP}" />
+                          </StackPanel>
+                        </Ribbon:GalleryItem>
+                        <Ribbon:GalleryItem Tag="Standard Views">
+                          <StackPanel Focusable="True"
+                                      Orientation="Horizontal"
+                                      Tag="Standard Views">
+                              <Image Source="Images\content16.png" Stretch="None" />
+                              <TextBlock HorizontalAlignment="Center"
+                                         VerticalAlignment="Center"
+                                         Text="{StaticResource btnContentICP}" />
+                          </StackPanel>
+                        </Ribbon:GalleryItem>
                         <!--  Slider Orientation="Horizontal" Tag="Additional Views" Interval="1" Minimum="48" Maximum="256" SmallChange="1" /  -->
                     </Ribbon:InRibbonGallery>
                 </Ribbon:RibbonGroupBox>
@@ -2611,13 +2627,13 @@
                                    LargeIcon="Images\archivecheck32.png"
                                    Ribbon:KeyTip.Keys="C"
                                    SizeDefinition="Large" />
-                    <!--<Ribbon:Button x:Name="btnViewArchive"
+                    <Ribbon:Button x:Name="btnViewArchive"
                                    Click="btnViewArchive_Click"
                                    Header="{StaticResource btnViewArchiveCP}"
                                    Icon="Images\archiveview16.png"
                                    LargeIcon="Images\archiveview32.png"
                                    Ribbon:KeyTip.Keys="V"
-                                   SizeDefinition="Large" Visibility="Collapsed" />-->
+                                   SizeDefinition="Large" Visibility="Visible" />
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 

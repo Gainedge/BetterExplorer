@@ -704,6 +704,16 @@ namespace Microsoft.WindowsAPICodePack.Shell
          }
       }
 
+      public IntPtr TargetPIDL
+      {
+        get
+        {
+          IntPtr pidl = IntPtr.Zero;
+          linkW.GetIDList(out pidl);
+          return pidl;
+        }
+      }
+
       /// <summary>
       /// Gets/sets the Working Directory for the Link
       /// </summary>

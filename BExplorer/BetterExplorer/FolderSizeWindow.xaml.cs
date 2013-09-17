@@ -21,6 +21,7 @@ using System.Runtime.InteropServices;
 using System.Globalization;
 using Fluent;
 using System.Windows.Interop;
+using System.Threading.Tasks;
 
 namespace BetterExplorer
 {
@@ -184,12 +185,15 @@ namespace BetterExplorer
 
             // please note that the following line won't work if you try this on a network folder, like \\Machine\C$
             // simply remove the \\?\ part in this case or use \\?\UNC\ prefix
-            findHandle = FindFirstFile(@"\\?\" + directory + @"\*", out findData);
+            findHandle = FindFirstFile(String.Format(@"\\?\{0}\*", directory), out findData);
             if (findHandle != INVALID_HANDLE_VALUE)
             {
 
                 do
                 {
+                  if (bgw.CancellationPending)
+                    break;
+
                     if ((findData.dwFileAttributes & FileAttributes.Directory) != 0)
                     {
 
@@ -227,6 +231,24 @@ namespace BetterExplorer
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool FindClose(IntPtr hFindFile);
 
+        public IEnumerable<string> EnumerateFiles(string path, string searchPattern, SearchOption searchOpt)
+        {
+          try
+          {
+            var dirFiles = Enumerable.Empty<string>();
+            if (searchOpt == SearchOption.AllDirectories)
+            {
+              dirFiles = Directory.EnumerateDirectories(path)
+                                  .SelectMany(x => EnumerateFiles(x, searchPattern, searchOpt));
+            }
+            return dirFiles.Concat(Directory.EnumerateFiles(path, searchPattern));
+          }
+          catch (UnauthorizedAccessException ex)
+          {
+            return Enumerable.Empty<string>();
+          }
+        }
+
         void bgw_DoWork(object sender, DoWorkEventArgs e)
         {
             //FSI = FolderSizeInfoClass.ConstructData(e.Argument.ToString());
@@ -243,12 +265,12 @@ namespace BetterExplorer
                                     progressBar1.Maximum = diri.Count();
                                 }));
 
-            foreach (DirectoryInfo item in diri)
+            Parallel.ForEach(diri, (item, state) =>
             {
                 
                 if ((sender as BackgroundWorker).CancellationPending)
                 {
-                    break;
+                  state.Break();
                 }
                 FolderSizeInfoClass fsi = new FolderSizeInfoClass();
                 fsi.FolderSizeLoc = item.Name;
@@ -277,14 +299,23 @@ namespace BetterExplorer
                 //}
                 int ii = 0;
                 int iff = 0;
-                retsize = RecurseDirectory(item.FullName, -1, out ii, out iff);
+
+                try
+                {
+                  retsize = RecurseDirectory(item.FullName, -1, out ii, out iff);
+                }
+                catch (Exception)
+                {
+
+                }
                 fsi.FSize = retsize;
                 FSI.Add(fsi);
+               
                 (sender as BackgroundWorker).ReportProgress(i++);
 
                 
                 
-            }
+            });
             shol.Clear();
             GC.Collect();
             GC.WaitForPendingFinalizers();
@@ -293,6 +324,7 @@ namespace BetterExplorer
                 WindowsAPI.SetProcessWorkingSetSize(System.Diagnostics.Process.GetCurrentProcess().Handle, -1, -1);
             }
         }
+
 
         private long GetFolderSize(string dir, bool includesubdirs)
         {

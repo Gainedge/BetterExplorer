@@ -85,6 +85,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       public GetSortColumns _GetSortColumns;
       public GetColumnbyIndex _GetColumnbyIndex;
       public List<LVItemColor> LVItemsColorCodes { get; set; }
+      public ImageList jumbo = new ImageList(ImageListSize.Jumbo);
+      public ImageList extra = new ImageList(ImageListSize.ExtraLarge);
+      public ImageList large = new ImageList(ImageListSize.Large);
+      public ImageList syssmall = new ImageList(ImageListSize.SystemSmall);
+      public ImageList small = new ImageList(ImageListSize.Small);
       #endregion
 
 	    #region Imports
@@ -1207,6 +1212,17 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				WindowsAPI.ShellExecuteEx(ref info);
 			}
 
+      public void EditFile(string Filename)
+      {
+        WindowsAPI.SHELLEXECUTEINFO info = new WindowsAPI.SHELLEXECUTEINFO();
+        info.cbSize = Marshal.SizeOf(info);
+        info.lpVerb = "edit";
+        info.lpFile = Filename;
+        info.nShow = SW_SHOW;
+        info.fMask = SEE_MASK_INVOKEIDLIST;
+        WindowsAPI.ShellExecuteEx(ref info);
+      }
+
       public void SelectItem(ShellObject Item) {
         IntPtr pPIDL = IntPtr.Zero;
         IShellView shv = GetShellView();
@@ -1991,8 +2007,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					if (IsOldSysListView)
 					{
 							fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.VISTALAYOUT, WindowsAPI.FOLDERVIEWOPTIONS.VISTALAYOUT);
-              fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMORDERING, WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMORDERING);
-              fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMPOSITION, WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMPOSITION);
+              //fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMORDERING, WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMORDERING);
+              //fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMPOSITION, WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMPOSITION);
 					}
 
 					NativeRect rect = new NativeRect();
@@ -2015,7 +2031,6 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 						Navigate(antecreationNavigationTarget);
 						antecreationNavigationTarget = null;
 					}
-
 
 				}
 
@@ -3078,6 +3093,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       public const int CDDS_SUBITEM           = 0x00020000;
       public const int CDDS_ITEMPREPAINT      = (CDDS_ITEM | CDDS_PREPAINT);
       public const int CDDS_ITEMPOSTPAINT     = (CDDS_ITEM | CDDS_POSTPAINT);
+      //public const int CDDS_ITEMPOSTPAINT     = 65538;
+
       [DllImport("user32.dll")]
       public static extern bool GetCursorPos(out POINT lpPoint);
 
@@ -3093,6 +3110,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       // this is the new wndproc, just show a messagebox on left button down:
 			private int MyWndProc(IntPtr hWnd, int Msg, int wParam, int lParam)
 			{
+        if (Msg == (int)WindowsAPI.WndMsg.WM_ERASEBKGND)
+        {
+          return 0;
+        }
+
         if (Msg == (int)WindowsAPI.WndMsg.WM_CONTEXTMENU)
         {
           this.IsRenameStarted = true;
@@ -3108,15 +3130,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
         
         if (Msg == 78)
         {
-          WindowsAPI.NMHDR nmhdr = WindowsAPI.PtrToStructure<WindowsHelper.WindowsAPI.NMHDR>((IntPtr)lParam);
+          WindowsAPI.NMHDR nmhdr = WindowsAPI.PtrToStructure<WindowsAPI.NMHDR>((IntPtr)lParam);
           switch (nmhdr.code)
           {
             case WNM.LVN_GETINFOTIP:
-
-              // try to start preview seaquence by tooltip
-              // we can not distinguish tooltip by mouse from by keyboard here for 7.
-
-
+              //TODO: Write here the code for the tooltip flyout
               break;
             case WNM.NM_CUSTOMDRAW:
               if (nmhdr.hwndFrom == this.SysListViewHandle)
@@ -3138,9 +3156,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                 }
 
                 object ext = null;
+                ShellObject itemobj = null;
                 if (item != null)
                 {
-                  ShellObject itemobj = ShellObjectFactory.Create(item);
+                  itemobj = ShellObjectFactory.Create(item);
 
                   ext = itemobj.Properties.System.FileExtension.Value;
                 }
@@ -3160,6 +3179,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
                 switch (nmlvcd.nmcd.dwDrawStage)
                 {
+                  case CDDS_PREPAINT:
+                    return CDRF_NOTIFYITEMDRAW;
                   case CDDS_ITEMPREPAINT:
                       // call default procedure in case system might do custom drawing and set special colors
                       CallWindowProc(oldWndProc, hWnd, Msg, wParam, lParam);
@@ -3167,15 +3188,17 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                       {
                         nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
                         Marshal.StructureToPtr(nmlvcd, (IntPtr)lParam, false);
-                        return CDRF_NEWFONT;
+                        
+                        return CDRF_NEWFONT | CDRF_NOTIFYPOSTPAINT | CDRF_NOTIFYSUBITEMDRAW;
                       }
                       else
                       {
-                        return CDRF_DODEFAULT;
+                        return CDRF_NOTIFYPOSTPAINT | CDRF_NOTIFYSUBITEMDRAW;
                       }
                  
                   case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
                     // before a subitem drawn
+                   
                     if ((nmlvcd.nmcd.uItemState & (WindowsAPI.CDIS.HOT | WindowsAPI.CDIS.DROPHILITED)) != 0 || 0 != WindowsAPI.SendMessage(this.SysListViewHandle, WindowsAPI.LVM.GETITEMSTATE, index, (int)WindowsAPI.LVIS.LVIS_SELECTED))
                     {
                       // hot, drophilited or selected.
@@ -3209,6 +3232,37 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                       }
                     }
                     break;
+                  case CDDS_ITEMPOSTPAINT:
+                      if (nmlvcd.clrTextBk != 0)
+                      {
+                        var iconBounds = new WindowsAPI.RECT();
+
+                        iconBounds.left = 1;
+
+                        WindowsAPI.SendMessage(SysListViewHandle, WindowsAPI.LVM.GETITEMRECT, index, ref iconBounds);
+
+                        //using (Graphics graphics = Graphics.FromHdc(nmlvcd.nmcd.hdc))
+                        //{
+                        //  graphics.Clip = new Region(iconBounds.ToRectangle()); ;
+                        //  graphics.FillRectangle(Brushes.Black, new Rectangle(iconBounds.left, iconBounds.bottom - 20, 20, 20));
+                        //}
+                        if (itemobj.IsShared)
+                        {
+                          if (this.ContentOptions.ViewMode == ExplorerBrowserViewMode.Details || this.ContentOptions.ViewMode == ExplorerBrowserViewMode.List || this.ContentOptions.ViewMode == ExplorerBrowserViewMode.SmallIcon)
+                            small.DrawOverlay(hdc, 1, new Point(iconBounds.left, iconBounds.bottom - 16));
+                          else
+                          {
+                            if (this.ContentOptions.ThumbnailSize > 180)
+                              jumbo.DrawOverlay(hdc, 1, new Point(iconBounds.left, iconBounds.bottom - this.ContentOptions.ThumbnailSize / 3), this.ContentOptions.ThumbnailSize / 3);
+                            else
+                            if (this.ContentOptions.ThumbnailSize > 64)
+                              extra.DrawOverlay(hdc, 1, new Point(iconBounds.left + 10, iconBounds.bottom - 50));
+                            else
+                            large.DrawOverlay(hdc, 1, new Point(iconBounds.left + 10, iconBounds.bottom - 32));
+                          }
+                        }
+                      }
+                    return CDRF_SKIPDEFAULT;
                 }
               }
               break;

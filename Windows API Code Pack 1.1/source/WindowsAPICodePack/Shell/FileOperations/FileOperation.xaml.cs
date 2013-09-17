@@ -607,7 +607,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
                   {
                     var itemInfo = new FileInfo(item);
                     if (itemInfo.IsReadOnly)
-                      File.SetAttributes(item, FileAttributes.Normal);
+                      File.SetAttributes(item, System.IO.FileAttributes.Normal);
                     if (this.DeleteToRB)
                       RecycleBin.SendSilent(item);
                     else
@@ -1008,7 +1008,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
         private void DeleteFolderRecursive(DirectoryInfo baseDir, Boolean isNotAfterMove = true)
         {
-            baseDir.Attributes = FileAttributes.Normal;
+            baseDir.Attributes = System.IO.FileAttributes.Normal;
             foreach (var childDir in baseDir.GetDirectories())
             {
                 _block.WaitOne();

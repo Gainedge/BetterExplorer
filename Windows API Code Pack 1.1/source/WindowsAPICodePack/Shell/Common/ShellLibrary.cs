@@ -370,7 +370,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
         internal const string FileExtension = ".library-ms";
 
-        internal override IShellItem NativeShellItem
+        public override IShellItem NativeShellItem
         {
             get { return NativeShellItem2; }
         }

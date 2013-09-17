@@ -571,7 +571,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
     }
 
     [Flags]
-    public enum ShellFolderEnumerationOptions : ushort
+    public enum ShellFolderEnumerationOptions 
     {
         CheckingForChildren = 0x0010,
         Folders = 0x0020,
@@ -584,7 +584,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
         NavigationEnum = 0x1000,
         FastItems = 0x2000,
         FlatList = 0x4000,
-        EnableAsync = 0x8000
+        EnableAsync = 0x8000,
+        SuperHidden = 0x10000,
+
     }
 
 

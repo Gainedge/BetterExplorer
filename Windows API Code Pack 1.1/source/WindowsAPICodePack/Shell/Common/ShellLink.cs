@@ -16,7 +16,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
         #region Internal Constructors
 
-        internal ShellLink(IShellItem2 shellItem)
+        public ShellLink(IShellItem2 shellItem)
         {
             nativeShellItem = shellItem;
         }
@@ -76,7 +76,12 @@ namespace Microsoft.WindowsAPICodePack.Shell
         /// </summary>
         public ShellObject TargetShellObject
         {
-            get { return ShellObjectFactory.Create(TargetLocation); }
+            get {
+              var link = new ShellLinkApi(this.ParsingName);
+              var pidl = link.TargetPIDL;
+              link.Dispose();
+              return ShellObjectFactory.Create(pidl); 
+            }
         }
 
         /// <summary>

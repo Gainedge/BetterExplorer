@@ -31,7 +31,7 @@ namespace BetterExplorer
             //_iconReader.ReadIcons(pathIconLibrary).ForEach(o => archiveTree.ImageList.Images.Add(o.Icon));
             WindowsHelper.WindowsAPI.SetWindowTheme(lvArchiveDetails.Handle, "Explorer", null);
             SysImageListHelper.SetListViewImageList(lvArchiveDetails, lst, false);
-            SevenZipExtractor.SetLibraryPath("7z.dll");
+            SevenZipExtractor.SetLibraryPath(IntPtr.Size == 8 ? "7z64.dll" : "7z32.dll");
             _pathArchive = pathArchive;
             
             Shown += ShowArchiveContent;
@@ -201,7 +201,7 @@ namespace BetterExplorer
 
         private void lvArchiveDetails_ItemActivate(object sender, EventArgs e)
         {
-            IList<ArchiveFileInfo> archiveinfos = (sender as ListView).Tag as IList<ArchiveFileInfo>;
+            IList<ArchiveFileInfo> archiveinfos = lvArchiveDetails.Tag as IList<ArchiveFileInfo>;
             List<ArchiveFileInfo> arhiveinfoList = new List<ArchiveFileInfo>();
             if (SelectedItem.SubItems[1].Text == "Folder")
             {

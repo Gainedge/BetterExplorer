@@ -623,6 +623,7 @@ namespace WindowsHelper
           public const int SETCOLUMNWIDTH = (FIRST + 30);		// LVM_SETCOLUMNWIDTH
           public const int GETCOLUMNWIDTH = (FIRST + 29);		// LVM_GETCOLUMNWIDTH
           public const int ENSUREVISIBLE = (FIRST + 19);
+          public const int ISITEMVISIBLE = (FIRST + 182);
 
           public const int LVIR_BOUNDS = 0;
           public const int LVIR_ICON = 1;
@@ -2033,6 +2034,10 @@ namespace WindowsHelper
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, MSG Msg,
             int wParam, int lParam);
+
+        [DllImport("user32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg,
+            int wParam, ref  RECT lparam);
 
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg,
