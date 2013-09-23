@@ -994,7 +994,6 @@
                                             <Ribbon:CheckBox x:Name="chkDrive"
                                                              Checked="chkDrive_Checked"
                                                              Header="{StaticResource ctbDriveToolsCP}"
-                                                             IsEnabled="False"
                                                              Unchecked="chkDrive_Unchecked" />
                                             <Ribbon:CheckBox x:Name="chkArchive"
                                                              Checked="chkArchive_Checked"
@@ -1012,6 +1011,10 @@
                                                              Checked="chkLibrary_Checked"
                                                              Header="{StaticResource ctbLibrariesCP}"
                                                              Unchecked="chkLibrary_Unchecked" />
+                                            <Ribbon:CheckBox x:Name="chkVirtualTools"
+                                                             Checked="chkVirtualTools_Checked"
+                                                             Header="Virtual Disk Tools"
+                                                             Unchecked="chkVirtualTools_Unchecked" />
                                         </StackPanel>
 
                                         <Ribbon:SeparatorTabItem Margin="0,300,0,0"
@@ -1162,9 +1165,9 @@
                                         <Ribbon:CheckBox x:Name="chkIsLastTabCloseApp" Click="chkIsLastTabCloseApp_Click"  Header="Closing last Tab closes Application" Margin="7,275,0,0" VerticalAlignment="Top" Height="22"/>
                                     </Grid>
                                 </TabItem>
-                                <Ribbon:SeparatorTabItem Header="Accounts" Visibility="Collapsed" />
+                                <Ribbon:SeparatorTabItem Header="Accounts" />
                                 <TabItem Header="Social Media"
-                                         Ribbon:KeyTip.Keys="M" Visibility="Collapsed">
+                                         Ribbon:KeyTip.Keys="M" >
                                     <Grid Margin="20,5,0,0">
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
                                                                  Header="Connected Social Media Accounts"
@@ -1187,7 +1190,7 @@
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="Online Storage"
-                                         Ribbon:KeyTip.Keys="O" Visibility="Collapsed">
+                                         Ribbon:KeyTip.Keys="O">
                                     <Grid Margin="20,5,0,0">
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
                                                                  Header="Connected Online Storage Accounts"
@@ -1210,7 +1213,7 @@
                                     </Grid>
                                 </TabItem>
                                 <TabItem Header="FTP / WebDAV"
-                                         Ribbon:KeyTip.Keys="F" Visibility="Collapsed">
+                                         Ribbon:KeyTip.Keys="F">
                                     <Grid Margin="20,5,0,0">
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
                                                                  Header="FTP / WebDAV Servers"

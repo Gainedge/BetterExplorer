@@ -108,6 +108,7 @@ namespace BetterExplorer
 		bool asDrive = false;
 		bool asApplication = false;
 		bool asLibrary = false;
+        bool asVirtualDrive = false;
 		bool canlogactions = false;
 		string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
 		string logdir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\ActionLog\\";
@@ -342,6 +343,7 @@ namespace BetterExplorer
       rks.SetValue(@"AutoSwitchApplicationTools", GetIntegerFromBoolean(asApplication));
       rks.SetValue(@"AutoSwitchLibraryTools", GetIntegerFromBoolean(asLibrary));
       rks.SetValue(@"AutoSwitchDriveTools", GetIntegerFromBoolean(asDrive));
+      rks.SetValue(@"AutoSwitchVirtualDriveTools", GetIntegerFromBoolean(asVirtualDrive));
       rks.SetValue(@"IsLastTabCloseApp", GetIntegerFromBoolean(this.IsCloseLastTabCloseApp));
       if (this.IsConsoleShown)
         rks.SetValue(@"CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
@@ -1762,7 +1764,7 @@ namespace BetterExplorer
     {
       #region Archive Contextual Tab
       ctgArchive.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && Archives.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
-      if (asArchive == true)
+      if (asArchive == true && ctgArchive.Visibility == System.Windows.Visibility.Visible)
       {
         TheRibbon.SelectedTabItem = ctgArchive.Items[0];
       }  
@@ -1770,15 +1772,15 @@ namespace BetterExplorer
 
       #region Drive Contextual Tab
       ctgDrive.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && ((selectedItem != null && selectedItem.IsDrive) || (selectedItem != null && selectedItem.Parent != null && selectedItem.Parent.IsDrive))) || ((Explorer.NavigationLog.CurrentLocation.IsDrive)));
-      if (asDrive == true)
+      if (asDrive == true && ctgDrive.Visibility == System.Windows.Visibility.Visible && (selectedItem != null && selectedItem.IsDrive))
       {
         TheRibbon.SelectedTabItem = ctgDrive.Items[0];
       }  
       #endregion
 
       #region Application Context Tab
-      ctgExe.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".exe" || Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".msi"));
-      if (asApplication == true)
+      ctgExe.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".exe" || Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".msi") && selectedItem.IsFolder == false);
+      if (asApplication == true && ctgExe.Visibility == System.Windows.Visibility.Visible)
       {
         TheRibbon.SelectedTabItem = ctgExe.Items[0];
       }  
@@ -1786,14 +1788,14 @@ namespace BetterExplorer
 
       #region Folder Tools Context Tab
       ctgFolderTools.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && ((selectedItem.IsFolder && selectedItem.IsFileSystemObject && !selectedItem.IsDrive && !selectedItem.IsNetDrive))) || (Explorer.NavigationLog.CurrentLocation.IsFolder && Explorer.NavigationLog.CurrentLocation.IsFileSystemObject && !Explorer.NavigationLog.CurrentLocation.IsDrive && !Explorer.NavigationLog.CurrentLocation.IsNetDrive));
-      if (asFolder == true)
+      if (asFolder == true && ctgFolderTools.Visibility == System.Windows.Visibility.Visible)
       {
         TheRibbon.SelectedTabItem = ctgFolderTools.Items[0];
       } 
       #endregion
 
       #region Image Context Tab
-      ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
+      ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()) && selectedItem.IsFolder == false);
       if (ctgImage.Visibility == System.Windows.Visibility.Visible)
       {
         Bitmap cvt = new Bitmap(selectedItem.ParsingName);
@@ -1811,14 +1813,18 @@ namespace BetterExplorer
 
       #region Library Context Tab
       ctgLibraries.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (Explorer.NavigationLog.CurrentLocation.Equals(KnownFolders.Libraries) || (selectedItem.Parent != null && selectedItem.Parent.Equals(KnownFolders.Libraries))));
-      if (asLibrary == true)
+      if (asLibrary == true && ctgLibraries.Visibility == Visibility.Visible)
       {
         TheRibbon.SelectedTabItem = ctgLibraries.Items[0];
       } 
       #endregion
 
       #region Virtual Disk Context Tab
-      ctgVirtualDisk.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".iso")); 
+      ctgVirtualDisk.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".iso") && selectedItem.IsFolder == false);
+      if (asVirtualDrive == true && ctgVirtualDisk.Visibility == System.Windows.Visibility.Visible)
+      {
+          TheRibbon.SelectedTabItem = ctgVirtualDisk.Items[0];
+      }
       #endregion
 
       #region Search Contextual Tab
@@ -4697,8 +4703,8 @@ namespace BetterExplorer
       asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
       asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
       asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
-      asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 0) == 1);
-
+      asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 1) == 1);
+      asVirtualDrive = ((int)rks.GetValue(@"AutoSwitchVirtualDriveTools", 0) == 1);
 
 
       chkFolder.IsChecked = asFolder;
@@ -4707,6 +4713,7 @@ namespace BetterExplorer
       chkApp.IsChecked = asApplication;
       chkLibrary.IsChecked = asLibrary;
       chkDrive.IsChecked = asDrive;
+      chkVirtualTools.IsChecked = asVirtualDrive;
 
       // load OverwriteOnImages setting (default is false)
       int oor = (int)rks.GetValue(@"OverwriteImageWhileEditing", 0);
@@ -8157,6 +8164,17 @@ namespace BetterExplorer
 		{
 			asLibrary = false;
 		}
+
+
+        private void chkVirtualTools_Checked(object sender, RoutedEventArgs e)
+        {
+            asVirtualDrive = true;
+        }
+
+        private void chkVirtualTools_Unchecked(object sender, RoutedEventArgs e)
+        {
+            asVirtualDrive = false;
+        }
 
 		#endregion
 
