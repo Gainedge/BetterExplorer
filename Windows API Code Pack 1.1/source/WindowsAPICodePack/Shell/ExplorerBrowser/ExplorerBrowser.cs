@@ -90,6 +90,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       public ImageList large = new ImageList(ImageListSize.Large);
       public ImageList syssmall = new ImageList(ImageListSize.SystemSmall);
       public ImageList small = new ImageList(ImageListSize.Small);
+      public Boolean IsCancelNavigation { get; set; }
       #endregion
 
 	    #region Imports
@@ -1724,6 +1725,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			/// <exception cref="System.Runtime.InteropServices.COMException">Will throw if navigation fails for any other reason.</exception>
 			public void Navigate(ShellObject shellObject)
 			{
+        this.IsCancelNavigation = false;
 				if (shellObject == null)
 				{
 					throw new ArgumentNullException("shellObject");
@@ -3137,102 +3139,104 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
               //TODO: Write here the code for the tooltip flyout
               break;
             case WNM.NM_CUSTOMDRAW:
-              if (nmhdr.hwndFrom == this.SysListViewHandle)
+              if (!NavigationLog.CurrentLocation.IsSearchFolder)
               {
-                var nmlvcd = WindowsAPI.PtrToStructure<WindowsAPI.NMLVCUSTOMDRAW>((IntPtr)lParam);
-                var index = (int)nmlvcd.nmcd.dwItemSpec;
-                var hdc = nmlvcd.nmcd.hdc;
+                if (nmhdr.hwndFrom == this.SysListViewHandle)
+                {
+                  var nmlvcd = WindowsAPI.PtrToStructure<WindowsAPI.NMLVCUSTOMDRAW>((IntPtr)lParam);
+                  var index = (int)nmlvcd.nmcd.dwItemSpec;
+                  var hdc = nmlvcd.nmcd.hdc;
 
-                Guid IIFV2 = typeof(IShellItem).GUID;
-                IFolderView2 fv2 = GetFolderView2();
-                IShellItem item = null;
-                try
-                {
-                  fv2.GetItem(index, ref IIFV2, out item);
-                }
-                catch (Exception)
-                {
-                  
-                }
-
-                object ext = null;
-                ShellObject itemobj = null;
-                if (item != null)
-                {
-                  itemobj = ShellObjectFactory.Create(item);
-
-                  ext = itemobj.Properties.System.FileExtension.Value;
-                }
-                Color? textColor = null;
-                if (this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0)
-                {
-                  if (ext != null)
+                  Guid IIFV2 = typeof(IShellItem).GUID;
+                  IFolderView2 fv2 = GetFolderView2();
+                  IShellItem item = null;
+                  try
                   {
-                    var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(ext.ToString())).Count() > 0;
-                    if (extItemsAvailable)
+                    fv2.GetItem(index, ref IIFV2, out item);
+                  }
+                  catch (Exception)
+                  {
+
+                  }
+
+                  object ext = null;
+                  ShellObject itemobj = null;
+                  if (item != null)
+                  {
+                    itemobj = ShellObjectFactory.Create(item);
+
+                    ext = itemobj.Properties.System.FileExtension.Value;
+                  }
+                  Color? textColor = null;
+                  if (this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0)
+                  {
+                    if (ext != null)
                     {
-                      var color = this.LVItemsColorCodes.Where(c => c.ExtensionList.ToLowerInvariant().Contains(ext.ToString().ToLowerInvariant())).Select(c => c.TextColor).SingleOrDefault();
-                      textColor = color;
+                      var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(ext.ToString())).Count() > 0;
+                      if (extItemsAvailable)
+                      {
+                        var color = this.LVItemsColorCodes.Where(c => c.ExtensionList.ToLowerInvariant().Contains(ext.ToString().ToLowerInvariant())).Select(c => c.TextColor).SingleOrDefault();
+                        textColor = color;
+                      }
                     }
                   }
-                }
 
-                switch (nmlvcd.nmcd.dwDrawStage)
-                {
-                  case CDDS_PREPAINT:
-                    return CDRF_NOTIFYITEMDRAW;
-                  case CDDS_ITEMPREPAINT:
+                  switch (nmlvcd.nmcd.dwDrawStage)
+                  {
+                    case CDDS_PREPAINT:
+                      return CDRF_NOTIFYITEMDRAW;
+                    case CDDS_ITEMPREPAINT:
                       // call default procedure in case system might do custom drawing and set special colors
                       CallWindowProc(oldWndProc, hWnd, Msg, wParam, lParam);
                       if (textColor != null)
                       {
                         nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
                         Marshal.StructureToPtr(nmlvcd, (IntPtr)lParam, false);
-                        
+
                         return CDRF_NEWFONT | CDRF_NOTIFYPOSTPAINT | CDRF_NOTIFYSUBITEMDRAW;
                       }
                       else
                       {
                         return CDRF_NOTIFYPOSTPAINT | CDRF_NOTIFYSUBITEMDRAW;
                       }
-                 
-                  case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
-                    // before a subitem drawn
-                   
-                    if ((nmlvcd.nmcd.uItemState & (WindowsAPI.CDIS.HOT | WindowsAPI.CDIS.DROPHILITED)) != 0 || 0 != WindowsAPI.SendMessage(this.SysListViewHandle, WindowsAPI.LVM.GETITEMSTATE, index, (int)WindowsAPI.LVIS.LVIS_SELECTED))
-                    {
-                      // hot, drophilited or selected.
-                      if (nmlvcd.iSubItem == 0)
+
+                    case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
+                      // before a subitem drawn
+
+                      if ((nmlvcd.nmcd.uItemState & (WindowsAPI.CDIS.HOT | WindowsAPI.CDIS.DROPHILITED)) != 0 || 0 != WindowsAPI.SendMessage(this.SysListViewHandle, WindowsAPI.LVM.GETITEMSTATE, index, (int)WindowsAPI.LVIS.LVIS_SELECTED))
                       {
-                        // do default to draw hilite bar
-                        return CDRF_DODEFAULT;
+                        // hot, drophilited or selected.
+                        if (nmlvcd.iSubItem == 0)
+                        {
+                          // do default to draw hilite bar
+                          return CDRF_DODEFAULT;
+                        }
+                        else
+                        {
+                          // remaining region of a hilted item need to be drawn
+                          return CDRF_NOTIFYPOSTPAINT;
+                        }
                       }
-                      else
+                      else if ((nmlvcd.iSubItem == 0 && nmlvcd.nmcd.uItemState.HasFlag(WindowsAPI.CDIS.FOCUS)))
                       {
-                        // remaining region of a hilted item need to be drawn
+                        // if the subitem in selected column, or first item with focus
                         return CDRF_NOTIFYPOSTPAINT;
                       }
-                    }
-                    else if ( (nmlvcd.iSubItem == 0 && nmlvcd.nmcd.uItemState.HasFlag(WindowsAPI.CDIS.FOCUS)))
-                    {
-                      // if the subitem in selected column, or first item with focus
-                      return CDRF_NOTIFYPOSTPAINT;
-                    }
-                    else
-                    {
-                      if (textColor != null)
-                      {
-                        nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
-                        Marshal.StructureToPtr(nmlvcd, (IntPtr)lParam, false);
-                        return CDRF_NEWFONT;
-                      }
                       else
                       {
-                        return CDRF_DODEFAULT;
+                        if (textColor != null)
+                        {
+                          nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
+                          Marshal.StructureToPtr(nmlvcd, (IntPtr)lParam, false);
+                          return CDRF_NEWFONT;
+                        }
+                        else
+                        {
+                          return CDRF_DODEFAULT;
+                        }
                       }
-                    }
-                    break;
-                  case CDDS_ITEMPOSTPAINT:
+                      break;
+                    case CDDS_ITEMPOSTPAINT:
                       if (nmlvcd.clrTextBk != 0)
                       {
                         var iconBounds = new WindowsAPI.RECT();
@@ -3255,14 +3259,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                             if (this.ContentOptions.ThumbnailSize > 180)
                               jumbo.DrawOverlay(hdc, 1, new Point(iconBounds.left, iconBounds.bottom - this.ContentOptions.ThumbnailSize / 3), this.ContentOptions.ThumbnailSize / 3);
                             else
-                            if (this.ContentOptions.ThumbnailSize > 64)
-                              extra.DrawOverlay(hdc, 1, new Point(iconBounds.left + 10, iconBounds.bottom - 50));
-                            else
-                            large.DrawOverlay(hdc, 1, new Point(iconBounds.left + 10, iconBounds.bottom - 32));
+                              if (this.ContentOptions.ThumbnailSize > 64)
+                                extra.DrawOverlay(hdc, 1, new Point(iconBounds.left + 10, iconBounds.bottom - 50));
+                              else
+                                large.DrawOverlay(hdc, 1, new Point(iconBounds.left + 10, iconBounds.bottom - 32));
                           }
                         }
                       }
-                    return CDRF_SKIPDEFAULT;
+                      return CDRF_SKIPDEFAULT;
+                  }
                 }
               }
               break;

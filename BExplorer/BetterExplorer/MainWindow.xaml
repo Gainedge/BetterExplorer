@@ -2008,7 +2008,7 @@
                                          Text="{StaticResource btnTilesICP}" />
                           </StackPanel>
                         </Ribbon:GalleryItem>
-                        <Ribbon:GalleryItem Tag="Standard Views">
+                        <Ribbon:GalleryItem Tag="Standard Views"  Visibility="Collapsed">
                           <StackPanel Focusable="True"
                                       Orientation="Horizontal"
                                       Tag="Standard Views">
