@@ -479,13 +479,13 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       /// Returns the current view mode of the browser
       /// </summary>
       /// <returns></returns>
-      internal ExplorerBrowserViewMode GetCurrentViewMode() {
+      internal ExplorerBrowserViewMode GetCurrentViewMode(out int IconSize) {
         IFolderView2 ifv2 = GetFolderView2();
         int viewMode = 0;
-        int iconSize = 0;
+        IconSize = 0;
         if (ifv2 != null) {
           try {
-            HResult hr = ifv2.GetViewModeAndIconSize(out viewMode, out iconSize);
+            HResult hr = ifv2.GetViewModeAndIconSize(out viewMode, out IconSize);
             if (hr != HResult.Ok) { throw new ShellException(hr); }
           } finally {
             Marshal.ReleaseComObject(ifv2);
@@ -2332,14 +2332,14 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 					return HResult.Ok;
 			}
 
+
 			HResult IExplorerBrowserEvents.OnNavigationComplete(IntPtr pidlFolder)
 			{
 					IsPressedLKButton = false;
 					// view mode may change 
-					//ContentOptions.folderSettings.Options |= FolderOptions.SnapToGrid;
-					//ContentOptions.folderSettings.Options |= FolderOptions.AutoArrange;
-					ContentOptions.ViewMode = GetCurrentViewMode();
-					//ContentOptions.ThumbnailSize = GetCurrentthumbSize();
+          int iconSize = 0;
+          ContentOptions.ViewMode = GetCurrentViewMode(out iconSize);
+          ContentOptions.ThumbnailSize = iconSize;
 						
 					if (NavigationComplete != null)
 					{
@@ -2579,9 +2579,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                   if (!IsOldSysListView)
                   {
                   //WindowsAPI.SetFocus(SysListViewHandle);
-                  WindowsAPI.RECTW r = new WindowsAPI.RECTW();
-                  WindowsAPI.GetWindowRect(SysListViewHandle, ref r);
-                  Rectangle reclv = r.ToRectangle();
+                    WindowsAPI.RECT r = new WindowsAPI.RECT();
+                    WindowsAPI.GetWindowRect(new HandleRef(this, SysListViewHandle), out r);
+                    var reclv = r.ToRectangle();
                   if (Cursor.Position.Y >= reclv.Top && Cursor.Position.Y <= reclv.Top + 29)
                   {
                     IsMouseClickOnHeader = true;
@@ -2662,14 +2662,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                 var buttonPressed = LoWord((Int64)m.WParam);
                 if (MouseWheel != null)
                 {
-                  WindowsAPI.RECTW rr = new WindowsAPI.RECTW();
-                  WindowsAPI.GetWindowRect(SysListViewHandle, ref rr);
-                  Rectangle reclv = rr.ToRectangle();
+                  SetUpShellViewHandles(false);
+                  WindowsAPI.RECT reclv = new WindowsAPI.RECT();
+                  var b = WindowsAPI.GetWindowRect(new HandleRef(this, SysListViewHandle), out reclv);
+                  //Rectangle reclv = ;
 
                   ExplorerMoiseWheelArgs args = new ExplorerMoiseWheelArgs();
                   args.Delta = Wheel_delta;
                   args.IsCTRL = buttonPressed == 0x0008;
-                  args.IsOutsideExplorer = (Cursor.Position.Y < reclv.Y) || (Cursor.Position.Y > (reclv.Y + reclv.Height));// !reclv.Contains(Cursor.Position);
+                  args.IsOutsideExplorer = (Cursor.Position.Y < reclv.Top) || (Cursor.Position.Y > (reclv.Top + reclv.Bottom - reclv.Top));// !reclv.Contains(Cursor.Position);
                   args.MouseLocation = Cursor.Position;
                   MouseWheel.Invoke(this, args);
                   foreach (Delegate del in MouseWheel.GetInvocationList())
@@ -2848,8 +2849,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 							if ((m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSEMOVE))
 							{
 								
-									WindowsAPI.RECTW rr = new WindowsAPI.RECTW();
-									WindowsAPI.GetWindowRect(SysListViewHandle, ref rr);
+									WindowsAPI.RECT rr = new WindowsAPI.RECT();
+									WindowsAPI.GetWindowRect(new HandleRef(this,SysListViewHandle), out rr);
 									Rectangle reclv = rr.ToRectangle();
 									Rectangle rec2 = new Rectangle(reclv.X + 1, reclv.Y + 30, reclv.Width - 3,
 											reclv.Height - 5 - 30);
@@ -3112,10 +3113,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
       // this is the new wndproc, just show a messagebox on left button down:
 			private int MyWndProc(IntPtr hWnd, int Msg, int wParam, int lParam)
 			{
-        if (Msg == (int)WindowsAPI.WndMsg.WM_ERASEBKGND)
-        {
-          return 0;
-        }
+        //if (Msg == (int)WindowsAPI.WndMsg.WM_ERASEBKGND)
+        //{
+        //  return 0;
+        //}
 
         if (Msg == (int)WindowsAPI.WndMsg.WM_CONTEXTMENU)
         {
@@ -3184,6 +3185,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                   switch (nmlvcd.nmcd.dwDrawStage)
                   {
                     case CDDS_PREPAINT:
+                      CallWindowProc(oldWndProc, hWnd, Msg, wParam, lParam);
                       return CDRF_NOTIFYITEMDRAW;
                     case CDDS_ITEMPREPAINT:
                       // call default procedure in case system might do custom drawing and set special colors
@@ -3202,7 +3204,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
                     case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
                       // before a subitem drawn
-
+                      CallWindowProc(oldWndProc, hWnd, Msg, wParam, lParam);
                       if ((nmlvcd.nmcd.uItemState & (WindowsAPI.CDIS.HOT | WindowsAPI.CDIS.DROPHILITED)) != 0 || 0 != WindowsAPI.SendMessage(this.SysListViewHandle, WindowsAPI.LVM.GETITEMSTATE, index, (int)WindowsAPI.LVIS.LVIS_SELECTED))
                       {
                         // hot, drophilited or selected.
@@ -3237,11 +3239,12 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                       }
                       break;
                     case CDDS_ITEMPOSTPAINT:
+                      CallWindowProc(oldWndProc, hWnd, Msg, wParam, lParam);
                       if (nmlvcd.clrTextBk != 0)
                       {
                         var iconBounds = new WindowsAPI.RECT();
 
-                        iconBounds.left = 1;
+                        iconBounds.Left = 1;
 
                         WindowsAPI.SendMessage(SysListViewHandle, WindowsAPI.LVM.GETITEMRECT, index, ref iconBounds);
 
@@ -3253,16 +3256,16 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                         if (itemobj.IsShared)
                         {
                           if (this.ContentOptions.ViewMode == ExplorerBrowserViewMode.Details || this.ContentOptions.ViewMode == ExplorerBrowserViewMode.List || this.ContentOptions.ViewMode == ExplorerBrowserViewMode.SmallIcon)
-                            small.DrawOverlay(hdc, 1, new Point(iconBounds.left, iconBounds.bottom - 16));
+                            small.DrawOverlay(hdc, 1, new Point(iconBounds.Left, iconBounds.Bottom - 16));
                           else
                           {
                             if (this.ContentOptions.ThumbnailSize > 180)
-                              jumbo.DrawOverlay(hdc, 1, new Point(iconBounds.left, iconBounds.bottom - this.ContentOptions.ThumbnailSize / 3), this.ContentOptions.ThumbnailSize / 3);
+                              jumbo.DrawOverlay(hdc, 1, new Point(iconBounds.Left, iconBounds.Bottom - this.ContentOptions.ThumbnailSize / 3), this.ContentOptions.ThumbnailSize / 3);
                             else
                               if (this.ContentOptions.ThumbnailSize > 64)
-                                extra.DrawOverlay(hdc, 1, new Point(iconBounds.left + 10, iconBounds.bottom - 50));
+                                extra.DrawOverlay(hdc, 1, new Point(iconBounds.Left + 10, iconBounds.Bottom - 50));
                               else
-                                large.DrawOverlay(hdc, 1, new Point(iconBounds.left + 10, iconBounds.bottom - 32));
+                                large.DrawOverlay(hdc, 1, new Point(iconBounds.Left + 10, iconBounds.Bottom - 32));
                           }
                         }
                       }
@@ -3305,20 +3308,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				}
 			}
 
-			internal void FireContentEnumerationComplete()
-			{
-				if (ViewEnumerationComplete != null)
-				{
-          try
+      private void SetUpShellViewHandles(bool isHandle = true)
+      {
+        Invoke(new MethodInvoker(
+          delegate
           {
-            try
-            {
-              DeSubClass(ShellSysListViewHandle);
-            }
-            catch (Exception)
-            {
-
-            }
             Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
             IntPtr view = IntPtr.Zero;
             HResult hr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
@@ -3337,6 +3331,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
             //SysTreeViewHandle = WindowsAPI.FindWindowEx(SysTreeViewCHandle, IntPtr.Zero, "SysTreeView32", "Tree View");
             IntPtr s3 = WindowsAPI.FindWindowEx(o, s2, "CtrlNotifySink", null);
             ShellSysListViewHandle = WindowsAPI.FindWindowEx(s3, IntPtr.Zero, "SHELLDLL_DefView", null);
+            if (ShellSysListViewHandle == IntPtr.Zero)
+            {
+              IntPtr s6 = WindowsAPI.FindWindowEx(o, s3, "CtrlNotifySink", null);
+              ShellSysListViewHandle = WindowsAPI.FindWindowEx(s6, IntPtr.Zero, "SHELLDLL_DefView", null);
+            }
             SysListViewHandle = WindowsAPI.FindWindowEx(ShellSysListViewHandle, IntPtr.Zero, "SysListView32", null);
             if (SysListViewHandle == IntPtr.Zero)
             {
@@ -3345,16 +3344,38 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
             IntPtr s4 = WindowsAPI.FindWindowEx(SysListViewHandle, IntPtr.Zero, "CtrlNotifySink", null);
             IntPtr s5 = WindowsAPI.FindWindowEx(SysListViewHandle, s4, "CtrlNotifySink", null);
             VScrollHandle = WindowsAPI.FindWindowEx(s5, IntPtr.Zero, "ScrollBar", null);
-            WindowsAPI.RECTW rscroll = new WindowsAPI.RECTW();
-            WindowsAPI.GetWindowRect(VScrollHandle, ref rscroll);
-            
-            AvailableVisibleColumns = AvailableColumns(false);
-            SysListviewDT = (WindowsAPI.IDropTarget)isv;
+            WindowsAPI.RECT rscroll = new WindowsAPI.RECT();
+            WindowsAPI.GetWindowRect(new HandleRef(this, VScrollHandle), out rscroll);
 
-            
-            
-            SubclassHWnd(ShellSysListViewHandle);
+            if (isHandle)
+            {
+              AvailableVisibleColumns = AvailableColumns(false);
+              SysListviewDT = (WindowsAPI.IDropTarget)isv;
+
+
+
+              SubclassHWnd(ShellSysListViewHandle);
+            }
             Marshal.ReleaseComObject(isv);
+          }));
+      }
+      internal void FireContentEnumerationComplete()
+			{
+				if (ViewEnumerationComplete != null)
+				{
+          try
+          {
+            try
+            {
+              DeSubClass(ShellSysListViewHandle);
+            }
+            catch (Exception)
+            {
+
+            }
+
+            SetUpShellViewHandles();
+
             if (!IsCustomDialogs)
             {
               WindowsAPI.RevokeDragDrop(SysListViewHandle);

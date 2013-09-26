@@ -3508,7 +3508,8 @@ namespace WindowsHelper
         public static extern bool IsIconic(IntPtr hWnd);
 
         [DllImport("user32.dll")]
-        public static extern IntPtr GetWindowRect(IntPtr hWnd, ref RECTW rect);
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(HandleRef hwnd, out RECT lpRect);
 
         [DllImport("user32.dll", SetLastError = false)]
         public static extern IntPtr GetDesktopWindow();
@@ -3617,7 +3618,6 @@ namespace WindowsHelper
         //Flash continuously until the window comes to the foreground.
         public const UInt32 FLASHW_TIMERNOFG = 12;
 
-
         [DllImport("user32.dll")]
         private static extern uint RealGetWindowClass(IntPtr hWnd, StringBuilder pszType, uint cchType);
 
@@ -3682,39 +3682,10 @@ namespace WindowsHelper
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {
-          public int left;
-          public int top;
-          public int right;
-          public int bottom;
-
-          public RECT(System.Drawing.Rectangle r)
-          {
-            this.left = r.X;
-            this.top = r.Y;
-            this.right = r.Right;
-            this.bottom = r.Bottom;
-          }
-
-          public int Width
-          {
-            get
-            {
-              return Math.Abs(right - left);
-            }
-          }
-
-          public int Height
-          {
-            get
-            {
-              return bottom - top;
-            }
-          }
-
-          public System.Drawing.Rectangle ToRectangle()
-          {
-            return new System.Drawing.Rectangle(left, top, Math.Abs(right - left), bottom - top);
-          }
+          public int Left;        // x position of upper-left corner
+          public int Top;         // y position of upper-left corner
+          public int Right;       // x position of lower-right corner
+          public int Bottom;      // y position of lower-right corner
         }
 
         #region SPI

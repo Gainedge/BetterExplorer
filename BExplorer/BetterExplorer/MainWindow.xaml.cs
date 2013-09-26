@@ -843,7 +843,7 @@ namespace BetterExplorer
 
     private async void Explorer_ViewEnumerationComplete(object sender, EventArgs e)
 		{
-        await Task.Delay(100);
+        //await Task.Delay(100);
 
 				IsCalledFromViewEnum = true;
 				zoomSlider.Value = Explorer.ContentOptions.ThumbnailSize;
@@ -4332,7 +4332,7 @@ namespace BetterExplorer
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 
-			ExplorerBrowser.SetCustomDialogs(Convert.ToInt32(rks.GetValue(@"IsCustomFO", 0)) == 1);
+      ExplorerBrowser.SetCustomDialogs(false);//Convert.ToInt32(rks.GetValue(@"IsCustomFO", 0)) == 1);
 			ExplorerBrowser.IsOldSysListView = Convert.ToInt32(rks.GetValue(@"IsVistaStyleListView", 1)) == 1;
 
 			// loads current Ribbon color theme
@@ -4400,7 +4400,7 @@ namespace BetterExplorer
 
 
 			//Main Initialization routine
-            InitializeComponent();
+      InitializeComponent();
 
 			isOnLoad = true;
 			//chkOldSysListView.IsChecked = ExplorerBrowser.IsOldSysListView;
@@ -5074,6 +5074,11 @@ namespace BetterExplorer
         var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
         scroll.ScrollToHorizontalOffset(scroll.HorizontalOffset - e.Delta);
       }
+      //else
+      //{
+      //  Explorer.SetExplorerFocus();
+      //  Explorer.SetActiveShell();
+      //}
     }
 
     void r_OnMessageReceived(object sender, EventArgs e)
@@ -5104,20 +5109,20 @@ namespace BetterExplorer
 				new ShellSearchFolder(searchCondition, (ShellContainer)BeforeSearchFolder);
 
 
-			Dispatcher.Invoke(
-					System.Windows.Threading.DispatcherPriority.Normal,
-					new Action(
-					delegate()
-					{
+			//Dispatcher.Invoke(
+			//		System.Windows.Threading.DispatcherPriority.Normal,
+			//		new Action(
+			//		delegate()
+			//		{
 						Explorer.Navigate(searchFolder);
 
-					}
-				));
+				//	}
+				//));
 
 			if (BeforeSearchFolder != null)
 			{
-				Thread.Sleep(750);
-				Explorer.RefreshExplorer();
+				//Thread.Sleep(750);
+				//Explorer.RefreshExplorer();
 			}
 
 
@@ -5149,12 +5154,12 @@ namespace BetterExplorer
 
 			if (SearchCriteria != "")
 			{
-
-				backgroundSearchThread = new Thread(new ParameterizedThreadStart(DoSimpleSearch));
-				backgroundSearchThread.IsBackground = true;
-				// ApartmentState.STA is required for COM
-				backgroundSearchThread.SetApartmentState(ApartmentState.STA);
-				backgroundSearchThread.Start(SearchCriteria);
+        DoSimpleSearch(SearchCriteria);
+				//backgroundSearchThread = new Thread(new ParameterizedThreadStart(DoSimpleSearch));
+				//backgroundSearchThread.IsBackground = true;
+				//// ApartmentState.STA is required for COM
+				//backgroundSearchThread.SetApartmentState(ApartmentState.STA);
+				//backgroundSearchThread.Start(SearchCriteria);
 
 			}
 		}
@@ -6293,25 +6298,7 @@ namespace BetterExplorer
 			if (ReadyToChangeLanguage == true)
 			{
 				ChangeLocale(((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
-				lblLocale.Visibility = Visibility.Visible;
-                //ReInitializeComponent();
-				Restart();
 			}
-		}
-
-		private void Restart()
-		{
-			Process pr = Process.GetCurrentProcess();
-			Process startIt = new Process();
-			// Stop the process from opening a new window
-			startIt.StartInfo.RedirectStandardOutput = true;
-			startIt.StartInfo.UseShellExecute = false;
-			startIt.StartInfo.CreateNoWindow = true;
-			startIt.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-			startIt.StartInfo.FileName = "StartIt.exe";
-			startIt.StartInfo.Arguments = String.Format("\"{0}\"", pr.MainModule.FileName);
-			startIt.Start();
-			btnBackstageExit_Click(null, null);
 		}
 
 		private void btnRemoveLangSetting_Click(object sender, RoutedEventArgs e)
@@ -6654,11 +6641,6 @@ namespace BetterExplorer
 
 		}
 
-		private void RibbonWindow_Deactivated(object sender, EventArgs e)
-		{
-
-		}
-
 		private void chkIsFlyout_Checked(object sender, RoutedEventArgs e)
 		{
 			if (!isOnLoad)
@@ -6698,7 +6680,7 @@ namespace BetterExplorer
 					FileName = ExePath,
 					Verb = "runas",
 					UseShellExecute = true,
-					Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
+          Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
 				};
 				proc.StartInfo = psi;
 				proc.Start();
@@ -6730,7 +6712,7 @@ namespace BetterExplorer
 					FileName = ExePath,
 					Verb = "runas",
 					UseShellExecute = true,
-					Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
+          Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
 				};
 				proc.StartInfo = psi;
 				proc.Start();
@@ -6822,7 +6804,6 @@ namespace BetterExplorer
 				rks.SetValue(@"IsVistaStyleListView", 1);
 				rks.Close();
 				rk.Close();
-				Restart();
 			}
 		}
 
@@ -6835,7 +6816,6 @@ namespace BetterExplorer
 				rks.SetValue(@"IsVistaStyleListView", 0);
 				rks.Close();
 				rk.Close();
-				Restart();
 			}
 		}
 
@@ -8576,11 +8556,11 @@ namespace BetterExplorer
 			newt.IsNavigate = false;
 			newt.Index = tabControl1.Items.Count;
 			newt.AllowDrop = true;
-			newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
-			newt.DragEnter += new DragEventHandler(newt_DragEnter);
-			newt.DragOver += new DragEventHandler(newt_DragOver);
-			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
-			newt.Drop += new DragEventHandler(newt_Drop);
+      newt.CloseTab += newt_CloseTab;
+      newt.DragEnter += newt_DragEnter;
+      newt.DragOver += newt_DragOver;
+      newt.PreviewMouseMove += newt_PreviewMouseMove;
+      newt.Drop += newt_Drop;
 			newt.TabSelected += newt_TabSelected;
 			tabControl1.Items.Add(newt);
 			LastTabIndex = tabControl1.SelectedIndex;
@@ -9417,19 +9397,19 @@ namespace BetterExplorer
 			if (reopenabletabs.Count == 0)
 			{
 				btnUndoClose.IsEnabled = false;
-                foreach (ClosableTabItem item in this.tabControl1.Items)
+        foreach (ClosableTabItem item in this.tabControl1.Items)
+        {
+            foreach (FrameworkElement m in item.mnu.Items)
+            {
+                if (m.Tag != null)
                 {
-                    foreach (FrameworkElement m in item.mnu.Items)
+                    if (m.Tag.ToString() == "UCTI")
                     {
-                        if (m.Tag != null)
-                        {
-                            if (m.Tag.ToString() == "UCTI")
-                            {
-                                (m as MenuItem).IsEnabled = false;
-                            }
-                        }
+                        (m as MenuItem).IsEnabled = false;
                     }
                 }
+            }
+        }
 			}
 		}
 
@@ -9460,20 +9440,21 @@ namespace BetterExplorer
 			{
 				UndoCloseGalleryItem gli = new UndoCloseGalleryItem();
 				gli.LoadData(item);
-				gli.Click += new UndoCloseGalleryItem.NavigationLogEventHandler(gli_Click);
+        gli.Click += gli_Click;
 				rotGallery.Items.Add(gli);
 			}
 		}
 
-		void gli_Click(object sender, NavigationLogEventArgs e)
-		{
-			ReOpenTab(e.NavigationLog);
-			reopenabletabs.Remove((sender as UndoCloseGalleryItem).nav);
-			if (reopenabletabs.Count == 0)
-			{
-				btnUndoClose.IsEnabled = false;
-			}
-		}
+    void gli_Click(object sender, NavigationLogEventArgs e)
+    {
+      this.ReOpenTab(e.NavigationLog);
+      reopenabletabs.Remove((sender as UndoCloseGalleryItem).nav);
+      if (reopenabletabs.Count == 0)
+      {
+      	btnUndoClose.IsEnabled = false;
+      }
+    }
+
 
 		private void rotGallery_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
@@ -9585,9 +9566,9 @@ namespace BetterExplorer
 			foreach (string item in LoadListOfTabListFiles())
 			{
 				SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item);
-                gli.Directory = sstdir;
-                gli.Click += gli_Click;
-                gli.SetUpTooltip((FindResource("tabTabsCP") as string));
+        gli.Directory = sstdir;
+        gli.Click += gli_Click;
+        gli.SetUpTooltip((FindResource("tabTabsCP") as string));
 				stGallery.Items.Add(gli);
 			}
 		}
@@ -9601,20 +9582,17 @@ namespace BetterExplorer
 					tabControl1.SelectedItem = tabitem;
 			}
 			NavigateAfterTabChange();
-			//MessageBox.Show(sstdir + e.PathString + ".txt");
-			//throw new NotImplementedException();
 		}
 
 		private void miTabManager_Click(object sender, RoutedEventArgs e)
 		{
-            string sstdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
-            if (Directory.Exists(sstdir))
-            {
-                BetterExplorer.Tabs.TabManager man = new Tabs.TabManager();
-                man.MainForm = this;
-                man.Show();
-            }
-		    //this.WindowState = System.Windows.WindowState.Minimized;
+      string sstdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
+      if (Directory.Exists(sstdir))
+      {
+          BetterExplorer.Tabs.TabManager man = new Tabs.TabManager();
+          man.MainForm = this;
+          man.Show();
+      }
 		}
 
         private void RibbonWindow_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -9623,39 +9601,6 @@ namespace BetterExplorer
             {
                 (tabControl1.SelectedItem as ClosableTabItem).BringIntoView();
             }
-        }
-
-
-        private void tabControl1_MouseEnter(object sender, MouseEventArgs e)
-        {
-            //if (!Explorer.IsRenameStarted || IsAfterFolderCreate)
-            //{
-            //  tabControl1.Focusable = true;
-            //  //tabControl1.Focus();
-            //  e.Handled = true;
-            //  tabControl1.Focus();
-            //  tabControl1.Focusable = false;
-            //}
-        }
-
-        private void tabControl1_MouseLeave(object sender, MouseEventArgs e)
-        {
-            //e.Handled = true;
-            //if (!Explorer.IsRenameStarted || IsAfterFolderCreate)
-            //{
-            //  Explorer.SetExplorerFocus();
-            //}
-
-        }
-
-        private void tabControl1_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-
-        }
-
-        private void svTabBar_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-
         }
 
         private void tabControl1_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -10268,42 +10213,42 @@ namespace BetterExplorer
 
         private void inRibbonGallery1_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-          switch (ViewGallery.SelectedIndex)
-          {
-            case 0:
-              Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
-              Explorer.ContentOptions.ThumbnailSize = 256;
-              break;
-            case 1:
-              Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
-              Explorer.ContentOptions.ThumbnailSize = 96;
-              break;
-            case 2:
-              Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Icon;
-              //Explorer.ContentOptions.ThumbnailSize = 64;
-              break;
-            case 3:
-              Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.SmallIcon;
-              //Explorer.ContentOptions.ThumbnailSize = 48;
-              break;
-            case 4:
+          //switch (ViewGallery.SelectedIndex)
+          //{
+          //  case 0:
+          //    Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
+          //    Explorer.ContentOptions.ThumbnailSize = 256;
+          //    break;
+          //  case 1:
+          //    Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
+          //    Explorer.ContentOptions.ThumbnailSize = 96;
+          //    break;
+          //  case 2:
+          //    Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Icon;
+          //    //Explorer.ContentOptions.ThumbnailSize = 64;
+          //    break;
+          //  case 3:
+          //    Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.SmallIcon;
+          //    //Explorer.ContentOptions.ThumbnailSize = 48;
+          //    break;
+          //  case 4:
 
-              Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.List;
-              break;
-            case 5:
+          //    Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.List;
+          //    break;
+          //  case 5:
 
-              Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Details;
-              break;
-            case 6:
+          //    Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Details;
+          //    break;
+          //  case 6:
 
-              Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Tile;
-              break;
-            case 7:
-              Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Content;
-              break;
-            default:
-              break;
-          }
+          //    Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Tile;
+          //    break;
+          //  case 7:
+          //    Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Content;
+          //    break;
+          //  default:
+          //    break;
+          //}
         }
 
         private void inRibbonGallery1_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)

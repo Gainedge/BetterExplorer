@@ -33,7 +33,8 @@ namespace Microsoft.WindowsAPICodePack.Controls
         {
             get
             {
-              return eb.GetCurrentViewMode();
+              int iconSize = 0;
+              return (ExplorerBrowserViewMode)eb.GetCurrentViewMode(out iconSize);
             }
             set
             {
@@ -63,7 +64,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
             }
             set
             {
-                folderSettings.Options = (FolderOptions)value | FolderOptions.UseSearchFolders | FolderOptions.NoWebView;
+                folderSettings.Options = (FolderOptions)value | FolderOptions.UseSearchFolders;
                 if (eb.explorerBrowserControl != null)
                 {
                     eb.explorerBrowserControl.SetFolderSettings(folderSettings);
@@ -265,7 +266,7 @@ namespace Microsoft.WindowsAPICodePack.Controls
         {
 
           if (value) {
-            folderSettings.Options |= (FolderOptions)flag | FolderOptions.AutoArrange | FolderOptions.SnapToGrid;
+            folderSettings.Options |= (FolderOptions)flag | FolderOptions.AutoArrange | FolderOptions.SnapToGrid | FolderOptions.UseSearchFolders;
           } else {
             folderSettings.Options = folderSettings.Options & ~(FolderOptions)flag;
           }
