@@ -369,7 +369,7 @@ namespace BetterExplorer
         {
           r.Close();
         }
-        Explorer.DesubclassShellViewWin();
+
       }
 
       if (this.OwnedWindows.OfType<FileOperationDialog>().Count() > 0) {
@@ -7074,7 +7074,7 @@ namespace BetterExplorer
 
 			ShellObject lastLoc = Explorer.NavigationLog.CurrentLocation;
 
-      Explorer.DesubclassShellViewWin();
+      
 
       Explorer = null;
 

@@ -1150,7 +1150,7 @@ namespace WindowsHelper
           // 12/24
           public IntPtr hwndFrom;
           public IntPtr idFrom;
-          public int code;
+          public long code;
         }
 
         [DllImport("user32.dll", SetLastError = true)]

@@ -98,7 +98,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
     private bool ParentControl_MessageCaptured(ref Message msg) {
       if (msg.Msg == (int)WindowsAPI.WndMsg.WM_NOTIFY) {
         WindowsAPI.NMHDR nmhdr = (WindowsAPI.NMHDR)Marshal.PtrToStructure(msg.LParam, typeof(WindowsAPI.NMHDR));
-        switch (nmhdr.code) {
+        switch ((int)nmhdr.code) {
           case -2: /* NM_CLICK */
             if (Control.ModifierKeys != Keys.None) {
               Point pt = Control.MousePosition;

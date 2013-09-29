@@ -8,6 +8,7 @@ using Microsoft.WindowsAPICodePack.Shell;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 
 namespace BetterExplorerControls
@@ -92,7 +93,7 @@ namespace BetterExplorerControls
 		{
 			get
 			{
-        ObservableCollection<BreadcrumbBarFSItem> hilist = new ObservableCollection<BreadcrumbBarFSItem>();
+                 ObservableCollection<BreadcrumbBarFSItem> hilist = new ObservableCollection<BreadcrumbBarFSItem>();
 
 				foreach (var item in hl)
 				{
@@ -107,7 +108,10 @@ namespace BetterExplorerControls
 				{
 					hl.Add(item);
 				}
-        HistoryCombo.ItemsSource = hl;
+                Dispatcher.Invoke(DispatcherPriority.Background, (ThreadStart)(() =>
+                {
+                    HistoryCombo.ItemsSource = hl;
+                }));
 			}
 		}
 
