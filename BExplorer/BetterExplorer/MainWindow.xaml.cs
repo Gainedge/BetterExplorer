@@ -841,29 +841,28 @@ namespace BetterExplorer
       btnMoreColls.Items.Add(micm);
     }
 
-    private async void Explorer_ViewEnumerationComplete(object sender, EventArgs e)
+    private void Explorer_ViewEnumerationComplete(object sender, EventArgs e)
 		{
-        //await Task.Delay(100);
+			IsCalledFromViewEnum = true;
+			zoomSlider.Value = Explorer.ContentOptions.ThumbnailSize;
+			IsCalledFromViewEnum = false;
 
-				IsCalledFromViewEnum = true;
-				zoomSlider.Value = Explorer.ContentOptions.ThumbnailSize;
-				IsCalledFromViewEnum = false;
+      Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
+      {
 
-        await Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
-        {
+        IShellView isv = Explorer.GetShellView();
+        Collumns[] AllAvailColls = Explorer.AvailableColumns(true);
 
-          IShellView isv = Explorer.GetShellView();
-          Collumns[] AllAvailColls = Explorer.AvailableColumns(true);
+        SetupColumnsButton(AllAvailColls);
 
-          SetupColumnsButton(AllAvailColls);
-
-          SetSortingAndGroupingButtons();
+        SetSortingAndGroupingButtons();
 						
-          IsViewSelection = false;
-          SetUpViewGallery();
-          IsViewSelection = true;
-				}));
+          
+			}));
 
+      IsViewSelection = false;
+      SetUpViewGallery();
+      IsViewSelection = true;
       Explorer.ContentOptions.CheckSelect = this.isCheckModeEnabled;
 		}
 
@@ -1035,6 +1034,27 @@ namespace BetterExplorer
       }
     }
 
+    private void TranslateUI()
+    {
+      if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName)
+      {
+        btnCreateFolder.Header = FindResource("btnNewLibraryCP");  //"New Library";
+        stNewFolder.Title = FindResource("btnNewLibraryCP").ToString();//"New Library";
+        stNewFolder.Text = "Creates a new library in the current folder.";
+        stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/newlib32.png", UriKind.Relative));
+        btnCreateFolder.LargeIcon = @"..\Images\newlib32.png";
+        btnCreateFolder.Icon = @"..\Images\newlib16.png";
+      }
+      else
+      {
+        btnCreateFolder.Header = FindResource("btnNewFolderCP");//"New Folder";
+        stNewFolder.Title = FindResource("btnNewFolderCP").ToString(); //"New Folder";
+        stNewFolder.Text = "Creates a new folder in the current folder";
+        stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/folder_new32.png", UriKind.Relative));
+        btnCreateFolder.LargeIcon = @"..\Images\folder_new32.png";
+        btnCreateFolder.Icon = @"..\Images\folder_new16.png";
+      }
+    }
     private bool SetUpNewFolderButtons()
     {
       bool isinLibraries = false;
@@ -1054,30 +1074,9 @@ namespace BetterExplorer
       btnCreateFolder.IsEnabled = Explorer.NavigationLog.CurrentLocation.IsFileSystemObject ||
           (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName) ||
           (isinLibraries);
-      if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName)
-      {
-        btnCreateFolder.Header = FindResource("btnNewLibraryCP");  //"New Library";
-        stNewFolder.Title = FindResource("btnNewLibraryCP").ToString();//"New Library";
-        stNewFolder.Text = "Creates a new library in the current folder.";
-        stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/newlib32.png", UriKind.Relative));
-        btnCreateFolder.LargeIcon = @"..\Images\newlib32.png";
-        btnCreateFolder.Icon = @"..\Images\newlib16.png";
-      }
-      else
-      {
-        btnCreateFolder.Header = FindResource("btnNewFolderCP");//"New Folder";
-        stNewFolder.Title = FindResource("btnNewFolderCP").ToString(); //"New Folder";
-        stNewFolder.Text = "Creates a new folder in the current folder";
-        stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/folder_new32.png", UriKind.Relative));
-        btnCreateFolder.LargeIcon = @"..\Images\folder_new32.png";
-        btnCreateFolder.Icon = @"..\Images\folder_new16.png";
-      }
-      if (Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-          !Explorer.NavigationLog.CurrentLocation.IsSearchFolder)
-      {
-        //MessageBox.Show("3");
-        //ctgFolderTools.Visibility = Visibility.Visible;
-      }
+
+      TranslateUI();
+
       return isinLibraries;
     }
     private void SetUpButtonVisibilityOnNavComplete(bool isinLibraries)
@@ -3282,7 +3281,7 @@ namespace BetterExplorer
 			bool IsLib = false;
 			if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName)
 			{
-                path = Explorer.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString()).GetDisplayName(DisplayNameType.Default);
+        path = Explorer.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString()).GetDisplayName(DisplayNameType.Default);
 				AddToLog("Library created");
 				IsLib = true;
 			}
@@ -3564,14 +3563,14 @@ namespace BetterExplorer
 
 		private void btnFormatDrive_Click(object sender, RoutedEventArgs e)
 		{
-            if (MessageBox.Show("Are you sure you want to do this?", FindResource("btnFormatDriveCP").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-            {
-                Thread formatDriveThread = new Thread(() =>
-                {
-                Explorer.FormatDrive(IntPtr.Zero);
-                });
-                formatDriveThread.Start();
-            }
+      if (MessageBox.Show("Are you sure you want to do this?", FindResource("btnFormatDriveCP").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+      {
+        Thread formatDriveThread = new Thread(() =>
+        {
+          Explorer.FormatDrive(IntPtr.Zero);
+        });
+        formatDriveThread.Start();
+      }
 		}
 
 		private void btnCleanDrive_Click(object sender, RoutedEventArgs e)
@@ -6298,6 +6297,7 @@ namespace BetterExplorer
 			if (ReadyToChangeLanguage == true)
 			{
 				ChangeLocale(((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
+        TranslateUI();
 			}
 		}
 
@@ -8037,7 +8037,7 @@ namespace BetterExplorer
 
 		private void dcCustomTime_Click(object sender, RoutedEventArgs e)
 		{
-            SDateSearchCriteriaDialog star = new SDateSearchCriteriaDialog(FindResource("btnODateCCP") as string);
+      SDateSearchCriteriaDialog star = new SDateSearchCriteriaDialog(FindResource("btnODateCCP") as string);
 
 			star.DateCriteria = GetValueOnly("date", edtSearchBox.DateCondition);
 			//star.textBlock1.Text = "Set Date Created Filter";
