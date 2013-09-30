@@ -150,7 +150,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
 
     #region CreateMessageWindow
-    public const int WmNCCreate = 0x0081;
+    public const int WM_NCCREATE = 0x0081;
     /// <summary>
     /// Creates the helper message window that is used
     /// to receive messages from the taskbar icon.
@@ -215,7 +215,7 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop
 
       // Pass the message to the default window procedure
       long result = WinApi.DefWindowProc(hwnd, messageId, wparam, lparam);
-      result = messageId == WmNCCreate ? 1 : result;
+      result = messageId == WM_NCCREATE ? 1 : result;
       return result;
     }
 
