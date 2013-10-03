@@ -1,5 +1,5 @@
-﻿using AppLimit.CloudComputing.SharpBox;
-using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
+﻿//using AppLimit.CloudComputing.SharpBox;
+//using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -123,9 +123,9 @@ namespace BetterExplorer.Networks
 
         #region Dropbox
 
-        private DropBoxConfiguration _UsedConfig = null;
-        private DropBoxRequestToken _CurrentRequestToken = null;
-        private ICloudStorageAccessToken _GeneratedToken = null;
+        //private DropBoxConfiguration _UsedConfig = null;
+        //private DropBoxRequestToken _CurrentRequestToken = null;
+        //private ICloudStorageAccessToken _GeneratedToken = null;
 
         void Dropbox_ItemSelected(object sender, EventArgs e)
         {
@@ -135,13 +135,13 @@ namespace BetterExplorer.Networks
         private void SetUpDropbox()
         {
             AllowClose = false;
-            _UsedConfig = DropBoxConfiguration.GetStandardConfiguration();
-            _UsedConfig.AuthorizationCallBack = new Uri("http://better-explorer.com/");
-            _UsedConfig.APIVersion = DropBoxAPIVersion.V1;
-            _CurrentRequestToken = DropBoxStorageProviderTools.GetDropBoxRequestToken(_UsedConfig, Networks.DropBoxAuth.Key, Networks.DropBoxAuth.Secret);
-            string AuthUrl = DropBoxStorageProviderTools.GetDropBoxAuthorizationUrl(_UsedConfig, _CurrentRequestToken);
-            this.Navigated += HandleDropboxAuth;
-            this.NavigateTo(AuthUrl);
+            //_UsedConfig = DropBoxConfiguration.GetStandardConfiguration();
+            //_UsedConfig.AuthorizationCallBack = new Uri("http://better-explorer.com/");
+            //_UsedConfig.APIVersion = DropBoxAPIVersion.V1;
+            //_CurrentRequestToken = DropBoxStorageProviderTools.GetDropBoxRequestToken(_UsedConfig, Networks.DropBoxAuth.Key, Networks.DropBoxAuth.Secret);
+            //string AuthUrl = DropBoxStorageProviderTools.GetDropBoxAuthorizationUrl(_UsedConfig, _CurrentRequestToken);
+            //this.Navigated += HandleDropboxAuth;
+            //this.NavigateTo(AuthUrl);
             MainMenu.Visibility = System.Windows.Visibility.Collapsed;
             this.Width = 900;
             this.Height = 650;
@@ -150,21 +150,20 @@ namespace BetterExplorer.Networks
 
         private void HandleDropboxAuth(object sender, NavigationRoutedEventArgs e)
         {
-            if (_GeneratedToken == null && e.Uri.ToString().StartsWith(_UsedConfig.AuthorizationCallBack.ToString()))
-            {
-                _GeneratedToken = DropBoxStorageProviderTools.ExchangeDropBoxRequestTokenIntoAccessToken(_UsedConfig, Networks.DropBoxAuth.Key, Networks.DropBoxAuth.Secret, _CurrentRequestToken);
+            //if (_GeneratedToken == null && e.Uri.ToString().StartsWith(_UsedConfig.AuthorizationCallBack.ToString()))
+            //{
+            //    _GeneratedToken = DropBoxStorageProviderTools.ExchangeDropBoxRequestTokenIntoAccessToken(_UsedConfig, Networks.DropBoxAuth.Key, Networks.DropBoxAuth.Secret, _CurrentRequestToken);
 
-                (sender as Window).Close();
+            //    (sender as Window).Close();
 
-                CloudStorage cs = new CloudStorage();
-                cs.Open(_UsedConfig, _GeneratedToken);
+            //    CloudStorage cs = new CloudStorage();
+            //    cs.Open(_UsedConfig, _GeneratedToken);
 
-                Complete(cs.IsOpened, "Dropbox");
-                //cs.SerializeSecurityToken(_GeneratedToken);
+            //    Complete(cs.IsOpened, "Dropbox");
+            //    //cs.SerializeSecurityToken(_GeneratedToken);
 
-                cs.Close();
-            }
-            //throw new NotImplementedException();
+            //    cs.Close();
+            //}
         }
 
         #endregion

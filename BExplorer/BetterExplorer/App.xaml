@@ -5,6 +5,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Fluent;Component/Themes/Generic.xaml" />
                 <ResourceDictionary Source="/Fluent;component/Themes/Office2010/Blue.xaml" />
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.bg-BG.xaml"/>
                 <ResourceDictionary Source="/BetterExplorer;component/Translation/Locale.it-IT.xaml"/>

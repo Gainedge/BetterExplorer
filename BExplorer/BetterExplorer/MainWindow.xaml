@@ -258,7 +258,7 @@
                                Click="btnAbout_Click"
                                Icon="Images\about16.png"
                                Ribbon:KeyTip.Keys="B"
-                               SizeDefinition="Small,Small,Small"
+                               Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Small,Small,Small"
                                Visibility="Collapsed" />
             </Ribbon:Ribbon.ToolBarItems>
 
@@ -938,7 +938,7 @@
                                                                  IsChecked="False"
                                                                  LargeIcon="Images\SilverTheme.png"
                                                                  Ribbon:KeyTip.Keys="S"
-                                                                 SizeDefinition="Large" />
+                                                                 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                                             <Ribbon:ToggleButton x:Name="btnBlue"
                                                                  Click="btnBlue_Click"
                                                                  Foreground="Black"
@@ -947,7 +947,7 @@
                                                                  IsChecked="False"
                                                                  LargeIcon="Images\BlueTheme.png"
                                                                  Ribbon:KeyTip.Keys="B"
-                                                                 SizeDefinition="Large" />
+                                                                 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                                             <Ribbon:ToggleButton x:Name="btnBlack"
                                                                  Click="btnBlack_Click"
                                                                  Foreground="Black"
@@ -956,7 +956,7 @@
                                                                  IsChecked="False"
                                                                  LargeIcon="Images\BlackTheme.png"
                                                                  Ribbon:KeyTip.Keys="L"
-                                                                 SizeDefinition="Large" />
+                                                                 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                                             <Ribbon:ToggleButton x:Name="btnGreen"
                                                                  Click="btnGreen_Click"
                                                                  Foreground="Black"
@@ -965,7 +965,7 @@
                                                                  IsChecked="False"
                                                                  LargeIcon="Images\BlueTheme.png"
                                                                  Ribbon:KeyTip.Keys="G"
-                                                                 SizeDefinition="Large"
+                                                                 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large"
                                                                  Visibility="Collapsed" />
                                         </StackPanel>
                                         <Ribbon:SeparatorTabItem Margin="0,100,0,0"
@@ -1159,58 +1159,11 @@
                                         <Ribbon:CheckBox x:Name="chkIsLastTabCloseApp" Click="chkIsLastTabCloseApp_Click"  Header="Closing last Tab closes Application" Margin="7,275,0,0" VerticalAlignment="Top" Height="22"/>
                                     </Grid>
                                 </TabItem>
-                                <Ribbon:SeparatorTabItem Header="Accounts" />
-                                <TabItem Header="Social Media"
-                                         Ribbon:KeyTip.Keys="M" >
-                                    <Grid Margin="20,5,0,0">
-                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
-                                                                 Header="Connected Social Media Accounts"
-                                                                 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Ribbon:Button x:Name="btnAddSocialMedia"
-                                               Height="88"
-                                               Margin="0,35,0,0"
-                                               HorizontalAlignment="Left"
-                                               VerticalAlignment="Top"
-                                               Header="Add Account"
-                                               Icon="Images\add16.png"
-                                               IsDefinitive="True"
-                                               LargeIcon="Images\add32.png"
-                                               Ribbon:KeyTip.Keys="A"
-                                               Ribbon:KeyTip.AutoPlacement="False"
-                                               Ribbon:KeyTip.VerticalAlignment="Bottom"
-                                               Ribbon:KeyTip.HorizontalAlignment="Center"
-                                               Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddSocialMedia_Click" >
-                                        </Ribbon:Button>
-                                    </Grid>
-                                </TabItem>
-                                <TabItem Header="Online Storage"
-                                         Ribbon:KeyTip.Keys="O">
-                                    <Grid Margin="20,5,0,0">
-                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
-                                                                 Header="Connected Online Storage Accounts"
-                                                                 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Ribbon:Button x:Name="btnAddStorageService"
-                                               Height="88"
-                                               Margin="0,35,0,0"
-                                               HorizontalAlignment="Left"
-                                               VerticalAlignment="Top"
-                                               Header="Add Account"
-                                               Icon="Images\add16.png"
-                                               IsDefinitive="True"
-                                               LargeIcon="Images\add32.png"
-                                               Ribbon:KeyTip.Keys="A"
-                                               Ribbon:KeyTip.AutoPlacement="False"
-                                               Ribbon:KeyTip.VerticalAlignment="Bottom"
-                                               Ribbon:KeyTip.HorizontalAlignment="Center"
-                                               Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddStorageService_Click" >
-                                        </Ribbon:Button>
-                                    </Grid>
-                                </TabItem>
-                                <TabItem Header="FTP / WebDAV"
+                                <!--<TabItem Header="Accounts"
                                          Ribbon:KeyTip.Keys="F">
                                     <Grid Margin="20,5,0,0">
                                         <Ribbon:SeparatorTabItem VerticalAlignment="Top" Margin="0,0,0,0"
-                                                                 Header="FTP / WebDAV Servers"
+                                                                 Header="Connected Accounts/Locations"
                                                                  Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
                                         <Ribbon:Button x:Name="btnAddWebServer"
                                                Height="88"
@@ -1227,13 +1180,28 @@
                                                Ribbon:KeyTip.HorizontalAlignment="Center"
                                                Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddWebServer_Click">
                                         </Ribbon:Button>
+                                        <Ribbon:Button x:Name="btnAddStorageService"
+                                               Height="88"
+                                               Margin="100,35,0,0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Top"
+                                               Header="Add Account"
+                                               Icon="Images\add16.png"
+                                               IsDefinitive="True"
+                                               LargeIcon="Images\add32.png"
+                                               Ribbon:KeyTip.Keys="A"
+                                               Ribbon:KeyTip.AutoPlacement="False"
+                                               Ribbon:KeyTip.VerticalAlignment="Bottom"
+                                               Ribbon:KeyTip.HorizontalAlignment="Center"
+                                               Style="{DynamicResource ButtonBackstageStyle}" Click="btnAddStorageService_Click" >
+                                        </Ribbon:Button>
                                         <ScrollViewer Margin="20,135,20,20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto">
                                             <StackPanel x:Name="pnlServers">
                                                 
                                             </StackPanel>
                                         </ScrollViewer>
                                     </Grid>
-                                </TabItem>
+                                </TabItem>-->
                             </TabControl>
                         </Ribbon:BackstageTabItem>
                         <Ribbon:Button x:Name="Exitbutton"
@@ -1343,14 +1311,14 @@
                                    Icon="Images\cut16.png"
                                    IsEnabled="False"
                                    Ribbon:KeyTip.Keys="CU"
-                                   SizeDefinition="Middle,Middle,Small" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small" />
                     <Ribbon:Button x:Name="btnPathCopy"
                                    Click="btnPathCopy_Click"
                                    Header="{DynamicResource btnCopyPathCP}"
                                    Icon="Images\copypath16.png"
                                    IsEnabled="True"
                                    Ribbon:KeyTip.Keys="CP"
-                                   SizeDefinition="Middle,Small,Small">
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Small,Small">
                         <Ribbon:Button.ToolTip>
                             <Ribbon:ScreenTip Title="{DynamicResource btnCopyPathCP}"
                                               Width="250"
@@ -1365,7 +1333,7 @@
                                         Icon="Images\pastet16.png"
                                         IsEnabled="False"
                                         Ribbon:KeyTip.Keys="SP"
-                                        SizeDefinition="Middle,Small,Small"
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Small,Small"
                                         ToolTipOpening="btn_ToolTipOpening">
                         <Ribbon:MenuItem Click="btnPasetShC_Click"
                                          Focusable="False"
@@ -1489,7 +1457,7 @@
                                    Icon="Images\folder_new16.png"
                                    LargeIcon="Images\folder_new32.png"
                                    Ribbon:KeyTip.Keys="N"
-                                   SizeDefinition="Large"
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large"
                                    TextOptions.TextFormattingMode="Display" Focusable="False">
                         <Ribbon:Button.ToolTip>
                             <Ribbon:ScreenTip x:Name="stNewFolder"
@@ -1504,12 +1472,12 @@
                                         Click="btnNewItem_Click"
                                         Header="New item"
                                         Ribbon:KeyTip.Keys="CR"
-                                        SizeDefinition="Middle,Small,Small"
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Small,Small"
                                         Icon="Images\newitems16.png"
                                         Visibility="Visible" DropDownOpened="btnNewItem_DropDownOpened" />
                     <Ribbon:DropDownButton x:Name="btnEasyAccess" Header="Easy Access"
                                         Ribbon:KeyTip.Keys="E"
-                                        SizeDefinition="Middle,Small,Small"
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Small,Small"
                                         Visibility="Visible"
                                         Icon="Images\easyacc16.png"
                                         DropDownOpened="btnEasyAccess_DropDownOpened">
@@ -1547,7 +1515,7 @@
                                         Icon="Images\open16.png"
                                         IsEnabled="False"
                                         Ribbon:KeyTip.Keys="O"
-                                        SizeDefinition="Middle,Middle,Small"
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small"
                                         ToolTipOpening="btn_ToolTipOpening" />
                     <Ribbon:Button x:Name="btnEdit"
                                    Click="btnEdit_Click"
@@ -1555,14 +1523,14 @@
                                    Icon="Images\edit16.png"
                                    IsEnabled="False"
                                    Ribbon:KeyTip.Keys="E"
-                                   SizeDefinition="Middle,Middle,Small" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small" />
                     <Ribbon:Button x:Name="btnHistory"
                                    Click="btnHistory_Click"
                                    Header="{DynamicResource btnHistoryCP}"
                                    Icon="Images\history16.png"
                                    IsEnabled="False"
                                    Ribbon:KeyTip.Keys="H"
-                                   SizeDefinition="Middle,Middle,Middle" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle" />
                     <Ribbon:SplitButton x:Name="btnFavorites"
                                         Click="btnFavorites_Click"
                                         DropDownClosed="btnMoreColls_DropDownClosed"
@@ -1571,7 +1539,7 @@
                                         Icon="Images\favorites16.png"
                                         LargeIcon="Images\favorites32.png"
                                         Ribbon:KeyTip.Keys="F"
-                                        SizeDefinition="Large, Middle, Middle"
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large, Middle, Middle"
                                         ToolTipOpening="btn_ToolTipOpening" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox x:Name="Select"
@@ -1583,24 +1551,21 @@
                                    Header="{DynamicResource btnSelectAllCP}"
                                    Icon="Images\selectall16.png"
                                    Ribbon:KeyTip.Keys="SA"
-                                   Size="Middle"
-                                   SizeDefinition="Middle,Middle,Middle" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle" />
                     <Ribbon:Button x:Name="btnSelNone"
                                    Click="btnSelNone_Click"
                                    Header="{DynamicResource btnSelectNoneCP}"
                                    Icon="Images\selectnone16.png"
                                    IsEnabled="False"
                                    Ribbon:KeyTip.Keys="SN"
-                                   Size="Middle"
-                                   SizeDefinition="Middle,Middle,Middle" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle" />
                     <Ribbon:Button x:Name="btnInvSel"
                                    Click="btnInvSel_Click"
                                    Header="{DynamicResource btnInvertSelectionCP}"
                                    Icon="Images\invsel16.png"
                                    IsEnabled="True"
                                    Ribbon:KeyTip.Keys="SI"
-                                   Size="Middle"
-                                   SizeDefinition="Middle,Middle,Middle" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle" />
                     <Ribbon:SplitButton x:Name="btnCondSel"
                                         Click="btnCondSel_Click"
                                         DropDownOpened="btnCondSel_DropDownOpened"
@@ -1608,7 +1573,7 @@
                                         Icon="Images\filter16.png"
                                         LargeIcon="Images\filter32.png"
                                         Ribbon:KeyTip.Keys="SC"
-                                        SizeDefinition="Large, Small, Small"
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large, Small, Small"
                                         ToolTipOpening="btn_ToolTipOpening"
                                         Visibility="Visible">
                         <Ribbon:SplitButton.ToolTip>
@@ -1648,7 +1613,7 @@
                                    Icon="Images\newtab16.png"
                                    LargeIcon="Images\newtab32.png"
                                    Ribbon:KeyTip.Keys="T"
-                                   SizeDefinition="Large,Middle,Middle">
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle">
                         <Ribbon:Button.ToolTip>
                             <!--  "{DynamicResource btnNewTabCP}"  -->
                             <Ribbon:ScreenTip Title="{DynamicResource btnNewTabTCP}"
@@ -1664,7 +1629,7 @@
                                    Icon="Images\closetab.png"
                                    LargeIcon="Images\closetab.png"
                                    Ribbon:KeyTip.Keys="CT"
-                                   SizeDefinition="Large,Middle,Middle" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle" />
                     <Ribbon:Button x:Name="btnTabClone"
                                    Click="btnTabClone_Click"
                                    ClickMode="Release"
@@ -1674,8 +1639,7 @@
                                    IsDefinitive="True"
                                    LargeIcon="Images\clonetab.png"
                                    Ribbon:KeyTip.Keys="CL"
-                                   Size="Middle"
-                                   SizeDefinition="Middle,Middle,Middle">
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle">
                         <Ribbon:Button.ToolTip>
                             <!--  "{DynamicResource btnCloneTabTCP}"  -->
                             <Ribbon:ScreenTip Title="{DynamicResource btnCloneTabCP}"
@@ -1691,8 +1655,7 @@
                                            Icon="Images\savetabs16.png"
                                            LargeIcon="Images\savetabs32.png"
                                            Ribbon:KeyTip.Keys="R"
-                                           Size="Middle"
-                                           SizeDefinition="Middle,Middle,Small">
+                                           Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small">
                         <Ribbon:DropDownButton.ToolTip>
                             <Ribbon:ScreenTip Title="{DynamicResource btnSavedTabsCP}"
                                               Width="250"
@@ -1726,8 +1689,7 @@
                                         IsEnabled="False"
                                         LargeIcon="Images\undotab32.png"
                                         Ribbon:KeyTip.Keys="UC"
-                                        Size="Middle"
-                                        SizeDefinition="Middle,Middle,Small">
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small">
                         <Ribbon:SplitButton.ToolTip>
                             <Ribbon:ScreenTip Title="{DynamicResource btnUndoCloseCP}"
                                               Width="250"
@@ -1747,7 +1709,7 @@
                     </Ribbon:SplitButton>
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox x:Name="RecycleBin" Header="Recycle Bin">
-                  <Ribbon:SplitButton x:Name="btnRecycleBin" SizeDefinition="Large, Small, Small" Header="Recycle Bin" LargeIcon="Images/RecycleBinEmpty32.png" Icon="Images/RecycleBinEmpty16.png" Click="miOpenRB_Click">
+                  <Ribbon:SplitButton x:Name="btnRecycleBin" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large, Small, Small" Header="Recycle Bin" LargeIcon="Images/RecycleBinEmpty32.png" Icon="Images/RecycleBinEmpty16.png" Click="miOpenRB_Click">
                     <Ribbon:MenuItem x:Name="miEmptyRB" Header="Empty Recycle Bin" Click="miEmptyRB_Click"/>
                     <Ribbon:MenuItem x:Name="miOpenRB" Header="Open Recycle Bin" Click="miOpenRB_Click"/>
                     <Ribbon:MenuItem x:Name="miRestoreRBItems" Header="Restore selected item" Click="miRestoreRBItems_Click"/>
@@ -1773,7 +1735,7 @@
                                    Icon="Images\archiver16.png"
                                    LargeIcon="Images\archiver32.png"
                                    Ribbon:KeyTip.Keys="R"
-                                   SizeDefinition="Large,Large,Large">
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Large,Large">
                         <Ribbon:Button.ToolTip>
                             <!--  Title="{DynamicResource btnMakeArchiveHCP}"  -->
                             <Ribbon:ScreenTip Title="{DynamicResource btnMakeArchiveCP}"
@@ -1804,14 +1766,14 @@
                                    Icon="Images\condrive16.png"
                                    LargeIcon="Images\condrive32.png"
                                    Ribbon:KeyTip.Keys="M"
-                                   SizeDefinition="Large,Middle,Middle" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle" />
                     <Ribbon:Button x:Name="btnDisconectDrive"
                                    Click="btnDisconectDrive_Click"
                                    Header="{DynamicResource btnDiscDriveCP}"
                                    Icon="Images\disdrive16.png"
                                    LargeIcon="Images\disdrive32.png"
                                    Ribbon:KeyTip.Keys="D"
-                                   SizeDefinition="Large,Middle,Middle" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Ribbon:KeyTip.Keys="G">
                     <Ribbon:Button x:Name="btnAdvancedSecurity"
@@ -1846,7 +1808,7 @@
                                          Icon="Images\navpane16.png"
                                          LargeIcon="Images\navpane32.png"
                                          Ribbon:KeyTip.Keys="NP"
-                                         SizeDefinition="Large,Middle,Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle"
                                          Unchecked="btnNavigationPane_Unchecked">
                         <Ribbon:ToggleButton.ToolTip>
                             <!--  "{DynamicResource btnNavigationTCP}"  -->
@@ -1863,7 +1825,7 @@
                                          Icon="Images\prevpane16.png"
                                          LargeIcon="Images\prevpane32.png"
                                          Ribbon:KeyTip.Keys="PP"
-                                         SizeDefinition="Middle,Middle,Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle"
                                          Unchecked="btnPreviewPane_Unchecked">
                         <Ribbon:ToggleButton.ToolTip>
                             <!--  "{DynamicResource btnNavigationTCP}"  -->
@@ -1880,7 +1842,7 @@
                                          Icon="Images\detailpane16.png"
                                          LargeIcon="Images\detailpane32.png"
                                          Ribbon:KeyTip.Keys="IP"
-                                         SizeDefinition="Middle,Middle,Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle"
                                          Unchecked="btnInfoPane_Unchecked">
                         <Ribbon:ToggleButton.ToolTip>
                             <!--  "{DynamicResource btnInfoTCP}"  -->
@@ -1896,7 +1858,7 @@
                                                    Icon="Images\console16.png"
                                                    LargeIcon="Images\console32.png"
                                                    Ribbon:KeyTip.Keys="PC"
-                                                   SizeDefinition="Middle,Middle,Middle" Click="btnConsolePane_Click"/>
+                                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle" Click="btnConsolePane_Click"/>
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox x:Name="Layout"
                                        Header="{DynamicResource tgLayoutCP}"
@@ -1917,7 +1879,7 @@
                                             Ribbon:KeyTip.Keys="V"
                                             SelectedFilter="{Binding ElementName=galleryFilterAll}"
                                             SelectionChanged="inRibbonGallery1_SelectionChanged"
-                                            SizeDefinition="Large,Large,Large" PreviewMouseDown="inRibbonGallery1_PreviewMouseDown" MouseLeftButtonDown="inRibbonGallery1_MouseLeftButtonDown" PreviewMouseLeftButtonUp="inRibbonGallery1_PreviewMouseLeftButtonUp">
+                                            Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Large,Large" PreviewMouseDown="inRibbonGallery1_PreviewMouseDown" MouseLeftButtonDown="inRibbonGallery1_MouseLeftButtonDown" PreviewMouseLeftButtonUp="inRibbonGallery1_PreviewMouseLeftButtonUp">
                         <Ribbon:InRibbonGallery.Filters>
                             <Ribbon:GalleryGroupFilter x:Name="galleryFilterAll"
                                                        Title="All"
@@ -2028,7 +1990,7 @@
                                            Icon="Images\sort16.png"
                                            LargeIcon="Images\sort32.png"
                                            Ribbon:KeyTip.Keys="S"
-                                           SizeDefinition="Large,Large,Small">
+                                           Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Large,Small">
                         <Ribbon:DropDownButton.ToolTip>
                             <!--  "{DynamicResource btnSortHCP}"  -->
                             <Ribbon:ScreenTip Title="{DynamicResource btnSortByCP}"
@@ -2044,13 +2006,13 @@
                                            Header="{DynamicResource btnGroupByCP}"
                                            Icon="Images\groupby16.png"
                                            Ribbon:KeyTip.Keys="G"
-                                           SizeDefinition="Middle,Small,Small" />
+                                           Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Small,Small" />
                     <Ribbon:Button x:Name="btnAutosizeColls"
                                    Click="btnAutosizeColls_Click"
                                    Header="{DynamicResource btnAutoSizeColCP}"
                                    Icon="Images\ascol16.png"
                                    Ribbon:KeyTip.Keys="CA"
-                                   SizeDefinition="Middle,Small,Small">
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Small,Small">
                         <Ribbon:Button.ToolTip>
                             <!--  "{DynamicResource btnAutoSizeColHCP}"  -->
                             <Ribbon:ScreenTip Title="{DynamicResource btnAutoSizeColCP}"
@@ -2066,7 +2028,7 @@
                                         Header="{DynamicResource btnMoreColCP}"
                                         Icon="Images\morecols16.png"
                                         Ribbon:KeyTip.Keys="CM"
-                                        SizeDefinition="Middle,Small,Small" />
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Small,Small" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox x:Name="ShowHide"
                                        Header="{DynamicResource tgShowHideCP}"
@@ -2087,13 +2049,13 @@
                                      Checked="chkHiddenFiles_Checked"
                                      Header="{DynamicResource chkHiddenItemsCP}"
                                      Ribbon:KeyTip.Keys="D"
-                                     SizeDefinition="Middle,Middle,Small"
+                                     Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small"
                                      Unchecked="chkHiddenFiles_Unchecked" />
                     <Ribbon:CheckBox x:Name="chkExtensions"
                                      Checked="chkExtensions_Checked"
                                      Header="{DynamicResource chkExtensionsCP}"
                                      Ribbon:KeyTip.Keys="E"
-                                     SizeDefinition="Middle,Middle,Small"
+                                     Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small"
                                      Unchecked="chkExtensions_Unchecked">
                         <Ribbon:CheckBox.ToolTip>
                             <!--  Title="{DynamicResource chkExtensionsHCP}"  -->
@@ -2109,7 +2071,7 @@
                                         Icon="Images\hideitems16.png"
                                         LargeIcon="Images\hideitems48.png"
                                         Ribbon:KeyTip.Keys="H"
-                                        SizeDefinition="Large,Small,Small">
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Small,Small">
                         <Ribbon:MenuItem Click="btnHideSelItems_Click"
                                          Focusable="False"
                                          Header="{DynamicResource miHideSelCP}"
@@ -2136,7 +2098,7 @@
                                    Icon="Images\refresh16.png"
                                    LargeIcon="Images\Refresh32.png"
                                    Ribbon:KeyTip.Keys="R"
-                                   SizeDefinition="Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 
@@ -2153,7 +2115,7 @@
                                    Header="{DynamicResource btnManageLibCP}"
                                    LargeIcon="Images\explorer32.png"
                                    Ribbon:KeyTip.Keys="M"
-                                   SizeDefinition="Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                     <Ribbon:DropDownButton x:Name="btnDefSave"
                                            DropDownClosed="btnMoreColls_DropDownClosed"
                                            DropDownOpened="btnMoreColls_DropDownOpened"
@@ -2161,13 +2123,13 @@
                                            Icon="Images\libsaveloc16.png"
                                            LargeIcon="Images\libsaveloc32.png"
                                            Ribbon:KeyTip.Keys="D"
-                                           SizeDefinition="Large" />
+                                           Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                     <Ribbon:DropDownButton DropDownClosed="btnMoreColls_DropDownClosed"
                                            DropDownOpened="btnMoreColls_DropDownOpened"
                                            Header="{DynamicResource btnOptimizeCP}"
                                            Icon="Images\libtype16.png"
                                            Ribbon:KeyTip.Keys="O"
-                                           SizeDefinition="Middle,Middle,Small">
+                                           Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small">
                         <Ribbon:MenuItem x:Name="btnOLIGtem"
                                          Click="btnOLItem_Click"
                                          Header="{DynamicResource miGeneralCP}"
@@ -2200,12 +2162,12 @@
                                    Icon="Images\libicon16.png"
                                    LargeIcon="Images\libicon32.png"
                                    Ribbon:KeyTip.Keys="I"
-                                   SizeDefinition="Middle,Middle,Small" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small" />
                     <Ribbon:CheckBox x:Name="chkPinNav"
                                      Checked="chkPinNav_Checked"
                                      Header="{DynamicResource chkPinNavCP}"
                                      Ribbon:KeyTip.Keys="N"
-                                     SizeDefinition="Middle,Middle,Small"
+                                     Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small"
                                      Unchecked="chkPinNav_Unchecked">
                         <Ribbon:CheckBox.ToolTip>
                             <Ribbon:ScreenTip Title="{DynamicResource chkPinNavHCP}"
@@ -2223,7 +2185,7 @@
                                    Header="{DynamicResource btnResetCP}"
                                    LargeIcon="Images\resetlib32.png"
                                    Ribbon:KeyTip.Keys="R"
-                                   SizeDefinition="Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
 
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
@@ -2240,21 +2202,21 @@
                                    Icon="Images\formatd16.png"
                                    LargeIcon="Images\formatd.png"
                                    Ribbon:KeyTip.Keys="F"
-                                   SizeDefinition="Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                     <Ribbon:Button x:Name="btnCleanDrive"
                                    Click="btnCleanDrive_Click"
                                    Header="{DynamicResource btnCleanDriveCP}"
                                    Icon="Images\cleand16.png"
                                    LargeIcon="Images\cleand32.png"
                                    Ribbon:KeyTip.Keys="C"
-                                   SizeDefinition="Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                     <Ribbon:Button x:Name="btnDefragDrive"
                                    Click="btnDefragDrive_Click"
                                    Header="{DynamicResource btnDefragDriveCP}"
                                    Icon="Images\defrag16.png"
                                    LargeIcon="Images\defrag32.png"
                                    Ribbon:KeyTip.Keys="D"
-                                   SizeDefinition="Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header="Remove" x:Name="grpDriveDisk"
                                        IsLauncherVisible="False">
@@ -2264,7 +2226,7 @@
                                    Ribbon:KeyTip.Keys="O"
                                    LargeIcon="Images\cdtray32.png"
                                    Icon="Images\cdtray16.png"
-                                   SizeDefinition="Large">
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large">
                     <Ribbon:MenuItem x:Name="btnCloseTray"
                                    Header="Close Tray"
                                    Click="btnCloseTray_Click" />
@@ -2276,7 +2238,7 @@
                                    LargeIcon="Images\removeusb32.png"
                                    Icon="Images\removeusb16.png"
                                    Ribbon:KeyTip.Keys="E"
-                                   SizeDefinition="Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header="Virtual">
                     <Ribbon:Button x:Name="btnUnmountDrive"
@@ -2285,7 +2247,7 @@
                                    LargeIcon="Images/unmount32.png" 
                                    Icon="Images/unmount16.png"
                                    Ribbon:KeyTip.Keys="U"
-                                   SizeDefinition="Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox Header=""
                                        IsLauncherVisible="False">
@@ -2310,7 +2272,7 @@
                                          Icon="Images\pint16.png"
                                          LargeIcon="Images\pint32.png"
                                          Ribbon:KeyTip.Keys="P"
-                                         SizeDefinition="Large">
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large">
                         <Ribbon:MenuItem x:Name="btnPinToStart" Header="Pin to Start" Click="btnPinToStart_Click" />
                     </Ribbon:SplitButton>
                     <Separator />
@@ -2320,8 +2282,8 @@
                                    Icon="Images\admin16.png"
                                    LargeIcon="Images\admin32.png"
                                    Ribbon:KeyTip.Keys="A"
-                                   SizeDefinition="Large" />
-                    <Ribbon:Button x:Name="btnRunAs" Header="Run As Another User" SizeDefinition="Large" Click="btnRunAs_Click" Icon="Images\users16.png" LargeIcon="Images\users32.png" Visibility="Visible" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
+                    <Ribbon:Button x:Name="btnRunAs" Header="Run As Another User" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" Click="btnRunAs_Click" Icon="Images\users16.png" LargeIcon="Images\users32.png" Visibility="Visible" />
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
         
@@ -2329,10 +2291,10 @@
                                   Header="{DynamicResource tbManageCP}"
                                   Ribbon:KeyTip.Keys="V">
                 <Ribbon:RibbonGroupBox Header="">
-                    <Ribbon:Button Header="Mount as Drive" x:Name="btnAdvMountIso" SizeDefinition="Large" Click="btnAdvMountIso_Click" LargeIcon="Images/mount32.png" Icon="Images/mount16.png"/>
-                    <Ribbon:Button Header="Quick Mount as Drive" x:Name="btnMountIso" SizeDefinition="Large" Click="btnMountIso_Click" LargeIcon="Images/qmount32.png" Icon="Images/qmount16.png"/>
+                    <Ribbon:Button Header="Mount as Drive" x:Name="btnAdvMountIso" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" Click="btnAdvMountIso_Click" LargeIcon="Images/mount32.png" Icon="Images/mount16.png"/>
+                    <Ribbon:Button Header="Quick Mount as Drive" x:Name="btnMountIso" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" Click="btnMountIso_Click" LargeIcon="Images/qmount32.png" Icon="Images/qmount16.png"/>
                     <Separator />
-                    <Ribbon:Button Header="Burn to Disk" x:Name="btnWriteIso" SizeDefinition="Large" Click="btnWriteIso_Click" LargeIcon="Images/burn32.png" Icon="Images/burn16.png"/>
+                    <Ribbon:Button Header="Burn to Disk" x:Name="btnWriteIso" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" Click="btnWriteIso_Click" LargeIcon="Images/burn32.png" Icon="Images/burn16.png"/>
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 
@@ -2350,34 +2312,34 @@
                                    Icon="Images\rl16.png"
                                    LargeIcon="Images\rl32.png"
                                    Ribbon:KeyTip.Keys="L"
-                                   SizeDefinition="Large,Large,Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Large,Large" />
                     <Ribbon:Button x:Name="btnRotateRight"
                                    Click="btnRotateRight_Click"
                                    Header="{DynamicResource btnRotateRightCP}"
                                    Icon="Images\rr16.png"
                                    LargeIcon="Images\rr32.png"
                                    Ribbon:KeyTip.Keys="R"
-                                   SizeDefinition="Large,Large,Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Large,Large" />
                     <Ribbon:Button x:Name="btnFlipX"
                                    Click="btnFlipX_Click"
                                    Header="{DynamicResource btnFlipXCP}"
                                    Icon="Images\fh16.png"
                                    LargeIcon="Images\fh32.png"
                                    Ribbon:KeyTip.Keys="X"
-                                   SizeDefinition="Large,Middle,Middle" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle" />
                     <Ribbon:Button x:Name="btnFlipY"
                                    Click="btnFlipY_Click"
                                    Header="{DynamicResource btnFlipYCP}"
                                    Icon="Images\fv16.png"
                                    LargeIcon="Images\fv32.png"
                                    Ribbon:KeyTip.Keys="Y"
-                                   SizeDefinition="Large,Middle,Middle" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle" />
                     <Ribbon:DropDownButton x:Name="btnConvertImage"
                                            Header="{DynamicResource btnConvertImageCP}"
                                            Icon="Images\convert16.png"
                                            LargeIcon="Images\convert32.png"
                                            Ribbon:KeyTip.Keys="C"
-                                           SizeDefinition="Large,Middle,Middle">
+                                           Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle">
                         <Ribbon:MenuItem x:Name="ConvertToJPG"
                                          Click="ConvertToJPG_Click"
                                          Header="{DynamicResource miJPGfCP}"
@@ -2408,14 +2370,14 @@
                         <Ribbon:RibbonToolBar.LayoutDefinitions>
 
                             <!--  Large Size of the RibbonToolBar  -->
-                            <Ribbon:RibbonToolBarLayoutDefinition Size="Large">
+                            <Ribbon:RibbonToolBarLayoutDefinition Ribbon:RibbonAttachedProperties.RibbonSize="Large">
                                 <Ribbon:RibbonToolBarRow>
                                     <Ribbon:RibbonToolBarControlDefinition Target="imgSizeDisplay" />
                                 </Ribbon:RibbonToolBarRow>
                             </Ribbon:RibbonToolBarLayoutDefinition>
 
                             <!--  Middle Size of the RibbonToolBar  -->
-                            <Ribbon:RibbonToolBarLayoutDefinition Size="Middle">
+                            <Ribbon:RibbonToolBarLayoutDefinition Ribbon:RibbonAttachedProperties.RibbonSize="Middle">
                                 <Ribbon:RibbonToolBarRow>
                                     <Ribbon:RibbonToolBarControlDefinition Target="imgSizeDisplay" />
                                 </Ribbon:RibbonToolBarRow>
@@ -2432,7 +2394,7 @@
                             </Ribbon:RibbonToolBarLayoutDefinition>
 
                             <!--  Small Size of the RibbonToolBar  -->
-                            <Ribbon:RibbonToolBarLayoutDefinition Size="Small">
+                            <Ribbon:RibbonToolBarLayoutDefinition Ribbon:RibbonAttachedProperties.RibbonSize="Small">
                                 <Ribbon:RibbonToolBarRow>
                                     <Ribbon:RibbonToolBarControlDefinition Target="imgSizeDisplay" />
                                 </Ribbon:RibbonToolBarRow>
@@ -2469,7 +2431,7 @@
                                    Icon="Images\resize16.png"
                                    LargeIcon="Images\resize32.png"
                                    Ribbon:KeyTip.Keys="Z"
-                                   SizeDefinition="Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox x:Name="imgView"
                                        Header="{DynamicResource tgImgViewCP}"
@@ -2479,14 +2441,14 @@
                                    Header="{DynamicResource btnSlideShowCP}"
                                    LargeIcon="Images\slideshow32.png"
                                    Ribbon:KeyTip.Keys="H"
-                                   SizeDefinition="Large"
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large"
                                    Visibility="Collapsed" />-->
                     <Ribbon:SplitButton x:Name="btnWallpaper"
                                         Click="btnWallpaper_Click"
                                         Header="{DynamicResource btnWallpaperCP}"
                                         LargeIcon="Images\sawall32.png"
                                         Ribbon:KeyTip.Keys="W"
-                                        SizeDefinition="Large">
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large">
                         <Ribbon:MenuItem x:Name="miWallFill"
                                          Click="miWallFill_Click"
                                          Header="{DynamicResource miWallFillCP}"
@@ -2526,7 +2488,7 @@
                                    Icon="Images\zipeztract16.png"
                                    LargeIcon="Images\zipeztract32.png"
                                    Ribbon:KeyTip.Keys="H"
-                                   SizeDefinition="Large">
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large">
                         <Ribbon:Button.ToolTip>
                             <Ribbon:ScreenTip Title="{DynamicResource btnExtractHereHCP}"
                                               Width="250"
@@ -2540,14 +2502,14 @@
                         <Ribbon:RibbonToolBar.LayoutDefinitions>
 
                             <!--  Large Size of the RibbonToolBar  -->
-                            <Ribbon:RibbonToolBarLayoutDefinition Size="Large">
+                            <Ribbon:RibbonToolBarLayoutDefinition Ribbon:RibbonAttachedProperties.RibbonSize="Large">
                                 <Ribbon:RibbonToolBarRow>
                                     <Ribbon:RibbonToolBarControlDefinition Target="lblExtract" />
                                     <Ribbon:RibbonToolBarControlDefinition Width="400" Target="txtExtractLocation" />
                                 </Ribbon:RibbonToolBarRow>
                                 <Ribbon:RibbonToolBarRow>
-                                    <Ribbon:RibbonToolBarControlDefinition Size="Middle" Target="btnChooseLocation" />
-                                    <Ribbon:RibbonToolBarControlDefinition Size="Middle" Target="btnExtractNow" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnChooseLocation" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnExtractNow" />
                                 </Ribbon:RibbonToolBarRow>
                                 <Ribbon:RibbonToolBarRow>
                                     <Ribbon:RibbonToolBarControlDefinition Target="chkUseNewFolder" />
@@ -2557,14 +2519,14 @@
 
 
                             <!--  Middle Size of the RibbonToolBar  -->
-                            <Ribbon:RibbonToolBarLayoutDefinition Size="Middle">
+                            <Ribbon:RibbonToolBarLayoutDefinition Ribbon:RibbonAttachedProperties.RibbonSize="Middle">
                                 <Ribbon:RibbonToolBarRow>
                                     <Ribbon:RibbonToolBarControlDefinition Target="lblExtract" />
                                     <Ribbon:RibbonToolBarControlDefinition Width="300" Target="txtExtractLocation" />
                                 </Ribbon:RibbonToolBarRow>
                                 <Ribbon:RibbonToolBarRow>
-                                    <Ribbon:RibbonToolBarControlDefinition Size="Middle" Target="btnChooseLocation" />
-                                    <Ribbon:RibbonToolBarControlDefinition Size="Middle" Target="btnExtractNow" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnChooseLocation" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnExtractNow" />
                                 </Ribbon:RibbonToolBarRow>
                                 <Ribbon:RibbonToolBarRow>
                                     <Ribbon:RibbonToolBarControlDefinition Target="chkUseNewFolder" />
@@ -2573,14 +2535,14 @@
                             </Ribbon:RibbonToolBarLayoutDefinition>
 
                             <!--  Small Size of the RibbonToolBar  -->
-                            <Ribbon:RibbonToolBarLayoutDefinition Size="Small">
+                            <Ribbon:RibbonToolBarLayoutDefinition Ribbon:RibbonAttachedProperties.RibbonSize="Small">
                                 <Ribbon:RibbonToolBarRow>
                                     <Ribbon:RibbonToolBarControlDefinition Target="lblExtract" />
                                     <Ribbon:RibbonToolBarControlDefinition Width="200" Target="txtExtractLocation" />
                                 </Ribbon:RibbonToolBarRow>
                                 <Ribbon:RibbonToolBarRow>
-                                    <Ribbon:RibbonToolBarControlDefinition Size="Middle" Target="btnChooseLocation" />
-                                    <Ribbon:RibbonToolBarControlDefinition Size="Middle" Target="btnExtractNow" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnChooseLocation" />
+                                    <Ribbon:RibbonToolBarControlDefinition Target="btnExtractNow" />
                                 </Ribbon:RibbonToolBarRow>
                                 <Ribbon:RibbonToolBarRow>
                                     <Ribbon:RibbonToolBarControlDefinition Target="chkUseNewFolder" />
@@ -2598,10 +2560,12 @@
                         <Ribbon:Button x:Name="btnChooseLocation"
                                        Click="btnChooseLocation_Click"
                                        Header="{DynamicResource btnChooseLocationCP}"
+                                       Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle"
                                        Icon="Images\folder_new16.png" />
                         <Ribbon:Button x:Name="btnExtractNow"
                                        Click="btnExtractNow_Click"
                                        Header="{DynamicResource btnExtractNowCP}"
+                                       Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle"
                                        Icon="Images\archiver16.png" />
                         <Ribbon:CheckBox x:Name="chkUseNewFolder"
                                          Header="{DynamicResource chkUseNewFolderCP}"
@@ -2623,14 +2587,14 @@
                                    Icon="Images\archivecheck16.png"
                                    LargeIcon="Images\archivecheck32.png"
                                    Ribbon:KeyTip.Keys="C"
-                                   SizeDefinition="Large" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
                     <Ribbon:Button x:Name="btnViewArchive"
                                    Click="btnViewArchive_Click"
                                    Header="{DynamicResource btnViewArchiveCP}"
                                    Icon="Images\archiveview16.png"
                                    LargeIcon="Images\archiveview32.png"
                                    Ribbon:KeyTip.Keys="V"
-                                   SizeDefinition="Large" Visibility="Visible" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" Visibility="Visible" />
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 
@@ -2672,9 +2636,9 @@
                                   Ribbon:KeyTip.Keys="S">
                 <!--
                     <Ribbon:RibbonGroupBox Header="Modifiers" IsLauncherVisible="False" Name="tsgModifiers">
-                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="AND" Tag="AND" GroupName="b1" Visibility="Collapsed"/>
-                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="OR" Tag="OR" GroupName="b1"/>
-                    <Ribbon:ToggleButton SizeDefinition="Middle" Header="NOT" Tag="NOT" GroupName="b1"/>
+                    <Ribbon:ToggleButton Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Header="AND" Tag="AND" GroupName="b1" Visibility="Collapsed"/>
+                    <Ribbon:ToggleButton Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Header="OR" Tag="OR" GroupName="b1"/>
+                    <Ribbon:ToggleButton Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Header="NOT" Tag="NOT" GroupName="b1"/>
                     </Ribbon:RibbonGroupBox>
                 -->
                 <Ribbon:RibbonGroupBox x:Name="tsgKind"
@@ -2687,7 +2651,7 @@
                                          Icon="Images\jseverything16.png"
                                          IsChecked="True"
                                          LargeIcon="Images\jseverything32.png"
-                                         SizeDefinition="Large"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large"
                                          Tag=":null:" />
                     <Ribbon:ToggleButton x:Name="btnSearchDocuments"
                                          Click="ToggleButton_Click"
@@ -2695,7 +2659,7 @@
                                          Header="{DynamicResource btnKindDocsCP}"
                                          Icon="Images\jsdocs16.png"
                                          LargeIcon="Images\jsdocs32.png"
-                                         SizeDefinition="Large,Middle,Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle"
                                          Tag="kind:docs" />
                     <Ribbon:ToggleButton x:Name="btnSearchPictures"
                                          Click="ToggleButton_Click"
@@ -2703,7 +2667,7 @@
                                          Header="{DynamicResource btnKindPicsCP}"
                                          Icon="Images\jsimages16.png"
                                          LargeIcon="Images\jsimages32.png"
-                                         SizeDefinition="Large,Middle,Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle"
                                          Tag="kind:pics" />
                     <Ribbon:ToggleButton x:Name="btnSearchMusic"
                                          Click="ToggleButton_Click"
@@ -2711,7 +2675,7 @@
                                          Header="{DynamicResource btnKindMusicCP}"
                                          Icon="Images\jsmusic16.png"
                                          LargeIcon="Images\jsmusic32.png"
-                                         SizeDefinition="Large,Middle,Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle"
                                          Tag="kind:music" />
                     <Ribbon:ToggleButton x:Name="btnSearchVideos" 
                                          Click="ToggleButton_Click"
@@ -2719,7 +2683,7 @@
                                          Header="{DynamicResource btnKindVideosCP}"
                                          Icon="Images\jsvideos16.png"
                                          LargeIcon="Images\jsvideos32.png"
-                                         SizeDefinition="Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle"
                                          Tag="kind:videos" />
                     <Ribbon:ToggleButton x:Name="btnSearchFolders"
                                          Click="ToggleButton_Click"
@@ -2727,7 +2691,7 @@
                                          Header="{DynamicResource btnKindFoldersCP}"
                                          Icon="Images\jsfolders16.png"
                                          LargeIcon="Images\jsfolders32.png"
-                                         SizeDefinition="Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle"
                                          Tag="kind:folders" />
                     <Ribbon:ToggleButton x:Name="btnSearchPrograms"
                                          Click="ToggleButton_Click"
@@ -2735,7 +2699,7 @@
                                          Header="{DynamicResource btnKindProgramsCP}"
                                          Icon="Images\jsprograms16.png"
                                          LargeIcon="Images\jsprograms32.png"
-                                         SizeDefinition="Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle"
                                          Tag="kind:programs" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox x:Name="tsgOther"
@@ -2747,7 +2711,7 @@
                                         Icon="Images\jssize16.png"
                                         IsCheckable="True"
                                         LargeIcon="Images\jssize32.png"
-                                        SizeDefinition="Large,Middle,Middle">
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle">
                         <Ribbon:MenuItem Click="MenuItem_Click_5"
                                          GroupName="s1"
                                          Header="{DynamicResource miSizeVLargeCP}"
@@ -2784,7 +2748,7 @@
                                         Icon="Images\jsdc16.png"
                                         IsCheckable="True"
                                         LargeIcon="Images\jsdc32.png"
-                                        SizeDefinition="Large,Middle,Middle">
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle">
                         <Ribbon:MenuItem Click="MenuItem_Click_4"
                                          GroupName="s2"
                                          Header="{DynamicResource miDateTodayCP}"
@@ -2821,7 +2785,7 @@
                                         Icon="Images\jsdm16.png"
                                         IsCheckable="True"
                                         LargeIcon="Images\jsdm32.png"
-                                        SizeDefinition="Large,Middle,Middle">
+                                        Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle">
                         <Ribbon:MenuItem Click="MenuItem_Click_3"
                                          GroupName="s3"
                                          Header="{DynamicResource miDateTodayCP}"
@@ -2857,21 +2821,21 @@
                                          Header="{DynamicResource btnExtCP}"
                                          Icon="Images\jsext16.png"
                                          LargeIcon="Images\jsext32.png"
-                                         SizeDefinition="Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle"
                                          Tag="ext:" />
                     <Ribbon:ToggleButton x:Name="AuthorToggle"
                                          Click="AuthorToggle_Click"
                                          Header="{DynamicResource btnAuthorCP}"
                                          Icon="Images\jsauthor16.png"
                                          LargeIcon="Images\jsauthor32.png"
-                                         SizeDefinition="Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle"
                                          Tag="author:" />
                     <Ribbon:ToggleButton x:Name="SubjectToggle"
                                          Click="SubjectToggle_Click"
                                          Header="{DynamicResource btnSubjectCP}"
                                          Icon="Images\jssubject16.png"
                                          LargeIcon="Images\jssubject32.png"
-                                         SizeDefinition="Middle"
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle"
                                          Tag="subject:" />
                 </Ribbon:RibbonGroupBox>
                 <Ribbon:RibbonGroupBox>
@@ -2880,11 +2844,11 @@
                                    Header="{DynamicResource btnSearchCP}"
                                    Icon="Images\jssearch16.png"
                                    LargeIcon="Images\jssearch32.png"
-                                   SizeDefinition="Large,Middle,Middle" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle" />
                     <!--<Ribbon:Button Header="Advanced Search"
                                    Icon="Images\searchadv16.png"
                                    LargeIcon="Images\searchadv32.png"
-                                   SizeDefinition="Large,Middle,Middle"
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle"
                                    Visibility="Collapsed" />-->
                 </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
@@ -3206,7 +3170,7 @@
                                    VerticalContentAlignment="Top"
                                    Click="btnSizeChart_Click"
                                    Icon="Images\jssize16.png"
-                                   SizeDefinition="Small,Small,Small" />
+                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Small,Small,Small" />
                 </StackPanel>
             </Ribbon:StatusBarItem>
 
@@ -3223,19 +3187,19 @@
                                          Height="18"
                                          Click="btnSbIcons_Click"
                                          Icon="Images\medium16.png"
-                                         SizeDefinition="Small,Small,Small" />
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Small,Small,Small" />
                     <Ribbon:ToggleButton x:Name="btnSbDetails"
                                          Width="18"
                                          Height="18"
                                          Click="btnSbDetails_Click"
                                          Icon="Images\details16.png"
-                                         SizeDefinition="Small,Small,Small" />
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Small,Small,Small" />
                     <Ribbon:ToggleButton x:Name="btnSbTiles"
                                          Width="18"
                                          Height="18"
                                          Click="btnSbTiles_Click"
                                          Icon="Images\tiles16.png"
-                                         SizeDefinition="Small,Small,Small" />
+                                         Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Small,Small,Small" />
                 </StackPanel>
             </Ribbon:StatusBarItem>
             <Separator x:Name="spSelItems4" HorizontalAlignment="Right" />

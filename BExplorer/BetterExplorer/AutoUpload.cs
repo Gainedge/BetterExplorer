@@ -5,8 +5,8 @@ using System.Text;
 using System.Security;
 using System.Security.Cryptography;
 using Microsoft.VisualBasic;
-using AlexPilotti.FTPS;
-using AlexPilotti.FTPS.Client;
+//using AlexPilotti.FTPS;
+//using AlexPilotti.FTPS.Client;
 
 namespace BetterExplorer
 {
@@ -18,10 +18,10 @@ namespace BetterExplorer
             string val = PackString(FingerPrint.Value(), 9);
             string uniqueid = "log-" + sessionid.ToString() + "-" + val;
 
-            FTPSClient fli = new FTPSClient();
-            fli.Connect("hostname", new System.Net.NetworkCredential("username", "password"), ESSLSupportMode.DataChannelRequested);
-            fli.PutFile(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\log.txt", uniqueid + ".txt");
-            fli.Close();
+            //FTPSClient fli = new FTPSClient();
+            //fli.Connect("hostname", new System.Net.NetworkCredential("username", "password"), ESSLSupportMode.DataChannelRequested);
+            //fli.PutFile(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\log.txt", uniqueid + ".txt");
+            //fli.Close();
         }
 
         public string PackString(string input, int length)

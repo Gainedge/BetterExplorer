@@ -135,17 +135,20 @@ namespace BetterExplorer.Networks
 
         private FTPServer GetFTPServer()
         {
-            return new FTPServer(txtDisplayName.Text, txtAddress.Text, Convert.ToInt32(txtPort.Text), txtUsername.Text, txtPassword.Text, chkAnonymous.IsChecked.Value, chkPassive.IsChecked.Value);
+            return null;
+            //return new FTPServer(txtDisplayName.Text, txtAddress.Text, Convert.ToInt32(txtPort.Text), txtUsername.Text, txtPassword.Text, chkAnonymous.IsChecked.Value, chkPassive.IsChecked.Value);
         }
 
         private FTPSServer GetFTPSServer()
         {
-            return new FTPSServer(txtDisplayName.Text, txtAddress.Text, Convert.ToInt32(txtPort.Text), txtUsername.Text, txtPassword.Text, chkAnonymous.IsChecked.Value, chkPassive.IsChecked.Value, AlexPilotti.FTPS.Client.ESSLSupportMode.DataChannelRequested);
+            return null;
+            //return new FTPSServer(txtDisplayName.Text, txtAddress.Text, Convert.ToInt32(txtPort.Text), txtUsername.Text, txtPassword.Text, chkAnonymous.IsChecked.Value, chkPassive.IsChecked.Value, AlexPilotti.FTPS.Client.ESSLSupportMode.DataChannelRequested);
         }
 
         private WebDAVserver GetWebDAVServer()
         {
-            return new WebDAVserver(txtDisplayName.Text, txtAddress.Text, txtUsername.Text, txtPassword.Text);
+            return null;
+            //return new WebDAVserver(txtDisplayName.Text, txtAddress.Text, txtUsername.Text, txtPassword.Text);
         }
 
         public void ImportNetworkItem(NetworkItem item)
@@ -160,12 +163,12 @@ namespace BetterExplorer.Networks
             {
                 case AccountService.FTP:
                     ServerType.SelectedIndex = 0;
-                    chkPassive.IsChecked = (item as FTPServer).PassiveMode;
+                    //chkPassive.IsChecked = (item as FTPServer).PassiveMode;
                     txtPort.Text = item.Port.ToString();
                     break;
                 case AccountService.FTPS:
                     ServerType.SelectedIndex = 1;
-                    chkPassive.IsChecked = (item as FTPSServer).PassiveMode;
+                    //chkPassive.IsChecked = (item as FTPSServer).PassiveMode;
                     txtPort.Text = item.Port.ToString();
                     break;
                 case AccountService.WebDAV:

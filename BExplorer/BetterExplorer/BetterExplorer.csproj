@@ -683,17 +683,13 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AlexFTPS\FTPSClient.csproj">
-      <Project>{8271707d-0c08-460d-a332-6fdb8d0bb6d1}</Project>
-      <Name>FTPSClient</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\ConsoleControl\ConsoleControl.csproj">
       <Project>{737CC7F2-EC7C-4800-B7EB-72637E892C42}</Project>
       <Name>ConsoleControl</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\fluent_72f5e3ec252b\Fluent\Fluent\Fluent dotNET 4.0.csproj">
-      <Project>{4c92fcf4-3561-499f-bc5b-f2f089863047}</Project>
-      <Name>Fluent dotNET 4.0</Name>
+    <ProjectReference Include="..\..\fluent_528456d5eb19\Fluent\Fluent\Fluent dotNET 4.5.csproj">
+      <Project>{d9903e8a-5fc4-43c6-a48d-806742704de8}</Project>
+      <Name>Fluent dotNET 4.5</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ImDiskNet\ImDiskNet.vbproj">
       <Project>{3efcb6f8-ef7e-4f60-a0de-bb197240fcc9}</Project>
@@ -706,10 +702,6 @@
     <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj">
       <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
       <Name>SevenZip2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SharpBox\SharpBox2010.csproj">
-      <Project>{5b779ae9-72b6-4b7e-88b7-47227b92112a}</Project>
-      <Name>SharpBox2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\UsbEject\UsbEject.csproj">
       <Project>{ae269158-dfa5-4dd7-8afc-f45faf2b958c}</Project>
@@ -859,18 +851,6 @@
     <Resource Include="Images\edit.png" />
     <Resource Include="Images\delete_16x16-4.png" />
     <Content Include="AutomaticUpdaterWPF.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="BEH32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="BEH64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="BEHookLib32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="BEHookLib64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="BetterExplorerShell.exe">
@@ -1177,7 +1157,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

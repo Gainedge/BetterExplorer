@@ -5203,11 +5203,11 @@ namespace BetterExplorer
 			Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() =>
 			{
 				Application.Current.Resources.BeginInit();
-				Application.Current.Resources.MergedDictionaries.RemoveAt(0);
+				Application.Current.Resources.MergedDictionaries.RemoveAt(1);
         if (IsMetro) {
-          Application.Current.Resources.MergedDictionaries.Insert(0, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Metro/{0}.xaml", "White")) });
+          Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Metro/{0}.xaml", "White")) });
         } else {
-          Application.Current.Resources.MergedDictionaries.Insert(0, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Office2010/{0}.xaml", ThemeName)) });
+          Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Office2010/{0}.xaml", ThemeName)) });
         }
 				Application.Current.Resources.EndInit();
 			}));
@@ -9876,7 +9876,7 @@ namespace BetterExplorer
         {
             List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
 
-            foreach (UIElement item in TheRibbon.quickAccessElements.Keys)
+            foreach (UIElement item in TheRibbon.QuickAccessToolbarItems.Keys)
             {
                 rb.Add(item as IRibbonControl);
             }
@@ -10075,7 +10075,7 @@ namespace BetterExplorer
                 ui.RequestRemove += ui_RequestRemove;
                 ui.RequestEdit += ui_RequestEdit;
                 ui.LoadFromNetworkItem(ni);
-                pnlServers.Children.Add(ui);
+                //pnlServers.Children.Add(ui);
             }
 
         }
@@ -10089,14 +10089,14 @@ namespace BetterExplorer
             if (asw.yep == true)
             {
                 nam.Remove(e.NetworkItem);
-                pnlServers.Children.Remove(sender as ServerItem);
+                //pnlServers.Children.Remove(sender as ServerItem);
                 NetworkItem ni = asw.GetNetworkItem();
                 nam.Add(ni);
                 ServerItem ui = new ServerItem();
                 ui.RequestRemove += ui_RequestRemove;
                 ui.RequestEdit += ui_RequestEdit;
                 ui.LoadFromNetworkItem(ni);
-                pnlServers.Children.Add(ui);
+                //pnlServers.Children.Add(ui);
             }
         }
 
@@ -10105,7 +10105,7 @@ namespace BetterExplorer
             if (MessageBox.Show("Are you sure you want to remove this account?", "Remove Account", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 nam.Remove(e.NetworkItem);
-                pnlServers.Children.Remove(sender as ServerItem);
+                //pnlServers.Children.Remove(sender as ServerItem);
             }
         }
 
@@ -10113,6 +10113,7 @@ namespace BetterExplorer
         {
             AccountAuthWindow aaw = new AccountAuthWindow();
             aaw.LoadStorageServices();
+            aaw.LoadSocialMediaServices();
             aaw.Owner = this;
             aaw.ShowDialog();
         }
