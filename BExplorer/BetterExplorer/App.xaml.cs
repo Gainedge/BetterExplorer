@@ -423,6 +423,7 @@ namespace BetterExplorer
                         newt.Header = sho.GetDisplayName(DisplayNameType.Default);
                         newt.TabIcon = sho.Thumbnail.BitmapSource;
                         newt.PreviewMouseMove += newt_PreviewMouseMove;
+                        newt.ToolTip = sho.ParsingName;
                         newt.TabSelected += win.newt_TabSelected;
                         newt.Path = sho;
                         win.CloneTab(newt);
@@ -439,6 +440,7 @@ namespace BetterExplorer
                           newt.Header = sho.GetDisplayName(DisplayNameType.Default);
                           newt.TabIcon = sho.Thumbnail.BitmapSource;
                           newt.PreviewMouseMove += newt_PreviewMouseMove;
+                          newt.ToolTip = sho.ParsingName;
                           newt.TabSelected += win.newt_TabSelected;
                           newt.Path = sho;
                           win.CloneTab(newt);
@@ -459,6 +461,7 @@ namespace BetterExplorer
                           newt.Header = sho.GetDisplayName(DisplayNameType.Default);
                           newt.TabIcon = sho.Thumbnail.BitmapSource;
                           newt.PreviewMouseMove += newt_PreviewMouseMove;
+                          newt.ToolTip = sho.ParsingName;
                           newt.TabSelected += win.newt_TabSelected;
                           newt.Path = sho;
                           win.CloneTab(newt);

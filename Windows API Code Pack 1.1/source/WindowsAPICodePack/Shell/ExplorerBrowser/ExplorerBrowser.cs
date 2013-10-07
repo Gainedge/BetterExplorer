@@ -1,7 +1,6 @@
 ﻿//Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using System.Collections.Specialized;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
@@ -26,9 +25,6 @@ using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 using System.Diagnostics;
 using System.Windows.Automation;
 using Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Linq;
-using System.Xml;
 
 
 namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
@@ -51,18 +47,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
     public bool IsExFileOpEnabled = false;
     ShellObject antecreationNavigationTarget;
     ExplorerBrowserViewEvents viewEvents;
-    private IntPtr hHook_Msg;
-    private WindowsAPI.HookProc hookProc_GetMsg;
+    private readonly IntPtr hHook_Msg;
     private IShellItemArray shellItemsArray;
     private ShellObjectCollection itemsCollection;
     public TreeViewWrapper SysTreeView { get; set; }
     private readonly uint WM_NEWTREECONTROL = WindowsAPI.RegisterWindowMessage("BE_NewTreeControl");
-    private readonly uint WM_FILEOPERATION = WindowsAPI.RegisterWindowMessage("BE_FileOperation");
     bool Ctrl = false;
     bool IsPressedLKButton = false;
     bool IsMouseClickOnHeader = false;
     bool IsMouseClickOutsideLV = true;
-    bool IsGetHWnd = false;
     Rectangle LastItemRect = new Rectangle();
     public IntPtr SysListViewHandle { get; set; }
     public IntPtr ShellSysListViewHandle { get; set; }
@@ -73,7 +66,6 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
     public bool IsRenameStarted { get; set; }
     private IShellItemArray selectedShellItemsArray;
     Collumns[] _Collumns = new Collumns[0];
-    short mHotKeyId = 0;
     public static bool IsCustomDialogs { get; set; }
     private IntPtr BEHDLL { get; set; }
     public GetItemName _GetItemName;
@@ -523,9 +515,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
     public void SetSortCollumn(WindowsAPI.PROPERTYKEY pk, WindowsAPI.SORT Order) {
 
     IFolderView2 ifv2 = GetFolderView2();
-    WindowsAPI.SORTCOLUMN sc = new WindowsAPI.SORTCOLUMN();
-    sc.propkey = pk;
-    sc.direction = Order;
+    WindowsAPI.SORTCOLUMN sc = new WindowsAPI.SORTCOLUMN() { propkey = pk, direction = Order };
     IntPtr scptr = Marshal.AllocHGlobal(Marshal.SizeOf(sc));
     Marshal.StructureToPtr(sc, scptr, false);
     ifv2.SetSortColumns(scptr, 1);
@@ -541,9 +531,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
     WindowsAPI.SORTCOLUMN[] scl = new WindowsAPI.SORTCOLUMN[pk.Count];
     IFolderView2 ifv2 = GetFolderView2();
     for (int i = 0; i < pk.Count; i++) {
-        WindowsAPI.SORTCOLUMN sc = new WindowsAPI.SORTCOLUMN();
-        sc.propkey = pk[i];
-        sc.direction = Order[i];
+      WindowsAPI.SORTCOLUMN sc = new WindowsAPI.SORTCOLUMN() { propkey = pk[i], direction = Order[i] };
         scl[i] = sc;
     }
 
@@ -554,7 +542,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 	  {
 		  Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
 		  IntPtr view = IntPtr.Zero;
-		  HResult hr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
+		  this.explorerBrowserControl.GetCurrentView(ref iid, out view);
 		  IShellView isv = (IShellView)Marshal.GetObjectForIUnknown(view);
 		  return isv;
 	  }
@@ -682,7 +670,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 	  #region operations
 
-	  public void FlushMemory()
+	  public static void FlushMemory()
 	  {
 			  GC.Collect();
 			  GC.WaitForPendingFinalizers();
@@ -752,7 +740,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
   /// Runs an application as an administrator.
   /// </summary>
   /// <param name="ExePath">The path of the application.</param>
-  public void RunExeAsAdmin(string ExePath) {
+  public static void RunExeAsAdmin(string ExePath) {
   var psi = new ProcessStartInfo {
       FileName = ExePath,
       Verb = "runas",
@@ -768,7 +756,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
   /// </summary>
   /// <param name="ExePath">The path of the application.</param>
   /// <param name="username">The path of the username to use.</param>
-  public void RunExeAsAnotherUser(string ExePath, string username)
+  public static void RunExeAsAnotherUser(string ExePath, string username)
   {
       var psi = new ProcessStartInfo
       {
@@ -781,7 +769,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
   }
 
-  public void StartCompartabilityWizzard() {
+  public static void StartCompartabilityWizzard() {
   Process.Start("msdt.exe", "-id PCWDiagnostic");
   }
 
@@ -845,40 +833,39 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 	  }
 	  public Collumns[] AvailableColumns(bool All)
 	  {
-  try {
-      Guid iid = new Guid(ExplorerBrowserIIDGuid.IColumnManager);
-      IntPtr view = IntPtr.Zero;
-      IntPtr Ishellv = Marshal.GetComInterfaceForObject(GetShellView(), typeof(IShellView));
-      Marshal.QueryInterface(Ishellv, ref iid, out view);
-      IColumnManager cm = (IColumnManager)Marshal.GetObjectForIUnknown(view);
-      uint HeaderColsCount = 0;
-      cm.GetColumnCount(All ? CM_ENUM_FLAGS.CM_ENUM_ALL : CM_ENUM_FLAGS.CM_ENUM_VISIBLE, out HeaderColsCount);
-      Collumns[] ci = new Collumns[HeaderColsCount];
-      for (int i = 0; i < HeaderColsCount; i++) {
-      Collumns col = new Collumns();
-      WindowsAPI.PROPERTYKEY pk;
-      WindowsAPI.CM_COLUMNINFO cmi = new WindowsAPI.CM_COLUMNINFO();
-      IntPtr ii = Marshal.AllocCoTaskMem(Marshal.SizeOf(cmi));
-
       try {
-          _GetColumnbyIndex(GetShellView(), All, i, out pk);
-          _GetColumnInfobyIndex(GetShellView(), All, i, out cmi);
-          col.pkey = pk;
-          col.Name = cmi.wszName;
-          col.Width = (int)cmi.uWidth;
-          ci[i] = col;
+        Guid iid = new Guid(ExplorerBrowserIIDGuid.IColumnManager);
+        IntPtr view = IntPtr.Zero;
+        IntPtr Ishellv = Marshal.GetComInterfaceForObject(GetShellView(), typeof(IShellView));
+        Marshal.QueryInterface(Ishellv, ref iid, out view);
+        IColumnManager cm = (IColumnManager)Marshal.GetObjectForIUnknown(view);
+        uint HeaderColsCount = 0;
+        cm.GetColumnCount(All ? CM_ENUM_FLAGS.CM_ENUM_ALL : CM_ENUM_FLAGS.CM_ENUM_VISIBLE, out HeaderColsCount);
+        Collumns[] ci = new Collumns[HeaderColsCount];
+        for (int i = 0; i < HeaderColsCount; i++) {
+          Collumns col = new Collumns();
+          WindowsAPI.PROPERTYKEY pk;
+          WindowsAPI.CM_COLUMNINFO cmi = new WindowsAPI.CM_COLUMNINFO();
+          Marshal.AllocCoTaskMem(Marshal.SizeOf(cmi));
+          try {
+            _GetColumnbyIndex(GetShellView(), All, i, out pk);
+            _GetColumnInfobyIndex(GetShellView(), All, i, out cmi);
+            col.pkey = pk;
+            col.Name = cmi.wszName;
+            col.Width = (int)cmi.uWidth;
+            ci[i] = col;
 
-      } catch {
+          } catch {
 
 
+          }
+
+        }
+          return ci;
+      } catch (Exception) {
+
+          return new Collumns[0];
       }
-
-      }
-      return ci;
-  } catch (Exception) {
-
-      return new Collumns[0];
-  }
 	  }
 	  public void SetAutoSizeColumns()
 	  {
@@ -1106,7 +1093,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
               GC.Collect();
 	  }
 
-	  public void DoDelete(object Data)
+	  public static void DoDelete(object Data)
 	  {
 		  ShellObjectCollection DataDelete = (ShellObjectCollection)Data;
 
@@ -1718,7 +1705,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 	  /// <exception cref="System.Runtime.InteropServices.COMException">Will throw if navigation fails for any other reason.</exception>
 	  public void Navigate(ShellObject shellObject)
 	  {
-  this.IsCancelNavigation = false;
+      this.IsCancelNavigation = false;
 		  if (shellObject == null)
 		  {
 			  throw new ArgumentNullException("shellObject");
@@ -1928,119 +1915,123 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 		  base.OnPaint(e);
 	  }
 
-	  /// <summary>
+    public void InitBrowser()
+    {
+      //Initialize the hooks needed by ExplorerBrowser
+      BEHDLL = WindowsAPI.LoadLibrary(WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "BEH64.dll" : "BEH32.dll");
+
+      IntPtr GetItemNameP = WindowsAPI.GetProcAddress(BEHDLL, "GetItemName");
+      _GetItemName = (GetItemName)Marshal.GetDelegateForFunctionPointer(GetItemNameP, typeof(GetItemName));
+
+      IntPtr GetItemLocationP = WindowsAPI.GetProcAddress(BEHDLL, "GetItemLocation");
+      _GetItemLocation = (GetItemLocation)Marshal.GetDelegateForFunctionPointer(GetItemLocationP, typeof(GetItemLocation));
+
+
+      IntPtr SetColumnInShellViewP = WindowsAPI.GetProcAddress(BEHDLL, "SetColumnInShellView");
+      _SetColumnInShellView = (SetColumnInShellView)Marshal.GetDelegateForFunctionPointer(SetColumnInShellViewP, typeof(SetColumnInShellView));
+
+
+      IntPtr SetSortColumnsP = WindowsAPI.GetProcAddress(BEHDLL, "SetSortColumns");
+      _SetSortColumns = (SetSortColumns)Marshal.GetDelegateForFunctionPointer(SetSortColumnsP, typeof(SetSortColumns));
+
+
+      IntPtr GetColumnInfobyIndexP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnInfobyIndex");
+      _GetColumnInfobyIndex = (GetColumnInfobyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyIndexP, typeof(GetColumnInfobyIndex));
+
+
+      IntPtr GetColumnInfobyPKP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnInfobyPK");
+      _GetColumnInfobyPK = (GetColumnInfobyPK)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyPKP, typeof(GetColumnInfobyPK));
+
+      IntPtr GetSortColumnsP = WindowsAPI.GetProcAddress(BEHDLL, "GetSortColumns");
+      _GetSortColumns = (GetSortColumns)Marshal.GetDelegateForFunctionPointer(GetSortColumnsP, typeof(GetSortColumns));
+
+      IntPtr GetColumnbyIndexP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnbyIndex");
+      _GetColumnbyIndex = (GetColumnbyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnbyIndexP, typeof(GetColumnbyIndex));
+
+
+
+      //this.LVItemsColorCodes = new List<LVItemColor>();
+      //LVItemsColorCodes.Add(new LVItemColor(".jpeg;.jpg;.bmp", Color.Red));
+      //LVItemsColorCodes.Add(new LVItemColor(".zip;.rar;.7z", Color.Orange));
+      //XDocument doc = new XDocument();
+      //
+      //var xEle = new XElement("Colors",
+      //        from clr in LVItemsColorCodes
+      //        select new XElement("ItemColorRow",
+      //                     new XElement("EXT", clr.ExtensionList),
+      //                     new XElement("COLOR", clr.TextColor.ToArgb())
+      //                   ));
+
+      //xEle.Save(itemColorSettingsLocation);
+
+
+      if (this.DesignMode == false)
+      {
+        explorerBrowserControl = new ExplorerBrowserClass();
+
+        this.BorderStyle = System.Windows.Forms.BorderStyle.None;
+
+        // hooks up IExplorerPaneVisibility and ICommDlgBrowser event notifications
+        ExplorerBrowserNativeMethods.IUnknown_SetSite(explorerBrowserControl, this);
+
+        // hooks up IExplorerBrowserEvents event notification
+        explorerBrowserControl.Advise(
+            Marshal.GetComInterfaceForObject(this, typeof(IExplorerBrowserEvents)),
+            out eventsCookie);
+
+        // sets up ExplorerBrowser view connection point events
+        viewEvents = new ExplorerBrowserViewEvents(this);
+        WindowsAPI.IFolderViewOptions fvo = (WindowsAPI.IFolderViewOptions)explorerBrowserControl;
+        if (IsOldSysListView)
+        {
+          fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.VISTALAYOUT, WindowsAPI.FOLDERVIEWOPTIONS.VISTALAYOUT);
+          //fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMORDERING, WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMORDERING);
+          //fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMPOSITION, WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMPOSITION);
+        }
+
+        NativeRect rect = new NativeRect();
+        rect.Top = ClientRectangle.Top - 1;
+        rect.Left = ClientRectangle.Left - 1;
+        rect.Right = ClientRectangle.Right + 1;
+        rect.Bottom = ClientRectangle.Bottom + 1;
+
+        explorerBrowserControl.Initialize(this.Handle, ref rect, null);
+
+        // Force an initial show frames so that IExplorerPaneVisibility works the first time it is set.
+        // This also enables the control panel to be browsed to. If it is not set, then navigating to
+        // the control panel succeeds, but no items are visible in the view.
+        explorerBrowserControl.SetOptions(ExplorerBrowserOptions.ShowFrames);
+
+        explorerBrowserControl.SetPropertyBag(propertyBagName);
+
+        if (antecreationNavigationTarget != null)
+        {
+          Navigate(antecreationNavigationTarget);
+          antecreationNavigationTarget = null;
+        }
+
+      }
+
+      //hookProc_GetMsg = new WindowsHelper.WindowsAPI.HookProc(CallbackGetMsgProc);
+      //int currentThreadId = WindowsAPI.GetCurrentThreadId();
+      //hHook_Msg = WindowsAPI.SetWindowsHookEx(3, hookProc_GetMsg, IntPtr.Zero, currentThreadId);
+
+      //Add MessageFilter for the IShellView
+
+      HookLibManager.SyncContext = SynchronizationContext.Current;
+      HookLibManager.IsCustomDialog = IsCustomDialogs;
+      HookLibManager.explorer = this;
+      //HookLibManager.Browser = this;
+      HookLibManager.Initialize();
+      Application.AddMessageFilter(this);
+    }
+    /// <summary>
 	  /// Creates and initializes the native ExplorerBrowser control
 	  /// </summary>
 	  protected override void OnCreateControl()
 	  {
 		  base.OnCreateControl();
-  //Initialize the hooks needed by ExplorerBrowser
-  BEHDLL = WindowsAPI.LoadLibrary(WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "BEH64.dll" : "BEH32.dll");
-
-  IntPtr GetItemNameP = WindowsAPI.GetProcAddress(BEHDLL, "GetItemName");
-  _GetItemName = (GetItemName)Marshal.GetDelegateForFunctionPointer(GetItemNameP,typeof(GetItemName));
-
-  IntPtr GetItemLocationP = WindowsAPI.GetProcAddress(BEHDLL, "GetItemLocation");
-  _GetItemLocation = (GetItemLocation)Marshal.GetDelegateForFunctionPointer(GetItemLocationP, typeof(GetItemLocation));
-
-
-  IntPtr SetColumnInShellViewP = WindowsAPI.GetProcAddress(BEHDLL, "SetColumnInShellView");
-  _SetColumnInShellView = (SetColumnInShellView)Marshal.GetDelegateForFunctionPointer(SetColumnInShellViewP, typeof(SetColumnInShellView));
-
-
-  IntPtr SetSortColumnsP = WindowsAPI.GetProcAddress(BEHDLL, "SetSortColumns");
-  _SetSortColumns = (SetSortColumns)Marshal.GetDelegateForFunctionPointer(SetSortColumnsP, typeof(SetSortColumns));
-
-
-  IntPtr GetColumnInfobyIndexP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnInfobyIndex");
-  _GetColumnInfobyIndex = (GetColumnInfobyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyIndexP, typeof(GetColumnInfobyIndex));
-
-
-  IntPtr GetColumnInfobyPKP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnInfobyPK");
-  _GetColumnInfobyPK = (GetColumnInfobyPK)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyPKP, typeof(GetColumnInfobyPK));
-
-  IntPtr GetSortColumnsP = WindowsAPI.GetProcAddress(BEHDLL, "GetSortColumns");
-  _GetSortColumns = (GetSortColumns)Marshal.GetDelegateForFunctionPointer(GetSortColumnsP, typeof(GetSortColumns));
-
-  IntPtr GetColumnbyIndexP = WindowsAPI.GetProcAddress(BEHDLL, "GetColumnbyIndex");
-  _GetColumnbyIndex = (GetColumnbyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnbyIndexP, typeof(GetColumnbyIndex));
-
-        
-
-  //this.LVItemsColorCodes = new List<LVItemColor>();
-  //LVItemsColorCodes.Add(new LVItemColor(".jpeg;.jpg;.bmp", Color.Red));
-  //LVItemsColorCodes.Add(new LVItemColor(".zip;.rar;.7z", Color.Orange));
-  //XDocument doc = new XDocument();
-  //
-  //var xEle = new XElement("Colors",
-  //        from clr in LVItemsColorCodes
-  //        select new XElement("ItemColorRow",
-  //                     new XElement("EXT", clr.ExtensionList),
-  //                     new XElement("COLOR", clr.TextColor.ToArgb())
-  //                   ));
-
-  //xEle.Save(itemColorSettingsLocation);
-
-
-		  if (this.DesignMode == false)
-		  {
-			  explorerBrowserControl = new ExplorerBrowserClass();
-
-			  this.BorderStyle = System.Windows.Forms.BorderStyle.None;
-								
-			  // hooks up IExplorerPaneVisibility and ICommDlgBrowser event notifications
-			  ExplorerBrowserNativeMethods.IUnknown_SetSite(explorerBrowserControl, this);
-
-			  // hooks up IExplorerBrowserEvents event notification
-			  explorerBrowserControl.Advise(
-					  Marshal.GetComInterfaceForObject(this, typeof(IExplorerBrowserEvents)),
-					  out eventsCookie);
-
-			  // sets up ExplorerBrowser view connection point events
-			  viewEvents = new ExplorerBrowserViewEvents(this);
-      WindowsAPI.IFolderViewOptions fvo = (WindowsAPI.IFolderViewOptions)explorerBrowserControl;
-			  if (IsOldSysListView)
-			  {
-					  fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.VISTALAYOUT, WindowsAPI.FOLDERVIEWOPTIONS.VISTALAYOUT);
-          //fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMORDERING, WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMORDERING);
-          //fvo.SetFolderViewOptions(WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMPOSITION, WindowsAPI.FOLDERVIEWOPTIONS.CUSTOMPOSITION);
-			  }
-
-			  NativeRect rect = new NativeRect();
-			  rect.Top = ClientRectangle.Top - 1;
-			  rect.Left = ClientRectangle.Left - 1;
-			  rect.Right = ClientRectangle.Right + 1;
-			  rect.Bottom = ClientRectangle.Bottom  + 1;
-
-			  explorerBrowserControl.Initialize(this.Handle, ref rect, null);
-
-			  // Force an initial show frames so that IExplorerPaneVisibility works the first time it is set.
-			  // This also enables the control panel to be browsed to. If it is not set, then navigating to 
-			  // the control panel succeeds, but no items are visible in the view.
-			  explorerBrowserControl.SetOptions(ExplorerBrowserOptions.ShowFrames);
-
-			  explorerBrowserControl.SetPropertyBag(propertyBagName);
-
-			  if (antecreationNavigationTarget != null)
-			  {
-				  Navigate(antecreationNavigationTarget);
-				  antecreationNavigationTarget = null;
-			  }
-
-		  }
-
-          //hookProc_GetMsg = new WindowsHelper.WindowsAPI.HookProc(CallbackGetMsgProc);
-          //int currentThreadId = WindowsAPI.GetCurrentThreadId();
-          //hHook_Msg = WindowsAPI.SetWindowsHookEx(3, hookProc_GetMsg, IntPtr.Zero, currentThreadId);
-
-          //Add MessageFilter for the IShellView
-                
-          HookLibManager.SyncContext = SynchronizationContext.Current;
-          HookLibManager.IsCustomDialog = IsCustomDialogs;
-          HookLibManager.explorer = this;
-          //HookLibManager.Browser = this;
-          HookLibManager.Initialize();
-          Application.AddMessageFilter(this);
+      InitBrowser();
 	  }
 
   public bool IsInEditMode()
@@ -2132,33 +2123,37 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			  base.OnSizeChanged(e);
 	  }
 
-	  /// <summary>
+    public void DestroyBrowser()
+    {
+      if (explorerBrowserControl != null)
+      {
+        ShellViewExplorerManager.ReleaseHandle();
+        ShellViewExplorerManager.DestroyHandle();
+
+        WindowsAPI.FreeLibrary(BEHDLL);
+        // unhook events
+        viewEvents.DisconnectFromView();
+        explorerBrowserControl.Unadvise(eventsCookie);
+        ExplorerBrowserNativeMethods.IUnknown_SetSite(explorerBrowserControl, null);
+
+        // destroy the explorer browser control
+        explorerBrowserControl.Destroy();
+
+        // release com reference to it
+        Marshal.ReleaseComObject(explorerBrowserControl);
+        explorerBrowserControl = null;
+      }
+
+      HookLibManager.ClearHookMemmmory();
+    }
+    /// <summary>
 	  /// Cleans up the explorer browser events+object when the window is being taken down.
 	  /// </summary>
 	  /// <param name="e">An EventArgs that contains event data.</param>
 	  protected override void OnHandleDestroyed(EventArgs e)
 	  {
-			  if (explorerBrowserControl != null)
-			  {
-                  ShellViewExplorerManager.ReleaseHandle();
-                  ShellViewExplorerManager.DestroyHandle();
-
-      WindowsAPI.FreeLibrary(BEHDLL);
-					  // unhook events
-					  viewEvents.DisconnectFromView();
-					  explorerBrowserControl.Unadvise(eventsCookie);
-					  ExplorerBrowserNativeMethods.IUnknown_SetSite(explorerBrowserControl, null);
-
-					  // destroy the explorer browser control
-					  explorerBrowserControl.Destroy();
-
-					  // release com reference to it
-					  Marshal.ReleaseComObject(explorerBrowserControl);
-					  explorerBrowserControl = null;
-			  }
-
-      HookLibManager.ClearHookMemmmory();
-			  base.OnHandleDestroyed(e);
+      DestroyBrowser();
+			base.OnHandleDestroyed(e);
 	  }
 	  #endregion
 

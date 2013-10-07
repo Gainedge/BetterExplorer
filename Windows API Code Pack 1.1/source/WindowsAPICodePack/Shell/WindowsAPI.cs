@@ -2034,6 +2034,9 @@ namespace WindowsHelper
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, MSG Msg,
             int wParam, int lParam);
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SendMessage(
+            IntPtr hWnd, uint Msg, IntPtr wParam, string lParam);
 
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, int Msg,

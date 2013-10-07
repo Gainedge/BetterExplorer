@@ -243,3 +243,6 @@ BExplorer/BetterExplorer/BEH64.lib
 BExplorer/BetterExplorer/BEH64.exp
 BExplorer/BetterExplorer/BEH64.lib
 BEH*.dll
+BExplorer/BetterExplorer/BEH32.exp
+BExplorer/BetterExplorer/BEH32.ilk
+BExplorer/BetterExplorer/BEH32.lib

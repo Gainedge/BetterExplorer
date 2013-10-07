@@ -850,12 +850,19 @@ namespace BetterExplorer
       Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
       {
 
-        IShellView isv = Explorer.GetShellView();
-        Collumns[] AllAvailColls = Explorer.AvailableColumns(true);
+        try
+        {
+          IShellView isv = Explorer.GetShellView();
+          Collumns[] AllAvailColls = Explorer.AvailableColumns(true);
 
-        SetupColumnsButton(AllAvailColls);
+          SetupColumnsButton(AllAvailColls);
 
-        SetSortingAndGroupingButtons();
+          SetSortingAndGroupingButtons();
+        }
+        catch (Exception)
+        {
+
+        }
 						
           
 			}));
@@ -2956,8 +2963,7 @@ namespace BetterExplorer
 				if ((Explorer.NavigationLog.CurrentLocation.IsFolder || Explorer.NavigationLog.CurrentLocation.IsDrive)
 											&& Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
 				{
-					FolderSizeWindow fsw = new FolderSizeWindow(Explorer.NavigationLog.CurrentLocation.ParsingName);
-					fsw.Owner = this;
+          FolderSizeWindow fsw = new FolderSizeWindow(Explorer.NavigationLog.CurrentLocation.ParsingName) { Owner = this };
 					fsw.Show();
 				}
 			}
@@ -2966,8 +2972,7 @@ namespace BetterExplorer
 
 		private void btnSizeChart_Click(object sender, RoutedEventArgs e)
 		{
-			FolderSizeWindow fsw = new FolderSizeWindow(Explorer.NavigationLog.CurrentLocation.ParsingName);
-			fsw.Owner = this;
+      FolderSizeWindow fsw = new FolderSizeWindow(Explorer.NavigationLog.CurrentLocation.ParsingName) { Owner = this };
 			fsw.Show();
 		}
 
@@ -3479,9 +3484,9 @@ namespace BetterExplorer
             }
             else
             {
-                Thread CopyThread = new Thread(new ParameterizedThreadStart(Explorer.DoDelete));
-                CopyThread.SetApartmentState(ApartmentState.STA);
-                CopyThread.Start(Explorer.SelectedItems);
+              Thread CopyThread = new Thread(ExplorerBrowser.DoDelete);
+              CopyThread.SetApartmentState(ApartmentState.STA);
+              CopyThread.Start(Explorer.SelectedItems);
             }
         }
         else
@@ -3939,7 +3944,7 @@ namespace BetterExplorer
 
 		private void btnRunAsAdmin_Click(object sender, RoutedEventArgs e)
 		{
-			Explorer.RunExeAsAdmin(Explorer.SelectedItems[0].ParsingName);
+			ExplorerBrowser.RunExeAsAdmin(Explorer.SelectedItems[0].ParsingName);
 		}
 
 		private void btnPin_Click(object sender, RoutedEventArgs e)
@@ -4518,6 +4523,7 @@ namespace BetterExplorer
     }
     private void InitializeExplorerControl()
     {
+      Explorer.LVItemsColorCodes = this.LVItemsColor;
       Explorer.SelectionChanged += ExplorerBrowserControl_SelectionChanged;
       Explorer.NavigationComplete += Explorer_NavigationComplete;
       Explorer.MouseWheel += Explorer_MouseWheel;
@@ -5073,11 +5079,6 @@ namespace BetterExplorer
         var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
         scroll.ScrollToHorizontalOffset(scroll.HorizontalOffset - e.Delta);
       }
-      //else
-      //{
-      //  Explorer.SetExplorerFocus();
-      //  Explorer.SetActiveShell();
-      //}
     }
 
     void r_OnMessageReceived(object sender, EventArgs e)
@@ -7069,122 +7070,105 @@ namespace BetterExplorer
 		/// </summary>
 		/// <param name="PaneForChange">The pane for change (0x1 - Details, 0x2 - Preview, 0x3 - Navigation)</param>
 		/// <param name="IsShow"></param>
-		private void ChangePaneVisibility(uint PaneForChange, bool IsShow)
+		private async void ChangePaneVisibility(uint PaneForChange, bool IsShow)
 		{
 
 			ShellObject lastLoc = Explorer.NavigationLog.CurrentLocation;
-
-      
-
-      Explorer = null;
-
-			Explorer = new ExplorerBrowser();
-
-			switch (PaneForChange)
-			{
-				case 0x1:
-					{
-						Explorer.NavigationOptions.PaneVisibility.Details = IsShow ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
-						RegistryKey rk = Registry.CurrentUser;
-						RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-						rks.SetValue(@"InfoPaneEnabled", IsShow ? 1 : 0);
-						rks.Close();
-						rk.Close();
-						IsInfoPaneEnabled = IsShow;
-						if (!IsNavigationPaneEnabled)
-						{
-							Explorer.NavigationOptions.PaneVisibility.Navigation = PaneVisibilityState.Hide;
-						}
-						if (!IsPreviewPaneEnabled)
-						{
-							Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
-						}
-						else
-						{
-							Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Show;
-						}
-						break;
-					}
-				case 0x2:
-					{
-						Explorer.NavigationOptions.PaneVisibility.Preview = IsShow ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
-
-						RegistryKey rk = Registry.CurrentUser;
-						RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-						rks.SetValue(@"PreviewPaneEnabled", IsShow ? 1 : 0);
-						rks.Close();
-						rk.Close();
-						IsPreviewPaneEnabled = IsShow;
-						if (!IsNavigationPaneEnabled)
-						{
-							Explorer.NavigationOptions.PaneVisibility.Navigation = PaneVisibilityState.Hide;
-						}
-						if (!IsInfoPaneEnabled)
-						{
-							Explorer.NavigationOptions.PaneVisibility.Details = PaneVisibilityState.Hide;
-						}
-						break;
-					}
-				case 0x3:
-					{
-						Explorer.NavigationOptions.PaneVisibility.Navigation = IsShow ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
-						IsNavigationPaneEnabled = true;
-						RegistryKey rk = Registry.CurrentUser;
-						RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-						rks.SetValue(@"NavigationPaneEnabled", IsShow ? 1 : 0);
-						rks.Close();
-						rk.Close();
-						IsNavigationPaneEnabled = IsShow;
-						if (!IsPreviewPaneEnabled)
-						{
-							Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
-						}
-						else
-						{
-							Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Show;
-						}
-						if (!IsInfoPaneEnabled)
-						{
-							Explorer.NavigationOptions.PaneVisibility.Details = PaneVisibilityState.Hide;
-						}
-						break;
-					}
-				default:
-					break;
-			}
+      await Task.Run(() =>
+          {
+            Dispatcher.Invoke(DispatcherPriority.Render, (ThreadStart)(() =>
+            {
+              Explorer.DestroyBrowser();
 
 
-      Explorer.LVItemsColorCodes = this.LVItemsColor;
-			Explorer.SelectionChanged += new EventHandler(ExplorerBrowserControl_SelectionChanged);
-			Explorer.NavigationComplete += new EventHandler<NavigationCompleteEventArgs>(Explorer_NavigationComplete);
-      Explorer.MouseWheel += Explorer_MouseWheel;
-			Explorer.ViewEnumerationComplete += new EventHandler(Explorer_ViewEnumerationComplete);
-			Explorer.NavigationPending += new EventHandler<NavigationPendingEventArgs>(Explorer_NavigationPending);
-			Explorer.GotFocus += new EventHandler(Explorer_GotFocus);
-			Explorer.ExplorerGotFocus += new EventHandler(Explorer_ExplorerGotFocus);
-			Explorer.RenameFinished += new EventHandler(Explorer_RenameFinished);
-			Explorer.KeyUP += new EventHandler<ExplorerKeyUPEventArgs>(Explorer_KeyUP);
-			Explorer.LostFocus += new EventHandler(Explorer_LostFocus);
-			Explorer.NavigationOptions.PaneVisibility.Commands = PaneVisibilityState.Hide;
-			Explorer.NavigationOptions.PaneVisibility.CommandsOrganize = PaneVisibilityState.Hide;
-			Explorer.NavigationOptions.PaneVisibility.CommandsView = PaneVisibilityState.Hide;
-			Explorer.ItemsChanged += new EventHandler(Explorer_ItemsChanged);
-			Explorer.ContentOptions.FullRowSelect = true;
-			Explorer.ClientSizeChanged += new EventHandler(ExplorerBrowserControl_ClientSizeChanged);
-			Explorer.Paint += new System.Windows.Forms.PaintEventHandler(ExplorerBrowserControl_Paint);
-			//Explorer.ViewChanged += new EventHandler<ViewChangedEventArgs>(Explorer_ViewChanged);
-      Explorer.ItemHot += Explorer_ItemHot;
-      Explorer.ItemMouseMiddleClick += Explorer_ItemMouseMiddleClick;
-			Explorer.ExplorerBrowserMouseLeave += new EventHandler(Explorer_ExplorerBrowserMouseLeave);
-			Explorer.DragDrop += new System.Windows.Forms.DragEventHandler(Explorer_DragDrop);
+
+              switch (PaneForChange)
+              {
+                case 0x1:
+                  {
+                    Explorer.NavigationOptions.PaneVisibility.Details = IsShow ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
+                    RegistryKey rk = Registry.CurrentUser;
+                    RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                    rks.SetValue(@"InfoPaneEnabled", IsShow ? 1 : 0);
+                    rks.Close();
+                    rk.Close();
+                    IsInfoPaneEnabled = IsShow;
+                    if (!IsNavigationPaneEnabled)
+                    {
+                      Explorer.NavigationOptions.PaneVisibility.Navigation = PaneVisibilityState.Hide;
+                    }
+                    if (!IsPreviewPaneEnabled)
+                    {
+                      Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
+                    }
+                    else
+                    {
+                      Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Show;
+                    }
+                    break;
+                  }
+                case 0x2:
+                  {
+                    Explorer.NavigationOptions.PaneVisibility.Preview = IsShow ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
+
+                    RegistryKey rk = Registry.CurrentUser;
+                    RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                    rks.SetValue(@"PreviewPaneEnabled", IsShow ? 1 : 0);
+                    rks.Close();
+                    rk.Close();
+                    IsPreviewPaneEnabled = IsShow;
+                    if (!IsNavigationPaneEnabled)
+                    {
+                      Explorer.NavigationOptions.PaneVisibility.Navigation = PaneVisibilityState.Hide;
+                    }
+                    if (!IsInfoPaneEnabled)
+                    {
+                      Explorer.NavigationOptions.PaneVisibility.Details = PaneVisibilityState.Hide;
+                    }
+                    break;
+                  }
+                case 0x3:
+                  {
+                    Explorer.NavigationOptions.PaneVisibility.Navigation = IsShow ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
+                    IsNavigationPaneEnabled = true;
+                    RegistryKey rk = Registry.CurrentUser;
+                    RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+                    rks.SetValue(@"NavigationPaneEnabled", IsShow ? 1 : 0);
+                    rks.Close();
+                    rk.Close();
+                    IsNavigationPaneEnabled = IsShow;
+                    if (!IsPreviewPaneEnabled)
+                    {
+                      Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
+                    }
+                    else
+                    {
+                      Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Show;
+                    }
+                    if (!IsInfoPaneEnabled)
+                    {
+                      Explorer.NavigationOptions.PaneVisibility.Details = PaneVisibilityState.Hide;
+                    }
+                    break;
+                  }
+                default:
+                  break;
+              }
+
+              Explorer.InitBrowser();
+            }));
+          });
+
+      //InitializeExplorerControl();
 
 
 			isGoingBackOrForward = true;
 
-      Explorer.Width = (int)ShellVView.Width;
-      Explorer.Height = (int)ShellVView.Height;
+      //Explorer.Width = (int)ShellVView.Width;
+      //Explorer.Height = (int)ShellVView.Height;
+
       Explorer.Navigate(lastLoc);
-      ShellVView.Child = Explorer;
+      //ShellVView.Child = Explorer;
 		}
 
     void Explorer_ItemMouseMiddleClick(object sender, ExplorerMouseEventArgs e) {
@@ -8375,26 +8359,26 @@ namespace BetterExplorer
 
 		private void btnTabClone_Click(object sender, RoutedEventArgs e)
 		{
-			CloneTab(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem);
+      CloneTab(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem);
             
 		}
 
 		private void btnTabCloseC_Click(object sender, RoutedEventArgs e)
 		{
-            CloseTab(tabControl1.SelectedItem as ClosableTabItem);
+      CloseTab(tabControl1.SelectedItem as ClosableTabItem);
 		}
 
 		//'close tab
 		void cti_CloseTab(object sender, RoutedEventArgs e)
 		{
-			ClosableTabItem curItem = e.Source as ClosableTabItem;
+      ClosableTabItem curItem = e.Source as ClosableTabItem;
 
 			CloseTab(curItem);
 		}
 
-		public void CloneTab(ClosableTabItem CurTab)
+    public void CloneTab(ClosableTabItem CurTab)
 		{
-			ClosableTabItem newt = new ClosableTabItem();
+      ClosableTabItem newt = new ClosableTabItem();
 			CreateTabbarRKMenu(newt);
 			newt.Header = CurTab.Header;
 			newt.TabIcon = CurTab.TabIcon;
@@ -8439,7 +8423,7 @@ namespace BetterExplorer
             NavigateAfterTabChange();
 		}
 
-		void CloseTab(ClosableTabItem thetab, bool allowreopening = true)
+    void CloseTab(ClosableTabItem thetab, bool allowreopening = true)
 		{
 			if (tabControl1.SelectedIndex == 0 && tabControl1.Items.Count == 1)
 			{
@@ -8467,7 +8451,7 @@ namespace BetterExplorer
 
 				for (int i = thetab.Index + 1; i < tabControl1.Items.Count; i++)
 				{
-					ClosableTabItem tab = tabControl1.Items[i] as ClosableTabItem;
+          ClosableTabItem tab = tabControl1.Items[i] as ClosableTabItem;
 					tab.Index = tab.Index - 1;
 				}
 				tabControl1.Items.Remove(thetab);
@@ -8479,23 +8463,23 @@ namespace BetterExplorer
 			{
 				reopenabletabs.Add(thetab.log);
 				btnUndoClose.IsEnabled = true;
-                foreach (ClosableTabItem item in this.tabControl1.Items)
+        foreach (ClosableTabItem item in this.tabControl1.Items)
+        {
+            foreach (FrameworkElement m in item.mnu.Items)
+            {
+                if (m.Tag != null)
                 {
-                    foreach (FrameworkElement m in item.mnu.Items)
+                    if (m.Tag.ToString() == "UCTI")
                     {
-                        if (m.Tag != null)
-                        {
-                            if (m.Tag.ToString() == "UCTI")
-                            {
-                                (m as MenuItem).IsEnabled = true;
-                            }
-                        }
+                        (m as MenuItem).IsEnabled = true;
                     }
                 }
+            }
+        }
 			}
 
 
-			ClosableTabItem itb = tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem;
+      ClosableTabItem itb = tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem;
 
 			  isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
             if (itb != null) {
@@ -8533,7 +8517,7 @@ namespace BetterExplorer
 		}
 		void newt_CloseTab(object sender, RoutedEventArgs e)
 		{
-			ClosableTabItem curItem = e.Source as ClosableTabItem;
+      ClosableTabItem curItem = e.Source as ClosableTabItem;
 			CloseTab(curItem);
 		}
 
@@ -8543,7 +8527,7 @@ namespace BetterExplorer
 		/// <param name="log">The navigation log data from the previously closed tab.</param>
 		public void ReOpenTab(NavigationLog log)
 		{
-			ClosableTabItem newt = new ClosableTabItem();
+      ClosableTabItem newt = new ClosableTabItem();
 			CreateTabbarRKMenu(newt);
 
 			ShellObject DefPath = log.CurrentLocation;
@@ -8610,7 +8594,7 @@ namespace BetterExplorer
 		{
 			if (e.ChangedButton == MouseButton.Middle)
 			{
-				CloneTab(tabControl1.SelectedItem as ClosableTabItem);
+        CloneTab(tabControl1.SelectedItem as ClosableTabItem);
 			}
 		}
 
@@ -8648,7 +8632,7 @@ namespace BetterExplorer
 		}
 
 
-		void CreateTabbarRKMenu(ClosableTabItem tabitem)
+    void CreateTabbarRKMenu(ClosableTabItem tabitem)
 		{
 
 			tabitem.mnu = new ContextMenu();
@@ -8715,7 +8699,7 @@ namespace BetterExplorer
 		void miopeninnew_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem mi = (sender as MenuItem);
-			ClosableTabItem ti = mi.Tag as ClosableTabItem;
+      ClosableTabItem ti = mi.Tag as ClosableTabItem;
 			Process.Start(Assembly.GetExecutingAssembly().GetName().Name, ti.Path.ParsingName + " /nw");
 			CloseTab(ti);
 			//throw new NotImplementedException();
@@ -8724,7 +8708,7 @@ namespace BetterExplorer
 		void miclosealltabbd_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem mi = (sender as MenuItem);
-			ClosableTabItem ti = mi.Tag as ClosableTabItem;
+      ClosableTabItem ti = mi.Tag as ClosableTabItem;
 			CloseAllTabsButThis(ti);
 		}
 
@@ -8736,7 +8720,7 @@ namespace BetterExplorer
 		void miclosecurrentr_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem mi = (sender as MenuItem);
-			ClosableTabItem ti = mi.Tag as ClosableTabItem;
+      ClosableTabItem ti = mi.Tag as ClosableTabItem;
 			CloseTab(ti);
 		}
 
@@ -8766,16 +8750,16 @@ namespace BetterExplorer
 
 		void CloseAllTabs(bool CloseFirstTab)
 		{
-			List<ClosableTabItem> tabs = new List<ClosableTabItem>();
+      List<ClosableTabItem> tabs = new List<ClosableTabItem>();
 			foreach (object item in tabControl1.Items)
 			{
-				ClosableTabItem it = item as ClosableTabItem;
+        ClosableTabItem it = item as ClosableTabItem;
 				tabs.Add(it);
 			}
 
 			if (CloseFirstTab)
 			{
-				foreach (ClosableTabItem item in tabs)
+        foreach (ClosableTabItem item in tabs)
 				{
 
 					CloseTab(item);
@@ -8783,7 +8767,7 @@ namespace BetterExplorer
 			}
 			else
 			{
-				foreach (ClosableTabItem item in tabs)
+        foreach (ClosableTabItem item in tabs)
 				{
 
 					if (item.Index != 0)
@@ -8799,17 +8783,17 @@ namespace BetterExplorer
 		}
 
 
-		void CloseAllTabsButThis(ClosableTabItem tabitem)
+    void CloseAllTabsButThis(ClosableTabItem tabitem)
 		{
-			List<ClosableTabItem> tabs = new List<ClosableTabItem>();
+      List<ClosableTabItem> tabs = new List<ClosableTabItem>();
 			foreach (object item in tabControl1.Items)
 			{
-				ClosableTabItem it = item as ClosableTabItem;
+        ClosableTabItem it = item as ClosableTabItem;
 				tabs.Add(it);
 			}
 
 
-			foreach (ClosableTabItem item in tabs)
+      foreach (ClosableTabItem item in tabs)
 			{
 
 				if (true)
@@ -8906,11 +8890,11 @@ namespace BetterExplorer
       ConstructMoveToCopyToMenu();
     }
 
-		
 
-		public ClosableTabItem NewTab(string Location, bool IsNavigate = false)
+
+    public ClosableTabItem NewTab(string Location, bool IsNavigate = false)
 		{
-			ClosableTabItem newt = new ClosableTabItem();
+      ClosableTabItem newt = new ClosableTabItem();
 			CreateTabbarRKMenu(newt);
 
       ShellObject DefPath = GetShellObjectFromLocation(Location);
@@ -8951,7 +8935,7 @@ namespace BetterExplorer
 
 		public void newt_TabSelected(object sender, RoutedEventArgs e)
 		{
-			ClosableTabItem itb = sender as ClosableTabItem;
+      ClosableTabItem itb = sender as ClosableTabItem;
 
 				isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
 				if (itb != null)
@@ -9001,7 +8985,7 @@ namespace BetterExplorer
 
 		void newt_PreviewMouseMove(object sender, MouseEventArgs e)
 		{
-			var tabItem = e.Source as ClosableTabItem;
+      var tabItem = e.Source as ClosableTabItem;
 
 			if (tabItem == null)
 				return;
@@ -9016,9 +9000,9 @@ namespace BetterExplorer
 		{
 
 			e.Handled = true;
-			var tabItemTarget = e.Source as ClosableTabItem;
+      var tabItemTarget = e.Source as ClosableTabItem;
 
-			var tabItemSource = e.Data.GetData(typeof(ClosableTabItem)) as ClosableTabItem;
+      var tabItemSource = e.Data.GetData(typeof(ClosableTabItem)) as ClosableTabItem;
 			if (tabItemSource != null)
 			{
 				if (!tabItemTarget.Equals(tabItemSource))
@@ -9055,7 +9039,7 @@ namespace BetterExplorer
 
 				//if (e.Data.GetDataPresent(DataFormats.FileDrop))
 				//{
-				if ((sender as ClosableTabItem).Path.IsFileSystemObject)
+        if ((sender as ClosableTabItem).Path.IsFileSystemObject)
 				{
 					if ((e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey)
 					{
@@ -9067,7 +9051,7 @@ namespace BetterExplorer
 							StringCollection scol = new StringCollection();
 							scol.AddRange(collection);
 							PasteData.DropList = scol;
-							PasteData.PathForDrop = (sender as ClosableTabItem).Path.ParsingName;
+              PasteData.PathForDrop = (sender as ClosableTabItem).Path.ParsingName;
 							Thread t = null;
 							t = new Thread(new ParameterizedThreadStart(Explorer.DoCopy));
 							t.SetApartmentState(ApartmentState.STA);
@@ -9087,7 +9071,7 @@ namespace BetterExplorer
 							StringCollection scol = new StringCollection();
 							scol.AddRange(collection);
 							PasteData.DropList = scol;
-							PasteData.PathForDrop = (sender as ClosableTabItem).Path.ParsingName;
+              PasteData.PathForDrop = (sender as ClosableTabItem).Path.ParsingName;
 							Thread t = null;
 							t = new Thread(new ParameterizedThreadStart(Explorer.DoMove));
 							t.SetApartmentState(ApartmentState.STA);
@@ -9155,7 +9139,7 @@ namespace BetterExplorer
 		{
 			e.Handled = true;
 
-			if ((sender as ClosableTabItem).Path.IsFileSystemObject)
+      if ((sender as ClosableTabItem).Path.IsFileSystemObject)
 			{
 				if ((e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey)
 				{
@@ -9190,7 +9174,7 @@ namespace BetterExplorer
 			Win32Point ptw = new Win32Point();
 			GetCursorPos(ref ptw);
 			//e.Handled = true;
-			if (e.Data.GetType() != typeof(ClosableTabItem))
+      if (e.Data.GetType() != typeof(ClosableTabItem))
 				DropTargetHelper.DragOver(new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
 		}
 
@@ -9202,7 +9186,7 @@ namespace BetterExplorer
 		void newt_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Handled = true;
-			var tabItem = e.Source as ClosableTabItem;
+      var tabItem = e.Source as ClosableTabItem;
 
 			if (tabItem == null)
 				return;
@@ -9213,7 +9197,7 @@ namespace BetterExplorer
 			//}
 			//if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			//{
-				if ((sender as ClosableTabItem).Path.IsFileSystemObject)
+      if ((sender as ClosableTabItem).Path.IsFileSystemObject)
 				{
 					if ((e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey)
 					{
@@ -9249,7 +9233,7 @@ namespace BetterExplorer
 				Win32Point ptw = new Win32Point();
 				GetCursorPos(ref ptw);
 				e.Effects = DragDropEffects.None;
-				var tabItemSource = e.Data.GetData(typeof(ClosableTabItem)) as ClosableTabItem;
+        var tabItemSource = e.Data.GetData(typeof(ClosableTabItem)) as ClosableTabItem;
 				if (tabItemSource == null)
 					DropTargetHelper.DragEnter(this, e.Data, new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
 			//}
@@ -9292,7 +9276,7 @@ namespace BetterExplorer
 					}
 					else
 						Explorer.Navigate(ShellObject.FromParsingName(StartUpLocation.Replace("\"", "")));
-					(tabControl1.SelectedItem as ClosableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
+          (tabControl1.SelectedItem as ClosableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
 				}
 				else if (hitTestList.Count == 3)
 				{
@@ -9306,7 +9290,7 @@ namespace BetterExplorer
 						}
 						else
 							Explorer.Navigate(ShellObject.FromParsingName(StartUpLocation.Replace("\"", "")));
-						(tabControl1.SelectedItem as ClosableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
+            (tabControl1.SelectedItem as ClosableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
 					}
 				}
 			}
@@ -9602,18 +9586,6 @@ namespace BetterExplorer
                 (tabControl1.SelectedItem as ClosableTabItem).BringIntoView();
             }
         }
-
-        private void tabControl1_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
-        }
-
-        private void tabControl1_PreviewMouseWheel_1(object sender, MouseWheelEventArgs e)
-        {
-
-            var scroll = (ScrollViewer)tabControl1.Template.FindName("svTabBar", tabControl1);
-        }
-
 		#endregion
 
         #region Customize Quick Access Toolbar

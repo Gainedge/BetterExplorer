@@ -30,191 +30,7 @@
                      mc:Ignorable="d" SizeChanged="RibbonWindow_SizeChanged" MinWidth="640" MinHeight="480" >
 
     <Ribbon:RibbonWindow.Resources>
-        <ResourceDictionary>
-            <ControlTemplate x:Key="HorizontalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
-                <Grid x:Name="Bg"
-                      Background="Transparent"
-                      SnapsToDevicePixels="True">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition MaxWidth="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}}" />
-                        <ColumnDefinition Width="1E-05*" />
-                        <ColumnDefinition MaxWidth="{DynamicResource {x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}}" />
-                    </Grid.ColumnDefinitions>
-                    <RepeatButton Command="ScrollBar.LineLeftCommand"
-                                  IsEnabled="{TemplateBinding IsMouseOver}"
-                                  Microsoft_Windows_Themes:ScrollChrome.ScrollGlyph="LeftArrow">
-                        <RepeatButton.Style>
-                            <Style TargetType="{x:Type RepeatButton}">
-                                <Setter Property="OverridesDefaultStyle" Value="True" />
-                                <Setter Property="Focusable" Value="False" />
-                                <Setter Property="IsTabStop" Value="False" />
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                            <Border Width="18"
-                                                    Height="18"
-                                                    Background="{x:Null}">
-                                                <Path Data=" M 8 15 L 8 3 L 2 9 Z" Fill="Black" />
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </RepeatButton.Style>
-                    </RepeatButton>
-                    <RepeatButton Grid.Column="2"
-                                  Command="ScrollBar.LineRightCommand"
-                                  IsEnabled="{TemplateBinding IsMouseOver}"
-                                  Microsoft_Windows_Themes:ScrollChrome.ScrollGlyph="RightArrow">
-                        <RepeatButton.Style>
-                            <Style TargetType="{x:Type RepeatButton}">
-                                <Setter Property="OverridesDefaultStyle" Value="True" />
-                                <Setter Property="Focusable" Value="False" />
-                                <Setter Property="IsTabStop" Value="False" />
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type RepeatButton}">
-                                            <Border Width="18"
-                                                    Height="18"
-                                                    Background="{x:Null}">
-                                                <Path Data=" M 9 15 L 9 3 L 15 9 Z" Fill="Black" />
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </RepeatButton.Style>
-                    </RepeatButton>
-                </Grid>
-                <ControlTemplate.Triggers>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter TargetName="Bg" Property="Background" Value="#FFF4F4F4" />
-                    </Trigger>
-                </ControlTemplate.Triggers>
-            </ControlTemplate>
-            <ControlTemplate x:Key="ScrollViewerTemplate" TargetType="{x:Type ScrollViewer}">
-                <Grid x:Name="Grid" Background="Transparent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Rectangle x:Name="Corner"
-                               Grid.Row="1"
-                               Grid.Column="1"
-                               Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" />
-                    <ScrollBar x:Name="PART_HorizontalScrollBar"
-                               Grid.Row="0"
-                               Grid.Column="0"
-                               AutomationProperties.AutomationId="HorizontalScrollBar"
-                               Cursor="Arrow"
-                               Maximum="{TemplateBinding ScrollableWidth}"
-                               Minimum="0"
-                               Orientation="Horizontal"
-                               Template="{DynamicResource HorizontalScrollBarTemplate}"
-                               ViewportSize="{TemplateBinding ViewportWidth}"
-                               Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"
-                               Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
-                    <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
-                                            Grid.Row="0"
-                                            Grid.Column="0"
-                                            Margin="0,2,0,0"
-                                            CanContentScroll="{TemplateBinding CanContentScroll}"
-                                            CanHorizontallyScroll="False"
-                                            CanVerticallyScroll="False"
-                                            Content="{TemplateBinding Content}"
-                                            ContentTemplate="{TemplateBinding ContentTemplate}" />
-                </Grid>
-                <ControlTemplate.Triggers>
-                    <Trigger Property="ComputedHorizontalScrollBarVisibility" Value="Visible">
-                        <Setter TargetName="PART_ScrollContentPresenter" Property="Margin" Value="15,2,15,0" />
-                    </Trigger>
-                </ControlTemplate.Triggers>
-            </ControlTemplate>
-            <ControlTemplate x:Key="ScrollableTabControlTemplate" TargetType="{x:Type TabControl}">
-                <Grid ClipToBounds="True"
-                      KeyboardNavigation.TabNavigation="Local"
-                      SnapsToDevicePixels="True">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition x:Name="ColumnDefinition0" />
-                        <ColumnDefinition x:Name="ColumnDefinition1" Width="0" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition x:Name="RowDefinition0" Height="Auto" />
-                        <RowDefinition x:Name="RowDefinition1" Height="*" />
-                    </Grid.RowDefinitions>
-
-                    <Border x:Name="ContentPanel"
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Margin="0,0,0,0"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="0,1,0,0"
-                            KeyboardNavigation.DirectionalNavigation="Contained"
-                            KeyboardNavigation.TabIndex="2"
-                            KeyboardNavigation.TabNavigation="Local">
-                        <ContentPresenter x:Name="PART_SelectedContentHost"
-                                          Margin="{TemplateBinding Padding}"
-                                          Content="{TemplateBinding SelectedContent}"
-                                          ContentSource="SelectedContent"
-                                          ContentStringFormat="{TemplateBinding SelectedContentStringFormat}"
-                                          ContentTemplate="{TemplateBinding SelectedContentTemplate}"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                    </Border>
-
-                    <ScrollViewer x:Name="svTabBar" Margin="0,0,0,-1"
-                                  HorizontalScrollBarVisibility="Auto"
-                                  PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
-                                  Template="{DynamicResource ScrollViewerTemplate}"
-                                  VerticalScrollBarVisibility="Disabled">
-                        <TabPanel x:Name="HeaderPanel"
-                                  Margin="0,2,2,1"
-                                  IsItemsHost="True"
-                                  KeyboardNavigation.TabIndex="1" />
-                    </ScrollViewer>
-
-
-                </Grid>
-                <ControlTemplate.Triggers>
-                    <Trigger Property="TabStripPlacement" Value="Bottom">
-                        <Setter TargetName="HeaderPanel" Property="Grid.Row" Value="1" />
-                        <Setter TargetName="ContentPanel" Property="Grid.Row" Value="0" />
-                        <Setter TargetName="RowDefinition0" Property="Height" Value="*" />
-                        <Setter TargetName="RowDefinition1" Property="Height" Value="Auto" />
-                        <Setter TargetName="HeaderPanel" Property="Margin" Value="2,0,2,2" />
-                    </Trigger>
-                    <Trigger Property="TabStripPlacement" Value="Left">
-                        <Setter TargetName="HeaderPanel" Property="Grid.Row" Value="0" />
-                        <Setter TargetName="ContentPanel" Property="Grid.Row" Value="0" />
-                        <Setter TargetName="HeaderPanel" Property="Grid.Column" Value="0" />
-                        <Setter TargetName="ContentPanel" Property="Grid.Column" Value="1" />
-                        <Setter TargetName="ColumnDefinition0" Property="Width" Value="Auto" />
-                        <Setter TargetName="ColumnDefinition1" Property="Width" Value="*" />
-                        <Setter TargetName="RowDefinition0" Property="Height" Value="*" />
-                        <Setter TargetName="RowDefinition1" Property="Height" Value="0" />
-                        <Setter TargetName="HeaderPanel" Property="Margin" Value="2,2,0,2" />
-                    </Trigger>
-                    <Trigger Property="TabStripPlacement" Value="Right">
-                        <Setter TargetName="HeaderPanel" Property="Grid.Row" Value="0" />
-                        <Setter TargetName="ContentPanel" Property="Grid.Row" Value="0" />
-                        <Setter TargetName="HeaderPanel" Property="Grid.Column" Value="1" />
-                        <Setter TargetName="ContentPanel" Property="Grid.Column" Value="0" />
-                        <Setter TargetName="ColumnDefinition0" Property="Width" Value="*" />
-                        <Setter TargetName="ColumnDefinition1" Property="Width" Value="Auto" />
-                        <Setter TargetName="RowDefinition0" Property="Height" Value="*" />
-                        <Setter TargetName="RowDefinition1" Property="Height" Value="0" />
-                        <Setter TargetName="HeaderPanel" Property="Margin" Value="0,2,2,2" />
-                    </Trigger>
-                    <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
-                    </Trigger>
-                </ControlTemplate.Triggers>
-            </ControlTemplate>
-		    </ResourceDictionary>
+      <ResourceDictionary Source="Themes\generic.xaml" />
     </Ribbon:RibbonWindow.Resources>
 
     <Grid x:Name="grid1">
@@ -1220,7 +1036,7 @@
                                                  BorderBrush="Magenta"
                                                  Header="{DynamicResource ctbLibrariesCP}"
                                                  Visibility="Collapsed" 
-                                                 MinWidth="100"/>
+                                                 MinWidth="120"/>
                 <Ribbon:RibbonContextualTabGroup x:Name="ctgDrive"
                                                  Background="LightBlue"
                                                  BorderBrush="Blue"
@@ -3115,12 +2931,13 @@
                     SelectedIndex="0"
                     SnapsToDevicePixels="True"
                     SelectionChanged="tabControl1_SelectionChanged"
-                    Template="{DynamicResource ScrollableTabControlTemplate}" PreviewMouseWheel="tabControl1_PreviewMouseWheel_1">
-            <TabControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel IsItemsHost="True" Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </TabControl.ItemsPanel>
+                    Template="{StaticResource ScrollableTabControlTemplate}"
+                    >
+          <TabControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel IsItemsHost="True" Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+          </TabControl.ItemsPanel>
         </TabControl>
 
         <WindowsFormsHost x:Name="ShellVView"

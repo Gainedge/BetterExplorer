@@ -217,6 +217,7 @@
     <Compile Include="Customize\CustomizeQAT.xaml.cs" />
     <Compile Include="Customize\RibbonItemListDisplay.xaml.cs" />
     <Compile Include="HelperClasses\FolderStructForSize.cs" />
+    <Compile Include="HelperClasses\NavigationLog.cs" />
     <Compile Include="HelperClasses\PathStringCombiner.cs" />
     <Compile Include="MessageReceiver.cs">
       <SubType>Form</SubType>
@@ -293,6 +294,7 @@
       <DependentUpon>ResizeImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="SystemMenu.cs" />
+    <Compile Include="Tabs\ClosableTabItem.cs" />
     <Compile Include="Tabs\SavedTabsListGalleryItem.xaml.cs">
       <DependentUpon>SavedTabsListGalleryItem.xaml</DependentUpon>
     </Compile>
@@ -329,7 +331,6 @@
     <Compile Include="ItemPopup.xaml.cs">
       <DependentUpon>ItemPopup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses\NavigationLog.cs" />
     <Compile Include="PreviewMedia.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -485,7 +486,6 @@
     <Compile Include="HelperClasses\ClipBoardMonitor.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tabs\ClosableTabItem.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -1157,7 +1157,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
