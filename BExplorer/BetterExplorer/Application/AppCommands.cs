@@ -13,6 +13,8 @@ namespace BetterExplorer
         public static RoutedCommand RoutedEnterInBreadCrumbCombo = new RoutedCommand();
         public static RoutedCommand RoutedChangeTab = new RoutedCommand();
         public static RoutedCommand RoutedCloseTab = new RoutedCommand();
+        public static RoutedCommand RoutedNavigateBack = new RoutedCommand();
+        public static RoutedCommand RoutedNavigateFF = new RoutedCommand();
         #endregion
     }
 }

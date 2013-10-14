@@ -113,6 +113,9 @@
     <Compile Include="ImageSizeDisplay.xaml.cs">
       <DependentUpon>ImageSizeDisplay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PreviewPane.xaml.cs">
+      <DependentUpon>PreviewPane.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -158,6 +161,10 @@
     <Page Include="ImageSizeDisplay.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PreviewPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SearchBox.xaml">
       <Generator>MSBuild:Compile</Generator>

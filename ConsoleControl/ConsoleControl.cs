@@ -34,6 +34,15 @@ namespace ConsoleControl
             //  Initialise the component.
             InitializeComponent();
 
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.UserPaint |
+                          ControlStyles.AllPaintingInWmPaint |
+                          ControlStyles.ResizeRedraw |
+                          ControlStyles.ContainerControl |
+                          ControlStyles.OptimizedDoubleBuffer |
+                          ControlStyles.SupportsTransparentBackColor
+                          , true);
+
             //  Show diagnostics disabled by default.
             ShowDiagnostics = false;
 
@@ -216,13 +225,13 @@ namespace ConsoleControl
                 (output == lastInput || output.Replace("\r\n", "") == lastInput))
                 return;
 
-            Invoke((Action)(() =>
-            {
+            //Invoke((Action)(() =>
+            //{
                 //  Write the output.
                 richTextBoxConsole.SelectionColor = color;
                 richTextBoxConsole.SelectedText += output;
                 inputStart = richTextBoxConsole.SelectionStart;
-            }));
+            //}));
         }
 
         public void ClearOutput()
@@ -444,6 +453,30 @@ namespace ConsoleControl
         public List<KeyMapping> KeyMappings
         {
             get { return keyMappings; }
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+
+        }
+        protected override CreateParams CreateParams
+        {
+          get
+          {
+            CreateParams cp = base.CreateParams;
+            cp.ExStyle |= 0x02000000;
+            return cp;
+          }
+        }
+        protected override void OnResize(EventArgs e)
+        {
+          this.Invalidate();
+          base.OnResize(e);
+        }
+        protected override void OnSizeChanged(EventArgs e)
+        {
+          this.Invalidate();
+          base.OnSizeChanged(e);
         }
     }
 }

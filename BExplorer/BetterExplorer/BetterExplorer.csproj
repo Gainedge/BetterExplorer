@@ -683,6 +683,10 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\BEHelper\BEHelper.csproj">
+      <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
+      <Name>BEHelper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ConsoleControl\ConsoleControl.csproj">
       <Project>{737CC7F2-EC7C-4800-B7EB-72637E892C42}</Project>
       <Name>ConsoleControl</Name>
@@ -714,6 +718,10 @@
     <ProjectReference Include="..\..\WpfControlLibrary1\BetterExplorerControls.csproj">
       <Project>{04270710-e358-46d4-83e5-eb7a9323cce7}</Project>
       <Name>BetterExplorerControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WpfDocumentPreviewer\WpfDocumentPreviewer.csproj">
+      <Project>{6a63405a-b6bb-4095-b48c-e720de021482}</Project>
+      <Name>WpfDocumentPreviewer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

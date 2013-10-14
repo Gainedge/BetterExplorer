@@ -2,6 +2,7 @@
 using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -199,6 +200,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
                                         m.Result = (IntPtr)CDRF_SKIPDEFAULT;
                                         break;
                                 }
+                                if (itemobj != null)
+                                  itemobj.Dispose();
                                 return;
                             }
                         }

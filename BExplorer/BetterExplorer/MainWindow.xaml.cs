@@ -65,6 +65,7 @@ namespace BetterExplorer
 		string StartUpLocation = KnownFolders.Libraries.ParsingName;
 		bool IsHFlyoutEnabled;
 		bool IsPreviewPaneEnabled;
+    int PreviewPaneWidth = 120;
 		bool IsInfoPaneEnabled;
 		bool IsNavigationPaneEnabled;
 		bool isCheckModeEnabled;
@@ -85,7 +86,7 @@ namespace BetterExplorer
 		string EditComm = "";
 		List<string> Archives = new List<string>(new string[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
 		List<string> Images = new List<string>(new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
-        List<string> VirDisks = new List<string>(new string[] { ".iso", ".bin", ".vhd" });
+    List<string> VirDisks = new List<string>(new string[] { ".iso", ".bin", ".vhd" });
 		MenuItem misa;
 		MenuItem misd;
 		MenuItem misag;
@@ -122,16 +123,16 @@ namespace BetterExplorer
 		System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
 		DateTime LastUpdateCheck;
 		Int32 UpdateCheckInterval;
-        Double CommandPromptWinHeight;
-        bool IsViewSelection = false;
-        private ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
-        public List<string> QatItems = new List<string>();
-        UIElement curitem = null;
-        Boolean IsGlassOnRibonMinimized { get; set; }
-        NetworkAccountManager nam = new NetworkAccountManager();
-        List<LVItemColor> LVItemsColor { get; set; }
-        uint SelectedDriveID = 0;
-        string[] InitialTabs;
+    Double CommandPromptWinHeight;
+    bool IsViewSelection = false;
+    private readonly ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
+    public List<string> QatItems = new List<string>();
+    UIElement curitem = null;
+    Boolean IsGlassOnRibonMinimized { get; set; }
+    NetworkAccountManager nam = new NetworkAccountManager();
+    List<LVItemColor> LVItemsColor { get; set; }
+    uint SelectedDriveID = 0;
+    string[] InitialTabs;
 		#endregion
 
 		#region Properties
@@ -345,6 +346,9 @@ namespace BetterExplorer
       rks.SetValue(@"AutoSwitchDriveTools", GetIntegerFromBoolean(asDrive));
       rks.SetValue(@"AutoSwitchVirtualDriveTools", GetIntegerFromBoolean(asVirtualDrive));
       rks.SetValue(@"IsLastTabCloseApp", GetIntegerFromBoolean(this.IsCloseLastTabCloseApp));
+      if (this.IsPreviewPaneEnabled)
+        rks.SetValue(@"PreviewPaneWidth", (int)clPreview.ActualWidth, RegistryValueKind.DWord);
+
       if (this.IsConsoleShown)
         rks.SetValue(@"CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
       rks.SetValue(@"IsConsoleShown", this.IsConsoleShown ? 1 : 0);
@@ -586,6 +590,8 @@ namespace BetterExplorer
 			AppCommands.RoutedEnterInBreadCrumbCombo.InputGestures.Add(new KeyGesture(Key.E, ModifierKeys.Alt));
 			AppCommands.RoutedChangeTab.InputGestures.Add(new KeyGesture(Key.Tab, ModifierKeys.Control));
 			AppCommands.RoutedCloseTab.InputGestures.Add(new KeyGesture(Key.W, ModifierKeys.Control));
+      AppCommands.RoutedNavigateBack.InputGestures.Add(new KeyGesture(Key.Left, ModifierKeys.Alt));
+      AppCommands.RoutedNavigateFF.InputGestures.Add(new KeyGesture(Key.Right, ModifierKeys.Alt));
 
       LoadInitialWindowPositionAndState();
 
@@ -1243,6 +1249,7 @@ namespace BetterExplorer
         {
           Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
                     {
+                      ExplorerBrowser.FlushMemory();
                       PreselectItemsIntoExplorerControl();
 
                       ConstructMoveToCopyToMenu();
@@ -1261,6 +1268,11 @@ namespace BetterExplorer
                       SetupUIOnSelectOrNavigate(Explorer.GetSelectedItemsCount(), true);
                     }
                   ));
+        });
+
+        await Task.Run(() =>
+        {
+          PreviewPanel.FillPreviewPane(Explorer);
         });
 
         #region StatusBar selected items counter
@@ -1559,30 +1571,38 @@ namespace BetterExplorer
 		async void ExplorerBrowserControl_SelectionChanged(object sender, EventArgs e)
 		{
       int explorerSelectedItemsCount = 0;
-
-      await Task.Run(() =>
+      
+      if (!IsSelectionRized)
       {
-        //ct.ThrowIfCancellationRequested();
-        Dispatcher.BeginInvoke(DispatcherPriority.Input, (ThreadStart)(() =>
+        IsSelectionRized = true;
+        
+        await Task.Run(() =>
         {
-
-          if (!IsSelectionRized)
+          //ct.ThrowIfCancellationRequested();
+          Dispatcher.BeginInvoke(DispatcherPriority.Input, (ThreadStart)(() =>
           {
             try
             {
-              IsSelectionRized = true;
+              ExplorerBrowser.FlushMemory();
               // set up buttons
               SetupUIOnSelectOrNavigate(Explorer.GetSelectedItemsCount());
+              
+
             }
             catch (Exception)
             {
 
 
             }
-            IsSelectionRized = false;
-          }
-        }));
-      });
+            
+          }));
+        });
+        await Task.Run(() =>
+        {
+          PreviewPanel.FillPreviewPane(Explorer);
+        });
+        IsSelectionRized = false;
+      }
 
       #region StatusBar selected items counter
       await Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() =>
@@ -1887,6 +1907,15 @@ namespace BetterExplorer
           SetUpOpenWithButton(selectedItem);
       }
 
+      if (selectedItem != null && selectedItem.IsFileSystemObject && IsPreviewPaneEnabled && !selectedItem.IsFolder && SelItemsCount == 1)
+      {
+        this.Previewer.FileName = selectedItem.ParsingName;
+      }
+      else
+      {
+        if (!String.IsNullOrEmpty(this.Previewer.FileName))
+          this.Previewer.FileName = null;
+      }
       //Set up ribbon contextual tabs on selection changed
       SetUPRibbonTabsVisibilityOnSelectOrNavigate(SelItemsCount, selectedItem);
 
@@ -4333,6 +4362,11 @@ namespace BetterExplorer
 			this.CommandBindings.Add(cbCloseTab);
 			CommandBinding cbChangeTab= new CommandBinding(AppCommands.RoutedChangeTab, ChangeTab);
 			this.CommandBindings.Add(cbChangeTab);
+      CommandBinding cbNavigateBack = new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click);
+      this.CommandBindings.Add(cbNavigateBack);
+      CommandBinding cbNavigateFF = new CommandBinding(AppCommands.RoutedNavigateFF, rightNavBut_Click);
+      this.CommandBindings.Add(cbNavigateFF);
+
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 
@@ -4374,16 +4408,15 @@ namespace BetterExplorer
 				string loc;
 				if (Convert.ToString(rks.GetValue(@"Locale", ":null:")) == ":null:")
 				{
-					// creates value in Registry if value does not exist
-					rks.SetValue(@"Locale", "en-US");
-					loc = "en-US";
+					//load current UI language in case there is no specified registry value
+          loc = Thread.CurrentThread.CurrentUICulture.Name; ;
 				}
 				else
 				{
 					loc = Convert.ToString(rks.GetValue(@"Locale", ":null:"));
 				}
 
-                SelectCulture(loc, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\translation.xaml");
+        SelectCulture(loc, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\translation.xaml");
 
 			}
 			catch (Exception ex)
@@ -4419,23 +4452,23 @@ namespace BetterExplorer
 				}
 			}
 
-            bool rtlset = false;
+      bool rtlset = false;
 
-            if (rtlused != "notset")
-            {
-                rtlset = true;
-            }
-            else
-            {
-                if ((this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL == true)
-                {
-                    rtlused = "true";
-                }
-                else
-                {
-                    rtlused = "false";
-                }
-            }
+      if (rtlused != "notset")
+      {
+          rtlset = true;
+      }
+      else
+      {
+          if ((this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL == true)
+          {
+              rtlused = "true";
+          }
+          else
+          {
+              rtlused = "false";
+          }
+      }
 
 			// sets size of search bar
 			this.SearchBarColumn.Width = new GridLength(sbw);
@@ -4547,8 +4580,7 @@ namespace BetterExplorer
       Explorer.ExplorerBrowserMouseLeave += Explorer_ExplorerBrowserMouseLeave;
       Explorer.DragDrop += Explorer_DragDrop;
 
-      Explorer.NavigationOptions.PaneVisibility.Preview =
-        IsPreviewPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
+      Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
       Explorer.NavigationOptions.PaneVisibility.Details =
         IsInfoPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
 
@@ -4648,6 +4680,19 @@ namespace BetterExplorer
 
       IsPreviewPaneEnabled = (PreviewPaneEnabled == 1);
       btnPreviewPane.IsChecked = IsPreviewPaneEnabled;
+
+      PreviewPaneWidth = (int)rks.GetValue(@"PreviewPaneWidth", 120);
+
+      if (IsPreviewPaneEnabled)
+      {
+        clPreview.Width = new GridLength((double)PreviewPaneWidth);
+        clPreviewSplitter.Width = new GridLength(1);
+      }
+      else
+      {
+        clPreview.Width = new GridLength(0);
+        clPreviewSplitter.Width = new GridLength(0);
+      }
 
       int NavigationPaneEnabled = (int)rks.GetValue(@"NavigationPaneEnabled", 1);
 
@@ -5043,7 +5088,7 @@ namespace BetterExplorer
         SetsUpJumpList();
       
 				//Setup Clipboard monitor
-				cbm.ClipboardChanged += new EventHandler<ClipboardChangedEventArgs>(cbm_ClipboardChanged);
+        cbm.ClipboardChanged += cbm_ClipboardChanged;
                     
 
 				if (exitApp)
@@ -5053,9 +5098,12 @@ namespace BetterExplorer
 				}
 
         if (this.IsConsoleShown) {
-          ctrlConsole.StartProcess("cmd.exe", null);
-          ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
-          ctrlConsole.ClearOutput(); 
+          if (!ctrlConsole.IsProcessRunning)
+          {
+            ctrlConsole.StartProcess("cmd.exe", null);
+            ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+            ctrlConsole.ClearOutput();
+          }
         }
 
         //Set up Version Info
@@ -7103,13 +7151,13 @@ namespace BetterExplorer
                     }
                     else
                     {
-                      Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Show;
+                      Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
                     }
                     break;
                   }
                 case 0x2:
                   {
-                    Explorer.NavigationOptions.PaneVisibility.Preview = IsShow ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
+                    Explorer.NavigationOptions.PaneVisibility.Preview = IsShow ? PaneVisibilityState.Hide : PaneVisibilityState.Hide;
 
                     RegistryKey rk = Registry.CurrentUser;
                     RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
@@ -7143,7 +7191,7 @@ namespace BetterExplorer
                     }
                     else
                     {
-                      Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Show;
+                      Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
                     }
                     if (!IsInfoPaneEnabled)
                     {
@@ -7189,14 +7237,40 @@ namespace BetterExplorer
 
 		private void btnPreviewPane_Checked(object sender, RoutedEventArgs e)
 		{
-			if (!isOnLoad)
-				ChangePaneVisibility(0x2, true);
+      if (!isOnLoad)
+      {
+        //ChangePaneVisibility(0x2, true);
+        this.clPreview.Width = new GridLength((double)this.PreviewPaneWidth);
+        this.clPreviewSplitter.Width = new GridLength(1);
+        var selectedItem = Explorer.SelectedItems.FirstOrDefault();
+        if (selectedItem != null && selectedItem.IsFileSystemObject && Explorer.SelectedItems.Count == 1 && !selectedItem.IsFolder)
+        {
+          this.Previewer.FileName = selectedItem.ParsingName;
+        }
+        RegistryKey rk = Registry.CurrentUser;
+        RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+        rks.SetValue(@"PreviewPaneEnabled", 1);
+        rks.Close();
+        rk.Close();
+        this.IsPreviewPaneEnabled = true;
+      }
 		}
 
 		private void btnPreviewPane_Unchecked(object sender, RoutedEventArgs e)
 		{
-			if (!isOnLoad)
-				ChangePaneVisibility(0x2, false);
+      if (!isOnLoad)
+      {
+        //ChangePaneVisibility(0x2, false);
+        this.clPreview.Width = new GridLength(0);
+        this.clPreviewSplitter.Width = new GridLength(0);
+        this.Previewer.FileName = null;
+        RegistryKey rk = Registry.CurrentUser;
+        RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+        rks.SetValue(@"PreviewPaneEnabled", 0);
+        rks.Close();
+        rk.Close();
+        this.IsPreviewPaneEnabled = false;
+      }
 		}
 
 		private void btnInfoPane_Unchecked(object sender, RoutedEventArgs e)
@@ -7250,7 +7324,7 @@ namespace BetterExplorer
                 RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
                 rks.SetValue(@"PreviewPaneEnabled", 0);
                 IsPreviewPaneEnabled = false;
-                Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
+                //Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
                 //Explorer.Navigate(Explorer.NavigationLog.CurrentLocation);
                 rks.Close();
                 rk.Close();
@@ -7265,7 +7339,7 @@ namespace BetterExplorer
                 RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
                 rks.SetValue(@"PreviewPaneEnabled", 1);
                 IsPreviewPaneEnabled = true;
-                Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Show;
+                //Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Show;
                 //Explorer.SetState();
                 //Explorer.Navigate(Explorer.NavigationLog.CurrentLocation);
                 rks.Close();

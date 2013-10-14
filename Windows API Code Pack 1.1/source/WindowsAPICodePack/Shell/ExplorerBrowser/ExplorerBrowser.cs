@@ -670,10 +670,13 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 
 	  #region operations
 
-	  public static void FlushMemory()
+	  public static void FlushMemory(bool Collect = true)
 	  {
-			  GC.Collect();
-			  GC.WaitForPendingFinalizers();
+      if (Collect)
+      {
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+      }
 			  if (Environment.OSVersion.Platform == PlatformID.Win32NT)
 			  {
 					  WindowsAPI.SetProcessWorkingSetSize(System.Diagnostics.Process.GetCurrentProcess().Handle, -1, -1);
@@ -1911,9 +1914,30 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 				  }
 			  }
 		  }
+      if (e != null)
+      {
+        e.Graphics.FillRectangle(SystemBrushes.Window, ClientRectangle);
+      }
+
+      if (explorerBrowserControl != null)
+      {
+        NativeRect rect = new NativeRect();
+        rect.Top = ClientRectangle.Top - 1;
+        rect.Left = ClientRectangle.Left - 1;
+        rect.Right = ClientRectangle.Right + 2;
+        rect.Bottom = ClientRectangle.Bottom + 2;
+
+        IntPtr ptr = IntPtr.Zero;
+        explorerBrowserControl.SetRect(ref ptr, rect);
+      }
 
 		  base.OnPaint(e);
 	  }
+
+    protected override void OnPaintBackground(PaintEventArgs e)
+    {
+      //base.OnPaintBackground(e);
+    }
 
     public void InitBrowser()
     {
@@ -2108,21 +2132,16 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 	  /// <param name="e">Contains information about the size changed event.</param>
 	  protected override void OnSizeChanged(EventArgs e)
 	  {
-			  if (explorerBrowserControl != null)
-			  {
-					  NativeRect rect = new NativeRect();
-					  rect.Top = ClientRectangle.Top - 1;
-					  rect.Left = ClientRectangle.Left - 1;
-					  rect.Right = ClientRectangle.Right + 1;
-					  rect.Bottom = ClientRectangle.Bottom + 1;
 
-					  IntPtr ptr = IntPtr.Zero;
-					  explorerBrowserControl.SetRect(ref ptr, rect);
-			  }
-
+      this.Update();
 			  base.OnSizeChanged(e);
 	  }
 
+    protected override void OnResize(EventArgs e)
+    {
+      this.Update();
+      base.OnResize(e);
+    }
     public void DestroyBrowser()
     {
       if (explorerBrowserControl != null)
@@ -2398,7 +2417,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 	  {
 			  if (uChange == CommDlgBrowserStateChange.SelectionChange)
 			  {
-					  BeginInvoke(new MethodInvoker(delegate()
+					  Invoke(new MethodInvoker(delegate()
 					  {
 							  FireSelectionChanged();
 					  }));
