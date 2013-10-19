@@ -8,7 +8,7 @@ How to build and test Better Explorer
 ======================================
 **You can also download a test build from our website to test new features.**
 
-Important: This process includes the installation of either Visual Studio Express 2013 or SharpDevelop. Visual Studio Express 2013 takes longer to install, but is 100% guaranteed to work with BetterExplorer.
+Important: This process includes the installation of either Visual Studio Express 2013 or SharpDevelop. It might take a bit of a while!
 
 Anyway, here's how it's done (in just 3 steps!):
 
