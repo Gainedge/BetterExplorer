@@ -28,7 +28,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
             HResult hr = nativeShellFolder.NativeShellFolder.EnumObjects(
                 IntPtr.Zero,
-                ShellFolderEnumerationOptions.Folders | ShellFolderEnumerationOptions.NonFolders | ShellFolderEnumerationOptions.IncludeHidden  | ShellFolderEnumerationOptions.EnableAsync | ShellFolderEnumerationOptions.InitializeOnFirstNext,
+                ShellFolderEnumerationOptions.Folders | ShellFolderEnumerationOptions.NonFolders | ShellFolderEnumerationOptions.IncludeHidden  | ShellFolderEnumerationOptions.EnableAsync | ShellFolderEnumerationOptions.FastItems,
                 out nativeEnumIdList);
 
 

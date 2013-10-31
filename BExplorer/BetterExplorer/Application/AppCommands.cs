@@ -15,6 +15,7 @@ namespace BetterExplorer
         public static RoutedCommand RoutedCloseTab = new RoutedCommand();
         public static RoutedCommand RoutedNavigateBack = new RoutedCommand();
         public static RoutedCommand RoutedNavigateFF = new RoutedCommand();
+        public static RoutedCommand RoutedGotoSearch = new RoutedCommand();
         #endregion
     }
 }

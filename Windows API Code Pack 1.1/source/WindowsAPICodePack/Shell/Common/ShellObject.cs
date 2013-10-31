@@ -523,6 +523,28 @@ namespace Microsoft.WindowsAPICodePack.Shell
             }
         }
 
+        public bool IsBrowsable
+        {
+          get
+          {
+            try
+            {
+              ShellFileGetAttributesOptions sfgao;
+              NativeShellItem.GetAttributes(ShellFileGetAttributesOptions.Browsable, out sfgao);
+              return (sfgao & ShellFileGetAttributesOptions.Browsable) != 0;
+            }
+            catch (FileNotFoundException)
+            {
+              return false;
+            }
+            catch (NullReferenceException)
+            {
+              // NativeShellItem is null
+              return false;
+            }
+          }
+        }
+
         public bool IsHidden {
           get {
             try {
@@ -606,10 +628,19 @@ namespace Microsoft.WindowsAPICodePack.Shell
             }
         }
 
-        public Bitmap GetShellThumbnail(int Size, bool OnlyIcon = false, bool OnlyCache = false)
+        //public Bitmap GetShellThumbnail(int Size, bool OnlyIcon = false, bool OnlyCache = false, bool OnlyThumbnail = false)
+        //{
+        //  this.Thumbnail.RetrievalOption = OnlyCache ? ShellThumbnailRetrievalOption.CacheOnly : ShellThumbnailRetrievalOption.Default;
+
+        //  this.Thumbnail.FormatOption = OnlyIcon ? ShellThumbnailFormatOption.IconOnly : ShellThumbnailFormatOption.Default;
+        //  this.Thumbnail.CurrentSize = new System.Windows.Size(Size, Size);
+        //  return this.Thumbnail.Bitmap;
+        //}
+
+        public Bitmap GetShellThumbnail(int Size, ShellThumbnailFormatOption format = ShellThumbnailFormatOption.Default, bool OnlyCache = false)
         {
           this.Thumbnail.RetrievalOption = OnlyCache ? ShellThumbnailRetrievalOption.CacheOnly : ShellThumbnailRetrievalOption.Default;
-          this.Thumbnail.FormatOption = OnlyIcon ? ShellThumbnailFormatOption.IconOnly : ShellThumbnailFormatOption.Default;
+          this.Thumbnail.FormatOption = format;
           this.Thumbnail.CurrentSize = new System.Windows.Size(Size, Size);
           return this.Thumbnail.Bitmap;
         }

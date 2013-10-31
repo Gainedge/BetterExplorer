@@ -580,6 +580,14 @@ namespace BetterExplorerControls
             SearchCriteriatext.Focus();
         }
 
+        private void UserControl_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+          lblDefault.Visibility = System.Windows.Visibility.Hidden;
+          this.Focus();
+          SearchCriteriatext.IsEnabled = true;
+          SearchCriteriatext.Focus();
+        }
+
     }
 }
 

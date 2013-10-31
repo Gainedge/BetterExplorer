@@ -133,6 +133,19 @@ namespace BetterExplorerControls
 				NavigateRequested(this, e);
 		}
 
+    public delegate void RefreshHandler(object sender);
+
+    // An event that clients can use to be notified whenever the
+    // elements of the list change:
+    public event RefreshHandler RefreshRequested;
+
+    // Invoke the Changed event; called whenever list changes:
+    protected virtual void OnRefreshRequested()
+    {
+      if (RefreshRequested != null)
+        RefreshRequested(this);
+    }
+
 		public void SetDragHandlers(DragEventHandler dragenter, DragEventHandler dragleave, DragEventHandler dragover, DragEventHandler drop)
 		{
 			de = dragenter;
@@ -523,5 +536,12 @@ namespace BetterExplorerControls
       }
       ExitEditMode();
     }
+
+    private void btnRefreshExplorer_Click(object sender, RoutedEventArgs e)
+    {
+      OnRefreshRequested();
+    }
+
+    
 	}
 }

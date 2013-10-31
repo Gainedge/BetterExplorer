@@ -37,6 +37,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
         public const int CDDS_SUBITEM = 0x00020000;
         public const int CDDS_ITEMPREPAINT = (CDDS_ITEM | CDDS_PREPAINT);
         public const int CDDS_ITEMPOSTPAINT = (CDDS_ITEM | CDDS_POSTPAINT);
+
         public SubclassHWND(Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser browser, IntPtr sysListviewHandle)
         {
             this.Browser = browser;

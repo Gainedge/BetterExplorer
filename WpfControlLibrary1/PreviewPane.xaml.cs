@@ -26,28 +26,22 @@ namespace BetterExplorerControls
   public partial class PreviewPane : UserControl, INotifyPropertyChanged
   {
     public ExplorerBrowser Browser;
-
+    private BitmapSource _thumbnail;
+    private ShellObject[] SelectedItems;
     public BitmapSource Thumbnail { 
       get{
-        if (this.Browser.SelectedItems.Count() > 0)
-        {
-          ShellObject selectedItemsFirst = this.Browser.SelectedItems.First();
-          selectedItemsFirst.Thumbnail.CurrentSize = new Size(this.ActualHeight - 20, this.ActualHeight - 20);
-          return selectedItemsFirst.Thumbnail.BitmapSource;
-        } else {
-          return null;
-        }
+        return _thumbnail;
       }
     }
 
+    
     public String DisplayName
     {
       get
       {
         if (this.Browser.SelectedItems.Count() > 0)
         {
-          ShellObject selectedItemsFirst = this.Browser.SelectedItems.First();
-          return selectedItemsFirst.GetDisplayName(DisplayNameType.Default);
+          return this.Browser.SelectedItems[0].GetDisplayName(DisplayNameType.Default);
         }
         else
         {
@@ -62,8 +56,7 @@ namespace BetterExplorerControls
       {
         if (this.Browser.SelectedItems.Count() > 0)
         {
-          ShellObject selectedItemsFirst = this.Browser.SelectedItems.First();
-          return selectedItemsFirst.Properties.System.ItemTypeText != null ? selectedItemsFirst.Properties.System.ItemTypeText.Value : String.Empty;
+          return this.Browser.SelectedItems[0].Properties.System.ItemTypeText != null ? this.Browser.SelectedItems[0].Properties.System.ItemTypeText.Value : String.Empty;
         }
         else
         {
@@ -83,25 +76,41 @@ namespace BetterExplorerControls
       this.SizeChanged += PreviewPane_SizeChanged;
     }
 
+
     void PreviewPane_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-      
-      PropertyChangedEventArgs args = new PropertyChangedEventArgs("Thumbnail");
-      this.PropertyChanged.Invoke(this, args);
+      //Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
+      //{
+        ShellObject selectedItemsFirst = null;
+        if (this.Browser != null && this.Browser.SelectedItems != null && this.Browser.SelectedItems.Count == 1)
+        {
+          selectedItemsFirst = this.Browser.SelectedItems.First();
+          selectedItemsFirst.Thumbnail.CurrentSize = new Size(this.ActualHeight - 20, this.ActualHeight - 20);
+          icon.Source = selectedItemsFirst.Thumbnail.BitmapSource;
+        }
+
+      //}));
     }
 
 
     public void FillPreviewPane(ExplorerBrowser browser)
     {
-      Dispatcher.BeginInvoke(DispatcherPriority.Input, (ThreadStart)(() =>
+      Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
           {
             if (this.Browser == null)
               this.Browser = browser;
-            PropertyChangedEventArgs args = new PropertyChangedEventArgs("Thumbnail");
-            this.PropertyChanged.Invoke(this, args);
+            
+            if (this.Browser.SelectedItems.Count == 1){
+                this.SelectedItems = this.Browser.SelectedItems.ToArray();
+                this.SelectedItems[0].Thumbnail.CurrentSize = new Size(this.ActualHeight - 20, this.ActualHeight - 20);
+                icon.Source = this.SelectedItems[0].Thumbnail.BitmapSource;
+            }
+
             this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("DisplayName"));
             this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("FileType"));
+            
           }));
+      
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

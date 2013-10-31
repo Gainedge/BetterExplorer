@@ -3012,14 +3012,17 @@
           Margin="118,6,5,0"
           VerticalAlignment="Top">
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="484*" MinWidth="200" />
+        <ColumnDefinition x:Name="breadcrumbBarColumn"
+                          Width="484*"
+                          MinWidth="200" />
         <ColumnDefinition x:Name="SearchBarColumn"
                           Width="219"
                           MinWidth="150" />
       </Grid.ColumnDefinitions>
       <controls:BreadcrumbBarControl x:Name="breadcrumbBarControl1"
                                      Width="Auto"
-                                     NavigateRequested="breadcrumbBarControl1_NavigateRequested" />
+                                     NavigateRequested="breadcrumbBarControl1_NavigateRequested"
+                                     RefreshRequested="breadcrumbBarControl1_RefreshRequested" />
 
       <!--  my:SearchTextBox Margin="8,0,0,0" Name="searchTextBox1" HorizontalAlignment="Stretch" BorderBrush="Black" MinHeight="23" Search="searchTextBox1_Search" VerticalAlignment="Stretch" Grid.Column="1" PreviewMouseUp="searchTextBox1_PreviewMouseUp" MouseDown="searchTextBox1_MouseDown" GotFocus="searchTextBox1_GotFocus" IsKeyboardFocusedChanged="searchTextBox1_IsKeyboardFocusedChanged" LostFocus="searchTextBox1_LostFocus" LostKeyboardFocus="searchTextBox1_LostKeyboardFocus" GotKeyboardFocus="searchTextBox1_GotKeyboardFocus" MouseMove="searchTextBox1_MouseMove" MouseUp="searchTextBox1_MouseUp" /  -->
       <controls:SearchBox x:Name="edtSearchBox"
@@ -3064,6 +3067,7 @@
                 VerticalAlignment="Top"
                 Panel.ZIndex="99"
                 AllowDrop="True"
+                Background="Transparent"
                 Drop="tabControl1_Drop"
                 GotFocus="TheStatusBar_GotFocus"
                 ItemsSource="{Binding itbl}"
@@ -3073,7 +3077,6 @@
                 SelectedIndex="0"
                 SelectionChanged="tabControl1_SelectionChanged"
                 SnapsToDevicePixels="True"
-                Background="Transparent"
                 Template="{StaticResource ScrollableTabControlTemplate}">
       <TabControl.ItemsPanel>
         <ItemsPanelTemplate>
@@ -3089,7 +3092,7 @@
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
         <RowDefinition x:Name="rPreviewPane" Height="100" />
-        <RowDefinition Height="1" />
+        <RowDefinition x:Name="rPreviewPaneSplitter" Height="1" />
         <RowDefinition />
       </Grid.RowDefinitions>
       <controls:PreviewPane x:Name="PreviewPanel"

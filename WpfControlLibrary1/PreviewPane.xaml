@@ -32,13 +32,11 @@
         <RowDefinition Height="*" />
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
-      <Image Grid.RowSpan="2"
+      <Image x:Name="icon" Grid.RowSpan="2"
              Grid.Column="0"
              Margin="5"
              HorizontalAlignment="Stretch"
              VerticalAlignment="Stretch"
-             Source="{Binding Path=Thumbnail,
-                              UpdateSourceTrigger=PropertyChanged}"
              Stretch="None" />
       <TextBlock Grid.Row="0"
                  Grid.Column="1"

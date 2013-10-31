@@ -744,13 +744,13 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
   /// </summary>
   /// <param name="ExePath">The path of the application.</param>
   public static void RunExeAsAdmin(string ExePath) {
-  var psi = new ProcessStartInfo {
-      FileName = ExePath,
-      Verb = "runas",
-      UseShellExecute = true,
-      Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
-  };
-  Process.Start(psi);
+    var psi = new ProcessStartInfo {
+        FileName = ExePath,
+        Verb = "runas",
+        UseShellExecute = true,
+        Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
+    };
+    Process.Start(psi);
 
   }
      
@@ -2361,6 +2361,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
                   int iconSize = 0;
                   ContentOptions.ViewMode = GetCurrentViewMode(out iconSize);
                   ContentOptions.ThumbnailSize = iconSize;
+
 					  Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
 					  IntPtr view = IntPtr.Zero;
 					  HResult hrr = this.explorerBrowserControl.GetCurrentView(ref iid, out view);
@@ -2393,31 +2394,23 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 	  #region ICommDlgBrowser
 	  HResult ICommDlgBrowser3.OnDefaultCommand(IntPtr ppshv)
 	  {
-          if (!SelectedItems[0].IsFolder)
-          {
-              Process.Start(SelectedItems[0].ParsingName);
-          }
-          else
-          {
-
-              if (Path.GetExtension(SelectedItems[0].ParsingName).ToLowerInvariant() == ".zip")
-              {
-                  Process.Start(SelectedItems[0].ParsingName);
-              }
-              else
-              {
-                  Navigate(SelectedItems[0]);
-              }
-          }
-			  return HResult.Ok;
-						
+      if (SelectedItems[0].IsBrowsable || SelectedItems[0].IsFolder)
+      {
+        Navigate(SelectedItems[0]);
+      }
+      else
+      {
+        Process.Start(SelectedItems[0].ParsingName);
+        
+      }
+			return HResult.Ok;		
 	  }
 
 	  HResult ICommDlgBrowser3.OnStateChange(IntPtr ppshv, CommDlgBrowserStateChange uChange)
 	  {
 			  if (uChange == CommDlgBrowserStateChange.SelectionChange)
 			  {
-					  Invoke(new MethodInvoker(delegate()
+					  BeginInvoke(new MethodInvoker(delegate()
 					  {
 							  FireSelectionChanged();
 					  }));
@@ -2431,11 +2424,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 			  {
 					  if (RenameFinished != null)
 					  {
-          IsRenameStarted = false;
-							  RenameFinished(this, EventArgs.Empty);
+              IsRenameStarted = false;
+							RenameFinished(this, EventArgs.Empty);
 					  }
 			  }
-
 
 			  if (uChange == CommDlgBrowserStateChange.KillFocus)
 			  {

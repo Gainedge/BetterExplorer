@@ -66,6 +66,7 @@ namespace BetterExplorer
 		bool IsHFlyoutEnabled;
 		bool IsPreviewPaneEnabled;
     int PreviewPaneWidth = 120;
+    int InfoPaneHeight = 150;
 		bool IsInfoPaneEnabled;
 		bool IsNavigationPaneEnabled;
 		bool isCheckModeEnabled;
@@ -349,6 +350,9 @@ namespace BetterExplorer
       if (this.IsPreviewPaneEnabled)
         rks.SetValue(@"PreviewPaneWidth", (int)clPreview.ActualWidth, RegistryValueKind.DWord);
 
+      if (this.IsInfoPaneEnabled)
+        rks.SetValue(@"InfoPaneHeight", (int)rPreviewPane.ActualHeight, RegistryValueKind.DWord);
+
       if (this.IsConsoleShown)
         rks.SetValue(@"CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
       rks.SetValue(@"IsConsoleShown", this.IsConsoleShown ? 1 : 0);
@@ -592,6 +596,7 @@ namespace BetterExplorer
 			AppCommands.RoutedCloseTab.InputGestures.Add(new KeyGesture(Key.W, ModifierKeys.Control));
       AppCommands.RoutedNavigateBack.InputGestures.Add(new KeyGesture(Key.Left, ModifierKeys.Alt));
       AppCommands.RoutedNavigateFF.InputGestures.Add(new KeyGesture(Key.Right, ModifierKeys.Alt));
+      AppCommands.RoutedGotoSearch.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Control));
 
       LoadInitialWindowPositionAndState();
 
@@ -1270,10 +1275,13 @@ namespace BetterExplorer
                   ));
         });
 
-        await Task.Run(() =>
+        if (this.IsInfoPaneEnabled)
         {
-          PreviewPanel.FillPreviewPane(Explorer);
-        });
+          await Task.Run(() =>
+          {
+            PreviewPanel.FillPreviewPane(Explorer);
+          });
+        }
 
         #region StatusBar selected items counter
         await Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
@@ -1583,7 +1591,6 @@ namespace BetterExplorer
           {
             try
             {
-              ExplorerBrowser.FlushMemory();
               // set up buttons
               SetupUIOnSelectOrNavigate(Explorer.GetSelectedItemsCount());
               
@@ -1597,10 +1604,14 @@ namespace BetterExplorer
             
           }));
         });
-        await Task.Run(() =>
+        if (this.IsInfoPaneEnabled)
         {
-          PreviewPanel.FillPreviewPane(Explorer);
-        });
+          await Task.Run(() =>
+          {
+            PreviewPanel.FillPreviewPane(Explorer);
+            ExplorerBrowser.FlushMemory();
+          });
+        }
         IsSelectionRized = false;
       }
 
@@ -2542,7 +2553,7 @@ namespace BetterExplorer
         //    }
 
 			btnCondSel.IsDropDownOpen = false;
-			Explorer.Focus();
+			Explorer.SetExplorerFocus();
 
 		}
 
@@ -2607,9 +2618,9 @@ namespace BetterExplorer
 			if (csf.CancelAction == false)
 			{
 				ConditionallySelectFiles(csf.csd);
-                Explorer.Focus();
+        Explorer.SetExplorerFocus();
 			}
-            Explorer.Focus();
+        Explorer.SetExplorerFocus();
 		}
 
 		private void ConditionallySelectFiles(ConditionalSelectData csd)
@@ -3160,19 +3171,19 @@ namespace BetterExplorer
 
           FileOperation tempWindow = new FileOperation(SourceItemsCollection, DestinationLocation, OperationType.Move);
           FileOperationDialog currentDialog = win.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
+          //TODO: fix FO dialog here
+          //if (currentDialog == null) {
+          //  currentDialog = new FileOperationDialog();
+          //  tempWindow.ParentContents = currentDialog;
+          //  currentDialog.Owner = win;
 
-          if (currentDialog == null) {
-            currentDialog = new FileOperationDialog();
-            tempWindow.ParentContents = currentDialog;
-            currentDialog.Owner = win;
-
-            tempWindow.Visibility = Visibility.Collapsed;
-            currentDialog.Contents.Add(tempWindow);
-          } else {
-            tempWindow.ParentContents = currentDialog;
-            tempWindow.Visibility = Visibility.Collapsed;
-            currentDialog.Contents.Add(tempWindow);
-          }
+          //  tempWindow.Visibility = Visibility.Collapsed;
+          //  currentDialog.Contents.Add(tempWindow);
+          //} else {
+          //  tempWindow.ParentContents = currentDialog;
+          //  tempWindow.Visibility = Visibility.Collapsed;
+          //  currentDialog.Contents.Add(tempWindow);
+          //}
         } else {
           var DestinationLocation = Explorer.SelectedItems.Count == 1 ? Explorer.SelectedItems[0].ParsingName : Explorer.NavigationLog.CurrentLocation.ParsingName; ;
           var SourceItemsCollection = System.Windows.Forms.Clipboard.GetFileDropList().OfType<String>().ToArray();
@@ -3180,19 +3191,19 @@ namespace BetterExplorer
 
           FileOperation tempWindow = new FileOperation(SourceItemsCollection, DestinationLocation, OperationType.Copy);
           FileOperationDialog currentDialog = win.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
+          //TODO: fix FO dialog here
+          //if (currentDialog == null) {
+          //  currentDialog = new FileOperationDialog();
+          //  tempWindow.ParentContents = currentDialog;
+          //  currentDialog.Owner = win;
 
-          if (currentDialog == null) {
-            currentDialog = new FileOperationDialog();
-            tempWindow.ParentContents = currentDialog;
-            currentDialog.Owner = win;
-
-            tempWindow.Visibility = Visibility.Collapsed;
-            currentDialog.Contents.Add(tempWindow);
-          } else {
-            tempWindow.ParentContents = currentDialog;
-            tempWindow.Visibility = Visibility.Collapsed;
-            currentDialog.Contents.Add(tempWindow);
-          }
+          //  tempWindow.Visibility = Visibility.Collapsed;
+          //  currentDialog.Contents.Add(tempWindow);
+          //} else {
+          //  tempWindow.ParentContents = currentDialog;
+          //  tempWindow.Visibility = Visibility.Collapsed;
+          //  currentDialog.Contents.Add(tempWindow);
+          //}
         }
       }
 		}
@@ -3457,19 +3468,19 @@ namespace BetterExplorer
 
           FileOperation tempWindow = new FileOperation(SourceItemsCollection, DestinationLocation, opType);
           FileOperationDialog currentDialog = win.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
+          //TODO: fix FOdialog here
+          //if (currentDialog == null) {
+          //  currentDialog = new FileOperationDialog();
+          //  tempWindow.ParentContents = currentDialog;
+          //  currentDialog.Owner = win;
 
-          if (currentDialog == null) {
-            currentDialog = new FileOperationDialog();
-            tempWindow.ParentContents = currentDialog;
-            currentDialog.Owner = win;
-
-            tempWindow.Visibility = Visibility.Collapsed;
-            currentDialog.Contents.Add(tempWindow);
-          } else {
-            tempWindow.ParentContents = currentDialog;
-            tempWindow.Visibility = Visibility.Collapsed;
-            currentDialog.Contents.Add(tempWindow);
-          }
+          //  tempWindow.Visibility = Visibility.Collapsed;
+          //  currentDialog.Contents.Add(tempWindow);
+          //} else {
+          //  tempWindow.ParentContents = currentDialog;
+          //  tempWindow.Visibility = Visibility.Collapsed;
+          //  currentDialog.Contents.Add(tempWindow);
+          //}
         }
     }
     private void SetFOperation(ShellObject obj, OperationType opType) {
@@ -3488,19 +3499,19 @@ namespace BetterExplorer
 
         FileOperation tempWindow = new FileOperation(SourceItemsCollection, DestinationLocation, opType);
         FileOperationDialog currentDialog = win.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
+        //TODO: fix FOdialog here
+        //if (currentDialog == null) {
+        //  currentDialog = new FileOperationDialog();
+        //  tempWindow.ParentContents = currentDialog;
+        //  currentDialog.Owner = win;
 
-        if (currentDialog == null) {
-          currentDialog = new FileOperationDialog();
-          tempWindow.ParentContents = currentDialog;
-          currentDialog.Owner = win;
-
-          tempWindow.Visibility = Visibility.Collapsed;
-          currentDialog.Contents.Add(tempWindow);
-        } else {
-          tempWindow.ParentContents = currentDialog;
-          tempWindow.Visibility = Visibility.Collapsed;
-          currentDialog.Contents.Add(tempWindow);
-        }
+        //  tempWindow.Visibility = Visibility.Collapsed;
+        //  currentDialog.Contents.Add(tempWindow);
+        //} else {
+        //  tempWindow.ParentContents = currentDialog;
+        //  tempWindow.Visibility = Visibility.Collapsed;
+        //  currentDialog.Contents.Add(tempWindow);
+        //}
       }
     }
     private void SetDeleteOperation(bool isMoveToRB)
@@ -4366,6 +4377,8 @@ namespace BetterExplorer
       this.CommandBindings.Add(cbNavigateBack);
       CommandBinding cbNavigateFF = new CommandBinding(AppCommands.RoutedNavigateFF, rightNavBut_Click);
       this.CommandBindings.Add(cbNavigateFF);
+      CommandBinding cbGoToSearchBox = new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox);
+      this.CommandBindings.Add(cbGoToSearchBox);
 
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
@@ -4581,13 +4594,14 @@ namespace BetterExplorer
       Explorer.DragDrop += Explorer_DragDrop;
 
       Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
-      Explorer.NavigationOptions.PaneVisibility.Details =
-        IsInfoPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
+      Explorer.NavigationOptions.PaneVisibility.Details = PaneVisibilityState.Hide;
 
       Explorer.NavigationOptions.PaneVisibility.Navigation =
         IsNavigationPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
 
       Explorer.ContentOptions.CheckSelect = isCheckModeEnabled;
+      Explorer.Width = (int)ShellVView.ActualWidth;
+      Explorer.Height = (int)ShellVView.ActualHeight;
     }
     protected override void OnSourceInitialized(EventArgs e)
     {
@@ -4675,6 +4689,19 @@ namespace BetterExplorer
 
       IsInfoPaneEnabled = (InfoPaneEnabled == 1);
       btnInfoPane.IsChecked = IsInfoPaneEnabled;
+
+      InfoPaneHeight = (int)rks.GetValue(@"InfoPaneHeight", 150);
+
+      if (IsInfoPaneEnabled)
+      {
+        rPreviewPane.Height = new GridLength(InfoPaneHeight);
+        rPreviewPaneSplitter.Height = new GridLength(1);
+      }
+      else
+      {
+        rPreviewPane.Height = new GridLength(0);
+        rPreviewPaneSplitter.Height = new GridLength(0);
+      }
 
       int PreviewPaneEnabled = (int)rks.GetValue(@"PreviewPaneEnabled", 0);
 
@@ -7207,13 +7234,10 @@ namespace BetterExplorer
             }));
           });
 
-      //InitializeExplorerControl();
-
-
+     
 			isGoingBackOrForward = true;
 
-      //Explorer.Width = (int)ShellVView.Width;
-      //Explorer.Height = (int)ShellVView.Height;
+      
 
       Explorer.Navigate(lastLoc);
       //ShellVView.Child = Explorer;
@@ -7275,14 +7299,39 @@ namespace BetterExplorer
 
 		private void btnInfoPane_Unchecked(object sender, RoutedEventArgs e)
 		{
-			if (!isOnLoad)
-				ChangePaneVisibility(0x1, false);
+      if (!isOnLoad)
+      {
+        //ChangePaneVisibility(0x1, false);
+        this.rPreviewPane.Height = new GridLength(0);
+        this.rPreviewPaneSplitter.Height = new GridLength(0);
+        RegistryKey rk = Registry.CurrentUser;
+        RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+        rks.SetValue(@"InfoPaneEnabled", 0);
+        rks.Close();
+        rk.Close();
+        this.IsInfoPaneEnabled = false;
+        var selectedItem = Explorer.SelectedItems.FirstOrDefault();
+        if (selectedItem != null)
+        {
+          PreviewPanel.FillPreviewPane(Explorer);
+        }
+      }
 		}
 
 		private void btnInfoPane_Checked(object sender, RoutedEventArgs e)
 		{
-			if (!isOnLoad)
-				ChangePaneVisibility(0x1, true);
+      if (!isOnLoad)
+      {
+        //ChangePaneVisibility(0x1, true);
+        this.rPreviewPane.Height = new GridLength(this.InfoPaneHeight);
+        this.rPreviewPaneSplitter.Height = new GridLength(1);
+        RegistryKey rk = Registry.CurrentUser;
+        RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+        rks.SetValue(@"InfoPaneEnabled", 1);
+        rks.Close();
+        rk.Close();
+        this.IsInfoPaneEnabled = true;
+      }
 		}
 
         // Legacy Pane Code
@@ -7408,6 +7457,11 @@ namespace BetterExplorer
 		{
      
 			Explorer.Navigate(e.ShellObject != null ? e.ShellObject : ShellObject.FromParsingName(e.Path));
+		}
+
+    private void breadcrumbBarControl1_RefreshRequested(object sender)
+		{
+      Explorer.RefreshExplorer();
 		}
 
 		private void RibbonWindow_KeyUp(object sender, KeyEventArgs e)
@@ -8704,6 +8758,11 @@ namespace BetterExplorer
 		{
 			breadcrumbBarControl1.EnterEditMode();
 		}
+    private void GoToSearchBox(object sender, ExecutedRoutedEventArgs e)
+    {
+      edtSearchBox.Focus();
+      Keyboard.Focus(edtSearchBox);
+    }
 
 
     void CreateTabbarRKMenu(ClosableTabItem tabitem)
@@ -10047,6 +10106,7 @@ namespace BetterExplorer
         private void miOpenRB_Click(object sender, RoutedEventArgs e)
         {
           Explorer.Navigate((ShellObject)KnownFolders.RecycleBin);
+          
         }
 
         private void miRestoreRBItems_Click(object sender, RoutedEventArgs e)

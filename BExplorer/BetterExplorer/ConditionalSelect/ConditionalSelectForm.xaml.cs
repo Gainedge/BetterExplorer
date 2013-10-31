@@ -263,5 +263,6 @@ namespace BetterExplorer
             MessageBox.Show((FindResource("txtSelectFiles") as string), "Resource String");
         }
 
+
     }
 }
