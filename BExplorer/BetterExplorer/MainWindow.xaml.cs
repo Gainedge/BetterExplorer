@@ -65,8 +65,8 @@ namespace BetterExplorer
 		string StartUpLocation = KnownFolders.Libraries.ParsingName;
 		bool IsHFlyoutEnabled;
 		bool IsPreviewPaneEnabled;
-    int PreviewPaneWidth = 120;
-    int InfoPaneHeight = 150;
+		int PreviewPaneWidth = 120;
+		int InfoPaneHeight = 150;
 		bool IsInfoPaneEnabled;
 		bool IsNavigationPaneEnabled;
 		bool isCheckModeEnabled;
@@ -87,7 +87,7 @@ namespace BetterExplorer
 		string EditComm = "";
 		List<string> Archives = new List<string>(new string[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
 		List<string> Images = new List<string>(new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
-    List<string> VirDisks = new List<string>(new string[] { ".iso", ".bin", ".vhd" });
+		List<string> VirDisks = new List<string>(new string[] { ".iso", ".bin", ".vhd" });
 		MenuItem misa;
 		MenuItem misd;
 		MenuItem misag;
