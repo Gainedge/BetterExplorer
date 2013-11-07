@@ -596,6 +596,7 @@ namespace BetterExplorer
 			AppCommands.RoutedCloseTab.InputGestures.Add(new KeyGesture(Key.W, ModifierKeys.Control));
       AppCommands.RoutedNavigateBack.InputGestures.Add(new KeyGesture(Key.Left, ModifierKeys.Alt));
       AppCommands.RoutedNavigateFF.InputGestures.Add(new KeyGesture(Key.Right, ModifierKeys.Alt));
+      AppCommands.RoutedNavigateUp.InputGestures.Add(new KeyGesture(Key.Up, ModifierKeys.Alt));
       AppCommands.RoutedGotoSearch.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Control));
 
       LoadInitialWindowPositionAndState();
@@ -4377,6 +4378,8 @@ namespace BetterExplorer
       this.CommandBindings.Add(cbNavigateBack);
       CommandBinding cbNavigateFF = new CommandBinding(AppCommands.RoutedNavigateFF, rightNavBut_Click);
       this.CommandBindings.Add(cbNavigateFF);
+      CommandBinding cbNavigateUp = new CommandBinding(AppCommands.RoutedNavigateUp, btnUpLevel_Click);
+      this.CommandBindings.Add(cbNavigateUp);
       CommandBinding cbGoToSearchBox = new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox);
       this.CommandBindings.Add(cbGoToSearchBox);
 

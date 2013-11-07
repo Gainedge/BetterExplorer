@@ -352,7 +352,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
       return managedBitmapReal;
     }
 
-    private Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap)
+    public Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap)
     {
       Bitmap bmp = Bitmap.FromHbitmap(nativeHBitmap);
 

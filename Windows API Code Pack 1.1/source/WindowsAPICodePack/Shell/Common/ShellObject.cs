@@ -10,6 +10,9 @@ using Microsoft.WindowsAPICodePack.Shell.Resources;
 using MS.WindowsAPICodePack.Internal;
 using System.Runtime.InteropServices.ComTypes;
 using System.Drawing;
+using WindowsHelper;
+using System.Text;
+using System.Drawing.Imaging;
 
 namespace Microsoft.WindowsAPICodePack.Shell
 {
@@ -636,13 +639,123 @@ namespace Microsoft.WindowsAPICodePack.Shell
         //  this.Thumbnail.CurrentSize = new System.Windows.Size(Size, Size);
         //  return this.Thumbnail.Bitmap;
         //}
-
-        public Bitmap GetShellThumbnail(int Size, ShellThumbnailFormatOption format = ShellThumbnailFormatOption.Default, bool OnlyCache = false)
+        public Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap)
         {
-          this.Thumbnail.RetrievalOption = OnlyCache ? ShellThumbnailRetrievalOption.CacheOnly : ShellThumbnailRetrievalOption.Default;
+          Bitmap bmp = Bitmap.FromHbitmap(nativeHBitmap);
+
+          if (Bitmap.GetPixelFormatSize(bmp.PixelFormat) < 32)
+          {
+            //bmp.MakeTransparent(Color.Black);
+            return bmp;
+          }
+
+          BitmapData bmpData;
+
+          if (IsAlphaBitmap(bmp, out bmpData))
+            return GetlAlphaBitmapFromBitmapData(bmpData);
+
+          //if (bmp.GetPixel(1, 1) == Color.FromArgb(255, Color.Black) && RetrievalOption == ShellThumbnailRetrievalOption.CacheOnly)
+          //  return null;
+          //bmp.MakeTransparent(Color.FromArgb(255, Color.Black));
+          return bmp;
+        }
+        public Bitmap GetBitmapFromHBitmap(Bitmap nativeHBitmap)
+        {
+          Bitmap bmp = nativeHBitmap;
+
+          if (Bitmap.GetPixelFormatSize(bmp.PixelFormat) < 32)
+          {
+            //bmp.MakeTransparent(Color.Black);
+            return bmp;
+          }
+
+          BitmapData bmpData;
+
+          if (IsAlphaBitmap(bmp, out bmpData))
+            return GetlAlphaBitmapFromBitmapData(bmpData);
+
+          //if (bmp.GetPixel(1, 1) == Color.FromArgb(255, Color.Black) && RetrievalOption == ShellThumbnailRetrievalOption.CacheOnly)
+          //  return null;
+          //bmp.MakeTransparent(Color.FromArgb(255, Color.Black));
+          return bmp;
+        }
+
+        public static Bitmap GetlAlphaBitmapFromBitmapData(BitmapData bmpData)
+        {
+          Bitmap b = new Bitmap(
+                  bmpData.Width,
+                  bmpData.Height,
+                  bmpData.Stride,
+                  PixelFormat.Format32bppArgb,
+                  bmpData.Scan0);
+          return b;
+        }
+
+        public static bool IsAlphaBitmap(Bitmap bmp, out BitmapData bmpData)
+        {
+          Rectangle bmBounds = new Rectangle(0, 0, bmp.Width, bmp.Height);
+
+          bmpData = bmp.LockBits(bmBounds, ImageLockMode.ReadOnly, bmp.PixelFormat);
+
+          try
+          {
+            for (int y = 0; y <= bmpData.Height - 1; y++)
+            {
+              for (int x = 0; x <= bmpData.Width - 1; x++)
+              {
+                Color pixelColor = Color.FromArgb(
+                    Marshal.ReadInt32(bmpData.Scan0, (bmpData.Stride * y) + (4 * x)));
+
+                if (pixelColor.A >= 0 & pixelColor.A <= 255)
+                {
+                  return true;
+                }
+              }
+            }
+          }
+          finally
+          {
+            bmp.UnlockBits(bmpData);
+          }
+
+          return false;
+        }
+
+        public Bitmap GetShellThumbnail(int Size, ShellThumbnailFormatOption format = ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption retrieve = ShellThumbnailRetrievalOption.Default)
+        {
+          this.Thumbnail.RetrievalOption = retrieve;
           this.Thumbnail.FormatOption = format;
           this.Thumbnail.CurrentSize = new System.Windows.Size(Size, Size);
           return this.Thumbnail.Bitmap;
+        }
+        public static uint makeDWord(ushort LoWord, ushort HiWord)
+        {
+          return (uint)(LoWord + (HiWord << 16));
+        }
+        public WindowsAPI.IExtractIconpwFlags GetIconType()
+        {
+          try
+          {
+            var guid = new Guid("000214fa-0000-0000-c000-000000000046");
+            object result;
+            uint res = 0;
+            var ishellfolder = WindowsAPI.GetIShellFolder(this.Parent);
+            ishellfolder.GetUIObjectOf(IntPtr.Zero,
+            (uint)1, new IntPtr[1] { WindowsAPI.ILFindLastID(this.PIDL) },
+            ref guid, ref res, out result);
+            var iextract = (WindowsAPI.IExtractIcon)result;
+            var str = new StringBuilder(512);
+            int index = -1;
+            WindowsAPI.IExtractIconpwFlags flags;
+            iextract.GetIconLocation(0, str, 512, out index, out flags);
+
+            return flags;
+          }
+          catch (Exception)
+          {
+
+            return 0;
+          }
         }
 
         private ShellObject parentShellObject;
