@@ -216,9 +216,6 @@
     </Compile>
     <Compile Include="Customize\CustomizeQAT.xaml.cs" />
     <Compile Include="Customize\RibbonItemListDisplay.xaml.cs" />
-    <Compile Include="FileOperationDialog.xaml.cs">
-      <DependentUpon>FileOperationDialog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="HelperClasses\FolderStructForSize.cs" />
     <Compile Include="HelperClasses\NavigationLog.cs" />
     <Compile Include="HelperClasses\PathStringCombiner.cs" />
@@ -386,7 +383,6 @@
     </Compile>
     <Compile Include="HelperClasses\WindowExtensions.cs" />
     <Compile Include="HelperClasses\Wpf32Window.cs" />
-    <Compile Include="XProcAddInHost.cs" />
     <Page Include="ArchiveView\ArchiveViewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -404,10 +400,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Customize\RibbonItemListDisplay.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="FileOperationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -691,10 +683,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\BEFileOperation\BEFileOperation.csproj">
-      <Project>{17604237-eb73-4db3-ba14-484537594a20}</Project>
-      <Name>BEFileOperation</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\BEHelper\BEHelper.csproj">
       <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
       <Name>BEHelper</Name>
@@ -1177,7 +1165,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
