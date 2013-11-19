@@ -39,14 +39,16 @@ namespace BetterExplorerControls
     {
       get
       {
-        if (this.Browser.SelectedItems.Count() > 0)
-        {
-          return this.Browser.SelectedItems[0].GetDisplayName(DisplayNameType.Default);
-        }
-        else
-        {
-          return String.Empty;
-        }
+				//FIXME: fix this here
+        //if (this.Browser.SelectedItems.Count() > 0)
+        //{
+        //  return this.Browser.SelectedItems[0].GetDisplayName(DisplayNameType.Default);
+        //}
+        //else
+        //{
+        //  return String.Empty;
+        //}
+				return String.Empty;
       }
     }
 
@@ -54,14 +56,16 @@ namespace BetterExplorerControls
     {
       get
       {
-        if (this.Browser.SelectedItems.Count() > 0)
-        {
-          return this.Browser.SelectedItems[0].Properties.System.ItemTypeText != null ? this.Browser.SelectedItems[0].Properties.System.ItemTypeText.Value : String.Empty;
-        }
-        else
-        {
-          return String.Empty;
-        }
+				//FIXME: fix this here
+        //if (this.Browser.SelectedItems.Count() > 0)
+        //{
+        //  return this.Browser.SelectedItems[0].Properties.System.ItemTypeText != null ? this.Browser.SelectedItems[0].Properties.System.ItemTypeText.Value : String.Empty;
+        //}
+        //else
+        //{
+        //  return String.Empty;
+        //}
+				return string.Empty;
       }
     }
     public PreviewPane()

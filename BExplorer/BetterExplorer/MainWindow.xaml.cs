@@ -48,6 +48,7 @@ using LTR.IO;
 using LTR.IO.ImDisk;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using GongSolutions.Shell;
 
 namespace BetterExplorer
 {
@@ -58,6 +59,8 @@ namespace BetterExplorer
 	{
 		#region Variables and Constants
 		ExplorerBrowser Explorer = new ExplorerBrowser();
+		ShellView ShellListView = new ShellView();
+		ShellTreeView ShellTree = new ShellTreeView();
 		ClipboardMonitor cbm = new ClipboardMonitor();
 		ContextMenu cmHistory = new ContextMenu();
 		private int LastTabIndex = -1;
@@ -131,7 +134,7 @@ namespace BetterExplorer
     UIElement curitem = null;
     Boolean IsGlassOnRibonMinimized { get; set; }
     NetworkAccountManager nam = new NetworkAccountManager();
-    List<LVItemColor> LVItemsColor { get; set; }
+    List<GongSolutions.Shell.LVItemColor> LVItemsColor { get; set; }
     uint SelectedDriveID = 0;
     string[] InitialTabs;
 		#endregion
@@ -581,7 +584,7 @@ namespace BetterExplorer
           XDocument docs = XDocument.Load(itemColorSettingsLocation);
 
           this.LVItemsColor = docs.Root.Elements("ItemColorRow")
-                             .Select(element => new LVItemColor(element.Elements().ToArray()[0].Value, System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value))))
+                             .Select(element => new GongSolutions.Shell.LVItemColor(element.Elements().ToArray()[0].Value, System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value))))
                              .ToList();
 
         }
@@ -1239,95 +1242,7 @@ namespace BetterExplorer
     }
     async void Explorer_NavigationComplete(object sender, NavigationCompleteEventArgs e)
 		{
-			try
-      {
-        int explorerSelectedItemsCount = 0;
-        Task.Run(() =>
-        {
-          Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() =>
-          {
-            SetUpBreadcrumbbarOnNavComplete(e);
-
-          }));
-        });
-
-        Task.Run(() =>
-        {
-          Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
-                    {
-                      ExplorerBrowser.FlushMemory();
-                      PreselectItemsIntoExplorerControl();
-
-                      ConstructMoveToCopyToMenu();
-
-                      SetupUIonNavComplete(e);
-
-                      SetUpJumpListOnNavComplete();
-
-
-                      bool isinLibraries = SetUpNewFolderButtons();
-
-                      SetUpButtonVisibilityOnNavComplete(isinLibraries);
-
-                      SetUpConsoleWindow(e);
-
-                      SetupUIOnSelectOrNavigate(Explorer.GetSelectedItemsCount(), true);
-                    }
-                  ));
-        });
-
-        if (this.IsInfoPaneEnabled)
-        {
-          await Task.Run(() =>
-          {
-            PreviewPanel.FillPreviewPane(Explorer);
-          });
-        }
-
-        #region StatusBar selected items counter
-        await Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
-        {
-          explorerSelectedItemsCount = Explorer.GetSelectedItemsCount();
-        }));
-
-        SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
-        #endregion
-			}
-			catch (Exception exe)
-			{
-			  ShellObject ne = e.NewLocation;
-			  bool isinLibraries = false;
-			  bool itisLibraries = false;
-        if (ne != null)
-        {
-
-            if (ne.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
-            {
-                isinLibraries = true;
-            }
-            else
-            {
-                isinLibraries = false;
-            }
-
-            if (ne.ParsingName == KnownFolders.Libraries.ParsingName)
-            {
-                itisLibraries = true;
-            }
-            else
-            {
-                itisLibraries = false;
-            }
-        }
-
-			    //if (MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is some information about the folder being loaded:\r\n\r\nName: " + ne.GetDisplayName(DisplayNameType.Default) + "\r\nLocation: " + ne.ParsingName +
-			    //    "\r\n\r\nFolder, Drive, or Library: " + GetYesNoFromBoolean(ne.IsFolder) + "\r\nDrive: " + GetYesNoFromBoolean(ne.IsDrive) + "\r\nNetwork Drive: " + GetYesNoFromBoolean(ne.IsNetDrive) + "\r\nRemovable: " + GetYesNoFromBoolean(ne.IsRemovable) +
-			    //    "\r\nSearch Folder: " + GetYesNoFromBoolean(ne.IsSearchFolder) + "\r\nShared: " + GetYesNoFromBoolean(ne.IsShared) + "\r\nShortcut: " + GetYesNoFromBoolean(ne.IsLink) + "\r\nLibrary: " + GetYesNoFromBoolean(isinLibraries) + "\r\nLibraries Folder: " + GetYesNoFromBoolean(itisLibraries) +
-			    //    "\r\n\r\n Would you like to see additional information? Click No to try continuing the program.", "Error Occurred on Completing Navigation", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-			    //{
-			        // MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is additional information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Additional Error Data", MessageBoxButton.OK, MessageBoxImage.Error);
-			    //}
-			}
+			
 
 		}
 
@@ -1436,69 +1351,6 @@ namespace BetterExplorer
 		void Explorer_NavigationPending(object sender, NavigationPendingEventArgs e)
 		{
 			e.Cancel = Explorer.IsCancelNavigation;
-		}
-
-		void Explorer_ViewChanged(object sender, ViewChangedEventArgs e)
-		{
-      IsViewSelection = false;
-
-      if (e.ThumbnailSize == 256)
-      {
-          ViewGallery.SelectedIndex = 0;
-
-      }
-      if (e.ThumbnailSize == 96)
-      {
-          ViewGallery.SelectedIndex = 1;
-
-      }
-      if (e.View == ExplorerBrowserViewMode.Icon && e.ThumbnailSize == 48)
-      {
-          ViewGallery.SelectedIndex = 2;
-          btnSbIcons.IsChecked = true;
-      }
-      if (e.View == ExplorerBrowserViewMode.SmallIcon)
-      {
-          ViewGallery.SelectedIndex = 3;
-                                     
-      }
-      else
-      {
-          btnSbIcons.IsChecked = false;
-      }
-      if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.List)
-      {
-          ViewGallery.SelectedIndex = 4;
-      }
-      if (e.View == ExplorerBrowserViewMode.Details)
-      {
-          ViewGallery.SelectedIndex = 5;
-          btnSbDetails.IsChecked = true;
-      }
-      else
-      {
-          btnSbDetails.IsChecked = false;
-      }
-      if (e.View == ExplorerBrowserViewMode.Tile)
-      {
-          ViewGallery.SelectedIndex = 6;
-          btnSbTiles.IsChecked = true;
-      }
-      else
-      {
-          btnSbTiles.IsChecked = false;
-      }
-      if (e.View == ExplorerBrowserViewMode.Content)
-      {
-          ViewGallery.SelectedIndex = 7;
-      }
-      IsCalledFromViewEnum = true;
-      zoomSlider.Value = e.ThumbnailSize;
-      IsCalledFromViewEnum = false;
-
-      btnAutosizeColls.IsEnabled = e.View == ExplorerBrowserViewMode.Details ? true : false;
-
-      IsViewSelection = true;
 		}
 
 		void fsw_Renamed(object sender, RenamedEventArgs e)
@@ -4493,9 +4345,12 @@ namespace BetterExplorer
 			PreviouseWindowState = WindowState;
 
 			// attach to event (used to store prev. win. state)
-			LayoutUpdated += Window_LayoutUpdated;
+			//FIXME: fix the event
+			//LayoutUpdated += Window_LayoutUpdated;
 
 			ShellVView.Child = Explorer;
+			//ShellVView.Visibility = System.Windows.Visibility.Hidden;
+
 
 			// prepares RTL mode
 			if (rtlused == "true")
@@ -4572,9 +4427,11 @@ namespace BetterExplorer
     }
     private void InitializeExplorerControl()
     {
-      Explorer.LVItemsColorCodes = this.LVItemsColor;
+			ShellListView.Navigated += ShellListView_Navigated;
+			ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
+      //Explorer.LVItemsColorCodes = this.LVItemsColor;
       Explorer.SelectionChanged += ExplorerBrowserControl_SelectionChanged;
-      Explorer.NavigationComplete += Explorer_NavigationComplete;
+      //Explorer.NavigationComplete += Explorer_NavigationComplete;
       Explorer.MouseWheel += Explorer_MouseWheel;
       Explorer.ViewEnumerationComplete += Explorer_ViewEnumerationComplete;
       Explorer.NavigationPending += Explorer_NavigationPending;
@@ -4590,7 +4447,7 @@ namespace BetterExplorer
       Explorer.ContentOptions.FullRowSelect = true;
       Explorer.ClientSizeChanged += ExplorerBrowserControl_ClientSizeChanged;
       Explorer.Paint += ExplorerBrowserControl_Paint;
-      Explorer.ViewChanged += Explorer_ViewChanged;
+      //Explorer.ViewChanged += Explorer_ViewChanged;
       Explorer.ItemHot += Explorer_ItemHot;
       Explorer.ItemMouseMiddleClick += Explorer_ItemMouseMiddleClick;
       Explorer.ExplorerBrowserMouseLeave += Explorer_ExplorerBrowserMouseLeave;
@@ -4606,6 +4463,166 @@ namespace BetterExplorer
       Explorer.Width = (int)ShellVView.ActualWidth;
       Explorer.Height = (int)ShellVView.ActualHeight;
     }
+
+		void ShellListView_ViewStyleChanged(object sender, GongSolutions.Shell.ViewChangedEventArgs e)
+		{
+			IsViewSelection = false;
+
+			if (e.ThumbnailSize == 256)
+			{
+				ViewGallery.SelectedIndex = 0;
+
+			}
+			if (e.ThumbnailSize == 96)
+			{
+				ViewGallery.SelectedIndex = 1;
+
+			}
+			if (e.CurrentView == ShellViewStyle.LargeIcon && e.ThumbnailSize == 48)
+			{
+				ViewGallery.SelectedIndex = 2;
+				btnSbIcons.IsChecked = true;
+			}
+			if (e.CurrentView == ShellViewStyle.SmallIcon)
+			{
+				ViewGallery.SelectedIndex = 3;
+
+			}
+			else
+			{
+				btnSbIcons.IsChecked = false;
+			}
+			if (e.CurrentView == ShellViewStyle.List)
+			{
+				ViewGallery.SelectedIndex = 4;
+			}
+			if (e.CurrentView == ShellViewStyle.Details)
+			{
+				ViewGallery.SelectedIndex = 5;
+				btnSbDetails.IsChecked = true;
+			}
+			else
+			{
+				btnSbDetails.IsChecked = false;
+			}
+			if (e.CurrentView == ShellViewStyle.Tile)
+			{
+				ViewGallery.SelectedIndex = 6;
+				btnSbTiles.IsChecked = true;
+			}
+			else
+			{
+				btnSbTiles.IsChecked = false;
+			}
+			if (e.CurrentView == ShellViewStyle.Content)
+			{
+				ViewGallery.SelectedIndex = 7;
+			}
+			IsCalledFromViewEnum = true;
+			zoomSlider.Value = e.ThumbnailSize;
+			IsCalledFromViewEnum = false;
+
+			btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details ? true : false;
+
+			IsViewSelection = true;
+		}
+
+		async void ShellListView_Navigated(object sender, NavigatedEventArgs e)
+		{
+			ShellObject sho;
+			try
+			{
+				sho = ShellObjectFactory.Create(e.Folder.Pidl);
+				NavigationCompleteEventArgs ec = new NavigationCompleteEventArgs();
+				ec.NewLocation = sho;
+				int explorerSelectedItemsCount = 0;
+				Task.Run(() =>
+				{
+					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() =>
+					{
+						SetUpBreadcrumbbarOnNavComplete(ec);
+
+					}));
+				});
+
+				Task.Run(() =>
+				{
+					Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
+					{
+						ExplorerBrowser.FlushMemory();
+						PreselectItemsIntoExplorerControl();
+
+						ConstructMoveToCopyToMenu();
+
+						SetupUIonNavComplete(ec);
+
+						SetUpJumpListOnNavComplete();
+
+
+						bool isinLibraries = SetUpNewFolderButtons();
+
+						SetUpButtonVisibilityOnNavComplete(isinLibraries);
+
+						SetUpConsoleWindow(ec);
+
+						SetupUIOnSelectOrNavigate(Explorer.GetSelectedItemsCount(), true);
+					}
+									));
+				});
+
+				if (this.IsInfoPaneEnabled)
+				{
+					await Task.Run(() =>
+					{
+						PreviewPanel.FillPreviewPane(Explorer);
+					});
+				}
+
+				#region StatusBar selected items counter
+				await Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
+				{
+					explorerSelectedItemsCount = Explorer.GetSelectedItemsCount();
+				}));
+
+				SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
+				#endregion
+			}
+			catch (Exception exe)
+			{
+				ShellObject ne = ShellObjectFactory.Create(e.Folder.Pidl);
+				bool isinLibraries = false;
+				bool itisLibraries = false;
+				if (ne != null)
+				{
+
+					if (ne.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
+					{
+						isinLibraries = true;
+					}
+					else
+					{
+						isinLibraries = false;
+					}
+
+					if (ne.ParsingName == KnownFolders.Libraries.ParsingName)
+					{
+						itisLibraries = true;
+					}
+					else
+					{
+						itisLibraries = false;
+					}
+				}
+
+				//if (MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is some information about the folder being loaded:\r\n\r\nName: " + ne.GetDisplayName(DisplayNameType.Default) + "\r\nLocation: " + ne.ParsingName +
+				//    "\r\n\r\nFolder, Drive, or Library: " + GetYesNoFromBoolean(ne.IsFolder) + "\r\nDrive: " + GetYesNoFromBoolean(ne.IsDrive) + "\r\nNetwork Drive: " + GetYesNoFromBoolean(ne.IsNetDrive) + "\r\nRemovable: " + GetYesNoFromBoolean(ne.IsRemovable) +
+				//    "\r\nSearch Folder: " + GetYesNoFromBoolean(ne.IsSearchFolder) + "\r\nShared: " + GetYesNoFromBoolean(ne.IsShared) + "\r\nShortcut: " + GetYesNoFromBoolean(ne.IsLink) + "\r\nLibrary: " + GetYesNoFromBoolean(isinLibraries) + "\r\nLibraries Folder: " + GetYesNoFromBoolean(itisLibraries) +
+				//    "\r\n\r\n Would you like to see additional information? Click No to try continuing the program.", "Error Occurred on Completing Navigation", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
+				//{
+				// MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is additional information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Additional Error Data", MessageBoxButton.OK, MessageBoxImage.Error);
+				//}
+			}
+		}
     protected override void OnSourceInitialized(EventArgs e)
     {
       base.OnSourceInitialized(e);
@@ -4930,6 +4947,7 @@ namespace BetterExplorer
             if (i == InitialTabs.Count())
             {
               ShellObject sho = GetShellObjectFromLocation(str);
+							//FIXME: fix it to work with new controls
               Explorer.Navigate(sho);
               (tabControl1.SelectedItem as ClosableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
               (tabControl1.SelectedItem as ClosableTabItem).ToolTip = Explorer.NavigationLog.CurrentLocation.ParsingName;
@@ -4965,6 +4983,8 @@ namespace BetterExplorer
 
       if (tabControl1.Items.Count == 1)
         tabControl1.SelectedIndex = 0;
+
+			//ShellVView.Visibility = System.Windows.Visibility.Hidden;
     }
     private void SetsUpJumpList()
     {
@@ -4999,6 +5019,7 @@ namespace BetterExplorer
 
       }
     }
+
     private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
       Task.Run(() =>
@@ -5006,6 +5027,11 @@ namespace BetterExplorer
           UpdateRecycleBinInfos();
         });
 
+			ShellTreeHost.Child = ShellTree;
+			ShellViewHost.Child = ShellListView;
+
+			ShellTree.ShellView = ShellListView;
+			ShellListView.LVItemsColorCodes = LVItemsColor;
      
       r = new MessageReceiver();
       r.OnMessageReceived += r_OnMessageReceived;
@@ -5055,7 +5081,7 @@ namespace BetterExplorer
         });
 
         //Set up ListView Color codes 
-        Explorer.LVItemsColorCodes = this.LVItemsColor;
+        //Explorer.LVItemsColorCodes = this.LVItemsColor;
 
 
         //Load the ShellSettings
@@ -5139,7 +5165,8 @@ namespace BetterExplorer
         //Set up Version Info
 				verNumber.Content = "Version " + (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
 				lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
-
+				ShellListView.subclassed = new ShellDeffViewSubClassedWindow(IntPtr.Zero, ShellListView.ShellListViewHandle, ShellListView);
+				ShellListView.subclassed.AssignHandle(ShellListView.m_ShellViewWindow);
         this.Activate(true);
 			}
 			catch (Exception exe)
@@ -5938,39 +5965,36 @@ namespace BetterExplorer
       {
         switch (ViewGallery.SelectedIndex)
         {
-            case 0:
-                Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Icon;
-                Explorer.ContentOptions.ThumbnailSize = 256;
-                break;
-            case 1:
-                Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Icon;
-                Explorer.ContentOptions.ThumbnailSize = 96;
-                break;
-            case 2:
-                Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Icon;
-                Explorer.ContentOptions.ThumbnailSize = 48;
-                break;
-            case 3:
-                Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.SmallIcon;
-                Explorer.ContentOptions.ThumbnailSize = 16;
-                break;
-            case 4:
-
-                Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.List;
-                break;
-            case 5:
-
-                Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Details;
-                break;
-            case 6:
-
-                Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Tile;
-                break;
-            case 7:
-                Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Content;
-                break;
-            default:
-                break;
+          case 0:
+						ShellListView.View = ShellViewStyle.LargeIcon;
+						ShellListView.ThumbnailSize = 256;
+						break;
+          case 1:
+            ShellListView.View = ShellViewStyle.LargeIcon;
+						ShellListView.ThumbnailSize = 96;
+            break;
+          case 2:
+            ShellListView.View = ShellViewStyle.LargeIcon;
+						ShellListView.ThumbnailSize = 48;
+            break;
+          case 3:
+            ShellListView.View = ShellViewStyle.SmallIcon;
+						ShellListView.ThumbnailSize = 16;
+            break;
+          case 4:
+            ShellListView.View = ShellViewStyle.List;
+            break;
+          case 5:
+						ShellListView.View = ShellViewStyle.Details;
+            break;
+          case 6:
+						ShellListView.View = ShellViewStyle.Tile;
+            break;
+          case 7:
+            ShellListView.View = ShellViewStyle.Content;
+            break;
+          default:
+              break;
         }
       }
 
@@ -5988,7 +6012,8 @@ namespace BetterExplorer
 									WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
 									state.fShowAllObjects = 1;
 									WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
-									Explorer.RefreshExplorer();
+									ShellListView.RefreshContents();
+									ShellTree.RefreshContents();
 								}
 				));
 			};
@@ -6005,7 +6030,8 @@ namespace BetterExplorer
 									WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
 									state.fShowAllObjects = 0;
 									WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
-									Explorer.RefreshExplorer();
+									ShellListView.RefreshContents();
+									ShellTree.RefreshContents();
 								}
 				));
 			}
@@ -6023,7 +6049,7 @@ namespace BetterExplorer
 									WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
 									state.fShowExtensions = 1;
 									WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
-									Explorer.RefreshExplorer();
+									ShellListView.RefreshContents();
 								}
 				));
 			}
@@ -6040,7 +6066,7 @@ namespace BetterExplorer
 									WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
 									state.fShowExtensions = 0;
 									WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
-									Explorer.RefreshExplorer();
+									ShellListView.RefreshContents();
 								}
 				));
 			}
@@ -10377,6 +10403,12 @@ namespace BetterExplorer
           //Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.SmallIcon;
           //Explorer.ContentOptions.ThumbnailSize = 16;
         }
+
+				private void GridSplitter_DragDelta(object sender, DragDeltaEventArgs e)
+				{
+					//ShellTree.Invalidate();
+					//ShellTree.m_TreeView.Invalidate();
+				}
 
     }
 }

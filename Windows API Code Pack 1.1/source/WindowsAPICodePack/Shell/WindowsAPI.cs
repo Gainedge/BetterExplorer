@@ -2111,6 +2111,9 @@ namespace WindowsHelper
         public static extern int SendMessage(IntPtr hWnd, MSG Msg,
             int wParam, ref LVITEMA lParam);
 
+				[DllImport("user32.dll", CharSet = CharSet.Auto)]
+				public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, int lParam);
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         public struct LVITEMA
         {
@@ -2887,11 +2890,13 @@ namespace WindowsHelper
         public static extern int SHMultiFileProperties(System.Runtime.InteropServices.ComTypes.IDataObject pdtobj, int flags);
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern int SendMessage(IntPtr handle, int messg, int wparam, int lparam);
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr handle, int messg, IntPtr wparam, IntPtr lparam);
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
+				[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+				public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
         public static IntPtr FindChildWindow(IntPtr parent, Predicate<IntPtr> pred) {
@@ -5651,7 +5656,7 @@ namespace WindowsHelper
       #endregion
     }
 
-    static class WNM {
+    public static class WNM {
       const int NM_FIRST = 0;
       public const int NM_KILLFOCUS = (NM_FIRST - 8);
       public const int NM_CUSTOMDRAW = (NM_FIRST - 12);

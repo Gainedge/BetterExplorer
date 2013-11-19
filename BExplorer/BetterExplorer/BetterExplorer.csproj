@@ -707,13 +707,17 @@
       <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
       <Name>SevenZip2010</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Shell\Shell.csproj">
+      <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
+      <Name>Shell</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\UsbEject\UsbEject.csproj">
       <Project>{ae269158-dfa5-4dd7-8afc-f45faf2b958c}</Project>
       <Name>UsbEject</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\Shell.csproj">
+    <ProjectReference Include="..\..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\ShellCodePack.csproj">
       <Project>{aa0c00cb-8699-4f37-bfae-40ca87acc06d}</Project>
-      <Name>Shell</Name>
+      <Name>ShellCodePack</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WpfControlLibrary1\BetterExplorerControls.csproj">
       <Project>{04270710-e358-46d4-83e5-eb7a9323cce7}</Project>
@@ -1165,7 +1169,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

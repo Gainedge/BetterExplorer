@@ -81,9 +81,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\Shell.csproj">
+    <ProjectReference Include="..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\ShellCodePack.csproj">
       <Project>{aa0c00cb-8699-4f37-bfae-40ca87acc06d}</Project>
-      <Name>Shell</Name>
+      <Name>ShellCodePack</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
