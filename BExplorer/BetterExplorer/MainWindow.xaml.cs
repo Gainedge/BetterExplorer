@@ -58,97 +58,97 @@ namespace BetterExplorer
 	public partial class MainWindow : RibbonWindow
 	{
 		#region Variables and Constants
-		ExplorerBrowser Explorer = new ExplorerBrowser();
-		ShellView ShellListView = new ShellView();
-		ShellTreeView ShellTree = new ShellTreeView();
-		ClipboardMonitor cbm = new ClipboardMonitor();
-		ContextMenu cmHistory = new ContextMenu();
-		private int LastTabIndex = -1;
-		private int BeforeLastTabIndex = -1;
-		string StartUpLocation = KnownFolders.Libraries.ParsingName;
-		bool IsHFlyoutEnabled;
-		bool IsPreviewPaneEnabled;
-		int PreviewPaneWidth = 120;
-		int InfoPaneHeight = 150;
-		bool IsInfoPaneEnabled;
-		bool IsNavigationPaneEnabled;
-		bool isCheckModeEnabled;
-		bool IsExtendedFileOpEnabled;
+        ExplorerBrowser Explorer = new ExplorerBrowser();
+        ShellView ShellListView = new ShellView();
+        ShellTreeView ShellTree = new ShellTreeView();
+        ClipboardMonitor cbm = new ClipboardMonitor();
+        ContextMenu cmHistory = new ContextMenu();
+        private int LastTabIndex = -1;
+        private int BeforeLastTabIndex = -1;
+        string StartUpLocation = KnownFolders.Libraries.ParsingName;
+        bool IsHFlyoutEnabled;
+        bool IsPreviewPaneEnabled;
+        int PreviewPaneWidth = 120;
+        int InfoPaneHeight = 150;
+        bool IsInfoPaneEnabled;
+        bool IsNavigationPaneEnabled;
+        bool isCheckModeEnabled;
+        bool IsExtendedFileOpEnabled;
         bool IsCloseLastTabCloseApp;
-		public bool IsrestoreTabs;
-		bool IsUpdateCheck;
-	    bool IsUpdateCheckStartup;
+        public bool IsrestoreTabs;
+        bool IsUpdateCheck;
+        bool IsUpdateCheckStartup;
         bool IsConsoleShown;
-	    int UpdateCheckType;
-		public bool isOnLoad;
-		System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
-		public bool IsCalledFromLoading;
-		public bool IsCalledFromViewEnum;
-		bool ReadyToChangeLanguage;
-		System.Windows.Forms.Timer FocusTimer = new System.Windows.Forms.Timer();
-		IntPtr Handle;
-		string EditComm = "";
-		List<string> Archives = new List<string>(new string[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
-		List<string> Images = new List<string>(new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
-		List<string> VirDisks = new List<string>(new string[] { ".iso", ".bin", ".vhd" });
-		MenuItem misa;
-		MenuItem misd;
-		MenuItem misag;
-		MenuItem misdg;
-		MenuItem misng;
-		public static UpdateManager Updater;
-		bool inLibrary = false;
-		bool inDrive = false;
-		//string LastItemSelected = "";
-		string SelectedArchive = "";
-		//bool KeepFocusOnExplorer = false;
-		bool KeepBackstageOpen = false;
-		IProgressDialog pd;
-		private string ICON_DLLPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
-		bool IsAfterFolderCreate = false;
-		bool isGoingBackOrForward;
-		bool asFolder = false;
-		bool asImage = false;
-		bool asArchive = false;
-		bool asDrive = false;
-		bool asApplication = false;
-		bool asLibrary = false;
+        int UpdateCheckType;
+        public bool isOnLoad;
+        System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
+        public bool IsCalledFromLoading;
+        public bool IsCalledFromViewEnum;
+        bool ReadyToChangeLanguage;
+        System.Windows.Forms.Timer FocusTimer = new System.Windows.Forms.Timer();
+        IntPtr Handle;
+        string EditComm = "";
+        List<string> Archives = new List<string>(new string[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
+        List<string> Images = new List<string>(new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
+        List<string> VirDisks = new List<string>(new string[] { ".iso", ".bin", ".vhd" });
+        MenuItem misa;
+        MenuItem misd;
+        MenuItem misag;
+        MenuItem misdg;
+        MenuItem misng;
+        public static UpdateManager Updater;
+        bool inLibrary = false;
+        bool inDrive = false;
+        //string LastItemSelected = "";
+        string SelectedArchive = "";
+        //bool KeepFocusOnExplorer = false;
+        bool KeepBackstageOpen = false;
+        IProgressDialog pd;
+        private string ICON_DLLPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
+        bool IsAfterFolderCreate = false;
+        bool isGoingBackOrForward;
+        bool asFolder = false;
+        bool asImage = false;
+        bool asArchive = false;
+        bool asDrive = false;
+        bool asApplication = false;
+        bool asLibrary = false;
         bool asVirtualDrive = false;
-		bool canlogactions = false;
-		string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
-		string logdir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\ActionLog\\";
-		string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
+        bool canlogactions = false;
+        string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
+        string logdir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\ActionLog\\";
+        string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
         string naddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\NetworkAccounts\\";
-		string sstdir;
-		List<NavigationLog> reopenabletabs = new List<NavigationLog>();
-		bool OverwriteOnRotate = false;
-		NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-		BackgroundWorker UpdaterWorker;
-		System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
-		DateTime LastUpdateCheck;
-		Int32 UpdateCheckInterval;
-    Double CommandPromptWinHeight;
-    bool IsViewSelection = false;
-    private readonly ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
-    public List<string> QatItems = new List<string>();
-    UIElement curitem = null;
-    Boolean IsGlassOnRibonMinimized { get; set; }
-    NetworkAccountManager nam = new NetworkAccountManager();
-    List<GongSolutions.Shell.LVItemColor> LVItemsColor { get; set; }
-    uint SelectedDriveID = 0;
-    string[] InitialTabs;
+        string sstdir;
+        List<NavigationLog> reopenabletabs = new List<NavigationLog>();
+        bool OverwriteOnRotate = false;
+        NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        BackgroundWorker UpdaterWorker;
+        System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
+        DateTime LastUpdateCheck;
+        Int32 UpdateCheckInterval;
+        Double CommandPromptWinHeight;
+        bool IsViewSelection = false;
+        private readonly ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
+        public List<string> QatItems = new List<string>();
+        UIElement curitem = null;
+        Boolean IsGlassOnRibonMinimized { get; set; }
+        NetworkAccountManager nam = new NetworkAccountManager();
+        List<GongSolutions.Shell.LVItemColor> LVItemsColor { get; set; }
+        uint SelectedDriveID = 0;
+        string[] InitialTabs;
 		#endregion
 
 		#region Properties
 		/// <summary>
-		/// Gets Previouse Window State
+		/// Gets Previous Window State
 		/// </summary>
 		public WindowState PreviouseWindowState { get; private set; }
 
 		/// <summary>
 		/// Gets the New context menu
 		/// </summary>
-		/// <returns>The list of the nwe context menu items</returns>
+		/// <returns>The list of the new context menu items</returns>
 		private List<string> GetNewContextMenu()
 		{
 			List<string> TheList = new List<string>();
@@ -177,40 +177,49 @@ namespace BetterExplorer
 
 		#region Events
 
-    void InternalRichTextBox_TextChanged(object sender, EventArgs e) {
-      ctrlConsole.ScrollToBottom();
-    }
-
-    void Explorer_ItemHot(object sender, ExplorerAUItemEventArgs e) {
-     // MessageBox.Show(e.Item.ParsingName);
-    }
-
-    private void chkIsLastTabCloseApp_Click(object sender, RoutedEventArgs e) {
-      this.IsCloseLastTabCloseApp = this.chkIsLastTabCloseApp.IsChecked.Value;
-    }
-
-    private void btnConsolePane_Click(object sender, RoutedEventArgs e) {
-      if (btnConsolePane.IsChecked.Value) {
-        this.IsConsoleShown = true;
-        rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
-        spCommandPrompt.Height = GridLength.Auto;
-        if (!ctrlConsole.IsProcessRunning) {
-          ctrlConsole.StartProcess("cmd.exe", Explorer.NavigationLog.CurrentLocation.IsFileSystemObject?String.Format("/K \"{0}\"",Explorer.NavigationLog.CurrentLocation.ParsingName.TrimEnd(new[] { '/', '\\' })):null);
-          ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
-          ctrlConsole.ClearOutput();
+        void InternalRichTextBox_TextChanged(object sender, EventArgs e)
+        {
+            ctrlConsole.ScrollToBottom();
         }
-      } else {
-        this.IsConsoleShown = false;
-        rCommandPrompt.Height = new GridLength(0);
-        spCommandPrompt.Height = new GridLength(0);
-        if (ctrlConsole.IsProcessRunning)
-          ctrlConsole.StopProcess();
-      }
-    }
 
-    private void ctrlConsole_OnConsoleInput(object sender, ConsoleControl.ConsoleEventArgs args) {
+        void Explorer_ItemHot(object sender, ExplorerAUItemEventArgs e)
+        {
+            // MessageBox.Show(e.Item.ParsingName);
+        }
 
-    }
+        private void chkIsLastTabCloseApp_Click(object sender, RoutedEventArgs e)
+        {
+            this.IsCloseLastTabCloseApp = this.chkIsLastTabCloseApp.IsChecked.Value;
+        }
+
+        private void btnConsolePane_Click(object sender, RoutedEventArgs e)
+        {
+            if (btnConsolePane.IsChecked.Value)
+            {
+                this.IsConsoleShown = true;
+                rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
+                spCommandPrompt.Height = GridLength.Auto;
+                if (!ctrlConsole.IsProcessRunning)
+                {
+                    ctrlConsole.StartProcess("cmd.exe", Explorer.NavigationLog.CurrentLocation.IsFileSystemObject ? String.Format("/K \"{0}\"", Explorer.NavigationLog.CurrentLocation.ParsingName.TrimEnd(new[] { '/', '\\' })) : null);
+                    ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+                    ctrlConsole.ClearOutput();
+                }
+            }
+            else
+            {
+                this.IsConsoleShown = false;
+                rCommandPrompt.Height = new GridLength(0);
+                spCommandPrompt.Height = new GridLength(0);
+                if (ctrlConsole.IsProcessRunning)
+                    ctrlConsole.StopProcess();
+            }
+        }
+
+        private void ctrlConsole_OnConsoleInput(object sender, ConsoleControl.ConsoleEventArgs args)
+        {
+
+        }
 
 		private void btnAbout_Click(object sender, RoutedEventArgs e)
 		{
@@ -284,140 +293,6 @@ namespace BetterExplorer
 			//  }
 		}
 
-    private void SaveSettings(String openedTabs)
-    {
-      RegistryKey rk = Registry.CurrentUser;
-      RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-      rks.SetValue(@"LastWindowWidth", this.Width);
-      rks.SetValue(@"LastWindowHeight", this.Height);
-      rks.SetValue(@"LastWindowPosLeft", this.Left);
-      rks.SetValue(@"LastWindowPosTop", this.Top);
-      if (btnBlue.IsChecked == true)
-      {
-        rks.SetValue(@"CurrentTheme", "Blue");
-      }
-      else if (btnSilver.IsChecked == true)
-      {
-        rks.SetValue(@"CurrentTheme", "Silver");
-      }
-      else if (btnBlack.IsChecked == true)
-      {
-        rks.SetValue(@"CurrentTheme", "Black");
-      }
-      else if (btnGreen.IsChecked == true)
-      {
-        rks.SetValue(@"CurrentTheme", "Green");
-      }
-      switch (this.WindowState)
-      {
-        case System.Windows.WindowState.Maximized:
-          rks.SetValue(@"LastWindowState", 2);
-          break;
-        case System.Windows.WindowState.Minimized:
-          rks.SetValue(@"LastWindowState", 1);
-          break;
-        case System.Windows.WindowState.Normal:
-          rks.SetValue(@"LastWindowState", 0);
-          break;
-        default:
-          rks.SetValue(@"LastWindowState", -1);
-          break;
-      }
-      rks.SetValue(@"IsRibonMinimized", TheRibbon.IsMinimized);
-      rks.SetValue(@"OpenedTabs", openedTabs);
-
-      if (FlowDirection == System.Windows.FlowDirection.RightToLeft)
-      {
-        rks.SetValue(@"RTLMode", "true");
-      }
-      else
-      {
-        rks.SetValue(@"RTLMode", "false");
-      }
-
-      //asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
-      //asArchive = ((int)rks.GetValue(@"AutoSwitchArchiveTools", 1) == 1);
-      //asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
-      //asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
-      //asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
-      //asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 0) == 1);
-
-      rks.SetValue(@"AutoSwitchFolderTools", GetIntegerFromBoolean(asFolder));
-      rks.SetValue(@"AutoSwitchArchiveTools", GetIntegerFromBoolean(asArchive));
-      rks.SetValue(@"AutoSwitchImageTools", GetIntegerFromBoolean(asImage));
-      rks.SetValue(@"AutoSwitchApplicationTools", GetIntegerFromBoolean(asApplication));
-      rks.SetValue(@"AutoSwitchLibraryTools", GetIntegerFromBoolean(asLibrary));
-      rks.SetValue(@"AutoSwitchDriveTools", GetIntegerFromBoolean(asDrive));
-      rks.SetValue(@"AutoSwitchVirtualDriveTools", GetIntegerFromBoolean(asVirtualDrive));
-      rks.SetValue(@"IsLastTabCloseApp", GetIntegerFromBoolean(this.IsCloseLastTabCloseApp));
-      if (this.IsPreviewPaneEnabled)
-        rks.SetValue(@"PreviewPaneWidth", (int)clPreview.ActualWidth, RegistryValueKind.DWord);
-
-      if (this.IsInfoPaneEnabled)
-        rks.SetValue(@"InfoPaneHeight", (int)rPreviewPane.ActualHeight, RegistryValueKind.DWord);
-
-      if (this.IsConsoleShown)
-        rks.SetValue(@"CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
-      rks.SetValue(@"IsConsoleShown", this.IsConsoleShown ? 1 : 0);
-
-      if (this.TabbaBottom.IsChecked == true)
-      {
-        rks.SetValue(@"TabBarAlignment", "bottom");
-      }
-      else
-      {
-        rks.SetValue(@"TabBarAlignment", "top");
-      }
-
-      rks.Close();
-    }
-    private void RibbonWindow_Closing(object sender, CancelEventArgs e)
-		{
-
-      if (App.isStartNewWindows)
-      {
-        if (r != null)
-        {
-          r.Close();
-        }
-
-      }
-
-      if (this.OwnedWindows.OfType<FileOperationDialog>().Count() > 0) {
-        
-        if (MessageBox.Show("Are you sure you want to cancel all running file operation tasks?", "", MessageBoxButton.YesNo) == MessageBoxResult.No) {
-          e.Cancel = true;
-          return;
-        }
-      }
-			//Explorer.automan.Dispose();
-			//if (PicturePreview != null)
-			//{
-			//    PicturePreview.Close(); 
-			//}
-      //if (ctrlConsole.IsProcessRunning)
-      //  ctrlConsole.StopProcess();
-
-			string OpenedTabs = "";
-			foreach (ClosableTabItem item in tabControl1.Items)
-			{
-				OpenedTabs += ";" + item.Path.ParsingName;
-			}
-
-      if (this.WindowState != System.Windows.WindowState.Minimized)
-        SaveSettings(OpenedTabs);
-
-			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems.Select(s => s.DisplayName).ToList());
-			AddToLog("Session Ended");
-      if (!App.isStartNewWindows)
-      {
-        e.Cancel = true;
-        App.isStartMinimized = true;
-        this.WindowState = System.Windows.WindowState.Minimized;
-        this.Visibility = System.Windows.Visibility.Hidden; 
-      }
-		}
-
 		private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e)
 		{
             autoUpdater.Visibility = System.Windows.Visibility.Visible;
@@ -439,47 +314,47 @@ namespace BetterExplorer
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
-			if (TheRibbon.IsMinimized)
-			{
-        if (this.IsGlassOnRibonMinimized)
-        {
-          System.Windows.Point p =
-          ShellVView.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-          this.GlassBorderThickness = new Thickness(8, this.WindowState == System.Windows.WindowState.Maximized ? p.Y : p.Y - 2, 8, 8); ;
-        }
-				try
-				{
-					this.SetBlur(false);
-				}
-				catch (Exception)
-				{
+            if (TheRibbon.IsMinimized)
+            {
+                if (this.IsGlassOnRibonMinimized)
+                {
+                    System.Windows.Point p =
+                    ShellVView.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+                    this.GlassBorderThickness = new Thickness(8, this.WindowState == System.Windows.WindowState.Maximized ? p.Y : p.Y - 2, 8, 8); ;
+                }
+                try
+                {
+                    this.SetBlur(false);
+                }
+                catch (Exception)
+                {
 
 
-				}
-			}
-			else
-			{
-        if (this.IsGlassOnRibonMinimized)
-        {
-          System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-          this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight + 2, 8, 8);
-        }
-				try
-				{
-					this.SetBlur(true);
-				}
-				catch (Exception)
-				{
+                }
+            }
+            else
+            {
+                if (this.IsGlassOnRibonMinimized)
+                {
+                    System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+                    this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight + 2, 8, 8);
+                }
+                try
+                {
+                    this.SetBlur(true);
+                }
+                catch (Exception)
+                {
 
 
-				}
-			}
+                }
+            }
 
 		}
 
 		private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e)
 		{
-      OpenCustomizeQAT();
+            OpenCustomizeQAT();
 		}
 
 		private static int GetIntegerFromBoolean(bool value)
@@ -608,7 +483,7 @@ namespace BetterExplorer
 		}
 
 		/// <summary>
-		/// Occures on layout change
+		/// Occurs on layout change
 		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
@@ -617,276 +492,279 @@ namespace BetterExplorer
 			PreviouseWindowState = WindowState;
 		}
 
-    private void SetSortingAndGroupingButtons()
-    {
-      btnSort.Items.Clear();
-      btnGroup.Items.Clear();
+        #region ViewEnumerationComplete
 
-      WindowsAPI.SORTCOLUMN sc;
-      Explorer.GetSortColInfo(out sc);
-      WindowsAPI.PROPERTYKEY pkg;
-      bool GroupDir;
-      Explorer.GetGroupColInfo(out pkg, out GroupDir);
-
-      try
-      {
-        foreach (Collumns item in Explorer.AvailableVisibleColumns)
+        private void Explorer_ViewEnumerationComplete(object sender, EventArgs e)
         {
+            IsCalledFromViewEnum = true;
+            zoomSlider.Value = Explorer.ContentOptions.ThumbnailSize;
+            IsCalledFromViewEnum = false;
 
-          if (item != null)
-          {
-            MenuItem mi = new MenuItem();
-            mi.Header = item.Name;
-            mi.Tag = item;
-            mi.GroupName = "GR2";
-            mi.Focusable = false;
-            mi.IsCheckable = true;
-            if ((item.pkey.fmtid == sc.propkey.fmtid) && (item.pkey.pid == sc.propkey.pid))
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
             {
-              mi.IsChecked = true;
+
+                try
+                {
+                    IShellView isv = Explorer.GetShellView();
+                    Collumns[] AllAvailColls = Explorer.AvailableColumns(true);
+
+                    SetupColumnsButton(AllAvailColls);
+
+                    SetSortingAndGroupingButtons();
+                }
+                catch (Exception)
+                {
+
+                }
+
+
+            }));
+
+            IsViewSelection = false;
+            SetUpViewGallery();
+            IsViewSelection = true;
+            Explorer.ContentOptions.CheckSelect = this.isCheckModeEnabled;
+        }
+
+        private void SetSortingAndGroupingButtons()
+        {
+            btnSort.Items.Clear();
+            btnGroup.Items.Clear();
+
+            WindowsAPI.SORTCOLUMN sc;
+            Explorer.GetSortColInfo(out sc);
+            WindowsAPI.PROPERTYKEY pkg;
+            bool GroupDir;
+            Explorer.GetGroupColInfo(out pkg, out GroupDir);
+
+            try
+            {
+                foreach (Collumns item in Explorer.AvailableVisibleColumns)
+                {
+
+                    if (item != null)
+                    {
+                        MenuItem mi = new MenuItem();
+                        mi.Header = item.Name;
+                        mi.Tag = item;
+                        mi.GroupName = "GR2";
+                        mi.Focusable = false;
+                        mi.IsCheckable = true;
+                        if ((item.pkey.fmtid == sc.propkey.fmtid) && (item.pkey.pid == sc.propkey.pid))
+                        {
+                            mi.IsChecked = true;
+                        }
+                        else
+                        {
+                            mi.IsChecked = false;
+                        }
+                        mi.Click += mi_Click;
+                        btnSort.Items.Add(mi);
+
+                        MenuItem mig = new MenuItem();
+                        mig.Header = item.Name;
+                        mig.Tag = item;
+                        mig.GroupName = "GR3";
+                        mig.Focusable = false;
+                        mig.IsCheckable = true;
+                        if ((item.pkey.fmtid == pkg.fmtid) && (item.pkey.pid == pkg.pid))
+                        {
+                            mig.IsChecked = true;
+                        }
+                        else
+                        {
+                            mig.IsChecked = false;
+                        }
+                        mig.Click += mig_Click;
+                        btnGroup.Items.Add(mig);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //FIXME: I disable this message because of strange null after filter
+                MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            Separator sp = new Separator();
+            sp.Focusable = false;
+            btnSort.Items.Add(sp);
+            misa = new MenuItem();
+            misa.Click += misa_Click;
+            misa.Focusable = false;
+            misa.Header = FindResource("miAscending");
+            misa.GroupName = "GR1";
+            misa.IsCheckable = true;
+
+            misd = new MenuItem();
+            misd.Header = FindResource("miDescending");
+            misd.IsCheckable = true;
+            misd.Click += misd_Click;
+            misd.Focusable = false;
+            misd.GroupName = "GR1";
+            if (sc.direction == WindowsAPI.SORT.ASCENDING)
+            {
+                misa.IsChecked = true;
             }
             else
             {
-              mi.IsChecked = false;
+                misd.IsChecked = true;
             }
-            mi.Click += mi_Click;
-            btnSort.Items.Add(mi);
+            btnSort.Items.Add(misa);
+            btnSort.Items.Add(misd);
+            misng = new MenuItem();
+            misng.Header = "(none)";
+            misng.Focusable = false;
+            misng.GroupName = "GR3";
+            misng.IsCheckable = true;
+            misng.IsChecked = pkg.fmtid == Guid.Empty;
+            misng.Click += misng_Click;
+            btnGroup.Items.Add(misng);
+            Separator spg = new Separator();
+            btnGroup.Items.Add(spg);
+            misag = new MenuItem();
+            misag.Focusable = false;
+            misag.Header = FindResource("miAscending");
+            misag.IsCheckable = true;
 
-            MenuItem mig = new MenuItem();
-            mig.Header = item.Name;
-            mig.Tag = item;
-            mig.GroupName = "GR3";
-            mig.Focusable = false;
-            mig.IsCheckable = true;
-            if ((item.pkey.fmtid == pkg.fmtid) && (item.pkey.pid == pkg.pid))
+
+            misag.GroupName = "GR4";
+
+            misdg = new MenuItem();
+            misdg.Focusable = false;
+            misdg.Header = FindResource("miDescending");
+            misdg.IsCheckable = true;
+            misdg.GroupName = "GR4";
+            if (GroupDir)
             {
-              mig.IsChecked = true;
+                misag.IsChecked = true;
             }
             else
             {
-              mig.IsChecked = false;
+                misdg.IsChecked = true;
             }
-            mig.Click += mig_Click;
-            btnGroup.Items.Add(mig);
-          }
+
+            btnGroup.Items.Add(misag);
+            btnGroup.Items.Add(misdg);
+
         }
-      }
-      catch (Exception ex)
-      {
-        //FIXME: I disable this message becasue of strange null after filter
-        MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
-      }
-
-      Separator sp = new Separator();
-      sp.Focusable = false;
-      btnSort.Items.Add(sp);
-      misa = new MenuItem();
-      misa.Click += misa_Click;
-      misa.Focusable = false;
-      misa.Header = FindResource("miAscending");
-      misa.GroupName = "GR1";
-      misa.IsCheckable = true;
-
-      misd = new MenuItem();
-      misd.Header = FindResource("miDescending");
-      misd.IsCheckable = true;
-      misd.Click += misd_Click;
-      misd.Focusable = false;
-      misd.GroupName = "GR1";
-      if (sc.direction == WindowsAPI.SORT.ASCENDING)
-      {
-        misa.IsChecked = true;
-      }
-      else
-      {
-        misd.IsChecked = true;
-      }
-      btnSort.Items.Add(misa);
-      btnSort.Items.Add(misd);
-      misng = new MenuItem();
-      misng.Header = "(none)";
-      misng.Focusable = false;
-      misng.GroupName = "GR3";
-      misng.IsCheckable = true;
-      misng.IsChecked = pkg.fmtid == Guid.Empty;
-      misng.Click += misng_Click;
-      btnGroup.Items.Add(misng);
-      Separator spg = new Separator();
-      btnGroup.Items.Add(spg);
-      misag = new MenuItem();
-      misag.Focusable = false;
-      misag.Header = FindResource("miAscending");
-      misag.IsCheckable = true;
-
-
-      misag.GroupName = "GR4";
-
-      misdg = new MenuItem();
-      misdg.Focusable = false;
-      misdg.Header = FindResource("miDescending");
-      misdg.IsCheckable = true;
-      misdg.GroupName = "GR4";
-      if (GroupDir)
-      {
-        misag.IsChecked = true;
-      }
-      else
-      {
-        misdg.IsChecked = true;
-      }
-
-      btnGroup.Items.Add(misag);
-      btnGroup.Items.Add(misdg);
-
-    }
-    private void SetUpViewGallery()
-    {
-      if (Explorer.ContentOptions.ThumbnailSize == 256)
-      {
-        ViewGallery.SelectedIndex = 0;
-
-      }
-      if (Explorer.ContentOptions.ThumbnailSize == 96)
-      {
-        ViewGallery.SelectedIndex = 1;
-
-      }
-      if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Icon && Explorer.ContentOptions.ThumbnailSize == 48)
-      {
-        ViewGallery.SelectedIndex = 2;
-        btnSbIcons.IsChecked = true;
-
-      }
-      if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.SmallIcon)
-      {
-        ViewGallery.SelectedIndex = 3;
-
-      }
-      else
-      {
-        btnSbIcons.IsChecked = false;
-      }
-      if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.List)
-      {
-        ViewGallery.SelectedIndex = 4;
-      }
-      if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Details)
-      {
-        ViewGallery.SelectedIndex = 5;
-        btnSbDetails.IsChecked = true;
-      }
-      else
-      {
-        btnSbDetails.IsChecked = false;
-      }
-      if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Tile)
-      {
-        ViewGallery.SelectedIndex = 6;
-        btnSbTiles.IsChecked = true;
-      }
-      else
-      {
-        btnSbTiles.IsChecked = false;
-      }
-      if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Content)
-      {
-        ViewGallery.SelectedIndex = 7;
-      }
-    }
-
-    private void SetupColumnsButton(Collumns[] AllAvailColls)
-    {
-      btnMoreColls.Items.Clear();
-
-      for (int j = 1; j < 10; j++)
-      {
-        try
+        private void SetUpViewGallery()
         {
-          MenuItem mic = new MenuItem();
-          mic.Header = AllAvailColls[j].Name;
-          mic.Tag = AllAvailColls[j].pkey;
-          mic.Click += mic_Click;
-          mic.Focusable = false;
-          mic.IsCheckable = true;
-          foreach (Collumns col in Explorer.AvailableVisibleColumns)
-          {
-            if (col.Name == AllAvailColls[j].Name)
+            if (Explorer.ContentOptions.ThumbnailSize == 256)
             {
-              mic.IsChecked = true;
+                ViewGallery.SelectedIndex = 0;
+
             }
-          }
-          btnMoreColls.Items.Add(mic);
+            if (Explorer.ContentOptions.ThumbnailSize == 96)
+            {
+                ViewGallery.SelectedIndex = 1;
+
+            }
+            if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Icon && Explorer.ContentOptions.ThumbnailSize == 48)
+            {
+                ViewGallery.SelectedIndex = 2;
+                btnSbIcons.IsChecked = true;
+
+            }
+            if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.SmallIcon)
+            {
+                ViewGallery.SelectedIndex = 3;
+
+            }
+            else
+            {
+                btnSbIcons.IsChecked = false;
+            }
+            if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.List)
+            {
+                ViewGallery.SelectedIndex = 4;
+            }
+            if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Details)
+            {
+                ViewGallery.SelectedIndex = 5;
+                btnSbDetails.IsChecked = true;
+            }
+            else
+            {
+                btnSbDetails.IsChecked = false;
+            }
+            if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Tile)
+            {
+                ViewGallery.SelectedIndex = 6;
+                btnSbTiles.IsChecked = true;
+            }
+            else
+            {
+                btnSbTiles.IsChecked = false;
+            }
+            if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Content)
+            {
+                ViewGallery.SelectedIndex = 7;
+            }
         }
-        catch (Exception)
+
+        private void SetupColumnsButton(Collumns[] AllAvailColls)
         {
+            btnMoreColls.Items.Clear();
 
-        }
+            for (int j = 1; j < 10; j++)
+            {
+                try
+                {
+                    MenuItem mic = new MenuItem();
+                    mic.Header = AllAvailColls[j].Name;
+                    mic.Tag = AllAvailColls[j].pkey;
+                    mic.Click += mic_Click;
+                    mic.Focusable = false;
+                    mic.IsCheckable = true;
+                    foreach (Collumns col in Explorer.AvailableVisibleColumns)
+                    {
+                        if (col.Name == AllAvailColls[j].Name)
+                        {
+                            mic.IsChecked = true;
+                        }
+                    }
+                    btnMoreColls.Items.Add(mic);
+                }
+                catch (Exception)
+                {
+
+                }
 
 
-      }
+            }
 
-      int ItemsCount = Explorer.GetItemsCount();
-
-
-      if (ItemsCount == 0)
-      {
-        sbiItemsCount.Visibility = System.Windows.Visibility.Collapsed;
-      }
-      else
-      {
-        sbiItemsCount.Visibility = System.Windows.Visibility.Visible;
-      }
-      if (ItemsCount == 1)
-      {
-        sbiItemsCount.Content = "1 item";
-      }
-      else
-      {
-        sbiItemsCount.Content = ItemsCount + " items";
-      }
+            int ItemsCount = Explorer.GetItemsCount();
 
 
-      Separator sep = new Separator();
-      btnMoreColls.Items.Add(sep);
-      MenuItem micm = new MenuItem();
-      micm.Header = FindResource("btnMoreColCP");
-      micm.Focusable = false;
-      micm.Tag = AllAvailColls;
-      micm.Click += new RoutedEventHandler(micm_Click);
-      btnMoreColls.Items.Add(micm);
-    }
+            if (ItemsCount == 0)
+            {
+                sbiItemsCount.Visibility = System.Windows.Visibility.Collapsed;
+            }
+            else
+            {
+                sbiItemsCount.Visibility = System.Windows.Visibility.Visible;
+            }
+            if (ItemsCount == 1)
+            {
+                sbiItemsCount.Content = "1 item";
+            }
+            else
+            {
+                sbiItemsCount.Content = ItemsCount + " items";
+            }
 
-    private void Explorer_ViewEnumerationComplete(object sender, EventArgs e)
-		{
-			IsCalledFromViewEnum = true;
-			zoomSlider.Value = Explorer.ContentOptions.ThumbnailSize;
-			IsCalledFromViewEnum = false;
 
-      Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
-      {
-
-        try
-        {
-          IShellView isv = Explorer.GetShellView();
-          Collumns[] AllAvailColls = Explorer.AvailableColumns(true);
-
-          SetupColumnsButton(AllAvailColls);
-
-          SetSortingAndGroupingButtons();
-        }
-        catch (Exception)
-        {
-
-        }
-						
-          
-			}));
-
-      IsViewSelection = false;
-      SetUpViewGallery();
-      IsViewSelection = true;
-      Explorer.ContentOptions.CheckSelect = this.isCheckModeEnabled;
-		}
+            Separator sep = new Separator();
+            btnMoreColls.Items.Add(sep);
+            MenuItem micm = new MenuItem();
+            micm.Header = FindResource("btnMoreColCP");
+            micm.Focusable = false;
+            micm.Tag = AllAvailColls;
+            micm.Click += new RoutedEventHandler(micm_Click);
+            btnMoreColls.Items.Add(micm);
+        } 
+        #endregion
 
 		void misd_Click(object sender, RoutedEventArgs e)
 		{
@@ -920,336 +798,35 @@ namespace BetterExplorer
 			(sender as DispatcherTimer).Stop();
 		}
 
-		void micm_Click(object sender, RoutedEventArgs e)
-		{
-
-      using (MoreColumns fMoreCollumns = new MoreColumns())
-      {
-        fMoreCollumns.PopulateAvailableColumns((Collumns[])(sender as MenuItem).Tag, Explorer, this.PointToScreen(Mouse.GetPosition(this)));
-      }
-		}
-
-		void mic_Click(object sender, RoutedEventArgs e)
-		{
-			MenuItem mi = (sender as MenuItem);
-      WindowsAPI.PROPERTYKEY pkey = (WindowsAPI.PROPERTYKEY)mi.Tag;
-			Explorer.SetColInView(pkey, !mi.IsChecked);
-		}
-
-		[DllImport("shell32.dll")]
-		public static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, [Out()] out IntPtr pidl, uint sfgaoIn, [Out()] out uint psfgaoOut);
-
-    private void PreselectItemsIntoExplorerControl()
-    {
-      var itb = tabControl1.SelectedItem as ClosableTabItem;
-      if (itb.SelectedItems != null)
-      {
-        foreach (var item in itb.SelectedItems)
-        {
-          try
-          {
-            Explorer.SelectItem(ShellObject.FromParsingName(item));
-          }
-          catch (Exception)
-          {
-            //! Sometimes there can be malformed or invalid string on some systems so we have to catch this error.
-          }
-        }
-        Explorer.SetExplorerFocus();
-      }
-    }
-    private void SetupUIonNavComplete(NavigationCompleteEventArgs e)
-    {
-      if (e.NewLocation.IsFileSystemObject)
-      {
-        btnSizeChart.IsEnabled = true;
-      }
-      else
-      {
-        btnSizeChart.IsEnabled = false;
-      }
-
-
-      btnAutosizeColls.IsEnabled =
-          Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Details ?
-            true : false;
-
-
-      if (e.NewLocation.ParsingName == KnownFolders.RecycleBin.ParsingName)
-      {
-        if (Explorer.GetItemsCount() > 0)
-        {
-          miRestoreALLRB.Visibility = System.Windows.Visibility.Visible;
-        }
-      }
-      else
-      {
-        miRestoreALLRB.Visibility = System.Windows.Visibility.Collapsed;
-      }
-      bool IsChanged = (Explorer.GetSelectedItemsCount() > 0);
-      bool isFuncAvail;
-      if (Explorer.SelectedItems.Count == 1)
-      {
-        isFuncAvail = (Explorer.SelectedItems[0].IsFileSystemObject) ||
-          Explorer.NavigationLog.CurrentLocation.ParsingName ==
-            KnownFolders.Libraries.ParsingName;
-      }
-      else
-      {
-        if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-          !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
-          ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-        isFuncAvail = true;
-      }
-      btnCopy.IsEnabled = IsChanged;
-      //btnPathCopy.IsEnabled = IsChanged;
-      btnCut.IsEnabled = IsChanged;
-      btnRename.IsEnabled = IsChanged;
-      btnDelete.IsEnabled = IsChanged && isFuncAvail;
-      btnCopyto.IsEnabled = IsChanged;
-      btnMoveto.IsEnabled = IsChanged;
-      btnSelNone.IsEnabled = IsChanged;
-      btnUpLevel.IsEnabled = !(Explorer.NavigationLog.CurrentLocation.Parent == null);
-    }
-
-    private void SetUpJumpListOnNavComplete()
-    {
-      IntPtr pIDL = IntPtr.Zero;
-
-      try
-      {
-        uint iAttribute;
-        SHParseDisplayName(Explorer.NavigationLog.CurrentLocation.ParsingName,
-            IntPtr.Zero, out pIDL, (uint)0, out iAttribute);
-
-        WindowsAPI.SHFILEINFO sfi = new WindowsAPI.SHFILEINFO();
-        IntPtr Res = IntPtr.Zero;
-        if (pIDL != IntPtr.Zero)
-        {
-          if (!Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
-          {
-            Res = WindowsAPI.SHGetFileInfo(pIDL, 0, ref sfi, (uint)Marshal.SizeOf(sfi), WindowsAPI.SHGFI.IconLocation | WindowsAPI.SHGFI.SmallIcon | WindowsAPI.SHGFI.PIDL);
-          }
-
-        }
-
-        if (Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
-        {
-          WindowsAPI.SHGetFileInfo(Explorer.NavigationLog.CurrentLocation.ParsingName, 0, ref sfi, (uint)Marshal.SizeOf(sfi), (uint)WindowsAPI.SHGFI.IconLocation | (uint)WindowsAPI.SHGFI.SmallIcon);
-
-        }
-        JumpTask JTask = new JumpTask();
-        JTask.ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-        JTask.Arguments = String.Format("\"{0}\"", Explorer.NavigationLog.CurrentLocation.ParsingName);
-        JTask.Title = Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default);
-        JTask.IconResourcePath = sfi.szDisplayName;
-        JTask.IconResourceIndex = sfi.iIcon;
-        System.Windows.Shell.JumpList.AddToRecentCategory(JTask);
-        AppJL.Apply();
-
-      }
-      finally
-      {
-
-        if (pIDL != IntPtr.Zero)
-          Marshal.FreeCoTaskMem(pIDL);
-      }
-    }
-
-    private void TranslateUI()
-    {
-      if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName)
-      {
-        btnCreateFolder.Header = FindResource("btnNewLibraryCP");  //"New Library";
-        stNewFolder.Title = FindResource("btnNewLibraryCP").ToString();//"New Library";
-        stNewFolder.Text = "Creates a new library in the current folder.";
-        stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/newlib32.png", UriKind.Relative));
-        btnCreateFolder.LargeIcon = @"..\Images\newlib32.png";
-        btnCreateFolder.Icon = @"..\Images\newlib16.png";
-      }
-      else
-      {
-        btnCreateFolder.Header = FindResource("btnNewFolderCP");//"New Folder";
-        stNewFolder.Title = FindResource("btnNewFolderCP").ToString(); //"New Folder";
-        stNewFolder.Text = "Creates a new folder in the current folder";
-        stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/folder_new32.png", UriKind.Relative));
-        btnCreateFolder.LargeIcon = @"..\Images\folder_new32.png";
-        btnCreateFolder.Icon = @"..\Images\folder_new16.png";
-      }
-    }
-    private bool SetUpNewFolderButtons()
-    {
-      bool isinLibraries = false;
-      if (Explorer.NavigationLog.CurrentLocation.Parent != null)
-      {
-        if (Explorer.NavigationLog.CurrentLocation.Parent.ParsingName ==
-              KnownFolders.Libraries.ParsingName)
-        {
-          isinLibraries = true;
-        }
-        else
-        {
-          isinLibraries = false;
-        }
-      }
-
-      btnCreateFolder.IsEnabled = Explorer.NavigationLog.CurrentLocation.IsFileSystemObject ||
-          (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName) ||
-          (isinLibraries);
-
-      TranslateUI();
-
-      return isinLibraries;
-    }
-    private void SetUpButtonVisibilityOnNavComplete(bool isinLibraries)
-    {
-      if (Explorer.NavigationLog.CurrentLocation.ParsingName.Contains(KnownFolders.Libraries.ParsingName) &&
-                                    Explorer.NavigationLog.CurrentLocation.ParsingName != KnownFolders.Libraries.ParsingName)
-      {
-        ctgLibraries.Visibility = System.Windows.Visibility.Visible;
-        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-        ctgImage.Visibility = System.Windows.Visibility.Collapsed;
-        ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
-        ctgVirtualDisk.Visibility = System.Windows.Visibility.Collapsed;
-        ctgExe.Visibility = System.Windows.Visibility.Collapsed;
-        inLibrary = true;
-
-        //MessageBox.Show("In Library");
-        try
-        {
-          ShellLibrary lib =
-              ShellLibrary.Load(Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default), false);
-          IsFromSelectionOrNavigation = true;
-          chkPinNav.IsChecked = lib.IsPinnedToNavigationPane;
-          IsFromSelectionOrNavigation = false;
-          foreach (ShellObject item in lib)
-          {
-            MenuItem miItem = new MenuItem();
-            miItem.Header = item.GetDisplayName(DisplayNameType.Default);
-            miItem.Tag = item;
-            item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-            item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-            miItem.Icon = item.Thumbnail.BitmapSource;
-            miItem.GroupName = "GRDS1";
-            miItem.IsCheckable = true;
-            miItem.IsChecked = (item.ParsingName == lib.DefaultSaveFolder);
-            miItem.Click += new RoutedEventHandler(miItem_Click);
-            btnDefSave.Items.Add(miItem);
-          }
-
-          btnDefSave.IsEnabled = !(lib.Count == 0);
-          lib.Close();
-        }
-        catch
+        void micm_Click(object sender, RoutedEventArgs e)
         {
 
+            using (MoreColumns fMoreCollumns = new MoreColumns())
+            {
+                fMoreCollumns.PopulateAvailableColumns((Collumns[])(sender as MenuItem).Tag, Explorer, this.PointToScreen(Mouse.GetPosition(this)));
+            }
         }
-      }
-      else
-      {
-        if (!Explorer.NavigationLog.CurrentLocation.ParsingName.ToLowerInvariant().EndsWith("library-ms"))
+
+        void mic_Click(object sender, RoutedEventArgs e)
         {
-          btnDefSave.Items.Clear();
-          ctgLibraries.Visibility = System.Windows.Visibility.Collapsed;
-          inLibrary = false;
-        }
-        //MessageBox.Show("Not in Library");
-      }
-      if (Explorer.NavigationLog.CurrentLocation.IsDrive)
-      {
-        ctgDrive.Visibility = System.Windows.Visibility.Visible;
-        inDrive = true;
-        //MessageBox.Show("In Drive");
-      }
-      else
-      {
-        ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-        inDrive = false;
-        //MessageBox.Show("Not In Drive");
-      }
-      if (isinLibraries)
-      {
-        ctgFolderTools.Visibility = Visibility.Collapsed;
-      }
-    }
-    private void SetUpConsoleWindow(NavigationCompleteEventArgs e)
-    {
-      try
-      {
-        if (e.NewLocation.IsFileSystemObject)
-        {
-          ctrlConsole.WriteInput(String.Format("cd \"{0}\"", e.NewLocation.ParsingName), System.Drawing.Color.Red, false);
-        }
-        if (ctrlConsole.InternalRichTextBox.Lines.Last().Substring(0, ctrlConsole.InternalRichTextBox.Lines.Last().IndexOf(Char.Parse(@"\")) + 1) != Path.GetPathRoot(e.NewLocation.ParsingName))
-        {
-          ctrlConsole.WriteInput(Path.GetPathRoot(e.NewLocation.ParsingName).TrimEnd(Char.Parse(@"\")), System.Drawing.Color.Red, false);
-        }
-      }
-      catch (Exception)
-      {
-        // catch all expetions for illigal path
-      }
-    }
-    private void SetUpBreadcrumbbarOnNavComplete(NavigationCompleteEventArgs e)
-    {
-      this.breadcrumbBarControl1.LoadDirectory(e.NewLocation);
-      this.breadcrumbBarControl1.LastPath = e.NewLocation.ParsingName;
-      this.Title = "Better Explorer - " + e.NewLocation.GetDisplayName(DisplayNameType.Default);
-      e.NewLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-      e.NewLocation.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-      try
-      {
-        (tabControl1.SelectedItem as ClosableTabItem).Header = e.NewLocation.GetDisplayName(DisplayNameType.Default);
-        (tabControl1.SelectedItem as ClosableTabItem).TabIcon = e.NewLocation.Thumbnail.BitmapSource;
-      }
-      catch (Exception)
-      {
-
-      }
-
-      try
-      {
-
-        //ClosableTabItem it = new ClosableTabItem();
-        //CreateTabbarRKMenu(it);
-
-        (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
-        if (!isGoingBackOrForward)
-        {
-          try
-          {
-            if ((tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.ForwardEntries.Count() > 1)
-              (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.ClearForwardItems();
-          }
-          catch (Exception)
-          {
-
-          }
-
-          (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CurrentLocation = Explorer.NavigationLog.CurrentLocation;
-
+            MenuItem mi = (sender as MenuItem);
+            WindowsAPI.PROPERTYKEY pkey = (WindowsAPI.PROPERTYKEY)mi.Tag;
+            Explorer.SetColInView(pkey, !mi.IsChecked);
         }
 
-        isGoingBackOrForward = false;
+        [DllImport("shell32.dll")]
+        public static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, [Out()] out IntPtr pidl, uint sfgaoIn, [Out()] out uint psfgaoOut);
 
-        leftNavBut.IsEnabled = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CanNavigateBackwards;
-        rightNavBut.IsEnabled = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CanNavigateForwards;
-      }
-      catch (Exception)
-      {
-
-      }
-    }
-    async void Explorer_NavigationComplete(object sender, NavigationCompleteEventArgs e)
+        async void Explorer_NavigationComplete(object sender, NavigationCompleteEventArgs e)
 		{
 			
 
 		}
 
-		public static string GetYesNoFromBoolean(bool value)
-		{
-      return value ? "Yes" : "No";
-		}
+    public static string GetYesNoFromBoolean(bool value)
+    {
+        return value ? "Yes" : "No";
+    }
 
 		void miItem_Click(object sender, RoutedEventArgs e)
 		{
@@ -1429,44 +1006,44 @@ namespace BetterExplorer
 		//BackgroundWorker bwSelectionChanged = new BackgroundWorker();
 		//'Selection change (when an item is selected in a folder)
 
-		async void ExplorerBrowserControl_SelectionChanged(object sender, EventArgs e)
-		{
-      int explorerSelectedItemsCount = 0;
-      
-      if (!IsSelectionRized)
-      {
-        IsSelectionRized = true;
-        
-        await Task.Run(() =>
+        async void ExplorerBrowserControl_SelectionChanged(object sender, EventArgs e)
         {
-          //ct.ThrowIfCancellationRequested();
-          Dispatcher.BeginInvoke(DispatcherPriority.Input, (ThreadStart)(() =>
-          {
-            try
+            int explorerSelectedItemsCount = 0;
+
+            if (!IsSelectionRized)
             {
-              // set up buttons
-              SetupUIOnSelectOrNavigate(Explorer.GetSelectedItemsCount());
-              
+                IsSelectionRized = true;
 
+                await Task.Run(() =>
+                {
+                    //ct.ThrowIfCancellationRequested();
+                    Dispatcher.BeginInvoke(DispatcherPriority.Input, (ThreadStart)(() =>
+                    {
+                        try
+                        {
+                            // set up buttons
+                            SetupUIOnSelectOrNavigate(Explorer.GetSelectedItemsCount());
+
+
+                        }
+                        catch (Exception)
+                        {
+
+
+                        }
+
+                    }));
+                });
+                if (this.IsInfoPaneEnabled)
+                {
+                    await Task.Run(() =>
+                    {
+                        PreviewPanel.FillPreviewPane(Explorer);
+                        ExplorerBrowser.FlushMemory();
+                    });
+                }
+                IsSelectionRized = false;
             }
-            catch (Exception)
-            {
-
-
-            }
-            
-          }));
-        });
-        if (this.IsInfoPaneEnabled)
-        {
-          await Task.Run(() =>
-          {
-            PreviewPanel.FillPreviewPane(Explorer);
-            ExplorerBrowser.FlushMemory();
-          });
-        }
-        IsSelectionRized = false;
-      }
 
       #region StatusBar selected items counter
       await Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() =>
@@ -1784,555 +1361,6 @@ namespace BetterExplorer
       SetUPRibbonTabsVisibilityOnSelectOrNavigate(SelItemsCount, selectedItem);
 
       SetUpButtonsStateOnSelectOrNavigate(SelItemsCount, selectedItem);
-
-      //string defapp = "";
-      //bool isFuncAvail;
-      //bool isEditAvailable;
-      //string ext;
-      //if (SelItemsCount == 0)
-      //{
-      //  // WHAT TO DO IF NO ITEMS ARE SELECTED
-      //  //MessageBox.Show("No Items Selected");
-
-      //  // hide status bar items
-      //  sbiSelItemsCount.Visibility = System.Windows.Visibility.Collapsed;
-      //  spSelItems.Visibility = System.Windows.Visibility.Collapsed;
-
-      //  // disable buttons
-      //  btnShare.IsEnabled = false;
-      //  btnCopy.IsEnabled = false;
-      //  btnCut.IsEnabled = false;
-      //  btnRename.IsEnabled = false;
-      //  btnDelete.IsEnabled = false;
-      //  btnCopyto.IsEnabled = false;
-      //  btnMoveto.IsEnabled = false;
-      //  btnSelNone.IsEnabled = false;
-      //  btnOpenWith.IsEnabled = false;
-      //  btnEdit.IsEnabled = false;
-      //  btnHistory.IsEnabled = false;
-      //  btnAdvancedSecurity.IsEnabled = false;
-      //  miRestoreRBItems.Visibility = System.Windows.Visibility.Collapsed;
-      //  mnuIncludeInLibrary.IsEnabled = false;
-      //  btnOpenTray.IsEnabled = false;
-      //  btnCloseTray.IsEnabled = false;
-      //  btnEjectDevice.IsEnabled = false;
-      //  btnUnmountDrive.IsEnabled = false;
-
-      //  // this still has functionality when there are no items selected
-      //  btnEasyAccess.IsEnabled = true;
-
-      //  // hide contextual tabs
-      //  ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
-      //  ctgVirtualDisk.Visibility = System.Windows.Visibility.Collapsed;
-      //  ctgExe.Visibility = System.Windows.Visibility.Collapsed;
-      //  ctgImage.Visibility = System.Windows.Visibility.Collapsed;
-
-      //  // already hidden (not)
-      //  ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-
-      //  // if the current viewing location is a Drive, show Drive Tools.
-      //  if (inDrive == true)
-      //  {
-      //    ctgDrive.Visibility = System.Windows.Visibility.Visible;
-      //  }
-      //  else
-      //  {
-      //    ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-      //  }
-
-      //  miSelAllByType.IsEnabled = false;
-      //  miSelAllByDate.IsEnabled = false;
-
-      //  // if the current viewing location is a Library, show Library Tools.
-      //  //if (Explorer.NavigationLog.CurrentLocation.Parent != null)
-      //  //{
-      //  //    if (Explorer.NavigationLog.CurrentLocation.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
-      //  //    {
-      //  //        ctgFolderTools.Visibility = Visibility.Collapsed;
-      //  //    }
-      //  //}
-
-      //  if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName || Explorer.NavigationLog.CurrentLocation.IsDrive)
-      //  {
-      //    ctgFolderTools.Visibility = Visibility.Collapsed;
-      //  }
-
-      //  if (inLibrary == true)
-      //  {
-      //    ctgFolderTools.Visibility = Visibility.Collapsed;
-      //    ctgLibraries.Visibility = System.Windows.Visibility.Visible;
-      //    ShellLibrary lib = ShellLibrary.Load(Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default), false);
-      //    IsFromSelectionOrNavigation = true;
-      //    chkPinNav.IsChecked = lib.IsPinnedToNavigationPane;
-      //    IsFromSelectionOrNavigation = false;
-      //    foreach (ShellObject item in lib)
-      //    {
-      //      MenuItem miItem = new MenuItem();
-      //      miItem.Header = item.GetDisplayName(DisplayNameType.Default);
-      //      miItem.Tag = item;
-      //      item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-      //      item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-      //      miItem.Icon = item.Thumbnail.BitmapSource;
-      //      miItem.GroupName = "GRDS1";
-      //      miItem.Click += new RoutedEventHandler(miItem_Click);
-      //      miItem.IsCheckable = true;
-      //      miItem.IsChecked = (item.ParsingName == lib.DefaultSaveFolder);
-      //      btnDefSave.Items.Add(miItem);
-      //    }
-
-      //    btnDefSave.IsEnabled = !(lib.Count == 0);
-      //    lib.Close();
-      //  }
-      //  else
-      //  {
-      //    if (!Explorer.NavigationLog.CurrentLocation.ParsingName.ToLowerInvariant().EndsWith("library-ms"))
-      //    {
-      //      ctgLibraries.Visibility = System.Windows.Visibility.Collapsed;
-      //    }
-      //  }
-
-      //}
-      //else
-      //{
-      //  // WHAT TO DO IF ITEMS ARE SELECTED
-
-      //  // show status bar items
-      //  sbiSelItemsCount.Visibility = System.Windows.Visibility.Visible;
-      //  spSelItems.Visibility = System.Windows.Visibility.Visible;
-
-      //  // enable (most) buttons
-      //  btnCopy.IsEnabled = true;
-      //  btnCut.IsEnabled = true;
-      //  btnRename.IsEnabled = Explorer.SelectedItems.Count() == 1;
-      //  btnCopyto.IsEnabled = true;
-      //  btnMoveto.IsEnabled = true;
-      //  btnSelNone.IsEnabled = true;
-      //  btnAdvancedSecurity.IsEnabled = false;
-      //  btnDefSave.Items.Clear();
-
-      //  miSelAllByType.IsEnabled = true;
-      //  miSelAllByDate.IsEnabled = true;
-
-      //  // Disable in case the selection is not a folder, or there's more than one selected item
-      //  mnuIncludeInLibrary.IsEnabled = false;
-
-      //  if (SelItemsCount == 1)
-      //  {
-      //    // IF ONE ITEM IS SELECTED
-      //    ShellObject SelectedItem = Explorer.SelectedItems[0];
-      //    //MessageBox.Show("One Item Selected \r\n" + SelectedItem.ParsingName);
-      //    if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.RecycleBin.ParsingName)
-      //    {
-      //      miRestoreRBItems.Visibility = System.Windows.Visibility.Visible;
-      //    }
-      //    // set up status bar
-      //    sbiSelItemsCount.Content = "1 item selected";
-
-      //    // set variables
-
-      //    btnEasyAccess.IsEnabled = true;
-
-      //    btnShare.IsEnabled = SelectedItem.IsFolder && SelectedItem.IsFileSystemObject;
-      //    btnAdvancedSecurity.IsEnabled = SelectedItem.IsFileSystemObject;
-      //    isFuncAvail = (SelectedItem.IsFileSystemObject &&
-      //        (Explorer.NavigationLog.CurrentLocation.ParsingName != KnownFolders.Computer.ParsingName));
-
-      //    isEditAvailable = SetupEditButton(SelectedItem);
-
-      //    // set up Open With button
-      //    SetUpOpenWithButton(defapp, isFuncAvail, SelectedItem);
-
-      //    // enable buttons
-      //    btnDelete.IsEnabled = (isFuncAvail || Explorer.NavigationLog.CurrentLocation.ParsingName ==
-      //        KnownFolders.Libraries.ParsingName);
-      //    btnOpenWith.IsEnabled = (isFuncAvail &&
-      //        System.IO.Path.GetExtension(SelectedItem.ParsingName) != ""
-      //        && (btnOpenWith.Items.Count > 0));
-
-      //    btnEdit.IsEnabled = isFuncAvail && isEditAvailable;
-      //    btnHistory.IsEnabled = true;
-
-      //    //set up contextual tabs
-
-      //    bool selisfolder = false;
-      //    bool selislib = false;
-
-      //    // Folder/Disk Tools
-      //    if (SelectedItem.IsFolder && SelectedItem.IsFileSystemObject)
-      //    {
-      //      // Check for if Disk
-      //      if (SelectedItem.IsDrive)
-      //      {
-      //        // Is Drive
-      //        ctgDrive.Visibility = System.Windows.Visibility.Visible;
-      //        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-
-      //        if (SelectedItem.GetDriveInfo().DriveType == DriveType.CDRom)
-      //        {
-      //          btnOpenTray.IsEnabled = true;
-      //          btnCloseTray.IsEnabled = true;
-      //          btnEjectDevice.IsEnabled = false;
-      //        }
-      //        else if (SelectedItem.GetDriveInfo().DriveType == DriveType.Removable)
-      //        {
-      //          btnOpenTray.IsEnabled = false;
-      //          btnCloseTray.IsEnabled = false;
-      //          btnEjectDevice.IsEnabled = true;
-      //        }
-      //        else
-      //        {
-      //          btnOpenTray.IsEnabled = false;
-      //          btnCloseTray.IsEnabled = false;
-      //          btnEjectDevice.IsEnabled = false;
-      //        }
-
-      //        try
-      //        {
-      //          if (GetLettersOfVirtualDrives(false).Contains(GetDriveLetterFromDrivePath(SelectedItem.ParsingName)) == true)
-      //          {
-      //            btnUnmountDrive.IsEnabled = true;
-      //            SelectedDriveID = GetDeviceNumberForDriveLetter(GetDriveLetterFromDrivePath(SelectedItem.ParsingName));
-      //          }
-      //          else
-      //          {
-      //            btnUnmountDrive.IsEnabled = false;
-      //          }
-      //        }
-      //        catch (System.DllNotFoundException)
-      //        {
-      //          btnUnmountDrive.IsEnabled = false;
-      //        }
-
-      //      }
-      //      else if (!SelectedItem.IsNetDrive)
-      //      {
-      //        // Is Folder
-      //        ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-      //        btnOpenTray.IsEnabled = false;
-      //        btnCloseTray.IsEnabled = false;
-      //        btnEjectDevice.IsEnabled = false;
-      //        btnUnmountDrive.IsEnabled = false;
-      //        //MessageBox.Show("1");
-      //        ctgFolderTools.Visibility = System.Windows.Visibility.Visible;
-      //        mnuIncludeInLibrary.IsEnabled = true;
-      //        selisfolder = true;
-      //      }
-      //      else
-      //      {
-      //        // Is Network Drive
-      //        ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-      //        btnOpenTray.IsEnabled = false;
-      //        btnCloseTray.IsEnabled = false;
-      //        btnEjectDevice.IsEnabled = false;
-      //        btnUnmountDrive.IsEnabled = false;
-      //        if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-      //            !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
-      //          ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //      }
-      //    }
-      //    else
-      //    {
-      //      // Is not a directory
-      //      ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-      //      btnOpenTray.IsEnabled = false;
-      //      btnCloseTray.IsEnabled = false;
-      //      btnEjectDevice.IsEnabled = false;
-      //      btnUnmountDrive.IsEnabled = false;
-      //      if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-      //          !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
-      //        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //    }
-
-      //    // Library Tools
-      //    if (SelectedItem.ParsingName.Contains(KnownFolders.Libraries.ParsingName))
-      //    {
-      //      ctgLibraries.Visibility = System.Windows.Visibility.Visible;
-      //      selislib = true;
-      //      ShellLibrary lib =
-      //      ShellLibrary.Load(Explorer.SelectedItems[0].GetDisplayName(DisplayNameType.Default), false);
-      //      IsFromSelectionOrNavigation = true;
-      //      chkPinNav.IsChecked = lib.IsPinnedToNavigationPane;
-      //      IsFromSelectionOrNavigation = false;
-      //      foreach (ShellObject item in lib)
-      //      {
-      //        MenuItem miItem = new MenuItem();
-      //        miItem.Header = item.GetDisplayName(DisplayNameType.Default);
-      //        miItem.Tag = item;
-      //        item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-      //        item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-      //        miItem.Icon = item.Thumbnail.BitmapSource;
-      //        miItem.IsCheckable = true;
-      //        miItem.Click += new RoutedEventHandler(miItem_Click);
-      //        miItem.IsChecked = (item.ParsingName == lib.DefaultSaveFolder);
-      //        btnDefSave.Items.Add(miItem);
-      //      }
-
-      //      btnDefSave.IsEnabled = !(lib.Count == 0);
-      //      lib.Close();
-
-      //    }
-      //    else
-      //    {
-      //      if (!Explorer.NavigationLog.CurrentLocation.ParsingName.ToLowerInvariant().EndsWith("library-ms"))
-      //      {
-      //        btnDefSave.Items.Clear();
-      //        ctgLibraries.Visibility = System.Windows.Visibility.Collapsed;
-      //      }
-
-      //    }
-
-      //    //Application Tools
-      //    if ((System.IO.Path.GetExtension(SelectedItem.ParsingName).ToLowerInvariant() == ".exe" ||
-      //        System.IO.Path.GetExtension(SelectedItem.ParsingName).ToLowerInvariant() == ".msi") &&
-      //        !(SelectedItem.IsFolder))
-      //    {
-      //      ctgExe.Visibility = System.Windows.Visibility.Visible;
-      //      btnPin.IsChecked = WindowsAPI.IsPinnedToTaskbar(Explorer.SelectedItems[0].ParsingName);
-      //      if (asApplication == true)
-      //      {
-      //        TheRibbon.SelectedTabItem = ctgExe.Items[0];
-      //      }
-      //    }
-      //    else
-      //    {
-      //      ctgExe.Visibility = System.Windows.Visibility.Collapsed;
-      //    }
-
-      //    // Archive Tools
-      //    if (Archives.Contains(System.IO.Path.GetExtension(SelectedItem.ParsingName).ToLowerInvariant()))
-      //    {
-      //      ctgArchive.Visibility = System.Windows.Visibility.Visible;
-      //      if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-      //          !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
-      //        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //      ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //      selisfolder = false;
-      //      var sectedFileInfo = new FileInfo(SelectedItem.ParsingName);
-      //      txtExtractLocation.Text = sectedFileInfo.DirectoryName;
-      //      sectedFileInfo = null;
-      //      SelectedArchive = SelectedItem.ParsingName;
-      //      if (System.IO.Path.GetExtension(SelectedItem.ParsingName).ToLowerInvariant().EndsWith(".zip"))
-      //      {
-      //        //btnViewArchive.IsEnabled = true;
-      //      }
-      //      else
-      //      {
-      //        //btnViewArchive.IsEnabled = false;
-      //      }
-      //      if (asArchive == true)
-      //      {
-      //        TheRibbon.SelectedTabItem = ctgArchive.Items[0];
-      //      }
-      //    }
-      //    else
-      //    {
-      //      ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
-      //    }
-
-      //    // Virtual Disk Tools
-      //    if (VirDisks.Contains(System.IO.Path.GetExtension(SelectedItem.ParsingName).ToLowerInvariant()))
-      //    {
-      //      ctgVirtualDisk.Visibility = System.Windows.Visibility.Visible;
-      //    }
-      //    else
-      //    {
-      //      ctgVirtualDisk.Visibility = System.Windows.Visibility.Collapsed;
-      //    }
-
-      //    // Image Tools
-      //    System.Drawing.Bitmap cvt;
-      //    if (//SelItemsCount > 0 &&
-      //        Images.Contains(System.IO.Path.GetExtension(SelectedItem.ParsingName).ToLowerInvariant()))
-      //    {
-      //      cvt = new Bitmap(SelectedItem.ParsingName);
-      //      //imgdHeight.Text = cvt.Height.ToString();
-      //      //imgdWidth.Text = cvt.Width.ToString();
-      //      imgSizeDisplay.WidthData = cvt.Width.ToString();
-      //      imgSizeDisplay.HeightData = cvt.Height.ToString();
-      //      ctgImage.Visibility = System.Windows.Visibility.Visible;
-      //      if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-      //          !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
-      //        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //      if (asImage == true)
-      //      {
-      //        TheRibbon.SelectedTabItem = ctgImage.Items[0];
-      //      }
-      //      cvt.Dispose();
-      //    }
-      //    else
-      //    {
-      //      ctgImage.Visibility = System.Windows.Visibility.Collapsed;
-      //    }
-      //    //LastItemSelected = SelectedItem.ParsingName;
-
-      //    // Folder/Disk Tools
-      //    if (Explorer.NavigationLog.CurrentLocation.IsFolder && Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
-      //    {
-      //      // Check for if Disk
-      //      if (Explorer.NavigationLog.CurrentLocation.IsDrive)
-      //      {
-      //        ctgDrive.Visibility = System.Windows.Visibility.Visible;
-      //        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //        if (asDrive == true)
-      //        {
-      //          //TheRibbon.SelectedTabItem = ctgDrive.Items[0];
-      //        }
-      //      }
-      //      else if (!Explorer.NavigationLog.CurrentLocation.IsNetDrive)
-      //      {
-      //        ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-      //        //ctgFolderTools.Visibility = System.Windows.Visibility.Visible;
-      //      }
-      //      else
-      //      {
-      //        ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-      //        if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-      //            !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
-      //          ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //      }
-      //    }
-      //    else
-      //    {
-      //      if (!(Explorer.SelectedItems[0].IsDrive && !Explorer.SelectedItems[0].IsNetDrive))
-      //      {
-      //        ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-      //        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //      }
-
-      //    }
-
-      //    if (selisfolder == true && Explorer.SelectedItems[0].IsFolder)
-      //    {
-      //      //MessageBox.Show("2");
-      //      ctgFolderTools.Visibility = System.Windows.Visibility.Visible;
-      //      if (asFolder == true)
-      //      {
-      //        TheRibbon.SelectedTabItem = ctgFolderTools.Items[0];
-      //      }
-      //    }
-      //    else
-      //    {
-      //      if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-      //          !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
-      //        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //      ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //    }
-
-
-
-      //    if (selislib == true)
-      //    {
-      //      ctgLibraries.Visibility = System.Windows.Visibility.Visible;
-      //      if (asLibrary == true)
-      //      {
-      //        TheRibbon.SelectedTabItem = ctgLibraries.Items[0];
-      //      }
-      //    }
-
-      //  }
-      //  else
-      //  {
-      //    // IF MULTIPLE ITEMS ARE SELECTED
-      //    //MessageBox.Show(SelItemsCount.ToString() + " items selected");
-
-      //    // set variables
-      //    isFuncAvail = true;
-      //    isEditAvailable = false;
-
-      //    // set up status bar
-      //    sbiSelItemsCount.Content = SelItemsCount.ToString() + " items selected";
-
-      //    // enable (or disable) buttons
-      //    btnDelete.IsEnabled = true;
-      //    btnShare.IsEnabled = false;
-      //    btnOpenWith.IsEnabled = false;
-      //    btnEdit.IsEnabled = false;
-      //    btnHistory.IsEnabled = false;
-      //    btnEasyAccess.IsEnabled = false;
-      //    btnOpenTray.IsEnabled = false;
-      //    btnCloseTray.IsEnabled = false;
-      //    btnEjectDevice.IsEnabled = false;
-      //    btnUnmountDrive.IsEnabled = false;
-
-      //    // hide contextual tabs
-      //    ctgImage.Visibility = System.Windows.Visibility.Collapsed;
-      //    ctgExe.Visibility = System.Windows.Visibility.Collapsed;
-      //    ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
-      //    ctgVirtualDisk.Visibility = System.Windows.Visibility.Collapsed;
-      //    ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-      //    if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-      //            !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
-      //      ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //    ctgLibraries.Visibility = System.Windows.Visibility.Collapsed;
-
-      //    // Folder/Disk Tools
-      //    if (Explorer.NavigationLog.CurrentLocation.IsFolder && Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
-      //    {
-      //      // Check for if Disk
-      //      if (Explorer.NavigationLog.CurrentLocation.IsDrive)
-      //      {
-      //        ctgDrive.Visibility = System.Windows.Visibility.Visible;
-      //        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //      }
-      //      else if (!Explorer.NavigationLog.CurrentLocation.IsNetDrive)
-      //      {
-      //        ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-      //        //ctgFolderTools.Visibility = System.Windows.Visibility.Visible;
-      //      }
-      //      else
-      //      {
-      //        ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-      //        if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-      //            !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
-      //          ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //      }
-      //    }
-      //    else
-      //    {
-      //      ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
-      //      if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
-      //            !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
-      //        ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //    }
-
-      //    // if the current viewing location is a Library, show Library Tools.
-      //    if (inLibrary == true)
-      //    {
-      //      ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
-      //      ctgLibraries.Visibility = System.Windows.Visibility.Visible;
-      //      ShellLibrary lib =
-      //                  ShellLibrary.Load(Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default), false);
-      //      IsFromSelectionOrNavigation = true;
-      //      chkPinNav.IsChecked = lib.IsPinnedToNavigationPane;
-      //      IsFromSelectionOrNavigation = false;
-      //      foreach (ShellObject item in lib)
-      //      {
-      //        MenuItem miItem = new MenuItem();
-      //        miItem.Header = item.GetDisplayName(DisplayNameType.Default);
-      //        miItem.Tag = item.ParsingName;
-      //        item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-      //        item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-      //        miItem.Icon = item.Thumbnail.BitmapSource;
-      //        miItem.IsCheckable = true;
-      //        miItem.IsChecked = (item.ParsingName == lib.DefaultSaveFolder);
-      //        btnDefSave.Items.Add(miItem);
-      //      }
-
-      //      btnDefSave.IsEnabled = !(lib.Count == 0);
-      //      lib.Close();
-      //    }
-      //    else
-      //    {
-      //      if (!Explorer.NavigationLog.CurrentLocation.ParsingName.ToLowerInvariant().EndsWith("library-ms"))
-      //      {
-      //        btnDefSave.Items.Clear();
-      //        ctgLibraries.Visibility = System.Windows.Visibility.Collapsed;
-      //      }
-
-      //    }
-      //  }
-
-      //}
     }
 		bool IsFromSelectionOrNavigation = false;
         
@@ -2950,7 +1978,7 @@ namespace BetterExplorer
 
 		private void btnBackstageExit_Click(object sender, RoutedEventArgs e)
 		{
-      //! We call Shutdown() so to explisit shutdown the app regardless of windows closing cancel flag.
+      //! We call Shutdown() so to explicit shutdown the app regardless of windows closing cancel flag.
       if (r != null)
         r.Close();
 
@@ -3572,7 +2600,7 @@ namespace BetterExplorer
                               case Native.PNP_VETO_TYPE.WindowsService:
                                 break;
                               case Native.PNP_VETO_TYPE.OutstandingOpen:
-                                message = String.Format("The device {0} can not be disconnected becasue is in use!", obj.GetDisplayName(DisplayNameType.Default));
+                                message = String.Format("The device {0} can not be disconnected because is in use!", obj.GetDisplayName(DisplayNameType.Default));
                                 break;
                               case Native.PNP_VETO_TYPE.Device:
                                 break;
@@ -4203,7 +3231,7 @@ namespace BetterExplorer
     }
 
     /// <summary>
-    /// Apends the args.
+    /// Appends the args.
     /// </summary>
     /// <param name="args">The args.</param>
     public void ApendArgs(string[] args)
@@ -4391,80 +3419,782 @@ namespace BetterExplorer
 
     MessageReceiver r;
 
+    #region On Startup
+
     private void SetUpFavoritesMenu()
     {
-      Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() =>
-      {
-        try
+        Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() =>
         {
-          btnFavorites.Visibility = System.Windows.Visibility.Visible;
-          foreach (var item in ((ShellContainer)KnownFolders.Links).Where(w => !w.IsHidden))
-          {
             try
             {
-              MenuItem mi = new MenuItem();
-              mi.Header = item.GetDisplayName(DisplayNameType.Default);
-              mi.Tag = item;
-              item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-              item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-              ImageSource icon = item.Thumbnail.BitmapSource;
-              mi.Focusable = false;
-              mi.Icon = icon;
-              mi.Click += new RoutedEventHandler(mif_Click);
-              btnFavorites.Items.Add(mi);
+                btnFavorites.Visibility = System.Windows.Visibility.Visible;
+                foreach (var item in ((ShellContainer)KnownFolders.Links).Where(w => !w.IsHidden))
+                {
+                    try
+                    {
+                        MenuItem mi = new MenuItem();
+                        mi.Header = item.GetDisplayName(DisplayNameType.Default);
+                        mi.Tag = item;
+                        item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                        item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+                        ImageSource icon = item.Thumbnail.BitmapSource;
+                        mi.Focusable = false;
+                        mi.Icon = icon;
+                        mi.Click += new RoutedEventHandler(mif_Click);
+                        btnFavorites.Items.Add(mi);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
             }
             catch (Exception)
             {
+
+                btnFavorites.Visibility = System.Windows.Visibility.Collapsed;
             }
-          }
+        }));
+    }
+
+    private void InitializeExplorerControl()
+    {
+        ShellListView.Navigated += ShellListView_Navigated;
+        ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
+        //Explorer.LVItemsColorCodes = this.LVItemsColor;
+        Explorer.SelectionChanged += ExplorerBrowserControl_SelectionChanged;
+        //Explorer.NavigationComplete += Explorer_NavigationComplete;
+        Explorer.MouseWheel += Explorer_MouseWheel;
+        Explorer.ViewEnumerationComplete += Explorer_ViewEnumerationComplete;
+        Explorer.NavigationPending += Explorer_NavigationPending;
+        Explorer.GotFocus += Explorer_GotFocus;
+        Explorer.ExplorerGotFocus += Explorer_ExplorerGotFocus;
+        Explorer.RenameFinished += Explorer_RenameFinished;
+        Explorer.KeyUP += Explorer_KeyUP;
+        Explorer.LostFocus += Explorer_LostFocus;
+        Explorer.NavigationOptions.PaneVisibility.Commands = PaneVisibilityState.Hide;
+        Explorer.NavigationOptions.PaneVisibility.CommandsOrganize = PaneVisibilityState.Hide;
+        Explorer.NavigationOptions.PaneVisibility.CommandsView = PaneVisibilityState.Hide;
+        Explorer.ItemsChanged += Explorer_ItemsChanged;
+        Explorer.ContentOptions.FullRowSelect = true;
+        Explorer.ClientSizeChanged += ExplorerBrowserControl_ClientSizeChanged;
+        Explorer.Paint += ExplorerBrowserControl_Paint;
+        //Explorer.ViewChanged += Explorer_ViewChanged;
+        Explorer.ItemHot += Explorer_ItemHot;
+        Explorer.ItemMouseMiddleClick += Explorer_ItemMouseMiddleClick;
+        Explorer.ExplorerBrowserMouseLeave += Explorer_ExplorerBrowserMouseLeave;
+        Explorer.DragDrop += Explorer_DragDrop;
+
+        Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
+        Explorer.NavigationOptions.PaneVisibility.Details = PaneVisibilityState.Hide;
+
+        Explorer.NavigationOptions.PaneVisibility.Navigation =
+          IsNavigationPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
+
+        Explorer.ContentOptions.CheckSelect = isCheckModeEnabled;
+        Explorer.Width = (int)ShellVView.ActualWidth;
+        Explorer.Height = (int)ShellVView.ActualHeight;
+    }
+
+    protected override void OnSourceInitialized(EventArgs e)
+    {
+        base.OnSourceInitialized(e);
+        Handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
+    }
+
+    private void LoadRegistryRelatedSettings()
+    {
+        RegistryKey rk = Registry.CurrentUser;
+        RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
+
+        switch (Convert.ToString(rks.GetValue(@"CurrentTheme", "Blue")))
+        {
+            case "Blue":
+                btnBlue.IsChecked = true;
+                break;
+            case "Silver":
+                btnSilver.IsChecked = true;
+                break;
+            case "Black":
+                btnBlack.IsChecked = true;
+                break;
+            case "Green":
+                btnGreen.IsChecked = true;
+                break;
+            default:
+                btnBlue.IsChecked = true;
+                break;
+        }
+
+        LastUpdateCheck = DateTime.FromBinary(Convert.ToInt64(rks.GetValue(@"LastUpdateCheck", 0)));
+
+        UpdateCheckInterval = (int)rks.GetValue(@"CheckInterval", 7);
+
+        switch (UpdateCheckInterval)
+        {
+            case 1:
+                rbDaily.IsChecked = true;
+                break;
+            case 7:
+                rbWeekly.IsChecked = true;
+                break;
+            case 30:
+                rbMonthly.IsChecked = true;
+                break;
+            default:
+                break;
+        }
+
+        UpdateCheckType = (int)rks.GetValue(@"UpdateCheckType", 1);
+
+        switch (UpdateCheckType)
+        {
+            case 0:
+                rbReleases.IsChecked = true;
+                break;
+            case 1:
+                rbReleasTest.IsChecked = true;
+                break;
+            default:
+                break;
+
+        }
+
+
+        int HFlyoutEnabled = (int)rks.GetValue(@"HFlyoutEnabled", 0);
+
+        int UpdateCheck = (int)rks.GetValue(@"CheckForUpdates", 1);
+        IsUpdateCheck = (UpdateCheck == 1);
+        chkUpdateCheck.IsChecked = IsUpdateCheck;
+
+        int UpdateCheckStartup = (int)rks.GetValue(@"CheckForUpdatesStartup", 1);
+        IsUpdateCheckStartup = (UpdateCheckStartup == 1);
+        chkUpdateStartupCheck.IsChecked = IsUpdateCheckStartup;
+
+        int isConsoleShown = (int)rks.GetValue(@"IsConsoleShown", 0);
+        IsConsoleShown = (isConsoleShown == 1);
+        btnConsolePane.IsChecked = this.IsConsoleShown;
+
+        IsHFlyoutEnabled = (HFlyoutEnabled == 1);
+        chkIsFlyout.IsChecked = IsHFlyoutEnabled;
+
+        int InfoPaneEnabled = (int)rks.GetValue(@"InfoPaneEnabled", 0);
+
+        IsInfoPaneEnabled = (InfoPaneEnabled == 1);
+        btnInfoPane.IsChecked = IsInfoPaneEnabled;
+
+        InfoPaneHeight = (int)rks.GetValue(@"InfoPaneHeight", 150);
+
+        if (IsInfoPaneEnabled)
+        {
+            rPreviewPane.Height = new GridLength(InfoPaneHeight);
+            rPreviewPaneSplitter.Height = new GridLength(1);
+        }
+        else
+        {
+            rPreviewPane.Height = new GridLength(0);
+            rPreviewPaneSplitter.Height = new GridLength(0);
+        }
+
+        int PreviewPaneEnabled = (int)rks.GetValue(@"PreviewPaneEnabled", 0);
+
+        IsPreviewPaneEnabled = (PreviewPaneEnabled == 1);
+        btnPreviewPane.IsChecked = IsPreviewPaneEnabled;
+
+        PreviewPaneWidth = (int)rks.GetValue(@"PreviewPaneWidth", 120);
+
+        if (IsPreviewPaneEnabled)
+        {
+            clPreview.Width = new GridLength((double)PreviewPaneWidth);
+            clPreviewSplitter.Width = new GridLength(1);
+        }
+        else
+        {
+            clPreview.Width = new GridLength(0);
+            clPreviewSplitter.Width = new GridLength(0);
+        }
+
+        int NavigationPaneEnabled = (int)rks.GetValue(@"NavigationPaneEnabled", 1);
+
+        IsNavigationPaneEnabled = (NavigationPaneEnabled == 1);
+        btnNavigationPane.IsChecked = IsNavigationPaneEnabled;
+
+        int CheckBoxesEnabled = (int)rks.GetValue(@"CheckModeEnabled", 0);
+
+        isCheckModeEnabled = (CheckBoxesEnabled == 1);
+        chkShowCheckBoxes.IsChecked = isCheckModeEnabled;
+
+        int ExFileOpEnabled = (int)rks.GetValue(@"FileOpExEnabled", 0);
+
+        IsExtendedFileOpEnabled = (ExFileOpEnabled == 1);
+        Explorer.IsExFileOpEnabled = IsExtendedFileOpEnabled;
+        chkIsTerraCopyEnabled.IsChecked = IsExtendedFileOpEnabled;
+
+        int cfoEnabled = (int)rks.GetValue(@"IsCustomFO", 0);
+
+        chkIsCFO.IsChecked = cfoEnabled == 1;
+
+        int CompartibleRename = (int)rks.GetValue(@"CompartibleRename", 1);
+
+        IsCompartibleRename = (CompartibleRename == 1);
+
+        //chkIsCompartibleRename.IsChecked = IsCompartibleRename;
+
+        int RestoreTabs = (int)rks.GetValue(@"IsRestoreTabs", 1);
+
+        IsrestoreTabs = (RestoreTabs == 1);
+
+        chkIsRestoreTabs.IsChecked = IsrestoreTabs;
+
+        //if this instance has the /norestore switch, do not load tabs from previous session, even if it is set in the Registry
+        if (App.isStartWithStartupTab == true)
+        {
+            IsrestoreTabs = false;
+        }
+
+        int IsLastTabCloseApp = (int)rks.GetValue(@"IsLastTabCloseApp", 1);
+        IsCloseLastTabCloseApp = (IsLastTabCloseApp == 1);
+        this.chkIsLastTabCloseApp.IsChecked = IsCloseLastTabCloseApp;
+
+        int LogActions = (int)rks.GetValue(@"EnableActionLog", 0);
+
+        canlogactions = (LogActions == 1);
+        chkLogHistory.IsChecked = canlogactions;
+        if (LogActions == 1)
+        {
+            chkLogHistory.Visibility = System.Windows.Visibility.Visible;
+            ShowLogsBorder.Visibility = System.Windows.Visibility.Visible;
+            paddinglbl8.Visibility = System.Windows.Visibility.Visible;
+        }
+
+        // load settings for auto-switch to contextual tab
+        asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
+        asArchive = ((int)rks.GetValue(@"AutoSwitchArchiveTools", 1) == 1);
+        asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
+        asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
+        asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
+        asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 1) == 1);
+        asVirtualDrive = ((int)rks.GetValue(@"AutoSwitchVirtualDriveTools", 0) == 1);
+
+
+        chkFolder.IsChecked = asFolder;
+        chkArchive.IsChecked = asArchive;
+        chkImage.IsChecked = asImage;
+        chkApp.IsChecked = asApplication;
+        chkLibrary.IsChecked = asLibrary;
+        chkDrive.IsChecked = asDrive;
+        chkVirtualTools.IsChecked = asVirtualDrive;
+
+        // load OverwriteOnImages setting (default is false)
+        int oor = (int)rks.GetValue(@"OverwriteImageWhileEditing", 0);
+        OverwriteOnRotate = (oor == 1);
+        chkOverwriteImages.IsChecked = (oor == 1);
+
+        // load Saved Tabs Directory location (if different from default)
+        string tdir = Convert.ToString(rks.GetValue(@"SavedTabsDirectory", satdir));
+        txtDefSaveTabs.Text = tdir;
+        sstdir = tdir;
+
+        StartUpLocation = rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+
+        if (StartUpLocation == "")
+        {
+            rks.SetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName);
+            StartUpLocation = KnownFolders.Libraries.ParsingName;
+        }
+        char[] delimiters = new char[] { ';' };
+        string LastOpenedTabs = rks.GetValue(@"OpenedTabs", "").ToString();
+        InitialTabs = LastOpenedTabs.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+
+        try
+        {
+            RegistryKey rkbe = Registry.ClassesRoot;
+            RegistryKey rksbe = rkbe.OpenSubKey(@"Folder\shell\open\command", RegistryKeyPermissionCheck.ReadSubTree);
+            bool IsThereDefault = rksbe.GetValue("DelegateExecute", "-1").ToString() == "-1";
+            chkIsDefault.IsChecked = IsThereDefault;
+            chkIsDefault.IsEnabled = true;
+            rksbe.Close();
+            rkbe.Close();
         }
         catch (Exception)
         {
-
-          btnFavorites.Visibility = System.Windows.Visibility.Collapsed;
+            chkIsDefault.IsChecked = false;
+            chkIsDefault.IsEnabled = false;
         }
-      }));
+
+        RegistryKey rkfe = Registry.CurrentUser;
+        RegistryKey rksfe = rk.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", RegistryKeyPermissionCheck.ReadSubTree);
+        chkTreeExpand.IsChecked = (int)rksfe.GetValue("NavPaneExpandToCurrentFolder", 0) == 1;
+        rksfe.Close();
+        rkfe.Close();
+
+        rks.Close();
+        rk.Close();
+
+        if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
+        {
+            btnSetCurrentasStartup.Header =
+            ShellObject.FromParsingName("Shell:" + StartUpLocation).GetDisplayName(DisplayNameType.Default);
+            btnSetCurrentasStartup.Icon = ShellObject.FromParsingName("Shell:" + StartUpLocation).Thumbnail.BitmapSource;
+        }
+        else
+        {
+            try
+            {
+                btnSetCurrentasStartup.Header =
+                  ShellObject.FromParsingName(StartUpLocation).GetDisplayName(DisplayNameType.Default);
+
+                btnSetCurrentasStartup.Icon = ShellObject.FromParsingName(StartUpLocation).Thumbnail.BitmapSource;
+            }
+            catch
+            {
+
+
+            }
+        }
+
+        miTabManager.IsEnabled = Directory.Exists(sstdir);
+
+        autoUpdater.DaysBetweenChecks = this.UpdateCheckInterval;
+        try
+        {
+            if (IsUpdateCheck)
+            {
+                autoUpdater.UpdateType = UpdateType.OnlyCheck;
+            }
+            else
+            {
+                autoUpdater.UpdateType = UpdateType.DoNothing;
+            }
+            if (IsUpdateCheckStartup)
+            {
+                autoUpdater.ForceCheckForUpdate();
+            }
+        }
+        catch (IOException)
+        {
+            this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
+            this.btnUpdateCheck.IsEnabled = false;
+        }
+
+        if (App.isStartMinimized)
+        {
+            this.Visibility = System.Windows.Visibility.Hidden;
+            this.WindowState = System.Windows.WindowState.Minimized;
+            //this.ShowInTaskbar = false;
+        }
+
+        if (!TheRibbon.IsMinimized)
+        {
+            TheRibbon.SelectedTabItem = HomeTab;
+            this.TheRibbon.SelectedTabIndex = 0;
+        }
     }
-    private void InitializeExplorerControl()
+
+    private void InitializeInitialTabs()
     {
-			ShellListView.Navigated += ShellListView_Navigated;
-			ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
-      //Explorer.LVItemsColorCodes = this.LVItemsColor;
-      Explorer.SelectionChanged += ExplorerBrowserControl_SelectionChanged;
-      //Explorer.NavigationComplete += Explorer_NavigationComplete;
-      Explorer.MouseWheel += Explorer_MouseWheel;
-      Explorer.ViewEnumerationComplete += Explorer_ViewEnumerationComplete;
-      Explorer.NavigationPending += Explorer_NavigationPending;
-      Explorer.GotFocus += Explorer_GotFocus;
-      Explorer.ExplorerGotFocus += Explorer_ExplorerGotFocus;
-      Explorer.RenameFinished += Explorer_RenameFinished;
-      Explorer.KeyUP += Explorer_KeyUP;
-      Explorer.LostFocus += Explorer_LostFocus;
-      Explorer.NavigationOptions.PaneVisibility.Commands = PaneVisibilityState.Hide;
-      Explorer.NavigationOptions.PaneVisibility.CommandsOrganize = PaneVisibilityState.Hide;
-      Explorer.NavigationOptions.PaneVisibility.CommandsView = PaneVisibilityState.Hide;
-      Explorer.ItemsChanged += Explorer_ItemsChanged;
-      Explorer.ContentOptions.FullRowSelect = true;
-      Explorer.ClientSizeChanged += ExplorerBrowserControl_ClientSizeChanged;
-      Explorer.Paint += ExplorerBrowserControl_Paint;
-      //Explorer.ViewChanged += Explorer_ViewChanged;
-      Explorer.ItemHot += Explorer_ItemHot;
-      Explorer.ItemMouseMiddleClick += Explorer_ItemMouseMiddleClick;
-      Explorer.ExplorerBrowserMouseLeave += Explorer_ExplorerBrowserMouseLeave;
-      Explorer.DragDrop += Explorer_DragDrop;
+        if (InitialTabs.Length == 0 || !IsrestoreTabs)
+        {
+            ShellObject sho = GetShellObjectFromLocation(StartUpLocation);
+            if (tabControl1.Items.OfType<ClosableTabItem>().Count() == 0)
+                NewTab(sho, true);
+            else
+                Explorer.Navigate(sho);
+        }
+        if (IsrestoreTabs)
+        {
+            isOnLoad = true;
+            int i = 0;
+            foreach (string str in InitialTabs)
+            {
+                try
+                {
+                    i++;
+                    if (i == InitialTabs.Length)
+                    {
+                        NewTab(str, true);
+                    }
+                    else
+                    {
+                        NewTab(str, false);
+                    }
+                    if (i == InitialTabs.Count())
+                    {
+                        ShellObject sho = GetShellObjectFromLocation(str);
+                        //FIXME: fix it to work with new controls
+                        Explorer.Navigate(sho);
+                        (tabControl1.SelectedItem as ClosableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
+                        (tabControl1.SelectedItem as ClosableTabItem).ToolTip = Explorer.NavigationLog.CurrentLocation.ParsingName;
+                    }
+                }
+                catch
+                {
+                    //AddToLog(String.Format("Unable to load {0} into a tab!", str));
+                    MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
 
-      Explorer.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
-      Explorer.NavigationOptions.PaneVisibility.Details = PaneVisibilityState.Hide;
+            }
+            if (tabControl1.Items.Count == 0)
+            {
+                NewTab();
 
-      Explorer.NavigationOptions.PaneVisibility.Navigation =
-        IsNavigationPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
+                if (StartUpLocation.IndexOf("::") == 0)
+                {
 
-      Explorer.ContentOptions.CheckSelect = isCheckModeEnabled;
-      Explorer.Width = (int)ShellVView.ActualWidth;
-      Explorer.Height = (int)ShellVView.ActualHeight;
+                    Explorer.Navigate(ShellObject.FromParsingName("shell:" + StartUpLocation));
+                }
+                else
+                    Explorer.Navigate(ShellObject.FromParsingName(StartUpLocation.Replace("\"", "")));
+
+                (tabControl1.SelectedItem as ClosableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
+                (tabControl1.SelectedItem as ClosableTabItem).ToolTip = Explorer.NavigationLog.CurrentLocation.ParsingName;
+            }
+            isOnLoad = false;
+
+        }
+        breadcrumbBarControl1.ExitEditMode();
+        Explorer.SetExplorerFocus();
+
+        if (tabControl1.Items.Count == 1)
+            tabControl1.SelectedIndex = 0;
+
+        //ShellVView.Visibility = System.Windows.Visibility.Hidden;
     }
 
-		void ShellListView_ViewStyleChanged(object sender, GongSolutions.Shell.ViewChangedEventArgs e)
+    private void SetsUpJumpList()
+    {
+        //sets up Jump List
+        try
+        {
+            AppJL.ShowRecentCategory = true;
+            AppJL.ShowFrequentCategory = true;
+            System.Windows.Shell.JumpList.SetJumpList(Application.Current, AppJL);
+            JumpTask newTab = new JumpTask()
+            {
+                ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
+                Arguments = "t",
+                Title = "Open Tab",
+                Description = "Opens new tab with default location"
+            };
+
+            JumpTask newWindow = new JumpTask()
+            {
+                ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
+                Arguments = "/nw",
+                Title = "New Window",
+                Description = "Creates a new window with default location"
+            };
+
+            AppJL.JumpItems.Add(newTab);
+            AppJL.JumpItems.Add(newWindow);
+            AppJL.Apply();
+        }
+        catch
+        {
+
+        }
+    }
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+    {
+        Task.Run(() =>
+        {
+            UpdateRecycleBinInfos();
+        });
+
+        ShellTreeHost.Child = ShellTree;
+        ShellViewHost.Child = ShellListView;
+
+        ShellTree.ShellView = ShellListView;
+        ShellListView.LVItemsColorCodes = LVItemsColor;
+
+        r = new MessageReceiver();
+        r.OnMessageReceived += r_OnMessageReceived;
+        r.Show();
+
+        bool exitApp = false;
+
+        try
+        {
+            Task.Run(() =>
+            {
+                if (WindowsAPI.getOSInfo() == WindowsAPI.OsVersionInfo.Windows8)
+                {
+                    WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
+                    WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, false);
+                    if (state.fShowStatusBar == 1)
+                    {
+                        WindowsAPI.SHELLSTATE newState = new WindowsAPI.SHELLSTATE();
+                        newState.fShowStatusBar = 0;
+                        WindowsAPI.SHGetSetSettings(ref newState, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, true);
+                    }
+                }
+            });
+
+
+
+            //Sets up FileSystemWatcher for Favorites folder
+            try
+            {
+                FileSystemWatcher fsw = new FileSystemWatcher(KnownFolders.Links.ParsingName);
+                fsw.Created += fsw_Created;
+                fsw.Deleted += fsw_Deleted;
+                fsw.Renamed += fsw_Renamed;
+                fsw.EnableRaisingEvents = true;
+            }
+            catch
+            {
+            }
+
+            //Set up breadcrumb bar drag/drop functionality
+            breadcrumbBarControl1.SetDragHandlers(new DragEventHandler(bbi_DragEnter), new DragEventHandler(bbi_DragLeave), new DragEventHandler(bbi_DragOver), new DragEventHandler(bbi_Drop));
+
+            //Set up Favorites Menu
+            Task.Run(() =>
+            {
+                SetUpFavoritesMenu();
+            });
+
+            //Set up ListView Color codes 
+            //Explorer.LVItemsColorCodes = this.LVItemsColor;
+
+
+            //Load the ShellSettings
+            IsCalledFromLoading = true;
+            WindowsAPI.SHELLSTATE statef = new WindowsAPI.SHELLSTATE();
+            WindowsAPI.SHGetSetSettings(ref statef, WindowsAPI.SSF.SSF_SHOWALLOBJECTS | WindowsAPI.SSF.SSF_SHOWEXTENSIONS, false);
+            chkHiddenFiles.IsChecked = (statef.fShowAllObjects == 1);
+            chkExtensions.IsChecked = (statef.fShowExtensions == 1);
+            IsCalledFromLoading = false;
+
+            isOnLoad = true;
+
+            //'load from Registry
+            LoadRegistryRelatedSettings();
+
+            //'set up Explorer control
+            InitializeExplorerControl();
+
+            // set up history on breadcrumb bar (currently missing try-catch statement in order to catch error)
+            try
+            {
+                Task.Run(() =>
+                {
+                    breadcrumbBarControl1.ClearHistory();
+                    breadcrumbBarControl1.HistoryItems = ReadHistoryFromFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt");
+                });
+            }
+            catch (FileNotFoundException)
+            {
+                logger.Warn(String.Format("History file not found at location:{0}\\history.txt", Environment.SpecialFolder.LocalApplicationData));
+            }
+
+            AddToLog("Session Began");
+
+            isOnLoad = false;
+
+            //'set StartUp location
+            if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized")
+            {
+
+                String cmd = Application.Current.Properties["cmd"].ToString();
+
+                if (cmd.IndexOf("::") == 0)
+                {
+
+                    Explorer.Navigate(ShellObject.FromParsingName("shell:" + cmd));
+                }
+                else
+                    Explorer.Navigate(ShellObject.FromParsingName(cmd.Replace("\"", "")));
+
+
+                NewTab(Explorer.NavigationLog.CurrentLocation, true);
+
+            }
+            else
+            {
+                InitializeInitialTabs();
+            }
+
+            SetsUpJumpList();
+
+            //Setup Clipboard monitor
+            cbm.ClipboardChanged += cbm_ClipboardChanged;
+
+
+            if (exitApp)
+            {
+                Application.Current.Shutdown();
+                return;
+            }
+
+            if (this.IsConsoleShown)
+            {
+                if (!ctrlConsole.IsProcessRunning)
+                {
+                    ctrlConsole.StartProcess("cmd.exe", null);
+                    ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+                    ctrlConsole.ClearOutput();
+                }
+            }
+
+            //Set up Version Info
+            verNumber.Content = "Version " + (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
+            lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
+            ShellListView.subclassed = new ShellDeffViewSubClassedWindow(IntPtr.Zero, ShellListView.ShellListViewHandle, ShellListView);
+            ShellListView.subclassed.AssignHandle(ShellListView.m_ShellViewWindow);
+            this.Activate(true);
+        }
+        catch (Exception exe)
+        {
+            MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+    }
+
+#endregion
+
+    #region On Closing
+
+    private void SaveSettings(String openedTabs)
+    {
+        RegistryKey rk = Registry.CurrentUser;
+        RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+        rks.SetValue(@"LastWindowWidth", this.Width);
+        rks.SetValue(@"LastWindowHeight", this.Height);
+        rks.SetValue(@"LastWindowPosLeft", this.Left);
+        rks.SetValue(@"LastWindowPosTop", this.Top);
+        if (btnBlue.IsChecked == true)
+        {
+            rks.SetValue(@"CurrentTheme", "Blue");
+        }
+        else if (btnSilver.IsChecked == true)
+        {
+            rks.SetValue(@"CurrentTheme", "Silver");
+        }
+        else if (btnBlack.IsChecked == true)
+        {
+            rks.SetValue(@"CurrentTheme", "Black");
+        }
+        else if (btnGreen.IsChecked == true)
+        {
+            rks.SetValue(@"CurrentTheme", "Green");
+        }
+        switch (this.WindowState)
+        {
+            case System.Windows.WindowState.Maximized:
+                rks.SetValue(@"LastWindowState", 2);
+                break;
+            case System.Windows.WindowState.Minimized:
+                rks.SetValue(@"LastWindowState", 1);
+                break;
+            case System.Windows.WindowState.Normal:
+                rks.SetValue(@"LastWindowState", 0);
+                break;
+            default:
+                rks.SetValue(@"LastWindowState", -1);
+                break;
+        }
+        rks.SetValue(@"IsRibonMinimized", TheRibbon.IsMinimized);
+        rks.SetValue(@"OpenedTabs", openedTabs);
+
+        if (FlowDirection == System.Windows.FlowDirection.RightToLeft)
+        {
+            rks.SetValue(@"RTLMode", "true");
+        }
+        else
+        {
+            rks.SetValue(@"RTLMode", "false");
+        }
+
+        //asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
+        //asArchive = ((int)rks.GetValue(@"AutoSwitchArchiveTools", 1) == 1);
+        //asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
+        //asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
+        //asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
+        //asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 0) == 1);
+
+        rks.SetValue(@"AutoSwitchFolderTools", GetIntegerFromBoolean(asFolder));
+        rks.SetValue(@"AutoSwitchArchiveTools", GetIntegerFromBoolean(asArchive));
+        rks.SetValue(@"AutoSwitchImageTools", GetIntegerFromBoolean(asImage));
+        rks.SetValue(@"AutoSwitchApplicationTools", GetIntegerFromBoolean(asApplication));
+        rks.SetValue(@"AutoSwitchLibraryTools", GetIntegerFromBoolean(asLibrary));
+        rks.SetValue(@"AutoSwitchDriveTools", GetIntegerFromBoolean(asDrive));
+        rks.SetValue(@"AutoSwitchVirtualDriveTools", GetIntegerFromBoolean(asVirtualDrive));
+        rks.SetValue(@"IsLastTabCloseApp", GetIntegerFromBoolean(this.IsCloseLastTabCloseApp));
+        if (this.IsPreviewPaneEnabled)
+            rks.SetValue(@"PreviewPaneWidth", (int)clPreview.ActualWidth, RegistryValueKind.DWord);
+
+        if (this.IsInfoPaneEnabled)
+            rks.SetValue(@"InfoPaneHeight", (int)rPreviewPane.ActualHeight, RegistryValueKind.DWord);
+
+        if (this.IsConsoleShown)
+            rks.SetValue(@"CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
+        rks.SetValue(@"IsConsoleShown", this.IsConsoleShown ? 1 : 0);
+
+        if (this.TabbaBottom.IsChecked == true)
+        {
+            rks.SetValue(@"TabBarAlignment", "bottom");
+        }
+        else
+        {
+            rks.SetValue(@"TabBarAlignment", "top");
+        }
+
+        rks.Close();
+    }
+
+    private void RibbonWindow_Closing(object sender, CancelEventArgs e)
+    {
+
+        if (App.isStartNewWindows)
+        {
+            if (r != null)
+            {
+                r.Close();
+            }
+
+        }
+
+        if (this.OwnedWindows.OfType<FileOperationDialog>().Count() > 0)
+        {
+
+            if (MessageBox.Show("Are you sure you want to cancel all running file operation tasks?", "", MessageBoxButton.YesNo) == MessageBoxResult.No)
+            {
+                e.Cancel = true;
+                return;
+            }
+        }
+        //Explorer.automan.Dispose();
+        //if (PicturePreview != null)
+        //{
+        //    PicturePreview.Close(); 
+        //}
+        //if (ctrlConsole.IsProcessRunning)
+        //  ctrlConsole.StopProcess();
+
+        string OpenedTabs = "";
+        foreach (ClosableTabItem item in tabControl1.Items)
+        {
+            OpenedTabs += ";" + item.Path.ParsingName;
+        }
+
+        if (this.WindowState != System.Windows.WindowState.Minimized)
+            SaveSettings(OpenedTabs);
+
+        SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems.Select(s => s.DisplayName).ToList());
+        AddToLog("Session Ended");
+        if (!App.isStartNewWindows)
+        {
+            e.Cancel = true;
+            App.isStartMinimized = true;
+            this.WindowState = System.Windows.WindowState.Minimized;
+            this.Visibility = System.Windows.Visibility.Hidden;
+        }
+    }
+
+    #endregion
+
+    void ShellListView_ViewStyleChanged(object sender, GongSolutions.Shell.ViewChangedEventArgs e)
 		{
 			IsViewSelection = false;
 
@@ -4518,6 +4248,10 @@ namespace BetterExplorer
 			{
 				ViewGallery.SelectedIndex = 7;
 			}
+            if (e.CurrentView == ShellViewStyle.Thumbstrip)
+            {
+                ViewGallery.SelectedIndex = 8;
+            }
 			IsCalledFromViewEnum = true;
 			zoomSlider.Value = e.ThumbnailSize;
 			IsCalledFromViewEnum = false;
@@ -4527,7 +4261,9 @@ namespace BetterExplorer
 			IsViewSelection = true;
 		}
 
-		async void ShellListView_Navigated(object sender, NavigatedEventArgs e)
+    #region On Navigated
+
+    async void ShellListView_Navigated(object sender, NavigatedEventArgs e)
 		{
 			ShellObject sho;
 			try
@@ -4623,560 +4359,316 @@ namespace BetterExplorer
 				//}
 			}
 		}
-    protected override void OnSourceInitialized(EventArgs e)
-    {
-      base.OnSourceInitialized(e);
-      Handle = new WindowInteropHelper(Application.Current.MainWindow).Handle;
-    }
 
-    private void LoadRegistryRelatedSettings()
-    {
-      RegistryKey rk = Registry.CurrentUser;
-      RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
-
-      switch (Convert.ToString(rks.GetValue(@"CurrentTheme", "Blue")))
-      {
-        case "Blue":
-          btnBlue.IsChecked = true;
-          break;
-        case "Silver":
-          btnSilver.IsChecked = true;
-          break;
-        case "Black":
-          btnBlack.IsChecked = true;
-          break;
-        case "Green":
-          btnGreen.IsChecked = true;
-          break;
-        default:
-          btnBlue.IsChecked = true;
-          break;
-      }
-
-      LastUpdateCheck = DateTime.FromBinary(Convert.ToInt64(rks.GetValue(@"LastUpdateCheck", 0)));
-
-      UpdateCheckInterval = (int)rks.GetValue(@"CheckInterval", 7);
-
-      switch (UpdateCheckInterval)
-      {
-        case 1:
-          rbDaily.IsChecked = true;
-          break;
-        case 7:
-          rbWeekly.IsChecked = true;
-          break;
-        case 30:
-          rbMonthly.IsChecked = true;
-          break;
-        default:
-          break;
-      }
-
-      UpdateCheckType = (int)rks.GetValue(@"UpdateCheckType", 1);
-
-      switch (UpdateCheckType)
-      {
-        case 0:
-          rbReleases.IsChecked = true;
-          break;
-        case 1:
-          rbReleasTest.IsChecked = true;
-          break;
-        default:
-          break;
-
-      }
-
-
-      int HFlyoutEnabled = (int)rks.GetValue(@"HFlyoutEnabled", 0);
-
-      int UpdateCheck = (int)rks.GetValue(@"CheckForUpdates", 1);
-      IsUpdateCheck = (UpdateCheck == 1);
-      chkUpdateCheck.IsChecked = IsUpdateCheck;
-
-      int UpdateCheckStartup = (int)rks.GetValue(@"CheckForUpdatesStartup", 1);
-      IsUpdateCheckStartup = (UpdateCheckStartup == 1);
-      chkUpdateStartupCheck.IsChecked = IsUpdateCheckStartup;
-
-      int isConsoleShown = (int)rks.GetValue(@"IsConsoleShown", 0);
-      IsConsoleShown = (isConsoleShown == 1);
-      btnConsolePane.IsChecked = this.IsConsoleShown;
-
-      IsHFlyoutEnabled = (HFlyoutEnabled == 1);
-      chkIsFlyout.IsChecked = IsHFlyoutEnabled;
-
-      int InfoPaneEnabled = (int)rks.GetValue(@"InfoPaneEnabled", 0);
-
-      IsInfoPaneEnabled = (InfoPaneEnabled == 1);
-      btnInfoPane.IsChecked = IsInfoPaneEnabled;
-
-      InfoPaneHeight = (int)rks.GetValue(@"InfoPaneHeight", 150);
-
-      if (IsInfoPaneEnabled)
-      {
-        rPreviewPane.Height = new GridLength(InfoPaneHeight);
-        rPreviewPaneSplitter.Height = new GridLength(1);
-      }
-      else
-      {
-        rPreviewPane.Height = new GridLength(0);
-        rPreviewPaneSplitter.Height = new GridLength(0);
-      }
-
-      int PreviewPaneEnabled = (int)rks.GetValue(@"PreviewPaneEnabled", 0);
-
-      IsPreviewPaneEnabled = (PreviewPaneEnabled == 1);
-      btnPreviewPane.IsChecked = IsPreviewPaneEnabled;
-
-      PreviewPaneWidth = (int)rks.GetValue(@"PreviewPaneWidth", 120);
-
-      if (IsPreviewPaneEnabled)
-      {
-        clPreview.Width = new GridLength((double)PreviewPaneWidth);
-        clPreviewSplitter.Width = new GridLength(1);
-      }
-      else
-      {
-        clPreview.Width = new GridLength(0);
-        clPreviewSplitter.Width = new GridLength(0);
-      }
-
-      int NavigationPaneEnabled = (int)rks.GetValue(@"NavigationPaneEnabled", 1);
-
-      IsNavigationPaneEnabled = (NavigationPaneEnabled == 1);
-      btnNavigationPane.IsChecked = IsNavigationPaneEnabled;
-
-      int CheckBoxesEnabled = (int)rks.GetValue(@"CheckModeEnabled", 0);
-
-      isCheckModeEnabled = (CheckBoxesEnabled == 1);
-      chkShowCheckBoxes.IsChecked = isCheckModeEnabled;
-
-      int ExFileOpEnabled = (int)rks.GetValue(@"FileOpExEnabled", 0);
-
-      IsExtendedFileOpEnabled = (ExFileOpEnabled == 1);
-      Explorer.IsExFileOpEnabled = IsExtendedFileOpEnabled;
-      chkIsTerraCopyEnabled.IsChecked = IsExtendedFileOpEnabled;
-
-      int cfoEnabled = (int)rks.GetValue(@"IsCustomFO", 0);
-
-      chkIsCFO.IsChecked = cfoEnabled == 1;
-
-      int CompartibleRename = (int)rks.GetValue(@"CompartibleRename", 1);
-
-      IsCompartibleRename = (CompartibleRename == 1);
-
-      //chkIsCompartibleRename.IsChecked = IsCompartibleRename;
-
-      int RestoreTabs = (int)rks.GetValue(@"IsRestoreTabs", 1);
-
-      IsrestoreTabs = (RestoreTabs == 1);
-
-      chkIsRestoreTabs.IsChecked = IsrestoreTabs;
-
-      //if this instance has the /norestore switch, do not load tabs from previous session, even if it is set in the Registry
-      if (App.isStartWithStartupTab == true)
-      {
-        IsrestoreTabs = false;
-      }
-
-      int IsLastTabCloseApp = (int)rks.GetValue(@"IsLastTabCloseApp", 1);
-      IsCloseLastTabCloseApp = (IsLastTabCloseApp == 1);
-      this.chkIsLastTabCloseApp.IsChecked = IsCloseLastTabCloseApp;
-
-      int LogActions = (int)rks.GetValue(@"EnableActionLog", 0);
-
-      canlogactions = (LogActions == 1);
-      chkLogHistory.IsChecked = canlogactions;
-      if (LogActions == 1)
-      {
-        chkLogHistory.Visibility = System.Windows.Visibility.Visible;
-        ShowLogsBorder.Visibility = System.Windows.Visibility.Visible;
-        paddinglbl8.Visibility = System.Windows.Visibility.Visible;
-      }
-
-      // load settings for auto-switch to contextual tab
-      asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
-      asArchive = ((int)rks.GetValue(@"AutoSwitchArchiveTools", 1) == 1);
-      asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
-      asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
-      asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
-      asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 1) == 1);
-      asVirtualDrive = ((int)rks.GetValue(@"AutoSwitchVirtualDriveTools", 0) == 1);
-
-
-      chkFolder.IsChecked = asFolder;
-      chkArchive.IsChecked = asArchive;
-      chkImage.IsChecked = asImage;
-      chkApp.IsChecked = asApplication;
-      chkLibrary.IsChecked = asLibrary;
-      chkDrive.IsChecked = asDrive;
-      chkVirtualTools.IsChecked = asVirtualDrive;
-
-      // load OverwriteOnImages setting (default is false)
-      int oor = (int)rks.GetValue(@"OverwriteImageWhileEditing", 0);
-      OverwriteOnRotate = (oor == 1);
-      chkOverwriteImages.IsChecked = (oor == 1);
-
-      // load Saved Tabs Directory location (if different from default)
-      string tdir = Convert.ToString(rks.GetValue(@"SavedTabsDirectory", satdir));
-      txtDefSaveTabs.Text = tdir;
-      sstdir = tdir;
-
-      StartUpLocation = rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
-
-      if (StartUpLocation == "")
-      {
-        rks.SetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName);
-        StartUpLocation = KnownFolders.Libraries.ParsingName;
-      }
-      char[] delimiters = new char[] { ';' };
-      string LastOpenedTabs = rks.GetValue(@"OpenedTabs", "").ToString();
-      InitialTabs = LastOpenedTabs.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-
-      try
-      {
-        RegistryKey rkbe = Registry.ClassesRoot;
-        RegistryKey rksbe = rkbe.OpenSubKey(@"Folder\shell\open\command", RegistryKeyPermissionCheck.ReadSubTree);
-        bool IsThereDefault = rksbe.GetValue("DelegateExecute", "-1").ToString() == "-1";
-        chkIsDefault.IsChecked = IsThereDefault;
-        chkIsDefault.IsEnabled = true;
-        rksbe.Close();
-        rkbe.Close();
-      }
-      catch (Exception)
-      {
-        chkIsDefault.IsChecked = false;
-        chkIsDefault.IsEnabled = false;
-      }
-
-      RegistryKey rkfe = Registry.CurrentUser;
-      RegistryKey rksfe = rk.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", RegistryKeyPermissionCheck.ReadSubTree);
-      chkTreeExpand.IsChecked = (int)rksfe.GetValue("NavPaneExpandToCurrentFolder", 0) == 1;
-      rksfe.Close();
-      rkfe.Close();
-
-      rks.Close();
-      rk.Close();
-
-      if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
-      {
-        btnSetCurrentasStartup.Header =
-        ShellObject.FromParsingName("Shell:" + StartUpLocation).GetDisplayName(DisplayNameType.Default);
-        btnSetCurrentasStartup.Icon = ShellObject.FromParsingName("Shell:" + StartUpLocation).Thumbnail.BitmapSource;
-      }
-      else
-      {
-        try
+        private void PreselectItemsIntoExplorerControl()
         {
-          btnSetCurrentasStartup.Header =
-            ShellObject.FromParsingName(StartUpLocation).GetDisplayName(DisplayNameType.Default);
-
-          btnSetCurrentasStartup.Icon = ShellObject.FromParsingName(StartUpLocation).Thumbnail.BitmapSource;
-        }
-        catch
-        {
-
-
-        }
-      }
-
-      miTabManager.IsEnabled = Directory.Exists(sstdir);
-
-      autoUpdater.DaysBetweenChecks = this.UpdateCheckInterval;
-      try
-      {
-        if (IsUpdateCheck)
-        {
-          autoUpdater.UpdateType = UpdateType.OnlyCheck;
-        }
-        else
-        {
-          autoUpdater.UpdateType = UpdateType.DoNothing;
-        }
-        if (IsUpdateCheckStartup)
-        {
-          autoUpdater.ForceCheckForUpdate();
-        }
-      }
-      catch (IOException)
-      {
-        this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
-        this.btnUpdateCheck.IsEnabled = false;
-      }
-
-      if (App.isStartMinimized)
-      {
-        this.Visibility = System.Windows.Visibility.Hidden;
-        this.WindowState = System.Windows.WindowState.Minimized;
-        //this.ShowInTaskbar = false;
-      }
-
-      if (!TheRibbon.IsMinimized)
-      {
-        TheRibbon.SelectedTabItem = HomeTab;
-        this.TheRibbon.SelectedTabIndex = 0;
-      }
-    }
-    private void InitializeInitialTabs()
-    {
-      if (InitialTabs.Length == 0 || !IsrestoreTabs)
-      {
-        ShellObject sho = GetShellObjectFromLocation(StartUpLocation);
-        if (tabControl1.Items.OfType<ClosableTabItem>().Count() == 0)
-          NewTab(sho, true);
-        else
-          Explorer.Navigate(sho);
-      }
-      if (IsrestoreTabs)
-      {
-        isOnLoad = true;
-        int i = 0;
-        foreach (string str in InitialTabs)
-        {
-          try
-          {
-            i++;
-            if (i == InitialTabs.Length)
+            var itb = tabControl1.SelectedItem as ClosableTabItem;
+            if (itb.SelectedItems != null)
             {
-              NewTab(str, true);
+                foreach (var item in itb.SelectedItems)
+                {
+                    try
+                    {
+                        Explorer.SelectItem(ShellObject.FromParsingName(item));
+                    }
+                    catch (Exception)
+                    {
+                        //! Sometimes there can be malformed or invalid string on some systems so we have to catch this error.
+                    }
+                }
+                Explorer.SetExplorerFocus();
+            }
+        }
+        private void SetupUIonNavComplete(NavigationCompleteEventArgs e)
+        {
+            if (e.NewLocation.IsFileSystemObject)
+            {
+                btnSizeChart.IsEnabled = true;
             }
             else
             {
-              NewTab(str, false);
+                btnSizeChart.IsEnabled = false;
             }
-            if (i == InitialTabs.Count())
+
+
+            btnAutosizeColls.IsEnabled =
+                Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Details ?
+                  true : false;
+
+
+            if (e.NewLocation.ParsingName == KnownFolders.RecycleBin.ParsingName)
             {
-              ShellObject sho = GetShellObjectFromLocation(str);
-							//FIXME: fix it to work with new controls
-              Explorer.Navigate(sho);
-              (tabControl1.SelectedItem as ClosableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
-              (tabControl1.SelectedItem as ClosableTabItem).ToolTip = Explorer.NavigationLog.CurrentLocation.ParsingName;
+                if (Explorer.GetItemsCount() > 0)
+                {
+                    miRestoreALLRB.Visibility = System.Windows.Visibility.Visible;
+                }
             }
-          }
-          catch
-          {
-            //AddToLog(String.Format("Unable to load {0} into a tab!", str));
-            MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
-          }
-
-        }
-        if (tabControl1.Items.Count == 0)
-        {
-          NewTab();
-
-          if (StartUpLocation.IndexOf("::") == 0)
-          {
-
-            Explorer.Navigate(ShellObject.FromParsingName("shell:" + StartUpLocation));
-          }
-          else
-            Explorer.Navigate(ShellObject.FromParsingName(StartUpLocation.Replace("\"", "")));
-
-          (tabControl1.SelectedItem as ClosableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
-          (tabControl1.SelectedItem as ClosableTabItem).ToolTip = Explorer.NavigationLog.CurrentLocation.ParsingName;
-        }
-        isOnLoad = false;
-
-      }
-      breadcrumbBarControl1.ExitEditMode();
-      Explorer.SetExplorerFocus();
-
-      if (tabControl1.Items.Count == 1)
-        tabControl1.SelectedIndex = 0;
-
-			//ShellVView.Visibility = System.Windows.Visibility.Hidden;
-    }
-    private void SetsUpJumpList()
-    {
-      //sets up Jump List
-      try
-      {
-        AppJL.ShowRecentCategory = true;
-        AppJL.ShowFrequentCategory = true;
-        System.Windows.Shell.JumpList.SetJumpList(Application.Current, AppJL);
-        JumpTask newTab = new JumpTask()
-        {
-          ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
-          Arguments = "t",
-          Title = "Open Tab",
-          Description = "Opens new tab with default location"
-        };
-
-        JumpTask newWindow = new JumpTask()
-        {
-          ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
-          Arguments = "/nw",
-          Title = "New Window",
-          Description = "Creates a new window with default location"
-        };
-
-        AppJL.JumpItems.Add(newTab);
-        AppJL.JumpItems.Add(newWindow);
-        AppJL.Apply();
-      }
-      catch
-      {
-
-      }
-    }
-
-    private void Window_Loaded(object sender, RoutedEventArgs e)
-		{
-      Task.Run(() =>
-        {
-          UpdateRecycleBinInfos();
-        });
-
-			ShellTreeHost.Child = ShellTree;
-			ShellViewHost.Child = ShellListView;
-
-			ShellTree.ShellView = ShellListView;
-			ShellListView.LVItemsColorCodes = LVItemsColor;
-     
-      r = new MessageReceiver();
-      r.OnMessageReceived += r_OnMessageReceived;
-      r.Show();
-
-			bool exitApp = false;
-
-			try
-			{
-        Task.Run(() =>
-        {
-          if (WindowsAPI.getOSInfo() == WindowsAPI.OsVersionInfo.Windows8)
-          {
-            WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
-            WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, false);
-            if (state.fShowStatusBar == 1)
+            else
             {
-              WindowsAPI.SHELLSTATE newState = new WindowsAPI.SHELLSTATE();
-              newState.fShowStatusBar = 0;
-              WindowsAPI.SHGetSetSettings(ref newState, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, true);
+                miRestoreALLRB.Visibility = System.Windows.Visibility.Collapsed;
             }
-          }
-        });
+            bool IsChanged = (Explorer.GetSelectedItemsCount() > 0);
+            bool isFuncAvail;
+            if (Explorer.SelectedItems.Count == 1)
+            {
+                isFuncAvail = (Explorer.SelectedItems[0].IsFileSystemObject) ||
+                  Explorer.NavigationLog.CurrentLocation.ParsingName ==
+                    KnownFolders.Libraries.ParsingName;
+            }
+            else
+            {
+                if (!(Explorer.NavigationLog.CurrentLocation.IsFolder && !Explorer.NavigationLog.CurrentLocation.IsDrive &&
+                  !Explorer.NavigationLog.CurrentLocation.IsSearchFolder))
+                    ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                isFuncAvail = true;
+            }
+            btnCopy.IsEnabled = IsChanged;
+            //btnPathCopy.IsEnabled = IsChanged;
+            btnCut.IsEnabled = IsChanged;
+            btnRename.IsEnabled = IsChanged;
+            btnDelete.IsEnabled = IsChanged && isFuncAvail;
+            btnCopyto.IsEnabled = IsChanged;
+            btnMoveto.IsEnabled = IsChanged;
+            btnSelNone.IsEnabled = IsChanged;
 
-				
-
-				//Sets up FileSystemWatcher for Favorites folder
-				try
-				{
-					FileSystemWatcher fsw = new FileSystemWatcher(KnownFolders.Links.ParsingName);
-          fsw.Created += fsw_Created;
-          fsw.Deleted += fsw_Deleted;
-          fsw.Renamed += fsw_Renamed;
-					fsw.EnableRaisingEvents = true;
-				}
-				catch
-				{
-				}
-
-				//Set up breadcrumb bar drag/drop functionality
-				breadcrumbBarControl1.SetDragHandlers(new DragEventHandler(bbi_DragEnter), new DragEventHandler(bbi_DragLeave), new DragEventHandler(bbi_DragOver), new DragEventHandler(bbi_Drop));
-
-        //Set up Favorites Menu
-        Task.Run(() =>
+            leftNavBut.IsEnabled = ShellListView.CanNavigateBack;
+            rightNavBut.IsEnabled = ShellListView.CanNavigateForward;
+            btnUpLevel.IsEnabled = ShellListView.CanNavigateParent;
+            //btnUpLevel.IsEnabled = !(Explorer.NavigationLog.CurrentLocation.Parent == null);
+        }
+        private void SetUpJumpListOnNavComplete()
         {
-          SetUpFavoritesMenu();
-        });
+            IntPtr pIDL = IntPtr.Zero;
 
-        //Set up ListView Color codes 
-        //Explorer.LVItemsColorCodes = this.LVItemsColor;
+            try
+            {
+                uint iAttribute;
+                SHParseDisplayName(Explorer.NavigationLog.CurrentLocation.ParsingName,
+                    IntPtr.Zero, out pIDL, (uint)0, out iAttribute);
 
+                WindowsAPI.SHFILEINFO sfi = new WindowsAPI.SHFILEINFO();
+                IntPtr Res = IntPtr.Zero;
+                if (pIDL != IntPtr.Zero)
+                {
+                    if (!Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
+                    {
+                        Res = WindowsAPI.SHGetFileInfo(pIDL, 0, ref sfi, (uint)Marshal.SizeOf(sfi), WindowsAPI.SHGFI.IconLocation | WindowsAPI.SHGFI.SmallIcon | WindowsAPI.SHGFI.PIDL);
+                    }
 
-        //Load the ShellSettings
-        IsCalledFromLoading = true;
-				WindowsAPI.SHELLSTATE statef = new WindowsAPI.SHELLSTATE();
-        WindowsAPI.SHGetSetSettings(ref statef, WindowsAPI.SSF.SSF_SHOWALLOBJECTS | WindowsAPI.SSF.SSF_SHOWEXTENSIONS, false);
-        chkHiddenFiles.IsChecked = (statef.fShowAllObjects == 1);
-        chkExtensions.IsChecked = (statef.fShowExtensions == 1);
-				IsCalledFromLoading = false;
+                }
 
-				isOnLoad = true;
+                if (Explorer.NavigationLog.CurrentLocation.IsFileSystemObject)
+                {
+                    WindowsAPI.SHGetFileInfo(Explorer.NavigationLog.CurrentLocation.ParsingName, 0, ref sfi, (uint)Marshal.SizeOf(sfi), (uint)WindowsAPI.SHGFI.IconLocation | (uint)WindowsAPI.SHGFI.SmallIcon);
 
-				//'load from Registry
-        LoadRegistryRelatedSettings();
+                }
+                JumpTask JTask = new JumpTask();
+                JTask.ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
+                JTask.Arguments = String.Format("\"{0}\"", Explorer.NavigationLog.CurrentLocation.ParsingName);
+                JTask.Title = Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default);
+                JTask.IconResourcePath = sfi.szDisplayName;
+                JTask.IconResourceIndex = sfi.iIcon;
+                System.Windows.Shell.JumpList.AddToRecentCategory(JTask);
+                AppJL.Apply();
 
-        //'set up Explorer control
-        InitializeExplorerControl();
+            }
+            finally
+            {
 
-				// set up history on breadcrumb bar (currently missing try-catch statement in order to catch error)
-				try
-				{
-          Task.Run(() =>
-          {
-            breadcrumbBarControl1.ClearHistory();
-            breadcrumbBarControl1.HistoryItems = ReadHistoryFromFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt");
-          });
-				}
-				catch (FileNotFoundException)
-				{
-					logger.Warn(String.Format("History file not found at location:{0}\\history.txt", Environment.SpecialFolder.LocalApplicationData));
-				}
+                if (pIDL != IntPtr.Zero)
+                    Marshal.FreeCoTaskMem(pIDL);
+            }
+        }
+        private void TranslateUI()
+        {
+            if (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName)
+            {
+                btnCreateFolder.Header = FindResource("btnNewLibraryCP");  //"New Library";
+                stNewFolder.Title = FindResource("btnNewLibraryCP").ToString();//"New Library";
+                stNewFolder.Text = "Creates a new library in the current folder.";
+                stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/newlib32.png", UriKind.Relative));
+                btnCreateFolder.LargeIcon = @"..\Images\newlib32.png";
+                btnCreateFolder.Icon = @"..\Images\newlib16.png";
+            }
+            else
+            {
+                btnCreateFolder.Header = FindResource("btnNewFolderCP");//"New Folder";
+                stNewFolder.Title = FindResource("btnNewFolderCP").ToString(); //"New Folder";
+                stNewFolder.Text = "Creates a new folder in the current folder";
+                stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/folder_new32.png", UriKind.Relative));
+                btnCreateFolder.LargeIcon = @"..\Images\folder_new32.png";
+                btnCreateFolder.Icon = @"..\Images\folder_new16.png";
+            }
+        }
+        private bool SetUpNewFolderButtons()
+        {
+            bool isinLibraries = false;
+            if (Explorer.NavigationLog.CurrentLocation.Parent != null)
+            {
+                if (Explorer.NavigationLog.CurrentLocation.Parent.ParsingName ==
+                      KnownFolders.Libraries.ParsingName)
+                {
+                    isinLibraries = true;
+                }
+                else
+                {
+                    isinLibraries = false;
+                }
+            }
 
-				AddToLog("Session Began");
+            //btnCreateFolder.IsEnabled = Explorer.NavigationLog.CurrentLocation.IsFileSystemObject ||
+            //    (Explorer.NavigationLog.CurrentLocation.ParsingName == KnownFolders.Libraries.ParsingName) ||
+            //    (isinLibraries);
 
-				isOnLoad = false;
-                         
-				//'set StartUp location
-        if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized")
-				{
+            btnCreateFolder.IsEnabled = ShellListView.CanCreateFolder || (ShellListView.CurrentFolder.FileSystemPath == KnownFolders.Libraries.ParsingName) || (isinLibraries);
 
-					String cmd = Application.Current.Properties["cmd"].ToString();
+            TranslateUI();
 
-					if (cmd.IndexOf("::") == 0)
-					{
+            return isinLibraries;
+        }
+        private void SetUpButtonVisibilityOnNavComplete(bool isinLibraries)
+        {
+            if (Explorer.NavigationLog.CurrentLocation.ParsingName.Contains(KnownFolders.Libraries.ParsingName) &&
+                                          Explorer.NavigationLog.CurrentLocation.ParsingName != KnownFolders.Libraries.ParsingName)
+            {
+                ctgLibraries.Visibility = System.Windows.Visibility.Visible;
+                ctgFolderTools.Visibility = System.Windows.Visibility.Collapsed;
+                ctgImage.Visibility = System.Windows.Visibility.Collapsed;
+                ctgArchive.Visibility = System.Windows.Visibility.Collapsed;
+                ctgVirtualDisk.Visibility = System.Windows.Visibility.Collapsed;
+                ctgExe.Visibility = System.Windows.Visibility.Collapsed;
+                inLibrary = true;
 
-						Explorer.Navigate(ShellObject.FromParsingName("shell:" + cmd));
-					}
-					else
-						Explorer.Navigate(ShellObject.FromParsingName(cmd.Replace("\"", "")));
+                //MessageBox.Show("In Library");
+                try
+                {
+                    ShellLibrary lib =
+                        ShellLibrary.Load(Explorer.NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default), false);
+                    IsFromSelectionOrNavigation = true;
+                    chkPinNav.IsChecked = lib.IsPinnedToNavigationPane;
+                    IsFromSelectionOrNavigation = false;
+                    foreach (ShellObject item in lib)
+                    {
+                        MenuItem miItem = new MenuItem();
+                        miItem.Header = item.GetDisplayName(DisplayNameType.Default);
+                        miItem.Tag = item;
+                        item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                        item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+                        miItem.Icon = item.Thumbnail.BitmapSource;
+                        miItem.GroupName = "GRDS1";
+                        miItem.IsCheckable = true;
+                        miItem.IsChecked = (item.ParsingName == lib.DefaultSaveFolder);
+                        miItem.Click += new RoutedEventHandler(miItem_Click);
+                        btnDefSave.Items.Add(miItem);
+                    }
 
+                    btnDefSave.IsEnabled = !(lib.Count == 0);
+                    lib.Close();
+                }
+                catch
+                {
 
-          NewTab(Explorer.NavigationLog.CurrentLocation,true);
-					
-				}
-				else
-				{
-            InitializeInitialTabs();
-				}
+                }
+            }
+            else
+            {
+                if (!Explorer.NavigationLog.CurrentLocation.ParsingName.ToLowerInvariant().EndsWith("library-ms"))
+                {
+                    btnDefSave.Items.Clear();
+                    ctgLibraries.Visibility = System.Windows.Visibility.Collapsed;
+                    inLibrary = false;
+                }
+                //MessageBox.Show("Not in Library");
+            }
+            if (Explorer.NavigationLog.CurrentLocation.IsDrive)
+            {
+                ctgDrive.Visibility = System.Windows.Visibility.Visible;
+                inDrive = true;
+                //MessageBox.Show("In Drive");
+            }
+            else
+            {
+                ctgDrive.Visibility = System.Windows.Visibility.Collapsed;
+                inDrive = false;
+                //MessageBox.Show("Not In Drive");
+            }
+            if (isinLibraries)
+            {
+                ctgFolderTools.Visibility = Visibility.Collapsed;
+            }
+        }
+        private void SetUpConsoleWindow(NavigationCompleteEventArgs e)
+        {
+            try
+            {
+                if (e.NewLocation.IsFileSystemObject)
+                {
+                    ctrlConsole.WriteInput(String.Format("cd \"{0}\"", e.NewLocation.ParsingName), System.Drawing.Color.Red, false);
+                }
+                if (ctrlConsole.InternalRichTextBox.Lines.Last().Substring(0, ctrlConsole.InternalRichTextBox.Lines.Last().IndexOf(Char.Parse(@"\")) + 1) != Path.GetPathRoot(e.NewLocation.ParsingName))
+                {
+                    ctrlConsole.WriteInput(Path.GetPathRoot(e.NewLocation.ParsingName).TrimEnd(Char.Parse(@"\")), System.Drawing.Color.Red, false);
+                }
+            }
+            catch (Exception)
+            {
+                // catch all expetions for illigal path
+            }
+        }
+        private void SetUpBreadcrumbbarOnNavComplete(NavigationCompleteEventArgs e)
+        {
+            this.breadcrumbBarControl1.LoadDirectory(e.NewLocation);
+            this.breadcrumbBarControl1.LastPath = e.NewLocation.ParsingName;
+            this.Title = "Better Explorer - " + e.NewLocation.GetDisplayName(DisplayNameType.Default);
+            e.NewLocation.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            e.NewLocation.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+            try
+            {
+                (tabControl1.SelectedItem as ClosableTabItem).Header = e.NewLocation.GetDisplayName(DisplayNameType.Default);
+                (tabControl1.SelectedItem as ClosableTabItem).TabIcon = e.NewLocation.Thumbnail.BitmapSource;
+            }
+            catch (Exception)
+            {
 
-        SetsUpJumpList();
-      
-				//Setup Clipboard monitor
-        cbm.ClipboardChanged += cbm_ClipboardChanged;
-                    
+            }
 
-				if (exitApp)
-				{
-					Application.Current.Shutdown();
-					return;
-				}
+            try
+            {
 
-        if (this.IsConsoleShown) {
-          if (!ctrlConsole.IsProcessRunning)
-          {
-            ctrlConsole.StartProcess("cmd.exe", null);
-            ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
-            ctrlConsole.ClearOutput();
-          }
+                //ClosableTabItem it = new ClosableTabItem();
+                //CreateTabbarRKMenu(it);
+
+                //(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).Path = Explorer.NavigationLog.CurrentLocation;
+                if (!isGoingBackOrForward)
+                {
+                    try
+                    {
+                        if ((tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.ForwardEntries.Count() > 1)
+                            (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.ClearForwardItems();
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                    (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CurrentLocation = Explorer.NavigationLog.CurrentLocation;
+
+                }
+
+                isGoingBackOrForward = false;
+
+                //leftNavBut.IsEnabled = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CanNavigateBackwards;
+                //rightNavBut.IsEnabled = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CanNavigateForwards;
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
-        //Set up Version Info
-				verNumber.Content = "Version " + (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
-				lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
-				ShellListView.subclassed = new ShellDeffViewSubClassedWindow(IntPtr.Zero, ShellListView.ShellListViewHandle, ShellListView);
-				ShellListView.subclassed.AssignHandle(ShellListView.m_ShellViewWindow);
-        this.Activate(true);
-			}
-			catch (Exception exe)
-			{
-				MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
-			}
-            
-		}
+    #endregion
 
-    void Explorer_MouseWheel(object sender, ExplorerMoiseWheelArgs e)
+        void Explorer_MouseWheel(object sender, ExplorerMoiseWheelArgs e)
     {
       if (e.IsOutsideExplorer)
       {
@@ -5186,7 +4678,7 @@ namespace BetterExplorer
       }
     }
 
-    void r_OnMessageReceived(object sender, EventArgs e)
+        void r_OnMessageReceived(object sender, EventArgs e)
     {
       Thread t = new Thread(() =>
       {
@@ -5755,13 +5247,15 @@ namespace BetterExplorer
 		private void leftNavBut_Click(object sender, RoutedEventArgs e)
 		{
 			isGoingBackOrForward = true;
-			Explorer.Navigate((tabControl1.SelectedItem as ClosableTabItem).log.NavigateBack());
+            ShellListView.NavigateBack();
+			//Explorer.Navigate((tabControl1.SelectedItem as ClosableTabItem).log.NavigateBack());
 		}
 
 		private void rightNavBut_Click(object sender, RoutedEventArgs e)
 		{
 			isGoingBackOrForward = true;
-			Explorer.Navigate((tabControl1.SelectedItem as ClosableTabItem).log.NavigateForward());
+            ShellListView.NavigateForward();
+			//Explorer.Navigate((tabControl1.SelectedItem as ClosableTabItem).log.NavigateForward());
 		}
 
 		private void downArrow_Click(object sender, RoutedEventArgs e)
@@ -5812,10 +5306,18 @@ namespace BetterExplorer
 
 		private void btnUpLevel_Click(object sender, RoutedEventArgs e)
 		{
-      if (Explorer.NavigationLog.CurrentLocation.Parent != null)
-        Explorer.Navigate(Explorer.NavigationLog.CurrentLocation.Parent);
-      else
-        btnUpLevel.IsEnabled = false;
+      //if (Explorer.NavigationLog.CurrentLocation.Parent != null)
+      //  Explorer.Navigate(Explorer.NavigationLog.CurrentLocation.Parent);
+      //else
+      //  btnUpLevel.IsEnabled = false;
+            if (ShellListView.CanNavigateParent)
+            {
+                ShellListView.NavigateParent();
+            }
+            else
+            {
+                btnUpLevel.IsEnabled = false;
+            }
 
 			WindowsAPI.SetFocus(Explorer.SysListViewHandle);
 			//ShellContextMenu cm = new ShellContextMenu();
@@ -5853,37 +5355,82 @@ namespace BetterExplorer
 
 		private void btnSbDetails_Click(object sender, RoutedEventArgs e)
 		{
-			if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Details)
-			{
-				btnSbDetails.IsChecked = true;
-			}
+            //if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Details)
+            //{
+            //    btnSbDetails.IsChecked = true;
+            //}
 
-			else
-				Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Details;
+            //else
+            //    Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Details;
+            try
+            {
+                if (ShellListView.View == ShellViewStyle.Details)
+                {
+                    btnSbDetails.IsChecked = true;
+                }
+                else
+                {
+                    ShellListView.View = ShellViewStyle.Details;
+                }
+            }
+            catch (NullReferenceException ex)
+            {
+
+            }
 		}
 
 		private void btnSbIcons_Click(object sender, RoutedEventArgs e)
 		{
-			if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Icon)
-			{
-				btnSbIcons.IsChecked = true;
-			}
-			else
-				Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Icon;
+            //if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Icon)
+            //{
+            //    btnSbIcons.IsChecked = true;
+            //}
+            //else
+            //    Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Icon;
+            try {
+                if (ShellListView.View == ShellViewStyle.LargeIcon)
+                {
+                    btnSbDetails.IsChecked = true;
+                }
+                else
+                {
+                    ShellListView.View = ShellViewStyle.LargeIcon;
+                }
+            }
+            catch (NullReferenceException ex)
+            {
+
+            }
 		}
 
 		private void btnSbTiles_Click(object sender, RoutedEventArgs e)
 		{
 
-			if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Tile)
-			{
-				btnSbTiles.IsChecked = true;
-			}
-			else
-				Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Tile;
+            //if (Explorer.ContentOptions.ViewMode == ExplorerBrowserViewMode.Tile)
+            //{
+            //    btnSbTiles.IsChecked = true;
+            //}
+            //else
+            //    Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Tile;
+            try {
+                if (ShellListView.View == ShellViewStyle.Tile)
+                {
+                    btnSbDetails.IsChecked = true;
+                }
+                else
+                {
+                    ShellListView.View = ShellViewStyle.Tile;
+                }
+            }
+            catch (NullReferenceException ex)
+            {
+
+            }
 
 		}
+
     bool isCalledFromSlider = false;
+
 		private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
       
@@ -5893,8 +5440,16 @@ namespace BetterExplorer
 				//				new Action(
 				//				delegate()
 				//				{
-				Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
-				Explorer.ContentOptions.ThumbnailSize = (int)e.NewValue;
+				//Explorer.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
+				//Explorer.ContentOptions.ThumbnailSize = (int)e.NewValue;
+                try {
+                    ShellListView.View = ShellViewStyle.LargeIcon;
+                    ShellListView.ThumbnailSize = (int)e.NewValue;
+                }
+                catch (NullReferenceException ex)
+                {
+
+                }
 							//	}));
 
 			}
@@ -5905,7 +5460,9 @@ namespace BetterExplorer
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			Explorer.RefreshExplorer();
+            ShellListView.RefreshContents();
+            ShellTree.RefreshContents();
+			//Explorer.RefreshExplorer();
 		}
 
 		private void btnRefresh_Click(object sender, RoutedEventArgs e)
@@ -5960,42 +5517,45 @@ namespace BetterExplorer
 
 
 		private void inRibbonGallery1_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-      if (IsViewSelection)
-      {
-        switch (ViewGallery.SelectedIndex)
         {
-          case 0:
-						ShellListView.View = ShellViewStyle.LargeIcon;
-						ShellListView.ThumbnailSize = 256;
-						break;
-          case 1:
-            ShellListView.View = ShellViewStyle.LargeIcon;
-						ShellListView.ThumbnailSize = 96;
-            break;
-          case 2:
-            ShellListView.View = ShellViewStyle.LargeIcon;
-						ShellListView.ThumbnailSize = 48;
-            break;
-          case 3:
-            ShellListView.View = ShellViewStyle.SmallIcon;
-						ShellListView.ThumbnailSize = 16;
-            break;
-          case 4:
-            ShellListView.View = ShellViewStyle.List;
-            break;
-          case 5:
-						ShellListView.View = ShellViewStyle.Details;
-            break;
-          case 6:
-						ShellListView.View = ShellViewStyle.Tile;
-            break;
-          case 7:
-            ShellListView.View = ShellViewStyle.Content;
-            break;
-          default:
-              break;
-        }
+            if (IsViewSelection)
+            {
+                switch (ViewGallery.SelectedIndex)
+                {
+                    case 0:
+                        ShellListView.View = ShellViewStyle.LargeIcon;
+                        ShellListView.ThumbnailSize = 256;
+                        break;
+                    case 1:
+                        ShellListView.View = ShellViewStyle.LargeIcon;
+                        ShellListView.ThumbnailSize = 96;
+                        break;
+                    case 2:
+                        ShellListView.View = ShellViewStyle.LargeIcon;
+                        ShellListView.ThumbnailSize = 48;
+                        break;
+                    case 3:
+                        ShellListView.View = ShellViewStyle.SmallIcon;
+                        ShellListView.ThumbnailSize = 16;
+                        break;
+                    case 4:
+                        ShellListView.View = ShellViewStyle.List;
+                        break;
+                    case 5:
+                        ShellListView.View = ShellViewStyle.Details;
+                        break;
+                    case 6:
+                        ShellListView.View = ShellViewStyle.Tile;
+                        break;
+                    case 7:
+                        ShellListView.View = ShellViewStyle.Content;
+                        break;
+                    case 8:
+                        ShellListView.View = ShellViewStyle.Thumbstrip;
+                        break;
+                    default:
+                        break;
+                }
       }
 
 		}

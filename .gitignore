@@ -246,3 +246,4 @@ BEH*.dll
 BExplorer/BetterExplorer/BEH32.exp
 BExplorer/BetterExplorer/BEH32.ilk
 BExplorer/BetterExplorer/BEH32.lib
+*.tlog
