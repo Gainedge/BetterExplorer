@@ -176,11 +176,6 @@ namespace GongSolutions.Shell
 
 											User32.SendMessage(this.SysListviewhandle, MSG.LVM_GETITEMRECT, index, ref iconBounds);
 
-											//using (Graphics graphics = Graphics.FromHdc(nmlvcd.nmcd.hdc))
-											//{
-											//  graphics.Clip = new Region(iconBounds.ToRectangle()); ;
-											//  graphics.FillRectangle(Brushes.Black, new Rectangle(iconBounds.left, iconBounds.bottom - 20, 20, 20));
-											//}
 											if (itemobj.IsShared)
 											{
 												if (this.Browser.View == ShellViewStyle.Details || this.Browser.View == ShellViewStyle.List || this.Browser.View == ShellViewStyle.SmallIcon)
