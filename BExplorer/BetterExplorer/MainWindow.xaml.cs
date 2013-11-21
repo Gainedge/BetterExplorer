@@ -996,58 +996,6 @@ namespace BetterExplorer
 		//BackgroundWorker bwSelectionChanged = new BackgroundWorker();
 		//'Selection change (when an item is selected in a folder)
 
-        async void ExplorerBrowserControl_SelectionChanged(object sender, EventArgs e)
-        {
-            int explorerSelectedItemsCount = 0;
-
-            if (!IsSelectionRized)
-            {
-                IsSelectionRized = true;
-
-                await Task.Run(() =>
-                {
-                    //ct.ThrowIfCancellationRequested();
-                    Dispatcher.BeginInvoke(DispatcherPriority.Input, (ThreadStart)(() =>
-                    {
-                        try
-                        {
-                            // set up buttons
-                            SetupUIOnSelectOrNavigate(ShellListView.SelectedItems.Count());
-
-
-                        }
-                        catch (Exception)
-                        {
-
-
-                        }
-
-                    }));
-                });
-                if (this.IsInfoPaneEnabled)
-                {
-                    await Task.Run(() =>
-                    {
-											//FIXME:
-                      //  PreviewPanel.FillPreviewPane(Explorer);
-                    });
-                }
-                IsSelectionRized = false;
-            }
-
-      #region StatusBar selected items counter
-      await Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() =>
-        {
-          explorerSelectedItemsCount = ShellListView.SelectedItems.Count();
-        }));
-
-      SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
-      #endregion
-
-      //if (!IsAfterFolderCreate && !backstage.IsOpen && IsAfterRename && !ShellListView.IsRenameStarted)
-      //    ShellListView.SetExplorerFocus();
-		}
-
     private Boolean SetupEditButton(string item)
     {
       bool isEditAvailable = false;
@@ -3458,6 +3406,7 @@ namespace BetterExplorer
     {
         ShellListView.Navigated += ShellListView_Navigated;
         ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
+				ShellListView.SelectionChanged += ShellListView_SelectionChanged;
         ////ShellListView.LVItemsColorCodes = this.LVItemsColor;
         //ShellListView.SelectionChanged += ExplorerBrowserControl_SelectionChanged;
         ////ShellListView.NavigationComplete += Explorer_NavigationComplete;
@@ -3492,6 +3441,58 @@ namespace BetterExplorer
         //ShellListView.Width = (int)ShellVView.ActualWidth;
         //ShellListView.Height = (int)ShellVView.ActualHeight;
     }
+
+		async void ShellListView_SelectionChanged(object sender, EventArgs e)
+		{
+			int explorerSelectedItemsCount = 0;
+
+			if (!IsSelectionRized)
+			{
+				IsSelectionRized = true;
+
+				await Task.Run(() =>
+				{
+					//ct.ThrowIfCancellationRequested();
+					Dispatcher.BeginInvoke(DispatcherPriority.Input, (ThreadStart)(() =>
+					{
+						try
+						{
+							// set up buttons
+							SetupUIOnSelectOrNavigate(ShellListView.SelectedItems.Count());
+
+
+						}
+						catch (Exception)
+						{
+
+
+						}
+
+					}));
+				});
+				if (this.IsInfoPaneEnabled)
+				{
+					await Task.Run(() =>
+					{
+						//FIXME:
+						//  PreviewPanel.FillPreviewPane(Explorer);
+					});
+				}
+				IsSelectionRized = false;
+			}
+
+			#region StatusBar selected items counter
+			await Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() =>
+			{
+				explorerSelectedItemsCount = ShellListView.SelectedItems.Count();
+			}));
+
+			SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
+			#endregion
+
+			//if (!IsAfterFolderCreate && !backstage.IsOpen && IsAfterRename && !ShellListView.IsRenameStarted)
+			//    ShellListView.SetExplorerFocus();
+		}
 
     protected override void OnSourceInitialized(EventArgs e)
     {
