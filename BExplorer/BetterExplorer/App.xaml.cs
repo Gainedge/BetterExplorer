@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows;
 using SingleInstanceApplication;
 using System.Reflection;
-using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.Win32;
 using System.Windows.Threading;
 using System.Threading;
@@ -18,6 +17,8 @@ using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Interop;
 using WindowsHelper;
+using GongSolutions.Shell;
+using GongSolutions.Shell.Interop;
 
 namespace BetterExplorer
 {
@@ -358,7 +359,7 @@ namespace BetterExplorer
 
                 if (x)
                 {
-                    ShellObject sho = null;
+                    ShellItem sho = null;
                     if (args != null && args.CommandLineArgs != null)
                     {
 
@@ -385,10 +386,10 @@ namespace BetterExplorer
                             String cmd = args.CommandLineArgs[1];
                             if (cmd.IndexOf("::") == 0)
                             {
-                              sho = ShellObject.FromParsingName("shell:" + cmd);
+                              sho = new ShellItem("shell:" + cmd);
                             }
                             else
-                              sho = ShellObject.FromParsingName(args.CommandLineArgs[1].Replace("\"", ""));
+                              sho = new ShellItem(args.CommandLineArgs[1].Replace("\"", ""));
                           }
                         }
                         else
@@ -399,7 +400,7 @@ namespace BetterExplorer
                             WindowsAPI.ShowWindow(hwnd,
                                 (int)WindowsAPI.ShowCommands.SW_RESTORE);
                           }
-                          sho = win.GetShellObjectFromLocation(StartUpLocation);
+                          sho = new ShellItem(StartUpLocation);
                         }
                       }
                       else
@@ -411,16 +412,16 @@ namespace BetterExplorer
                           WindowsAPI.ShowWindow(hwnd,
                               (int)WindowsAPI.ShowCommands.SW_RESTORE);
                         }
-                        sho = win.GetShellObjectFromLocation(StartUpLocation);
+                        sho = new ShellItem(StartUpLocation);
                       }
 
                       if (!isStartMinimized || win.tabControl1.Items.Count == 0)
                       {
 
                         sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                        sho.Thumbnail.CurrentSize = new Size(16, 16);
+                        sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
                         ClosableTabItem newt = new ClosableTabItem();
-                        newt.Header = sho.GetDisplayName(DisplayNameType.Default);
+                        newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
                         newt.TabIcon = sho.Thumbnail.BitmapSource;
                         newt.PreviewMouseMove += newt_PreviewMouseMove;
                         newt.ToolTip = sho.ParsingName;
@@ -435,9 +436,9 @@ namespace BetterExplorer
                         {
                           win.tabControl1.Items.Clear();
                           sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                          sho.Thumbnail.CurrentSize = new Size(16, 16);
+                          sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
                           ClosableTabItem newt = new ClosableTabItem();
-                          newt.Header = sho.GetDisplayName(DisplayNameType.Default);
+													newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
                           newt.TabIcon = sho.Thumbnail.BitmapSource;
                           newt.PreviewMouseMove += newt_PreviewMouseMove;
                           newt.ToolTip = sho.ParsingName;
@@ -450,15 +451,15 @@ namespace BetterExplorer
                           String cmd = args.CommandLineArgs[1];
                           if (cmd.IndexOf("::") == 0)
                           {
-                            sho = ShellObject.FromParsingName("shell:" + cmd);
+                            sho = new ShellItem("shell:" + cmd);
                           }
                           else
-                            sho = ShellObject.FromParsingName(args.CommandLineArgs[1].Replace("\"", ""));
+                            sho = new ShellItem(args.CommandLineArgs[1].Replace("\"", ""));
 
                           sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                          sho.Thumbnail.CurrentSize = new Size(16, 16);
+                          sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
                           ClosableTabItem newt = new ClosableTabItem();
-                          newt.Header = sho.GetDisplayName(DisplayNameType.Default);
+                          newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
                           newt.TabIcon = sho.Thumbnail.BitmapSource;
                           newt.PreviewMouseMove += newt_PreviewMouseMove;
                           newt.ToolTip = sho.ParsingName;

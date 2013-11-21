@@ -12,6 +12,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Drawing;
 using Microsoft.WindowsAPICodePack.Shell;
+using GongSolutions.Shell;
+using GongSolutions.Shell.Interop;
 
 namespace BetterExplorer
 {
@@ -36,11 +38,11 @@ namespace BetterExplorer
             spinner1.Value = 100;
         }
 
-        public ResizeImage(ShellObject file)
+        public ResizeImage(ShellItem file)
         {
             InitializeComponent();
 
-            textBlock1.Text = FindResource("txtFilename") + ": " + file.GetDisplayName(DisplayNameType.Default);
+            textBlock1.Text = FindResource("txtFilename") + ": " + file.GetDisplayName(SIGDN.NORMALDISPLAY);
             cvt = new Bitmap(file.ParsingName);
             textBlock2.Text = FindResource("lblHeightCP") + ": " + cvt.Height.ToString();
             textBlock3.Text = FindResource("lblWidthCP") + ": " + cvt.Width.ToString();

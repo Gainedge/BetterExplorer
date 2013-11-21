@@ -55,14 +55,37 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collumns.cs" />
+    <Compile Include="Interop\FileIcon.cs" />
+    <Compile Include="Interop\ShellLink.cs" />
+    <Compile Include="Interop\KnownFoldersCOM.cs" />
+    <Compile Include="Interop\ShellThumbnail.cs" />
+    <Compile Include="Interop\DefaultIconSize.cs" />
+    <Compile Include="Interop\Gdi32.cs" />
+    <Compile Include="Interop\IThumbnail.cs" />
+    <Compile Include="KnownFolders\DefinitionOptions.cs" />
+    <Compile Include="KnownFolders\FileSystemKnownFolder.cs" />
+    <Compile Include="KnownFolders\FolderCategory.cs" />
+    <Compile Include="KnownFolders\FolderProperties.cs" />
+    <Compile Include="KnownFolders\FoldersIdentifiers.cs" />
+    <Compile Include="KnownFolders\FolderTypes.cs" />
+    <Compile Include="KnownFolders\IKnownFolder.cs" />
+    <Compile Include="KnownFolders\KnownFolderHelper.cs" />
+    <Compile Include="KnownFolders\KnownFolders.cs" />
+    <Compile Include="KnownFolders\KnownFolderSettings.cs" />
+    <Compile Include="KnownFolders\NonFileSystemKnownFolder.cs" />
+    <Compile Include="KnownFolders\RedirectionCapabilities.cs" />
+    <Compile Include="KnownFolders\RetrievalOptions.cs" />
     <Compile Include="LVItemColor.cs" />
     <Compile Include="Interop\Enums.cs" />
     <Compile Include="Interop\IFolderView.cs" />
@@ -72,12 +95,6 @@
     <Compile Include="SysImageList.cs" />
     <Compile Include="TreeViewBase.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="FileDialogToolbar.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="FileDialogToolbar.Designer.cs">
-      <DependentUpon>FileDialogToolbar.cs</DependentUpon>
     </Compile>
     <Compile Include="FileFilterComboBox.cs">
       <SubType>Component</SubType>
@@ -93,8 +110,6 @@
     <Compile Include="Interop\IContextMenu.cs" />
     <Compile Include="Interop\IDropSource.cs" />
     <Compile Include="Interop\IDropTarget.cs" />
-    <Compile Include="Interop\IKnownFolder.cs" />
-    <Compile Include="Interop\IKnownFolderManager.cs" />
     <Compile Include="Interop\IOleCommandTarget.cs" />
     <Compile Include="Interop\IQueryInfo.cs" />
     <Compile Include="Interop\IServiceProvider.cs" />
@@ -114,7 +129,6 @@
     <Compile Include="Interop\ShlWapi.cs" />
     <Compile Include="Interop\User32.cs" />
     <Compile Include="Interop\VistaBridge\ShellItemImpl.cs" />
-    <Compile Include="KnownFolderManager.cs" />
     <Compile Include="PlacesToolbar.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -134,13 +148,6 @@
     <Compile Include="ShellContextMenu.cs" />
     <Compile Include="ShellHistory.cs" />
     <Compile Include="ShellItem.cs" />
-    <Compile Include="ShellItemBrowseForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ShellItemBrowseForm.Designer.cs">
-      <DependentUpon>ShellItemBrowseForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ShellItemEditor.cs" />
     <Compile Include="ShellNotificationListener.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -154,10 +161,6 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="FileDialogToolbar.resx">
-      <DependentUpon>FileDialogToolbar.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="PlacesToolbar.resx">
       <DependentUpon>PlacesToolbar.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -166,10 +169,6 @@
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ShellItemBrowseForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>ShellItemBrowseForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +28,23 @@ namespace GongSolutions.Shell.Interop
 		internal const string IDataObject = "0000010E-0000-0000-C000-000000000046";
 		internal const string IShellFolderView = "37A378C0-F82D-11CE-AE65-08002B2E1262";
 		internal const string IShellBrowser = "000214e2-0000-0000-c000-000000000046";
+		internal const string IShellItem = "43826D1E-E718-42EE-BC55-A1E261C37BFE";
+		internal const string IShellItem2 = "7E9FB0D3-919F-4307-AB2E-9B1860310C93";
+		internal const string IShellItemArray = "B63EA76D-1F85-456F-A19C-48159EFA858B";
+		internal const string IShellLibrary = "11A66EFA-382E-451A-9234-1E0E12EF3085";
+		internal const string IThumbnailCache = "F676C15D-596A-4ce2-8234-33996F445DB1";
+		internal const string ISharedBitmap = "091162a4-bc96-411f-aae8-c5122cd03363";
+		internal const string IShellFolder = "000214E6-0000-0000-C000-000000000046";
+		internal const string IShellFolder2 = "93F2F68C-1D1B-11D3-A30E-00C04F79ABD1";
+		internal const string IEnumIDList = "000214F2-0000-0000-C000-000000000046";
+		internal const string IShellLinkW = "000214F9-0000-0000-C000-000000000046";
+		internal const string CShellLink = "00021401-0000-0000-C000-000000000046";
+		internal const string IKnownFolder = "3AA7AF7E-9B36-420c-A8E3-F77D4674A488";
+		internal const string KnownFolderManager = "4df0c730-df9d-4ae3-9153-aa6b82e9795a";
+		internal const string ComputerFolder = "0AC0837C-BBF8-452A-850D-79D08E667CA7";
+		internal const string Favorites = "1777F761-68AD-4D8A-87BD-30B759FA33DD";
+		internal const string Documents = "FDD39AD0-238F-46AF-ADB4-6C85480369C7";
+		internal const string Profile = "5E6C858F-0E22-4760-9AFE-EA3317B67173";
 
 	}
 
@@ -118,5 +136,23 @@ namespace GongSolutions.Shell.Interop
 		public const int LVS_EX_FULLROWSELECT = 0x00000020;
 		//public const int LVS_EX_TRANSPARENTBKGND = 0x00400000; // Background is painted by the parent via WM_PRINTCLIENT
 		//public const int LVS_EX_TRANSPARENTSHADOWTEXT = 0x00800000;  // Enable shadow text on transparent backgrounds only (useful with bitmaps)
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	internal struct NativeFolderDefinition
+	{
+		internal FolderCategory category;
+		internal IntPtr name;
+		internal IntPtr description;
+		internal Guid parentId;
+		internal IntPtr relativePath;
+		internal IntPtr parsingName;
+		internal IntPtr tooltip;
+		internal IntPtr localizedName;
+		internal IntPtr icon;
+		internal IntPtr security;
+		internal UInt32 attributes;
+		internal DefinitionOptions definitionOptions;
+		internal Guid folderTypeId;
 	}
 }

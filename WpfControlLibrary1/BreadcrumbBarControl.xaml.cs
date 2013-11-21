@@ -4,11 +4,13 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Microsoft.WindowsAPICodePack.Shell;
+
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using GongSolutions.Shell;
+using GongSolutions.Shell.Interop;
 
 
 namespace BetterExplorerControls
@@ -75,7 +77,7 @@ namespace BetterExplorerControls
 		void g_Click(object sender, RoutedEventArgs e)
 		{
 			HistoryCombo.Text = (string)(sender as MenuItem).Header;
-      PathEventArgs args = new PathEventArgs(ShellObject.FromParsingName(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text));
+      PathEventArgs args = new PathEventArgs(new ShellItem(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text));
       OnNavigateRequested(args);
       ExitEditMode();
 		}
@@ -166,10 +168,10 @@ namespace BetterExplorerControls
 			}
 		}
 
-		private List<ShellObject> GetPaths(ShellObject currloc)
+		private List<ShellItem> GetPaths(ShellItem currloc)
 		{
-			List<ShellObject> res = new List<ShellObject>();
-			ShellObject subject = currloc;
+			List<ShellItem> res = new List<ShellItem>();
+			ShellItem subject = currloc;
 
 			bool apf = false;
 
@@ -189,7 +191,7 @@ namespace BetterExplorerControls
 			return res;
 		}
 
-		public void LoadDirectory(ShellObject currloc, bool loadDragEvents = true)
+		public void LoadDirectory(ShellItem currloc, bool loadDragEvents = true)
 		{
 			this.elPanel.Children.Clear();
 			GetBreadCrumbItems(GetPaths(currloc));
@@ -206,11 +208,11 @@ namespace BetterExplorerControls
 			}
 		}
 
-		public ShellObject GetDirectoryAtPoint(Point pt)
+		public ShellItem GetDirectoryAtPoint(Point pt)
 		{
 			try
 			{
-				return ((BreadcrumbBarItem)elPanel.InputHitTest(pt)).ShellObject;
+				return ((BreadcrumbBarItem)elPanel.InputHitTest(pt)).ShellItem;
 			}
 			catch (Exception)
 			{
@@ -225,12 +227,12 @@ namespace BetterExplorerControls
 			lastitem.SetChildren(CurLocationCount > 0);
 		}
 
-		private void GetBreadCrumbItems(List<ShellObject> items)
+		private void GetBreadCrumbItems(List<ShellItem> items)
 		{
-			ShellObject lastmanstanding = items[0];
+			ShellItem lastmanstanding = items[0];
 			items.Reverse();
 
-			foreach (ShellObject thing in items)
+			foreach (ShellItem thing in items)
 			{
 				bool isSearch = false;
 				try
@@ -249,8 +251,8 @@ namespace BetterExplorerControls
 				else
 				{
 					thing.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-					thing.Thumbnail.CurrentSize = new Size(16, 16);
-					duh.pathName.Text = thing.GetDisplayName(DisplayNameType.Default);
+					thing.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+					duh.pathName.Text = thing.GetDisplayName(SIGDN.NORMALDISPLAY);
 					duh.PathImage.Source = thing.Thumbnail.BitmapSource;
 					duh.MenuBorder.Visibility = System.Windows.Visibility.Collapsed;
 					duh.grid1.Visibility = System.Windows.Visibility.Collapsed;
@@ -300,18 +302,18 @@ namespace BetterExplorerControls
 
     void duh_ContextMenuRequested(object sender, PathEventArgs e)
     {
-      ShellObject[] dirs = new ShellObject[1];
-      dirs[0] = e.ShellObject;
+			ShellItem[] dirs = new ShellItem[1];
+			dirs[0] = e.ShellItem;
       Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow)
                           .Transform(new Point(0, 0));
       Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
-      ContextShellMenu cm = new ContextShellMenu(dirs);
-      cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
+      ShellContextMenu cm = new ShellContextMenu(dirs);
+      //cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
     }
 		void duh_NavigateRequested(object sender, PathEventArgs e)
 		{
 			OnNavigateRequested(e);
-			LastPath = e.ShellObject.ParsingName;
+			LastPath = e.ShellItem.ParsingName;
 		}
 
 		public string LastPath = "";
@@ -375,22 +377,22 @@ namespace BetterExplorerControls
           Undertextbox.Visibility = System.Windows.Visibility.Visible;
           //Undertextbox.SelectAll();
         }
-        var obj = furthestrightitem.ShellObject;
+				var obj = furthestrightitem.ShellItem;
 
         if (obj.ParsingName.StartsWith(":"))
         {
           var correctItems = KnownFolders.All.Where(w => obj.ParsingName.Contains(w.ParsingName)).ToArray();
           foreach (var item in correctItems)
           {
-            ShellObject realItem = (ShellObject)item;
-            HistoryCombo.Text = obj.ParsingName.Replace(realItem.ParsingName, realItem.GetDisplayName(DisplayNameType.Default)).Replace(".library-ms", "");
-            realItem.Dispose();
+						ShellItem realItem = (ShellItem)item;
+            HistoryCombo.Text = obj.ParsingName.Replace(realItem.ParsingName, realItem.GetDisplayName(SIGDN.NORMALDISPLAY)).Replace(".library-ms", "");
+
           }
           
         }
         else
         {
-          HistoryCombo.Text = furthestrightitem.ShellObject.ParsingName;
+					HistoryCombo.Text = furthestrightitem.ShellItem.ParsingName;
         }
         FocusManager.SetIsFocusScope(this, true);
 		}
@@ -408,10 +410,10 @@ namespace BetterExplorerControls
       else
       {
         path = Path;
-        item = new BreadcrumbBarFSItem(ShellObject.FromParsingName(Path.StartsWith(":") ? "shell:" + Path : Path));
+        item = new BreadcrumbBarFSItem(new ShellItem(Path.StartsWith(":") ? "shell:" + Path : Path));
       }
 
-      ea = new PathEventArgs(ShellObject.FromParsingName(path));
+      ea = new PathEventArgs(new ShellItem(path));
 
       OnNavigateRequested(ea);
       if (writetohistory == true)

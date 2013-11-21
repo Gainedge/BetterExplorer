@@ -1238,7 +1238,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 		  IntPtr pIDL = IntPtr.Zero;
 		  IFolderView ifv = GetFolderView();
 
-  IntPtr[] PIDLArray = new IntPtr[ShellObjectArray.Length];
+			IntPtr[] PIDLArray = new IntPtr[ShellObjectArray.Length];
 		  int i = 0;
 
 		  foreach (ShellObject item in ShellObjectArray)
@@ -1257,18 +1257,18 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
 						
 					  i++;
 		  }
-  NativePoint pt = new NativePoint(0,0);
-  ifv.SelectAndPositionItems((uint)ShellObjectArray.Length, PIDLArray, ref pt, WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_ENSUREVISIBLE | WindowsAPI.SVSIF.SVSI_FOCUSED | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS);
+			NativePoint pt = new NativePoint(0,0);
+			ifv.SelectAndPositionItems((uint)ShellObjectArray.Length, PIDLArray, ref pt, WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_ENSUREVISIBLE | WindowsAPI.SVSIF.SVSI_FOCUSED | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS);
 	  }
 
   public void DoRename() {
-  IShellView shv = GetShellView();
+		IShellView shv = GetShellView();
 
-  IsRenameStarted = true;
-  shv.SelectItem(WindowsAPI.ILFindLastID(SelectedItems[0].PIDL), WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS |
-      WindowsAPI.SVSIF.SVSI_EDIT);
+		IsRenameStarted = true;
+		shv.SelectItem(WindowsAPI.ILFindLastID(SelectedItems[0].PIDL), WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS |
+				WindowsAPI.SVSIF.SVSI_EDIT);
 
-  Marshal.ReleaseComObject(shv);
+		Marshal.ReleaseComObject(shv);
   }
 
 

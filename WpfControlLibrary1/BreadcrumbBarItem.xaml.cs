@@ -12,11 +12,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
-using Microsoft.WindowsAPICodePack.Shell;
 using Fluent;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using System.Threading;
+using GongSolutions.Shell;
+using GongSolutions.Shell.Interop;
 
 namespace BetterExplorerControls
 {
@@ -28,7 +29,7 @@ namespace BetterExplorerControls
 		string path = "";
 		Fluent.ContextMenu DropDownMenu = new Fluent.ContextMenu();
 		bool children = true;
-		ShellObject so;
+		ShellItem so;
 
 		public bool HasDropDownMenu
 		{
@@ -38,7 +39,7 @@ namespace BetterExplorerControls
 			}
 		}
 
-		public ShellObject ShellObject
+		public ShellItem ShellItem
 		{
 			get
 			{
@@ -73,12 +74,12 @@ namespace BetterExplorerControls
 			ShowSelectedColors();
 		}
 
-		public void LoadDirectory(ShellObject obj)
+		public void LoadDirectory(ShellItem obj)
 		{
 			obj.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			obj.Thumbnail.CurrentSize = new Size(16, 16);
+			obj.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 			this.PathImage.Source = obj.Thumbnail.BitmapSource;
-			this.pathName.Text = obj.GetDisplayName(DisplayNameType.Default);
+			this.pathName.Text = obj.GetDisplayName(SIGDN.NORMALDISPLAY);
 			this.so = obj;
 			path = obj.ParsingName;
 
@@ -94,9 +95,9 @@ namespace BetterExplorerControls
 				{
 					try
 					{
-						ShellContainer con = (ShellContainer)obj;
-						List<ShellObject> joe = new List<ShellObject>();
-						foreach (ShellObject item in con)
+						ShellItem con = obj;
+						List<ShellItem> joe = new List<ShellItem>();
+						foreach (ShellItem item in con)
 						{
 							if (item.IsFolder == true)
 							{
@@ -197,7 +198,7 @@ namespace BetterExplorerControls
 		private void MenuItemClicked(object sender, RoutedEventArgs e)
 		{
 			Fluent.MenuItem pan = (Fluent.MenuItem)sender;
-			OnNavigateRequested(new PathEventArgs(pan.Tag as ShellObject));
+			OnNavigateRequested(new PathEventArgs(pan.Tag as ShellItem));
 		}
 
 		private void ShowSelectedColors()
@@ -238,9 +239,9 @@ namespace BetterExplorerControls
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
 			e.Handled = true;
-			ShellContainer con = (ShellContainer)this.ShellObject;
-			List<ShellObject> joe = new List<ShellObject>();
-			foreach (ShellObject item in con)
+			ShellItem con = this.ShellItem;
+			List<ShellItem> joe = new List<ShellItem>();
+			foreach (ShellItem item in con)
 			{
 				if (item.IsFolder)
 				{
@@ -251,15 +252,15 @@ namespace BetterExplorerControls
 				}
 			}
 
-			joe.Sort(delegate(ShellObject j1, ShellObject j2) { return j1.GetDisplayName(DisplayNameType.Default).CompareTo(j2.GetDisplayName(DisplayNameType.Default)); });
+			joe.Sort(delegate(ShellItem j1, ShellItem j2) { return j1.GetDisplayName(SIGDN.NORMALDISPLAY).CompareTo(j2.GetDisplayName(SIGDN.NORMALDISPLAY)); });
 			DropDownMenu.Items.Clear();
-			foreach (ShellObject thing in joe)
+			foreach (ShellItem thing in joe)
 			{
 				Fluent.MenuItem pan = new Fluent.MenuItem();
 				thing.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-				thing.Thumbnail.CurrentSize = new Size(16, 16);
+				thing.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 				pan.Icon = thing.Thumbnail.BitmapSource;
-        var header = thing.GetDisplayName(DisplayNameType.Default);
+        var header = thing.GetDisplayName(SIGDN.NORMALDISPLAY);
         var posunderscore = header.IndexOf("_");
         if (posunderscore != -1)
           header = header.Insert(posunderscore, "_");
@@ -287,11 +288,11 @@ namespace BetterExplorerControls
 			OnButtonClick(e);
 			if (e.ChangedButton == MouseButton.Left)
 			{
-				OnNavigateRequested(new PathEventArgs(this.ShellObject));
+				OnNavigateRequested(new PathEventArgs(this.ShellItem));
 			}
 			else if (e.ChangedButton == MouseButton.Right)
 			{
-				OnContextMenuRequested(new PathEventArgs(this.ShellObject));
+				OnContextMenuRequested(new PathEventArgs(this.ShellItem));
 			}
 		}
 
@@ -335,9 +336,9 @@ namespace BetterExplorerControls
 public class PathEventArgs
 {
 	string _path;
-	ShellObject _obj;
+	ShellItem _obj;
 
-	public PathEventArgs(ShellObject obj = null)
+	public PathEventArgs(ShellItem obj = null)
 	{
 		_obj = obj;
 		_path = obj.ParsingName;
@@ -351,7 +352,7 @@ public class PathEventArgs
 		}
 	}
 
-	public ShellObject ShellObject
+	public ShellItem ShellItem
 	{
 		get
 		{

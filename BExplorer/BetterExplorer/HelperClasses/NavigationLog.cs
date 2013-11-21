@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.WindowsAPICodePack.Shell;
+using GongSolutions.Shell;
 
 namespace BetterExplorer
 {
     public class NavigationLog
     {
 
-        private List<ShellObject> HistoryItems = new List<ShellObject>();
+			private List<ShellItem> HistoryItems = new List<ShellItem>();
 
         int CurrentLocIndex = -1;
 
@@ -25,13 +25,13 @@ namespace BetterExplorer
             CurrentLocIndex = HistoryItems.LastIndexOf(log.CurrentLocation);
         }
 
-        public void NavigateOnwards(ShellObject loc)
+				public void NavigateOnwards(ShellItem loc)
         {
             HistoryItems.Add(loc);
             CurrentLocIndex = HistoryItems.Count - 1;
         }
 
-        public ShellObject NavigateBack()
+				public ShellItem NavigateBack()
         {
 
             CurrentLocIndex--;
@@ -48,7 +48,7 @@ namespace BetterExplorer
             }
         }
 
-        public ShellObject NavigateForward()
+				public ShellItem NavigateForward()
         {
 
             CurrentLocIndex++;
@@ -56,7 +56,7 @@ namespace BetterExplorer
             return HistoryItems[CurrentLocIndex];
         }
 
-        public List<ShellObject> HistoryItemsList
+				public List<ShellItem> HistoryItemsList
         {
             get
             {
@@ -77,11 +77,11 @@ namespace BetterExplorer
             }
         }
 
-        public List<ShellObject> BackEntries
+				public List<ShellItem> BackEntries
         {
             get
             {
-                List<ShellObject> _BackEntries = new List<ShellObject>();
+							List<ShellItem> _BackEntries = new List<ShellItem>();
                 if (CurrentLocIndex != -1)
                 {
                   for (int i = 0; i < CurrentLocIndex; i++)
@@ -94,11 +94,11 @@ namespace BetterExplorer
             }
         }
 
-        public List<ShellObject> ForwardEntries
+				public List<ShellItem> ForwardEntries
         {
             get
             {
-                List<ShellObject> _ForwardEntries = new List<ShellObject>();
+							List<ShellItem> _ForwardEntries = new List<ShellItem>();
                 if (CurrentLocIndex != -1)
                 {
                   for (int i = CurrentLocIndex; i < HistoryItems.Count; i++)
@@ -148,7 +148,7 @@ namespace BetterExplorer
             }
         }
 
-        public ShellObject CurrentLocation
+				public ShellItem CurrentLocation
         {
             get
             {
@@ -169,7 +169,7 @@ namespace BetterExplorer
 
     public class ShObjwithNumber
     {
-        public ShellObject obj;
+			public ShellItem obj;
         public int number;
     }
 }

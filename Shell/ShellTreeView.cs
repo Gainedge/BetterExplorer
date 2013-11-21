@@ -67,7 +67,7 @@ namespace GongSolutions.Shell
 						m_TreeView.BorderStyle = BorderStyle.None;
             m_ScrollTimer.Interval = 250;
             m_ScrollTimer.Tick += new EventHandler(m_ScrollTimer_Tick);
-            Size = new Size(120, 100);
+            Size = new System.Drawing.Size(120, 100);
             SystemImageList.UseSystemImageList(m_TreeView);
 
             m_ShellListener.DriveAdded += new ShellItemEventHandler(m_ShellListener_ItemUpdated);
@@ -205,7 +205,6 @@ namespace GongSolutions.Shell
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        [Editor(typeof(ShellItemEditor), typeof(UITypeEditor))]
         public ShellItem SelectedFolder
         {
             get { return (ShellItem)m_TreeView.SelectedNode.Tag; }

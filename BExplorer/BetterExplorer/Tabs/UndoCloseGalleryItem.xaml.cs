@@ -11,8 +11,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Microsoft.WindowsAPICodePack.Shell;
 using BetterExplorer;
+using GongSolutions.Shell;
+using GongSolutions.Shell.Interop;
 
 namespace BetterExplorer
 {
@@ -31,8 +32,8 @@ namespace BetterExplorer
         public void LoadData(NavigationLog log)
         {
             nav = log;
-            ShellObject obj = log.CurrentLocation;
-            tabTitle.Text = obj.GetDisplayName(DisplayNameType.Default);
+						ShellItem obj = log.CurrentLocation;
+            tabTitle.Text = obj.GetDisplayName(SIGDN.NORMALDISPLAY);
             image1.Source = obj.Thumbnail.BitmapSource;
             this.ToolTip = obj.ParsingName;
         }
@@ -73,7 +74,7 @@ public class NavigationLogEventArgs
         _obj = log;
     }
 
-    public ShellObject CurrentLocation
+		public ShellItem CurrentLocation
     {
         get
         {

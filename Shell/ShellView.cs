@@ -116,7 +116,7 @@ namespace GongSolutions.Shell
             m_History = new ShellHistory();
             m_MultiSelect = true;
             m_View = ShellViewStyle.LargeIcon;
-            Size = new Size(250, 200);
+            Size = new System.Drawing.Size(250, 200);
             Navigate(ShellItem.Desktop);
         }
 
@@ -439,9 +439,57 @@ namespace GongSolutions.Shell
         {
             foreach (ShellItem item in ShellItem)
             {
-                m_ComInterface.SelectItem(item.ILPidl, SVSI.SVSI_SELECT);
+                m_ComInterface.SelectItem(item.ILPidl, SVSI.SELECT);
             }
         }
+
+				public void SelectItems(ShellItem[] ShellObjectArray)
+				{
+					IntPtr pIDL = IntPtr.Zero;
+					IFolderView ifv = this.FolderView2;
+
+					IntPtr[] PIDLArray = new IntPtr[ShellObjectArray.Length];
+					int i = 0;
+
+					foreach (ShellItem item in ShellObjectArray)
+					{
+						uint iAttribute;
+						Shell32.SHParseDisplayName(item.ParsingName.Replace(@"\\", @"\"), IntPtr.Zero, out pIDL, (uint)0, out iAttribute);
+
+						if (pIDL != IntPtr.Zero)
+						{
+							IntPtr pIDLRltv = Shell32.ILFindLastID(item.Pidl);
+							if (pIDLRltv != IntPtr.Zero)
+							{
+								PIDLArray[i] = pIDLRltv;
+							}
+						}
+
+						i++;
+					}
+					NativePoint pt = new NativePoint(0, 0);
+					ifv.SelectAndPositionItems((uint)ShellObjectArray.Length, PIDLArray, ref pt, SVSI.SELECT | SVSI.ENSUREVISIBLE | SVSI.FOCUSED | SVSI.DESELECTOTHERS);
+				}
+
+				public void DoRename()
+				{
+
+					//IsRenameStarted = true;
+					m_ComInterface.SelectItem(SelectedItems[0].ILPidl, SVSI.SELECT | SVSI.DESELECTOTHERS |
+							SVSI.EDIT);
+
+				}
+
+				public void EditFile(string Filename)
+				{
+					Shell32.SHELLEXECUTEINFO info = new Shell32.SHELLEXECUTEINFO();
+					info.cbSize = Marshal.SizeOf(info);
+					info.lpVerb = "edit";
+					info.lpFile = Filename;
+					info.nShow = SW_SHOW;
+					info.fMask = SEE_MASK_INVOKEIDLIST;
+					Shell32.ShellExecuteEx(ref info);
+				}
 
         /// <summary>
         /// Gets a value indicating whether a new folder can be created in
@@ -506,7 +554,7 @@ namespace GongSolutions.Shell
         /// Gets/sets a <see cref="ShellItem"/> describing the folder 
         /// currently being browsed by the <see cref="ShellView"/>.
         /// </summary>
-        [Editor(typeof(ShellItemEditor), typeof(UITypeEditor))]
+        [Browsable(false)]
         public ShellItem CurrentFolder
         {
             get { return m_CurrentFolder; }
@@ -845,27 +893,27 @@ namespace GongSolutions.Shell
         /// 
         /// <param name="msg"/>
         /// <returns/>
-        public override bool PreProcessMessage(ref Message msg)
-        {
-            const int WM_KEYDOWN = 0x100;
-            const int WM_KEYUP = 0x101;
-            Keys keyCode = (Keys)(int)msg.WParam & Keys.KeyCode;
+        //public override bool PreProcessMessage(ref Message msg)
+        //{
+        //    const int WM_KEYDOWN = 0x100;
+        //    const int WM_KEYUP = 0x101;
+        //    Keys keyCode = (Keys)(int)msg.WParam & Keys.KeyCode;
 
-            if ((msg.Msg == WM_KEYDOWN) || (msg.Msg == WM_KEYUP))
-            {
-                switch (keyCode)
-                {
-                    case Keys.F2:
-                        RenameSelectedItem();
-                        return true;
-                    case Keys.Delete:
-                        DeleteSelectedItems();
-                        return true;
-                }
-            }
+        //    if ((msg.Msg == WM_KEYDOWN) || (msg.Msg == WM_KEYUP))
+        //    {
+        //        switch (keyCode)
+        //        {
+        //            case Keys.F2:
+        //                RenameSelectedItem();
+        //                return true;
+        //            case Keys.Delete:
+        //                DeleteSelectedItems();
+        //                return true;
+        //        }
+        //    }
 
-            return base.PreProcessMessage(ref msg);
-        }
+        //    return base.PreProcessMessage(ref msg);
+        //}
 
         /// <summary>
         /// Overrides <see cref="Control.WndProc"/>
@@ -1058,6 +1106,97 @@ namespace GongSolutions.Shell
                 return null;
             }
         }
+
+				public void ShowFileProperties()
+				{
+					if (Shell32.SHMultiFileProperties(GetSelectionDataObject(), 0) != 0 /*S_OK*/)
+					{
+						throw new Win32Exception();
+					}
+				}
+				private const int SW_SHOW = 5;
+				private const uint SEE_MASK_INVOKEIDLIST = 12;
+				public void ShowFileProperties(string Filename)
+				{
+					Shell32.SHELLEXECUTEINFO info = new Shell32.SHELLEXECUTEINFO();
+					info.cbSize = Marshal.SizeOf(info);
+					info.lpVerb = "properties";
+					info.lpFile = Filename;
+					info.nShow = SW_SHOW;
+					info.fMask = SEE_MASK_INVOKEIDLIST;
+					Shell32.ShellExecuteEx(ref info);
+				}
+
+				public void DeSelectAllItems()
+				{
+					this.FolderView2.SelectItem(-1, (uint)SVSI.DESELECTOTHERS);
+				}
+
+				public void SelectItem(int Index)
+				{
+					this.FolderView2.SelectItem(Index, (uint)SVSI.DESELECTOTHERS);
+				}
+
+				public void InvertSelection()
+				{
+					for (int i = 0; i < GetItemsCount(); i++)
+					{
+						IFolderView2 folderView2 = this.FolderView2;
+						IntPtr pidl;
+						folderView2.Item(i, out pidl);
+						SVSI state;
+						folderView2.GetSelectionState(pidl, out state);
+						if (state == SVSI.DESELECT || state == SVSI.FOCUSED &&
+								state != SVSI.SELECT)
+						{
+							this.m_ComInterface.SelectItem(pidl, SVSI.SELECT);
+						}
+						else
+						{
+							this.m_ComInterface.SelectItem(pidl, SVSI.DESELECT);
+						}
+
+					}
+				}
+
+				/// <summary>
+				/// Returns the number of the items in current view
+				/// </summary>
+				/// <returns></returns>
+				public int GetItemsCount()
+				{
+					int itemsCount = 0;
+
+					//IFolderView2 iFV2 = GetFolderView2();
+					if (this.FolderView2 != null)
+					{
+						try
+						{
+							HResult hr = this.FolderView2.ItemCount((uint)SVGIO.SVGIO_ALLVIEW, out itemsCount);
+
+							//if (hr != HResult.Ok &&
+							//		hr != HResult.ElementNotFound &&
+							//		hr != HResult.Fail)
+							//{
+							//	throw;
+							//}
+						}
+						finally
+						{
+							//Marshal.ReleaseComObject(iFV2);
+							//iFV2 = null;
+						}
+					}
+
+					return itemsCount;
+				}
+
+				[Browsable(false)]
+				public Collumns[] AvailableVisibleColumns
+				{
+					get;
+					set;
+				}
 
         IShellBrowser GetShellBrowser()
         {

@@ -6,8 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 using WindowsHelper;
+using GongSolutions.Shell;
 
 namespace BetterExplorer
 {
@@ -19,7 +19,7 @@ namespace BetterExplorer
           WindowsAPI.SetWindowTheme(lvColumns.Handle, "explorer", null);
         }
 
-        ExplorerBrowser BrowserControl;
+        ShellView BrowserControl;
         public bool IsBeforeShow = true;
         protected override void WndProc(ref Message m)
         {
@@ -44,7 +44,7 @@ namespace BetterExplorer
           }
         }
 
-        public void PopulateAvailableColumns(Collumns[] AvailableCols, ExplorerBrowser ShellView, System.Windows.Point Location)
+        public void PopulateAvailableColumns(Collumns[] AvailableCols, ShellView ShellView, System.Windows.Point Location)
         {
           BrowserControl = ShellView;
           for (int i = 1; i < AvailableCols.Length; i++)
@@ -83,7 +83,8 @@ namespace BetterExplorer
           if (!IsBeforeShow)
           {
             WindowsAPI.PROPERTYKEY pk = (WindowsAPI.PROPERTYKEY)e.Item.Tag;
-            BrowserControl.SetColInView(pk, !e.Item.Checked); 
+						//FIXME: fix this
+            //BrowserControl.SetColInView(pk, !e.Item.Checked); 
           }
         }
 

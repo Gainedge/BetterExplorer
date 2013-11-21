@@ -125,7 +125,7 @@ namespace GongSolutions.Shell
         /// Gets/sets the folder that the <see cref="ShellComboBox"/> should
         /// display as the root folder.
         /// </summary>
-        [Editor(typeof(ShellItemEditor), typeof(UITypeEditor))]
+        [Browsable(false)]
         public ShellItem RootFolder
         {
             get { return m_RootFolder; }
@@ -144,7 +144,7 @@ namespace GongSolutions.Shell
         /// Gets/sets the folder currently selected in the 
         /// <see cref="ShellComboBox"/>.
         /// </summary>
-        [Editor(typeof(ShellItemEditor), typeof(UITypeEditor))]
+        [Browsable(false)]
         public ShellItem SelectedFolder
         {
             get { return m_SelectedFolder; }

@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Shell;
 using Fluent;
 using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
+using GongSolutions.Shell;
 
 namespace BetterExplorer
 {
@@ -128,8 +129,8 @@ namespace BetterExplorer
             }
         }
 
-        ShellObject _Path;
-        public ShellObject Path
+				ShellItem _Path;
+        public ShellItem Path
         {
             get
             {

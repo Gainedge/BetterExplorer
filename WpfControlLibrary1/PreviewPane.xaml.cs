@@ -1,5 +1,5 @@
-﻿using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
-using Microsoft.WindowsAPICodePack.Shell;
+﻿
+using GongSolutions.Shell;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,9 +25,9 @@ namespace BetterExplorerControls
   /// </summary>
   public partial class PreviewPane : UserControl, INotifyPropertyChanged
   {
-    public ExplorerBrowser Browser;
+    public ShellView Browser;
     private BitmapSource _thumbnail;
-    private ShellObject[] SelectedItems;
+    private ShellItem[] SelectedItems;
     public BitmapSource Thumbnail { 
       get{
         return _thumbnail;
@@ -85,8 +85,8 @@ namespace BetterExplorerControls
     {
       //Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
       //{
-        ShellObject selectedItemsFirst = null;
-        if (this.Browser != null && this.Browser.SelectedItems != null && this.Browser.SelectedItems.Count == 1)
+        ShellItem selectedItemsFirst = null;
+        if (this.Browser != null && this.Browser.SelectedItems != null && this.Browser.SelectedItems.Count() == 1)
         {
           selectedItemsFirst = this.Browser.SelectedItems.First();
           selectedItemsFirst.Thumbnail.CurrentSize = new Size(this.ActualHeight - 20, this.ActualHeight - 20);
@@ -97,14 +97,14 @@ namespace BetterExplorerControls
     }
 
 
-    public void FillPreviewPane(ExplorerBrowser browser)
+    public void FillPreviewPane(ShellView browser)
     {
       Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
           {
             if (this.Browser == null)
               this.Browser = browser;
             
-            if (this.Browser.SelectedItems.Count == 1){
+            if (this.Browser.SelectedItems.Count() == 1){
                 this.SelectedItems = this.Browser.SelectedItems.ToArray();
                 this.SelectedItems[0].Thumbnail.CurrentSize = new Size(this.ActualHeight - 20, this.ActualHeight - 20);
                 icon.Source = this.SelectedItems[0].Thumbnail.BitmapSource;

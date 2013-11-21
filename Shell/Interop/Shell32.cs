@@ -283,8 +283,19 @@ namespace GongSolutions.Shell.Interop
 
     public enum SVSI : uint
     {
-        SVSI_DESELECT = 0x00000000,
-        SVSI_SELECT = 0x00000001,
+			DESELECT = 0x00000000,
+			SELECT = 0x00000001,
+			EDIT = 0x00000003,
+			DESELECTOTHERS = 0x00000004,
+			ENSUREVISIBLE = 0x00000008,
+			FOCUSED = 0x00000010,
+			TRANSLATEPT = 0x00000020,
+			SELECTIONMARK = 0x00000040,
+			SPOSITIONITEM = 0x00000080,
+			CHECK = 0x00000100,
+			CHECK2 = 0x00000200,
+			SKEYBOARDSELECT = 0x00000401,
+			NOTAKEFOCUS = 0x40000000
     }
 
     public struct FOLDERSETTINGS
@@ -440,5 +451,77 @@ namespace GongSolutions.Shell.Interop
         [DllImport("shell32.dll")]
         public static extern HResult SHGetSpecialFolderLocation(IntPtr hwndOwner,
             CSIDL nFolder, out IntPtr ppidl);
+
+				[DllImport("shell32.dll", SetLastError = true)]
+				public static extern int SHMultiFileProperties(System.Runtime.InteropServices.ComTypes.IDataObject pdtobj, int flags);
+
+				[DllImport("shell32.dll", CharSet = CharSet.Auto)]
+				public static extern bool ShellExecuteEx(ref SHELLEXECUTEINFO lpExecInfo);
+
+				[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+				public struct SHELLEXECUTEINFO
+				{
+					public int cbSize;
+					public uint fMask;
+					public IntPtr hwnd;
+					[MarshalAs(UnmanagedType.LPTStr)]
+					public string lpVerb;
+					[MarshalAs(UnmanagedType.LPTStr)]
+					public string lpFile;
+					[MarshalAs(UnmanagedType.LPTStr)]
+					public string lpParameters;
+					[MarshalAs(UnmanagedType.LPTStr)]
+					public string lpDirectory;
+					public int nShow;
+					public IntPtr hInstApp;
+					public IntPtr lpIDList;
+					[MarshalAs(UnmanagedType.LPTStr)]
+					public string lpClass;
+					public IntPtr hkeyClass;
+					public uint dwHotKey;
+					public IntPtr hIcon;
+					public IntPtr hProcess;
+				}
+				[DllImport("shell32.dll")]
+				public static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, [Out()] out IntPtr pidl, uint sfgaoIn, [Out()] out uint psfgaoOut);
+
+				internal static IntPtr PidlFromParsingName(string name)
+				{
+					IntPtr pidl = IntPtr.Zero;
+
+					uint sfgao;
+					try
+					{
+						SHParseDisplayName(
+											name, IntPtr.Zero, out pidl, 0,
+											out sfgao);
+					}
+					catch (Exception)
+					{
+						
+						
+					}
+
+					return pidl;
+				}
+				internal static IntPtr PidlFromShellItem(IShellItem nativeShellItem)
+				{
+					IntPtr unknown = Marshal.GetIUnknownForObject(nativeShellItem);
+					return PidlFromUnknown(unknown);
+				}
+
+				internal static IntPtr PidlFromUnknown(IntPtr unknown)
+				{
+					try
+					{
+						IntPtr pidl = SHGetIDListFromObject(unknown);
+						return pidl;
+					}
+					catch (Exception)
+					{
+
+						return IntPtr.Zero;
+					}
+				}
     }
 }

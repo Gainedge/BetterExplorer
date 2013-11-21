@@ -17,6 +17,7 @@
 // Boston, MA 2110-1301, USA.
 //
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
 #pragma warning disable 1591
@@ -27,5 +28,12 @@ namespace GongSolutions.Shell.Interop
     {
         [DllImport("kernel32.dll")]
         public static extern IntPtr GlobalLock(IntPtr hMem);
+
+				/// <summary>
+				/// The GetDriveType function determines whether a disk drive is a removable, fixed, CD-ROM, RAM disk, or network drive
+				/// </summary>
+				/// <param name="lpRootPathName">A pointer to a null-terminated string that specifies the root directory and returns information about the disk.A trailing backslash is required. If this parameter is NULL, the function uses the root of the current directory.</param>
+				[DllImport("kernel32.dll")]
+				public static extern DriveType GetDriveType([MarshalAs(UnmanagedType.LPStr)] string lpRootPathName);
     }
 }

@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Linq;
 using System.Runtime.InteropServices;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 using GongSolutions.Shell.Interop;
@@ -58,6 +59,11 @@ namespace GongSolutions.Shell
         {
             Initialize(uri);
         }
+
+				public ShellItem()
+				{
+
+				}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ShellItem"/> class.
@@ -231,31 +237,66 @@ namespace GongSolutions.Shell
         /// <see langword="true"/> if the two objects refer to the same
         /// folder, <see langword="false"/> otherwise.
         /// </returns>
-        public override bool Equals(object obj)
-        {
-            if (obj is ShellItem)
-            {
-                ShellItem otherItem = (ShellItem)obj;
-                bool result = m_ComInterface.Compare(otherItem.ComInterface,
-                    SICHINT.DISPLAY) == 0;
+				/// <summary>
+				/// Determines if two ShellObjects are identical.
+				/// </summary>
+				/// <param name="other">The ShellObject to comare this one to.</param>
+				/// <returns>True if the ShellObjects are equal, false otherwise.</returns>
+				public bool Equals(ShellItem other)
+				{
+					bool areEqual = false;
 
-                // Sometimes, folders are reported as being unequal even when
-                // they refer to the same folder, so double check by comparing
-                // the file system paths. (This was showing up on Windows XP in 
-                // the SpecialFolders() test)
-                if (!result)
-                {
-                    result = IsFileSystem && otherItem.IsFileSystem &&
-                        (FileSystemPath == otherItem.FileSystemPath);
-                }
+					if (other != null)
+					{
+						IShellItem ifirst = this.m_ComInterface;
+						IShellItem isecond = other.m_ComInterface;
+						if (ifirst != null && isecond != null)
+						{
+							int result = ifirst.Compare(
+									isecond, SICHINT.ALLFIELDS);
 
-                return result;
-            }
-            else
-            {
-                return false;
-            }
-        }
+							areEqual = (result == 0);
+						}
+					}
+
+					return areEqual;
+				}
+
+				/// <summary>
+				/// Returns whether this object is equal to another.
+				/// </summary>
+				/// <param name="obj">The object to compare against.</param>
+				/// <returns>Equality result.</returns>
+				public override bool Equals(object obj)
+				{
+					return this.Equals(obj as ShellItem);
+				}
+
+				/// <summary>
+				/// Implements the == (equality) operator.
+				/// </summary>
+				/// <param name="leftShellObject">First object to compare.</param>
+				/// <param name="rightShellObject">Second object to compare.</param>
+				/// <returns>True if leftShellObject equals rightShellObject; false otherwise.</returns>
+				public static bool operator ==(ShellItem leftShellObject, ShellItem rightShellObject)
+				{
+					if ((object)leftShellObject == null)
+					{
+						return ((object)rightShellObject == null);
+					}
+					return leftShellObject.Equals(rightShellObject);
+				}
+
+				/// <summary>
+				/// Implements the != (inequality) operator.
+				/// </summary>
+				/// <param name="leftShellObject">First object to compare.</param>
+				/// <param name="rightShellObject">Second object to compare.</param>
+				/// <returns>True if leftShellObject does not equal leftShellObject; false otherwise.</returns>        
+				public static bool operator !=(ShellItem leftShellObject, ShellItem rightShellObject)
+				{
+					return !(leftShellObject == rightShellObject);
+				}
 
         /// <summary>
         /// Returns the name of the item in the specified style.
@@ -270,10 +311,17 @@ namespace GongSolutions.Shell
         /// </returns>
         public string GetDisplayName(SIGDN sigdn)
         {
-            IntPtr resultPtr = m_ComInterface.GetDisplayName(sigdn);
-            string result = Marshal.PtrToStringUni(resultPtr);
-            Marshal.FreeCoTaskMem(resultPtr);
-            return result;
+					try
+					{
+						IntPtr resultPtr = m_ComInterface.GetDisplayName(sigdn);
+						string result = Marshal.PtrToStringUni(resultPtr);
+						Marshal.FreeCoTaskMem(resultPtr);
+						return result;
+					}
+					catch (Exception)
+					{
+						return String.Empty;
+					}
         }
 
         /// <summary>
@@ -390,6 +438,19 @@ namespace GongSolutions.Shell
                 typeof(IShellFolder));
         }
 
+				private ShellThumbnail thumbnail;
+				/// <summary>
+				/// Gets the thumbnail of the ShellObject.
+				/// </summary>
+				public ShellThumbnail Thumbnail
+				{
+					get
+					{
+						if (thumbnail == null) { thumbnail = new ShellThumbnail(this); }
+						return thumbnail;
+					}
+				}
+
         /// <summary>
         /// Gets the index in the system image list of the icon representing
         /// the item.
@@ -451,7 +512,7 @@ namespace GongSolutions.Shell
         /// </summary>
         public override string ToString()
         {
-            return ToUri().ToString();
+					return "";// ToUri().ToString();
         }
 
         /// <summary>
@@ -459,36 +520,37 @@ namespace GongSolutions.Shell
         /// </summary>
         public Uri ToUri()
         {
-            KnownFolderManager manager = new KnownFolderManager();
-            StringBuilder path = new StringBuilder("shell:///");
-            KnownFolder knownFolder = manager.FindNearestParent(this);
+            //GongSolutions.Shell.Interop.CoClass.KnownFolderManager manager = new GongSolutions.Shell.Interop.CoClass.KnownFolderManager();
+            //StringBuilder path = new StringBuilder("shell:///");
+            //KnownFolder knownFolder = manager.FindNearestParent(this);
 
-            if (knownFolder != null)
-            {
-                List<string> folders = new List<string>();
-                ShellItem knownFolderItem = knownFolder.CreateShellItem();
-                ShellItem item = this;
+            //if (knownFolder != null)
+            //{
+            //    List<string> folders = new List<string>();
+            //    ShellItem knownFolderItem = knownFolder.CreateShellItem();
+            //    ShellItem item = this;
 
-                while (item != knownFolderItem)
-                {
-                    folders.Add(item.GetDisplayName(SIGDN.PARENTRELATIVEPARSING));
-                    item = item.Parent;
-                }
+            //    while (item != knownFolderItem)
+            //    {
+            //        folders.Add(item.GetDisplayName(SIGDN.PARENTRELATIVEPARSING));
+            //        item = item.Parent;
+            //    }
 
-                folders.Reverse();
-                path.Append(knownFolder.Name);
-                foreach (string s in folders)
-                {
-                    path.Append('/');
-                    path.Append(s);
-                }
+            //    folders.Reverse();
+            //    path.Append(knownFolder.Name);
+            //    foreach (string s in folders)
+            //    {
+            //        path.Append('/');
+            //        path.Append(s);
+            //    }
 
-                return new Uri(path.ToString());
-            }
-            else
-            {
-                return new Uri(FileSystemPath);
-            }
+            //    return new Uri(path.ToString());
+            //}
+            //else
+            //{
+            //    return new Uri(FileSystemPath);
+            //}
+					return null;
         }
 
         /// <summary>
@@ -503,52 +565,6 @@ namespace GongSolutions.Shell
             get
             {
                 return new ShellItem(this, name);
-            }
-        }
-
-        /// <summary>
-        /// Tests if two <see cref="ShellItem"/>s refer to the same folder.
-        /// </summary>
-        /// 
-        /// <param name="a">
-        /// The first folder.
-        /// </param>
-        /// 
-        /// <param name="b">
-        /// The second folder.
-        /// </param>
-        public static bool operator !=(ShellItem a, ShellItem b)
-        {
-            if (object.ReferenceEquals(a, null))
-            {
-                return !object.ReferenceEquals(b, null);
-            }
-            else
-            {
-                return !a.Equals(b);
-            }
-        }
-
-        /// <summary>
-        /// Tests if two <see cref="ShellItem"/>s refer to the same folder.
-        /// </summary>
-        /// 
-        /// <param name="a">
-        /// The first folder.
-        /// </param>
-        /// 
-        /// <param name="b">
-        /// The second folder.
-        /// </param>
-        public static bool operator ==(ShellItem a, ShellItem b)
-        {
-            if (object.ReferenceEquals(a, null))
-            {
-                return object.ReferenceEquals(b, null);
-            }
-            else
-            {
-                return a.Equals(b);
             }
         }
 
@@ -621,6 +637,142 @@ namespace GongSolutions.Shell
         {
             get { return m_ComInterface.GetAttributes(SFGAO.READONLY) != 0; }
         }
+
+				public bool IsHidden
+				{
+					get
+					{
+						try
+						{
+							SFGAO sfgao =
+							m_ComInterface.GetAttributes(SFGAO.HIDDEN);
+							return (sfgao & SFGAO.HIDDEN) != 0;
+						}
+						catch (FileNotFoundException)
+						{
+							return false;
+						}
+						catch (NullReferenceException)
+						{
+							// NativeShellItem is null
+							return false;
+						}
+					}
+				}
+
+				/// <summary>
+				/// Gets a value that determines if this ShellObject is a link or shortcut.
+				/// </summary>
+				public bool IsLink
+				{
+					get
+					{
+						try
+						{
+							SFGAO sfgao = m_ComInterface.GetAttributes(SFGAO.LINK);
+							return (sfgao & SFGAO.LINK ) != 0;
+						}
+						catch (FileNotFoundException)
+						{
+							return false;
+						}
+						catch (NullReferenceException)
+						{
+							// NativeShellItem is null
+							return false;
+						}
+					}
+				}
+
+				public System.IO.DriveInfo GetDriveInfo()
+				{
+
+					if (IsDrive == true || IsNetDrive == true)
+					{
+						return new DriveInfo(ParsingName);
+					}
+					else
+					{
+						return null;
+					}
+				}
+
+				public bool IsDrive
+				{
+					get
+					{
+						try
+						{
+							return Directory.GetLogicalDrives().Contains(ParsingName) &&
+									Kernel32.GetDriveType(ParsingName) != DriveType.Network;
+
+						}
+						catch
+						{
+							return false;
+						}
+
+					}
+				}
+
+				public bool IsNetworkPath
+				{
+					get
+					{
+						if (!ParsingName.StartsWith("::"))
+						{
+							if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\"))
+							{
+								string rootPath = System.IO.Path.GetPathRoot(ParsingName); // get drive's letter
+								System.IO.DriveInfo driveInfo = new System.IO.DriveInfo(rootPath); // get info about the drive
+								return driveInfo.DriveType == DriveType.Network; // return true if a network drive
+							}
+
+							return true; // is a UNC path 
+						}
+						else
+						{
+							return false;
+						}
+					}
+				}
+
+				public bool IsNetDrive
+				{
+					get
+					{
+						try
+						{
+							return Directory.GetLogicalDrives().Contains(ParsingName) &&
+									Kernel32.GetDriveType(ParsingName) == DriveType.Network;
+
+						}
+						catch
+						{
+							return false;
+						}
+
+					}
+				}
+
+				public bool IsSearchFolder
+				{
+					get
+					{
+						try
+						{
+
+							return (!ParsingName.StartsWith("::") && !IsFileSystem && !ParsingName.StartsWith(@"\\") &&
+									!ParsingName.Contains(":\\")) || ParsingName.EndsWith(".search-ms");
+
+						}
+						catch
+						{
+							return false;
+						}
+
+					}
+				}
 
         /// <summary>
         /// Gets the item's parent.
@@ -782,29 +934,29 @@ namespace GongSolutions.Shell
 
         void InitializeFromShellUri(Uri uri)
         {
-            KnownFolderManager manager = new KnownFolderManager();
-            string path = uri.GetComponents(UriComponents.Path, UriFormat.Unescaped);
-            string knownFolder;
-            string restOfPath;
-            int separatorIndex = path.IndexOf('/');
+            //KnownFolderManager manager = new KnownFolderManager();
+            //string path = uri.GetComponents(UriComponents.Path, UriFormat.Unescaped);
+            //string knownFolder;
+            //string restOfPath;
+            //int separatorIndex = path.IndexOf('/');
 
-            if (separatorIndex != -1)
-            {
-                knownFolder = path.Substring(0, separatorIndex);
-                restOfPath = path.Substring(separatorIndex + 1);
-            }
-            else
-            {
-                knownFolder = path;
-                restOfPath = string.Empty;
-            }
+            //if (separatorIndex != -1)
+            //{
+            //    knownFolder = path.Substring(0, separatorIndex);
+            //    restOfPath = path.Substring(separatorIndex + 1);
+            //}
+            //else
+            //{
+            //    knownFolder = path;
+            //    restOfPath = string.Empty;
+            //}
 
-            m_ComInterface = manager.GetFolder(knownFolder).CreateShellItem().ComInterface;
+            //m_ComInterface = manager.GetFolder(knownFolder).CreateShellItem().ComInterface;
 
-            if (restOfPath != string.Empty)
-            {
-                m_ComInterface = this[restOfPath.Replace('/', '\\')].ComInterface;
-            }
+            //if (restOfPath != string.Empty)
+            //{
+            //    m_ComInterface = this[restOfPath.Replace('/', '\\')].ComInterface;
+            //}
         }
 
         static IShellItem CreateItemFromIDList(IntPtr pidl)
@@ -884,7 +1036,7 @@ namespace GongSolutions.Shell
             }
         }
 
-        IShellItem m_ComInterface;
+        public IShellItem m_ComInterface;
         static ShellItem m_Desktop;
     }
 

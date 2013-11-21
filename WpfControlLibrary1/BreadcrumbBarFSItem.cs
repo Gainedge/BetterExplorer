@@ -1,4 +1,6 @@
-﻿using Microsoft.WindowsAPICodePack.Shell;
+﻿
+using GongSolutions.Shell;
+using GongSolutions.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,16 +15,16 @@ namespace BetterExplorerControls
         public String DisplayName { get; set; }
         public String RealPath { get; set; }
 
-        public BreadcrumbBarFSItem(ShellObject fsItem)
+        public BreadcrumbBarFSItem(ShellItem fsItem)
         {
             this.DisplayName = fsItem.ParsingName;
             if (fsItem.ParsingName.StartsWith(":"))
             {
                 Thread t = new Thread(() =>
                 {
-                    foreach (ShellObject item in KnownFolders.All)
+									foreach (ShellItem item in KnownFolders.All)
                     {
-                        this.DisplayName = this.DisplayName.Replace(item.ParsingName, item.GetDisplayName(DisplayNameType.Default)).Replace(".library-ms", "");
+                        this.DisplayName = this.DisplayName.Replace(item.ParsingName, item.GetDisplayName(SIGDN.NORMALDISPLAY)).Replace(".library-ms", "");
                     }
                 });
                 t.Start();

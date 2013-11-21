@@ -67,9 +67,9 @@ namespace GongSolutions.Shell
             }
 
             ComCtl32.ImageList_GetIconSize(large, out x, out y);
-            control.LargeImageList.ImageSize = new Size(x, y);
+            control.LargeImageList.ImageSize = new System.Drawing.Size(x, y);
             ComCtl32.ImageList_GetIconSize(small, out x, out y);
-            control.SmallImageList.ImageSize = new Size(x, y);
+            control.SmallImageList.ImageSize = new System.Drawing.Size(x, y);
 
             User32.SendMessage(control.Handle, MSG.LVM_SETIMAGELIST,
                 (int)LVSIL.LVSIL_NORMAL, LargeImageList);

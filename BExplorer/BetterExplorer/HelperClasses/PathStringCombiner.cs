@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.WindowsAPICodePack.Shell;
+using GongSolutions.Shell;
+using GongSolutions.Shell.Interop;
 
 namespace BetterExplorer
 {
     class PathStringCombiner
     {
 
-        public static string CombinePaths(List<ShellObject> paths, string separatorvalue = ";", bool checkforfolders = false)
+        public static string CombinePaths(List<ShellItem> paths, string separatorvalue = ";", bool checkforfolders = false)
         {
             string ret = "";
 
-            foreach (ShellObject item in paths)
+            foreach (ShellItem item in paths)
             {
                 if (checkforfolders == false)
                 {
@@ -23,7 +24,7 @@ namespace BetterExplorer
                 {
                     if (item.IsFolder == true)
                     {
-                        ret += separatorvalue + "(f)" + item.ParsingName.Replace(@"\\", @"\");
+											ret += String.Format("{0}(f){1}", separatorvalue, item.ParsingName.Replace(@"\\", @"\"));
                     }
                     else
                     {
@@ -35,27 +36,27 @@ namespace BetterExplorer
             return ret;
         }
 
-        public static string CombinePathsWithSinglePath(string path, List<ShellObject> files, bool checkforfolders = false)
+        public static string CombinePathsWithSinglePath(string path, List<ShellItem> files, bool checkforfolders = false)
         {
             string ret = "";
 
-            foreach (ShellObject item in files)
+            foreach (ShellItem item in files)
             {
-                if (checkforfolders == false)
-                {
-                    ret += ";" + path + item.GetDisplayName(DisplayNameType.Default);
-                }
-                else
-                {
-                    if (item.IsFolder == true)
-                    {
-                        ret += ";(f)" + path + item.GetDisplayName(DisplayNameType.Default);
-                    }
-                    else
-                    {
-                        ret += ";" + path + item.GetDisplayName(DisplayNameType.Default);
-                    }
-                }
+							if (checkforfolders == false)
+							{
+								ret += String.Format(";{0}{1}", path, item.GetDisplayName(SIGDN.NORMALDISPLAY));
+							}
+							else
+							{
+								if (item.IsFolder == true)
+								{
+									ret += String.Format(";(f){0}{1}", path, item.GetDisplayName(SIGDN.NORMALDISPLAY));
+								}
+								else
+								{
+									ret += String.Format(";{0}{1}", path, item.GetDisplayName(SIGDN.NORMALDISPLAY));
+								}
+							}
             }
 
             return ret;
