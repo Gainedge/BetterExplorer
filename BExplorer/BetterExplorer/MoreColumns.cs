@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using WindowsHelper;
-using GongSolutions.Shell;
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell;
+using BExplorer.Shell.Interop;
 
 namespace BetterExplorer
 {
@@ -84,8 +84,7 @@ namespace BetterExplorer
           if (!IsBeforeShow)
           {
             PROPERTYKEY pk = (PROPERTYKEY)e.Item.Tag;
-						//FIXME: fix this
-            //BrowserControl.SetColInView(pk, !e.Item.Checked); 
+            BrowserControl.SetColInView(pk, !e.Item.Checked); 
           }
         }
 

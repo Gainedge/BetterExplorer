@@ -13,7 +13,7 @@ using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Shell;
 using Fluent;
 using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
-using GongSolutions.Shell;
+using BExplorer.Shell;
 
 namespace BetterExplorer
 {

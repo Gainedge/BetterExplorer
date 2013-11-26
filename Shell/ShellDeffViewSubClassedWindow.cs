@@ -1,4 +1,4 @@
-﻿using GongSolutions.Shell.Interop;
+﻿using BExplorer.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
 	public class ShellDeffViewSubClassedWindow : NativeWindow
 	{

@@ -1,4 +1,4 @@
-// GongSolutions.Shell - A Windows Shell library for .Net.
+// BExplorer.Shell - A Windows Shell library for .Net.
 // Copyright (C) 2007-2009 Steven J. Kirk
 //
 // This program is free software; you can redistribute it and/or
@@ -20,7 +20,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace GongSolutions.Shell.Interop.VistaBridge
+namespace BExplorer.Shell.Interop.VistaBridge
 {
     class ShellItemImpl : IDisposable, IShellItem
     {

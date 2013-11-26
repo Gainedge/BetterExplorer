@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
-namespace GongSolutions.Shell.Interop
+namespace BExplorer.Shell.Interop
 {
 	// <summary>
 	/// Represents the different retrieval options for the thumbnail or icon,

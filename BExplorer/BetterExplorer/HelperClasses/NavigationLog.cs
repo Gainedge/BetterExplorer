@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GongSolutions.Shell;
+using BExplorer.Shell;
 
 namespace BetterExplorer
 {

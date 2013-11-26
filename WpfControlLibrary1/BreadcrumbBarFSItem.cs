@@ -1,6 +1,6 @@
 ﻿
-using GongSolutions.Shell;
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell;
+using BExplorer.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;

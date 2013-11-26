@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace GongSolutions.Shell.Interop
+namespace BExplorer.Shell.Interop
 {
 	#region ShellLink Object
 	/// <summary>

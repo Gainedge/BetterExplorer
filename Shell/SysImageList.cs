@@ -7,7 +7,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
   /// Win32APIðµ¤ÃINXB
   /// </summary>

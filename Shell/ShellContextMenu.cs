@@ -1,4 +1,4 @@
-// GongSolutions.Shell - A Windows Shell library for .Net.
+// BExplorer.Shell - A Windows Shell library for .Net.
 // Copyright (C) 2007-2009 Steven J. Kirk
 //
 // This program is free software; you can redistribute it and/or
@@ -22,9 +22,9 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell.Interop;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
     /// <summary>
     /// Provides support for displaying the context menu of a shell item.

@@ -16,8 +16,8 @@ using Fluent;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using System.Threading;
-using GongSolutions.Shell;
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell;
+using BExplorer.Shell.Interop;
 
 namespace BetterExplorerControls
 {

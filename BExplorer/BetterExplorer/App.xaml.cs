@@ -17,8 +17,8 @@ using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Interop;
 using WindowsHelper;
-using GongSolutions.Shell;
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell;
+using BExplorer.Shell.Interop;
 
 namespace BetterExplorer
 {

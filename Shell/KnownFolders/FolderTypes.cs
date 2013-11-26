@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
     /// <summary>
     /// The FolderTypes values represent a view template applied to a folder, 

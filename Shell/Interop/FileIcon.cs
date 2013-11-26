@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GongSolutions.Shell.Interop
+namespace BExplorer.Shell.Interop
 {
 	/// <summary>
 	/// Enables extraction of icons for any file type from

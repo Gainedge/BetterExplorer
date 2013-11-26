@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GongSolutions.Shell.Interop
+namespace BExplorer.Shell.Interop
 {
 	public static class Gdi32
 	{

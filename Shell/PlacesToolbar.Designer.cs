@@ -1,4 +1,4 @@
-namespace GongSolutions.Shell {
+namespace BExplorer.Shell {
     partial class PlacesToolbar {
         /// <summary> 
         /// Required designer variable.

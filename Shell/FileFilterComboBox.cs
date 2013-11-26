@@ -1,4 +1,4 @@
-// GongSolutions.Shell - A Windows Shell library for .Net.
+// BExplorer.Shell - A Windows Shell library for .Net.
 // Copyright (C) 2007-2009 Steven J. Kirk
 //
 // This program is free software; you can redistribute it and/or
@@ -24,9 +24,9 @@ using System.IO;
 using System.Windows.Forms;
 using System.Text;
 using System.Text.RegularExpressions;
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell.Interop;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
     /// <summary>
     /// A file-filter combo box suitable for use in open/save file dialogs.

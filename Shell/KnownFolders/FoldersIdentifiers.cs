@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
     /// <summary>
     /// Contains the GUID identifiers for well-known folders.

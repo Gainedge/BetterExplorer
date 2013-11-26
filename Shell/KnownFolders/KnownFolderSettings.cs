@@ -1,11 +1,11 @@
 ﻿//Copyright (c) Microsoft Corporation.  All rights reserved.
 
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell.Interop;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
     /// <summary>
     /// Internal class to represent the KnownFolder settings/properties

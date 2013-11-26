@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GongSolutions.Shell.Interop
+namespace BExplorer.Shell.Interop
 {
 	[ComImportAttribute()]
 	[GuidAttribute("bcc18b79-ba16-442f-80c4-8a59c30c463b")]

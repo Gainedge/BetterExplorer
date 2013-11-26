@@ -9,8 +9,8 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
-using GongSolutions.Shell;
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell;
+using BExplorer.Shell.Interop;
 
 
 namespace BetterExplorerControls

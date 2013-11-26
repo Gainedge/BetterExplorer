@@ -2,7 +2,7 @@
 
 using System;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
     /// <summary>
     /// Contains special retrieval options for known folders.

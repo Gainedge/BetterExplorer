@@ -1,4 +1,4 @@
-// GongSolutions.Shell - A Windows Shell library for .Net.
+// BExplorer.Shell - A Windows Shell library for .Net.
 // Copyright (C) 2007-2009 Steven J. Kirk
 //
 // This program is free software; you can redistribute it and/or
@@ -26,14 +26,14 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using GongSolutions.Shell.Interop;
-using Interop = GongSolutions.Shell.Interop;
+using BExplorer.Shell.Interop;
+using Interop = BExplorer.Shell.Interop;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Linq;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
 	/// <summary>
 	/// Provides a tree view of a computer's folders.

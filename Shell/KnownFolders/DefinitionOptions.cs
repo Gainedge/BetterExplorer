@@ -1,7 +1,7 @@
 //Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
     /// <summary>
     /// Specifies behaviors for known folders.

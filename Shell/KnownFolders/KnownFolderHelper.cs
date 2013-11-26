@@ -2,9 +2,9 @@
 
 using System;
 using System.Diagnostics;
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell.Interop;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
     /// <summary>
     /// Creates the helper class for known folders.

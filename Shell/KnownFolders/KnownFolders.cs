@@ -1,12 +1,12 @@
 //Copyright (c) Microsoft Corporation.  All rights reserved.
 
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
     /// <summary>
     /// Defines properties for known folders that identify the path of standard known folders.

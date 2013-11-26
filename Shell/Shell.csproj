@@ -8,8 +8,8 @@
     <ProjectGuid>{711CCF1F-6B8F-4E97-8D84-0EE679C83B41}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GongSolutions.Shell</RootNamespace>
-    <AssemblyName>GongShell</AssemblyName>
+    <RootNamespace>BExplorer.Shell</RootNamespace>
+    <AssemblyName>BExplorerShell</AssemblyName>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -41,7 +41,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\GongShell.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\BExplorerShell.xml</DocumentationFile>
     <NoWarn>0419</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>

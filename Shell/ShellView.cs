@@ -1,4 +1,4 @@
-// GongSolutions.Shell - A Windows Shell library for .Net.
+// BExplorer.Shell - A Windows Shell library for .Net.
 // Copyright (C) 2007-2009 Steven J. Kirk
 //
 // This program is free software; you can redistribute it and/or
@@ -28,13 +28,13 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Windows.Forms;
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell.Interop;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GongSolutions.Shell
+namespace BExplorer.Shell
 {
     /// <summary>
     /// Specifies how list items are displayed in a <see cref="ShellView"/> 
@@ -1335,39 +1335,6 @@ namespace GongSolutions.Shell
 							curCol.Width = (int)ci.uIdealWidth;
 							colls.Add(curCol);
 						}
-						
-						//Guid iid = new Guid(InterfaceGuids.IColumnManager);
-						//IntPtr view = IntPtr.Zero;
-						//IntPtr Ishellv = Marshal.GetComInterfaceForObject(GetShellView(), typeof(IShellView));
-						//Marshal.QueryInterface(Ishellv, ref iid, out view);
-						//IColumnManager cm = (IColumnManager)Marshal.GetObjectForIUnknown(view);
-						//uint HeaderColsCount = 0;
-						//cm.GetColumnCount(All ? CM_ENUM_FLAGS.CM_ENUM_ALL : CM_ENUM_FLAGS.CM_ENUM_VISIBLE, out HeaderColsCount);
-						//Collumns[] ci = new Collumns[HeaderColsCount];
-						//for (int i = 0; i < HeaderColsCount; i++)
-						//{
-						//	Collumns col = new Collumns();
-						//	WindowsAPI.PROPERTYKEY pk;
-						//	WindowsAPI.CM_COLUMNINFO cmi = new WindowsAPI.CM_COLUMNINFO();
-						//	Marshal.AllocCoTaskMem(Marshal.SizeOf(cmi));
-						//	try
-						//	{
-						//		_GetColumnbyIndex(GetShellView(), All, i, out pk);
-						//		_GetColumnInfobyIndex(GetShellView(), All, i, out cmi);
-						//		col.pkey = pk;
-						//		col.Name = cmi.wszName;
-						//		col.Width = (int)cmi.uWidth;
-						//		ci[i] = col;
-
-						//	}
-						//	catch
-						//	{
-
-
-						//	}
-
-						//}
-						//return ci;
 						return colls.ToArray();
 					}
 					catch (Exception)
@@ -1430,6 +1397,47 @@ namespace GongSolutions.Shell
 					Marshal.StructureToPtr(sc, scptr, false);
 					ifv2.SetSortColumns(scptr, 1);
 					Marshal.FreeHGlobal(scptr);
+				}
+
+				public void SetColInView(PROPERTYKEY pk, bool Remove)
+				{
+
+					if (!Remove)
+					{
+						PROPERTYKEY[] pkk = new PROPERTYKEY[AvailableVisibleColumns.Length + 1];
+						for (int i = 0; i < AvailableVisibleColumns.Length; i++)
+						{
+							pkk[i] = AvailableVisibleColumns[i].pkey;
+						}
+
+						pkk[AvailableVisibleColumns.Length] = pk;
+
+						IColumnManager icm = (IColumnManager)m_ComInterface;
+						icm.SetColumns(pkk, (uint)AvailableVisibleColumns.Length + 1);
+						//_SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length + 1, pkk);
+
+						AvailableVisibleColumns = AvailableColumns(false);
+					}
+					else
+					{
+						PROPERTYKEY[] pkk = new PROPERTYKEY[AvailableVisibleColumns.Length - 1];
+						int j = 0;
+						for (int i = 0; i < AvailableVisibleColumns.Length; i++)
+						{
+							if (!(AvailableVisibleColumns[i].pkey.fmtid == pk.fmtid && AvailableVisibleColumns[i].pkey.pid == pk.pid))
+							{
+								pkk[j] = AvailableVisibleColumns[i].pkey;
+								j++;
+							}
+
+						}
+
+						IColumnManager icm = (IColumnManager)m_ComInterface;
+						icm.SetColumns(pkk, (uint)AvailableVisibleColumns.Length - 1);
+						//_SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length - 1, pkk);
+
+						AvailableVisibleColumns = AvailableColumns(false);
+					}
 				}
 
 				/// <summary>

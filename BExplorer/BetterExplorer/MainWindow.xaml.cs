@@ -45,8 +45,8 @@ using LTR.IO;
 using LTR.IO.ImDisk;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using GongSolutions.Shell;
-using GongSolutions.Shell.Interop;
+using BExplorer.Shell;
+using BExplorer.Shell.Interop;
 
 namespace BetterExplorer
 {
@@ -131,7 +131,7 @@ namespace BetterExplorer
         UIElement curitem = null;
         Boolean IsGlassOnRibonMinimized { get; set; }
         NetworkAccountManager nam = new NetworkAccountManager();
-        List<GongSolutions.Shell.LVItemColor> LVItemsColor { get; set; }
+        List<BExplorer.Shell.LVItemColor> LVItemsColor { get; set; }
         uint SelectedDriveID = 0;
         string[] InitialTabs;
 		#endregion
@@ -451,7 +451,7 @@ namespace BetterExplorer
           XDocument docs = XDocument.Load(itemColorSettingsLocation);
 
           this.LVItemsColor = docs.Root.Elements("ItemColorRow")
-                             .Select(element => new GongSolutions.Shell.LVItemColor(element.Elements().ToArray()[0].Value, System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value))))
+                             .Select(element => new BExplorer.Shell.LVItemColor(element.Elements().ToArray()[0].Value, System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value))))
                              .ToList();
 
         }
@@ -802,9 +802,8 @@ namespace BetterExplorer
     void mic_Click(object sender, RoutedEventArgs e)
     {
         MenuItem mi = (sender as MenuItem);
-        WindowsAPI.PROPERTYKEY pkey = (WindowsAPI.PROPERTYKEY)mi.Tag;
-			//FIXME: fix this
-        //ShellListView.SetColInView(pkey, !mi.IsChecked);
+        PROPERTYKEY pkey = (PROPERTYKEY)mi.Tag;
+        ShellListView.SetColInView(pkey, !mi.IsChecked);
     }
 
     [DllImport("shell32.dll")]
@@ -825,7 +824,7 @@ namespace BetterExplorer
 			//	ShellListView.CurrentFolder.ParsingName.EndsWith("library-ms"))
 			//{
 			//	ShellLibrary lib =
-			//		ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(GongSolutions.Shell.Interop.SIGDN.NORMALDISPLAY), false);
+			//		ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY), false);
 			//	lib.DefaultSaveFolder = SaveLoc.ParsingName;
 			//	lib.Close();
 
@@ -833,7 +832,7 @@ namespace BetterExplorer
 			//else if (ShellListView.SelectedItems[0].ParsingName.Contains(KnownFolders.Libraries.ParsingName))
 			//{
 			//	ShellLibrary lib =
-			//		ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(GongSolutions.Shell.Interop.SIGDN.NORMALDISPLAY), false);
+			//		ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY), false);
 			//	lib.DefaultSaveFolder = SaveLoc.ParsingName;
 			//	lib.Close();
 
@@ -962,7 +961,7 @@ namespace BetterExplorer
 								 {
 									 ShellItem so = new ShellItem(e.FullPath);
 									 MenuItem mi = new MenuItem();
-									 mi.Header = so.GetDisplayName(GongSolutions.Shell.Interop.SIGDN.NORMALDISPLAY);
+									 mi.Header = so.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
 									 mi.Tag = so;
 									 so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 									 so.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
@@ -2404,7 +2403,7 @@ namespace BetterExplorer
         link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.SelectedItems[0].ParsingName;
 				link.Save(KnownFolders.Links.ParsingName + @"\" +
-					ShellListView.SelectedItems[0].GetDisplayName(GongSolutions.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
+					ShellListView.SelectedItems[0].GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
 				link.Dispose();
 			}
 
@@ -2414,7 +2413,7 @@ namespace BetterExplorer
         link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.CurrentFolder.ParsingName;
 				link.Save(KnownFolders.Links.ParsingName + @"\" +
-					ShellListView.CurrentFolder.GetDisplayName(GongSolutions.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
+					ShellListView.CurrentFolder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
 				link.Dispose();
 			}
 
@@ -4190,7 +4189,7 @@ namespace BetterExplorer
 
     #endregion
 
-    void ShellListView_ViewStyleChanged(object sender, GongSolutions.Shell.ViewChangedEventArgs e)
+    void ShellListView_ViewStyleChanged(object sender, BExplorer.Shell.ViewChangedEventArgs e)
 		{
 			IsViewSelection = false;
 
@@ -4616,12 +4615,12 @@ namespace BetterExplorer
         {
             this.breadcrumbBarControl1.LoadDirectory(e.Folder);
             this.breadcrumbBarControl1.LastPath = e.Folder.ParsingName;
-            this.Title = "Better Explorer - " + e.Folder.GetDisplayName(GongSolutions.Shell.Interop.SIGDN.NORMALDISPLAY);
+            this.Title = "Better Explorer - " + e.Folder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
             e.Folder.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
             e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
             try
             {
-							(tabControl1.SelectedItem as ClosableTabItem).Header = e.Folder.GetDisplayName(GongSolutions.Shell.Interop.SIGDN.NORMALDISPLAY);
+							(tabControl1.SelectedItem as ClosableTabItem).Header = e.Folder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
                 (tabControl1.SelectedItem as ClosableTabItem).TabIcon = e.Folder.Thumbnail.BitmapSource;
             }
             catch (Exception)
@@ -8482,7 +8481,7 @@ namespace BetterExplorer
       DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
       DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
       newt.PreviewMouseMove += newt_PreviewMouseMove;
-      newt.Header = DefPath.GetDisplayName(GongSolutions.Shell.Interop.SIGDN.NORMALDISPLAY);
+      newt.Header = DefPath.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
       newt.TabIcon = DefPath.Thumbnail.BitmapSource;
       newt.Path = DefPath;
       newt.ToolTip = DefPath.ParsingName;
