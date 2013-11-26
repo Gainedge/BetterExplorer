@@ -48,11 +48,6 @@ namespace GongSolutions.Shell.Interop
 
 	}
 
-	internal static class WM
-	{
-		internal const int WM_CONTEXTMENU = 0x007B;
-	}
-
 	internal static class WNM
 	{
 		const int NM_FIRST = 0;
@@ -155,4 +150,5 @@ namespace GongSolutions.Shell.Interop
 		internal DefinitionOptions definitionOptions;
 		internal Guid folderTypeId;
 	}
+
 }

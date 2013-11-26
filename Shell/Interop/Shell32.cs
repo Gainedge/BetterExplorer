@@ -123,7 +123,8 @@ namespace GongSolutions.Shell.Interop
         SINGLECLICKACTIVATE = 0x8000,
         NOWEBVIEW = 0x10000,
         HIDEFILENAMES = 0x20000,
-        CHECKSELECT = 0x40000
+        CHECKSELECT = 0x40000,
+				EXTENDEDTILES = 0x02000000,
     }
 
     public enum FOLDERVIEWMODE : uint
@@ -141,13 +142,19 @@ namespace GongSolutions.Shell.Interop
 
     public enum SHCONTF
     {
-        FOLDERS = 0x0020,
-        NONFOLDERS = 0x0040,
-        INCLUDEHIDDEN = 0x0080,
-        INIT_ON_FIRST_NEXT = 0x0100,
-        NETPRINTERSRCH = 0x0200,
-        SHAREABLE = 0x0400,
-        STORAGE = 0x0800
+			CHECKING_FOR_CHILDREN = 0x00010,
+			FOLDERS = 0x00020,
+			NONFOLDERS = 0x00040,
+			INCLUDEHIDDEN = 0x00080,
+			INIT_ON_FIRST_NEXT = 0x00100,
+			NETPRINTERSRCH = 0x00200,
+			SHAREABLE = 0x00400,
+			STORAGE = 0x00800,
+			NAVIGATION_ENUM = 0x01000,
+			FASTITEMS = 0x02000,
+			SFLATLIST = 0x04000,
+			ENABLE_ASYNC = 0x08000,
+			INCLUDESUPERHIDDEN = 0x10000
     }
 
     [Flags]
@@ -523,5 +530,8 @@ namespace GongSolutions.Shell.Interop
 						return IntPtr.Zero;
 					}
 				}
+
+				[DllImport("kernel32.dll")]
+				public static extern bool SetProcessWorkingSetSize(IntPtr proc, int min, int max);
     }
 }

@@ -51,10 +51,10 @@ namespace GongSolutions.Shell.Interop
             [Out] out int psfgaoAttribs);
 
         void GetCount(
-            [Out] out ushort pdwNumItems);
+            [Out] out uint pdwNumItems);
 
         void GetItemAt(
-            [In] ushort dwIndex,
+            [In] uint dwIndex,
             [Out, MarshalAs(UnmanagedType.Interface)] out IShellItem ppsi);
 
         void EnumItems(

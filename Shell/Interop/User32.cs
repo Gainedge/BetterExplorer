@@ -153,6 +153,7 @@ namespace GongSolutions.Shell.Interop
         TVM_SETITEMW = 4415,
 			  LVM_GETITEMSTATE = (FIRST + 44),
 				LVM_GETITEMRECT = (FIRST + 14),
+				LVM_SETITEMSTATE = (FIRST + 43),
     }
 
     [Flags]
@@ -275,6 +276,10 @@ namespace GongSolutions.Shell.Interop
             int wParam, int lParam);
 
 				[DllImport("user32.dll")]
+				public static extern int SendMessage(IntPtr hWnd, int Msg,
+						IntPtr wParam, IntPtr lParam);
+
+				[DllImport("user32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, MSG Msg,
 						int wParam, ref RECT lparam);
 
@@ -356,6 +361,42 @@ namespace GongSolutions.Shell.Interop
 					public RECT rcText;
 					public int uAlign;
 				}
+
+				[DllImport("user32.dll", CharSet = CharSet.Auto)]
+				public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+				public const int WM_CHANGEUISTATE = 296;
+				public const int UIS_SET = 1;
+				public const int UISF_HIDEFOCUS = 0x1;
+
+				private static short LOWORD(int dw)
+				{
+					short loWord = 0;
+					ushort andResult = (ushort)(dw & 0x00007FFF);
+					ushort mask = 0x8000;
+					if ((dw & 0x8000) != 0)
+					{
+						loWord = (short)(mask | andResult);
+					}
+					else
+					{
+						loWord = (short)andResult;
+					}
+					return loWord;
+				}
+
+				public static int MAKELONG(int wLow, int wHigh)
+				{
+					int low = (int)LOWORD(wLow);
+					short high = LOWORD(wHigh);
+					int product = 0x00010000 * (int)high;
+					int makeLong = (int)(low | product);
+					return makeLong;
+				}
+
+
+
+
 
     }
 }

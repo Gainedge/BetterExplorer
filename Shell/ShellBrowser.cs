@@ -92,7 +92,8 @@ namespace GongSolutions.Shell
 
         HResult IShellBrowser.TranslateAcceleratorSB(IntPtr pmsg, ushort wID)
         {
-            return HResult.E_NOTIMPL;
+					//var hr = ((IInputObject)this).TranslateAcceleratorIO(pmsg);
+					return HResult.E_NOTIMPL;
         }
 
         HResult IShellBrowser.BrowseObject(IntPtr pidl, SBSP wFlags)
@@ -117,7 +118,9 @@ namespace GongSolutions.Shell
             }
 						else if ((wFlags & SBSP.SBSP_SAMEBROWSER) != 0)
 						{
-
+							ShellItem child = new ShellItem(pidl);
+							m_ShellView.Navigate(child);
+							//child.Dispose();
 						} else
             {
                 m_ShellView.Navigate(new ShellItem(ShellItem.Desktop, Shell32.ILFindLastID(pidl)));
@@ -226,10 +229,19 @@ namespace GongSolutions.Shell
         StatusBar m_StatusBar;
     }
 
-    class DialogShellBrowser : ShellBrowser, ICommDlgBrowser
+    class DialogShellBrowser : ShellBrowser, ICommDlgBrowser, IMessageFilter
     {
         public DialogShellBrowser(ShellView shellView)
-            : base(shellView) { }
+            : base(shellView) {
+							t.Interval = 100;
+							t.Tick += t_Tick;
+				}
+
+				void t_Tick(object sender, EventArgs e)
+				{
+					m_ShellView.OnSelectionChanged();
+					(sender as Timer).Stop();
+				}
 
         #region ICommDlgBrowser Members
 
@@ -255,15 +267,34 @@ namespace GongSolutions.Shell
             return HResult.S_OK;
         }
 
+				Timer t = new Timer();
         HResult ICommDlgBrowser.OnStateChange(IShellView ppshv, CDBOSC uChange)
         {
             if (uChange == CDBOSC.CDBOSC_SELCHANGE)
             {
-                m_ShellView.OnSelectionChanged();
+							if (t.Enabled)
+							{
+								t.Stop();
+								t.Start();
+							}
+							else
+							{
+								t.Start();
+							}
+                
             }
+						
             return HResult.S_OK;
         }
 
+				public bool PreFilterMessage(ref Message m)
+				{
+					if (m.Msg == (int)WM.WM_PAINT || m.Msg == (int)WM.WM_CREATE || m.Msg == (int)WM.WM_LBUTTONUP || m.Msg == (int)WM.WM_LBUTTONDOWN || m.Msg == (int)WM.WM_KEYUP || m.Msg == (int)WM.WM_KEYDOWN)
+					{
+						User32.SendMessage(m_ShellView.ShellListViewHandle, User32.WM_CHANGEUISTATE, User32.MAKELONG(1, 1), 0);
+					}
+					return true;
+				}
         HResult ICommDlgBrowser.IncludeObject(IShellView ppshv, IntPtr pidl)
         {
             return m_ShellView.IncludeItem(pidl) ?

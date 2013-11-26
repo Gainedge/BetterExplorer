@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using WindowsHelper;
 using GongSolutions.Shell;
+using GongSolutions.Shell.Interop;
 
 namespace BetterExplorer
 {
@@ -49,24 +50,24 @@ namespace BetterExplorer
           BrowserControl = ShellView;
           for (int i = 1; i < AvailableCols.Length; i++)
           {
-            if (AvailableCols[i].Name == null)
-            {
-                MessageBox.Show("The More Columns dialog cannot be shown right now.", "More Columns", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            ListViewItem lvi = new ListViewItem(AvailableCols[i].Name);
-            lvi.Tag = AvailableCols[i].pkey;
-            foreach (Collumns collumn in ShellView.AvailableVisibleColumns)
-	          {
-		          if (collumn.pkey.fmtid == AvailableCols[i].pkey.fmtid && collumn.pkey.pid == AvailableCols[i].pkey.pid)
-	            {
-                lvi.Checked = true;
-	            }
-	          }
-                
-            lvColumns.Items.Add(lvi);
+						if (!String.IsNullOrEmpty(AvailableCols[i].Name))
+						{
+							ListViewItem lvi = new ListViewItem(AvailableCols[i].Name);
+							lvi.Tag = AvailableCols[i].pkey;
+							foreach (Collumns collumn in ShellView.AvailableVisibleColumns)
+							{
+								if (collumn.pkey.fmtid == AvailableCols[i].pkey.fmtid && collumn.pkey.pid == AvailableCols[i].pkey.pid)
+								{
+									lvi.Checked = true;
+								}
+							}
+
+							lvColumns.Items.Add(lvi);
+						}
           }
           Opacity = 0;
-          Show();
+					if (lvColumns.Items.Count > 0)
+						Show();
           this.Location = new Point((int)Location.X, (int)Location.Y);
           //this.lvColumns.Sort(); //'this didn't do anything... lol.
           this.lvColumns.Sorting = SortOrder.Ascending;
@@ -82,7 +83,7 @@ namespace BetterExplorer
         {
           if (!IsBeforeShow)
           {
-            WindowsAPI.PROPERTYKEY pk = (WindowsAPI.PROPERTYKEY)e.Item.Tag;
+            PROPERTYKEY pk = (PROPERTYKEY)e.Item.Tag;
 						//FIXME: fix this
             //BrowserControl.SetColInView(pk, !e.Item.Checked); 
           }

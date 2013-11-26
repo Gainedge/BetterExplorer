@@ -131,7 +131,7 @@ namespace GongSolutions.Shell.Interop
 		void SetText(int iType, [MarshalAs(UnmanagedType.LPWStr)] string pwszText);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SetCurrentFolderFlags(uint dwMask, uint dwFlags);
+		void SetCurrentFolderFlags(FOLDERFLAGS dwMask, FOLDERFLAGS dwFlags);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetCurrentFolderFlags(out uint pdwFlags);
@@ -143,7 +143,7 @@ namespace GongSolutions.Shell.Interop
 		void SetSortColumns(IntPtr rgSortColumns, int cColumns);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSortColumns(out IntPtr rgSortColumns, int cColumns);
+		void GetSortColumns([Out][MarshalAs(UnmanagedType.LPArray)] SORTCOLUMN[] rgSortColumns, int cColumns);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetItem(int iItem, ref Guid riid, out IShellItem ppv);

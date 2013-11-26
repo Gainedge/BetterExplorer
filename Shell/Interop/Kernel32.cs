@@ -17,6 +17,7 @@
 // Boston, MA 2110-1301, USA.
 //
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -35,5 +36,44 @@ namespace GongSolutions.Shell.Interop
 				/// <param name="lpRootPathName">A pointer to a null-terminated string that specifies the root directory and returns information about the disk.A trailing backslash is required. If this parameter is NULL, the function uses the root of the current directory.</param>
 				[DllImport("kernel32.dll")]
 				public static extern DriveType GetDriveType([MarshalAs(UnmanagedType.LPStr)] string lpRootPathName);
+
+				[DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
+				public static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+
+				[DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
+				public static extern IntPtr LoadLibrary(string lpFileName);
+
+				public static bool IsThis64bitProcess()
+				{
+					return (IntPtr.Size == 8);
+				}
+
+				public static bool Is64bitProcess(Process proc)
+				{
+					return !Is32bitProcess(proc);
+				}
+
+				public static bool Is32bitProcess(Process proc)
+				{
+					if (!IsThis64bitProcess()) return true; // we're in 32bit mode, so all are 32bit
+
+					foreach (ProcessModule module in proc.Modules)
+					{
+						try
+						{
+							string fname = Path.GetFileName(module.FileName).ToLowerInvariant();
+							if (fname.Contains("wow64"))
+							{
+								return true;
+							}
+						}
+						catch
+						{
+							// wtf
+						}
+					}
+
+					return false;
+				}
     }
 }

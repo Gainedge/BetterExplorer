@@ -44,7 +44,7 @@ namespace GongSolutions.Shell
 		[System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
 		protected override void WndProc(ref Message m)
 		{
-			if (m.Msg == WM.WM_CONTEXTMENU)
+			if (m.Msg == (int)WM.WM_CONTEXTMENU)
 			{
 				//this.Browser.IsRenameStarted = true;
 				ShellItem[] dirs = this.Browser.SelectedItems;
@@ -66,6 +66,9 @@ namespace GongSolutions.Shell
 				{
 					case WNM.LVN_GETINFOTIP:
 						//TODO: Write here the code for the tooltip flyout
+						break;
+					case WNM.LVN_ITEMCHANGED:
+						//User32.SendMessage(Browser.ShellListViewHandle, 0x127, 0x10001, 0);
 						break;
 					case WNM.NM_CUSTOMDRAW:
 						//if (!this.Browser.NavigationLog.CurrentLocation.IsSearchFolder)
@@ -114,11 +117,14 @@ namespace GongSolutions.Shell
 								switch (nmlvcd.nmcd.dwDrawStage)
 								{
 									case CDDS_PREPAINT:
+										//User32.SendMessage(Browser.ShellListViewHandle, User32.WM_CHANGEUISTATE, User32.MAKELONG(1, 1), 0);
 										m.Result = (IntPtr)CDRF_NOTIFYITEMDRAW;
 										break;
 									case CDDS_ITEMPREPAINT:
+										//User32.SendMessage(Browser.ShellListViewHandle, User32.WM_CHANGEUISTATE, User32.MAKELONG(1, 1), 0);
 										// call default procedure in case system might do custom drawing and set special colors
-
+										//User32.SendMessage(this.SysListviewhandle, User32.WM_CHANGEUISTATE, User32.MakeLong(User32.UIS_SET, User32.UISF_HIDEFOCUS), 0);
+										//base.WndProc(ref m);
 										if (textColor != null)
 										{
 											nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
@@ -132,6 +138,7 @@ namespace GongSolutions.Shell
 										}
 										break;
 									case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
+										//User32.SendMessage(Browser.ShellListViewHandle, User32.WM_CHANGEUISTATE, User32.MAKELONG(1, 1), 0);
 										// before a subitem drawn
 										if ((nmlvcd.nmcd.uItemState & (CDIS.HOT | CDIS.DROPHILITED)) != 0 || 0 != User32.SendMessage(this.SysListviewhandle, MSG.LVM_GETITEMSTATE, index, (int)LVIS.LVIS_SELECTED))
 										{
@@ -168,6 +175,7 @@ namespace GongSolutions.Shell
 										break;
 									case CDDS_ITEMPOSTPAINT:
 										//base.WndProc(ref m);
+										//User32.SendMessage(this.SysListviewhandle, User32.WM_CHANGEUISTATE, User32.MakeLong(User32.UIS_SET, User32.UISF_HIDEFOCUS), 0);
 										if (nmlvcd.clrTextBk != 0)
 										{
 											var iconBounds = new User32.RECT();
@@ -191,6 +199,7 @@ namespace GongSolutions.Shell
 															large.DrawOverlay(hdc, 1, new Point(iconBounds.Left + 10, iconBounds.Bottom - 32));
 												}
 											}
+											//
 										}
 										m.Result = (IntPtr)CDRF_SKIPDEFAULT;
 										break;

@@ -36,5 +36,6 @@ namespace GongSolutions.Shell.Interop
         E_NOTIMPL = unchecked((int)0x80004001),
         OLE_E_ADVISENOTSUPPORTED = unchecked((int)80040003),
         MK_E_NOOBJECT = unchecked((int)0x800401E5),
+				E_INVALIDARG = unchecked((int)0x80070057),
     }
 }

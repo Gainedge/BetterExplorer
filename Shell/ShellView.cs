@@ -30,6 +30,9 @@ using System.Text;
 using System.Windows.Forms;
 using GongSolutions.Shell.Interop;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GongSolutions.Shell
 {
@@ -107,6 +110,40 @@ namespace GongSolutions.Shell
     {
 			public ShellDeffViewSubClassedWindow subclassed;
 
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			public delegate void GetColumnbyIndex(IShellView view, bool isAll, int index, out PROPERTYKEY res);
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			public delegate IntPtr GetItemName(IFolderView2 view, int index);
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			public delegate void GetItemLocation(IShellView view, int index, out int pointx, out int pointy);
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			public delegate void SetColumnInShellView(IShellView view, int count, [MarshalAs(UnmanagedType.LPArray)] PROPERTYKEY[] pk);
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			public delegate void SetSortColumns(IFolderView2 view, int count, [MarshalAs(UnmanagedType.LPArray)] SORTCOLUMN[] pk);
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			public delegate int GetColumnInfobyIndex(IShellView view, bool isAll, int index, out CM_COLUMNINFO res);
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			public delegate int GetColumnInfobyPK(IShellView view, bool isAll, PROPERTYKEY pk, out CM_COLUMNINFO res);
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			public delegate void GetSortColumns(IShellView view, int index, out SORTCOLUMN sc);
+
+			private IntPtr BEHDLL { get; set; }
+			public GetItemName _GetItemName;
+			public GetItemLocation _GetItemLocation;
+			public SetColumnInShellView _SetColumnInShellView;
+			public SetSortColumns _SetSortColumns;
+			public GetColumnInfobyIndex _GetColumnInfobyIndex;
+			public GetColumnInfobyPK _GetColumnInfobyPK;
+			public GetSortColumns _GetSortColumns;
+			public GetColumnbyIndex _GetColumnbyIndex;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ShellView"/> class.
         /// </summary>
@@ -118,6 +155,35 @@ namespace GongSolutions.Shell
             m_View = ShellViewStyle.LargeIcon;
             Size = new System.Drawing.Size(250, 200);
             Navigate(ShellItem.Desktop);
+						BEHDLL = Kernel32.LoadLibrary(Kernel32.Is64bitProcess(Process.GetCurrentProcess()) ? "BEH64.dll" : "BEH32.dll");
+
+						IntPtr GetItemNameP = Kernel32.GetProcAddress(BEHDLL, "GetItemName");
+						_GetItemName = (GetItemName)Marshal.GetDelegateForFunctionPointer(GetItemNameP, typeof(GetItemName));
+
+						IntPtr GetItemLocationP = Kernel32.GetProcAddress(BEHDLL, "GetItemLocation");
+						_GetItemLocation = (GetItemLocation)Marshal.GetDelegateForFunctionPointer(GetItemLocationP, typeof(GetItemLocation));
+
+
+						IntPtr SetColumnInShellViewP = Kernel32.GetProcAddress(BEHDLL, "SetColumnInShellView");
+						_SetColumnInShellView = (SetColumnInShellView)Marshal.GetDelegateForFunctionPointer(SetColumnInShellViewP, typeof(SetColumnInShellView));
+
+
+						IntPtr SetSortColumnsP = Kernel32.GetProcAddress(BEHDLL, "SetSortColumns");
+						_SetSortColumns = (SetSortColumns)Marshal.GetDelegateForFunctionPointer(SetSortColumnsP, typeof(SetSortColumns));
+
+
+						IntPtr GetColumnInfobyIndexP = Kernel32.GetProcAddress(BEHDLL, "GetColumnInfobyIndex");
+						_GetColumnInfobyIndex = (GetColumnInfobyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyIndexP, typeof(GetColumnInfobyIndex));
+
+
+						IntPtr GetColumnInfobyPKP = Kernel32.GetProcAddress(BEHDLL, "GetColumnInfobyPK");
+						_GetColumnInfobyPK = (GetColumnInfobyPK)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyPKP, typeof(GetColumnInfobyPK));
+
+						IntPtr GetSortColumnsP = Kernel32.GetProcAddress(BEHDLL, "GetSortColumns");
+						_GetSortColumns = (GetSortColumns)Marshal.GetDelegateForFunctionPointer(GetSortColumnsP, typeof(GetSortColumns));
+
+						IntPtr GetColumnbyIndexP = Kernel32.GetProcAddress(BEHDLL, "GetColumnbyIndex");
+						_GetColumnbyIndex = (GetColumnbyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnbyIndexP, typeof(GetColumnbyIndex));
         }
 
         /// <summary>
@@ -198,6 +264,10 @@ namespace GongSolutions.Shell
                     throw;
                 }
             }
+
+						GC.Collect();
+						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+
         }
 
         /// <summary>
@@ -437,10 +507,15 @@ namespace GongSolutions.Shell
         /// </summary>
         public void SelectAll()
         {
-            foreach (ShellItem item in ShellItem)
-            {
-                m_ComInterface.SelectItem(item.ILPidl, SVSI.SELECT);
-            }
+            //foreach (ShellItem item in ShellItem)
+            //{
+            //    m_ComInterface.SelectItem(item.ILPidl, SVSI.SELECT);
+            //}
+					LVITEMA item = new LVITEMA();
+          item.mask = LVIF.LVIF_STATE;
+          item.stateMask = LVIS.LVIS_SELECTED;
+					item.state = LVIS.LVIS_SELECTED;
+					User32.SendMessage(this.ShellListViewHandle, MSG.LVM_SETITEMSTATE, -1, ref item);
         }
 
 				public void SelectItems(ShellItem[] ShellObjectArray)
@@ -592,43 +667,91 @@ namespace GongSolutions.Shell
         {
             get
             {
-                uint CFSTR_SHELLIDLIST =
-                    User32.RegisterClipboardFormat("Shell IDList Array");
-                ComTypes.IDataObject selection = GetSelectionDataObject();
+							List<ShellItem> items = new List<Shell.ShellItem>();
+							var iArray = GetSelectedItemsArray();
+							if (iArray != null)
+							{
+								try
+								{
+									
+									uint itemCount = 0;
+									iArray.GetCount(out itemCount);
+									for (uint index = 0; index < itemCount; index++)
+									{
+										IShellItem iShellItem = null;
+										iArray.GetItemAt(index, out iShellItem);
+										items.Add(new ShellItem(iShellItem));
+									}
+									
+								}
+								finally
+								{
+									Marshal.ReleaseComObject(iArray);
+								}
+								
+							}
+							return items.ToArray();
+                //uint CFSTR_SHELLIDLIST =
+                //    User32.RegisterClipboardFormat("Shell IDList Array");
+                //ComTypes.IDataObject selection = GetSelectionDataObject();
 
-                if (selection != null)
-                {
-                    FORMATETC format = new FORMATETC();
-                    STGMEDIUM storage = new STGMEDIUM();
+                //if (selection != null)
+                //{
+                //    FORMATETC format = new FORMATETC();
+                //    STGMEDIUM storage = new STGMEDIUM();
 
-                    format.cfFormat = (short)CFSTR_SHELLIDLIST;
-                    format.dwAspect = DVASPECT.DVASPECT_CONTENT;
-                    format.lindex = 0;
-                    format.tymed = TYMED.TYMED_HGLOBAL;
+                //    format.cfFormat = (short)CFSTR_SHELLIDLIST;
+                //    format.dwAspect = DVASPECT.DVASPECT_CONTENT;
+                //    format.lindex = 0;
+                //    format.tymed = TYMED.TYMED_HGLOBAL;
 
-                    if (selection.QueryGetData(ref format) == 0)
-                    {
-                        selection.GetData(ref format, out storage);
+                //    if (selection.QueryGetData(ref format) == 0)
+                //    {
+                //        selection.GetData(ref format, out storage);
 
-                        int itemCount = Marshal.ReadInt32(storage.unionmember);
-                        ShellItem[] result = new ShellItem[itemCount];
+                //        int itemCount = Marshal.ReadInt32(storage.unionmember);
+                //        ShellItem[] result = new ShellItem[itemCount];
 
-                        for (int n = 0; n < itemCount; ++n)
-                        {
-                            int offset = Marshal.ReadInt32(storage.unionmember,
-                                8 + (n * 4));
-                            result[n] = new ShellItem(
-                                m_CurrentFolder,
-                                (IntPtr)((int)storage.unionmember + offset));
-                        }
+                //        for (int n = 0; n < itemCount; ++n)
+                //        {
+                //            int offset = Marshal.ReadInt32(storage.unionmember,
+                //                8 + (n * 4));
+                //            result[n] = new ShellItem(
+                //                m_CurrentFolder,
+                //                (IntPtr)((int)storage.unionmember + offset));
+                //        }
 
-                        GlobalFree(storage.unionmember);
-                        return result;
-                    }
-                }
-                return new ShellItem[0];
+                //        GlobalFree(storage.unionmember);
+                //        return result;
+                //    }
+                //}
+                //return new ShellItem[0];
             }
         }
+
+				internal IShellItemArray GetSelectedItemsArray()
+				{
+					IShellItemArray iArray = null;
+					IFolderView2 iFV2 = this.FolderView2;
+					if (iFV2 != null)
+					{
+						try
+						{
+							Guid iidShellItemArray = new Guid(InterfaceGuids.IShellItemArray);
+							object oArray = null;
+							HResult hr = iFV2.Items((uint)SVGIO.SVGIO_SELECTION, ref iidShellItemArray, out oArray);
+							iArray = oArray as IShellItemArray;
+							
+						}
+						finally
+						{
+							//Marshal.ReleaseComObject(iFV2);
+							//iFV2 = null;
+						}
+					}
+
+					return iArray;
+				}
 
         /// <summary>
         /// Gets/sets a value indicating whether multiple items can be selected
@@ -701,10 +824,21 @@ namespace GongSolutions.Shell
             {
                 m_View = value;
 								IFolderView2 ifv = (IFolderView2)m_ComInterface;
-								ifv.SetCurrentViewMode(value);
+								if (value == ShellViewStyle.Content)
+								{
+									ifv.SetCurrentFolderFlags(FOLDERFLAGS.EXTENDEDTILES, FOLDERFLAGS.EXTENDEDTILES);
+									ifv.SetCurrentViewMode(ShellViewStyle.Tile);
+								}
+								else
+								{
+									ifv.SetCurrentFolderFlags(FOLDERFLAGS.EXTENDEDTILES, 0);
+									ifv.SetCurrentViewMode(value);
+								}
+								
 								ShellViewStyle viewStyle;
 								Int32 thumbnailSize;
 								ifv.GetViewModeAndIconSize(out viewStyle, out thumbnailSize);
+								
 								OnViewChanged(new ViewChangedEventArgs(viewStyle, thumbnailSize));
                 //OnNavigated(new NavigatedEventArgs(ShellItem.Desktop));
             }
@@ -871,6 +1005,7 @@ namespace GongSolutions.Shell
                 e.IsInputKey = true;
 
             if (e.Control && e.KeyCode == Keys.A) SelectAll();
+						if (e.KeyCode == Keys.F2) RenameSelectedItem();
 
             base.OnPreviewKeyDown(e);
         }
@@ -893,54 +1028,57 @@ namespace GongSolutions.Shell
         /// 
         /// <param name="msg"/>
         /// <returns/>
-        //public override bool PreProcessMessage(ref Message msg)
-        //{
-        //    const int WM_KEYDOWN = 0x100;
-        //    const int WM_KEYUP = 0x101;
-        //    Keys keyCode = (Keys)(int)msg.WParam & Keys.KeyCode;
+      //  public override bool PreProcessMessage(ref Message msg)
+      //  {
+      //      const int WM_KEYDOWN = 0x100;
+      //      const int WM_KEYUP = 0x101;
+      //      Keys keyCode = (Keys)(int)msg.WParam & Keys.KeyCode;
 
-        //    if ((msg.Msg == WM_KEYDOWN) || (msg.Msg == WM_KEYUP))
-        //    {
-        //        switch (keyCode)
-        //        {
-        //            case Keys.F2:
-        //                RenameSelectedItem();
-        //                return true;
-        //            case Keys.Delete:
-        //                DeleteSelectedItems();
-        //                return true;
-        //        }
-        //    }
+      //      if ((msg.Msg == WM_KEYDOWN) || (msg.Msg == WM_KEYUP))
+      //      {
+						//	
+      //          switch (keyCode)
+      //          {
+      //              case Keys.F2:
+      //                  RenameSelectedItem();
+      //                  return true;
+      //              case Keys.Delete:
+      //                  DeleteSelectedItems();
+      //                  return true;
+      //          }
+      //      }
+						//if (msg.Msg == (int)WM.WM_MOUSEWHEEL || msg.Msg == (int)WM.WM_VSCROLL)
+						//{
+						//	return true;
+						//}
 
-        //    return base.PreProcessMessage(ref msg);
-        //}
+						////var hr = ((IInputObject)this.GetShellBrowser()).TranslateAcceleratorIO(ref msg);
+						//return base.PreProcessMessage(ref msg);
+      //  }
 
-        /// <summary>
-        /// Overrides <see cref="Control.WndProc"/>
-        /// </summary>
-        /// <param name="m"/>
-        protected override void WndProc(ref Message m)
-        {
-					if (m.Msg == 78)
-					{
+     //   /// <summary>
+     //   /// Overrides <see cref="Control.WndProc"/>
+     //   /// </summary>
+     //   /// <param name="m"/>
+     //   protected override void WndProc(ref Message m)
+     //   {
+					//
+     //       const int CWM_GETISHELLBROWSER = 0x407;
 
-					}
-            const int CWM_GETISHELLBROWSER = 0x407;
-
-            // Windows 9x sends the CWM_GETISHELLBROWSER message and expects
-            // the IShellBrowser for the window to be returned or an Access
-            // Violation occurs. This is pseudo-documented in knowledge base 
-            // article Q157247.
-            if (m.Msg == CWM_GETISHELLBROWSER)
-            {
-                m.Result = Marshal.GetComInterfaceForObject(m_Browser,
-                    typeof(IShellBrowser));
-            }
-            else
-            {
-                base.WndProc(ref m);
-            }
-        }
+     //       // Windows 9x sends the CWM_GETISHELLBROWSER message and expects
+     //       // the IShellBrowser for the window to be returned or an Access
+     //       // Violation occurs. This is pseudo-documented in knowledge base 
+     //       // article Q157247.
+     //       if (m.Msg == CWM_GETISHELLBROWSER)
+     //       {
+     //           m.Result = Marshal.GetComInterfaceForObject(m_Browser,
+     //               typeof(IShellBrowser));
+     //       }
+     //       else
+     //       {
+     //           base.WndProc(ref m);
+     //       }
+     //   }
 
         internal bool IncludeItem(IntPtr pidl)
         {
@@ -964,10 +1102,12 @@ namespace GongSolutions.Shell
 
         internal void OnSelectionChanged()
         {
+
             if (SelectionChanged != null)
             {
                 SelectionChanged(this, EventArgs.Empty);
             }
+						
         }
 
         internal ShellItem ShellItem
@@ -1006,6 +1146,8 @@ namespace GongSolutions.Shell
                 folderSettings.fFlags |= FOLDERFLAGS.SINGLESEL;
             }
 
+						folderSettings.fFlags |= FOLDERFLAGS.AUTOARRANGE | FOLDERFLAGS.SNAPTOGRID;
+
             // Tell the IShellView object to create a view window and
             // activate it.
             try
@@ -1013,6 +1155,17 @@ namespace GongSolutions.Shell
                 m_ComInterface.CreateViewWindow(previous, ref folderSettings,
                                              GetShellBrowser(), ref bounds,
                                              out m_ShellViewWindow);
+								Task.Run(() =>
+								{
+									BeginInvoke(new MethodInvoker(() =>
+									{
+										AvailableVisibleColumns = AvailableColumns(false);
+										if (this.AllAvailableColumns == null)
+										{
+											this.AllAvailableColumns = AvailableColumns(true);
+										}
+									}));
+								});
             }
             catch (COMException ex)
             {
@@ -1039,7 +1192,7 @@ namespace GongSolutions.Shell
             // Destroy the previous view window.
             if (previous != null) previous.DestroyViewWindow();
         }
-
+				public SubclassListView lv;
         void RecreateShellView()
         {
             if (m_ComInterface != null)
@@ -1047,6 +1200,8 @@ namespace GongSolutions.Shell
                 CreateShellView();
 								this.subclassed.SysListviewhandle = this.ShellListViewHandle;
 								this.subclassed.AssignHandle(this.m_ShellViewWindow);
+								lv.lvhandle = this.ShellListViewHandle;
+								lv.AssignHandle(this.ShellListViewHandle);
                 //OnNavigated(new NavigatedEventArgs(ShellItem.Desktop));
             }
 
@@ -1159,6 +1314,124 @@ namespace GongSolutions.Shell
 					}
 				}
 
+				public Collumns[] AvailableColumns(bool All)
+				{
+					try
+					{
+						
+						IColumnManager icm = (IColumnManager)m_ComInterface;
+						uint columncount = 0;
+						HResult res = icm.GetColumnCount(All ? CM_ENUM_FLAGS.CM_ENUM_ALL : CM_ENUM_FLAGS.CM_ENUM_VISIBLE, out columncount);
+						PROPERTYKEY[] pk = new PROPERTYKEY[columncount];
+						res = icm.GetColumns(All ? CM_ENUM_FLAGS.CM_ENUM_ALL :  CM_ENUM_FLAGS.CM_ENUM_VISIBLE, pk, columncount);
+						List<Collumns> colls = new List<Collumns>();
+						foreach (PROPERTYKEY item in pk)
+						{
+							CM_COLUMNINFO ci = new CM_COLUMNINFO();
+							_GetColumnInfobyPK(m_ComInterface, All, item, out ci);
+							Collumns curCol = new Collumns();
+							curCol.Name = ci.wszName;
+							curCol.pkey = item;
+							curCol.Width = (int)ci.uIdealWidth;
+							colls.Add(curCol);
+						}
+						
+						//Guid iid = new Guid(InterfaceGuids.IColumnManager);
+						//IntPtr view = IntPtr.Zero;
+						//IntPtr Ishellv = Marshal.GetComInterfaceForObject(GetShellView(), typeof(IShellView));
+						//Marshal.QueryInterface(Ishellv, ref iid, out view);
+						//IColumnManager cm = (IColumnManager)Marshal.GetObjectForIUnknown(view);
+						//uint HeaderColsCount = 0;
+						//cm.GetColumnCount(All ? CM_ENUM_FLAGS.CM_ENUM_ALL : CM_ENUM_FLAGS.CM_ENUM_VISIBLE, out HeaderColsCount);
+						//Collumns[] ci = new Collumns[HeaderColsCount];
+						//for (int i = 0; i < HeaderColsCount; i++)
+						//{
+						//	Collumns col = new Collumns();
+						//	WindowsAPI.PROPERTYKEY pk;
+						//	WindowsAPI.CM_COLUMNINFO cmi = new WindowsAPI.CM_COLUMNINFO();
+						//	Marshal.AllocCoTaskMem(Marshal.SizeOf(cmi));
+						//	try
+						//	{
+						//		_GetColumnbyIndex(GetShellView(), All, i, out pk);
+						//		_GetColumnInfobyIndex(GetShellView(), All, i, out cmi);
+						//		col.pkey = pk;
+						//		col.Name = cmi.wszName;
+						//		col.Width = (int)cmi.uWidth;
+						//		ci[i] = col;
+
+						//	}
+						//	catch
+						//	{
+
+
+						//	}
+
+						//}
+						//return ci;
+						return colls.ToArray();
+					}
+					catch (Exception)
+					{
+
+						return new Collumns[0];
+					}
+				}
+
+				public void GetGroupColInfo(out PROPERTYKEY pk, out bool Asc)
+				{
+					try
+					{
+						this.FolderView2.GetGroupBy(out pk, out Asc);
+
+					}
+					catch (Exception)
+					{
+						pk = new PROPERTYKEY();
+						Asc = false;
+					}
+				}
+
+				public void GetSortColInfo(out SORTCOLUMN ci)
+				{
+					try
+					{
+						
+						int SortColsCount = -1;
+						this.FolderView2.GetSortColumnCount(out SortColsCount);
+						SORTCOLUMN[] sc = new SORTCOLUMN[SortColsCount];
+						if (SortColsCount > 0)
+						{
+							this.FolderView2.GetSortColumns(sc, SortColsCount); //_GetSortColumns(GetShellView(), 0, out sc);
+						}
+						ci = sc[0];
+					}
+					catch (Exception)
+					{
+						SORTCOLUMN sc = new SORTCOLUMN();
+						ci = sc;
+					}
+				}
+
+				public void SetGroupCollumn(PROPERTYKEY pk, bool Asc)
+				{
+					IFolderView2 ifv2 = this.FolderView2;
+					IntPtr scptr = Marshal.AllocHGlobal(Marshal.SizeOf(pk));
+					Marshal.StructureToPtr(pk, scptr, false);
+					ifv2.SetGroupBy(scptr, Asc);
+					Marshal.FreeHGlobal(scptr);
+				}
+
+				public void SetSortCollumn(PROPERTYKEY pk, SORT Order)
+				{
+
+					IFolderView2 ifv2 = this.FolderView2;
+					SORTCOLUMN sc = new SORTCOLUMN() { propkey = pk, direction = Order };
+					IntPtr scptr = Marshal.AllocHGlobal(Marshal.SizeOf(sc));
+					Marshal.StructureToPtr(sc, scptr, false);
+					ifv2.SetSortColumns(scptr, 1);
+					Marshal.FreeHGlobal(scptr);
+				}
+
 				/// <summary>
 				/// Returns the number of the items in current view
 				/// </summary>
@@ -1193,6 +1466,12 @@ namespace GongSolutions.Shell
 
 				[Browsable(false)]
 				public Collumns[] AvailableVisibleColumns
+				{
+					get;
+					set;
+				}
+
+				public Collumns[] AllAvailableColumns
 				{
 					get;
 					set;
@@ -1256,7 +1535,9 @@ namespace GongSolutions.Shell
         bool m_ShowWebView;
         ShellViewStyle m_View;
         PropertyChangedEventHandler m_PropertyChanged;
-    }
+
+				
+		}
 
     /// <summary>
     /// Provides information for FilterItem events.

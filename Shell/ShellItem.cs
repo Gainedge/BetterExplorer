@@ -35,7 +35,7 @@ namespace GongSolutions.Shell
     /// Represents an item in the Windows Shell namespace.
     /// </summary>
     [TypeConverter(typeof(ShellItemConverter))]
-    public class ShellItem : IEnumerable<ShellItem>
+    public class ShellItem : IEnumerable<ShellItem>, IDisposable
     {
 
         /// <summary>
@@ -340,7 +340,7 @@ namespace GongSolutions.Shell
         public IEnumerator<ShellItem> GetEnumerator()
         {
             return GetEnumerator(SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN |
-                SHCONTF.NONFOLDERS);
+                SHCONTF.NONFOLDERS | SHCONTF.INIT_ON_FIRST_NEXT | SHCONTF.FASTITEMS | SHCONTF.ENABLE_ASYNC);
         }
 
         /// <summary>
@@ -480,6 +480,22 @@ namespace GongSolutions.Shell
 
             return info.iIcon;
         }
+
+				public static int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags)
+				{
+					SHFILEINFO info = new SHFILEINFO();
+					IntPtr result = Shell32.SHGetFileInfo(pidl, 0, out info,
+							Marshal.SizeOf(info),
+							SHGFI.ICON | SHGFI.SYSICONINDEX | SHGFI.OVERLAYINDEX | SHGFI.PIDL |
+							(SHGFI)type | (SHGFI)flags);
+
+					if (result == IntPtr.Zero)
+					{
+						throw new Exception("Error retreiving shell folder icon");
+					}
+
+					return info.iIcon;
+				}
 
         /// <summary>
         /// Tests whether the <see cref="ShellItem"/> is the immediate parent 
@@ -1038,7 +1054,32 @@ namespace GongSolutions.Shell
 
         public IShellItem m_ComInterface;
         static ShellItem m_Desktop;
-    }
+				bool disposed;
+				/// <summary>
+				/// Clears up any resources associated with the SystemImageList
+				/// </summary>
+				public void Dispose()
+				{
+					Dispose(true);
+					//GC.SuppressFinalize(this);
+				}
+				/// <summary>
+				/// Clears up any resources associated with the SystemImageList
+				/// when disposing is true.
+				/// </summary>
+				/// <param name="disposing">Whether the object is being disposed</param>
+				public virtual void Dispose(bool disposing)
+				{
+						if (disposing)
+						{
+							if (m_ComInterface != null)
+							{
+								Marshal.ReleaseComObject(m_ComInterface);
+							}
+							m_ComInterface = null;
+						}
+				}
+		}
 
     class ShellItemConverter : TypeConverter
     {
@@ -1144,7 +1185,7 @@ namespace GongSolutions.Shell
     public enum ShellIconFlags
     {
         /// <summary>The icon is displayed opened.</summary>
-        OpenIcon = SHGFI.OPENICON,
+        OpenIcon = SHGFI.ICON,
 
         /// <summary>Get the overlay for the icon as well.</summary>
         OverlayIndex = SHGFI.OVERLAYINDEX

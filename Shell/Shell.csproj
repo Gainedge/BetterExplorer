@@ -66,6 +66,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collumns.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Interop\IColumnManager.cs" />
+    <Compile Include="Interop\IInputObject.cs" />
     <Compile Include="Interop\FileIcon.cs" />
     <Compile Include="Interop\ShellLink.cs" />
     <Compile Include="Interop\KnownFoldersCOM.cs" />
@@ -92,6 +95,7 @@
     <Compile Include="Interop\NativePoint.cs" />
     <Compile Include="Interop\Constants.cs" />
     <Compile Include="ShellDeffViewSubClassedWindow.cs" />
+    <Compile Include="SubclassListView.cs" />
     <Compile Include="SysImageList.cs" />
     <Compile Include="TreeViewBase.cs">
       <SubType>Component</SubType>
@@ -158,6 +162,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SystemImageList.cs" />
+    <Compile Include="VisualHelpers.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>

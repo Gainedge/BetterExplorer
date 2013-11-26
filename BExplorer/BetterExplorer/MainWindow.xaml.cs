@@ -524,13 +524,12 @@ namespace BetterExplorer
             btnSort.Items.Clear();
             btnGroup.Items.Clear();
 
-            WindowsAPI.SORTCOLUMN sc = new WindowsAPI.SORTCOLUMN();
-					//FIXME: fix this
-           // ShellListView.GetSortColInfo(out sc);
-            WindowsAPI.PROPERTYKEY pkg = new WindowsAPI.PROPERTYKEY();
+            SORTCOLUMN sc = new SORTCOLUMN();
+
+           ShellListView.GetSortColInfo(out sc);
+            PROPERTYKEY pkg = new PROPERTYKEY();
             bool GroupDir = false;
-						//FIXME: fix this
-           // ShellListView.GetGroupColInfo(out pkg, out GroupDir);
+           ShellListView.GetGroupColInfo(out pkg, out GroupDir);
 
             try
             {
@@ -597,7 +596,7 @@ namespace BetterExplorer
             misd.Click += misd_Click;
             misd.Focusable = false;
             misd.GroupName = "GR1";
-            if (sc.direction == WindowsAPI.SORT.ASCENDING)
+            if (sc.direction == SORT.ASCENDING)
             {
                 misa.IsChecked = true;
             }
@@ -768,8 +767,7 @@ namespace BetterExplorer
 				if (item is MenuItem)
 					if (((MenuItem)item).IsChecked && ((MenuItem)item != (sender as MenuItem)))
 					{
-						//FIXME: fix this
-            //ShellListView.SetSortCollumn(((Collumns)((MenuItem)item).Tag).pkey, WindowsAPI.SORT.DESCENDING);
+            ShellListView.SetSortCollumn(((Collumns)((MenuItem)item).Tag).pkey, SORT.DESCENDING);
 					}
 			}
 		}
@@ -781,8 +779,7 @@ namespace BetterExplorer
 				if (item is MenuItem)
 					if (((MenuItem)item).IsChecked && ((MenuItem)item != (sender as MenuItem)))
 					{
-						//FIXME: fix this
-            //ShellListView.SetSortCollumn(((Collumns)((MenuItem)item).Tag).pkey, WindowsAPI.SORT.ASCENDING);
+            ShellListView.SetSortCollumn(((Collumns)((MenuItem)item).Tag).pkey, SORT.ASCENDING);
 					}
 			}
 		}
@@ -798,10 +795,8 @@ namespace BetterExplorer
     void micm_Click(object sender, RoutedEventArgs e)
     {
 
-        using (MoreColumns fMoreCollumns = new MoreColumns())
-        {
-            fMoreCollumns.PopulateAvailableColumns((Collumns[])(sender as MenuItem).Tag, ShellListView, this.PointToScreen(Mouse.GetPosition(this)));
-        }
+			MoreColumns fMoreCollumns = new MoreColumns();
+			fMoreCollumns.PopulateAvailableColumns((Collumns[])(sender as MenuItem).Tag, ShellListView, this.PointToScreen(Mouse.GetPosition(this)));
     }
 
     void mic_Click(object sender, RoutedEventArgs e)
@@ -3444,21 +3439,21 @@ namespace BetterExplorer
 
 		async void ShellListView_SelectionChanged(object sender, EventArgs e)
 		{
-			int explorerSelectedItemsCount = 0;
+			int explorerSelectedItemsCount = ShellListView.SelectedItems.Count();
 
 			if (!IsSelectionRized)
 			{
 				IsSelectionRized = true;
 
-				await Task.Run(() =>
+				await Task.Run(async () =>
 				{
 					//ct.ThrowIfCancellationRequested();
-					Dispatcher.BeginInvoke(DispatcherPriority.Input, (ThreadStart)(() =>
+					await Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
 					{
 						try
 						{
 							// set up buttons
-							SetupUIOnSelectOrNavigate(ShellListView.SelectedItems.Count());
+							SetupUIOnSelectOrNavigate(explorerSelectedItemsCount);
 
 
 						}
@@ -3899,6 +3894,9 @@ namespace BetterExplorer
 			ShellListView.LVItemsColorCodes = LVItemsColor;
 			ShellListView.subclassed = new ShellDeffViewSubClassedWindow(IntPtr.Zero, ShellListView.ShellListViewHandle, ShellListView);
 			ShellListView.subclassed.AssignHandle(ShellListView.m_ShellViewWindow);
+			ShellListView.lv = new SubclassListView();
+			ShellListView.lv.AssignHandle(ShellListView.ShellListViewHandle);
+			ShellListView.lv.lvhandle = ShellListView.ShellListViewHandle;
         Task.Run(() =>
         {
             UpdateRecycleBinInfos();
@@ -4296,6 +4294,10 @@ namespace BetterExplorer
 						SetUpConsoleWindow(e);
 
 						SetupUIOnSelectOrNavigate(ShellListView.SelectedItems.Count(), true);
+
+						SetupColumnsButton(this.ShellListView.AllAvailableColumns);
+
+						SetSortingAndGroupingButtons();
 					}
 									));
 				});
@@ -5340,8 +5342,8 @@ namespace BetterExplorer
 
 		void mig_Click(object sender, RoutedEventArgs e)
 		{
-			//MenuItem item = (sender as MenuItem);
-			//ShellListView.SetGroupCollumn(((Collumns)item.Tag).pkey, true);
+			MenuItem item = (sender as MenuItem);
+			ShellListView.SetGroupCollumn(((Collumns)item.Tag).pkey, true);
 		}
 
 		private void btnAutosizeColls_Click(object sender, RoutedEventArgs e)
@@ -5492,11 +5494,11 @@ namespace BetterExplorer
       MenuItem ascitem = (MenuItem)parentButton.Items[parentButton.Items.IndexOf(misa)];
 			if (ascitem.IsChecked)
 			{
-        //ShellListView.SetSortCollumn(((Collumns)item.Tag).pkey, WindowsAPI.SORT.ASCENDING);
+        ShellListView.SetSortCollumn(((Collumns)item.Tag).pkey, SORT.ASCENDING);
 			}
 			else
 			{
-				//ShellListView.SetSortCollumn(((Collumns)item.Tag).pkey, WindowsAPI.SORT.DESCENDING);
+				ShellListView.SetSortCollumn(((Collumns)item.Tag).pkey, SORT.DESCENDING);
 			}
 
 		}
@@ -5505,10 +5507,8 @@ namespace BetterExplorer
 		{
 			MenuItem item = (sender as MenuItem);
 			item.IsChecked = true;
-      WindowsAPI.PROPERTYKEY pk = new WindowsAPI.PROPERTYKEY();
-			pk.fmtid = new Guid("00000000-0000-0000-0000-000000000000");
-			pk.pid = 0;
-			//ShellListView.SetGroupCollumn(pk, true);
+      PROPERTYKEY pk = new PROPERTYKEY();
+			ShellListView.SetGroupCollumn(pk, true);
 		}
 
 

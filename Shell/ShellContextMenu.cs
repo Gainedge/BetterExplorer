@@ -232,7 +232,7 @@ namespace GongSolutions.Shell
         {
             using (ContextMenu menu = new ContextMenu())
             {
-                pos = control.PointToScreen(pos);
+                //pos = control.PointToScreen(pos);
                 Populate(menu);
                 int command = User32.TrackPopupMenuEx(menu.Handle,
                     TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
