@@ -81,10 +81,10 @@ namespace BExplorer.Shell
         /// with a large preview of the seleted item appearing above.
         /// </summary>
         Thumbstrip,
-				/// <summary>
-				/// Each item appears in a item that occupy the whole view width
-				/// </summary>
-				Content,
+        /// <summary>
+        /// Each item appears in a item that occupy the whole view width
+        /// </summary>
+        Content,
     }
 
     /// <summary>
@@ -108,82 +108,82 @@ namespace BExplorer.Shell
     /// </remarks>    
     public class ShellView : Control, INotifyPropertyChanged
     {
-			public ShellDeffViewSubClassedWindow subclassed;
+        public ShellDeffViewSubClassedWindow subclassed;
 
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate void GetColumnbyIndex(IShellView view, bool isAll, int index, out PROPERTYKEY res);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void GetColumnbyIndex(IShellView view, bool isAll, int index, out PROPERTYKEY res);
 
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate IntPtr GetItemName(IFolderView2 view, int index);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate IntPtr GetItemName(IFolderView2 view, int index);
 
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate void GetItemLocation(IShellView view, int index, out int pointx, out int pointy);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void GetItemLocation(IShellView view, int index, out int pointx, out int pointy);
 
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate void SetColumnInShellView(IShellView view, int count, [MarshalAs(UnmanagedType.LPArray)] PROPERTYKEY[] pk);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void SetColumnInShellView(IShellView view, int count, [MarshalAs(UnmanagedType.LPArray)] PROPERTYKEY[] pk);
 
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate void SetSortColumns(IFolderView2 view, int count, [MarshalAs(UnmanagedType.LPArray)] SORTCOLUMN[] pk);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void SetSortColumns(IFolderView2 view, int count, [MarshalAs(UnmanagedType.LPArray)] SORTCOLUMN[] pk);
 
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate int GetColumnInfobyIndex(IShellView view, bool isAll, int index, out CM_COLUMNINFO res);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int GetColumnInfobyIndex(IShellView view, bool isAll, int index, out CM_COLUMNINFO res);
 
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate int GetColumnInfobyPK(IShellView view, bool isAll, PROPERTYKEY pk, out CM_COLUMNINFO res);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int GetColumnInfobyPK(IShellView view, bool isAll, PROPERTYKEY pk, out CM_COLUMNINFO res);
 
-			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-			public delegate void GetSortColumns(IShellView view, int index, out SORTCOLUMN sc);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void GetSortColumns(IShellView view, int index, out SORTCOLUMN sc);
 
-			private IntPtr BEHDLL { get; set; }
-			public GetItemName _GetItemName;
-			public GetItemLocation _GetItemLocation;
-			public SetColumnInShellView _SetColumnInShellView;
-			public SetSortColumns _SetSortColumns;
-			public GetColumnInfobyIndex _GetColumnInfobyIndex;
-			public GetColumnInfobyPK _GetColumnInfobyPK;
-			public GetSortColumns _GetSortColumns;
-			public GetColumnbyIndex _GetColumnbyIndex;
+        private IntPtr BEHDLL { get; set; }
+        public GetItemName _GetItemName;
+        public GetItemLocation _GetItemLocation;
+        public SetColumnInShellView _SetColumnInShellView;
+        public SetSortColumns _SetSortColumns;
+        public GetColumnInfobyIndex _GetColumnInfobyIndex;
+        public GetColumnInfobyPK _GetColumnInfobyPK;
+        public GetSortColumns _GetSortColumns;
+        public GetColumnbyIndex _GetColumnbyIndex;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ShellView"/> class.
         /// </summary>
         public ShellView()
         {
-					this.DoubleBuffered = true;
+            this.DoubleBuffered = true;
             m_History = new ShellHistory();
             m_MultiSelect = true;
             m_View = ShellViewStyle.LargeIcon;
             Size = new System.Drawing.Size(250, 200);
             Navigate(ShellItem.Desktop);
-						BEHDLL = Kernel32.LoadLibrary(Kernel32.Is64bitProcess(Process.GetCurrentProcess()) ? "BEH64.dll" : "BEH32.dll");
+            BEHDLL = Kernel32.LoadLibrary(Kernel32.Is64bitProcess(Process.GetCurrentProcess()) ? "BEH64.dll" : "BEH32.dll");
 
-						IntPtr GetItemNameP = Kernel32.GetProcAddress(BEHDLL, "GetItemName");
-						_GetItemName = (GetItemName)Marshal.GetDelegateForFunctionPointer(GetItemNameP, typeof(GetItemName));
+            IntPtr GetItemNameP = Kernel32.GetProcAddress(BEHDLL, "GetItemName");
+            _GetItemName = (GetItemName)Marshal.GetDelegateForFunctionPointer(GetItemNameP, typeof(GetItemName));
 
-						IntPtr GetItemLocationP = Kernel32.GetProcAddress(BEHDLL, "GetItemLocation");
-						_GetItemLocation = (GetItemLocation)Marshal.GetDelegateForFunctionPointer(GetItemLocationP, typeof(GetItemLocation));
-
-
-						IntPtr SetColumnInShellViewP = Kernel32.GetProcAddress(BEHDLL, "SetColumnInShellView");
-						_SetColumnInShellView = (SetColumnInShellView)Marshal.GetDelegateForFunctionPointer(SetColumnInShellViewP, typeof(SetColumnInShellView));
+            IntPtr GetItemLocationP = Kernel32.GetProcAddress(BEHDLL, "GetItemLocation");
+            _GetItemLocation = (GetItemLocation)Marshal.GetDelegateForFunctionPointer(GetItemLocationP, typeof(GetItemLocation));
 
 
-						IntPtr SetSortColumnsP = Kernel32.GetProcAddress(BEHDLL, "SetSortColumns");
-						_SetSortColumns = (SetSortColumns)Marshal.GetDelegateForFunctionPointer(SetSortColumnsP, typeof(SetSortColumns));
+            IntPtr SetColumnInShellViewP = Kernel32.GetProcAddress(BEHDLL, "SetColumnInShellView");
+            _SetColumnInShellView = (SetColumnInShellView)Marshal.GetDelegateForFunctionPointer(SetColumnInShellViewP, typeof(SetColumnInShellView));
 
 
-						IntPtr GetColumnInfobyIndexP = Kernel32.GetProcAddress(BEHDLL, "GetColumnInfobyIndex");
-						_GetColumnInfobyIndex = (GetColumnInfobyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyIndexP, typeof(GetColumnInfobyIndex));
+            IntPtr SetSortColumnsP = Kernel32.GetProcAddress(BEHDLL, "SetSortColumns");
+            _SetSortColumns = (SetSortColumns)Marshal.GetDelegateForFunctionPointer(SetSortColumnsP, typeof(SetSortColumns));
 
 
-						IntPtr GetColumnInfobyPKP = Kernel32.GetProcAddress(BEHDLL, "GetColumnInfobyPK");
-						_GetColumnInfobyPK = (GetColumnInfobyPK)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyPKP, typeof(GetColumnInfobyPK));
+            IntPtr GetColumnInfobyIndexP = Kernel32.GetProcAddress(BEHDLL, "GetColumnInfobyIndex");
+            _GetColumnInfobyIndex = (GetColumnInfobyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyIndexP, typeof(GetColumnInfobyIndex));
 
-						IntPtr GetSortColumnsP = Kernel32.GetProcAddress(BEHDLL, "GetSortColumns");
-						_GetSortColumns = (GetSortColumns)Marshal.GetDelegateForFunctionPointer(GetSortColumnsP, typeof(GetSortColumns));
 
-						IntPtr GetColumnbyIndexP = Kernel32.GetProcAddress(BEHDLL, "GetColumnbyIndex");
-						_GetColumnbyIndex = (GetColumnbyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnbyIndexP, typeof(GetColumnbyIndex));
+            IntPtr GetColumnInfobyPKP = Kernel32.GetProcAddress(BEHDLL, "GetColumnInfobyPK");
+            _GetColumnInfobyPK = (GetColumnInfobyPK)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyPKP, typeof(GetColumnInfobyPK));
+
+            IntPtr GetSortColumnsP = Kernel32.GetProcAddress(BEHDLL, "GetSortColumns");
+            _GetSortColumns = (GetSortColumns)Marshal.GetDelegateForFunctionPointer(GetSortColumnsP, typeof(GetSortColumns));
+
+            IntPtr GetColumnbyIndexP = Kernel32.GetProcAddress(BEHDLL, "GetColumnbyIndex");
+            _GetColumnbyIndex = (GetColumnbyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnbyIndexP, typeof(GetColumnbyIndex));
         }
 
         /// <summary>
@@ -253,9 +253,9 @@ namespace BExplorer.Shell
                 {
                     RecreateShellView();
                     m_History.Add(folder);
-										NavigatedEventArgs enav = new NavigatedEventArgs(folder);
+                    NavigatedEventArgs enav = new NavigatedEventArgs(folder);
                     OnNavigated(enav);
-										OnViewChanged(new ViewChangedEventArgs(this.View, this.ThumbnailSize));
+                    OnViewChanged(new ViewChangedEventArgs(this.View, this.ThumbnailSize));
                 }
                 catch (Exception)
                 {
@@ -265,8 +265,8 @@ namespace BExplorer.Shell
                 }
             }
 
-						GC.Collect();
-						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+            GC.Collect();
+            Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 
         }
 
@@ -511,60 +511,60 @@ namespace BExplorer.Shell
             //{
             //    m_ComInterface.SelectItem(item.ILPidl, SVSI.SELECT);
             //}
-					LVITEMA item = new LVITEMA();
-          item.mask = LVIF.LVIF_STATE;
-          item.stateMask = LVIS.LVIS_SELECTED;
-					item.state = LVIS.LVIS_SELECTED;
-					User32.SendMessage(this.ShellListViewHandle, MSG.LVM_SETITEMSTATE, -1, ref item);
+            LVITEMA item = new LVITEMA();
+            item.mask = LVIF.LVIF_STATE;
+            item.stateMask = LVIS.LVIS_SELECTED;
+            item.state = LVIS.LVIS_SELECTED;
+            User32.SendMessage(this.ShellListViewHandle, MSG.LVM_SETITEMSTATE, -1, ref item);
         }
 
-				public void SelectItems(ShellItem[] ShellObjectArray)
-				{
-					IntPtr pIDL = IntPtr.Zero;
-					IFolderView ifv = this.FolderView2;
+        public void SelectItems(ShellItem[] ShellObjectArray)
+        {
+            IntPtr pIDL = IntPtr.Zero;
+            IFolderView ifv = this.FolderView2;
 
-					IntPtr[] PIDLArray = new IntPtr[ShellObjectArray.Length];
-					int i = 0;
+            IntPtr[] PIDLArray = new IntPtr[ShellObjectArray.Length];
+            int i = 0;
 
-					foreach (ShellItem item in ShellObjectArray)
-					{
-						uint iAttribute;
-						Shell32.SHParseDisplayName(item.ParsingName.Replace(@"\\", @"\"), IntPtr.Zero, out pIDL, (uint)0, out iAttribute);
+            foreach (ShellItem item in ShellObjectArray)
+            {
+                uint iAttribute;
+                Shell32.SHParseDisplayName(item.ParsingName.Replace(@"\\", @"\"), IntPtr.Zero, out pIDL, (uint)0, out iAttribute);
 
-						if (pIDL != IntPtr.Zero)
-						{
-							IntPtr pIDLRltv = Shell32.ILFindLastID(item.Pidl);
-							if (pIDLRltv != IntPtr.Zero)
-							{
-								PIDLArray[i] = pIDLRltv;
-							}
-						}
+                if (pIDL != IntPtr.Zero)
+                {
+                    IntPtr pIDLRltv = Shell32.ILFindLastID(item.Pidl);
+                    if (pIDLRltv != IntPtr.Zero)
+                    {
+                        PIDLArray[i] = pIDLRltv;
+                    }
+                }
 
-						i++;
-					}
-					NativePoint pt = new NativePoint(0, 0);
-					ifv.SelectAndPositionItems((uint)ShellObjectArray.Length, PIDLArray, ref pt, SVSI.SELECT | SVSI.ENSUREVISIBLE | SVSI.FOCUSED | SVSI.DESELECTOTHERS);
-				}
+                i++;
+            }
+            NativePoint pt = new NativePoint(0, 0);
+            ifv.SelectAndPositionItems((uint)ShellObjectArray.Length, PIDLArray, ref pt, SVSI.SELECT | SVSI.ENSUREVISIBLE | SVSI.FOCUSED | SVSI.DESELECTOTHERS);
+        }
 
-				public void DoRename()
-				{
+        public void DoRename()
+        {
 
-					//IsRenameStarted = true;
-					m_ComInterface.SelectItem(SelectedItems[0].ILPidl, SVSI.SELECT | SVSI.DESELECTOTHERS |
-							SVSI.EDIT);
+            //IsRenameStarted = true;
+            m_ComInterface.SelectItem(SelectedItems[0].ILPidl, SVSI.SELECT | SVSI.DESELECTOTHERS |
+                    SVSI.EDIT);
 
-				}
+        }
 
-				public void EditFile(string Filename)
-				{
-					Shell32.SHELLEXECUTEINFO info = new Shell32.SHELLEXECUTEINFO();
-					info.cbSize = Marshal.SizeOf(info);
-					info.lpVerb = "edit";
-					info.lpFile = Filename;
-					info.nShow = SW_SHOW;
-					info.fMask = SEE_MASK_INVOKEIDLIST;
-					Shell32.ShellExecuteEx(ref info);
-				}
+        public void EditFile(string Filename)
+        {
+            Shell32.SHELLEXECUTEINFO info = new Shell32.SHELLEXECUTEINFO();
+            info.cbSize = Marshal.SizeOf(info);
+            info.lpVerb = "edit";
+            info.lpFile = Filename;
+            info.nShow = SW_SHOW;
+            info.fMask = SEE_MASK_INVOKEIDLIST;
+            Shell32.ShellExecuteEx(ref info);
+        }
 
         /// <summary>
         /// Gets a value indicating whether a new folder can be created in
@@ -667,30 +667,30 @@ namespace BExplorer.Shell
         {
             get
             {
-							List<ShellItem> items = new List<Shell.ShellItem>();
-							var iArray = GetSelectedItemsArray();
-							if (iArray != null)
-							{
-								try
-								{
-									
-									uint itemCount = 0;
-									iArray.GetCount(out itemCount);
-									for (uint index = 0; index < itemCount; index++)
-									{
-										IShellItem iShellItem = null;
-										iArray.GetItemAt(index, out iShellItem);
-										items.Add(new ShellItem(iShellItem));
-									}
-									
-								}
-								finally
-								{
-									Marshal.ReleaseComObject(iArray);
-								}
-								
-							}
-							return items.ToArray();
+                List<ShellItem> items = new List<Shell.ShellItem>();
+                var iArray = GetSelectedItemsArray();
+                if (iArray != null)
+                {
+                    try
+                    {
+
+                        uint itemCount = 0;
+                        iArray.GetCount(out itemCount);
+                        for (uint index = 0; index < itemCount; index++)
+                        {
+                            IShellItem iShellItem = null;
+                            iArray.GetItemAt(index, out iShellItem);
+                            items.Add(new ShellItem(iShellItem));
+                        }
+
+                    }
+                    finally
+                    {
+                        Marshal.ReleaseComObject(iArray);
+                    }
+
+                }
+                return items.ToArray();
                 //uint CFSTR_SHELLIDLIST =
                 //    User32.RegisterClipboardFormat("Shell IDList Array");
                 //ComTypes.IDataObject selection = GetSelectionDataObject();
@@ -729,29 +729,29 @@ namespace BExplorer.Shell
             }
         }
 
-				internal IShellItemArray GetSelectedItemsArray()
-				{
-					IShellItemArray iArray = null;
-					IFolderView2 iFV2 = this.FolderView2;
-					if (iFV2 != null)
-					{
-						try
-						{
-							Guid iidShellItemArray = new Guid(InterfaceGuids.IShellItemArray);
-							object oArray = null;
-							HResult hr = iFV2.Items((uint)SVGIO.SVGIO_SELECTION, ref iidShellItemArray, out oArray);
-							iArray = oArray as IShellItemArray;
-							
-						}
-						finally
-						{
-							//Marshal.ReleaseComObject(iFV2);
-							//iFV2 = null;
-						}
-					}
+        internal IShellItemArray GetSelectedItemsArray()
+        {
+            IShellItemArray iArray = null;
+            IFolderView2 iFV2 = this.FolderView2;
+            if (iFV2 != null)
+            {
+                try
+                {
+                    Guid iidShellItemArray = new Guid(InterfaceGuids.IShellItemArray);
+                    object oArray = null;
+                    HResult hr = iFV2.Items((uint)SVGIO.SVGIO_SELECTION, ref iidShellItemArray, out oArray);
+                    iArray = oArray as IShellItemArray;
 
-					return iArray;
-				}
+                }
+                finally
+                {
+                    //Marshal.ReleaseComObject(iFV2);
+                    //iFV2 = null;
+                }
+            }
+
+            return iArray;
+        }
 
         /// <summary>
         /// Gets/sets a value indicating whether multiple items can be selected
@@ -823,61 +823,139 @@ namespace BExplorer.Shell
             set
             {
                 m_View = value;
-								IFolderView2 ifv = (IFolderView2)m_ComInterface;
-								if (value == ShellViewStyle.Content)
-								{
-									ifv.SetCurrentFolderFlags(FOLDERFLAGS.EXTENDEDTILES, FOLDERFLAGS.EXTENDEDTILES);
-									ifv.SetCurrentViewMode(ShellViewStyle.Tile);
-								}
-								else
-								{
-									ifv.SetCurrentFolderFlags(FOLDERFLAGS.EXTENDEDTILES, 0);
-									ifv.SetCurrentViewMode(value);
-								}
-								
-								ShellViewStyle viewStyle;
-								Int32 thumbnailSize;
-								ifv.GetViewModeAndIconSize(out viewStyle, out thumbnailSize);
-								
-								OnViewChanged(new ViewChangedEventArgs(viewStyle, thumbnailSize));
+                IFolderView2 ifv = (IFolderView2)m_ComInterface;
+                if (value == ShellViewStyle.Content)
+                {
+                    ifv.SetCurrentFolderFlags(FOLDERFLAGS.EXTENDEDTILES, FOLDERFLAGS.EXTENDEDTILES);
+                    ifv.SetCurrentViewMode(ShellViewStyle.Tile);
+                }
+                else
+                {
+                    ifv.SetCurrentFolderFlags(FOLDERFLAGS.EXTENDEDTILES, 0);
+                    ifv.SetCurrentViewMode(value);
+                }
+
+                ShellViewStyle viewStyle;
+                Int32 thumbnailSize;
+                ifv.GetViewModeAndIconSize(out viewStyle, out thumbnailSize);
+
+                OnViewChanged(new ViewChangedEventArgs(viewStyle, thumbnailSize));
                 //OnNavigated(new NavigatedEventArgs(ShellItem.Desktop));
             }
         }
-				private Int32 m_ThumbnailSize;
-			[DefaultValue(48), Category("Appearance")]
-				public Int32 ThumbnailSize
-				{
-					set
-					{
-						IFolderView2 ifv = (IFolderView2)m_ComInterface;
-						ifv.SetViewModeAndIconSize(View,value);
-						m_ThumbnailSize = value;
-						OnViewChanged(new ViewChangedEventArgs(View, value));
-					}
-					get
-					{
-						IFolderView2 ifv = (IFolderView2)m_ComInterface;
-						if (ifv != null)
-						{
-							ShellViewStyle viewStyle;
-							Int32 thumbnailSize;
-							ifv.GetViewModeAndIconSize(out viewStyle, out thumbnailSize);
-							return thumbnailSize;
-						}
-						else
-						{
-							return 48;
-						}
-					}
-				}
-			public List<LVItemColor> LVItemsColorCodes { get; set; }
-			public IFolderView2 FolderView2
-			{
-				get
-				{
-					return (IFolderView2)m_ComInterface;
-				}
-			}
+        private Int32 m_ThumbnailSize;
+        [DefaultValue(48), Category("Appearance")]
+        public Int32 ThumbnailSize
+        {
+            set
+            {
+                IFolderView2 ifv = (IFolderView2)m_ComInterface;
+                ifv.SetViewModeAndIconSize(View, value);
+                m_ThumbnailSize = value;
+                OnViewChanged(new ViewChangedEventArgs(View, value));
+            }
+            get
+            {
+                IFolderView2 ifv = (IFolderView2)m_ComInterface;
+                if (ifv != null)
+                {
+                    ShellViewStyle viewStyle;
+                    Int32 thumbnailSize;
+                    ifv.GetViewModeAndIconSize(out viewStyle, out thumbnailSize);
+                    return thumbnailSize;
+                }
+                else
+                {
+                    return 48;
+                }
+            }
+        }
+        public List<LVItemColor> LVItemsColorCodes { get; set; }
+        public IFolderView2 FolderView2
+        {
+            get
+            {
+                return (IFolderView2)m_ComInterface;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets whether checkboxes are displayed to multi-select items.
+        /// </summary>
+        public bool ShowCheckboxes
+        {
+            get
+            {
+                IFolderView2 ifv = (IFolderView2)m_ComInterface;
+                uint sch;
+                ifv.GetCurrentFolderFlags(out sch);
+                if ((sch & (uint)FOLDERFLAGS.CHECKSELECT) == (uint)FOLDERFLAGS.CHECKSELECT)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            set
+            {
+                IFolderView2 ifv = (IFolderView2)m_ComInterface;
+                if (value == true)
+                {
+                    ifv.SetCurrentFolderFlags(FOLDERFLAGS.CHECKSELECT, FOLDERFLAGS.CHECKSELECT);
+                }
+                else
+                {
+                    ifv.SetCurrentFolderFlags(FOLDERFLAGS.CHECKSELECT, 0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets if single-click-open mode is used.
+        /// 
+        /// In this mode, a single-click will open a file. A file is selected on hover.
+        /// </summary>
+        public bool SingleClickOpenMode
+        {
+            get
+            {
+                IFolderView2 ifv = (IFolderView2)m_ComInterface;
+                uint sch;
+                ifv.GetCurrentFolderFlags(out sch);
+                if ((sch & (uint)FOLDERFLAGS.SINGLECLICKACTIVATE) == (uint)FOLDERFLAGS.SINGLECLICKACTIVATE)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            set
+            {
+                IFolderView2 ifv = (IFolderView2)m_ComInterface;
+                if (value == true)
+                {
+                    ifv.SetCurrentFolderFlags(FOLDERFLAGS.SINGLECLICKACTIVATE, FOLDERFLAGS.SINGLECLICKACTIVATE);
+                }
+                else
+                {
+                    ifv.SetCurrentFolderFlags(FOLDERFLAGS.SINGLECLICKACTIVATE, 0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Occurs when the control gains focus
+        /// </summary>
+        public event EventHandler GotFocus;
+
+        /// <summary>
+        /// Occurs when the control loses focus
+        /// </summary>
+        public event EventHandler LostFocus;
 
         /// <summary>
         /// Occurs when the <see cref="ShellView"/> control wants to know
@@ -915,7 +993,7 @@ namespace BExplorer.Shell
         /// </remarks>
         public event EventHandler SelectionChanged;
 
-				public event EventHandler<ViewChangedEventArgs> ViewStyleChanged;
+        public event EventHandler<ViewChangedEventArgs> ViewStyleChanged;
 
         #region Hidden Inherited Properties
 
@@ -987,8 +1065,8 @@ namespace BExplorer.Shell
             base.OnCreateControl();
             CreateShellView();
             OnNavigated(new NavigatedEventArgs(ShellItem.Desktop));
-						
-						
+
+
         }
 
         /// <summary>
@@ -1005,7 +1083,7 @@ namespace BExplorer.Shell
                 e.IsInputKey = true;
 
             if (e.Control && e.KeyCode == Keys.A) SelectAll();
-						if (e.KeyCode == Keys.F2) RenameSelectedItem();
+            if (e.KeyCode == Keys.F2) RenameSelectedItem();
 
             base.OnPreviewKeyDown(e);
         }
@@ -1028,57 +1106,57 @@ namespace BExplorer.Shell
         /// 
         /// <param name="msg"/>
         /// <returns/>
-      //  public override bool PreProcessMessage(ref Message msg)
-      //  {
-      //      const int WM_KEYDOWN = 0x100;
-      //      const int WM_KEYUP = 0x101;
-      //      Keys keyCode = (Keys)(int)msg.WParam & Keys.KeyCode;
+        //  public override bool PreProcessMessage(ref Message msg)
+        //  {
+        //      const int WM_KEYDOWN = 0x100;
+        //      const int WM_KEYUP = 0x101;
+        //      Keys keyCode = (Keys)(int)msg.WParam & Keys.KeyCode;
 
-      //      if ((msg.Msg == WM_KEYDOWN) || (msg.Msg == WM_KEYUP))
-      //      {
-						//	
-      //          switch (keyCode)
-      //          {
-      //              case Keys.F2:
-      //                  RenameSelectedItem();
-      //                  return true;
-      //              case Keys.Delete:
-      //                  DeleteSelectedItems();
-      //                  return true;
-      //          }
-      //      }
-						//if (msg.Msg == (int)WM.WM_MOUSEWHEEL || msg.Msg == (int)WM.WM_VSCROLL)
-						//{
-						//	return true;
-						//}
+        //      if ((msg.Msg == WM_KEYDOWN) || (msg.Msg == WM_KEYUP))
+        //      {
+        //	
+        //          switch (keyCode)
+        //          {
+        //              case Keys.F2:
+        //                  RenameSelectedItem();
+        //                  return true;
+        //              case Keys.Delete:
+        //                  DeleteSelectedItems();
+        //                  return true;
+        //          }
+        //      }
+        //if (msg.Msg == (int)WM.WM_MOUSEWHEEL || msg.Msg == (int)WM.WM_VSCROLL)
+        //{
+        //	return true;
+        //}
 
-						////var hr = ((IInputObject)this.GetShellBrowser()).TranslateAcceleratorIO(ref msg);
-						//return base.PreProcessMessage(ref msg);
-      //  }
+        ////var hr = ((IInputObject)this.GetShellBrowser()).TranslateAcceleratorIO(ref msg);
+        //return base.PreProcessMessage(ref msg);
+        //  }
 
-     //   /// <summary>
-     //   /// Overrides <see cref="Control.WndProc"/>
-     //   /// </summary>
-     //   /// <param name="m"/>
-     //   protected override void WndProc(ref Message m)
-     //   {
-					//
-     //       const int CWM_GETISHELLBROWSER = 0x407;
+        //   /// <summary>
+        //   /// Overrides <see cref="Control.WndProc"/>
+        //   /// </summary>
+        //   /// <param name="m"/>
+        //   protected override void WndProc(ref Message m)
+        //   {
+        //
+        //       const int CWM_GETISHELLBROWSER = 0x407;
 
-     //       // Windows 9x sends the CWM_GETISHELLBROWSER message and expects
-     //       // the IShellBrowser for the window to be returned or an Access
-     //       // Violation occurs. This is pseudo-documented in knowledge base 
-     //       // article Q157247.
-     //       if (m.Msg == CWM_GETISHELLBROWSER)
-     //       {
-     //           m.Result = Marshal.GetComInterfaceForObject(m_Browser,
-     //               typeof(IShellBrowser));
-     //       }
-     //       else
-     //       {
-     //           base.WndProc(ref m);
-     //       }
-     //   }
+        //       // Windows 9x sends the CWM_GETISHELLBROWSER message and expects
+        //       // the IShellBrowser for the window to be returned or an Access
+        //       // Violation occurs. This is pseudo-documented in knowledge base 
+        //       // article Q157247.
+        //       if (m.Msg == CWM_GETISHELLBROWSER)
+        //       {
+        //           m.Result = Marshal.GetComInterfaceForObject(m_Browser,
+        //               typeof(IShellBrowser));
+        //       }
+        //       else
+        //       {
+        //           base.WndProc(ref m);
+        //       }
+        //   }
 
         internal bool IncludeItem(IntPtr pidl)
         {
@@ -1107,7 +1185,23 @@ namespace BExplorer.Shell
             {
                 SelectionChanged(this, EventArgs.Empty);
             }
-						
+
+        }
+
+        internal void OnGotFocus()
+        {
+            if (GotFocus != null)
+            {
+                GotFocus(this, EventArgs.Empty);
+            }
+        }
+
+        internal void OnLostFocus()
+        {
+            if (LostFocus != null)
+            {
+                LostFocus(this, EventArgs.Empty);
+            }
         }
 
         internal ShellItem ShellItem
@@ -1115,14 +1209,14 @@ namespace BExplorer.Shell
             get { return m_CurrentFolder; }
         }
 
-				public IntPtr ShellListViewHandle
-				{
-					get
-					{
-						var handle = User32.FindWindowEx(m_ShellViewWindow, IntPtr.Zero, "SysListView32", "FolderView");
-						return handle;
-					}
-				}
+        public IntPtr ShellListViewHandle
+        {
+            get
+            {
+                var handle = User32.FindWindowEx(m_ShellViewWindow, IntPtr.Zero, "SysListView32", "FolderView");
+                return handle;
+            }
+        }
 
         void CreateShellView()
         {
@@ -1146,7 +1240,7 @@ namespace BExplorer.Shell
                 folderSettings.fFlags |= FOLDERFLAGS.SINGLESEL;
             }
 
-						folderSettings.fFlags |= FOLDERFLAGS.AUTOARRANGE | FOLDERFLAGS.SNAPTOGRID;
+            folderSettings.fFlags |= FOLDERFLAGS.AUTOARRANGE | FOLDERFLAGS.SNAPTOGRID;
 
             // Tell the IShellView object to create a view window and
             // activate it.
@@ -1155,17 +1249,17 @@ namespace BExplorer.Shell
                 m_ComInterface.CreateViewWindow(previous, ref folderSettings,
                                              GetShellBrowser(), ref bounds,
                                              out m_ShellViewWindow);
-								Task.Run(() =>
-								{
-									BeginInvoke(new MethodInvoker(() =>
-									{
-										AvailableVisibleColumns = AvailableColumns(false);
-										if (this.AllAvailableColumns == null)
-										{
-											this.AllAvailableColumns = AvailableColumns(true);
-										}
-									}));
-								});
+                Task.Run(() =>
+                {
+                    BeginInvoke(new MethodInvoker(() =>
+                    {
+                        AvailableVisibleColumns = AvailableColumns(false);
+                        if (this.AllAvailableColumns == null)
+                        {
+                            this.AllAvailableColumns = AvailableColumns(true);
+                        }
+                    }));
+                });
             }
             catch (COMException ex)
             {
@@ -1188,20 +1282,20 @@ namespace BExplorer.Shell
                 User32.EnableWindow(m_ShellViewWindow, false);
             }
 
-						
+
             // Destroy the previous view window.
             if (previous != null) previous.DestroyViewWindow();
         }
-				public SubclassListView lv;
+        public SubclassListView lv;
         void RecreateShellView()
         {
             if (m_ComInterface != null)
             {
                 CreateShellView();
-								this.subclassed.SysListviewhandle = this.ShellListViewHandle;
-								this.subclassed.AssignHandle(this.m_ShellViewWindow);
-								lv.lvhandle = this.ShellListViewHandle;
-								lv.AssignHandle(this.ShellListViewHandle);
+                this.subclassed.SysListviewhandle = this.ShellListViewHandle;
+                this.subclassed.AssignHandle(this.m_ShellViewWindow);
+                lv.lvhandle = this.ShellListViewHandle;
+                lv.AssignHandle(this.ShellListViewHandle);
                 //OnNavigated(new NavigatedEventArgs(ShellItem.Desktop));
             }
 
@@ -1262,230 +1356,230 @@ namespace BExplorer.Shell
             }
         }
 
-				public void ShowFileProperties()
-				{
-					if (Shell32.SHMultiFileProperties(GetSelectionDataObject(), 0) != 0 /*S_OK*/)
-					{
-						throw new Win32Exception();
-					}
-				}
-				private const int SW_SHOW = 5;
-				private const uint SEE_MASK_INVOKEIDLIST = 12;
-				public void ShowFileProperties(string Filename)
-				{
-					Shell32.SHELLEXECUTEINFO info = new Shell32.SHELLEXECUTEINFO();
-					info.cbSize = Marshal.SizeOf(info);
-					info.lpVerb = "properties";
-					info.lpFile = Filename;
-					info.nShow = SW_SHOW;
-					info.fMask = SEE_MASK_INVOKEIDLIST;
-					Shell32.ShellExecuteEx(ref info);
-				}
+        public void ShowFileProperties()
+        {
+            if (Shell32.SHMultiFileProperties(GetSelectionDataObject(), 0) != 0 /*S_OK*/)
+            {
+                throw new Win32Exception();
+            }
+        }
+        private const int SW_SHOW = 5;
+        private const uint SEE_MASK_INVOKEIDLIST = 12;
+        public void ShowFileProperties(string Filename)
+        {
+            Shell32.SHELLEXECUTEINFO info = new Shell32.SHELLEXECUTEINFO();
+            info.cbSize = Marshal.SizeOf(info);
+            info.lpVerb = "properties";
+            info.lpFile = Filename;
+            info.nShow = SW_SHOW;
+            info.fMask = SEE_MASK_INVOKEIDLIST;
+            Shell32.ShellExecuteEx(ref info);
+        }
 
-				public void DeSelectAllItems()
-				{
-					this.FolderView2.SelectItem(-1, (uint)SVSI.DESELECTOTHERS);
-				}
+        public void DeSelectAllItems()
+        {
+            this.FolderView2.SelectItem(-1, (uint)SVSI.DESELECTOTHERS);
+        }
 
-				public void SelectItem(int Index)
-				{
-					this.FolderView2.SelectItem(Index, (uint)SVSI.DESELECTOTHERS);
-				}
+        public void SelectItem(int Index)
+        {
+            this.FolderView2.SelectItem(Index, (uint)SVSI.DESELECTOTHERS);
+        }
 
-				public void InvertSelection()
-				{
-					for (int i = 0; i < GetItemsCount(); i++)
-					{
-						IFolderView2 folderView2 = this.FolderView2;
-						IntPtr pidl;
-						folderView2.Item(i, out pidl);
-						SVSI state;
-						folderView2.GetSelectionState(pidl, out state);
-						if (state == SVSI.DESELECT || state == SVSI.FOCUSED &&
-								state != SVSI.SELECT)
-						{
-							this.m_ComInterface.SelectItem(pidl, SVSI.SELECT);
-						}
-						else
-						{
-							this.m_ComInterface.SelectItem(pidl, SVSI.DESELECT);
-						}
+        public void InvertSelection()
+        {
+            for (int i = 0; i < GetItemsCount(); i++)
+            {
+                IFolderView2 folderView2 = this.FolderView2;
+                IntPtr pidl;
+                folderView2.Item(i, out pidl);
+                SVSI state;
+                folderView2.GetSelectionState(pidl, out state);
+                if (state == SVSI.DESELECT || state == SVSI.FOCUSED &&
+                        state != SVSI.SELECT)
+                {
+                    this.m_ComInterface.SelectItem(pidl, SVSI.SELECT);
+                }
+                else
+                {
+                    this.m_ComInterface.SelectItem(pidl, SVSI.DESELECT);
+                }
 
-					}
-				}
+            }
+        }
 
-				public Collumns[] AvailableColumns(bool All)
-				{
-					try
-					{
-						
-						IColumnManager icm = (IColumnManager)m_ComInterface;
-						uint columncount = 0;
-						HResult res = icm.GetColumnCount(All ? CM_ENUM_FLAGS.CM_ENUM_ALL : CM_ENUM_FLAGS.CM_ENUM_VISIBLE, out columncount);
-						PROPERTYKEY[] pk = new PROPERTYKEY[columncount];
-						res = icm.GetColumns(All ? CM_ENUM_FLAGS.CM_ENUM_ALL :  CM_ENUM_FLAGS.CM_ENUM_VISIBLE, pk, columncount);
-						List<Collumns> colls = new List<Collumns>();
-						foreach (PROPERTYKEY item in pk)
-						{
-							CM_COLUMNINFO ci = new CM_COLUMNINFO();
-							_GetColumnInfobyPK(m_ComInterface, All, item, out ci);
-							Collumns curCol = new Collumns();
-							curCol.Name = ci.wszName;
-							curCol.pkey = item;
-							curCol.Width = (int)ci.uIdealWidth;
-							colls.Add(curCol);
-						}
-						return colls.ToArray();
-					}
-					catch (Exception)
-					{
+        public Collumns[] AvailableColumns(bool All)
+        {
+            try
+            {
 
-						return new Collumns[0];
-					}
-				}
+                IColumnManager icm = (IColumnManager)m_ComInterface;
+                uint columncount = 0;
+                HResult res = icm.GetColumnCount(All ? CM_ENUM_FLAGS.CM_ENUM_ALL : CM_ENUM_FLAGS.CM_ENUM_VISIBLE, out columncount);
+                PROPERTYKEY[] pk = new PROPERTYKEY[columncount];
+                res = icm.GetColumns(All ? CM_ENUM_FLAGS.CM_ENUM_ALL : CM_ENUM_FLAGS.CM_ENUM_VISIBLE, pk, columncount);
+                List<Collumns> colls = new List<Collumns>();
+                foreach (PROPERTYKEY item in pk)
+                {
+                    CM_COLUMNINFO ci = new CM_COLUMNINFO();
+                    _GetColumnInfobyPK(m_ComInterface, All, item, out ci);
+                    Collumns curCol = new Collumns();
+                    curCol.Name = ci.wszName;
+                    curCol.pkey = item;
+                    curCol.Width = (int)ci.uIdealWidth;
+                    colls.Add(curCol);
+                }
+                return colls.ToArray();
+            }
+            catch (Exception)
+            {
 
-				public void GetGroupColInfo(out PROPERTYKEY pk, out bool Asc)
-				{
-					try
-					{
-						this.FolderView2.GetGroupBy(out pk, out Asc);
+                return new Collumns[0];
+            }
+        }
 
-					}
-					catch (Exception)
-					{
-						pk = new PROPERTYKEY();
-						Asc = false;
-					}
-				}
+        public void GetGroupColInfo(out PROPERTYKEY pk, out bool Asc)
+        {
+            try
+            {
+                this.FolderView2.GetGroupBy(out pk, out Asc);
 
-				public void GetSortColInfo(out SORTCOLUMN ci)
-				{
-					try
-					{
-						
-						int SortColsCount = -1;
-						this.FolderView2.GetSortColumnCount(out SortColsCount);
-						SORTCOLUMN[] sc = new SORTCOLUMN[SortColsCount];
-						if (SortColsCount > 0)
-						{
-							this.FolderView2.GetSortColumns(sc, SortColsCount); //_GetSortColumns(GetShellView(), 0, out sc);
-						}
-						ci = sc[0];
-					}
-					catch (Exception)
-					{
-						SORTCOLUMN sc = new SORTCOLUMN();
-						ci = sc;
-					}
-				}
+            }
+            catch (Exception)
+            {
+                pk = new PROPERTYKEY();
+                Asc = false;
+            }
+        }
 
-				public void SetGroupCollumn(PROPERTYKEY pk, bool Asc)
-				{
-					IFolderView2 ifv2 = this.FolderView2;
-					IntPtr scptr = Marshal.AllocHGlobal(Marshal.SizeOf(pk));
-					Marshal.StructureToPtr(pk, scptr, false);
-					ifv2.SetGroupBy(scptr, Asc);
-					Marshal.FreeHGlobal(scptr);
-				}
+        public void GetSortColInfo(out SORTCOLUMN ci)
+        {
+            try
+            {
 
-				public void SetSortCollumn(PROPERTYKEY pk, SORT Order)
-				{
+                int SortColsCount = -1;
+                this.FolderView2.GetSortColumnCount(out SortColsCount);
+                SORTCOLUMN[] sc = new SORTCOLUMN[SortColsCount];
+                if (SortColsCount > 0)
+                {
+                    this.FolderView2.GetSortColumns(sc, SortColsCount); //_GetSortColumns(GetShellView(), 0, out sc);
+                }
+                ci = sc[0];
+            }
+            catch (Exception)
+            {
+                SORTCOLUMN sc = new SORTCOLUMN();
+                ci = sc;
+            }
+        }
 
-					IFolderView2 ifv2 = this.FolderView2;
-					SORTCOLUMN sc = new SORTCOLUMN() { propkey = pk, direction = Order };
-					IntPtr scptr = Marshal.AllocHGlobal(Marshal.SizeOf(sc));
-					Marshal.StructureToPtr(sc, scptr, false);
-					ifv2.SetSortColumns(scptr, 1);
-					Marshal.FreeHGlobal(scptr);
-				}
+        public void SetGroupCollumn(PROPERTYKEY pk, bool Asc)
+        {
+            IFolderView2 ifv2 = this.FolderView2;
+            IntPtr scptr = Marshal.AllocHGlobal(Marshal.SizeOf(pk));
+            Marshal.StructureToPtr(pk, scptr, false);
+            ifv2.SetGroupBy(scptr, Asc);
+            Marshal.FreeHGlobal(scptr);
+        }
 
-				public void SetColInView(PROPERTYKEY pk, bool Remove)
-				{
+        public void SetSortCollumn(PROPERTYKEY pk, SORT Order)
+        {
 
-					if (!Remove)
-					{
-						PROPERTYKEY[] pkk = new PROPERTYKEY[AvailableVisibleColumns.Length + 1];
-						for (int i = 0; i < AvailableVisibleColumns.Length; i++)
-						{
-							pkk[i] = AvailableVisibleColumns[i].pkey;
-						}
+            IFolderView2 ifv2 = this.FolderView2;
+            SORTCOLUMN sc = new SORTCOLUMN() { propkey = pk, direction = Order };
+            IntPtr scptr = Marshal.AllocHGlobal(Marshal.SizeOf(sc));
+            Marshal.StructureToPtr(sc, scptr, false);
+            ifv2.SetSortColumns(scptr, 1);
+            Marshal.FreeHGlobal(scptr);
+        }
 
-						pkk[AvailableVisibleColumns.Length] = pk;
+        public void SetColInView(PROPERTYKEY pk, bool Remove)
+        {
 
-						IColumnManager icm = (IColumnManager)m_ComInterface;
-						icm.SetColumns(pkk, (uint)AvailableVisibleColumns.Length + 1);
-						//_SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length + 1, pkk);
+            if (!Remove)
+            {
+                PROPERTYKEY[] pkk = new PROPERTYKEY[AvailableVisibleColumns.Length + 1];
+                for (int i = 0; i < AvailableVisibleColumns.Length; i++)
+                {
+                    pkk[i] = AvailableVisibleColumns[i].pkey;
+                }
 
-						AvailableVisibleColumns = AvailableColumns(false);
-					}
-					else
-					{
-						PROPERTYKEY[] pkk = new PROPERTYKEY[AvailableVisibleColumns.Length - 1];
-						int j = 0;
-						for (int i = 0; i < AvailableVisibleColumns.Length; i++)
-						{
-							if (!(AvailableVisibleColumns[i].pkey.fmtid == pk.fmtid && AvailableVisibleColumns[i].pkey.pid == pk.pid))
-							{
-								pkk[j] = AvailableVisibleColumns[i].pkey;
-								j++;
-							}
+                pkk[AvailableVisibleColumns.Length] = pk;
 
-						}
+                IColumnManager icm = (IColumnManager)m_ComInterface;
+                icm.SetColumns(pkk, (uint)AvailableVisibleColumns.Length + 1);
+                //_SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length + 1, pkk);
 
-						IColumnManager icm = (IColumnManager)m_ComInterface;
-						icm.SetColumns(pkk, (uint)AvailableVisibleColumns.Length - 1);
-						//_SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length - 1, pkk);
+                AvailableVisibleColumns = AvailableColumns(false);
+            }
+            else
+            {
+                PROPERTYKEY[] pkk = new PROPERTYKEY[AvailableVisibleColumns.Length - 1];
+                int j = 0;
+                for (int i = 0; i < AvailableVisibleColumns.Length; i++)
+                {
+                    if (!(AvailableVisibleColumns[i].pkey.fmtid == pk.fmtid && AvailableVisibleColumns[i].pkey.pid == pk.pid))
+                    {
+                        pkk[j] = AvailableVisibleColumns[i].pkey;
+                        j++;
+                    }
 
-						AvailableVisibleColumns = AvailableColumns(false);
-					}
-				}
+                }
 
-				/// <summary>
-				/// Returns the number of the items in current view
-				/// </summary>
-				/// <returns></returns>
-				public int GetItemsCount()
-				{
-					int itemsCount = 0;
+                IColumnManager icm = (IColumnManager)m_ComInterface;
+                icm.SetColumns(pkk, (uint)AvailableVisibleColumns.Length - 1);
+                //_SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length - 1, pkk);
 
-					//IFolderView2 iFV2 = GetFolderView2();
-					if (this.FolderView2 != null)
-					{
-						try
-						{
-							HResult hr = this.FolderView2.ItemCount((uint)SVGIO.SVGIO_ALLVIEW, out itemsCount);
+                AvailableVisibleColumns = AvailableColumns(false);
+            }
+        }
 
-							//if (hr != HResult.Ok &&
-							//		hr != HResult.ElementNotFound &&
-							//		hr != HResult.Fail)
-							//{
-							//	throw;
-							//}
-						}
-						finally
-						{
-							//Marshal.ReleaseComObject(iFV2);
-							//iFV2 = null;
-						}
-					}
+        /// <summary>
+        /// Returns the number of the items in current view
+        /// </summary>
+        /// <returns></returns>
+        public int GetItemsCount()
+        {
+            int itemsCount = 0;
 
-					return itemsCount;
-				}
+            //IFolderView2 iFV2 = GetFolderView2();
+            if (this.FolderView2 != null)
+            {
+                try
+                {
+                    HResult hr = this.FolderView2.ItemCount((uint)SVGIO.SVGIO_ALLVIEW, out itemsCount);
 
-				[Browsable(false)]
-				public Collumns[] AvailableVisibleColumns
-				{
-					get;
-					set;
-				}
+                    //if (hr != HResult.Ok &&
+                    //		hr != HResult.ElementNotFound &&
+                    //		hr != HResult.Fail)
+                    //{
+                    //	throw;
+                    //}
+                }
+                finally
+                {
+                    //Marshal.ReleaseComObject(iFV2);
+                    //iFV2 = null;
+                }
+            }
 
-				public Collumns[] AllAvailableColumns
-				{
-					get;
-					set;
-				}
+            return itemsCount;
+        }
 
-        IShellBrowser GetShellBrowser()
+        [Browsable(false)]
+        public Collumns[] AvailableVisibleColumns
+        {
+            get;
+            set;
+        }
+
+        public Collumns[] AllAvailableColumns
+        {
+            get;
+            set;
+        }
+
+        public IShellBrowser GetShellBrowser()
         {
             if (m_Browser == null)
             {
@@ -1509,13 +1603,13 @@ namespace BExplorer.Shell
             }
         }
 
-				void OnViewChanged(ViewChangedEventArgs e)
-				{
-					if (ViewStyleChanged != null)
-					{
-						ViewStyleChanged(this, e);
-					}
-				}
+        void OnViewChanged(ViewChangedEventArgs e)
+        {
+            if (ViewStyleChanged != null)
+            {
+                ViewStyleChanged(this, e);
+            }
+        }
 
         bool ShouldSerializeCurrentFolder()
         {
@@ -1544,8 +1638,8 @@ namespace BExplorer.Shell
         ShellViewStyle m_View;
         PropertyChangedEventHandler m_PropertyChanged;
 
-				
-		}
+
+    }
 
     /// <summary>
     /// Provides information for FilterItem events.
@@ -1629,48 +1723,48 @@ namespace BExplorer.Shell
         ShellItem m_Folder;
     }
 
-		public class NavigatedEventArgs : EventArgs
-		{
-			ShellItem m_Folder;
-			public NavigatedEventArgs(ShellItem folder)
-			{
-				m_Folder = folder;
-			}
-			/// <summary>
-			/// The folder that is navigated to.
-			/// </summary>
-			public ShellItem Folder
-			{
-				get { return m_Folder; }
-				set { m_Folder = value; }
-			}
-		}
+    public class NavigatedEventArgs : EventArgs
+    {
+        ShellItem m_Folder;
+        public NavigatedEventArgs(ShellItem folder)
+        {
+            m_Folder = folder;
+        }
+        /// <summary>
+        /// The folder that is navigated to.
+        /// </summary>
+        public ShellItem Folder
+        {
+            get { return m_Folder; }
+            set { m_Folder = value; }
+        }
+    }
 
-		public class ViewChangedEventArgs : EventArgs
-		{
-			ShellViewStyle m_View;
-			Int32 m_ThumbnailSize;
-			public ViewChangedEventArgs(ShellViewStyle view, Int32? thumbnailSize)
-			{
-				m_View = view;
-				if (thumbnailSize != null)
-					m_ThumbnailSize = thumbnailSize.Value;
-			}
-			/// <summary>
-			/// The current ViewStyle
-			/// </summary>
-			public ShellViewStyle CurrentView
-			{
-				get { return m_View; }
-				set { m_View = value; }
-			}
+    public class ViewChangedEventArgs : EventArgs
+    {
+        ShellViewStyle m_View;
+        Int32 m_ThumbnailSize;
+        public ViewChangedEventArgs(ShellViewStyle view, Int32? thumbnailSize)
+        {
+            m_View = view;
+            if (thumbnailSize != null)
+                m_ThumbnailSize = thumbnailSize.Value;
+        }
+        /// <summary>
+        /// The current ViewStyle
+        /// </summary>
+        public ShellViewStyle CurrentView
+        {
+            get { return m_View; }
+            set { m_View = value; }
+        }
 
-			public Int32 ThumbnailSize
-			{
-				get { return m_ThumbnailSize; }
-				set { m_ThumbnailSize = value; }
-			}
-		}
+        public Int32 ThumbnailSize
+        {
+            get { return m_ThumbnailSize; }
+            set { m_ThumbnailSize = value; }
+        }
+    }
 
     /// <summary>
     /// Exception raised when a user aborts a Shell operation.

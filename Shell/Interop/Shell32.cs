@@ -124,7 +124,7 @@ namespace BExplorer.Shell.Interop
         NOWEBVIEW = 0x10000,
         HIDEFILENAMES = 0x20000,
         CHECKSELECT = 0x40000,
-				EXTENDEDTILES = 0x02000000,
+		EXTENDEDTILES = 0x02000000,
     }
 
     public enum FOLDERVIEWMODE : uint

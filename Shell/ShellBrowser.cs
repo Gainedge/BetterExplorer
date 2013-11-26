@@ -283,6 +283,14 @@ namespace BExplorer.Shell
 							}
                 
             }
+            else if (uChange == CDBOSC.CDBOSC_SETFOCUS)
+            {
+                m_ShellView.OnGotFocus();
+            }
+            else if (uChange == CDBOSC.CDBOSC_KILLFOCUS)
+            {
+                m_ShellView.OnLostFocus();
+            }
 						
             return HResult.S_OK;
         }

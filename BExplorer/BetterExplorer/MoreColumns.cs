@@ -67,7 +67,7 @@ namespace BetterExplorer
           }
           Opacity = 0;
 					if (lvColumns.Items.Count > 0)
-						Show();
+						Show(ShellView);
           this.Location = new Point((int)Location.X, (int)Location.Y);
           //this.lvColumns.Sort(); //'this didn't do anything... lol.
           this.lvColumns.Sorting = SortOrder.Ascending;

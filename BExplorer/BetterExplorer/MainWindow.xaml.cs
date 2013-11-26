@@ -754,6 +754,7 @@ namespace BetterExplorer
             MenuItem micm = new MenuItem();
             micm.Header = FindResource("btnMoreColCP");
             micm.Focusable = false;
+            btnMoreColls.Tag = AllAvailColls;
             micm.Tag = AllAvailColls;
             micm.Click += new RoutedEventHandler(micm_Click);
             btnMoreColls.Items.Add(micm);
@@ -795,8 +796,8 @@ namespace BetterExplorer
     void micm_Click(object sender, RoutedEventArgs e)
     {
 
-			MoreColumns fMoreCollumns = new MoreColumns();
-			fMoreCollumns.PopulateAvailableColumns((Collumns[])(sender as MenuItem).Tag, ShellListView, this.PointToScreen(Mouse.GetPosition(this)));
+		MoreColumns fMoreCollumns = new MoreColumns();
+        fMoreCollumns.PopulateAvailableColumns((Collumns[])(sender as FrameworkElement).Tag, ShellListView, this.PointToScreen(Mouse.GetPosition(this)));
     }
 
     void mic_Click(object sender, RoutedEventArgs e)
@@ -3400,7 +3401,9 @@ namespace BetterExplorer
     {
         ShellListView.Navigated += ShellListView_Navigated;
         ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
-				ShellListView.SelectionChanged += ShellListView_SelectionChanged;
+		ShellListView.SelectionChanged += ShellListView_SelectionChanged;
+        ShellListView.LostFocus += ShellListView_LostFocus;
+        ShellListView.GotFocus += ShellListView_GotFocus;
         ////ShellListView.LVItemsColorCodes = this.LVItemsColor;
         //ShellListView.SelectionChanged += ExplorerBrowserControl_SelectionChanged;
         ////ShellListView.NavigationComplete += Explorer_NavigationComplete;
@@ -3434,6 +3437,20 @@ namespace BetterExplorer
         //ShellListView.ContentOptions.CheckSelect = isCheckModeEnabled;
         //ShellListView.Width = (int)ShellVView.ActualWidth;
         //ShellListView.Height = (int)ShellVView.ActualHeight;
+    }
+
+    void ShellListView_GotFocus(object sender, EventArgs e)
+    {
+        if (breadcrumbBarControl1.IsInEditMode == true)
+        {
+            breadcrumbBarControl1.ExitEditMode();
+        }
+        //throw new NotImplementedException();
+    }
+
+    void ShellListView_LostFocus(object sender, EventArgs e)
+    {
+        //throw new NotImplementedException();
     }
 
 		async void ShellListView_SelectionChanged(object sender, EventArgs e)
@@ -5334,6 +5351,7 @@ namespace BetterExplorer
 
 		private void btnMoreColls_Click(object sender, RoutedEventArgs e)
 		{
+            micm_Click(sender, e);
 			//MoreColumns fMoreCollumns = new MoreColumns();
 			//fMoreCollumns.PopulateAvailableColumns(ShellListView.AvailableColumns(true), Explorer,
 			//	this.PointToScreen(Mouse.GetPosition(this)));
@@ -6507,6 +6525,8 @@ namespace BetterExplorer
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 			rks.SetValue(@"CheckModeEnabled", 1);
 			isCheckModeEnabled = true;
+            ShellListView.ShowCheckboxes = true;
+            ShellListView.RefreshContents();
 			//ShellListView.ContentOptions.CheckSelect = true;
 			rk.Close();
 			rks.Close();
@@ -6518,6 +6538,8 @@ namespace BetterExplorer
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 			rks.SetValue(@"CheckModeEnabled", 0);
 			isCheckModeEnabled = false;
+            ShellListView.ShowCheckboxes = false;
+            ShellListView.RefreshContents();
 			//ShellListView.ContentOptions.CheckSelect = false;
 			rk.Close();
 			rks.Close();
