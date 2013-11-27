@@ -13,8 +13,9 @@ namespace BExplorer.Shell
 	[Serializable]
 	public class Collumns
 	{
-		public PROPERTYKEY pkey;
-		public string Name;
-		public int Width;
+		public PROPERTYKEY pkey { get; set; }
+		public string Name { get; set; }
+		public int Width { get; set; }
+		public Boolean IsColumnHandler { get; set; }
 	}
 }

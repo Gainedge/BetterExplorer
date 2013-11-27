@@ -34,13 +34,18 @@ namespace BExplorer.Shell
 		public const int CDDS_SUBITEM = 0x00020000;
 		public const int CDDS_ITEMPREPAINT = (CDDS_ITEM | CDDS_PREPAINT);
 		public const int CDDS_ITEMPOSTPAINT = (CDDS_ITEM | CDDS_POSTPAINT);
+		public static IColumnProvider FolderSize()
+		{
+			Type comType = Type.GetTypeFromCLSID(Guid.Parse("04DAAD08-70EF-450E-834A-DCFAF9B48748"));
+			return (IColumnProvider)Activator.CreateInstance(comType);
+		}
 		public ShellDeffViewSubClassedWindow(IntPtr handle, IntPtr sysListViewhandle, ShellView view)
 		{
 			//this.AssignHandle(handle);
 			SysListviewhandle = sysListViewhandle;
 			Browser = view;
 		}
-
+		int i = 0;
 		[System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
 		protected override void WndProc(ref Message m)
 		{
@@ -64,6 +69,42 @@ namespace BExplorer.Shell
 				nmhdr = (User32.NMHDR)m.GetLParam(nmhdr.GetType());
 				switch ((int)nmhdr.code)
 				{
+					case WNM.LVN_GETDISPINFOW:
+						var nmlv = new NMLVDISPINFO();
+						nmlv = (NMLVDISPINFO)m.GetLParam(nmlv.GetType());
+						if ((nmlv.item.mask == 0))
+							break;
+						Guid IIFV3 = typeof(IShellItem).GUID;
+							IFolderView2 fv3 = this.Browser.FolderView2;
+							IShellItem item1 = null;
+							try
+							{
+								fv3.GetItem(nmlv.item.iItem, ref IIFV3, out item1);
+							}
+							catch (Exception)
+							{
+
+							}
+							var sho = new ShellItem(item1);
+						if (nmlv.item.iSubItem == 4)
+						{
+							
+							//if (i > 15)
+							//	i = 0;
+							
+							//PROPERTYKEY pk = Browser.AvailableVisibleColumns.Last().pkey;
+							//PropVariant var = new PropVariant(sho.Pidl.ToInt32());
+							//var h = fv2.SetViewProperty(sho.Pidl, pk, var);
+							var val = String.Empty;
+							if (Browser.FolderSizes.TryGetValue(sho.ParsingName, out val)){
+							nmlv.item.mask |= LVIF.LVIF_PARAM;
+							nmlv.item.pszText = val;
+							//nmlv.item.lParam = Browser.FolderSizes[sho.ParsingName];
+							Marshal.StructureToPtr(nmlv, m.LParam, false);
+							}
+							//Marshal.ReleaseComObject(icp);
+						}
+						break;
 					case WNM.LVN_GETINFOTIP:
 						//TODO: Write here the code for the tooltip flyout
 						break;

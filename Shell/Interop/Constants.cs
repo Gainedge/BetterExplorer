@@ -73,6 +73,9 @@ namespace BExplorer.Shell.Interop
 		public const int LVN_HOTTRACK = (LVN_FIRST - 21);
 		public const int LVN_KEYDOWN = (LVN_FIRST - 55);
 		public const int LVN_GETINFOTIP = (LVN_FIRST - 58);
+		public const int LVN_GETDISPINFOW = (LVN_FIRST - 77);
+		public const int LVN_SETDISPINFOA = (LVN_FIRST - 51);
+
 
 		const int UDN_FIRST = -721;        // updown
 		public const int UDN_DELTAPOS = (UDN_FIRST - 1);

@@ -67,6 +67,9 @@
   <ItemGroup>
     <Compile Include="Collumns.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Interop\PropVariant.cs" />
+    <Compile Include="Interop\PropVariantNativeMethods.cs" />
+    <Compile Include="Interop\IColumnProvider.cs" />
     <Compile Include="Interop\IColumnManager.cs" />
     <Compile Include="Interop\IInputObject.cs" />
     <Compile Include="Interop\FileIcon.cs" />

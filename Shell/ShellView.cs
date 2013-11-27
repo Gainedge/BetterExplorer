@@ -33,6 +33,7 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace BExplorer.Shell
 {
@@ -132,6 +133,9 @@ namespace BExplorer.Shell
 			public delegate int GetColumnInfobyPK(IShellView view, bool isAll, PROPERTYKEY pk, out CM_COLUMNINFO res);
 
 			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			public delegate void SetColumnInfobyPK(IShellView view, PROPERTYKEY pk, CM_COLUMNINFO cm);
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 			public delegate void GetSortColumns(IShellView view, int index, out SORTCOLUMN sc);
 
 			private IntPtr BEHDLL { get; set; }
@@ -141,6 +145,7 @@ namespace BExplorer.Shell
 			public SetSortColumns _SetSortColumns;
 			public GetColumnInfobyIndex _GetColumnInfobyIndex;
 			public GetColumnInfobyPK _GetColumnInfobyPK;
+      public SetColumnInfobyPK _SetColumnInfobyPK;
 			public GetSortColumns _GetSortColumns;
 			public GetColumnbyIndex _GetColumnbyIndex;
 
@@ -179,11 +184,16 @@ namespace BExplorer.Shell
 						IntPtr GetColumnInfobyPKP = Kernel32.GetProcAddress(BEHDLL, "GetColumnInfobyPK");
 						_GetColumnInfobyPK = (GetColumnInfobyPK)Marshal.GetDelegateForFunctionPointer(GetColumnInfobyPKP, typeof(GetColumnInfobyPK));
 
+						IntPtr SetColumnInfobyPKP = Kernel32.GetProcAddress(BEHDLL, "SetColumnInfobyPK");
+						_SetColumnInfobyPK = (SetColumnInfobyPK)Marshal.GetDelegateForFunctionPointer(SetColumnInfobyPKP, typeof(SetColumnInfobyPK));
+
 						IntPtr GetSortColumnsP = Kernel32.GetProcAddress(BEHDLL, "GetSortColumns");
 						_GetSortColumns = (GetSortColumns)Marshal.GetDelegateForFunctionPointer(GetSortColumnsP, typeof(GetSortColumns));
 
 						IntPtr GetColumnbyIndexP = Kernel32.GetProcAddress(BEHDLL, "GetColumnbyIndex");
 						_GetColumnbyIndex = (GetColumnbyIndex)Marshal.GetDelegateForFunctionPointer(GetColumnbyIndexP, typeof(GetColumnbyIndex));
+						Type comType = Type.GetTypeFromCLSID(Guid.Parse("04DAAD08-70EF-450E-834A-DCFAF9B48748"));
+						ICP = (IColumnProvider)Activator.CreateInstance(comType);
         }
 
         /// <summary>
@@ -227,6 +237,8 @@ namespace BExplorer.Shell
 
             //m_CurrentFolder.GetChildContextMenu(pidls).InvokeDelete();
         }
+
+				public Dictionary<String, string> FolderSizes = new Dictionary<string, string>();
 
         /// <summary>
         /// Navigates to the specified <see cref="ShellItem"/>.
@@ -753,6 +765,97 @@ namespace BExplorer.Shell
 					return iArray;
 				}
 
+				[Browsable(false)]
+				public ShellItem[] Items
+				{
+					get
+					{
+						List<ShellItem> items = new List<Shell.ShellItem>();
+						var iArray = GetItemsArray();
+						if (iArray != null)
+						{
+							try
+							{
+
+								uint itemCount = 0;
+								iArray.GetCount(out itemCount);
+								for (uint index = 0; index < itemCount; index++)
+								{
+									IShellItem iShellItem = null;
+									iArray.GetItemAt(index, out iShellItem);
+									items.Add(new ShellItem(iShellItem));
+								}
+
+							}
+							finally
+							{
+								Marshal.ReleaseComObject(iArray);
+							}
+
+						}
+						return items.ToArray();
+						//uint CFSTR_SHELLIDLIST =
+						//    User32.RegisterClipboardFormat("Shell IDList Array");
+						//ComTypes.IDataObject selection = GetSelectionDataObject();
+
+						//if (selection != null)
+						//{
+						//    FORMATETC format = new FORMATETC();
+						//    STGMEDIUM storage = new STGMEDIUM();
+
+						//    format.cfFormat = (short)CFSTR_SHELLIDLIST;
+						//    format.dwAspect = DVASPECT.DVASPECT_CONTENT;
+						//    format.lindex = 0;
+						//    format.tymed = TYMED.TYMED_HGLOBAL;
+
+						//    if (selection.QueryGetData(ref format) == 0)
+						//    {
+						//        selection.GetData(ref format, out storage);
+
+						//        int itemCount = Marshal.ReadInt32(storage.unionmember);
+						//        ShellItem[] result = new ShellItem[itemCount];
+
+						//        for (int n = 0; n < itemCount; ++n)
+						//        {
+						//            int offset = Marshal.ReadInt32(storage.unionmember,
+						//                8 + (n * 4));
+						//            result[n] = new ShellItem(
+						//                m_CurrentFolder,
+						//                (IntPtr)((int)storage.unionmember + offset));
+						//        }
+
+						//        GlobalFree(storage.unionmember);
+						//        return result;
+						//    }
+						//}
+						//return new ShellItem[0];
+					}
+				}
+
+				internal IShellItemArray GetItemsArray()
+				{
+					IShellItemArray iArray = null;
+					IFolderView2 iFV2 = this.FolderView2;
+					if (iFV2 != null)
+					{
+						try
+						{
+							Guid iidShellItemArray = new Guid(InterfaceGuids.IShellItemArray);
+							object oArray = null;
+							HResult hr = iFV2.Items((uint)SVGIO.SVGIO_SELECTION, ref iidShellItemArray, out oArray);
+							iArray = oArray as IShellItemArray;
+
+						}
+						finally
+						{
+							//Marshal.ReleaseComObject(iFV2);
+							//iFV2 = null;
+						}
+					}
+
+					return iArray;
+				}
+
         /// <summary>
         /// Gets/sets a value indicating whether multiple items can be selected
         /// by the user.
@@ -979,14 +1082,17 @@ namespace BExplorer.Shell
             base.Dispose(disposing);
         }
 
+				public IColumnProvider ICP { get; set; }
         /// <summary>
         /// Creates the actual shell view control.
         /// </summary>
         protected override void OnCreateControl()
         {
+						
             base.OnCreateControl();
             CreateShellView();
             OnNavigated(new NavigatedEventArgs(ShellItem.Desktop));
+						
 						
 						
         }
@@ -1195,6 +1301,7 @@ namespace BExplorer.Shell
 				public SubclassListView lv;
         void RecreateShellView()
         {
+					this.FolderSizes.Clear();
             if (m_ComInterface != null)
             {
                 CreateShellView();
@@ -1202,6 +1309,7 @@ namespace BExplorer.Shell
 								this.subclassed.AssignHandle(this.m_ShellViewWindow);
 								lv.lvhandle = this.ShellListViewHandle;
 								lv.AssignHandle(this.ShellListViewHandle);
+								
                 //OnNavigated(new NavigatedEventArgs(ShellItem.Desktop));
             }
 
@@ -1335,6 +1443,21 @@ namespace BExplorer.Shell
 							curCol.Width = (int)ci.uIdealWidth;
 							colls.Add(curCol);
 						}
+
+						if (All)
+						{
+							Type comType = Type.GetTypeFromCLSID(Guid.Parse("04DAAD08-70EF-450E-834A-DCFAF9B48748"));
+							IColumnProvider ici = (IColumnProvider)Activator.CreateInstance(comType);
+							SHCOLUMNINFO shi = new SHCOLUMNINFO();
+							ici.GetColumnInfo(0, out shi);
+							Collumns curCol = new Collumns();
+							curCol.Name = shi.wszTitle;
+							curCol.pkey = new PROPERTYKEY() { fmtid = shi.scid.fmtid, pid = (int)shi.scid.pid };
+							curCol.Width = (int)shi.vt;
+							curCol.IsColumnHandler = true;
+							colls.Add(curCol);
+							Marshal.ReleaseComObject(ici);
+						}
 						return colls.ToArray();
 					}
 					catch (Exception)
@@ -1399,7 +1522,7 @@ namespace BExplorer.Shell
 					Marshal.FreeHGlobal(scptr);
 				}
 
-				public void SetColInView(PROPERTYKEY pk, bool Remove)
+				public void SetColInView(PROPERTYKEY pk, bool Remove, bool IsColumnHandler = false)
 				{
 
 					if (!Remove)
@@ -1415,8 +1538,21 @@ namespace BExplorer.Shell
 						IColumnManager icm = (IColumnManager)m_ComInterface;
 						icm.SetColumns(pkk, (uint)AvailableVisibleColumns.Length + 1);
 						//_SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length + 1, pkk);
+						
 
 						AvailableVisibleColumns = AvailableColumns(false);
+
+						if (IsColumnHandler)
+						{
+							LVCOLUMN col = new LVCOLUMN();
+							col.cchTextMax = 256;
+							col.cx = 60;
+							col.fmt = LVCFMT.LEFT;
+							col.iSubItem = 4;
+							col.mask = LVCF.LVCF_FMT | LVCF.LVCF_SUBITEM | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH;
+							col.pszText = "Folder Size";
+							var k = User32.SendMessage(this.ShellListViewHandle, MSG.LVM_SETCOLUMN, 4, ref col);
+						}
 					}
 					else
 					{
@@ -1438,6 +1574,42 @@ namespace BExplorer.Shell
 
 						AvailableVisibleColumns = AvailableColumns(false);
 					}
+				}
+
+				public void AddCustomColumn(String header, object value)
+				{
+					//Type comType = Type.GetTypeFromCLSID(Guid.Parse("04DAAD08-70EF-450E-834A-DCFAF9B48748"));
+					//IColumnProvider ici = (IColumnProvider)Activator.CreateInstance(comType);
+					//LPCSHCOLUMNINIT lpi = new LPCSHCOLUMNINIT();
+					//lpi.wszFolder = "C:\\\0";
+					//ici.Initialize(lpi);
+					//SHCOLUMNINFO shi = new SHCOLUMNINFO();
+					//ici.GetColumnInfo(1, out shi);
+					//LPCSHCOLUMNID lid = new LPCSHCOLUMNID();
+					//lid.fmtid = Guid.Parse("04DAAD08-70EF-450E-834A-DCFAF9B48748");
+					//lid.pid = 1;
+					//LPCSHCOLUMNDATA ldata = new LPCSHCOLUMNDATA();
+					//ldata.dwFileAttributes = (uint)FileAttributes.Directory;
+					//ldata.wszFile = "C:\\boost154\0";
+					//object o = null;
+					//ici.GetItemData(lid, ldata, out o);
+
+					//PROPERTYKEY[] pkk = new PROPERTYKEY[AvailableVisibleColumns.Length + 1];
+					//for (int i = 0; i < AvailableVisibleColumns.Length; i++)
+					//{
+					//	pkk[i] = AvailableVisibleColumns[i].pkey;
+					//}
+
+					//pkk[AvailableVisibleColumns.Length] = new PROPERTYKEY() { fmtid = Guid.Parse("04DAAD08-70EF-450E-834A-DCFAF9B48748"), pid = 1 };
+
+					//IColumnManager icm = (IColumnManager)m_ComInterface;
+					//icm.SetColumns(pkk, (uint)AvailableVisibleColumns.Length + 1);
+					////_SetColumnInShellView(GetShellView(), AvailableVisibleColumns.Length + 1, pkk);
+
+					//AvailableVisibleColumns = AvailableColumns(false);
+
+
+
 				}
 
 				/// <summary>
@@ -1503,10 +1675,53 @@ namespace BExplorer.Shell
 
         void OnNavigated(NavigatedEventArgs e)
         {
-            if (Navigated != null)
-            {
-                Navigated(this, e);
-            }
+					if (Navigated != null)
+					{
+						Navigated(this, e);
+					}
+					//this.FolderSizes.Clear();
+					LPCSHCOLUMNINIT lpi = new LPCSHCOLUMNINIT();
+						lpi.wszFolder = e.Folder.ParsingName + "\0";
+						if (ICP != null)
+						{
+							Task.Run(() =>
+							{
+								this.BeginInvoke(new MethodInvoker(() =>
+									{
+										this.FolderSizes.Clear();
+										ICP.Initialize(lpi);
+										foreach (var item in this.CurrentFolder)
+										{
+											var pn = item.ParsingName;
+												LPCSHCOLUMNID lid = new LPCSHCOLUMNID();
+												lid.fmtid = Guid.Parse("04DAAD08-70EF-450E-834A-DCFAF9B48748");
+												lid.pid = 0;
+												LPCSHCOLUMNDATA ldata = new LPCSHCOLUMNDATA();
+												ldata.dwFileAttributes = item.IsFolder ? (uint)FileAttributes.Directory : 0;
+												//ldata.dwFileAttributes = (uint)FileAttributes.Directory;
+												if (!item.IsFolder)
+												{
+													ldata.pwszExt = Path.GetExtension(item.ParsingName);
+												}
+												ldata.wszFile = pn + "\0";
+												object o = 0;
+												this.ICP.GetItemData(lid, ldata, out o);
+												if (o != null)
+												{
+													if (this.FolderSizes.ContainsKey(pn))
+														this.FolderSizes[pn] = o.ToString();
+													else
+														this.FolderSizes.Add(pn, o.ToString());
+												}
+
+												Thread.Sleep(1);
+												Application.DoEvents();
+
+										}
+									}));
+							});
+						}
+            
         }
 
 				void OnViewChanged(ViewChangedEventArgs e)

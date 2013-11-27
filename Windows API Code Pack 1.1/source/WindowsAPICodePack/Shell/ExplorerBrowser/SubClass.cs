@@ -134,7 +134,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
                                         break;
                                     case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
                                         // before a subitem drawn
-                                        if ((nmlvcd.nmcd.uItemState & (WindowsAPI.CDIS.HOT | WindowsAPI.CDIS.DROPHILITED)) != 0 || IntPtr.Zero != WindowsAPI.SendMessage(this.SysListviewhandle, WindowsAPI.LVM.GETITEMSTATE, index, (int)WindowsAPI.LVIS.LVIS_SELECTED))
+                                        if ((nmlvcd.nmcd.uItemState & (WindowsAPI.CDIS.HOT | WindowsAPI.CDIS.DROPHILITED)) != 0 || 0 != WindowsAPI.SendMessage(this.SysListviewhandle, WindowsAPI.LVM.GETITEMSTATE, index, (int)WindowsAPI.LVIS.LVIS_SELECTED))
                                         {
                                             // hot, drophilited or selected.
                                             if (nmlvcd.iSubItem == 0)

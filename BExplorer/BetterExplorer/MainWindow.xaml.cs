@@ -4260,6 +4260,7 @@ namespace BetterExplorer
 
     async void ShellListView_Navigated(object sender, NavigatedEventArgs e)
 		{
+			ShellListView.AddCustomColumn("", "");
 			try
 			{
 				int explorerSelectedItemsCount = 0;

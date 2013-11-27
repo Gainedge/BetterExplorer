@@ -2091,6 +2091,7 @@ namespace WindowsHelper
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, MSG Msg,
             int wParam, int lParam);
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr SendMessage(
             IntPtr hWnd, uint Msg, IntPtr wParam, string lParam);
@@ -2895,7 +2896,7 @@ namespace WindowsHelper
         public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
 				[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-				public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+				public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
@@ -5679,7 +5680,9 @@ namespace WindowsHelper
       public const int LVN_ODSTATECHANGED = (LVN_FIRST - 15);
       public const int LVN_HOTTRACK = (LVN_FIRST - 21);
       public const int LVN_KEYDOWN = (LVN_FIRST - 55);
-      public const int LVN_GETINFOTIP = (LVN_FIRST - 58);
+			public const int LVN_GETINFOTIP = (LVN_FIRST - 58);
+			public const int LVN_GETDISPINFOW = (LVN_FIRST - 77);
+			public const int LVN_SETDISPINFOA = (LVN_FIRST - 51);
 
       const int UDN_FIRST = -721;        // updown
       public const int UDN_DELTAPOS = (UDN_FIRST - 1);

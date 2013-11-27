@@ -22,6 +22,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using BExplorer.Shell.Interop;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace BExplorer.Shell
 {
@@ -240,7 +242,7 @@ namespace BExplorer.Shell
 				void t_Tick(object sender, EventArgs e)
 				{
 					m_ShellView.OnSelectionChanged();
-					(sender as Timer).Stop();
+					(sender as System.Windows.Forms.Timer).Stop();
 				}
 
         #region ICommDlgBrowser Members
@@ -267,7 +269,7 @@ namespace BExplorer.Shell
             return HResult.S_OK;
         }
 
-				Timer t = new Timer();
+				System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
         HResult ICommDlgBrowser.OnStateChange(IShellView ppshv, CDBOSC uChange)
         {
             if (uChange == CDBOSC.CDBOSC_SELCHANGE)

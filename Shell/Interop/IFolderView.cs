@@ -115,8 +115,9 @@ namespace BExplorer.Shell.Interop
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetGroupBy(out PROPERTYKEY pkey, out bool pfAscending);
 
+		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SetViewProperty(IntPtr pidl, IntPtr propkey, object propvar);
+		HResult SetViewProperty(IntPtr pidl, PROPERTYKEY propkey, PropVariant propvar);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetViewProperty(IntPtr pidl, IntPtr propkey, out object ppropvar);

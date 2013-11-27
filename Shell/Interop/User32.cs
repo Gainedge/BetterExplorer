@@ -154,6 +154,7 @@ namespace BExplorer.Shell.Interop
 			  LVM_GETITEMSTATE = (FIRST + 44),
 				LVM_GETITEMRECT = (FIRST + 14),
 				LVM_SETITEMSTATE = (FIRST + 43),
+				LVM_SETCOLUMN = 0x101A,
     }
 
     [Flags]
@@ -274,6 +275,10 @@ namespace BExplorer.Shell.Interop
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, MSG Msg,
             int wParam, int lParam);
+
+				[DllImport("user32.dll")]
+				public static extern int SendMessage(IntPtr hWnd, MSG Msg,
+						int wParam, ref LVCOLUMN lParam);
 
 				[DllImport("user32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, int Msg,

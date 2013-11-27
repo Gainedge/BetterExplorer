@@ -53,6 +53,13 @@ extern "C"
 
   }
 
+   __declspec(dllexport) void SetColumnInfobyPK(IShellView* view, PROPERTYKEY pk, CM_COLUMNINFO cm)
+   {
+	   IColumnManager* columns;
+	   view->QueryInterface(&columns);
+	   columns->SetColumnInfo(pk, &cm);
+   }
+
 
   __declspec(dllexport) void SetColumnInShellView(IShellView* view , int count, PROPERTYKEY pk[])
   {

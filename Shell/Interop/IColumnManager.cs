@@ -23,7 +23,7 @@ namespace BExplorer.Shell.Interop
 
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult SetColumnInfo([In] ref PROPERTYKEY propkey, [In] ref IntPtr pcmci);
+		HResult SetColumnInfo([In] PROPERTYKEY propkey, [In] ref CM_COLUMNINFO pcmci);
 
 		[PreserveSig]
 		HResult GetColumnInfo(REFPROPERTYKEY propkey, ref CM_COLUMNINFO pcmci);
