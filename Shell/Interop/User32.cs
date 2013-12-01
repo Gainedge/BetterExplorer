@@ -297,6 +297,10 @@ namespace BExplorer.Shell.Interop
         [DllImport("user32.dll")]
         public static extern uint RegisterClipboardFormat(string lpszFormat);
 
+
+        [DllImport("user32")]
+        public static extern int DestroyIcon(IntPtr hIcon);
+
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, MSG Msg,
             int wParam, int lParam);

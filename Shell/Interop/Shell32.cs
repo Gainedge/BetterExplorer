@@ -413,6 +413,9 @@ namespace BExplorer.Shell.Interop
         public static extern bool Shell_GetImageLists(out IntPtr lphimlLarge,
             out IntPtr lphimlSmall);
 
+        [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
+        public static extern Boolean CloseHandle(IntPtr handle);
+
         [DllImport("shell32.dll", EntryPoint = "#2")]
         public static extern uint SHChangeNotifyRegister(IntPtr hWnd,
             SHCNRF fSources, SHCNE fEvents, uint wMsg, int cEntries,

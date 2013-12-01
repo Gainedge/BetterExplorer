@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BExplorer.Shell.Interop;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -353,7 +354,9 @@ namespace BExplorer.Shell
 			var hresult = this._ImageList.GetIcon(index, options, out hIcon);
 			Marshal.ThrowExceptionForHR(hresult);
 			if(hIcon != IntPtr.Zero){
-				return Icon.FromHandle(hIcon);
+                var icon = Icon.FromHandle(hIcon);
+                //Shell32.CloseHandle(hIcon);
+                return icon;
 			}else{
 				throw new Win32Exception();
 			}

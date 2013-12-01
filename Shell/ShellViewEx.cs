@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using BExplorer.Shell.Interop;
 using System.Runtime.InteropServices;
-using System.Data.SQLite;
 using System.Drawing.Imaging;
 using System.Threading;
 using System.IO;
@@ -42,9 +41,9 @@ namespace BExplorer.Shell
 		public ShellView()
 		{
 			InitializeComponent();
-			thumb = new Thread(RefreshThumbnail);
-			thumb.IsBackground = true;
-			thumb.Start();
+            //thumb = new Thread(RefreshThumbnail);
+            //thumb.IsBackground = true;
+            //thumb.Start();
 			this.SelectedItems = new ShellItem[0];
 			m_History = new ShellHistory();
 			token = tokenSource.Token;
@@ -265,61 +264,61 @@ namespace BExplorer.Shell
 			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMSTATE, -1, ref item);
 		}
 
-		private async void LoadImage(int id, int iconSize, int index)
-		{
-			if (!cache.ContainsKey(id))
-			{
-				string query = "SELECT thumbnail FROM Thumbnails WHERE id=@0;";
-				SQLiteConnectionStringBuilder connBuilder = new SQLiteConnectionStringBuilder();
-				if (iconSize == 16)
-					connBuilder.DataSource = "cache16.s3db";
-				else if (iconSize > 16 && iconSize <= 32)
-					connBuilder.DataSource = "cache32.s3db";
-				else if (iconSize > 32 && iconSize <= 48)
-					connBuilder.DataSource = "cache48.s3db";
-				else if (iconSize > 48 && iconSize <= 96)
-					connBuilder.DataSource = "cache96.s3db";
-				else if (iconSize > 96 && iconSize <= 256)
-					connBuilder.DataSource = "cache256.s3db";
-				connBuilder.Version = 3;
-				//Set page size to NTFS cluster size = 4096 bytes
-				connBuilder.PageSize = 4096;
-				connBuilder.CacheSize = 10000;
-				connBuilder.JournalMode = SQLiteJournalModeEnum.Wal;
-				connBuilder.Pooling = true;
-				connBuilder.LegacyFormat = false;
-				connBuilder.DefaultTimeout = 500;
-				connBuilder.SyncMode = SynchronizationModes.Normal;
-				SQLiteConnection con = new SQLiteConnection(connBuilder.ToString());
-				SQLiteCommand cmd = new SQLiteCommand(query, con);
-				SQLiteParameter param = new SQLiteParameter("@0", System.Data.DbType.Int64);
-				param.Value = id;
-				cmd.Parameters.Add(param);
-				if (con.State != ConnectionState.Open)
-					con.Open();
-				Bitmap b = null;
-				try
-				{
-					IDataReader rdr = await cmd.ExecuteReaderAsync();
-					try
-					{
-						while (rdr.Read())
-						{
-							byte[] a = (System.Byte[])rdr[0];
-							b = ByteToImage(a);
+        //private async void LoadImage(int id, int iconSize, int index)
+        //{
+        //    if (!cache.ContainsKey(id))
+        //    {
+        //        string query = "SELECT thumbnail FROM Thumbnails WHERE id=@0;";
+        //        SQLiteConnectionStringBuilder connBuilder = new SQLiteConnectionStringBuilder();
+        //        if (iconSize == 16)
+        //            connBuilder.DataSource = "cache16.s3db";
+        //        else if (iconSize > 16 && iconSize <= 32)
+        //            connBuilder.DataSource = "cache32.s3db";
+        //        else if (iconSize > 32 && iconSize <= 48)
+        //            connBuilder.DataSource = "cache48.s3db";
+        //        else if (iconSize > 48 && iconSize <= 96)
+        //            connBuilder.DataSource = "cache96.s3db";
+        //        else if (iconSize > 96 && iconSize <= 256)
+        //            connBuilder.DataSource = "cache256.s3db";
+        //        connBuilder.Version = 3;
+        //        //Set page size to NTFS cluster size = 4096 bytes
+        //        connBuilder.PageSize = 4096;
+        //        connBuilder.CacheSize = 10000;
+        //        connBuilder.JournalMode = SQLiteJournalModeEnum.Wal;
+        //        connBuilder.Pooling = true;
+        //        connBuilder.LegacyFormat = false;
+        //        connBuilder.DefaultTimeout = 500;
+        //        connBuilder.SyncMode = SynchronizationModes.Normal;
+        //        SQLiteConnection con = new SQLiteConnection(connBuilder.ToString());
+        //        SQLiteCommand cmd = new SQLiteCommand(query, con);
+        //        SQLiteParameter param = new SQLiteParameter("@0", System.Data.DbType.Int64);
+        //        param.Value = id;
+        //        cmd.Parameters.Add(param);
+        //        if (con.State != ConnectionState.Open)
+        //            con.Open();
+        //        Bitmap b = null;
+        //        try
+        //        {
+        //            IDataReader rdr = await cmd.ExecuteReaderAsync();
+        //            try
+        //            {
+        //                while (rdr.Read())
+        //                {
+        //                    byte[] a = (System.Byte[])rdr[0];
+        //                    b = ByteToImage(a);
 
-						}
-					}
-					catch (Exception exc) { MessageBox.Show(exc.Message); }
-				}
-				catch (Exception ex) { MessageBox.Show(ex.Message); }
+        //                }
+        //            }
+        //            catch (Exception exc) { MessageBox.Show(exc.Message); }
+        //        }
+        //        catch (Exception ex) { MessageBox.Show(ex.Message); }
 
-				con.Close();
-				if (!cache.ContainsKey(id))
-					cache.Add(id, b);
-				User32.SendMessage(this.LVHandle, MSG.LVM_REDRAWITEMS, index, index);
-			}
-		}
+        //        con.Close();
+        //        if (!cache.ContainsKey(id))
+        //            cache.Add(id, b);
+        //        User32.SendMessage(this.LVHandle, MSG.LVM_REDRAWITEMS, index, index);
+        //    }
+        //}
 
 		public void RefreshContents()
 		{
@@ -462,167 +461,180 @@ namespace BExplorer.Shell
 		public List<Collumns> AllAvailableColumns = new List<Collumns>();
 
 		public ShellItem[] SelectedItems { get; set; }
-		private void RefreshThumbnail()
-		{
-			while (true)
-			{
-				while (refreshedImages.Count == 0)
-					Thread.Sleep(1);
-				var iconSize = 256;
-				SQLiteConnectionStringBuilder connBuilder = new SQLiteConnectionStringBuilder();
-				if (this.IconSize == 16)
-				{
-					connBuilder.DataSource = "cache16.s3db";
-					iconSize = 16;
-				}
-				else if (IconSize > 16 && IconSize <= 32)
-				{
-					connBuilder.DataSource = "cache32.s3db";
-					iconSize = 32;
-				}
-				else if (IconSize > 32 && IconSize <= 48)
-				{
-					connBuilder.DataSource = "cache48.s3db";
-					iconSize = 48;
-				}
-				else if (IconSize > 48 && IconSize <= 96)
-				{
-					connBuilder.DataSource = "cache96.s3db";
-					iconSize = 96;
-				}
-				else if (IconSize > 96 && IconSize <= 256)
-				{
-					connBuilder.DataSource = "cache256.s3db";
-					iconSize = 256;
-				}
+        //private void RefreshThumbnail()
+        //{
+        //    while (true)
+        //    {
+        //        while (refreshedImages.Count == 0)
+        //            Thread.Sleep(1);
+        //        var iconSize = 256;
+        //        SQLiteConnectionStringBuilder connBuilder = new SQLiteConnectionStringBuilder();
+        //        if (this.IconSize == 16)
+        //        {
+        //            connBuilder.DataSource = "cache16.s3db";
+        //            iconSize = 16;
+        //        }
+        //        else if (IconSize > 16 && IconSize <= 32)
+        //        {
+        //            connBuilder.DataSource = "cache32.s3db";
+        //            iconSize = 32;
+        //        }
+        //        else if (IconSize > 32 && IconSize <= 48)
+        //        {
+        //            connBuilder.DataSource = "cache48.s3db";
+        //            iconSize = 48;
+        //        }
+        //        else if (IconSize > 48 && IconSize <= 96)
+        //        {
+        //            connBuilder.DataSource = "cache96.s3db";
+        //            iconSize = 96;
+        //        }
+        //        else if (IconSize > 96 && IconSize <= 256)
+        //        {
+        //            connBuilder.DataSource = "cache256.s3db";
+        //            iconSize = 256;
+        //        }
 
-				connBuilder.Version = 3;
-				//Set page size to NTFS cluster size = 4096 bytes
-				connBuilder.PageSize = 4096;
-				connBuilder.CacheSize = 10000;
-				connBuilder.JournalMode = SQLiteJournalModeEnum.Wal;
-				connBuilder.Pooling = true;
-				connBuilder.LegacyFormat = false;
-				connBuilder.DefaultTimeout = 500;
+        //        connBuilder.Version = 3;
+        //        //Set page size to NTFS cluster size = 4096 bytes
+        //        connBuilder.PageSize = 4096;
+        //        connBuilder.CacheSize = 10000;
+        //        connBuilder.JournalMode = SQLiteJournalModeEnum.Wal;
+        //        connBuilder.Pooling = true;
+        //        connBuilder.LegacyFormat = false;
+        //        connBuilder.DefaultTimeout = 500;
 
-				using (SQLiteConnection con1 = new SQLiteConnection(connBuilder.ToString()))
-				{
-					var refreshedImagesArray = refreshedImages.ToArray();
-					con1.Open();
-					//SQLiteTransaction transaction = con1.BeginTransaction();
-					SQLiteCommand cmd = con1.CreateCommand();
-					//cmd.Transaction = transaction;
-					cmd.CommandText = "INSERT INTO Thumbnails (id, thumbnail) VALUES (@0, @1);";
-					foreach (var itemf in refreshedImagesArray)
-					{
-						if (Cancel)
-						{
-							Cancel = false;
-							break;
-						}
-						if (User32.SendMessage(this.LVHandle, MSG.LVM_ISITEMVISIBLE, itemf, 0) == 0)
-						{
-							refreshedImages.Remove(itemf);
-							continue;
-						}
-						if (itemf < Items.Length)
-						{
-							Bitmap image = null;
-							ShellItem item = null;
-							int hash = -1;
-							//this.Invoke(new MethodInvoker(() =>
-							//{
-								try
-								{
-									item = Items[itemf];
-									hash = item.GetHashCode();
-								}
-								catch { }
+        //        using (SQLiteConnection con1 = new SQLiteConnection(connBuilder.ToString()))
+        //        {
+        //            var refreshedImagesArray = refreshedImages.ToArray();
+        //            con1.Open();
+        //            //SQLiteTransaction transaction = con1.BeginTransaction();
+        //            SQLiteCommand cmd = con1.CreateCommand();
+        //            //cmd.Transaction = transaction;
+        //            cmd.CommandText = "INSERT INTO Thumbnails (id, thumbnail) VALUES (@0, @1);";
+        //            foreach (var itemf in refreshedImagesArray)
+        //            {
+        //                if (Cancel)
+        //                {
+        //                    Cancel = false;
+        //                    break;
+        //                }
+        //                if (User32.SendMessage(this.LVHandle, MSG.LVM_ISITEMVISIBLE, itemf, 0) == 0)
+        //                {
+        //                    refreshedImages.Remove(itemf);
+        //                    continue;
+        //                }
+        //                if (itemf < Items.Length)
+        //                {
+        //                    Bitmap image = null;
+        //                    ShellItem item = null;
+        //                    int hash = -1;
+        //                    //this.Invoke(new MethodInvoker(() =>
+        //                    //{
+        //                        try
+        //                        {
+        //                            item = Items[itemf];
+        //                            hash = item.GetHashCode();
+        //                        }
+        //                        catch { }
 
-							//}));
+        //                    //}));
 
-							if (item != null && image == null)
-							{
-								image = new Bitmap(item.GetShellThumbnail(iconSize, iconSize < 32 ? ShellThumbnailFormatOption.IconOnly : ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default));
+        //                    if (item != null && image == null)
+        //                    {
+        //                        image = new Bitmap(item.GetShellThumbnail(iconSize, iconSize < 32 ? ShellThumbnailFormatOption.IconOnly : ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default));
 
-								if (image != null)
-								{
+        //                        if (image != null)
+        //                        {
 
-									try
-									{
-										var buffer = image;
-										byte[] imageToByte;
-										lock (buffer)
-										{
-											imageToByte = ImageToByte(buffer, ImageFormat.Png);
+        //                            try
+        //                            {
+        //                                var buffer = image;
+        //                                byte[] imageToByte;
+        //                                lock (buffer)
+        //                                {
+        //                                    imageToByte = ImageToByte(buffer, ImageFormat.Png);
 
 
-											if (!cache.ContainsKey(hash))
-												cache.Add(hash, new Bitmap(buffer));
-										}
-										buffer.Dispose();
-										if (imageToByte != null)
-										{
-											SQLiteParameter param0 = new SQLiteParameter("@0", System.Data.DbType.Int64);
-											param0.Value = hash;
-											SQLiteParameter param = new SQLiteParameter("@1", System.Data.DbType.Binary);
-											param.Value = imageToByte;
-											cmd.Parameters.Add(param0);
-											cmd.Parameters.Add(param);
+        //                                    if (!cache.ContainsKey(hash))
+        //                                        cache.Add(hash, new Bitmap(buffer));
+        //                                }
+        //                                buffer.Dispose();
+        //                                if (imageToByte != null)
+        //                                {
+        //                                    SQLiteParameter param0 = new SQLiteParameter("@0", System.Data.DbType.Int64);
+        //                                    param0.Value = hash;
+        //                                    SQLiteParameter param = new SQLiteParameter("@1", System.Data.DbType.Binary);
+        //                                    param.Value = imageToByte;
+        //                                    cmd.Parameters.Add(param0);
+        //                                    cmd.Parameters.Add(param);
 
-											cmd.ExecuteNonQueryAsync();
-											imageToByte = null;
-										}
-										Thread.Sleep(1);
-										Application.DoEvents();
+        //                                    cmd.ExecuteNonQueryAsync();
+        //                                    imageToByte = null;
+        //                                }
+        //                                Thread.Sleep(1);
+        //                                Application.DoEvents();
 
-										User32.SendMessage(this.LVHandle, MSG.LVM_REDRAWITEMS, itemf, itemf);
+        //                                User32.SendMessage(this.LVHandle, MSG.LVM_REDRAWITEMS, itemf, itemf);
 
 										
 
-									}
-									catch (Exception exc1)
-									{
-										User32.SendMessage(this.LVHandle, MSG.LVM_REDRAWITEMS, itemf, itemf);
-										//transaction.Rollback();
-										//MessageBox.Show(exc1.Message);
-									}
+        //                            }
+        //                            catch (Exception exc1)
+        //                            {
+        //                                User32.SendMessage(this.LVHandle, MSG.LVM_REDRAWITEMS, itemf, itemf);
+        //                                //transaction.Rollback();
+        //                                //MessageBox.Show(exc1.Message);
+        //                            }
 
-									refreshedImages.Remove(itemf);
-								}
-							}
-							else
-							{
+        //                            refreshedImages.Remove(itemf);
+        //                        }
+        //                    }
+        //                    else
+        //                    {
 
-							}
-						}
-						refreshedImages.Remove(itemf);
-					}
-					//transaction.Commit();
+        //                    }
+        //                }
+        //                refreshedImages.Remove(itemf);
+        //            }
+        //            //transaction.Commit();
 
-					con1.Close();
-				}
-			}
-		}
-
+        //            con1.Close();
+        //        }
+        //    }
+        //}
+        ImageList jumbo = new ImageList(ImageListSize.Jumbo);
+        ImageList extra = new ImageList(ImageListSize.ExtraLarge);
 		public void LoadIcon(int index)
 		{
+            
 			if (User32.SendMessage(this.LVHandle, MSG.LVM_ISITEMVISIBLE, index, 0) == 0)
 				return;
-			var sho = Items[index];
-			var hash = sho.GetHashCode();
-			var bitmap = sho.GetShellThumbnail(IconSize);
-			if ((sho.GetIconType() & IExtractIconpwFlags.GIL_PERCLASS) == 0)
-			{
-				if (!cache.ContainsKey(hash))
-					cache.Add(hash, new Bitmap(bitmap));
-			}
-			else
-			{
-				if (!cache.ContainsKey(hash))
-					cache.Add(hash, null);
-			}
-			bitmap.Dispose();
+            ShellItem sho = null;
+            int hash = -1;
+            Bitmap bitmap = null;
+            this.Invoke(new MethodInvoker(() =>
+                {
+                    sho = Items[index];
+                    hash = sho.GetHashCode();
+                    Thread.Sleep(1);
+                    Application.DoEvents();
+                    bitmap = sho.GetShellThumbnail(IconSize);
+                    if ((sho.GetIconType() & IExtractIconpwFlags.GIL_PERCLASS) == 0)
+                    {
+                        if (!cache.ContainsKey(hash))
+                            cache.Add(hash, new Bitmap(bitmap));
+                    }
+                    else
+                    {
+                        if (!cache.ContainsKey(hash))
+                            cache.Add(hash, null);
+                    }
+                    bitmap.Dispose();
+			        
+                }));
+            
+			
 			User32.SendMessage(this.LVHandle, MSG.LVM_REDRAWITEMS, index, index);
 			//Thread.Sleep(1);
 			//Application.DoEvents();
@@ -636,7 +648,7 @@ namespace BExplorer.Shell
 		Dictionary<int, Bitmap> cache = new Dictionary<int, Bitmap>();
 		List<int> refreshedImages = new List<int>();
 		CancellationTokenSource tokenSource = new CancellationTokenSource();
-		
+        Bitmap icon = null;
 		protected override void WndProc(ref Message m)
 		{
 			base.WndProc(ref m);
@@ -725,95 +737,120 @@ namespace BExplorer.Shell
 												if (sho != null)
 												{
 
-													Bitmap icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
+                                                    icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
 
 
 
 
-													if (icon == null)
-													{
+                                                    if (icon == null)
+                                                    {
 
 
-														Bitmap tempicon = null;
-														if (!cache.TryGetValue(hash, out tempicon))
-														{
-															//if (!this.refreshedImages.Contains(index))
-															//{
-															//	this.refreshedImages.Add(index);
-															//}
-															Task.Run(() =>
-															{
+                                                        Bitmap tempicon = null;
+                                                        if (!cache.TryGetValue(hash, out tempicon))
+                                                        {
+                                                            //if (!this.refreshedImages.Contains(index))
+                                                            //{
+                                                            //	this.refreshedImages.Add(index);
+                                                            //}
+                                                            Task.Run(() =>
+                                                            {
 
-																LoadIcon(index);
+                                                                LoadIcon(index);
 
-															});
+                                                            });
 
-														}
-														else
-														{
-															if (tempicon != null)
-															{
-																icon = tempicon;
-															}
-														}
+                                                        }
+                                                        else
+                                                        {
+                                                            if (tempicon != null)
+                                                            {
+                                                                icon = tempicon;
+                                                            }
+                                                        }
 
-														if ((sho.GetIconType() & IExtractIconpwFlags.GIL_PERCLASS) == IExtractIconpwFlags.GIL_PERCLASS || sho.IsFolder)
-															icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
-														else
-														{
+                                                        if ((sho.GetIconType() & IExtractIconpwFlags.GIL_PERCLASS) == IExtractIconpwFlags.GIL_PERCLASS || sho.IsFolder)
+                                                            icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
+                                                        else
+                                                        {
+                                                        int iconindex = 0;
+                                                        if (Path.GetExtension(sho.ParsingName) == ".exe" || Path.GetExtension(sho.ParsingName) == ".com" || Path.GetExtension(sho.ParsingName) == ".bat")
+                                                        {
+                                                            iconindex = 2;
+                                                        }
+                                                        else if (sho.IsFolder)
+                                                        {
+                                                            iconindex = 3;
+                                                        }
+                                                        var real_icon = IconSize > 48 ? jumbo.GetIcon(iconindex) : extra.GetIcon(iconindex);
+                                                        if (real_icon != null)
+                                                        {
+                                                            icon = real_icon.ToBitmap();
+                                                            //real_icon.Dispose();
+                                                            User32.DestroyIcon(real_icon.Handle);
+                                                        }
+                                                            Bitmap tempicon2 = null;
+                                                            if (!cache.TryGetValue(hash, out tempicon2))
+                                                            {
+                                                                //if (!this.refreshedImages.Contains(index))
+                                                                //{
+                                                                //	this.refreshedImages.Add(index);
+                                                                //}
+                                                                Task.Run(() =>
+                                                                {
 
-															Bitmap tempicon2 = null;
-															if (!cache.TryGetValue(hash, out tempicon2))
-															{
-																//if (!this.refreshedImages.Contains(index))
-																//{
-																//	this.refreshedImages.Add(index);
-																//}
-																Task.Run(() =>
-																{
+                                                                    LoadIcon(index);
+                                                                    
 
-																	LoadIcon(index);
+                                                                });
 
-																});
+                                                            }
+                                                            else
+                                                            {
+                                                                if (tempicon2 != null)
+                                                                {
+                                                                    icon = tempicon2;
+                                                                }
+                                                            }
+                                                        }
+                                                    //    //else
+                                                    //    //	icon = ((ShellItem)KnownFolders.Windows).GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
+                                                    //    //}
+                                                    }
 
-															}
-															else
-															{
-																if (tempicon != null)
-																{
-																	icon = tempicon2;
-																}
-															}
-														}
-														//else
-														//	icon = ((ShellItem)KnownFolders.Windows).GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
-														//}
-													}
+                                                    ////var txtBounds = new User32.RECT();
 
-													//var txtBounds = new User32.RECT();
+                                                    ////txtBounds.Left = 2;
+                                                    ////WindowsAPI.SendMessage(this.handle, WindowsAPI.LVM.GETITEMRECT, index, ref txtBounds);
 
-													//txtBounds.Left = 2;
-													//WindowsAPI.SendMessage(this.handle, WindowsAPI.LVM.GETITEMRECT, index, ref txtBounds);
+                                                    if (icon != null)
+                                                    {
+                                                        using (Graphics g = Graphics.FromHdc(hdc))
+                                                        {
 
-													if (icon != null)
-													{
-														using (Graphics g = Graphics.FromHdc(hdc))
-														{
-															if (icon.Width != icon.Height)
-															{
-																g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-															}
-															else
-															{
-																g.DrawImage(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-															}
-														}
-														//icon.Dispose();
-													}
+                                                            if (icon.Width != icon.Height)
+                                                            {
+                                                                g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+                                                            }
+                                                            else
+                                                            {
+                                                                g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                                                                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                                                                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                                                                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                                                                g.DrawImage(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+                                                            }
+
+                                                        }
+                                                        icon.Dispose();
+                                                        if (cache.ContainsKey(hash))
+                                                            cache[hash].Dispose();
+                                                        cache.Remove(hash);
+                                                    }
 
 												}
 											}
-											catch (Exception)
+											catch (Exception ex)
 											{
 
 												//throw;
@@ -835,6 +872,7 @@ namespace BExplorer.Shell
 		{
 			this.cache.Clear();
 			this.refreshedImages.Clear();
+            GC.Collect();
 			this.Cancel = true;
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 			this.Items = destination.OrderByDescending(o => o.IsFolder).ToArray();
