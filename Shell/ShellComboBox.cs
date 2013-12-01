@@ -201,7 +201,7 @@ namespace BExplorer.Shell
         /// This event allows the folders displayed in the 
         /// <see cref="ShellComboBox"/> control to be filtered.
         /// </remarks>
-        public event FilterItemEventHandler FilterItem;
+        //public event FilterItemEventHandler FilterItem;
 
         internal bool ShouldSerializeRootFolder()
         {
@@ -261,28 +261,29 @@ namespace BExplorer.Shell
 
         bool ShouldCreateItem(ShellItem folder)
         {
-            FilterItemEventArgs e = new FilterItemEventArgs(folder);
-            ShellItem myComputer = new ShellItem(Environment.SpecialFolder.MyComputer);
+            //FilterItemEventArgs e = new FilterItemEventArgs(folder);
+            //ShellItem myComputer = new ShellItem(Environment.SpecialFolder.MyComputer);
 
-            e.Include = false;
+            //e.Include = false;
 
-            if (ShellItem.Desktop.IsImmediateParentOf(folder) ||
-                m_Computer.IsImmediateParentOf(folder))
-            {
-                e.Include = folder.IsFileSystemAncestor;
-            }
-            else if ((folder == m_SelectedFolder) ||
-                       folder.IsParentOf(m_SelectedFolder))
-            {
-                e.Include = true;
-            }
+            //if (ShellItem.Desktop.IsImmediateParentOf(folder) ||
+            //    m_Computer.IsImmediateParentOf(folder))
+            //{
+            //    e.Include = folder.IsFileSystemAncestor;
+            //}
+            //else if ((folder == m_SelectedFolder) ||
+            //           folder.IsParentOf(m_SelectedFolder))
+            //{
+            //    e.Include = true;
+            //}
 
-            if (FilterItem != null)
-            {
-                FilterItem(this, e);
-            }
+            //if (FilterItem != null)
+            //{
+            //    FilterItem(this, e);
+            //}
 
-            return e.Include;
+            //return e.Include;
+					return true;
         }
 
         bool ShouldCreateChildren(ShellItem folder)

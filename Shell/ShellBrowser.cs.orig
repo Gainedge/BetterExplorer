@@ -241,7 +241,7 @@ namespace BExplorer.Shell
 
 				void t_Tick(object sender, EventArgs e)
 				{
-					//m_ShellView.OnSelectionChanged();
+					m_ShellView.OnSelectionChanged();
 					(sender as System.Windows.Forms.Timer).Stop();
 				}
 
@@ -249,22 +249,22 @@ namespace BExplorer.Shell
 
         HResult ICommDlgBrowser.OnDefaultCommand(IShellView ppshv)
         {
-            //ShellItem[] selected = m_ShellView.SelectedItems;
+            ShellItem[] selected = m_ShellView.SelectedItems;
 
-            //if ((selected.Length > 0) && (selected[0].IsFolder))
-            //{
-            //    try
-            //    {
-            //        m_ShellView.Navigate(selected[0]);
-            //    }
-            //    catch (Exception)
-            //    {
-            //    }
-            //}
-            //else
-            //{
-            //    //m_ShellView.OnDoubleClick(EventArgs.Empty);
-            //}
+            if ((selected.Length > 0) && (selected[0].IsFolder))
+            {
+                try
+                {
+                    m_ShellView.Navigate(selected[0]);
+                }
+                catch (Exception)
+                {
+                }
+            }
+            else
+            {
+                m_ShellView.OnDoubleClick(EventArgs.Empty);
+            }
 
             return HResult.S_OK;
         }
@@ -287,11 +287,11 @@ namespace BExplorer.Shell
             }
             else if (uChange == CDBOSC.CDBOSC_SETFOCUS)
             {
-                //m_ShellView.OnGotFocus();
+                m_ShellView.OnGotFocus();
             }
             else if (uChange == CDBOSC.CDBOSC_KILLFOCUS)
             {
-                //m_ShellView.OnLostFocus();
+                m_ShellView.OnLostFocus();
             }
 						
             return HResult.S_OK;
@@ -301,13 +301,14 @@ namespace BExplorer.Shell
 				{
 					if (m.Msg == (int)WM.WM_PAINT || m.Msg == (int)WM.WM_CREATE || m.Msg == (int)WM.WM_LBUTTONUP || m.Msg == (int)WM.WM_LBUTTONDOWN || m.Msg == (int)WM.WM_KEYUP || m.Msg == (int)WM.WM_KEYDOWN)
 					{
-						//User32.SendMessage(m_ShellView.ShellListViewHandle, User32.WM_CHANGEUISTATE, User32.MAKELONG(1, 1), 0);
+						User32.SendMessage(m_ShellView.ShellListViewHandle, User32.WM_CHANGEUISTATE, User32.MAKELONG(1, 1), 0);
 					}
 					return true;
 				}
         HResult ICommDlgBrowser.IncludeObject(IShellView ppshv, IntPtr pidl)
         {
-            return HResult.S_OK ;
+            return m_ShellView.IncludeItem(pidl) ?
+                HResult.S_OK : HResult.S_FALSE;
         }
 
         #endregion

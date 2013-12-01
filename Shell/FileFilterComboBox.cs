@@ -207,14 +207,14 @@ namespace BExplorer.Shell
             {
                 if (m_ShellView != null)
                 {
-                    m_ShellView.FilterItem -= new FilterItemEventHandler(m_ShellView_FilterItem);
+                    //m_ShellView.FilterItem -= new FilterItemEventHandler(m_ShellView_FilterItem);
                 }
 
                 m_ShellView = value;
 
                 if (m_ShellView != null)
                 {
-                    m_ShellView.FilterItem += new FilterItemEventHandler(m_ShellView_FilterItem);
+                    //m_ShellView.FilterItem += new FilterItemEventHandler(m_ShellView_FilterItem);
                 }
             }
         }
@@ -273,16 +273,16 @@ namespace BExplorer.Shell
             }
         }
 
-        void m_ShellView_FilterItem(object sender, FilterItemEventArgs e)
-        {
-            // Include items that are present in the filesystem, and are a 
-            // folder, or match the current regex.
-            if (e.Include)
-            {
-                e.Include = (e.Item.IsFileSystem || e.Item.IsFileSystemAncestor) &&
-                    (e.Item.IsFolder || m_Regex.IsMatch(e.Item.FileSystemPath));
-            }
-        }
+        //void m_ShellView_FilterItem(object sender, FilterItemEventArgs e)
+        //{
+        //    // Include items that are present in the filesystem, and are a 
+        //    // folder, or match the current regex.
+        //    if (e.Include)
+        //    {
+        //        e.Include = (e.Item.IsFileSystem || e.Item.IsFileSystemAncestor) &&
+        //            (e.Item.IsFolder || m_Regex.IsMatch(e.Item.FileSystemPath));
+        //    }
+        //}
 
         string m_Filter = "*.*";
         string m_FilterItems = "";

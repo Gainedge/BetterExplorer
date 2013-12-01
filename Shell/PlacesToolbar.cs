@@ -106,7 +106,7 @@ namespace BExplorer.Shell
         /// This event allows the items displayed in the 
         /// <see cref="PlacesToolbar"/> control to be filtered.
         /// </remarks>
-        public event FilterItemEventHandler FilterItem;
+        //public event FilterItemEventHandler FilterItem;
 
         #region Hidden Properties
 
@@ -255,16 +255,16 @@ namespace BExplorer.Shell
 
         bool IncludeItem(ShellItem item)
         {
-            if (FilterItem != null)
-            {
-                FilterItemEventArgs e = new FilterItemEventArgs(item);
-                FilterItem(this, e);
-                return e.Include;
-            }
-            else
-            {
+            //if (FilterItem != null)
+            //{
+            //    FilterItemEventArgs e = new FilterItemEventArgs(item);
+            //    FilterItem(this, e);
+            //    return e.Include;
+            //}
+            //else
+            //{
                 return true;
-            }
+           // }
         }
 
         string WrapButtonText(ToolStripButton button, string s)

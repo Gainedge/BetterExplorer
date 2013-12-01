@@ -354,6 +354,7 @@ namespace BExplorer.Shell.Interop
 
 	public enum ListViewExtendedStyles
 	{
+		LVS_EX_AUTOAUTOARRANGE = 0x1000000,
 		/// <summary>
 		/// LVS_EX_GRIDLINES
 		/// </summary>
@@ -439,10 +440,13 @@ namespace BExplorer.Shell.Interop
 		/// </summary>
 		SimpleSelect = 0x00100000,
 		/// <summary>
+		/// LVS_EX_AUTOSIZECOLUMNS
+		/// </summary>
+		AutosizeColumns = 0x10000000,
+		/// <summary>
 		/// LVS_EX_HEADERINALLVIEWS
 		/// </summary>
-		HeaderInAllViews = 0x02000000,
-
-		AutosizeColumns = 0x10000000
+		HeaderInAllViews = 0x2000000,
+		LVS_EX_DOUBLEBUFFER = 0x00010000,
 	}
 }

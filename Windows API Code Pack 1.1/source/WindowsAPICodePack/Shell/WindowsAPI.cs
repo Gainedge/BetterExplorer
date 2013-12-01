@@ -5683,6 +5683,8 @@ namespace WindowsHelper
 			public const int LVN_GETINFOTIP = (LVN_FIRST - 58);
 			public const int LVN_GETDISPINFOW = (LVN_FIRST - 77);
 			public const int LVN_SETDISPINFOA = (LVN_FIRST - 51);
+			public const int LVN_BEGINSCROLL = (LVN_FIRST - 80);
+      //public const int LVN_ITEMACTIVATE = (LVN_FIRST-14)
 
       const int UDN_FIRST = -721;        // updown
       public const int UDN_DELTAPOS = (UDN_FIRST - 1);

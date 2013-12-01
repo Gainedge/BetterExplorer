@@ -496,16 +496,20 @@ namespace BExplorer.Shell.Interop
 
 			// return a System.Media.Imaging.BitmapSource
 			// Use interop to create a BitmapSource from hBitmap.
-			BitmapSource returnValue = Imaging.CreateBitmapSourceFromHBitmap(
-					hBitmap,
-					IntPtr.Zero,
-					System.Windows.Int32Rect.Empty,
-					BitmapSizeOptions.FromEmptyOptions());
+			if (hBitmap != IntPtr.Zero)
+			{
+				BitmapSource returnValue = Imaging.CreateBitmapSourceFromHBitmap(
+						hBitmap,
+						IntPtr.Zero,
+						System.Windows.Int32Rect.Empty,
+						BitmapSizeOptions.FromEmptyOptions());
 
-			// delete HBitmap to avoid memory leaks
-			Gdi32.DeleteObject(hBitmap);
+				// delete HBitmap to avoid memory leaks
+				Gdi32.DeleteObject(hBitmap);
+				return returnValue;
+			}
 
-			return returnValue;
+			return null;
 		}
 
 		#endregion

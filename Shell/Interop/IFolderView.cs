@@ -135,7 +135,7 @@ namespace BExplorer.Shell.Interop
 		void SetCurrentFolderFlags(FOLDERFLAGS dwMask, FOLDERFLAGS dwFlags);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetCurrentFolderFlags(out uint pdwFlags);
+		void GetCurrentFolderFlags(out FOLDERFLAGS pdwFlags);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetSortColumnCount(out int pcColumns);

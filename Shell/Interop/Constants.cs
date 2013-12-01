@@ -75,6 +75,8 @@ namespace BExplorer.Shell.Interop
 		public const int LVN_GETINFOTIP = (LVN_FIRST - 58);
 		public const int LVN_GETDISPINFOW = (LVN_FIRST - 77);
 		public const int LVN_SETDISPINFOA = (LVN_FIRST - 51);
+		public const int LVN_BEGINSCROLL = (LVN_FIRST - 80);
+		public const int LVN_ENDSCROLL = (LVN_FIRST - 81);
 
 
 		const int UDN_FIRST = -721;        // updown
@@ -154,4 +156,42 @@ namespace BExplorer.Shell.Interop
 		internal Guid folderTypeId;
 	}
 
+	public enum HDN
+	{
+		FIRST = (0 - 300),
+		ENDDRAG = (FIRST - 11),
+		ITEMCHANGEDW = (FIRST - 21),
+		GETDISPINFOW = (FIRST - 9),
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct NMHDDISPINFO
+	{
+		public NMHDR hdr;
+		public int iItem;
+		public uint mask;
+		public string pszText;
+		public int cchTextMax;
+		public int iImage;
+		public IntPtr lParam;
+	}
+
+	public static class CustomDraw
+	{
+		public const int CDRF_DODEFAULT = 0x00000000;
+		public const int CDRF_NEWFONT = 0x00000002;
+		public const int CDRF_SKIPDEFAULT = 0x00000004;
+		public const int CDRF_DOERASE = 0x00000008; // draw the background
+		public const int CDRF_NOTIFYPOSTPAINT = 0x00000010;
+		public const int CDRF_NOTIFYITEMDRAW = 0x00000020;
+		public const int CDRF_NOTIFYSUBITEMDRAW = 0x00000020;
+
+		public const int CDDS_PREPAINT = 0x00000001;
+		public const int CDDS_POSTPAINT = 0x00000002;
+		public const int CDDS_ITEM = 0x00010000;
+		public const int CDDS_SUBITEM = 0x00020000;
+		public const int CDDS_ITEMPREPAINT = 0x00010001;
+		public const int CDDS_ITEMPOSTPAINT = 0x00010002;
+		public const int NM_CUSTOMDRAW = (-12);
+	}
 }

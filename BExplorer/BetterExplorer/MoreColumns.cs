@@ -6,7 +6,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using WindowsHelper;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
 
@@ -17,7 +16,7 @@ namespace BetterExplorer
         public MoreColumns()
         {
           InitializeComponent();
-          WindowsAPI.SetWindowTheme(lvColumns.Handle, "explorer", null);
+          UxTheme.SetWindowTheme(lvColumns.Handle, "explorer", 0);
         }
 
         ShellView BrowserControl;
@@ -45,10 +44,10 @@ namespace BetterExplorer
           }
         }
 
-        public void PopulateAvailableColumns(Collumns[] AvailableCols, ShellView ShellView, System.Windows.Point Location)
+        public void PopulateAvailableColumns(List<Collumns> AvailableCols, ShellView ShellView, System.Windows.Point Location)
         {
           BrowserControl = ShellView;
-          for (int i = 1; i < AvailableCols.Length; i++)
+          for (int i = 1; i < AvailableCols.Count; i++)
           {
 						if (!String.IsNullOrEmpty(AvailableCols[i].Name))
 						{
@@ -85,8 +84,8 @@ namespace BetterExplorer
         {
           if (!IsBeforeShow)
           {
-            PROPERTYKEY pk = ((Collumns)e.Item.Tag).pkey;
-            BrowserControl.SetColInView(pk, !e.Item.Checked, (e.Item.Tag as Collumns).IsColumnHandler); 
+            Collumns col = ((Collumns)e.Item.Tag);
+            //BrowserControl.SetColInView(col, !e.Item.Checked); 
           }
         }
 

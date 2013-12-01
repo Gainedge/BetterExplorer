@@ -20,7 +20,13 @@ namespace BExplorer.Shell
 		public string pszText;
 		public int cchTextMax;
 		public int iImage;
-		public uint lParam;
+		public IntPtr lParam;
+		public int    iIndent;
+		public int iGroupId;
+		public int cColumns;
+		public uint puColumns;
+		public int piColFmt;
+		public int iGroup;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -29,7 +35,7 @@ namespace BExplorer.Shell
 		// 12/24
 		public IntPtr hwndFrom;
 		public IntPtr idFrom;
-		public long code;
+		public int code;
 	}
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
@@ -76,6 +82,89 @@ namespace BExplorer.Shell
       public Int32 cchTextMax;
       public Int32 iSubItem;
   }
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct NMHEADER
+	{
+		public NMHDR hdr;
+		public int iItem;
+		public int iButton;
+		public IntPtr pitem;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct NMCUSTOMDRAW
+	{
+		// 48/80	
+		public NMHDR hdr;
+		public int dwDrawStage;
+		public IntPtr hdc;
+		public User32.RECT rc;
+		public IntPtr dwItemSpec;
+		public CDIS uItemState;
+		public IntPtr lItemlParam;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct NMLVCUSTOMDRAW
+	{
+		// 104/136  
+		public NMCUSTOMDRAW nmcd;
+		public int clrText;
+		public int clrTextBk;
+		public int iSubItem;
+		public int dwItemType;
+		public int clrFace;
+		public int iIconEffect;
+		public int iIconPhase;
+		public int iPartId;
+		public int iStateId;
+		public User32.RECT rcText;
+		public int uAlign;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct NMITEMACTIVATE
+	{
+		public NMHDR hdr;
+		public int iItem;
+		public int iSubItem;
+		public uint uNewState;
+		public uint uOldState;
+		public uint uChanged;
+		NativePoint ptAction;
+		public IntPtr lParam;
+		public uint uKeyFlags;
+	}
+	public enum LVTVIM
+	{
+		LVTVIM_COLUMNS = 2,
+		LVTVIM_TILESIZE = 1,
+		LVTVIM_LABELMARGIN = 4,
+	}
+
+	public enum LVTVIF
+	{
+		LVTVIF_AUTOSIZE = 0,
+		LVTVIF_FIXEDHEIGHT = 2,
+		LVTVIF_FIXEDSIZE = 3,
+		LVTVIF_FIXEDWIDTH = 1,
+	}
+	public struct INTEROP_SIZE
+	{
+		public int cx;
+		public int cy;
+	}
+	[StructLayout(LayoutKind.Sequential)]
+	public struct LVTILEVIEWINFO
+	{
+		public int cbSize;
+		public int dwMask;
+		public int dwFlags;
+		public INTEROP_SIZE sizeTile;
+		public int cLines;
+		public INTEROP_SIZE rcLabelMargin;
+	}
 	public static class Extensions
 	{
 

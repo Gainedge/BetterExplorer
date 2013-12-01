@@ -45,5 +45,15 @@ namespace BExplorer.Shell.Interop
 
         [DllImport("comctl32")]
         public static extern bool ImageList_GetIconSize(IntPtr himl, out int cx, out int cy);
+
+				[StructLayout(LayoutKind.Sequential)]
+				public struct INITCOMMONCONTROLSEX
+				{
+					public int dwSize;
+					public uint dwICC;
+				}
+
+				[DllImport("comctl32.dll", EntryPoint = "InitCommonControlsEx", CallingConvention = CallingConvention.StdCall)]
+				public static extern bool InitCommonControlsEx(ref INITCOMMONCONTROLSEX iccex);
     }
 }

@@ -231,7 +231,7 @@ namespace BExplorer.Shell
             {
                 if (m_ShellView != null)
                 {
-                    m_ShellView.Navigate(path);
+                    //m_ShellView.Navigate(path);
                     Text = string.Empty;
                     result = true;
                 }
@@ -261,19 +261,19 @@ namespace BExplorer.Shell
             {
                 if (m_ShellView != null)
                 {
-                    m_ShellView.Navigate(parent);
+                    //m_ShellView.Navigate(parent);
                 }
             }
         }
 
         void m_ShellView_SelectionChanged(object sender, EventArgs e)
         {
-            if ((m_ShellView.SelectedItems.Length > 0) &&
-                (!m_ShellView.SelectedItems[0].IsFolder) &&
-                (m_ShellView.SelectedItems[0].IsFileSystem))
-            {
-                Text = Path.GetFileName(m_ShellView.SelectedItems[0].FileSystemPath);
-            }
+            //if ((m_ShellView.SelectedItems.Length > 0) &&
+            //    (!m_ShellView.SelectedItems[0].IsFolder) &&
+            //    (m_ShellView.SelectedItems[0].IsFileSystem))
+            //{
+            //    Text = Path.GetFileName(m_ShellView.SelectedItems[0].FileSystemPath);
+            //}
         }
 
         FileFilterComboBox m_FilterControl;
