@@ -247,3 +247,6 @@ BExplorer/BetterExplorer/BEH32.exp
 BExplorer/BetterExplorer/BEH32.ilk
 BExplorer/BetterExplorer/BEH32.lib
 *.tlog
+Shell/ShellView.cs~RF244fb642.TMP
+Shell/ShellView.cs~RF244fd160.TMP
+BEApi/x64/Release/vc120.pdb
