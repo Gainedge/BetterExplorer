@@ -363,9 +363,35 @@ namespace BExplorer.Shell
 						var str = new StringBuilder(512);
 						int index = -1;
 						IExtractIconpwFlags flags;
-						iextract.GetIconLocation(0, str, 512, out index, out flags);
+						iextract.GetIconLocation(IExtractIconuFlags.GIL_ASYNC, str, 512, out index, out flags);
 
 						return flags;
+					}
+					catch (Exception)
+					{
+
+						return 0;
+					}
+				}
+
+				public int GetFallbackIconIndex()
+				{
+					try
+					{
+						var guid = new Guid("000214fa-0000-0000-c000-000000000046");
+						IntPtr result;
+						uint res = 0;
+						var ishellfolder = this.Parent.GetIShellFolder();
+						ishellfolder.GetUIObjectOf(IntPtr.Zero,
+						(uint)1, new IntPtr[1] { this.ILPidl },
+						guid, res, out result);
+						var iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
+						var str = new StringBuilder(512);
+						int index = -1;
+						IExtractIconpwFlags flags;
+						iextract.GetIconLocation(IExtractIconuFlags.GIL_DEFAULTICON | IExtractIconuFlags.GIL_FORSHELL | IExtractIconuFlags.GIL_OPENICON, str, 512, out index, out flags);
+
+						return index;
 					}
 					catch (Exception)
 					{
@@ -546,6 +572,21 @@ namespace BExplorer.Shell
 							Marshal.SizeOf(info),
 							SHGFI.ICON | SHGFI.SYSICONINDEX | SHGFI.OVERLAYINDEX | SHGFI.PIDL |
 							(SHGFI)type | (SHGFI)flags);
+
+					if (result == IntPtr.Zero)
+					{
+						throw new Exception("Error retreiving shell folder icon");
+					}
+
+					return info.iIcon;
+				}
+
+				public static int GetSystemImageListDefaultIndex(IntPtr pidl, bool IsFolder)
+				{
+					SHFILEINFO info = new SHFILEINFO();
+					IntPtr result = Shell32.SHGetFileInfo(pidl, IsFolder ? (int)FileAttributes.Directory : 0, out info,
+							Marshal.SizeOf(info),
+							SHGFI.ICON | SHGFI.SYSICONINDEX);
 
 					if (result == IntPtr.Zero)
 					{

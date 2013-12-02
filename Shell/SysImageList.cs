@@ -283,7 +283,7 @@ namespace BExplorer.Shell
 		public ImageList(ImageListSize size){
 			this._Size = size;
 			this._SizePixels = new Lazy<Int32Size>(this.GetSizePixels);
-			var hresult = Win32Api.SHGetImageList(size, ref IID_ImageList, out this._ImageList);
+			var hresult = Win32Api.SHGetImageList(size, ref IID_ImageList2, out this._ImageList);
 			Marshal.ThrowExceptionForHR(hresult);
 		}
 
@@ -355,7 +355,6 @@ namespace BExplorer.Shell
 			Marshal.ThrowExceptionForHR(hresult);
 			if(hIcon != IntPtr.Zero){
 				Icon icon = Icon.FromHandle(hIcon);
-
 				return icon;
 			}else{
 				throw new Win32Exception();

@@ -607,34 +607,44 @@ namespace BExplorer.Shell
         ImageList extra = new ImageList(ImageListSize.ExtraLarge);
 		public async void LoadIcon(int index)
 		{
-            
-			if (User32.SendMessage(this.LVHandle, MSG.LVM_ISITEMVISIBLE, index, 0) == 0)
-				return;
-            
-            this.Invoke(new MethodInvoker(() =>
-                {
-									ShellItem sho = null;
-									int hash = -1;
-									Bitmap bitmap = null;
-                    sho = Items[index];
-                    hash = sho.GetHashCode();
-                    Thread.Sleep(2);
-                    Application.DoEvents();
-                    bitmap = sho.GetShellThumbnail(IconSize);
-                    if ((sho.GetIconType() & IExtractIconpwFlags.GIL_PERCLASS) == 0)
-                    {
-                        if (!cache.ContainsKey(hash))
-                            cache.Add(hash, new Bitmap(bitmap));
-                    }
-                    else
-                    {
-                        if (!cache.ContainsKey(hash))
-                            cache.Add(hash, null);
-                    }
-                    bitmap.Dispose();
-										User32.SendMessage(this.LVHandle, MSG.LVM_REDRAWITEMS, index, index);
-			        
-                }));
+
+			try
+			{
+				if (User32.SendMessage(this.LVHandle, MSG.LVM_ISITEMVISIBLE, index, 0) == 0)
+					return;
+
+				//this.BeginInvoke(new MethodInvoker(() =>
+				//    {
+				ShellItem sho = null;
+				int hash = -1;
+				Bitmap bitmap = null;
+				sho = Items[index];
+				hash = sho.GetHashCode();
+
+				if (hash != -1)
+				{
+					bitmap = sho.GetShellThumbnail(IconSize);
+					if ((sho.GetIconType() & IExtractIconpwFlags.GIL_PERCLASS) == 0 && !sho.IsFolder)
+					{
+						if (!cache.ContainsKey(hash))
+							cache.Add(hash, new Bitmap(bitmap));
+					}
+					else
+					{
+						if (!cache.ContainsKey(hash))
+							cache.Add(hash, null);
+					}
+					bitmap.Dispose();
+					User32.SendMessage(this.LVHandle, MSG.LVM_REDRAWITEMS, index, index);
+				}
+			}
+			catch (Exception)
+			{
+				
+			}
+										//Thread.Sleep(1);
+										//Application.DoEvents();
+                //}));
             
 			
 			
@@ -691,14 +701,9 @@ namespace BExplorer.Shell
 						Navigate(Items[iac.iItem]);
 						break;
 					case WNM.LVN_ENDSCROLL:
-						tokenSource.Cancel();// .Cancel();
 						this.Cancel = true;
-						
-						this.cache.Clear();
-						//this.refreshedImages.Clear();
 						GC.Collect();
 						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-						
 						break;
 					case CustomDraw.NM_CUSTOMDRAW:
 						{
@@ -739,116 +744,122 @@ namespace BExplorer.Shell
 												if (sho != null)
 												{
 													Icon real_icon = null;
-                                                    icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
+                          icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
 
 
 
 
-                                                    if (icon == null)
-                                                    {
+                          if (icon == null)
+                          {
+
+														//icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.MemoryOnly);
+														if (icon == null)
+														{
+															Bitmap tempicon = null;
+															if (!cache.TryGetValue(hash, out tempicon))
+															{
+																//if (!this.refreshedImages.Contains(index))
+																//{
+																//	this.refreshedImages.Add(index);
+																//}
+																Task.Run(() =>
+																{
+																	//Task.Delay(1);
+																	LoadIcon(index);
+
+																});
+
+															}
+															else
+															{
+																if (tempicon != null)
+																{
+																	icon = tempicon;
+																}
+															}
+
+															if ((sho.GetIconType() & IExtractIconpwFlags.GIL_PERCLASS) == IExtractIconpwFlags.GIL_PERCLASS || sho.IsFolder)
+																icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
+															else
+															{
+																int iconindex = 0;
+																if (Path.GetExtension(sho.ParsingName) == ".exe" || Path.GetExtension(sho.ParsingName) == ".com" || Path.GetExtension(sho.ParsingName) == ".bat")
+																{
+																	Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO();
+																	defIconInfo.cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO));
+																	Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_APPLICATION, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
+																	iconindex = defIconInfo.iSysIconIndex;
+																}
+																else if (sho.IsFolder)
+																{
+																	Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO();
+																	defIconInfo.cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO));
+																	Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_FOLDER, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
+																	iconindex = defIconInfo.iSysIconIndex;
+																}
+																real_icon = IconSize > 48 ? jumbo.GetIcon(iconindex) : extra.GetIcon(iconindex);
+																if (real_icon != null)
+																{
+																	icon = real_icon.ToBitmap();
+																	//real_icon.Dispose();
+																	User32.DestroyIcon(real_icon.Handle);
+
+																}
+																Bitmap tempicon2 = null;
+																if (!cache.TryGetValue(hash, out tempicon2))
+																{
+																	//if (!this.refreshedImages.Contains(index))
+																	//{
+																	//	this.refreshedImages.Add(index);
+																	//}
+																	Task.Run(() =>
+																	{
+																		//Task.Delay(1);
+																		LoadIcon(index);
 
 
-                                                        Bitmap tempicon = null;
-                                                        if (!cache.TryGetValue(hash, out tempicon))
-                                                        {
-                                                            //if (!this.refreshedImages.Contains(index))
-                                                            //{
-                                                            //	this.refreshedImages.Add(index);
-                                                            //}
-                                                            Task.Run(() =>
-                                                            {
+																	});
 
-                                                                LoadIcon(index);
+																}
+																else
+																{
+																	if (tempicon2 != null)
+																	{
+																		icon = tempicon2;
+																	}
+																}
+															}
+														}
+                          //    //else
+                          //    //	icon = ((ShellItem)KnownFolders.Windows).GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
+                          //    //}
+                          }
 
-                                                            });
+                          ////var txtBounds = new User32.RECT();
 
-                                                        }
-                                                        else
-                                                        {
-                                                            if (tempicon != null)
-                                                            {
-                                                                icon = tempicon;
-                                                            }
-                                                        }
+                          ////txtBounds.Left = 2;
+                          ////WindowsAPI.SendMessage(this.handle, WindowsAPI.LVM.GETITEMRECT, index, ref txtBounds);
 
-                                                        if ((sho.GetIconType() & IExtractIconpwFlags.GIL_PERCLASS) == IExtractIconpwFlags.GIL_PERCLASS || sho.IsFolder)
-                                                            icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
-                                                        else
-                                                        {
-                                                        int iconindex = 0;
-                                                        if (Path.GetExtension(sho.ParsingName) == ".exe" || Path.GetExtension(sho.ParsingName) == ".com" || Path.GetExtension(sho.ParsingName) == ".bat")
-                                                        {
-                                                            iconindex = 0;
-                                                        }
-                                                        else if (sho.IsFolder)
-                                                        {
-                                                            iconindex = 1;
-                                                        }
-                                                        real_icon = IconSize > 48 ? jumbo.GetIcon(iconindex) : extra.GetIcon(iconindex);
-                                                        if (real_icon != null)
-                                                        {
-                                                            icon = real_icon.ToBitmap();
-                                                            real_icon.Dispose();
-																														User32.DestroyIcon(real_icon.Handle);
-                                                            
-                                                        }
-                                                            Bitmap tempicon2 = null;
-                                                            if (!cache.TryGetValue(hash, out tempicon2))
-                                                            {
-                                                                //if (!this.refreshedImages.Contains(index))
-                                                                //{
-                                                                //	this.refreshedImages.Add(index);
-                                                                //}
-                                                                Task.Run(() =>
-                                                                {
+                          if (icon != null)
+                          {
+                              using (Graphics g = Graphics.FromHdc(hdc))
+                              {
 
-                                                                    LoadIcon(index);
-                                                                    
+                                  if (icon.Width != icon.Height)
+                                  {
+                                      g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+                                  }
+                                  else
+                                  {
+                                      g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                                      g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                                      g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                                      g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                                      g.DrawImage(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+                                  }
 
-                                                                });
-
-                                                            }
-                                                            else
-                                                            {
-                                                                if (tempicon2 != null)
-                                                                {
-                                                                    icon = tempicon2;
-                                                                }
-                                                            }
-                                                        }
-                                                    //    //else
-                                                    //    //	icon = ((ShellItem)KnownFolders.Windows).GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
-                                                    //    //}
-                                                    }
-
-                                                    ////var txtBounds = new User32.RECT();
-
-                                                    ////txtBounds.Left = 2;
-                                                    ////WindowsAPI.SendMessage(this.handle, WindowsAPI.LVM.GETITEMRECT, index, ref txtBounds);
-
-                                                    if (icon != null)
-                                                    {
-                                                        using (Graphics g = Graphics.FromHdc(hdc))
-                                                        {
-
-                                                            if (icon.Width != icon.Height)
-                                                            {
-                                                                g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-                                                            }
-                                                            else
-                                                            {
-                                                                g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                                                                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                                                                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                                                                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                                                                g.DrawImage(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-                                                            }
-
-                                                        }
-                                                        
-																												
-                                                        
-                                                    }
+                              }                         
+                          }
 
 												}
 											}
@@ -872,9 +883,10 @@ namespace BExplorer.Shell
 
 		public void Navigate(ShellItem destination)
 		{
+			
+			//this.refreshedImages.Clear();
 			this.cache.Clear();
-			this.refreshedImages.Clear();
-            GC.Collect();
+      GC.Collect();
 			this.Cancel = true;
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 			this.Items = destination.OrderByDescending(o => o.IsFolder).ToArray();

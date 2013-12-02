@@ -95,6 +95,7 @@ namespace BExplorer.Shell
 			CreateItems();
 		}
 
+		private bool HandleCreated = false;
 		//protected override CreateParams CreateParams
 		//{
 		//	get
@@ -111,6 +112,18 @@ namespace BExplorer.Shell
 		public void RefreshContents()
 		{
 			RefreshItem(m_TreeView.Nodes[0]);
+		}
+
+		protected override void OnHandleCreated(EventArgs e)
+		{
+			base.OnHandleCreated(e);
+			HandleCreated = true;
+		}
+
+		protected override void OnHandleDestroyed(EventArgs e)
+		{
+			base.OnHandleDestroyed(e);
+			HandleCreated = false;
 		}
 
 		protected override void OnSizeChanged(EventArgs e)
@@ -393,23 +406,33 @@ namespace BExplorer.Shell
 			//}
 
 			node.Tag = folder;
-			node.ImageIndex = 3;
+   //   IntPtr pidl = Marshal.StringToHGlobalUni("Test");
+			//var defIndex = ShellItem.GetSystemImageListDefaultIndex(pidl, true);
+			//Marshal.FreeHGlobal(pidl);
+			Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO();
+			defIconInfo.cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO));
+			Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_FOLDER, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
+			node.ImageIndex = defIconInfo.iSysIconIndex;//defIndex;
 			var treeHandle = m_TreeView.Handle;
 			Task.Run(() =>
 			{
-				if (m_TreeView.InvokeRequired)
+				//if (this.InvokeRequired)
+				//{
+				if (HandleCreated)
 				{
-					m_TreeView.BeginInvoke(new MethodInvoker(() =>
+					this.BeginInvoke(new MethodInvoker(() =>
 					{
 						SetNodeImage(node.Handle, node.Tag as ShellItem, m_TreeView.Handle);
+						Thread.Sleep(2);
+						Application.DoEvents();
 					}));
 				}
-				else
-				{
-					SetNodeImage(node.Handle, node.Tag as ShellItem, m_TreeView.Handle);
-				}
-				Thread.Sleep(2);
-				Application.DoEvents();
+				//}
+				//else
+				//{
+				//	SetNodeImage(node.Handle, node.Tag as ShellItem, m_TreeView.Handle);
+				//}
+
 			});
 
 			Task.Run(() =>
@@ -417,21 +440,25 @@ namespace BExplorer.Shell
 				var sho = node.Tag as ShellItem;
 				if (sho.Count(c => c.IsFolder) == 0)
 				{
-					if (m_TreeView.InvokeRequired)
+					//if (m_TreeView.InvokeRequired)
+					//{
+					if (HandleCreated)
 					{
-						m_TreeView.BeginInvoke(new MethodInvoker(() =>
+						this.BeginInvoke(new MethodInvoker(() =>
 						{
 
 							node.Nodes.Clear();
+							Thread.Sleep(2);
+							Application.DoEvents();
 						}));
 					}
-					else
-					{
-						node.Nodes.Clear();
-					}
+					//}
+					//else
+					//{
+					//	node.Nodes.Clear();
+					//}
 				}
-				Thread.Sleep(2);
-				Application.DoEvents();
+				
 			});
 		
 				

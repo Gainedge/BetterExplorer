@@ -416,7 +416,9 @@ namespace BExplorer.Shell.Interop
 			BitmapData bmpData;
 
 			if (IsAlphaBitmap(bmp, out bmpData))
+			{
 				return GetlAlphaBitmapFromBitmapData(bmpData);
+			}
 
 			//if (bmp.GetPixel(1, 1) == Color.FromArgb(255, Color.Black) && RetrievalOption == ShellThumbnailRetrievalOption.CacheOnly)
 			//  return null;
@@ -460,6 +462,7 @@ namespace BExplorer.Shell.Interop
 			finally
 			{
 				bmp.UnlockBits(bmpData);
+				
 			}
 
 			return false;
