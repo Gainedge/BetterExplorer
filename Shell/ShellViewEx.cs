@@ -605,19 +605,20 @@ namespace BExplorer.Shell
         //}
         ImageList jumbo = new ImageList(ImageListSize.Jumbo);
         ImageList extra = new ImageList(ImageListSize.ExtraLarge);
-		public void LoadIcon(int index)
+		public async void LoadIcon(int index)
 		{
             
 			if (User32.SendMessage(this.LVHandle, MSG.LVM_ISITEMVISIBLE, index, 0) == 0)
 				return;
-            ShellItem sho = null;
-            int hash = -1;
-            Bitmap bitmap = null;
+            
             this.Invoke(new MethodInvoker(() =>
                 {
+									ShellItem sho = null;
+									int hash = -1;
+									Bitmap bitmap = null;
                     sho = Items[index];
                     hash = sho.GetHashCode();
-                    Thread.Sleep(1);
+                    Thread.Sleep(2);
                     Application.DoEvents();
                     bitmap = sho.GetShellThumbnail(IconSize);
                     if ((sho.GetIconType() & IExtractIconpwFlags.GIL_PERCLASS) == 0)
@@ -631,11 +632,12 @@ namespace BExplorer.Shell
                             cache.Add(hash, null);
                     }
                     bitmap.Dispose();
+										User32.SendMessage(this.LVHandle, MSG.LVM_REDRAWITEMS, index, index);
 			        
                 }));
             
 			
-			User32.SendMessage(this.LVHandle, MSG.LVM_REDRAWITEMS, index, index);
+			
 			//Thread.Sleep(1);
 			//Application.DoEvents();
 			//if (token.IsCancellationRequested == true)
@@ -736,7 +738,7 @@ namespace BExplorer.Shell
 
 												if (sho != null)
 												{
-
+													Icon real_icon = null;
                                                     icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
 
 
@@ -776,18 +778,19 @@ namespace BExplorer.Shell
                                                         int iconindex = 0;
                                                         if (Path.GetExtension(sho.ParsingName) == ".exe" || Path.GetExtension(sho.ParsingName) == ".com" || Path.GetExtension(sho.ParsingName) == ".bat")
                                                         {
-                                                            iconindex = 2;
+                                                            iconindex = 0;
                                                         }
                                                         else if (sho.IsFolder)
                                                         {
-                                                            iconindex = 3;
+                                                            iconindex = 1;
                                                         }
-                                                        var real_icon = IconSize > 48 ? jumbo.GetIcon(iconindex) : extra.GetIcon(iconindex);
+                                                        real_icon = IconSize > 48 ? jumbo.GetIcon(iconindex) : extra.GetIcon(iconindex);
                                                         if (real_icon != null)
                                                         {
                                                             icon = real_icon.ToBitmap();
-                                                            //real_icon.Dispose();
-                                                            User32.DestroyIcon(real_icon.Handle);
+                                                            real_icon.Dispose();
+																														User32.DestroyIcon(real_icon.Handle);
+                                                            
                                                         }
                                                             Bitmap tempicon2 = null;
                                                             if (!cache.TryGetValue(hash, out tempicon2))
@@ -842,10 +845,9 @@ namespace BExplorer.Shell
                                                             }
 
                                                         }
-                                                        icon.Dispose();
-                                                        if (cache.ContainsKey(hash))
-                                                            cache[hash].Dispose();
-                                                        cache.Remove(hash);
+                                                        
+																												
+                                                        
                                                     }
 
 												}
