@@ -95,7 +95,9 @@ namespace BExplorer.Shell
 			icc.dwSize = Marshal.SizeOf(typeof(ComCtl32.INITCOMMONCONTROLSEX));
 			icc.dwICC = 1;
 			var res = ComCtl32.InitCommonControlsEx(ref icc);
-			this.LVHandle = User32.CreateWindowEx(0, "SysListView32", "", User32.WindowStyles.WS_CHILD | User32.WindowStyles.WS_CLIPCHILDREN | User32.WindowStyles.WS_CLIPSIBLINGS | (User32.WindowStyles)User32.LVS_EDITLABELS | (User32.WindowStyles)User32.LVS_OWNERDATA, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, this.Handle, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+			this.LVHandle = User32.CreateWindowEx(0, "SysListView32", "", User32.WindowStyles.WS_CHILD | User32.WindowStyles.WS_CLIPCHILDREN | User32.WindowStyles.WS_CLIPSIBLINGS | 
+																																		(User32.WindowStyles)User32.LVS_EDITLABELS | (User32.WindowStyles)User32.LVS_OWNERDATA | (User32.WindowStyles)User32.LVS_SHOWSELALWAYS, 
+																																		0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, this.Handle, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 			User32.ShowWindow(this.LVHandle, User32.ShowWindowCommands.Show);
 
 			
@@ -177,6 +179,16 @@ namespace BExplorer.Shell
 		//	//User32.SetWindowPos(this.LVHandle, IntPtr.Zero, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, 0);
 		//	
 		//}
+
+		internal void OnSelectionChanged()
+		{
+
+			if (SelectionChanged != null)
+			{
+				SelectionChanged(this, EventArgs.Empty);
+			}
+
+		}
 
 		internal void OnGotFocus()
 		{
@@ -675,8 +687,6 @@ namespace BExplorer.Shell
 				if (User32.SendMessage(this.LVHandle, MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero || this.Cancel)
 					return;
 
-				//this.BeginInvoke(new MethodInvoker(() =>
-				//    {
 				ShellItem sho = null;
 				int hash = -1;
 				Bitmap bitmap = null;
@@ -704,24 +714,13 @@ namespace BExplorer.Shell
 			{
 				
 			}
-										//Thread.Sleep(1);
-										//Application.DoEvents();
-                //}));
-            
-			
-			
-			//Thread.Sleep(1);
-			//Application.DoEvents();
-			//if (token.IsCancellationRequested == true)
-			//{
-			//	return;
-			//}
 		}
 
 		Boolean Cancel = false;
 		Dictionary<int, Bitmap> cache = new Dictionary<int, Bitmap>();
 		List<int> refreshedImages = new List<int>();
 		CancellationTokenSource tokenSource = new CancellationTokenSource();
+		System.Windows.Forms.Timer selectionTimer = new System.Windows.Forms.Timer();
         Bitmap icon = null;
 		protected override void WndProc(ref Message m)
 		{
@@ -771,7 +770,7 @@ namespace BExplorer.Shell
 											}
 											else if (currentCollumn.CollumnType == typeof(long))
 											{
-												value = String.Format("{0} KB", Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024)); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
+												value = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ##0"))); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
 											}
 											else
 											{
@@ -799,6 +798,27 @@ namespace BExplorer.Shell
 					case WNM.LVN_ENDSCROLL:
 						GC.Collect();
 						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+						break;
+					case WNM.LVN_ITEMCHANGED:
+						NMLISTVIEW nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
+						if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE)
+						{
+							selectionTimer.Interval = 100;
+							selectionTimer.Tick += selectionTimer_Tick;
+							if (selectionTimer.Enabled)
+							{
+								selectionTimer.Stop();
+								selectionTimer.Start();
+							}
+							else
+							{
+								selectionTimer.Start();
+							}
+						}
+
+						break;
+					case WNM.LVN_ODSTATECHANGED:
+						OnSelectionChanged();
 						break;
 					case WNM.NM_RCLICK:
 						var selitems = this.SelectedItems;
@@ -1030,6 +1050,12 @@ namespace BExplorer.Shell
 
 		}
 
+		void selectionTimer_Tick(object sender, EventArgs e)
+		{
+			OnSelectionChanged();
+			(sender as System.Windows.Forms.Timer).Stop();
+		}
+
 
 		public void Navigate(ShellItem destination)
 		{
@@ -1042,6 +1068,11 @@ namespace BExplorer.Shell
 			this.Items = destination.OrderByDescending(o => o.IsFolder).ToArray();
 			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Length, 0);
 			this.m_CurrentFolder = destination;
+			try
+			{
+				m_History.Add(destination);
+			}
+			catch { }
 			this.OnNavigated(new NavigatedEventArgs(destination));
 		}
 

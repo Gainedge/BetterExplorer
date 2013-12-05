@@ -720,6 +720,7 @@ namespace BExplorer.Shell.Interop
 				public const int LVS_REPORT = 1;
 				public const int LVS_EDITLABELS = 512;
 				public const int LVS_OWNERDATA = 0x1000;
+				public const int LVS_SHOWSELALWAYS = 0x0008;
 
 				[DllImport("user32.dll", SetLastError = true)]
 				public static extern IntPtr CreateWindowEx(

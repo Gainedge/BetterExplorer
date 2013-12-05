@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace BExplorer.Shell
 {
@@ -138,6 +139,20 @@ namespace BExplorer.Shell
 		public IntPtr lParam;
 		public uint uKeyFlags;
 	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	internal struct NMLISTVIEW
+	{
+		public NMHDR hdr;
+		public int iItem;
+		public int iSubItem;
+		public uint uNewState;
+		public uint uOldState;
+		public LVIF uChanged;
+		public Point ptAction;
+		public IntPtr lParam;
+	}
+
 	public enum LVTVIM
 	{
 		LVTVIM_COLUMNS = 2,
@@ -231,6 +246,47 @@ namespace BExplorer.Shell
 			else
 			{
 				return path;
+			}
+		}
+
+		public static void SetSortIcon(this ShellView listViewControl, int columnIndex, SortOrder order)
+		{
+			IntPtr columnHeader = User32.SendMessage(listViewControl.LVHandle, MSG.LVM_GETHEADER, 0, 0);
+			for (int columnNumber = 0; columnNumber <= listViewControl.AvailableVisibleColumns.Count - 1; columnNumber++)
+			{
+				var item = new HDITEM
+				{
+					mask = HDITEM.Mask.Format
+				};
+
+				if (User32.SendMessage(columnHeader, MSG.HDM_GETITEM, columnNumber, ref item) == IntPtr.Zero)
+				{
+					throw new Win32Exception();
+				}
+
+				if (order != SortOrder.None && columnNumber == columnIndex)
+				{
+					switch (order)
+					{
+						case SortOrder.Ascending:
+							item.fmt &= ~HDITEM.Format.SortDown;
+							item.fmt |= HDITEM.Format.SortUp;
+							break;
+						case SortOrder.Descending:
+							item.fmt &= ~HDITEM.Format.SortUp;
+							item.fmt |= HDITEM.Format.SortDown;
+							break;
+					}
+				}
+				else
+				{
+					item.fmt &= ~HDITEM.Format.SortDown & ~HDITEM.Format.SortUp;
+				}
+
+				if (User32.SendMessage(columnHeader, MSG.HDM_SETITEM, columnNumber, ref item) == IntPtr.Zero)
+				{
+					throw new Win32Exception();
+				}
 			}
 		}
 
