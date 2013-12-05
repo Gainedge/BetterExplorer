@@ -152,7 +152,7 @@ namespace BExplorer.Shell
         HResult IShellBrowser.SendControlMsg(FCW id, MSG uMsg, uint wParam,
                                          uint lParam, IntPtr pret)
         {
-            int result = 0;
+            IntPtr result = IntPtr.Zero;
 
             if ((id == FCW.FCW_STATUS) && (m_StatusBar != null))
             {
@@ -162,7 +162,7 @@ namespace BExplorer.Shell
 
             if (pret != IntPtr.Zero)
             {
-                Marshal.WriteInt32(pret, result);
+                Marshal.WriteInt32(pret, result.ToInt32());
             }
 
             return HResult.S_OK;

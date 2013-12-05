@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -45,6 +46,26 @@ namespace BExplorer.Shell.Interop
 		internal const string Favorites = "1777F761-68AD-4D8A-87BD-30B759FA33DD";
 		internal const string Documents = "FDD39AD0-238F-46AF-ADB4-6C85480369C7";
 		internal const string Profile = "5E6C858F-0E22-4760-9AFE-EA3317B67173";
+		internal const string IPropertyStore = "886D8EEB-8CF2-4446-8D02-CDBA1DBDCF99";
+		internal const string IPropertyStoreCache = "3017056d-9a91-4e90-937d-746c72abbf4f";
+		internal const string IPropertyDescription = "6F79D558-3E96-4549-A1D1-7D75D2288814";
+		internal const string IPropertyDescription2 = "57D2EDED-5062-400E-B107-5DAE79FE57A6";
+		internal const string IPropertyDescriptionList = "1F9FC1D0-C39B-4B26-817F-011967D3440E";
+		internal const string IPropertyEnumType = "11E1FBF9-2D56-4A6B-8DB3-7CD193A471F2";
+		internal const string IPropertyEnumType2 = "9B6E051C-5DDD-4321-9070-FE2ACB55E794";
+		internal const string IPropertyEnumTypeList = "A99400F4-3D84-4557-94BA-1242FB2CC9A6";
+		internal const string IPropertyStoreCapabilities = "c8e2d566-186e-4d49-bf41-6909ead56acc";
+
+		internal const string ICondition = "0FC988D4-C935-4b97-A973-46282EA175C8";
+		internal const string ISearchFolderItemFactory = "a0ffbc28-5482-4366-be27-3e81e78e06c2";
+		internal const string IConditionFactory = "A5EFE073-B16F-474f-9F3E-9F8B497A3E08";
+		internal const string IRichChunk = "4FDEF69C-DBC9-454e-9910-B34F3C64B510";
+		internal const string IPersistStream = "00000109-0000-0000-C000-000000000046";
+		internal const string IPersist = "0000010c-0000-0000-C000-000000000046";
+		internal const string IEnumUnknown = "00000100-0000-0000-C000-000000000046";
+		internal const string IQuerySolution = "D6EBC66B-8921-4193-AFDD-A1789FB7FF57";
+		internal const string IQueryParser = "2EBDEE67-3505-43f8-9946-EA44ABC8E5B0";
+		internal const string IQueryParserManager = "A879E3C4-AF77-44fb-8F37-EBD1487CF920";
 
 	}
 
@@ -53,6 +74,8 @@ namespace BExplorer.Shell.Interop
 		const int NM_FIRST = 0;
 		public const int NM_KILLFOCUS = (NM_FIRST - 8);
 		public const int NM_CUSTOMDRAW = (NM_FIRST - 12);
+		public const int NM_RCLICK = (NM_FIRST - 5);
+		public const int NM_SETFOCUS = (NM_FIRST - 7);
 
 		const int TTN_FIRST = -520;
 		public const int TTN_SHOW = (TTN_FIRST - 1);
@@ -156,13 +179,53 @@ namespace BExplorer.Shell.Interop
 		internal Guid folderTypeId;
 	}
 
-	public enum HDN
+	[StructLayout(LayoutKind.Sequential)]
+  public struct NMITEMACTIVATE {
+      public NMHDR hdr;
+      public int iItem;
+      public int iSubItem;
+      public int uNewState;
+      public int uOldState;
+      public int uChanged;
+      public Point ptAction;
+      public IntPtr lParam;
+      public int uKeyFlags;
+  }
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct HDITEM
 	{
-		FIRST = (0 - 300),
-		ENDDRAG = (FIRST - 11),
-		ITEMCHANGEDW = (FIRST - 21),
-		GETDISPINFOW = (FIRST - 9),
-	}
+		public Mask mask;
+		public int cxy;
+		[MarshalAs(UnmanagedType.LPTStr)]
+		public string pszText;
+		public IntPtr hbm;
+		public int cchTextMax;
+		public Format fmt;
+		public IntPtr lParam;
+		// _WIN32_IE >= 0x0300 
+		public int iImage;
+		public int iOrder;
+		// _WIN32_IE >= 0x0500
+		public uint type;
+		public IntPtr pvFilter;
+		// _WIN32_WINNT >= 0x0600
+		public uint state;
+
+		[Flags]
+		public enum Mask
+		{
+			Format = 0x4,       // HDI_FORMAT
+		};
+
+		[Flags]
+		public enum Format
+		{
+			SortDown = 0x200,   // HDF_SORTDOWN
+			SortUp = 0x400,     // HDF_SORTUP
+			HDF_SPLITBUTTON = 0x01000000,
+		};
+	};
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct NMHDDISPINFO

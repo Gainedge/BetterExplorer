@@ -468,6 +468,19 @@ namespace BExplorer.Shell
 					return this.Thumbnail.Bitmap;
 				}
 
+				public String Extension
+				{
+					get
+					{
+						return Path.GetExtension(this.ParsingName);
+					}
+				}
+
+				public object GetPropertyValue(PROPERTYKEY pkey, Type type)
+				{
+					return null;
+				}
+
         /// <summary>
         /// Returns an enumerator detailing the child items of the
         /// <see cref="ShellItem"/>.
@@ -554,7 +567,7 @@ namespace BExplorer.Shell
             SHFILEINFO info = new SHFILEINFO();
             IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info,
                 Marshal.SizeOf(info),
-                SHGFI.ICON | SHGFI.SYSICONINDEX | SHGFI.OVERLAYINDEX | SHGFI.PIDL |
+								SHGFI.ICON | SHGFI.SYSICONINDEX | SHGFI.OVERLAYINDEX | SHGFI.PIDL |
                 (SHGFI)type | (SHGFI)flags);
 
             if (result == IntPtr.Zero)
@@ -562,6 +575,7 @@ namespace BExplorer.Shell
                 throw new Exception("Error retreiving shell folder icon");
             }
 
+						User32.DestroyIcon(info.hIcon);
             return info.iIcon;
         }
 
@@ -573,11 +587,14 @@ namespace BExplorer.Shell
 							SHGFI.ICON | SHGFI.SYSICONINDEX | SHGFI.OVERLAYINDEX | SHGFI.PIDL |
 							(SHGFI)type | (SHGFI)flags);
 
+					
+
 					if (result == IntPtr.Zero)
 					{
 						throw new Exception("Error retreiving shell folder icon");
 					}
 
+					User32.DestroyIcon(info.hIcon);
 					return info.iIcon;
 				}
 
@@ -586,7 +603,7 @@ namespace BExplorer.Shell
 					SHFILEINFO info = new SHFILEINFO();
 					IntPtr result = Shell32.SHGetFileInfo(pidl, IsFolder ? (int)FileAttributes.Directory : 0, out info,
 							Marshal.SizeOf(info),
-							SHGFI.ICON | SHGFI.SYSICONINDEX);
+							SHGFI.SYSICONINDEX);
 
 					if (result == IntPtr.Zero)
 					{
@@ -1049,30 +1066,35 @@ namespace BExplorer.Shell
 
         void InitializeFromShellUri(Uri uri)
         {
+					//TODO: add shell folders handling here
             //KnownFolderManager manager = new KnownFolderManager();
-            //string path = uri.GetComponents(UriComponents.Path, UriFormat.Unescaped);
-            //string knownFolder;
-            //string restOfPath;
-            //int separatorIndex = path.IndexOf('/');
+            string path = uri.GetComponents(UriComponents.Path, UriFormat.Unescaped);
+            string knownFolder;
+            string restOfPath;
+            int separatorIndex = path.IndexOf('/');
 
-            //if (separatorIndex != -1)
-            //{
-            //    knownFolder = path.Substring(0, separatorIndex);
-            //    restOfPath = path.Substring(separatorIndex + 1);
-            //}
-            //else
-            //{
-            //    knownFolder = path;
-            //    restOfPath = string.Empty;
-            //}
+            if (separatorIndex != -1)
+            {
+                knownFolder = path.Substring(0, separatorIndex);
+                restOfPath = path.Substring(separatorIndex + 1);
+            }
+            else
+            {
+                knownFolder = path;
+                restOfPath = string.Empty;
+            }
+
+						m_ComInterface =  (KnownFolders.All.Where(w => w.ParsingName == knownFolder).First() as ShellItem).m_ComInterface;
+
 
             //m_ComInterface = manager.GetFolder(knownFolder).CreateShellItem().ComInterface;
 
-            //if (restOfPath != string.Empty)
-            //{
-            //    m_ComInterface = this[restOfPath.Replace('/', '\\')].ComInterface;
-            //}
+            if (restOfPath != string.Empty)
+            {
+                m_ComInterface = this[restOfPath.Replace('/', '\\')].ComInterface;
+            }
         }
+
 
         static IShellItem CreateItemFromIDList(IntPtr pidl)
         {

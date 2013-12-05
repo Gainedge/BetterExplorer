@@ -232,7 +232,7 @@ namespace BExplorer.Shell
         {
             using (ContextMenu menu = new ContextMenu())
             {
-                //pos = control.PointToScreen(pos);
+                pos = control.PointToScreen(pos);
                 Populate(menu);
                 int command = User32.TrackPopupMenuEx(menu.Handle,
                     TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
@@ -243,6 +243,21 @@ namespace BExplorer.Shell
                 }
             }
         }
+
+				public void ShowContextMenu(Point pos)
+				{
+					using (ContextMenu menu = new ContextMenu())
+					{
+						Populate(menu);
+						int command = User32.TrackPopupMenuEx(menu.Handle,
+								TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
+								IntPtr.Zero);
+						if (command > 0)
+						{
+							InvokeCommand(command - m_CmdFirst);
+						}
+					}
+				}
 
         /// <summary>
         /// Gets the underlying COM <see cref="IContextMenu"/> interface.

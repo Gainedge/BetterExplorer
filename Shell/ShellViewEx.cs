@@ -44,7 +44,6 @@ namespace BExplorer.Shell
             //thumb = new Thread(RefreshThumbnail);
             //thumb.IsBackground = true;
             //thumb.Start();
-			this.SelectedItems = new ShellItem[0];
 			m_History = new ShellHistory();
 			token = tokenSource.Token;
 			//SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
@@ -80,6 +79,8 @@ namespace BExplorer.Shell
 		public event EventHandler SelectionChanged;
 
 		public event EventHandler<ViewChangedEventArgs> ViewStyleChanged;
+
+		public List<Collumns> Collumns = new List<Collumns>();
        
 		protected override void OnHandleCreated(EventArgs e)
 		{
@@ -97,6 +98,8 @@ namespace BExplorer.Shell
 			this.LVHandle = User32.CreateWindowEx(0, "SysListView32", "", User32.WindowStyles.WS_CHILD | User32.WindowStyles.WS_CLIPCHILDREN | User32.WindowStyles.WS_CLIPSIBLINGS | (User32.WindowStyles)User32.LVS_EDITLABELS | (User32.WindowStyles)User32.LVS_OWNERDATA, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, this.Handle, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 			User32.ShowWindow(this.LVHandle, User32.ShowWindowCommands.Show);
 
+			
+
 			LVCOLUMN column = new LVCOLUMN();
 			column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_SUBITEM;
 			column.cx = 100;
@@ -104,6 +107,9 @@ namespace BExplorer.Shell
 			column.pszText = "Name";
 			column.fmt = LVCFMT.LEFT;
 			User32.SendMessage(this.LVHandle, MSG.LVM_INSERTCOLUMN, 0, ref column);
+
+			Collumns.Add(column.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 10 }, typeof(String), false));
+			
 
 			LVCOLUMN column2 = new LVCOLUMN();
 			column2.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_SUBITEM;
@@ -113,13 +119,19 @@ namespace BExplorer.Shell
 			column2.fmt = LVCFMT.LEFT;
 			User32.SendMessage(this.LVHandle, MSG.LVM_INSERTCOLUMN, 1, ref column2);
 
+			Collumns.Add(column.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC") , pid = 4 }, typeof(String), false));
+			
+
 			LVCOLUMN column3 = new LVCOLUMN();
 			column3.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_SUBITEM;
 			column3.cx = 100;
 			column3.iSubItem = 2;
 			column3.pszText = "Size";
-			column3.fmt = LVCFMT.LEFT;
+			column3.fmt = LVCFMT.RIGHT;
 			User32.SendMessage(this.LVHandle, MSG.LVM_INSERTCOLUMN, 2, ref column3);
+
+			Collumns.Add(column.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 12 }, typeof(long) ,false));
+			
 
 			LVCOLUMN column4 = new LVCOLUMN();
 			column4.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_SUBITEM;
@@ -129,6 +141,16 @@ namespace BExplorer.Shell
 			column4.fmt = LVCFMT.LEFT;
 			User32.SendMessage(this.LVHandle, MSG.LVM_INSERTCOLUMN, 3, ref column4);
 
+			Collumns.Add(column.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 14 }, typeof(DateTime), false));
+
+			
+			IntPtr headerhandle = User32.SendMessage(this.LVHandle, MSG.LVM_GETHEADER, 0, 0);
+
+			for (int i = 0; i < this.Collumns.Count; i++)
+			{
+				this.Collumns[i].SetSplitButton(headerhandle, i);
+			}
+			
 			User32.SendMessage(this.LVHandle, MSG.LVM_SETIMAGELIST, 0, il.Handle);
 			User32.SendMessage(this.LVHandle, MSG.LVM_SETIMAGELIST, 1, ils.Handle);
 			UxTheme.SetWindowTheme(this.LVHandle, "Explorer", 0);
@@ -138,6 +160,8 @@ namespace BExplorer.Shell
 			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.HeaderInAllViews, (int)ListViewExtendedStyles.HeaderInAllViews);
 			//WinAPI.SendMessage(handle, WinAPI.LVM.LVM_SetExtendedStyle, (int)WinAPI.ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE, (int)WinAPI.ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE);
 			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER, (int)ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.FullRowSelect, (int)ListViewExtendedStyles.FullRowSelect);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.HeaderDragDrop, (int)ListViewExtendedStyles.HeaderDragDrop);
 
 		}
 
@@ -154,11 +178,28 @@ namespace BExplorer.Shell
 		//	
 		//}
 
+		internal void OnGotFocus()
+		{
+			if (GotFocus != null)
+			{
+				GotFocus(this, EventArgs.Empty);
+			}
+		}
+
+		internal void OnLostFocus()
+		{
+			if (LostFocus != null)
+			{
+				LostFocus(this, EventArgs.Empty);
+			}
+		}
+
 		async void OnNavigated(NavigatedEventArgs e)
 		{
 			if (Navigated != null)
 			{
 				Navigated(this, e);
+				this.Cancel = false;
 			}
 			//this.FolderSizes.Clear();
 			//LPCSHCOLUMNINIT lpi = new LPCSHCOLUMNINIT();
@@ -460,7 +501,6 @@ namespace BExplorer.Shell
 		public List<Collumns> AvailableVisibleColumns = new List<Collumns>();
 		public List<Collumns> AllAvailableColumns = new List<Collumns>();
 
-		public ShellItem[] SelectedItems { get; set; }
         //private void RefreshThumbnail()
         //{
         //    while (true)
@@ -603,6 +643,28 @@ namespace BExplorer.Shell
         //        }
         //    }
         //}
+		public List<ShellItem> SelectedItems
+		{
+			get
+			{
+				List<ShellItem> selItems = new List<ShellItem>();
+				int index = -2;
+				int iStart = -1;
+
+				while (index != -1)
+				{
+					index = User32.SendMessage(this.LVHandle, LVM.GETNEXTITEM, iStart, LVNI.LVNI_SELECTED);
+					iStart = index;
+					if (index != -1)
+					{
+						selItems.Add(this.Items[index]);
+					}
+				}
+
+				return selItems;
+
+			}
+		}
         ImageList jumbo = new ImageList(ImageListSize.Jumbo);
         ImageList extra = new ImageList(ImageListSize.ExtraLarge);
 		public async void LoadIcon(int index)
@@ -610,7 +672,7 @@ namespace BExplorer.Shell
 
 			try
 			{
-				if (User32.SendMessage(this.LVHandle, MSG.LVM_ISITEMVISIBLE, index, 0) == 0)
+				if (User32.SendMessage(this.LVHandle, MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero || this.Cancel)
 					return;
 
 				//this.BeginInvoke(new MethodInvoker(() =>
@@ -623,7 +685,7 @@ namespace BExplorer.Shell
 
 				if (hash != -1)
 				{
-					bitmap = sho.GetShellThumbnail(IconSize);
+					bitmap = sho.GetShellThumbnail(IconSize, (View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details) ? ShellThumbnailFormatOption.IconOnly : ShellThumbnailFormatOption.Default);
 					if ((sho.GetIconType() & IExtractIconpwFlags.GIL_PERCLASS) == 0 && !sho.IsFolder)
 					{
 						if (!cache.ContainsKey(hash))
@@ -663,6 +725,7 @@ namespace BExplorer.Shell
         Bitmap icon = null;
 		protected override void WndProc(ref Message m)
 		{
+			bool isSmallIcons = (View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details);
 			base.WndProc(ref m);
 			if (m.Msg == 78)
 			{
@@ -682,28 +745,72 @@ namespace BExplorer.Shell
 						//	nmlv.item.puColumns = (uint)ptr;
 						//	Marshal.StructureToPtr(nmlv, m.LParam, false);
 						//}
-						if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT && nmlv.item.iSubItem == 0)
+						if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT)
 						{
-							var currentItem = Items[nmlv.item.iItem];
-							nmlv.item.pszText =  this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
-							Marshal.StructureToPtr(nmlv, m.LParam, false);
+							if (nmlv.item.iSubItem == 0){
+								var currentItem = Items[nmlv.item.iItem];
+								nmlv.item.pszText =  this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
+								Marshal.StructureToPtr(nmlv, m.LParam, false);
+							} else {
+								if (isSmallIcons)
+								{
+									var currentItem = Items[nmlv.item.iItem];
+									IShellItem2 isi2 = (IShellItem2)currentItem.m_ComInterface;
+									Collumns currentCollumn = this.Collumns[nmlv.item.iSubItem];
+									PROPERTYKEY pk = currentCollumn.pkey;
+									PropVariant pvar = new PropVariant();
+									if (isi2.GetProperty(ref pk, pvar) == HResult.S_OK)
+									{
+										String value = String.Empty;
+										if (pvar.Value != null)
+										{
+											if (currentCollumn.CollumnType == typeof(DateTime))
+											{
+
+												value = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
+											}
+											else if (currentCollumn.CollumnType == typeof(long))
+											{
+												value = String.Format("{0} KB", Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024)); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
+											}
+											else
+											{
+												value = pvar.Value.ToString();
+											}
+										}
+										nmlv.item.pszText = value;
+										Marshal.StructureToPtr(nmlv, m.LParam, false);
+									}
+									pvar.Dispose();
+								}
+							}
 						}
-						if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT && nmlv.item.iSubItem == 1)
-						{
-							var currentItem = Items[nmlv.item.iItem];
-							nmlv.item.pszText = "AAAAA";
-							Marshal.StructureToPtr(nmlv, m.LParam, false);
-						}
+
 						break;
 					case WNM.LVN_ITEMACTIVATE:
 						var iac = new NMITEMACTIVATE();
 						iac = (NMITEMACTIVATE)m.GetLParam(iac.GetType());
-						Navigate(Items[iac.iItem]);
+            ShellItem selectedItem = Items[iac.iItem];
+						if (selectedItem.IsFolder)
+							Navigate(selectedItem);
+						else
+							Process.Start(selectedItem.ParsingName);
 						break;
 					case WNM.LVN_ENDSCROLL:
-						this.Cancel = true;
 						GC.Collect();
 						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+						break;
+					case WNM.NM_RCLICK:
+						var selitems = this.SelectedItems;
+						NMITEMACTIVATE itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
+						ShellContextMenu cm = new ShellContextMenu(selitems.ToArray());
+						cm.ShowContextMenu(this, itemActivate.ptAction);
+						break;
+					case WNM.NM_SETFOCUS:
+						OnGotFocus();
+						break;
+					case WNM.NM_KILLFOCUS:
+						OnLostFocus();
 						break;
 					case CustomDraw.NM_CUSTOMDRAW:
 						{
@@ -736,6 +843,7 @@ namespace BExplorer.Shell
 											var hash = -1;
 
 											sho = Items[index];
+                      
 											try
 											{
 												hash = sho.GetHashCode();
@@ -744,27 +852,17 @@ namespace BExplorer.Shell
 												if (sho != null)
 												{
 													Icon real_icon = null;
-                          icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
-
-
-
+													icon = sho.GetShellThumbnail(IconSize, isSmallIcons ? ShellThumbnailFormatOption.IconOnly : ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
 
                           if (icon == null)
                           {
-
-														//icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.MemoryOnly);
 														if (icon == null)
 														{
 															Bitmap tempicon = null;
 															if (!cache.TryGetValue(hash, out tempicon))
 															{
-																//if (!this.refreshedImages.Contains(index))
-																//{
-																//	this.refreshedImages.Add(index);
-																//}
 																Task.Run(() =>
 																{
-																	//Task.Delay(1);
 																	LoadIcon(index);
 
 																});
@@ -830,10 +928,62 @@ namespace BExplorer.Shell
 																}
 															}
 														}
-                          //    //else
-                          //    //	icon = ((ShellItem)KnownFolders.Windows).GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
-                          //    //}
                           }
+
+													if (isSmallIcons)
+													{
+														if ((sho.GetIconType() & IExtractIconpwFlags.GIL_PERCLASS) == IExtractIconpwFlags.GIL_PERCLASS || sho.IsFolder)
+															icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
+														else
+														{
+															int iconindex = 0;
+															if (Path.GetExtension(sho.ParsingName) == ".exe" || Path.GetExtension(sho.ParsingName) == ".com" || Path.GetExtension(sho.ParsingName) == ".bat")
+															{
+																Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO();
+																defIconInfo.cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO));
+																Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_APPLICATION, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
+																iconindex = defIconInfo.iSysIconIndex;
+															}
+															else if (sho.IsFolder)
+															{
+																Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO();
+																defIconInfo.cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO));
+																Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_FOLDER, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
+																iconindex = defIconInfo.iSysIconIndex;
+															}
+															real_icon = IconSize > 48 ? jumbo.GetIcon(iconindex) : extra.GetIcon(iconindex);
+															if (real_icon != null)
+															{
+																icon = real_icon.ToBitmap();
+																//real_icon.Dispose();
+																User32.DestroyIcon(real_icon.Handle);
+
+															}
+															Bitmap tempicon2 = null;
+															if (!cache.TryGetValue(hash, out tempicon2))
+															{
+																//if (!this.refreshedImages.Contains(index))
+																//{
+																//	this.refreshedImages.Add(index);
+																//}
+																Task.Run(() =>
+																{
+																	//Task.Delay(1);
+																	LoadIcon(index);
+
+
+																});
+
+															}
+															else
+															{
+																if (tempicon2 != null)
+																{
+																	icon = tempicon2;
+																}
+															}
+														}
+													}
 
                           ////var txtBounds = new User32.RECT();
 

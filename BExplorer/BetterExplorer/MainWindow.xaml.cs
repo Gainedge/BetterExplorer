@@ -3740,7 +3740,7 @@ namespace BetterExplorer
 
         if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
         {
-					ShellItem sho = new ShellItem(@"C:");
+					ShellItem sho = new ShellItem(String.Format("shell:{0}", StartUpLocation));
 					btnSetCurrentasStartup.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
 					btnSetCurrentasStartup.Icon = sho.Thumbnail.BitmapSource;
         }
@@ -3801,7 +3801,7 @@ namespace BetterExplorer
     {
         if (InitialTabs.Length == 0 || !IsrestoreTabs)
         {
-            ShellItem sho = new ShellItem(StartUpLocation);
+            ShellItem sho = new ShellItem(StartUpLocation.ToShellParsingName());
             if (tabControl1.Items.OfType<ClosableTabItem>().Count() == 0)
                 NewTab(sho, true);
             else
@@ -3818,15 +3818,15 @@ namespace BetterExplorer
                     i++;
                     if (i == InitialTabs.Length)
                     {
-                        NewTab(str, true);
+                        NewTab(str.ToShellParsingName(), true);
                     }
                     else
                     {
-                        NewTab(str, false);
+                        NewTab(str.ToShellParsingName(), false);
                     }
                     if (i == InitialTabs.Count())
                     {
-                        ShellItem sho = new ShellItem(str);
+                        ShellItem sho = new ShellItem(str.ToShellParsingName());
                         ShellListView.Navigate(sho);
                         (tabControl1.SelectedItem as ClosableTabItem).Path = ShellListView.CurrentFolder;
 												(tabControl1.SelectedItem as ClosableTabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
@@ -3846,7 +3846,7 @@ namespace BetterExplorer
                 if (StartUpLocation.IndexOf("::") == 0)
                 {
 
-									ShellListView.Navigate(new ShellItem("shell:" + StartUpLocation));
+									ShellListView.Navigate(new ShellItem(StartUpLocation.ToShellParsingName()));
                 }
                 else
 									ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
@@ -3901,6 +3901,7 @@ namespace BetterExplorer
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
+			//ShellItem iii = new ShellItem(@"shell:" + KnownFolders.Libraries.ParsingName);
 			ShellTreeHost.Child = ShellTree;
 			ShellViewHost.Child = ShellListView;
 
@@ -4638,8 +4639,11 @@ namespace BetterExplorer
             e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
             try
             {
-							(tabControl1.SelectedItem as ClosableTabItem).Header = e.Folder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
-                (tabControl1.SelectedItem as ClosableTabItem).TabIcon = e.Folder.Thumbnail.BitmapSource;
+							ClosableTabItem selectedTabItem = (tabControl1.SelectedItem as ClosableTabItem);
+							selectedTabItem.Header = e.Folder.DisplayName;
+							selectedTabItem.TabIcon = e.Folder.Thumbnail.BitmapSource;
+							selectedTabItem.Path = e.Folder;
+							selectedTabItem.ToolTip = e.Folder.ParsingName;
             }
             catch (Exception)
             {

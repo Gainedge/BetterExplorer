@@ -165,6 +165,10 @@ namespace BExplorer.Shell.Interop
 			  LVM_ISITEMVISIBLE = (FIRST + 182),
 				LVM_SETVIEW = (FIRST + 142),
 				LVM_SETTILEVIEWINFO = (FIRST + 162),
+			  LVM_GETHEADER = (FIRST + 31),
+			  HDM_FIRST = 0x1200,
+        HDM_GETITEM = HDM_FIRST + 11,
+        HDM_SETITEM = HDM_FIRST + 12,
     }
 
 		public enum LV_VIEW : int
@@ -301,13 +305,17 @@ namespace BExplorer.Shell.Interop
         [DllImport("user32")]
         public static extern int DestroyIcon(IntPtr hIcon);
 
-        [DllImport("user32.dll")]
-        public static extern int SendMessage(IntPtr hWnd, MSG Msg,
-            int wParam, int lParam);
+				[DllImport("user32.dll")]
+				public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,
+						int wParam, int lParam);
 
 				[DllImport("user32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, MSG Msg,
 						int wParam, ref LVCOLUMN lParam);
+
+				[DllImport("user32.dll")]
+				public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,
+						int wParam, ref HDITEM lParam);
 
 				[DllImport("user32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, int Msg,
@@ -475,6 +483,9 @@ namespace BExplorer.Shell.Interop
 
 				[DllImport("user32.dll", CharSet = CharSet.Auto)]
 				public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+				[DllImport("user32.dll", CharSet = CharSet.Auto)]
+				public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, LVNI lParam);
 
 				public const int WM_CHANGEUISTATE = 296;
 				public const int UIS_SET = 1;

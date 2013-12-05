@@ -1,6 +1,8 @@
 ﻿using BExplorer.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -132,7 +134,7 @@ namespace BExplorer.Shell
 		public uint uNewState;
 		public uint uOldState;
 		public uint uChanged;
-		NativePoint ptAction;
+		public Point ptAction;
 		public IntPtr lParam;
 		public uint uKeyFlags;
 	}
@@ -167,6 +169,70 @@ namespace BExplorer.Shell
 	}
 	public static class Extensions
 	{
+
+		public static Collumns ToCollumns(this LVCOLUMN column, PROPERTYKEY pkey, Type type, bool IsColumnHandler){
+			Collumns col = new Collumns();
+			col.pkey = pkey;
+			col.Name = column.pszText;
+			col.Width = column.cx;
+			col.IsColumnHandler = IsColumnHandler;
+			col.CollumnType = type;
+			return col;
+		}
+
+		public static void SetSplitButton(this Collumns column, IntPtr handle, int index){
+			
+			var item = new HDITEM
+			{
+				mask = HDITEM.Mask.Format
+			};
+
+			if (User32.SendMessage(handle, MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero)
+			{
+				throw new Win32Exception();
+			}
+
+
+			item.fmt |= HDITEM.Format.HDF_SPLITBUTTON;
+
+			if (User32.SendMessage(handle, MSG.HDM_SETITEM, index, ref item) == IntPtr.Zero)
+			{
+				throw new Win32Exception();
+			}
+		}
+
+		public static void SetFormat(this LVCOLUMN column, IntPtr handle, int index){
+			
+			var item = new HDITEM
+			{
+				mask = HDITEM.Mask.Format
+			};
+
+			if (User32.SendMessage(handle, MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero)
+			{
+				throw new Win32Exception();
+			}
+
+
+			item.fmt |= HDITEM.Format.HDF_SPLITBUTTON;
+
+			if (User32.SendMessage(handle, MSG.HDM_SETITEM, index, ref item) == IntPtr.Zero)
+			{
+				throw new Win32Exception();
+			}
+		}
+
+		public static String ToShellParsingName(this String path)
+		{
+			if (path.IndexOf("::") == 0 && path.IndexOf(@"\") == -1)
+			{
+				return String.Format("shell:{0}", path);
+			}
+			else
+			{
+				return path;
+			}
+		}
 
 	}
 }
