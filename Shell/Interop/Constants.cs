@@ -100,6 +100,7 @@ namespace BExplorer.Shell.Interop
 		public const int LVN_SETDISPINFOA = (LVN_FIRST - 51);
 		public const int LVN_BEGINSCROLL = (LVN_FIRST - 80);
 		public const int LVN_ENDSCROLL = (LVN_FIRST - 81);
+		public const int LVN_COLUMNCLICK = (LVN_FIRST - 8);
 
 
 		const int UDN_FIRST = -721;        // updown

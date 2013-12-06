@@ -50,8 +50,8 @@ namespace BExplorer.Shell.Interop
         LVIS_STATEIMAGEMASK = 0xF000,
     }
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct LVITEMA
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct LVITEM
     {
         public LVIF mask;
         public int iItem;
@@ -146,8 +146,9 @@ namespace BExplorer.Shell.Interop
         WM_COMMAND = 0x0111,
         WM_VSCROLL = 0x0115,
         LVM_GETITEMCOUNT = 0x1004,
-        LVM_GETITEMA = 0x1005,
-        LVM_EDITLABEL = 0x1017,
+				LVM_GETITEMW = (FIRST + 75),
+				LVM_EDITLABELW = (FIRST + 118),
+				LVM_SETITEMW = (FIRST + 76),
         TVM_SETIMAGELIST = 4361,
         TVM_SETITEMW = 4415,
 			  LVM_GETITEMSTATE = (FIRST + 44),
@@ -169,6 +170,7 @@ namespace BExplorer.Shell.Interop
 			  HDM_FIRST = 0x1200,
         HDM_GETITEM = HDM_FIRST + 11,
         HDM_SETITEM = HDM_FIRST + 12,
+				LVM_GETSELECTEDCOUNT = (FIRST + 50),
     }
 
 		public enum LV_VIEW : int
@@ -327,7 +329,7 @@ namespace BExplorer.Shell.Interop
 
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, MSG Msg,
-            int wParam, ref LVITEMA lParam);
+            int wParam, ref Shell.LVITEM lParam);
 
         [DllImport("user32.dll")]
         public static extern int SendMessage(IntPtr hWnd, MSG Msg,
@@ -486,6 +488,9 @@ namespace BExplorer.Shell.Interop
 
 				[DllImport("user32.dll", CharSet = CharSet.Auto)]
 				public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, LVNI lParam);
+
+				[DllImport("user32.dll", CharSet = CharSet.Auto)]
+				public static extern LVIS SendMessage(IntPtr hWnd, MSG Msg, int wParam, LVIS lParam);
 
 				public const int WM_CHANGEUISTATE = 296;
 				public const int UIS_SET = 1;

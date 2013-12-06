@@ -55,7 +55,7 @@ namespace BetterExplorer
 							lvi.Tag = AvailableCols[i];
 							if (AvailableCols[i].IsColumnHandler)
 								lvi.ForeColor = Color.Red;
-							foreach (Collumns collumn in ShellView.AvailableVisibleColumns)
+							foreach (Collumns collumn in ShellView.Collumns)
 							{
 								if (collumn.pkey.fmtid == AvailableCols[i].pkey.fmtid && collumn.pkey.pid == AvailableCols[i].pkey.pid)
 								{

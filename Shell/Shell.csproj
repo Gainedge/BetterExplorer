@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collumns.cs" />
+    <Compile Include="Defaults.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Interop\IShellItem2.cs" />
     <Compile Include="Interop\IExtractIcon.cs" />

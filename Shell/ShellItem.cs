@@ -85,7 +85,15 @@ namespace BExplorer.Shell
         /// </param>
         public ShellItem(string path)
         {
-            Initialize(new Uri(path));
+					try
+					{
+						Uri newUri = new Uri(path);
+						Initialize(newUri);
+					}
+					catch (Exception)
+					{
+
+					}
         }
 
         /// <summary>
@@ -476,9 +484,33 @@ namespace BExplorer.Shell
 					}
 				}
 
-				public object GetPropertyValue(PROPERTYKEY pkey, Type type)
+				public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type)
 				{
-					return null;
+					PropVariant pvar = new PropVariant();
+					IShellItem2 isi2 = (IShellItem2)m_ComInterface;
+					if (isi2.GetProperty(ref pkey, pvar) != HResult.S_OK)
+					{
+						//String value = String.Empty;
+						//if (pvar.Value != null)
+						//{
+						//	//if (currentCollumn.CollumnType == typeof(DateTime))
+						//	//{
+
+						//	//	value = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
+						//	//}
+						//	//else if (currentCollumn.CollumnType == typeof(long))
+						//	//{
+						//	//	value = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0"))); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
+						//	//}
+						//	//else
+						//	//{
+						//	//	value = pvar.Value.ToString();
+						//	//}
+						//}
+						//nmlv.item.pszText = value;
+						//Marshal.StructureToPtr(nmlv, m.LParam, false);
+					}
+					return pvar;
 				}
 
         /// <summary>
@@ -729,7 +761,11 @@ namespace BExplorer.Shell
         /// </summary>
         public bool HasSubFolders
         {
-            get { return m_ComInterface.GetAttributes(SFGAO.HASSUBFOLDER) != 0; }
+					get {
+						SFGAO sfgao;
+            m_ComInterface.GetAttributes(SFGAO.HASSUBFOLDER, out sfgao);
+						return sfgao != 0; 
+					}
         }
 
         /// <summary>
@@ -737,7 +773,20 @@ namespace BExplorer.Shell
         /// </summary>
         public bool IsFileSystem
         {
-            get { return m_ComInterface.GetAttributes(SFGAO.FILESYSTEM) != 0; }
+					get
+					{
+						try
+						{
+							SFGAO sfgao;
+              m_ComInterface.GetAttributes(SFGAO.FILESYSTEM, out sfgao);
+							return sfgao != 0;
+						}
+						catch
+						{
+
+							return false;
+						}
+					}
         }
 
         /// <summary>
@@ -746,7 +795,12 @@ namespace BExplorer.Shell
         /// </summary>
         public bool IsFileSystemAncestor
         {
-            get { return m_ComInterface.GetAttributes(SFGAO.FILESYSANCESTOR) != 0; }
+            get 
+						{
+							SFGAO sfgao;
+							m_ComInterface.GetAttributes(SFGAO.FILESYSANCESTOR, out sfgao);
+							return sfgao != 0; 
+						}
         }
 
         /// <summary>
@@ -754,12 +808,22 @@ namespace BExplorer.Shell
         /// </summary>
         public bool IsFolder
         {
-            get { return m_ComInterface.GetAttributes(SFGAO.FOLDER) != 0; }
+            get 
+						{
+							SFGAO sfgao;
+							m_ComInterface.GetAttributes(SFGAO.FOLDER, out sfgao);
+							return sfgao != 0;
+						}
         }
 
 				public bool IsShared
 				{
-					get { return m_ComInterface.GetAttributes(SFGAO.SHARE) != 0; }
+					get 
+					{
+						SFGAO sfgao;
+						m_ComInterface.GetAttributes(SFGAO.SHARE, out sfgao);
+						return sfgao != 0;
+					}
 				}
 
         /// <summary>
@@ -767,7 +831,12 @@ namespace BExplorer.Shell
         /// </summary>
         public bool IsReadOnly
         {
-            get { return m_ComInterface.GetAttributes(SFGAO.READONLY) != 0; }
+            get 
+						{
+							SFGAO sfgao;
+							m_ComInterface.GetAttributes(SFGAO.READONLY, out sfgao);
+							return sfgao != 0;
+						}
         }
 
 				public bool IsHidden
@@ -776,9 +845,9 @@ namespace BExplorer.Shell
 					{
 						try
 						{
-							SFGAO sfgao =
-							m_ComInterface.GetAttributes(SFGAO.HIDDEN);
-							return (sfgao & SFGAO.HIDDEN) != 0;
+							SFGAO sfgao;
+							m_ComInterface.GetAttributes(SFGAO.HIDDEN, out sfgao);
+							return sfgao != 0;
 						}
 						catch (FileNotFoundException)
 						{
@@ -801,8 +870,9 @@ namespace BExplorer.Shell
 					{
 						try
 						{
-							SFGAO sfgao = m_ComInterface.GetAttributes(SFGAO.LINK);
-							return (sfgao & SFGAO.LINK ) != 0;
+							SFGAO sfgao;
+							m_ComInterface.GetAttributes(SFGAO.LINK, out sfgao);
+							return sfgao != 0;
 						}
 						catch (FileNotFoundException)
 						{
@@ -1084,7 +1154,9 @@ namespace BExplorer.Shell
                 restOfPath = string.Empty;
             }
 
-						m_ComInterface =  (KnownFolders.All.Where(w => w.ParsingName == knownFolder).First() as ShellItem).m_ComInterface;
+						IKnownFolder knownFolderI = KnownFolderHelper.FromParsingName(knownFolder);
+						if (knownFolderI != null)
+							m_ComInterface = (knownFolderI as ShellItem).m_ComInterface;
 
 
             //m_ComInterface = manager.GetFolder(knownFolder).CreateShellItem().ComInterface;

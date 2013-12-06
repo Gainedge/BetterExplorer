@@ -18,6 +18,7 @@
 //
 using System;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
@@ -50,5 +51,12 @@ namespace BExplorer.Shell.Interop
         {
             get { return new Guid("00000122-0000-0000-C000-000000000046"); }
         }
+
+				[DllImport("ole32.dll")]
+				public static extern int CoMarshalInterThreadInterfaceInStream([In] ref Guid riid,
+					 [MarshalAs(UnmanagedType.IUnknown)] object pUnk, out IStream ppStm);
+
+				[DllImport("ole32.dll")]
+				public static extern int CoGetInterfaceAndReleaseStream(IStream pStm, [In] ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
     }
 }

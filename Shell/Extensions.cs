@@ -153,6 +153,14 @@ namespace BExplorer.Shell
 		public IntPtr lParam;
 	}
 
+	[StructLayout(LayoutKind.Sequential)]
+	public class NMLVKEYDOWN
+	{
+		public NMHDR hdr;
+		public short wVKey;
+		public uint flags;
+	}
+
 	public enum LVTVIM
 	{
 		LVTVIM_COLUMNS = 2,
@@ -252,7 +260,7 @@ namespace BExplorer.Shell
 		public static void SetSortIcon(this ShellView listViewControl, int columnIndex, SortOrder order)
 		{
 			IntPtr columnHeader = User32.SendMessage(listViewControl.LVHandle, MSG.LVM_GETHEADER, 0, 0);
-			for (int columnNumber = 0; columnNumber <= listViewControl.AvailableVisibleColumns.Count - 1; columnNumber++)
+			for (int columnNumber = 0; columnNumber <= listViewControl.Collumns.Count - 1; columnNumber++)
 			{
 				var item = new HDITEM
 				{

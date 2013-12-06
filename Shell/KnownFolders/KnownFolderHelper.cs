@@ -85,11 +85,11 @@ namespace BExplorer.Shell
             // If we have a valid IShellItem, try to get the FileSystem attribute.
             if (shellItem != null)
             {
-                SFGAO sfgao =
-                shellItem.GetAttributes(SFGAO.FILESYSTEM);
+							SFGAO sfgao;
+							shellItem.GetAttributes(SFGAO.FILESYSTEM, out sfgao);
 
                 // Is this item a FileSystem item?
-                isFileSystem = (sfgao & SFGAO.FILESYSTEM) != 0;
+							isFileSystem = (sfgao & SFGAO.FILESYSTEM) != 0;
             }
 
             // If it's FileSystem, create a FileSystemKnownFolder, else NonFileSystemKnownFolder

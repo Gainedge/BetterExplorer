@@ -97,7 +97,7 @@ namespace BExplorer.Shell.Interop.VistaBridge
             }
         }
 
-        public SFGAO GetAttributes(SFGAO sfgaoMask)
+				public HResult GetAttributes(SFGAO sfgaoMask, out SFGAO psfgaoAttribs)
         {
             IShellFolder parentFolder = GetParent().GetIShellFolder();
             SFGAO result = sfgaoMask;
@@ -105,7 +105,8 @@ namespace BExplorer.Shell.Interop.VistaBridge
             parentFolder.GetAttributesOf(1,
                 new IntPtr[] { Shell32.ILFindLastID(m_Pidl) },
                 ref result);
-            return result & sfgaoMask;
+            psfgaoAttribs = result & sfgaoMask;
+						return HResult.S_OK;
         }
 
         public int Compare(IShellItem psi, SICHINT hint)

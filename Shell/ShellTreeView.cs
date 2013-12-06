@@ -210,7 +210,8 @@ namespace BExplorer.Shell
 				if (m_ShellView != null)
 				{
 					m_ShellView.Navigated += m_ShellView_Navigated;
-					m_ShellView_Navigated(m_ShellView, new NavigatedEventArgs(m_ShellView.CurrentFolder));
+					if (m_ShellView.CurrentFolder != null) 
+						m_ShellView_Navigated(m_ShellView, new NavigatedEventArgs(m_ShellView.CurrentFolder));
 				}
 			}
 		}

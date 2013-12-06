@@ -521,6 +521,7 @@ namespace BetterExplorer
 
         private void SetSortingAndGroupingButtons()
         {
+					//FIXME: fix sorting and grouping
             btnSort.Items.Clear();
             btnGroup.Items.Clear();
 
@@ -528,118 +529,118 @@ namespace BetterExplorer
 
            //ShellListView.GetSortColInfo(out sc);
            // PROPERTYKEY pkg = new PROPERTYKEY();
-           // bool GroupDir = false;
+            bool GroupDir = false;
            //ShellListView.GetGroupColInfo(out pkg, out GroupDir);
 
-           // try
-           // {
-           //     foreach (Collumns item in ShellListView.AvailableVisibleColumns)
-           //     {
+            try
+            {
+                foreach (Collumns item in ShellListView.Collumns)
+                {
 
-           //         if (item != null)
-           //         {
-           //             MenuItem mi = new MenuItem();
-           //             mi.Header = item.Name;
-           //             mi.Tag = item;
-           //             mi.GroupName = "GR2";
-           //             mi.Focusable = false;
-           //             mi.IsCheckable = true;
-           //             if ((item.pkey.fmtid == sc.propkey.fmtid) && (item.pkey.pid == sc.propkey.pid))
-           //             {
-           //                 mi.IsChecked = true;
-           //             }
-           //             else
-           //             {
-           //                 mi.IsChecked = false;
-           //             }
-           //             mi.Click += mi_Click;
-           //             btnSort.Items.Add(mi);
+                    if (item != null)
+                    {
+                        MenuItem mi = new MenuItem();
+                        mi.Header = item.Name;
+                        mi.Tag = item;
+                        mi.GroupName = "GR2";
+                        mi.Focusable = false;
+                        mi.IsCheckable = true;
+												if ((item.pkey.fmtid == ShellListView.Collumns[ShellListView.LastSortedColumnIndex].pkey.fmtid) && (item.pkey.pid == ShellListView.Collumns[ShellListView.LastSortedColumnIndex].pkey.pid))
+                        {
+                            mi.IsChecked = true;
+                        }
+                        else
+                        {
+                            mi.IsChecked = false;
+                        }
+                        mi.Click += mi_Click;
+                        btnSort.Items.Add(mi);
 
-           //             MenuItem mig = new MenuItem();
-           //             mig.Header = item.Name;
-           //             mig.Tag = item;
-           //             mig.GroupName = "GR3";
-           //             mig.Focusable = false;
-           //             mig.IsCheckable = true;
-           //             if ((item.pkey.fmtid == pkg.fmtid) && (item.pkey.pid == pkg.pid))
-           //             {
-           //                 mig.IsChecked = true;
-           //             }
-           //             else
-           //             {
-           //                 mig.IsChecked = false;
-           //             }
-           //             mig.Click += mig_Click;
-           //             btnGroup.Items.Add(mig);
-           //         }
-           //     }
-           // }
-           // catch (Exception ex)
-           // {
-           //     //FIXME: I disable this message because of strange null after filter
-           //     MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
-           // }
+                        MenuItem mig = new MenuItem();
+                        mig.Header = item.Name;
+                        mig.Tag = item;
+                        mig.GroupName = "GR3";
+                        mig.Focusable = false;
+                        mig.IsCheckable = true;
+                        //if ((item.pkey.fmtid == pkg.fmtid) && (item.pkey.pid == pkg.pid))
+                        //{
+                        //    mig.IsChecked = true;
+                        //}
+                        //else
+                        {
+                            mig.IsChecked = false;
+                        }
+                        mig.Click += mig_Click;
+                        btnGroup.Items.Add(mig);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                //FIXME: I disable this message because of strange null after filter
+                MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
-           // Separator sp = new Separator();
-           // sp.Focusable = false;
-           // btnSort.Items.Add(sp);
-           // misa = new MenuItem();
-           // misa.Click += misa_Click;
-           // misa.Focusable = false;
-           // misa.Header = FindResource("miAscending");
-           // misa.GroupName = "GR1";
-           // misa.IsCheckable = true;
+            Separator sp = new Separator();
+            sp.Focusable = false;
+            btnSort.Items.Add(sp);
+            misa = new MenuItem();
+            misa.Click += misa_Click;
+            misa.Focusable = false;
+            misa.Header = FindResource("miAscending");
+            misa.GroupName = "GR1";
+            misa.IsCheckable = true;
 
-           // misd = new MenuItem();
-           // misd.Header = FindResource("miDescending");
-           // misd.IsCheckable = true;
-           // misd.Click += misd_Click;
-           // misd.Focusable = false;
-           // misd.GroupName = "GR1";
-           // if (sc.direction == SORT.ASCENDING)
-           // {
-           //     misa.IsChecked = true;
-           // }
-           // else
-           // {
-           //     misd.IsChecked = true;
-           // }
-           // btnSort.Items.Add(misa);
-           // btnSort.Items.Add(misd);
-           // misng = new MenuItem();
-           // misng.Header = "(none)";
-           // misng.Focusable = false;
-           // misng.GroupName = "GR3";
-           // misng.IsCheckable = true;
-           // misng.IsChecked = pkg.fmtid == Guid.Empty;
-           // misng.Click += misng_Click;
-           // btnGroup.Items.Add(misng);
-           // Separator spg = new Separator();
-           // btnGroup.Items.Add(spg);
-           // misag = new MenuItem();
-           // misag.Focusable = false;
-           // misag.Header = FindResource("miAscending");
-           // misag.IsCheckable = true;
+            misd = new MenuItem();
+            misd.Header = FindResource("miDescending");
+            misd.IsCheckable = true;
+            misd.Click += misd_Click;
+            misd.Focusable = false;
+            misd.GroupName = "GR1";
+            if (this.ShellListView.LastSortOrder == System.Windows.Forms.SortOrder.Ascending)
+            {
+                misa.IsChecked = true;
+            }
+            else
+            {
+                misd.IsChecked = true;
+            }
+            btnSort.Items.Add(misa);
+            btnSort.Items.Add(misd);
+            misng = new MenuItem();
+            misng.Header = "(none)";
+            misng.Focusable = false;
+            misng.GroupName = "GR3";
+            misng.IsCheckable = true;
+            //misng.IsChecked = pkg.fmtid == Guid.Empty;
+            misng.Click += misng_Click;
+            btnGroup.Items.Add(misng);
+            Separator spg = new Separator();
+            btnGroup.Items.Add(spg);
+            misag = new MenuItem();
+            misag.Focusable = false;
+            misag.Header = FindResource("miAscending");
+            misag.IsCheckable = true;
 
 
-           // misag.GroupName = "GR4";
+            misag.GroupName = "GR4";
 
-           // misdg = new MenuItem();
-           // misdg.Focusable = false;
-           // misdg.Header = FindResource("miDescending");
-           // misdg.IsCheckable = true;
-           // misdg.GroupName = "GR4";
-           // if (GroupDir)
-           // {
-           //     misag.IsChecked = true;
-           // }
-           // else
-           // {
-           //     misdg.IsChecked = true;
-           // }
+            misdg = new MenuItem();
+            misdg.Focusable = false;
+            misdg.Header = FindResource("miDescending");
+            misdg.IsCheckable = true;
+            misdg.GroupName = "GR4";
+            if (GroupDir)
+            {
+                misag.IsChecked = true;
+            }
+            else
+            {
+                misdg.IsChecked = true;
+            }
 
-           // btnGroup.Items.Add(misag);
-           // btnGroup.Items.Add(misdg);
+            btnGroup.Items.Add(misag);
+            btnGroup.Items.Add(misdg);
 
         }
 				private void SetUpViewGallery()
@@ -711,7 +712,7 @@ namespace BetterExplorer
                     mic.Click += mic_Click;
                     mic.Focusable = false;
                     mic.IsCheckable = true;
-										foreach (Collumns col in ShellListView.AvailableVisibleColumns)
+										foreach (Collumns col in ShellListView.Collumns)
                     {
                         if (col.Name == AllAvailColls[j].Name)
                         {
@@ -768,7 +769,7 @@ namespace BetterExplorer
 				if (item is MenuItem)
 					if (((MenuItem)item).IsChecked && ((MenuItem)item != (sender as MenuItem)))
 					{
-            //ShellListView.SetSortCollumn(((Collumns)((MenuItem)item).Tag).pkey, SORT.DESCENDING);
+						ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)((MenuItem)item).Tag), System.Windows.Forms.SortOrder.Descending);
 					}
 			}
 		}
@@ -780,7 +781,7 @@ namespace BetterExplorer
 				if (item is MenuItem)
 					if (((MenuItem)item).IsChecked && ((MenuItem)item != (sender as MenuItem)))
 					{
-            //ShellListView.SetSortCollumn(((Collumns)((MenuItem)item).Tag).pkey, SORT.ASCENDING);
+            ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)((MenuItem)item).Tag), System.Windows.Forms.SortOrder.Ascending);
 					}
 			}
 		}
@@ -1324,7 +1325,7 @@ namespace BetterExplorer
 		private void miSelAllByType_Click(object sender, RoutedEventArgs e)
 		{
 
-            if (ShellListView.SelectedItems.Count() > 0)
+			if (ShellListView.GetSelectedCount() > 0)
             {
 							//FIXME: fix This
                 //List<string> flt = new List<string>();
@@ -1373,7 +1374,7 @@ namespace BetterExplorer
 
 		private void miSelAllByDate_Click(object sender, RoutedEventArgs e)
 		{
-			if (ShellListView.SelectedItems.Count() > 0)
+			if (ShellListView.GetSelectedCount() > 0)
             {
 				//FIXME:fixthis
                 //List<DateTime> flt = new List<DateTime>();
@@ -1792,7 +1793,7 @@ namespace BetterExplorer
 
 		private void btnFSizeChart_Click(object sender, RoutedEventArgs e)
 		{
-			if (ShellListView.SelectedItems.Count() > 0)
+			if (ShellListView.GetSelectedCount() > 0)
 			{
 				if ((ShellListView.SelectedItems[0].IsFolder || ShellListView.SelectedItems[0].IsDrive) && ShellListView.SelectedItems[0].IsFileSystem)
 				{
@@ -2201,7 +2202,7 @@ namespace BetterExplorer
 
 		private void btnInvSel_Click(object sender, RoutedEventArgs e)
 		{
-			//ShellListView.InvertSelection();
+			ShellListView.InvertSelection();
 			//WindowsAPI.SendMessage((int)ShellListView.Handle, 0x0111, 0x7013, 0);
 		}
 
@@ -3455,7 +3456,7 @@ namespace BetterExplorer
 
 		async void ShellListView_SelectionChanged(object sender, EventArgs e)
 		{
-			int explorerSelectedItemsCount = ShellListView.SelectedItems.Count();
+			int explorerSelectedItemsCount = ShellListView.GetSelectedCount();
 
 			if (!IsSelectionRized)
 			{
@@ -3495,7 +3496,7 @@ namespace BetterExplorer
 			#region StatusBar selected items counter
 			await Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() =>
 			{
-				explorerSelectedItemsCount = ShellListView.SelectedItems.Count();
+				explorerSelectedItemsCount = ShellListView.GetSelectedCount();
 			}));
 
 			SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
@@ -3987,6 +3988,8 @@ namespace BetterExplorer
             //'set up Explorer control
             InitializeExplorerControl();
 
+
+						ViewGallery.SelectedIndex = 2;
             // set up history on breadcrumb bar (currently missing try-catch statement in order to catch error)
             try
             {
@@ -4211,17 +4214,17 @@ namespace BetterExplorer
 		{
 			IsViewSelection = false;
 
-			if (e.ThumbnailSize == 256)
+			if (e.CurrentView == ShellViewStyle.ExtraLargeIcon)
 			{
 				ViewGallery.SelectedIndex = 0;
 
 			}
-			if (e.ThumbnailSize == 96)
+			if (e.CurrentView == ShellViewStyle.LargeIcon)
 			{
 				ViewGallery.SelectedIndex = 1;
 
 			}
-			if (e.CurrentView == ShellViewStyle.LargeIcon && e.ThumbnailSize == 48)
+			if (e.CurrentView == ShellViewStyle.Medium)
 			{
 				ViewGallery.SelectedIndex = 2;
 				btnSbIcons.IsChecked = true;
@@ -4261,10 +4264,10 @@ namespace BetterExplorer
 			{
 				ViewGallery.SelectedIndex = 7;
 			}
-            if (e.CurrentView == ShellViewStyle.Thumbstrip)
-            {
-                ViewGallery.SelectedIndex = 8;
-            }
+      if (e.CurrentView == ShellViewStyle.Thumbstrip)
+      {
+          ViewGallery.SelectedIndex = 8;
+      }
 			IsCalledFromViewEnum = true;
 			zoomSlider.Value = e.ThumbnailSize;
 			IsCalledFromViewEnum = false;
@@ -4311,7 +4314,7 @@ namespace BetterExplorer
 
 						SetUpConsoleWindow(e);
 
-						SetupUIOnSelectOrNavigate(ShellListView.SelectedItems.Count(), true);
+						SetupUIOnSelectOrNavigate(ShellListView.GetSelectedCount(), true);
 
 						SetupColumnsButton(this.ShellListView.AllAvailableColumns);
 
@@ -4332,7 +4335,7 @@ namespace BetterExplorer
 				#region StatusBar selected items counter
 				await Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
 				{
-					explorerSelectedItemsCount = ShellListView.SelectedItems == null ? 0 : ShellListView.SelectedItems.Count();
+					explorerSelectedItemsCount = ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount();
 				}));
 
 				SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
@@ -4421,7 +4424,7 @@ namespace BetterExplorer
             {
                 miRestoreALLRB.Visibility = System.Windows.Visibility.Collapsed;
             }
-						int selectedItemsCount = ShellListView.SelectedItems == null ? 0 : ShellListView.SelectedItems.Count();
+						int selectedItemsCount = ShellListView.GetSelectedCount();
 						bool IsChanged = (selectedItemsCount > 0);
             bool isFuncAvail;
             if (selectedItemsCount == 1)
@@ -5408,13 +5411,13 @@ namespace BetterExplorer
             //else
             //    ShellListView.ContentOptions.ViewMode = ExplorerBrowserViewMode.Icon;
             try {
-                if (ShellListView.View == ShellViewStyle.LargeIcon)
+                if (ShellListView.View == ShellViewStyle.Medium)
                 {
                     btnSbDetails.IsChecked = true;
                 }
                 else
                 {
-                    ShellListView.View = ShellViewStyle.LargeIcon;
+                    ShellListView.View = ShellViewStyle.Medium;
                 }
             }
             catch (NullReferenceException ex)
@@ -5464,7 +5467,7 @@ namespace BetterExplorer
 				//ShellListView.ContentOptions.ThumbnailSize = (int)e.NewValue;
                 try {
                     ShellListView.View = ShellViewStyle.LargeIcon;
-                    ShellListView.IconSize = (int)e.NewValue;
+                    ShellListView.ResizeIcons((int)e.NewValue);
                 }
                 catch (NullReferenceException ex)
                 {
@@ -5500,7 +5503,7 @@ namespace BetterExplorer
 
 
 
-			//ShellListView.RefreshExplorer();
+			ShellListView.RefreshContents();
 
 
 			//resets Refresh image back to normal
@@ -5516,11 +5519,11 @@ namespace BetterExplorer
       MenuItem ascitem = (MenuItem)parentButton.Items[parentButton.Items.IndexOf(misa)];
 			if (ascitem.IsChecked)
 			{
-        //ShellListView.SetSortCollumn(((Collumns)item.Tag).pkey, SORT.ASCENDING);
+        ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), System.Windows.Forms.SortOrder.Ascending);
 			}
 			else
 			{
-				//ShellListView.SetSortCollumn(((Collumns)item.Tag).pkey, SORT.DESCENDING);
+				ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), System.Windows.Forms.SortOrder.Descending);
 			}
 
 		}
@@ -5541,32 +5544,25 @@ namespace BetterExplorer
                 switch (ViewGallery.SelectedIndex)
                 {
                     case 0:
-                        ShellListView.View = ShellViewStyle.LargeIcon;
-                        ShellListView.IconSize = 256;
+                        ShellListView.View = ShellViewStyle.ExtraLargeIcon;
                         break;
                     case 1:
                         ShellListView.View = ShellViewStyle.LargeIcon;
-												ShellListView.IconSize = 96;
                         break;
                     case 2:
-                        ShellListView.View = ShellViewStyle.LargeIcon;
-												ShellListView.IconSize = 48;
+                        ShellListView.View = ShellViewStyle.Medium;
                         break;
                     case 3:
                         ShellListView.View = ShellViewStyle.SmallIcon;
-												ShellListView.IconSize = 16;
                         break;
                     case 4:
                         ShellListView.View = ShellViewStyle.List;
-												ShellListView.IconSize = 16;
                         break;
                     case 5:
                         ShellListView.View = ShellViewStyle.Details;
-												ShellListView.IconSize = 16;
                         break;
                     case 6:
                         ShellListView.View = ShellViewStyle.Tile;
-												ShellListView.IconSize = 48;
                         break;
                     case 7:
                         ShellListView.View = ShellViewStyle.Content;
@@ -9753,7 +9749,7 @@ namespace BetterExplorer
 
         private void mnuPinToStart_Click(object sender, RoutedEventArgs e)
         {
-            if (ShellListView.SelectedItems.Count() == 1)
+					if (ShellListView.GetSelectedCount() == 1)
             {
                 string loc = KnownFolders.StartMenu.ParsingName + @"\" +
                     ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY) + ".lnk";
@@ -9766,7 +9762,7 @@ namespace BetterExplorer
                 WindowsAPI.PinUnpinToStartMenu(loc);
             }
 
-						if (ShellListView.SelectedItems.Count() == 0)
+					if (ShellListView.GetSelectedCount() == 0)
             {
                 string loc = KnownFolders.StartMenu.ParsingName + @"\" +
                     ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY) + ".lnk";
@@ -9800,7 +9796,7 @@ namespace BetterExplorer
 
         private void btnEasyAccess_DropDownOpened(object sender, EventArgs e)
         {
-            if (ShellListView.SelectedItems.Count() == 1)
+					if (ShellListView.GetSelectedCount() == 1)
             {
                 mnuIncludeInLibrary.Items.Clear();
 

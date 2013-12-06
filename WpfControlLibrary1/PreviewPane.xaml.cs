@@ -86,7 +86,7 @@ namespace BetterExplorerControls
       //Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
       //{
         ShellItem selectedItemsFirst = null;
-        if (this.Browser != null && this.Browser.SelectedItems != null && this.Browser.SelectedItems.Count() == 1)
+				if (this.Browser != null && this.Browser.GetSelectedCount() == 1)
         {
           selectedItemsFirst = this.Browser.SelectedItems.First();
           selectedItemsFirst.Thumbnail.CurrentSize = new Size(this.ActualHeight - 20, this.ActualHeight - 20);
@@ -103,8 +103,9 @@ namespace BetterExplorerControls
           {
             if (this.Browser == null)
               this.Browser = browser;
-            
-            if (this.Browser.SelectedItems.Count() == 1){
+
+						if (this.Browser.GetSelectedCount() == 1)
+						{
                 this.SelectedItems = this.Browser.SelectedItems.ToArray();
                 this.SelectedItems[0].Thumbnail.CurrentSize = new Size(this.ActualHeight - 20, this.ActualHeight - 20);
                 icon.Source = this.SelectedItems[0].Thumbnail.BitmapSource;
