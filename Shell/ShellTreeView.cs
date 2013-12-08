@@ -419,15 +419,12 @@ namespace BExplorer.Shell
 			{
 				//if (this.InvokeRequired)
 				//{
-				if (HandleCreated)
-				{
-					this.BeginInvoke(new MethodInvoker(() =>
+
+					this.m_TreeView.BeginInvoke(new MethodInvoker(() =>
 					{
 						SetNodeImage(node.Handle, node.Tag as ShellItem, m_TreeView.Handle);
-						Thread.Sleep(2);
-						Application.DoEvents();
 					}));
-				}
+
 				//}
 				//else
 				//{
@@ -445,12 +442,10 @@ namespace BExplorer.Shell
 					//{
 					if (HandleCreated)
 					{
-						this.BeginInvoke(new MethodInvoker(() =>
+						this.m_TreeView.BeginInvoke(new MethodInvoker(() =>
 						{
 
 							node.Nodes.Clear();
-							Thread.Sleep(2);
-							Application.DoEvents();
 						}));
 					}
 					//}
