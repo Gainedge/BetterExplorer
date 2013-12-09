@@ -5466,7 +5466,6 @@ namespace BetterExplorer
 				//ShellListView.ContentOptions.ViewMode = ExplorerBrowserViewMode.Thumbnail;
 				//ShellListView.ContentOptions.ThumbnailSize = (int)e.NewValue;
                 try {
-                    ShellListView.View = ShellViewStyle.LargeIcon;
                     ShellListView.ResizeIcons((int)e.NewValue);
                 }
                 catch (NullReferenceException ex)

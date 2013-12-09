@@ -910,7 +910,7 @@ namespace BExplorer.Shell
 										m.Result = (IntPtr)CustomDraw.CDRF_NOTIFYPOSTPAINT;
 										break;
 									case CustomDraw.CDDS_ITEMPOSTPAINT:
-										if (nmlvcd.clrFace != 0 && nmlvcd.clrTextBk != 0 )
+										if (nmlvcd.clrFace != 0 && nmlvcd.clrTextBk != 0 && nmlvcd.clrText != 0 )
 										{
 											var itemBounds = new User32.RECT();
 											User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMRECT, index, ref itemBounds);
@@ -1001,6 +1001,16 @@ namespace BExplorer.Shell
 																}
 															}
                           }
+                                                    else
+                                                    {
+                                                        if (icon.Width == icon.Height && icon.Width != IconSize)
+                                                        {
+                                                            Task.Run(() =>
+                                                            {
+                                                                LoadIcon(index);
+                                                            });
+                                                        }
+                                                    }
 
 													if (isSmallIcons)
 													{
@@ -1059,19 +1069,7 @@ namespace BExplorer.Shell
                           {
                               using (Graphics g = Graphics.FromHdc(hdc))
                               {
-
-                                  if (icon.Width != icon.Height)
-                                  {
-                                      g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-                                  }
-                                  else
-                                  {
-                                      g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
-                                      g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                                      g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                                      g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                                      g.DrawImage(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-                                  }
+                                      g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
 
                               }                         
                           }
@@ -1106,7 +1104,6 @@ namespace BExplorer.Shell
 		{
 			this.Cancel = true;
 			this.cache.Clear();
-			GC.Collect();
 
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 
