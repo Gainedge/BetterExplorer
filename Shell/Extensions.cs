@@ -247,7 +247,7 @@ namespace BExplorer.Shell
 
 		public static String ToShellParsingName(this String path)
 		{
-			if (path.IndexOf("::") == 0 && path.IndexOf(@"\") == -1)
+			if (path.IndexOf("::") == 0 && !path.StartsWith(@"\\"))
 			{
 				return String.Format("shell:{0}", path);
 			}

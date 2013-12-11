@@ -202,16 +202,16 @@ namespace BExplorer.Shell
 			{
 				if (m_ShellView != null)
 				{
-					m_ShellView.Navigated -= m_ShellView_Navigated;
+					//m_ShellView.Navigated -= m_ShellView_Navigated;
 				}
 
 				m_ShellView = value;
 
 				if (m_ShellView != null)
 				{
-					m_ShellView.Navigated += m_ShellView_Navigated;
-					if (m_ShellView.CurrentFolder != null) 
-						m_ShellView_Navigated(m_ShellView, new NavigatedEventArgs(m_ShellView.CurrentFolder));
+					//m_ShellView.Navigated += m_ShellView_Navigated;
+					//if (m_ShellView.CurrentFolder != null) 
+					//	m_ShellView_Navigated(m_ShellView, new NavigatedEventArgs(m_ShellView.CurrentFolder));
 				}
 			}
 		}
@@ -414,66 +414,53 @@ namespace BExplorer.Shell
 			defIconInfo.cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO));
 			Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_FOLDER, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
 			node.ImageIndex = defIconInfo.iSysIconIndex;//defIndex;
-			var treeHandle = m_TreeView.Handle;
-			Task.Run(() =>
+			await Task.Run(async () =>
 			{
-				//if (this.InvokeRequired)
-				//{
-
 					this.m_TreeView.BeginInvoke(new MethodInvoker(() =>
 					{
 						SetNodeImage(node.Handle, node.Tag as ShellItem, m_TreeView.Handle);
+						
 					}));
-
-				//}
-				//else
-				//{
-				//	SetNodeImage(node.Handle, node.Tag as ShellItem, m_TreeView.Handle);
-				//}
-
-			});
-
-			Task.Run(() =>
-			{
-				var sho = node.Tag as ShellItem;
-				if (sho.Count(c => c.IsFolder) == 0)
-				{
-					//if (m_TreeView.InvokeRequired)
-					//{
-					if (HandleCreated)
+					await Task.Run(() =>
 					{
-						this.m_TreeView.BeginInvoke(new MethodInvoker(() =>
+						if (!folder.HasSubFolders)
 						{
-
-							node.Nodes.Clear();
-						}));
-					}
-					//}
-					//else
-					//{
-					//	node.Nodes.Clear();
-					//}
-				}
-				
+							this.m_TreeView.BeginInvoke(new MethodInvoker(() =>
+							{
+								node.Nodes.Clear();
+							}));
+						}
+					});
 			});
+
 		
 				
 
 
 		}
 
-		void CreateChildren(TreeNode node)
+		async void CreateChildren(TreeNode node)
 		{
 			if ((node.Nodes.Count == 1) && (node.Nodes[0].Tag == null))
 			{
 				ShellItem folder = (ShellItem)node.Tag;
-				IEnumerator<ShellItem> e = GetFolderEnumerator(folder);
 
 				node.Nodes.Clear();
-				while (e.MoveNext())
+				var items = folder.Where(w => w.IsFolder).ToArray();
+				//var items =  await Task.Run(() =>
+				//{
+				//	return (new ShellItem(pidl)).Where(w => w.IsFolder).ToArray();
+				//});
+				//while (e.MoveNext())
+				//{
+
+				//		CreateItem(node, e.Current);
+				//}
+				foreach (var item in items)
 				{
-					CreateItem(node, e.Current);
+					CreateItem(node, item);
 				}
+				
 			}
 		}
 
@@ -760,7 +747,7 @@ namespace BExplorer.Shell
 				m_Navigating = true;
 				try
 				{
-					m_ShellView.CurrentFolder = SelectedFolder;
+					m_ShellView.Navigate(SelectedFolder);
 				}
 				catch (Exception)
 				{
@@ -971,7 +958,7 @@ namespace BExplorer.Shell
 		ShellItem m_RootFolder = ShellItem.Desktop;
 		ShellView m_ShellView;
 		ShowHidden m_ShowHidden = ShowHidden.System;
-		bool m_Navigating;
+		public bool m_Navigating;
 		bool m_AllowDrop;
 		ShellNotificationListener m_ShellListener = new ShellNotificationListener();
 	}

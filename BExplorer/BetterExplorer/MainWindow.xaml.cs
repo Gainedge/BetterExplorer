@@ -4319,6 +4319,11 @@ namespace BetterExplorer
 						SetupColumnsButton(this.ShellListView.AllAvailableColumns);
 
 						SetSortingAndGroupingButtons();
+
+						//Setup the current selected folder in the ShellTree control
+						ShellTree.m_Navigating = true;
+						ShellTree.SelectedFolder = e.Folder;
+						ShellTree.m_Navigating = false;
 					}
 									));
 				});

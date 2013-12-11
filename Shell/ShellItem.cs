@@ -364,9 +364,11 @@ namespace BExplorer.Shell
 						IntPtr result;
 						uint res = 0;
 						var ishellfolder = this.Parent.GetIShellFolder();
+						IntPtr[] pidls = new IntPtr[1];
+						pidls[0] = Shell32.ILFindLastID(this.Pidl);
 						ishellfolder.GetUIObjectOf(IntPtr.Zero,
-						(uint)1, new IntPtr[1] { this.ILPidl },
-						guid, res, out result);
+						1, pidls,
+						ref guid, res, out result);
 						var iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
 						var str = new StringBuilder(512);
 						int index = -1;

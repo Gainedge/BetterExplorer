@@ -209,11 +209,11 @@ namespace BExplorer.Shell
         /// <param name="menu">
         /// The menu to populate.
         /// </param>
-        public void Populate(Menu menu)
+        public void Populate(Menu menu, CMF additionalFlags)
         {
             RemoveShellMenuItems(menu);
             m_ComInterface.QueryContextMenu(menu.Handle, 0,
-                m_CmdFirst, int.MaxValue, CMF.EXPLORE);
+                m_CmdFirst, int.MaxValue, CMF.EXPLORE | additionalFlags);
         }
 
         /// <summary>
@@ -228,12 +228,12 @@ namespace BExplorer.Shell
         /// The position on <paramref name="control"/> that the menu
         /// should be displayed at.
         /// </param>
-        public void ShowContextMenu(Control control, Point pos)
+        public void ShowContextMenu(Control control, Point pos, CMF aditionalFlags = 0)
         {
             using (ContextMenu menu = new ContextMenu())
             {
                 pos = control.PointToScreen(pos);
-                Populate(menu);
+								Populate(menu, aditionalFlags);
                 int command = User32.TrackPopupMenuEx(menu.Handle,
                     TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
                     IntPtr.Zero);
@@ -248,7 +248,7 @@ namespace BExplorer.Shell
 				{
 					using (ContextMenu menu = new ContextMenu())
 					{
-						Populate(menu);
+						Populate(menu, 0);
 						int command = User32.TrackPopupMenuEx(menu.Handle,
 								TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
 								IntPtr.Zero);
