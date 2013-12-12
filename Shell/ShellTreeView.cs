@@ -414,23 +414,23 @@ namespace BExplorer.Shell
 			defIconInfo.cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO));
 			Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_FOLDER, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
 			node.ImageIndex = defIconInfo.iSysIconIndex;//defIndex;
-			await Task.Run(async () =>
+			IntPtr nodeHandle = node.Handle;
+			ShellItem sho = node.Tag as ShellItem;
+			IntPtr treeHandle = m_TreeView.Handle;
+			IntPtr firstChildhandle = node.Nodes[0].Handle;
+			//ThreadPool.QueueUserWorkItem(unused => 
+			Task.Run(() =>
 			{
-					this.m_TreeView.BeginInvoke(new MethodInvoker(() =>
-					{
-						SetNodeImage(node.Handle, node.Tag as ShellItem, m_TreeView.Handle);
-						
-					}));
-					await Task.Run(() =>
-					{
-						if (!folder.HasSubFolders)
+			//		//this.m_TreeView.BeginInvoke(new MethodInvoker(() =>
+			//		//{
+						SetNodeImage(nodeHandle, sho, treeHandle);
+			//			
+			//		//}));
+
+						if (!sho.HasSubFolders)
 						{
-							this.m_TreeView.BeginInvoke(new MethodInvoker(() =>
-							{
-								node.Nodes.Clear();
-							}));
+							User32.SendMessage(treeHandle, MSG.TVM_DELETEITEM, 0, firstChildhandle);
 						}
-					});
 			});
 
 		
@@ -569,7 +569,6 @@ namespace BExplorer.Shell
 
 
 				TVITEMW itemInfo = new TVITEMW();
-				ShellItem folder = sho;
 
 				// We need to set the images for the item by sending a 
 				// TVM_SETITEMW message, as we need to set the overlay images,
