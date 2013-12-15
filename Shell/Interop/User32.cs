@@ -340,6 +340,9 @@ namespace BExplorer.Shell.Interop
         public static extern int SendMessage(IntPtr hWnd, MSG Msg,
             int wParam, ref TVITEMW lParam);
 
+        [DllImport("User32.dll", CharSet = CharSet.Auto)]
+        public static extern UInt32 PrivateExtractIcons(String lpszFile, int nIconIndex, int cxIcon, int cyIcon, IntPtr[] phicon, IntPtr[] piconid, UInt32 nIcons, UInt32 flags);
+
         [DllImport("user32.dll")]
         public static extern bool SetMenuInfo(IntPtr hmenu,
             ref MENUINFO lpcmi);

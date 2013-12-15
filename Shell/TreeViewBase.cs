@@ -45,25 +45,12 @@ namespace BExplorer.Shell
 		}
 		protected override void WndProc(ref Message m)
 		{
-			//if (m.Msg == WM_ERASEBKGND)
-			//{
-			//	m.Result = IntPtr.Zero;
-			//	return;
-			//}
-			if (m.Msg == 78)
-			{
-				NMHDR nmhdr = new NMHDR();
-				nmhdr = (NMHDR)m.GetLParam(nmhdr.GetType());
-				switch ((int)nmhdr.code)
-				{
-					case CustomDraw.NM_CUSTOMDRAW:
-						var nmlvcd = new NMTVCUSTOMDRAW();
-						nmlvcd = (NMTVCUSTOMDRAW)m.GetLParam(nmlvcd.GetType());
-						var itemHandle = (int)nmlvcd.nmcd.dwItemSpec;
-						var hdc = nmlvcd.nmcd.hdc;
-						break;
-				}
-			}
+            if (m.Msg == WM_ERASEBKGND)
+            {
+                m.Result = IntPtr.Zero;
+                return;
+            }
+			
 			base.WndProc(ref m);
 		}
 

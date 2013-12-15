@@ -347,7 +347,7 @@ namespace BExplorer.Shell
 		}
 
 		public Icon GetIcon(int index){
-			return this.GetIcon(index, ImageListDrawOptions.Normal);
+			return this.GetIcon(index, ImageListDrawOptions.Async);
 		}
 		public Icon GetIcon(int index, ImageListDrawOptions options){
 			IntPtr hIcon;
