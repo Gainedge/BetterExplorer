@@ -127,6 +127,16 @@ namespace BExplorer.Shell
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
+	public struct NMTVCUSTOMDRAW
+	{
+		// 104/136  
+		public NMCUSTOMDRAW nmcd;
+		public int clrText;
+		public int clrTextBk;
+		public int iLevel;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
 	public struct NMITEMACTIVATE
 	{
 		public NMHDR hdr;
@@ -210,7 +220,7 @@ namespace BExplorer.Shell
 				mask = HDITEM.Mask.Format
 			};
 
-			if (User32.SendMessage(handle, MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero)
+			if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero)
 			{
 				throw new Win32Exception();
 			}
@@ -218,7 +228,7 @@ namespace BExplorer.Shell
 
 			item.fmt |= HDITEM.Format.HDF_SPLITBUTTON;
 
-			if (User32.SendMessage(handle, MSG.HDM_SETITEM, index, ref item) == IntPtr.Zero)
+			if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_SETITEM, index, ref item) == IntPtr.Zero)
 			{
 				throw new Win32Exception();
 			}
@@ -231,7 +241,7 @@ namespace BExplorer.Shell
 				mask = HDITEM.Mask.Format
 			};
 
-			if (User32.SendMessage(handle, MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero)
+			if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero)
 			{
 				throw new Win32Exception();
 			}
@@ -239,7 +249,7 @@ namespace BExplorer.Shell
 
 			item.fmt |= HDITEM.Format.HDF_SPLITBUTTON;
 
-			if (User32.SendMessage(handle, MSG.HDM_SETITEM, index, ref item) == IntPtr.Zero)
+			if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_SETITEM, index, ref item) == IntPtr.Zero)
 			{
 				throw new Win32Exception();
 			}
@@ -259,7 +269,7 @@ namespace BExplorer.Shell
 
 		public static void SetSortIcon(this ShellView listViewControl, int columnIndex, SortOrder order)
 		{
-			IntPtr columnHeader = User32.SendMessage(listViewControl.LVHandle, MSG.LVM_GETHEADER, 0, 0);
+			IntPtr columnHeader = User32.SendMessage(listViewControl.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETHEADER, 0, 0);
 			for (int columnNumber = 0; columnNumber <= listViewControl.Collumns.Count - 1; columnNumber++)
 			{
 				var item = new HDITEM
@@ -267,7 +277,7 @@ namespace BExplorer.Shell
 					mask = HDITEM.Mask.Format
 				};
 
-				if (User32.SendMessage(columnHeader, MSG.HDM_GETITEM, columnNumber, ref item) == IntPtr.Zero)
+				if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_GETITEM, columnNumber, ref item) == IntPtr.Zero)
 				{
 					throw new Win32Exception();
 				}
@@ -291,7 +301,7 @@ namespace BExplorer.Shell
 					item.fmt &= ~HDITEM.Format.SortDown & ~HDITEM.Format.SortUp;
 				}
 
-				if (User32.SendMessage(columnHeader, MSG.HDM_SETITEM, columnNumber, ref item) == IntPtr.Zero)
+				if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_SETITEM, columnNumber, ref item) == IntPtr.Zero)
 				{
 					throw new Win32Exception();
 				}

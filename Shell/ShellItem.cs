@@ -384,6 +384,34 @@ namespace BExplorer.Shell
 					}
 				}
 
+				public IExtractIconpwFlags GetShield()
+				{
+					try
+					{
+						var guid = new Guid("000214fa-0000-0000-c000-000000000046");
+						IntPtr result;
+						uint res = 0;
+						var ishellfolder = this.Parent.GetIShellFolder();
+						IntPtr[] pidls = new IntPtr[1];
+						pidls[0] = Shell32.ILFindLastID(this.Pidl);
+						ishellfolder.GetUIObjectOf(IntPtr.Zero,
+						1, pidls,
+						ref guid, res, out result);
+						var iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
+						var str = new StringBuilder(512);
+						int index = -1;
+						IExtractIconpwFlags flags;
+						iextract.GetIconLocation(IExtractIconuFlags.GIL_CHECKSHIELD, str, 512, out index, out flags);
+
+						return flags;
+					}
+					catch (Exception)
+					{
+
+						return 0;
+					}
+				}
+
 				public int GetFallbackIconIndex()
 				{
 					try

@@ -727,6 +727,12 @@ namespace BExplorer.Shell.Interop
 				public const int LVS_EDITLABELS = 512;
 				public const int LVS_OWNERDATA = 0x1000;
 				public const int LVS_SHOWSELALWAYS = 0x0008;
+				public const int TVS_HASBUTTONS = 0x0001;
+				public const int TVS_HASLINES = 0x0002;
+				public const int TVS_LINESATROOT = 0x0004;
+				public const int TVS_EDITLABELS = 0x0008;
+				public const int TVS_DISABLEDRAGDROP = 0x0010;
+				public const int TVS_SHOWSELALWAYS = 0x0020;
 
 				[DllImport("user32.dll", SetLastError = true)]
 				public static extern IntPtr CreateWindowEx(

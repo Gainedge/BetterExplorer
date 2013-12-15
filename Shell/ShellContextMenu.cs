@@ -133,7 +133,7 @@ namespace BExplorer.Shell
         /// </returns>
         public bool HandleMenuMessage(ref Message m)
         {
-            if ((m.Msg == (int)MSG.WM_COMMAND) && ((int)m.WParam >= m_CmdFirst))
+            if ((m.Msg == (int)BExplorer.Shell.Interop.MSG.WM_COMMAND) && ((int)m.WParam >= m_CmdFirst))
             {
                 InvokeCommand((int)m.WParam - m_CmdFirst);
                 return true;

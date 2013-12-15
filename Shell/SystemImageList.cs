@@ -71,15 +71,15 @@ namespace BExplorer.Shell
             ComCtl32.ImageList_GetIconSize(small, out x, out y);
             control.SmallImageList.ImageSize = new System.Drawing.Size(x, y);
 
-            User32.SendMessage(control.Handle, MSG.LVM_SETIMAGELIST,
+            User32.SendMessage(control.Handle, BExplorer.Shell.Interop.MSG.LVM_SETIMAGELIST,
                 (int)LVSIL.LVSIL_NORMAL, LargeImageList);
-            User32.SendMessage(control.Handle, MSG.LVM_SETIMAGELIST,
+            User32.SendMessage(control.Handle, BExplorer.Shell.Interop.MSG.LVM_SETIMAGELIST,
                 (int)LVSIL.LVSIL_SMALL, SmallImageList);
         }
 
         public static void UseSystemImageList(TreeView control)
         {
-            User32.SendMessage(control.Handle, MSG.TVM_SETIMAGELIST,
+            User32.SendMessage(control.Handle, BExplorer.Shell.Interop.MSG.TVM_SETIMAGELIST,
                 0, SmallImageList);
         }
 

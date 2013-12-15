@@ -91,7 +91,7 @@ namespace BExplorer.Shell
 			m_TreeView.AllowDrop = true;
 			m_TreeView.AllowDrop = false;
 			this.DoubleBuffered = true;
-			SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
+			//SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
 			CreateItems();
 		}
 
@@ -415,23 +415,20 @@ namespace BExplorer.Shell
 			Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_FOLDER, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
 			node.ImageIndex = defIconInfo.iSysIconIndex;//defIndex;
 			IntPtr nodeHandle = node.Handle;
-			ShellItem sho = node.Tag as ShellItem;
+			ShellItem sho = new ShellItem((node.Tag as ShellItem).m_ComInterface);
 			IntPtr treeHandle = m_TreeView.Handle;
 			IntPtr firstChildhandle = node.Nodes[0].Handle;
 			//ThreadPool.QueueUserWorkItem(unused => 
-			Task.Run(() =>
-			{
-			//		//this.m_TreeView.BeginInvoke(new MethodInvoker(() =>
-			//		//{
-						SetNodeImage(nodeHandle, sho, treeHandle);
-			//			
-			//		//}));
+			Thread myThread = new Thread(delegate(){
+				SetNodeImage(nodeHandle, sho, treeHandle);
 
-						if (!sho.HasSubFolders)
-						{
-							User32.SendMessage(treeHandle, MSG.TVM_DELETEITEM, 0, firstChildhandle);
-						}
+				if (!sho.HasSubFolders)
+				{
+					User32.SendMessage(treeHandle, BExplorer.Shell.Interop.MSG.TVM_DELETEITEM, 0, firstChildhandle);
+					Application.DoEvents();
+				}
 			});
+			myThread.Start();
 
 		
 				
@@ -462,6 +459,26 @@ namespace BExplorer.Shell
 				}
 				
 			}
+		}
+
+		protected override void WndProc(ref Message m)
+		{
+			
+			if (m.Msg == 0x4e)
+			{
+				NMHDR nmhdr = new NMHDR();
+				nmhdr = (NMHDR)m.GetLParam(nmhdr.GetType());
+				switch ((int)nmhdr.code)
+				{
+					case CustomDraw.NM_CUSTOMDRAW:
+						var nmlvcd = new NMTVCUSTOMDRAW();
+						nmlvcd = (NMTVCUSTOMDRAW)m.GetLParam(nmlvcd.GetType());
+						var itemHandle = (int)nmlvcd.nmcd.dwItemSpec;
+						var hdc = nmlvcd.nmcd.hdc;
+						break;
+				}
+			}
+			base.WndProc(ref m);
 		}
 
 		void RefreshItem(TreeNode node)
@@ -583,8 +600,10 @@ namespace BExplorer.Shell
 				itemInfo.state = (TVIS)(itemInfo.iImage >> 16);
 				itemInfo.stateMask = TVIS.TVIS_OVERLAYMASK;
 				
-				User32.SendMessage(m_TreeViewHandle, MSG.TVM_SETITEMW,
+				User32.SendMessage(m_TreeViewHandle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW,
 						0, ref itemInfo);
+				Application.DoEvents();
+				
 		}
 
 		void SelectItem(ShellItem value)
@@ -654,7 +673,7 @@ namespace BExplorer.Shell
 
 		void ScrollTreeView(ScrollDirection direction)
 		{
-			User32.SendMessage(m_TreeView.Handle, MSG.WM_VSCROLL,
+			User32.SendMessage(m_TreeView.Handle, BExplorer.Shell.Interop.MSG.WM_VSCROLL,
 					(int)direction, 0);
 		}
 
@@ -949,7 +968,7 @@ namespace BExplorer.Shell
 			static ComTypes.IDataObject m_Data;
 		}
 
-		public TreeView m_TreeView;
+		public TreeViewBase m_TreeView;
 		TreeNode m_RightClickNode;
 		DragTarget m_DragTarget;
 		System.Windows.Forms.Timer m_ScrollTimer = new System.Windows.Forms.Timer();

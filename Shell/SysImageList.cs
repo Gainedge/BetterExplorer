@@ -361,6 +361,22 @@ namespace BExplorer.Shell
 			}
 		}
 
+		public IntPtr GetHIcon(int index)
+		{
+			IntPtr hIcon;
+			var hresult = this._ImageList.GetIcon(index, ImageListDrawOptions.PreserveAlpha, out hIcon);
+			Marshal.ThrowExceptionForHR(hresult);
+			if (hIcon != IntPtr.Zero)
+			{
+				
+				return hIcon;
+			}
+			else
+			{
+				throw new Win32Exception();
+			}
+		}
+
 		public Icon GetIcon(IntPtr path){
 			return this.GetIcon(path, ImageListDrawOptions.Normal);
 		}
@@ -396,8 +412,13 @@ namespace BExplorer.Shell
 
     public void DrawOverlay(IntPtr hdc, int overlayIndex, Point location, int newSize = -1)
     {
-      DrawInternal(hdc, GetIndexOfOverlay(overlayIndex), 0, ImageListDrawOptions.Normal  | ImageListDrawOptions.Transparent, ImageListDrawStates.Normal, 0, location, newSize);
+      DrawInternal(hdc, GetIndexOfOverlay(overlayIndex), 0, ImageListDrawOptions.Normal  | ImageListDrawOptions.Transparent , ImageListDrawStates.Normal , 0, location, newSize);
     }
+
+		public void DrawIcon(IntPtr hdc, int index, Point location, int newSize = -1)
+		{
+			DrawInternal(hdc, index, 0, ImageListDrawOptions.Normal | ImageListDrawOptions.Transparent, ImageListDrawStates.Normal, 0, location, newSize);
+		}
 		public void Draw(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions options, Point location, int newSize = -1){
 			 this.DrawInternal(hdc, index, overlayIndex, options, ImageListDrawStates.Normal, 0, location, newSize);
 		}

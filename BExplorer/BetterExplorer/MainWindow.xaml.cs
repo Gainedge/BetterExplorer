@@ -3906,7 +3906,7 @@ namespace BetterExplorer
 			ShellTreeHost.Child = ShellTree;
 			ShellViewHost.Child = ShellListView;
 
-			ShellTree.ShellView = ShellListView;
+			//ShellTree.ShellView = ShellListView;
 			//ShellListView.LVItemsColorCodes = LVItemsColor;
 			//ShellListView.subclassed = new ShellDeffViewSubClassedWindow(IntPtr.Zero, ShellListView.ShellListViewHandle, ShellListView);
 			//ShellListView.subclassed.AssignHandle(ShellListView.m_ShellViewWindow);

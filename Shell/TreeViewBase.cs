@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BExplorer.Shell.Interop;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace BExplorer.Shell
 	{
 		public TreeViewBase()
 		{
-			SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.ResizeRedraw | ControlStyles.EnableNotifyMessage, true);
+			SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.EnableNotifyMessage, true);
 		}
 
 		//protected override CreateParams CreateParams
@@ -42,15 +43,29 @@ namespace BExplorer.Shell
 			if (Style != 0)
 				SendMessage(this.Handle, TVM_SETEXTENDEDSTYLE, (IntPtr)TVS_EX_DOUBLEBUFFER, (IntPtr)Style);
 		}
-		//protected override void WndProc(ref Message m)
-		//{
-		//	if (m.Msg == WM_ERASEBKGND)
-		//	{
-		//		m.Result = IntPtr.Zero;
-		//		return;
-		//	}
-		//	base.WndProc(ref m);
-		//}
+		protected override void WndProc(ref Message m)
+		{
+			//if (m.Msg == WM_ERASEBKGND)
+			//{
+			//	m.Result = IntPtr.Zero;
+			//	return;
+			//}
+			if (m.Msg == 78)
+			{
+				NMHDR nmhdr = new NMHDR();
+				nmhdr = (NMHDR)m.GetLParam(nmhdr.GetType());
+				switch ((int)nmhdr.code)
+				{
+					case CustomDraw.NM_CUSTOMDRAW:
+						var nmlvcd = new NMTVCUSTOMDRAW();
+						nmlvcd = (NMTVCUSTOMDRAW)m.GetLParam(nmlvcd.GetType());
+						var itemHandle = (int)nmlvcd.nmcd.dwItemSpec;
+						var hdc = nmlvcd.nmcd.hdc;
+						break;
+				}
+			}
+			base.WndProc(ref m);
+		}
 
 		protected override void OnHandleCreated(EventArgs e)
 		{
