@@ -4323,7 +4323,7 @@ namespace BetterExplorer
 
 						//Setup the current selected folder in the ShellTree control
 						ShellTree.m_Navigating = true;
-						//ShellTree.SelectedFolder = e.Folder;
+						ShellTree.SelectedFolder = e.Folder;
 						ShellTree.m_Navigating = false;
 					}
 									));
