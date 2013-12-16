@@ -118,13 +118,14 @@ namespace BExplorer.Shell
 			this.View = ShellViewStyle.Medium;
 
 			//Navigate((ShellItem)KnownFolders.Desktop);
-			CurrentFolder = (ShellItem)KnownFolders.Desktop;
+			
 
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.HeaderInAllViews, (int)ListViewExtendedStyles.HeaderInAllViews);
 			//WinAPI.SendMessage(handle, WinAPI.LVM.LVM_SetExtendedStyle, (int)WinAPI.ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE, (int)WinAPI.ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER, (int)ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.FullRowSelect, (int)ListViewExtendedStyles.FullRowSelect);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.HeaderDragDrop, (int)ListViewExtendedStyles.HeaderDragDrop);
+			CurrentFolder = (ShellItem)KnownFolders.Desktop;
 
 		}
 
@@ -212,7 +213,7 @@ namespace BExplorer.Shell
 			//				}
 
 			//				Thread.Sleep(1);
-			//				Application.DoEvents();
+			//				//Application.DoEvents();
 
 			//			}
 			//		}));
@@ -529,8 +530,8 @@ namespace BExplorer.Shell
 
         private void SaveThumbnail(int index)
         {
-            Thread.Sleep(1);
-            Application.DoEvents();
+            //Thread.Sleep(1);
+            ////Application.DoEvents();
             var iconSize = 256;
                 SQLiteConnectionStringBuilder connBuilder = new SQLiteConnectionStringBuilder();
                 if (this.IconSize == 16)
@@ -575,16 +576,20 @@ namespace BExplorer.Shell
                 //Set page size to NTFS cluster size = 4096 bytes
                 connBuilder.PageSize = 4096;
                 connBuilder.CacheSize = 10000;
-                connBuilder.JournalMode = SQLiteJournalModeEnum.Wal;
+                connBuilder.JournalMode = SQLiteJournalModeEnum.Memory;
                 connBuilder.Pooling = true;
                 connBuilder.LegacyFormat = false;
-                connBuilder.DefaultTimeout = 500;
+                connBuilder.DefaultTimeout = 100;
+								connBuilder.SyncMode = SynchronizationModes.Off;
                 var image = ImageToByte(sho.GetShellThumbnail(iconSize, ShellThumbnailFormatOption.Default), ImageFormat.Png);
-                using (SQLiteConnection con1 = new SQLiteConnection(connBuilder.ToString()))
-                {
-                    con1.Open();
+                //using (SQLiteConnection con1 = new SQLiteConnection(connBuilder.ToString()))
+                //{
+								if (con == null)
+									con = new SQLiteConnection(connBuilder.ToString());
+								if (con.State != ConnectionState.Open)
+                    con.Open();
                     //SQLiteTransaction transaction = con1.BeginTransaction();
-                    SQLiteCommand cmd = con1.CreateCommand();
+                    SQLiteCommand cmd = con.CreateCommand();
                     //cmd.Transaction = transaction;
                     cmd.CommandText = "INSERT INTO Thumbnails (id, thumbnail) VALUES (@0, @1);";
                     
@@ -599,7 +604,7 @@ namespace BExplorer.Shell
 
                         try
                         {
-                            cmd.ExecuteNonQuery();
+                            cmd.ExecuteNonQueryAsync();
                         }
                         catch (Exception)
                         {
@@ -608,13 +613,14 @@ namespace BExplorer.Shell
                         image = null;
                     }
                                        
-                    con1.Close();
-                }
+                   // con1.Close();
+                //}
             
         }
-
+				SQLiteConnection con;
         private Bitmap LoadThumbnailFromCache(int hash)
         {
+					//Application.DoEvents();
             var iconSize = 256;
             SQLiteConnectionStringBuilder connBuilder = new SQLiteConnectionStringBuilder();
             if (this.IconSize == 16)
@@ -648,16 +654,19 @@ namespace BExplorer.Shell
             //Set page size to NTFS cluster size = 4096 bytes
             connBuilder.PageSize = 4096;
             connBuilder.CacheSize = 10000;
-            connBuilder.JournalMode = SQLiteJournalModeEnum.Wal;
+            connBuilder.JournalMode = SQLiteJournalModeEnum.Memory;
             connBuilder.Pooling = true;
             connBuilder.LegacyFormat = false;
             connBuilder.DefaultTimeout = 500;
+						connBuilder.SyncMode = SynchronizationModes.Off;
             Bitmap b = null;
-            using (SQLiteConnection con1 = new SQLiteConnection(connBuilder.ToString()))
-            {
-                con1.Open();
+						if (con == null) 
+							con  = new SQLiteConnection(connBuilder.ToString());
+            
+					if (con.State != ConnectionState.Open)
+                con.Open();
                 //SQLiteTransaction transaction = con1.BeginTransaction();
-                SQLiteCommand cmd = con1.CreateCommand();
+                SQLiteCommand cmd = con.CreateCommand();
                 //cmd.Transaction = transaction;
                 cmd.CommandText = "SELECT thumbnail FROM Thumbnails WHERE id = @0;";
                 SQLiteParameter param0 = new SQLiteParameter("@0", System.Data.DbType.Int64);
@@ -669,7 +678,7 @@ namespace BExplorer.Shell
                 
 
                 //con1.Close();
-            }
+            
             if (b != null)
             {
                 return new Bitmap(b);
@@ -716,7 +725,7 @@ namespace BExplorer.Shell
                     while (true)
                     {
 
-                        Thread.Sleep(1);
+											//Application.DoEvents();
                         while (waitingThumbnails.Count == 0)
                             Thread.Sleep(1);
 
@@ -817,7 +826,7 @@ namespace BExplorer.Shell
                                         bitmap.Dispose();
                                     }
                                     //Thread.Sleep(1);
-                                    //Application.DoEvents();
+                                    ////Application.DoEvents();
                                     //User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
 
                                 }
@@ -834,6 +843,7 @@ namespace BExplorer.Shell
 				{
                     if (this.Cancel)
                         return;
+										//Application.DoEvents();
 					ShellItem sho = null;
 					var shoTemp = Items[index];
 					if (shoTemp.ParsingName.StartsWith("::"))
@@ -859,8 +869,9 @@ namespace BExplorer.Shell
 				Dictionary<int, int> shieldedIcons = new Dictionary<int, int>();
 				public void LoadShield(int index)
 				{
-                    //if (this.Cancel)
-                    //    return;
+                    if (this.Cancel)
+                        return;
+										//Application.DoEvents();
 					ShellItem sho = null;
 					var shoTemp = Items[index];
 					if (shoTemp.ParsingName.StartsWith("::"))
@@ -897,7 +908,7 @@ namespace BExplorer.Shell
                 //        if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, 0, index) == IntPtr.Zero && this.Cancel)
                 //            return;
                         
-                //        Application.DoEvents();
+                //        //Application.DoEvents();
                 //        Thread.Sleep(1);
                 //        ShellItem sho = null;
                 //        int hash = -1;
@@ -968,7 +979,7 @@ namespace BExplorer.Shell
                 //                bitmap.Dispose();
                 //            }
                 //            //Thread.Sleep(1);
-                //            //Application.DoEvents();
+                //            ////Application.DoEvents();
                 //        }
                 //    }
                 //    catch (Exception)
@@ -1568,7 +1579,7 @@ namespace BExplorer.Shell
 		BackgroundWorker bw = new BackgroundWorker();
 		public async void Navigate(ShellItem destination)
 		{
-			Application.DoEvents();
+			////Application.DoEvents();
 			bw.DoWork += bw_DoWork;
 			bw.RunWorkerCompleted += bw_RunWorkerCompleted;
 			overlays.Clear();

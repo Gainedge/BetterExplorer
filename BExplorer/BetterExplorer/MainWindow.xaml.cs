@@ -4008,28 +4008,7 @@ namespace BetterExplorer
 
             isOnLoad = false;
 
-            //'set StartUp location
-            if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized")
-            {
-
-                String cmd = Application.Current.Properties["cmd"].ToString();
-
-                if (cmd.IndexOf("::") == 0)
-                {
-
-                    ShellListView.Navigate(new ShellItem("shell:" + cmd));
-                }
-                else
-									ShellListView.Navigate(new ShellItem(cmd.Replace("\"", "")));
-
-
-								NewTab(ShellListView.CurrentFolder, true);
-
-            }
-            else
-            {
-                InitializeInitialTabs();
-            }
+            
 
             SetsUpJumpList();
 
@@ -4056,8 +4035,30 @@ namespace BetterExplorer
             //Set up Version Info
             verNumber.Content = "Version " + (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
             lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
-						
-            this.Activate(true);
+
+						//'set StartUp location
+						if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized")
+						{
+
+							String cmd = Application.Current.Properties["cmd"].ToString();
+
+							if (cmd.IndexOf("::") == 0)
+							{
+
+								ShellListView.Navigate(new ShellItem("shell:" + cmd));
+							}
+							else
+								ShellListView.Navigate(new ShellItem(cmd.Replace("\"", "")));
+
+
+							NewTab(ShellListView.CurrentFolder, true);
+
+						}
+						else
+						{
+							InitializeInitialTabs();
+						}
+            //this.Activate(true);
 						
         }
         catch (Exception exe)
@@ -4322,7 +4323,7 @@ namespace BetterExplorer
 
 						//Setup the current selected folder in the ShellTree control
 						ShellTree.m_Navigating = true;
-						ShellTree.SelectedFolder = e.Folder;
+						//ShellTree.SelectedFolder = e.Folder;
 						ShellTree.m_Navigating = false;
 					}
 									));
