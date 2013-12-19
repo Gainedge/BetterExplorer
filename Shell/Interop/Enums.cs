@@ -411,6 +411,7 @@ namespace BExplorer.Shell.Interop
 		/// LVS_EX_CHECKBOXES
 		/// </summary>
 		CheckBoxes = 0x00000004,
+		LVS_EX_AUTOCHECKSELECT = 0x8000000,
 		/// <summary>
 		/// LVS_EX_TRACKSELECT
 		/// </summary>
@@ -493,4 +494,5 @@ namespace BExplorer.Shell.Interop
 		HeaderInAllViews = 0x2000000,
 		LVS_EX_DOUBLEBUFFER = 0x00010000,
 	}
+
 }

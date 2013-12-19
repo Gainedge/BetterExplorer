@@ -333,7 +333,9 @@ namespace BExplorer.Shell
 			}
 
 			if (retVal.Equals(IntPtr.Zero)){
-				throw new Win32Exception(Marshal.GetLastWin32Error());
+				//throw new Win32Exception(Marshal.GetLastWin32Error());
+				overlayIndex = 0;
+				return 0;
 			}else{
 				/* brakes stack on optimized build
 				int idx = shfi.iIcon & 0xFFFFFF;

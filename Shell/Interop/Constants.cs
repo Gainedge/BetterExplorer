@@ -76,6 +76,7 @@ namespace BExplorer.Shell.Interop
 		public const int NM_CUSTOMDRAW = (NM_FIRST - 12);
 		public const int NM_RCLICK = (NM_FIRST - 5);
 		public const int NM_SETFOCUS = (NM_FIRST - 7);
+		public const int NM_CLICK = (NM_FIRST - 2);
 
 		const int TTN_FIRST = -520;
 		public const int TTN_SHOW = (TTN_FIRST - 1);

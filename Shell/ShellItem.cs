@@ -842,7 +842,9 @@ namespace BExplorer.Shell
 						{
 							SFGAO sfgao;
 							m_ComInterface.GetAttributes(SFGAO.FOLDER, out sfgao);
-							return sfgao != 0;
+							SFGAO sfgao2;
+							m_ComInterface.GetAttributes(SFGAO.STREAM, out sfgao2);
+							return sfgao != 0 && sfgao2 == 0;
 						}
         }
 
@@ -1253,7 +1255,14 @@ namespace BExplorer.Shell
         {
             if (RunningVista)
             {
-                return Shell32.SHGetIDListFromObject(item);
+							if (item != null)
+							{
+								return Shell32.SHGetIDListFromObject(item);
+							}
+							else
+							{
+								return IntPtr.Zero;
+							}
             }
             else
             {

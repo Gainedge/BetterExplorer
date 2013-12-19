@@ -91,6 +91,7 @@ namespace BExplorer.Shell
 			m_TreeView.AllowDrop = true;
 			m_TreeView.AllowDrop = false;
 			this.DoubleBuffered = true;
+			TreeHandle = m_TreeView.Handle;
 			//SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint, true);
 			CreateItems();
 		}
@@ -131,7 +132,7 @@ namespace BExplorer.Shell
 
 			m_TreeView.BackColor = Color.White;
 			m_TreeView.Invalidate();
-			m_TreeView.Update();
+			//m_TreeView.Update();
 			base.OnSizeChanged(e);
 		}
 
@@ -419,16 +420,7 @@ namespace BExplorer.Shell
 			IntPtr treeHandle = m_TreeView.Handle;
 			IntPtr firstChildhandle = node.Nodes[0].Handle;
 			//ThreadPool.QueueUserWorkItem(unused => 
-			Thread myThread = new Thread(delegate(){
-				SetNodeImage(nodeHandle, sho, treeHandle);
-
-				if (!sho.HasSubFolders)
-				{
-					User32.SendMessage(treeHandle, BExplorer.Shell.Interop.MSG.TVM_DELETEITEM, 0, firstChildhandle);
-					Application.DoEvents();
-				}
-			});
-			myThread.Start();
+			
 
 		
 				
@@ -783,42 +775,117 @@ namespace BExplorer.Shell
 			}
 		}
 
+		BackgroundWorker bg = new BackgroundWorker();
 		void m_TreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
 		{
 			try
 			{
+				var treeHandle = m_TreeView.Handle;
+				TreeNodeCollection eNodeNodes = e.Node.Nodes;
 				CreateChildren(e.Node);
-				
-					//foreach (TreeNode item in e.Node.Nodes)
-					//{
-					//		Task.Run(() =>
-					//		{
-					//			SetNodeImage(item.Handle, item.Tag as ShellItem, m_TreeView.Handle);
-					//			Thread.Sleep(1);
-					//			Application.DoEvents();
-					//		});
-					//
-					//	Task.Run(() =>
-					//	{
-					//		var sho = item.Tag as ShellItem;
-					//		if (sho.Count(c => c.IsFolder) == 0)
-					//		{
-					//			m_TreeView.BeginInvoke(new MethodInvoker(() =>
-					//			{
+				Thread myThread = new Thread(delegate()
+						{
+							try
+							{
 
-					//				item.Nodes.Clear();
-					//			}));
-					//		}
-					//		Thread.Sleep(1);
-					//		Application.DoEvents();
-					//	});
-					//}
+								foreach (TreeNode item in eNodeNodes)
+								{
+									//if (!item.IsVisible)
+									//	break;
+									Application.DoEvents();
+									Thread.Sleep(5);
+									try
+									{
+										ShellItem sho = item.Tag as ShellItem;
+										var firstChildhandle = item.Nodes[0].Handle;
+										SetNodeImage(item.Handle, sho, treeHandle);
+
+										if (!sho.HasSubFolders)
+										{
+											User32.SendMessage(treeHandle, BExplorer.Shell.Interop.MSG.TVM_DELETEITEM, 0, firstChildhandle);
+										}
+									}
+									catch (Exception)
+									{
+
+									}
+
+									//		Task.Run(() =>
+									//		{
+									//			SetNodeImage(item.Handle, item.Tag as ShellItem, m_TreeView.Handle);
+									//			Thread.Sleep(1);
+									//			Application.DoEvents();
+									//		});
+									//
+									//	Task.Run(() =>
+									//	{
+									//		var sho = item.Tag as ShellItem;
+									//		if (sho.Count(c => c.IsFolder) == 0)
+									//		{
+									//			m_TreeView.BeginInvoke(new MethodInvoker(() =>
+									//			{
+
+									//				item.Nodes.Clear();
+									//			}));
+									//		}
+									//		Thread.Sleep(1);
+									//		Application.DoEvents();
+									//	});
+								}
+							}
+							catch (Exception)
+							{
+
+							}
+						});
+				myThread.IsBackground = true;
+				myThread.Priority = ThreadPriority.BelowNormal;
+				myThread.Start();
+				bg.DoWork += bg_DoWork;
+				//bg.RunWorkerAsync(eNodeNodes);
 				
 			}
 			catch (Exception)
 			{
 				e.Cancel = true;
 			}
+		}
+
+		IntPtr TreeHandle;
+		void bg_DoWork(object sender, DoWorkEventArgs e)
+		{
+			var nodes = e.Argument as TreeNodeCollection;
+						try
+						{
+
+							foreach (TreeNode item in nodes)
+							{
+								//if (!item.IsVisible)
+								//	break;
+								Application.DoEvents();
+								Thread.Sleep(5);
+								try
+								{
+									ShellItem sho = item.Tag as ShellItem;
+									var firstChildhandle = item.Nodes[0].Handle;
+									SetNodeImage(item.Handle, sho, TreeHandle);
+
+									if (!sho.HasSubFolders)
+									{
+										item.Nodes.Clear();//User32.SendMessage(treeHandle, BExplorer.Shell.Interop.MSG.TVM_DELETEITEM, 0, firstChildhandle);
+									}
+								}
+								catch (Exception)
+								{
+
+								}
+							}
+						}
+						catch (Exception)
+						{
+
+						}
+
 		}
 
 		void m_TreeView_ItemDrag(object sender, ItemDragEventArgs e)

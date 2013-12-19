@@ -3315,13 +3315,6 @@ namespace BetterExplorer
 			//FIXME: fix the event
 			//LayoutUpdated += Window_LayoutUpdated;
 
-
-
-			
-
-			
-			
-
 			// prepares RTL mode
 			if (rtlused == "true")
 			{
@@ -3332,10 +3325,10 @@ namespace BetterExplorer
 				FlowDirection = System.Windows.FlowDirection.LeftToRight;
 			}
 
-            if (rtlset == true)
-            {
-                rtlused = "notset";
-            }
+      if (rtlset == true)
+      {
+          rtlused = "notset";
+      }
 
 			// sets tab bar alignment
 			if (tabba == "top")
@@ -3402,7 +3395,7 @@ namespace BetterExplorer
     {
         ShellListView.Navigated += ShellListView_Navigated;
         ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
-		ShellListView.SelectionChanged += ShellListView_SelectionChanged;
+				ShellListView.SelectionChanged += ShellListView_SelectionChanged;
         ShellListView.LostFocus += ShellListView_LostFocus;
         ShellListView.GotFocus += ShellListView_GotFocus;
         ////ShellListView.LVItemsColorCodes = this.LVItemsColor;
@@ -3446,7 +3439,6 @@ namespace BetterExplorer
         {
             breadcrumbBarControl1.ExitEditMode();
         }
-        //throw new NotImplementedException();
     }
 
     void ShellListView_LostFocus(object sender, EventArgs e)
@@ -3471,13 +3463,9 @@ namespace BetterExplorer
 						{
 							// set up buttons
 							SetupUIOnSelectOrNavigate(explorerSelectedItemsCount);
-
-
 						}
 						catch (Exception)
 						{
-
-
 						}
 
 					}));
@@ -3629,8 +3617,8 @@ namespace BetterExplorer
         IsNavigationPaneEnabled = (NavigationPaneEnabled == 1);
         btnNavigationPane.IsChecked = IsNavigationPaneEnabled;
 
-        //isCheckModeEnabled = ShellListView.ShowCheckboxes;
-        //chkShowCheckBoxes.IsChecked = isCheckModeEnabled;
+        isCheckModeEnabled = ShellListView.ShowCheckboxes;
+        chkShowCheckBoxes.IsChecked = isCheckModeEnabled;
 
         int ExFileOpEnabled = (int)rks.GetValue(@"FileOpExEnabled", 0);
 
@@ -3906,7 +3894,7 @@ namespace BetterExplorer
 			ShellTreeHost.Child = ShellTree;
 			ShellViewHost.Child = ShellListView;
 
-			//ShellTree.ShellView = ShellListView;
+			ShellTree.ShellView = ShellListView;
 			//ShellListView.LVItemsColorCodes = LVItemsColor;
 			//ShellListView.subclassed = new ShellDeffViewSubClassedWindow(IntPtr.Zero, ShellListView.ShellListViewHandle, ShellListView);
 			//ShellListView.subclassed.AssignHandle(ShellListView.m_ShellViewWindow);
@@ -6530,7 +6518,7 @@ namespace BetterExplorer
 
 		private void chkShowCheckBoxes_Checked(object sender, RoutedEventArgs e)
 		{
-      //ShellListView.ShowCheckboxes = true;
+      ShellListView.ShowCheckboxes = true;
 			this.isCheckModeEnabled = true;
       ShellListView.RefreshContents();
 
@@ -6539,7 +6527,7 @@ namespace BetterExplorer
 		private void chkShowCheckBoxes_Unchecked(object sender, RoutedEventArgs e)
 		{
 
-      //ShellListView.ShowCheckboxes = false;
+      ShellListView.ShowCheckboxes = false;
 			this.isCheckModeEnabled = false;
       ShellListView.RefreshContents();
 
