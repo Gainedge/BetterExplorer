@@ -3965,6 +3965,7 @@ namespace BetterExplorer
             WindowsAPI.SHELLSTATE statef = new WindowsAPI.SHELLSTATE();
             WindowsAPI.SHGetSetSettings(ref statef, WindowsAPI.SSF.SSF_SHOWALLOBJECTS | WindowsAPI.SSF.SSF_SHOWEXTENSIONS, false);
             chkHiddenFiles.IsChecked = (statef.fShowAllObjects == 1);
+						ShellListView.ShowHidden = chkHiddenFiles.IsChecked.Value;
             chkExtensions.IsChecked = (statef.fShowExtensions == 1);
             IsCalledFromLoading = false;
 
@@ -5582,7 +5583,7 @@ namespace BetterExplorer
 									WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
 									state.fShowAllObjects = 1;
 									WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
-									ShellListView.RefreshContents();
+									ShellListView.ShowHidden = true;
 									ShellTree.RefreshContents();
 								}
 				));
@@ -5600,7 +5601,7 @@ namespace BetterExplorer
 									WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
 									state.fShowAllObjects = 0;
 									WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
-									ShellListView.RefreshContents();
+									ShellListView.ShowHidden = false;
 									ShellTree.RefreshContents();
 								}
 				));

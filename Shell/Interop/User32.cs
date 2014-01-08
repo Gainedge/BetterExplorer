@@ -172,6 +172,7 @@ namespace BExplorer.Shell.Interop
         HDM_SETITEM = HDM_FIRST + 12,
 				LVM_GETSELECTEDCOUNT = (FIRST + 50),
 				TVM_DELETEITEM = (0x1100 + 1),
+			  LVM_SETICONSPACING = FIRST + 53,
     }
 
 		public enum LV_VIEW : int
