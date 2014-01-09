@@ -17,6 +17,7 @@
 // Boston, MA 2110-1301, USA.
 //
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -84,16 +85,6 @@ namespace BExplorer.Shell.Interop
         COMMON_OEM_LINKS = 0x003a,
         CDBURN_AREA = 0x003b,
         COMPUTERSNEARME = 0x003d,
-    }
-
-    public enum ERROR
-    {
-        SUCCESS,
-        FILE_EXISTS = 80,
-        BAD_PATHNAME = 161,
-        ALREADY_EXISTS = 183,
-        FILENAME_EXCED_RANGE = 206,
-        CANCELLED = 1223,
     }
 
     public enum FFFP_MODE
@@ -317,6 +308,16 @@ namespace BExplorer.Shell.Interop
 			NOTAKEFOCUS = 0x40000000
     }
 
+		public enum ERROR
+		{
+			SUCCESS,
+			FILE_EXISTS = 80,
+			BAD_PATHNAME = 161,
+			ALREADY_EXISTS = 183,
+			FILENAME_EXCED_RANGE = 206,
+			CANCELLED = 1223,
+		}
+
     public struct FOLDERSETTINGS
     {
         public FOLDERVIEWMODE ViewMode;
@@ -381,6 +382,7 @@ namespace BExplorer.Shell.Interop
 
     class Shell32
     {
+
         [DllImport("shell32.dll", EntryPoint = "#660")]
         public static extern bool FileIconInit(bool bFullInit);
 
@@ -683,6 +685,50 @@ namespace BExplorer.Shell.Interop
 
 				[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
 				internal static extern uint ILGetSize(IntPtr pidl);
+
+				/// <summary>
+				/// Formats a Drive
+				/// </summary>
+				/// <param name="hwnd"></param>
+				/// <param name="drive"></param>
+				/// <param name="fmtID"></param>
+				/// <param name="options"></param>
+				/// <returns></returns>
+				[DllImport("shell32.dll")]
+				private static extern uint SHFormatDrive(IntPtr hwnd, uint drive, SHFormatFlags fmtID,
+															 SHFormatOptions options);
+
+				public enum SHFormatFlags : uint
+				{
+					SHFMT_ID_DEFAULT = 0xFFFF,
+				}
+
+				[Flags]
+				public enum SHFormatOptions : uint
+				{
+					SHFMT_OPT_FULL = 0x1,
+					SHFMT_OPT_SYSONLY = 0x2,
+				}
+
+				public const uint SHFMT_ERROR = 0xFFFFFFFF;
+				public const uint SHFMT_CANCEL = 0xFFFFFFFE;
+				public const uint SHFMT_NOFORMAT = 0xFFFFFFD;
+
+				/// <summary>
+				/// Format a Drive by givven Drive letter
+				/// </summary>
+				/// <param name="DriveLetter">The Drive letter</param>
+				/// <returns>Error or Success Code</returns>
+				public static uint FormatDrive(IntPtr Handle, string DriveLetter)
+				{
+					DriveInfo drive = new DriveInfo(DriveLetter);
+					byte[] bytes = Encoding.ASCII.GetBytes(drive.Name.ToCharArray());
+					uint driveNumber = Convert.ToUInt32(bytes[0] - Encoding.ASCII.GetBytes(new[] { 'A' })[0]);
+					uint Result = SHFormatDrive(Handle, driveNumber, SHFormatFlags.SHFMT_ID_DEFAULT,
+							 SHFormatOptions.SHFMT_OPT_FULL);
+					return Result;
+				}
+
 
 				#region SSF
 				[Flags]

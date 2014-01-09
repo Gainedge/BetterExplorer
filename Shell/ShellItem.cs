@@ -501,6 +501,10 @@ namespace BExplorer.Shell
             yield break;
         }
 
+				public int GetItemIndexInCollection(ShellItem[] collection)
+				{
+					return Array.IndexOf(collection, this);
+				}
 				public Bitmap GetShellThumbnail(int Size, ShellThumbnailFormatOption format = ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption retrieve = ShellThumbnailRetrievalOption.Default)
 				{
 					this.Thumbnail.RetrievalOption = retrieve;
