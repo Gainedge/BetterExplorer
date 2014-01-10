@@ -473,7 +473,7 @@ namespace BExplorer.Shell.Interop
 			changenetrys[0] = changeentry;
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
-				SHCNF.SHCNF_TYPE | SHCNF.SHCNF_IDLIST,
+				SHCNF.SHCNF_TYPE | SHCNF.SHCNF_IDLIST | (SHCNF)SHCNRF.InterruptLevel | (SHCNF)SHCNRF.ShellLevel,
 				SHCNE.SHCNE_ALLEVENTS | SHCNE.SHCNE_INTERRUPT,
 				WM_SHNOTIFY,
 				1,

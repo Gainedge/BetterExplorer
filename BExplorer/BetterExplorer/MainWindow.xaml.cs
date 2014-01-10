@@ -299,7 +299,7 @@ namespace BetterExplorer
 
 		private void RibbonWindow_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			IsAfterRename = true;
+			IsRenameFromCreate = true;
 			if (breadcrumbBarControl1.IsInEditMode)
 				breadcrumbBarControl1.ExitEditMode();
 		}
@@ -821,24 +821,24 @@ namespace BetterExplorer
 		{
 			MenuItem mi = sender as MenuItem;
 			ShellItem SaveLoc = mi.Tag as ShellItem;
-			//FIXME: fix shellLibraries
-			//if (ShellListView.CurrentFolder.ParsingName.Contains(KnownFolders.Libraries.ParsingName) &&
-			//	ShellListView.CurrentFolder.ParsingName.EndsWith("library-ms"))
-			//{
-			//	ShellLibrary lib =
-			//		ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY), false);
-			//	lib.DefaultSaveFolder = SaveLoc.ParsingName;
-			//	lib.Close();
 
-			//}
-			//else if (ShellListView.SelectedItems[0].ParsingName.Contains(KnownFolders.Libraries.ParsingName))
-			//{
-			//	ShellLibrary lib =
-			//		ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY), false);
-			//	lib.DefaultSaveFolder = SaveLoc.ParsingName;
-			//	lib.Close();
+			if (ShellListView.CurrentFolder.ParsingName.Contains(KnownFolders.Libraries.ParsingName) &&
+				ShellListView.CurrentFolder.ParsingName.EndsWith("library-ms"))
+			{
+				ShellLibrary lib =
+					ShellLibrary.Load(ShellListView.CurrentFolder.DisplayName, false);
+				lib.DefaultSaveFolder = SaveLoc.ParsingName;
+				lib.Close();
 
-			//}
+			}
+			else if (ShellListView.SelectedItems[0].ParsingName.Contains(KnownFolders.Libraries.ParsingName))
+			{
+				ShellLibrary lib =
+					ShellLibrary.Load(ShellListView.SelectedItems[0].DisplayName, false);
+				lib.DefaultSaveFolder = SaveLoc.ParsingName;
+				lib.Close();
+
+			}
 		}
 
 		void Explorer_ExplorerGotFocus(object sender, EventArgs e)
@@ -847,7 +847,7 @@ namespace BetterExplorer
 			{
 				breadcrumbBarControl1.ExitEditMode();
 			}
-			IsAfterRename = false;
+			IsRenameFromCreate = false;
 			//ShellListView.IsRenameStarted = false;
 			
 		}
@@ -856,7 +856,7 @@ namespace BetterExplorer
 		{
 						//if (!backstage.IsOpen)
 						//    ShellListView.SetExplorerFocus();
-			IsAfterRename = false;
+			IsRenameFromCreate = false;
 		}
 
 		//FIXME: fix this
@@ -872,7 +872,7 @@ namespace BetterExplorer
 
 		void Explorer_RenameFinished(object sender, EventArgs e)
 		{
-			IsAfterRename = true;
+			IsRenameFromCreate = true;
 			IsAfterFolderCreate = false;
 			//ShellListView.IsRenameStarted = false;
 			breadcrumbBarControl1.ExitEditMode();
@@ -2004,7 +2004,7 @@ namespace BetterExplorer
 		// Rename
 		private void Button_Click_1(object sender, RoutedEventArgs e)
 		{
-			IsAfterRename = false;
+			IsRenameFromCreate = false;
 			//ShellListView.DoRename();
 		}
 
@@ -2102,7 +2102,7 @@ namespace BetterExplorer
 
 		string LastPath = "";
 		public bool IsCompartibleRename = false;
-		public bool IsAfterRename = false;
+		public bool IsRenameFromCreate = false;
 
 		// New Folder/Library
 		private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -2110,10 +2110,10 @@ namespace BetterExplorer
 			string path = "";
 
 			bool IsLib = false;
+			IsRenameFromCreate = true;
 			if (ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName)
 			{
-				//FIXME:
-		//    path = ShellListView.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString()).GetDisplayName(SIGDN.NORMALDISPLAY);
+		    path = ShellListView.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString()).DisplayName;
 				//AddToLog("Library created");
 				IsLib = true;
 			}
@@ -2131,7 +2131,7 @@ namespace BetterExplorer
 
 
 
-			IsAfterRename = false;
+			
 
 
 
@@ -2891,15 +2891,15 @@ namespace BetterExplorer
 
 		private string GetDefaultFolderfromLibrary(string library)
 		{
-			//try
-			//{
-			//	ShellLibrary lib = ShellLibrary.Load(library, true);
-			//	return lib.DefaultSaveFolder;
-			//}
-			//catch
-			//{
-			//	return library;
-			//}
+			try
+			{
+				ShellLibrary lib = ShellLibrary.Load(library, true);
+				return lib.DefaultSaveFolder;
+			}
+			catch
+			{
+				return library;
+			}
 			return "";
 		}
 
@@ -3363,6 +3363,7 @@ namespace BetterExplorer
 				ShellListView.LostFocus += ShellListView_LostFocus;
 				ShellListView.GotFocus += ShellListView_GotFocus;
 				ShellListView.LVItemsColorCodes = this.LVItemsColor;
+				ShellListView.ItemUpdated += ShellListView_ItemUpdated;
 				//ShellListView.SelectionChanged += ExplorerBrowserControl_SelectionChanged;
 				////ShellListView.NavigationComplete += Explorer_NavigationComplete;
 				//ShellListView.MouseWheel += Explorer_MouseWheel;
@@ -3395,6 +3396,15 @@ namespace BetterExplorer
 				//ShellListView.ContentOptions.CheckSelect = isCheckModeEnabled;
 				//ShellListView.Width = (int)ShellVView.ActualWidth;
 				//ShellListView.Height = (int)ShellVView.ActualHeight;
+		}
+
+		void ShellListView_ItemUpdated(object sender, ItemUpdatedEventArgs e)
+		{
+			if (e.UpdateType == ItemUpdateType.Created && IsRenameFromCreate)
+			{
+				ShellListView.RenameItem(e.NewItemIndex);
+				IsRenameFromCreate = false;
+			}
 		}
 
 		void ShellListView_GotFocus(object sender, EventArgs e)
@@ -4519,28 +4529,28 @@ namespace BetterExplorer
 								//MessageBox.Show("In Library");
 								try
 								{
-										//ShellLibrary lib =
-										//    ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
-										//IsFromSelectionOrNavigation = true;
-										//chkPinNav.IsChecked = lib.IsPinnedToNavigationPane;
-										//IsFromSelectionOrNavigation = false;
-										//foreach (ShellItem item in lib)
-										//{
-										//    MenuItem miItem = new MenuItem();
-										//    miItem.Header = item.GetDisplayName(SIGDN.NORMALDISPLAY);
-										//    miItem.Tag = item;
-										//    item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-										//    item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-										//    miItem.Icon = item.Thumbnail.BitmapSource;
-										//    miItem.GroupName = "GRDS1";
-										//    miItem.IsCheckable = true;
-										//    miItem.IsChecked = (item.ParsingName == lib.DefaultSaveFolder);
-										//    miItem.Click += new RoutedEventHandler(miItem_Click);
-										//    btnDefSave.Items.Add(miItem);
-										//}
+										ShellLibrary lib =
+										    ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
+										IsFromSelectionOrNavigation = true;
+										chkPinNav.IsChecked = lib.IsPinnedToNavigationPane;
+										IsFromSelectionOrNavigation = false;
+										foreach (ShellItem item in lib)
+										{
+										    MenuItem miItem = new MenuItem();
+										    miItem.Header = item.GetDisplayName(SIGDN.NORMALDISPLAY);
+										    miItem.Tag = item;
+										    item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+										    item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+										    miItem.Icon = item.Thumbnail.BitmapSource;
+										    miItem.GroupName = "GRDS1";
+										    miItem.IsCheckable = true;
+										    miItem.IsChecked = (item.ParsingName == lib.DefaultSaveFolder);
+										    miItem.Click += new RoutedEventHandler(miItem_Click);
+										    btnDefSave.Items.Add(miItem);
+										}
 
-										//btnDefSave.IsEnabled = !(lib.Count == 0);
-										//lib.Close();
+										btnDefSave.IsEnabled = !(lib.Count == 0);
+										lib.Close();
 								}
 								catch
 								{
@@ -5091,134 +5101,133 @@ namespace BetterExplorer
 
 		private void btnOLItem_Click(object sender, RoutedEventArgs e)
 		{
-			//FIXME:
-			//ShellLibrary lib = null;
-			//if (ShellListView.GetSelectedItemsCount() == 1)
-			//{
-			//	lib = ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			//}
-			//else
-			//{
-			//	lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			//}
-			//switch ((sender as MenuItem).Tag.ToString())
-			//{
-			//	case "gu":
-			//		lib.LibraryType = LibraryFolderType.Generic;
-			//		lib.Close();
-			//		break;
-			//	case "doc":
-			//		lib.LibraryType = LibraryFolderType.Documents;
-			//		lib.Close();
-			//		break;
-			//	case "pic":
-			//		lib.LibraryType = LibraryFolderType.Pictures;
-			//		lib.Close();
-			//		break;
-			//	case "vid":
-			//		lib.LibraryType = LibraryFolderType.Videos;
-			//		lib.Close();
-			//		break;
-			//	case "mu":
-			//		lib.LibraryType = LibraryFolderType.Music;
-			//		lib.Close();
-			//		break;
-			//	default:
-			//		break;
-			//}
+			ShellLibrary lib = null;
+			if (ShellListView.GetSelectedCount() == 1)
+			{
+				lib = ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY), false);
+			}
+			else
+			{
+				lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
+			}
+			switch ((sender as MenuItem).Tag.ToString())
+			{
+				case "gu":
+					lib.LibraryType = LibraryFolderType.Generic;
+					lib.Close();
+					break;
+				case "doc":
+					lib.LibraryType = LibraryFolderType.Documents;
+					lib.Close();
+					break;
+				case "pic":
+					lib.LibraryType = LibraryFolderType.Pictures;
+					lib.Close();
+					break;
+				case "vid":
+					lib.LibraryType = LibraryFolderType.Videos;
+					lib.Close();
+					break;
+				case "mu":
+					lib.LibraryType = LibraryFolderType.Music;
+					lib.Close();
+					break;
+				default:
+					break;
+			}
 		}
 
 		private void chkPinNav_Checked(object sender, RoutedEventArgs e)
 		{
-			//ShellLibrary lib = null;
-			//if (ShellListView.GetSelectedItemsCount() == 1)
-			//{
-			//	lib = ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			//}
-			//else
-			//{
-			//	lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			//}
-			//if (!IsFromSelectionOrNavigation)
-			//{
-			//	lib.IsPinnedToNavigationPane = true;
-			//}
+			ShellLibrary lib = null;
+			if (ShellListView.GetSelectedCount() == 1)
+			{
+				lib = ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY), false);
+			}
+			else
+			{
+				lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
+			}
+			if (!IsFromSelectionOrNavigation)
+			{
+				lib.IsPinnedToNavigationPane = true;
+			}
 
-			//lib.Close();
+			lib.Close();
 		}
 
 		private void chkPinNav_Unchecked(object sender, RoutedEventArgs e)
 		{
-			//ShellLibrary lib = null;
-			//if (ShellListView.GetSelectedItemsCount() == 1)
-			//{
-			//	lib = ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			//}
-			//else
-			//{
-			//	lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			//}
-			//if (!IsFromSelectionOrNavigation)
-			//{
-			//	lib.IsPinnedToNavigationPane = false;
-			//}
+			ShellLibrary lib = null;
+			if (ShellListView.GetSelectedCount() == 1)
+			{
+				lib = ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY), false);
+			}
+			else
+			{
+				lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
+			}
+			if (!IsFromSelectionOrNavigation)
+			{
+				lib.IsPinnedToNavigationPane = false;
+			}
 
-			//lib.Close();
+			lib.Close();
 		}
 
 		private void btnChangeLibIcon_Click(object sender, RoutedEventArgs e)
 		{
-		//	IconView iv = new IconView();
+			IconView iv = new IconView();
 
-		//	iv.LoadIcons(Explorer, true);
+			iv.LoadIcons(ShellListView, true);
 		}
 
 		private void btnManageLib_Click(object sender, RoutedEventArgs e)
 		{
-			//try
-			//{
-			//	ShellLibrary.ShowManageLibraryUI(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY),
-			//		this.Handle, "Choose which folders will be in this library", "A library gathers content from all of the folders listed below and puts it all in one window for you to see.", true);
-			//}
-			//catch
-			//{
+			try
+			{
+				ShellLibrary.ShowManageLibraryUI(ShellListView.SelectedItems[0].DisplayName,
+					this.Handle, "Choose which folders will be in this library", "A library gathers content from all of the folders listed below and puts it all in one window for you to see.", true);
+			}
+			catch
+			{
 
-			//	ShellLibrary.ShowManageLibraryUI(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY),
-			//		this.Handle, "Choose which folders will be in this library", "A library gathers content from all of the folders listed below and puts it all in one window for you to see.", true);
-			//}
+				ShellLibrary.ShowManageLibraryUI(ShellListView.CurrentFolder.DisplayName,
+					this.Handle, "Choose which folders will be in this library", "A library gathers content from all of the folders listed below and puts it all in one window for you to see.", true);
+			}
 		}
 
 		private void Button_Click_3(object sender, RoutedEventArgs e)
 		{
-			//TaskDialog td = new TaskDialog();
-			//td.Caption = "Reset Library";
-			//td.Icon = TaskDialogStandardIcon.Warning;
-			//td.Text = "Click \"OK\" to reset currently selected library properties";
-			//td.InstructionText = "Reset Library Properties?";
-			//td.FooterIcon = TaskDialogStandardIcon.Information;
-			////td.FooterText = "This will reset all the properties to default properties for library type";
-			//td.DetailsCollapsedLabel = "More info";
-			//td.DetailsExpandedLabel = "More Info";
-			//td.DetailsExpandedText = "This will reset all the properties to default properties for library type";
-			//td.DetailsExpanded = false;
-			//td.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter;
-			//td.StandardButtons = TaskDialogStandardButtons.Ok | TaskDialogStandardButtons.Cancel;
-			//td.OwnerWindowHandle = this.Handle;
-			//if (td.Show() == TaskDialogResult.Ok)
-			//{
-			//	if (ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "documents" &&
-			//		ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "music" &&
-			//		ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "videos" &&
-			//		ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "pictures")
-			//	{
-			//		ShellLibrary lib = ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY),
-			//					false);
-			//		lib.IsPinnedToNavigationPane = true;
-			//		lib.LibraryType = LibraryFolderType.Generic;
-			//		lib.IconResourceId = new IconReference(@"C:\Windows\System32\imageres.dll", 187);
-			//		lib.Close();
-			//	}
-			//}
+			TaskDialog td = new TaskDialog();
+			td.Caption = "Reset Library";
+			td.Icon = TaskDialogStandardIcon.Warning;
+			td.Text = "Click \"OK\" to reset currently selected library properties";
+			td.InstructionText = "Reset Library Properties?";
+			td.FooterIcon = TaskDialogStandardIcon.Information;
+			//td.FooterText = "This will reset all the properties to default properties for library type";
+			td.DetailsCollapsedLabel = "More info";
+			td.DetailsExpandedLabel = "More Info";
+			td.DetailsExpandedText = "This will reset all the properties to default properties for library type";
+			td.DetailsExpanded = false;
+			td.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter;
+			td.StandardButtons = TaskDialogStandardButtons.Ok | TaskDialogStandardButtons.Cancel;
+			td.OwnerWindowHandle = this.Handle;
+			if (td.Show() == TaskDialogResult.Ok)
+			{
+				if (ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "documents" &&
+					ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "music" &&
+					ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "videos" &&
+					ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "pictures")
+				{
+					ShellLibrary lib = ShellLibrary.Load(ShellListView.SelectedItems[0].DisplayName,
+								false);
+					lib.IsPinnedToNavigationPane = true;
+					lib.LibraryType = LibraryFolderType.Generic;
+					lib.IconResourceId = new IconReference(@"C:\Windows\System32\imageres.dll", 187);
+					lib.Close();
+				}
+			}
 		}
 
 		#endregion
@@ -6256,14 +6265,14 @@ namespace BetterExplorer
 		#region Folder Tools Commands
 		private void btnChangeFoldericon_Click(object sender, RoutedEventArgs e)
 		{
-			//IconView iv = new IconView();
+			IconView iv = new IconView();
 
-			//iv.LoadIcons(Explorer, false);
+			iv.LoadIcons(this.ShellListView, false);
 		}
 
 		private void btnClearFoldericon_Click(object sender, RoutedEventArgs e)
 		{
-			//ShellListView.ClearFolderIcon(ShellListView.SelectedItems[0].ParsingName);
+			ShellListView.ClearFolderIcon(ShellListView.SelectedItems[0].ParsingName);
 		}
 		#endregion
 
@@ -9736,20 +9745,20 @@ namespace BetterExplorer
 
 				void mln_Click(object sender, RoutedEventArgs e)
 				{
-						//ShellLibrary lib = ShellListView.CreateNewLibrary(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY));
-						//if (ShellListView.SelectedItems[0].IsFolder)
-						//{
-						//    lib.Add(ShellListView.SelectedItems[0].ParsingName);
-						//}
+						ShellLibrary lib = ShellListView.CreateNewLibrary(ShellListView.SelectedItems[0].DisplayName);
+						if (ShellListView.SelectedItems[0].IsFolder)
+						{
+						    lib.Add(ShellListView.SelectedItems[0].ParsingName);
+						}
 				}
 
 				void mli_Click(object sender, RoutedEventArgs e)
 				{
-					//ShellLibrary lib = ShellLibrary.Load(((ShellItem)(sender as Fluent.MenuItem).Tag).GetDisplayName(SIGDN.NORMALDISPLAY),false);
-					//  if (ShellListView.SelectedItems[0].IsFolder)
-					//  {
-					//      lib.Add(ShellListView.SelectedItems[0].ParsingName);
-					//  }
+					ShellLibrary lib = ShellLibrary.Load(((ShellItem)(sender as Fluent.MenuItem).Tag).DisplayName,false);
+					  if (ShellListView.SelectedItems[0].IsFolder)
+					  {
+					      lib.Add(ShellListView.SelectedItems[0].ParsingName);
+					  }
 				}
 
 				private void btnEasyAccess_DropDownOpened(object sender, EventArgs e)
@@ -9760,13 +9769,13 @@ namespace BetterExplorer
 
 								foreach (ShellItem lib in KnownFolders.Libraries)
 								{
-										//Fluent.MenuItem mli = new MenuItem();
-										//mli.Header = lib.GetDisplayName(SIGDN.NORMALDISPLAY);
-										//lib.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-										//mli.Icon = lib.Thumbnail.BitmapSource;
-										//mli.Tag = ShellLibrary.FromParsingName(lib.ParsingName);
-										//mli.Click += mli_Click;
-										//mnuIncludeInLibrary.Items.Add(mli);
+										Fluent.MenuItem mli = new MenuItem();
+										mli.Header = lib.GetDisplayName(SIGDN.NORMALDISPLAY);
+										lib.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+										mli.Icon = lib.Thumbnail.BitmapSource;
+										mli.Tag = ShellLibrary.Load(Path.GetFileNameWithoutExtension(lib.ParsingName), true);
+										mli.Click += mli_Click;
+										mnuIncludeInLibrary.Items.Add(mli);
 								}
 
 								mnuIncludeInLibrary.Items.Add(new Separator());

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -82,6 +83,24 @@ namespace BExplorer.Shell.Interop
 			graphics.DrawImage(img, new Rectangle(0, 0, bmp.Width, bmp.Height), 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, imgAttribute);
 			graphics.Dispose();   // Releasing all resource used by graphics
 			return bmp;
+		}
+		internal static string GetParsingName(IShellItem shellItem)
+		{
+			if (shellItem == null) { return null; }
+
+			string path = null;
+
+			IntPtr pszPath = shellItem.GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING);
+
+			if (pszPath != IntPtr.Zero)
+			{
+				path = Marshal.PtrToStringAuto(pszPath);
+				Marshal.FreeCoTaskMem(pszPath);
+				pszPath = IntPtr.Zero;
+			}
+
+			return path;
+
 		}
 	}
 }

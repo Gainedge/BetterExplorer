@@ -56,6 +56,13 @@ namespace BExplorer.Shell.Interop
 		internal const string IPropertyEnumTypeList = "A99400F4-3D84-4557-94BA-1242FB2CC9A6";
 		internal const string IPropertyStoreCapabilities = "c8e2d566-186e-4d49-bf41-6909ead56acc";
 
+		internal const string FileOpenDialog = "DC1C5A9C-E88A-4DDE-A5A1-60F82A20AEF7";
+		internal const string FileSaveDialog = "C0B4E2F3-BA21-4773-8DBA-335EC946EB8B";
+		internal const string ShellLibrary = "D9B3211D-E57F-4426-AAEF-30A806ADD397";
+		internal const string SearchFolderItemFactory = "14010e02-bbbd-41f0-88e3-eda371216584";
+		internal const string ConditionFactory = "E03E85B0-7BE3-4000-BA98-6C13DE9FA486";
+		internal const string QueryParserManager = "5088B39A-29B4-4d9d-8245-4EE289222F66";
+
 		internal const string ICondition = "0FC988D4-C935-4b97-A973-46282EA175C8";
 		internal const string ISearchFolderItemFactory = "a0ffbc28-5482-4366-be27-3e81e78e06c2";
 		internal const string IConditionFactory = "A5EFE073-B16F-474f-9F3E-9F8B497A3E08";
@@ -66,6 +73,15 @@ namespace BExplorer.Shell.Interop
 		internal const string IQuerySolution = "D6EBC66B-8921-4193-AFDD-A1789FB7FF57";
 		internal const string IQueryParser = "2EBDEE67-3505-43f8-9946-EA44ABC8E5B0";
 		internal const string IQueryParserManager = "A879E3C4-AF77-44fb-8F37-EBD1487CF920";
+
+
+		internal const string GenericLibrary = "5c4f28b5-f869-4e84-8e60-f11db97c5cc7";
+		internal const string DocumentsLibrary = "7d49d726-3c21-4f05-99aa-fdc2c9474656";
+		internal const string MusicLibrary = "94d6ddcc-4a68-4175-a374-bd584a510b78";
+		internal const string PicturesLibrary = "b3690e58-e961-423b-b687-386ebfd83239";
+		internal const string VideosLibrary = "5fa96407-7e77-483c-ac93-691d05850de8";
+
+		internal const string Libraries = "1B3EA5DC-B587-4786-B4EF-BD1DC332AEAE";
 
 	}
 

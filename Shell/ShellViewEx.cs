@@ -137,6 +137,30 @@ namespace BExplorer.Shell
 		}
 	}
 
+	public enum ItemUpdateType
+	{
+		Renamed,
+		Created,
+		Deleted,
+		Updated
+	}
+
+	public class ItemUpdatedEventArgs : EventArgs
+	{
+		public ItemUpdateType UpdateType { get; private set;}
+		public ShellItem PreviousItem { get; private set; }
+		public ShellItem NewItem { get; private set; }
+
+		public int NewItemIndex { get; private set; }
+		public ItemUpdatedEventArgs(ItemUpdateType type, ShellItem newItem, ShellItem previousItem, int index)
+		{
+			this.UpdateType = type;
+			this.NewItem = newItem;
+			this.PreviousItem = previousItem;
+			this.NewItemIndex = index;
+		}
+	}
+
 	public partial class ShellView : UserControl
 	{
 
@@ -243,6 +267,8 @@ namespace BExplorer.Shell
 		/// a limitation in the underlying windows control.
 		/// </remarks>
 		public event EventHandler SelectionChanged;
+
+		public event EventHandler<ItemUpdatedEventArgs> ItemUpdated;
 
 		public event EventHandler<ViewChangedEventArgs> ViewStyleChanged;
 
@@ -507,11 +533,11 @@ namespace BExplorer.Shell
 				{
 					if (this.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
 					{
-						//ShellLibrary lib =
-						//		ShellLibrary.Load(NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default), true);
-						//name = String.Format("{0}\\New Folder ({1})",
-						//		lib.DefaultSaveFolder, ++suffix);
-						//lib.Close();
+						ShellLibrary lib =
+								ShellLibrary.Load(this.CurrentFolder.DisplayName, true);
+						name = String.Format("{0}\\New Folder ({1})",
+								lib.DefaultSaveFolder, ++suffix);
+						lib.Close();
 					}
 					else
 						name = String.Format("{0}\\New Folder ({1})",
@@ -548,11 +574,11 @@ namespace BExplorer.Shell
 				{
 					if (this.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
 					{
-						//ShellLibrary lib =
-						//		ShellLibrary.Load(NavigationLog.CurrentLocation.GetDisplayName(DisplayNameType.Default), true);
-						//endname = String.Format("{0}\\" + name + " ({1})",
-						//		lib.DefaultSaveFolder, ++suffix);
-						//lib.Close();
+						ShellLibrary lib =
+								ShellLibrary.Load(this.CurrentFolder.DisplayName, true);
+						endname = String.Format("{0}\\" + name + " ({1})",
+								lib.DefaultSaveFolder, ++suffix);
+						lib.Close();
 					}
 					else
 						endname = String.Format("{0}\\" + name + " ({1})",
@@ -576,6 +602,131 @@ namespace BExplorer.Shell
 					throw new IOException("The filename is too long");
 			}
 			return endname;
+		}
+
+		public ShellLibrary CreateNewLibrary()
+		{
+			//      string name = "New Library";
+			//      int suffix = 0;
+			//      ShellLibrary lib = null;
+			//      try
+			//      {
+			//              lib = ShellLibrary.Load(name, true);
+			//      }
+			//      catch
+			//      {
+			////TODO: add log here
+			//      }
+			//      if (lib != null)
+			//      {
+			//          do
+			//          {
+			//              name = String.Format("New Library ({0})",
+			//                      ++suffix);
+			//              try
+			//              {
+			//                      lib = ShellLibrary.Load(name, true);
+			//              }
+			//              catch
+			//              {
+			//                      lib = null;
+			//              }
+			//          } while (lib != null); 
+			//      }
+
+			//      ShellLibrary libcreate = new ShellLibrary(name, false);
+
+			//      return libcreate.GetDisplayName(DisplayNameType.Default);
+			return CreateNewLibrary("New Library");
+		}
+
+		public ShellLibrary CreateNewLibrary(string name)
+		{
+			string endname = name;
+			int suffix = 0;
+			ShellLibrary lib = null;
+			try
+			{
+				lib = ShellLibrary.Load(endname, true);
+			}
+			catch
+			{
+
+			}
+			if (lib != null)
+			{
+				do
+				{
+					endname = String.Format(name + "({0})",
+							++suffix);
+					try
+					{
+						lib = ShellLibrary.Load(endname, true);
+					}
+					catch
+					{
+						lib = null;
+					}
+				} while (lib != null);
+			}
+
+			return new ShellLibrary(endname, false);
+
+			//return libcreate.GetDisplayName(DisplayNameType.Default);
+		}
+
+		public HResult SetFolderIcon(string wszPath, string wszExpandedIconPath, int iIcon)
+		{
+			HResult hr;
+
+			Shell32.LPSHFOLDERCUSTOMSETTINGS fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS();
+			fcs.dwSize = (uint)Marshal.SizeOf(fcs);
+			fcs.dwMask = Shell32.FCSM_ICONFILE;
+			fcs.pszIconFile = wszExpandedIconPath.Replace(@"\\", @"\");
+			fcs.cchIconFile = 0;
+			fcs.iIconIndex = iIcon;
+
+			// Set the folder icon
+			hr = Shell32.SHGetSetFolderCustomSettings(ref fcs, wszPath.Replace(@"\\", @"\"), Shell32.FCS_FORCEWRITE);
+
+			if (hr == HResult.S_OK)
+			{
+				// Update the icon cache
+				SHFILEINFO sfi = new SHFILEINFO();
+				Shell32.SHGetFileInfo(Marshal.StringToHGlobalAuto(wszPath.Replace(@"\\", @"\")), 0, out sfi, (int)Marshal.SizeOf(sfi), SHGFI.ICONLOCATION);
+				int iIconIndex = Shell32.Shell_GetCachedImageIndex(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0);
+				Shell32.SHUpdateImage(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0, iIconIndex);
+				//RefreshExplorer();
+				Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEIMAGE,
+				Shell32.HChangeNotifyFlags.SHCNF_DWORD | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, IntPtr.Zero,
+					(IntPtr)sfi.iIcon);
+			}
+
+			this.RefreshItem(Items.IndexOf(Items.Single(s => s.ParsingName == wszPath)));
+			return hr;
+		}
+
+		public HResult ClearFolderIcon(string wszPath)
+		{
+			HResult hr;
+
+			Shell32.LPSHFOLDERCUSTOMSETTINGS fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS();
+			fcs.dwSize = (uint)Marshal.SizeOf(fcs);
+			fcs.dwMask = Shell32.FCSM_ICONFILE;
+			hr = Shell32.SHGetSetFolderCustomSettings(ref fcs, wszPath, Shell32.FCS_FORCEWRITE);
+			if (hr == HResult.S_OK)
+			{
+				// Update the icon cache
+				SHFILEINFO sfi = new SHFILEINFO();
+				Shell32.SHGetFileInfo(Marshal.StringToHGlobalAuto(wszPath.Replace(@"\\", @"\")), 0, out sfi, (int)Marshal.SizeOf(sfi), SHGFI.ICONLOCATION);
+				int iIconIndex = Shell32.Shell_GetCachedImageIndex(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0);
+				Shell32.SHUpdateImage(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0, iIconIndex);
+				Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEIMAGE,
+				Shell32.HChangeNotifyFlags.SHCNF_DWORD | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, IntPtr.Zero,
+					(IntPtr)sfi.iIcon);
+			}
+			this.RefreshItem(Items.IndexOf(Items.Single(s => s.ParsingName == wszPath)));
+			return hr;
 		}
 
 		public void DefragDrive()
@@ -1027,6 +1178,25 @@ namespace BExplorer.Shell
 			Navigate(this.CurrentFolder);
 		}
 
+		public void RefreshItem(int index)
+		{
+			if (cache.ContainsKey(index))
+			{
+				Bitmap bmp = null;
+				if (cache.TryRemove(index, out bmp))
+				{
+					bmp.Dispose();
+					bmp = null;
+				}
+			}
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
+		}
+
+		public void RenameItem(int index)
+		{
+			this.Focus();
+			var res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_EDITLABELW, index, 0);
+		}
 		public void RenameSelectedItem()
 		{
 			//User32.EnumChildWindows(this.LVHandle, RenameCallback, IntPtr.Zero);
@@ -1234,21 +1404,52 @@ namespace BExplorer.Shell
 			{
 				if (Notifications.NotificationReceipt(m.WParam, m.LParam))
 				{
-					var info = (NotifyInfos)Notifications.NotificationsReceived[Notifications.NotificationsReceived.Count - 1];
-					if (info.Notification == ShellNotifications.SHCNE.SHCNE_CREATE || info.Notification == ShellNotifications.SHCNE.SHCNE_MKDIR)
+					//var info = (NotifyInfos)Notifications.NotificationsReceived[Notifications.NotificationsReceived.Count - 1];
+					foreach (NotifyInfos info in Notifications.NotificationsReceived.ToArray())
 					{
-						var obj = new ShellItem(info.Item1);
-						if (Items.Count(w => w.ParsingName == obj.ParsingName) == 0)
+
+
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_CREATE || info.Notification == ShellNotifications.SHCNE.SHCNE_MKDIR)
 						{
-							Items.Add(obj);
+							var obj = new ShellItem(info.Item1);
+							if (Items.Count(w => w.ParsingName == obj.ParsingName) == 0 && !String.IsNullOrEmpty(obj.ParsingName))
+							{
+								Items.Add(obj);
+							}
+							User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+							if (this.ItemUpdated != null)
+								this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, this.Items.Count - 1));
+							Notifications.NotificationsReceived.Remove(info);
 						}
-						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-					}
-					if (info.Notification == ShellNotifications.SHCNE.SHCNE_DELETE || info.Notification == ShellNotifications.SHCNE.SHCNE_RMDIR)
-					{
-						var obj = new ShellItem(info.Item1);
-						Items.Remove(obj);
-						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_DELETE || info.Notification == ShellNotifications.SHCNE.SHCNE_RMDIR)
+						{
+							var obj = new ShellItem(info.Item1);
+							if (!String.IsNullOrEmpty(obj.ParsingName))
+							{
+								Items.Remove(Items.Single(s => s.ParsingName == obj.ParsingName));
+								User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+								if (this.ItemUpdated != null)
+									this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
+								Notifications.NotificationsReceived.Remove(info);
+							}
+						}
+
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER || info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEITEM)
+						{
+							var obj1 = new ShellItem(info.Item1);
+							var obj2 = new ShellItem(info.Item2);
+							if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName))
+							{
+								int itemIndex = Items.IndexOf(Items.Single(s => s.ParsingName == obj1.ParsingName));
+
+
+								Items[itemIndex] = obj2;
+								User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, itemIndex, 0);
+								if (this.ItemUpdated != null)
+									this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, itemIndex));
+								Notifications.NotificationsReceived.Remove(info);
+							}
+						}
 					}
 				}
 
@@ -1500,35 +1701,41 @@ namespace BExplorer.Shell
 												var thumbnail = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
 												if (thumbnail != null && IconSize != 16)
 												{
-
-													using (Graphics g = Graphics.FromHdc(hdc))
+													if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize)))
 													{
-
-														if (sho.IsHidden)
-															thumbnail = Helpers.ChangeOpacity(thumbnail, 0.5f);
-														g.DrawImageUnscaled(thumbnail, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - thumbnail.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height));
-
-														if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List)
+														ThumbnailsForCacheLoad.Enqueue(index);
+													}
+													else
+													{
+														using (Graphics g = Graphics.FromHdc(hdc))
 														{
-															var nItemState = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_STATEIMAGEMASK);
 
-															if ((int)User32.SendMessage(this.LVHandle, LVM.GETHOTITEM, 0, 0) == index || (int)nItemState == (2 << 12))
+															if (sho.IsHidden)
+																thumbnail = Helpers.ChangeOpacity(thumbnail, 0.5f);
+															g.DrawImageUnscaled(thumbnail, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - thumbnail.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height));
+
+															if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List)
 															{
-																var lvis = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_SELECTED);
-																var checkboxOffsetH = 14;
-																var checkboxOffsetV = 2;
-																if (View == ShellViewStyle.Tile || View == ShellViewStyle.SmallIcon)
-																	checkboxOffsetH = 2;
-																if (View == ShellViewStyle.Tile)
-																	checkboxOffsetV = 1;
+																var nItemState = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_STATEIMAGEMASK);
 
-																if (lvis != 0)
+																if ((int)User32.SendMessage(this.LVHandle, LVM.GETHOTITEM, 0, 0) == index || (int)nItemState == (2 << 12))
 																{
-																	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal);
-																}
-																else
-																{
-																	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal);
+																	var lvis = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_SELECTED);
+																	var checkboxOffsetH = 14;
+																	var checkboxOffsetV = 2;
+																	if (View == ShellViewStyle.Tile || View == ShellViewStyle.SmallIcon)
+																		checkboxOffsetH = 2;
+																	if (View == ShellViewStyle.Tile)
+																		checkboxOffsetV = 1;
+
+																	if (lvis != 0)
+																	{
+																		CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal);
+																	}
+																	else
+																	{
+																		CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal);
+																	}
 																}
 															}
 														}
@@ -1538,8 +1745,10 @@ namespace BExplorer.Shell
 												}
 												else
 												{
+													
 													if (((sho.GetIconType() & IExtractIconpwFlags.GIL_PERINSTANCE) == 0 && thumbnail == null) || IconSize == 16)
 													{
+														ThumbnailsForCacheLoad.Enqueue(index);
 														var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 														if (icon != null)
 														{
@@ -1668,11 +1877,6 @@ namespace BExplorer.Shell
 																}
 															}
 														}
-													}
-													if (thumbnail == null || ((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize)))
-													{
-														if (IconSize != 16)
-															ThumbnailsForCacheLoad.Enqueue(index);
 													}
 												}
 

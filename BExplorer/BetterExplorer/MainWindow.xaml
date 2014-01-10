@@ -298,11 +298,11 @@
                            FontSize="14"
                            FontStyle="Italic"
                            FontWeight="Bold" />
-                                        <Label Margin="20,0,40,0"
+                                        <!--<Label Margin="20,0,40,0"
                            Content="Alexey Barkalov"
                            FontSize="14"
                            FontStyle="Italic"
-                           FontWeight="Bold" />
+                           FontWeight="Bold" />-->
                                         <Ribbon:SeparatorTabItem Margin="0,20,50,0"
                                              Header="{DynamicResource lblAboutBEHeader}"
                                              Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />

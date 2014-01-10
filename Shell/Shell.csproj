@@ -63,12 +63,23 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="TAFactory.IconPack">
+      <HintPath>..\BExplorer\BetterExplorer\TAFactory.IconPack.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Icons\FileIcon.cs" />
+    <Compile Include="Icons\IconFile.cs" />
+    <Compile Include="Icons\IconReader.cs" />
+    <Compile Include="Icons\IconUtilities.cs" />
+    <Compile Include="Interop\IconReference.cs" />
+    <Compile Include="Interop\IShellLibrary.cs" />
+    <Compile Include="Interop\INativeShellLibrary.cs" />
     <Compile Include="Interop\CredUI.cs" />
     <Compile Include="Interop\Helpers.cs" />
     <Compile Include="Interop\ShellNotifications.cs" />
+    <Compile Include="Libraries\ShellLibrary.cs" />
     <Compile Include="SyncQueue.cs" />
     <Compile Include="Collumns.cs" />
     <Compile Include="Defaults.cs" />

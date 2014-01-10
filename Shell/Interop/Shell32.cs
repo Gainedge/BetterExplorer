@@ -26,76 +26,76 @@ using System.Text;
 namespace BExplorer.Shell.Interop
 {
 
-    public enum CSIDL
-    {
-        DESKTOP = 0x0000,
-        INTERNET = 0x0001,
-        PROGRAMS = 0x0002,
-        CONTROLS = 0x0003,
-        PRINTERS = 0x0004,
-        PERSONAL = 0x0005,
-        FAVORITES = 0x0006,
-        STARTUP = 0x0007,
-        RECENT = 0x0008,
-        SENDTO = 0x0009,
-        BITBUCKET = 0x000a,
-        STARTMENU = 0x000b,
-        MYDOCUMENTS = PERSONAL,
-        MYMUSIC = 0x000d,
-        MYVIDEO = 0x000e,
-        DESKTOPDIRECTORY = 0x0010,
-        DRIVES = 0x0011,
-        NETWORK = 0x0012,
-        NETHOOD = 0x0013,
-        FONTS = 0x0014,
-        TEMPLATES = 0x0015,
-        COMMON_STARTMENU = 0x0016,
-        COMMON_PROGRAMS = 0x0017,
-        COMMON_STARTUP = 0x0018,
-        COMMON_DESKTOPDIRECTORY = 0x0019,
-        APPDATA = 0x001a,
-        PRINTHOOD = 0x001b,
-        LOCAL_APPDATA = 0x001c,
-        ALTSTARTUP = 0x001d,
-        COMMON_ALTSTARTUP = 0x001e,
-        COMMON_FAVORITES = 0x001f,
-        INTERNET_CACHE = 0x0020,
-        COOKIES = 0x0021,
-        HISTORY = 0x0022,
-        COMMON_APPDATA = 0x0023,
-        WINDOWS = 0x0024,
-        SYSTEM = 0x0025,
-        PROGRAM_FILES = 0x0026,
-        MYPICTURES = 0x0027,
-        PROFILE = 0x0028,
-        SYSTEMX86 = 0x0029,
-        PROGRAM_FILESX86 = 0x002a,
-        PROGRAM_FILES_COMMON = 0x002b,
-        PROGRAM_FILES_COMMONX86 = 0x002c,
-        COMMON_TEMPLATES = 0x002d,
-        COMMON_DOCUMENTS = 0x002e,
-        COMMON_ADMINTOOLS = 0x002f,
-        ADMINTOOLS = 0x0030,
-        CONNECTIONS = 0x0031,
-        COMMON_MUSIC = 0x0035,
-        COMMON_PICTURES = 0x0036,
-        COMMON_VIDEO = 0x0037,
-        RESOURCES = 0x0038,
-        RESOURCES_LOCALIZED = 0x0039,
-        COMMON_OEM_LINKS = 0x003a,
-        CDBURN_AREA = 0x003b,
-        COMPUTERSNEARME = 0x003d,
-    }
+		public enum CSIDL
+		{
+				DESKTOP = 0x0000,
+				INTERNET = 0x0001,
+				PROGRAMS = 0x0002,
+				CONTROLS = 0x0003,
+				PRINTERS = 0x0004,
+				PERSONAL = 0x0005,
+				FAVORITES = 0x0006,
+				STARTUP = 0x0007,
+				RECENT = 0x0008,
+				SENDTO = 0x0009,
+				BITBUCKET = 0x000a,
+				STARTMENU = 0x000b,
+				MYDOCUMENTS = PERSONAL,
+				MYMUSIC = 0x000d,
+				MYVIDEO = 0x000e,
+				DESKTOPDIRECTORY = 0x0010,
+				DRIVES = 0x0011,
+				NETWORK = 0x0012,
+				NETHOOD = 0x0013,
+				FONTS = 0x0014,
+				TEMPLATES = 0x0015,
+				COMMON_STARTMENU = 0x0016,
+				COMMON_PROGRAMS = 0x0017,
+				COMMON_STARTUP = 0x0018,
+				COMMON_DESKTOPDIRECTORY = 0x0019,
+				APPDATA = 0x001a,
+				PRINTHOOD = 0x001b,
+				LOCAL_APPDATA = 0x001c,
+				ALTSTARTUP = 0x001d,
+				COMMON_ALTSTARTUP = 0x001e,
+				COMMON_FAVORITES = 0x001f,
+				INTERNET_CACHE = 0x0020,
+				COOKIES = 0x0021,
+				HISTORY = 0x0022,
+				COMMON_APPDATA = 0x0023,
+				WINDOWS = 0x0024,
+				SYSTEM = 0x0025,
+				PROGRAM_FILES = 0x0026,
+				MYPICTURES = 0x0027,
+				PROFILE = 0x0028,
+				SYSTEMX86 = 0x0029,
+				PROGRAM_FILESX86 = 0x002a,
+				PROGRAM_FILES_COMMON = 0x002b,
+				PROGRAM_FILES_COMMONX86 = 0x002c,
+				COMMON_TEMPLATES = 0x002d,
+				COMMON_DOCUMENTS = 0x002e,
+				COMMON_ADMINTOOLS = 0x002f,
+				ADMINTOOLS = 0x0030,
+				CONNECTIONS = 0x0031,
+				COMMON_MUSIC = 0x0035,
+				COMMON_PICTURES = 0x0036,
+				COMMON_VIDEO = 0x0037,
+				RESOURCES = 0x0038,
+				RESOURCES_LOCALIZED = 0x0039,
+				COMMON_OEM_LINKS = 0x003a,
+				CDBURN_AREA = 0x003b,
+				COMPUTERSNEARME = 0x003d,
+		}
 
-    public enum FFFP_MODE
-    {
-        EXACTMATCH,
-        NEARESTPARENTMATCH,
-    }
+		public enum FFFP_MODE
+		{
+				EXACTMATCH,
+				NEARESTPARENTMATCH,
+		}
 
-    [Flags]
-    public enum FOLDERFLAGS
-    {
+		[Flags]
+		public enum FOLDERFLAGS
+		{
 			AutoArrange = 0x00000001,
 			AbbreviatedNames = 0x00000002,
 			SnapToGrid = 0x00000004,
@@ -128,23 +128,23 @@ namespace BExplorer.Shell.Interop
 			SubsetGroups = 0x20000000,
 			UseSearchFolders = 0x40000000,
 			AllowRightToLeftReading = unchecked((int)0x80000000)
-    }
+		}
 
-    public enum FOLDERVIEWMODE : uint
-    {
-        FIRST = 1,
-        ICON = 1,
-        SMALLICON = 2,
-        LIST = 3,
-        DETAILS = 4,
-        THUMBNAIL = 5,
-        TILE = 6,
-        THUMBSTRIP = 7,
-        LAST = 7
-    }
+		public enum FOLDERVIEWMODE : uint
+		{
+				FIRST = 1,
+				ICON = 1,
+				SMALLICON = 2,
+				LIST = 3,
+				DETAILS = 4,
+				THUMBNAIL = 5,
+				TILE = 6,
+				THUMBSTRIP = 7,
+				LAST = 7
+		}
 
-    public enum SHCONTF
-    {
+		public enum SHCONTF
+		{
 			CHECKING_FOR_CHILDREN = 0x00010,
 			FOLDERS = 0x00020,
 			NONFOLDERS = 0x00040,
@@ -158,141 +158,141 @@ namespace BExplorer.Shell.Interop
 			SFLATLIST = 0x04000,
 			ENABLE_ASYNC = 0x08000,
 			INCLUDESUPERHIDDEN = 0x10000
-    }
+		}
 
-    [Flags]
-    public enum SFGAO : uint
-    {
-        CANCOPY = 0x00000001,
-        CANMOVE = 0x00000002,
-        CANLINK = 0x00000004,
-        STORAGE = 0x00000008,
-        CANRENAME = 0x00000010,
-        CANDELETE = 0x00000020,
-        HASPROPSHEET = 0x00000040,
-        DROPTARGET = 0x00000100,
-        CAPABILITYMASK = 0x00000177,
-        ENCRYPTED = 0x00002000,
-        ISSLOW = 0x00004000,
-        GHOSTED = 0x00008000,
-        LINK = 0x00010000,
-        SHARE = 0x00020000,
-        READONLY = 0x00040000,
-        HIDDEN = 0x00080000,
-        DISPLAYATTRMASK = 0x000FC000,
-        STREAM = 0x00400000,
-        STORAGEANCESTOR = 0x00800000,
-        VALIDATE = 0x01000000,
-        REMOVABLE = 0x02000000,
-        COMPRESSED = 0x04000000,
-        BROWSABLE = 0x08000000,
-        FILESYSANCESTOR = 0x10000000,
-        FOLDER = 0x20000000,
-        FILESYSTEM = 0x40000000,
-        HASSUBFOLDER = 0x80000000,
-        CONTENTSMASK = 0x80000000,
-        STORAGECAPMASK = 0x70C50008,
-    }
+		[Flags]
+		public enum SFGAO : uint
+		{
+				CANCOPY = 0x00000001,
+				CANMOVE = 0x00000002,
+				CANLINK = 0x00000004,
+				STORAGE = 0x00000008,
+				CANRENAME = 0x00000010,
+				CANDELETE = 0x00000020,
+				HASPROPSHEET = 0x00000040,
+				DROPTARGET = 0x00000100,
+				CAPABILITYMASK = 0x00000177,
+				ENCRYPTED = 0x00002000,
+				ISSLOW = 0x00004000,
+				GHOSTED = 0x00008000,
+				LINK = 0x00010000,
+				SHARE = 0x00020000,
+				READONLY = 0x00040000,
+				HIDDEN = 0x00080000,
+				DISPLAYATTRMASK = 0x000FC000,
+				STREAM = 0x00400000,
+				STORAGEANCESTOR = 0x00800000,
+				VALIDATE = 0x01000000,
+				REMOVABLE = 0x02000000,
+				COMPRESSED = 0x04000000,
+				BROWSABLE = 0x08000000,
+				FILESYSANCESTOR = 0x10000000,
+				FOLDER = 0x20000000,
+				FILESYSTEM = 0x40000000,
+				HASSUBFOLDER = 0x80000000,
+				CONTENTSMASK = 0x80000000,
+				STORAGECAPMASK = 0x70C50008,
+		}
 
-    [Flags]
-    public enum SHCIDS : uint
-    {
-        ALLFIELDS = 0x80000000,
-        CANONICALONLY = 0x10000000,
-        BITMASK = 0xFFFF0000,
-        COLUMNMASK = 0x0000FFFF,
-    }
+		[Flags]
+		public enum SHCIDS : uint
+		{
+				ALLFIELDS = 0x80000000,
+				CANONICALONLY = 0x10000000,
+				BITMASK = 0xFFFF0000,
+				COLUMNMASK = 0x0000FFFF,
+		}
 
-    public enum SHCNE : uint
-    {
-        RENAMEITEM = 0x00000001,
-        CREATE = 0x00000002,
-        DELETE = 0x00000004,
-        MKDIR = 0x00000008,
-        RMDIR = 0x00000010,
-        MEDIAINSERTED = 0x00000020,
-        MEDIAREMOVED = 0x00000040,
-        DRIVEREMOVED = 0x00000080,
-        DRIVEADD = 0x00000100,
-        NETSHARE = 0x00000200,
-        NETUNSHARE = 0x00000400,
-        ATTRIBUTES = 0x00000800,
-        UPDATEDIR = 0x00001000,
-        UPDATEITEM = 0x00002000,
-        SERVERDISCONNECT = 0x00004000,
-        UPDATEIMAGE = 0x00008000,
-        DRIVEADDGUI = 0x00010000,
-        RENAMEFOLDER = 0x00020000,
-        FREESPACE = 0x00040000,
-        EXTENDED_EVENT = 0x04000000,
-        ASSOCCHANGED = 0x08000000,
-        DISKEVENTS = 0x0002381F,
-        GLOBALEVENTS = 0x0C0581E0,
-        ALLEVENTS = 0x7FFFFFFF,
-        INTERRUPT = 0x80000000,
-    }
+		public enum SHCNE : uint
+		{
+				RENAMEITEM = 0x00000001,
+				CREATE = 0x00000002,
+				DELETE = 0x00000004,
+				MKDIR = 0x00000008,
+				RMDIR = 0x00000010,
+				MEDIAINSERTED = 0x00000020,
+				MEDIAREMOVED = 0x00000040,
+				DRIVEREMOVED = 0x00000080,
+				DRIVEADD = 0x00000100,
+				NETSHARE = 0x00000200,
+				NETUNSHARE = 0x00000400,
+				ATTRIBUTES = 0x00000800,
+				UPDATEDIR = 0x00001000,
+				UPDATEITEM = 0x00002000,
+				SERVERDISCONNECT = 0x00004000,
+				UPDATEIMAGE = 0x00008000,
+				DRIVEADDGUI = 0x00010000,
+				RENAMEFOLDER = 0x00020000,
+				FREESPACE = 0x00040000,
+				EXTENDED_EVENT = 0x04000000,
+				ASSOCCHANGED = 0x08000000,
+				DISKEVENTS = 0x0002381F,
+				GLOBALEVENTS = 0x0C0581E0,
+				ALLEVENTS = 0x7FFFFFFF,
+				INTERRUPT = 0x80000000,
+		}
 
-    public enum SHCNRF
-    {
-        InterruptLevel = 0x0001,
-        ShellLevel = 0x0002,
-        RecursiveInterrupt = 0x1000,
-        NewDelivery = 0x8000,
-    }
+		public enum SHCNRF
+		{
+				InterruptLevel = 0x0001,
+				ShellLevel = 0x0002,
+				RecursiveInterrupt = 0x1000,
+				NewDelivery = 0x8000,
+		}
 
-    [Flags]
-    enum SHGFI
-    {
-        ICON = 0x000000100,
-        DISPLAYNAME = 0x000000200,
-        TYPENAME = 0x000000400,
-        ATTRIBUTES = 0x000000800,
-        ICONLOCATION = 0x000001000,
-        EXETYPE = 0x000002000,
-        SYSICONINDEX = 0x000004000,
-        LINKOVERLAY = 0x000008000,
-        SELECTED = 0x000010000,
-        ATTR_SPECIFIED = 0x000020000,
-        LARGEICON = 0x000000000,
-        SMALLICON = 0x000000001,
-        OPENICON = 0x000000002,
-        SHELLICONSIZE = 0x000000004,
-        PIDL = 0x000000008,
-        USEFILEATTRIBUTES = 0x000000010,
-        ADDOVERLAYS = 0x000000020,
-        OVERLAYINDEX = 0x000000040
-    }
+		[Flags]
+		enum SHGFI
+		{
+				ICON = 0x000000100,
+				DISPLAYNAME = 0x000000200,
+				TYPENAME = 0x000000400,
+				ATTRIBUTES = 0x000000800,
+				ICONLOCATION = 0x000001000,
+				EXETYPE = 0x000002000,
+				SYSICONINDEX = 0x000004000,
+				LINKOVERLAY = 0x000008000,
+				SELECTED = 0x000010000,
+				ATTR_SPECIFIED = 0x000020000,
+				LARGEICON = 0x000000000,
+				SMALLICON = 0x000000001,
+				OPENICON = 0x000000002,
+				SHELLICONSIZE = 0x000000004,
+				PIDL = 0x000000008,
+				USEFILEATTRIBUTES = 0x000000010,
+				ADDOVERLAYS = 0x000000020,
+				OVERLAYINDEX = 0x000000040
+		}
 
-    public enum SHGNO
-    {
-        NORMAL = 0x0000,
-        INFOLDER = 0x0001,
-        FOREDITING = 0x1000,
-        FORADDRESSBAR = 0x4000,
-        FORPARSING = 0x8000,
-    }
+		public enum SHGNO
+		{
+				NORMAL = 0x0000,
+				INFOLDER = 0x0001,
+				FOREDITING = 0x1000,
+				FORADDRESSBAR = 0x4000,
+				FORPARSING = 0x8000,
+		}
 
-    public enum SICHINT : uint
-    {
-        DISPLAY = 0x00000000,
-        CANONICAL = 0x10000000,
-        ALLFIELDS = 0x80000000
-    }
+		public enum SICHINT : uint
+		{
+				DISPLAY = 0x00000000,
+				CANONICAL = 0x10000000,
+				ALLFIELDS = 0x80000000
+		}
 
-    public enum SIGDN : uint
-    {
-        NORMALDISPLAY = 0,
-        PARENTRELATIVEPARSING = 0x80018001,
-        PARENTRELATIVEFORADDRESSBAR = 0x8001c001,
-        DESKTOPABSOLUTEPARSING = 0x80028000,
-        PARENTRELATIVEEDITING = 0x80031001,
-        DESKTOPABSOLUTEEDITING = 0x8004c000,
-        FILESYSPATH = 0x80058000,
-        URL = 0x80068000
-    }
+		public enum SIGDN : uint
+		{
+				NORMALDISPLAY = 0,
+				PARENTRELATIVEPARSING = 0x80018001,
+				PARENTRELATIVEFORADDRESSBAR = 0x8001c001,
+				DESKTOPABSOLUTEPARSING = 0x80028000,
+				PARENTRELATIVEEDITING = 0x80031001,
+				DESKTOPABSOLUTEEDITING = 0x8004c000,
+				FILESYSPATH = 0x80058000,
+				URL = 0x80068000
+		}
 
-    public enum SVSI : uint
-    {
+		public enum SVSI : uint
+		{
 			DESELECT = 0x00000000,
 			SELECT = 0x00000001,
 			EDIT = 0x00000003,
@@ -306,7 +306,7 @@ namespace BExplorer.Shell.Interop
 			CHECK2 = 0x00000200,
 			SKEYBOARDSELECT = 0x00000401,
 			NOTAKEFOCUS = 0x40000000
-    }
+		}
 
 		public enum ERROR
 		{
@@ -318,163 +318,487 @@ namespace BExplorer.Shell.Interop
 			CANCELLED = 1223,
 		}
 
-    public struct FOLDERSETTINGS
-    {
-        public FOLDERVIEWMODE ViewMode;
-        public FOLDERFLAGS fFlags;
-    }
+		public struct FOLDERSETTINGS
+		{
+				public FOLDERVIEWMODE ViewMode;
+				public FOLDERFLAGS fFlags;
+		}
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    public struct KNOWNFOLDER_DEFINITION
-    {
-        public int category;
-        public IntPtr pszName;
-        public IntPtr pszDescription;
-        public Guid fidParent;
-        public IntPtr pszRelativePath;
-        public IntPtr pszParsingName;
-        public IntPtr pszTooltip;
-        public IntPtr pszLocalizedName;
-        public IntPtr pszIcon;
-        public IntPtr pszSecurity;
-        public uint dwAttributes;
-        public int kfdFlags;
-        public Guid ftidType;
-    }
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+		public struct KNOWNFOLDER_DEFINITION
+		{
+				public int category;
+				public IntPtr pszName;
+				public IntPtr pszDescription;
+				public Guid fidParent;
+				public IntPtr pszRelativePath;
+				public IntPtr pszParsingName;
+				public IntPtr pszTooltip;
+				public IntPtr pszLocalizedName;
+				public IntPtr pszIcon;
+				public IntPtr pszSecurity;
+				public uint dwAttributes;
+				public int kfdFlags;
+				public Guid ftidType;
+		}
 
-    public struct SHChangeNotifyEntry
-    {
-        public IntPtr pidl;
-        public bool fRecursive;
-    }
+		public struct SHChangeNotifyEntry
+		{
+				public IntPtr pidl;
+				public bool fRecursive;
+		}
 
-    public struct SHFILEINFO
-    {
-        public IntPtr hIcon;
-        public int iIcon;
-        public uint dwAttributes;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-        public string szDisplayName;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-        public string szTypeName;
-    }
+		public struct SHFILEINFO
+		{
+				public IntPtr hIcon;
+				public int iIcon;
+				public uint dwAttributes;
+				[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+				public string szDisplayName;
+				[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+				public string szTypeName;
+		}
 
-    public struct SHNOTIFYSTRUCT
-    {
-        public IntPtr dwItem1;
-        public IntPtr dwItem2;
-    }
+		public struct SHNOTIFYSTRUCT
+		{
+				public IntPtr dwItem1;
+				public IntPtr dwItem2;
+		}
 
-    [StructLayout(LayoutKind.Explicit, Size = 264)]
-    public struct STRRET
-    {
-        [FieldOffset(0)]
-        public UInt32 uType;
-        [FieldOffset(4)]
-        public IntPtr pOleStr;
-        [FieldOffset(4)]
-        public IntPtr pStr;
-        [FieldOffset(4)]
-        public UInt32 uOffset;
-        [FieldOffset(4)]
-        public IntPtr cStr;
-    }
+		[StructLayout(LayoutKind.Explicit, Size = 264)]
+		public struct STRRET
+		{
+				[FieldOffset(0)]
+				public UInt32 uType;
+				[FieldOffset(4)]
+				public IntPtr pOleStr;
+				[FieldOffset(4)]
+				public IntPtr pStr;
+				[FieldOffset(4)]
+				public UInt32 uOffset;
+				[FieldOffset(4)]
+				public IntPtr cStr;
+		}
 
-    class Shell32
-    {
+		class Shell32
+		{
+			[DllImport("Shell32", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
+			internal static extern int SHShowManageLibraryUI(
+					[In, MarshalAs(UnmanagedType.Interface)] IShellItem library,
+					[In] IntPtr hwndOwner,
+					[In] string title,
+					[In] string instruction,
+					[In] LibraryManageDialogOptions lmdOptions);
 
-        [DllImport("shell32.dll", EntryPoint = "#660")]
-        public static extern bool FileIconInit(bool bFullInit);
+			#region enum HChangeNotifyEventID
+			/// <summary>
+			/// Describes the event that has occurred.
+			/// Typically, only one event is specified at a time.
+			/// If more than one event is specified, the values contained
+			/// in the <i>dwItem1</i> and <i>dwItem2</i>
+			/// parameters must be the same, respectively, for all specified events.
+			/// This parameter can be one or more of the following values.
+			/// </summary>
+			/// <remarks>
+			/// <para><b>Windows NT/2000/XP:</b> <i>dwItem2</i> contains the index
+			/// in the system image list that has changed.
+			/// <i>dwItem1</i> is not used and should be <see langword="null"/>.</para>
+			/// <para><b>Windows 95/98:</b> <i>dwItem1</i> contains the index
+			/// in the system image list that has changed.
+			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.</para>
+			/// </remarks>
 
-        [DllImport("shell32.dll", EntryPoint = "#18")]
-        public static extern IntPtr ILClone(IntPtr pidl);
+			[Flags]
+			public enum HChangeNotifyEventID
+			{
+				/// <summary>
+				/// All events have occurred.
+				/// </summary>
+				SHCNE_ALLEVENTS = 0x7FFFFFFF,
 
-        [DllImport("shell32.dll", EntryPoint = "#25")]
-        public static extern IntPtr ILCombine(IntPtr pidl1, IntPtr pidl2);
+				/// <summary>
+				/// A file type association has changed. <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/>
+				/// must be specified in the <i>uFlags</i> parameter.
+				/// <i>dwItem1</i> and <i>dwItem2</i> are not used and must be <see langword="null"/>.
+				/// </summary>
+				SHCNE_ASSOCCHANGED = 0x08000000,
 
-        [DllImport("shell32.dll")]
-        public static extern IntPtr ILCreateFromPath(string pszPath);
+				/// <summary>
+				/// The attributes of an item or folder have changed.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the item or folder that has changed.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_ATTRIBUTES = 0x00000800,
 
-        [DllImport("shell32.dll", EntryPoint = "#16")]
-        public static extern IntPtr ILFindLastID(IntPtr pidl);
+				/// <summary>
+				/// A nonfolder item has been created.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the item that was created.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_CREATE = 0x00000002,
 
-        [DllImport("shell32.dll", EntryPoint = "#155")]
-        public static extern void ILFree(IntPtr pidl);
+				/// <summary>
+				/// A nonfolder item has been deleted.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the item that was deleted.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_DELETE = 0x00000004,
 
-        [DllImport("shell32.dll", EntryPoint = "#21")]
-        public static extern bool ILIsEqual(IntPtr pidl1, IntPtr pidl2);
+				/// <summary>
+				/// A drive has been added.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the root of the drive that was added.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_DRIVEADD = 0x00000100,
 
-        [DllImport("shell32.dll", EntryPoint = "#23")]
-        public static extern bool ILIsParent(IntPtr pidl1, IntPtr pidl2,
-            bool fImmediate);
+				/// <summary>
+				/// A drive has been added and the Shell should create a new window for the drive.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the root of the drive that was added.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_DRIVEADDGUI = 0x00010000,
 
-        [DllImport("shell32.dll", EntryPoint = "#17")]
-        public static extern bool ILRemoveLastID(IntPtr pidl);
+				/// <summary>
+				/// A drive has been removed. <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the root of the drive that was removed.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_DRIVEREMOVED = 0x00000080,
 
-        [DllImport("shell32.dll", EntryPoint = "#71")]
-        public static extern bool Shell_GetImageLists(out IntPtr lphimlLarge,
-            out IntPtr lphimlSmall);
+				/// <summary>
+				/// Not currently used.
+				/// </summary>
+				SHCNE_EXTENDED_EVENT = 0x04000000,
 
-        [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
-        public static extern Boolean CloseHandle(IntPtr handle);
+				/// <summary>
+				/// The amount of free space on a drive has changed.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the root of the drive on which the free space changed.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_FREESPACE = 0x00040000,
 
-        [DllImport("shell32.dll", EntryPoint = "#2")]
-        public static extern uint SHChangeNotifyRegister(IntPtr hWnd,
-            SHCNRF fSources, SHCNE fEvents, uint wMsg, int cEntries,
-            ref SHChangeNotifyEntry pFsne);
+				/// <summary>
+				/// Storage media has been inserted into a drive.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the root of the drive that contains the new media.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_MEDIAINSERTED = 0x00000020,
 
-        [DllImport("shell32.dll", EntryPoint = "#4")]
-        public static extern bool SHChangeNotifyUnregister(uint hNotify);
+				/// <summary>
+				/// Storage media has been removed from a drive.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the root of the drive from which the media was removed.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_MEDIAREMOVED = 0x00000040,
 
-        [DllImport("shell32.dll", EntryPoint = "#165", CharSet = CharSet.Unicode)]
-        public static extern ERROR SHCreateDirectory(IntPtr hwnd, string pszPath);
+				/// <summary>
+				/// A folder has been created. <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/>
+				/// or <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the folder that was created.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_MKDIR = 0x00000008,
 
-        [DllImport("shell32.dll", PreserveSig = false)]
-        public static extern IShellItem SHCreateItemFromIDList(
-            [In] IntPtr pidl,
-            [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+				/// <summary>
+				/// A folder on the local computer is being shared via the network.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the folder that is being shared.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_NETSHARE = 0x00000200,
 
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
-        public static extern IShellItem SHCreateItemFromParsingName(
-            [In] string pszPath,
-            [In] IntPtr pbc,
-            [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+				/// <summary>
+				/// A folder on the local computer is no longer being shared via the network.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the folder that is no longer being shared.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_NETUNSHARE = 0x00000400,
 
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
-        public static extern IShellItem SHCreateItemWithParent(
-            [In] IntPtr pidlParent,
-            [In] IShellFolder psfParent,
-            [In] IntPtr pidl,
-            [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+				/// <summary>
+				/// The name of a folder has changed.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the previous pointer to an item identifier list (PIDL) or name of the folder.
+				/// <i>dwItem2</i> contains the new PIDL or name of the folder.
+				/// </summary>
+				SHCNE_RENAMEFOLDER = 0x00020000,
 
-        [DllImport("shell32.dll", PreserveSig = false)]
-        public static extern IShellFolder SHGetDesktopFolder();
+				/// <summary>
+				/// The name of a nonfolder item has changed.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the previous PIDL or name of the item.
+				/// <i>dwItem2</i> contains the new PIDL or name of the item.
+				/// </summary>
+				SHCNE_RENAMEITEM = 0x00000001,
 
-        [DllImport("shell32.dll")]
-        public static extern IntPtr SHGetFileInfo(IntPtr pszPath,
-            int dwFileAttributes, out SHFILEINFO psfi, int cbFileInfo,
-            SHGFI uFlags);
+				/// <summary>
+				/// A folder has been removed.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the folder that was removed.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_RMDIR = 0x00000010,
 
-        [DllImport("shfolder.dll")]
-        public static extern HResult SHGetFolderPath(
-            [In] IntPtr hwndOwner,
-            [In] CSIDL nFolder,
-            [In] IntPtr hToken,
-            [In] uint dwFlags,
-            [Out] StringBuilder pszPath);
+				/// <summary>
+				/// The computer has disconnected from a server.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the server from which the computer was disconnected.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// </summary>
+				SHCNE_SERVERDISCONNECT = 0x00004000,
 
-        [DllImport("shell32.dll", PreserveSig = false)]
-        public static extern IntPtr SHGetIDListFromObject(
-            [In, MarshalAs(UnmanagedType.IUnknown)] object punk);
+				/// <summary>
+				/// The contents of an existing folder have changed,
+				/// but the folder still exists and has not been renamed.
+				/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
+				/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+				/// <i>dwItem1</i> contains the folder that has changed.
+				/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
+				/// If a folder has been created, deleted, or renamed, use SHCNE_MKDIR, SHCNE_RMDIR, or
+				/// SHCNE_RENAMEFOLDER, respectively, instead.
+				/// </summary>
+				SHCNE_UPDATEDIR = 0x00001000,
 
-        [DllImport("shell32.dll")]
-        public static extern bool SHGetPathFromIDList(
-            [In] IntPtr pidl,
-            [Out] StringBuilder pszPath);
+				/// <summary>
+				/// An image in the system image list has changed.
+				/// <see cref="HChangeNotifyFlags.SHCNF_DWORD"/> must be specified in <i>uFlags</i>.
+				/// </summary>
+				SHCNE_UPDATEIMAGE = 0x00008000,
 
-        [DllImport("shell32.dll")]
-        public static extern HResult SHGetSpecialFolderLocation(IntPtr hwndOwner,
-            CSIDL nFolder, out IntPtr ppidl);
+				SHCNE_UPDATEITEM = 0x00002000,
+
+
+			}
+			#endregion // enum HChangeNotifyEventID
+
+			#region public enum HChangeNotifyFlags
+			/// <summary>
+			/// Flags that indicate the meaning of the <i>dwItem1</i> and <i>dwItem2</i> parameters.
+			/// The uFlags parameter must be one of the following values.
+			/// </summary>
+			[Flags]
+			public enum HChangeNotifyFlags
+			{
+				/// <summary>
+				/// The <i>dwItem1</i> and <i>dwItem2</i> parameters are DWORD values.
+				/// </summary>
+				SHCNF_DWORD = 0x0003,
+				/// <summary>
+				/// <i>dwItem1</i> and <i>dwItem2</i> are the addresses of ITEMIDLIST structures that
+				/// represent the item(s) affected by the change.
+				/// Each ITEMIDLIST must be relative to the desktop folder.
+				/// </summary>
+				SHCNF_IDLIST = 0x0000,
+				/// <summary>
+				/// <i>dwItem1</i> and <i>dwItem2</i> are the addresses of null-terminated strings of
+				/// maximum length MAX_PATH that contain the full path names
+				/// of the items affected by the change.
+				/// </summary>
+				SHCNF_PATHA = 0x0001,
+				/// <summary>
+				/// <i>dwItem1</i> and <i>dwItem2</i> are the addresses of null-terminated strings of
+				/// maximum length MAX_PATH that contain the full path names
+				/// of the items affected by the change.
+				/// </summary>
+				SHCNF_PATHW = 0x0005,
+				/// <summary>
+				/// <i>dwItem1</i> and <i>dwItem2</i> are the addresses of null-terminated strings that
+				/// represent the friendly names of the printer(s) affected by the change.
+				/// </summary>
+				SHCNF_PRINTERA = 0x0002,
+				/// <summary>
+				/// <i>dwItem1</i> and <i>dwItem2</i> are the addresses of null-terminated strings that
+				/// represent the friendly names of the printer(s) affected by the change.
+				/// </summary>
+				SHCNF_PRINTERW = 0x0006,
+				/// <summary>
+				/// The function should not return until the notification
+				/// has been delivered to all affected components.
+				/// As this flag modifies other data-type flags, it cannot by used by itself.
+				/// </summary>
+				SHCNF_FLUSH = 0x1000,
+				/// <summary>
+				/// The function should begin delivering notifications to all affected components
+				/// but should return as soon as the notification process has begun.
+				/// As this flag modifies other data-type flags, it cannot by used by itself.
+				/// </summary>
+				SHCNF_FLUSHNOWAIT = 0x2000
+			}
+			#endregion // enum HChangeNotifyFlags
+
+
+			/// <summary>
+			/// Notifies the system of an event that an application has performed. 
+			/// An application should use this function if it performs an action that may affect the Shell.
+			/// </summary>
+			/// <param name="wEventId">Describes the event that has occurred. Typically, only one event is specified at a time. 
+			/// If more than one event is specified, the values contained in the dwItem1 and dwItem2 parameters must be the same, respectively, for all specified events. This parameter can be one or more of the following values.</param>
+			/// <param name="uFlags">Flags that, when combined bitwise with SHCNF_TYPE, indicate the meaning of the dwItem1 and dwItem2 parameters.</param>
+			/// <param name="dwItem1">Optional. First event-dependent value.</param>
+			/// <param name="dwItem2">Optional. Second event-dependent value.</param>
+			[DllImport("shell32.dll")]
+			public static extern void SHChangeNotify(HChangeNotifyEventID wEventId,
+																				 HChangeNotifyFlags uFlags,
+																				 IntPtr dwItem1,
+																				 IntPtr dwItem2);
+			[DllImport("shell32.dll", CharSet = CharSet.Auto)]
+			public static extern int Shell_GetCachedImageIndex(string pwszIconPath, int iIconIndex, uint uIconFlags);
+
+			[DllImport("shell32.dll", CharSet = CharSet.Auto)]
+			public static extern void SHUpdateImage(string pszHashItem, int iIndex, uint uFlags, int iImageIndex);
+
+			[DllImport("Shell32.dll", CharSet = CharSet.Auto)]
+			public static extern HResult SHGetSetFolderCustomSettings(ref LPSHFOLDERCUSTOMSETTINGS pfcs, string pszPath, UInt32 dwReadWrite);
+
+			[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+			public struct LPSHFOLDERCUSTOMSETTINGS
+			{
+				public UInt32 dwSize;
+				public UInt32 dwMask;
+				public IntPtr pvid;
+				public string pszWebViewTemplate;
+				public UInt32 cchWebViewTemplate;
+				public string pszWebViewTemplateVersion;
+				public string pszInfoTip;
+				public UInt32 cchInfoTip;
+				public IntPtr pclsid;
+				public UInt32 dwFlags;
+				public string pszIconFile;
+				public UInt32 cchIconFile;
+				public int iIconIndex;
+				public string pszLogo;
+				public UInt32 cchLogo;
+			}
+
+			public static UInt32 FCS_READ = 0x00000001;
+			public static UInt32 FCS_FORCEWRITE = 0x00000002;
+			public static UInt32 FCS_WRITE = FCS_READ | FCS_FORCEWRITE;
+
+			public static UInt32 FCSM_VIEWID = 0x00000001;    // deprecated
+			public static UInt32 FCSM_WEBVIEWTEMPLATE = 0x00000002;  // deprecated
+			public static UInt32 FCSM_INFOTIP = 0x00000004;
+			public static UInt32 FCSM_CLSID = 0x00000008;
+			public static UInt32 FCSM_ICONFILE = 0x00000010;
+			public static UInt32 FCSM_LOGO = 0x00000020;
+			public static UInt32 FCSM_FLAGS = 0x00000040;
+
+			public static UInt32 SHGFI_ICONLOCATION = 0x000001000;
+
+				[DllImport("shell32.dll", EntryPoint = "#660")]
+				public static extern bool FileIconInit(bool bFullInit);
+
+				[DllImport("shell32.dll", EntryPoint = "#18")]
+				public static extern IntPtr ILClone(IntPtr pidl);
+
+				[DllImport("shell32.dll", EntryPoint = "#25")]
+				public static extern IntPtr ILCombine(IntPtr pidl1, IntPtr pidl2);
+
+				[DllImport("shell32.dll")]
+				public static extern IntPtr ILCreateFromPath(string pszPath);
+
+				[DllImport("shell32.dll", EntryPoint = "#16")]
+				public static extern IntPtr ILFindLastID(IntPtr pidl);
+
+				[DllImport("shell32.dll", EntryPoint = "#155")]
+				public static extern void ILFree(IntPtr pidl);
+
+				[DllImport("shell32.dll", EntryPoint = "#21")]
+				public static extern bool ILIsEqual(IntPtr pidl1, IntPtr pidl2);
+
+				[DllImport("shell32.dll", EntryPoint = "#23")]
+				public static extern bool ILIsParent(IntPtr pidl1, IntPtr pidl2,
+						bool fImmediate);
+
+				[DllImport("shell32.dll", EntryPoint = "#17")]
+				public static extern bool ILRemoveLastID(IntPtr pidl);
+
+				[DllImport("shell32.dll", EntryPoint = "#71")]
+				public static extern bool Shell_GetImageLists(out IntPtr lphimlLarge,
+						out IntPtr lphimlSmall);
+
+				[System.Runtime.InteropServices.DllImport("Kernel32.dll")]
+				public static extern Boolean CloseHandle(IntPtr handle);
+
+				[DllImport("shell32.dll", EntryPoint = "#2")]
+				public static extern uint SHChangeNotifyRegister(IntPtr hWnd,
+						SHCNRF fSources, SHCNE fEvents, uint wMsg, int cEntries,
+						ref SHChangeNotifyEntry pFsne);
+
+				[DllImport("shell32.dll", EntryPoint = "#4")]
+				public static extern bool SHChangeNotifyUnregister(uint hNotify);
+
+				[DllImport("shell32.dll", EntryPoint = "#165", CharSet = CharSet.Unicode)]
+				public static extern ERROR SHCreateDirectory(IntPtr hwnd, string pszPath);
+
+				[DllImport("shell32.dll", PreserveSig = false)]
+				public static extern IShellItem SHCreateItemFromIDList(
+						[In] IntPtr pidl,
+						[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+
+				[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
+				public static extern IShellItem SHCreateItemFromParsingName(
+						[In] string pszPath,
+						[In] IntPtr pbc,
+						[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+
+				[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
+				public static extern IShellItem SHCreateItemWithParent(
+						[In] IntPtr pidlParent,
+						[In] IShellFolder psfParent,
+						[In] IntPtr pidl,
+						[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+
+				[DllImport("shell32.dll", PreserveSig = false)]
+				public static extern IShellFolder SHGetDesktopFolder();
+
+				[DllImport("shell32.dll")]
+				public static extern IntPtr SHGetFileInfo(IntPtr pszPath,
+						int dwFileAttributes, out SHFILEINFO psfi, int cbFileInfo,
+						SHGFI uFlags);
+
+				[DllImport("shfolder.dll")]
+				public static extern HResult SHGetFolderPath(
+						[In] IntPtr hwndOwner,
+						[In] CSIDL nFolder,
+						[In] IntPtr hToken,
+						[In] uint dwFlags,
+						[Out] StringBuilder pszPath);
+
+				[DllImport("shell32.dll", PreserveSig = false)]
+				public static extern IntPtr SHGetIDListFromObject(
+						[In, MarshalAs(UnmanagedType.IUnknown)] object punk);
+
+				[DllImport("shell32.dll")]
+				public static extern bool SHGetPathFromIDList(
+						[In] IntPtr pidl,
+						[Out] StringBuilder pszPath);
+
+				[DllImport("shell32.dll")]
+				public static extern HResult SHGetSpecialFolderLocation(IntPtr hwndOwner,
+						CSIDL nFolder, out IntPtr ppidl);
 
 				[DllImport("shell32.dll", SetLastError = true)]
 				public static extern int SHMultiFileProperties(System.Runtime.InteropServices.ComTypes.IDataObject pdtobj, int flags);
@@ -1131,5 +1455,5 @@ namespace BExplorer.Shell.Interop
 				}
 				#endregion
 
-    }
+		}
 }
