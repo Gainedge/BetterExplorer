@@ -102,5 +102,30 @@ namespace BExplorer.Shell.Interop
 			return path;
 
 		}
+
+		public static void SetListViewBackgroundImage(IntPtr lvHandle, Bitmap bitmap)
+		{
+
+			LVBKIMAGE lvBkImage = new LVBKIMAGE();
+
+			lvBkImage.ulFlags = LVBKIF.STYLE_WATERMARK | LVBKIF.FLAG_ALPHABLEND;
+
+			lvBkImage.hbm = bitmap.GetHbitmap();
+
+			lvBkImage.cchImageMax = 0;
+
+			lvBkImage.xOffsetPercent = 100;
+
+			lvBkImage.yOffsetPercent = 100;
+
+
+
+			IntPtr lbkImageptr = Marshal.AllocHGlobal(Marshal.SizeOf(lvBkImage));
+			Marshal.StructureToPtr(lvBkImage, lbkImageptr, false);
+			User32.SendMessage(lvHandle, MSG.LVM_SETBKIMAGE, 0, lbkImageptr);
+			//Gdi32.DeleteObject(lvBkImage.hbm);
+			Marshal.FreeHGlobal(lbkImageptr);
+
+		}
 	}
 }

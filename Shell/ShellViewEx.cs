@@ -674,7 +674,10 @@ namespace BExplorer.Shell
 
 			//return libcreate.GetDisplayName(DisplayNameType.Default);
 		}
-
+		public void SetLVBackgroundImage(Bitmap bitmap)
+		{
+			Helpers.SetListViewBackgroundImage(this.LVHandle, bitmap);
+		}
 		public HResult SetFolderIcon(string wszPath, string wszExpandedIconPath, int iIcon)
 		{
 			HResult hr;
@@ -1035,7 +1038,7 @@ namespace BExplorer.Shell
 
 
 			//this.Items = items.Select(s => new ShellItem(s.ToShellParsingName())).OrderByDescending(o => o.IsFolder).ToArray();
-
+			
 			IsDoubleNavFinished = false;
 
 		}
