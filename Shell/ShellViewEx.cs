@@ -1540,6 +1540,7 @@ namespace BExplorer.Shell
 						this.Cancel = true;
 						cache.Clear();
 						//waitingThumbnails.Clear();
+						ThumbnailsForCacheLoad.Clear();
 						overlayQueue.Clear();
 						shieldQueue.Clear();
 
@@ -1669,7 +1670,7 @@ namespace BExplorer.Shell
 										}
 										break;
 									case CustomDraw.CDDS_ITEMPOSTPAINT:
-										if (nmlvcd.iPartId == 0 && nmlvcd.clrTextBk != 0)
+										if (nmlvcd.clrTextBk != 0 && nmlvcd.clrFace != 0 && nmlvcd.clrText != 0)
 										{
 											var itemBounds = new User32.RECT();
 											User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMRECT, index, ref itemBounds);
@@ -1751,7 +1752,8 @@ namespace BExplorer.Shell
 													
 													if (((sho.GetIconType() & IExtractIconpwFlags.GIL_PERINSTANCE) == 0 && thumbnail == null) || IconSize == 16)
 													{
-														ThumbnailsForCacheLoad.Enqueue(index);
+														if (IconSize != 16)
+															ThumbnailsForCacheLoad.Enqueue(index);
 														var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 														if (icon != null)
 														{
