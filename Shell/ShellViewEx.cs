@@ -1719,7 +1719,8 @@ namespace BExplorer.Shell
 												{
 													if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize) || thumbnail.Width == thumbnail.Height && thumbnail.Width != IconSize))
 													{
-														ThumbnailsForCacheLoad.Enqueue(index);
+														if (!cachedIndexes.Contains(index))
+															ThumbnailsForCacheLoad.Enqueue(index);
 													}
 													else
 													{
