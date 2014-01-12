@@ -216,7 +216,8 @@ namespace BExplorer.Shell
 			thumb.Start();
 			CacheLoad = new Thread(LoadCacheIcon);
 			CacheLoad.IsBackground = true;
-			CacheLoad.Priority = ThreadPriority.AboveNormal;
+			CacheLoad.Priority = ThreadPriority.Normal;
+			CacheLoad.SetApartmentState(ApartmentState.STA);
 			CacheLoad.Start();
 			overlaysThread = new Thread(LoadOverlay);
 			overlaysThread.IsBackground = true;
@@ -818,7 +819,7 @@ namespace BExplorer.Shell
 				User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMSTATE, n, ref item_new);
 			}
 		}
-
+		List<int> cachedIndexes = new List<int>();
 		public async void LoadCacheIcon()
 		{
 			while (true)
@@ -839,9 +840,12 @@ namespace BExplorer.Shell
 						thumb.Dispose();
 						thumb = null;
 					}
+					if (!cachedIndexes.Contains(index))
+						cachedIndexes.Add(index);
 					Thread.Sleep(2);
+					Application.DoEvents();
 				}
-				catch (Exception)
+				catch 
 				{
 
 				}
@@ -881,8 +885,9 @@ namespace BExplorer.Shell
 						}
 					}
 					Thread.Sleep(1);
+					Application.DoEvents();
 				}
-				catch (Exception)
+				catch
 				{
 
 				}
@@ -894,7 +899,7 @@ namespace BExplorer.Shell
 			while (true)
 			{
 				//Application.DoEvents();
-				Thread.Sleep(3);
+				
 				//while (overlayQueue.Count == 0)
 				//{
 				//	Thread.Sleep(5);
@@ -928,6 +933,8 @@ namespace BExplorer.Shell
 					}
 					if (overlayIndex > 0)
 						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
+					Thread.Sleep(3);
+					Application.DoEvents();
 				}
 				catch (Exception)
 				{
@@ -941,7 +948,7 @@ namespace BExplorer.Shell
 			while (true)
 			{
 				//Application.DoEvents();
-				Thread.Sleep(4);
+				
 
 				//while (shieldQueue.Count == 0)
 				//{
@@ -981,8 +988,10 @@ namespace BExplorer.Shell
 					{
 						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
 					}
+					Thread.Sleep(4);
+					Application.DoEvents();
 				}
-				catch (Exception)
+				catch
 				{
 
 				}
@@ -997,6 +1006,7 @@ namespace BExplorer.Shell
 			shieldedIcons.Clear();
 			cache.Clear();
 			Items.Clear();
+			cachedIndexes.Clear();
 			waitingThumbnails.Clear();
 			overlayQueue.Clear();
 			shieldQueue.Clear();
@@ -1213,6 +1223,8 @@ namespace BExplorer.Shell
 				_iconSize = value;
 				this.Cancel = true;
 				cache.Clear();
+				cachedIndexes.Clear();
+				ThumbnailsForCacheLoad.Clear();
 				waitingThumbnails.Clear();
 
 				//Task.Run(() =>
@@ -1705,7 +1717,7 @@ namespace BExplorer.Shell
 												var thumbnail = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
 												if (thumbnail != null && IconSize != 16)
 												{
-													if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize)))
+													if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize) || thumbnail.Width == thumbnail.Height && thumbnail.Width != IconSize))
 													{
 														ThumbnailsForCacheLoad.Enqueue(index);
 													}
@@ -1752,7 +1764,7 @@ namespace BExplorer.Shell
 													
 													if (((sho.GetIconType() & IExtractIconpwFlags.GIL_PERINSTANCE) == 0 && thumbnail == null) || IconSize == 16)
 													{
-														if (IconSize != 16)
+														if (IconSize != 16 && !cachedIndexes.Contains(index))
 															ThumbnailsForCacheLoad.Enqueue(index);
 														var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 														if (icon != null)
