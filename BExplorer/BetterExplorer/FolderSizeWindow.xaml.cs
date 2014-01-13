@@ -243,7 +243,7 @@ namespace BetterExplorer
             }
             return dirFiles.Concat(Directory.EnumerateFiles(path, searchPattern));
           }
-          catch (UnauthorizedAccessException ex)
+          catch (UnauthorizedAccessException)
           {
             return Enumerable.Empty<string>();
           }

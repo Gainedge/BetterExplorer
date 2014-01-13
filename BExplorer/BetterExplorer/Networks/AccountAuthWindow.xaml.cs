@@ -312,37 +312,37 @@ namespace BetterExplorer.Networks
                 }
             }
 
-            public RoutedEvent RoutedEvent
-            {
-                get
-                {
-                    return base.RoutedEvent;
-                }
-                set
-                {
-                    base.RoutedEvent = value;
-                }
-            }
+            //public RoutedEvent RoutedEvent
+            //{
+            //    get
+            //    {
+            //        return base.RoutedEvent;
+            //    }
+            //    set
+            //    {
+            //        base.RoutedEvent = value;
+            //    }
+            //}
 
-            public object Source
-            {
-                get
-                {
-                    return base.Source;
-                }
-                set
-                {
-                    base.Source = value;
-                }
-            }
+            //public object Source
+            //{
+            //    get
+            //    {
+            //        return base.Source;
+            //    }
+            //    set
+            //    {
+            //        base.Source = value;
+            //    }
+            //}
 
-            public object OriginalSource
-            {
-                get
-                {
-                    return base.OriginalSource;
-                }
-            }
+            //public object OriginalSource
+            //{
+            //    get
+            //    {
+            //        return base.OriginalSource;
+            //    }
+            //}
 
         }
         #endregion
@@ -399,37 +399,37 @@ namespace BetterExplorer.Networks
                 }
             }
 
-            public RoutedEvent RoutedEvent
-            {
-                get
-                {
-                    return base.RoutedEvent;
-                }
-                set
-                {
-                    base.RoutedEvent = value;
-                }
-            }
+            //public RoutedEvent RoutedEvent
+            //{
+            //    get
+            //    {
+            //        return base.RoutedEvent;
+            //    }
+            //    set
+            //    {
+            //        base.RoutedEvent = value;
+            //    }
+            //}
 
-            public object Source
-            {
-                get
-                {
-                    return base.Source;
-                }
-                set
-                {
-                    base.Source = value;
-                }
-            }
+            //public object Source
+            //{
+            //    get
+            //    {
+            //        return base.Source;
+            //    }
+            //    set
+            //    {
+            //        base.Source = value;
+            //    }
+            //}
 
-            public object OriginalSource
-            {
-                get
-                {
-                    return base.OriginalSource;
-                }
-            }
+            //public object OriginalSource
+            //{
+            //    get
+            //    {
+            //        return base.OriginalSource;
+            //    }
+            //}
 
         }
 

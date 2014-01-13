@@ -88,7 +88,8 @@ namespace BetterExplorer
                 }
 
             }
-            catch (Exception e)
+            //catch (Exception e)
+            catch (Exception)
             {
                 // Swallow or pop-up, not sure
                 // Trace.Write(e.ToString());

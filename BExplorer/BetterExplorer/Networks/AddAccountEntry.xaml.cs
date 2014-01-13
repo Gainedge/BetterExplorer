@@ -80,7 +80,7 @@ namespace BetterExplorer.Networks
         /// The color when this control does not have focus.
         /// </summary>
         [Category("Brush")]
-        public Brush Background
+        new public Brush Background
         {
             get
             {

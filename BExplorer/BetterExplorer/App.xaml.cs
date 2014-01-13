@@ -27,8 +27,8 @@ namespace BetterExplorer
     /// </summary>
     public partial class App : Application
     {
-        private CompositionContainer container;
-        private AggregateCatalog catalog;
+        //private CompositionContainer container;
+        //private AggregateCatalog catalog;
         public static bool isStartMinimized = false;
         public static bool isStartNewWindows = false;
         public static bool isStartWithStartupTab = false;
@@ -438,7 +438,7 @@ namespace BetterExplorer
                           sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
                           sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
                           ClosableTabItem newt = new ClosableTabItem();
-													newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
+                                                    newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
                           newt.TabIcon = sho.Thumbnail.BitmapSource;
                           newt.PreviewMouseMove += newt_PreviewMouseMove;
                           newt.ToolTip = sho.ParsingName;

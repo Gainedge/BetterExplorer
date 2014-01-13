@@ -30,10 +30,10 @@ namespace BetterExplorer.Networks
          * 
         */
 
-        private string _PassFile;
-        private string _DataFile;
-        private bool _MasterUsed;
-        private SecureString _MasterPW;
+        //private string _PassFile;
+        //private string _DataFile;
+        //private bool _MasterUsed;
+        //private SecureString _MasterPW;
         private string _dataloc = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\NetworkAccounts\\";
 
         public string DataLocation
@@ -51,7 +51,7 @@ namespace BetterExplorer.Networks
         // Call this function to remove the key from memory after use for security.
         [System.Runtime.InteropServices.DllImport("KERNEL32.DLL", EntryPoint="RtlZeroMemory")]
         public static extern bool ZeroMemory(ref string Destination, int Length);
-		
+        
         // Function to Generate a 64 bits Key.
         static string GenerateKey()
         {

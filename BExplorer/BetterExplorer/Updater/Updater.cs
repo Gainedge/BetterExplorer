@@ -13,7 +13,7 @@ namespace BetterExplorer
         #region Variables
         Boolean upd = false; // true if currently checking for updates
         System.Net.WebClient updchk = new System.Net.WebClient(); // object that downloads file and update
-        string los = ""; // online location of file that will be used to check for updates
+        //string los = ""; // online location of file that will be used to check for updates
         string loc = ""; // location of local file that is checked for if there are updates or not
         string curr = ""; // version of this build
         string tis = ""; // online location of program that will update software
