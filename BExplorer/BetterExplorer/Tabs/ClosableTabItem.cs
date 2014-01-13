@@ -129,7 +129,7 @@ namespace BetterExplorer
             }
         }
 
-				ShellItem _Path;
+                ShellItem _Path;
         public ShellItem Path
         {
             get

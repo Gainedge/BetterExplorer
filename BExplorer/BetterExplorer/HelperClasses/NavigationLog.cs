@@ -8,8 +8,7 @@ namespace BetterExplorer
 {
     public class NavigationLog
     {
-
-			private List<ShellItem> HistoryItems = new List<ShellItem>();
+        private List<ShellItem> HistoryItems = new List<ShellItem>();
 
         int CurrentLocIndex = -1;
 
@@ -25,13 +24,13 @@ namespace BetterExplorer
             CurrentLocIndex = HistoryItems.LastIndexOf(log.CurrentLocation);
         }
 
-				public void NavigateOnwards(ShellItem loc)
+        public void NavigateOnwards(ShellItem loc)
         {
             HistoryItems.Add(loc);
             CurrentLocIndex = HistoryItems.Count - 1;
         }
 
-				public ShellItem NavigateBack()
+        public ShellItem NavigateBack()
         {
 
             CurrentLocIndex--;
@@ -48,7 +47,7 @@ namespace BetterExplorer
             }
         }
 
-				public ShellItem NavigateForward()
+        public ShellItem NavigateForward()
         {
 
             CurrentLocIndex++;
@@ -56,7 +55,7 @@ namespace BetterExplorer
             return HistoryItems[CurrentLocIndex];
         }
 
-				public List<ShellItem> HistoryItemsList
+        public List<ShellItem> HistoryItemsList
         {
             get
             {
@@ -77,34 +76,34 @@ namespace BetterExplorer
             }
         }
 
-				public List<ShellItem> BackEntries
+        public List<ShellItem> BackEntries
         {
             get
             {
-							List<ShellItem> _BackEntries = new List<ShellItem>();
+                List<ShellItem> _BackEntries = new List<ShellItem>();
                 if (CurrentLocIndex != -1)
                 {
-                  for (int i = 0; i < CurrentLocIndex; i++)
-                  {
-                    _BackEntries.Add(HistoryItems[i]);
-                  }
+                    for (int i = 0; i < CurrentLocIndex; i++)
+                    {
+                        _BackEntries.Add(HistoryItems[i]);
+                    }
                 }
                 //_BackEntries.Reverse();
                 return _BackEntries;
             }
         }
 
-				public List<ShellItem> ForwardEntries
+        public List<ShellItem> ForwardEntries
         {
             get
             {
-							List<ShellItem> _ForwardEntries = new List<ShellItem>();
+                List<ShellItem> _ForwardEntries = new List<ShellItem>();
                 if (CurrentLocIndex != -1)
                 {
-                  for (int i = CurrentLocIndex; i < HistoryItems.Count; i++)
-                  {
-                    _ForwardEntries.Add(HistoryItems[i]);
-                  }
+                    for (int i = CurrentLocIndex; i < HistoryItems.Count; i++)
+                    {
+                        _ForwardEntries.Add(HistoryItems[i]);
+                    }
                 }
                 //_BackEntries.Reverse();
                 return _ForwardEntries;
@@ -112,10 +111,10 @@ namespace BetterExplorer
         }
         public void ClearForwardItems()
         {
-          for (int i = HistoryItems.ToArray().Count() - 1; i > CurrentLocIndex; i--)
-          {
-            HistoryItems.RemoveAt(i);
-          }
+            for (int i = HistoryItems.ToArray().Count() - 1; i > CurrentLocIndex; i--)
+            {
+                HistoryItems.RemoveAt(i);
+            }
         }
 
         public bool CanNavigateBackwards
@@ -148,7 +147,7 @@ namespace BetterExplorer
             }
         }
 
-				public ShellItem CurrentLocation
+        public ShellItem CurrentLocation
         {
             get
             {
@@ -165,11 +164,5 @@ namespace BetterExplorer
             }
         }
 
-    }
-
-    public class ShObjwithNumber
-    {
-			public ShellItem obj;
-        public int number;
     }
 }
