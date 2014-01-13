@@ -707,7 +707,7 @@ namespace BetterExplorer
                 {
                     MenuItem mic = new MenuItem();
                     mic.Header = AllAvailColls[j].Name;
-                    mic.Tag = AllAvailColls[j].pkey;
+                    mic.Tag = AllAvailColls[j];
                     mic.Click += mic_Click;
                     mic.Focusable = false;
                     mic.IsCheckable = true;
@@ -804,7 +804,7 @@ namespace BetterExplorer
         {
             MenuItem mi = (sender as MenuItem);
             Collumns col = (Collumns) mi.Tag;
-            //ShellListView.SetColInView(col, !mi.IsChecked);
+            ShellListView.SetColInView(col, !mi.IsChecked);
         }
 
         [DllImport("shell32.dll")]
@@ -1210,6 +1210,8 @@ namespace BetterExplorer
 
             #region Library Context Tab
             ctgLibraries.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (ShellListView.CurrentFolder.Equals(KnownFolders.Libraries) || (selectedItem.Parent != null && selectedItem.Parent.Equals(KnownFolders.Libraries))));
+            // || (ShellListView.CurrentFolder.Parent != null && ShellListView.CurrentFolder.Parent.Equals(KnownFolders.Libraries))
+            
             if (asLibrary == true && ctgLibraries.Visibility == Visibility.Visible)
             {
                 TheRibbon.SelectedTabItem = ctgLibraries.Items[0];
@@ -1218,6 +1220,11 @@ namespace BetterExplorer
             if (ctgLibraries.Visibility == System.Windows.Visibility.Visible && ShellListView.CurrentFolder.Equals(KnownFolders.Libraries))
             {
                 SetupLibrariesTab(ShellLibrary.Load(selectedItem.DisplayName, false));
+            }
+
+            else if (ctgLibraries.Visibility == System.Windows.Visibility.Visible && ShellListView.CurrentFolder.Parent.Equals(KnownFolders.Libraries))
+            {
+                SetupLibrariesTab(ShellLibrary.Load(ShellListView.CurrentFolder.DisplayName, false));
             }
             #endregion
 
@@ -2943,6 +2950,25 @@ namespace BetterExplorer
             catch
             {
                 MessageBox.Show("Could not open command prompt in this directory: " + dir);
+            }
+        }
+
+        public void ExportColumnDataToTextFile(string filename)
+        {
+            Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser eb = new Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser();
+            eb.InitBrowser();
+            Microsoft.WindowsAPICodePack.Controls.WindowsForms.Collumns[] cols = eb.AvailableColumnsList(true);
+
+            int acount = 0;
+
+            foreach (Microsoft.WindowsAPICodePack.Controls.WindowsForms.Collumns item in cols)
+            {
+                using (StreamWriter sw = new StreamWriter(filename, true))
+                {
+                    // new Tuple<String, PROPERTYKEY, Type>("Date Modified", new PROPERTYKEY(){fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 14}, typeof(DateTime))
+                    sw.WriteLine("{\"A" + acount + "\", new Tuple<String, PROPERTYKEY, Type>(\"" + item.Name + "\", new PROPERTYKEY(){fmtid = Guid.Parse(\"" + item.pkey.fmtid + "\"), pid = " + item.pkey.pid + "}, typeof(String))},");
+                    acount++;
+                }
             }
         }
 
@@ -9878,6 +9904,11 @@ namespace BetterExplorer
         {
             //ShellTree.Invalidate();
             //ShellTree.m_TreeView.Invalidate();
+        }
+
+        private void tmpButtonB_Click(object sender, RoutedEventArgs e)
+        {
+            ExportColumnDataToTextFile(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\ColumnData.txt");
         }
 
     }

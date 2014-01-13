@@ -1627,6 +1627,9 @@
                                HasTwoLines="False"
                                Text="0 bytes" />
                 </Ribbon:RibbonGroupBox>
+                <Ribbon:RibbonGroupBox x:Name="tmpGroupB" Header="Developer" Visibility="Collapsed" >
+                    <Ribbon:Button x:Name="tmpButtonB" Header="Export Col Data To List" Click="tmpButtonB_Click" />
+                </Ribbon:RibbonGroupBox>
             </Ribbon:RibbonTabItem>
 
             <Ribbon:RibbonTabItem x:Name="tbShare"
