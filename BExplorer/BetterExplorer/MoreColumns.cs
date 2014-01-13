@@ -85,7 +85,7 @@ namespace BetterExplorer
           if (!IsBeforeShow)
           {
             Collumns col = ((Collumns)e.Item.Tag);
-            //BrowserControl.SetColInView(col, !e.Item.Checked); 
+            BrowserControl.SetColInView(col, !e.Item.Checked); 
           }
         }
 

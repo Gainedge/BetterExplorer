@@ -1296,7 +1296,30 @@ namespace BExplorer.Shell
 			}
 			this.Focus();
 		}
+		public void SetColInView(Collumns col, bool Remove)
+		{
 
+			if (!Remove)
+			{
+				if (this.Collumns.Count(s => s.pkey.fmtid == col.pkey.fmtid && s.pkey.pid == col.pkey.pid) == 0)
+				{
+					this.Collumns.Add(col);
+					var column = col.ToNativeColumn();
+					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
+				}
+			}
+			else
+			{
+				Collumns theColumn = this.Collumns.SingleOrDefault(s => s.pkey.fmtid == col.pkey.fmtid && s.pkey.pid == col.pkey.pid);
+				if (theColumn != null)
+				{
+					int colIndex = this.Collumns.IndexOf(theColumn);
+					this.Collumns.Remove(theColumn);
+					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_DELETECOLUMN, colIndex, 0);
+				}
+
+			}
+		}
 		public void SetSortCollumn(int colIndex, SortOrder Order)
 		{
 			if (colIndex == this.LastSortedColumnIndex)

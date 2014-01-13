@@ -64,6 +64,15 @@ namespace BExplorer.Shell
 			{"A3", new Tuple<String, PROPERTYKEY, Type>("Date Modified", new PROPERTYKEY(){fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 14}, typeof(DateTime))},
 		};
 
+		public static LVCOLUMN ToNativeColumn(this Collumns col)
+		{
+			LVCOLUMN column = new LVCOLUMN();
+			column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH;
+			column.cx = 100;
+			column.pszText = col.Name;
+			column.fmt = LVCFMT.LEFT;
+			return column;
+		}
 		public static List<Collumns> AvailableColumns(this ShellView view)
 		{
 			return AllColumnsPKeys.Select(s => new Collumns(){ID = s.Key, CollumnType = s.Value.Item3, pkey = s.Value.Item2, Name = s.Value.Item1, Width = 100, IsColumnHandler = false }).ToList();

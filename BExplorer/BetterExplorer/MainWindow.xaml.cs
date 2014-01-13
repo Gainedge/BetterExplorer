@@ -707,7 +707,7 @@ namespace BetterExplorer
                 {
                     MenuItem mic = new MenuItem();
                     mic.Header = AllAvailColls[j].Name;
-                    mic.Tag = AllAvailColls[j].pkey;
+                    mic.Tag = AllAvailColls[j];
                     mic.Click += mic_Click;
                     mic.Focusable = false;
                     mic.IsCheckable = true;
@@ -804,7 +804,7 @@ namespace BetterExplorer
         {
             MenuItem mi = (sender as MenuItem);
             Collumns col = (Collumns) mi.Tag;
-            //ShellListView.SetColInView(col, !mi.IsChecked);
+            ShellListView.SetColInView(col, !mi.IsChecked);
         }
 
         [DllImport("shell32.dll")]
