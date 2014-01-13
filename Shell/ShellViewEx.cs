@@ -1319,6 +1319,13 @@ namespace BExplorer.Shell
 								}
 
 						}
+
+						IntPtr headerhandle = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETHEADER, 0, 0);
+
+						for (int i = 0; i < this.Collumns.Count; i++)
+						{
+							this.Collumns[i].SetSplitButton(headerhandle, i);
+						}
 				}
 				public void SetSortCollumn(int colIndex, SortOrder Order)
 				{

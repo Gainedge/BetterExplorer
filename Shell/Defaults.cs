@@ -366,7 +366,7 @@ namespace BExplorer.Shell
 						column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH;
 						column.cx = 100;
 						column.pszText = col.Name;
-						column.fmt = LVCFMT.LEFT;
+						column.fmt = col.CollumnType == typeof(long) ? LVCFMT.RIGHT : LVCFMT.LEFT;
 						return column;
 				}
 				public static List<Collumns> AvailableColumns(this ShellView view)
