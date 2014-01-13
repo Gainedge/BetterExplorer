@@ -55,5 +55,18 @@ namespace BExplorer.Shell
 
 			shellView.Collumns.Add(column4.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 14 }, typeof(DateTime), false));
 		}
+
+		public static Dictionary<String, Tuple<String, PROPERTYKEY, Type>> AllColumnsPKeys = new Dictionary<string, Tuple<String, PROPERTYKEY, Type>>()
+		{
+			{"A0", new Tuple<String, PROPERTYKEY, Type>("Name", new PROPERTYKEY(){fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 10}, typeof(String))},
+			{"A1", new Tuple<String, PROPERTYKEY, Type>("Type", new PROPERTYKEY(){fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4}, typeof(String))},
+			{"A2", new Tuple<String, PROPERTYKEY, Type>("Size", new PROPERTYKEY(){fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 12}, typeof(long))},
+			{"A3", new Tuple<String, PROPERTYKEY, Type>("Date Modified", new PROPERTYKEY(){fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 14}, typeof(DateTime))},
+		};
+
+		public static List<Collumns> AvailableColumns(this ShellView view)
+		{
+			return AllColumnsPKeys.Select(s => new Collumns(){ID = s.Key, CollumnType = s.Value.Item3, pkey = s.Value.Item2, Name = s.Value.Item1, Width = 100, IsColumnHandler = false }).ToList();
+		}
 	}
 }

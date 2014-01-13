@@ -209,7 +209,7 @@ namespace BExplorer.Shell
 			InitializeComponent();
 			this.Items = new List<ShellItem>();
 			this.LVItemsColorCodes = new List<LVItemColor>();
-
+			this.AllAvailableColumns = this.AvailableColumns();
 			thumb = new Thread(LoadIcon);
 			thumb.IsBackground = true;
 			thumb.Priority = ThreadPriority.AboveNormal;
