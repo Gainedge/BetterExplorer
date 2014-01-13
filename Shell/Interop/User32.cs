@@ -176,6 +176,7 @@ namespace BExplorer.Shell.Interop
 				LVM_UPDATE = FIRST + 42,
 				LVM_SETBKIMAGE = (FIRST + 138),
         LVM_GETBKIMAGE = (FIRST + 139),
+
     }
 
 		public enum LV_VIEW : int
