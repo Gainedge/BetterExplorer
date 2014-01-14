@@ -232,8 +232,7 @@ namespace BExplorer.Shell
 						overlaysThread2.Start();
 						UpdateSubitemValues = new Thread(UpdateSubitems);
 						UpdateSubitemValues.IsBackground = true;
-						UpdateSubitemValues.Priority = ThreadPriority.Normal;
-						UpdateSubitemValues.SetApartmentState(ApartmentState.STA);
+						UpdateSubitemValues.Priority = ThreadPriority.BelowNormal;
 						UpdateSubitemValues.Start();
 						m_History = new ShellHistory();
 						token = tokenSource.Token;
@@ -839,8 +838,9 @@ namespace BExplorer.Shell
 						{
 							if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) == IntPtr.Zero)
 								continue;
+
 							//Application.DoEvents();
-							Thread.Sleep(5);
+							Thread.Sleep(10);
 
 							
 
