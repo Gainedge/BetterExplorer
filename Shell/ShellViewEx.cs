@@ -829,12 +829,14 @@ namespace BExplorer.Shell
 				}
 				List<int> cachedIndexes = new List<int>();
 				ConcurrentBag<Tuple<int, PROPERTYKEY, object>> SubItemValues = new ConcurrentBag<Tuple<int, PROPERTYKEY, object>>();
-
+				ManualResetEvent resetEvent = new ManualResetEvent(true);
 				public void UpdateSubitems()
 				{
 					while (true)
 					{
-						Thread.Sleep(5);
+						
+						Thread.Sleep(6);
+						resetEvent.WaitOne();
 						var index = ItemsForSubitemsUpdate.Dequeue();
 						//if (this.Cancel)
 						//	continue;
@@ -899,7 +901,7 @@ namespace BExplorer.Shell
 										}
 										if (!cachedIndexes.Contains(index))
 												cachedIndexes.Add(index);
-										Thread.Sleep(2);
+										resetEvent.WaitOne();
 										Application.DoEvents();
 								}
 								catch 
@@ -913,7 +915,7 @@ namespace BExplorer.Shell
 				{
 						while (true)
 						{
-
+							Thread.Sleep(1);
 								//Application.DoEvents();
 
 								try
@@ -941,7 +943,7 @@ namespace BExplorer.Shell
 														}
 												}
 										}
-										Thread.Sleep(1);
+										resetEvent.WaitOne();
 										Application.DoEvents();
 								}
 								catch
@@ -961,7 +963,7 @@ namespace BExplorer.Shell
 								//{
 								//	Thread.Sleep(5);
 								//}
-
+							Thread.Sleep(3);
 								try
 								{
 										var index = overlayQueue.Dequeue();
@@ -990,7 +992,7 @@ namespace BExplorer.Shell
 										}
 										if (overlayIndex > 0)
 												User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
-										Thread.Sleep(3);
+										resetEvent.WaitOne();
 										Application.DoEvents();
 								}
 								catch (Exception)
@@ -1011,7 +1013,7 @@ namespace BExplorer.Shell
 								//{
 								//	Thread.Sleep(5);
 								//}
-
+							Thread.Sleep(4);
 								try
 								{
 										var index = shieldQueue.Dequeue();
@@ -1045,7 +1047,7 @@ namespace BExplorer.Shell
 										{
 												User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
 										}
-										Thread.Sleep(4);
+										resetEvent.WaitOne();
 										Application.DoEvents();
 								}
 								catch
@@ -1735,7 +1737,7 @@ namespace BExplorer.Shell
 														Process.Start(selectedItem.ParsingName);
 												break;
 										case WNM.LVN_BEGINSCROLL:
-
+												resetEvent.Reset();
 												this.Cancel = true;
 												cache.Clear();
 												//waitingThumbnails.Clear();
@@ -1743,12 +1745,12 @@ namespace BExplorer.Shell
 												//ItemsForSubitemsUpdate.Clear();
 												overlayQueue.Clear();
 												shieldQueue.Clear();
-
+												//! to be revised this for performace
 												Task.Run(() =>
 												{
 													while (ItemsForSubitemsUpdate.queue.Count > 0)
 													{
-														Thread.Sleep(5);
+														Thread.Sleep(4);
 														var item = ItemsForSubitemsUpdate.Dequeue();
 														if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, item.Item1, 0) != IntPtr.Zero)
 														{
@@ -1771,7 +1773,7 @@ namespace BExplorer.Shell
 												break;
 										case WNM.LVN_ENDSCROLL:
 												this.Cancel = false;
-												
+												resetEvent.Set();
 												Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 												break;
 										case WNM.LVN_ITEMCHANGED:
