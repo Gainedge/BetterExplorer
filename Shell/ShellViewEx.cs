@@ -1755,6 +1755,15 @@ namespace BExplorer.Shell
 															ItemsForSubitemsUpdate.Enqueue(item);
 														}
 													}
+
+													while (waitingThumbnails.queue.Count > 0)
+													{
+														var iconIndex = waitingThumbnails.Dequeue();
+														if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, iconIndex, 0) != IntPtr.Zero)
+														{
+															waitingThumbnails.Enqueue(iconIndex);
+														}
+													}
 												});
 												//shieldedIcons.Clear();
 												//overlays.Clear();
