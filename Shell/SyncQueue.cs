@@ -17,7 +17,7 @@ namespace BExplorer.Shell
 			}
 		}
 		private bool isHandled = false;
-		private readonly Queue<T> queue = new Queue<T>();
+		public readonly Queue<T> queue = new Queue<T>();
 		private readonly int maxSize;
 		public SyncQueue(int maxSize) { this.maxSize = maxSize; }
 		public event EventHandler<OverloadEventArgs> OnQueueOverload;

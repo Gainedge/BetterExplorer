@@ -233,6 +233,7 @@ namespace BExplorer.Shell
 						UpdateSubitemValues = new Thread(UpdateSubitems);
 						UpdateSubitemValues.IsBackground = true;
 						UpdateSubitemValues.Priority = ThreadPriority.BelowNormal;
+						UpdateSubitemValues.SetApartmentState(ApartmentState.STA);
 						UpdateSubitemValues.Start();
 						m_History = new ShellHistory();
 						token = tokenSource.Token;
@@ -833,35 +834,45 @@ namespace BExplorer.Shell
 				{
 					while (true)
 					{
+						Thread.Sleep(5);
 						var index = ItemsForSubitemsUpdate.Dequeue();
+						//if (this.Cancel)
+						//	continue;
 						try
 						{
-							if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) == IntPtr.Zero)
-								continue;
-
-							//Application.DoEvents();
-							Thread.Sleep(10);
-
-							
-
-							var currentItem = Items[index.Item1];
-							int hash = currentItem.GetHashCode();
-							IShellItem2 isi2 = (IShellItem2)currentItem.m_ComInterface;
-							var pvar = new PropVariant();
-							var pk = index.Item3;
-							if (isi2.GetProperty(ref pk, pvar) == HResult.S_OK)
+							if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero)
 							{
-								if (SubItemValues.Count(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid) == 0)
+								//	continue;
+								//if (this.Cancel)
+								//	continue;
+								//Application.DoEvents();
+								
+
+
+
+								var currentItem = Items[index.Item1];
+								int hash = currentItem.GetHashCode();
+								IShellItem2 isi2 = (IShellItem2)currentItem.m_ComInterface;
+								var pvar = new PropVariant();
+								var pk = index.Item3;
+								Guid guid = new Guid(InterfaceGuids.IPropertyStore);
+								IPropertyStore propStore = null;
+								isi2.GetPropertyStore(GetPropertyStoreOptions.Default, ref guid, out propStore);
+								if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK)
 								{
-									SubItemValues.Add(new Tuple<int, PROPERTYKEY, object>(hash, pk, pvar.Value));
-									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index.Item1, index.Item1);
+									if (SubItemValues.ToArray().Count(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid) == 0)
+									{
+										SubItemValues.Add(new Tuple<int, PROPERTYKEY, object>(hash, pk, pvar.Value));
+										User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index.Item1, index.Item1);
+									}
+									pvar.Dispose();
 								}
 							}
-							pvar.Dispose();
+							
 						}
 						catch
 						{
-							User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, index.Item1, 0);
+							//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, index.Item1, 0);
 						}
 
 					}
@@ -1590,13 +1601,15 @@ namespace BExplorer.Shell
 														{
 																if (isSmallIcons)
 																{
-																	var currentItem = this.Items[nmlv.item.iItem];
-																	var hash = currentItem.GetHashCode();
-																	Collumns currentCollumn = this.Collumns[nmlv.item.iSubItem];
-																	var valueCached = SubItemValues.FirstOrDefault(s => s.Item1 == hash && s.Item2.fmtid == currentCollumn.pkey.fmtid && s.Item2.pid == currentCollumn.pkey.pid);
-																	if (valueCached != null && valueCached.Item3 != null)
+																	try
 																	{
-																		String val = String.Empty;
+																		var currentItem = this.Items[nmlv.item.iItem];
+																		var hash = currentItem.GetHashCode();
+																		Collumns currentCollumn = this.Collumns[nmlv.item.iSubItem];
+																		var valueCached = SubItemValues.ToArray().FirstOrDefault(s => s.Item1 == hash && s.Item2.fmtid == currentCollumn.pkey.fmtid && s.Item2.pid == currentCollumn.pkey.pid);
+																		if (valueCached != null && valueCached.Item3 != null)
+																		{
+																			String val = String.Empty;
 																			if (currentCollumn.CollumnType == typeof(DateTime))
 																			{
 
@@ -1610,50 +1623,56 @@ namespace BExplorer.Shell
 																			{
 																				val = valueCached.Item3.ToString();
 																			}
-																		nmlv.item.pszText = val;
-																		Marshal.StructureToPtr(nmlv, m.LParam, false);
-																	}
-																	else
-																	{
-																		IShellItem2 isi2 = (IShellItem2)currentItem.m_ComInterface;
-																		Guid guid = new Guid(InterfaceGuids.IPropertyStore);
-																		IPropertyStore propStore = null;
-																		isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
-																		PROPERTYKEY pk = currentCollumn.pkey;
-																		PropVariant pvar = new PropVariant();
-																		if (propStore != null)
+																			nmlv.item.pszText = val;
+																			Marshal.StructureToPtr(nmlv, m.LParam, false);
+																		}
+																		else
 																		{
-																			if (propStore.GetValue(ref pk, pvar) == HResult.S_OK)
+																			IShellItem2 isi2 = (IShellItem2)currentItem.m_ComInterface;
+																			Guid guid = new Guid(InterfaceGuids.IPropertyStore);
+																			IPropertyStore propStore = null;
+																			isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
+																			PROPERTYKEY pk = currentCollumn.pkey;
+																			PropVariant pvar = new PropVariant();
+																			if (propStore != null)
 																			{
-																				String val = String.Empty;
-																				if (pvar.Value != null)
+																				if (propStore.GetValue(ref pk, pvar) == HResult.S_OK)
 																				{
-																					if (currentCollumn.CollumnType == typeof(DateTime))
+																					String val = String.Empty;
+																					if (pvar.Value != null)
 																					{
+																						if (currentCollumn.CollumnType == typeof(DateTime))
+																						{
 
-																						val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
-																					}
-																					else if (currentCollumn.CollumnType == typeof(long))
-																					{
-																						val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0"))); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
+																							val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
+																						}
+																						else if (currentCollumn.CollumnType == typeof(long))
+																						{
+																							val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0"))); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
+																						}
+																						else
+																						{
+																							val = pvar.Value.ToString();
+																						}
+																						nmlv.item.pszText = val;
+																						Marshal.StructureToPtr(nmlv, m.LParam, false);
+																						pvar.Dispose();
 																					}
 																					else
 																					{
-																						val = pvar.Value.ToString();
+																						ItemsForSubitemsUpdate.Enqueue(new Tuple<int, int, PROPERTYKEY>(nmlv.item.iItem, nmlv.item.iSubItem, pk));
 																					}
+
 																				}
-																				else
-																				{
-																					ItemsForSubitemsUpdate.Enqueue(new Tuple<int, int, PROPERTYKEY>(nmlv.item.iItem, nmlv.item.iSubItem, pk));
-																				}
-																				nmlv.item.pszText = val;
-																				Marshal.StructureToPtr(nmlv, m.LParam, false);
-																				pvar.Dispose();
+
 																			}
-																			
+
+
 																		}
-																	
-																		
+																	}
+																	catch 
+																	{
+
 																	}
 																		//var currentItem = Items[nmlv.item.iItem];
 																		//var hash = currentItem.GetHashCode();
@@ -1721,16 +1740,29 @@ namespace BExplorer.Shell
 												cache.Clear();
 												//waitingThumbnails.Clear();
 												ThumbnailsForCacheLoad.Clear();
+												//ItemsForSubitemsUpdate.Clear();
 												overlayQueue.Clear();
 												shieldQueue.Clear();
 
-
+												Task.Run(() =>
+												{
+													while (ItemsForSubitemsUpdate.queue.Count > 0)
+													{
+														Thread.Sleep(5);
+														var item = ItemsForSubitemsUpdate.Dequeue();
+														if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, item.Item1, 0) != IntPtr.Zero)
+														{
+															ItemsForSubitemsUpdate.Enqueue(item);
+														}
+													}
+												});
 												//shieldedIcons.Clear();
 												//overlays.Clear();
-												GC.Collect();
+												//GC.Collect();
 												break;
 										case WNM.LVN_ENDSCROLL:
 												this.Cancel = false;
+												
 												Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 												break;
 										case WNM.LVN_ITEMCHANGED:
