@@ -237,6 +237,8 @@ namespace BExplorer.Shell
 						UpdateSubitemValues.Start();
 						m_History = new ShellHistory();
 						token = tokenSource.Token;
+						resetTimer.Interval = 1000;
+						resetTimer.Tick += resetTimer_Tick;
 
 						Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO();
 						defIconInfo.cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO));
@@ -247,6 +249,11 @@ namespace BExplorer.Shell
 						ExeFallBack16 = small.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
 
 						//SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
+				}
+
+				void resetTimer_Tick(object sender, EventArgs e)
+				{
+					resetEvent.Set();
 				}
 
 				/// <summary>
@@ -1506,7 +1513,7 @@ namespace BExplorer.Shell
 						//this.Refresh();
 						User32.MoveWindow(this.LVHandle, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, true);
 				}
-
+				System.Windows.Forms.Timer resetTimer = new System.Windows.Forms.Timer();
 				protected override void WndProc(ref Message m)
 				{
 						bool isSmallIcons = (View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details);
@@ -1621,6 +1628,10 @@ namespace BExplorer.Shell
 																			{
 																				val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(valueCached.Item3.ToString()) / 1024).ToString("# ### ### ##0"))); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
 																			}
+																			else if (currentCollumn.CollumnType == typeof(PerceivedType))
+																			{
+																				val = ((PerceivedType)valueCached.Item3).ToString();
+																			}
 																			else
 																			{
 																				val = valueCached.Item3.ToString();
@@ -1651,6 +1662,10 @@ namespace BExplorer.Shell
 																						else if (currentCollumn.CollumnType == typeof(long))
 																						{
 																							val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0"))); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
+																						}
+																						else if (currentCollumn.CollumnType == typeof(PerceivedType))
+																						{
+																							val = ((PerceivedType)pvar.Value).ToString();
 																						}
 																						else
 																						{
@@ -1738,6 +1753,7 @@ namespace BExplorer.Shell
 												break;
 										case WNM.LVN_BEGINSCROLL:
 												resetEvent.Reset();
+												resetTimer.Stop();
 												this.Cancel = true;
 												cache.Clear();
 												//waitingThumbnails.Clear();
@@ -1773,8 +1789,8 @@ namespace BExplorer.Shell
 												break;
 										case WNM.LVN_ENDSCROLL:
 												this.Cancel = false;
-												resetEvent.Set();
-												Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+												resetTimer.Start();
+												//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 												break;
 										case WNM.LVN_ITEMCHANGED:
 												NMLISTVIEW nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));

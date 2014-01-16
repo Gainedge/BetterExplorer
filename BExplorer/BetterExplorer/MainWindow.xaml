@@ -314,7 +314,7 @@
                            Margin="20,0,0,0"
                            Content="32-bit Version"
                            FontSize="12" />
-                                        <Label Margin="20,0,0,0" Content="© 2012. All right reserved." />
+                                        <Label Margin="20,0,0,0" Content="© 2014. All right reserved." />
                                         <Ribbon:SeparatorTabItem Margin="0,20,50,0"
                                              Header="Credits"
                                              Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
@@ -322,7 +322,7 @@
                                         <!--  <Label Content="Qttabbar - a great utility for Windows Explorer"/>  -->
                                         <Label Content="7-Zip - archiving utility (www.7-zip.org)" />
                                         <Label Content="7ZipSharp - a wrapper of 7Zip for .NET" />
-                                        <Label Content="Some icons and ExplorerBrowser control are property of Microsoft® Corporation. All right reserved." />
+                                        <Label Content="Some icons are property of Microsoft® Corporation. All right reserved." />
 
                                     </StackPanel>
                                 </ScrollViewer>

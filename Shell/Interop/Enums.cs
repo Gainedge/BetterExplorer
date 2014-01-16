@@ -199,6 +199,24 @@ namespace BExplorer.Shell.Interop
 
 	#endregion
 
+
+	public enum PerceivedType
+	{
+		Application	= 8,
+		Audio	= 3,
+		Compressed	= 5,
+		Contacts	= 10,
+		Custom = -3,	
+		Document= 6,	
+		Folder	= -1,
+		GameMedia	= 9,
+		Image	= 2,
+		System	= 7,
+		Text	= 1,
+		Unknown	= 0,
+		Unspecified	= -2,
+		Video = 4,
+	}
 	public enum LVBKIF : int
 	{
 

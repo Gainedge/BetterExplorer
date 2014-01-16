@@ -71,7 +71,7 @@ namespace BExplorer.Shell
 						{"A6", new Tuple<String, PROPERTYKEY, Type>("Attributes", new PROPERTYKEY(){fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 13}, typeof(String))},
 						{"A7", new Tuple<String, PROPERTYKEY, Type>("Offline status", new PROPERTYKEY(){fmtid = Guid.Parse("6d24888f-4718-4bda-afed-ea0fb4386cd8"), pid = 100}, typeof(String))},
 						{"A8", new Tuple<String, PROPERTYKEY, Type>("Offline availability", new PROPERTYKEY(){fmtid = Guid.Parse("a94688b6-7d9f-4570-a648-e3dfc0ab2b3f"), pid = 100}, typeof(String))},
-						{"A9", new Tuple<String, PROPERTYKEY, Type>("Perceived type", new PROPERTYKEY(){fmtid = Guid.Parse("28636aa6-953d-11d2-b5d6-00c04fd918d0"), pid = 9}, typeof(String))},
+						{"A9", new Tuple<String, PROPERTYKEY, Type>("Perceived type", new PROPERTYKEY(){fmtid = Guid.Parse("28636aa6-953d-11d2-b5d6-00c04fd918d0"), pid = 9}, typeof(PerceivedType))},
 						{"A10", new Tuple<String, PROPERTYKEY, Type>("Owner", new PROPERTYKEY(){fmtid = Guid.Parse("9b174b34-40ff-11d2-a27e-00c04fc30871"), pid = 4}, typeof(String))},
 						{"A11", new Tuple<String, PROPERTYKEY, Type>("Kind", new PROPERTYKEY(){fmtid = Guid.Parse("1e3ee840-bc2b-476c-8237-2acd1a839b22"), pid = 3}, typeof(String))},
 						{"A12", new Tuple<String, PROPERTYKEY, Type>("Date taken", new PROPERTYKEY(){fmtid = Guid.Parse("14b81da1-0135-4d31-96d9-6cbfc9671a99"), pid = 36867}, typeof(String))},
