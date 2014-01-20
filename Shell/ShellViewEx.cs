@@ -232,8 +232,8 @@ namespace BExplorer.Shell
 						overlaysThread2.Start();
 						UpdateSubitemValues = new Thread(UpdateSubitems);
 						UpdateSubitemValues.IsBackground = true;
-						UpdateSubitemValues.Priority = ThreadPriority.BelowNormal;
-						UpdateSubitemValues.SetApartmentState(ApartmentState.STA);
+						UpdateSubitemValues.Priority = ThreadPriority.Normal;
+						//UpdateSubitemValues.SetApartmentState(ApartmentState.STA);
 						UpdateSubitemValues.Start();
 						m_History = new ShellHistory();
 						token = tokenSource.Token;
@@ -249,6 +249,30 @@ namespace BExplorer.Shell
 						ExeFallBack16 = small.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
 
 						//SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
+				}
+
+				protected override void OnHandleDestroyed(EventArgs e)
+				{
+					try
+					{
+						if (thumb.IsAlive)
+							thumb.Abort();
+						if (CacheLoad.IsAlive)
+							CacheLoad.Abort();
+						if (overlaysThread.IsAlive)
+							overlaysThread.Abort();
+						if (overlaysThread2.IsAlive)
+							overlaysThread2.Abort();
+						if (UpdateSubitemValues.IsAlive)
+							UpdateSubitemValues.Abort();
+						if (MaintenanceThread != null & MaintenanceThread.IsAlive)
+							MaintenanceThread.Abort();
+					}
+					catch (ThreadAbortException)
+					{
+
+					}
+					base.OnHandleDestroyed(e);
 				}
 
 				void resetTimer_Tick(object sender, EventArgs e)
@@ -842,8 +866,9 @@ namespace BExplorer.Shell
 					while (true)
 					{
 						
-						Thread.Sleep(6);
+						
 						resetEvent.WaitOne();
+						Thread.Sleep(1);
 						var index = ItemsForSubitemsUpdate.Dequeue();
 						//if (this.Cancel)
 						//	continue;
@@ -890,7 +915,8 @@ namespace BExplorer.Shell
 				{
 						while (true)
 						{
-
+								resetEvent.WaitOne();
+								Thread.Sleep(1);
 								try
 								{
 										//Application.DoEvents();
@@ -908,8 +934,8 @@ namespace BExplorer.Shell
 										}
 										if (!cachedIndexes.Contains(index))
 												cachedIndexes.Add(index);
-										resetEvent.WaitOne();
-										Application.DoEvents();
+										
+										//Application.DoEvents();
 								}
 								catch 
 								{
@@ -922,36 +948,33 @@ namespace BExplorer.Shell
 				{
 						while (true)
 						{
+							resetEvent.WaitOne();
 							Thread.Sleep(1);
 								//Application.DoEvents();
 
 								try
 								{
 										var index = waitingThumbnails.Dequeue();
-										if (!this.Cancel)
+										var sho = Items[index];
+										var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+										if (icon != null)
 										{
-												var sho = Items[index];
-												var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
-												if (icon != null)
+												if (!cache.ContainsKey(index))
 												{
-														if (!cache.ContainsKey(index))
-														{
-																cache.TryAdd(index, new Bitmap(icon));
-																User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
-																icon.Dispose();
-																icon = null;
-														}
-														else
-														{
-																cache[index] = new Bitmap(icon);
-																User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
-																icon.Dispose();
-																icon = null;
-														}
+														cache.TryAdd(index, new Bitmap(icon));
+														User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
+														icon.Dispose();
+														icon = null;
+												}
+												else
+												{
+														cache[index] = new Bitmap(icon);
+														User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
+														icon.Dispose();
+														icon = null;
 												}
 										}
-										resetEvent.WaitOne();
-										Application.DoEvents();
+										//Application.DoEvents();
 								}
 								catch
 								{
@@ -1000,7 +1023,7 @@ namespace BExplorer.Shell
 										if (overlayIndex > 0)
 												User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
 										resetEvent.WaitOne();
-										Application.DoEvents();
+										//Application.DoEvents();
 								}
 								catch (Exception)
 								{
@@ -1055,7 +1078,7 @@ namespace BExplorer.Shell
 												User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
 										}
 										resetEvent.WaitOne();
-										Application.DoEvents();
+										//Application.DoEvents();
 								}
 								catch
 								{
@@ -1514,6 +1537,7 @@ namespace BExplorer.Shell
 						User32.MoveWindow(this.LVHandle, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, true);
 				}
 				System.Windows.Forms.Timer resetTimer = new System.Windows.Forms.Timer();
+				Thread MaintenanceThread;
 				protected override void WndProc(ref Message m)
 				{
 						bool isSmallIcons = (View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details);
@@ -1762,27 +1786,39 @@ namespace BExplorer.Shell
 												overlayQueue.Clear();
 												shieldQueue.Clear();
 												//! to be revised this for performace
-												Task.Run(() =>
+												try
 												{
-													while (ItemsForSubitemsUpdate.queue.Count > 0)
+													if (MaintenanceThread != null && MaintenanceThread.IsAlive)
+														MaintenanceThread.Abort();
+													MaintenanceThread = new Thread(() =>
 													{
-														Thread.Sleep(4);
-														var item = ItemsForSubitemsUpdate.Dequeue();
-														if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, item.Item1, 0) != IntPtr.Zero)
+														while (ItemsForSubitemsUpdate.queue.Count > 0)
 														{
-															ItemsForSubitemsUpdate.Enqueue(item);
+															Thread.Sleep(1);
+															var item = ItemsForSubitemsUpdate.Dequeue();
+															if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, item.Item1, 0) != IntPtr.Zero)
+															{
+																ItemsForSubitemsUpdate.Enqueue(item);
+															}
 														}
-													}
 
-													while (waitingThumbnails.queue.Count > 0)
-													{
-														var iconIndex = waitingThumbnails.Dequeue();
-														if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, iconIndex, 0) != IntPtr.Zero)
+														while (waitingThumbnails.queue.Count > 0)
 														{
-															waitingThumbnails.Enqueue(iconIndex);
+															Thread.Sleep(1);
+															var iconIndex = waitingThumbnails.Dequeue();
+															if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, iconIndex, 0) != IntPtr.Zero)
+															{
+																waitingThumbnails.Enqueue(iconIndex);
+															}
 														}
-													}
-												});
+
+													});
+													MaintenanceThread.Start();
+												}
+												catch (ThreadAbortException)
+												{
+
+												}
 												//shieldedIcons.Clear();
 												//overlays.Clear();
 												//GC.Collect();
