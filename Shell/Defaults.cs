@@ -356,18 +356,21 @@ namespace BExplorer.Shell
 						//{"A290", new Tuple<String, PROPERTYKEY, Type>("", new PROPERTYKEY(){fmtid = Guid.Parse("1ce0d6bc-536c-4600-b0dd-7e0c66b350d5"), pid = 6}, typeof(String))},
 						//{"A291", new Tuple<String, PROPERTYKEY, Type>("Masters Keywords (debug)", new PROPERTYKEY(){fmtid = Guid.Parse("a4790b72-7113-4348-97ea-292bbc1f6770"), pid = 6}, typeof(String))},
 						//{"A292", new Tuple<String, PROPERTYKEY, Type>("Masters Keywords (debug)", new PROPERTYKEY(){fmtid = Guid.Parse("a4790b72-7113-4348-97ea-292bbc1f6770"), pid = 5}, typeof(String))},
-
-
 				};
 
+				/// <summary>
+				/// Convert and Collumns structure to LVCOLUMN (Native Listview Column)
+				/// </summary>
+				/// <param name="col">the column</param>
+				/// <returns>resulting LVCOLUMN structure</returns>
 				public static LVCOLUMN ToNativeColumn(this Collumns col)
 				{
-						LVCOLUMN column = new LVCOLUMN();
-						column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH;
-						column.cx = 100;
-						column.pszText = col.Name;
-						column.fmt = col.CollumnType == typeof(long) ? LVCFMT.RIGHT : LVCFMT.LEFT;
-						return column;
+					LVCOLUMN column = new LVCOLUMN();
+					column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH;
+					column.cx = 100;
+					column.pszText = col.Name;
+					column.fmt = col.CollumnType == typeof(long) ? LVCFMT.RIGHT : LVCFMT.LEFT;
+					return column;
 				}
 				public static List<Collumns> AvailableColumns(this ShellView view)
 				{

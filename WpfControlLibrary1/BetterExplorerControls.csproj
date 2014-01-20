@@ -110,6 +110,23 @@
     <Compile Include="BreadcrumbBarItem.xaml.cs">
       <DependentUpon>BreadcrumbBarItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BreadCrumbBar\BreacrumbCorePanel.cs" />
+    <Compile Include="BreadCrumbBar\Breadcrumb.cs" />
+    <Compile Include="BreadCrumbBar\BreadcrumbBase.cs" />
+    <Compile Include="BreadCrumbBar\BreadcrumbCore.cs" />
+    <Compile Include="BreadCrumbBar\BreadcrumbExpander.cs" />
+    <Compile Include="BreadCrumbBar\BreadcrumbItem.cs" />
+    <Compile Include="BreadCrumbBar\BreadcrumbOverflowPanel.cs" />
+    <Compile Include="BreadCrumbBar\DropDown.cs" />
+    <Compile Include="BreadCrumbBar\DropDownList.cs" />
+    <Compile Include="BreadCrumbBar\SuggestBox.cs" />
+    <Compile Include="BreadCrumbBar\SuggestBoxBase.cs" />
+    <Compile Include="ItemSources\AutoSuggestSource.cs" />
+    <Compile Include="Helpers\PathExistsValidationRule.cs" />
+    <Compile Include="Helpers\PathHierarchyHelper.cs" />
+    <Compile Include="Helpers\PropertyPathHelper.cs" />
+    <Compile Include="Helpers\UITools.cs" />
+    <Compile Include="Helpers\AttachedProperties.cs" />
     <Compile Include="ImageSizeDisplay.xaml.cs">
       <DependentUpon>ImageSizeDisplay.xaml</DependentUpon>
     </Compile>

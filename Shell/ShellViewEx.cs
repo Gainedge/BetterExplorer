@@ -28,58 +28,75 @@ namespace BExplorer.Shell
 		/// </summary>
 		public enum ShellViewStyle
 		{
-				ExtraLargeIcon,
-				LargeIcon,
-				/// <summary>
-				/// Each item appears as a full-sized icon with a label below it. 
-				/// </summary>
-				Medium,
+			/// <summary>
+			/// Items appear in a grid and icon size is 256x256
+			/// </summary>
+			ExtraLargeIcon,
 
-				/// <summary>
-				/// Each item appears as a small icon with a label to its right. 
-				/// </summary>
-				SmallIcon,
+			/// <summary>
+			/// Items appear in a grid and icon size is 96x96
+			/// </summary>
+			LargeIcon,
 
-				/// <summary>
-				/// Each item appears as a small icon with a label to its right. 
-				/// Items are arranged in columns with no column headers. 
-				/// </summary>
-				List,
+			/// <summary>
+			/// Each item appears as a full-sized icon with a label below it. 
+			/// </summary>
+			Medium,
 
-				/// <summary>
-				/// Each item appears on a separate line with further information 
-				/// about each item arranged in columns. The left-most column 
-				/// contains a small icon and label. 
-				/// </summary>
-				Details,
+			/// <summary>
+			/// Each item appears as a small icon with a label to its right. 
+			/// </summary>
+			SmallIcon,
 
-				/// <summary>
-				/// Each item appears with a thumbnail picture of the file's content.
-				/// </summary>
-				Thumbnail,
+			/// <summary>
+			/// Each item appears as a small icon with a label to its right. 
+			/// Items are arranged in columns. 
+			/// </summary>
+			List,
 
-				/// <summary>
-				/// Each item appears as a full-sized icon with the item label and 
-				/// file information to the right of it. 
-				/// </summary>
-				Tile,
+			/// <summary>
+			/// Each item appears on a separate line with further information 
+			/// about each item arranged in columns. The left-most column 
+			/// contains a small icon and label. 
+			/// </summary>
+			Details,
 
-				/// <summary>
-				/// Each item appears in a thumbstrip at the bottom of the control,
-				/// with a large preview of the seleted item appearing above.
-				/// </summary>
-				Thumbstrip,
-				/// <summary>
-				/// Each item appears in a item that occupy the whole view width
-				/// </summary>
-				Content,
+			/// <summary>
+			/// Each item appears with a thumbnail picture of the file's content.
+			/// </summary>
+			Thumbnail,
+
+			/// <summary>
+			/// Each item appears as a full-sized icon with the item label and 
+			/// file information to the right of it. 
+			/// </summary>
+			Tile,
+
+			/// <summary>
+			/// Each item appears in a thumbstrip at the bottom of the control,
+			/// with a large preview of the seleted item appearing above.
+			/// </summary>
+			Thumbstrip,
+
+			/// <summary>
+			/// Each item appears in a item that occupy the whole view width
+			/// </summary>
+			Content,
 
 
 		}
 
-		public class NavigatedEventArgs : EventArgs
+		public class NavigatedEventArgs : EventArgs, IDisposable
 		{
 				ShellItem m_Folder;
+				public void Dispose()
+				{
+					if (m_Folder != null)
+					{
+						m_Folder.Dispose();
+						m_Folder = null;
+					}
+				}
 				public NavigatedEventArgs(ShellItem folder)
 				{
 						m_Folder = folder;
@@ -98,12 +115,20 @@ namespace BExplorer.Shell
 		/// Provides information for the <see cref="ShellView.Navigating"/>
 		/// event.
 		/// </summary>
-		public class NavigatingEventArgs : EventArgs
+		public class NavigatingEventArgs : EventArgs, IDisposable
 		{
 				bool m_Cancel;
 
 				ShellItem m_Folder;
 
+				public void Dispose()
+				{
+					if (m_Folder != null)
+					{
+						m_Folder.Dispose();
+						m_Folder = null;
+					}
+				}
 				/// <summary>
 				/// Initializes a new instance of the <see cref="NavigatingEventArgs"/>
 				/// class.
@@ -161,6 +186,9 @@ namespace BExplorer.Shell
 				}
 		}
 
+	/// <summary>
+	/// The ShellFileView class
+	/// </summary>
 		public partial class ShellView : UserControl
 		{
 
@@ -172,7 +200,7 @@ namespace BExplorer.Shell
 				private Boolean _ShowHidden;
 				BackgroundWorker bw = new BackgroundWorker();
 				ConcurrentDictionary<int, Bitmap> cache = new ConcurrentDictionary<int, Bitmap>();
-				Thread CacheLoad;
+				Thread _IconCacheLoadingThread;
 				Boolean Cancel = false;
 				Bitmap ExeFallBack16;
 				Bitmap ExeFallBack256;
@@ -188,60 +216,47 @@ namespace BExplorer.Shell
 				ShellViewStyle m_View;
 				SyncQueue<int> overlayQueue = new SyncQueue<int>(3000);
 				Dictionary<int, int> overlays = new Dictionary<int, int>();
-				Thread overlaysThread;
-				Thread overlaysThread2;
+				Thread _OverlaysLoadingThread;
+				Thread _ShieldLoadingThread;
 				System.Windows.Forms.Timer selectionTimer = new System.Windows.Forms.Timer();
 				Dictionary<int, int> shieldedIcons = new Dictionary<int, int>();
 				SyncQueue<int> shieldQueue = new SyncQueue<int>(3000);
 				ImageList small = new ImageList(ImageListSize.SystemSmall);
-				Thread thumb;
-				Thread UpdateSubitemValues;
+				Thread _IconLoadingThread;
+				Thread _UpdateSubitemValuesThread;
 				ConcurrentDictionary<int, ConcurrentDictionary<Collumns, object>> SubItems = new ConcurrentDictionary<int, ConcurrentDictionary<Collumns, object>>();
 
 				SyncQueue<int> ThumbnailsForCacheLoad = new SyncQueue<int>(5000);
 				SyncQueue<Tuple<int, int, PROPERTYKEY>> ItemsForSubitemsUpdate = new SyncQueue<Tuple<int, int, PROPERTYKEY>>(5000);
 
-				CancellationToken token;
-
-				CancellationTokenSource tokenSource = new CancellationTokenSource();
-
 				SyncQueue<int> waitingThumbnails = new SyncQueue<int>(3000);
 
+				/// <summary>
+				/// Main constructor
+				/// </summary>
 				public ShellView()
 				{
 						InitializeComponent();
 						this.Items = new List<ShellItem>();
 						this.LVItemsColorCodes = new List<LVItemColor>();
 						this.AllAvailableColumns = this.AvailableColumns();
-						thumb = new Thread(LoadIcon);
-						thumb.IsBackground = true;
-						thumb.Priority = ThreadPriority.AboveNormal;
-						thumb.Start();
-						CacheLoad = new Thread(LoadCacheIcon);
-						CacheLoad.IsBackground = true;
-						CacheLoad.Priority = ThreadPriority.Normal;
-						CacheLoad.SetApartmentState(ApartmentState.STA);
-						CacheLoad.Start();
-						overlaysThread = new Thread(LoadOverlay);
-						overlaysThread.IsBackground = true;
-						overlaysThread.Priority = ThreadPriority.BelowNormal;
-						overlaysThread.Start();
-						overlaysThread2 = new Thread(LoadShield);
-						overlaysThread2.IsBackground = true;
-						overlaysThread2.Priority = ThreadPriority.BelowNormal;
-						overlaysThread2.Start();
-						UpdateSubitemValues = new Thread(UpdateSubitems);
-						UpdateSubitemValues.IsBackground = true;
-						UpdateSubitemValues.Priority = ThreadPriority.Normal;
+						_IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.AboveNormal };
+						_IconLoadingThread.Start();
+						_IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
+						_IconCacheLoadingThread.SetApartmentState(ApartmentState.STA);
+						_IconCacheLoadingThread.Start();
+						_OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
+						_OverlaysLoadingThread.Start();
+						_ShieldLoadingThread = new Thread(_ShieldLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
+						_ShieldLoadingThread.Start();
+						_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
 						//UpdateSubitemValues.SetApartmentState(ApartmentState.STA);
-						UpdateSubitemValues.Start();
+						_UpdateSubitemValuesThread.Start();
 						m_History = new ShellHistory();
-						token = tokenSource.Token;
-						resetTimer.Interval = 1000;
-						resetTimer.Tick += resetTimer_Tick;
+						_ResetTimer.Interval = 500;
+						_ResetTimer.Tick += resetTimer_Tick;
 
-						Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO();
-						defIconInfo.cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO));
+						Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
 
 						Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_APPLICATION, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
 						ExeFallBack48 = extra.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
@@ -255,17 +270,17 @@ namespace BExplorer.Shell
 				{
 					try
 					{
-						if (thumb.IsAlive)
-							thumb.Abort();
-						if (CacheLoad.IsAlive)
-							CacheLoad.Abort();
-						if (overlaysThread.IsAlive)
-							overlaysThread.Abort();
-						if (overlaysThread2.IsAlive)
-							overlaysThread2.Abort();
-						if (UpdateSubitemValues.IsAlive)
-							UpdateSubitemValues.Abort();
-						if (MaintenanceThread != null & MaintenanceThread.IsAlive)
+						if (_IconLoadingThread.IsAlive)
+							_IconLoadingThread.Abort();
+						if (_IconCacheLoadingThread.IsAlive)
+							_IconCacheLoadingThread.Abort();
+						if (_OverlaysLoadingThread.IsAlive)
+							_OverlaysLoadingThread.Abort();
+						if (_ShieldLoadingThread.IsAlive)
+							_ShieldLoadingThread.Abort();
+						if (_UpdateSubitemValuesThread.IsAlive)
+							_UpdateSubitemValuesThread.Abort();
+						if (MaintenanceThread != null && MaintenanceThread.IsAlive)
 							MaintenanceThread.Abort();
 					}
 					catch (ThreadAbortException)
@@ -861,7 +876,7 @@ namespace BExplorer.Shell
 				List<int> cachedIndexes = new List<int>();
 				ConcurrentBag<Tuple<int, PROPERTYKEY, object>> SubItemValues = new ConcurrentBag<Tuple<int, PROPERTYKEY, object>>();
 				ManualResetEvent resetEvent = new ManualResetEvent(true);
-				public void UpdateSubitems()
+				public void _UpdateSubitemValuesThreadRun()
 				{
 					while (true)
 					{
@@ -911,7 +926,7 @@ namespace BExplorer.Shell
 
 					}
 				}
-				public async void LoadCacheIcon()
+				public async void _IconCacheLoadingThreadRun()
 				{
 						while (true)
 						{
@@ -944,7 +959,7 @@ namespace BExplorer.Shell
 						}
 				}
 
-				public async void LoadIcon()
+				public async void _IconsLoadingThreadRun()
 				{
 						while (true)
 						{
@@ -983,7 +998,7 @@ namespace BExplorer.Shell
 						}
 				}
 
-				public void LoadOverlay()
+				public void _OverlaysLoadingThreadRun()
 				{
 						while (true)
 						{
@@ -1032,7 +1047,7 @@ namespace BExplorer.Shell
 						}
 				}
 
-				public void LoadShield()
+				public void _ShieldLoadingThreadRun()
 				{
 						while (true)
 						{
@@ -1536,7 +1551,7 @@ namespace BExplorer.Shell
 						//this.Refresh();
 						User32.MoveWindow(this.LVHandle, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, true);
 				}
-				System.Windows.Forms.Timer resetTimer = new System.Windows.Forms.Timer();
+				System.Windows.Forms.Timer _ResetTimer = new System.Windows.Forms.Timer();
 				Thread MaintenanceThread;
 				protected override void WndProc(ref Message m)
 				{
@@ -1777,7 +1792,7 @@ namespace BExplorer.Shell
 												break;
 										case WNM.LVN_BEGINSCROLL:
 												resetEvent.Reset();
-												resetTimer.Stop();
+												_ResetTimer.Stop();
 												this.Cancel = true;
 												cache.Clear();
 												//waitingThumbnails.Clear();
@@ -1825,7 +1840,7 @@ namespace BExplorer.Shell
 												break;
 										case WNM.LVN_ENDSCROLL:
 												this.Cancel = false;
-												resetTimer.Start();
+												_ResetTimer.Start();
 												//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 												break;
 										case WNM.LVN_ITEMCHANGED:
