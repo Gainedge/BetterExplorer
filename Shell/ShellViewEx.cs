@@ -1569,13 +1569,16 @@ namespace BExplorer.Shell
 												if (info.Notification == ShellNotifications.SHCNE.SHCNE_CREATE || info.Notification == ShellNotifications.SHCNE.SHCNE_MKDIR)
 												{
 														var obj = new ShellItem(info.Item1);
-														if (Items.Count(w => w.ParsingName == obj.ParsingName) == 0 && !String.IsNullOrEmpty(obj.ParsingName))
+														if (obj.Parent.ParsingName == this.CurrentFolder.ParsingName)
 														{
+															if (Items.Count(w => w.ParsingName == obj.ParsingName) == 0 && !String.IsNullOrEmpty(obj.ParsingName))
+															{
 																Items.Add(obj);
-														}
-														User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-														if (this.ItemUpdated != null)
+															}
+															User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+															if (this.ItemUpdated != null)
 																this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, this.Items.Count - 1));
+														}
 														Notifications.NotificationsReceived.Remove(info);
 												}
 												if (info.Notification == ShellNotifications.SHCNE.SHCNE_DELETE || info.Notification == ShellNotifications.SHCNE.SHCNE_RMDIR)
@@ -1621,6 +1624,21 @@ namespace BExplorer.Shell
 						base.WndProc(ref m);
 						if (m.Msg == 78)
 						{
+								var nmhdrHeader = (NMHEADER)(m.GetLParam(typeof(NMHEADER)));
+								if (nmhdrHeader.hdr.code == (int)HDN.HDN_DROPDOWN)
+								{
+									MessageBox.Show(nmhdrHeader.iItem.ToString());
+								}
+								if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
+								{
+									if (this.View != ShellViewStyle.Details)
+										m.Result = (IntPtr)1;
+								}
+								if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
+								{
+									if (this.View != ShellViewStyle.Details)
+										m.Result = (IntPtr)1;
+								}
 								NMHDR nmhdr = new NMHDR();
 								nmhdr = (NMHDR)m.GetLParam(nmhdr.GetType());
 								switch ((int)nmhdr.code)
@@ -1882,10 +1900,22 @@ namespace BExplorer.Shell
 												}
 												break;
 										case WNM.NM_RCLICK:
-												var selitems = this.SelectedItems;
-												NMITEMACTIVATE itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
-												ShellContextMenu cm = new ShellContextMenu(selitems.ToArray());
-												cm.ShowContextMenu(this, itemActivate.ptAction, CMF.CANRENAME);
+												var nmhdrHdn = (NMHEADER)(m.GetLParam(typeof(NMHEADER)));
+												if (nmhdrHdn.iItem != -1 && nmhdrHdn.hdr.hwndFrom == this.LVHandle)
+												{
+													var selitems = this.SelectedItems;
+													NMITEMACTIVATE itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
+													ShellContextMenu cm = new ShellContextMenu(selitems.ToArray());
+													cm.ShowContextMenu(this, itemActivate.ptAction, CMF.CANRENAME);
+												}
+												else if (nmhdrHdn.iItem == -1)
+												{
+
+												}
+												else
+												{
+													MessageBox.Show("Header RClick!!!!!");
+												}
 												break;
 										case WNM.NM_CLICK:
 												break;
