@@ -65,7 +65,7 @@ namespace BExplorer.Shell.Interop
 	/// <summary>
 	/// Represents a thumbnail or an icon for a ShellObject.
 	/// </summary>
-	public class ShellThumbnail
+	public class ShellThumbnail : IDisposable
 	{
 		#region Private members
 
@@ -83,6 +83,14 @@ namespace BExplorer.Shell.Interop
 
 		#region Constructors
 
+		public void Dispose()
+		{
+			if (shellItemNative != null)
+			{
+				Marshal.FinalReleaseComObject(shellItemNative);
+				shellItemNative = null;
+			}
+		}
 		/// <summary>
 		/// Internal constructor that takes in a parent ShellObject.
 		/// </summary>
@@ -417,9 +425,12 @@ namespace BExplorer.Shell.Interop
 
 			if (IsAlphaBitmap(bmp, out bmpData))
 			{
-				return GetlAlphaBitmapFromBitmapData(bmpData);
+				Bitmap resBmp = GetlAlphaBitmapFromBitmapData(bmpData);
+				//bmp.Dispose();
+				bmpData = null;
+				return resBmp;
 			}
-
+			bmpData = null;
 			//if (bmp.GetPixel(1, 1) == Color.FromArgb(255, Color.Black) && RetrievalOption == ShellThumbnailRetrievalOption.CacheOnly)
 			//  return null;
 			//bmp.MakeTransparent(Color.FromArgb(255, Color.Black));
