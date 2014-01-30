@@ -408,7 +408,7 @@ namespace BExplorer.Shell
 			//}
 
 			node.Tag = folder;
-   //   IntPtr pidl = Marshal.StringToHGlobalUni("Test");
+	 //   IntPtr pidl = Marshal.StringToHGlobalUni("Test");
 			//var defIndex = ShellItem.GetSystemImageListDefaultIndex(pidl, true);
 			//Marshal.FreeHGlobal(pidl);
 			Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO();
@@ -574,7 +574,16 @@ namespace BExplorer.Shell
 
 		void SetNodeImage(IntPtr node, ShellItem sho, IntPtr m_TreeViewHandle)
 		{
-			var pidl = sho.Pidl;
+			ShellItem temp = null;
+			if (!sho.ParsingName.StartsWith("::"))
+			{
+				temp = new ShellItem(sho.ParsingName);
+			}
+			else
+			{
+				temp = sho;
+			}
+			var pidl = temp.Pidl;
 
 
 				TVITEMW itemInfo = new TVITEMW();

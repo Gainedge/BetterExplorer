@@ -48,6 +48,7 @@ using BExplorer.Shell;
 using BExplorer.Shell.Interop;
 using WindowsHelper;
 
+
 namespace BetterExplorer
 {
 				/// <summary>
@@ -4708,26 +4709,26 @@ namespace BetterExplorer
 								internal void DoSimpleSearch(object arg)
 								{
 												//FIXME: fix the search
-												//SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(arg.ToString());
-												//ShellSearchFolder searchFolder =
-												//	new ShellSearchFolder(searchCondition, (ShellContainer)BeforeSearchFolder);
+												SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(arg.ToString());
+												ShellSearchFolder searchFolder =
+													new ShellSearchFolder(searchCondition, BeforeSearchFolder);
 
 
-												////Dispatcher.Invoke(
-												////		System.Windows.Threading.DispatcherPriority.Normal,
-												////		new Action(
-												////		delegate()
-												////		{
-												//			ShellListView.Navigate(searchFolder);
+												//Dispatcher.Invoke(
+												//		System.Windows.Threading.DispatcherPriority.Normal,
+												//		new Action(
+												//		delegate()
+												//		{
+															ShellListView.Navigate(searchFolder);
 
-												//	//	}
-												//	//));
+													//	}
+													//));
 
-												//if (BeforeSearchFolder != null)
-												//{
-												//	//Thread.Sleep(750);
-												//	//ShellListView.RefreshExplorer();
-												//}
+												if (BeforeSearchFolder != null)
+												{
+													//Thread.Sleep(750);
+													//ShellListView.RefreshContents();
+												}
 
 
 								}
@@ -7039,8 +7040,8 @@ namespace BetterExplorer
 												//	e.Effects = DragDropEffects.None;
 												//}
 
-
-												DropTargetHelper.Drop(e.Data, pt, e.Effects);
+												//TODO: fixDrop!!!!
+												//System.Windows.Forms.DropTargetHelper.Drop((System.Windows.Forms.IDataObject)e.Data, new System.Drawing.Point((int)pt.X, (int)pt.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
 								}
 
 								void bbi_DragOver(object sender, DragEventArgs e)
@@ -7082,12 +7083,15 @@ namespace BetterExplorer
 												Win32Point ptw = new Win32Point();
 												GetCursorPos(ref ptw);
 												//e.Handled = true;
-												DropTargetHelper.DragOver(new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
+												//TODO: fixDrop!!!!
+												//System.Windows.Forms.DropTargetHelper.DragOver(new System.Drawing.Point((int)ptw.X, (int)ptw.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
 								}
 
 								void bbi_DragLeave(object sender, DragEventArgs e)
 								{
-												DropTargetHelper.DragLeave();
+									//TODO: fixDrop!!!!
+									//System.Windows.Forms.DropTargetHelper.DragLeave();
+
 								}
 
 								void bbi_DragEnter(object sender, DragEventArgs e)
@@ -7130,7 +7134,9 @@ namespace BetterExplorer
 												Win32Point ptw = new Win32Point();
 												GetCursorPos(ref ptw);
 												e.Effects = DragDropEffects.None;
-												DropTargetHelper.DragEnter(this, e.Data, new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
+												//TODO: fixthis!!!!
+												//System.Windows.Forms.DropTargetHelper.DragEnter((Control)this, (System.Windows.Forms.IDataObject)e.Data, new System.Drawing.Point((int)ptw.X, (int)ptw.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
+												//DropTargetHelper.DragEnter(this, e.Data, new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
 								}
 
 								#endregion
@@ -8660,7 +8666,8 @@ namespace BetterExplorer
 																{
 																				e.Effects = DragDropEffects.None;
 																}
-																DropTargetHelper.Drop(e.Data, pt, e.Effects);
+													//TODO: fixDrop!!!!
+																//System.Windows.Forms.DropTargetHelper.Drop((System.Windows.Forms.IDataObject)e.Data, new System.Drawing.Point((int)pt.X, (int)pt.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
 																// attempt at making drag-and-drop tabs a possibility
 																//}
 																//else
@@ -8731,13 +8738,15 @@ namespace BetterExplorer
 												Win32Point ptw = new Win32Point();
 												GetCursorPos(ref ptw);
 												//e.Handled = true;
-												if (e.Data.GetType() != typeof(ClosableTabItem))
-																DropTargetHelper.DragOver(new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
+									//TODO: fixDrop!!!!
+												//if (e.Data.GetType() != typeof(ClosableTabItem))
+												//	System.Windows.Forms.DropTargetHelper.DragOver(new System.Drawing.Point((int)ptw.X, (int)ptw.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
 								}
 
 								void newt_DragLeave(object sender, DragEventArgs e)
 								{
-												DropTargetHelper.DragLeave();
+									//TODO: fixDrop!!!!
+									//System.Windows.Forms.DropTargetHelper.DragLeave();
 								}
 
 								void newt_DragEnter(object sender, DragEventArgs e)
@@ -8791,8 +8800,10 @@ namespace BetterExplorer
 												GetCursorPos(ref ptw);
 												e.Effects = DragDropEffects.None;
 												var tabItemSource = e.Data.GetData(typeof(ClosableTabItem)) as ClosableTabItem;
-												if (tabItemSource == null)
-																DropTargetHelper.DragEnter(this, e.Data, new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
+												//TODO: fix this!!!
+												//if (tabItemSource == null)
+												//	System.Windows.Forms.DropTargetHelper.DragEnter((System.Windows.Forms.IDataObject)e.Data, new System.Drawing.Point((int)pt.X, (int)pt.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
+												//				DropTargetHelper.DragEnter(this, e.Data, new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
 												//}
 												//else
 												//{

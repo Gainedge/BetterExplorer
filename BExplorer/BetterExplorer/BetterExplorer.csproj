@@ -314,7 +314,6 @@
     <Compile Include="ArchiveView\CreateArchive.designer.cs">
       <DependentUpon>CreateArchive.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses\DragDropLib.cs" />
     <Compile Include="fmAbout.xaml.cs">
       <DependentUpon>fmAbout.xaml</DependentUpon>
     </Compile>
@@ -1169,7 +1168,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -59,6 +59,7 @@ namespace BExplorer.Shell
 				public ShellItem(Uri uri)
 				{
 						Initialize(uri);
+						this.IconType = GetIconType();
 				}
 
 				public ShellItem()
@@ -92,6 +93,7 @@ namespace BExplorer.Shell
 					{
 						Uri newUri = new Uri(path);
 						Initialize(newUri);
+						this.IconType = GetIconType();
 					}
 					catch (Exception)
 					{
@@ -140,7 +142,9 @@ namespace BExplorer.Shell
 								Marshal.ThrowExceptionForHR((int)Shell32.SHGetFolderPath(
 										IntPtr.Zero, (CSIDL)folder, IntPtr.Zero, 0, path));
 								m_ComInterface = CreateItemFromParsingName(path.ToString());
+
 						}
+						this.IconType = GetIconType();
 				}
 
 				/// <summary>
@@ -188,16 +192,19 @@ namespace BExplorer.Shell
 										Shell32.ILFree(pidl);
 								}
 						}
+						this.IconType = GetIconType();
 				}
 
 				internal ShellItem(IntPtr pidl)
 				{
 						m_ComInterface = CreateItemFromIDList(pidl);
+						this.IconType = GetIconType();
 				}
 
 				internal ShellItem(ShellItem parent, IntPtr pidl)
 				{
 						m_ComInterface = CreateItemWithParent(parent, pidl);
+						this.IconType = GetIconType();
 				}
 
 				public override int GetHashCode()
@@ -361,56 +368,83 @@ namespace BExplorer.Shell
 
 				public IExtractIconpwFlags GetIconType()
 				{
+
+				  IExtractIcon iextract = null;
+					IShellFolder ishellfolder = null;
+					StringBuilder str = null;
+					IntPtr result;
 					try
 					{
 						var guid = new Guid("000214fa-0000-0000-c000-000000000046");
-						IntPtr result;
+						
 						uint res = 0;
-						var ishellfolder = this.Parent.GetIShellFolder();
+						ishellfolder = this.Parent.GetIShellFolder();
 						IntPtr[] pidls = new IntPtr[1];
 						pidls[0] = Shell32.ILFindLastID(this.Pidl);
 						ishellfolder.GetUIObjectOf(IntPtr.Zero,
 						1, pidls,
 						ref guid, res, out result);
-						var iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
-						var str = new StringBuilder(512);
+						iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
+						str = new StringBuilder(512);
 						int index = -1;
 						IExtractIconpwFlags flags;
 						iextract.GetIconLocation(IExtractIconuFlags.GIL_ASYNC, str, 512, out index, out flags);
-
-						return flags;
+						pidls = null;
+						Marshal.ReleaseComObject(ishellfolder);
+						Marshal.ReleaseComObject(iextract);
+						ishellfolder = null;
+						iextract = null;
+						str = null;
+						//Shell32.ILFree(pidls[0]);
+						return  flags;
 					}
 					catch (Exception)
 					{
-
+						if (ishellfolder != null)
+							Marshal.ReleaseComObject(ishellfolder);
+						if (iextract != null)
+							Marshal.ReleaseComObject(iextract);
 						return 0;
 					}
+					
 				}
 
 				public IExtractIconpwFlags GetShield()
 				{
+					IExtractIcon iextract = null;
+					IShellFolder ishellfolder = null;
+					StringBuilder str = null;
+					IntPtr result;
 					try
 					{
 						var guid = new Guid("000214fa-0000-0000-c000-000000000046");
-						IntPtr result;
 						uint res = 0;
-						var ishellfolder = this.Parent.GetIShellFolder();
+						ishellfolder = this.Parent.GetIShellFolder();
 						IntPtr[] pidls = new IntPtr[1];
 						pidls[0] = Shell32.ILFindLastID(this.Pidl);
 						ishellfolder.GetUIObjectOf(IntPtr.Zero,
 						1, pidls,
 						ref guid, res, out result);
-						var iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
-						var str = new StringBuilder(512);
+						iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
+						str = new StringBuilder(512);
 						int index = -1;
 						IExtractIconpwFlags flags;
 						iextract.GetIconLocation(IExtractIconuFlags.GIL_CHECKSHIELD, str, 512, out index, out flags);
-
+						pidls = null;
+						Marshal.FinalReleaseComObject(ishellfolder);
+						Marshal.FinalReleaseComObject(iextract);
+						ishellfolder = null;
+						iextract = null;
+						str = null;
 						return flags;
 					}
 					catch (Exception)
 					{
-
+						Marshal.FinalReleaseComObject(ishellfolder);
+						Marshal.FinalReleaseComObject(iextract);
+						ishellfolder = null;
+						iextract = null;
+						str = null;
 						return 0;
 					}
 				}
@@ -456,7 +490,7 @@ namespace BExplorer.Shell
 				/// </returns>
 				public IEnumerator<ShellItem> GetEnumerator()
 				{
-						return GetEnumerator(SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN |
+						return GetEnumerator(SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | 
 								SHCONTF.NONFOLDERS | SHCONTF.INIT_ON_FIRST_NEXT | SHCONTF.FASTITEMS | SHCONTF.ENABLE_ASYNC);
 				}
 
@@ -572,12 +606,12 @@ namespace BExplorer.Shell
 				/// Returns an <see cref="ComTypes.IDataObject"/> representing the
 				/// item. This object is used in drag and drop operations.
 				/// </summary>
-				public ComTypes.IDataObject GetIDataObject()
+				public System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject()
 				{
 						IntPtr result = m_ComInterface.BindToHandler(IntPtr.Zero,
 								BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID);
-						return (ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(result,
-								typeof(ComTypes.IDataObject));
+						return (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(result,
+								typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
 				}
 
 				/// <summary>
@@ -600,10 +634,12 @@ namespace BExplorer.Shell
 				{
 						IntPtr result = m_ComInterface.BindToHandler(IntPtr.Zero,
 								BHID.SFObject, typeof(IShellFolder).GUID);
-						return (IShellFolder)Marshal.GetTypedObjectForIUnknown(result,
-								typeof(IShellFolder));
+						IShellFolder iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(result,
+														typeof(IShellFolder));
+						return iShellFolder;
 				}
 
+				public IExtractIconpwFlags IconType { get; set; }
 				private ShellThumbnail thumbnail;
 				/// <summary>
 				/// Gets the thumbnail of the ShellObject.
@@ -864,6 +900,7 @@ namespace BExplorer.Shell
 						return sfgao != 0;
 					}
 				}
+
 
 				/// <summary>
 				/// Gets a value indicating whether the item is read-only.
@@ -1308,7 +1345,7 @@ namespace BExplorer.Shell
 				public void Dispose()
 				{
 					Dispose(true);
-					//GC.SuppressFinalize(this);
+					GC.SuppressFinalize(this);
 				}
 				/// <summary>
 				/// Clears up any resources associated with the SystemImageList
@@ -1321,7 +1358,7 @@ namespace BExplorer.Shell
 						{
 							if (m_ComInterface != null)
 							{
-								Marshal.ReleaseComObject(m_ComInterface);
+								Marshal.FinalReleaseComObject(m_ComInterface);
 							}
 							m_ComInterface = null;
 						}

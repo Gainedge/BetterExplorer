@@ -745,4 +745,19 @@ namespace BExplorer.Shell.Interop
 		LVS_EX_DOUBLEBUFFER = 0x00010000,
 	}
 
+	[StructLayout(LayoutKind.Sequential)]
+	public struct POINT
+	{
+		public int x;
+		public int y;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct LVHITTESTINFO
+	{
+		public POINT pt;
+		public uint flags;
+		public int iItem;
+		public int iSubItem;
+	}
 }
