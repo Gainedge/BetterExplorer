@@ -258,7 +258,7 @@ namespace BExplorer.Shell
 				_ResetTimer.Interval = 200;
 			_ResetTimer.Tick += resetTimer_Tick;
 
-			_KeyJumpTimer.Interval = 1000;
+			_KeyJumpTimer.Interval = 500;
 			_KeyJumpTimer.Enabled = false;
 			_KeyJumpTimer.Tick += _KeyJumpTimer_Tick;
 
@@ -1906,11 +1906,18 @@ namespace BExplorer.Shell
 					case WNM.LVN_ITEMACTIVATE:
 						var iac = new NMITEMACTIVATE();
 						iac = (NMITEMACTIVATE) m.GetLParam(iac.GetType());
-						ShellItem selectedItem = Items[iac.iItem];
-						if (selectedItem.IsFolder)
-							Navigate(selectedItem);
-						else
-							Process.Start(selectedItem.ParsingName);
+						try
+						{
+							ShellItem selectedItem = Items[iac.iItem];
+							if (selectedItem.IsFolder)
+								Navigate(selectedItem);
+							else
+								Process.Start(selectedItem.ParsingName);
+						}
+						catch(Exception)
+						{
+
+						}
 						break;
 					case WNM.LVN_BEGINSCROLL:
 						resetEvent.Reset();
@@ -2020,12 +2027,13 @@ namespace BExplorer.Shell
 									// allows the number pad to work (since the number pad keys give a different Key value)
 									skeyr = skeyr.Substring(6);
 								}
+								if (skeyr.Length == 2 && skeyr.StartsWith("D"))
+								{
+									skeyr = skeyr.Substring(1);
+								}
+
 								if (skeyr.Length == 1)
 								{
-									if (KeyJumpKeyDown != null)
-									{
-										KeyJumpKeyDown(this, new KeyEventArgs(key));
-									}
 
 									if (_KeyJumpTimer.Enabled == false)
 									{
@@ -2037,6 +2045,30 @@ namespace BExplorer.Shell
 										_KeyJumpTimer.Stop();
 										_KeyJumpTimer.Start();
 										_keyjumpstr += skeyr;
+									}
+
+									if (KeyJumpKeyDown != null)
+									{
+										KeyJumpKeyDown(this, new KeyEventArgs(key));
+									}
+								}
+								else if (skeyr.ToUpperInvariant() == "SPACE")
+								{
+									if (_KeyJumpTimer.Enabled == false)
+									{
+										_KeyJumpTimer.Start();
+										_keyjumpstr = " ";
+									}
+									else
+									{
+										_KeyJumpTimer.Stop();
+										_KeyJumpTimer.Start();
+										_keyjumpstr += " ";
+									}
+
+									if (KeyJumpKeyDown != null)
+									{
+										KeyJumpKeyDown(this, new KeyEventArgs(key));
 									}
 								}
 
@@ -2549,9 +2581,50 @@ namespace BExplorer.Shell
 				KeyJumpTimerDone(this, EventArgs.Empty);
 			}
 
+			_KeyJumpTimer.Enabled = false;
+
 			//process key jump
+			DeSelectAllItems();
+			int selind = GetFirstIndexOf(_keyjumpstr);
+			if (selind != -1)
+			{
+				SelectItemByIndex(selind);
+			}
 
 			_keyjumpstr = "";
+		}
+
+		private int GetFirstIndexOf(string name)
+		{
+			return GetFirstIndexOf(name, 0);
+		}
+
+		private int GetFirstIndexOf(string name, int startindex)
+		{
+			bool found = false;
+			int i = startindex;
+
+			while (found == false)
+			{
+				if (i < Items.Count)
+				{
+					if (Items[i].GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(name.ToUpperInvariant()))
+					{
+						found = true;
+					}
+					else
+					{
+						i++;
+					}
+				}
+				else
+				{
+					found = true;
+					i = -1;
+				}
+			}
+
+			return i;
 		}
 
 		private static BitmapFrame CreateResizedImage(IntPtr hBitmap, int width, int height, int margin)
