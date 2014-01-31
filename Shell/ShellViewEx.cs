@@ -1719,18 +1719,6 @@ namespace BExplorer.Shell
 
 			}
 
-			if (m.Msg == 78)
-			{
-				NMHDR nmhdr = new NMHDR();
-				nmhdr = (NMHDR) m.GetLParam(nmhdr.GetType());
-				switch ((int) nmhdr.code)
-				{
-					case WNM.LVN_ODFINDITEM:
-						m.Result = (IntPtr)(-1);
-						return;
-				}
-			}
-
 			base.WndProc(ref m);
 			if (m.Msg == 78)
 			{
@@ -1919,6 +1907,36 @@ namespace BExplorer.Shell
 						NMLISTVIEW nlcv = (NMLISTVIEW) m.GetLParam(typeof(NMLISTVIEW));
 						SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
 						break;
+					case WNM.LVN_ODFINDITEM:
+						var findItem = (NMLVFINDITEM)m.GetLParam(typeof(NMLVFINDITEM));
+						_keyjumpstr = findItem.lvfi.psz;
+						
+
+						if (KeyJumpKeyDown != null)
+						{
+							KeyJumpKeyDown(this, new KeyEventArgs(Keys.A));
+						}
+						int startindex = 0;
+						if (_kpreselitem != null)
+						{
+							if (_kpreselitem.DisplayName.ToUpperInvariant().StartsWith(_keyjumpstr.ToUpperInvariant()))
+							{
+								startindex = this.Items.IndexOf(_kpreselitem) + 1;
+							}
+						}
+
+						int selind = GetFirstIndexOf(_keyjumpstr, startindex);
+						if (selind != -1)
+						{
+							m.Result = (IntPtr)(selind);
+							_kpreselitem = this.Items[selind];
+							
+						}
+						
+						break;
+					case WNM.LVN_INCREMENTALSEARCH:
+						var incrementalSearch = (NMLVFINDITEM)m.GetLParam(typeof(NMLVFINDITEM));
+						break;
 					case WNM.LVN_ITEMACTIVATE:
 						var iac = new NMITEMACTIVATE();
 						iac = (NMITEMACTIVATE) m.GetLParam(iac.GetType());
@@ -2036,124 +2054,126 @@ namespace BExplorer.Shell
 								else
 									Process.Start(SelectedItems[0].ParsingName);
 								break;
-							default:
-								// initiate key jump code
-								string skeyr = Enum.GetName(typeof(Keys), key);
-								if (skeyr.StartsWith("NumPad"))
-								{
-									// allows the number pad to work (since the number pad keys give a different Key value)
-									skeyr = skeyr.Substring(6);
-								}
-								if (skeyr.Length == 2 && skeyr.StartsWith("D"))
-								{
-									skeyr = skeyr.Substring(1);
-								}
+							//default:
+							//	// initiate key jump code
+							//	string skeyr = Enum.GetName(typeof(Keys), key);
+							//	if (skeyr.StartsWith("NumPad"))
+							//	{
+							//		// allows the number pad to work (since the number pad keys give a different Key value)
+							//		skeyr = skeyr.Substring(6);
+							//	}
+							//	if (skeyr.Length == 2 && skeyr.StartsWith("D"))
+							//	{
+							//		skeyr = skeyr.Substring(1);
+							//	}
 
-								if (skeyr.Length == 1 || skeyr.ToUpperInvariant() == "SPACE" || skeyr.ToUpperInvariant() == "OEMPERIOD" || skeyr.ToUpperInvariant() == "OEMMINUS")
-								{
-									if (SelectedItems.Count != 0)
-									{
-										_kpreselitem = SelectedItems[0];
-									}
-									else
-									{
-										_kpreselitem = null;
-									}
+							//	if (skeyr.Length == 1 || skeyr.ToUpperInvariant() == "SPACE" || skeyr.ToUpperInvariant() == "OEMPERIOD" || skeyr.ToUpperInvariant() == "OEMMINUS")
+							//	{
+							//		if (SelectedItems.Count != 0)
+							//		{
+							//			_kpreselitem = SelectedItems[0];
+							//		}
+							//		else
+							//		{
+							//			_kpreselitem = null;
+							//		}
 
-									if (_KeyJumpTimer.Enabled == false)
-									{
-										_KeyJumpTimer.Start();
-										_keyjumpstr = GetStringFromAcceptedKeyCodeString(skeyr);
-									}
-									else
-									{
-										_KeyJumpTimer.Stop();
-										_KeyJumpTimer.Start();
-										_keyjumpstr += GetStringFromAcceptedKeyCodeString(skeyr);
-									}
+							//		if (_KeyJumpTimer.Enabled == false)
+							//		{
+							//			_KeyJumpTimer.Start();
+							//			_keyjumpstr = GetStringFromAcceptedKeyCodeString(skeyr);
+							//		}
+							//		else
+							//		{
+							//			_KeyJumpTimer.Stop();
+							//			_KeyJumpTimer.Start();
+							//			_keyjumpstr += GetStringFromAcceptedKeyCodeString(skeyr);
+							//		}
 
-									if (KeyJumpKeyDown != null)
-									{
-										KeyJumpKeyDown(this, new KeyEventArgs(key));
-									}
-								}
-
-								break;
+							//		if (KeyJumpKeyDown != null)
+							//		{
+							//			KeyJumpKeyDown(this, new KeyEventArgs(key));
+							//		}
+							//	}
+							//	
+							//	break;
 						}
+						m.Result = IntPtr.Zero;
+						return;
 						break;
-									case WNM.LVN_BEGINDRAG:
-													//uint CFSTR_SHELLIDLIST =
-													//	User32.RegisterClipboardFormat("Shell IDList Array");
-													//	System.Windows.Forms.DataObject dobj = new System.Windows.Forms.DataObject("")
-													DraggedItemIndexes.Clear();
-													List<ShellItem> selectedItems = this.SelectedItems;
-													DraggedItemIndexes = selectedItems.Select(s => this.Items.IndexOf(this.Items.Single(c => c.ParsingName == s.ParsingName))).ToList();
-													Bitmap bmpb = new Bitmap(100, 100, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-													using (Graphics g = Graphics.FromImage(bmpb))
-													{
-														GraphicsPath  rrect = RoundedRectangle.Create(new Rectangle(0,0,99,99),4);
-														g.Clear(System.Drawing.Color.Transparent);
-														g.FillPath(new SolidBrush( System.Drawing.Color.FromArgb(0xC2, 0xC4, 0xE2, 0xF5)), rrect);
-														g.DrawPath(Pens.LightBlue, rrect);
-														if (selectedItems.Count == 1)
-														{
-															var bmp = selectedItems.First().GetShellThumbnail(96, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-															g.DrawImageUnscaled(bmp, new Rectangle(2,2,96,96));
-															bmp.Dispose();
-														}
-														else if (selectedItems.Count == 2)
-														{
-															var bmp = selectedItems.First().GetShellThumbnail(90, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-															g.DrawImageUnscaled(bmp, new Rectangle(2, 2, 90, 90));
-															bmp.Dispose();
-															var bmpLast = selectedItems.Last().GetShellThumbnail(90, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-															g.DrawImageUnscaled(bmpLast, new Rectangle(5, 5, 90, 90));
-															bmpLast.Dispose();
-														}
-														else if (selectedItems.Count > 2)
-														{
-															var bmp = selectedItems.First().GetShellThumbnail(80, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-															g.DrawImageUnscaled(bmp, new Rectangle(2, 2, 80, 80));
-															bmp.Dispose();
-															int middleIndex = (int)Math.Round((double)selectedItems.Count/2, 0);
-															var bmpMidle = selectedItems[middleIndex - 1].GetShellThumbnail(80, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-															g.DrawImageUnscaled(bmpMidle, new Rectangle(8, 8, 80, 80));
-															bmpMidle.Dispose();
-															var bmpLast = selectedItems.Last().GetShellThumbnail(80, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-															g.DrawImageUnscaled(bmpLast, new Rectangle(14, 14, 80, 80));
-															bmpLast.Dispose();
-														}
+					case WNM.LVN_BEGINDRAG:
+						//uint CFSTR_SHELLIDLIST =
+						//	User32.RegisterClipboardFormat("Shell IDList Array");
+						//	System.Windows.Forms.DataObject dobj = new System.Windows.Forms.DataObject("")
+						DraggedItemIndexes.Clear();
+						List<ShellItem> selectedItems = this.SelectedItems;
+						DraggedItemIndexes = selectedItems.Select(s => this.Items.IndexOf(this.Items.Single(c => c.ParsingName == s.ParsingName))).ToList();
+						Bitmap bmpb = new Bitmap(100, 100, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+						using (Graphics g = Graphics.FromImage(bmpb))
+						{
+							GraphicsPath  rrect = RoundedRectangle.Create(new Rectangle(0,0,99,99),4);
+							g.Clear(System.Drawing.Color.Transparent);
+							g.FillPath(new SolidBrush( System.Drawing.Color.FromArgb(0xC2, 0xC4, 0xE2, 0xF5)), rrect);
+							g.DrawPath(Pens.LightBlue, rrect);
+							if (selectedItems.Count == 1)
+							{
+								var bmp = selectedItems.First().GetShellThumbnail(96, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
+								g.DrawImageUnscaled(bmp, new Rectangle(2,2,96,96));
+								bmp.Dispose();
+							}
+							else if (selectedItems.Count == 2)
+							{
+								var bmp = selectedItems.First().GetShellThumbnail(90, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
+								g.DrawImageUnscaled(bmp, new Rectangle(2, 2, 90, 90));
+								bmp.Dispose();
+								var bmpLast = selectedItems.Last().GetShellThumbnail(90, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
+								g.DrawImageUnscaled(bmpLast, new Rectangle(5, 5, 90, 90));
+								bmpLast.Dispose();
+							}
+							else if (selectedItems.Count > 2)
+							{
+								var bmp = selectedItems.First().GetShellThumbnail(80, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
+								g.DrawImageUnscaled(bmp, new Rectangle(2, 2, 80, 80));
+								bmp.Dispose();
+								int middleIndex = (int)Math.Round((double)selectedItems.Count/2, 0);
+								var bmpMidle = selectedItems[middleIndex - 1].GetShellThumbnail(80, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
+								g.DrawImageUnscaled(bmpMidle, new Rectangle(8, 8, 80, 80));
+								bmpMidle.Dispose();
+								var bmpLast = selectedItems.Last().GetShellThumbnail(80, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
+								g.DrawImageUnscaled(bmpLast, new Rectangle(14, 14, 80, 80));
+								bmpLast.Dispose();
+							}
 
-													}
+						}
 				
 				
-													ShDragImage shdi = new ShDragImage();
-													Win32Size size;
-													size.cx = bmpb.Width;
-													size.cy = bmpb.Height;
-													shdi.sizeDragImage = size;
-													System.Drawing.Point p = new System.Drawing.Point(50,50);
-													Win32Point wpt;
-													wpt.x = p.X;
-													wpt.y = p.Y;
-													shdi.ptOffset = wpt;
-													shdi.hbmpDragImage = bmpb.GetHbitmap();
-													shdi.crColorKey = System.Drawing.Color.Magenta.ToArgb();
+						ShDragImage shdi = new ShDragImage();
+						Win32Size size;
+						size.cx = bmpb.Width;
+						size.cy = bmpb.Height;
+						shdi.sizeDragImage = size;
+						System.Drawing.Point p = new System.Drawing.Point(50,50);
+						Win32Point wpt;
+						wpt.x = p.X;
+						wpt.y = p.Y;
+						shdi.ptOffset = wpt;
+						shdi.hbmpDragImage = bmpb.GetHbitmap();
+						shdi.crColorKey = System.Drawing.Color.Magenta.ToArgb();
 				
 													
-													System.Windows.Forms.DragDropEffects effect;
-													IntPtr dataObjPtr = IntPtr.Zero;
-													System.Runtime.InteropServices.ComTypes.IDataObject ddataObject = GetIDataObject(selectedItems.ToArray(), out dataObjPtr);
-													//System.Windows.Forms.DataObject ddataObject = new System.Windows.Forms.DataObject(new DataObject());
-													//ddataObject.SetData(dataObject);
-													IDragSourceHelper sourceHelper = (IDragSourceHelper)new DragDropHelper();
-													sourceHelper.InitializeFromBitmap(ref shdi, ddataObject);
-													DoDragDrop(ddataObject, System.Windows.Forms.DragDropEffects.All);
-													selectedItems.Clear();
-													selectedItems = null;
-													//Ole32.DoDragDrop(ddataObject, this, System.Windows.Forms.DragDropEffects.All, out effect);
-													//DragSourceHelper.DoDragDrop(this, new System.Drawing.Point(0, 0), System.Windows.Forms.DragDropEffects.Copy, new KeyValuePair<string, object>("Shell IDList Array", new ShellItemArray(this.SelectedItems.Select(s => s.m_ComInterface).ToArray())));
-									break;
+						System.Windows.Forms.DragDropEffects effect;
+						IntPtr dataObjPtr = IntPtr.Zero;
+						System.Runtime.InteropServices.ComTypes.IDataObject ddataObject = GetIDataObject(selectedItems.ToArray(), out dataObjPtr);
+						//System.Windows.Forms.DataObject ddataObject = new System.Windows.Forms.DataObject(new DataObject());
+						//ddataObject.SetData(dataObject);
+						IDragSourceHelper sourceHelper = (IDragSourceHelper)new DragDropHelper();
+						sourceHelper.InitializeFromBitmap(ref shdi, ddataObject);
+						DoDragDrop(ddataObject, System.Windows.Forms.DragDropEffects.All);
+						selectedItems.Clear();
+						selectedItems = null;
+						//Ole32.DoDragDrop(ddataObject, this, System.Windows.Forms.DragDropEffects.All, out effect);
+						//DragSourceHelper.DoDragDrop(this, new System.Drawing.Point(0, 0), System.Windows.Forms.DragDropEffects.Copy, new KeyValuePair<string, object>("Shell IDList Array", new ShellItemArray(this.SelectedItems.Select(s => s.m_ComInterface).ToArray())));
+					break;
 					case WNM.NM_RCLICK:
 						var nmhdrHdn = (NMHEADER) (m.GetLParam(typeof(NMHEADER)));
 						if (nmhdrHdn.iItem != -1 && nmhdrHdn.hdr.hwndFrom == this.LVHandle)
@@ -2837,6 +2857,10 @@ namespace BExplorer.Shell
 		void selectionTimer_Tick(object sender, EventArgs e)
 		{
 			OnSelectionChanged();
+			if (KeyJumpTimerDone != null)
+			{
+				KeyJumpTimerDone(this, EventArgs.Empty);
+			}
 			(sender as System.Windows.Forms.Timer).Stop();
 		}
 			protected override void OnGiveFeedback(System.Windows.Forms.GiveFeedbackEventArgs e)

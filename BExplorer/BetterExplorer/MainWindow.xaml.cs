@@ -3491,17 +3491,20 @@ namespace BetterExplorer
 			//ShellListView.Width = (int)ShellVView.ActualWidth;
 			//ShellListView.Height = (int)ShellVView.ActualHeight;
 		}
-
+		System.Windows.Forms.Timer _keyjumpTimer = new System.Windows.Forms.Timer();
 		void ShellListView_KeyJumpTimerDone(object sender, EventArgs e)
 		{
-			//key jump done
-			KeyJumpGrid.Visibility = System.Windows.Visibility.Collapsed;
+			if (_keyjumpTimer != null)
+			{
+				_keyjumpTimer.Stop();
+				_keyjumpTimer.Start();
+			}
 		}
 
 		void ShellListView_KeyJumpKeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
 			//add key for key jump
-			KeyJumpGrid.Visibility = System.Windows.Visibility.Visible;
+			KeyJumpGrid.IsOpen = true;
 			txtKeyJump.Text = ShellListView.KeyJumpString;
 		}
 
@@ -3973,7 +3976,10 @@ namespace BetterExplorer
 
 		private void Window_Loaded(object sender, RoutedEventArgs e)
 		{
-			//ShellItem iii = new ShellItem(@"shell:" + KnownFolders.Libraries.ParsingName);
+			_keyjumpTimer.Interval = 1000;
+			_keyjumpTimer.Tick += _keyjumpTimer_Tick;
+		
+					//ShellItem iii = new ShellItem(@"shell:" + KnownFolders.Libraries.ParsingName);
 			ShellTreeHost.Child = ShellTree;
 			ShellViewHost.Child = ShellListView;
 
@@ -4138,6 +4144,13 @@ namespace BetterExplorer
 				MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 
+		}
+
+		void _keyjumpTimer_Tick(object sender, EventArgs e)
+		{
+			//key jump done
+			KeyJumpGrid.IsOpen = false;
+			(sender as System.Windows.Forms.Timer).Stop();
 		}
 
 		#endregion
