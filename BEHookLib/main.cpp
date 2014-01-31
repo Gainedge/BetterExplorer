@@ -155,7 +155,6 @@ int Initialize(CallbackStruct* cb) {
 
     // Create and enable the CoCreateInstance, RegisterDragDrop, and SHCreateShellFolderView hooks.
     CREATE_HOOK(&CoCreateInstance, CoCreateInstance);
-
     return MH_OK;
 }
 

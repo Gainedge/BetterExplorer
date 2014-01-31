@@ -118,6 +118,8 @@ namespace BExplorer.Shell.Interop
 		public const int LVN_BEGINSCROLL = (LVN_FIRST - 80);
 		public const int LVN_ENDSCROLL = (LVN_FIRST - 81);
 		public const int LVN_COLUMNCLICK = (LVN_FIRST - 8);
+		public const int LVN_INCREMENTALSEARCH = (LVN_FIRST - 63);
+		public const int LVN_ODFINDITEM = (LVN_FIRST - 79);
 
 
 		const int UDN_FIRST = -721;        // updown

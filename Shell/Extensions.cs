@@ -171,6 +171,37 @@ namespace BExplorer.Shell
 				public uint flags;
 		}
 
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct NMLVFINDITEM
+		{
+			public NMHDR hdr;
+			public int iStart;
+			public LVFINDINFO lvfi;
+		}
+
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		public struct LVFINDINFO
+		{
+			public LVFI flags;
+			public string psz;
+			public IntPtr lParam;
+			public int ptX; // was POINT pt
+			public int ptY;
+			public int vkDirection;
+		}
+
+
+		public enum LVFI
+		{
+			LVFI_PARAM         =     0x0001,
+			LVFI_STRING        =     0x0002,
+			LVFI_SUBSTRING     =     0x0004,  // Same as LVFI_PARTIAL
+			LVFI_PARTIAL       =     0x0008,
+			LVFI_WRAP          =     0x0020,
+			LVFI_NEARESTXY     =     0x0040,
+		}
+
 		public enum LVTVIM
 		{
 				LVTVIM_COLUMNS = 2,

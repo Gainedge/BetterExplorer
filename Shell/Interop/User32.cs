@@ -176,6 +176,8 @@ namespace BExplorer.Shell.Interop
 				LVM_UPDATE = FIRST + 42,
 				LVM_SETBKIMAGE = (FIRST + 138),
 				LVM_GETBKIMAGE = (FIRST + 139),
+				LVM_FINDITEM = (FIRST + 83),
+				LVM_ENSUREVISISBLE = (FIRST + 19),
 
 		}
 
@@ -293,6 +295,9 @@ namespace BExplorer.Shell.Interop
 
 				[DllImport("User32.dll")]
 				public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, LVTILEVIEWINFO lParam);
+
+				[DllImport("User32.dll")]
+				public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, LVFINDINFO lParam);
 
 				[DllImport("User32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref LVHITTESTINFO lParam);

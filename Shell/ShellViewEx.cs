@@ -258,7 +258,7 @@ namespace BExplorer.Shell
 				_ResetTimer.Interval = 200;
 			_ResetTimer.Tick += resetTimer_Tick;
 
-			_KeyJumpTimer.Interval = 500;
+			_KeyJumpTimer.Interval = 250;
 			_KeyJumpTimer.Enabled = false;
 			_KeyJumpTimer.Tick += _KeyJumpTimer_Tick;
 
@@ -1464,13 +1464,15 @@ namespace BExplorer.Shell
 			this.Focus();
 		}
 
-			public void SelectItemByIndex(int index)
+			public void SelectItemByIndex(int index, bool ensureVisisble = false)
 			{
 				LVITEM lvi = new LVITEM();
 				lvi.mask = LVIF.LVIF_STATE;
 				lvi.stateMask = LVIS.LVIS_SELECTED;
 				lvi.state = LVIS.LVIS_SELECTED;
 				User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMSTATE, index, ref lvi);
+				if (ensureVisisble)
+					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ENSUREVISISBLE, index, 0);
 				this.Focus();
 			}
 		public void SetColInView(Collumns col, bool Remove)
@@ -1715,6 +1717,18 @@ namespace BExplorer.Shell
 
 			}
 
+			if (m.Msg == 78)
+			{
+				NMHDR nmhdr = new NMHDR();
+				nmhdr = (NMHDR) m.GetLParam(nmhdr.GetType());
+				switch ((int) nmhdr.code)
+				{
+					case WNM.LVN_ODFINDITEM:
+						m.Result = (IntPtr)(-1);
+						return;
+				}
+			}
+
 			base.WndProc(ref m);
 			if (m.Msg == 78)
 			{
@@ -1793,16 +1807,16 @@ namespace BExplorer.Shell
 										else
 										{
 
-																										ShellItem temp = null;
-																										if (!currentItem.ParsingName.StartsWith("::"))
-																										{
-																											temp = new ShellItem(currentItem.ParsingName);
-																										}
-																										else
-																										{
-																											temp = currentItem;
-																										}
-																											IShellItem2 isi2 = (IShellItem2)temp.m_ComInterface;
+											ShellItem temp = null;
+											if (!currentItem.ParsingName.StartsWith("::"))
+											{
+												temp = new ShellItem(currentItem.ParsingName);
+											}
+											else
+											{
+												temp = currentItem;
+											}
+												IShellItem2 isi2 = (IShellItem2)temp.m_ComInterface;
 											Guid guid = new Guid(InterfaceGuids.IPropertyStore);
 											IPropertyStore propStore = null;
 											isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
@@ -2000,6 +2014,7 @@ namespace BExplorer.Shell
 					case WNM.LVN_ODSTATECHANGED:
 						OnSelectionChanged();
 						break;
+					
 					case WNM.LVN_KEYDOWN:
 						NMLVKEYDOWN nkd = (NMLVKEYDOWN) m.GetLParam(typeof(NMLVKEYDOWN));
 						Keys key = (Keys) ((int) nkd.wVKey);
@@ -2071,7 +2086,6 @@ namespace BExplorer.Shell
 										KeyJumpKeyDown(this, new KeyEventArgs(key));
 									}
 								}
-
 
 								break;
 						}
@@ -2588,7 +2602,7 @@ namespace BExplorer.Shell
 			int selind = GetFirstIndexOf(_keyjumpstr);
 			if (selind != -1)
 			{
-				SelectItemByIndex(selind);
+				SelectItemByIndex(selind, true);
 			}
 
 			_keyjumpstr = "";
