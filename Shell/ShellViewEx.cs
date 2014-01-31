@@ -2049,47 +2049,27 @@ namespace BExplorer.Shell
 									skeyr = skeyr.Substring(1);
 								}
 
-								if (skeyr.Length == 1)
+								if (skeyr.Length == 1 || skeyr.ToUpperInvariant() == "SPACE" || skeyr.ToUpperInvariant() == "OEMPERIOD" || skeyr.ToUpperInvariant() == "OEMMINUS")
 								{
 									if (SelectedItems.Count != 0)
 									{
 										_kpreselitem = SelectedItems[0];
 									}
-
-									if (_KeyJumpTimer.Enabled == false)
-									{
-										_KeyJumpTimer.Start();
-										_keyjumpstr = skeyr;
-									}
 									else
 									{
-										_KeyJumpTimer.Stop();
-										_KeyJumpTimer.Start();
-										_keyjumpstr += skeyr;
-									}
-
-									if (KeyJumpKeyDown != null)
-									{
-										KeyJumpKeyDown(this, new KeyEventArgs(key));
-									}
-								}
-								else if (skeyr.ToUpperInvariant() == "SPACE")
-								{
-									if (SelectedItems.Count != 0)
-									{
-										_kpreselitem = SelectedItems[0];
+										_kpreselitem = null;
 									}
 
 									if (_KeyJumpTimer.Enabled == false)
 									{
 										_KeyJumpTimer.Start();
-										_keyjumpstr = " ";
+										_keyjumpstr = GetStringFromAcceptedKeyCodeString(skeyr);
 									}
 									else
 									{
 										_KeyJumpTimer.Stop();
 										_KeyJumpTimer.Start();
-										_keyjumpstr += " ";
+										_keyjumpstr += GetStringFromAcceptedKeyCodeString(skeyr);
 									}
 
 									if (KeyJumpKeyDown != null)
@@ -2599,6 +2579,31 @@ namespace BExplorer.Shell
 			get { return _keyjumpstr; }
 		}
 
+		private string GetStringFromAcceptedKeyCodeString(string str)
+		{
+			str = str.ToUpperInvariant();
+			if (str.Length == 1)
+			{
+				return str;
+			}
+			else if (str == "SPACE")
+			{
+				return " ";
+			}
+			else if (str == "OEMPERIOD")
+			{
+				return ".";
+			}
+			else if (str == "OEMMINUS")
+			{
+				return "-";
+			}
+			else
+			{
+				return "";
+			}
+		}
+
 		void _KeyJumpTimer_Tick(object sender, EventArgs e)
 		{
 			if (KeyJumpTimerDone != null)
@@ -2611,10 +2616,14 @@ namespace BExplorer.Shell
 			//process key jump
 			DeSelectAllItems();
 			int startindex = 0;
-			if (_kpreselitem.GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(_keyjumpstr.ToUpperInvariant()))
+			if (_kpreselitem != null)
 			{
-				startindex = Items.IndexOf(_kpreselitem) + 1;
+				if (_kpreselitem.GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(_keyjumpstr.ToUpperInvariant()))
+				{
+					startindex = Items.IndexOf(_kpreselitem) + 1;
+				}
 			}
+
 			int selind = GetFirstIndexOf(_keyjumpstr, startindex);
 			if (selind != -1)
 			{
