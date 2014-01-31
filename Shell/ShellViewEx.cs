@@ -1646,8 +1646,10 @@ namespace BExplorer.Shell
 		System.Windows.Forms.Timer _ResetTimer = new System.Windows.Forms.Timer();
 		Thread MaintenanceThread;
 			List<Int32> DraggedItemIndexes = new List<int>();
+
 		System.Windows.Forms.Timer _KeyJumpTimer = new System.Windows.Forms.Timer();
 		string _keyjumpstr = "";
+		ShellItem _kpreselitem = null;
 
 		protected override void WndProc(ref Message m)
 		{
@@ -2049,6 +2051,10 @@ namespace BExplorer.Shell
 
 								if (skeyr.Length == 1)
 								{
+									if (SelectedItems.Count != 0)
+									{
+										_kpreselitem = SelectedItems[0];
+									}
 
 									if (_KeyJumpTimer.Enabled == false)
 									{
@@ -2069,6 +2075,11 @@ namespace BExplorer.Shell
 								}
 								else if (skeyr.ToUpperInvariant() == "SPACE")
 								{
+									if (SelectedItems.Count != 0)
+									{
+										_kpreselitem = SelectedItems[0];
+									}
+
 									if (_KeyJumpTimer.Enabled == false)
 									{
 										_KeyJumpTimer.Start();
@@ -2599,7 +2610,12 @@ namespace BExplorer.Shell
 
 			//process key jump
 			DeSelectAllItems();
-			int selind = GetFirstIndexOf(_keyjumpstr);
+			int startindex = 0;
+			if (_kpreselitem.GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(_keyjumpstr.ToUpperInvariant()))
+			{
+				startindex = Items.IndexOf(_kpreselitem) + 1;
+			}
+			int selind = GetFirstIndexOf(_keyjumpstr, startindex);
 			if (selind != -1)
 			{
 				SelectItemByIndex(selind, true);
@@ -2608,12 +2624,23 @@ namespace BExplorer.Shell
 			_keyjumpstr = "";
 		}
 
-		private int GetFirstIndexOf(string name)
+		/// <summary>
+		/// Returns the index of the first item whose display name starts with the search string.
+		/// </summary>
+		/// <param name="search">The string for which to search for.</param>
+		/// <returns>The index of an item within the list view.</returns>
+		public int GetFirstIndexOf(string search)
 		{
-			return GetFirstIndexOf(name, 0);
+			return GetFirstIndexOf(search, 0);
 		}
 
-		private int GetFirstIndexOf(string name, int startindex)
+		/// <summary>
+		/// Returns the index of the first item whose display name starts with the search string.
+		/// </summary>
+		/// <param name="search">The string for which to search for.</param>
+		/// <param name="startindex">The index from which to start searching. Enter '0' to search all items.</param>
+		/// <returns>The index of an item within the list view.</returns>
+		private int GetFirstIndexOf(string search, int startindex)
 		{
 			bool found = false;
 			int i = startindex;
@@ -2622,7 +2649,7 @@ namespace BExplorer.Shell
 			{
 				if (i < Items.Count)
 				{
-					if (Items[i].GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(name.ToUpperInvariant()))
+					if (Items[i].GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(search.ToUpperInvariant()))
 					{
 						found = true;
 					}
