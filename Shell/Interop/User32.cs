@@ -297,7 +297,7 @@ namespace BExplorer.Shell.Interop
 				public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, LVTILEVIEWINFO lParam);
 
 				[DllImport("User32.dll")]
-				public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, LVFINDINFO lParam);
+				public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, LVFINDINFO lParam);
 
 				[DllImport("User32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref LVHITTESTINFO lParam);

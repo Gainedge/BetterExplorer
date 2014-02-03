@@ -1916,21 +1916,11 @@ namespace BExplorer.Shell
 						{
 							KeyJumpKeyDown(this, new KeyEventArgs(Keys.A));
 						}
-						int startindex = 0;
-						if (_kpreselitem != null)
-						{
-							if (_kpreselitem.DisplayName.ToUpperInvariant().StartsWith(_keyjumpstr.ToUpperInvariant()))
-							{
-								startindex = this.Items.IndexOf(_kpreselitem) + 1;
-							}
-						}
-
+						int startindex = findItem.iStart;
 						int selind = GetFirstIndexOf(_keyjumpstr, startindex);
 						if (selind != -1)
 						{
 							m.Result = (IntPtr)(selind);
-							_kpreselitem = this.Items[selind];
-							
 						}
 						
 						break;
