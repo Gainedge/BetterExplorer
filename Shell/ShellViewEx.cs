@@ -1922,6 +1922,14 @@ namespace BExplorer.Shell
 						{
 							m.Result = (IntPtr)(selind);
 						}
+						else
+						{
+							int selindOver = GetFirstIndexOf(_keyjumpstr, 0);
+							if (selindOver != -1)
+							{
+								m.Result = (IntPtr)(selindOver);
+							}
+						}
 						
 						break;
 					case WNM.LVN_INCREMENTALSEARCH:
