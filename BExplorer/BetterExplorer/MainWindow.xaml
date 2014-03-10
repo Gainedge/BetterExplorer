@@ -30,7 +30,7 @@
                      WindowState="Maximized"
                      d:DesignHeight="768"
                      d:DesignWidth="852"
-                     mc:Ignorable="d">
+                     mc:Ignorable="d" KeyDown="RibbonWindow_KeyDown" PreviewKeyDown="RibbonWindow_PreviewKeyDown">
 
     <Ribbon:RibbonWindow.Resources>
         <ResourceDictionary Source="Themes\generic.xaml" />
@@ -3060,14 +3060,14 @@
                          FollowPlacementTarget="True"
                          AllowOutsideScreenPlacement="True"
                          ParentWindow="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                         IsOpen="True"
+                         IsOpen="False"
                          AllowsTransparency="True"
                          Placement="Center"
                          Width="{Binding ElementName=ShellViewHost, Path=ActualWidth}"
                          Height="{Binding ElementName=ShellViewHost, Path=ActualHeight}">
 						<Grid Grid.Row="1" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" >
 								<Border Height="Auto" Width="Auto" Opacity="0.5" CornerRadius="5" VerticalAlignment="Center" HorizontalAlignment="Center" Background="White" BorderBrush="Black" BorderThickness="2">
-										<TextBlock FontSize="20" Margin="3,1,3,1" x:Name="txtKeyJump" Text="j" Foreground="Black" />
+										<TextBlock FontSize="20" Margin="3,1,3,1" x:Name="txtKeyJump" Text="" Foreground="Black" />
 								</Border>
 						</Grid>
 				</controls:AirspacePopup>

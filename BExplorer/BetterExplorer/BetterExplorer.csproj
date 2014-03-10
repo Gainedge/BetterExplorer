@@ -133,6 +133,12 @@
       <HintPath>.\AutomaticUpdaterWPF.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Live, Version=5.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Threading.Tasks">
+      <HintPath>..\..\packages\Microsoft.Bcl.Async.1.0.16\lib\net45\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions">
+      <HintPath>..\..\packages\Microsoft.Bcl.Async.1.0.16\lib\net45\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -675,6 +681,7 @@
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -685,6 +692,10 @@
     <ProjectReference Include="..\..\BEHelper\BEHelper.csproj">
       <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
       <Name>BEHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BetterExplorerLib\BetterExplorerLib.csproj">
+      <Project>{4e10209e-837f-4116-b873-102f44cdb42e}</Project>
+      <Name>BetterExplorerLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ConsoleControl\ConsoleControl.csproj">
       <Project>{737CC7F2-EC7C-4800-B7EB-72637E892C42}</Project>
@@ -1168,9 +1179,10 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.7\tools\Microsoft.Bcl.Build.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

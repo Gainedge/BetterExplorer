@@ -156,8 +156,8 @@ namespace BExplorer.Shell
 				public NMHDR hdr;
 				public int iItem;
 				public int iSubItem;
-				public uint uNewState;
-				public uint uOldState;
+				public LVIS uNewState;
+				public LVIS uOldState;
 				public LVIF uChanged;
 				public Point ptAction;
 				public IntPtr lParam;

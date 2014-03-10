@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:progress="clr-namespace:RateBar;assembly=RateBar"
-             mc:Ignorable="d" Height="246.5" Width="388" Unloaded="FO_Unloaded" Loaded="UserControl_Loaded" >
+             mc:Ignorable="d" Height="246.5" Width="421" Unloaded="FO_Unloaded" Loaded="UserControl_Loaded" >
     <UserControl.Resources>
         <Style TargetType="{x:Type Button}" x:Key="ControlBtnStyle" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Template">
@@ -69,7 +69,7 @@
             <Image Source="pack://application:,,,/BetterExplorer;Component/Images/stop.png" Width="12" Height="12"/>
         </Button>
         <ProgressBar x:Name="prFileProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="5" Height="16" Visibility="Visible"/>
-        <progress:RateGraph x:Name="prOverallProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="7" Height="88" Width="355" ValueChanged="prOverallProgress_ValueChanged" Maximum="100" Loaded="prOverallProgress_Loaded"/>
+        <progress:RateGraph x:Name="prOverallProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="7" Height="88" Width="380" ValueChanged="prOverallProgress_ValueChanged" Maximum="100" Loaded="prOverallProgress_Loaded"/>
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8" Margin="0,5,195,0" Height="18" VerticalAlignment="Top">
             <TextBlock Text="Speed:" VerticalAlignment="Center" Visibility="Visible"/>
             <Image Source="pack://application:,,,/BetterExplorer;Component/Images/speed16.png" Width="24" Height="24" ToolTip="Speed" VerticalAlignment="Center" Visibility="Collapsed"/>

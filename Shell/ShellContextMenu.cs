@@ -67,7 +67,8 @@ namespace BExplorer.Shell
     /// </remarks>
     public class ShellContextMenu
     {
-
+			private ShellView _ShellView { get; set;}
+			private ShellTreeView _ShellTreeView { get; set; }
         /// <summary>
         /// Initialises a new instance of the <see cref="ShellContextMenu"/> 
         /// class.
@@ -91,7 +92,10 @@ namespace BExplorer.Shell
         /// </param>
         public ShellContextMenu(ShellItem[] items)
         {
-            Initialize(items);
+					//this._ShellView = view;
+					//this._ShellTreeView = tree;
+          Initialize(items);
+
         }
 
         /// <summary>
@@ -189,10 +193,12 @@ namespace BExplorer.Shell
         /// </summary>
         public void InvokeRename()
         {
-            CMINVOKECOMMANDINFO invoke = new CMINVOKECOMMANDINFO();
-            invoke.cbSize = Marshal.SizeOf(invoke);
-            invoke.lpVerb = "rename";
-            m_ComInterface.InvokeCommand(ref invoke);
+            //CMINVOKECOMMANDINFO invoke = new CMINVOKECOMMANDINFO();
+            //invoke.cbSize = Marshal.SizeOf(invoke);
+            //invoke.lpVerb = "rename";
+            //m_ComInterface.InvokeCommand(ref invoke);
+						if (this._ShellView != null)
+						this._ShellView.RenameSelectedItem();
         }
 
         /// <summary>
@@ -239,7 +245,43 @@ namespace BExplorer.Shell
                     IntPtr.Zero);
                 if (command > 0)
                 {
-                    InvokeCommand(command - m_CmdFirst);
+									string info = string.Empty;
+									byte[] bytes = new byte[256];
+									int index;
+
+									m_ComInterface.GetCommandString(command - m_CmdFirst, 4, 0, bytes, 260);
+
+									index = 0;
+									while (index < bytes.Length - 1 && (bytes[index] != 0 || bytes[index + 1] != 0))
+									{ index += 2; }
+
+									if (index < bytes.Length - 1)
+										info = Encoding.Unicode.GetString(bytes, 0, index);
+
+									switch (info)
+									{
+										case "rename":
+											if (control is ShellView)
+											{
+												(control as ShellView).RenameSelectedItem();
+											}
+											break;
+										case "cut":
+											if (control is ShellView)
+											{
+												(control as ShellView).CutSelectedFiles();
+											}
+											break;
+										case "copy":
+											if (control is ShellView)
+											{
+												(control as ShellView).CopySelectedFiles();
+											}
+											break;
+										default:
+											InvokeCommand(command - m_CmdFirst);
+											break;
+									}
                 }
             }
         }

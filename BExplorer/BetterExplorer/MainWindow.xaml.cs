@@ -1370,8 +1370,8 @@ namespace BetterExplorer
 
 		void cbm_ClipboardChanged(object sender, ClipboardChangedEventArgs e)
 		{
-			btnPaste.IsEnabled = e.DataObject.GetDataPresent(DataFormats.FileDrop);
-			btnPasetShC.IsEnabled = e.DataObject.GetDataPresent(DataFormats.FileDrop);
+			btnPaste.IsEnabled = e.DataObject.GetDataPresent(DataFormats.FileDrop) || e.DataObject.GetDataPresent("Shell IDList Array");
+			btnPasetShC.IsEnabled = e.DataObject.GetDataPresent(DataFormats.FileDrop) || e.DataObject.GetDataPresent("Shell IDList Array");
 		}
 
 		private void TheRibbon_IsCollapsedChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -2261,32 +2261,32 @@ namespace BetterExplorer
 
 		private void btnctDocuments_Click(object sender, RoutedEventArgs e)
 		{
-			SetFOperation(KnownFolders.Documents.ParsingName, OperationType.Copy);
+			SetFOperation(KnownFolders.Documents.ParsingName, BExplorer.Shell.OperationType.Copy);
 		}
 
 		private void btnctDesktop_Click(object sender, RoutedEventArgs e)
 		{
-			SetFOperation(KnownFolders.Desktop.ParsingName, OperationType.Copy);
+			SetFOperation(KnownFolders.Desktop.ParsingName, BExplorer.Shell.OperationType.Copy);
 		}
 
 		private void btnctDounloads_Click(object sender, RoutedEventArgs e)
 		{
-			SetFOperation(KnownFolders.Downloads.ParsingName, OperationType.Copy);
+			SetFOperation(KnownFolders.Downloads.ParsingName, BExplorer.Shell.OperationType.Copy);
 		}
 
 		private void btnmtDocuments_Click(object sender, RoutedEventArgs e)
 		{
-			SetFOperation(KnownFolders.Documents.ParsingName, OperationType.Move);
+			SetFOperation(KnownFolders.Documents.ParsingName, BExplorer.Shell.OperationType.Move);
 		}
 
 		private void btnmtDesktop_Click(object sender, RoutedEventArgs e)
 		{
-			SetFOperation(KnownFolders.Desktop.ParsingName, OperationType.Move);
+			SetFOperation(KnownFolders.Desktop.ParsingName, BExplorer.Shell.OperationType.Move);
 		}
 
 		private void btnmtDounloads_Click(object sender, RoutedEventArgs e)
 		{
-			SetFOperation(KnownFolders.Downloads.ParsingName, OperationType.Move);
+			SetFOperation(KnownFolders.Downloads.ParsingName, BExplorer.Shell.OperationType.Move);
 		}
 
 		private void btnmtOther_Click(object sender, RoutedEventArgs e)
@@ -2295,11 +2295,11 @@ namespace BetterExplorer
 			dlg.IsFolderPicker = true;
 			if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
 			{
-				SetFOperation(dlg.FileName, OperationType.Move);
+				SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Move);
 			}
 		}
 
-		private void SetFOperation(String FileName, OperationType opType)
+		private void SetFOperation(String FileName, BExplorer.Shell.OperationType opType)
 		{
 			//FIXME: fix this
 			//if (!ExplorerBrowser.IsCustomDialogs) {
@@ -2332,7 +2332,7 @@ namespace BetterExplorer
 			//  //}
 			//}
 		}
-		private void SetFOperation(ShellItem obj, OperationType opType)
+		private void SetFOperation(ShellItem obj, BExplorer.Shell.OperationType opType)
 		{
 			//FIXME: fix this
 			//if (!ExplorerBrowser.IsCustomDialogs) {
@@ -2394,7 +2394,7 @@ namespace BetterExplorer
 			dlg.IsFolderPicker = true;
 			if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
 			{
-				SetFOperation(dlg.FileName, OperationType.Copy);
+				SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Copy);
 			}
 			ShellListView.Focus();
 		}
@@ -3534,6 +3534,7 @@ namespace BetterExplorer
 		void ShellListView_LostFocus(object sender, EventArgs e)
 		{
 			//throw new NotImplementedException();
+			//ShellListView.Focus();
 		}
 
 		async void ShellListView_SelectionChanged(object sender, EventArgs e)
@@ -4257,7 +4258,7 @@ namespace BetterExplorer
 
 			}
 
-			if (this.OwnedWindows.OfType<FileOperationDialog>().Count() > 0)
+			if (this.OwnedWindows.OfType<BExplorer.Shell.FileOperationDialog>().Count() > 0)
 			{
 
 				if (MessageBox.Show("Are you sure you want to cancel all running file operation tasks?", "", MessageBoxButton.YesNo) == MessageBoxResult.No)
@@ -7112,8 +7113,12 @@ namespace BetterExplorer
 			//	e.Effects = DragDropEffects.None;
 			//}
 
-			//TODO: fixDrop!!!!
-			//System.Windows.Forms.DropTargetHelper.Drop((System.Windows.Forms.IDataObject)e.Data, new System.Drawing.Point((int)pt.X, (int)pt.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
+
+			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
+			BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
+			wpt.x = (int)pt.X;
+			wpt.y = (int)pt.Y;
+			dropHelper.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 		}
 
 		void bbi_DragOver(object sender, DragEventArgs e)
@@ -7154,15 +7159,18 @@ namespace BetterExplorer
 
 			Win32Point ptw = new Win32Point();
 			GetCursorPos(ref ptw);
-			//e.Handled = true;
-			//TODO: fixDrop!!!!
-			//System.Windows.Forms.DropTargetHelper.DragOver(new System.Drawing.Point((int)ptw.X, (int)ptw.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
+			e.Handled = true;
+			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
+			BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
+			wpt.x = (int)ptw.X;
+			wpt.y = (int)ptw.Y;
+			dropHelper.DragOver(ref wpt, (int)e.Effects);
 		}
 
 		void bbi_DragLeave(object sender, DragEventArgs e)
 		{
-			//TODO: fixDrop!!!!
-			//System.Windows.Forms.DropTargetHelper.DragLeave();
+			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
+			dropHelper.DragLeave();
 
 		}
 
@@ -7206,9 +7214,11 @@ namespace BetterExplorer
 			Win32Point ptw = new Win32Point();
 			GetCursorPos(ref ptw);
 			e.Effects = DragDropEffects.None;
-			//TODO: fixthis!!!!
-			//System.Windows.Forms.DropTargetHelper.DragEnter((Control)this, (System.Windows.Forms.IDataObject)e.Data, new System.Drawing.Point((int)ptw.X, (int)ptw.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
-			//DropTargetHelper.DragEnter(this, e.Data, new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
+			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
+			BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
+			wpt.x = (int)ptw.X;
+			wpt.y = (int)ptw.Y;
+			dropHelper.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 		}
 
 		#endregion
@@ -7916,13 +7926,13 @@ namespace BetterExplorer
 		void mimc_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem mi = sender as MenuItem;
-			SetFOperation((mi.Tag as ShellItem), OperationType.Copy);
+			SetFOperation((mi.Tag as ShellItem), BExplorer.Shell.OperationType.Copy);
 		}
 
 		void mim_Click(object sender, RoutedEventArgs e)
 		{
 			MenuItem mi = sender as MenuItem;
-			SetFOperation((mi.Tag as ShellItem), OperationType.Move);
+			SetFOperation((mi.Tag as ShellItem), BExplorer.Shell.OperationType.Move);
 		}
 
 		public void NavigateAfterTabChange()
@@ -8657,8 +8667,8 @@ namespace BetterExplorer
 
 
 
-					tabControl.Items.Remove(tabItemTarget);
-					tabControl.Items.Insert(sourceIndex, tabItemTarget);
+					//tabControl.Items.Remove(tabItemTarget);
+					//tabControl.Items.Insert(sourceIndex, tabItemTarget);
 					if (tabState == 1)
 						tabControl.SelectedIndex = sourceIndex;
 					else if (tabState == 0)
@@ -8738,8 +8748,11 @@ namespace BetterExplorer
 				{
 					e.Effects = DragDropEffects.None;
 				}
-				//TODO: fixDrop!!!!
-				//System.Windows.Forms.DropTargetHelper.Drop((System.Windows.Forms.IDataObject)e.Data, new System.Drawing.Point((int)pt.X, (int)pt.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
+				IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
+				BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
+				wpt.x = (int)pt.X;
+				wpt.y = (int)pt.Y;
+				dropHelper.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 				// attempt at making drag-and-drop tabs a possibility
 				//}
 				//else
@@ -8809,16 +8822,22 @@ namespace BetterExplorer
 
 			Win32Point ptw = new Win32Point();
 			GetCursorPos(ref ptw);
-			//e.Handled = true;
-			//TODO: fixDrop!!!!
-			//if (e.Data.GetType() != typeof(ClosableTabItem))
-			//	System.Windows.Forms.DropTargetHelper.DragOver(new System.Drawing.Point((int)ptw.X, (int)ptw.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
+			e.Handled = true;
+
+			if (e.Data.GetType() != typeof(ClosableTabItem))
+			{
+				IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
+				BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
+				wpt.x = (int)ptw.X;
+				wpt.y = (int)ptw.Y;
+				dropHelper.DragOver(ref wpt, (int)e.Effects);
+			}
 		}
 
 		void newt_DragLeave(object sender, DragEventArgs e)
 		{
-			//TODO: fixDrop!!!!
-			//System.Windows.Forms.DropTargetHelper.DragLeave();
+			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
+			dropHelper.DragLeave();
 		}
 
 		void newt_DragEnter(object sender, DragEventArgs e)
@@ -8873,17 +8892,21 @@ namespace BetterExplorer
 			e.Effects = DragDropEffects.None;
 			var tabItemSource = e.Data.GetData(typeof(ClosableTabItem)) as ClosableTabItem;
 			//TODO: fix this!!!
-			//if (tabItemSource == null)
-			//	System.Windows.Forms.DropTargetHelper.DragEnter((System.Windows.Forms.IDataObject)e.Data, new System.Drawing.Point((int)pt.X, (int)pt.Y), (System.Windows.Forms.DragDropEffects)e.Effects);
-			//				DropTargetHelper.DragEnter(this, e.Data, new System.Windows.Point(ptw.X, ptw.Y), e.Effects);
-			//}
-			//else
-			//{
-			//    if (e.Data.GetDataPresent(typeof(ClosableTabItem)))
-			//    {
-			//        e.Effects = DragDropEffects.Move;
-			//    }
-			//}
+			if (tabItemSource == null)
+			{
+				IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
+				BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
+				wpt.x = (int)ptw.X;
+				wpt.y = (int)ptw.Y;
+				dropHelper.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+			}
+			else
+			{
+				if (e.Data.GetDataPresent(typeof(ClosableTabItem)))
+				{
+					e.Effects = DragDropEffects.Move;
+				}
+			}
 
 		}
 
@@ -9910,6 +9933,46 @@ namespace BetterExplorer
 		private void tmpButtonB_Click(object sender, RoutedEventArgs e)
 		{
 			ExportColumnDataToTextFile(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\ColumnData.txt");
+		}
+
+		private void RibbonWindow_KeyDown(object sender, KeyEventArgs e)
+		{
+			
+		}
+		private void RibbonWindow_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (!Keyboard.IsKeyDown(Key.LeftAlt) && (e.Key == Key.Left || e.Key == Key.Right || e.Key == Key.Up || e.Key == Key.Down)) { 
+				e.Handled = true;
+				var keyText = String.Empty;
+				switch (e.Key)
+				{
+					case Key.Left:
+						keyText = "{LEFT}";
+					break;
+					case Key.Right:
+						keyText = "{RIGHT}";
+					break;
+					case Key.Up:
+						keyText = "{UP}";
+					break;
+					case Key.Down:
+						keyText = "{DOWN}";
+					break;
+
+				}
+				System.Windows.Forms.SendKeys.SendWait(keyText);
+			}
+		}
+
+		private void ShellViewHost_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+
+					
+		}
+
+		private void ShellViewHost_GotFocus(object sender, RoutedEventArgs e)
+		{
+
 		}
 
 	}

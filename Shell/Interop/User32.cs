@@ -280,6 +280,14 @@ namespace BExplorer.Shell.Interop
 
 		public class User32
 		{
+			/// <summary>The GetForegroundWindow function returns a handle to the foreground window.</summary>
+			[DllImport("user32.dll")]
+			public static extern IntPtr GetForegroundWindow();
+			// For Windows Mobile, replace user32.dll with coredll.dll
+			[DllImport("user32.dll")]
+			[return: MarshalAs(UnmanagedType.Bool)]
+			public static extern bool SetForegroundWindow(IntPtr hWnd);
+
 			[DllImport("user32", CharSet = CharSet.Unicode, SetLastError = true, ExactSpelling = true)]
 			public static extern IntPtr SetFocus(IntPtr hWnd);
 
