@@ -82,8 +82,9 @@ namespace BetterExplorer.PieChart
 
             Pie.Width = clPie.ActualWidth;
             Pie.Height = this.ActualHeight;
-            legend1.Height = this.ActualHeight - 50;
-            legend1.Width = 240;
+						legend1.Margin = new Thickness(0);
+            legend1.Height = this.ActualHeight - 40;
+            legend1.Width = 245;
         }
     }
 }

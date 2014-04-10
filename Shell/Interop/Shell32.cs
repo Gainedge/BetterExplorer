@@ -19,6 +19,7 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
 #pragma warning disable 1591
@@ -382,6 +383,12 @@ namespace BExplorer.Shell.Interop
 
 		class Shell32
 		{
+			[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
+			public static extern void SHCreateShellItemArrayFromDataObject(
+						[In] System.Runtime.InteropServices.ComTypes.IDataObject pdo,
+						[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
+						[MarshalAs(UnmanagedType.Interface)] out IShellItemArray ppv);
+
 			[DllImport("Shell32", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 			internal static extern int SHShowManageLibraryUI(
 					[In, MarshalAs(UnmanagedType.Interface)] IShellItem library,
@@ -786,6 +793,15 @@ namespace BExplorer.Shell.Interop
 						[In] IntPtr hToken,
 						[In] uint dwFlags,
 						[Out] StringBuilder pszPath);
+
+				[DllImport("shell32.dll")]
+				public static extern HResult SHDoDragDrop(
+					IntPtr hwnd,
+					IDataObject pdtobj,
+					IDropSource pdsrc,
+					uint dwEffect,
+					out uint pdwEffect
+					);
 
 				[DllImport("shell32.dll", PreserveSig = false)]
 				public static extern IntPtr SHGetIDListFromObject(

@@ -86,6 +86,20 @@ namespace BExplorer.Shell.Interop
 					ALL = SERVER | INPROC_HANDLER
 				}
 
+				[StructLayout(LayoutKind.Sequential)]
+				internal struct BIND_OPTS3
+				{
+					internal uint cbStruct;
+					internal uint grfFlags;
+					internal uint grfMode;
+					internal uint dwTickCountDeadline;
+					internal uint dwTrackFlags;
+					internal uint dwClassContext;
+					internal uint locale;
+					object pServerInfo; // will be passing null, so type doesn't matter
+					internal IntPtr hwnd;
+				}
+
 				[DllImport("ole32.dll",
 						CharSet = CharSet.Auto,
 						SetLastError = true)]
@@ -107,6 +121,29 @@ namespace BExplorer.Shell.Interop
 				public static Guid CLSID_NewMenu = new Guid("{D969A300-E7FF-11d0-A93B-00A0C90F2719}");
 				public static Guid IID_IDragSourceHelper = new Guid("{DE5BF786-477A-11d2-839D-00C04FD918D0}");
 				public static Guid IID_IDropTargetHelper = new Guid("{4657278B-411B-11d2-839A-00C04FD918D0}");
+
+				[DllImport("ole32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = false)]
+				[return: MarshalAs(UnmanagedType.Interface)]
+				internal static extern object CoGetObject(
+					 string pszName,
+					 [In] ref BIND_OPTS3 pBindOptions,
+					 [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+
+				[return: MarshalAs(UnmanagedType.Interface)]
+				public static object LaunchElevatedCOMObject(Guid Clsid, Guid InterfaceID)
+				{
+					string CLSID = Clsid.ToString("B"); // B formatting directive: returns {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx} 
+					string monikerName = "Elevation:Administrator!new:" + CLSID;
+
+					BIND_OPTS3 bo = new BIND_OPTS3();
+					bo.cbStruct = (uint)Marshal.SizeOf(bo);
+					bo.hwnd = IntPtr.Zero;
+					bo.dwClassContext = (int)CLSCTX.LOCAL_SERVER;
+
+					object retVal = CoGetObject(monikerName, ref bo, InterfaceID);
+
+					return (retVal);
+				}
 
     }
 }

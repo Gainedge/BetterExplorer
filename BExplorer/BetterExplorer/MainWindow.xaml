@@ -1787,10 +1787,7 @@
                                   MaxItemsInRow="3"
                                   MinItemsInDropDownRow="2"
                                   MinItemsInRow="3"
-                                  MouseLeftButtonDown="inRibbonGallery1_MouseLeftButtonDown"
                                   Orientation="Horizontal"
-                                  PreviewMouseDown="inRibbonGallery1_PreviewMouseDown"
-                                  PreviewMouseLeftButtonUp="inRibbonGallery1_PreviewMouseLeftButtonUp"
                                   ResizeMode="Both"
                                   Ribbon:KeyTip.Keys="V"
                                   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Large,Large"
@@ -1803,7 +1800,7 @@
                             <Ribbon:GalleryGroupFilter Title="Standard Views" Groups="Standard Views" />
                             <Ribbon:GalleryGroupFilter Title="Additional Views" Groups="Additional Views" />
                         </Ribbon:InRibbonGallery.Filters>
-                        <Ribbon:GalleryItem PreviewMouseLeftButtonUp="ExtraLarge_GalleryItem_MouseLeftButtonUp" Tag="Standard Views">
+                        <Ribbon:GalleryItem Tag="Standard Views">
                             <StackPanel x:Name="ExtraLargeIconsPanel"
                           Focusable="True"
                           Orientation="Horizontal"
@@ -1839,7 +1836,7 @@
                            Text="{DynamicResource btnMediumICP}" />
                             </StackPanel>
                         </Ribbon:GalleryItem>
-                        <Ribbon:GalleryItem PreviewMouseLeftButtonUp="GalleryItem_PreviewMouseLeftButtonUp" Tag="Standard Views">
+                        <Ribbon:GalleryItem Tag="Standard Views">
                             <StackPanel Focusable="True"
                           Orientation="Horizontal"
                           Tag="Standard Views">

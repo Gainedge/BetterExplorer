@@ -432,7 +432,7 @@ namespace BetterExplorer
 												newt.PreviewMouseMove += newt_PreviewMouseMove;
 												newt.ToolTip = sho.ParsingName;
 												newt.TabSelected += win.newt_TabSelected;
-												newt.Path = sho;
+												newt.ShellObject = sho;
 												win.CloneTab(newt);
 											}
 											else
@@ -449,7 +449,7 @@ namespace BetterExplorer
 													newt.PreviewMouseMove += newt_PreviewMouseMove;
 													newt.ToolTip = sho.ParsingName;
 													newt.TabSelected += win.newt_TabSelected;
-													newt.Path = sho;
+													newt.ShellObject = sho;
 													win.CloneTab(newt);
 												}
 												if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null)
@@ -470,7 +470,7 @@ namespace BetterExplorer
 													newt.PreviewMouseMove += newt_PreviewMouseMove;
 													newt.ToolTip = sho.ParsingName;
 													newt.TabSelected += win.newt_TabSelected;
-													newt.Path = sho;
+													newt.ShellObject = sho;
 													win.CloneTab(newt);
 												}
 											}

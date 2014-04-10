@@ -73,6 +73,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileOperation\AsyncUnbuffCopy.cs" />
+    <Compile Include="FileOperation\FileOperationProgressSink.cs" />
+    <Compile Include="FileOperation\IIFileOperation.cs" />
     <Compile Include="FileOperation\FileOperation.xaml.cs">
       <DependentUpon>FileOperation.xaml</DependentUpon>
     </Compile>
@@ -80,6 +82,10 @@
       <DependentUpon>FileOperationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileOperation\Theme.cs" />
+    <Compile Include="Interop\ComReleaser.cs" />
+    <Compile Include="Interop\FileOperationFlags.cs" />
+    <Compile Include="Interop\IFileOperationProgressSink.cs" />
+    <Compile Include="Interop\IFileOperation.cs" />
     <Compile Include="RoundedRectangle.cs" />
     <Compile Include="DragDropHelper.cs" />
     <Compile Include="ShellViewDragDrop.cs" />

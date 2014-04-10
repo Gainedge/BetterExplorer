@@ -20,6 +20,8 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Collections.Concurrent;
 using System.Drawing.Drawing2D;
+using System.Security;
+using Microsoft.Win32;
 
 namespace BExplorer.Shell
 {
@@ -199,6 +201,7 @@ namespace BExplorer.Shell
 		int _iconSize;
 		private Boolean _showCheckBoxes = false;
 		private Boolean _ShowHidden;
+		private Boolean _IsInRenameMode = false;
 		BackgroundWorker bw = new BackgroundWorker();
 		ConcurrentDictionary<int, Bitmap> cache = new ConcurrentDictionary<int, Bitmap>();
 		Thread _IconCacheLoadingThread;
@@ -682,6 +685,14 @@ namespace BExplorer.Shell
 				this._CuttedIndexes.Clear();
 				System.Windows.Forms.Clipboard.Clear();
 			}
+			if (e.KeyCode == Keys.Delete)
+			{
+				this.DeleteSelectedFiles((Control.ModifierKeys & Keys.Shift) != Keys.Shift);
+			}
+			if (e.KeyCode == Keys.F5)
+			{
+				this.RefreshContents();
+			}
 		}
 
 
@@ -751,6 +762,8 @@ namespace BExplorer.Shell
 		public event EventHandler<ItemUpdatedEventArgs> ItemUpdated;
 
 		public event EventHandler<ViewChangedEventArgs> ViewStyleChanged;
+
+		public event EventHandler<NavigatedEventArgs> ItemMiddleClick;
 
 		/// <summary>
 		/// Occurs when the user right-clicks on the blank area of the column header area
@@ -1268,7 +1281,8 @@ namespace BExplorer.Shell
 		/// </summary>
 		public void Focus()
 		{
-			User32.SetFocus(this.LVHandle);
+			if (!this._IsInRenameMode)
+				User32.SetFocus(this.LVHandle);
 		}
 		public void FormatDrive(IntPtr handle)
 		{
@@ -1815,10 +1829,12 @@ namespace BExplorer.Shell
 		{
 			this.Focus();
 			var res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_EDITLABELW, index, 0);
+			this._IsInRenameMode = true;
 		}
 		public void RenameSelectedItem()
 		{
 			//User32.EnumChildWindows(this.LVHandle, RenameCallback, IntPtr.Zero);
+			this.Focus();
 			RenameCallback(this.LVHandle, IntPtr.Zero);
 		}
 
@@ -1834,28 +1850,167 @@ namespace BExplorer.Shell
 			}
 			this._CuttedIndexes.AddRange(this.SelectedIndexes.ToArray());
 			IntPtr dataObjPtr = IntPtr.Zero;
-			System.Runtime.InteropServices.ComTypes.IDataObject dataObject = GetIDataObject(this.SelectedItems.ToArray(), out dataObjPtr);
-			System.Windows.Forms.DataObject ddataObject = new System.Windows.Forms.DataObject(dataObject);
-			using (System.IO.MemoryStream ms = new System.IO.MemoryStream(4))
-			{
-				// Copy or Cut operation (5 = copy; 2 = cut)
-				byte[] bytes = new byte[] {2, 0, 0, 0};
-				ms.Write(bytes, 0, bytes.Length);
-				ms.SetLength(bytes.Length);
-				ddataObject.SetData("Preferred DropEffect", ms);
-			}
-			System.Windows.Forms.Clipboard.SetDataObject(ddataObject);
+			//System.Runtime.InteropServices.ComTypes.IDataObject dataObject = GetIDataObject(this.SelectedItems.ToArray(), out dataObjPtr);
+			System.Windows.Forms.IDataObject ddataObject = new System.Windows.Forms.DataObject();
+																																				// Copy or Cut operation (5 = copy; 2 = cut)
+			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 2, 0, 0, 0 }));
+			ddataObject.SetData("Shell IDList Array", true, this.SelectedItems.ToArray().CreateShellIDList());
+			System.Windows.Forms.Clipboard.SetDataObject(ddataObject, true);
 
 		}
 
 		public void CopySelectedFiles()
 		{
+			IntPtr dataObjPtr = IntPtr.Zero;
+			//System.Runtime.InteropServices.ComTypes.IDataObject dataObject = GetIDataObject(this.SelectedItems.ToArray(), out dataObjPtr);
+			System.Windows.Forms.DataObject ddataObject = new System.Windows.Forms.DataObject();
+			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 5, 0, 0, 0 }));
+			ddataObject.SetData("Shell IDList Array", true, this.SelectedItems.ToArray().CreateShellIDList());
+			System.Windows.Forms.Clipboard.SetDataObject(ddataObject, true);
 
 		}
 
 		public void PasteAvailableFiles()
 		{
+			var dataObject = System.Windows.Forms.Clipboard.GetDataObject();
+			var dragDropEffect = System.Windows.DragDropEffects.Copy;
+			var dropEffect = dataObject.ToDropEffect();
+			var shellItemArray = dataObject.ToShellItemArray();
+			var items = shellItemArray.ToArray();
+			try
+			{
+				IIFileOperation fo = new IIFileOperation();
+				foreach (var item in items)
+				{
+					if (dropEffect == System.Windows.DragDropEffects.Copy)
+					{
+						fo.CopyItem(item, this.CurrentFolder.m_ComInterface, String.Empty);
+					}
+					else
+					{
+						fo.MoveItem(item, this.CurrentFolder.m_ComInterface, null);
+					}
+				}
 
+				fo.PerformOperations();
+			}
+			catch (SecurityException)
+			{
+				throw;
+			}
+		}
+
+		public void DoCopy(ShellItem destination)
+		{
+			IIFileOperation fo = new IIFileOperation();
+			foreach (var item in this.SelectedItems.Select(s => s.m_ComInterface).ToArray())
+			{
+				fo.CopyItem(item, destination.m_ComInterface, null);
+			}
+			fo.PerformOperations();
+		}
+		public void DoCopy(System.Windows.Forms.IDataObject dataObject, ShellItem destination)
+		{
+			var shellItemArray = dataObject.ToShellItemArray();
+			var items = shellItemArray.ToArray();
+			try
+			{
+				IIFileOperation fo = new IIFileOperation();
+				foreach (var item in items)
+				{
+						fo.CopyItem(item, destination.m_ComInterface, String.Empty);
+				}
+
+				fo.PerformOperations();
+			}
+			catch (SecurityException)
+			{
+				throw;
+			}
+		}
+
+		public void DoCopy(System.Windows.IDataObject dataObject, ShellItem destination)
+		{
+			var shellItemArray = dataObject.ToShellItemArray();
+			var items = shellItemArray.ToArray();
+			try
+			{
+				IIFileOperation fo = new IIFileOperation();
+				foreach (var item in items)
+				{
+					fo.CopyItem(item, destination.m_ComInterface, String.Empty);
+				}
+
+				fo.PerformOperations();
+			}
+			catch (SecurityException)
+			{
+				throw;
+			}
+		}
+		public void DoMove(System.Windows.Forms.IDataObject dataObject, ShellItem destination)
+		{
+			var shellItemArray = dataObject.ToShellItemArray();
+			var items = shellItemArray.ToArray();
+			try
+			{
+				IIFileOperation fo = new IIFileOperation();
+				foreach (var item in items)
+				{
+					fo.MoveItem(item, destination.m_ComInterface, null);
+				}
+
+				fo.PerformOperations();
+			}
+			catch (SecurityException)
+			{
+				throw;
+			}
+		}
+
+		public void DoMove(System.Windows.IDataObject dataObject, ShellItem destination)
+		{
+			var shellItemArray = dataObject.ToShellItemArray();
+			var items = shellItemArray.ToArray();
+			try
+			{
+				IIFileOperation fo = new IIFileOperation();
+				foreach (var item in items)
+				{
+					fo.MoveItem(item, destination.m_ComInterface, null);
+				}
+
+				fo.PerformOperations();
+			}
+			catch (SecurityException)
+			{
+				throw;
+			}
+		}
+
+		public void DoMove(ShellItem destination)
+		{
+			IIFileOperation fo = new IIFileOperation();
+			foreach (var item in this.SelectedItems.Select(s => s.m_ComInterface).ToArray())
+			{
+				fo.MoveItem(item, destination.m_ComInterface, null);
+			}
+			fo.PerformOperations();
+		}
+
+		public void DeleteSelectedFiles(Boolean isRecycling)
+		{
+			IIFileOperation fo = new IIFileOperation(isRecycling);
+			foreach (var item in this.SelectedItems.Select(s => s.m_ComInterface).ToArray())
+			{
+				fo.DeleteItem(item);
+			}
+			fo.PerformOperations();
+		}
+		public void RenameShellItem(IShellItem item, String newName){
+			IIFileOperation fo = new IIFileOperation(true);
+			fo.RenameItem(item, newName);
+			fo.PerformOperations();
 		}
 		public void ResizeIcons(int value)
 		{
@@ -2051,6 +2206,20 @@ namespace BExplorer.Shell
 			}
 
 		}
+
+		internal void OnItemMiddleClick()
+		{
+			if (ItemMiddleClick != null)
+			{
+				var row = -1;
+				var column = -1;
+				this.HitTest(this.PointToClient(Cursor.Position), out row, out column);
+				if (row != -1 && this.Items[row].IsFolder)
+				{
+					ItemMiddleClick.Invoke(this, new NavigatedEventArgs(this.Items[row]));
+				}
+			}
+		}
 			ShellViewDragDrop DropTarget;
 		protected override void OnHandleCreated(EventArgs e)
 		{
@@ -2143,6 +2312,13 @@ namespace BExplorer.Shell
 		protected override void WndProc(ref Message m)
 		{
 			bool isSmallIcons = (View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details);
+			if (m.Msg == (int)WM.WM_PARENTNOTIFY)
+			{
+				if (User32.LOWORD((int)m.WParam) == (int)WM.WM_MBUTTONDOWN)
+				{
+					OnItemMiddleClick();
+				}
+			}
 
 			if (m.Msg == ShellNotifications.WM_SHNOTIFY)
 			{
@@ -2208,7 +2384,7 @@ namespace BExplorer.Shell
 
 			}
 
-			if (m.Msg == (int)WM.WM_KEYUP)
+			if (m.Msg == (int)WM.WM_NCMBUTTONDOWN)
 			{
 
 			}
@@ -2235,8 +2411,13 @@ namespace BExplorer.Shell
 				nmhdr = (NMHDR) m.GetLParam(nmhdr.GetType());
 				switch ((int) nmhdr.code)
 				{
+					case WNM.LVN_ENDLABELEDITW:
+						var nmlvedit = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
+						if (!String.IsNullOrEmpty(nmlvedit.item.pszText))
+							RenameShellItem(this.SelectedItems[0].m_ComInterface, nmlvedit.item.pszText);
+						break;
 					case WNM.LVN_GETDISPINFOW:
-													var nmlv = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
+						var nmlv = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
 						//if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS)
 						//{
 						//	int[] varArray = {0,1,2,3};
@@ -2593,85 +2774,19 @@ namespace BExplorer.Shell
 						//uint CFSTR_SHELLIDLIST =
 						//	User32.RegisterClipboardFormat("Shell IDList Array");
 						//	System.Windows.Forms.DataObject dobj = new System.Windows.Forms.DataObject("")
-						Task.Run(() =>
-						{
-							this.BeginInvoke(new MethodInvoker(() =>
-							{
-								DraggedItemIndexes.Clear();
-								List<ShellItem> selectedItems = this.SelectedItems;
-								
-								Bitmap bmpb = new Bitmap(100, 100, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-								using (Graphics g = Graphics.FromImage(bmpb))
-								{
-									GraphicsPath rrect = RoundedRectangle.Create(new Rectangle(0, 0, 99, 99), 4);
-									g.Clear(System.Drawing.Color.Magenta);
-									g.FillPath(new SolidBrush(System.Drawing.Color.FromArgb(0xDD, 0xE9, 0xF2)), rrect);
-									g.DrawPath(Pens.LightBlue, rrect);
-									if (selectedItems.Count == 1)
-									{
-										var bmp = selectedItems.First().GetShellThumbnail(96, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-										g.DrawImageUnscaled(bmp, new Rectangle(2, 2, 96, 96));
-										bmp.Dispose();
-									}
-									else if (selectedItems.Count == 2)
-									{
-										var bmp = selectedItems.First().GetShellThumbnail(90, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-										g.DrawImageUnscaled(bmp, new Rectangle(2, 2, 90, 90));
-										bmp.Dispose();
-										var bmpLast = selectedItems.Last().GetShellThumbnail(90, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-										g.DrawImageUnscaled(bmpLast, new Rectangle(5, 5, 90, 90));
-										bmpLast.Dispose();
-									}
-									else if (selectedItems.Count > 2)
-									{
-										var bmp = selectedItems.First().GetShellThumbnail(80, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-										g.DrawImageUnscaled(bmp, new Rectangle(2, 2, 80, 80));
-										bmp.Dispose();
-										int middleIndex = (int)Math.Round((double)selectedItems.Count / 2, 0);
-										var bmpMidle = selectedItems[middleIndex - 1].GetShellThumbnail(80, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-										g.DrawImageUnscaled(bmpMidle, new Rectangle(8, 8, 80, 80));
-										bmpMidle.Dispose();
-										var bmpLast = selectedItems.Last().GetShellThumbnail(80, ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption.Default);
-										g.DrawImageUnscaled(bmpLast, new Rectangle(14, 14, 80, 80));
-										bmpLast.Dispose();
-									}
+						//Task.Run(() =>
+						//{
+						//	this.BeginInvoke(new MethodInvoker(() =>
+						//	{
+						this.DraggedItemIndexes.Clear();								
+						IntPtr dataObjPtr = IntPtr.Zero;
+						System.Runtime.InteropServices.ComTypes.IDataObject dataObject = GetIDataObject(this.SelectedItems.ToArray(), out dataObjPtr);
 
-								}
+						uint ef = 0;
+						Shell32.SHDoDragDrop(this.Handle, dataObject, null, unchecked((uint)System.Windows.Forms.DragDropEffects.All | (uint)System.Windows.Forms.DragDropEffects.Link), out ef);
 
-								ShDragImage shdi = new ShDragImage();
-								Win32Size size;
-								size.cx = bmpb.Width;
-								size.cy = bmpb.Height;
-								shdi.sizeDragImage = size;
-								System.Drawing.Point p = new System.Drawing.Point(50, 50);
-								Win32Point wpt;
-								wpt.x = p.X;
-								wpt.y = p.Y;
-								shdi.ptOffset = wpt;
-								shdi.hbmpDragImage = bmpb.GetHbitmap();
-								shdi.crColorKey = System.Drawing.Color.Magenta.ToArgb();
-
-
-								IntPtr dataObjPtr = IntPtr.Zero;
-								System.Runtime.InteropServices.ComTypes.IDataObject dataObject = GetIDataObject(selectedItems.ToArray(), out dataObjPtr);
-								System.Windows.Forms.DataObject ddataObject = new System.Windows.Forms.DataObject(dataObject);
-								//using (System.IO.MemoryStream ms = new System.IO.MemoryStream(4))
-								//{
-								//	// Copy or Cut operation
-								//	byte[] bytes = new byte[] {5, 0, 0, 0};
-								//	ms.Write(bytes, 0, bytes.Length);
-								//	ms.SetLength(bytes.Length);
-								//	ddataObject.SetData("Preferred DropEffect", ms);
-								//	//ddataObject.SetData(dataObject);
-								//	
-								//}
-								IDragSourceHelper sourceHelper = (IDragSourceHelper)new DragDropHelper();
-								sourceHelper.InitializeFromBitmap(ref shdi, ddataObject);
-								DoDragDrop(ddataObject, System.Windows.Forms.DragDropEffects.All);
-								selectedItems.Clear();
-								selectedItems = null;
-							}));
-						});
+						//	}));
+						//});
 						//Ole32.DoDragDrop(ddataObject, this, System.Windows.Forms.DragDropEffects.All, out effect);
 						//DragSourceHelper.DoDragDrop(this, new System.Drawing.Point(0, 0), System.Windows.Forms.DragDropEffects.Copy, new KeyValuePair<string, object>("Shell IDList Array", new ShellItemArray(this.SelectedItems.Select(s => s.m_ComInterface).ToArray())));
 					break;
@@ -3352,11 +3467,13 @@ namespace BExplorer.Shell
 
 		bool RenameCallback(IntPtr hwnd, IntPtr lParam)
 		{
+			this.Focus();
 			var index = User32.SendMessage(this.LVHandle, LVM.GETNEXTITEM, -1, LVNI.LVNI_SELECTED);
 			var res = User32.SendMessage(hwnd, BExplorer.Shell.Interop.MSG.LVM_EDITLABELW, index, 0);
-			return false;
+			this._IsInRenameMode = true;
+			//return false;
 
-			//return true;
+			return true;
 		}
 		void selectionTimer_Tick(object sender, EventArgs e)
 		{
@@ -3384,7 +3501,49 @@ namespace BExplorer.Shell
 			
 			protected override void OnDragEnter(System.Windows.Forms.DragEventArgs e)
 			{
-				e.Effect = System.Windows.Forms.DragDropEffects.Copy;
+				if ((e.KeyState & (8 + 32)) == (8 + 32) &&
+						(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Link) == System.Windows.Forms.DragDropEffects.Link)
+				{
+					// KeyState 8 + 32 = CTL + ALT 
+
+					// Link drag-and-drop effect.
+					e.Effect = System.Windows.Forms.DragDropEffects.Link;
+
+				}
+				else if ((e.KeyState & 32) == 32 &&
+					(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Link) == System.Windows.Forms.DragDropEffects.Link)
+				{
+
+					// ALT KeyState for link.
+					e.Effect = System.Windows.Forms.DragDropEffects.Link;
+
+				}
+				else if ((e.KeyState & 4) == 4 &&
+					(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Move) == System.Windows.Forms.DragDropEffects.Move)
+				{
+
+					// SHIFT KeyState for move.
+					e.Effect = System.Windows.Forms.DragDropEffects.Move;
+
+				}
+				else if ((e.KeyState & 8) == 8 &&
+					(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Copy) == System.Windows.Forms.DragDropEffects.Copy)
+				{
+
+					// CTL KeyState for copy.
+					e.Effect = System.Windows.Forms.DragDropEffects.Copy;
+
+				}
+				else if ((e.AllowedEffect & System.Windows.Forms.DragDropEffects.Move) == System.Windows.Forms.DragDropEffects.Move)
+				{
+
+					// By default, the drop action should be move, if allowed.
+					e.Effect = System.Windows.Forms.DragDropEffects.Move;
+
+				}
+				else
+					e.Effect = System.Windows.Forms.DragDropEffects.None;
+
 				IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 				Win32Point wp = new Win32Point();
 				wp.x = e.X;
@@ -3392,13 +3551,54 @@ namespace BExplorer.Shell
 
 				if (e.Data.GetDataPresent("DragImageBits"))
 					dropHelper.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
-				System.Windows.Forms.Application.DoEvents();
 			}
 
 			int _LastSelectedIndexByDragDrop = -1;
 			protected override void OnDragOver(System.Windows.Forms.DragEventArgs e)
 			{
-				e.Effect = System.Windows.Forms.DragDropEffects.Copy;
+				if ((e.KeyState & (8 + 32)) == (8 + 32) &&
+				(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Link) == System.Windows.Forms.DragDropEffects.Link)
+				{
+					// KeyState 8 + 32 = CTL + ALT 
+
+					// Link drag-and-drop effect.
+					e.Effect = System.Windows.Forms.DragDropEffects.Link;
+
+				}
+				else if ((e.KeyState & 32) == 32 &&
+					(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Link) == System.Windows.Forms.DragDropEffects.Link)
+				{
+
+					// ALT KeyState for link.
+					e.Effect = System.Windows.Forms.DragDropEffects.Link;
+
+				}
+				else if ((e.KeyState & 4) == 4 &&
+					(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Move) == System.Windows.Forms.DragDropEffects.Move)
+				{
+
+					// SHIFT KeyState for move.
+					e.Effect = System.Windows.Forms.DragDropEffects.Move;
+
+				}
+				else if ((e.KeyState & 8) == 8 &&
+					(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Copy) == System.Windows.Forms.DragDropEffects.Copy)
+				{
+
+					// CTL KeyState for copy.
+					e.Effect = System.Windows.Forms.DragDropEffects.Copy;
+
+				}
+				else if ((e.AllowedEffect & System.Windows.Forms.DragDropEffects.Move) == System.Windows.Forms.DragDropEffects.Move)
+				{
+
+					// By default, the drop action should be move, if allowed.
+					e.Effect = System.Windows.Forms.DragDropEffects.Move;
+
+				}
+				else
+					e.Effect = System.Windows.Forms.DragDropEffects.None;
+
 				IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 				Win32Point wp = new Win32Point();
 				wp.x = e.X;
@@ -3427,7 +3627,6 @@ namespace BExplorer.Shell
 
 				if (e.Data.GetDataPresent("DragImageBits"))
 					dropHelper.DragOver(ref wp, (int)e.Effect);
-				System.Windows.Forms.Application.DoEvents();
 			}
 
 			protected override void OnDragLeave(EventArgs e)
@@ -3438,7 +3637,39 @@ namespace BExplorer.Shell
 
 			protected override void OnDragDrop(System.Windows.Forms.DragEventArgs e)
 			{
-				e.Effect = System.Windows.Forms.DragDropEffects.Copy;
+				int row = -1;
+				int collumn = -1;
+				this.HitTest(PointToClient(new System.Drawing.Point(e.X, e.Y)), out row, out collumn);
+				ShellItem destination = null;
+				if (row != -1)
+				{
+					destination = this.Items[row];
+				}
+				else
+				{
+					destination = this.CurrentFolder;
+				}
+				switch (e.Effect)
+				{
+					case System.Windows.Forms.DragDropEffects.All:
+						break;
+					case System.Windows.Forms.DragDropEffects.Copy:
+						this.DoCopy(e.Data, destination);
+						break;
+					case System.Windows.Forms.DragDropEffects.Link:
+						System.Windows.MessageBox.Show("link");
+						break;
+					case System.Windows.Forms.DragDropEffects.Move:
+						this.DoMove(e.Data, destination);
+						break;
+					case System.Windows.Forms.DragDropEffects.None:
+						break;
+					case System.Windows.Forms.DragDropEffects.Scroll:
+						break;
+					default:
+						break;
+				}
+
 				IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 				Win32Point wp = new Win32Point();
 				wp.x = e.X;
@@ -3452,6 +3683,36 @@ namespace BExplorer.Shell
 					this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
 				}
 			}
+			public List<string> RecommendedPrograms(string ext)
+			{
+				List<string> progs = new List<string>();
+
+				string baseKey = ext;
+
+				using (RegistryKey rk = Registry.ClassesRoot.OpenSubKey(baseKey + @"\OpenWithList"))
+				{
+
+					if (rk != null)
+					{
+						foreach (string item in rk.GetSubKeyNames())
+						{
+							progs.Add(item);
+						}
+					}
+				}
+
+				using (RegistryKey rk = Registry.ClassesRoot.OpenSubKey(baseKey + @"\OpenWithProgids"))
+				{
+					if (rk != null)
+					{
+						foreach (string item in rk.GetValueNames())
+							progs.Add(item);
+					}
+				}
+
+				return progs;
+			}
+
 	}
 	public class ViewChangedEventArgs : EventArgs
 	{

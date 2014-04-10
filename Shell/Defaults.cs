@@ -376,4 +376,9 @@ namespace BExplorer.Shell
 			return AllColumnsPKeys.Select(s => new Collumns() { ID = s.Key, CollumnType = s.Value.Item3, pkey = s.Value.Item2, Name = s.Value.Item1, Width = 100, IsColumnHandler = false }).ToList();
 		}
 	}
+
+	public static class SystemProperties
+	{
+		public static PROPERTYKEY FileSize = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 12 };
+	}
 }

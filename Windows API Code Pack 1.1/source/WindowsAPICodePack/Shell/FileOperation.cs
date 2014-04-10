@@ -10,19 +10,19 @@ using Microsoft.WindowsAPICodePack.Shell;
 
 namespace FileOperations
 {
-    class FileOperation : IDisposable
+    public class FileOperation : IDisposable
     {
         private bool _disposed;
         private IFileOperation _fileOperation;
         private FileOperationProgressSink _callbackSink;
         private uint _sinkCookie;
 
-        public FileOperation() : this(null) { }
-        public FileOperation(FileOperationProgressSink callbackSink) : this(callbackSink, null) { }
-        public FileOperation(FileOperationProgressSink callbackSink, IWin32Window owner)
+        public FileOperation() : this(null,false) { }
+        public FileOperation(FileOperationProgressSink callbackSink, Boolean isAdmin) : this(callbackSink, null,isAdmin) { }
+        public FileOperation(FileOperationProgressSink callbackSink, IWin32Window owner, Boolean isAdmin)
         {
             _callbackSink = callbackSink;
-            _fileOperation = (IFileOperation)Activator.CreateInstance(_fileOperationType);
+            _fileOperation = isAdmin ? (IFileOperation)Activator.CreateInstance(_fileOperationType) : (IFileOperation)Activator.CreateInstance(_fileOperationType);
             //_fileOperation.SetProgressDialog(null);
             _fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR);
             if (_callbackSink != null) _sinkCookie = _fileOperation.Advise(_callbackSink);

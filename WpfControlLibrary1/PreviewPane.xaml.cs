@@ -39,16 +39,15 @@ namespace BetterExplorerControls
     {
       get
       {
-				//FIXME: fix this here
-        //if (this.Browser.SelectedItems.Count() > 0)
-        //{
-        //  return this.Browser.SelectedItems[0].GetDisplayName(DisplayNameType.Default);
-        //}
-        //else
-        //{
-        //  return String.Empty;
-        //}
-				return String.Empty;
+
+        if (this.Browser.GetSelectedCount() > 0)
+        {
+          return this.Browser.SelectedItems[0].DisplayName;
+        }
+        else
+        {
+          return String.Empty;
+        }
       }
     }
 

@@ -574,16 +574,18 @@ namespace BExplorer.Shell
 
 		void SetNodeImage(IntPtr node, ShellItem sho, IntPtr m_TreeViewHandle)
 		{
-			ShellItem temp = null;
-			if (!sho.ParsingName.StartsWith("::"))
+			try
 			{
-				temp = new ShellItem(sho.ParsingName);
-			}
-			else
-			{
-				temp = sho;
-			}
-			var pidl = temp.Pidl;
+				ShellItem temp = null;
+				if (!sho.ParsingName.StartsWith("::"))
+				{
+					temp = new ShellItem(sho.ParsingName);
+				}
+				else
+				{
+					temp = sho;
+				}
+				var pidl = temp.Pidl;
 
 
 				TVITEMW itemInfo = new TVITEMW();
@@ -596,13 +598,18 @@ namespace BExplorer.Shell
 				itemInfo.hItem = node;
 				itemInfo.iImage = ShellItem.GetSystemImageListIndex(pidl,
 						ShellIconType.SmallIcon, ShellIconFlags.OverlayIndex);
-				itemInfo.iSelectedImage = ShellItem.GetSystemImageListIndex( pidl,
+				itemInfo.iSelectedImage = ShellItem.GetSystemImageListIndex(pidl,
 						ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 				itemInfo.state = (TVIS)(itemInfo.iImage >> 16);
 				itemInfo.stateMask = TVIS.TVIS_OVERLAYMASK;
-				
+
 				User32.SendMessage(m_TreeViewHandle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW,
 						0, ref itemInfo);
+			}
+			catch (Exception)
+			{
+
+			}
 				Application.DoEvents();
 				
 		}

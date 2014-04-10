@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -387,6 +388,117 @@ namespace BExplorer.Shell
 					}
 
 					return hitLocationFound;
+			}
+
+			public static IShellItem[] ToArray(this IShellItemArray shellItemArray)
+			{
+				List<IShellItem> items = new List<IShellItem>();
+				if (shellItemArray != null)
+				{
+					try
+					{
+						uint itemCount = 0;
+						shellItemArray.GetCount(out itemCount);
+						for (uint index = 0; index < itemCount; index++)
+						{
+							IShellItem iShellItem = null;
+							shellItemArray.GetItemAt(index, out iShellItem);
+							items.Add(iShellItem);
+						}
+					}
+					finally
+					{
+						Marshal.ReleaseComObject(shellItemArray);
+					}
+				}
+				return items.ToArray();
+			}
+			public static IShellItemArray ToShellItemArray(this IDataObject dataobject)
+			{
+				IShellItemArray shellItemArray;
+				Guid iid = new Guid(InterfaceGuids.IShellItemArray);
+				Shell32.SHCreateShellItemArrayFromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)dataobject, iid, out shellItemArray);
+				return shellItemArray;
+			}
+			public static IShellItemArray ToShellItemArray(this System.Windows.IDataObject dataobject)
+			{
+				IShellItemArray shellItemArray;
+				Guid iid = new Guid(InterfaceGuids.IShellItemArray);
+				Shell32.SHCreateShellItemArrayFromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)dataobject, iid, out shellItemArray);
+				return shellItemArray;
+			}
+			public static System.Windows.DragDropEffects ToDropEffect(this IDataObject dataObject)
+			{
+				System.Windows.DragDropEffects dragDropEffect = System.Windows.DragDropEffects.Copy;
+				if (dataObject.GetDataPresent("Preferred DropEffect") == true)
+				{
+
+					object data = dataObject.GetData("Preferred DropEffect", true);
+
+					if (data is System.IO.Stream)
+					{
+						Stream stream = (Stream)data;
+						StreamReader reader = new StreamReader(stream);
+						int value = reader.Read();
+						stream.Position = 0; // This had no apparent effect
+
+						if ((value & 2) == 2)
+						{
+							dragDropEffect = System.Windows.DragDropEffects.Move;
+						}
+						else
+						{
+							dragDropEffect = dragDropEffect = System.Windows.DragDropEffects.Copy;
+						}
+					}
+				}
+				return dragDropEffect;
+			}
+
+			[DllImport("shell32.dll", CharSet = CharSet.Auto)]
+			public static extern IntPtr ILCreateFromPath(string path);
+			[DllImport("shell32.dll", CharSet = CharSet.None)]
+			public static extern void ILFree(IntPtr pidl);
+			[DllImport("shell32.dll", CharSet = CharSet.None)]
+			public static extern int ILGetSize(IntPtr pidl);
+
+			public static MemoryStream CreateShellIDList(this ShellItem[] items)
+			{
+				// first convert all files into pidls list
+				int pos = 0;
+				byte[][] pidls = new byte[items.Count()][];
+				foreach (var item in items)
+				{
+					// Get pidl based on name
+					IntPtr pidl = item.Pidl;
+					int pidlSize = ILGetSize(pidl);
+					// Copy over to our managed array
+					pidls[pos] = new byte[pidlSize];
+					Marshal.Copy(pidl, pidls[pos++], 0, pidlSize);
+					ILFree(pidl);
+				}
+
+				// Determine where in CIDL we will start pumping PIDLs
+				int pidlOffset = 4 * (items.Count() + 2);
+				// Start the CIDL stream
+				var memStream = new MemoryStream();
+				var sw = new BinaryWriter(memStream);
+				// Initialize CIDL witha count of files
+				sw.Write(items.Count());
+				// Calcualte and write relative offsets of every pidl starting with root
+				sw.Write(pidlOffset);
+				pidlOffset += 4; // root is 4 bytes
+				foreach (var pidl in pidls)
+				{
+					sw.Write(pidlOffset);
+					pidlOffset += pidl.Length;
+				}
+
+				// Write the root pidl (0) followed by all pidls
+				sw.Write(0);
+				foreach (var pidl in pidls) sw.Write(pidl);
+				// stream now contains the CIDL
+				return memStream;
 			}
 		}
 }

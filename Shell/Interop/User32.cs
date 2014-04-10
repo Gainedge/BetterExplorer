@@ -524,7 +524,7 @@ namespace BExplorer.Shell.Interop
 				public const int UIS_SET = 1;
 				public const int UISF_HIDEFOCUS = 0x1;
 
-				private static short LOWORD(int dw)
+				public static short LOWORD(int dw)
 				{
 					short loWord = 0;
 					ushort andResult = (ushort)(dw & 0x00007FFF);

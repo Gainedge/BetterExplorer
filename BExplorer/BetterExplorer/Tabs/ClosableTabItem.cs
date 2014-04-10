@@ -130,7 +130,7 @@ namespace BetterExplorer
         }
 
                 ShellItem _Path;
-        public ShellItem Path
+        public ShellItem ShellObject
         {
             get
             {
