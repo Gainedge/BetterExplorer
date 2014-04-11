@@ -1872,140 +1872,194 @@ namespace BExplorer.Shell
 
 		public void PasteAvailableFiles()
 		{
-			var dataObject = System.Windows.Forms.Clipboard.GetDataObject();
-			var dragDropEffect = System.Windows.DragDropEffects.Copy;
-			var dropEffect = dataObject.ToDropEffect();
-			var shellItemArray = dataObject.ToShellItemArray();
-			var items = shellItemArray.ToArray();
-			try
+			var handle = this.Handle;
+			var thread = new Thread(() =>
 			{
-				IIFileOperation fo = new IIFileOperation();
-				foreach (var item in items)
+				var dataObject = System.Windows.Forms.Clipboard.GetDataObject();
+				var dragDropEffect = System.Windows.DragDropEffects.Copy;
+				var dropEffect = dataObject.ToDropEffect();
+				var shellItemArray = dataObject.ToShellItemArray();
+				var items = shellItemArray.ToArray();
+				try
 				{
-					if (dropEffect == System.Windows.DragDropEffects.Copy)
+					IIFileOperation fo = new IIFileOperation(handle);
+					foreach (var item in items)
 					{
-						fo.CopyItem(item, this.CurrentFolder.m_ComInterface, String.Empty);
+						if (dropEffect == System.Windows.DragDropEffects.Copy)
+						{
+							fo.CopyItem(item, this.CurrentFolder.m_ComInterface, String.Empty);
+						}
+						else
+						{
+							fo.MoveItem(item, this.CurrentFolder.m_ComInterface, null);
+						}
 					}
-					else
-					{
-						fo.MoveItem(item, this.CurrentFolder.m_ComInterface, null);
-					}
-				}
 
-				fo.PerformOperations();
-			}
-			catch (SecurityException)
-			{
-				throw;
-			}
+					fo.PerformOperations();
+				}
+				catch (SecurityException)
+				{
+					throw;
+				}
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
 		}
 
 		public void DoCopy(ShellItem destination)
 		{
-			IIFileOperation fo = new IIFileOperation();
-			foreach (var item in this.SelectedItems.Select(s => s.m_ComInterface).ToArray())
+			var handle = this.Handle;
+			var thread = new Thread(() =>
 			{
-				fo.CopyItem(item, destination.m_ComInterface, null);
-			}
-			fo.PerformOperations();
+				IIFileOperation fo = new IIFileOperation(handle);
+				foreach (var item in this.SelectedItems.Select(s => s.m_ComInterface).ToArray())
+				{
+					fo.CopyItem(item, destination.m_ComInterface, null);
+				}
+				fo.PerformOperations();
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
 		}
 		public void DoCopy(System.Windows.Forms.IDataObject dataObject, ShellItem destination)
 		{
-			var shellItemArray = dataObject.ToShellItemArray();
-			var items = shellItemArray.ToArray();
-			try
+			var handle = this.Handle;
+			var thread = new Thread(() =>
 			{
-				IIFileOperation fo = new IIFileOperation();
-				foreach (var item in items)
+				var shellItemArray = dataObject.ToShellItemArray();
+				var items = shellItemArray.ToArray();
+				try
 				{
+					IIFileOperation fo = new IIFileOperation(handle);
+					foreach (var item in items)
+					{
 						fo.CopyItem(item, destination.m_ComInterface, String.Empty);
-				}
+					}
 
-				fo.PerformOperations();
-			}
-			catch (SecurityException)
-			{
-				throw;
-			}
+					fo.PerformOperations();
+				}
+				catch (SecurityException)
+				{
+					throw;
+				}
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
 		}
 
 		public void DoCopy(System.Windows.IDataObject dataObject, ShellItem destination)
 		{
-			var shellItemArray = dataObject.ToShellItemArray();
-			var items = shellItemArray.ToArray();
-			try
+			var handle = this.Handle;
+			var thread = new Thread(() =>
 			{
-				IIFileOperation fo = new IIFileOperation();
-				foreach (var item in items)
+				var shellItemArray = dataObject.ToShellItemArray();
+				var items = shellItemArray.ToArray();
+				try
 				{
-					fo.CopyItem(item, destination.m_ComInterface, String.Empty);
-				}
+					IIFileOperation fo = new IIFileOperation(handle);
+					foreach (var item in items)
+					{
+						fo.CopyItem(item, destination.m_ComInterface, String.Empty);
+					}
 
-				fo.PerformOperations();
-			}
-			catch (SecurityException)
-			{
-				throw;
-			}
+					fo.PerformOperations();
+				}
+				catch (SecurityException)
+				{
+					throw;
+				}
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
 		}
 		public void DoMove(System.Windows.Forms.IDataObject dataObject, ShellItem destination)
 		{
-			var shellItemArray = dataObject.ToShellItemArray();
-			var items = shellItemArray.ToArray();
-			try
+			var handle = this.Handle;
+			var thread = new Thread(() =>
 			{
-				IIFileOperation fo = new IIFileOperation();
-				foreach (var item in items)
+				var shellItemArray = dataObject.ToShellItemArray();
+				var items = shellItemArray.ToArray();
+				try
 				{
-					fo.MoveItem(item, destination.m_ComInterface, null);
-				}
+					IIFileOperation fo = new IIFileOperation(handle);
+					foreach (var item in items)
+					{
+						fo.MoveItem(item, destination.m_ComInterface, null);
+					}
 
-				fo.PerformOperations();
-			}
-			catch (SecurityException)
-			{
-				throw;
-			}
+					fo.PerformOperations();
+				}
+				catch (SecurityException)
+				{
+					throw;
+				}
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
+			
 		}
 
 		public void DoMove(System.Windows.IDataObject dataObject, ShellItem destination)
 		{
-			var shellItemArray = dataObject.ToShellItemArray();
-			var items = shellItemArray.ToArray();
-			try
+			var handle = this.Handle;
+			var thread = new Thread(() =>
 			{
-				IIFileOperation fo = new IIFileOperation();
-				foreach (var item in items)
+				
+				var shellItemArray = dataObject.ToShellItemArray();
+				var items = shellItemArray.ToArray();
+				try
 				{
-					fo.MoveItem(item, destination.m_ComInterface, null);
-				}
+					IIFileOperation fo = new IIFileOperation(handle);
+					foreach (var item in items)
+					{
+						fo.MoveItem(item, destination.m_ComInterface, null);
+					}
 
-				fo.PerformOperations();
-			}
-			catch (SecurityException)
-			{
-				throw;
-			}
+					fo.PerformOperations();
+				}
+				catch (SecurityException)
+				{
+					throw;
+				}
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
+			
 		}
 
 		public void DoMove(ShellItem destination)
 		{
-			IIFileOperation fo = new IIFileOperation();
-			foreach (var item in this.SelectedItems.Select(s => s.m_ComInterface).ToArray())
+			var handle = this.Handle;
+			var thread = new Thread(() =>
 			{
-				fo.MoveItem(item, destination.m_ComInterface, null);
-			}
-			fo.PerformOperations();
+				
+				IIFileOperation fo = new IIFileOperation(handle);
+				foreach (var item in this.SelectedItems.Select(s => s.m_ComInterface).ToArray())
+				{
+					fo.MoveItem(item, destination.m_ComInterface, null);
+				}
+				fo.PerformOperations();
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
+			
 		}
 
 		public void DeleteSelectedFiles(Boolean isRecycling)
 		{
-			IIFileOperation fo = new IIFileOperation(isRecycling);
-			foreach (var item in this.SelectedItems.Select(s => s.m_ComInterface).ToArray())
+			var handle = this.Handle;
+			var thread = new Thread(() =>
 			{
-				fo.DeleteItem(item);
-			}
-			fo.PerformOperations();
+				IIFileOperation fo = new IIFileOperation(handle, isRecycling);
+				foreach (var item in this.SelectedItems.Select(s => s.m_ComInterface).ToArray())
+				{
+					fo.DeleteItem(item);
+				}
+				fo.PerformOperations();
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
+			
 		}
 		public void RenameShellItem(IShellItem item, String newName){
 			IIFileOperation fo = new IIFileOperation(true);

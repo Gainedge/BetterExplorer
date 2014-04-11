@@ -5430,7 +5430,7 @@ namespace BetterExplorer
 
 		private void inRibbonGallery1_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (IsViewSelection)
+			//if (IsViewSelection)
 			{
 				switch (ViewGallery.SelectedIndex)
 				{

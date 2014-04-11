@@ -18,9 +18,11 @@ namespace BExplorer.Shell
 		private uint _sinkCookie;
 
 		public IIFileOperation() : this(null, false) { }
+		public IIFileOperation(IntPtr owner, Boolean isRecycle) : this(null, owner, isRecycle) { }
+		public IIFileOperation(IntPtr owner) : this(null, owner, false) { }
 		public IIFileOperation(Boolean isRecycle) : this(null, isRecycle) { }
-		public IIFileOperation(FileOperationProgressSink callbackSink, Boolean isRecycle) : this(callbackSink, null, isRecycle) { }
-		public IIFileOperation(FileOperationProgressSink callbackSink, IWin32Window owner, Boolean isRecycle)
+		public IIFileOperation(FileOperationProgressSink callbackSink, Boolean isRecycle) : this(callbackSink, IntPtr.Zero, isRecycle) { }
+		public IIFileOperation(FileOperationProgressSink callbackSink, IntPtr owner, Boolean isRecycle)
 		{
 			_callbackSink = callbackSink;
 			_fileOperation = (IFileOperation)Activator.CreateInstance(_fileOperationType);
@@ -30,7 +32,7 @@ namespace BExplorer.Shell
 			else
 				_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR);
 			if (_callbackSink != null) _sinkCookie = _fileOperation.Advise(_callbackSink);
-			if (owner != null) _fileOperation.SetOwnerWindow((uint)owner.Handle);
+			if (owner != IntPtr.Zero) _fileOperation.SetOwnerWindow((uint)owner);
 		}
 
 
