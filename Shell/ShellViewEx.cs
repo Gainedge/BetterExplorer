@@ -1344,7 +1344,7 @@ namespace BExplorer.Shell
 
 
 				resetEvent.WaitOne();
-				Thread.Sleep(1);
+				//Thread.Sleep(1);
 				var index = ItemsForSubitemsUpdate.Dequeue();
 				//if (this.Cancel)
 				//	continue;
@@ -1401,7 +1401,7 @@ namespace BExplorer.Shell
 			while (true)
 			{
 				resetEvent.WaitOne();
-				Thread.Sleep(1);
+				//Thread.Sleep(1);
 				try
 				{
 					//Application.DoEvents();
@@ -1486,7 +1486,7 @@ namespace BExplorer.Shell
 				//{
 				//	Thread.Sleep(5);
 				//}
-				Thread.Sleep(3);
+				//Thread.Sleep(3);
 				try
 				{
 					var index = overlayQueue.Dequeue();
@@ -1535,7 +1535,8 @@ namespace BExplorer.Shell
 				//{
 				//	Thread.Sleep(5);
 				//}
-				Thread.Sleep(4);
+				resetEvent.WaitOne();
+				//Thread.Sleep(4);
 				try
 				{
 					var index = shieldQueue.Dequeue();
@@ -1567,7 +1568,7 @@ namespace BExplorer.Shell
 					{
 						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
 					}
-					resetEvent.WaitOne();
+					
 					//Application.DoEvents();
 				}
 				catch
@@ -1577,10 +1578,11 @@ namespace BExplorer.Shell
 			}
 		}
 
-		public async void Navigate(ShellItem destination)
+		public void Navigate(ShellItem destination)
 		{
-			////Application.DoEvents();
-				
+			if (destination == null)
+				return;
+
 			this.Notifications.UnregisterChangeNotify();
 			overlays.Clear();
 			shieldedIcons.Clear();
@@ -1602,53 +1604,45 @@ namespace BExplorer.Shell
 			if (tmp != null)
 				tmp = null;
 			SubItems.Clear();
-				
+
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
 
-			//Task.Run(() =>
-			//{
-			//	var array = destination.ToArray();
-			//	IsDoubleNavFinished = true;
-			//});
-			//if (!bw.IsBusy)
-			//{
-			//	bw.RunWorkerAsync(destination);
-			//}
+			var e = destination.GetEnumerator();
 
-				
-					//var tempListCount =  await Task.Run(() => {
-					//	var pc = new ProgressContext<ShellItem>(destination);
-					//	pc.UpdateProgress += pc_UpdateProgress;
-					//	return pc.Count();
-					//
-					//});
-
-				var e = destination.GetEnumerator();
-				while (e.MoveNext())
+			while (e.MoveNext())
+			{
+				System.Windows.Forms.Application.DoEvents();
+				this.Items.Add(e.Current);
+				System.Windows.Forms.Application.DoEvents();
+				CurrentI++;
+				if (CurrentI - LastI >= (destination.IsSearchFolder ? 5 : 2500) && destination.IsSearchFolder)
 				{
+					Thread.Sleep(10);
+					System.Windows.Forms.Application.DoEvents();
+					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+					//Thread.Sleep(e.Item.Parent.IsSearchFolder? 5: 1);
 
-						this.Items.Add(e.Current);
-						System.Windows.Forms.Application.DoEvents();
-						CurrentI++;
-						if (CurrentI - LastI >= (destination.IsSearchFolder ? 5 : 2500) && destination.IsSearchFolder)
-						{
-							Thread.Sleep(10);
-							System.Windows.Forms.Application.DoEvents();
-							User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-							//Thread.Sleep(e.Item.Parent.IsSearchFolder? 5: 1);
-
-							//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-							LastI = CurrentI;
-							//GC.WaitForPendingFinalizers();
-							//GC.Collect();
-						}
+					//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+					LastI = CurrentI;
+					//GC.WaitForPendingFinalizers();
+					//GC.Collect();
 				}
-				this.Items = this.Items.Where(w => this.ShowHidden ? true : w.IsHidden == false).OrderByDescending(o => o.IsFolder).ToList();
+			}
 
-				GC.WaitForPendingFinalizers();
-				GC.Collect();
-				Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-				
+			//System.Windows.Forms.Application.DoEvents();
+			if (destination.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant())
+			{
+				this.Items = this.Items.ToList();
+			}
+			else
+			{
+				this.Items = this.Items.Where(w => this.ShowHidden ? true : w.IsHidden == false).OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
+			}
+
+			GC.WaitForPendingFinalizers();
+			GC.Collect();
+			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+
 			this.Cancel = false;
 			this.LastSortedColumnIndex = 0;
 			this.LastSortOrder = SortOrder.Ascending;
@@ -1663,10 +1657,7 @@ namespace BExplorer.Shell
 
 			this.OnNavigated(new NavigatedEventArgs(destination));
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-
-
-			//this.Items = items.Select(s => new ShellItem(s.ToShellParsingName())).OrderByDescending(o => o.IsFolder).ToArray();
-				//Add DragDrop Capability
+				//dest.Dispose();
 				
 			IsDoubleNavFinished = false;
 
@@ -2322,7 +2313,7 @@ namespace BExplorer.Shell
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int) ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER, (int) ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int) ListViewExtendedStyles.FullRowSelect, (int) ListViewExtendedStyles.FullRowSelect);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int) ListViewExtendedStyles.HeaderDragDrop, (int) ListViewExtendedStyles.HeaderDragDrop);
-			CurrentFolder = (ShellItem) KnownFolders.Desktop;
+			//CurrentFolder = (ShellItem) KnownFolders.Desktop;
 			this.Focus();
 			User32.SetForegroundWindow(this.LVHandle);
 
@@ -2336,25 +2327,7 @@ namespace BExplorer.Shell
 			User32.MoveWindow(this.LVHandle, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, true);
 		}
 
-			public System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(ShellItem[] items,
-														out IntPtr dataObjectPtr)
-			{
-				ShellItem parent =
-						items[0].Parent != null ? items[0].Parent : items[0];
-
-				IntPtr[] pidls = new IntPtr[items.Length];
-				for (int i = 0; i < items.Length; i++)
-					pidls[i] = items[i].ILPidl;
-					Guid IID_IDataObject = Ole32.IID_IDataObject;
-					parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length,pidls,ref IID_IDataObject,0, out dataObjectPtr);
-
-					System.Runtime.InteropServices.ComTypes.IDataObject dataObj =
-							(System.Runtime.InteropServices.ComTypes.IDataObject)
-									Marshal.GetTypedObjectForIUnknown(
-											dataObjectPtr, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
-
-					return dataObj;
-			}
+			
 		System.Windows.Forms.Timer _ResetTimer = new System.Windows.Forms.Timer();
 		Thread MaintenanceThread;
 			List<Int32> DraggedItemIndexes = new List<int>();
@@ -2834,7 +2807,7 @@ namespace BExplorer.Shell
 						//	{
 						this.DraggedItemIndexes.Clear();								
 						IntPtr dataObjPtr = IntPtr.Zero;
-						System.Runtime.InteropServices.ComTypes.IDataObject dataObject = GetIDataObject(this.SelectedItems.ToArray(), out dataObjPtr);
+						System.Runtime.InteropServices.ComTypes.IDataObject dataObject = this.SelectedItems.ToArray().GetIDataObject(out dataObjPtr);
 
 						uint ef = 0;
 						Shell32.SHDoDragDrop(this.Handle, dataObject, null, unchecked((uint)System.Windows.Forms.DragDropEffects.All | (uint)System.Windows.Forms.DragDropEffects.Link), out ef);
@@ -2960,7 +2933,29 @@ namespace BExplorer.Shell
 
 
 
-												hash = sho.GetHashCode();
+												try
+												{
+													hash = sho.GetHashCode();
+												}
+												catch 
+												{
+													//try
+													//{
+													//	sho = Items[index];
+													//}
+													//catch (Exception)
+													//{
+													//	//! Index  is outside of bounds
+													//}
+													//try
+													//{
+													//	hash = sho.GetHashCode();
+													//}
+													//catch 
+													//{
+
+													//}
+												}
 												string shoExtension = sho.Extension;
 
 												if (!overlays.TryGetValue(hash, out overlayIndex))
@@ -3126,6 +3121,7 @@ namespace BExplorer.Shell
 																			if (sho.IsHidden || nItemState != 0 || this._CuttedIndexes.Contains(index))
 																				bmp = Helpers.ChangeOpacity(bmp, 0.5f);
 																			g.DrawImage(bmp, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+																			this.Items[index] = new ShellItem(sho.m_ComInterface);
 
 																		}
 

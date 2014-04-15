@@ -144,6 +144,7 @@ namespace BetterExplorer.Tabs
         private void button4_Click(object sender, RoutedEventArgs e)
         {
             NameTabList o = new NameTabList();
+						o.Owner = this;
             o.ShowDialog();
             if (o.dialogresult == true)
             {
@@ -155,6 +156,7 @@ namespace BetterExplorer.Tabs
         private void button7_Click(object sender, RoutedEventArgs e)
         {
             NameTabList o = new NameTabList();
+						o.Owner = this;
             o.ShowDialog();
             if (o.dialogresult == true)
             {

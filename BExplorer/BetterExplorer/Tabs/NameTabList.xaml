@@ -1,13 +1,32 @@
 ﻿<Window x:Class="BetterExplorer.Tabs.NameTabList"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Name Your New Tab List" Height="200" Width="350" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Loaded="Window_Loaded">
-    <Grid>
-        <TextBlock Height="23" HorizontalAlignment="Left" Margin="15,13,0,0" Name="textBlock1" Text="{StaticResource txtChooseName}" VerticalAlignment="Top" FontWeight="Bold" FontSize="14" />
-        <TextBlock Height="35" HorizontalAlignment="Left" Margin="15,35,0,0" Name="textBlock2" Text="{StaticResource txtOverwriteSavedTabs}" VerticalAlignment="Top" TextWrapping="Wrap" />
-        <TextBox Height="23" HorizontalAlignment="Left" Margin="12,75,0,0" Name="textBox1" VerticalAlignment="Top" Width="322" KeyUp="textBox1_KeyUp" />
-        <Button Content="{StaticResource txtCancel}" Height="23" HorizontalAlignment="Right" Margin="0,140,10,0" Name="button1" VerticalAlignment="Top" Width="75" Click="button1_Click" />
-        <Button Content="{StaticResource btnSave}" Height="23" HorizontalAlignment="Right" Margin="0,140,90,0" Name="button2" VerticalAlignment="Top" Width="75" Click="button2_Click" />
-        <TextBlock Height="35" HorizontalAlignment="Left" Margin="15,100,0,0" Name="textBlock3" Text="{StaticResource txtIllegalCharacters}" VerticalAlignment="Top" TextWrapping="Wrap" />
-    </Grid>
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				Title="Name Your New Tab List" Height="200" Width="350" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" Loaded="Window_Loaded">
+		<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="5"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="75"/>
+			<ColumnDefinition Width="5"/>
+			<ColumnDefinition Width="75"/>
+			<ColumnDefinition Width="5"/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="5"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="10"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="5"/>
+		</Grid.RowDefinitions>
+				<TextBlock Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4" Name="textBlock1" Text="{StaticResource txtChooseName}" FontWeight="Bold" FontSize="14" />
+				<TextBlock Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="4" Name="textBlock2" Text="{StaticResource txtOverwriteSavedTabs}" TextWrapping="Wrap" />
+				<TextBox Height="23" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="4" Name="textBox1"  KeyUp="textBox1_KeyUp" />
+				<Button Content="{StaticResource txtCancel}" Height="23" Grid.Column="4" Grid.Row="7" Name="button1" Click="button1_Click" />
+				<Button Content="{StaticResource btnSave}" Height="23" Grid.Column="2" Grid.Row="7" Name="button2" Click="button2_Click" />
+				<TextBlock Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="4" Name="textBlock3" Text="{StaticResource txtIllegalCharacters}" TextWrapping="Wrap" />
+		</Grid>
 </Window>
