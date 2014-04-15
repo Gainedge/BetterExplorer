@@ -5,29 +5,28 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading;
 
-namespace SingleInstanceApplication
-{
+namespace SingleInstanceApplication {
 	/// <summary>
 	/// Application Instance Manager
 	/// </summary>
-	public static class ApplicationInstanceManager
-	{
+	public static class ApplicationInstanceManager {
 		/// <summary>
 		/// Creates the single instance.
 		/// </summary>
 		/// <param name="name">The name.</param>
 		/// <param name="callback">The callback.</param>
 		/// <returns></returns>
-		public static bool CreateSingleInstance(string name, EventHandler<InstanceCallbackEventArgs> callback)
-		{
+		public static bool CreateSingleInstance(string name, EventHandler<InstanceCallbackEventArgs> callback) {
 			EventWaitHandle eventWaitHandle = null;
 			string eventName = string.Format("{0}-{1}-{2}", Environment.MachineName, name, Environment.UserName);
 
 			InstanceProxy.IsFirstInstance = false;
 			InstanceProxy.CommandLineArgs = Environment.GetCommandLineArgs();
 
+			//Does not need try catch
 			EventWaitHandle.TryOpenExisting(eventName, out eventWaitHandle);
 
+			/*
 			try
 			{
 				// try opening existing wait handle
@@ -38,9 +37,8 @@ namespace SingleInstanceApplication
 				// got exception = handle wasn't created yet
 				InstanceProxy.IsFirstInstance = true;
 			}
-
-			if (InstanceProxy.IsFirstInstance)
-			{
+			*/
+			if (InstanceProxy.IsFirstInstance) {
 				// init handle
 				eventWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset, eventName);
 
@@ -51,8 +49,7 @@ namespace SingleInstanceApplication
 				// register shared type (used to pass data between processes)
 				RegisterRemoteType(name);
 			}
-			else
-			{
+			else {
 				// pass console arguments to shared object
 				UpdateRemoteObject(name);
 
@@ -71,15 +68,14 @@ namespace SingleInstanceApplication
 		/// Updates the remote object.
 		/// </summary>
 		/// <param name="uri">The remote URI.</param>
-		private static void UpdateRemoteObject(string uri)
-		{
+		private static void UpdateRemoteObject(string uri) {
 			// register net-pipe channel
 			var clientChannel = new IpcClientChannel();
 			ChannelServices.RegisterChannel(clientChannel, true);
 
 			// get shared object from other process
 			var proxy =
-				Activator.GetObject(typeof(InstanceProxy), 
+				Activator.GetObject(typeof(InstanceProxy),
 				string.Format("ipc://{0}{1}{2}/{1}", Environment.MachineName, uri, Environment.UserName)) as InstanceProxy;
 
 			// pass current command line args to proxy
@@ -94,8 +90,7 @@ namespace SingleInstanceApplication
 		/// Registers the remote type.
 		/// </summary>
 		/// <param name="uri">The URI.</param>
-		private static void RegisterRemoteType(string uri)
-		{
+		private static void RegisterRemoteType(string uri) {
 			// register remote channel (net-pipes)
 			var serverChannel = new IpcServerChannel(Environment.MachineName + uri + Environment.UserName);
 			ChannelServices.RegisterChannel(serverChannel, true);
@@ -114,8 +109,7 @@ namespace SingleInstanceApplication
 		/// </summary>
 		/// <param name="state">The state.</param>
 		/// <param name="timedOut">if set to <c>true</c> [timed out].</param>
-		private static void WaitOrTimerCallback(object state, bool timedOut)
-		{
+		private static void WaitOrTimerCallback(object state, bool timedOut) {
 			// cast to event handler
 			var callback = state as EventHandler<InstanceCallbackEventArgs>;
 			if (callback == null) return;
