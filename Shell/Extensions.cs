@@ -295,8 +295,50 @@ namespace BExplorer.Shell
 						}
 						else
 						{
+							if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+								return String.Format("{0}{1}", path, Path.DirectorySeparatorChar);
+							else
 								return path;
 						}
+				}
+
+				public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this ShellItem[] items,
+															out IntPtr dataObjectPtr)
+				{
+					ShellItem parent =
+							items[0].Parent != null ? items[0].Parent : items[0];
+
+					IntPtr[] pidls = new IntPtr[items.Length];
+					for (int i = 0; i < items.Length; i++)
+						pidls[i] = items[i].ILPidl;
+					Guid IID_IDataObject = Ole32.IID_IDataObject;
+					parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, ref IID_IDataObject, 0, out dataObjectPtr);
+
+					System.Runtime.InteropServices.ComTypes.IDataObject dataObj =
+							(System.Runtime.InteropServices.ComTypes.IDataObject)
+									Marshal.GetTypedObjectForIUnknown(
+											dataObjectPtr, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
+
+					return dataObj;
+				}
+
+				public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this ShellItem item,
+																out IntPtr dataObjectPtr)
+				{
+					ShellItem parent =
+							item.Parent != null ? item.Parent : item;
+
+					IntPtr[] pidls = new IntPtr[1];
+					pidls[0] = item.ILPidl;
+					Guid IID_IDataObject = Ole32.IID_IDataObject;
+					parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, ref IID_IDataObject, 0, out dataObjectPtr);
+
+					System.Runtime.InteropServices.ComTypes.IDataObject dataObj =
+							(System.Runtime.InteropServices.ComTypes.IDataObject)
+									Marshal.GetTypedObjectForIUnknown(
+											dataObjectPtr, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
+
+					return dataObj;
 				}
 
 				public static void SetSortIcon(this ShellView listViewControl, int columnIndex, SortOrder order)

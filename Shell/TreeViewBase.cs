@@ -30,11 +30,12 @@ namespace BExplorer.Shell
 		private const int TV_FIRST = 0x1100;
 		private const int TVM_SETBKCOLOR = TV_FIRST + 29;
 		private const int TVM_SETEXTENDEDSTYLE = TV_FIRST + 44;
+		public const int TVS_EX_FADEINOUTEXPANDOS = 0x0040;
 		private const int TVS_EX_DOUBLEBUFFER = 0x0004;
 		[DllImport("user32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, int Msg,
 				IntPtr wParam, IntPtr lParam);
-		private void UpdateExtendedStyles()
+		private void SetDoubleBuffer()
 		{
 			int Style = 0;
 
@@ -42,6 +43,16 @@ namespace BExplorer.Shell
 
 			if (Style != 0)
 				SendMessage(this.Handle, TVM_SETEXTENDEDSTYLE, (IntPtr)TVS_EX_DOUBLEBUFFER, (IntPtr)Style);
+		}
+
+		private void SetExpandoesStyle()
+		{
+			int Style = 0;
+
+			Style |= TVS_EX_FADEINOUTEXPANDOS;
+
+			if (Style != 0)
+				SendMessage(this.Handle, TVM_SETEXTENDEDSTYLE, (IntPtr)TVS_EX_FADEINOUTEXPANDOS, (IntPtr)Style);
 		}
 		protected override void WndProc(ref Message m)
 		{
@@ -57,7 +68,9 @@ namespace BExplorer.Shell
 		protected override void OnHandleCreated(EventArgs e)
 		{
 			base.OnHandleCreated(e);
-			UpdateExtendedStyles();
+			SetDoubleBuffer();
+			SetExpandoesStyle();
+			UxTheme.SetWindowTheme(this.Handle, "Explorer", 0);
 
 		}
 		protected override void OnNotifyMessage(Message m)

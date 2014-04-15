@@ -88,6 +88,12 @@
     <Compile Include="Interop\IFileOperation.cs" />
     <Compile Include="RoundedRectangle.cs" />
     <Compile Include="DragDropHelper.cs" />
+    <Compile Include="ShellTreeViewEx.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ShellTreeViewEx.Designer.cs">
+      <DependentUpon>ShellTreeViewEx.cs</DependentUpon>
+    </Compile>
     <Compile Include="ShellViewDragDrop.cs" />
     <Compile Include="Icons\FileIcon.cs" />
     <Compile Include="Icons\IconFile.cs" />
@@ -209,9 +215,6 @@
     <Compile Include="ShellHistory.cs" />
     <Compile Include="ShellItem.cs" />
     <Compile Include="ShellNotificationListener.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="ShellTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SystemImageList.cs" />

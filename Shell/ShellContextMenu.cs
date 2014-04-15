@@ -68,7 +68,7 @@ namespace BExplorer.Shell
     public class ShellContextMenu
     {
 			private ShellView _ShellView { get; set;}
-			private ShellTreeView _ShellTreeView { get; set; }
+			private ShellTreeViewEx _ShellTreeView { get; set; }
         /// <summary>
         /// Initialises a new instance of the <see cref="ShellContextMenu"/> 
         /// class.

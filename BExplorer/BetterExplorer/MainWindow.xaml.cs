@@ -58,7 +58,7 @@ namespace BetterExplorer
 	{
 		#region Variables and Constants
 		ShellView ShellListView = new ShellView();
-		ShellTreeView ShellTree = new ShellTreeView();
+		ShellTreeViewEx ShellTree = new ShellTreeViewEx();
 		ClipboardMonitor cbm = new ClipboardMonitor();
 		ContextMenu cmHistory = new ContextMenu();
 		private int LastTabIndex = -1;
@@ -3824,7 +3824,7 @@ namespace BetterExplorer
 			ShellTreeHost.Child = ShellTree;
 			ShellViewHost.Child = ShellListView;
 
-			ShellTree.ShellView = ShellListView;
+			ShellTree.ShellListView = ShellListView;
 			//ShellListView.LVItemsColorCodes = LVItemsColor;
 			//ShellListView.subclassed = new ShellDeffViewSubClassedWindow(IntPtr.Zero, ShellListView.ShellListViewHandle, ShellListView);
 			//ShellListView.subclassed.AssignHandle(ShellListView.m_ShellViewWindow);
@@ -4244,11 +4244,11 @@ namespace BetterExplorer
 						SetSortingAndGroupingButtons();
 
 						//Setup the current selected folder in the ShellTree control
-						ShellTree.m_Navigating = true;
-						ShellTree.SelectedFolder = e.Folder;
-						ShellTree.m_Navigating = false;
-					}
-																					));
+						//FIXME: fix it!
+						//ShellTree.m_Navigating = true;
+						//ShellTree.SelectedFolder = e.Folder;
+						//ShellTree.m_Navigating = false;
+					}));
 				});
 
 				if (this.IsInfoPaneEnabled)
@@ -5430,8 +5430,6 @@ namespace BetterExplorer
 
 		private void inRibbonGallery1_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			//if (IsViewSelection)
-			{
 				switch (ViewGallery.SelectedIndex)
 				{
 					case 0:
@@ -5464,8 +5462,6 @@ namespace BetterExplorer
 					default:
 						break;
 				}
-			}
-
 		}
 
 		private void chkHiddenFiles_Checked(object sender, RoutedEventArgs e)
@@ -8766,6 +8762,7 @@ namespace BetterExplorer
 			SavedTabsList list = SavedTabsList.CreateFromString(str);
 
 			BetterExplorer.Tabs.NameTabList ntl = new BetterExplorer.Tabs.NameTabList();
+			ntl.Owner = this;
 			ntl.ShowDialog();
 			if (ntl.dialogresult == true)
 			{

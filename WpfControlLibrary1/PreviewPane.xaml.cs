@@ -40,7 +40,7 @@ namespace BetterExplorerControls
       get
       {
 
-        if (this.Browser.GetSelectedCount() > 0)
+				if (this.Browser != null && this.Browser.GetSelectedCount() > 0)
         {
           return this.Browser.SelectedItems[0].DisplayName;
         }
