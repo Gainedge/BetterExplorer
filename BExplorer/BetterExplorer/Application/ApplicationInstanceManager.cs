@@ -26,6 +26,8 @@ namespace SingleInstanceApplication
 			InstanceProxy.IsFirstInstance = false;
 			InstanceProxy.CommandLineArgs = Environment.GetCommandLineArgs();
 
+			EventWaitHandle.TryOpenExisting(eventName, out eventWaitHandle);
+
 			try
 			{
 				// try opening existing wait handle
