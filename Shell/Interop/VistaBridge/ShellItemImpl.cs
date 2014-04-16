@@ -41,11 +41,12 @@ namespace BExplorer.Shell.Interop.VistaBridge
             Dispose(false);
         }
 
-        public IntPtr BindToHandler(IntPtr pbc, Guid bhid, Guid riid)
+        public HResult BindToHandler(IntPtr pbc, Guid bhid, Guid riid, out IntPtr obj)
         {
             if (riid == typeof(IShellFolder).GUID)
             {
-                return Marshal.GetIUnknownForObject(GetIShellFolder());
+              obj = Marshal.GetIUnknownForObject(GetIShellFolder());;
+							return HResult.S_OK;
             }
             else
             {

@@ -514,6 +514,84 @@ namespace BExplorer.Shell {
 				return Path.GetExtension(this.ParsingName).ToLowerInvariant();
 			}
 		}
+		/// <summary>
+		/// Returns an <see cref="ComTypes.IDataObject"/> representing the
+		/// item. This object is used in drag and drop operations.
+		/// </summary>
+		public System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject()
+		{
+			IntPtr res;
+				HResult result = m_ComInterface.BindToHandler(IntPtr.Zero,
+						BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID, out res);
+				return (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(res,
+						typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
+		}
+
+		public List<AssociationItem> GetAssocList()
+		{
+			var assocList = new List<AssociationItem>();
+			IntPtr enumAssocPtr;
+			Shell32.SHAssocEnumHandlers(Path.GetExtension(ParsingName), Shell32.ASSOC_FILTER.ASSOC_FILTER_RECOMMENDED, out enumAssocPtr);
+			IntPtr pUnk = Marshal.ReadIntPtr(enumAssocPtr);
+
+			IntPtr pFunc = Marshal.ReadIntPtr(pUnk + 3 * IntPtr.Size);
+			Shell32.funcNext Next = (Shell32.funcNext)Marshal.GetDelegateForFunctionPointer(pFunc, typeof(Shell32.funcNext));
+
+			IntPtr[] funcs = new IntPtr[15];
+			int num;
+			int res = Next(enumAssocPtr, 15, funcs, out num);
+			if (res == 0)
+			{
+				for (int i = 0; i < num; i++)
+				{
+					var funcpUnk = Marshal.ReadIntPtr(funcs[i]);
+					var getNamepFunc = Marshal.ReadIntPtr(funcpUnk + 3 * IntPtr.Size);
+					var getNameUIpFunc = Marshal.ReadIntPtr(funcpUnk + 4 * IntPtr.Size);
+					Shell32.funcGetName GetName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNamepFunc, typeof(Shell32.funcGetName));
+					Shell32.funcGetName GetUIName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNameUIpFunc, typeof(Shell32.funcGetName));
+					String path = String.Empty;
+					String displayName = String.Empty;
+					GetName(funcs[i], out path);
+					GetUIName(funcs[i], out displayName);
+					assocList.Add(new AssociationItem() { DisplayName = displayName, ApplicationPath = path, InvokePtr = funcpUnk });
+					Marshal.Release(funcs[i]);
+					//Marshal.Release(funcpUnk);
+					Marshal.Release(getNamepFunc);
+					Marshal.Release(getNameUIpFunc);
+
+				}
+			}
+			Marshal.Release(enumAssocPtr);
+			Marshal.Release(pUnk);
+
+			return assocList;
+		}
+
+		/// <summary>
+		/// Returns an <see cref="IDropTarget"/> representing the
+		/// item. This object is used in drag and drop operations.
+		/// </summary>
+		public IDropTarget GetIDropTarget(System.Windows.Forms.Control control)
+		{
+				IntPtr result = GetIShellFolder().CreateViewObject(control.Handle,
+						typeof(IDropTarget).GUID);
+				return (IDropTarget)Marshal.GetTypedObjectForIUnknown(result,
+								typeof(IDropTarget));
+		}
+
+		/// <summary>
+		/// Returns an <see cref="IShellFolder"/> representing the
+		/// item.
+		/// </summary>
+		public IShellFolder GetIShellFolder()
+		{
+			IntPtr res;
+				HResult result = m_ComInterface.BindToHandler(IntPtr.Zero,
+						BHID.SFObject, typeof(IShellFolder).GUID, out res);
+				IShellFolder iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res,
+												typeof(IShellFolder));
+				return iShellFolder;
+		}
 
 		public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) {
 			PropVariant pvar = new PropVariant();
@@ -557,40 +635,6 @@ namespace BExplorer.Shell {
 		/// </returns>
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
 			return GetEnumerator();
-		}
-
-		/// <summary>
-		/// Returns an <see cref="ComTypes.IDataObject"/> representing the
-		/// item. This object is used in drag and drop operations.
-		/// </summary>
-		public System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject() {
-			IntPtr result = m_ComInterface.BindToHandler(IntPtr.Zero,
-					BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID);
-			return (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(result,
-					typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
-		}
-
-		/// <summary>
-		/// Returns an <see cref="IDropTarget"/> representing the
-		/// item. This object is used in drag and drop operations.
-		/// </summary>
-		public IDropTarget GetIDropTarget(System.Windows.Forms.Control control) {
-			IntPtr result = GetIShellFolder().CreateViewObject(control.Handle,
-					typeof(IDropTarget).GUID);
-			return (IDropTarget)Marshal.GetTypedObjectForIUnknown(result,
-							typeof(IDropTarget));
-		}
-
-		/// <summary>
-		/// Returns an <see cref="IShellFolder"/> representing the
-		/// item.
-		/// </summary>
-		public IShellFolder GetIShellFolder() {
-			IntPtr result = m_ComInterface.BindToHandler(IntPtr.Zero,
-				BHID.SFObject, typeof(IShellFolder).GUID);
-			IShellFolder iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(result,
-											typeof(IShellFolder));
-			return iShellFolder;
 		}
 
 		public IExtractIconpwFlags IconType { get; set; }

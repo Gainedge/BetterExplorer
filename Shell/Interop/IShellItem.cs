@@ -29,9 +29,9 @@ namespace BExplorer.Shell.Interop
     [Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")]
     public interface IShellItem
     {
-        IntPtr BindToHandler(IntPtr pbc,
+        HResult BindToHandler(IntPtr pbc,
             [MarshalAs(UnmanagedType.LPStruct)]Guid bhid,
-            [MarshalAs(UnmanagedType.LPStruct)]Guid riid);
+            [MarshalAs(UnmanagedType.LPStruct)]Guid riid, out IntPtr obj);
 
         [PreserveSig]
         HResult GetParent(out IShellItem ppsi);

@@ -45,6 +45,7 @@ namespace BExplorer.Shell
 			this.ShellTreeView = new TreeViewBase();
 			this.ShellTreeView.Dock = DockStyle.Fill;
 			this.ShellTreeView.BackColor = Color.White;
+			this.ShellTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.ShellTreeView.AllowDrop = true;
 			this.ShellTreeView.HideSelection = false;
 			this.ShellTreeView.ShowLines = false;
@@ -481,7 +482,7 @@ namespace BExplorer.Shell
 				System.Runtime.InteropServices.ComTypes.IDataObject dataObject = shellItem.GetIDataObject(out dataObjPtr);
 
 				uint ef = 0;
-				Shell32.SHDoDragDrop(this.ShellTreeView.Handle, dataObject, null, unchecked((uint)System.Windows.Forms.DragDropEffects.All | (uint)System.Windows.Forms.DragDropEffects.Link), out ef);
+				Shell32.SHDoDragDrop(this.ShellListView.Handle, dataObject, null, unchecked((uint)System.Windows.Forms.DragDropEffects.All | (uint)System.Windows.Forms.DragDropEffects.Link), out ef);
 			}
 		}
 
@@ -557,39 +558,6 @@ namespace BExplorer.Shell
 					return;
 				}
 			}
-			//var rootPath = Path.GetPathRoot(item.ParsingName);
-			//var rootItem = new ShellItem(rootPath);
-			//var rootNode = nodes.Where(wr => wr.Tag != null).Where(w => (w.Tag as ShellItem) != null && (w.Tag as ShellItem).ParsingName.ToLowerInvariant() == rootItem.ParsingName.ToLowerInvariant()).SingleOrDefault();
-			//if (rootNode != null)
-			//{
-			//	if (!rootNode.IsExpanded)
-			//	{
-			//		rootNode.Expand();
-			//	}
-			//	else
-			//	{
-
-			//	}
-			//}
-			//var theNode = nodes.Where(wr => wr.Tag != null).Where(w => (w.Tag as ShellItem) != null && (w.Tag as ShellItem).ParsingName.ToLowerInvariant() == item.ParsingName.ToLowerInvariant()).SingleOrDefault();
-			//if (theNode == null)
-			//{
-			//	if (item.ParsingName == KnownFolders.Desktop.ParsingName)
-			//		return;
-			//	this.SelectItem(item.Parent);
-			//}
-			//if (theNode != null)
-			//{
-			//	theNode.Expand();
-			//	var childNodes = theNode.Nodes.OfType<TreeNode>().ToArray();
-			//	var treeNode = childNodes.SelectMany(s => s.Nodes.OfType<TreeNode>().ToArray()).Where(w => w.Tag != null).SingleOrDefault(s => (s.Tag as ShellItem).ParsingName == item.ParsingName);
-			//	if (treeNode == null)
-			//		this.SelectItem(item.Parent);
-			//	if (treeNode != null)
-			//	{
-			//		treeNode.Expand();
-			//	}
-			//}
 		}
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e)
 		{

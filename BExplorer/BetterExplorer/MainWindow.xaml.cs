@@ -950,86 +950,41 @@ namespace BetterExplorer {
 		private void SetUpOpenWithButton(ShellItem SelectedItem) {
 			btnOpenWith.Items.Clear();
 			string defapp = "";
-			List<string> recommendedPrograms = new List<string>();
+			List<AssociationItem> recommendedPrograms = new List<AssociationItem>();
 			string extension =
 			System.IO.Path.GetExtension(SelectedItem.ParsingName);
 
-			recommendedPrograms = ShellListView.RecommendedPrograms(extension);
+			recommendedPrograms = SelectedItem.GetAssocList(); //ShellListView.RecommendedPrograms(extension);
 
-			MenuItem mid = new MenuItem();
-			defapp = WindowsAPI.GetAssoc(extension, WindowsAPI.AssocF.Verify,
-																			WindowsAPI.AssocStr.Executable);
-			if (File.Exists(defapp) && defapp.ToLowerInvariant() != Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll").ToLowerInvariant()) {
-				if (defapp != "" && defapp != "\"%1\"" && extension != "") {
+			if (recommendedPrograms.Count > 0)
+			{
+				foreach (var item in recommendedPrograms)
+				{
 
-					string DefAppName = WindowsAPI.GetAssoc(extension, WindowsAPI.AssocF.Verify,
-																																																													WindowsAPI.AssocStr.FriendlyAppName);
-					try {
-						ShellItem objd = new ShellItem(defapp);
-						mid.Header = DefAppName;
-						mid.Tag = defapp;
-						mid.Click += new RoutedEventHandler(miow_Click);
-						objd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-						objd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-						mid.Icon = objd.Thumbnail.BitmapSource;
-						mid.Focusable = false;
-						btnOpenWith.Items.Add(mid);
-					}
-					catch (Exception) {
+					MenuItem mi = new MenuItem();
+					try
+					{
+						mi.Header = item.DisplayName;
+						mi.Tag = item.InvokePtr;
+						mi.Click += new RoutedEventHandler(miow_Click);
+						mi.Icon = item.Icon;
+						mi.ToolTip = item.ApplicationPath;
+						mi.Focusable = false;
 
 					}
-				}
+					catch (Exception)
+					{
 
-			}
-			if (recommendedPrograms.Count > 0) {
-				foreach (string item in recommendedPrograms) {
-					if (item != "CompressedFolder") {
-						MenuItem mi = new MenuItem();
-						string deffappname;
-						String ExePath = "";
-						ExePath = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify |
-														WindowsAPI.AssocF.Open_ByExeName, WindowsAPI.AssocStr.Executable);
-						deffappname = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify |
-														WindowsAPI.AssocF.Open_ByExeName, WindowsAPI.AssocStr.FriendlyAppName);
-						if (!File.Exists(ExePath)) {
-							ExePath = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify,
-															WindowsAPI.AssocStr.Executable);
-							deffappname = WindowsAPI.GetAssoc(item, WindowsAPI.AssocF.Verify, WindowsAPI.AssocStr.FriendlyAppName);
-						}
-
-						bool isDuplicate = false;
-
-						foreach (MenuItem mei in btnOpenWith.Items) {
-							if ((mei.Tag as string) == ExePath) {
-								isDuplicate = true;
-								//MessageBox.Show(ExePath,"Duplicate Found");
-							}
-						}
-
-						if (isDuplicate == false) {
-							try {
-								ShellItem obj = new ShellItem(ExePath);
-								mi.Header = deffappname;
-								mi.Tag = ExePath;
-								mi.Click += new RoutedEventHandler(miow_Click);
-								obj.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-								obj.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-								mi.Icon = obj.Thumbnail.BitmapSource;
-								mi.ToolTip = ExePath;
-								mi.Focusable = false;
-
-							}
-							catch (Exception) {
-
-							}
-
-							if (!String.IsNullOrEmpty(defapp))
-								btnOpenWith.Items.Add(mi);
-
-						}
 					}
+
+					//if (!String.IsNullOrEmpty(defapp))
+						btnOpenWith.Items.Add(mi);
 				}
 			}
+
+						//}
+					//}
+				//}
 			btnOpenWith.IsEnabled = btnOpenWith.HasItems;
 		}
 		private Visibility BooleanToVisibiliy(bool value) {
@@ -1686,7 +1641,16 @@ namespace BetterExplorer {
 
 		void miow_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
-			Process.Start(item.Tag.ToString(), String.Format("\"{0}\"", ShellListView.SelectedItems[0].ParsingName));
+			var ptr = (IntPtr)item.Tag;
+			var invokepFunc = Marshal.ReadIntPtr(ptr + 5 * IntPtr.Size);
+			ShellView.funcInvoke Invoke = (ShellView.funcInvoke)Marshal.GetDelegateForFunctionPointer(invokepFunc, typeof(ShellView.funcInvoke));
+			var j = Invoke(ptr, this.ShellListView.SelectedItems[0].GetIDataObject());
+			//if (j != 0)
+			//{
+			//	var ex = Marshal.GetExceptionForHR(j);
+			//	throw ex;
+			//}
+			//Process.Start(item.Tag.ToString(), String.Format("\"{0}\"", ShellListView.SelectedItems[0].ParsingName));
 		}
 
 		void mif_Click(object sender, RoutedEventArgs e) {

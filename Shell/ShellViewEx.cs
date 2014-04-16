@@ -3733,6 +3733,9 @@ namespace BExplorer.Shell
 					this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
 				}
 			}
+
+			[UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+			public delegate int funcInvoke(IntPtr refer, [In, MarshalAs(UnmanagedType.Interface)] System.Runtime.InteropServices.ComTypes.IDataObject pdo);
 			public List<string> RecommendedPrograms(string ext)
 			{
 				List<string> progs = new List<string>();

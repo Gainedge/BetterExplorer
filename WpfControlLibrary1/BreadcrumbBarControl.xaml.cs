@@ -66,9 +66,9 @@ namespace BetterExplorerControls {
 
 		void g_Click(object sender, RoutedEventArgs e) {
 			HistoryCombo.Text = (string)(sender as MenuItem).Header;
-			PathEventArgs args = new PathEventArgs(new ShellItem(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text));
-			OnNavigateRequested(args);
-			ExitEditMode();
+      PathEventArgs args = new PathEventArgs(new ShellItem(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text.ToShellParsingName()));
+      OnNavigateRequested(args);
+      ExitEditMode();
 		}
 
 		private BreadcrumbBarItem furthestrightitem;
@@ -290,7 +290,6 @@ namespace BetterExplorerControls {
 
 		private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e) {
 			e.Handled = true;
-
 			if (e.LeftButton == MouseButtonState.Released) {
 				IsEcsPressed = false;
 				if (!IsInEditMode)
@@ -353,8 +352,8 @@ namespace BetterExplorerControls {
 				item = new BreadcrumbBarFSItem(Path, path);
 			}
 			else {
-				path = Path;
-				item = new BreadcrumbBarFSItem(new ShellItem(Path.StartsWith(":") ? "shell:" + Path : Path));
+				path = Path.ToShellParsingName();
+				item = new BreadcrumbBarFSItem(new ShellItem(path));
 			}
 
 			ea = new PathEventArgs(new ShellItem(path));
@@ -366,7 +365,8 @@ namespace BetterExplorerControls {
 				}
 			}
 		}
-		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e) {
+    private void HistoryCombo_KeyUp(object sender, KeyEventArgs e)
+		{
 			e.Handled = true;
 			IsEcsPressed = false;
 			if (e.Key == Key.Enter) {

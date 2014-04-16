@@ -803,6 +803,21 @@ namespace BExplorer.Shell.Interop
 					out uint pdwEffect
 					);
 
+				public enum ASSOC_FILTER
+				{
+					ASSOC_FILTER_NONE = 0x00000000,
+					ASSOC_FILTER_RECOMMENDED = 0x00000001
+				}
+
+				[UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+				public delegate int funcNext(IntPtr refer, int celt, [Out, MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.Interface, SizeParamIndex = 1)] IntPtr[] rgelt, [Out] out int pceltFetched);
+
+				[UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
+				public delegate int funcGetName(IntPtr refer, [Out, MarshalAs(UnmanagedType.LPWStr)] out String ppsz);
+
+				[DllImport("Shell32", EntryPoint = "SHAssocEnumHandlers", PreserveSig = false)]
+				public extern static void SHAssocEnumHandlers([MarshalAs(UnmanagedType.LPWStr)] string pszExtra, ASSOC_FILTER afFilter, [Out] out IntPtr ppEnumHandler);
+
 				[DllImport("shell32.dll", PreserveSig = false)]
 				public static extern IntPtr SHGetIDListFromObject(
 						[In, MarshalAs(UnmanagedType.IUnknown)] object punk);
