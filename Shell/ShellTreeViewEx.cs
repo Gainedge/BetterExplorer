@@ -653,6 +653,8 @@ namespace BExplorer.Shell
 					node = TreeNode.FromHandle(ShellTreeView, handle);
 					treeHandle = this.ShellTreeView.Handle;
 				}));
+
+
 				var hash = (node.Tag as ShellItem).GetHashCode();
 				var pidl = (node.Tag as ShellItem).Pidl;
 				var nodeHandle = handle;

@@ -24,16 +24,14 @@ namespace SingleInstanceApplication {
 			InstanceProxy.CommandLineArgs = Environment.GetCommandLineArgs();
 
 			//Does not need try catch
-			EventWaitHandle.TryOpenExisting(eventName, out eventWaitHandle);
+			InstanceProxy.IsFirstInstance = !EventWaitHandle.TryOpenExisting(eventName, out eventWaitHandle);
 
 			/*
-			try
-			{
+			try {
 				// try opening existing wait handle
 				eventWaitHandle = EventWaitHandle.OpenExisting(eventName);
 			}
-			catch
-			{
+			catch (Exception ex) {
 				// got exception = handle wasn't created yet
 				InstanceProxy.IsFirstInstance = true;
 			}

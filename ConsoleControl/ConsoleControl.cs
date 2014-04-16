@@ -201,17 +201,28 @@ namespace ConsoleControl {
 		/// <param name="output">The output.</param>
 		/// <param name="color">The color.</param>
 		public void WriteOutput(string output, Color color) {
-			if (string.IsNullOrEmpty(lastInput) == false &&
-				(output == lastInput || output.Replace("\r\n", "") == lastInput))
+			if (string.IsNullOrEmpty(lastInput) == false && (output == lastInput || output.Replace("\r\n", "") == lastInput))
+				return;
+			else if (!richTextBoxConsole.Created)
 				return;
 
-			//Invoke((Action)(() =>
-			//{
+			richTextBoxConsole.BeginInvoke((Action)(() => {
+				//  Write the output.
+				richTextBoxConsole.SelectionColor = color;
+				richTextBoxConsole.SelectedText += output;
+				inputStart = richTextBoxConsole.SelectionStart;
+			}));
+
+
+			/*
+			//Invoke((Action)(() => {
 			//  Write the output.
 			richTextBoxConsole.SelectionColor = color;
 			richTextBoxConsole.SelectedText += output;
 			inputStart = richTextBoxConsole.SelectionStart;
 			//}));
+			*/
+
 		}
 
 		public void ClearOutput() {
@@ -450,7 +461,21 @@ namespace ConsoleControl {
 		}
 
 		private void contextMenuStrip1_Opened(object sender, EventArgs e) {
+		}
 
+		private void btnPaste_Click(object sender, EventArgs e) {
+			this.richTextBoxConsole.AppendText(System.Windows.Forms.Clipboard.GetText());
+		}
+
+		private void btnCopy_Click(object sender, EventArgs e) {
+			System.Windows.Forms.Clipboard.SetText(richTextBoxConsole.Text);
+		}
+
+		public string NewestFolder { get; set; }
+		private void btnClear_Click(object sender, EventArgs e) {
+			//richTextBoxConsole.Clear();
+			//richTextBoxConsole.Text = lastInput;
+			richTextBoxConsole.Text = NewestFolder + ">";
 		}
 	}
 }
