@@ -23,18 +23,6 @@ namespace ConsoleControl {
 	/// <summary> The Console Control allows you to embed a basic console in your application. </summary>
 	[ToolboxBitmap(typeof(resfinder), "ConsoleControl.ConsoleControl.bmp")]
 	public partial class ConsoleControl : UserControl {
-		//TODO: Make EVERYTHING PRIVATE
-		//TODO: Group everything into regions
-		//TODO: Clean and remove as much code as you can!!
-
-		/*
-		 * Do not let ANYTHING edit the text
-		 * Except this control itself
-		 *
-		 */
-
-		//Finish!!
-
 
 		#region Properties
 
@@ -124,6 +112,77 @@ namespace ConsoleControl {
 
 		#endregion
 
+		#region Control Events
+
+
+		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e) {
+			//contextMenuStrip1.Show(Cursor.Position);
+			//btnCopy.Visible = richTextBoxConsole.SelectedText != "";
+			//btnPaste.Visible = richTextBoxConsole.SelectedText != "";
+		}
+
+		private void contextMenuStrip1_Opened(object sender, EventArgs e) {
+		}
+
+		private void btnPaste_Click(object sender, EventArgs e) {
+			this.richTextBoxConsole.AppendText(System.Windows.Forms.Clipboard.GetText());
+		}
+
+		private void btnCopy_Click(object sender, EventArgs e) {
+			System.Windows.Forms.Clipboard.SetText(richTextBoxConsole.Text);
+		}
+
+		private void btnClear_Click(object sender, EventArgs e) {
+			//richTextBoxConsole.Clear();
+			//richTextBoxConsole.Text = lastInput;
+			//richTextBoxConsole.Text = NewestFolder + ">";
+			MessageBox.Show("This does not work correctly yet");
+			ClearOutput();
+		}
+
+
+
+		private void richTextBoxConsole_TextChanged(object sender, EventArgs e) {
+			SendMessage(richTextBoxConsole.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
+		}
+
+
+		#endregion
+
+		#region Processing
+
+		/// <summary> Runs a process. </summary>
+		/// <param name="fileName">  Name of the file. </param>
+		/// <param name="arguments"> The arguments. </param>
+		[Obsolete("Making Private soon", false)]
+		public void StartProcess(string fileName, string arguments) {
+			// Are we showing diagnostics?
+			if (ShowDiagnostics) {
+				WriteOutput("Preparing to run " + fileName, Color.FromArgb(255, 0, 255, 0));
+				if (!string.IsNullOrEmpty(arguments))
+					WriteOutput(" with arguments " + arguments + "." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
+				else
+					WriteOutput("." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
+			}
+
+			// Start the process.
+			processInterace.StartProcess(fileName, arguments);
+
+			// If we enable input, make the control not read only.
+			if (IsInputEnabled)
+				richTextBoxConsole.ReadOnly = false;
+		}
+
+
+		/// <summary> Stops the process. </summary>
+		[Obsolete("Will become private soon", false)]
+		public void StopProcess() {
+			// Stop the interface.
+			processInterace.StopProcess();
+		}
+
+
+		#endregion
 
 
 
@@ -165,31 +224,8 @@ namespace ConsoleControl {
 
 
 
-		/// <summary> Runs a process. </summary>
-		/// <param name="fileName">  Name of the file. </param>
-		/// <param name="arguments"> The arguments. </param>
-		[Obsolete("Use ChangeFolder() if public", false)]
-		public void StartProcess(string fileName, string arguments) {
-			// Are we showing diagnostics?
-			if (ShowDiagnostics) {
-				WriteOutput("Preparing to run " + fileName, Color.FromArgb(255, 0, 255, 0));
-				if (!string.IsNullOrEmpty(arguments))
-					WriteOutput(" with arguments " + arguments + "." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
-				else
-					WriteOutput("." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
-			}
-
-			// Start the process.
-			processInterace.StartProcess(fileName, arguments);
-
-			// If we enable input, make the control not read only.
-			if (IsInputEnabled)
-				richTextBoxConsole.ReadOnly = false;
-		}
-
 		public void ChangeFolder(string Folder, bool IsFileSystem) {
 			string Value = null;
-
 
 			if (IsFileSystem) {
 				Value = String.Format("cd \"{0}\"", Folder);
@@ -198,18 +234,22 @@ namespace ConsoleControl {
 			//ctrlConsole.InternalRichTextBox.Lines.Last().Substring(0, ctrlConsole.InternalRichTextBox.Lines.Last().IndexOf(Char.Parse(@"\")) + 1) != Path.GetPathRoot(Folder)
 
 			//TODO: Try to reduce the amount of logic here
-			var Path = System.IO.Path.GetPathRoot(Folder);
-			var LastLine = InternalRichTextBox.Lines.Last();
-			var Question = LastLine.Substring(0, LastLine.IndexOf(Char.Parse(@"\")) + 1);
-			var Answer = Question != Path;
-			if (Answer) {
-				Value = Path.TrimEnd(Char.Parse(@"\"));
+			if (this.richTextBoxConsole.Text != "") {
+				var Path = System.IO.Path.GetPathRoot(Folder);
+				var LastLine = richTextBoxConsole.Lines.Last();
+				var Question = LastLine.Substring(0, LastLine.IndexOf(Char.Parse(@"\")) + 1);
+				var Answer = Question != Path;
+				if (Answer) {
+					Value = Path.TrimEnd(Char.Parse(@"\"));
+				}
 			}
 
+			WriteInput(Value, Color.Wheat, false);
 
+			/*
+			return;
 
-
-
+			//ClearOutput();
 			lastInput = Value;
 
 			// Write the input.
@@ -217,11 +257,12 @@ namespace ConsoleControl {
 
 			// Fire the event.
 			FireConsoleInputEvent(Value);
+			*/
 		}
 
 
 
-
+		/*
 		/// <summary> Gets the internal rich text box. </summary>
 		[Browsable(false)]
 		[Obsolete("Will become private soon", false)]
@@ -230,7 +271,7 @@ namespace ConsoleControl {
 				return richTextBoxConsole;
 			}
 		}
-
+		*/
 
 		[Obsolete("Will become private soon", false)]
 		public void ClearOutput() {
@@ -239,13 +280,6 @@ namespace ConsoleControl {
 		}
 
 
-
-		/// <summary> Stops the process. </summary>
-		[Obsolete("Will become private soon", false)]
-		public void StopProcess() {
-			// Stop the interface.
-			processInterace.StopProcess();
-		}
 
 
 		/// <summary> Writes the input to the console control. </summary>
@@ -333,7 +367,7 @@ namespace ConsoleControl {
 			}));
 		}
 
-		/// <summary> Initialises the key mappings. </summary>
+		/// <summary> Initializes the key mappings. </summary>
 		private void InitialiseKeyMappings() {
 			// Map 'tab'.
 			keyMappings.Add(new KeyMapping(false, false, false, Keys.Tab, "{TAB}", "\t"));
@@ -471,41 +505,5 @@ namespace ConsoleControl {
 			base.OnSizeChanged(e);
 		}
 
-		private void richTextBoxConsole_MouseClick(object sender, MouseEventArgs e) {
-			//btnCopy.Visible = richTextBoxConsole.SelectedRtf != null;
-			//btnPaste.Visible = richTextBoxConsole.SelectedRtf != null;
-			//contextMenuStrip1.Show(Cursor.Position);
-		}
-
-		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e) {
-			//contextMenuStrip1.Show(Cursor.Position);
-			//btnCopy.Visible = richTextBoxConsole.SelectedText != "";
-			//btnPaste.Visible = richTextBoxConsole.SelectedText != "";
-		}
-
-		private void contextMenuStrip1_Opened(object sender, EventArgs e) {
-		}
-
-		private void btnPaste_Click(object sender, EventArgs e) {
-			this.richTextBoxConsole.AppendText(System.Windows.Forms.Clipboard.GetText());
-		}
-
-		private void btnCopy_Click(object sender, EventArgs e) {
-			System.Windows.Forms.Clipboard.SetText(richTextBoxConsole.Text);
-		}
-
-		private void btnClear_Click(object sender, EventArgs e) {
-			//richTextBoxConsole.Clear();
-			//richTextBoxConsole.Text = lastInput;
-			//richTextBoxConsole.Text = NewestFolder + ">";
-			ClearOutput();
-		}
-
-
-
-
-		private void richTextBoxConsole_TextChanged(object sender, EventArgs e) {
-			SendMessage(richTextBoxConsole.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
-		}
 	}
 }
