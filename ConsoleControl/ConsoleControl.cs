@@ -11,6 +11,8 @@ using System.IO;
 using System.Threading;
 using System.Runtime.InteropServices;
 
+
+
 namespace ConsoleControl {
 	/// <summary>
 	/// The console event handler is used for console events.
@@ -24,11 +26,25 @@ namespace ConsoleControl {
 	/// </summary>
 	[ToolboxBitmap(typeof(resfinder), "ConsoleControl.ConsoleControl.bmp")]
 	public partial class ConsoleControl : UserControl {
+
+		//TODO: Make EVERYTHING PRIVATE
+		//TODO: Group everything into regions
+		//TODO: Clean and remove as much code as you can!!
+
+		/*
+		 * Do not let ANYTHING edit the text
+		 * Except this control itself
+		 * 
+		 */
+
+		//Finish!!
+
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ConsoleControl"/> class.
 		/// </summary>
 		public ConsoleControl() {
-			//  Initialise the component.
+			//  Initialize the component.
 			InitializeComponent();
 
 			this.DoubleBuffered = true;
@@ -66,7 +82,7 @@ namespace ConsoleControl {
 		/// Handles the OnProcessError event of the processInterace control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
-		/// <param name="args">The <see cref="ProcessInterface.ProcessEventArgs"/> instance containing the event data.</param>
+		/// <param name="args">The <see cref="Process_Interface.ProcessEventArgs"/> instance containing the event data.</param>
 		void processInterace_OnProcessError(object sender, ProcessInterface.ProcessEventArgs args) {
 			//  Write the output, in red
 			WriteOutput(args.Content, Color.Red);
@@ -79,7 +95,7 @@ namespace ConsoleControl {
 		/// Handles the OnProcessOutput event of the processInterace control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
-		/// <param name="args">The <see cref="ProcessInterface.ProcessEventArgs"/> instance containing the event data.</param>
+		/// <param name="args">The <see cref="Process_Interface.ProcessEventArgs"/> instance containing the event data.</param>
 		void processInterace_OnProcessOutput(object sender, ProcessInterface.ProcessEventArgs args) {
 			//  Write the output, in white
 			WriteOutput(args.Content, Color.White);
@@ -92,7 +108,7 @@ namespace ConsoleControl {
 		/// Handles the OnProcessInput event of the processInterace control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
-		/// <param name="args">The <see cref="ProcessInterface.ProcessEventArgs"/> instance containing the event data.</param>
+		/// <param name="args">The <see cref="Process_Interface.ProcessEventArgs"/> instance containing the event data.</param>
 		void processInterace_OnProcessInput(object sender, ProcessInterface.ProcessEventArgs args) {
 			throw new NotImplementedException();
 		}
@@ -101,7 +117,7 @@ namespace ConsoleControl {
 		/// Handles the OnProcessExit event of the processInterace control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
-		/// <param name="args">The <see cref="ProcessInterface.ProcessEventArgs"/> instance containing the event data.</param>
+		/// <param name="args">The <see cref="Process_Interface.ProcessEventArgs"/> instance containing the event data.</param>
 		void processInterace_OnProcessExit(object sender, ProcessInterface.ProcessEventArgs args) {
 			//  Are we showing diagnostics?
 			if (ShowDiagnostics) {
@@ -417,7 +433,7 @@ namespace ConsoleControl {
 		/// Gets the process interface.
 		/// </summary>
 		[Browsable(false)]
-		public ProcessInterface.ProcessInterface ProcessInterface {
+		public ProcessInterface.ProcessInterface Process_Interface {
 			get { return processInterace; }
 		}
 
