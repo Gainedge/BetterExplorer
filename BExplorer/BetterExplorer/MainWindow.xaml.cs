@@ -3657,7 +3657,8 @@ namespace BetterExplorer {
 
 						SetUpButtonVisibilityOnNavComplete(isinLibraries);
 
-						SetUpConsoleWindow(e);
+						ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+						//SetUpConsoleWindow(e);
 
 						SetupUIOnSelectOrNavigate(ShellListView.GetSelectedCount(), true);
 
@@ -3896,20 +3897,34 @@ namespace BetterExplorer {
 			}
 		}
 
+		/*
 		private void SetUpConsoleWindow(NavigatedEventArgs e) {
+			ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+
+
+			/*
 			try {
+				//ctrlConsole.ChangeFolder(e.Folder.ParsingName);
+				//return;
+
 				var Folder = e.Folder.ParsingName;
 				ctrlConsole.NewestFolder = Folder;
-				if (e.Folder.IsFileSystem)
-					ctrlConsole.WriteInput(String.Format("cd \"{0}\"", Folder), System.Drawing.Color.Red, false);
+				if (e.Folder.IsFileSystem) {
+					//ctrlConsole.WriteInput(String.Format("cd \"{0}\"", Folder), System.Drawing.Color.Red, false);
+					ctrlConsole.ChangeFolder(String.Format("cd \"{0}\"", Folder));
+				}
 				else if (!ctrlConsole.InternalRichTextBox.Lines.Any()) { }
-				else if (ctrlConsole.InternalRichTextBox.Lines.Last().Substring(0, ctrlConsole.InternalRichTextBox.Lines.Last().IndexOf(Char.Parse(@"\")) + 1) != Path.GetPathRoot(Folder))
-					ctrlConsole.WriteInput(Path.GetPathRoot(Folder).TrimEnd(Char.Parse(@"\")), System.Drawing.Color.Red, false);
+				else if (ctrlConsole.InternalRichTextBox.Lines.Last().Substring(0, ctrlConsole.InternalRichTextBox.Lines.Last().IndexOf(Char.Parse(@"\")) + 1) != Path.GetPathRoot(Folder)) {
+					//ctrlConsole.WriteInput(Path.GetPathRoot(Folder).TrimEnd(Char.Parse(@"\")), System.Drawing.Color.Red, false);
+					ctrlConsole.ChangeFolder(Path.GetPathRoot(Folder).TrimEnd(Char.Parse(@"\")));
+				}
 			}
 			catch (Exception) {
 				// catch all expetions for illigal path
 			}
+			-/
 		}
+		*/
 
 		private void SetUpBreadcrumbbarOnNavComplete(NavigatedEventArgs e) {
 			this.breadcrumbBarControl1.LoadDirectory(e.Folder);

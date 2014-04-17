@@ -168,9 +168,8 @@ namespace ConsoleControl {
 		/// <summary> Runs a process. </summary>
 		/// <param name="fileName">  Name of the file. </param>
 		/// <param name="arguments"> The arguments. </param>
-		[Obsolete("Will become private soon", false)]
+		[Obsolete("Use ChangeFolder() if public", false)]
 		public void StartProcess(string fileName, string arguments) {
-			return;
 			// Are we showing diagnostics?
 			if (ShowDiagnostics) {
 				WriteOutput("Preparing to run " + fileName, Color.FromArgb(255, 0, 255, 0));
@@ -188,12 +187,49 @@ namespace ConsoleControl {
 				richTextBoxConsole.ReadOnly = false;
 		}
 
+		public void ChangeFolder(string Folder, bool IsFileSystem) {
+			string Value = null;
+
+
+			if (IsFileSystem) {
+				Value = String.Format("cd \"{0}\"", Folder);
+			}
+
+			//ctrlConsole.InternalRichTextBox.Lines.Last().Substring(0, ctrlConsole.InternalRichTextBox.Lines.Last().IndexOf(Char.Parse(@"\")) + 1) != Path.GetPathRoot(Folder)
+
+			//TODO: Try to reduce the amount of logic here
+			var Path = System.IO.Path.GetPathRoot(Folder);
+			var LastLine = InternalRichTextBox.Lines.Last();
+			var Question = LastLine.Substring(0, LastLine.IndexOf(Char.Parse(@"\")) + 1);
+			var Answer = Question != Path;
+			if (Answer) {
+				Value = Path.TrimEnd(Char.Parse(@"\"));
+			}
+
+
+
+
+
+			lastInput = Value;
+
+			// Write the input.
+			processInterace.WriteInput(Value);
+
+			// Fire the event.
+			FireConsoleInputEvent(Value);
+		}
+
+
 
 
 		/// <summary> Gets the internal rich text box. </summary>
 		[Browsable(false)]
 		[Obsolete("Will become private soon", false)]
-		public RichTextBox InternalRichTextBox { get { return richTextBoxConsole; } }
+		public RichTextBox InternalRichTextBox {
+			get {
+				return richTextBoxConsole;
+			}
+		}
 
 
 		[Obsolete("Will become private soon", false)]
@@ -217,7 +253,7 @@ namespace ConsoleControl {
 		/// <param name="color"> The color. </param>
 		/// <param name="echo">  if set to <c>true</c> echo the input. </param>
 		[Obsolete("Will become private soon", false)]
-		public void WriteInput(string input, Color color, bool echo) {
+		private void WriteInput(string input, Color color, bool echo) {
 			Invoke((Action)(() => {
 				// Are we echoing?
 				if (echo) {
