@@ -178,6 +178,7 @@ namespace BExplorer.Shell.Interop
 				LVM_GETBKIMAGE = (FIRST + 139),
 				LVM_FINDITEM = (FIRST + 83),
 				LVM_ENSUREVISISBLE = (FIRST + 19),
+				LVM_ARRANGE = (FIRST + 22),
 
 		}
 
@@ -451,7 +452,8 @@ namespace BExplorer.Shell.Interop
 			 [DllImport("user32.dll", SetLastError = true)]
 			 public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
-
+			 [DllImport("user32.dll")]
+			 public static extern bool RedrawWindow(IntPtr hWnd, IntPtr lprcUpdate, IntPtr hrgnUpdate, uint flags); 
 
 				[DllImport("user32.dll")]
 				public static extern int TrackPopupMenuEx(IntPtr hmenu,
@@ -549,6 +551,8 @@ namespace BExplorer.Shell.Interop
 					return makeLong;
 				}
 
+			[DllImport("user32.dll")]
+			public static extern bool UpdateWindow(IntPtr hWnd);
 
 				[Flags]
 				public enum WindowStylesEx : uint

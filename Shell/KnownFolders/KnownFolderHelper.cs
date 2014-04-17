@@ -142,6 +142,14 @@ namespace BExplorer.Shell
 				/// <param name="parsingName">The parsing name (or path) for the requested known folder.</param>
 				/// <returns>A known folder representing the specified name.</returns>
 				/// <exception cref="System.ArgumentException">Thrown if the given parsing name is invalid.</exception>
+				/// 
+				public static IKnownFolder FromParsingNameOnly(string parsingName)
+				{
+					KnownFolderManagerClass k = new KnownFolderManagerClass();
+					IKnownFolderNative folder = null;
+					k.FindFolderFromPath(parsingName, 0, out folder);
+					return (IKnownFolder)folder;
+				}
 				public static IKnownFolder FromParsingName(string parsingName)
 				{
 						if (parsingName == null)

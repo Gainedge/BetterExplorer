@@ -12,25 +12,27 @@ namespace BExplorer.Shell
 {
 	public class TreeViewBase : TreeView
 	{
+		public event EventHandler VerticalScroll;
 		public TreeViewBase()
 		{
 			SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.EnableNotifyMessage, true);
 		}
 
-		//protected override CreateParams CreateParams
-		//{
-		//	get
-		//	{
-		//		CreateParams cp = base.CreateParams;
-		//		cp.ExStyle |= 0x02000000;
-		//		return cp;
-		//	}
-		//}
+		protected override CreateParams CreateParams
+		{
+			get
+			{
+				CreateParams cp = base.CreateParams;
+				cp.Style |= 0x0400 | 0x8000;
+				return cp;
+			}
+		}
 		private const int WM_ERASEBKGND = 0x0014;
 		private const int TV_FIRST = 0x1100;
 		private const int TVM_SETBKCOLOR = TV_FIRST + 29;
 		private const int TVM_SETEXTENDEDSTYLE = TV_FIRST + 44;
 		public const int TVS_EX_FADEINOUTEXPANDOS = 0x0040;
+		public const int TVS_EX_AUTOHSCROLL = 0x8000;
 		private const int TVS_EX_DOUBLEBUFFER = 0x0004;
 		[DllImport("user32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, int Msg,
@@ -61,6 +63,13 @@ namespace BExplorer.Shell
                 m.Result = IntPtr.Zero;
                 return;
             }
+						if (m.Msg == 277)
+						{
+							if (VerticalScroll != null)
+							{
+								VerticalScroll.Invoke(this, EventArgs.Empty);
+							}
+						}
 			
 			base.WndProc(ref m);
 		}
@@ -70,6 +79,7 @@ namespace BExplorer.Shell
 			base.OnHandleCreated(e);
 			SetDoubleBuffer();
 			SetExpandoesStyle();
+			SendMessage(this.Handle, TVM_SETEXTENDEDSTYLE, (IntPtr)TVS_EX_AUTOHSCROLL, (IntPtr)TVS_EX_AUTOHSCROLL);
 			UxTheme.SetWindowTheme(this.Handle, "Explorer", 0);
 
 		}

@@ -1578,10 +1578,15 @@ namespace BExplorer.Shell
 			}
 		}
 
-		public void Navigate(ShellItem destination)
+		public void Navigate(ShellItem destination, Boolean isReload = false)
 		{
 			if (destination == null)
 				return;
+			if (this.CurrentFolder != null)
+			{
+				if (destination.ParsingName == this.CurrentFolder.ParsingName && !isReload)
+					return;
+			}
 
 			this.Notifications.UnregisterChangeNotify();
 			overlays.Clear();
@@ -1799,7 +1804,7 @@ namespace BExplorer.Shell
 
 		public void RefreshContents()
 		{
-			Navigate(this.CurrentFolder);
+			Navigate(this.CurrentFolder, true);
 		}
 
 		public void RefreshItem(int index)
@@ -2056,6 +2061,8 @@ namespace BExplorer.Shell
 			IIFileOperation fo = new IIFileOperation(true);
 			fo.RenameItem(item, newName);
 			fo.PerformOperations();
+			//this.Navigate(this.CurrentFolder);
+			
 		}
 		public void ResizeIcons(int value)
 		{
@@ -2302,14 +2309,8 @@ namespace BExplorer.Shell
 
 			this.View = ShellViewStyle.Medium;
 
-			//Navigate((ShellItem)KnownFolders.Desktop);
-
-				//Ole32.RevokeDragDrop(this.Handle);
-				////DropTarget = new ShellViewDragDrop();
-				//var result = (HResult)Ole32.RegisterDragDrop(this.Handle, this);	
-
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int) ListViewExtendedStyles.HeaderInAllViews, (int) ListViewExtendedStyles.HeaderInAllViews);
-			//WinAPI.SendMessage(handle, WinAPI.LVM.LVM_SetExtendedStyle, (int)WinAPI.ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE, (int)WinAPI.ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE);
+			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int) ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE, (int) ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int) ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER, (int) ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int) ListViewExtendedStyles.FullRowSelect, (int) ListViewExtendedStyles.FullRowSelect);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int) ListViewExtendedStyles.HeaderDragDrop, (int) ListViewExtendedStyles.HeaderDragDrop);
@@ -2327,7 +2328,15 @@ namespace BExplorer.Shell
 			User32.MoveWindow(this.LVHandle, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, true);
 		}
 
-			
+		public void UpdateItem(int index)
+		{
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, index, 0);
+		}
+
+		public void RedrawItem(int index)
+		{
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
+		}
 		System.Windows.Forms.Timer _ResetTimer = new System.Windows.Forms.Timer();
 		Thread MaintenanceThread;
 			List<Int32> DraggedItemIndexes = new List<int>();
@@ -2336,6 +2345,12 @@ namespace BExplorer.Shell
 		string _keyjumpstr = "";
 		ShellItem _kpreselitem = null;
 		LVIS _IsDragSelect = 0;
+		private void RedrawWindow()
+		{
+			User32.RedrawWindow(this.LVHandle, IntPtr.Zero, IntPtr.Zero,
+													0x0400/*RDW_FRAME*/ | 0x0100/*RDW_UPDATENOW*/
+													| 0x0001/*RDW_INVALIDATE*/| 0x4);
+		}
 		protected override void WndProc(ref Message m)
 		{
 			bool isSmallIcons = (View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details);
@@ -2400,6 +2415,7 @@ namespace BExplorer.Shell
 									int itemIndex = Items.IndexOf(theItem);
 									Items[itemIndex] = obj2;
 									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, itemIndex, 0);
+									RedrawWindow();
 									if (this.ItemUpdated != null)
 										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, itemIndex));
 								}
@@ -2441,7 +2457,10 @@ namespace BExplorer.Shell
 					case WNM.LVN_ENDLABELEDITW:
 						var nmlvedit = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
 						if (!String.IsNullOrEmpty(nmlvedit.item.pszText))
-							RenameShellItem(this.SelectedItems[0].m_ComInterface, nmlvedit.item.pszText);
+						{
+							RenameShellItem(this.Items[nmlvedit.item.iItem].m_ComInterface, nmlvedit.item.pszText);
+							this.RedrawWindow();
+						}
 						break;
 					case WNM.LVN_GETDISPINFOW:
 						var nmlv = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
@@ -2643,9 +2662,30 @@ namespace BExplorer.Shell
 						{
 							ShellItem selectedItem = Items[iac.iItem];
 							if (selectedItem.IsFolder)
+							{
 								Navigate(selectedItem);
+							}
 							else
-								Process.Start(selectedItem.ParsingName);
+							{
+								if (selectedItem.IsLink)
+								{
+									var shellLink = new ShellLink(selectedItem.ParsingName);
+									var newSho = new ShellItem(shellLink.TargetPIDL);
+									if (newSho.IsFolder)
+									{
+										Navigate(newSho);
+									}
+									else
+									{
+										Process.Start(newSho.ParsingName);
+									}
+									shellLink.Dispose();
+								}
+								else
+								{
+									Process.Start(selectedItem.ParsingName);
+								}
+							}
 						}
 						catch(Exception)
 						{
@@ -2914,7 +2954,7 @@ namespace BExplorer.Shell
 										break;
 									case CustomDraw.CDDS_ITEMPOSTPAINT:
 
-										if (nmlvcd.clrTextBk != 0 && nmlvcd.clrFace != 0 && nmlvcd.clrText != 0)
+										if (nmlvcd.clrTextBk != 0)
 										{
 											var itemBounds = new User32.RECT();
 											User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMRECT, index, ref itemBounds);
@@ -3251,8 +3291,8 @@ namespace BExplorer.Shell
 										m.Result = (IntPtr) CustomDraw.CDRF_SKIPDEFAULT;
 										break;
 								}
-																					
-																					
+
+																			
 							}
 						}
 						break;
@@ -3524,6 +3564,28 @@ namespace BExplorer.Shell
 			//return false;
 
 			return true;
+		}
+
+		private const int SW_SHOW = 5;
+		private const uint SEE_MASK_INVOKEIDLIST = 12;
+		public void ShowFileProperties(string Filename)
+		{
+			Shell32.SHELLEXECUTEINFO info = new Shell32.SHELLEXECUTEINFO();
+			info.cbSize = Marshal.SizeOf(info);
+			info.lpVerb = "properties";
+			info.lpFile = Filename;
+			info.nShow = SW_SHOW;
+			info.fMask = SEE_MASK_INVOKEIDLIST;
+			Shell32.ShellExecuteEx(ref info);
+		}
+
+		public void ShowFileProperties()
+		{
+			IntPtr doPtr = IntPtr.Zero;
+			if (Shell32.SHMultiFileProperties(this.SelectedItems.ToArray().GetIDataObject(out doPtr), 0) != 0 /*S_OK*/)
+			{
+				throw new Win32Exception();
+			}
 		}
 		void selectionTimer_Tick(object sender, EventArgs e)
 		{

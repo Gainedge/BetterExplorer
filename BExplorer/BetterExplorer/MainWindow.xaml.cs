@@ -1769,6 +1769,7 @@ namespace BetterExplorer {
 
 		// New Folder/Library
 		private void Button_Click_2(object sender, RoutedEventArgs e) {
+			this.ShellListView.Focus();
 			string path = "";
 
 			bool IsLib = false;
@@ -1789,25 +1790,18 @@ namespace BetterExplorer {
 			WindowsAPI.HChangeNotifyFlags.SHCNF_PATHW | WindowsAPI.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT,
 							Marshal.StringToHGlobalAuto(path.Replace(@"\\", @"\")), IntPtr.Zero);
 
-
-
-
-
-
-
-
 			IsLibW = IsLib;
 			IsAfterFolderCreate = true;
-
+			this.ShellListView.Focus();
 		}
 
 
 		private void btnProperties_Click(object sender, RoutedEventArgs e) {
-			if (ShellListView.SelectedItems.Count() > 0) {
-				//ShellListView.ShowFileProperties();
+			if (ShellListView.GetSelectedCount() > 0) {
+				ShellListView.ShowFileProperties();
 			}
 			else {
-				//ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
+				ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
 			}
 			ShellListView.Focus();
 		}
@@ -3209,17 +3203,27 @@ namespace BetterExplorer {
 				foreach (string str in InitialTabs) {
 					try {
 						i++;
+						var itemPath = str;
+						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}")
+						{
+							if (i == InitialTabs.Length)
+							{
+								tabControl1.SelectedIndex = InitialTabs.Length - 2;
+								NavigateAfterTabChange();
+							}
+							continue;
+						}
 						if (i == InitialTabs.Length) {
-							NewTab(str.ToShellParsingName(), true);
+							NewTab(itemPath.ToShellParsingName(), true);
 						}
 						else {
-							NewTab(str.ToShellParsingName(), false);
+							NewTab(itemPath.ToShellParsingName(), false);
 						}
 						if (i == InitialTabs.Count()) {
-							ShellItem sho = new ShellItem(str.ToShellParsingName());
+							ShellItem sho = new ShellItem(itemPath.ToShellParsingName());
 							ShellListView.Navigate(sho);
-							(tabControl1.SelectedItem as ClosableTabItem).ShellObject = ShellListView.CurrentFolder;
-							(tabControl1.SelectedItem as ClosableTabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
+							(tabControl1.SelectedItem as ClosableTabItem).ShellObject = sho;
+							(tabControl1.SelectedItem as ClosableTabItem).ToolTip = sho.ParsingName;
 						}
 					}
 					catch {
@@ -3353,6 +3357,7 @@ namespace BetterExplorer {
 				WindowsAPI.SHGetSetSettings(ref statef, WindowsAPI.SSF.SSF_SHOWALLOBJECTS | WindowsAPI.SSF.SSF_SHOWEXTENSIONS, false);
 				chkHiddenFiles.IsChecked = (statef.fShowAllObjects == 1);
 				ShellListView.ShowHidden = chkHiddenFiles.IsChecked.Value;
+				ShellTree.IsShowHiddenItems = chkHiddenFiles.IsChecked.Value;
 				chkExtensions.IsChecked = (statef.fShowExtensions == 1);
 				IsCalledFromLoading = false;
 
@@ -3676,9 +3681,9 @@ namespace BetterExplorer {
 				}
 
 				#region StatusBar selected items counter
-				await Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-					explorerSelectedItemsCount = ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount();
-				}));
+				//await Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+					explorerSelectedItemsCount = ShellListView.GetSelectedCount();
+				//}));
 
 				SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
 				#endregion
@@ -3910,7 +3915,7 @@ namespace BetterExplorer {
 		private void SetUpBreadcrumbbarOnNavComplete(NavigatedEventArgs e) {
 			this.breadcrumbBarControl1.LoadDirectory(e.Folder);
 			this.breadcrumbBarControl1.LastPath = e.Folder.ParsingName;
-			this.Title = "Better Explorer - " + e.Folder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
+			this.Title = "Better Explorer - " + e.Folder.DisplayName;
 			e.Folder.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 			e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			try {
@@ -3938,8 +3943,10 @@ namespace BetterExplorer {
 					catch (Exception) {
 
 					}
-
-					(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CurrentLocation = ShellListView.CurrentFolder;
+					Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
+					{
+						(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CurrentLocation = e.Folder;
+					}));
 
 				}
 
@@ -4479,7 +4486,8 @@ namespace BetterExplorer {
 			NavigationLog nl = (tabControl1.SelectedItem as ClosableTabItem).log;
 			int i = 0;
 			foreach (ShellItem item in nl.HistoryItemsList) {
-
+				var pidl = item.Pidl;
+			
 				if (item != null) {
 					item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 					item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
@@ -4738,6 +4746,7 @@ namespace BetterExplorer {
 																					state.fShowAllObjects = 1;
 																					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
 																					ShellListView.ShowHidden = true;
+																					ShellTree.IsShowHiddenItems = true;
 																					ShellTree.RefreshContents();
 																				}
 				));
@@ -4752,6 +4761,7 @@ namespace BetterExplorer {
 																					WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
 																					state.fShowAllObjects = 0;
 																					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
+																					ShellTree.IsShowHiddenItems = false;
 																					ShellListView.ShowHidden = false;
 																					ShellTree.RefreshContents();
 																				}

@@ -1025,6 +1025,16 @@ namespace BExplorer.Shell {
 			get { return GetIDListFromObject(m_ComInterface); }
 		}
 
+		public IntPtr AbsolutePidl
+		{
+			get
+			{
+				uint attr;
+				IntPtr pidl;
+				Shell32.SHParseDisplayName(this.ParsingName, IntPtr.Zero, out pidl, 0, out attr);
+				return pidl;
+			}
+		}
 		public IntPtr ILPidl {
 			get {
 				return Shell32.ILFindLastID(Pidl);
