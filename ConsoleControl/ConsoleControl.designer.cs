@@ -47,6 +47,7 @@
 			this.richTextBoxConsole.TabIndex = 0;
 			this.richTextBoxConsole.Text = "";
 			this.richTextBoxConsole.MouseClick += new System.Windows.Forms.MouseEventHandler(this.richTextBoxConsole_MouseClick);
+			this.richTextBoxConsole.TextChanged += new System.EventHandler(this.richTextBoxConsole_TextChanged);
 			// 
 			// contextMenuStrip1
 			// 
@@ -62,21 +63,21 @@
 			// btnCopy
 			// 
 			this.btnCopy.Name = "btnCopy";
-			this.btnCopy.Size = new System.Drawing.Size(152, 22);
+			this.btnCopy.Size = new System.Drawing.Size(102, 22);
 			this.btnCopy.Text = "Copy";
 			this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
 			// 
 			// btnPaste
 			// 
 			this.btnPaste.Name = "btnPaste";
-			this.btnPaste.Size = new System.Drawing.Size(152, 22);
+			this.btnPaste.Size = new System.Drawing.Size(102, 22);
 			this.btnPaste.Text = "Paste";
 			this.btnPaste.Click += new System.EventHandler(this.btnPaste_Click);
 			// 
 			// btnClear
 			// 
 			this.btnClear.Name = "btnClear";
-			this.btnClear.Size = new System.Drawing.Size(152, 22);
+			this.btnClear.Size = new System.Drawing.Size(102, 22);
 			this.btnClear.Text = "Clear";
 			this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
 			// 

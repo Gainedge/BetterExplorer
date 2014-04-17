@@ -111,7 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProcessInterface\ProcessInterface.csproj">
-      <Project>{A4B8573F-EBFC-4140-B8AA-7C037919EF57}</Project>
+      <Project>{a4b8573f-ebfc-4140-b8aa-7c037919ef57}</Project>
       <Name>ProcessInterface</Name>
     </ProjectReference>
   </ItemGroup>

@@ -175,9 +175,12 @@ namespace BetterExplorer {
 			IsViewSelection = true;
 		}
 
+		/*
+		[Obsolete("Removing", false)]
 		void InternalRichTextBox_TextChanged(object sender, EventArgs e) {
 			ctrlConsole.ScrollToBottom();
 		}
+		*/
 
 		private void chkIsLastTabCloseApp_Click(object sender, RoutedEventArgs e) {
 			this.IsCloseLastTabCloseApp = this.chkIsLastTabCloseApp.IsChecked.Value;
@@ -190,7 +193,7 @@ namespace BetterExplorer {
 				spCommandPrompt.Height = GridLength.Auto;
 				if (!ctrlConsole.IsProcessRunning) {
 					ctrlConsole.StartProcess("cmd.exe", ShellListView.CurrentFolder.IsFileSystem ? String.Format("/K \"{0}\"", ShellListView.CurrentFolder.ParsingName.TrimEnd(new[] { '/', '\\' })) : null);
-					ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+					//ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
 					ctrlConsole.ClearOutput();
 				}
 			}
@@ -388,7 +391,7 @@ namespace BetterExplorer {
 					Task.Run(() => {
 						ctrlConsole.StartProcess("cmd.exe", null);
 					});
-					ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+					//ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
 					ctrlConsole.ClearOutput();
 				}
 			}
@@ -956,14 +959,11 @@ namespace BetterExplorer {
 
 			recommendedPrograms = SelectedItem.GetAssocList(); //ShellListView.RecommendedPrograms(extension);
 
-			if (recommendedPrograms.Count > 0)
-			{
-				foreach (var item in recommendedPrograms)
-				{
+			if (recommendedPrograms.Count > 0) {
+				foreach (var item in recommendedPrograms) {
 
 					MenuItem mi = new MenuItem();
-					try
-					{
+					try {
 						mi.Header = item.DisplayName;
 						mi.Tag = item.InvokePtr;
 						mi.Click += new RoutedEventHandler(miow_Click);
@@ -972,19 +972,18 @@ namespace BetterExplorer {
 						mi.Focusable = false;
 
 					}
-					catch (Exception)
-					{
+					catch (Exception) {
 
 					}
 
 					//if (!String.IsNullOrEmpty(defapp))
-						btnOpenWith.Items.Add(mi);
+					btnOpenWith.Items.Add(mi);
 				}
 			}
 
-						//}
-					//}
-				//}
+			//}
+			//}
+			//}
 			btnOpenWith.IsEnabled = btnOpenWith.HasItems;
 		}
 		private Visibility BooleanToVisibiliy(bool value) {
@@ -3402,7 +3401,7 @@ namespace BetterExplorer {
 				if (this.IsConsoleShown) {
 					if (!ctrlConsole.IsProcessRunning) {
 						ctrlConsole.StartProcess("cmd.exe", null);
-						ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
+						//ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
 						ctrlConsole.ClearOutput();
 					}
 				}
@@ -4700,40 +4699,38 @@ namespace BetterExplorer {
 		}
 
 
-		private void inRibbonGallery1_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-				switch (ViewGallery.SelectedIndex)
-				{
-					case 0:
-						ShellListView.View = ShellViewStyle.ExtraLargeIcon;
-						break;
-					case 1:
-						ShellListView.View = ShellViewStyle.LargeIcon;
-						break;
-					case 2:
-						ShellListView.View = ShellViewStyle.Medium;
-						break;
-					case 3:
-						ShellListView.View = ShellViewStyle.SmallIcon;
-						break;
-					case 4:
-						ShellListView.View = ShellViewStyle.List;
-						break;
-					case 5:
-						ShellListView.View = ShellViewStyle.Details;
-						break;
-					case 6:
-						ShellListView.View = ShellViewStyle.Tile;
-						break;
-					case 7:
-						ShellListView.View = ShellViewStyle.Content;
-						break;
-					case 8:
-						ShellListView.View = ShellViewStyle.Thumbstrip;
-						break;
-					default:
-						break;
-				}
+		private void inRibbonGallery1_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			switch (ViewGallery.SelectedIndex) {
+				case 0:
+					ShellListView.View = ShellViewStyle.ExtraLargeIcon;
+					break;
+				case 1:
+					ShellListView.View = ShellViewStyle.LargeIcon;
+					break;
+				case 2:
+					ShellListView.View = ShellViewStyle.Medium;
+					break;
+				case 3:
+					ShellListView.View = ShellViewStyle.SmallIcon;
+					break;
+				case 4:
+					ShellListView.View = ShellViewStyle.List;
+					break;
+				case 5:
+					ShellListView.View = ShellViewStyle.Details;
+					break;
+				case 6:
+					ShellListView.View = ShellViewStyle.Tile;
+					break;
+				case 7:
+					ShellListView.View = ShellViewStyle.Content;
+					break;
+				case 8:
+					ShellListView.View = ShellViewStyle.Thumbstrip;
+					break;
+				default:
+					break;
+			}
 		}
 
 		private void chkHiddenFiles_Checked(object sender, RoutedEventArgs e) {
