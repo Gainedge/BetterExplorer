@@ -192,7 +192,11 @@ namespace BetterExplorer {
 				rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
 				spCommandPrompt.Height = GridLength.Auto;
 				if (!ctrlConsole.IsProcessRunning) {
-					ctrlConsole.StartProcess("cmd.exe", ShellListView.CurrentFolder.IsFileSystem ? String.Format("/K \"{0}\"", ShellListView.CurrentFolder.ParsingName.TrimEnd(new[] { '/', '\\' })) : null);
+					ctrlConsole.ChangeFolder(ShellListView.CurrentFolder.ParsingName, ShellListView.CurrentFolder.IsFileSystem);
+					//.StartProcess("cmd.exe", ShellListView.CurrentFolder.IsFileSystem ? String.Format("/K \"{0}\"", ShellListView.CurrentFolder.ParsingName.TrimEnd(new[] { '/', '\\' })) : null);
+
+					//ctrlConsole.StartProcess("cmd.exe",null);
+
 					//ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
 					ctrlConsole.ClearOutput();
 				}
@@ -204,10 +208,6 @@ namespace BetterExplorer {
 				if (ctrlConsole.IsProcessRunning)
 					ctrlConsole.StopProcess();
 			}
-		}
-
-		private void ctrlConsole_OnConsoleInput(object sender, ConsoleControl.ConsoleEventArgs args) {
-
 		}
 
 		private void btnAbout_Click(object sender, RoutedEventArgs e) {
@@ -387,6 +387,7 @@ namespace BetterExplorer {
 			if ((int)rks.GetValue(@"IsConsoleShown", 0) == 1) {
 				rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
 				spCommandPrompt.Height = GridLength.Auto;
+				/*
 				if (!ctrlConsole.IsProcessRunning) {
 					Task.Run(() => {
 						ctrlConsole.StartProcess("cmd.exe", null);
@@ -394,6 +395,7 @@ namespace BetterExplorer {
 					//ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
 					ctrlConsole.ClearOutput();
 				}
+				*/
 			}
 			else {
 				rCommandPrompt.Height = new GridLength(0);
@@ -3393,6 +3395,7 @@ namespace BetterExplorer {
 					return;
 				}
 
+				/*
 				if (this.IsConsoleShown) {
 					if (!ctrlConsole.IsProcessRunning) {
 						ctrlConsole.StartProcess("cmd.exe", null);
@@ -3400,6 +3403,7 @@ namespace BetterExplorer {
 						ctrlConsole.ClearOutput();
 					}
 				}
+				*/
 
 				// Set up Column Header menu
 				chcm = new ContextMenu();
@@ -3414,10 +3418,8 @@ namespace BetterExplorer {
 
 					String cmd = Application.Current.Properties["cmd"].ToString();
 
-					if (cmd.IndexOf("::") == 0) {
-
+					if (cmd.IndexOf("::") == 0)
 						ShellListView.Navigate(new ShellItem("shell:" + cmd));
-					}
 					else
 						ShellListView.Navigate(new ShellItem(cmd.Replace("\"", "")));
 
