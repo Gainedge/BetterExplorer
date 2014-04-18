@@ -1770,6 +1770,8 @@ namespace BetterExplorer {
 
 		// New Folder/Library
 		private void Button_Click_2(object sender, RoutedEventArgs e) {
+			//We should focus the ListView or on some surcumstances new folder does not start renaming after folder is created
+			this.ShellListView.Focus();
 			string path = "";
 
 			bool IsLib = false;
@@ -1790,25 +1792,18 @@ namespace BetterExplorer {
 			WindowsAPI.HChangeNotifyFlags.SHCNF_PATHW | WindowsAPI.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT,
 							Marshal.StringToHGlobalAuto(path.Replace(@"\\", @"\")), IntPtr.Zero);
 
-
-
-
-
-
-
-
 			IsLibW = IsLib;
 			IsAfterFolderCreate = true;
-
+			this.ShellListView.Focus();
 		}
 
 
 		private void btnProperties_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.SelectedItems.Count() > 0) {
-				//ShellListView.ShowFileProperties();
+				ShellListView.ShowFileProperties();
 			}
 			else {
-				//ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
+				ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
 			}
 			ShellListView.Focus();
 		}
@@ -3210,6 +3205,17 @@ namespace BetterExplorer {
 				foreach (string str in InitialTabs) {
 					try {
 						i++;
+						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}")
+						{
+							if (i == InitialTabs.Length)
+							{
+								tabControl1.SelectedIndex = InitialTabs.Length - 2;
+								NavigateAfterTabChange();
+							}
+
+							continue;
+						}
+
 						if (i == InitialTabs.Length) {
 							NewTab(str.ToShellParsingName(), true);
 						}
@@ -3219,8 +3225,8 @@ namespace BetterExplorer {
 						if (i == InitialTabs.Count()) {
 							ShellItem sho = new ShellItem(str.ToShellParsingName());
 							ShellListView.Navigate(sho);
-							(tabControl1.SelectedItem as ClosableTabItem).ShellObject = ShellListView.CurrentFolder;
-							(tabControl1.SelectedItem as ClosableTabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
+							(tabControl1.SelectedItem as ClosableTabItem).ShellObject = sho;
+							(tabControl1.SelectedItem as ClosableTabItem).ToolTip = sho.ParsingName;
 						}
 					}
 					catch {
@@ -3354,6 +3360,7 @@ namespace BetterExplorer {
 				WindowsAPI.SHGetSetSettings(ref statef, WindowsAPI.SSF.SSF_SHOWALLOBJECTS | WindowsAPI.SSF.SSF_SHOWEXTENSIONS, false);
 				chkHiddenFiles.IsChecked = (statef.fShowAllObjects == 1);
 				ShellListView.ShowHidden = chkHiddenFiles.IsChecked.Value;
+				ShellTree.IsShowHiddenItems = chkHiddenFiles.IsChecked.Value;
 				chkExtensions.IsChecked = (statef.fShowExtensions == 1);
 				IsCalledFromLoading = false;
 

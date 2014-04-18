@@ -23,7 +23,7 @@ namespace BExplorer.Shell
 			get
 			{
 				CreateParams cp = base.CreateParams;
-				cp.Style |= 0x0400 | 0x8000;
+				cp.Style |=  0x8000;
 				return cp;
 			}
 		}
