@@ -278,6 +278,7 @@ namespace ConsoleControl {
 			//Invoke((Action)(() => {
 			lastInput = input;
 
+
 			// Write the input.
 			processInterace.WriteInput(input);
 
