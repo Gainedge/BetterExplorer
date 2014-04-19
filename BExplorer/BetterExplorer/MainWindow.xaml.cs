@@ -198,15 +198,15 @@ namespace BetterExplorer {
 					//ctrlConsole.StartProcess("cmd.exe",null);
 
 					//ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
-					ctrlConsole.ClearOutput();
+					//ctrlConsole.ClearOutput();
 				}
 			}
 			else {
 				this.IsConsoleShown = false;
 				rCommandPrompt.Height = new GridLength(0);
 				spCommandPrompt.Height = new GridLength(0);
-				if (ctrlConsole.IsProcessRunning)
-					ctrlConsole.StopProcess();
+				//if (ctrlConsole.IsProcessRunning)
+				ctrlConsole.StopProcess();
 			}
 		}
 
@@ -3205,10 +3205,8 @@ namespace BetterExplorer {
 				foreach (string str in InitialTabs) {
 					try {
 						i++;
-						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}")
-						{
-							if (i == InitialTabs.Length)
-							{
+						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
+							if (i == InitialTabs.Length) {
 								tabControl1.SelectedIndex = InitialTabs.Length - 2;
 								NavigateAfterTabChange();
 							}
