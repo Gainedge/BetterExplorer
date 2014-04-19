@@ -1192,7 +1192,7 @@ namespace BExplorer.Shell
 			{
 				// Update the icon cache
 				SHFILEINFO sfi = new SHFILEINFO();
-				Shell32.SHGetFileInfo(Marshal.StringToHGlobalAuto(wszPath.Replace(@"\\", @"\")), 0, out sfi, (int) Marshal.SizeOf(sfi), SHGFI.ICONLOCATION);
+				var res = Shell32.SHGetFileInfo(Marshal.StringToHGlobalAuto(wszPath), 0, out sfi, (int) Marshal.SizeOf(sfi), SHGFI.ICONLOCATION);
 				int iIconIndex = Shell32.Shell_GetCachedImageIndex(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0);
 				Shell32.SHUpdateImage(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0, iIconIndex);
 				//RefreshExplorer();
@@ -1201,7 +1201,9 @@ namespace BExplorer.Shell
 								(IntPtr) sfi.iIcon);
 			}
 
-			this.RefreshItem(Items.IndexOf(Items.Single(s => s.ParsingName == wszPath)));
+			Items[this.SelectedIndexes[0]] = new ShellItem(wszPath);
+			//this.UpdateItem(this.SelectedIndexes[0]);
+			this.RefreshItem(this.SelectedIndexes[0]);
 			return hr;
 		}
 
@@ -1224,7 +1226,9 @@ namespace BExplorer.Shell
 				Shell32.HChangeNotifyFlags.SHCNF_DWORD | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, IntPtr.Zero,
 								(IntPtr) sfi.iIcon);
 			}
-			this.RefreshItem(Items.IndexOf(Items.Single(s => s.ParsingName == wszPath)));
+			Items[this.SelectedIndexes[0]] = new ShellItem(wszPath);
+			//this.UpdateItem(this.SelectedIndexes[0]);
+			this.RefreshItem(this.SelectedIndexes[0]);
 			return hr;
 		}
 
@@ -1807,7 +1811,7 @@ namespace BExplorer.Shell
 			Navigate(this.CurrentFolder, true);
 		}
 
-		public void RefreshItem(int index)
+		public void RefreshItem(int index, Boolean IsForceRedraw = false)
 		{
 			if (cache.ContainsKey(index))
 			{
@@ -1818,6 +1822,7 @@ namespace BExplorer.Shell
 					bmp = null;
 				}
 			}
+
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
 		}
 
@@ -3009,6 +3014,7 @@ namespace BExplorer.Shell
 												}
 																																					
 												var thumbnail = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
+
 												if (thumbnail != null && IconSize != 16)
 												{
 													if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize) || thumbnail.Width == thumbnail.Height && thumbnail.Width != IconSize))

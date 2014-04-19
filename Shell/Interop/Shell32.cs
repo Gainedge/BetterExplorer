@@ -349,6 +349,7 @@ namespace BExplorer.Shell.Interop
 				public bool fRecursive;
 		}
 
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 		public struct SHFILEINFO
 		{
 				public IntPtr hIcon;
@@ -781,7 +782,7 @@ namespace BExplorer.Shell.Interop
 				[DllImport("shell32.dll", PreserveSig = false)]
 				public static extern IShellFolder SHGetDesktopFolder();
 
-				[DllImport("shell32.dll")]
+				[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 				public static extern IntPtr SHGetFileInfo(IntPtr pszPath,
 						int dwFileAttributes, out SHFILEINFO psfi, int cbFileInfo,
 						SHGFI uFlags);
