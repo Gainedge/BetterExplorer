@@ -96,7 +96,6 @@
     <Compile Include="ShellTreeViewEx.Designer.cs">
       <DependentUpon>ShellTreeViewEx.cs</DependentUpon>
     </Compile>
-    <Compile Include="ShellViewDragDrop.cs" />
     <Compile Include="Icons\FileIcon.cs" />
     <Compile Include="Icons\IconFile.cs" />
     <Compile Include="Icons\IconReader.cs" />

@@ -11,25 +11,7 @@ namespace BExplorer.Shell
   public class VisualHelpers
   {
 
-    private static void DrawOverlay(Graphics g, Rectangle bounds, Pen borderPen, float cornerRadius, Size boundsPadding, Color? fillGradientFrom, Color? fillGradientTo, LinearGradientMode fillGradientMode, bool isDetails)
-    {
-      System.Drawing.Drawing2D.LinearGradientBrush fillBrush = null;
-      if (isDetails)
-      {
-        bounds.Width = bounds.Width - 1;
-        bounds.Height = bounds.Height - 1;
-      }
-      bounds.Inflate(boundsPadding);
-      GraphicsPath path = GetRoundedRect(bounds, cornerRadius);
-      if (fillGradientFrom != null && fillGradientTo != null)
-      {
-        fillBrush = new System.Drawing.Drawing2D.LinearGradientBrush(bounds, fillGradientFrom.Value, fillGradientTo.Value, fillGradientMode);
-      }
-      if (fillBrush != null)
-        g.FillPath(fillBrush, path);
-      if (borderPen != null)
-        g.DrawPath(borderPen, path);
-    }
+    #region Private Methods
 
     protected static GraphicsPath GetRoundedRect(RectangleF rect, float diameter)
     {
@@ -54,16 +36,38 @@ namespace BExplorer.Shell
 
       return path;
     }
-
-    public static void DrawHot(Graphics g, Rectangle bounds, Size padding, bool isDetails)
+    private static void DrawOverlay(Graphics g, Rectangle bounds, Pen borderPen, float cornerRadius, Size boundsPadding, Color? fillGradientFrom, Color? fillGradientTo, LinearGradientMode fillGradientMode, bool isDetails)
     {
-      DrawOverlay(g, bounds, new Pen(Color.FromArgb(154, 223, 251)), isDetails ? 2.0f : 6.0f, padding, Color.FromArgb(0, 255, 255, 255), Color.FromArgb(64, 183, 237, 240), LinearGradientMode.ForwardDiagonal, isDetails);
+      System.Drawing.Drawing2D.LinearGradientBrush fillBrush = null;
+      if (isDetails)
+      {
+        bounds.Width = bounds.Width - 1;
+        bounds.Height = bounds.Height - 1;
+      }
+      bounds.Inflate(boundsPadding);
+      GraphicsPath path = GetRoundedRect(bounds, cornerRadius);
+      if (fillGradientFrom != null && fillGradientTo != null)
+      {
+        fillBrush = new System.Drawing.Drawing2D.LinearGradientBrush(bounds, fillGradientFrom.Value, fillGradientTo.Value, fillGradientMode);
+      }
+      if (fillBrush != null)
+        g.FillPath(fillBrush, path);
+      if (borderPen != null)
+        g.DrawPath(borderPen, path);
     }
+    #endregion
+
+    #region Public Methods
 
     public static void DrawSelected(Graphics g, Rectangle bounds, Size padding, bool isDetails)
     {
       DrawOverlay(g, bounds, new Pen(Color.FromArgb(154, 223, 251)), isDetails ? 2.0f : 6.0f, padding, Color.FromArgb(0, 163, 217, 225), Color.FromArgb(0xD6, 0xC1, 0xDC, 0xFC), LinearGradientMode.Vertical, isDetails);
     }
+    public static void DrawHot(Graphics g, Rectangle bounds, Size padding, bool isDetails)
+    {
+      DrawOverlay(g, bounds, new Pen(Color.FromArgb(154, 223, 251)), isDetails ? 2.0f : 6.0f, padding, Color.FromArgb(0, 255, 255, 255), Color.FromArgb(64, 183, 237, 240), LinearGradientMode.ForwardDiagonal, isDetails);
+    }
+    #endregion
 
     
   }

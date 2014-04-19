@@ -84,6 +84,16 @@
 					_ResetTimer.Dispose();
 					_ResetTimer = null;
 				}
+				if (_KeyJumpTimer != null)
+				{
+					_KeyJumpTimer.Dispose();
+					_KeyJumpTimer = null;
+				}
+				if (_kpreselitem != null)
+				{
+					_kpreselitem.Dispose();
+					_kpreselitem = null;
+				}
 			}
 			base.Dispose(disposing);
 		}
