@@ -251,8 +251,8 @@ namespace ConsoleControl {
 			//if (string.IsNullOrEmpty(lastInput) == false && (output == lastInput || output.Replace("\r\n", "") == lastInput))
 			if (!string.IsNullOrEmpty(lastInput) && (output == lastInput || output.Replace("\r\n", "") == lastInput))
 				return;
-			else if (!richTextBoxConsole.Created)
-				return;
+			//else if (!richTextBoxConsole.Created)
+			//	return;
 
 			//richTextBoxConsole.BeginInvoke((Action)(() => {
 			// Write the output.
@@ -277,7 +277,6 @@ namespace ConsoleControl {
 		private void WriteInput(string input, Color color) {
 			//Invoke((Action)(() => {
 			lastInput = input;
-
 
 			// Write the input.
 			processInterace.WriteInput(input);
@@ -454,13 +453,9 @@ namespace ConsoleControl {
 			// Is it the return key?
 			if (e.KeyCode == Keys.Return) {
 				// Get the input.
-				try {
-					string input = richTextBoxConsole.Text.Substring(inputStart, (richTextBoxConsole.SelectionStart) - inputStart);
-					WriteInput(input, Color.White);
-				}
-				catch (ArgumentOutOfRangeException) {
-					//Catch the argument out of range
-				}
+				string input = richTextBoxConsole.Text.Substring(inputStart, richTextBoxConsole.SelectionStart - inputStart);
+				WriteInput(input, Color.White);
+
 			}
 		}
 

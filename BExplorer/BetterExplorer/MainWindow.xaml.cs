@@ -2382,7 +2382,9 @@ namespace BetterExplorer {
 			}
 		}
 
+		[Obsolete("Consider Removing this")]
 		private void OpenCommandPromptHere(string dir) {
+			//TODO:Consider Removing this
 			try {
 				Process p = new Process();
 				p.StartInfo.FileName = "cmd.exe";
@@ -3636,10 +3638,11 @@ namespace BetterExplorer {
 			//var k = ShellListView.ShowCheckboxes;
 			try {
 				int explorerSelectedItemsCount = 0;
+				ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+
 				Task.Run(() => {
 					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() => {
 						SetUpBreadcrumbbarOnNavComplete(e);
-
 					}));
 				});
 
@@ -3659,7 +3662,7 @@ namespace BetterExplorer {
 
 						SetUpButtonVisibilityOnNavComplete(isinLibraries);
 
-						ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+						//ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
 						//SetUpConsoleWindow(e);
 
 						SetupUIOnSelectOrNavigate(ShellListView.GetSelectedCount(), true);
