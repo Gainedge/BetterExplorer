@@ -679,15 +679,10 @@ namespace BExplorer.Shell
 			_ShieldLoadingThread = new Thread(_ShieldLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
 			_ShieldLoadingThread.Start();
 			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
-			//UpdateSubitemValues.SetApartmentState(ApartmentState.STA);
 			_UpdateSubitemValuesThread.Start();
 			m_History = new ShellHistory();
 			_ResetTimer.Interval = 200;
 			_ResetTimer.Tick += resetTimer_Tick;
-
-			//_KeyJumpTimer.Interval = 250;
-			//_KeyJumpTimer.Enabled = false;
-			//_KeyJumpTimer.Tick += _KeyJumpTimer_Tick;
 
 			Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
 
@@ -699,8 +694,6 @@ namespace BExplorer.Shell
 			this.KeyDown += ShellView_KeyDown;
 			this.MouseUp += ShellView_MouseUp;
 			this.GotFocus += ShellView_GotFocus;
-
-			//SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw, true);
 		} 
 		#endregion
 
