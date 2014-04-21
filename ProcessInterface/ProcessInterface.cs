@@ -21,6 +21,199 @@ namespace ProcessInterface {
 	/// </summary>
 	[Obsolete("Moving into ConsoleControl", false)]
 	public class ProcessInterface {
+
+		#region Events
+
+		/// <summary>
+		/// Occurs when process output is produced.
+		/// </summary>
+		public event ProcessEventHanlder OnProcessOutput;
+
+		/// <summary>
+		/// Occurs when process error output is produced.
+		/// </summary>
+		public event ProcessEventHanlder OnProcessError;
+
+		/// <summary>
+		/// Occurs when process input is produced.
+		/// </summary>
+		public event ProcessEventHanlder OnProcessInput;
+
+		/// <summary>
+		/// Occurs when the process ends.
+		/// </summary>
+		public event ProcessEventHanlder OnProcessExit;
+
+		#endregion
+
+		#region Properties
+
+		/*
+		/// <summary>
+		/// The current process.
+		/// </summary>
+		private Process process;
+
+		/// <summary>
+		/// Current process file name.
+		/// </summary>
+		private string processFileName;
+
+		/// <summary>
+		/// Arguments sent to the current process.
+		/// </summary>
+		private string processArguments;
+		*/
+
+
+		/// <summary>
+		/// The input writer.
+		/// </summary>
+		private StreamWriter inputWriter;
+
+		/// <summary>
+		/// The output reader.
+		/// </summary>
+		private TextReader outputReader;
+
+		/// <summary>
+		/// The error reader.
+		/// </summary>
+		private TextReader errorReader;
+
+		/// <summary>
+		/// The output worker.
+		/// </summary>
+		private BackgroundWorker outputWorker = new BackgroundWorker();
+
+		/// <summary>
+		/// The error worker.
+		/// </summary>
+		private BackgroundWorker errorWorker = new BackgroundWorker();
+
+
+
+		/// <summary>
+		/// Gets the internal process.
+		/// </summary>
+		public Process Process { get; private set; }
+
+		/// <summary>
+		/// Gets the name of the process.
+		/// </summary>
+		/// <value>
+		/// The name of the process.
+		/// </value>
+		public string ProcessFileName { get; private set; }
+
+		/// <summary>
+		/// Gets the process arguments.
+		/// </summary>
+		public string ProcessArguments { get; private set; }
+
+
+		/// <summary>
+		/// Gets a value indicating whether this instance is process running.
+		/// </summary>
+		/// <value>
+		/// 	<c>true</c> if this instance is process running; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsProcessRunning {
+			get {
+				//TODO: try removing this [Try Catch]
+				try {
+					//return (Process != null && Process.HasExited == false);
+					return Process != null && !Process.HasExited;
+				}
+				catch {
+					return false;
+				}
+			}
+		}
+
+		#endregion
+
+
+		#region Public Methods
+
+		/// <summary>
+		/// Runs a process.
+		/// </summary>
+		/// <param name="fileName">Name of the file.</param>
+		/// <param name="arguments">The arguments.</param>
+		public void StartProcess(string fileName, string arguments) {
+			//  Create the process start info.
+			var processStartInfo = new ProcessStartInfo(fileName, arguments);
+
+			//  Set the options.
+			processStartInfo.UseShellExecute = false;
+			processStartInfo.ErrorDialog = false;
+			processStartInfo.CreateNoWindow = true;
+
+			//  Specify redirection.
+			processStartInfo.RedirectStandardError = true;
+			processStartInfo.RedirectStandardInput = true;
+			processStartInfo.RedirectStandardOutput = true;
+
+			//  Create the process.
+			Process = new Process();
+			Process.EnableRaisingEvents = true;
+			Process.StartInfo = processStartInfo;
+			Process.Exited += new EventHandler(currentProcess_Exited);
+
+			//  Start the process.
+			try {
+				bool processStarted = Process.Start();
+			}
+			catch (Exception e) {
+				//  Trace the exception.
+				Trace.WriteLine("Failed to start process " + fileName + " with arguments '" + arguments + "'");
+				Trace.WriteLine(e.ToString());
+				return;
+			}
+
+			//  Store name and arguments.
+			ProcessFileName = fileName;
+			ProcessArguments = arguments;
+
+			//  Create the readers and writers.
+			inputWriter = Process.StandardInput;
+			outputReader = TextReader.Synchronized(Process.StandardOutput);
+			errorReader = TextReader.Synchronized(Process.StandardError);
+
+			//  Run the workers that read output and error.
+			outputWorker.RunWorkerAsync();
+			errorWorker.RunWorkerAsync();
+		}
+
+		/// <summary>
+		/// Stops the process.
+		/// </summary>
+		public void StopProcess() {
+			//  Handle the trivial case.
+			if (!IsProcessRunning)
+				return;
+
+			//  Kill the process.
+			Process.Kill();
+		}
+
+
+		/// <summary>
+		/// Writes the input.
+		/// </summary>
+		/// <param name="input">The input.</param>
+		public void WriteInput(string input) {
+			if (IsProcessRunning) {
+				inputWriter.WriteLine(input);
+				inputWriter.Flush();
+			}
+		}
+
+
+		#endregion
+
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProcessInterface"/> class.
 		/// </summary>
@@ -107,75 +300,13 @@ namespace ProcessInterface {
 		}
 
 		/// <summary>
-		/// Runs a process.
-		/// </summary>
-		/// <param name="fileName">Name of the file.</param>
-		/// <param name="arguments">The arguments.</param>
-		public void StartProcess(string fileName, string arguments) {
-			//  Create the process start info.
-			var processStartInfo = new ProcessStartInfo(fileName, arguments);
-
-			//  Set the options.
-			processStartInfo.UseShellExecute = false;
-			processStartInfo.ErrorDialog = false;
-			processStartInfo.CreateNoWindow = true;
-
-			//  Specify redirection.
-			processStartInfo.RedirectStandardError = true;
-			processStartInfo.RedirectStandardInput = true;
-			processStartInfo.RedirectStandardOutput = true;
-
-			//  Create the process.
-			process = new Process();
-			process.EnableRaisingEvents = true;
-			process.StartInfo = processStartInfo;
-			process.Exited += new EventHandler(currentProcess_Exited);
-
-			//  Start the process.
-			try {
-				bool processStarted = process.Start();
-			}
-			catch (Exception e) {
-				//  Trace the exception.
-				Trace.WriteLine("Failed to start process " + fileName + " with arguments '" + arguments + "'");
-				Trace.WriteLine(e.ToString());
-				return;
-			}
-
-			//  Store name and arguments.
-			processFileName = fileName;
-			processArguments = arguments;
-
-			//  Create the readers and writers.
-			inputWriter = process.StandardInput;
-			outputReader = TextReader.Synchronized(process.StandardOutput);
-			errorReader = TextReader.Synchronized(process.StandardError);
-
-			//  Run the workers that read output and error.
-			outputWorker.RunWorkerAsync();
-			errorWorker.RunWorkerAsync();
-		}
-
-		/// <summary>
-		/// Stops the process.
-		/// </summary>
-		public void StopProcess() {
-			//  Handle the trivial case.
-			if (IsProcessRunning == false)
-				return;
-
-			//  Kill the process.
-			process.Kill();
-		}
-
-		/// <summary>
 		/// Handles the Exited event of the currentProcess control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
 		void currentProcess_Exited(object sender, EventArgs e) {
 			//  Fire process exited.
-			FireProcessExitEvent(process.ExitCode);
+			FireProcessExitEvent(Process.ExitCode);
 
 			//  Disable the threads.
 			outputWorker.CancelAsync();
@@ -183,9 +314,9 @@ namespace ProcessInterface {
 			inputWriter = null;
 			outputReader = null;
 			errorReader = null;
-			process = null;
-			processFileName = null;
-			processArguments = null;
+			Process = null;
+			ProcessFileName = null;
+			ProcessArguments = null;
 		}
 
 		/// <summary>
@@ -232,116 +363,5 @@ namespace ProcessInterface {
 				theEvent(this, new ProcessEventArgs(code));
 		}
 
-		/// <summary>
-		/// Writes the input.
-		/// </summary>
-		/// <param name="input">The input.</param>
-		public void WriteInput(string input) {
-			if (IsProcessRunning) {
-				inputWriter.WriteLine(input);
-				inputWriter.Flush();
-			}
-		}
-
-		/// <summary>
-		/// The current process.
-		/// </summary>
-		private Process process;
-
-		/// <summary>
-		/// The input writer.
-		/// </summary>
-		private StreamWriter inputWriter;
-
-		/// <summary>
-		/// The output reader.
-		/// </summary>
-		private TextReader outputReader;
-
-		/// <summary>
-		/// The error reader.
-		/// </summary>
-		private TextReader errorReader;
-
-		/// <summary>
-		/// The output worker.
-		/// </summary>
-		private BackgroundWorker outputWorker = new BackgroundWorker();
-
-		/// <summary>
-		/// The error worker.
-		/// </summary>
-		private BackgroundWorker errorWorker = new BackgroundWorker();
-
-		/// <summary>
-		/// Current process file name.
-		/// </summary>
-		private string processFileName;
-
-		/// <summary>
-		/// Arguments sent to the current process.
-		/// </summary>
-		private string processArguments;
-
-		/// <summary>
-		/// Occurs when process output is produced.
-		/// </summary>
-		public event ProcessEventHanlder OnProcessOutput;
-
-		/// <summary>
-		/// Occurs when process error output is produced.
-		/// </summary>
-		public event ProcessEventHanlder OnProcessError;
-
-		/// <summary>
-		/// Occurs when process input is produced.
-		/// </summary>
-		public event ProcessEventHanlder OnProcessInput;
-
-		/// <summary>
-		/// Occurs when the process ends.
-		/// </summary>
-		public event ProcessEventHanlder OnProcessExit;
-
-		/// <summary>
-		/// Gets a value indicating whether this instance is process running.
-		/// </summary>
-		/// <value>
-		/// 	<c>true</c> if this instance is process running; otherwise, <c>false</c>.
-		/// </value>
-		public bool IsProcessRunning {
-			get {
-				try {
-					return (process != null && process.HasExited == false);
-				}
-				catch {
-					return false;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets the internal process.
-		/// </summary>
-		public Process Process {
-			get { return process; }
-		}
-
-		/// <summary>
-		/// Gets the name of the process.
-		/// </summary>
-		/// <value>
-		/// The name of the process.
-		/// </value>
-		public string ProcessFileName {
-			get { return processFileName; }
-		}
-
-		/// <summary>
-		/// Gets the process arguments.
-		/// </summary>
-		public string ProcessArguments {
-			get { return processArguments; }
-		}
 	}
 }

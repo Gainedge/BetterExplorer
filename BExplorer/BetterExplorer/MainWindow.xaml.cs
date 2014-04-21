@@ -198,15 +198,15 @@ namespace BetterExplorer {
 					//ctrlConsole.StartProcess("cmd.exe",null);
 
 					//ctrlConsole.InternalRichTextBox.TextChanged += new EventHandler(InternalRichTextBox_TextChanged);
-					ctrlConsole.ClearOutput();
+					//ctrlConsole.ClearOutput();
 				}
 			}
 			else {
 				this.IsConsoleShown = false;
 				rCommandPrompt.Height = new GridLength(0);
 				spCommandPrompt.Height = new GridLength(0);
-				if (ctrlConsole.IsProcessRunning)
-					ctrlConsole.StopProcess();
+				//if (ctrlConsole.IsProcessRunning)
+				ctrlConsole.StopProcess();
 			}
 		}
 
@@ -2382,7 +2382,9 @@ namespace BetterExplorer {
 			}
 		}
 
+		[Obsolete("Consider Removing this")]
 		private void OpenCommandPromptHere(string dir) {
+			//TODO:Consider Removing this
 			try {
 				Process p = new Process();
 				p.StartInfo.FileName = "cmd.exe";
@@ -3205,10 +3207,8 @@ namespace BetterExplorer {
 				foreach (string str in InitialTabs) {
 					try {
 						i++;
-						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}")
-						{
-							if (i == InitialTabs.Length)
-							{
+						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
+							if (i == InitialTabs.Length) {
 								tabControl1.SelectedIndex = InitialTabs.Length - 2;
 								NavigateAfterTabChange();
 							}
@@ -3638,10 +3638,11 @@ namespace BetterExplorer {
 			//var k = ShellListView.ShowCheckboxes;
 			try {
 				int explorerSelectedItemsCount = 0;
+				ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+
 				Task.Run(() => {
 					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() => {
 						SetUpBreadcrumbbarOnNavComplete(e);
-
 					}));
 				});
 
@@ -3661,7 +3662,7 @@ namespace BetterExplorer {
 
 						SetUpButtonVisibilityOnNavComplete(isinLibraries);
 
-						ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+						//ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
 						//SetUpConsoleWindow(e);
 
 						SetupUIOnSelectOrNavigate(ShellListView.GetSelectedCount(), true);

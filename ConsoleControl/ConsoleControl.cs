@@ -19,6 +19,7 @@ namespace ConsoleControl {
 	/// <summary> The Console Control allows you to embed a basic console in your application. </summary>
 	[ToolboxBitmap(typeof(resfinder), "ConsoleControl.ConsoleControl.bmp")]
 	public partial class ConsoleControl : UserControl {
+		//finish
 
 		#region Properties
 
@@ -106,21 +107,13 @@ namespace ConsoleControl {
 
 		#region Control Events
 
-		private void contextMenuStrip1_Opening(object sender, CancelEventArgs e) {
-			//contextMenuStrip1.Show(Cursor.Position);
-			//btnCopy.Visible = richTextBoxConsole.SelectedText != "";
-			//btnPaste.Visible = richTextBoxConsole.SelectedText != "";
-		}
-
-		private void contextMenuStrip1_Opened(object sender, EventArgs e) {
-		}
-
 		private void btnPaste_Click(object sender, EventArgs e) {
+			MessageBox.Show("this is not correct as it does not write to the stream...I think O.o!");
 			this.richTextBoxConsole.AppendText(System.Windows.Forms.Clipboard.GetText());
 		}
 
 		private void btnCopy_Click(object sender, EventArgs e) {
-			System.Windows.Forms.Clipboard.SetText(richTextBoxConsole.Text);
+			System.Windows.Forms.Clipboard.SetText(richTextBoxConsole.SelectedText);
 		}
 
 		private void btnClear_Click(object sender, EventArgs e) {
@@ -167,7 +160,6 @@ namespace ConsoleControl {
 		}
 
 		/// <summary> Stops the process. </summary>
-		[Obsolete("Will become private soon", false)]
 		public void StopProcess() {
 			// Stop the interface.
 			processInterace.StopProcess();
@@ -247,8 +239,7 @@ namespace ConsoleControl {
 
 		#region Writing
 
-		[Obsolete("Will become private soon", false)]
-		public void ClearOutput() {
+		private void ClearOutput() {
 			richTextBoxConsole.Clear();
 			inputStart = 0;
 		}
@@ -257,17 +248,18 @@ namespace ConsoleControl {
 		/// <param name="output"> The output. </param>
 		/// <param name="color">  The color. </param>
 		private void WriteOutput(string output, Color color) {
-			if (string.IsNullOrEmpty(lastInput) == false && (output == lastInput || output.Replace("\r\n", "") == lastInput))
+			//if (string.IsNullOrEmpty(lastInput) == false && (output == lastInput || output.Replace("\r\n", "") == lastInput))
+			if (!string.IsNullOrEmpty(lastInput) && (output == lastInput || output.Replace("\r\n", "") == lastInput))
 				return;
-			else if (!richTextBoxConsole.Created)
-				return;
+			//else if (!richTextBoxConsole.Created)
+			//	return;
 
-			richTextBoxConsole.BeginInvoke((Action)(() => {
-				// Write the output.
-				richTextBoxConsole.SelectionColor = color;
-				richTextBoxConsole.SelectedText += output;
-				inputStart = richTextBoxConsole.SelectionStart;
-			}));
+			//richTextBoxConsole.BeginInvoke((Action)(() => {
+			// Write the output.
+			richTextBoxConsole.SelectionColor = color;
+			richTextBoxConsole.SelectedText += output;
+			inputStart = richTextBoxConsole.SelectionStart;
+			//}));
 
 			/*
 			//Invoke((Action)(() => {
@@ -281,26 +273,17 @@ namespace ConsoleControl {
 
 		/// <summary> Writes the input to the console control. </summary>
 		/// <param name="input"> The input. </param>
-		/// <param name="color"> The color. </param>
-		/// <param name="echo">  if set to <c>true</c> echo the input. </param>
-		[Obsolete("Will become private soon", false)]
-		private void WriteInput(string input, Color color, bool echo) {
-			Invoke((Action)(() => {
-				// Are we echoing?
-				if (echo) {
-					richTextBoxConsole.SelectionColor = color;
-					richTextBoxConsole.SelectedText += input;
-					inputStart = richTextBoxConsole.SelectionStart;
-				}
+		/// <param name="color"> The color. </param>		
+		private void WriteInput(string input, Color color) {
+			//Invoke((Action)(() => {
+			lastInput = input;
 
-				lastInput = input;
+			// Write the input.
+			processInterace.WriteInput(input);
 
-				// Write the input.
-				processInterace.WriteInput(input);
-
-				// Fire the event.
-				FireConsoleInputEvent(input);
-			}));
+			// Fire the event.
+			FireConsoleInputEvent(input);
+			//}));
 		}
 
 		public void ChangeFolder(string Folder, bool IsFileSystem) {
@@ -309,18 +292,18 @@ namespace ConsoleControl {
 			richTextBoxConsole.ReadOnly = false;
 			ClearOutput();
 
-			if (!IsProcessRunning) {
+			if (!IsProcessRunning)
 				processInterace.StartProcess("cmd.exe", null);
-			}
 
-			if (IsFileSystem) {
+			if (IsFileSystem)
 				Value = String.Format("cd \"{0}\"", Folder);
-			}
+
 
 			//ctrlConsole.InternalRichTextBox.Lines.Last().Substring(0, ctrlConsole.InternalRichTextBox.Lines.Last().IndexOf(Char.Parse(@"\")) + 1) != Path.GetPathRoot(Folder)
 
 			//TODO: Try to reduce the amount of logic here
 			if (this.richTextBoxConsole.Text != "") {
+				//TODO: Figure out if [this.richTextBoxConsole.Text != ""] will ever be [True] 
 				var Path = System.IO.Path.GetPathRoot(Folder);
 				var LastLine = richTextBoxConsole.Lines.Last();
 				var Question = LastLine.Substring(0, LastLine.IndexOf(Char.Parse(@"\")) + 1);
@@ -330,13 +313,13 @@ namespace ConsoleControl {
 				}
 			}
 
-			WriteInput(Value, Color.Wheat, false);
+			WriteInput(Value, Color.Wheat);
 
 			/*
 			return;
 
 			//ClearOutput();
-			lastInput = Value;
+			lastInput_ = Value;
 
 			// Write the input.
 			processInterace.WriteInput(Value);
@@ -359,8 +342,8 @@ namespace ConsoleControl {
 						  ControlStyles.ResizeRedraw |
 						  ControlStyles.ContainerControl |
 						  ControlStyles.OptimizedDoubleBuffer |
-						  ControlStyles.SupportsTransparentBackColor
-						  , true);
+						  ControlStyles.SupportsTransparentBackColor,
+						  true);
 
 			// Show diagnostics disabled by default.
 			ShowDiagnostics = false;
@@ -371,7 +354,7 @@ namespace ConsoleControl {
 			// Disable special commands by default.
 			SendKeyboardCommandsToProcess = false;
 
-			// Initialise the keymappings.
+			// Initialize the keymappings.
 			InitialiseKeyMappings();
 
 			// Handle process events.
@@ -422,14 +405,16 @@ namespace ConsoleControl {
 				// Get key mappings for this key event?
 				var mappings = from k in keyMappings
 							   where
-							   (k.KeyCode == e.KeyCode &&
+							   k.KeyCode == e.KeyCode &&
 							   k.IsAltPressed == e.Alt &&
 							   k.IsControlPressed == e.Control &&
-							   k.IsShiftPressed == e.Shift)
+							   k.IsShiftPressed == e.Shift
 							   select k;
 
+
+
 				// Go through each mapping, send the message.
-				foreach (var mapping in mappings) {
+				foreach (var mapping in mappings) { //TODO: Find out if we need this [For Each]
 					//SendKeysEx.SendKeys(CurrentProcessHwnd, mapping.SendKeysMapping);
 					//inputWriter.WriteLine(mapping.StreamMapping);
 					//WriteInput("\x3", Color.White, false);
@@ -468,16 +453,9 @@ namespace ConsoleControl {
 			// Is it the return key?
 			if (e.KeyCode == Keys.Return) {
 				// Get the input.
-				try {
-					string input = richTextBoxConsole.Text.Substring(inputStart,
-																	 (richTextBoxConsole.SelectionStart) - inputStart);
+				string input = richTextBoxConsole.Text.Substring(inputStart, richTextBoxConsole.SelectionStart - inputStart);
+				WriteInput(input, Color.White);
 
-					// Write the input (without echoing).
-					WriteInput(input, Color.White, false);
-				}
-				catch (ArgumentOutOfRangeException) {
-					//Catch the argument out of range
-				}
 			}
 		}
 
