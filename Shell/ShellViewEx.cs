@@ -711,36 +711,6 @@ namespace BExplorer.Shell
 			}
 		}
 
-		void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-			var destination = e.Result as ShellItem;
-			//this.Items = destination.OrderByDescending(o => o.IsFolder).ToArray();
-			////this.Items = destination.OrderByDescending(o => o.IsFolder).ToArray();
-
-			//this.Cancel = false;
-			//this.LastSortedColumnIndex = 0;
-			//this.LastSortOrder = SortOrder.Ascending;
-			//this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
-			//this.m_CurrentFolder = destination;
-			//try
-			//{
-			//	m_History.Add(destination);
-			//}
-			//catch { }
-
-			//this.OnNavigated(new NavigatedEventArgs(destination));
-			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Length, 0);
-		}
-
-		void bw_DoWork(object sender, DoWorkEventArgs e)
-		{
-			var dest = e.Argument as ShellItem;
-			var array = dest.OrderByDescending(o => o.IsFolder).ToArray();
-			array = null;
-			GC.Collect();
-			e.Result = dest;
-		}
-
 		void _KeyJumpTimer_Tick(object sender, EventArgs e)
 		{
 			if (KeyJumpTimerDone != null)
