@@ -710,30 +710,6 @@ namespace BExplorer.Shell
 				(sender as System.Windows.Forms.Timer).Stop();
 			}
 		}
-		void pc_UpdateProgress(object sender, ProgressArgs<ShellItem> e)
-		{
-				System.Windows.Forms.Application.DoEvents();
-				this.Invoke(new MethodInvoker(() =>
-				{
-					this.Items.Add(new ShellItem(e.Item.Pidl));
-				}));
-
-					CurrentI++;
-					if (CurrentI - LastI >= (e.Item.Parent.IsSearchFolder ? 5 : 2500) && e.Item.Parent.IsSearchFolder)
-					{
-						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-						//Thread.Sleep(e.Item.Parent.IsSearchFolder? 5: 1);
-						
-						//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-						LastI = CurrentI;
-						//GC.WaitForPendingFinalizers();
-						//GC.Collect();
-						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-					}
-				
-				//Thread.Sleep(1);
-			//var aaa = e.Item;
-		}
 
 		void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
