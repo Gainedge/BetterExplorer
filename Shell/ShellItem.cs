@@ -332,7 +332,8 @@ namespace BExplorer.Shell {
 		}
 
 		public IExtractIconpwFlags GetIconType() {
-
+			if (this.ParsingName.ToLowerInvariant().EndsWith(".lnk"))
+				return IExtractIconpwFlags.GIL_PERINSTANCE | IExtractIconpwFlags.GIL_FORCENOSHIELD;
 			IExtractIcon iextract = null;
 			IShellFolder ishellfolder = null;
 			StringBuilder str = null;
@@ -371,7 +372,6 @@ namespace BExplorer.Shell {
 				ishellfolder = null;
 				iextract = null;
 				str = null;
-				//Shell32.ILFree(pidls[0]);
 				return flags;
 			}
 			catch (Exception) {
