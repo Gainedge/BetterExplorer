@@ -65,9 +65,7 @@ namespace BetterExplorer {
 
 			f.percsetting = false;
 
-			var test = f.ShowDialog();
-
-
+			f.ShowDialog();
 
 
 			if (f.Confirm) {
@@ -135,11 +133,19 @@ namespace BetterExplorer {
 			this.Close();
 		}
 
-		private void textBox1_TextChanged(object sender, TextChangedEventArgs e) {
-			if (textBox1 == null || textBox2 == null || percsetting == true) {
+		private void TextBoxes_Edited(object sender, TextChangedEventArgs e) {
+			if (textBox1 == null || textBox2 == null || percsetting) {
 				return;
 			}
-
+			else if (!int.TryParse(textBox1.Text, out newwidth)) {
+				System.Windows.Forms.MessageBox.Show("Width cannot be less than 1");
+				textBox1.Text = "1";
+			}
+			else if (!int.TryParse(textBox2.Text, out newheight)) {
+				System.Windows.Forms.MessageBox.Show("Height cannot be less than 1");
+				textBox2.Text = "1";
+			}
+			/*
 			try {
 				newwidth = Convert.ToInt32(textBox1.Text);
 				if (newwidth < 1) {
@@ -159,6 +165,7 @@ namespace BetterExplorer {
 			catch {
 				textBox2.Text = "1";
 			}
+			*/
 		}
 
 		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
