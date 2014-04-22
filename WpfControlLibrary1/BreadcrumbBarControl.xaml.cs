@@ -295,7 +295,6 @@ namespace BetterExplorerControls {
 				if (!IsInEditMode)
 					EnterEditMode();
 				Needfilter = false;
-
 			}
 		}
 
@@ -333,7 +332,6 @@ namespace BetterExplorerControls {
 				foreach (var item in correctItems) {
 					ShellItem realItem = (ShellItem)item;
 					HistoryCombo.Text = obj.ParsingName.Replace(realItem.ParsingName, realItem.GetDisplayName(SIGDN.NORMALDISPLAY)).Replace(".library-ms", "");
-
 				}
 			}
 			else {

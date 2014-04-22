@@ -6304,22 +6304,12 @@ namespace BetterExplorer {
 		private void ToggleButton_Click_1(object sender, RoutedEventArgs e) {
 			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("ext", edtSearchBox.ExtensionCondition, FindResource("btnExtCP") as string);
 			dat.ShowDialog();
-			if (dat.Confirm == true) {
+			if (dat.Confirm) {
 				edtSearchBox.ExtensionCondition = "ext:" + dat.textBox1.Text;
-				if (dat.textBox1.Text.Length > 0) {
-					ExtToggle.IsChecked = true;
-				}
-				else {
-					ExtToggle.IsChecked = false;
-				}
+				ExtToggle.IsChecked = dat.textBox1.Text.Length > 0;
 			}
 			else {
-				if (GetValueOnly("ext", edtSearchBox.ExtensionCondition).Length > 0) {
-					ExtToggle.IsChecked = true;
-				}
-				else {
-					ExtToggle.IsChecked = false;
-				}
+				ExtToggle.IsChecked = GetValueOnly("ext", edtSearchBox.ExtensionCondition).Length > 0;
 			}
 		}
 
