@@ -19,7 +19,18 @@ namespace ConsoleControl {
 	/// <summary> The Console Control allows you to embed a basic console in your application. </summary>
 	[ToolboxBitmap(typeof(resfinder), "ConsoleControl.ConsoleControl.bmp")]
 	public partial class ConsoleControl : UserControl {
+		/*
+		 * Fix: fix the console not working with different root directories
+		 * [C:\] is okay but [D:\] will not work
+		 * There should be some code already for this
+		 * 
+		 * Fix the Info Panel
+		 * Fix the Preview Panel
+		 */
+
 		//finish
+
+
 
 		#region Properties
 
