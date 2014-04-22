@@ -25,5 +25,6 @@
         <TextBlock HorizontalAlignment="Left" Margin="22,136,0,0" Name="textBlock6" Text="Or set specific size:" VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="163,93,0,0" Name="textBlock7" Text="%" VerticalAlignment="Top" />
         <Rectangle Height="1" HorizontalAlignment="Left" Margin="17,81,0,0" Name="rectangle1" Stroke="Black" VerticalAlignment="Top" Width="211" />
-    </Grid>
+		<CheckBox Content="Maintain aspect ratio" HorizontalAlignment="Left" Margin="22,114,0,0" VerticalAlignment="Top" IsChecked="True"/>
+	</Grid>
 </Window>

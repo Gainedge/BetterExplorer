@@ -5301,9 +5301,14 @@ namespace BetterExplorer {
 		}
 
 		private void btnResize_Click(object sender, RoutedEventArgs e) {
+			ResizeImage.Open(ShellListView.SelectedItems[0]);
+
+			/*
 			ResizeImage ri = new ResizeImage(ShellListView.SelectedItems[0]);
 			ri.ShowDialog();
-			if (ri.Confirm == true) {
+
+
+			if (ri.Confirm) {
 				System.Drawing.Bitmap cvt = new Bitmap(ShellListView.SelectedItems[0].ParsingName);
 				System.Drawing.Bitmap cst = ChangeImageSize(cvt, ri.newwidth, ri.newheight);
 
@@ -5313,15 +5318,17 @@ namespace BetterExplorer {
 				cvt.Dispose();
 				cst.Dispose();
 			}
+			*/
 		}
 
+		/*
 		private Bitmap ChangeImageSize(Bitmap img, int width, int height) {
 			Bitmap bm_dest = new Bitmap(width, height);
 			Graphics gr_dest = Graphics.FromImage(bm_dest);
 			gr_dest.DrawImage(img, 0, 0, bm_dest.Width + 1, bm_dest.Height + 1);
 			return bm_dest;
 		}
-
+		*/
 		#endregion
 
 		#region Folder Tools Commands

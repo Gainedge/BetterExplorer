@@ -66,9 +66,9 @@ namespace BetterExplorerControls {
 
 		void g_Click(object sender, RoutedEventArgs e) {
 			HistoryCombo.Text = (string)(sender as MenuItem).Header;
-      PathEventArgs args = new PathEventArgs(new ShellItem(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text.ToShellParsingName()));
-      OnNavigateRequested(args);
-      ExitEditMode();
+			PathEventArgs args = new PathEventArgs(new ShellItem(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text.ToShellParsingName()));
+			OnNavigateRequested(args);
+			ExitEditMode();
 		}
 
 		private BreadcrumbBarItem furthestrightitem;
@@ -365,8 +365,7 @@ namespace BetterExplorerControls {
 				}
 			}
 		}
-    private void HistoryCombo_KeyUp(object sender, KeyEventArgs e)
-		{
+		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e) {
 			e.Handled = true;
 			IsEcsPressed = false;
 			if (e.Key == Key.Enter) {
