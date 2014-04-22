@@ -1,634 +1,420 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace BetterExplorerControls
-{
-    /// <summary>
-    /// Interaction logic for SearchBox.xaml
-    /// </summary>
-    public partial class SearchBox : UserControl
-    {
-        public SearchBox()
-        {
-            InitializeComponent();
-            ShowFilterMenu();
-        }
+namespace BetterExplorerControls {
 
-        private string _CurrentPathName;
-        public static readonly RoutedEvent BeginSearchEvent = EventManager.RegisterRoutedEvent(
-        "BeginSearch", RoutingStrategy.Direct, typeof(SearchEventHandler), typeof(SearchBox));
+	/// <summary> Interaction logic for SearchBox.xaml </summary>
+	public partial class SearchBox : UserControl {
 
-        // Provide CLR accessors for the event
+		#region Events
 
-        public delegate void SearchEventHandler(object sender, SearchRoutedEventArgs e);
+		public event SearchEventHandler BeginSearch {
+			add { AddHandler(BeginSearchEvent, value); }
+			remove { RemoveHandler(BeginSearchEvent, value); }
+		}
 
-        public event SearchEventHandler BeginSearch
-        {
-            add { AddHandler(BeginSearchEvent, value); }
-            remove { RemoveHandler(BeginSearchEvent, value); }
-        }
+		/// <summary>
+		/// An event that clients can use to be notified whenever the elements of the list change:
+		/// </summary>
+		public event SearchEventHandler RequestCriteriaChange;
 
-        // This method raises the Tap event
-        void RaiseBeginSearchEvent()
-        {
-            SearchRoutedEventArgs newEventArgs = new SearchRoutedEventArgs(CompileTerms(), SearchBox.BeginSearchEvent);
-            RaiseEvent(newEventArgs);
-        }
+		public delegate void SearchEventHandler(object sender, SearchRoutedEventArgs e);
 
-        // An event that clients can use to be notified whenever the
-        // elements of the list change:
-        public event SearchEventHandler RequestCriteriaChange;
+		// An event that clients can use to be notified whenever the elements of the list change:
+		public event EventHandler FiltersCleared;
 
-        // Invoke the Changed event; called whenever list changes:
-        protected virtual void OnCriteriaChangeRequested(SearchRoutedEventArgs e)
-        {
-            if (RequestCriteriaChange != null)
-                RequestCriteriaChange(this, e);
-        }
+		#endregion Events
 
-        // An event that clients can use to be notified whenever the
-        // elements of the list change:
-        public event EventHandler FiltersCleared;
+		#region Properties
 
-        // Invoke the Changed event; called whenever list changes:
-        protected virtual void OnFiltersCleared(EventArgs e)
-        {
-            if (FiltersCleared != null)
-                FiltersCleared(this, e);
-        }
+		private string _CurrentPathName;
+		public string FullSearchTerms { get { return CompileTerms(); } }
+		public bool FiltersMenuShown { get { return this.SFilters.Visibility == System.Windows.Visibility.Visible; } }
+		public string TextBoxSearchTerms { get { return SearchCriteriatext.Text; } }
+		public string ClearFiltersTitle { get; set; }
+		public bool AutomaticallySetUseValues { get; set; }
+
+		public static readonly RoutedEvent BeginSearchEvent =
+			EventManager.RegisterRoutedEvent("BeginSearch", RoutingStrategy.Direct, typeof(SearchEventHandler), typeof(SearchBox));
+
+		// Provide CLR accessors for the event <- What was this comment for?
+
+		public string CurrentPathName {
+			get { return _CurrentPathName; }
+			set {
+				_CurrentPathName = value;
+				lblDefault.Text = "Search " + value;
+			}
+		}
 
 
-        public string CurrentPathName
-        {
-            get { return _CurrentPathName; }
-            set
-            {
-                _CurrentPathName = value;
-                lblDefault.Text = "Search " + value;
-            }
-        }
-        
 
-        public string FullSearchTerms
-        {
-            get
-            {
-                return CompileTerms();
-            }
-        }
+		public string KindCondition { get; set; }
 
-        private string CompileTerms()
-        {
-            string full = "";
+		private string esc = "ext:";
+		private bool useesc = false;
 
-            full += TextBoxSearchTerms;
-            if (ksc != ":null:")
-            {
-                full += " " + KindCondition;
-            }
-            if (useesc == true)
-            {
-                full += " " + esc;
-            }
-            if (usessc == true)
-            {
-                full += " " + ssc;
-            }
-            if (useasc == true)
-            {
-                full += " " + asc;
-            }
-            if (usedsc == true)
-            {
-                full += " " + dsc;
-            }
-            if (usemsc == true)
-            {
-                full += " " + msc;
-            }
-            if (useusc == true)
-            {
-                full += " " + usc;
-            }
+		public string ExtensionCondition {
+			get { return esc; }
+			set {
+				esc = value;
+				if (AutomaticallySetUseValues) {
+					useesc = esc.Length > 4;
+					ShowFilterMenu();
+				}
+			}
+		}
 
-            return full;
-        }
+		public bool UseExtensionCondition {
+			get { return useesc; }
+			set {
+				useesc = value;
+				ShowFilterMenu();
+			}
+		}
 
-        public bool FiltersMenuShown
-        {
-            get
-            {
-                if (this.SFilters.Visibility == System.Windows.Visibility.Visible)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
+		private string ssc = "size:";
+		private bool usessc = false;
 
-        private string cfs = "Clear All Filters";
+		public string SizeCondition {
+			get { return ssc; }
+			set {
+				ssc = value;
+				if (AutomaticallySetUseValues) {
+					usessc = ssc.Length > 5;
+					ShowFilterMenu();
+				}
+			}
+		}
 
-        public string ClearFiltersTitle
-        {
-            get
-            {
-                return cfs;
-            }
-            set
-            {
-                cfs = value;
-            }
-        }
+		public bool UseSizeCondition {
+			get { return usessc; }
+			set {
+				usessc = value;
+				ShowFilterMenu();
+			}
+		}
 
-        public void SetUpFiltersMenu()
-        {
-            SFilters.Items.Clear();
+		private string asc = "author:";
+		private bool useasc = false;
 
-            Fluent.MenuItem cfd = new Fluent.MenuItem();
-            cfd.Header = cfs;
-            cfd.Click += new RoutedEventHandler(cfd_Click);
-            SFilters.Items.Add(cfd);
-            
-            SFilters.Items.Add(new Separator());
+		public string AuthorCondition {
+			get { return asc; }
+			set {
+				asc = value;
+				if (AutomaticallySetUseValues) {
+					useasc = asc.Length > 7;
+					ShowFilterMenu();
+				}
+			}
+		}
 
-            if (useesc == true)
-            {
-                Fluent.MenuItem a = new Fluent.MenuItem();
-                a.Header = esc;
-                a.Click += new RoutedEventHandler(a_Click);
-                SFilters.Items.Add(a);
-            }
-            if (usessc == true)
-            {
-                Fluent.MenuItem a = new Fluent.MenuItem();
-                a.Header = ssc;
-                a.Click += new RoutedEventHandler(a_Click);
-                SFilters.Items.Add(a);
-            }
-            if (useasc == true)
-            {
-                Fluent.MenuItem a = new Fluent.MenuItem();
-                a.Header = asc;
-                a.Click += new RoutedEventHandler(a_Click);
-                SFilters.Items.Add(a);
-            }
-            if (usedsc == true)
-            {
-                Fluent.MenuItem a = new Fluent.MenuItem();
-                a.Header = dsc;
-                a.Click += new RoutedEventHandler(a_Click);
-                SFilters.Items.Add(a);
-            }
-            if (usemsc == true)
-            {
-                Fluent.MenuItem a = new Fluent.MenuItem();
-                a.Header = msc;
-                a.Click += new RoutedEventHandler(a_Click);
-                SFilters.Items.Add(a);
-            }
-            if (useusc == true)
-            {
-                Fluent.MenuItem a = new Fluent.MenuItem();
-                a.Header = usc;
-                a.Click += new RoutedEventHandler(a_Click);
-                SFilters.Items.Add(a);
-            }
-        }
+		public bool UseAuthorCondition {
+			get { return useasc; }
+			set {
+				useasc = value;
+				ShowFilterMenu();
+			}
+		}
 
-        void cfd_Click(object sender, RoutedEventArgs e)
-        {
-            ssc = "size:";
-            asc = "author:";
-            esc = "ext:";
-            dsc = "date:";
-            msc = "modified:";
-            usc = "subject:";
+		private string dsc = "date:";
+		private bool usedsc = false;
 
-            useasc = false;
-            usedsc = false;
-            useesc = false;
-            usemsc = false;
-            usessc = false;
-            useusc = false;
+		public string DateCondition {
+			get { return dsc; }
+			set {
+				dsc = value;
+				if (AutomaticallySetUseValues) {
+					usedsc = dsc.Length > 5;
+					ShowFilterMenu();
+				}
+			}
+		}
 
-            OnFiltersCleared(EventArgs.Empty);
-            SetUpFiltersMenu();
-            ShowFilterMenu();
-        }
+		public bool UseDateCondition {
+			get { return usedsc; }
+			set {
+				usedsc = value;
+				ShowFilterMenu();
+			}
+		}
 
-        void a_Click(object sender, RoutedEventArgs e)
-        {
-            OnCriteriaChangeRequested(new SearchRoutedEventArgs((string)((Fluent.MenuItem)sender).Header, e.RoutedEvent));
-        }
+		private string msc = "modified:";
+		private bool usemsc = false;
 
-        private bool autouse = true;
-        public bool AutomaticallySetUseValues
-        {
-            get
-            {
-                return autouse;
-            }
-            set
-            {
-                autouse = value;
-            }
-        }
+		public string ModifiedCondition {
+			get { return msc; }
+			set {
+				msc = value;
+				if (AutomaticallySetUseValues) {
+					usemsc = msc.Length > 9;
+					ShowFilterMenu();
+				}
+			}
+		}
 
-        private void ShowFilterMenu()
-        {
-            if (useasc == false && usessc == false && useesc == false && useusc == false && usemsc == false && usedsc == false)
-            {
-                this.SFilters.Visibility = System.Windows.Visibility.Collapsed;
-                this.SearchCriteriatext.Margin = new Thickness(0, 0, 24, 0);
-            }
-            else
-            {
-                this.SFilters.Visibility = System.Windows.Visibility.Visible;
-                this.SearchCriteriatext.Margin = new Thickness(0, 0, 54, 0);
-            }
-        }
+		public bool UseModifiedCondition {
+			get { return usemsc; }
+			set {
+				usemsc = value;
+				ShowFilterMenu();
+			}
+		}
 
-        private string ksc = ":null:";
+		private string usc = "subject:";
+		private bool useusc = false;
 
-        public string KindCondition
-        {
-            get
-            {
-                return ksc;
-            }
-            set
-            {
-                ksc = value;
-            }
-        }
+		public string SubjectCondition {
+			get { return usc; }
+			set {
+				usc = value;
+				if (AutomaticallySetUseValues) {
+					useusc = usc.Length > 8;
+					ShowFilterMenu();
+				}
+			}
+		}
 
-        private string esc = "ext:";
-        private bool useesc = false;
+		public bool UseSubjectCondition {
+			get { return useusc; }
+			set {
+				useusc = value;
+				ShowFilterMenu();
+			}
+		}
 
-        public string ExtensionCondition
-        {
-            get
-            {
-                return esc;
-            }
-            set
-            {
-                esc = value;
-                if (autouse == true)
-                {
-                    if (esc.Length > 4)
-                    {
-                        useesc = true;
-                    }
-                    else
-                    {
-                        useesc = false;
-                    }
-                    ShowFilterMenu();
-                }
-            }
-        }
 
-        public bool UseExtensionCondition
-        {
-            get
-            {
-                return useesc;
-            }
-            set
-            {
-                useesc = value;
-                ShowFilterMenu();
-            }
-        }
 
-        private string ssc = "size:";
-        private bool usessc = false;
+		#endregion Properties
 
-        public string SizeCondition
-        {
-            get
-            {
-                return ssc;
-            }
-            set
-            {
-                ssc = value;
-                if (autouse == true)
-                {
-                    if (ssc.Length > 5)
-                    {
-                        usessc = true;
-                    }
-                    else
-                    {
-                        usessc = false;
-                    }
-                    ShowFilterMenu();
-                }
-            }
-        }
+		public SearchBox() {
+			InitializeComponent();
+			ShowFilterMenu();
 
-        public bool UseSizeCondition
-        {
-            get
-            {
-                return usessc;
-            }
-            set
-            {
-                usessc = value;
-                ShowFilterMenu();
-            }
-        }
+			ClearFiltersTitle = "Clear All Filters";
+			AutomaticallySetUseValues = true;
+			KindCondition = ":null:";
+		}
 
-        private string asc = "author:";
-        private bool useasc = false;
+		/// <summary> This method raises the Tap event </summary>
+		private void RaiseBeginSearchEvent() {
+			SearchRoutedEventArgs newEventArgs = new SearchRoutedEventArgs(CompileTerms(), SearchBox.BeginSearchEvent);
+			RaiseEvent(newEventArgs);
+		}
 
-        public string AuthorCondition
-        {
-            get
-            {
-                return asc;
-            }
-            set
-            {
-                asc = value;
-                if (autouse == true)
-                {
-                    if (asc.Length > 7)
-                    {
-                        useasc = true;
-                    }
-                    else
-                    {
-                        useasc = false;
-                    }
-                    ShowFilterMenu();
-                }
-            }
-        }
+		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
+		protected virtual void OnFiltersCleared(EventArgs e) {
+			if (FiltersCleared != null)
+				FiltersCleared(this, e);
+		}
 
-        public bool UseAuthorCondition
-        {
-            get
-            {
-                return useasc;
-            }
-            set
-            {
-                useasc = value;
-                ShowFilterMenu();
-            }
-        }
+		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
+		protected virtual void OnCriteriaChangeRequested(SearchRoutedEventArgs e) {
+			if (RequestCriteriaChange != null)
+				RequestCriteriaChange(this, e);
+		}
 
-        private string dsc = "date:";
-        private bool usedsc = false;
+		#region Control Events
 
-        public string DateCondition
-        {
-            get
-            {
-                return dsc;
-            }
-            set
-            {
-                dsc = value;
-                if (autouse == true)
-                {
-                    if (dsc.Length > 5)
-                    {
-                        usedsc = true;
-                    }
-                    else
-                    {
-                        usedsc = false;
-                    }
-                    ShowFilterMenu();
-                }
-            }
-        }
+		private void textBox1_TextChanged(object sender, TextChangedEventArgs e) {
+			SStartEnd.IsEnabled = SearchCriteriatext.Text.Length != 0;
+		}
 
-        public bool UseDateCondition
-        {
-            get
-            {
-                return usedsc;
-            }
-            set
-            {
-                usedsc = value;
-                ShowFilterMenu();
-            }
-        }
+		private void UserControl_LostFocus(object sender, RoutedEventArgs e) {
+		}
 
-        private string msc = "modified:";
-        private bool usemsc = false;
+		private void textBox1_LostFocus(object sender, RoutedEventArgs e) {
+			if (SearchCriteriatext.Text.Length == 0) {
+				lblDefault.Visibility = System.Windows.Visibility.Visible;
+			}
+		}
 
-        public string ModifiedCondition
-        {
-            get
-            {
-                return msc;
-            }
-            set
-            {
-                msc = value;
-                if (autouse == true)
-                {
-                    if (msc.Length > 9)
-                    {
-                        usemsc = true;
-                    }
-                    else
-                    {
-                        usemsc = false;
-                    }
-                    ShowFilterMenu();
-                }
-            }
-        }
+		private void textBox1_GotFocus(object sender, RoutedEventArgs e) {
+			FocusManager.SetIsFocusScope(this, true);
+		}
 
-        public bool UseModifiedCondition
-        {
-            get
-            {
-                return usemsc;
-            }
-            set
-            {
-                usemsc = value;
-                ShowFilterMenu();
-            }
-        }
+		private void textBox1_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			if (SearchCriteriatext.Text.Length == 0) {
+				lblDefault.Visibility = System.Windows.Visibility.Visible;
+			}
+		}
 
-        private string usc = "subject:";
-        private bool useusc = false;
+		private void SStartEnd_Click(object sender, RoutedEventArgs e) {
+			RaiseBeginSearchEvent();
+		}
 
-        public string SubjectCondition
-        {
-            get
-            {
-                return usc;
-            }
-            set
-            {
-                usc = value;
-                if (autouse == true)
-                {
-                    if (usc.Length > 8)
-                    {
-                        useusc = true;
-                    }
-                    else
-                    {
-                        useusc = false;
-                    }
-                    ShowFilterMenu();
-                }
-            }
-        }
+		private void SFilters_DropDownOpened(object sender, EventArgs e) {
+			SetUpFiltersMenu();
+		}
 
-        public bool UseSubjectCondition
-        {
-            get
-            {
-                return useusc;
-            }
-            set
-            {
-                useusc = value;
-                ShowFilterMenu();
-            }
-        }
+		private void lblDefault_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+			lblDefault.Visibility = System.Windows.Visibility.Hidden;
+			this.Focus();
+			SearchCriteriatext.IsEnabled = true;
+			SearchCriteriatext.Focus();
+		}
 
-        public string TextBoxSearchTerms
-        {
-            get
-            {
-                return SearchCriteriatext.Text;
-            }
-        }
+		private void UserControl_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			lblDefault.Visibility = System.Windows.Visibility.Hidden;
+			this.Focus();
+			SearchCriteriatext.IsEnabled = true;
+			SearchCriteriatext.Focus();
+		}
 
-        private void textBox1_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (SearchCriteriatext.Text.Length == 0)
-            {
-                SStartEnd.IsEnabled = false;
-            }
-            else
-            {
-                SStartEnd.IsEnabled = true;
-            }
-        }
 
-        private void UserControl_LostFocus(object sender, RoutedEventArgs e)
-        {
 
-        }
+		private void cfd_Click(object sender, RoutedEventArgs e) {
+			ssc = "size:";
+			asc = "author:";
+			esc = "ext:";
+			dsc = "date:";
+			msc = "modified:";
+			usc = "subject:";
 
-        private void textBox1_LostFocus(object sender, RoutedEventArgs e)
-        {
-            if (SearchCriteriatext.Text.Length == 0)
-            {
-                lblDefault.Visibility = System.Windows.Visibility.Visible;
-            }
-        }
+			useasc = false;
+			usedsc = false;
+			useesc = false;
+			usemsc = false;
+			usessc = false;
+			useusc = false;
 
-        private void textBox1_GotFocus(object sender, RoutedEventArgs e)
-        {
-            FocusManager.SetIsFocusScope(this, true);
-        }
+			OnFiltersCleared(EventArgs.Empty);
+			SetUpFiltersMenu();
+			ShowFilterMenu();
+		}
 
-        private void textBox1_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-            if (SearchCriteriatext.Text.Length == 0)
-            {
-                lblDefault.Visibility = System.Windows.Visibility.Visible;
-            }
-        }
+		private void a_Click(object sender, RoutedEventArgs e) {
+			OnCriteriaChangeRequested(new SearchRoutedEventArgs((string)((Fluent.MenuItem)sender).Header, e.RoutedEvent));
+		}
 
-        private void SStartEnd_Click(object sender, RoutedEventArgs e)
-        {
-            RaiseBeginSearchEvent();
-        }
 
-        private void SFilters_DropDownOpened(object sender, EventArgs e)
-        {
-            SetUpFiltersMenu();
-        }
+		#endregion Control Events
 
-        private void lblDefault_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            lblDefault.Visibility = System.Windows.Visibility.Hidden;
-            this.Focus();
-            SearchCriteriatext.IsEnabled = true;
-            SearchCriteriatext.Focus();
-        }
+		#region Helpers
 
-        private void UserControl_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {
-          lblDefault.Visibility = System.Windows.Visibility.Hidden;
-          this.Focus();
-          SearchCriteriatext.IsEnabled = true;
-          SearchCriteriatext.Focus();
-        }
+		private string CompileTerms() {
+			string full = TextBoxSearchTerms;
 
-    }
+			if (KindCondition != ":null:")
+				full += " " + KindCondition;
+
+			if (useesc)
+				full += " " + esc;
+
+			if (usessc)
+				full += " " + ssc;
+
+			if (useasc)
+				full += " " + asc;
+
+			if (usedsc)
+				full += " " + dsc;
+
+			if (usemsc)
+				full += " " + msc;
+
+			if (useusc)
+				full += " " + usc;
+
+			return full;
+		}
+
+		private void ShowFilterMenu() {
+			if (!useasc && !usessc && !useesc && !useusc && !usemsc && !usedsc) {
+				this.SFilters.Visibility = System.Windows.Visibility.Collapsed;
+				this.SearchCriteriatext.Margin = new Thickness(0, 0, 24, 0);
+			}
+			else {
+				this.SFilters.Visibility = System.Windows.Visibility.Visible;
+				this.SearchCriteriatext.Margin = new Thickness(0, 0, 54, 0);
+			}
+		}
+
+
+		public void SetUpFiltersMenu() {
+			SFilters.Items.Clear();
+
+			Fluent.MenuItem cfd = new Fluent.MenuItem();
+			cfd.Header = ClearFiltersTitle;
+			cfd.Click += new RoutedEventHandler(cfd_Click);
+			SFilters.Items.Add(cfd);
+
+			SFilters.Items.Add(new Separator());
+
+			if (useesc) {
+				Fluent.MenuItem a = new Fluent.MenuItem();
+				a.Header = esc;
+				a.Click += new RoutedEventHandler(a_Click);
+				SFilters.Items.Add(a);
+			}
+			if (usessc) {
+				Fluent.MenuItem a = new Fluent.MenuItem();
+				a.Header = ssc;
+				a.Click += new RoutedEventHandler(a_Click);
+				SFilters.Items.Add(a);
+			}
+			if (useasc) {
+				Fluent.MenuItem a = new Fluent.MenuItem();
+				a.Header = asc;
+				a.Click += new RoutedEventHandler(a_Click);
+				SFilters.Items.Add(a);
+			}
+			if (usedsc) {
+				Fluent.MenuItem a = new Fluent.MenuItem();
+				a.Header = dsc;
+				a.Click += new RoutedEventHandler(a_Click);
+				SFilters.Items.Add(a);
+			}
+			if (usemsc) {
+				Fluent.MenuItem a = new Fluent.MenuItem();
+				a.Header = msc;
+				a.Click += new RoutedEventHandler(a_Click);
+				SFilters.Items.Add(a);
+			}
+			if (useusc) {
+				Fluent.MenuItem a = new Fluent.MenuItem();
+				a.Header = usc;
+				a.Click += new RoutedEventHandler(a_Click);
+				SFilters.Items.Add(a);
+			}
+		}
+
+
+		#endregion Helpers
+	}
 }
 
-public class SearchRoutedEventArgs : RoutedEventArgs
-{
-    private string st;
+public class SearchRoutedEventArgs : RoutedEventArgs {
+	private string st;
 
-    public SearchRoutedEventArgs(string terms)
-    {
-        st = terms;
-    }
+	public SearchRoutedEventArgs(string terms) {
+		st = terms;
+	}
 
-    public SearchRoutedEventArgs(RoutedEvent routedevent)
-    {
-        st = "";
-        base.RoutedEvent = routedevent;
-    }
+	public SearchRoutedEventArgs(RoutedEvent routedevent) {
+		st = "";
+		base.RoutedEvent = routedevent;
+	}
 
-    public SearchRoutedEventArgs(string terms, RoutedEvent routedevent)
-    {
-        st = terms;
-        base.RoutedEvent = routedevent;
-    }
+	public SearchRoutedEventArgs(string terms, RoutedEvent routedevent) {
+		st = terms;
+		base.RoutedEvent = routedevent;
+	}
 
-    public SearchRoutedEventArgs(string terms, RoutedEvent routedevent, string source)
-    {
-        st = terms;
-        base.RoutedEvent = routedevent;
-        base.Source = source;
-    }
+	public SearchRoutedEventArgs(string terms, RoutedEvent routedevent, string source) {
+		st = terms;
+		base.RoutedEvent = routedevent;
+		base.Source = source;
+	}
 
-    public string SearchTerms
-    {
-        get
-        {
-            return st;
-        }
-        set
-        {
-            st = value;
-        }
-    }
-
+	public string SearchTerms {
+		get {
+			return st;
+		}
+		set {
+			st = value;
+		}
+	}
 }

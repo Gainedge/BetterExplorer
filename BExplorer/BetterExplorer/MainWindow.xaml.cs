@@ -8055,8 +8055,7 @@ namespace BetterExplorer {
 		private void beNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e) {
 			this.Visibility = Visibility.Visible;
 			if (this.WindowState == WindowState.Minimized) {
-				WindowsAPI.ShowWindow(Handle,
-												(int)WindowsAPI.ShowCommands.SW_RESTORE);
+				WindowsAPI.ShowWindow(Handle, (int)WindowsAPI.ShowCommands.SW_RESTORE);
 			}
 
 			this.Activate();
