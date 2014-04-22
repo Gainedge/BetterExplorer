@@ -9,18 +9,13 @@ namespace BetterExplorer {
 
 	/// <summary> Interaction logic for ResizeImage.xaml </summary>
 	public partial class ResizeImage : Window {
-		public int newheight;
-		public int newwidth;
-
-		public bool Confirm = false;
-
+		public int newheight, newwidth;
+		public bool Confirm = false, percsetting = false;
 		private Bitmap cvt;
 
-		private bool percsetting = false;
 
 		private ResizeImage() {
 			InitializeComponent();
-
 			spinner1.Value = 100;
 		}
 
@@ -70,7 +65,7 @@ namespace BetterExplorer {
 
 			if (f.Confirm) {
 				System.Drawing.Bitmap cvt = new Bitmap(file.ParsingName);
-				System.Drawing.Bitmap cst = f.ChangeImageSize(cvt, f.newwidth, f.newheight);
+				System.Drawing.Bitmap cst = ChangeImageSize(cvt, f.newwidth, f.newheight);
 
 				string ext = file.Extension;
 
@@ -81,7 +76,7 @@ namespace BetterExplorer {
 
 		}
 
-		private Bitmap ChangeImageSize(Bitmap img, int width, int height) {
+		private static Bitmap ChangeImageSize(Bitmap img, int width, int height) {
 			Bitmap bm_dest = new Bitmap(width, height);
 			Graphics gr_dest = Graphics.FromImage(bm_dest);
 			gr_dest.DrawImage(img, 0, 0, bm_dest.Width + 1, bm_dest.Height + 1);
@@ -108,7 +103,7 @@ namespace BetterExplorer {
 		//}
 
 		private void spinner1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-			try {
+			if (cvt != null) {
 				newwidth = Convert.ToInt32(Math.Round(Convert.ToDouble(cvt.Width * Convert.ToInt32(spinner1.Value) / 100)));
 				newheight = Convert.ToInt32(Math.Round(Convert.ToDouble(cvt.Height * Convert.ToInt32(spinner1.Value) / 100)));
 
@@ -118,8 +113,6 @@ namespace BetterExplorer {
 				textBox2.Text = newheight.ToString();
 
 				percsetting = false;
-			}
-			catch {
 			}
 		}
 
@@ -134,17 +127,37 @@ namespace BetterExplorer {
 		}
 
 		private void TextBoxes_Edited(object sender, TextChangedEventArgs e) {
+			int this_Width = newwidth, This_Heighth = newheight;
+
+			//TODO: Get the Value Before AND after the change THEN deal with keeping the ratio's the same
+
+
 			if (textBox1 == null || textBox2 == null || percsetting) {
 				return;
 			}
-			else if (!int.TryParse(textBox1.Text, out newwidth)) {
+			else if (!int.TryParse(textBox1.Text, out this_Width)) {
 				System.Windows.Forms.MessageBox.Show("Width cannot be less than 1");
 				textBox1.Text = "1";
 			}
-			else if (!int.TryParse(textBox2.Text, out newheight)) {
+			else if (!int.TryParse(textBox2.Text, out This_Heighth)) {
 				System.Windows.Forms.MessageBox.Show("Height cannot be less than 1");
 				textBox2.Text = "1";
 			}
+			else if (cbxMaintainRatio != null && cbxMaintainRatio.IsChecked.Value) {
+				if (sender == textBox1) {
+
+				}
+				else {
+
+				}
+
+
+			}
+
+			newwidth = this_Width;
+			newheight = This_Heighth;
+
+
 			/*
 			try {
 				newwidth = Convert.ToInt32(textBox1.Text);
