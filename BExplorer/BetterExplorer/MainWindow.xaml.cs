@@ -2918,7 +2918,7 @@ namespace BetterExplorer {
 				});
 				if (this.IsInfoPaneEnabled) {
 					await Task.Run(() => {
-						PreviewPanel.FillPreviewPane(this.ShellListView);
+						this.DetailsPanel.FillPreviewPane(this.ShellListView);
 					});
 				}
 				IsSelectionRized = false;
@@ -3691,7 +3691,7 @@ namespace BetterExplorer {
 
 				if (this.IsInfoPaneEnabled) {
 					await Task.Run(() => {
-						PreviewPanel.FillPreviewPane(this.ShellListView);
+						this.DetailsPanel.FillPreviewPane(this.ShellListView);
 					});
 				}
 

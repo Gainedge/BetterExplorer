@@ -12,7 +12,7 @@ using BExplorer.Shell;
 namespace BetterExplorerControls {
 
 	/// <summary> Interaction logic for PreviewPane.xaml </summary>
-	public partial class PreviewPane : UserControl, INotifyPropertyChanged {
+	public partial class DetailsPane : UserControl, INotifyPropertyChanged {
 		public ShellView Browser;
 		private BitmapSource _thumbnail;
 		private ShellItem[] SelectedItems;
@@ -42,7 +42,7 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		public PreviewPane() {
+		public DetailsPane() {
 			InitializeComponent();
 			DataContext = this;
 			this.Loaded += PreviewPane_Loaded;
@@ -54,6 +54,8 @@ namespace BetterExplorerControls {
 
     void PreviewPane_SizeChanged(object sender, SizeChangedEventArgs e)
     {
+			if (this.ActualHeight == 0)
+				return;
       //Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
       //{
         ShellItem selectedItemsFirst = null;

@@ -3115,16 +3115,11 @@
 				<RowDefinition x:Name="rPreviewPaneSplitter" Height="1" />
 				<RowDefinition />
 			</Grid.RowDefinitions>
-			<controls:PreviewPane x:Name="PreviewPanel"
-							Grid.Row="0"
-							Grid.ColumnSpan="3"
-							Width="{Binding ActualWidth,
+			<controls:DetailsPane x:Name="DetailsPanel" Grid.Row="0" Grid.ColumnSpan="3" Width="{Binding ActualWidth,
 											RelativeSource={RelativeSource Mode=FindAncestor,
-																		   AncestorType={x:Type Grid}}}"
-							Height="{Binding ActualHeight,
+																		   AncestorType={x:Type Grid}}}" Height="{Binding ActualHeight,
 											 RelativeSource={RelativeSource Mode=FindAncestor,
-																			AncestorType={x:Type RowDefinition}}}"
-							Margin="0" />
+																			AncestorType={x:Type RowDefinition}}}" Margin="0"/>
 			<GridSplitter Grid.Row="1"
 					Grid.ColumnSpan="3"
 					Height="1"
