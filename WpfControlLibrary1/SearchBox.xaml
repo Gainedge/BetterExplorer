@@ -3,18 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             mc:Ignorable="d" d:DesignWidth="250" xmlns:my="clr-namespace:Fluent;assembly=Fluent" Height="24" BorderBrush="Black" Background="White" BorderThickness="1" Focusable="True" LostFocus="UserControl_LostFocus" GotKeyboardFocus="UserControl_GotKeyboardFocus">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
+             mc:Ignorable="d" d:DesignWidth="250" 
+						 xmlns:my="clr-namespace:Fluent;assembly=Fluent" 
+						 xmlns:local="clr-namespace:BetterExplorerControls"
+						 Height="24" 
+						 BorderBrush="Black" 
+						 Background="White" 
+						 BorderThickness="1" 
+						 Focusable="True">
     <Grid>
-        <TextBox Name="SearchCriteriatext" BorderBrush="{x:Null}" BorderThickness="0" VerticalContentAlignment="Center" TextChanged="textBox1_TextChanged" LostFocus="textBox1_LostFocus" GotFocus="textBox1_GotFocus" LostKeyboardFocus="textBox1_LostKeyboardFocus" Margin="0,0,54,0" />
-        <my:DropDownButton Name="SFilters" Header="Filters" Icon="Images\filter16.png" my:RibbonAttachedProperties.RibbonSize="Small" Width="30" Height="22" CanAddToQuickAccessToolBar="False" ToolTip="Filters" DropDownOpened="SFilters_DropDownOpened" HorizontalAlignment="Right" Margin="0,0,24,0" />
-        <my:Button Height="22" Name="SStartEnd" my:RibbonAttachedProperties.RibbonSize="Small" Header="Search" Icon="Images\search.png" CanAddToQuickAccessToolBar="False" ToolTip="Search" Click="SStartEnd_Click" HorizontalAlignment="Right" Width="24" IsEnabled="False"/>
-        <TextBox Name="lblDefault" Text="{StaticResource txtSearchLabel}" VerticalAlignment="Center" Padding="6,0,0,0" IsReadOnly="True" FontStyle="Italic" Background="#01000000" Margin="0,0,54,0" BorderBrush="{x:Null}" BorderThickness="0" PreviewMouseLeftButtonDown="lblDefault_PreviewMouseLeftButtonDown" />
-    </Grid>
+			<local:WatermarkedTextBox x:Name="SearchCriteriatext" Watermark="{StaticResource txtSearchLabel}" BorderBrush="{x:Null}" BorderThickness="0" VerticalContentAlignment="Center" TextChanged="textBox1_TextChanged" Margin="0,0,54,0" />
+			<my:DropDownButton Name="SFilters" Header="Filters" Icon="Images\filter16.png" my:RibbonAttachedProperties.RibbonSize="Small" Width="30" Height="22" CanAddToQuickAccessToolBar="False" ToolTip="Filters" DropDownOpened="SFilters_DropDownOpened" HorizontalAlignment="Right" Margin="0,0,24,0" />
+			<my:Button Height="22" Name="SStartEnd" my:RibbonAttachedProperties.RibbonSize="Small" Header="Search" Icon="Images\search.png" CanAddToQuickAccessToolBar="False" ToolTip="Search" Click="SStartEnd_Click" HorizontalAlignment="Right" Width="24" IsEnabled="False"/>
+		</Grid>
 </UserControl>

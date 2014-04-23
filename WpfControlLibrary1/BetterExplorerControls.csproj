@@ -122,6 +122,7 @@
     <Compile Include="BreadCrumbBar\SuggestBox.cs" />
     <Compile Include="BreadCrumbBar\SuggestBoxBase.cs" />
     <Compile Include="AirspacePopup.cs" />
+    <Compile Include="WatermarkedTextBox.cs" />
     <Compile Include="ItemSources\AutoSuggestSource.cs" />
     <Compile Include="Helpers\PathExistsValidationRule.cs" />
     <Compile Include="Helpers\PathHierarchyHelper.cs" />

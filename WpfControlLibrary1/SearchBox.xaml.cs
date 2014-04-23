@@ -45,7 +45,6 @@ namespace BetterExplorerControls {
 			get { return _CurrentPathName; }
 			set {
 				_CurrentPathName = value;
-				lblDefault.Text = "Search " + value;
 			}
 		}
 
@@ -219,27 +218,10 @@ namespace BetterExplorerControls {
 		#region Control Events
 
 		private void textBox1_TextChanged(object sender, TextChangedEventArgs e) {
-			SStartEnd.IsEnabled = SearchCriteriatext.Text.Length != 0;
+			if (SStartEnd != null)
+				SStartEnd.IsEnabled = SearchCriteriatext.Text.Length != 0 && !SearchCriteriatext.IsWatermarkShown;
 		}
 
-		private void UserControl_LostFocus(object sender, RoutedEventArgs e) {
-		}
-
-		private void textBox1_LostFocus(object sender, RoutedEventArgs e) {
-			if (SearchCriteriatext.Text.Length == 0) {
-				lblDefault.Visibility = System.Windows.Visibility.Visible;
-			}
-		}
-
-		private void textBox1_GotFocus(object sender, RoutedEventArgs e) {
-			FocusManager.SetIsFocusScope(this, true);
-		}
-
-		private void textBox1_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			if (SearchCriteriatext.Text.Length == 0) {
-				lblDefault.Visibility = System.Windows.Visibility.Visible;
-			}
-		}
 
 		private void SStartEnd_Click(object sender, RoutedEventArgs e) {
 			RaiseBeginSearchEvent();
@@ -248,23 +230,6 @@ namespace BetterExplorerControls {
 		private void SFilters_DropDownOpened(object sender, EventArgs e) {
 			SetUpFiltersMenu();
 		}
-
-		private void lblDefault_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
-			lblDefault.Visibility = System.Windows.Visibility.Hidden;
-			this.Focus();
-			SearchCriteriatext.IsEnabled = true;
-			SearchCriteriatext.Focus();
-		}
-
-		private void UserControl_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			lblDefault.Visibility = System.Windows.Visibility.Hidden;
-			this.Focus();
-			SearchCriteriatext.IsEnabled = true;
-			SearchCriteriatext.Focus();
-		}
-
-
-
 		private void cfd_Click(object sender, RoutedEventArgs e) {
 			ssc = "size:";
 			asc = "author:";
@@ -279,7 +244,6 @@ namespace BetterExplorerControls {
 			usemsc = false;
 			usessc = false;
 			useusc = false;
-
 			OnFiltersCleared(EventArgs.Empty);
 			SetUpFiltersMenu();
 			ShowFilterMenu();
@@ -288,8 +252,6 @@ namespace BetterExplorerControls {
 		private void a_Click(object sender, RoutedEventArgs e) {
 			OnCriteriaChangeRequested(new SearchRoutedEventArgs((string)((Fluent.MenuItem)sender).Header, e.RoutedEvent));
 		}
-
-
 		#endregion Control Events
 
 		#region Helpers
