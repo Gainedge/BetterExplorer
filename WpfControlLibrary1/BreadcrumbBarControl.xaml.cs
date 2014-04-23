@@ -66,9 +66,9 @@ namespace BetterExplorerControls {
 
 		void g_Click(object sender, RoutedEventArgs e) {
 			HistoryCombo.Text = (string)(sender as MenuItem).Header;
-      PathEventArgs args = new PathEventArgs(new ShellItem(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text.ToShellParsingName()));
-      OnNavigateRequested(args);
-      ExitEditMode();
+			PathEventArgs args = new PathEventArgs(new ShellItem(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text.ToShellParsingName()));
+			OnNavigateRequested(args);
+			ExitEditMode();
 		}
 
 		private BreadcrumbBarItem furthestrightitem;
@@ -295,7 +295,6 @@ namespace BetterExplorerControls {
 				if (!IsInEditMode)
 					EnterEditMode();
 				Needfilter = false;
-
 			}
 		}
 
@@ -333,7 +332,6 @@ namespace BetterExplorerControls {
 				foreach (var item in correctItems) {
 					ShellItem realItem = (ShellItem)item;
 					HistoryCombo.Text = obj.ParsingName.Replace(realItem.ParsingName, realItem.GetDisplayName(SIGDN.NORMALDISPLAY)).Replace(".library-ms", "");
-
 				}
 			}
 			else {
@@ -365,8 +363,7 @@ namespace BetterExplorerControls {
 				}
 			}
 		}
-    private void HistoryCombo_KeyUp(object sender, KeyEventArgs e)
-		{
+		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e) {
 			e.Handled = true;
 			IsEcsPressed = false;
 			if (e.Key == Key.Enter) {

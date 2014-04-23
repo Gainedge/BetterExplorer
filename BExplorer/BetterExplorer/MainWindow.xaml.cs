@@ -5311,9 +5311,14 @@ namespace BetterExplorer {
 		}
 
 		private void btnResize_Click(object sender, RoutedEventArgs e) {
+			ResizeImage.Open(ShellListView.SelectedItems[0]);
+
+			/*
 			ResizeImage ri = new ResizeImage(ShellListView.SelectedItems[0]);
 			ri.ShowDialog();
-			if (ri.Confirm == true) {
+
+
+			if (ri.Confirm) {
 				System.Drawing.Bitmap cvt = new Bitmap(ShellListView.SelectedItems[0].ParsingName);
 				System.Drawing.Bitmap cst = ChangeImageSize(cvt, ri.newwidth, ri.newheight);
 
@@ -5323,15 +5328,17 @@ namespace BetterExplorer {
 				cvt.Dispose();
 				cst.Dispose();
 			}
+			*/
 		}
 
+		/*
 		private Bitmap ChangeImageSize(Bitmap img, int width, int height) {
 			Bitmap bm_dest = new Bitmap(width, height);
 			Graphics gr_dest = Graphics.FromImage(bm_dest);
 			gr_dest.DrawImage(img, 0, 0, bm_dest.Width + 1, bm_dest.Height + 1);
 			return bm_dest;
 		}
-
+		*/
 		#endregion
 
 		#region Folder Tools Commands
@@ -6307,22 +6314,12 @@ namespace BetterExplorer {
 		private void ToggleButton_Click_1(object sender, RoutedEventArgs e) {
 			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("ext", edtSearchBox.ExtensionCondition, FindResource("btnExtCP") as string);
 			dat.ShowDialog();
-			if (dat.Confirm == true) {
+			if (dat.Confirm) {
 				edtSearchBox.ExtensionCondition = "ext:" + dat.textBox1.Text;
-				if (dat.textBox1.Text.Length > 0) {
-					ExtToggle.IsChecked = true;
-				}
-				else {
-					ExtToggle.IsChecked = false;
-				}
+				ExtToggle.IsChecked = dat.textBox1.Text.Length > 0;
 			}
 			else {
-				if (GetValueOnly("ext", edtSearchBox.ExtensionCondition).Length > 0) {
-					ExtToggle.IsChecked = true;
-				}
-				else {
-					ExtToggle.IsChecked = false;
-				}
+				ExtToggle.IsChecked = GetValueOnly("ext", edtSearchBox.ExtensionCondition).Length > 0;
 			}
 		}
 
@@ -8058,8 +8055,7 @@ namespace BetterExplorer {
 		private void beNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e) {
 			this.Visibility = Visibility.Visible;
 			if (this.WindowState == WindowState.Minimized) {
-				WindowsAPI.ShowWindow(Handle,
-												(int)WindowsAPI.ShowCommands.SW_RESTORE);
+				WindowsAPI.ShowWindow(Handle, (int)WindowsAPI.ShowCommands.SW_RESTORE);
 			}
 
 			this.Activate();

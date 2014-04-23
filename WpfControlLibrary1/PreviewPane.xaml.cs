@@ -1,61 +1,35 @@
-﻿
-using BExplorer.Shell;
-using BExplorer.Shell.Interop;
+﻿using BExplorer.Shell.Interop;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
+using BExplorer.Shell;
 
-namespace BetterExplorerControls
-{
-  /// <summary>
-  /// Interaction logic for PreviewPane.xaml
-  /// </summary>
-  public partial class PreviewPane : UserControl, INotifyPropertyChanged
-  {
-    public ShellView Browser;
-    private BitmapSource _thumbnail;
-    private ShellItem[] SelectedItems;
-    public BitmapSource Thumbnail { 
-      get{
-        return _thumbnail;
-      }
-    }
+namespace BetterExplorerControls {
 
-    
-    public String DisplayName
-    {
-      get
-      {
+	/// <summary> Interaction logic for PreviewPane.xaml </summary>
+	public partial class PreviewPane : UserControl, INotifyPropertyChanged {
+		public ShellView Browser;
+		private BitmapSource _thumbnail;
+		private ShellItem[] SelectedItems;
 
+		public BitmapSource Thumbnail { get { return _thumbnail; } }
+
+		public String DisplayName {
+			get {
 				if (this.Browser != null && this.Browser.GetSelectedCount() > 0)
-        {
-          return this.Browser.SelectedItems[0].DisplayName;
-        }
-        else
-        {
-          return String.Empty;
-        }
-      }
-    }
+					return this.Browser.SelectedItems[0].DisplayName;
+				else
+					return String.Empty;
+			}
+		}
 
-    public String FileType
-    {
-      get
-      {
+		public String FileType {
+			get {
         if (this.Browser != null && this.Browser.SelectedItems.Count() > 0)
         {
 					return this.Browser.SelectedItems[0].GetPropertyValue(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 }, typeof(String)).Value.ToString();
@@ -65,20 +39,18 @@ namespace BetterExplorerControls
           return String.Empty;
         }
 				return string.Empty;
-      }
-    }
-    public PreviewPane()
-    {
-      InitializeComponent();
-      DataContext = this;
-      this.Loaded += PreviewPane_Loaded;
-    }
+			}
+		}
 
-    void PreviewPane_Loaded(object sender, RoutedEventArgs e)
-    {
-      this.SizeChanged += PreviewPane_SizeChanged;
-    }
+		public PreviewPane() {
+			InitializeComponent();
+			DataContext = this;
+			this.Loaded += PreviewPane_Loaded;
+		}
 
+		private void PreviewPane_Loaded(object sender, RoutedEventArgs e) {
+			this.SizeChanged += PreviewPane_SizeChanged;
+		}
 
     void PreviewPane_SizeChanged(object sender, SizeChangedEventArgs e)
     {
@@ -94,9 +66,13 @@ namespace BetterExplorerControls
           icon.Source = selectedItemsFirst.Thumbnail.BitmapSource;
         }
 
-      //}));
-    }
+			//}));
+		}
 
+		public void FillPreviewPane(ShellView browser) {
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+				if (this.Browser == null)
+					this.Browser = browser;
 
     public void FillPreviewPane(ShellView browser)
     {
@@ -116,13 +92,6 @@ namespace BetterExplorerControls
                 icon.Source = this.SelectedItems[0].Thumbnail.BitmapSource;
             }
 
-            this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("DisplayName"));
-            this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("FileType"));
-            
-          }));
-      
-    }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-  }
+		public event PropertyChangedEventHandler PropertyChanged;
+	}
 }

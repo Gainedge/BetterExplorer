@@ -37,6 +37,16 @@ namespace BExplorer.Shell {
 	[TypeConverter(typeof(ShellItemConverter))]
 	public class ShellItem : IEnumerable<ShellItem>, IDisposable {
 
+		public Bitmap ThumbnailIcon { get; set; }
+		public bool IsVisible { get; set; }
+
+
+
+		public ShellItem() {
+
+		}
+
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ShellItem"/> class.
 		/// </summary>
@@ -59,12 +69,20 @@ namespace BExplorer.Shell {
 			this.IconType = GetIconType();
 		}
 
-		public ShellItem() {
+		/*
+		public static ShellItem Build(string path) {
+			Uri OMG;
+			Uri.TryCreate(path, UriKind.RelativeOrAbsolute, out OMG);
+
+			if (OMG.IsAbsoluteUri) {
+				return new ShellItem(OMG);
+			}
+			else {
+				return null;
+			}
 
 		}
-
-		public Bitmap ThumbnailIcon { get; set; }
-		public bool IsVisible { get; set; }
+		*/
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ShellItem"/> class.
@@ -84,6 +102,12 @@ namespace BExplorer.Shell {
 		/// A string containing a Uri with the location of the ShellItem.
 		/// </param>
 		public ShellItem(string path) {
+			//Uri OMG;
+			//Uri.TryCreate(path, UriKind.RelativeOrAbsolute, out OMG);
+			//Initialize(OMG);
+			//this.IconType = GetIconType();
+
+			//TODO: Fix this!!!
 			try {
 				Uri newUri = new Uri(path);
 				Initialize(newUri);
@@ -518,17 +542,15 @@ namespace BExplorer.Shell {
 		/// Returns an <see cref="ComTypes.IDataObject"/> representing the
 		/// item. This object is used in drag and drop operations.
 		/// </summary>
-		public System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject()
-		{
+		public System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject() {
 			IntPtr res;
-				HResult result = m_ComInterface.BindToHandler(IntPtr.Zero,
-						BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID, out res);
-				return (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(res,
-						typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
+			HResult result = m_ComInterface.BindToHandler(IntPtr.Zero,
+					BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID, out res);
+			return (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(res,
+					typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
 		}
 
-		public List<AssociationItem> GetAssocList()
-		{
+		public List<AssociationItem> GetAssocList() {
 			var assocList = new List<AssociationItem>();
 			IntPtr enumAssocPtr;
 			Shell32.SHAssocEnumHandlers(Path.GetExtension(ParsingName), Shell32.ASSOC_FILTER.ASSOC_FILTER_RECOMMENDED, out enumAssocPtr);
@@ -540,10 +562,8 @@ namespace BExplorer.Shell {
 			IntPtr[] funcs = new IntPtr[15];
 			int num;
 			int res = Next(enumAssocPtr, 15, funcs, out num);
-			if (res == 0)
-			{
-				for (int i = 0; i < num; i++)
-				{
+			if (res == 0) {
+				for (int i = 0; i < num; i++) {
 					var funcpUnk = Marshal.ReadIntPtr(funcs[i]);
 					var getNamepFunc = Marshal.ReadIntPtr(funcpUnk + 3 * IntPtr.Size);
 					var getNameUIpFunc = Marshal.ReadIntPtr(funcpUnk + 4 * IntPtr.Size);
@@ -571,26 +591,24 @@ namespace BExplorer.Shell {
 		/// Returns an <see cref="IDropTarget"/> representing the
 		/// item. This object is used in drag and drop operations.
 		/// </summary>
-		public IDropTarget GetIDropTarget(System.Windows.Forms.Control control)
-		{
-				IntPtr result = GetIShellFolder().CreateViewObject(control.Handle,
-						typeof(IDropTarget).GUID);
-				return (IDropTarget)Marshal.GetTypedObjectForIUnknown(result,
-								typeof(IDropTarget));
+		public IDropTarget GetIDropTarget(System.Windows.Forms.Control control) {
+			IntPtr result = GetIShellFolder().CreateViewObject(control.Handle,
+					typeof(IDropTarget).GUID);
+			return (IDropTarget)Marshal.GetTypedObjectForIUnknown(result,
+							typeof(IDropTarget));
 		}
 
 		/// <summary>
 		/// Returns an <see cref="IShellFolder"/> representing the
 		/// item.
 		/// </summary>
-		public IShellFolder GetIShellFolder()
-		{
+		public IShellFolder GetIShellFolder() {
 			IntPtr res;
-				HResult result = m_ComInterface.BindToHandler(IntPtr.Zero,
-						BHID.SFObject, typeof(IShellFolder).GUID, out res);
-				IShellFolder iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res,
-												typeof(IShellFolder));
-				return iShellFolder;
+			HResult result = m_ComInterface.BindToHandler(IntPtr.Zero,
+					BHID.SFObject, typeof(IShellFolder).GUID, out res);
+			IShellFolder iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res,
+											typeof(IShellFolder));
+			return iShellFolder;
 		}
 
 		public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) {
@@ -1025,10 +1043,8 @@ namespace BExplorer.Shell {
 			get { return GetIDListFromObject(m_ComInterface); }
 		}
 
-		public IntPtr AbsolutePidl
-		{
-			get
-			{
+		public IntPtr AbsolutePidl {
+			get {
 				uint attr;
 				IntPtr pidl;
 				Shell32.SHParseDisplayName(this.ParsingName, IntPtr.Zero, out pidl, 0, out attr);
