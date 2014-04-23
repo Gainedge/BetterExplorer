@@ -731,7 +731,7 @@ namespace BExplorer.Shell.Interop
 					WS_POPUP = 0x80000000u,
 
 					/// <summary>The window is a pop-up window. The WS_CAPTION and WS_POPUPWINDOW styles must be combined to make the window menu visible.</summary>
-					WS_POPUPWINDOW = WS_POPUP | WS_BORDER | WS_SYSMENU,
+					WS_POPUPWINDOW = (uint)WS_POPUP | (uint)WS_BORDER | (uint)WS_SYSMENU,
 
 					/// <summary>The window has a sizing border.</summary>
 					WS_SIZEFRAME = 0x40000,

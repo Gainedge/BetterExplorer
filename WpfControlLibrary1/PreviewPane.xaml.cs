@@ -1,5 +1,6 @@
 ﻿
 using BExplorer.Shell;
+using BExplorer.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,15 +56,14 @@ namespace BetterExplorerControls
     {
       get
       {
-				//FIXME: fix this here
-        //if (this.Browser.SelectedItems.Count() > 0)
-        //{
-        //  return this.Browser.SelectedItems[0].Properties.System.ItemTypeText != null ? this.Browser.SelectedItems[0].Properties.System.ItemTypeText.Value : String.Empty;
-        //}
-        //else
-        //{
-        //  return String.Empty;
-        //}
+        if (this.Browser != null && this.Browser.SelectedItems.Count() > 0)
+        {
+					return this.Browser.SelectedItems[0].GetPropertyValue(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 }, typeof(String)).Value.ToString();
+        }
+        else
+        {
+          return String.Empty;
+        }
 				return string.Empty;
       }
     }
@@ -88,7 +88,9 @@ namespace BetterExplorerControls
 				if (this.Browser != null && this.Browser.GetSelectedCount() == 1)
         {
           selectedItemsFirst = this.Browser.SelectedItems.First();
-          selectedItemsFirst.Thumbnail.CurrentSize = new Size(this.ActualHeight - 20, this.ActualHeight - 20);
+          selectedItemsFirst.Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
+					selectedItemsFirst.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
+					selectedItemsFirst.Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
           icon.Source = selectedItemsFirst.Thumbnail.BitmapSource;
         }
 
@@ -98,15 +100,19 @@ namespace BetterExplorerControls
 
     public void FillPreviewPane(ShellView browser)
     {
+			if (this.Browser == null)
+				this.Browser = browser;
+
       Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
           {
-            if (this.Browser == null)
-              this.Browser = browser;
+            
 
 						if (this.Browser.GetSelectedCount() == 1)
 						{
                 this.SelectedItems = this.Browser.SelectedItems.ToArray();
-                this.SelectedItems[0].Thumbnail.CurrentSize = new Size(this.ActualHeight - 20, this.ActualHeight - 20);
+								this.SelectedItems[0].Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
+								this.SelectedItems[0].Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
+								this.SelectedItems[0].Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
                 icon.Source = this.SelectedItems[0].Thumbnail.BitmapSource;
             }
 

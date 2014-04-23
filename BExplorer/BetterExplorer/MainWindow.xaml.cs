@@ -2814,6 +2814,7 @@ namespace BetterExplorer {
 			ShellListView.KeyJumpKeyDown += ShellListView_KeyJumpKeyDown;
 			ShellListView.KeyJumpTimerDone += ShellListView_KeyJumpTimerDone;
 			ShellListView.ItemMiddleClick += ShellListView_ItemMiddleClick;
+			this.ShellTree.NodeClick += ShellTree_NodeClick;
 			//ShellListView.SelectionChanged += ExplorerBrowserControl_SelectionChanged;
 			////ShellListView.NavigationComplete += Explorer_NavigationComplete;
 			//ShellListView.MouseWheel += Explorer_MouseWheel;
@@ -2846,6 +2847,15 @@ namespace BetterExplorer {
 			//ShellListView.ContentOptions.CheckSelect = isCheckModeEnabled;
 			//ShellListView.Width = (int)ShellVView.ActualWidth;
 			//ShellListView.Height = (int)ShellVView.ActualHeight;
+		}
+
+		void ShellTree_NodeClick(object sender, System.Windows.Forms.TreeNodeMouseClickEventArgs e)
+		{
+			if (e.Button == System.Windows.Forms.MouseButtons.Middle)
+			{
+				if (e.Node != null && e.Node.Tag != null)
+					NewTab(e.Node.Tag as ShellItem);
+			}
 		}
 
 		void ShellListView_ItemMiddleClick(object sender, NavigatedEventArgs e) {

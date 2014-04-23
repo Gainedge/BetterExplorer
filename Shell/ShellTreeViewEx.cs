@@ -14,6 +14,8 @@ namespace BExplorer.Shell
 {
 	public partial class ShellTreeViewEx : UserControl
 	{
+		public event EventHandler<TreeNodeMouseClickEventArgs> NodeClick;
+
 		#region Public Members
 		public TreeViewBase ShellTreeView;
 		public Boolean IsShowHiddenItems { get; set; }
@@ -221,6 +223,7 @@ namespace BExplorer.Shell
 			this.ShellTreeView.DrawNode += ShellTreeView_DrawNode;
 			this.ShellTreeView.BeforeExpand += ShellTreeView_BeforeExpand;
 			this.ShellTreeView.AfterExpand += ShellTreeView_AfterExpand;
+			this.ShellTreeView.MouseDown += ShellTreeView_MouseDown;
 			this.ShellTreeView.HandleDestroyed += ShellTreeView_HandleDestroyed;
 			this.ShellTreeView.ItemDrag += ShellTreeView_ItemDrag;
 			this.ShellTreeView.AfterSelect += ShellTreeView_AfterSelect;
@@ -248,6 +251,16 @@ namespace BExplorer.Shell
 			childsThread.IsBackground = true;
 			childsThread.Start();
 		}
+
+		void ShellTreeView_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (NodeClick != null)
+			{
+				var treeNode = this.ShellTreeView.GetNodeAt(e.X, e.Y);
+				NodeClick.Invoke(this, new TreeNodeMouseClickEventArgs(treeNode, e.Button, e.Clicks, e.X, e.Y));
+			}
+		}
+
 		#endregion
 
 		#region Public Methods
@@ -618,12 +631,14 @@ namespace BExplorer.Shell
 		void ShellTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
 			
+
 			if (e.Button == System.Windows.Forms.MouseButtons.Right)
 			{
 				//this.ShellTreeView.SelectedNode = e.Node;
 				ShellContextMenu cm = new ShellContextMenu(e.Node.Tag as ShellItem);
 				cm.ShowContextMenu(this, e.Location, CMF.CANRENAME);
 			}
+			
 		}
 
 		void ShellTreeView_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)

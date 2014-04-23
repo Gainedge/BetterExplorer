@@ -1484,6 +1484,7 @@ namespace BExplorer.Shell
 						//	nmlv.item.puColumns = (uint)ptr;
 						//	Marshal.StructureToPtr(nmlv, m.LParam, false);
 						//}
+						
 						if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT)
 						{
 							if (nmlv.item.iSubItem == 0)
@@ -2298,6 +2299,11 @@ namespace BExplorer.Shell
 
 											}
 
+											if (index == 0 && !sho.IsInitialised)
+											{
+												this.SelectItemByIndex(index);
+												sho.IsInitialised = true;
+											}
 																																	
 										}
 										m.Result = (IntPtr) CustomDraw.CDRF_SKIPDEFAULT;
@@ -3070,6 +3076,7 @@ namespace BExplorer.Shell
 
 			this.OnNavigated(new NavigatedEventArgs(destination));
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+			
 				//dest.Dispose();
 				
 			IsDoubleNavFinished = false;

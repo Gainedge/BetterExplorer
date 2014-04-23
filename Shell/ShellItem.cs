@@ -919,7 +919,7 @@ namespace BExplorer.Shell {
 				}
 			}
 		}
-
+		public bool IsInitialised { get; set; }
 		public System.IO.DriveInfo GetDriveInfo() {
 
 			if (IsDrive == true || IsNetDrive == true) {
