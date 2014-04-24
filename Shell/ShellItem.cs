@@ -384,7 +384,11 @@ namespace BExplorer.Shell {
 
 
 
-
+				if (result == IntPtr.Zero) { 
+					pidls = null;
+					Marshal.ReleaseComObject(ishellfolder);
+					return IExtractIconpwFlags.GIL_PERCLASS;
+				}
 				iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
 				str = new StringBuilder(512);
 				int index = -1;

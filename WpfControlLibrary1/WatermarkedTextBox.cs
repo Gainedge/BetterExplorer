@@ -48,6 +48,7 @@ namespace BetterExplorerControls
 		#region Initializer
 		public WatermarkedTextBox()
 		{
+			this.SetResourceReference(StyleProperty, typeof(TextBox));
 			Loaded += (s, ea) => ShowWatermark();
 		}
 		#endregion

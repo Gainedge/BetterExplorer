@@ -147,6 +147,31 @@ namespace BExplorer.Shell {
 		}
 	}
 
+	public class ItemDisplayedEventArgs : EventArgs, IDisposable
+	{
+		public ShellItem DisplayedItem { get; private set; }
+		public int DisplayedItemIndex { get; private set; }
+
+		public ItemDisplayedEventArgs(ShellItem item, int index)
+		{
+			this.DisplayedItem = item;
+			this.DisplayedItemIndex = index;
+		}
+
+		#region IDisposable Members
+
+		public void Dispose()
+		{
+			if (DisplayedItem != null)
+			{
+				DisplayedItem.Dispose();
+				DisplayedItem = null;
+			}
+		}
+
+		#endregion
+	}
+
 	public enum ItemUpdateType {
 		Renamed,
 		Created,
@@ -256,6 +281,16 @@ namespace BExplorer.Shell {
 		/// Occurs when the control gains focus
 		/// </summary>
 		public event EventHandler GotFocus;
+
+		public event EventHandler<ItemDisplayedEventArgs> ItemDisplayed;
+
+		private void OnItemDisplayed(ShellItem item, int index)
+		{
+			if (ItemDisplayed != null)
+			{
+				ItemDisplayed(this, new ItemDisplayedEventArgs(item, index));
+			}
+		}
 
 		/// <summary>
 		/// Occurs when the control loses focus
@@ -2058,10 +2093,10 @@ namespace BExplorer.Shell {
 
 											}
 
-											if (index == 0 && !sho.IsInitialised)
+											if (!sho.IsInitialised)
 											{
-												this.SelectItemByIndex(index);
 												sho.IsInitialised = true;
+												OnItemDisplayed(sho, index);
 											}
 																																	
 										}
