@@ -10,14 +10,24 @@ using System.Windows.Threading;
 using BExplorer.Shell;
 
 namespace BetterExplorerControls {
+	/*
+	Make this work like the normal File Info Popup
+	
+	File -> Right-Click -> Properties
+	*/
+
+
+	Finish!!!!
 
 	/// <summary> Interaction logic for PreviewPane.xaml </summary>
 	public partial class DetailsPane : UserControl, INotifyPropertyChanged {
 		public ShellView Browser;
-		private BitmapSource _thumbnail;
 		private ShellItem[] SelectedItems;
+		//private BitmapSource _thumbnail;
+		//public BitmapSource Thumbnail { get { return _thumbnail; } }
 
-		public BitmapSource Thumbnail { get { return _thumbnail; } }
+		public BitmapSource Thumbnail { get; private set; }
+
 
 		public String DisplayName {
 			get {
@@ -30,14 +40,12 @@ namespace BetterExplorerControls {
 
 		public String FileType {
 			get {
-        if (this.Browser != null && this.Browser.SelectedItems.Count() > 0)
-        {
+				if (this.Browser != null && this.Browser.SelectedItems.Count() > 0) {
 					return this.Browser.SelectedItems[0].GetPropertyValue(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 }, typeof(String)).Value.ToString();
-        }
-        else
-        {
-          return String.Empty;
-        }
+				}
+				else {
+					return String.Empty;
+				}
 				return string.Empty;
 			}
 		}
@@ -52,33 +60,28 @@ namespace BetterExplorerControls {
 			this.SizeChanged += PreviewPane_SizeChanged;
 		}
 
-    void PreviewPane_SizeChanged(object sender, SizeChangedEventArgs e)
-    {
+		void PreviewPane_SizeChanged(object sender, SizeChangedEventArgs e) {
 			if (this.ActualHeight == 0)
 				return;
-      //Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
-      //{
-        ShellItem selectedItemsFirst = null;
-				if (this.Browser != null && this.Browser.GetSelectedCount() == 1)
-        {
-          selectedItemsFirst = this.Browser.SelectedItems.First();
-          selectedItemsFirst.Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
-					selectedItemsFirst.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
-					selectedItemsFirst.Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
-          icon.Source = selectedItemsFirst.Thumbnail.BitmapSource;
-        }
+			//Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
+			//{
+			ShellItem selectedItemsFirst = null;
+			if (this.Browser != null && this.Browser.GetSelectedCount() == 1) {
+				selectedItemsFirst = this.Browser.SelectedItems.First();
+				selectedItemsFirst.Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
+				selectedItemsFirst.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
+				selectedItemsFirst.Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
+				icon.Source = selectedItemsFirst.Thumbnail.BitmapSource;
+			}
 
 			//}));
 		}
-    public void FillPreviewPane(ShellView browser)
-    {
+		public void FillPreviewPane(ShellView browser) {
 			if (this.Browser == null)
 				this.Browser = browser;
 
-			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
-					{
-						if (this.Browser.GetSelectedCount() == 1)
-						{
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+						if (this.Browser.GetSelectedCount() == 1) {
 							this.SelectedItems = this.Browser.SelectedItems.ToArray();
 							this.SelectedItems[0].Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
 							this.SelectedItems[0].Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
