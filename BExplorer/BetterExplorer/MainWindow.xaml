@@ -76,7 +76,6 @@
 				   CanCustomizeQuickAccessToolBar="True"
 				   CustomizeQuickAccessToolbar="TheRibbon_CustomizeQuickAccessToolbar"
 				   Focusable="False"
-				   GotFocus="TheStatusBar_GotFocus"
 				   IsCollapsedChanged="TheRibbon_IsCollapsedChanged"
 				   ItemAddedToQuickAccessToolbar="TheRibbon_ItemAddedToQuickAccessToolbar"
 				   ItemRemovedToQuickAccessToolbar="TheRibbon_ItemRemovedToQuickAccessToolbar"
@@ -2817,7 +2816,6 @@
 			HorizontalAlignment="Left"
 			VerticalAlignment="Top"
 			Click="btnUpLevel_Click"
-			GotFocus="TheStatusBar_GotFocus"
 			ToolTip="{DynamicResource txtLevelUp}">
 			<Button.Template>
 				<ControlTemplate TargetType="{x:Type Button}">
@@ -2865,8 +2863,7 @@
 		  Height="30"
 		  Margin="10,3,0,0"
 		  HorizontalAlignment="Left"
-		  VerticalAlignment="Top"
-		  GotFocus="TheStatusBar_GotFocus">
+		  VerticalAlignment="Top">
 
 			<Grid.Background>
 				<ImageBrush x:Name="Normal" ImageSource="/BetterExplorer;component/Images/back.png" />
@@ -3034,11 +3031,7 @@
 						  Margin="8,0,0,0"
 						  BeginSearch="edtSearchBox_BeginSearch_1"
 						  FiltersCleared="edtSearchBox_FiltersCleared"
-						  GotFocus="searchTextBox1_GotFocus"
 						  GotKeyboardFocus="searchTextBox1_GotKeyboardFocus"
-						  KeyUp="edtSearchBox_KeyUp"
-						  LostFocus="searchTextBox1_LostFocus"
-						  LostKeyboardFocus="searchTextBox1_LostKeyboardFocus"
 						  RequestCriteriaChange="edtSearchBox_RequestCriteriaChange" />
 			<GridSplitter x:Name="gridSplitter1"
 					Grid.Column="1"
@@ -3046,7 +3039,6 @@
 					HorizontalAlignment="Left"
 					Background="#01000000"
 					DragCompleted="gridSplitter1_DragCompleted"
-					GotFocus="TheStatusBar_GotFocus"
 					ResizeDirection="Columns">
 				<GridSplitter.ContextMenu>
 					<ContextMenu>
@@ -3089,7 +3081,6 @@
 				AllowDrop="True"
 				Background="Transparent"
 				Drop="tabControl1_Drop"
-				GotFocus="TheStatusBar_GotFocus"
 				ItemsSource="{Binding itbl}"
 				MouseDoubleClick="tabControl1_MouseDoubleClick"
 				MouseUp="tabControl1_MouseUp"
@@ -3187,9 +3178,8 @@
 		
 
 		<Ribbon:StatusBar x:Name="TheStatusBar"
-					  Grid.Row="8"
-					  ContextMenuClosing="TheStatusBar_ContextMenuClosing"
-					  GotFocus="TheStatusBar_GotFocus" Grid.ColumnSpan="2" Margin="0,0,0,-2">
+					  Grid.Row="8"					 
+					  Grid.ColumnSpan="2" Margin="0,0,0,-2">
 			<Ribbon:StatusBarItem x:Name="sbiItemsCount"
 							Title="Items Count"
 							HorizontalAlignment="Left"

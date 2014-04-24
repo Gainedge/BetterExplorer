@@ -222,7 +222,6 @@ namespace BetterExplorerControls {
 				SStartEnd.IsEnabled = SearchCriteriatext.Text.Length != 0 && !SearchCriteriatext.IsWatermarkShown;
 		}
 
-
 		private void SStartEnd_Click(object sender, RoutedEventArgs e) {
 			RaiseBeginSearchEvent();
 		}
@@ -252,6 +251,16 @@ namespace BetterExplorerControls {
 		private void a_Click(object sender, RoutedEventArgs e) {
 			OnCriteriaChangeRequested(new SearchRoutedEventArgs((string)((Fluent.MenuItem)sender).Header, e.RoutedEvent));
 		}
+
+
+		protected override void OnKeyUp(KeyEventArgs e) {
+			//base.OnKeyUp(e);
+			e.Handled = true;
+			if (e.Key == Key.Enter) {
+				RaiseBeginSearchEvent();
+			}
+		}
+
 		#endregion Control Events
 
 		#region Helpers

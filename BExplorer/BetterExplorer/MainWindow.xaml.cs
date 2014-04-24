@@ -1563,8 +1563,7 @@ namespace BetterExplorer {
 			string PathForDrop = ShellListView.CurrentFolder.ParsingName.Replace(@"\\", @"\");
 			foreach (string item in DropList) {
 				ShellItem o = new ShellItem(item);
-				JunctionPointUtils.JunctionPoint.Create(String.Format(@"{0}\{1}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY)),
-																																												o.ParsingName, true);
+				JunctionPointUtils.JunctionPoint.Create(String.Format(@"{0}\{1}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY)), o.ParsingName, true);
 				AddToLog(String.Format(@"Created Junction Point at {0}\{1} linked to {2}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY), o.ParsingName));
 			}
 		}
@@ -2017,10 +2016,9 @@ namespace BetterExplorer {
 												(Action)(() => {
 													this.beNotifyIcon.ShowBalloonTip("Information", String.Format("It is safe to remove {0}", item.LogicalDrive), Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
 													var tabsForRemove = tabControl1.Items.OfType<ClosableTabItem>()
-																																																																									 .Where(w => w.ShellObject.IsFileSystem &&
-																																																																																																	 Path.GetPathRoot(w.ShellObject.ParsingName).ToLowerInvariant() ==
-																																																																																																	 String.Format("{0}:\\", DriveLetter).ToLowerInvariant()).ToArray();
-
+															.Where(w => w.ShellObject.IsFileSystem &&
+															Path.GetPathRoot(w.ShellObject.ParsingName).ToLowerInvariant() ==
+															String.Format("{0}:\\", DriveLetter).ToLowerInvariant()).ToArray();
 													foreach (ClosableTabItem tab in tabsForRemove) {
 														CloseTab(tab, false);
 													}
@@ -4020,24 +4018,19 @@ namespace BetterExplorer {
 		private ShellItem BeforeSearchFolder;
 		Thread backgroundSearchThread;
 		// Helper method to do the search on a background thread
+
+		/*
 		internal void DoSimpleSearch(object arg) {
 			SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(arg.ToString());
-			ShellSearchFolder searchFolder =
-				new ShellSearchFolder(searchCondition, BeforeSearchFolder);
-
-
-
+			ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, BeforeSearchFolder);
 			ShellListView.Navigate(searchFolder);
-
 
 			if (BeforeSearchFolder != null) {
 				//Thread.Sleep(750);
 				//ShellListView.RefreshContents();
 			}
-
-
 		}
-
+		*/
 
 		void bw_DoWork(object sender, DoWorkEventArgs e) {
 			//ShellListView.Navigate((ShellSearchFolder)e.Argument);
@@ -4046,7 +4039,6 @@ namespace BetterExplorer {
 		public void DoSearch(string SearchCriteria) {
 			if (backgroundSearchThread != null)
 				backgroundSearchThread.Abort();
-
 
 			if (ShellListView.CurrentFolder.IsSearchFolder) {
 				if (BeforeSearchFolder == null) {
@@ -4058,13 +4050,19 @@ namespace BetterExplorer {
 			}
 
 			if (SearchCriteria != "") {
-				DoSimpleSearch(SearchCriteria);
+				SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(SearchCriteria);
+				ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, BeforeSearchFolder);
+				ShellListView.Navigate(searchFolder);
+
+				if (BeforeSearchFolder != null) {
+					//Thread.Sleep(750);
+					//ShellListView.RefreshContents();
+				}
 				//backgroundSearchThread = new Thread(new ParameterizedThreadStart(DoSimpleSearch));
 				//backgroundSearchThread.IsBackground = true;
 				//// ApartmentState.STA is required for COM
 				//backgroundSearchThread.SetApartmentState(ApartmentState.STA);
 				//backgroundSearchThread.Start(SearchCriteria);
-
 			}
 		}
 		private void searchTextBox1_Search(object sender, RoutedEventArgs e) {
@@ -5858,10 +5856,6 @@ namespace BetterExplorer {
 
 		#region IsBool Code
 
-		private void TheStatusBar_ContextMenuClosing(object sender, ContextMenuEventArgs e) {
-
-		}
-
 		private void RibbonWindow_Activated(object sender, EventArgs e) {
 			//if (!backstage.IsOpen)
 			//  ShellListView.SetExplorerFocus();
@@ -5909,20 +5903,11 @@ namespace BetterExplorer {
 			ShellListView.RefreshContents();
 		}
 
-		private void RibbonWindow_KeyUp(object sender, KeyEventArgs e) {			
+		private void RibbonWindow_KeyUp(object sender, KeyEventArgs e) {
 			if (e.Key == Key.Escape) {
 				breadcrumbBarControl1.ExitEditMode();
 				//ShellListView.IsCancelNavigation = true;
 			}
-		}
-
-		private void TheStatusBar_GotFocus(object sender, RoutedEventArgs e) {
-			//if (IsAfterRename)
-			//{
-			//    breadcrumbBarControl1.ExitEditMode();
-			//}
-			//if (!backstage.IsOpen)
-			//    ShellListView.SetExplorerFocus();
 		}
 
 		private void RibbonWindow_GotFocus(object sender, RoutedEventArgs e) {
@@ -6115,41 +6100,11 @@ namespace BetterExplorer {
 
 		#region Search
 
-		private void searchTextBox1_PreviewMouseUp(object sender, MouseButtonEventArgs e) {
-			//e.Handled = true;
-			//searchTextBox1.Focus();
-		}
-
-		private void searchTextBox1_MouseDown(object sender, MouseButtonEventArgs e) {
-
-		}
-
-		private void searchTextBox1_GotFocus(object sender, RoutedEventArgs e) {
-			e.Handled = true;
-
-		}
-
-		private void searchTextBox1_IsKeyboardFocusedChanged(object sender, DependencyPropertyChangedEventArgs e) {
-
-
-		}
-
-		private void searchTextBox1_LostFocus(object sender, RoutedEventArgs e) {
-			e.Handled = true;
-
-		}
-
-		private void searchTextBox1_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			e.Handled = true;
-
-		}
-
 		private void searchTextBox1_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
 			ctgSearch.Visibility = System.Windows.Visibility.Visible;
 			if (!TheRibbon.IsMinimized) {
 				TheRibbon.SelectedTabItem = tbSearch;
 			}
-
 		}
 
 		private void MenuItem_Checked(object sender, RoutedEventArgs e) {
@@ -6162,7 +6117,6 @@ namespace BetterExplorer {
 						break;
 					}
 				}
-
 			}
 
 			((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
@@ -6178,8 +6132,8 @@ namespace BetterExplorer {
 						break;
 					}
 				}
-
 			}
+
 			((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
 		}
 
@@ -6194,6 +6148,8 @@ namespace BetterExplorer {
 		}
 
 		private void btnSearch_Click(object sender, RoutedEventArgs e) {
+			DoSearch(edtSearchBox.FullSearchTerms);
+
 			//string SearchStr = "";
 			//string CondStr = "";
 			//string KindStr = "";
@@ -6248,24 +6204,7 @@ namespace BetterExplorer {
 			//SearchStr += KindStr;
 			//SearchStr += OtherStr;
 
-			//DoSearch(SearchStr);
-
-			DoSearch(edtSearchBox.FullSearchTerms);
-		}
-
-		private void searchTextBox1_MouseMove(object sender, MouseEventArgs e) {
-			e.Handled = true;
-		}
-
-		private void searchTextBox1_MouseUp(object sender, MouseButtonEventArgs e) {
-			e.Handled = true;
-		}
-
-		private void edtSearchBox_KeyUp(object sender, KeyEventArgs e) {
-			e.Handled = true;
-			if (e.Key == Key.Enter) {
-				DoSearch(edtSearchBox.FullSearchTerms);
-			}
+			//DoSearch(SearchStr);			
 		}
 
 		private void edtSearchBox_BeginSearch_1(object sender, SearchRoutedEventArgs e) {
@@ -6310,7 +6249,19 @@ namespace BetterExplorer {
 		}
 
 		private void edtSearchBox_FiltersCleared(object sender, EventArgs e) {
+			//Aaron Campf
 			scSize.IsChecked = false;
+
+			foreach (var item in scSize.Items) { //.OfType<MenuItem>()
+				try {
+					(item as MenuItem).IsChecked = false;
+				}
+				catch {
+
+				}
+			}
+
+			/*
 			foreach (object item in scSize.Items) {
 				try {
 					(item as MenuItem).IsChecked = false;
@@ -6319,6 +6270,7 @@ namespace BetterExplorer {
 
 				}
 			}
+			*/
 			ExtToggle.IsChecked = false;
 			AuthorToggle.IsChecked = false;
 			SubjectToggle.IsChecked = false;
@@ -6414,6 +6366,26 @@ namespace BetterExplorer {
 		}
 
 		private void edtSearchBox_RequestCriteriaChange(object sender, SearchRoutedEventArgs e) {
+			//TODO: Test this new, clearer code
+			if (e.SearchTerms.StartsWith("author:"))
+				AuthorToggle_Click(sender, new RoutedEventArgs(e.RoutedEvent));
+			else if (e.SearchTerms.StartsWith("ext:"))
+				ToggleButton_Click_1(sender, new RoutedEventArgs(e.RoutedEvent));
+			else if (e.SearchTerms.StartsWith("subject:"))
+				SubjectToggle_Click(sender, new RoutedEventArgs(e.RoutedEvent));
+			else if (e.SearchTerms.StartsWith("size:"))
+				miCustomSize_Click(sender, new RoutedEventArgs(e.RoutedEvent));
+			else if (e.SearchTerms.StartsWith("date:"))
+				dcCustomTime_Click(sender, new RoutedEventArgs(e.RoutedEvent));
+			else if (e.SearchTerms.StartsWith("modified:"))
+				dmCustomTime_Click(sender, new RoutedEventArgs(e.RoutedEvent));
+			else {
+				var T = "You have discovered an error in this program. Please tell us which filter you were trying to edit and any other details we should know. \r\n\r\nYour filter: ";
+				MessageBox.Show(T + e.SearchTerms, "Oops! Found a Bug!", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+
+
+			/*
 			if (e.SearchTerms.StartsWith("author:")) {
 				AuthorToggle_Click(sender, new RoutedEventArgs(e.RoutedEvent));
 			}
@@ -6446,6 +6418,7 @@ namespace BetterExplorer {
 					}
 				}
 			}
+			*/
 		}
 
 		private void dcCustomTime_Click(object sender, RoutedEventArgs e) {
@@ -6455,16 +6428,11 @@ namespace BetterExplorer {
 			//star.textBlock1.Text = "Set Date Created Filter";
 			star.ShowDialog();
 
-			if (star.Confirm == true) {
+			if (star.Confirm) {
 				edtSearchBox.DateCondition = "date:" + star.DateCriteria;
 			}
 
-			if (edtSearchBox.UseDateCondition == true) {
-				dcsplit.IsChecked = true;
-			}
-			else {
-				dcsplit.IsChecked = false;
-			}
+			dcsplit.IsChecked = edtSearchBox.UseDateCondition;
 		}
 
 		private void dmCustomTime_Click(object sender, RoutedEventArgs e) {
@@ -6474,16 +6442,11 @@ namespace BetterExplorer {
 			//star.textBlock1.Text = "Set Date Modified Filter";
 			star.ShowDialog();
 
-			if (star.Confirm == true) {
+			if (star.Confirm) {
 				edtSearchBox.ModifiedCondition = "modified:" + star.DateCriteria;
 			}
 
-			if (edtSearchBox.UseModifiedCondition == true) {
-				dmsplit.IsChecked = true;
-			}
-			else {
-				dmsplit.IsChecked = false;
-			}
+			dmsplit.IsChecked = edtSearchBox.UseModifiedCondition;
 		}
 
 		#endregion
@@ -6710,8 +6673,6 @@ namespace BetterExplorer {
 					//LastTabIndex = itb.Index;
 					//CurrentTabIndex = LastTabIndex;
 					if (ShellListView.CurrentFolder == null || itb.ShellObject.ParsingName != ShellListView.CurrentFolder.ParsingName) {
-
-
 						if (!Keyboard.IsKeyDown(Key.Tab)) {
 							ShellListView.Navigate(itb.ShellObject);
 						}
@@ -6721,7 +6682,6 @@ namespace BetterExplorer {
 							t.Tick += new EventHandler(t_Tick);
 							t.Start();
 						}
-
 					}
 
 					itb.BringIntoView();
@@ -6818,7 +6778,6 @@ namespace BetterExplorer {
 				tabControl1.Items.Remove(thetab);
 			}
 			else {
-
 				for (int i = thetab.Index + 1; i < tabControl1.Items.Count; i++) {
 					ClosableTabItem tab = tabControl1.Items[i] as ClosableTabItem;
 					tab.Index = tab.Index - 1;
@@ -6828,7 +6787,7 @@ namespace BetterExplorer {
 
 			ConstructMoveToCopyToMenu();
 
-			if (allowreopening == true) {
+			if (allowreopening) {
 				reopenabletabs.Add(thetab.log);
 				btnUndoClose.IsEnabled = true;
 				foreach (ClosableTabItem item in this.tabControl1.Items) {
@@ -6865,7 +6824,6 @@ namespace BetterExplorer {
 							t.Tick += new EventHandler(t_Tick);
 							t.Start();
 						}
-
 					}
 				}
 				catch (StackOverflowException) {
@@ -6940,9 +6898,7 @@ namespace BetterExplorer {
 
 		void t_Tick(object sender, EventArgs e) {
 			if (!Keyboard.IsKeyDown(Key.Tab)) {
-
 				ShellListView.Navigate((sender as System.Windows.Forms.Timer).Tag as ShellItem);
-
 				(sender as System.Windows.Forms.Timer).Stop();
 			}
 		}
@@ -6961,7 +6917,6 @@ namespace BetterExplorer {
 			int CurSelIndex = tabControl1.SelectedIndex;
 			if (tabControl1.SelectedIndex == 0) {
 				tabControl1.SelectedItem = tabControl1.Items[1];
-
 			}
 			else {
 				tabControl1.SelectedItem = tabControl1.Items[CurSelIndex - 1];
@@ -7026,12 +6981,7 @@ namespace BetterExplorer {
 
 			MenuItem miundocloser = new MenuItem();
 			miundocloser.Header = "Undo close tab";
-			if (btnUndoClose.IsEnabled == true) {
-				miundocloser.IsEnabled = true;
-			}
-			else {
-				miundocloser.IsEnabled = false;
-			}
+			miundocloser.IsEnabled = btnUndoClose.IsEnabled;
 			miundocloser.Tag = "UCTI";
 			miundocloser.Click += new RoutedEventHandler(miundocloser_Click);
 			tabitem.mnu.Items.Add(miundocloser);
@@ -7099,22 +7049,18 @@ namespace BetterExplorer {
 
 			if (CloseFirstTab) {
 				foreach (ClosableTabItem item in tabs) {
-
 					CloseTab(item);
 				}
 			}
 			else {
 				foreach (ClosableTabItem item in tabs) {
-
 					if (item.Index != 0) {
 						CloseTab(item);
 					}
-
 				}
 			}
 
 			tabs = null;
-
 		}
 
 
@@ -7125,16 +7071,10 @@ namespace BetterExplorer {
 				tabs.Add(it);
 			}
 
-
 			foreach (ClosableTabItem item in tabs) {
-
-				if (true) {
-					if (item != tabitem) {
-						CloseTab(item);
-					}
-
+				if (item != tabitem) {
+					CloseTab(item);
 				}
-
 			}
 
 			tabs = null;
@@ -7269,10 +7209,7 @@ namespace BetterExplorer {
 					//LastTabIndex = itb.Index;
 					//CurrentTabIndex = LastTabIndex;
 					if (itb.ShellObject != ShellListView.CurrentFolder) {
-
-
 						if (!Keyboard.IsKeyDown(Key.Tab)) {
-
 							ShellListView.Navigate(itb.ShellObject);
 						}
 						else {
@@ -7281,10 +7218,7 @@ namespace BetterExplorer {
 							t.Tick += new EventHandler(t_Tick);
 							t.Start();
 						}
-
 					}
-
-
 
 					itb.BringIntoView();
 				}
@@ -7312,7 +7246,6 @@ namespace BetterExplorer {
 		}
 
 		void newt_Drop(object sender, DragEventArgs e) {
-
 			e.Handled = true;
 			var tabItemTarget = e.Source as ClosableTabItem;
 
@@ -7341,15 +7274,12 @@ namespace BetterExplorer {
 						tabControl.SelectedIndex = sourceIndex;
 					else if (tabState == 0)
 						tabControl.SelectedIndex = targetIndex;
-
 				}
 			}
 			else {
-
 				System.Windows.Point pt = e.GetPosition(sender as IInputElement);
 
 				if ((sender as ClosableTabItem).ShellObject.IsFileSystem) {
-
 					if ((e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey) {
 						e.Effects = DragDropEffects.Copy;
 					}
@@ -7453,7 +7383,6 @@ namespace BetterExplorer {
 			if ((sender as ClosableTabItem).ShellObject.IsFileSystem) {
 				if ((e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey) {
 					e.Effects = DragDropEffects.Copy;
-
 				}
 				else {
 					//if (Path.GetPathRoot((sender as ClosableTabItem).Path.ParsingName) ==
@@ -7519,7 +7448,6 @@ namespace BetterExplorer {
 				if (hitTestList[0].GetType().Name.Equals("ScrollViewer") && hitTestList.Count == 2) {
 					NewTab();
 					if (StartUpLocation.IndexOf("::") == 0) {
-
 						ShellListView.Navigate(new ShellItem("shell:" + StartUpLocation));
 					}
 					else
@@ -7530,11 +7458,12 @@ namespace BetterExplorer {
 					if (hitTestList[2].GetType().Name == "Grid") {
 						NewTab();
 						if (StartUpLocation.IndexOf("::") == 0) {
-
 							ShellListView.Navigate(new ShellItem("shell:" + StartUpLocation));
 						}
-						else
+						else {
 							ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
+						}
+
 						(tabControl1.SelectedItem as ClosableTabItem).ShellObject = ShellListView.CurrentFolder;
 					}
 				}
@@ -7601,8 +7530,8 @@ namespace BetterExplorer {
 			BetterExplorer.Tabs.NameTabList ntl = new BetterExplorer.Tabs.NameTabList();
 			ntl.Owner = this;
 			ntl.ShowDialog();
-			if (ntl.dialogresult == true) {
-				if (System.IO.Directory.Exists(sstdir) == false) {
+			if (ntl.dialogresult) {
+				if (!System.IO.Directory.Exists(sstdir)) {
 					System.IO.Directory.CreateDirectory(sstdir);
 				}
 				SavedTabsList.SaveTabList(list, String.Format("{0}{1}.txt", sstdir, ntl.textBox1.Text));
@@ -7701,7 +7630,6 @@ namespace BetterExplorer {
 								if (!(linkobj.IsFolder && obj.IsFileSystem))
 									MessageBox.Show("Hey... this isn't a folder! We can't make a new tab out of this file.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
 							}
-
 						}
 						else {
 							itemPath = item;
@@ -7712,7 +7640,7 @@ namespace BetterExplorer {
 							}
 						}
 
-						if (isarchive == false) {
+						if (!isarchive) {
 							NewTab(itemPath);
 						}
 						else {
@@ -7725,10 +7653,7 @@ namespace BetterExplorer {
 				}
 			}
 			else {
-				if (e.Data.GetDataPresent(typeof(ClosableTabItem))) {
-
-				}
-				else {
+				if (!e.Data.GetDataPresent(typeof(ClosableTabItem))) {
 					MessageBox.Show("It appears that you tried to drag something to the blank area of the tab bar, and that something was not a folder. Drag a folder here to open it in a new tab.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 				}
 			}
@@ -7833,7 +7758,7 @@ namespace BetterExplorer {
 			foreach (string item in headers) {
 				bool found = false;
 				foreach (IRibbonControl thing in items) {
-					if (found == false) {
+					if (!found) {
 						if (thing.Header as string == item) {
 							rb.Add(thing);
 							found = true;
@@ -8007,9 +7932,6 @@ namespace BetterExplorer {
 				IRibbonControl ri;
 				if (dic.TryGetValue(name, out ri)) {
 					rb.Add(ri);
-				}
-				else {
-
 				}
 			}
 
@@ -8236,8 +8158,7 @@ namespace BetterExplorer {
 			}
 
 			if (ShellListView.GetSelectedCount() == 0) {
-				string loc = KnownFolders.StartMenu.ParsingName + @"\" +
-												ShellListView.CurrentFolder.DisplayName + ".lnk";
+				string loc = KnownFolders.StartMenu.ParsingName + @"\" + ShellListView.CurrentFolder.DisplayName + ".lnk";
 				ShellLink link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.CurrentFolder.ParsingName;
@@ -8318,8 +8239,8 @@ namespace BetterExplorer {
 					case Key.Down:
 						keyText = "{DOWN}";
 						break;
-
 				}
+
 				System.Windows.Forms.SendKeys.SendWait(keyText);
 			}
 		}
