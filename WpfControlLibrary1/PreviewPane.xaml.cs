@@ -17,7 +17,7 @@ namespace BetterExplorerControls {
 	*/
 
 
-	Finish!!!!
+	//Finish!!!!
 
 	/// <summary> Interaction logic for PreviewPane.xaml </summary>
 	public partial class DetailsPane : UserControl, INotifyPropertyChanged {
