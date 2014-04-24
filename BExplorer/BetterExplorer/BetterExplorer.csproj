@@ -1014,6 +1014,12 @@
     <Resource Include="Images\clear16.png" />
     <Resource Include="Images\clear32.png" />
     <Resource Include="Images\clear48.png" />
+    <Resource Include="Images\cmd16.png" />
+    <Resource Include="Images\cmd32.png" />
+    <Resource Include="Images\cmd48.png" />
+    <Resource Include="Images\powershell16.png" />
+    <Resource Include="Images\powershell32.png" />
+    <Resource Include="Images\powershell48.png" />
     <Content Include="Ionic.Zip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1179,7 +1185,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.7\tools\Microsoft.Bcl.Build.targets" />

@@ -3163,10 +3163,13 @@
 				<RowDefinition Height="*"/>
 			</Grid.RowDefinitions>
 			<ToolBar Grid.Row="0" ToolBarTray.IsLocked="True" SizeChanged="ToolBar_SizeChanged">
+				<Ribbon:ToggleButton GroupName="CMDP" Header="CMD" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Icon="Images\cmd16.png"/>
+				<Ribbon:ToggleButton GroupName="CMDP" Header="PowerShell" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Icon="Images\powershell16.png"/>
+				<Separator/>
 				<Ribbon:SplitButton x:Name="btnConsoleHistory" Header="History" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Icon="Images\history16.png"/>
 				<Ribbon:Button Header="Clear" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Icon="Images\clear16.png" Click="ConsoleClear_Click"/>
 				<Separator/>
-				<Ribbon:ToggleButton Header="IsSynchronised" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Icon="Images\Sync16.png"/>
+				<Ribbon:ToggleButton Header="Sync" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Icon="Images\Sync16.png"/>
 			</ToolBar>
 			<Helper:NoFlickerWindowsFormsHost x:Name="ctrlConsoleHost"
 									  Grid.Row="1"
