@@ -21,50 +21,64 @@ namespace BetterExplorerControls {
 
 	/// <summary> Interaction logic for PreviewPane.xaml </summary>
 	public partial class DetailsPane : UserControl, INotifyPropertyChanged {
+		//private ShellItem[] SelectedItems;
+		public event PropertyChangedEventHandler PropertyChanged;
 		public ShellView Browser;
-		private ShellItem[] SelectedItems;
-		//private BitmapSource _thumbnail;
-		//public BitmapSource Thumbnail { get { return _thumbnail; } }
+		private BitmapSource Thumbnail { get; set; }
+		private ShellItem SelectedItem { get { return this.Browser != null && this.Browser.GetSelectedCount() > 0 ? this.Browser.SelectedItems[0] : null; } }
+		private String DisplayName { get { return SelectedItem != null ? SelectedItem.DisplayName : String.Empty; } }
+		private String FileSize { get { return "FileSize: Not Coded"; } }
+		private String FileCreated { get { return "FileCreated: Not Coded"; } }
+		private String FileModified { get { return "FileModified: Not Coded"; } }
 
-		public BitmapSource Thumbnail { get; private set; }
 
-
-		public String DisplayName {
+		private String FileType {
 			get {
-				if (this.Browser != null && this.Browser.GetSelectedCount() > 0)
-					return this.Browser.SelectedItems[0].DisplayName;
-				else
+				if (SelectedItem == null) {
 					return String.Empty;
+				}
+
+				return SelectedItem.GetPropertyValue(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 }, typeof(String)).Value.ToString();
 			}
 		}
 
-		public String FileType {
-			get {
-				if (this.Browser != null && this.Browser.SelectedItems.Count() > 0) {
-					return this.Browser.SelectedItems[0].GetPropertyValue(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 }, typeof(String)).Value.ToString();
-				}
-				else {
-					return String.Empty;
-				}
-				return string.Empty;
-			}
-		}
+
+
 
 		public DetailsPane() {
 			InitializeComponent();
 			DataContext = this;
-			this.Loaded += PreviewPane_Loaded;
+			this.Loaded += (sender, e) => { this.SizeChanged += PreviewPane_SizeChanged; };
 		}
 
-		private void PreviewPane_Loaded(object sender, RoutedEventArgs e) {
-			this.SizeChanged += PreviewPane_SizeChanged;
+		private void Setup_PreviewPane() {
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+				if (this.Browser.GetSelectedCount() == 1) {
+					this.SelectedItem.Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
+					this.SelectedItem.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
+					this.SelectedItem.Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
+					icon.Source = this.SelectedItem.Thumbnail.BitmapSource;
+
+					txtDisplayName.Text = DisplayName;
+					txtFileType.Text = FileType;
+					txtFileSize.Text = FileSize;
+
+					txtFileCreated.Text = FileCreated;
+					txtFileModified.Text = FileModified;
+				}
+			}));
 		}
 
-		void PreviewPane_SizeChanged(object sender, SizeChangedEventArgs e) {
+
+		private void PreviewPane_SizeChanged(object sender, SizeChangedEventArgs e) {
 			if (this.ActualHeight == 0)
 				return;
+
+			Setup_PreviewPane();
 			//Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
 			//{
+
+			/*
 			ShellItem selectedItemsFirst = null;
 			if (this.Browser != null && this.Browser.GetSelectedCount() == 1) {
 				selectedItemsFirst = this.Browser.SelectedItems.First();
@@ -72,7 +86,11 @@ namespace BetterExplorerControls {
 				selectedItemsFirst.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
 				selectedItemsFirst.Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
 				icon.Source = selectedItemsFirst.Thumbnail.BitmapSource;
+
+
+				txtDisplayName.Text = DisplayName;
 			}
+			*/
 
 			//}));
 		}
@@ -80,17 +98,20 @@ namespace BetterExplorerControls {
 			if (this.Browser == null)
 				this.Browser = browser;
 
+			Setup_PreviewPane();
+			/*
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-						if (this.Browser.GetSelectedCount() == 1) {
-							this.SelectedItems = this.Browser.SelectedItems.ToArray();
-							this.SelectedItems[0].Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
-							this.SelectedItems[0].Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
-							this.SelectedItems[0].Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
-							icon.Source = this.SelectedItems[0].Thumbnail.BitmapSource;
-						}
-					}));
-		}
+				if (this.Browser.GetSelectedCount() == 1) {
+					this.SelectedItems = this.Browser.SelectedItems.ToArray();
+					this.SelectedItems[0].Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
+					this.SelectedItems[0].Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
+					this.SelectedItems[0].Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
+					icon.Source = this.SelectedItems[0].Thumbnail.BitmapSource;
 
-		public event PropertyChangedEventHandler PropertyChanged;
+					txtDisplayName.Text = DisplayName;
+				}
+			}));
+			*/
+		}
 	}
 }
