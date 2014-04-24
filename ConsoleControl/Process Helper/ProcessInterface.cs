@@ -5,6 +5,7 @@ using System.Text;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace ProcessInterface {
 	/// <summary>
@@ -132,7 +133,8 @@ namespace ProcessInterface {
 		}
 
 		#endregion
-
+		[DllImport("kernel32.dll")]
+		static extern bool SetConsoleOutputCP(uint wCodePageID);
 
 		#region Public Methods
 
@@ -141,7 +143,7 @@ namespace ProcessInterface {
 		/// </summary>
 		/// <param name="fileName">Name of the file.</param>
 		/// <param name="arguments">The arguments.</param>
-		public void StartProcess(string fileName, string arguments) {
+		public IntPtr StartProcess(string fileName, string arguments) {
 			//  Create the process start info.
 			var processStartInfo = new ProcessStartInfo(fileName, arguments);
 
@@ -151,6 +153,7 @@ namespace ProcessInterface {
 			processStartInfo.CreateNoWindow = true;
 
 			//  Specify redirection.
+			processStartInfo.StandardOutputEncoding = Encoding.UTF8;
 			processStartInfo.RedirectStandardError = true;
 			processStartInfo.RedirectStandardInput = true;
 			processStartInfo.RedirectStandardOutput = true;
@@ -169,7 +172,7 @@ namespace ProcessInterface {
 				//  Trace the exception.
 				Trace.WriteLine("Failed to start process " + fileName + " with arguments '" + arguments + "'");
 				Trace.WriteLine(e.ToString());
-				return;
+				return IntPtr.Zero;
 			}
 
 			//  Store name and arguments.
@@ -178,12 +181,13 @@ namespace ProcessInterface {
 
 			//  Create the readers and writers.
 			inputWriter = Process.StandardInput;
-			outputReader = TextReader.Synchronized(Process.StandardOutput);
+			outputReader = TextReader.Synchronized(new StreamReader(Process.StandardOutput.BaseStream, Encoding.UTF8));
 			errorReader = TextReader.Synchronized(Process.StandardError);
 
 			//  Run the workers that read output and error.
 			outputWorker.RunWorkerAsync();
 			errorWorker.RunWorkerAsync();
+			return Process.Handle;
 		}
 
 		/// <summary>

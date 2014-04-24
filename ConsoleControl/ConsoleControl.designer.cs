@@ -38,11 +38,12 @@
 			this.richTextBoxConsole.BackColor = System.Drawing.Color.Black;
 			this.richTextBoxConsole.ContextMenuStrip = this.contextMenuStrip1;
 			this.richTextBoxConsole.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.richTextBoxConsole.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.richTextBoxConsole.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.richTextBoxConsole.ForeColor = System.Drawing.Color.White;
 			this.richTextBoxConsole.Location = new System.Drawing.Point(0, 0);
 			this.richTextBoxConsole.Name = "richTextBoxConsole";
 			this.richTextBoxConsole.ReadOnly = true;
+			this.richTextBoxConsole.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
 			this.richTextBoxConsole.Size = new System.Drawing.Size(150, 150);
 			this.richTextBoxConsole.TabIndex = 0;
 			this.richTextBoxConsole.Text = "";

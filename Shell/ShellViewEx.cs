@@ -292,6 +292,18 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		public event EventHandler<NavigatingEventArgs> Navigating;
+
+		/// <summary>
+		/// Triggers the Navigating event.
+		/// </summary>
+		public virtual void OnNavigating(NavigatingEventArgs ea)
+		{
+			EventHandler<NavigatingEventArgs> handler = Navigating;
+			if (handler != null)
+				handler(this, ea);
+		}
+
 		/// <summary>
 		/// Occurs when the control loses focus
 		/// </summary>
@@ -2702,6 +2714,7 @@ namespace BExplorer.Shell {
 		}
 
 		public void Navigate(ShellItem destination, Boolean isReload = false) {
+			this.OnNavigating(new NavigatingEventArgs(destination));
 			if (destination == null)
 				return;
 			if (this.CurrentFolder != null) {

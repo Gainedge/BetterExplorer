@@ -3157,18 +3157,31 @@
 				  Height="2"
 				  HorizontalAlignment="Stretch" Grid.ColumnSpan="2" />
 
-		<Helper:NoFlickerWindowsFormsHost x:Name="ctrlConsoleHost"
-									  Grid.Row="6"
+		<Grid Grid.Row="6" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Background="White">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<ToolBar Grid.Row="0" ToolBarTray.IsLocked="True" SizeChanged="ToolBar_SizeChanged">
+				<Ribbon:SplitButton x:Name="btnConsoleHistory" Header="History" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Icon="Images\history16.png"/>
+				<Ribbon:Button Header="Clear" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Icon="Images\clear16.png" Click="ConsoleClear_Click"/>
+				<Separator/>
+				<Ribbon:ToggleButton Header="IsSynchronised" Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Icon="Images\Sync16.png"/>
+			</ToolBar>
+			<Helper:NoFlickerWindowsFormsHost x:Name="ctrlConsoleHost"
+									  Grid.Row="1"
 									  VerticalAlignment="Stretch"
 									  Background="White" Grid.ColumnSpan="2">
-			<console:ConsoleControl x:Name="ctrlConsole"
-									BackColor="Black"
+				<console:ConsoleControl x:Name="ctrlConsole"
+									BackColor="Black" OnConsoleInput="ctrlConsole_OnConsoleInput"
 									/>
-			<!--
+				<!--
 									SendKeyboardCommandsToProcess="True" 
 									OnConsoleInput="ctrlConsole_OnConsoleInput"
 									-->
-		</Helper:NoFlickerWindowsFormsHost>
+			</Helper:NoFlickerWindowsFormsHost>
+		</Grid>
+		
 
 		<Ribbon:StatusBar x:Name="TheStatusBar"
 					  Grid.Row="8"

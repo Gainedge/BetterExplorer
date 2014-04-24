@@ -161,7 +161,7 @@ namespace BetterExplorer
             }
         }
 
-        public String[] SelectedItems { get; set; }
+        public List<String> SelectedItems { get; set; }
         public Fluent.ContextMenu mnu = null;
         private System.Windows.Controls.Button CloseButton;
         public override void OnApplyTemplate()

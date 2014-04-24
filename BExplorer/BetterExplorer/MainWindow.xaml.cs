@@ -2815,6 +2815,7 @@ namespace BetterExplorer {
 			ShellListView.KeyJumpTimerDone += ShellListView_KeyJumpTimerDone;
 			ShellListView.ItemMiddleClick += ShellListView_ItemMiddleClick;
 			ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
+			ShellListView.Navigating += ShellListView_Navigating;
 			this.ShellTree.NodeClick += ShellTree_NodeClick;
 			//ShellListView.SelectionChanged += ExplorerBrowserControl_SelectionChanged;
 			////ShellListView.NavigationComplete += Explorer_NavigationComplete;
@@ -2850,15 +2851,26 @@ namespace BetterExplorer {
 			//ShellListView.Height = (int)ShellVView.ActualHeight;
 		}
 
+		void ShellListView_Navigating(object sender, NavigatingEventArgs e)
+		{
+			var tab = (this.tabControl1.SelectedItem as ClosableTabItem);
+			if (tab != null &&(tab.SelectedItems == null || tab.SelectedItems.Count() == 0))
+			{
+				tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+			}
+		}
+
 		void ShellListView_ItemDisplayed(object sender, ItemDisplayedEventArgs e)
 		{
 			var selectedItem = this.tabControl1.SelectedItem as ClosableTabItem;
 			if (selectedItem != null)
 			{
 				var selectedPaths = selectedItem.SelectedItems;
-				if (selectedPaths != null && selectedPaths.Contains(e.DisplayedItem.ParsingName))
+        var path = e.DisplayedItem.ParsingName;
+				if (selectedPaths != null && selectedPaths.Contains(path))
 				{
 					this.ShellListView.SelectItemByIndex(e.DisplayedItemIndex);
+					selectedPaths.Remove(path);
 				}
 			}
 		}
@@ -3662,7 +3674,8 @@ namespace BetterExplorer {
 			//var k = ShellListView.ShowCheckboxes;
 			try {
 				int explorerSelectedItemsCount = 0;
-				ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+				if (this.IsConsoleShown)
+					ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
 
 				Task.Run(() => {
 					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() => {
@@ -6949,11 +6962,11 @@ namespace BetterExplorer {
 		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
 		private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			try {
-				if (e.RemovedItems.Count > 0) {
-					var item = tabControl1.Items.OfType<ClosableTabItem>().Where(c => c == e.RemovedItems[0]).SingleOrDefault();
-					if (item != null)
-						item.SelectedItems = ShellListView.SelectedItems.Select(c => c.ParsingName).ToArray();
-				}
+				//if (e.RemovedItems.Count > 0) {
+				//	var item = tabControl1.Items.OfType<ClosableTabItem>().Where(c => c == e.RemovedItems[0]).SingleOrDefault();
+				//	if (item != null)
+				//		item.SelectedItems = ShellListView.SelectedItems.Select(c => c.ParsingName).ToArray();
+				//}
 				if (e.AddedItems.Count > 0 && (e.AddedItems[0] as ClosableTabItem).Index == tabControl1.Items.Count - 1) {
 					tabControl1.Items.OfType<ClosableTabItem>().Last().BringIntoView();
 				}
@@ -7300,7 +7313,7 @@ namespace BetterExplorer {
 
 
 						if (!Keyboard.IsKeyDown(Key.Tab)) {
-
+							
 							ShellListView.Navigate(itb.ShellObject);
 						}
 						else {
@@ -8359,6 +8372,46 @@ namespace BetterExplorer {
 
 		private void ShellViewHost_GotFocus(object sender, RoutedEventArgs e) {
 
+		}
+
+		private void ToolBar_SizeChanged(object sender, SizeChangedEventArgs e)
+		{
+			ToolBar toolBar = sender as ToolBar;
+			var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
+			if (overflowGrid != null)
+			{
+				overflowGrid.Visibility = toolBar.HasOverflowItems ? Visibility.Visible : Visibility.Collapsed;
+			}
+
+			var mainPanelBorder = toolBar.Template.FindName("MainPanelBorder", toolBar) as FrameworkElement;
+			if (mainPanelBorder != null)
+			{
+				var defaultMargin = new Thickness(0, 0, 11, 0);
+				mainPanelBorder.Margin = toolBar.HasOverflowItems ? defaultMargin : new Thickness(0);
+			}
+		}
+
+		private void ctrlConsole_OnConsoleInput(object sender, ConsoleControl.ConsoleEventArgs args)
+		{
+			if (args.Content.Trim().ToLowerInvariant().StartsWith("cd"))
+			{
+				this.ShellListView.Navigate(new ShellItem(args.Content.ToLowerInvariant().Replace("cd", String.Empty).Replace("/d",String.Empty).Trim()));
+			}
+			Fluent.MenuItem cmi = new MenuItem();
+			cmi.Header = args.Content;
+			cmi.Click += cmi_Click;
+			this.btnConsoleHistory.Items.Add(cmi);
+		}
+
+		void cmi_Click(object sender, RoutedEventArgs e)
+		{
+			var item = sender as Fluent.MenuItem;
+			this.ctrlConsole.WriteInput(item.Header.ToString(), System.Drawing.Color.Blue, false);
+		}
+
+		private void ConsoleClear_Click(object sender, RoutedEventArgs e)
+		{
+			this.ctrlConsole.ClearConsole();
 		}
 
 	}

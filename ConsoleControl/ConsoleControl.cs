@@ -49,10 +49,16 @@ namespace ConsoleControl {
 		/// <summary> The is input enabled flag. </summary>
 		private bool isInputEnabled = true;
 
+		private bool _ShouldClear = true;
+
+		private bool _IsCodepageSet = false;
+
 		/// <summary>
 		/// The last input string (used so that we can make sure we don't echo input twice).
 		/// </summary>
 		private string lastInput;
+
+		private IntPtr _cmdhandle;
 
 		/// <summary> Gets or sets a value indicating whether this instance is input enabled. </summary>
 		/// <value> <c>true</c> if this instance is input enabled; otherwise, <c>false</c>. </value>
@@ -73,7 +79,7 @@ namespace ConsoleControl {
 		private event ConsoleEventHanlder OnConsoleOutput;
 
 		/// <summary> Occurs when console input is produced. </summary>
-		private event ConsoleEventHanlder OnConsoleInput;
+		public event ConsoleEventHanlder OnConsoleInput;
 
 		/// <summary> Gets the process interface. </summary>
 		[Browsable(false)]
@@ -111,6 +117,8 @@ namespace ConsoleControl {
 		[Category("Console Control"), Description("Show diagnostic information, such as exceptions.")]
 		public bool ShowDiagnostics { get; set; }
 
+		public String LastLinePath { get; set; }
+
 
 
 
@@ -128,10 +136,7 @@ namespace ConsoleControl {
 		}
 
 		private void btnClear_Click(object sender, EventArgs e) {
-			//richTextBoxConsole.Clear();
-			//richTextBoxConsole.Text = lastInput;
-			//richTextBoxConsole.Text = NewestFolder + ">";
-			MessageBox.Show("This does not work correctly yet");
+			this._ShouldClear = true;
 			ClearOutput();
 		}
 
@@ -149,7 +154,8 @@ namespace ConsoleControl {
 		[Obsolete("Making Private soon", false)]
 		private void StartProcess(string fileName, string arguments) {
 			if (!IsProcessRunning) {
-				processInterace.StartProcess("cmd.exe", null);
+				this._cmdhandle = processInterace.StartProcess("cmd.exe", null);
+				
 				ClearOutput();
 			}
 
@@ -163,7 +169,7 @@ namespace ConsoleControl {
 			}
 
 			// Start the process.
-			processInterace.StartProcess(fileName, arguments);
+			this._cmdhandle = processInterace.StartProcess(fileName, arguments);
 
 			// If we enable input, make the control not read only.
 			if (IsInputEnabled)
@@ -174,6 +180,7 @@ namespace ConsoleControl {
 		public void StopProcess() {
 			// Stop the interface.
 			processInterace.StopProcess();
+			this._IsCodepageSet = false;
 		}
 
 		/// <summary> Handles the OnProcessError event of the processInterace control. </summary>
@@ -249,10 +256,20 @@ namespace ConsoleControl {
 		#endregion Processing
 
 		#region Writing
-
-		private void ClearOutput() {
-			richTextBoxConsole.Clear();
-			inputStart = 0;
+		public void ClearConsole(){
+			this._ShouldClear = true;
+			ClearOutput();
+		}
+		private void ClearOutput(bool isSendClear = true, bool isClearAfterEnter = true) {
+			if (isClearAfterEnter)
+			{
+				if (isSendClear)
+					//Clear the real console screen
+					WriteInput("cls", Color.Black, false);
+				richTextBoxConsole.SelectedText = "";
+				richTextBoxConsole.Clear();
+				inputStart = 0;
+			}
 		}
 
 		/// <summary> Writes the output to the console control. </summary>
@@ -262,6 +279,7 @@ namespace ConsoleControl {
 			//if (string.IsNullOrEmpty(lastInput) == false && (output == lastInput || output.Replace("\r\n", "") == lastInput))
 			if (!string.IsNullOrEmpty(lastInput) && (output == lastInput || output.Replace("\r\n", "") == lastInput))
 				return;
+			ClearOutput(false, this._ShouldClear);
 			//else if (!richTextBoxConsole.Created)
 			//	return;
 
@@ -284,8 +302,9 @@ namespace ConsoleControl {
 
 		/// <summary> Writes the input to the console control. </summary>
 		/// <param name="input"> The input. </param>
-		/// <param name="color"> The color. </param>		
-		private void WriteInput(string input, Color color) {
+		/// <param name="color"> The color. </param>
+		/// <param name="isRaiseEvent"> Rise input event or not </param>
+		public void WriteInput(string input, Color color, Boolean isRaiseEvent = true) {
 			//Invoke((Action)(() => {
 			lastInput = input;
 
@@ -293,7 +312,8 @@ namespace ConsoleControl {
 			processInterace.WriteInput(input);
 
 			// Fire the event.
-			FireConsoleInputEvent(input);
+			if (isRaiseEvent)
+				FireConsoleInputEvent(input);
 			//}));
 		}
 
@@ -301,43 +321,24 @@ namespace ConsoleControl {
 			string Value = null;
 
 			richTextBoxConsole.ReadOnly = false;
-			ClearOutput();
+			
 
 			if (!IsProcessRunning)
-				processInterace.StartProcess("cmd.exe", null);
+				this._cmdhandle = processInterace.StartProcess("cmd.exe", null);
+			this._ShouldClear = true;
+			ClearOutput();
 
 			if (IsFileSystem)
-				Value = String.Format("cd \"{0}\"", Folder);
-
-
-			//ctrlConsole.InternalRichTextBox.Lines.Last().Substring(0, ctrlConsole.InternalRichTextBox.Lines.Last().IndexOf(Char.Parse(@"\")) + 1) != Path.GetPathRoot(Folder)
-
-			//TODO: Try to reduce the amount of logic here
-			if (this.richTextBoxConsole.Text != "") {
-				//TODO: Figure out if [this.richTextBoxConsole.Text != ""] will ever be [True] 
-				var Path = System.IO.Path.GetPathRoot(Folder);
-				var LastLine = richTextBoxConsole.Lines.Last();
-				var Question = LastLine.Substring(0, LastLine.IndexOf(Char.Parse(@"\")) + 1);
-				var Answer = Question != Path;
-				if (Answer) {
-					Value = Path.TrimEnd(Char.Parse(@"\"));
-				}
+				Value = String.Format("cd /D \"{0}\"", Folder);
+			if (!this._IsCodepageSet)
+			{
+				//Enable UTF-8 for the ConsoleControl
+				WriteInput("chcp 65001", Color.Wheat, false);
+				this._IsCodepageSet = true;
 			}
 
-			WriteInput(Value, Color.Wheat);
-
-			/*
-			return;
-
-			//ClearOutput();
-			lastInput_ = Value;
-
-			// Write the input.
-			processInterace.WriteInput(Value);
-
-			// Fire the event.
-			FireConsoleInputEvent(Value);
-			*/
+			WriteInput(Value, Color.Wheat, false);
+			this.LastLinePath = Folder;
 		}
 
 		#endregion Writing
@@ -363,7 +364,7 @@ namespace ConsoleControl {
 			IsInputEnabled = true;
 
 			// Disable special commands by default.
-			SendKeyboardCommandsToProcess = false;
+			SendKeyboardCommandsToProcess = true;
 
 			// Initialize the keymappings.
 			InitialiseKeyMappings();
@@ -423,13 +424,16 @@ namespace ConsoleControl {
 							   select k;
 
 
-
-				// Go through each mapping, send the message.
-				foreach (var mapping in mappings) { //TODO: Find out if we need this [For Each]
-					//SendKeysEx.SendKeys(CurrentProcessHwnd, mapping.SendKeysMapping);
-					//inputWriter.WriteLine(mapping.StreamMapping);
-					//WriteInput("\x3", Color.White, false);
-				}
+				//if (e.KeyCode == Keys.Tab)
+				//{
+				//	SendKeysEx.SendKeys(this._cmdhandle, "{TAB}");
+				//}
+				//// Go through each mapping, send the message.
+				//foreach (var mapping in mappings) { //TODO: Find out if we need this [For Each]
+				//	//SendKeysEx.SendKeys(this._cmdhandle, mapping.SendKeysMapping);
+				//	//WriteInput(mapping.StreamMapping, Color.Yellow);
+				//	//WriteInput("\x3", Color.White);
+				//}
 
 				// If we handled a mapping, we're done here.
 				if (mappings.Count() > 0) {
@@ -463,6 +467,7 @@ namespace ConsoleControl {
 
 			// Is it the return key?
 			if (e.KeyCode == Keys.Return) {
+				this._ShouldClear = false;
 				// Get the input.
 				string input = richTextBoxConsole.Text.Substring(inputStart, richTextBoxConsole.SelectionStart - inputStart);
 				WriteInput(input, Color.White);

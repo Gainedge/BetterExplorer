@@ -31,7 +31,7 @@ namespace ConsoleControl
             SetForegroundWindow(windowHandle);
 
             //  Send the keys.
-            System.Windows.Forms.SendKeys.Send(keys);
+            System.Windows.Forms.SendKeys.SendWait(keys);
 
             //  Restore the window handle.
             SetForegroundWindow(foregroundWindow);

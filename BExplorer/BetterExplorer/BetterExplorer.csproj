@@ -1008,6 +1008,12 @@
     <Resource Include="Images\qmount16.png" />
     <Resource Include="Images\qmount32.png" />
     <Resource Include="Images\qmount48.png" />
+    <Resource Include="Images\sync16.png" />
+    <Resource Include="Images\Sync32.png" />
+    <Resource Include="Images\Sync48.png" />
+    <Resource Include="Images\clear16.png" />
+    <Resource Include="Images\clear32.png" />
+    <Resource Include="Images\clear48.png" />
     <Content Include="Ionic.Zip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1173,7 +1179,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.7\tools\Microsoft.Bcl.Build.targets" />
