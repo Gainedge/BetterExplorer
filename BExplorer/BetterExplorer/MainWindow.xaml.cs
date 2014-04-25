@@ -55,7 +55,7 @@ namespace BetterExplorer {
 	/// </summary>
 	public partial class MainWindow : RibbonWindow {
 		#region Variables and Constants
-		ShellView ShellListView = new ShellView();
+		ShellView this.ShellListView = new ShellView();
 		ShellTreeViewEx ShellTree = new ShellTreeViewEx();
 		ClipboardMonitor cbm = new ClipboardMonitor();
 		ContextMenu cmHistory = new ContextMenu();
@@ -2801,52 +2801,20 @@ namespace BetterExplorer {
 		}
 
 		private void InitializeExplorerControl() {
-			ShellListView.Navigated += ShellListView_Navigated;
-			ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
-			ShellListView.SelectionChanged += ShellListView_SelectionChanged;
-			ShellListView.LostFocus += ShellListView_LostFocus;
-			ShellListView.GotFocus += ShellListView_GotFocus;
-			ShellListView.LVItemsColorCodes = this.LVItemsColor;
-			ShellListView.ItemUpdated += ShellListView_ItemUpdated;
-			ShellListView.ColumnHeaderRightClick += ShellListView_ColumnHeaderRightClick;
-			ShellListView.KeyJumpKeyDown += ShellListView_KeyJumpKeyDown;
-			ShellListView.KeyJumpTimerDone += ShellListView_KeyJumpTimerDone;
-			ShellListView.ItemMiddleClick += ShellListView_ItemMiddleClick;
-			ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
-			ShellListView.Navigating += ShellListView_Navigating;
+			this.ShellListView.Navigated += ShellListView_Navigated;
+			this.ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
+			this.ShellListView.SelectionChanged += ShellListView_SelectionChanged;
+			this.ShellListView.LostFocus += ShellListView_LostFocus;
+			this.ShellListView.GotFocus += ShellListView_GotFocus;
+			this.ShellListView.LVItemsColorCodes = this.LVItemsColor;
+			this.ShellListView.ItemUpdated += ShellListView_ItemUpdated;
+			this.ShellListView.ColumnHeaderRightClick += ShellListView_ColumnHeaderRightClick;
+			this.ShellListView.KeyJumpKeyDown += ShellListView_KeyJumpKeyDown;
+			this.ShellListView.KeyJumpTimerDone += ShellListView_KeyJumpTimerDone;
+			this.ShellListView.ItemMiddleClick += ShellListView_ItemMiddleClick;
+			this.ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
+			this.ShellListView.Navigating += ShellListView_Navigating;
 			this.ShellTree.NodeClick += ShellTree_NodeClick;
-			//ShellListView.SelectionChanged += ExplorerBrowserControl_SelectionChanged;
-			////ShellListView.NavigationComplete += Explorer_NavigationComplete;
-			//ShellListView.MouseWheel += Explorer_MouseWheel;
-			//ShellListView.ViewEnumerationComplete += Explorer_ViewEnumerationComplete;
-			//ShellListView.NavigationPending += Explorer_NavigationPending;
-			//ShellListView.GotFocus += Explorer_GotFocus;
-			//ShellListView.ExplorerGotFocus += Explorer_ExplorerGotFocus;
-			//ShellListView.RenameFinished += Explorer_RenameFinished;
-			//ShellListView.KeyUP += Explorer_KeyUP;
-			//ShellListView.LostFocus += Explorer_LostFocus;
-			//ShellListView.NavigationOptions.PaneVisibility.Commands = PaneVisibilityState.Hide;
-			//ShellListView.NavigationOptions.PaneVisibility.CommandsOrganize = PaneVisibilityState.Hide;
-			//ShellListView.NavigationOptions.PaneVisibility.CommandsView = PaneVisibilityState.Hide;
-			//ShellListView.ItemsChanged += Explorer_ItemsChanged;
-			//ShellListView.ContentOptions.FullRowSelect = true;
-			//ShellListView.ClientSizeChanged += ExplorerBrowserControl_ClientSizeChanged;
-			//ShellListView.Paint += ExplorerBrowserControl_Paint;
-			////ShellListView.ViewChanged += Explorer_ViewChanged;
-			//ShellListView.ItemHot += Explorer_ItemHot;
-			//ShellListView.ItemMouseMiddleClick += Explorer_ItemMouseMiddleClick;
-			//ShellListView.ExplorerBrowserMouseLeave += Explorer_ExplorerBrowserMouseLeave;
-			//ShellListView.DragDrop += Explorer_DragDrop;
-
-			//ShellListView.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
-			//ShellListView.NavigationOptions.PaneVisibility.Details = PaneVisibilityState.Hide;
-
-			//ShellListView.NavigationOptions.PaneVisibility.Navigation =
-			//  IsNavigationPaneEnabled ? PaneVisibilityState.Show : PaneVisibilityState.Hide;
-
-			//ShellListView.ContentOptions.CheckSelect = isCheckModeEnabled;
-			//ShellListView.Width = (int)ShellVView.ActualWidth;
-			//ShellListView.Height = (int)ShellVView.ActualHeight;
 		}
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
