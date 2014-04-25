@@ -12,65 +12,34 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace BetterExplorerControls
-{
-    /// <summary>
-    /// Interaction logic for ImageSizeDisplay.xaml
-    /// </summary>
-    public partial class ImageSizeDisplay : UserControl
-    {
-        public ImageSizeDisplay()
-        {
-            InitializeComponent();
-        }
+namespace BetterExplorerControls {
+	/// <summary>
+	/// Interaction logic for ImageSizeDisplay.xaml
+	/// </summary>
+	public partial class ImageSizeDisplay : UserControl {
+		public ImageSizeDisplay() {
+			InitializeComponent();
+		}
 
-        public string WidthName
-        {
-            get
-            {
-                return textBlock1.Text;
-            }
-            set
-            {
-                textBlock1.Text = value;
-            }
-        }
+		public string WidthName {
+			get { return textBlock1.Text; }
+			set { textBlock1.Text = value; }
+		}
 
-        public string HeightName
-        {
-            get
-            {
-                return textBlock2.Text;
-            }
-            set
-            {
-                textBlock2.Text = value;
-            }
-        }
+		public string HeightName {
+			get { return textBlock2.Text; }
+			set { textBlock2.Text = value; }
+		}
 
-        public string WidthData
-        {
-            get
-            {
-                return textBox1.Text;
-            }
-            set
-            {
-                textBox1.Text = value;
-            }
-        }
+		public string WidthData {
+			get { return textBox1.Text; }
+			set { textBox1.Text = value; }
+		}
 
-        public string HeightData
-        {
-            get
-            {
-                return textBox2.Text;
-            }
-            set
-            {
-                textBox2.Text = value;
-            }
-        }
+		public string HeightData {
+			get { return textBox2.Text; }
+			set { textBox2.Text = value; }
+		}
 
-    }
+	}
 }
