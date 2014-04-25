@@ -304,7 +304,7 @@ namespace ConsoleControl {
 		/// <param name="input"> The input. </param>
 		/// <param name="color"> The color. </param>
 		/// <param name="isRaiseEvent"> Rise input event or not </param>
-		public void WriteInput(string input, Color color, Boolean isRaiseEvent = true) {
+		private void WriteInput(string input, Color color, Boolean isRaiseEvent = true) {
 			//Invoke((Action)(() => {
 			lastInput = input;
 
@@ -315,6 +315,14 @@ namespace ConsoleControl {
 			if (isRaiseEvent)
 				FireConsoleInputEvent(input);
 			//}));
+		}
+
+		public void EnqueleInput(string input)
+		{
+			inputStart = richTextBoxConsole.SelectionStart;
+			richTextBoxConsole.SelectionColor = Color.LightBlue;
+			richTextBoxConsole.SelectedText += input;
+			
 		}
 
 		public void ChangeFolder(string Folder, bool IsFileSystem) {
@@ -414,6 +422,7 @@ namespace ConsoleControl {
 		private void richTextBoxConsole_KeyDown(object sender, KeyEventArgs e) {
 			// Are we sending keyboard commands to the process?
 			if (SendKeyboardCommandsToProcess && IsProcessRunning) {
+				richTextBoxConsole.SelectionColor = Color.White;
 				// Get key mappings for this key event?
 				var mappings = from k in keyMappings
 							   where

@@ -187,7 +187,7 @@ namespace BExplorer.Shell
 
 			foreach (var sho in items)
 			{
-				var theNode = nodes.Where(wr => wr.Tag != null).Where(w => (w.Tag as ShellItem) != null && (w.Tag as ShellItem).ParsingName.ToLowerInvariant().Replace("shell:", "") == sho.ParsingName.ToLowerInvariant().Replace("shell:", "")).SingleOrDefault();
+				var theNode = nodes.Where(wr => wr.Tag != null).Where(w => (w.Tag as ShellItem) != null && (w.Tag as ShellItem).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
 				if (theNode != null)
 				{
 					if (items.Last() == sho)

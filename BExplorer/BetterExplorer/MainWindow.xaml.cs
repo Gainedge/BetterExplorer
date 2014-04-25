@@ -8187,15 +8187,12 @@ namespace BetterExplorer {
 			Fluent.MenuItem cmi = new MenuItem();
 			cmi.Header = args.Content;
 			cmi.Click += cmi_Click;
-
-
-			System.Windows.Forms.MessageBox.Show("Missing btnConsoleHistory");
-			//this.btnConsoleHistory.Items.Add(cmi);
+			this.btnConsoleHistory.Items.Add(cmi);
 		}
 
 		void cmi_Click(object sender, RoutedEventArgs e) {
 			var item = sender as Fluent.MenuItem;
-			this.ctrlConsole.WriteInput(item.Header.ToString(), System.Drawing.Color.Blue, false);
+			this.ctrlConsole.EnqueleInput(item.Header.ToString());
 		}
 
 		private void ConsoleClear_Click(object sender, RoutedEventArgs e) {

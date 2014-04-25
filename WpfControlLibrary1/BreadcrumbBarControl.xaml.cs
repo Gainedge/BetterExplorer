@@ -35,12 +35,13 @@ namespace BetterExplorerControls {
 			Undertextbox.AddHandler(TextBox.TextInputEvent,
 						 new TextCompositionEventHandler(Undertextbox_TextInput),
 						 true);
-			Undertextbox.TextChanged += Undertextbox_TextChanged;
+			Undertextbox.GotKeyboardFocus += Undertextbox_GotKeyboardFocus;
 
 		}
 
-		void Undertextbox_TextChanged(object sender, TextChangedEventArgs e) {
-
+		void Undertextbox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+		{
+			Undertextbox.SelectAll();
 		}
 
 		void Undertextbox_TextInput(object sender, TextCompositionEventArgs e) {
@@ -262,7 +263,7 @@ namespace BetterExplorerControls {
 								.Transform(new Point(0, 0));
 			Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
 			ShellContextMenu cm = new ShellContextMenu(dirs);
-			//cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
+			cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
 		}
 		void duh_NavigateRequested(object sender, PathEventArgs e) {
 			OnNavigateRequested(e);
@@ -273,10 +274,6 @@ namespace BetterExplorerControls {
 
 		private void HistoryCombo_GotFocus(object sender, RoutedEventArgs e) {
 			e.Handled = true;
-			FocusManager.SetIsFocusScope(this, true);
-
-			//HistoryCombo.Text = LastPath; 
-
 			EnterEditMode();
 		}
 
@@ -304,7 +301,6 @@ namespace BetterExplorerControls {
 		}
 
 		public void ExitEditMode() {
-			//FocusManager.SetIsFocusScope(this, false);
 			IsInEditMode = false;
 			elPanel.Visibility = System.Windows.Visibility.Visible;
 
@@ -318,27 +314,10 @@ namespace BetterExplorerControls {
 			elPanel.Focusable = false;
 			if (Undertextbox != null) {
 				Undertextbox.Visibility = System.Windows.Visibility.Visible;
-				//Undertextbox.SelectAll();
-			}
-			//if (furthestrightitem == null) {
-			//	FocusManager.SetIsFocusScope(this, true);
-			//	return;
-			//}
-
-			var obj = furthestrightitem.ShellItem;
-
-			if (obj.ParsingName.StartsWith(":")) {
-				var correctItems = KnownFolders.All.Where(w => obj.ParsingName.Contains(w.ParsingName)).ToArray();
-				foreach (var item in correctItems) {
-					ShellItem realItem = (ShellItem)item;
-					HistoryCombo.Text = obj.ParsingName.Replace(realItem.ParsingName, realItem.GetDisplayName(SIGDN.NORMALDISPLAY)).Replace(".library-ms", "");
-				}
-			}
-			else {
-				HistoryCombo.Text = furthestrightitem.ShellItem.ParsingName;
 			}
 
-			FocusManager.SetIsFocusScope(this, true);
+			HistoryCombo.Text = furthestrightitem.ShellItem.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING);
+			Undertextbox.Focus();
 		}
 
 		private void RequestNavigation(String Path) {
@@ -405,7 +384,7 @@ namespace BetterExplorerControls {
 
 		private void HistoryCombo_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
 			e.Handled = true;
-			FocusManager.SetIsFocusScope(this, true);
+
 			if (!IsInEditMode && !IsEcsPressed) {
 				EnterEditMode();
 				Undertextbox.Focus();
