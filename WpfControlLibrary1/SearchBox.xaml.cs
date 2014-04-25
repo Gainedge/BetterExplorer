@@ -29,32 +29,34 @@ namespace BetterExplorerControls {
 
 		#region Properties
 
-		private string _CurrentPathName;
+		public string CurrentPathName { get; set; }
+		public string KindCondition { get; set; }
+
+		[Obsolete("Likely becoming private soon", false)]
 		public string FullSearchTerms { get { return CompileTerms(); } }
+		[Obsolete("Likely becoming private soon", false)]
 		public bool FiltersMenuShown { get { return this.SFilters.Visibility == System.Windows.Visibility.Visible; } }
+		[Obsolete("Likely becoming private soon", false)]
 		public string TextBoxSearchTerms { get { return SearchCriteriatext.Text; } }
+		[Obsolete("Likely becoming private soon", false)]
 		public string ClearFiltersTitle { get; set; }
+		[Obsolete("Likely becoming private soon", false)]
 		public bool AutomaticallySetUseValues { get; set; }
 
+		[Obsolete("Likely becoming private soon", false)]
 		public static readonly RoutedEvent BeginSearchEvent =
 			EventManager.RegisterRoutedEvent("BeginSearch", RoutingStrategy.Direct, typeof(SearchEventHandler), typeof(SearchBox));
 
 		// Provide CLR accessors for the event <- What was this comment for?
 
-		public string CurrentPathName {
-			get { return _CurrentPathName; }
-			set {
-				_CurrentPathName = value;
-			}
-		}
 
 
 
-		public string KindCondition { get; set; }
 
 		private string esc = "ext:";
 		private bool useesc = false;
 
+		[Obsolete("Likely becoming private soon", false)]
 		public string ExtensionCondition {
 			get { return esc; }
 			set {
@@ -66,6 +68,7 @@ namespace BetterExplorerControls {
 			}
 		}
 
+		[Obsolete("Likely becoming private soon", false)]
 		public bool UseExtensionCondition {
 			get { return useesc; }
 			set {
@@ -77,6 +80,7 @@ namespace BetterExplorerControls {
 		private string ssc = "size:";
 		private bool usessc = false;
 
+		[Obsolete("Likely becoming private soon", false)]
 		public string SizeCondition {
 			get { return ssc; }
 			set {
@@ -88,6 +92,7 @@ namespace BetterExplorerControls {
 			}
 		}
 
+		[Obsolete("Likely becoming private soon", false)]
 		public bool UseSizeCondition {
 			get { return usessc; }
 			set {
@@ -99,6 +104,7 @@ namespace BetterExplorerControls {
 		private string asc = "author:";
 		private bool useasc = false;
 
+		[Obsolete("Likely becoming private soon", false)]
 		public string AuthorCondition {
 			get { return asc; }
 			set {
@@ -110,6 +116,7 @@ namespace BetterExplorerControls {
 			}
 		}
 
+		[Obsolete("Likely becoming private soon", false)]
 		public bool UseAuthorCondition {
 			get { return useasc; }
 			set {
@@ -121,6 +128,7 @@ namespace BetterExplorerControls {
 		private string dsc = "date:";
 		private bool usedsc = false;
 
+		[Obsolete("Likely becoming private soon", false)]
 		public string DateCondition {
 			get { return dsc; }
 			set {
@@ -132,6 +140,7 @@ namespace BetterExplorerControls {
 			}
 		}
 
+		[Obsolete("Likely becoming private soon", false)]
 		public bool UseDateCondition {
 			get { return usedsc; }
 			set {
@@ -143,6 +152,7 @@ namespace BetterExplorerControls {
 		private string msc = "modified:";
 		private bool usemsc = false;
 
+		[Obsolete("Likely becoming private soon", false)]
 		public string ModifiedCondition {
 			get { return msc; }
 			set {
@@ -154,6 +164,7 @@ namespace BetterExplorerControls {
 			}
 		}
 
+		[Obsolete("Likely becoming private soon", false)]
 		public bool UseModifiedCondition {
 			get { return usemsc; }
 			set {
@@ -165,6 +176,7 @@ namespace BetterExplorerControls {
 		private string usc = "subject:";
 		private bool useusc = false;
 
+		[Obsolete("Likely becoming private soon", false)]
 		public string SubjectCondition {
 			get { return usc; }
 			set {
@@ -176,6 +188,7 @@ namespace BetterExplorerControls {
 			}
 		}
 
+		[Obsolete("Likely becoming private soon", false)]
 		public bool UseSubjectCondition {
 			get { return useusc; }
 			set {
@@ -293,6 +306,10 @@ namespace BetterExplorerControls {
 		}
 
 		private void ShowFilterMenu() {
+			this.SFilters.Visibility = System.Windows.Visibility.Visible;
+			this.SearchCriteriatext.Margin = new Thickness(0, 0, 54, 0);
+
+			/*
 			if (!useasc && !usessc && !useesc && !useusc && !usemsc && !usedsc) {
 				this.SFilters.Visibility = System.Windows.Visibility.Collapsed;
 				this.SearchCriteriatext.Margin = new Thickness(0, 0, 24, 0);
@@ -301,6 +318,7 @@ namespace BetterExplorerControls {
 				this.SFilters.Visibility = System.Windows.Visibility.Visible;
 				this.SearchCriteriatext.Margin = new Thickness(0, 0, 54, 0);
 			}
+			*/
 		}
 
 
@@ -313,6 +331,16 @@ namespace BetterExplorerControls {
 			SFilters.Items.Add(cfd);
 
 			SFilters.Items.Add(new Separator());
+
+
+			//Aaron Campf
+			useasc = true;
+			usedsc = true;
+			useesc = true;
+			usemsc = true;
+			usessc = true;
+			useusc = true;
+			//Aaron Campf
 
 			if (useesc) {
 				Fluent.MenuItem a = new Fluent.MenuItem();
@@ -358,34 +386,26 @@ namespace BetterExplorerControls {
 }
 
 public class SearchRoutedEventArgs : RoutedEventArgs {
-	private string st;
+	public string SearchTerms { get; set; }
 
 	public SearchRoutedEventArgs(string terms) {
-		st = terms;
+		SearchTerms = terms;
 	}
 
 	public SearchRoutedEventArgs(RoutedEvent routedevent) {
-		st = "";
+		SearchTerms = "";
 		base.RoutedEvent = routedevent;
 	}
 
 	public SearchRoutedEventArgs(string terms, RoutedEvent routedevent) {
-		st = terms;
+		SearchTerms = terms;
 		base.RoutedEvent = routedevent;
 	}
 
 	public SearchRoutedEventArgs(string terms, RoutedEvent routedevent, string source) {
-		st = terms;
+		SearchTerms = terms;
 		base.RoutedEvent = routedevent;
 		base.Source = source;
 	}
 
-	public string SearchTerms {
-		get {
-			return st;
-		}
-		set {
-			st = value;
-		}
-	}
 }

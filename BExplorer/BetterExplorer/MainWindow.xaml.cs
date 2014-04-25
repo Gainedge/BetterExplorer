@@ -6252,89 +6252,45 @@ namespace BetterExplorer {
 			//Aaron Campf
 			scSize.IsChecked = false;
 
-			foreach (var item in scSize.Items) { //.OfType<MenuItem>()
-				try {
-					(item as MenuItem).IsChecked = false;
-				}
-				catch {
-
-				}
+			foreach (var item in scSize.Items.OfType<MenuItem>()) {
+				item.IsChecked = false;
 			}
 
-			/*
-			foreach (object item in scSize.Items) {
-				try {
-					(item as MenuItem).IsChecked = false;
-				}
-				catch {
-
-				}
-			}
-			*/
 			ExtToggle.IsChecked = false;
 			AuthorToggle.IsChecked = false;
 			SubjectToggle.IsChecked = false;
 			dcsplit.IsChecked = false;
-			foreach (object item in dcsplit.Items) {
-				try {
-					(item as MenuItem).IsChecked = false;
-				}
-				catch {
-
-				}
+			foreach (var item in dcsplit.Items.OfType<MenuItem>()) {
+				item.IsChecked = false;
 			}
-			dmsplit.IsChecked = false;
-			foreach (object item in dmsplit.Items) {
-				try {
-					(item as MenuItem).IsChecked = false;
-				}
-				catch {
 
-				}
+			dmsplit.IsChecked = false;
+			foreach (var item in dmsplit.Items.OfType<MenuItem>()) {
+				item.IsChecked = false;
 			}
 		}
 
 		private void AuthorToggle_Click(object sender, RoutedEventArgs e) {
 			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("author", edtSearchBox.AuthorCondition, FindResource("btnAuthorCP") as string);
 			dat.ShowDialog();
-			if (dat.Confirm == true) {
+			if (dat.Confirm) {
 				edtSearchBox.AuthorCondition = "author:" + dat.textBox1.Text;
-				if (dat.textBox1.Text.Length > 0) {
-					AuthorToggle.IsChecked = true;
-				}
-				else {
-					AuthorToggle.IsChecked = false;
-				}
+				AuthorToggle.IsChecked = dat.textBox1.Text.Length > 0;
 			}
 			else {
-				if (GetValueOnly("author", edtSearchBox.AuthorCondition).Length > 0) {
-					AuthorToggle.IsChecked = true;
-				}
-				else {
-					AuthorToggle.IsChecked = false;
-				}
+				AuthorToggle.IsChecked = GetValueOnly("author", edtSearchBox.AuthorCondition).Length > 0;
 			}
 		}
 
 		private void SubjectToggle_Click(object sender, RoutedEventArgs e) {
 			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("subject", edtSearchBox.SubjectCondition, FindResource("btnSubjectCP") as string);
 			dat.ShowDialog();
-			if (dat.Confirm == true) {
+			if (dat.Confirm) {
 				edtSearchBox.SubjectCondition = "subject:" + dat.textBox1.Text;
-				if (dat.textBox1.Text.Length > 0) {
-					SubjectToggle.IsChecked = true;
-				}
-				else {
-					SubjectToggle.IsChecked = false;
-				}
+				SubjectToggle.IsChecked = dat.textBox1.Text.Length > 0;
 			}
 			else {
-				if (GetValueOnly("subject", edtSearchBox.SubjectCondition).Length > 0) {
-					SubjectToggle.IsChecked = true;
-				}
-				else {
-					SubjectToggle.IsChecked = false;
-				}
+				SubjectToggle.IsChecked = GetValueOnly("subject", edtSearchBox.SubjectCondition).Length > 0;
 			}
 		}
 
@@ -6342,26 +6298,14 @@ namespace BetterExplorer {
 			SizeSearchCriteriaDialog dat = new SizeSearchCriteriaDialog();
 			string sd = GetValueOnly("size", edtSearchBox.SizeCondition);
 			dat.curval.Text = sd;
-
 			dat.ShowDialog();
 
-			if (dat.Confirm == true) {
+			if (dat.Confirm) {
 				edtSearchBox.SizeCondition = "size:" + dat.GetSizeQuery();
-
-				if (dat.GetSizeQuery().Length > 0) {
-					scSize.IsChecked = true;
-				}
-				else {
-					scSize.IsChecked = false;
-				}
+				scSize.IsChecked = dat.GetSizeQuery().Length > 0;
 			}
 			else {
-				if (edtSearchBox.SizeCondition.Length > 5) {
-					scSize.IsChecked = true;
-				}
-				else {
-					scSize.IsChecked = false;
-				}
+				scSize.IsChecked = dat.GetSizeQuery().Length > 5;
 			}
 		}
 
