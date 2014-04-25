@@ -7,6 +7,14 @@ namespace BetterExplorerControls {
 
 	/// <summary> Interaction logic for SearchBox.xaml </summary>
 	public partial class SearchBox : UserControl {
+		/*
+		 * 
+		 Make everything private that you can
+		 * 
+		 */
+
+		//Finish
+
 
 		#region Events
 
@@ -30,6 +38,7 @@ namespace BetterExplorerControls {
 		#region Properties
 
 		public string CurrentPathName { get; set; }
+		[Obsolete("Likely becoming private soon", false)]
 		public string KindCondition { get; set; }
 
 		[Obsolete("Likely becoming private soon", false)]
@@ -40,8 +49,6 @@ namespace BetterExplorerControls {
 		public string TextBoxSearchTerms { get { return SearchCriteriatext.Text; } }
 		[Obsolete("Likely becoming private soon", false)]
 		public string ClearFiltersTitle { get; set; }
-		[Obsolete("Likely becoming private soon", false)]
-		public bool AutomaticallySetUseValues { get; set; }
 
 		[Obsolete("Likely becoming private soon", false)]
 		public static readonly RoutedEvent BeginSearchEvent =
@@ -61,10 +68,8 @@ namespace BetterExplorerControls {
 			get { return esc; }
 			set {
 				esc = value;
-				if (AutomaticallySetUseValues) {
-					useesc = esc.Length > 4;
-					ShowFilterMenu();
-				}
+				useesc = esc.Length > 4;
+				ShowFilterMenu();
 			}
 		}
 
@@ -85,10 +90,8 @@ namespace BetterExplorerControls {
 			get { return ssc; }
 			set {
 				ssc = value;
-				if (AutomaticallySetUseValues) {
-					usessc = ssc.Length > 5;
-					ShowFilterMenu();
-				}
+				usessc = ssc.Length > 5;
+				ShowFilterMenu();
 			}
 		}
 
@@ -109,10 +112,8 @@ namespace BetterExplorerControls {
 			get { return asc; }
 			set {
 				asc = value;
-				if (AutomaticallySetUseValues) {
-					useasc = asc.Length > 7;
-					ShowFilterMenu();
-				}
+				useasc = asc.Length > 7;
+				ShowFilterMenu();
 			}
 		}
 
@@ -133,10 +134,8 @@ namespace BetterExplorerControls {
 			get { return dsc; }
 			set {
 				dsc = value;
-				if (AutomaticallySetUseValues) {
-					usedsc = dsc.Length > 5;
-					ShowFilterMenu();
-				}
+				usedsc = dsc.Length > 5;
+				ShowFilterMenu();
 			}
 		}
 
@@ -157,10 +156,8 @@ namespace BetterExplorerControls {
 			get { return msc; }
 			set {
 				msc = value;
-				if (AutomaticallySetUseValues) {
-					usemsc = msc.Length > 9;
-					ShowFilterMenu();
-				}
+				usemsc = msc.Length > 9;
+				ShowFilterMenu();
 			}
 		}
 
@@ -181,10 +178,8 @@ namespace BetterExplorerControls {
 			get { return usc; }
 			set {
 				usc = value;
-				if (AutomaticallySetUseValues) {
-					useusc = usc.Length > 8;
-					ShowFilterMenu();
-				}
+				useusc = usc.Length > 8;
+				ShowFilterMenu();
 			}
 		}
 
@@ -206,7 +201,6 @@ namespace BetterExplorerControls {
 			ShowFilterMenu();
 
 			ClearFiltersTitle = "Clear All Filters";
-			AutomaticallySetUseValues = true;
 			KindCondition = ":null:";
 		}
 
