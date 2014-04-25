@@ -55,7 +55,7 @@ namespace BetterExplorer {
 	/// </summary>
 	public partial class MainWindow : RibbonWindow {
 		#region Variables and Constants
-		ShellView this.ShellListView = new ShellView();
+		ShellView ShellListView = new ShellView();
 		ShellTreeViewEx ShellTree = new ShellTreeViewEx();
 		ClipboardMonitor cbm = new ClipboardMonitor();
 		ContextMenu cmHistory = new ContextMenu();
