@@ -14,6 +14,12 @@ using BExplorer.Shell.Interop;
 
 
 namespace BetterExplorerControls {
+	/*
+	 * Try cleaning the smaller controls like this!!
+	 */
+	Finish
+
+
 	/// <summary>
 	/// Interaction logic for BreadcrumbBarControl.xaml
 	/// </summary>
@@ -327,7 +333,7 @@ namespace BetterExplorerControls {
 
 			var obj = furthestrightitem.ShellItem;
 
-			if (obj.ParsingName.StartsWith(":")) {
+			if (obj != null && obj.ParsingName.StartsWith(":")) {
 				var correctItems = KnownFolders.All.Where(w => obj.ParsingName.Contains(w.ParsingName)).ToArray();
 				foreach (var item in correctItems) {
 					ShellItem realItem = (ShellItem)item;

@@ -36,13 +36,15 @@ namespace BetterExplorerControls {
 		#endregion Events
 
 		#region Properties
+		public string FullSearchTerms { get { return CompileTerms(); } }
 
-		public string CurrentPathName { get; set; }
+
+
+		//[Obsolete("Likely becoming private soon", false)]
+		//public string CurrentPathName { get; set; }
 		[Obsolete("Likely becoming private soon", false)]
 		public string KindCondition { get; set; }
 
-		[Obsolete("Likely becoming private soon", false)]
-		public string FullSearchTerms { get { return CompileTerms(); } }
 		[Obsolete("Likely becoming private soon", false)]
 		public bool FiltersMenuShown { get { return this.SFilters.Visibility == System.Windows.Visibility.Visible; } }
 		[Obsolete("Likely becoming private soon", false)]
@@ -54,16 +56,10 @@ namespace BetterExplorerControls {
 		public static readonly RoutedEvent BeginSearchEvent =
 			EventManager.RegisterRoutedEvent("BeginSearch", RoutingStrategy.Direct, typeof(SearchEventHandler), typeof(SearchBox));
 
-		// Provide CLR accessors for the event <- What was this comment for?
-
-
-
-
 
 		private string esc = "ext:";
 		private bool useesc = false;
 
-		[Obsolete("Likely becoming private soon", false)]
 		public string ExtensionCondition {
 			get { return esc; }
 			set {
@@ -73,7 +69,6 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		[Obsolete("Likely becoming private soon", false)]
 		public bool UseExtensionCondition {
 			get { return useesc; }
 			set {
@@ -85,7 +80,6 @@ namespace BetterExplorerControls {
 		private string ssc = "size:";
 		private bool usessc = false;
 
-		[Obsolete("Likely becoming private soon", false)]
 		public string SizeCondition {
 			get { return ssc; }
 			set {
@@ -95,7 +89,6 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		[Obsolete("Likely becoming private soon", false)]
 		public bool UseSizeCondition {
 			get { return usessc; }
 			set {
@@ -107,7 +100,6 @@ namespace BetterExplorerControls {
 		private string asc = "author:";
 		private bool useasc = false;
 
-		[Obsolete("Likely becoming private soon", false)]
 		public string AuthorCondition {
 			get { return asc; }
 			set {
@@ -117,7 +109,6 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		[Obsolete("Likely becoming private soon", false)]
 		public bool UseAuthorCondition {
 			get { return useasc; }
 			set {
@@ -129,7 +120,6 @@ namespace BetterExplorerControls {
 		private string dsc = "date:";
 		private bool usedsc = false;
 
-		[Obsolete("Likely becoming private soon", false)]
 		public string DateCondition {
 			get { return dsc; }
 			set {
@@ -139,7 +129,6 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		[Obsolete("Likely becoming private soon", false)]
 		public bool UseDateCondition {
 			get { return usedsc; }
 			set {
@@ -151,7 +140,6 @@ namespace BetterExplorerControls {
 		private string msc = "modified:";
 		private bool usemsc = false;
 
-		[Obsolete("Likely becoming private soon", false)]
 		public string ModifiedCondition {
 			get { return msc; }
 			set {
@@ -161,7 +149,6 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		[Obsolete("Likely becoming private soon", false)]
 		public bool UseModifiedCondition {
 			get { return usemsc; }
 			set {
@@ -173,7 +160,6 @@ namespace BetterExplorerControls {
 		private string usc = "subject:";
 		private bool useusc = false;
 
-		[Obsolete("Likely becoming private soon", false)]
 		public string SubjectCondition {
 			get { return usc; }
 			set {
@@ -183,7 +169,6 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		[Obsolete("Likely becoming private soon", false)]
 		public bool UseSubjectCondition {
 			get { return useusc; }
 			set {
