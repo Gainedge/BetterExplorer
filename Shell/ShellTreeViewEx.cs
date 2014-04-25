@@ -147,6 +147,9 @@ namespace BExplorer.Shell
 		}
 		void SelectItem(ShellItem item)
 		{
+			if (item.IsSearchFolder)
+				return;
+
 			var listNodes = this.ShellTreeView.Nodes.OfType<TreeNode>().ToList();
 			listNodes.AddRange(this.ShellTreeView.Nodes.OfType<TreeNode>().SelectMany(s => s.Nodes.OfType<TreeNode>()).ToArray());
 			var nodes = listNodes.ToArray();
