@@ -1,89 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
-using System.Threading;
-using System.Runtime.InteropServices;
-using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
-
 
 namespace BetterExplorerControls {
 	/*
 	 * Try cleaning the smaller controls like this!!
 	 */
-	Finish
+	//Finish
 
-
-	/// <summary>
-	/// Interaction logic for BreadcrumbBarControl.xaml
-	/// </summary>
+	/// <summary> Interaction logic for BreadcrumbBarControl.xaml </summary>
 	public partial class BreadcrumbBarControl : UserControl {
+
+		#region Properties
+
 		private ObservableCollection<BreadcrumbBarFSItem> hl { get; set; }
 		private TextBox Undertextbox;
-		private bool Needfilter;
-		private bool IsFiltered;
-		private bool IsEcsPressed;
+		private bool Needfilter, IsFiltered, IsEcsPressed;
+		private DragEventHandler de, dl, dm, dp;
 
-		public BreadcrumbBarControl() {
-			InitializeComponent();
-			this.hl = new ObservableCollection<BreadcrumbBarFSItem>();
-			this.Loaded += BreadcrumbBarControl_Loaded;
-		}
+		[Obsolete("Warning: Might become private soon")]
+		public bool RecordHistory { get; set; }  //<- writetohistory
 
-		void BreadcrumbBarControl_Loaded(object sender, RoutedEventArgs e) {
-			Undertextbox = (TextBox)HistoryCombo.Template.FindName("PART_EditableTextBox", HistoryCombo);
-			Undertextbox.AddHandler(TextBox.TextInputEvent,
-						 new TextCompositionEventHandler(Undertextbox_TextInput),
-						 true);
-			Undertextbox.TextChanged += Undertextbox_TextChanged;
+		public delegate void PathEventHandler(object sender, PathEventArgs e);
 
-		}
+		/// <summary>An event that clients can use to be notified whenever the elements of the list change:</summary>
+		public event PathEventHandler NavigateRequested;
 
-		void Undertextbox_TextChanged(object sender, TextChangedEventArgs e) {
+		public delegate void RefreshHandler(object sender);
 
-		}
-
-		void Undertextbox_TextInput(object sender, TextCompositionEventArgs e) {
-			if ((e.Text.All(Char.IsLetterOrDigit) || e.Text.All(Char.IsSymbol) || e.Text.All(Char.IsWhiteSpace)) && e.Text != "\r") {
-
-				if (!HistoryCombo.IsDropDownOpen)
-					Needfilter = true;
-				HistoryCombo.IsDropDownOpen = true;
-				if (!String.IsNullOrEmpty(Undertextbox.Text) && Needfilter) {
-					HistoryCombo.Items.Filter += a => {
-						if (((BreadcrumbBarFSItem)a).RealPath.ToLower().StartsWith(Undertextbox.Text.ToLower()) || ((BreadcrumbBarFSItem)a).DisplayName.ToLower().StartsWith(Undertextbox.Text.ToLower())) {
-							return true;
-						}
-						return false;
-					};
-					IsFiltered = true;
-				}
-			}
-			Undertextbox.SelectionLength = 0;
-			Undertextbox.SelectionStart = Undertextbox.Text.Length;
-			Undertextbox.SelectedText = "";
-		}
-
-		void g_Click(object sender, RoutedEventArgs e) {
-			HistoryCombo.Text = (string)(sender as MenuItem).Header;
-			PathEventArgs args = new PathEventArgs(new ShellItem(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text.ToShellParsingName()));
-			OnNavigateRequested(args);
-			ExitEditMode();
-		}
+		/// <summary>An event that clients can use to be notified whenever the elements of the list change:</summary>
+		[Obsolete("Warning: Might become private soon")]
+		public event RefreshHandler RefreshRequested;
 
 		private BreadcrumbBarItem furthestrightitem;
 
-		private bool writetohistory = true;
+		[Obsolete("Warning: Might become private soon")]
+		public bool IsInEditMode { get; set; }
 
-		public void ClearHistory() {
-			hl.Clear();
-		}
 
 		public ObservableCollection<BreadcrumbBarFSItem> HistoryItems {
 			get {
@@ -105,113 +67,254 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		private DragEventHandler de;
-		private DragEventHandler dl;
-		private DragEventHandler dm;
-		private DragEventHandler dp;
+		public string LastPath = "";
 
-		public delegate void PathEventHandler(object sender, PathEventArgs e);
+		#endregion Properties
 
-		// An event that clients can use to be notified whenever the
-		// elements of the list change:
-		public event PathEventHandler NavigateRequested;
 
-		// Invoke the Changed event; called whenever list changes:
-		protected virtual void OnNavigateRequested(PathEventArgs e) {
-			if (NavigateRequested != null)
-				NavigateRequested(this, e);
+		#region Control Events
+
+
+		private void BreadcrumbBarControl_Loaded(object sender, RoutedEventArgs e) {
+			Undertextbox = (TextBox)HistoryCombo.Template.FindName("PART_EditableTextBox", HistoryCombo);
+			Undertextbox.AddHandler(TextBox.TextInputEvent,
+						 new TextCompositionEventHandler(Undertextbox_TextInput),
+						 true);
+			Undertextbox.TextChanged += Undertextbox_TextChanged;
 		}
 
-		public delegate void RefreshHandler(object sender);
-
-		// An event that clients can use to be notified whenever the
-		// elements of the list change:
-		public event RefreshHandler RefreshRequested;
-
-		// Invoke the Changed event; called whenever list changes:
-		protected virtual void OnRefreshRequested() {
-			if (RefreshRequested != null)
-				RefreshRequested(this);
+		private void Undertextbox_TextChanged(object sender, TextChangedEventArgs e) {
 		}
 
-		public void SetDragHandlers(DragEventHandler dragenter, DragEventHandler dragleave, DragEventHandler dragover, DragEventHandler drop) {
-			de = dragenter;
-			dl = dragleave;
-			dm = dragover;
-			dp = drop;
-		}
-
-		public bool RecordHistory {
-			get {
-				return writetohistory;
-			}
-			set {
-				writetohistory = value;
-			}
-		}
-
-		private List<ShellItem> GetPaths(ShellItem currloc) {
-			List<ShellItem> res = new List<ShellItem>();
-			ShellItem subject = currloc;
-
-			bool apf = false;
-
-			while (apf == false) {
-				res.Add(subject);
-				if (subject.Parent != null) {
-					subject = subject.Parent;
-				}
-				else {
-					apf = true;
+		private void Undertextbox_TextInput(object sender, TextCompositionEventArgs e) {
+			if ((e.Text.All(Char.IsLetterOrDigit) || e.Text.All(Char.IsSymbol) || e.Text.All(Char.IsWhiteSpace)) && e.Text != "\r") {
+				if (!HistoryCombo.IsDropDownOpen) Needfilter = true;
+				HistoryCombo.IsDropDownOpen = true;
+				if (!String.IsNullOrEmpty(Undertextbox.Text) && Needfilter) {
+					HistoryCombo.Items.Filter += a => {
+						if (((BreadcrumbBarFSItem)a).RealPath.ToLower().StartsWith(Undertextbox.Text.ToLower()) || ((BreadcrumbBarFSItem)a).DisplayName.ToLower().StartsWith(Undertextbox.Text.ToLower())) {
+							return true;
+						}
+						return false;
+					};
+					IsFiltered = true;
 				}
 			}
-
-			return res;
+			Undertextbox.SelectionLength = 0;
+			Undertextbox.SelectionStart = Undertextbox.Text.Length;
+			Undertextbox.SelectedText = "";
 		}
 
-		public void LoadDirectory(ShellItem currloc, bool loadDragEvents = true) {
-			this.elPanel.Children.Clear();
-			GetBreadCrumbItems(GetPaths(currloc));
-			if (loadDragEvents == true) {
-				foreach (BreadcrumbBarItem item in this.elPanel.Children) {
-					item.AllowDrop = true;
-					item.DragEnter += de;
-					item.DragLeave += dl;
-					item.DragOver += dm;
-					item.Drop += dp;
-				}
+
+		private void g_Click(object sender, RoutedEventArgs e) {
+			HistoryCombo.Text = (string)(sender as MenuItem).Header;
+			PathEventArgs args = new PathEventArgs(new ShellItem(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text.ToShellParsingName()));
+			OnNavigateRequested(args);
+			ExitEditMode();
+		}
+
+
+
+		private void duh_ContextMenuRequested(object sender, PathEventArgs e) {
+			ShellItem[] dirs = new ShellItem[1];
+			dirs[0] = e.ShellItem;
+			Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow)
+								.Transform(new Point(0, 0));
+			Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
+			ShellContextMenu cm = new ShellContextMenu(dirs);
+			//cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
+		}
+
+		private void duh_NavigateRequested(object sender, PathEventArgs e) {
+			OnNavigateRequested(e);
+			LastPath = e.ShellItem.ParsingName;
+		}
+
+
+
+		private void HistoryCombo_GotFocus(object sender, RoutedEventArgs e) {
+			e.Handled = true;
+			FocusManager.SetIsFocusScope(this, true);
+
+			//HistoryCombo.Text = LastPath;
+
+			EnterEditMode();
+		}
+
+		private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e) {
+			e.Handled = true;
+			if (IsInEditMode)
+				ExitEditMode();
+		}
+
+		private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e) {
+			e.Handled = true;
+			if (e.LeftButton == MouseButtonState.Released) {
+				IsEcsPressed = false;
+				if (!IsInEditMode)
+					EnterEditMode();
+				Needfilter = false;
 			}
 		}
 
-		public ShellItem GetDirectoryAtPoint(Point pt) {
+
+		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e) {
+			e.Handled = true;
+			IsEcsPressed = false;
+			if (e.Key == Key.Enter) {
+				IsEcsPressed = true;
+				try {
+					RequestNavigation(HistoryCombo.Text);
+				}
+				catch (Exception) {
+					// For now just handle the exception. later will be fixed to navigate correct path.
+				}
+				ExitEditMode();
+			}
+			else if (e.Key == Key.Escape) {
+				IsEcsPressed = true;
+				ExitEditMode();
+			}
+		}
+
+		private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e) {
+			if (furthestrightitem != null)
+				furthestrightitem.BringIntoView();
+		}
+
+		private void HistoryCombo_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			e.Handled = true;
+
 			try {
-				return ((BreadcrumbBarItem)elPanel.InputHitTest(pt)).ShellItem;
+				if (HistoryCombo.IsDropDownOpen) {
+					ExitEditMode();
+				}
+			}
+			catch {
+			}
+		}
+
+		private void HistoryCombo_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			e.Handled = true;
+			FocusManager.SetIsFocusScope(this, true);
+			if (!IsInEditMode && !IsEcsPressed) {
+				EnterEditMode();
+				Undertextbox.Focus();
+				Undertextbox.SelectAll();
+			}
+		}
+
+		private void UserControl_GotFocus(object sender, RoutedEventArgs e) {
+			itemholder.Focus();
+		}
+
+		private void HistoryCombo_DropDownClosed(object sender, EventArgs e) {
+			Needfilter = true;
+		}
+
+		private void HistoryCombo_DropDownOpened(object sender, EventArgs e) {
+			if (IsFiltered) {
+				HistoryCombo.Items.Filter += a => {
+					return true;
+				};
+				IsFiltered = false;
+			}
+			if (!IsInEditMode)
+				EnterEditMode();
+			Undertextbox.Focus();
+
+			if (HistoryCombo.Items.Count == 0) {
+				HistoryCombo.IsDropDownOpen = false;
+			}
+		}
+
+		private void HistoryCombo_KeyDown(object sender, KeyEventArgs e) {
+			if (e.Key == Key.Escape)
+				IsEcsPressed = true;
+		}
+
+		private void HistoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			try {
+				RequestNavigation((e.AddedItems[0] as BreadcrumbBarFSItem).RealPath);
+				IsEcsPressed = true;
 			}
 			catch (Exception) {
-				return null;
+				//For now just handle the exception. later will be fixed to navigate correct path.
+			}
+			ExitEditMode();
+		}
+
+		private void btnRefreshExplorer_Click(object sender, RoutedEventArgs e) {
+			OnRefreshRequested();
+		}
+
+
+		#endregion
+
+
+		#region Cursor Stuff??
+
+
+		/// <summary> Retrieves the cursor's position, in screen coordinates. </summary>
+		/// <see> See MSDN documentation for further information. </see>
+		[DllImport("user32.dll")]
+		private static extern bool GetCursorPos(out POINT lpPoint);
+
+		/// <summary> Struct representing a point. </summary>
+		[StructLayout(LayoutKind.Sequential)]
+		private struct POINT {
+			public int X;
+			public int Y;
+
+			public static implicit operator Point(POINT point) {
+				return new Point(point.X, point.Y);
 			}
 		}
 
-		public void UpdateLastItem(int CurLocationCount) {
-			BreadcrumbBarItem lastitem =
-					elPanel.Children[elPanel.Children.Count - 1] as BreadcrumbBarItem;
-			lastitem.SetChildren(CurLocationCount > 0);
+		/*
+		public static Point GetCursorPosition() {
+			POINT lpPoint;
+			GetCursorPos(out lpPoint);
+			return lpPoint;
 		}
+		*/
+		#endregion
+
+
+		#region Random Private
+
+
+		private void RequestNavigation(String Path) {
+			PathEventArgs ea = null;
+			var path = String.Empty;
+			BreadcrumbBarFSItem item = null;
+			if (Path.Trim().StartsWith("%")) {
+				path = Environment.ExpandEnvironmentVariables(Path);
+				item = new BreadcrumbBarFSItem(Path, path);
+			}
+			else {
+				path = Path.ToShellParsingName();
+				item = new BreadcrumbBarFSItem(new ShellItem(path));
+			}
+
+			ea = new PathEventArgs(new ShellItem(path));
+
+			OnNavigateRequested(ea);
+			if (RecordHistory) {
+				if (hl.Select(s => s.RealPath).Contains(Path) == false) {
+					hl.Add(item);
+				}
+			}
+		}
+
 
 		private void GetBreadCrumbItems(List<ShellItem> items) {
 			ShellItem lastmanstanding = items[0];
 			items.Reverse();
 
 			foreach (ShellItem thing in items) {
-				bool isSearch = false;
-				try {
-					isSearch = thing.IsSearchFolder;
-				}
-				catch {
-					isSearch = false;
-				}
 				BreadcrumbBarItem duh = new BreadcrumbBarItem();
-				if (!isSearch) {
+				if (!thing.IsSearchFolder) {
 					duh.LoadDirectory(thing);
 				}
 				else {
@@ -235,79 +338,77 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		/// <summary>
-		/// Struct representing a point.
-		/// </summary>
-		[StructLayout(LayoutKind.Sequential)]
-		public struct POINT {
-			public int X;
-			public int Y;
 
-			public static implicit operator Point(POINT point) {
-				return new Point(point.X, point.Y);
+		private List<ShellItem> GetPaths(ShellItem currloc) {
+			List<ShellItem> res = new List<ShellItem>();
+			ShellItem subject = currloc;
+
+			do {
+				res.Add(subject);
+				subject = subject.Parent;
+			} while (subject != null);
+
+			/*
+			bool apf = false;
+
+			while (!apf) {
+				res.Add(subject);
+				if (subject.Parent != null)
+					subject = subject.Parent;
+				else
+					apf = true;
+			}
+			*/
+
+			return res;
+		}
+
+		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
+		protected virtual void OnNavigateRequested(PathEventArgs e) { if (NavigateRequested != null) NavigateRequested(this, e); }
+
+		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
+		protected virtual void OnRefreshRequested() { if (RefreshRequested != null) RefreshRequested(this); }
+
+		#endregion
+
+
+		#region Random Public
+
+		public void ClearHistory() { hl.Clear(); }
+
+
+		public void SetDragHandlers(DragEventHandler dragenter, DragEventHandler dragleave, DragEventHandler dragover, DragEventHandler drop) {
+			de = dragenter;
+			dl = dragleave;
+			dm = dragover;
+			dp = drop;
+		}
+
+		public void LoadDirectory(ShellItem currloc, bool loadDragEvents = true) {
+			this.elPanel.Children.Clear();
+			GetBreadCrumbItems(GetPaths(currloc));
+			if (loadDragEvents) {
+				foreach (BreadcrumbBarItem item in this.elPanel.Children) {
+					item.AllowDrop = true;
+					item.DragEnter += de;
+					item.DragLeave += dl;
+					item.DragOver += dm;
+					item.Drop += dp;
+				}
 			}
 		}
 
-		/// <summary>
-		/// Retrieves the cursor's position, in screen coordinates.
-		/// </summary>
-		/// <see>See MSDN documentation for further information.</see>
-		[DllImport("user32.dll")]
-		public static extern bool GetCursorPos(out POINT lpPoint);
-
-		public static Point GetCursorPosition() {
-			POINT lpPoint;
-			GetCursorPos(out lpPoint);
-			return lpPoint;
-		}
-
-		void duh_ContextMenuRequested(object sender, PathEventArgs e) {
-			ShellItem[] dirs = new ShellItem[1];
-			dirs[0] = e.ShellItem;
-			Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow)
-								.Transform(new Point(0, 0));
-			Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
-			ShellContextMenu cm = new ShellContextMenu(dirs);
-			//cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
-		}
-		void duh_NavigateRequested(object sender, PathEventArgs e) {
-			OnNavigateRequested(e);
-			LastPath = e.ShellItem.ParsingName;
-		}
-
-		public string LastPath = "";
-
-		private void HistoryCombo_GotFocus(object sender, RoutedEventArgs e) {
-			e.Handled = true;
-			FocusManager.SetIsFocusScope(this, true);
-
-			//HistoryCombo.Text = LastPath; 
-
-			EnterEditMode();
-		}
-
-		private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e) {
-
-			e.Handled = true;
-			if (IsInEditMode)
-				ExitEditMode();
-		}
-
-
-		private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e) {
-			e.Handled = true;
-			if (e.LeftButton == MouseButtonState.Released) {
-				IsEcsPressed = false;
-				if (!IsInEditMode)
-					EnterEditMode();
-				Needfilter = false;
+		/*
+		public ShellItem GetDirectoryAtPoint(Point pt) {
+			try {
+				return ((BreadcrumbBarItem)elPanel.InputHitTest(pt)).ShellItem;
+			}
+			catch (Exception) {
+				return null;
 			}
 		}
+		*/
 
-		public bool IsInEditMode {
-			get;
-			set;
-		}
 
 		public void ExitEditMode() {
 			//FocusManager.SetIsFocusScope(this, false);
@@ -347,125 +448,23 @@ namespace BetterExplorerControls {
 			FocusManager.SetIsFocusScope(this, true);
 		}
 
-		private void RequestNavigation(String Path) {
-			PathEventArgs ea = null;
-			var path = String.Empty;
-			BreadcrumbBarFSItem item = null;
-			if (Path.Trim().StartsWith("%")) {
-				path = Environment.ExpandEnvironmentVariables(Path);
-				item = new BreadcrumbBarFSItem(Path, path);
-			}
-			else {
-				path = Path.ToShellParsingName();
-				item = new BreadcrumbBarFSItem(new ShellItem(path));
-			}
 
-			ea = new PathEventArgs(new ShellItem(path));
+		#endregion
 
-			OnNavigateRequested(ea);
-			if (writetohistory == true) {
-				if (hl.Select(s => s.RealPath).Contains(Path) == false) {
-					hl.Add(item);
-				}
-			}
-		}
-		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e) {
-			e.Handled = true;
-			IsEcsPressed = false;
-			if (e.Key == Key.Enter) {
-				IsEcsPressed = true;
-				try {
-					RequestNavigation(HistoryCombo.Text);
-				}
-				catch (Exception) {
 
-					// For now just handle the exception. later will be fixed to navigate correct path.
-				}
-				ExitEditMode();
-			}
-			if (e.Key == Key.Escape) {
-				IsEcsPressed = true;
-				ExitEditMode();
-			}
+		public BreadcrumbBarControl() {
+			InitializeComponent();
+			this.hl = new ObservableCollection<BreadcrumbBarFSItem>();
+			this.Loaded += BreadcrumbBarControl_Loaded;
+
+			RecordHistory = true;
 		}
 
-		private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e) {
-			if (furthestrightitem != null)
-				furthestrightitem.BringIntoView();
-
+		/*
+		public void UpdateLastItem(int CurLocationCount) {
+			BreadcrumbBarItem lastitem = elPanel.Children[elPanel.Children.Count - 1] as BreadcrumbBarItem;
+			lastitem.SetChildren(CurLocationCount > 0);
 		}
-
-		private void HistoryCombo_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			e.Handled = true;
-
-			try {
-				if (HistoryCombo.IsDropDownOpen) {
-					ExitEditMode();
-				}
-			}
-			catch {
-
-			}
-
-		}
-
-		private void HistoryCombo_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			e.Handled = true;
-			FocusManager.SetIsFocusScope(this, true);
-			if (!IsInEditMode && !IsEcsPressed) {
-				EnterEditMode();
-				Undertextbox.Focus();
-				Undertextbox.SelectAll();
-			}
-		}
-
-
-
-		private void UserControl_GotFocus(object sender, RoutedEventArgs e) {
-			itemholder.Focus();
-		}
-
-		private void HistoryCombo_DropDownClosed(object sender, EventArgs e) {
-			Needfilter = true;
-		}
-
-		private void HistoryCombo_DropDownOpened(object sender, EventArgs e) {
-			if (IsFiltered) {
-				HistoryCombo.Items.Filter += a => {
-					return true;
-				};
-				IsFiltered = false;
-			}
-			if (!IsInEditMode)
-				EnterEditMode();
-			Undertextbox.Focus();
-
-			if (HistoryCombo.Items.Count == 0) {
-				HistoryCombo.IsDropDownOpen = false;
-			}
-
-		}
-
-		private void HistoryCombo_KeyDown(object sender, KeyEventArgs e) {
-			if (e.Key == Key.Escape)
-				IsEcsPressed = true;
-		}
-
-		private void HistoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			try {
-				RequestNavigation((e.AddedItems[0] as BreadcrumbBarFSItem).RealPath);
-				IsEcsPressed = true;
-			}
-			catch (Exception) {
-				//For now just handle the exception. later will be fixed to navigate correct path.
-			}
-			ExitEditMode();
-		}
-
-		private void btnRefreshExplorer_Click(object sender, RoutedEventArgs e) {
-			OnRefreshRequested();
-		}
-
-
+		*/
 	}
 }

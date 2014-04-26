@@ -19,18 +19,6 @@ namespace ConsoleControl {
 	/// <summary> The Console Control allows you to embed a basic console in your application. </summary>
 	[ToolboxBitmap(typeof(resfinder), "ConsoleControl.ConsoleControl.bmp")]
 	public partial class ConsoleControl : UserControl {
-		/*
-		 * Fix: fix the console not working with different root directories
-		 * [C:\] is okay but [D:\] will not work
-		 * There should be some code already for this
-		 * 
-		 * Fix the Info Panel
-		 * Fix the Preview Panel
-		 */
-
-		//finish
-
-
 
 		#region Properties
 
@@ -155,7 +143,7 @@ namespace ConsoleControl {
 		private void StartProcess(string fileName, string arguments) {
 			if (!IsProcessRunning) {
 				this._cmdhandle = processInterace.StartProcess("cmd.exe", null);
-				
+
 				ClearOutput();
 			}
 
@@ -256,13 +244,12 @@ namespace ConsoleControl {
 		#endregion Processing
 
 		#region Writing
-		public void ClearConsole(){
+		public void ClearConsole() {
 			this._ShouldClear = true;
 			ClearOutput();
 		}
 		private void ClearOutput(bool isSendClear = true, bool isClearAfterEnter = true) {
-			if (isClearAfterEnter)
-			{
+			if (isClearAfterEnter) {
 				if (isSendClear)
 					//Clear the real console screen
 					WriteInput("cls", Color.Black, false);
@@ -317,19 +304,18 @@ namespace ConsoleControl {
 			//}));
 		}
 
-		public void EnqueleInput(string input)
-		{
+		public void EnqueleInput(string input) {
 			inputStart = richTextBoxConsole.SelectionStart;
 			richTextBoxConsole.SelectionColor = Color.LightBlue;
 			richTextBoxConsole.SelectedText += input;
-			
+
 		}
 
 		public void ChangeFolder(string Folder, bool IsFileSystem) {
 			string Value = null;
 
 			richTextBoxConsole.ReadOnly = false;
-			
+
 
 			if (!IsProcessRunning)
 				this._cmdhandle = processInterace.StartProcess("cmd.exe", null);
@@ -338,8 +324,7 @@ namespace ConsoleControl {
 
 			if (IsFileSystem)
 				Value = String.Format("cd /D \"{0}\"", Folder);
-			if (!this._IsCodepageSet)
-			{
+			if (!this._IsCodepageSet) {
 				//Enable UTF-8 for the ConsoleControl
 				WriteInput("chcp 65001", Color.Wheat, false);
 				this._IsCodepageSet = true;
@@ -482,9 +467,6 @@ namespace ConsoleControl {
 				WriteInput(input, Color.White);
 
 			}
-		}
-
-		protected override void OnPaintBackground(PaintEventArgs e) {
 		}
 
 		protected override void OnResize(EventArgs e) {
