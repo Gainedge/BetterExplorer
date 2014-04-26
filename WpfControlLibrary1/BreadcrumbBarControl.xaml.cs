@@ -35,6 +35,7 @@ namespace BetterExplorerControls {
 		#region Properties
 
 		private TextBox Undertextbox;
+		private BreadcrumbBarItem furthestrightitem;
 		private DragEventHandler de, dl, dm, dp;
 		private bool Needfilter, IsFiltered, IsEcsPressed;
 		private ObservableCollection<BreadcrumbBarFSItem> hl { get; set; }
@@ -51,10 +52,10 @@ namespace BetterExplorerControls {
 		public event RefreshHandler RefreshRequested;
 
 
-		private BreadcrumbBarItem furthestrightitem;
+
 
 		[Obsolete("Warning: Might become private soon")]
-		public bool IsInEditMode { get; set; }
+		private bool IsInEditMode { get; set; }
 
 
 		public ObservableCollection<BreadcrumbBarFSItem> HistoryItems {
@@ -402,7 +403,17 @@ namespace BetterExplorerControls {
 		*/
 
 
-		public void ExitEditMode() {
+		public void ExitEditMode_IfNeeded(bool Cheat = false) {
+			if (Cheat) {
+				IsInEditMode = true;
+			}
+
+			if (IsInEditMode) {
+				ExitEditMode();
+			}
+		}
+
+		private void ExitEditMode() {
 			//FocusManager.SetIsFocusScope(this, false);
 			IsInEditMode = false;
 			elPanel.Visibility = System.Windows.Visibility.Visible;
@@ -475,14 +486,6 @@ namespace BetterExplorerControls {
 		*/
 		#endregion
 
-
-		#region Refresh
-
-
-
-
-
-		#endregion
 
 		#endregion
 

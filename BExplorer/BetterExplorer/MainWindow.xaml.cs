@@ -249,9 +249,7 @@ namespace BetterExplorer {
 
 
 		private void RibbonWindow_MouseUp(object sender, MouseButtonEventArgs e) {
-			if (breadcrumbBarControl1.IsInEditMode) {
-				breadcrumbBarControl1.ExitEditMode();
-			}
+			breadcrumbBarControl1.ExitEditMode_IfNeeded();
 		}
 
 
@@ -282,7 +280,7 @@ namespace BetterExplorer {
 			autoUpdater.Visibility = System.Windows.Visibility.Visible;
 			autoUpdater.UpdateLayout();
 
-			if (KeepBackstageOpen == true) {
+			if (KeepBackstageOpen) {
 				backstage.IsOpen = true;
 				KeepBackstageOpen = false;
 			}
@@ -290,8 +288,7 @@ namespace BetterExplorer {
 
 		private void RibbonWindow_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
 			IsRenameFromCreate = true;
-			if (breadcrumbBarControl1.IsInEditMode)
-				breadcrumbBarControl1.ExitEditMode();
+			breadcrumbBarControl1.ExitEditMode_IfNeeded();
 		}
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -305,7 +302,6 @@ namespace BetterExplorer {
 					this.SetBlur(false);
 				}
 				catch (Exception) {
-
 
 				}
 			}
@@ -787,9 +783,7 @@ namespace BetterExplorer {
 		}
 
 		void Explorer_ExplorerGotFocus(object sender, EventArgs e) {
-			if (breadcrumbBarControl1.IsInEditMode) {
-				breadcrumbBarControl1.ExitEditMode();
-			}
+			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
 			IsRenameFromCreate = false;
 			//ShellListView.IsRenameStarted = false;
 
@@ -805,7 +799,9 @@ namespace BetterExplorer {
 			IsRenameFromCreate = true;
 			IsAfterFolderCreate = false;
 			//ShellListView.IsRenameStarted = false;
-			breadcrumbBarControl1.ExitEditMode();
+
+			//TODO: Test this out
+			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
 		}
 
 		void Explorer_GotFocus(object sender, EventArgs e) {
@@ -2879,9 +2875,7 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_GotFocus(object sender, EventArgs e) {
-			if (breadcrumbBarControl1.IsInEditMode) {
-				breadcrumbBarControl1.ExitEditMode();
-			}
+			breadcrumbBarControl1.ExitEditMode_IfNeeded();
 		}
 
 		void ShellListView_LostFocus(object sender, EventArgs e) {
@@ -3239,10 +3233,8 @@ namespace BetterExplorer {
 				if (tabControl1.Items.Count == 0) {
 					NewTab();
 
-					if (StartUpLocation.IndexOf("::") == 0) {
-
+					if (StartUpLocation.IndexOf("::") == 0)
 						ShellListView.Navigate(new ShellItem(StartUpLocation.ToShellParsingName()));
-					}
 					else
 						ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
 
@@ -3252,7 +3244,7 @@ namespace BetterExplorer {
 				isOnLoad = false;
 
 			}
-			breadcrumbBarControl1.ExitEditMode();
+			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
 
 			if (tabControl1.Items.Count == 1)
 				tabControl1.SelectedIndex = 0;
@@ -3940,11 +3932,13 @@ namespace BetterExplorer {
 			//(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).Path = ShellListView.CurrentFolder;
 
 
-			var Current = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CurrentLocation;
-			if (Current != null && Current.ParsingName == ShellListView.CurrentFolder.ParsingName) {
+			var Current = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log;
+			if (Current != null && Current.CurrentLocation != null && Current.CurrentLocation.ParsingName == ShellListView.CurrentFolder.ParsingName) {
 				//Aaron Campf
-				if (Current.log.ForwardEntries.Count() > 1)
-					Current.log.ClearForwardItems();
+				if (Current.ForwardEntries.Count() > 1)
+					Current.ClearForwardItems();
+
+				(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CurrentLocation = ShellListView.CurrentFolder;
 			}
 
 			/*
@@ -5883,15 +5877,13 @@ namespace BetterExplorer {
 
 		private void RibbonWindow_KeyUp(object sender, KeyEventArgs e) {
 			if (e.Key == Key.Escape) {
-				breadcrumbBarControl1.ExitEditMode();
+				breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
 				//ShellListView.IsCancelNavigation = true;
 			}
 		}
 
 		private void RibbonWindow_GotFocus(object sender, RoutedEventArgs e) {
-			if (breadcrumbBarControl1.IsInEditMode) {
-				breadcrumbBarControl1.ExitEditMode();
-			}
+			breadcrumbBarControl1.ExitEditMode_IfNeeded();
 
 			//if (!backstage.IsOpen)
 			//    ShellListView.SetExplorerFocus();
@@ -8106,7 +8098,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnEasyAccess_DropDownOpened(object sender, EventArgs e) {
-			if (ShellListView.GetSelectedCount() == 1 && ShellListView.SelectedItems[0].IsFolder == true) {
+			if (ShellListView.GetSelectedCount() == 1 && ShellListView.SelectedItems[0].IsFolder) {
 				mnuIncludeInLibrary.Items.Clear();
 
 				foreach (ShellItem lib in KnownFolders.Libraries) {

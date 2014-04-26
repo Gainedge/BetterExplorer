@@ -147,23 +147,19 @@ namespace BExplorer.Shell {
 		}
 	}
 
-	public class ItemDisplayedEventArgs : EventArgs, IDisposable
-	{
+	public class ItemDisplayedEventArgs : EventArgs, IDisposable {
 		public ShellItem DisplayedItem { get; private set; }
 		public int DisplayedItemIndex { get; private set; }
 
-		public ItemDisplayedEventArgs(ShellItem item, int index)
-		{
+		public ItemDisplayedEventArgs(ShellItem item, int index) {
 			this.DisplayedItem = item;
 			this.DisplayedItemIndex = index;
 		}
 
 		#region IDisposable Members
 
-		public void Dispose()
-		{
-			if (DisplayedItem != null)
-			{
+		public void Dispose() {
+			if (DisplayedItem != null) {
 				DisplayedItem.Dispose();
 				DisplayedItem = null;
 			}
@@ -284,10 +280,8 @@ namespace BExplorer.Shell {
 
 		public event EventHandler<ItemDisplayedEventArgs> ItemDisplayed;
 
-		private void OnItemDisplayed(ShellItem item, int index)
-		{
-			if (ItemDisplayed != null)
-			{
+		private void OnItemDisplayed(ShellItem item, int index) {
+			if (ItemDisplayed != null) {
 				ItemDisplayed(this, new ItemDisplayedEventArgs(item, index));
 			}
 		}
@@ -297,8 +291,7 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Triggers the Navigating event.
 		/// </summary>
-		public virtual void OnNavigating(NavigatingEventArgs ea)
-		{
+		public virtual void OnNavigating(NavigatingEventArgs ea) {
 			EventHandler<NavigatingEventArgs> handler = Navigating;
 			if (handler != null)
 				handler(this, ea);
@@ -2105,12 +2098,11 @@ namespace BExplorer.Shell {
 
 											}
 
-											if (!sho.IsInitialised)
-											{
+											if (!sho.IsInitialised) {
 												sho.IsInitialised = true;
 												OnItemDisplayed(sho, index);
 											}
-																																	
+
 										}
 										m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
 										break;
@@ -2931,6 +2923,11 @@ namespace BExplorer.Shell {
 					//Application.DoEvents();
 
 					var index = ThumbnailsForCacheLoad.Dequeue();
+
+					if (index >= Items.Count) {
+						continue;
+					}
+
 					var sho = Items[index];
 					var thumb = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
 					if (thumb != null) {

@@ -7,20 +7,20 @@ namespace BetterExplorer {
 	public class NavigationLog {
 
 		#region Properties
-		private List<ShellItem> HistoryItems = new List<ShellItem>();
+		//private List<ShellItem> HistoryItems = new List<ShellItem>();
 
-		public List<ShellItem> HistoryItemsList { get { return HistoryItems; } }
+		public List<ShellItem> HistoryItemsList { get; private set; }
 		public int CurrentLocPos { get; set; }
 
-		public bool CanNavigateBackwards { get { return !(CurrentLocPos == 0 || HistoryItems.Count == 0); } }
-		public bool CanNavigateForwards { get { return !(CurrentLocPos == HistoryItems.Count - 1 || HistoryItems.Count == 0); } }
+		public bool CanNavigateBackwards { get { return !(CurrentLocPos == 0 || HistoryItemsList.Count == 0); } }
+		public bool CanNavigateForwards { get { return !(CurrentLocPos == HistoryItemsList.Count - 1 || HistoryItemsList.Count == 0); } }
 
 		public List<ShellItem> BackEntries {
 			get {
 				List<ShellItem> _BackEntries = new List<ShellItem>();
 				if (CurrentLocPos != -1) {
 					for (int i = 0; i < CurrentLocPos; i++) {
-						_BackEntries.Add(HistoryItems[i]);
+						_BackEntries.Add(HistoryItemsList[i]);
 					}
 				}
 				//_BackEntries.Reverse();
@@ -32,8 +32,8 @@ namespace BetterExplorer {
 			get {
 				List<ShellItem> _ForwardEntries = new List<ShellItem>();
 				if (CurrentLocPos != -1) {
-					for (int i = CurrentLocPos; i < HistoryItems.Count; i++) {
-						_ForwardEntries.Add(HistoryItems[i]);
+					for (int i = CurrentLocPos; i < HistoryItemsList.Count; i++) {
+						_ForwardEntries.Add(HistoryItemsList[i]);
 					}
 				}
 				//_BackEntries.Reverse();
@@ -43,7 +43,7 @@ namespace BetterExplorer {
 
 		public ShellItem CurrentLocation {
 			get {
-				return HistoryItems.Count <= 0 ? null : HistoryItems[CurrentLocPos];
+				return HistoryItemsList.Count <= 0 ? null : HistoryItemsList[CurrentLocPos];
 				//if (HistoryItems.Count == 0) 
 				//	return null;				
 				//else
@@ -51,45 +51,45 @@ namespace BetterExplorer {
 			}
 			set {
 				//NavigateOnwards(value);
-				HistoryItems.Add(value);
-				CurrentLocPos = HistoryItems.Count - 1;
+				HistoryItemsList.Add(value);
+				CurrentLocPos = HistoryItemsList.Count - 1;
 			}
 		}
 
 		#endregion Properties
 
+
+
+		public NavigationLog() {
+			HistoryItemsList = new List<ShellItem>();
+			////HistoryItems.Clear();
+			CurrentLocPos = -1;
+
+		}
+
+
 		public ShellItem NavigateBack() {
 			CurrentLocPos--;
-			return HistoryItems[HistoryItems.Count < CurrentLocPos - 1 ? CurrentLocPos : CurrentLocPos + 1];
+			return HistoryItemsList[HistoryItemsList.Count < CurrentLocPos - 1 ? CurrentLocPos : CurrentLocPos + 1];
 		}
 
 		public ShellItem NavigateForward() {
 			CurrentLocPos++;
-			return HistoryItems[CurrentLocPos];
+			return HistoryItemsList[CurrentLocPos];
 		}
 
 		public void ClearForwardItems() {
-			for (int i = HistoryItems.ToArray().Count() - 1; i > CurrentLocPos; i--) {
-				HistoryItems.RemoveAt(i);
+			for (int i = HistoryItemsList.ToArray().Count() - 1; i > CurrentLocPos; i--) {
+				HistoryItemsList.RemoveAt(i);
 			}
 		}
-		#region Public Methods
 
 
-
-		#endregion
-
-
-
-		public NavigationLog() {
-			HistoryItems.Clear();
-			CurrentLocPos = -1;
-		}
 
 		public void ImportData(NavigationLog log) {
-			HistoryItems.Clear();
-			HistoryItems.AddRange(log.HistoryItemsList);
-			CurrentLocPos = HistoryItems.LastIndexOf(log.CurrentLocation);
+			HistoryItemsList.Clear();
+			HistoryItemsList.AddRange(log.HistoryItemsList);
+			CurrentLocPos = HistoryItemsList.LastIndexOf(log.CurrentLocation);
 		}
 
 		/*
