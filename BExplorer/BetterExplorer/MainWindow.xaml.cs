@@ -102,7 +102,11 @@ namespace BetterExplorer {
 		//IProgressDialog pd;
 		private string ICON_DLLPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
 		bool IsAfterFolderCreate = false;
+
+		[Obsolete("Removing this is High Priority!", true)]
 		bool isGoingBackOrForward;
+
+
 		bool asFolder = false;
 		bool asImage = false;
 		bool asArchive = false;
@@ -994,22 +998,24 @@ namespace BetterExplorer {
 
 		private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, ShellItem selectedItem) {
 			#region Archive Contextual Tab
-			ctgArchive.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && Archives.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
-			if (asArchive == true && ctgArchive.Visibility == System.Windows.Visibility.Visible) {
-				TheRibbon.SelectedTabItem = ctgArchive.Items[0];
-			}
+			if (selectedItem != null) {
+				ctgArchive.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && Archives.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
+				if (asArchive && ctgArchive.Visibility == System.Windows.Visibility.Visible) {
+					TheRibbon.SelectedTabItem = ctgArchive.Items[0];
+				}
 			#endregion
+			}
 
 			#region Drive Contextual Tab
 			ctgDrive.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && ((selectedItem != null && selectedItem.IsDrive) || (selectedItem != null && selectedItem.Parent != null && selectedItem.Parent.IsDrive))) || ((ShellListView.CurrentFolder.IsDrive)));
-			if (asDrive == true && ctgDrive.Visibility == System.Windows.Visibility.Visible && (selectedItem != null && selectedItem.IsDrive)) {
+			if (asDrive && ctgDrive.Visibility == System.Windows.Visibility.Visible && (selectedItem != null && selectedItem.IsDrive)) {
 				TheRibbon.SelectedTabItem = ctgDrive.Items[0];
 			}
 			#endregion
 
 			#region Application Context Tab
-			ctgExe.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".exe" || Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".msi") && selectedItem.IsFolder == false);
-			if (asApplication == true && ctgExe.Visibility == System.Windows.Visibility.Visible) {
+			ctgExe.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".exe" || Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".msi") && !selectedItem.IsFolder);
+			if (asApplication && ctgExe.Visibility == System.Windows.Visibility.Visible) {
 				TheRibbon.SelectedTabItem = ctgExe.Items[0];
 			}
 			#endregion
@@ -2873,7 +2879,7 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_GotFocus(object sender, EventArgs e) {
-			if (breadcrumbBarControl1.IsInEditMode == true) {
+			if (breadcrumbBarControl1.IsInEditMode) {
 				breadcrumbBarControl1.ExitEditMode();
 			}
 		}
@@ -3911,7 +3917,7 @@ namespace BetterExplorer {
 
 		private void SetUpBreadcrumbbarOnNavComplete(NavigatedEventArgs e) {
 			this.breadcrumbBarControl1.LoadDirectory(e.Folder);
-			this.breadcrumbBarControl1.LastPath = e.Folder.ParsingName;
+			//this.breadcrumbBarControl1.LastPath = e.Folder.ParsingName;
 			this.Title = "Better Explorer - " + e.Folder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
 			e.Folder.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 			e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
@@ -3926,33 +3932,39 @@ namespace BetterExplorer {
 
 			}
 
-			try {
+			//try {
 
-				//ClosableTabItem it = new ClosableTabItem();
-				//CreateTabbarRKMenu(it);
+			//ClosableTabItem it = new ClosableTabItem();
+			//CreateTabbarRKMenu(it);
 
-				//(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).Path = ShellListView.CurrentFolder;
-				if (!isGoingBackOrForward) {
-					try {
-						if ((tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.ForwardEntries.Count() > 1)
-							(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.ClearForwardItems();
-					}
-					catch (Exception) {
+			//(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).Path = ShellListView.CurrentFolder;
 
-					}
 
-					(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CurrentLocation = ShellListView.CurrentFolder;
-
-				}
-
-				isGoingBackOrForward = false;
-
-				//leftNavBut.IsEnabled = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CanNavigateBackwards;
-				//rightNavBut.IsEnabled = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CanNavigateForwards;
+			var Current = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CurrentLocation;
+			if (Current != null && Current.ParsingName == ShellListView.CurrentFolder.ParsingName) {
+				//Aaron Campf
+				if (Current.log.ForwardEntries.Count() > 1)
+					Current.log.ClearForwardItems();
 			}
-			catch (Exception) {
 
+			/*
+			if (!isGoingBackOrForward) {
+				//try {
+				if ((tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.ForwardEntries.Count() > 1)
+					(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.ClearForwardItems();
+				//}
+				//catch (Exception) { }
+
+				(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CurrentLocation = ShellListView.CurrentFolder;
 			}
+
+			isGoingBackOrForward = false;
+			*/
+
+			//leftNavBut.IsEnabled = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CanNavigateBackwards;
+			//rightNavBut.IsEnabled = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log.CanNavigateForwards;
+			//}
+			//catch (Exception) { }
 		}
 
 		#endregion
@@ -3968,12 +3980,10 @@ namespace BetterExplorer {
 		//}
 
 		void r_OnMessageReceived(object sender, EventArgs e) {
-			Thread t = new Thread(() => {
+			new Thread(() => {
 				Thread.Sleep(1000);
 				UpdateRecycleBinInfos();
-			});
-
-			t.Start();
+			}).Start();
 		}
 
 
@@ -4456,13 +4466,13 @@ namespace BetterExplorer {
 		#region Navigation (Back/Forward Arrows) and Up Button
 
 		private void leftNavBut_Click(object sender, RoutedEventArgs e) {
-			isGoingBackOrForward = true;
+			//isGoingBackOrForward = true;
 			//ShellListView.NavigateBack();
 			ShellListView.Navigate((tabControl1.SelectedItem as ClosableTabItem).log.NavigateBack());
 		}
 
 		private void rightNavBut_Click(object sender, RoutedEventArgs e) {
-			isGoingBackOrForward = true;
+			//isGoingBackOrForward = true;
 			//ShellListView.NavigateForward();
 			ShellListView.Navigate((tabControl1.SelectedItem as ClosableTabItem).log.NavigateForward());
 		}
@@ -4500,7 +4510,7 @@ namespace BetterExplorer {
 		void miItems_Click(object sender, RoutedEventArgs e) {
 			ShellItem item = (ShellItem)(sender as MenuItem).Tag;
 			if (item != null) {
-				isGoingBackOrForward = true;
+				//isGoingBackOrForward = true;
 				NavigationLog nl = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log;
 				(sender as MenuItem).IsChecked = true;
 				nl.CurrentLocPos = cmHistory.Items.IndexOf((sender as MenuItem));
@@ -6576,7 +6586,7 @@ namespace BetterExplorer {
 		public void NavigateAfterTabChange() {
 			ClosableTabItem itb = tabControl1.SelectedItem as ClosableTabItem;
 
-			isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
+			//isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
 			if (itb != null) {
 				try {
 					BeforeLastTabIndex = LastTabIndex;
@@ -6716,7 +6726,7 @@ namespace BetterExplorer {
 
 			ClosableTabItem itb = tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem;
 
-			isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
+			//isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
 			if (itb != null) {
 				try {
 					BeforeLastTabIndex = LastTabIndex;
@@ -7112,7 +7122,7 @@ namespace BetterExplorer {
 		public void newt_TabSelected(object sender, RoutedEventArgs e) {
 			ClosableTabItem itb = sender as ClosableTabItem;
 
-			isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
+			//isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
 			if (itb != null) {
 				try {
 					BeforeLastTabIndex = LastTabIndex;

@@ -18,28 +18,38 @@ namespace BetterExplorerControls {
 	//Finish
 
 	/// <summary> Interaction logic for BreadcrumbBarControl.xaml </summary>
-	public partial class BreadcrumbBarControl : UserControl {
+	public partial class BreadcrumbBarControl : UserControl { //TODO: See To Do List Document
+
+		#region Being Removed
+
+		[Obsolete("Being Removed", true)]
+		public string LastPath = "";
+
+		[Obsolete("Being Removed", true)]
+		public bool RecordHistory { get; set; }  //<- writetohistory
+
+
+		#endregion
+
 
 		#region Properties
 
-		private ObservableCollection<BreadcrumbBarFSItem> hl { get; set; }
 		private TextBox Undertextbox;
-		private bool Needfilter, IsFiltered, IsEcsPressed;
 		private DragEventHandler de, dl, dm, dp;
-
-		[Obsolete("Warning: Might become private soon")]
-		public bool RecordHistory { get; set; }  //<- writetohistory
+		private bool Needfilter, IsFiltered, IsEcsPressed;
+		private ObservableCollection<BreadcrumbBarFSItem> hl { get; set; }
 
 		public delegate void PathEventHandler(object sender, PathEventArgs e);
 
 		/// <summary>An event that clients can use to be notified whenever the elements of the list change:</summary>
 		public event PathEventHandler NavigateRequested;
 
+		[Obsolete("Might replace with Action<Object>")]
 		public delegate void RefreshHandler(object sender);
 
 		/// <summary>An event that clients can use to be notified whenever the elements of the list change:</summary>
-		[Obsolete("Warning: Might become private soon")]
 		public event RefreshHandler RefreshRequested;
+
 
 		private BreadcrumbBarItem furthestrightitem;
 
@@ -49,13 +59,17 @@ namespace BetterExplorerControls {
 
 		public ObservableCollection<BreadcrumbBarFSItem> HistoryItems {
 			get {
+				return new ObservableCollection<BreadcrumbBarFSItem>(hl.ToArray());
+				/*
 				ObservableCollection<BreadcrumbBarFSItem> hilist = new ObservableCollection<BreadcrumbBarFSItem>();
 
+				
 				foreach (var item in hl) {
 					hilist.Add(item);
 				}
 
 				return hilist;
+				*/
 			}
 			set {
 				foreach (var item in value) {
@@ -67,7 +81,7 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		public string LastPath = "";
+
 
 		#endregion Properties
 
@@ -118,16 +132,16 @@ namespace BetterExplorerControls {
 		private void duh_ContextMenuRequested(object sender, PathEventArgs e) {
 			ShellItem[] dirs = new ShellItem[1];
 			dirs[0] = e.ShellItem;
-			Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow)
-								.Transform(new Point(0, 0));
+			Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
 			Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
 			ShellContextMenu cm = new ShellContextMenu(dirs);
 			//cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
 		}
 
+		[Obsolete("Try to inline this IF possible")]
 		private void duh_NavigateRequested(object sender, PathEventArgs e) {
 			OnNavigateRequested(e);
-			LastPath = e.ShellItem.ParsingName;
+			//LastPath = e.ShellItem.ParsingName;
 		}
 
 
@@ -159,20 +173,26 @@ namespace BetterExplorerControls {
 
 
 		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e) {
+			//TODO: Test this out
 			e.Handled = true;
-			IsEcsPressed = false;
+			IsEcsPressed = (e.Key == Key.Enter || e.Key == Key.Escape);
 			if (e.Key == Key.Enter) {
-				IsEcsPressed = true;
+				//IsEcsPressed = true;
 				try {
+					//TODO: Try to remove this [Try Catch]
 					RequestNavigation(HistoryCombo.Text);
 				}
 				catch (Exception) {
 					// For now just handle the exception. later will be fixed to navigate correct path.
 				}
-				ExitEditMode();
+				//ExitEditMode();
 			}
-			else if (e.Key == Key.Escape) {
-				IsEcsPressed = true;
+			//else if (e.Key == Key.Escape) {
+			//	//IsEcsPressed = true;
+			//	ExitEditMode();
+			//}
+
+			if (IsEcsPressed) {
 				ExitEditMode();
 			}
 		}
@@ -252,34 +272,6 @@ namespace BetterExplorerControls {
 		#endregion
 
 
-		#region Cursor Stuff??
-
-
-		/// <summary> Retrieves the cursor's position, in screen coordinates. </summary>
-		/// <see> See MSDN documentation for further information. </see>
-		[DllImport("user32.dll")]
-		private static extern bool GetCursorPos(out POINT lpPoint);
-
-		/// <summary> Struct representing a point. </summary>
-		[StructLayout(LayoutKind.Sequential)]
-		private struct POINT {
-			public int X;
-			public int Y;
-
-			public static implicit operator Point(POINT point) {
-				return new Point(point.X, point.Y);
-			}
-		}
-
-		/*
-		public static Point GetCursorPosition() {
-			POINT lpPoint;
-			GetCursorPos(out lpPoint);
-			return lpPoint;
-		}
-		*/
-		#endregion
-
 
 		#region Random Private
 
@@ -300,11 +292,11 @@ namespace BetterExplorerControls {
 			ea = new PathEventArgs(new ShellItem(path));
 
 			OnNavigateRequested(ea);
-			if (RecordHistory) {
-				if (hl.Select(s => s.RealPath).Contains(Path) == false) {
-					hl.Add(item);
-				}
+			//if (RecordHistory) {
+			if (hl.Select(s => s.RealPath).Contains(Path) == false) {
+				hl.Add(item);
 			}
+			//}
 		}
 
 
@@ -452,12 +444,56 @@ namespace BetterExplorerControls {
 		#endregion
 
 
+		#region Unused
+
+
+		#region Cursor Stuff??
+
+
+		/// <summary> Retrieves the cursor's position, in screen coordinates. </summary>
+		/// <see> See MSDN documentation for further information. </see>
+		[DllImport("user32.dll")]
+		private static extern bool GetCursorPos(out POINT lpPoint);
+
+		/// <summary> Struct representing a point. </summary>
+		[StructLayout(LayoutKind.Sequential)]
+		private struct POINT {
+			public int X;
+			public int Y;
+
+			public static implicit operator Point(POINT point) {
+				return new Point(point.X, point.Y);
+			}
+		}
+
+		/*
+		public static Point GetCursorPosition() {
+			POINT lpPoint;
+			GetCursorPos(out lpPoint);
+			return lpPoint;
+		}
+		*/
+		#endregion
+
+
+		#region Refresh
+
+
+
+
+
+		#endregion
+
+		#endregion
+
+
+
 		public BreadcrumbBarControl() {
 			InitializeComponent();
 			this.hl = new ObservableCollection<BreadcrumbBarFSItem>();
 			this.Loaded += BreadcrumbBarControl_Loaded;
 
-			RecordHistory = true;
+			//RecordHistory = true;
 		}
 
 		/*
