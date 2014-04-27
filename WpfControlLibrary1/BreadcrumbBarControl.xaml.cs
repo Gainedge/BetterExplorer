@@ -95,9 +95,7 @@ namespace BetterExplorerControls {
 
 		private void BreadcrumbBarControl_Loaded(object sender, RoutedEventArgs e) {
 			Undertextbox = (TextBox)HistoryCombo.Template.FindName("PART_EditableTextBox", HistoryCombo);
-			Undertextbox.AddHandler(TextBox.TextInputEvent,
-						 new TextCompositionEventHandler(Undertextbox_TextInput),
-						 true);
+			Undertextbox.AddHandler(TextBox.TextInputEvent, new TextCompositionEventHandler(Undertextbox_TextInput), true);
 			Undertextbox.TextChanged += Undertextbox_TextChanged;
 		}
 
@@ -134,11 +132,13 @@ namespace BetterExplorerControls {
 
 
 		private void duh_ContextMenuRequested(object sender, PathEventArgs e) {
-			ShellItem[] dirs = new ShellItem[1];
-			dirs[0] = e.ShellItem;
+			//ShellItem[] dirs = new ShellItem[1];
+			//dirs[0] = e.ShellItem;
+			//var dirs = new[] { e.ShellItem };
+
 			Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
 			Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
-			ShellContextMenu cm = new ShellContextMenu(dirs);
+			ShellContextMenu cm = new ShellContextMenu(new[] { e.ShellItem });
 			//cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
 		}
 
@@ -153,16 +153,13 @@ namespace BetterExplorerControls {
 		private void HistoryCombo_GotFocus(object sender, RoutedEventArgs e) {
 			e.Handled = true;
 			FocusManager.SetIsFocusScope(this, true);
-
 			//HistoryCombo.Text = LastPath;
-
 			EnterEditMode();
 		}
 
 		private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e) {
 			e.Handled = true;
-			if (IsInEditMode)
-				ExitEditMode();
+			ExitEditMode_IfNeeded();
 		}
 
 		private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e) {
@@ -196,9 +193,7 @@ namespace BetterExplorerControls {
 			//	ExitEditMode();
 			//}
 
-			if (IsEcsPressed) {
-				ExitEditMode();
-			}
+			ExitEditMode_IfNeeded();
 		}
 
 		private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -208,13 +203,8 @@ namespace BetterExplorerControls {
 
 		private void HistoryCombo_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
 			e.Handled = true;
-
-			try {
-				if (HistoryCombo.IsDropDownOpen) {
-					ExitEditMode();
-				}
-			}
-			catch {
+			if (HistoryCombo.IsDropDownOpen) {
+				ExitEditMode();
 			}
 		}
 
@@ -258,11 +248,11 @@ namespace BetterExplorerControls {
 		private void HistoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			try {
 				RequestNavigation((e.AddedItems[0] as BreadcrumbBarFSItem).RealPath);
-				IsEcsPressed = true;
 			}
 			catch (Exception) {
 				//For now just handle the exception. later will be fixed to navigate correct path.
 			}
+			IsEcsPressed = true;
 			ExitEditMode();
 		}
 
@@ -405,13 +395,11 @@ namespace BetterExplorerControls {
 
 
 		public void ExitEditMode_IfNeeded(bool Cheat = false) {
-			if (Cheat) {
+			if (Cheat)
 				IsInEditMode = true;
-			}
 
-			if (IsInEditMode) {
+			if (IsInEditMode)
 				ExitEditMode();
-			}
 		}
 
 		private void ExitEditMode() {
