@@ -285,10 +285,9 @@ namespace BetterExplorerControls {
 		}
 
 		private void ShowFilterMenu() {
-			this.SFilters.Visibility = System.Windows.Visibility.Visible;
-			this.SearchCriteriatext.Margin = new Thickness(0, 0, 54, 0);
+			//this.SFilters.Visibility = System.Windows.Visibility.Visible;
+			//this.SearchCriteriatext.Margin = new Thickness(0, 0, 54, 0);
 
-			/*
 			if (!useasc && !usessc && !useesc && !useusc && !usemsc && !usedsc) {
 				this.SFilters.Visibility = System.Windows.Visibility.Collapsed;
 				this.SearchCriteriatext.Margin = new Thickness(0, 0, 24, 0);
@@ -297,7 +296,6 @@ namespace BetterExplorerControls {
 				this.SFilters.Visibility = System.Windows.Visibility.Visible;
 				this.SearchCriteriatext.Margin = new Thickness(0, 0, 54, 0);
 			}
-			*/
 		}
 
 
