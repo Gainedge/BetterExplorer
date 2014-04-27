@@ -6,7 +6,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Width="300"
              Height="24"
-             GotFocus="UserControl_GotFocus"
              SizeChanged="UserControl_SizeChanged"
              mc:Ignorable="d">
   <UserControl.Resources>
@@ -56,9 +55,7 @@
                 VerticalContentAlignment="Center"
                 BorderBrush="{x:Null}"
                 BorderThickness="0"
-                DisplayMemberPath="DisplayName"
-                DropDownClosed="HistoryCombo_DropDownClosed"
-                DropDownOpened="HistoryCombo_DropDownOpened"
+                DisplayMemberPath="DisplayName"          
                 FocusVisualStyle="{x:Null}"
                 GotFocus="HistoryCombo_GotFocus"
                 GotKeyboardFocus="HistoryCombo_GotKeyboardFocus"

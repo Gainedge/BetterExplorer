@@ -23,7 +23,6 @@ namespace BetterExplorer {
 						_BackEntries.Add(HistoryItemsList[i]);
 					}
 				}
-				//_BackEntries.Reverse();
 				return _BackEntries;
 			}
 		}
@@ -36,7 +35,6 @@ namespace BetterExplorer {
 						_ForwardEntries.Add(HistoryItemsList[i]);
 					}
 				}
-				//_BackEntries.Reverse();
 				return _ForwardEntries;
 			}
 		}
@@ -64,7 +62,6 @@ namespace BetterExplorer {
 			HistoryItemsList = new List<ShellItem>();
 			////HistoryItems.Clear();
 			CurrentLocPos = -1;
-
 		}
 
 

@@ -28,6 +28,11 @@ namespace BetterExplorerControls {
 		[Obsolete("Being Removed", true)]
 		public bool RecordHistory { get; set; }  //<- writetohistory
 
+		[Obsolete("Being Removed", true)]
+		private bool Needfilter;
+
+		[Obsolete("Being Removed", true)]
+		private bool IsFiltered;
 
 		#endregion
 
@@ -37,10 +42,11 @@ namespace BetterExplorerControls {
 		private TextBox Undertextbox;
 		private BreadcrumbBarItem furthestrightitem;
 		private DragEventHandler de, dl, dm, dp;
-		private bool Needfilter, IsFiltered, IsEcsPressed;
+		private bool IsEcsPressed;
 		private ObservableCollection<BreadcrumbBarFSItem> hl { get; set; }
 
 		public delegate void PathEventHandler(object sender, PathEventArgs e);
+
 
 		/// <summary>An event that clients can use to be notified whenever the elements of the list change:</summary>
 		public event PathEventHandler NavigateRequested;
@@ -50,9 +56,6 @@ namespace BetterExplorerControls {
 
 		/// <summary>An event that clients can use to be notified whenever the elements of the list change:</summary>
 		public event RefreshHandler RefreshRequested;
-
-
-
 
 		[Obsolete("Warning: Might become private soon")]
 		private bool IsInEditMode { get; set; }
@@ -103,16 +106,16 @@ namespace BetterExplorerControls {
 
 		private void Undertextbox_TextInput(object sender, TextCompositionEventArgs e) {
 			if ((e.Text.All(Char.IsLetterOrDigit) || e.Text.All(Char.IsSymbol) || e.Text.All(Char.IsWhiteSpace)) && e.Text != "\r") {
-				if (!HistoryCombo.IsDropDownOpen) Needfilter = true;
+				//if (!HistoryCombo.IsDropDownOpen) Needfilter = true;
 				HistoryCombo.IsDropDownOpen = true;
-				if (!String.IsNullOrEmpty(Undertextbox.Text) && Needfilter) {
+				if (!String.IsNullOrEmpty(Undertextbox.Text) && !HistoryCombo.IsDropDownOpen) {
 					HistoryCombo.Items.Filter += a => {
 						if (((BreadcrumbBarFSItem)a).RealPath.ToLower().StartsWith(Undertextbox.Text.ToLower()) || ((BreadcrumbBarFSItem)a).DisplayName.ToLower().StartsWith(Undertextbox.Text.ToLower())) {
 							return true;
 						}
 						return false;
 					};
-					IsFiltered = true;
+					//IsFiltered = true;
 				}
 			}
 			Undertextbox.SelectionLength = 0;
@@ -168,7 +171,7 @@ namespace BetterExplorerControls {
 				IsEcsPressed = false;
 				if (!IsInEditMode)
 					EnterEditMode();
-				Needfilter = false;
+				//Needfilter = false;
 			}
 		}
 
@@ -225,25 +228,23 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		private void UserControl_GotFocus(object sender, RoutedEventArgs e) {
-			itemholder.Focus();
-		}
+		//private void UserControl_GotFocus(object sender, RoutedEventArgs e) {
+		//	//itemholder.Focus();
+		//}
 
-		private void HistoryCombo_DropDownClosed(object sender, EventArgs e) {
-			Needfilter = true;
-		}
+		//private void HistoryCombo_DropDownClosed(object sender, EventArgs e) {
+		//	//Needfilter = true;
+		//}
 
 		private void HistoryCombo_DropDownOpened(object sender, EventArgs e) {
-			if (IsFiltered) {
-				HistoryCombo.Items.Filter += a => {
-					return true;
-				};
-				IsFiltered = false;
-			}
-			if (!IsInEditMode)
-				EnterEditMode();
-			Undertextbox.Focus();
+			//if (IsFiltered) {
+			//	HistoryCombo.Items.Filter += a => true;
+			//	IsFiltered = false;
+			//}
 
+			if (!IsInEditMode) EnterEditMode();
+
+			Undertextbox.Focus();
 			if (HistoryCombo.Items.Count == 0) {
 				HistoryCombo.IsDropDownOpen = false;
 			}
