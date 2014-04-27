@@ -3933,7 +3933,7 @@ namespace BetterExplorer {
 
 
 			var Current = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log;
-			if (Current != null && Current.CurrentLocation != null && Current.CurrentLocation.ParsingName == ShellListView.CurrentFolder.ParsingName) {
+			if (Current != null) {
 				//Aaron Campf
 				if (Current.ForwardEntries.Count() > 1)
 					Current.ClearForwardItems();
