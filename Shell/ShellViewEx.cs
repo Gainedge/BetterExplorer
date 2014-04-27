@@ -1397,16 +1397,16 @@ namespace BExplorer.Shell {
 						//	nmlv.item.puColumns = (uint)ptr;
 						//	Marshal.StructureToPtr(nmlv, m.LParam, false);
 						//}
+						var currentItem = Items[nmlv.item.iItem];
 						if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
 							if (nmlv.item.iSubItem == 0) {
-								var currentItem = Items[nmlv.item.iItem];
+								
 								nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
 								Marshal.StructureToPtr(nmlv, m.LParam, false);
 							}
 							else {
 								if (isSmallIcons) {
 									try {
-										var currentItem = this.Items[nmlv.item.iItem];
 										var hash = currentItem.GetHashCode();
 										Collumns currentCollumn = this.Collumns[nmlv.item.iSubItem];
 										var valueCached = SubItemValues.ToArray().FirstOrDefault(s => s.Item1 == hash && s.Item2.fmtid == currentCollumn.pkey.fmtid && s.Item2.pid == currentCollumn.pkey.pid);
@@ -1523,7 +1523,11 @@ namespace BExplorer.Shell {
 								}
 							}
 						}
-
+						if (!currentItem.IsInitialised)
+						{
+							currentItem.IsInitialised = true;
+							OnItemDisplayed(currentItem, nmlv.item.iItem);
+						}
 						break;
 					case WNM.LVN_COLUMNCLICK:
 						NMLISTVIEW nlcv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
@@ -2098,10 +2102,7 @@ namespace BExplorer.Shell {
 
 											}
 
-											if (!sho.IsInitialised) {
-												sho.IsInitialised = true;
-												OnItemDisplayed(sho, index);
-											}
+											
 
 										}
 										m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;

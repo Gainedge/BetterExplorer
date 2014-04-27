@@ -7436,7 +7436,7 @@ namespace BetterExplorer {
 		private void miSaveCurTabs_Click(object sender, RoutedEventArgs e) {
 			List<ShellItem> objs = new List<ShellItem>();
 			foreach (ClosableTabItem item in tabControl1.Items) {
-				objs.Add(item.log.CurrentLocation);
+				objs.Add(item.ShellObject);
 			}
 			String str = PathStringCombiner.CombinePaths(objs, "|");
 			SavedTabsList list = SavedTabsList.CreateFromString(str);
@@ -7596,7 +7596,7 @@ namespace BetterExplorer {
 		void gli_Click(object sender, PathStringEventArgs e) {
 			SavedTabsList list = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", sstdir, e.PathString));
 			for (int i = 0; i < list.Count; i++) {
-				var tabitem = NewTab(list[i]);
+				var tabitem = NewTab(list[i].ToShellParsingName());
 				if (i == list.Count - 1)
 					tabControl1.SelectedItem = tabitem;
 			}
