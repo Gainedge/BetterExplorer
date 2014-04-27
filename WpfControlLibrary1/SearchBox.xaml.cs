@@ -312,14 +312,14 @@ namespace BetterExplorerControls {
 			SFilters.Items.Add(new Separator());
 
 
-			//Aaron Campf
-			useasc = true;
-			usedsc = true;
-			useesc = true;
-			usemsc = true;
-			usessc = true;
-			useusc = true;
-			//Aaron Campf
+			////Aaron Campf
+			//useasc = true;
+			//usedsc = true;
+			//useesc = true;
+			//usemsc = true;
+			//usessc = true;
+			//useusc = true;
+			////Aaron Campf
 
 			if (useesc) {
 				Fluent.MenuItem a = new Fluent.MenuItem();

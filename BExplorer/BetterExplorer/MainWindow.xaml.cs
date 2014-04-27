@@ -3932,6 +3932,15 @@ namespace BetterExplorer {
 			//(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).Path = ShellListView.CurrentFolder;
 
 
+
+			/*
+			 * isGoingBackOrForward
+			 * Used to see if the navigation buttons where pressed
+			 * In order to STOP that folder change from being added to the list
+			 * 
+			 * See: Skype chat
+			 * 
+			 */
 			var Current = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log;
 			if (Current != null) {
 				//Aaron Campf
