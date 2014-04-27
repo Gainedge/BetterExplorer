@@ -188,7 +188,7 @@ namespace BetterExplorerControls {
 			ClearFiltersTitle = "Clear All Filters";
 			KindCondition = ":null:";
 
-			SStartEnd.Visibility = System.Windows.Visibility.Visible;
+			SFilters.Visibility = System.Windows.Visibility.Hidden;
 		}
 
 		/// <summary> This method raises the Tap event </summary>
