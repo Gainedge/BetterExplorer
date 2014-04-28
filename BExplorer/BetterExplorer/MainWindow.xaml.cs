@@ -1737,7 +1737,7 @@ namespace BetterExplorer {
 		// Rename
 		private void btnRename_Click(object sender, RoutedEventArgs e) {
 			IsRenameFromCreate = false;
-			//ShellListView.DoRename();
+			ShellListView.RenameSelectedItem();
 		}
 
 		private void btnPathCopy_Click(object sender, RoutedEventArgs e) {
@@ -4151,7 +4151,7 @@ namespace BetterExplorer {
 		#region Navigation (Back/Forward Arrows) and Up Button
 
 		private void leftNavBut_Click(object sender, RoutedEventArgs e) {
-			//isGoingBackOrForward = true;
+			isGoingBackOrForward = true;
 			//ShellListView.NavigateBack();
 			ShellListView.Navigate((tabControl1.SelectedItem as ClosableTabItem).log.NavigateBack());
 		}

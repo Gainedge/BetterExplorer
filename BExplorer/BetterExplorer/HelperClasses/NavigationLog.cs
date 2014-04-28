@@ -41,7 +41,7 @@ namespace BetterExplorer {
 
 		public ShellItem CurrentLocation {
 			get {
-				return HistoryItemsList.Count <= 0 ? null : HistoryItemsList[CurrentLocPos];
+				return HistoryItemsList.Count == 0 ? null : HistoryItemsList[CurrentLocPos];
 				//if (HistoryItems.Count == 0) 
 				//	return null;				
 				//else
@@ -67,12 +67,12 @@ namespace BetterExplorer {
 
 		public ShellItem NavigateBack() {
 			CurrentLocPos--;
-			return HistoryItemsList[HistoryItemsList.Count < CurrentLocPos - 1 ? CurrentLocPos : CurrentLocPos + 1];
+			return HistoryItemsList[CurrentLocPos < 0 ? 0 : CurrentLocPos];
 		}
 
 		public ShellItem NavigateForward() {
 			CurrentLocPos++;
-			return HistoryItemsList[CurrentLocPos];
+			return HistoryItemsList[CurrentLocPos > HistoryItemsList.Count -1 ? HistoryItemsList.Count -1 : CurrentLocPos];
 		}
 
 		public void ClearForwardItems() {

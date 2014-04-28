@@ -14,7 +14,9 @@ namespace BExplorer.Shell
 {
 	public partial class ShellTreeViewEx : UserControl
 	{
+		#region Event Handlers
 		public event EventHandler<TreeNodeMouseClickEventArgs> NodeClick;
+		#endregion
 
 		#region Public Members
 		public TreeViewBase ShellTreeView;
