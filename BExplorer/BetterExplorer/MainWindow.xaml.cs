@@ -493,27 +493,36 @@ namespace BetterExplorer {
 					XDocument docs = XDocument.Load(itemColorSettingsLocation);
 
 					this.LVItemsColor = docs.Root.Elements("ItemColorRow")
-																																									 .Select(element => new BExplorer.Shell.LVItemColor(element.Elements().ToArray()[0].Value, System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value))))
-																																									 .ToList();
-
+						.Select(element => new BExplorer.Shell.LVItemColor(element.Elements().ToArray()[0].Value,
+							System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value)))).ToList();
 				}
 			});
 		}
 
 		private void RibbonWindow_Initialized(object sender, EventArgs e) {
-			AppCommands.RoutedNewTab.InputGestures.Add(new KeyGesture(Key.T, ModifierKeys.Control));
-			AppCommands.RoutedEnterInBreadCrumbCombo.InputGestures.Add(new KeyGesture(Key.E, ModifierKeys.Alt));
-			AppCommands.RoutedChangeTab.InputGestures.Add(new KeyGesture(Key.Tab, ModifierKeys.Control));
-			AppCommands.RoutedCloseTab.InputGestures.Add(new KeyGesture(Key.W, ModifierKeys.Control));
-			AppCommands.RoutedNavigateBack.InputGestures.Add(new KeyGesture(Key.Left, ModifierKeys.Alt));
-			AppCommands.RoutedNavigateFF.InputGestures.Add(new KeyGesture(Key.Right, ModifierKeys.Alt));
-			AppCommands.RoutedNavigateUp.InputGestures.Add(new KeyGesture(Key.Up, ModifierKeys.Alt));
-			AppCommands.RoutedGotoSearch.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Control));
+			AppCommands.RoutedNewTab.InputGestures.AddRange(new[] {
+				new KeyGesture(Key.T, ModifierKeys.Control),
+				new KeyGesture(Key.E, ModifierKeys.Alt),
+				new KeyGesture(Key.Tab, ModifierKeys.Control),
+				new KeyGesture(Key.W, ModifierKeys.Control),
+				new KeyGesture(Key.Left, ModifierKeys.Alt),
+				new KeyGesture(Key.Right, ModifierKeys.Alt),
+				new KeyGesture(Key.Up, ModifierKeys.Alt),
+				new KeyGesture(Key.F, ModifierKeys.Control)
+			});
 
 			LoadInitialWindowPositionAndState();
-
 			LoadColorCodesFromFile();
 
+
+			//AppCommands.RoutedNewTab.InputGestures.Add(new KeyGesture(Key.T, ModifierKeys.Control));
+			//AppCommands.RoutedEnterInBreadCrumbCombo.InputGestures.Add(new KeyGesture(Key.E, ModifierKeys.Alt));
+			//AppCommands.RoutedChangeTab.InputGestures.Add(new KeyGesture(Key.Tab, ModifierKeys.Control));
+			//AppCommands.RoutedCloseTab.InputGestures.Add(new KeyGesture(Key.W, ModifierKeys.Control));
+			//AppCommands.RoutedNavigateBack.InputGestures.Add(new KeyGesture(Key.Left, ModifierKeys.Alt));
+			//AppCommands.RoutedNavigateFF.InputGestures.Add(new KeyGesture(Key.Right, ModifierKeys.Alt));
+			//AppCommands.RoutedNavigateUp.InputGestures.Add(new KeyGesture(Key.Up, ModifierKeys.Alt));
+			//AppCommands.RoutedGotoSearch.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Control));
 		}
 
 		/// <summary>
@@ -860,7 +869,6 @@ namespace BetterExplorer {
 			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
 			IsRenameFromCreate = false;
 			//ShellListView.IsRenameStarted = false;
-
 		}
 
 		void Explorer_LostFocus(object sender, EventArgs e) {
