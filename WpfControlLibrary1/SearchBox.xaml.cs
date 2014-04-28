@@ -49,8 +49,6 @@ namespace BetterExplorerControls {
 		public bool FiltersMenuShown { get { return this.SFilters.Visibility == System.Windows.Visibility.Visible; } }
 		[Obsolete("Likely becoming private soon", false)]
 		public string TextBoxSearchTerms { get { return SearchCriteriatext.Text; } }
-		[Obsolete("Likely becoming private soon", false)]
-		public string ClearFiltersTitle { get; set; }
 
 		[Obsolete("Likely becoming private soon", false)]
 		public static readonly RoutedEvent BeginSearchEvent =
@@ -185,7 +183,6 @@ namespace BetterExplorerControls {
 			InitializeComponent();
 			ShowFilterMenu();
 
-			ClearFiltersTitle = "Clear All Filters";
 			KindCondition = ":null:";
 
 			SFilters.Visibility = System.Windows.Visibility.Hidden;
@@ -305,7 +302,7 @@ namespace BetterExplorerControls {
 			SFilters.Items.Clear();
 
 			Fluent.MenuItem cfd = new Fluent.MenuItem();
-			cfd.Header = ClearFiltersTitle;
+			cfd.Header = "Clear All Filters";
 			cfd.Click += new RoutedEventHandler(cfd_Click);
 			SFilters.Items.Add(cfd);
 

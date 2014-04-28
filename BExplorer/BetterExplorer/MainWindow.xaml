@@ -130,7 +130,7 @@
 						  Ribbon:KeyTip.Keys="F">
 					<Ribbon:BackstageTabControl>
 						<Ribbon:Button x:Name="btnNewWindow"
-						   Click="Button_Click_5"
+						   Click="btnNewWindow_Click"
 						   Content="New Window"
 						   Header="{DynamicResource btnNewWindowCP}"
 						   Icon="Images\new_window.png"
@@ -851,12 +851,12 @@
 								VerticalAlignment="Top"
 								Orientation="Vertical">
 											<Ribbon:CheckBox x:Name="chkFolder"
-									   Checked="chkFolder_Checked"
 									   Header="{DynamicResource ctgFolderToolsCP}"
+									   Checked="chkFolder_Checked"
 									   Unchecked="chkFolder_Unchecked" />
 											<Ribbon:CheckBox x:Name="chkDrive"
-									   Checked="chkDrive_Checked"
 									   Header="{DynamicResource ctbDriveToolsCP}"
+									   Checked="chkDrive_Checked"
 									   Unchecked="chkDrive_Unchecked" />
 											<Ribbon:CheckBox x:Name="chkArchive"
 									   Checked="chkArchive_Checked"
@@ -1322,7 +1322,7 @@
 					  Ribbon:KeyTip.Keys="P" />
 					</Ribbon:SplitButton>
 					<Ribbon:Button x:Name="btnRename"
-						 Click="Button_Click_1"
+						 Click="btnRename_Click"
 						 Focusable="False"
 						 Header="{DynamicResource btnRenameCP}"
 						 Icon="Images\rename16.png"
@@ -2003,7 +2003,7 @@
 				</Ribbon:RibbonGroupBox>
 				<Ribbon:RibbonGroupBox Header="{DynamicResource grpWindowsCP}" Ribbon:KeyTip.Keys="W">
 					<Ribbon:Button x:Name="btnNewWin"
-						 Click="Button_Click_5"
+						 Click="btnNewWindow_Click"
 						 Content="New Window"
 						 Header="{DynamicResource btnNewWindowCP}"
 						 Icon="Images\new_window.png"
