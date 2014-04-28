@@ -1295,32 +1295,31 @@ namespace BetterExplorer {
 
 			if (csd.FilterByFileName) {
 				foreach (ShellItem item in shells) {
-					if (!Directory.Exists(item.ParsingName)) {
-						FileInfo data = new FileInfo(item.ParsingName);
-						string ToFind = csd.FileNameData.matchCase ? data.Name : data.Name.ToLower();
+					FileInfo data = new FileInfo(item.ParsingName);
+					string ToFind = csd.FileNameData.matchCase ? data.Name : data.Name.ToLower();
 
-						switch (csd.FileNameData.filter) {
-							case ConditionalSelectParameters.FileNameFilterTypes.Contains:
-								if (ToFind.Contains(csd.FileNameData.query)) l1shells.Add(item);
-								break;
-							case ConditionalSelectParameters.FileNameFilterTypes.StartsWith:
-								if (ToFind.StartsWith(csd.FileNameData.query)) l1shells.Add(item);
-								break;
-							case ConditionalSelectParameters.FileNameFilterTypes.EndsWith:
-								if (ToFind.EndsWith(csd.FileNameData.query)) l1shells.Add(item);
-								break;
-							case ConditionalSelectParameters.FileNameFilterTypes.Equals:
-								if (ToFind == csd.FileNameData.query) l1shells.Add(item);
-								break;
-							case ConditionalSelectParameters.FileNameFilterTypes.DoesNotContain:
-								if (!ToFind.Contains(csd.FileNameData.query)) l1shells.Add(item);
-								break;
-							case ConditionalSelectParameters.FileNameFilterTypes.NotEqualTo:
-								if (ToFind != csd.FileNameData.query) l1shells.Add(item);
-								break;
-							default:
-								break;
-						}
+					switch (csd.FileNameData.filter) {
+						case ConditionalSelectParameters.FileNameFilterTypes.Contains:
+							if (ToFind.Contains(csd.FileNameData.query)) l1shells.Add(item);
+							break;
+						case ConditionalSelectParameters.FileNameFilterTypes.StartsWith:
+							if (ToFind.StartsWith(csd.FileNameData.query)) l1shells.Add(item);
+							break;
+						case ConditionalSelectParameters.FileNameFilterTypes.EndsWith:
+							if (ToFind.EndsWith(csd.FileNameData.query)) l1shells.Add(item);
+							break;
+						case ConditionalSelectParameters.FileNameFilterTypes.Equals:
+							if (ToFind == csd.FileNameData.query) l1shells.Add(item);
+							break;
+						case ConditionalSelectParameters.FileNameFilterTypes.DoesNotContain:
+							if (!ToFind.Contains(csd.FileNameData.query)) l1shells.Add(item);
+							break;
+						case ConditionalSelectParameters.FileNameFilterTypes.NotEqualTo:
+							if (ToFind != csd.FileNameData.query) l1shells.Add(item);
+							break;
+						default:
+							break;
+					}
 
 
 						/*
@@ -1373,7 +1372,6 @@ namespace BetterExplorer {
 							}
 						}
 						*/
-					}
 				}
 			}
 			else {
@@ -4152,7 +4150,6 @@ namespace BetterExplorer {
 
 		private void leftNavBut_Click(object sender, RoutedEventArgs e) {
 			isGoingBackOrForward = true;
-			//ShellListView.NavigateBack();
 			ShellListView.Navigate((tabControl1.SelectedItem as ClosableTabItem).log.NavigateBack());
 		}
 

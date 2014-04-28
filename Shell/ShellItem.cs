@@ -758,7 +758,7 @@ namespace BExplorer.Shell {
 		/// Returns a string representation of the <see cref="ShellItem"/>.
 		/// </summary>
 		public override string ToString() {
-			return "";// ToUri().ToString();
+			return this.DisplayName;
 		}
 
 		/// <summary>
