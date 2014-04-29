@@ -102,6 +102,19 @@ namespace BetterExplorer {
 		}
 		*/
 
+
+		/// <summary>
+		/// Appends the args.
+		/// </summary>
+		/// <param name="args">The args.</param>
+		[Obsolete("Why do we have this, it literaly does nothing?", true)]
+		public void ApendArgs(string[] args) {
+			//if (args == null) return;
+			//Application.Current.Properties["cmd2"] = args[0];
+		}
+
+
+
 		[Obsolete("Removing this is High Priority!", true)]
 		bool IsViewSelection = false, inLibrary = false, inDrive = false;
 
@@ -1330,56 +1343,56 @@ namespace BetterExplorer {
 					}
 
 
-						/*
-						if (csd.FileNameData.matchCase) {
-							switch (csd.FileNameData.filter) {
-								case ConditionalSelectParameters.FileNameFilterTypes.Contains:
-									if (data.Name.Contains(csd.FileNameData.query)) l1shells.Add(item);
-									break;
-								case ConditionalSelectParameters.FileNameFilterTypes.StartsWith:
-									if (data.Name.StartsWith(csd.FileNameData.query)) l1shells.Add(item);
-									break;
-								case ConditionalSelectParameters.FileNameFilterTypes.EndsWith:
-									if (data.Name.EndsWith(csd.FileNameData.query)) l1shells.Add(item);
-									break;
-								case ConditionalSelectParameters.FileNameFilterTypes.Equals:
-									if (data.Name == csd.FileNameData.query) l1shells.Add(item);
-									break;
-								case ConditionalSelectParameters.FileNameFilterTypes.DoesNotContain:
-									if (!data.Name.Contains(csd.FileNameData.query)) l1shells.Add(item);
-									break;
-								case ConditionalSelectParameters.FileNameFilterTypes.NotEqualTo:
-									if (data.Name != csd.FileNameData.query) l1shells.Add(item);
-									break;
-								default:
-									break;
-							}
+					/*
+					if (csd.FileNameData.matchCase) {
+						switch (csd.FileNameData.filter) {
+							case ConditionalSelectParameters.FileNameFilterTypes.Contains:
+								if (data.Name.Contains(csd.FileNameData.query)) l1shells.Add(item);
+								break;
+							case ConditionalSelectParameters.FileNameFilterTypes.StartsWith:
+								if (data.Name.StartsWith(csd.FileNameData.query)) l1shells.Add(item);
+								break;
+							case ConditionalSelectParameters.FileNameFilterTypes.EndsWith:
+								if (data.Name.EndsWith(csd.FileNameData.query)) l1shells.Add(item);
+								break;
+							case ConditionalSelectParameters.FileNameFilterTypes.Equals:
+								if (data.Name == csd.FileNameData.query) l1shells.Add(item);
+								break;
+							case ConditionalSelectParameters.FileNameFilterTypes.DoesNotContain:
+								if (!data.Name.Contains(csd.FileNameData.query)) l1shells.Add(item);
+								break;
+							case ConditionalSelectParameters.FileNameFilterTypes.NotEqualTo:
+								if (data.Name != csd.FileNameData.query) l1shells.Add(item);
+								break;
+							default:
+								break;
 						}
-						else {
-							switch (csd.FileNameData.filter) {
-								case ConditionalSelectParameters.FileNameFilterTypes.Contains:
-									if (data.Name.ToLower().Contains(csd.FileNameData.query.ToLower())) l1shells.Add(item);
-									break;
-								case ConditionalSelectParameters.FileNameFilterTypes.StartsWith:
-									if (data.Name.ToLower().StartsWith(csd.FileNameData.query.ToLower())) l1shells.Add(item);
-									break;
-								case ConditionalSelectParameters.FileNameFilterTypes.EndsWith:
-									if (data.Name.ToLower().EndsWith(csd.FileNameData.query.ToLower())) l1shells.Add(item);
-									break;
-								case ConditionalSelectParameters.FileNameFilterTypes.Equals:
-									if (data.Name.ToLower() == csd.FileNameData.query.ToLower()) l1shells.Add(item);
-									break;
-								case ConditionalSelectParameters.FileNameFilterTypes.DoesNotContain:
-									if (data.Name.ToLower().Contains(csd.FileNameData.query.ToLower())) l1shells.Add(item);
-									break;
-								case ConditionalSelectParameters.FileNameFilterTypes.NotEqualTo:
-									if (data.Name.ToLower() != csd.FileNameData.query.ToLower()) l1shells.Add(item);
-									break;
-								default:
-									break;
-							}
+					}
+					else {
+						switch (csd.FileNameData.filter) {
+							case ConditionalSelectParameters.FileNameFilterTypes.Contains:
+								if (data.Name.ToLower().Contains(csd.FileNameData.query.ToLower())) l1shells.Add(item);
+								break;
+							case ConditionalSelectParameters.FileNameFilterTypes.StartsWith:
+								if (data.Name.ToLower().StartsWith(csd.FileNameData.query.ToLower())) l1shells.Add(item);
+								break;
+							case ConditionalSelectParameters.FileNameFilterTypes.EndsWith:
+								if (data.Name.ToLower().EndsWith(csd.FileNameData.query.ToLower())) l1shells.Add(item);
+								break;
+							case ConditionalSelectParameters.FileNameFilterTypes.Equals:
+								if (data.Name.ToLower() == csd.FileNameData.query.ToLower()) l1shells.Add(item);
+								break;
+							case ConditionalSelectParameters.FileNameFilterTypes.DoesNotContain:
+								if (data.Name.ToLower().Contains(csd.FileNameData.query.ToLower())) l1shells.Add(item);
+								break;
+							case ConditionalSelectParameters.FileNameFilterTypes.NotEqualTo:
+								if (data.Name.ToLower() != csd.FileNameData.query.ToLower()) l1shells.Add(item);
+								break;
+							default:
+								break;
 						}
-						*/
+					}
+					*/
 				}
 			}
 			else {
@@ -2360,12 +2373,7 @@ namespace BetterExplorer {
 		#region Path to String HelperFunctions / Other HelperFunctions
 
 		private string RemoveExtensionsFromFile(string file, string ext) {
-			if (file.EndsWith(ext) == true) {
-				return file.Remove(file.LastIndexOf(ext), ext.Length);
-			}
-			else {
-				return file;
-			}
+			return file.EndsWith(ext) ? file.Remove(file.LastIndexOf(ext), ext.Length) : file;
 		}
 
 		private string GetExtension(string file) {
@@ -2422,7 +2430,6 @@ namespace BetterExplorer {
 			Microsoft.WindowsAPICodePack.Controls.WindowsForms.Collumns[] cols = eb.AvailableColumnsList(true);
 
 			int acount = 0;
-
 			foreach (Microsoft.WindowsAPICodePack.Controls.WindowsForms.Collumns item in cols) {
 				using (StreamWriter sw = new StreamWriter(filename, true)) {
 					// new Tuple<String, PROPERTYKEY, Type>("Date Modified", new PROPERTYKEY(){fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 14}, typeof(DateTime))
@@ -2577,7 +2584,7 @@ namespace BetterExplorer {
 
 		//public ShellItem GetShellItemFromLocation(string Location) {
 		//  ShellItem sho;
-		//  if (Location.IndexOf("::") == 0 && Location.IndexOf(@"\") == -1)
+		//  if (Location.IndexOf_("::") == 0 && Location.IndexOf(@"\") == -1)
 		//    sho = new ShellItem("shell:" + Location);
 		//  else
 		//    try {
@@ -2608,14 +2615,6 @@ namespace BetterExplorer {
 			return Activate();
 		}
 
-		/// <summary>
-		/// Appends the args.
-		/// </summary>
-		/// <param name="args">The args.</param>
-		public void ApendArgs(string[] args) {
-			//if (args == null) return;
-			//Application.Current.Properties["cmd2"] = args[0];
-		}
 
 		#endregion
 
@@ -2989,7 +2988,7 @@ namespace BetterExplorer {
 			rks.Close();
 			rk.Close();
 
-			if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1) {
+			if (StartUpLocation.StartsWith("::") && StartUpLocation.IndexOf(@"\") == -1) {
 				ShellItem sho = new ShellItem(String.Format("shell:{0}", StartUpLocation));
 				btnSetCurrentasStartup.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
 				btnSetCurrentasStartup.Icon = sho.Thumbnail.BitmapSource;
@@ -3075,7 +3074,7 @@ namespace BetterExplorer {
 				if (tabControl1.Items.Count == 0) {
 					NewTab();
 
-					if (StartUpLocation.IndexOf("::") == 0)
+					if (StartUpLocation.StartsWith("::"))
 						ShellListView.Navigate(new ShellItem(StartUpLocation.ToShellParsingName()));
 					else
 						ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
@@ -3259,7 +3258,7 @@ namespace BetterExplorer {
 				if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized") {
 					String cmd = Application.Current.Properties["cmd"].ToString();
 
-					var Path = cmd.IndexOf("::") == 0 ? "shell:" + cmd : cmd.Replace("\"", "");
+					var Path = cmd.StartsWith("::") ? "shell:" + cmd : cmd.Replace("\"", "");
 					ShellListView.Navigate(new ShellItem(Path));
 					NewTab(ShellListView.CurrentFolder, true);
 				}
@@ -6659,7 +6658,7 @@ namespace BetterExplorer {
 			CreateTabbarRKMenu(newt);
 
 			ShellItem DefPath;
-			if (StartUpLocation.IndexOf("::") == 0 && StartUpLocation.IndexOf(@"\") == -1)
+			if (StartUpLocation.StartsWith("::") && StartUpLocation.IndexOf(@"\") == -1)
 				DefPath = new ShellItem("shell:" + StartUpLocation);
 			else
 				try {
@@ -7001,11 +7000,8 @@ namespace BetterExplorer {
 		}
 
 		private void tabControl1_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-
 			string h = sender.GetType().Name.ToString();
-
 			hitTestList = new List<DependencyObject>();
-
 			System.Windows.Point pt = e.GetPosition(sender as IInputElement);
 
 			VisualTreeHelper.HitTest(
@@ -7019,17 +7015,20 @@ namespace BetterExplorer {
 			if (hitTestList.Count() > 0) {
 				if (hitTestList[0].GetType().Name.Equals("ScrollViewer") && hitTestList.Count == 2) {
 					NewTab();
-					if (StartUpLocation.IndexOf("::") == 0) {
+					//if (StartUpLocation.IndexOf_("::") == 0) {
+					if (StartUpLocation.StartsWith("::")) {
 						ShellListView.Navigate(new ShellItem("shell:" + StartUpLocation));
 					}
-					else
+					else {
 						ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
+					}
 					(tabControl1.SelectedItem as ClosableTabItem).ShellObject = ShellListView.CurrentFolder;
 				}
 				else if (hitTestList.Count == 3) {
 					if (hitTestList[2].GetType().Name == "Grid") {
 						NewTab();
-						if (StartUpLocation.IndexOf("::") == 0) {
+						//if (StartUpLocation.IndexOf_("::") == 0) {
+						if (StartUpLocation.StartsWith("::")) {
 							ShellListView.Navigate(new ShellItem("shell:" + StartUpLocation));
 						}
 						else {
@@ -7787,17 +7786,11 @@ namespace BetterExplorer {
 
 			bool rtlset = false;
 
-			if (rtlused != "notset") {
+			if (rtlused != "notset")
 				rtlset = true;
-			}
-			else {
-				if ((this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL == true) {
-					rtlused = "true";
-				}
-				else {
-					rtlused = "false";
-				}
-			}
+			else
+				rtlused = (this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL ? "true" : "false";
+
 
 			// sets size of search bar
 			this.SearchBarColumn.Width = new GridLength(sbw);
@@ -7810,14 +7803,13 @@ namespace BetterExplorer {
 			//LayoutUpdated += Window_LayoutUpdated;
 
 			// prepares RTL mode
-			if (rtlused == "true") {
+			if (rtlused == "true")
 				FlowDirection = System.Windows.FlowDirection.RightToLeft;
-			}
-			else {
+			else
 				FlowDirection = System.Windows.FlowDirection.LeftToRight;
-			}
 
-			if (rtlset == true) {
+
+			if (rtlset) {
 				rtlused = "notset";
 			}
 
