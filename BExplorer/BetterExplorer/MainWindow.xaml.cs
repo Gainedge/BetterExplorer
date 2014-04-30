@@ -500,29 +500,30 @@ namespace BetterExplorer {
 		}
 
 		private void RibbonWindow_Initialized(object sender, EventArgs e) {
-			AppCommands.RoutedNewTab.InputGestures.AddRange(new[] {
-				new KeyGesture(Key.T, ModifierKeys.Control),
-				new KeyGesture(Key.E, ModifierKeys.Alt),
-				new KeyGesture(Key.Tab, ModifierKeys.Control),
-				new KeyGesture(Key.W, ModifierKeys.Control),
-				new KeyGesture(Key.Left, ModifierKeys.Alt),
-				new KeyGesture(Key.Right, ModifierKeys.Alt),
-				new KeyGesture(Key.Up, ModifierKeys.Alt),
-				new KeyGesture(Key.F, ModifierKeys.Control)
-			});
+			//! @Aaron [Revert] This not works since you attach all to the NewTab shortcut!!!!!
+			//AppCommands.RoutedNewTab.InputGestures.AddRange(new[] {
+			//	new KeyGesture(Key.T, ModifierKeys.Control),
+			//	new KeyGesture(Key.E, ModifierKeys.Alt),
+			//	new KeyGesture(Key.Tab, ModifierKeys.Control),
+			//	new KeyGesture(Key.W, ModifierKeys.Control),
+			//	new KeyGesture(Key.Left, ModifierKeys.Alt),
+			//	new KeyGesture(Key.Right, ModifierKeys.Alt),
+			//	new KeyGesture(Key.Up, ModifierKeys.Alt),
+			//	new KeyGesture(Key.F, ModifierKeys.Control)
+			//});
 
 			LoadInitialWindowPositionAndState();
 			LoadColorCodesFromFile();
 
 
-			//AppCommands.RoutedNewTab.InputGestures.Add(new KeyGesture(Key.T, ModifierKeys.Control));
-			//AppCommands.RoutedEnterInBreadCrumbCombo.InputGestures.Add(new KeyGesture(Key.E, ModifierKeys.Alt));
-			//AppCommands.RoutedChangeTab.InputGestures.Add(new KeyGesture(Key.Tab, ModifierKeys.Control));
-			//AppCommands.RoutedCloseTab.InputGestures.Add(new KeyGesture(Key.W, ModifierKeys.Control));
-			//AppCommands.RoutedNavigateBack.InputGestures.Add(new KeyGesture(Key.Left, ModifierKeys.Alt));
-			//AppCommands.RoutedNavigateFF.InputGestures.Add(new KeyGesture(Key.Right, ModifierKeys.Alt));
-			//AppCommands.RoutedNavigateUp.InputGestures.Add(new KeyGesture(Key.Up, ModifierKeys.Alt));
-			//AppCommands.RoutedGotoSearch.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Control));
+			AppCommands.RoutedNewTab.InputGestures.Add(new KeyGesture(Key.T, ModifierKeys.Control));
+			AppCommands.RoutedEnterInBreadCrumbCombo.InputGestures.Add(new KeyGesture(Key.E, ModifierKeys.Alt));
+			AppCommands.RoutedChangeTab.InputGestures.Add(new KeyGesture(Key.Tab, ModifierKeys.Control));
+			AppCommands.RoutedCloseTab.InputGestures.Add(new KeyGesture(Key.W, ModifierKeys.Control));
+			AppCommands.RoutedNavigateBack.InputGestures.Add(new KeyGesture(Key.Left, ModifierKeys.Alt));
+			AppCommands.RoutedNavigateFF.InputGestures.Add(new KeyGesture(Key.Right, ModifierKeys.Alt));
+			AppCommands.RoutedNavigateUp.InputGestures.Add(new KeyGesture(Key.Up, ModifierKeys.Alt));
+			AppCommands.RoutedGotoSearch.InputGestures.Add(new KeyGesture(Key.F, ModifierKeys.Control));
 		}
 
 		/// <summary>
