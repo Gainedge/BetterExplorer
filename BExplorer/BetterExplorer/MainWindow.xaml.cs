@@ -124,22 +124,6 @@ namespace BetterExplorer {
 		[Obsolete("Removing this is High Priority!", true)]
 		public bool IsCompartibleRename = false;
 
-		[Obsolete("Does Nothing!!!!")]
-		private void PreselectItemsIntoExplorerControl() {
-			return; // Added by aaron
-			var itb = tabControl1.SelectedItem as ClosableTabItem;
-			if (itb.SelectedItems != null) {
-				foreach (var item in itb.SelectedItems) {
-					try {
-						//ShellListView.SelectItem(new ShellItem(item));
-					}
-					catch (Exception) {
-						//! Sometimes there can be malformed or invalid string on some systems so we have to catch this error.
-					}
-				}
-				//ShellListView.SetExplorerFocus();
-			}
-		}
 
 		/*
 		private void Explorer_ViewEnumerationComplete(object sender, EventArgs e) {
@@ -175,21 +159,7 @@ namespace BetterExplorer {
 		*/
 
 
-		[Obsolete("Not used")]
-		private string GetStringsFromCollection(StringCollection coll, string separator = " ") {
-			string path = null;
-			foreach (string item in coll) {
-				if (string.IsNullOrEmpty(path)) {
-					path = item;
-				}
-				else {
-					path = path + separator + item;
-				}
-			}
-			return path;
-		}
-
-		[Obsolete("Never used", true)]
+		[Obsolete("Save?", true)]
 		private uint GetDeviceNumberForDriveLetter(char letter) {
 			List<int> list = ImDiskAPI.GetDeviceList();
 			foreach (int item in list) {
@@ -3423,7 +3393,7 @@ namespace BetterExplorer {
 				Task.Run(() => {
 					Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 						//ExplorerBrowser.FlushMemory();
-						PreselectItemsIntoExplorerControl();
+						//PreselectItemsIntoExplorerControl();
 
 						ConstructMoveToCopyToMenu();
 
