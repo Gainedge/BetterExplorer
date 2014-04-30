@@ -107,7 +107,7 @@ namespace BetterExplorer {
 		/// Appends the args.
 		/// </summary>
 		/// <param name="args">The args.</param>
-		[Obsolete("Why do we have this, it literaly does nothing?", true)]
+		[Obsolete("Why do we have this, it literally does nothing?", true)]
 		public void ApendArgs(string[] args) {
 			//if (args == null) return;
 			//Application.Current.Properties["cmd2"] = args[0];
@@ -2848,8 +2848,6 @@ namespace BetterExplorer {
 				case 30:
 					rbMonthly.IsChecked = true;
 					break;
-				default:
-					break;
 			}
 
 			UpdateCheckType = (int)rks.GetValue(@"UpdateCheckType", 1);
@@ -2861,9 +2859,6 @@ namespace BetterExplorer {
 				case 1:
 					rbReleasTest.IsChecked = true;
 					break;
-				default:
-					break;
-
 			}
 
 
