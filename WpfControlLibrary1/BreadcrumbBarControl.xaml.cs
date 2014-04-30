@@ -61,38 +61,6 @@ namespace BetterExplorerControls {
 		[Obsolete("Was only used 1 time", true)]
 		protected virtual void OnRefreshRequested() { if (RefreshRequested != null) RefreshRequested(this); }
 
-		#region Unused
-
-		#region Cursor Stuff??
-
-		/// <summary> Retrieves the cursor's position, in screen coordinates. </summary>
-		/// <see> See MSDN documentation for further information. </see>
-		[DllImport("user32.dll")]
-		private static extern bool GetCursorPos(out POINT lpPoint);
-
-		/// <summary> Struct representing a point. </summary>
-		[StructLayout(LayoutKind.Sequential)]
-		private struct POINT {
-			public int X;
-			public int Y;
-
-			public static implicit operator Point(POINT point) {
-				return new Point(point.X, point.Y);
-			}
-		}
-
-		/*
-		public static Point GetCursorPosition() {
-			POINT lpPoint;
-			GetCursorPos(out lpPoint);
-			return lpPoint;
-		}
-		*/
-
-		#endregion Cursor Stuff??
-
-		#endregion Unused
-
 		#endregion Being Removed
 
 		#region Properties
@@ -142,11 +110,15 @@ namespace BetterExplorerControls {
 		private void BreadcrumbBarControl_Loaded(object sender, RoutedEventArgs e) {
 			Undertextbox = (TextBox)HistoryCombo.Template.FindName("PART_EditableTextBox", HistoryCombo);
 			Undertextbox.AddHandler(TextBox.TextInputEvent, new TextCompositionEventHandler(Undertextbox_TextInput), true);
-			Undertextbox.TextChanged += Undertextbox_TextChanged;
+			Undertextbox.GotKeyboardFocus += Undertextbox_GotKeyboardFocus;
 		}
 
-		private void Undertextbox_TextChanged(object sender, TextChangedEventArgs e) {
+		void Undertextbox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+		{
+			Undertextbox.SelectAll();
 		}
+
+		
 
 		private void Undertextbox_TextInput(object sender, TextCompositionEventArgs e) {
 			if ((e.Text.All(Char.IsLetterOrDigit) || e.Text.All(Char.IsSymbol) || e.Text.All(Char.IsWhiteSpace)) && e.Text != "\r") {
@@ -175,19 +147,16 @@ namespace BetterExplorerControls {
 			Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
 			Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
 			ShellContextMenu cm = new ShellContextMenu(new[] { e.ShellItem });
-			//cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
+			cm.ShowContextMenu(new System.Drawing.Point((int)GetCursorPosition().X, (int)realCoordinates.Y + (int)this.Height));
 		}
 
 		[Obsolete("Try to inline this IF possible")]
 		private void duh_NavigateRequested(object sender, PathEventArgs e) {
 			OnNavigateRequested(e);
-			//LastPath = e.ShellItem.ParsingName;
 		}
 
 		private void HistoryCombo_GotFocus(object sender, RoutedEventArgs e) {
 			e.Handled = true;
-			FocusManager.SetIsFocusScope(this, true);
-			//HistoryCombo.Text = LastPath;
 			EnterEditMode();
 		}
 
@@ -202,7 +171,6 @@ namespace BetterExplorerControls {
 				IsEcsPressed = false;
 				if (!IsInEditMode)
 					EnterEditMode();
-				//Needfilter = false;
 			}
 		}
 
@@ -211,20 +179,15 @@ namespace BetterExplorerControls {
 			e.Handled = true;
 			IsEcsPressed = (e.Key == Key.Enter || e.Key == Key.Escape);
 			if (e.Key == Key.Enter) {
-				//IsEcsPressed = true;
 				try {
 					//TODO: Try to remove this [Try Catch]
-					RequestNavigation(HistoryCombo.Text);
+					RequestNavigation(HistoryCombo.Text.ToShellParsingName());
 				}
 				catch (Exception) {
 					// For now just handle the exception. later will be fixed to navigate correct path.
 				}
 				//ExitEditMode();
 			}
-			//else if (e.Key == Key.Escape) {
-			//	//IsEcsPressed = true;
-			//	ExitEditMode();
-			//}
 
 			ExitEditMode_IfNeeded();
 		}
@@ -243,21 +206,11 @@ namespace BetterExplorerControls {
 
 		private void HistoryCombo_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
 			e.Handled = true;
-			FocusManager.SetIsFocusScope(this, true);
 			if (!IsInEditMode && !IsEcsPressed) {
 				EnterEditMode();
 				Undertextbox.Focus();
-				Undertextbox.SelectAll();
 			}
 		}
-
-		//private void UserControl_GotFocus(object sender, RoutedEventArgs e) {
-		//	//itemholder.Focus();
-		//}
-
-		//private void HistoryCombo_DropDownClosed(object sender, EventArgs e) {
-		//	//Needfilter = true;
-		//}
 
 		private void HistoryCombo_KeyDown(object sender, KeyEventArgs e) {
 			if (e.Key == Key.Escape)
@@ -415,7 +368,6 @@ namespace BetterExplorerControls {
 		}
 
 		private void ExitEditMode() {
-			//FocusManager.SetIsFocusScope(this, false);
 			IsInEditMode = false;
 			elPanel.Visibility = System.Windows.Visibility.Visible;
 
@@ -426,40 +378,55 @@ namespace BetterExplorerControls {
 		public void EnterEditMode() {
 			IsInEditMode = true;
 			elPanel.Visibility = System.Windows.Visibility.Collapsed;
-			elPanel.Focusable = false;
+
 			if (Undertextbox != null) {
 				Undertextbox.Visibility = System.Windows.Visibility.Visible;
-				//Undertextbox.SelectAll();
+				Undertextbox.SelectAll();
 			}
-			//if (furthestrightitem == null) {
-			//	FocusManager.SetIsFocusScope(this, true);
-			//	return;
-			//}
 
 			var obj = furthestrightitem.ShellItem;
 
-			if (obj != null && obj.ParsingName.StartsWith(":")) {
-				var correctItems = KnownFolders.All.Where(w => obj.ParsingName.Contains(w.ParsingName)).ToArray();
-				foreach (var item in correctItems) {
-					ShellItem realItem = (ShellItem)item;
-					HistoryCombo.Text = obj.ParsingName.Replace(realItem.ParsingName, realItem.GetDisplayName(SIGDN.NORMALDISPLAY)).Replace(".library-ms", "");
-				}
-			}
-			else {
-				HistoryCombo.Text = furthestrightitem.ShellItem.ParsingName;
+			if (obj != null)
+			{
+				HistoryCombo.Text = obj.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING);
+				Undertextbox.Focus();
 			}
 
-			FocusManager.SetIsFocusScope(this, true);
+
 		}
 
 		#endregion Random Public
 
+		#region Cursor Stuff
+		/// <summary> Retrieves the cursor's position, in screen coordinates. </summary>
+		/// <see> See MSDN documentation for further information. </see>
+		[DllImport("user32.dll")]
+		private static extern bool GetCursorPos(out POINT lpPoint);
 
-		/*
-		public void UpdateLastItem(int CurLocationCount) {
-			BreadcrumbBarItem lastitem = elPanel.Children[elPanel.Children.Count - 1] as BreadcrumbBarItem;
-			lastitem.SetChildren(CurLocationCount > 0);
+		/// <summary> Struct representing a point. </summary>
+		[StructLayout(LayoutKind.Sequential)]
+		private struct POINT
+		{
+			public int X;
+			public int Y;
+
+			public static implicit operator Point(POINT point)
+			{
+				return new Point(point.X, point.Y);
+			}
 		}
-		*/
+		public static Point GetCursorPosition() {
+			POINT lpPoint;
+			GetCursorPos(out lpPoint);
+			return lpPoint;
+		}
+		#endregion
+
+		public BreadcrumbBarControl()
+		{
+			InitializeComponent();
+			this.hl = new ObservableCollection<BreadcrumbBarFSItem>();
+			this.Loaded += BreadcrumbBarControl_Loaded;
+		}
 	}
 }

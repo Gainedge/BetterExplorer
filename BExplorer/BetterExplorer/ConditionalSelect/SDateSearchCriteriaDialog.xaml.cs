@@ -32,7 +32,6 @@ namespace BetterExplorer {
 		//	InitializeComponent();
 		//}
 
-		//[Obsolete("Attempting to replace with Static Open(...)")]
 		public SDateSearchCriteriaDialog(string displayname) {
 			InitializeComponent();
 			SetFilterName(displayname);
