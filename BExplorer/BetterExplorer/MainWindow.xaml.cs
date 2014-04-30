@@ -174,6 +174,100 @@ namespace BetterExplorer {
 		}
 		*/
 
+
+		[Obsolete("Not used")]
+		private string GetStringsFromCollection(StringCollection coll, string separator = " ") {
+			string path = null;
+			foreach (string item in coll) {
+				if (string.IsNullOrEmpty(path)) {
+					path = item;
+				}
+				else {
+					path = path + separator + item;
+				}
+			}
+			return path;
+		}
+
+		[Obsolete("Never used", true)]
+		private uint GetDeviceNumberForDriveLetter(char letter) {
+			List<int> list = ImDiskAPI.GetDeviceList();
+			foreach (int item in list) {
+				if (ImDiskAPI.QueryDevice(Convert.ToUInt32(item)).DriveLetter == letter) {
+					return Convert.ToUInt32(item);
+				}
+			}
+
+			return 0;
+		}
+
+
+
+		[Obsolete("Never used", true)]
+		private List<char> GetLettersOfVirtualDrives(bool threaded = true) {
+			if (threaded) {
+				List<char> drives = new List<char>();
+				Thread t = new Thread(() => {
+					Thread.Sleep(10);
+					List<int> list = ImDiskAPI.GetDeviceList();
+					foreach (int item in list) {
+						drives.Add(ImDiskAPI.QueryDevice(Convert.ToUInt32(item)).DriveLetter);
+					}
+				});
+				t.Start();
+				return drives;
+			}
+			else {
+				List<char> drives = new List<char>();
+				List<int> list = ImDiskAPI.GetDeviceList();
+				foreach (int item in list) {
+					try {
+						drives.Add(ImDiskAPI.QueryDevice(Convert.ToUInt32(item)).DriveLetter);
+					}
+					catch {
+
+					}
+				}
+				return drives;
+			}
+		}
+
+
+		[Obsolete("Not Used!!", true)]
+		private string GetUseablePath(string path) {
+			if (path.StartsWith("::")) {
+				string lib = path.Substring(0, path.IndexOf("\\"));
+				string gp = GetDefaultFolderfromLibrary(lib);
+				if (gp == lib) {
+					return path;
+				}
+				else {
+					return gp + path.Substring(path.IndexOf("\\") + 1);
+				}
+			}
+			else {
+				return path;
+			}
+		}
+
+
+		[Obsolete("Not used", true)]
+		private bool IsConnectedToInternet() {
+			//Code source - Codeplex User Salysle
+			//Hope it works...
+			int lngFlags = 0;
+			return WindowsAPI.InternetGetConnectedState(lngFlags, 0);
+		}
+
+		[Obsolete("Not Used!!!", true)]
+		public bool Activate(bool restoreIfMinimized) {
+			if (restoreIfMinimized && WindowState == WindowState.Minimized) {
+				WindowState = PreviouseWindowState == WindowState.Normal ? WindowState.Normal : WindowState.Maximized;
+			}
+
+			return Activate();
+		}
+
 		#endregion
 
 		#region DLLImports
@@ -1785,8 +1879,8 @@ namespace BetterExplorer {
 					else {
 						path = String.Format("{0}\r\n{1}", path, item.ParsingName);
 					}
-
 				}
+
 				Clipboards.SetText(path);
 			}
 			else if (ShellListView.SelectedItems.Count() == 1) {
@@ -1795,21 +1889,8 @@ namespace BetterExplorer {
 			else {
 				Clipboards.SetText(ShellListView.CurrentFolder.ParsingName);
 			}
-
 		}
 
-		private string GetStringsFromCollection(StringCollection coll, string separator = " ") {
-			string path = null;
-			foreach (string item in coll) {
-				if (string.IsNullOrEmpty(path)) {
-					path = item;
-				}
-				else {
-					path = path + separator + item;
-				}
-			}
-			return path;
-		}
 
 		private void btnSelAll_Click(object sender, RoutedEventArgs e) {
 			ShellListView.SelectAll();
@@ -1838,16 +1919,18 @@ namespace BetterExplorer {
 		private void MenuItem_Click(object sender, RoutedEventArgs e) {
 			//KeepFocusOnExplorer = true;
 			AddToLog(String.Format("The following files have been moved to the Recycle Bin: {0}", ListAllSelectedItems()));
-			SetDeleteOperation(true);
+			//SetDeleteOperation(true);
+			ShellListView.DeleteSelectedFiles(true);
 		}
 
 		// Delete > Permanently Delete
 		private void MenuItem_Click_1(object sender, RoutedEventArgs e) {
 			//KeepFocusOnExplorer = true;
-			SetDeleteOperation(false);
+			//SetDeleteOperation(false);
+			ShellListView.DeleteSelectedFiles(false);
 		}
 
-		string LastPath = "";
+		//string LastPath = "";
 
 		public bool IsRenameFromCreate = false;
 
@@ -1869,7 +1952,7 @@ namespace BetterExplorer {
 				//AddToLog("Folder created in " + ShellListView.CurrentFolder.ParsingName);
 			}
 
-			LastPath = path;
+			//LastPath = path;
 
 			WindowsAPI.SHChangeNotify(WindowsAPI.HChangeNotifyEventID.SHCNE_MKDIR,
 			WindowsAPI.HChangeNotifyFlags.SHCNF_PATHW | WindowsAPI.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT,
@@ -1888,6 +1971,7 @@ namespace BetterExplorer {
 			else {
 				ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
 			}
+
 			ShellListView.Focus();
 		}
 
@@ -1899,7 +1983,6 @@ namespace BetterExplorer {
 		}
 
 		private void btnPasetShC_Click(object sender, RoutedEventArgs e) {
-
 			StringCollection DropList = System.Windows.Forms.Clipboard.GetFileDropList();
 			string PathForDrop = ShellListView.CurrentFolder.ParsingName;
 			foreach (string item in DropList) {
@@ -1963,9 +2046,11 @@ namespace BetterExplorer {
 				ShellListView.DoMove(obj);
 
 		}
-		private void SetDeleteOperation(bool isMoveToRB) {
-			ShellListView.DeleteSelectedFiles(isMoveToRB);
-		}
+
+		//[Obsolete("Inline", true)]
+		//private void SetDeleteOperation(bool isMoveToRB) {
+		//	ShellListView.DeleteSelectedFiles(isMoveToRB);
+		//}
 
 		private void btnctOther_Click(object sender, RoutedEventArgs e) {
 			CommonOpenFileDialog dlg = new CommonOpenFileDialog();
@@ -1985,6 +2070,8 @@ namespace BetterExplorer {
 		}
 
 		private void btnCut_Click(object sender, RoutedEventArgs e) {
+			//TODO: Code this!!
+			System.Windows.Forms.MessageBox.Show("This button currently does nothing");
 			//AddToLog("The following files have been cut: " + PathStringCombiner.CombinePaths(ShellListView.SelectedItems.ToList(), " ", false));
 			//ShellListView.DoCut();
 		}
@@ -1999,6 +2086,8 @@ namespace BetterExplorer {
 		}
 
 		private void btnEdit_Click(object sender, RoutedEventArgs e) {
+			//TODO: Code this!!
+			System.Windows.Forms.MessageBox.Show("This button currently does nothing");
 			//ShellListView.EditFile(ShellListView.SelectedItems[0].ParsingName);
 		}
 
@@ -2008,8 +2097,7 @@ namespace BetterExplorer {
 				ShellLink link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.SelectedItems[0].ParsingName;
-				link.Save(KnownFolders.Links.ParsingName + @"\" +
-								ShellListView.SelectedItems[0].GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
+				link.Save(KnownFolders.Links.ParsingName + @"\" + ShellListView.SelectedItems[0].GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
 				link.Dispose();
 			}
 
@@ -2017,8 +2105,7 @@ namespace BetterExplorer {
 				ShellLink link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.CurrentFolder.ParsingName;
-				link.Save(KnownFolders.Links.ParsingName + @"\" +
-								ShellListView.CurrentFolder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
+				link.Save(KnownFolders.Links.ParsingName + @"\" + ShellListView.CurrentFolder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
 				link.Dispose();
 			}
 
@@ -2134,9 +2221,7 @@ namespace BetterExplorer {
 								Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
 												(Action)(() => {
 													this.beNotifyIcon.ShowBalloonTip("Error", message, Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Error);
-
 												}));
-
 							}
 						}
 						break;
@@ -2176,7 +2261,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnAdvMountIso_Click(object sender, RoutedEventArgs e) {
-			if (CheckImDiskInstalled() == false) {
+			if (!CheckImDiskInstalled()) {
 				ShowInstallImDiskMessage();
 				return;
 			}
@@ -2252,52 +2337,13 @@ namespace BetterExplorer {
 
 		private void btnWriteIso_Click(object sender, RoutedEventArgs e) {
 			Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "isoburn.exe"),
-											string.Format("\"{0}\"", ShellListView.SelectedItems[0].ParsingName));
-		}
-
-		private List<char> GetLettersOfVirtualDrives(bool threaded = true) {
-			if (threaded == true) {
-				List<char> drives = new List<char>();
-				Thread t = new Thread(() => {
-					Thread.Sleep(10);
-					List<int> list = ImDiskAPI.GetDeviceList();
-					foreach (int item in list) {
-						drives.Add(ImDiskAPI.QueryDevice(Convert.ToUInt32(item)).DriveLetter);
-					}
-				});
-				t.Start();
-				return drives;
-			}
-			else {
-				List<char> drives = new List<char>();
-				List<int> list = ImDiskAPI.GetDeviceList();
-				foreach (int item in list) {
-					try {
-						drives.Add(ImDiskAPI.QueryDevice(Convert.ToUInt32(item)).DriveLetter);
-					}
-					catch {
-
-					}
-				}
-				return drives;
-			}
-		}
-
-		private uint GetDeviceNumberForDriveLetter(char letter) {
-			List<int> list = ImDiskAPI.GetDeviceList();
-			foreach (int item in list) {
-				if (ImDiskAPI.QueryDevice(Convert.ToUInt32(item)).DriveLetter == letter) {
-					return Convert.ToUInt32(item);
-				}
-			}
-			return 0;
+									   string.Format("\"{0}\"", ShellListView.SelectedItems[0].ParsingName));
 		}
 
 		private void btnUnmountDrive_Click(object sender, RoutedEventArgs e) {
 			try {
-				if (!CheckImDiskInstalled()) {
+				if (!CheckImDiskInstalled())
 					ShowInstallImDiskMessage();
-				}
 				else if ((ImDiskAPI.QueryDevice(SelectedDriveID).Flags & ImDiskFlags.DeviceTypeCD) != 0)
 					ImDiskAPI.ForceRemoveDevice(SelectedDriveID);
 				else
@@ -2363,15 +2409,12 @@ namespace BetterExplorer {
 				case UpdateStepOn.ExtractingUpdate:
 					autoUpdater.Cancel();
 					break;
-
 				case UpdateStepOn.UpdateReadyToInstall:
 				case UpdateStepOn.UpdateAvailable:
 					break;
-
 				case UpdateStepOn.UpdateDownloaded:
 					autoUpdater.InstallNow();
 					break;
-
 				default:
 					autoUpdater.ForceCheckForUpdate(true);
 					break;
@@ -2393,22 +2436,6 @@ namespace BetterExplorer {
 
 		private string GetExtension(string file) {
 			return file.Substring(file.LastIndexOf("."));
-		}
-
-		private string GetUseablePath(string path) {
-			if (path.StartsWith("::")) {
-				string lib = path.Substring(0, path.IndexOf("\\"));
-				string gp = GetDefaultFolderfromLibrary(lib);
-				if (gp == lib) {
-					return path;
-				}
-				else {
-					return gp + path.Substring(path.IndexOf("\\") + 1);
-				}
-			}
-			else {
-				return path;
-			}
 		}
 
 		private string GetDefaultFolderfromLibrary(string library) {
@@ -2508,13 +2535,6 @@ namespace BetterExplorer {
 			//rks.Close();
 			//rk.Close();
 			LastUpdateCheck = DateTime.Now;
-		}
-
-		//Code source - Codeplex User Salysle
-		//Hope it works...
-		private bool IsConnectedToInternet() {
-			int lngFlags = 0;
-			return WindowsAPI.InternetGetConnectedState(lngFlags, 0);
 		}
 
 		private void btnAdvancedUpdateSettings_Click(object sender, RoutedEventArgs e) {
@@ -2631,13 +2651,6 @@ namespace BetterExplorer {
 			hitTestList.Add(result.VisualHit);
 			return HitTestResultBehavior.Continue;
 		}
-		public bool Activate(bool restoreIfMinimized) {
-			if (restoreIfMinimized && WindowState == WindowState.Minimized) {
-				WindowState = PreviouseWindowState == WindowState.Normal ? WindowState.Normal : WindowState.Maximized;
-			}
-			return Activate();
-		}
-
 
 		#endregion
 
@@ -2721,6 +2734,7 @@ namespace BetterExplorer {
 		*/
 
 		System.Windows.Forms.Timer _keyjumpTimer = new System.Windows.Forms.Timer();
+
 		void ShellListView_KeyJumpTimerDone(object sender, EventArgs e) {
 			if (_keyjumpTimer != null) {
 				_keyjumpTimer.Stop();
@@ -3012,7 +3026,7 @@ namespace BetterExplorer {
 			rks.Close();
 			rk.Close();
 
-			if (StartUpLocation.StartsWith("::") && StartUpLocation.IndexOf(@"\") == -1) {
+			if (StartUpLocation.StartsWith("::") && StartUpLocation.Contains("\\")) {
 				ShellItem sho = new ShellItem(String.Format("shell:{0}", StartUpLocation));
 				btnSetCurrentasStartup.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
 				btnSetCurrentasStartup.Icon = sho.Thumbnail.BitmapSource;
@@ -3024,22 +3038,15 @@ namespace BetterExplorer {
 					btnSetCurrentasStartup.Icon = sho.Thumbnail.BitmapSource;
 				}
 				catch {
-
-
 				}
 			}
 
 			miTabManager.IsEnabled = Directory.Exists(sstdir);
-
 			autoUpdater.DaysBetweenChecks = this.UpdateCheckInterval;
-			try {
-				if (IsUpdateCheck)
-					autoUpdater.UpdateType = UpdateType.OnlyCheck;
-				else
-					autoUpdater.UpdateType = UpdateType.DoNothing;
 
-				if (IsUpdateCheckStartup)
-					autoUpdater.ForceCheckForUpdate();
+			try {
+				autoUpdater.UpdateType = IsUpdateCheck ? UpdateType.OnlyCheck : UpdateType.DoNothing;
+				if (IsUpdateCheckStartup) autoUpdater.ForceCheckForUpdate();
 			}
 			catch (IOException) {
 				this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
@@ -3093,8 +3100,8 @@ namespace BetterExplorer {
 						//AddToLog(String.Format("Unable to load {0} into a tab!", str));
 						MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
 					}
-
 				}
+
 				if (tabControl1.Items.Count == 0) {
 					NewTab();
 
@@ -3705,24 +3712,25 @@ namespace BetterExplorer {
 		#endregion
 
 		#region Old Search Code
-		private ShellItem BeforeSearchFolder;
-		Thread backgroundSearchThread;
+		//private ShellItem BeforeSearchFolder;
+		int CurrentProgressValue = 0;
+
+		//Thread backgroundSearchThread;
 		// Helper method to do the search on a background thread
 
 
 
-		void bw_DoWork(object sender, DoWorkEventArgs e) {
-			//ShellListView.Navigate((ShellSearchFolder)e.Argument);
-		}
+		//void bw_DoWork(object sender, DoWorkEventArgs e) {
+		//	//ShellListView.Navigate((ShellSearchFolder)e.Argument);
+		//}
 
 		public void DoSearch(string SearchCriteria) {
-			if (backgroundSearchThread != null)
-				backgroundSearchThread.Abort();
+			ShellItem BeforeSearchFolder = null; //TODO: Make sure moving this is okay
+			//if (backgroundSearchThread != null)
+			//	backgroundSearchThread.Abort();
 
 			if (ShellListView.CurrentFolder.IsSearchFolder) {
-				if (BeforeSearchFolder == null) {
-					BeforeSearchFolder = ShellListView.CurrentFolder;
-				}
+				if (BeforeSearchFolder == null) BeforeSearchFolder = ShellListView.CurrentFolder;
 			}
 			else {
 				BeforeSearchFolder = ShellListView.CurrentFolder;
@@ -3733,10 +3741,10 @@ namespace BetterExplorer {
 				ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, BeforeSearchFolder);
 				ShellListView.Navigate(searchFolder);
 
-				if (BeforeSearchFolder != null) {
-					//Thread.Sleep(750);
-					//ShellListView.RefreshContents();
-				}
+				//if (BeforeSearchFolder != null) {
+				//	//Thread.Sleep(750);
+				//	//ShellListView.RefreshContents();
+				//}
 				//backgroundSearchThread = new Thread(new ParameterizedThreadStart(DoSimpleSearch));
 				//backgroundSearchThread.IsBackground = true;
 				//// ApartmentState.STA is required for COM
@@ -3744,15 +3752,15 @@ namespace BetterExplorer {
 				//backgroundSearchThread.Start(SearchCriteria);
 			}
 		}
-		private void searchTextBox1_Search(object sender, RoutedEventArgs e) {
+		//private void searchTextBox1_Search(object sender, RoutedEventArgs e) {
 
-			//DoSearch(searchTextBox1.Text);
-			//StatusBar.UpdateLayout();
+		//	//DoSearch(searchTextBox1.Text);
+		//	//StatusBar.UpdateLayout();
 
-		}
-		int searchcicles = 0;
+		//}
+		//int searchcicles = 0;
 		//int BeforeSearcCicles = 0;
-		int CurrentProgressValue = 0;
+
 		#endregion
 
 		#region Change Ribbon Color (Theme)
@@ -4010,7 +4018,6 @@ namespace BetterExplorer {
 
 
 		private void DoCheck() {
-
 			string FileName = ShellListView.SelectedItems[0].ParsingName;
 			SevenZipExtractor extractor = new SevenZipExtractor(FileName);
 			if (!extractor.Check())
@@ -4999,12 +5006,14 @@ namespace BetterExplorer {
 			StartUpLocation = CurrentLocString;
 			btnSetCurrentasStartup.Header = ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY);
 			btnSetCurrentasStartup.Icon = ShellListView.CurrentFolder.Thumbnail.BitmapSource;
-			RegistryKey rk = Registry.CurrentUser;
-			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-			rks.SetValue(@"StartUpLoc", CurrentLocString);
-			rks.Close();
-			rk.Close();
 
+			SetRegistryValue("StartUpLoc", CurrentLocString);
+
+			//RegistryKey rk = Registry.CurrentUser;
+			//RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+			//rks.SetValue(@"StartUpLoc", CurrentLocString);
+			//rks.Close();
+			//rk.Close();
 		}
 
 		private void chkIsFlyout_Checked(object sender, RoutedEventArgs e) {
@@ -7924,6 +7933,7 @@ namespace BetterExplorer {
 				mnuIncludeInLibrary.IsEnabled = false;
 			}
 		}
+
 		private void GridSplitter_DragDelta(object sender, DragDeltaEventArgs e) {
 			//ShellTree.Invalidate();
 			//ShellTree.m_TreeView.Invalidate();
@@ -7936,6 +7946,7 @@ namespace BetterExplorer {
 		private void RibbonWindow_KeyDown(object sender, KeyEventArgs e) {
 
 		}
+
 		private void RibbonWindow_PreviewKeyDown(object sender, KeyEventArgs e) {
 			if (!Keyboard.IsKeyDown(Key.LeftAlt) && (e.Key == Key.Left || e.Key == Key.Right || e.Key == Key.Up || e.Key == Key.Down)) {
 				e.Handled = true;

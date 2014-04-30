@@ -34,8 +34,66 @@ namespace BetterExplorerControls {
 		[Obsolete("Being Removed", true)]
 		private bool IsFiltered;
 
-		#endregion
+		[Obsolete("Not Used!!!", true)]
+		private void g_Click(object sender, RoutedEventArgs e) {
+			HistoryCombo.Text = (string)(sender as MenuItem).Header;
+			PathEventArgs args = new PathEventArgs(new ShellItem(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text.ToShellParsingName()));
+			OnNavigateRequested(args);
+			ExitEditMode();
+		}
 
+		[Obsolete("Not Used!!!", true)]
+		private void HistoryCombo_DropDownOpened(object sender, EventArgs e) {
+			//if (IsFiltered) {
+			//	HistoryCombo.Items.Filter += a => true;
+			//	IsFiltered = false;
+			//}
+
+			if (!IsInEditMode) EnterEditMode();
+
+			Undertextbox.Focus();
+			if (HistoryCombo.Items.Count == 0) {
+				HistoryCombo.IsDropDownOpen = false;
+			}
+		}
+
+		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
+		[Obsolete("Was only used 1 time", true)]
+		protected virtual void OnRefreshRequested() { if (RefreshRequested != null) RefreshRequested(this); }
+
+		#region Unused
+
+		#region Cursor Stuff??
+
+		/// <summary> Retrieves the cursor's position, in screen coordinates. </summary>
+		/// <see> See MSDN documentation for further information. </see>
+		[DllImport("user32.dll")]
+		private static extern bool GetCursorPos(out POINT lpPoint);
+
+		/// <summary> Struct representing a point. </summary>
+		[StructLayout(LayoutKind.Sequential)]
+		private struct POINT {
+			public int X;
+			public int Y;
+
+			public static implicit operator Point(POINT point) {
+				return new Point(point.X, point.Y);
+			}
+		}
+
+		/*
+		public static Point GetCursorPosition() {
+			POINT lpPoint;
+			GetCursorPos(out lpPoint);
+			return lpPoint;
+		}
+		*/
+
+		#endregion Cursor Stuff??
+
+		#endregion Unused
+
+		#endregion Being Removed
 
 		#region Properties
 
@@ -47,33 +105,25 @@ namespace BetterExplorerControls {
 
 		public delegate void PathEventHandler(object sender, PathEventArgs e);
 
-
-		/// <summary>An event that clients can use to be notified whenever the elements of the list change:</summary>
+		/// <summary>
+		/// An event that clients can use to be notified whenever the elements of the list change:
+		/// </summary>
 		public event PathEventHandler NavigateRequested;
 
 		[Obsolete("Might replace with Action<Object>")]
 		public delegate void RefreshHandler(object sender);
 
-		/// <summary>An event that clients can use to be notified whenever the elements of the list change:</summary>
+		/// <summary>
+		/// An event that clients can use to be notified whenever the elements of the list change:
+		/// </summary>
 		public event RefreshHandler RefreshRequested;
 
 		[Obsolete("Warning: Might become private soon")]
 		private bool IsInEditMode { get; set; }
 
-
 		public ObservableCollection<BreadcrumbBarFSItem> HistoryItems {
 			get {
 				return new ObservableCollection<BreadcrumbBarFSItem>(hl.ToArray());
-				/*
-				ObservableCollection<BreadcrumbBarFSItem> hilist = new ObservableCollection<BreadcrumbBarFSItem>();
-
-				
-				foreach (var item in hl) {
-					hilist.Add(item);
-				}
-
-				return hilist;
-				*/
 			}
 			set {
 				foreach (var item in value) {
@@ -85,13 +135,9 @@ namespace BetterExplorerControls {
 			}
 		}
 
-
-
 		#endregion Properties
 
-
 		#region Control Events
-
 
 		private void BreadcrumbBarControl_Loaded(object sender, RoutedEventArgs e) {
 			Undertextbox = (TextBox)HistoryCombo.Template.FindName("PART_EditableTextBox", HistoryCombo);
@@ -121,16 +167,6 @@ namespace BetterExplorerControls {
 			Undertextbox.SelectedText = "";
 		}
 
-
-		private void g_Click(object sender, RoutedEventArgs e) {
-			HistoryCombo.Text = (string)(sender as MenuItem).Header;
-			PathEventArgs args = new PathEventArgs(new ShellItem(HistoryCombo.Text.Trim().StartsWith("%") ? Environment.ExpandEnvironmentVariables(HistoryCombo.Text) : HistoryCombo.Text.ToShellParsingName()));
-			OnNavigateRequested(args);
-			ExitEditMode();
-		}
-
-
-
 		private void duh_ContextMenuRequested(object sender, PathEventArgs e) {
 			//ShellItem[] dirs = new ShellItem[1];
 			//dirs[0] = e.ShellItem;
@@ -147,8 +183,6 @@ namespace BetterExplorerControls {
 			OnNavigateRequested(e);
 			//LastPath = e.ShellItem.ParsingName;
 		}
-
-
 
 		private void HistoryCombo_GotFocus(object sender, RoutedEventArgs e) {
 			e.Handled = true;
@@ -171,7 +205,6 @@ namespace BetterExplorerControls {
 				//Needfilter = false;
 			}
 		}
-
 
 		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e) {
 			//TODO: Test this out
@@ -226,20 +259,6 @@ namespace BetterExplorerControls {
 		//	//Needfilter = true;
 		//}
 
-		private void HistoryCombo_DropDownOpened(object sender, EventArgs e) {
-			//if (IsFiltered) {
-			//	HistoryCombo.Items.Filter += a => true;
-			//	IsFiltered = false;
-			//}
-
-			if (!IsInEditMode) EnterEditMode();
-
-			Undertextbox.Focus();
-			if (HistoryCombo.Items.Count == 0) {
-				HistoryCombo.IsDropDownOpen = false;
-			}
-		}
-
 		private void HistoryCombo_KeyDown(object sender, KeyEventArgs e) {
 			if (e.Key == Key.Escape)
 				IsEcsPressed = true;
@@ -257,16 +276,13 @@ namespace BetterExplorerControls {
 		}
 
 		private void btnRefreshExplorer_Click(object sender, RoutedEventArgs e) {
-			OnRefreshRequested();
+			//OnRefreshRequested();
+			if (RefreshRequested != null) RefreshRequested(this);
 		}
 
-
-		#endregion
-
-
+		#endregion Control Events
 
 		#region Random Private
-
 
 		private void RequestNavigation(String Path) {
 			PathEventArgs ea = null;
@@ -290,7 +306,6 @@ namespace BetterExplorerControls {
 			}
 			//}
 		}
-
 
 		private void GetBreadCrumbItems(List<ShellItem> items) {
 			ShellItem lastmanstanding = items[0];
@@ -322,7 +337,6 @@ namespace BetterExplorerControls {
 			}
 		}
 
-
 		private List<ShellItem> GetPaths(ShellItem currloc) {
 			List<ShellItem> res = new List<ShellItem>();
 			ShellItem subject = currloc;
@@ -348,18 +362,17 @@ namespace BetterExplorerControls {
 		}
 
 		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
-		protected virtual void OnNavigateRequested(PathEventArgs e) { if (NavigateRequested != null) NavigateRequested(this, e); }
+		protected virtual void OnNavigateRequested(PathEventArgs e) {
+			if (NavigateRequested != null) NavigateRequested(this, e);
+		}
 
-		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
-		protected virtual void OnRefreshRequested() { if (RefreshRequested != null) RefreshRequested(this); }
-
-		#endregion
-
+		#endregion Random Private
 
 		#region Random Public
 
-		public void ClearHistory() { hl.Clear(); }
-
+		public void ClearHistory() {
+			hl.Clear();
+		}
 
 		public void SetDragHandlers(DragEventHandler dragenter, DragEventHandler dragleave, DragEventHandler dragover, DragEventHandler drop) {
 			de = dragenter;
@@ -392,7 +405,6 @@ namespace BetterExplorerControls {
 			}
 		}
 		*/
-
 
 		public void ExitEditMode_IfNeeded(bool Cheat = false) {
 			if (Cheat)
@@ -440,53 +452,8 @@ namespace BetterExplorerControls {
 			FocusManager.SetIsFocusScope(this, true);
 		}
 
+		#endregion Random Public
 
-		#endregion
-
-
-		#region Unused
-
-
-		#region Cursor Stuff??
-
-
-		/// <summary> Retrieves the cursor's position, in screen coordinates. </summary>
-		/// <see> See MSDN documentation for further information. </see>
-		[DllImport("user32.dll")]
-		private static extern bool GetCursorPos(out POINT lpPoint);
-
-		/// <summary> Struct representing a point. </summary>
-		[StructLayout(LayoutKind.Sequential)]
-		private struct POINT {
-			public int X;
-			public int Y;
-
-			public static implicit operator Point(POINT point) {
-				return new Point(point.X, point.Y);
-			}
-		}
-
-		/*
-		public static Point GetCursorPosition() {
-			POINT lpPoint;
-			GetCursorPos(out lpPoint);
-			return lpPoint;
-		}
-		*/
-		#endregion
-
-
-		#endregion
-
-
-
-		public BreadcrumbBarControl() {
-			InitializeComponent();
-			this.hl = new ObservableCollection<BreadcrumbBarFSItem>();
-			this.Loaded += BreadcrumbBarControl_Loaded;
-
-			//RecordHistory = true;
-		}
 
 		/*
 		public void UpdateLastItem(int CurLocationCount) {
