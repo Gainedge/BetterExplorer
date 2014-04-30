@@ -362,9 +362,14 @@ namespace BExplorer.Shell {
 			IShellFolder ishellfolder = null;
 			StringBuilder str = null;
 			IntPtr result;
+
+			if (this.Parent == null) {
+				//TODO: Fix this!
+				return 0;
+			}
+
 			try {
 				var guid = new Guid("000214fa-0000-0000-c000-000000000046");
-
 				uint res = 0;
 				ishellfolder = this.Parent.GetIShellFolder();
 				IntPtr[] pidls = new IntPtr[1];
@@ -384,7 +389,7 @@ namespace BExplorer.Shell {
 
 
 
-				if (result == IntPtr.Zero) { 
+				if (result == IntPtr.Zero) {
 					pidls = null;
 					Marshal.ReleaseComObject(ishellfolder);
 					return IExtractIconpwFlags.GIL_PERCLASS;
