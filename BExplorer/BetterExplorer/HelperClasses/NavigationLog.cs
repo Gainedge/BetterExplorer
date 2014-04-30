@@ -15,6 +15,7 @@ namespace BetterExplorer {
 		public bool CanNavigateBackwards { get { return !(CurrentLocPos == 0 || HistoryItemsList.Count == 0); } }
 		public bool CanNavigateForwards { get { return !(CurrentLocPos == HistoryItemsList.Count - 1 || HistoryItemsList.Count == 0); } }
 
+		/*
 		public List<ShellItem> BackEntries {
 			get {
 				List<ShellItem> _BackEntries = new List<ShellItem>();
@@ -26,6 +27,7 @@ namespace BetterExplorer {
 				return _BackEntries;
 			}
 		}
+		*/
 
 		public List<ShellItem> ForwardEntries {
 			get {
@@ -42,13 +44,8 @@ namespace BetterExplorer {
 		public ShellItem CurrentLocation {
 			get {
 				return HistoryItemsList.Count == 0 ? null : HistoryItemsList[CurrentLocPos];
-				//if (HistoryItems.Count == 0) 
-				//	return null;				
-				//else
-				//	return HistoryItems[CurrentLocPos];
 			}
 			set {
-				//NavigateOnwards(value);
 				HistoryItemsList.Add(value);
 				CurrentLocPos = HistoryItemsList.Count - 1;
 			}
@@ -60,7 +57,6 @@ namespace BetterExplorer {
 
 		public NavigationLog() {
 			HistoryItemsList = new List<ShellItem>();
-			////HistoryItems.Clear();
 			CurrentLocPos = -1;
 		}
 
@@ -72,7 +68,7 @@ namespace BetterExplorer {
 
 		public ShellItem NavigateForward() {
 			CurrentLocPos++;
-			return HistoryItemsList[CurrentLocPos > HistoryItemsList.Count -1 ? HistoryItemsList.Count -1 : CurrentLocPos];
+			return HistoryItemsList[CurrentLocPos > HistoryItemsList.Count - 1 ? HistoryItemsList.Count - 1 : CurrentLocPos];
 		}
 
 		public void ClearForwardItems() {
@@ -95,7 +91,6 @@ namespace BetterExplorer {
 			CurrentLocPos = HistoryItems.Count - 1;
 		}
 		*/
-
 
 	}
 }

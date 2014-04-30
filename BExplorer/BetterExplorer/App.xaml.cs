@@ -202,16 +202,19 @@ namespace BetterExplorer {
 			bool dmi = true;
 
 			if (e.Args != null && e.Args.Count() > 0) {
-				foreach (var Arg in e.Args) {
-					switch (Arg) {
-						case "/nw":
-							dmi = false;
-							break;
-						case "/norestore":
-							isStartWithStartupTab = true;
-							break;
-					}
-				}
+				dmi = !e.Args.Any((x) => x == "/nw");
+				isStartWithStartupTab = e.Args.Any((x) => x == "/norestore");
+
+				//foreach (var Arg in e.Args) {
+				//	switch (Arg) {
+				//		case "/nw":
+				//			dmi = false;
+				//			break;
+				//		case "/norestore":
+				//			isStartWithStartupTab = true;
+				//			break;
+				//	}
+				//}
 
 				//TODO: Consider Refactoring this so [e.Args[0] != "-minimized"] is inside the switch 
 				if (e.Args[0] != "-minimized")
@@ -274,8 +277,6 @@ namespace BetterExplorer {
 				//Aaron Campf => Bookmark
 				//win.ApendArgs(args.CommandLineArgs);			
 
-
-
 				var Check = (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null && args.CommandLineArgs[1] != "-minimized");
 				if (!Check || args.CommandLineArgs[1] == "t") {
 					win.Visibility = Visibility.Visible;
@@ -295,8 +296,6 @@ namespace BetterExplorer {
 						sho = new ShellItem(cmd.StartsWith("::") ? "shell:" + cmd : args.CommandLineArgs[1].Replace("\"", ""));
 					}
 				}
-
-
 
 
 				var Worker = (Action)(() => {
@@ -399,11 +398,8 @@ namespace BetterExplorer {
 
 			if (tabItem == null)
 				return;
-			else if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed) {
+			else if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
 				DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
-			}
 		}
-
 	}
-
 }
