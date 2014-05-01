@@ -238,7 +238,7 @@ namespace BetterExplorer {
 
 			try {
 				var regLocale = rks.GetValue(@"Locale", "").ToString();
-				Locale = String.IsNullOrEmpty(regLocale) ? CultureInfo.CurrentUICulture.EnglishName : regLocale;
+				Locale = String.IsNullOrEmpty(regLocale) ? CultureInfo.CurrentUICulture.Name : regLocale;
 				SelectCulture(Locale);
 			}
 			catch {

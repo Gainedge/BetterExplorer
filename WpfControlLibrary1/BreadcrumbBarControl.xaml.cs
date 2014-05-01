@@ -186,10 +186,13 @@ namespace BetterExplorerControls {
 				catch (Exception) {
 					// For now just handle the exception. later will be fixed to navigate correct path.
 				}
-				//ExitEditMode();
+				
 			}
 
-			ExitEditMode_IfNeeded();
+			if (IsEcsPressed)
+				ExitEditMode_IfNeeded();
+
+			
 		}
 
 		private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -363,7 +366,7 @@ namespace BetterExplorerControls {
 			if (Cheat)
 				IsInEditMode = true;
 
-			if (IsInEditMode)
+			if (IsInEditMode || IsEcsPressed)
 				ExitEditMode();
 		}
 
@@ -381,7 +384,6 @@ namespace BetterExplorerControls {
 
 			if (Undertextbox != null) {
 				Undertextbox.Visibility = System.Windows.Visibility.Visible;
-				Undertextbox.SelectAll();
 			}
 
 			var obj = furthestrightitem.ShellItem;
