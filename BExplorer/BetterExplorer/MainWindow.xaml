@@ -7,7 +7,7 @@
 					 xmlns:Previewer="clr-namespace:WpfDocumentPreviewer;assembly=WpfDocumentPreviewer"
 					 xmlns:Ribbon="clr-namespace:Fluent;assembly=Fluent"
 					 xmlns:console="clr-namespace:ConsoleControl;assembly=ConsoleControl"
-					 xmlns:controls="clr-namespace:BetterExplorerControls;assembly=BetterExplorerControls"
+					 xmlns:controls="clr-namespace:BetterExplorerControls;assembly=BetterExplorerControls"										
 					 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					 xmlns:local="clr-namespace:BetterExplorer"
 					 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -30,7 +30,7 @@
 					 WindowState="Maximized"
 					 d:DesignHeight="768"
 					 d:DesignWidth="852"
-					 mc:Ignorable="d" KeyDown="RibbonWindow_KeyDown" PreviewKeyDown="RibbonWindow_PreviewKeyDown">
+					 mc:Ignorable="d" PreviewKeyDown="RibbonWindow_PreviewKeyDown">
 
 	<Ribbon:RibbonWindow.Resources>
 		<ResourceDictionary Source="Themes\generic.xaml" />
@@ -1460,8 +1460,7 @@
 						 Ribbon:KeyTip.Keys="SI"
 						 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle" />
 					<Ribbon:SplitButton x:Name="btnCondSel"
-							  Click="btnCondSel_Click"
-							  DropDownOpened="btnCondSel_DropDownOpened"
+							  Click="btnCondSel_Click"							 
 							  Header="{DynamicResource btnConditionalSelectCP}"
 							  Icon="Images\filter16.png"
 							  LargeIcon="Images\filter32.png"
@@ -3124,7 +3123,7 @@
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
 				<Helper:NoFlickerWindowsFormsHost x:Name="ShellTreeHost" Grid.Column="0" Background="White"/>
-				<GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="LightGray" DragDelta="GridSplitter_DragDelta"/>
+				<GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="LightGray"/>
 				<Helper:NoFlickerWindowsFormsHost x:Name="ShellViewHost" Grid.Column="2" Background="White"/>
 			</Grid>
 			<GridSplitter Grid.Row="2"

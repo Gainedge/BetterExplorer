@@ -301,7 +301,12 @@ namespace BetterExplorer {
 				var Worker = (Action)(() => {
 					sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 					sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+
 					ClosableTabItem newt = new ClosableTabItem();
+
+
+
+
 					newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
 					newt.TabIcon = sho.Thumbnail.BitmapSource;
 					newt.PreviewMouseMove += newt_PreviewMouseMove;
@@ -331,57 +336,6 @@ namespace BetterExplorer {
 					Worker();
 				}
 
-
-				/*
-				if (!isStartMinimized || win.tabControl1.Items.Count == 0) {
-					sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-					sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-					ClosableTabItem newt = new ClosableTabItem();
-					newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
-					newt.TabIcon = sho.Thumbnail.BitmapSource;
-					newt.PreviewMouseMove += newt_PreviewMouseMove;
-					newt.ToolTip = sho.ParsingName;
-					newt.TabSelected += win.newt_TabSelected;
-					newt.ShellObject = sho;
-					win.CloneTab(newt);
-				}
-				else {
-					int RestoreTabs = (int)rks.GetValue(@"IsRestoreTabs", 1);
-					if (RestoreTabs == 0) {
-						win.tabControl1.Items.Clear();
-						sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-						sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-						ClosableTabItem newt = new ClosableTabItem();
-						newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
-						newt.TabIcon = sho.Thumbnail.BitmapSource;
-						newt.PreviewMouseMove += newt_PreviewMouseMove;
-						newt.ToolTip = sho.ParsingName;
-						newt.TabSelected += win.newt_TabSelected;
-						newt.ShellObject = sho;
-						win.CloneTab(newt);
-					}
-					if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
-						String cmd = args.CommandLineArgs[1];
-						if (cmd.StartsWith("::")) {
-							sho = new ShellItem("shell:" + cmd);
-						}
-						else {
-							sho = new ShellItem(args.CommandLineArgs[1].Replace("\"", ""));
-						}
-
-						sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-						sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-						ClosableTabItem newt = new ClosableTabItem();
-						newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
-						newt.TabIcon = sho.Thumbnail.BitmapSource;
-						newt.PreviewMouseMove += newt_PreviewMouseMove;
-						newt.ToolTip = sho.ParsingName;
-						newt.TabSelected += win.newt_TabSelected;
-						newt.ShellObject = sho;
-						win.CloneTab(newt);
-					}
-				}
-				*/
 				rks.Close();
 				rk.Close();
 
