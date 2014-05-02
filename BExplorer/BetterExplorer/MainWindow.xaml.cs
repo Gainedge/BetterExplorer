@@ -2562,9 +2562,13 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
-			var tab = (this.tabControl1.SelectedItem as ClosableTabItem);
-			if (tab != null && (tab.SelectedItems == null || tab.SelectedItems.Count() == 0)) {
-				tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+			if (this.ShellListView.CurrentFolder != null)
+			{
+				var tab = this.tabControl1.Items.OfType<ClosableTabItem>().Where(w => w.ShellObject.ParsingName == this.ShellListView.CurrentFolder.ParsingName).SingleOrDefault();
+				if (tab != null && this.ShellListView.GetSelectedCount() > 0)
+				{
+					tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+				}
 			}
 		}
 
@@ -6610,7 +6614,7 @@ namespace BetterExplorer {
 
 		public void newt_TabSelected(object sender, RoutedEventArgs e) {
 			ClosableTabItem itb = sender as ClosableTabItem;
-			if (itb != null) return;
+			if (itb == null) return;
 
 			isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
 			try {
@@ -6621,6 +6625,7 @@ namespace BetterExplorer {
 				//CurrentTabIndex = LastTabIndex;
 				if (itb.ShellObject != ShellListView.CurrentFolder) {
 					if (!Keyboard.IsKeyDown(Key.Tab)) {
+						tabControl1.SelectedItem = itb;
 						ShellListView.Navigate(itb.ShellObject);
 					}
 					else {
