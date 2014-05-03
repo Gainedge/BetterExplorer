@@ -2562,13 +2562,12 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
-			if (this.ShellListView.CurrentFolder != null)
-			{
-				var tab = this.tabControl1.Items.OfType<ClosableTabItem>().Where(w => w.ShellObject.ParsingName == this.ShellListView.CurrentFolder.ParsingName).SingleOrDefault();
-				if (tab != null && this.ShellListView.GetSelectedCount() > 0)
-				{
-					tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
-				}
+			if (this.ShellListView.CurrentFolder == null) return;
+			//var tab = this.tabControl1.Items.OfType<ClosableTabItem>().Where(w => w.ShellObject.ParsingName == this.ShellListView.CurrentFolder.ParsingName).SingleOrDefault();
+			var tab = tabControl1.SelectedItem as ClosableTabItem;
+
+			if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
+				tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
 			}
 		}
 
