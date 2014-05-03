@@ -6159,12 +6159,11 @@ namespace BetterExplorer {
 			CloseTab(tabControl1.SelectedItem as ClosableTabItem);
 		}
 
-		//'close tab
-		void cti_CloseTab(object sender, RoutedEventArgs e) {
-			ClosableTabItem curItem = e.Source as ClosableTabItem;
-
-			CloseTab(curItem);
-		}
+		////'close tab
+		//void cti_CloseTab(object sender, RoutedEventArgs e) {
+		//	ClosableTabItem curItem = e.Source as ClosableTabItem;
+		//	CloseTab(curItem);
+		//}
 
 		//public void CloneTab(ClosableTabItem CurTab) {
 		//	ClosableTabItem newt = new ClosableTabItem();
@@ -6437,48 +6436,48 @@ namespace BetterExplorer {
 
 		//}
 
-		void miopeninnew_Click(object sender, RoutedEventArgs e) {
-			MenuItem mi = (sender as MenuItem);
-			ClosableTabItem ti = mi.Tag as ClosableTabItem;
-			Process.Start(Assembly.GetExecutingAssembly().GetName().Name, ti.ShellObject.ParsingName + " /nw");
-			CloseTab(ti);
-			//throw new NotImplementedException();
-		}
+		//void miopeninnew_Click(object sender, RoutedEventArgs e) {
+		//	MenuItem mi = (sender as MenuItem);
+		//	ClosableTabItem ti = mi.Tag as ClosableTabItem;
+		//	Process.Start(Assembly.GetExecutingAssembly().GetName().Name, ti.ShellObject.ParsingName + " /nw");
+		//	CloseTab(ti);
+		//	//throw new NotImplementedException();
+		//}
 
-		void miclosealltabbd_Click(object sender, RoutedEventArgs e) {
-			MenuItem mi = (sender as MenuItem);
-			ClosableTabItem ti = mi.Tag as ClosableTabItem;
-			CloseAllTabsButThis(ti);
-		}
+		//void miclosealltabbd_Click(object sender, RoutedEventArgs e) {
+		//	MenuItem mi = (sender as MenuItem);
+		//	ClosableTabItem ti = mi.Tag as ClosableTabItem;
+		//	CloseAllTabsButThis(ti);
+		//}
 
-		void miclosealltab_Click(object sender, RoutedEventArgs e) {
-			CloseAllTabs(true);
-		}
+		//void miclosealltab_Click(object sender, RoutedEventArgs e) {
+		//	CloseAllTabs(true);
+		//}
 
-		void miclosecurrentr_Click(object sender, RoutedEventArgs e) {
-			MenuItem mi = (sender as MenuItem);
-			ClosableTabItem ti = mi.Tag as ClosableTabItem;
-			CloseTab(ti);
-		}
+		//void miclosecurrentr_Click(object sender, RoutedEventArgs e) {
+		//	MenuItem mi = (sender as MenuItem);
+		//	ClosableTabItem ti = mi.Tag as ClosableTabItem;
+		//	CloseTab(ti);
+		//}
 
-		void minewtabr_Click(object sender, RoutedEventArgs e) {
-			MenuItem mi = (sender as MenuItem);
-			ClosableTabItem ti = mi.Tag as ClosableTabItem;
-			NewTab();
-		}
+		//void minewtabr_Click(object sender, RoutedEventArgs e) {
+		//	MenuItem mi = (sender as MenuItem);
+		//	ClosableTabItem ti = mi.Tag as ClosableTabItem;
+		//	NewTab();
+		//}
 
-		void miclonecurrentr_Click(object sender, RoutedEventArgs e) {
-			MenuItem mi = (sender as MenuItem);
-			ClosableTabItem ti = mi.Tag as ClosableTabItem;
-			CloneTab(ti);
-		}
+		//void miclonecurrentr_Click(object sender, RoutedEventArgs e) {
+		//	MenuItem mi = (sender as MenuItem);
+		//	ClosableTabItem ti = mi.Tag as ClosableTabItem;
+		//	CloneTab(ti);
+		//}
 
-		void miundocloser_Click(object sender, RoutedEventArgs e) {
-			//MenuItem mi = (sender as MenuItem);
-			if (btnUndoClose.IsEnabled) {
-				btnUndoClose_Click(this, e);
-			}
-		}
+		//void miundocloser_Click(object sender, RoutedEventArgs e) {
+		//	//MenuItem mi = (sender as MenuItem);
+		//	if (btnUndoClose.IsEnabled) {
+		//		btnUndoClose_Click(this, e);
+		//	}
+		//}
 
 		//void CloseAllTabs(bool CloseFirstTab) {
 		//	foreach (ClosableTabItem tab in tabControl1.Items.OfType<ClosableTabItem>().ToArray()) {

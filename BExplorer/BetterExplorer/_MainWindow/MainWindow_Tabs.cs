@@ -10,7 +10,9 @@ using ContextMenu = Fluent.ContextMenu;
 using MenuItem = Fluent.MenuItem;
 
 namespace BetterExplorer {
-	//TODO: Fix Tab History/Navigation issue on new tabs
+
+	//TODO: Fix Folder History/Navigation issue on new tabs
+	//TODO: Fix Context Menu Item [Open in new window]
 	partial class MainWindow {
 		//private ClosableTabItem CreateNewClosableTabItem(ShellItem DefPath, bool IsNavigate) {
 		//	//TODO: figure out what to do with Cloning a tab!
@@ -259,7 +261,7 @@ namespace BetterExplorer {
 
 		public void NewTab(bool IsNavigate = true) {
 			ShellItem DefPath;
-			if (StartUpLocation.StartsWith("::") && StartUpLocation.IndexOf(@"\") == -1)
+			if (StartUpLocation.StartsWith("::") && !StartUpLocation.Contains(@"\"))
 				DefPath = new ShellItem("shell:" + StartUpLocation);
 			else
 				try {
@@ -347,23 +349,66 @@ namespace BetterExplorer {
 				tabitem.mnu.Items.Add(Item);
 			};
 
-			Worker("Close current tab", new RoutedEventHandler(miclosecurrentr_Click));
-			Worker("Close all tab", new RoutedEventHandler(miclosealltab_Click));
-			Worker("Close all other tab", new RoutedEventHandler(miclosealltabbd_Click));
+			//Worker("Close current tab", new RoutedEventHandler(miclosecurrentr_Click));
+			Worker("Close current tab", new RoutedEventHandler(
+				(sender, e) => {
+					CloseTab((sender as MenuItem).Tag as ClosableTabItem);
+				}));
+
+			//Worker("Close all tabs", new RoutedEventHandler(miclosealltab_Click));
+			Worker("Close all tabs", new RoutedEventHandler(
+				(sender, e) => {
+					CloseAllTabs(true);
+				}));
+
+			//Worker("Close all other tabs", new RoutedEventHandler(miclosealltabbd_Click));
+			Worker("Close all other tabs", new RoutedEventHandler(
+				(sender, e) => {
+					CloseAllTabsButThis((sender as MenuItem).Tag as ClosableTabItem);
+				}));
+
 			tabitem.mnu.Items.Add(new Separator());
-			Worker("New tab", new RoutedEventHandler(minewtabr_Click));
-			Worker("Clone tab", new RoutedEventHandler(miclonecurrentr_Click));
+
+			//Worker("New tab", new RoutedEventHandler(minewtabr_Click));
+			Worker("New tab", new RoutedEventHandler(
+				(sender, e) => {
+					//MenuItem mi = (sender as MenuItem);
+					//ClosableTabItem ti = mi.Tag as ClosableTabItem;
+					NewTab();
+				}));
+
+			Worker("Clone tab", new RoutedEventHandler(
+				(sender, e) => {
+					CloneTab((sender as MenuItem).Tag as ClosableTabItem);
+				}));
+
+
 			tabitem.mnu.Items.Add(new Separator());
 
 			MenuItem miundocloser = new MenuItem();
 			miundocloser.Header = "Undo close tab";
 			miundocloser.IsEnabled = btnUndoClose.IsEnabled;
 			miundocloser.Tag = "UCTI";
-			miundocloser.Click += new RoutedEventHandler(miundocloser_Click);
+			//miundocloser.Click += new RoutedEventHandler(miundocloser_Click);
+			miundocloser.Click += new RoutedEventHandler(
+				(sender, e) => {
+					if (btnUndoClose.IsEnabled) btnUndoClose_Click(this, e);
+				});
+
 			tabitem.mnu.Items.Add(miundocloser);
 
 			tabitem.mnu.Items.Add(new Separator());
-			Worker("Open in new window", new RoutedEventHandler(miopeninnew_Click));
+
+
+			//TODO: Fix Context Menu Item [Open in new window]
+			//Worker("Open in new window", new RoutedEventHandler(miopeninnew_Click));
+			Worker("Open in new window", new RoutedEventHandler(
+				(sender, e) => {
+					var ti = (sender as MenuItem).Tag as ClosableTabItem;
+					System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, ti.ShellObject.ParsingName + " /nw");
+					CloseTab(ti);
+				}));
+
 
 			/*
 			MenuItem miclosecurrentr = new MenuItem();
