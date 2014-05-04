@@ -3348,9 +3348,6 @@ namespace BetterExplorer {
 
 		private void SetupUIonNavComplete(NavigatedEventArgs e) {
 			btnSizeChart.IsEnabled = e.Folder.IsFileSystem;
-
-
-
 			btnAutosizeColls.IsEnabled = ShellListView.View == ShellViewStyle.Details;// ? true : false;
 
 
@@ -3387,6 +3384,7 @@ namespace BetterExplorer {
 			btnUpLevel.IsEnabled = ShellListView.CanNavigateParent;
 			//btnUpLevel.IsEnabled = !(ShellListView.CurrentFolder.Parent == null);
 		}
+
 		private void SetUpJumpListOnNavComplete() {
 			IntPtr pIDL = IntPtr.Zero;
 
@@ -3454,6 +3452,7 @@ namespace BetterExplorer {
 
 			return isinLibraries;
 		}
+
 		private void SetUpButtonVisibilityOnNavComplete(bool isinLibraries) {
 			if (ShellListView.CurrentFolder.ParsingName.Contains(KnownFolders.Libraries.ParsingName) &&
 																																																															ShellListView.CurrentFolder.ParsingName != KnownFolders.Libraries.ParsingName) {
@@ -4179,9 +4178,9 @@ namespace BetterExplorer {
 				//	}));
 
 			}
+
 			IsCalledFromLoading = false;
 			IsCalledFromViewEnum = false;
-
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e) {
@@ -4593,7 +4592,7 @@ namespace BetterExplorer {
 		#endregion
 
 		#region Image Editing
-
+		/*
 		private void ConvertImages(ImageFormat format, string extension) {
 			foreach (ShellItem item in ShellListView.SelectedItems) {
 				System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
@@ -4623,6 +4622,30 @@ namespace BetterExplorer {
 			cvt.Dispose();
 		}
 
+
+		private void ConvertToJPG_Click(object sender, RoutedEventArgs e) {
+			ConvertImages(ImageFormat.Jpeg, ".jpg");
+		}
+
+		private void ConvertToPNG_Click(object sender, RoutedEventArgs e) {
+			ConvertImages(ImageFormat.Png, ".png");
+		}
+
+		private void ConvertToGIF_Click(object sender, RoutedEventArgs e) {
+			ConvertImages(ImageFormat.Gif, ".gif");
+		}
+
+		private void ConvertToBMP_Click(object sender, RoutedEventArgs e) {
+			ConvertImages(ImageFormat.Bmp, ".bmp");
+		}
+
+		private void ConvertToWMF_Click(object sender, RoutedEventArgs e) {
+			ConvertImages(ImageFormat.Wmf, ".wmf");
+		}
+		*/
+
+
+
 		/*
 		private ImageFormat GetImageFormat(string FileName) {
 			using (Bitmap bitmap = new Bitmap(FileName)) {
@@ -4648,89 +4671,74 @@ namespace BetterExplorer {
 		*/
 
 
-		private void ConvertToJPG_Click(object sender, RoutedEventArgs e) {
-			ConvertImages(ImageFormat.Jpeg, ".jpg");
-		}
 
-		private void ConvertToPNG_Click(object sender, RoutedEventArgs e) {
-			ConvertImages(ImageFormat.Png, ".png");
-		}
 
-		private void ConvertToGIF_Click(object sender, RoutedEventArgs e) {
-			ConvertImages(ImageFormat.Gif, ".gif");
-		}
+		private void Convert_Images(object sender, RoutedEventArgs e) {
+			ImageFormat format = null; string extension = null;
 
-		private void ConvertToBMP_Click(object sender, RoutedEventArgs e) {
-			ConvertImages(ImageFormat.Bmp, ".bmp");
-		}
-
-		private void ConvertToWMF_Click(object sender, RoutedEventArgs e) {
-			ConvertImages(ImageFormat.Wmf, ".wmf");
-		}
-
-		private void btnRotateLeft_Click(object sender, RoutedEventArgs e) {
-			//Dispatcher.BeginInvoke(
-			//                  System.Windows.Threading.DispatcherPriority.Background,
-			//                  new Action(
-			//                    delegate()
-			//                    {
-			//                        ImageFormat imagef = GetImageFormat(ShellListView.SelectedItems[0].ParsingName);
-			//                        RotateAndSaveImage(ShellListView.SelectedItems[0].ParsingName,
-			//                            ShellListView.SelectedItems[0].ParsingName, imagef, RotateFlipType.Rotate270FlipNone);
-			//                    }));
-			foreach (ShellItem item in ShellListView.SelectedItems) {
-				if (OverwriteOnRotate) {
-					System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-					cvt.RotateFlip(RotateFlipType.Rotate270FlipNone);
-					cvt.Save(item.ParsingName);
-					cvt.Dispose();
-					AddToLog("Rotated image " + item.ParsingName);
-				}
-				else {
-					System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-					string ext = Utilities.GetExtension(item.ParsingName);
-					string name = item.ParsingName;
-					string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
-					cvt.RotateFlip(RotateFlipType.Rotate270FlipNone);
-					cvt.Save(namen + "_Rotated270" + ext);
-					cvt.Dispose();
-					AddToLog("Rotated image " + item.ParsingName);
-				}
+			if (sender == ConvertToJPG) {
+				format = ImageFormat.Jpeg;
+				extension = ".jpg";
+			}
+			else if (sender == ConvertToPNG) {
+				format = ImageFormat.Png;
+				extension = ".png";
+			}
+			else if (sender == ConvertToGIF) {
+				format = ImageFormat.Gif;
+				extension = ".gif";
+			}
+			else if (sender == ConvertToBMP) {
+				format = ImageFormat.Bmp;
+				extension = ".bmp";
+			}
+			else if (sender == ConvertToJPG) {
+				format = ImageFormat.Wmf;
+				extension = ".wmf";
+			}
+			else {
+				throw new Exception("Invalid Sender");
 			}
 
-		}
-
-		private void btnRotateRight_Click(object sender, RoutedEventArgs e) {
-			//Dispatcher.BeginInvoke(
-			//                  System.Windows.Threading.DispatcherPriority.Background,
-			//                  new Action(
-			//                    delegate()
-			//                    {
-			//                        ImageFormat imagef = GetImageFormat(ShellListView.SelectedItems[0].ParsingName);
-			//                        RotateAndSaveImage(ShellListView.SelectedItems[0].ParsingName,
-			//                            ShellListView.SelectedItems[0].ParsingName, imagef, RotateFlipType.Rotate90FlipNone);
-			//                    }));
 			foreach (ShellItem item in ShellListView.SelectedItems) {
-				if (OverwriteOnRotate) {
-					System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-					cvt.RotateFlip(RotateFlipType.Rotate90FlipNone);
-					cvt.Save(item.ParsingName);
-					cvt.Dispose();
-					AddToLog("Rotated image " + item.ParsingName);
+				System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+				string namen = Utilities.RemoveExtensionsFromFile(item.ParsingName, new System.IO.FileInfo(item.ParsingName).Extension);
+				try {
+					AddToLog("Converted Image from " + item.ParsingName + " to new file " + namen + extension);
+					cvt.Save(namen + extension, format);
 				}
-				else {
-					System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-					string ext = Utilities.GetExtension(item.ParsingName);
-					string name = item.ParsingName;
-					string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
-					cvt.RotateFlip(RotateFlipType.Rotate90FlipNone);
-					cvt.Save(namen + "_Rotated90" + ext);
-					cvt.Dispose();
-					AddToLog("Rotated image " + item.ParsingName);
+				catch (Exception) {
+					MessageBox.Show("There appears to have been an issue with converting the file. Make sure the filename \"" + Utilities.RemoveExtensionsFromFile(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY), new System.IO.FileInfo(item.ParsingName).Extension) + extension + "\" does already not exist.", "Conversion Error", MessageBoxButton.OK, MessageBoxImage.Error);
 				}
+				cvt.Dispose();
 			}
 		}
 
+		private void Set_Wallpaper(object sender, RoutedEventArgs e) {
+			Wallpaper.Style ThisStyle;
+
+			if (sender == btnWallpaper)
+				ThisStyle = Wallpaper.Style.Stretched;
+			else if (sender == miWallFill)
+				ThisStyle = Wallpaper.Style.Fill;
+			else if (sender == miWallFit)
+				ThisStyle = Wallpaper.Style.Fit;
+			else if (sender == miWallStretch)
+				ThisStyle = Wallpaper.Style.Stretched;
+			else if (sender == miWallTile)
+				ThisStyle = Wallpaper.Style.Tiled;
+			else if (sender == miWallCenter)
+				ThisStyle = Wallpaper.Style.Centered;
+			else
+				throw new Exception("Invalid Sender");
+
+			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
+				Wallpaper TheWall = new Wallpaper();
+				TheWall.Set(new Uri(ShellListView.SelectedItems[0].ParsingName), ThisStyle);
+			}));
+		}
+
+		/*
 		private void btnWallpaper_Click(object sender, RoutedEventArgs e) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
 				Wallpaper TheWall = new Wallpaper();
@@ -4772,48 +4780,101 @@ namespace BetterExplorer {
 				TheWall.Set(new Uri(ShellListView.SelectedItems[0].ParsingName), Wallpaper.Style.Centered);
 			}));
 		}
+		*/
 
-		private void btnFlipX_Click(object sender, RoutedEventArgs e) {
+
+
+
+
+		private void btnRotateLeft_Click(object sender, RoutedEventArgs e) {
+			//Dispatcher.BeginInvoke(
+			//                  System.Windows.Threading.DispatcherPriority.Background,
+			//                  new Action(
+			//                    delegate()
+			//                    {
+			//                        ImageFormat imagef = GetImageFormat(ShellListView.SelectedItems[0].ParsingName);
+			//                        RotateAndSaveImage(ShellListView.SelectedItems[0].ParsingName,
+			//                            ShellListView.SelectedItems[0].ParsingName, imagef, RotateFlipType.Rotate270FlipNone);
+			//                    }));
 			foreach (ShellItem item in ShellListView.SelectedItems) {
+				System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+				cvt.RotateFlip(RotateFlipType.Rotate270FlipNone);
 				if (OverwriteOnRotate) {
-					System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-					cvt.RotateFlip(RotateFlipType.RotateNoneFlipX);
 					cvt.Save(item.ParsingName);
-					cvt.Dispose();
-					AddToLog("Flipped image " + item.ParsingName);
 				}
 				else {
-					System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
 					string ext = Utilities.GetExtension(item.ParsingName);
 					string name = item.ParsingName;
 					string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
-					cvt.RotateFlip(RotateFlipType.RotateNoneFlipX);
-					cvt.Save(namen + "_FlippedX" + ext);
-					cvt.Dispose();
-					AddToLog("Flipped image " + item.ParsingName);
+					cvt.Save(namen + "_Rotated270" + ext);
 				}
+				cvt.Dispose();
+				AddToLog("Rotated image " + item.ParsingName);
+			}
+
+		}
+
+		private void btnRotateRight_Click(object sender, RoutedEventArgs e) {
+			//Dispatcher.BeginInvoke(
+			//                  System.Windows.Threading.DispatcherPriority.Background,
+			//                  new Action(
+			//                    delegate()
+			//                    {
+			//                        ImageFormat imagef = GetImageFormat(ShellListView.SelectedItems[0].ParsingName);
+			//                        RotateAndSaveImage(ShellListView.SelectedItems[0].ParsingName,
+			//                            ShellListView.SelectedItems[0].ParsingName, imagef, RotateFlipType.Rotate90FlipNone);
+			//                    }));
+			foreach (ShellItem item in ShellListView.SelectedItems) {
+				System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+				cvt.RotateFlip(RotateFlipType.Rotate90FlipNone);
+				if (OverwriteOnRotate) {
+					cvt.Save(item.ParsingName);
+				}
+				else {
+					string ext = Utilities.GetExtension(item.ParsingName);
+					string name = item.ParsingName;
+					string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
+					cvt.Save(namen + "_Rotated90" + ext);
+				}
+				cvt.Dispose();
+				AddToLog("Rotated image " + item.ParsingName);
+			}
+		}
+
+
+		private void btnFlipX_Click(object sender, RoutedEventArgs e) {
+			foreach (ShellItem item in ShellListView.SelectedItems) {
+				System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+				cvt.RotateFlip(RotateFlipType.RotateNoneFlipX);
+				if (OverwriteOnRotate) {
+					cvt.Save(item.ParsingName);
+				}
+				else {
+					string ext = Utilities.GetExtension(item.ParsingName);
+					string name = item.ParsingName;
+					string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
+					cvt.Save(namen + "_FlippedX" + ext);
+				}
+				cvt.Dispose();
+				AddToLog("Flipped image " + item.ParsingName);
 			}
 		}
 
 		private void btnFlipY_Click(object sender, RoutedEventArgs e) {
 			foreach (ShellItem item in ShellListView.SelectedItems) {
+				System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+				cvt.RotateFlip(RotateFlipType.RotateNoneFlipY);
 				if (OverwriteOnRotate) {
-					System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-					cvt.RotateFlip(RotateFlipType.RotateNoneFlipY);
 					cvt.Save(item.ParsingName);
-					cvt.Dispose();
-					AddToLog("Flipped image " + item.ParsingName);
 				}
 				else {
-					System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
 					string ext = Utilities.GetExtension(item.ParsingName);
 					string name = item.ParsingName;
 					string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
-					cvt.RotateFlip(RotateFlipType.RotateNoneFlipY);
 					cvt.Save(namen + "_FlippedY" + ext);
-					cvt.Dispose();
-					AddToLog("Flipped image " + item.ParsingName);
 				}
+				cvt.Dispose();
+				AddToLog("Flipped image " + item.ParsingName);
 			}
 		}
 
@@ -4834,7 +4895,6 @@ namespace BetterExplorer {
 		#region Folder Tools Commands
 		private void btnChangeFoldericon_Click(object sender, RoutedEventArgs e) {
 			IconView iv = new IconView();
-
 			iv.LoadIcons(this.ShellListView, false);
 		}
 
@@ -5076,18 +5136,17 @@ namespace BetterExplorer {
 				string dir = Path.GetDirectoryName(CurrentexePath);
 				string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
 				Process proc = new Process();
-				var psi = new ProcessStartInfo {
+				proc.StartInfo = new ProcessStartInfo {
 					FileName = ExePath,
 					Verb = "runas",
 					UseShellExecute = true,
 					Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
 				};
-				proc.StartInfo = psi;
+
 				proc.Start();
 				Thread.Sleep(1000);
 				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
-				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"),
-								0, "0x88775");
+				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88775");
 				proc.WaitForExit();
 			}
 		}
@@ -5110,29 +5169,30 @@ namespace BetterExplorer {
 				string dir = Path.GetDirectoryName(CurrentexePath);
 				string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
 				Process proc = new Process();
-				var psi = new ProcessStartInfo {
+				proc.StartInfo = new ProcessStartInfo {
 					FileName = ExePath,
 					Verb = "runas",
 					UseShellExecute = true,
 					Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
 				};
-				proc.StartInfo = psi;
 				proc.Start();
 				Thread.Sleep(1000);
 				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
-				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"),
-								0, "0x88776");
+				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88776");
 				proc.WaitForExit();
 			}
 		}
 
 		private void chkOverwriteImages_Checked(object sender, RoutedEventArgs e) {
 			OverwriteOnRotate = true;
-			RegistryKey rk = Registry.CurrentUser;
-			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-			rks.SetValue(@"OverwriteImageWhileEditing", 1);
-			rks.Close();
-			rk.Close();
+			//RegistryKey rk = Registry.CurrentUser;
+			//RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+			//rks.SetValue(@"OverwriteImageWhileEditing", 1);
+			//rks.Close();
+			//rk.Close();
+
+
+			Utilities.SetRegistryValue("OverwriteImageWhileEditing", 1);
 		}
 
 		private void chkOverwriteImages_Unchecked(object sender, RoutedEventArgs e) {
@@ -5613,211 +5673,9 @@ namespace BetterExplorer {
 
 		#region Search
 
-		private void searchTextBox1_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+		private void edtSearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
 			ctgSearch.Visibility = System.Windows.Visibility.Visible;
 			if (!TheRibbon.IsMinimized) TheRibbon.SelectedTabItem = tbSearch;
-		}
-
-		private void MenuItem_Checked(object sender, RoutedEventArgs e) {
-			e.Handled = true;
-			bool isThereChecked = false;
-			foreach (object item in ((sender as MenuItem).Parent as SplitButton).Items) {
-				if (item is MenuItem) {
-					if ((item as MenuItem).IsChecked) {
-						isThereChecked = true;
-						break;
-					}
-				}
-			}
-
-			((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
-		}
-
-		private void MenuItem_Unchecked(object sender, RoutedEventArgs e) {
-			e.Handled = true;
-			bool isThereChecked = false;
-			foreach (object item in ((sender as MenuItem).Parent as SplitButton).Items) {
-				if (item is MenuItem) {
-					if ((item as MenuItem).IsChecked) {
-						isThereChecked = true;
-						break;
-					}
-				}
-			}
-
-			((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
-		}
-
-		private void MenuItem_Click_2(object sender, RoutedEventArgs e) {
-			e.Handled = true;
-			//(sender as MenuItem).IsChecked = !(sender as MenuItem).IsChecked;
-		}
-
-		private void ctgSearch_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
-			System.Windows.Forms.MessageBox.Show("Feature not added");
-			//if (((System.Windows.Visibility)e.NewValue) == System.Windows.Visibility.Collapsed)
-			//    TheRibbon.SelectedTabItem = HomeTab;
-		}
-
-		private void btnSearch_Click(object sender, RoutedEventArgs e) {
-			DoSearch(edtSearchBox.FullSearchTerms);
-
-			//string SearchStr = "";
-			//string CondStr = "";
-			//string KindStr = "";
-			//string OtherStr = "";
-			//SearchStr = edtSearchBox.SearchCriteriatext.Text;
-			////foreach (Fluent.ToggleButton item in tsgModifiers.Items)
-			////{
-			////    if (item.IsChecked == true)
-			////    {
-			////        CondStr = item.Tag.ToString();
-			////    }
-			////}
-			//CondStr.Replace("AND", "");
-			//SearchStr += " " + CondStr + " ";
-			//foreach (Fluent.ToggleButton item in tsgKind.Items)
-			//{
-			//    if (item.IsChecked == true)
-			//    {
-			//        if (item.Tag.ToString() == "kind:everything")
-			//        {
-			//            KindStr = item.Tag.ToString();
-			//            break;
-			//        }
-			//        else
-			//        {
-			//            KindStr += item.Tag.ToString() + " " + CondStr + " ";
-			//        }
-
-			//    }
-			//}
-
-			//foreach (object item in tsgOther.Items)
-			//{
-			//    if (item is SplitButton)
-			//    {
-			//        if ((item as SplitButton).IsChecked)
-			//        {
-			//            foreach (object obj in (item as SplitButton).Items)
-			//            {
-			//                if (obj is MenuItem)
-			//                {
-			//                    if ((obj as MenuItem).IsChecked)
-			//                    {
-			//                        OtherStr += (obj as MenuItem).Tag.ToString() + " " + CondStr + " ";
-			//                    }
-			//                }
-
-			//            }
-			//        }
-			//    }
-			//}
-			//SearchStr += KindStr;
-			//SearchStr += OtherStr;
-
-			//DoSearch(SearchStr);			
-		}
-
-		private void edtSearchBox_BeginSearch_1(object sender, SearchRoutedEventArgs e) {
-			DoSearch(edtSearchBox.FullSearchTerms);
-		}
-
-		private void MenuItem_Click_3(object sender, RoutedEventArgs e) {
-			edtSearchBox.ModifiedCondition = (string)((FrameworkElement)sender).Tag;
-			dmsplit.IsChecked = true;
-		}
-
-		private void MenuItem_Click_4(object sender, RoutedEventArgs e) {
-			edtSearchBox.DateCondition = (string)((FrameworkElement)sender).Tag;
-			dcsplit.IsChecked = true;
-		}
-
-		private void ToggleButton_Click(object sender, RoutedEventArgs e) {
-			((Fluent.ToggleButton)sender).IsChecked = true;
-			edtSearchBox.KindCondition = (string)((FrameworkElement)sender).Tag;
-			edtSearchBox.Focus();
-		}
-
-		private void MenuItem_Click_5(object sender, RoutedEventArgs e) {
-			edtSearchBox.SizeCondition = (string)((FrameworkElement)sender).Tag;
-			scSize.IsChecked = true;
-		}
-
-		private string GetValueOnly(string property, string value) {
-			return value.Substring(property.Length + 1);
-		}
-
-		private void ToggleButton_Click_1(object sender, RoutedEventArgs e) {
-			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("ext", edtSearchBox.ExtensionCondition, FindResource("btnExtCP") as string);
-			dat.ShowDialog();
-			if (dat.Confirm) {
-				edtSearchBox.ExtensionCondition = "ext:" + dat.textBox1.Text;
-				ExtToggle.IsChecked = dat.textBox1.Text.Length > 0;
-			}
-			else {
-				ExtToggle.IsChecked = GetValueOnly("ext", edtSearchBox.ExtensionCondition).Length > 0;
-			}
-		}
-
-		private void edtSearchBox_FiltersCleared(object sender, EventArgs e) {
-			scSize.IsChecked = false;
-
-			foreach (var item in scSize.Items.OfType<MenuItem>()) {
-				item.IsChecked = false;
-			}
-
-			ExtToggle.IsChecked = false;
-			AuthorToggle.IsChecked = false;
-			SubjectToggle.IsChecked = false;
-			dcsplit.IsChecked = false;
-			foreach (var item in dcsplit.Items.OfType<MenuItem>()) {
-				item.IsChecked = false;
-			}
-
-			dmsplit.IsChecked = false;
-			foreach (var item in dmsplit.Items.OfType<MenuItem>()) {
-				item.IsChecked = false;
-			}
-		}
-
-		private void AuthorToggle_Click(object sender, RoutedEventArgs e) {
-			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("author", edtSearchBox.AuthorCondition, FindResource("btnAuthorCP") as string);
-			dat.ShowDialog();
-			if (dat.Confirm) {
-				edtSearchBox.AuthorCondition = "author:" + dat.textBox1.Text;
-				AuthorToggle.IsChecked = dat.textBox1.Text.Length > 0;
-			}
-			else {
-				AuthorToggle.IsChecked = GetValueOnly("author", edtSearchBox.AuthorCondition).Length > 0;
-			}
-		}
-
-		private void SubjectToggle_Click(object sender, RoutedEventArgs e) {
-			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("subject", edtSearchBox.SubjectCondition, FindResource("btnSubjectCP") as string);
-			dat.ShowDialog();
-			if (dat.Confirm) {
-				edtSearchBox.SubjectCondition = "subject:" + dat.textBox1.Text;
-				SubjectToggle.IsChecked = dat.textBox1.Text.Length > 0;
-			}
-			else {
-				SubjectToggle.IsChecked = GetValueOnly("subject", edtSearchBox.SubjectCondition).Length > 0;
-			}
-		}
-
-		private void miCustomSize_Click(object sender, RoutedEventArgs e) {
-			SizeSearchCriteriaDialog dat = new SizeSearchCriteriaDialog();
-			string sd = GetValueOnly("size", edtSearchBox.SizeCondition);
-			dat.curval.Text = sd;
-			dat.ShowDialog();
-
-			if (dat.Confirm) {
-				edtSearchBox.SizeCondition = "size:" + dat.GetSizeQuery();
-				scSize.IsChecked = dat.GetSizeQuery().Length > 0;
-			}
-			else {
-				scSize.IsChecked = dat.GetSizeQuery().Length > 5;
-			}
 		}
 
 		private void edtSearchBox_RequestCriteriaChange(object sender, SearchRoutedEventArgs e) {
@@ -5874,6 +5732,160 @@ namespace BetterExplorer {
 				}
 			}
 			*/
+		}
+
+		private void edtSearchBox_BeginSearch(object sender, SearchRoutedEventArgs e) {
+			DoSearch(edtSearchBox.FullSearchTerms);
+		}
+
+		private void edtSearchBox_FiltersCleared(object sender, EventArgs e) {
+			scSize.IsChecked = false;
+			ExtToggle.IsChecked = false;
+			AuthorToggle.IsChecked = false;
+			SubjectToggle.IsChecked = false;
+			dcsplit.IsChecked = false;
+			dmsplit.IsChecked = false;
+
+			foreach (var item in scSize.Items.OfType<MenuItem>()) {
+				item.IsChecked = false;
+			}
+			foreach (var item in dcsplit.Items.OfType<MenuItem>()) {
+				item.IsChecked = false;
+			}
+			foreach (var item in dmsplit.Items.OfType<MenuItem>()) {
+				item.IsChecked = false;
+			}
+		}
+
+
+
+		private void MenuItem_Checked(object sender, RoutedEventArgs e) {
+			e.Handled = true;
+			bool isThereChecked = false;
+			foreach (object item in ((sender as MenuItem).Parent as SplitButton).Items) {
+				if (item is MenuItem) {
+					if ((item as MenuItem).IsChecked) {
+						isThereChecked = true;
+						break;
+					}
+				}
+			}
+
+			((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
+		}
+
+		private void MenuItem_Unchecked(object sender, RoutedEventArgs e) {
+			e.Handled = true;
+			bool isThereChecked = false;
+			foreach (object item in ((sender as MenuItem).Parent as SplitButton).Items) {
+				if (item is MenuItem) {
+					if ((item as MenuItem).IsChecked) {
+						isThereChecked = true;
+						break;
+					}
+				}
+			}
+
+			((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
+		}
+
+		private void MenuItem_Click_2(object sender, RoutedEventArgs e) {
+			e.Handled = true;
+			//(sender as MenuItem).IsChecked = !(sender as MenuItem).IsChecked;
+		}
+
+		/*
+		private void ctgSearch_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
+			System.Windows.Forms.MessageBox.Show("Feature not added");
+			//if (((System.Windows.Visibility)e.NewValue) == System.Windows.Visibility.Collapsed)
+			//    TheRibbon.SelectedTabItem = HomeTab;
+		}
+		*/
+
+
+
+
+
+		private void btnSearch_Click(object sender, RoutedEventArgs e) {
+			DoSearch(edtSearchBox.FullSearchTerms);
+		}
+
+
+
+		private void MenuItem_Click_3(object sender, RoutedEventArgs e) {
+			edtSearchBox.ModifiedCondition = (string)((FrameworkElement)sender).Tag;
+			dmsplit.IsChecked = true;
+		}
+
+		private void MenuItem_Click_4(object sender, RoutedEventArgs e) {
+			edtSearchBox.DateCondition = (string)((FrameworkElement)sender).Tag;
+			dcsplit.IsChecked = true;
+		}
+
+		private void ToggleButton_Click(object sender, RoutedEventArgs e) {
+			((Fluent.ToggleButton)sender).IsChecked = true;
+			edtSearchBox.KindCondition = (string)((FrameworkElement)sender).Tag;
+			edtSearchBox.Focus();
+		}
+
+		private void MenuItem_Click_5(object sender, RoutedEventArgs e) {
+			edtSearchBox.SizeCondition = (string)((FrameworkElement)sender).Tag;
+			scSize.IsChecked = true;
+		}
+
+		private string GetValueOnly(string property, string value) {
+			return value.Substring(property.Length + 1);
+		}
+
+		private void ToggleButton_Click_1(object sender, RoutedEventArgs e) {
+			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("ext", edtSearchBox.ExtensionCondition, FindResource("btnExtCP") as string);
+			dat.ShowDialog();
+			if (dat.Confirm) {
+				edtSearchBox.ExtensionCondition = "ext:" + dat.textBox1.Text;
+				ExtToggle.IsChecked = dat.textBox1.Text.Length > 0;
+			}
+			else {
+				ExtToggle.IsChecked = GetValueOnly("ext", edtSearchBox.ExtensionCondition).Length > 0;
+			}
+		}
+
+		private void AuthorToggle_Click(object sender, RoutedEventArgs e) {
+			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("author", edtSearchBox.AuthorCondition, FindResource("btnAuthorCP") as string);
+			dat.ShowDialog();
+			if (dat.Confirm) {
+				edtSearchBox.AuthorCondition = "author:" + dat.textBox1.Text;
+				AuthorToggle.IsChecked = dat.textBox1.Text.Length > 0;
+			}
+			else {
+				AuthorToggle.IsChecked = GetValueOnly("author", edtSearchBox.AuthorCondition).Length > 0;
+			}
+		}
+
+		private void SubjectToggle_Click(object sender, RoutedEventArgs e) {
+			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("subject", edtSearchBox.SubjectCondition, FindResource("btnSubjectCP") as string);
+			dat.ShowDialog();
+			if (dat.Confirm) {
+				edtSearchBox.SubjectCondition = "subject:" + dat.textBox1.Text;
+				SubjectToggle.IsChecked = dat.textBox1.Text.Length > 0;
+			}
+			else {
+				SubjectToggle.IsChecked = GetValueOnly("subject", edtSearchBox.SubjectCondition).Length > 0;
+			}
+		}
+
+		private void miCustomSize_Click(object sender, RoutedEventArgs e) {
+			SizeSearchCriteriaDialog dat = new SizeSearchCriteriaDialog();
+			string sd = GetValueOnly("size", edtSearchBox.SizeCondition);
+			dat.curval.Text = sd;
+			dat.ShowDialog();
+
+			if (dat.Confirm) {
+				edtSearchBox.SizeCondition = "size:" + dat.GetSizeQuery();
+				scSize.IsChecked = dat.GetSizeQuery().Length > 0;
+			}
+			else {
+				scSize.IsChecked = dat.GetSizeQuery().Length > 5;
+			}
 		}
 
 		private void dcCustomTime_Click(object sender, RoutedEventArgs e) {
@@ -7233,8 +7245,8 @@ namespace BetterExplorer {
 					this.TheRibbon.AddToQuickAccessToolBar(ctrl as UIElement);
 					curitem = null;
 				}
-
 			}
+
 			LoadInternalList();
 		}
 
@@ -7256,25 +7268,31 @@ namespace BetterExplorer {
 			return rb;
 		}
 
+		/*
 		public Tuple<string, IRibbonControl> AddOtherButtonForDictionary(IRibbonControl item, Dictionary<string, IRibbonControl> dict) {
 			Tuple<string, IRibbonControl> entry = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
 			dict.Add(entry.Item1, entry.Item2);
 			return entry;
 		}
+		*/
 
+		/*
 		public Tuple<string, IRibbonControl> AddOtherButtonForLists(IRibbonControl item, List<IRibbonControl> rb, List<string> rs) {
 			Tuple<string, IRibbonControl> entry = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
 			rb.Add(item);
 			rs.Add(item.Header as string);
 			return entry;
 		}
+		*/
 
+		/*
 		public Tuple<string, IRibbonControl> RemoveOtherButtonForLists(IRibbonControl item, List<IRibbonControl> rb, List<string> rs) {
 			Tuple<string, IRibbonControl> entry = new Tuple<string, IRibbonControl>((item as FrameworkElement).Name, item);
 			rb.Remove(item);
 			rs.Remove(item.Header as string);
 			return entry;
 		}
+		*/
 
 		public List<Fluent.IRibbonControl> GetAllButtons() {
 			List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
@@ -7297,8 +7315,8 @@ namespace BetterExplorer {
 		}
 
 		public List<Fluent.IRibbonControl> GetNonQATButtons() {
-			List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
-			List<string> rs = new List<string>();
+			var rb = new List<Fluent.IRibbonControl>();
+			var rs = new List<string>();
 
 			foreach (RibbonTabItem item in TheRibbon.Tabs) {
 				foreach (RibbonGroupBox itg in item.Groups) {
@@ -7318,12 +7336,14 @@ namespace BetterExplorer {
 			return SortNames(rb, rs);
 		}
 
+		/*
 		public void AddOtherButton(IRibbonControl item, bool test, List<IRibbonControl> rb, List<string> rs) {
 			if (TheRibbon.IsInQuickAccessToolBar(item as UIElement) == test) {
 				rb.Add(item);
 				rs.Add(item.Header as string);
 			}
 		}
+		*/
 
 		/*
 		public List<Fluent.IRibbonControl> GetQATButtonsSorted() {
@@ -7468,6 +7488,7 @@ namespace BetterExplorer {
 			}
 			return false;
 		}
+
 		private bool DoVerb(FolderItem Item, string Verb) {
 			foreach (FolderItemVerb FIVerb in Item.Verbs()) {
 				if (FIVerb.Name.ToUpper().Contains(Verb.ToUpper())) {

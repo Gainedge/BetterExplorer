@@ -1144,8 +1144,8 @@
 										 Background="Green"
 										 BorderBrush="DarkGreen"
 										 Header="{DynamicResource ctbSearchToolsCP}"
-										 IsVisibleChanged="ctgSearch_IsVisibleChanged"
 										 Visibility="Collapsed" />
+										 <!--IsVisibleChanged="ctgSearch_IsVisibleChanged"-->
 			</Ribbon:Ribbon.ContextualGroups>
 
 			<Ribbon:RibbonTabItem x:Name="HomeTab"
@@ -2279,23 +2279,23 @@
 								 Ribbon:KeyTip.Keys="C"
 								 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle">
 						<Ribbon:MenuItem x:Name="ConvertToJPG"
-							 Click="ConvertToJPG_Click"
+							 Click="Convert_Images"
 							 Header="{DynamicResource miJPGfCP}"
 							 Ribbon:KeyTip.Keys="J" />
 						<Ribbon:MenuItem x:Name="ConvertToPNG"
-							 Click="ConvertToPNG_Click"
+							 Click="Convert_Images"
 							 Header="{DynamicResource miPNGfCP}"
 							 Ribbon:KeyTip.Keys="P" />
 						<Ribbon:MenuItem x:Name="ConvertToGIF"
-							 Click="ConvertToGIF_Click"
+							 Click="Convert_Images"
 							 Header="{DynamicResource miGIFfCP}"
 							 Ribbon:KeyTip.Keys="G" />
 						<Ribbon:MenuItem x:Name="ConvertToBMP"
-							 Click="ConvertToBMP_Click"
+							 Click="Convert_Images"
 							 Header="{DynamicResource miBMPfCP}"
 							 Ribbon:KeyTip.Keys="G" />
 						<Ribbon:MenuItem x:Name="ConvertToWMF"
-							 Click="ConvertToWMF_Click"
+							 Click="Convert_Images"
 							 Header="{DynamicResource miWMFfCP}"
 							 Ribbon:KeyTip.Keys="W" />
 					</Ribbon:DropDownButton>
@@ -2384,29 +2384,29 @@
 			Visibility="Collapsed" />
 		  -->
 					<Ribbon:SplitButton x:Name="btnWallpaper"
-							  Click="btnWallpaper_Click"
+							  Click="Set_Wallpaper"
 							  Header="{DynamicResource btnWallpaperCP}"
 							  LargeIcon="Images\sawall32.png"
 							  Ribbon:KeyTip.Keys="W"
 							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large">
 						<Ribbon:MenuItem x:Name="miWallFill"
-							 Click="miWallFill_Click"
+							 Click="Set_Wallpaper"
 							 Header="{DynamicResource miWallFillCP}"
 							 Ribbon:KeyTip.Keys="L" />
 						<Ribbon:MenuItem x:Name="miWallFit"
-							 Click="miWallFit_Click"
+							 Click="Set_Wallpaper"
 							 Header="{DynamicResource miWallFitCP}"
 							 Ribbon:KeyTip.Keys="F" />
 						<Ribbon:MenuItem x:Name="miWallStretch"
-							 Click="miWallStretch_Click"
+							 Click="Set_Wallpaper"
 							 Header="{DynamicResource miWallStretchCP}"
 							 Ribbon:KeyTip.Keys="S" />
 						<Ribbon:MenuItem x:Name="miWallTile"
-							 Click="miWallTile_Click"
+							 Click="Set_Wallpaper"
 							 Header="{DynamicResource miWallTileCP}"
 							 Ribbon:KeyTip.Keys="T" />
 						<Ribbon:MenuItem x:Name="miWallCenter"
-							 Click="miWallCenter_Click"
+							 Click="Set_Wallpaper"
 							 Header="{DynamicResource miWallCenterCP}"
 							 Ribbon:KeyTip.Keys="C" />
 					</Ribbon:SplitButton>
@@ -3021,9 +3021,9 @@
 			<controls:SearchBox x:Name="edtSearchBox"
 						  Grid.Column="1"
 						  Margin="8,0,0,0"
-						  BeginSearch="edtSearchBox_BeginSearch_1"
+						  BeginSearch="edtSearchBox_BeginSearch"
 						  FiltersCleared="edtSearchBox_FiltersCleared"
-						  GotKeyboardFocus="searchTextBox1_GotKeyboardFocus"
+						  GotKeyboardFocus="edtSearchBox_GotKeyboardFocus"
 						  RequestCriteriaChange="edtSearchBox_RequestCriteriaChange" />
 			<GridSplitter x:Name="gridSplitter1"
 					Grid.Column="1"
