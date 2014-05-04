@@ -964,13 +964,13 @@
 											<TextBlock Text="{DynamicResource lblShowTabBarCP}" />
 											<Ribbon:RadioButton x:Name="TabbaTop"
 										  Margin="5,5,0,0"
-										  Checked="RadioButton_Checked"
+										  Checked="FolderTabs_Placement"
 										  GroupName="tba"
 										  Header="{DynamicResource chkTabBarTopCP}"
 										  Ribbon:KeyTip.Keys="TT" />
 											<Ribbon:RadioButton x:Name="TabbaBottom"
 										  Margin="5,5,0,0"
-										  Checked="RadioButton_Checked_1"
+										  Checked="FolderTabs_Placement"
 										  GroupName="tba"
 										  Header="{DynamicResource chkTabBarBottomCP}"
 										  Ribbon:KeyTip.Keys="TB" />
@@ -1215,8 +1215,7 @@
 							  Icon="Images\pastet16.png"
 							  IsEnabled="False"
 							  Ribbon:KeyTip.Keys="SP"
-							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Small,Small"
-							  ToolTipOpening="btn_ToolTipOpening">
+							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Small,Small">
 						<Ribbon:MenuItem Click="btnPasetShC_Click"
 							 Focusable="False"
 							 Header="{DynamicResource btnPasteScCP}"
@@ -1240,8 +1239,7 @@
 							  Icon="Images\copyto16.png"
 							  IsEnabled="False"
 							  LargeIcon="Images\copyto32.png"
-							  Ribbon:KeyTip.Keys="CF"
-							  ToolTipOpening="btn_ToolTipOpening">
+							  Ribbon:KeyTip.Keys="CF">
 						<MenuItem x:Name="btnctDocuments"
 					  Click="btnctDocuments_Click"
 					  Focusable="False"
@@ -1274,8 +1272,7 @@
 							  IsEnabled="False"
 							  LargeIcon="Images\moveto32.png"
 							  LostFocus="btnCopyto_LostFocus"
-							  Ribbon:KeyTip.Keys="M"
-							  ToolTipOpening="btn_ToolTipOpening">
+							  Ribbon:KeyTip.Keys="M">
 						<MenuItem x:Name="btnmtDocuments"
 					  Click="btnmtDocuments_Click"
 					  Focusable="False"
@@ -1308,8 +1305,7 @@
 							  IsEnabled="False"
 							  LargeIcon="Images\delete32.png"
 							  LostFocus="btnCopyto_LostFocus"
-							  Ribbon:KeyTip.Keys="D"
-							  ToolTipOpening="btn_ToolTipOpening">
+							  Ribbon:KeyTip.Keys="D">
 						<MenuItem Click="MenuItem_Click"
 					  Focusable="False"
 					  Header="{DynamicResource miDeltoRB}"
@@ -1408,8 +1404,7 @@
 							  Icon="Images\open16.png"
 							  IsEnabled="False"
 							  Ribbon:KeyTip.Keys="O"
-							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small"
-							  ToolTipOpening="btn_ToolTipOpening" />
+							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small"/>
 					<Ribbon:Button x:Name="btnEdit"
 						 Click="btnEdit_Click"
 						 Header="{DynamicResource btnEditCP}"
@@ -1432,8 +1427,7 @@
 							  Icon="Images\favorites16.png"
 							  LargeIcon="Images\favorites32.png"
 							  Ribbon:KeyTip.Keys="F"
-							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large, Middle, Middle"
-							  ToolTipOpening="btn_ToolTipOpening" />
+							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large, Middle, Middle"/>
 				</Ribbon:RibbonGroupBox>
 				<Ribbon:RibbonGroupBox x:Name="Select"
 							   Header="{DynamicResource tgSelectCP}"
@@ -1466,7 +1460,6 @@
 							  LargeIcon="Images\filter32.png"
 							  Ribbon:KeyTip.Keys="SC"
 							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large, Small, Small"
-							  ToolTipOpening="btn_ToolTipOpening"
 							  Visibility="Visible">
 						<Ribbon:SplitButton.ToolTip>
 							<Ribbon:ScreenTip Title="{DynamicResource btnConditionalSelectCP}"
