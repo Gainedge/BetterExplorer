@@ -4864,44 +4864,6 @@ namespace BetterExplorer {
 
 		#region Tabs
 
-
-		public void NavigateAfterTabChange() {
-			ClosableTabItem itb = tabControl1.SelectedItem as ClosableTabItem;
-
-			isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
-			if (itb != null) {
-				try {
-					BeforeLastTabIndex = LastTabIndex;
-
-					//tabControl1.SelectedIndex = itb.Index;
-					//LastTabIndex = itb.Index;
-					//CurrentTabIndex = LastTabIndex;
-					if (ShellListView.CurrentFolder == null || itb.ShellObject.ParsingName != ShellListView.CurrentFolder.ParsingName) {
-						if (!Keyboard.IsKeyDown(Key.Tab)) {
-							ShellListView.Navigate(itb.ShellObject);
-						}
-						else {
-							t.Interval = 500;
-							t.Tag = itb.ShellObject;
-							t.Tick += new EventHandler(t_Tick);
-							t.Start();
-						}
-					}
-
-					itb.BringIntoView();
-
-				}
-				catch (StackOverflowException) {
-
-				}
-				//'btnTabCloseC.IsEnabled = tabControl1.Items.Count > 1;
-				//'there's a bug that has this enabled when there's only one tab open, but why disable it
-				//'if it never crashes the program? Closing the last tab simply closes the program, so I
-				//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
-			}
-		}
-
-
 		void mimc_Click(object sender, RoutedEventArgs e) {
 			MenuItem mi = sender as MenuItem;
 			SetFOperation((mi.Tag as ShellItem), BExplorer.Shell.OperationType.Copy);
@@ -5392,7 +5354,6 @@ namespace BetterExplorer {
 				if (i == list.Count - 1)
 					tabControl1.SelectedItem = tabitem;
 			}
-			NavigateAfterTabChange();
 		}
 
 		private void miTabManager_Click(object sender, RoutedEventArgs e) {

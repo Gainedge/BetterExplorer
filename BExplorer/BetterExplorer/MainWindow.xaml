@@ -16,7 +16,6 @@
 					 Title="Better Explorer"
 					 MinWidth="640"
 					 MinHeight="480"
-					 Activated="RibbonWindow_Activated"
 					 Closing="RibbonWindow_Closing"
 					 GotFocus="RibbonWindow_GotFocus"
 					 GotKeyboardFocus="RibbonWindow_GotKeyboardFocus"
@@ -1263,15 +1262,11 @@
 					  Ribbon:KeyTip.Keys="O" />
 					</Ribbon:SplitButton>
 					<Ribbon:SplitButton x:Name="btnMoveto"
-							  Click="btnMoveto_Click"
-							  DropDownClosed="btnMoreColls_DropDownClosed"
-							  DropDownOpened="btnMoreColls_DropDownOpened"
-							  GotFocus="btnCopyto_GotFocus"
+							  Click="btnMoveto_Click"							 
 							  Header="{DynamicResource btnMoveToCP}"
 							  Icon="Images\moveto16.png"
 							  IsEnabled="False"
 							  LargeIcon="Images\moveto32.png"
-							  LostFocus="btnCopyto_LostFocus"
 							  Ribbon:KeyTip.Keys="M">
 						<MenuItem x:Name="btnmtDocuments"
 					  Click="btnmtDocuments_Click"
@@ -1297,14 +1292,10 @@
 					<Separator />
 					<Ribbon:SplitButton x:Name="btnDelete"
 							  Click="SplitButton_Click"
-							  DropDownClosed="btnMoreColls_DropDownClosed"
-							  DropDownOpened="btnMoreColls_DropDownOpened"
-							  GotFocus="btnCopyto_GotFocus"
 							  Header="{DynamicResource btnDeleteCP}"
 							  Icon="Images\delete16.png"
 							  IsEnabled="False"
 							  LargeIcon="Images\delete32.png"
-							  LostFocus="btnCopyto_LostFocus"
 							  Ribbon:KeyTip.Keys="D">
 						<MenuItem Click="MenuItem_Click"
 					  Focusable="False"
@@ -1398,8 +1389,6 @@
 		  -->
 					<Ribbon:SplitButton x:Name="btnOpenWith"
 							  Click="btnOpenWith_Click"
-							  DropDownClosed="btnMoreColls_DropDownClosed"
-							  DropDownOpened="btnMoreColls_DropDownOpened"
 							  Header="{DynamicResource btnOpenCP}"
 							  Icon="Images\open16.png"
 							  IsEnabled="False"
@@ -1421,8 +1410,6 @@
 						 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle" />
 					<Ribbon:SplitButton x:Name="btnFavorites"
 							  Click="btnFavorites_Click"
-							  DropDownClosed="btnMoreColls_DropDownClosed"
-							  DropDownOpened="btnMoreColls_DropDownOpened"
 							  Header="{DynamicResource btnFavoritesCP}"
 							  Icon="Images\favorites16.png"
 							  LargeIcon="Images\favorites32.png"
@@ -1488,8 +1475,6 @@
 					</Ribbon:SplitButton>
 				</Ribbon:RibbonGroupBox>
 				<Ribbon:RibbonGroupBox x:Name="Tabs"
-							   DropDownClosed="btnMoreColls_DropDownClosed"
-							   DropDownOpened="btnMoreColls_DropDownOpened"
 							   Header="{DynamicResource tgTabsCP}"
 							   Ribbon:KeyTip.Keys="T">
 					<Ribbon:Button x:Name="btnNewTab"
@@ -1773,8 +1758,6 @@
 							   Ribbon:KeyTip.Keys="L">
 					<Ribbon:InRibbonGallery x:Name="ViewGallery"
 								  CanCollapseToButton="True"
-								  DropDownClosed="btnMoreColls_DropDownClosed"
-								  DropDownOpened="btnMoreColls_DropDownOpened"
 								  GroupBy="Tag"
 								  Header="View Mode"
 								  ItemHeight="20"
@@ -1894,8 +1877,6 @@
 							   Header="{DynamicResource tgCurrentViewCP}"
 							   Ribbon:KeyTip.Keys="CV">
 					<Ribbon:DropDownButton x:Name="btnSort"
-								 DropDownClosed="btnMoreColls_DropDownClosed"
-								 DropDownOpened="btnMoreColls_DropDownOpened"
 								 Header="{DynamicResource btnSortByCP}"
 								 Icon="Images\sort16.png"
 								 LargeIcon="Images\sort32.png"
@@ -1911,8 +1892,6 @@
 						</Ribbon:DropDownButton.ToolTip>
 					</Ribbon:DropDownButton>
 					<Ribbon:DropDownButton x:Name="btnGroup"
-								 DropDownClosed="btnMoreColls_DropDownClosed"
-								 DropDownOpened="btnMoreColls_DropDownOpened"
 								 Header="{DynamicResource btnGroupByCP}"
 								 Icon="Images\groupby16.png"
 								 Ribbon:KeyTip.Keys="G"
@@ -1933,8 +1912,6 @@
 					</Ribbon:Button>
 					<Ribbon:SplitButton x:Name="btnMoreColls"
 							  Click="btnMoreColls_Click"
-							  DropDownClosed="btnMoreColls_DropDownClosed"
-							  DropDownOpened="btnMoreColls_DropDownOpened"
 							  Header="{DynamicResource btnMoreColCP}"
 							  Icon="Images\morecols16.png"
 							  Ribbon:KeyTip.Keys="CM"
@@ -2028,15 +2005,12 @@
 						 Ribbon:KeyTip.Keys="M"
 						 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
 					<Ribbon:DropDownButton x:Name="btnDefSave"
-								 DropDownClosed="btnMoreColls_DropDownClosed"
-								 DropDownOpened="btnMoreColls_DropDownOpened"
 								 Header="{DynamicResource btnDefSaveCP}"
 								 Icon="Images\libsaveloc16.png"
 								 LargeIcon="Images\libsaveloc32.png"
 								 Ribbon:KeyTip.Keys="D"
 								 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large" />
-					<Ribbon:DropDownButton DropDownClosed="btnMoreColls_DropDownClosed"
-								 DropDownOpened="btnMoreColls_DropDownOpened"
+					<Ribbon:DropDownButton
 								 Header="{DynamicResource btnOptimizeCP}"
 								 Icon="Images\libtype16.png"
 								 Ribbon:KeyTip.Keys="O"
