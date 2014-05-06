@@ -40,8 +40,6 @@ namespace BExplorer.Shell {
 		public Bitmap ThumbnailIcon { get; set; }
 		public bool IsVisible { get; set; }
 
-
-
 		public ShellItem() {
 
 		}
@@ -67,6 +65,7 @@ namespace BExplorer.Shell {
 		public ShellItem(Uri uri) {
 			Initialize(uri);
 			this.IconType = GetIconType();
+			this.CachedParsingName = this.ParsingName;
 		}
 
 		/*
@@ -112,6 +111,7 @@ namespace BExplorer.Shell {
 				Uri newUri = new Uri(path);
 				Initialize(newUri);
 				this.IconType = GetIconType();
+				this.CachedParsingName = this.ParsingName;
 			}
 			catch (Exception) {
 
@@ -157,6 +157,7 @@ namespace BExplorer.Shell {
 
 			}
 			this.IconType = GetIconType();
+			this.CachedParsingName = this.ParsingName;
 		}
 
 		/// <summary>
@@ -200,16 +201,19 @@ namespace BExplorer.Shell {
 				}
 			}
 			this.IconType = GetIconType();
+			this.CachedParsingName = this.ParsingName;
 		}
 
 		internal ShellItem(IntPtr pidl) {
 			m_ComInterface = CreateItemFromIDList(pidl);
 			this.IconType = GetIconType();
+			this.CachedParsingName = this.ParsingName;
 		}
 
 		internal ShellItem(ShellItem parent, IntPtr pidl) {
 			m_ComInterface = CreateItemWithParent(parent, pidl);
 			this.IconType = GetIconType();
+			this.CachedParsingName = this.ParsingName;
 		}
 
 		public override int GetHashCode() {
@@ -241,6 +245,7 @@ namespace BExplorer.Shell {
 		/// </param>
 		public ShellItem(IShellItem comInterface) {
 			m_ComInterface = comInterface;
+			this.CachedParsingName = this.ParsingName;
 		}
 
 		/// <summary>
@@ -284,20 +289,8 @@ namespace BExplorer.Shell {
 		/// <param name="other">The ShellObject to comare this one to.</param>
 		/// <returns>True if the ShellObjects are equal, false otherwise.</returns>
 		public bool Equals(ShellItem other) {
-			bool areEqual = false;
-
-			if (other != null) {
-				IShellItem ifirst = this.m_ComInterface;
-				IShellItem isecond = other.m_ComInterface;
-				if (ifirst != null && isecond != null) {
-					int result = ifirst.Compare(
-							isecond, SICHINT.ALLFIELDS);
-
-					areEqual = (result == 0);
-				}
-			}
-
-			return areEqual;
+			if (other == null) return false;
+			return this.CachedParsingName == other.CachedParsingName;
 		}
 
 		/// <summary>
@@ -1043,6 +1036,12 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public string ParsingName {
 			get { return GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING); }
+		}
+
+		public String CachedParsingName
+		{
+			get;
+			set;
 		}
 
 		/// <summary>

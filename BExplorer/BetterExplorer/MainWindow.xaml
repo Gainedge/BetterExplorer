@@ -3116,7 +3116,7 @@
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
 				<Helper:NoFlickerWindowsFormsHost x:Name="ShellTreeHost" Grid.Column="0" Background="White"/>
-				<GridSplitter Grid.Column="1" Width="1" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="LightGray"/>
+				<GridSplitter Grid.Column="1" Width="2" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="LightGray"/>
 				<Helper:NoFlickerWindowsFormsHost x:Name="ShellViewHost" Grid.Column="2" Background="White"/>
 			</Grid>
 			<GridSplitter Grid.Row="2"

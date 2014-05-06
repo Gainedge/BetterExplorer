@@ -148,7 +148,7 @@ namespace BetterExplorer
 								ShellLibrary lib = null;
 								try
 								{
-										lib = ShellLibrary.Load(ShellView.SelectedItems[0].DisplayName,
+										lib = ShellLibrary.Load(ShellView.GetFirstSelectedItem().DisplayName,
 															 false);
 								}
 								catch 
@@ -162,7 +162,7 @@ namespace BetterExplorer
 						}
 						else
 						{
-								ShellView.SetFolderIcon(ShellView.SelectedItems[0].ParsingName, tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
+								ShellView.SetFolderIcon(ShellView.GetFirstSelectedItem().ParsingName, tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
 						}
 						
 				}

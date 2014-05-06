@@ -132,6 +132,7 @@ namespace BExplorer.Shell.Interop
 		const int FIRST = 0x1000;				// LVM_FIRST
 		public const int SETIMAGELIST = (FIRST + 3);		// LVM_SETIMAGELIST
 		public const int GETNEXTITEM = (FIRST + 12);		// LVM_GETNEXTITEM
+		public const int GETNEXTITEMINDEX = (FIRST + 211);
 		public const int GETITEMRECT = (FIRST + 14);		// LVM_GETITEMRECT
 		public const int HITTEST = (FIRST + 18);		// LVM_HITTEST
 		public const int REDRAWITEMS = (FIRST + 21);		// LVM_REDRAWITEMS

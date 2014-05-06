@@ -753,6 +753,13 @@ namespace BExplorer.Shell.Interop
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
+	public struct LVITEMINDEX
+	{
+		public int iItem;
+		public int iGroup;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
 	public struct LVHITTESTINFO
 	{
 		public POINT pt;

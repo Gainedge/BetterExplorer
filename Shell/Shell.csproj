@@ -83,6 +83,8 @@
       <DependentUpon>FileOperationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="FileOperation\Theme.cs" />
+    <Compile Include="Groups\LVGROUP.cs" />
+    <Compile Include="Groups\ListViewGroupEx.cs" />
     <Compile Include="Interop\IAssocHandler.cs" />
     <Compile Include="Interop\ComReleaser.cs" />
     <Compile Include="Interop\FileOperationFlags.cs" />
@@ -219,6 +221,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SystemImageList.cs" />
+    <Compile Include="VirtualGroups\VirtualGrouping.cs" />
+    <Compile Include="VirtualGroups\IOwnerDataCallback.cs" />
     <Compile Include="VisualHelpers.cs" />
     <Compile Include="WindowsSearch\SearchCondition.cs" />
     <Compile Include="WindowsSearch\SearchConditionFactory.cs" />
