@@ -218,6 +218,8 @@
     <Compile Include="HelperClasses\FolderStructForSize.cs" />
     <Compile Include="HelperClasses\NavigationLog.cs" />
     <Compile Include="HelperClasses\PathStringCombiner.cs" />
+    <Compile Include="HelperClasses\Utilities.cs" />
+    <Compile Include="HelperClasses\WindowExtensions.cs" />
     <Compile Include="MessageReceiver.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -379,7 +381,6 @@
     <Compile Include="Updater\UpdateWizard.Designer.cs">
       <DependentUpon>UpdateWizard.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses\WindowExtensions.cs" />
     <Compile Include="HelperClasses\Wpf32Window.cs" />
     <Compile Include="_MainWindow\MainWindow_Tabs.cs">
       <SubType>Code</SubType>
@@ -1187,7 +1188,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!--   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />

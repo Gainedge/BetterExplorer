@@ -964,13 +964,13 @@
 											<TextBlock Text="{DynamicResource lblShowTabBarCP}" />
 											<Ribbon:RadioButton x:Name="TabbaTop"
 										  Margin="5,5,0,0"
-										  Checked="RadioButton_Checked"
+										  Checked="FolderTabs_Placement"
 										  GroupName="tba"
 										  Header="{DynamicResource chkTabBarTopCP}"
 										  Ribbon:KeyTip.Keys="TT" />
 											<Ribbon:RadioButton x:Name="TabbaBottom"
 										  Margin="5,5,0,0"
-										  Checked="RadioButton_Checked_1"
+										  Checked="FolderTabs_Placement"
 										  GroupName="tba"
 										  Header="{DynamicResource chkTabBarBottomCP}"
 										  Ribbon:KeyTip.Keys="TB" />
@@ -1144,8 +1144,8 @@
 										 Background="Green"
 										 BorderBrush="DarkGreen"
 										 Header="{DynamicResource ctbSearchToolsCP}"
-										 IsVisibleChanged="ctgSearch_IsVisibleChanged"
 										 Visibility="Collapsed" />
+										 <!--IsVisibleChanged="ctgSearch_IsVisibleChanged"-->
 			</Ribbon:Ribbon.ContextualGroups>
 
 			<Ribbon:RibbonTabItem x:Name="HomeTab"
@@ -1215,8 +1215,7 @@
 							  Icon="Images\pastet16.png"
 							  IsEnabled="False"
 							  Ribbon:KeyTip.Keys="SP"
-							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Small,Small"
-							  ToolTipOpening="btn_ToolTipOpening">
+							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Small,Small">
 						<Ribbon:MenuItem Click="btnPasetShC_Click"
 							 Focusable="False"
 							 Header="{DynamicResource btnPasteScCP}"
@@ -1240,8 +1239,7 @@
 							  Icon="Images\copyto16.png"
 							  IsEnabled="False"
 							  LargeIcon="Images\copyto32.png"
-							  Ribbon:KeyTip.Keys="CF"
-							  ToolTipOpening="btn_ToolTipOpening">
+							  Ribbon:KeyTip.Keys="CF">
 						<MenuItem x:Name="btnctDocuments"
 					  Click="btnctDocuments_Click"
 					  Focusable="False"
@@ -1274,8 +1272,7 @@
 							  IsEnabled="False"
 							  LargeIcon="Images\moveto32.png"
 							  LostFocus="btnCopyto_LostFocus"
-							  Ribbon:KeyTip.Keys="M"
-							  ToolTipOpening="btn_ToolTipOpening">
+							  Ribbon:KeyTip.Keys="M">
 						<MenuItem x:Name="btnmtDocuments"
 					  Click="btnmtDocuments_Click"
 					  Focusable="False"
@@ -1308,8 +1305,7 @@
 							  IsEnabled="False"
 							  LargeIcon="Images\delete32.png"
 							  LostFocus="btnCopyto_LostFocus"
-							  Ribbon:KeyTip.Keys="D"
-							  ToolTipOpening="btn_ToolTipOpening">
+							  Ribbon:KeyTip.Keys="D">
 						<MenuItem Click="MenuItem_Click"
 					  Focusable="False"
 					  Header="{DynamicResource miDeltoRB}"
@@ -1408,8 +1404,7 @@
 							  Icon="Images\open16.png"
 							  IsEnabled="False"
 							  Ribbon:KeyTip.Keys="O"
-							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small"
-							  ToolTipOpening="btn_ToolTipOpening" />
+							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small"/>
 					<Ribbon:Button x:Name="btnEdit"
 						 Click="btnEdit_Click"
 						 Header="{DynamicResource btnEditCP}"
@@ -1432,8 +1427,7 @@
 							  Icon="Images\favorites16.png"
 							  LargeIcon="Images\favorites32.png"
 							  Ribbon:KeyTip.Keys="F"
-							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large, Middle, Middle"
-							  ToolTipOpening="btn_ToolTipOpening" />
+							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large, Middle, Middle"/>
 				</Ribbon:RibbonGroupBox>
 				<Ribbon:RibbonGroupBox x:Name="Select"
 							   Header="{DynamicResource tgSelectCP}"
@@ -1466,7 +1460,6 @@
 							  LargeIcon="Images\filter32.png"
 							  Ribbon:KeyTip.Keys="SC"
 							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large, Small, Small"
-							  ToolTipOpening="btn_ToolTipOpening"
 							  Visibility="Visible">
 						<Ribbon:SplitButton.ToolTip>
 							<Ribbon:ScreenTip Title="{DynamicResource btnConditionalSelectCP}"
@@ -2286,23 +2279,23 @@
 								 Ribbon:KeyTip.Keys="C"
 								 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle">
 						<Ribbon:MenuItem x:Name="ConvertToJPG"
-							 Click="ConvertToJPG_Click"
+							 Click="Convert_Images"
 							 Header="{DynamicResource miJPGfCP}"
 							 Ribbon:KeyTip.Keys="J" />
 						<Ribbon:MenuItem x:Name="ConvertToPNG"
-							 Click="ConvertToPNG_Click"
+							 Click="Convert_Images"
 							 Header="{DynamicResource miPNGfCP}"
 							 Ribbon:KeyTip.Keys="P" />
 						<Ribbon:MenuItem x:Name="ConvertToGIF"
-							 Click="ConvertToGIF_Click"
+							 Click="Convert_Images"
 							 Header="{DynamicResource miGIFfCP}"
 							 Ribbon:KeyTip.Keys="G" />
 						<Ribbon:MenuItem x:Name="ConvertToBMP"
-							 Click="ConvertToBMP_Click"
+							 Click="Convert_Images"
 							 Header="{DynamicResource miBMPfCP}"
 							 Ribbon:KeyTip.Keys="G" />
 						<Ribbon:MenuItem x:Name="ConvertToWMF"
-							 Click="ConvertToWMF_Click"
+							 Click="Convert_Images"
 							 Header="{DynamicResource miWMFfCP}"
 							 Ribbon:KeyTip.Keys="W" />
 					</Ribbon:DropDownButton>
@@ -2391,29 +2384,29 @@
 			Visibility="Collapsed" />
 		  -->
 					<Ribbon:SplitButton x:Name="btnWallpaper"
-							  Click="btnWallpaper_Click"
+							  Click="Set_Wallpaper"
 							  Header="{DynamicResource btnWallpaperCP}"
 							  LargeIcon="Images\sawall32.png"
 							  Ribbon:KeyTip.Keys="W"
 							  Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large">
 						<Ribbon:MenuItem x:Name="miWallFill"
-							 Click="miWallFill_Click"
+							 Click="Set_Wallpaper"
 							 Header="{DynamicResource miWallFillCP}"
 							 Ribbon:KeyTip.Keys="L" />
 						<Ribbon:MenuItem x:Name="miWallFit"
-							 Click="miWallFit_Click"
+							 Click="Set_Wallpaper"
 							 Header="{DynamicResource miWallFitCP}"
 							 Ribbon:KeyTip.Keys="F" />
 						<Ribbon:MenuItem x:Name="miWallStretch"
-							 Click="miWallStretch_Click"
+							 Click="Set_Wallpaper"
 							 Header="{DynamicResource miWallStretchCP}"
 							 Ribbon:KeyTip.Keys="S" />
 						<Ribbon:MenuItem x:Name="miWallTile"
-							 Click="miWallTile_Click"
+							 Click="Set_Wallpaper"
 							 Header="{DynamicResource miWallTileCP}"
 							 Ribbon:KeyTip.Keys="T" />
 						<Ribbon:MenuItem x:Name="miWallCenter"
-							 Click="miWallCenter_Click"
+							 Click="Set_Wallpaper"
 							 Header="{DynamicResource miWallCenterCP}"
 							 Ribbon:KeyTip.Keys="C" />
 					</Ribbon:SplitButton>
@@ -3028,9 +3021,9 @@
 			<controls:SearchBox x:Name="edtSearchBox"
 						  Grid.Column="1"
 						  Margin="8,0,0,0"
-						  BeginSearch="edtSearchBox_BeginSearch_1"
+						  BeginSearch="edtSearchBox_BeginSearch"
 						  FiltersCleared="edtSearchBox_FiltersCleared"
-						  GotKeyboardFocus="searchTextBox1_GotKeyboardFocus"
+						  GotKeyboardFocus="edtSearchBox_GotKeyboardFocus"
 						  RequestCriteriaChange="edtSearchBox_RequestCriteriaChange" />
 			<GridSplitter x:Name="gridSplitter1"
 					Grid.Column="1"
