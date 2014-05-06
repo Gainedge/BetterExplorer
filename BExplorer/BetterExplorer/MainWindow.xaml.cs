@@ -3729,7 +3729,7 @@ namespace BetterExplorer {
 
 		private void btnExtractNow_Click(object sender, RoutedEventArgs e) {
 			if (chkUseNewFolder.IsChecked == true) {
-				string OutputLoc = String.Format("{0}\\{1}", txtExtractLocation.Text, RemoveExtensionsFromFile(ShellListView.GetFirstSelectedItem().ParsingName, new FileInfo(ShellListView.GetFirstSelectedItem().ParsingName).Extension));
+				string OutputLoc = String.Format("{0}\\{1}", txtExtractLocation.Text, Utilities.RemoveExtensionsFromFile(ShellListView.GetFirstSelectedItem().ParsingName, new FileInfo(ShellListView.GetFirstSelectedItem().ParsingName).Extension));
 				try {
 					Directory.CreateDirectory(OutputLoc);
 					ExtractToLocation(SelectedArchive, OutputLoc);
