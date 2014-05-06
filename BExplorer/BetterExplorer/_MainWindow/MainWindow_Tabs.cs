@@ -134,8 +134,6 @@ namespace BetterExplorer {
 				//'if it never crashes the program? Closing the last tab simply closes the program, so I
 				//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
 			}
-
-			NavigateAfterTabChange();
 		}
 
 		private void CloseAllTabs(bool CloseFirstTab) {
@@ -157,47 +155,10 @@ namespace BetterExplorer {
 
 
 		#region Tab Changers
-
-		public void NavigateAfterTabChange() {
-			ClosableTabItem itb = tabControl1.SelectedItem as ClosableTabItem;
-
-			isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
-			if (itb != null) {
-				try {
-					BeforeLastTabIndex = LastTabIndex;
-
-					//tabControl1.SelectedIndex = itb.Index;
-					//LastTabIndex = itb.Index;
-					//CurrentTabIndex = LastTabIndex;
-					if (ShellListView.CurrentFolder == null || itb.ShellObject.ParsingName != ShellListView.CurrentFolder.ParsingName) {
-						if (!Keyboard.IsKeyDown(Key.Tab)) {
-							ShellListView.Navigate(itb.ShellObject);
-						}
-						else {
-							t.Interval = 500;
-							t.Tag = itb.ShellObject;
-							t.Tick += new EventHandler(t_Tick);
-							t.Start();
-						}
-					}
-
-					itb.BringIntoView();
-				}
-				catch (StackOverflowException) {
-				}
-				//'btnTabCloseC.IsEnabled = tabControl1.Items.Count > 1;
-				//'there's a bug that has this enabled when there's only one tab open, but why disable it
-				//'if it never crashes the program? Closing the last tab simply closes the program, so I
-				//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
-			}
-		}
-
 		private void ChangeTab(object sender, ExecutedRoutedEventArgs e) {
 			t.Stop();
-			//SelectTab(tabControl1.SelectedIndex + 1);
 			int selIndex = tabControl1.SelectedIndex == tabControl1.Items.Count - 1 ? 0 : tabControl1.SelectedIndex + 1;
 			tabControl1.SelectedItem = tabControl1.Items[selIndex];
-			NavigateAfterTabChange();
 		}
 
 		#endregion
@@ -227,8 +188,6 @@ namespace BetterExplorer {
 			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
 			newt.Drop += new DragEventHandler(newt_Drop);
 
-			newt.TabSelected += newt_TabSelected;
-
 			tabControl1.Items.Add(newt);
 			LastTabIndex = tabControl1.SelectedIndex;
 			newt.log.CurrentLocation = DefPath;
@@ -236,7 +195,6 @@ namespace BetterExplorer {
 			if (IsNavigate) {
 				tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
 				tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-				NavigateAfterTabChange();
 			}
 
 			ConstructMoveToCopyToMenu();
@@ -322,7 +280,6 @@ namespace BetterExplorer {
 			newt.DragOver += new DragEventHandler(newt_DragOver);
 			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
 			newt.Drop += new DragEventHandler(newt_Drop);
-			newt.TabSelected += newt_TabSelected;
 			newt.AllowDrop = true;
 			newt.log.CurrentLocation = CurTab.ShellObject;
 			newt.SelectedItems = CurTab.SelectedItems;
@@ -331,7 +288,6 @@ namespace BetterExplorer {
 			tabControl1.SelectedItem = newt;
 			LastTabIndex = tabControl1.SelectedIndex;
 			ConstructMoveToCopyToMenu();
-			NavigateAfterTabChange();
 		}
 
 		#endregion

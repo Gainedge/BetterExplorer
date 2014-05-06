@@ -915,8 +915,8 @@ namespace BetterExplorer {
 				lib.Close();
 
 			}
-			else if (ShellListView.SelectedItems[0].ParsingName.Contains(KnownFolders.Libraries.ParsingName)) {
-				ShellLibrary lib = ShellLibrary.Load(ShellListView.SelectedItems[0].DisplayName, false);
+			else if (ShellListView.GetFirstSelectedItem().ParsingName.Contains(KnownFolders.Libraries.ParsingName)) {
+				ShellLibrary lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().DisplayName, false);
 				lib.DefaultSaveFolder = SaveLoc.ParsingName;
 				lib.Close();
 
@@ -1248,7 +1248,7 @@ namespace BetterExplorer {
 
 		private void SetupUIOnSelectOrNavigate(int SelItemsCount, bool isNavigate = false) {
 			btnDefSave.Items.Clear();
-			var selectedItem = ShellListView.SelectedItems.FirstOrDefault();
+			var selectedItem = this.ShellListView.GetFirstSelectedItem();
 			if (selectedItem != null) {
 				if (!isNavigate)
 					SetUpOpenWithButton(selectedItem);
@@ -1561,8 +1561,8 @@ namespace BetterExplorer {
 
 		private void btnFSizeChart_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.GetSelectedCount() > 0) {
-				if ((ShellListView.SelectedItems[0].IsFolder || ShellListView.SelectedItems[0].IsDrive) && ShellListView.SelectedItems[0].IsFileSystem) {
-					FolderSizeWindow.Open(ShellListView.SelectedItems[0].ParsingName, this);
+				if ((ShellListView.GetFirstSelectedItem().IsFolder || ShellListView.GetFirstSelectedItem().IsDrive) && ShellListView.GetFirstSelectedItem().IsFileSystem) {
+					FolderSizeWindow.Open(ShellListView.GetFirstSelectedItem().ParsingName, this);
 				}
 				else {
 					if ((ShellListView.CurrentFolder.IsFolder || ShellListView.CurrentFolder.IsDrive) && ShellListView.CurrentFolder.IsFileSystem) {
@@ -1648,7 +1648,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnHistory_Click(object sender, RoutedEventArgs e) {
-			//ShellListView.ShowPropPage(this.Handle, ShellListView.SelectedItems[0].ParsingName, 
+			//ShellListView.ShowPropPage(this.Handle, ShellListView.GetFirstSelectedItem().ParsingName, 
 			//	WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),"twext.dll"),1024,"Previous Versions"));
 		}
 
@@ -1672,13 +1672,13 @@ namespace BetterExplorer {
 			var ptr = (IntPtr)item.Tag;
 			var invokepFunc = Marshal.ReadIntPtr(ptr + 5 * IntPtr.Size);
 			ShellView.funcInvoke Invoke = (ShellView.funcInvoke)Marshal.GetDelegateForFunctionPointer(invokepFunc, typeof(ShellView.funcInvoke));
-			var j = Invoke(ptr, this.ShellListView.SelectedItems[0].GetIDataObject());
+			var j = Invoke(ptr, this.ShellListView.GetFirstSelectedItem().GetIDataObject());
 			//if (j != 0)
 			//{
 			//	var ex = Marshal.GetExceptionForHR(j);
 			//	throw ex;
 			//}
-			//Process.Start(item.Tag.ToString(), String.Format("\"{0}\"", ShellListView.SelectedItems[0].ParsingName));
+			//Process.Start(item.Tag.ToString(), String.Format("\"{0}\"", ShellListView.GetFirstSelectedItem().ParsingName));
 		}
 
 		void mif_Click(object sender, RoutedEventArgs e) {
@@ -1734,7 +1734,7 @@ namespace BetterExplorer {
 				Clipboards.SetText(path);
 			}
 			else if (ShellListView.SelectedItems.Count() == 1) {
-				Clipboards.SetText(ShellListView.SelectedItems[0].ParsingName);
+				Clipboards.SetText(ShellListView.GetFirstSelectedItem().ParsingName);
 			}
 			else {
 				Clipboards.SetText(ShellListView.CurrentFolder.ParsingName);
@@ -1922,13 +1922,13 @@ namespace BetterExplorer {
 		}
 
 		private void btnOpenWith_Click(object sender, RoutedEventArgs e) {
-			Process.Start(String.Format("\"{0}\"", ShellListView.SelectedItems[0].ParsingName));
+			Process.Start(String.Format("\"{0}\"", ShellListView.GetFirstSelectedItem().ParsingName));
 		}
 
 		private void btnEdit_Click(object sender, RoutedEventArgs e) {
 			//TODO: Code this!!
 			System.Windows.Forms.MessageBox.Show("This button currently does nothing");
-			//ShellListView.EditFile(ShellListView.SelectedItems[0].ParsingName);
+			//ShellListView.EditFile(ShellListView.GetFirstSelectedItem().ParsingName);
 		}
 
 		private void btnFavorites_Click(object sender, RoutedEventArgs e) {
@@ -1936,8 +1936,8 @@ namespace BetterExplorer {
 			if (selectedItems.Count() == 1) {
 				ShellLink link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
-				link.Target = ShellListView.SelectedItems[0].ParsingName;
-				link.Save(KnownFolders.Links.ParsingName + @"\" + ShellListView.SelectedItems[0].GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
+				link.Target = ShellListView.GetFirstSelectedItem().ParsingName;
+				link.Save(KnownFolders.Links.ParsingName + @"\" + ShellListView.GetFirstSelectedItem().GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
 				link.Dispose();
 			}
 
@@ -1987,17 +1987,17 @@ namespace BetterExplorer {
 		}
 
 		private void btnOpenTray_Click(object sender, RoutedEventArgs e) {
-			if (ShellListView.SelectedItems[0].GetDriveInfo() != null) {
-				if (ShellListView.SelectedItems[0].GetDriveInfo().DriveType == DriveType.CDRom) {
-					OpenCDTray(GetDriveLetterFromDrivePath(ShellListView.SelectedItems[0].ParsingName));
+			if (ShellListView.GetFirstSelectedItem().GetDriveInfo() != null) {
+				if (ShellListView.GetFirstSelectedItem().GetDriveInfo().DriveType == DriveType.CDRom) {
+					OpenCDTray(GetDriveLetterFromDrivePath(ShellListView.GetFirstSelectedItem().ParsingName));
 				}
 			}
 		}
 
 		private void btnCloseTray_Click(object sender, RoutedEventArgs e) {
-			if (ShellListView.SelectedItems[0].GetDriveInfo() != null) {
-				if (ShellListView.SelectedItems[0].GetDriveInfo().DriveType == DriveType.CDRom) {
-					CloseCDTray(GetDriveLetterFromDrivePath(ShellListView.SelectedItems[0].ParsingName));
+			if (ShellListView.GetFirstSelectedItem().GetDriveInfo() != null) {
+				if (ShellListView.GetFirstSelectedItem().GetDriveInfo().DriveType == DriveType.CDRom) {
+					CloseCDTray(GetDriveLetterFromDrivePath(ShellListView.GetFirstSelectedItem().ParsingName));
 				}
 			}
 		}
@@ -2072,9 +2072,9 @@ namespace BetterExplorer {
 		}
 
 		private void btnEjectDevice_Click(object sender, RoutedEventArgs e) {
-			if (ShellListView.SelectedItems[0].GetDriveInfo() != null) {
-				if (ShellListView.SelectedItems[0].GetDriveInfo().DriveType == DriveType.Removable) {
-					EjectDisk(GetDriveLetterFromDrivePath(ShellListView.SelectedItems[0].ParsingName));
+			if (ShellListView.GetFirstSelectedItem().GetDriveInfo() != null) {
+				if (ShellListView.GetFirstSelectedItem().GetDriveInfo().DriveType == DriveType.Removable) {
+					EjectDisk(GetDriveLetterFromDrivePath(ShellListView.GetFirstSelectedItem().ParsingName));
 				}
 			}
 		}
@@ -2156,7 +2156,7 @@ namespace BetterExplorer {
 					imflags |= ImDiskFlags.ReadOnly;
 
 
-				ImDiskAPI.CreateDevice(size, 0, 0, 0, 0, imflags, ShellListView.SelectedItems[0].ParsingName, false, DriveLetter, IntPtr.Zero);
+				ImDiskAPI.CreateDevice(size, 0, 0, 0, 0, imflags, ShellListView.GetFirstSelectedItem().ParsingName, false, DriveLetter, IntPtr.Zero);
 			}
 		}
 
@@ -2165,7 +2165,7 @@ namespace BetterExplorer {
 				//TODO: add the code for mounting images with ImDisk. look the example below!
 
 				var freeDriveLetter = String.Format("{0}:", ImDiskAPI.FindFreeDriveLetter());
-				ImDiskAPI.CreateDevice(0, 0, 0, 0, 0, ImDiskFlags.Auto, ShellListView.SelectedItems[0].ParsingName, false, freeDriveLetter, IntPtr.Zero);
+				ImDiskAPI.CreateDevice(0, 0, 0, 0, 0, ImDiskFlags.Auto, ShellListView.GetFirstSelectedItem().ParsingName, false, freeDriveLetter, IntPtr.Zero);
 			}
 			catch (System.DllNotFoundException) {
 				ShowInstallImDiskMessage();
@@ -2177,7 +2177,7 @@ namespace BetterExplorer {
 
 		private void btnWriteIso_Click(object sender, RoutedEventArgs e) {
 			Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "isoburn.exe"),
-									   string.Format("\"{0}\"", ShellListView.SelectedItems[0].ParsingName));
+									   string.Format("\"{0}\"", ShellListView.GetFirstSelectedItem().ParsingName));
 		}
 
 		private void btnUnmountDrive_Click(object sender, RoutedEventArgs e) {
@@ -2203,22 +2203,22 @@ namespace BetterExplorer {
 		#region Application Tools
 
 		private void btnRunAsAdmin_Click(object sender, RoutedEventArgs e) {
-			ShellListView.RunExeAsAdmin(ShellListView.SelectedItems[0].ParsingName);
+			ShellListView.RunExeAsAdmin(ShellListView.GetFirstSelectedItem().ParsingName);
 		}
 
 		private void btnPin_Click(object sender, RoutedEventArgs e) {
-			WindowsAPI.PinUnpinToTaskbar(ShellListView.SelectedItems[0].ParsingName);
+			WindowsAPI.PinUnpinToTaskbar(ShellListView.GetFirstSelectedItem().ParsingName);
 		}
 
 		private void btnPinToStart_Click(object sender, RoutedEventArgs e) {
-			WindowsAPI.PinUnpinToStartMenu(ShellListView.SelectedItems[0].ParsingName);
+			WindowsAPI.PinUnpinToStartMenu(ShellListView.GetFirstSelectedItem().ParsingName);
 			//if (ShellListView.GetSelectedItemsCount() == 1)
 			//{
 			//    ShellLink link = new ShellLink();
 			//    link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
-			//    link.Target = ShellListView.SelectedItems[0].ParsingName;
+			//    link.Target = ShellListView.GetFirstSelectedItem().ParsingName;
 			//    link.Save(KnownFolders.StartMenu.ParsingName + @"\" +
-			//        ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY) + ".lnk");
+			//        ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY) + ".lnk");
 			//    link.Dispose();
 			//}
 		}
@@ -2229,9 +2229,9 @@ namespace BetterExplorer {
 
 			//if (reu.dialogresult == true)
 			//{
-			//    ShellListView.RunExeAsAnotherUser(ShellListView.SelectedItems[0].ParsingName, reu.textBox1.Text);
+			//    ShellListView.RunExeAsAnotherUser(ShellListView.GetFirstSelectedItem().ParsingName, reu.textBox1.Text);
 			//}
-			CredUI.RunProcesssAsUser(ShellListView.SelectedItems[0].ParsingName);
+			CredUI.RunProcesssAsUser(ShellListView.GetFirstSelectedItem().ParsingName);
 		}
 
 		#endregion
@@ -2562,11 +2562,10 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
-			if (this.ShellListView.CurrentFolder == null) return;
-			//var tab = this.tabControl1.Items.OfType<ClosableTabItem>().Where(w => w.ShellObject.ParsingName == this.ShellListView.CurrentFolder.ParsingName).SingleOrDefault();
 			var tab = tabControl1.SelectedItem as ClosableTabItem;
 
-			if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
+			if (tab != null && this.ShellListView.GetSelectedCount() > 0 && (tab.SelectedItems == null || tab.SelectedItems.Count == 0))
+			{
 				tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
 			}
 		}
@@ -2634,13 +2633,12 @@ namespace BetterExplorer {
 
 		async void ShellListView_SelectionChanged(object sender, EventArgs e) {
 			int explorerSelectedItemsCount = ShellListView.GetSelectedCount();
-
 			if (!IsSelectionRized) {
 				IsSelectionRized = true;
 
-				await Task.Run(async () => {
+				Task.Run(async () => {
 					//ct.ThrowIfCancellationRequested();
-					await Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+					Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 						try {
 							// set up buttons
 							SetupUIOnSelectOrNavigate(explorerSelectedItemsCount);
@@ -2659,9 +2657,9 @@ namespace BetterExplorer {
 			}
 
 			#region StatusBar selected items counter
-			await Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
-				explorerSelectedItemsCount = ShellListView.GetSelectedCount();
-			}));
+
+			explorerSelectedItemsCount = ShellListView.GetSelectedCount();
+
 
 			SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
 			#endregion
@@ -2940,7 +2938,6 @@ namespace BetterExplorer {
 						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
 							if (i == InitialTabs.Length) {
 								tabControl1.SelectedIndex = InitialTabs.Length - 2;
-								NavigateAfterTabChange();
 							}
 
 							continue;
@@ -3375,7 +3372,7 @@ namespace BetterExplorer {
 			bool IsChanged = (selectedItemsCount > 0);
 			bool isFuncAvail;
 			if (selectedItemsCount == 1) {
-				isFuncAvail = ShellListView.SelectedItems[0].IsFileSystem || ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName;
+				isFuncAvail = ShellListView.GetFirstSelectedItem().IsFileSystem || ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName;
 			}
 			else {
 				if (!(ShellListView.CurrentFolder.IsFolder && !ShellListView.CurrentFolder.IsDrive && !ShellListView.CurrentFolder.IsSearchFolder))
@@ -3715,7 +3712,7 @@ namespace BetterExplorer {
 		//        {
 		//            var CAI = new CreateArchive(selectedItems,
 		//                                        true,
-		//                                        Path.GetDirectoryName(selectedItems[0]),
+		//                                        Path.GetDirectoryName(GetFirstSelectedItem()),
 		//                                        format);
 
 		//            CAI.Show(this.GetWin32Window());
@@ -3734,7 +3731,7 @@ namespace BetterExplorer {
 
 		private void btnExtractNow_Click(object sender, RoutedEventArgs e) {
 			if (chkUseNewFolder.IsChecked == true) {
-				string OutputLoc = String.Format("{0}\\{1}", txtExtractLocation.Text, RemoveExtensionsFromFile(ShellListView.SelectedItems[0].ParsingName, new FileInfo(ShellListView.SelectedItems[0].ParsingName).Extension));
+				string OutputLoc = String.Format("{0}\\{1}", txtExtractLocation.Text, RemoveExtensionsFromFile(ShellListView.GetFirstSelectedItem().ParsingName, new FileInfo(ShellListView.GetFirstSelectedItem().ParsingName).Extension));
 				try {
 					Directory.CreateDirectory(OutputLoc);
 					ExtractToLocation(SelectedArchive, OutputLoc);
@@ -3809,7 +3806,7 @@ namespace BetterExplorer {
 				selectedItems.Add(item.ParsingName);
 			}
 			try {
-				var CAI = new CreateArchive(selectedItems, false, ShellListView.SelectedItems[0].ParsingName);
+				var CAI = new CreateArchive(selectedItems, false, ShellListView.GetFirstSelectedItem().ParsingName);
 				CAI.Show(this.GetWin32Window());
 			}
 			catch (Exception exception) {
@@ -3827,7 +3824,7 @@ namespace BetterExplorer {
 			//					delegate()
 			//					{
 
-			string FileName = ShellListView.SelectedItems[0].ParsingName;
+			string FileName = ShellListView.GetFirstSelectedItem().ParsingName;
 			SevenZipExtractor extractor = new SevenZipExtractor(FileName);
 			string DirectoryName = System.IO.Path.GetDirectoryName(FileName);
 			string ArchName = System.IO.Path.GetFileNameWithoutExtension(FileName);
@@ -3876,7 +3873,7 @@ namespace BetterExplorer {
 
 
 		private void DoCheck() {
-			string FileName = ShellListView.SelectedItems[0].ParsingName;
+			string FileName = ShellListView.GetFirstSelectedItem().ParsingName;
 			SevenZipExtractor extractor = new SevenZipExtractor(FileName);
 			if (!extractor.Check())
 				MessageBox.Show("Not Pass");
@@ -3891,7 +3888,7 @@ namespace BetterExplorer {
 			var archiveDetailView = new ArchiveDetailView(ICON_DLLPATH, name);
 			archiveDetailView.Show(this.GetWin32Window());
 
-			//ArchiveViewWindow g = new ArchiveViewWindow(ShellListView.SelectedItems[0], IsPreviewPaneEnabled, IsInfoPaneEnabled);
+			//ArchiveViewWindow g = new ArchiveViewWindow(ShellListView.GetFirstSelectedItem(), IsPreviewPaneEnabled, IsInfoPaneEnabled);
 			//g.Show();
 		}
 
@@ -3910,7 +3907,7 @@ namespace BetterExplorer {
 		private void btnOLItem_Click(object sender, RoutedEventArgs e) {
 			ShellLibrary lib = null;
 			if (ShellListView.GetSelectedCount() == 1) {
-				lib = ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY), false);
+				lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY), false);
 			}
 			else {
 				lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
@@ -3944,7 +3941,7 @@ namespace BetterExplorer {
 		private void chkPinNav_Checked(object sender, RoutedEventArgs e) {
 			ShellLibrary lib = null;
 			if (ShellListView.GetSelectedCount() == 1) {
-				lib = ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY), false);
+				lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY), false);
 			}
 			else {
 				lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
@@ -3959,7 +3956,7 @@ namespace BetterExplorer {
 		private void chkPinNav_Unchecked(object sender, RoutedEventArgs e) {
 			ShellLibrary lib = null;
 			if (ShellListView.GetSelectedCount() == 1) {
-				lib = ShellLibrary.Load(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY), false);
+				lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY), false);
 			}
 			else {
 				lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
@@ -3978,7 +3975,7 @@ namespace BetterExplorer {
 
 		private void btnManageLib_Click(object sender, RoutedEventArgs e) {
 			try {
-				ShellLibrary.ShowManageLibraryUI(ShellListView.SelectedItems[0].DisplayName,
+				ShellLibrary.ShowManageLibraryUI(ShellListView.GetFirstSelectedItem().DisplayName,
 								this.Handle, "Choose which folders will be in this library", "A library gathers content from all of the folders listed below and puts it all in one window for you to see.", true);
 			}
 			catch {
@@ -4004,11 +4001,11 @@ namespace BetterExplorer {
 			td.StandardButtons = TaskDialogStandardButtons.Yes | TaskDialogStandardButtons.No;
 			td.OwnerWindowHandle = this.Handle;
 			if (td.Show() == TaskDialogResult.Yes) {
-				if (ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "documents" &&
-								ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "music" &&
-								ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "videos" &&
-								ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "pictures") {
-					ShellLibrary lib = ShellLibrary.Load(ShellListView.SelectedItems[0].DisplayName,
+				if (ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "documents" &&
+								ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "music" &&
+								ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "videos" &&
+								ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "pictures") {
+					ShellLibrary lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().DisplayName,
 																	false);
 					lib.IsPinnedToNavigationPane = true;
 					lib.LibraryType = LibraryFolderType.Generic;
@@ -4094,7 +4091,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnAutosizeColls_Click(object sender, RoutedEventArgs e) {
-			//ShellListView.SetAutoSizeColumns();
+			this.ShellListView.AutosizeAllColumns(-1);
 		}
 
 		private void btnSbDetails_Click(object sender, RoutedEventArgs e) {
@@ -4201,7 +4198,7 @@ namespace BetterExplorer {
 			//For some reason, this was giving off an error.
 
 			//ChangePaneVisibility(0x1, true);
-			//ShellListView.ShowPropPage(this.Handle, ShellListView.SelectedItems[0].ParsingName, "Security");
+			//ShellListView.ShowPropPage(this.Handle, ShellListView.GetFirstSelectedItem().ParsingName, "Security");
 
 			ShellListView.RefreshContents();
 
@@ -4512,7 +4509,7 @@ namespace BetterExplorer {
 		#region Share Tab Commands (excluding Archive)
 
 		private void btnMapDrive_Click(object sender, RoutedEventArgs e) {
-			WindowsAPI.MapDrive(this.Handle, ShellListView.SelectedItems.Count() == 1 ? ShellListView.SelectedItems[0].ParsingName : String.Empty);
+			WindowsAPI.MapDrive(this.Handle, ShellListView.SelectedItems.Count() == 1 ? ShellListView.GetFirstSelectedItem().ParsingName : String.Empty);
 		}
 
 		private void btnDisconectDrive_Click(object sender, RoutedEventArgs e) {
@@ -4524,7 +4521,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnAdvancedSecurity_Click(object sender, RoutedEventArgs e) {
-			//ShellListView.ShowPropPage(this.Handle, ShellListView.SelectedItems[0].ParsingName, "Security");
+			//ShellListView.ShowPropPage(this.Handle, ShellListView.GetFirstSelectedItem().ParsingName, "Security");
 		}
 
 		#endregion
@@ -4623,7 +4620,7 @@ namespace BetterExplorer {
 				cvt.Save(namen + extension, format);
 			}
 			catch (Exception) {
-				MessageBox.Show("There appears to have been an issue with converting the file. Make sure the filename \"" + RemoveExtensionsFromFile(ShellListView.SelectedItems[0].GetDisplayName(SIGDN.NORMALDISPLAY), new System.IO.FileInfo(name).Extension) + extension + "\" does already not exist.", "Conversion Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show("There appears to have been an issue with converting the file. Make sure the filename \"" + RemoveExtensionsFromFile(ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY), new System.IO.FileInfo(name).Extension) + extension + "\" does already not exist.", "Conversion Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 			cvt.Dispose();
 		}
@@ -4664,9 +4661,9 @@ namespace BetterExplorer {
 			//                  new Action(
 			//                    delegate()
 			//                    {
-			//                        ImageFormat imagef = GetImageFormat(ShellListView.SelectedItems[0].ParsingName);
-			//                        RotateAndSaveImage(ShellListView.SelectedItems[0].ParsingName,
-			//                            ShellListView.SelectedItems[0].ParsingName, imagef, RotateFlipType.Rotate270FlipNone);
+			//                        ImageFormat imagef = GetImageFormat(ShellListView.GetFirstSelectedItem().ParsingName);
+			//                        RotateAndSaveImage(ShellListView.GetFirstSelectedItem().ParsingName,
+			//                            ShellListView.GetFirstSelectedItem().ParsingName, imagef, RotateFlipType.Rotate270FlipNone);
 			//                    }));
 			foreach (ShellItem item in ShellListView.SelectedItems) {
 				if (OverwriteOnRotate) {
@@ -4696,9 +4693,9 @@ namespace BetterExplorer {
 			//                  new Action(
 			//                    delegate()
 			//                    {
-			//                        ImageFormat imagef = GetImageFormat(ShellListView.SelectedItems[0].ParsingName);
-			//                        RotateAndSaveImage(ShellListView.SelectedItems[0].ParsingName,
-			//                            ShellListView.SelectedItems[0].ParsingName, imagef, RotateFlipType.Rotate90FlipNone);
+			//                        ImageFormat imagef = GetImageFormat(ShellListView.GetFirstSelectedItem().ParsingName);
+			//                        RotateAndSaveImage(ShellListView.GetFirstSelectedItem().ParsingName,
+			//                            ShellListView.GetFirstSelectedItem().ParsingName, imagef, RotateFlipType.Rotate90FlipNone);
 			//                    }));
 			foreach (ShellItem item in ShellListView.SelectedItems) {
 				if (OverwriteOnRotate == true) {
@@ -4725,7 +4722,7 @@ namespace BetterExplorer {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
 				Wallpaper TheWall = new Wallpaper();
 
-				TheWall.Set(new Uri(ShellListView.SelectedItems[0].ParsingName), Wallpaper.Style.Stretched);
+				TheWall.Set(new Uri(ShellListView.GetFirstSelectedItem().ParsingName), Wallpaper.Style.Stretched);
 			}));
 		}
 
@@ -4733,7 +4730,7 @@ namespace BetterExplorer {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
 				Wallpaper TheWall = new Wallpaper();
 
-				TheWall.Set(new Uri(ShellListView.SelectedItems[0].ParsingName), Wallpaper.Style.Fill);
+				TheWall.Set(new Uri(ShellListView.GetFirstSelectedItem().ParsingName), Wallpaper.Style.Fill);
 			}));
 		}
 
@@ -4741,7 +4738,7 @@ namespace BetterExplorer {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
 				Wallpaper TheWall = new Wallpaper();
 
-				TheWall.Set(new Uri(ShellListView.SelectedItems[0].ParsingName), Wallpaper.Style.Fit);
+				TheWall.Set(new Uri(ShellListView.GetFirstSelectedItem().ParsingName), Wallpaper.Style.Fit);
 			}));
 		}
 
@@ -4749,7 +4746,7 @@ namespace BetterExplorer {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
 				Wallpaper TheWall = new Wallpaper();
 
-				TheWall.Set(new Uri(ShellListView.SelectedItems[0].ParsingName), Wallpaper.Style.Stretched);
+				TheWall.Set(new Uri(ShellListView.GetFirstSelectedItem().ParsingName), Wallpaper.Style.Stretched);
 			}));
 		}
 
@@ -4757,7 +4754,7 @@ namespace BetterExplorer {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
 				Wallpaper TheWall = new Wallpaper();
 
-				TheWall.Set(new Uri(ShellListView.SelectedItems[0].ParsingName), Wallpaper.Style.Tiled);
+				TheWall.Set(new Uri(ShellListView.GetFirstSelectedItem().ParsingName), Wallpaper.Style.Tiled);
 			}));
 		}
 
@@ -4765,7 +4762,7 @@ namespace BetterExplorer {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
 				Wallpaper TheWall = new Wallpaper();
 
-				TheWall.Set(new Uri(ShellListView.SelectedItems[0].ParsingName), Wallpaper.Style.Centered);
+				TheWall.Set(new Uri(ShellListView.GetFirstSelectedItem().ParsingName), Wallpaper.Style.Centered);
 			}));
 		}
 
@@ -4814,20 +4811,20 @@ namespace BetterExplorer {
 		}
 
 		private void btnResize_Click(object sender, RoutedEventArgs e) {
-			ResizeImage.Open(ShellListView.SelectedItems[0]);
+			ResizeImage.Open(ShellListView.GetFirstSelectedItem());
 
 			/*
-			ResizeImage ri = new ResizeImage(ShellListView.SelectedItems[0]);
+			ResizeImage ri = new ResizeImage(ShellListView.GetFirstSelectedItem());
 			ri.ShowDialog();
 
 
 			if (ri.Confirm) {
-				System.Drawing.Bitmap cvt = new Bitmap(ShellListView.SelectedItems[0].ParsingName);
+				System.Drawing.Bitmap cvt = new Bitmap(ShellListView.GetFirstSelectedItem().ParsingName);
 				System.Drawing.Bitmap cst = ChangeImageSize(cvt, ri.newwidth, ri.newheight);
 
-				string ext = GetExtension(ShellListView.SelectedItems[0].ParsingName);
+				string ext = GetExtension(ShellListView.GetFirstSelectedItem().ParsingName);
 
-				cst.Save(ShellListView.SelectedItems[0].ParsingName + " (" + ri.newwidth + " X " + ri.newheight + ")" + ext);
+				cst.Save(ShellListView.GetFirstSelectedItem().ParsingName + " (" + ri.newwidth + " X " + ri.newheight + ")" + ext);
 				cvt.Dispose();
 				cst.Dispose();
 			}
@@ -4852,7 +4849,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnClearFoldericon_Click(object sender, RoutedEventArgs e) {
-			ShellListView.ClearFolderIcon(ShellListView.SelectedItems[0].ParsingName);
+			ShellListView.ClearFolderIcon(ShellListView.GetFirstSelectedItem().ParsingName);
 		}
 		#endregion
 
@@ -5422,7 +5419,8 @@ namespace BetterExplorer {
 		}
 
 		private void breadcrumbBarControl1_RefreshRequested(object sender) {
-			ShellListView.RefreshContents();
+			this.ShellListView.EnableGroups();
+			//ShellListView.RefreshContents();
 		}
 
 		private void RibbonWindow_KeyUp(object sender, KeyEventArgs e) {
@@ -6317,13 +6315,50 @@ namespace BetterExplorer {
 		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
 		private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			try {
-				//if (e.RemovedItems.Count > 0) {
-				//	var item = tabControl1.Items.OfType<ClosableTabItem>().Where(c => c == e.RemovedItems[0]).SingleOrDefault();
-				//	if (item != null)
-				//		item.SelectedItems = ShellListView.SelectedItems.Select(c => c.ParsingName).ToArray();
-				//}
+				if (e.RemovedItems.Count > 0) {
+					var tab = e.RemovedItems[0] as ClosableTabItem;
+
+					if (tab != null && this.ShellListView.GetSelectedCount() > 0)
+					{
+						tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+					}
+				}
 				if (e.AddedItems.Count > 0 && (e.AddedItems[0] as ClosableTabItem).Index == tabControl1.Items.Count - 1) {
 					tabControl1.Items.OfType<ClosableTabItem>().Last().BringIntoView();
+				}
+				if (e.AddedItems.Count == 0) return;
+
+				ClosableTabItem itb = e.AddedItems[0] as ClosableTabItem;
+				if (itb == null) return;
+
+				isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
+				try
+				{
+					BeforeLastTabIndex = LastTabIndex;
+
+					//tabControl1.SelectedIndex = itb.Index;
+					//LastTabIndex = itb.Index;
+					//CurrentTabIndex = LastTabIndex;
+					if (itb.ShellObject != ShellListView.CurrentFolder)
+					{
+						if (!Keyboard.IsKeyDown(Key.Tab))
+						{
+							ShellListView.Navigate(itb.ShellObject);
+						}
+						else
+						{
+							t.Interval = 500;
+							t.Tag = itb.ShellObject;
+							t.Tick += new EventHandler(t_Tick);
+							t.Start();
+						}
+					}
+
+					itb.BringIntoView();
+				}
+				catch (StackOverflowException)
+				{
+
 				}
 			}
 			catch (Exception ex) {
@@ -6364,14 +6399,6 @@ namespace BetterExplorer {
 			tabControl1.Items.RemoveAt(CurSelIndex);
 		}
 
-		//private void ChangeTab(object sender, ExecutedRoutedEventArgs e) {
-		//	t.Stop();
-		//	//SelectTab(tabControl1.SelectedIndex + 1);
-		//	int selIndex = tabControl1.SelectedIndex == tabControl1.Items.Count - 1 ? 0 : tabControl1.SelectedIndex + 1;
-		//	tabControl1.SelectedItem = tabControl1.Items[selIndex];
-		//	NavigateAfterTabChange();
-		//}
-
 		private void ERGoToBCCombo(object sender, ExecutedRoutedEventArgs e) {
 			breadcrumbBarControl1.EnterEditMode();
 		}
@@ -6381,272 +6408,6 @@ namespace BetterExplorer {
 		}
 
 
-		//void CreateTabbarRKMenu(ClosableTabItem tabitem) {
-		//	tabitem.mnu = new ContextMenu();
-		//	MenuItem miclosecurrentr = new MenuItem();
-		//	miclosecurrentr.Header = "Close current tab";
-		//	miclosecurrentr.Tag = tabitem;
-		//	miclosecurrentr.Click += new RoutedEventHandler(miclosecurrentr_Click);
-		//	tabitem.mnu.Items.Add(miclosecurrentr);
-
-		//	MenuItem miclosealltab = new MenuItem();
-		//	miclosealltab.Header = "Close all tabs";
-		//	miclosealltab.Click += new RoutedEventHandler(miclosealltab_Click);
-		//	tabitem.mnu.Items.Add(miclosealltab);
-
-		//	MenuItem miclosealltabbd = new MenuItem();
-		//	miclosealltabbd.Header = "Close all other tabs";
-		//	miclosealltabbd.Tag = tabitem;
-		//	miclosealltabbd.Click += new RoutedEventHandler(miclosealltabbd_Click);
-		//	tabitem.mnu.Items.Add(miclosealltabbd);
-
-		//	tabitem.mnu.Items.Add(new Separator());
-
-
-		//	MenuItem minewtabr = new MenuItem();
-		//	minewtabr.Header = "New tab";
-		//	minewtabr.Tag = tabitem;
-		//	minewtabr.Click += new RoutedEventHandler(minewtabr_Click);
-		//	tabitem.mnu.Items.Add(minewtabr);
-
-
-		//	MenuItem miclonecurrentr = new MenuItem();
-		//	miclonecurrentr.Header = "Clone tab";
-		//	miclonecurrentr.Tag = tabitem;
-		//	miclonecurrentr.Click += new RoutedEventHandler(miclonecurrentr_Click);
-		//	tabitem.mnu.Items.Add(miclonecurrentr);
-
-		//	tabitem.mnu.Items.Add(new Separator());
-
-
-		//	MenuItem miundocloser = new MenuItem();
-		//	miundocloser.Header = "Undo close tab";
-		//	miundocloser.IsEnabled = btnUndoClose.IsEnabled;
-		//	miundocloser.Tag = "UCTI";
-		//	miundocloser.Click += new RoutedEventHandler(miundocloser_Click);
-		//	tabitem.mnu.Items.Add(miundocloser);
-
-		//	tabitem.mnu.Items.Add(new Separator());
-
-		//	MenuItem miopeninnew = new MenuItem();
-		//	miopeninnew.Header = "Open in new window";
-		//	miopeninnew.Tag = tabitem;
-		//	miopeninnew.Click += new RoutedEventHandler(miopeninnew_Click);
-		//	tabitem.mnu.Items.Add(miopeninnew);
-
-		//}
-
-		//void miopeninnew_Click(object sender, RoutedEventArgs e) {
-		//	MenuItem mi = (sender as MenuItem);
-		//	ClosableTabItem ti = mi.Tag as ClosableTabItem;
-		//	Process.Start(Assembly.GetExecutingAssembly().GetName().Name, ti.ShellObject.ParsingName + " /nw");
-		//	CloseTab(ti);
-		//	//throw new NotImplementedException();
-		//}
-
-		//void miclosealltabbd_Click(object sender, RoutedEventArgs e) {
-		//	MenuItem mi = (sender as MenuItem);
-		//	ClosableTabItem ti = mi.Tag as ClosableTabItem;
-		//	CloseAllTabsButThis(ti);
-		//}
-
-		//void miclosealltab_Click(object sender, RoutedEventArgs e) {
-		//	CloseAllTabs(true);
-		//}
-
-		//void miclosecurrentr_Click(object sender, RoutedEventArgs e) {
-		//	MenuItem mi = (sender as MenuItem);
-		//	ClosableTabItem ti = mi.Tag as ClosableTabItem;
-		//	CloseTab(ti);
-		//}
-
-		//void minewtabr_Click(object sender, RoutedEventArgs e) {
-		//	MenuItem mi = (sender as MenuItem);
-		//	ClosableTabItem ti = mi.Tag as ClosableTabItem;
-		//	NewTab();
-		//}
-
-		//void miclonecurrentr_Click(object sender, RoutedEventArgs e) {
-		//	MenuItem mi = (sender as MenuItem);
-		//	ClosableTabItem ti = mi.Tag as ClosableTabItem;
-		//	CloneTab(ti);
-		//}
-
-		//void miundocloser_Click(object sender, RoutedEventArgs e) {
-		//	//MenuItem mi = (sender as MenuItem);
-		//	if (btnUndoClose.IsEnabled) {
-		//		btnUndoClose_Click(this, e);
-		//	}
-		//}
-
-		//void CloseAllTabs(bool CloseFirstTab) {
-		//	foreach (ClosableTabItem tab in tabControl1.Items.OfType<ClosableTabItem>().ToArray()) {
-		//		CloseTab(tab);
-		//	}
-		//}
-
-
-		//void CloseAllTabsButThis(ClosableTabItem tabitem) {
-		//	foreach (ClosableTabItem tab in tabControl1.Items.OfType<ClosableTabItem>().ToArray()) {
-		//		if (tab != tabitem) CloseTab(tab);
-		//	}
-
-		//	ConstructMoveToCopyToMenu();
-		//}
-
-		//public void NewTab(bool IsNavigate = true) {
-		//	ClosableTabItem newt = new ClosableTabItem();
-		//	CreateTabbarRKMenu(newt);
-
-		//	ShellItem DefPath;
-		//	if (StartUpLocation.StartsWith("::") && StartUpLocation.IndexOf(@"\") == -1)
-		//		DefPath = new ShellItem("shell:" + StartUpLocation);
-		//	else
-		//		try {
-		//			DefPath = new ShellItem(StartUpLocation);
-		//		}
-		//		catch {
-		//			DefPath = (ShellItem)KnownFolders.Libraries;
-		//		}
-
-		//	DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-		//	DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-		//	newt.PreviewMouseMove += newt_PreviewMouseMove;
-		//	newt.Header = DefPath.GetDisplayName(SIGDN.NORMALDISPLAY);
-		//	newt.TabIcon = DefPath.Thumbnail.BitmapSource;
-		//	newt.ShellObject = DefPath;
-		//	newt.ToolTip = DefPath.ParsingName;
-		//	newt.IsNavigate = IsNavigate;
-		//	newt.Index = tabControl1.Items.Count;
-		//	newt.AllowDrop = true;
-		//	newt.log.CurrentLocation = DefPath;
-
-		//	newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
-		//	newt.DragEnter += new DragEventHandler(newt_DragEnter);
-		//	newt.DragOver += new DragEventHandler(newt_DragOver);
-		//	newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
-		//	newt.Drop += new DragEventHandler(newt_Drop);
-		//	newt.TabSelected += newt_TabSelected;
-		//	tabControl1.Items.Add(newt);
-		//	LastTabIndex = tabControl1.SelectedIndex;
-		//	tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
-		//	tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-
-		//	ConstructMoveToCopyToMenu();
-		//	NavigateAfterTabChange();
-		//}
-
-		//public void NewTab(ShellItem location, bool IsNavigate = false) {
-		//	ClosableTabItem newt = new ClosableTabItem();
-		//	CreateTabbarRKMenu(newt);
-
-		//	ShellItem DefPath = location;
-		//	DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-		//	DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-		//	newt.PreviewMouseMove += newt_PreviewMouseMove;
-		//	newt.Header = DefPath.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
-		//	newt.TabIcon = DefPath.Thumbnail.BitmapSource;
-		//	newt.ShellObject = DefPath;
-		//	newt.ToolTip = DefPath.ParsingName;
-		//	newt.IsNavigate = IsNavigate;
-		//	newt.Index = tabControl1.Items.Count;
-		//	newt.AllowDrop = true;
-		//	newt.log.CurrentLocation = DefPath;
-
-		//	newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
-		//	newt.DragEnter += new DragEventHandler(newt_DragEnter);
-		//	newt.DragOver += new DragEventHandler(newt_DragOver);
-		//	newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
-		//	newt.Drop += new DragEventHandler(newt_Drop);
-		//	newt.TabSelected += newt_TabSelected;
-		//	tabControl1.Items.Add(newt);
-		//	LastTabIndex = tabControl1.SelectedIndex;
-		//	if (IsNavigate) {
-		//		tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
-		//		tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-		//		NavigateAfterTabChange();
-		//	}
-
-		//	ConstructMoveToCopyToMenu();
-		//}
-
-
-
-		//public ClosableTabItem NewTab(string Location, bool IsNavigate = false) {
-		//	ClosableTabItem newt = new ClosableTabItem();
-		//	CreateTabbarRKMenu(newt);
-
-		//	ShellItem DefPath = new ShellItem(Location);
-		//	DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-		//	DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-		//	newt.Header = DefPath.GetDisplayName(SIGDN.NORMALDISPLAY);
-		//	newt.TabIcon = DefPath.Thumbnail.BitmapSource;
-		//	newt.ShellObject = DefPath;
-		//	newt.ToolTip = DefPath.ParsingName;
-		//	newt.IsNavigate = IsNavigate;
-		//	newt.Index = tabControl1.Items.Count;
-		//	newt.AllowDrop = true;
-		//	newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
-		//	newt.DragEnter += new DragEventHandler(newt_DragEnter);
-		//	newt.DragOver += new DragEventHandler(newt_DragOver);
-		//	newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
-		//	newt.TabSelected += newt_TabSelected;
-		//	newt.Drop += new DragEventHandler(newt_Drop);
-
-		//	tabControl1.Items.Add(newt);
-		//	LastTabIndex = tabControl1.SelectedIndex;
-		//	if (IsNavigate) {
-		//		//IsCancel = true;
-
-		//		tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
-		//		tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-		//		//IsCancel = false;
-		//	}
-		//	else {
-		//		newt.log.CurrentLocation = DefPath;
-		//	}
-
-		//	ConstructMoveToCopyToMenu();
-		//	return newt;
-		//}
-
-		public void newt_TabSelected(object sender, RoutedEventArgs e) {
-			ClosableTabItem itb = sender as ClosableTabItem;
-			if (itb == null) return;
-
-			isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
-			try {
-				BeforeLastTabIndex = LastTabIndex;
-
-				//tabControl1.SelectedIndex = itb.Index;
-				//LastTabIndex = itb.Index;
-				//CurrentTabIndex = LastTabIndex;
-				if (itb.ShellObject != ShellListView.CurrentFolder) {
-					if (!Keyboard.IsKeyDown(Key.Tab)) {
-						tabControl1.SelectedItem = itb;
-						ShellListView.Navigate(itb.ShellObject);
-					}
-					else {
-						t.Interval = 500;
-						t.Tag = itb.ShellObject;
-						t.Tick += new EventHandler(t_Tick);
-						t.Start();
-					}
-				}
-
-				itb.BringIntoView();
-			}
-			catch (StackOverflowException) {
-
-			}
-			//'btnTabCloseC.IsEnabled = tabControl1.Items.Count > 1;
-			//'there's a bug that has this enabled when there's only one tab open, but why disable it
-			//'if it never crashes the program? Closing the last tab simply closes the program, so I
-			//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
-
-
-			//ShellListView.SetExplorerFocus();
-		}
 
 		void newt_PreviewMouseMove(object sender, MouseEventArgs e) {
 			var tabItem = e.Source as ClosableTabItem;
@@ -6679,10 +6440,6 @@ namespace BetterExplorer {
 					tabControl.Items.Remove(tabItemSource);
 					tabControl.Items.Insert(targetIndex, tabItemSource);
 
-
-
-					//tabControl.Items.Remove(tabItemTarget);
-					//tabControl.Items.Insert(sourceIndex, tabItemTarget);
 					if (tabState == 1)
 						tabControl.SelectedIndex = sourceIndex;
 					else if (tabState == 0)
@@ -7086,7 +6843,6 @@ namespace BetterExplorer {
 				if (i == list.Count - 1)
 					tabControl1.SelectedItem = tabitem;
 			}
-			NavigateAfterTabChange();
 		}
 
 		private void miTabManager_Click(object sender, RoutedEventArgs e) {
@@ -7727,10 +7483,10 @@ namespace BetterExplorer {
 
 		private void mnuPinToStart_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.GetSelectedCount() == 1) {
-				string loc = KnownFolders.StartMenu.ParsingName + @"\" + ShellListView.SelectedItems[0].DisplayName + ".lnk";
+				string loc = KnownFolders.StartMenu.ParsingName + @"\" + ShellListView.GetFirstSelectedItem().DisplayName + ".lnk";
 				ShellLink link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
-				link.Target = ShellListView.SelectedItems[0].ParsingName;
+				link.Target = ShellListView.GetFirstSelectedItem().ParsingName;
 				link.Save(loc);
 				link.Dispose();
 
@@ -7750,21 +7506,21 @@ namespace BetterExplorer {
 		}
 
 		void mln_Click(object sender, RoutedEventArgs e) {
-			ShellLibrary lib = ShellListView.CreateNewLibrary(ShellListView.SelectedItems[0].DisplayName);
-			if (ShellListView.SelectedItems[0].IsFolder) {
-				lib.Add(ShellListView.SelectedItems[0].ParsingName);
+			ShellLibrary lib = ShellListView.CreateNewLibrary(ShellListView.GetFirstSelectedItem().DisplayName);
+			if (ShellListView.GetFirstSelectedItem().IsFolder) {
+				lib.Add(ShellListView.GetFirstSelectedItem().ParsingName);
 			}
 		}
 
 		void mli_Click(object sender, RoutedEventArgs e) {
 			ShellLibrary lib = ShellLibrary.Load(((ShellItem)(sender as Fluent.MenuItem).Tag).DisplayName, false);
-			if (ShellListView.SelectedItems[0].IsFolder) {
-				lib.Add(ShellListView.SelectedItems[0].ParsingName);
+			if (ShellListView.GetFirstSelectedItem().IsFolder) {
+				lib.Add(ShellListView.GetFirstSelectedItem().ParsingName);
 			}
 		}
 
 		private void btnEasyAccess_DropDownOpened(object sender, EventArgs e) {
-			if (ShellListView.GetSelectedCount() == 1 && ShellListView.SelectedItems[0].IsFolder) {
+			if (ShellListView.GetSelectedCount() == 1 && ShellListView.GetFirstSelectedItem().IsFolder) {
 				mnuIncludeInLibrary.Items.Clear();
 
 				foreach (ShellItem lib in KnownFolders.Libraries) {

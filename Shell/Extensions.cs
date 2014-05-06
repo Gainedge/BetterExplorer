@@ -28,7 +28,7 @@ namespace BExplorer.Shell
 				public int    iIndent;
 				public int iGroupId;
 				public int cColumns;
-				public uint puColumns;
+				public IntPtr puColumns;
 				public int piColFmt;
 				public int iGroup;
 		}
@@ -235,6 +235,26 @@ namespace BExplorer.Shell
 		public static class Extensions
 		{
 
+			public static LVGROUP2 ToNativeListViewGroup(this ListViewGroupEx group)
+			{
+				LVGROUP2 nativeGroup = new LVGROUP2();
+				nativeGroup.cbSize = (uint)Marshal.SizeOf(typeof(LVGROUP2));
+				nativeGroup.mask = (uint)(GroupMask.LVGF_HEADER ^ GroupMask.LVGF_STATE ^ GroupMask.LVGF_GROUPID);
+				nativeGroup.stateMask = (uint)GroupState.LVGS_COLLAPSIBLE;
+				nativeGroup.state = (uint)GroupState.LVGS_COLLAPSIBLE;
+				nativeGroup.pszHeader = group.Header;
+				nativeGroup.iGroupId = group.Index;
+
+				if (group.Items.Count() > 0)
+				{
+					nativeGroup.cItems = group.Items.Count();
+					nativeGroup.mask ^= (uint)GroupMask.LVGF_ITEMS;
+				}
+
+				return nativeGroup;
+
+
+			}
 				public static Collumns ToCollumns(this LVCOLUMN column, PROPERTYKEY pkey, Type type, bool IsColumnHandler){
 						Collumns col = new Collumns();
 						col.pkey = pkey;

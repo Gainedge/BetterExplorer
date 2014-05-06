@@ -293,7 +293,7 @@ namespace BetterExplorer {
 					}
 					else {
 						String cmd = args.CommandLineArgs[1];
-						sho = new ShellItem(cmd.StartsWith("::") ? "shell:" + cmd : args.CommandLineArgs[1].Replace("\"", ""));
+						sho = new ShellItem(cmd.ToShellParsingName());
 					}
 				}
 
@@ -311,7 +311,6 @@ namespace BetterExplorer {
 					newt.TabIcon = sho.Thumbnail.BitmapSource;
 					newt.PreviewMouseMove += newt_PreviewMouseMove;
 					newt.ToolTip = sho.ParsingName;
-					newt.TabSelected += win.newt_TabSelected;
 					newt.ShellObject = sho;
 					win.CloneTab(newt);
 				});

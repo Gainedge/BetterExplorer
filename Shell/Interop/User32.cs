@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 namespace BExplorer.Shell.Interop
 {
 		[Flags]
-		public enum LVIF
+		public enum LVIF : uint
 		{
 				LVIF_TEXT = 0x0001,
 				LVIF_IMAGE = 0x0002,
@@ -39,7 +39,7 @@ namespace BExplorer.Shell.Interop
 		}
 
 		[Flags]
-		public enum LVIS
+		public enum LVIS : uint
 		{
 				LVIS_FOCUSED = 0x0001,
 				LVIS_SELECTED = 0x0002,
@@ -179,6 +179,7 @@ namespace BExplorer.Shell.Interop
 				LVM_FINDITEM = (FIRST + 83),
 				LVM_ENSUREVISISBLE = (FIRST + 19),
 				LVM_ARRANGE = (FIRST + 22),
+				LVM_GETITEMINDEXRECT = (FIRST + 209),
 
 		}
 
@@ -303,7 +304,10 @@ namespace BExplorer.Shell.Interop
 				public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
 
 				[DllImport("User32.dll")]
-				public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, LVTILEVIEWINFO lParam);
+				public static extern HResult SendMessage(IntPtr hWnd, int msg, int wParam, LVTILEVIEWINFO lParam);
+
+				[DllImport("User32.dll")]
+				public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref LVGROUP2 lParam);
 
 				[DllImport("User32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, LVFINDINFO lParam);
@@ -352,6 +356,10 @@ namespace BExplorer.Shell.Interop
 				[DllImport("user32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, MSG Msg,
 						int wParam, ref RECT lparam);
+
+				[DllImport("user32.dll")]
+				public static extern int SendMessage(IntPtr hWnd, MSG Msg,
+						ref LVITEMINDEX wParam, ref RECT lparam);
 
 				[DllImport("user32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, MSG Msg,
@@ -518,6 +526,9 @@ namespace BExplorer.Shell.Interop
 
 				[DllImport("user32.dll", CharSet = CharSet.Auto)]
 				public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, LVNI lParam);
+
+				[DllImport("user32.dll", CharSet = CharSet.Auto)]
+				public static extern int SendMessage(IntPtr hWnd, int Msg, ref LVITEMINDEX wParam, LVNI lParam);
 
 				[DllImport("user32.dll", CharSet = CharSet.Auto)]
 				public static extern LVIS SendMessage(IntPtr hWnd, MSG Msg, int wParam, LVIS lParam);
