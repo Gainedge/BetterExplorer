@@ -3216,19 +3216,19 @@
 					<Ribbon:ToggleButton x:Name="btnSbIcons"
 							   Width="18"
 							   Height="18"
-							   Click="btnSbIcons_Click"
+							   Click="StatusBar_Folder_Buttons"
 							   Icon="Images\medium16.png"
 							   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Small,Small,Small" />
 					<Ribbon:ToggleButton x:Name="btnSbDetails"
 							   Width="18"
 							   Height="18"
-							   Click="btnSbDetails_Click"
+							   Click="StatusBar_Folder_Buttons"
 							   Icon="Images\details16.png"
 							   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Small,Small,Small" />
 					<Ribbon:ToggleButton x:Name="btnSbTiles"
 							   Width="18"
 							   Height="18"
-							   Click="btnSbTiles_Click"
+							   Click="StatusBar_Folder_Buttons"
 							   Icon="Images\tiles16.png"
 							   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Small,Small,Small" />
 				</StackPanel>
