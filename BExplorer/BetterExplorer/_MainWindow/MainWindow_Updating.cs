@@ -53,12 +53,11 @@ using WindowsHelper;
 namespace BetterExplorer {
 
 	//TODO: Make all updating private and handled in [Updater]
-	Finish!!
 	partial class MainWindow {
+		BackgroundWorker UpdaterWorker;
+		int UpdateCheckType;
 
-
-		[Obsolete("Make All Loading Private", true)]
-		public void CheckForUpdate(bool ShowUpdateUI = true) {
+		void CheckForUpdate(bool ShowUpdateUI = true) {
 			this.UpdaterWorker = new BackgroundWorker();
 			this.UpdaterWorker.WorkerSupportsCancellation = true;
 			this.UpdaterWorker.WorkerReportsProgress = true;
@@ -74,9 +73,8 @@ namespace BetterExplorer {
 		}
 
 
-		[Obsolete("Make All Loading Private", true)]
 		void UpdaterWorker_DoWork(object sender, DoWorkEventArgs e) {
-			Updater updater = new Updater("http://update.better-explorer.com/update.xml", 5, this.UpdateCheckType == 1);
+			Updater updater = new Updater("http://update.better-explorer.com/update.xml", 5, UpdateCheckType == 1);
 			if (updater.LoadUpdateFile()) {
 				if ((bool)e.Argument) {
 					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,

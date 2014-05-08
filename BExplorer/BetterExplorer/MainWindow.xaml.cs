@@ -113,7 +113,7 @@ namespace BetterExplorer {
 		private int BeforeLastTabIndex = -1;
 		string StartUpLocation = KnownFolders.Libraries.ParsingName;
 
-		int UpdateCheckType;
+
 		public bool isOnLoad;
 		System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
 		public bool IsCalledFromLoading;
@@ -142,7 +142,6 @@ namespace BetterExplorer {
 		List<NavigationLog> reopenabletabs = new List<NavigationLog>();
 		bool OverwriteOnRotate = false;
 		NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-		BackgroundWorker UpdaterWorker;
 		System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
 		DateTime LastUpdateCheck;
 		Int32 UpdateCheckInterval;
@@ -1944,26 +1943,6 @@ namespace BetterExplorer {
 
 		#region Path to String HelperFunctions / Other HelperFunctions
 
-
-
-		[Obsolete("Consider Removing this")]
-		private void OpenCommandPromptHere(string dir) {
-			//TODO:Consider Removing this
-			try {
-				Process p = new Process();
-				p.StartInfo.FileName = "cmd.exe";
-				p.StartInfo.WorkingDirectory = dir;
-				//p.StartInfo.WorkingDirectory = @"c:\Program Files\";
-				//p.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-				p.StartInfo.UseShellExecute = false; // not sure if this should be false or not
-
-				p.Start();
-			}
-			catch {
-				MessageBox.Show("Could not open command prompt in this directory: " + dir);
-			}
-		}
-
 		public void ExportColumnDataToTextFile(string filename) {
 			Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser eb = new Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser();
 			eb.InitBrowser();
@@ -1983,10 +1962,34 @@ namespace BetterExplorer {
 			return value ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
 		}
 
+		List<DependencyObject> hitTestList = null;
+		HitTestResultBehavior CollectAllVisuals_Callback(HitTestResult result) {
+			if (result == null || result.VisualHit == null)
+				return HitTestResultBehavior.Stop;
+
+			hitTestList.Add(result.VisualHit);
+			return HitTestResultBehavior.Continue;
+		}
+
+		private void AddToLog(string value) {
+			try {
+				if (canlogactions) {
+					if (!Directory.Exists(logdir)) Directory.CreateDirectory(logdir);
+
+					using (StreamWriter sw = new StreamWriter(String.Format("{0}{1}.txt", logdir, sessionid), true)) {
+						sw.WriteLine(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " : " + value);
+					}
+				}
+			}
+			catch (Exception exe) {
+				MessageBox.Show("An error occurred while writing to the log file. This error can be avoided if you disable the action logging feature. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Writing to Log", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+		}
+
+
 		#endregion
 
 		#region Updater
-
 
 		private void CheckBox_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
@@ -2031,34 +2034,6 @@ namespace BetterExplorer {
 		private void UpdateTypeCheck_Click(object sender, RoutedEventArgs e) {
 			Utilities.SetRegistryValue("UpdateCheckType", rbReleases.IsChecked.Value ? 0 : 1);
 			UpdateCheckType = rbReleases.IsChecked.Value ? 0 : 1;
-		}
-
-		#endregion
-
-		#region Miscellaneous Helper Functions
-
-		List<DependencyObject> hitTestList = null;
-		HitTestResultBehavior CollectAllVisuals_Callback(HitTestResult result) {
-			if (result == null || result.VisualHit == null)
-				return HitTestResultBehavior.Stop;
-
-			hitTestList.Add(result.VisualHit);
-			return HitTestResultBehavior.Continue;
-		}
-
-		private void AddToLog(string value) {
-			try {
-				if (canlogactions) {
-					if (!Directory.Exists(logdir)) Directory.CreateDirectory(logdir);
-
-					using (StreamWriter sw = new StreamWriter(String.Format("{0}{1}.txt", logdir, sessionid), true)) {
-						sw.WriteLine(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " : " + value);
-					}
-				}
-			}
-			catch (Exception exe) {
-				MessageBox.Show("An error occurred while writing to the log file. This error can be avoided if you disable the action logging feature. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Writing to Log", MessageBoxButton.OK, MessageBoxImage.Error);
-			}
 		}
 
 		#endregion
@@ -2931,24 +2906,24 @@ namespace BetterExplorer {
 
 				WindowsAPI.SHFILEINFO sfi = new WindowsAPI.SHFILEINFO();
 				IntPtr Res = IntPtr.Zero;
-				if (pIDL != IntPtr.Zero) {
-					if (!ShellListView.CurrentFolder.IsFileSystem) {
-						Res = WindowsAPI.SHGetFileInfo(pIDL, 0, ref sfi, (uint)Marshal.SizeOf(sfi), WindowsAPI.SHGFI.IconLocation | WindowsAPI.SHGFI.SmallIcon | WindowsAPI.SHGFI.PIDL);
-					}
+				if (pIDL != IntPtr.Zero && !ShellListView.CurrentFolder.IsFileSystem) {
+					//if (!ShellListView.CurrentFolder.IsFileSystem) {
+					Res = WindowsAPI.SHGetFileInfo(pIDL, 0, ref sfi, (uint)Marshal.SizeOf(sfi), WindowsAPI.SHGFI.IconLocation | WindowsAPI.SHGFI.SmallIcon | WindowsAPI.SHGFI.PIDL);
 				}
 
 				if (ShellListView.CurrentFolder.IsFileSystem) {
 					WindowsAPI.SHGetFileInfo(ShellListView.CurrentFolder.ParsingName, 0, ref sfi, (uint)Marshal.SizeOf(sfi), (uint)WindowsAPI.SHGFI.IconLocation | (uint)WindowsAPI.SHGFI.SmallIcon);
 				}
-				JumpTask JTask = new JumpTask();
-				JTask.ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
-				JTask.Arguments = String.Format("\"{0}\"", ShellListView.CurrentFolder.ParsingName);
-				JTask.Title = ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY);
-				JTask.IconResourcePath = sfi.szDisplayName;
-				JTask.IconResourceIndex = sfi.iIcon;
-				System.Windows.Shell.JumpList.AddToRecentCategory(JTask);
-				AppJL.Apply();
 
+				System.Windows.Shell.JumpList.AddToRecentCategory(new JumpTask() {
+					ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName,
+					Arguments = String.Format("\"{0}\"", ShellListView.CurrentFolder.ParsingName),
+					Title = ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY),
+					IconResourcePath = sfi.szDisplayName,
+					IconResourceIndex = sfi.iIcon
+				});
+
+				AppJL.Apply();
 			}
 			finally {
 				if (pIDL != IntPtr.Zero) Marshal.FreeCoTaskMem(pIDL);
@@ -2956,28 +2931,28 @@ namespace BetterExplorer {
 		}
 
 		private bool SetUpNewFolderButtons() {
-			bool isinLibraries = false;
-			if (ShellListView.CurrentFolder.Parent != null) {
-				if (ShellListView.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
-					btnCreateFolder.Header = FindResource("btnNewLibraryCP");  //"New Library";
-					stNewFolder.Title = FindResource("btnNewLibraryCP").ToString();//"New Library";
-					stNewFolder.Text = "Creates a new library in the current folder.";
-					stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/newlib32.png", UriKind.Relative));
-					btnCreateFolder.LargeIcon = @"..\Images\newlib32.png";
-					btnCreateFolder.Icon = @"..\Images\newlib16.png";
+			if (ShellListView.CurrentFolder.Parent == null) {
+				return false;
+			}
+			else if (ShellListView.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
+				btnCreateFolder.Header = FindResource("btnNewLibraryCP");  //"New Library";
+				stNewFolder.Title = FindResource("btnNewLibraryCP").ToString();//"New Library";
+				stNewFolder.Text = "Creates a new library in the current folder.";
+				stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/newlib32.png", UriKind.Relative));
+				btnCreateFolder.LargeIcon = @"..\Images\newlib32.png";
+				btnCreateFolder.Icon = @"..\Images\newlib16.png";
 
-					isinLibraries = true;
-				}
-				else {
-					btnCreateFolder.Header = FindResource("btnNewFolderCP");//"New Folder";
-					stNewFolder.Title = FindResource("btnNewFolderCP").ToString(); //"New Folder";
-					stNewFolder.Text = "Creates a new folder in the current folder";
-					stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/folder_new32.png", UriKind.Relative));
-					btnCreateFolder.LargeIcon = @"..\Images\folder_new32.png";
-					btnCreateFolder.Icon = @"..\Images\folder_new16.png";
+				return true;
+			}
+			else {
+				btnCreateFolder.Header = FindResource("btnNewFolderCP");//"New Folder";
+				stNewFolder.Title = FindResource("btnNewFolderCP").ToString(); //"New Folder";
+				stNewFolder.Text = "Creates a new folder in the current folder";
+				stNewFolder.Image = new BitmapImage(new Uri(@"/BetterExplorer;component/Images/folder_new32.png", UriKind.Relative));
+				btnCreateFolder.LargeIcon = @"..\Images\folder_new32.png";
+				btnCreateFolder.Icon = @"..\Images\folder_new16.png";
 
-					isinLibraries = false;
-				}
+				return false;
 			}
 
 			//btnCreateFolder.IsEnabled = ShellListView.CurrentFolder.IsFileSystem ||
@@ -2985,8 +2960,6 @@ namespace BetterExplorer {
 			//    (isinLibraries);
 
 			//btnCreateFolder.IsEnabled = ShellListView.CanCreateFolder || (ShellListView.CurrentFolder.FileSystemPath == KnownFolders.Libraries.ParsingName) || (isinLibraries);
-
-			return isinLibraries;
 		}
 
 		private void SetUpButtonVisibilityOnNavComplete(bool isinLibraries) {
@@ -3004,11 +2977,9 @@ namespace BetterExplorer {
 				catch {
 				}
 			}
-			else {
-				if (!ShellListView.CurrentFolder.ParsingName.ToLowerInvariant().EndsWith("library-ms")) {
-					btnDefSave.Items.Clear();
-					ctgLibraries.Visibility = System.Windows.Visibility.Collapsed;
-				}
+			else if (!ShellListView.CurrentFolder.ParsingName.ToLowerInvariant().EndsWith("library-ms")) {
+				btnDefSave.Items.Clear();
+				ctgLibraries.Visibility = System.Windows.Visibility.Collapsed;
 			}
 
 			if (ShellListView.CurrentFolder.IsDrive) {
@@ -3037,7 +3008,6 @@ namespace BetterExplorer {
 				selectedTabItem.ToolTip = e.Folder.ParsingName;
 			}
 			catch (Exception) {
-
 			}
 
 			//try {
@@ -3055,42 +3025,6 @@ namespace BetterExplorer {
 
 			isGoingBackOrForward = false;
 		}
-
-		#endregion
-
-		#region Old Search Code
-
-		int CurrentProgressValue = 0;
-
-		public void DoSearch(string SearchCriteria) {
-			ShellItem BeforeSearchFolder = null; //TODO: Make sure moving this is okay
-			//if (backgroundSearchThread != null)
-			//	backgroundSearchThread.Abort();
-
-			if (ShellListView.CurrentFolder.IsSearchFolder) {
-				if (BeforeSearchFolder == null) BeforeSearchFolder = ShellListView.CurrentFolder;
-			}
-			else {
-				BeforeSearchFolder = ShellListView.CurrentFolder;
-			}
-
-			if (SearchCriteria != "") {
-				SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(SearchCriteria);
-				ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, BeforeSearchFolder);
-				ShellListView.Navigate(searchFolder);
-
-				//if (BeforeSearchFolder != null) {
-				//	//Thread.Sleep(750);
-				//	//ShellListView.RefreshContents();
-				//}
-				//backgroundSearchThread = new Thread(new ParameterizedThreadStart(DoSimpleSearch));
-				//backgroundSearchThread.IsBackground = true;
-				//// ApartmentState.STA is required for COM
-				//backgroundSearchThread.SetApartmentState(ApartmentState.STA);
-				//backgroundSearchThread.Start(SearchCriteria);
-			}
-		}
-
 
 		#endregion
 
@@ -3124,7 +3058,6 @@ namespace BetterExplorer {
 			Utilities.SetRegistryValue("CurrentTheme", "Silver");
 			KeepBackstageOpen = true;
 		}
-
 
 		private void btnBlue_Click(object sender, RoutedEventArgs e) {
 			ChangeRibbonTheme("Blue");
@@ -3491,17 +3424,10 @@ namespace BetterExplorer {
 			micm_Click(sender, e);
 		}
 
+		[Obsolete("Does Nothing")]
 		void mig_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
-			var collumn = item.Tag as Collumns;
-			if (collumn != null)
-			{
-				if (!this.ShellListView.IsGroupsEnabled)
-				{
-					this.ShellListView.EnableGroups();
-				}
-				this.ShellListView.GenerateGroupsFromColumn(collumn);
-			}
+			//ShellListView.SetGroupCollumn(((Collumns)item.Tag).pkey, true);
 		}
 
 		private void btnAutosizeColls_Click(object sender, RoutedEventArgs e) {
@@ -3557,7 +3483,8 @@ namespace BetterExplorer {
 		void misng_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
 			item.IsChecked = true;
-			ShellListView.DisableGroups();
+			PROPERTYKEY pk = new PROPERTYKEY();
+			//ShellListView.SetGroupCollumn(pk, true);
 		}
 
 
@@ -4402,7 +4329,6 @@ namespace BetterExplorer {
 
 		#endregion
 
-
 		#region Breadcrumb Bar
 
 		private void breadcrumbBarControl1_NavigateRequested(object sender, PathEventArgs e) {
@@ -4542,9 +4468,22 @@ namespace BetterExplorer {
 
 		#region Search
 
-		private void edtSearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			ctgSearch.Visibility = System.Windows.Visibility.Visible;
-			if (!TheRibbon.IsMinimized) TheRibbon.SelectedTabItem = tbSearch;
+		int CurrentProgressValue = 0;
+
+		public void DoSearch(string SearchCriteria) {
+			if (SearchCriteria != "") {
+				SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(SearchCriteria);
+				ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
+				ShellListView.Navigate(searchFolder);
+			}
+		}
+
+		private void edtSearchBox_BeginSearch(object sender, SearchRoutedEventArgs e) {
+			DoSearch(edtSearchBox.FullSearchTerms);
+		}
+
+		private void btnSearch_Click(object sender, RoutedEventArgs e) {
+			DoSearch(edtSearchBox.FullSearchTerms);
 		}
 
 		private void edtSearchBox_RequestCriteriaChange(object sender, SearchRoutedEventArgs e) {
@@ -4567,8 +4506,9 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void edtSearchBox_BeginSearch(object sender, SearchRoutedEventArgs e) {
-			DoSearch(edtSearchBox.FullSearchTerms);
+		private void edtSearchBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			ctgSearch.Visibility = System.Windows.Visibility.Visible;
+			if (!TheRibbon.IsMinimized) TheRibbon.SelectedTabItem = tbSearch;
 		}
 
 		private void edtSearchBox_FiltersCleared(object sender, EventArgs e) {
@@ -4589,8 +4529,6 @@ namespace BetterExplorer {
 				item.IsChecked = false;
 			}
 		}
-
-
 
 		private void MenuItem_Checked(object sender, RoutedEventArgs e) {
 			e.Handled = true;
@@ -4636,9 +4574,6 @@ namespace BetterExplorer {
 		}
 		*/
 
-		private void btnSearch_Click(object sender, RoutedEventArgs e) {
-			DoSearch(edtSearchBox.FullSearchTerms);
-		}
 
 		private void MenuItem_Click_3(object sender, RoutedEventArgs e) {
 			edtSearchBox.ModifiedCondition = (string)((FrameworkElement)sender).Tag;
@@ -4759,6 +4694,7 @@ namespace BetterExplorer {
 		private void chkDrive_Checked(object sender, RoutedEventArgs e) {
 			asDrive = true;
 		}
+
 		private void chkDrive_Unchecked(object sender, RoutedEventArgs e) {
 			asDrive = false;
 		}
@@ -5453,7 +5389,7 @@ namespace BetterExplorer {
 
 		public void UpdateRecycleBinInfos() {
 			var rb = KnownFolders.RecycleBin;
-			int count = rb.Count();
+			int count = rb.Count(); //TODO: Find out if we can remove [count]
 
 			if (rb.Count() == 0) {
 				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
@@ -5503,7 +5439,6 @@ namespace BetterExplorer {
 			}
 			UpdateRecycleBinInfos();
 		}
-
 
 		private bool RestoreFromRB(string Item) {
 			var Shl = new Shell();
