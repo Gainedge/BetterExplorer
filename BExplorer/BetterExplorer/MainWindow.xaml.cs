@@ -49,7 +49,6 @@ using BExplorer.Shell.Interop;
 using WindowsHelper;
 
 
-//Remove As Much Commented Code as you can	
 namespace BetterExplorer {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
@@ -983,7 +982,7 @@ namespace BetterExplorer {
 
 		private void miSelAllByType_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.GetSelectedCount() > 0) {
-				List<string> flt = new List<string>();
+				var flt = new List<string>();
 				PROPERTYKEY typePK = new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 };
 
 				foreach (ShellItem item in ShellListView.SelectedItems) {
@@ -1001,7 +1000,7 @@ namespace BetterExplorer {
 
 		private void miSelAllByDate_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.GetSelectedCount() > 0) {
-				List<DateTime> flt = new List<DateTime>();
+				var flt = new List<DateTime>();
 				PROPERTYKEY typePK = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 15 };
 
 				foreach (ShellItem item in ShellListView.SelectedItems) {
@@ -1906,13 +1905,6 @@ namespace BetterExplorer {
 		}
 
 		private void btnRunAs_Click(object sender, RoutedEventArgs e) {
-			//RunExeAsUser reu = new RunExeAsUser();
-			//reu.ShowDialog();
-
-			//if (reu.dialogresult == true)
-			//{
-			//    ShellListView.RunExeAsAnotherUser( ShellListView.GetFirstSelectedItem().ParsingName, reu.textBox1.Text);
-			//}
 			CredUI.RunProcesssAsUser(ShellListView.GetFirstSelectedItem().ParsingName);
 		}
 
@@ -1995,58 +1987,6 @@ namespace BetterExplorer {
 
 		#region Updater
 
-		public void CheckForUpdate(bool ShowUpdateUI = true) {
-			this.UpdaterWorker = new BackgroundWorker();
-			this.UpdaterWorker.WorkerSupportsCancellation = true;
-			this.UpdaterWorker.WorkerReportsProgress = true;
-			this.UpdaterWorker.DoWork += new DoWorkEventHandler(UpdaterWorker_DoWork);
-
-			if (!this.UpdaterWorker.IsBusy)
-				this.UpdaterWorker.RunWorkerAsync(ShowUpdateUI);
-			else if (ShowUpdateUI)
-				MessageBox.Show("Update in progress! Please wait!");
-
-			// var informalVersion = (Assembly.GetExecutingAssembly().GetCustomAttributes(
-			//typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
-		}
-
-		void UpdaterWorker_DoWork(object sender, DoWorkEventArgs e) {
-			Updater updater = new Updater("http://update.better-explorer.com/update.xml", 5, this.UpdateCheckType == 1);
-			if (updater.LoadUpdateFile()) {
-				if ((bool)e.Argument) {
-					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-						(Action)(() => {
-							UpdateWizard updateWizzard = new UpdateWizard(updater);
-							updateWizzard.ShowDialog(this.GetWin32Window());
-						}));
-				}
-				else {
-					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-						(Action)(() => {
-							stiUpdate.Content = FindResource("stUpdateAvailableCP").ToString().Replace("VER", updater.AvailableUpdates[0].Version);
-							stiUpdate.Foreground = System.Windows.Media.Brushes.Red;
-						}));
-				}
-			}
-			else {
-				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-						(Action)(() => {
-							stiUpdate.Content = FindResource("stUpdateNotAvailableCP").ToString();
-							stiUpdate.Foreground = System.Windows.Media.Brushes.Black;
-							if ((bool)e.Argument)
-								MessageBox.Show(FindResource("stUpdateNotAvailableCP").ToString());
-						}));
-			}
-
-			Utilities.SetRegistryValue("LastUpdateCheck", DateTime.Now.ToBinary(), RegistryValueKind.QWord);
-			LastUpdateCheck = DateTime.Now;
-		}
-
-		void updateCheckTimer_Tick(object sender, EventArgs e) {
-			if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
-				CheckForUpdate(false);
-			}
-		}
 
 		private void CheckBox_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
@@ -2071,17 +2011,16 @@ namespace BetterExplorer {
 
 		private void rbCheckInterval_Click(object sender, RoutedEventArgs e) {
 			if (rbDaily.IsChecked.Value) {
-				Utilities.SetRegistryValue("CheckInterval", 1);
 				UpdateCheckInterval = 1;
 			}
 			else if (rbMonthly.IsChecked.Value) {
-				Utilities.SetRegistryValue("CheckInterval", 30);
 				UpdateCheckInterval = 30;
 			}
 			else {
-				Utilities.SetRegistryValue("CheckInterval", 7);
 				UpdateCheckInterval = 7;
 			}
+
+			Utilities.SetRegistryValue("CheckInterval", UpdateCheckInterval);
 		}
 
 		private void chkUpdateStartupCheck_Click(object sender, RoutedEventArgs e) {
@@ -3660,7 +3599,7 @@ namespace BetterExplorer {
 			if (!IsCalledFromLoading) {
 				Dispatcher.BeginInvoke(new Action(
 					delegate() {
-						WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
+						var state = new WindowsAPI.SHELLSTATE();
 						state.fShowAllObjects = 1;
 						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
 						ShellListView.ShowHidden = true;
@@ -3674,7 +3613,7 @@ namespace BetterExplorer {
 			if (!IsCalledFromLoading) {
 				Dispatcher.BeginInvoke(new Action(
 					delegate() {
-						WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
+						var state = new WindowsAPI.SHELLSTATE();
 						state.fShowAllObjects = 0;
 						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
 						ShellListView.ShowHidden = false;
@@ -3685,11 +3624,10 @@ namespace BetterExplorer {
 		}
 
 		private void chkExtensions_Checked(object sender, RoutedEventArgs e) {
-
 			if (!IsCalledFromLoading) {
 				Dispatcher.BeginInvoke(new Action(
 					delegate() {
-						WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
+						var state = new WindowsAPI.SHELLSTATE();
 						state.fShowExtensions = 1;
 						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
 						ShellListView.RefreshContents();
@@ -4177,7 +4115,7 @@ namespace BetterExplorer {
 
 		}
 
-		public const int WM_COPYDATA = 0x4A;
+		//public const int WM_COPYDATA = 0x4A;
 		private void chkIsDefault_Unchecked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
 				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
