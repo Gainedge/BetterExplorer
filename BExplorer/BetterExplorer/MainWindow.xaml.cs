@@ -3552,10 +3552,17 @@ namespace BetterExplorer {
 			micm_Click(sender, e);
 		}
 
-		[Obsolete("Does Nothing")]
 		void mig_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
-			//ShellListView.SetGroupCollumn(((Collumns)item.Tag).pkey, true);
+			var collumn = item.Tag as Collumns;
+			if (collumn != null)
+			{
+				if (!this.ShellListView.IsGroupsEnabled)
+				{
+					this.ShellListView.EnableGroups();
+				}
+				this.ShellListView.GenerateGroupsFromColumn(collumn);
+			}
 		}
 
 		private void btnAutosizeColls_Click(object sender, RoutedEventArgs e) {
@@ -3611,8 +3618,7 @@ namespace BetterExplorer {
 		void misng_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
 			item.IsChecked = true;
-			PROPERTYKEY pk = new PROPERTYKEY();
-			//ShellListView.SetGroupCollumn(pk, true);
+			ShellListView.DisableGroups();
 		}
 
 

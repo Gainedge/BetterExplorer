@@ -39,7 +39,13 @@ namespace BExplorer.Shell {
 
 		public Bitmap ThumbnailIcon { get; set; }
 		public bool IsVisible { get; set; }
+		public bool IsThumbnailLoaded { get; set; }
+		public bool IsIconLoaded { get; set; }
 
+		public int IsShielded = -1;
+
+		public int OverlayIconIndex { get; set; }
+		public bool ISRedrawed { get; set; }
 		public ShellItem() {
 
 		}
@@ -66,6 +72,7 @@ namespace BExplorer.Shell {
 			Initialize(uri);
 			this.IconType = GetIconType();
 			this.CachedParsingName = this.ParsingName;
+			this.OverlayIconIndex = -1;
 		}
 
 		/*
@@ -112,6 +119,7 @@ namespace BExplorer.Shell {
 				Initialize(newUri);
 				this.IconType = GetIconType();
 				this.CachedParsingName = this.ParsingName;
+				this.OverlayIconIndex = -1;
 			}
 			catch (Exception) {
 
@@ -158,6 +166,7 @@ namespace BExplorer.Shell {
 			}
 			this.IconType = GetIconType();
 			this.CachedParsingName = this.ParsingName;
+			this.OverlayIconIndex = -1;
 		}
 
 		/// <summary>
@@ -202,18 +211,21 @@ namespace BExplorer.Shell {
 			}
 			this.IconType = GetIconType();
 			this.CachedParsingName = this.ParsingName;
+			this.OverlayIconIndex = -1;
 		}
 
 		internal ShellItem(IntPtr pidl) {
 			m_ComInterface = CreateItemFromIDList(pidl);
 			this.IconType = GetIconType();
 			this.CachedParsingName = this.ParsingName;
+			this.OverlayIconIndex = -1;
 		}
 
 		internal ShellItem(ShellItem parent, IntPtr pidl) {
 			m_ComInterface = CreateItemWithParent(parent, pidl);
 			this.IconType = GetIconType();
 			this.CachedParsingName = this.ParsingName;
+			this.OverlayIconIndex = -1;
 		}
 
 		public override int GetHashCode() {
@@ -246,6 +258,7 @@ namespace BExplorer.Shell {
 		public ShellItem(IShellItem comInterface) {
 			m_ComInterface = comInterface;
 			this.CachedParsingName = this.ParsingName;
+			this.OverlayIconIndex = -1;
 		}
 
 		/// <summary>

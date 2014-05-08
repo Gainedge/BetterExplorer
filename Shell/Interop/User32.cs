@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 namespace BExplorer.Shell.Interop
 {
 		[Flags]
-		public enum LVIF : uint
+		public enum LVIF : int
 		{
 				LVIF_TEXT = 0x0001,
 				LVIF_IMAGE = 0x0002,
@@ -39,7 +39,7 @@ namespace BExplorer.Shell.Interop
 		}
 
 		[Flags]
-		public enum LVIS : uint
+		public enum LVIS : int
 		{
 				LVIS_FOCUSED = 0x0001,
 				LVIS_SELECTED = 0x0002,
@@ -180,6 +180,7 @@ namespace BExplorer.Shell.Interop
 				LVM_ENSUREVISISBLE = (FIRST + 19),
 				LVM_ARRANGE = (FIRST + 22),
 				LVM_GETITEMINDEXRECT = (FIRST + 209),
+				LVM_REMOVEALLGROUPS = (FIRST + 160),
 
 		}
 
@@ -461,7 +462,13 @@ namespace BExplorer.Shell.Interop
 			 public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
 			 [DllImport("user32.dll")]
-			 public static extern bool RedrawWindow(IntPtr hWnd, IntPtr lprcUpdate, IntPtr hrgnUpdate, uint flags); 
+			 public static extern bool RedrawWindow(IntPtr hWnd, ref RECT lprcUpdate, IntPtr hrgnUpdate, uint flags);
+
+			 [DllImport("user32.dll")]
+			 public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
+
+			 [DllImport("user32.dll")]
+			 public static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);
 
 				[DllImport("user32.dll")]
 				public static extern int TrackPopupMenuEx(IntPtr hmenu,

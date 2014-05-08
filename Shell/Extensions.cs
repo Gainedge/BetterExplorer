@@ -160,7 +160,7 @@ namespace BExplorer.Shell
 				public LVIS uNewState;
 				public LVIS uOldState;
 				public LVIF uChanged;
-				public Point ptAction;
+				public POINT ptAction;
 				public IntPtr lParam;
 		}
 

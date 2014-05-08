@@ -121,6 +121,7 @@ namespace BExplorer.Shell.Interop
 		public const int LVN_INCREMENTALSEARCH = (LVN_FIRST - 63);
 		public const int LVN_ODFINDITEM = (LVN_FIRST - 79);
 		public const int LVN_ENDLABELEDITW = (LVN_FIRST - 76);
+		public const int LVN_GROUPINFO = (LVN_FIRST - 88);
 
 
 		const int UDN_FIRST = -721;        // updown

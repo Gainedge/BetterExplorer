@@ -42,7 +42,10 @@ namespace BExplorer.Shell
 			var group = this._VirtualListView.Groups[groupIndex];
 			var itemInGroup = group.Items[n];
 
-			itemIndex = this._VirtualListView.ItemsHashed[itemInGroup];
+			if (!this._VirtualListView.ItemsHashed.TryGetValue(itemInGroup, out itemIndex))
+			{
+				itemIndex = -1;
+			}
 		}
 		public void GetItemGroup(int itemIndex, int occurrenceCount, out int groupIndex)
 		{
