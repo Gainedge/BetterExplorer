@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
-	public static class CredUI
-	{
+namespace BExplorer.Shell.Interop {
+
+	public static class CredUI {
+
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-		public struct CREDUI_INFO
-		{
+		public struct CREDUI_INFO {
 			public int cbSize;
 			public IntPtr hwndParent;
 			public string pszMessageText;
@@ -23,8 +19,7 @@ namespace BExplorer.Shell.Interop
 		}
 
 		[Flags]
-		public enum CREDUI_FLAGS
-		{
+		public enum CREDUI_FLAGS {
 			INCORRECT_PASSWORD = 0x1,
 			DO_NOT_PERSIST = 0x2,
 			REQUEST_ADMINISTRATOR = 0x4,
@@ -44,8 +39,7 @@ namespace BExplorer.Shell.Interop
 			KEEP_USERNAME = 0x100000,
 		}
 
-		public enum CredUIReturnCodes
-		{
+		public enum CredUIReturnCodes {
 			NO_ERROR = 0,
 			ERROR_CANCELLED = 1223,
 			ERROR_NO_SUCH_LOGON_SESSION = 1312,
@@ -69,31 +63,30 @@ namespace BExplorer.Shell.Interop
 			CREDUI_FLAGS flags);
 
 		[DllImport("credui.dll", CharSet = CharSet.Auto)]
-		public static extern bool CredUnPackAuthenticationBuffer(int dwFlags,
-																															 IntPtr pAuthBuffer,
-																															 uint cbAuthBuffer,
-																															 StringBuilder pszUserName,
-																															 ref int pcchMaxUserName,
-																															 StringBuilder pszDomainName,
-																															 ref int pcchMaxDomainame,
-																															 StringBuilder pszPassword,
-																															 ref int pcchMaxPassword);
+		public static extern bool CredUnPackAuthenticationBuffer(
+			int dwFlags,
+			IntPtr pAuthBuffer,
+			uint cbAuthBuffer,
+			StringBuilder pszUserName,
+			ref int pcchMaxUserName,
+			StringBuilder pszDomainName,
+			ref int pcchMaxDomainame,
+			StringBuilder pszPassword,
+			ref int pcchMaxPassword);
 
 		[DllImport("credui.dll", CharSet = CharSet.Auto)]
-		public static extern int CredUIPromptForWindowsCredentials(ref CREDUI_INFO notUsedHere,
-																																 int authError,
-																																 ref uint authPackage,
-																																 IntPtr InAuthBuffer,
-																																 uint InAuthBufferSize,
-																																 out IntPtr refOutAuthBuffer,
-																																 out uint refOutAuthBufferSize,
-																																 ref bool fSave,
-																																 int flags);
+		public static extern int CredUIPromptForWindowsCredentials(
+			ref CREDUI_INFO notUsedHere,
+			int authError,
+			ref uint authPackage,
+			IntPtr InAuthBuffer,
+			uint InAuthBufferSize,
+			out IntPtr refOutAuthBuffer,
+			out uint refOutAuthBufferSize,
+			ref bool fSave,
+			int flags);
 
-
-
-		public static void RunProcesssAsUser(String processPath)
-		{
+		public static void RunProcesssAsUser(String processPath) {
 			// Setup the flags and variables
 			StringBuilder userPassword = new StringBuilder(), userID = new StringBuilder();
 			CREDUI_INFO credUI = new CREDUI_INFO();
@@ -104,15 +97,16 @@ namespace BExplorer.Shell.Interop
 			IntPtr outCredBuffer = new IntPtr();
 			uint outCredSize;
 			bool save = false;
-			int result = CredUIPromptForWindowsCredentials(ref credUI,
-																								 0,
-																								 ref authPackage,
-																								 IntPtr.Zero,
-																								 0,
-																								 out outCredBuffer,
-																								 out outCredSize,
-																								 ref save,
-																								 1 /* Generic */);
+			int result = CredUIPromptForWindowsCredentials(
+				ref credUI,
+				0,
+				ref authPackage,
+				IntPtr.Zero,
+				0,
+				out outCredBuffer,
+				out outCredSize,
+				ref save,
+				1 /* Generic */);
 
 			var usernameBuf = new StringBuilder(100);
 			var passwordBuf = new StringBuilder(100);
@@ -121,25 +115,21 @@ namespace BExplorer.Shell.Interop
 			int maxUserName = 100;
 			int maxDomain = 100;
 			int maxPassword = 100;
-			if (result == 0)
-			{
+			if (result == 0) {
 				if (CredUnPackAuthenticationBuffer(0, outCredBuffer, outCredSize, usernameBuf, ref maxUserName,
-																					 domainBuf, ref maxDomain, passwordBuf, ref maxPassword))
-				{
+																					 domainBuf, ref maxDomain, passwordBuf, ref maxPassword)) {
 					//TODO: ms documentation says we should call this but i can't get it to work
 					//SecureZeroMem(outCredBuffer, outCredSize);
 
-					//clear the memory allocated by CredUIPromptForWindowsCredentials 
+					//clear the memory allocated by CredUIPromptForWindowsCredentials
 					Ole32.CoTaskMemFree(outCredBuffer);
 
 					SecureString pass = new SecureString();
-					foreach (char _char in passwordBuf.ToString().ToCharArray())
-					{
+					foreach (char _char in passwordBuf.ToString().ToCharArray()) {
 						pass.AppendChar(_char);
 					}
 
-					using (Process p = new Process())
-					{
+					using (Process p = new Process()) {
 						p.StartInfo.UseShellExecute = true;
 						p.StartInfo.WorkingDirectory = Path.GetDirectoryName(processPath);
 						p.StartInfo.FileName = processPath;
@@ -151,10 +141,6 @@ namespace BExplorer.Shell.Interop
 					}
 				}
 			}
-
-
-
-
 		}
 	}
 }

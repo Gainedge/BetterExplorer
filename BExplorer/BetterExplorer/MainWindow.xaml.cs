@@ -983,7 +983,7 @@ namespace BetterExplorer {
 
 		private void miSelAllByType_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.GetSelectedCount() > 0) {
-				List<string> flt = new List<string>();
+				var flt = new List<string>();
 				PROPERTYKEY typePK = new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 };
 
 				foreach (ShellItem item in ShellListView.SelectedItems) {
@@ -1001,7 +1001,7 @@ namespace BetterExplorer {
 
 		private void miSelAllByDate_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.GetSelectedCount() > 0) {
-				List<DateTime> flt = new List<DateTime>();
+				var flt = new List<DateTime>();
 				PROPERTYKEY typePK = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 15 };
 
 				foreach (ShellItem item in ShellListView.SelectedItems) {
@@ -1906,13 +1906,6 @@ namespace BetterExplorer {
 		}
 
 		private void btnRunAs_Click(object sender, RoutedEventArgs e) {
-			//RunExeAsUser reu = new RunExeAsUser();
-			//reu.ShowDialog();
-
-			//if (reu.dialogresult == true)
-			//{
-			//    ShellListView.RunExeAsAnotherUser( ShellListView.GetFirstSelectedItem().ParsingName, reu.textBox1.Text);
-			//}
 			CredUI.RunProcesssAsUser(ShellListView.GetFirstSelectedItem().ParsingName);
 		}
 
@@ -2071,17 +2064,16 @@ namespace BetterExplorer {
 
 		private void rbCheckInterval_Click(object sender, RoutedEventArgs e) {
 			if (rbDaily.IsChecked.Value) {
-				Utilities.SetRegistryValue("CheckInterval", 1);
 				UpdateCheckInterval = 1;
 			}
 			else if (rbMonthly.IsChecked.Value) {
-				Utilities.SetRegistryValue("CheckInterval", 30);
 				UpdateCheckInterval = 30;
 			}
 			else {
-				Utilities.SetRegistryValue("CheckInterval", 7);
 				UpdateCheckInterval = 7;
 			}
+
+			Utilities.SetRegistryValue("CheckInterval", UpdateCheckInterval);
 		}
 
 		private void chkUpdateStartupCheck_Click(object sender, RoutedEventArgs e) {
@@ -3654,7 +3646,7 @@ namespace BetterExplorer {
 			if (!IsCalledFromLoading) {
 				Dispatcher.BeginInvoke(new Action(
 					delegate() {
-						WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
+						var state = new WindowsAPI.SHELLSTATE();
 						state.fShowAllObjects = 1;
 						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
 						ShellListView.ShowHidden = true;
@@ -3668,7 +3660,7 @@ namespace BetterExplorer {
 			if (!IsCalledFromLoading) {
 				Dispatcher.BeginInvoke(new Action(
 					delegate() {
-						WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
+						var state = new WindowsAPI.SHELLSTATE();
 						state.fShowAllObjects = 0;
 						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
 						ShellListView.ShowHidden = false;
@@ -3679,11 +3671,10 @@ namespace BetterExplorer {
 		}
 
 		private void chkExtensions_Checked(object sender, RoutedEventArgs e) {
-
 			if (!IsCalledFromLoading) {
 				Dispatcher.BeginInvoke(new Action(
 					delegate() {
-						WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
+						var state = new WindowsAPI.SHELLSTATE();
 						state.fShowExtensions = 1;
 						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
 						ShellListView.RefreshContents();
@@ -4171,7 +4162,7 @@ namespace BetterExplorer {
 
 		}
 
-		public const int WM_COPYDATA = 0x4A;
+		//public const int WM_COPYDATA = 0x4A;
 		private void chkIsDefault_Unchecked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
 				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
