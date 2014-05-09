@@ -155,6 +155,8 @@ namespace BExplorer.Shell.Interop
 		public const int GETCOLUMNWIDTH = (FIRST + 29);		// LVM_GETCOLUMNWIDTH
 		public const int ENSUREVISIBLE = (FIRST + 19);
 		public const int ISITEMVISIBLE = (FIRST + 182);
+		public const int GETTOOLTIPS = (FIRST + 78);
+		public const int SETINFOTIP = (FIRST + 173);
 
 		public const int LVIR_BOUNDS = 0;
 		public const int LVIR_ICON = 1;

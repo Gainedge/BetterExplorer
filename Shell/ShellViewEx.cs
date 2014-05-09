@@ -1568,6 +1568,11 @@ namespace BExplorer.Shell {
 					case WNM.LVN_GETINFOTIP:
 						NMLVGETINFOTIP nmGetInfoTip = (NMLVGETINFOTIP)m.GetLParam(typeof(NMLVGETINFOTIP));
 						var itemInfotip = this.Items[nmGetInfoTip.iItem];
+						char[] charBuf = ("\0").ToCharArray();
+						Marshal.Copy(charBuf, 0, nmGetInfoTip.pszText, Math.Min(charBuf.Length, nmGetInfoTip.cchTextMax)); 
+						Marshal.StructureToPtr(nmGetInfoTip, m.LParam, false);
+						if (tt.IsVisible)
+							tt.Hide();
 						if (!String.IsNullOrEmpty(itemInfotip.ToolTipText))
 						{
 							tt.Contents = itemInfotip.ToolTipText;
@@ -2061,7 +2066,7 @@ namespace BExplorer.Shell {
 																		if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List)
 																		{
 																			var nItemState = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_STATEIMAGEMASK);
-
+																			var h = User32.SendMessage(this.LVHandle, LVM.GETHOTITEM, 0, 0);
 																			if ((int)User32.SendMessage(this.LVHandle, LVM.GETHOTITEM, 0, 0) == index || (int)nItemState == (2 << 12))
 																			{
 																				var checkboxOffsetH = 14;

@@ -193,6 +193,16 @@ namespace BExplorer.Shell
 			public IntPtr lParam;
 		}
 
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+		public struct LVSETINFOTIP
+		{
+			public int cbSize;
+			public uint dwFlags;
+			public string pszText;
+			public int iItem;
+			public int iSubItem;
+		};
+
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 		public struct LVFINDINFO
 		{

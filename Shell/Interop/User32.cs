@@ -540,6 +540,9 @@ namespace BExplorer.Shell.Interop
 				public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
 				[DllImport("user32.dll", CharSet = CharSet.Auto)]
+				public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, LVSETINFOTIP lParam);
+
+				[DllImport("user32.dll", CharSet = CharSet.Auto)]
 				public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, LVNI lParam);
 
 				[DllImport("user32.dll", CharSet = CharSet.Auto)]
