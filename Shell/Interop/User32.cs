@@ -343,6 +343,14 @@ namespace BExplorer.Shell.Interop
 						int wParam, int lParam);
 
 				[DllImport("user32.dll")]
+				public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,
+						IntPtr wParam, IntPtr lParam);
+
+				[DllImport("user32.dll")]
+				public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,
+						ref LVITEMINDEX wParam, int lParam);
+
+				[DllImport("user32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, MSG Msg,
 						int wParam, ref LVCOLUMN lParam);
 
@@ -776,6 +784,7 @@ namespace BExplorer.Shell.Interop
 				public const int LVS_EDITLABELS = 512;
 				public const int LVS_OWNERDATA = 0x1000;
 				public const int LVS_SHOWSELALWAYS = 0x0008;
+				public const int LVS_AUTOARRANGE = 0x100;
 				public const int TVS_HASBUTTONS = 0x0001;
 				public const int TVS_HASLINES = 0x0002;
 				public const int TVS_LINESATROOT = 0x0004;

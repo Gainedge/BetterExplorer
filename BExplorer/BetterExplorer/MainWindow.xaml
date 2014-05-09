@@ -48,7 +48,7 @@
 			<RowDefinition x:Name="rTabbarTop" Height="25" />
 			<RowDefinition Height="*" />
 			<RowDefinition x:Name="spCommandPrompt" Height="Auto" />
-			<RowDefinition x:Name="rCommandPrompt" Height="*" />
+			<RowDefinition x:Name="rCommandPrompt" Height="*" MinHeight="100"/>
 			<RowDefinition x:Name="rTabbarBot" Height="0" />
 			<RowDefinition x:Name="rStatusbar" Height="20" />
 		</Grid.RowDefinitions>

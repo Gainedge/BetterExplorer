@@ -1120,7 +1120,7 @@ namespace BExplorer.Shell {
 				queryInfo = (IQueryInfo)
 						Marshal.GetTypedObjectForIUnknown(result,
 								typeof(IQueryInfo));
-				queryInfo.GetInfoTip(0, out infoTipPtr);
+				queryInfo.GetInfoTip(0x00000001 | 0x00000008, out infoTipPtr);
 				infoTip = Marshal.PtrToStringUni(infoTipPtr);
 				Ole32.CoTaskMemFree(infoTipPtr);
 				return infoTip;

@@ -181,6 +181,18 @@ namespace BExplorer.Shell
 			public LVFINDINFO lvfi;
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public struct NMLVGETINFOTIP
+		{
+			public NMHDR hdr;
+			public int dwFlags;
+			public IntPtr pszText;
+			public int cchTextMax;
+			public int iItem;
+			public int iSubItem;
+			public IntPtr lParam;
+		}
+
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 		public struct LVFINDINFO
 		{

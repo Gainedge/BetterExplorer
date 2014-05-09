@@ -179,11 +179,13 @@ namespace BetterExplorer {
 			this.IsConsoleShown = btnConsolePane.IsChecked.Value;
 			if (btnConsolePane.IsChecked.Value) {
 				rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
+				rCommandPrompt.MinHeight = 100;
 				spCommandPrompt.Height = GridLength.Auto;
 				if (!ctrlConsole.IsProcessRunning)
 					ctrlConsole.ChangeFolder(ShellListView.CurrentFolder.ParsingName, ShellListView.CurrentFolder.IsFileSystem);
 			}
 			else {
+				rCommandPrompt.MinHeight = 0;
 				rCommandPrompt.Height = new GridLength(0);
 				spCommandPrompt.Height = new GridLength(0);
 				ctrlConsole.StopProcess();
@@ -340,10 +342,12 @@ namespace BetterExplorer {
 			rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
 
 			if ((int)rks.GetValue(@"IsConsoleShown", 0) == 1) {
+				rCommandPrompt.MinHeight = 100;
 				rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
 				spCommandPrompt.Height = GridLength.Auto;
 			}
 			else {
+				rCommandPrompt.MinHeight = 0;
 				rCommandPrompt.Height = new GridLength(0);
 				spCommandPrompt.Height = new GridLength(0);
 			}
@@ -3427,7 +3431,12 @@ namespace BetterExplorer {
 		[Obsolete("Does Nothing")]
 		void mig_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
-			//ShellListView.SetGroupCollumn(((Collumns)item.Tag).pkey, true);
+			var col = item.Tag as Collumns;
+			if (!this.ShellListView.IsGroupsEnabled)
+			{
+				this.ShellListView.EnableGroups();
+			}
+			this.ShellListView.GenerateGroupsFromColumn(col);
 		}
 
 		private void btnAutosizeColls_Click(object sender, RoutedEventArgs e) {
@@ -3478,13 +3487,13 @@ namespace BetterExplorer {
 			var Sort = ascitem.IsChecked ? System.Windows.Forms.SortOrder.Ascending : System.Windows.Forms.SortOrder.Descending;
 			ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), Sort);
 		}
-
-		[Obsolete("Why do we have this!!!")]
 		void misng_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
 			item.IsChecked = true;
-			PROPERTYKEY pk = new PROPERTYKEY();
-			//ShellListView.SetGroupCollumn(pk, true);
+			if (this.ShellListView.IsGroupsEnabled)
+			{
+				this.ShellListView.DisableGroups();
+			}
 		}
 
 

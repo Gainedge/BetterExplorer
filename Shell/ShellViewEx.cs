@@ -349,6 +349,7 @@ namespace BExplorer.Shell {
 
 		#region Public Members
 		public Boolean IsGroupsEnabled { get; set; }
+		public ToolTip tt = new ToolTip();
 		public List<string> RecommendedPrograms(string ext) {
 			List<string> progs = new List<string>();
 
@@ -489,12 +490,15 @@ namespace BExplorer.Shell {
 				List<int> selItems = new List<int>();
 				int index = -2;
 				int iStart = -1;
-
-				while (index != -1) {
-					index = User32.SendMessage(this.LVHandle, LVM.GETNEXTITEM, iStart, LVNI.LVNI_SELECTED);
-					iStart = index;
-					if (index != -1) {
-						selItems.Add(index);
+				LVITEMINDEX lvi = new LVITEMINDEX();
+				while (lvi.iItem != -1) {
+					lvi.iItem = iStart;
+					lvi.iGroup = this.GetGroupIndex(iStart);
+					User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
+					iStart = lvi.iItem;
+					if (lvi.iItem != -1)
+					{
+						selItems.Add(lvi.iItem);
 					}
 				}
 
@@ -587,12 +591,12 @@ namespace BExplorer.Shell {
 					default:
 						break;
 				}
-				
-				OnViewChanged(new ViewChangedEventArgs(value, iconsize));
 				if (value != ShellViewStyle.Details)
 					AutosizeAllColumns(-2);
 				else
 					AutosizeAllColumns(-1);
+				OnViewChanged(new ViewChangedEventArgs(value, iconsize));
+				
 				//OnNavigated(new NavigatedEventArgs(ShellItem.Desktop));
 			}
 		}
@@ -1388,6 +1392,7 @@ namespace BExplorer.Shell {
 			if (m.Msg == (int)WM.WM_NCMBUTTONDOWN) {
 
 			}
+			
 			base.WndProc(ref m);
 			if (m.Msg == 78) {
 				var nmhdrHeader = (NMHEADER)(m.GetLParam(typeof(NMHEADER)));
@@ -1559,6 +1564,19 @@ namespace BExplorer.Shell {
 					case WNM.LVN_COLUMNCLICK:
 						NMLISTVIEW nlcv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 						SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
+						break;
+					case WNM.LVN_GETINFOTIP:
+						NMLVGETINFOTIP nmGetInfoTip = (NMLVGETINFOTIP)m.GetLParam(typeof(NMLVGETINFOTIP));
+						var itemInfotip = this.Items[nmGetInfoTip.iItem];
+						if (!String.IsNullOrEmpty(itemInfotip.ToolTipText))
+						{
+							tt.Contents = itemInfotip.ToolTipText;
+							tt.Left = Cursor.Position.X;
+							tt.Top = Cursor.Position.Y;
+							tt.Show();
+							
+						}
+						
 						break;
 					case WNM.LVN_ODFINDITEM:
 						var findItem = (NMLVFINDITEM)m.GetLParam(typeof(NMLVFINDITEM));
@@ -1833,10 +1851,14 @@ namespace BExplorer.Shell {
 						break;
 					case WNM.NM_SETFOCUS:
 						//RedrawWindow();
+						if (this.tt.Visibility == Visibility.Visible)
+							this.tt.Hide();
 						OnGotFocus();
 						break;
 					case WNM.NM_KILLFOCUS:
 						//RedrawWindow();
+						if (this.tt.Visibility == Visibility.Visible)
+							this.tt.Hide();
 						OnLostFocus();
 						break;
 					case CustomDraw.NM_CUSTOMDRAW: {
@@ -2067,6 +2089,53 @@ namespace BExplorer.Shell {
 														}
 													}
 												}
+												else
+												{
+													if ((sho.IconType & IExtractIconpwFlags.GIL_PERCLASS) == IExtractIconpwFlags.GIL_PERCLASS)
+													{
+														var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
+														if (icon != null)
+														{
+															sho.IsIconLoaded = true;
+															using (Graphics g = Graphics.FromHdc(hdc))
+															{
+																var cutFlag = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
+																if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+																	icon = Helpers.ChangeOpacity(icon, 0.5f);
+																g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
+															}
+															icon.Dispose();
+														}
+													}
+													else if ((sho.IconType & IExtractIconpwFlags.GIL_PERINSTANCE) == IExtractIconpwFlags.GIL_PERINSTANCE)
+													{
+														if (!sho.IsIconLoaded)
+														{
+															waitingThumbnails.Enqueue(index);
+															using (Graphics g = Graphics.FromHdc(hdc))
+															{
+																	g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+															}
+														}
+														else
+														{
+															Bitmap icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
+															if (icon != null)
+															{
+																sho.IsIconLoaded = true;
+																using (Graphics g = Graphics.FromHdc(hdc))
+																{
+																	var cutFlag = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
+																	if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+																		icon = Helpers.ChangeOpacity(icon, 0.5f);
+																	g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
+																}
+																icon.Dispose();
+															}
+														}
+
+													}
+												}
 
 												if (sho.OverlayIconIndex > 0) {
 													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
@@ -2160,7 +2229,7 @@ namespace BExplorer.Shell {
 			icc.dwICC = 1;
 			var res = ComCtl32.InitCommonControlsEx(ref icc);
 			this.LVHandle = User32.CreateWindowEx(0, "SysListView32", "", User32.WindowStyles.WS_CHILD | User32.WindowStyles.WS_CLIPCHILDREN | User32.WindowStyles.WS_CLIPSIBLINGS |
-						(User32.WindowStyles)User32.LVS_EDITLABELS | (User32.WindowStyles)User32.LVS_OWNERDATA | (User32.WindowStyles)User32.LVS_SHOWSELALWAYS,
+						(User32.WindowStyles)User32.LVS_EDITLABELS | (User32.WindowStyles)User32.LVS_OWNERDATA | (User32.WindowStyles)User32.LVS_SHOWSELALWAYS | (User32.WindowStyles)User32.LVS_AUTOARRANGE,
 								0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, this.Handle, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 
 			User32.ShowWindow(this.LVHandle, User32.ShowWindowCommands.Show);
@@ -2175,6 +2244,7 @@ namespace BExplorer.Shell {
 
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETIMAGELIST, 0, il.Handle);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETIMAGELIST, 1, ils.Handle);
+			//User32.SendMessage(this.LVHandle, 4170, 0, 0);
 			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SET, 1, ils.Handle);
 			UxTheme.SetWindowTheme(this.LVHandle, "Explorer", 0);
 
@@ -2183,10 +2253,16 @@ namespace BExplorer.Shell {
 			this.View = ShellViewStyle.Medium;
 
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.HeaderInAllViews, (int)ListViewExtendedStyles.HeaderInAllViews);
-			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int) ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE, (int) ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE);
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int) ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE, (int) ListViewExtendedStyles.LVS_EX_AUTOAUTOARRANGE);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER, (int)ListViewExtendedStyles.LVS_EX_DOUBLEBUFFER);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.FullRowSelect, (int)ListViewExtendedStyles.FullRowSelect);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.HeaderDragDrop, (int)ListViewExtendedStyles.HeaderDragDrop);
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LabelTip, (int)ListViewExtendedStyles.LabelTip);
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.InfoTip, (int)ListViewExtendedStyles.InfoTip);
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.UnderlineHot, (int)ListViewExtendedStyles.UnderlineHot);
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.AutosizeColumns, (int)ListViewExtendedStyles.AutosizeColumns);
+			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.colum, (int)ListViewExtendedStyles.AutosizeColumns);
+			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.TrackSelect, (int)ListViewExtendedStyles.TrackSelect);
 			//CurrentFolder = (ShellItem) KnownFolders.Desktop;
 			this.Focus();
 			User32.SetForegroundWindow(this.LVHandle);
@@ -2286,13 +2362,13 @@ namespace BExplorer.Shell {
 
 		public void RenameItem(int index) {
 			this.Focus();
-			var res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_EDITLABELW, index, 0);
+			var res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_EDITLABELW, new IntPtr(index), IntPtr.Zero);
 			this._IsInRenameMode = true;
 		}
 		public void RenameSelectedItem() {
 			//User32.EnumChildWindows(this.LVHandle, RenameCallback, IntPtr.Zero);
 			this.Focus();
-			RenameCallback(this.LVHandle, IntPtr.Zero);
+			this.RenameItem(this.GetFirstSelectedItemIndex());
 		}
 
 		public void CutSelectedFiles() {
@@ -2494,6 +2570,10 @@ namespace BExplorer.Shell {
 				cachedIndexes.Clear();
 				ThumbnailsForCacheLoad.Clear();
 				waitingThumbnails.Clear();
+				foreach (var obj in this.Items)
+				{
+					obj.IsIconLoaded = false;
+				}
 
 				//Task.Run(() =>
 				//{
@@ -2875,43 +2955,125 @@ namespace BExplorer.Shell {
 		public void GenerateGroupsFromColumn(Collumns col)
 		{
 			int LVM_INSERTGROUP = 0x1000 + 145;
-			ListViewGroupEx testgrn = new ListViewGroupEx();
-			testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("0") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("9")).ToArray();
-			testgrn.Header = String.Format("0 - 9 ({0})", testgrn.Items.Count());
-			testgrn.Index = 0;
-			var nativeGroupn = testgrn.ToNativeListViewGroup();
-			this.Groups.Add(testgrn);
-			
-			ListViewGroupEx testgr = new ListViewGroupEx();
-			testgr.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("A") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("H")).ToArray();
-			testgr.Header = String.Format("A - H ({0})", testgr.Items.Count());
-			testgr.Index = 1;
-			var nativeGroup = testgr.ToNativeListViewGroup();
-			this.Groups.Add(testgr);
-			
-			ListViewGroupEx testgr2 = new ListViewGroupEx();
-			testgr2.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("I") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("P")).ToArray();
-			testgr2.Header = String.Format("I - P ({0})", testgr2.Items.Count());
-			testgr2.Index = 2;
-			var nativeGroup2 = testgr2.ToNativeListViewGroup();
-			this.Groups.Add(testgr2);
-			
-			ListViewGroupEx testgr3 = new ListViewGroupEx();
-			testgr3.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("Q") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("Z")).ToArray();
-			testgr3.Header = String.Format("Q - Z ({0})", testgr3.Items.Count());
-			testgr3.Index = 3;
-			var nativeGroup3 = testgr3.ToNativeListViewGroup();
-			this.Groups.Add(testgr3);
-			User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroupn);
-			User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
-			User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup2);
-			User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup3);
+			this.Groups.Clear();
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
+			if (col.CollumnType == typeof(String))
+			{
+				ListViewGroupEx testgrn = new ListViewGroupEx();
+				testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("0") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("9")).ToArray();
+				testgrn.Header = String.Format("0 - 9 ({0})", testgrn.Items.Count());
+				testgrn.Index = 0;
+				var nativeGroupn = testgrn.ToNativeListViewGroup();
+				this.Groups.Add(testgrn);
+
+				ListViewGroupEx testgr = new ListViewGroupEx();
+				testgr.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("A") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("H")).ToArray();
+				testgr.Header = String.Format("A - H ({0})", testgr.Items.Count());
+				testgr.Index = 1;
+				var nativeGroup = testgr.ToNativeListViewGroup();
+				this.Groups.Add(testgr);
+
+				ListViewGroupEx testgr2 = new ListViewGroupEx();
+				testgr2.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("I") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("P")).ToArray();
+				testgr2.Header = String.Format("I - P ({0})", testgr2.Items.Count());
+				testgr2.Index = 2;
+				var nativeGroup2 = testgr2.ToNativeListViewGroup();
+				this.Groups.Add(testgr2);
+
+				ListViewGroupEx testgr3 = new ListViewGroupEx();
+				testgr3.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("Q") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("Z")).ToArray();
+				testgr3.Header = String.Format("Q - Z ({0})", testgr3.Items.Count());
+				testgr3.Index = 3;
+				var nativeGroup3 = testgr3.ToNativeListViewGroup();
+				this.Groups.Add(testgr3);
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroupn);
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup2);
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup3);
+			}
+			if (col.CollumnType == typeof(long))
+			{
+				ListViewGroupEx testgrn = new ListViewGroupEx();
+				testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) == 0).ToArray();
+				testgrn.Header = String.Format("Empty ({0})", testgrn.Items.Count());
+				testgrn.Index = 0;
+				var nativeGroupn = testgrn.ToNativeListViewGroup();
+				this.Groups.Add(testgrn);
+
+				ListViewGroupEx testgr = new ListViewGroupEx();
+				testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 10 * 1024).ToArray();
+				testgr.Header = String.Format("Very Small ({0})", testgr.Items.Count());
+				testgr.Index = 1;
+				var nativeGroup = testgr.ToNativeListViewGroup();
+				this.Groups.Add(testgr);
+
+				ListViewGroupEx testgr2 = new ListViewGroupEx();
+				testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 100 * 1024).ToArray();
+				testgr2.Header = String.Format("Small ({0})", testgr2.Items.Count());
+				testgr2.Index = 2;
+				var nativeGroup2 = testgr2.ToNativeListViewGroup();
+				this.Groups.Add(testgr2);
+
+				ListViewGroupEx testgr3 = new ListViewGroupEx();
+				testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 1 * 1024 * 1024).ToArray();
+				testgr3.Header = String.Format("Medium ({0})", testgr3.Items.Count());
+				testgr3.Index = 3;
+				var nativeGroup3 = testgr3.ToNativeListViewGroup();
+				this.Groups.Add(testgr3);
+
+				ListViewGroupEx testgr4 = new ListViewGroupEx();
+				testgr4.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 16 * 1024 * 1024).ToArray();
+				testgr4.Header = String.Format("Big ({0})", testgr4.Items.Count());
+				testgr4.Index = 4;
+				var nativeGroup4 = testgr4.ToNativeListViewGroup();
+				this.Groups.Add(testgr4);
+
+				ListViewGroupEx testgr5 = new ListViewGroupEx();
+				testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 16 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 128 * 1024 * 1024).ToArray();
+				testgr5.Header = String.Format("Huge ({0})", testgr5.Items.Count());
+				testgr5.Index = 5;
+				var nativeGroup5 = testgr5.ToNativeListViewGroup();
+				this.Groups.Add(testgr5);
+
+				ListViewGroupEx testgr6 = new ListViewGroupEx();
+				testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 128 * 1024 * 1024).ToArray();
+				testgr6.Header = String.Format("Gigantic ({0})", testgr6.Items.Count());
+				testgr6.Index = 6;
+				var nativeGroup6 = testgr6.ToNativeListViewGroup();
+				this.Groups.Add(testgr6);
+
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroupn);
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup2);
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup3);
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup4);
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup5);
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup6);
+			}
+
+			if (col.CollumnType == typeof(DateTime))
+			{
+
+			}
 		}
 		public ShellItem GetFirstSelectedItem()
 		{
-			var index = User32.SendMessage(this.LVHandle, LVM.GETNEXTITEM, -1, LVNI.LVNI_SELECTED);
-			if (index == -1) return null;
-			return this.Items[index];
+			LVITEMINDEX lvi = new LVITEMINDEX();
+			lvi.iItem = -1;
+			lvi.iGroup = 0;
+			User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
+			if (lvi.iItem == -1) return null;
+			return this.Items[lvi.iItem];
+		}
+
+		public int GetFirstSelectedItemIndex()
+		{
+			LVITEMINDEX lvi = new LVITEMINDEX();
+			lvi.iItem = -1;
+			lvi.iGroup = 0;
+			User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
+			if (lvi.iItem == -1) return -1;
+			return lvi.iItem;
 		}
 		public void _ShieldLoadingThreadRun() {
 			while (true) {
@@ -3427,16 +3589,7 @@ namespace BExplorer.Shell {
 			}
 			return 0;
 		}
-		bool RenameCallback(IntPtr hwnd, IntPtr lParam) {
-			this.Focus();
-			var index = User32.SendMessage(this.LVHandle, LVM.GETNEXTITEM, -1, LVNI.LVNI_SELECTED);
-			var res = User32.SendMessage(hwnd, BExplorer.Shell.Interop.MSG.LVM_EDITLABELW, index, 0);
-			this._IsInRenameMode = true;
-			//return false;
-
-			return true;
-		}
-
+		
 		private static BitmapFrame CreateResizedImage(IntPtr hBitmap, int width, int height, int margin) {
 			var source = Imaging.CreateBitmapSourceFromHBitmap(
 															hBitmap,
@@ -3569,10 +3722,12 @@ namespace BExplorer.Shell {
 
 		public void AutosizeAllColumns(int autosizeParam)
 		{
+			this.SuspendLayout();
 			for (int i = 0; i < this.Collumns.Count; i++)
 			{
 				User32.SendMessage(this.LVHandle, LVM.SETCOLUMNWIDTH, i, autosizeParam);
 			}
+			this.ResumeLayout();
 		}
 	}
 
