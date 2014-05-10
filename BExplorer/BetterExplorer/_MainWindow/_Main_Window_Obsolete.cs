@@ -185,6 +185,12 @@ namespace BetterExplorer {
 			return Activate();
 		}
 
+		[Obsolete("Not Used!!!", true)]
+		bool IsAfterFolderCreate = false;
+
+		[Obsolete("Not Used!!!", true)]
+		private bool IsLibW = false;
+
 		#endregion
 
 		#region DLLImports

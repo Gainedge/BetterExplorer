@@ -114,11 +114,11 @@
     <Compile Include="BreadCrumbBar\Breadcrumb.cs" />
     <Compile Include="BreadCrumbBar\BreadcrumbBase.cs" />
     <Compile Include="BreadCrumbBar\BreadcrumbCore.cs" />
-    <Compile Include="BreadCrumbBar\BreadcrumbExpander.cs" />
+    <Compile Include="BreadCrumbBar\_Obsolete\BreadcrumbExpander.cs" />
     <Compile Include="BreadCrumbBar\BreadcrumbItem.cs" />
     <Compile Include="BreadCrumbBar\BreadcrumbOverflowPanel.cs" />
-    <Compile Include="BreadCrumbBar\DropDown.cs" />
-    <Compile Include="BreadCrumbBar\DropDownList.cs" />
+    <Compile Include="BreadCrumbBar\_Obsolete\DropDown.cs" />
+    <Compile Include="BreadCrumbBar\_Obsolete\DropDownList.cs" />
     <Compile Include="BreadCrumbBar\SuggestBox.cs" />
     <Compile Include="BreadCrumbBar\SuggestBoxBase.cs" />
     <Compile Include="AirspacePopup.cs" />

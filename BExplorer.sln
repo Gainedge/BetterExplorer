@@ -43,8 +43,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shell", "Shell\Shell.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GMailDrivePlugin", "GMailDrivePlugin\GMailDrivePlugin.csproj", "{CDC51A7E-5CEA-4478-AE3E-92E7C54AD4AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterExplorerLib", "BetterExplorerLib\BetterExplorerLib.csproj", "{4E10209E-837F-4116-B873-102F44CDB42E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BEHelper", "BEHelper\BEHelper.csproj", "{6942FB86-F12F-43AE-8E6D-D4186CE7CB81}"
 EndProject
 Global
@@ -583,34 +581,6 @@ Global
 		{CDC51A7E-5CEA-4478-AE3E-92E7C54AD4AA}.Release|Win32.ActiveCfg = Release|Any CPU
 		{CDC51A7E-5CEA-4478-AE3E-92E7C54AD4AA}.Release|x64.ActiveCfg = Release|Any CPU
 		{CDC51A7E-5CEA-4478-AE3E-92E7C54AD4AA}.Release|x86.ActiveCfg = Release|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.CodeAnalysisDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.CodeAnalysisDebug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.CodeAnalysisDebug|Win32.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.CodeAnalysisDebug|x64.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.CodeAnalysisDebug|x86.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Deploy|Any CPU.Build.0 = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Deploy|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Deploy|Mixed Platforms.Build.0 = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Deploy|Win32.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Deploy|x64.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Deploy|x86.ActiveCfg = Debug|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Release|Win32.ActiveCfg = Release|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Release|x64.ActiveCfg = Release|Any CPU
-		{4E10209E-837F-4116-B873-102F44CDB42E}.Release|x86.ActiveCfg = Release|Any CPU
 		{6942FB86-F12F-43AE-8E6D-D4186CE7CB81}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6942FB86-F12F-43AE-8E6D-D4186CE7CB81}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
 		{6942FB86-F12F-43AE-8E6D-D4186CE7CB81}.CodeAnalysisDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
