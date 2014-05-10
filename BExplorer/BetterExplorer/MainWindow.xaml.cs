@@ -5914,5 +5914,51 @@ namespace BetterExplorer {
 
 			System.Diagnostics.Process.Start(url);
 		}
+
+		private void btnTest_Click(object sender, RoutedEventArgs e) {
+			//TODO: Consider using
+			/*
+			 We could easily move this to another project and send that method			 
+			 */
+
+
+			//Following could be an example of what the most basic plugin could look like
+			//We could also separate plugins so they could be enabled WHEN
+			//Always OR Folder_Selected OR File_Selected 
+			Action<string, string> Plugin_Example_Activate_Basic = (string Plugin_Path, string Current_FileOrFolder) => {
+				Process.Start(Plugin_Path, Current_FileOrFolder);
+			};
+
+
+			var Tab = new RibbonTabItem();
+			TheRibbon.Tabs.Add(Tab);
+			Tab.Header = "Plugins";
+			Tab.ToolTip = "Plugins";
+			var GroupBox1 = new RibbonGroupBox();
+			Tab.Groups.Add(GroupBox1);
+			GroupBox1.Header = "Test";
+
+			var XML =
+					@"<Shortcuts>
+						<Shortcut Name='Test' Path = 'C:\Aaron'/>
+					</Shortcuts>";
+
+
+			var XDoc = XElement.Parse(XML);
+			var Shortcuts = XDoc.Elements("Shortcut");
+
+			var DropDown = new SplitButton();
+			GroupBox1.Items.Add(DropDown);
+
+			foreach (var Node in XDoc.Elements("Shortcut")) {
+				var Item = new MenuItem();
+				Item.Header = Node.Attribute("Name").Value;
+				Item.Click += (x, y) => {
+					Process.Start(Node.Attribute("Path").Value);
+				};
+
+				DropDown.Items.Add(Item);
+			}
+		}
 	}
 }

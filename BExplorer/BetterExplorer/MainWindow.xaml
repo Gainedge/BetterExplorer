@@ -3237,6 +3237,7 @@
 			</Ribbon:StatusBarItem>
 
 		</Ribbon:StatusBar>
+		<Button x:Name="btnTest" Grid.ColumnSpan="2" Content="Button" Margin="673,23,0,0" VerticalAlignment="Top" Width="75" Click="btnTest_Click"/>
 
 	</Grid>
 </Ribbon:RibbonWindow>
