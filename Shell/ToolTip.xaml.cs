@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
@@ -23,24 +24,27 @@ namespace BExplorer.Shell
 	/// </summary>
 	public partial class ToolTip : Window, INotifyPropertyChanged
 	{
-		private String _Contents;
-		private DispatcherTimer DelayTimer = new DispatcherTimer();
+		private ShellItem _ShellItem;
+		private DispatcherTimer DelayTimer = new DispatcherTimer(DispatcherPriority.Background);
 
-		public ShellItem CurrentItem { get; set; }
-
-		public Int32 ItemIndex { get; set; }
-		public String Contents
+		public int Type { get; set; }
+		public ShellItem CurrentItem
 		{
 			get
 			{
-				return this._Contents;
+				return _ShellItem;
 			}
+
 			set
 			{
-				this._Contents = value;
-				RaisePropertyChanged("Contents");
+				_ShellItem = value;
+				RaisePropertyChanged("CurrentItem");
 			}
 		}
+
+		public Int32 ItemIndex { get; set; }
+		public String Contents {get; set;}
+		
 		public ToolTip()
 		{
 			InitializeComponent();
@@ -53,12 +57,13 @@ namespace BExplorer.Shell
 		{
 			DelayTimer.Stop();
 			this.Show();
+			Contents = Type == 0 ? String.Format("{0}\r\n{1}", CurrentItem.DisplayName, CurrentItem.ToolTipText) : CurrentItem.ToolTipText;
+			RaisePropertyChanged("Contents");
 		}
 
 		public ToolTip(String contents)
 		{
 			InitializeComponent();
-			this.Contents = contents;
 			this.DataContext = this;
 
 		}
@@ -71,21 +76,9 @@ namespace BExplorer.Shell
 
 		public void HideTooltip()
 		{
-				DelayTimer.Stop();
+			DelayTimer.Stop();
+			if (this.IsVisible)
 				this.Hide();
-		}
-
-		protected override void OnLostFocus(RoutedEventArgs e)
-		{
-			base.OnLostFocus(e);
-			DelayTimer.Stop();
-			Hide();
-		}
-		protected override void OnDeactivated(EventArgs e)
-		{
-			base.OnDeactivated(e);
-			DelayTimer.Stop();
-			Hide();
 		}
 
 		#region INotifyPropertyChanged Members

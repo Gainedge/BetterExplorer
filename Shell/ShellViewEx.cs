@@ -1575,7 +1575,7 @@ namespace BExplorer.Shell {
 						{
 							tt.CurrentItem = itemInfotip;
 							tt.ItemIndex = nmGetInfoTip.iItem;
-							tt.Contents = nmGetInfoTip.dwFlags == 0 ? String.Format("{0}\r\n{1}", itemInfotip.DisplayName, itemInfotip.ToolTipText) : itemInfotip.ToolTipText;
+							tt.Type = nmGetInfoTip.dwFlags;
 							tt.Left = Cursor.Position.X;
 							tt.Top = Cursor.Position.Y;
 							tt.ShowTooltip();
@@ -1640,12 +1640,13 @@ namespace BExplorer.Shell {
 						resetEvent.Reset();
 						_ResetTimer.Stop();
 						this.Cancel = true;
-						foreach (var item in cache) {
-							if (item.Value != null) {
-								item.Value.Dispose();
-							}
-						}
-						cache.Clear();
+						tt.HideTooltip();
+						//foreach (var item in cache) {
+						//	if (item.Value != null) {
+						//		item.Value.Dispose();
+						//	}
+						//}
+						//cache.Clear();
 						//waitingThumbnails.Clear();
 						ThumbnailsForCacheLoad.Clear();
 						//ItemsForSubitemsUpdate.Clear();
@@ -1717,20 +1718,23 @@ namespace BExplorer.Shell {
 							selectionTimer.Interval = 100;
 							selectionTimer.Tick += selectionTimer_Tick;
 							this._IsDragSelect = nlv.uNewState;
-							if (nlv.iItem != -1)
+							if (IsGroupsEnabled)
 							{
-								var itemBounds = new User32.RECT();
-								LVITEMINDEX lvi = new LVITEMINDEX();
-								lvi.iItem = nlv.iItem;
-								lvi.iGroup = this.GetGroupIndex(nlv.iItem);
-								User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-								RedrawWindow(itemBounds);
+								if (nlv.iItem != -1)
+								{
+									var itemBounds = new User32.RECT();
+									LVITEMINDEX lvi = new LVITEMINDEX();
+									lvi.iItem = nlv.iItem;
+									lvi.iGroup = this.GetGroupIndex(nlv.iItem);
+									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+									RedrawWindow(itemBounds);
+								}
+								else
+								{
+									RedrawWindow();
+								}
+								
 							}
-							else
-							{
-								RedrawWindow();
-							}
-
 							//if ((nlv.uNewState & LVIS.LVIS_SELECTED) == 0)
 							//{
 								//RedrawWindow();
@@ -1863,14 +1867,16 @@ namespace BExplorer.Shell {
 					case WNM.NM_CLICK:
 						break;
 					case WNM.NM_SETFOCUS:
-						RedrawWindow();
-						if (this.tt.Visibility == Visibility.Visible)
+						if (IsGroupsEnabled)
+							RedrawWindow();
+						if (this.tt.IsVisible)
 							this.tt.HideTooltip();
 						OnGotFocus();
 						break;
 					case WNM.NM_KILLFOCUS:
-						RedrawWindow();
-						if (this.tt.Visibility == Visibility.Visible)
+						if (IsGroupsEnabled)
+							RedrawWindow();
+						if (this.tt.IsVisible)
 							this.tt.HideTooltip();
 						OnLostFocus();
 						break;
