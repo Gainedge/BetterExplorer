@@ -2059,11 +2059,11 @@
 						 Ribbon:KeyTip.Keys="I"
 						 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small" />
 					<Ribbon:CheckBox x:Name="chkPinNav"
-						   Checked="chkPinNav_Checked"
+						   Checked="chkPinNav_CheckChanged"
+						   Unchecked="chkPinNav_CheckChanged"
 						   Header="{DynamicResource chkPinNavCP}"
 						   Ribbon:KeyTip.Keys="N"
-						   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small"
-						   Unchecked="chkPinNav_Unchecked">
+						   Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small">
 						<Ribbon:CheckBox.ToolTip>
 							<Ribbon:ScreenTip Title="{DynamicResource chkPinNavHCP}"
 								Width="250"

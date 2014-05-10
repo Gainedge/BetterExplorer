@@ -130,7 +130,7 @@ namespace BetterExplorer {
 		string SelectedArchive = "";
 		bool KeepBackstageOpen = false;
 		private string ICON_DLLPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
-		bool IsAfterFolderCreate = false;
+
 
 
 		bool canlogactions = false;
@@ -421,12 +421,10 @@ namespace BetterExplorer {
 						mig.GroupName = "GR3";
 						mig.Focusable = false;
 						mig.IsCheckable = true;
-						if (ShellListView.LastGroupCollumn != null && (item.pkey.fmtid == ShellListView.LastGroupCollumn.pkey.fmtid) && (item.pkey.pid == ShellListView.LastGroupCollumn.pkey.pid))
-						{
-						    mig.IsChecked = true;
+						if (ShellListView.LastGroupCollumn != null && (item.pkey.fmtid == ShellListView.LastGroupCollumn.pkey.fmtid) && (item.pkey.pid == ShellListView.LastGroupCollumn.pkey.pid)) {
+							mig.IsChecked = true;
 						}
-						else
-						{
+						else {
 							mig.IsChecked = false;
 						}
 						mig.Click += mig_Click;
@@ -671,14 +669,14 @@ namespace BetterExplorer {
 
 		void Explorer_RenameFinished(object sender, EventArgs e) {
 			IsRenameFromCreate = true;
-			IsAfterFolderCreate = false;
+			//IsAfterFolderCreate = false;
 			//ShellListView.IsRenameStarted = false;
 
 			//TODO: Test this out
 			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
 		}
 
-		private bool IsLibW = false;
+
 		void Explorer_ItemsChanged(object sender, EventArgs e) {
 			int ItemsCount = ShellListView.GetItemsCount();
 			sbiItemsCount.Content = ItemsCount == 1 ? ItemsCount.ToString() + " item" : ItemsCount.ToString() + " items";
@@ -1477,7 +1475,7 @@ namespace BetterExplorer {
 
 		// New Folder/Library
 		private void Button_Click_2(object sender, RoutedEventArgs e) {
-			//We should focus the ListView or on some surcumstances new folder does not start renaming after folder is created
+			//We should focus the ListView or on some circumstances new folder does not start renaming after folder is created
 			this.ShellListView.Focus();
 			string path = "";
 
@@ -1494,8 +1492,8 @@ namespace BetterExplorer {
 			WindowsAPI.SHChangeNotify(WindowsAPI.HChangeNotifyEventID.SHCNE_MKDIR,
 			WindowsAPI.HChangeNotifyFlags.SHCNF_PATHW | WindowsAPI.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, Marshal.StringToHGlobalAuto(path.Replace(@"\\", @"\")), IntPtr.Zero);
 
-			IsLibW = IsLib;
-			IsAfterFolderCreate = true;
+			//IsLibW = IsLib;
+			//IsAfterFolderCreate = true;
 			this.ShellListView.Focus();
 		}
 
@@ -2408,7 +2406,7 @@ namespace BetterExplorer {
 			btnSetCurrentasStartup.Header = sho.DisplayName;
 			sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			btnSetCurrentasStartup.Icon = sho.Thumbnail.SmallBitmapSource;
-			
+
 
 			miTabManager.IsEnabled = Directory.Exists(sstdir);
 			autoUpdater.DaysBetweenChecks = this.UpdateCheckInterval;
@@ -2843,6 +2841,7 @@ namespace BetterExplorer {
 					itisLibraries = ne.ParsingName == KnownFolders.Libraries.ParsingName;
 				}
 				*/
+
 				//if (MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is some information about the folder being loaded:\r\n\r\nName: " + ne.GetDisplayName(SIGDN.NORMALDISPLAY) + "\r\nLocation: " + ne.ParsingName +
 				//    "\r\n\r\nFolder, Drive, or Library: " + GetYesNoFromBoolean(ne.IsFolder) + "\r\nDrive: " + GetYesNoFromBoolean(ne.IsDrive) + "\r\nNetwork Drive: " + GetYesNoFromBoolean(ne.IsNetDrive) + "\r\nRemovable: " + GetYesNoFromBoolean(ne.IsRemovable) +
 				//    "\r\nSearch Folder: " + GetYesNoFromBoolean(ne.IsSearchFolder) + "\r\nShared: " + GetYesNoFromBoolean(ne.IsShared) + "\r\nShortcut: " + GetYesNoFromBoolean(ne.IsLink) + "\r\nLibrary: " + GetYesNoFromBoolean(isinLibraries) + "\r\nLibraries Folder: " + GetYesNoFromBoolean(itisLibraries) +
@@ -2858,9 +2857,7 @@ namespace BetterExplorer {
 			btnAutosizeColls.IsEnabled = ShellListView.View == ShellViewStyle.Details;
 
 			if (e.Folder.ParsingName == KnownFolders.RecycleBin.ParsingName) {
-				if (ShellListView.GetItemsCount() > 0) {
-					miRestoreALLRB.Visibility = System.Windows.Visibility.Visible;
-				}
+				if (ShellListView.GetItemsCount() > 0) miRestoreALLRB.Visibility = System.Windows.Visibility.Visible;
 			}
 			else {
 				miRestoreALLRB.Visibility = System.Windows.Visibility.Collapsed;
@@ -3277,6 +3274,22 @@ namespace BetterExplorer {
 			}
 		}
 
+		private void chkPinNav_CheckChanged(object sender, RoutedEventArgs e) {
+			ShellLibrary lib = null;
+			if (ShellListView.GetSelectedCount() == 1) {
+				lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY), false);
+			}
+			else {
+				lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
+			}
+			if (!IsFromSelectionOrNavigation) {
+				lib.IsPinnedToNavigationPane = e.RoutedEvent.Name == "Checked";
+			}
+
+			lib.Close();
+		}
+
+		/*
 		private void chkPinNav_Checked(object sender, RoutedEventArgs e) {
 			ShellLibrary lib = null;
 			if (ShellListView.GetSelectedCount() == 1) {
@@ -3306,6 +3319,7 @@ namespace BetterExplorer {
 
 			lib.Close();
 		}
+		*/
 
 		private void btnChangeLibIcon_Click(object sender, RoutedEventArgs e) {
 			IconView iv = new IconView();
@@ -3318,7 +3332,6 @@ namespace BetterExplorer {
 								this.Handle, "Choose which folders will be in this library", "A library gathers content from all of the folders listed below and puts it all in one window for you to see.", true);
 			}
 			catch {
-
 				ShellLibrary.ShowManageLibraryUI(ShellListView.CurrentFolder.DisplayName,
 								this.Handle, "Choose which folders will be in this library", "A library gathers content from all of the folders listed below and puts it all in one window for you to see.", true);
 			}
@@ -3421,8 +3434,7 @@ namespace BetterExplorer {
 		void mig_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
 			var col = item.Tag as Collumns;
-			if (!this.ShellListView.IsGroupsEnabled)
-			{
+			if (!this.ShellListView.IsGroupsEnabled) {
 				this.ShellListView.EnableGroups();
 			}
 			this.ShellListView.GenerateGroupsFromColumn(col);
@@ -3479,8 +3491,7 @@ namespace BetterExplorer {
 		void misng_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
 			item.IsChecked = true;
-			if (this.ShellListView.IsGroupsEnabled)
-			{
+			if (this.ShellListView.IsGroupsEnabled) {
 				this.ShellListView.DisableGroups();
 			}
 		}
@@ -5885,14 +5896,13 @@ namespace BetterExplorer {
 			this.ctrlConsole.ClearConsole();
 		}
 
-		private void btnPaypal_Click(object sender, RoutedEventArgs e)
-		{
+		private void btnPaypal_Click(object sender, RoutedEventArgs e) {
 			string url = "";
 
-			string business = "dimitarcenevjp@gmail.com";								// your paypal email
+			string business = "dimitarcenevjp@gmail.com";				// your PayPal email
 			string description = "Donation%20for%20Better%20Explorer";  // '%20' represents a space. remember HTML!
-			string country = "US";																			// AU, US, etc.
-			string currency = "USD";																		// AUD, USD, etc.
+			string country = "US";										// AU, US, etc.
+			string currency = "USD";									// AUD, USD, etc.
 
 			url += "https://www.paypal.com/cgi-bin/webscr" +
 					"?cmd=" + "_donations" +
