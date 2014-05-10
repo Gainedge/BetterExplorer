@@ -421,14 +421,14 @@ namespace BetterExplorer {
 						mig.GroupName = "GR3";
 						mig.Focusable = false;
 						mig.IsCheckable = true;
-						//if ((item.pkey.fmtid == pkg.fmtid) && (item.pkey.pid == pkg.pid))
-						//{
-						//    mig.IsChecked = true;
-						//}
-						//else
-						//{
-						mig.IsChecked = false;
-						//}
+						if (ShellListView.LastGroupCollumn != null && (item.pkey.fmtid == ShellListView.LastGroupCollumn.pkey.fmtid) && (item.pkey.pid == ShellListView.LastGroupCollumn.pkey.pid))
+						{
+						    mig.IsChecked = true;
+						}
+						else
+						{
+							mig.IsChecked = false;
+						}
 						mig.Click += mig_Click;
 						btnGroup.Items.Add(mig);
 					}
@@ -468,7 +468,7 @@ namespace BetterExplorer {
 			misng.Focusable = false;
 			misng.GroupName = "GR3";
 			misng.IsCheckable = true;
-			//misng.IsChecked = pkg.fmtid == Guid.Empty;
+			misng.IsChecked = ShellListView.LastGroupCollumn == null;
 			misng.Click += misng_Click;
 			btnGroup.Items.Add(misng);
 			Separator spg = new Separator();
@@ -2404,21 +2404,11 @@ namespace BetterExplorer {
 
 			rks.Close();
 			rk.Close();
-
-			if (StartUpLocation.StartsWith("::") && StartUpLocation.Contains("\\")) {
-				ShellItem sho = new ShellItem(String.Format("shell:{0}", StartUpLocation));
-				btnSetCurrentasStartup.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
-				btnSetCurrentasStartup.Icon = sho.Thumbnail.BitmapSource;
-			}
-			else {
-				try {
-					ShellItem sho = new ShellItem(StartUpLocation);
-					btnSetCurrentasStartup.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
-					btnSetCurrentasStartup.Icon = sho.Thumbnail.BitmapSource;
-				}
-				catch {
-				}
-			}
+			ShellItem sho = new ShellItem(StartUpLocation.ToShellParsingName());
+			btnSetCurrentasStartup.Header = sho.DisplayName;
+			sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+			btnSetCurrentasStartup.Icon = sho.Thumbnail.SmallBitmapSource;
+			
 
 			miTabManager.IsEnabled = Directory.Exists(sstdir);
 			autoUpdater.DaysBetweenChecks = this.UpdateCheckInterval;
@@ -3428,7 +3418,6 @@ namespace BetterExplorer {
 			micm_Click(sender, e);
 		}
 
-		[Obsolete("Does Nothing")]
 		void mig_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
 			var col = item.Tag as Collumns;
@@ -5894,6 +5883,26 @@ namespace BetterExplorer {
 
 		private void ConsoleClear_Click(object sender, RoutedEventArgs e) {
 			this.ctrlConsole.ClearConsole();
+		}
+
+		private void btnPaypal_Click(object sender, RoutedEventArgs e)
+		{
+			string url = "";
+
+			string business = "dimitarcenevjp@gmail.com";								// your paypal email
+			string description = "Donation%20for%20Better%20Explorer";  // '%20' represents a space. remember HTML!
+			string country = "US";																			// AU, US, etc.
+			string currency = "USD";																		// AUD, USD, etc.
+
+			url += "https://www.paypal.com/cgi-bin/webscr" +
+					"?cmd=" + "_donations" +
+					"&business=" + business +
+					"&lc=" + country +
+					"&item_name=" + description +
+					"&currency_code=" + currency +
+					"&bn=" + "PP%2dDonationsBF";
+
+			System.Diagnostics.Process.Start(url);
 		}
 	}
 }

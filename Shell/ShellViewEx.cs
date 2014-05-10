@@ -470,6 +470,10 @@ namespace BExplorer.Shell {
 
 		public SortOrder LastSortOrder { get; set; }
 
+		public Collumns LastGroupCollumn { get; set; }
+
+		public SortOrder LastGroupOrder { get; set; }
+
 		public IntPtr LVHandle { get; set; }
 
 		public List<LVItemColor> LVItemsColorCodes { get; set; }
@@ -1157,7 +1161,6 @@ namespace BExplorer.Shell {
 		#endregion
 
 		#region Overrides
-
 		protected override void OnDragDrop(System.Windows.Forms.DragEventArgs e) {
 			int row = -1;
 			int collumn = -1;
@@ -1388,11 +1391,6 @@ namespace BExplorer.Shell {
 				}
 
 			}
-
-			if (m.Msg == (int)WM.WM_NCMBUTTONDOWN) {
-
-			}
-			
 			base.WndProc(ref m);
 			if (m.Msg == 78) {
 				var nmhdrHeader = (NMHEADER)(m.GetLParam(typeof(NMHEADER)));
@@ -1572,13 +1570,15 @@ namespace BExplorer.Shell {
 						Marshal.Copy(charBuf, 0, nmGetInfoTip.pszText, Math.Min(charBuf.Length, nmGetInfoTip.cchTextMax)); 
 						Marshal.StructureToPtr(nmGetInfoTip, m.LParam, false);
 						if (tt.IsVisible)
-							tt.Hide();
+							tt.HideTooltip();
 						if (!String.IsNullOrEmpty(itemInfotip.ToolTipText))
 						{
-							tt.Contents = itemInfotip.ToolTipText;
+							tt.CurrentItem = itemInfotip;
+							tt.ItemIndex = nmGetInfoTip.iItem;
+							tt.Contents = nmGetInfoTip.dwFlags == 0 ? String.Format("{0}\r\n{1}", itemInfotip.DisplayName, itemInfotip.ToolTipText) : itemInfotip.ToolTipText;
 							tt.Left = Cursor.Position.X;
 							tt.Top = Cursor.Position.Y;
-							tt.Show();
+							tt.ShowTooltip();
 							
 						}
 						
@@ -1713,17 +1713,18 @@ namespace BExplorer.Shell {
 						//RedrawWindow();
 						NMLISTVIEW nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 						if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE) {
+							tt.HideTooltip();
 							selectionTimer.Interval = 100;
 							selectionTimer.Tick += selectionTimer_Tick;
 							this._IsDragSelect = nlv.uNewState;
 							if (nlv.iItem != -1)
 							{
-								//var itemBounds = new User32.RECT();
-								//LVITEMINDEX lvi = new LVITEMINDEX();
-								//lvi.iItem = nlv.iItem;
-								//lvi.iGroup = this.GetGroupIndex(nlv.iItem);
-								//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-								//RedrawWindow(itemBounds);
+								var itemBounds = new User32.RECT();
+								LVITEMINDEX lvi = new LVITEMINDEX();
+								lvi.iItem = nlv.iItem;
+								lvi.iGroup = this.GetGroupIndex(nlv.iItem);
+								User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+								RedrawWindow(itemBounds);
 							}
 							else
 							{
@@ -1813,6 +1814,13 @@ namespace BExplorer.Shell {
 					case WNM.LVN_GROUPINFO:
 						//RedrawWindow();
 						break;
+					case WNM.LVN_HOTTRACK:
+						NMLISTVIEW nlvHotTrack = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
+						if (nlvHotTrack.iItem != tt.ItemIndex)
+						{
+							tt.HideTooltip();
+						}
+						break;
 					case WNM.LVN_BEGINDRAG:
 						//uint CFSTR_SHELLIDLIST =
 						//	User32.RegisterClipboardFormat("Shell IDList Array");
@@ -1855,15 +1863,15 @@ namespace BExplorer.Shell {
 					case WNM.NM_CLICK:
 						break;
 					case WNM.NM_SETFOCUS:
-						//RedrawWindow();
+						RedrawWindow();
 						if (this.tt.Visibility == Visibility.Visible)
-							this.tt.Hide();
+							this.tt.HideTooltip();
 						OnGotFocus();
 						break;
 					case WNM.NM_KILLFOCUS:
-						//RedrawWindow();
+						RedrawWindow();
 						if (this.tt.Visibility == Visibility.Visible)
-							this.tt.Hide();
+							this.tt.HideTooltip();
 						OnLostFocus();
 						break;
 					case CustomDraw.NM_CUSTOMDRAW: {
@@ -1925,17 +1933,31 @@ namespace BExplorer.Shell {
 									case CustomDraw.CDDS_ITEMPOSTPAINT:
 
 										if (nmlvcd.clrTextBk != 0) {
-											var itemBounds = new User32.RECT();
+											var itemBounds = nmlvcd.nmcd.rc;
 											LVITEMINDEX lvi = new LVITEMINDEX();
 											lvi.iItem = index;
 											lvi.iGroup = this.GetGroupIndex(index);
-											User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+											//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 
 											var iconBounds = new User32.RECT();
 
 											iconBounds.Left = 1;
 
 											User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref iconBounds);
+
+											LVITEM lvItem = new LVITEM();
+											lvItem.iItem = index;
+											lvItem.iGroupId = lvi.iGroup;
+											lvItem.iGroup = lvi.iGroup;
+											lvItem.mask = LVIF.LVIF_STATE;
+											lvItem.stateMask = LVIS.LVIS_SELECTED;
+
+											LVITEM lvItemImageMask = new LVITEM();
+											lvItemImageMask.iItem = index;
+											lvItemImageMask.iGroupId = lvi.iGroup;
+											lvItemImageMask.iGroup = lvi.iGroup;
+											lvItemImageMask.mask = LVIF.LVIF_STATE;
+											lvItemImageMask.stateMask = LVIS.LVIS_STATEIMAGEMASK;
 
 											if (sho != null) {
 												string shoExtension = sho.Extension;
@@ -1966,10 +1988,10 @@ namespace BExplorer.Shell {
 															g.DrawImageUnscaled(thumbnail, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - thumbnail.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height));
 
 															if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
-																var nItemState = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_STATEIMAGEMASK);
+																var res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
 
-																if ((int)User32.SendMessage(this.LVHandle, LVM.GETHOTITEM, 0, 0) == index || (int)nItemState == (2 << 12)) {
-																	var lvis = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_SELECTED);
+																if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12)) {
+																	res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
 																	var checkboxOffsetH = 14;
 																	var checkboxOffsetV = 2;
 																	if (View == ShellViewStyle.Tile || View == ShellViewStyle.SmallIcon)
@@ -1977,7 +1999,7 @@ namespace BExplorer.Shell {
 																	if (View == ShellViewStyle.Tile)
 																		checkboxOffsetV = 1;
 
-																	if (lvis != 0) {
+																	if (lvItem.state != 0) {
 																		CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal);
 																	}
 																	else {
@@ -2008,9 +2030,9 @@ namespace BExplorer.Shell {
 
 																	if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List)
 																	{
-																		var nItemState = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_STATEIMAGEMASK);
+																		var res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
 
-																		if ((int)User32.SendMessage(this.LVHandle, LVM.GETHOTITEM, 0, 0) == index || (int)nItemState == (2 << 12))
+																		if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12))
 																		{
 																			var checkboxOffsetH = 14;
 																			var checkboxOffsetV = 2;
@@ -2018,8 +2040,8 @@ namespace BExplorer.Shell {
 																				checkboxOffsetH = 2;
 																			if (View == ShellViewStyle.Tile)
 																				checkboxOffsetV = 1;
-																			var lvis = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_SELECTED);
-																			if (lvis != 0)
+																			res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
+																			if (lvItem.state != 0)
 																			{
 																				CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal);
 																			}
@@ -2065,9 +2087,9 @@ namespace BExplorer.Shell {
 
 																		if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List)
 																		{
-																			var nItemState = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_STATEIMAGEMASK);
-																			var h = User32.SendMessage(this.LVHandle, LVM.GETHOTITEM, 0, 0);
-																			if ((int)User32.SendMessage(this.LVHandle, LVM.GETHOTITEM, 0, 0) == index || (int)nItemState == (2 << 12))
+																			var res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
+
+																			if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12))
 																			{
 																				var checkboxOffsetH = 14;
 																				var checkboxOffsetV = 2;
@@ -2075,8 +2097,9 @@ namespace BExplorer.Shell {
 																					checkboxOffsetH = 2;
 																				if (View == ShellViewStyle.Tile)
 																					checkboxOffsetV = 1;
-																				var lvis = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_SELECTED);
-																				if (lvis != 0)
+																				
+																				res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
+																				if (lvItem.state != 0)
 																				{
 																					CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal);
 																				}
@@ -2940,6 +2963,7 @@ namespace BExplorer.Shell {
 			const int LVM_SETOWNERDATACALLBACK = 0x10BB;
 			x = User32.SendMessage(this.LVHandle, LVM_SETOWNERDATACALLBACK, 0, 0);
 			IsGroupsEnabled = false;
+			this.LastGroupCollumn = null;
 		}
 		public void EnableGroups()
 		{
@@ -3060,6 +3084,7 @@ namespace BExplorer.Shell {
 			{
 
 			}
+			this.LastGroupCollumn = col;
 		}
 		public ShellItem GetFirstSelectedItem()
 		{

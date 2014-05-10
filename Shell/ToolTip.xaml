@@ -14,12 +14,10 @@
 	AllowsTransparency="True" 
 	Background="{x:Null}" 
 	ScrollViewer.VerticalScrollBarVisibility="Disabled"
-	MaxWidth="500"
-	MaxHeight="500"
 	ShowActivated="False"
 	Topmost="False">
   <Grid>
-		<Border CornerRadius="4" Margin="1" BorderBrush="DarkGray" BorderThickness="1">
+		<Border CornerRadius="4" Margin="1" Padding="3" BorderBrush="DarkGray" BorderThickness="1">
 			<Border.Background>
 				<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
 					<GradientStop Color="Snow" Offset="0.0"/>
@@ -27,7 +25,7 @@
 					<GradientStop Color="Gainsboro" Offset="1.0"/>
 				</LinearGradientBrush>
 			</Border.Background>
-			<TextBlock Text="{Binding Contents, UpdateSourceTrigger=PropertyChanged}" Margin="2" TextAlignment="Left"/>
+			<TextBlock Text="{Binding Contents, UpdateSourceTrigger=PropertyChanged}" Margin="2" TextAlignment="Left" TextWrapping="NoWrap"/>
 		</Border>
 	</Grid>
 </Window>

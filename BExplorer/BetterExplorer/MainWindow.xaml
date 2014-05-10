@@ -29,7 +29,7 @@
 					 WindowState="Maximized"
 					 d:DesignHeight="768"
 					 d:DesignWidth="852"
-					 mc:Ignorable="d" PreviewKeyDown="RibbonWindow_PreviewKeyDown">
+					 mc:Ignorable="d" PreviewKeyDown="RibbonWindow_PreviewKeyDown" Icon="Images/explorer16.png">
 
 	<Ribbon:RibbonWindow.Resources>
 		<ResourceDictionary Source="Themes\generic.xaml" />
@@ -196,17 +196,17 @@
 							   Ribbon:KeyTip.VerticalAlignment="Bottom"
 							   Style="{DynamicResource ButtonBackstageStyle}" />
 								<Label Margin="105,140,10,0"
-					   HorizontalAlignment="Left"
-					   VerticalAlignment="Top"
-					   Content="{DynamicResource btnOpenWebsiteHCP}"
-					   FontSize="12"
-					   FontWeight="Bold" />
+									 HorizontalAlignment="Left"
+									 VerticalAlignment="Top"
+									 Content="{DynamicResource btnOpenWebsiteHCP}"
+									 FontSize="12"
+									 FontWeight="Bold" />
 								<TextBlock Height="50"
-						   Margin="110,170,10,0"
-						   HorizontalAlignment="Left"
-						   VerticalAlignment="Top"
-						   Text="{DynamicResource btnOpenWebsiteICP}"
-						   TextWrapping="Wrap" />
+									 Margin="110,170,10,0"
+									 HorizontalAlignment="Left"
+									 VerticalAlignment="Top"
+									 Text="{DynamicResource btnOpenWebsiteICP}"
+									 TextWrapping="Wrap" />
 								<Ribbon:Button Height="88"
 							   Margin="20,235,0,0"
 							   HorizontalAlignment="Left"
@@ -221,31 +221,41 @@
 							   Ribbon:KeyTip.Keys="R"
 							   Ribbon:KeyTip.VerticalAlignment="Bottom"
 							   Style="{DynamicResource ButtonBackstageStyle}" />
+								<Button x:Name="btnPaypal"
+									Margin="20,350,0,0"
+									HorizontalAlignment="Left"
+									VerticalAlignment="Top"
+									Cursor="Hand"
+									Width="280"
+									Height="140"
+									Click="btnPaypal_Click">
+									<Image Width="253" Height="120" Source="Images\paypal.png" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+								</Button>
 								<Label Margin="105,235,10,0"
-					   HorizontalAlignment="Left"
-					   VerticalAlignment="Top"
-					   Content="Report a problem, bug or feature request"
-					   FontSize="12"
-					   FontWeight="Bold" />
+								 HorizontalAlignment="Left"
+								 VerticalAlignment="Top"
+								 Content="Report a problem, bug or feature request"
+								 FontSize="12"
+								 FontWeight="Bold" />
 								<TextBlock Height="50"
-						   Margin="110,265,10,0"
-						   HorizontalAlignment="Left"
-						   VerticalAlignment="Top"
-						   Text="This redirects you to the bugtracker website where you can post issues."
-						   TextWrapping="Wrap" />
+									 Margin="110,265,10,0"
+									 HorizontalAlignment="Left"
+									 VerticalAlignment="Top"
+									 Text="This redirects you to the bugtracker website where you can post issues."
+									 TextWrapping="Wrap" />
 								<Separator Grid.Column="0" HorizontalAlignment="Right" />
 								<Image Grid.Column="1"
-					   Width="400"
-					   Height="100"
-					   Margin="10,20,0,0"
-					   HorizontalAlignment="Left"
-					   VerticalAlignment="Top"
-					   Source="Images\bexplorerlogo.png"
-					   Stretch="Fill" />
+									 Width="400"
+									 Height="100"
+									 Margin="10,20,0,0"
+									 HorizontalAlignment="Left"
+									 VerticalAlignment="Top"
+									 Source="Images\bexplorerlogo.png"
+									 Stretch="Fill" />
 								<ScrollViewer Grid.Column="1"
-							  Margin="20,110,10,0"
-							  HorizontalScrollBarVisibility="Auto"
-							  VerticalScrollBarVisibility="Auto">
+									Margin="20,110,10,0"
+									HorizontalScrollBarVisibility="Auto"
+									VerticalScrollBarVisibility="Auto">
 									<StackPanel Margin="1,0,0,1">
 										<Controls:AutomaticUpdater x:Name="autoUpdater"
 											   Margin="0,15,50,10"
