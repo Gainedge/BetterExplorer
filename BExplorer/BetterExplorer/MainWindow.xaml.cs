@@ -96,6 +96,8 @@ namespace BetterExplorer {
 		bool IsInfoPaneEnabled, IsNavigationPaneEnabled, IsConsoleShown, IsPreviewPaneEnabled;
 		int PreviewPaneWidth = 120, InfoPaneHeight = 150;
 
+		ShellTreeViewEx ShellTree = new ShellTreeViewEx();
+		ShellView ShellListView = new ShellView();
 
 
 		bool IsHFlyoutEnabled;
@@ -105,8 +107,7 @@ namespace BetterExplorer {
 		public bool IsrestoreTabs;
 		bool IsUpdateCheck;
 		bool IsUpdateCheckStartup;
-		ShellView ShellListView = new ShellView();
-		ShellTreeViewEx ShellTree = new ShellTreeViewEx();
+
 		ClipboardMonitor cbm = new ClipboardMonitor();
 		ContextMenu cmHistory = new ContextMenu();
 		private int LastTabIndex = -1;
@@ -728,27 +729,22 @@ namespace BetterExplorer {
 		//'Selection change (when an item is selected in a folder)
 
 		private Boolean SetupEditButton(string item) {
-			//TODO: Check this!
-
-			//bool isEditAvailable = false;
-
 			RegistryKey rg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\" + Path.GetExtension(item) + @"\OpenWithProgids");
 			if (rg == null) return false;
 
-
 			string filetype = rg.GetValueNames()[0];
 			rg.Close();
-			RegistryKey rgtype = Registry.ClassesRoot.OpenSubKey(filetype + @"\shell\edit\command");
-			if (rgtype == null) return false;
 
-
-			string editcommand = (string)rgtype.GetValue("");
-
-			//isEditAvailable = true;
-			EditComm = editcommand.Replace("\"", "");
-			rgtype.Close();
-			return true;
-
+			using (var rgtype = Registry.ClassesRoot.OpenSubKey(filetype + @"\shell\edit\command")) {
+				if (rgtype == null) {
+					return false;
+				}
+				else {
+					EditComm = ((string)rgtype.GetValue("")).Replace("\"", "");
+					return true;
+				}
+			}
+			//TODO: Remove the following Comment!
 			//else {
 			//	//RegistryKey rgtypeopen = Registry.ClassesRoot.OpenSubKey(filetype + @"\shell\open\command");
 			//	//if (rgtypeopen != null)
@@ -789,69 +785,88 @@ namespace BetterExplorer {
 
 			//return isEditAvailable;
 		}
+
 		private void SetUpOpenWithButton(ShellItem SelectedItem) {
 			btnOpenWith.Items.Clear();
-			//string defapp = "";
-			List<AssociationItem> recommendedPrograms = new List<AssociationItem>();
-			string extension =
-			System.IO.Path.GetExtension(SelectedItem.ParsingName);
-			recommendedPrograms = SelectedItem.GetAssocList(); //ShellListView.RecommendedPrograms(extension);
+			foreach (var item in SelectedItem.GetAssocList()) {
+				MenuItem mi = new MenuItem();
+				mi.Header = item.DisplayName;
+				mi.Tag = item.InvokePtr;
+				mi.Click += new RoutedEventHandler(miow_Click);
+				mi.Icon = item.Icon;
+				mi.ToolTip = item.ApplicationPath;
+				mi.Focusable = false;
 
-			if (recommendedPrograms.Count > 0) {
-				foreach (var item in recommendedPrograms) {
-					MenuItem mi = new MenuItem();
-					try {
-						mi.Header = item.DisplayName;
-						mi.Tag = item.InvokePtr;
-						mi.Click += new RoutedEventHandler(miow_Click);
-						mi.Icon = item.Icon;
-						mi.ToolTip = item.ApplicationPath;
-						mi.Focusable = false;
-					}
-					catch (Exception) {
-					}
-
-					btnOpenWith.Items.Add(mi);
-				}
+				btnOpenWith.Items.Add(mi);
 			}
 
 			btnOpenWith.IsEnabled = btnOpenWith.HasItems;
 		}
 
 		private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, ShellItem selectedItem) {
-			#region Archive Contextual Tab
-			if (selectedItem != null) {
-				ctgArchive.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && Archives.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
-				if (asArchive && ctgArchive.Visibility == System.Windows.Visibility.Visible) {
-					TheRibbon.SelectedTabItem = ctgArchive.Items[0];
-				}
-			}
-			#endregion
-
-			#region Drive Contextual Tab
-			ctgDrive.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && ((selectedItem != null && selectedItem.IsDrive) || (selectedItem != null && selectedItem.Parent != null && selectedItem.Parent.IsDrive))) || ((ShellListView.CurrentFolder.IsDrive)));
-			if (asDrive && ctgDrive.Visibility == System.Windows.Visibility.Visible && (selectedItem != null && selectedItem.IsDrive)) {
-				TheRibbon.SelectedTabItem = ctgDrive.Items[0];
-			}
-			#endregion
-
-			#region Application Context Tab
-			ctgExe.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".exe" || Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".msi") && !selectedItem.IsFolder);
-			if (asApplication && ctgExe.Visibility == System.Windows.Visibility.Visible) {
-				TheRibbon.SelectedTabItem = ctgExe.Items[0];
+			#region Search Contextual Tab
+			ctgSearch.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.IsSearchFolder);
+			if (ctgSearch.Visibility == System.Windows.Visibility.Visible && !ShellListView.CurrentFolder.IsSearchFolder) {
+				ctgSearch.Visibility = System.Windows.Visibility.Collapsed;
+				TheRibbon.SelectedTabItem = HomeTab;
 			}
 			#endregion
 
 			#region Folder Tools Context Tab
-			ctgFolderTools.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && ((selectedItem.IsFolder && selectedItem.IsFileSystem && !selectedItem.IsDrive && !selectedItem.IsNetDrive))) || (ShellListView.CurrentFolder.IsFolder && ShellListView.CurrentFolder.IsFileSystem && !ShellListView.CurrentFolder.IsDrive && !ShellListView.CurrentFolder.IsNetDrive));
-			if (asFolder == true && ctgFolderTools.Visibility == System.Windows.Visibility.Visible) {
+			ctgFolderTools.Visibility = BooleanToVisibiliy(
+				(selectedItemsCount == 1 && selectedItem.IsFolder && selectedItem.IsFileSystem && !selectedItem.IsDrive && !selectedItem.IsNetDrive)
+				||
+				(ShellListView.CurrentFolder.IsFolder && ShellListView.CurrentFolder.IsFileSystem && !ShellListView.CurrentFolder.IsDrive && !ShellListView.CurrentFolder.IsNetDrive));
+
+			if (asFolder && ctgFolderTools.Visibility == Visibility.Visible) {
 				TheRibbon.SelectedTabItem = ctgFolderTools.Items[0];
 			}
 			#endregion
 
+			#region Drive Contextual Tab
+			//Aaron Campf
+			//ctgDrive.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && ((!sItem_Null && selectedItem.IsDrive) || (!sItem_Null && selectedItem.Parent != null && selectedItem.Parent.IsDrive))) || ShellListView.CurrentFolder.IsDrive);
+			ctgDrive.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.IsDrive || selectedItemsCount == 1 && selectedItem != null && (selectedItem.IsDrive || (selectedItem.Parent != null && selectedItem.Parent.IsDrive)));
+			if (asDrive && ctgDrive.Visibility == Visibility.Visible && (selectedItem != null && selectedItem.IsDrive)) {
+				TheRibbon.SelectedTabItem = ctgDrive.Items[0];
+			}
+			#endregion
+
+			#region Library Context Tab
+			//Aaron Campf
+			ctgLibraries.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.Equals(KnownFolders.Libraries) || selectedItemsCount == 1 && selectedItem.Parent != null && selectedItem.Parent.Equals(KnownFolders.Libraries));
+			//ctgLibraries.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (ShellListView.CurrentFolder.Equals(KnownFolders.Libraries) || (selectedItem.Parent != null && selectedItem.Parent.Equals(KnownFolders.Libraries))));
+			//// || (ShellListView.CurrentFolder.Parent != null && ShellListView.CurrentFolder.Parent.Equals(KnownFolders.Libraries))
+
+			if (ctgLibraries.Visibility == Visibility.Visible && asLibrary) {
+				TheRibbon.SelectedTabItem = ctgLibraries.Items[0];
+			}
+
+			if (ctgLibraries.Visibility == Visibility.Visible && ShellListView.CurrentFolder.Equals(KnownFolders.Libraries)) {
+				SetupLibrariesTab(ShellLibrary.Load(selectedItem.DisplayName, false));
+			}
+			else if (ctgLibraries.Visibility == Visibility.Visible && ShellListView.CurrentFolder.Parent.Equals(KnownFolders.Libraries)) {
+				SetupLibrariesTab(ShellLibrary.Load(ShellListView.CurrentFolder.DisplayName, false));
+			}
+			#endregion
+
+			#region Archive Contextual Tab
+			ctgArchive.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && Archives.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
+			if (asArchive && ctgArchive.Visibility == Visibility.Visible) {
+				TheRibbon.SelectedTabItem = ctgArchive.Items[0];
+			}
+			#endregion
+
+			#region Application Context Tab
+			ctgExe.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".exe" || Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".msi"));
+			if (asApplication && ctgExe.Visibility == Visibility.Visible) {
+				TheRibbon.SelectedTabItem = ctgExe.Items[0];
+			}
+			#endregion
+
 			#region Image Context Tab
-			ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()) && selectedItem.IsFolder == false);
-			if (ctgImage.Visibility == System.Windows.Visibility.Visible) {
+			ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
+			if (ctgImage.Visibility == Visibility.Visible) {
 				Bitmap cvt = new Bitmap(selectedItem.ParsingName);
 
 				imgSizeDisplay.WidthData = cvt.Width.ToString();
@@ -863,38 +878,12 @@ namespace BetterExplorer {
 			}
 			#endregion
 
-			#region Library Context Tab
-			ctgLibraries.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (ShellListView.CurrentFolder.Equals(KnownFolders.Libraries) || (selectedItem.Parent != null && selectedItem.Parent.Equals(KnownFolders.Libraries))));
-			// || (ShellListView.CurrentFolder.Parent != null && ShellListView.CurrentFolder.Parent.Equals(KnownFolders.Libraries))
-
-			if (asLibrary && ctgLibraries.Visibility == Visibility.Visible) {
-				TheRibbon.SelectedTabItem = ctgLibraries.Items[0];
-			}
-
-			if (ctgLibraries.Visibility == System.Windows.Visibility.Visible && ShellListView.CurrentFolder.Equals(KnownFolders.Libraries)) {
-				SetupLibrariesTab(ShellLibrary.Load(selectedItem.DisplayName, false));
-			}
-
-			else if (ctgLibraries.Visibility == System.Windows.Visibility.Visible && ShellListView.CurrentFolder.Parent.Equals(KnownFolders.Libraries)) {
-				SetupLibrariesTab(ShellLibrary.Load(ShellListView.CurrentFolder.DisplayName, false));
-			}
-			#endregion
-
 			#region Virtual Disk Context Tab
-			ctgVirtualDisk.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".iso") && selectedItem.IsFolder == false);
-			if (asVirtualDrive == true && ctgVirtualDisk.Visibility == System.Windows.Visibility.Visible) {
+			ctgVirtualDisk.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant() == ".iso");
+			if (asVirtualDrive && ctgVirtualDisk.Visibility == Visibility.Visible) {
 				TheRibbon.SelectedTabItem = ctgVirtualDisk.Items[0];
 			}
 			#endregion
-
-			#region Search Contextual Tab
-			ctgSearch.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.IsSearchFolder);
-			if (ctgSearch.Visibility == System.Windows.Visibility.Visible && !ShellListView.CurrentFolder.IsSearchFolder) {
-				ctgSearch.Visibility = System.Windows.Visibility.Collapsed;
-				TheRibbon.SelectedTabItem = HomeTab;
-			}
-			#endregion
-
 		}
 
 		private void SetUpStatusBarOnSelectOrNavigate(int selectedItemsCount) {
@@ -946,7 +935,10 @@ namespace BetterExplorer {
 			lib.Close();
 		}
 
-		private void SetupUIOnSelectOrNavigate(int SelItemsCount, bool isNavigate = false) {
+		private void SetupUIOnSelectOrNavigate(bool isNavigate = false) {
+			//private void SetupUIOnSelectOrNavigate(int SelItemsCount, bool isNavigate = false) {
+			var SelItemsCount = ShellListView.GetSelectedCount();
+
 			btnDefSave.Items.Clear();
 			var selectedItem = this.ShellListView.GetFirstSelectedItem();
 			if (selectedItem != null) {
@@ -2072,7 +2064,14 @@ namespace BetterExplorer {
 
 		private void InitializeExplorerControl() {
 			this.ShellTree.NodeClick += ShellTree_NodeClick;
+
+
+
+			//this.ShellListView.Navigated += ShellListView_Navigated;
+
 			this.ShellListView.Navigated += ShellListView_Navigated;
+
+
 			this.ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
 			this.ShellListView.SelectionChanged += ShellListView_SelectionChanged;
 			this.ShellListView.LostFocus += ShellListView_LostFocus;
@@ -2086,6 +2085,7 @@ namespace BetterExplorer {
 			this.ShellListView.Navigating += ShellListView_Navigating;
 			this.ShellListView.ItemMiddleClick += (sender, e) => NewTab(e.Folder);
 		}
+
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
@@ -2155,7 +2155,7 @@ namespace BetterExplorer {
 		}
 
 		async void ShellListView_SelectionChanged(object sender, EventArgs e) {
-			int explorerSelectedItemsCount = ShellListView.GetSelectedCount();
+			//int explorerSelectedItemsCount = ShellListView.GetSelectedCount();
 
 			if (!IsSelectionRized) {
 				IsSelectionRized = true;
@@ -2165,11 +2165,12 @@ namespace BetterExplorer {
 					Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 						try {
 							// set up buttons
-							SetupUIOnSelectOrNavigate(explorerSelectedItemsCount);
+
+							//SetupUIOnSelectOrNavigate(explorerSelectedItemsCount);
+							SetupUIOnSelectOrNavigate();
 						}
 						catch (Exception) {
 						}
-
 					}));
 				});
 				if (this.IsInfoPaneEnabled) {
@@ -2181,8 +2182,9 @@ namespace BetterExplorer {
 			}
 
 			#region StatusBar selected items counter
-			explorerSelectedItemsCount = ShellListView.GetSelectedCount();
-			SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
+			//TODO: Make sure there was no reason for the following code
+			//explorerSelectedItemsCount = ShellListView.GetSelectedCount();
+			SetUpStatusBarOnSelectOrNavigate(ShellListView.GetSelectedCount());
 			#endregion
 
 			//if (!IsAfterFolderCreate && !backstage.IsOpen && IsAfterRename && !ShellListView.IsRenameStarted)
@@ -2520,18 +2522,11 @@ namespace BetterExplorer {
 			_keyjumpTimer.Interval = 1000;
 			_keyjumpTimer.Tick += _keyjumpTimer_Tick;
 
-			//ShellItem iii = new ShellItem(@"shell:" + KnownFolders.Libraries.ParsingName);
 			ShellTreeHost.Child = ShellTree;
 			ShellViewHost.Child = ShellListView;
 
 			ShellTree.ShellListView = ShellListView;
-			//ShellListView.LVItemsColorCodes = LVItemsColor;
-			//ShellListView.subclassed = new ShellDeffViewSubClassedWindow(IntPtr.Zero, ShellListView.ShellListViewHandle, ShellListView);
-			//ShellListView.subclassed.AssignHandle(ShellListView.m_ShellViewWindow);
-			//ShellListView.lv = new SubclassListView();
-			//ShellListView.lv.AssignHandle(ShellListView.ShellListViewHandle);
-			//ShellListView.lv.lvhandle = ShellListView.ShellListViewHandle;
-			//ShellListView.lv.Browser = ShellListView;
+
 			Task.Run(() => {
 				UpdateRecycleBinInfos();
 			});
@@ -2561,6 +2556,7 @@ namespace BetterExplorer {
 
 				//Sets up FileSystemWatcher for Favorites folder
 				try {
+					//TODO: Find out why we gave this, it is NEVER USED. After this method I assume it will be disposed!!
 					FileSystemWatcher fsw = new FileSystemWatcher(KnownFolders.Links.ParsingName);
 					fsw.Created += fsw_Created;
 					fsw.Deleted += fsw_Deleted;
@@ -2774,12 +2770,62 @@ namespace BetterExplorer {
 
 		#region On Navigated
 
-		async void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
-			//var k = ShellListView.ShowCheckboxes;
+		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
+			/**
+			 * From: Aaron Campf
+			 * Subject: Describing reasons for changing code
+			 * 
+			 * After testing and research I have concluded that neither [async] or the [Task.Run] had any actually effect
+			 * [Dispatcher.BeginInvoke] is still called and that is the only way to edit the UI without already being on the UI Thread
+			 * 
+			 * [async] is only usefull when you want the method to use threads but not freeze the current thread while the new thread does its work
+			 * Because [async] had no real effect, the only thing that matters is [Task.Run]
+			 * 
+			 * [Task.Run] Do nothing but create a [Dispatcher.BeginInvoke] which is the same as if we removed the [Task.Run] and created them directly
+			 */
+
+			if (this.IsConsoleShown)
+				ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+
+			Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() => {
+				SetUpBreadcrumbbarOnNavComplete(e);
+			}));
+
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+				ConstructMoveToCopyToMenu();
+				SetupUIonNavComplete(e);
+				SetUpJumpListOnNavComplete();
+				SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
+				SetupUIOnSelectOrNavigate(true);
+				SetupColumnsButton(this.ShellListView.AllAvailableColumns);
+				SetSortingAndGroupingButtons();
+
+				//Setup the current selected folder in the ShellTree control
+				//FIXME: fix it!
+				//ShellTree.m_Navigating = true;
+				//ShellTree.SelectedFolder = e.Folder;
+				//ShellTree.m_Navigating = false;
+			}));
+
+			if (this.IsInfoPaneEnabled) {
+				Task.Run(() => {
+					this.DetailsPanel.FillPreviewPane(this.ShellListView);
+				});
+			}
+
+			#region StatusBar selected items counter
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+				var explorerSelectedItemsCount = ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount();
+				SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
+			}));
+
+			#endregion
+			//TODO: Consider ONLY using [Dispatcher.BeginInvoke]
+			/*
 			try {
-				int explorerSelectedItemsCount = 0;
 				if (this.IsConsoleShown)
 					ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+
 
 				Task.Run(() => {
 					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() => {
@@ -2797,10 +2843,9 @@ namespace BetterExplorer {
 						SetUpJumpListOnNavComplete();
 						SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
 
-						//ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
-						//SetUpConsoleWindow(e);
 
-						SetupUIOnSelectOrNavigate(ShellListView.GetSelectedCount(), true);
+						//SetupUIOnSelectOrNavigate(ShellListView.GetSelectedCount(), true);
+						SetupUIOnSelectOrNavigate(true);
 
 						SetupColumnsButton(this.ShellListView.AllAvailableColumns);
 
@@ -2815,21 +2860,23 @@ namespace BetterExplorer {
 				});
 
 				if (this.IsInfoPaneEnabled) {
-					await Task.Run(() => {
+					Task.Run(() => { //await
 						this.DetailsPanel.FillPreviewPane(this.ShellListView);
 					});
 				}
 
 				#region StatusBar selected items counter
-				await Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-					explorerSelectedItemsCount = ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount();
+				 Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {//await
+					var explorerSelectedItemsCount = ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount();
+					SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
 				}));
 
-				SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
 				#endregion
+
+				System.Windows.Forms.MessageBox.Show("ShellListView_Navigated");
 			}
 			catch (Exception) {
-				/*
+				/-
 				 * Date: 4/29/2014	User: Aaron Campf
 				 * Commented out this code
 				 
@@ -2840,7 +2887,7 @@ namespace BetterExplorer {
 					isinLibraries = ne.Parent.ParsingName == KnownFolders.Libraries.ParsingName;
 					itisLibraries = ne.ParsingName == KnownFolders.Libraries.ParsingName;
 				}
-				*/
+				-/
 
 				//if (MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is some information about the folder being loaded:\r\n\r\nName: " + ne.GetDisplayName(SIGDN.NORMALDISPLAY) + "\r\nLocation: " + ne.ParsingName +
 				//    "\r\n\r\nFolder, Drive, or Library: " + GetYesNoFromBoolean(ne.IsFolder) + "\r\nDrive: " + GetYesNoFromBoolean(ne.IsDrive) + "\r\nNetwork Drive: " + GetYesNoFromBoolean(ne.IsNetDrive) + "\r\nRemovable: " + GetYesNoFromBoolean(ne.IsRemovable) +
@@ -2850,6 +2897,7 @@ namespace BetterExplorer {
 				// MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is additional information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Additional Error Data", MessageBoxButton.OK, MessageBoxImage.Error);
 				//}
 			}
+			*/
 		}
 
 		private void SetupUIonNavComplete(NavigatedEventArgs e) {
