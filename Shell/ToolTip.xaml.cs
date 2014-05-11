@@ -25,7 +25,7 @@ namespace BExplorer.Shell
 	public partial class ToolTip : Window, INotifyPropertyChanged
 	{
 		private ShellItem _ShellItem;
-		private DispatcherTimer DelayTimer = new DispatcherTimer(DispatcherPriority.Background);
+		private DispatcherTimer DelayTimer = new DispatcherTimer(DispatcherPriority.SystemIdle);
 
 		public int Type { get; set; }
 		public ShellItem CurrentItem
@@ -49,7 +49,7 @@ namespace BExplorer.Shell
 		{
 			InitializeComponent();
 			this.DataContext = this;
-			DelayTimer.Interval = TimeSpan.FromMilliseconds(400);
+			DelayTimer.Interval = TimeSpan.FromMilliseconds(700);
 			DelayTimer.Tick += DelayTimer_Tick;
 		}
 
@@ -57,8 +57,21 @@ namespace BExplorer.Shell
 		{
 			DelayTimer.Stop();
 			this.Show();
-			Contents = Type == 0 ? String.Format("{0}\r\n{1}", CurrentItem.DisplayName, CurrentItem.ToolTipText) : CurrentItem.ToolTipText;
-			RaisePropertyChanged("Contents");
+			Task.Run(() =>
+			{
+				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() =>
+				{
+					var tooltip = CurrentItem.ToolTipText;
+					if (String.IsNullOrEmpty(tooltip) && Type == 1)
+					{
+						this.Hide();
+						return;
+					}
+					Contents = Type == 0 ? String.Format("{0}\r\n{1}", CurrentItem.DisplayName, CurrentItem.ToolTipText) : CurrentItem.ToolTipText;
+					RaisePropertyChanged("Contents");
+				}));
+			});
+			
 		}
 
 		public ToolTip(String contents)
