@@ -1571,16 +1571,14 @@ namespace BExplorer.Shell {
 						Marshal.StructureToPtr(nmGetInfoTip, m.LParam, false);
 						if (tt.IsVisible)
 							tt.HideTooltip();
-						if (!String.IsNullOrEmpty(itemInfotip.ToolTipText))
-						{
-							tt.CurrentItem = itemInfotip;
-							tt.ItemIndex = nmGetInfoTip.iItem;
-							tt.Type = nmGetInfoTip.dwFlags;
-							tt.Left = Cursor.Position.X;
-							tt.Top = Cursor.Position.Y;
-							tt.ShowTooltip();
-							
-						}
+						
+						tt.CurrentItem = itemInfotip;
+						tt.ItemIndex = nmGetInfoTip.iItem;
+						tt.Type = nmGetInfoTip.dwFlags;
+						tt.Left = Cursor.Position.X;
+						tt.Top = Cursor.Position.Y;
+						tt.ShowTooltip();
+
 						
 						break;
 					case WNM.LVN_ODFINDITEM:
