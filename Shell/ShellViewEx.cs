@@ -320,7 +320,6 @@ namespace BExplorer.Shell {
 
 		public List<string> RecommendedPrograms(string ext) {
 			List<string> progs = new List<string>();
-			//string baseKey = ext;
 
 			using (RegistryKey rk = Registry.ClassesRoot.OpenSubKey(ext + @"\OpenWithList")) {
 				if (rk != null) {
@@ -566,9 +565,11 @@ namespace BExplorer.Shell {
 		#endregion Public Members
 
 		#region Private Members
+
 		//private ShellHistory m_History;
 		//private int _iconSize;
 		private Boolean _showCheckBoxes = false;
+
 		private Boolean _ShowHidden;
 		private Boolean _IsInRenameMode = false;
 		private System.Windows.Forms.Timer _ResetTimer = new System.Windows.Forms.Timer();
@@ -1686,14 +1687,20 @@ namespace BExplorer.Shell {
 						Marshal.StructureToPtr(nmGetInfoTip, m.LParam, false);
 						if (tt.IsVisible)
 							tt.HideTooltip();
-						if (!String.IsNullOrEmpty(itemInfotip.ToolTipText)) {
-							tt.CurrentItem = itemInfotip;
-							tt.ItemIndex = nmGetInfoTip.iItem;
-							tt.Type = nmGetInfoTip.dwFlags;
-							tt.Left = Cursor.Position.X;
-							tt.Top = Cursor.Position.Y;
-							tt.ShowTooltip();
-						}
+						//if (!String.IsNullOrEmpty(itemInfotip.ToolTipText)) {
+						//	tt.CurrentItem = itemInfotip;
+						//	tt.ItemIndex = nmGetInfoTip.iItem;
+						//	tt.Type = nmGetInfoTip.dwFlags;
+						//	tt.Left = Cursor.Position.X;
+						//	tt.Top = Cursor.Position.Y;
+						//	tt.ShowTooltip();
+						//}
+						tt.CurrentItem = itemInfotip;
+						tt.ItemIndex = nmGetInfoTip.iItem;
+						tt.Type = nmGetInfoTip.dwFlags;
+						tt.Left = Cursor.Position.X;
+						tt.Top = Cursor.Position.Y;
+						tt.ShowTooltip();
 
 						break;
 
