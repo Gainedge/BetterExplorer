@@ -3091,55 +3091,63 @@ namespace BExplorer.Shell {
 				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup3);
 			}
 			if (col.CollumnType == typeof(long)) {
+				ListViewGroupEx uspec = new ListViewGroupEx();
+				uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
+				uspec.Header = String.Format("Unspecified ({0})", uspec.Items.Count());
+				uspec.Index = 0;
+				var nativeGroupu = uspec.ToNativeListViewGroup();
+				this.Groups.Add(uspec);
+
 				ListViewGroupEx testgrn = new ListViewGroupEx();
-				testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) == 0).ToArray();
+				testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) == 0 && !w.IsFolder).ToArray();
 				testgrn.Header = String.Format("Empty ({0})", testgrn.Items.Count());
-				testgrn.Index = 0;
+				testgrn.Index = 1;
 				var nativeGroupn = testgrn.ToNativeListViewGroup();
 				this.Groups.Add(testgrn);
 
 				ListViewGroupEx testgr = new ListViewGroupEx();
 				testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 10 * 1024).ToArray();
 				testgr.Header = String.Format("Very Small ({0})", testgr.Items.Count());
-				testgr.Index = 1;
+				testgr.Index = 2;
 				var nativeGroup = testgr.ToNativeListViewGroup();
 				this.Groups.Add(testgr);
 
 				ListViewGroupEx testgr2 = new ListViewGroupEx();
 				testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 100 * 1024).ToArray();
 				testgr2.Header = String.Format("Small ({0})", testgr2.Items.Count());
-				testgr2.Index = 2;
+				testgr2.Index = 3;
 				var nativeGroup2 = testgr2.ToNativeListViewGroup();
 				this.Groups.Add(testgr2);
 
 				ListViewGroupEx testgr3 = new ListViewGroupEx();
 				testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 1 * 1024 * 1024).ToArray();
 				testgr3.Header = String.Format("Medium ({0})", testgr3.Items.Count());
-				testgr3.Index = 3;
+				testgr3.Index = 4;
 				var nativeGroup3 = testgr3.ToNativeListViewGroup();
 				this.Groups.Add(testgr3);
 
 				ListViewGroupEx testgr4 = new ListViewGroupEx();
 				testgr4.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 16 * 1024 * 1024).ToArray();
 				testgr4.Header = String.Format("Big ({0})", testgr4.Items.Count());
-				testgr4.Index = 4;
+				testgr4.Index = 5;
 				var nativeGroup4 = testgr4.ToNativeListViewGroup();
 				this.Groups.Add(testgr4);
 
 				ListViewGroupEx testgr5 = new ListViewGroupEx();
 				testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 16 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 128 * 1024 * 1024).ToArray();
 				testgr5.Header = String.Format("Huge ({0})", testgr5.Items.Count());
-				testgr5.Index = 5;
+				testgr5.Index = 6;
 				var nativeGroup5 = testgr5.ToNativeListViewGroup();
 				this.Groups.Add(testgr5);
 
 				ListViewGroupEx testgr6 = new ListViewGroupEx();
 				testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 128 * 1024 * 1024).ToArray();
 				testgr6.Header = String.Format("Gigantic ({0})", testgr6.Items.Count());
-				testgr6.Index = 6;
+				testgr6.Index = 7;
 				var nativeGroup6 = testgr6.ToNativeListViewGroup();
 				this.Groups.Add(testgr6);
 
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroupu);
 				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroupn);
 				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
 				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup2);
