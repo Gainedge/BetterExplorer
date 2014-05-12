@@ -97,12 +97,10 @@ namespace BExplorer.Shell.Interop
 		/// <param name="shellObject"></param>
 		internal ShellThumbnail(ShellItem shellObject)
 		{
-			if (shellObject == null || shellObject.m_ComInterface == null)
+			if (shellObject != null && shellObject.m_ComInterface != null)
 			{
-				throw new ArgumentNullException("shellObject");
+				shellItemNative = shellObject.m_ComInterface;
 			}
-
-			shellItemNative = shellObject.m_ComInterface;
 		}
 
 		#endregion
@@ -359,6 +357,8 @@ namespace BExplorer.Shell.Interop
 		{
 			IntPtr hbitmap = IntPtr.Zero;
 
+			if (shellItemNative == null)
+				return IntPtr.Zero;
 			// Create a size structure to pass to the native method
 			Size nativeSIZE = new Size();
 			nativeSIZE.Width = Convert.ToInt32(size.Width);

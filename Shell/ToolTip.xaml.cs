@@ -25,7 +25,7 @@ namespace BExplorer.Shell
 	public partial class ToolTip : Window, INotifyPropertyChanged
 	{
 		private ShellItem _ShellItem;
-		private DispatcherTimer DelayTimer = new DispatcherTimer(DispatcherPriority.SystemIdle);
+		private DispatcherTimer DelayTimer = new DispatcherTimer(DispatcherPriority.Background);
 
 		public int Type { get; set; }
 		public ShellItem CurrentItem
@@ -56,22 +56,27 @@ namespace BExplorer.Shell
 		void DelayTimer_Tick(object sender, EventArgs e)
 		{
 			DelayTimer.Stop();
-			this.Show();
-			Task.Run(() =>
+
+			Thread t = new Thread(() =>
 			{
-				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() =>
+				var tooltip = CurrentItem.ToolTipText;
+				if (String.IsNullOrEmpty(tooltip) && Type == 1)
 				{
-					var tooltip = CurrentItem.ToolTipText;
-					if (String.IsNullOrEmpty(tooltip) && Type == 1)
+					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() =>
 					{
 						this.Hide();
-						return;
-					}
-					Contents = Type == 0 ? String.Format("{0}\r\n{1}", CurrentItem.DisplayName, CurrentItem.ToolTipText) : CurrentItem.ToolTipText;
-					RaisePropertyChanged("Contents");
+					}));
+					return;
+				}
+				Contents = Type == 0 ? String.Format("{0}\r\n{1}", CurrentItem.DisplayName, CurrentItem.ToolTipText) : CurrentItem.ToolTipText;
+				RaisePropertyChanged("Contents");
+				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() =>
+				{
+					this.Show();
 				}));
 			});
-			
+			t.SetApartmentState(ApartmentState.STA);
+			t.Start();
 		}
 
 		public ToolTip(String contents)

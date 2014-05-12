@@ -2103,7 +2103,7 @@ namespace BetterExplorer {
 				var selectedPaths = selectedItem.SelectedItems;
 				var path = e.DisplayedItem.ParsingName;
 				if (selectedPaths != null && selectedPaths.Contains(path)) {
-					this.ShellListView.SelectItemByIndex(e.DisplayedItemIndex);
+					this.ShellListView.SelectItemByIndex(e.DisplayedItemIndex ,true);
 					selectedPaths.Remove(path);
 				}
 			}
@@ -2633,10 +2633,9 @@ namespace BetterExplorer {
 				//'set StartUp location
 				if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized") {
 					String cmd = Application.Current.Properties["cmd"].ToString();
-
-					var Path = cmd.StartsWith("::") ? "shell:" + cmd : cmd.Replace("\"", "");
-					ShellListView.Navigate(new ShellItem(Path));
-					NewTab(ShellListView.CurrentFolder, true);
+					
+					if (cmd == "/nw")
+						NewTab(ShellListView.CurrentFolder, true);
 				}
 				else {
 					InitializeInitialTabs();
@@ -2758,12 +2757,12 @@ namespace BetterExplorer {
 
 			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems.Select(s => s.DisplayName).ToList());
 			AddToLog("Session Ended");
-			if (!App.isStartNewWindows) {
+			//if (!App.isStartNewWindows) {
 				e.Cancel = true;
 				App.isStartMinimized = true;
 				this.WindowState = System.Windows.WindowState.Minimized;
 				this.Visibility = System.Windows.Visibility.Hidden;
-			}
+			//}
 		}
 
 		#endregion
@@ -2771,19 +2770,6 @@ namespace BetterExplorer {
 		#region On Navigated
 
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
-			/**
-			 * From: Aaron Campf
-			 * Subject: Describing reasons for changing code
-			 * 
-			 * After testing and research I have concluded that neither [async] or the [Task.Run] had any actually effect
-			 * [Dispatcher.BeginInvoke] is still called and that is the only way to edit the UI without already being on the UI Thread
-			 * 
-			 * [async] is only usefull when you want the method to use threads but not freeze the current thread while the new thread does its work
-			 * Because [async] had no real effect, the only thing that matters is [Task.Run]
-			 * 
-			 * [Task.Run] Do nothing but create a [Dispatcher.BeginInvoke] which is the same as if we removed the [Task.Run] and created them directly
-			 */
-
 			if (this.IsConsoleShown)
 				ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
 
@@ -2799,18 +2785,32 @@ namespace BetterExplorer {
 				SetupUIOnSelectOrNavigate(true);
 				SetupColumnsButton(this.ShellListView.AllAvailableColumns);
 				SetSortingAndGroupingButtons();
-
-				//Setup the current selected folder in the ShellTree control
-				//FIXME: fix it!
-				//ShellTree.m_Navigating = true;
-				//ShellTree.SelectedFolder = e.Folder;
-				//ShellTree.m_Navigating = false;
 			}));
 
 			if (this.IsInfoPaneEnabled) {
 				Task.Run(() => {
 					this.DetailsPanel.FillPreviewPane(this.ShellListView);
 				});
+			}
+
+			var selectedItem = this.tabControl1.SelectedItem as ClosableTabItem;
+			if (selectedItem != null)
+			{
+				var selectedPaths = selectedItem.SelectedItems;
+				if (selectedPaths != null)
+				{
+					foreach (var path in selectedPaths.ToArray())
+					{
+						var sho = this.ShellListView.Items.Where(w => w.CachedParsingName == path).SingleOrDefault();
+						if (sho != null)
+						{
+							var index = this.ShellListView.ItemsHashed[sho];
+							this.ShellListView.SelectItemByIndex(index, true);
+							selectedPaths.Remove(path);
+						}
+
+					}
+				}
 			}
 
 			#region StatusBar selected items counter
@@ -2820,84 +2820,9 @@ namespace BetterExplorer {
 			}));
 
 			#endregion
-			//TODO: Consider ONLY using [Dispatcher.BeginInvoke]
-			/*
-			try {
-				if (this.IsConsoleShown)
-					ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
 
-
-				Task.Run(() => {
-					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() => {
-						SetUpBreadcrumbbarOnNavComplete(e);
-					}));
-				});
-
-				Task.Run(() => {
-					Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-						//ExplorerBrowser.FlushMemory();
-						//PreselectItemsIntoExplorerControl();
-
-						ConstructMoveToCopyToMenu();
-						SetupUIonNavComplete(e);
-						SetUpJumpListOnNavComplete();
-						SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
-
-
-						//SetupUIOnSelectOrNavigate(ShellListView.GetSelectedCount(), true);
-						SetupUIOnSelectOrNavigate(true);
-
-						SetupColumnsButton(this.ShellListView.AllAvailableColumns);
-
-						SetSortingAndGroupingButtons();
-
-						//Setup the current selected folder in the ShellTree control
-						//FIXME: fix it!
-						//ShellTree.m_Navigating = true;
-						//ShellTree.SelectedFolder = e.Folder;
-						//ShellTree.m_Navigating = false;
-					}));
-				});
-
-				if (this.IsInfoPaneEnabled) {
-					Task.Run(() => { //await
-						this.DetailsPanel.FillPreviewPane(this.ShellListView);
-					});
-				}
-
-				#region StatusBar selected items counter
-				 Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {//await
-					var explorerSelectedItemsCount = ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount();
-					SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
-				}));
-
-				#endregion
-
-				System.Windows.Forms.MessageBox.Show("ShellListView_Navigated");
-			}
-			catch (Exception) {
-				/-
-				 * Date: 4/29/2014	User: Aaron Campf
-				 * Commented out this code
-				 
-				ShellItem ne = e.Folder;
-				bool isinLibraries = false, itisLibraries = false;
-
-				if (ne != null) {
-					isinLibraries = ne.Parent.ParsingName == KnownFolders.Libraries.ParsingName;
-					itisLibraries = ne.ParsingName == KnownFolders.Libraries.ParsingName;
-				}
-				-/
-
-				//if (MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is some information about the folder being loaded:\r\n\r\nName: " + ne.GetDisplayName(SIGDN.NORMALDISPLAY) + "\r\nLocation: " + ne.ParsingName +
-				//    "\r\n\r\nFolder, Drive, or Library: " + GetYesNoFromBoolean(ne.IsFolder) + "\r\nDrive: " + GetYesNoFromBoolean(ne.IsDrive) + "\r\nNetwork Drive: " + GetYesNoFromBoolean(ne.IsNetDrive) + "\r\nRemovable: " + GetYesNoFromBoolean(ne.IsRemovable) +
-				//    "\r\nSearch Folder: " + GetYesNoFromBoolean(ne.IsSearchFolder) + "\r\nShared: " + GetYesNoFromBoolean(ne.IsShared) + "\r\nShortcut: " + GetYesNoFromBoolean(ne.IsLink) + "\r\nLibrary: " + GetYesNoFromBoolean(isinLibraries) + "\r\nLibraries Folder: " + GetYesNoFromBoolean(itisLibraries) +
-				//    "\r\n\r\n Would you like to see additional information? Click No to try continuing the program.", "Error Occurred on Completing Navigation", MessageBoxButton.YesNo, MessageBoxImage.Error) == MessageBoxResult.Yes)
-				//{
-				// MessageBox.Show("An error occurred while loading a folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\nHere is additional information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Additional Error Data", MessageBoxButton.OK, MessageBoxImage.Error);
-				//}
-			}
-			*/
+			this.ShellListView.Focus();
+			
 		}
 
 		private void SetupUIonNavComplete(NavigatedEventArgs e) {
@@ -2933,7 +2858,6 @@ namespace BetterExplorer {
 			leftNavBut.IsEnabled = (tabControl1.SelectedItem as ClosableTabItem).log.CanNavigateBackwards;
 			rightNavBut.IsEnabled = (tabControl1.SelectedItem as ClosableTabItem).log.CanNavigateForwards;
 			btnUpLevel.IsEnabled = ShellListView.CanNavigateParent;
-			//btnUpLevel.IsEnabled = !(ShellListView.CurrentFolder.Parent == null);
 		}
 
 		private void SetUpJumpListOnNavComplete() {

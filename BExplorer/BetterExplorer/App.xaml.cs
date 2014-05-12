@@ -202,7 +202,7 @@ namespace BetterExplorer {
 			bool dmi = true;
 
 			if (e.Args != null && e.Args.Count() > 0) {
-				dmi = !e.Args.Any((x) => x == "/nw");
+				dmi = e.Args.Any((x) => x == "/nw");
 				isStartWithStartupTab = e.Args.Any((x) => x == "/norestore");
 
 				//foreach (var Arg in e.Args) {
@@ -223,8 +223,7 @@ namespace BetterExplorer {
 					isStartMinimized = true;
 			}
 
-
-			isStartNewWindows = dmi || e.Args != null && e.Args.Count() > 0;
+			isStartNewWindows = dmi;
 			if (isStartNewWindows) {
 				if (!ApplicationInstanceManager.CreateSingleInstance(Assembly.GetExecutingAssembly().GetName().Name, SingleInstanceCallback))
 					return; // exit, if same app. is running
@@ -253,6 +252,23 @@ namespace BetterExplorer {
 
 
 
+		private void CreateInitialTab(MainWindow win, ShellItem sho)
+		{
+			sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+			sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+
+			ClosableTabItem newt = new ClosableTabItem();
+
+
+
+
+			newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
+			newt.TabIcon = sho.Thumbnail.BitmapSource;
+			newt.PreviewMouseMove += newt_PreviewMouseMove;
+			newt.ToolTip = sho.ParsingName;
+			newt.ShellObject = sho;
+			win.CloneTab(newt);
+		}
 		/// <summary>
 		/// Single instance callback handler.
 		/// </summary>
@@ -284,10 +300,10 @@ namespace BetterExplorer {
 						WindowsAPI.ShowWindow(hwnd, (int)WindowsAPI.ShowCommands.SW_RESTORE);
 					};
 
-					sho = new ShellItem(StartUpLocation);
+					sho = new ShellItem(StartUpLocation.ToShellParsingName());
 				}
 				else if (Check && args.CommandLineArgs[1] != "t") {
-					if (args.CommandLineArgs[1] == "nw") {
+					if (args.CommandLineArgs[1] == "/nw") {
 						new MainWindow().Show();
 						return;
 					}
@@ -297,42 +313,18 @@ namespace BetterExplorer {
 					}
 				}
 
-
-				var Worker = (Action)(() => {
-					sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-					sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-
-					ClosableTabItem newt = new ClosableTabItem();
-
-
-
-
-					newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
-					newt.TabIcon = sho.Thumbnail.BitmapSource;
-					newt.PreviewMouseMove += newt_PreviewMouseMove;
-					newt.ToolTip = sho.ParsingName;
-					newt.ShellObject = sho;
-					win.CloneTab(newt);
-				});
-
-
 				//TODO: Try refactoring [Worker] away 
 				if (!isStartMinimized || win.tabControl1.Items.Count == 0) {
-					Worker();
+					CreateInitialTab(win, sho);
 				}
 				else if ((int)rks.GetValue(@"IsRestoreTabs", 1) == 0) {
 					win.tabControl1.Items.Clear();
-					Worker();
+					CreateInitialTab(win, sho);
 				}
 				else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
 					String cmd = args.CommandLineArgs[1];
-					if (cmd.StartsWith("::")) {
-						sho = new ShellItem("shell:" + cmd);
-					}
-					else {
-						sho = new ShellItem(args.CommandLineArgs[1].Replace("\"", ""));
-					}
-					Worker();
+					sho = new ShellItem(cmd.ToShellParsingName());
+					CreateInitialTab(win, sho);
 				}
 
 				rks.Close();
