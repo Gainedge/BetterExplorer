@@ -242,6 +242,71 @@ namespace BetterExplorer {
 		#endregion
 
 
+		#region OnStartup
+
+		private void InitializeInitialTabs() {
+			var InitialTabs = Utilities.GetRegistryValue("OpenedTabs", "").ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (InitialTabs.Length == 0 || !IsrestoreTabs) {
+				ShellItem sho = new ShellItem(StartUpLocation.ToShellParsingName());
+				if (tabControl1.Items.OfType<ClosableTabItem>().Count() == 0)
+					NewTab(sho, true);
+				else
+					ShellListView.Navigate(sho);
+			}
+			if (IsrestoreTabs) {
+				isOnLoad = true;
+				int i = 0;
+				foreach (string str in InitialTabs) {
+					try {
+						i++;
+						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
+							if (i == InitialTabs.Length) {
+								tabControl1.SelectedIndex = InitialTabs.Length - 2;
+							}
+
+							continue;
+						}
+
+						NewTab(str.ToShellParsingName(), i == InitialTabs.Length);
+						if (i == InitialTabs.Count()) {
+							ShellItem sho = new ShellItem(str.ToShellParsingName());
+							ShellListView.Navigate(sho);
+							(tabControl1.SelectedItem as ClosableTabItem).ShellObject = sho;
+							(tabControl1.SelectedItem as ClosableTabItem).ToolTip = sho.ParsingName;
+						}
+					}
+					catch {
+						//AddToLog(String.Format("Unable to load {0} into a tab!", str));
+						MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
+					}
+				}
+
+				if (tabControl1.Items.Count == 0) {
+					NewTab();
+
+					if (StartUpLocation.StartsWith("::"))
+						ShellListView.Navigate(new ShellItem(StartUpLocation.ToShellParsingName()));
+					else
+						ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
+
+					(tabControl1.SelectedItem as ClosableTabItem).ShellObject = ShellListView.CurrentFolder;
+					(tabControl1.SelectedItem as ClosableTabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
+				}
+
+				isOnLoad = false;
+			}
+			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
+
+			if (tabControl1.Items.Count == 1)
+				tabControl1.SelectedIndex = 0;
+
+			//ShellVView.Visibility = System.Windows.Visibility.Hidden;
+		}
+
+		#endregion
+
+
 		[Obsolete("Try to inline this", false)]
 		private void CreateTabbarRKMenu(ClosableTabItem tabitem) {
 			tabitem.mnu = new ContextMenu();
