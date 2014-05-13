@@ -940,12 +940,11 @@ namespace BetterExplorer {
 			if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && SelItemsCount == 1) {
 				this.Previewer.FileName = selectedItem.ParsingName;
 			}
-			else {
-				if (!String.IsNullOrEmpty(this.Previewer.FileName)) this.Previewer.FileName = null;
+			else if (!String.IsNullOrEmpty(this.Previewer.FileName)) {
+				this.Previewer.FileName = null;
 			}
 			//Set up ribbon contextual tabs on selection changed
 			SetUpRibbonTabsVisibilityOnSelectOrNavigate(SelItemsCount, selectedItem);
-
 			SetUpButtonsStateOnSelectOrNavigate(SelItemsCount, selectedItem);
 		}
 
@@ -1974,7 +1973,6 @@ namespace BetterExplorer {
 					autoUpdater.ForceCheckForUpdate(true);
 					break;
 			}
-
 		}
 
 		private void Button_Click_7(object sender, RoutedEventArgs e) {
@@ -2330,13 +2328,12 @@ namespace BetterExplorer {
 			chkShowCheckBoxes.IsChecked = isCheckModeEnabled;
 
 			int ExFileOpEnabled = (int)rks.GetValue(@"FileOpExEnabled", 0);
-
 			IsExtendedFileOpEnabled = (ExFileOpEnabled == 1);
 			//ShellListView.IsExFileOpEnabled = IsExtendedFileOpEnabled;
+
 			chkIsTerraCopyEnabled.IsChecked = IsExtendedFileOpEnabled;
 
 			int cfoEnabled = (int)rks.GetValue(@"IsCustomFO", 0);
-
 			chkIsCFO.IsChecked = cfoEnabled == 1;
 
 			/*
@@ -2507,8 +2504,8 @@ namespace BetterExplorer {
 					(tabControl1.SelectedItem as ClosableTabItem).ShellObject = ShellListView.CurrentFolder;
 					(tabControl1.SelectedItem as ClosableTabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
 				}
-				isOnLoad = false;
 
+				isOnLoad = false;
 			}
 			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
 
@@ -2799,7 +2796,7 @@ namespace BetterExplorer {
 			if (this.IsConsoleShown)
 				ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
 
-			Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() => {
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				SetUpBreadcrumbbarOnNavComplete(e);
 			}));
 
@@ -2819,6 +2816,21 @@ namespace BetterExplorer {
 				});
 			}
 
+			/*
+			 * From: Aaron Campf
+			 * Date: 5/13/2012
+			 * 
+			 * I commented out the following code because all it did was let you select several folders,
+			 * then have them reselected when you get back to the folder
+			 * 
+			 * I do not see a user ever using it and if used overrides the feature where the when moving up a folder the parent is selected
+			 * 
+			 * Removing it also increases performance and decreases errors
+			 */
+
+
+			/*
+			//TODO: Why would have more then 1 selected path? We would only have 1 folder at a time
 			var selectedItem = this.tabControl1.SelectedItem as ClosableTabItem;
 			if (selectedItem != null) {
 				var selectedPaths = selectedItem.SelectedItems;
@@ -2830,21 +2842,15 @@ namespace BetterExplorer {
 							this.ShellListView.SelectItemByIndex(index, true);
 							selectedPaths.Remove(path);
 						}
-
 					}
-				}
+				}				
 			}
-
-			#region StatusBar selected items counter
+			*/
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-				var explorerSelectedItemsCount = ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount();
-				SetUpStatusBarOnSelectOrNavigate(explorerSelectedItemsCount);
+				SetUpStatusBarOnSelectOrNavigate(ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount());
 			}));
 
-			#endregion
-
 			this.ShellListView.Focus();
-
 		}
 
 		private void SetupUIonNavComplete(NavigatedEventArgs e) {
@@ -2901,7 +2907,7 @@ namespace BetterExplorer {
 				}
 
 				System.Windows.Shell.JumpList.AddToRecentCategory(new JumpTask() {
-					ApplicationPath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName,
+					ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
 					Arguments = String.Format("\"{0}\"", ShellListView.CurrentFolder.ParsingName),
 					Title = ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY),
 					IconResourcePath = sfi.szDisplayName,
