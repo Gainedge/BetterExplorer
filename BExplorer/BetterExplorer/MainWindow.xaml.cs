@@ -2846,10 +2846,18 @@ namespace BetterExplorer {
 				}				
 			}
 			*/
+
+			/*
+			 * From: Aaron Campf
+			 * Date: 5/13/2012
+			 * 
+			 * Commented out the following code because it did not seem to have ANY effect
+			 */
+			/*
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				SetUpStatusBarOnSelectOrNavigate(ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount());
 			}));
-
+			*/
 			this.ShellListView.Focus();
 		}
 
