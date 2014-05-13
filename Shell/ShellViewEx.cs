@@ -316,7 +316,8 @@ namespace BExplorer.Shell {
 		#region Public Members
 
 		public Boolean IsGroupsEnabled { get; set; }
-		public ToolTip tt = new ToolTip();
+
+		public ToolTip ToolTip;
 
 		public List<string> RecommendedPrograms(string ext) {
 			List<string> progs = new List<string>();
@@ -441,7 +442,6 @@ namespace BExplorer.Shell {
 		public List<int> SelectedIndexes {
 			get {
 				List<int> selItems = new List<int>();
-				//int index = -2;
 				int iStart = -1;
 				LVITEMINDEX lvi = new LVITEMINDEX();
 				while (lvi.iItem != -1) {
@@ -557,8 +557,6 @@ namespace BExplorer.Shell {
 				else
 					AutosizeAllColumns(-1);
 				OnViewChanged(new ViewChangedEventArgs(value, iconsize));
-
-				//OnNavigated(new NavigatedEventArgs(ShellItem.Desktop));
 			}
 		}
 
@@ -1583,7 +1581,7 @@ namespace BExplorer.Shell {
 										}
 										else {
 											ShellItem temp = null;
-											if (!currentItem.ParsingName.StartsWith("::")) {
+											if (!(currentItem.IsNetDrive || currentItem.IsNetworkPath) && !currentItem.ParsingName.StartsWith("::")) {
 												temp = new ShellItem(currentItem.ParsingName);
 											}
 											else {
@@ -1685,6 +1683,7 @@ namespace BExplorer.Shell {
 						char[] charBuf = ("\0").ToCharArray();
 						Marshal.Copy(charBuf, 0, nmGetInfoTip.pszText, Math.Min(charBuf.Length, nmGetInfoTip.cchTextMax));
 						Marshal.StructureToPtr(nmGetInfoTip, m.LParam, false);
+<<<<<<< HEAD
 						if (tt.IsVisible)
 							tt.HideTooltip();
 
@@ -1694,6 +1693,24 @@ namespace BExplorer.Shell {
 						tt.Left = Cursor.Position.X;
 						tt.Top = Cursor.Position.Y;
 						tt.ShowTooltip();
+=======
+						if (ToolTip.IsVisible)
+							ToolTip.HideTooltip();
+						//if (!String.IsNullOrEmpty(itemInfotip.ToolTipText)) {
+						//	tt.CurrentItem = itemInfotip;
+						//	tt.ItemIndex = nmGetInfoTip.iItem;
+						//	tt.Type = nmGetInfoTip.dwFlags;
+						//	tt.Left = Cursor.Position.X;
+						//	tt.Top = Cursor.Position.Y;
+						//	tt.ShowTooltip();
+						//}
+						ToolTip.CurrentItem = itemInfotip;
+						ToolTip.ItemIndex = nmGetInfoTip.iItem;
+						ToolTip.Type = nmGetInfoTip.dwFlags;
+						ToolTip.Left = Cursor.Position.X;
+						ToolTip.Top = Cursor.Position.Y;
+						ToolTip.ShowTooltip();
+>>>>>>> 33c2fb062eaf3e8c8bb0aa80572440505e339229
 
 						break;
 
@@ -1755,7 +1772,7 @@ namespace BExplorer.Shell {
 						resetEvent.Reset();
 						_ResetTimer.Stop();
 						this.Cancel = true;
-						tt.HideTooltip();
+						ToolTip.HideTooltip();
 						//foreach (var item in cache) {
 						//	if (item.Value != null) {
 						//		item.Value.Dispose();
@@ -1826,7 +1843,7 @@ namespace BExplorer.Shell {
 						//RedrawWindow();
 						NMLISTVIEW nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 						if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE) {
-							tt.HideTooltip();
+							ToolTip.HideTooltip();
 							selectionTimer.Interval = 100;
 							selectionTimer.Tick += selectionTimer_Tick;
 							this._IsDragSelect = nlv.uNewState;
@@ -1916,8 +1933,8 @@ namespace BExplorer.Shell {
 
 					case WNM.LVN_HOTTRACK:
 						NMLISTVIEW nlvHotTrack = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
-						if (nlvHotTrack.iItem != tt.ItemIndex) {
-							tt.HideTooltip();
+						if (nlvHotTrack.iItem != ToolTip.ItemIndex) {
+							ToolTip.HideTooltip();
 						}
 						break;
 
@@ -1967,16 +1984,16 @@ namespace BExplorer.Shell {
 					case WNM.NM_SETFOCUS:
 						if (IsGroupsEnabled)
 							RedrawWindow();
-						if (this.tt.IsVisible)
-							this.tt.HideTooltip();
+						if (this.ToolTip != null && this.ToolTip.IsVisible)
+							this.ToolTip.HideTooltip();
 						OnGotFocus();
 						break;
 
 					case WNM.NM_KILLFOCUS:
 						if (IsGroupsEnabled)
 							RedrawWindow();
-						if (this.tt.IsVisible)
-							this.tt.HideTooltip();
+						if (this.ToolTip != null && this.ToolTip.IsVisible)
+							this.ToolTip.HideTooltip();
 						OnLostFocus();
 						break;
 
@@ -2081,10 +2098,14 @@ namespace BExplorer.Shell {
 												if (IconSize != 16) {
 													var thumbnail = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
 													if (thumbnail != null) {
-														if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize) || thumbnail.Width == thumbnail.Height && thumbnail.Width != IconSize)) {
+														if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize) || thumbnail.Width == thumbnail.Height && thumbnail.Width != IconSize))
+														{
 															ThumbnailsForCacheLoad.Enqueue(index);
 														}
-														sho.IsThumbnailLoaded = true;
+														else
+														{
+															sho.IsThumbnailLoaded = true;
+														}
 														using (Graphics g = Graphics.FromHdc(hdc)) {
 															var cutFlag = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
 															if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
@@ -2204,6 +2225,7 @@ namespace BExplorer.Shell {
 													}
 												}
 												else {
+													sho.IsThumbnailLoaded = true;
 													if ((sho.IconType & IExtractIconpwFlags.GIL_PERCLASS) == IExtractIconpwFlags.GIL_PERCLASS) {
 														var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 														if (icon != null) {
@@ -2927,6 +2949,11 @@ namespace BExplorer.Shell {
 			this.OnNavigating(new NavigatingEventArgs(destination));
 			if (destination == null)
 				return;
+
+			if (ToolTip == null)
+			{
+				this.ToolTip = new ToolTip();
+			}
 			if (this.CurrentFolder != null) {
 				if (destination.ParsingName == this.CurrentFolder.ParsingName && !isReload)
 					return;
@@ -2945,6 +2972,7 @@ namespace BExplorer.Shell {
 			this.Cancel = true;
 			this.cache.Clear();
 			this._CuttedIndexes.Clear();
+			SubItems.Clear();
 			Tuple<int, PROPERTYKEY, object> tmp = null;
 			while (!SubItemValues.IsEmpty) {
 				SubItemValues.TryTake(out tmp);
@@ -2998,7 +3026,7 @@ namespace BExplorer.Shell {
 			}
 			catch { }
 
-			this.OnNavigated(new NavigatedEventArgs(destination));
+			
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 			if (IsGroupsEnabled) {
 				this.Groups.Clear();
@@ -3006,7 +3034,7 @@ namespace BExplorer.Shell {
 				GenerateGroupsFromColumn(this.Collumns.First());
 			}
 			//dest.Dispose();
-
+			this.OnNavigated(new NavigatedEventArgs(destination));
 			IsDoubleNavFinished = false;
 		}
 
@@ -3076,55 +3104,63 @@ namespace BExplorer.Shell {
 				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup3);
 			}
 			if (col.CollumnType == typeof(long)) {
+				ListViewGroupEx uspec = new ListViewGroupEx();
+				uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
+				uspec.Header = String.Format("Unspecified ({0})", uspec.Items.Count());
+				uspec.Index = 0;
+				var nativeGroupu = uspec.ToNativeListViewGroup();
+				this.Groups.Add(uspec);
+
 				ListViewGroupEx testgrn = new ListViewGroupEx();
-				testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) == 0).ToArray();
+				testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) == 0 && !w.IsFolder).ToArray();
 				testgrn.Header = String.Format("Empty ({0})", testgrn.Items.Count());
-				testgrn.Index = 0;
+				testgrn.Index = 1;
 				var nativeGroupn = testgrn.ToNativeListViewGroup();
 				this.Groups.Add(testgrn);
 
 				ListViewGroupEx testgr = new ListViewGroupEx();
 				testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 10 * 1024).ToArray();
 				testgr.Header = String.Format("Very Small ({0})", testgr.Items.Count());
-				testgr.Index = 1;
+				testgr.Index = 2;
 				var nativeGroup = testgr.ToNativeListViewGroup();
 				this.Groups.Add(testgr);
 
 				ListViewGroupEx testgr2 = new ListViewGroupEx();
 				testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 100 * 1024).ToArray();
 				testgr2.Header = String.Format("Small ({0})", testgr2.Items.Count());
-				testgr2.Index = 2;
+				testgr2.Index = 3;
 				var nativeGroup2 = testgr2.ToNativeListViewGroup();
 				this.Groups.Add(testgr2);
 
 				ListViewGroupEx testgr3 = new ListViewGroupEx();
 				testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 1 * 1024 * 1024).ToArray();
 				testgr3.Header = String.Format("Medium ({0})", testgr3.Items.Count());
-				testgr3.Index = 3;
+				testgr3.Index = 4;
 				var nativeGroup3 = testgr3.ToNativeListViewGroup();
 				this.Groups.Add(testgr3);
 
 				ListViewGroupEx testgr4 = new ListViewGroupEx();
 				testgr4.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 16 * 1024 * 1024).ToArray();
 				testgr4.Header = String.Format("Big ({0})", testgr4.Items.Count());
-				testgr4.Index = 4;
+				testgr4.Index = 5;
 				var nativeGroup4 = testgr4.ToNativeListViewGroup();
 				this.Groups.Add(testgr4);
 
 				ListViewGroupEx testgr5 = new ListViewGroupEx();
 				testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 16 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 128 * 1024 * 1024).ToArray();
 				testgr5.Header = String.Format("Huge ({0})", testgr5.Items.Count());
-				testgr5.Index = 5;
+				testgr5.Index = 6;
 				var nativeGroup5 = testgr5.ToNativeListViewGroup();
 				this.Groups.Add(testgr5);
 
 				ListViewGroupEx testgr6 = new ListViewGroupEx();
 				testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 128 * 1024 * 1024).ToArray();
 				testgr6.Header = String.Format("Gigantic ({0})", testgr6.Items.Count());
-				testgr6.Index = 6;
+				testgr6.Index = 7;
 				var nativeGroup6 = testgr6.ToNativeListViewGroup();
 				this.Groups.Add(testgr6);
 
+				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroupu);
 				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroupn);
 				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
 				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup2);
@@ -3171,7 +3207,7 @@ namespace BExplorer.Shell {
 					var index = shieldQueue.Dequeue();
 					//Application.DoEvents();
 					var shoTemp = Items[index];
-					ShellItem sho = shoTemp.ParsingName.StartsWith("::") ? shoTemp : new ShellItem(shoTemp.ParsingName);
+					ShellItem sho = !(shoTemp.IsNetDrive || shoTemp.IsNetworkPath) && shoTemp.ParsingName.StartsWith("::") ? shoTemp : new ShellItem(shoTemp.ParsingName);
 
 					var shieldOverlay = 0;
 					if ((sho.GetShield() & IExtractIconpwFlags.GIL_SHIELD) != 0) {
@@ -3206,7 +3242,7 @@ namespace BExplorer.Shell {
 					//	continue;
 					//Application.DoEvents();
 					var shoTemp = Items[index];
-					ShellItem sho = shoTemp.ParsingName.StartsWith("::") ? shoTemp : new ShellItem(shoTemp.ParsingName);
+					ShellItem sho = !(shoTemp.IsNetDrive || shoTemp.IsNetworkPath) &&  shoTemp.ParsingName.StartsWith("::") ? shoTemp : new ShellItem(shoTemp.ParsingName);
 
 					int overlayIndex = 0;
 					small.GetIconIndexWithOverlay(sho.Pidl, out overlayIndex);
@@ -3241,7 +3277,7 @@ namespace BExplorer.Shell {
 					//	continue;
 					resetEvent.WaitOne();
 					var sho = Items[index];
-					ShellItem temp = sho.ParsingName.StartsWith("::") ? sho : new ShellItem(sho.ParsingName);
+					ShellItem temp = !(sho.IsNetDrive || sho.IsNetworkPath) && sho.ParsingName.StartsWith("::") ? sho : new ShellItem(sho.ParsingName);
 
 					var icon = temp.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 					if (icon != null) {
@@ -3313,7 +3349,8 @@ namespace BExplorer.Shell {
 
 						var currentItem = Items[index.Item1];
 						ShellItem temp = null;
-						if (!currentItem.ParsingName.StartsWith("::")) {
+						if (!(currentItem.IsNetDrive || currentItem.IsNetworkPath) && !currentItem.ParsingName.StartsWith("::"))
+						{
 							temp = new ShellItem(currentItem.ParsingName);
 						}
 						else {
@@ -3329,7 +3366,7 @@ namespace BExplorer.Shell {
 						if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
 							if (SubItemValues.ToArray().Count(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid) == 0) {
 								SubItemValues.Add(new Tuple<int, PROPERTYKEY, object>(hash, pk, pvar.Value));
-								User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index.Item1, index.Item1);
+								this.RedrawItem(index.Item1);
 							}
 							pvar.Dispose();
 						}
