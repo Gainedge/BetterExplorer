@@ -110,8 +110,8 @@ namespace BetterExplorer {
 
 		ClipboardMonitor cbm = new ClipboardMonitor();
 		ContextMenu cmHistory = new ContextMenu();
-		private int LastTabIndex = -1;
-		private int BeforeLastTabIndex = -1;
+		//private int LastTabIndex = -1;
+		//private int BeforeLastTabIndex = -1;
 		string StartUpLocation = KnownFolders.Libraries.ParsingName;
 
 
@@ -119,7 +119,7 @@ namespace BetterExplorer {
 		System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
 		public bool IsCalledFromLoading;
 		public bool IsCalledFromViewEnum;
-		bool ReadyToChangeLanguage;
+
 		System.Windows.Forms.Timer FocusTimer = new System.Windows.Forms.Timer();
 		IntPtr Handle;
 		string EditComm = "";
@@ -148,7 +148,7 @@ namespace BetterExplorer {
 		Int32 UpdateCheckInterval;
 		Double CommandPromptWinHeight;
 
-		private readonly ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
+
 		public List<string> QatItems = new List<string>();
 		UIElement curitem = null;
 		Boolean IsGlassOnRibonMinimized { get; set; }
@@ -159,14 +159,6 @@ namespace BetterExplorer {
 		ContextMenu chcm;
 
 		MessageReceiver r;
-
-		#endregion
-
-		#region Properties
-		/// <summary>
-		/// Gets Previous Window State
-		/// </summary>
-		public WindowState PreviouseWindowState { get; private set; }
 
 		#endregion
 
@@ -307,8 +299,8 @@ namespace BetterExplorer {
 			System.Drawing.Point Location = new System.Drawing.Point();
 			try {
 				Location = new System.Drawing.Point(
-								Convert.ToInt32(rks.GetValue(@"LastWindowPosLeft", "0")),
-								Convert.ToInt32(rks.GetValue(@"LastWindowPosTop", "0"))
+					Convert.ToInt32(rks.GetValue(@"LastWindowPosLeft", "0")),
+					Convert.ToInt32(rks.GetValue(@"LastWindowPosTop", "0"))
 				);
 			}
 			catch { }
@@ -895,7 +887,7 @@ namespace BetterExplorer {
 				sbiSelItemsCount.Content = selectedItemsCount.ToString() + " items selected";
 		}
 
-		private async void SetUpButtonsStateOnSelectOrNavigate(int selectedItemsCount, ShellItem selectedItem) {
+		private void SetUpButtonsStateOnSelectOrNavigate(int selectedItemsCount, ShellItem selectedItem) {
 			btnCopy.IsEnabled = selectedItemsCount > 0;
 			btnCopyto.IsEnabled = selectedItemsCount > 0;
 			btnMoveto.IsEnabled = selectedItemsCount > 0;
@@ -941,8 +933,8 @@ namespace BetterExplorer {
 
 			btnDefSave.Items.Clear();
 			var selectedItem = this.ShellListView.GetFirstSelectedItem();
-			if (selectedItem != null) {
-				if (!isNavigate) SetUpOpenWithButton(selectedItem);
+			if (selectedItem != null && !isNavigate) {
+				SetUpOpenWithButton(selectedItem);
 			}
 
 			if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && SelItemsCount == 1) {
@@ -965,6 +957,7 @@ namespace BetterExplorer {
 			btnPasetShC.IsEnabled = e.DataObject.GetDataPresent(DataFormats.FileDrop) || e.DataObject.GetDataPresent("Shell IDList Array");
 		}
 
+		[Obsolete("How do I activate this event and why would I want to do it!!!")]
 		private void TheRibbon_IsCollapsedChanged(object sender, DependencyPropertyChangedEventArgs e) {
 			this.edtSearchBox.Visibility = this.BooleanToVisibiliy(!(bool)e.NewValue);
 		}
@@ -1020,6 +1013,7 @@ namespace BetterExplorer {
 		}
 
 		private void ConditionallySelectFiles(ConditionalSelectData csd) {
+			//TODO: Test this to see if it works
 			if (csd == null) return;
 
 			var shells = ShellListView.Items.ToList();
@@ -1087,19 +1081,16 @@ namespace BetterExplorer {
 								smallbound = csd.FileSizeData.query1;
 								largebound = csd.FileSizeData.query2;
 							}
+							else if (csd.FileSizeData.query2 < csd.FileSizeData.query1) {
+								smallbound = csd.FileSizeData.query2;
+								largebound = csd.FileSizeData.query1;
+							}
 							else {
-								if (csd.FileSizeData.query2 < csd.FileSizeData.query1) {
-									smallbound = csd.FileSizeData.query2;
-									largebound = csd.FileSizeData.query1;
-								}
-								else {
-									if (data.Length == csd.FileSizeData.query1) l2shells.Add(item);
-									break;
-								}
+								if (data.Length == csd.FileSizeData.query1) l2shells.Add(item);
+								break;
 							}
 
-							if (data.Length > smallbound)
-								if (data.Length < largebound) l2shells.Add(item);
+							if (data.Length > smallbound && data.Length < largebound) l2shells.Add(item);
 							break;
 						case ConditionalSelectParameters.FileSizeFilterTypes.NotEqualTo:
 							if (data.Length != csd.FileSizeData.query1) l2shells.Add(item);
@@ -1110,16 +1101,14 @@ namespace BetterExplorer {
 								smallbound2 = csd.FileSizeData.query1;
 								largebound2 = csd.FileSizeData.query2;
 							}
+							else if (csd.FileSizeData.query2 < csd.FileSizeData.query1) {
+								smallbound2 = csd.FileSizeData.query2;
+								largebound2 = csd.FileSizeData.query1;
+							}
 							else {
-								if (csd.FileSizeData.query2 < csd.FileSizeData.query1) {
-									smallbound2 = csd.FileSizeData.query2;
-									largebound2 = csd.FileSizeData.query1;
-								}
-								else {
-									// they are the same, use Unequal code
-									if (data.Length != csd.FileSizeData.query1) l2shells.Add(item);
-									break;
-								}
+								// they are the same, use Unequal code
+								if (data.Length != csd.FileSizeData.query1) l2shells.Add(item);
+								break;
 							}
 
 							if (data.Length < smallbound2 || data.Length > largebound2) l2shells.Add(item);
@@ -1127,7 +1116,6 @@ namespace BetterExplorer {
 						default:
 							break;
 					}
-
 				}
 			}
 			else {
@@ -1136,8 +1124,18 @@ namespace BetterExplorer {
 				}
 			}
 
+			//TODO: Check this!!
+
+			Func<FileInfo, DateTime> GetCreateDate = (x) => x.CreationTimeUtc;
+			foreach (var item in !csd.FilterByDateCreated ? l2shells : DateFilter(l2shells, csd.DateCreatedData, GetCreateDate)) {
+				l3shells.Add(item);
+			}
+
+			/*
 			if (csd.FilterByDateCreated) {
-				foreach (ShellItem item in FilterByCreateDate(l2shells.ToArray(), csd.DateCreatedData.queryDate, csd.DateCreatedData.filter)) {
+				Func<FileInfo, DateTime> GetDate = (x) => x.CreationTimeUtc;
+				foreach (ShellItem item in DateFilter(l2shells, csd.DateCreatedData.queryDate, csd.DateCreatedData.filter, GetDate)) {
+					//foreach (ShellItem item in FilterByCreateDate(l2shells.ToArray(), csd.DateCreatedData.queryDate, csd.DateCreatedData.filter)) {
 					l3shells.Add(item);
 				}
 			}
@@ -1146,9 +1144,18 @@ namespace BetterExplorer {
 					l3shells.Add(item);
 				}
 			}
+			*/
 
+			Func<FileInfo, DateTime> GetDateModified = (x) => x.LastWriteTimeUtc;
+			foreach (var item in !csd.FilterByDateModified ? l2shells : DateFilter(l3shells, csd.DateModifiedData, GetDateModified)) {
+				l4shells.Add(item);
+			}
+
+			/*
 			if (csd.FilterByDateModified) {
-				foreach (ShellItem item in FilterByWriteDate(l3shells.ToArray(), csd.DateModifiedData.queryDate, csd.DateModifiedData.filter)) {
+				Func<FileInfo, DateTime> GetDate = (x) => x.LastWriteTimeUtc;
+				foreach (ShellItem item in DateFilter(l3shells, csd.DateModifiedData.queryDate, csd.DateModifiedData.filter, GetDate)) {
+					//foreach (ShellItem item in FilterByWriteDate(l3shells.ToArray(), csd.DateModifiedData.queryDate, csd.DateModifiedData.filter)) {
 					l4shells.Add(item);
 				}
 			}
@@ -1157,9 +1164,18 @@ namespace BetterExplorer {
 					l4shells.Add(item);
 				}
 			}
+			*/
 
+			Func<FileInfo, DateTime> GetDateAccessed = (x) => x.LastAccessTimeUtc;
+			foreach (var item in !csd.FilterByDateAccessed ? l4shells : DateFilter(l4shells, csd.DateAccessedData, GetDateAccessed)) {
+				l5shells.Add(item);
+			}
+
+			/*
 			if (csd.FilterByDateAccessed) {
-				foreach (ShellItem item in FilterByAccessDate(l4shells.ToArray(), csd.DateAccessedData.queryDate, csd.DateAccessedData.filter)) {
+				Func<FileInfo, DateTime> GetDate = (x) => x.LastAccessTimeUtc;
+				//foreach (ShellItem item in FilterByAccessDate(l4shells.ToArray(), csd.DateAccessedData.queryDate, csd.DateAccessedData.filter)) {
+				foreach (ShellItem item in DateFilter(l4shells, csd.DateAccessedData.queryDate, csd.DateAccessedData.filter, GetDate)) {
 					l5shells.Add(item);
 				}
 			}
@@ -1168,6 +1184,7 @@ namespace BetterExplorer {
 					l5shells.Add(item);
 				}
 			}
+			*/
 
 			//List<ShellItem> sel = new List<ShellItem>();
 			ShellListView.SelectItems(l5shells.ToArray());
@@ -1175,6 +1192,36 @@ namespace BetterExplorer {
 
 		}
 
+
+
+		private List<ShellItem> DateFilter(List<ShellItem> shells, ConditionalSelectParameters.DateParameters filter, Func<FileInfo, DateTime> GetDate) {
+			var outshells = new List<ShellItem>();
+
+			foreach (ShellItem item in shells) {
+				FileInfo data = new FileInfo(item.ParsingName);
+				var Date = GetDate(data);
+
+				switch (filter.filter) {
+					case ConditionalSelectParameters.DateFilterTypes.EarlierThan:
+						if (DateTime.Compare(Date, filter.queryDate) < 0) outshells.Add(item);
+						break;
+					case ConditionalSelectParameters.DateFilterTypes.LaterThan:
+						if (DateTime.Compare(Date, filter.queryDate) > 0) outshells.Add(item);
+						break;
+					case ConditionalSelectParameters.DateFilterTypes.Equals:
+						if (DateTime.Compare(Date, filter.queryDate) == 0) outshells.Add(item);
+						break;
+					default:
+						break;
+				}
+			}
+
+			return outshells;
+		}
+
+
+
+		/*
 		public List<ShellItem> FilterByCreateDate(ShellItem[] shells, DateTime datetocompare, ConditionalSelectParameters.DateFilterTypes filter) {
 			List<ShellItem> outshells = new List<ShellItem>();
 
@@ -1243,6 +1290,7 @@ namespace BetterExplorer {
 
 			return outshells;
 		}
+		*/
 
 		#endregion
 
@@ -2064,14 +2112,7 @@ namespace BetterExplorer {
 
 		private void InitializeExplorerControl() {
 			this.ShellTree.NodeClick += ShellTree_NodeClick;
-
-
-
-			//this.ShellListView.Navigated += ShellListView_Navigated;
-
 			this.ShellListView.Navigated += ShellListView_Navigated;
-
-
 			this.ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
 			this.ShellListView.SelectionChanged += ShellListView_SelectionChanged;
 			this.ShellListView.LostFocus += ShellListView_LostFocus;
@@ -2103,7 +2144,7 @@ namespace BetterExplorer {
 				var selectedPaths = selectedItem.SelectedItems;
 				var path = e.DisplayedItem.ParsingName;
 				if (selectedPaths != null && selectedPaths.Contains(path)) {
-					this.ShellListView.SelectItemByIndex(e.DisplayedItemIndex ,true);
+					this.ShellListView.SelectItemByIndex(e.DisplayedItemIndex, true);
 					selectedPaths.Remove(path);
 				}
 			}
@@ -2154,41 +2195,26 @@ namespace BetterExplorer {
 			//ShellListView.Focus();
 		}
 
-		async void ShellListView_SelectionChanged(object sender, EventArgs e) {
-			//int explorerSelectedItemsCount = ShellListView.GetSelectedCount();
-
+		void ShellListView_SelectionChanged(object sender, EventArgs e) {
 			if (!IsSelectionRized) {
 				IsSelectionRized = true;
 
-				Task.Run(async () => {
-					//ct.ThrowIfCancellationRequested();
-					Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-						try {
-							// set up buttons
-
-							//SetupUIOnSelectOrNavigate(explorerSelectedItemsCount);
-							SetupUIOnSelectOrNavigate();
-						}
-						catch (Exception) {
-						}
-					}));
-				});
+				Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+					try {
+						SetupUIOnSelectOrNavigate();
+					}
+					catch (Exception) {
+					}
+				}));
 				if (this.IsInfoPaneEnabled) {
-					await Task.Run(() => {
+					Task.Run(() => {
 						this.DetailsPanel.FillPreviewPane(this.ShellListView);
 					});
 				}
 				IsSelectionRized = false;
 			}
 
-			#region StatusBar selected items counter
-			//TODO: Make sure there was no reason for the following code
-			//explorerSelectedItemsCount = ShellListView.GetSelectedCount();
 			SetUpStatusBarOnSelectOrNavigate(ShellListView.GetSelectedCount());
-			#endregion
-
-			//if (!IsAfterFolderCreate && !backstage.IsOpen && IsAfterRename && !ShellListView.IsRenameStarted)
-			//    ShellListView.SetExplorerFocus();
 		}
 
 		protected override void OnSourceInitialized(EventArgs e) {
@@ -2633,7 +2659,7 @@ namespace BetterExplorer {
 				//'set StartUp location
 				if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized") {
 					String cmd = Application.Current.Properties["cmd"].ToString();
-					
+
 					if (cmd == "/nw")
 						NewTab(ShellListView.CurrentFolder, true);
 				}
@@ -2758,10 +2784,10 @@ namespace BetterExplorer {
 			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems.Select(s => s.DisplayName).ToList());
 			AddToLog("Session Ended");
 			//if (!App.isStartNewWindows) {
-				e.Cancel = true;
-				App.isStartMinimized = true;
-				this.WindowState = System.Windows.WindowState.Minimized;
-				this.Visibility = System.Windows.Visibility.Hidden;
+			e.Cancel = true;
+			App.isStartMinimized = true;
+			this.WindowState = System.Windows.WindowState.Minimized;
+			this.Visibility = System.Windows.Visibility.Hidden;
 			//}
 		}
 
@@ -2794,16 +2820,12 @@ namespace BetterExplorer {
 			}
 
 			var selectedItem = this.tabControl1.SelectedItem as ClosableTabItem;
-			if (selectedItem != null)
-			{
+			if (selectedItem != null) {
 				var selectedPaths = selectedItem.SelectedItems;
-				if (selectedPaths != null)
-				{
-					foreach (var path in selectedPaths.ToArray())
-					{
+				if (selectedPaths != null) {
+					foreach (var path in selectedPaths.ToArray()) {
 						var sho = this.ShellListView.Items.Where(w => w.CachedParsingName == path).SingleOrDefault();
-						if (sho != null)
-						{
+						if (sho != null) {
 							var index = this.ShellListView.ItemsHashed[sho];
 							this.ShellListView.SelectItemByIndex(index, true);
 							selectedPaths.Remove(path);
@@ -2822,7 +2844,7 @@ namespace BetterExplorer {
 			#endregion
 
 			this.ShellListView.Focus();
-			
+
 		}
 
 		private void SetupUIonNavComplete(NavigatedEventArgs e) {
@@ -4752,58 +4774,11 @@ namespace BetterExplorer {
 		}
 
 		void newt_CloseTab(object sender, RoutedEventArgs e) {
-			ClosableTabItem curItem = e.Source as ClosableTabItem;
-			CloseTab(curItem);
+			CloseTab(e.Source as ClosableTabItem);
 		}
 
 
-		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-		private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			try {
-				if (e.RemovedItems.Count > 0) {
-					var tab = e.RemovedItems[0] as ClosableTabItem;
 
-					if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
-						tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
-					}
-				}
-				if (e.AddedItems.Count > 0 && (e.AddedItems[0] as ClosableTabItem).Index == tabControl1.Items.Count - 1) {
-					tabControl1.Items.OfType<ClosableTabItem>().Last().BringIntoView();
-				}
-				if (e.AddedItems.Count == 0) return;
-
-				ClosableTabItem itb = e.AddedItems[0] as ClosableTabItem;
-				if (itb == null) return;
-
-				isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
-				try {
-					BeforeLastTabIndex = LastTabIndex;
-
-					//tabControl1.SelectedIndex = itb.Index;
-					//LastTabIndex = itb.Index;
-					//CurrentTabIndex = LastTabIndex;
-					if (itb.ShellObject != ShellListView.CurrentFolder) {
-						if (!Keyboard.IsKeyDown(Key.Tab)) {
-							ShellListView.Navigate(itb.ShellObject);
-						}
-						else {
-							t.Interval = 500;
-							t.Tag = itb.ShellObject;
-							t.Tick += new EventHandler(t_Tick);
-							t.Start();
-						}
-					}
-
-					itb.BringIntoView();
-				}
-				catch (StackOverflowException) {
-
-				}
-			}
-			catch (Exception ex) {
-				//Catch eventual exceptions
-			}
-		}
 
 		void t_Tick(object sender, EventArgs e) {
 			if (!Keyboard.IsKeyDown(Key.Tab)) {
@@ -5626,8 +5601,10 @@ namespace BetterExplorer {
 			// sets size of search bar
 			this.SearchBarColumn.Width = new GridLength(sbw);
 
+			/*
 			// store 1st value
 			PreviouseWindowState = WindowState;
+			*/
 
 			// attach to event (used to store prev. win. state)
 			//FIXME: fix the event

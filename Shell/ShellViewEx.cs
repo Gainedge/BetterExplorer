@@ -1682,35 +1682,17 @@ namespace BExplorer.Shell {
 						var itemInfotip = this.Items[nmGetInfoTip.iItem];
 						char[] charBuf = ("\0").ToCharArray();
 						Marshal.Copy(charBuf, 0, nmGetInfoTip.pszText, Math.Min(charBuf.Length, nmGetInfoTip.cchTextMax));
-						Marshal.StructureToPtr(nmGetInfoTip, m.LParam, false);
-<<<<<<< HEAD
-						if (tt.IsVisible)
-							tt.HideTooltip();
+						Marshal.StructureToPtr(nmGetInfoTip, m.LParam, false);		
 
-						tt.CurrentItem = itemInfotip;
-						tt.ItemIndex = nmGetInfoTip.iItem;
-						tt.Type = nmGetInfoTip.dwFlags;
-						tt.Left = Cursor.Position.X;
-						tt.Top = Cursor.Position.Y;
-						tt.ShowTooltip();
-=======
 						if (ToolTip.IsVisible)
 							ToolTip.HideTooltip();
-						//if (!String.IsNullOrEmpty(itemInfotip.ToolTipText)) {
-						//	tt.CurrentItem = itemInfotip;
-						//	tt.ItemIndex = nmGetInfoTip.iItem;
-						//	tt.Type = nmGetInfoTip.dwFlags;
-						//	tt.Left = Cursor.Position.X;
-						//	tt.Top = Cursor.Position.Y;
-						//	tt.ShowTooltip();
-						//}
+		
 						ToolTip.CurrentItem = itemInfotip;
 						ToolTip.ItemIndex = nmGetInfoTip.iItem;
 						ToolTip.Type = nmGetInfoTip.dwFlags;
 						ToolTip.Left = Cursor.Position.X;
 						ToolTip.Top = Cursor.Position.Y;
 						ToolTip.ShowTooltip();
->>>>>>> 33c2fb062eaf3e8c8bb0aa80572440505e339229
 
 						break;
 
