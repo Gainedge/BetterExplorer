@@ -716,7 +716,7 @@ namespace BetterExplorer {
 				}));
 		}
 
-		bool IsSelectionRized = false;
+		//bool IsSelectionRized = false;
 		//BackgroundWorker bwSelectionChanged = new BackgroundWorker();
 		//'Selection change (when an item is selected in a folder)
 
@@ -2194,22 +2194,15 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_SelectionChanged(object sender, EventArgs e) {
-			if (!IsSelectionRized) {
-				IsSelectionRized = true;
 
-				Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-					try {
-						SetupUIOnSelectOrNavigate();
-					}
-					catch (Exception) {
-					}
-				}));
-				if (this.IsInfoPaneEnabled) {
-					Task.Run(() => {
-						this.DetailsPanel.FillPreviewPane(this.ShellListView);
-					});
-				}
-				IsSelectionRized = false;
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+				SetupUIOnSelectOrNavigate();
+			}));
+
+			if (this.IsInfoPaneEnabled) {
+				Task.Run(() => {
+					this.DetailsPanel.FillPreviewPane(this.ShellListView);
+				});
 			}
 
 			SetUpStatusBarOnSelectOrNavigate(ShellListView.GetSelectedCount());
@@ -2852,6 +2845,7 @@ namespace BetterExplorer {
 			 * Date: 5/13/2012
 			 * 
 			 * Commented out the following code because it did not seem to have ANY effect
+			 * It is likely that SetUpStatusBarOnSelectOrNavigate(...) is already be is already being called from ShellListView_SelectionChanged(...)
 			 */
 			/*
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
