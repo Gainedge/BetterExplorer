@@ -1687,14 +1687,7 @@ namespace BExplorer.Shell {
 						Marshal.StructureToPtr(nmGetInfoTip, m.LParam, false);
 						if (tt.IsVisible)
 							tt.HideTooltip();
-						//if (!String.IsNullOrEmpty(itemInfotip.ToolTipText)) {
-						//	tt.CurrentItem = itemInfotip;
-						//	tt.ItemIndex = nmGetInfoTip.iItem;
-						//	tt.Type = nmGetInfoTip.dwFlags;
-						//	tt.Left = Cursor.Position.X;
-						//	tt.Top = Cursor.Position.Y;
-						//	tt.ShowTooltip();
-						//}
+
 						tt.CurrentItem = itemInfotip;
 						tt.ItemIndex = nmGetInfoTip.iItem;
 						tt.Type = nmGetInfoTip.dwFlags;
@@ -2399,6 +2392,7 @@ namespace BExplorer.Shell {
 
 		#region Public Methods
 
+		[Obsolete("Does nothing or is not finished")]
 		public void ShowFileProperties() {
 			IntPtr doPtr = IntPtr.Zero;
 			if (Shell32.SHMultiFileProperties(this.SelectedItems.ToArray().GetIDataObject(out doPtr), 0) != 0 /*S_OK*/) {
