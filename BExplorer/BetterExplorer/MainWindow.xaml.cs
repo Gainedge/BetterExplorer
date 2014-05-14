@@ -90,6 +90,11 @@ namespace BetterExplorer {
 
 		#region Variables and Constants
 
+		[Obsolete("We should get the items in the METHOD there being used NOT here!!!")]
+		public List<string> QatItems = new List<string>();
+
+
+
 		bool asFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
 		MenuItem misa, misd, misag, misdg, misng;
 
@@ -148,8 +153,6 @@ namespace BetterExplorer {
 		Int32 UpdateCheckInterval;
 		Double CommandPromptWinHeight;
 
-
-		public List<string> QatItems = new List<string>();
 		UIElement curitem = null;
 		Boolean IsGlassOnRibonMinimized { get; set; }
 		NetworkAccountManager nam = new NetworkAccountManager();
@@ -5169,13 +5172,13 @@ namespace BetterExplorer {
 				}
 				qal.AllControls.Items.Add(rils);
 			}
-
-			foreach (IRibbonControl item in GetRibbonControlsFromNames(QatItems)) {
+			//foreach (IRibbonControl item in GetRibbonControlsFromNames(QatItems)) {
+			foreach (IRibbonControl item in GetRibbonControlsFromNames()) {
 				RibbonItemListDisplay rils = new RibbonItemListDisplay();
 				if (item.Icon != null) {
 					rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
 				}
-				rils.Header = (item.Header as string);
+				rils.Header = item.Header as string;
 				rils.SourceControl = item;
 				rils.ItemName = (item as FrameworkElement).Name;
 				rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -5191,28 +5194,39 @@ namespace BetterExplorer {
 		public List<IRibbonControl> SortNames(List<IRibbonControl> items, List<string> headers) {
 			var rb = new List<IRibbonControl>();
 
+
+			/*
+			 * From: Aaron Campf
+			 * Date: 5/13/2014
+			 * 
+			 * Commented out [found] and added [break]
+			 * Using break will end that [foreach] which has the same effect as [found]
+			 */
 			foreach (string item in headers) {
-				bool found = false;
+				//bool found = false;
 				foreach (IRibbonControl thing in items) {
-					if (!found) {
-						if (thing.Header as string == item) {
-							rb.Add(thing);
-							found = true;
-						}
+					//if (!found) {
+					if (thing.Header as string == item) {
+						rb.Add(thing);
+						//found = true;
+						break;
 					}
+					//}
 				}
 			}
 
 			return rb;
 		}
 
+
+		[Obsolete("Do not use, let the Ribbon Add/Remove Events handle it")]
 		public void LoadInternalList() {
-			Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
-				QatItems.Clear();
-				//QatItems = GetNamesFromRibbonControls(GetQATButtons());
-				var Buttons = (from UIElement item in TheRibbon.QuickAccessToolbarItems.Keys select item as IRibbonControl).ToList();
-				QatItems = (from FrameworkElement button in Buttons select button.Name).ToList();
-			}));
+			//Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
+			//	QatItems.Clear();
+			//	//QatItems = GetNamesFromRibbonControls(GetQATButtons());
+			//	var Buttons = (from UIElement item in TheRibbon.QuickAccessToolbarItems.Keys select item as FrameworkElement).ToList();
+			//	QatItems = Buttons.ConvertAll(x => x.Name);
+			//}));
 		}
 
 		public void PutItemsOnQAT(List<string> names) {
@@ -5248,11 +5262,14 @@ namespace BetterExplorer {
 			return rb;
 		}
 
-		public List<IRibbonControl> GetRibbonControlsFromNames(List<string> input) {
-			List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
-			Dictionary<string, IRibbonControl> dic = GetAllButtonsAsDictionary();
+		public List<IRibbonControl> GetRibbonControlsFromNames() { //List<string> input
+			//var Buttons = (from UIElement item in TheRibbon.QuickAccessToolbarItems.Keys select (item as FrameworkElement).Name).ToList();
+			//from UIElement item in TheRibbon.QuickAccessToolbarItems.Keys select (item as FrameworkElement).Name
 
-			foreach (string name in input) {
+			var rb = new List<Fluent.IRibbonControl>();
+			var dic = GetAllButtonsAsDictionary();
+
+			foreach (string name in QatItems) {
 				IRibbonControl ri;
 				if (dic.TryGetValue(name, out ri)) {
 					rb.Add(ri);
@@ -5266,6 +5283,7 @@ namespace BetterExplorer {
 
 		#region Add/Remove Event Handlers
 
+		[Obsolete("Try removing this!!! It is slowing down the application loading for no real gains")]
 		private void TheRibbon_ItemAddedToQuickAccessToolbar(object sender, Ribbon.UIElementEventArgs e) {
 			if (curitem == null) {
 				Debug.WriteLine("Item being added: " + (e.Item as FrameworkElement).Name);
