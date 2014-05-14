@@ -143,8 +143,11 @@ namespace BetterExplorer
 
 				private void btnSet_Click(object sender, EventArgs e)
 				{
+					var itemIndex = ShellView.GetFirstSelectedItemIndex();
+					this.ShellView.CurrentRefreshedItemIndex = itemIndex;
 						if (IsLibrary)
 						{
+
 								ShellLibrary lib = null;
 								try
 								{
@@ -159,7 +162,7 @@ namespace BetterExplorer
 								}
 								lib.IconResourceId = new IconReference(tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
 								lib.Close();
-								var itemIndex = ShellView.GetFirstSelectedItemIndex();
+								
 								var item = ShellView.Items[itemIndex];
 								item.IsIconLoaded = false;
 								ShellView.RefreshItem(ShellView.GetFirstSelectedItemIndex(), true);

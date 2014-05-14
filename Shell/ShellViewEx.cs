@@ -560,6 +560,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		public int CurrentRefreshedItemIndex = -1;	
 		#endregion Public Members
 
 		#region Private Members
@@ -620,7 +621,7 @@ namespace BExplorer.Shell {
 		private const int SW_SHOW = 5;
 		private const uint SEE_MASK_INVOKEIDLIST = 12;
 		private int _LastSelectedIndexByDragDrop = -1;
-
+		
 		#endregion Private Members
 
 		#region Initializer
@@ -1470,45 +1471,81 @@ namespace BExplorer.Shell {
 					foreach (NotifyInfos info in Notifications.NotificationsReceived.ToArray()) {
 						if (info.Notification == ShellNotifications.SHCNE.SHCNE_CREATE || info.Notification == ShellNotifications.SHCNE.SHCNE_MKDIR) {
 							var obj = new ShellItem(info.Item1);
-							if (obj.Parent.ParsingName == this.CurrentFolder.ParsingName) {
-								if (Items.Count(w => w.ParsingName == obj.ParsingName) == 0 && !String.IsNullOrEmpty(obj.ParsingName)) {
-									Items.Add(obj);
+							if (obj.Extension.ToLowerInvariant() != ".tmp")
+							{
+								if (obj.Parent.ParsingName == this.CurrentFolder.ParsingName)
+								{
+									if (Items.Count(w => w.ParsingName == obj.ParsingName) == 0 && !String.IsNullOrEmpty(obj.ParsingName))
+									{
+										Items.Add(obj);
+										ItemsHashed.Add(obj, Items.Count - 1);
+									}
+									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+									if (this.ItemUpdated != null)
+										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, this.Items.Count - 1));
 								}
-								User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-								if (this.ItemUpdated != null)
-									this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, this.Items.Count - 1));
 							}
 							Notifications.NotificationsReceived.Remove(info);
 						}
 						if (info.Notification == ShellNotifications.SHCNE.SHCNE_DELETE || info.Notification == ShellNotifications.SHCNE.SHCNE_RMDIR) {
 							var obj = new ShellItem(info.Item1);
-							if (!String.IsNullOrEmpty(obj.ParsingName)) {
+							if (!String.IsNullOrEmpty(obj.ParsingName) && obj.Extension.ToLowerInvariant() != ".tmp")
+							{
 								ShellItem theItem = Items.SingleOrDefault(s => s.ParsingName == obj.ParsingName);
 								if (theItem != null) {
 									Items.Remove(theItem);
+									ItemsHashed.Remove(theItem);
 									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 									if (this.ItemUpdated != null)
 										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
 								}
-								Notifications.NotificationsReceived.Remove(info);
+								
 							}
+							Notifications.NotificationsReceived.Remove(info);
 						}
 
 						if (info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER || info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEITEM) {
 							var obj1 = new ShellItem(info.Item1);
 							var obj2 = new ShellItem(info.Item2);
 							if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName)) {
-								ShellItem theItem = Items.SingleOrDefault(s => s.ParsingName == obj1.ParsingName);
-								if (theItem != null) {
-									int itemIndex = Items.IndexOf(theItem);
-									Items[itemIndex] = obj2;
-									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, itemIndex, 0);
-									RedrawWindow();
+								ShellItem tempItem = Items.SingleOrDefault(s => s.CachedParsingName == obj2.CachedParsingName);
+								if (tempItem == null)
+								{
+									Items.Insert(this.CurrentRefreshedItemIndex == -1 ? 0 :CurrentRefreshedItemIndex ,obj2);
+									ItemsHashed.Add(obj2, this.CurrentRefreshedItemIndex == -1 ? 0 :CurrentRefreshedItemIndex);
+									//this.SelectItemByIndex(this.CurrentRefreshedItemIndex == -1 ? 0 :CurrentRefreshedItemIndex);
+									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 									if (this.ItemUpdated != null)
-										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, itemIndex));
+										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj2, null, this.CurrentRefreshedItemIndex == -1 ? 0 :CurrentRefreshedItemIndex));
+									
+
 								}
-								Notifications.NotificationsReceived.Remove(info);
+								if (this.CurrentRefreshedItemIndex == -1)
+								{
+									ShellItem theItem = Items.SingleOrDefault(s => s.ParsingName == obj1.ParsingName);
+									if (theItem != null)
+									{
+										int itemIndex = Items.IndexOf(theItem);
+										Items[itemIndex] = obj2;
+										ItemsHashed.Remove(theItem);
+										ItemsHashed.Add(obj2, itemIndex);
+										User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, itemIndex, 0);
+										RedrawWindow();
+										if (this.ItemUpdated != null)
+											this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, itemIndex));
+									}
+								}
+								this.CurrentRefreshedItemIndex = -1;
 							}
+							Notifications.NotificationsReceived.Remove(info);
+						}
+
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_UPDATEITEM || info.Notification == ShellNotifications.SHCNE.SHCNE_UPDATEDIR)
+						{
+							var obj = new ShellItem(info.Item1);
+
+							Notifications.NotificationsReceived.Remove(info);
+
 						}
 					}
 				}
@@ -1700,6 +1737,8 @@ namespace BExplorer.Shell {
 						break;
 
 					case WNM.LVN_ODFINDITEM:
+						if (this.ToolTip != null && this.ToolTip.IsVisible)
+							this.ToolTip.HideTooltip();
 						var findItem = (NMLVFINDITEM)m.GetLParam(typeof(NMLVFINDITEM));
 						_keyjumpstr = findItem.lvfi.psz;
 
@@ -1725,6 +1764,8 @@ namespace BExplorer.Shell {
 						break;
 
 					case WNM.LVN_ITEMACTIVATE:
+						if (this.ToolTip != null && this.ToolTip.IsVisible)
+							this.ToolTip.HideTooltip();
 						var iac = new NMITEMACTIVATE();
 						iac = (NMITEMACTIVATE)m.GetLParam(iac.GetType());
 						try {

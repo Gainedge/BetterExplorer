@@ -2747,21 +2747,6 @@ namespace BetterExplorer {
 				});
 			}
 
-			/*
-			 * From: Aaron Campf
-			 * Date: 5/13/2012
-			 * 
-			 * I commented out the following code because all it did was let you select several folders,
-			 * then have them reselected when you get back to the folder
-			 * 
-			 * I do not see a user ever using it and if used overrides the feature where the when moving up a folder the parent is selected
-			 * 
-			 * Removing it also increases performance and decreases errors
-			 */
-
-
-			/*
-			//TODO: Why would have more then 1 selected path? We would only have 1 folder at a time
 			var selectedItem = this.tabControl1.SelectedItem as ClosableTabItem;
 			if (selectedItem != null) {
 				var selectedPaths = selectedItem.SelectedItems;
@@ -2776,20 +2761,12 @@ namespace BetterExplorer {
 					}
 				}				
 			}
-			*/
 
-			/*
-			 * From: Aaron Campf
-			 * Date: 5/13/2012
-			 * 
-			 * Commented out the following code because it did not seem to have ANY effect
-			 * It is likely that SetUpStatusBarOnSelectOrNavigate(...) is already be is already being called from ShellListView_SelectionChanged(...)
-			 */
-			/*
+			//This initially setup the statusbar after program opens
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				SetUpStatusBarOnSelectOrNavigate(ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount());
 			}));
-			*/
+			
 			this.ShellListView.Focus();
 		}
 
@@ -3182,6 +3159,7 @@ namespace BetterExplorer {
 
 		private void btnOLItem_Click(object sender, RoutedEventArgs e) {
 			ShellLibrary lib = null;
+			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
 			if (ShellListView.GetSelectedCount() == 1) {
 				lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY), false);
 			}
@@ -3216,6 +3194,7 @@ namespace BetterExplorer {
 
 		private void chkPinNav_CheckChanged(object sender, RoutedEventArgs e) {
 			ShellLibrary lib = null;
+			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
 			if (ShellListView.GetSelectedCount() == 1) {
 				lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY), false);
 			}
@@ -3229,44 +3208,13 @@ namespace BetterExplorer {
 			lib.Close();
 		}
 
-		/*
-		private void chkPinNav_Checked(object sender, RoutedEventArgs e) {
-			ShellLibrary lib = null;
-			if (ShellListView.GetSelectedCount() == 1) {
-				lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			}
-			else {
-				lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			}
-			if (!IsFromSelectionOrNavigation) {
-				lib.IsPinnedToNavigationPane = true;
-			}
-
-			lib.Close();
-		}
-
-		private void chkPinNav_Unchecked(object sender, RoutedEventArgs e) {
-			ShellLibrary lib = null;
-			if (ShellListView.GetSelectedCount() == 1) {
-				lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			}
-			else {
-				lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			}
-			if (!IsFromSelectionOrNavigation) {
-				lib.IsPinnedToNavigationPane = false;
-			}
-
-			lib.Close();
-		}
-		*/
-
 		private void btnChangeLibIcon_Click(object sender, RoutedEventArgs e) {
 			IconView iv = new IconView();
 			iv.LoadIcons(ShellListView, true);
 		}
 
 		private void btnManageLib_Click(object sender, RoutedEventArgs e) {
+			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
 			try {
 				ShellLibrary.ShowManageLibraryUI(ShellListView.GetFirstSelectedItem().DisplayName,
 								this.Handle, "Choose which folders will be in this library", "A library gathers content from all of the folders listed below and puts it all in one window for you to see.", true);
@@ -3278,6 +3226,7 @@ namespace BetterExplorer {
 		}
 
 		private void Button_Click_3(object sender, RoutedEventArgs e) {
+			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
 			TaskDialog td = new TaskDialog();
 			td.Caption = "Reset Library";
 			td.Icon = TaskDialogStandardIcon.Warning;
