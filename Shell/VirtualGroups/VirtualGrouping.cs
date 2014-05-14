@@ -54,7 +54,7 @@ namespace BExplorer.Shell
 			{
 				if (group.Items.Count(c => c.CachedParsingName == itemControlWide.CachedParsingName) > 0)
 				{
-					groupIndex = this._VirtualListView.Groups.IndexOf(group);
+					groupIndex = group.Index;
 					break;
 				}
 			}

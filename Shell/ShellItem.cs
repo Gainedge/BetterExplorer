@@ -214,7 +214,7 @@ namespace BExplorer.Shell {
 			this.OverlayIconIndex = -1;
 		}
 
-		internal ShellItem(IntPtr pidl) {
+		public ShellItem(IntPtr pidl) {
 			m_ComInterface = CreateItemFromIDList(pidl);
 			this.IconType = GetIconType();
 			this.CachedParsingName = this.ParsingName;
@@ -303,6 +303,9 @@ namespace BExplorer.Shell {
 		/// <returns>True if the ShellObjects are equal, false otherwise.</returns>
 		public bool Equals(ShellItem other) {
 			if (other == null) return false;
+			if (String.IsNullOrEmpty(this.CachedParsingName) || string.IsNullOrEmpty(other.CachedParsingName))
+				return this.ParsingName == other.ParsingName;
+
 			return this.CachedParsingName == other.CachedParsingName;
 		}
 

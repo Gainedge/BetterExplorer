@@ -1674,7 +1674,10 @@ namespace BExplorer.Shell {
 
 					case WNM.LVN_COLUMNCLICK:
 						NMLISTVIEW nlcv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
-						SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
+						if (this.IsGroupsEnabled)
+							this.ReverseGroupOrder();
+						else
+							SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
 						break;
 
 					case WNM.LVN_GETINFOTIP:
@@ -2456,14 +2459,10 @@ namespace BExplorer.Shell {
 		}
 
 		public void RefreshItem(int index, Boolean IsForceRedraw = false) {
-			if (cache.ContainsKey(index)) {
-				Bitmap bmp = null;
-				if (cache.TryRemove(index, out bmp)) {
-					bmp.Dispose();
-					bmp = null;
-				}
+			if (IsForceRedraw)
+			{
+				this.Items[index] = new ShellItem(this.Items[index].Pidl);
 			}
-
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REDRAWITEMS, index, index);
 		}
 
@@ -3036,6 +3035,7 @@ namespace BExplorer.Shell {
 			x = User32.SendMessage(this.LVHandle, LVM_SETOWNERDATACALLBACK, 0, 0);
 			IsGroupsEnabled = false;
 			this.LastGroupCollumn = null;
+			this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
 		}
 
 		public void EnableGroups() {
@@ -3053,113 +3053,117 @@ namespace BExplorer.Shell {
 			IsGroupsEnabled = true;
 		}
 
-		public void GenerateGroupsFromColumn(Collumns col) {
+		public void GenerateGroupsFromColumn(Collumns col, Boolean reversed = false) {
 			int LVM_INSERTGROUP = 0x1000 + 145;
 			this.Groups.Clear();
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
 			if (col.CollumnType == typeof(String)) {
+				var i = reversed ? 3 : 0;
 				ListViewGroupEx testgrn = new ListViewGroupEx();
 				testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("0") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("9")).ToArray();
 				testgrn.Header = String.Format("0 - 9 ({0})", testgrn.Items.Count());
-				testgrn.Index = 0;
-				var nativeGroupn = testgrn.ToNativeListViewGroup();
+				testgrn.Index = reversed ? i-- : i++;
 				this.Groups.Add(testgrn);
 
 				ListViewGroupEx testgr = new ListViewGroupEx();
 				testgr.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("A") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("H")).ToArray();
 				testgr.Header = String.Format("A - H ({0})", testgr.Items.Count());
-				testgr.Index = 1;
-				var nativeGroup = testgr.ToNativeListViewGroup();
+				testgr.Index = reversed ? i-- : i++;
 				this.Groups.Add(testgr);
 
 				ListViewGroupEx testgr2 = new ListViewGroupEx();
 				testgr2.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("I") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("P")).ToArray();
 				testgr2.Header = String.Format("I - P ({0})", testgr2.Items.Count());
-				testgr2.Index = 2;
-				var nativeGroup2 = testgr2.ToNativeListViewGroup();
+				testgr2.Index = reversed ? i-- : i++;
 				this.Groups.Add(testgr2);
 
 				ListViewGroupEx testgr3 = new ListViewGroupEx();
 				testgr3.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("Q") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("Z")).ToArray();
 				testgr3.Header = String.Format("Q - Z ({0})", testgr3.Items.Count());
-				testgr3.Index = 3;
-				var nativeGroup3 = testgr3.ToNativeListViewGroup();
+				testgr3.Index = reversed ? i-- : i++;
 				this.Groups.Add(testgr3);
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroupn);
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup2);
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup3);
+
+				if (reversed)
+					this.Groups.Reverse();
+
+				foreach (var group in this.Groups)
+				{
+					var nativeGroup = group.ToNativeListViewGroup();
+					User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
+				}
+
 			}
 			if (col.CollumnType == typeof(long)) {
+				var j = reversed ? 7 : 0;
 				ListViewGroupEx uspec = new ListViewGroupEx();
 				uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
 				uspec.Header = String.Format("Unspecified ({0})", uspec.Items.Count());
-				uspec.Index = 0;
-				var nativeGroupu = uspec.ToNativeListViewGroup();
+				uspec.Index = reversed ? j-- : j++;
 				this.Groups.Add(uspec);
 
 				ListViewGroupEx testgrn = new ListViewGroupEx();
 				testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) == 0 && !w.IsFolder).ToArray();
 				testgrn.Header = String.Format("Empty ({0})", testgrn.Items.Count());
-				testgrn.Index = 1;
-				var nativeGroupn = testgrn.ToNativeListViewGroup();
+				testgrn.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgrn);
 
 				ListViewGroupEx testgr = new ListViewGroupEx();
 				testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 10 * 1024).ToArray();
 				testgr.Header = String.Format("Very Small ({0})", testgr.Items.Count());
-				testgr.Index = 2;
-				var nativeGroup = testgr.ToNativeListViewGroup();
+				testgr.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr);
 
 				ListViewGroupEx testgr2 = new ListViewGroupEx();
 				testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 100 * 1024).ToArray();
 				testgr2.Header = String.Format("Small ({0})", testgr2.Items.Count());
-				testgr2.Index = 3;
-				var nativeGroup2 = testgr2.ToNativeListViewGroup();
+				testgr2.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr2);
 
 				ListViewGroupEx testgr3 = new ListViewGroupEx();
 				testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 1 * 1024 * 1024).ToArray();
 				testgr3.Header = String.Format("Medium ({0})", testgr3.Items.Count());
-				testgr3.Index = 4;
-				var nativeGroup3 = testgr3.ToNativeListViewGroup();
+				testgr3.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr3);
 
 				ListViewGroupEx testgr4 = new ListViewGroupEx();
 				testgr4.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 16 * 1024 * 1024).ToArray();
 				testgr4.Header = String.Format("Big ({0})", testgr4.Items.Count());
-				testgr4.Index = 5;
-				var nativeGroup4 = testgr4.ToNativeListViewGroup();
+				testgr4.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr4);
 
 				ListViewGroupEx testgr5 = new ListViewGroupEx();
 				testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 16 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 128 * 1024 * 1024).ToArray();
 				testgr5.Header = String.Format("Huge ({0})", testgr5.Items.Count());
-				testgr5.Index = 6;
-				var nativeGroup5 = testgr5.ToNativeListViewGroup();
+				testgr5.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr5);
 
 				ListViewGroupEx testgr6 = new ListViewGroupEx();
 				testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 128 * 1024 * 1024).ToArray();
 				testgr6.Header = String.Format("Gigantic ({0})", testgr6.Items.Count());
-				testgr6.Index = 7;
-				var nativeGroup6 = testgr6.ToNativeListViewGroup();
+				testgr6.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr6);
 
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroupu);
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroupn);
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup2);
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup3);
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup4);
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup5);
-				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup6);
+				if (reversed)
+					this.Groups.Reverse();
+
+				foreach (var group in this.Groups)
+				{
+					var nativeGroup = group.ToNativeListViewGroup();
+					User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
+				}
 			}
 
 			if (col.CollumnType == typeof(DateTime)) {
 			}
 			this.LastGroupCollumn = col;
+			this.LastGroupOrder = reversed ? SortOrder.Descending : SortOrder.Ascending;
+			
+			this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
+		}
+
+		public void ReverseGroupOrder()
+		{
+			this.GenerateGroupsFromColumn(this.LastGroupCollumn, this.LastGroupOrder == SortOrder.Ascending);
 		}
 
 		public ShellItem GetFirstSelectedItem() {
@@ -3522,7 +3526,7 @@ namespace BExplorer.Shell {
 				Shell32.HChangeNotifyFlags.SHCNF_DWORD | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, IntPtr.Zero, (IntPtr)sfi.iIcon);
 			}
 
-			Items[this.SelectedIndexes[0]] = new ShellItem(wszPath);
+			Items[this.GetFirstSelectedItemIndex()] = new ShellItem(wszPath);
 			//this.UpdateItem(this.SelectedIndexes[0]);
 			this.RefreshItem(this.SelectedIndexes[0]);
 			return hr;
@@ -3645,7 +3649,7 @@ namespace BExplorer.Shell {
 			var item = this.Items[itemIndex];
 			foreach (var group in this.Groups) {
 				if (group.Items.Count(c => c == item) > 0)
-					return this.Groups.IndexOf(group);
+					return group.Index;
 			}
 			return 0;
 		}

@@ -476,7 +476,7 @@ namespace BetterExplorer {
 			misag.Focusable = false;
 			misag.Header = FindResource("miAscending");
 			misag.IsCheckable = true;
-
+			misag.Click += misag_Click;
 
 			misag.GroupName = "GR4";
 
@@ -484,8 +484,9 @@ namespace BetterExplorer {
 			misdg.Focusable = false;
 			misdg.Header = FindResource("miDescending");
 			misdg.IsCheckable = true;
+			misdg.Click += misag_Click;
 			misdg.GroupName = "GR4";
-			if (GroupDir) {
+			if (this.ShellListView.LastGroupOrder == System.Windows.Forms.SortOrder.Ascending) {
 				misag.IsChecked = true;
 			}
 			else {
@@ -495,6 +496,11 @@ namespace BetterExplorer {
 			btnGroup.Items.Add(misag);
 			btnGroup.Items.Add(misdg);
 
+		}
+
+		void misag_Click(object sender, RoutedEventArgs e)
+		{
+			this.ShellListView.ReverseGroupOrder();
 		}
 
 		private void SetUpViewGallery() {
@@ -813,10 +819,7 @@ namespace BetterExplorer {
 			#endregion
 
 			#region Folder Tools Context Tab
-			ctgFolderTools.Visibility = BooleanToVisibiliy(
-				(selectedItemsCount == 1 && selectedItem.IsFolder && selectedItem.IsFileSystem && !selectedItem.IsDrive && !selectedItem.IsNetDrive)
-				||
-				(ShellListView.CurrentFolder.IsFolder && ShellListView.CurrentFolder.IsFileSystem && !ShellListView.CurrentFolder.IsDrive && !ShellListView.CurrentFolder.IsNetDrive));
+			ctgFolderTools.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && selectedItem.IsFolder && selectedItem.IsFileSystem && !selectedItem.IsDrive && !selectedItem.IsNetDrive));
 
 			if (asFolder && ctgFolderTools.Visibility == Visibility.Visible) {
 				TheRibbon.SelectedTabItem = ctgFolderTools.Items[0];
@@ -824,26 +827,23 @@ namespace BetterExplorer {
 			#endregion
 
 			#region Drive Contextual Tab
-			//Aaron Campf
-			//ctgDrive.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && ((!sItem_Null && selectedItem.IsDrive) || (!sItem_Null && selectedItem.Parent != null && selectedItem.Parent.IsDrive))) || ShellListView.CurrentFolder.IsDrive);
-			ctgDrive.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.IsDrive || selectedItemsCount == 1 && selectedItem != null && (selectedItem.IsDrive || (selectedItem.Parent != null && selectedItem.Parent.IsDrive)));
+			ctgDrive.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.IsDrive || (selectedItemsCount == 1 && selectedItem != null && (selectedItem.IsDrive || (selectedItem.Parent != null && selectedItem.Parent.IsDrive))));
 			if (asDrive && ctgDrive.Visibility == Visibility.Visible && (selectedItem != null && selectedItem.IsDrive)) {
 				TheRibbon.SelectedTabItem = ctgDrive.Items[0];
 			}
 			#endregion
 
 			#region Library Context Tab
-			//Aaron Campf
-			ctgLibraries.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.Equals(KnownFolders.Libraries) || selectedItemsCount == 1 && selectedItem.Parent != null && selectedItem.Parent.Equals(KnownFolders.Libraries));
-			//ctgLibraries.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && (ShellListView.CurrentFolder.Equals(KnownFolders.Libraries) || (selectedItem.Parent != null && selectedItem.Parent.Equals(KnownFolders.Libraries))));
-			//// || (ShellListView.CurrentFolder.Parent != null && ShellListView.CurrentFolder.Parent.Equals(KnownFolders.Libraries))
+			var h = ShellListView.CurrentFolder.Equals(KnownFolders.Libraries);
+			ctgLibraries.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.Equals(KnownFolders.Libraries) || (selectedItemsCount == 1 && selectedItem.Parent != null && selectedItem.Parent.Equals(KnownFolders.Libraries)));
 
 			if (ctgLibraries.Visibility == Visibility.Visible && asLibrary) {
 				TheRibbon.SelectedTabItem = ctgLibraries.Items[0];
 			}
 
 			if (ctgLibraries.Visibility == Visibility.Visible && ShellListView.CurrentFolder.Equals(KnownFolders.Libraries)) {
-				SetupLibrariesTab(ShellLibrary.Load(selectedItem.DisplayName, false));
+				if (selectedItem != null)
+					SetupLibrariesTab(ShellLibrary.Load(selectedItem.DisplayName, false));
 			}
 			else if (ctgLibraries.Visibility == Visibility.Visible && ShellListView.CurrentFolder.Parent.Equals(KnownFolders.Libraries)) {
 				SetupLibrariesTab(ShellLibrary.Load(ShellListView.CurrentFolder.DisplayName, false));
