@@ -53,8 +53,21 @@ namespace BetterExplorer {
 
 		#region Being Removed
 
+
+		[Obsolete("Do we really need this?!!")]
+		bool ReadyToChangeLanguage;
+
+		/// <summary>
+		/// Gets Previous Window State
+		/// </summary>
 		[Obsolete("Removing this is High Priority!", true)]
-		bool IsViewSelection = false, inLibrary = false, inDrive = false;
+		public WindowState PreviouseWindowState { get; private set; }
+
+		[Obsolete("Removing this is High Priority!", true)]
+		private readonly ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
+
+		//[Obsolete("Removing this is High Priority!", true)]
+		//bool IsViewSelection = false, inLibrary = false, inDrive = false;
 
 		/// <summary>Try to make it so you do not need this!</summary>
 		bool isGoingBackOrForward; //TODO: Try to make it so you do not need this!
@@ -176,20 +189,20 @@ namespace BetterExplorer {
 			return WindowsAPI.InternetGetConnectedState(lngFlags, 0);
 		}
 
-		[Obsolete("Not Used!!!", true)]
-		public bool Activate(bool restoreIfMinimized) {
-			if (restoreIfMinimized && WindowState == WindowState.Minimized) {
-				WindowState = PreviouseWindowState == WindowState.Normal ? WindowState.Normal : WindowState.Maximized;
-			}
+		//[Obsolete("Not Used!!!", true)]
+		//public bool Activate(bool restoreIfMinimized) {
+		//	if (restoreIfMinimized && WindowState == WindowState.Minimized) {
+		//		WindowState = PreviouseWindowState == WindowState.Normal ? WindowState.Normal : WindowState.Maximized;
+		//	}
 
-			return Activate();
-		}
+		//	return Activate();
+		//}
 
-		[Obsolete("Not Used!!!", true)]
-		bool IsAfterFolderCreate = false;
+		//[Obsolete("Not Used!!!", true)]
+		//bool IsAfterFolderCreate = false;
 
-		[Obsolete("Not Used!!!", true)]
-		private bool IsLibW = false;
+		//[Obsolete("Not Used!!!", true)]
+		//private bool IsLibW = false;
 
 		#endregion
 

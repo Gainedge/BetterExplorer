@@ -249,19 +249,11 @@ namespace BetterExplorer {
 			rk.Close();
 		}
 
-
-
-
-		private void CreateInitialTab(MainWindow win, ShellItem sho)
-		{
+		private void CreateInitialTab(MainWindow win, ShellItem sho) {
 			sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 
 			ClosableTabItem newt = new ClosableTabItem();
-
-
-
-
 			newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
 			newt.TabIcon = sho.Thumbnail.BitmapSource;
 			newt.PreviewMouseMove += newt_PreviewMouseMove;
@@ -289,9 +281,6 @@ namespace BetterExplorer {
 				if (!x) return;
 				if (!(args != null && args.CommandLineArgs != null)) return;
 				if (win == null) return;
-
-				//Aaron Campf => Bookmark
-				//win.ApendArgs(args.CommandLineArgs);			
 
 				var Check = (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null && args.CommandLineArgs[1] != "-minimized");
 				if (!Check || args.CommandLineArgs[1] == "t") {

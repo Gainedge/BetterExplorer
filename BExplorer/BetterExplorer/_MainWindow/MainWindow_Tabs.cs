@@ -88,7 +88,6 @@ namespace BetterExplorer {
 			}
 
 			tabControl1.Items.Remove(thetab);
-
 			ConstructMoveToCopyToMenu();
 
 			if (allowreopening) {
@@ -104,36 +103,11 @@ namespace BetterExplorer {
 				}
 			}
 
-			ClosableTabItem itb = tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem;
-
-			isGoingBackOrForward = itb.log.HistoryItemsList.Count != 0;
-			if (itb != null) {
-				try {
-					BeforeLastTabIndex = LastTabIndex;
-
-					//tabControl1.SelectedIndex = itb.Index;
-					//LastTabIndex = itb.Index;
-					//CurrentTabIndex = LastTabIndex;
-					if (itb.ShellObject != ShellListView.CurrentFolder) {
-						if (!Keyboard.IsKeyDown(Key.Tab)) {
-							ShellListView.Navigate(itb.ShellObject);
-						}
-						else {
-							t.Interval = 500;
-							t.Tag = itb.ShellObject;
-							t.Tick += new EventHandler(t_Tick);
-							t.Start();
-						}
-					}
-				}
-				catch (StackOverflowException) {
-				}
-
-				//'btnTabCloseC.IsEnabled = tabControl1.Items.Count > 1;
-				//'there's a bug that has this enabled when there's only one tab open, but why disable it
-				//'if it never crashes the program? Closing the last tab simply closes the program, so I
-				//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
-			}
+			SelectTab(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem);
+			//'btnTabCloseC.IsEnabled = tabControl1.Items.Count > 1;
+			//'there's a bug that has this enabled when there's only one tab open, but why disable it
+			//'if it never crashes the program? Closing the last tab simply closes the program, so I
+			//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
 		}
 
 		private void CloseAllTabs(bool CloseFirstTab) {
@@ -189,7 +163,7 @@ namespace BetterExplorer {
 			newt.Drop += new DragEventHandler(newt_Drop);
 
 			tabControl1.Items.Add(newt);
-			LastTabIndex = tabControl1.SelectedIndex;
+			//LastTabIndex = tabControl1.SelectedIndex;
 			newt.log.CurrentLocation = DefPath;
 
 			if (IsNavigate) {
@@ -230,39 +204,14 @@ namespace BetterExplorer {
 				}
 
 			CreateNewClosableTabItem(DefPath, IsNavigate);
-
-			//tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
-			//tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-
-			//ConstructMoveToCopyToMenu();
-			//NavigateAfterTabChange();
 		}
 
 		public void NewTab(ShellItem location, bool IsNavigate = false) {
 			CreateNewClosableTabItem(location, IsNavigate);
-
-			//if (IsNavigate) {
-			//	tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
-			//	tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-			//	NavigateAfterTabChange();
-			//}
-
-			//ConstructMoveToCopyToMenu();
 		}
 
 		public ClosableTabItem NewTab(string Location, bool IsNavigate = false) {
 			return CreateNewClosableTabItem(new ShellItem(Location), IsNavigate);
-
-			//if (IsNavigate) {
-			//	tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
-			//	tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
-			//}
-			//else {
-			//	newt.log.CurrentLocation = DefPath;
-			//}
-
-			//ConstructMoveToCopyToMenu();
-			//return newt;
 		}
 
 		public void CloneTab(ClosableTabItem CurTab) {
@@ -286,8 +235,73 @@ namespace BetterExplorer {
 			newt.log.ImportData(CurTab.log);
 			tabControl1.Items.Add(newt);
 			tabControl1.SelectedItem = newt;
-			LastTabIndex = tabControl1.SelectedIndex;
+			//LastTabIndex = tabControl1.SelectedIndex;
 			ConstructMoveToCopyToMenu();
+		}
+
+		#endregion
+
+
+		#region OnStartup
+
+		private void InitializeInitialTabs() {
+			var InitialTabs = Utilities.GetRegistryValue("OpenedTabs", "").ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (InitialTabs.Length == 0 || !IsrestoreTabs) {
+				ShellItem sho = new ShellItem(StartUpLocation.ToShellParsingName());
+				if (tabControl1.Items.OfType<ClosableTabItem>().Count() == 0)
+					NewTab(sho, true);
+				else
+					ShellListView.Navigate(sho);
+			}
+			if (IsrestoreTabs) {
+				isOnLoad = true;
+				int i = 0;
+				foreach (string str in InitialTabs) {
+					try {
+						i++;
+						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
+							if (i == InitialTabs.Length) {
+								tabControl1.SelectedIndex = InitialTabs.Length - 2;
+							}
+
+							continue;
+						}
+
+						NewTab(str.ToShellParsingName(), i == InitialTabs.Length);
+						if (i == InitialTabs.Count()) {
+							ShellItem sho = new ShellItem(str.ToShellParsingName());
+							ShellListView.Navigate(sho);
+							(tabControl1.SelectedItem as ClosableTabItem).ShellObject = sho;
+							(tabControl1.SelectedItem as ClosableTabItem).ToolTip = sho.ParsingName;
+						}
+					}
+					catch {
+						//AddToLog(String.Format("Unable to load {0} into a tab!", str));
+						MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
+					}
+				}
+
+				if (tabControl1.Items.Count == 0) {
+					NewTab();
+
+					if (StartUpLocation.StartsWith("::"))
+						ShellListView.Navigate(new ShellItem(StartUpLocation.ToShellParsingName()));
+					else
+						ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
+
+					(tabControl1.SelectedItem as ClosableTabItem).ShellObject = ShellListView.CurrentFolder;
+					(tabControl1.SelectedItem as ClosableTabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
+				}
+
+				isOnLoad = false;
+			}
+			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
+
+			if (tabControl1.Items.Count == 1)
+				tabControl1.SelectedIndex = 0;
+
+			//ShellVView.Visibility = System.Windows.Visibility.Hidden;
 		}
 
 		#endregion
@@ -305,19 +319,16 @@ namespace BetterExplorer {
 				tabitem.mnu.Items.Add(Item);
 			};
 
-			//Worker("Close current tab", new RoutedEventHandler(miclosecurrentr_Click));
 			Worker("Close current tab", new RoutedEventHandler(
 				(sender, e) => {
 					CloseTab((sender as MenuItem).Tag as ClosableTabItem);
 				}));
 
-			//Worker("Close all tabs", new RoutedEventHandler(miclosealltab_Click));
 			Worker("Close all tabs", new RoutedEventHandler(
 				(sender, e) => {
 					CloseAllTabs(true);
 				}));
 
-			//Worker("Close all other tabs", new RoutedEventHandler(miclosealltabbd_Click));
 			Worker("Close all other tabs", new RoutedEventHandler(
 				(sender, e) => {
 					CloseAllTabsButThis((sender as MenuItem).Tag as ClosableTabItem);
@@ -325,11 +336,8 @@ namespace BetterExplorer {
 
 			tabitem.mnu.Items.Add(new Separator());
 
-			//Worker("New tab", new RoutedEventHandler(minewtabr_Click));
 			Worker("New tab", new RoutedEventHandler(
 				(sender, e) => {
-					//MenuItem mi = (sender as MenuItem);
-					//ClosableTabItem ti = mi.Tag as ClosableTabItem;
 					NewTab();
 				}));
 
@@ -345,14 +353,12 @@ namespace BetterExplorer {
 			miundocloser.Header = "Undo close tab";
 			miundocloser.IsEnabled = btnUndoClose.IsEnabled;
 			miundocloser.Tag = "UCTI";
-			//miundocloser.Click += new RoutedEventHandler(miundocloser_Click);
 			miundocloser.Click += new RoutedEventHandler(
 				(sender, e) => {
 					if (btnUndoClose.IsEnabled) btnUndoClose_Click(this, e);
 				});
 
 			tabitem.mnu.Items.Add(miundocloser);
-
 			tabitem.mnu.Items.Add(new Separator());
 
 
@@ -364,57 +370,6 @@ namespace BetterExplorer {
 					System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, ti.ShellObject.ParsingName + " /nw");
 					CloseTab(ti);
 				}));
-
-
-			/*
-			MenuItem miclosecurrentr = new MenuItem();
-			miclosecurrentr.Header = "Close current tab";
-			miclosecurrentr.Tag = tabitem;
-			miclosecurrentr.Click += new RoutedEventHandler(miclosecurrentr_Click);
-			tabitem.mnu.Items.Add(miclosecurrentr);
-
-			MenuItem miclosealltab = new MenuItem();
-			miclosealltab.Header = "Close all tabs";
-			miclosealltab.Click += new RoutedEventHandler(miclosealltab_Click);
-			tabitem.mnu.Items.Add(miclosealltab);
-
-			MenuItem miclosealltabbd = new MenuItem();
-			miclosealltabbd.Header = "Close all other tabs";
-			miclosealltabbd.Tag = tabitem;
-			miclosealltabbd.Click += new RoutedEventHandler(miclosealltabbd_Click);
-			tabitem.mnu.Items.Add(miclosealltabbd);
-
-			tabitem.mnu.Items.Add(new Separator());
-
-			MenuItem minewtabr = new MenuItem();
-			minewtabr.Header = "New tab";
-			minewtabr.Tag = tabitem;
-			minewtabr.Click += new RoutedEventHandler(minewtabr_Click);
-			tabitem.mnu.Items.Add(minewtabr);
-
-			MenuItem miclonecurrentr = new MenuItem();
-			miclonecurrentr.Header = "Clone tab";
-			miclonecurrentr.Tag = tabitem;
-			miclonecurrentr.Click += new RoutedEventHandler(miclonecurrentr_Click);
-			tabitem.mnu.Items.Add(miclonecurrentr);
-
-			tabitem.mnu.Items.Add(new Separator());
-
-			MenuItem miundocloser = new MenuItem();
-			miundocloser.Header = "Undo close tab";
-			miundocloser.IsEnabled = btnUndoClose.IsEnabled;
-			miundocloser.Tag = "UCTI";
-			miundocloser.Click += new RoutedEventHandler(miundocloser_Click);
-			tabitem.mnu.Items.Add(miundocloser);
-
-			tabitem.mnu.Items.Add(new Separator());
-
-			MenuItem miopeninnew = new MenuItem();
-			miopeninnew.Header = "Open in new window";
-			miopeninnew.Tag = tabitem;
-			miopeninnew.Click += new RoutedEventHandler(miopeninnew_Click);
-			tabitem.mnu.Items.Add(miopeninnew);
-			*/
 		}
 
 		private void ConstructMoveToCopyToMenu() {
@@ -442,31 +397,6 @@ namespace BetterExplorer {
 			var mimDesktop = Builder("btnctDesktopCP", new RoutedEventHandler(btnmtDesktop_Click), sod.Thumbnail.BitmapSource);
 			var micDesktop = Builder("btnctDesktopCP", new RoutedEventHandler(btnctDesktop_Click), sod.Thumbnail.BitmapSource);
 
-			/*
-			MenuItem OtherLocationMove = new MenuItem();
-			OtherLocationMove.Focusable = false;
-			OtherLocationMove.Header = FindResource("miOtherDestCP");
-			OtherLocationMove.Click += new RoutedEventHandler(btnmtOther_Click);
-			MenuItem OtherLocationCopy = new MenuItem();
-			OtherLocationCopy.Focusable = false;
-			OtherLocationCopy.Header = FindResource("miOtherDestCP");
-			OtherLocationCopy.Click += new RoutedEventHandler(btnctOther_Click);
-
-			MenuItem mimDesktop = new MenuItem();
-			ShellItem sod = (ShellItem)KnownFolders.Desktop;
-			sod.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			sod.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-			mimDesktop.Focusable = false;
-			mimDesktop.Icon = sod.Thumbnail.BitmapSource;
-			mimDesktop.Header = FindResource("btnctDesktopCP");
-			mimDesktop.Click += new RoutedEventHandler(btnmtDesktop_Click);
-			MenuItem micDesktop = new MenuItem();
-			micDesktop.Focusable = false;
-			micDesktop.Icon = sod.Thumbnail.BitmapSource;
-			micDesktop.Header = FindResource("btnctDesktopCP");
-			micDesktop.Click += new RoutedEventHandler(btnctDesktop_Click);
-			*/
-
 			MenuItem mimDocuments = new MenuItem(), micDocuments = new MenuItem();
 			try {
 				ShellItem sodc = (ShellItem)KnownFolders.Documents;
@@ -490,26 +420,11 @@ namespace BetterExplorer {
 
 				mimDownloads = Builder("btnctDownloadsCP", new RoutedEventHandler(btnmtDounloads_Click), sodd.Thumbnail.BitmapSource);
 				micDownloads = Builder("btnctDownloadsCP", new RoutedEventHandler(btnctDounloads_Click), sodd.Thumbnail.BitmapSource);
-
-				/*
-				ShellItem sodd = (ShellItem)KnownFolders.Downloads;
-				sodd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-				sodd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-				mimDownloads.Focusable = false;
-				mimDownloads.Icon = sodd.Thumbnail.BitmapSource;
-				mimDownloads.Header = FindResource("btnctDownloadsCP");
-				mimDownloads.Click += new RoutedEventHandler(btnmtDounloads_Click);
-
-				micDownloads.Focusable = false;
-				micDownloads.Icon = sodd.Thumbnail.BitmapSource;
-				micDownloads.Header = FindResource("btnctDownloadsCP");
-				micDownloads.Click += new RoutedEventHandler(btnctDounloads_Click);
-				*/
 			}
 			catch (Exception) {
 				micDownloads = null;
 				mimDownloads = null;
-				//ctach the exception in case the user deleted that basic folder somehow
+				//catch the exception in case the user deleted that basic folder somehow
 			}
 
 			if (mimDocuments != null)
@@ -577,5 +492,46 @@ namespace BetterExplorer {
 			btnCopyto.Items.Add(OtherLocationCopy);
 		}
 
+
+
+		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
+		private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			if (e.RemovedItems.Count > 0) {
+				var tab = e.RemovedItems[0] as ClosableTabItem;
+
+				if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
+					tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+				}
+			}
+			if (e.AddedItems.Count > 0 && (e.AddedItems[0] as ClosableTabItem).Index == tabControl1.Items.Count - 1) {
+				tabControl1.Items.OfType<ClosableTabItem>().Last().BringIntoView();
+			}
+			if (e.AddedItems.Count == 0) return;
+			SelectTab(e.AddedItems[0] as ClosableTabItem);
+		}
+
+		private void SelectTab(ClosableTabItem Tab) {
+			if (Tab == null) return;
+			try {
+				isGoingBackOrForward = Tab.log.HistoryItemsList.Count != 0;
+				//BeforeLastTabIndex = LastTabIndex;
+				if (Tab.ShellObject != ShellListView.CurrentFolder) {
+					if (!Keyboard.IsKeyDown(Key.Tab)) {
+						ShellListView.Navigate(Tab.ShellObject);
+					}
+					else {
+						t.Interval = 500;
+						t.Tag = Tab.ShellObject;
+						t.Tick += new EventHandler(t_Tick);
+						t.Start();
+					}
+				}
+			}
+			catch (StackOverflowException) {
+			}
+		}
+
 	}
 }
+
+

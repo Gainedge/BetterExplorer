@@ -8,7 +8,7 @@
         <ListBox x:Name="QATControls" Margin="0,30,90,55" HorizontalAlignment="Right" Width="200"/>
         <TextBlock HorizontalAlignment="Left" Margin="30,9,0,0" TextWrapping="Wrap" Text="Add or remove items from the Quick Access Toolbar:" VerticalAlignment="Top"/>
         <Grid Margin="0,0,60,25" HorizontalAlignment="Center" VerticalAlignment="Center" Width="70">
-            <Button Content="Add »" x:Name="btnAdd" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Click="Button_Click_1"/>
+            <Button Content="Add »" x:Name="btnAdd" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Click="btnAdd_Click"/>
             <Button Content="« Remove" x:Name="btnRemove" Margin="0,27,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Click="Button_Click_2"/>
         </Grid>
         <Grid Margin="0,0,10,25" HorizontalAlignment="Right" VerticalAlignment="Center" Width="70">
