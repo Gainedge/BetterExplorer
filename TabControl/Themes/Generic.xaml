@@ -1,0 +1,777 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:l="clr-namespace:Wpf.Controls">
+
+	<BooleanToVisibilityConverter x:Key="boolConverter"/>
+    <l:InverseBooleanConverter x:Key="_inverseBooleanConverter"/>
+	<!-- 
+		Brushes used to define the Look of the TabControl & TabItem
+	-->
+	<!-- Border Brush for the TabItems and TabControl -->
+	<SolidColorBrush x:Key="TabBorderBrush" Color="Gainsboro"/>
+	<!-- Tab Text Colour when Not Selected-->
+	<SolidColorBrush x:Key="TabGrayTextBrush" Color="#FF444444"/>
+	<!-- TabItem CloseButton Brush-->
+	<SolidColorBrush x:Key="TabCloseButtonBrush" Color="#FFADADAD"/>
+
+	<!-- TabItem Brushes -->
+	<SolidColorBrush x:Key="TabItemNormalBackground" Color="WhiteSmoke"/>
+	<SolidColorBrush x:Key="TabItemHoverBackground" Color="LightGray"/>
+	<SolidColorBrush x:Key="TabItemSelectedBackground" Color="#FFEAF6FB"/>
+
+	<!-- Style for the Repeat Button used to scrool the Tabs to the Left-->
+	<Style x:Key="RepeatButtonScrollLeftOrUpStyle" TargetType="{x:Type RepeatButton}">
+		<Setter Property="Foreground" Value="{StaticResource TabGrayTextBrush}" />
+		<Setter Property="Background" Value="{Binding Path=TabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+		<Setter Property="BorderBrush" Value="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+		<Setter Property="SnapsToDevicePixels" Value="True"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type RepeatButton}">
+					<Border x:Name="outerBorder"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="1"
+						Padding="{TemplateBinding Padding}"
+						CornerRadius="3,3,0,0">
+
+						<Border x:Name="innerBorder" BorderThickness="1" BorderBrush="Transparent" Background="Transparent" Padding="4,0,4,0">
+							<Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+								<Path x:Name="path1" Stroke="{TemplateBinding Foreground}" Fill="Transparent" Data="M 3,0 L0,3 3,6" />
+								<Path x:Name="path2" Stroke="{TemplateBinding Foreground}" Fill="Transparent" Data="M 7,0 L4,3 7,6" />
+							</Grid>
+						</Border>
+
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter Property="Background" Value="{Binding Path=TabItemMouseOverBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+							<Setter Property="Foreground" Value="Black"/>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter Property="Background" Value="{Binding Path=TabItemMouseOverBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+							<Setter Property="Background" TargetName="innerBorder" Value="#11000000"/>
+							<Setter Property="BorderBrush" TargetName="innerBorder" Value="#66000000" />
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="CornerRadius" TargetName="innerBorder" Value="3,3,0,0"/>
+							<Setter Property="BorderThickness" TargetName="innerBorder" Value="1,2,1,0" />
+						</Trigger>
+
+						<DataTrigger Binding="{Binding Path=TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" Value="Left">
+							<Setter Property="Data" TargetName="path1" Value="M 0,3 L3,0 6,3"/>
+							<Setter Property="Data" TargetName="path2" Value="M 0,7 L3,4 6,7"/>
+						</DataTrigger>
+						<DataTrigger Binding="{Binding Path=TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" Value="Right">
+							<Setter Property="Data" TargetName="path1" Value="M 0,3 L3,0 6,3"/>
+							<Setter Property="Data" TargetName="path2" Value="M 0,7 L3,4 6,7"/>
+						</DataTrigger>
+						<DataTrigger Binding="{Binding Path=TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" Value="Bottom">
+							<Setter Property="CornerRadius" TargetName="outerBorder" Value="0,0,3,3"/>
+						</DataTrigger>
+
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Style for the Repeat Button used to scrool the Tabs to the Right-->
+	<Style x:Key="RepeatButtonScrollRightOrDownStyle" TargetType="{x:Type RepeatButton}">
+		<Setter Property="Foreground" Value="{StaticResource TabGrayTextBrush}" />
+		<Setter Property="Background" Value="{Binding Path=TabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+		<Setter Property="BorderBrush" Value="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+		<Setter Property="SnapsToDevicePixels" Value="True"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type RepeatButton}">
+					<Border x:Name="outerBorder"
+						Background="{TemplateBinding Background}"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="1"
+						Padding="{TemplateBinding Padding}"
+						CornerRadius="3,3,0,0">
+						<Border x:Name="innerBorder" BorderThickness="1" BorderBrush="Transparent" Background="Transparent" Padding="4,0,4,0">
+							<Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+								<Path x:Name="path1" Stroke="{TemplateBinding Foreground}" Fill="Transparent" Data="M 0,0 L3,3 0,6" />
+								<Path x:Name="path2" Stroke="{TemplateBinding Foreground}" Fill="Transparent" Data="M 4,0 L7,3 4,6" />
+							</Grid>
+						</Border>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter Property="Background" Value="{Binding Path=TabItemMouseOverBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+							<Setter Property="Foreground" Value="Black"/>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter Property="Background" Value="{Binding Path=TabItemMouseOverBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+							<Setter Property="Background" TargetName="innerBorder" Value="#11000000"/>
+							<Setter Property="BorderBrush" TargetName="innerBorder" Value="#66000000" />
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="CornerRadius" TargetName="innerBorder" Value="3,3,0,0"/>
+							<Setter Property="BorderThickness" TargetName="innerBorder" Value="1,2,1,0" />
+						</Trigger>
+
+						<DataTrigger Binding="{Binding Path=TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" Value="Left">
+							<Setter Property="Data" TargetName="path1" Value="M 0,0 L3,3 6,0"/>
+							<Setter Property="Data" TargetName="path2" Value="M 0,4 L3,7 6,4"/>
+							<Setter Property="CornerRadius" TargetName="outerBorder" Value="0,0,3,3"/>
+							<Setter Property="CornerRadius" TargetName="innerBorder" Value="0,0,3,3"/>
+						</DataTrigger>
+						<DataTrigger Binding="{Binding Path=TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" Value="Right">
+							<Setter Property="Data" TargetName="path1" Value="M 0,0 L3,3 6,0"/>
+							<Setter Property="Data" TargetName="path2" Value="M 0,4 L3,7 6,4"/>
+							<Setter Property="CornerRadius" TargetName="outerBorder" Value="0,0,3,3"/>
+							<Setter Property="CornerRadius" TargetName="innerBorder" Value="0,0,3,3"/>
+						</DataTrigger>
+						<DataTrigger Binding="{Binding Path=TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" Value="Bottom">
+							<Setter Property="CornerRadius" TargetName="outerBorder" Value="0,0,3,3"/>
+							<Setter Property="CornerRadius" TargetName="innerBorder" Value="0,0,3,3"/>
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Style for the Toggle Button which displays a cntext menu listing all the Tab Headers-->
+	<Style x:Key="DropDownToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+		<Setter Property="Background" Value="{Binding Path=TabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+		<Setter Property="BorderBrush" Value="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+		<Setter Property="Foreground" Value="{StaticResource TabGrayTextBrush}"/>
+		<Setter Property="SnapsToDevicePixels" Value="True"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ToggleButton}">
+					<Border x:Name="outerBorder" CornerRadius="3,3,0,0" BorderThickness="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" >
+						<Border x:Name="innerBorder" CornerRadius="3,3,0,0">
+							<Grid HorizontalAlignment="Center" VerticalAlignment="Center" ClipToBounds="False" Margin="0,1,0,0" SnapsToDevicePixels="False">
+								<Path Stroke="{TemplateBinding Foreground}" Data="M1,1L3,4 5,1z" Fill="{TemplateBinding Foreground}" ClipToBounds="False" HorizontalAlignment="Center" VerticalAlignment="Center" SnapsToDevicePixels="True"/>
+							</Grid>
+						</Border>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter Property="Background" Value="{Binding Path=TabItemMouseOverBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+							<Setter Property="Foreground" Value="Black"/>
+						</Trigger>
+						<Trigger Property="IsChecked" Value="True">
+							<Setter Property="Background" Value="{Binding Path=TabItemMouseOverBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+							<Setter Property="Background" TargetName="innerBorder" Value="#11000000"/>
+							<Setter Property="BorderBrush" TargetName="innerBorder" Value="#66000000" />
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="Margin" TargetName="innerBorder" Value="-1"/>
+							<Setter Property="CornerRadius" TargetName="innerBorder" Value="3,3,0,0"/>
+							<Setter Property="BorderThickness" TargetName="innerBorder" Value="1,2,1,0" />
+						</Trigger>
+
+						<DataTrigger Binding="{Binding Path=TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" Value="Bottom">
+							<Setter Property="CornerRadius" TargetName="outerBorder" Value="0,0,3,3"/>
+							<Setter Property="CornerRadius" TargetName="innerBorder" Value="0,0,3,3"/>
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Style for the New Tab Button -->
+	<Style x:Key="NewTabButtonStyle" TargetType="{x:Type Button}">
+		<Setter Property="Background" Value="{Binding Path=TabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+		<Setter Property="BorderBrush" Value="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+		<Setter Property="Foreground" Value="{StaticResource TabGrayTextBrush}"/>
+		<Setter Property="SnapsToDevicePixels" Value="True"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Border CornerRadius="3,3,0,0" BorderThickness="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" x:Name="outerBorder">
+						<Border x:Name="innerBorder" CornerRadius="3,3,0,0">
+							<Grid HorizontalAlignment="Center" VerticalAlignment="Center" Width="16" Height="16" Margin="0,1,0,0" SnapsToDevicePixels="False">
+								<ContentPresenter x:Name="Cp" Opacity="0.4" />
+							</Grid>
+						</Border>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter Property="Background" Value="{Binding Path=TabItemMouseOverBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="Opacity" TargetName="Cp" Value="1"/>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter Property="Background" Value="{Binding Path=TabItemMouseOverBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+							<Setter Property="Background" TargetName="innerBorder" Value="#11000000"/>
+							<Setter Property="BorderBrush" TargetName="innerBorder" Value="#66000000" />
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="Margin" TargetName="innerBorder" Value="-1"/>
+							<Setter Property="CornerRadius" TargetName="innerBorder" Value="3,3,0,0"/>
+							<Setter Property="BorderThickness" TargetName="innerBorder" Value="1,2,1,0" />
+						</Trigger>
+						<DataTrigger Binding="{Binding Path=TabStripPlacement, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" Value="Bottom">
+							<Setter Property="CornerRadius" TargetName="outerBorder" Value="0,0,3,3"/>
+							<Setter Property="CornerRadius" TargetName="innerBorder" Value="0,0,3,3"/>
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Style for the Close Button on each TabItem -->
+	<Style x:Key="CloseButtonStyle" TargetType="{x:Type Button}">
+		<Setter Property="BorderBrush" Value="Transparent"/>
+		<Setter Property="Background" Value="Transparent"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+					<Border x:Name="border" 
+						CornerRadius="2" 
+						Background="{TemplateBinding Background}" 
+						BorderThickness="1" 
+						BorderBrush="{TemplateBinding BorderBrush}" 
+						Width="16" Height="16" 
+						SnapsToDevicePixels="True">
+						<Grid Width="8" Height="8" HorizontalAlignment="Center" VerticalAlignment="Center">
+							<Path x:Name="path1" Stroke="{StaticResource TabCloseButtonBrush}" Data="M0,0 L8,8" StrokeThickness="2" />
+							<Path x:Name="path2" Stroke="{StaticResource TabCloseButtonBrush}" Data="M8,0 L0,8" StrokeThickness="2" />
+						</Grid>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="BorderBrush" Value="{StaticResource TabCloseButtonBrush}"/>
+							<Setter Property="Background" Value="WhiteSmoke"/>
+							<Setter Property="Stroke" TargetName="path1" Value="DarkRed"/>
+							<Setter Property="Stroke" TargetName="path2" Value="DarkRed"/>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter Property="Background">
+								<Setter.Value>
+									<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+										<GradientStop Color="#FFADADAD" Offset="0"/>
+										<GradientStop Color="White" Offset="0.5"/>
+										<GradientStop Color="White" Offset="1"/>
+									</LinearGradientBrush>
+								</Setter.Value>
+							</Setter>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- TabItem Style, defines the look of a Tab Item-->
+	<Style TargetType="{x:Type l:TabItem}">
+		<Setter Property="Background" Value="{Binding Path=TabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+		<Setter Property="BorderBrush" Value="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+		<Setter Property="Padding" Value="5" />
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+		<Setter Property="VerticalAlignment" Value="Stretch" />
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="VerticalContentAlignment" Value="Stretch" />
+		<Setter Property="SnapsToDevicePixels" Value="True"/>
+		<Setter Property="UseLayoutRounding" Value="True"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type l:TabItem}">
+					<Border x:Name="Bd"
+							Background="{TemplateBinding Background}"
+							BorderBrush="{TemplateBinding BorderBrush}"
+							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+							UseLayoutRounding="True">
+						<Grid HorizontalAlignment="Stretch" UseLayoutRounding="True">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+
+							<Image Source="{TemplateBinding Icon}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="16" Height="16" Stretch="None" Margin="5,0,0,0" UseLayoutRounding="True"/>
+
+							<Border Margin="2,0,2,0" Grid.Column="1">
+								<TextBlock
+									    Text="{TemplateBinding Header}"
+										HorizontalAlignment="Stretch"
+										VerticalAlignment="Center"
+									    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+									    Margin="{TemplateBinding Padding}"
+									TextTrimming="CharacterEllipsis"
+									TextWrapping="NoWrap"
+									/>
+							</Border>
+
+							<Button x:Name="PART_CloseButton" 
+								Grid.Column="2" 
+								VerticalAlignment="Center"
+								HorizontalAlignment="Center"
+								Margin="5,0,5,0"
+								Style="{StaticResource CloseButtonStyle}"
+								Visibility="Visible"
+								/>
+						</Grid>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="true">
+							<Setter Property="Background" Value="{Binding Path=TabItemMouseOverBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+							<Setter Property="Foreground" Value="Black"/>
+						</Trigger>
+						<Trigger Property="IsSelected" Value="true">
+							<Setter Property="Background" Value="{Binding Path=TabItemSelectedBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="Margin" TargetName="Bd" Value="0"/>
+						</Trigger>
+
+						<Trigger Property="TabStripPlacement" Value="Top">
+							<Setter Property="BorderThickness" TargetName="Bd" Value="1,1,1,0"/>
+							<Setter Property="CornerRadius" TargetName="Bd" Value="4,4,0,0"/>
+							<Setter Property="Margin" TargetName="Bd" Value="0,0,0,-1"/>
+						</Trigger>
+
+						<Trigger Property="TabStripPlacement" Value="Bottom">
+							<Setter Property="BorderThickness" TargetName="Bd" Value="1,0,1,1"/>
+							<Setter Property="CornerRadius" TargetName="Bd" Value="0,0,4,4"/>
+							<Setter Property="Margin" TargetName="Bd" Value="0,-1,0,7"/>
+						</Trigger>
+
+						<Trigger Property="TabStripPlacement" Value="Left">
+							<Setter Property="BorderThickness" TargetName="Bd" Value="1,1,0,1"/>
+							<Setter Property="CornerRadius" TargetName="Bd" Value="4,0,0,0"/>
+							<Setter Property="Margin" TargetName="Bd" Value="0,0,0,-1"/>
+						</Trigger>
+
+						<Trigger Property="TabStripPlacement" Value="Right">
+							<Setter Property="BorderThickness" TargetName="Bd" Value="0,1,1,1"/>
+							<Setter Property="CornerRadius" TargetName="Bd" Value="0,4,0,0"/>
+							<Setter Property="Margin" TargetName="Bd" Value="0,0,0,-1"/>
+						</Trigger>
+                        
+                        <Trigger Property="AllowDelete" Value="false">
+                            <Setter Property="Visibility" TargetName="PART_CloseButton" Value="Collapsed"/> 
+                        </Trigger>  
+
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="TabStripPlacement" Value="Top"/>
+								<Condition Property="IsSelected" Value="true"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="Panel.ZIndex" Value="2" />
+							<Setter Property="BorderThickness" TargetName="Bd" Value="1,1,1,0"/>
+							<Setter Property="CornerRadius" TargetName="Bd" Value="4,4,0,0"/>
+							<Setter Property="Margin" TargetName="Bd" Value="0,0,0,-1"/>
+						</MultiTrigger>
+
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="TabStripPlacement" Value="Bottom"/>
+								<Condition Property="IsSelected" Value="true"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="Panel.ZIndex" Value="2" />
+							<Setter Property="BorderThickness" TargetName="Bd" Value="1,0,1,1"/>
+							<Setter Property="CornerRadius" TargetName="Bd" Value="0,0,4,4"/>
+							<Setter Property="Margin" TargetName="Bd" Value="0,-1,0,0"/>
+						</MultiTrigger>
+
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="TabStripPlacement" Value="Left"/>
+								<Condition Property="IsSelected" Value="true"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="Panel.ZIndex" Value="2" />
+							<Setter Property="BorderThickness" TargetName="Bd" Value="1,1,0,1"/>
+							<Setter Property="CornerRadius" TargetName="Bd" Value="4,0,0,4"/>
+							<Setter Property="Margin" TargetName="Bd" Value="0,0,0,-1"/>
+						</MultiTrigger>
+
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="TabStripPlacement" Value="Right"/>
+								<Condition Property="IsSelected" Value="true"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="Panel.ZIndex" Value="2" />
+							<Setter Property="BorderThickness" TargetName="Bd" Value="1,1,1,1"/>
+							<Setter Property="CornerRadius" TargetName="Bd" Value="0,4,0,0"/>
+							<Setter Property="Margin" TargetName="Bd" Value="0,0,0,-1"/>
+						</MultiTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Control Template for TabStripPlacement Top-->
+	<ControlTemplate x:Key="TabControlTabPlacementTop" TargetType="{x:Type l:TabControl}">
+		<Grid SnapsToDevicePixels="{Binding Path=SnapsToDevicePixels, RelativeSource={RelativeSource TemplatedParent}}" KeyboardNavigation.TabNavigation="Local">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition x:Name="RowDefinition0" Height="Auto" />
+				<RowDefinition x:Name="RowDefinition1" Height="*" />
+			</Grid.RowDefinitions>
+
+			<Border Grid.ColumnSpan="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent"/>
+
+			<!-- Toggle button which displays a context menu with a menu item for each tab which can be used to select a tab that is not in view-->
+			<ToggleButton 
+                x:Name="PART_DropDown" 
+                Height="22"
+                Width="16"
+                VerticalAlignment="Bottom"
+                Margin="0,0,0,-1"
+                Grid.Column="0" 
+                KeyboardNavigation.TabIndex="1"
+                Style="{StaticResource DropDownToggleButtonStyle}" 
+                Visibility="{Binding IsUsingItemsSource, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource _inverseBooleanConverter}}"
+                ToolTip="Display all the tabs in a menu"/>
+
+			<Button 
+                x:Name="PART_NewTabButton" 
+                Grid.Column="1" 
+                Height="22"
+                VerticalAlignment="Bottom"
+                Margin="-1,5,0,-1" 
+                KeyboardNavigation.TabIndex="2"
+                Style="{StaticResource NewTabButtonStyle}" 
+                Width="24"
+				Visibility="{Binding Path=AllowAddNew, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolConverter}}"
+				ToolTip="Add a New tab">
+
+				<Image Source="pack://application:,,,/Wpf.TabControl;component/Images/newtab.ico"/>
+			</Button>
+
+			<!-- Repeat Buttons used for scrolling the TabItems into view-->
+			<RepeatButton 
+                x:Name="PART_RepeatLeft" 
+                Panel.ZIndex="1" 
+                Grid.Column="2" 
+                Height="22"
+                KeyboardNavigation.TabIndex="3"
+                VerticalAlignment="Bottom"
+                Style="{StaticResource RepeatButtonScrollLeftOrUpStyle}" 
+                Margin="-1,5,0,-1" 
+                ToolTip="Scroll the Tab Items to the Left" 
+				Visibility="{Binding ElementName=TabPanel, Path=CanScrollLeftOrUp, Converter={StaticResource boolConverter}}"/>
+
+			<ScrollViewer x:Name="PART_ScrollViewer" Grid.Column="3" Panel.ZIndex="1" CanContentScroll="True" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden">
+				<l:TabPanel x:Name="TabPanel" IsItemsHost="True" SnapsToDevicePixels="True" />
+			</ScrollViewer>
+
+			<RepeatButton 
+                x:Name="PART_RepeatRight" 
+                Panel.ZIndex="1" 
+                Grid.Column="4" 
+                Height="22"
+                VerticalAlignment="Bottom"
+                Style="{StaticResource RepeatButtonScrollRightOrDownStyle}" 
+                Margin="-1,5,0,-1" 
+                ToolTip="Scroll the Tab Items to the Right" 
+                Visibility="{Binding ElementName=TabPanel, Path=CanScrollRightOrDown, Converter={StaticResource boolConverter}}" />
+
+			<!-- Content Panel-->
+			<Border x:Name="ContentPanel"
+				Grid.ColumnSpan="5" Grid.Row="1"
+				Background="{Binding Path=Background, RelativeSource={RelativeSource TemplatedParent}}" 
+                BorderBrush="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
+                BorderThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}}"
+				KeyboardNavigation.DirectionalNavigation="Contained"
+				KeyboardNavigation.TabIndex="5"
+				KeyboardNavigation.TabNavigation="Local">
+				<ContentPresenter x:Name="PART_SelectedContentHost"
+				    Content="{Binding Path=SelectedContent, RelativeSource={RelativeSource TemplatedParent}}"
+				    ContentSource="SelectedContent"
+                    ContentTemplate="{Binding Path=ContentTemplate, RelativeSource={RelativeSource TemplatedParent}}"
+				    SnapsToDevicePixels="{Binding Path=SnapsToDevicePixels, RelativeSource={RelativeSource TemplatedParent}}"
+				    Margin="{Binding Path=Padding, RelativeSource={RelativeSource TemplatedParent}}" />
+			</Border>
+		</Grid>
+	</ControlTemplate>
+
+	<!-- Control Template for TabStripPlacement Bottom-->
+	<ControlTemplate x:Key="TabControlTabPlacementBottom" TargetType="{x:Type l:TabControl}">
+		<Grid SnapsToDevicePixels="{Binding Path=SnapsToDevicePixels, RelativeSource={RelativeSource TemplatedParent}}" KeyboardNavigation.TabNavigation="Local">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition x:Name="RowDefinition0" Height="*" />
+				<RowDefinition x:Name="RowDefinition1" Height="Auto" />
+			</Grid.RowDefinitions>
+
+			<!-- Toggle button which displays a context menu with a menu item for each tab which can be used to select a tab that is not in view-->
+			<ToggleButton 
+                x:Name="PART_DropDown" 
+                Grid.Row="1"
+                Height="22"
+                Width="16"
+                VerticalAlignment="Top"
+                Margin="0,-1,0,0"
+                Grid.Column="0" 
+                Style="{StaticResource DropDownToggleButtonStyle}" 
+                Visibility="{Binding IsUsingItemsSource, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource _inverseBooleanConverter}}"
+                ToolTip="Display all the tabs in a menu"/>
+
+			<Button 
+                x:Name="PART_NewTabButton" 
+                Grid.Row="1"
+                Grid.Column="1" 
+                Height="22"
+                VerticalAlignment="Top"
+                Margin="-1,-1,0,0" 
+                Style="{StaticResource NewTabButtonStyle}" 
+                Width="24"
+				Visibility="{Binding Path=AllowAddNew, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolConverter}}"
+				ToolTip="Add a New tab">
+
+				<Image Source="pack://application:,,,/Wpf.TabControl;component/Images/newtab.ico"/>
+			</Button>
+
+			<!-- Repeat Buttons used for scrolling the TabItems into view-->
+			<RepeatButton 
+                x:Name="PART_RepeatLeft" 
+                Panel.ZIndex="1" 
+                Grid.Row="1"
+                Grid.Column="2" 
+                Height="22"
+                VerticalAlignment="Top"
+                Style="{StaticResource RepeatButtonScrollLeftOrUpStyle}" 
+                Margin="-1,-1,0,0" 
+                ToolTip="Scroll the Tab Items to the Left" 
+				Visibility="{Binding ElementName=TabPanel, Path=CanScrollLeftOrUp, Converter={StaticResource boolConverter}}"/>
+
+			<ScrollViewer x:Name="PART_ScrollViewer" Grid.Row="1" Grid.Column="3" Panel.ZIndex="1" CanContentScroll="True" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Hidden">
+				<l:TabPanel x:Name="TabPanel" IsItemsHost="True" SnapsToDevicePixels="True" />
+			</ScrollViewer>
+
+			<RepeatButton 
+                x:Name="PART_RepeatRight" 
+                Panel.ZIndex="1" 
+                Grid.Row="1"
+                Grid.Column="4" 
+                Height="22"
+                VerticalAlignment="Top"
+                Style="{StaticResource RepeatButtonScrollRightOrDownStyle}" 
+                Margin="-1,-1,0,0" 
+                ToolTip="Scroll the Tab Items to the Right" 
+                Visibility="{Binding ElementName=TabPanel, Path=CanScrollRightOrDown, Converter={StaticResource boolConverter}}" />
+
+			<!-- Content Panel-->
+			<Border x:Name="ContentPanel"
+				Grid.ColumnSpan="5" 
+				Grid.Row="0"
+				Background="{Binding Path=Background, RelativeSource={RelativeSource TemplatedParent}}" 
+                BorderBrush="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
+                BorderThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}}"
+				KeyboardNavigation.DirectionalNavigation="Contained"
+				KeyboardNavigation.TabIndex="2"
+				KeyboardNavigation.TabNavigation="Local">
+				<ContentPresenter x:Name="PART_SelectedContentHost"
+				    Content="{Binding Path=SelectedContent, RelativeSource={RelativeSource TemplatedParent}}"
+				    ContentSource="SelectedContent"
+                    ContentTemplate="{Binding Path=ContentTemplate, RelativeSource={RelativeSource TemplatedParent}}"
+				    SnapsToDevicePixels="{Binding Path=SnapsToDevicePixels, RelativeSource={RelativeSource TemplatedParent}}"
+				    Margin="{Binding Path=Padding, RelativeSource={RelativeSource TemplatedParent}}" />
+			</Border>
+		</Grid>
+	</ControlTemplate>
+
+	<!-- Control Template for TabStripPlacement Left-->
+	<ControlTemplate x:Key="TabControlTabPlacementLeft" TargetType="{x:Type l:TabControl}">
+		<Grid SnapsToDevicePixels="{Binding Path=SnapsToDevicePixels, RelativeSource={RelativeSource TemplatedParent}}" KeyboardNavigation.TabNavigation="Local">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="20"/>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="20"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+			</Grid.ColumnDefinitions>
+
+			<Border Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{Binding Path=Background, RelativeSource={RelativeSource TemplatedParent}}"/>
+
+			<Grid Grid.Row="0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
+				<!-- Repeat Buttons used for scrolling the TabItems into view-->
+				<RepeatButton 
+                    x:Name="PART_RepeatLeft" 
+                    Panel.ZIndex="1" 
+                    Grid.Column="0" 
+                    Style="{StaticResource RepeatButtonScrollLeftOrUpStyle}" 
+                    Margin="0,0,0,-1" 
+                    ToolTip="Scroll the Tab Items to the Top" 
+                    Visibility="{Binding ElementName=TabPanel, Path=CanScrollLeftOrUp, Converter={StaticResource boolConverter}}"/>
+
+				<!-- Toggle button which displays a context menu with a menu item for each tab which can be used to select a tab that is not in view-->
+				<ToggleButton x:Name="PART_DropDown" Grid.Column="1" Margin="-1,0,0,-1" Style="{StaticResource DropDownToggleButtonStyle}" ToolTip="Display all the tabs in a menu" Width="20" Panel.ZIndex="1"
+                              Visibility="{Binding IsUsingItemsSource, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource _inverseBooleanConverter}}"/>
+
+				<Button x:Name="PART_NewTabButton" Grid.Column="2" Margin="-1,0,0,-1" Style="{StaticResource NewTabButtonStyle}" Width="24"  Panel.ZIndex="1"
+				    Visibility="{Binding Path=AllowAddNew, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolConverter}}"
+				    ToolTip="Add a New tab">
+
+					<Image Source="pack://application:,,,/Wpf.TabControl;component/Images/newtab.ico"/>
+				</Button>
+			</Grid>
+
+			<ScrollViewer x:Name="PART_ScrollViewer" Grid.Row="1" Panel.ZIndex="1" CanContentScroll="True" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+				<l:TabPanel x:Name="TabPanel" IsItemsHost="True" />
+			</ScrollViewer>
+
+			<RepeatButton 
+                x:Name="PART_RepeatRight" 
+                Panel.ZIndex="1" 
+                Grid.Row="2" 
+                Style="{StaticResource RepeatButtonScrollRightOrDownStyle}" 
+                ToolTip="Scroll the Tab Items to the Bottom" 
+                Visibility="{Binding ElementName=TabPanel, Path=CanScrollRightOrDown, Converter={StaticResource boolConverter}}"/>
+
+			<!-- Content Panel-->
+			<Border x:Name="ContentPanel"
+				Grid.Column="1" Grid.RowSpan="3"
+				Background="{Binding Path=Background, RelativeSource={RelativeSource TemplatedParent}}" 
+                BorderBrush="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
+                BorderThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}}"
+				KeyboardNavigation.DirectionalNavigation="Contained"
+				KeyboardNavigation.TabIndex="2"
+				KeyboardNavigation.TabNavigation="Local">
+				<ContentPresenter x:Name="PART_SelectedContentHost"
+				    Content="{Binding Path=SelectedContent, RelativeSource={RelativeSource TemplatedParent}}"
+				    ContentSource="SelectedContent"
+                    ContentTemplate="{Binding Path=ContentTemplate, RelativeSource={RelativeSource TemplatedParent}}"
+				    SnapsToDevicePixels="{Binding Path=SnapsToDevicePixels, RelativeSource={RelativeSource TemplatedParent}}"
+				    Margin="{Binding Path=Padding, RelativeSource={RelativeSource TemplatedParent}}"/>
+			</Border>
+		</Grid>
+	</ControlTemplate>
+
+	<!-- Control Template for TabStripPlacement Right-->
+	<ControlTemplate x:Key="TabControlTabPlacementRight" TargetType="{x:Type l:TabControl}">
+		<Grid SnapsToDevicePixels="{Binding Path=SnapsToDevicePixels, RelativeSource={RelativeSource TemplatedParent}}" KeyboardNavigation.TabNavigation="Local">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="20"/>
+				<RowDefinition Height="*" />
+				<RowDefinition Height="20"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+			<Border Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{Binding Path=Background, RelativeSource={RelativeSource TemplatedParent}}"/>
+
+			<Grid Grid.Row="0" Grid.Column="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+
+				<!-- Repeat Buttons used for scrolling the TabItems into view-->
+				<RepeatButton 
+                    x:Name="PART_RepeatLeft" 
+                    Panel.ZIndex="1" 
+                    Grid.Column="2" 
+                    Style="{StaticResource RepeatButtonScrollLeftOrUpStyle}" 
+                    Margin="0,0,0,-1" 
+                    ToolTip="Scroll the Tab Items to the Top" 
+                    Visibility="{Binding ElementName=TabPanel, Path=CanScrollLeftOrUp, Converter={StaticResource boolConverter}}"/>
+
+				<!-- Toggle button which displays a context menu with a menu item for each tab which can be used to select a tab that is not in view-->
+				<ToggleButton x:Name="PART_DropDown" Grid.Column="1" Margin="-1,0,0,-1" Style="{StaticResource DropDownToggleButtonStyle}" ToolTip="Display all the tabs in a menu" Width="20" Panel.ZIndex="1"
+                              Visibility="{Binding IsUsingItemsSource, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource _inverseBooleanConverter}}"/>
+
+				<Button x:Name="PART_NewTabButton" Grid.Column="0" Margin="-1,0,0,-1" Style="{StaticResource NewTabButtonStyle}" Width="24"  Panel.ZIndex="1"
+				    Visibility="{Binding Path=AllowAddNew, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource boolConverter}}"
+				    ToolTip="Add a New tab">
+
+					<Image Source="pack://application:,,,/Wpf.TabControl;component/Images/newtab.ico"/>
+				</Button>
+			</Grid>
+
+			<ScrollViewer x:Name="PART_ScrollViewer" Grid.Row="1" Grid.Column="1" Panel.ZIndex="1" CanContentScroll="True" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+				<l:TabPanel x:Name="TabPanel" IsItemsHost="True" />
+			</ScrollViewer>
+
+			<RepeatButton 
+                x:Name="PART_RepeatRight" 
+                Panel.ZIndex="1" 
+                Grid.Row="2" 
+                Grid.Column="1"
+                Style="{StaticResource RepeatButtonScrollRightOrDownStyle}" 
+                ToolTip="Scroll the Tab Items to the Bottom" 
+                Visibility="{Binding ElementName=TabPanel, Path=CanScrollRightOrDown, Converter={StaticResource boolConverter}}"/>
+
+			<!-- Content Panel-->
+			<Border x:Name="ContentPanel"
+				Grid.RowSpan="3"
+				Background="{Binding Path=Background, RelativeSource={RelativeSource TemplatedParent}}" 
+                BorderBrush="{Binding Path=BorderBrush, RelativeSource={RelativeSource TemplatedParent}}"
+                BorderThickness="{Binding Path=BorderThickness, RelativeSource={RelativeSource TemplatedParent}}"
+				KeyboardNavigation.DirectionalNavigation="Contained"
+				KeyboardNavigation.TabIndex="2"
+				KeyboardNavigation.TabNavigation="Local">
+				<ContentPresenter x:Name="PART_SelectedContentHost"
+				    Content="{Binding Path=SelectedContent, RelativeSource={RelativeSource TemplatedParent}}"
+				    ContentSource="SelectedContent"
+                    ContentTemplate="{Binding Path=ContentTemplate, RelativeSource={RelativeSource TemplatedParent}}"
+				    SnapsToDevicePixels="{Binding Path=SnapsToDevicePixels, RelativeSource={RelativeSource TemplatedParent}}"
+				    Margin="{Binding Path=Padding, RelativeSource={RelativeSource TemplatedParent}}"/>
+			</Border>
+		</Grid>
+	</ControlTemplate>
+	<!-- TabControl Style, defines the look of the TabControl-->
+	<Style TargetType="{x:Type l:TabControl}">
+		<Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle"/>
+		<Setter Property="KeyboardNavigation.DirectionalNavigation" Value="Cycle"/>
+
+		<Setter Property="Background" Value="White"/>
+		<Setter Property="BorderBrush" Value="{StaticResource TabBorderBrush}"/>
+		<Setter Property="BorderThickness" Value="1"/>
+
+		<Setter Property="TabItemNormalBackground" Value="{StaticResource TabItemNormalBackground}"/>
+		<Setter Property="TabItemMouseOverBackground" Value="{StaticResource TabItemHoverBackground}"/>
+		<Setter Property="TabItemSelectedBackground" Value="{StaticResource TabItemSelectedBackground}"/>
+
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="VerticalContentAlignment" Value="Stretch" />
+
+		<Setter Property="SnapsToDevicePixels" Value="True"/>
+		<Setter Property="Template" Value="{StaticResource TabControlTabPlacementTop}"/>
+		<Style.Triggers>
+
+			<Trigger Property="TabStripPlacement" Value="Bottom">
+				<Setter Property="Template" Value="{StaticResource TabControlTabPlacementBottom}"/>
+			</Trigger>
+
+			<Trigger Property="TabStripPlacement" Value="Left">
+				<Setter Property="TabItemMinWidth" Value="0"/>
+				<Setter Property="TabItemMaxWidth" Value="150"/>
+
+				<Setter Property="TabItemMinHeight" Value="20"/>
+				<Setter Property="TabItemMaxHeight" Value="250"/>
+				<Setter Property="Template" Value="{StaticResource TabControlTabPlacementLeft}"/>
+			</Trigger>
+
+			<Trigger Property="TabStripPlacement" Value="Right">
+				<Setter Property="TabItemMinWidth" Value="0"/>
+				<Setter Property="TabItemMaxWidth" Value="150"/>
+
+				<Setter Property="TabItemMinHeight" Value="20"/>
+				<Setter Property="TabItemMaxHeight" Value="250"/>
+				<Setter Property="Template" Value="{StaticResource TabControlTabPlacementRight}"/>
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+</ResourceDictionary>

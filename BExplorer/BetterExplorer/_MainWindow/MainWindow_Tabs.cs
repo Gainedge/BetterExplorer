@@ -14,9 +14,9 @@ namespace BetterExplorer {
 	//TODO: Fix Folder History/Navigation issue on new tabs
 	//TODO: Fix Context Menu Item [Open in new window]
 	partial class MainWindow {
-		//private ClosableTabItem CreateNewClosableTabItem(ShellItem DefPath, bool IsNavigate) {
+		//private Wpf.Controls.TabItem CreateNewWpf.Controls.TabItem(ShellItem DefPath, bool IsNavigate) {
 		//	//TODO: figure out what to do with Cloning a tab!
-		//	ClosableTabItem newt = new ClosableTabItem();
+		//	Wpf.Controls.TabItem newt = new Wpf.Controls.TabItem();
 
 		// #region CreateTabbarRKMenu newt.mnu = new ContextMenu();
 
@@ -42,17 +42,17 @@ namespace BetterExplorer {
 		// newt.PreviewMouseMove += newt_PreviewMouseMove; newt.Header =
 		// DefPath.GetDisplayName(SIGDN.NORMALDISPLAY); newt.TabIcon =
 		// DefPath.Thumbnail.BitmapSource; newt.ShellObject = DefPath; newt.ToolTip =
-		// DefPath.ParsingName; newt.IsNavigate = IsNavigate; newt.Index = tabControl1.Items.Count;
+		// DefPath.ParsingName; newt.IsNavigate = IsNavigate; newt.Index = tcMain.Items.Count;
 		// newt.AllowDrop = true; newt.log.CurrentLocation = DefPath;
 
 		// newt.CloseTab += new RoutedEventHandler(newt_CloseTab); newt.DragEnter += new
 		// DragEventHandler(newt_DragEnter); newt.DragOver += new DragEventHandler(newt_DragOver);
 		// newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove); newt.Drop += new
 		// DragEventHandler(newt_Drop); newt.TabSelected += newt_TabSelected;
-		// tabControl1.Items.Add(newt); LastTabIndex = tabControl1.SelectedIndex;
+		// tcMain.Items.Add(newt); LastTabIndex = tcMain.SelectedIndex;
 
-		// tabControl1.SelectedIndex = tabControl1.Items.Count - 1; tabControl1.SelectedItem =
-		// tabControl1.Items[tabControl1.Items.Count - 1];
+		// tcMain.SelectedIndex = tcMain.Items.Count - 1; tcMain.SelectedItem =
+		// tcMain.Items[tcMain.Items.Count - 1];
 
 		// ConstructMoveToCopyToMenu(); NavigateAfterTabChange();
 
@@ -62,8 +62,8 @@ namespace BetterExplorer {
 
 		#region Tab Closers
 
-		private void CloseTab(ClosableTabItem thetab, bool allowreopening = true) {
-			if (tabControl1.SelectedIndex == 0 && tabControl1.Items.Count == 1) {
+		private void CloseTab(Wpf.Controls.TabItem thetab, bool allowreopening = true) {
+			if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
 				if (this.IsCloseLastTabCloseApp) {
 					Close();
 				}
@@ -74,26 +74,14 @@ namespace BetterExplorer {
 				return;
 			}
 
-			if (thetab.Index == 0 && tabControl1.Items.Count > 1) {
-				tabControl1.SelectedIndex = thetab.Index + 1;
-			}
-			else if (thetab.Index == tabControl1.Items.Count - 1) {
-				tabControl1.SelectedIndex = thetab.Index - 1;
-			}
-			else {
-				for (int i = thetab.Index + 1; i < tabControl1.Items.Count; i++) {
-					ClosableTabItem tab = tabControl1.Items[i] as ClosableTabItem;
-					tab.Index = tab.Index - 1;
-				}
-			}
-
-			tabControl1.Items.Remove(thetab);
+			tcMain.Items.Remove(thetab);
 			ConstructMoveToCopyToMenu();
 
 			if (allowreopening) {
 				reopenabletabs.Add(thetab.log);
 				btnUndoClose.IsEnabled = true;
-				foreach (ClosableTabItem item in this.tabControl1.Items) {
+				foreach (Wpf.Controls.TabItem item in this.tcMain.Items)
+				{
 					foreach (FrameworkElement m in item.mnu.Items) {
 						if (m.Tag != null) {
 							if (m.Tag.ToString() == "UCTI")
@@ -103,22 +91,24 @@ namespace BetterExplorer {
 				}
 			}
 
-			SelectTab(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem);
-			//'btnTabCloseC.IsEnabled = tabControl1.Items.Count > 1;
+			SelectTab(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem);
+			//'btnTabCloseC.IsEnabled = tcMain.Items.Count > 1;
 			//'there's a bug that has this enabled when there's only one tab open, but why disable it
 			//'if it never crashes the program? Closing the last tab simply closes the program, so I
 			//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
 		}
 
 		private void CloseAllTabs(bool CloseFirstTab) {
-			foreach (ClosableTabItem tab in tabControl1.Items.OfType<ClosableTabItem>().ToArray()) {
+			foreach (Wpf.Controls.TabItem tab in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray()) {
 				CloseTab(tab);
 			}
 		}
 
 		[Obsolete("Consider Inlining")]
-		private void CloseAllTabsButThis(ClosableTabItem tabitem) {
-			foreach (ClosableTabItem tab in tabControl1.Items.OfType<ClosableTabItem>().ToArray()) {
+		private void CloseAllTabsButThis(Wpf.Controls.TabItem tabitem)
+		{
+			foreach (Wpf.Controls.TabItem tab in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray())
+			{
 				if (tab != tabitem) CloseTab(tab);
 			}
 
@@ -131,8 +121,8 @@ namespace BetterExplorer {
 		#region Tab Changers
 		private void ChangeTab(object sender, ExecutedRoutedEventArgs e) {
 			t.Stop();
-			int selIndex = tabControl1.SelectedIndex == tabControl1.Items.Count - 1 ? 0 : tabControl1.SelectedIndex + 1;
-			tabControl1.SelectedItem = tabControl1.Items[selIndex];
+			int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
+			tcMain.SelectedItem = tcMain.Items[selIndex];
 		}
 
 		#endregion
@@ -140,9 +130,9 @@ namespace BetterExplorer {
 
 		#region Tab Creators
 
-		private ClosableTabItem CreateNewClosableTabItem(ShellItem DefPath, bool IsNavigate) {
+		private Wpf.Controls.TabItem CreateNewTab(ShellItem DefPath, bool IsNavigate) {
 			//TODO: figure out what to do with Cloning a tab!
-			ClosableTabItem newt = new ClosableTabItem();
+			Wpf.Controls.TabItem newt = new Wpf.Controls.TabItem();
 			CreateTabbarRKMenu(newt);
 
 			DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
@@ -150,25 +140,25 @@ namespace BetterExplorer {
 			newt.ShellObject = DefPath;
 
 			newt.Header = DefPath.GetDisplayName(SIGDN.NORMALDISPLAY);
-			newt.TabIcon = DefPath.Thumbnail.BitmapSource;
+			newt.Icon = DefPath.Thumbnail.BitmapSource;
 			newt.ToolTip = DefPath.ParsingName;
-			newt.IsNavigate = IsNavigate;
-			newt.Index = tabControl1.Items.Count;
+			//newt.IsNavigate = IsNavigate;
+			//newt.Index = tcMain.Items.Count;
 			newt.AllowDrop = true;
 
-			newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
+			//newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
 			newt.DragEnter += new DragEventHandler(newt_DragEnter);
 			newt.DragOver += new DragEventHandler(newt_DragOver);
 			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
 			newt.Drop += new DragEventHandler(newt_Drop);
 
-			tabControl1.Items.Add(newt);
-			//LastTabIndex = tabControl1.SelectedIndex;
+			tcMain.Items.Add(newt);
+			//LastTabIndex = tcMain.SelectedIndex;
 			newt.log.CurrentLocation = DefPath;
 
 			if (IsNavigate) {
-				tabControl1.SelectedIndex = tabControl1.Items.Count - 1;
-				tabControl1.SelectedItem = tabControl1.Items[tabControl1.Items.Count - 1];
+				tcMain.SelectedIndex = tcMain.Items.Count - 1;
+				tcMain.SelectedItem = tcMain.Items[tcMain.Items.Count - 1];
 			}
 
 			ConstructMoveToCopyToMenu();
@@ -179,7 +169,7 @@ namespace BetterExplorer {
 		/// <summary> Re-opens a previously closed tab using that tab's navigation log data. </summary>
 		/// <param name="log"> The navigation log data from the previously closed tab. </param>
 		public void ReOpenTab(NavigationLog log) {
-			var Tab = CreateNewClosableTabItem(log.CurrentLocation, false);
+			var Tab = CreateNewTab(log.CurrentLocation, false);
 			Tab.log.ImportData(log);
 
 			//newt.CloseTab += newt_CloseTab;
@@ -203,27 +193,27 @@ namespace BetterExplorer {
 					DefPath = (ShellItem)KnownFolders.Libraries;
 				}
 
-			CreateNewClosableTabItem(DefPath, IsNavigate);
+			CreateNewTab(DefPath, IsNavigate);
 		}
 
 		public void NewTab(ShellItem location, bool IsNavigate = false) {
-			CreateNewClosableTabItem(location, IsNavigate);
+			CreateNewTab(location, IsNavigate);
 		}
 
-		public ClosableTabItem NewTab(string Location, bool IsNavigate = false) {
-			return CreateNewClosableTabItem(new ShellItem(Location), IsNavigate);
+		public Wpf.Controls.TabItem NewTab(string Location, bool IsNavigate = false) {
+			return CreateNewTab(new ShellItem(Location), IsNavigate);
 		}
 
-		public void CloneTab(ClosableTabItem CurTab) {
-			ClosableTabItem newt = new ClosableTabItem();
+		public void CloneTab(Wpf.Controls.TabItem CurTab) {
+			Wpf.Controls.TabItem newt = new Wpf.Controls.TabItem();
 			CreateTabbarRKMenu(newt);
 
 			newt.Header = CurTab.Header;
-			newt.TabIcon = CurTab.TabIcon;
+			newt.Icon = CurTab.Icon;
 			newt.ShellObject = CurTab.ShellObject;
 			newt.ToolTip = CurTab.ShellObject.ParsingName;
-			newt.Index = tabControl1.Items.Count;
-			newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
+			//newt.Index = tcMain.Items.Count;
+			//newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
 			newt.DragEnter += new DragEventHandler(newt_DragEnter);
 			newt.DragLeave += new DragEventHandler(newt_DragLeave);
 			newt.DragOver += new DragEventHandler(newt_DragOver);
@@ -233,9 +223,9 @@ namespace BetterExplorer {
 			newt.log.CurrentLocation = CurTab.ShellObject;
 			newt.SelectedItems = CurTab.SelectedItems;
 			newt.log.ImportData(CurTab.log);
-			tabControl1.Items.Add(newt);
-			tabControl1.SelectedItem = newt;
-			//LastTabIndex = tabControl1.SelectedIndex;
+			tcMain.Items.Add(newt);
+			tcMain.SelectedItem = newt;
+			//LastTabIndex = tcMain.SelectedIndex;
 			ConstructMoveToCopyToMenu();
 		}
 
@@ -246,10 +236,9 @@ namespace BetterExplorer {
 
 		private void InitializeInitialTabs() {
 			var InitialTabs = Utilities.GetRegistryValue("OpenedTabs", "").ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-
 			if (InitialTabs.Length == 0 || !IsrestoreTabs) {
 				ShellItem sho = new ShellItem(StartUpLocation.ToShellParsingName());
-				if (tabControl1.Items.OfType<ClosableTabItem>().Count() == 0)
+				if (tcMain.Items.OfType<Wpf.Controls.TabItem>().Count() == 0)
 					NewTab(sho, true);
 				else
 					ShellListView.Navigate(sho);
@@ -262,7 +251,7 @@ namespace BetterExplorer {
 						i++;
 						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
 							if (i == InitialTabs.Length) {
-								tabControl1.SelectedIndex = InitialTabs.Length - 2;
+								tcMain.SelectedIndex = InitialTabs.Length - 2;
 							}
 
 							continue;
@@ -272,8 +261,8 @@ namespace BetterExplorer {
 						if (i == InitialTabs.Count()) {
 							ShellItem sho = new ShellItem(str.ToShellParsingName());
 							ShellListView.Navigate(sho);
-							(tabControl1.SelectedItem as ClosableTabItem).ShellObject = sho;
-							(tabControl1.SelectedItem as ClosableTabItem).ToolTip = sho.ParsingName;
+							(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = sho;
+							(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = sho.ParsingName;
 						}
 					}
 					catch {
@@ -282,7 +271,7 @@ namespace BetterExplorer {
 					}
 				}
 
-				if (tabControl1.Items.Count == 0) {
+				if (tcMain.Items.Count == 0) {
 					NewTab();
 
 					if (StartUpLocation.StartsWith("::"))
@@ -290,16 +279,16 @@ namespace BetterExplorer {
 					else
 						ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
 
-					(tabControl1.SelectedItem as ClosableTabItem).ShellObject = ShellListView.CurrentFolder;
-					(tabControl1.SelectedItem as ClosableTabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
+					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
+					(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
 				}
 
 				isOnLoad = false;
 			}
 			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
 
-			if (tabControl1.Items.Count == 1)
-				tabControl1.SelectedIndex = 0;
+			if (tcMain.Items.Count == 1)
+				tcMain.SelectedIndex = 0;
 
 			//ShellVView.Visibility = System.Windows.Visibility.Hidden;
 		}
@@ -308,7 +297,7 @@ namespace BetterExplorer {
 
 
 		[Obsolete("Try to inline this", false)]
-		private void CreateTabbarRKMenu(ClosableTabItem tabitem) {
+		private void CreateTabbarRKMenu(Wpf.Controls.TabItem tabitem) {
 			tabitem.mnu = new ContextMenu();
 
 			Action<string, RoutedEventHandler> Worker = (x, y) => {
@@ -321,7 +310,7 @@ namespace BetterExplorer {
 
 			Worker("Close current tab", new RoutedEventHandler(
 				(sender, e) => {
-					CloseTab((sender as MenuItem).Tag as ClosableTabItem);
+					CloseTab((sender as MenuItem).Tag as Wpf.Controls.TabItem);
 				}));
 
 			Worker("Close all tabs", new RoutedEventHandler(
@@ -331,7 +320,7 @@ namespace BetterExplorer {
 
 			Worker("Close all other tabs", new RoutedEventHandler(
 				(sender, e) => {
-					CloseAllTabsButThis((sender as MenuItem).Tag as ClosableTabItem);
+					CloseAllTabsButThis((sender as MenuItem).Tag as Wpf.Controls.TabItem);
 				}));
 
 			tabitem.mnu.Items.Add(new Separator());
@@ -343,7 +332,7 @@ namespace BetterExplorer {
 
 			Worker("Clone tab", new RoutedEventHandler(
 				(sender, e) => {
-					CloneTab((sender as MenuItem).Tag as ClosableTabItem);
+					CloneTab((sender as MenuItem).Tag as Wpf.Controls.TabItem);
 				}));
 
 
@@ -366,7 +355,7 @@ namespace BetterExplorer {
 			//Worker("Open in new window", new RoutedEventHandler(miopeninnew_Click));
 			Worker("Open in new window", new RoutedEventHandler(
 				(sender, e) => {
-					var ti = (sender as MenuItem).Tag as ClosableTabItem;
+					var ti = (sender as MenuItem).Tag as Wpf.Controls.TabItem;
 					System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, ti.ShellObject.ParsingName + " /nw");
 					CloseTab(ti);
 				}));
@@ -443,7 +432,8 @@ namespace BetterExplorer {
 			btnCopyto.Items.Add(micDesktop);
 			btnCopyto.Items.Add(new Separator());
 
-			foreach (var item in tabControl1.Items.OfType<ClosableTabItem>().ToList()) {
+			foreach (var item in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToList())
+			{
 				bool IsAdditem = true;
 				foreach (object mii in btnCopyto.Items) {
 					if (mii is MenuItem) {
@@ -495,22 +485,23 @@ namespace BetterExplorer {
 
 
 		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-		private void tabControl1_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+		private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			if (e.RemovedItems.Count > 0) {
-				var tab = e.RemovedItems[0] as ClosableTabItem;
+				var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
 
 				if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
 					tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
 				}
 			}
-			if (e.AddedItems.Count > 0 && (e.AddedItems[0] as ClosableTabItem).Index == tabControl1.Items.Count - 1) {
-				tabControl1.Items.OfType<ClosableTabItem>().Last().BringIntoView();
-			}
+			//if (e.AddedItems.Count > 0 && (e.AddedItems[0] as Wpf.Controls.TabItem).Index == tcMain.Items.Count - 1) {
+			//	tcMain.Items.OfType<Wpf.Controls.TabItem>().Last().BringIntoView();
+			//}
 			if (e.AddedItems.Count == 0) return;
-			SelectTab(e.AddedItems[0] as ClosableTabItem);
+			SelectTab(e.AddedItems[0] as Wpf.Controls.TabItem);
 		}
 
-		private void SelectTab(ClosableTabItem Tab) {
+		private void SelectTab(Wpf.Controls.TabItem Tab)
+		{
 			if (Tab == null) return;
 			try {
 				isGoingBackOrForward = Tab.log.HistoryItemsList.Count != 0;

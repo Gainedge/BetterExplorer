@@ -1743,11 +1743,12 @@ namespace BetterExplorer {
 								Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
 												(Action)(() => {
 													this.beNotifyIcon.ShowBalloonTip("Information", String.Format("It is safe to remove {0}", item.LogicalDrive), Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
-													var tabsForRemove = tabControl1.Items.OfType<ClosableTabItem>()
+													var tabsForRemove = tcMain.Items.OfType<Wpf.Controls.TabItem>()
 															.Where(w => w.ShellObject.IsFileSystem &&
 															Path.GetPathRoot(w.ShellObject.ParsingName).ToLowerInvariant() ==
 															String.Format("{0}:\\", DriveLetter).ToLowerInvariant()).ToArray();
-													foreach (ClosableTabItem tab in tabsForRemove) {
+													foreach (Wpf.Controls.TabItem tab in tabsForRemove)
+													{
 														CloseTab(tab, false);
 													}
 												}));
@@ -2133,7 +2134,7 @@ namespace BetterExplorer {
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
 
-			var tab = tabControl1.SelectedItem as ClosableTabItem;
+			var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 			if (tab != null && this.ShellListView.GetSelectedCount() > 0 && (tab.SelectedItems == null || tab.SelectedItems.Count == 0)) {
 				tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
 			}
@@ -2141,7 +2142,7 @@ namespace BetterExplorer {
 
 
 		void ShellListView_ItemDisplayed(object sender, ItemDisplayedEventArgs e) {
-			var selectedItem = this.tabControl1.SelectedItem as ClosableTabItem;
+			var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
 			if (selectedItem != null) {
 				var selectedPaths = selectedItem.SelectedItems;
 				var path = e.DisplayedItem.ParsingName;
@@ -2580,6 +2581,7 @@ namespace BetterExplorer {
 				chcm = new ContextMenu();
 				chcm.Placement = PlacementMode.MousePoint;
 
+				tcMain.DefaultTabPath = this.StartUpLocation.ToShellParsingName();
 				//Set up Version Info
 				verNumber.Content = "Version " + (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
 				lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
@@ -2692,7 +2694,7 @@ namespace BetterExplorer {
 
 			if (this.WindowState != System.Windows.WindowState.Minimized) {
 				string OpenedTabs = "";
-				foreach (ClosableTabItem item in tabControl1.Items) {
+				foreach (Wpf.Controls.TabItem item in tcMain.Items) {
 					OpenedTabs += ";" + item.ShellObject.ParsingName;
 				}
 
@@ -2701,7 +2703,7 @@ namespace BetterExplorer {
 
 			/*
 			string OpenedTabs = "";
-			foreach (ClosableTabItem item in tabControl1.Items) {
+			foreach (Wpf.Controls.TabItem item in tcMain.Items) {
 				OpenedTabs += ";" + item.ShellObject.ParsingName;
 			}
 
@@ -2747,7 +2749,7 @@ namespace BetterExplorer {
 				});
 			}
 
-			var selectedItem = this.tabControl1.SelectedItem as ClosableTabItem;
+			var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
 			if (selectedItem != null) {
 				var selectedPaths = selectedItem.SelectedItems;
 				if (selectedPaths != null) {
@@ -2800,8 +2802,8 @@ namespace BetterExplorer {
 			btnMoveto.IsEnabled = IsChanged;
 			btnSelNone.IsEnabled = IsChanged;
 
-			leftNavBut.IsEnabled = (tabControl1.SelectedItem as ClosableTabItem).log.CanNavigateBackwards;
-			rightNavBut.IsEnabled = (tabControl1.SelectedItem as ClosableTabItem).log.CanNavigateForwards;
+			leftNavBut.IsEnabled = (tcMain.SelectedItem as Wpf.Controls.TabItem).log.CanNavigateBackwards;
+			rightNavBut.IsEnabled = (tcMain.SelectedItem as Wpf.Controls.TabItem).log.CanNavigateForwards;
 			btnUpLevel.IsEnabled = ShellListView.CanNavigateParent;
 		}
 
@@ -2909,9 +2911,9 @@ namespace BetterExplorer {
 			e.Folder.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 			e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			try {
-				ClosableTabItem selectedTabItem = (tabControl1.SelectedItem as ClosableTabItem);
+				Wpf.Controls.TabItem selectedTabItem = (tcMain.SelectedItem as Wpf.Controls.TabItem);
 				selectedTabItem.Header = e.Folder.DisplayName;
-				selectedTabItem.TabIcon = e.Folder.Thumbnail.BitmapSource;
+				selectedTabItem.Icon = e.Folder.Thumbnail.BitmapSource;
 				selectedTabItem.ShellObject = e.Folder;
 				selectedTabItem.ToolTip = e.Folder.ParsingName;
 			}
@@ -2920,13 +2922,13 @@ namespace BetterExplorer {
 
 			//try {
 
-			//ClosableTabItem it = new Closable_TabItem();
+			//Wpf.Controls.TabItem it = new Closable_TabItem();
 			//CreateTabbarRKMenu(it);
 
-			//(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).Path = ShellListView.CurrentFolder;
+			//(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).Path = ShellListView.CurrentFolder;
 
 			if (!isGoingBackOrForward) {
-				var Current = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log;
+				var Current = (tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
 				if (Current.ForwardEntries.Count() > 1) Current.ClearForwardItems();
 				Current.CurrentLocation = ShellListView.CurrentFolder;
 			}
@@ -3261,17 +3263,17 @@ namespace BetterExplorer {
 
 		private void leftNavBut_Click(object sender, RoutedEventArgs e) {
 			isGoingBackOrForward = true;
-			ShellListView.Navigate((tabControl1.SelectedItem as ClosableTabItem).log.NavigateBack());
+			ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack());
 		}
 
 		private void rightNavBut_Click(object sender, RoutedEventArgs e) {
 			isGoingBackOrForward = true;
-			ShellListView.Navigate((tabControl1.SelectedItem as ClosableTabItem).log.NavigateForward());
+			ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateForward());
 		}
 
 		private void downArrow_Click(object sender, RoutedEventArgs e) {
 			cmHistory.Items.Clear();
-			NavigationLog nl = (tabControl1.SelectedItem as ClosableTabItem).log;
+			NavigationLog nl = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
 			int i = 0;
 			foreach (ShellItem item in nl.HistoryItemsList) {
 				if (item != null) {
@@ -3299,7 +3301,7 @@ namespace BetterExplorer {
 			ShellItem item = (ShellItem)(sender as MenuItem).Tag;
 			if (item != null) {
 				isGoingBackOrForward = true;
-				NavigationLog nl = (tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem).log;
+				NavigationLog nl = (tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
 				(sender as MenuItem).IsChecked = true;
 				nl.CurrentLocPos = cmHistory.Items.IndexOf((sender as MenuItem));
 				ShellListView.Navigate(item);
@@ -4657,11 +4659,11 @@ namespace BetterExplorer {
 		}
 
 		private void btnTabClone_Click(object sender, RoutedEventArgs e) {
-			CloneTab(tabControl1.Items[tabControl1.SelectedIndex] as ClosableTabItem);
+			CloneTab(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem);
 		}
 
 		private void btnTabCloseC_Click(object sender, RoutedEventArgs e) {
-			CloseTab(tabControl1.SelectedItem as ClosableTabItem);
+			CloseTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
 		}
 
 		private void ERNewTab(object sender, ExecutedRoutedEventArgs e) {
@@ -4669,7 +4671,7 @@ namespace BetterExplorer {
 		}
 
 		void newt_CloseTab(object sender, RoutedEventArgs e) {
-			CloseTab(e.Source as ClosableTabItem);
+			CloseTab(e.Source as Wpf.Controls.TabItem);
 		}
 
 
@@ -4682,21 +4684,21 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void tabControl1_MouseUp(object sender, MouseButtonEventArgs e) {
+		private void tcMain_MouseUp(object sender, MouseButtonEventArgs e) {
 			if (e.ChangedButton == MouseButton.Middle) {
-				CloneTab(tabControl1.SelectedItem as ClosableTabItem);
+				CloneTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
 			}
 		}
 
 		private void RCloseTab(object sender, ExecutedRoutedEventArgs e) {
-			if (tabControl1.SelectedIndex == 0 && tabControl1.Items.Count == 1) {
+			if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
 				Close();
 				return;
 			}
 
-			int CurSelIndex = tabControl1.SelectedIndex;
-			tabControl1.SelectedItem = tabControl1.SelectedIndex == 0 ? tabControl1.Items[1] : tabControl1.Items[CurSelIndex - 1];
-			tabControl1.Items.RemoveAt(CurSelIndex);
+			int CurSelIndex = tcMain.SelectedIndex;
+			tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
+			tcMain.Items.RemoveAt(CurSelIndex);
 		}
 
 		private void ERGoToBCCombo(object sender, ExecutedRoutedEventArgs e) {
@@ -4709,7 +4711,7 @@ namespace BetterExplorer {
 		}
 
 		void newt_PreviewMouseMove(object sender, MouseEventArgs e) {
-			var tabItem = e.Source as ClosableTabItem;
+			var tabItem = e.Source as Wpf.Controls.TabItem;
 
 			if (tabItem == null)
 				return;
@@ -4723,9 +4725,9 @@ namespace BetterExplorer {
 
 		void newt_Drop(object sender, DragEventArgs e) {
 			e.Handled = true;
-			var tabItemTarget = e.Source as ClosableTabItem;
+			var tabItemTarget = e.Source as Wpf.Controls.TabItem;
 
-			var tabItemSource = e.Data.GetData(typeof(ClosableTabItem)) as ClosableTabItem;
+			var tabItemSource = e.Data.GetData(typeof(Wpf.Controls.TabItem)) as Wpf.Controls.TabItem;
 			if (tabItemSource != null) {
 				if (!tabItemTarget.Equals(tabItemSource)) {
 					var tabControl = tabItemTarget.Parent as TabControl;
@@ -4751,19 +4753,19 @@ namespace BetterExplorer {
 			else {
 				System.Windows.Point pt = e.GetPosition(sender as IInputElement);
 
-				if ((sender as ClosableTabItem).ShellObject.IsFileSystem) {
+				if ((sender as Wpf.Controls.TabItem).ShellObject.IsFileSystem) {
 					e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 
 					switch (e.Effects) {
 						case DragDropEffects.All:
 							break;
 						case DragDropEffects.Copy:
-							this.ShellListView.DoCopy(e.Data, (sender as ClosableTabItem).ShellObject);
+							this.ShellListView.DoCopy(e.Data, (sender as Wpf.Controls.TabItem).ShellObject);
 							break;
 						case DragDropEffects.Link:
 							break;
 						case DragDropEffects.Move:
-							this.ShellListView.DoMove(e.Data, (sender as ClosableTabItem).ShellObject);
+							this.ShellListView.DoMove(e.Data, (sender as Wpf.Controls.TabItem).ShellObject);
 							break;
 						case DragDropEffects.None:
 							break;
@@ -4789,7 +4791,7 @@ namespace BetterExplorer {
 		void newt_DragOver(object sender, DragEventArgs e) {
 			e.Handled = true;
 
-			if ((sender as ClosableTabItem).ShellObject.IsFileSystem) {
+			if ((sender as Wpf.Controls.TabItem).ShellObject.IsFileSystem) {
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 			}
 			else {
@@ -4800,7 +4802,7 @@ namespace BetterExplorer {
 			GetCursorPos(ref ptw);
 			e.Handled = true;
 
-			if (e.Data.GetType() != typeof(ClosableTabItem)) {
+			if (e.Data.GetType() != typeof(Wpf.Controls.TabItem)) {
 				IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 				BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
 				wpt.x = (int)ptw.X;
@@ -4816,7 +4818,7 @@ namespace BetterExplorer {
 
 		void newt_DragEnter(object sender, DragEventArgs e) {
 			e.Handled = true;
-			var tabItem = e.Source as ClosableTabItem;
+			var tabItem = e.Source as Wpf.Controls.TabItem;
 
 			if (tabItem == null)
 				return;
@@ -4827,7 +4829,7 @@ namespace BetterExplorer {
 			//}
 			//if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			//{
-			if ((sender as ClosableTabItem).ShellObject.IsFileSystem) {
+			if ((sender as Wpf.Controls.TabItem).ShellObject.IsFileSystem) {
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 			}
 			else {
@@ -4838,7 +4840,7 @@ namespace BetterExplorer {
 			Win32Point ptw = new Win32Point();
 			GetCursorPos(ref ptw);
 			e.Effects = DragDropEffects.None;
-			var tabItemSource = e.Data.GetData(typeof(ClosableTabItem)) as ClosableTabItem;
+			var tabItemSource = e.Data.GetData(typeof(Wpf.Controls.TabItem)) as Wpf.Controls.TabItem;
 			//TODO: fix this!!!
 			if (tabItemSource == null) {
 				IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
@@ -4848,13 +4850,13 @@ namespace BetterExplorer {
 				dropHelper.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 			}
 			else {
-				if (e.Data.GetDataPresent(typeof(ClosableTabItem))) {
+				if (e.Data.GetDataPresent(typeof(Wpf.Controls.TabItem))) {
 					e.Effects = DragDropEffects.Move;
 				}
 			}
 		}
 
-		private void tabControl1_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
+		private void tcMain_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
 			string h = sender.GetType().Name.ToString();
 			hitTestList = new List<DependencyObject>();
 			System.Windows.Point pt = e.GetPosition(sender as IInputElement);
@@ -4873,7 +4875,7 @@ namespace BetterExplorer {
 					else {
 						ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
 					}
-					(tabControl1.SelectedItem as ClosableTabItem).ShellObject = ShellListView.CurrentFolder;
+					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
 				}
 				else if (hitTestList.Count == 3) {
 					if (hitTestList[2].GetType().Name == "Grid") {
@@ -4885,7 +4887,7 @@ namespace BetterExplorer {
 							ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
 						}
 
-						(tabControl1.SelectedItem as ClosableTabItem).ShellObject = ShellListView.CurrentFolder;
+						(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
 					}
 				}
 			}
@@ -4910,24 +4912,24 @@ namespace BetterExplorer {
 
 		private void FolderTabs_Placement(object sender, RoutedEventArgs e) {
 			if (sender == TabbaTop) {
-				Grid.SetRow(this.tabControl1, 3);
+				Grid.SetRow(this.tcMain, 3);
 				divNav.Visibility = Visibility.Hidden;
 				this.rTabbarTop.Height = new GridLength(25);
 				this.rTabbarBot.Height = new GridLength(0);
-				this.tabControl1.TabStripPlacement = Dock.Top;
+				this.tcMain.TabStripPlacement = Dock.Top;
 			}
 			else {
-				Grid.SetRow(this.tabControl1, 7);
+				Grid.SetRow(this.tcMain, 7);
 				divNav.Visibility = Visibility.Visible;
 				this.rTabbarTop.Height = new GridLength(0);
 				this.rTabbarBot.Height = new GridLength(25);
-				this.tabControl1.TabStripPlacement = Dock.Bottom;
+				this.tcMain.TabStripPlacement = Dock.Bottom;
 			}
 		}
 
 		private void miSaveCurTabs_Click(object sender, RoutedEventArgs e) {
-			var objs = new List<ShellItem>(from ClosableTabItem x in tabControl1.Items select x.ShellObject);
-			//foreach (ClosableTabItem item in tabControl1.Items) {
+			var objs = new List<ShellItem>(from Wpf.Controls.TabItem x in tcMain.Items select x.ShellObject);
+			//foreach (Wpf.Controls.TabItem item in tcMain.Items) {
 			//	objs.Add(item.ShellObject);
 			//}
 
@@ -4957,7 +4959,7 @@ namespace BetterExplorer {
 			reopenabletabs.RemoveAt(reopenabletabs.Count - 1);
 			if (reopenabletabs.Count == 0) {
 				btnUndoClose.IsEnabled = false;
-				foreach (ClosableTabItem item in this.tabControl1.Items) {
+				foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
 					foreach (FrameworkElement m in item.mnu.Items) {
 						if (m.Tag != null)
 							if (m.Tag.ToString() == "UCTI") (m as MenuItem).IsEnabled = false;
@@ -4970,7 +4972,7 @@ namespace BetterExplorer {
 			reopenabletabs.Clear();
 			btnUndoClose.IsDropDownOpen = false;
 			btnUndoClose.IsEnabled = false;
-			foreach (ClosableTabItem item in this.tabControl1.Items) {
+			foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
 				foreach (FrameworkElement m in item.mnu.Items) {
 					if (m.Tag != null)
 						if (m.Tag.ToString() == "UCTI") (m as MenuItem).IsEnabled = false;
@@ -5015,7 +5017,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void tabControl1_Drop(object sender, DragEventArgs e) {
+		private void tcMain_Drop(object sender, DragEventArgs e) {
 			if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
 				//MessageBox.Show("Dropped here!");
 				String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
@@ -5053,7 +5055,7 @@ namespace BetterExplorer {
 				}
 			}
 			else {
-				if (!e.Data.GetDataPresent(typeof(ClosableTabItem))) {
+				if (!e.Data.GetDataPresent(typeof(Wpf.Controls.TabItem))) {
 					MessageBox.Show("It appears that you tried to drag something to the blank area of the tab bar, and that something was not a folder. Drag a folder here to open it in a new tab.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 				}
 			}
@@ -5083,7 +5085,7 @@ namespace BetterExplorer {
 			for (int i = 0; i < list.Count; i++) {
 				var tabitem = NewTab(list[i].ToShellParsingName());
 				if (i == list.Count - 1)
-					tabControl1.SelectedItem = tabitem;
+					tcMain.SelectedItem = tabitem;
 			}
 		}
 
@@ -5097,8 +5099,8 @@ namespace BetterExplorer {
 		}
 
 		private void RibbonWindow_SizeChanged(object sender, SizeChangedEventArgs e) {
-			if (tabControl1.SelectedItem != null) {
-				(tabControl1.SelectedItem as ClosableTabItem).BringIntoView();
+			if (tcMain.SelectedItem != null) {
+				(tcMain.SelectedItem as Wpf.Controls.TabItem).BringIntoView();
 			}
 		}
 

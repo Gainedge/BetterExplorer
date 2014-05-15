@@ -10,6 +10,7 @@
 					 xmlns:controls="clr-namespace:BetterExplorerControls;assembly=BetterExplorerControls"										
 					 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					 xmlns:local="clr-namespace:BetterExplorer"
+					 xmlns:tabcontrol="clr-namespace:Wpf.Controls;assembly=Wpf.TabControl" 
 					 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					 xmlns:my2="http://schemas.microsoft.com/winfx/2006/xaml/presentation/ribbon"
 					 xmlns:ni="http://www.hardcodet.net/taskbar"
@@ -3047,30 +3048,8 @@
 			   Grid.ColumnSpan="2"
 			   Height="1"
 			   Fill="Gray" />
-
-		<TabControl x:Name="tabControl1"
-				Grid.Row="3"
-				Grid.ColumnSpan="2"
-				Height="30"
-				VerticalAlignment="Top"
-				Panel.ZIndex="99"
-				AllowDrop="True"
-				Background="Transparent"
-				Drop="tabControl1_Drop"
-				ItemsSource="{Binding itbl}"
-				MouseDoubleClick="tabControl1_MouseDoubleClick"
-				MouseUp="tabControl1_MouseUp"
-				Padding="0,0,-2,-2"
-				SelectedIndex="0"
-				SelectionChanged="tabControl1_SelectionChanged"
-				SnapsToDevicePixels="True"
-				Template="{StaticResource ScrollableTabControlTemplate}" Grid.RowSpan="2">
-			<TabControl.ItemsPanel>
-				<ItemsPanelTemplate>
-					<StackPanel IsItemsHost="True" Orientation="Horizontal" />
-				</ItemsPanelTemplate>
-			</TabControl.ItemsPanel>
-		</TabControl>
+		<tabcontrol:TabControl x:Name="tcMain" Grid.Row="3" Grid.ColumnSpan="2" Panel.ZIndex="99" TabItemMinWidth="100" TabItemMaxWidth="300" TabItemMinHeight="20" TabItemMaxHeight="25" Height="25" SelectionChanged="tcMain_SelectionChanged">
+		</tabcontrol:TabControl>
 		<Grid Grid.Row="4" Background="White" Grid.ColumnSpan="2">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />

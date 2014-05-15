@@ -216,7 +216,6 @@
     <Compile Include="Customize\CustomizeQAT.xaml.cs" />
     <Compile Include="Customize\RibbonItemListDisplay.xaml.cs" />
     <Compile Include="HelperClasses\FolderStructForSize.cs" />
-    <Compile Include="HelperClasses\NavigationLog.cs" />
     <Compile Include="HelperClasses\PathStringCombiner.cs" />
     <Compile Include="HelperClasses\Utilities.cs" />
     <Compile Include="HelperClasses\WindowExtensions.cs" />
@@ -295,7 +294,6 @@
       <DependentUpon>ResizeImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="SystemMenu.cs" />
-    <Compile Include="Tabs\ClosableTabItem.cs" />
     <Compile Include="Tabs\SavedTabsListGalleryItem.xaml.cs">
       <DependentUpon>SavedTabsListGalleryItem.xaml</DependentUpon>
     </Compile>
@@ -715,6 +713,10 @@
     <ProjectReference Include="..\..\Shell\Shell.csproj">
       <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
       <Name>Shell</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TabControl\Wpf.TabControl.csproj">
+      <Project>{509d06bd-aeb6-4e92-8e5b-21188ebdbd9c}</Project>
+      <Name>Wpf.TabControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\UsbEject\UsbEject.csproj">
       <Project>{ae269158-dfa5-4dd7-8afc-f45faf2b958c}</Project>

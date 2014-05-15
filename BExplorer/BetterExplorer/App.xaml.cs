@@ -253,9 +253,9 @@ namespace BetterExplorer {
 			sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 
-			ClosableTabItem newt = new ClosableTabItem();
+			Wpf.Controls.TabItem newt = new Wpf.Controls.TabItem();
 			newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
-			newt.TabIcon = sho.Thumbnail.BitmapSource;
+			newt.Icon = sho.Thumbnail.BitmapSource;
 			newt.PreviewMouseMove += newt_PreviewMouseMove;
 			newt.ToolTip = sho.ParsingName;
 			newt.ShellObject = sho;
@@ -303,11 +303,11 @@ namespace BetterExplorer {
 				}
 
 				//TODO: Try refactoring [Worker] away 
-				if (!isStartMinimized || win.tabControl1.Items.Count == 0) {
+				if (!isStartMinimized || win.tcMain.Items.Count == 0) {
 					CreateInitialTab(win, sho);
 				}
 				else if ((int)rks.GetValue(@"IsRestoreTabs", 1) == 0) {
-					win.tabControl1.Items.Clear();
+					win.tcMain.Items.Clear();
 					CreateInitialTab(win, sho);
 				}
 				else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
@@ -328,7 +328,7 @@ namespace BetterExplorer {
 		}
 
 		void newt_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e) {
-			var tabItem = e.Source as ClosableTabItem;
+			var tabItem = e.Source as Wpf.Controls.TabItem;
 
 			if (tabItem == null)
 				return;

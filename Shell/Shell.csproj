@@ -90,6 +90,7 @@
     <Compile Include="Interop\FileOperationFlags.cs" />
     <Compile Include="Interop\IFileOperationProgressSink.cs" />
     <Compile Include="Interop\IFileOperation.cs" />
+    <Compile Include="NavigationLog.cs" />
     <Compile Include="RoundedRectangle.cs" />
     <Compile Include="DragDropHelper.cs" />
     <Compile Include="ShellTreeViewEx.cs">
