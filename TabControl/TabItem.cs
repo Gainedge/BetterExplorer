@@ -51,7 +51,7 @@ namespace Wpf.Controls
 						ButtonBase button = this.Template.FindName("PART_CloseButton", this) as ButtonBase;
 						if (button != null)
 						{
-							button.PreviewMouseLeftButtonDown += (sender, e) =>
+							button.PreviewMouseLeftButtonUp += (sender, e) =>
 							{
 								// get the parent tabcontrol 
 								TabControl tc = Helper.FindParentControl<TabControl>(this);
