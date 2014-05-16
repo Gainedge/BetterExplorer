@@ -280,7 +280,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void Button_Click_2(object sender, RoutedEventArgs e) {
+		private void btnRemove_Click(object sender, RoutedEventArgs e) {
 			int sel = QATControls.SelectedIndex;
 			RibbonItemListDisplay item = QATControls.SelectedValue as RibbonItemListDisplay;
 			QATControls.Items.Remove(item);
@@ -324,7 +324,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void Button_Click_3(object sender, RoutedEventArgs e) {
+		private void btnCancel_Click(object sender, RoutedEventArgs e) {
 			this.Close();
 		}
 
@@ -338,7 +338,7 @@ namespace BetterExplorer {
 		}
 
 
-		private void Button_Click_5(object sender, RoutedEventArgs e) {
+		private void btnApply_Click(object sender, RoutedEventArgs e) {
 			List<string> list = new List<string>();
 			foreach (RibbonItemListDisplay item in this.QATControls.Items) {
 				list.Add(item.ItemName);
@@ -355,8 +355,8 @@ namespace BetterExplorer {
 		}	// Apply button
 
 
-		private void Button_Click_6(object sender, RoutedEventArgs e) {
-			Button_Click_5(sender, e);
+		private void btnOkay_Click(object sender, RoutedEventArgs e) {
+			btnApply_Click(sender, e);
 			this.Close();
 		}	// OK button
 
@@ -425,7 +425,6 @@ namespace BetterExplorer {
 			//    QATControls.Items.Add(item);
 			//}
 		}
-
 
 
 
