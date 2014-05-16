@@ -11,14 +11,150 @@ namespace BetterExplorer {
 	public partial class CustomizeQAT : Window {
 		private static List<Fluent.Button> _QuickButtons = new List<Fluent.Button>();
 		public static List<Fluent.Button> QuickButtons { get { return _QuickButtons; } }
-
 		public MainWindow MainForm;
+
+		#region Obsolete
+
+		/*
+		public void AddToQAT(IRibbonControl item) {
+			//MainForm.RibbonUI.AddToQuickAccessToolBar((item as UIElement));
+			Refresh();
+		}
+
+		public void RemoveFromQAT(IRibbonControl item) {
+			//MainForm.RibbonUI.RemoveFromQuickAccessToolBar((item as UIElement));
+			Refresh();
+		}
+		*/
+
+		/*
+		public void Refresh() {
+			AllControls.Items.Clear();
+			QATControls.Items.Clear();
+			MainForm.RefreshQATDialog(this);
+		}
+		*/
+
+		/*
+		 * No one will even want this feature
+		 *
+		public void StoreToFile(string file) {
+			List<string> list = new List<string>();
+			foreach (RibbonItemListDisplay item in this.QATControls.Items) {
+				list.Add(item.ItemName);
+			}
+
+			//XMLio.XMLio.WriteFile(file, list);
+		}
+		*/
+
+		/*
+		public void MoveUp() {
+			//TODO: Remove Commented code if possible
+			if (QATControls.SelectedIndex != 0) {
+				//RibbonItemListDisplay r1 = (QATControls.SelectedValue as RibbonItemListDisplay);
+				//RibbonItemListDisplay r2 = (QATControls.Items[QATControls.SelectedIndex - 1] as RibbonItemListDisplay);
+
+				int sel = QATControls.SelectedIndex;
+
+				Object oItem = QATControls.Items.GetItemAt(sel);
+				QATControls.Items.RemoveAt(sel);
+				QATControls.Items.Insert(sel - 1, oItem);
+				QATControls.SelectedIndex = QATControls.Items.IndexOf(oItem);
+				QATControls.ScrollIntoView(QATControls.SelectedItem);
+				//RibbonItemListDisplay r3 = r1;
+				//r1.Icon = r2.Icon;
+				//r1.SourceControl = r2.SourceControl;
+				//r1.ShowMenuArrow = r2.ShowMenuArrow;
+				//r1.Header = r2.Header;
+				//r1.ItemName = r2.ItemName;
+
+				//r2.Icon = r3.Icon;
+				//r2.Header = r3.Header;
+				//r2.SourceControl = r3.SourceControl;
+				//r2.ItemName = r3.ItemName;
+				//r2.ShowMenuArrow = r3.ShowMenuArrow;
+				//QATControls.Items.Remove(r1);
+				//QATControls.Items.Remove(r2);
+				//QATControls.Items[QATControls.SelectedIndex - 1] = r1;
+				//QATControls.Items[QATControls.SelectedIndex] = r2;
+			}
+		}
+		*/
+
+		/*
+		public void MoveDown() {
+			//TODO: Remove Commented code if possible
+			if (QATControls.SelectedIndex != (QATControls.Items.Count - 1)) {
+				//RibbonItemListDisplay r1 = (QATControls.SelectedValue as RibbonItemListDisplay);
+				//RibbonItemListDisplay r2 = (QATControls.Items[QATControls.SelectedIndex + 1] as RibbonItemListDisplay);
+
+				int sel = QATControls.SelectedIndex;
+
+				Object oItem = QATControls.Items.GetItemAt(sel);
+				QATControls.Items.RemoveAt(sel);
+				QATControls.Items.Insert(sel + 1, oItem);
+				QATControls.SelectedIndex = QATControls.Items.IndexOf(oItem);
+				QATControls.ScrollIntoView(QATControls.SelectedItem);
+				//RibbonItemListDisplay r3 = r1;
+				//r1.Icon = r2.Icon;
+				//r1.SourceControl = r2.SourceControl;
+				//r1.ShowMenuArrow = r2.ShowMenuArrow;
+				//r1.Header = r2.Header;
+				//r1.ItemName = r2.ItemName;
+
+				//r2.Icon = r3.Icon;
+				//r2.Header = r3.Header;
+				//r2.SourceControl = r3.SourceControl;
+				//r2.ItemName = r3.ItemName;
+				//r2.ShowMenuArrow = r3.ShowMenuArrow;
+				//QATControls.Items.Remove(r1);
+				//QATControls.Items.Remove(r2);
+				//QATControls.Items[QATControls.SelectedIndex + 1] = r1;
+				//QATControls.Items[QATControls.SelectedIndex] = r2;
+			}
+		}
+		*/
 
 		[Obsolete("Never has any effect on anything and can be removed without any real effect")]
 		public bool DirectConfigMode = true;
 
+		[Obsolete("No Actual Code!!")]
+		public void LoadFile(string file) {
+			//this.QATControls.Items.Clear();
+			//foreach (RibbonItemListDisplay item in MainForm.ImportQATConfigForEditor(file))
+			//{
+			//    QATControls.Items.Add(item);
+			//}
+		}
 
+		[Obsolete("Never ever used")]
+		public void LoadIndirectConfigMode(string file) {
+			//LoadFile(file);
+			//this.AllControls.Items.Clear();
+			//foreach (IRibbonControl item in MainForm.GetAllButtons()) {
+			//	RibbonItemListDisplay rils = new RibbonItemListDisplay();
+			//	if (item.Icon != null) {
+			//		rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
+			//	}
+			//	rils.Header = (item.Header as string);
+			//	rils.SourceControl = item;
+			//	rils.ItemName = (item as FrameworkElement).Name;
+			//	rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+			//	if (item is Fluent.DropDownButton || item is Fluent.SplitButton) {
+			//		rils.ShowMenuArrow = true;
+			//	}
 
+			//	if (item is Fluent.CheckBox) {
+			//		rils.ShowCheck = true;
+			//	}
+			//	this.AllControls.Items.Add(rils);
+			//}
+			//DirectConfigMode = false;
+			//CheckAgainstList();
+		}
+
+		#endregion Obsolete
 
 		#region Helpers
 
@@ -39,15 +175,7 @@ namespace BetterExplorer {
 			}
 			//foreach (IRibbonControl item in GetRibbonControlsFromNames(QatItems)) {
 			//foreach (IRibbonControl item in GetRibbonControlsFromNames()) {
-
-
 			//Use CustomizeQAT.QuickButtons Here
-
-
-
-
-
-
 
 			foreach (var item in CustomizeQAT.QuickButtons) {
 				//foreach (var item in ribbon.QuickAccessItems) {
@@ -169,6 +297,21 @@ namespace BetterExplorer {
 			}
 		}
 
+		public void CheckAgainstList() {
+			List<RibbonItemListDisplay> torem = new List<RibbonItemListDisplay>();
+			foreach (RibbonItemListDisplay item in this.QATControls.Items) {
+				foreach (RibbonItemListDisplay thing in this.AllControls.Items) {
+					if (thing.ItemName == item.ItemName) {
+						torem.Add(thing);
+					}
+				}
+			}
+
+			foreach (RibbonItemListDisplay item in torem) {
+				this.AllControls.Items.Remove(item);
+			}
+		}
+
 		/*
 		public void PutItemsOnQAT(List<string> names) {
 			MainForm.TheRibbon.ClearQuickAccessToolBar();
@@ -183,75 +326,8 @@ namespace BetterExplorer {
 			//LoadInternalList();
 		}
 		*/
+
 		#endregion Helpers
-
-		#region Move
-
-		public void MoveUp() {
-			//TODO: Remove Commented code if possible
-			if (QATControls.SelectedIndex != 0) {
-				//RibbonItemListDisplay r1 = (QATControls.SelectedValue as RibbonItemListDisplay);
-				//RibbonItemListDisplay r2 = (QATControls.Items[QATControls.SelectedIndex - 1] as RibbonItemListDisplay);
-
-				int sel = QATControls.SelectedIndex;
-
-				Object oItem = QATControls.Items.GetItemAt(sel);
-				QATControls.Items.RemoveAt(sel);
-				QATControls.Items.Insert(sel - 1, oItem);
-				QATControls.SelectedIndex = QATControls.Items.IndexOf(oItem);
-				QATControls.ScrollIntoView(QATControls.SelectedItem);
-				//RibbonItemListDisplay r3 = r1;
-				//r1.Icon = r2.Icon;
-				//r1.SourceControl = r2.SourceControl;
-				//r1.ShowMenuArrow = r2.ShowMenuArrow;
-				//r1.Header = r2.Header;
-				//r1.ItemName = r2.ItemName;
-
-				//r2.Icon = r3.Icon;
-				//r2.Header = r3.Header;
-				//r2.SourceControl = r3.SourceControl;
-				//r2.ItemName = r3.ItemName;
-				//r2.ShowMenuArrow = r3.ShowMenuArrow;
-				//QATControls.Items.Remove(r1);
-				//QATControls.Items.Remove(r2);
-				//QATControls.Items[QATControls.SelectedIndex - 1] = r1;
-				//QATControls.Items[QATControls.SelectedIndex] = r2;
-			}
-		}
-
-		public void MoveDown() {
-			//TODO: Remove Commented code if possible
-			if (QATControls.SelectedIndex != (QATControls.Items.Count - 1)) {
-				//RibbonItemListDisplay r1 = (QATControls.SelectedValue as RibbonItemListDisplay);
-				//RibbonItemListDisplay r2 = (QATControls.Items[QATControls.SelectedIndex + 1] as RibbonItemListDisplay);
-
-				int sel = QATControls.SelectedIndex;
-
-				Object oItem = QATControls.Items.GetItemAt(sel);
-				QATControls.Items.RemoveAt(sel);
-				QATControls.Items.Insert(sel + 1, oItem);
-				QATControls.SelectedIndex = QATControls.Items.IndexOf(oItem);
-				QATControls.ScrollIntoView(QATControls.SelectedItem);
-				//RibbonItemListDisplay r3 = r1;
-				//r1.Icon = r2.Icon;
-				//r1.SourceControl = r2.SourceControl;
-				//r1.ShowMenuArrow = r2.ShowMenuArrow;
-				//r1.Header = r2.Header;
-				//r1.ItemName = r2.ItemName;
-
-				//r2.Icon = r3.Icon;
-				//r2.Header = r3.Header;
-				//r2.SourceControl = r3.SourceControl;
-				//r2.ItemName = r3.ItemName;
-				//r2.ShowMenuArrow = r3.ShowMenuArrow;
-				//QATControls.Items.Remove(r1);
-				//QATControls.Items.Remove(r2);
-				//QATControls.Items[QATControls.SelectedIndex + 1] = r1;
-				//QATControls.Items[QATControls.SelectedIndex] = r2;
-			}
-		}
-
-		#endregion Move
 
 		#region Buttons
 
@@ -328,15 +404,27 @@ namespace BetterExplorer {
 			this.Close();
 		}
 
-
 		private void btnMoveUp_Click(object sender, RoutedEventArgs e) {
-			MoveUp();
+			if (QATControls.SelectedIndex != 0) {
+				int sel = QATControls.SelectedIndex;
+				Object oItem = QATControls.Items.GetItemAt(sel);
+				QATControls.Items.RemoveAt(sel);
+				QATControls.Items.Insert(sel - 1, oItem);
+				QATControls.SelectedIndex = QATControls.Items.IndexOf(oItem);
+				QATControls.ScrollIntoView(QATControls.SelectedItem);
+			}
 		}
 
 		private void btnMoveDown_Click(object sender, RoutedEventArgs e) {
-			MoveDown();
+			if (QATControls.SelectedIndex != (QATControls.Items.Count - 1)) {
+				int sel = QATControls.SelectedIndex;
+				Object oItem = QATControls.Items.GetItemAt(sel);
+				QATControls.Items.RemoveAt(sel);
+				QATControls.Items.Insert(sel + 1, oItem);
+				QATControls.SelectedIndex = QATControls.Items.IndexOf(oItem);
+				QATControls.ScrollIntoView(QATControls.SelectedItem);
+			}
 		}
-
 
 		private void btnApply_Click(object sender, RoutedEventArgs e) {
 			List<string> list = new List<string>();
@@ -354,13 +442,12 @@ namespace BetterExplorer {
 			}
 		}	// Apply button
 
-
 		private void btnOkay_Click(object sender, RoutedEventArgs e) {
 			btnApply_Click(sender, e);
 			this.Close();
 		}	// OK button
 
-		#endregion
+		#endregion Buttons
 
 		private CustomizeQAT() {
 			InitializeComponent();
@@ -373,93 +460,5 @@ namespace BetterExplorer {
 			qal.MainForm = mainWindow;
 			qal.ShowDialog();
 		}
-
-
-
-		[Obsolete("Never ever used")]
-		public void LoadIndirectConfigMode(string file) {
-			//LoadFile(file);
-			//this.AllControls.Items.Clear();
-			//foreach (IRibbonControl item in MainForm.GetAllButtons()) {
-			//	RibbonItemListDisplay rils = new RibbonItemListDisplay();
-			//	if (item.Icon != null) {
-			//		rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
-			//	}
-			//	rils.Header = (item.Header as string);
-			//	rils.SourceControl = item;
-			//	rils.ItemName = (item as FrameworkElement).Name;
-			//	rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-			//	if (item is Fluent.DropDownButton || item is Fluent.SplitButton) {
-			//		rils.ShowMenuArrow = true;
-			//	}
-
-			//	if (item is Fluent.CheckBox) {
-			//		rils.ShowCheck = true;
-			//	}
-			//	this.AllControls.Items.Add(rils);
-			//}
-			//DirectConfigMode = false;
-			//CheckAgainstList();
-		}
-
-		public void CheckAgainstList() {
-			List<RibbonItemListDisplay> torem = new List<RibbonItemListDisplay>();
-			foreach (RibbonItemListDisplay item in this.QATControls.Items) {
-				foreach (RibbonItemListDisplay thing in this.AllControls.Items) {
-					if (thing.ItemName == item.ItemName) {
-						torem.Add(thing);
-					}
-				}
-			}
-
-			foreach (RibbonItemListDisplay item in torem) {
-				this.AllControls.Items.Remove(item);
-			}
-		}
-
-		[Obsolete("No Actual Code!!")]
-		public void LoadFile(string file) {
-			//this.QATControls.Items.Clear();
-			//foreach (RibbonItemListDisplay item in MainForm.ImportQATConfigForEditor(file))
-			//{
-			//    QATControls.Items.Add(item);
-			//}
-		}
-
-
-
-		/*
-		public void AddToQAT(IRibbonControl item) {
-			//MainForm.RibbonUI.AddToQuickAccessToolBar((item as UIElement));
-			Refresh();
-		}
-
-		public void RemoveFromQAT(IRibbonControl item) {
-			//MainForm.RibbonUI.RemoveFromQuickAccessToolBar((item as UIElement));
-			Refresh();
-		}
-		*/
-
-		/*
-		public void Refresh() {
-			AllControls.Items.Clear();
-			QATControls.Items.Clear();
-			MainForm.RefreshQATDialog(this);
-		}
-		*/
-
-		/*
-		 * No one will even want this feature
-		 *
-		public void StoreToFile(string file) {
-			List<string> list = new List<string>();
-			foreach (RibbonItemListDisplay item in this.QATControls.Items) {
-				list.Add(item.ItemName);
-			}
-
-			//XMLio.XMLio.WriteFile(file, list);
-		}
-		*/
-
 	}
 }
