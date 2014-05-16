@@ -4082,21 +4082,18 @@ namespace BetterExplorer {
 		}
 
 		private void chkRibbonMinimizedGlass_Click(object sender, RoutedEventArgs e) {
-			if (chkRibbonMinimizedGlass.IsChecked.Value) {
-				this.IsGlassOnRibonMinimized = true;
-				Utilities.SetRegistryValue("RibbonMinimizedGlass", 1, RegistryValueKind.DWord);
-				if (TheRibbon.IsMinimized) {
-					System.Windows.Point p = ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-					this.GlassBorderThickness = new Thickness(8, p.Y, 8, 8);
-				}
+			this.IsGlassOnRibonMinimized = chkRibbonMinimizedGlass.IsChecked.Value == true;
+			Utilities.SetRegistryValue("RibbonMinimizedGlass", chkRibbonMinimizedGlass.IsChecked.Value == true ? 1 : 0, RegistryValueKind.DWord);
+
+			if (!TheRibbon.IsMinimized) {
+			}
+			else if (chkRibbonMinimizedGlass.IsChecked.Value) {
+				System.Windows.Point p = ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+				this.GlassBorderThickness = new Thickness(8, p.Y, 8, 8);
 			}
 			else {
-				this.IsGlassOnRibonMinimized = false;
-				Utilities.SetRegistryValue("RibbonMinimizedGlass", 0, RegistryValueKind.DWord);
-				if (TheRibbon.IsMinimized) {
-					System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-					this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
-				}
+				System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+				this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
 			}
 		}
 
@@ -5848,6 +5845,17 @@ namespace BetterExplorer {
 
 				DropDown.Items.Add(Item);
 			}
+		}
+
+
+		private void TheRibbon_ItemAddedToQuickAccessToolbar(object sender, Ribbon.UIElementEventArgs e) {
+			//TODO: Find a way to NOT have to use this event
+			CustomizeQAT.QuickButtons.Add((Fluent.Button)e.Item);
+		}
+
+		private void TheRibbon_ItemRemovedToQuickAccessToolbar(object sender, Ribbon.UIElementEventArgs e) {
+			//TODO: Find a way to NOT have to use this event
+			CustomizeQAT.QuickButtons.Remove((Fluent.Button)e.Item);
 		}
 	}
 }

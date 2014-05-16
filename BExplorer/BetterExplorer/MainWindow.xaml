@@ -74,12 +74,12 @@
 				   Grid.ColumnSpan="2"
 				   Background="White"
 				   CanCustomizeQuickAccessToolBar="True"
-				   CustomizeQuickAccessToolbar="TheRibbon_CustomizeQuickAccessToolbar"
 				   Focusable="False"
 				   IsCollapsedChanged="TheRibbon_IsCollapsedChanged"
+				   CustomizeQuickAccessToolbar="TheRibbon_CustomizeQuickAccessToolbar"
+				ItemAddedToQuickAccessToolbar="TheRibbon_ItemAddedToQuickAccessToolbar"
+				ItemRemovedToQuickAccessToolbar="TheRibbon_ItemRemovedToQuickAccessToolbar"
 				   SizeChanged="TheRibbon_SizeChanged">
-			<!--ItemAddedToQuickAccessToolbar="TheRibbon_ItemAddedToQuickAccessToolbar"
-				ItemRemovedToQuickAccessToolbar="TheRibbon_ItemRemovedToQuickAccessToolbar"-->
 			<Ribbon:Ribbon.ToolBarItems>
 				<Ribbon:Button x:Name="btnAbout"
 					   Click="btnAbout_Click"

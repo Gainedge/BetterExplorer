@@ -9,10 +9,16 @@ namespace BetterExplorer {
 
 	/// <summary> Interaction logic for CustomizeQAT.xaml </summary>
 	public partial class CustomizeQAT : Window {
+		private static List<Fluent.Button> _QuickButtons = new List<Fluent.Button>();
+		public static List<Fluent.Button> QuickButtons { get { return _QuickButtons; } }
+
 		public MainWindow MainForm;
 
 		[Obsolete("Never has any effect on anything and can be removed without any real effect")]
 		public bool DirectConfigMode = true;
+
+
+
 
 		#region Helpers
 
@@ -33,7 +39,18 @@ namespace BetterExplorer {
 			}
 			//foreach (IRibbonControl item in GetRibbonControlsFromNames(QatItems)) {
 			//foreach (IRibbonControl item in GetRibbonControlsFromNames()) {
-			foreach (var item in ribbon.QuickAccessItems) {
+
+
+			//Use CustomizeQAT.QuickButtons Here
+
+
+
+
+
+
+
+			foreach (var item in CustomizeQAT.QuickButtons) {
+				//foreach (var item in ribbon.QuickAccessItems) {
 				RibbonItemListDisplay rils = new RibbonItemListDisplay();
 				if (item.Icon != null) {
 					rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
