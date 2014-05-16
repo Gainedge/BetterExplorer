@@ -52,7 +52,13 @@ namespace Wpf.Controls
 
 										if (IsUsingItemsSource && IsFixedSize)
 												AllowAddNew = AllowDelete = false;
+										this.MouseDoubleClick += TabControl_MouseDoubleClick;
 								};
+				}
+
+				void TabControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+				{
+					this.AddTabItem();
 				}
 
 				#region Properties

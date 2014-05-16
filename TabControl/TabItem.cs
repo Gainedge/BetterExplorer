@@ -51,7 +51,7 @@ namespace Wpf.Controls
 						ButtonBase button = this.Template.FindName("PART_CloseButton", this) as ButtonBase;
 						if (button != null)
 						{
-							button.PreviewMouseLeftButtonUp += (sender, e) =>
+							button.PreviewMouseLeftButtonDown += (sender, e) =>
 							{
 								// get the parent tabcontrol 
 								TabControl tc = Helper.FindParentControl<TabControl>(this);
@@ -62,7 +62,13 @@ namespace Wpf.Controls
 							};
 						}
 
+						this.PreviewMouseDoubleClick += TabItem_PreviewMouseDoubleClick;
 						this.MouseRightButtonUp += TabItem_MouseRightButtonUp;
+				}
+
+				void TabItem_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+				{
+					e.Handled = true;
 				}
 
 				void TabItem_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
