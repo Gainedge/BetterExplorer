@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell;
+using System.Linq;
 
 namespace Wpf.Controls
 {
@@ -707,6 +708,32 @@ namespace Wpf.Controls
 
 						if (TabItemClosed != null)
 								TabItemClosed(this, new TabItemEventArgs(tabItem));
+				}
+
+				public void CloneTabItem(TabItem theTab)
+				{
+					int i = this.SelectedIndex;
+					TabItem newt = new TabItem();
+					newt.Header = theTab.Header;
+					newt.Icon = theTab.Icon;
+					newt.ShellObject = theTab.ShellObject;
+					newt.ToolTip = theTab.ShellObject.ParsingName;
+					newt.AllowDrop = true;
+					newt.log.CurrentLocation = theTab.ShellObject;
+					newt.SelectedItems = theTab.SelectedItems;
+					newt.log.ImportData(theTab.log);
+					if (i == -1 || i == this.Items.Count - 1 || AddNewTabToEnd)
+						this.Items.Add(newt);
+					else
+						this.Items.Insert(++i, newt);
+				}
+
+				public void CloseAllTabsButThis(TabItem tabItem)
+				{
+					foreach (TabItem tab in this.Items.OfType<TabItem>().ToArray())
+					{
+						if (tab != tabItem) this.RemoveTabItem(tab);
+					}
 				}
 
 				private void SetAddNewButtonVisibility()

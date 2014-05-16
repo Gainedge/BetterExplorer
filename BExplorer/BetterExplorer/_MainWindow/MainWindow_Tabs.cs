@@ -74,7 +74,7 @@ namespace BetterExplorer {
 				return;
 			}
 
-			tcMain.Items.Remove(thetab);
+			tcMain.RemoveTabItem(thetab);
 			ConstructMoveToCopyToMenu();
 
 			if (allowreopening) {
@@ -96,22 +96,6 @@ namespace BetterExplorer {
 			//'if it never crashes the program? Closing the last tab simply closes the program, so I
 			//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
 		}
-
-		private void CloseAllTabs(bool CloseFirstTab) {
-			foreach (Wpf.Controls.TabItem tab in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray()) {
-				CloseTab(tab);
-			}
-		}
-
-		[Obsolete("Consider Inlining")]
-		private void CloseAllTabsButThis(Wpf.Controls.TabItem tabitem) {
-			foreach (Wpf.Controls.TabItem tab in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray()) {
-				if (tab != tabitem) CloseTab(tab);
-			}
-
-			ConstructMoveToCopyToMenu();
-		}
-
 		#endregion
 
 
@@ -130,7 +114,6 @@ namespace BetterExplorer {
 		private Wpf.Controls.TabItem CreateNewTab(ShellItem DefPath, bool IsNavigate) {
 			//TODO: figure out what to do with Cloning a tab!
 			Wpf.Controls.TabItem newt = new Wpf.Controls.TabItem();
-			CreateTabbarRKMenu(newt);
 
 			DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 			DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
@@ -151,7 +134,7 @@ namespace BetterExplorer {
 
 			tcMain.Items.Add(newt);
 			//LastTabIndex = tcMain.SelectedIndex;
-			newt.log.CurrentLocation = DefPath;
+			//newt.log.CurrentLocation = DefPath;
 
 			if (IsNavigate) {
 				tcMain.SelectedIndex = tcMain.Items.Count - 1;
@@ -202,27 +185,7 @@ namespace BetterExplorer {
 		}
 
 		public void CloneTab(Wpf.Controls.TabItem CurTab) {
-			Wpf.Controls.TabItem newt = new Wpf.Controls.TabItem();
-			CreateTabbarRKMenu(newt);
-
-			newt.Header = CurTab.Header;
-			newt.Icon = CurTab.Icon;
-			newt.ShellObject = CurTab.ShellObject;
-			newt.ToolTip = CurTab.ShellObject.ParsingName;
-			//newt.Index = tcMain.Items.Count;
-			//newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
-			newt.DragEnter += new DragEventHandler(newt_DragEnter);
-			newt.DragLeave += new DragEventHandler(newt_DragLeave);
-			newt.DragOver += new DragEventHandler(newt_DragOver);
-			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
-			newt.Drop += new DragEventHandler(newt_Drop);
-			newt.AllowDrop = true;
-			newt.log.CurrentLocation = CurTab.ShellObject;
-			newt.SelectedItems = CurTab.SelectedItems;
-			newt.log.ImportData(CurTab.log);
-			tcMain.Items.Add(newt);
-			tcMain.SelectedItem = newt;
-			//LastTabIndex = tcMain.SelectedIndex;
+			tcMain.CloneTabItem(CurTab);
 			ConstructMoveToCopyToMenu();
 		}
 
@@ -291,73 +254,6 @@ namespace BetterExplorer {
 		}
 
 		#endregion
-
-
-		[Obsolete("Try to inline this", false)]
-		private void CreateTabbarRKMenu(Wpf.Controls.TabItem tabitem) {
-			tabitem.mnu = new ContextMenu();
-
-			Action<string, RoutedEventHandler> Worker = (x, y) => {
-				MenuItem Item = new MenuItem();
-				Item.Header = x;
-				Item.Tag = tabitem;
-				Item.Click += y;
-				tabitem.mnu.Items.Add(Item);
-			};
-
-			Worker("Close current tab", new RoutedEventHandler(
-				(sender, e) => {
-					CloseTab((sender as MenuItem).Tag as Wpf.Controls.TabItem);
-				}));
-
-			Worker("Close all tabs", new RoutedEventHandler(
-				(sender, e) => {
-					CloseAllTabs(true);
-				}));
-
-			Worker("Close all other tabs", new RoutedEventHandler(
-				(sender, e) => {
-					CloseAllTabsButThis((sender as MenuItem).Tag as Wpf.Controls.TabItem);
-				}));
-
-			tabitem.mnu.Items.Add(new Separator());
-
-			Worker("New tab", new RoutedEventHandler(
-				(sender, e) => {
-					NewTab();
-				}));
-
-			Worker("Clone tab", new RoutedEventHandler(
-				(sender, e) => {
-					CloneTab((sender as MenuItem).Tag as Wpf.Controls.TabItem);
-				}));
-
-
-			tabitem.mnu.Items.Add(new Separator());
-
-			MenuItem miundocloser = new MenuItem();
-			miundocloser.Header = "Undo close tab";
-			miundocloser.IsEnabled = btnUndoClose.IsEnabled;
-			miundocloser.Tag = "UCTI";
-			miundocloser.Click += new RoutedEventHandler(
-				(sender, e) => {
-					if (btnUndoClose.IsEnabled) btnUndoClose_Click(this, e);
-				});
-
-			tabitem.mnu.Items.Add(miundocloser);
-			tabitem.mnu.Items.Add(new Separator());
-
-
-			//TODO: Fix Context Menu Item [Open in new window]
-			//Worker("Open in new window", new RoutedEventHandler(miopeninnew_Click));
-			Worker("Open in new window", new RoutedEventHandler(
-				(sender, e) => {
-					var ti = (sender as MenuItem).Tag as Wpf.Controls.TabItem;
-					System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, ti.ShellObject.ParsingName + " /nw");
-					CloseTab(ti);
-				}));
-		}
-
 		private void ConstructMoveToCopyToMenu() {
 			//TODO: Find the parts that will cause the errors and put the try catch around them ONLY or fix the issue!!!
 

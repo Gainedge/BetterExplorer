@@ -205,17 +205,6 @@ namespace BetterExplorer {
 				dmi = e.Args.Any((x) => x == "/nw");
 				isStartWithStartupTab = e.Args.Any((x) => x == "/norestore");
 
-				//foreach (var Arg in e.Args) {
-				//	switch (Arg) {
-				//		case "/nw":
-				//			dmi = false;
-				//			break;
-				//		case "/norestore":
-				//			isStartWithStartupTab = true;
-				//			break;
-				//	}
-				//}
-
 				//TODO: Consider Refactoring this so [e.Args[0] != "-minimized"] is inside the switch 
 				if (e.Args[0] != "-minimized")
 					this.Properties["cmd"] = e.Args[0];

@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using BExplorer.Shell;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace Wpf.Controls
 {
@@ -73,7 +74,85 @@ namespace Wpf.Controls
 
 				void TabItem_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
 				{
-					if (this.mnu != null)
+					TabControl tc = Helper.FindParentControl<TabControl>(this);
+					if (tc == null)
+						return;
+
+					TabItem firstItem = tc.Items.OfType<TabItem>().FirstOrDefault();
+
+					this.mnu = new ContextMenu();
+
+					Action<string, RoutedEventHandler> Worker = (x, y) =>
+					{
+						MenuItem Item = new MenuItem();
+						Item.Header = x;
+						Item.Click += y;
+						this.mnu.Items.Add(Item);
+					};
+
+					Worker("Close current tab", new RoutedEventHandler(
+						(owner, a) =>
+						{
+							tc.RemoveTabItem(this);
+						}));
+
+					Worker("Close all tabs", new RoutedEventHandler(
+						(owner, a) =>
+						{
+							foreach (TabItem tabItem in tc.Items.OfType<TabItem>().ToArray())
+							{
+								var isFirst = tabItem.Equals(firstItem);
+								if (!isFirst)
+									tc.RemoveTabItem(tabItem);
+							}
+						}));
+
+					Worker("Close all other tabs", new RoutedEventHandler(
+						(owner, a) =>
+						{
+							tc.CloseAllTabsButThis(this);
+						}));
+
+					this.mnu.Items.Add(new Separator());
+
+					Worker("New tab", new RoutedEventHandler(
+						(owner, a) =>
+						{
+							tc.AddTabItem();
+						}));
+
+					Worker("Clone tab", new RoutedEventHandler(
+						(owner, a) =>
+						{
+							tc.CloneTabItem(this);
+						}));
+
+
+					this.mnu.Items.Add(new Separator());
+
+					//TODO: fix reopetab
+					MenuItem miundocloser = new MenuItem();
+					miundocloser.Header = "Undo close tab";
+					miundocloser.IsEnabled = false; //btnUndoClose.IsEnabled;
+					miundocloser.Tag = "UCTI";
+					miundocloser.Click += new RoutedEventHandler(
+						(owner, a) =>
+						{
+							//if (btnUndoClose.IsEnabled) btnUndoClose_Click(this, e);
+						});
+
+					this.mnu.Items.Add(miundocloser);
+					this.mnu.Items.Add(new Separator());
+
+
+					//TODO: Fix Context Menu Item [Open in new window]
+					Worker("Open in new window", new RoutedEventHandler(
+						(owner, a) =>
+						{
+							System.Diagnostics.Process.Start(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName, this.ShellObject.ParsingName + " /nw");
+							tc.RemoveTabItem(this);
+						}));
+					if (this.mnu != null && this.mnu.Items.Count > 0)
 					{
 						this.mnu.Placement = PlacementMode.Bottom;
 						this.mnu.PlacementTarget = this;

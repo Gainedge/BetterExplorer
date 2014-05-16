@@ -4954,12 +4954,6 @@ namespace BetterExplorer {
 			reopenabletabs.RemoveAt(reopenabletabs.Count - 1);
 			if (reopenabletabs.Count == 0) {
 				btnUndoClose.IsEnabled = false;
-				foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
-					foreach (FrameworkElement m in item.mnu.Items) {
-						if (m.Tag != null)
-							if (m.Tag.ToString() == "UCTI") (m as MenuItem).IsEnabled = false;
-					}
-				}
 			}
 		}
 

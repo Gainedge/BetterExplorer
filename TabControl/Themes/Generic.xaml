@@ -9,7 +9,7 @@
 		Brushes used to define the Look of the TabControl & TabItem
 	-->
 	<!-- Border Brush for the TabItems and TabControl -->
-	<SolidColorBrush x:Key="TabBorderBrush" Color="Gainsboro"/>
+	<SolidColorBrush x:Key="TabBorderBrush" Color="#a5a5a5"/>
 	<!-- Tab Text Colour when Not Selected-->
 	<SolidColorBrush x:Key="TabGrayTextBrush" Color="#FF444444"/>
 	<!-- TabItem CloseButton Brush-->
