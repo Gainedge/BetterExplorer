@@ -811,26 +811,9 @@ namespace BetterExplorer {
 		*/
 
 
-		public List<Fluent.IRibbonControl> GetAllButtons() {
-			List<Fluent.IRibbonControl> rb = new List<Fluent.IRibbonControl>();
-			List<string> rs = new List<string>();
 
-			foreach (RibbonTabItem item in TheRibbon.Tabs) {
-				foreach (RibbonGroupBox itg in item.Groups) {
-					foreach (object ic in itg.Items) {
-						if (ic is IRibbonControl) {
-							rb.Add(ic as IRibbonControl);
-							rs.Add((ic as IRibbonControl).Header as string);
-						}
-					}
-				}
-			}
 
-			rs.Sort();
-
-			return SortNames(rb, rs);
-		}
-
+		/*
 		public List<Fluent.IRibbonControl> GetNonQATButtons() {
 			var rb = new List<Fluent.IRibbonControl>();
 			var rs = new List<string>();
@@ -851,6 +834,7 @@ namespace BetterExplorer {
 			rs.Sort();
 			return SortNames(rb, rs);
 		}
+		*/
 
 		/*
 		public void AddOtherButton(IRibbonControl item, bool test, List<IRibbonControl> rb, List<string> rs) {

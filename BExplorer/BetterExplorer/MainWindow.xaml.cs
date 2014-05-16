@@ -90,10 +90,6 @@ namespace BetterExplorer {
 
 		#region Variables and Constants
 
-		[Obsolete("We should get the items in the METHOD there being used NOT here!!!")]
-		public List<string> QatItems = new List<string>();
-
-
 
 		bool asFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
 		MenuItem misa, misd, misag, misdg, misng;
@@ -153,7 +149,7 @@ namespace BetterExplorer {
 		Int32 UpdateCheckInterval;
 		Double CommandPromptWinHeight;
 
-		UIElement curitem = null;
+		//UIElement curitem = null;
 		Boolean IsGlassOnRibonMinimized { get; set; }
 		NetworkAccountManager nam = new NetworkAccountManager();
 		List<BExplorer.Shell.LVItemColor> LVItemsColor { get; set; }
@@ -280,14 +276,18 @@ namespace BetterExplorer {
 		}
 
 		private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e) {
+			CustomizeQAT.Open(this, TheRibbon);
+
+			/*
 			CustomizeQAT qal = new CustomizeQAT();
 			qal.Owner = this;
 
-			LoadInternalList();
+			//LoadInternalList();
 			RefreshQATDialog(qal);
 
 			qal.MainForm = this;
 			qal.ShowDialog();
+			*/
 		}
 
 		private void LoadInitialWindowPositionAndState() {
@@ -494,8 +494,7 @@ namespace BetterExplorer {
 
 		}
 
-		void misag_Click(object sender, RoutedEventArgs e)
-		{
+		void misag_Click(object sender, RoutedEventArgs e) {
 			this.ShellListView.ReverseGroupOrder();
 		}
 
@@ -1747,8 +1746,7 @@ namespace BetterExplorer {
 															.Where(w => w.ShellObject.IsFileSystem &&
 															Path.GetPathRoot(w.ShellObject.ParsingName).ToLowerInvariant() ==
 															String.Format("{0}:\\", DriveLetter).ToLowerInvariant()).ToArray();
-													foreach (Wpf.Controls.TabItem tab in tabsForRemove)
-													{
+													foreach (Wpf.Controls.TabItem tab in tabsForRemove) {
 														CloseTab(tab, false);
 													}
 												}));
@@ -2761,14 +2759,14 @@ namespace BetterExplorer {
 							selectedPaths.Remove(path);
 						}
 					}
-				}				
+				}
 			}
 
 			//This initially setup the statusbar after program opens
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				SetUpStatusBarOnSelectOrNavigate(ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount());
 			}));
-			
+
 			this.ShellListView.Focus();
 		}
 
@@ -5108,6 +5106,8 @@ namespace BetterExplorer {
 
 		#region Customize Quick Access Toolbar
 
+		/*
+		[Obsolete("Move into Control", true)]
 		public void RefreshQATDialog(CustomizeQAT qal) {
 			foreach (IRibbonControl item in GetNonQATButtons()) {
 				RibbonItemListDisplay rils = new RibbonItemListDisplay();
@@ -5124,7 +5124,10 @@ namespace BetterExplorer {
 				qal.AllControls.Items.Add(rils);
 			}
 			//foreach (IRibbonControl item in GetRibbonControlsFromNames(QatItems)) {
-			foreach (IRibbonControl item in GetRibbonControlsFromNames()) {
+
+
+			//foreach (IRibbonControl item in GetRibbonControlsFromNames()) {
+			foreach (var item in TheRibbon.QuickAccessItems) {
 				RibbonItemListDisplay rils = new RibbonItemListDisplay();
 				if (item.Icon != null) {
 					rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
@@ -5133,15 +5136,29 @@ namespace BetterExplorer {
 				rils.SourceControl = item;
 				rils.ItemName = (item as FrameworkElement).Name;
 				rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+				/*
 				if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery) {
 					rils.ShowMenuArrow = true;
 				}
+				-/
 				qal.QATControls.Items.Add(rils);
 			}
-		}
 
+
+			//foreach (var item in TheRibbon.QuickAccessItems) {
+			//	qal.QATControls.Items.Add(item);
+			//}
+
+
+
+			//TheRibbon.QuickAccessItems
+			//TheRibbon.QuickAccessToolbarItems
+		}
+		*/
 		#region Helper Functions
 
+		/*
+		[Obsolete("Try and remove this. I'd prefer to only use it [CustomizeQAT]")]
 		public List<IRibbonControl> SortNames(List<IRibbonControl> items, List<string> headers) {
 			var rb = new List<IRibbonControl>();
 
@@ -5152,7 +5169,7 @@ namespace BetterExplorer {
 			 * 
 			 * Commented out [found] and added [break]
 			 * Using break will end that [foreach] which has the same effect as [found]
-			 */
+			 -/
 			foreach (string item in headers) {
 				//bool found = false;
 				foreach (IRibbonControl thing in items) {
@@ -5168,8 +5185,9 @@ namespace BetterExplorer {
 
 			return rb;
 		}
+		*/
 
-
+		/*
 		[Obsolete("Do not use, let the Ribbon Add/Remove Events handle it")]
 		public void LoadInternalList() {
 			//Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
@@ -5179,21 +5197,22 @@ namespace BetterExplorer {
 			//	QatItems = Buttons.ConvertAll(x => x.Name);
 			//}));
 		}
+		*/
 
-		public void PutItemsOnQAT(List<string> names) {
-			this.TheRibbon.ClearQuickAccessToolBar();
-			Dictionary<string, IRibbonControl> items = GetAllButtonsAsDictionary();
-			foreach (string item in names) {
-				IRibbonControl ctrl;
-				if (items.TryGetValue(item, out ctrl)) {
-					curitem = (ctrl as UIElement);
-					this.TheRibbon.AddToQuickAccessToolBar(ctrl as UIElement);
-					curitem = null;
-				}
-			}
+		//public void PutItemsOnQAT(List<string> names) {
+		//	this.TheRibbon.ClearQuickAccessToolBar();
+		//	Dictionary<string, IRibbonControl> items = GetAllButtonsAsDictionary();
+		//	foreach (string item in names) {
+		//		IRibbonControl ctrl;
+		//		if (items.TryGetValue(item, out ctrl)) {
+		//			curitem = (ctrl as UIElement);
+		//			this.TheRibbon.AddToQuickAccessToolBar(ctrl as UIElement);
+		//			curitem = null;
+		//		}
+		//	}
 
-			LoadInternalList();
-		}
+		//	//LoadInternalList();
+		//}
 
 		#endregion
 
@@ -5213,6 +5232,11 @@ namespace BetterExplorer {
 			return rb;
 		}
 
+		/*
+		[Obsolete("We should get the items in the METHOD there being used NOT here!!!")]
+		public List<string> QatItems = new List<string>();
+
+		[Obsolete("Being Replaced", true)]
 		public List<IRibbonControl> GetRibbonControlsFromNames() { //List<string> input
 			//var Buttons = (from UIElement item in TheRibbon.QuickAccessToolbarItems.Keys select (item as FrameworkElement).Name).ToList();
 			//from UIElement item in TheRibbon.QuickAccessToolbarItems.Keys select (item as FrameworkElement).Name
@@ -5229,11 +5253,11 @@ namespace BetterExplorer {
 
 			return rb;
 		}
-
+		*/
 		#endregion
 
 		#region Add/Remove Event Handlers
-
+		/*
 		[Obsolete("Try removing this!!! It is slowing down the application loading for no real gains")]
 		private void TheRibbon_ItemAddedToQuickAccessToolbar(object sender, Ribbon.UIElementEventArgs e) {
 			if (curitem == null) {
@@ -5250,7 +5274,9 @@ namespace BetterExplorer {
 		}
 
 		#endregion
+		*/
 
+		#endregion
 		#endregion
 
 		#region Recycle Bin
@@ -5541,9 +5567,11 @@ namespace BetterExplorer {
 
 			// allows user to change language
 			ReadyToChangeLanguage = true;
+			/*
 			Task.Run(() => {
 				LoadInternalList();
 			});
+			*/
 		}
 
 

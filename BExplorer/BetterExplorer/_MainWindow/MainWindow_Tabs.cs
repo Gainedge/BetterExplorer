@@ -80,8 +80,7 @@ namespace BetterExplorer {
 			if (allowreopening) {
 				reopenabletabs.Add(thetab.log);
 				btnUndoClose.IsEnabled = true;
-				foreach (Wpf.Controls.TabItem item in this.tcMain.Items)
-				{
+				foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
 					foreach (FrameworkElement m in item.mnu.Items) {
 						if (m.Tag != null) {
 							if (m.Tag.ToString() == "UCTI")
@@ -105,10 +104,8 @@ namespace BetterExplorer {
 		}
 
 		[Obsolete("Consider Inlining")]
-		private void CloseAllTabsButThis(Wpf.Controls.TabItem tabitem)
-		{
-			foreach (Wpf.Controls.TabItem tab in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray())
-			{
+		private void CloseAllTabsButThis(Wpf.Controls.TabItem tabitem) {
+			foreach (Wpf.Controls.TabItem tab in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray()) {
 				if (tab != tabitem) CloseTab(tab);
 			}
 
@@ -432,8 +429,7 @@ namespace BetterExplorer {
 			btnCopyto.Items.Add(micDesktop);
 			btnCopyto.Items.Add(new Separator());
 
-			foreach (var item in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToList())
-			{
+			foreach (var item in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToList()) {
 				bool IsAdditem = true;
 				foreach (object mii in btnCopyto.Items) {
 					if (mii is MenuItem) {
@@ -500,8 +496,7 @@ namespace BetterExplorer {
 			SelectTab(e.AddedItems[0] as Wpf.Controls.TabItem);
 		}
 
-		private void SelectTab(Wpf.Controls.TabItem Tab)
-		{
+		private void SelectTab(Wpf.Controls.TabItem Tab) {
 			if (Tab == null) return;
 			try {
 				isGoingBackOrForward = Tab.log.HistoryItemsList.Count != 0;
