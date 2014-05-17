@@ -277,17 +277,6 @@ namespace BetterExplorer {
 
 		private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e) {
 			CustomizeQAT.Open(this, TheRibbon);
-
-			/*
-			CustomizeQAT qal = new CustomizeQAT();
-			qal.Owner = this;
-
-			//LoadInternalList();
-			RefreshQATDialog(qal);
-
-			qal.MainForm = this;
-			qal.ShowDialog();
-			*/
 		}
 
 		private void LoadInitialWindowPositionAndState() {
@@ -5841,15 +5830,11 @@ namespace BetterExplorer {
 			}
 		}
 
+		private void Button_Click_1(object sender, RoutedEventArgs e) {
+			var Item1 = TheRibbon.QuickAccessToolbarItems;
+			var Item2 = TheRibbon.QuickAccessItems;
 
-		private void TheRibbon_ItemAddedToQuickAccessToolbar(object sender, Ribbon.UIElementEventArgs e) {
-			//TODO: Find a way to NOT have to use this event
-			CustomizeQAT.QuickButtons.Add((Fluent.Button)e.Item);
 		}
 
-		private void TheRibbon_ItemRemovedToQuickAccessToolbar(object sender, Ribbon.UIElementEventArgs e) {
-			//TODO: Find a way to NOT have to use this event
-			CustomizeQAT.QuickButtons.Remove((Fluent.Button)e.Item);
-		}
 	}
 }

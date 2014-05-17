@@ -4,14 +4,22 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using Fluent;
+using System.Linq;
+using System.Windows.Controls;
 
 namespace BetterExplorer {
 
 	/// <summary> Interaction logic for CustomizeQAT.xaml </summary>
 	public partial class CustomizeQAT : Window {
+		/*
 		private static List<Fluent.Button> _QuickButtons = new List<Fluent.Button>();
 		public static List<Fluent.Button> QuickButtons { get { return _QuickButtons; } }
+		*/
+
 		public MainWindow MainForm;
+
+		//There are still duplicates!!!
+		//See picture
 
 		#region Obsolete
 
@@ -173,11 +181,115 @@ namespace BetterExplorer {
 				}
 				AllControls.Items.Add(rils);
 			}
+
+			/*
+			var QuickItems = MainForm.TheRibbon.QuickAccessItems.Select(x => x.Target).ToList();
+			foreach (var item in MainForm.TheRibbon.QuickAccessItems) {
+				if (!QuickItems.Contains(item.Target)) {
+					QuickItems.Add(item.Target);
+				}
+			}
+			*/
+
+			//var QuickItems = MainForm.TheRibbon.ToolBarItems.Select(x => x as IRibbonControl).ToList();
+			//foreach (var item in MainForm.TheRibbon.QuickAccessItems) {
+			//	if (!QuickItems.Contains(item)) {
+
+			//		var rils = new RibbonItemListDisplay() {
+			//			ItemName = item.Name,
+			//			HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+			//			Header = (item as IRibbonControl).Header as string,
+			//			SourceControl = (item as IRibbonControl)
+			//		};
+
+
+			//		if ((item as IRibbonControl).Icon != null) {
+			//			rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + (item as IRibbonControl).Icon.ToString(), UriKind.Relative));
+			//		}
+
+			//		QATControls.Items.Add(rils);
+			//	}
+			//}
+
+
+
+
+
+
+			var AllMenuItems = MainForm.TheRibbon.QuickAccessItems.Select(x => x.Target).ToList();
+
+			//MainForm.TheRibbon.QuickAccessToolbarItems.Select(x => x.Key as Control).Where(QATControls.Items.OfType<BetterExplorer.RibbonItemListDisplay>().Any(x => x.ItemName == item.Name))
+
+			var Controls = (from control in MainForm.TheRibbon.QuickAccessToolbarItems
+							select control.Key as Control into newControl
+							where !AllMenuItems.Any(x => x.Name == newControl.Name)
+							select newControl).ToList();
+
+			AllMenuItems.AddRange(Controls);
+
+			foreach (var item in AllMenuItems) {
+				//foreach (var item in MainForm.TheRibbon.QuickAccessItems.Select(x => x.Target)) {
+				var rils = new RibbonItemListDisplay() {
+					ItemName = item.Name,
+					HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+					Header = (item as IRibbonControl).Header as string,
+					SourceControl = (item as IRibbonControl)
+				};
+
+
+				if ((item as IRibbonControl).Icon != null) {
+					rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + (item as IRibbonControl).Icon.ToString(), UriKind.Relative));
+				}
+
+				/*
+				if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery) {
+					rils.ShowMenuArrow = true;
+				}
+				*/
+
+				QATControls.Items.Add(rils);
+			}
+
+
+
+			//foreach (var item in MainForm.TheRibbon.QuickAccessToolbarItems.Select(x => x.Key as Control)) {
+			//	if (QATControls.Items.OfType<BetterExplorer.RibbonItemListDisplay>().Any(x => x.ItemName == item.Name)) {
+			//		continue;
+			//	}
+			//	else {
+			//		this.ToString();
+			//	}
+
+			//	var rils = new RibbonItemListDisplay() {
+			//		ItemName = item.Name,
+			//		HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+			//		Header = (item as IRibbonControl).Header as string,
+			//		SourceControl = (item as IRibbonControl)
+			//	};
+
+
+			//	if ((item as IRibbonControl).Icon != null) {
+			//		rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + (item as IRibbonControl).Icon.ToString(), UriKind.Relative));
+			//	}
+
+			//	/*
+			//	if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery) {
+			//		rils.ShowMenuArrow = true;
+			//	}
+			//	*/
+
+			//	QATControls.Items.Add(rils);
+			//}
+
+
+
 			//foreach (IRibbonControl item in GetRibbonControlsFromNames(QatItems)) {
 			//foreach (IRibbonControl item in GetRibbonControlsFromNames()) {
 			//Use CustomizeQAT.QuickButtons Here
 
-			foreach (var item in CustomizeQAT.QuickButtons) {
+			/*
+			foreach (var item in MainForm.TheRibbon.QuickAccessItems.Select(x => x.Target)) {
+				//foreach (var item in CustomizeQAT.QuickButtons) {
 				//foreach (var item in ribbon.QuickAccessItems) {
 				RibbonItemListDisplay rils = new RibbonItemListDisplay();
 				if (item.Icon != null) {
@@ -191,10 +303,10 @@ namespace BetterExplorer {
 				if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery) {
 					rils.ShowMenuArrow = true;
 				}
-				*/
+				-/
 				QATControls.Items.Add(rils);
 			}
-
+			*/
 			//foreach (var item in TheRibbon.QuickAccessItems) {
 			//	qal.QATControls.Items.Add(item);
 			//}
@@ -427,10 +539,12 @@ namespace BetterExplorer {
 		}
 
 		private void btnApply_Click(object sender, RoutedEventArgs e) {
-			List<string> list = new List<string>();
+			var Item2 = MainForm.TheRibbon.QuickAccessItems.ToList();
+			var list = new List<string>();
 			foreach (RibbonItemListDisplay item in this.QATControls.Items) {
 				list.Add(item.ItemName);
 			}
+
 
 			MainForm.TheRibbon.ClearQuickAccessToolBar();
 			Dictionary<string, IRibbonControl> items = MainForm.GetAllButtonsAsDictionary();
@@ -440,12 +554,16 @@ namespace BetterExplorer {
 					MainForm.TheRibbon.AddToQuickAccessToolBar(ctrl as UIElement);
 				}
 			}
-		}	// Apply button
+
+
+
+
+		}
 
 		private void btnOkay_Click(object sender, RoutedEventArgs e) {
 			btnApply_Click(sender, e);
 			this.Close();
-		}	// OK button
+		}
 
 		#endregion Buttons
 
@@ -456,9 +574,17 @@ namespace BetterExplorer {
 		public static void Open(MainWindow mainWindow, Ribbon ribbon) {
 			CustomizeQAT qal = new CustomizeQAT();
 			qal.Owner = mainWindow;
-			qal.RefreshQATDialog(ribbon);
 			qal.MainForm = mainWindow;
+			qal.RefreshQATDialog(ribbon);
 			qal.ShowDialog();
 		}
+
+
+
+		//private IEnumerable<System.Windows.Controls.Control> GetControls() {
+		//	return MainForm.TheRibbon.QuickAccessItems.Select(x => x.Target);
+		//}
+
+
 	}
 }

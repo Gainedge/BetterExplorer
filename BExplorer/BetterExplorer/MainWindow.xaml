@@ -77,8 +77,6 @@
 				   Focusable="False"
 				   IsCollapsedChanged="TheRibbon_IsCollapsedChanged"
 				   CustomizeQuickAccessToolbar="TheRibbon_CustomizeQuickAccessToolbar"
-				ItemAddedToQuickAccessToolbar="TheRibbon_ItemAddedToQuickAccessToolbar"
-				ItemRemovedToQuickAccessToolbar="TheRibbon_ItemRemovedToQuickAccessToolbar"
 				   SizeChanged="TheRibbon_SizeChanged">
 			<Ribbon:Ribbon.ToolBarItems>
 				<Ribbon:Button x:Name="btnAbout"
@@ -3217,6 +3215,7 @@
 
 		</Ribbon:StatusBar>
 		<Button x:Name="btnTest" Grid.ColumnSpan="2" Content="Button" Margin="673,23,0,0" VerticalAlignment="Top" Width="75" Click="btnTest_Click"/>
+		<Button Content="Button" HorizontalAlignment="Left" Margin="643,23,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
 
 	</Grid>
 </Ribbon:RibbonWindow>
