@@ -495,7 +495,7 @@ namespace BetterExplorer {
 		}
 
 		void misag_Click(object sender, RoutedEventArgs e) {
-			this.ShellListView.ReverseGroupOrder();
+			this.ShellListView.SetGroupOrder();
 		}
 
 		private void SetUpViewGallery() {

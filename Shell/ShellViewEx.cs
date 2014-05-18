@@ -1457,7 +1457,56 @@ namespace BExplorer.Shell {
 			System.Windows.Forms.Application.DoEvents();
 		}
 
-		protected override void WndProc(ref Message m) {
+		private void InsertNewItem(ShellItem obj)
+		{
+			if (!Items.Contains(obj) && !String.IsNullOrEmpty(obj.ParsingName))
+			{
+				Items.Add(obj);
+				this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+				User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+			}
+			
+		}
+		private void UpdateItem(ShellItem obj1, ShellItem obj2)
+		{
+			if (this.CurrentRefreshedItemIndex != -1)
+			{
+				ShellItem tempItem = Items.SingleOrDefault(s => s.CachedParsingName == obj2.CachedParsingName);
+				if (tempItem == null)
+				{
+					Items.Insert(this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex, obj2);
+					ItemsHashed.Add(obj2, this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex);
+					//this.SelectItemByIndex(this.CurrentRefreshedItemIndex == -1 ? 0 :CurrentRefreshedItemIndex);
+					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+					if (this.ItemUpdated != null)
+						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj2, null, this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex));
+
+
+				}
+			}
+			else
+			{
+				//if (this.CurrentRefreshedItemIndex == -1)
+				//{
+				ShellItem theItem = Items.SingleOrDefault(s => s.ParsingName == obj1.ParsingName);
+				if (theItem != null)
+				{
+					int itemIndex = Items.IndexOf(theItem);
+					Items[itemIndex] = obj2;
+					ItemsHashed.Remove(theItem);
+					ItemsHashed.Add(obj2, itemIndex);
+					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, itemIndex, 0);
+					RedrawWindow();
+					if (this.ItemUpdated != null)
+						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, itemIndex));
+				}
+				this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+			}
+			//}
+			this.CurrentRefreshedItemIndex = -1;
+		}
+		protected override void WndProc(ref Message m)
+		{
 			bool isSmallIcons = (View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details);
 			if (m.Msg == (int)WM.WM_PARENTNOTIFY) {
 				if (User32.LOWORD((int)m.WParam) == (int)WM.WM_MBUTTONDOWN) {
@@ -1473,14 +1522,9 @@ namespace BExplorer.Shell {
 							var obj = new ShellItem(info.Item1);
 							if (obj.Extension.ToLowerInvariant() != ".tmp")
 							{
-								if (obj.Parent.ParsingName == this.CurrentFolder.ParsingName)
+								if (obj.Parent.Equals(this.CurrentFolder))
 								{
-									if (Items.Count(w => w.ParsingName == obj.ParsingName) == 0 && !String.IsNullOrEmpty(obj.ParsingName))
-									{
-										Items.Add(obj);
-										ItemsHashed.Add(obj, Items.Count - 1);
-									}
-									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+									InsertNewItem(obj);
 									if (this.ItemUpdated != null)
 										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, this.Items.Count - 1));
 								}
@@ -1508,41 +1552,33 @@ namespace BExplorer.Shell {
 							var obj1 = new ShellItem(info.Item1);
 							var obj2 = new ShellItem(info.Item2);
 							if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName)) {
-								ShellItem tempItem = Items.SingleOrDefault(s => s.CachedParsingName == obj2.CachedParsingName);
-								if (tempItem == null)
-								{
-									Items.Insert(this.CurrentRefreshedItemIndex == -1 ? 0 :CurrentRefreshedItemIndex ,obj2);
-									ItemsHashed.Add(obj2, this.CurrentRefreshedItemIndex == -1 ? 0 :CurrentRefreshedItemIndex);
-									//this.SelectItemByIndex(this.CurrentRefreshedItemIndex == -1 ? 0 :CurrentRefreshedItemIndex);
-									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-									if (this.ItemUpdated != null)
-										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj2, null, this.CurrentRefreshedItemIndex == -1 ? 0 :CurrentRefreshedItemIndex));
-									
-
-								}
-								if (this.CurrentRefreshedItemIndex == -1)
-								{
-									ShellItem theItem = Items.SingleOrDefault(s => s.ParsingName == obj1.ParsingName);
-									if (theItem != null)
-									{
-										int itemIndex = Items.IndexOf(theItem);
-										Items[itemIndex] = obj2;
-										ItemsHashed.Remove(theItem);
-										ItemsHashed.Add(obj2, itemIndex);
-										User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, itemIndex, 0);
-										RedrawWindow();
-										if (this.ItemUpdated != null)
-											this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, itemIndex));
-									}
-								}
-								this.CurrentRefreshedItemIndex = -1;
+								UpdateItem(obj1, obj2);
 							}
 							Notifications.NotificationsReceived.Remove(info);
 						}
 
-						if (info.Notification == ShellNotifications.SHCNE.SHCNE_UPDATEITEM || info.Notification == ShellNotifications.SHCNE.SHCNE_UPDATEDIR)
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_DRIVEADD)
 						{
 							var obj = new ShellItem(info.Item1);
+
+							if (this.CurrentFolder.Equals(KnownFolders.Computer))
+							{
+								this.InsertNewItem(obj);
+							}
+
+							Notifications.NotificationsReceived.Remove(info);
+
+						}
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED)
+						{
+							var obj = new ShellItem(info.Item1);
+
+							if (this.CurrentFolder.Equals(KnownFolders.Computer))
+							{
+									Items.Remove(obj);
+									ItemsHashed.Remove(obj);
+									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+							}
 
 							Notifications.NotificationsReceived.Remove(info);
 
@@ -1712,7 +1748,17 @@ namespace BExplorer.Shell {
 					case WNM.LVN_COLUMNCLICK:
 						NMLISTVIEW nlcv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 						if (this.IsGroupsEnabled)
-							this.ReverseGroupOrder();
+						{
+							if (this.LastGroupCollumn == this.Collumns[nlcv.iSubItem])
+							{
+								this.SetGroupOrder();
+							}
+							else
+							{
+								SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
+								this.SetGroupOrder(false);
+							}
+						}
 						else
 							SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
 						break;
@@ -2818,8 +2864,8 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public void SetSortCollumn(int colIndex, SortOrder Order) {
-			if (colIndex == this.LastSortedColumnIndex) {
+		public void SetSortCollumn(int colIndex, SortOrder Order, Boolean reverseOrder = true) {
+			if (colIndex == this.LastSortedColumnIndex && reverseOrder) {
 				// Reverse the current sort direction for this column.
 				if (this.LastSortOrder == SortOrder.Ascending) {
 					this.LastSortOrder = SortOrder.Descending;
@@ -3194,12 +3240,13 @@ namespace BExplorer.Shell {
 			this.LastGroupCollumn = col;
 			this.LastGroupOrder = reversed ? SortOrder.Descending : SortOrder.Ascending;
 			
-			this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
+			if (this.Collumns[this.LastSortedColumnIndex] == col || reversed)
+				this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
 		}
 
-		public void ReverseGroupOrder()
+		public void SetGroupOrder(Boolean reverse = true)
 		{
-			this.GenerateGroupsFromColumn(this.LastGroupCollumn, this.LastGroupOrder == SortOrder.Ascending);
+			this.GenerateGroupsFromColumn(this.LastGroupCollumn, reverse ? this.LastGroupOrder == SortOrder.Ascending : false);
 		}
 
 		public ShellItem GetFirstSelectedItem() {
