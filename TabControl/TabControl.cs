@@ -534,7 +534,7 @@ namespace Wpf.Controls {
 		}
 
 		private void TabControl_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-			this.AddTabItem();
+			this.NewTab();
 		}
 
 		/*
