@@ -46,7 +46,8 @@ namespace BExplorer.Shell
 		private SyncQueue<IntPtr> childsQueue = new SyncQueue<IntPtr>(7000);
 		private Thread imagesThread;
 		private Thread childsThread;
-		private Boolean isFromTreeview; 
+		private Boolean isFromTreeview;
+		private Boolean _IsNavigate;
 		#endregion
 
 		#region Private Methods
@@ -605,7 +606,11 @@ namespace BExplorer.Shell
 					catch {	}
 				}
 				this.isFromTreeview = true;
-				this.ShellListView.Navigate(linkSho ?? sho);
+				if (this._IsNavigate)
+				{
+					this.ShellListView.Navigate(linkSho ?? sho);
+				}
+				this._IsNavigate = false;
 				this.isFromTreeview = false;
 				e.Node.Expand();
 			}
@@ -642,6 +647,10 @@ namespace BExplorer.Shell
 				//this.ShellTreeView.SelectedNode = e.Node;
 				ShellContextMenu cm = new ShellContextMenu(e.Node.Tag as ShellItem);
 				cm.ShowContextMenu(this, e.Location, CMF.CANRENAME);
+			}
+			else if (e.Button == System.Windows.Forms.MouseButtons.Left)
+			{
+				this._IsNavigate = true;
 			}
 			
 		}

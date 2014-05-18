@@ -113,6 +113,7 @@ namespace BetterExplorer {
 
 		private Wpf.Controls.TabItem CreateNewTab(ShellItem DefPath, bool IsNavigate) {
 			//TODO: figure out what to do with Cloning a tab!
+			tcMain.SelectNewTabOnCreate = IsNavigate;
 			Wpf.Controls.TabItem newt = new Wpf.Controls.TabItem();
 
 			DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
@@ -122,24 +123,15 @@ namespace BetterExplorer {
 			newt.Header = DefPath.GetDisplayName(SIGDN.NORMALDISPLAY);
 			newt.Icon = DefPath.Thumbnail.BitmapSource;
 			newt.ToolTip = DefPath.ParsingName;
-			//newt.IsNavigate = IsNavigate;
-			//newt.Index = tcMain.Items.Count;
+
 			newt.AllowDrop = true;
 
-			//newt.CloseTab += new RoutedEventHandler(newt_CloseTab);
 			newt.DragEnter += new DragEventHandler(newt_DragEnter);
 			newt.DragOver += new DragEventHandler(newt_DragOver);
 			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
 			newt.Drop += new DragEventHandler(newt_Drop);
 
 			tcMain.Items.Add(newt);
-			//LastTabIndex = tcMain.SelectedIndex;
-			//newt.log.CurrentLocation = DefPath;
-
-			if (IsNavigate) {
-				tcMain.SelectedIndex = tcMain.Items.Count - 1;
-				tcMain.SelectedItem = tcMain.Items[tcMain.Items.Count - 1];
-			}
 
 			ConstructMoveToCopyToMenu();
 
@@ -151,14 +143,6 @@ namespace BetterExplorer {
 		public void ReOpenTab(NavigationLog log) {
 			var Tab = CreateNewTab(log.CurrentLocation, false);
 			Tab.log.ImportData(log);
-
-			//newt.CloseTab += newt_CloseTab;
-			//newt.DragEnter += newt_DragEnter;
-			//newt.DragOver += newt_DragOver;
-			//newt.PreviewMouseMove += newt_PreviewMouseMove;
-			//newt.Drop += newt_Drop;
-
-			//newt.log.ImportData(log);
 		}
 
 		public void NewTab(bool IsNavigate = true) {
@@ -211,7 +195,7 @@ namespace BetterExplorer {
 						i++;
 						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
 							if (i == InitialTabs.Length) {
-								tcMain.SelectedIndex = InitialTabs.Length - 2;
+								//tcMain.SelectedIndex = InitialTabs.Length - 2;
 							}
 
 							continue;
@@ -247,8 +231,8 @@ namespace BetterExplorer {
 			}
 			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
 
-			if (tcMain.Items.Count == 1)
-				tcMain.SelectedIndex = 0;
+			//if (tcMain.Items.Count == 1)
+			//	tcMain.SelectedIndex = 0;
 
 			//ShellVView.Visibility = System.Windows.Visibility.Hidden;
 		}

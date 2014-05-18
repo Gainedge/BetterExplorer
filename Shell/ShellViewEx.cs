@@ -3174,7 +3174,7 @@ namespace BExplorer.Shell {
 					User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
 				}
 
-			}
+			} else
 			if (col.CollumnType == typeof(long)) {
 				var j = reversed ? 7 : 0;
 				ListViewGroupEx uspec = new ListViewGroupEx();
@@ -3234,9 +3234,12 @@ namespace BExplorer.Shell {
 					User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
 				}
 			}
+			else
+			{
 
-			if (col.CollumnType == typeof(DateTime)) {
 			}
+
+
 			this.LastGroupCollumn = col;
 			this.LastGroupOrder = reversed ? SortOrder.Descending : SortOrder.Ascending;
 			
