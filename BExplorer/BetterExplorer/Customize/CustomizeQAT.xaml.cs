@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media.Imaging;
 using Fluent;
 
@@ -37,21 +36,8 @@ namespace BetterExplorer {
 			return rils;
 		}
 
-
 		private void RefreshQATDialog(Ribbon ribbon) {
 			foreach (IRibbonControl item in GetNonQATButtons(ribbon)) {
-				//RibbonItemListDisplay rils = new RibbonItemListDisplay();
-				//if (item.Icon != null) {
-				//	rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
-				//}
-				//rils.Header = (item.Header as string);
-				//rils.SourceControl = item;
-				//rils.ItemName = (item as FrameworkElement).Name;
-				//rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-				//if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery) {
-				//	rils.ShowMenuArrow = true;
-				//}
-				//AllControls.Items.Add(rils);
 				AllControls.Items.Add(GetRibbonItemListDisplay(item));
 			}
 
@@ -64,23 +50,6 @@ namespace BetterExplorer {
 			AllMenuItems.AddRange(Controls);
 
 			foreach (var item in AllMenuItems) {
-				//var rils = new RibbonItemListDisplay() {
-				//	ItemName = item.Name,
-				//	HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
-				//	Header = (item as IRibbonControl).Header as string,
-				//	SourceControl = (item as IRibbonControl)
-				//};
-
-				//if ((item as IRibbonControl).Icon != null) {
-				//	rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + (item as IRibbonControl).Icon.ToString(), UriKind.Relative));
-				//}
-
-				////TODO: Find out if I need the following [if(...)]
-				//if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery) {
-				//	rils.ShowMenuArrow = true;
-				//}
-
-				//QATControls.Items.Add(rils);
 				QATControls.Items.Add(GetRibbonItemListDisplay(item as IRibbonControl));
 			}
 		}
@@ -114,24 +83,6 @@ namespace BetterExplorer {
 		}
 
 		private void AddToList(RibbonItemListDisplay source, bool qatlist = true) {
-			//IRibbonControl item = source.SourceControl;
-			//RibbonItemListDisplay rils = new RibbonItemListDisplay();
-			//rils.Header = (item.Header as string);
-			//rils.SourceControl = item;
-			//rils.ItemName = (item as FrameworkElement).Name;
-			//rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-			//if (item.Icon != null) {
-			//	rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
-			//}
-
-			//if (item is Fluent.DropDownButton || item is Fluent.SplitButton) {
-			//	rils.ShowMenuArrow = true;
-			//}
-			//else if (item is Fluent.CheckBox) {
-			//	rils.ShowCheck = true;
-			//}
-
-
 			if (qatlist) {
 				this.QATControls.Items.Add(GetRibbonItemListDisplay(source.SourceControl));
 			}
@@ -165,7 +116,6 @@ namespace BetterExplorer {
 			AllControls.Items.Remove(item);
 			AddToList(item, true);
 
-
 			CheckAgainstList();
 			if (sel != 0) {
 				AllControls.SelectedIndex = sel - 1;
@@ -181,26 +131,9 @@ namespace BetterExplorer {
 
 		private void btnRemove_Click(object sender, RoutedEventArgs e) {
 			int sel = QATControls.SelectedIndex;
-			var item = QATControls.SelectedValue as RibbonItemListDisplay;
-			QATControls.Items.Remove(item);
+			QATControls.Items.Remove(QATControls.SelectedValue as RibbonItemListDisplay);
 			this.AllControls.Items.Clear();
 			foreach (IRibbonControl thing in GetAllButtons()) {
-				//var rils = new RibbonItemListDisplay();
-				//if (thing.Icon != null) {
-				//	rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + thing.Icon.ToString(), UriKind.Relative));
-				//}
-				//rils.Header = (thing.Header as string);
-				//rils.SourceControl = thing;
-				//rils.ItemName = (thing as FrameworkElement).Name;
-				//rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-
-				//if (thing is Fluent.DropDownButton || thing is Fluent.SplitButton) {
-				//	rils.ShowMenuArrow = true;
-				//}
-				//else if (thing is Fluent.CheckBox) {
-				//	rils.ShowCheck = true;
-				//}
-
 				this.AllControls.Items.Add(GetRibbonItemListDisplay(thing));
 			}
 
@@ -278,7 +211,5 @@ namespace BetterExplorer {
 			qal.RefreshQATDialog(ribbon);
 			qal.ShowDialog();
 		}
-
-
 	}
 }
