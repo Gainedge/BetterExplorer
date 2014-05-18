@@ -219,13 +219,13 @@ namespace BetterExplorer {
 			}
 
 			base.OnStartup(e);
-			RegistryKey rk = Registry.CurrentUser;
-			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-			if (rks == null)
-				rks = rk.CreateSubKey(@"Software\BExplorer");
+			//RegistryKey rk = Registry.CurrentUser;
+			//RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+			//if (rks == null)
+			//	rks = rk.CreateSubKey(@"Software\BExplorer");
 
 			try {
-				var regLocale = rks.GetValue(@"Locale", "").ToString();
+				var regLocale = Utilities.GetRegistryValue("Locale", "").ToString();
 				Locale = String.IsNullOrEmpty(regLocale) ? CultureInfo.CurrentUICulture.Name : regLocale;
 				SelectCulture(Locale);
 			}
@@ -234,8 +234,8 @@ namespace BetterExplorer {
 				Shutdown();
 			}
 
-			rks.Close();
-			rk.Close();
+			//rks.Close();
+			//rk.Close();
 		}
 
 		private void CreateInitialTab(MainWindow win, ShellItem sho) {
@@ -248,8 +248,9 @@ namespace BetterExplorer {
 			newt.PreviewMouseMove += newt_PreviewMouseMove;
 			newt.ToolTip = sho.ParsingName;
 			newt.ShellObject = sho;
-			win.CloneTab(newt);
+			win.tcMain.CloneTabItem(newt);
 		}
+
 		/// <summary>
 		/// Single instance callback handler.
 		/// </summary>

@@ -3046,8 +3046,7 @@
 			   Grid.ColumnSpan="2"
 			   Height="1"
 			   Fill="Gray" />
-		<tabcontrol:TabControl x:Name="tcMain" Grid.Row="3" Grid.ColumnSpan="2" Panel.ZIndex="99" TabItemMinWidth="100" TabItemMaxWidth="300" TabItemMinHeight="20" TabItemMaxHeight="25" Height="25" SelectionChanged="tcMain_SelectionChanged">
-		</tabcontrol:TabControl>
+		<tabcontrol:TabControl x:Name="tcMain" Grid.Row="3" Grid.ColumnSpan="2" Panel.ZIndex="99" TabItemMinWidth="100" TabItemMaxWidth="300" TabItemMinHeight="20" TabItemMaxHeight="25" Height="25" SelectionChanged="tcMain_SelectionChanged" HorizontalAlignment="Right" Width="844"/>
 		<Grid Grid.Row="4" Background="White" Grid.ColumnSpan="2">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />

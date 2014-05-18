@@ -69,9 +69,6 @@ namespace BetterExplorer {
 		//[Obsolete("Removing this is High Priority!", true)]
 		//bool IsViewSelection = false, inLibrary = false, inDrive = false;
 
-		/// <summary>Try to make it so you do not need this!</summary>
-		bool isGoingBackOrForward; //TODO: Try to make it so you do not need this!
-
 		[Obsolete("Removing this is High Priority!", true)]
 		public bool IsCompartibleRename = false;
 

@@ -159,9 +159,8 @@ namespace BetterExplorer.Tabs {
 		}
 
 		private void button1_Click(object sender, RoutedEventArgs e) {
-			MainForm.NewTab(GetSavedTabsLocation());
+			MainForm.tcMain.NewTab(GetSavedTabsLocation());
 			MainForm.Focus();
 		}
-
 	}
 }

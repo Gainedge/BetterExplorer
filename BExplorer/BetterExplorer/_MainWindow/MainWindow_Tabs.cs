@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -6,7 +7,6 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
-using ContextMenu = Fluent.ContextMenu;
 using MenuItem = Fluent.MenuItem;
 
 namespace BetterExplorer {
@@ -14,176 +14,69 @@ namespace BetterExplorer {
 	//TODO: Fix Folder History/Navigation issue on new tabs
 	//TODO: Fix Context Menu Item [Open in new window]
 	partial class MainWindow {
-		//private Wpf.Controls.TabItem CreateNewWpf.Controls.TabItem(ShellItem DefPath, bool IsNavigate) {
+
+		#region Tab Creators
+
+		//public Wpf.Controls.TabItem NewTab(ShellItem DefPath, bool IsNavigate) {
 		//	//TODO: figure out what to do with Cloning a tab!
-		//	Wpf.Controls.TabItem newt = new Wpf.Controls.TabItem();
+		//	DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+		//	DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+		//	tcMain.SelectNewTabOnCreate = IsNavigate;
+		//	var newt = new Wpf.Controls.TabItem() {
+		//		ShellObject = DefPath,
+		//		Header = DefPath.GetDisplayName(SIGDN.NORMALDISPLAY),
+		//		Icon = DefPath.Thumbnail.BitmapSource,
+		//		ToolTip = DefPath.ParsingName,
+		//		AllowDrop = true
+		//	};
 
-		// #region CreateTabbarRKMenu newt.mnu = new ContextMenu();
+		//	newt.DragEnter += new DragEventHandler(newt_DragEnter);
+		//	newt.DragOver += new DragEventHandler(newt_DragOver);
+		//	newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
+		//	newt.Drop += new DragEventHandler(newt_Drop);
 
-		// Action<string, RoutedEventHandler> Worker = (x, y) => { MenuItem Item = new MenuItem();
-		// Item.Header = x; Item.Tag = newt; Item.Click += y; newt.mnu.Items.Add(Item); };
+		//	tcMain.Items.Add(newt);
 
-		// Worker("Close current tab", new RoutedEventHandler(miclosecurrentr_Click)); Worker("Close
-		// all tab", new RoutedEventHandler(miclosealltab_Click)); Worker("Close all other tab", new
-		// RoutedEventHandler(miclosealltabbd_Click)); newt.mnu.Items.Add(new Separator());
-		// Worker("New tab", new RoutedEventHandler(minewtabr_Click)); Worker("Clone tab", new
-		// RoutedEventHandler(miclonecurrentr_Click)); newt.mnu.Items.Add(new Separator());
-
-		// MenuItem miundocloser = new MenuItem(); miundocloser.Header = "Undo close tab";
-		// miundocloser.IsEnabled = btnUndoClose.IsEnabled; miundocloser.Tag = "UCTI";
-		// miundocloser.Click += new RoutedEventHandler(miundocloser_Click); newt.mnu.Items.Add(miundocloser);
-
-		// newt.mnu.Items.Add(new Separator()); Worker("Open in new window", new RoutedEventHandler(miopeninnew_Click));
-
-		// #endregion
-
-		// DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-		// DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-		// newt.PreviewMouseMove += newt_PreviewMouseMove; newt.Header =
-		// DefPath.GetDisplayName(SIGDN.NORMALDISPLAY); newt.TabIcon =
-		// DefPath.Thumbnail.BitmapSource; newt.ShellObject = DefPath; newt.ToolTip =
-		// DefPath.ParsingName; newt.IsNavigate = IsNavigate; newt.Index = tcMain.Items.Count;
-		// newt.AllowDrop = true; newt.log.CurrentLocation = DefPath;
-
-		// newt.CloseTab += new RoutedEventHandler(newt_CloseTab); newt.DragEnter += new
-		// DragEventHandler(newt_DragEnter); newt.DragOver += new DragEventHandler(newt_DragOver);
-		// newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove); newt.Drop += new
-		// DragEventHandler(newt_Drop); newt.TabSelected += newt_TabSelected;
-		// tcMain.Items.Add(newt); LastTabIndex = tcMain.SelectedIndex;
-
-		// tcMain.SelectedIndex = tcMain.Items.Count - 1; tcMain.SelectedItem =
-		// tcMain.Items[tcMain.Items.Count - 1];
-
-		// ConstructMoveToCopyToMenu(); NavigateAfterTabChange();
+		//	ConstructMoveToCopyToMenu();
 
 		//	return newt;
 		//}
 
+		//public Wpf.Controls.TabItem NewTab(string Location, bool IsNavigate = false) {
+		//	return NewTab(new ShellItem(Location), IsNavigate);
+		//}
 
-		#region Tab Closers
+		//[Obsolete("Use tcMain", true)]
+		//public void NewTab() {
+		//	ShellItem DefPath;
+		//	if (tcMain.StartUpLocation.StartsWith("::") && !tcMain.StartUpLocation.Contains(@"\"))
+		//		DefPath = new ShellItem("shell:" + tcMain.StartUpLocation);
+		//	else
+		//		try {
+		//			DefPath = new ShellItem(tcMain.StartUpLocation);
+		//		}
+		//		catch {
+		//			DefPath = (ShellItem)KnownFolders.Libraries;
+		//		}
 
-		private void CloseTab(Wpf.Controls.TabItem thetab, bool allowreopening = true) {
-			if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-				if (this.IsCloseLastTabCloseApp) {
-					Close();
-				}
-				else {
-					ShellListView.Navigate(new ShellItem(this.StartUpLocation));
-				}
+		//	NewTab(DefPath, true);
+		//}
 
-				return;
-			}
+		//public void CloneTab(Wpf.Controls.TabItem CurTab) {
+		//	tcMain.CloneTabItem(CurTab);
+		//	ConstructMoveToCopyToMenu();
+		//}
 
-			tcMain.RemoveTabItem(thetab);
-			ConstructMoveToCopyToMenu();
-
-			if (allowreopening) {
-				reopenabletabs.Add(thetab.log);
-				btnUndoClose.IsEnabled = true;
-				foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
-					foreach (FrameworkElement m in item.mnu.Items) {
-						if (m.Tag != null) {
-							if (m.Tag.ToString() == "UCTI")
-								(m as MenuItem).IsEnabled = true;
-						}
-					}
-				}
-			}
-
-			SelectTab(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem);
-			//'btnTabCloseC.IsEnabled = tcMain.Items.Count > 1;
-			//'there's a bug that has this enabled when there's only one tab open, but why disable it
-			//'if it never crashes the program? Closing the last tab simply closes the program, so I
-			//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
-		}
-		#endregion
-
-
-		#region Tab Changers
-		private void ChangeTab(object sender, ExecutedRoutedEventArgs e) {
-			t.Stop();
-			int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
-			tcMain.SelectedItem = tcMain.Items[selIndex];
-		}
-
-		#endregion
-
-
-		#region Tab Creators
-
-		private Wpf.Controls.TabItem CreateNewTab(ShellItem DefPath, bool IsNavigate) {
-			//TODO: figure out what to do with Cloning a tab!
-			tcMain.SelectNewTabOnCreate = IsNavigate;
-			Wpf.Controls.TabItem newt = new Wpf.Controls.TabItem();
-
-			DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-			DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			newt.ShellObject = DefPath;
-
-			newt.Header = DefPath.GetDisplayName(SIGDN.NORMALDISPLAY);
-			newt.Icon = DefPath.Thumbnail.BitmapSource;
-			newt.ToolTip = DefPath.ParsingName;
-
-			newt.AllowDrop = true;
-
-			newt.DragEnter += new DragEventHandler(newt_DragEnter);
-			newt.DragOver += new DragEventHandler(newt_DragOver);
-			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
-			newt.Drop += new DragEventHandler(newt_Drop);
-
-			tcMain.Items.Add(newt);
-
-			ConstructMoveToCopyToMenu();
-
-			return newt;
-		}
-
-		/// <summary> Re-opens a previously closed tab using that tab's navigation log data. </summary>
-		/// <param name="log"> The navigation log data from the previously closed tab. </param>
-		public void ReOpenTab(NavigationLog log) {
-			var Tab = CreateNewTab(log.CurrentLocation, false);
-			Tab.log.ImportData(log);
-		}
-
-		public void NewTab(bool IsNavigate = true) {
-			ShellItem DefPath;
-			if (StartUpLocation.StartsWith("::") && !StartUpLocation.Contains(@"\"))
-				DefPath = new ShellItem("shell:" + StartUpLocation);
-			else
-				try {
-					DefPath = new ShellItem(StartUpLocation);
-				}
-				catch {
-					DefPath = (ShellItem)KnownFolders.Libraries;
-				}
-
-			CreateNewTab(DefPath, IsNavigate);
-		}
-
-		public void NewTab(ShellItem location, bool IsNavigate = false) {
-			CreateNewTab(location, IsNavigate);
-		}
-
-		public Wpf.Controls.TabItem NewTab(string Location, bool IsNavigate = false) {
-			return CreateNewTab(new ShellItem(Location), IsNavigate);
-		}
-
-		public void CloneTab(Wpf.Controls.TabItem CurTab) {
-			tcMain.CloneTabItem(CurTab);
-			ConstructMoveToCopyToMenu();
-		}
-
-		#endregion
-
-
-		#region OnStartup
+		#endregion Tab Creators
 
 		private void InitializeInitialTabs() {
+			tcMain_Setup(null, null);
+
 			var InitialTabs = Utilities.GetRegistryValue("OpenedTabs", "").ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			if (InitialTabs.Length == 0 || !IsrestoreTabs) {
-				ShellItem sho = new ShellItem(StartUpLocation.ToShellParsingName());
+				var sho = new ShellItem(tcMain.StartUpLocation.ToShellParsingName());
 				if (tcMain.Items.OfType<Wpf.Controls.TabItem>().Count() == 0)
-					NewTab(sho, true);
+					tcMain.NewTab(sho, true);
 				else
 					ShellListView.Navigate(sho);
 			}
@@ -201,7 +94,7 @@ namespace BetterExplorer {
 							continue;
 						}
 
-						NewTab(str.ToShellParsingName(), i == InitialTabs.Length);
+						tcMain.NewTab(str.ToShellParsingName(), i == InitialTabs.Length);
 						if (i == InitialTabs.Count()) {
 							ShellItem sho = new ShellItem(str.ToShellParsingName());
 							ShellListView.Navigate(sho);
@@ -216,12 +109,12 @@ namespace BetterExplorer {
 				}
 
 				if (tcMain.Items.Count == 0) {
-					NewTab();
+					tcMain.NewTab();
 
-					if (StartUpLocation.StartsWith("::"))
-						ShellListView.Navigate(new ShellItem(StartUpLocation.ToShellParsingName()));
+					if (tcMain.StartUpLocation.StartsWith("::"))
+						ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation.ToShellParsingName()));
 					else
-						ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
+						ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation.Replace("\"", "")));
 
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
@@ -237,7 +130,41 @@ namespace BetterExplorer {
 			//ShellVView.Visibility = System.Windows.Visibility.Hidden;
 		}
 
-		#endregion
+		private void CloseTab(Wpf.Controls.TabItem thetab, bool allowreopening = true) {
+			if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
+				if (this.IsCloseLastTabCloseApp) {
+					Close();
+				}
+				else {
+					ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation));
+				}
+
+				return;
+			}
+
+			tcMain.RemoveTabItem(thetab);
+			ConstructMoveToCopyToMenu();
+
+			if (allowreopening) {
+				tcMain.reopenabletabs.Add(thetab.log);
+				btnUndoClose.IsEnabled = true;
+				foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
+					foreach (FrameworkElement m in item.mnu.Items) {
+						if (m.Tag != null) {
+							if (m.Tag.ToString() == "UCTI")
+								(m as MenuItem).IsEnabled = true;
+						}
+					}
+				}
+			}
+
+			SelectTab(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem);
+			//'btnTabCloseC.IsEnabled = tcMain.Items.Count > 1;
+			//'there's a bug that has this enabled when there's only one tab open, but why disable it
+			//'if it never crashes the program? Closing the last tab simply closes the program, so I
+			//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
+		}
+
 		private void ConstructMoveToCopyToMenu() {
 			//TODO: Find the parts that will cause the errors and put the try catch around them ONLY or fix the issue!!!
 
@@ -358,9 +285,9 @@ namespace BetterExplorer {
 			btnCopyto.Items.Add(OtherLocationCopy);
 		}
 
+		[Obsolete("Remove this or move it into TabControls!!!!!!!!!!!")]
+		private System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
 
-
-		System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
 		private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			if (e.RemovedItems.Count > 0) {
 				var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
@@ -379,7 +306,7 @@ namespace BetterExplorer {
 		private void SelectTab(Wpf.Controls.TabItem Tab) {
 			if (Tab == null) return;
 			try {
-				isGoingBackOrForward = Tab.log.HistoryItemsList.Count != 0;
+				tcMain.isGoingBackOrForward = Tab.log.HistoryItemsList.Count != 0;
 				//BeforeLastTabIndex = LastTabIndex;
 				if (Tab.ShellObject != ShellListView.CurrentFolder) {
 					if (!Keyboard.IsKeyDown(Key.Tab)) {
@@ -397,7 +324,16 @@ namespace BetterExplorer {
 			}
 		}
 
+		public List<string> LoadListOfTabListFiles() {
+			var o = new List<string>();
+
+			if (System.IO.Directory.Exists(sstdir)) {
+				foreach (string item in System.IO.Directory.GetFiles(sstdir)) {
+					ShellItem obj = new ShellItem(item);
+					o.Add(Utilities.RemoveExtensionsFromFile(obj.GetDisplayName(SIGDN.NORMALDISPLAY), Utilities.GetExtension(item)));
+				}
+			}
+			return o;
+		}
 	}
 }
-
-

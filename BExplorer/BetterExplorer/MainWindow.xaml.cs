@@ -113,7 +113,7 @@ namespace BetterExplorer {
 		ContextMenu cmHistory = new ContextMenu();
 		//private int LastTabIndex = -1;
 		//private int BeforeLastTabIndex = -1;
-		string StartUpLocation = KnownFolders.Libraries.ParsingName;
+
 
 
 		public bool isOnLoad;
@@ -141,7 +141,7 @@ namespace BetterExplorer {
 		string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
 		string naddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\NetworkAccounts\\";
 		string sstdir;
-		List<NavigationLog> reopenabletabs = new List<NavigationLog>();
+
 		bool OverwriteOnRotate = false;
 		NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
@@ -159,6 +159,9 @@ namespace BetterExplorer {
 		ContextMenu chcm;
 
 		MessageReceiver r;
+
+		//[Obsolete("Use StartUpLocation from inside tcMain", true)]
+		//string StartUpLocation = KnownFolders.Libraries.ParsingName;
 
 		#endregion
 
@@ -2114,7 +2117,7 @@ namespace BetterExplorer {
 			this.ShellListView.KeyJumpTimerDone += ShellListView_KeyJumpTimerDone;
 			this.ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
 			this.ShellListView.Navigating += ShellListView_Navigating;
-			this.ShellListView.ItemMiddleClick += (sender, e) => NewTab(e.Folder);
+			this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 		}
 
 
@@ -2143,7 +2146,7 @@ namespace BetterExplorer {
 		void ShellTree_NodeClick(object sender, System.Windows.Forms.TreeNodeMouseClickEventArgs e) {
 			if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
 				if (e.Node != null && e.Node.Tag != null)
-					NewTab(e.Node.Tag as ShellItem);
+					tcMain.NewTab(e.Node.Tag as ShellItem, false);
 			}
 		}
 
@@ -2373,11 +2376,10 @@ namespace BetterExplorer {
 			txtDefSaveTabs.Text = tdir;
 			sstdir = tdir;
 
-			StartUpLocation = rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
-
-			if (StartUpLocation == "") {
-				rks.SetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName);
-				StartUpLocation = KnownFolders.Libraries.ParsingName;
+			var StartUpLocation = rks.GetValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+			if (tcMain.StartUpLocation == "") {
+				rks.SetValue("StartUpLoc", KnownFolders.Libraries.ParsingName);
+				tcMain.StartUpLocation = KnownFolders.Libraries.ParsingName;
 			}
 
 			try {
@@ -2402,6 +2404,10 @@ namespace BetterExplorer {
 
 			rks.Close();
 			rk.Close();
+
+
+
+
 			ShellItem sho = new ShellItem(StartUpLocation.ToShellParsingName());
 			btnSetCurrentasStartup.Header = sho.DisplayName;
 			sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
@@ -2568,7 +2574,6 @@ namespace BetterExplorer {
 				chcm = new ContextMenu();
 				chcm.Placement = PlacementMode.MousePoint;
 
-				tcMain.DefaultTabPath = this.StartUpLocation.ToShellParsingName();
 				//Set up Version Info
 				verNumber.Content = "Version " + (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
 				lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
@@ -2578,7 +2583,7 @@ namespace BetterExplorer {
 					String cmd = Application.Current.Properties["cmd"].ToString();
 
 					if (cmd == "/nw")
-						NewTab(ShellListView.CurrentFolder, true);
+						tcMain.NewTab(ShellListView.CurrentFolder, true);
 				}
 				else {
 					InitializeInitialTabs();
@@ -2914,13 +2919,13 @@ namespace BetterExplorer {
 
 			//(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).Path = ShellListView.CurrentFolder;
 
-			if (!isGoingBackOrForward) {
+			if (!tcMain.isGoingBackOrForward) {
 				var Current = (tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
 				if (Current.ForwardEntries.Count() > 1) Current.ClearForwardItems();
 				Current.CurrentLocation = ShellListView.CurrentFolder;
 			}
 
-			isGoingBackOrForward = false;
+			tcMain.isGoingBackOrForward = false;
 		}
 
 		#endregion
@@ -3031,7 +3036,7 @@ namespace BetterExplorer {
 
 		private void ExtractionHasCompleted(object sender, ArchiveEventArgs e) {
 			if (chkOpenResults.IsChecked == true) {
-				NewTab(e.OutputLocation);
+				tcMain.NewTab(e.OutputLocation);
 			}
 		}
 
@@ -3249,12 +3254,12 @@ namespace BetterExplorer {
 		#region Navigation (Back/Forward Arrows) and Up Button
 
 		private void leftNavBut_Click(object sender, RoutedEventArgs e) {
-			isGoingBackOrForward = true;
+			tcMain.isGoingBackOrForward = true;
 			ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack());
 		}
 
 		private void rightNavBut_Click(object sender, RoutedEventArgs e) {
-			isGoingBackOrForward = true;
+			tcMain.isGoingBackOrForward = true;
 			ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateForward());
 		}
 
@@ -3287,7 +3292,7 @@ namespace BetterExplorer {
 		void miItems_Click(object sender, RoutedEventArgs e) {
 			ShellItem item = (ShellItem)(sender as MenuItem).Tag;
 			if (item != null) {
-				isGoingBackOrForward = true;
+				tcMain.isGoingBackOrForward = true;
 				NavigationLog nl = (tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
 				(sender as MenuItem).IsChecked = true;
 				nl.CurrentLocPos = cmHistory.Items.IndexOf((sender as MenuItem));
@@ -3880,7 +3885,7 @@ namespace BetterExplorer {
 		private void btnSetCurrentasStartup_Click(object sender, RoutedEventArgs e) {
 			backstage.IsOpen = true;
 			string CurrentLocString = ShellListView.CurrentFolder.ParsingName;
-			StartUpLocation = CurrentLocString;
+			tcMain.StartUpLocation = CurrentLocString;
 			btnSetCurrentasStartup.Header = ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY);
 			btnSetCurrentasStartup.Icon = ShellListView.CurrentFolder.Thumbnail.BitmapSource;
 
@@ -4099,7 +4104,7 @@ namespace BetterExplorer {
 		private void btnShowLogs_Click(object sender, RoutedEventArgs e) {
 			try {
 				if (!Directory.Exists(logdir)) Directory.CreateDirectory(logdir);
-				NewTab(logdir);
+				tcMain.NewTab(logdir);
 				this.backstage.IsOpen = false;
 			}
 			catch (Exception exe) {
@@ -4639,25 +4644,41 @@ namespace BetterExplorer {
 		}
 
 		private void btnNewTab_Click(object sender, RoutedEventArgs e) {
-			NewTab();
+			tcMain.NewTab();
 		}
 
 		private void btnTabClone_Click(object sender, RoutedEventArgs e) {
-			CloneTab(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem);
+			tcMain.CloneTabItem(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem);
 		}
 
 		private void btnTabCloseC_Click(object sender, RoutedEventArgs e) {
 			CloseTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
 		}
 
-		private void ERNewTab(object sender, ExecutedRoutedEventArgs e) {
-			NewTab();
-		}
-
 		void newt_CloseTab(object sender, RoutedEventArgs e) {
 			CloseTab(e.Source as Wpf.Controls.TabItem);
 		}
 
+		private void btnUndoClose_Click(object sender, RoutedEventArgs e) {
+			tcMain.ReOpenTab(tcMain.reopenabletabs[tcMain.reopenabletabs.Count - 1]);
+			//reopenabletabs.RemoveAt(reopenabletabs.Count - 1);
+			btnUndoClose.IsEnabled = tcMain.reopenabletabs.Count != 0;
+		}
+
+		void gli_Click(object sender, NavigationLogEventArgs e) {
+			tcMain.ReOpenTab(e.NavigationLog);
+			//reopenabletabs.Remove((sender as UndoCloseGalleryItem).nav);
+			btnUndoClose.IsEnabled = tcMain.reopenabletabs.Count != 0;
+		}
+
+		void gli_Click(object sender, PathStringEventArgs e) {
+			var list = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", sstdir, e.PathString));
+			for (int i = 0; i < list.Count; i++) {
+				var tabitem = tcMain.NewTab(list[i].ToShellParsingName());
+				if (i == list.Count - 1)
+					tcMain.SelectedItem = tabitem;
+			}
+		}
 
 
 
@@ -4670,24 +4691,20 @@ namespace BetterExplorer {
 
 		private void tcMain_MouseUp(object sender, MouseButtonEventArgs e) {
 			if (e.ChangedButton == MouseButton.Middle) {
-				CloneTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
+				tcMain.CloneTabItem(tcMain.SelectedItem as Wpf.Controls.TabItem);
 			}
 		}
 
-		private void RCloseTab(object sender, ExecutedRoutedEventArgs e) {
-			if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-				Close();
-				return;
-			}
+		//private void RCloseTab(object sender, ExecutedRoutedEventArgs e) {
+		//	if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
+		//		Close();
+		//		return;
+		//	}
 
-			int CurSelIndex = tcMain.SelectedIndex;
-			tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
-			tcMain.Items.RemoveAt(CurSelIndex);
-		}
-
-		private void ERGoToBCCombo(object sender, ExecutedRoutedEventArgs e) {
-			breadcrumbBarControl1.EnterEditMode();
-		}
+		//	int CurSelIndex = tcMain.SelectedIndex;
+		//	tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
+		//	tcMain.Items.RemoveAt(CurSelIndex);
+		//}
 
 		private void GoToSearchBox(object sender, ExecutedRoutedEventArgs e) {
 			edtSearchBox.Focus();
@@ -4852,23 +4869,23 @@ namespace BetterExplorer {
 			//DependencyObject elementToFind = null;
 			if (hitTestList.Count() > 0) {
 				if (hitTestList[0].GetType().Name.Equals("ScrollViewer") && hitTestList.Count == 2) {
-					NewTab();
-					if (StartUpLocation.StartsWith("::")) {
-						ShellListView.Navigate(new ShellItem("shell:" + StartUpLocation));
+					tcMain.NewTab();
+					if (tcMain.StartUpLocation.StartsWith("::")) {
+						ShellListView.Navigate(new ShellItem("shell:" + tcMain.StartUpLocation));
 					}
 					else {
-						ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
+						ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation.Replace("\"", "")));
 					}
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
 				}
 				else if (hitTestList.Count == 3) {
 					if (hitTestList[2].GetType().Name == "Grid") {
-						NewTab();
-						if (StartUpLocation.StartsWith("::")) {
-							ShellListView.Navigate(new ShellItem("shell:" + StartUpLocation));
+						tcMain.NewTab();
+						if (tcMain.StartUpLocation.StartsWith("::")) {
+							ShellListView.Navigate(new ShellItem("shell:" + tcMain.StartUpLocation));
 						}
 						else {
-							ShellListView.Navigate(new ShellItem(StartUpLocation.Replace("\"", "")));
+							ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation.Replace("\"", "")));
 						}
 
 						(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
@@ -4882,17 +4899,6 @@ namespace BetterExplorer {
 
 		#region Tab Controls
 
-		public List<string> LoadListOfTabListFiles() {
-			List<string> o = new List<string>();
-
-			if (Directory.Exists(sstdir)) {
-				foreach (string item in Directory.GetFiles(sstdir)) {
-					ShellItem obj = new ShellItem(item);
-					o.Add(Utilities.RemoveExtensionsFromFile(obj.GetDisplayName(SIGDN.NORMALDISPLAY), Utilities.GetExtension(item)));
-				}
-			}
-			return o;
-		}
 
 		private void FolderTabs_Placement(object sender, RoutedEventArgs e) {
 			if (sender == TabbaTop) {
@@ -4938,16 +4944,8 @@ namespace BetterExplorer {
 			//}
 		}
 
-		private void btnUndoClose_Click(object sender, RoutedEventArgs e) {
-			ReOpenTab(reopenabletabs[reopenabletabs.Count - 1]);
-			reopenabletabs.RemoveAt(reopenabletabs.Count - 1);
-			if (reopenabletabs.Count == 0) {
-				btnUndoClose.IsEnabled = false;
-			}
-		}
-
 		private void miClearUndoList_Click(object sender, RoutedEventArgs e) {
-			reopenabletabs.Clear();
+			tcMain.reopenabletabs.Clear();
 			btnUndoClose.IsDropDownOpen = false;
 			btnUndoClose.IsEnabled = false;
 			foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
@@ -4960,19 +4958,11 @@ namespace BetterExplorer {
 
 		private void btnUndoClose_DropDownOpened(object sender, EventArgs e) {
 			rotGallery.Items.Clear();
-			foreach (NavigationLog item in reopenabletabs) {
+			foreach (NavigationLog item in tcMain.reopenabletabs) {
 				UndoCloseGalleryItem gli = new UndoCloseGalleryItem();
 				gli.LoadData(item);
 				gli.Click += gli_Click;
 				rotGallery.Items.Add(gli);
-			}
-		}
-
-		void gli_Click(object sender, NavigationLogEventArgs e) {
-			this.ReOpenTab(e.NavigationLog);
-			reopenabletabs.Remove((sender as UndoCloseGalleryItem).nav);
-			if (reopenabletabs.Count == 0) {
-				btnUndoClose.IsEnabled = false;
 			}
 		}
 
@@ -5021,7 +5011,7 @@ namespace BetterExplorer {
 						}
 
 						if (!isarchive) {
-							NewTab(itemPath);
+							tcMain.NewTab(itemPath);
 						}
 						else {
 							MessageBox.Show("We see this is an archive. However, we're not able to open archives here. Try clicking on it and extracting it.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -5058,14 +5048,8 @@ namespace BetterExplorer {
 			}
 		}
 
-		void gli_Click(object sender, PathStringEventArgs e) {
-			var list = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", sstdir, e.PathString));
-			for (int i = 0; i < list.Count; i++) {
-				var tabitem = NewTab(list[i].ToShellParsingName());
-				if (i == list.Count - 1)
-					tcMain.SelectedItem = tabitem;
-			}
-		}
+
+
 
 		private void miTabManager_Click(object sender, RoutedEventArgs e) {
 			string sstdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
@@ -5418,14 +5402,6 @@ namespace BetterExplorer {
 		public MainWindow() {
 			TaskbarManager.Instance.ApplicationId = "{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}";
 
-			CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, ERNewTab);
-			this.CommandBindings.Add(cbnewtab);
-			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, ERGoToBCCombo);
-			this.CommandBindings.Add(cbGotoCombo);
-			CommandBinding cbCloseTab = new CommandBinding(AppCommands.RoutedCloseTab, RCloseTab);
-			this.CommandBindings.Add(cbCloseTab);
-			CommandBinding cbChangeTab = new CommandBinding(AppCommands.RoutedChangeTab, ChangeTab);
-			this.CommandBindings.Add(cbChangeTab);
 			CommandBinding cbNavigateBack = new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click);
 			this.CommandBindings.Add(cbNavigateBack);
 			CommandBinding cbNavigateFF = new CommandBinding(AppCommands.RoutedNavigateFF, rightNavBut_Click);
@@ -5434,6 +5410,36 @@ namespace BetterExplorer {
 			this.CommandBindings.Add(cbNavigateUp);
 			CommandBinding cbGoToSearchBox = new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox);
 			this.CommandBindings.Add(cbGoToSearchBox);
+
+
+
+			CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, (sender, e) =>
+				tcMain.NewTab()
+				);
+			this.CommandBindings.Add(cbnewtab);
+			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => breadcrumbBarControl1.EnterEditMode());
+			this.CommandBindings.Add(cbGotoCombo);
+
+			CommandBinding cbChangeTab = new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {
+				t.Stop();
+				int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
+				tcMain.SelectedItem = tcMain.Items[selIndex];
+			});
+			this.CommandBindings.Add(cbChangeTab);
+
+			CommandBinding cbCloseTab = new CommandBinding(AppCommands.RoutedCloseTab, (sender, e) => {
+				if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
+					Close();
+					return;
+				}
+
+				int CurSelIndex = tcMain.SelectedIndex;
+				tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
+				tcMain.Items.RemoveAt(CurSelIndex);
+			});
+
+			this.CommandBindings.Add(cbCloseTab);
+
 
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
@@ -5834,6 +5840,23 @@ namespace BetterExplorer {
 			var Item1 = TheRibbon.QuickAccessToolbarItems;
 			var Item2 = TheRibbon.QuickAccessItems;
 
+		}
+
+
+		private void tcMain_Setup(object sender, RoutedEventArgs e) {
+			tcMain.newt_DragEnter = newt_DragEnter;
+			tcMain.newt_DragOver = newt_DragOver;
+			tcMain.newt_Drop = newt_Drop;
+			tcMain.newt_PreviewMouseMove = newt_PreviewMouseMove;
+			tcMain.ConstructMoveToCopyToMenu += ConstructMoveToCopyToMenu;
+			tcMain.DefaultTabPath = tcMain.StartUpLocation.ToShellParsingName();
+
+
+			tcMain.StartUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+			if (tcMain.StartUpLocation == "") {
+				Utilities.SetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName);
+				tcMain.StartUpLocation = KnownFolders.Libraries.ParsingName;
+			}
 		}
 
 	}

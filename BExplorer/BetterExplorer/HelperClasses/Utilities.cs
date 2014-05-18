@@ -8,6 +8,13 @@ using Microsoft.Win32;
 namespace BetterExplorer {
 	static class Utilities {
 
+		static Utilities() {
+			RegistryKey rk = Registry.CurrentUser;
+			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+			if (rks == null)
+				rks = rk.CreateSubKey(@"Software\BExplorer");
+		}
+
 		public static string RemoveExtensionsFromFile(string file, string ext) {
 			return file.EndsWith(ext) ? file.Remove(file.LastIndexOf(ext), ext.Length) : file;
 		}
