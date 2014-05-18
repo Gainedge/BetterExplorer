@@ -23,7 +23,14 @@ namespace BetterExplorer {
 			};
 
 			if (item.Icon != null) {
-				rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
+				if (item.Icon is String)
+				{
+					rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
+				}
+				else
+				{
+					rils.Icon = (item.Icon as Image).Source;
+				}
 			}
 
 			if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery) {
@@ -42,15 +49,18 @@ namespace BetterExplorer {
 			}
 
 			var AllMenuItems = MainForm.TheRibbon.QuickAccessItems.Select(x => x.Target).ToList();
+			var visibleElements = MainForm.TheRibbon.QuickAccessToolbarItems.Select(s => s.Key as Control).ToList();
 			var Controls = (from control in MainForm.TheRibbon.QuickAccessToolbarItems
 							select control.Key as Control into newControl
 							where !AllMenuItems.Any(x => x.Name == newControl.Name)
 							select newControl).ToList();
 
 			AllMenuItems.AddRange(Controls);
-
-			foreach (var item in AllMenuItems) {
-				QATControls.Items.Add(GetRibbonItemListDisplay(item as IRibbonControl));
+			//Here add visible elements since we want to show in that dialog only visible elements into the QAT.
+			//Maybe have to find a way to show all elemnts even not visible and do some handling to display them properly
+			foreach (var item in visibleElements)
+			{
+					QATControls.Items.Add(GetRibbonItemListDisplay(item as IRibbonControl));
 			}
 		}
 
