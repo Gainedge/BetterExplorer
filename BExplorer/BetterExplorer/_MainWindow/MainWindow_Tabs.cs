@@ -11,8 +11,7 @@ using MenuItem = Fluent.MenuItem;
 
 namespace BetterExplorer {
 
-	//TODO: Fix Folder History/Navigation issue on new tabs
-	//TODO: Fix Context Menu Item [Open in new window]
+	//TODO: Find a way to move CloseTab(...) into TabControl
 	partial class MainWindow {
 
 		#region Tab Creators

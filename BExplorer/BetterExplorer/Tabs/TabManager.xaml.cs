@@ -19,54 +19,23 @@ namespace BetterExplorer.Tabs {
 	/// Interaction logic for TabManager.xaml
 	/// </summary>
 	public partial class TabManager : Window {
+		public MainWindow MainForm;
 		string selfile, sstdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
 
 		public TabManager() {
 			InitializeComponent();
 		}
 
-		public MainWindow MainForm;
-
 		private string GetDefaultLocation() {
 			return Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
-
-			//RegistryKey rk = Registry.CurrentUser;
-			//RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
-			//string df = rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
-			//rk.Close();
-			//rks.Close();
-			//return df;
 		}
 
 		private string GetSavedTabsLocation() {
 			return Utilities.GetRegistryValue("SavedTabsDirectory", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\").ToString();
-
-
-			//RegistryKey rk = Registry.CurrentUser;
-			//RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
-			//string df = rks.GetValue(@"SavedTabsDirectory", Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\").ToString();
-			//rk.Close();
-			//rks.Close();
-			//return df;
 		}
 
-		//private string GetExtension(string file) {
-		//	return file.Substring(file.LastIndexOf("."));
-		//}
-
-		//private string RemoveExtensionsFromFile(string file, string ext) {
-		//	if (file.EndsWith(ext)) {
-		//		return file.Remove(file.LastIndexOf(ext), ext.Length);
-		//	}
-		//	else {
-		//		return file;
-		//	}
-		//}
-
-
-
 		public List<string> LoadListOfTabListFiles() {
-			List<string> o = new List<string>();
+			var o = new List<string>();
 			foreach (string item in Directory.GetFiles(GetSavedTabsLocation())) {
 				ShellObject obj = ShellObject.FromParsingName(item);
 				o.Add(Utilities.RemoveExtensionsFromFile(obj.GetDisplayName(DisplayNameType.Default), Utilities.GetExtension(item)));
@@ -81,7 +50,7 @@ namespace BetterExplorer.Tabs {
 		private void RefreshList() {
 			stackPanel1.Children.Clear();
 			foreach (string item in LoadListOfTabListFiles()) {
-				SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item);
+				var gli = new SavedTabsListGalleryItem(item);
 				gli.Click += new SavedTabsListGalleryItem.PathStringEventHandler(gli_Click);
 				stackPanel1.Children.Add(gli);
 			}
@@ -90,16 +59,9 @@ namespace BetterExplorer.Tabs {
 		private void RefreshListAndLoad(string loc) {
 			stackPanel1.Children.Clear();
 			foreach (string item in LoadListOfTabListFiles()) {
-				if (item == loc) {
-					SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item, true);
-					gli.Click += new SavedTabsListGalleryItem.PathStringEventHandler(gli_Click);
-					stackPanel1.Children.Add(gli);
-				}
-				else {
-					SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item, false);
-					gli.Click += new SavedTabsListGalleryItem.PathStringEventHandler(gli_Click);
-					stackPanel1.Children.Add(gli);
-				}
+				var gli = new SavedTabsListGalleryItem(item, item == loc);
+				gli.Click += new SavedTabsListGalleryItem.PathStringEventHandler(gli_Click);
+				stackPanel1.Children.Add(gli);
 			}
 		}
 
@@ -111,8 +73,6 @@ namespace BetterExplorer.Tabs {
 			(sender as SavedTabsListGalleryItem).SetSelected();
 			tabListEditor1.ImportSavedTabList(SavedTabsList.LoadTabList(GetSavedTabsLocation() + e.PathString + ".txt"));
 			selfile = GetSavedTabsLocation() + e.PathString + ".txt";
-			//MessageBox.Show(sstdir + e.PathString + ".txt");
-			//throw new NotImplementedException();
 		}
 
 		private void button3_Click(object sender, RoutedEventArgs e) {
@@ -125,9 +85,6 @@ namespace BetterExplorer.Tabs {
 		}
 
 		private void button4_Click(object sender, RoutedEventArgs e) {
-			//NameTabList o = new NameTabList();
-			//			o.Owner = this;
-			//o.ShowDialog();
 			var Entered_Name = NameTabList.Open(this);
 			if (Entered_Name != null) {
 				SavedTabsList.SaveTabList(SavedTabsList.CreateFromString(GetDefaultLocation()), GetSavedTabsLocation() + Entered_Name + ".txt");
@@ -136,10 +93,6 @@ namespace BetterExplorer.Tabs {
 		}
 
 		private void button7_Click(object sender, RoutedEventArgs e) {
-			//NameTabList o = new NameTabList();
-			//o.Owner = this;
-			//o.ShowDialog();
-
 			var Entered_Name = NameTabList.Open(this);
 			if (Entered_Name != null) {
 				SavedTabsList.SaveTabList(tabListEditor1.ExportSavedTabList(), GetSavedTabsLocation() + Entered_Name + ".txt");

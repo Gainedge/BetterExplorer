@@ -29,6 +29,10 @@ namespace Wpf.Controls {
 
 		public bool isGoingBackOrForward;
 
+		private List<string> Archives = new List<string>(new string[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
+		private List<string> Images = new List<string>(new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
+		private List<string> VirDisks = new List<string>(new string[] { ".iso", ".bin", ".vhd" });
+
 		#region Properties/Locals
 
 		// TemplatePart controls
@@ -59,7 +63,7 @@ namespace Wpf.Controls {
 
 		#endregion Events
 
-		#region Dependancy properties
+		#region Dependency properties
 
 		public bool IsUsingItemsSource {
 			get { return (bool)GetValue(IsUsingItemsSourceProperty); }
@@ -344,7 +348,7 @@ namespace Wpf.Controls {
 			}
 		}
 
-		#endregion Dependancy properties
+		#endregion Dependency properties
 
 		#region Tab Stuff
 
@@ -399,7 +403,6 @@ namespace Wpf.Controls {
 			Tab.log.ImportData(log);
 			reopenabletabs.Remove(log);
 		}
-
 
 		/*
 		/// <summary>
@@ -463,6 +466,7 @@ namespace Wpf.Controls {
 				TabItemAdded(this, new TabItemEventArgs(tabItem));
 		}
 		*/
+
 		/// <summary>
 		/// Called by a child Header that wants to remove itself by clicking on the close button
 		/// </summary>
@@ -510,8 +514,6 @@ namespace Wpf.Controls {
 
 			ConstructMoveToCopyToMenu();
 		}
-
-
 
 		#endregion Tab Stuff
 
@@ -823,5 +825,6 @@ namespace Wpf.Controls {
 					yield return this.ItemContainerGenerator.ContainerFromItem(enumerator.Current) as TabItem;
 			}
 		}
+
 	}
 }

@@ -55,6 +55,7 @@ namespace BetterExplorer {
 	/// </summary>
 	public partial class MainWindow : RibbonWindow {
 
+
 		#region DLLImports
 
 		#region Cursor
@@ -101,11 +102,11 @@ namespace BetterExplorer {
 		ShellView ShellListView = new ShellView();
 
 
+		public bool IsrestoreTabs;
 		bool IsHFlyoutEnabled;
 		bool isCheckModeEnabled;
 		bool IsExtendedFileOpEnabled;
 		bool IsCloseLastTabCloseApp;
-		public bool IsrestoreTabs;
 		bool IsUpdateCheck;
 		bool IsUpdateCheckStartup;
 
@@ -1186,8 +1187,6 @@ namespace BetterExplorer {
 
 		}
 
-
-
 		private List<ShellItem> DateFilter(List<ShellItem> shells, ConditionalSelectParameters.DateParameters filter, Func<FileInfo, DateTime> GetDate) {
 			var outshells = new List<ShellItem>();
 
@@ -1212,8 +1211,6 @@ namespace BetterExplorer {
 
 			return outshells;
 		}
-
-
 
 		/*
 		public List<ShellItem> FilterByCreateDate(ShellItem[] shells, DateTime datetocompare, ConditionalSelectParameters.DateFilterTypes filter) {
@@ -4857,48 +4854,11 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void tcMain_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-			string h = sender.GetType().Name.ToString();
-			hitTestList = new List<DependencyObject>();
-			System.Windows.Point pt = e.GetPosition(sender as IInputElement);
 
-			VisualTreeHelper.HitTest(sender as Visual, null, CollectAllVisuals_Callback, new PointHitTestParameters(pt));
-
-			hitTestList.Reverse();
-
-			//DependencyObject elementToFind = null;
-			if (hitTestList.Count() > 0) {
-				if (hitTestList[0].GetType().Name.Equals("ScrollViewer") && hitTestList.Count == 2) {
-					tcMain.NewTab();
-					if (tcMain.StartUpLocation.StartsWith("::")) {
-						ShellListView.Navigate(new ShellItem("shell:" + tcMain.StartUpLocation));
-					}
-					else {
-						ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation.Replace("\"", "")));
-					}
-					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
-				}
-				else if (hitTestList.Count == 3) {
-					if (hitTestList[2].GetType().Name == "Grid") {
-						tcMain.NewTab();
-						if (tcMain.StartUpLocation.StartsWith("::")) {
-							ShellListView.Navigate(new ShellItem("shell:" + tcMain.StartUpLocation));
-						}
-						else {
-							ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation.Replace("\"", "")));
-						}
-
-						(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
-					}
-				}
-			}
-
-		}
 
 		#endregion
 
 		#region Tab Controls
-
 
 		private void FolderTabs_Placement(object sender, RoutedEventArgs e) {
 			if (sender == TabbaTop) {
@@ -4985,50 +4945,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void tcMain_Drop(object sender, DragEventArgs e) {
-			if (e.Data.GetDataPresent(DataFormats.FileDrop)) {
-				//MessageBox.Show("Dropped here!");
-				String[] collection = (String[])e.Data.GetData(DataFormats.FileDrop);
-				foreach (string item in collection) {
-					ShellItem obj = new ShellItem(item);
-					if ((obj.IsFolder || obj.IsLink) && obj.IsFileSystem) {
-						bool isarchive = false;
-						string itemPath = String.Empty;
-						if (obj.IsLink) {
-							using (ShellLink link = new ShellLink(item)) {
-								itemPath = link.Target;
-								ShellItem linkobj = new ShellItem(link.Target);
-								if (!(linkobj.IsFolder && obj.IsFileSystem))
-									MessageBox.Show("Hey... this isn't a folder! We can't make a new tab out of this file.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
-							}
-						}
-						else {
-							itemPath = item;
-						}
-
-						foreach (string item2 in Archives) {
-							if (itemPath.Contains(item2)) isarchive = true;
-						}
-
-						if (!isarchive) {
-							tcMain.NewTab(itemPath);
-						}
-						else {
-							MessageBox.Show("We see this is an archive. However, we're not able to open archives here. Try clicking on it and extracting it.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
-						}
-					}
-					else {
-						MessageBox.Show("Hey... this isn't a folder! We can't make a new tab out of this file.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Information);
-					}
-				}
-			}
-			else {
-				if (!e.Data.GetDataPresent(typeof(Wpf.Controls.TabItem))) {
-					MessageBox.Show("It appears that you tried to drag something to the blank area of the tab bar, and that something was not a folder. Drag a folder here to open it in a new tab.", "Attempt Failed", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-				}
-			}
-		}
-
 		private void stGallery_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			try {
 				(e.AddedItems[0] as SavedTabsListGalleryItem).PerformClickEvent();
@@ -5047,8 +4963,6 @@ namespace BetterExplorer {
 				stGallery.Items.Add(gli);
 			}
 		}
-
-
 
 
 		private void miTabManager_Click(object sender, RoutedEventArgs e) {
