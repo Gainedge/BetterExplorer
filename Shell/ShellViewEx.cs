@@ -3104,6 +3104,7 @@ namespace BExplorer.Shell {
 			//dest.Dispose();
 			this.OnNavigated(new NavigatedEventArgs(destination));
 			IsDoubleNavFinished = false;
+			this.Focus();
 		}
 
 		public void DisableGroups() {

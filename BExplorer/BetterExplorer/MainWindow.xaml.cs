@@ -4234,9 +4234,8 @@ namespace BetterExplorer {
 
 		private void RibbonWindow_GotFocus(object sender, RoutedEventArgs e) {
 			breadcrumbBarControl1.ExitEditMode_IfNeeded();
-
-			//if (!backstage.IsOpen)
-			//    ShellListView.SetExplorerFocus();
+			if (!backstage.IsOpen)
+			    ShellListView.Focus();
 		}
 
 		private void SaveHistoryToFile(string relativepath, List<String> history) {
@@ -5771,6 +5770,11 @@ namespace BetterExplorer {
 				Utilities.SetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName);
 				tcMain.StartUpLocation = KnownFolders.Libraries.ParsingName;
 			}
+		}
+
+		private void RibbonWindow_Activated(object sender, EventArgs e)
+		{
+			this.ShellListView.Focus();
 		}
 
 	}

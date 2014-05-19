@@ -365,7 +365,8 @@ namespace BExplorer.Shell {
 		}
 
 		public IExtractIconpwFlags GetIconType() {
-			if (this.ParsingName.ToLowerInvariant().EndsWith(".lnk"))
+			var parsingName = this.ParsingName.ToLowerInvariant();
+			if (parsingName.EndsWith(".lnk") || parsingName.EndsWith(".htm") || parsingName.EndsWith(".html"))
 				return IExtractIconpwFlags.GIL_PERINSTANCE | IExtractIconpwFlags.GIL_FORCENOSHIELD;
 			IExtractIcon iextract = null;
 			IShellFolder ishellfolder = null;
