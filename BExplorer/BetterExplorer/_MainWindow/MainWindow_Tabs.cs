@@ -14,59 +14,40 @@ namespace BetterExplorer {
 	//TODO: Find a way to move CloseTab(...) into TabControl
 	partial class MainWindow {
 
-		#region Tab Creators
+		private void CloseTab(Wpf.Controls.TabItem thetab, bool allowreopening = true) {
+			if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
+				if (this.IsCloseLastTabCloseApp) {
+					Close();
+				}
+				else {
+					ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation));
+				}
 
-		//public Wpf.Controls.TabItem NewTab(ShellItem DefPath, bool IsNavigate) {
-		//	//TODO: figure out what to do with Cloning a tab!
-		//	DefPath.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-		//	DefPath.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-		//	tcMain.SelectNewTabOnCreate = IsNavigate;
-		//	var newt = new Wpf.Controls.TabItem() {
-		//		ShellObject = DefPath,
-		//		Header = DefPath.GetDisplayName(SIGDN.NORMALDISPLAY),
-		//		Icon = DefPath.Thumbnail.BitmapSource,
-		//		ToolTip = DefPath.ParsingName,
-		//		AllowDrop = true
-		//	};
+				return;
+			}
 
-		//	newt.DragEnter += new DragEventHandler(newt_DragEnter);
-		//	newt.DragOver += new DragEventHandler(newt_DragOver);
-		//	newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
-		//	newt.Drop += new DragEventHandler(newt_Drop);
+			tcMain.RemoveTabItem(thetab);
+			ConstructMoveToCopyToMenu();
 
-		//	tcMain.Items.Add(newt);
+			if (allowreopening) {
+				tcMain.reopenabletabs.Add(thetab.log);
+				btnUndoClose.IsEnabled = true;
+				foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
+					foreach (FrameworkElement m in item.mnu.Items) {
+						if (m.Tag != null) {
+							if (m.Tag.ToString() == "UCTI")
+								(m as MenuItem).IsEnabled = true;
+						}
+					}
+				}
+			}
 
-		//	ConstructMoveToCopyToMenu();
-
-		//	return newt;
-		//}
-
-		//public Wpf.Controls.TabItem NewTab(string Location, bool IsNavigate = false) {
-		//	return NewTab(new ShellItem(Location), IsNavigate);
-		//}
-
-		//[Obsolete("Use tcMain", true)]
-		//public void NewTab() {
-		//	ShellItem DefPath;
-		//	if (tcMain.StartUpLocation.StartsWith("::") && !tcMain.StartUpLocation.Contains(@"\"))
-		//		DefPath = new ShellItem("shell:" + tcMain.StartUpLocation);
-		//	else
-		//		try {
-		//			DefPath = new ShellItem(tcMain.StartUpLocation);
-		//		}
-		//		catch {
-		//			DefPath = (ShellItem)KnownFolders.Libraries;
-		//		}
-
-		//	NewTab(DefPath, true);
-		//}
-
-		//public void CloneTab(Wpf.Controls.TabItem CurTab) {
-		//	tcMain.CloneTabItem(CurTab);
-		//	ConstructMoveToCopyToMenu();
-		//}
-
-		#endregion Tab Creators
+			SelectTab(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem);
+			//'btnTabCloseC.IsEnabled = tcMain.Items.Count > 1;
+			//'there's a bug that has this enabled when there's only one tab open, but why disable it
+			//'if it never crashes the program? Closing the last tab simply closes the program, so I
+			//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
+		}
 
 		private void InitializeInitialTabs() {
 			tcMain_Setup(null, null);
@@ -127,41 +108,6 @@ namespace BetterExplorer {
 			//	tcMain.SelectedIndex = 0;
 
 			//ShellVView.Visibility = System.Windows.Visibility.Hidden;
-		}
-
-		private void CloseTab(Wpf.Controls.TabItem thetab, bool allowreopening = true) {
-			if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-				if (this.IsCloseLastTabCloseApp) {
-					Close();
-				}
-				else {
-					ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation));
-				}
-
-				return;
-			}
-
-			tcMain.RemoveTabItem(thetab);
-			ConstructMoveToCopyToMenu();
-
-			if (allowreopening) {
-				tcMain.reopenabletabs.Add(thetab.log);
-				btnUndoClose.IsEnabled = true;
-				foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
-					foreach (FrameworkElement m in item.mnu.Items) {
-						if (m.Tag != null) {
-							if (m.Tag.ToString() == "UCTI")
-								(m as MenuItem).IsEnabled = true;
-						}
-					}
-				}
-			}
-
-			SelectTab(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem);
-			//'btnTabCloseC.IsEnabled = tcMain.Items.Count > 1;
-			//'there's a bug that has this enabled when there's only one tab open, but why disable it
-			//'if it never crashes the program? Closing the last tab simply closes the program, so I
-			//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
 		}
 
 		private void ConstructMoveToCopyToMenu() {
@@ -295,18 +241,15 @@ namespace BetterExplorer {
 					tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
 				}
 			}
-			//if (e.AddedItems.Count > 0 && (e.AddedItems[0] as Wpf.Controls.TabItem).Index == tcMain.Items.Count - 1) {
-			//	tcMain.Items.OfType<Wpf.Controls.TabItem>().Last().BringIntoView();
-			//}
+
 			if (e.AddedItems.Count == 0) return;
 			SelectTab(e.AddedItems[0] as Wpf.Controls.TabItem);
 		}
 
 		private void SelectTab(Wpf.Controls.TabItem Tab) {
 			if (Tab == null) return;
+			tcMain.isGoingBackOrForward = Tab.log.HistoryItemsList.Count != 0;
 			try {
-				tcMain.isGoingBackOrForward = Tab.log.HistoryItemsList.Count != 0;
-				//BeforeLastTabIndex = LastTabIndex;
 				if (Tab.ShellObject != ShellListView.CurrentFolder) {
 					if (!Keyboard.IsKeyDown(Key.Tab)) {
 						ShellListView.Navigate(Tab.ShellObject);

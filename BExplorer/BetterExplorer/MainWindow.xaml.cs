@@ -54,6 +54,13 @@ namespace BetterExplorer {
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : RibbonWindow {
+		//TODO: Find out why things are calling zoomSlider_ValueChanged so much and where is the zoomSlider
+
+		[Obsolete("Completely UnNecessary, net effect is no different then not using it.", true)]
+		public bool IsCalledFromViewEnum;
+
+		[Obsolete("Can re move this!!!")]
+		public bool IsCalledFromLoading;
 
 
 		#region DLLImports
@@ -91,7 +98,6 @@ namespace BetterExplorer {
 
 		#region Variables and Constants
 
-
 		bool asFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
 		MenuItem misa, misd, misag, misdg, misng;
 
@@ -100,7 +106,6 @@ namespace BetterExplorer {
 
 		ShellTreeViewEx ShellTree = new ShellTreeViewEx();
 		ShellView ShellListView = new ShellView();
-
 
 		public bool IsrestoreTabs;
 		bool IsHFlyoutEnabled;
@@ -112,16 +117,9 @@ namespace BetterExplorer {
 
 		ClipboardMonitor cbm = new ClipboardMonitor();
 		ContextMenu cmHistory = new ContextMenu();
-		//private int LastTabIndex = -1;
-		//private int BeforeLastTabIndex = -1;
-
-
 
 		public bool isOnLoad;
 		System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
-		public bool IsCalledFromLoading;
-		public bool IsCalledFromViewEnum;
-
 		System.Windows.Forms.Timer FocusTimer = new System.Windows.Forms.Timer();
 		IntPtr Handle;
 		string EditComm = "";
@@ -3338,16 +3336,17 @@ namespace BetterExplorer {
 		}
 
 		private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-			if (!IsCalledFromLoading && !IsCalledFromViewEnum) {
-				try {
-					ShellListView.ResizeIcons((int)e.NewValue);
-				}
-				catch (NullReferenceException) {
-				}
+			//if (!IsCalledFromLoading && !IsCalledFromViewEnum) {
+			//if (!IsCalledFromLoading) {
+			try {
+				ShellListView.ResizeIcons((int)e.NewValue);
 			}
+			catch (NullReferenceException) {
+			}
+			//}
 
-			IsCalledFromLoading = false;
-			IsCalledFromViewEnum = false;
+			//IsCalledFromLoading = false;
+			//IsCalledFromViewEnum = false;
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e) {
@@ -3412,57 +3411,53 @@ namespace BetterExplorer {
 		}
 
 		private void chkHiddenFiles_Checked(object sender, RoutedEventArgs e) {
-			if (!IsCalledFromLoading) {
-				Dispatcher.BeginInvoke(new Action(
-					delegate() {
-						var state = new WindowsAPI.SHELLSTATE();
-						state.fShowAllObjects = 1;
-						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
-						ShellListView.ShowHidden = true;
-						ShellTree.RefreshContents();
-					}
-				));
-			};
+			if (IsCalledFromLoading) return;
+			Dispatcher.BeginInvoke(new Action(
+				delegate() {
+					var state = new WindowsAPI.SHELLSTATE();
+					state.fShowAllObjects = 1;
+					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
+					ShellListView.ShowHidden = true;
+					ShellTree.RefreshContents();
+				}
+			));
 		}
 
 		private void chkHiddenFiles_Unchecked(object sender, RoutedEventArgs e) {
-			if (!IsCalledFromLoading) {
-				Dispatcher.BeginInvoke(new Action(
-					delegate() {
-						var state = new WindowsAPI.SHELLSTATE();
-						state.fShowAllObjects = 0;
-						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
-						ShellListView.ShowHidden = false;
-						ShellTree.RefreshContents();
-					}
-				));
-			}
+			if (IsCalledFromLoading) return;
+			Dispatcher.BeginInvoke(new Action(
+				delegate() {
+					var state = new WindowsAPI.SHELLSTATE();
+					state.fShowAllObjects = 0;
+					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
+					ShellListView.ShowHidden = false;
+					ShellTree.RefreshContents();
+				}
+			));
 		}
 
 		private void chkExtensions_Checked(object sender, RoutedEventArgs e) {
-			if (!IsCalledFromLoading) {
-				Dispatcher.BeginInvoke(new Action(
-					delegate() {
-						var state = new WindowsAPI.SHELLSTATE();
-						state.fShowExtensions = 1;
-						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
-						ShellListView.RefreshContents();
-					}
-				));
-			}
+			if (IsCalledFromLoading) return;
+			Dispatcher.BeginInvoke(new Action(
+				delegate() {
+					var state = new WindowsAPI.SHELLSTATE();
+					state.fShowExtensions = 1;
+					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
+					ShellListView.RefreshContents();
+				}
+			));
 		}
 
 		private void chkExtensions_Unchecked(object sender, RoutedEventArgs e) {
-			if (!IsCalledFromLoading) {
-				Dispatcher.BeginInvoke(new Action(
-					delegate() {
-						WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
-						state.fShowExtensions = 0;
-						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
-						ShellListView.RefreshContents();
-					}
-				));
-			}
+			if (IsCalledFromLoading) return;
+			Dispatcher.BeginInvoke(new Action(
+				delegate() {
+					WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
+					state.fShowExtensions = 0;
+					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
+					ShellListView.RefreshContents();
+				}
+			));
 		}
 
 		#endregion
@@ -4235,7 +4230,7 @@ namespace BetterExplorer {
 		private void RibbonWindow_GotFocus(object sender, RoutedEventArgs e) {
 			breadcrumbBarControl1.ExitEditMode_IfNeeded();
 			if (!backstage.IsOpen)
-			    ShellListView.Focus();
+				ShellListView.Focus();
 		}
 
 		private void SaveHistoryToFile(string relativepath, List<String> history) {
@@ -4676,8 +4671,6 @@ namespace BetterExplorer {
 			}
 		}
 
-
-
 		void t_Tick(object sender, EventArgs e) {
 			if (!Keyboard.IsKeyDown(Key.Tab)) {
 				ShellListView.Navigate((sender as System.Windows.Forms.Timer).Tag as ShellItem);
@@ -4690,17 +4683,6 @@ namespace BetterExplorer {
 				tcMain.CloneTabItem(tcMain.SelectedItem as Wpf.Controls.TabItem);
 			}
 		}
-
-		//private void RCloseTab(object sender, ExecutedRoutedEventArgs e) {
-		//	if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-		//		Close();
-		//		return;
-		//	}
-
-		//	int CurSelIndex = tcMain.SelectedIndex;
-		//	tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
-		//	tcMain.Items.RemoveAt(CurSelIndex);
-		//}
 
 		private void GoToSearchBox(object sender, ExecutedRoutedEventArgs e) {
 			edtSearchBox.Focus();
@@ -4716,8 +4698,6 @@ namespace BetterExplorer {
 				DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
 			}
 		}
-
-
 
 
 		void newt_Drop(object sender, DragEventArgs e) {
@@ -4853,8 +4833,6 @@ namespace BetterExplorer {
 			}
 		}
 
-
-
 		#endregion
 
 		#region Tab Controls
@@ -4963,7 +4941,6 @@ namespace BetterExplorer {
 			}
 		}
 
-
 		private void miTabManager_Click(object sender, RoutedEventArgs e) {
 			string sstdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
 			if (Directory.Exists(sstdir)) {
@@ -4983,120 +4960,8 @@ namespace BetterExplorer {
 
 		#region Customize Quick Access Toolbar
 
-		/*
-		[Obsolete("Move into Control", true)]
-		public void RefreshQATDialog(CustomizeQAT qal) {
-			foreach (IRibbonControl item in GetNonQATButtons()) {
-				RibbonItemListDisplay rils = new RibbonItemListDisplay();
-				if (item.Icon != null) {
-					rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
-				}
-				rils.Header = (item.Header as string);
-				rils.SourceControl = item;
-				rils.ItemName = (item as FrameworkElement).Name;
-				rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-				if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery) {
-					rils.ShowMenuArrow = true;
-				}
-				qal.AllControls.Items.Add(rils);
-			}
-			//foreach (IRibbonControl item in GetRibbonControlsFromNames(QatItems)) {
-
-
-			//foreach (IRibbonControl item in GetRibbonControlsFromNames()) {
-			foreach (var item in TheRibbon.QuickAccessItems) {
-				RibbonItemListDisplay rils = new RibbonItemListDisplay();
-				if (item.Icon != null) {
-					rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
-				}
-				rils.Header = item.Header as string;
-				rils.SourceControl = item;
-				rils.ItemName = (item as FrameworkElement).Name;
-				rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-				/*
-				if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery) {
-					rils.ShowMenuArrow = true;
-				}
-				-/
-				qal.QATControls.Items.Add(rils);
-			}
-
-
-			//foreach (var item in TheRibbon.QuickAccessItems) {
-			//	qal.QATControls.Items.Add(item);
-			//}
-
-
-
-			//TheRibbon.QuickAccessItems
-			//TheRibbon.QuickAccessToolbarItems
-		}
-		*/
-		#region Helper Functions
-
-		/*
-		[Obsolete("Try and remove this. I'd prefer to only use it [CustomizeQAT]")]
-		public List<IRibbonControl> SortNames(List<IRibbonControl> items, List<string> headers) {
-			var rb = new List<IRibbonControl>();
-
-
-			/*
-			 * From: Aaron Campf
-			 * Date: 5/13/2014
-			 * 
-			 * Commented out [found] and added [break]
-			 * Using break will end that [foreach] which has the same effect as [found]
-			 -/
-			foreach (string item in headers) {
-				//bool found = false;
-				foreach (IRibbonControl thing in items) {
-					//if (!found) {
-					if (thing.Header as string == item) {
-						rb.Add(thing);
-						//found = true;
-						break;
-					}
-					//}
-				}
-			}
-
-			return rb;
-		}
-		*/
-
-		/*
-		[Obsolete("Do not use, let the Ribbon Add/Remove Events handle it")]
-		public void LoadInternalList() {
-			//Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
-			//	QatItems.Clear();
-			//	//QatItems = GetNamesFromRibbonControls(GetQATButtons());
-			//	var Buttons = (from UIElement item in TheRibbon.QuickAccessToolbarItems.Keys select item as FrameworkElement).ToList();
-			//	QatItems = Buttons.ConvertAll(x => x.Name);
-			//}));
-		}
-		*/
-
-		//public void PutItemsOnQAT(List<string> names) {
-		//	this.TheRibbon.ClearQuickAccessToolBar();
-		//	Dictionary<string, IRibbonControl> items = GetAllButtonsAsDictionary();
-		//	foreach (string item in names) {
-		//		IRibbonControl ctrl;
-		//		if (items.TryGetValue(item, out ctrl)) {
-		//			curitem = (ctrl as UIElement);
-		//			this.TheRibbon.AddToQuickAccessToolBar(ctrl as UIElement);
-		//			curitem = null;
-		//		}
-		//	}
-
-		//	//LoadInternalList();
-		//}
-
-		#endregion
-
-		#region Get Buttons Helper Functions
-
 		public Dictionary<string, IRibbonControl> GetAllButtonsAsDictionary() {
-			Dictionary<string, Fluent.IRibbonControl> rb = new Dictionary<string, Fluent.IRibbonControl>();
+			var rb = new Dictionary<string, Fluent.IRibbonControl>();
 
 			foreach (RibbonTabItem item in TheRibbon.Tabs) {
 				foreach (RibbonGroupBox itg in item.Groups) {
@@ -5109,51 +4974,6 @@ namespace BetterExplorer {
 			return rb;
 		}
 
-		/*
-		[Obsolete("We should get the items in the METHOD there being used NOT here!!!")]
-		public List<string> QatItems = new List<string>();
-
-		[Obsolete("Being Replaced", true)]
-		public List<IRibbonControl> GetRibbonControlsFromNames() { //List<string> input
-			//var Buttons = (from UIElement item in TheRibbon.QuickAccessToolbarItems.Keys select (item as FrameworkElement).Name).ToList();
-			//from UIElement item in TheRibbon.QuickAccessToolbarItems.Keys select (item as FrameworkElement).Name
-
-			var rb = new List<Fluent.IRibbonControl>();
-			var dic = GetAllButtonsAsDictionary();
-
-			foreach (string name in QatItems) {
-				IRibbonControl ri;
-				if (dic.TryGetValue(name, out ri)) {
-					rb.Add(ri);
-				}
-			}
-
-			return rb;
-		}
-		*/
-		#endregion
-
-		#region Add/Remove Event Handlers
-		/*
-		[Obsolete("Try removing this!!! It is slowing down the application loading for no real gains")]
-		private void TheRibbon_ItemAddedToQuickAccessToolbar(object sender, Ribbon.UIElementEventArgs e) {
-			if (curitem == null) {
-				Debug.WriteLine("Item being added: " + (e.Item as FrameworkElement).Name);
-				QatItems.Add((e.Item as FrameworkElement).Name);
-			}
-		}
-
-		private void TheRibbon_ItemRemovedToQuickAccessToolbar(object sender, Ribbon.UIElementEventArgs e) {
-			if (curitem == null) {
-				Debug.WriteLine("Item being removed: " + (e.Item as FrameworkElement).Name);
-				QatItems.Remove((e.Item as FrameworkElement).Name);
-			}
-		}
-
-		#endregion
-		*/
-
-		#endregion
 		#endregion
 
 		#region Recycle Bin
@@ -5487,8 +5307,6 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_ViewStyleChanged(object sender, BExplorer.Shell.ViewChangedEventArgs e) {
-			//IsViewSelection = false;
-
 			if (e.CurrentView == ShellViewStyle.ExtraLargeIcon) {
 				ViewGallery.SelectedIndex = 0;
 			}
@@ -5529,12 +5347,10 @@ namespace BetterExplorer {
 				ViewGallery.SelectedIndex = 8;
 			}
 
-			IsCalledFromViewEnum = true;
+			//IsCalledFromViewEnum = true;
 			zoomSlider.Value = e.ThumbnailSize;
-			IsCalledFromViewEnum = false;
-
+			//IsCalledFromViewEnum = false;
 			btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
-			//IsViewSelection = true;
 		}
 
 		void r_OnMessageReceived(object sender, EventArgs e) {
@@ -5772,8 +5588,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void RibbonWindow_Activated(object sender, EventArgs e)
-		{
+		private void RibbonWindow_Activated(object sender, EventArgs e) {
 			this.ShellListView.Focus();
 		}
 
