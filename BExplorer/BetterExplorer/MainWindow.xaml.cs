@@ -59,8 +59,11 @@ namespace BetterExplorer {
 		[Obsolete("Completely UnNecessary, net effect is no different then not using it.", true)]
 		public bool IsCalledFromViewEnum;
 
-		[Obsolete("Can re move this!!!")]
+		[Obsolete("Can remove move this!!!")]
 		public bool IsCalledFromLoading;
+
+		[Obsolete("try Removing")]
+		public bool isOnLoad;
 
 
 		#region DLLImports
@@ -118,14 +121,14 @@ namespace BetterExplorer {
 		ClipboardMonitor cbm = new ClipboardMonitor();
 		ContextMenu cmHistory = new ContextMenu();
 
-		public bool isOnLoad;
+
 		System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
 		System.Windows.Forms.Timer FocusTimer = new System.Windows.Forms.Timer();
 		IntPtr Handle;
 		string EditComm = "";
-		List<string> Archives = new List<string>(new string[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
-		List<string> Images = new List<string>(new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
-		List<string> VirDisks = new List<string>(new string[] { ".iso", ".bin", ".vhd" });
+		List<string> Archives = new List<string>(new[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
+		List<string> Images = new List<string>(new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
+		List<string> VirDisks = new List<string>(new[] { ".iso", ".bin", ".vhd" });
 
 		public static UpdateManager Updater;
 		string SelectedArchive = "";
@@ -148,19 +151,13 @@ namespace BetterExplorer {
 		Int32 UpdateCheckInterval;
 		Double CommandPromptWinHeight;
 
-		//UIElement curitem = null;
 		Boolean IsGlassOnRibonMinimized { get; set; }
 		NetworkAccountManager nam = new NetworkAccountManager();
 		List<BExplorer.Shell.LVItemColor> LVItemsColor { get; set; }
 		uint SelectedDriveID = 0;
-		//[Obsolete("Inlining this!!!", true)]
-		//string[] InitialTabs;
 		ContextMenu chcm;
 
 		MessageReceiver r;
-
-		//[Obsolete("Use StartUpLocation from inside tcMain", true)]
-		//string StartUpLocation = KnownFolders.Libraries.ParsingName;
 
 		#endregion
 
@@ -2022,24 +2019,25 @@ namespace BetterExplorer {
 		#region Updater
 
 		private void CheckBox_Checked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				Utilities.SetRegistryValue("CheCkForUpdates", 1);
-				IsUpdateCheck = true;
-				updateCheckTimer.Interval = 3600000 * 3;
-				updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
-				updateCheckTimer.Start();
+			if (isOnLoad) return;
 
-				if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
-					CheckForUpdate(false);
-				}
+			Utilities.SetRegistryValue("CheCkForUpdates", 1);
+			IsUpdateCheck = true;
+			updateCheckTimer.Interval = 3600000 * 3;
+			updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
+			updateCheckTimer.Start();
+
+			if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) {
+				CheckForUpdate(false);
 			}
 		}
 
 		private void CheckBox_Unchecked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				Utilities.SetRegistryValue("CheckForUpdates", 0);
-				IsUpdateCheck = false;
-			}
+			if (isOnLoad) return;
+
+			Utilities.SetRegistryValue("CheckForUpdates", 0);
+			IsUpdateCheck = false;
+
 		}
 
 		private void rbCheckInterval_Click(object sender, RoutedEventArgs e) {
@@ -2671,13 +2669,6 @@ namespace BetterExplorer {
 					return;
 				}
 			}
-			//ShellListView.automan.Dispose();
-			//if (PicturePreview != null)
-			//{
-			//    PicturePreview.Close(); 
-			//}
-			//if (ctrlConsole.IsProcessRunning)
-			//  ctrlConsole.StopProcess();
 
 			if (this.WindowState != System.Windows.WindowState.Minimized) {
 				string OpenedTabs = "";
@@ -2687,16 +2678,6 @@ namespace BetterExplorer {
 
 				SaveSettings(OpenedTabs);
 			}
-
-			/*
-			string OpenedTabs = "";
-			foreach (Wpf.Controls.TabItem item in tcMain.Items) {
-				OpenedTabs += ";" + item.ShellObject.ParsingName;
-			}
-
-			if (this.WindowState != System.Windows.WindowState.Minimized)
-				SaveSettings(OpenedTabs);
-			*/
 
 			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems.Select(s => s.DisplayName).ToList());
 			AddToLog("Session Ended");
@@ -3303,19 +3284,16 @@ namespace BetterExplorer {
 		#endregion
 
 		#region View Tab/Status Bar
-		//bool isCalledFromSlider = false;
 
 		private void btnMoreColls_Click(object sender, RoutedEventArgs e) {
 			micm_Click(sender, e);
 		}
 
 		void mig_Click(object sender, RoutedEventArgs e) {
-			MenuItem item = (sender as MenuItem);
-			var col = item.Tag as Collumns;
 			if (!this.ShellListView.IsGroupsEnabled) {
 				this.ShellListView.EnableGroups();
 			}
-			this.ShellListView.GenerateGroupsFromColumn(col);
+			this.ShellListView.GenerateGroupsFromColumn((sender as MenuItem).Tag as Collumns);
 		}
 
 		private void btnAutosizeColls_Click(object sender, RoutedEventArgs e) {
@@ -3797,7 +3775,6 @@ namespace BetterExplorer {
 				cvt.Dispose();
 				AddToLog("Rotated image " + item.ParsingName);
 			}
-
 		}
 
 		private void btnRotateRight_Click(object sender, RoutedEventArgs e) {
@@ -4246,7 +4223,7 @@ namespace BetterExplorer {
 
 		private ObservableCollection<BreadcrumbBarFSItem> ReadHistoryFromFile(string relativepath) {
 			string line = "";
-			ObservableCollection<BreadcrumbBarFSItem> hl = new ObservableCollection<BreadcrumbBarFSItem>();
+			var hl = new ObservableCollection<BreadcrumbBarFSItem>();
 			using (StreamReader sr = new StreamReader(relativepath, Encoding.UTF8)) {
 				while ((line = sr.ReadLine()) != null) {
 					if (!String.IsNullOrEmpty(line.Replace("\0", String.Empty))) {
@@ -5148,7 +5125,7 @@ namespace BetterExplorer {
 
 			CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, (sender, e) =>
 				tcMain.NewTab()
-				);
+			);
 			this.CommandBindings.Add(cbnewtab);
 			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => breadcrumbBarControl1.EnterEditMode());
 			this.CommandBindings.Add(cbGotoCombo);
@@ -5199,7 +5176,6 @@ namespace BetterExplorer {
 						ChangeRibbonTheme("Blue");
 						break;
 				}
-
 			}
 			catch (Exception ex) {
 				MessageBox.Show(String.Format("An error occurred while trying to load the theme data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "RibbonTheme Error - " + ex.ToString());
@@ -5237,9 +5213,9 @@ namespace BetterExplorer {
 			//Main Initialization routine
 			InitializeComponent();
 
-			isOnLoad = true;
-			//chkOldSysListView.IsChecked = ExplorerBrowser.IsOldSysListView;
-			isOnLoad = false;
+			//isOnLoad = true;
+			////chkOldSysListView.IsChecked = ExplorerBrowser.IsOldSysListView;
+			//isOnLoad = false;
 
 			// sets up ComboBox to select the current UI language
 			foreach (TranslationComboBoxItem item in this.TranslationComboBox.Items) {
