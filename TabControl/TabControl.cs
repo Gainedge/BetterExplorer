@@ -21,7 +21,7 @@ namespace Wpf.Controls {
 	[TemplatePart(Name = "PART_NewTabButton", Type = typeof(ButtonBase))]
 	[TemplatePart(Name = "PART_ScrollViewer", Type = typeof(ScrollViewer))]
 	public class TabControl : System.Windows.Controls.TabControl {
-		public List<NavigationLog> reopenabletabs = new List<NavigationLog>();
+		public List<NavigationLog> ReopenableTabs = new List<NavigationLog>();
 		public string StartUpLocation = KnownFolders.Libraries.ParsingName;
 		public DragEventHandler newt_DragEnter, newt_DragOver, newt_Drop;
 		public MouseEventHandler newt_PreviewMouseMove;
@@ -401,7 +401,7 @@ namespace Wpf.Controls {
 		public void ReOpenTab(NavigationLog log) {
 			var Tab = NewTab(log.CurrentLocation, false);
 			Tab.log.ImportData(log);
-			reopenabletabs.Remove(log);
+			ReopenableTabs.Remove(log);
 		}
 
 		/*
@@ -471,9 +471,12 @@ namespace Wpf.Controls {
 		/// Called by a child Header that wants to remove itself by clicking on the close button
 		/// </summary>
 		/// <param name="tabItem"></param>
-		public void RemoveTabItem(TabItem tabItem) {
+		public void RemoveTabItem(TabItem tabItem, Boolean allowReopening = true) {
 			if (IsFixedSize)
 				throw new InvalidOperationException("ItemsSource is Fixed Size");
+
+			if (allowReopening)
+				this.ReopenableTabs.Add(tabItem.log);
 
 			// gives an opertunity to cancel the removal of the tabitem
 			var c = new TabItemCancelEventArgs(tabItem);
@@ -494,6 +497,8 @@ namespace Wpf.Controls {
 
 			if (TabItemClosed != null)
 				TabItemClosed(this, new TabItemEventArgs(tabItem));
+
+			
 		}
 
 		public void CloneTabItem(TabItem theTab) {

@@ -117,7 +117,7 @@ namespace Wpf.Controls {
 			//TODO: fix reopetab
 			MenuItem miundocloser = new MenuItem();
 			miundocloser.Header = "Undo close tab";
-			miundocloser.IsEnabled = false; //btnUndoClose.IsEnabled;
+			miundocloser.IsEnabled = tc.ReopenableTabs.Count > 0;
 			miundocloser.Tag = "UCTI";
 			miundocloser.Click += new RoutedEventHandler(
 				(owner, a) => {

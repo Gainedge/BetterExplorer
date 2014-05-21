@@ -137,31 +137,14 @@ namespace BetterExplorer {
 				else {
 					ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation));
 				}
-
 				return;
 			}
 
-			tcMain.RemoveTabItem(thetab);
+			tcMain.RemoveTabItem(thetab, allowreopening);
+
 			ConstructMoveToCopyToMenu();
 
-			if (allowreopening) {
-				tcMain.reopenabletabs.Add(thetab.log);
-				btnUndoClose.IsEnabled = true;
-				foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
-					foreach (FrameworkElement m in item.mnu.Items) {
-						if (m.Tag != null) {
-							if (m.Tag.ToString() == "UCTI")
-								(m as MenuItem).IsEnabled = true;
-						}
-					}
-				}
-			}
-
-			SelectTab(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem);
-			//'btnTabCloseC.IsEnabled = tcMain.Items.Count > 1;
-			//'there's a bug that has this enabled when there's only one tab open, but why disable it
-			//'if it never crashes the program? Closing the last tab simply closes the program, so I
-			//'thought, what the heck... let's just keep it enabled. :) -JaykeBird
+			SelectTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
 		}
 
 		private void ConstructMoveToCopyToMenu() {
@@ -302,18 +285,17 @@ namespace BetterExplorer {
 			SelectTab(e.AddedItems[0] as Wpf.Controls.TabItem);
 		}
 
-		private void SelectTab(Wpf.Controls.TabItem Tab) {
-			if (Tab == null) return;
+		private void SelectTab(Wpf.Controls.TabItem tab) {
+			if (tab == null) return;
 			try {
-				tcMain.isGoingBackOrForward = Tab.log.HistoryItemsList.Count != 0;
-				//BeforeLastTabIndex = LastTabIndex;
-				if (Tab.ShellObject != ShellListView.CurrentFolder) {
+				tcMain.isGoingBackOrForward = tab.log.HistoryItemsList.Count != 0;
+				if (tab.ShellObject != ShellListView.CurrentFolder) {
 					if (!Keyboard.IsKeyDown(Key.Tab)) {
-						ShellListView.Navigate(Tab.ShellObject);
+						ShellListView.Navigate(tab.ShellObject);
 					}
 					else {
 						t.Interval = 500;
-						t.Tag = Tab.ShellObject;
+						t.Tag = tab.ShellObject;
 						t.Tick += new EventHandler(t_Tick);
 						t.Start();
 					}

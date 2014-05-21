@@ -4656,15 +4656,15 @@ namespace BetterExplorer {
 		}
 
 		private void btnUndoClose_Click(object sender, RoutedEventArgs e) {
-			tcMain.ReOpenTab(tcMain.reopenabletabs[tcMain.reopenabletabs.Count - 1]);
+			tcMain.ReOpenTab(tcMain.ReopenableTabs[tcMain.ReopenableTabs.Count - 1]);
 			//reopenabletabs.RemoveAt(reopenabletabs.Count - 1);
-			btnUndoClose.IsEnabled = tcMain.reopenabletabs.Count != 0;
+			btnUndoClose.IsEnabled = tcMain.ReopenableTabs.Count != 0;
 		}
 
 		void gli_Click(object sender, NavigationLogEventArgs e) {
 			tcMain.ReOpenTab(e.NavigationLog);
 			//reopenabletabs.Remove((sender as UndoCloseGalleryItem).nav);
-			btnUndoClose.IsEnabled = tcMain.reopenabletabs.Count != 0;
+			btnUndoClose.IsEnabled = tcMain.ReopenableTabs.Count != 0;
 		}
 
 		void gli_Click(object sender, PathStringEventArgs e) {
@@ -4904,7 +4904,7 @@ namespace BetterExplorer {
 		}
 
 		private void miClearUndoList_Click(object sender, RoutedEventArgs e) {
-			tcMain.reopenabletabs.Clear();
+			tcMain.ReopenableTabs.Clear();
 			btnUndoClose.IsDropDownOpen = false;
 			btnUndoClose.IsEnabled = false;
 			foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
@@ -4917,7 +4917,7 @@ namespace BetterExplorer {
 
 		private void btnUndoClose_DropDownOpened(object sender, EventArgs e) {
 			rotGallery.Items.Clear();
-			foreach (NavigationLog item in tcMain.reopenabletabs) {
+			foreach (NavigationLog item in tcMain.ReopenableTabs) {
 				UndoCloseGalleryItem gli = new UndoCloseGalleryItem();
 				gli.LoadData(item);
 				gli.Click += gli_Click;
