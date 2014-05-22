@@ -1820,7 +1820,7 @@ namespace BExplorer.Shell {
 								Navigate(selectedItem);
 							}
 							else {
-								if (selectedItem.IsLink) {
+								if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
 									var shellLink = new ShellLink(selectedItem.ParsingName);
 									var newSho = new ShellItem(shellLink.TargetPIDL);
 									if (newSho.IsFolder) {
@@ -1845,19 +1845,9 @@ namespace BExplorer.Shell {
 						_ResetTimer.Stop();
 						this.Cancel = true;
 						ToolTip.HideTooltip();
-						//foreach (var item in cache) {
-						//	if (item.Value != null) {
-						//		item.Value.Dispose();
-						//	}
-						//}
-						//cache.Clear();
-						//waitingThumbnails.Clear();
 						ThumbnailsForCacheLoad.Clear();
-						//ItemsForSubitemsUpdate.Clear();
 						overlayQueue.Clear();
 						shieldQueue.Clear();
-						//waitingThumbnails.Clear();
-						//ItemsForSubitemsUpdate.Clear();
 						//! to be revised this for performace
 						try {
 							if (MaintenanceThread != null && MaintenanceThread.IsAlive)
@@ -1895,9 +1885,7 @@ namespace BExplorer.Shell {
 						}
 						catch (ThreadAbortException) {
 						}
-						//shieldedIcons.Clear();
-						//overlays.Clear();
-						//GC.Collect();
+						GC.Collect();
 
 						break;
 
@@ -2211,7 +2199,7 @@ namespace BExplorer.Shell {
 													else {
 														if (!sho.IsThumbnailLoaded)
 															ThumbnailsForCacheLoad.Enqueue(index);
-														if ((sho.IconType & IExtractIconpwFlags.GIL_PERCLASS) == IExtractIconpwFlags.GIL_PERCLASS) {
+														if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
 															var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 															if (icon != null) {
 																sho.IsIconLoaded = true;
@@ -2244,7 +2232,7 @@ namespace BExplorer.Shell {
 																icon.Dispose();
 															}
 														}
-														else if ((sho.IconType & IExtractIconpwFlags.GIL_PERINSTANCE) == IExtractIconpwFlags.GIL_PERINSTANCE) {
+														else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
 															if (!sho.IsIconLoaded) {
 																waitingThumbnails.Enqueue(index);
 																using (Graphics g = Graphics.FromHdc(hdc)) {
@@ -2298,7 +2286,7 @@ namespace BExplorer.Shell {
 												}
 												else {
 													sho.IsThumbnailLoaded = true;
-													if ((sho.IconType & IExtractIconpwFlags.GIL_PERCLASS) == IExtractIconpwFlags.GIL_PERCLASS) {
+													if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
 														var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 														if (icon != null) {
 															sho.IsIconLoaded = true;
@@ -2311,7 +2299,7 @@ namespace BExplorer.Shell {
 															icon.Dispose();
 														}
 													}
-													else if ((sho.IconType & IExtractIconpwFlags.GIL_PERINSTANCE) == IExtractIconpwFlags.GIL_PERINSTANCE) {
+													else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
 														if (!sho.IsIconLoaded) {
 															waitingThumbnails.Enqueue(index);
 															using (Graphics g = Graphics.FromHdc(hdc)) {
@@ -3288,7 +3276,7 @@ namespace BExplorer.Shell {
 					ShellItem sho = !(shoTemp.IsNetDrive || shoTemp.IsNetworkPath) && shoTemp.ParsingName.StartsWith("::") ? shoTemp : new ShellItem(shoTemp.ParsingName);
 
 					var shieldOverlay = 0;
-					if ((sho.GetShield() & IExtractIconpwFlags.GIL_SHIELD) != 0) {
+					if ((sho.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) {
 						shieldOverlay = ShieldIconIndex;
 					}
 

@@ -537,7 +537,7 @@ namespace BExplorer.Shell
 							}
 							else
 							{
-								if (item.IconType == IExtractIconpwFlags.GIL_PERCLASS)
+								if (item.IconType == IExtractIconPWFlags.GIL_PERCLASS)
 								{
 									itemNode.ImageIndex = item.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 									itemNode.SelectedImageIndex = itemNode.ImageIndex;

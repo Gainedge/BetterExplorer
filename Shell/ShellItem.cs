@@ -364,17 +364,18 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public IExtractIconpwFlags GetIconType() {
+		public IExtractIconPWFlags GetIconType() {
 			var parsingName = this.ParsingName.ToLowerInvariant();
-			if (parsingName.EndsWith(".lnk") || parsingName.EndsWith(".htm") || parsingName.EndsWith(".html"))
-				return IExtractIconpwFlags.GIL_PERINSTANCE | IExtractIconpwFlags.GIL_FORCENOSHIELD;
+			if (this.IsLink)
+				return IExtractIconPWFlags.GIL_PERINSTANCE | IExtractIconPWFlags.GIL_FORCENOSHIELD;
+			if (parsingName.EndsWith(".htm") || parsingName.EndsWith(".html"))
+				return IExtractIconPWFlags.GIL_PERCLASS | IExtractIconPWFlags.GIL_FORCENOSHIELD;
 			IExtractIcon iextract = null;
 			IShellFolder ishellfolder = null;
 			StringBuilder str = null;
 			IntPtr result;
 
 			if (this.Parent == null) {
-				//TODO: Fix this!
 				return 0;
 			}
 
@@ -384,9 +385,6 @@ namespace BExplorer.Shell {
 				ishellfolder = this.Parent.GetIShellFolder();
 				IntPtr[] pidls = new IntPtr[1];
 				pidls[0] = Shell32.ILFindLastID(this.Pidl);
-
-
-				//TODO: Try and fix!
 				ishellfolder.GetUIObjectOf(
 					IntPtr.Zero,
 					1,
@@ -395,20 +393,16 @@ namespace BExplorer.Shell {
 					res,
 					out result
 				);
-
-
-
-
 				if (result == IntPtr.Zero) {
 					pidls = null;
 					Marshal.ReleaseComObject(ishellfolder);
-					return IExtractIconpwFlags.GIL_PERCLASS;
+					return IExtractIconPWFlags.GIL_PERCLASS;
 				}
 				iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
 				str = new StringBuilder(512);
 				int index = -1;
-				IExtractIconpwFlags flags;
-				iextract.GetIconLocation(IExtractIconuFlags.GIL_ASYNC, str, 512, out index, out flags);
+				IExtractIconPWFlags flags;
+				iextract.GetIconLocation(IExtractIconUFlags.GIL_ASYNC, str, 512, out index, out flags);
 				pidls = null;
 				Marshal.ReleaseComObject(ishellfolder);
 				Marshal.ReleaseComObject(iextract);
@@ -427,7 +421,7 @@ namespace BExplorer.Shell {
 
 		}
 
-		public IExtractIconpwFlags GetShield() {
+		public IExtractIconPWFlags GetShield() {
 			IExtractIcon iextract = null;
 			IShellFolder ishellfolder = null;
 			StringBuilder str = null;
@@ -444,21 +438,21 @@ namespace BExplorer.Shell {
 				iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
 				str = new StringBuilder(512);
 				int index = -1;
-				IExtractIconpwFlags flags;
-				iextract.GetIconLocation(IExtractIconuFlags.GIL_CHECKSHIELD, str, 512, out index, out flags);
+				IExtractIconPWFlags flags;
+				iextract.GetIconLocation(IExtractIconUFlags.GIL_CHECKSHIELD, str, 512, out index, out flags);
 				pidls = null;
-				Marshal.FinalReleaseComObject(ishellfolder);
-				Marshal.FinalReleaseComObject(iextract);
-				ishellfolder = null;
-				iextract = null;
+				if (ishellfolder != null)
+					Marshal.ReleaseComObject(ishellfolder);
+				if (iextract != null)
+					Marshal.ReleaseComObject(iextract);
 				str = null;
 				return flags;
 			}
 			catch (Exception) {
-				Marshal.FinalReleaseComObject(ishellfolder);
-				Marshal.FinalReleaseComObject(iextract);
-				ishellfolder = null;
-				iextract = null;
+				if (ishellfolder != null)
+					Marshal.ReleaseComObject(ishellfolder);
+				if (iextract != null)
+					Marshal.ReleaseComObject(iextract);
 				str = null;
 				return 0;
 			}
@@ -476,8 +470,8 @@ namespace BExplorer.Shell {
 				var iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
 				var str = new StringBuilder(512);
 				int index = -1;
-				IExtractIconpwFlags flags;
-				iextract.GetIconLocation(IExtractIconuFlags.GIL_DEFAULTICON | IExtractIconuFlags.GIL_FORSHELL | IExtractIconuFlags.GIL_OPENICON, str, 512, out index, out flags);
+				IExtractIconPWFlags flags;
+				iextract.GetIconLocation(IExtractIconUFlags.GIL_DEFAULTICON | IExtractIconUFlags.GIL_FORSHELL | IExtractIconUFlags.GIL_OPENICON, str, 512, out index, out flags);
 
 				return index;
 			}
@@ -674,7 +668,7 @@ namespace BExplorer.Shell {
 			return GetEnumerator();
 		}
 
-		public IExtractIconpwFlags IconType { get; set; }
+		public IExtractIconPWFlags IconType { get; set; }
 		private ShellThumbnail thumbnail;
 		/// <summary>
 		/// Gets the thumbnail of the ShellObject.

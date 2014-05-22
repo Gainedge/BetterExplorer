@@ -24,7 +24,7 @@ namespace BExplorer.Shell.Interop
 		/// <returns></returns>
 		///
 		[PreserveSig]
-		int GetIconLocation(IExtractIconuFlags uFlags, [Out, MarshalAs(UnmanagedType.LPWStr, SizeParamIndex = 2)] StringBuilder szIconFile, int cchMax, out int piIndex, out IExtractIconpwFlags pwFlags);
+		int GetIconLocation(IExtractIconUFlags uFlags, [Out, MarshalAs(UnmanagedType.LPWStr, SizeParamIndex = 2)] StringBuilder szIconFile, int cchMax, out int piIndex, out IExtractIconPWFlags pwFlags);
 
 		/// <summary>
 		/// Extracts an icon image from the specified location.
@@ -42,7 +42,7 @@ namespace BExplorer.Shell.Interop
 	}
 
 	[Flags()]
-	public enum IExtractIconuFlags : uint
+	public enum IExtractIconUFlags : uint
 	{
 		GIL_ASYNC = 0x0020,
 		GIL_DEFAULTICON = 0x0040,
@@ -53,7 +53,7 @@ namespace BExplorer.Shell.Interop
 	}
 
 	[Flags()]
-	public enum IExtractIconpwFlags : uint
+	public enum IExtractIconPWFlags : uint
 	{
 		GIL_DONTCACHE = 0x0010,
 		GIL_NOTFILENAME = 0x0008,

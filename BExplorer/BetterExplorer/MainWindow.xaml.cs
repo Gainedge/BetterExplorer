@@ -56,9 +56,6 @@ namespace BetterExplorer {
 	public partial class MainWindow : RibbonWindow {
 		//TODO: Find out why things are calling zoomSlider_ValueChanged so much and where is the zoomSlider
 
-		[Obsolete("Completely UnNecessary, net effect is no different then not using it.", true)]
-		public bool IsCalledFromViewEnum;
-
 		[Obsolete("Can remove move this!!!")]
 		public bool IsCalledFromLoading;
 
@@ -88,77 +85,61 @@ namespace BetterExplorer {
 		[DllImport("user32.dll", SetLastError = true)]
 		private static extern int UnregisterHotKey(IntPtr hwnd, int id);
 
-		[DllImport("shell32.dll")]
-		public static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, [Out()] out IntPtr pidl, uint sfgaoIn, [Out()] out uint psfgaoOut);
-
 		[DllImport("winmm.dll")]
 		static extern Int32 mciSendString(String command, StringBuilder buffer, Int32 bufferSize, IntPtr hwndCallback);
-
-		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
 		#endregion
 
 		#region Variables and Constants
 
-		bool asFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
-		MenuItem misa, misd, misag, misdg, misng;
-
-		bool IsInfoPaneEnabled, IsNavigationPaneEnabled, IsConsoleShown, IsPreviewPaneEnabled;
-		int PreviewPaneWidth = 120, InfoPaneHeight = 150;
-
-		ShellTreeViewEx ShellTree = new ShellTreeViewEx();
-		ShellView ShellListView = new ShellView();
-
+		#region Public member
 		public bool IsrestoreTabs;
-		bool IsHFlyoutEnabled;
-		bool isCheckModeEnabled;
-		bool IsExtendedFileOpEnabled;
-		bool IsCloseLastTabCloseApp;
-		bool IsUpdateCheck;
-		bool IsUpdateCheckStartup;
-
-		ClipboardMonitor cbm = new ClipboardMonitor();
-		ContextMenu cmHistory = new ContextMenu();
-
-
-		System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
-		System.Windows.Forms.Timer FocusTimer = new System.Windows.Forms.Timer();
-		IntPtr Handle;
-		string EditComm = "";
-		List<string> Archives = new List<string>(new[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
-		List<string> Images = new List<string>(new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
-		List<string> VirDisks = new List<string>(new[] { ".iso", ".bin", ".vhd" });
-
 		public static UpdateManager Updater;
-		string SelectedArchive = "";
-		bool KeepBackstageOpen = false;
+		#endregion
+		
+		#region Private Members
+		private bool asFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
+		private MenuItem misa, misd, misag, misdg, misng;
+		private bool IsInfoPaneEnabled, IsNavigationPaneEnabled, IsConsoleShown, IsPreviewPaneEnabled;
+		private int PreviewPaneWidth = 120, InfoPaneHeight = 150;
+		private ShellTreeViewEx ShellTree = new ShellTreeViewEx();
+		private ShellView ShellListView = new ShellView();
+		private bool IsHFlyoutEnabled;
+		private bool isCheckModeEnabled;
+		private bool IsExtendedFileOpEnabled;
+		private bool IsCloseLastTabCloseApp;
+		private bool IsUpdateCheck;
+		private bool IsUpdateCheckStartup;
+		private ClipboardMonitor cbm = new ClipboardMonitor();
+		private ContextMenu cmHistory = new ContextMenu();
+		private System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
+		private IntPtr Handle;
+		private string EditComm = "";
+		private List<string> Archives = new List<string>(new[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
+		private List<string> Images = new List<string>(new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
+		private List<string> VirDisks = new List<string>(new[] { ".iso", ".bin", ".vhd" });
+		private string SelectedArchive = "";
+		private bool KeepBackstageOpen = false;
 		private string ICON_DLLPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
-
-
-
 		bool canlogactions = false;
 		string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
 		string logdir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\ActionLog\\";
 		string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
 		string naddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\NetworkAccounts\\";
 		string sstdir;
-
 		bool OverwriteOnRotate = false;
 		NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
 		DateTime LastUpdateCheck;
 		Int32 UpdateCheckInterval;
 		Double CommandPromptWinHeight;
-
 		Boolean IsGlassOnRibonMinimized { get; set; }
 		NetworkAccountManager nam = new NetworkAccountManager();
 		List<BExplorer.Shell.LVItemColor> LVItemsColor { get; set; }
 		uint SelectedDriveID = 0;
 		ContextMenu chcm;
-
 		MessageReceiver r;
-
+		#endregion
 		#endregion
 
 		#region Events
@@ -980,10 +961,10 @@ namespace BetterExplorer {
 				PROPERTYKEY typePK = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 15 };
 
 				foreach (ShellItem item in ShellListView.SelectedItems) {
-					flt.Add(DateTime.Parse(item.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()));
+					flt.Add(DateTime.Parse(item.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date);
 				}
 
-				var items = ShellListView.Items.Where(w => flt.Contains(DateTime.Parse(w.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()))).ToArray();
+				var items = ShellListView.Items.Where(w => flt.Contains(DateTime.Parse(w.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date)).ToArray();
 
 				ShellListView.SelectItems(items);
 				items = null;
@@ -1003,7 +984,6 @@ namespace BetterExplorer {
 		}
 
 		private void ConditionallySelectFiles(ConditionalSelectData csd) {
-			//TODO: Test this to see if it works
 			if (csd == null) return;
 
 			var shells = ShellListView.Items.ToList();
@@ -1114,69 +1094,22 @@ namespace BetterExplorer {
 				}
 			}
 
-			//TODO: Check this!!
 
 			Func<FileInfo, DateTime> GetCreateDate = (x) => x.CreationTimeUtc;
 			foreach (var item in !csd.FilterByDateCreated ? l2shells : DateFilter(l2shells, csd.DateCreatedData, GetCreateDate)) {
 				l3shells.Add(item);
 			}
 
-			/*
-			if (csd.FilterByDateCreated) {
-				Func<FileInfo, DateTime> GetDate = (x) => x.CreationTimeUtc;
-				foreach (ShellItem item in DateFilter(l2shells, csd.DateCreatedData.queryDate, csd.DateCreatedData.filter, GetDate)) {
-					//foreach (ShellItem item in FilterByCreateDate(l2shells.ToArray(), csd.DateCreatedData.queryDate, csd.DateCreatedData.filter)) {
-					l3shells.Add(item);
-				}
-			}
-			else {
-				foreach (ShellItem item in l2shells) {
-					l3shells.Add(item);
-				}
-			}
-			*/
-
 			Func<FileInfo, DateTime> GetDateModified = (x) => x.LastWriteTimeUtc;
 			foreach (var item in !csd.FilterByDateModified ? l2shells : DateFilter(l3shells, csd.DateModifiedData, GetDateModified)) {
 				l4shells.Add(item);
 			}
 
-			/*
-			if (csd.FilterByDateModified) {
-				Func<FileInfo, DateTime> GetDate = (x) => x.LastWriteTimeUtc;
-				foreach (ShellItem item in DateFilter(l3shells, csd.DateModifiedData.queryDate, csd.DateModifiedData.filter, GetDate)) {
-					//foreach (ShellItem item in FilterByWriteDate(l3shells.ToArray(), csd.DateModifiedData.queryDate, csd.DateModifiedData.filter)) {
-					l4shells.Add(item);
-				}
-			}
-			else {
-				foreach (ShellItem item in l2shells) {
-					l4shells.Add(item);
-				}
-			}
-			*/
-
 			Func<FileInfo, DateTime> GetDateAccessed = (x) => x.LastAccessTimeUtc;
 			foreach (var item in !csd.FilterByDateAccessed ? l4shells : DateFilter(l4shells, csd.DateAccessedData, GetDateAccessed)) {
 				l5shells.Add(item);
 			}
-
-			/*
-			if (csd.FilterByDateAccessed) {
-				Func<FileInfo, DateTime> GetDate = (x) => x.LastAccessTimeUtc;
-				//foreach (ShellItem item in FilterByAccessDate(l4shells.ToArray(), csd.DateAccessedData.queryDate, csd.DateAccessedData.filter)) {
-				foreach (ShellItem item in DateFilter(l4shells, csd.DateAccessedData.queryDate, csd.DateAccessedData.filter, GetDate)) {
-					l5shells.Add(item);
-				}
-			}
-			else {
-				foreach (ShellItem item in l4shells) {
-					l5shells.Add(item);
-				}
-			}
-			*/
-
-			//List<ShellItem> sel = new List<ShellItem>();
+			
 			ShellListView.SelectItems(l5shells.ToArray());
 			ShellListView.Focus();
 
@@ -1206,78 +1139,6 @@ namespace BetterExplorer {
 
 			return outshells;
 		}
-
-		/*
-		public List<ShellItem> FilterByCreateDate(ShellItem[] shells, DateTime datetocompare, ConditionalSelectParameters.DateFilterTypes filter) {
-			List<ShellItem> outshells = new List<ShellItem>();
-
-			foreach (ShellItem item in shells) {
-				FileInfo data = new FileInfo(item.ParsingName);
-				switch (filter) {
-					case ConditionalSelectParameters.DateFilterTypes.EarlierThan:
-						if (DateTime.Compare(data.CreationTimeUtc.Date, datetocompare.Date) < 0) outshells.Add(item);
-						break;
-					case ConditionalSelectParameters.DateFilterTypes.LaterThan:
-						if (DateTime.Compare(data.CreationTimeUtc.Date, datetocompare.Date) > 0) outshells.Add(item);
-						break;
-					case ConditionalSelectParameters.DateFilterTypes.Equals:
-						if (DateTime.Compare(data.CreationTimeUtc.Date, datetocompare.Date) == 0) outshells.Add(item);
-						break;
-					default:
-						break;
-				}
-			}
-
-			return outshells;
-		}
-
-		public List<ShellItem> FilterByWriteDate(ShellItem[] shells, DateTime datetocompare, ConditionalSelectParameters.DateFilterTypes filter) {
-			List<ShellItem> outshells = new List<ShellItem>();
-
-			foreach (ShellItem item in shells) {
-				FileInfo data = new FileInfo(item.ParsingName);
-				switch (filter) {
-					case ConditionalSelectParameters.DateFilterTypes.EarlierThan:
-						if (DateTime.Compare(data.LastWriteTimeUtc.Date, datetocompare) < 0) outshells.Add(item);
-						break;
-					case ConditionalSelectParameters.DateFilterTypes.LaterThan:
-						if (DateTime.Compare(data.LastWriteTimeUtc.Date, datetocompare) > 0) outshells.Add(item);
-						break;
-					case ConditionalSelectParameters.DateFilterTypes.Equals:
-						if (DateTime.Compare(data.LastWriteTimeUtc.Date, datetocompare) == 0) outshells.Add(item);
-						break;
-					default:
-						break;
-				}
-			}
-
-			return outshells;
-		}
-
-		public List<ShellItem> FilterByAccessDate(ShellItem[] shells, DateTime datetocompare, ConditionalSelectParameters.DateFilterTypes filter) {
-			List<ShellItem> outshells = new List<ShellItem>();
-
-			foreach (ShellItem item in shells) {
-				FileInfo data = new FileInfo(item.ParsingName);
-				switch (filter) {
-					case ConditionalSelectParameters.DateFilterTypes.EarlierThan:
-						if (DateTime.Compare(data.LastAccessTimeUtc.Date, datetocompare) < 0) outshells.Add(item);
-						break;
-					case ConditionalSelectParameters.DateFilterTypes.LaterThan:
-						if (DateTime.Compare(data.LastAccessTimeUtc.Date, datetocompare) > 0) outshells.Add(item);
-						break;
-					case ConditionalSelectParameters.DateFilterTypes.Equals:
-						if (DateTime.Compare(data.LastAccessTimeUtc.Date, datetocompare) == 0) outshells.Add(item);
-						break;
-					default:
-						break;
-				}
-			}
-
-			return outshells;
-		}
-		*/
-
 		#endregion
 
 		#region Size Chart
@@ -1363,6 +1224,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnHistory_Click(object sender, RoutedEventArgs e) {
+			//TODO: Fix this!!!!
 			//ShellListView.ShowPropPage(this.Handle, ShellListView.GetFirstSelectedItem().ParsingName, 
 			//	WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System),"twext.dll"),1024,"Previous Versions"));
 		}
@@ -1383,6 +1245,7 @@ namespace BetterExplorer {
 
 
 		void miow_Click(object sender, RoutedEventArgs e) {
+			//TODO: fix this as this not work!!!!!
 			MenuItem item = (sender as MenuItem);
 			var ptr = (IntPtr)item.Tag;
 			var invokepFunc = Marshal.ReadIntPtr(ptr + 5 * IntPtr.Size);
@@ -1397,16 +1260,16 @@ namespace BetterExplorer {
 		}
 
 		void mif_Click(object sender, RoutedEventArgs e) {
-			//FIFIXME:
-			//MenuItem item = (sender as MenuItem);
+			MenuItem item = (sender as MenuItem);
 
-			//   var obj = (item.Tag as ShellItem);
-			//   ShellLink lnk = new ShellLink(obj.m_ComInterface);
+			var obj = (item.Tag as ShellItem);
+			ShellLink lnk = new ShellLink(obj.ParsingName);
 
-			//   ShellListView.Navigate(lnk.TargetShellItem);
+			var obj2 = new ShellItem(lnk.TargetPIDL);
+			ShellListView.Navigate(obj2);
 
-			//   lnk.Dispose();
-			//   obj.Dispose();
+			lnk.Dispose();
+			obj.Dispose();
 		}
 
 		private void btnCopy_Click(object sender, RoutedEventArgs e) {
@@ -1415,7 +1278,6 @@ namespace BetterExplorer {
 				sc.Add(item.ParsingName);
 			}
 			System.Windows.Forms.Clipboard.SetFileDropList(sc);
-			//ShellListView.IsMoveClipboardOperation = false;
 		}
 
 		private void btnPaste_Click(object sender, RoutedEventArgs e) {
@@ -1437,7 +1299,6 @@ namespace BetterExplorer {
 			if (ShellListView.SelectedItems.Count() > 1) {
 				string path = null;
 				foreach (ShellItem item in ShellListView.SelectedItems) {
-					//This way i think is better of making multiple line in .Net ;)
 					if (string.IsNullOrEmpty(path)) {
 						path = item.ParsingName;
 					}
@@ -1468,7 +1329,6 @@ namespace BetterExplorer {
 		private string ListAllSelectedItems() {
 			string path = null;
 			foreach (ShellItem item in ShellListView.SelectedItems) {
-				//This way i think is better of making multiple line in .Net ;)
 				if (string.IsNullOrEmpty(path)) {
 					path = item.ParsingName;
 				}
@@ -1482,20 +1342,14 @@ namespace BetterExplorer {
 
 		// Delete > Send to Recycle Bin
 		private void MenuItem_Click(object sender, RoutedEventArgs e) {
-			//KeepFocusOnExplorer = true;
 			AddToLog(String.Format("The following files have been moved to the Recycle Bin: {0}", ListAllSelectedItems()));
-			//SetDeleteOperation(true);
 			ShellListView.DeleteSelectedFiles(true);
 		}
 
 		// Delete > Permanently Delete
 		private void MenuItem_Click_1(object sender, RoutedEventArgs e) {
-			//KeepFocusOnExplorer = true;
-			//SetDeleteOperation(false);
 			ShellListView.DeleteSelectedFiles(false);
 		}
-
-		//string LastPath = "";
 
 		public bool IsRenameFromCreate = false;
 
@@ -1537,7 +1391,6 @@ namespace BetterExplorer {
 
 		private void btnInvSel_Click(object sender, RoutedEventArgs e) {
 			ShellListView.InvertSelection();
-			//WindowsAPI.SendMessage((int)ShellListView.Handle, 0x0111, 0x7013, 0);
 		}
 
 		private void btnPasetShC_Click(object sender, RoutedEventArgs e) {
@@ -1622,10 +1475,8 @@ namespace BetterExplorer {
 		}
 
 		private void btnCut_Click(object sender, RoutedEventArgs e) {
-			//TODO: Code this!!
-			System.Windows.Forms.MessageBox.Show("This button currently does nothing");
 			//AddToLog("The following files have been cut: " + PathStringCombiner.CombinePaths(ShellListView.SelectedItems.ToList(), " ", false));
-			//ShellListView.DoCut();
+			ShellListView.CutSelectedFiles();
 		}
 
 		private void btnNewItem_Click(object sender, RoutedEventArgs e) {
@@ -1649,7 +1500,7 @@ namespace BetterExplorer {
 				ShellLink link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.GetFirstSelectedItem().ParsingName;
-				link.Save(KnownFolders.Links.ParsingName + @"\" + ShellListView.GetFirstSelectedItem().GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
+				link.Save(String.Format(@"{0}\{1}.lnk", KnownFolders.Links.ParsingName, ShellListView.GetFirstSelectedItem().GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY)));
 				link.Dispose();
 			}
 
@@ -1657,7 +1508,7 @@ namespace BetterExplorer {
 				ShellLink link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.CurrentFolder.ParsingName;
-				link.Save(KnownFolders.Links.ParsingName + @"\" + ShellListView.CurrentFolder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY) + ".lnk");
+				link.Save(String.Format(@"{0}\{1}.lnk", KnownFolders.Links.ParsingName, ShellListView.CurrentFolder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY)));
 				link.Dispose();
 			}
 
@@ -2776,12 +2627,11 @@ namespace BetterExplorer {
 		}
 
 		private void SetUpJumpListOnNavComplete() {
-			IntPtr pIDL = IntPtr.Zero;
+			var pIDL = IntPtr.Zero;
 
 			try {
 				uint iAttribute;
-				SHParseDisplayName(ShellListView.CurrentFolder.ParsingName, IntPtr.Zero, out pIDL, (uint)0, out iAttribute);
-
+				pIDL = this.ShellListView.CurrentFolder.AbsolutePidl;
 				WindowsAPI.SHFILEINFO sfi = new WindowsAPI.SHFILEINFO();
 				IntPtr Res = IntPtr.Zero;
 				if (pIDL != IntPtr.Zero && !ShellListView.CurrentFolder.IsFileSystem) {
