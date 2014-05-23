@@ -234,6 +234,7 @@ namespace BetterExplorer {
 			foreach (var item in tcMain.ReopenableTabs) {
 				btnUndoClose.Items.Add(item.CurrentLocation);
 			}
+			this.ShellListView.Focus();
 
 		}
 

@@ -496,36 +496,42 @@ namespace BExplorer.Shell {
 						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(256);
 						iconsize = 256;
+						RefreshItemsCountInternal();
 						break;
 
 					case ShellViewStyle.LargeIcon:
 						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(96);
 						iconsize = 96;
+						RefreshItemsCountInternal();
 						break;
 
 					case ShellViewStyle.Medium:
 						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(48);
 						iconsize = 48;
+						RefreshItemsCountInternal();
 						break;
 
 					case ShellViewStyle.SmallIcon:
 						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_SMALLICON, 0);
 						ResizeIcons(16);
 						iconsize = 16;
+						RefreshItemsCountInternal();
 						break;
 
 					case ShellViewStyle.List:
 						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_LIST, 0);
 						ResizeIcons(16);
 						iconsize = 16;
+						RefreshItemsCountInternal();
 						break;
 
 					case ShellViewStyle.Details:
 						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_DETAILS, 0);
 						ResizeIcons(16);
 						iconsize = 16;
+						RefreshItemsCountInternal();
 						break;
 
 					case ShellViewStyle.Thumbnail:
@@ -535,6 +541,7 @@ namespace BExplorer.Shell {
 						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_TILE, 0);
 						ResizeIcons(48);
 						iconsize = 48;
+						RefreshItemsCountInternal();
 						//LVTILEVIEWINFO tvi = new LVTILEVIEWINFO();
 						//tvi.cbSize = Marshal.SizeOf(typeof(LVTILEVIEWINFO));
 						//tvi.dwMask = (int)LVTVIM.LVTVIM_COLUMNS | (int)LVTVIM.LVTVIM_TILESIZE;
@@ -1546,7 +1553,7 @@ namespace BExplorer.Shell {
 						}
 						if (info.Notification == ShellNotifications.SHCNE.SHCNE_DELETE || info.Notification == ShellNotifications.SHCNE.SHCNE_RMDIR) {
 							var obj = new ShellItem(info.Item1);
-							if (!String.IsNullOrEmpty(obj.ParsingName) && obj.Extension.ToLowerInvariant() != ".tmp")
+							if (!String.IsNullOrEmpty(obj.ParsingName))
 							{
 								ShellItem theItem = Items.SingleOrDefault(s => s.ParsingName == obj.ParsingName);
 								if (theItem != null) {
@@ -3256,6 +3263,8 @@ namespace BExplorer.Shell {
 			
 			if (this.Collumns[this.LastSortedColumnIndex] == col || reversed)
 				this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
+
+			RefreshItemsCountInternal();
 		}
 
 		public void SetGroupOrder(Boolean reverse = true)
@@ -3880,6 +3889,11 @@ namespace BExplorer.Shell {
 		private void SuspendLayout()
 		{
 			User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 0, 0);
+		}
+		private void RefreshItemsCountInternal()
+		{
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 		}
 		#endregion Private Methods
 
