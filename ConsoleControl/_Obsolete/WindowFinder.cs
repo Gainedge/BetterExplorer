@@ -5,6 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 
 namespace ConsoleControl {
+	[Obsolete("Not Used", true)]
 	public class WindowFinder {
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
@@ -16,6 +17,9 @@ namespace ConsoleControl {
 		static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
 		private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+		IntPtr windowHandle = IntPtr.Zero;
+		int pid = 0;
 
 		public WindowFinder() {
 			ewp = new EnumWindowsProc(EnumWindowFunction);
@@ -39,8 +43,5 @@ namespace ConsoleControl {
 			}
 			return true;
 		}
-
-		IntPtr windowHandle = IntPtr.Zero;
-		int pid = 0;
 	}
 }

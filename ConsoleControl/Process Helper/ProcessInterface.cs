@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace ProcessInterface {
+
 	/// <summary>
 	/// A ProcessEventHandler is a delegate for process input/output events.
 	/// </summary>
 	/// <param name="sender">The sender.</param>
 	/// <param name="args">The <see cref="ProcessInterface.ProcessEventArgs"/> instance containing the event data.</param>
 	public delegate void ProcessEventHanlder(object sender, ProcessEventArgs args);
-
 
 	//TODO: Move into ConsoleControl
 	/// <summary>
@@ -23,49 +21,7 @@ namespace ProcessInterface {
 	[Obsolete("Moving into ConsoleControl", false)]
 	public class ProcessInterface {
 
-		#region Events
-
-		/// <summary>
-		/// Occurs when process output is produced.
-		/// </summary>
-		public event ProcessEventHanlder OnProcessOutput;
-
-		/// <summary>
-		/// Occurs when process error output is produced.
-		/// </summary>
-		public event ProcessEventHanlder OnProcessError;
-
-		/// <summary>
-		/// Occurs when process input is produced.
-		/// </summary>
-		public event ProcessEventHanlder OnProcessInput;
-
-		/// <summary>
-		/// Occurs when the process ends.
-		/// </summary>
-		public event ProcessEventHanlder OnProcessExit;
-
-		#endregion
-
 		#region Properties
-
-		/*
-		/// <summary>
-		/// The current process.
-		/// </summary>
-		private Process process;
-
-		/// <summary>
-		/// Current process file name.
-		/// </summary>
-		private string processFileName;
-
-		/// <summary>
-		/// Arguments sent to the current process.
-		/// </summary>
-		private string processArguments;
-		*/
-
 
 		/// <summary>
 		/// The input writer.
@@ -92,8 +48,6 @@ namespace ProcessInterface {
 		/// </summary>
 		private BackgroundWorker errorWorker = new BackgroundWorker();
 
-
-
 		/// <summary>
 		/// Gets the internal process.
 		/// </summary>
@@ -111,7 +65,6 @@ namespace ProcessInterface {
 		/// Gets the process arguments.
 		/// </summary>
 		public string ProcessArguments { get; private set; }
-
 
 		/// <summary>
 		/// Gets a value indicating whether this instance is process running.
@@ -132,9 +85,34 @@ namespace ProcessInterface {
 			}
 		}
 
-		#endregion
+		#endregion Properties
+
+		#region Events/DllImport
+
 		[DllImport("kernel32.dll")]
-		static extern bool SetConsoleOutputCP(uint wCodePageID);
+		private static extern bool SetConsoleOutputCP(uint wCodePageID);
+
+		/// <summary>
+		/// Occurs when process output is produced.
+		/// </summary>
+		public event ProcessEventHanlder OnProcessOutput;
+
+		/// <summary>
+		/// Occurs when process error output is produced.
+		/// </summary>
+		public event ProcessEventHanlder OnProcessError;
+
+		/// <summary>
+		/// Occurs when process input is produced.
+		/// </summary>
+		public event ProcessEventHanlder OnProcessInput;
+
+		/// <summary>
+		/// Occurs when the process ends.
+		/// </summary>
+		public event ProcessEventHanlder OnProcessExit;
+
+		#endregion Events/DllImport
 
 		#region Public Methods
 
@@ -202,7 +180,6 @@ namespace ProcessInterface {
 			Process.Kill();
 		}
 
-
 		/// <summary>
 		/// Writes the input.
 		/// </summary>
@@ -214,9 +191,7 @@ namespace ProcessInterface {
 			}
 		}
 
-
-		#endregion
-
+		#endregion Public Methods
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProcessInterface"/> class.
@@ -240,7 +215,7 @@ namespace ProcessInterface {
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="System.ComponentModel.ProgressChangedEventArgs"/> instance containing the event data.</param>
-		void outputWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+		private void outputWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			//  We must be passed a string in the user state.
 			if (e.UserState is string) {
 				//  Fire the output event.
@@ -253,7 +228,7 @@ namespace ProcessInterface {
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
-		void outputWorker_DoWork(object sender, DoWorkEventArgs e) {
+		private void outputWorker_DoWork(object sender, DoWorkEventArgs e) {
 			while (outputWorker.CancellationPending == false) {
 				//  Any lines to read?
 				int count = 0;
@@ -274,7 +249,7 @@ namespace ProcessInterface {
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="System.ComponentModel.ProgressChangedEventArgs"/> instance containing the event data.</param>
-		void errorWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+		private void errorWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			//  The userstate must be a string.
 			if (e.UserState is string) {
 				//  Fire the error event.
@@ -287,7 +262,7 @@ namespace ProcessInterface {
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="System.ComponentModel.DoWorkEventArgs"/> instance containing the event data.</param>
-		void errorWorker_DoWork(object sender, DoWorkEventArgs e) {
+		private void errorWorker_DoWork(object sender, DoWorkEventArgs e) {
 			while (errorWorker.CancellationPending == false) {
 				//  Any lines to read?
 				int count = 0;
@@ -308,7 +283,7 @@ namespace ProcessInterface {
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
 		/// <param name="e">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-		void currentProcess_Exited(object sender, EventArgs e) {
+		private void currentProcess_Exited(object sender, EventArgs e) {
 			//  Fire process exited.
 			FireProcessExitEvent(Process.ExitCode);
 
@@ -366,6 +341,5 @@ namespace ProcessInterface {
 			if (theEvent != null)
 				theEvent(this, new ProcessEventArgs(code));
 		}
-
 	}
 }

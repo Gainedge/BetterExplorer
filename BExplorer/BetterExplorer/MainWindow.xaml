@@ -2228,28 +2228,28 @@
 							   IsLauncherVisible="False"
 							   Ribbon:KeyTip.Keys="O">
 					<Ribbon:Button x:Name="btnRotateLeft"
-						 Click="btnRotateLeft_Click"
+						 Click="RotateImages"
 						 Header="{DynamicResource btnRotateLeftCP}"
 						 Icon="Images\rl16.png"
 						 LargeIcon="Images\rl32.png"
 						 Ribbon:KeyTip.Keys="L"
 						 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Large,Large" />
 					<Ribbon:Button x:Name="btnRotateRight"
-						 Click="btnRotateRight_Click"
+						 Click="RotateImages"
 						 Header="{DynamicResource btnRotateRightCP}"
 						 Icon="Images\rr16.png"
 						 LargeIcon="Images\rr32.png"
 						 Ribbon:KeyTip.Keys="R"
 						 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Large,Large" />
 					<Ribbon:Button x:Name="btnFlipX"
-						 Click="btnFlipX_Click"
+						 Click="RotateImages"
 						 Header="{DynamicResource btnFlipXCP}"
 						 Icon="Images\fh16.png"
 						 LargeIcon="Images\fh32.png"
 						 Ribbon:KeyTip.Keys="X"
 						 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle" />
 					<Ribbon:Button x:Name="btnFlipY"
-						 Click="btnFlipY_Click"
+						 Click="RotateImages"
 						 Header="{DynamicResource btnFlipYCP}"
 						 Icon="Images\fv16.png"
 						 LargeIcon="Images\fv32.png"
@@ -3214,7 +3214,6 @@
 
 		</Ribbon:StatusBar>
 		<Button x:Name="btnTest" Grid.ColumnSpan="2" Content="Button" Margin="673,23,0,0" VerticalAlignment="Top" Width="75" Click="btnTest_Click"/>
-		<Button Content="Button" HorizontalAlignment="Left" Margin="643,23,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click_1"/>
 
 	</Grid>
 </Ribbon:RibbonWindow>

@@ -5,109 +5,95 @@ using System.Windows.Forms;
 using System.Drawing;
 using Microsoft.WindowsAPICodePack.Shell;
 
-namespace BetterExplorer
-{
-    // Must inherit Control, not Component, in order to have Handle
-    [DefaultEvent("ClipboardChanged")]
-    public partial class ClipboardMonitor : Control
-    {
-        IntPtr nextClipboardViewer;
+namespace BetterExplorer {
+	/// <summary>Must inherit Control, not Component, in order to have Handle</summary>
+	[DefaultEvent("ClipboardChanged")]
+	public partial class ClipboardMonitor : Control {
 
-        public ClipboardMonitor()
-        {
-            this.BackColor = Color.Red;
-            this.Visible = false;
+		#region Properties/Events/DllImport
 
-            nextClipboardViewer = (IntPtr)SetClipboardViewer((int)this.Handle);
-        }
+		IntPtr nextClipboardViewer;
 
-        /// <summary>
-        /// Clipboard contents changed.
-        /// </summary>
-        public event EventHandler<ClipboardChangedEventArgs> ClipboardChanged;
+		/// <summary>Clipboard contents changed.</summary>
+		public event EventHandler<ClipboardChangedEventArgs> ClipboardChanged;
 
-        protected override void Dispose(bool disposing)
-        {
-            try
-            {
-                if (nextClipboardViewer != null)
-                    ChangeClipboardChain(this.Handle, nextClipboardViewer);
-            }
-            catch (Exception)
-            {
-                
-            }
-        }
+		[DllImport("user32.dll")]
+		protected static extern int SetClipboardViewer(int hWndNewViewer);
 
-        [DllImport("user32.dll")]
-        protected static extern int SetClipboardViewer(int hWndNewViewer);
+		[DllImport("user32.dll", CharSet = CharSet.Auto)]
+		public static extern bool ChangeClipboardChain(IntPtr hWndRemove, IntPtr hWndNewNext);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern bool ChangeClipboardChain(IntPtr hWndRemove, IntPtr hWndNewNext);
+		[DllImport("user32.dll", CharSet = CharSet.Auto)]
+		public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
+		#endregion
 
-        protected override void WndProc(ref Message m)
-        {
-            // defined in winuser.h
-            const int WM_DRAWCLIPBOARD = 0x308;
-            const int WM_CHANGECBCHAIN = 0x030D;
+		public ClipboardMonitor() {
+			this.BackColor = Color.Red;
+			this.Visible = false;
 
-            switch (m.Msg)
-            {
-                case WM_DRAWCLIPBOARD:
-                    OnClipboardChanged();
-                    SendMessage(nextClipboardViewer, m.Msg, m.WParam, m.LParam);
-                    break;
+			nextClipboardViewer = (IntPtr)SetClipboardViewer((int)this.Handle);
+		}
 
-                case WM_CHANGECBCHAIN:
-                    if (m.WParam == nextClipboardViewer)
-                        nextClipboardViewer = m.LParam;
-                    else
-                        SendMessage(nextClipboardViewer, m.Msg, m.WParam, m.LParam);
-                    break;
+		protected override void Dispose(bool disposing) {
+			try {
+				if (nextClipboardViewer != null)
+					ChangeClipboardChain(this.Handle, nextClipboardViewer);
+			}
+			catch (Exception) {
 
-                default:
-                    base.WndProc(ref m);
-                    break;
-            }
-        }
+			}
+		}
 
-        /*Call when content conetent of clipboard is changed
-         */
-        void OnClipboardChanged()
-        {
-            try
-            {
-                IDataObject iData = Clipboard.GetDataObject();
-                
-                if (ClipboardChanged != null)
-                {
-                    ClipboardChanged(this, new ClipboardChangedEventArgs(iData));
-                }
+		protected override void WndProc(ref Message m) {
+			// defined in winuser.h
+			const int WM_DRAWCLIPBOARD = 0x308;
+			const int WM_CHANGECBCHAIN = 0x030D;
 
-            }
-            //catch (Exception e)
-            catch (Exception)
-            {
-                // Swallow or pop-up, not sure
-                // Trace.Write(e.ToString());
-                //MessageBox.Show(e.ToString());
-            }
-        }
-    }
+			switch (m.Msg) {
+				case WM_DRAWCLIPBOARD:
+					OnClipboardChanged();
+					SendMessage(nextClipboardViewer, m.Msg, m.WParam, m.LParam);
+					break;
 
-    /// <summary>
-    /// Class for recording events of ClipboardChanges
-    /// </summary>
-    public class ClipboardChangedEventArgs : EventArgs
-    {
-        public readonly IDataObject DataObject;
+				case WM_CHANGECBCHAIN:
+					if (m.WParam == nextClipboardViewer)
+						nextClipboardViewer = m.LParam;
+					else
+						SendMessage(nextClipboardViewer, m.Msg, m.WParam, m.LParam);
+					break;
 
-        public ClipboardChangedEventArgs(IDataObject dataObject)
-        {
-            DataObject = dataObject;
-        }
-    }
+				default:
+					base.WndProc(ref m);
+					break;
+			}
+		}
+
+		/// <summary>Call when content content of clipboard is changed</summary>
+		void OnClipboardChanged() {
+			try {
+				IDataObject iData = Clipboard.GetDataObject();
+
+				if (ClipboardChanged != null) {
+					ClipboardChanged(this, new ClipboardChangedEventArgs(iData));
+				}
+
+			}
+			//catch (Exception e)
+			catch (Exception) {
+				// Swallow or pop-up, not sure
+				// Trace.Write(e.ToString());
+				//MessageBox.Show(e.ToString());
+			}
+		}
+	}
+
+	/// <summary>Class for recording events of ClipboardChanges</summary>
+	public class ClipboardChangedEventArgs : EventArgs {
+		public readonly IDataObject DataObject;
+
+		public ClipboardChangedEventArgs(IDataObject dataObject) {
+			DataObject = dataObject;
+		}
+	}
 }
