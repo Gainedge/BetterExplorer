@@ -2061,6 +2061,12 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_ItemUpdated(object sender, ItemUpdatedEventArgs e) {
+			if (e.UpdateType != ItemUpdateType.Renamed && e.UpdateType != ItemUpdateType.Updated)
+			{
+				int ItemsCount = ShellListView.GetItemsCount();
+				sbiItemsCount.Visibility = ItemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;
+				sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
+			}
 			if (e.UpdateType == ItemUpdateType.Created && IsRenameFromCreate) {
 				ShellListView.RenameItem(e.NewItemIndex);
 				IsRenameFromCreate = false;

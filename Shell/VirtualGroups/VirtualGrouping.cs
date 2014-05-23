@@ -39,6 +39,12 @@ namespace BExplorer.Shell
 
 		public void GetItemInGroup(int groupIndex, int n, out int itemIndex)
 		{
+			if (this._VirtualListView.Groups == null || this._VirtualListView.Groups.Count == 0)
+			{
+				itemIndex = -1;
+				return;
+			}
+
 			var group = this._VirtualListView.Groups[groupIndex];
 			var itemInGroup = group.Items[n];
 

@@ -1462,15 +1462,12 @@ namespace BExplorer.Shell {
 			if (!Items.Contains(obj) && !String.IsNullOrEmpty(obj.ParsingName))
 			{
 				Items.Add(obj);
+				this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
 				if (this.IsGroupsEnabled)
 				{
-					//TODO: add here logic for adding new items when grouping is enabled!
+					SetGroupOrder(false);
 				}
-				else
-				{
-					this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
-					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-				}
+				
 			}
 			
 		}
@@ -1484,7 +1481,12 @@ namespace BExplorer.Shell {
 					Items.Insert(this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex, obj2);
 					ItemsHashed.Add(obj2, this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex);
 					//this.SelectItemByIndex(this.CurrentRefreshedItemIndex == -1 ? 0 :CurrentRefreshedItemIndex);
-					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+					if (this.IsGroupsEnabled)
+					{
+						this.SetGroupOrder(false);
+					}
+					this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+
 					if (this.ItemUpdated != null)
 						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj2, null, this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex));
 
@@ -1503,11 +1505,15 @@ namespace BExplorer.Shell {
 					ItemsHashed.Remove(theItem);
 					ItemsHashed.Add(obj2, itemIndex);
 					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, itemIndex, 0);
+					if (this.IsGroupsEnabled)
+					{
+						this.SetGroupOrder(false);
+					}
+					this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
 					RedrawWindow();
 					if (this.ItemUpdated != null)
 						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, itemIndex));
 				}
-				this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
 			}
 			//}
 			this.CurrentRefreshedItemIndex = -1;
@@ -1546,7 +1552,12 @@ namespace BExplorer.Shell {
 								if (theItem != null) {
 									Items.Remove(theItem);
 									ItemsHashed.Remove(theItem);
-									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+									if (this.IsGroupsEnabled)
+									{
+										this.SetGroupOrder(false);
+									}
+									this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+
 									if (this.ItemUpdated != null)
 										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
 								}
@@ -1584,6 +1595,10 @@ namespace BExplorer.Shell {
 							{
 									Items.Remove(obj);
 									ItemsHashed.Remove(obj);
+									if (this.IsGroupsEnabled)
+									{
+										this.SetGroupOrder(false);
+									}
 									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 							}
 
@@ -3858,6 +3873,14 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		private void ResumeLayout()
+		{
+			User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 1, 0);
+		}
+		private void SuspendLayout()
+		{
+			User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 0, 0);
+		}
 		#endregion Private Methods
 
 		#region Unmanaged
@@ -3867,7 +3890,8 @@ namespace BExplorer.Shell {
 
 		#endregion Unmanaged
 
-		public void AutosizeAllColumns(int autosizeParam) {
+		public void AutosizeAllColumns(int autosizeParam)
+		{
 			this.SuspendLayout();
 			for (int i = 0; i < this.Collumns.Count; i++) {
 				User32.SendMessage(this.LVHandle, LVM.SETCOLUMNWIDTH, i, autosizeParam);
