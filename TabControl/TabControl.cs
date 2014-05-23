@@ -22,24 +22,18 @@ namespace Wpf.Controls {
 	[TemplatePart(Name = "PART_ScrollViewer", Type = typeof(ScrollViewer))]
 	public class TabControl : System.Windows.Controls.TabControl {
 		public List<NavigationLog> ReopenableTabs = new List<NavigationLog>();
+		//public static List<NavigationLog> ReopenableTabs = new List<NavigationLog>();
+
+		#region Properties
 		public string StartUpLocation = KnownFolders.Libraries.ParsingName;
 		public DragEventHandler newt_DragEnter, newt_DragOver, newt_Drop;
 		public MouseEventHandler newt_PreviewMouseMove;
 		public Action ConstructMoveToCopyToMenu;
-
 		public bool isGoingBackOrForward;
-
-		private List<string> Archives = new List<string>(new string[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
-		private List<string> Images = new List<string>(new string[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
-		private List<string> VirDisks = new List<string>(new string[] { ".iso", ".bin", ".vhd" });
-
-		#region Properties/Locals
 
 		// TemplatePart controls
 		private ToggleButton _toggleButton;
-
 		private ButtonBase _addNewButton;
-
 		private bool IsFixedSize {
 			get {
 				IEnumerable items = GetItems();
@@ -48,20 +42,6 @@ namespace Wpf.Controls {
 		}
 
 		#endregion Properties/Locals
-
-		#region Events
-
-		public event EventHandler<CancelEventArgs> TabItemAdding;
-
-		public event EventHandler<TabItemEventArgs> TabItemAdded;
-
-		public event EventHandler<TabItemCancelEventArgs> TabItemClosing;
-
-		public event EventHandler<TabItemEventArgs> TabItemClosed;
-
-		public event EventHandler<NewTabItemEventArgs> NewTabItem;
-
-		#endregion Events
 
 		#region Dependency properties
 
@@ -350,6 +330,16 @@ namespace Wpf.Controls {
 
 		#endregion Dependency properties
 
+		#region Events
+
+		public event EventHandler<CancelEventArgs> TabItemAdding;
+		public event EventHandler<TabItemEventArgs> TabItemAdded;
+		public event EventHandler<TabItemCancelEventArgs> TabItemClosing;
+		public event EventHandler<TabItemEventArgs> TabItemClosed;
+		public event EventHandler<NewTabItemEventArgs> NewTabItem;
+
+		#endregion Events
+
 		#region Tab Stuff
 
 		public Wpf.Controls.TabItem NewTab(ShellItem DefPath, bool IsNavigate) {
@@ -404,69 +394,6 @@ namespace Wpf.Controls {
 			ReopenableTabs.Remove(log);
 		}
 
-		/*
-		/// <summary>
-		///     Add a new Header
-		/// </summary>
-		[Obsolete("Shouldn't we just use NewTab() ??")]
-		public void AddTabItem() {
-			var obj = new ShellItem(this.DefaultTabPath);
-			obj.Thumbnail.CurrentSize = new Size(16, 16);
-			obj.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.IconOnly;
-			obj.Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
-
-			if (IsFixedSize)
-				throw new InvalidOperationException("ItemsSource is Fixed Size");
-
-			int i = this.SelectedIndex;
-
-			// give an opertunity to cancel the adding of the tabitem
-			CancelEventArgs c = new CancelEventArgs();
-			if (TabItemAdding != null)
-				TabItemAdding(this, c);
-
-			if (c.Cancel)
-				return;
-
-			TabItem tabItem;
-
-			// Using ItemsSource property
-			if (ItemsSource != null) {
-				IList list = (IList)ItemsSource;
-				NewTabItemEventArgs n = new NewTabItemEventArgs();
-				if (NewTabItem == null)
-					throw new InvalidOperationException("You must implement the NewTabItem event to supply the item to be added to the tab control.");
-
-				NewTabItem(this, n);
-				if (n.Content == null)
-					return;
-
-				if (i == -1 || i == list.Count - 1 || AddNewTabToEnd)
-					list.Add(n.Content);
-				else
-					list.Insert(++i, n.Content);
-
-				tabItem = (TabItem)this.ItemContainerGenerator.ContainerFromItem(n.Content);
-			}
-			else {
-				// Using Items Property
-				tabItem = new TabItem {
-					Header = obj.DisplayName,
-					Icon = obj.Thumbnail.BitmapSource,
-					ShellObject = obj,
-				};
-
-				if (i == -1 || i == this.Items.Count - 1 || AddNewTabToEnd)
-					this.Items.Add(tabItem);
-				else
-					this.Items.Insert(++i, tabItem);
-			}
-
-			if (TabItemAdded != null)
-				TabItemAdded(this, new TabItemEventArgs(tabItem));
-		}
-		*/
-
 		/// <summary>
 		/// Called by a child Header that wants to remove itself by clicking on the close button
 		/// </summary>
@@ -497,8 +424,6 @@ namespace Wpf.Controls {
 
 			if (TabItemClosed != null)
 				TabItemClosed(this, new TabItemEventArgs(tabItem));
-
-			
 		}
 
 		public void CloneTabItem(TabItem theTab) {
@@ -520,34 +445,13 @@ namespace Wpf.Controls {
 			ConstructMoveToCopyToMenu();
 		}
 
+		public void CloseAllTabsButThis(TabItem tabItem) {
+			foreach (TabItem tab in this.Items.OfType<TabItem>().ToArray()) {
+				if (tab != tabItem) this.RemoveTabItem(tab);
+			}
+		}
+
 		#endregion Tab Stuff
-
-		static TabControl() {
-			DefaultStyleKeyProperty.OverrideMetadata(typeof(TabControl), new FrameworkPropertyMetadata(typeof(TabControl)));
-			TabStripPlacementProperty.AddOwner(typeof(TabControl), new FrameworkPropertyMetadata(Dock.Top, new PropertyChangedCallback(OnTabStripPlacementChanged)));
-		}
-
-		public TabControl() {
-			Loaded +=
-				delegate {
-					SetAddNewButtonVisibility();
-					SetTabItemsCloseButtonVisibility();
-					IsUsingItemsSource = BindingOperations.IsDataBound(this, ItemsSourceProperty);
-
-					if (IsUsingItemsSource && IsFixedSize)
-						AllowAddNew = AllowDelete = false;
-					this.MouseDoubleClick += TabControl_MouseDoubleClick;
-				};
-		}
-
-		private void TabControl_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-			this.NewTab();
-		}
-
-		/*
-		 * Protected override methods
-		 *
-		 */
 
 		#region Overrides
 
@@ -698,6 +602,33 @@ namespace Wpf.Controls {
 
 		#endregion Overrides
 
+		#region Constructors
+
+		static TabControl() {
+			DefaultStyleKeyProperty.OverrideMetadata(typeof(TabControl), new FrameworkPropertyMetadata(typeof(TabControl)));
+			TabStripPlacementProperty.AddOwner(typeof(TabControl), new FrameworkPropertyMetadata(Dock.Top, new PropertyChangedCallback(OnTabStripPlacementChanged)));
+		}
+
+		public TabControl() {
+			Loaded +=
+				delegate {
+					SetAddNewButtonVisibility();
+					SetTabItemsCloseButtonVisibility();
+					IsUsingItemsSource = BindingOperations.IsDataBound(this, ItemsSourceProperty);
+
+					if (IsUsingItemsSource && IsFixedSize)
+						AllowAddNew = AllowDelete = false;
+					this.MouseDoubleClick += TabControl_MouseDoubleClick;
+				};
+		}
+
+		#endregion Constructors
+
+
+		private void TabControl_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
+			this.NewTab();
+		}
+
 		/// <summary>
 		/// Handle the ToggleButton Checked event that displays a context menu of Header Headers
 		/// </summary>
@@ -745,12 +676,6 @@ namespace Wpf.Controls {
 
 					tabItem.Focus();
 				}
-			}
-		}
-
-		public void CloseAllTabsButThis(TabItem tabItem) {
-			foreach (TabItem tab in this.Items.OfType<TabItem>().ToArray()) {
-				if (tab != tabItem) this.RemoveTabItem(tab);
 			}
 		}
 
@@ -830,6 +755,5 @@ namespace Wpf.Controls {
 					yield return this.ItemContainerGenerator.ContainerFromItem(enumerator.Current) as TabItem;
 			}
 		}
-
 	}
 }

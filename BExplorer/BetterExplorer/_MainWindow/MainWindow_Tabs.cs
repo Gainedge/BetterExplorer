@@ -74,10 +74,11 @@ namespace BetterExplorer {
 			//ShellVView.Visibility = System.Windows.Visibility.Hidden;
 		}
 
-		
+
 		private void CloseTab(Wpf.Controls.TabItem thetab, bool allowreopening = true) {
 			if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-				if (this.IsCloseLastTabCloseApp) {
+				//if (this.IsCloseLastTabCloseApp) {
+				if (chkIsLastTabCloseApp.IsChecked.Value) {
 					Close();
 				}
 				else {
@@ -227,13 +228,20 @@ namespace BetterExplorer {
 
 			if (e.AddedItems.Count == 0) return;
 			SelectTab(e.AddedItems[0] as Wpf.Controls.TabItem);
+
+			//btnUndoClose
+			btnUndoClose.Items.Clear();
+			foreach (var item in tcMain.ReopenableTabs) {
+				btnUndoClose.Items.Add(item.CurrentLocation);
+			}
+
 		}
 
 		private void SelectTab(Wpf.Controls.TabItem tab) {
 			if (tab == null) return;
 			tcMain.isGoingBackOrForward = tab.log.HistoryItemsList.Count != 0;
 			try {
-				if (tab.ShellObject != ShellListView.CurrentFolder){
+				if (tab.ShellObject != ShellListView.CurrentFolder) {
 					if (!Keyboard.IsKeyDown(Key.Tab)) {
 						ShellListView.Navigate(tab.ShellObject);
 					}

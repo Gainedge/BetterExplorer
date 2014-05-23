@@ -10,6 +10,7 @@ namespace SingleInstanceApplication {
 	/// Application Instance Manager
 	/// </summary>
 	public static class ApplicationInstanceManager {
+
 		/// <summary>
 		/// Creates the single instance.
 		/// </summary>

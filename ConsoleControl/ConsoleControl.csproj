@@ -88,8 +88,8 @@
     <Compile Include="Process Helper\ProcessInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResFinder.cs" />
-    <Compile Include="SendKeysEx.cs" />
-    <Compile Include="WindowFinder.cs" />
+    <Compile Include="_Obsolete\SendKeysEx.cs" />
+    <Compile Include="_Obsolete\WindowFinder.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="ConsoleControl.resx">

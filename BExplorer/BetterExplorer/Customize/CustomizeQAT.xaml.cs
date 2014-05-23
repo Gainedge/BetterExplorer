@@ -77,19 +77,6 @@ namespace BetterExplorer {
 			return rb.OrderBy(x => x.Header as string).ToList();
 		}
 
-		public List<Fluent.IRibbonControl> GetAllButtons() {
-			var rb = new List<Fluent.IRibbonControl>();
-			foreach (RibbonGroupBox itg in MainForm.TheRibbon.Tabs.SelectMany(x => x.Groups)) {
-				foreach (object ic in itg.Items) {
-					if (ic is IRibbonControl) {
-						rb.Add(ic as IRibbonControl);
-					}
-				}
-			}
-
-			return rb;
-		}
-
 		private void AddToList(RibbonItemListDisplay source, bool qatlist = true) {
 			if (qatlist) {
 				this.QATControls.Items.Add(GetRibbonItemListDisplay(source.SourceControl));
@@ -99,7 +86,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		public void CheckAgainstList() {
+		private void CheckAgainstList() {
 			var torem = new List<RibbonItemListDisplay>();
 			foreach (RibbonItemListDisplay item in this.QATControls.Items) {
 				foreach (RibbonItemListDisplay thing in this.AllControls.Items) {
@@ -112,6 +99,19 @@ namespace BetterExplorer {
 			foreach (RibbonItemListDisplay item in torem) {
 				this.AllControls.Items.Remove(item);
 			}
+		}
+
+		private List<Fluent.IRibbonControl> GetAllButtons() {
+			var rb = new List<Fluent.IRibbonControl>();
+			foreach (RibbonGroupBox itg in MainForm.TheRibbon.Tabs.SelectMany(x => x.Groups)) {
+				foreach (object ic in itg.Items) {
+					if (ic is IRibbonControl) {
+						rb.Add(ic as IRibbonControl);
+					}
+				}
+			}
+
+			return rb;
 		}
 
 		#endregion Helpers

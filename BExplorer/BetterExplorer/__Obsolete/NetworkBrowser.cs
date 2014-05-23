@@ -8,7 +8,6 @@ using System.Security;
 using System.Collections;
 
 namespace BetterExplorer {
-	#region NetworkBrowser CLASS
 	/// <summary>
 	/// Provides a mechanism for supplying a list of all PC names in the local network.
 	/// This collection of PC names is used in the <see cref="ListNetworkComputers.frmMain">
@@ -169,6 +168,4 @@ namespace BetterExplorer {
 		}
 		#endregion
 	}
-	#endregion
-
 }

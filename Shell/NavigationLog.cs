@@ -2,8 +2,7 @@
 using System.Linq;
 using BExplorer.Shell;
 
-namespace BExplorer.Shell
-{
+namespace BExplorer.Shell {
 
 	public class NavigationLog {
 
@@ -16,29 +15,23 @@ namespace BExplorer.Shell
 		public bool CanNavigateBackwards { get { return !(CurrentLocPos == 0 || HistoryItemsList.Count == 0); } }
 		public bool CanNavigateForwards { get { return !(CurrentLocPos == HistoryItemsList.Count - 1 || HistoryItemsList.Count == 0); } }
 
-		/*
-		public List<ShellItem> BackEntries {
-			get {
-				List<ShellItem> _BackEntries = new List<ShellItem>();
-				if (CurrentLocPos != -1) {
-					for (int i = 0; i < CurrentLocPos; i++) {
-						_BackEntries.Add(HistoryItemsList[i]);
-					}
-				}
-				return _BackEntries;
-			}
-		}
-		*/
+
 
 		public List<ShellItem> ForwardEntries {
+			//TODO: I think these are actually Backwards Entries not Forwards
 			get {
-				List<ShellItem> _ForwardEntries = new List<ShellItem>();
+				//TODO: Test
+				return HistoryItemsList.Skip(CurrentLocPos).ToList();
+
+				/*
+				var _ForwardEntries = new List<ShellItem>();
 				if (CurrentLocPos != -1) {
 					for (int i = CurrentLocPos; i < HistoryItemsList.Count; i++) {
 						_ForwardEntries.Add(HistoryItemsList[i]);
 					}
 				}
 				return _ForwardEntries;
+				*/
 			}
 		}
 
@@ -73,9 +66,13 @@ namespace BExplorer.Shell
 		}
 
 		public void ClearForwardItems() {
+			//TODO: Test
+			ForwardEntries.ForEach(item => HistoryItemsList.Remove(item));
+			/*
 			for (int i = HistoryItemsList.ToArray().Count() - 1; i > CurrentLocPos; i--) {
 				HistoryItemsList.RemoveAt(i);
 			}
+			 */
 		}
 
 
