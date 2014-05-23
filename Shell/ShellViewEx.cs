@@ -1462,8 +1462,15 @@ namespace BExplorer.Shell {
 			if (!Items.Contains(obj) && !String.IsNullOrEmpty(obj.ParsingName))
 			{
 				Items.Add(obj);
-				this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
-				User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+				if (this.IsGroupsEnabled)
+				{
+					//TODO: add here logic for adding new items when grouping is enabled!
+				}
+				else
+				{
+					this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+				}
 			}
 			
 		}
