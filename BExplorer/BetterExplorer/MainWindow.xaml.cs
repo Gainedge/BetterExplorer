@@ -593,6 +593,13 @@ namespace BetterExplorer {
 		#endregion
 
 		void misd_Click(object sender, RoutedEventArgs e) {
+			//TODO: Test
+			foreach (var item in btnSort.Items.OfType<MenuItem>()) {
+				if (item.IsChecked && item != (sender as MenuItem)) {
+					ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), System.Windows.Forms.SortOrder.Descending);
+				}
+			}
+			/*
 			foreach (object item in btnSort.Items) {
 				if (item is MenuItem) {
 					if (((MenuItem)item).IsChecked && ((MenuItem)item != (sender as MenuItem))) {
@@ -600,9 +607,18 @@ namespace BetterExplorer {
 					}
 				}
 			}
+			*/
 		}
 
 		void misa_Click(object sender, RoutedEventArgs e) {
+			//TODO: Test
+			foreach (var item in btnSort.Items.OfType<MenuItem>()) {
+				if (item.IsChecked && item != (sender as MenuItem)) {
+					ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), System.Windows.Forms.SortOrder.Ascending);
+				}
+			}
+
+			/*
 			foreach (object item in btnSort.Items) {
 				if (item is MenuItem) {
 					if (((MenuItem)item).IsChecked && ((MenuItem)item != (sender as MenuItem))) {
@@ -610,6 +626,7 @@ namespace BetterExplorer {
 					}
 				}
 			}
+			*/
 		}
 
 		void timerv_Tick(object sender, EventArgs e) {
@@ -1045,11 +1062,13 @@ namespace BetterExplorer {
 				}
 			}
 			else {
-				foreach (ShellItem item in shells) {
-					if (!Directory.Exists(item.ParsingName)) {
-						l1shells.Add(item);
-					}
-				}
+				l1shells.AddRange(shells.Where((x) => !Directory.Exists(x.ParsingName)));
+
+				//foreach (ShellItem item in shells) {
+				//	if (!Directory.Exists(item.ParsingName)) {
+				//		l1shells.Add(item);
+				//	}
+				//}
 			}
 
 			if (csd.FilterByFileSize) {
@@ -1294,9 +1313,12 @@ namespace BetterExplorer {
 
 		private void btnCopy_Click(object sender, RoutedEventArgs e) {
 			StringCollection sc = new StringCollection();
-			foreach (ShellItem item in ShellListView.SelectedItems) {
-				sc.Add(item.ParsingName);
-			}
+			sc.AddRange(ShellListView.SelectedItems.Select(x => x.ParsingName).ToArray());
+
+			//foreach (ShellItem item in ShellListView.SelectedItems) {
+			//	sc.Add(item.ParsingName);
+			//}
+
 			System.Windows.Forms.Clipboard.SetFileDropList(sc);
 		}
 
@@ -1379,11 +1401,11 @@ namespace BetterExplorer {
 			this.ShellListView.Focus();
 			string path = "";
 
-			bool IsLib = false;
+			//bool IsLib = false;
 			IsRenameFromCreate = true;
 			if (ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName) {
 				path = ShellListView.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString()).DisplayName;
-				IsLib = true;
+				//IsLib = true;
 			}
 			else {
 				path = ShellListView.CreateNewFolder(FindResource("btnNewFolderCP").ToString());
@@ -4353,35 +4375,57 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void MenuItem_Checked(object sender, RoutedEventArgs e) {
-			e.Handled = true;
-			bool isThereChecked = false;
-			foreach (object item in ((sender as MenuItem).Parent as SplitButton).Items) {
-				if (item is MenuItem) {
-					if ((item as MenuItem).IsChecked) {
-						isThereChecked = true;
-						break;
-					}
-				}
-			}
+		//private void MenuItem_Checked(object sender, RoutedEventArgs e) {
+		//	e.Handled = true;
+		//	bool isThereChecked = false;
 
-			((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
-		}
+		//	//TODO: Test
+		//	foreach (var item in ((sender as MenuItem).Parent as SplitButton).Items.OfType<MenuItem>()) {
+		//		if (item.IsChecked) {
+		//			isThereChecked = true;
+		//			break;
+		//		}
+		//	}
 
-		private void MenuItem_Unchecked(object sender, RoutedEventArgs e) {
-			e.Handled = true;
-			bool isThereChecked = false;
-			foreach (object item in ((sender as MenuItem).Parent as SplitButton).Items) {
-				if (item is MenuItem) {
-					if ((item as MenuItem).IsChecked) {
-						isThereChecked = true;
-						break;
-					}
-				}
-			}
+		//	/*
+		//	foreach (object item in ((sender as MenuItem).Parent as SplitButton).Items) {
+		//		if (item is MenuItem) {
+		//			if ((item as MenuItem).IsChecked) {
+		//				isThereChecked = true;
+		//				break;
+		//			}
+		//		}
+		//	}
+		//	*/
+		//	((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
+		//}
 
-			((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
-		}
+		//private void MenuItem_Unchecked(object sender, RoutedEventArgs e) {
+		//	e.Handled = true;
+		//	bool isThereChecked = false;
+
+
+		//	//TODO: Test
+		//	foreach (var item in ((sender as MenuItem).Parent as SplitButton).Items.OfType<MenuItem>()) {
+		//		if (item.IsChecked) {
+		//			isThereChecked = true;
+		//			break;
+		//		}
+		//	}
+
+		//	/*
+		//	foreach (object item in ((sender as MenuItem).Parent as SplitButton).Items) {
+		//		if (item is MenuItem) {
+		//			if ((item as MenuItem).IsChecked) {
+		//				isThereChecked = true;
+		//				break;
+		//			}
+		//		}
+		//	}
+		//	*/
+
+		//	((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
+		//}
 
 		[Obsolete("This does nothing")]
 		private void MenuItem_Click_2(object sender, RoutedEventArgs e) {
@@ -4828,6 +4872,7 @@ namespace BetterExplorer {
 			tcMain.ReopenableTabs.Clear();
 			btnUndoClose.IsDropDownOpen = false;
 			btnUndoClose.IsEnabled = false;
+
 			foreach (Wpf.Controls.TabItem item in this.tcMain.Items) {
 				foreach (FrameworkElement m in item.mnu.Items) {
 					if (m.Tag != null)
@@ -4908,10 +4953,15 @@ namespace BetterExplorer {
 
 			foreach (RibbonTabItem item in TheRibbon.Tabs) {
 				foreach (RibbonGroupBox itg in item.Groups) {
-					foreach (object ic in itg.Items) {
-						if (ic is IRibbonControl) rb.Add((ic as FrameworkElement).Name, (ic as IRibbonControl));
+					foreach (var ic in itg.Items.OfType<IRibbonControl>()) {
+						rb.Add((ic as FrameworkElement).Name, ic);
 					}
 				}
+
+				//	foreach (object ic in itg.Items) {
+				//		if (ic is IRibbonControl) rb.Add((ic as FrameworkElement).Name, (ic as IRibbonControl));
+				//	}
+				//}
 			}
 
 			return rb;

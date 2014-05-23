@@ -318,42 +318,19 @@ namespace BetterExplorerControls {
 			//useusc = true;
 			////Aaron Campf
 
-			if (useesc) {
+			Action<string> AddMenuItem = (Header) => {
 				Fluent.MenuItem a = new Fluent.MenuItem();
-				a.Header = esc;
+				a.Header = Header;
 				a.Click += new RoutedEventHandler(a_Click);
 				SFilters.Items.Add(a);
-			}
-			if (usessc) {
-				Fluent.MenuItem a = new Fluent.MenuItem();
-				a.Header = ssc;
-				a.Click += new RoutedEventHandler(a_Click);
-				SFilters.Items.Add(a);
-			}
-			if (useasc) {
-				Fluent.MenuItem a = new Fluent.MenuItem();
-				a.Header = asc;
-				a.Click += new RoutedEventHandler(a_Click);
-				SFilters.Items.Add(a);
-			}
-			if (usedsc) {
-				Fluent.MenuItem a = new Fluent.MenuItem();
-				a.Header = dsc;
-				a.Click += new RoutedEventHandler(a_Click);
-				SFilters.Items.Add(a);
-			}
-			if (usemsc) {
-				Fluent.MenuItem a = new Fluent.MenuItem();
-				a.Header = msc;
-				a.Click += new RoutedEventHandler(a_Click);
-				SFilters.Items.Add(a);
-			}
-			if (useusc) {
-				Fluent.MenuItem a = new Fluent.MenuItem();
-				a.Header = usc;
-				a.Click += new RoutedEventHandler(a_Click);
-				SFilters.Items.Add(a);
-			}
+			};
+
+			if (useesc) AddMenuItem(esc);
+			if (usessc) AddMenuItem(ssc);
+			if (useasc) AddMenuItem(asc);
+			if (usedsc) AddMenuItem(dsc);
+			if (usemsc) AddMenuItem(msc);
+			if (useusc) AddMenuItem(usc);
 		}
 
 
