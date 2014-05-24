@@ -69,6 +69,7 @@ namespace BetterExplorerControls {
 		private BreadcrumbBarItem furthestrightitem;
 		private DragEventHandler de, dl, dm, dp;
 		private bool IsEcsPressed;
+
 		private ObservableCollection<BreadcrumbBarFSItem> hl { get; set; }
 
 		public delegate void PathEventHandler(object sender, PathEventArgs e);
@@ -113,12 +114,9 @@ namespace BetterExplorerControls {
 			Undertextbox.GotKeyboardFocus += Undertextbox_GotKeyboardFocus;
 		}
 
-		void Undertextbox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-		{
+		private void Undertextbox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
 			Undertextbox.SelectAll();
 		}
-
-		
 
 		private void Undertextbox_TextInput(object sender, TextCompositionEventArgs e) {
 			if ((e.Text.All(Char.IsLetterOrDigit) || e.Text.All(Char.IsSymbol) || e.Text.All(Char.IsWhiteSpace)) && e.Text != "\r") {
@@ -186,13 +184,10 @@ namespace BetterExplorerControls {
 				catch (Exception) {
 					// For now just handle the exception. later will be fixed to navigate correct path.
 				}
-				
 			}
 
 			if (IsEcsPressed)
 				ExitEditMode_IfNeeded();
-
-			
 		}
 
 		private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -388,18 +383,16 @@ namespace BetterExplorerControls {
 
 			var obj = furthestrightitem.ShellItem;
 
-			if (obj != null)
-			{
+			if (obj != null) {
 				HistoryCombo.Text = obj.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING);
 				Undertextbox.Focus();
 			}
-
-
 		}
 
 		#endregion Random Public
 
 		#region Cursor Stuff
+
 		/// <summary> Retrieves the cursor's position, in screen coordinates. </summary>
 		/// <see> See MSDN documentation for further information. </see>
 		[DllImport("user32.dll")]
@@ -407,25 +400,24 @@ namespace BetterExplorerControls {
 
 		/// <summary> Struct representing a point. </summary>
 		[StructLayout(LayoutKind.Sequential)]
-		private struct POINT
-		{
+		private struct POINT {
 			public int X;
 			public int Y;
 
-			public static implicit operator Point(POINT point)
-			{
+			public static implicit operator Point(POINT point) {
 				return new Point(point.X, point.Y);
 			}
 		}
+
 		public static Point GetCursorPosition() {
 			POINT lpPoint;
 			GetCursorPos(out lpPoint);
 			return lpPoint;
 		}
-		#endregion
 
-		public BreadcrumbBarControl()
-		{
+		#endregion Cursor Stuff
+
+		public BreadcrumbBarControl() {
 			InitializeComponent();
 			this.hl = new ObservableCollection<BreadcrumbBarFSItem>();
 			this.Loaded += BreadcrumbBarControl_Loaded;

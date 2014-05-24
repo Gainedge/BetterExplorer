@@ -17,6 +17,7 @@ namespace BetterExplorerControls {
 	/// Interaction logic for ImageSizeDisplay.xaml
 	/// </summary>
 	public partial class ImageSizeDisplay : UserControl {
+
 		public ImageSizeDisplay() {
 			InitializeComponent();
 		}

@@ -2061,8 +2061,7 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_ItemUpdated(object sender, ItemUpdatedEventArgs e) {
-			if (e.UpdateType != ItemUpdateType.Renamed && e.UpdateType != ItemUpdateType.Updated)
-			{
+			if (e.UpdateType != ItemUpdateType.Renamed && e.UpdateType != ItemUpdateType.Updated) {
 				int ItemsCount = ShellListView.GetItemsCount();
 				sbiItemsCount.Visibility = ItemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;
 				sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
@@ -5578,7 +5577,6 @@ namespace BetterExplorer {
 			tcMain.newt_PreviewMouseMove = newt_PreviewMouseMove;
 			tcMain.ConstructMoveToCopyToMenu += ConstructMoveToCopyToMenu;
 			tcMain.DefaultTabPath = tcMain.StartUpLocation.ToShellParsingName();
-
 
 			tcMain.StartUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
 			if (tcMain.StartUpLocation == "") {
