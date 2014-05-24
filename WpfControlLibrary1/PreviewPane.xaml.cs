@@ -11,7 +11,7 @@ using BExplorer.Shell;
 
 namespace BetterExplorerControls {
 	/*
-	Make this work like the normal File Info Popup
+	Make this work like the normal File Info Pop-up
 	
 	File -> Right-Click -> Properties
 	*/
@@ -24,23 +24,23 @@ namespace BetterExplorerControls {
 		//private ShellItem[] SelectedItems;
 		public event PropertyChangedEventHandler PropertyChanged;
 		public ShellView Browser;
-		private BitmapSource Thumbnail { get; set; }
+		//private BitmapSource Thumbnail { get; set; }
 		private ShellItem SelectedItem { get { return this.Browser != null && this.Browser.GetSelectedCount() > 0 ? this.Browser.SelectedItems[0] : null; } }
-		private String DisplayName { get { return SelectedItem != null ? SelectedItem.DisplayName : String.Empty; } }
-		private String FileSize { get { return "FileSize: Not Coded"; } }
-		private String FileCreated { get { return "FileCreated: Not Coded"; } }
-		private String FileModified { get { return "FileModified: Not Coded"; } }
+		//private String DisplayName { get { return SelectedItem != null ? SelectedItem.DisplayName : String.Empty; } }
+		//private String FileSize { get { return "FileSize: Not Coded"; } }
+		//private String FileCreated { get { return "FileCreated: Not Coded"; } }
+		//private String FileModified { get { return "FileModified: Not Coded"; } }
 
 
-		private String FileType {
-			get {
-				if (SelectedItem == null) {
-					return String.Empty;
-				}
+		//private String FileType {
+		//	get {
+		//		if (SelectedItem	 == null) {
+		//			return String.Empty;
+		//		}
 
-				return SelectedItem.GetPropertyValue(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 }, typeof(String)).Value.ToString();
-			}
-		}
+		//		return SelectedItem.GetPropertyValue(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 }, typeof(String)).Value.ToString();
+		//	}
+		//}
 
 
 
@@ -48,28 +48,26 @@ namespace BetterExplorerControls {
 		public DetailsPane() {
 			InitializeComponent();
 			DataContext = this;
-			this.Loaded += (sender, e) => { this.SizeChanged += PreviewPane_SizeChanged; };
+			this.Loaded += (sender, e) => this.SizeChanged += PreviewPane_SizeChanged; ;
 		}
 
 		private void Setup_PreviewPane() {
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				if (SelectedItem != null) {
 					if (Browser.SelectedItems.Count == 0) return;
-
-					var ShellItem = Browser.SelectedItems[0];
-
+					var File = new System.IO.FileInfo(Browser.SelectedItems[0].ParsingName);
 
 					this.SelectedItem.Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
 					this.SelectedItem.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
 					this.SelectedItem.Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
 					icon.Source = this.SelectedItem.Thumbnail.BitmapSource;
 
-					txtDisplayName.Text = DisplayName;
-					txtFileType.Text = FileType;
-					txtFileSize.Text = FileSize;
 
-					txtFileCreated.Text = FileCreated;
-					txtFileModified.Text = FileModified;
+					txtDisplayName.Text = File.Name;
+					txtFileType.Text = File.Extension;
+					txtFileSize.Text = File.Length.ToString();
+					txtFileCreated.Text = File.CreationTime.ToLongDateString();
+					txtFileModified.Text = File.LastWriteTime.ToLongDateString();
 				}
 			}));
 		}
