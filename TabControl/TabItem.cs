@@ -21,6 +21,12 @@ namespace Wpf.Controls {
 		public ShellItem ShellObject { get; set; }
 		public ContextMenu mnu { get; set; }
 
+
+		/// <summary>
+		///     Used by the TabPanel for sizing
+		/// </summary>
+		internal Dimension Dimension { get; set; }
+
 		/// <summary>
 		/// Provides a place to display an Icon on the Header and on the DropDown Context Menu
 		/// </summary>
@@ -37,10 +43,6 @@ namespace Wpf.Controls {
 			set { SetValue(AllowDeleteProperty, value); }
 		}
 
-		/// <summary>
-		///     Used by the TabPanel for sizing
-		/// </summary>
-		internal Dimension Dimension { get; set; }
 
 		#endregion Properties
 

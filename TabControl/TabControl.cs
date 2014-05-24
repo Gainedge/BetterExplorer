@@ -25,6 +25,7 @@ namespace Wpf.Controls {
 		//public static List<NavigationLog> ReopenableTabs = new List<NavigationLog>();
 
 		#region Properties
+
 		public string StartUpLocation = KnownFolders.Libraries.ParsingName;
 		public DragEventHandler newt_DragEnter, newt_DragOver, newt_Drop;
 		public MouseEventHandler newt_PreviewMouseMove;
@@ -41,50 +42,11 @@ namespace Wpf.Controls {
 			}
 		}
 
-		#endregion Properties/Locals
-
-		#region Dependency properties
 
 		public bool IsUsingItemsSource {
 			get { return (bool)GetValue(IsUsingItemsSourceProperty); }
 			private set { SetValue(IsUsingItemsSourcePropertyKey, value); }
 		}
-
-		public static readonly DependencyPropertyKey IsUsingItemsSourcePropertyKey =
-				DependencyProperty.RegisterReadOnly("IsUsingItemsSource", typeof(bool), typeof(TabControl), new UIPropertyMetadata(false));
-
-		public static readonly DependencyProperty IsUsingItemsSourceProperty = IsUsingItemsSourcePropertyKey.DependencyProperty;
-
-		#region Brushes
-
-		public Brush TabItemNormalBackground {
-			get { return (Brush)GetValue(TabItemNormalBackgroundProperty); }
-			set { SetValue(TabItemNormalBackgroundProperty, value); }
-		}
-
-		public static readonly DependencyProperty TabItemNormalBackgroundProperty = DependencyProperty.Register("TabItemNormalBackground", typeof(Brush), typeof(TabControl), new UIPropertyMetadata(null));
-
-		public Brush TabItemMouseOverBackground {
-			get { return (Brush)GetValue(TabItemMouseOverBackgroundProperty); }
-			set { SetValue(TabItemMouseOverBackgroundProperty, value); }
-		}
-
-		public static readonly DependencyProperty TabItemMouseOverBackgroundProperty = DependencyProperty.Register("TabItemMouseOverBackground", typeof(Brush), typeof(TabControl), new UIPropertyMetadata(null));
-
-		public Brush TabItemSelectedBackground {
-			get { return (Brush)GetValue(TabItemSelectedBackgroundProperty); }
-			set { SetValue(TabItemSelectedBackgroundProperty, value); }
-		}
-
-		public static readonly DependencyProperty TabItemSelectedBackgroundProperty = DependencyProperty.Register("TabItemSelectedBackground", typeof(Brush), typeof(TabControl), new UIPropertyMetadata(null));
-
-		#endregion Brushes
-
-		/*
-				 * Based on the whether the ControlTemplate implements the NewTab button and Close Buttons determines the functionality of the AllowAddNew & AllowDelete properties
-				 * If they are in the control template, then the visibility of the AddNew & Header buttons are bound to these properties
-				 *
-				*/
 
 		/// <summary>
 		/// Allow the User to Add New TabItems
@@ -94,40 +56,24 @@ namespace Wpf.Controls {
 			set { SetValue(AllowAddNewProperty, value); }
 		}
 
-		public static readonly DependencyProperty AllowAddNewProperty = DependencyProperty.Register("AllowAddNew", typeof(bool), typeof(TabControl),
-				new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnAllowAddNewChanged), OnCoerceAllowAddNewCallback));
-
-		public static readonly DependencyProperty DefaultTabPathProperty = DependencyProperty.Register("DefaultTabPath", typeof(String), typeof(TabControl),
-					new UIPropertyMetadata(null));
-
 		public String DefaultTabPath {
-			get {
-				return (String)GetValue(DefaultTabPathProperty);
-			}
-			set {
-				SetValue(DefaultTabPathProperty, value);
-			}
+			get { return (String)GetValue(DefaultTabPathProperty); }
+			set { SetValue(DefaultTabPathProperty, value); }
 		}
 
-		private static void OnAllowAddNewChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-			((TabControl)d).SetAddNewButtonVisibility();
+		public Brush TabItemNormalBackground {
+			get { return (Brush)GetValue(TabItemNormalBackgroundProperty); }
+			set { SetValue(TabItemNormalBackgroundProperty, value); }
 		}
 
-		private static object OnCoerceAllowAddNewCallback(DependencyObject d, object basevalue) {
-			return ((TabControl)d).OnCoerceAllowAddNewCallback(basevalue);
+		public Brush TabItemMouseOverBackground {
+			get { return (Brush)GetValue(TabItemMouseOverBackgroundProperty); }
+			set { SetValue(TabItemMouseOverBackgroundProperty, value); }
 		}
 
-		private object OnCoerceAllowAddNewCallback(object basevalue) {
-			if (ItemsSource != null) {
-				IList list = ItemsSource as IList;
-				if (list != null) {
-					if (list.IsFixedSize)
-						return false;
-					return basevalue;
-				}
-				return false;
-			}
-			return basevalue;
+		public Brush TabItemSelectedBackground {
+			get { return (Brush)GetValue(TabItemSelectedBackgroundProperty); }
+			set { SetValue(TabItemSelectedBackgroundProperty, value); }
 		}
 
 		/// <summary>
@@ -138,31 +84,6 @@ namespace Wpf.Controls {
 			set { SetValue(AllowDeleteProperty, value); }
 		}
 
-		public static readonly DependencyProperty AllowDeleteProperty = DependencyProperty.Register("AllowDelete", typeof(bool), typeof(TabControl),
-				new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnAllowDeleteChanged), OnCoerceAllowDeleteNewCallback));
-
-		private static void OnAllowDeleteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-			TabControl tc = (TabControl)d;
-			tc.SetTabItemsCloseButtonVisibility();
-		}
-
-		private static object OnCoerceAllowDeleteNewCallback(DependencyObject d, object basevalue) {
-			return ((TabControl)d).OnCoerceAllowDeleteCallback(basevalue);
-		}
-
-		private object OnCoerceAllowDeleteCallback(object basevalue) {
-			if (ItemsSource != null) {
-				IList list = ItemsSource as IList;
-				if (list != null) {
-					if (list.IsFixedSize)
-						return false;
-					return basevalue;
-				}
-				return false;
-			}
-			return basevalue;
-		}
-
 		/// <summary>
 		/// Set new Header as the current selection
 		/// </summary>
@@ -170,8 +91,6 @@ namespace Wpf.Controls {
 			get { return (bool)GetValue(SelectNewTabOnCreateProperty); }
 			set { SetValue(SelectNewTabOnCreateProperty, value); }
 		}
-
-		public static readonly DependencyProperty SelectNewTabOnCreateProperty = DependencyProperty.Register("SelectNewTabOnCreate", typeof(bool), typeof(TabControl), new UIPropertyMetadata(true));
 
 		/// <summary>
 		/// Determines where new TabItems are added to the TabControl
@@ -185,7 +104,6 @@ namespace Wpf.Controls {
 			set { SetValue(AddNewTabToEndProperty, value); }
 		}
 
-		public static readonly DependencyProperty AddNewTabToEndProperty = DependencyProperty.Register("AddNewTabToEnd", typeof(bool), typeof(TabControl), new UIPropertyMetadata(true));
 
 		/// <summary>
 		/// defines the Minimum width of a Header
@@ -196,19 +114,6 @@ namespace Wpf.Controls {
 		public double TabItemMinWidth {
 			get { return (double)GetValue(TabItemMinWidthProperty); }
 			set { SetValue(TabItemMinWidthProperty, value); }
-		}
-
-		public static readonly DependencyProperty TabItemMinWidthProperty = DependencyProperty.Register("TabItemMinWidth", typeof(double), typeof(TabControl),
-				new FrameworkPropertyMetadata(20.0, new PropertyChangedCallback(OnMinMaxChanged), CoerceMinWidth));
-
-		private static object CoerceMinWidth(DependencyObject d, object value) {
-			TabControl tc = (TabControl)d;
-			double newValue = (double)value;
-
-			if (newValue > tc.TabItemMaxWidth)
-				return tc.TabItemMaxWidth;
-
-			return (newValue > 0 ? newValue : 0);
 		}
 
 		/// <summary>
@@ -222,18 +127,6 @@ namespace Wpf.Controls {
 			set { SetValue(TabItemMinHeightProperty, value); }
 		}
 
-		public static readonly DependencyProperty TabItemMinHeightProperty = DependencyProperty.Register("TabItemMinHeight", typeof(double), typeof(TabControl),
-				new FrameworkPropertyMetadata(20.0, new PropertyChangedCallback(OnMinMaxChanged), CoerceMinHeight));
-
-		private static object CoerceMinHeight(DependencyObject d, object value) {
-			TabControl tc = (TabControl)d;
-			double newValue = (double)value;
-
-			if (newValue > tc.TabItemMaxHeight)
-				return tc.TabItemMaxHeight;
-
-			return (newValue > 0 ? newValue : 0);
-		}
 
 		/// <summary>
 		/// defines the Maximum width of a Header
@@ -244,19 +137,6 @@ namespace Wpf.Controls {
 		public double TabItemMaxWidth {
 			get { return (double)GetValue(TabItemMaxWidthProperty); }
 			set { SetValue(TabItemMaxWidthProperty, value); }
-		}
-
-		public static readonly DependencyProperty TabItemMaxWidthProperty = DependencyProperty.Register("TabItemMaxWidth", typeof(double), typeof(TabControl),
-				new FrameworkPropertyMetadata(double.PositiveInfinity, new PropertyChangedCallback(OnMinMaxChanged), CoerceMaxWidth));
-
-		private static object CoerceMaxWidth(DependencyObject d, object value) {
-			TabControl tc = (TabControl)d;
-			double newValue = (double)value;
-
-			if (newValue < tc.TabItemMinWidth)
-				return tc.TabItemMinWidth;
-
-			return newValue;
 		}
 
 		/// <summary>
@@ -270,21 +150,67 @@ namespace Wpf.Controls {
 			set { SetValue(TabItemMaxHeightProperty, value); }
 		}
 
-		public static readonly DependencyProperty TabItemMaxHeightProperty = DependencyProperty.Register("TabItemMaxHeight", typeof(double), typeof(TabControl),
-				new FrameworkPropertyMetadata(double.PositiveInfinity, new PropertyChangedCallback(OnMinMaxChanged), CoerceMaxHeight));
+
+		#endregion Properties/Locals
+
+		#region Static
+
+		public static readonly DependencyProperty TabItemNormalBackgroundProperty = DependencyProperty.Register("TabItemNormalBackground", typeof(Brush), typeof(TabControl), new UIPropertyMetadata(null));
+		public static readonly DependencyProperty TabItemMouseOverBackgroundProperty = DependencyProperty.Register("TabItemMouseOverBackground", typeof(Brush), typeof(TabControl), new UIPropertyMetadata(null));
+		public static readonly DependencyProperty TabItemSelectedBackgroundProperty = DependencyProperty.Register("TabItemSelectedBackground", typeof(Brush), typeof(TabControl), new UIPropertyMetadata(null));
+		public static readonly DependencyPropertyKey IsUsingItemsSourcePropertyKey = DependencyProperty.RegisterReadOnly("IsUsingItemsSource", typeof(bool), typeof(TabControl), new UIPropertyMetadata(false));
+		public static readonly DependencyProperty IsUsingItemsSourceProperty = IsUsingItemsSourcePropertyKey.DependencyProperty;
+		public static readonly DependencyProperty AllowAddNewProperty = DependencyProperty.Register("AllowAddNew", typeof(bool), typeof(TabControl), new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnAllowAddNewChanged), OnCoerceAllowAddNewCallback));
+		public static readonly DependencyProperty DefaultTabPathProperty = DependencyProperty.Register("DefaultTabPath", typeof(String), typeof(TabControl), new UIPropertyMetadata(null));
+		public static readonly DependencyProperty AllowDeleteProperty = DependencyProperty.Register("AllowDelete", typeof(bool), typeof(TabControl), new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnAllowDeleteChanged), OnCoerceAllowDeleteNewCallback));
+		public static readonly DependencyProperty SelectNewTabOnCreateProperty = DependencyProperty.Register("SelectNewTabOnCreate", typeof(bool), typeof(TabControl), new UIPropertyMetadata(true));
+		public static readonly DependencyProperty AddNewTabToEndProperty = DependencyProperty.Register("AddNewTabToEnd", typeof(bool), typeof(TabControl), new UIPropertyMetadata(true));
+		public static readonly DependencyProperty TabItemMinWidthProperty = DependencyProperty.Register("TabItemMinWidth", typeof(double), typeof(TabControl), new FrameworkPropertyMetadata(20.0, new PropertyChangedCallback(OnMinMaxChanged), CoerceMinWidth));
+		public static readonly DependencyProperty TabItemMinHeightProperty = DependencyProperty.Register("TabItemMinHeight", typeof(double), typeof(TabControl), new FrameworkPropertyMetadata(20.0, new PropertyChangedCallback(OnMinMaxChanged), CoerceMinHeight));
+		public static readonly DependencyProperty TabItemMaxWidthProperty = DependencyProperty.Register("TabItemMaxWidth", typeof(double), typeof(TabControl), new FrameworkPropertyMetadata(double.PositiveInfinity, new PropertyChangedCallback(OnMinMaxChanged), CoerceMaxWidth));
+		public static readonly DependencyProperty TabItemMaxHeightProperty = DependencyProperty.Register("TabItemMaxHeight", typeof(double), typeof(TabControl), new FrameworkPropertyMetadata(double.PositiveInfinity, new PropertyChangedCallback(OnMinMaxChanged), CoerceMaxHeight));
+
+
+		private static void OnAllowAddNewChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) { ((TabControl)d).SetAddNewButtonVisibility(); }
+		private static object OnCoerceAllowAddNewCallback(DependencyObject d, object basevalue) { return ((TabControl)d).OnCoerceAllowAddNewCallback(basevalue); }
+		private static object OnCoerceAllowDeleteNewCallback(DependencyObject d, object basevalue) { return ((TabControl)d).OnCoerceAllowDeleteCallback(basevalue); }
+
+
+		private static void OnAllowDeleteChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+			TabControl tc = (TabControl)d;
+			tc.SetTabItemsCloseButtonVisibility();
+		}
+
+		private static object CoerceMinWidth(DependencyObject d, object value) {
+			TabControl tc = (TabControl)d;
+			double newValue = (double)value;
+
+			if (newValue > tc.TabItemMaxWidth) return tc.TabItemMaxWidth;
+			return newValue > 0 ? newValue : 0;
+		}
+
+		private static object CoerceMinHeight(DependencyObject d, object value) {
+			TabControl tc = (TabControl)d;
+			double newValue = (double)value;
+
+			if (newValue > tc.TabItemMaxHeight) return tc.TabItemMaxHeight;
+			return newValue > 0 ? newValue : 0;
+		}
+
+		private static object CoerceMaxWidth(DependencyObject d, object value) {
+			TabControl tc = (TabControl)d;
+			double newValue = (double)value;
+			return newValue < tc.TabItemMinWidth ? tc.TabItemMinWidth : newValue;
+		}
 
 		private static object CoerceMaxHeight(DependencyObject d, object value) {
 			TabControl tc = (TabControl)d;
 			double newValue = (double)value;
-
-			if (newValue < tc.TabItemMinHeight)
-				return tc.TabItemMinHeight;
-
-			return newValue;
+			return newValue < tc.TabItemMinHeight ? tc.TabItemMinHeight : newValue;
 		}
 
 		/// <summary>
-		/// OnMinMaxChanged callback responds to any of the Min/Max dependancy properties changing
+		/// OnMinMaxChanged callback responds to any of the Min/Max dependency properties changing
 		/// </summary>
 		/// <param name="d"></param>
 		/// <param name="e"></param>
@@ -318,9 +244,7 @@ namespace Wpf.Controls {
 		///     we are using virtualization in the tabpanel, it only updates visible items
 		/// </remarks>
 		private static void OnTabStripPlacementChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-			TabControl tc = (TabControl)d;
-
-			foreach (TabItem tabItem in tc.InternalChildren()) {
+			foreach (TabItem tabItem in ((TabControl)d).InternalChildren()) {
 				if (tabItem != null) {
 					tabItem.Dimension = null;
 					tabItem.CoerceValue(System.Windows.Controls.TabItem.TabStripPlacementProperty);
@@ -625,6 +549,31 @@ namespace Wpf.Controls {
 		#endregion Constructors
 
 
+		[Obsolete("Exactly the same as OnCoerceAllowDeleteCallback(...)")]
+		private object OnCoerceAllowAddNewCallback(object basevalue) {
+			if (ItemsSource != null) {
+				IList list = ItemsSource as IList;
+				if (list != null) {
+					return list.IsFixedSize ? false : basevalue;
+				}
+				return false;
+			}
+			return basevalue;
+		}
+
+		[Obsolete("Exactly the same as OnCoerceAllowAddNewCallback(...)")]
+		private object OnCoerceAllowDeleteCallback(object basevalue) {
+			if (ItemsSource != null) {
+				IList list = ItemsSource as IList;
+				if (list != null) {
+					return list.IsFixedSize ? false : basevalue;
+				}
+				return false;
+			}
+			return basevalue;
+		}
+
+
 		private void TabControl_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
 			this.NewTab();
 		}
@@ -716,15 +665,11 @@ namespace Wpf.Controls {
 				// ItemsSource is only an IEnumerable
 				int i = 0;
 				IEnumerator enumerator = ItemsSource.GetEnumerator();
-				while (enumerator.MoveNext())
-					i++;
+				while (enumerator.MoveNext()) i++;
 				return i;
 			}
 
-			if (Items != null)
-				return Items.Count;
-
-			return 0;
+			return Items == null ? 0 : Items.Count;
 		}
 
 		internal TabItem GetTabItem(int index) {

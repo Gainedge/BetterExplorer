@@ -7,14 +7,6 @@ namespace BetterExplorerControls {
 
 	/// <summary> Interaction logic for SearchBox.xaml </summary>
 	public partial class SearchBox : UserControl {
-		/*
-		 * 
-		 Make everything private that you can
-		 * 
-		 */
-
-		//Finish
-
 
 		#region Events
 
@@ -23,9 +15,6 @@ namespace BetterExplorerControls {
 			remove { RemoveHandler(BeginSearchEvent, value); }
 		}
 
-		/// <summary>
-		/// An event that clients can use to be notified whenever the elements of the list change:
-		/// </summary>
 		public event SearchEventHandler RequestCriteriaChange;
 
 		public delegate void SearchEventHandler(object sender, SearchRoutedEventArgs e);
@@ -33,22 +22,28 @@ namespace BetterExplorerControls {
 		// An event that clients can use to be notified whenever the elements of the list change:
 		public event EventHandler FiltersCleared;
 
+
+		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
+		protected virtual void OnFiltersCleared(EventArgs e) {
+			if (FiltersCleared != null)
+				FiltersCleared(this, e);
+		}
+
+		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
+		protected virtual void OnCriteriaChangeRequested(SearchRoutedEventArgs e) {
+			if (RequestCriteriaChange != null)
+				RequestCriteriaChange(this, e);
+		}
+
+
 		#endregion Events
 
 		#region Properties
 		public string FullSearchTerms { get { return CompileTerms(); } }
 
-
-
-		//[Obsolete("Likely becoming private soon", false)]
-		//public string CurrentPathName { get; set; }
 		[Obsolete("Likely becoming private soon", false)]
-		public string KindCondition { get; set; }
+		public string KindCondition { private get; set; }
 
-		[Obsolete("Likely becoming private soon", false)]
-		public bool FiltersMenuShown { get { return this.SFilters.Visibility == System.Windows.Visibility.Visible; } }
-		[Obsolete("Likely becoming private soon", false)]
-		public string TextBoxSearchTerms { get { return SearchCriteriatext.Text; } }
 
 		[Obsolete("Likely becoming private soon", false)]
 		public static readonly RoutedEvent BeginSearchEvent =
@@ -179,33 +174,6 @@ namespace BetterExplorerControls {
 
 		#endregion Properties
 
-		public SearchBox() {
-			InitializeComponent();
-			ShowFilterMenu();
-
-			KindCondition = ":null:";
-
-			SFilters.Visibility = System.Windows.Visibility.Hidden;
-		}
-
-		/// <summary> This method raises the Tap event </summary>
-		private void RaiseBeginSearchEvent() {
-			SearchRoutedEventArgs newEventArgs = new SearchRoutedEventArgs(CompileTerms(), SearchBox.BeginSearchEvent);
-			RaiseEvent(newEventArgs);
-		}
-
-		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
-		protected virtual void OnFiltersCleared(EventArgs e) {
-			if (FiltersCleared != null)
-				FiltersCleared(this, e);
-		}
-
-		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
-		protected virtual void OnCriteriaChangeRequested(SearchRoutedEventArgs e) {
-			if (RequestCriteriaChange != null)
-				RequestCriteriaChange(this, e);
-		}
-
 		#region Control Events
 
 		private void textBox1_TextChanged(object sender, TextChangedEventArgs e) {
@@ -214,12 +182,14 @@ namespace BetterExplorerControls {
 		}
 
 		private void SStartEnd_Click(object sender, RoutedEventArgs e) {
-			RaiseBeginSearchEvent();
+			//RaiseBeginSearchEvent();
+			RaiseEvent(new SearchRoutedEventArgs(CompileTerms(), SearchBox.BeginSearchEvent));
 		}
 
 		private void SFilters_DropDownOpened(object sender, EventArgs e) {
 			SetUpFiltersMenu();
 		}
+
 		private void cfd_Click(object sender, RoutedEventArgs e) {
 			ssc = "size:";
 			asc = "author:";
@@ -248,7 +218,8 @@ namespace BetterExplorerControls {
 			//base.OnKeyUp(e);
 			e.Handled = true;
 			if (e.Key == Key.Enter) {
-				RaiseBeginSearchEvent();
+				//RaiseBeginSearchEvent();
+				RaiseEvent(new SearchRoutedEventArgs(CompileTerms(), SearchBox.BeginSearchEvent));
 			}
 		}
 
@@ -257,7 +228,7 @@ namespace BetterExplorerControls {
 		#region Helpers
 
 		private string CompileTerms() {
-			string full = TextBoxSearchTerms;
+			string full = SearchCriteriatext.Text;
 
 			if (KindCondition != ":null:")
 				full += " " + KindCondition;
@@ -297,7 +268,6 @@ namespace BetterExplorerControls {
 			}
 		}
 
-
 		public void SetUpFiltersMenu() {
 			SFilters.Items.Clear();
 
@@ -333,32 +303,47 @@ namespace BetterExplorerControls {
 			if (useusc) AddMenuItem(usc);
 		}
 
-
 		#endregion Helpers
+
+
+		public SearchBox() {
+			InitializeComponent();
+			ShowFilterMenu();
+
+			KindCondition = ":null:";
+
+			SFilters.Visibility = System.Windows.Visibility.Hidden;
+		}
+
+		///// <summary> This method raises the Tap event </summary>
+		//private void RaiseBeginSearchEvent() {
+		//	RaiseEvent(new SearchRoutedEventArgs(CompileTerms(), SearchBox.BeginSearchEvent));
+		//}
+
 	}
 }
 
 public class SearchRoutedEventArgs : RoutedEventArgs {
 	public string SearchTerms { get; set; }
 
-	public SearchRoutedEventArgs(string terms) {
-		SearchTerms = terms;
-	}
+	//public SearchRoutedEventArgs(string terms) {
+	//	SearchTerms = terms;
+	//}
 
-	public SearchRoutedEventArgs(RoutedEvent routedevent) {
-		SearchTerms = "";
-		base.RoutedEvent = routedevent;
-	}
+	//public SearchRoutedEventArgs(RoutedEvent routedevent) {
+	//	SearchTerms = "";
+	//	base.RoutedEvent = routedevent;
+	//}
 
 	public SearchRoutedEventArgs(string terms, RoutedEvent routedevent) {
 		SearchTerms = terms;
 		base.RoutedEvent = routedevent;
 	}
 
-	public SearchRoutedEventArgs(string terms, RoutedEvent routedevent, string source) {
-		SearchTerms = terms;
-		base.RoutedEvent = routedevent;
-		base.Source = source;
-	}
+	//public SearchRoutedEventArgs(string terms, RoutedEvent routedevent, string source) {
+	//	SearchTerms = terms;
+	//	base.RoutedEvent = routedevent;
+	//	base.Source = source;
+	//}
 
 }
