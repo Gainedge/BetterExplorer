@@ -15,7 +15,7 @@ namespace BetterExplorer {
 		IntPtr nextClipboardViewer;
 
 		/// <summary>Clipboard contents changed.</summary>
-		public event EventHandler<ClipboardChangedEventArgs> ClipboardChanged;
+		public event EventHandler<Tuple<IDataObject>> ClipboardChanged;
 
 		[DllImport("user32.dll")]
 		protected static extern int SetClipboardViewer(int hWndNewViewer);
@@ -75,7 +75,7 @@ namespace BetterExplorer {
 				IDataObject iData = Clipboard.GetDataObject();
 
 				if (ClipboardChanged != null) {
-					ClipboardChanged(this, new ClipboardChangedEventArgs(iData));
+					ClipboardChanged(this, new Tuple<IDataObject>(iData));
 				}
 
 			}
@@ -89,6 +89,7 @@ namespace BetterExplorer {
 	}
 
 	/// <summary>Class for recording events of ClipboardChanges</summary>
+	[Obsolete("Being changed into a Tuple<IDataObject>", true)]
 	public class ClipboardChangedEventArgs : EventArgs {
 		public readonly IDataObject DataObject;
 

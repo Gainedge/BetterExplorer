@@ -82,7 +82,6 @@
     <Compile Include="ConsoleControl.designer.cs">
       <DependentUpon>ConsoleControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConsoleEventArgs.cs" />
     <Compile Include="KeyMapping.cs" />
     <Compile Include="Process Helper\ProcessEventArgs.cs" />
     <Compile Include="Process Helper\ProcessInterface.cs" />

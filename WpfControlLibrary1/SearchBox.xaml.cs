@@ -45,8 +45,7 @@ namespace BetterExplorerControls {
 		public string KindCondition { private get; set; }
 
 
-		[Obsolete("Likely becoming private soon", false)]
-		public static readonly RoutedEvent BeginSearchEvent =
+		private static readonly RoutedEvent BeginSearchEvent =
 			EventManager.RegisterRoutedEvent("BeginSearch", RoutingStrategy.Direct, typeof(SearchEventHandler), typeof(SearchBox));
 
 
@@ -259,11 +258,11 @@ namespace BetterExplorerControls {
 			//this.SearchCriteriatext.Margin = new Thickness(0, 0, 54, 0);
 
 			if (!useasc && !usessc && !useesc && !useusc && !usemsc && !usedsc) {
-				this.SFilters.Visibility = System.Windows.Visibility.Collapsed;
+				this.SFilters.Visibility = Visibility.Collapsed;
 				this.SearchCriteriatext.Margin = new Thickness(0, 0, 24, 0);
 			}
 			else {
-				this.SFilters.Visibility = System.Windows.Visibility.Visible;
+				this.SFilters.Visibility = Visibility.Visible;
 				this.SearchCriteriatext.Margin = new Thickness(0, 0, 54, 0);
 			}
 		}

@@ -412,18 +412,19 @@ namespace BetterExplorer {
 		}
 	}
 
+	[Obsolete("Should be changed into a Tuple<string>")]
 	public class ArchiveEventArgs {
-		private string _output = "";
+		public string OutputLocation {
+			get;
+			private set;
+		}
+
 
 		public ArchiveEventArgs(string output) {
-			_output = output;
+			OutputLocation = output;
 		}
 
-		public string OutputLocation {
-			get {
-				return _output;
-			}
-		}
+
 	}
 
 	public enum ArchiveAction {

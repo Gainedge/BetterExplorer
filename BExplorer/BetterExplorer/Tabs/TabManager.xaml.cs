@@ -65,14 +65,14 @@ namespace BetterExplorer.Tabs {
 			}
 		}
 
-		void gli_Click(object sender, PathStringEventArgs e) {
+		void gli_Click(object sender, Tuple<string> e) {
 			foreach (SavedTabsListGalleryItem item in stackPanel1.Children) {
 				item.SetDeselected();
 			}
 
 			(sender as SavedTabsListGalleryItem).SetSelected();
-			tabListEditor1.ImportSavedTabList(SavedTabsList.LoadTabList(GetSavedTabsLocation() + e.PathString + ".txt"));
-			selfile = GetSavedTabsLocation() + e.PathString + ".txt";
+			tabListEditor1.ImportSavedTabList(SavedTabsList.LoadTabList(GetSavedTabsLocation() + e.Item1 + ".txt"));
+			selfile = GetSavedTabsLocation() + e.Item1 + ".txt";
 		}
 
 		private void button3_Click(object sender, RoutedEventArgs e) {

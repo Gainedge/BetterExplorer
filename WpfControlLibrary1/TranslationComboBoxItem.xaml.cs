@@ -1,78 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace BetterExplorerControls
-{
-    /// <summary>
-    /// Interaction logic for TranslationComboBoxItem.xaml
-    /// </summary>
-    public partial class TranslationComboBoxItem : UserControl
-    {
-        public TranslationComboBoxItem()
-        {
-            InitializeComponent();
-        }
+namespace BetterExplorerControls {
 
-        private bool rtlused = false;
+	/// <summary>
+	/// Interaction logic for TranslationComboBoxItem.xaml
+	/// </summary>
+	public partial class TranslationComboBoxItem : UserControl {
+		public bool UsesRTL { get; set; }
 
-        public bool UsesRTL
-        {
-            get
-            {
-                return rtlused;
-            }
-            set
-            {
-                rtlused = value;
-            }
-        }
+		public string LanguageText {
+			get { return this.LanguageTextBlock.Text; }
+			set { this.LanguageTextBlock.Text = value; }
+		}
 
-        public string LanguageText
-        {
-            get
-            {
-                return this.LanguageTextBlock.Text;
-            }
-            set
-            {
-                this.LanguageTextBlock.Text = value;
-            }
-        }
+		public string LocaleCode {
+			get { return this.LocaleTextBlock.Text; }
+			set { this.LocaleTextBlock.Text = value; }
+		}
 
-        public string LocaleCode
-        {
-            get
-            {
-                return this.LocaleTextBlock.Text;
-            }
-            set
-            {
-                this.LocaleTextBlock.Text = value;
-            }
-        }
+		public ImageSource CountryFlag {
+			get { return this.LangFlag.Source; }
+			set { this.LangFlag.Source = value; }
+		}
 
-        public ImageSource CountryFlag
-        {
-            get
-            {
-                return this.LangFlag.Source;
-            }
-            set
-            {
-                this.LangFlag.Source = value;
-            }
-        }
-
-    }
+		public TranslationComboBoxItem() {
+			InitializeComponent();
+			UsesRTL = false;
+		}
+	}
 }

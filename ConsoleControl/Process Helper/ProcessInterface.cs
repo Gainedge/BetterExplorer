@@ -14,11 +14,9 @@ namespace ProcessInterface {
 	/// <param name="args">The <see cref="ProcessInterface.ProcessEventArgs"/> instance containing the event data.</param>
 	public delegate void ProcessEventHanlder(object sender, ProcessEventArgs args);
 
-	//TODO: Move into ConsoleControl
 	/// <summary>
 	/// A class the wraps a process, allowing programmatic input and output.
 	/// </summary>
-	[Obsolete("Moving into ConsoleControl", false)]
 	public class ProcessInterface {
 
 		#region Properties
@@ -76,7 +74,6 @@ namespace ProcessInterface {
 			get {
 				//TODO: try removing this [Try Catch]
 				try {
-					//return (Process != null && Process.HasExited == false);
 					return Process != null && !Process.HasExited;
 				}
 				catch {

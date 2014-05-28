@@ -12,13 +12,9 @@ using BExplorer.Shell;
 using BExplorer.Shell.Interop;
 
 namespace BetterExplorerControls {
-	/*
-	 * Try cleaning the smaller controls like this!!
-	 */
-	//Finish
 
 	/// <summary> Interaction logic for BreadcrumbBarControl.xaml </summary>
-	public partial class BreadcrumbBarControl : UserControl { //TODO: See To Do List Document
+	public partial class BreadcrumbBarControl : UserControl {
 
 		#region Being Removed
 
@@ -44,6 +40,7 @@ namespace BetterExplorerControls {
 
 		[Obsolete("Not Used!!!", true)]
 		private void HistoryCombo_DropDownOpened(object sender, EventArgs e) {
+			/*
 			//if (IsFiltered) {
 			//	HistoryCombo.Items.Filter += a => true;
 			//	IsFiltered = false;
@@ -55,11 +52,37 @@ namespace BetterExplorerControls {
 			if (HistoryCombo.Items.Count == 0) {
 				HistoryCombo.IsDropDownOpen = false;
 			}
+			*/
 		}
 
 		/// <summary> Invoke the Changed event; called whenever list changes: </summary>
 		[Obsolete("Was only used 1 time", true)]
 		protected virtual void OnRefreshRequested() { if (RefreshRequested != null) RefreshRequested(this); }
+
+
+		//private bool IsEcsPressed;
+		[Obsolete("I think we could reduce the scope of this to inside methods only", true)]
+		private bool IsLeavingControl;
+
+		[Obsolete("Anything that produces a situation where we would need this is now considered an error and THAT should be fixed!", true)]
+		private bool IsInEditMode { get; set; }
+
+		[Obsolete("Exact same effect without it", false)]
+		private void HistoryCombo_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			//e.Handled = true;
+			//if (!IsInEditMode && !IsLeavingControl) {
+			//	EnterEditMode();
+			//	//Undertextbox.Focus();
+			//}
+		}
+
+		[Obsolete("Exact same effect without it", false)]
+		private void HistoryCombo_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			//e.Handled = true;
+			//if (HistoryCombo.IsDropDownOpen) {
+			//	ExitEditMode();
+			//}
+		}
 
 		#endregion Being Removed
 
@@ -68,7 +91,6 @@ namespace BetterExplorerControls {
 		private TextBox Undertextbox;
 		private BreadcrumbBarItem furthestrightitem;
 		private DragEventHandler de, dl, dm, dp;
-		private bool IsEcsPressed;
 
 		private ObservableCollection<BreadcrumbBarFSItem> hl { get; set; }
 
@@ -86,9 +108,6 @@ namespace BetterExplorerControls {
 		/// An event that clients can use to be notified whenever the elements of the list change:
 		/// </summary>
 		public event RefreshHandler RefreshRequested;
-
-		[Obsolete("Warning: Might become private soon")]
-		private bool IsInEditMode { get; set; }
 
 		public ObservableCollection<BreadcrumbBarFSItem> HistoryItems {
 			get {
@@ -153,81 +172,12 @@ namespace BetterExplorerControls {
 			OnNavigateRequested(e);
 		}
 
-		private void HistoryCombo_GotFocus(object sender, RoutedEventArgs e) {
-			e.Handled = true;
-			EnterEditMode();
-		}
-
-		private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e) {
-			e.Handled = true;
-			ExitEditMode_IfNeeded();
-		}
-
-		private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e) {
-			e.Handled = true;
-			if (e.LeftButton == MouseButtonState.Released) {
-				IsEcsPressed = false;
-				if (!IsInEditMode)
-					EnterEditMode();
-			}
-		}
-
-		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e) {
-			//TODO: Test this out
-			e.Handled = true;
-			IsEcsPressed = (e.Key == Key.Enter || e.Key == Key.Escape);
-			if (e.Key == Key.Enter) {
-				try {
-					//TODO: Try to remove this [Try Catch]
-					RequestNavigation(HistoryCombo.Text.ToShellParsingName());
-				}
-				catch (Exception) {
-					// For now just handle the exception. later will be fixed to navigate correct path.
-				}
-			}
-
-			if (IsEcsPressed)
-				ExitEditMode_IfNeeded();
-		}
-
 		private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e) {
 			if (furthestrightitem != null)
 				furthestrightitem.BringIntoView();
 		}
 
-		private void HistoryCombo_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			e.Handled = true;
-			if (HistoryCombo.IsDropDownOpen) {
-				ExitEditMode();
-			}
-		}
-
-		private void HistoryCombo_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			e.Handled = true;
-			if (!IsInEditMode && !IsEcsPressed) {
-				EnterEditMode();
-				Undertextbox.Focus();
-			}
-		}
-
-		private void HistoryCombo_KeyDown(object sender, KeyEventArgs e) {
-			if (e.Key == Key.Escape)
-				IsEcsPressed = true;
-		}
-
-		private void HistoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			try {
-				RequestNavigation((e.AddedItems[0] as BreadcrumbBarFSItem).RealPath);
-			}
-			catch (Exception) {
-				//For now just handle the exception. later will be fixed to navigate correct path.
-			}
-			IsEcsPressed = true;
-			ExitEditMode();
-		}
-
 		private void btnRefreshExplorer_Click(object sender, RoutedEventArgs e) {
-			//OnRefreshRequested();
 			if (RefreshRequested != null) RefreshRequested(this);
 		}
 
@@ -236,6 +186,19 @@ namespace BetterExplorerControls {
 		#region Random Private
 
 		private void RequestNavigation(String Path) {
+			//IsLeavingControl = true;
+			if (!System.IO.Directory.Exists(Path)) {
+				//ExitEditMode_IfNeeded() must be run to prevent endless MessageBox loop!
+				//ExitEditMode_IfNeeded();
+				ExitEditMode();
+				MessageBox.Show("Better Explorer Cannot find '" + HistoryCombo.Text + "' Check the spelling and try again", "Better Explorer",
+					MessageBoxButton.OK,
+					MessageBoxImage.Error
+				);
+
+				return;
+			}
+
 			PathEventArgs ea = null;
 			var path = String.Empty;
 			BreadcrumbBarFSItem item = null;
@@ -256,6 +219,8 @@ namespace BetterExplorerControls {
 				hl.Add(item);
 			}
 			//}
+
+			ExitEditMode();
 		}
 
 		private void GetBreadCrumbItems(List<ShellItem> items) {
@@ -272,8 +237,8 @@ namespace BetterExplorerControls {
 					thing.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 					duh.pathName.Text = thing.GetDisplayName(SIGDN.NORMALDISPLAY);
 					duh.PathImage.Source = thing.Thumbnail.BitmapSource;
-					duh.MenuBorder.Visibility = System.Windows.Visibility.Collapsed;
-					duh.grid1.Visibility = System.Windows.Visibility.Collapsed;
+					duh.MenuBorder.Visibility = Visibility.Collapsed;
+					duh.grid1.Visibility = Visibility.Collapsed;
 				}
 
 				duh.NavigateRequested += new BreadcrumbBarItem.PathEventHandler(duh_NavigateRequested);
@@ -346,39 +311,34 @@ namespace BetterExplorerControls {
 			}
 		}
 
-		/*
-		public ShellItem GetDirectoryAtPoint(Point pt) {
-			try {
-				return ((BreadcrumbBarItem)elPanel.InputHitTest(pt)).ShellItem;
-			}
-			catch (Exception) {
-				return null;
-			}
-		}
-		*/
+		public void ExitEditMode() {
+			//if (!this.IsLeavingControl) {
+			//	this.ToString();
+			//}
 
-		public void ExitEditMode_IfNeeded(bool Cheat = false) {
-			if (Cheat)
-				IsInEditMode = true;
-
-			if (IsInEditMode || IsEcsPressed)
-				ExitEditMode();
-		}
-
-		private void ExitEditMode() {
-			IsInEditMode = false;
-			elPanel.Visibility = System.Windows.Visibility.Visible;
+			//IsLeavingControl = true;
+			//IsInEditMode = false;
+			elPanel.Visibility = Visibility.Visible;
 
 			if (Undertextbox != null)
-				Undertextbox.Visibility = System.Windows.Visibility.Hidden;
+				Undertextbox.Visibility = Visibility.Hidden;
 		}
 
+		[Obsolete("This WILL become private")]
 		public void EnterEditMode() {
-			IsInEditMode = true;
-			elPanel.Visibility = System.Windows.Visibility.Collapsed;
+			//if (this.IsInEditMode) {
+			//	this.ToString();
+			//}
+			////else if (this.IsLeavingControl) {
+			////	this.ToString();
+			////}
+
+			//IsLeavingControl = false;
+			//IsInEditMode = true;
+			elPanel.Visibility = Visibility.Collapsed;
 
 			if (Undertextbox != null) {
-				Undertextbox.Visibility = System.Windows.Visibility.Visible;
+				Undertextbox.Visibility = Visibility.Visible;
 			}
 
 			var obj = furthestrightitem.ShellItem;
@@ -421,6 +381,43 @@ namespace BetterExplorerControls {
 			InitializeComponent();
 			this.hl = new ObservableCollection<BreadcrumbBarFSItem>();
 			this.Loaded += BreadcrumbBarControl_Loaded;
+		}
+
+		private void HistoryCombo_GotFocus(object sender, RoutedEventArgs e) {
+			e.Handled = true;
+			EnterEditMode();
+		}
+
+		private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e) {
+			e.Handled = true;
+			//This is calling ExitEditMode_IfNeeded() an extra time
+			//ExitEditMode_IfNeeded();
+			//if (IsInEditMode || IsLeavingControl)
+			//if (IsInEditMode)
+			ExitEditMode();
+		}
+
+		private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e) {
+			e.Handled = true;
+			if (e.LeftButton == MouseButtonState.Released) EnterEditMode();
+			//IsLeavingControl = false;
+			//if (!IsInEditMode)
+		}
+
+		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e) {
+			//TODO: Test this out
+			e.Handled = true;
+			//IsLeavingControl = e.Key == Key.Enter || e.Key == Key.Escape;
+			if (e.Key == Key.Enter)
+				RequestNavigation(HistoryCombo.Text.ToShellParsingName());
+		}
+
+		private void HistoryCombo_KeyDown(object sender, KeyEventArgs e) {
+			if (e.Key == Key.Escape) ExitEditMode();
+		}
+
+		private void HistoryCombo_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			RequestNavigation((e.AddedItems[0] as BreadcrumbBarFSItem).RealPath);
 		}
 	}
 }

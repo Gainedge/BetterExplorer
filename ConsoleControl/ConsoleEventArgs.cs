@@ -7,6 +7,7 @@ namespace ConsoleControl {
 	/// <summary>
 	/// The ConsoleEventArgs are arguments for a console event.
 	/// </summary>
+	[Obsolete("Replaced with a Tuple<String>", true)]
 	public class ConsoleEventArgs : EventArgs {
 
 		/// <summary>

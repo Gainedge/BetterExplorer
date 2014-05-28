@@ -51,8 +51,6 @@ using System.Text.RegularExpressions;
 
 
 namespace BetterExplorer {
-	//Do everything on the To Do List sent to you Via skype in the notepad
-
 
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
@@ -80,6 +78,100 @@ namespace BetterExplorer {
 
 		[Obsolete("This will always be the same as [chkIsLastTabCloseApp.IsChecked == true]", true)]
 		private bool IsCloseLastTabCloseApp; //TODO: Test this!!!
+
+		[Obsolete("Can be safely removed")]
+		private void RibbonWindow_KeyUp(object sender, KeyEventArgs e) {
+			if (e.Key == Key.Escape) {
+				//breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
+				//ShellListView.IsCancelNavigation = true;
+			}
+		}
+
+
+		[Obsolete("Does Nothing")]
+		private void chkIsLastTabCloseApp_Click(object sender, RoutedEventArgs e) {
+			//this.IsCloseLastTabCloseApp = this.chkIsLastTabCloseApp.IsChecked.Value;
+		}
+
+		[Obsolete("Does Nothing")]
+		private void RibbonWindow_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			//ShellListView.Focus();
+			//     if (!backstage.IsOpen)
+			//ShellListView.SetExplorerFocus();
+			//  if (breadcrumbBarControl1.IsInEditMode)
+			//  {
+			//      breadcrumbBarControl1.ExitEditMode();
+			//  }
+		}
+
+		//[Obsolete("Never Called!!")]
+		//private void RibbonWindow_MouseUp(object sender, MouseButtonEventArgs e) {
+		//	breadcrumbBarControl1.ExitEditMode_IfNeeded();
+		//}
+
+		[Obsolete("Never Called!!")]
+		void Explorer_ExplorerGotFocus(object sender, EventArgs e) {
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
+			IsRenameFromCreate = false;
+			//ShellListView.IsRenameStarted = false;
+		}
+
+		[Obsolete("Never Called!!")]
+		void Explorer_LostFocus(object sender, EventArgs e) {
+			//if (!backstage.IsOpen)
+			//    ShellListView.SetExplorerFocus();
+			IsRenameFromCreate = false;
+		}
+
+		[Obsolete("Never Called!!")]
+		void Explorer_RenameFinished(object sender, EventArgs e) {
+			IsRenameFromCreate = true;
+			//IsAfterFolderCreate = false;
+			//ShellListView.IsRenameStarted = false;
+
+			//TODO: Test this out
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
+		}
+
+		[Obsolete("Never Called!!")]
+		void Explorer_ItemsChanged(object sender, EventArgs e) {
+			int ItemsCount = ShellListView.GetItemsCount();
+			sbiItemsCount.Content = ItemsCount == 1 ? ItemsCount.ToString() + " item" : ItemsCount.ToString() + " items";
+		}
+
+		[Obsolete("Never Called!!")]
+		void Explorer_DragDrop(object sender, System.Windows.Forms.DragEventArgs e) {
+			switch (e.Effect) {
+				case System.Windows.Forms.DragDropEffects.All:
+					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				case System.Windows.Forms.DragDropEffects.Copy:
+					AddToLog(String.Format("The following data was copied into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				case System.Windows.Forms.DragDropEffects.Link:
+					AddToLog(String.Format("The following data was linked into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				case System.Windows.Forms.DragDropEffects.Move:
+					AddToLog(String.Format("The following data was moved into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				case System.Windows.Forms.DragDropEffects.None:
+					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				case System.Windows.Forms.DragDropEffects.Scroll:
+					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				default:
+					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+			}
+		}
+
+		[Obsolete("Duplicates BreadcrumbBarControl.HistoryCombo_KeyUp(...) Functionality")]
+		void ShellListView_GotFocus(object sender, EventArgs e) {
+			//Commented out on [5/27/2014] by Aaron Campf
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded();
+		}
+
 
 		//uint SelectedDriveID = 0;
 
@@ -165,10 +257,6 @@ namespace BetterExplorer {
 
 		#region Events
 
-		private void chkIsLastTabCloseApp_Click(object sender, RoutedEventArgs e) {
-			//this.IsCloseLastTabCloseApp = this.chkIsLastTabCloseApp.IsChecked.Value;
-		}
-
 		private void btnConsolePane_Click(object sender, RoutedEventArgs e) {
 			this.IsConsoleShown = btnConsolePane.IsChecked.Value;
 			if (btnConsolePane.IsChecked.Value) {
@@ -192,35 +280,6 @@ namespace BetterExplorer {
 			fAbout.ShowDialog();
 		}
 
-		void Explorer_DragDrop(object sender, System.Windows.Forms.DragEventArgs e) {
-			switch (e.Effect) {
-				case System.Windows.Forms.DragDropEffects.All:
-					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
-					break;
-				case System.Windows.Forms.DragDropEffects.Copy:
-					AddToLog(String.Format("The following data was copied into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
-					break;
-				case System.Windows.Forms.DragDropEffects.Link:
-					AddToLog(String.Format("The following data was linked into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
-					break;
-				case System.Windows.Forms.DragDropEffects.Move:
-					AddToLog(String.Format("The following data was moved into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
-					break;
-				case System.Windows.Forms.DragDropEffects.None:
-					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
-					break;
-				case System.Windows.Forms.DragDropEffects.Scroll:
-					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
-					break;
-				default:
-					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
-					break;
-			}
-		}
-
-		private void RibbonWindow_MouseUp(object sender, MouseButtonEventArgs e) {
-			breadcrumbBarControl1.ExitEditMode_IfNeeded();
-		}
 		private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e) {
 			ScrollViewer scviewer = (sender as ScrollViewer);
 			scviewer.ScrollToHorizontalOffset(scviewer.HorizontalOffset - e.Delta);
@@ -231,16 +290,6 @@ namespace BetterExplorer {
 		}
 
 
-		[Obsolete("Does Nothing")]
-		private void RibbonWindow_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			//ShellListView.Focus();
-			//     if (!backstage.IsOpen)
-			//ShellListView.SetExplorerFocus();
-			//  if (breadcrumbBarControl1.IsInEditMode)
-			//  {
-			//      breadcrumbBarControl1.ExitEditMode();
-			//  }
-		}
 
 		private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e) {
 			autoUpdater.Visibility = System.Windows.Visibility.Visible;
@@ -254,15 +303,15 @@ namespace BetterExplorer {
 
 		private void RibbonWindow_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
 			IsRenameFromCreate = true;
-			breadcrumbBarControl1.ExitEditMode_IfNeeded();
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded();
+			breadcrumbBarControl1.ExitEditMode();
 		}
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
 			//TODO:	[Date: 5/6/2014]	Test this code change
 			if (TheRibbon.IsMinimized && this.IsGlassOnRibonMinimized) {
-				System.Windows.Point p =
-				ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-				this.GlassBorderThickness = new Thickness(8, this.WindowState == System.Windows.WindowState.Maximized ? p.Y : p.Y - 2, 8, 8);
+				System.Windows.Point p = ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+				this.GlassBorderThickness = new Thickness(8, this.WindowState == WindowState.Maximized ? p.Y : p.Y - 2, 8, 8);
 			}
 			else if (this.IsGlassOnRibonMinimized) {
 				System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
@@ -664,32 +713,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		void Explorer_ExplorerGotFocus(object sender, EventArgs e) {
-			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
-			IsRenameFromCreate = false;
-			//ShellListView.IsRenameStarted = false;
-		}
-
-		void Explorer_LostFocus(object sender, EventArgs e) {
-			//if (!backstage.IsOpen)
-			//    ShellListView.SetExplorerFocus();
-			IsRenameFromCreate = false;
-		}
-
-		void Explorer_RenameFinished(object sender, EventArgs e) {
-			IsRenameFromCreate = true;
-			//IsAfterFolderCreate = false;
-			//ShellListView.IsRenameStarted = false;
-
-			//TODO: Test this out
-			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
-		}
-
-
-		void Explorer_ItemsChanged(object sender, EventArgs e) {
-			int ItemsCount = ShellListView.GetItemsCount();
-			sbiItemsCount.Content = ItemsCount == 1 ? ItemsCount.ToString() + " item" : ItemsCount.ToString() + " items";
-		}
 
 		void fsw_Renamed(object sender, RenamedEventArgs e) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal,
@@ -961,9 +984,9 @@ namespace BetterExplorer {
 		bool IsFromSelectionOrNavigation = false;
 		// background worker code removed. hopefully we don't need it still... Lol.
 
-		void cbm_ClipboardChanged(object sender, ClipboardChangedEventArgs e) {
-			btnPaste.IsEnabled = e.DataObject.GetDataPresent(DataFormats.FileDrop) || e.DataObject.GetDataPresent("Shell IDList Array");
-			btnPasetShC.IsEnabled = e.DataObject.GetDataPresent(DataFormats.FileDrop) || e.DataObject.GetDataPresent("Shell IDList Array");
+		void cbm_ClipboardChanged(object sender, Tuple<System.Windows.Forms.IDataObject> e) {
+			btnPaste.IsEnabled = e.Item1.GetDataPresent(DataFormats.FileDrop) || e.Item1.GetDataPresent("Shell IDList Array");
+			btnPasetShC.IsEnabled = e.Item1.GetDataPresent(DataFormats.FileDrop) || e.Item1.GetDataPresent("Shell IDList Array");
 		}
 
 		[Obsolete("How do I activate this event and why would I want to do it!!!")]
@@ -2073,9 +2096,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		void ShellListView_GotFocus(object sender, EventArgs e) {
-			breadcrumbBarControl1.ExitEditMode_IfNeeded();
-		}
 
 		void ShellListView_SelectionChanged(object sender, EventArgs e) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
@@ -4189,15 +4209,8 @@ namespace BetterExplorer {
 			ShellListView.RefreshContents();
 		}
 
-		private void RibbonWindow_KeyUp(object sender, KeyEventArgs e) {
-			if (e.Key == Key.Escape) {
-				breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
-				//ShellListView.IsCancelNavigation = true;
-			}
-		}
-
 		private void RibbonWindow_GotFocus(object sender, RoutedEventArgs e) {
-			breadcrumbBarControl1.ExitEditMode_IfNeeded();
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded();
 			if (!backstage.IsOpen)
 				ShellListView.Focus();
 		}
@@ -4319,20 +4332,20 @@ namespace BetterExplorer {
 
 		int CurrentProgressValue = 0;
 
-		public void DoSearch(string SearchCriteria) {
-			if (SearchCriteria != "") {
-				SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(SearchCriteria);
+		public void DoSearch() {
+			if (edtSearchBox.FullSearchTerms != "") {
+				SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
 				ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
 				ShellListView.Navigate(searchFolder);
 			}
 		}
 
 		private void edtSearchBox_BeginSearch(object sender, SearchRoutedEventArgs e) {
-			DoSearch(edtSearchBox.FullSearchTerms);
+			DoSearch();
 		}
 
 		private void btnSearch_Click(object sender, RoutedEventArgs e) {
-			DoSearch(edtSearchBox.FullSearchTerms);
+			DoSearch();
 		}
 
 		private void edtSearchBox_RequestCriteriaChange(object sender, SearchRoutedEventArgs e) {
@@ -4653,8 +4666,8 @@ namespace BetterExplorer {
 			btnUndoClose.IsEnabled = tcMain.ReopenableTabs.Count != 0;
 		}
 
-		void gli_Click(object sender, PathStringEventArgs e) {
-			var list = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", sstdir, e.PathString));
+		void gli_Click(object sender, Tuple<string> e) {
+			var list = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", sstdir, e.Item1));
 			for (int i = 0; i < list.Count; i++) {
 				var tabitem = tcMain.NewTab(list[i].ToShellParsingName());
 				if (i == list.Count - 1)
@@ -5131,12 +5144,13 @@ namespace BetterExplorer {
 
 		#region Console
 
-		private void ctrlConsole_OnConsoleInput(object sender, ConsoleControl.ConsoleEventArgs args) {
-			if (args.Content.Trim().ToLowerInvariant().StartsWith("cd")) {
-				this.ShellListView.Navigate(new ShellItem(args.Content.ToLowerInvariant().Replace("cd", String.Empty).Replace("/d", String.Empty).Trim()));
+		private void ctrlConsole_OnConsoleInput(object sender, Tuple<string> args) {
+
+			if (args.Item1.Trim().ToLowerInvariant().StartsWith("cd")) {
+				this.ShellListView.Navigate(new ShellItem(args.Item1.ToLowerInvariant().Replace("cd", String.Empty).Replace("/d", String.Empty).Trim()));
 			}
 			Fluent.MenuItem cmi = new MenuItem();
-			cmi.Header = args.Content;
+			cmi.Header = args.Item1;
 			cmi.Click += cmi_Click;
 			this.btnConsoleHistory.Items.Add(cmi);
 		}

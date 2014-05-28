@@ -1,85 +1,76 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Data;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Media;
 
-namespace BetterExplorerControls
-{
-	public class WatermarkedTextBox : TextBox
-	{
+namespace BetterExplorerControls {
+
+	public class WatermarkedTextBox : TextBox {
 
 		#region Dependency Properties
-		public static DependencyProperty WatermarkProperty = DependencyProperty.Register("Watermark",
-																																						 typeof(string),
-																																						 typeof(WatermarkedTextBox),
-																																						 new PropertyMetadata(new PropertyChangedCallback(OnWatermarkChanged)));
-		#endregion
+
+		public static DependencyProperty WatermarkProperty =
+			DependencyProperty.Register("Watermark", typeof(string), typeof(WatermarkedTextBox), new PropertyMetadata(new PropertyChangedCallback(OnWatermarkChanged)));
+
+		#endregion Dependency Properties
 
 		#region Public Member
-		protected new Brush Foreground
-		{
-			get { return base.Foreground; }
-			set { base.Foreground = value; }
-		}
 
-		public string Watermark
-		{
+		public Boolean IsWatermarkShown { get { return this._isWatermarked; } }
+
+		public string Watermark {
 			get { return (string)GetValue(WatermarkProperty); }
 			set { SetValue(WatermarkProperty, value); }
 		}
 
-		public Boolean IsWatermarkShown {
-			get
-			{
-				return this._isWatermarked;
-			}
+		protected new Brush Foreground {
+			get { return base.Foreground; }
+			set { base.Foreground = value; }
 		}
-		#endregion
+
+		#endregion Public Member
 
 		#region Private Member
+
 		private bool _isWatermarked;
 		private Binding _textBinding;
-		#endregion
+
+		#endregion Private Member
 
 		#region Initializer
-		public WatermarkedTextBox()
-		{
+
+		public WatermarkedTextBox() {
 			this.SetResourceReference(StyleProperty, typeof(TextBox));
 			Loaded += (s, ea) => ShowWatermark();
 		}
-		#endregion
+
+		#endregion Initializer
 
 		#region Events
-		protected override void OnGotFocus(RoutedEventArgs e)
-		{
+
+		protected override void OnGotFocus(RoutedEventArgs e) {
 			base.OnGotFocus(e);
 			HideWatermark();
 		}
 
-		protected override void OnLostFocus(RoutedEventArgs e)
-		{
+		protected override void OnLostFocus(RoutedEventArgs e) {
 			base.OnLostFocus(e);
 			ShowWatermark();
 		}
 
-		private static void OnWatermarkChanged(DependencyObject sender, DependencyPropertyChangedEventArgs ea)
-		{
+		private static void OnWatermarkChanged(DependencyObject sender, DependencyPropertyChangedEventArgs ea) {
 			var tbw = sender as WatermarkedTextBox;
 			if (tbw == null) return;
 			tbw.ShowWatermark();
 		}
-		#endregion
+
+		#endregion Events
 
 		#region Private Methods
 
-		private void ShowWatermark()
-		{
-			if (string.IsNullOrEmpty(base.Text))
-			{
+		private void ShowWatermark() {
+			if (string.IsNullOrEmpty(base.Text)) {
 				_isWatermarked = true;
 				base.Foreground = new SolidColorBrush(Colors.Gray);
 				base.FontStyle = FontStyles.Italic;
@@ -92,10 +83,8 @@ namespace BetterExplorerControls
 			}
 		}
 
-		private void HideWatermark()
-		{
-			if (_isWatermarked)
-			{
+		private void HideWatermark() {
+			if (_isWatermarked) {
 				_isWatermarked = false;
 				ClearValue(ForegroundProperty);
 				base.FontStyle = FontStyles.Normal;
@@ -104,7 +93,6 @@ namespace BetterExplorerControls
 			}
 		}
 
-		#endregion
-
+		#endregion Private Methods
 	}
 }
