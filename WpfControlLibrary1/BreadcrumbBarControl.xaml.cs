@@ -324,6 +324,7 @@ namespace BetterExplorerControls {
 				Undertextbox.Visibility = Visibility.Hidden;
 		}
 
+		[Obsolete("This WILL become private")]
 		public void EnterEditMode() {
 			//if (this.IsInEditMode) {
 			//	this.ToString();

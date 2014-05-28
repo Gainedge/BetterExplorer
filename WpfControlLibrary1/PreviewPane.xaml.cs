@@ -10,14 +10,6 @@ using System.Windows.Threading;
 using BExplorer.Shell;
 
 namespace BetterExplorerControls {
-	/*
-	Make this work like the normal File Info Pop-up
-	
-	File -> Right-Click -> Properties
-	*/
-
-
-	//Finish!!!!
 
 	/// <summary> Interaction logic for PreviewPane.xaml </summary>
 	public partial class DetailsPane : UserControl, INotifyPropertyChanged {

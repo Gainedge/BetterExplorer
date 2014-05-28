@@ -24,8 +24,8 @@ namespace BetterExplorerControls {
 
 		public delegate void PathEventHandler(object sender, PathEventArgs e);
 
-		[Obsolete("Never used")]
-		private string path = "";
+		//[Obsolete("Never used")]
+		//private string path = "";
 
 		private Fluent.ContextMenu DropDownMenu = new Fluent.ContextMenu();
 
@@ -165,15 +165,15 @@ namespace BetterExplorerControls {
 
 		private void DropDownMenu_Closed(object sender, RoutedEventArgs e) {
 			OnMenuClosed(EventArgs.Empty);
-			expandArrow.Visibility = System.Windows.Visibility.Visible;
-			ddArrow.Visibility = System.Windows.Visibility.Hidden;
+			expandArrow.Visibility = Visibility.Visible;
+			ddArrow.Visibility = Visibility.Hidden;
 			HideSelectedColors();
 		}
 
 		private void DropDownMenu_Opened(object sender, RoutedEventArgs e) {
 			OnMenuOpened(EventArgs.Empty);
-			expandArrow.Visibility = System.Windows.Visibility.Hidden;
-			ddArrow.Visibility = System.Windows.Visibility.Visible;
+			expandArrow.Visibility = Visibility.Hidden;
+			ddArrow.Visibility = Visibility.Visible;
 			ShowSelectedColors();
 		}
 
@@ -192,20 +192,20 @@ namespace BetterExplorerControls {
 			this.PathImage.Source = obj.Thumbnail.BitmapSource;
 			this.pathName.Text = obj.GetDisplayName(SIGDN.NORMALDISPLAY);
 			this.so = obj;
-			path = obj.ParsingName;
 
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
 				if (obj.ParsingName == KnownFolders.Network.ParsingName || obj.ParsingName.StartsWith(@"\\")) {
 					SetChildren(true);
-					grid1.Visibility = System.Windows.Visibility.Visible;
-					MenuBorder.Visibility = System.Windows.Visibility.Visible;
+					grid1.Visibility = Visibility.Visible;
+					MenuBorder.Visibility = Visibility.Visible;
 				}
 				else {
 					try {
-						ShellItem con = obj;
+						//ShellItem con = obj;
 						List<ShellItem> joe = new List<ShellItem>();
-						foreach (ShellItem item in con) {
-							if (item.IsFolder == true) {
+						//foreach (ShellItem item in con) {
+						foreach (ShellItem item in obj) {
+							if (item.IsFolder) {
 								if (item.ParsingName.ToLower().EndsWith(".zip") == false && item.ParsingName.ToLower().EndsWith(".cab") == false) {
 									joe.Add(item);
 								}
@@ -221,8 +221,8 @@ namespace BetterExplorerControls {
 		}
 
 		private void SetChildren(bool isON) {
-			expandArrow.Visibility = isON ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
-			grid1.Visibility = isON ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+			expandArrow.Visibility = isON ? Visibility.Visible : Visibility.Collapsed;
+			grid1.Visibility = isON ? Visibility.Visible : Visibility.Collapsed;
 			//children = isON;
 			HasDropDownMenu = isON;
 		}
@@ -236,21 +236,21 @@ namespace BetterExplorerControls {
 		}
 
 		private void ShowSelectedColors() {
-			this.SelectionBackground.Visibility = System.Windows.Visibility.Visible;
+			this.SelectionBackground.Visibility = Visibility.Visible;
 			this.PathBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 60, 127, 177));
 
-			if (HasDropDownMenu == true) {
-				this.MenuBackground.Visibility = System.Windows.Visibility.Visible;
+			if (HasDropDownMenu) {
+				this.MenuBackground.Visibility = Visibility.Visible;
 				this.MenuBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 60, 127, 177));
 			}
 		}
 
 		private void HideSelectedColors() {
-			this.SelectionBackground.Visibility = System.Windows.Visibility.Hidden;
+			this.SelectionBackground.Visibility = Visibility.Hidden;
 			this.PathBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(1, 60, 127, 177));
 
-			if (HasDropDownMenu == true) {
-				this.MenuBackground.Visibility = System.Windows.Visibility.Hidden;
+			if (HasDropDownMenu) {
+				this.MenuBackground.Visibility = Visibility.Hidden;
 				this.MenuBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(1, 60, 127, 177));
 			}
 		}

@@ -122,7 +122,7 @@ namespace BetterExplorer
             lblDownloadedBytes.Text = String.Format("{0}/{1} bytes downloaded.", e.BytesReceived, e.TotalBytesToReceive);
         }
 
-        void CurrentUpdater_UpdaterDownloadComplete(object sender, Updater.PathEventArgs e)
+		void CurrentUpdater_UpdaterDownloadComplete(object sender, Tuple<string> e)
         {
             //pbFileDownload.Value = 0;
             //lblDownloadedBytes.Text = "0000 / 0000 bytes downloaded";

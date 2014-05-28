@@ -14,7 +14,7 @@ namespace ConsoleControl {
 	/// <param name="args">  
 	/// The <see cref="ConsoleControl.ConsoleEventArgs" /> instance containing the event data.
 	/// </param>
-	public delegate void ConsoleEventHanlder(object sender, ConsoleEventArgs args);
+	public delegate void ConsoleEventHanlder(object sender, Tuple<string> args);
 
 	/// <summary> The Console Control allows you to embed a basic console in your application. </summary>
 	[ToolboxBitmap(typeof(resfinder), "ConsoleControl.ConsoleControl.bmp")]
@@ -229,7 +229,7 @@ namespace ConsoleControl {
 			// Get the event.
 			var theEvent = OnConsoleOutput;
 			if (theEvent != null)
-				theEvent(this, new ConsoleEventArgs(content));
+				theEvent(this, new Tuple<string>(content));
 		}
 
 		/// <summary> Fires the console input event. </summary>
@@ -238,7 +238,7 @@ namespace ConsoleControl {
 			// Get the event.
 			var theEvent = OnConsoleInput;
 			if (theEvent != null)
-				theEvent(this, new ConsoleEventArgs(content));
+				theEvent(this, new Tuple<string>(content));
 		}
 
 		#endregion Processing

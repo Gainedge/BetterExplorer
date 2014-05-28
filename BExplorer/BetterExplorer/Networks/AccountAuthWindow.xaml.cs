@@ -158,7 +158,7 @@ namespace BetterExplorer.Networks {
 			yep = true;
 			AddedService = Service;
 
-						if (Success) {
+			if (Success) {
 				SuccessImage.Visibility = System.Windows.Visibility.Visible;
 				FailureImage.Visibility = System.Windows.Visibility.Collapsed;
 			}
@@ -256,26 +256,17 @@ namespace BetterExplorer.Networks {
 		}
 
 		public class NavigationRoutedEventArgs : RoutedEventArgs {
-			private System.Net.WebResponse _resp;
-			private Uri _address;
+			public Uri Uri { get; private set; }
+			public System.Net.WebResponse Response { get; private set; }
+
 
 			public NavigationRoutedEventArgs(RoutedEvent RoutedEvent, Uri uri, System.Net.WebResponse response) {
 				base.RoutedEvent = RoutedEvent;
-				_address = uri;
-				_resp = response;
+				Uri = uri;
+				Response = response;
 			}
 
-			public Uri Uri {
-				get {
-					return _address;
-				}
-			}
 
-			public System.Net.WebResponse Response {
-				get {
-					return _resp;
-				}
-			}
 
 			//public RoutedEvent RoutedEvent
 			//{
@@ -318,8 +309,8 @@ namespace BetterExplorer.Networks {
 
 		// Create a custom routed event by first registering a RoutedEventID 
 		// This event uses the bubbling routing strategy 
-		public static readonly RoutedEvent BeginLoginEvent = EventManager.RegisterRoutedEvent(
-			"BeginLogin", RoutingStrategy.Bubble, typeof(LoginRoutedEventHandler), typeof(AccountAuthWindow));
+		public static readonly RoutedEvent BeginLoginEvent =
+			EventManager.RegisterRoutedEvent("BeginLogin", RoutingStrategy.Bubble, typeof(LoginRoutedEventHandler), typeof(AccountAuthWindow));
 
 		// Provide CLR accessors for the event 
 		public event LoginRoutedEventHandler BeginLogin {
@@ -335,26 +326,16 @@ namespace BetterExplorer.Networks {
 		}
 
 		public class LoginRoutedEventArgs : RoutedEventArgs {
-			private string _user;
-			private string _pass;
+			public string Username { get; private set; }
+			public string Password { get; private set; }
+
 
 			public LoginRoutedEventArgs(RoutedEvent RoutedEvent, string username, string password) {
 				base.RoutedEvent = RoutedEvent;
-				_user = username;
-				_pass = password;
+				Username = username;
+				Password = password;
 			}
 
-			public string Username {
-				get {
-					return _user;
-				}
-			}
-
-			public string Password {
-				get {
-					return _pass;
-				}
-			}
 
 			//public RoutedEvent RoutedEvent
 			//{

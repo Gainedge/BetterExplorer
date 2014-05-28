@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 
 namespace ProcessInterface {
-	//TODO: Move into ConsoleControl
+
 	/// <summary>
 	/// The ProcessEventArgs are arguments for a console event.
 	/// </summary>
-	[Obsolete("Moving into ConsoleControl", false)]
 	public class ProcessEventArgs : EventArgs {
 
 		/// <summary>
@@ -57,7 +56,6 @@ namespace ProcessInterface {
 			Content = content;
 			Code = code;
 		}
-
 
 	}
 }

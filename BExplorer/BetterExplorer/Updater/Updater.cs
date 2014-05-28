@@ -88,6 +88,7 @@ namespace BetterExplorer {
 
 		#region Internal Classes
 
+		[Obsolete("Use Tuple<string>", true)]
 		public class PathEventArgs {
 			public string Path { get; private set; }
 
@@ -108,7 +109,7 @@ namespace BetterExplorer {
 
 		#region Events
 
-		public delegate void PathEventHandler(object sender, PathEventArgs e);
+		public delegate void PathEventHandler(object sender, Tuple<string> e);
 
 		// An event that clients can use to be notified whenever the
 		// elements of the list change:
@@ -116,7 +117,7 @@ namespace BetterExplorer {
 		//public event EventHandler MouseDoubleClick;
 
 		// Invoke the Changed event; called whenever list changes:
-		protected virtual void OnUpdaterDownloadComplete(PathEventArgs e) {
+		protected virtual void OnUpdaterDownloadComplete(Tuple<string> e) {
 			if (UpdaterDownloadComplete != null)
 				UpdaterDownloadComplete(this, e);
 		}
@@ -256,7 +257,7 @@ namespace BetterExplorer {
 
 		private void updchk_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e) {
 			if (!upd) {
-				OnUpdaterDownloadComplete(new PathEventArgs(LocalUpdaterLocation));
+				OnUpdaterDownloadComplete(new Tuple<string>(LocalUpdaterLocation));
 			}
 			else if (e.Error != null) {
 				OnErrorOccurredWhileChecking(new ExceptionEventArgs(e.Error));
