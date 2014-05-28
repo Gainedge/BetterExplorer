@@ -66,7 +66,7 @@ namespace BetterExplorer {
 
 				isOnLoad = false;
 			}
-			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
 
 			//if (tcMain.Items.Count == 1)
 			//	tcMain.SelectedIndex = 0;

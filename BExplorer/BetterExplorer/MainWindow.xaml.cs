@@ -50,8 +50,6 @@ using WindowsHelper;
 
 
 namespace BetterExplorer {
-	//Do everything on the To Do List sent to you Via skype in the notepad
-
 
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
@@ -162,33 +160,57 @@ namespace BetterExplorer {
 
 		#endregion
 
-		#region Events
 
+
+		[Obsolete("Does Nothing")]
 		private void chkIsLastTabCloseApp_Click(object sender, RoutedEventArgs e) {
 			//this.IsCloseLastTabCloseApp = this.chkIsLastTabCloseApp.IsChecked.Value;
 		}
 
-		private void btnConsolePane_Click(object sender, RoutedEventArgs e) {
-			this.IsConsoleShown = btnConsolePane.IsChecked.Value;
-			if (btnConsolePane.IsChecked.Value) {
-				rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
-				rCommandPrompt.MinHeight = 100;
-				spCommandPrompt.Height = GridLength.Auto;
-				if (!ctrlConsole.IsProcessRunning)
-					ctrlConsole.ChangeFolder(ShellListView.CurrentFolder.ParsingName, ShellListView.CurrentFolder.IsFileSystem);
-			}
-			else {
-				rCommandPrompt.MinHeight = 0;
-				rCommandPrompt.Height = new GridLength(0);
-				spCommandPrompt.Height = new GridLength(0);
-				ctrlConsole.StopProcess();
-			}
+		[Obsolete("Does Nothing")]
+		private void RibbonWindow_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			//ShellListView.Focus();
+			//     if (!backstage.IsOpen)
+			//ShellListView.SetExplorerFocus();
+			//  if (breadcrumbBarControl1.IsInEditMode)
+			//  {
+			//      breadcrumbBarControl1.ExitEditMode();
+			//  }
 		}
 
-		private void btnAbout_Click(object sender, RoutedEventArgs e) {
-			fmAbout fAbout = new fmAbout(this);
-			//fAbout.Closed += new EventHandler(fAbout_Closed);
-			fAbout.ShowDialog();
+
+		//[Obsolete("Never Called!!")]
+		//private void RibbonWindow_MouseUp(object sender, MouseButtonEventArgs e) {
+		//	breadcrumbBarControl1.ExitEditMode_IfNeeded();
+		//}
+
+
+
+		[Obsolete("Never Called!!")]
+		void Explorer_ExplorerGotFocus(object sender, EventArgs e) {
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
+			IsRenameFromCreate = false;
+			//ShellListView.IsRenameStarted = false;
+		}
+
+		void Explorer_LostFocus(object sender, EventArgs e) {
+			//if (!backstage.IsOpen)
+			//    ShellListView.SetExplorerFocus();
+			IsRenameFromCreate = false;
+		}
+
+		void Explorer_RenameFinished(object sender, EventArgs e) {
+			IsRenameFromCreate = true;
+			//IsAfterFolderCreate = false;
+			//ShellListView.IsRenameStarted = false;
+
+			//TODO: Test this out
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
+		}
+
+		void Explorer_ItemsChanged(object sender, EventArgs e) {
+			int ItemsCount = ShellListView.GetItemsCount();
+			sbiItemsCount.Content = ItemsCount == 1 ? ItemsCount.ToString() + " item" : ItemsCount.ToString() + " items";
 		}
 
 		void Explorer_DragDrop(object sender, System.Windows.Forms.DragEventArgs e) {
@@ -217,9 +239,33 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void RibbonWindow_MouseUp(object sender, MouseButtonEventArgs e) {
-			breadcrumbBarControl1.ExitEditMode_IfNeeded();
+
+
+		#region Events
+
+		private void btnConsolePane_Click(object sender, RoutedEventArgs e) {
+			this.IsConsoleShown = btnConsolePane.IsChecked.Value;
+			if (btnConsolePane.IsChecked.Value) {
+				rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
+				rCommandPrompt.MinHeight = 100;
+				spCommandPrompt.Height = GridLength.Auto;
+				if (!ctrlConsole.IsProcessRunning)
+					ctrlConsole.ChangeFolder(ShellListView.CurrentFolder.ParsingName, ShellListView.CurrentFolder.IsFileSystem);
+			}
+			else {
+				rCommandPrompt.MinHeight = 0;
+				rCommandPrompt.Height = new GridLength(0);
+				spCommandPrompt.Height = new GridLength(0);
+				ctrlConsole.StopProcess();
+			}
 		}
+
+		private void btnAbout_Click(object sender, RoutedEventArgs e) {
+			fmAbout fAbout = new fmAbout(this);
+			//fAbout.Closed += new EventHandler(fAbout_Closed);
+			fAbout.ShowDialog();
+		}
+
 		private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e) {
 			ScrollViewer scviewer = (sender as ScrollViewer);
 			scviewer.ScrollToHorizontalOffset(scviewer.HorizontalOffset - e.Delta);
@@ -230,16 +276,6 @@ namespace BetterExplorer {
 		}
 
 
-		[Obsolete("Does Nothing")]
-		private void RibbonWindow_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			//ShellListView.Focus();
-			//     if (!backstage.IsOpen)
-			//ShellListView.SetExplorerFocus();
-			//  if (breadcrumbBarControl1.IsInEditMode)
-			//  {
-			//      breadcrumbBarControl1.ExitEditMode();
-			//  }
-		}
 
 		private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e) {
 			autoUpdater.Visibility = System.Windows.Visibility.Visible;
@@ -253,15 +289,15 @@ namespace BetterExplorer {
 
 		private void RibbonWindow_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
 			IsRenameFromCreate = true;
-			breadcrumbBarControl1.ExitEditMode_IfNeeded();
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded();
+			breadcrumbBarControl1.ExitEditMode();
 		}
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
 			//TODO:	[Date: 5/6/2014]	Test this code change
 			if (TheRibbon.IsMinimized && this.IsGlassOnRibonMinimized) {
-				System.Windows.Point p =
-				ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-				this.GlassBorderThickness = new Thickness(8, this.WindowState == System.Windows.WindowState.Maximized ? p.Y : p.Y - 2, 8, 8);
+				System.Windows.Point p = ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+				this.GlassBorderThickness = new Thickness(8, this.WindowState == WindowState.Maximized ? p.Y : p.Y - 2, 8, 8);
 			}
 			else if (this.IsGlassOnRibonMinimized) {
 				System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
@@ -663,32 +699,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		void Explorer_ExplorerGotFocus(object sender, EventArgs e) {
-			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
-			IsRenameFromCreate = false;
-			//ShellListView.IsRenameStarted = false;
-		}
-
-		void Explorer_LostFocus(object sender, EventArgs e) {
-			//if (!backstage.IsOpen)
-			//    ShellListView.SetExplorerFocus();
-			IsRenameFromCreate = false;
-		}
-
-		void Explorer_RenameFinished(object sender, EventArgs e) {
-			IsRenameFromCreate = true;
-			//IsAfterFolderCreate = false;
-			//ShellListView.IsRenameStarted = false;
-
-			//TODO: Test this out
-			breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
-		}
-
-
-		void Explorer_ItemsChanged(object sender, EventArgs e) {
-			int ItemsCount = ShellListView.GetItemsCount();
-			sbiItemsCount.Content = ItemsCount == 1 ? ItemsCount.ToString() + " item" : ItemsCount.ToString() + " items";
-		}
 
 		void fsw_Renamed(object sender, RenamedEventArgs e) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal,
@@ -1962,6 +1972,13 @@ namespace BetterExplorer {
 
 		#endregion
 
+
+		[Obsolete("Duplicates BreadcrumbBarControl.HistoryCombo_KeyUp(...) Functionality")]
+		void ShellListView_GotFocus(object sender, EventArgs e) {
+			//Commented out on [5/27/2014] by Aaron Campf
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded();
+		}
+
 		#region On Startup
 
 		private void SetUpFavoritesMenu() {
@@ -2072,9 +2089,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		void ShellListView_GotFocus(object sender, EventArgs e) {
-			breadcrumbBarControl1.ExitEditMode_IfNeeded();
-		}
 
 		void ShellListView_SelectionChanged(object sender, EventArgs e) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
@@ -4180,6 +4194,16 @@ namespace BetterExplorer {
 
 		#endregion
 
+
+		[Obsolete("Can be safely removed")]
+		private void RibbonWindow_KeyUp(object sender, KeyEventArgs e) {
+			if (e.Key == Key.Escape) {
+				//breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
+				//ShellListView.IsCancelNavigation = true;
+			}
+		}
+
+
 		#region Breadcrumb Bar
 
 		private void breadcrumbBarControl1_NavigateRequested(object sender, PathEventArgs e) {
@@ -4190,15 +4214,8 @@ namespace BetterExplorer {
 			ShellListView.RefreshContents();
 		}
 
-		private void RibbonWindow_KeyUp(object sender, KeyEventArgs e) {
-			if (e.Key == Key.Escape) {
-				breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
-				//ShellListView.IsCancelNavigation = true;
-			}
-		}
-
 		private void RibbonWindow_GotFocus(object sender, RoutedEventArgs e) {
-			breadcrumbBarControl1.ExitEditMode_IfNeeded();
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded();
 			if (!backstage.IsOpen)
 				ShellListView.Focus();
 		}
