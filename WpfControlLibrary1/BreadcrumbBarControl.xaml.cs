@@ -14,7 +14,7 @@ using BExplorer.Shell.Interop;
 namespace BetterExplorerControls {
 
 	/// <summary> Interaction logic for BreadcrumbBarControl.xaml </summary>
-	public partial class BreadcrumbBarControl : UserControl { //TODO: See To Do List Document
+	public partial class BreadcrumbBarControl : UserControl {
 
 		#region Being Removed
 
@@ -85,7 +85,6 @@ namespace BetterExplorerControls {
 		}
 
 		#endregion Being Removed
-
 
 		#region Properties
 
@@ -235,11 +234,11 @@ namespace BetterExplorerControls {
 				}
 				else {
 					thing.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-					thing.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+					thing.Thumbnail.CurrentSize = new Size(16, 16);
 					duh.pathName.Text = thing.GetDisplayName(SIGDN.NORMALDISPLAY);
 					duh.PathImage.Source = thing.Thumbnail.BitmapSource;
-					duh.MenuBorder.Visibility = System.Windows.Visibility.Collapsed;
-					duh.grid1.Visibility = System.Windows.Visibility.Collapsed;
+					duh.MenuBorder.Visibility = Visibility.Collapsed;
+					duh.grid1.Visibility = Visibility.Collapsed;
 				}
 
 				duh.NavigateRequested += new BreadcrumbBarItem.PathEventHandler(duh_NavigateRequested);
@@ -319,10 +318,10 @@ namespace BetterExplorerControls {
 
 			//IsLeavingControl = true;
 			//IsInEditMode = false;
-			elPanel.Visibility = System.Windows.Visibility.Visible;
+			elPanel.Visibility = Visibility.Visible;
 
 			if (Undertextbox != null)
-				Undertextbox.Visibility = System.Windows.Visibility.Hidden;
+				Undertextbox.Visibility = Visibility.Hidden;
 		}
 
 		public void EnterEditMode() {
@@ -335,10 +334,10 @@ namespace BetterExplorerControls {
 
 			//IsLeavingControl = false;
 			//IsInEditMode = true;
-			elPanel.Visibility = System.Windows.Visibility.Collapsed;
+			elPanel.Visibility = Visibility.Collapsed;
 
 			if (Undertextbox != null) {
-				Undertextbox.Visibility = System.Windows.Visibility.Visible;
+				Undertextbox.Visibility = Visibility.Visible;
 			}
 
 			var obj = furthestrightitem.ShellItem;
@@ -390,7 +389,6 @@ namespace BetterExplorerControls {
 
 		private void HistoryCombo_LostFocus(object sender, RoutedEventArgs e) {
 			e.Handled = true;
-
 			//This is calling ExitEditMode_IfNeeded() an extra time
 			//ExitEditMode_IfNeeded();
 			//if (IsInEditMode || IsLeavingControl)
@@ -400,11 +398,9 @@ namespace BetterExplorerControls {
 
 		private void HistoryCombo_MouseUp(object sender, MouseButtonEventArgs e) {
 			e.Handled = true;
-			if (e.LeftButton == MouseButtonState.Released) {
-				//IsLeavingControl = false;
-				//if (!IsInEditMode)
-				EnterEditMode();
-			}
+			if (e.LeftButton == MouseButtonState.Released) EnterEditMode();
+			//IsLeavingControl = false;
+			//if (!IsInEditMode)
 		}
 
 		private void HistoryCombo_KeyUp(object sender, KeyEventArgs e) {
