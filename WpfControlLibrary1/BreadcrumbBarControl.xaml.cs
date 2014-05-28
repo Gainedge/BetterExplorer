@@ -234,7 +234,7 @@ namespace BetterExplorerControls {
 				}
 				else {
 					thing.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-					thing.Thumbnail.CurrentSize = new Size(16, 16);
+					thing.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 					duh.pathName.Text = thing.GetDisplayName(SIGDN.NORMALDISPLAY);
 					duh.PathImage.Source = thing.Thumbnail.BitmapSource;
 					duh.MenuBorder.Visibility = Visibility.Collapsed;
