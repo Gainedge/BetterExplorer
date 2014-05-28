@@ -1464,7 +1464,7 @@ namespace BExplorer.Shell {
 			System.Windows.Forms.Application.DoEvents();
 		}
 
-		private void InsertNewItem(ShellItem obj)
+		private Int32 InsertNewItem(ShellItem obj)
 		{
 			if (!Items.Contains(obj) && !String.IsNullOrEmpty(obj.ParsingName))
 			{
@@ -1476,7 +1476,7 @@ namespace BExplorer.Shell {
 				}
 				
 			}
-			
+			return ItemsHashed[obj];
 		}
 		private void UpdateItem(ShellItem obj1, ShellItem obj2)
 		{
@@ -1544,9 +1544,9 @@ namespace BExplorer.Shell {
 							{
 								if (obj.Parent.Equals(this.CurrentFolder))
 								{
-									InsertNewItem(obj);
+									var itemIndex = InsertNewItem(obj);
 									if (this.ItemUpdated != null)
-										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, this.Items.Count - 1));
+										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
 								}
 							}
 							Notifications.NotificationsReceived.Remove(info);
@@ -3704,7 +3704,14 @@ namespace BExplorer.Shell {
 		/// <summary> Gives the ShellListView focus </summary>
 		public void Focus() {
 			if (!this._IsInRenameMode)
-				User32.SetFocus(this.LVHandle);
+			{
+				var res = User32.SetFocus(this.LVHandle);
+				if (res == IntPtr.Zero)
+				{
+					User32.SetForegroundWindow(this.LVHandle);
+				}
+				res = User32.SetActiveWindow(this.LVHandle);
+			}
 		}
 
 		public void FormatDrive(IntPtr handle) {

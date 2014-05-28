@@ -47,6 +47,7 @@ using System.Threading.Tasks;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
 using WindowsHelper;
+using System.Text.RegularExpressions;
 
 
 namespace BetterExplorer {
@@ -2719,7 +2720,7 @@ namespace BetterExplorer {
 			if (ShellListView.CurrentFolder.Parent == null) {
 				return false;
 			}
-			else if (ShellListView.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
+			else if (ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName) {
 				btnCreateFolder.Header = FindResource("btnNewLibraryCP");  //"New Library";
 				stNewFolder.Title = FindResource("btnNewLibraryCP").ToString();//"New Library";
 				stNewFolder.Text = "Creates a new library in the current folder.";
@@ -2729,7 +2730,7 @@ namespace BetterExplorer {
 
 				return true;
 			}
-			else {
+			else if (this.ShellListView.CurrentFolder.IsFileSystem || this.ShellListView.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName){
 				btnCreateFolder.Header = FindResource("btnNewFolderCP");//"New Folder";
 				stNewFolder.Title = FindResource("btnNewFolderCP").ToString(); //"New Folder";
 				stNewFolder.Text = "Creates a new folder in the current folder";
@@ -2739,12 +2740,10 @@ namespace BetterExplorer {
 
 				return false;
 			}
-
-			//btnCreateFolder.IsEnabled = ShellListView.CurrentFolder.IsFileSystem ||
-			//    (ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName) ||
-			//    (isinLibraries);
-
-			//btnCreateFolder.IsEnabled = ShellListView.CanCreateFolder || (ShellListView.CurrentFolder.FileSystemPath == KnownFolders.Libraries.ParsingName) || (isinLibraries);
+			else
+			{
+				return false;
+			}
 		}
 
 		private void SetUpButtonVisibilityOnNavComplete(bool isinLibraries) {
@@ -5585,10 +5584,29 @@ namespace BetterExplorer {
 			}
 		}
 
+		System.Windows.Forms.Timer focusTimer = new System.Windows.Forms.Timer();
 		private void RibbonWindow_Activated(object sender, EventArgs e) {
+			focusTimer.Interval = 500;
+			focusTimer.Tick += focusTimer_Tick;
+			focusTimer.Start();
+		}
+
+		void focusTimer_Tick(object sender, EventArgs e)
+		{
 			this.ShellListView.Focus();
+			(sender as System.Windows.Forms.Timer).Stop();
 		}
 
 		#endregion
+
+		private void RibbonWindow_StateChanged(object sender, EventArgs e)
+		{
+			if (this.WindowState != System.Windows.WindowState.Minimized)
+			{
+				focusTimer.Interval = 500;
+				focusTimer.Tick += focusTimer_Tick;
+				focusTimer.Start();
+			}
+		}
 	}
 }
