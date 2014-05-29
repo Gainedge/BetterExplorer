@@ -3744,24 +3744,16 @@ namespace BExplorer.Shell {
 		}
 
 		private static BitmapFrame CreateResizedImage(IntPtr hBitmap, int width, int height, int margin) {
-			var source = Imaging.CreateBitmapSourceFromHBitmap(
-															hBitmap,
-															IntPtr.Zero,
-															System.Windows.Int32Rect.Empty,
-															BitmapSizeOptions.FromEmptyOptions()).Clone();
+			var source = Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()).Clone();
 			Gdi32.DeleteObject(hBitmap);
 
 			var group = new DrawingGroup();
-			RenderOptions.SetBitmapScalingMode(
-											group, BitmapScalingMode.Fant);
-			group.Children.Add(
-											new ImageDrawing(source,
-																			new Rect(0, 0, width, height)));
+			RenderOptions.SetBitmapScalingMode(group, BitmapScalingMode.Fant);
+			group.Children.Add(new ImageDrawing(source, new Rect(0, 0, width, height)));
 			var targetVisual = new DrawingVisual();
 			var targetContext = targetVisual.RenderOpen();
 			targetContext.DrawDrawing(group);
-			var target = new RenderTargetBitmap(
-											width, height, 96, 96, PixelFormats.Default);
+			var target = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Default);
 			targetContext.Close();
 			target.Render(targetVisual);
 			return BitmapFrame.Create(target);
@@ -3893,8 +3885,13 @@ namespace BExplorer.Shell {
 		}
 
 
-		private void LoadFileSettingFromDatabase() {
+		private void LoadFolderSettingFromDatabase() {
+			//TODO: Add code for loading settings
 
+		}
+
+		private void SaveFolderSettingFromDatabase() {
+			//TODO: Add code for loading settings
 		}
 	}
 }
