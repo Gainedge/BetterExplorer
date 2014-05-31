@@ -832,8 +832,8 @@ namespace BetterExplorer {
 		private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, ShellItem selectedItem) {
 			#region Search Contextual Tab
 			ctgSearch.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.IsSearchFolder);
-			if (ctgSearch.Visibility == System.Windows.Visibility.Visible && !ShellListView.CurrentFolder.IsSearchFolder) {
-				ctgSearch.Visibility = System.Windows.Visibility.Collapsed;
+			if (ctgSearch.Visibility == Visibility.Visible && !ShellListView.CurrentFolder.IsSearchFolder) {
+				ctgSearch.Visibility = Visibility.Collapsed;
 				TheRibbon.SelectedTabItem = HomeTab;
 			}
 			#endregion
@@ -2030,28 +2030,24 @@ namespace BetterExplorer {
 			this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
 		}
 
-		void ShellListView_EndItemLabelEdit(object sender, EventArgs e)
-		{
+		void ShellListView_EndItemLabelEdit(object sender, EventArgs e) {
 			this.Editor.IsOpen = false;
 		}
 
-		void ShellListView_BeginItemLabelEdit(object sender, EventArgs e)
-		{
+		void ShellListView_BeginItemLabelEdit(object sender, EventArgs e) {
 			var isSmall = this.ShellListView.IconSize == 16;
 			var itemRect = this.ShellListView.GetItemBounds(this.ShellListView.GetFirstSelectedItemIndex(), 0);
 			var itemLabelRect = this.ShellListView.GetItemBounds(this.ShellListView.GetFirstSelectedItemIndex(), 2);
 			this.txtEditor.Text = this.ShellListView.GetFirstSelectedItem().DisplayName;
-			var point = this.ShellViewHost.PointToScreen(new System.Windows.Point( isSmall? itemLabelRect.Left : itemRect.Left, itemLabelRect.Top));
+			var point = this.ShellViewHost.PointToScreen(new System.Windows.Point(isSmall ? itemLabelRect.Left : itemRect.Left, itemLabelRect.Top));
 			this.Editor.HorizontalOffset = point.X;
 			this.Editor.VerticalOffset = point.Y;
 
-			if (isSmall)
-			{
+			if (isSmall) {
 				this.txtEditor.MaxHeight = itemLabelRect.Height;
 				this.txtEditor.MaxWidth = Double.PositiveInfinity;
 			}
-			else
-			{
+			else {
 				this.txtEditor.MaxWidth = itemRect.Width;
 				this.txtEditor.MaxHeight = Double.PositiveInfinity;
 			}
@@ -2781,7 +2777,7 @@ namespace BetterExplorer {
 
 				return true;
 			}
-			else if (this.ShellListView.CurrentFolder.IsFileSystem || this.ShellListView.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName){
+			else if (this.ShellListView.CurrentFolder.IsFileSystem || this.ShellListView.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
 				btnCreateFolder.Header = FindResource("btnNewFolderCP");//"New Folder";
 				stNewFolder.Title = FindResource("btnNewFolderCP").ToString(); //"New Folder";
 				stNewFolder.Text = "Creates a new folder in the current folder";
@@ -2791,8 +2787,7 @@ namespace BetterExplorer {
 
 				return false;
 			}
-			else
-			{
+			else {
 				return false;
 			}
 		}
@@ -5636,31 +5631,26 @@ namespace BetterExplorer {
 			focusTimer.Start();
 		}
 
-		void focusTimer_Tick(object sender, EventArgs e)
-		{
+		void focusTimer_Tick(object sender, EventArgs e) {
 			this.ShellListView.Focus();
 			(sender as System.Windows.Forms.Timer).Stop();
 		}
 
 		#endregion
 
-		private void RibbonWindow_StateChanged(object sender, EventArgs e)
-		{
-			if (this.WindowState != System.Windows.WindowState.Minimized)
-			{
+		private void RibbonWindow_StateChanged(object sender, EventArgs e) {
+			if (this.WindowState != System.Windows.WindowState.Minimized) {
 				focusTimer.Interval = 500;
 				focusTimer.Tick += focusTimer_Tick;
 				focusTimer.Start();
 			}
 		}
 
-		private void txtEditor_TextChanged(object sender, TextChangedEventArgs e)
-		{
+		private void txtEditor_TextChanged(object sender, TextChangedEventArgs e) {
 			this.ShellListView.NewName = this.txtEditor.Text;
 		}
 
-		private void txtEditor_PreviewKeyDown(object sender, KeyEventArgs e)
-		{
+		private void txtEditor_PreviewKeyDown(object sender, KeyEventArgs e) {
 			//if (e.Key == Key.Escape)
 			//{
 			//	this.ShellListView.EndLabelEdit(true);
@@ -5671,8 +5661,7 @@ namespace BetterExplorer {
 			//}
 		}
 
-		private void Editor_Closed(object sender, EventArgs e)
-		{
+		private void Editor_Closed(object sender, EventArgs e) {
 			this.ShellListView.Focus();
 			var index = this.ShellListView.ItemForRename;
 			this.ShellListView.ItemForRename = -1;
@@ -5681,8 +5670,7 @@ namespace BetterExplorer {
 			//MessageBox.Show(FocusManager.GetFocusedElement(this).ToString());
 		}
 
-		private void Editor_Opened(object sender, EventArgs e)
-		{
+		private void Editor_Opened(object sender, EventArgs e) {
 			//FocusManager.SetIsFocusScope(this, true);
 		}
 
