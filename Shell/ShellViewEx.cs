@@ -1341,13 +1341,8 @@ namespace BExplorer.Shell {
 			int row = -1;
 			int collumn = -1;
 			this.HitTest(PointToClient(new System.Drawing.Point(e.X, e.Y)), out row, out collumn);
-			ShellItem destination = null;
-			if (row != -1) {
-				destination = this.Items[row];
-			}
-			else {
-				destination = this.CurrentFolder;
-			}
+			ShellItem destination = row != -1 ? Items[row] : CurrentFolder;
+
 			switch (e.Effect) {
 				case System.Windows.Forms.DragDropEffects.All:
 					break;
