@@ -322,7 +322,7 @@ namespace BExplorer.Shell {
 				}
 				else if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\")) {
 					string rootPath = System.IO.Path.GetPathRoot(ParsingName); // get drive's letter
-					System.IO.DriveInfo driveInfo = new System.IO.DriveInfo(rootPath); // get info about the drive
+					DriveInfo driveInfo = new DriveInfo(rootPath); // get info about the drive
 					return driveInfo.DriveType == DriveType.Network; // return true if a network drive
 				}
 				else {
@@ -1288,37 +1288,14 @@ namespace BExplorer.Shell {
 		/// Returns a URI representation of the <see cref="ShellItem"/>.
 		/// </summary>
 		public Uri ToUri() {
-			//BExplorer.Shell.Interop.CoClass.KnownFolderManager manager = new BExplorer.Shell.Interop.CoClass.KnownFolderManager();
-			//StringBuilder path = new StringBuilder("shell:///");
-			//KnownFolder knownFolder = manager.FindNearestParent(this);
+			StringBuilder path = new StringBuilder("shell:///");
 
-			//if (knownFolder != null)
-			//{
-			//    List<string> folders = new List<string>();
-			//    ShellItem knownFolderItem = knownFolder.CreateShellItem();
-			//    ShellItem item = this;
-
-			//    while (item != knownFolderItem)
-			//    {
-			//        folders.Add(item.GetDisplayName(SIGDN.PARENTRELATIVEPARSING));
-			//        item = item.Parent;
-			//    }
-
-			//    folders.Reverse();
-			//    path.Append(knownFolder.Name);
-			//    foreach (string s in folders)
-			//    {
-			//        path.Append('/');
-			//        path.Append(s);
-			//    }
-
-			//    return new Uri(path.ToString());
-			//}
-			//else
-			//{
-			//    return new Uri(FileSystemPath);
-			//}
-			return null;
+			if (this.ParsingName.StartsWith("::"))
+			{
+				path.Append(this.ParsingName);
+				return new Uri(path.ToString());
+			}
+			return new Uri(this.FileSystemPath);
 		}
 
 		private void Initialize(Uri uri) {
@@ -1333,14 +1310,14 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		#endregion
-
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		private bool COM_Attribute_Check(SFGAO Check) {
 			SFGAO sfgao;
 			m_ComInterface.GetAttributes(Check, out sfgao);
 			return sfgao != 0;
 		}
+		#endregion
+
 
 	}
 }

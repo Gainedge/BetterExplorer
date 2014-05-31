@@ -147,7 +147,7 @@ namespace BExplorer.Shell.Interop
 				WM_VSCROLL = 0x0115,
 				LVM_GETITEMCOUNT = 0x1004,
 				LVM_GETITEMW = (FIRST + 75),
-				LVM_EDITLABELW = (FIRST + 118),
+				LVM_EDITLABELW = 0x1076,//(FIRST + 118),
 				LVM_SETITEMW = (FIRST + 76),
 				TVM_SETIMAGELIST = 4361,
 				TVM_SETITEMW = 4415,
@@ -181,6 +181,7 @@ namespace BExplorer.Shell.Interop
 				LVM_ARRANGE = (FIRST + 22),
 				LVM_GETITEMINDEXRECT = (FIRST + 209),
 				LVM_REMOVEALLGROUPS = (FIRST + 160),
+				LVM_SETITEMINDEXSTATE = (FIRST + 210),
 
 		}
 
@@ -294,6 +295,10 @@ namespace BExplorer.Shell.Interop
 			[DllImport("user32", CharSet = CharSet.Unicode, SetLastError = true, ExactSpelling = true)]
 			public static extern IntPtr SetFocus(IntPtr hWnd);
 
+			[DllImport("user32.dll", SetLastError = true)]
+			public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
+
 			[DllImport("user32.dll", SetLastError=true)]
 			public static extern IntPtr SetActiveWindow(IntPtr hWnd);
 
@@ -377,6 +382,10 @@ namespace BExplorer.Shell.Interop
 				[DllImport("user32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, MSG Msg,
 						int wParam, ref Shell.LVITEM lParam);
+
+				[DllImport("user32.dll")]
+				public static extern int SendMessage(IntPtr hWnd, MSG Msg,
+						ref LVITEMINDEX wparam, ref Shell.LVITEM lParam);
 
 				[DllImport("user32.dll")]
 				public static extern int SendMessage(IntPtr hWnd, MSG Msg,

@@ -628,6 +628,7 @@ namespace BExplorer.Shell {
 		private const int SW_SHOW = 5;
 		private const uint SEE_MASK_INVOKEIDLIST = 12;
 		private int _LastSelectedIndexByDragDrop = -1;
+		private TextBox _Editor = new TextBox();
 		
 		#endregion Private Members
 
@@ -672,6 +673,40 @@ namespace BExplorer.Shell {
 			this.KeyDown += ShellView_KeyDown;
 			this.MouseUp += ShellView_MouseUp;
 			this.GotFocus += ShellView_GotFocus;
+			this._Editor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this._Editor.Multiline = true;
+			this._Editor.AcceptsReturn = false;
+			this._Editor.Font = System.Drawing.SystemFonts.IconTitleFont;
+			this._Editor.WordWrap = true;
+			//this._Editor.Visible = false;
+			this._Editor.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+			this._Editor.TextChanged += _Editor_TextChanged;
+			this._Editor.LostFocus += _Editor_LostFocus;
+		}
+
+		void _Editor_TextChanged(object sender, EventArgs e)
+		{
+			var size = TextRenderer.MeasureText(this._Editor.Text, this._Editor.Font);
+			var widthOld = this._Editor.Width;
+			this._Editor.Width = size.Width + 4;
+			this._Editor.Height = size.Height + 4;
+			var dx = (this._Editor.Width - widthOld) / (double)2;
+			var dxInt = (int)dx;
+			this._Editor.Left = this._Editor.Left - dxInt;
+			//var itemIndex = (int)this._Editor.Tag;
+			//LVITEMINDEX lviLe = new LVITEMINDEX();
+			//lviLe.iItem = itemIndex;
+			//lviLe.iGroup = this.GetGroupIndex(itemIndex);
+			//var labelBounds = new User32.RECT();
+			//labelBounds.Left = 2;
+			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
+			//this._Editor.Location = new System.Drawing.Point(labelBounds.Left - 1, labelBounds.Top - 1);
+			
+		}
+
+		void _Editor_LostFocus(object sender, EventArgs e)
+		{
+			this.EndLabelEdit();
 		}
 
 		#endregion Initializer
@@ -1487,17 +1522,18 @@ namespace BExplorer.Shell {
 				{
 					Items.Insert(this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex, obj2);
 					ItemsHashed.Add(obj2, this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex);
-					//this.SelectItemByIndex(this.CurrentRefreshedItemIndex == -1 ? 0 :CurrentRefreshedItemIndex);
 					if (this.IsGroupsEnabled)
 					{
 						this.SetGroupOrder(false);
 					}
 					this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
 
+					
+
 					if (this.ItemUpdated != null)
-						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj2, null, this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex));
+						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj2, null, ItemsHashed[obj2]));
 
-
+					this.SelectItemByIndex(ItemsHashed[obj2], true, true);
 				}
 			}
 			else
@@ -1519,11 +1555,54 @@ namespace BExplorer.Shell {
 					this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
 					RedrawWindow();
 					if (this.ItemUpdated != null)
-						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, itemIndex));
+						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, ItemsHashed[obj2]));
+
+					this.SelectItemByIndex(ItemsHashed[obj2], true, true);
 				}
 			}
 			//}
 			this.CurrentRefreshedItemIndex = -1;
+		}
+		private void BeginLabelEdit(int itemIndex)
+		{
+			LVITEMINDEX lviLe = new LVITEMINDEX();
+			lviLe.iItem = itemIndex;
+			lviLe.iGroup = this.GetGroupIndex(itemIndex);
+			var labelBounds = new User32.RECT();
+			labelBounds.Left = 2;
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
+			var size = TextRenderer.MeasureText(this.Items[itemIndex].DisplayName, this._Editor.Font);
+			this._Editor.Width = labelBounds.Right - labelBounds.Left + 4;
+			this._Editor.Height = labelBounds.Bottom - labelBounds.Top + 4;
+			this._Editor.Location = new System.Drawing.Point(labelBounds.Left - 2, labelBounds.Top - 2);
+			this._Editor.Text = this.Items[itemIndex].DisplayName;
+			this._Editor.Tag = itemIndex;
+			User32.SetParent(this._Editor.Handle, this.LVHandle);
+			User32.ShowWindow(this._Editor.Handle, User32.ShowWindowCommands.Show);
+			this._Editor.Focus();
+			this._Editor.SelectAll();
+		}
+		private void EndLabelEdit(Boolean isCancel = false)
+		{
+			if (this._Editor.Visible)
+			{
+				this._Editor.Visible = false;
+
+				var itemIndex = (int)this._Editor.Tag;
+				if (!String.IsNullOrEmpty(this._Editor.Text))
+				{
+					if (!isCancel)
+					{
+						if (this._Editor.Text.ToLowerInvariant() != this.Items[itemIndex].DisplayName.ToLowerInvariant())
+						{
+							RenameShellItem(this.Items[itemIndex].m_ComInterface, this._Editor.Text);
+							this.RedrawWindow();
+						}
+					}
+				}
+				this._Editor.Text = String.Empty;
+			}
+			
 		}
 		protected override void WndProc(ref Message m)
 		{
@@ -1820,15 +1899,19 @@ namespace BExplorer.Shell {
 						if (KeyJumpKeyDown != null) {
 							KeyJumpKeyDown(this, new KeyEventArgs(Keys.A));
 						}
-						int startindex = findItem.iStart;
+						int startindex = this.GetFirstSelectedItemIndex() + (_keyjumpstr.Length > 1 ? 0 : 1);
 						int selind = GetFirstIndexOf(_keyjumpstr, startindex);
 						if (selind != -1) {
 							m.Result = (IntPtr)(selind);
+							if (IsGroupsEnabled)
+								this.SelectItemByIndex(selind, true, true);
 						}
 						else {
 							int selindOver = GetFirstIndexOf(_keyjumpstr, 0);
 							if (selindOver != -1) {
 								m.Result = (IntPtr)(selindOver);
+								if (IsGroupsEnabled)
+									this.SelectItemByIndex(selindOver, true, true);
 							}
 						}
 
@@ -1836,6 +1919,12 @@ namespace BExplorer.Shell {
 
 					case WNM.LVN_INCREMENTALSEARCH:
 						var incrementalSearch = (NMLVFINDITEM)m.GetLParam(typeof(NMLVFINDITEM));
+						break;
+
+					case -175:
+						var nmlvLe = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
+						BeginLabelEdit(nmlvLe.item.iItem);
+						m.Result = (IntPtr)1;
 						break;
 
 					case WNM.LVN_ITEMACTIVATE:
@@ -1870,6 +1959,7 @@ namespace BExplorer.Shell {
 						break;
 
 					case WNM.LVN_BEGINSCROLL:
+						this.EndLabelEdit();
 						resetEvent.Reset();
 						_ResetTimer.Stop();
 						this.Cancel = true;
@@ -2567,7 +2657,7 @@ namespace BExplorer.Shell {
 
 		public void RenameItem(int index) {
 			this.Focus();
-			var res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_EDITLABELW, new IntPtr(index), IntPtr.Zero);
+			this.BeginLabelEdit(index);
 			this._IsInRenameMode = true;
 		}
 
@@ -2825,22 +2915,40 @@ namespace BExplorer.Shell {
 		}
 
 		public void SelectItems(ShellItem[] ShellObjectArray) {
+			this.DeSelectAllItems();
 			foreach (ShellItem item in ShellObjectArray) {
+				LVITEMINDEX lvii = new LVITEMINDEX();
+				lvii.iItem = ItemsHashed[item];
+				lvii.iGroup = this.GetGroupIndex(ItemsHashed[item]);
 				LVITEM lvi = new LVITEM();
 				lvi.mask = LVIF.LVIF_STATE;
 				lvi.stateMask = LVIS.LVIS_SELECTED;
 				lvi.state = LVIS.LVIS_SELECTED;
-				User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMSTATE, Items.IndexOf(item), ref lvi);
+				User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
 			}
 			this.Focus();
 		}
 
-		public void SelectItemByIndex(int index, bool ensureVisisble = false) {
+		public void SelectItemByIndex(int index, bool ensureVisisble = false, bool deselectOthers = false) {
+			LVITEMINDEX lvii = new LVITEMINDEX();
+			lvii.iItem = index;
+			lvii.iGroup = this.GetGroupIndex(index);
 			LVITEM lvi = new LVITEM();
 			lvi.mask = LVIF.LVIF_STATE;
 			lvi.stateMask = LVIS.LVIS_SELECTED;
 			lvi.state = LVIS.LVIS_SELECTED;
-			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMSTATE, index, ref lvi);
+			if (deselectOthers)
+			{
+				LVITEMINDEX lviid = new LVITEMINDEX();
+				lviid.iItem = -1;
+				lviid.iGroup = 0;
+				LVITEM lviDeselect = new LVITEM();
+				lviDeselect.mask = LVIF.LVIF_STATE;
+				lviDeselect.stateMask = LVIS.LVIS_SELECTED;
+				lviDeselect.state = 0;
+				User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMINDEXSTATE, ref lviid, ref lviDeselect);
+			}
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
 			if (ensureVisisble)
 				User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ENSUREVISISBLE, index, 0);
 			this.Focus();
@@ -2882,6 +2990,7 @@ namespace BExplorer.Shell {
 		}
 
 		public void SetSortCollumn(int colIndex, SortOrder Order, Boolean reverseOrder = true) {
+			var selectedItems = this.SelectedItems.ToArray();
 			if (colIndex == this.LastSortedColumnIndex && reverseOrder) {
 				// Reverse the current sort direction for this column.
 				if (this.LastSortOrder == SortOrder.Ascending) {
@@ -2907,6 +3016,7 @@ namespace BExplorer.Shell {
 			this.ItemsHashed = this.Items.ToDictionary(k => k, el => i++);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 			this.SetSortIcon(colIndex, Order);
+			this.SelectItems(selectedItems);
 		}
 
 		/// <summary>
@@ -3705,12 +3815,16 @@ namespace BExplorer.Shell {
 		public void Focus() {
 			if (!this._IsInRenameMode)
 			{
-				var res = User32.SetFocus(this.LVHandle);
-				if (res == IntPtr.Zero)
+				var mainWin = System.Windows.Application.Current.MainWindow;
+				if (mainWin.IsActive)
 				{
-					User32.SetForegroundWindow(this.LVHandle);
+					var res = User32.SetFocus(this.LVHandle);
 				}
-				res = User32.SetActiveWindow(this.LVHandle);
+				//if (res == IntPtr.Zero)
+				//{
+				//	User32.SetForegroundWindow(this.LVHandle);
+				//}
+				//res = User32.SetActiveWindow(this.LVHandle);
 			}
 		}
 
