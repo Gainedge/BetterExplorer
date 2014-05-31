@@ -308,13 +308,19 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public event KeyEventHandler KeyJumpKeyDown;
 
+		public event EventHandler BeginItemLabelEdit;
+
+		public event EventHandler EndItemLabelEdit;
+
 		/// <summary> Raised when the timer finishes for the Key Jump timer. </summary>
 		public event EventHandler KeyJumpTimerDone;
 
 		#endregion Event Handler
 
 		#region Public Members
+		public String NewName { get; set; }
 
+		public int ItemForRename { get; set; }
 		public Boolean IsGroupsEnabled { get; set; }
 
 		public ToolTip ToolTip;
@@ -628,7 +634,7 @@ namespace BExplorer.Shell {
 		private const int SW_SHOW = 5;
 		private const uint SEE_MASK_INVOKEIDLIST = 12;
 		private int _LastSelectedIndexByDragDrop = -1;
-		private TextBox _Editor = new TextBox();
+
 		
 		#endregion Private Members
 
@@ -637,6 +643,7 @@ namespace BExplorer.Shell {
 		/// <summary> Main constructor </summary>
 		public ShellView() {
 			this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.Opaque | ControlStyles.OptimizedDoubleBuffer | ControlStyles.EnableNotifyMessage, true);
+			this.ItemForRename = -1;
 			InitializeComponent();
 			this.Items = new List<ShellItem>();
 			this.LVItemsColorCodes = new List<LVItemColor>();
@@ -673,40 +680,7 @@ namespace BExplorer.Shell {
 			this.KeyDown += ShellView_KeyDown;
 			this.MouseUp += ShellView_MouseUp;
 			this.GotFocus += ShellView_GotFocus;
-			this._Editor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this._Editor.Multiline = true;
-			this._Editor.AcceptsReturn = false;
-			this._Editor.Font = System.Drawing.SystemFonts.IconTitleFont;
-			this._Editor.WordWrap = true;
-			//this._Editor.Visible = false;
-			this._Editor.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-			this._Editor.TextChanged += _Editor_TextChanged;
-			this._Editor.LostFocus += _Editor_LostFocus;
-		}
-
-		void _Editor_TextChanged(object sender, EventArgs e)
-		{
-			var size = TextRenderer.MeasureText(this._Editor.Text, this._Editor.Font);
-			var widthOld = this._Editor.Width;
-			this._Editor.Width = size.Width + 4;
-			this._Editor.Height = size.Height + 4;
-			var dx = (this._Editor.Width - widthOld) / (double)2;
-			var dxInt = (int)dx;
-			this._Editor.Left = this._Editor.Left - dxInt;
-			//var itemIndex = (int)this._Editor.Tag;
-			//LVITEMINDEX lviLe = new LVITEMINDEX();
-			//lviLe.iItem = itemIndex;
-			//lviLe.iGroup = this.GetGroupIndex(itemIndex);
-			//var labelBounds = new User32.RECT();
-			//labelBounds.Left = 2;
-			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
-			//this._Editor.Location = new System.Drawing.Point(labelBounds.Left - 1, labelBounds.Top - 1);
-			
-		}
-
-		void _Editor_LostFocus(object sender, EventArgs e)
-		{
-			this.EndLabelEdit();
+	
 		}
 
 		#endregion Initializer
@@ -775,6 +749,15 @@ namespace BExplorer.Shell {
 		}
 
 		private void ShellView_KeyDown(object sender, KeyEventArgs e) {
+			if (this.ItemForRename != -1)
+			{
+				if (e.KeyCode == Keys.Escape)
+				{
+					this.EndLabelEdit(true);
+				}
+				e.Handled = true;
+				return;
+			}
 			if ((Control.ModifierKeys & Keys.Control) == Keys.Control) {
 				switch (e.KeyCode) {
 					case Keys.A:
@@ -1314,6 +1297,7 @@ namespace BExplorer.Shell {
 						break;
 				}
 			}
+			
 			if (e.KeyCode == Keys.Escape) {
 				foreach (var index in this._CuttedIndexes) {
 					LVITEM item = new LVITEM();
@@ -1558,45 +1542,75 @@ namespace BExplorer.Shell {
 			//}
 			this.CurrentRefreshedItemIndex = -1;
 		}
-		private void BeginLabelEdit(int itemIndex)
+		public System.Windows.Rect GetItemBounds(int index, int mode)
 		{
 			LVITEMINDEX lviLe = new LVITEMINDEX();
-			lviLe.iItem = itemIndex;
-			lviLe.iGroup = this.GetGroupIndex(itemIndex);
+			lviLe.iItem = index;
+			lviLe.iGroup = this.GetGroupIndex(index);
 			var labelBounds = new User32.RECT();
-			labelBounds.Left = 2;
+			labelBounds.Left = mode;
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
-			var size = TextRenderer.MeasureText(this.Items[itemIndex].DisplayName, this._Editor.Font);
-			this._Editor.Width = labelBounds.Right - labelBounds.Left + 4;
-			this._Editor.Height = labelBounds.Bottom - labelBounds.Top + 4;
-			this._Editor.Location = new System.Drawing.Point(labelBounds.Left - 2, labelBounds.Top - 2);
-			this._Editor.Text = this.Items[itemIndex].DisplayName;
-			this._Editor.Tag = itemIndex;
-			User32.SetParent(this._Editor.Handle, this.LVHandle);
-			User32.ShowWindow(this._Editor.Handle, User32.ShowWindowCommands.Show);
-			this._Editor.Focus();
-			this._Editor.SelectAll();
+			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
-		private void EndLabelEdit(Boolean isCancel = false)
+		private void BeginLabelEdit(int itemIndex)
 		{
-			if (this._Editor.Visible)
+			this.ItemForRename = itemIndex;
+			if (this.BeginItemLabelEdit != null)
 			{
-				this._Editor.Visible = false;
+				this.BeginItemLabelEdit.Invoke(this, EventArgs.Empty);
+			}
 
-				var itemIndex = (int)this._Editor.Tag;
-				if (!String.IsNullOrEmpty(this._Editor.Text))
+			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_UPDATE, itemIndex, 0);
+			RedrawWindow();
+
+			//LVITEMINDEX lviLe = new LVITEMINDEX();
+			//lviLe.iItem = itemIndex;
+			//lviLe.iGroup = this.GetGroupIndex(itemIndex);
+			//var labelBounds = new User32.RECT();
+			//labelBounds.Left = 2;
+			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
+			//var size = TextRenderer.MeasureText(this.Items[itemIndex].DisplayName, this._Editor.Font);
+			//this._Editor.Width = labelBounds.Right - labelBounds.Left + 4;
+			//this._Editor.Height = labelBounds.Bottom - labelBounds.Top + 4;
+			//this._Editor.Location = new System.Drawing.Point(labelBounds.Left - 2, labelBounds.Top - 2);
+			//this._Editor.Text = this.Items[itemIndex].DisplayName;
+			//this._Editor.Tag = itemIndex;
+			////User32.SetParent(this._Editor.Handle, this.LVHandle);
+			//this._Editor.Parent = this;
+			////User32.ShowWindow(this._Editor.Handle, User32.ShowWindowCommands.Show);
+			//this._Editor.Show();
+			////this._Editor.Focus();
+			//this._Editor.SelectAll();
+		}
+		public void EndLabelEdit(Boolean isCancel = false)
+		{
+			if (this.EndItemLabelEdit != null)
+			{
+				this.EndItemLabelEdit.Invoke(this, EventArgs.Empty);
+			}
+			//if (this._Editor.Visible)
+			//{
+				//this._Editor.Visible = false;
+				//this._Editor.Hide();
+			if (ItemForRename != -1 && this.Items  != null && this.Items.Count >= ItemForRename)
+			{
+				var item = this.Items[ItemForRename];
+				if (!String.IsNullOrEmpty(NewName))
 				{
-					if (!isCancel)
+					if (!isCancel && item != null)
 					{
-						if (this._Editor.Text.ToLowerInvariant() != this.Items[itemIndex].DisplayName.ToLowerInvariant())
+						if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant())
 						{
-							RenameShellItem(this.Items[itemIndex].m_ComInterface, this._Editor.Text);
+							RenameShellItem(item.m_ComInterface, NewName);
+							NewName = String.Empty;
 							this.RedrawWindow();
 						}
 					}
 				}
-				this._Editor.Text = String.Empty;
 			}
+				
+			//	this._Editor.Text = String.Empty;
+			//}
 			
 		}
 		protected override void WndProc(ref Message m)
@@ -1688,6 +1702,7 @@ namespace BExplorer.Shell {
 						}
 					}
 				}
+				this.Focus();
 			}
 			base.WndProc(ref m);
 			if (m.Msg == 78) {
@@ -1729,7 +1744,7 @@ namespace BExplorer.Shell {
 						var currentItem = Items[nmlv.item.iItem];
 						if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
 							if (nmlv.item.iSubItem == 0) {
-								nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
+								nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (String.IsNullOrEmpty(NewName) == false ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
 								Marshal.StructureToPtr(nmlv, m.LParam, false);
 							}
 							else {
@@ -1925,31 +1940,46 @@ namespace BExplorer.Shell {
 					case WNM.LVN_ITEMACTIVATE:
 						if (this.ToolTip != null && this.ToolTip.IsVisible)
 							this.ToolTip.HideTooltip();
-						var iac = new NMITEMACTIVATE();
-						iac = (NMITEMACTIVATE)m.GetLParam(iac.GetType());
-						try {
-							ShellItem selectedItem = Items[iac.iItem];
-							if (selectedItem.IsFolder) {
-								Navigate(selectedItem);
+						if (this.ItemForRename == -1)
+						{
+							var iac = new NMITEMACTIVATE();
+							iac = (NMITEMACTIVATE)m.GetLParam(iac.GetType());
+							try
+							{
+								ShellItem selectedItem = Items[iac.iItem];
+								if (selectedItem.IsFolder)
+								{
+									Navigate(selectedItem);
+								}
+								else
+								{
+									if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk"))
+									{
+										var shellLink = new ShellLink(selectedItem.ParsingName);
+										var newSho = new ShellItem(shellLink.TargetPIDL);
+										if (newSho.IsFolder)
+										{
+											Navigate(newSho);
+										}
+										else
+										{
+											StartProcessInCurrentDirectory(newSho);
+										}
+										shellLink.Dispose();
+									}
+									else
+									{
+										StartProcessInCurrentDirectory(selectedItem);
+									}
+								}
 							}
-							else {
-								if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
-									var shellLink = new ShellLink(selectedItem.ParsingName);
-									var newSho = new ShellItem(shellLink.TargetPIDL);
-									if (newSho.IsFolder) {
-										Navigate(newSho);
-									}
-									else {
-										StartProcessInCurrentDirectory(newSho);
-									}
-									shellLink.Dispose();
-								}
-								else {
-									StartProcessInCurrentDirectory(selectedItem);
-								}
+							catch (Exception)
+							{
 							}
 						}
-						catch (Exception) {
+						else
+						{
+							this.EndLabelEdit();
 						}
 						break;
 
@@ -2015,8 +2045,11 @@ namespace BExplorer.Shell {
 
 					case WNM.LVN_ITEMCHANGED:
 						//RedrawWindow();
+						this.EndLabelEdit();
+						
 						NMLISTVIEW nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 						if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE) {
+							
 							ToolTip.HideTooltip();
 							selectionTimer.Interval = 100;
 							selectionTimer.Tick += selectionTimer_Tick;
@@ -2041,6 +2074,7 @@ namespace BExplorer.Shell {
 							if (!selectionTimer.Enabled) {
 								selectionTimer.Start();
 							}
+							
 						}
 
 						break;
@@ -2064,10 +2098,39 @@ namespace BExplorer.Shell {
 								break;
 
 							case (short)Keys.Enter:
-								if (SelectedItems[0].IsFolder)
-									Navigate(SelectedItems[0]);
+								if (this.ItemForRename == -1)
+								{
+									var selectedItem = this.GetFirstSelectedItem();
+									if (selectedItem.IsFolder)
+									{
+										Navigate(selectedItem);
+									}
+									else
+									{
+										if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk"))
+										{
+											var shellLink = new ShellLink(selectedItem.ParsingName);
+											var newSho = new ShellItem(shellLink.TargetPIDL);
+											if (newSho.IsFolder)
+											{
+												Navigate(newSho);
+											}
+											else
+											{
+												StartProcessInCurrentDirectory(newSho);
+											}
+											shellLink.Dispose();
+										}
+										else
+										{
+											StartProcessInCurrentDirectory(selectedItem);
+										}
+									}
+								}
 								else
-									StartProcessInCurrentDirectory(SelectedItems[0]);
+								{
+									this.EndLabelEdit();
+								}
 								break;
 							//default:
 							//	// initiate key jump code
@@ -2164,11 +2227,13 @@ namespace BExplorer.Shell {
 						break;
 
 					case WNM.NM_KILLFOCUS:
+						EndLabelEdit();
 						if (IsGroupsEnabled)
 							RedrawWindow();
 						if (this.ToolTip != null && this.ToolTip.IsVisible)
 							this.ToolTip.HideTooltip();
 						OnLostFocus();
+						this.Focus();
 						break;
 
 					case CustomDraw.NM_CUSTOMDRAW: {
@@ -3136,6 +3201,7 @@ namespace BExplorer.Shell {
 		}
 
 		public void Navigate(ShellItem destination, Boolean isReload = false) {
+			this.ItemForRename = -1;
 			this.OnNavigating(new NavigatingEventArgs(destination));
 			if (destination == null)
 				return;
@@ -3805,22 +3871,27 @@ namespace BExplorer.Shell {
 			item.state = 0;
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMSTATE, index, ref item);
 		}
-
+		Boolean IsFocusAllowed = true;
 		/// <summary> Gives the ShellListView focus </summary>
-		public void Focus() {
-			if (!this._IsInRenameMode)
-			{
+		public void Focus(Boolean isActiveCheck = true) {
+			
+			//if (!this._IsInRenameMode)
+			//{
 				var mainWin = System.Windows.Application.Current.MainWindow;
-				if (mainWin.IsActive)
+				if (mainWin.IsActive || !isActiveCheck)
 				{
-					var res = User32.SetFocus(this.LVHandle);
+					if (IsFocusAllowed)
+					{
+						var res = User32.SetFocus(this.LVHandle);
+					}
+					//if (res == IntPtr.Zero)
+					//{
+					//	User32.SetForegroundWindow(this.LVHandle);
+					//}
+					//res = User32.SetActiveWindow(this.LVHandle);
 				}
-				//if (res == IntPtr.Zero)
-				//{
-				//	User32.SetForegroundWindow(this.LVHandle);
-				//}
-				//res = User32.SetActiveWindow(this.LVHandle);
-			}
+				
+			//}
 		}
 
 		public void FormatDrive(IntPtr handle) {

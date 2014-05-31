@@ -2026,6 +2026,41 @@ namespace BetterExplorer {
 			this.ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
 			this.ShellListView.Navigating += ShellListView_Navigating;
 			this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
+			this.ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
+			this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
+		}
+
+		void ShellListView_EndItemLabelEdit(object sender, EventArgs e)
+		{
+			this.Editor.IsOpen = false;
+		}
+
+		void ShellListView_BeginItemLabelEdit(object sender, EventArgs e)
+		{
+			var isSmall = this.ShellListView.IconSize == 16;
+			var itemRect = this.ShellListView.GetItemBounds(this.ShellListView.GetFirstSelectedItemIndex(), 0);
+			var itemLabelRect = this.ShellListView.GetItemBounds(this.ShellListView.GetFirstSelectedItemIndex(), 2);
+			this.txtEditor.Text = this.ShellListView.GetFirstSelectedItem().DisplayName;
+			var point = this.ShellViewHost.PointToScreen(new System.Windows.Point( isSmall? itemLabelRect.Left : itemRect.Left, itemLabelRect.Top));
+			this.Editor.HorizontalOffset = point.X;
+			this.Editor.VerticalOffset = point.Y;
+
+			if (isSmall)
+			{
+				this.txtEditor.MaxHeight = itemLabelRect.Height;
+				this.txtEditor.MaxWidth = Double.PositiveInfinity;
+			}
+			else
+			{
+				this.txtEditor.MaxWidth = itemRect.Width;
+				this.txtEditor.MaxHeight = Double.PositiveInfinity;
+			}
+
+			this.Editor.Width = isSmall ? this.txtEditor.Width : itemRect.Width;
+			this.Editor.Height = this.txtEditor.Height;
+			this.Editor.IsOpen = true;
+			this.txtEditor.Focus();
+			this.txtEditor.SelectAll();
 		}
 
 
@@ -2089,6 +2124,7 @@ namespace BetterExplorer {
 				ShellListView.RenameItem(e.NewItemIndex);
 				IsRenameFromCreate = false;
 			}
+			this.ShellListView.Focus();
 		}
 
 
@@ -5617,5 +5653,38 @@ namespace BetterExplorer {
 				focusTimer.Start();
 			}
 		}
+
+		private void txtEditor_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			this.ShellListView.NewName = this.txtEditor.Text;
+		}
+
+		private void txtEditor_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			//if (e.Key == Key.Escape)
+			//{
+			//	this.ShellListView.EndLabelEdit(true);
+			//}
+			//if (e.Key == Key.Enter)
+			//{
+			//	this.ShellListView.EndLabelEdit();
+			//}
+		}
+
+		private void Editor_Closed(object sender, EventArgs e)
+		{
+			this.ShellListView.Focus();
+			var index = this.ShellListView.ItemForRename;
+			this.ShellListView.ItemForRename = -1;
+			this.ShellListView.UpdateItem(index);
+			//FocusManager.SetIsFocusScope(this, true);
+			//MessageBox.Show(FocusManager.GetFocusedElement(this).ToString());
+		}
+
+		private void Editor_Opened(object sender, EventArgs e)
+		{
+			//FocusManager.SetIsFocusScope(this, true);
+		}
+
 	}
 }

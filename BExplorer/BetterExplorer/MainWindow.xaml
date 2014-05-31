@@ -3039,6 +3039,17 @@
 				</Border>
 			</Grid>
 		</controls:AirspacePopup>
+		<controls:AirspacePopup x:Name="Editor" PlacementTarget="{Binding ElementName=ShellViewHost}"
+						 FollowPlacementTarget="True"
+						 AllowOutsideScreenPlacement="True"
+						 ParentWindow="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+						 IsOpen="False"
+						 Placement="AbsolutePoint"
+						 AllowsTransparency="True" PopupAnimation="Fade" Closed="Editor_Closed" Opened="Editor_Opened">
+			<Grid Grid.Row="1" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
+				<TextBox x:Name="txtEditor" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" TextChanged="txtEditor_TextChanged" PreviewKeyDown="txtEditor_PreviewKeyDown"/>
+			</Grid>
+		</controls:AirspacePopup>
 
 
 		<Rectangle x:Name="divNav"

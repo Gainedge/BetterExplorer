@@ -213,6 +213,11 @@ namespace BetterExplorerControls
 			SetTopmostState(IsTopmost);
 			base.OnOpened(e);
 		}
+		protected override void OnClosed(EventArgs e)
+		{
+			SetTopmostState(false);
+			base.OnClosed(e);
+		}
 
 		private void SetTopmostState(bool isTop)
 		{

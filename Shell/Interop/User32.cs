@@ -402,6 +402,12 @@ namespace BExplorer.Shell.Interop
 				public static extern bool SetMenuInfo(IntPtr hmenu,
 						ref MENUINFO lpcmi);
 
+				[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+				public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
+
+				[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+				public static extern int GetWindowLong(IntPtr hwnd, int index);
+
 				[Flags()]
 				public enum SetWindowPosFlags : uint
 				{
