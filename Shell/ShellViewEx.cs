@@ -409,7 +409,7 @@ namespace BExplorer.Shell {
 				//	Navigate(value);
 				//}
 				m_CurrentFolder = value;
-				LoadSettingsFromDatabase();
+				
 			}
 		}
 
@@ -3223,6 +3223,7 @@ namespace BExplorer.Shell {
 			this.LastSortOrder = SortOrder.Ascending;
 			this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
 			this.m_CurrentFolder = destination;
+			LoadSettingsFromDatabase();
 			Notifications.RegisterChangeNotify(this.Handle, destination, true);
 			try {
 				History.Add(destination);
@@ -4039,21 +4040,38 @@ namespace BExplorer.Shell {
 
 
 		private void LoadSettingsFromDatabase() {
-			var m_dbConnection = new SQLite.SQLiteConnection("Data Source=Settings.sqlite;Version=3;");
-			m_dbConnection.Open();
+			try
+			{
+				var m_dbConnection = new SQLite.SQLiteConnection("Data Source=Settings.sqlite;Version=3;");
+				m_dbConnection.Open();
 
 
-			var command1 = new SQLite.SQLiteCommand("select * from foldersettings where Path=@0", m_dbConnection);
-			command1.Parameters.AddWithValue("Path", CurrentFolder.FileSystemPath);
+				var command1 = new SQLite.SQLiteCommand("select * from foldersettings where Path=@0", m_dbConnection);
+				command1.Parameters.AddWithValue("0", CurrentFolder.ParsingName);
 
-			var sql = "";
-			var Reader = command1.ExecuteReader();
-			if (Reader.Read()) {
-				var Values = Reader.GetValues();
+				var sql = "";
+				var Reader = command1.ExecuteReader();
+				if (Reader.Read())
+				{
+					var Values = Reader.GetValues();
+					if (Values.Count > 0)
+					{
+						var view = Values.GetValues("View").FirstOrDefault();
+						if (view != null)
+						{
+							var realView = (ShellViewStyle)Enum.Parse(typeof(ShellViewStyle), view);
+							this.View = realView;
+						}
+					}
+				}
+
+
+				Reader.Close();
 			}
+			catch (Exception)
+			{
 
-
-			Reader.Close();
+			}
 		}
 
 		private void SaveSettingsFromDatabase() {
@@ -4065,7 +4083,7 @@ namespace BExplorer.Shell {
 			m_dbConnection.Open();
 
 			var command1 = new SQLite.SQLiteCommand("select * from foldersettings where Path=@Path", m_dbConnection);
-			command1.Parameters.AddWithValue("Path", CurrentFolder.FileSystemPath);
+			command1.Parameters.AddWithValue("Path", CurrentFolder.ParsingName);
 			var Reader = command1.ExecuteReader();
 			var sql = "";
 			if (Reader.Read()) {
@@ -4082,7 +4100,7 @@ namespace BExplorer.Shell {
 
 
 			var command2 = new SQLite.SQLiteCommand(sql, m_dbConnection);
-			command2.Parameters.AddWithValue("Path", CurrentFolder.FileSystemPath);
+			command2.Parameters.AddWithValue("Path", CurrentFolder.ParsingName);
 			command2.Parameters.AddWithValue("LastSortOrder", LastSortOrder.ToString());
 			command2.Parameters.AddWithValue("LastGroupOrder", LastGroupOrder.ToString());
 
@@ -4090,7 +4108,7 @@ namespace BExplorer.Shell {
 				command2.Parameters.AddWithValue("LastGroupCollumn", null);
 			}
 			else {
-				command2.Parameters.AddWithValue("LastGroupCollumn", LastGroupCollumn.ToString());
+				command2.Parameters.AddWithValue("LastGroupCollumn", LastGroupCollumn.ID);
 			}
 			command2.Parameters.AddWithValue("View", View.ToString());
 
