@@ -409,7 +409,7 @@ namespace BExplorer.Shell {
 				//	Navigate(value);
 				//}
 				m_CurrentFolder = value;
-				
+
 			}
 		}
 
@@ -2311,12 +2311,18 @@ namespace BExplorer.Shell {
 																	if (View == ShellViewStyle.Tile)
 																		checkboxOffsetV = 1;
 
-																	if (lvItem.state != 0) {
-																		CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal);
-																	}
-																	else {
-																		CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal);
-																	}
+
+																	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
+																		lvItem.state != 0 ? System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal : System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal
+																	);
+
+
+																	//if (lvItem.state != 0) {
+																	//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal);
+																	//}
+																	//else {
+																	//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal);
+																	//}
 																}
 															}
 														}
@@ -2347,12 +2353,15 @@ namespace BExplorer.Shell {
 																			if (View == ShellViewStyle.Tile)
 																				checkboxOffsetV = 1;
 																			res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
-																			if (lvItem.state != 0) {
-																				CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal);
-																			}
-																			else {
-																				CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal);
-																			}
+																			CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
+																				lvItem.state != 0 ? System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal : System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal
+																			);
+																			//if (lvItem.state != 0) {
+																			//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal);
+																			//}
+																			//else {
+																			//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal);
+																			//}
 																		}
 																	}
 																}
@@ -2390,18 +2399,22 @@ namespace BExplorer.Shell {
 																			if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12)) {
 																				var checkboxOffsetH = 14;
 																				var checkboxOffsetV = 2;
+
 																				if (View == ShellViewStyle.Tile || View == ShellViewStyle.SmallIcon)
 																					checkboxOffsetH = 2;
 																				if (View == ShellViewStyle.Tile)
 																					checkboxOffsetV = 1;
 
 																				res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
-																				if (lvItem.state != 0) {
-																					CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal);
-																				}
-																				else {
-																					CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal);
-																				}
+																				CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
+																					lvItem.state != 0 ? System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal : System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal
+																				);
+																				//if (lvItem.state != 0) {
+																				//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.CheckedNormal);
+																				//}
+																				//else {
+																				//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), System.Windows.Forms.VisualStyles.CheckBoxState.UncheckedNormal);
+																				//}
 																			}
 																		}
 																	}
@@ -4040,25 +4053,20 @@ namespace BExplorer.Shell {
 
 
 		private void LoadSettingsFromDatabase() {
-			try
-			{
+			try {
 				var m_dbConnection = new SQLite.SQLiteConnection("Data Source=Settings.sqlite;Version=3;");
 				m_dbConnection.Open();
-
 
 				var command1 = new SQLite.SQLiteCommand("select * from foldersettings where Path=@0", m_dbConnection);
 				command1.Parameters.AddWithValue("0", CurrentFolder.ParsingName);
 
 				var sql = "";
 				var Reader = command1.ExecuteReader();
-				if (Reader.Read())
-				{
+				if (Reader.Read()) {
 					var Values = Reader.GetValues();
-					if (Values.Count > 0)
-					{
+					if (Values.Count > 0) {
 						var view = Values.GetValues("View").FirstOrDefault();
-						if (view != null)
-						{
+						if (view != null) {
 							var realView = (ShellViewStyle)Enum.Parse(typeof(ShellViewStyle), view);
 							this.View = realView;
 						}
@@ -4068,16 +4076,13 @@ namespace BExplorer.Shell {
 
 				Reader.Close();
 			}
-			catch (Exception)
-			{
+			catch (Exception) {
 
 			}
 		}
 
 		private void SaveSettingsFromDatabase() {
-			if (CurrentFolder == null) {
-				return;
-			}
+			if (CurrentFolder == null) return;
 
 			var m_dbConnection = new SQLite.SQLiteConnection("Data Source=Settings.sqlite;Version=3;");
 			m_dbConnection.Open();
@@ -4085,33 +4090,23 @@ namespace BExplorer.Shell {
 			var command1 = new SQLite.SQLiteCommand("select * from foldersettings where Path=@Path", m_dbConnection);
 			command1.Parameters.AddWithValue("Path", CurrentFolder.ParsingName);
 			var Reader = command1.ExecuteReader();
-			var sql = "";
-			if (Reader.Read()) {
-				sql = @"
-					UPDATE foldersettings 
-					SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn, View = @View
-					WHERE Path = @Path";
-				//sql = @"Update into foldersettings (Path, LastSortOrder, LastGroupOrder, LastGroupCollumn, View) values (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View)";
-
-			}
-			else {
-				sql = @"insert into foldersettings (Path, LastSortOrder, LastGroupOrder, LastGroupCollumn, View) values (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View)";
-			}
-
+			var sql = Reader.Read() ?
+									@"UPDATE foldersettings 
+									SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn, View = @View, LastSortedColumn = @LastSortedColumn
+									WHERE Path = @Path"
+									:
+									@"INSERT into foldersettings (Path, LastSortOrder, LastGroupOrder, LastGroupCollumn, View, LastSortedColumn) 
+									VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn)";
 
 			var command2 = new SQLite.SQLiteCommand(sql, m_dbConnection);
 			command2.Parameters.AddWithValue("Path", CurrentFolder.ParsingName);
 			command2.Parameters.AddWithValue("LastSortOrder", LastSortOrder.ToString());
 			command2.Parameters.AddWithValue("LastGroupOrder", LastGroupOrder.ToString());
-
-			if (LastGroupCollumn == null) {
-				command2.Parameters.AddWithValue("LastGroupCollumn", null);
-			}
-			else {
-				command2.Parameters.AddWithValue("LastGroupCollumn", LastGroupCollumn.ID);
-			}
+			command2.Parameters.AddWithValue("LastGroupCollumn", LastGroupCollumn == null ? null : LastGroupCollumn.ID);
 			command2.Parameters.AddWithValue("View", View.ToString());
+			command2.Parameters.AddWithValue("LastSortedColumn", null); //Figure out how to do this later
 
+			//
 			command2.ExecuteNonQuery();
 			Reader.Close();
 			m_dbConnection.Close();

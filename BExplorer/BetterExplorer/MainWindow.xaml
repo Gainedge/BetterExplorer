@@ -1300,7 +1300,7 @@
 					</Ribbon:SplitButton>
 					<Separator />
 					<Ribbon:SplitButton x:Name="btnDelete"
-							  Click="SplitButton_Click"
+							  Click="btnDelete_Click"
 							  Header="{DynamicResource btnDeleteCP}"
 							  Icon="Images\delete16.png"
 							  IsEnabled="False"
@@ -1989,7 +1989,7 @@
 				</Ribbon:RibbonGroupBox>
 				<Ribbon:RibbonGroupBox>
 					<Ribbon:Button x:Name="btnRefresh"
-						 Click="Button_Click"
+						 Click="btnRefresh_Click"
 						 Header="{DynamicResource btnRefreshCP}"
 						 Icon="Images\refresh16.png"
 						 LargeIcon="Images\Refresh32.png"
