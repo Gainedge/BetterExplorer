@@ -3272,13 +3272,14 @@ namespace BExplorer.Shell {
 				GenerateGroupsFromColumn(this.Collumns.First());
 			}
 
+			
+			//dest.Dispose();
+			this.OnNavigated(new NavigatedEventArgs(destination));
+			IsDoubleNavFinished = false;
 			if (this.View != ShellViewStyle.Details)
 				AutosizeAllColumns(-2);
 			else
 				AutosizeAllColumns(-1);
-			//dest.Dispose();
-			this.OnNavigated(new NavigatedEventArgs(destination));
-			IsDoubleNavFinished = false;
 			this.Focus();
 		}
 
