@@ -3025,10 +3025,10 @@ namespace BExplorer.Shell {
 			}
 			var i = 0;
 			if (Order == SortOrder.Ascending) {
-				this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(this.Collumns[colIndex].pkey, typeof(String)).Value).ToList();
+				this.Items = this.Items.Where(w => this.ShowHidden ? true : w.IsHidden == false).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(this.Collumns[colIndex].pkey, typeof(String)).Value).ToList();
 			}
 			else {
-				this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(this.Collumns[colIndex].pkey, typeof(String)).Value).ToList();
+				this.Items = this.Items.Where(w => this.ShowHidden ? true : w.IsHidden == false).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(this.Collumns[colIndex].pkey, typeof(String)).Value).ToList();
 			}
 
 			this.ItemsHashed = this.Items.ToDictionary(k => k, el => i++);
@@ -3159,7 +3159,7 @@ namespace BExplorer.Shell {
 		}
 
 		public void Navigate(ShellItem destination, Boolean isReload = false) {
-			SaveSettingsFromDatabase();
+			SaveSettingsToDatabase();
 
 			this.ItemForRename = -1;
 			this.OnNavigating(new NavigatingEventArgs(destination));
@@ -3173,7 +3173,17 @@ namespace BExplorer.Shell {
 				if (destination.ParsingName == this.CurrentFolder.ParsingName && !isReload)
 					return;
 			}
+			var folderSettings = new FolderSettings();
+			var isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
 
+			if (isThereSettings)
+			{
+				this.View = folderSettings.View;
+			}
+			else
+			{
+				this.View = ShellViewStyle.Medium;
+			}
 			this.Notifications.UnregisterChangeNotify();
 			overlays.Clear();
 			shieldedIcons.Clear();
@@ -3219,11 +3229,20 @@ namespace BExplorer.Shell {
 			}
 
 			//System.Windows.Forms.Application.DoEvents();
-			if (destination.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant()) {
-				this.Items = this.Items.ToList();
+			if (isThereSettings && folderSettings.SortColumn != null)
+			{
+				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder);
 			}
-			else {
-				this.Items = this.Items.Where(w => this.ShowHidden ? true : w.IsHidden == false).OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
+			else
+			{
+				if (destination.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant())
+				{
+					this.Items = this.Items.ToList();
+				}
+				else
+				{
+					this.Items = this.Items.Where(w => this.ShowHidden ? true : w.IsHidden == false).OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
+				}
 			}
 			this.ItemsHashed = this.Items.ToDictionary(k => k, el => i++);
 			GC.WaitForPendingFinalizers();
@@ -3231,11 +3250,14 @@ namespace BExplorer.Shell {
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 
 			this.Cancel = false;
-			this.LastSortedColumnIndex = 0;
-			this.LastSortOrder = SortOrder.Ascending;
-			this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
+			if (!(isThereSettings && folderSettings.SortColumn != null))
+			{
+				this.LastSortedColumnIndex = 0;
+				this.LastSortOrder = SortOrder.Ascending;
+				this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
+			}
 			this.m_CurrentFolder = destination;
-			LoadSettingsFromDatabase();
+			
 			Notifications.RegisterChangeNotify(this.Handle, destination, true);
 			try {
 				History.Add(destination);
@@ -3249,6 +3271,11 @@ namespace BExplorer.Shell {
 				User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
 				GenerateGroupsFromColumn(this.Collumns.First());
 			}
+
+			if (this.View != ShellViewStyle.Details)
+				AutosizeAllColumns(-2);
+			else
+				AutosizeAllColumns(-1);
 			//dest.Dispose();
 			this.OnNavigated(new NavigatedEventArgs(destination));
 			IsDoubleNavFinished = false;
@@ -4047,23 +4074,35 @@ namespace BExplorer.Shell {
 		}
 
 
-		private void LoadSettingsFromDatabase() {
+		private Boolean LoadSettingsFromDatabase(ShellItem directory, out FolderSettings folderSettings) {
+			var result = false;
+			var folderSetting = new FolderSettings();
 			try {
+				
 				var m_dbConnection = new SQLite.SQLiteConnection("Data Source=Settings.sqlite;Version=3;");
 				m_dbConnection.Open();
 
 				var command1 = new SQLite.SQLiteCommand("select * from foldersettings where Path=@0", m_dbConnection);
-				command1.Parameters.AddWithValue("0", CurrentFolder.ParsingName);
+				command1.Parameters.AddWithValue("0", directory.ParsingName);
 
 				var sql = "";
 				var Reader = command1.ExecuteReader();
 				if (Reader.Read()) {
 					var Values = Reader.GetValues();
 					if (Values.Count > 0) {
+						result = true;
 						var view = Values.GetValues("View").FirstOrDefault();
+						var lastSortedColumnIndex = Values.GetValues("LastSortedColumn").FirstOrDefault();
+						var lastSortOrder = Values.GetValues("LastSortOrder").FirstOrDefault();
+						//var view = Values.GetValues("View").FirstOrDefault();
+						//var view = Values.GetValues("View").FirstOrDefault();
 						if (view != null) {
-							var realView = (ShellViewStyle)Enum.Parse(typeof(ShellViewStyle), view);
-							this.View = realView;
+							folderSetting.View = (ShellViewStyle)Enum.Parse(typeof(ShellViewStyle), view);
+						}
+						if (lastSortedColumnIndex != null)
+						{
+							folderSetting.SortColumn = Int32.Parse(lastSortedColumnIndex);
+							folderSetting.SortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), lastSortOrder);
 						}
 					}
 				}
@@ -4074,9 +4113,11 @@ namespace BExplorer.Shell {
 			catch (Exception) {
 
 			}
+			folderSettings = folderSetting;
+			return result;
 		}
 
-		private void SaveSettingsFromDatabase() {
+		public void SaveSettingsToDatabase() {
 			if (CurrentFolder == null) return;
 
 			var m_dbConnection = new SQLite.SQLiteConnection("Data Source=Settings.sqlite;Version=3;");
@@ -4099,7 +4140,7 @@ namespace BExplorer.Shell {
 			command2.Parameters.AddWithValue("LastGroupOrder", LastGroupOrder.ToString());
 			command2.Parameters.AddWithValue("LastGroupCollumn", LastGroupCollumn == null ? null : LastGroupCollumn.ID);
 			command2.Parameters.AddWithValue("View", View.ToString());
-			command2.Parameters.AddWithValue("LastSortedColumn", null); //Figure out how to do this later
+			command2.Parameters.AddWithValue("LastSortedColumn", LastSortedColumnIndex.ToString()); //Figure out how to do this later
 
 			//
 			command2.ExecuteNonQuery();

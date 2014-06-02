@@ -92,6 +92,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
+    <Compile Include="FolderSettings.cs" />
     <Compile Include="FileOperation\AsyncUnbuffCopy.cs" />
     <Compile Include="FileOperation\FileOperationProgressSink.cs" />
     <Compile Include="FileOperation\IIFileOperation.cs" />

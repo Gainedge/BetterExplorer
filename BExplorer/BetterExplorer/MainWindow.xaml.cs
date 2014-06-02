@@ -2683,7 +2683,7 @@ namespace BetterExplorer {
 
 				SaveSettings(OpenedTabs);
 			}
-
+			this.ShellListView.SaveSettingsToDatabase();
 			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems.Select(s => s.DisplayName).ToList());
 			AddToLog("Session Ended");
 			//if (!App.isStartNewWindows) {
