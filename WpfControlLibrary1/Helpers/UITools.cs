@@ -10,7 +10,6 @@ using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace BetterExplorerControls {
-
 	public static partial class UITools {
 
 		public static void AddValueChanged<T>(this T obj, DependencyProperty property, EventHandler handler) where T : DependencyObject {

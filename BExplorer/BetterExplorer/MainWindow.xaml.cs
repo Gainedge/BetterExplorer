@@ -4589,9 +4589,8 @@ namespace BetterExplorer {
 
 			if (tabItem == null)
 				return;
-			else if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed) {
+			else if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
 				DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
-			}
 		}
 
 
@@ -4921,7 +4920,6 @@ namespace BetterExplorer {
 
 		private void miOpenRB_Click(object sender, RoutedEventArgs e) {
 			ShellListView.Navigate((ShellItem)KnownFolders.RecycleBin);
-
 		}
 
 		private void miRestoreRBItems_Click(object sender, RoutedEventArgs e) {
