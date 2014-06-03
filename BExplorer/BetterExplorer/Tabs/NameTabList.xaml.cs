@@ -1,17 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace BetterExplorer.Tabs {
+
 	/// <summary>
 	/// Interaction logic for NameTabList.xaml
 	/// </summary>
@@ -34,11 +26,6 @@ namespace BetterExplorer.Tabs {
 				return null;
 			}
 		}
-
-
-
-
-
 
 		private void button2_Click(object sender, RoutedEventArgs e) {
 			if (textBox1.Text.Contains("\\") || textBox1.Text.Contains("/") || textBox1.Text.Contains(":") || textBox1.Text.Contains("?") || textBox1.Text.Contains("*") || textBox1.Text.Contains("<") || textBox1.Text.Contains(">") || textBox1.Text.Contains("|")) {

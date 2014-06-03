@@ -229,8 +229,12 @@
     <Compile Include="ConditionalSelect\ConditionalSelectForm.xaml.cs">
       <DependentUpon>ConditionalSelectForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Customize\CustomizeQAT.xaml.cs" />
-    <Compile Include="Customize\RibbonItemListDisplay.xaml.cs" />
+    <Compile Include="Customize\CustomizeQAT.xaml.cs">
+      <DependentUpon>CustomizeQAT.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Customize\RibbonItemListDisplay.xaml.cs">
+      <DependentUpon>RibbonItemListDisplay.xaml</DependentUpon>
+    </Compile>
     <Compile Include="HelperClasses\FolderStructForSize.cs" />
     <Compile Include="HelperClasses\PathStringCombiner.cs" />
     <Compile Include="HelperClasses\Utilities.cs" />
@@ -1213,7 +1217,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!--   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />

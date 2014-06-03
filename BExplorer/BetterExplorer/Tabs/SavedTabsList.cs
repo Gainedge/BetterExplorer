@@ -61,6 +61,7 @@ namespace BetterExplorer {
 			}
 		}
 
+		/*
 		public void SwitchPlaces(int val1, int val2) {
 			string o = this[val1];
 			string i = this[val2];
@@ -68,6 +69,7 @@ namespace BetterExplorer {
 			this[val2] = o;
 			this[val1] = i;
 		}
+		*/
 
 		public string ListToString() {
 			string path = null;

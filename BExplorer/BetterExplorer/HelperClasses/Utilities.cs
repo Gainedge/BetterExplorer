@@ -44,6 +44,7 @@ namespace BetterExplorer {
 			return file.EndsWith(ext) ? file.Remove(file.LastIndexOf(ext), ext.Length) : file;
 		}
 
+		[System.Diagnostics.DebuggerStepThrough()]
 		public static string GetExtension(string file) {
 			return file.Substring(file.LastIndexOf("."));
 		}
@@ -85,6 +86,11 @@ namespace BetterExplorer {
 			return Item;
 		} //TODO: Convert this into an extension
 
+
+		[System.Diagnostics.DebuggerStepThrough()]
+		public static string GetValueOnly(string property, string value) {
+			return value.Substring(property.Length + 1);
+		}
 
 	}
 }

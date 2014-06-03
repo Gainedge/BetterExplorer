@@ -20,11 +20,13 @@ namespace BetterExplorer {
 	/// Interaction logic for UndoCloseGalleryItem.xaml
 	/// </summary>
 	public partial class UndoCloseGalleryItem : UserControl {
+		public delegate void NavigationLogEventHandler(object sender, NavigationLogEventArgs e);
+		public NavigationLog nav;
+		public event NavigationLogEventHandler Click;
+
 		public UndoCloseGalleryItem() {
 			InitializeComponent();
 		}
-
-		public NavigationLog nav;
 
 		public void LoadData(NavigationLog log) {
 			nav = log;
@@ -34,14 +36,7 @@ namespace BetterExplorer {
 			this.ToolTip = obj.ParsingName;
 		}
 
-		public delegate void NavigationLogEventHandler(object sender, NavigationLogEventArgs e);
 
-		// An event that clients can use to be notified whenever the
-		// elements of the list change:
-		public event NavigationLogEventHandler Click;
-		//public event EventHandler MouseDoubleClick;
-
-		// Invoke the Changed event; called whenever list changes:
 		protected virtual void OnClick(NavigationLogEventArgs e) {
 			if (Click != null)
 				Click(this, e);
