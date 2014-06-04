@@ -34,10 +34,10 @@ namespace BetterExplorer {
 		Boolean upd = false; // true if currently checking for updates
 		System.Net.WebClient updchk = new System.Net.WebClient(); // object that downloads file and update
 		//string los = ""; // online location of file that will be used to check for updates
-		string loc = ""; // location of local file that is checked for if there are updates or not
-		string curr = ""; // version of this build
-		string tis = ""; // online location of program that will update software
-		string tid = ""; // local location of the program that will update software
+		//string loc = ""; // location of local file that is checked for if there are updates or not
+		//string curr = ""; // version of this build
+		//string tis = ""; // online location of program that will update software
+		//string tid = ""; // local location of the program that will update software
 		Boolean IsCheckForTestBuilds = false;
 		#endregion
 
@@ -47,11 +47,9 @@ namespace BetterExplorer {
 		/// <summary>
 		/// The remote location of a file that is used to check if an update exists.
 		/// </summary>
-		public string ServerCheckLocation {
-			get { return loc; }
-			set { loc = value; }
-		}
+		public string ServerCheckLocation { get; set; }
 
+		/*
 		/// <summary>
 		/// The location of a file on the local system that is used to check if an update exists.
 		/// </summary>
@@ -59,30 +57,22 @@ namespace BetterExplorer {
 			get { return loc; }
 			set { loc = value; }
 		}
+		*/
 
 		/// <summary>
 		/// A string representation of the current version of this software.
 		/// </summary>
-		public string CurrentVersion {
-			get { return curr; }
-			set { curr = value; }
-		}
+		public string CurrentVersion { get; set; }
 
 		/// <summary>
 		/// The location of a file on a remote location that contains a program that will install the update.
 		/// </summary>
-		public string ServerUpdaterLocation {
-			get { return tis; }
-			set { tis = value; }
-		}
+		public string ServerUpdaterLocation { get; set; }
 
 		/// <summary>
 		/// The location of a file on the local system that contains a program that will install the update.
 		/// </summary>
-		public string LocalUpdaterLocation {
-			get { return tid; }
-			set { tid = value; }
-		}
+		public string LocalUpdaterLocation { get; set; }
 
 		#endregion
 
@@ -111,54 +101,36 @@ namespace BetterExplorer {
 
 		public delegate void PathEventHandler(object sender, Tuple<string> e);
 
-		// An event that clients can use to be notified whenever the
-		// elements of the list change:
 		public event PathEventHandler UpdaterDownloadComplete;
-		//public event EventHandler MouseDoubleClick;
 
-		// Invoke the Changed event; called whenever list changes:
 		protected virtual void OnUpdaterDownloadComplete(Tuple<string> e) {
 			if (UpdaterDownloadComplete != null)
 				UpdaterDownloadComplete(this, e);
 		}
 
-
-
-		// An event that clients can use to be notified whenever the
-		// elements of the list change:
 		public event EventHandler DownloadUpdaterBegan;
 
-		// Invoke the Changed event; called whenever list changes:
 		protected virtual void OnDownloadUpdaterBegan(EventArgs e) {
 			if (DownloadUpdaterBegan != null)
 				DownloadUpdaterBegan(this, e);
 		}
 
-		// An event that clients can use to be notified whenever the
-		// elements of the list change:
 		public event EventHandler CheckForUpdatesBegan;
 
-		// Invoke the Changed event; called whenever list changes:
 		protected virtual void OnCheckForUpdatesBegan(EventArgs e) {
 			if (CheckForUpdatesBegan != null)
 				CheckForUpdatesBegan(this, e);
 		}
 
-		// An event that clients can use to be notified whenever the
-		// elements of the list change:
 		public event EventHandler UpdateAvailable;
 
-		// Invoke the Changed event; called whenever list changes:
 		protected virtual void OnUpdateAvailable(EventArgs e) {
 			if (UpdateAvailable != null)
 				UpdateAvailable(this, e);
 		}
 
-		// An event that clients can use to be notified whenever the
-		// elements of the list change:
 		public event EventHandler NoUpdatesNeeded;
 
-		// Invoke the Changed event; called whenever list changes:
 		protected virtual void OnNoUpdatesNeeded(EventArgs e) {
 			if (NoUpdatesNeeded != null)
 				NoUpdatesNeeded(this, e);
@@ -166,33 +138,23 @@ namespace BetterExplorer {
 
 		public delegate void ExceptionEventHandler(object sender, ExceptionEventArgs e);
 
-		// An event that clients can use to be notified whenever the
-		// elements of the list change:
 		public event ExceptionEventHandler ErrorOccurredWhileChecking;
-		//public event EventHandler MouseDoubleClick;
 
-		// Invoke the Changed event; called whenever list changes:
 		protected virtual void OnErrorOccurredWhileChecking(ExceptionEventArgs e) {
 			if (ErrorOccurredWhileChecking != null)
 				ErrorOccurredWhileChecking(this, e);
 		}
 
 
-		// An event that clients can use to be notified whenever the
-		// elements of the list change:
 		public event System.Net.DownloadProgressChangedEventHandler UpdaterDownloadProgressChanged;
 
-		// Invoke the Changed event; called whenever list changes:
 		protected virtual void OnUpdaterDownloadProgressChanged(System.Net.DownloadProgressChangedEventArgs e) {
 			if (UpdaterDownloadProgressChanged != null)
 				UpdaterDownloadProgressChanged(this, e);
 		}
 
-		// An event that clients can use to be notified whenever the
-		// elements of the list change:
 		public event System.Net.DownloadProgressChangedEventHandler PackageDownloadProgressChanged;
 
-		// Invoke the Changed event; called whenever list changes:
 		protected virtual void OnPackageDownloadProgressChanged(System.Net.DownloadProgressChangedEventArgs e) {
 			if (PackageDownloadProgressChanged != null)
 				PackageDownloadProgressChanged(this, e);
@@ -252,6 +214,16 @@ namespace BetterExplorer {
 			catch (Exception) {
 				return false;
 			}
+		}
+
+
+		/// <summary>
+		/// Start downloading the updater program.
+		/// </summary>
+		public void DownloadUpdater(String location, String DestinationName) {
+			upd = false;
+			OnDownloadUpdaterBegan(EventArgs.Empty);
+			updchk.DownloadFileAsync(new Uri(location), Path.Combine(LocalUpdaterLocation, DestinationName));
 		}
 
 
@@ -333,13 +305,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		/// <summary>
-		/// Start downloading the updater program.
-		/// </summary>
-		public void DownloadUpdater(String location, String DestinationName) {
-			upd = false;
-			OnDownloadUpdaterBegan(EventArgs.Empty);
-			updchk.DownloadFileAsync(new Uri(location), Path.Combine(LocalUpdaterLocation, DestinationName));
-		}
+
 	}
 }

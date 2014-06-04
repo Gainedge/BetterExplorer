@@ -12,24 +12,22 @@ namespace BetterExplorer {
 
 		public static SavedTabsList CreateFromString(string values) {
 			var o = new SavedTabsList();
-			foreach (string item in values.Split('|')) {
-				o.Add(item);
-				//try {
-				//	o.Add(item);
-				//	//MessageBox.Show(item);
-				//}
-				//catch {
-				//}
-			}
+			o.AddRange(values.Split('|'));
 			return o;
 		}
 
 		public static SavedTabsList LoadTabList(string file) {
+			/*
 			string line;
 			using (StreamReader sr = new StreamReader(file)) {
 				line = sr.ReadLine();
 			}
 			return SavedTabsList.CreateFromString(line);
+			*/
+
+			using (StreamReader sr = new StreamReader(file)) {
+				return SavedTabsList.CreateFromString(sr.ReadLine());
+			}
 		}
 
 		public static void SaveTabList(SavedTabsList locs, string file) {
