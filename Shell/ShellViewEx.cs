@@ -67,6 +67,15 @@ namespace BExplorer.Shell {
 		Content,
 	}
 
+	public class RenameEventArgs : EventArgs
+	{
+		public int ItemIndex { get; private set; }
+
+		public RenameEventArgs(int itemIndex){
+			this.ItemIndex = itemIndex;
+		}
+	}
+
 	public class NavigatedEventArgs : EventArgs, IDisposable {
 		private ShellItem m_Folder;
 
@@ -309,7 +318,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public event KeyEventHandler KeyJumpKeyDown;
 
-		public event EventHandler BeginItemLabelEdit;
+		public event EventHandler<RenameEventArgs> BeginItemLabelEdit;
 
 		public event EventHandler EndItemLabelEdit;
 
@@ -1544,7 +1553,7 @@ namespace BExplorer.Shell {
 		private void BeginLabelEdit(int itemIndex) {
 			this.ItemForRename = itemIndex;
 			if (this.BeginItemLabelEdit != null) {
-				this.BeginItemLabelEdit.Invoke(this, EventArgs.Empty);
+				this.BeginItemLabelEdit.Invoke(this, new RenameEventArgs(itemIndex));
 			}
 
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_UPDATE, itemIndex, 0);
@@ -1606,7 +1615,8 @@ namespace BExplorer.Shell {
 				if (Notifications.NotificationReceipt(m.WParam, m.LParam)) {
 					//var info = (NotifyInfos)Notifications.NotificationsReceived[Notifications.NotificationsReceived.Count - 1];
 					foreach (NotifyInfos info in Notifications.NotificationsReceived.ToArray()) {
-						if (info.Notification == ShellNotifications.SHCNE.SHCNE_CREATE || info.Notification == ShellNotifications.SHCNE.SHCNE_MKDIR) {
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_CREATE || info.Notification == ShellNotifications.SHCNE.SHCNE_MKDIR)
+						{
 							var obj = new ShellItem(info.Item1);
 							if (obj.Extension.ToLowerInvariant() != ".tmp") {
 								if (obj.Parent.Equals(this.CurrentFolder)) {
@@ -1615,6 +1625,38 @@ namespace BExplorer.Shell {
 										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
 								}
 							}
+							Notifications.NotificationsReceived.Remove(info);
+						}
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_UPDATEITEM)
+						{
+							var obj = new ShellItem(info.Item1);
+							var exisitingItem = this.Items.Where(w => w.Equals(obj)).SingleOrDefault();
+							if (exisitingItem == null)
+							{
+								if (obj.Extension.ToLowerInvariant() != ".tmp")
+								{
+									if (obj.Parent.Equals(this.CurrentFolder))
+									{
+										var itemIndex = InsertNewItem(obj);
+										if (this.ItemUpdated != null)
+											this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
+									}
+								}
+							}
+							//else
+							//{
+							//	Items.Remove(obj);
+							//	ItemsHashed.Remove(obj);
+							//	if (obj.Extension.ToLowerInvariant() != ".tmp")
+							//	{
+							//		if (obj.Parent.Equals(this.CurrentFolder))
+							//		{
+							//			var itemIndex = InsertNewItem(obj);
+							//			if (this.ItemUpdated != null)
+							//				this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
+							//		}
+							//	}
+							//}
 							Notifications.NotificationsReceived.Remove(info);
 						}
 						if (info.Notification == ShellNotifications.SHCNE.SHCNE_DELETE || info.Notification == ShellNotifications.SHCNE.SHCNE_RMDIR) {
@@ -3231,7 +3273,7 @@ namespace BExplorer.Shell {
 			//System.Windows.Forms.Application.DoEvents();
 			if (isThereSettings && folderSettings.SortColumn != null)
 			{
-				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder);
+				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder, false);
 			}
 			else
 			{
@@ -3861,17 +3903,24 @@ namespace BExplorer.Shell {
 
 			//if (!this._IsInRenameMode)
 			//{
-			var mainWin = System.Windows.Application.Current.MainWindow;
-			if (mainWin.IsActive || !isActiveCheck) {
-				if (IsFocusAllowed) {
-					var res = User32.SetFocus(this.LVHandle);
+			try
+			{
+				var mainWin = System.Windows.Application.Current.MainWindow;
+				if (mainWin.IsActive || !isActiveCheck)
+				{
+					if (IsFocusAllowed)
+					{
+						var res = User32.SetFocus(this.LVHandle);
+					}
+					//if (res == IntPtr.Zero)
+					//{
+					//	User32.SetForegroundWindow(this.LVHandle);
+					//}
+					//res = User32.SetActiveWindow(this.LVHandle);
 				}
-				//if (res == IntPtr.Zero)
-				//{
-				//	User32.SetForegroundWindow(this.LVHandle);
-				//}
-				//res = User32.SetActiveWindow(this.LVHandle);
 			}
+			//On Exception do nothing (usually it happens on app exit)
+			catch {	}
 
 			//}
 		}

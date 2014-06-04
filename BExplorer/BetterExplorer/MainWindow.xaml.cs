@@ -1476,12 +1476,12 @@ namespace BetterExplorer {
 				path = ShellListView.CreateNewFolder(FindResource("btnNewFolderCP").ToString());
 			}
 
-			WindowsAPI.SHChangeNotify(WindowsAPI.HChangeNotifyEventID.SHCNE_MKDIR,
-			WindowsAPI.HChangeNotifyFlags.SHCNF_PATHW | WindowsAPI.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, Marshal.StringToHGlobalAuto(path.Replace(@"\\", @"\")), IntPtr.Zero);
+			//WindowsAPI.SHChangeNotify(WindowsAPI.HChangeNotifyEventID.SHCNE_MKDIR,
+			//WindowsAPI.HChangeNotifyFlags.SHCNF_PATHW | WindowsAPI.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, Marshal.StringToHGlobalAuto(path.Replace(@"\\", @"\")), IntPtr.Zero);
 
 			//IsLibW = IsLib;
 			//IsAfterFolderCreate = true;
-			this.ShellListView.Focus();
+			//this.ShellListView.Focus();
 		}
 
 
@@ -2082,11 +2082,11 @@ namespace BetterExplorer {
 			this.Editor.IsOpen = false;
 		}
 
-		void ShellListView_BeginItemLabelEdit(object sender, EventArgs e) {
+		void ShellListView_BeginItemLabelEdit(object sender, RenameEventArgs e) {
 			var isSmall = this.ShellListView.IconSize == 16;
-			var itemRect = this.ShellListView.GetItemBounds(this.ShellListView.GetFirstSelectedItemIndex(), 0);
-			var itemLabelRect = this.ShellListView.GetItemBounds(this.ShellListView.GetFirstSelectedItemIndex(), 2);
-			this.txtEditor.Text = this.ShellListView.GetFirstSelectedItem().DisplayName;
+			var itemRect = this.ShellListView.GetItemBounds(e.ItemIndex, 0);
+			var itemLabelRect = this.ShellListView.GetItemBounds(e.ItemIndex, 2);
+			this.txtEditor.Text = this.ShellListView.Items[e.ItemIndex].DisplayName;
 			var point = this.ShellViewHost.PointToScreen(new System.Windows.Point(isSmall ? itemLabelRect.Left : itemRect.Left, itemLabelRect.Top));
 			this.Editor.HorizontalOffset = point.X;
 			this.Editor.VerticalOffset = point.Y;
