@@ -1067,10 +1067,9 @@ namespace BetterExplorer {
 					flt.Add(DateTime.Parse(item.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date);
 				}
 
-				var items = ShellListView.Items.Where(w => flt.Contains(DateTime.Parse(w.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date)).ToArray();
-
-				ShellListView.SelectItems(items);
-				items = null;
+				ShellListView.SelectItems(
+					ShellListView.Items.Where(w => flt.Contains(DateTime.Parse(w.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date)).ToArray()
+				);
 
 				btnCondSel.IsDropDownOpen = false;
 			}
@@ -1078,173 +1077,9 @@ namespace BetterExplorer {
 
 		private void btnCondSel_Click(object sender, RoutedEventArgs e) {
 			btnCondSel.IsDropDownOpen = false;
-
-			ConditionalSelectForm csf = new ConditionalSelectForm();
-			csf.ShowDialog();
-			if (!csf.CancelAction) {
-				ConditionallySelectFiles(csf.csd);
-			}
+			ConditionalSelectForm.Open(ShellListView);
 		}
 
-		private void ConditionallySelectFiles(ConditionalSelectData csd) {
-			if (csd == null) return;
-
-			var shells = ShellListView.Items.ToList();
-			var l1shells = new List<ShellItem>();
-			var l2shells = new List<ShellItem>();
-			var l3shells = new List<ShellItem>();
-			var l4shells = new List<ShellItem>();
-			var l5shells = new List<ShellItem>();
-
-			ShellListView.DeSelectAllItems();
-
-			if (csd.FilterByFileName) {
-				foreach (ShellItem item in shells) {
-					FileInfo data = new FileInfo(item.ParsingName);
-					string ToFind = csd.FileNameData.matchCase ? data.Name : data.Name.ToLower();
-
-					switch (csd.FileNameData.filter) {
-						case ConditionalSelectParameters.FileNameFilterTypes.Contains:
-							if (ToFind.Contains(csd.FileNameData.query)) l1shells.Add(item);
-							break;
-						case ConditionalSelectParameters.FileNameFilterTypes.StartsWith:
-							if (ToFind.StartsWith(csd.FileNameData.query)) l1shells.Add(item);
-							break;
-						case ConditionalSelectParameters.FileNameFilterTypes.EndsWith:
-							if (ToFind.EndsWith(csd.FileNameData.query)) l1shells.Add(item);
-							break;
-						case ConditionalSelectParameters.FileNameFilterTypes.Equals:
-							if (ToFind == csd.FileNameData.query) l1shells.Add(item);
-							break;
-						case ConditionalSelectParameters.FileNameFilterTypes.DoesNotContain:
-							if (!ToFind.Contains(csd.FileNameData.query)) l1shells.Add(item);
-							break;
-						case ConditionalSelectParameters.FileNameFilterTypes.NotEqualTo:
-							if (ToFind != csd.FileNameData.query) l1shells.Add(item);
-							break;
-						default:
-							break;
-					}
-				}
-			}
-			else {
-				l1shells.AddRange(shells.Where((x) => !Directory.Exists(x.ParsingName)));
-
-				//foreach (ShellItem item in shells) {
-				//	if (!Directory.Exists(item.ParsingName)) {
-				//		l1shells.Add(item);
-				//	}
-				//}
-			}
-
-			if (csd.FilterByFileSize) {
-				foreach (ShellItem item in l1shells) {
-					FileInfo data = new FileInfo(item.ParsingName);
-					switch (csd.FileSizeData.filter) {
-						case ConditionalSelectParameters.FileSizeFilterTypes.LargerThan:
-							if (data.Length > csd.FileSizeData.query1) l2shells.Add(item);
-							break;
-						case ConditionalSelectParameters.FileSizeFilterTypes.SmallerThan:
-							if (data.Length < csd.FileSizeData.query1) l2shells.Add(item);
-							break;
-						case ConditionalSelectParameters.FileSizeFilterTypes.Equals:
-							if (data.Length == csd.FileSizeData.query1) l2shells.Add(item);
-							break;
-						case ConditionalSelectParameters.FileSizeFilterTypes.Between:
-							long largebound, smallbound;
-							if (csd.FileSizeData.query2 > csd.FileSizeData.query1) {
-								smallbound = csd.FileSizeData.query1;
-								largebound = csd.FileSizeData.query2;
-							}
-							else if (csd.FileSizeData.query2 < csd.FileSizeData.query1) {
-								smallbound = csd.FileSizeData.query2;
-								largebound = csd.FileSizeData.query1;
-							}
-							else {
-								if (data.Length == csd.FileSizeData.query1) l2shells.Add(item);
-								break;
-							}
-
-							if (data.Length > smallbound && data.Length < largebound) l2shells.Add(item);
-							break;
-						case ConditionalSelectParameters.FileSizeFilterTypes.NotEqualTo:
-							if (data.Length != csd.FileSizeData.query1) l2shells.Add(item);
-							break;
-						case ConditionalSelectParameters.FileSizeFilterTypes.NotBetween:
-							long largebound2, smallbound2;
-							if (csd.FileSizeData.query2 > csd.FileSizeData.query1) {
-								smallbound2 = csd.FileSizeData.query1;
-								largebound2 = csd.FileSizeData.query2;
-							}
-							else if (csd.FileSizeData.query2 < csd.FileSizeData.query1) {
-								smallbound2 = csd.FileSizeData.query2;
-								largebound2 = csd.FileSizeData.query1;
-							}
-							else {
-								// they are the same, use Unequal code
-								if (data.Length != csd.FileSizeData.query1) l2shells.Add(item);
-								break;
-							}
-
-							if (data.Length < smallbound2 || data.Length > largebound2) l2shells.Add(item);
-							break;
-						default:
-							break;
-					}
-				}
-			}
-			else {
-				l2shells.AddRange(l1shells);
-				//foreach (ShellItem item in l1shells) {
-				//	l2shells.Add(item);
-				//}
-			}
-
-
-			Func<FileInfo, DateTime> GetCreateDate = (x) => x.CreationTimeUtc;
-			foreach (var item in !csd.FilterByDateCreated ? l2shells : DateFilter(l2shells, csd.DateCreatedData, GetCreateDate)) {
-				l3shells.Add(item);
-			}
-
-			Func<FileInfo, DateTime> GetDateModified = (x) => x.LastWriteTimeUtc;
-			foreach (var item in !csd.FilterByDateModified ? l2shells : DateFilter(l3shells, csd.DateModifiedData, GetDateModified)) {
-				l4shells.Add(item);
-			}
-
-			Func<FileInfo, DateTime> GetDateAccessed = (x) => x.LastAccessTimeUtc;
-			foreach (var item in !csd.FilterByDateAccessed ? l4shells : DateFilter(l4shells, csd.DateAccessedData, GetDateAccessed)) {
-				l5shells.Add(item);
-			}
-
-			ShellListView.SelectItems(l5shells.ToArray());
-			ShellListView.Focus();
-
-		}
-
-		private List<ShellItem> DateFilter(List<ShellItem> shells, ConditionalSelectParameters.DateParameters filter, Func<FileInfo, DateTime> GetDate) {
-			var outshells = new List<ShellItem>();
-
-			foreach (ShellItem item in shells) {
-				FileInfo data = new FileInfo(item.ParsingName);
-				var Date = GetDate(data);
-
-				switch (filter.filter) {
-					case ConditionalSelectParameters.DateFilterTypes.EarlierThan:
-						if (DateTime.Compare(Date, filter.queryDate) < 0) outshells.Add(item);
-						break;
-					case ConditionalSelectParameters.DateFilterTypes.LaterThan:
-						if (DateTime.Compare(Date, filter.queryDate) > 0) outshells.Add(item);
-						break;
-					case ConditionalSelectParameters.DateFilterTypes.Equals:
-						if (DateTime.Compare(Date, filter.queryDate) == 0) outshells.Add(item);
-						break;
-					default:
-						break;
-				}
-			}
-
-			return outshells;
-		}
 		#endregion
 
 		#region Size Chart
@@ -4540,10 +4375,6 @@ namespace BetterExplorer {
 			scSize.IsChecked = true;
 		}
 
-		private string GetValueOnly(string property, string value) {
-			return value.Substring(property.Length + 1);
-		}
-
 		private void ToggleButton_Click_1(object sender, RoutedEventArgs e) {
 			StringSearchCriteriaDialog dat = new StringSearchCriteriaDialog("ext", edtSearchBox.ExtensionCondition, FindResource("btnExtCP") as string);
 			dat.ShowDialog();
@@ -4552,7 +4383,7 @@ namespace BetterExplorer {
 				ExtToggle.IsChecked = dat.textBox1.Text.Length > 0;
 			}
 			else {
-				ExtToggle.IsChecked = GetValueOnly("ext", edtSearchBox.ExtensionCondition).Length > 0;
+				ExtToggle.IsChecked = Utilities.GetValueOnly("ext", edtSearchBox.ExtensionCondition).Length > 0;
 			}
 		}
 
@@ -4564,7 +4395,7 @@ namespace BetterExplorer {
 				AuthorToggle.IsChecked = dat.textBox1.Text.Length > 0;
 			}
 			else {
-				AuthorToggle.IsChecked = GetValueOnly("author", edtSearchBox.AuthorCondition).Length > 0;
+				AuthorToggle.IsChecked = Utilities.GetValueOnly("author", edtSearchBox.AuthorCondition).Length > 0;
 			}
 		}
 
@@ -4576,13 +4407,13 @@ namespace BetterExplorer {
 				SubjectToggle.IsChecked = dat.textBox1.Text.Length > 0;
 			}
 			else {
-				SubjectToggle.IsChecked = GetValueOnly("subject", edtSearchBox.SubjectCondition).Length > 0;
+				SubjectToggle.IsChecked = Utilities.GetValueOnly("subject", edtSearchBox.SubjectCondition).Length > 0;
 			}
 		}
 
 		private void miCustomSize_Click(object sender, RoutedEventArgs e) {
 			SizeSearchCriteriaDialog dat = new SizeSearchCriteriaDialog();
-			string sd = GetValueOnly("size", edtSearchBox.SizeCondition);
+			string sd = Utilities.GetValueOnly("size", edtSearchBox.SizeCondition);
 			dat.curval.Text = sd;
 			dat.ShowDialog();
 
@@ -4598,7 +4429,7 @@ namespace BetterExplorer {
 		private void dcCustomTime_Click(object sender, RoutedEventArgs e) {
 			SDateSearchCriteriaDialog star = new SDateSearchCriteriaDialog(FindResource("btnODateCCP") as string);
 
-			star.DateCriteria = GetValueOnly("date", edtSearchBox.DateCondition);
+			star.DateCriteria = Utilities.GetValueOnly("date", edtSearchBox.DateCondition);
 			//star.textBlock1.Text = "Set Date Created Filter";
 			star.ShowDialog();
 
@@ -4612,7 +4443,7 @@ namespace BetterExplorer {
 		private void dmCustomTime_Click(object sender, RoutedEventArgs e) {
 			SDateSearchCriteriaDialog star = new SDateSearchCriteriaDialog(FindResource("btnODateModCP") as string);
 
-			star.DateCriteria = GetValueOnly("modified", edtSearchBox.ModifiedCondition);
+			star.DateCriteria = Utilities.GetValueOnly("modified", edtSearchBox.ModifiedCondition);
 			//star.textBlock1.Text = "Set Date Modified Filter";
 			star.ShowDialog();
 
@@ -4758,9 +4589,8 @@ namespace BetterExplorer {
 
 			if (tabItem == null)
 				return;
-			else if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed) {
+			else if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
 				DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
-			}
 		}
 
 
@@ -5090,7 +4920,6 @@ namespace BetterExplorer {
 
 		private void miOpenRB_Click(object sender, RoutedEventArgs e) {
 			ShellListView.Navigate((ShellItem)KnownFolders.RecycleBin);
-
 		}
 
 		private void miRestoreRBItems_Click(object sender, RoutedEventArgs e) {

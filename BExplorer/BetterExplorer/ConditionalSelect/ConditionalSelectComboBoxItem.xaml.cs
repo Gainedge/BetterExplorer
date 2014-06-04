@@ -12,32 +12,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace BetterExplorer
-{
-    /// <summary>
-    /// Interaction logic for ConditionalSelectComboBoxItem.xaml
-    /// </summary>
-    public partial class ConditionalSelectComboBoxItem : TextBlock
-    {
-        public ConditionalSelectComboBoxItem()
-        {
-            InitializeComponent();
-        }
-
-        private string EnumName = "";
-
-        public string IdentifyingName
-        {
-            get
-            {
-                return EnumName;
-            }
-            set
-            {
-                EnumName = value;
-            }
-
-        }
-
-    }
+namespace BetterExplorer {
+	/// <summary>
+	/// Interaction logic for ConditionalSelectComboBoxItem.xaml
+	/// </summary>
+	public partial class ConditionalSelectComboBoxItem : TextBlock {
+		public string IdentifyingName { get; set; }
+		public ConditionalSelectComboBoxItem() {
+			InitializeComponent();
+		}
+	}
 }

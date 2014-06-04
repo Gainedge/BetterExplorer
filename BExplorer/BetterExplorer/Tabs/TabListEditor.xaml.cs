@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BetterExplorer {
+
 	/// <summary>
 	/// Interaction logic for TabListEditor.xaml
 	/// </summary>
 	public partial class TabListEditor : UserControl {
+
 		public TabListEditor() {
 			InitializeComponent();
 		}
@@ -35,16 +27,27 @@ namespace BetterExplorer {
 			}
 		}
 
-		void g_DeleteRequested(object sender, RoutedEventArgs e) {
-			stackPanel1.Children.Remove((sender as UIElement));
+		public void AddTab(string loc) {
+			TabListEditorItem g = new TabListEditorItem(loc);
+			g.TitleColumnWidth = NameCol.Width;
+			g.Width = this.Width;
+			g.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+			g.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
+			g.DeleteRequested += new RoutedEventHandler(g_DeleteRequested);
+			stackPanel1.Children.Add(g);
 		}
 
 		public SavedTabsList ExportSavedTabList() {
 			var o = new SavedTabsList();
-			foreach (TabListEditorItem g in stackPanel1.Children) {
-				o.Add(g.Path);
-			}
+			o.AddRange(stackPanel1.Children.OfType<TabListEditorItem>().Select(x => x.Path));
 			return o;
+			//foreach (TabListEditorItem g in stackPanel1.Children) {
+			//	o.Add(g.Path);
+			//}
+		}
+
+		private void g_DeleteRequested(object sender, RoutedEventArgs e) {
+			stackPanel1.Children.Remove((sender as UIElement));
 		}
 
 		private void gridSplitter1_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e) {
@@ -58,16 +61,5 @@ namespace BetterExplorer {
 				item.TitleColumnWidth = this.NameCol.Width;
 			}
 		}
-
-		public void AddTab(string loc) {
-			TabListEditorItem g = new TabListEditorItem(loc);
-			g.TitleColumnWidth = NameCol.Width;
-			g.Width = this.Width;
-			g.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-			g.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-			g.DeleteRequested += new RoutedEventHandler(g_DeleteRequested);
-			stackPanel1.Children.Add(g);
-		}
-
 	}
 }

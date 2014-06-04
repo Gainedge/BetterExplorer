@@ -6,7 +6,7 @@
         <TextBlock Height="32" Margin="12,8,12,0" Name="textBlock1" Text="{StaticResource txtSelectFiles}" VerticalAlignment="Top" TextWrapping="Wrap" />
         <Button Content="{StaticResource txtCancel}" Height="23" HorizontalAlignment="Right" Margin="0,0,12,12" Name="button1" VerticalAlignment="Bottom" Width="75" Click="button1_Click" />
         <Button Content="{StaticResource txtSelect}" Height="23" HorizontalAlignment="Right" Margin="0,0,93,12" Name="button2" VerticalAlignment="Bottom" Width="75" Click="button2_Click" />
-        <CheckBox Content="{StaticResource txtFilename}" Height="16" HorizontalAlignment="Left" Margin="16,52,0,0" Name="namecheck" VerticalAlignment="Top" Checked="checkBox1_Checked" Unchecked="checkBox1_Unchecked" IsChecked="True" />
+        <CheckBox Content="{StaticResource txtFilename}" Height="16" HorizontalAlignment="Left" Margin="16,52,0,0" Name="namecheck" VerticalAlignment="Top" Checked="namecheck_Checked" Unchecked="namecheck_Unchecked" IsChecked="True" />
         <ComboBox Height="23" HorizontalAlignment="Left" Margin="34,74,0,0" Name="namefilter" VerticalAlignment="Top" Width="120" SelectedIndex="0">
             <my:ConditionalSelectComboBoxItem Text="{StaticResource txtContains}" IdentifyingName="Contains" />
             <my:ConditionalSelectComboBoxItem Text="{StaticResource txtStartsWith}" IdentifyingName="StartsWith" />

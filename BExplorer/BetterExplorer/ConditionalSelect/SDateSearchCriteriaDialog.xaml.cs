@@ -23,35 +23,28 @@ namespace BetterExplorer {
 				return GetDateCriteria((dcfilter.SelectedItem as ConditionalSelectComboBoxItem).IdentifyingName, dcquery.SelectedDate, datePicker2.SelectedDate);
 			}
 			set {
-				UpdateCurrentValue(value);
+				//UpdateCurrentValue(value);
+				CurVal.Text = FindResource("txtCurrentValue") + ": " + value;
 			}
 		}
 
-
-		//public SDateSearchCriteriaDialog() {
-		//	InitializeComponent();
-		//}
-
 		public SDateSearchCriteriaDialog(string displayname) {
 			InitializeComponent();
-			SetFilterName(displayname);
+			//SetFilterName(displayname);
+
+
+			string title = FindResource("txtSetFilter") as string;
+			textBlock1.Text = title.Replace("(VAL)", displayname);
 		}
 
-
-		//public static Tuple<bool, string> Open(string displayname, ) {
-		//	var f = new SDateSearchCriteriaDialog(displayname);
-		//	f.ShowDialog();
-
-		//	return new Tuple<bool, string>(f.Confirm, f.DateCriteria);
+		//public void UpdateCurrentValue(string value) {
+		//	CurVal.Text = FindResource("txtCurrentValue") + ": " + value;
 		//}
 
-
-
-
-		public void SetFilterName(string name) {
-			string title = FindResource("txtSetFilter") as string;
-			textBlock1.Text = title.Replace("(VAL)", name);
-		}
+		//public void SetFilterName(string name) {
+		//	string title = FindResource("txtSetFilter") as string;
+		//	textBlock1.Text = title.Replace("(VAL)", name);
+		//}
 
 		public string GetDateCriteria(string str, DateTime? par1, DateTime? par2) {
 			DateTime dat1, dat2;
@@ -69,8 +62,6 @@ namespace BetterExplorer {
 				dat2 = new DateTime();
 
 
-
-
 			switch (str) {
 				case "Earlier":
 					return "<" + dat1.ToShortDateString();
@@ -79,20 +70,17 @@ namespace BetterExplorer {
 				case "Equals":
 					return dat1.ToShortDateString();
 				case "Between":
-					DateTime smallbound;
-					DateTime largebound;
+					DateTime smallbound, largebound;
 					if (dat2 > dat1) {
 						smallbound = dat1;
 						largebound = dat2;
 					}
+					else if (dat1 < dat2) {
+						smallbound = dat2;
+						largebound = dat1;
+					}
 					else {
-						if (dat1 < dat2) {
-							smallbound = dat2;
-							largebound = dat1;
-						}
-						else {
-							return dat1.ToShortDateString();
-						}
+						return dat1.ToShortDateString();
 					}
 
 					return smallbound.ToShortDateString() + ".." + largebound.ToShortDateString();
@@ -105,18 +93,6 @@ namespace BetterExplorer {
 			if (datePicker2 != null) {
 				this.datePicker2.IsEnabled = (e.AddedItems[0] as ConditionalSelectComboBoxItem).IdentifyingName == "Between";
 			}
-
-			//try {
-			//	if ((e.AddedItems[0] as ConditionalSelectComboBoxItem).IdentifyingName == "Between") 
-			//		this.datePicker2.IsEnabled = true;				
-			//	else 
-			//		this.datePicker2.IsEnabled = false;				
-			//}
-			//catch { }
-		}
-
-		public void UpdateCurrentValue(string value) {
-			CurVal.Text = FindResource("txtCurrentValue") + ": " + value;
 		}
 
 		private void button2_Click(object sender, RoutedEventArgs e) {

@@ -1,18 +1,18 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Drawing;
-using Microsoft.WindowsAPICodePack.Shell;
 
 namespace BetterExplorer {
+
 	/// <summary>Must inherit Control, not Component, in order to have Handle</summary>
 	[DefaultEvent("ClipboardChanged")]
 	public partial class ClipboardMonitor : Control {
 
 		#region Properties/Events/DllImport
 
-		IntPtr nextClipboardViewer;
+		private IntPtr nextClipboardViewer;
 
 		/// <summary>Clipboard contents changed.</summary>
 		public event EventHandler<Tuple<IDataObject>> ClipboardChanged;
@@ -26,7 +26,7 @@ namespace BetterExplorer {
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern int SendMessage(IntPtr hwnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
-		#endregion
+		#endregion Properties/Events/DllImport
 
 		public ClipboardMonitor() {
 			this.BackColor = Color.Red;
@@ -41,7 +41,6 @@ namespace BetterExplorer {
 					ChangeClipboardChain(this.Handle, nextClipboardViewer);
 			}
 			catch (Exception) {
-
 			}
 		}
 
@@ -70,14 +69,13 @@ namespace BetterExplorer {
 		}
 
 		/// <summary>Call when content content of clipboard is changed</summary>
-		void OnClipboardChanged() {
+		private void OnClipboardChanged() {
 			try {
 				IDataObject iData = Clipboard.GetDataObject();
 
 				if (ClipboardChanged != null) {
 					ClipboardChanged(this, new Tuple<IDataObject>(iData));
 				}
-
 			}
 			//catch (Exception e)
 			catch (Exception) {

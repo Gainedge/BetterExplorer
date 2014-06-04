@@ -36,7 +36,7 @@ namespace BetterExplorer {
 
 		[Category("Common")]
 		public Boolean ShowCheck {
-			get { return CheckBox.Visibility == System.Windows.Visibility.Visible; }
+			get { return CheckBox.Visibility == Visibility.Visible; }
 			set { CheckBox.Visibility = value ? Visibility.Visible : Visibility.Collapsed; }
 		}
 
