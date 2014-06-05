@@ -215,7 +215,6 @@ namespace BetterExplorer {
 
 
 
-
 		private bool IsUpdateCheck;
 		private bool IsUpdateCheckStartup;
 		private ClipboardMonitor cbm = new ClipboardMonitor();
@@ -296,7 +295,9 @@ namespace BetterExplorer {
 		private void RibbonWindow_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
 			IsRenameFromCreate = true;
 			//breadcrumbBarControl1.ExitEditMode_IfNeeded();
+			//this.ShellListView.IsFocusAllowed = true;
 			breadcrumbBarControl1.ExitEditMode();
+			//this.ShellListView.Focus();
 		}
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -2003,6 +2004,7 @@ namespace BetterExplorer {
 				sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
 			}
 			if (e.UpdateType == ItemUpdateType.Created && IsRenameFromCreate) {
+				this.ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
 				ShellListView.RenameItem(e.NewItemIndex);
 				IsRenameFromCreate = false;
 			}
@@ -2305,6 +2307,8 @@ namespace BetterExplorer {
 			ShellViewHost.Child = ShellListView;
 
 			ShellTree.ShellListView = ShellListView;
+			this.breadcrumbBarControl1.ShellListView = this.ShellListView;
+			this.ctrlConsole.ShellListView = this.ShellListView;
 
 			Task.Run(() => {
 				UpdateRecycleBinInfos();
@@ -5121,7 +5125,7 @@ namespace BetterExplorer {
 				tcMain.NewTab()
 			);
 			this.CommandBindings.Add(cbnewtab);
-			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => breadcrumbBarControl1.EnterEditMode());
+			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this.ShellListView.IsFocusAllowed = false; breadcrumbBarControl1.EnterEditMode(); });
 			this.CommandBindings.Add(cbGotoCombo);
 
 			CommandBinding cbChangeTab = new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {

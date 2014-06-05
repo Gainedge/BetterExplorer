@@ -87,7 +87,7 @@ namespace BetterExplorerControls {
 		#endregion Being Removed
 
 		#region Properties
-
+		public ShellView ShellListView { get; set; }
 		private TextBox Undertextbox;
 		private BreadcrumbBarItem furthestrightitem;
 		private DragEventHandler de, dl, dm, dp;
@@ -319,6 +319,7 @@ namespace BetterExplorerControls {
 			//IsLeavingControl = true;
 			//IsInEditMode = false;
 			elPanel.Visibility = Visibility.Visible;
+			this.ShellListView.IsFocusAllowed = true;
 
 			if (Undertextbox != null)
 				Undertextbox.Visibility = Visibility.Hidden;
@@ -332,7 +333,7 @@ namespace BetterExplorerControls {
 			////else if (this.IsLeavingControl) {
 			////	this.ToString();
 			////}
-
+			this.ShellListView.IsFocusAllowed = false;
 			//IsLeavingControl = false;
 			//IsInEditMode = true;
 			elPanel.Visibility = Visibility.Collapsed;

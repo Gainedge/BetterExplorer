@@ -125,6 +125,10 @@
       <Project>{d9903e8a-5fc4-43c6-a48d-806742704de8}</Project>
       <Name>Fluent dotNET 4.5</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Shell\Shell.csproj">
+      <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
+      <Name>Shell</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

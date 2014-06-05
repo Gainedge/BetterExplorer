@@ -1551,6 +1551,7 @@ namespace BExplorer.Shell {
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
 		private void BeginLabelEdit(int itemIndex) {
+			this._IsInRenameMode = true;
 			this.ItemForRename = itemIndex;
 			if (this.BeginItemLabelEdit != null) {
 				this.BeginItemLabelEdit.Invoke(this, new RenameEventArgs(itemIndex));
@@ -1598,7 +1599,7 @@ namespace BExplorer.Shell {
 					}
 				}
 			}
-
+			
 			//	this._Editor.Text = String.Empty;
 			//}
 
@@ -2215,6 +2216,7 @@ namespace BExplorer.Shell {
 						if (this.ToolTip != null && this.ToolTip.IsVisible)
 							this.ToolTip.HideTooltip();
 						OnGotFocus();
+						this.IsFocusAllowed = true;
 						break;
 
 					case WNM.NM_KILLFOCUS:
@@ -3897,7 +3899,7 @@ namespace BExplorer.Shell {
 			item.state = 0;
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMSTATE, index, ref item);
 		}
-		Boolean IsFocusAllowed = true;
+		public Boolean IsFocusAllowed = true;
 		/// <summary> Gives the ShellListView focus </summary>
 		public void Focus(Boolean isActiveCheck = true) {
 
@@ -3911,6 +3913,7 @@ namespace BExplorer.Shell {
 					if (IsFocusAllowed)
 					{
 						var res = User32.SetFocus(this.LVHandle);
+						this._IsInRenameMode = false;
 					}
 					//if (res == IntPtr.Zero)
 					//{

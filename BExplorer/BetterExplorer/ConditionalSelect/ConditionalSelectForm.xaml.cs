@@ -54,11 +54,11 @@ namespace BetterExplorer {
 			if (csd.FilterByFileName) {
 				foreach (ShellItem item in shells) {
 					var data = new FileInfo(item.ParsingName);
-					string ToFind = csd.FileNameData.matchCase ? data.Name : data.Name.ToLower();
+					string ToFind = csd.FileNameData.matchCase ? data.Name : data.Name.ToLowerInvariant();
 
 					switch (csd.FileNameData.filter) {
 						case ConditionalSelectParameters.FileNameFilterTypes.Contains:
-							if (ToFind.Contains(csd.FileNameData.query)) Matches_Name.Add(item);
+							if (ToFind.Contains(csd.FileNameData.matchCase ? csd.FileNameData.query : csd.FileNameData.query.ToLowerInvariant())) Matches_Name.Add(item);
 							break;
 
 						case ConditionalSelectParameters.FileNameFilterTypes.StartsWith:

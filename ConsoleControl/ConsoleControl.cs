@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BExplorer.Shell;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -40,6 +41,7 @@ namespace ConsoleControl {
 
 		private bool _IsCodepageSet = false;
 
+		public ShellView ShellListView { get; set; }
 		/// <summary>
 		/// The last input string (used so that we can make sure we don't echo input twice).
 		/// </summary>
@@ -369,6 +371,13 @@ namespace ConsoleControl {
 
 			// Wait for key down messages on the rich text box.
 			richTextBoxConsole.KeyDown += new KeyEventHandler(richTextBoxConsole_KeyDown);
+			richTextBoxConsole.MouseUp += richTextBoxConsole_MouseDown;
+		}
+
+		void richTextBoxConsole_MouseDown(object sender, MouseEventArgs e)
+		{
+			this.ShellListView.IsFocusAllowed = false;
+			richTextBoxConsole.Focus();
 		}
 
 		/*
