@@ -2,34 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BetterExplorer {
 	/// <summary>
 	/// Interaction logic for SavedTabsListGalleryItem.xaml
 	/// </summary>
 	public partial class SavedTabsListGalleryItem : UserControl {
+		private SavedTabsList lst;
+		public string Directory { get; set; }
+
+
+		/*
 		public SavedTabsListGalleryItem() {
+			Directory = "";
 			InitializeComponent();
 		}
+		*/
 
 		public SavedTabsListGalleryItem(string loc) {
 			InitializeComponent();
+			Directory = "";
 			Location = loc;
 		}
 
 		public SavedTabsListGalleryItem(string loc, bool selected) {
 			InitializeComponent();
 			Location = loc;
-			if (selected == true) {
+			if (selected) {
 				SetSelected();
 			}
 			else {
@@ -42,22 +44,16 @@ namespace BetterExplorer {
 			set { tabTitle.Text = value; }
 		}
 
-		private string dir = "";
+		
 
-		public string Directory {
-			get { return dir; }
-			set { dir = value; }
-		}
-
-		private SavedTabsList lst;
 
 		public void SetUpTooltip(string tabs) {
-			lst = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", dir, Location));
+			lst = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", Directory, Location));
 			StringBuilder blah = new StringBuilder(lst.Count);
 			foreach (string item in lst) {
 				blah.AppendLine(item);
 			}
-			string de = (String.Format("{0}: {1}\n\r", tabs, lst.Count.ToString()) + blah);
+			string de = String.Format("{0}: {1}\n\r", tabs, lst.Count.ToString()) + blah;
 
 			this.ToolTip = de.Remove(de.Length - 2);
 		}

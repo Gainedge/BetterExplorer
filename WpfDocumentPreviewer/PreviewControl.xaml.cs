@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Interop;
-using System.ComponentModel;
-using mshtml;
-using System.Runtime.InteropServices;
-using System.Reflection;
-
 
 
 namespace WpfDocumentPreviewer {
@@ -82,7 +73,7 @@ namespace WpfDocumentPreviewer {
 							null, wb1, new object[] { }) as SHDocVw.WebBrowser;
 						activeX.FileDownload += activeX_FileDownload;
 						wb1.Navigate(fileName);
-						imgh1.Visibility = System.Windows.Visibility.Collapsed;
+						imgh1.Visibility = Visibility.Collapsed;
 						wfh1.Visibility = Visibility.Collapsed;
 					}
 					else {
@@ -90,12 +81,12 @@ namespace WpfDocumentPreviewer {
 						imageSrc = new Bitmap(fileName);
 
 						img1.Image = imageSrc;
-						imgh1.Visibility = System.Windows.Visibility.Visible;
+						imgh1.Visibility = Visibility.Visible;
 						wfh1.Visibility = Visibility.Collapsed;
 					}
 				}
 				else {
-					imgh1.Visibility = System.Windows.Visibility.Collapsed;
+					imgh1.Visibility = Visibility.Collapsed;
 					wb1.Visibility = Visibility.Collapsed;
 					wfh1.Visibility = Visibility.Visible;
 				}
@@ -105,7 +96,7 @@ namespace WpfDocumentPreviewer {
 				previewHandlerHost1.Open(fileName, out previewGuid);
 				wb1.Visibility = Visibility.Collapsed;
 				wfh1.Visibility = Visibility.Visible;
-				imgh1.Visibility = System.Windows.Visibility.Collapsed;
+				imgh1.Visibility = Visibility.Collapsed;
 				img1.Image = null;
 				if (imageSrc != null)
 					imageSrc.Dispose();
