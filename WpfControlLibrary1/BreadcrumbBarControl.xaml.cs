@@ -187,17 +187,7 @@ namespace BetterExplorerControls {
 
 		private void RequestNavigation(String Path) {
 			//IsLeavingControl = true;
-			if (!System.IO.Directory.Exists(Path)) {
-				//ExitEditMode_IfNeeded() must be run to prevent endless MessageBox loop!
-				//ExitEditMode_IfNeeded();
-				ExitEditMode();
-				MessageBox.Show("Better Explorer Cannot find '" + HistoryCombo.Text + "' Check the spelling and try again", "Better Explorer",
-					MessageBoxButton.OK,
-					MessageBoxImage.Error
-				);
-
-				return;
-			}
+			
 
 			PathEventArgs ea = null;
 			var path = String.Empty;
@@ -209,6 +199,19 @@ namespace BetterExplorerControls {
 			else {
 				path = Path.ToShellParsingName();
 				item = new BreadcrumbBarFSItem(new ShellItem(path));
+			}
+
+			if (!System.IO.Directory.Exists(path))
+			{
+				//ExitEditMode_IfNeeded() must be run to prevent endless MessageBox loop!
+				//ExitEditMode_IfNeeded();
+				ExitEditMode();
+				MessageBox.Show("Better Explorer Cannot find '" + HistoryCombo.Text + "' Check the spelling and try again", "Better Explorer",
+					MessageBoxButton.OK,
+					MessageBoxImage.Error
+				);
+
+				return;
 			}
 
 			ea = new PathEventArgs(new ShellItem(path));
