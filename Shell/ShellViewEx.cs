@@ -3130,8 +3130,17 @@ namespace BExplorer.Shell
 			var handle = this.Handle;
 			var thread = new Thread(() =>
 			{
-				var shellItemArray = dataObject.ToShellItemArray();
-				var items = shellItemArray.ToArray();
+				IShellItemArray shellItemArray = null;
+				IShellItem[] items = null;
+				if (((System.Windows.Forms.DataObject)dataObject).ContainsFileDropList())
+				{
+					items = ((System.Windows.Forms.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => new ShellItem(s.ToShellParsingName()).m_ComInterface).ToArray();
+				}
+				else
+				{
+					shellItemArray = dataObject.ToShellItemArray();
+					items = shellItemArray.ToArray();
+				}
 				try
 				{
 					IIFileOperation fo = new IIFileOperation(handle);
@@ -3182,8 +3191,17 @@ namespace BExplorer.Shell
 			var handle = this.Handle;
 			var thread = new Thread(() =>
 			{
-				var shellItemArray = dataObject.ToShellItemArray();
-				var items = shellItemArray.ToArray();
+				IShellItemArray shellItemArray = null;
+				IShellItem[] items = null;
+				if (((System.Windows.Forms.DataObject)dataObject).ContainsFileDropList())
+				{
+					items = ((System.Windows.Forms.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => new ShellItem(s.ToShellParsingName()).m_ComInterface).ToArray();
+				}
+				else
+				{
+					shellItemArray = dataObject.ToShellItemArray();
+					items = shellItemArray.ToArray();
+				}
 				try
 				{
 					IIFileOperation fo = new IIFileOperation(handle);
