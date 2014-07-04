@@ -240,6 +240,9 @@ namespace BExplorer.Shell
 			this.ShellTreeView.DragOver += ShellTreeView_DragOver;
 			this.ShellTreeView.DragLeave += ShellTreeView_DragLeave;
 			this.ShellTreeView.DragDrop += ShellTreeView_DragDrop;
+			this.ShellTreeView.MouseMove += ShellListView_MouseMove;
+			this.ShellTreeView.MouseEnter += ShellTreeView_MouseEnter;
+			this.ShellTreeView.MouseLeave += ShellTreeView_MouseLeave;
 			if (this.ShellListView != null)
 			{
 				this.ShellListView.Navigated += ShellListView_Navigated;
@@ -256,6 +259,29 @@ namespace BExplorer.Shell
 			childsThread = new Thread(new ThreadStart(LoadChilds));
 			childsThread.IsBackground = true;
 			childsThread.Start();
+		}
+
+		void ShellTreeView_MouseLeave(object sender, EventArgs e)
+		{
+			if (this.ShellListView != null)
+			{
+				this.ShellListView.IsFocusAllowed = true;
+			}
+		}
+
+		void ShellTreeView_MouseEnter(object sender, EventArgs e)
+		{
+			if (this.ShellListView != null)
+			{
+				this.ShellListView.IsFocusAllowed = false;
+			}
+			this.ShellTreeView.Focus();
+		}
+
+		void ShellListView_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (!this.ShellTreeView.Focused)
+				this.ShellTreeView.Focus();
 		}
 
 		void ShellTreeView_MouseDown(object sender, MouseEventArgs e)

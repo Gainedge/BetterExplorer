@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterExplorer", "BExplorer\BetterExplorer\BetterExplorer.csproj", "{BBD6B64A-5617-4F6C-A5CE-5156365BF33E}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -46,6 +46,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BEHelper", "BEHelper\BEHelper.csproj", "{6942FB86-F12F-43AE-8E6D-D4186CE7CB81}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wpf.TabControl", "TabControl\Wpf.TabControl.csproj", "{509D06BD-AEB6-4E92-8E5B-21188EBDBD9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Odyssey.Controls", "BreadcrumbBar\Odyssey.Controls.csproj", "{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -639,6 +641,34 @@ Global
 		{509D06BD-AEB6-4E92-8E5B-21188EBDBD9C}.Release|Win32.ActiveCfg = Release|Any CPU
 		{509D06BD-AEB6-4E92-8E5B-21188EBDBD9C}.Release|x64.ActiveCfg = Release|Any CPU
 		{509D06BD-AEB6-4E92-8E5B-21188EBDBD9C}.Release|x86.ActiveCfg = Release|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.CodeAnalysisDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.CodeAnalysisDebug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.CodeAnalysisDebug|Win32.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.CodeAnalysisDebug|x64.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.CodeAnalysisDebug|x86.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Deploy|Any CPU.Build.0 = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Deploy|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Deploy|Mixed Platforms.Build.0 = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Deploy|Win32.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Deploy|x64.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Deploy|x86.ActiveCfg = Debug|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Release|Win32.ActiveCfg = Release|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Release|x64.ActiveCfg = Release|Any CPU
+		{333FDC55-6B47-4A64-A2DF-A4C5823FAC74}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

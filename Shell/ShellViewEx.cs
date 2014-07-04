@@ -150,7 +150,8 @@ namespace BExplorer.Shell
 			set { m_Folder = value; }
 		}
 
-		public Boolean IsNavigateInSameTab{
+		public Boolean IsNavigateInSameTab
+		{
 			get { return _IsNavigateInSaveTab; }
 			set { _IsNavigateInSaveTab = value; }
 		}
@@ -504,10 +505,17 @@ namespace BExplorer.Shell
 			get
 			{
 				List<ShellItem> selItems = new List<ShellItem>();
-				foreach (var index in this.SelectedIndexes)
+				foreach (var index in this.SelectedIndexes.ToArray())
 				{
-					selItems.Add(this.Items[index]);
-					DraggedItemIndexes.Add(index);
+					try
+					{
+						selItems.Add(this.Items[index]);
+						DraggedItemIndexes.Add(index);
+					}
+					catch (Exception)
+					{
+						this.SelectedIndexes.Remove(index);
+					}
 				}
 				return selItems;
 			}
@@ -766,13 +774,15 @@ namespace BExplorer.Shell
 			this.GotFocus += ShellView_GotFocus;
 
 		}
-
 		#endregion Initializer
 
 		#region Events
 
 		private void selectionTimer_Tick(object sender, EventArgs e)
 		{
+			int getFirstSelectedItemIndex = this.GetFirstSelectedItemIndex();
+			if (this.ItemForRename != getFirstSelectedItemIndex)
+				this.EndLabelEdit();
 			if (MouseButtons != System.Windows.Forms.MouseButtons.Left)
 			{
 				//RedrawWindow();
@@ -1617,7 +1627,11 @@ namespace BExplorer.Shell
 				}
 
 			}
-			return ItemsHashed[obj];
+			var itemIndex = Items.Count - 1;
+			if (!ItemsHashed.TryGetValue(obj, out itemIndex)) {
+				itemIndex = Items.Count - 1;
+			}
+			return itemIndex;
 		}
 		private void UpdateItem(ShellItem obj1, ShellItem obj2)
 		{
@@ -1682,6 +1696,7 @@ namespace BExplorer.Shell
 		private void BeginLabelEdit(int itemIndex)
 		{
 			this._IsInRenameMode = true;
+			this.IsFocusAllowed = false;
 			this.ItemForRename = itemIndex;
 			if (this.BeginItemLabelEdit != null)
 			{
@@ -1736,7 +1751,7 @@ namespace BExplorer.Shell
 					}
 				}
 			}
-
+			this.IsFocusAllowed = true;
 			//	this._Editor.Text = String.Empty;
 			//}
 
@@ -1870,10 +1885,15 @@ namespace BExplorer.Shell
 							Notifications.NotificationsReceived.Remove(info);
 
 						}
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_ATTRIBUTES)
+						{
+
+						}
 					}
 				}
 				this.Focus();
 			}
+
 			base.WndProc(ref m);
 			if (m.Msg == 78)
 			{
@@ -2055,7 +2075,7 @@ namespace BExplorer.Shell
 								}
 							}
 						}
-						
+
 						break;
 
 					case WNM.LVN_COLUMNCLICK:
@@ -2251,12 +2271,13 @@ namespace BExplorer.Shell
 
 					case WNM.LVN_ITEMCHANGED:
 						//RedrawWindow();
-						this.EndLabelEdit();
 
 						NMLISTVIEW nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 						if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE)
 						{
-
+							if (this.ItemForRename != -1 && nlv.iItem != -1 && nlv.iItem != this.ItemForRename)
+								this.EndLabelEdit();
+							
 							ToolTip.HideTooltip();
 							selectionTimer.Interval = 100;
 							selectionTimer.Tick += selectionTimer_Tick;
@@ -2295,23 +2316,21 @@ namespace BExplorer.Shell
 						break;
 
 					case WNM.LVN_KEYDOWN:
-
 						NMLVKEYDOWN nkd = (NMLVKEYDOWN)m.GetLParam(typeof(NMLVKEYDOWN));
 						Keys key = (Keys)((int)nkd.wVKey);
 						if (KeyDown != null)
 						{
 							KeyDown(this, new KeyEventArgs(key));
 						}
-
-						switch (nkd.wVKey)
+						if (this.ItemForRename == -1)
 						{
-							case (short)Keys.F2:
-								RenameSelectedItem();
-								break;
+							switch (nkd.wVKey)
+							{
+								case (short)Keys.F2:
+									RenameSelectedItem();
+									break;
 
-							case (short)Keys.Enter:
-								if (this.ItemForRename == -1)
-								{
+								case (short)Keys.Enter:
 									var selectedItem = this.GetFirstSelectedItem();
 									if (selectedItem.IsFolder)
 									{
@@ -2337,43 +2356,36 @@ namespace BExplorer.Shell
 										{
 											StartProcessInCurrentDirectory(selectedItem);
 										}
+
 									}
-								}
-								else
-								{
-									this.EndLabelEdit();
-								}
-								break;
-							//default:
-							//	// initiate key jump code
-							//	string skeyr = Enum.GetName(typeof(Keys), key);
-							//	if (skeyr.StartsWith("NumPad"))
-							//	{
-							//		// allows the number pad to work (since the number pad keys give a different Key value)
-							//		skeyr = skeyr.Substring(6);
-							//	}
-							//	if (skeyr.Length == 2 && skeyr.StartsWith("D"))
-							//	{
-							//		skeyr = skeyr.Substring(1);
-							//	}
 
-							// if (skeyr.Length == 1 || skeyr.ToUpperInvariant() == "SPACE" ||
-							// skeyr.ToUpperInvariant() == "OEMPERIOD" || skeyr.ToUpperInvariant()
-							// == "OEMMINUS") { if (SelectedItems.Count != 0) { _kpreselitem =
-							// SelectedItems[0]; } else { _kpreselitem = null; }
+									break;
+							}
 
-							// if (_KeyJumpTimer.Enabled == false) { _KeyJumpTimer.Start();
-							// _keyjumpstr = GetStringFromAcceptedKeyCodeString(skeyr); } else {
-							// _KeyJumpTimer.Stop(); _KeyJumpTimer.Start(); _keyjumpstr +=
-							// GetStringFromAcceptedKeyCodeString(skeyr); }
-
-							// if (KeyJumpKeyDown != null) { KeyJumpKeyDown(this, new
-							// KeyEventArgs(key)); } }
-							//
-							// break;
+							this.Focus();
 						}
-						//m.Result = (IntPtr)1;
-						this.Focus();
+						else
+						{
+							System.Windows.Input.InputManager.Current.ProcessInput(new System.Windows.Input.KeyEventArgs(System.Windows.Input.Keyboard.PrimaryDevice,
+									System.Windows.Input.Keyboard.PrimaryDevice.ActiveSource, Environment.TickCount, System.Windows.Input.KeyInterop.KeyFromVirtualKey(nkd.wVKey))
+									{
+										RoutedEvent = System.Windows.Controls.Control.KeyDownEvent
+									});
+							m.Result = (IntPtr)1;
+							switch (nkd.wVKey)
+							{
+								case (short)Keys.Enter:
+									this.EndLabelEdit();
+									this.Focus();
+									break;
+								case (short)Keys.Escape:
+									this.EndLabelEdit(true);
+									this.Focus();
+									break;
+								default:
+									break;
+							}
+						}
 						break;
 
 					case WNM.LVN_GROUPINFO:
@@ -2386,6 +2398,7 @@ namespace BExplorer.Shell
 						{
 							ToolTip.HideTooltip();
 						}
+						this.Focus();
 						break;
 
 					case WNM.LVN_BEGINDRAG:
@@ -2445,7 +2458,8 @@ namespace BExplorer.Shell
 						break;
 
 					case WNM.NM_KILLFOCUS:
-						EndLabelEdit();
+						if (this.ItemForRename != -1)
+							EndLabelEdit();
 						if (IsGroupsEnabled)
 							RedrawWindow();
 						if (this.ToolTip != null && this.ToolTip.IsVisible)
@@ -3607,7 +3621,7 @@ namespace BExplorer.Shell
 			SaveSettingsToDatabase();
 
 			this.ItemForRename = -1;
-			this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
+			
 			if (destination == null)
 				return;
 
@@ -3655,7 +3669,7 @@ namespace BExplorer.Shell
 			SubItems.Clear();
 
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
-
+			this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
 			var e = destination.GetEnumerator();
 			var i = 0;
 			while (e.MoveNext())
@@ -3871,15 +3885,15 @@ namespace BExplorer.Shell
 				}
 				else
 				{
-					var groups = this.Items.GroupBy(k => k.GetPropertyValue(col.pkey, typeof (String)).Value, e => e).OrderBy(o => o.Key);
+					var groups = this.Items.GroupBy(k => k.GetPropertyValue(col.pkey, typeof(String)).Value, e => e).OrderBy(o => o.Key);
 					var i = reversed ? groups.Count() - 1 : 0;
 					foreach (var group in groups)
 					{
-						
+
 						var groupItems = group.Select(s => s).ToArray();
 						ListViewGroupEx gr = new ListViewGroupEx();
 						gr.Items = groupItems;
-						gr.Header = String.Format("{0} ({1})",group.Key.ToString(), groupItems.Count());
+						gr.Header = String.Format("{0} ({1})", group.Key.ToString(), groupItems.Count());
 						gr.Index = reversed ? i-- : i++;
 						this.Groups.Add(gr);
 					}
@@ -4415,19 +4429,22 @@ namespace BExplorer.Shell
 			//{
 			try
 			{
-				var mainWin = System.Windows.Application.Current.MainWindow;
-				if (mainWin.IsActive || !isActiveCheck)
+				if (User32.GetForegroundWindow() != this.LVHandle)
 				{
-					if (IsFocusAllowed)
+					var mainWin = System.Windows.Application.Current.MainWindow;
+					if (mainWin.IsActive || !isActiveCheck)
 					{
-						var res = User32.SetFocus(this.LVHandle);
-						this._IsInRenameMode = false;
+						if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position))
+						{
+							var res = User32.SetFocus(this.LVHandle);
+							this._IsInRenameMode = false;
+						}
+						//if (res == IntPtr.Zero)
+						//{
+						//	User32.SetForegroundWindow(this.LVHandle);
+						//}
+						//res = User32.SetActiveWindow(this.LVHandle);
 					}
-					//if (res == IntPtr.Zero)
-					//{
-					//	User32.SetForegroundWindow(this.LVHandle);
-					//}
-					//res = User32.SetActiveWindow(this.LVHandle);
 				}
 			}
 			//On Exception do nothing (usually it happens on app exit)
@@ -4490,7 +4507,7 @@ namespace BExplorer.Shell
 
 		private int GetGroupIndex(int itemIndex)
 		{
-			if (itemIndex == -1) return 0;
+			if (itemIndex == -1 || itemIndex >= this.Items.Count) return 0;
 			var item = this.Items[itemIndex];
 			foreach (var group in this.Groups)
 			{

@@ -55,7 +55,6 @@ namespace BetterExplorerControls
 		{
 			Loaded += OnPopupLoaded;
 			Unloaded += OnPopupUnloaded;
-
 			DependencyPropertyDescriptor descriptor = DependencyPropertyDescriptor.FromProperty(PlacementTargetProperty, typeof(AirspacePopup));
 			descriptor.AddValueChanged(this, PlacementTargetChanged);
 		}

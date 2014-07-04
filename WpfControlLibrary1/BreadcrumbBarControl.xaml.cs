@@ -186,9 +186,6 @@ namespace BetterExplorerControls {
 		#region Random Private
 
 		private void RequestNavigation(String Path) {
-			//IsLeavingControl = true;
-			
-
 			PathEventArgs ea = null;
 			var path = String.Empty;
 			BreadcrumbBarFSItem item = null;
@@ -203,10 +200,8 @@ namespace BetterExplorerControls {
 
 			if (!System.IO.Directory.Exists(path))
 			{
-				//ExitEditMode_IfNeeded() must be run to prevent endless MessageBox loop!
-				//ExitEditMode_IfNeeded();
 				ExitEditMode();
-				MessageBox.Show("Better Explorer Cannot find '" + HistoryCombo.Text + "' Check the spelling and try again", "Better Explorer",
+				MessageBox.Show(String.Format("Better Explorer Cannot find '{0}' Check the spelling and try again", HistoryCombo.Text), "Better Explorer",
 					MessageBoxButton.OK,
 					MessageBoxImage.Error
 				);
@@ -244,7 +239,7 @@ namespace BetterExplorerControls {
 					duh.grid1.Visibility = Visibility.Collapsed;
 				}
 
-				duh.NavigateRequested += new BreadcrumbBarItem.PathEventHandler(duh_NavigateRequested);
+				duh.NavigateRequested += duh_NavigateRequested;
 				duh.ContextMenuRequested += duh_ContextMenuRequested;
 
 				this.elPanel.Children.Add(duh);

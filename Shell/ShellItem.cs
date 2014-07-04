@@ -445,7 +445,7 @@ namespace BExplorer.Shell {
 		/// </returns>
 		public IEnumerator<ShellItem> GetEnumerator() {
 			return GetEnumerator(SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN |
-					SHCONTF.NONFOLDERS | SHCONTF.INIT_ON_FIRST_NEXT | SHCONTF.FASTITEMS | SHCONTF.ENABLE_ASYNC);
+					SHCONTF.NONFOLDERS | SHCONTF.FASTITEMS | SHCONTF.ENABLE_ASYNC);
 		}
 
 		/// <summary>
@@ -519,7 +519,7 @@ namespace BExplorer.Shell {
 			var parsingName = this.ParsingName.ToLowerInvariant();
 			if (this.IsLink)
 				return IExtractIconPWFlags.GIL_PERINSTANCE | IExtractIconPWFlags.GIL_FORCENOSHIELD;
-			if (parsingName.EndsWith(".htm") || parsingName.EndsWith(".html"))
+			if (parsingName.ToLowerInvariant().EndsWith(".htm") || parsingName.ToLowerInvariant().EndsWith(".html") || parsingName.ToLowerInvariant().EndsWith(".xml"))
 				return IExtractIconPWFlags.GIL_PERCLASS | IExtractIconPWFlags.GIL_FORCENOSHIELD;
 			IExtractIcon iextract = null;
 			IShellFolder ishellfolder = null;
