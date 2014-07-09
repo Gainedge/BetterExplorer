@@ -1854,6 +1854,13 @@ namespace BetterExplorer {
 			this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 			this.ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
 			this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
+			this.ShellListView.GotFocus += ShellListView_GotFocus;
+		}
+
+		void ShellListView_GotFocus(object sender, EventArgs e) {
+			//if (this.bcbc != null) {
+			//	this.bcbc.Exit(true);
+			//}
 		}
 
 		void ShellListView_EndItemLabelEdit(object sender, EventArgs e) {
@@ -1884,6 +1891,8 @@ namespace BetterExplorer {
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
+			this._IsBreadcrumbBarSelectionChnagedAllowed = false;
+			this.bcbc.Path = e.Folder.ParsingName;
 			var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 			if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
 				if (tab.SelectedItems != null) {
@@ -2627,8 +2636,7 @@ namespace BetterExplorer {
 
 		private void SetUpBreadcrumbbarOnNavComplete(NavigatedEventArgs e) {
 			//this.breadcrumbBarControl1.LoadDirectory(e.Folder);
-			this._IsBreadcrumbBarSelectionChnagedAllowed = false;
-			this.bcbc.Path = e.Folder.ParsingName;
+			
 			//this._IsBreadcrumbBarSelectionChnagedAllowed = true;
 			//this.bcbc.UpdateLayout();
 			//this.bcbc.Path = e.Folder.ParsingName;
@@ -5427,11 +5435,15 @@ namespace BetterExplorer {
 		}
 
 		private void PopulateFolders(Odyssey.Controls.BreadcrumbItem item) {
-			Dispatcher.Invoke(DispatcherPriority.Background,
+			Dispatcher.Invoke(DispatcherPriority.Normal,
 				(Action)(() => {
+					if (item.Items.Count > 0) {
+						this._IsBreadcrumbBarSelectionChnagedAllowed = true;
+						return;
+					}
 					string trace = item.TraceValue;
 					var shellitem = item.DataContext as ShellItem;
-					if (trace.Equals("Computer")) {
+					if (trace.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
 						foreach (ShellItem s in KnownFolders.Computer) {
 							item.Items.Add(s);
 						}
@@ -5462,11 +5474,20 @@ namespace BetterExplorer {
 			}
 			this.bcbc.UpdateLayout();
 			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
+			this.bcbc.OnEditModeToggle += bcbc_OnEditModeToggle;
+		}
+
+		void bcbc_OnEditModeToggle(object sender, Odyssey.Controls.EditModeToggleEventArgs e) {
+			if (!e.IsExit) {
+				this.ShellListView.IsFocusAllowed = false;
+				this.bcbc.Focus();
+			} else {
+				this.ShellListView.IsFocusAllowed = true;
+			}
 		}
 		bool _IsBreadcrumbBarSelectionChnagedAllowed = false;
 		private void bcbc_SelectedChanged(object sender, RoutedEventArgs e) {
-			if (_IsBreadcrumbBarSelectionChnagedAllowed)
-				this.ShellListView.Navigate(this.bcbc.SelectedBreadcrumb.Data as ShellItem, false, true);
+
 		}
 
 		private void bcbc_BreadcrumbItemDropDownOpened(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
@@ -5476,6 +5497,20 @@ namespace BetterExplorer {
 
 		private void bcbc_BreadcrumbItemDropDownClosed(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			this.ShellListView.IsFocusAllowed = true;
+		}
+
+		private void path_conversation(object sender, Odyssey.Controls.PathConversionEventArgs e) {
+			var newPath = e.DisplayPath;
+			if (newPath != null && newPath.StartsWith("%")) {
+				newPath = Environment.ExpandEnvironmentVariables(newPath);
+			}
+			if (e.Mode == Odyssey.Controls.PathConversionEventArgs.ConversionMode.EditToDisplay && _IsBreadcrumbBarSelectionChnagedAllowed)
+				this.ShellListView.Navigate(new ShellItem(newPath.ToShellParsingName()), false, true);
+		}
+
+
+		private void path_changed(object sender, RoutedPropertyChangedEventArgs<string> e) {
+			
 		}
 
 	}

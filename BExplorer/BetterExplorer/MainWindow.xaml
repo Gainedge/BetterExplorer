@@ -40,9 +40,6 @@
 			<DataTemplate DataType="{x:Type shell:ShellItem}">
 				<TextBlock Text="{Binding DisplayName}"/>
 			</DataTemplate>
-			<Style TargetType="{x:Type odc:BreadcrumbItem}">
-				<Setter Property="Image" Value="Images/explorer16.png"/>
-			</Style>
 		</ResourceDictionary>
 	</Ribbon:RibbonWindow.Resources>
 
@@ -3012,7 +3009,7 @@
 									 Width="Auto"
 									 NavigateRequested="breadcrumbBarControl1_NavigateRequested"
 									 RefreshRequested="breadcrumbBarControl1_RefreshRequested" Visibility="Hidden" />
-			<odc:BreadcrumbBar x:Name="bcbc" Focusable="True" PopulateItems="pop_items" TraceBinding="{Binding DisplayName}" ImageBinding="{Binding Thumbnail.SmallBitmapSource}" Loaded="bcbc_Loaded" SelectedBreadcrumbChanged="bcbc_SelectedChanged" BreadcrumbItemDropDownOpened="bcbc_BreadcrumbItemDropDownOpened" BreadcrumbItemDropDownClosed="bcbc_BreadcrumbItemDropDownClosed" >
+			<odc:BreadcrumbBar x:Name="bcbc" Focusable="True" PopulateItems="pop_items" PathConversion="path_conversation" TraceBinding="{Binding DisplayName}" ImageBinding="{Binding Thumbnail.SmallBitmapSource}" Loaded="bcbc_Loaded" SelectedBreadcrumbChanged="bcbc_SelectedChanged" BreadcrumbItemDropDownOpened="bcbc_BreadcrumbItemDropDownOpened" BreadcrumbItemDropDownClosed="bcbc_BreadcrumbItemDropDownClosed" PathChanged="path_changed" >
 				<odc:BreadcrumbBar.Buttons>
 					<Button Click="Refresh_Click">
 						<Image Source="Images\Refresh16.png" Stretch="None" />

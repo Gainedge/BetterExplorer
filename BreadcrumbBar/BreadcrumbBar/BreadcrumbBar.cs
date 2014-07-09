@@ -148,6 +148,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 
 		public static readonly DependencyProperty ProgressMinimumProperty =
 				DependencyProperty.Register("ProgressMinimum", typeof(double), typeof(BreadcrumbBar), new UIPropertyMetadata(0.0, null, CoerceProgressMinimum));
+		public event EventHandler<EditModeToggleEventArgs> OnEditModeToggle;
 
 		#endregion
 
@@ -323,17 +324,22 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				RaiseEvent(args);
 			}
 		}
-
-
+		public String aa { get; set; }
+		static bool _allowSelectionChnaged = true;
 		/// <summary>
 		/// Traces the specified path and builds the associated BreadcrumbItems.
 		/// </summary>
 		/// <param name="path">The traces separated by the SepearatorString property.</param>
 		private bool BuildBreadcrumbsFromPath(string newPath) {
+			
 			PathConversionEventArgs e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.EditToDisplay, newPath, Root, PathConversionEvent);
 			RaiseEvent(e);
+			_allowSelectionChnaged = false;
 			newPath = e.DisplayPath;
-
+			aa = newPath;
+			if (newPath != null && newPath.StartsWith("%")) {
+				newPath = Environment.ExpandEnvironmentVariables(newPath);
+			}
 			BreadcrumbItem item = RootItem;
 			if (item == null) {
 				this.Path = null;
@@ -360,6 +366,8 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			// if the root is specified as first trace, then skip:
 			int length = traces.Count;
 			int max = breadcrumbsToHide;
+			ShellItem lItem = null;
+			BreadcrumbItem missingItem = null;
 			if (max > 0 && traces[index].GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING) == (shellItem.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING))) {
 				length--;
 				index++;
@@ -371,6 +379,12 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				var trace = traces[i];
 				OnPopulateItems(item);
 				object next = item.GetTraceItem(trace);
+				if (next == null && (item.Data as ShellItem) == trace.Parent) {
+					missingItem = item;
+					lItem = trace;
+					item.Items.Add(trace);
+					next = item.GetTraceItem(trace);
+				}
 				if (next == null) break;
 				itemIndex.Add(item.Items.IndexOf(next));
 				BreadcrumbItem container = item.ContainerFromItem(next);
@@ -385,18 +399,26 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 
 			// temporarily remove the SelectionChangedEvent handler to minimize processing of events while building the breadcrumb items:
 			RemoveHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
+			
+
 			try {
-				item = RootItem;
+				var item2 = RootItem;
 				for (int i = 0; i < itemIndex.Count; i++) {
 					if (item == null) break;
-					item.SelectedIndex = itemIndex[i];
-					item = item.SelectedBreadcrumb;
+					if (lItem != null && itemIndex[i] > item2.Items.OfType<ShellItem>().Count() - 1) {
+						if (!item2.Items.Contains(lItem))
+							item2.Items.Add(lItem);
+						lItem = null;
+					}
+					item2.SelectedIndex = itemIndex[i];
+					item2 = item2.SelectedBreadcrumb;
 				}
-				if (item != null) item.SelectedItem = null;
-				SelectedBreadcrumb = item;
-				SelectedItem = item != null ? item.Data : null;
+				if (item2 != null) item2.SelectedItem = null;
+				SelectedBreadcrumb = item2;
+				SelectedItem = item2 != null ? item2.Data : null;
 			} finally {
 				AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
+				_allowSelectionChnaged = true;
 			}
 
 			return true;
@@ -495,7 +517,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		/// </summary>
 		private void buttonClickedEvent(object sender, RoutedEventArgs e) {
 			if (this.IsKeyboardFocusWithin) {
-				this.Focus();
+				//this.Focus();
 			}
 		}
 
@@ -831,13 +853,52 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			comboBox = GetTemplateChild(partComboBox) as ComboBox;
 			rootButton = GetTemplateChild(partRoot) as BreadcrumbButton;
 			if (comboBox != null) {
+				comboBox.StaysOpenOnEdit = true;
 				comboBox.DropDownClosed += new EventHandler(comboBox_DropDownClosed);
-				comboBox.IsKeyboardFocusWithinChanged += new DependencyPropertyChangedEventHandler(comboBox_IsKeyboardFocusWithinChanged);
 				comboBox.KeyDown += new KeyEventHandler(comboBox_KeyDown);
+				comboBox.Loaded += comboBox_Loaded;
+				comboBox.IsKeyboardFocusWithinChanged += comboBox_IsKeyboardFocusWithinChanged;
 			}
 			if (rootButton != null) {
 				rootButton.Click += new RoutedEventHandler(rootButton_Click);
 			}
+		}
+
+		void comboBox_Loaded(object sender, RoutedEventArgs e) {
+			TextBox tb = (TextBox)comboBox.Template.FindName("PART_EditableTextBox", comboBox);
+			if (tb != null) {
+				tb.LostKeyboardFocus += tb_LostKeyboardFocus;
+			}
+		}
+
+		void tb_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			Exit(true);
+		}
+
+		void tb_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			
+		}
+
+		void tb_LostFocus(object sender, RoutedEventArgs e) {
+			//if (!comboBox.IsDropDownOpen)
+			//	Exit(false);
+		}
+
+		void tb_GotFocus(object sender, RoutedEventArgs e) {
+			
+		}
+
+		void comboBox_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
+			bool isKeyboardFocusWithin = (bool)e.NewValue;
+			if (!isKeyboardFocusWithin && !comboBox.IsDropDownOpen) Exit(true);
+		}
+
+		void comboBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+			//Exit(true); 
+		}
+
+		void comboBox_LostFocus(object sender, RoutedEventArgs e) {
+			
 		}
 
 
@@ -859,10 +920,19 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		}
 
 		void comboBox_IsKeyboardFocusWithinChanged(object sender, DependencyPropertyChangedEventArgs e) {
-			bool isKeyboardFocusWithin = (bool)e.NewValue;
-			if (!isKeyboardFocusWithin) Exit(true);
+			//bool isKeyboardFocusWithin = (bool)e.NewValue;
+			//if (!isKeyboardFocusWithin && !comboBox.IsDropDownOpen) Exit(true);
 		}
 
+		protected override void OnLostFocus(RoutedEventArgs e) {
+			base.OnLostFocus(e);
+			//Exit(false);
+		}
+		bool shouldExit = true;
+		protected override void OnPreviewMouseLeftButtonDown(MouseButtonEventArgs e) {
+			shouldExit = false;
+			base.OnPreviewMouseLeftButtonDown(e);
+		}
 		protected override void OnMouseDown(MouseButtonEventArgs e) {
 			if (e.Handled) return;
 			if (e.ChangedButton == MouseButton.Left && e.LeftButton == MouseButtonState.Pressed) {
@@ -878,7 +948,10 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		}
 
 		private void SetInputState() {
-			if (comboBox != null && IsEditable) {
+			if (comboBox != null && IsEditable && comboBox.Visibility != System.Windows.Visibility.Visible) {
+				if (this.OnEditModeToggle != null) {
+					this.OnEditModeToggle.Invoke(comboBox, new EditModeToggleEventArgs(false));
+				}
 				comboBox.Text = Path;
 				comboBox.Visibility = Visibility.Visible;
 				comboBox.Focus();
@@ -931,7 +1004,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 					
 				}
 				index++;
-				result = item.TraceValue == "Desktop" ? KnownFolders.Desktop.ParsingName : (item.Data as ShellItem).ParsingName;
+				result = item.TraceValue == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : (item.Data as ShellItem).ParsingName;
 				item = item.SelectedBreadcrumb;
 			}
 
@@ -942,14 +1015,18 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		/// <summary>
 		/// Do what's necassary to do when the BreadcrumbBar has lost focus.
 		/// </summary>
-		private void Exit(bool updatePath) {
+		public void Exit(bool updatePath) {
 			if (comboBox != null) {
 				if (updatePath && comboBox.IsVisible) Path = comboBox.Text;
 				comboBox.Visibility = Visibility.Hidden;
+				if (this.OnEditModeToggle != null) {
+					this.OnEditModeToggle.Invoke(comboBox, new EditModeToggleEventArgs(true));
+				}
 			}
 		}
 
 		void comboBox_DropDownClosed(object sender, EventArgs e) {
+			//shouldExit = true;
 			IsDropDownOpen = false;
 			Path = comboBox.Text;
 		}
@@ -1101,7 +1178,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		}
 
 		protected override void OnMouseLeave(MouseEventArgs e) {
-			if (this.IsKeyboardFocusWithin) this.Focus();
+			//if (this.IsKeyboardFocusWithin) this.Focus();
 			base.OnMouseLeave(e);
 		}
 

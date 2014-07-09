@@ -284,7 +284,11 @@ namespace Wpf.Controls {
 			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
 			newt.Drop += new DragEventHandler(newt_Drop);
 
-			Items.Add(newt);
+			try {
+				Items.Add(newt);
+			} catch (Exception) {
+
+			}
 
 			ConstructMoveToCopyToMenu();
 
