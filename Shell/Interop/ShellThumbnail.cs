@@ -97,9 +97,9 @@ namespace BExplorer.Shell.Interop
 		/// <param name="shellObject"></param>
 		internal ShellThumbnail(ShellItem shellObject)
 		{
-			if (shellObject != null && shellObject.m_ComInterface != null)
+			if (shellObject != null && shellObject.ComInterface != null)
 			{
-				shellItemNative = shellObject.m_ComInterface;
+				shellItemNative = shellObject.ComInterface;
 			}
 		}
 

@@ -130,7 +130,17 @@ namespace BExplorer.Shell {
 
 		private int? hashValue;
 		public int IsShielded = -1;
-		public IShellItem m_ComInterface;
+
+		/// <summary>
+		/// Gets the underlying <see cref="IShellItem"/> COM interface.
+		/// </summary>
+		public IShellItem ComInterface { get { return m_ComInterface; } protected set { m_ComInterface = value; } }
+		//public IShellItem ComInterface { get { return m_ComInterface; } }
+		protected IShellItem m_ComInterface;
+
+
+
+
 		private static ShellItem m_Desktop;
 		private bool disposed;
 		private ShellThumbnail thumbnail;
@@ -156,10 +166,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		/// <summary>
-		/// Gets the underlying <see cref="IShellItem"/> COM interface.
-		/// </summary>
-		public IShellItem ComInterface { get { return m_ComInterface; } }
+
 
 		/// <summary>
 		/// Gets the item's parsing name.
@@ -202,7 +209,7 @@ namespace BExplorer.Shell {
 		public bool IsFileSystemAncestor {
 			get {
 				SFGAO sfgao;
-				m_ComInterface.GetAttributes(SFGAO.FILESYSANCESTOR, out sfgao);
+				ComInterface.GetAttributes(SFGAO.FILESYSANCESTOR, out sfgao);
 				return sfgao != 0;
 			}
 		}
@@ -211,7 +218,7 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets a PIDL representing the item.
 		/// </summary>
-		public IntPtr Pidl { get { return GetIDListFromObject(m_ComInterface); } }
+		public IntPtr Pidl { get { return GetIDListFromObject(ComInterface); } }
 
 
 
@@ -221,9 +228,9 @@ namespace BExplorer.Shell {
 		public bool IsFolder {
 			get {
 				SFGAO sfgao;
-				m_ComInterface.GetAttributes(SFGAO.FOLDER, out sfgao);
+				ComInterface.GetAttributes(SFGAO.FOLDER, out sfgao);
 				SFGAO sfgao2;
-				m_ComInterface.GetAttributes(SFGAO.STREAM, out sfgao2);
+				ComInterface.GetAttributes(SFGAO.STREAM, out sfgao2);
 				return sfgao != 0 && sfgao2 == 0;
 			}
 		}
@@ -374,7 +381,7 @@ namespace BExplorer.Shell {
 		public ShellItem Parent {
 			get {
 				IShellItem item;
-				HResult result = m_ComInterface.GetParent(out item);
+				HResult result = ComInterface.GetParent(out item);
 
 				if (result == HResult.S_OK) {
 					return new ShellItem(item);
@@ -505,7 +512,7 @@ namespace BExplorer.Shell {
 		/// </returns>
 		public string GetDisplayName(SIGDN sigdn) {
 			try {
-				IntPtr resultPtr = m_ComInterface.GetDisplayName(sigdn);
+				IntPtr resultPtr = ComInterface.GetDisplayName(sigdn);
 				string result = Marshal.PtrToStringUni(resultPtr);
 				Marshal.FreeCoTaskMem(resultPtr);
 				return result;
@@ -648,10 +655,9 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject() {
 			IntPtr res;
-			HResult result = m_ComInterface.BindToHandler(IntPtr.Zero,
+			HResult result = ComInterface.BindToHandler(IntPtr.Zero,
 					BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID, out res);
-			return (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(res,
-					typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
+			return (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(res, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
 		}
 
 		public List<AssociationItem> GetAssocList() {
@@ -695,10 +701,8 @@ namespace BExplorer.Shell {
 		/// item. This object is used in drag and drop operations.
 		/// </summary>
 		public IDropTarget GetIDropTarget(System.Windows.Forms.Control control) {
-			IntPtr result = GetIShellFolder().CreateViewObject(control.Handle,
-					typeof(IDropTarget).GUID);
-			return (IDropTarget)Marshal.GetTypedObjectForIUnknown(result,
-							typeof(IDropTarget));
+			IntPtr result = GetIShellFolder().CreateViewObject(control.Handle, typeof(IDropTarget).GUID);
+			return (IDropTarget)Marshal.GetTypedObjectForIUnknown(result, typeof(IDropTarget));
 		}
 
 		/// <summary>
@@ -707,16 +711,14 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public IShellFolder GetIShellFolder() {
 			IntPtr res;
-			HResult result = m_ComInterface.BindToHandler(IntPtr.Zero,
-					BHID.SFObject, typeof(IShellFolder).GUID, out res);
-			IShellFolder iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res,
-											typeof(IShellFolder));
+			HResult result = ComInterface.BindToHandler(IntPtr.Zero, BHID.SFObject, typeof(IShellFolder).GUID, out res);
+			IShellFolder iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res, typeof(IShellFolder));
 			return iShellFolder;
 		}
 
 		public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) {
 			PropVariant pvar = new PropVariant();
-			IShellItem2 isi2 = (IShellItem2)m_ComInterface;
+			IShellItem2 isi2 = (IShellItem2)ComInterface;
 			if (isi2.GetProperty(ref pkey, pvar) != HResult.S_OK) {
 				//String value = String.Empty;
 				//if (pvar.Value != null)
@@ -896,10 +898,9 @@ namespace BExplorer.Shell {
 		public ShellItem(Environment.SpecialFolder folder) {
 			IntPtr pidl;
 
-			if (Shell32.SHGetSpecialFolderLocation(IntPtr.Zero,
-					(CSIDL)folder, out pidl) == HResult.S_OK) {
+			if (Shell32.SHGetSpecialFolderLocation(IntPtr.Zero, (CSIDL)folder, out pidl) == HResult.S_OK) {
 				try {
-					m_ComInterface = CreateItemFromIDList(pidl);
+					ComInterface = CreateItemFromIDList(pidl);
 				}
 				finally {
 					Shell32.ILFree(pidl);
@@ -913,9 +914,8 @@ namespace BExplorer.Shell {
 				// a PIDL which is preferable to a path as it can express
 				// virtual folder locations.
 				StringBuilder path = new StringBuilder();
-				Marshal.ThrowExceptionForHR((int)Shell32.SHGetFolderPath(
-						IntPtr.Zero, (CSIDL)folder, IntPtr.Zero, 0, path));
-				m_ComInterface = CreateItemFromParsingName(path.ToString());
+				Marshal.ThrowExceptionForHR((int)Shell32.SHGetFolderPath(IntPtr.Zero, (CSIDL)folder, IntPtr.Zero, 0, path));
+				ComInterface = CreateItemFromParsingName(path.ToString());
 			}
 			this.IconType = GetIconType();
 			this.CachedParsingName = this.ParsingName;
@@ -943,8 +943,7 @@ namespace BExplorer.Shell {
 				// chance of success is to use the FileSystemPath to
 				// create the new item. Folders other than Desktop don't
 				// seem to implement ParseDisplayName properly.
-				m_ComInterface = CreateItemFromParsingName(
-						Path.Combine(parent.FileSystemPath, name));
+				ComInterface = CreateItemFromParsingName(Path.Combine(parent.FileSystemPath, name));
 			}
 			else {
 				IShellFolder folder = parent.GetIShellFolder();
@@ -952,11 +951,10 @@ namespace BExplorer.Shell {
 				IntPtr pidl;
 				uint attributes = 0;
 
-				folder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero,
-						name, out eaten, out pidl, ref attributes);
+				folder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, name, out eaten, out pidl, ref attributes);
 
 				try {
-					m_ComInterface = CreateItemFromIDList(pidl);
+					ComInterface = CreateItemFromIDList(pidl);
 				}
 				finally {
 					Shell32.ILFree(pidl);
@@ -968,7 +966,7 @@ namespace BExplorer.Shell {
 		}
 
 		public ShellItem(IntPtr pidl) {
-			m_ComInterface = CreateItemFromIDList(pidl);
+			ComInterface = CreateItemFromIDList(pidl);
 			this.IconType = GetIconType();
 			this.CachedParsingName = this.ParsingName;
 			this.OverlayIconIndex = -1;
@@ -982,13 +980,13 @@ namespace BExplorer.Shell {
 		/// An <see cref="IShellItem"/> representing the folder.
 		/// </param>
 		public ShellItem(IShellItem comInterface) {
-			m_ComInterface = comInterface;
+			ComInterface = comInterface;
 			this.CachedParsingName = this.ParsingName;
 			this.OverlayIconIndex = -1;
 		}
 
 		internal ShellItem(ShellItem parent, IntPtr pidl) {
-			m_ComInterface = CreateItemWithParent(parent, pidl);
+			ComInterface = CreateItemWithParent(parent, pidl);
 			this.IconType = GetIconType();
 			this.CachedParsingName = this.ParsingName;
 			this.OverlayIconIndex = -1;
@@ -1054,8 +1052,7 @@ namespace BExplorer.Shell {
 		/// display order.
 		/// </returns>
 		public int Compare(ShellItem item) {
-			int result = m_ComInterface.Compare(item.ComInterface,
-					SICHINT.DISPLAY);
+			int result = ComInterface.Compare(item.ComInterface, SICHINT.DISPLAY);
 			return result;
 		}
 
@@ -1134,18 +1131,18 @@ namespace BExplorer.Shell {
 
 			IKnownFolder knownFolderI = KnownFolderHelper.FromParsingName(knownFolder);
 			if (knownFolderI != null)
-				m_ComInterface = (knownFolderI as ShellItem).m_ComInterface;
+				ComInterface = (knownFolderI as ShellItem).ComInterface;
 			else if (knownFolder.StartsWith(KnownFolders.Libraries.ParsingName)) {
 				ShellLibrary lib = ShellLibrary.Load(Path.GetFileNameWithoutExtension(knownFolder), true);
 				if (lib != null) {
-					m_ComInterface = lib.m_ComInterface;
+					ComInterface = lib.ComInterface;
 				}
 			}
 
 			//m_ComInterface = manager.GetFolder(knownFolder).CreateShellItem().ComInterface;
 
 			if (restOfPath != string.Empty) {
-				m_ComInterface = this[restOfPath.Replace('/', '\\')].ComInterface;
+				ComInterface = this[restOfPath.Replace('/', '\\')].ComInterface;
 			}
 		}
 
@@ -1224,10 +1221,10 @@ namespace BExplorer.Shell {
 		/// <param name="disposing">Whether the object is being disposed</param>
 		public virtual void Dispose(bool disposing) {
 			if (disposing) {
-				if (m_ComInterface != null) {
-					Marshal.FinalReleaseComObject(m_ComInterface);
+				if (ComInterface != null) {
+					Marshal.FinalReleaseComObject(ComInterface);
 				}
-				m_ComInterface = null;
+				ComInterface = null;
 			}
 		}
 
@@ -1281,8 +1278,7 @@ namespace BExplorer.Shell {
 		public Uri ToUri() {
 			StringBuilder path = new StringBuilder("shell:///");
 
-			if (this.ParsingName.StartsWith("::"))
-			{
+			if (this.ParsingName.StartsWith("::")) {
 				path.Append(this.ParsingName);
 				return new Uri(path.ToString());
 			}
@@ -1291,7 +1287,7 @@ namespace BExplorer.Shell {
 
 		private void Initialize(Uri uri) {
 			if (uri.Scheme == "file") {
-				m_ComInterface = CreateItemFromParsingName(uri.LocalPath);
+				ComInterface = CreateItemFromParsingName(uri.LocalPath);
 			}
 			else if (uri.Scheme == "shell") {
 				InitializeFromShellUri(uri);
@@ -1304,7 +1300,7 @@ namespace BExplorer.Shell {
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		private bool COM_Attribute_Check(SFGAO Check) {
 			SFGAO sfgao;
-			m_ComInterface.GetAttributes(Check, out sfgao);
+			ComInterface.GetAttributes(Check, out sfgao);
 			return sfgao != 0;
 		}
 		#endregion

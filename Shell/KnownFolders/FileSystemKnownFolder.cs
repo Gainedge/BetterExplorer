@@ -31,7 +31,7 @@ namespace BExplorer.Shell {
 
 			Guid guid = new Guid(InterfaceGuids.IShellItem);
 			knownFolderNative.GetShellItem(0, ref guid, out nativeShellItem);
-			base.m_ComInterface = nativeShellItem;
+			base.ComInterface = nativeShellItem;
 		}
 
 
@@ -129,7 +129,7 @@ namespace BExplorer.Shell {
 
 					// Get the PIDL for the ShellItem
 					if (nativeShellItem != null && base.Pidl == IntPtr.Zero) {
-						base.m_ComInterface = nativeShellItem;
+						base.ComInterface = nativeShellItem;
 					}
 
 					// If we have a valid PIDL, get the native IKnownFolder
