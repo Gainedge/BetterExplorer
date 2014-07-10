@@ -3150,7 +3150,7 @@ namespace BetterExplorer {
 
 		void mi_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
-			var parentButton = item.Parent as DropDownButton;
+			var parentButton = item.Parent as Fluent.DropDownButton;
 			MenuItem ascitem = (MenuItem)parentButton.Items[parentButton.Items.IndexOf(misa)];
 
 			var Sort = ascitem.IsChecked ? System.Windows.Forms.SortOrder.Ascending : System.Windows.Forms.SortOrder.Descending;
@@ -4815,7 +4815,7 @@ namespace BetterExplorer {
 		public Dictionary<string, IRibbonControl> GetAllButtonsAsDictionary() {
 			var rb = new Dictionary<string, Fluent.IRibbonControl>();
 
-			foreach (RibbonTabItem item in TheRibbon.Tabs) {
+			foreach (Fluent.RibbonTabItem item in TheRibbon.Tabs) {
 				foreach (RibbonGroupBox itg in item.Groups) {
 					foreach (var ic in itg.Items.OfType<IRibbonControl>()) {
 						rb.Add((ic as FrameworkElement).Name, ic);
@@ -5398,7 +5398,7 @@ namespace BetterExplorer {
 			};
 
 
-			var Tab = new RibbonTabItem();
+			var Tab = new Fluent.RibbonTabItem();
 			TheRibbon.Tabs.Add(Tab);
 			Tab.Header = "Plugins";
 			Tab.ToolTip = "Plugins";
