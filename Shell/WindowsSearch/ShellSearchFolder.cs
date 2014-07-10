@@ -15,10 +15,10 @@ namespace BExplorer.Shell {
 
 		#region Locals
 
-		internal ISearchFolderItemFactory NativeSearchFolderItemFactory { get; set; }
-
 		private string[] searchScopePaths;
 		private SearchCondition searchCondition;
+		private ISearchFolderItemFactory NativeSearchFolderItemFactory { get; set; }
+
 
 		#endregion Locals
 
@@ -31,8 +31,8 @@ namespace BExplorer.Shell {
 		/// <param name="searchCondition">Specific condition on which to perform the search (property and expected value)</param>
 		/// <param name="searchScopePath">List of folders/paths to perform the search on. These locations need to be indexed by the system.</param>
 		public ShellSearchFolder(SearchCondition searchCondition, params ShellItem[] searchScopePath) {
-			ComInterface = this.m_SearchComInterface;
 			NativeSearchFolderItemFactory = (ISearchFolderItemFactory)new SearchFolderItemFactoryCoClass();
+			ComInterface = this.m_SearchComInterface;
 			this.SearchCondition = searchCondition;
 
 			if (searchScopePath != null && searchScopePath.Length > 0 && searchScopePath[0] != null) {
@@ -61,10 +61,9 @@ namespace BExplorer.Shell {
 
 		public IShellItem m_SearchComInterface {
 			get {
-				if (NativeSearchFolderItemFactory == null) return null;
+				IShellItem shellItem;
 				Guid guid = new Guid(InterfaceGuids.IShellItem);
 
-				IShellItem shellItem;
 				int hr = NativeSearchFolderItemFactory.GetShellItem(ref guid, out shellItem);
 
 				if (hr != 0) throw Marshal.GetExceptionForHR((int)hr);
