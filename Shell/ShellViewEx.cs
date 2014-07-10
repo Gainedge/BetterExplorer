@@ -433,9 +433,9 @@ namespace BExplorer.Shell {
 					lvi.iGroup = this.GetGroupIndex(iStart);
 					User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
 					iStart = lvi.iItem;
-					if (lvi.iItem != -1) {
-						selItems.Add(lvi.iItem);
-					}
+
+					//TODO: Find out if we even need this IF Then
+					if (lvi.iItem != -1) selItems.Add(lvi.iItem);
 				}
 
 				return selItems;
@@ -2474,21 +2474,19 @@ namespace BExplorer.Shell {
 													}
 												}
 
+												//TODO: Check Change, I think its correct
 												if (sho.IsShielded > 0) {
 													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
 														small.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
 													}
+													else if (this.IconSize > 180) {
+														jumbo.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - this.IconSize / 3, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+													}
+													else if (this.IconSize > 64) {
+														extra.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 60, iconBounds.Bottom - 50));
+													}
 													else {
-														if (this.IconSize > 180) {
-															jumbo.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - this.IconSize / 3, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
-														}
-														else
-															if (this.IconSize > 64) {
-																extra.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 60, iconBounds.Bottom - 50));
-															}
-															else {
-																large.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 42, iconBounds.Bottom - 32));
-															}
+														large.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 42, iconBounds.Bottom - 32));
 													}
 												}
 
@@ -3274,10 +3272,12 @@ namespace BExplorer.Shell {
 			//dest.Dispose();
 			this.OnNavigated(new NavigatedEventArgs(destination));
 			IsDoubleNavFinished = false;
-			if (this.View != ShellViewStyle.Details)
-				AutosizeAllColumns(-2);
-			else
-				AutosizeAllColumns(-1);
+			AutosizeAllColumns(this.View != ShellViewStyle.Details ? -2 : -1);
+
+			//if (this.View != ShellViewStyle.Details)
+			//	AutosizeAllColumns(-2);
+			//else
+			//	AutosizeAllColumns(-1);
 			this.Focus();
 		}
 
@@ -3520,7 +3520,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public async void _IconsLoadingThreadRun() {
+		public void _IconsLoadingThreadRun() {
 			while (true) {
 				//resetEvent.WaitOne();
 				Thread.Sleep(1);
@@ -3567,7 +3567,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public async void _IconCacheLoadingThreadRun() {
+		public void _IconCacheLoadingThreadRun() {
 			while (true) {
 				resetEvent.WaitOne();
 				Thread.Sleep(1);
@@ -3763,9 +3763,7 @@ namespace BExplorer.Shell {
 			return endname;
 		}
 
-		public ShellLibrary CreateNewLibrary() {
-			return CreateNewLibrary("New Library");
-		}
+		public ShellLibrary CreateNewLibrary() { return CreateNewLibrary("New Library"); }
 
 		public ShellLibrary CreateNewLibrary(string name) {
 			string endname = name;
@@ -3921,9 +3919,7 @@ namespace BExplorer.Shell {
 			Shell32.FormatDrive(handle, DriveLetter);
 		}
 
-		public int GetItemsCount() {
-			return this.Items.Count;
-		}
+		public int GetItemsCount() { return this.Items.Count; }
 
 		public int GetSelectedCount() {
 			return (int)User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETSELECTEDCOUNT, 0, 0);
@@ -3951,11 +3947,8 @@ namespace BExplorer.Shell {
 		private int GetGroupIndex(int itemIndex) {
 			if (itemIndex == -1 || itemIndex >= this.Items.Count) return 0;
 			var item = this.Items[itemIndex];
-			foreach (var group in this.Groups) {
-				if (group.Items.Count(c => c == item) > 0)
-					return group.Index;
-			}
-			return 0;
+			var Found = this.Groups.FirstOrDefault(x => x.Items.Contains(item));
+			return Found == null ? 0 : Found.Index;
 		}
 
 		private static BitmapFrame CreateResizedImage(IntPtr hBitmap, int width, int height, int margin) {
@@ -3987,9 +3980,28 @@ namespace BExplorer.Shell {
 		/// </param>
 		/// <returns> The index of an item within the list view. </returns>
 		private int GetFirstIndexOf(string search, int startindex) {
-			bool found = false;
+			//bool found = false;
 			int i = startindex;
 
+
+			while (true) {
+				//TODO: Check
+				if (i >= Items.Count) {
+					//found = true;
+					//i = -1;
+					return -1;
+				}
+				else if (Items[i].GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(search.ToUpperInvariant())) {
+					//found = true;
+					return i;
+				}
+				else {
+					i++;
+				}
+			}
+
+
+			/*
 			while (!found) {
 				//TODO: Check
 				if (i >= Items.Count) {
@@ -4002,24 +4014,10 @@ namespace BExplorer.Shell {
 				else {
 					i++;
 				}
-
-				/*
-				if (i < Items.Count) {
-					if (Items[i].GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(search.ToUpperInvariant())) {
-						found = true;
-					}
-					else {
-						i++;
-					}
-				}
-				else {
-					found = true;
-					i = -1;
-				}
-				*/
 			}
 
 			return i;
+			*/
 		}
 
 		private string GetStringFromAcceptedKeyCodeString(string str) {
@@ -4042,10 +4040,13 @@ namespace BExplorer.Shell {
 		}
 
 		private void StartProcessInCurrentDirectory(ShellItem item) {
-			var psi = new ProcessStartInfo();
-			psi.FileName = item.ParsingName;
-			psi.WorkingDirectory = this.CurrentFolder.ParsingName;
-			Process.Start(psi);
+			//var psi = new ProcessStartInfo();
+			//psi.FileName = item.ParsingName;
+			//psi.WorkingDirectory = this.CurrentFolder.ParsingName;
+			Process.Start(new ProcessStartInfo() {
+				FileName = item.ParsingName,
+				WorkingDirectory = this.CurrentFolder.ParsingName
+			});
 		}
 
 		private void RedrawWindow() {
@@ -4056,8 +4057,7 @@ namespace BExplorer.Shell {
 
 		private void RedrawWindow(User32.RECT rect) {
 			//User32.InvalidateRect(this.LVHandle, ref rect, false);
-			User32.RedrawWindow(this.LVHandle, ref rect, IntPtr.Zero,
-													 0x0001/*RDW_INVALIDATE*/| 0x100);
+			User32.RedrawWindow(this.LVHandle, ref rect, IntPtr.Zero, 0x0001/*RDW_INVALIDATE*/| 0x100);
 			//User32.UpdateWindow(this.LVHandle);
 		}
 
