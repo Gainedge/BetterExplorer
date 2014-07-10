@@ -406,7 +406,11 @@ namespace BExplorer.Shell {
 
 		public List<ShellItem> SelectedItems {
 			get {
-				List<ShellItem> selItems = new List<ShellItem>();
+				var Data = this.SelectedIndexes.ToArray();
+				var selItems = new List<ShellItem>();
+				selItems.AddRange(Data);
+
+
 				foreach (var index in this.SelectedIndexes.ToArray()) {
 					try {
 						selItems.Add(this.Items[index]);
