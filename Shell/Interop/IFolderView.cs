@@ -6,13 +6,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
 	[ComImport,
 		 Guid(InterfaceGuids.IFolderView),
 		 InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IFolderView
-	{
+	public interface IFolderView {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetCurrentViewMode([Out] out uint pViewMode);
 
@@ -60,50 +58,49 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 			 Guid(InterfaceGuids.IFolderView2),
 			 InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IFolderView2 : IFolderView
-	{
+	public interface IFolderView2 : IFolderView {
 		// IFolderView
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult GetCurrentViewMode(out uint pViewMode);
+		new HResult GetCurrentViewMode(out uint pViewMode);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void SetCurrentViewMode(ShellViewStyle ViewMode);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetFolder(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
+		new void GetFolder(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void Item(int iItemIndex, out IntPtr ppidl);
-
-		[PreserveSig]
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult ItemCount(uint uFlags, out int pcItems);
+		new void Item(int iItemIndex, out IntPtr ppidl);
 
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult Items(uint uFlags, ref Guid riid, [Out, MarshalAs(UnmanagedType.IUnknown)] out object ppv);
+		new HResult ItemCount(uint uFlags, out int pcItems);
+
+		[PreserveSig]
+		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+		new HResult Items(uint uFlags, ref Guid riid, [Out, MarshalAs(UnmanagedType.IUnknown)] out object ppv);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSelectionMarkedItem(out int piItem);
+		new void GetSelectionMarkedItem(out int piItem);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetFocusedItem(out int piItem);
+		new void GetFocusedItem(out int piItem);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetItemPosition(IntPtr pidl, out NativePoint ppt);
+		new void GetItemPosition(IntPtr pidl, out NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSpacing([Out] out NativePoint ppt);
+		new void GetSpacing([Out] out NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetDefaultSpacing(out NativePoint ppt);
+		new void GetDefaultSpacing(out NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetAutoArrange();
+		new void GetAutoArrange();
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SelectItem(int iItem, uint dwFlags);
+		new void SelectItem(int iItem, uint dwFlags);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void SelectAndPositionItems(uint cidl, IntPtr apidl, ref NativePoint apt, uint dwFlags);

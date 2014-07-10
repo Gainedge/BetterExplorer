@@ -7,16 +7,14 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
 	/// <summary>
 	/// Indicate flags that modify the property store object retrieved by methods 
 	/// that create a property store, such as IShellItem2::GetPropertyStore or 
 	/// IPropertyStoreFactory::GetPropertyStore.
 	/// </summary>
 	[Flags]
-	public enum GetPropertyStoreOptions
-	{
+	public enum GetPropertyStoreOptions {
 		/// <summary>
 		/// Meaning to a calling process: Return a read-only property store that contains all 
 		/// properties. Slow items (offline files) are not opened. 
@@ -135,8 +133,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 			Guid(InterfaceGuids.IShellItem2),
 			InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IShellItem2 : IShellItem
-	{
+	public interface IShellItem2 : IShellItem {
 		// Not supported: IBindCtx.
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -148,7 +145,7 @@ namespace BExplorer.Shell.Interop
 
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult GetParent([MarshalAs(UnmanagedType.Interface)] out IShellItem ppsi);
+		new HResult GetParent([MarshalAs(UnmanagedType.Interface)] out IShellItem ppsi);
 
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -157,7 +154,7 @@ namespace BExplorer.Shell.Interop
 				[MarshalAs(UnmanagedType.LPWStr)] out string ppszName);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetAttributes([In] SFGAO sfgaoMask, out SFGAO psfgaoAttribs);
+		new void GetAttributes([In] SFGAO sfgaoMask, out SFGAO psfgaoAttribs);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void Compare(

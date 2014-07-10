@@ -6,15 +6,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
 	#region Property System Enumerations
 
 	/// <summary>
 	/// Property store cache state
 	/// </summary>
-	public enum PropertyStoreCacheState
-	{
+	public enum PropertyStoreCacheState {
 		/// <summary>
 		/// Contained in file, not updated.
 		/// </summary>
@@ -40,8 +38,7 @@ namespace BExplorer.Shell.Interop
 	/// so combinations like <c>ShortTime | LongTime | HideTime</c> are not allowed.
 	/// </remarks>
 	[Flags]
-	public enum PropertyDescriptionFormatOptions
-	{
+	public enum PropertyDescriptionFormatOptions {
 		/// <summary>
 		/// The format settings specified in the property's .propdesc file.
 		/// </summary>
@@ -145,8 +142,7 @@ namespace BExplorer.Shell.Interop
 	/// <summary>
 	/// Specifies the display types for a property.
 	/// </summary>
-	public enum PropertyDisplayType
-	{
+	public enum PropertyDisplayType {
 		/// <summary>
 		/// The String Display. This is the default if the property doesn't specify a display type.
 		/// </summary>
@@ -176,8 +172,7 @@ namespace BExplorer.Shell.Interop
 	/// <summary>
 	/// Property Aggregation Type
 	/// </summary>
-	public enum PropertyAggregationType
-	{
+	public enum PropertyAggregationType {
 		/// <summary>
 		/// The string "Multiple Values" is displayed.
 		/// </summary>
@@ -228,8 +223,7 @@ namespace BExplorer.Shell.Interop
 	/// <summary>
 	/// Property Enumeration Types
 	/// </summary>
-	public enum PropEnumType
-	{
+	public enum PropEnumType {
 		/// <summary>
 		/// Use DisplayText and either RangeMinValue or RangeSetValue.
 		/// </summary>
@@ -255,8 +249,7 @@ namespace BExplorer.Shell.Interop
 	/// Describes how a property should be treated for display purposes.
 	/// </summary>
 	[Flags]
-	public enum PropertyColumnStateOptions
-	{
+	public enum PropertyColumnStateOptions {
 		/// <summary>
 		/// Default value
 		/// </summary>
@@ -361,8 +354,7 @@ namespace BExplorer.Shell.Interop
 	/// <summary>
 	/// Specifies the condition type to use when displaying the property in the query builder user interface (UI).
 	/// </summary>
-	public enum PropertyConditionType
-	{
+	public enum PropertyConditionType {
 		/// <summary>
 		/// The default condition type.
 		/// </summary>
@@ -398,8 +390,7 @@ namespace BExplorer.Shell.Interop
 	/// Provides a set of flags to be used with IConditionFactory, 
 	/// ICondition, and IConditionGenerator to indicate the operation.
 	/// </summary>
-	public enum PropertyConditionOperation
-	{
+	public enum PropertyConditionOperation {
 		/// <summary>
 		/// The implicit comparison between the value of the property and the value of the constant.
 		/// </summary>
@@ -479,8 +470,7 @@ namespace BExplorer.Shell.Interop
 	/// <summary>
 	/// Specifies the property description grouping ranges.
 	/// </summary>
-	public enum PropertyGroupingRange
-	{
+	public enum PropertyGroupingRange {
 		/// <summary>
 		/// The individual values.
 		/// </summary>
@@ -524,8 +514,7 @@ namespace BExplorer.Shell.Interop
 	/// Note that the strings shown are English versions only; 
 	/// localized strings are used for other locales.
 	/// </remarks>
-	public enum PropertySortDescription
-	{
+	public enum PropertySortDescription {
 		/// <summary>
 		/// The default ascending or descending property sort, "Sort going up", "Sort going down".
 		/// </summary>
@@ -556,8 +545,7 @@ namespace BExplorer.Shell.Interop
 	/// Describes the attributes of the <c>typeInfo</c> element in the property's <c>.propdesc</c> file.
 	/// </summary>
 	[Flags]
-	public enum PropertyTypeOptions
-	{
+	public enum PropertyTypeOptions {
 		/// <summary>
 		/// The property uses the default values for all attributes.
 		/// </summary>
@@ -664,8 +652,7 @@ namespace BExplorer.Shell.Interop
 	/// Associates property names with property description list strings.
 	/// </summary>
 	[Flags]
-	public enum PropertyViewOptions
-	{
+	public enum PropertyViewOptions {
 		/// <summary>
 		/// The property is shown by default.
 		/// </summary>
@@ -741,8 +728,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport]
 	[Guid(InterfaceGuids.IPropertyStoreCapabilities)]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	interface IPropertyStoreCapabilities
-	{
+	interface IPropertyStoreCapabilities {
 		HResult IsPropertyWritable([In]ref PROPERTYKEY propertyKey);
 	}
 
@@ -752,8 +738,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport]
 	[Guid(InterfaceGuids.IPropertyStoreCache)]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	interface IPropertyStoreCache
-	{
+	interface IPropertyStoreCache {
 		/// <summary>
 		/// Gets the state of a property stored in the cache
 		/// </summary>
@@ -799,8 +784,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport]
 	[Guid(InterfaceGuids.IPropertyStore)]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IPropertyStore
-	{
+	public interface IPropertyStore {
 		/// <summary>
 		/// Gets the number of properties contained in the property store.
 		/// </summary>
@@ -848,8 +832,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.IPropertyDescriptionList),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IPropertyDescriptionList
-	{
+	internal interface IPropertyDescriptionList {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetCount(out uint pcElem);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -859,8 +842,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.IPropertyDescription),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IPropertyDescription
-	{
+	internal interface IPropertyDescription {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetPropertyKey(out PROPERTYKEY pkey);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -923,52 +905,51 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.IPropertyDescription2),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IPropertyDescription2 : IPropertyDescription
-	{
+	internal interface IPropertyDescription2 : IPropertyDescription {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetPropertyKey(out PROPERTYKEY pkey);
+		new void GetPropertyKey(out PROPERTYKEY pkey);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetCanonicalName([MarshalAs(UnmanagedType.LPWStr)] out string ppszName);
+		new void GetCanonicalName([MarshalAs(UnmanagedType.LPWStr)] out string ppszName);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetPropertyType(out VarEnum pvartype);
+		new void GetPropertyType(out VarEnum pvartype);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetDisplayName([MarshalAs(UnmanagedType.LPWStr)] out string ppszName);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetEditInvitation([MarshalAs(UnmanagedType.LPWStr)] out string ppszInvite);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetTypeFlags([In] PropertyTypeOptions mask, out PropertyTypeOptions ppdtFlags);
+		new void GetTypeFlags([In] PropertyTypeOptions mask, out PropertyTypeOptions ppdtFlags);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetViewFlags(out PropertyViewOptions ppdvFlags);
+		new void GetViewFlags(out PropertyViewOptions ppdvFlags);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetDefaultColumnWidth(out uint pcxChars);
+		new void GetDefaultColumnWidth(out uint pcxChars);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetDisplayType(out PropertyDisplayType pdisplaytype);
+		new void GetDisplayType(out PropertyDisplayType pdisplaytype);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetColumnState(out uint pcsFlags);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetGroupingRange(out PropertyGroupingRange pgr);
+		new void GetGroupingRange(out PropertyGroupingRange pgr);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetRelativeDescriptionType(out PropertySystemNativeMethods.RelativeDescriptionType prdt);
+		new void GetRelativeDescriptionType(out PropertySystemNativeMethods.RelativeDescriptionType prdt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetRelativeDescription(
+		new void GetRelativeDescription(
 			 [In] PropVariant propvar1,
 			 [In] PropVariant propvar2,
 			 [MarshalAs(UnmanagedType.LPWStr)] out string ppszDesc1,
 			 [MarshalAs(UnmanagedType.LPWStr)] out string ppszDesc2);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSortDescription(out PropertySortDescription psd);
+		new void GetSortDescription(out PropertySortDescription psd);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetSortDescriptionLabel([In] int fDescending, [MarshalAs(UnmanagedType.LPWStr)] out string ppszDescription);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetAggregationType(out PropertyAggregationType paggtype);
+		new void GetAggregationType(out PropertyAggregationType paggtype);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetConditionType(
+		new void GetConditionType(
 				out PropertyConditionType pcontype,
 				out PropertyConditionOperation popDefault);
 
@@ -976,13 +957,13 @@ namespace BExplorer.Shell.Interop
 		void GetEnumTypeList([In] ref Guid riid, out IntPtr ppv);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void CoerceToCanonicalValue([In, Out] PropVariant ppropvar);
+		new void CoerceToCanonicalValue([In, Out] PropVariant ppropvar);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void FormatForDisplay([In] PropVariant propvar, [In] ref PropertyDescriptionFormatOptions pdfFlags, [MarshalAs(UnmanagedType.LPWStr)] out string ppszDisplay);
+		new void FormatForDisplay([In] PropVariant propvar, [In] ref PropertyDescriptionFormatOptions pdfFlags, [MarshalAs(UnmanagedType.LPWStr)] out string ppszDisplay);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult IsValueCanonical([In] PropVariant propvar);
+		new HResult IsValueCanonical([In] PropVariant propvar);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetImageReferenceForValue(
@@ -993,8 +974,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.IPropertyEnumType),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IPropertyEnumType
-	{
+	internal interface IPropertyEnumType {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetEnumType([Out] out PropEnumType penumtype);
 
@@ -1014,22 +994,21 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.IPropertyEnumType2),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IPropertyEnumType2 : IPropertyEnumType
-	{
+	internal interface IPropertyEnumType2 : IPropertyEnumType {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetEnumType([Out] out PropEnumType penumtype);
+		new void GetEnumType([Out] out PropEnumType penumtype);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetValue([Out] PropVariant ppropvar);
+		new void GetValue([Out] PropVariant ppropvar);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetRangeMinValue([Out] PropVariant ppropvar);
+		new void GetRangeMinValue([Out] PropVariant ppropvar);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetRangeSetValue([Out] PropVariant ppropvar);
+		new void GetRangeSetValue([Out] PropVariant ppropvar);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetDisplayText([Out, MarshalAs(UnmanagedType.LPWStr)] out string ppszDisplay);
+		new void GetDisplayText([Out, MarshalAs(UnmanagedType.LPWStr)] out string ppszDisplay);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetImageReference([Out, MarshalAs(UnmanagedType.LPWStr)] out string ppszImageRes);
@@ -1039,8 +1018,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.IPropertyEnumTypeList),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IPropertyEnumTypeList
-	{
+	internal interface IPropertyEnumTypeList {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetCount([Out] out uint pctypes);
 
@@ -1062,12 +1040,10 @@ namespace BExplorer.Shell.Interop
 		[Out] out uint pnIndex);
 	}
 
-	internal static class PropertySystemNativeMethods
-	{
+	internal static class PropertySystemNativeMethods {
 		#region Property Definitions
 
-		internal enum RelativeDescriptionType
-		{
+		internal enum RelativeDescriptionType {
 			General,
 			Date,
 			Size,

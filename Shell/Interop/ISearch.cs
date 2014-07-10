@@ -6,14 +6,12 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
 	/// <summary>
 	/// Provides a set of flags to be used with <see cref="Microsoft.WindowsAPICodePack.Shell.SearchCondition"/> 
 	/// to indicate the operation in <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionFactory"/> methods.
 	/// </summary>
-	public enum SearchConditionOperation
-	{
+	public enum SearchConditionOperation {
 		/// <summary>
 		/// An implicit comparison between the value of the property and the value of the constant.
 		/// </summary>
@@ -94,8 +92,7 @@ namespace BExplorer.Shell.Interop
 	/// <summary>
 	/// Set of flags to be used with <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionFactory"/>.
 	/// </summary>
-	public enum SearchConditionType
-	{
+	public enum SearchConditionType {
 		/// <summary>
 		/// Indicates that the values of the subterms are combined by "AND".
 		/// </summary>
@@ -121,8 +118,7 @@ namespace BExplorer.Shell.Interop
 	/// <summary>
 	/// Used to describe the view mode.
 	/// </summary>
-	public enum FolderLogicalViewMode
-	{
+	public enum FolderLogicalViewMode {
 		/// <summary>
 		/// The view is not specified.
 		/// </summary>
@@ -172,8 +168,7 @@ namespace BExplorer.Shell.Interop
 	/// <summary>
 	/// The direction in which the items are sorted.
 	/// </summary>
-	public enum SortDirection
-	{
+	public enum SortDirection {
 		/// <summary>
 		/// A default value for sort direction, this value should not be used;
 		/// instead use Descending or Ascending.
@@ -197,8 +192,7 @@ namespace BExplorer.Shell.Interop
 	/// Provides a set of flags to be used with IQueryParser::SetOption and 
 	/// IQueryParser::GetOption to indicate individual options.
 	/// </summary>
-	public enum StructuredQuerySingleOption
-	{
+	public enum StructuredQuerySingleOption {
 		/// <summary>
 		/// The value should be VT_LPWSTR and the path to a file containing a schema binary.
 		/// </summary>
@@ -283,8 +277,7 @@ namespace BExplorer.Shell.Interop
 	/// Provides a set of flags to be used with IQueryParser::SetMultiOption 
 	/// to indicate individual options.
 	/// </summary>
-	public enum StructuredQueryMultipleOption
-	{
+	public enum StructuredQueryMultipleOption {
 		/// <summary>
 		/// The key should be property name P. The value should be a
 		/// VT_UNKNOWN with an IEnumVARIANT which has two values: a VT_BSTR that is another
@@ -323,8 +316,7 @@ namespace BExplorer.Shell.Interop
 	/// Used by IQueryParserManager::SetOption to set parsing options. 
 	/// This can be used to specify schemas and localization options.
 	/// </summary>
-	public enum QueryParserManagerOption
-	{
+	public enum QueryParserManagerOption {
 		/// <summary>
 		/// A VT_LPWSTR containing the name of the file that contains the schema binary. 
 		/// The default value is StructuredQuerySchema.bin for the SystemIndex catalog 
@@ -375,8 +367,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	[Guid("00000109-0000-0000-C000-000000000046")]
-	internal interface IPersistStream
-	{
+	internal interface IPersistStream {
 		// Summary:
 		//     Retrieves the class identifier (CLSID) of an object.
 		//
@@ -409,8 +400,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport(),
 	Guid(InterfaceGuids.ICondition),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface ICondition : IPersistStream
-	{
+	internal interface ICondition : IPersistStream {
 		// Summary:
 		//     Retrieves the class identifier (CLSID) of an object.
 		//
@@ -419,7 +409,7 @@ namespace BExplorer.Shell.Interop
 		//     When this method returns, contains a reference to the CLSID. This parameter
 		//     is passed uninitialized.
 		[PreserveSig]
-		void GetClassID(out Guid pClassID);
+		new void GetClassID(out Guid pClassID);
 		//
 		// Summary:
 		//     Checks an object for changes since it was last saved to its current file.
@@ -428,16 +418,16 @@ namespace BExplorer.Shell.Interop
 		//     S_OK if the file has changed since it was last saved; S_FALSE if the file
 		//     has not changed since it was last saved.
 		[PreserveSig]
-		HResult IsDirty();
+		new HResult IsDirty();
 
 		[PreserveSig]
-		HResult Load([In, MarshalAs(UnmanagedType.Interface)] IStream stm);
+		new HResult Load([In, MarshalAs(UnmanagedType.Interface)] IStream stm);
 
 		[PreserveSig]
-		HResult Save([In, MarshalAs(UnmanagedType.Interface)] IStream stm, bool fRemember);
+		new HResult Save([In, MarshalAs(UnmanagedType.Interface)] IStream stm, bool fRemember);
 
 		[PreserveSig]
-		HResult GetSizeMax(out ulong cbSize);
+		new HResult GetSizeMax(out ulong cbSize);
 
 		// For any node, return what kind of node it is.
 		[PreserveSig]
@@ -488,8 +478,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 		Guid(InterfaceGuids.IRichChunk),
 		InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IRichChunk
-	{
+	internal interface IRichChunk {
 		// The position *pFirstPos is zero-based.
 		// Any one of pFirstPos, pLength, ppsz and pValue may be NULL.
 		[PreserveSig]
@@ -499,8 +488,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	[Guid(InterfaceGuids.IEnumUnknown)]
-	internal interface IEnumUnknown
-	{
+	internal interface IEnumUnknown {
 		[PreserveSig]
 		HResult Next(UInt32 requestedNumber, ref IntPtr buffer, ref UInt32 fetchedNumber);
 		[PreserveSig]
@@ -515,8 +503,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.IConditionFactory),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IConditionFactory
-	{
+	internal interface IConditionFactory {
 		[PreserveSig]
 		HResult MakeNot([In] ICondition pcSub, [In] bool fSimplify, [Out] out ICondition ppcResult);
 
@@ -543,16 +530,14 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.IConditionFactory),
 	CoClass(typeof(ConditionFactoryCoClass))]
-	internal interface INativeConditionFactory : IConditionFactory
-	{
+	internal interface INativeConditionFactory : IConditionFactory {
 	}
 
 	[ComImport,
 	ClassInterface(ClassInterfaceType.None),
 	TypeLibType(TypeLibTypeFlags.FCanCreate),
 	Guid(InterfaceGuids.ConditionFactory)]
-	internal class ConditionFactoryCoClass
-	{
+	internal class ConditionFactoryCoClass {
 	}
 
 
@@ -560,8 +545,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.ISearchFolderItemFactory),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface ISearchFolderItemFactory
-	{
+	internal interface ISearchFolderItemFactory {
 		[PreserveSig]
 		HResult SetDisplayName([In, MarshalAs(UnmanagedType.LPWStr)] string pszDisplayName);
 
@@ -602,31 +586,28 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.ISearchFolderItemFactory),
 	CoClass(typeof(SearchFolderItemFactoryCoClass))]
-	internal interface INativeSearchFolderItemFactory : ISearchFolderItemFactory
-	{
+	internal interface INativeSearchFolderItemFactory : ISearchFolderItemFactory {
 	}
 
 	[ComImport,
 	ClassInterface(ClassInterfaceType.None),
 	TypeLibType(TypeLibTypeFlags.FCanCreate),
 	Guid(InterfaceGuids.SearchFolderItemFactory)]
-	internal class SearchFolderItemFactoryCoClass
-	{
+	internal class SearchFolderItemFactoryCoClass {
 	}
 
 	[ComImport,
 	Guid(InterfaceGuids.IQuerySolution),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	interface IQuerySolution : IConditionFactory
-	{
+	interface IQuerySolution : IConditionFactory {
 		[PreserveSig]
-		HResult MakeNot([In] ICondition pcSub, [In] bool fSimplify, [Out] out ICondition ppcResult);
+		new HResult MakeNot([In] ICondition pcSub, [In] bool fSimplify, [Out] out ICondition ppcResult);
 
 		[PreserveSig]
-		HResult MakeAndOr([In] SearchConditionType ct, [In] IEnumUnknown peuSubs, [In] bool fSimplify, [Out] out ICondition ppcResult);
+		new HResult MakeAndOr([In] SearchConditionType ct, [In] IEnumUnknown peuSubs, [In] bool fSimplify, [Out] out ICondition ppcResult);
 
 		[PreserveSig]
-		HResult MakeLeaf(
+		new HResult MakeLeaf(
 				[In, MarshalAs(UnmanagedType.LPWStr)] string pszPropertyName,
 				[In] SearchConditionOperation cop,
 				[In, MarshalAs(UnmanagedType.LPWStr)] string pszValueType,
@@ -638,7 +619,7 @@ namespace BExplorer.Shell.Interop
 				[Out] out ICondition ppcResult);
 
 		[PreserveSig]
-		HResult Resolve(/*[In] ICondition pc, [In] int sqro, [In] ref SYSTEMTIME pstReferenceTime, [Out] out ICondition ppcResolved*/);
+		new HResult Resolve(/*[In] ICondition pc, [In] int sqro, [In] ref SYSTEMTIME pstReferenceTime, [Out] out ICondition ppcResolved*/);
 
 		// Retrieve the condition tree and the "main type" of the solution.
 		// ppQueryNode and ppMainType may be NULL.
@@ -662,8 +643,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.IQueryParser),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IQueryParser
-	{
+	internal interface IQueryParser {
 		// Parse parses an input string, producing a query solution.
 		// pCustomProperties should be an enumeration of IRichChunk objects, one for each custom property
 		// the application has recognized. pCustomProperties may be NULL, equivalent to an empty enumeration.
@@ -705,8 +685,7 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.IQueryParserManager),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IQueryParserManager
-	{
+	internal interface IQueryParserManager {
 		// Create a query parser loaded with the schema for a certain catalog localize to a certain language, and initialized with
 		// standard defaults. One valid value for riid is IID_IQueryParser.
 		[PreserveSig]
@@ -727,23 +706,20 @@ namespace BExplorer.Shell.Interop
 	[ComImport,
 	Guid(InterfaceGuids.IQueryParserManager),
 	CoClass(typeof(QueryParserManagerCoClass))]
-	internal interface INativeQueryParserManager : IQueryParserManager
-	{
+	internal interface INativeQueryParserManager : IQueryParserManager {
 	}
 
 	[ComImport,
 	ClassInterface(ClassInterfaceType.None),
 	TypeLibType(TypeLibTypeFlags.FCanCreate),
 	Guid(InterfaceGuids.QueryParserManager)]
-	internal class QueryParserManagerCoClass
-	{
+	internal class QueryParserManagerCoClass {
 	}
 
 	[ComImport,
 	Guid("24264891-E80B-4fd3-B7CE-4FF2FAE8931F"),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IEntity
-	{
+	internal interface IEntity {
 		// TODO
 	}
 }

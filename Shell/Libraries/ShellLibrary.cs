@@ -892,7 +892,7 @@ namespace BExplorer.Shell
 				/// <summary>
 				/// Indicates whether this feature is supported on the current platform.
 				/// </summary>
-				new public static bool IsPlatformSupported
+				public static bool IsPlatformSupported
 				{
 						get
 						{

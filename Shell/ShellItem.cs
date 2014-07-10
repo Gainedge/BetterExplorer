@@ -1059,16 +1059,6 @@ namespace BExplorer.Shell {
 			return result;
 		}
 
-		/// <summary>
-		/// Determines whether two <see cref="ShellItem"/>s refer to
-		/// the same shell folder.
-		/// </summary>
-		///
-		/// <param name="obj">
-		/// The item to compare.
-		/// </param>
-		///
-		/// <returns>
 		/// <see langword="true"/> if the two objects refer to the same
 		/// folder, <see langword="false"/> otherwise.
 		/// </returns>
@@ -1077,6 +1067,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="other">The ShellObject to comare this one to.</param>
 		/// <returns>True if the ShellObjects are equal, false otherwise.</returns>
+		/// 		
 		public bool Equals(ShellItem other) {
 			if (other == null) return false;
 			if (String.IsNullOrEmpty(this.CachedParsingName) || string.IsNullOrEmpty(other.CachedParsingName))
