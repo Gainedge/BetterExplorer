@@ -13,6 +13,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Controls.Primitives;
 using System.Diagnostics;
+using BExplorer.Shell;
+using System.Runtime.InteropServices;
 //###################################################################################
 // Odyssey.Controls
 // (c) Copyright 2008 Thomas Gerber
@@ -93,10 +95,43 @@ namespace Odyssey.Controls {
 		}
 
 
+		#region Cursor Stuff
 
+		/// <summary> Retrieves the cursor's position, in screen coordinates. </summary>
+		/// <see> See MSDN documentation for further information. </see>
+		[DllImport("user32.dll")]
+		private static extern bool GetCursorPos(out POINT lpPoint);
+
+		/// <summary> Struct representing a point. </summary>
+		[StructLayout(LayoutKind.Sequential)]
+		private struct POINT {
+			public int X;
+			public int Y;
+
+			public static implicit operator Point(POINT point) {
+				return new Point(point.X, point.Y);
+			}
+		}
+
+		public static Point GetCursorPosition() {
+			POINT lpPoint;
+			GetCursorPos(out lpPoint);
+			return lpPoint;
+		}
+
+		#endregion Cursor Stuff
 
 		protected override void OnMouseUp(MouseButtonEventArgs e) {
 			e.Handled = true;
+			if (e.ChangedButton == MouseButton.Right) {
+				var data = this.DataContext as ShellItem;
+				if (data != null) {
+					Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
+					Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
+					ShellContextMenu cm = new ShellContextMenu(new[] { data });
+					cm.ShowContextMenu(new System.Drawing.Point((int)realCoordinates.X, (int)realCoordinates.Y + (int)this.ActualHeight));
+				}
+			}
 			if (isPressed) {
 				RoutedEventArgs args = new RoutedEventArgs(BreadcrumbButton.ClickEvent);
 				RaiseEvent(args);

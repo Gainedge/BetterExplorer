@@ -8,7 +8,7 @@
 			 xmlns:local="clr-namespace:BetterExplorerControls"
 			 Height="24" 
 			 BorderBrush="Black" 
-			 Background="White" 
+			 Background="#A0FFFFFF" 
 			 BorderThickness="1" 
 			 Focusable="True">
 	<Grid>
@@ -16,6 +16,7 @@
 			x:Name="SearchCriteriatext" 
 			Watermark="{StaticResource txtSearchLabel}" 
 			BorderBrush="{x:Null}" 
+			Background="Transparent"
 			BorderThickness="0" 
 			VerticalContentAlignment="Center" 
 			TextChanged="textBox1_TextChanged" 
@@ -29,10 +30,11 @@
 			Width="30" Height="22" 
 			CanAddToQuickAccessToolBar="False" 
 			ToolTip="Filters" 
+			Background="Transparent"
 			DropDownOpened="SFilters_DropDownOpened"
 			HorizontalAlignment="Right" 
 			Margin="0,0,24,0" Cursor="Hand" 
 			/>
-		<my:Button Height="22" Name="SStartEnd" my:RibbonAttachedProperties.RibbonSize="Small" Header="Search" Icon="Images\search.png" CanAddToQuickAccessToolBar="False" ToolTip="Search" Click="SStartEnd_Click" HorizontalAlignment="Right" Width="24" IsEnabled="False"/>
+		<my:Button Background="Transparent" Height="22" Name="SStartEnd" my:RibbonAttachedProperties.RibbonSize="Small" Header="Search" Icon="Images\search.png" CanAddToQuickAccessToolBar="False" ToolTip="Search" Click="SStartEnd_Click" HorizontalAlignment="Right" Width="24" IsEnabled="False"/>
 	</Grid>
 </UserControl>

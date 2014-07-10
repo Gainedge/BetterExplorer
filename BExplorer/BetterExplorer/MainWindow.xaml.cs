@@ -43,6 +43,7 @@ using wyDay.Controls;
 using Clipboards = System.Windows.Forms.Clipboard;
 using ContextMenu = Fluent.ContextMenu;
 using MenuItem = Fluent.MenuItem;
+using Odyssey.Controls;
 
 
 namespace BetterExplorer {
@@ -285,10 +286,6 @@ namespace BetterExplorer {
 
 		private void RibbonWindow_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
 			IsRenameFromCreate = true;
-			//breadcrumbBarControl1.ExitEditMode_IfNeeded();
-			//this.ShellListView.IsFocusAllowed = true;
-			breadcrumbBarControl1.ExitEditMode();
-			//this.ShellListView.Focus();
 		}
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -2249,7 +2246,6 @@ namespace BetterExplorer {
 			ShellViewHost.Child = ShellListView;
 
 			ShellTree.ShellListView = ShellListView;
-			this.breadcrumbBarControl1.ShellListView = this.ShellListView;
 			this.ctrlConsole.ShellListView = this.ShellListView;
 
 			Task.Run(() => {
@@ -2291,7 +2287,7 @@ namespace BetterExplorer {
 				}
 
 				//Set up breadcrumb bar drag/drop functionality
-				breadcrumbBarControl1.SetDragHandlers(new DragEventHandler(bbi_DragEnter), new DragEventHandler(bbi_DragLeave), new DragEventHandler(bbi_DragOver), new DragEventHandler(bbi_Drop));
+				//breadcrumbBarControl1.SetDragHandlers(new DragEventHandler(bbi_DragEnter), new DragEventHandler(bbi_DragLeave), new DragEventHandler(bbi_DragOver), new DragEventHandler(bbi_Drop));
 
 				//Set up Favorites Menu
 				Task.Run(() => {
@@ -2325,8 +2321,8 @@ namespace BetterExplorer {
 				// set up history on breadcrumb bar (currently missing try-catch statement in order to catch error)
 				try {
 					Task.Run(() => {
-						breadcrumbBarControl1.ClearHistory();
-						breadcrumbBarControl1.HistoryItems = ReadHistoryFromFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt");
+						//breadcrumbBarControl1.ClearHistory();
+						//breadcrumbBarControl1.HistoryItems = ReadHistoryFromFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt");
 					});
 				} catch (FileNotFoundException) {
 					logger.Warn(String.Format("History file not found at location:{0}\\history.txt", Environment.SpecialFolder.LocalApplicationData));
@@ -2458,7 +2454,7 @@ namespace BetterExplorer {
 				SaveSettings(OpenedTabs);
 			}
 			this.ShellListView.SaveSettingsToDatabase();
-			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", breadcrumbBarControl1.HistoryItems.Select(s => s.DisplayName).ToList());
+			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", this.bcbc.DropDownItems.OfType<String>().Select(s => s).ToList());
 			AddToLog("Session Ended");
 			//if (!App.isStartNewWindows) {
 			e.Cancel = true;
@@ -4011,13 +4007,6 @@ namespace BetterExplorer {
 
 		#region Breadcrumb Bar
 
-		private void breadcrumbBarControl1_NavigateRequested(object sender, PathEventArgs e) {
-			ShellListView.Navigate(e.ShellItem != null ? e.ShellItem : new ShellItem(e.Path));
-		}
-
-		private void breadcrumbBarControl1_RefreshRequested(object sender) {
-			ShellListView.RefreshContents();
-		}
 
 		private void RibbonWindow_GotFocus(object sender, RoutedEventArgs e) {
 			//breadcrumbBarControl1.ExitEditMode_IfNeeded();
@@ -4036,32 +4025,11 @@ namespace BetterExplorer {
 
 		}
 
-		private ObservableCollection<BreadcrumbBarFSItem> ReadHistoryFromFile(string relativepath) {
-			string line = "";
-			var hl = new ObservableCollection<BreadcrumbBarFSItem>();
-			using (StreamReader sr = new StreamReader(relativepath, Encoding.UTF8)) {
-				while ((line = sr.ReadLine()) != null) {
-					if (!String.IsNullOrEmpty(line.Replace("\0", String.Empty))) {
-						BreadcrumbBarFSItem item = null;
-						if (line.Trim().StartsWith("%")) {
-							var path = Environment.ExpandEnvironmentVariables(line);
-							item = new BreadcrumbBarFSItem(line, path);
-						} else {
-							item = new BreadcrumbBarFSItem(new ShellItem(line.StartsWith(":") ? "shell:" + line : line));
-						}
-
-						hl.Add(item);
-					}
-				}
-			}
-
-			return hl;
-		}
 
 		void bbi_Drop(object sender, DragEventArgs e) {
 			System.Windows.Point pt = e.GetPosition(sender as IInputElement);
 
-			if ((sender as BreadcrumbBarItem).ShellItem.IsFileSystem)
+			if (((sender as BreadcrumbItem).Data as ShellItem).IsFileSystem)
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 			else
 				e.Effects = DragDropEffects.None;
@@ -4070,12 +4038,12 @@ namespace BetterExplorer {
 				case DragDropEffects.All:
 					break;
 				case DragDropEffects.Copy:
-					this.ShellListView.DoCopy(e.Data, (sender as BreadcrumbBarItem).ShellItem);
+					this.ShellListView.DoCopy(e.Data, ((sender as BreadcrumbItem).Data as ShellItem));
 					break;
 				case DragDropEffects.Link:
 					break;
 				case DragDropEffects.Move:
-					this.ShellListView.DoMove(e.Data, (sender as BreadcrumbBarItem).ShellItem);
+					this.ShellListView.DoMove(e.Data, ((sender as BreadcrumbItem).Data as ShellItem));
 					break;
 				case DragDropEffects.None:
 					break;
@@ -4095,7 +4063,7 @@ namespace BetterExplorer {
 		void bbi_DragOver(object sender, DragEventArgs e) {
 			e.Handled = true;
 
-			if ((sender as BreadcrumbBarItem).ShellItem.IsFileSystem) {
+			if (((sender as BreadcrumbItem).Data as ShellItem).IsFileSystem) {
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 			} else {
 				e.Effects = DragDropEffects.None;
@@ -4117,7 +4085,7 @@ namespace BetterExplorer {
 		}
 
 		void bbi_DragEnter(object sender, DragEventArgs e) {
-			if ((sender as BreadcrumbBarItem).ShellItem.IsFileSystem) {
+			if (((sender as BreadcrumbItem).Data as ShellItem).IsFileSystem) {
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 			} else {
 				e.Effects = DragDropEffects.None;
@@ -5020,7 +4988,7 @@ namespace BetterExplorer {
 				tcMain.NewTab()
 			);
 			this.CommandBindings.Add(cbnewtab);
-			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this.ShellListView.IsFocusAllowed = false; breadcrumbBarControl1.EnterEditMode(); });
+			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this.ShellListView.IsFocusAllowed = false; this.bcbc.SetInputState(); });
 			this.CommandBindings.Add(cbGotoCombo);
 
 			CommandBinding cbChangeTab = new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {
@@ -5462,7 +5430,7 @@ namespace BetterExplorer {
 
 		private void Refresh_Click(object sender, RoutedEventArgs e) {
 			this.ShellListView.RefreshContents();
-			DoubleAnimation da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 0, 100)));
+			DoubleAnimation da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 1, 100)));
 			da.FillBehavior = FillBehavior.Stop;
 			this.bcbc.BeginAnimation(Odyssey.Controls.BreadcrumbBar.ProgressValueProperty, da);
 		}

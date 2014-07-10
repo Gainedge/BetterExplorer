@@ -3840,7 +3840,6 @@ namespace BExplorer.Shell {
 		public Boolean IsFocusAllowed = true;
 		/// <summary> Gives the ShellListView focus </summary>
 		public void Focus(Boolean isActiveCheck = true) {
-			return;
 			try {
 				if (User32.GetForegroundWindow() != this.LVHandle) {
 					var mainWin = System.Windows.Application.Current.MainWindow;

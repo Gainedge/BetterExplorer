@@ -345,7 +345,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				this.Path = null;
 				return false;
 			}
-
+			
 			newPath = RemoveLastEmptySeparator(newPath);
 			//newPath = newPath == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : newPath;
 			string newPathToShellParsingName = newPath.ToShellParsingName();
@@ -872,36 +872,8 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		}
 
 		void tb_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			Exit(true);
+			Exit(false);
 		}
-
-		void tb_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			
-		}
-
-		void tb_LostFocus(object sender, RoutedEventArgs e) {
-			//if (!comboBox.IsDropDownOpen)
-			//	Exit(false);
-		}
-
-		void tb_GotFocus(object sender, RoutedEventArgs e) {
-			
-		}
-
-		void comboBox_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
-			bool isKeyboardFocusWithin = (bool)e.NewValue;
-			if (!isKeyboardFocusWithin && !comboBox.IsDropDownOpen) Exit(true);
-		}
-
-		void comboBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
-			//Exit(true); 
-		}
-
-		void comboBox_LostFocus(object sender, RoutedEventArgs e) {
-			
-		}
-
-
 		protected override void OnInitialized(EventArgs e) {
 			base.OnInitialized(e);
 			if (initPath != null) {
@@ -939,6 +911,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				e.Handled = true;
 				SetInputState();
 			}
+			//MessageBox.Show(((FrameworkElement)((FrameworkElement)Mouse.DirectlyOver).Parent).Parent.ToString());
 			base.OnMouseDown(e);
 
 		}
@@ -947,12 +920,14 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			SetInputState();
 		}
 
-		private void SetInputState() {
+		public void SetInputState() {
 			if (comboBox != null && IsEditable && comboBox.Visibility != System.Windows.Visibility.Visible) {
 				if (this.OnEditModeToggle != null) {
 					this.OnEditModeToggle.Invoke(comboBox, new EditModeToggleEventArgs(false));
 				}
-				comboBox.Text = Path;
+				if (this.SelectedBreadcrumb != null && this.SelectedBreadcrumb.Data != null) {
+					comboBox.Text = (this.SelectedBreadcrumb.Data as ShellItem).GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING);
+				}
 				comboBox.Visibility = Visibility.Visible;
 				comboBox.Focus();
 			}

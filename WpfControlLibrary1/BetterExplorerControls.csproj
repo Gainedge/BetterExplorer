@@ -100,32 +100,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BreadcrumbBarControl.xaml.cs">
-      <DependentUpon>BreadcrumbBarControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="BreadcrumbBarFSItem.cs" />
-    <Compile Include="BreadcrumbBarHistoryItem.xaml.cs">
-      <DependentUpon>BreadcrumbBarHistoryItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="BreadcrumbBarItem.xaml.cs">
-      <DependentUpon>BreadcrumbBarItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="BreadCrumbBar\BreacrumbCorePanel.cs" />
-    <Compile Include="BreadCrumbBar\Breadcrumb.cs" />
-    <Compile Include="BreadCrumbBar\BreadcrumbBase.cs" />
-    <Compile Include="BreadCrumbBar\BreadcrumbCore.cs" />
-    <Compile Include="BreadCrumbBar\_Obsolete\BreadcrumbExpander.cs" />
-    <Compile Include="BreadCrumbBar\BreadcrumbItem.cs" />
-    <Compile Include="BreadCrumbBar\BreadcrumbOverflowPanel.cs" />
-    <Compile Include="BreadCrumbBar\_Obsolete\DropDown.cs" />
-    <Compile Include="BreadCrumbBar\_Obsolete\DropDownList.cs" />
-    <Compile Include="BreadCrumbBar\SuggestBox.cs" />
-    <Compile Include="BreadCrumbBar\SuggestBoxBase.cs" />
     <Compile Include="AirspacePopup.cs" />
     <Compile Include="WatermarkedTextBox.cs" />
-    <Compile Include="ItemSources\AutoSuggestSource.cs" />
-    <Compile Include="Helpers\PathExistsValidationRule.cs" />
-    <Compile Include="Helpers\PathHierarchyHelper.cs" />
     <Compile Include="Helpers\PropertyPathHelper.cs" />
     <Compile Include="Helpers\UITools.cs" />
     <Compile Include="Helpers\AttachedProperties.cs" />
@@ -165,18 +141,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="BreadcrumbBarControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="BreadcrumbBarHistoryItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="BreadcrumbBarItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="ImageSizeDisplay.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

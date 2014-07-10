@@ -590,11 +590,16 @@ namespace Odyssey.Controls {
 				if (item != null) {
 					//ApplyProperties(item);
 					var value = trace;
-					if (value != null && value.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING) == rootValue.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING))
+					if (value != null && value.GetHashCode() == rootValue.GetHashCode()) {
+						//MessageBox.Show("V:" + value.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING));
 						return item;
+					}
 					
 					while (value.Parent != null) {
-						if (value != null && value.Parent.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING) == rootValue.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING)) return item;
+						if (value != null && value.Parent.GetHashCode() == rootValue.GetHashCode()) {
+							//MessageBox.Show("VP:" + value.Parent.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING));
+							return item;
+						}
 						value = value.Parent;
 					}
 					//if (value != null && value.Equals(trace)) return item;

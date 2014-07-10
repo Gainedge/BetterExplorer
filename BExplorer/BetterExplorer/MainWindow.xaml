@@ -3005,10 +3005,6 @@
 							Width="219"
 							MinWidth="150" />
 			</Grid.ColumnDefinitions>
-			<controls:BreadcrumbBarControl x:Name="breadcrumbBarControl1"
-									 Width="Auto"
-									 NavigateRequested="breadcrumbBarControl1_NavigateRequested"
-									 RefreshRequested="breadcrumbBarControl1_RefreshRequested" Visibility="Hidden" />
 			<odc:BreadcrumbBar x:Name="bcbc" Focusable="True" PopulateItems="pop_items" PathConversion="path_conversation" TraceBinding="{Binding DisplayName}" ImageBinding="{Binding Thumbnail.SmallBitmapSource}" Loaded="bcbc_Loaded" SelectedBreadcrumbChanged="bcbc_SelectedChanged" BreadcrumbItemDropDownOpened="bcbc_BreadcrumbItemDropDownOpened" BreadcrumbItemDropDownClosed="bcbc_BreadcrumbItemDropDownClosed" PathChanged="path_changed" >
 				<odc:BreadcrumbBar.Buttons>
 					<Button Click="Refresh_Click">
