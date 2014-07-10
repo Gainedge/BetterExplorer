@@ -11,7 +11,7 @@ namespace BExplorer.Shell {
 	/// <summary>
 	/// Create and modify search folders.
 	/// </summary>
-	public class ShellSearchFolder : ShellSearchCollection {
+	public class ShellSearchFolder : ShellItem {
 
 		#region Locals
 
@@ -40,6 +40,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		/// <summary>
 		/// Create a simple search folder. Once the appropiate parameters are set,
 		/// the search folder can be enumerated to get the search results.
@@ -55,7 +56,7 @@ namespace BExplorer.Shell {
 				this.SearchScopePaths = searchScopePath;
 			}
 		}
-
+		*/
 		#endregion Constructors
 
 		public IShellItem m_SearchComInterface {

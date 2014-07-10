@@ -820,8 +820,9 @@ namespace BExplorer.Shell {
 
 		#region Constructors
 
-		public ShellItem() {
-		}
+
+		[Obsolete("Try to remove this!!!")]
+		protected ShellItem() { }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ShellItem"/> class.

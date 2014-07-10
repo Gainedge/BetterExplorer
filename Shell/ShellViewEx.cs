@@ -97,7 +97,7 @@ namespace BExplorer.Shell {
 		/// <summary> The folder being navigated to. </summary>
 		public ShellItem Folder { get; private set; }
 
-		/// <summary> Gets/sets a value indicating whether the navigation should be cancelled. </summary>
+		/// <summary> Gets/sets a value indicating whether the navigation should be canceled. </summary>
 		public bool Cancel { get; private set; }
 
 		public Boolean IsNavigateInSameTab { get; private set; }

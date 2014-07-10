@@ -5,18 +5,17 @@ namespace BExplorer.Shell {
 	/// <summary>
 	/// A Serch Connector folder in the Shell Namespace
 	/// </summary>
-	public sealed class ShellSearchConnector : ShellSearchCollection {
+	public sealed class ShellSearchConnector : ShellItem {
 
 		#region Internal Constructor
 
+		/*
 		internal ShellSearchConnector() {
 			//CoreHelpers.ThrowIfNotWin7();
 		}
+		*/
 
-		internal ShellSearchConnector(IShellItem2 shellItem)
-			: this() {
-				ComInterface = shellItem;
-		}
+		internal ShellSearchConnector(IShellItem2 shellItem) : base(shellItem) { }// { ComInterface = shellItem; }
 
 		#endregion
 

@@ -22,7 +22,27 @@ namespace BExplorer.Shell {
 		internal FileSystemKnownFolder(IShellItem shellItem) : base(shellItem) { }
 
 		IShellItem nativeShellItem;
-		internal FileSystemKnownFolder(IKnownFolderNative kf) {		
+
+		internal static FileSystemKnownFolder Create(IKnownFolderNative kf) {
+			Debug.Assert(kf != null);
+			var _knownFolderNative = kf;
+			IShellItem _nativeShellItem;
+
+			// Set the native shell item
+			// and set it on the base class (ShellObject)
+
+			Guid guid = new Guid(InterfaceGuids.IShellItem);
+			_knownFolderNative.GetShellItem(0, ref guid, out _nativeShellItem);
+
+			var FS = new FileSystemKnownFolder(_nativeShellItem);
+			FS.knownFolderNative = _knownFolderNative;
+
+			return FS;
+		}
+
+
+		/*
+		internal FileSystemKnownFolder(IKnownFolderNative kf) {
 			Debug.Assert(kf != null);
 			knownFolderNative = kf;
 
@@ -33,7 +53,7 @@ namespace BExplorer.Shell {
 			knownFolderNative.GetShellItem(0, ref guid, out nativeShellItem);
 			base.ComInterface = nativeShellItem;
 		}
-
+		*/
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileSystemKnownFolder"/> class.
@@ -50,13 +70,9 @@ namespace BExplorer.Shell {
 		/// <param name="uri">
 		/// A <see cref="Uri"/> containing the location of the FileSystemKnownFolder.
 		/// </param>
-		public FileSystemKnownFolder(Uri uri)
-			: base(uri) {
+		public FileSystemKnownFolder(Uri uri) : base(uri) { }
 
-		}
-		public FileSystemKnownFolder() {
 
-		}
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileSystemKnownFolder"/> class.
 		/// </summary>
@@ -72,10 +88,8 @@ namespace BExplorer.Shell {
 		/// <param name="path">
 		/// A string containing a Uri with the location of the FileSystemKnownFolder.
 		/// </param>
-		public FileSystemKnownFolder(string path)
-			: base(path) {
+		public FileSystemKnownFolder(string path) : base(path) { }
 
-		}
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileSystemKnownFolder"/> class.
 		/// </summary>
@@ -87,10 +101,7 @@ namespace BExplorer.Shell {
 		/// An <see cref="Environment.SpecialFolder"/> containing the 
 		/// location of the folder.
 		/// </param>
-		public FileSystemKnownFolder(Environment.SpecialFolder folder)
-			: base(folder) {
-
-		}
+		public FileSystemKnownFolder(Environment.SpecialFolder folder) : base(folder) { }
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileSystemKnownFolder"/> class.
 		/// </summary>
@@ -103,18 +114,9 @@ namespace BExplorer.Shell {
 		/// <param name="name">
 		/// The name of the child item.
 		/// </param>
-		public FileSystemKnownFolder(ShellItem parent, string name)
-			: base(parent, name) {
-
-		}
-		internal FileSystemKnownFolder(IntPtr pidl)
-			: base(pidl) {
-
-		}
-		internal FileSystemKnownFolder(ShellItem parent, IntPtr pidl)
-			: base(parent, pidl) {
-
-		}
+		public FileSystemKnownFolder(ShellItem parent, string name) : base(parent, name) { }
+		internal FileSystemKnownFolder(IntPtr pidl) : base(pidl) { }
+		internal FileSystemKnownFolder(ShellItem parent, IntPtr pidl) : base(parent, pidl) { }
 
 		#endregion
 
