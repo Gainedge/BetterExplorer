@@ -4185,10 +4185,16 @@ namespace BetterExplorer {
 		int CurrentProgressValue = 0;
 
 		public void DoSearch() {
-			if (edtSearchBox.FullSearchTerms != "") {
-				SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
-				ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
-				ShellListView.Navigate(searchFolder);
+			try {
+
+				if (edtSearchBox.FullSearchTerms != "") {
+					SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
+					ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
+					ShellListView.Navigate(searchFolder);
+				}
+			}
+			catch (Exception ex) {
+				MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
 			}
 		}
 

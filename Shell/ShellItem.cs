@@ -872,15 +872,17 @@ namespace BExplorer.Shell {
 			//this.IconType = GetIconType();
 
 			//TODO: Fix this!!!
-			try {
+
+
+			//try {
 				Uri newUri = new Uri(path);
 				Initialize(newUri);
 				this.IconType = GetIconType();
 				this.CachedParsingName = this.ParsingName;
 				this.OverlayIconIndex = -1;
-			}
-			catch (Exception) {
-			}
+			//}
+			//catch (Exception) {
+			//}
 		}
 
 		/// <summary>
