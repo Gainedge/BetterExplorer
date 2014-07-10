@@ -408,13 +408,12 @@ namespace BExplorer.Shell {
 			get {
 				var Data = this.SelectedIndexes.ToArray();
 				var selItems = new List<ShellItem>();
-				selItems.AddRange(Data);
+				DraggedItemIndexes.AddRange(Data);
 
-
-				foreach (var index in this.SelectedIndexes.ToArray()) {
+				foreach (var index in Data) {
 					try {
 						selItems.Add(this.Items[index]);
-						DraggedItemIndexes.Add(index);
+						//DraggedItemIndexes.Add(index);
 					}
 					catch (Exception) {
 						this.SelectedIndexes.Remove(index);
