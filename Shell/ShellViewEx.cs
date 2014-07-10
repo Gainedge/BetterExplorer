@@ -549,12 +549,19 @@ namespace BExplorer.Shell {
 
 		#region Private Members
 
+		[Obsolete("Never Actually Used")]
+		private Boolean Cancel = false;
+
+		[Obsolete("Never Actually Used")]
+		private Boolean _IsInRenameMode = false;
+
+
 		//private ShellHistory m_History;
 		//private int _iconSize;
 		private Boolean _showCheckBoxes = false;
 
 		private Boolean _ShowHidden;
-		//private Boolean _IsInRenameMode = false;
+
 		private System.Windows.Forms.Timer _ResetTimer = new System.Windows.Forms.Timer();
 		private Thread MaintenanceThread;
 		private List<Int32> DraggedItemIndexes = new List<int>();
@@ -565,7 +572,7 @@ namespace BExplorer.Shell {
 		private BackgroundWorker bw = new BackgroundWorker();
 		private ConcurrentDictionary<int, Bitmap> cache = new ConcurrentDictionary<int, Bitmap>();
 		private Thread _IconCacheLoadingThread;
-		//private Boolean Cancel = false;
+
 		private Bitmap ExeFallBack16;
 		private Bitmap ExeFallBack256;
 		private Bitmap ExeFallBack32;
