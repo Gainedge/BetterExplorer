@@ -34,7 +34,8 @@ namespace BExplorer.Shell {
 			NativeSearchFolderItemFactory = (ISearchFolderItemFactory)new SearchFolderItemFactoryCoClass();
 			ComInterface = this.m_SearchComInterface;
 			this.SearchCondition = searchCondition;
-
+			var test = this.IsSearchFolder;
+			
 			if (searchScopePath != null && searchScopePath.Length > 0 && searchScopePath[0] != null) {
 				this.SearchScopePaths = searchScopePath.Select(cont => cont.ParsingName);
 			}

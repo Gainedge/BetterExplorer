@@ -298,11 +298,12 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			string newPath = e.NewValue as string;
 
-			if (!bar.IsInitialized) {
-				bar.Path = bar.initPath = newPath;
-			} else {
+			if (bar.IsInitialized) {
 				bar.BuildBreadcrumbsFromPath(newPath);
 				bar.OnPathChanged(e.OldValue as string, newPath);
+			}
+			else {
+				bar.Path = bar.initPath = newPath;
 			}
 		}
 
@@ -331,7 +332,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		/// </summary>
 		/// <param name="path">The traces separated by the SepearatorString property.</param>
 		private bool BuildBreadcrumbsFromPath(string newPath) {
-			
 			PathConversionEventArgs e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.EditToDisplay, newPath, Root, PathConversionEvent);
 			RaiseEvent(e);
 			_allowSelectionChnaged = false;
@@ -345,7 +345,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				this.Path = null;
 				return false;
 			}
-			
+
 			newPath = RemoveLastEmptySeparator(newPath);
 			//newPath = newPath == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : newPath;
 			string newPathToShellParsingName = newPath.ToShellParsingName();
@@ -356,7 +356,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				traces.Add(shellItem.Parent);
 				shellItem = shellItem.Parent;
 			}
-		
+
 			if (traces.Count == 0) RootItem.SelectedItem = null;
 			traces.Reverse();
 			int index = 0;
@@ -399,7 +399,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 
 			// temporarily remove the SelectionChangedEvent handler to minimize processing of events while building the breadcrumb items:
 			RemoveHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
-			
 
 			try {
 				var item2 = RootItem;
@@ -416,7 +415,8 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				if (item2 != null) item2.SelectedItem = null;
 				SelectedBreadcrumb = item2;
 				SelectedItem = item2 != null ? item2.Data : null;
-			} finally {
+			}
+			finally {
 				AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
 				_allowSelectionChnaged = true;
 			}
@@ -507,7 +507,8 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			BreadcrumbItem breadcrumb = e.Source as BreadcrumbItem;
 			if (breadcrumb.IsDropDownPressed) {
 				OnBreadcrumbItemDropDownOpened(e);
-			} else {
+			}
+			else {
 				OnBreadcrumbItemDropDownClosed(e);
 			}
 		}
@@ -730,7 +731,8 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			if (newValue == null) {
 				RootItem = null;
 				Path = null;
-			} else {
+			}
+			else {
 				BreadcrumbItem root = newValue as BreadcrumbItem;
 				if (root == null) {
 					root = BreadcrumbItem.CreateItem(newValue);
@@ -975,8 +977,8 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			while (item != null) {
 				//if (sb.Length > 0) sb.Append(separator);
 				if (index >= breadcrumbsToHide || item.SelectedItem == null) {
-				//	sb.Append(item.GetTracePathValue());
-					
+					//	sb.Append(item.GetTracePathValue());
+
 				}
 				index++;
 				result = item.TraceValue == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : (item.Data as ShellItem).ParsingName;

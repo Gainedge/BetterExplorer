@@ -348,7 +348,8 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="search"> The string for which to search for. </param>
 		/// <returns> The index of an item within the list view. </returns>
-		public int GetFirstIndexOf(string search) { return GetFirstIndexOf(search, 0); }
+		[Obsolete("Never Used", true)]
+		private int GetFirstIndexOf(string search) { return GetFirstIndexOf(search, 0); }
 
 
 
@@ -382,10 +383,11 @@ namespace BExplorer.Shell {
 		[Browsable(false)]
 		public ShellItem CurrentFolder { get; set; }
 
-		// <summary> Gets the <see cref="ShellView" />'s navigation history. </summary>
+
+		///<summary> Gets the <see cref="ShellView" />'s navigation history. </summary>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public ShellHistory History { get; private set; }
+		protected ShellHistory History { get; private set; }
 
 		public int IconSize { get; private set; }
 
@@ -425,7 +427,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public List<int> SelectedIndexes {
+		private List<int> SelectedIndexes {
 			get {
 				List<int> selItems = new List<int>();
 				int iStart = -1;
@@ -2625,13 +2627,14 @@ namespace BExplorer.Shell {
 
 		#region Public Methods
 
+		/*
 		public void ShowFileProperties() {
 			IntPtr doPtr = IntPtr.Zero;
-			if (Shell32.SHMultiFileProperties(this.SelectedItems.ToArray().GetIDataObject(out doPtr), 0) != 0 /*S_OK*/) {
+			if (Shell32.SHMultiFileProperties(this.SelectedItems.ToArray().GetIDataObject(out doPtr), 0) != 0 /*S_OK/) {
 				throw new Win32Exception();
 			}
 		}
-
+		*/
 		public void ShowFileProperties(string Filename) {
 			Shell32.SHELLEXECUTEINFO info = new Shell32.SHELLEXECUTEINFO();
 			info.cbSize = Marshal.SizeOf(info);
@@ -3798,7 +3801,8 @@ namespace BExplorer.Shell {
 			//return libcreate.GetDisplayName(DisplayNameType.Default);
 		}
 
-		public void SetLVBackgroundImage(Bitmap bitmap) {
+		[Obsolete("Never Used", true)]
+		private void SetLVBackgroundImage(Bitmap bitmap) {
 			Helpers.SetListViewBackgroundImage(this.LVHandle, bitmap);
 		}
 
@@ -3879,7 +3883,7 @@ namespace BExplorer.Shell {
 			this.Focus();
 		}
 
-		public void DeselectItemByIndex(int index) {
+		private void DeselectItemByIndex(int index) {
 			LVITEM item = new LVITEM();
 			item.mask = LVIF.LVIF_STATE;
 			item.stateMask = LVIS.LVIS_SELECTED;
@@ -3887,7 +3891,8 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, index, ref item);
 		}
 
-		public void RemoveDropHighLightItemByIndex(int index) {
+		[Obsolete("Never Used", true)]
+		private void RemoveDropHighLightItemByIndex(int index) {
 			LVITEM item = new LVITEM();
 			item.mask = LVIF.LVIF_STATE;
 			item.stateMask = LVIS.LVIS_SELECTED | LVIS.LVIS_DROPHILITED;
@@ -4027,6 +4032,7 @@ namespace BExplorer.Shell {
 			*/
 		}
 
+		[Obsolete("Never Used", true)]
 		private string GetStringFromAcceptedKeyCodeString(string str) {
 			str = str.ToUpperInvariant();
 			if (str.Length == 1) {
@@ -4047,9 +4053,6 @@ namespace BExplorer.Shell {
 		}
 
 		private void StartProcessInCurrentDirectory(ShellItem item) {
-			//var psi = new ProcessStartInfo();
-			//psi.FileName = item.ParsingName;
-			//psi.WorkingDirectory = this.CurrentFolder.ParsingName;
 			Process.Start(new ProcessStartInfo() {
 				FileName = item.ParsingName,
 				WorkingDirectory = this.CurrentFolder.ParsingName

@@ -324,28 +324,14 @@ namespace BExplorer.Shell {
 					return false;
 				}
 				else if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\")) {
-					string rootPath = System.IO.Path.GetPathRoot(ParsingName); // get drive's letter
-					DriveInfo driveInfo = new DriveInfo(rootPath); // get info about the drive
-					return driveInfo.DriveType == DriveType.Network; // return true if a network drive
+					string rootPath = System.IO.Path.GetPathRoot(ParsingName);	// get drive's letter
+					DriveInfo driveInfo = new DriveInfo(rootPath);				// get info about the drive
+					return driveInfo.DriveType == DriveType.Network;			// return true if a network drive
 				}
 				else {
 					return true; // is a UNC path
 				}
 
-				/*
-				if (!ParsingName.StartsWith("::")) {
-					if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\")) {
-						string rootPath = System.IO.Path.GetPathRoot(ParsingName); // get drive's letter
-						System.IO.DriveInfo driveInfo = new System.IO.DriveInfo(rootPath); // get info about the drive
-						return driveInfo.DriveType == DriveType.Network; // return true if a network drive
-					}
-
-					return true; // is a UNC path
-				}
-				else {
-					return false;
-				}
-				*/
 			}
 		}
 

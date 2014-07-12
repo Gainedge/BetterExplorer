@@ -1234,13 +1234,16 @@ namespace BetterExplorer {
 
 
 		private void btnProperties_Click(object sender, RoutedEventArgs e) {
+			/*
 			if (ShellListView.SelectedItems.Count() > 0) {
 				ShellListView.ShowFileProperties();
 			}
 			else {
 				ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
 			}
-
+			*/
+			//We must have a file selected!
+			ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
 			ShellListView.Focus();
 		}
 
@@ -4125,6 +4128,8 @@ namespace BetterExplorer {
 				if (edtSearchBox.FullSearchTerms != "") {
 					SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
 					ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
+
+					//var test = searchFolder.ParsingName;
 					ShellListView.Navigate(searchFolder);
 				}
 			}
@@ -4624,11 +4629,10 @@ namespace BetterExplorer {
 				wpt.y = (int)ptw.Y;
 				dropHelper.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 			}
-			else {
-				if (e.Data.GetDataPresent(typeof(Wpf.Controls.TabItem))) {
-					e.Effects = DragDropEffects.Move;
-				}
+			else if (e.Data.GetDataPresent(typeof(Wpf.Controls.TabItem))) {
+				e.Effects = DragDropEffects.Move;
 			}
+
 		}
 
 		#endregion
