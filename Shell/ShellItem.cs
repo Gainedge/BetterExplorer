@@ -127,6 +127,7 @@ namespace BExplorer.Shell {
 	public class ShellItem : IEnumerable<ShellItem>, IDisposable {
 
 		#region Properties
+		private static ShellItem m_Desktop;
 
 		private int? hashValue;
 		public int IsShielded = -1;
@@ -138,22 +139,17 @@ namespace BExplorer.Shell {
 		//public IShellItem ComInterface { get { return m_ComInterface; } }
 		protected IShellItem m_ComInterface;
 
-
-
-
-		private static ShellItem m_Desktop;
-		private bool disposed;
 		private ShellThumbnail thumbnail;
 
-		public bool IsVisible { get; set; }
+		//public bool IsVisible { get; set; }
 		public bool IsThumbnailLoaded { get; set; }
 		public bool IsIconLoaded { get; set; }
-		public bool ISRedrawed { get; set; }
+		//public bool ISRedrawed { get; set; }
 		public bool IsInitialised { get; set; }
-		public Bitmap ThumbnailIcon { get; set; }
+		//public Bitmap ThumbnailIcon { get; set; }
 		public int OverlayIconIndex { get; set; }
 		public IExtractIconPWFlags IconType { get; set; }
-		public String CachedParsingName { get; set; }
+		public String CachedParsingName { get; private set; }
 		public IntPtr ILPidl { get { return Shell32.ILFindLastID(Pidl); } }
 
 		/// <summary>
@@ -495,9 +491,7 @@ namespace BExplorer.Shell {
 		#endregion
 
 
-		public System.IO.DriveInfo GetDriveInfo() {
-			return IsDrive || IsNetDrive ? new DriveInfo(ParsingName) : null;
-		}
+		public DriveInfo GetDriveInfo() { return IsDrive || IsNetDrive ? new DriveInfo(ParsingName) : null; }
 
 		/// <summary>
 		/// Returns the name of the item in the specified style.
@@ -638,9 +632,7 @@ namespace BExplorer.Shell {
 		}
 
 
-		public int GetItemIndexInCollection(ShellItem[] collection) {
-			return Array.IndexOf(collection, this);
-		}
+		public int GetItemIndexInCollection(ShellItem[] collection) { return Array.IndexOf(collection, this); }
 
 		public Bitmap GetShellThumbnail(int Size, ShellThumbnailFormatOption format = ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption retrieve = ShellThumbnailRetrievalOption.Default) {
 			this.Thumbnail.RetrievalOption = retrieve;
@@ -655,8 +647,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject() {
 			IntPtr res;
-			HResult result = ComInterface.BindToHandler(IntPtr.Zero,
-					BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID, out res);
+			HResult result = ComInterface.BindToHandler(IntPtr.Zero, BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID, out res);
 			return (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(res, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
 		}
 
@@ -875,11 +866,11 @@ namespace BExplorer.Shell {
 
 
 			//try {
-				Uri newUri = new Uri(path);
-				Initialize(newUri);
-				this.IconType = GetIconType();
-				this.CachedParsingName = this.ParsingName;
-				this.OverlayIconIndex = -1;
+			Uri newUri = new Uri(path);
+			Initialize(newUri);
+			this.IconType = GetIconType();
+			this.CachedParsingName = this.ParsingName;
+			this.OverlayIconIndex = -1;
 			//}
 			//catch (Exception) {
 			//}
@@ -1151,12 +1142,10 @@ namespace BExplorer.Shell {
 
 		private static IShellItem CreateItemFromIDList(IntPtr pidl) {
 			if (RunningVista) {
-				return Shell32.SHCreateItemFromIDList(pidl,
-						typeof(IShellItem).GUID);
+				return Shell32.SHCreateItemFromIDList(pidl, typeof(IShellItem).GUID);
 			}
 			else {
-				return new Interop.VistaBridge.ShellItemImpl(
-						pidl, false);
+				return new Interop.VistaBridge.ShellItemImpl(pidl, false);
 			}
 		}
 
