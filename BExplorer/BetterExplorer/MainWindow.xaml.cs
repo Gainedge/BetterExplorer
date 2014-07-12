@@ -382,7 +382,7 @@ namespace BetterExplorer {
 
 					this.LVItemsColor = docs.Root.Elements("ItemColorRow")
 						.Select(element => new BExplorer.Shell.LVItemColor(element.Elements().ToArray()[0].Value,
-							System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value)))).ToList();
+																		   Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value)))).ToList();
 				}
 			});
 		}
@@ -417,14 +417,13 @@ namespace BetterExplorer {
 			//bool GroupDir = false;
 
 			try {
-				foreach (Collumns item in ShellListView.Collumns) {
-					if (item != null) {
-
-						var IsChecked1 = (item.pkey.fmtid == ShellListView.Collumns[ShellListView.LastSortedColumnIndex].pkey.fmtid) && (item.pkey.pid == ShellListView.Collumns[ShellListView.LastSortedColumnIndex].pkey.pid);
-						btnSort.Items.Add(Utilities.Build_MenuItem(item.Name, item, checkable: true, isChecked: IsChecked1, GroupName: "GR2", onClick: mi_Click));
-						var IsCheckable2 = ShellListView.LastGroupCollumn != null && (item.pkey.fmtid == ShellListView.LastGroupCollumn.pkey.fmtid) && (item.pkey.pid == ShellListView.LastGroupCollumn.pkey.pid);
-						btnGroup.Items.Add(Utilities.Build_MenuItem(item.Name, item, checkable: true, isChecked: IsCheckable2, GroupName: "GR3", onClick: mig_Click));
-					}
+				foreach (Collumns item in ShellListView.Collumns.Where(x => x != null)) {
+					//if (item != null) {
+					var IsChecked1 = (item.pkey.fmtid == ShellListView.Collumns[ShellListView.LastSortedColumnIndex].pkey.fmtid) && (item.pkey.pid == ShellListView.Collumns[ShellListView.LastSortedColumnIndex].pkey.pid);
+					btnSort.Items.Add(Utilities.Build_MenuItem(item.Name, item, checkable: true, isChecked: IsChecked1, GroupName: "GR2", onClick: mi_Click));
+					var IsCheckable2 = ShellListView.LastGroupCollumn != null && (item.pkey.fmtid == ShellListView.LastGroupCollumn.pkey.fmtid) && (item.pkey.pid == ShellListView.LastGroupCollumn.pkey.pid);
+					btnGroup.Items.Add(Utilities.Build_MenuItem(item.Name, item, checkable: true, isChecked: IsCheckable2, GroupName: "GR3", onClick: mig_Click));
+					//}
 				}
 			}
 			catch (Exception ex) {
@@ -1181,7 +1180,8 @@ namespace BetterExplorer {
 			ShellListView.DeSelectAllItems();
 		}
 
-		private string ListAllSelectedItems() {
+		// Delete > Send to Recycle Bin
+		private void MenuItem_Click(object sender, RoutedEventArgs e) {
 			string path = null;
 			foreach (ShellItem item in ShellListView.SelectedItems) {
 				if (string.IsNullOrEmpty(path)) {
@@ -1192,12 +1192,7 @@ namespace BetterExplorer {
 				}
 			}
 
-			return path;
-		}
-
-		// Delete > Send to Recycle Bin
-		private void MenuItem_Click(object sender, RoutedEventArgs e) {
-			AddToLog(String.Format("The following files have been moved to the Recycle Bin: {0}", ListAllSelectedItems()));
+			AddToLog(String.Format("The following files have been moved to the Recycle Bin: {0}", path));
 			ShellListView.DeleteSelectedFiles(true);
 		}
 
