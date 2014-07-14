@@ -5466,11 +5466,11 @@ namespace BetterExplorer {
 						try {
 							if (shellitem != null) {
 								if (!shellitem.IsSearchFolder) {
-									foreach (ShellItem s in shellitem.Where(w => w.IsFolder && (this.ShellListView.ShowHidden ? true : w.IsHidden == false))) {
-										item.Items.Add(s);
-									}
+								foreach (ShellItem s in shellitem.Where(w => w.IsFolder && (this.ShellListView.ShowHidden ? true : w.IsHidden == false))) {
+									item.Items.Add(s);
 								}
 							}
+						}
 						}
 						catch { }
 					}
@@ -5529,8 +5529,8 @@ namespace BetterExplorer {
 				if (isValidPidl) {
 					this.ShellListView.Navigate(new ShellItem((IntPtr)pidl), false, true);
 				} else {
-					this.ShellListView.Navigate(new ShellItem(newPath.ToShellParsingName()), false, true);
-				}
+				this.ShellListView.Navigate(new ShellItem(newPath.ToShellParsingName()), false, true);
+		}
 			}
 		}
 
