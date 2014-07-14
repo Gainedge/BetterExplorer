@@ -349,7 +349,15 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			newPath = RemoveLastEmptySeparator(newPath);
 			//newPath = newPath == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : newPath;
 			string newPathToShellParsingName = newPath.ToShellParsingName();
-			var shellItem = new ShellItem(newPathToShellParsingName);
+			Int64 pidl;
+			bool isValidPidl = Int64.TryParse(RemoveLastEmptySeparator(newPathToShellParsingName), out pidl);
+
+			ShellItem shellItem = null;
+			if (isValidPidl) {
+				shellItem = new ShellItem((IntPtr)pidl);
+			} else {
+				shellItem = new ShellItem(newPathToShellParsingName);
+			}
 			List<ShellItem> traces = new List<ShellItem>();
 			traces.Add(shellItem);
 			while (shellItem != null && shellItem.Parent != null) {

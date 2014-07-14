@@ -382,7 +382,7 @@ namespace BetterExplorer {
 
 					this.LVItemsColor = docs.Root.Elements("ItemColorRow")
 						.Select(element => new BExplorer.Shell.LVItemColor(element.Elements().ToArray()[0].Value,
-																		   Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value)))).ToList();
+																		   System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value)))).ToList();
 				}
 			});
 		}
@@ -1857,7 +1857,7 @@ namespace BetterExplorer {
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
 			this._IsBreadcrumbBarSelectionChnagedAllowed = false;
-			this.bcbc.Path = e.Folder.ParsingName;
+			this.bcbc.Path = e.Folder.IsSearchFolder ? e.Folder.Pidl.ToString() : e.Folder.ParsingName;
 			var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 			if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
 				if (tab.SelectedItems != null) {
@@ -5465,8 +5465,10 @@ namespace BetterExplorer {
 					else {
 						try {
 							if (shellitem != null) {
-								foreach (ShellItem s in shellitem.Where(w => w.IsFolder && (this.ShellListView.ShowHidden ? true : w.IsHidden == false))) {
-									item.Items.Add(s);
+								if (!shellitem.IsSearchFolder) {
+									foreach (ShellItem s in shellitem.Where(w => w.IsFolder && (this.ShellListView.ShowHidden ? true : w.IsHidden == false))) {
+										item.Items.Add(s);
+									}
 								}
 							}
 						}
@@ -5521,8 +5523,15 @@ namespace BetterExplorer {
 			if (newPath != null && newPath.StartsWith("%")) {
 				newPath = Environment.ExpandEnvironmentVariables(newPath);
 			}
-			if (e.Mode == Odyssey.Controls.PathConversionEventArgs.ConversionMode.EditToDisplay && _IsBreadcrumbBarSelectionChnagedAllowed)
-				this.ShellListView.Navigate(new ShellItem(newPath.ToShellParsingName()), false, true);
+			if (e.Mode == Odyssey.Controls.PathConversionEventArgs.ConversionMode.EditToDisplay && _IsBreadcrumbBarSelectionChnagedAllowed) {
+				Int64 pidl;
+				bool isValidPidl = Int64.TryParse(newPath.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
+				if (isValidPidl) {
+					this.ShellListView.Navigate(new ShellItem((IntPtr)pidl), false, true);
+				} else {
+					this.ShellListView.Navigate(new ShellItem(newPath.ToShellParsingName()), false, true);
+				}
+			}
 		}
 
 

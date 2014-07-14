@@ -32,13 +32,12 @@ namespace BExplorer.Shell {
 		/// <param name="searchScopePath">List of folders/paths to perform the search on. These locations need to be indexed by the system.</param>
 		public ShellSearchFolder(SearchCondition searchCondition, params ShellItem[] searchScopePath) {
 			NativeSearchFolderItemFactory = (ISearchFolderItemFactory)new SearchFolderItemFactoryCoClass();
-			ComInterface = this.m_SearchComInterface;
 			this.SearchCondition = searchCondition;
-			var test = this.IsSearchFolder;
 			
 			if (searchScopePath != null && searchScopePath.Length > 0 && searchScopePath[0] != null) {
 				this.SearchScopePaths = searchScopePath.Select(cont => cont.ParsingName);
 			}
+			ComInterface = this.m_SearchComInterface;
 		}
 
 		/*

@@ -556,7 +556,6 @@ namespace BExplorer.Shell {
 
 		#region Private Members
 
-		[Obsolete("Never Actually Used")]
 		private Boolean Cancel = false;
 
 		[Obsolete("Never Actually Used")]
@@ -3209,7 +3208,7 @@ namespace BExplorer.Shell {
 			waitingThumbnails.Clear();
 			overlayQueue.Clear();
 			shieldQueue.Clear();
-			this.Cancel = true;
+			this.Cancel = false;
 			this.cache.Clear();
 			this._CuttedIndexes.Clear();
 			SubItems.Clear();
@@ -3230,14 +3229,16 @@ namespace BExplorer.Shell {
 				this.Items.Add(e.Current);
 				F.Application.DoEvents();
 				CurrentI++;
-				if (CurrentI - LastI >= (destination.IsSearchFolder ? 5 : 2500) && destination.IsSearchFolder) {
-					Thread.Sleep(10);
+				if (CurrentI - LastI >= (destination.IsSearchFolder ? 100 : 2500) && destination.IsSearchFolder) {
+					Thread.Sleep(2);
 					F.Application.DoEvents();
 					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 					//Thread.Sleep(e.Item.Parent.IsSearchFolder? 5: 1);
 
 					//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 					LastI = CurrentI;
+					if (this.Cancel)
+						break;
 					//GC.WaitForPendingFinalizers();
 					//GC.Collect();
 				}
