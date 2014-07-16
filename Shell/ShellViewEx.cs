@@ -18,6 +18,7 @@ using BExplorer.Shell.Interop;
 using Microsoft.Win32;
 using SQLite = System.Data.SQLite;
 using F = System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace BExplorer.Shell {
 
@@ -427,8 +428,7 @@ namespace BExplorer.Shell {
 					try {
 						selItems.Add(this.Items[index]);
 						//DraggedItemIndexes.Add(index);
-					}
-					catch (Exception) {
+					} catch (Exception) {
 						this.SelectedIndexes.Remove(index);
 					}
 				}
@@ -461,8 +461,7 @@ namespace BExplorer.Shell {
 				if (value) {
 					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.CheckBoxes, (int)ListViewExtendedStyles.CheckBoxes);
 					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT);
-				}
-				else {
+				} else {
 					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.CheckBoxes, 0);
 					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT, 0);
 				}
@@ -554,7 +553,8 @@ namespace BExplorer.Shell {
 						break;
 				}
 
-				AutosizeAllColumns(value != ShellViewStyle.Details ? -2 : -1);
+				if (value != ShellViewStyle.Details)
+					AutosizeAllColumns(-2);
 				OnViewChanged(new ViewChangedEventArgs(value, iconsize));
 			}
 		}
@@ -732,8 +732,7 @@ namespace BExplorer.Shell {
 				if (selectionTimer.Enabled) {
 					selectionTimer.Stop();
 					selectionTimer.Start();
-				}
-				else {
+				} else {
 					selectionTimer.Start();
 				}
 			}
@@ -1369,24 +1368,19 @@ namespace BExplorer.Shell {
 
 				// Link drag-and-drop effect.
 				e.Effect = F.DragDropEffects.Link;
-			}
-			else if ((e.KeyState & 32) == 32 && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
+			} else if ((e.KeyState & 32) == 32 && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
 				// ALT KeyState for link.
 				e.Effect = F.DragDropEffects.Link;
-			}
-			else if ((e.KeyState & 4) == 4 && (e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
+			} else if ((e.KeyState & 4) == 4 && (e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
 				// SHIFT KeyState for move.
 				e.Effect = F.DragDropEffects.Move;
-			}
-			else if ((e.KeyState & 8) == 8 && (e.AllowedEffect & F.DragDropEffects.Copy) == F.DragDropEffects.Copy) {
+			} else if ((e.KeyState & 8) == 8 && (e.AllowedEffect & F.DragDropEffects.Copy) == F.DragDropEffects.Copy) {
 				// CTL KeyState for copy.
 				e.Effect = F.DragDropEffects.Copy;
-			}
-			else if ((e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
+			} else if ((e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
 				// By default, the drop action should be move, if allowed.
 				e.Effect = F.DragDropEffects.Move;
-			}
-			else
+			} else
 				e.Effect = F.DragDropEffects.Copy;
 
 			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
@@ -1404,8 +1398,7 @@ namespace BExplorer.Shell {
 
 			if (row != -1) {
 				this.SelectItemByIndex(row);
-			}
-			else if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop)) {
+			} else if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop)) {
 				this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
 			}
 
@@ -1421,24 +1414,19 @@ namespace BExplorer.Shell {
 
 				// Link drag-and-drop effect.
 				e.Effect = F.DragDropEffects.Link;
-			}
-			else if ((e.KeyState & 32) == 32 && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
+			} else if ((e.KeyState & 32) == 32 && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
 				// ALT KeyState for link.
 				e.Effect = F.DragDropEffects.Link;
-			}
-			else if ((e.KeyState & 4) == 4 && (e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
+			} else if ((e.KeyState & 4) == 4 && (e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
 				// SHIFT KeyState for move.
 				e.Effect = F.DragDropEffects.Move;
-			}
-			else if ((e.KeyState & 8) == 8 && (e.AllowedEffect & F.DragDropEffects.Copy) == F.DragDropEffects.Copy) {
+			} else if ((e.KeyState & 8) == 8 && (e.AllowedEffect & F.DragDropEffects.Copy) == F.DragDropEffects.Copy) {
 				// CTL KeyState for copy.
 				e.Effect = F.DragDropEffects.Copy;
-			}
-			else if ((e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
+			} else if ((e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
 				// By default, the drop action should be move, if allowed.
 				e.Effect = F.DragDropEffects.Move;
-			}
-			else
+			} else
 				e.Effect = F.DragDropEffects.Copy;
 
 			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
@@ -1489,8 +1477,7 @@ namespace BExplorer.Shell {
 
 					this.SelectItemByIndex(ItemsHashed[obj2], true, true);
 				}
-			}
-			else {
+			} else {
 				//if (this.CurrentRefreshedItemIndex == -1)
 				//{
 				ShellItem theItem = Items.SingleOrDefault(s => s.ParsingName == obj1.ParsingName);
@@ -1698,11 +1685,9 @@ namespace BExplorer.Shell {
 				//TODO: Combine Else If(...)s and Remove If for MessageBox
 				if (nmhdrHeader.hdr.code == (int)HDN.HDN_DROPDOWN) {
 					F.MessageBox.Show(nmhdrHeader.iItem.ToString());
-				}
-				else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW) {
+				} else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW) {
 					if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
-				}
-				else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW) {
+				} else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW) {
 					if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 				}
 
@@ -1733,8 +1718,7 @@ namespace BExplorer.Shell {
 							if (nmlv.item.iSubItem == 0) {
 								nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (!String.IsNullOrEmpty(NewName) ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
 								Marshal.StructureToPtr(nmlv, m.LParam, false);
-							}
-							else if (isSmallIcons) {
+							} else if (isSmallIcons) {
 								//TODO: Try to remove the Try Catch
 								try {
 									var hash = currentItem.GetHashCode();
@@ -1753,8 +1737,7 @@ namespace BExplorer.Shell {
 
 										nmlv.item.pszText = val;
 										Marshal.StructureToPtr(nmlv, m.LParam, false);
-									}
-									else {
+									} else {
 										ShellItem temp = !(currentItem.IsNetDrive || currentItem.IsNetworkPath) && !currentItem.ParsingName.StartsWith("::") ?
 											new ShellItem(currentItem.ParsingName) : currentItem;
 
@@ -1777,28 +1760,23 @@ namespace BExplorer.Shell {
 											if (pvar.Value != null) {
 												if (currentCollumn.CollumnType == typeof(DateTime)) {
 													val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
-												}
-												else if (currentCollumn.CollumnType == typeof(long)) {
+												} else if (currentCollumn.CollumnType == typeof(long)) {
 													val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0"))); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
-												}
-												else if (currentCollumn.CollumnType == typeof(PerceivedType)) {
+												} else if (currentCollumn.CollumnType == typeof(PerceivedType)) {
 													val = ((PerceivedType)pvar.Value).ToString();
-												}
-												else {
+												} else {
 													val = pvar.Value.ToString();
 												}
 												nmlv.item.pszText = val;
 												Marshal.StructureToPtr(nmlv, m.LParam, false);
 												pvar.Dispose();
-											}
-											else {
+											} else {
 												ItemsForSubitemsUpdate.Enqueue(new Tuple<int, int, PROPERTYKEY>(nmlv.item.iItem, nmlv.item.iSubItem, pk));
 											}
 										}
 										//}
 									}
-								}
-								catch {
+								} catch {
 								}
 								//var currentItem = Items[nmlv.item.iItem];
 								//var hash = currentItem.GetHashCode();
@@ -1850,11 +1828,9 @@ namespace BExplorer.Shell {
 						NMLISTVIEW nlcv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 						if (!this.IsGroupsEnabled) {
 							SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
-						}
-						else if (this.LastGroupCollumn == this.Collumns[nlcv.iSubItem]) {
+						} else if (this.LastGroupCollumn == this.Collumns[nlcv.iSubItem]) {
 							this.SetGroupOrder();
-						}
-						else {
+						} else {
 							SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
 							this.SetGroupOrder(false);
 						}
@@ -1908,8 +1884,7 @@ namespace BExplorer.Shell {
 							m.Result = (IntPtr)(selind);
 							if (IsGroupsEnabled)
 								this.SelectItemByIndex(selind, true, true);
-						}
-						else {
+						} else {
 							int selindOver = GetFirstIndexOf(KeyJumpString, 0);
 							if (selindOver != -1) {
 								m.Result = (IntPtr)(selindOver);
@@ -1940,23 +1915,18 @@ namespace BExplorer.Shell {
 								ShellItem selectedItem = Items[iac.iItem];
 								if (selectedItem.IsFolder) {
 									Navigate(selectedItem, false, true);
-								}
-								else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
+								} else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
 									var shellLink = new ShellLink(selectedItem.ParsingName);
 									var newSho = new ShellItem(shellLink.TargetPIDL);
 									if (newSho.IsFolder) Navigate(newSho, false, true); else StartProcessInCurrentDirectory(newSho);
 
 									shellLink.Dispose();
-								}
-								else {
+								} else {
 									StartProcessInCurrentDirectory(selectedItem);
 								}
+							} catch (Exception) {
 							}
-
-							catch (Exception) {
-							}
-						}
-						else {
+						} else {
 							this.EndLabelEdit();
 						}
 						break;
@@ -2004,8 +1974,7 @@ namespace BExplorer.Shell {
 								}
 							});
 							MaintenanceThread.Start();
-						}
-						catch (ThreadAbortException) {
+						} catch (ThreadAbortException) {
 						}
 						GC.Collect();
 
@@ -2041,8 +2010,7 @@ namespace BExplorer.Shell {
 									lvi.iGroup = this.GetGroupIndex(nlv.iItem);
 									User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 									RedrawWindow(itemBounds);
-								}
-								else {
+								} else {
 									RedrawWindow();
 								}
 							}
@@ -2078,19 +2046,16 @@ namespace BExplorer.Shell {
 									var selectedItem = this.GetFirstSelectedItem();
 									if (selectedItem.IsFolder) {
 										Navigate(selectedItem);
-									}
-									else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
+									} else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
 										var shellLink = new ShellLink(selectedItem.ParsingName);
 										var newSho = new ShellItem(shellLink.TargetPIDL);
 										if (newSho.IsFolder) {
 											Navigate(newSho);
-										}
-										else {
+										} else {
 											StartProcessInCurrentDirectory(newSho);
 										}
 										shellLink.Dispose();
-									}
-									else {
+									} else {
 										StartProcessInCurrentDirectory(selectedItem);
 									}
 
@@ -2098,8 +2063,7 @@ namespace BExplorer.Shell {
 							}
 
 							this.Focus();
-						}
-						else {
+						} else {
 							System.Windows.Input.InputManager.Current.ProcessInput(new System.Windows.Input.KeyEventArgs(System.Windows.Input.Keyboard.PrimaryDevice,
 									System.Windows.Input.Keyboard.PrimaryDevice.ActiveSource, Environment.TickCount, System.Windows.Input.KeyInterop.KeyFromVirtualKey(nkd.wVKey)) {
 										RoutedEvent = System.Windows.Controls.Control.KeyDownEvent
@@ -2162,10 +2126,8 @@ namespace BExplorer.Shell {
 							NMITEMACTIVATE itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
 							ShellContextMenu cm = new ShellContextMenu(selitems.ToArray());
 							cm.ShowContextMenu(this, itemActivate.ptAction, CMF.CANRENAME);
-						}
-						else if (nmhdrHdn.iItem == -1) {
-						}
-						else {
+						} else if (nmhdrHdn.iItem == -1) {
+						} else {
 							//MessageBox.Show(MousePosition.X.ToString() + ", " + MousePosition.Y.ToString());
 							if (ColumnHeaderRightClick != null) {
 								ColumnHeaderRightClick(this, new MouseEventArgs(F.MouseButtons.Right, 1, MousePosition.X, MousePosition.Y, 0));
@@ -2239,8 +2201,7 @@ namespace BExplorer.Shell {
 											Marshal.StructureToPtr(nmlvcd, m.LParam, false);
 
 											m.Result = (IntPtr)(CustomDraw.CDRF_NEWFONT | CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
-										}
-										else {
+										} else {
 											m.Result = (IntPtr)(CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
 										}
 										break;
@@ -2250,8 +2211,7 @@ namespace BExplorer.Shell {
 											nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
 											Marshal.StructureToPtr(nmlvcd, m.LParam, false);
 											m.Result = (IntPtr)CustomDraw.CDRF_NEWFONT;
-										}
-										else {
+										} else {
 											m.Result = (IntPtr)CustomDraw.CDRF_DODEFAULT;
 										}
 										break;
@@ -2300,8 +2260,7 @@ namespace BExplorer.Shell {
 													if (thumbnail != null) {
 														if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize) || thumbnail.Width == thumbnail.Height && thumbnail.Width != IconSize)) {
 															ThumbnailsForCacheLoad.Enqueue(index);
-														}
-														else {
+														} else {
 															sho.IsThumbnailLoaded = true;
 														}
 														using (Graphics g = Graphics.FromHdc(hdc)) {
@@ -2337,8 +2296,7 @@ namespace BExplorer.Shell {
 														}
 														thumbnail.Dispose();
 														thumbnail = null;
-													}
-													else {
+													} else {
 														if (!sho.IsThumbnailLoaded)
 															ThumbnailsForCacheLoad.Enqueue(index);
 														if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
@@ -2372,23 +2330,19 @@ namespace BExplorer.Shell {
 																}
 																icon.Dispose();
 															}
-														}
-														else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
+														} else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
 															if (!sho.IsIconLoaded) {
 																waitingThumbnails.Enqueue(index);
 																using (Graphics g = Graphics.FromHdc(hdc)) {
 																	if (IconSize == 16) {
 																		g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-																	}
-																	else if (IconSize <= 48) {
+																	} else if (IconSize <= 48) {
 																		g.DrawImage(ExeFallBack48, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-																	}
-																	else if (IconSize <= 256) {
+																	} else if (IconSize <= 256) {
 																		g.DrawImage(ExeFallBack256, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
 																	}
 																}
-															}
-															else {
+															} else {
 																Bitmap icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 																if (icon != null) {
 																	sho.IsIconLoaded = true;
@@ -2423,8 +2377,7 @@ namespace BExplorer.Shell {
 															}
 														}
 													}
-												}
-												else {
+												} else {
 													sho.IsThumbnailLoaded = true;
 													if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
 														var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
@@ -2438,15 +2391,13 @@ namespace BExplorer.Shell {
 															}
 															icon.Dispose();
 														}
-													}
-													else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
+													} else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
 														if (!sho.IsIconLoaded) {
 															waitingThumbnails.Enqueue(index);
 															using (Graphics g = Graphics.FromHdc(hdc)) {
 																g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
 															}
-														}
-														else {
+														} else {
 															Bitmap icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 															if (icon != null) {
 																sho.IsIconLoaded = true;
@@ -2467,14 +2418,11 @@ namespace BExplorer.Shell {
 												if (sho.OverlayIconIndex > 0) {
 													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
 														small.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - 16));
-													}
-													else if (this.IconSize > 180) {
+													} else if (this.IconSize > 180) {
 														jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
-													}
-													else if (this.IconSize > 64) {
+													} else if (this.IconSize > 64) {
 														extra.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 50));
-													}
-													else {
+													} else {
 														large.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 32));
 													}
 												}
@@ -2503,14 +2451,11 @@ namespace BExplorer.Shell {
 												if (sho.IsShielded > 0) {
 													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
 														small.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
-													}
-													else if (this.IconSize > 180) {
+													} else if (this.IconSize > 180) {
 														jumbo.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - this.IconSize / 3, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
-													}
-													else if (this.IconSize > 64) {
+													} else if (this.IconSize > 64) {
 														extra.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 60, iconBounds.Bottom - 50));
-													}
-													else {
+													} else {
 														large.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 42, iconBounds.Bottom - 32));
 													}
 												}
@@ -2625,8 +2570,7 @@ namespace BExplorer.Shell {
 					_UpdateSubitemValuesThread.Abort();
 				if (MaintenanceThread != null && MaintenanceThread.IsAlive)
 					MaintenanceThread.Abort();
-			}
-			catch (ThreadAbortException) {
+			} catch (ThreadAbortException) {
 			}
 			base.OnHandleDestroyed(e);
 		}
@@ -2752,8 +2696,7 @@ namespace BExplorer.Shell {
 					}
 
 					fo.PerformOperations();
-				}
-				catch (SecurityException) {
+				} catch (SecurityException) {
 					throw;
 				}
 			});
@@ -2781,8 +2724,7 @@ namespace BExplorer.Shell {
 				IShellItem[] items = null;
 				if (((F.DataObject)dataObject).ContainsFileDropList()) {
 					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => new ShellItem(s.ToShellParsingName()).ComInterface).ToArray();
-				}
-				else {
+				} else {
 					shellItemArray = dataObject.ToShellItemArray();
 					items = shellItemArray.ToArray();
 				}
@@ -2793,8 +2735,7 @@ namespace BExplorer.Shell {
 					}
 
 					fo.PerformOperations();
-				}
-				catch (SecurityException) {
+				} catch (SecurityException) {
 					throw;
 				}
 			});
@@ -2814,8 +2755,7 @@ namespace BExplorer.Shell {
 					}
 
 					fo.PerformOperations();
-				}
-				catch (SecurityException) {
+				} catch (SecurityException) {
 					throw;
 				}
 			});
@@ -2830,8 +2770,7 @@ namespace BExplorer.Shell {
 				IShellItem[] items = null;
 				if (((F.DataObject)dataObject).ContainsFileDropList()) {
 					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => new ShellItem(s.ToShellParsingName()).ComInterface).ToArray();
-				}
-				else {
+				} else {
 					shellItemArray = dataObject.ToShellItemArray();
 					items = shellItemArray.ToArray();
 				}
@@ -2842,8 +2781,7 @@ namespace BExplorer.Shell {
 					}
 
 					fo.PerformOperations();
-				}
-				catch (SecurityException) {
+				} catch (SecurityException) {
 					throw;
 				}
 			});
@@ -2863,8 +2801,7 @@ namespace BExplorer.Shell {
 					}
 
 					fo.PerformOperations();
-				}
-				catch (SecurityException) {
+				} catch (SecurityException) {
 					throw;
 				}
 			});
@@ -2940,8 +2877,7 @@ namespace BExplorer.Shell {
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETIMAGELIST, 1, ils.Handle);
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETICONSPACING, 0, (IntPtr)User32.MAKELONG(value + 28, value + 42));
 				//this.Cancel = false;
-			}
-			catch (Exception) {
+			} catch (Exception) {
 			}
 		}
 
@@ -3023,8 +2959,7 @@ namespace BExplorer.Shell {
 					var column = col.ToNativeColumn();
 					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
 				}
-			}
-			else {
+			} else {
 				Collumns theColumn = this.Collumns.SingleOrDefault(s => s.pkey.fmtid == col.pkey.fmtid && s.pkey.pid == col.pkey.pid);
 				if (theColumn != null) {
 					int colIndex = this.Collumns.IndexOf(theColumn);
@@ -3045,8 +2980,7 @@ namespace BExplorer.Shell {
 			if (colIndex == this.LastSortedColumnIndex && reverseOrder) {
 				// Reverse the current sort direction for this column.
 				this.LastSortOrder = this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
-			}
-			else {
+			} else {
 				// Set the column number that is to be sorted; default to ascending.
 				this.LastSortedColumnIndex = colIndex;
 				this.LastSortOrder = Order;
@@ -3054,8 +2988,7 @@ namespace BExplorer.Shell {
 			var i = 0;
 			if (Order == SortOrder.Ascending) {
 				this.Items = this.Items.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(this.Collumns[colIndex].pkey, typeof(String)).Value).ToList();
-			}
-			else {
+			} else {
 				this.Items = this.Items.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(this.Collumns[colIndex].pkey, typeof(String)).Value).ToList();
 			}
 
@@ -3196,12 +3129,13 @@ namespace BExplorer.Shell {
 			//	Thread.Sleep(2);
 			//	F.Application.DoEvents();
 			//}
+			this.SetSortIcon(this.LastSortedColumnIndex, SortOrder.None);
 			if (isInSameTab)
 				SaveSettingsToDatabase(this.CurrentFolder);
 			this.Cancel = false;
 			//if (destination != this.CurrentFolder) {
-				this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
-			
+			this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
+
 			//}
 
 			this.ItemForRename = -1;
@@ -3254,14 +3188,14 @@ namespace BExplorer.Shell {
 				if (this.CurrentFolder != null && e.Current.Parent != this.CurrentFolder) {
 					break;
 				}
-				this.Items.Add(e.Current);
-				F.Application.DoEvents();
+				if (this.ShowHidden ? true : !e.Current.IsHidden)
+					this.Items.Add(e.Current);
 				CurrentI++;
-				if (CurrentI - LastI >= (destination.IsSearchFolder ? 100 : 2500) && destination.IsSearchFolder) {
-					Thread.Sleep(2);
+				if (CurrentI - LastI >= (destination.IsSearchFolder ? 70 : 1150)) {
 					F.Application.DoEvents();
 					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-					Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+					if (destination.IsSearchFolder)
+						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 					LastI = CurrentI;
 				}
 			}
@@ -3269,17 +3203,15 @@ namespace BExplorer.Shell {
 
 			if (isThereSettings && folderSettings.SortColumn != null) {
 				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder, false);
-			}
-			else if (destination.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant()) {
+			} else if (destination.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant()) {
 				this.Items = this.Items.ToList();
-			}
-			else {
-				this.Items = this.Items.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
+			} else {
+				this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
 			}
 
-			this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++);
-			GC.WaitForPendingFinalizers();
-			GC.Collect();
+			if (!(isThereSettings && folderSettings.SortColumn != null))
+				this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++);
+
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 
 			if (!(isThereSettings)) {
@@ -3287,33 +3219,37 @@ namespace BExplorer.Shell {
 				this.LastSortOrder = SortOrder.Ascending;
 				this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
 			}
-			
+
 
 			Notifications.RegisterChangeNotify(this.Handle, destination, true);
 			try {
 				History.Add(destination);
-			}
-			catch { }
+			} catch { }
 
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+			if (!(isThereSettings && folderSettings.SortColumn != null))
+				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 			if (IsGroupsEnabled) {
 				this.Groups.Clear();
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
 				GenerateGroupsFromColumn(this.Collumns.First());
 			}
-			
+
 			//dest.Dispose();
 			this.OnNavigated(new NavigatedEventArgs(destination, this.CurrentFolder, isInSameTab));
 			this.CurrentFolder = destination;
-			
+
 			IsDoubleNavFinished = false;
-			AutosizeAllColumns(this.View != ShellViewStyle.Details ? -2 : -1);
+			//AutosizeAllColumns(this.View != ShellViewStyle.Details ? -2 : -1);
 
 			//if (this.View != ShellViewStyle.Details)
 			//	AutosizeAllColumns(-2);
 			//else
 			//	AutosizeAllColumns(-1);
 			this.Focus();
+
+		}
+		private static int Compare(ShellItem x, ShellItem y) {
+			return String.Compare(x.DisplayName, y.DisplayName);
 		}
 
 		public void DisableGroups() {
@@ -3382,8 +3318,7 @@ namespace BExplorer.Shell {
 					var nativeGroup = group.ToNativeListViewGroup();
 					User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
 				}
-			}
-			else if (col.CollumnType == typeof(long)) {
+			} else if (col.CollumnType == typeof(long)) {
 				var j = reversed ? 7 : 0;
 				ListViewGroupEx uspec = new ListViewGroupEx();
 				uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
@@ -3440,8 +3375,7 @@ namespace BExplorer.Shell {
 					var nativeGroup = group.ToNativeListViewGroup();
 					User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
 				}
-			}
-			else {
+			} else {
 				var groups = this.Items.GroupBy(k => k.GetPropertyValue(col.pkey, typeof(String)).Value, e => e).OrderBy(o => o.Key);
 				var i = reversed ? groups.Count() - 1 : 0;
 				foreach (var group in groups) {
@@ -3518,8 +3452,7 @@ namespace BExplorer.Shell {
 					}
 
 					//Application.DoEvents();
-				}
-				catch {
+				} catch {
 				}
 			}
 		}
@@ -3549,8 +3482,7 @@ namespace BExplorer.Shell {
 						RedrawItem(index);
 					resetEvent.WaitOne();
 					//Application.DoEvents();
-				}
-				catch (Exception) {
+				} catch (Exception) {
 				}
 			}
 		}
@@ -3596,8 +3528,7 @@ namespace BExplorer.Shell {
 					}
 
 					//Application.DoEvents();
-				}
-				catch {
+				} catch {
 				}
 			}
 		}
@@ -3625,8 +3556,7 @@ namespace BExplorer.Shell {
 					}
 
 					//Application.DoEvents();
-				}
-				catch {
+				} catch {
 				}
 			}
 		}
@@ -3649,8 +3579,7 @@ namespace BExplorer.Shell {
 						ShellItem temp = null;
 						if (!(currentItem.IsNetDrive || currentItem.IsNetworkPath) && !currentItem.ParsingName.StartsWith("::")) {
 							temp = new ShellItem(currentItem.ParsingName);
-						}
-						else {
+						} else {
 							temp = currentItem;
 						}
 						int hash = currentItem.GetHashCode();
@@ -3668,8 +3597,7 @@ namespace BExplorer.Shell {
 							pvar.Dispose();
 						}
 					}
-				}
-				catch {
+				} catch {
 					//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, index.Item1, 0);
 				}
 			}
@@ -3758,13 +3686,11 @@ namespace BExplorer.Shell {
 				//TODO: Check
 				if (this.CurrentFolder.Parent == null) {
 					endname = String.Format("{0}\\" + name + " ({1})", this.CurrentFolder.ParsingName, ++suffix);
-				}
-				else if (this.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
+				} else if (this.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
 					ShellLibrary lib = ShellLibrary.Load(this.CurrentFolder.DisplayName, true);
 					endname = String.Format("{0}\\" + name + " ({1})", lib.DefaultSaveFolder, ++suffix);
 					lib.Close();
-				}
-				else {
+				} else {
 					endname = String.Format("{0}\\" + name + " ({1})", this.CurrentFolder.ParsingName, ++suffix);
 				}
 
@@ -3805,16 +3731,14 @@ namespace BExplorer.Shell {
 			ShellLibrary lib = null;
 			try {
 				lib = ShellLibrary.Load(endname, true);
-			}
-			catch {
+			} catch {
 			}
 			if (lib != null) {
 				do {
 					endname = String.Format(name + "({0})", ++suffix);
 					try {
 						lib = ShellLibrary.Load(endname, true);
-					}
-					catch {
+					} catch {
 						lib = null;
 					}
 				} while (lib != null);
@@ -3887,12 +3811,10 @@ namespace BExplorer.Shell {
 			if (SelectedItems.Count > 0) {
 				if (Directory.GetLogicalDrives().Contains(SelectedItems[0].ParsingName)) {
 					DriveLetter = SelectedItems[0].ParsingName;
-				}
-				else {
+				} else {
 					DriveLetter = this.CurrentFolder.ParsingName;
 				}
-			}
-			else {
+			} else {
 				DriveLetter = this.CurrentFolder.ParsingName;
 			}
 			Process.Start(Path.Combine(Environment.SystemDirectory, "dfrgui.exe"), "/u /v " + DriveLetter.Replace("\\", ""));
@@ -3939,7 +3861,7 @@ namespace BExplorer.Shell {
 					}
 				}
 			}
-			//On Exception do nothing (usually it happens on app exit)
+				//On Exception do nothing (usually it happens on app exit)
 			catch { }
 
 			//}
@@ -4026,12 +3948,10 @@ namespace BExplorer.Shell {
 					//found = true;
 					//i = -1;
 					return -1;
-				}
-				else if (Items[i].GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(search.ToUpperInvariant())) {
+				} else if (Items[i].GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(search.ToUpperInvariant())) {
 					//found = true;
 					return i;
-				}
-				else {
+				} else {
 					i++;
 				}
 			}
@@ -4061,17 +3981,13 @@ namespace BExplorer.Shell {
 			str = str.ToUpperInvariant();
 			if (str.Length == 1) {
 				return str;
-			}
-			else if (str == "SPACE") {
+			} else if (str == "SPACE") {
 				return " ";
-			}
-			else if (str == "OEMPERIOD") {
+			} else if (str == "OEMPERIOD") {
 				return ".";
-			}
-			else if (str == "OEMMINUS") {
+			} else if (str == "OEMMINUS") {
 				return "-";
-			}
-			else {
+			} else {
 				return "";
 			}
 		}
@@ -4178,8 +4094,7 @@ namespace BExplorer.Shell {
 				}
 
 				Reader.Close();
-			}
-			catch (Exception) {
+			} catch (Exception) {
 			}
 			folderSettings = folderSetting;
 			return result;

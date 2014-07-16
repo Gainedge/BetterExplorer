@@ -3172,7 +3172,8 @@
 							HorizontalAlignment="Left"
 							Content="0 selected items"
 							Foreground="{DynamicResource BackstageFontBrush}" />
-			<Separator x:Name="spSelItems" HorizontalAlignment="Left" />
+			<Separator x:Name="spSelItems" HorizontalAlignment="Left" Visibility="{Binding Path=Visibility,
+									ElementName=sbiSelItemsCount}"/>
 
 			<Ribbon:StatusBarItem Title="Size Chart"
 							HorizontalAlignment="Right"

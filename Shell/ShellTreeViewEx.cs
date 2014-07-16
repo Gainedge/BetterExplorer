@@ -545,7 +545,7 @@ namespace BExplorer.Shell {
 				}
 				this.isFromTreeview = true;
 				if (this._IsNavigate) {
-					this.ShellListView.Navigate(linkSho ?? sho);
+					this.ShellListView.Navigate(linkSho ?? sho, false, true);
 				}
 				this._IsNavigate = false;
 				this.isFromTreeview = false;

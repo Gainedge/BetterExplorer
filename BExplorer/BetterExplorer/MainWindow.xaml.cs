@@ -546,6 +546,8 @@ namespace BetterExplorer {
 			int ItemsCount = ShellListView.GetItemsCount();
 			sbiItemsCount.Visibility = ItemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;
 			sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
+			sbiSelItemsCount.Visibility = ShellListView.GetSelectedCount() == 0 ? Visibility.Collapsed : Visibility.Visible;
+			spSelItems.Visibility = sbiSelItemsCount.Visibility;
 
 			btnMoreColls.Items.Add(new Separator());
 
@@ -800,10 +802,11 @@ namespace BetterExplorer {
 			}
 
 			if (ctgLibraries.Visibility == Visibility.Visible && ShellListView.CurrentFolder.Equals(KnownFolders.Libraries)) {
-				if (selectedItem != null)
+				if (selectedItem != null && selectedItemsCount == 1)
 					SetupLibrariesTab(ShellLibrary.Load(selectedItem.DisplayName, false));
 			} else if (ctgLibraries.Visibility == Visibility.Visible && ShellListView.CurrentFolder.Parent.Equals(KnownFolders.Libraries)) {
-				SetupLibrariesTab(ShellLibrary.Load(ShellListView.CurrentFolder.DisplayName, false));
+				if (selectedItemsCount == 1)
+					SetupLibrariesTab(ShellLibrary.Load(ShellListView.CurrentFolder.DisplayName, false));
 			}
 			#endregion
 
@@ -1823,27 +1826,33 @@ namespace BetterExplorer {
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
-			this._IsBreadcrumbBarSelectionChnagedAllowed = false;
-			this.bcbc.Path = e.Folder.IsSearchFolder ? e.Folder.Pidl.ToString() : e.Folder.ParsingName;
-			var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
-			if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
-				if (tab.SelectedItems != null) {
-					tab.SelectedItems.AddRange(this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList());
-				} else {
-					tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+			//Dispatcher.Invoke(DispatcherPriority.Background, (Action)(() => {
+				this._IsBreadcrumbBarSelectionChnagedAllowed = false;
+				if (!e.IsNavigateInSameTab)
+					this.bcbc.PathConversion -= path_conversation;
+				this.bcbc.Path = e.Folder.IsSearchFolder ? e.Folder.Pidl.ToString() : e.Folder.ParsingName;
+				if (!e.IsNavigateInSameTab)
+					this.bcbc.PathConversion += path_conversation;
+				var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
+				if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
+					if (tab.SelectedItems != null) {
+						tab.SelectedItems.AddRange(this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList());
+					} else {
+						tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+					}
 				}
-			}
-			this.Title = "Better Explorer - " + e.Folder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
-			e.Folder.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-			e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			try {
-				Wpf.Controls.TabItem selectedTabItem = (tcMain.SelectedItem as Wpf.Controls.TabItem);
-				selectedTabItem.Header = e.Folder.DisplayName;
-				selectedTabItem.Icon = e.Folder.Thumbnail.BitmapSource;
-				selectedTabItem.ShellObject = this.ShellListView.CurrentFolder;
-				selectedTabItem.ToolTip = e.Folder.ParsingName;
-			} catch (Exception) {
-			}
+				this.Title = "Better Explorer - " + e.Folder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
+				e.Folder.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+				e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+				try {
+					Wpf.Controls.TabItem selectedTabItem = (tcMain.SelectedItem as Wpf.Controls.TabItem);
+					selectedTabItem.Header = e.Folder.DisplayName;
+					selectedTabItem.Icon = e.Folder.Thumbnail.BitmapSource;
+					selectedTabItem.ShellObject = this.ShellListView.CurrentFolder;
+					selectedTabItem.ToolTip = e.Folder.ParsingName;
+				} catch (Exception) {
+				}
+			//}));
 		}
 
 
@@ -2415,11 +2424,16 @@ namespace BetterExplorer {
 		#region On Navigated
 
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
+			SetupColumnsButton(this.ShellListView.AllAvailableColumns);
+			SetSortingAndGroupingButtons();
+			if (e.Folder == this.ShellListView.CurrentFolder)
+				return;
 			if (this.IsConsoleShown)
 				ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
 
 			//Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
-				//SetUpBreadcrumbbarOnNavComplete(e);
+			
+				SetUpBreadcrumbbarOnNavComplete(e);
 			//}));
 
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
@@ -2428,8 +2442,6 @@ namespace BetterExplorer {
 				SetUpJumpListOnNavComplete();
 				SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
 				SetupUIOnSelectOrNavigate(true);
-				SetupColumnsButton(this.ShellListView.AllAvailableColumns);
-				SetSortingAndGroupingButtons();
 			}));
 
 			if (this.IsInfoPaneEnabled) {
@@ -2586,18 +2598,18 @@ namespace BetterExplorer {
 			//this.bcbc.UpdateLayout();
 			//this.bcbc.Path = e.Folder.ParsingName;
 			//this.breadcrumbBarControl1.LastPath = e.Folder.ParsingName;
-			var folder = e.isInSameTab ? e.Folder : e.Folder;
-			this.Title = "Better Explorer - " + e.Folder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
-			e.Folder.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-			e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			try {
-				Wpf.Controls.TabItem selectedTabItem = (tcMain.SelectedItem as Wpf.Controls.TabItem);
-				selectedTabItem.Header = folder.DisplayName;
-				selectedTabItem.Icon = e.Folder.Thumbnail.BitmapSource;
-				selectedTabItem.ShellObject = e.Folder;
-				selectedTabItem.ToolTip = e.Folder.ParsingName;
-			} catch (Exception) {
-			}
+			//var folder = e.isInSameTab ? e.Folder : e.Folder;
+			//this.Title = "Better Explorer - " + e.Folder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
+			//e.Folder.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+			//e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+			//try {
+			//	Wpf.Controls.TabItem selectedTabItem = (tcMain.SelectedItem as Wpf.Controls.TabItem);
+			//	selectedTabItem.Header = folder.DisplayName;
+			//	selectedTabItem.Icon = e.Folder.Thumbnail.BitmapSource;
+			//	selectedTabItem.ShellObject = e.Folder;
+			//	selectedTabItem.ToolTip = e.Folder.ParsingName;
+			//} catch (Exception) {
+			//}
 
 			//try {
 
@@ -2983,7 +2995,7 @@ namespace BetterExplorer {
 				NavigationLog nl = (tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
 				(sender as MenuItem).IsChecked = true;
 				nl.CurrentLocPos = cmHistory.Items.IndexOf((sender as MenuItem));
-				ShellListView.Navigate(item);
+				ShellListView.Navigate(item, false, true);
 			}
 		}
 
@@ -4062,9 +4074,8 @@ namespace BetterExplorer {
 				if (edtSearchBox.FullSearchTerms != "") {
 					SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
 					ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
-
 					//var test = searchFolder.ParsingName;
-					ShellListView.Navigate(searchFolder,false,false);
+					ShellListView.Navigate(searchFolder,false,true);
 				}
 			} catch (Exception ex) {
 				MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
@@ -4406,8 +4417,13 @@ namespace BetterExplorer {
 
 		void t_Tick(object sender, EventArgs e) {
 			if (!Keyboard.IsKeyDown(Key.Tab)) {
+				var item = (sender as System.Windows.Forms.Timer).Tag as ShellItem;
 				//this.ShellListView.Cancel = true;
-				ShellListView.Navigate((sender as System.Windows.Forms.Timer).Tag as ShellItem);
+				if (item != this.ShellListView.CurrentFolder || item.IsSearchFolder) {
+					this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
+					this.ShellListView.CurrentFolder = item;
+					ShellListView.Navigate(item, false, false);
+				}
 				(sender as System.Windows.Forms.Timer).Stop();
 			}
 		}
@@ -5365,8 +5381,8 @@ namespace BetterExplorer {
 		}
 
 		private void PopulateFolders(Odyssey.Controls.BreadcrumbItem item) {
-			Dispatcher.Invoke(DispatcherPriority.Normal,
-				(Action)(() => {
+			//Dispatcher.Invoke(DispatcherPriority.Normal,
+			//	(Action)(() => {
 					if (item.Items.Count > 0) {
 						this._IsBreadcrumbBarSelectionChnagedAllowed = true;
 						return;
@@ -5380,16 +5396,21 @@ namespace BetterExplorer {
 					} else {
 						try {
 							if (shellitem != null) {
-								if (!shellitem.IsSearchFolder) {
-									foreach (ShellItem s in shellitem.Where(w => w.IsFolder && (this.ShellListView.ShowHidden ? true : w.IsHidden == false))) {
-										item.Items.Add(s);
+								if (!shellitem.IsSearchFolder) { 
+									var e = shellitem.GetEnumerator();
+									while (e.MoveNext()) {
+										if (e.Current.IsFolder && (this.ShellListView.ShowHidden ? true : e.Current.IsHidden == false)) {
+											System.Windows.Forms.Application.DoEvents();
+											item.Items.Add(e.Current);
+											System.Windows.Forms.Application.DoEvents();
+										}
 									}
 								}
 							}
 						} catch { }
 					}
 					this._IsBreadcrumbBarSelectionChnagedAllowed = true;
-				}));
+				//}));
 		}
 
 		private void Refresh_Click(object sender, RoutedEventArgs e) {
@@ -5440,13 +5461,18 @@ namespace BetterExplorer {
 				Int64 pidl;
 				bool isValidPidl = Int64.TryParse(newPath.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
 				ShellItem item = null;
-				if (isValidPidl) {
-					item = new ShellItem((IntPtr)pidl);
-				} else {
-					item = new ShellItem(newPath.ToShellParsingName());
-				}
-				if (item != this.ShellListView.CurrentFolder)
-					this.ShellListView.Navigate(item, false, false);
+				try {
+					if (isValidPidl) {
+						item = new ShellItem((IntPtr)pidl);
+					} else {
+						item = new ShellItem(newPath.ToShellParsingName());
+					}
+					//if (item != this.ShellListView.CurrentFolder) {
+						//this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
+						//this.ShellListView.CurrentFolder = item;
+						this.ShellListView.Navigate(item, false, true);
+					//}
+				} catch {	}
 			}
 		}
 
