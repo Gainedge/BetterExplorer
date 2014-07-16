@@ -267,9 +267,11 @@ namespace BetterExplorer {
 			if (tab == null) return;
 			tcMain.isGoingBackOrForward = tab.log.HistoryItemsList.Count != 0;
 			try {
-				if (tab.ShellObject != ShellListView.CurrentFolder) {
+				if (true/*tab.ShellObject != ShellListView.CurrentFolder*/) {
 					if (!Keyboard.IsKeyDown(Key.Tab)) {
-						ShellListView.Navigate(tab.ShellObject);
+						this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
+						this.ShellListView.CurrentFolder = tab.ShellObject;
+						ShellListView.Navigate(tab.ShellObject, false, false);
 					}
 					else {
 						t.Interval = 500;

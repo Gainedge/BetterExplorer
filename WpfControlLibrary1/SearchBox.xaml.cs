@@ -17,6 +17,8 @@ namespace BetterExplorerControls {
 
 		public event SearchEventHandler RequestCriteriaChange;
 
+		public event EventHandler RequestCancel;
+
 		public delegate void SearchEventHandler(object sender, SearchRoutedEventArgs e);
 
 		// An event that clients can use to be notified whenever the elements of the list change:
@@ -216,6 +218,11 @@ namespace BetterExplorerControls {
 		protected override void OnKeyUp(KeyEventArgs e) {
 			//base.OnKeyUp(e);
 			e.Handled = true;
+			if (e.Key == Key.Escape) {
+				if (this.RequestCancel != null) {
+					this.RequestCancel.Invoke(this, EventArgs.Empty);
+				}
+			}
 			if (e.Key == Key.Enter) {
 				//RaiseBeginSearchEvent();
 				RaiseEvent(new SearchRoutedEventArgs(CompileTerms(), SearchBox.BeginSearchEvent));

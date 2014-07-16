@@ -80,6 +80,9 @@ namespace BExplorer.Shell {
 	public class NavigatedEventArgs : EventArgs, IDisposable {
 		/// <summary> The folder that is navigated to. </summary>
 		public ShellItem Folder { get; set; }
+		public ShellItem OldFolder { get; set; }
+
+		public Boolean isInSameTab { get; set; }
 
 		public void Dispose() {
 			if (Folder != null) {
@@ -88,8 +91,14 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public NavigatedEventArgs(ShellItem folder) {
+		public NavigatedEventArgs(ShellItem folder, ShellItem old) {
 			Folder = folder;
+			OldFolder = old;
+		}
+		public NavigatedEventArgs(ShellItem folder, ShellItem old, bool isInSame) {
+			Folder = folder;
+			OldFolder = old;
+			isInSameTab = isInSame;
 		}
 	}
 
@@ -552,11 +561,11 @@ namespace BExplorer.Shell {
 
 		public int CurrentRefreshedItemIndex = -1;
 
+		public Boolean Cancel = false;
 		#endregion Public Members
 
 		#region Private Members
-
-		private Boolean Cancel = false;
+		private Boolean _IsNavigationInProgress = false;
 
 		[Obsolete("Never Actually Used")]
 		private Boolean _IsInRenameMode = false;
@@ -1930,12 +1939,12 @@ namespace BExplorer.Shell {
 							try {
 								ShellItem selectedItem = Items[iac.iItem];
 								if (selectedItem.IsFolder) {
-									Navigate(selectedItem);
+									Navigate(selectedItem, false, true);
 								}
 								else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
 									var shellLink = new ShellLink(selectedItem.ParsingName);
 									var newSho = new ShellItem(shellLink.TargetPIDL);
-									if (newSho.IsFolder) Navigate(newSho); else StartProcessInCurrentDirectory(newSho);
+									if (newSho.IsFolder) Navigate(newSho, false, true); else StartProcessInCurrentDirectory(newSho);
 
 									shellLink.Dispose();
 								}
@@ -1956,7 +1965,7 @@ namespace BExplorer.Shell {
 						this.EndLabelEdit();
 						resetEvent.Reset();
 						_ResetTimer.Stop();
-						this.Cancel = true;
+						//this.Cancel = true;
 						ToolTip.HideTooltip();
 						ThumbnailsForCacheLoad.Clear();
 						overlayQueue.Clear();
@@ -2003,7 +2012,7 @@ namespace BExplorer.Shell {
 						break;
 
 					case WNM.LVN_ENDSCROLL:
-						this.Cancel = false;
+						//this.Cancel = false;
 						_ResetTimer.Start();
 						//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 						break;
@@ -2899,7 +2908,7 @@ namespace BExplorer.Shell {
 		public void ResizeIcons(int value) {
 			try {
 				IconSize = value;
-				this.Cancel = true;
+				//this.Cancel = true;
 				cache.Clear();
 				cachedIndexes.Clear();
 				ThumbnailsForCacheLoad.Clear();
@@ -2930,7 +2939,7 @@ namespace BExplorer.Shell {
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETIMAGELIST, 0, il.Handle);
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETIMAGELIST, 1, ils.Handle);
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETICONSPACING, 0, (IntPtr)User32.MAKELONG(value + 28, value + 42));
-				this.Cancel = false;
+				//this.Cancel = false;
 			}
 			catch (Exception) {
 			}
@@ -3178,8 +3187,22 @@ namespace BExplorer.Shell {
 		}
 
 		public void Navigate(ShellItem destination, Boolean isReload = false, Boolean isInSameTab = false) {
-			this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
-			SaveSettingsToDatabase();
+			//if (!this._IsNavigationInProgress) {
+			//	this.Cancel = false;
+			//} else {
+			//	this.Cancel = false;
+			//}
+			//while (this._IsNavigationInProgress) {
+			//	Thread.Sleep(2);
+			//	F.Application.DoEvents();
+			//}
+			if (isInSameTab)
+				SaveSettingsToDatabase(this.CurrentFolder);
+			this.Cancel = false;
+			//if (destination != this.CurrentFolder) {
+				this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
+			
+			//}
 
 			this.ItemForRename = -1;
 
@@ -3189,14 +3212,16 @@ namespace BExplorer.Shell {
 			if (ToolTip == null) {
 				this.ToolTip = new ToolTip();
 			}
-			if (this.CurrentFolder != null) {
-				if (destination.ParsingName == this.CurrentFolder.ParsingName && !isReload)
-					return;
-			}
+			//if (this.CurrentFolder != null) {
+			//	if (destination.ParsingName == this.CurrentFolder.ParsingName && !isReload)
+			//		return;
+			//}
 			var folderSettings = new FolderSettings();
 			var isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
 
 			this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
+			if (folderSettings.View == ShellViewStyle.Details)
+				ResizeIcons(16);
 
 			this.Notifications.UnregisterChangeNotify();
 			overlays.Clear();
@@ -3208,7 +3233,6 @@ namespace BExplorer.Shell {
 			waitingThumbnails.Clear();
 			overlayQueue.Clear();
 			shieldQueue.Clear();
-			this.Cancel = false;
 			this.cache.Clear();
 			this._CuttedIndexes.Clear();
 			SubItems.Clear();
@@ -3224,8 +3248,12 @@ namespace BExplorer.Shell {
 
 			var e = destination.GetEnumerator();
 			var i = 0;
+			this._IsNavigationInProgress = true;
 			while (e.MoveNext()) {
 				F.Application.DoEvents();
+				if (this.CurrentFolder != null && e.Current.Parent != this.CurrentFolder) {
+					break;
+				}
 				this.Items.Add(e.Current);
 				F.Application.DoEvents();
 				CurrentI++;
@@ -3233,18 +3261,12 @@ namespace BExplorer.Shell {
 					Thread.Sleep(2);
 					F.Application.DoEvents();
 					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-					//Thread.Sleep(e.Item.Parent.IsSearchFolder? 5: 1);
-
-					//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+					Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 					LastI = CurrentI;
-					if (this.Cancel)
-						break;
-					//GC.WaitForPendingFinalizers();
-					//GC.Collect();
 				}
 			}
+			this._IsNavigationInProgress = false;
 
-			//F.Application.DoEvents();
 			if (isThereSettings && folderSettings.SortColumn != null) {
 				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder, false);
 			}
@@ -3260,13 +3282,12 @@ namespace BExplorer.Shell {
 			GC.Collect();
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 
-			this.Cancel = false;
-			if (!(isThereSettings && folderSettings.SortColumn != null)) {
+			if (!(isThereSettings)) {
 				this.LastSortedColumnIndex = 0;
 				this.LastSortOrder = SortOrder.Ascending;
 				this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
 			}
-			this.CurrentFolder = destination;
+			
 
 			Notifications.RegisterChangeNotify(this.Handle, destination, true);
 			try {
@@ -3280,9 +3301,11 @@ namespace BExplorer.Shell {
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
 				GenerateGroupsFromColumn(this.Collumns.First());
 			}
-
+			
 			//dest.Dispose();
-			this.OnNavigated(new NavigatedEventArgs(destination));
+			this.OnNavigated(new NavigatedEventArgs(destination, this.CurrentFolder, isInSameTab));
+			this.CurrentFolder = destination;
+			
 			IsDoubleNavFinished = false;
 			AutosizeAllColumns(this.View != ShellViewStyle.Details ? -2 : -1);
 
@@ -4096,7 +4119,7 @@ namespace BExplorer.Shell {
 				var column = -1;
 				this.HitTest(this.PointToClient(Cursor.Position), out row, out column);
 				if (row != -1 && this.Items[row].IsFolder) {
-					ItemMiddleClick.Invoke(this, new NavigatedEventArgs(this.Items[row]));
+					ItemMiddleClick.Invoke(this, new NavigatedEventArgs(this.Items[row], this.Items[row]));
 				}
 			}
 		}
@@ -4162,14 +4185,14 @@ namespace BExplorer.Shell {
 			return result;
 		}
 
-		public void SaveSettingsToDatabase() {
+		public void SaveSettingsToDatabase(ShellItem destination) {
 			if (CurrentFolder == null) return;
 
 			var m_dbConnection = new SQLite.SQLiteConnection("Data Source=Settings.sqlite;Version=3;");
 			m_dbConnection.Open();
 
 			var command1 = new SQLite.SQLiteCommand("SELECT * FROM foldersettings WHERE Path=@Path", m_dbConnection);
-			command1.Parameters.AddWithValue("Path", CurrentFolder.ParsingName);
+			command1.Parameters.AddWithValue("Path", destination.ParsingName);
 			var Reader = command1.ExecuteReader();
 			var sql = Reader.Read() ?
 									@"UPDATE foldersettings
@@ -4180,7 +4203,7 @@ namespace BExplorer.Shell {
 									VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn)";
 
 			var command2 = new SQLite.SQLiteCommand(sql, m_dbConnection);
-			command2.Parameters.AddWithValue("Path", CurrentFolder.ParsingName);
+			command2.Parameters.AddWithValue("Path", destination.ParsingName);
 			command2.Parameters.AddWithValue("LastSortOrder", LastSortOrder.ToString());
 			command2.Parameters.AddWithValue("LastGroupOrder", LastGroupOrder.ToString());
 			command2.Parameters.AddWithValue("LastGroupCollumn", LastGroupCollumn == null ? null : LastGroupCollumn.ID);

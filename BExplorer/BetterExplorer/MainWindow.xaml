@@ -3025,7 +3025,7 @@
 							BeginSearch="edtSearchBox_BeginSearch"
 							FiltersCleared="edtSearchBox_FiltersCleared"
 							GotKeyboardFocus="edtSearchBox_GotKeyboardFocus"
-							RequestCriteriaChange="edtSearchBox_RequestCriteriaChange" />
+							RequestCriteriaChange="edtSearchBox_RequestCriteriaChange" Loaded="edtSearchBox_Loaded" />
 			<GridSplitter x:Name="gridSplitter1"
 					Grid.Column="1"
 					Width="8"
