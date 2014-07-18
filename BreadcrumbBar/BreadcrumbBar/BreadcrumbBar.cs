@@ -18,6 +18,8 @@ using System.Collections.ObjectModel;
 using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
 using BExplorer.Shell;
+using System.Windows.Threading;
+using System.Threading;
 
 //###################################################################################
 // Odyssey.Controls
@@ -345,7 +347,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				this.Path = null;
 				return false;
 			}
-
 			newPath = RemoveLastEmptySeparator(newPath);
 			//newPath = newPath == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : newPath;
 			string newPathToShellParsingName = newPath.ToShellParsingName();
@@ -367,68 +368,72 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 
 			if (traces.Count == 0) RootItem.SelectedItem = null;
 			traces.Reverse();
+
+
 			int index = 0;
 
-			List<int> itemIndex = new List<int>();
+			List<Tuple<int, ShellItem>> itemIndex = new List<Tuple<int, ShellItem>>();
 
 			// if the root is specified as first trace, then skip:
 			int length = traces.Count;
 			int max = breadcrumbsToHide;
-			ShellItem lItem = null;
-			BreadcrumbItem missingItem = null;
-			if (max > 0 && traces[index].GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING) == (shellItem.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING))) {
+			if (max > 0 && traces[index].GetHashCode() == (shellItem.GetHashCode())) {
 				length--;
 				index++;
 				max--;
 			}
+					for (int i = index; i < traces.Count; i++) {
+						if (item == null) break;
+						var trace = traces[i];
+						OnPopulateItems(item);
+						object next = item.GetTraceItem(trace);
+						if (next == null && (item.Data as ShellItem) == trace.Parent) {
+							//missingItem = item;
+							//lItem = trace;
+							item.Items.Add(trace);
+							next = item.GetTraceItem(trace);
+						}
+						if (next == null) break;
+						itemIndex.Add(new Tuple<int, ShellItem>(item.Items.IndexOf(next), trace));
+						BreadcrumbItem container = item.ContainerFromItem(next);
 
-			for (int i = index; i < traces.Count; i++) {
-				if (item == null) break;
-				var trace = traces[i];
-				OnPopulateItems(item);
-				object next = item.GetTraceItem(trace);
-				if (next == null && (item.Data as ShellItem) == trace.Parent) {
-					missingItem = item;
-					lItem = trace;
-					item.Items.Add(trace);
-					next = item.GetTraceItem(trace);
-				}
-				if (next == null) break;
-				itemIndex.Add(item.Items.IndexOf(next));
-				BreadcrumbItem container = item.ContainerFromItem(next);
-
-				item = container;
-			}
-			if (length != itemIndex.Count) {
-				//recover the last path:
-				Path = GetDisplayPath();
-				return false;
-			}
-
-			// temporarily remove the SelectionChangedEvent handler to minimize processing of events while building the breadcrumb items:
-			RemoveHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
-
-			try {
-				var item2 = RootItem;
-				for (int i = 0; i < itemIndex.Count; i++) {
-					if (item == null) break;
-					if (lItem != null && itemIndex[i] > item2.Items.OfType<ShellItem>().Count() - 1) {
-						if (!item2.Items.Contains(lItem))
-							item2.Items.Add(lItem);
-						lItem = null;
+						item = container;
 					}
-					item2.SelectedIndex = itemIndex[i];
-					item2 = item2.SelectedBreadcrumb;
-				}
-				if (item2 != null) item2.SelectedItem = null;
-				SelectedBreadcrumb = item2;
-				SelectedItem = item2 != null ? item2.Data : null;
-			}
-			finally {
-				AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
-				_allowSelectionChnaged = true;
-			}
+					if (length != itemIndex.Count) {
+						//recover the last path:
+						Path = GetDisplayPath();
+						return false;
+					}
 
+					// temporarily remove the SelectionChangedEvent handler to minimize processing of events while building the breadcrumb items:
+					RemoveHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
+
+					try {
+						var item2 = RootItem;
+						foreach (var key in itemIndex) {
+							if (item == null) break;
+							//if (key.Item1 > item2.Items.OfType<ShellItem>().Count() - 1 ) {
+							if (item2.Items.OfType<ShellItem>().Count() == 1) {
+								var firstItem = item2.Items.OfType<ShellItem>().First();
+								if (firstItem != key.Item2) {
+									item2.Items.Clear();
+									item2.Items.Add(key.Item2);
+								}
+							} else if (item2.Items.OfType<ShellItem>().Count() == 0) {
+								item2.Items.Add(key.Item2);
+							}
+								
+							//}
+							item2.SelectedIndex = key.Item1;
+							item2 = item2.SelectedBreadcrumb;
+						}
+						if (item2 != null) item2.SelectedItem = null;
+						SelectedBreadcrumb = item2;
+						SelectedItem = item2 != null ? item2.Data : null;
+					} finally {
+						AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
+						_allowSelectionChnaged = true;
+					}
 			return true;
 		}
 
@@ -506,7 +511,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		private void breadcrumbItemSelectionChangedEvent(object sender, RoutedEventArgs e) {
 			BreadcrumbItem parent = e.Source as BreadcrumbItem;
 			if (parent != null && parent.SelectedBreadcrumb != null) {
-				OnPopulateItems(parent.SelectedBreadcrumb);
+					OnPopulateItems(parent.SelectedBreadcrumb);
 			}
 		}
 

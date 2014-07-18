@@ -1828,10 +1828,10 @@ namespace BetterExplorer {
 			if (this.ShellListView.CurrentFolder == null) return;
 			//Dispatcher.Invoke(DispatcherPriority.Background, (Action)(() => {
 				this._IsBreadcrumbBarSelectionChnagedAllowed = false;
-				if (!e.IsNavigateInSameTab)
+				//if (!e.IsNavigateInSameTab || e.Folder == this.ShellListView.CurrentFolder)
 					this.bcbc.PathConversion -= path_conversation;
 				this.bcbc.Path = e.Folder.IsSearchFolder ? e.Folder.Pidl.ToString() : e.Folder.ParsingName;
-				if (!e.IsNavigateInSameTab)
+				//if (!e.IsNavigateInSameTab)
 					this.bcbc.PathConversion += path_conversation;
 				var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 				if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
@@ -1848,7 +1848,7 @@ namespace BetterExplorer {
 					Wpf.Controls.TabItem selectedTabItem = (tcMain.SelectedItem as Wpf.Controls.TabItem);
 					selectedTabItem.Header = e.Folder.DisplayName;
 					selectedTabItem.Icon = e.Folder.Thumbnail.BitmapSource;
-					selectedTabItem.ShellObject = this.ShellListView.CurrentFolder;
+					selectedTabItem.ShellObject = e.Folder;
 					selectedTabItem.ToolTip = e.Folder.ParsingName;
 				} catch (Exception) {
 				}
@@ -2426,7 +2426,7 @@ namespace BetterExplorer {
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
 			SetupColumnsButton(this.ShellListView.AllAvailableColumns);
 			SetSortingAndGroupingButtons();
-			if (e.Folder == this.ShellListView.CurrentFolder)
+			if (e.OldFolder == this.ShellListView.CurrentFolder)
 				return;
 			if (this.IsConsoleShown)
 				ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
@@ -4075,7 +4075,8 @@ namespace BetterExplorer {
 					SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
 					ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
 					//var test = searchFolder.ParsingName;
-					ShellListView.Navigate(searchFolder,false,true);
+					this.ShellListView.CurrentFolder = searchFolder;
+					ShellListView.Navigate(searchFolder,false,false);
 				}
 			} catch (Exception ex) {
 				MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
@@ -5380,7 +5381,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void PopulateFolders(Odyssey.Controls.BreadcrumbItem item) {
+		private async void PopulateFolders(Odyssey.Controls.BreadcrumbItem item) {
 			//Dispatcher.Invoke(DispatcherPriority.Normal,
 			//	(Action)(() => {
 					if (item.Items.Count > 0) {
@@ -5393,22 +5394,23 @@ namespace BetterExplorer {
 						foreach (ShellItem s in KnownFolders.Computer) {
 							item.Items.Add(s);
 						}
-					} else {
-						try {
-							if (shellitem != null) {
-								if (!shellitem.IsSearchFolder) { 
-									var e = shellitem.GetEnumerator();
-									while (e.MoveNext()) {
-										if (e.Current.IsFolder && (this.ShellListView.ShowHidden ? true : e.Current.IsHidden == false)) {
-											System.Windows.Forms.Application.DoEvents();
-											item.Items.Add(e.Current);
-											System.Windows.Forms.Application.DoEvents();
-										}
-									}
-								}
-							}
-						} catch { }
-					}
+					} 
+					//else {
+					//	try {
+					//		if (shellitem != null) {
+					//			if (!shellitem.IsSearchFolder) { 
+					//				var e = shellitem.GetEnumerator();
+					//				while (e.MoveNext()) {
+					//					if (e.Current.IsFolder && (this.ShellListView.ShowHidden ? true : e.Current.IsHidden == false)) {
+					//						System.Windows.Forms.Application.DoEvents();
+					//						item.Items.Add(e.Current);
+					//						System.Windows.Forms.Application.DoEvents();
+					//					}
+					//				}
+					//			}
+					//		}
+					//	} catch { }
+					//}
 					this._IsBreadcrumbBarSelectionChnagedAllowed = true;
 				//}));
 		}
@@ -5467,11 +5469,11 @@ namespace BetterExplorer {
 					} else {
 						item = new ShellItem(newPath.ToShellParsingName());
 					}
-					//if (item != this.ShellListView.CurrentFolder) {
+					if (item != this.ShellListView.CurrentFolder) {
 						//this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
 						//this.ShellListView.CurrentFolder = item;
 						this.ShellListView.Navigate(item, false, true);
-					//}
+					}
 				} catch {	}
 			}
 		}

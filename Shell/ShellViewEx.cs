@@ -1713,6 +1713,8 @@ namespace BExplorer.Shell {
 						//	nmlv.item.puColumns = (uint)ptr;
 						//	Marshal.StructureToPtr(nmlv, m.LParam, false);
 						//}
+						if (Items.Count == 0 || Items.Count - 1 < nmlv.item.iItem)
+							break;
 						var currentItem = Items[nmlv.item.iItem];
 						if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
 							if (nmlv.item.iSubItem == 0) {
@@ -1852,6 +1854,8 @@ namespace BExplorer.Shell {
 
 					case WNM.LVN_GETINFOTIP:
 						NMLVGETINFOTIP nmGetInfoTip = (NMLVGETINFOTIP)m.GetLParam(typeof(NMLVGETINFOTIP));
+						if (this.Items.Count == 0)
+							break;
 						var itemInfotip = this.Items[nmGetInfoTip.iItem];
 						char[] charBuf = ("\0").ToCharArray();
 						Marshal.Copy(charBuf, 0, nmGetInfoTip.pszText, Math.Min(charBuf.Length, nmGetInfoTip.cchTextMax));
@@ -1914,11 +1918,19 @@ namespace BExplorer.Shell {
 							try {
 								ShellItem selectedItem = Items[iac.iItem];
 								if (selectedItem.IsFolder) {
+									this.SaveSettingsToDatabase(this.CurrentFolder);
+									CurrentFolder = selectedItem;
 									Navigate(selectedItem, false, true);
 								} else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
 									var shellLink = new ShellLink(selectedItem.ParsingName);
 									var newSho = new ShellItem(shellLink.TargetPIDL);
-									if (newSho.IsFolder) Navigate(newSho, false, true); else StartProcessInCurrentDirectory(newSho);
+									if (newSho.IsFolder) {
+										this.SaveSettingsToDatabase(this.CurrentFolder);
+										CurrentFolder = newSho;
+										Navigate(newSho, false, true);
+									} else {
+										StartProcessInCurrentDirectory(newSho);
+									}
 
 									shellLink.Dispose();
 								} else {
@@ -2626,11 +2638,12 @@ namespace BExplorer.Shell {
 
 		/// <summary> Navigates to the parent of the currently displayed folder. </summary>
 		public void NavigateParent() {
-			Navigate(CurrentFolder.Parent, false, true);
+			this.SaveSettingsToDatabase(this.CurrentFolder);
+			Navigate(CurrentFolder.Parent, false, false);
 		}
 
 		public void RefreshContents() {
-			Navigate(this.CurrentFolder, true);
+			Navigate(this.CurrentFolder, true, true);
 		}
 
 		public void RefreshItem(int index, Boolean IsForceRedraw = false) {
@@ -2992,7 +3005,7 @@ namespace BExplorer.Shell {
 				this.Items = this.Items.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(this.Collumns[colIndex].pkey, typeof(String)).Value).ToList();
 			}
 
-			this.ItemsHashed = this.Items.ToDictionary(k => k, el => i++);
+			this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 			this.SetSortIcon(colIndex, Order);
 			this.SelectItems(selectedItems);
@@ -3130,33 +3143,6 @@ namespace BExplorer.Shell {
 			//	F.Application.DoEvents();
 			//}
 			this.SetSortIcon(this.LastSortedColumnIndex, SortOrder.None);
-			if (isInSameTab)
-				SaveSettingsToDatabase(this.CurrentFolder);
-			this.Cancel = false;
-			//if (destination != this.CurrentFolder) {
-			this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
-
-			//}
-
-			this.ItemForRename = -1;
-
-			if (destination == null)
-				return;
-
-			if (ToolTip == null) {
-				this.ToolTip = new ToolTip();
-			}
-			//if (this.CurrentFolder != null) {
-			//	if (destination.ParsingName == this.CurrentFolder.ParsingName && !isReload)
-			//		return;
-			//}
-			var folderSettings = new FolderSettings();
-			var isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
-
-			this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
-			if (folderSettings.View == ShellViewStyle.Details)
-				ResizeIcons(16);
-
 			this.Notifications.UnregisterChangeNotify();
 			overlays.Clear();
 			shieldedIcons.Clear();
@@ -3170,6 +3156,8 @@ namespace BExplorer.Shell {
 			this.cache.Clear();
 			this._CuttedIndexes.Clear();
 			SubItems.Clear();
+			CurrentI = 0;
+			LastI = 0;
 			Tuple<int, PROPERTYKEY, object> tmp = null;
 			while (!SubItemValues.IsEmpty) {
 				SubItemValues.TryTake(out tmp);
@@ -3177,21 +3165,48 @@ namespace BExplorer.Shell {
 			if (tmp != null)
 				tmp = null;
 			SubItems.Clear();
-
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
+			this.ItemForRename = -1;
+			//if (isInSameTab)
+			//	SaveSettingsToDatabase(this.CurrentFolder);
+			this.Cancel = false;
+			//if (destination != this.CurrentFolder) {
+			this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
+
+			//}
+
+			
+
+			if (destination == null)
+				return;
+
+			if (ToolTip == null) {
+				this.ToolTip = new ToolTip();
+			}
+			//if (this.CurrentFolder != null) {
+			//	if (destination.ParsingName == this.CurrentFolder.ParsingName && !isReload)
+			//		return;
+			//}
+			var folderSettings = new FolderSettings();
+			var isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
+			this.SetSortIcon(folderSettings.SortColumn, folderSettings.SortOrder);
+
+			this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
+			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
+				ResizeIcons(16);
 
 			var e = destination.GetEnumerator();
 			var i = 0;
 			this._IsNavigationInProgress = true;
 			while (e.MoveNext()) {
 				F.Application.DoEvents();
-				if (this.CurrentFolder != null && e.Current.Parent != this.CurrentFolder) {
+				if (this.Items.Count > 0 && this.Items.Last().Parent != e.Current.Parent) {
 					break;
 				}
 				if (this.ShowHidden ? true : !e.Current.IsHidden)
 					this.Items.Add(e.Current);
 				CurrentI++;
-				if (CurrentI - LastI >= (destination.IsSearchFolder ? 70 : 1150)) {
+				if (CurrentI - LastI >= (destination.IsSearchFolder ? 70 : 2350)) {
 					F.Application.DoEvents();
 					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 					if (destination.IsSearchFolder)

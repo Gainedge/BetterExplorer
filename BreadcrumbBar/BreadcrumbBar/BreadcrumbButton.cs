@@ -15,6 +15,7 @@ using System.Windows.Controls.Primitives;
 using System.Diagnostics;
 using BExplorer.Shell;
 using System.Runtime.InteropServices;
+using System.Windows.Threading;
 //###################################################################################
 // Odyssey.Controls
 // (c) Copyright 2008 Thomas Gerber
@@ -176,6 +177,15 @@ namespace Odyssey.Controls {
 			if (dropDownBtn != null) {
 				dropDownBtn.MouseDown += new MouseButtonEventHandler(dropDownBtn_MouseDown);
 			}
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (Action)(() => {
+				var data = this.DataContext as ShellItem;
+				if (data != null && data.ParsingName != KnownFolders.Computer.ParsingName && data.ParsingName != KnownFolders.Desktop.ParsingName) {
+					//var existingItems = this.Items.OfType<object>().ToList();
+					BreadcrumbItem parent = TemplatedParent as BreadcrumbItem;
+					var aditionalItems = data.Where(w => w.IsFolder).ToArray();
+					this.ItemsSource = aditionalItems;
+				}
+			}));
 			base.OnApplyTemplate();
 		}
 
@@ -221,7 +231,8 @@ namespace Odyssey.Controls {
 					menuItem.Icon = image;
 
 					menuItem.Click += new RoutedEventHandler(item_Click);
-					if (item != null && item.Equals(SelectedItem)) menuItem.FontWeight = FontWeights.Bold;
+					var data = bi.Data as ShellItem;
+					if (item != null && (item.Equals(SelectedItem) || data == (ShellItem)SelectedItem)) menuItem.FontWeight = FontWeights.Bold;
 					menuItem.ItemTemplate = ItemTemplate;
 					menuItem.ItemTemplateSelector = ItemTemplateSelector;
 					contextMenu.Items.Add(menuItem);
@@ -237,7 +248,7 @@ namespace Odyssey.Controls {
 		void item_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = e.Source as MenuItem;
 			object dataItem = item.DataContext;
-			RemoveSelectedItem(dataItem);
+			//RemoveSelectedItem(dataItem);
 			SelectedItem = dataItem;
 		}
 
@@ -249,7 +260,9 @@ namespace Odyssey.Controls {
 		/// </summary>
 		/// <param name="dataItem"></param>
 		private void RemoveSelectedItem(object dataItem) {
-			if (dataItem != null && dataItem.Equals(SelectedItem)) SelectedItem = null;
+			var data = (dataItem as BreadcrumbItem).Data as ShellItem;
+			if (dataItem != null && (dataItem.Equals(SelectedItem) || data == (ShellItem)SelectedItem)) 
+				SelectedItem = null;
 		}
 
 		/// <summary>
