@@ -247,7 +247,6 @@
     <Compile Include="SystemImageList.cs" />
     <Compile Include="VirtualGroups\VirtualGrouping.cs" />
     <Compile Include="VirtualGroups\IOwnerDataCallback.cs" />
-    <Compile Include="VisualHelpers.cs" />
     <Compile Include="WindowsSearch\SearchCondition.cs" />
     <Compile Include="WindowsSearch\SearchConditionFactory.cs" />
     <Compile Include="WindowsSearch\ShellSavedSearchCollection.cs" />

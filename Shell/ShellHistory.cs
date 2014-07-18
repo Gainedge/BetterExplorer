@@ -61,8 +61,7 @@ namespace BExplorer.Shell {
 		public ShellItem[] HistoryForward {
 			get {
 				if (CanNavigateForward) {
-					return m_History.GetRange(m_Current + 1,
-						m_History.Count - (m_Current + 1)).ToArray();
+					return m_History.GetRange(m_Current + 1, m_History.Count - (m_Current + 1)).ToArray();
 				}
 				else {
 					return new ShellItem[0];

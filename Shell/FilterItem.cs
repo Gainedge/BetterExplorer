@@ -19,22 +19,26 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 namespace BExplorer.Shell {
 	internal class FilterItem {
+		public string Caption, Filter;
+
 		public FilterItem(string caption, string filter) {
 			Caption = caption;
 			Filter = filter;
 		}
 
 		public bool Contains(string filter) {
+			return Filter.Split(',').Any(x => x.Trim() == filter);
+			/*
 			string[] filters = Filter.Split(',');
-
 			foreach (string s in filters) {
 				if (filter == s.Trim()) return true;
 			}
-
 			return false;
+			*/
 		}
 
 		public override string ToString() {
@@ -48,14 +52,13 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		[Obsolete("Not Used", true)]
 		public static FilterItem[] ParseFilterString(string filterString) {
 			int dummy;
 			return ParseFilterString(filterString, string.Empty, out dummy);
 		}
 
-		public static FilterItem[] ParseFilterString(string filterString,
-													 string existing,
-													 out int existingIndex) {
+		public static FilterItem[] ParseFilterString(string filterString, string existing, out int existingIndex) {
 			List<FilterItem> result = new List<FilterItem>();
 			string[] items;
 
@@ -86,8 +89,5 @@ namespace BExplorer.Shell {
 
 			return result.ToArray();
 		}
-
-		public string Caption;
-		public string Filter;
 	}
 }

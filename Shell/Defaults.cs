@@ -5,12 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell
-{
-	public static class Defaults
-	{
-		public static void AddDefaultColumns(this ShellView shellView)
-		{
+namespace BExplorer.Shell {
+	[Obsolete("Not Used", true)]
+	public static class Defaults {
+		public static void AddDefaultColumns(this ShellView shellView) {
 
 			LVCOLUMN column = new LVCOLUMN();
 			column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_SUBITEM;
@@ -362,8 +360,7 @@ namespace BExplorer.Shell
 		/// </summary>
 		/// <param name="col">the column</param>
 		/// <returns>resulting LVCOLUMN structure</returns>
-		public static LVCOLUMN ToNativeColumn(this Collumns col)
-		{
+		public static LVCOLUMN ToNativeColumn(this Collumns col) {
 			LVCOLUMN column = new LVCOLUMN();
 			column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH;
 			column.cx = 100;
@@ -371,14 +368,12 @@ namespace BExplorer.Shell
 			column.fmt = col.CollumnType == typeof(long) ? LVCFMT.RIGHT : LVCFMT.LEFT;
 			return column;
 		}
-		public static List<Collumns> AvailableColumns(this ShellView view)
-		{
+		public static List<Collumns> AvailableColumns(this ShellView view) {
 			return AllColumnsPKeys.Select(s => new Collumns() { ID = s.Key, CollumnType = s.Value.Item3, pkey = s.Value.Item2, Name = s.Value.Item1, Width = 100, IsColumnHandler = false }).ToList();
 		}
 	}
 
-	public static class SystemProperties
-	{
+	public static class SystemProperties {
 		public static PROPERTYKEY FileSize = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 12 };
 		public static PROPERTYKEY LinkTarget = new PROPERTYKEY() { fmtid = Guid.Parse("b9b4b3fc-2b51-4a42-b5d8-324146afcf25"), pid = 2 };
 	}
