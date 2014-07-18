@@ -340,12 +340,6 @@
       <DependentUpon>FolderSizeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="HelperClasses\FriendlySizeConverter.cs" />
-    <Compile Include="ItemPop.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ItemPop.Designer.cs">
-      <DependentUpon>ItemPop.cs</DependentUpon>
-    </Compile>
     <Compile Include="ItemPopup.xaml.cs">
       <DependentUpon>ItemPopup.xaml</DependentUpon>
     </Compile>
@@ -665,9 +659,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ArchiveView\CreateArchive.resx">
       <DependentUpon>CreateArchive.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ItemPop.resx">
-      <DependentUpon>ItemPop.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MessageReceiver.resx">
       <DependentUpon>MessageReceiver.cs</DependentUpon>

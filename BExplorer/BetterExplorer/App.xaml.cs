@@ -96,14 +96,10 @@ namespace BetterExplorer {
 			if (culture == ":null:")
 				culture = CultureInfo.InstalledUICulture.Name;
 			// List all our resources      
-			List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>();
-			foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries) {
-				dictionaryList.Add(dictionary);
-			}
+			List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>(Application.Current.Resources.MergedDictionaries);
 			// We want our specific culture      
 			string requestedCulture = string.Format("Locale.{0}.xaml", culture);
-			ResourceDictionary resourceDictionary =
-					dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
+			ResourceDictionary resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
 			if (resourceDictionary == null) {
 				// If not found, we select our default language        
 				//        
@@ -133,12 +129,9 @@ namespace BetterExplorer {
 			if (culture == ":null:")
 				culture = CultureInfo.InstalledUICulture.Name;
 			// List all our resources      
-			List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>();
-			foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries) {
-				dictionaryList.Add(dictionary);
-			}
+			List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>(Application.Current.Resources.MergedDictionaries);
 
-			ResourceDictionary resourceDictionary = ResDictionaryLoader.Load(filename);
+			ResourceDictionary resourceDictionary = Utilities.Load(filename);
 			if (resourceDictionary == null) {
 				// if not found, then try from the application's resources
 				string requestedCulture = string.Format("Locale.{0}.xaml", culture);
