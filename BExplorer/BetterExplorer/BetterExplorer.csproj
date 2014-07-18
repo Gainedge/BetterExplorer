@@ -310,7 +310,6 @@
     <Compile Include="PieChart\Util\FileSizeConverter.cs" />
     <Compile Include="PieChart\Util\FormattingConverter.cs" />
     <Compile Include="PieChart\Util\Utils.cs" />
-    <Compile Include="ResDictionaryLoader.cs" />
     <Compile Include="ResizeImage.xaml.cs">
       <DependentUpon>ResizeImage.xaml</DependentUpon>
     </Compile>
