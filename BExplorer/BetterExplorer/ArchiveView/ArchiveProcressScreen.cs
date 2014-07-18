@@ -414,6 +414,7 @@ namespace BetterExplorer {
 
 	[Obsolete("Should be changed into a Tuple<string>")]
 	public class ArchiveEventArgs {
+
 		public string OutputLocation {
 			get;
 			private set;

@@ -1,68 +1,198 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.IO;
-using WPFPieChart;
-using System.Collections.ObjectModel;
-using System.Threading;
-using System.ComponentModel;
 using Microsoft.WindowsAPICodePack.Shell;
 using WindowsHelper;
-using System.Runtime.InteropServices;
-using System.Globalization;
-using Fluent;
-using System.Windows.Interop;
-using System.Threading.Tasks;
+//using WPFPieChart;
 
 namespace BetterExplorer {
+
 	/// <summary>
 	/// Interaction logic for FolderSizeWindow.xaml
 	/// </summary>
 	public partial class FolderSizeWindow : Window {
+
+		#region FolderSizeInfoClass
+
+		private class FolderSizeInfoClass : INotifyPropertyChanged {
+
+			#region Properties
+
+			private String myFolderSizeLoc;
+			public String FolderSizeLoc {
+				get { return myFolderSizeLoc; }
+				set {
+					myFolderSizeLoc = value;
+					RaisePropertyChangeEvent("FolderSizeLoc");
+				}
+			}
+
+			private double fSize;
+			public double FSize {
+				get { return fSize; }
+				set {
+					fSize = value;
+					RaisePropertyChangeEvent("FSize");
+				}
+			}
+
+			#endregion
+
+			#region INotifyPropertyChanged Members
+
+			public event PropertyChangedEventHandler PropertyChanged;
+
+			private void RaisePropertyChangeEvent(String propertyName) {
+				if (PropertyChanged != null) this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+
+			#endregion INotifyPropertyChanged Members
+
+
+			/*
+		[Obsolete("Not used, should remove", true)]
+		public static List<FolderSizeInfoClass> ConstructData(string Dir) {
+			var FolderInfoSize = new List<FolderSizeInfoClass>();
+			DirectoryInfo data = new DirectoryInfo(Dir);
+			foreach (DirectoryInfo item in data.GetDirectories()) {
+				FolderSizeInfoClass fsi = new FolderSizeInfoClass();
+				fsi.FolderSizeLoc = item.Name;
+				fsi.FSize = GetFolderSize(item.FullName, true);
+				FolderInfoSize.Add(fsi);
+			}
+
+			return FolderInfoSize;
+		}
+		*/
+
+
+			//private static long GetFolderSize(string dir, bool includesubdirs) {
+			//	//TODO: Test
+			//	long retsize = 0;
+			//	var Selected_SearchOption = includesubdirs ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
+			//	try {
+			//		DirectoryInfo data = new DirectoryInfo(dir);
+			//		foreach (FileInfo item in data.GetFiles("*.*", Selected_SearchOption)) {
+			//			retsize += item.Length;
+			//		}
+			//	}
+			//	catch (Exception) {
+			//	}
+
+			//	/*
+			//	try {
+			//		DirectoryInfo data = new DirectoryInfo(dir);
+			//		if (includesubdirs) {
+			//			foreach (FileInfo item in data.GetFiles("*.*", SearchOption.AllDirectories)) {
+			//				retsize += item.Length;
+			//			}
+			//		}
+			//		else {
+			//			foreach (FileInfo item in data.GetFiles("*.*", SearchOption.TopDirectoryOnly)) {
+			//				retsize += item.Length;
+			//			}
+			//		}
+			//	}
+			//	catch (Exception) {
+			//	}
+			//	*/
+			//	return retsize;
+			//}
+
+		}
+
+		#endregion
+
+		#region Structures
+
 		#region Margins
 
 		[DllImport("DwmApi.dll")]
-		public static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref MARGINS pMarInset);
+		private static extern int DwmExtendFrameIntoClientArea(IntPtr hwnd, ref MARGINS pMarInset);
 
+		private struct MARGINS {
+			public int Left, Right, Top, Bottom;
 
-		public struct MARGINS {
 			public MARGINS(Thickness t) {
 				Left = (int)t.Left;
 				Right = (int)t.Right;
 				Top = (int)t.Top;
 				Bottom = (int)t.Bottom;
 			}
-			public int Left;
-			public int Right;
-			public int Top;
-			public int Bottom;
 		}
 
-		#endregion
+		#endregion Margins
 
-		//public FolderSizeWindow()
-		//{
-		//		InitializeComponent();
-		//		LoadFolderSizeItems("C:\\");
-		//}
+		[StructLayout(LayoutKind.Sequential)]
+		private struct FILETIME {
+			public uint dwLowDateTime;
+			public uint dwHighDateTime;
+		};
 
-		private FolderSizeWindow() { }
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+		private struct WIN32_FIND_DATA {
+			public FileAttributes dwFileAttributes;
+			public FILETIME ftCreationTime;
+			public FILETIME ftLastAccessTime;
+			public FILETIME ftLastWriteTime;
+			public uint nFileSizeHigh; //changed all to uint, otherwise you run into unexpected overflow
+			public uint nFileSizeLow;  //|
+			public uint dwReserved0;   //|
+			public uint dwReserved1;   //v
 
+			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
+			public string cFileName;
 
-		//public FolderSizeWindow(string dir, Window owner = null) {
-		//	InitializeComponent();
-		//	LoadFolderSizeItems(dir);
-		//	this.Owner = owner;
-		//}
+			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_ALTERNATE)]
+			public string cAlternate;
+		}
+
+		#endregion Structures
+
+		#region DLLImports
+
+		[DllImport("dwmapi.dll", PreserveSig = false)]
+		private static extern bool DwmIsCompositionEnabled();
+
+		[DllImport("kernel32", CharSet = CharSet.Unicode)]
+		private static extern IntPtr FindFirstFile(string lpFileName, out WIN32_FIND_DATA lpFindFileData);
+
+		[DllImport("kernel32", CharSet = CharSet.Unicode)]
+		private static extern bool FindNextFile(IntPtr hFindFile, out WIN32_FIND_DATA lpFindFileData);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		private static extern bool FindClose(IntPtr hFindFile);
+
+		#endregion DLLImports
+
+		#region Properties
+
+		public const int MAX_PATH = 260;
+		public const int MAX_ALTERNATE = 14;
+
+		public BackgroundWorker bgw;
+
+		private ObservableCollection<FolderSizeInfoClass> FInfo;
+		private List<FolderSizeInfoClass> FSI = new List<FolderSizeInfoClass>();
+		private List<ShellObject> shol = new List<ShellObject>();
+
+		//private int AllDirsCount = 0;
+
+		#endregion Properties
+
+		#region Constructors
+
+		private FolderSizeWindow() {
+		}
 
 		public static void Open(string dir, Window owner) {
 			var f = new FolderSizeWindow();
@@ -72,15 +202,58 @@ namespace BetterExplorer {
 			f.Show();
 		}
 
-		protected override void OnSourceInitialized(EventArgs e) {
-			base.OnSourceInitialized(e);
-			// This can't be done any earlier than the SourceInitialized event:
-			ExtendGlassFrame(this, new Thickness(-1));
+		#endregion Constructors
+
+		#region Obsolete
+		/*
+		private long GetFolderSize(string dir, bool includesubdirs) {
+			shol.Clear();
+			long retsize = 0;
+			try {
+				GetFilesRec(ShellObject.FromParsingName(dir));
+				foreach (ShellObject item in shol) {
+					object oo = item.Properties.System.Size.ValueAsObject;
+					retsize += Convert.ToInt64(oo);
+				}
+				//ShellObject o = ShellObject.FromParsingName(dir);
+			}
+			catch (Exception) {
+			}
+
+			return retsize;
 		}
 
-		[DllImport("dwmapi.dll", PreserveSig = false)]
-		static extern bool DwmIsCompositionEnabled();
-		public static bool ExtendGlassFrame(Window window, Thickness margin) {
+		private void GetAllDirRec(ShellObject path) {
+			AllDirsCount = 0;
+			ShellContainer con = (ShellContainer)ShellContainer.FromParsingName(path.ParsingName);
+			foreach (ShellObject item in con) {
+				try {
+					if (item.IsFolder) {
+						try {
+							AllDirsCount++;
+							GetFilesRec(item);
+						}
+						catch (Exception) {
+						}
+					}
+				}
+				catch (Exception) {
+				}
+			}
+			con.Dispose();
+		}
+
+		private void chartitself_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			MessageBox.Show(e.AddedItems[0].GetType().ToString());
+		}
+
+		private void button1_Click(object sender, RoutedEventArgs e) {
+		}
+		*/
+		#endregion Obsolete
+
+
+		private static bool ExtendGlassFrame(Window window, Thickness margin) {
 			if (!DwmIsCompositionEnabled())
 				return false;
 
@@ -97,10 +270,16 @@ namespace BetterExplorer {
 			return true;
 		}
 
-		private ObservableCollection<FolderSizeInfoClass> FInfo;
-		public BackgroundWorker bgw;
-		public void LoadFolderSizeItems(string dir) {
 
+
+
+		protected override void OnSourceInitialized(EventArgs e) {
+			base.OnSourceInitialized(e);
+			// This can't be done any earlier than the SourceInitialized event:
+			ExtendGlassFrame(this, new Thickness(-1));
+		}
+
+		public void LoadFolderSizeItems(string dir) {
 			//List<KeyValuePair<string, long>> valueList = new List<KeyValuePair<string, long>>();
 			//DirectoryInfo data = new DirectoryInfo(dir);
 			////valueList.Add(new KeyValuePair<string, long>("Current Directory", GetFolderSize(dir, false)));
@@ -117,23 +296,19 @@ namespace BetterExplorer {
 			bgw.ProgressChanged += new ProgressChangedEventHandler(bgw_ProgressChanged);
 			bgw.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgw_RunWorkerCompleted);
 			bgw.RunWorkerAsync(dir);
-
-
 		}
 
-		void bgw_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+		private void bgw_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			try {
 				progressBar1.Value = e.ProgressPercentage;
 				FInfo = new ObservableCollection<FolderSizeInfoClass>(FSI.Where(w => w.FSize > 0).OrderBy(o => o.FSize));
 				this.DataContext = FInfo;
 			}
 			catch {
-
 			}
 		}
 
-		List<FolderSizeInfoClass> FSI = new List<FolderSizeInfoClass>();
-		void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+		private void bgw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
 			progressBar1.Value = progressBar1.Maximum;
 			progressBar1.Visibility = System.Windows.Visibility.Collapsed;
 			textBlock1.Visibility = System.Windows.Visibility.Collapsed;
@@ -141,37 +316,6 @@ namespace BetterExplorer {
 			FInfo = new ObservableCollection<FolderSizeInfoClass>(FSI.Where(w => w.FSize > 0).OrderBy(o => o.FSize));
 			this.DataContext = FInfo;
 		}
-
-		public const int MAX_PATH = 260;
-		public const int MAX_ALTERNATE = 14;
-
-		[StructLayout(LayoutKind.Sequential)]
-		public struct FILETIME {
-			public uint dwLowDateTime;
-			public uint dwHighDateTime;
-		};
-
-		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-		public struct WIN32_FIND_DATA {
-			public FileAttributes dwFileAttributes;
-			public FILETIME ftCreationTime;
-			public FILETIME ftLastAccessTime;
-			public FILETIME ftLastWriteTime;
-			public uint nFileSizeHigh; //changed all to uint, otherwise you run into unexpected overflow
-			public uint nFileSizeLow;  //|
-			public uint dwReserved0;   //|
-			public uint dwReserved1;   //v
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
-			public string cFileName;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_ALTERNATE)]
-			public string cAlternate;
-		}
-
-		[DllImport("kernel32", CharSet = CharSet.Unicode)]
-		public static extern IntPtr FindFirstFile(string lpFileName, out WIN32_FIND_DATA lpFindFileData);
-
-		[DllImport("kernel32", CharSet = CharSet.Unicode)]
-		public static extern bool FindNextFile(IntPtr hFindFile, out WIN32_FIND_DATA lpFindFileData);
 
 		private long RecurseDirectory(string directory, int level, out int files, out int folders) {
 			IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);
@@ -186,21 +330,18 @@ namespace BetterExplorer {
 			// simply remove the \\?\ part in this case or use \\?\UNC\ prefix
 			findHandle = FindFirstFile(String.Format(@"\\?\{0}\*", directory), out findData);
 			if (findHandle != INVALID_HANDLE_VALUE) {
-
 				do {
 					if (bgw.CancellationPending)
 						break;
 
 					if ((findData.dwFileAttributes & FileAttributes.Directory) != 0) {
-
 						if (findData.cFileName != "." && findData.cFileName != "..") {
 							folders++;
 
 							int subfiles, subfolders;
 							string subdirectory = directory + (directory.EndsWith(@"\") ? "" : @"\") +
 									findData.cFileName;
-							if (level != 0)  // allows -1 to do complete search.
-														{
+							if (level != 0) { // allows -1 to do complete search.
 								size += RecurseDirectory(subdirectory, level - 1, out subfiles, out subfolders);
 
 								folders += subfolders;
@@ -217,20 +358,16 @@ namespace BetterExplorer {
 				}
 				while (FindNextFile(findHandle, out findData));
 				FindClose(findHandle);
-
 			}
 
 			return size;
 		}
-		[DllImport("kernel32.dll", SetLastError = true)]
-		static extern bool FindClose(IntPtr hFindFile);
 
 		public IEnumerable<string> EnumerateFiles(string path, string searchPattern, SearchOption searchOpt) {
 			try {
 				var dirFiles = Enumerable.Empty<string>();
 				if (searchOpt == SearchOption.AllDirectories) {
-					dirFiles = Directory.EnumerateDirectories(path)
-															.SelectMany(x => EnumerateFiles(x, searchPattern, searchOpt));
+					dirFiles = Directory.EnumerateDirectories(path).SelectMany(x => EnumerateFiles(x, searchPattern, searchOpt));
 				}
 				return dirFiles.Concat(Directory.EnumerateFiles(path, searchPattern));
 			}
@@ -239,7 +376,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		void bgw_DoWork(object sender, DoWorkEventArgs e) {
+		private void bgw_DoWork(object sender, DoWorkEventArgs e) {
 			//FSI = FolderSizeInfoClass.ConstructData(e.Argument.ToString());
 
 			//List<FolderSizeInfoClass> FolderInfoSize = new List<FolderSizeInfoClass>();
@@ -254,7 +391,6 @@ namespace BetterExplorer {
 													}));
 
 			Parallel.ForEach(diri, (item, state) => {
-
 				if ((sender as BackgroundWorker).CancellationPending) {
 					state.Break();
 				}
@@ -262,27 +398,6 @@ namespace BetterExplorer {
 				fsi.FolderSizeLoc = item.Name;
 				shol.Clear();
 				long retsize = 0;
-				//try
-				//{
-				//    GetFilesRec(ShellObject.FromParsingName(item.FullName));
-
-				//    foreach (ShellObject item2 in shol)
-				//    {
-				//        if ((sender as BackgroundWorker).CancellationPending)
-				//        {
-				//            break;
-				//        }
-				//        object oo = item2.Properties.System.Size.ValueAsObject;
-				//        retsize += Convert.ToInt64(oo);
-				//        GC.Collect();
-				//    }
-				//    //ShellObject o = ShellObject.FromParsingName(dir);
-				//}
-				//catch (Exception)
-				//{
-
-
-				//}
 				int ii = 0;
 				int iff = 0;
 
@@ -290,15 +405,11 @@ namespace BetterExplorer {
 					retsize = RecurseDirectory(item.FullName, -1, out ii, out iff);
 				}
 				catch (Exception) {
-
 				}
 				fsi.FSize = retsize;
 				FSI.Add(fsi);
 
 				(sender as BackgroundWorker).ReportProgress(i++);
-
-
-
 			});
 			shol.Clear();
 			GC.Collect();
@@ -308,51 +419,7 @@ namespace BetterExplorer {
 			}
 		}
 
-
-		private long GetFolderSize(string dir, bool includesubdirs) {
-			shol.Clear();
-			long retsize = 0;
-			try {
-				GetFilesRec(ShellObject.FromParsingName(dir));
-				foreach (ShellObject item in shol) {
-					object oo = item.Properties.System.Size.ValueAsObject;
-					retsize += Convert.ToInt64(oo);
-				}
-				//ShellObject o = ShellObject.FromParsingName(dir);
-			}
-			catch (Exception) {
-
-
-			}
-
-			return retsize;
-		}
-		int AllDirsCount = 0;
-		private void GetAllDirRec(ShellObject path) {
-			AllDirsCount = 0;
-			ShellContainer con = (ShellContainer)ShellContainer.FromParsingName(path.ParsingName);
-			foreach (ShellObject item in con) {
-				try {
-					if (item.IsFolder) {
-						try {
-							AllDirsCount++;
-							GetFilesRec(item);
-						}
-						catch (Exception) {
-
-						}
-					}
-				}
-				catch (Exception) {
-
-				}
-			}
-			con.Dispose();
-		}
-		List<ShellObject> shol = new List<ShellObject>();
-
 		private void GetFilesRec(ShellObject path) {
-
 			ShellContainer con = (ShellContainer)ShellContainer.FromParsingName(path.ParsingName);
 			foreach (ShellObject item in con) {
 				try {
@@ -361,7 +428,6 @@ namespace BetterExplorer {
 							GetFilesRec(item);
 						}
 						catch (Exception) {
-
 						}
 					}
 					else {
@@ -369,15 +435,9 @@ namespace BetterExplorer {
 					}
 				}
 				catch (Exception) {
-
 				}
 			}
 			con.Dispose();
-
-		}
-
-		private void chartitself_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			MessageBox.Show(e.AddedItems[0].GetType().ToString());
 		}
 
 		private void Window_Closing(object sender, CancelEventArgs e) {
@@ -390,11 +450,5 @@ namespace BetterExplorer {
 				WindowsAPI.SetProcessWorkingSetSize(System.Diagnostics.Process.GetCurrentProcess().Handle, -1, -1);
 			}
 		}
-
-		private void button1_Click(object sender, RoutedEventArgs e) {
-
-		}
-
 	}
-
 }

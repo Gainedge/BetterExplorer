@@ -57,21 +57,34 @@ namespace BetterExplorer {
 		[Obsolete("Do we really need this?!!")]
 		bool ReadyToChangeLanguage;
 
+
+
+		/*
 		/// <summary>
 		/// Gets Previous Window State
 		/// </summary>
 		[Obsolete("Removing this is High Priority!", true)]
 		public WindowState PreviouseWindowState { get; private set; }
+		*/
 
+		/*
 		[Obsolete("Removing this is High Priority!", true)]
 		private readonly ShellNotifications.ShellNotifications Notifications = new ShellNotifications.ShellNotifications();
+		*/
+
+
+
+
 
 		//[Obsolete("Removing this is High Priority!", true)]
 		//bool IsViewSelection = false, inLibrary = false, inDrive = false;
 
+
+
+		/*
 		[Obsolete("Removing this is High Priority!", true)]
 		public bool IsCompartibleRename = false;
-
+		*/
 
 		/*
 		private void Explorer_ViewEnumerationComplete(object sender, EventArgs e) {
@@ -203,6 +216,16 @@ namespace BetterExplorer {
 
 		#endregion
 
+
+
+
+
+
+
+
+
+
+
 		#region DLLImports
 
 		//public static System.Drawing.Point GetMousePosition() {
@@ -211,6 +234,8 @@ namespace BetterExplorer {
 		//	return new System.Drawing.Point(w32Mouse.X, w32Mouse.Y);
 		//}
 		#endregion
+
+
 
 
 		#region Variables and Constants
@@ -961,7 +986,27 @@ namespace BetterExplorer {
 		*/
 
 
+		/*
+		[Obsolete("Never used Only assigned a value")]
+		private string EditComm = "";
+		*/
 
+		/*
+		[Obsolete("This will always be the same as [chkShowCheckBoxes.IsChecked == true]", true)]
+		private bool isCheckModeEnabled;
+		*/
+
+		/*
+		[Obsolete("This will always be the same as [chkIsTerraCopyEnabled.IsChecked == true]", true)]
+		private bool IsExtendedFileOpEnabled;
+		*/
+
+		/*
+		[Obsolete("This will always be the same as [chkIsFlyout.IsChecked == true]", true)]
+		private bool IsHFlyoutEnabled;
+		*/
+
+		/*
 		[Obsolete("Never used", true)]
 		private void tcMain_Drop(object sender, DragEventArgs e) {
 			return;
@@ -1007,8 +1052,9 @@ namespace BetterExplorer {
 				}
 			}
 		}
+		*/
 
-
+		/*
 		[Obsolete("Not used", true)]
 		private void tcMain_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
 			System.Windows.Forms.MessageBox.Show("Try to upgrade this to use NewTab(...)");
@@ -1048,6 +1094,126 @@ namespace BetterExplorer {
 				}
 			}
 		}
+		*/
+
+
+		/*
+		[Obsolete("Never Called!!", true)]
+		private void SetUpViewGallery() {
+			if (ShellListView.IconSize == 256) {
+				ViewGallery.SelectedIndex = 0;
+			}
+			else if (ShellListView.IconSize == 96) {
+				ViewGallery.SelectedIndex = 1;
+			}
+			else if (ShellListView.View == ShellViewStyle.LargeIcon && ShellListView.IconSize == 48) {
+				ViewGallery.SelectedIndex = 2;
+				btnSbIcons.IsChecked = true;
+			}
+
+			if (ShellListView.View == ShellViewStyle.SmallIcon) {
+				ViewGallery.SelectedIndex = 3;
+			}
+			else {
+				btnSbIcons.IsChecked = false;
+			}
+
+			if (ShellListView.View == ShellViewStyle.List) {
+				ViewGallery.SelectedIndex = 4;
+			}
+			else if (ShellListView.View == ShellViewStyle.Details) {
+				ViewGallery.SelectedIndex = 5;
+				btnSbDetails.IsChecked = true;
+			}
+			else {
+				btnSbDetails.IsChecked = false;
+			}
+
+
+			btnSbTiles.IsChecked = ShellListView.View == ShellViewStyle.Tile;
+			if (ShellListView.View == ShellViewStyle.Tile) {
+				ViewGallery.SelectedIndex = 6;
+			}
+
+			if (ShellListView.View == ShellViewStyle.Content) {
+				ViewGallery.SelectedIndex = 7;
+			}
+		}
+		*/
+
+
+		//[Obsolete("Never Called!!")]
+		//private void RibbonWindow_MouseUp(object sender, MouseButtonEventArgs e) {
+		//	breadcrumbBarControl1.ExitEditMode_IfNeeded();
+		//}
+
+		/*
+		[Obsolete("Never Called!!")]
+		void Explorer_ExplorerGotFocus(object sender, EventArgs e) {
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
+			IsRenameFromCreate = false;
+			//ShellListView.IsRenameStarted = false;
+		}
+		*/
+
+		/*
+		[Obsolete("Never Called!!")]
+		void Explorer_LostFocus(object sender, EventArgs e) {
+			//if (!backstage.IsOpen)
+			//    ShellListView.SetExplorerFocus();
+			IsRenameFromCreate = false;
+		}
+		*/
+
+		/*
+		[Obsolete("Never Called!!")]
+		void Explorer_RenameFinished(object sender, EventArgs e) {
+			IsRenameFromCreate = true;
+			//IsAfterFolderCreate = false;
+			//ShellListView.IsRenameStarted = false;
+
+			//TODO: Test this out
+			//breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
+		}
+		*/
+
+		/*
+		[Obsolete("Never Called!!")]
+		void Explorer_ItemsChanged(object sender, EventArgs e) {
+			int ItemsCount = ShellListView.GetItemsCount();
+			sbiItemsCount.Content = ItemsCount == 1 ? ItemsCount.ToString() + " item" : ItemsCount.ToString() + " items";
+		}
+		*/
+
+		/*
+		[Obsolete("Never Called!!")]
+		void Explorer_DragDrop(object sender, System.Windows.Forms.DragEventArgs e) {
+			switch (e.Effect) {
+				case System.Windows.Forms.DragDropEffects.All:
+					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				case System.Windows.Forms.DragDropEffects.Copy:
+					AddToLog(String.Format("The following data was copied into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				case System.Windows.Forms.DragDropEffects.Link:
+					AddToLog(String.Format("The following data was linked into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				case System.Windows.Forms.DragDropEffects.Move:
+					AddToLog(String.Format("The following data was moved into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				case System.Windows.Forms.DragDropEffects.None:
+					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				case System.Windows.Forms.DragDropEffects.Scroll:
+					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+				default:
+					AddToLog(String.Format("The following data was dragged into {0}: {1}", ShellListView.CurrentFolder, e.Data.GetData(DataFormats.FileDrop)));
+					break;
+			}
+		}
+		*/
+
 
 	}
 }

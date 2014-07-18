@@ -92,5 +92,36 @@ namespace BetterExplorer {
 			return value.Substring(property.Length + 1);
 		}
 
+
+		/// <summary>
+		/// Move somewhere else later
+		/// </summary>
+		/// <param name="filename"></param>
+		/// <returns></returns>
+		public static System.Windows.ResourceDictionary Load(string filename) {
+			if (System.IO.File.Exists(filename)) {
+				using (var s = new System.IO.FileStream(filename, System.IO.FileMode.Open)) {
+					return System.Windows.Markup.XamlReader.Load(s) as System.Windows.ResourceDictionary;
+				}
+			}
+			else {
+				return null;
+			}
+
+			/*
+			try
+			{
+				using (FileStream s = new FileStream(filename, FileMode.Open))
+				{
+					return XamlReader.Load(s) as ResourceDictionary;
+				}
+			}
+			catch
+			{
+				return null;
+			}
+			*/
+		}//TODO: Move somewhere else later
+
 	}
 }

@@ -239,7 +239,6 @@
     <Compile Include="Customize\RibbonItemListDisplay.xaml.cs">
       <DependentUpon>RibbonItemListDisplay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses\FolderStructForSize.cs" />
     <Compile Include="HelperClasses\PathStringCombiner.cs" />
     <Compile Include="HelperClasses\Utilities.cs" />
     <Compile Include="HelperClasses\WindowExtensions.cs" />
@@ -252,8 +251,6 @@
     <Compile Include="PieChart\PieChart\ColourConverter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="__Obsolete\MFTScanning\NtfsUsnJournal.cs" />
-    <Compile Include="__Obsolete\MFTScanning\Win32Api.cs" />
     <Compile Include="MountIso.xaml.cs">
       <DependentUpon>MountIso.xaml</DependentUpon>
     </Compile>
@@ -279,12 +276,10 @@
       <DependentUpon>BackButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Networks\DropBoxAccount.cs" />
-    <Compile Include="__Obsolete\SharpBoxFileSystem.cs" />
     <Compile Include="Networks\FTPSserver.cs" />
     <Compile Include="Networks\FileSystem\Directory.cs" />
     <Compile Include="Networks\FileSystem\File.cs" />
     <Compile Include="Networks\FileSystem\FileSystemObject.cs" />
-    <Compile Include="__Obsolete\FTPServerFileSystem.cs" />
     <Compile Include="Networks\FileSystem\NetworkFileSystem.cs" />
     <Compile Include="Networks\FileSystem\SymbolicLink.cs" />
     <Compile Include="Networks\FTPserver.cs" />
@@ -315,7 +310,6 @@
     <Compile Include="PieChart\Util\FileSizeConverter.cs" />
     <Compile Include="PieChart\Util\FormattingConverter.cs" />
     <Compile Include="PieChart\Util\Utils.cs" />
-    <Compile Include="ResDictionaryLoader.cs" />
     <Compile Include="ResizeImage.xaml.cs">
       <DependentUpon>ResizeImage.xaml</DependentUpon>
     </Compile>
@@ -346,12 +340,6 @@
       <DependentUpon>FolderSizeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="HelperClasses\FriendlySizeConverter.cs" />
-    <Compile Include="ItemPop.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ItemPop.Designer.cs">
-      <DependentUpon>ItemPop.cs</DependentUpon>
-    </Compile>
     <Compile Include="ItemPopup.xaml.cs">
       <DependentUpon>ItemPopup.xaml</DependentUpon>
     </Compile>
@@ -385,7 +373,7 @@
     <Compile Include="ConditionalSelect\StringSearchCriteriaDialog.xaml.cs">
       <DependentUpon>StringSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses\SysImageList.cs" />
+    <Compile Include="ArchiveView\SysImageList.cs" />
     <Compile Include="Tabs\TabListEditor.xaml.cs">
       <DependentUpon>TabListEditor.xaml</DependentUpon>
     </Compile>
@@ -405,7 +393,6 @@
     <Compile Include="Updater\UpdateWizard.Designer.cs">
       <DependentUpon>UpdateWizard.cs</DependentUpon>
     </Compile>
-    <Compile Include="__Obsolete\Wpf32Window.cs" />
     <Compile Include="_MainWindow\MainWindow_Tabs.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -672,9 +659,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ArchiveView\CreateArchive.resx">
       <DependentUpon>CreateArchive.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ItemPop.resx">
-      <DependentUpon>ItemPop.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MessageReceiver.resx">
       <DependentUpon>MessageReceiver.cs</DependentUpon>
@@ -1222,7 +1206,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!--   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
