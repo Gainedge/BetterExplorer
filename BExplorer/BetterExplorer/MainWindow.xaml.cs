@@ -2300,19 +2300,19 @@ namespace BetterExplorer {
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
 			SetupColumnsButton(this.ShellListView.AllAvailableColumns);
 			SetSortingAndGroupingButtons();
-			if (e.OldFolder == this.ShellListView.CurrentFolder)
-				return;
+			SetUpBreadcrumbbarOnNavComplete(e);
+			SetupUIonNavComplete(e);
+			
 			if (this.IsConsoleShown)
 				ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
 
 			//Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
 
-			SetUpBreadcrumbbarOnNavComplete(e);
+			
 			//}));
 
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				ConstructMoveToCopyToMenu();
-				SetupUIonNavComplete(e);
 				SetUpJumpListOnNavComplete();
 				SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
 				SetupUIOnSelectOrNavigate(true);
@@ -2323,20 +2323,21 @@ namespace BetterExplorer {
 					this.DetailsPanel.FillPreviewPane(this.ShellListView);
 				});
 			}
-
-			var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
-			selectedItem.Header = this.ShellListView.CurrentFolder.DisplayName;
-			selectedItem.Icon = this.ShellListView.CurrentFolder.Thumbnail.SmallBitmapSource;
-			selectedItem.ShellObject = this.ShellListView.CurrentFolder;
-			if (selectedItem != null) {
-				var selectedPaths = selectedItem.SelectedItems;
-				if (selectedPaths != null) {
-					foreach (var path in selectedPaths.ToArray()) {
-						var sho = this.ShellListView.Items.Where(w => w.CachedParsingName == path).SingleOrDefault();
-						if (sho != null) {
-							var index = this.ShellListView.ItemsHashed[sho];
-							this.ShellListView.SelectItemByIndex(index, true);
-							selectedPaths.Remove(path);
+			if (e.OldFolder != this.ShellListView.CurrentFolder) {
+				var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
+				selectedItem.Header = this.ShellListView.CurrentFolder.DisplayName;
+				selectedItem.Icon = this.ShellListView.CurrentFolder.Thumbnail.SmallBitmapSource;
+				selectedItem.ShellObject = this.ShellListView.CurrentFolder;
+				if (selectedItem != null) {
+					var selectedPaths = selectedItem.SelectedItems;
+					if (selectedPaths != null) {
+						foreach (var path in selectedPaths.ToArray()) {
+							var sho = this.ShellListView.Items.Where(w => w.CachedParsingName == path).SingleOrDefault();
+							if (sho != null) {
+								var index = this.ShellListView.ItemsHashed[sho];
+								this.ShellListView.SelectItemByIndex(index, true);
+								selectedPaths.Remove(path);
+							}
 						}
 					}
 				}
@@ -2495,7 +2496,8 @@ namespace BetterExplorer {
 			if (!tcMain.isGoingBackOrForward) {
 				var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
 				if (Current.ForwardEntries.Count() > 1) Current.ClearForwardItems();
-				Current.CurrentLocation = e.Folder;
+				if (Current.CurrentLocation != e.Folder)
+					Current.CurrentLocation = e.Folder;
 			}
 
 			tcMain.isGoingBackOrForward = false;

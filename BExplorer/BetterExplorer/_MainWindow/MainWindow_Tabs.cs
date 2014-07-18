@@ -273,8 +273,8 @@ namespace BetterExplorer {
 							this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
 							this.ShellListView.CurrentFolder = tab.ShellObject;
 							ShellListView.Navigate(tab.ShellObject, false, false);
-							if (tab.log.ForwardEntries.Count() > 1) tab.log.ClearForwardItems();
-							tab.log.CurrentLocation = this.ShellListView.CurrentFolder;
+							//if (tab.log.ForwardEntries.Count() > 1) tab.log.ClearForwardItems();
+							//tab.log.CurrentLocation = this.ShellListView.CurrentFolder;
 						}
 					}
 					else {

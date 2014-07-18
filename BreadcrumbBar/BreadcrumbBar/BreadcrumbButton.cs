@@ -180,7 +180,7 @@ namespace Odyssey.Controls {
 			}
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				var data = this.DataContext as ShellItem;
-				if (data != null && data.ParsingName != KnownFolders.Computer.ParsingName && data.ParsingName != KnownFolders.Desktop.ParsingName) {
+				if (data != null && data.ParsingName != KnownFolders.Computer.ParsingName && data.ParsingName != KnownFolders.Desktop.ParsingName && !data.IsSearchFolder) {
 					var aditionalItems = data.Where(w => w.IsFolder).ToArray();
 					this.ItemsSource = aditionalItems;
 				}
@@ -247,8 +247,14 @@ namespace Odyssey.Controls {
 		void item_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = e.Source as MenuItem;
 			object dataItem = item.DataContext;
-			RemoveSelectedItem(dataItem);
-			SelectedItem = dataItem;
+			//RemoveSelectedItem(dataItem);
+			//SelectedItem = dataItem;
+			FrameworkElement parent = TemplatedParent as FrameworkElement;
+			while (parent != null && !(parent is BreadcrumbBar)) parent = VisualTreeHelper.GetParent(parent) as FrameworkElement;
+			BreadcrumbBar bar = parent as BreadcrumbBar;
+			if (bar != null) {
+				bar.Path = (dataItem as ShellItem).ParsingName;
+			}
 		}
 
 		/// <summary>
