@@ -6,46 +6,34 @@ using System.Reflection;
 using System.Text;
 using TAFactory.IconPack;
 
-namespace BExplorer.Shell
-{
-    public class IconReader
-    {
-        public List<IconFile> ReadIcons(string pathLibary)
-        {
-            var icons = IconHelper.ExtractAllIcons(pathLibary);
+namespace BExplorer.Shell {
+	public class IconReader {
+		public List<IconFile> ReadIcons(string pathLibary) {
+			var iconFiles = new List<IconFile>();
+			foreach (var icon in IconHelper.ExtractAllIcons(pathLibary)) {
+				iconFiles.Add(
+					new IconFile {
+						Icon = icon,
+						Index = iconFiles.Count
+					}
+				);
+			}
 
-            var iconFiles = new List<IconFile>();
+			return iconFiles;
+		}
+		public List<IconFile> ReadIcons(string pathLibary, Size size) {
+			var iconFiles = new List<IconFile>();
+			foreach (var icon in IconHelper.ExtractAllIcons(pathLibary)) {
+				iconFiles.Add(
+					new IconFile {
+						Icon = IconHelper.GetBestFitIcon(icon, size, false),
+						Index = iconFiles.Count
+					}
+				);
+			}
 
-            foreach(var icon in icons)
-            {
-                var iconFile = new IconFile 
-                                { 
-                                    Icon = icon,
-                                    Index = iconFiles.Count
-                                };
-                iconFiles.Add(iconFile);
-            }
+			return iconFiles;
+		}
 
-            return iconFiles;
-        }
-        public List<IconFile> ReadIcons(string pathLibary, Size size)
-        {
-            var icons = IconHelper.ExtractAllIcons(pathLibary);
-
-            var iconFiles = new List<IconFile>();
-
-            foreach (var icon in icons)
-            {
-                var iconFile = new IconFile
-                {
-                    Icon = IconHelper.GetBestFitIcon(icon, size, false),
-                    Index = iconFiles.Count
-                };
-                iconFiles.Add(iconFile);
-            }
-
-            return iconFiles;
-        }
-
-    }
+	}
 }

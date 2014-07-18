@@ -423,15 +423,24 @@ namespace BExplorer.Shell {
 				var selItems = new List<ShellItem>();
 				DraggedItemIndexes.AddRange(Data);
 
-				//TODO: Try removing this Try Catch!
 				foreach (var index in Data) {
+					var Item = this.Items.ElementAtOrDefault(index);
+					if (Item == null)
+						this.SelectedIndexes.Remove(index);
+					else
+						selItems.Add(Item);
+
+					//: Try removing this Try Catch!
+					/*
 					try {
 						selItems.Add(this.Items[index]);
+
 						//DraggedItemIndexes.Add(index);
 					}
 					catch (Exception) {
 						this.SelectedIndexes.Remove(index);
 					}
+					*/
 				}
 				return selItems;
 			}
@@ -1956,7 +1965,8 @@ namespace BExplorer.Shell {
 										this.SaveSettingsToDatabase(this.CurrentFolder);
 										CurrentFolder = newSho;
 										Navigate(newSho, false, true);
-									} else {
+									}
+									else {
 										StartProcessInCurrentDirectory(newSho);
 									}
 
@@ -2666,7 +2676,7 @@ namespace BExplorer.Shell {
 			Shell32.ShellExecuteEx(ref info);
 		}
 
-		public void RedrawItem(int index) {
+		private void RedrawItem(int index) {
 			//F.Application.DoEvents();
 			var sho = Items[index];
 			//F.Application.DoEvents();
@@ -2717,7 +2727,7 @@ namespace BExplorer.Shell {
 		}
 
 		public void RenameSelectedItem() {
-			this.Focus();
+			//this.Focus();
 			this.RenameItem(this.GetFirstSelectedItemIndex());
 		}
 
@@ -3030,6 +3040,20 @@ namespace BExplorer.Shell {
 		}
 
 		public void SetColInView(Collumns col, bool Remove) {
+			if (Remove) {
+				Collumns theColumn = this.Collumns.SingleOrDefault(s => s.pkey.fmtid == col.pkey.fmtid && s.pkey.pid == col.pkey.pid);
+				if (theColumn != null) {
+					int colIndex = this.Collumns.IndexOf(theColumn);
+					this.Collumns.Remove(theColumn);
+					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_DELETECOLUMN, colIndex, 0);
+				}
+			}
+			else if (this.Collumns.Count(s => s.pkey.fmtid == col.pkey.fmtid && s.pkey.pid == col.pkey.pid) == 0) {
+				this.Collumns.Add(col);
+				var column = col.ToNativeColumn();
+				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
+			}
+			/*
 			if (!Remove) {
 				if (this.Collumns.Count(s => s.pkey.fmtid == col.pkey.fmtid && s.pkey.pid == col.pkey.pid) == 0) {
 					this.Collumns.Add(col);
@@ -3045,7 +3069,7 @@ namespace BExplorer.Shell {
 					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_DELETECOLUMN, colIndex, 0);
 				}
 			}
-
+			*/
 			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
 
 			for (int i = 0; i < this.Collumns.Count; i++) {
@@ -3242,7 +3266,7 @@ namespace BExplorer.Shell {
 
 			//}
 
-			
+
 
 			if (destination == null)
 				return;
@@ -4246,24 +4270,5 @@ namespace BExplorer.Shell {
 			}
 			this.ResumeLayout();
 		}
-
-		//static void Build() {
-		//	SQLiteConnection.CreateFile("MyDatabase.db");
-		//	var m_dbConnection = new SQLiteConnection("Data Source=MyDatabase.sqlite;Version=3;");
-		//	m_dbConnection.Open();
-
-		//	string sql = "create table highscores (name varchar(20), score int)";
-
-		//	SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-		//	command.ExecuteNonQuery();
-
-		//	string sql1 = "insert into highscores (name, score) values ('Me', 9001)";
-
-		//	SQLiteCommand command1 = new SQLiteCommand(sql1, m_dbConnection);
-		//	command1.ExecuteNonQuery();
-
-		//	m_dbConnection.Close();
-
-		//}
 	}
 }

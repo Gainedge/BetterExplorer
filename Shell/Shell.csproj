@@ -119,10 +119,10 @@
     <Compile Include="ShellTreeViewEx.Designer.cs">
       <DependentUpon>ShellTreeViewEx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Icons\FileIcon.cs" />
+    <Compile Include="Icons\_Obsolete\FileIcon.cs" />
     <Compile Include="Icons\IconFile.cs" />
     <Compile Include="Icons\IconReader.cs" />
-    <Compile Include="Icons\IconUtilities.cs" />
+    <Compile Include="Icons\_Obsolete\IconUtilities.cs" />
     <Compile Include="Interop\IAsyncOperation.cs" />
     <Compile Include="Interop\EnumUnknownClass.cs" />
     <Compile Include="Interop\ShellItemArray.cs" />
@@ -254,6 +254,7 @@
     <Compile Include="WindowsSearch\ShellSearchCollection.cs" />
     <Compile Include="WindowsSearch\ShellSearchConnector.cs" />
     <Compile Include="WindowsSearch\ShellSearchFolder.cs" />
+    <Compile Include="_Plugin Interfaces\IShellItem.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
