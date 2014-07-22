@@ -1689,13 +1689,6 @@ namespace BetterExplorer {
 			this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 			this.ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
 			this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
-			this.ShellListView.GotFocus += ShellListView_GotFocus;
-		}
-
-		void ShellListView_GotFocus(object sender, EventArgs e) {
-			//if (this.bcbc != null) {
-			//	this.bcbc.Exit(true);
-			//}
 		}
 
 		void ShellListView_EndItemLabelEdit(object sender, EventArgs e) {
@@ -1726,12 +1719,10 @@ namespace BetterExplorer {
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
-			//Dispatcher.Invoke(DispatcherPriority.Background, (Action)(() => {
 			this._IsBreadcrumbBarSelectionChnagedAllowed = false;
 			//if (!e.IsNavigateInSameTab || e.Folder == this.ShellListView.CurrentFolder)
 			this.bcbc.PathConversion -= path_conversation;
 			this.bcbc.Path = e.Folder.IsSearchFolder ? e.Folder.Pidl.ToString() : e.Folder.ParsingName;
-			//if (!e.IsNavigateInSameTab)
 			this.bcbc.PathConversion += path_conversation;
 			var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 			if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
@@ -1754,7 +1745,6 @@ namespace BetterExplorer {
 			}
 			catch (Exception) {
 			}
-			//}));
 		}
 
 
