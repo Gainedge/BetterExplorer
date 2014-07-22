@@ -1604,15 +1604,19 @@ namespace BExplorer.Shell {
 
 			if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
 				if (Notifications.NotificationReceipt(m.WParam, m.LParam)) {
-					//var info = (NotifyInfos)Notifications.NotificationsReceived[Notifications.NotificationsReceived.Count - 1];
 					foreach (NotifyInfos info in Notifications.NotificationsReceived.ToArray()) {
 						if (info.Notification == ShellNotifications.SHCNE.SHCNE_CREATE || info.Notification == ShellNotifications.SHCNE.SHCNE_MKDIR) {
 							var obj = new ShellItem(info.Item1);
-							//TODO: Check Changes to If(...)
 							if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
 								var itemIndex = InsertNewItem(obj);
 								if (this.ItemUpdated != null)
 									this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
+							} else {
+								var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
+								if (affectedItem != null) {
+									var index = this.Items.IndexOf(affectedItem);
+									this.RefreshItem(index, true);
+								}
 							}
 							Notifications.NotificationsReceived.Remove(info);
 						}
@@ -1624,6 +1628,7 @@ namespace BExplorer.Shell {
 								//TODO: Check Changes to If(...)
 								if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
 									var itemIndex = InsertNewItem(obj);
+									this.RefreshItem(itemIndex, true);
 									if (this.ItemUpdated != null)
 										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
 								}
@@ -1644,14 +1649,21 @@ namespace BExplorer.Shell {
 							//}
 							Notifications.NotificationsReceived.Remove(info);
 						}
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_UPDATEDIR) {
+							var obj = new ShellItem(info.Item1);
+							var item = this.ItemsHashed.SingleOrDefault(s => s.Key == obj);
+							if (item.Key != null) {
+								this.RefreshItem(item.Value, true);
+							}
+							Notifications.NotificationsReceived.Remove(info);
+						}
 						//TODO: Should this be and Else If(...)?
 						if (info.Notification == ShellNotifications.SHCNE.SHCNE_DELETE || info.Notification == ShellNotifications.SHCNE.SHCNE_RMDIR) {
 							var obj = new ShellItem(info.Item1);
 							if (!String.IsNullOrEmpty(obj.ParsingName)) {
-								ShellItem theItem = Items.SingleOrDefault(s => s.ParsingName == obj.ParsingName);
+								ShellItem theItem = Items.SingleOrDefault(s => s.GetHashCode() == obj.GetHashCode());
 								if (theItem != null) {
 									Items.Remove(theItem);
-									ItemsHashed.Remove(theItem);
 									if (this.IsGroupsEnabled) {
 										this.SetGroupOrder(false);
 									}
@@ -2320,12 +2332,17 @@ namespace BExplorer.Shell {
 												}
 												if (IconSize != 16) {
 													var thumbnail = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
+													if (sho.IsNeedRefreshing) {
+														thumbnail = sho.Thumbnail.RefreshThumbnail((uint)IconSize);
+														sho.IsNeedRefreshing = false;
+													}
 													if (thumbnail != null) {
 														if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize) || thumbnail.Width == thumbnail.Height && thumbnail.Width != IconSize)) {
 															ThumbnailsForCacheLoad.Enqueue(index);
 														}
 														else {
 															sho.IsThumbnailLoaded = true;
+															sho.IsNeedRefreshing = false;
 														}
 														using (Graphics g = Graphics.FromHdc(hdc)) {
 															var cutFlag = User32.SendMessage(this.LVHandle, Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
@@ -2716,6 +2733,7 @@ namespace BExplorer.Shell {
 		public void RefreshItem(int index, Boolean IsForceRedraw = false) {
 			if (IsForceRedraw) {
 				this.Items[index] = new ShellItem(this.Items[index].Pidl);
+				this.Items[index].IsNeedRefreshing = true;
 			}
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REDRAWITEMS, index, index);
 		}
@@ -3625,6 +3643,7 @@ namespace BExplorer.Shell {
 					var icon = temp.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 					if (icon != null) {
 						sho.IsIconLoaded = true;
+						//sho.IsNeedRefreshing = false;
 						//if (!cache.ContainsKey(index)) {
 						//	cache.TryAdd(index, new Bitmap(icon));
 						//	this.RedrawItem(index);
@@ -3652,24 +3671,19 @@ namespace BExplorer.Shell {
 				resetEvent.WaitOne();
 				Thread.Sleep(1);
 				try {
-					//Application.DoEvents();
-
 					var index = ThumbnailsForCacheLoad.Dequeue();
-
 					if (index >= Items.Count) {
 						continue;
 					}
-
 					var sho = Items[index];
 					var thumb = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
 					sho.IsThumbnailLoaded = true;
+					sho.IsNeedRefreshing = false;
 					if (thumb != null) {
 						this.RedrawItem(index);
 						thumb.Dispose();
 						thumb = null;
 					}
-
-					//Application.DoEvents();
 				}
 				catch {
 				}

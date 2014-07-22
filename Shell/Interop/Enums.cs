@@ -299,7 +299,29 @@ namespace BExplorer.Shell.Interop
 		SlowReclaim = 0x00000008,
 		ExtractDoNotCache = 0x00000020
 	}
-
+	[Flags]
+	public enum WTS_FLAGS : uint {
+		WTS_EXTRACT = 0x00000000,
+		WTS_INCACHEONLY = 0x00000001,
+		WTS_FASTEXTRACT = 0x00000002,
+		WTS_FORCEEXTRACTION = 0x00000004,
+		WTS_SLOWRECLAIM = 0x00000008,
+		WTS_EXTRACTDONOTCACHE = 0x00000020,
+		WTS_SCALETOREQUESTEDSIZE = 0x00000040,
+		WTS_SKIPFASTEXTRACT = 0x00000080,
+		WTS_EXTRACTINPROC = 0x00000100
+	}
+	[Flags]
+	public enum WTS_CACHEFLAGS : uint {
+		WTS_DEFAULT = 0x00000000,
+		WTS_LOWQUALITY = 0x00000001,
+		WTS_CACHED = 0x00000002
+	}
+	[StructLayout(LayoutKind.Sequential, Size = 16), Serializable]
+	public struct WTS_THUMBNAILID {
+		[MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 16)]
+		byte[] rgbKey;
+	}
 	[Flags]
 	public enum ThumbnailCacheOptions
 	{

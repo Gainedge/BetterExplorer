@@ -76,7 +76,7 @@ namespace BExplorer.Shell.Interop {
 		private System.Windows.Size currentSize = new System.Windows.Size(256, 256);
 
 		#endregion
-
+		private static IThumbnailCache ThumbnailCache;
 		#region Constructors
 
 		public void Dispose() {
@@ -92,6 +92,15 @@ namespace BExplorer.Shell.Interop {
 		internal ShellThumbnail(ShellItem shellObject) {
 			if (shellObject != null && shellObject.ComInterface != null) {
 				shellItemNative = shellObject.ComInterface;
+				if (ThumbnailCache == null) {
+					Guid IID_IUnknown = new Guid("00000000-0000-0000-C000-000000000046");
+					Guid CLSID_LocalThumbnailCache = new Guid("50EF4544-AC9F-4A8E-B21B-8A26180DB13F");
+
+					IntPtr cachePointer;
+					Ole32.CoCreateInstance(ref CLSID_LocalThumbnailCache, IntPtr.Zero, Ole32.CLSCTX.INPROC, ref IID_IUnknown, out cachePointer);
+
+					ThumbnailCache = (IThumbnailCache)Marshal.GetObjectForIUnknown(cachePointer);
+				}
 			}
 		}
 
@@ -339,6 +348,30 @@ namespace BExplorer.Shell.Interop {
 			//}
 
 			//throw new ShellException(hr);
+		}
+
+		public Bitmap RefreshThumbnail(uint iconSize) {
+			Bitmap returnValue = null;
+			ISharedBitmap bmp = null;
+			WTS_CACHEFLAGS cacheFlags;
+			WTS_THUMBNAILID thumbId;
+			try {
+				ThumbnailCache.GetThumbnail(this.shellItemNative, iconSize, WTS_FLAGS.WTS_FORCEEXTRACTION | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE, out bmp, out cacheFlags, out thumbId);
+				IntPtr hBitmap;
+				bmp.GetSharedBitmap(out hBitmap);
+
+				// return a System.Drawing.Bitmap from the hBitmap
+
+				if (hBitmap != IntPtr.Zero)
+					returnValue = GetBitmapFromHBitmap(hBitmap);
+
+				// delete HBitmap to avoid memory leaks
+				Gdi32.DeleteObject(hBitmap);
+			} finally {
+				if (bmp != null) Marshal.ReleaseComObject(bmp);
+			}
+
+			return returnValue;
 		}
 
 		public static Bitmap CopyHBitmapToBitmap(IntPtr nativeHBitmap) {

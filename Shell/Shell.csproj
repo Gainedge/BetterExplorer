@@ -105,6 +105,7 @@
     <Compile Include="FileOperation\Theme.cs" />
     <Compile Include="Groups\LVGROUP.cs" />
     <Compile Include="Groups\ListViewGroupEx.cs" />
+    <Compile Include="Interop\IThumbnailCache.cs" />
     <Compile Include="Interop\IAssocHandler.cs" />
     <Compile Include="Interop\ComReleaser.cs" />
     <Compile Include="Interop\FileOperationFlags.cs" />

@@ -141,7 +141,7 @@ namespace BExplorer.Shell {
 
 		private ShellThumbnail thumbnail;
 
-		//public bool IsVisible { get; set; }
+		public bool IsNeedRefreshing { get; set; }
 		public bool IsThumbnailLoaded { get; set; }
 		public bool IsIconLoaded { get; set; }
 		//public bool ISRedrawed { get; set; }
