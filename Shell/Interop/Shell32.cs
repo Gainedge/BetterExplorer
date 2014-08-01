@@ -384,6 +384,17 @@ namespace BExplorer.Shell.Interop
 
 		class Shell32
 		{
+			[DllImport("shell32.dll", CharSet=CharSet.Unicode)]
+			public static extern IntPtr SHChangeNotification_Lock(
+					IntPtr windowHandle,
+					int processId,
+					out IntPtr pidl,
+					out uint lEvent);
+
+			[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+			[return: MarshalAs(UnmanagedType.Bool)]
+			public static extern Boolean SHChangeNotification_Unlock(IntPtr hLock);
+
 			[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
 			public static extern void SHCreateShellItemArrayFromDataObject(
 						[In] System.Runtime.InteropServices.ComTypes.IDataObject pdo,
@@ -681,6 +692,9 @@ namespace BExplorer.Shell.Interop
 			[DllImport("Shell32.dll", CharSet = CharSet.Auto)]
 			public static extern HResult SHGetSetFolderCustomSettings(ref LPSHFOLDERCUSTOMSETTINGS pfcs, string pszPath, UInt32 dwReadWrite);
 
+			[DllImport("shell32.dll", SetLastError = true)]
+			public static extern bool SHObjectProperties(IntPtr hwnd, uint shopObjectType, [MarshalAs(UnmanagedType.LPWStr)] string pszObjectName, [MarshalAs(UnmanagedType.LPWStr)] string pszPropertyPage);
+
 			[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 			public struct LPSHFOLDERCUSTOMSETTINGS
 			{
@@ -816,8 +830,8 @@ namespace BExplorer.Shell.Interop
 				[UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
 				public delegate int funcGetName(IntPtr refer, [Out, MarshalAs(UnmanagedType.LPWStr)] out String ppsz);
 
-				[DllImport("Shell32", EntryPoint = "SHAssocEnumHandlers", PreserveSig = false)]
-				public extern static void SHAssocEnumHandlers([MarshalAs(UnmanagedType.LPWStr)] string pszExtra, ASSOC_FILTER afFilter, [Out] out IntPtr ppEnumHandler);
+				[DllImport("Shell32", EntryPoint = "SHAssocEnumHandlers", CharSet= CharSet.Unicode)]
+				public extern static HResult SHAssocEnumHandlers([MarshalAs(UnmanagedType.LPWStr)] string pszExtra, [In] ASSOC_FILTER afFilter, out IntPtr ppEnumHandler);
 
 				[DllImport("shell32.dll", PreserveSig = false)]
 				public static extern IntPtr SHGetIDListFromObject(
@@ -862,6 +876,28 @@ namespace BExplorer.Shell.Interop
 					public IntPtr hIcon;
 					public IntPtr hProcess;
 				}
+
+				[DllImport("shell32.dll", SetLastError = true)]
+				static extern IntPtr CommandLineToArgvW(
+						[MarshalAs(UnmanagedType.LPWStr)] string lpCmdLine, out int pNumArgs);
+
+				public static string[] CommandLineToArgs(string commandLine) {
+					int argc;
+					var argv = CommandLineToArgvW(commandLine, out argc);
+					if (argv == IntPtr.Zero)
+						throw new System.ComponentModel.Win32Exception();
+					try {
+						var args = new string[argc];
+						for (var i = 0; i < args.Length; i++) {
+							var p = Marshal.ReadIntPtr(argv, i * IntPtr.Size);
+							args[i] = Marshal.PtrToStringUni(p);
+						}
+						return args;
+					} finally {
+						Marshal.FreeHGlobal(argv);
+					}
+				}
+
 				[DllImport("shell32.dll")]
 				public static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, [Out()] out IntPtr pidl, uint sfgaoIn, [Out()] out uint psfgaoOut);
 

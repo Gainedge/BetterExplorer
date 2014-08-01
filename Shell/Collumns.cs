@@ -20,5 +20,6 @@ namespace BExplorer.Shell
 		public Boolean IsColumnHandler { get; set; }
 
 		public Type CollumnType { get; set; }
+		public int MinWidth { get; set; }
 	}
 }

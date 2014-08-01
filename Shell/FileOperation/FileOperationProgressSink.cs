@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BExplorer.Shell
@@ -74,6 +75,9 @@ namespace BExplorer.Shell
 				uint dwFlags, IShellItem psiItem,
 				uint hrDelete, IShellItem psiNewlyCreated)
 		{
+			var item = new ShellItem(psiItem);
+			Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_DELETE, Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, item.Pidl, IntPtr.Zero);
+			item.Dispose();
 			TraceAction("PostDeleteItem", psiItem, hrDelete);
 		}
 

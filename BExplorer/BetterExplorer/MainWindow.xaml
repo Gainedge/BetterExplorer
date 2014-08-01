@@ -1408,7 +1408,7 @@
 								Icon="Images\open16.png"
 								IsEnabled="False"
 								Ribbon:KeyTip.Keys="O"
-								Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small"/>
+								Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small" DropDownOpened="btnOpenWith_DropDownOpened"/>
 					<Ribbon:Button x:Name="btnEdit"
 						 Click="btnEdit_Click"
 						 Header="{DynamicResource btnEditCP}"
@@ -3010,9 +3010,6 @@
 					</Button>
 				</odc:BreadcrumbBar.Buttons>
 				<odc:BreadcrumbBar.DropDownItems>
-					<TextBlock Text="C:\Windows"/>
-					<TextBlock Text="C:\Windows\System32"/>
-					<TextBlock Text="C:\Users"/>
 				</odc:BreadcrumbBar.DropDownItems>
 			</odc:BreadcrumbBar>
 
@@ -3241,7 +3238,7 @@
 			</Ribbon:StatusBarItem>
 
 		</Ribbon:StatusBar>
-		<Button x:Name="btnTest" Grid.ColumnSpan="2" Content="Button" Margin="673,23,0,0" VerticalAlignment="Top" Width="75" Click="btnTest_Click"/>
+		<Button x:Name="btnTest" Grid.ColumnSpan="2" Content="Button" Margin="673,23,0,0" VerticalAlignment="Top" Width="75" Click="btnTest_Click" Visibility="Collapsed"/>
 
 	</Grid>
 </Ribbon:RibbonWindow>

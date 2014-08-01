@@ -80,18 +80,18 @@ namespace BExplorer.Shell.Interop {
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct MENUITEMINFO {
-		public int cbSize;
+		public uint cbSize;
 		public MIIM fMask;
 		public uint fType;
 		public uint fState;
 		public int wID;
 		public IntPtr hSubMenu;
-		public int hbmpChecked;
-		public int hbmpUnchecked;
-		public int dwItemData;
-		public string dwTypeData;
+		public IntPtr hbmpChecked;
+		public IntPtr hbmpUnchecked;
+		public IntPtr dwItemData;
+		public IntPtr dwTypeData;
 		public uint cch;
-		public int hbmpItem;
+		public IntPtr hbmpItem;
 	}
 
 	public enum MF {
@@ -142,7 +142,7 @@ namespace BExplorer.Shell.Interop {
 		LVM_GETITEMSTATE = (FIRST + 44),
 		LVM_GETITEMRECT = (FIRST + 14),
 		LVM_SETITEMSTATE = (FIRST + 43),
-		LVM_INSERTCOLUMN = (FIRST + 27),
+		LVM_INSERTCOLUMN = (FIRST + 97),
 		LVM_SETCOLUMN = (FIRST + 96),
 		LVM_SETCOLUMNWIDTH = (FIRST + 30),
 		LVM_DELETECOLUMN = (FIRST + 28),
@@ -180,6 +180,21 @@ namespace BExplorer.Shell.Interop {
 		LV_VIEW_MAX = 4,
 		LV_VIEW_SMALLICON = 2,
 		LV_VIEW_TILE = 4,
+	}
+
+	[Flags]
+	public enum CMIC : uint {
+		Hotkey = 0x00000020,
+		Icon = 0x00000010,
+		FlagNoUi = 0x00000400,
+		Unicode = 0x00004000,
+		NoConsole = 0x00008000,
+		Asyncok = 0x00100000,
+		NoZoneChecks = 0x00800000,
+		ShiftDown = 0x10000000,
+		ControlDown = 0x40000000,
+		FlagLogUsage = 0x04000000,
+		PtInvoke = 0x20000000
 	}
 
 
@@ -265,6 +280,8 @@ namespace BExplorer.Shell.Interop {
 	}
 
 	public class User32 {
+		[DllImport("user32.dll")]
+		public static extern IntPtr GetSubMenu(IntPtr hMenu, int nPos);
 		/// <summary>The GetForegroundWindow function returns a handle to the foreground window.</summary>
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetForegroundWindow();

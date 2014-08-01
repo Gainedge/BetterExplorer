@@ -17,6 +17,7 @@
 // Boston, MA 2110-1301, USA.
 //
 using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -37,7 +38,7 @@ namespace BExplorer.Shell.Interop {
 		RESERVED = 0xffff0000,
 	}
 
-	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 	public struct CMINVOKECOMMANDINFO {
 		public int cbSize;
 		public int fMask;
@@ -50,7 +51,27 @@ namespace BExplorer.Shell.Interop {
 		public IntPtr hIcon;
 	}
 
-	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+	[StructLayout(LayoutKind.Sequential)]
+	public struct CMINVOKECOMMANDINFOEX {
+		public int cbSize;
+		public int fMask;
+		public IntPtr hwnd;
+		public IntPtr lpVerb;
+		[MarshalAs(UnmanagedType.LPStr)] public string lpParameters;
+		[MarshalAs(UnmanagedType.LPStr)]
+		public string lpDirectory;
+		public int nShow;
+		public int dwHotKey;
+		public IntPtr hIcon;
+		[MarshalAs(UnmanagedType.LPStr)] public string lpTitle;
+		public IntPtr lpVerbW;
+		[MarshalAs(UnmanagedType.LPStr)] public string lpParametersW;
+		[MarshalAs(UnmanagedType.LPStr)] public string lpDirectoryW;
+		[MarshalAs(UnmanagedType.LPStr)] public string lpTitleW;
+		public Point ptInvoke;
+	}
+
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 	public struct CMINVOKECOMMANDINFO_ByIndex {
 		public int cbSize;
 		public int fMask;
@@ -71,7 +92,7 @@ namespace BExplorer.Shell.Interop {
 		HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
 														 int idCmdLast, CMF uFlags);
 
-		void InvokeCommand(ref CMINVOKECOMMANDINFO pici);
+		void InvokeCommand(ref CMINVOKECOMMANDINFOEX pici);
 
 		[PreserveSig]
 		HResult GetCommandString(int idcmd, uint uflags, int reserved,
@@ -88,7 +109,7 @@ namespace BExplorer.Shell.Interop {
 				int idCmdFirst, int idCmdLast,
 				CMF uFlags);
 
-		void InvokeCommand(ref CMINVOKECOMMANDINFO_ByIndex pici);
+		void InvokeCommand(ref CMINVOKECOMMANDINFOEX pici);
 
 		[PreserveSig]
 		HResult GetCommandString(int idcmd, uint uflags, int reserved,
@@ -121,5 +142,16 @@ namespace BExplorer.Shell.Interop {
 		[PreserveSig]
 		HResult HandleMenuMsg2(int uMsg, IntPtr wParam, IntPtr lParam,
 				out IntPtr plResult);
+	}
+
+	[ComImport()]
+	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	[GuidAttribute("000214e8-0000-0000-c000-000000000046")]
+	public interface IShellExtInit {
+		[PreserveSig()]
+		int Initialize(
+				IntPtr pidlFolder,
+				IntPtr lpdobj,
+				uint hKeyProgID);
 	}
 }

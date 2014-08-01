@@ -357,8 +357,9 @@ namespace BExplorer.Shell.Interop {
 			WTS_THUMBNAILID thumbId;
 			try {
 				ThumbnailCache.GetThumbnail(this.shellItemNative, iconSize, WTS_FLAGS.WTS_FORCEEXTRACTION | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE, out bmp, out cacheFlags, out thumbId);
-				IntPtr hBitmap;
-				bmp.GetSharedBitmap(out hBitmap);
+				IntPtr hBitmap = IntPtr.Zero;
+				if (bmp != null)
+					bmp.GetSharedBitmap(out hBitmap);
 
 				// return a System.Drawing.Bitmap from the hBitmap
 

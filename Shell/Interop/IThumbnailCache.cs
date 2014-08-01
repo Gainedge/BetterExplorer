@@ -10,7 +10,8 @@ namespace BExplorer.Shell.Interop {
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	[Guid("F676C15D-596A-4ce2-8234-33996F445DB1")]
 	public interface IThumbnailCache {
-		uint GetThumbnail(
+		[PreserveSig]
+		HResult GetThumbnail(
 				[In] IShellItem pShellItem,
 				[In] uint cxyRequestedThumbSize,
 				[In] WTS_FLAGS flags /*default:  WTS_FLAGS.WTS_EXTRACT*/,
@@ -18,8 +19,8 @@ namespace BExplorer.Shell.Interop {
 				[Out] out WTS_CACHEFLAGS pOutFlags,
 				[Out] out WTS_THUMBNAILID pThumbnailID
 		);
-
-		void GetThumbnailByID(
+		[PreserveSig]
+		HResult GetThumbnailByID(
 				[In, MarshalAs(UnmanagedType.Struct)] WTS_THUMBNAILID thumbnailID,
 				[In] uint cxyRequestedThumbSize,
 				[Out][MarshalAs(UnmanagedType.Interface)] out ISharedBitmap ppvThumb,

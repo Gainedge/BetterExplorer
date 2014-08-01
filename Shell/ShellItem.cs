@@ -640,9 +640,8 @@ namespace BExplorer.Shell {
 		public List<AssociationItem> GetAssocList() {
 			var assocList = new List<AssociationItem>();
 			IntPtr enumAssocPtr;
-			Shell32.SHAssocEnumHandlers(Path.GetExtension(ParsingName), Shell32.ASSOC_FILTER.ASSOC_FILTER_RECOMMENDED, out enumAssocPtr);
+			var h = Shell32.SHAssocEnumHandlers(Path.GetExtension(ParsingName), Shell32.ASSOC_FILTER.ASSOC_FILTER_RECOMMENDED, out enumAssocPtr);
 			IntPtr pUnk = Marshal.ReadIntPtr(enumAssocPtr);
-
 			IntPtr pFunc = Marshal.ReadIntPtr(pUnk + 3 * IntPtr.Size);
 			Shell32.funcNext Next = (Shell32.funcNext)Marshal.GetDelegateForFunctionPointer(pFunc, typeof(Shell32.funcNext));
 
@@ -660,9 +659,9 @@ namespace BExplorer.Shell {
 					String displayName = String.Empty;
 					GetName(funcs[i], out path);
 					GetUIName(funcs[i], out displayName);
-					assocList.Add(new AssociationItem() { DisplayName = displayName, ApplicationPath = path, InvokePtr = funcpUnk });
+					assocList.Add(new AssociationItem(this) { DisplayName = displayName, ApplicationPath = path});
 					Marshal.Release(funcs[i]);
-					//Marshal.Release(funcpUnk);
+					Marshal.Release(funcpUnk);
 					Marshal.Release(getNamepFunc);
 					Marshal.Release(getNameUIpFunc);
 				}
@@ -1280,6 +1279,19 @@ namespace BExplorer.Shell {
 			SFGAO sfgao;
 			ComInterface.GetAttributes(Check, out sfgao);
 			return sfgao != 0;
+		}
+
+		public void GetAssocHandlers() {
+			if (this.m_ComInterface != null) {
+				var result = IntPtr.Zero;
+				this.m_ComInterface.BindToHandler(IntPtr.Zero, BHID.SFAssocHandlers, typeof(IEnumAssocHandlers).GUID, out result);
+				var enumHandlers = Marshal.GetObjectForIUnknown(result) as IEnumAssocHandlers;
+				IAssocHandler assoc = null;
+				uint items = 0;
+				while (enumHandlers.Next(1, out assoc, out items ) == HResult.S_OK) {
+					var h = assoc;
+				}
+			}
 		}
 		#endregion
 

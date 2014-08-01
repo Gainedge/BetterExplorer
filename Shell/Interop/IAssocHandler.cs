@@ -21,22 +21,37 @@ namespace BExplorer.Shell.Interop
 				out uint pceltFetched);
 	}
 
-	[ComImport]
-	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	[Guid("F04061AC-1659-4a3f-A954-775AA57FC083")]
-	public interface IAssocHandler
-	{
-		[PreserveSig]
-		HResult GetName(out String ppsz);
+	[ComImport, Guid("F04061AC-1659-4a3f-A954-775AA57FC083"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown), ComConversionLoss]
+	public interface IAssocHandler {
 
 		[PreserveSig]
-		HResult GetUIName(out String ppsz);
+		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+		HResult GetName([MarshalAs(UnmanagedType.LPWStr), Out] String ppsz);
 
 		[PreserveSig]
+		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+		HResult GetUIName([MarshalAs(UnmanagedType.LPWStr), Out] String ppsz);
+
+		[PreserveSig]
+		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+		HResult GetIconLocation([MarshalAs(UnmanagedType.LPWStr), Out] String ppszPath, [Out] int pIndex);
+
+		[PreserveSig]
+		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		HResult IsRecommended();
 
 		[PreserveSig]
-		HResult Invoke(IDataObject pdo);
+		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+		HResult MakeDefault([MarshalAs(UnmanagedType.LPWStr), In] String pszDescription);
+
+		[PreserveSig]
+		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+		HResult Invoke([In] IDataObject pdo);
+
+		[PreserveSig]
+		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+		HResult CreateInvoker([In] IDataObject pdo, [Out] IntPtr ppInvoker);
 	}
+
 
 }

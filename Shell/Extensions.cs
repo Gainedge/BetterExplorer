@@ -67,10 +67,11 @@ namespace BExplorer.Shell {
 		LVCF_FMT = 0x1,
 		LVCF_WIDTH = 0x2,
 		LVCF_TEXT = 0x4,
-		LVCF_SUBITEM = 0x8
+		LVCF_SUBITEM = 0x8,
+		LVCF_MINWIDTH = 0x0040
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
+	[StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]
 	public struct LVCOLUMN {
 		public LVCF mask;
 		public LVCFMT fmt;
@@ -78,6 +79,11 @@ namespace BExplorer.Shell {
 		public String pszText;
 		public Int32 cchTextMax;
 		public Int32 iSubItem;
+		public int iImage;
+		public int iOrder;
+		public int cxMin;
+		public int cxDefault;
+		public int cxIdeal;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -250,13 +256,14 @@ namespace BExplorer.Shell {
 			return nativeGroup;
 		}
 
-		public static Collumns ToCollumns(this LVCOLUMN column, PROPERTYKEY pkey, Type type, bool IsColumnHandler) {
+		public static Collumns ToCollumns(this LVCOLUMN column, PROPERTYKEY pkey, Type type, bool IsColumnHandler, int minWidth) {
 			Collumns col = new Collumns();
 			col.pkey = pkey;
 			col.Name = column.pszText;
-			col.Width = column.cx;
+			col.Width = minWidth;
 			col.IsColumnHandler = IsColumnHandler;
 			col.CollumnType = type;
+			col.MinWidth = minWidth;
 			return col;
 		}
 

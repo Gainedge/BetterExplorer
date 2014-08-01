@@ -36,7 +36,7 @@ namespace BExplorer.Shell.Interop
 		[DllImport("shell32.dll", EntryPoint="#2", CharSet=CharSet.Auto)]
 		private static extern uint SHChangeNotifyRegister(
 						IntPtr hWnd,
-						SHCNF fSources,
+						SHCNRF fSources,
 						SHCNE fEvents,
 						uint wMsg,
 						int cEntries,
@@ -455,16 +455,18 @@ namespace BExplorer.Shell.Interop
 			changenetrys[0] = changeentry;
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
-				SHCNF.SHCNF_TYPE | SHCNF.SHCNF_IDLIST,
+				//SHCNF.SHCNF_TYPE | SHCNF.SHCNF_IDLIST,
+				SHCNRF.ShellLevel,
 				SHCNE.SHCNE_ALLEVENTS | SHCNE.SHCNE_INTERRUPT,
 				WM_SHNOTIFY,
 				1,
 				changenetrys);
 			return(notifyid);
 		}
-
+		IntPtr handle = IntPtr.Zero;
 		public ulong RegisterChangeNotify(IntPtr hWnd, ShellItem item, bool Recursively)
 		{
+			handle = hWnd;
 			if (notifyid != 0) return (0);
 			SHChangeNotifyEntry changeentry = new SHChangeNotifyEntry();
 			changeentry.pIdl = item.Pidl;
@@ -473,7 +475,7 @@ namespace BExplorer.Shell.Interop
 			changenetrys[0] = changeentry;
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
-				SHCNF.SHCNF_TYPE | SHCNF.SHCNF_IDLIST | (SHCNF)SHCNRF.InterruptLevel | (SHCNF)SHCNRF.ShellLevel,
+				SHCNRF.InterruptLevel | SHCNRF.ShellLevel,
 				SHCNE.SHCNE_ALLEVENTS | SHCNE.SHCNE_INTERRUPT,
 				WM_SHNOTIFY,
 				1,
