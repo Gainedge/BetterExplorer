@@ -314,11 +314,13 @@ namespace BExplorer.Shell {
 		}
 		*/
 
+		
 		/// <summary>
 		/// Converts a File/Folder path into a proper string used to create a <see cref="ShellItem"/>
 		/// </summary>
-		/// <param name="path"></param>
+		/// <param name="path">The path you want to convert</param>
 		/// <returns></returns>
+		[Obsolete("Replaced with ShellItem.ToShellParsingName")]
 		public static String ToShellParsingName(this String path) {
 			if (path.IndexOf("::") == 0 && !path.StartsWith(@"\\")) {
 				return String.Format("shell:{0}", path);
@@ -362,6 +364,7 @@ namespace BExplorer.Shell {
 			return dataObj;
 		}
 
+		/*
 		public static void SetSortIcon(this ShellView listViewControl, int columnIndex, SortOrder order) {
 			IntPtr columnHeader = User32.SendMessage(listViewControl.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETHEADER, 0, 0);
 			for (int columnNumber = 0; columnNumber <= listViewControl.Collumns.Count - 1; columnNumber++) {
@@ -394,7 +397,7 @@ namespace BExplorer.Shell {
 				}
 			}
 		}
-
+		*/
 		public static bool HitTest(this ShellView shellView, Point hitPoint, out int row, out int column) {
 			// clear the output values
 			row = column = -1;

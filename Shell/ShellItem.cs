@@ -1296,6 +1296,11 @@ namespace BExplorer.Shell {
 		#endregion
 
 
+		/// <summary>
+		/// Converts a File/Folder path into a proper string used to create a <see cref="ShellItem"/>
+		/// </summary>
+		/// <param name="path">The path you want to convert</param>
+		/// <returns></returns>
 		public static ShellItem ToShellParsingName(String path) {
 			if (path.IndexOf("::") == 0 && !path.StartsWith(@"\\")) {
 				return new ShellItem(String.Format("shell:{0}", path));
@@ -1306,7 +1311,7 @@ namespace BExplorer.Shell {
 			else {
 				return new ShellItem(path);
 			}
-		}
+		} //TODO: Consider making this a constructor!
 
 	}
 }
