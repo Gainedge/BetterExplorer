@@ -216,11 +216,12 @@ namespace BExplorer.Shell {
 
 	}
 
+	/*
 	public enum IconSize {
 		Large = 0x0,
 		Small = 0x1,
 	}
-
+	*/
 	[Flags]
 	public enum SHGetFileInfoOptions : uint {
 		Icon = 0x000000100,    // get icon

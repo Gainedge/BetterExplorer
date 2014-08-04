@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BExplorer.Shell {
 
+	[Obsolete("I do not think this actually does anything that a list could not.")]
 	public class SyncQueue<T> {
 		/*
 		public class OverloadEventArgs : EventArgs {
@@ -28,7 +29,7 @@ namespace BExplorer.Shell {
 		}
 
 		/// <summary>
-		/// Adds an object to the end of the System.Collections.Generic.Queue<T>.
+		/// Adds an object to the end of the System.Collections.Generic.Queue<T> then runs System.Threading.Monitor.PulseAll(queue) when queue.Count == 1;
 		/// </summary>
 		/// <param name="item">The object to add to the System.Collections.Generic.Queue<T>. The value can be null for reference types.</param>
 		public void Enqueue(T item) {
@@ -45,6 +46,16 @@ namespace BExplorer.Shell {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Removes and returns the object at the beginning of the System.Collections.Generic.Queue(Of T). while (queue.Count == 0) System.Threading.Monitor.Wait(queue);
+		/// </summary>
+		/// <returns>
+		/// The object that is removed from the beginning of the System.Collections.Generic.Queue(Of T).
+		/// </returns>
+		/// <Exceptions>
+		/// System.InvalidOperationException: The System.Collections.Generic.Queue(Of T) is empty.
+		/// </Exceptions>
 		public T Dequeue() {
 			lock (queue) {
 				while (queue.Count == 0) {
