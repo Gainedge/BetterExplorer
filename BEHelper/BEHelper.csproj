@@ -46,18 +46,16 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncContext.cs" />
-    <Compile Include="AsyncObservableCollection.cs" />
+    <Compile Include="Obsolete\AsyncContext.cs" />
+    <Compile Include="Obsolete\AsyncObservableCollection.cs" />
     <Compile Include="TransPicBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="IAsyncContext.cs" />
+    <Compile Include="Obsolete\IAsyncContext.cs" />
     <Compile Include="NoFlickerWindowsFormsHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Obsolete\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

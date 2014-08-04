@@ -21,6 +21,8 @@ namespace Wpf.Controls {
 	[TemplatePart(Name = "PART_NewTabButton", Type = typeof(ButtonBase))]
 	[TemplatePart(Name = "PART_ScrollViewer", Type = typeof(ScrollViewer))]
 	public class TabControl : System.Windows.Controls.TabControl {
+
+		/// <summary>List of tabs that can be reopened by the user</summary>
 		public List<NavigationLog> ReopenableTabs = new List<NavigationLog>();
 		//public static List<NavigationLog> ReopenableTabs = new List<NavigationLog>();
 
@@ -56,21 +58,25 @@ namespace Wpf.Controls {
 			set { SetValue(AllowAddNewProperty, value); }
 		}
 
+		/// <summary>The location where new tabs start at</summary>
 		public String DefaultTabPath {
 			get { return (String)GetValue(DefaultTabPathProperty); }
 			set { SetValue(DefaultTabPathProperty, value); }
 		}
 
+		[Obsolete("Never Used")]
 		public Brush TabItemNormalBackground {
 			get { return (Brush)GetValue(TabItemNormalBackgroundProperty); }
 			set { SetValue(TabItemNormalBackgroundProperty, value); }
 		}
 
+		[Obsolete("Never Used")]
 		public Brush TabItemMouseOverBackground {
 			get { return (Brush)GetValue(TabItemMouseOverBackgroundProperty); }
 			set { SetValue(TabItemMouseOverBackgroundProperty, value); }
 		}
 
+		[Obsolete("Never Used")]
 		public Brush TabItemSelectedBackground {
 			get { return (Brush)GetValue(TabItemSelectedBackgroundProperty); }
 			set { SetValue(TabItemSelectedBackgroundProperty, value); }
@@ -256,11 +262,11 @@ namespace Wpf.Controls {
 
 		#region Events
 
-		public event EventHandler<CancelEventArgs> TabItemAdding;
-		public event EventHandler<TabItemEventArgs> TabItemAdded;
-		public event EventHandler<TabItemCancelEventArgs> TabItemClosing;
-		public event EventHandler<TabItemEventArgs> TabItemClosed;
-		public event EventHandler<NewTabItemEventArgs> NewTabItem;
+		//public event EventHandler<CancelEventArgs> TabItemAdding;
+		//public event EventHandler<TabItemEventArgs> TabItemAdded;
+		//public event EventHandler<NewTabItemEventArgs> NewTabItem;
+		private event EventHandler<TabItemCancelEventArgs> TabItemClosing;
+		private event EventHandler<TabItemEventArgs> TabItemClosed;
 
 		#endregion Events
 
@@ -286,7 +292,8 @@ namespace Wpf.Controls {
 
 			try {
 				Items.Add(newt);
-			} catch (Exception) {
+			}
+			catch (Exception) {
 
 			}
 
