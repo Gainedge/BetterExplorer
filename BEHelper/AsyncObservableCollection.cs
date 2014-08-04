@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 
 namespace BEHelper {
+	[Obsolete("Not used", true)]
 	public class AsyncObservableCollection<T> : ObservableCollection<T>, IAsyncContext {
 		private readonly AsyncContext _asyncContext = new AsyncContext();
 

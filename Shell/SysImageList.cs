@@ -349,7 +349,8 @@ namespace BExplorer.Shell {
 
 		#region Method
 
-		public int GetIconIndex(IntPtr path) {
+		[Obsolete("Consider Inlining")]
+		private int GetIconIndex(IntPtr path) {
 			var options = SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.Pidl;
 			var shfi = new SHFileInfo();
 			var shfiSize = Marshal.SizeOf(shfi.GetType());
@@ -400,18 +401,19 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		public IntPtr GetHIcon(int index) {
 			IntPtr hIcon;
 			var hresult = this._ImageList.GetIcon(index, ImageListDrawOptions.PreserveAlpha, out hIcon);
 			Marshal.ThrowExceptionForHR(hresult);
 			if (hIcon != IntPtr.Zero) {
-
 				return hIcon;
 			}
 			else {
 				throw new Win32Exception();
 			}
 		}
+		*/
 
 		/*
 		public Icon GetIcon(int index) {
