@@ -44,6 +44,7 @@ namespace BExplorer.Shell {
 		public NMHDR hdr;
 		public LVITEM item;
 	}
+
 	/*
 	[StructLayout(LayoutKind.Sequential)]
 	public struct NMLVDISPINFO_NOTEXT {

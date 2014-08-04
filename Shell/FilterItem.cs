@@ -22,6 +22,8 @@ using System.Text;
 using System.Linq;
 
 namespace BExplorer.Shell {
+
+	/// <summary>Represents items/filters in a FileFilterComboBox</summary>
 	internal class FilterItem {
 		public string Caption, Filter;
 
@@ -58,27 +60,26 @@ namespace BExplorer.Shell {
 			return ParseFilterString(filterString, string.Empty, out dummy);
 		}
 
+		/// <summary>
+		/// Takes a string (representing a list of filters like: "txt|All files|") and converts it into a FilterItem[]
+		/// </summary>
+		/// <param name="filterString">The string representing a list of filters like: "txt|All files|"</param>
+		/// <param name="existing">Not Sure</param>
+		/// <param name="existingIndex">Not Sure</param>
+		/// <returns></returns>
 		public static FilterItem[] ParseFilterString(string filterString, string existing, out int existingIndex) {
+			//TODO: Find out why we have existingIndex
 			List<FilterItem> result = new List<FilterItem>();
-			string[] items;
-
 			existingIndex = -1;
 
-			if (filterString != string.Empty) {
-				items = filterString.Split('|');
-			}
-			else {
-				items = new string[0];
-			}
+			string[] items = filterString != string.Empty ? filterString.Split('|') : new string[0];
 
 			if ((items.Length % 2) != 0) {
 				throw new ArgumentException(
-					"Filter string you provided is not valid. The filter " +
-					"string must contain a description of the filter, " +
-					"followed by the vertical bar (|) and the filter pattern." +
-					"The strings for different filtering options must also be " +
-					"separated by the vertical bar. Example: " +
-					"\"Text files|*.txt|All files|*.*\"");
+					@"Filter string you provided is not valid. The filter string must contain a description of the filter, 
+					followed by the vertical bar (|) and the filter pattern. The strings for different filtering options must also be 
+					separated by the vertical bar. Example: " + "\"Text files|*.txt|All files|*.*\""
+				);
 			}
 
 			for (int n = 0; n < items.Length; n += 2) {

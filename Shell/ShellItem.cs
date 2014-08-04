@@ -148,7 +148,7 @@ namespace BExplorer.Shell {
 		public bool IsInitialised { get; set; }
 		//public Bitmap ThumbnailIcon { get; set; }
 		public int OverlayIconIndex { get; set; }
-		public IExtractIconPWFlags IconType { get; set; }
+		public IExtractIconPWFlags IconType { get; private set; }
 		public String CachedParsingName { get; private set; }
 		public IntPtr ILPidl { get { return Shell32.ILFindLastID(Pidl); } }
 
@@ -502,7 +502,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public IExtractIconPWFlags GetIconType() {
+		private IExtractIconPWFlags GetIconType() {
 			var parsingName = this.ParsingName.ToLowerInvariant();
 			if (this.IsLink)
 				return IExtractIconPWFlags.GIL_PERINSTANCE | IExtractIconPWFlags.GIL_FORCENOSHIELD;
@@ -796,6 +796,11 @@ namespace BExplorer.Shell {
 
 		#region Constructors
 
+		private void Constructor_Helper() {
+			this.IconType = GetIconType();
+			this.CachedParsingName = this.ParsingName;
+			this.OverlayIconIndex = -1;
+		} //TODO: Figure out if this should be added in protected ShellItem() { }
 
 		[Obsolete("Try to remove this!!!")]
 		protected ShellItem() { }
@@ -819,9 +824,7 @@ namespace BExplorer.Shell {
 		/// </param>
 		public ShellItem(Uri uri) {
 			Initialize(uri);
-			this.IconType = GetIconType();
-			this.CachedParsingName = this.ParsingName;
-			this.OverlayIconIndex = -1;
+			Constructor_Helper();
 		}
 
 		/// <summary>
@@ -842,23 +845,9 @@ namespace BExplorer.Shell {
 		/// A string containing a Uri with the location of the ShellItem.
 		/// </param>
 		public ShellItem(string path) {
-			//Uri OMG;
-			//Uri.TryCreate(path, UriKind.RelativeOrAbsolute, out OMG);
-			//Initialize(OMG);
-			//this.IconType = GetIconType();
-
-			//TODO: Fix this!!!
-
-
-			//try {
 			Uri newUri = new Uri(path);
 			Initialize(newUri);
-			this.IconType = GetIconType();
-			this.CachedParsingName = this.ParsingName;
-			this.OverlayIconIndex = -1;
-			//}
-			//catch (Exception) {
-			//}
+			Constructor_Helper();
 		}
 
 		/// <summary>
@@ -896,9 +885,7 @@ namespace BExplorer.Shell {
 				Marshal.ThrowExceptionForHR((int)Shell32.SHGetFolderPath(IntPtr.Zero, (CSIDL)folder, IntPtr.Zero, 0, path));
 				ComInterface = CreateItemFromParsingName(path.ToString());
 			}
-			this.IconType = GetIconType();
-			this.CachedParsingName = this.ParsingName;
-			this.OverlayIconIndex = -1;
+			Constructor_Helper();
 		}
 
 		/// <summary>
@@ -939,16 +926,12 @@ namespace BExplorer.Shell {
 					Shell32.ILFree(pidl);
 				}
 			}
-			this.IconType = GetIconType();
-			this.CachedParsingName = this.ParsingName;
-			this.OverlayIconIndex = -1;
+			Constructor_Helper();
 		}
 
 		public ShellItem(IntPtr pidl) {
 			ComInterface = CreateItemFromIDList(pidl);
-			this.IconType = GetIconType();
-			this.CachedParsingName = this.ParsingName;
-			this.OverlayIconIndex = -1;
+			Constructor_Helper();
 		}
 
 		/// <summary>
@@ -962,13 +945,11 @@ namespace BExplorer.Shell {
 			ComInterface = comInterface;
 			this.CachedParsingName = this.ParsingName;
 			this.OverlayIconIndex = -1;
-		}
+		} //TODO: Consider adding Constructor_Helper();
 
 		internal ShellItem(ShellItem parent, IntPtr pidl) {
 			ComInterface = CreateItemWithParent(parent, pidl);
-			this.IconType = GetIconType();
-			this.CachedParsingName = this.ParsingName;
-			this.OverlayIconIndex = -1;
+			Constructor_Helper();
 		}
 
 		#endregion Constructors
