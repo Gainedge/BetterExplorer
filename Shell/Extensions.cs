@@ -219,11 +219,13 @@ namespace BExplorer.Shell {
 		LVFI_NEARESTXY = 0x0040,
 	}
 
+	/*
 	public enum LVTVIM {
 		LVTVIM_COLUMNS = 2,
 		LVTVIM_TILESIZE = 1,
 		LVTVIM_LABELMARGIN = 4,
 	}
+	*/
 
 	public enum LVTVIF {
 		LVTVIF_AUTOSIZE = 0,
