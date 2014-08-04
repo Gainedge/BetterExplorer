@@ -314,7 +314,7 @@ namespace BExplorer.Shell {
 		}
 		*/
 
-		
+
 		/// <summary>
 		/// Converts a File/Folder path into a proper string used to create a <see cref="ShellItem"/>
 		/// </summary>
@@ -441,6 +441,11 @@ namespace BExplorer.Shell {
 			return hitLocationFound;
 		}
 
+		/// <summary>
+		/// Converts an <see cref="IShellItemArray"/> into a IShellItem[]
+		/// </summary>
+		/// <param name="shellItemArray">The Interface you want to convert</param>
+		/// <returns></returns>
 		public static IShellItem[] ToArray(this IShellItemArray shellItemArray) {
 			List<IShellItem> items = new List<IShellItem>();
 			if (shellItemArray != null) {
@@ -459,18 +464,31 @@ namespace BExplorer.Shell {
 			}
 			return items.ToArray();
 		}
+
+		/// <summary>
+		/// Converts a <see cref="IDataObject"/> into an <see cref="IShellItemArray"/>
+		/// </summary>
+		/// <param name="dataobject">The Interface you want to convert</param>
+		/// <returns></returns>
 		public static IShellItemArray ToShellItemArray(this IDataObject dataobject) {
 			IShellItemArray shellItemArray;
 			Guid iid = new Guid(InterfaceGuids.IShellItemArray);
 			Shell32.SHCreateShellItemArrayFromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)dataobject, iid, out shellItemArray);
 			return shellItemArray;
 		}
+
+		/// <summary>
+		/// Converts a <see cref="IDataObject"/> into an <see cref="IShellItemArray"/>
+		/// </summary>
+		/// <param name="dataobject">The Interface you want to convert</param>
+		/// <returns></returns>
 		public static IShellItemArray ToShellItemArray(this System.Windows.IDataObject dataobject) {
 			IShellItemArray shellItemArray;
 			Guid iid = new Guid(InterfaceGuids.IShellItemArray);
 			Shell32.SHCreateShellItemArrayFromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)dataobject, iid, out shellItemArray);
 			return shellItemArray;
 		}
+
 		public static System.Windows.DragDropEffects ToDropEffect(this IDataObject dataObject) {
 			System.Windows.DragDropEffects dragDropEffect = System.Windows.DragDropEffects.Copy;
 			if (dataObject.GetDataPresent("Preferred DropEffect")) {
@@ -493,8 +511,11 @@ namespace BExplorer.Shell {
 			return dragDropEffect;
 		}
 
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern IntPtr ILCreateFromPath(string path);
+		*/
+
 		[DllImport("shell32.dll", CharSet = CharSet.None)]
 		public static extern void ILFree(IntPtr pidl);
 		[DllImport("shell32.dll", CharSet = CharSet.None)]
