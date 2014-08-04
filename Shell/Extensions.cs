@@ -44,11 +44,13 @@ namespace BExplorer.Shell {
 		public NMHDR hdr;
 		public LVITEM item;
 	}
+	/*
 	[StructLayout(LayoutKind.Sequential)]
 	public struct NMLVDISPINFO_NOTEXT {
 		public NMHDR hdr;
 		public LVITEM_NOTEXT item;
 	}
+	*/
 	[StructLayout(LayoutKind.Sequential)]
 	public struct LVITEM_NOTEXT {
 		public LVIF mask;
@@ -71,7 +73,7 @@ namespace BExplorer.Shell {
 		LVCF_MINWIDTH = 0x0040
 	}
 
-	[StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 	public struct LVCOLUMN {
 		public LVCF mask;
 		public LVCFMT fmt;
