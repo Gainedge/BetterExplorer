@@ -286,7 +286,7 @@ namespace BExplorer.Shell {
 
 		#region Locals
 
-		private ImageListSize _Size;
+		//private ImageListSize _Size;
 		private IImageList2 _ImageList;
 		private static Guid IID_ImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
 		private static Guid IID_ImageList2 = new Guid("192B9D83-50FC-457B-90A0-2B82A8B5DAE1");
@@ -301,7 +301,7 @@ namespace BExplorer.Shell {
 			this._ImageList = Marshal.GetObjectForIUnknown(ImageList_Create(size, size, 0x00020000 | 0x00000020, 30, 30)) as IImageList2;
 			this._ImageList.SetImageCount(3000);
 		}
-		*/
+		
 		private Lazy<Int32Size> _SizePixels;
 
 		public ImageListSize Size {
@@ -321,8 +321,9 @@ namespace BExplorer.Shell {
 				return this._SizePixels.Value.Height;
 			}
 		}
+		*/
 
-		public IntPtr Handle {
+		private IntPtr Handle {
 			get {
 				return Marshal.GetIUnknownForObject(this._ImageList);
 			}
@@ -399,22 +400,6 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public Icon GetIcon(int index) {
-			return this.GetIcon(index, ImageListDrawOptions.Async);
-		}
-		public Icon GetIcon(int index, ImageListDrawOptions options) {
-			IntPtr hIcon;
-			var hresult = this._ImageList.GetIcon(index, options, out hIcon);
-			Marshal.ThrowExceptionForHR(hresult);
-			if (hIcon != IntPtr.Zero) {
-				Icon icon = Icon.FromHandle(hIcon);
-				return icon;
-			}
-			else {
-				throw new Win32Exception();
-			}
-		}
-
 		public IntPtr GetHIcon(int index) {
 			IntPtr hIcon;
 			var hresult = this._ImageList.GetIcon(index, ImageListDrawOptions.PreserveAlpha, out hIcon);
@@ -428,12 +413,35 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
+		public Icon GetIcon(int index) {
+			return this.GetIcon(index, ImageListDrawOptions.Async);
+		}
+		*/
+
+		public Icon GetIcon(int index, ImageListDrawOptions options = ImageListDrawOptions.Async) {
+			IntPtr hIcon;
+			var hresult = this._ImageList.GetIcon(index, options, out hIcon);
+			Marshal.ThrowExceptionForHR(hresult);
+			if (hIcon != IntPtr.Zero) {
+				Icon icon = Icon.FromHandle(hIcon);
+				return icon;
+			}
+			else {
+				throw new Win32Exception();
+			}
+		}
+
+		/*
 		public Icon GetIcon(IntPtr path) {
 			return this.GetIcon(path, ImageListDrawOptions.Normal);
 		}
-		public Icon GetIcon(IntPtr path, ImageListDrawOptions options) {
+		*/
+
+		public Icon GetIcon(IntPtr path, ImageListDrawOptions options = ImageListDrawOptions.Normal) {
 			return this.GetIcon(this.GetIconIndex(path), options);
 		}
+
 		public struct Int32Size {
 			public static Int32Size Empty {
 				get { return new Int32Size(); }
@@ -524,8 +532,8 @@ namespace BExplorer.Shell {
 		#endregion
 
 		public ImageList(ImageListSize size) {
-			this._Size = size;
-			this._SizePixels = new Lazy<Int32Size>(this.GetSizePixels);
+			//this._Size = size;
+			//this._SizePixels = new Lazy<Int32Size>(this.GetSizePixels);
 			var hresult = Win32Api.SHGetImageList(size, ref IID_ImageList2, out this._ImageList);
 			Marshal.ThrowExceptionForHR(hresult);
 		}
