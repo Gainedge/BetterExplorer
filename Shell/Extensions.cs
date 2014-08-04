@@ -51,6 +51,7 @@ namespace BExplorer.Shell {
 		public LVITEM_NOTEXT item;
 	}
 	*/
+	/*
 	[StructLayout(LayoutKind.Sequential)]
 	public struct LVITEM_NOTEXT {
 		public LVIF mask;
@@ -64,7 +65,7 @@ namespace BExplorer.Shell {
 		public IntPtr lParam;
 		public Int32 iIndent;
 	}
-
+	*/
 	public enum LVCF {
 		LVCF_FMT = 0x1,
 		LVCF_WIDTH = 0x2,
