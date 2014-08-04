@@ -7,6 +7,7 @@ using System.Windows.Forms.VisualStyles;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Microsoft.WindowsAPICodePack.Shell;
 using WindowsHelper;
 
 namespace BetterExplorer {
@@ -92,8 +93,8 @@ namespace BetterExplorer {
 		}
 
 		private void bw_DoWork(object sender, DoWorkEventArgs e) {
-			IconReader ir = new IconReader();
-			icons = ir.ReadIcons(tbLibrary.Text, new System.Drawing.Size(48, 48));
+			//IconReader ir = new IconReader();
+			icons = IconReader.ReadIcons(tbLibrary.Text, new System.Drawing.Size(48, 48));
 		}
 
 		private void LoadIcons(object Params) {
@@ -101,8 +102,8 @@ namespace BetterExplorer {
 							delegate {
 								lvIcons.BeginUpdate();
 								lvIcons.Items.Clear();
-								IconReader ir = new IconReader();
-								icons = ir.ReadIcons(Params.ToString(), new System.Drawing.Size(48, 48));
+								//IconReader ir = new IconReader();
+								icons = IconReader.ReadIcons(Params.ToString(), new System.Drawing.Size(48, 48));
 								foreach (IconFile icon in icons) {
 									ListViewItem lvi = new ListViewItem("#" + icon.Index.ToString());
 									lvi.Tag = icon.Index;
@@ -116,14 +117,14 @@ namespace BetterExplorer {
 			var itemIndex = ShellView.GetFirstSelectedItemIndex();
 			this.ShellView.CurrentRefreshedItemIndex = itemIndex;
 			if (IsLibrary) {
-				ShellLibrary lib = null;
+				BExplorer.Shell.ShellLibrary lib = null;
 				try {
-					lib = ShellLibrary.Load(ShellView.GetFirstSelectedItem().DisplayName, false);
+					lib = BExplorer.Shell.ShellLibrary.Load(ShellView.GetFirstSelectedItem().DisplayName, false);
 				}
 				catch {
-					lib = ShellLibrary.Load(ShellView.CurrentFolder.DisplayName, false);
+					lib = BExplorer.Shell.ShellLibrary.Load(ShellView.CurrentFolder.DisplayName, false);
 				}
-				lib.IconResourceId = new IconReference(tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
+				lib.IconResourceId = new BExplorer.Shell.Interop.IconReference(tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
 				lib.Close();
 
 				var item = ShellView.Items[itemIndex];

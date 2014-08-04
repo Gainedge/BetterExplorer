@@ -105,6 +105,7 @@
     <Compile Include="FileOperation\Theme.cs" />
     <Compile Include="Groups\LVGROUP.cs" />
     <Compile Include="Groups\ListViewGroupEx.cs" />
+    <Compile Include="Icons.cs" />
     <Compile Include="Interop\IThumbnailCache.cs" />
     <Compile Include="Interop\IAssocHandler.cs" />
     <Compile Include="Interop\ComReleaser.cs" />
@@ -112,7 +113,7 @@
     <Compile Include="Interop\IFileOperationProgressSink.cs" />
     <Compile Include="Interop\IFileOperation.cs" />
     <Compile Include="NavigationLog.cs" />
-    <Compile Include="RoundedRectangle.cs" />
+    <Compile Include="__Obsolete\RoundedRectangle.cs" />
     <Compile Include="DragDropHelper.cs" />
     <Compile Include="ShellTreeViewEx.cs">
       <SubType>UserControl</SubType>
@@ -120,10 +121,8 @@
     <Compile Include="ShellTreeViewEx.Designer.cs">
       <DependentUpon>ShellTreeViewEx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Icons\_Obsolete\FileIcon.cs" />
-    <Compile Include="Icons\IconFile.cs" />
-    <Compile Include="Icons\IconReader.cs" />
-    <Compile Include="Icons\_Obsolete\IconUtilities.cs" />
+    <Compile Include="__Obsolete\_Obsolete\FileIcon.cs" />
+    <Compile Include="__Obsolete\_Obsolete\IconUtilities.cs" />
     <Compile Include="Interop\IAsyncOperation.cs" />
     <Compile Include="Interop\EnumUnknownClass.cs" />
     <Compile Include="Interop\ShellItemArray.cs" />
@@ -235,7 +234,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ShellBrowser.cs" />
+    <Compile Include="__Obsolete\ShellBrowser.cs" />
     <Compile Include="ShellComboBox.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -8,8 +8,9 @@ using TAFactory.IconPack;
 
 namespace Microsoft.WindowsAPICodePack.Shell
 {
-    public class IconReader
+    public static class IconReader
     {
+		/*
         public List<IconFile> ReadIcons(string pathLibary)
         {
             var icons = IconHelper.ExtractAllIcons(pathLibary);
@@ -28,7 +29,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
             return iconFiles;
         }
-        public List<IconFile> ReadIcons(string pathLibary, Size size)
+		*/
+
+        public static List<IconFile> ReadIcons(string pathLibary, Size size)
         {
             var icons = IconHelper.ExtractAllIcons(pathLibary);
 

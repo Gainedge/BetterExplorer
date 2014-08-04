@@ -34,6 +34,7 @@ namespace BExplorer.Shell {
 			m_ShellView = shellView;
 		}
 
+		[Obsolete("Never Used", true)]
 		public StatusBar StatusBar {
 			get { return m_StatusBar; }
 			set {
