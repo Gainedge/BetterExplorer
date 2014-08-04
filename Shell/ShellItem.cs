@@ -142,13 +142,13 @@ namespace BExplorer.Shell {
 		private ShellThumbnail thumbnail;
 
 		internal bool IsNeedRefreshing { get; set; }
-		public bool IsThumbnailLoaded { get; set; }
+		internal bool IsThumbnailLoaded { get; set; }
 		public bool IsIconLoaded { get; set; }
 		//public bool ISRedrawed { get; set; }
-		public bool IsInitialised { get; set; }
+		internal bool IsInitialised { get; set; }
 		//public Bitmap ThumbnailIcon { get; set; }
-		public int OverlayIconIndex { get; set; }
-		public IExtractIconPWFlags IconType { get; private set; }
+		internal int OverlayIconIndex { get; set; }
+		internal IExtractIconPWFlags IconType { get; private set; }
 		public String CachedParsingName { get; private set; }
 		public IntPtr ILPidl { get { return Shell32.ILFindLastID(Pidl); } }
 
@@ -172,7 +172,7 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets the item's shell icon.
 		/// </summary>
-		public Icon ShellIcon {
+		internal Icon ShellIcon {
 			get {
 				SHFILEINFO info = new SHFILEINFO();
 				IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info,
@@ -259,6 +259,7 @@ namespace BExplorer.Shell {
 		public bool IsReadOnly { get { return COM_Attribute_Check(SFGAO.READONLY); } }
 		*/
 
+		/// <summary>Gets a value indicating whether the item is Hidden.</summary>
 		public bool IsHidden {
 			get {
 				try {
@@ -594,6 +595,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		public int GetFallbackIconIndex() {
 			try {
 				var guid = new Guid("000214fa-0000-0000-c000-000000000046");
@@ -615,11 +617,21 @@ namespace BExplorer.Shell {
 				return 0;
 			}
 		}
+		*/
 
-
+		/*
 		public int GetItemIndexInCollection(ShellItem[] collection) { return Array.IndexOf(collection, this); }
+		*/
 
-		public Bitmap GetShellThumbnail(int Size, ShellThumbnailFormatOption format = ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption retrieve = ShellThumbnailRetrievalOption.Default) {
+
+		/// <summary>
+		/// Gets the Bitmap of this ShellItem's Icon
+		/// </summary>
+		/// <param name="Size"></param>
+		/// <param name="format"></param>
+		/// <param name="retrieve"></param>
+		/// <returns></returns>
+		internal Bitmap GetShellThumbnail(int Size, ShellThumbnailFormatOption format = ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption retrieve = ShellThumbnailRetrievalOption.Default) {
 			this.Thumbnail.RetrievalOption = retrieve;
 			this.Thumbnail.FormatOption = format;
 			this.Thumbnail.CurrentSize = new System.Windows.Size(Size, Size);
@@ -671,6 +683,7 @@ namespace BExplorer.Shell {
 			return assocList;
 		}
 
+		/*
 		/// <summary>
 		/// Returns an <see cref="IDropTarget"/> representing the
 		/// item. This object is used in drag and drop operations.
@@ -679,6 +692,7 @@ namespace BExplorer.Shell {
 			IntPtr result = GetIShellFolder().CreateViewObject(control.Handle, typeof(IDropTarget).GUID);
 			return (IDropTarget)Marshal.GetTypedObjectForIUnknown(result, typeof(IDropTarget));
 		}
+		*/
 
 		/// <summary>
 		/// Returns an <see cref="IShellFolder"/> representing the
@@ -694,6 +708,13 @@ namespace BExplorer.Shell {
 		public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) {
 			PropVariant pvar = new PropVariant();
 			IShellItem2 isi2 = (IShellItem2)ComInterface;
+			isi2.GetProperty(ref pkey, pvar);
+			return pvar;
+
+			//TODO: do we need all of the above code
+
+
+			/*
 			if (isi2.GetProperty(ref pkey, pvar) != HResult.S_OK) {
 				//String value = String.Empty;
 				//if (pvar.Value != null)
@@ -715,6 +736,7 @@ namespace BExplorer.Shell {
 				//Marshal.StructureToPtr(nmlv, m.LParam, false);
 			}
 			return pvar;
+			*/
 		}
 
 		/// <summary>
@@ -778,6 +800,7 @@ namespace BExplorer.Shell {
 			return info.iIcon;
 		}
 
+		/*
 		public static int GetSystemImageListDefaultIndex(IntPtr pidl, bool IsFolder) {
 			SHFILEINFO info = new SHFILEINFO();
 			IntPtr result = Shell32.SHGetFileInfo(pidl, IsFolder ? (int)FileAttributes.Directory : 0, out info,
@@ -790,6 +813,7 @@ namespace BExplorer.Shell {
 
 			return info.iIcon;
 		}
+		*/
 
 		#endregion Value Getters
 
@@ -1017,7 +1041,6 @@ namespace BExplorer.Shell {
 
 		/// <see langword="true"/> if the two objects refer to the same
 		/// folder, <see langword="false"/> otherwise.
-		/// </returns>
 		/// <summary>
 		/// Determines if two ShellObjects are identical.
 		/// </summary>
@@ -1189,6 +1212,7 @@ namespace BExplorer.Shell {
 
 		#region Checks
 
+		/*
 		/// <summary>
 		/// Tests whether the <see cref="ShellItem"/> is the immediate parent
 		/// of another item.
@@ -1198,6 +1222,7 @@ namespace BExplorer.Shell {
 		/// The potential child item.
 		/// </param>
 		public bool IsImmediateParentOf(ShellItem item) { return IsFolder && Shell32.ILIsParent(Pidl, item.Pidl, true); }
+		*/
 
 		/// <summary>
 		/// Tests whether the <see cref="ShellItem"/> is the parent of
@@ -1261,6 +1286,7 @@ namespace BExplorer.Shell {
 			return sfgao != 0;
 		}
 
+		/*
 		public void GetAssocHandlers() {
 			if (this.m_ComInterface != null) {
 				var result = IntPtr.Zero;
@@ -1273,6 +1299,8 @@ namespace BExplorer.Shell {
 				}
 			}
 		}
+		*/
+
 		#endregion
 
 
