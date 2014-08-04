@@ -227,12 +227,15 @@ namespace BExplorer.Shell {
 	}
 	*/
 
+	/*
 	public enum LVTVIF {
 		LVTVIF_AUTOSIZE = 0,
 		LVTVIF_FIXEDHEIGHT = 2,
 		LVTVIF_FIXEDSIZE = 3,
 		LVTVIF_FIXEDWIDTH = 1,
 	}
+	*/
+
 	public struct INTEROP_SIZE {
 		public int cx;
 		public int cy;
@@ -246,6 +249,7 @@ namespace BExplorer.Shell {
 		public int cLines;
 		public INTEROP_SIZE rcLabelMargin;
 	}
+
 	public static class Extensions {
 
 		public static LVGROUP2 ToNativeListViewGroup(this ListViewGroupEx group) {
@@ -292,6 +296,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		public static void SetFormat(this LVCOLUMN column, IntPtr handle, int index) {
 			var item = new HDITEM {
 				mask = HDITEM.Mask.Format
@@ -307,6 +312,7 @@ namespace BExplorer.Shell {
 				throw new Win32Exception();
 			}
 		}
+		*/
 
 		public static String ToShellParsingName(this String path) {
 			if (path.IndexOf("::") == 0 && !path.StartsWith(@"\\")) {
