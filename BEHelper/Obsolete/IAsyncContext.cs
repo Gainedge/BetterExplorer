@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 
 namespace BEHelper {
+	[Obsolete("Not used", true)]
 	public interface IAsyncContext {
 		/// <summary>
 		/// Get the context of the creator thread

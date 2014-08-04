@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 
 namespace BEHelper {
-
+	[System.Obsolete("Not used", true)]
 	public class AsyncContext : IAsyncContext {
 		private readonly SynchronizationContext _asynchronizationContext;
 
