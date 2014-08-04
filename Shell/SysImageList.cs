@@ -12,8 +12,8 @@ namespace BExplorer.Shell {
 	/// Win32APIðµ¤ÃINXB
 	/// </summary>
 	public static class Win32Api {
-		[DllImport("shell32.dll", EntryPoint = "ExtractIconEx", CharSet = CharSet.Auto)]
-		public static extern int ExtractIconEx([MarshalAs(UnmanagedType.LPTStr)] string file, int index, out IntPtr largeIconHandle, out IntPtr smallIconHandle, int icons);
+		//[DllImport("shell32.dll", EntryPoint = "ExtractIconEx", CharSet = CharSet.Auto)]
+		//public static extern int ExtractIconEx([MarshalAs(UnmanagedType.LPTStr)] string file, int index, out IntPtr largeIconHandle, out IntPtr smallIconHandle, int icons);
 
 		[DllImport("shell32.dll", EntryPoint = "SHGetFileInfo", CharSet = CharSet.Auto)]
 		public static extern IntPtr SHGetFileInfo(IntPtr pszPath, FileAttributes attr, ref ImageList.SHFileInfo psfi, int cbSizeFileInfo, SHGetFileInfoOptions uFlags);
@@ -21,137 +21,137 @@ namespace BExplorer.Shell {
 		[DllImport("shell32.dll", EntryPoint = "#727")]
 		public extern static int SHGetImageList(ImageListSize iImageList, ref Guid riid, out IImageList2 ppv);
 
-		[DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-		public extern static IntPtr SetWindowLongPtr(IntPtr hwnd, int nIndex, IntPtr newValue);
+		//[DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+		//public extern static IntPtr SetWindowLongPtr(IntPtr hwnd, int nIndex, IntPtr newValue);
 
-		[DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
-		public extern static IntPtr SetWindowLongPtr64(IntPtr hwnd, int nIndex, IntPtr newValue);
+		//[DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
+		//public extern static IntPtr SetWindowLongPtr64(IntPtr hwnd, int nIndex, IntPtr newValue);
 
-		[DllImport("kernel32.dll")]
-		public static extern IntPtr LoadLibrary(String lpFileName);
-		[DllImport("kernel32.dll")]
-		public static extern IntPtr GetProcAddress(IntPtr hModule, String lpProcName);
-		[DllImport("kernel32.dll")]
-		public static extern Boolean FreeLibrary(IntPtr hLibModule);
+		//[DllImport("kernel32.dll")]
+		//public static extern IntPtr LoadLibrary(String lpFileName);
+		//[DllImport("kernel32.dll")]
+		//public static extern IntPtr GetProcAddress(IntPtr hModule, String lpProcName);
+		//[DllImport("kernel32.dll")]
+		//public static extern Boolean FreeLibrary(IntPtr hLibModule);
 
-		[DllImport("KERNEL32.DLL", EntryPoint = "CloseHandle", CharSet = CharSet.Auto, SetLastError = true)]
-		public static extern bool CloseHandle(IntPtr handle);
+		//[DllImport("KERNEL32.DLL", EntryPoint = "CloseHandle", CharSet = CharSet.Auto, SetLastError = true)]
+		//public static extern bool CloseHandle(IntPtr handle);
 
-		[DllImport("KERNEL32.DLL", EntryPoint = "UnmapViewOfFile", CharSet = CharSet.Auto, SetLastError = true)]
-		public static extern bool UnmapViewOfFile(IntPtr hMap);
+		//[DllImport("KERNEL32.DLL", EntryPoint = "UnmapViewOfFile", CharSet = CharSet.Auto, SetLastError = true)]
+		//public static extern bool UnmapViewOfFile(IntPtr hMap);
 
-		[DllImport("KERNEL32.DLL", EntryPoint = "GetLastError", CharSet = CharSet.Auto)]
-		public static extern int GetLastError();
+		//[DllImport("KERNEL32.DLL", EntryPoint = "GetLastError", CharSet = CharSet.Auto)]
+		//public static extern int GetLastError();
 
-		[DllImport("KERNEL32.DLL", EntryPoint = "RtlMoveMemory", CharSet = CharSet.Auto)]
-		public static extern void CopyMemory(IntPtr dst, IntPtr src, IntPtr length);
+		//[DllImport("KERNEL32.DLL", EntryPoint = "RtlMoveMemory", CharSet = CharSet.Auto)]
+		//public static extern void CopyMemory(IntPtr dst, IntPtr src, IntPtr length);
 
-		[DllImport("USER32.DLL", EntryPoint = "GetActiveWindow", CharSet = CharSet.Auto)]
-		public static extern IntPtr GetActiveWindow();
+		//[DllImport("USER32.DLL", EntryPoint = "GetActiveWindow", CharSet = CharSet.Auto)]
+		//public static extern IntPtr GetActiveWindow();
 
-		[DllImport("USER32.DLL", EntryPoint = "SetActiveWindow", CharSet = CharSet.Auto)]
-		public static extern IntPtr SetActiveWindow(IntPtr hwnd);
-
-
-		/// <summary>
-		/// EChEð\¦·éB
-		/// </summary>
-		/// <param name="hwnd">\¦·éEChEÌnh</param>
-		/// <param name="cmdShow">EChEÌóÔ</param>
-		/// <returns>int</returns>
-
-		/// <summary>
-		/// EChEðOÊÉ\¦·éB
-		/// </summary>
-		/// <param name="hWnd">OÊ¢\¦·éEChEÌnh</param>
-		/// <returns>bool</returns>
-		[DllImport("USER32.DLL", EntryPoint = "SetForegroundWindow", CharSet = CharSet.Auto)]
-		public static extern bool SetForegroundWindow(IntPtr hWnd);
-
-		[DllImport("USER32.DLL", EntryPoint = "GetForegroundWindow", CharSet = CharSet.Auto)]
-		public static extern IntPtr GetForegroundWindow();
+		//[DllImport("USER32.DLL", EntryPoint = "SetActiveWindow", CharSet = CharSet.Auto)]
+		//public static extern IntPtr SetActiveWindow(IntPtr hwnd);
 
 
-		[DllImport("USER32.DLL", EntryPoint = "SendMessage", CharSet = CharSet.Auto)]
-		public static extern IntPtr SendMessage(IntPtr hwnd, int msg, int wParam, int lParam);
+		///// <summary>
+		///// EChEð\¦·éB
+		///// </summary>
+		///// <param name="hwnd">\¦·éEChEÌnh</param>
+		///// <param name="cmdShow">EChEÌóÔ</param>
+		///// <returns>int</returns>
+
+		///// <summary>
+		///// EChEðOÊÉ\¦·éB
+		///// </summary>
+		///// <param name="hWnd">OÊ¢\¦·éEChEÌnh</param>
+		///// <returns>bool</returns>
+		//[DllImport("USER32.DLL", EntryPoint = "SetForegroundWindow", CharSet = CharSet.Auto)]
+		//public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+		//[DllImport("USER32.DLL", EntryPoint = "GetForegroundWindow", CharSet = CharSet.Auto)]
+		//public static extern IntPtr GetForegroundWindow();
 
 
-		/// <summary>
-		/// IMEÌReLXgðæ¾·éB
-		/// </summary>
-		/// <param name="hwnd">hwnd</param>
-		/// <returns>ReLXgÌ|C^</returns>
-		[DllImport("imm32.dll", EntryPoint = "ImmGetContext", CharSet = CharSet.Auto)]
-		public static extern IntPtr ImmGetContext(IntPtr hwnd);
-
-		/// <summary>
-		/// IMEÌóÔðÏX·éB
-		/// </summary>
-		/// <param name="hIMC">IMEÌReLXgÌ|C^</param>
-		/// <param name="fOpen">IMEðJ­©Ç¤©</param>
-		/// <returns>bool</returns>
-		[DllImport("imm32.dll", EntryPoint = "ImmSetOpenStatus", CharSet = CharSet.Auto)]
-		public static extern bool ImmSetOpenStatus(IntPtr hIMC, bool fOpen);
-
-		public delegate bool EnumWindowsProc(IntPtr hWnd, object lParam);
-
-		[DllImport("user32", EntryPoint = "EnumWindows", CharSet = CharSet.Auto)]
-		public static extern int EnumWindows(EnumWindowsProc lpEnumFunc, object lParam);
-
-		[DllImport("user32", EntryPoint = "GetWindowThreadProcessId", CharSet = CharSet.Auto)]
-		public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int ProcessId);
+		//[DllImport("USER32.DLL", EntryPoint = "SendMessage", CharSet = CharSet.Auto)]
+		//public static extern IntPtr SendMessage(IntPtr hwnd, int msg, int wParam, int lParam);
 
 
-		[DllImport("user32", EntryPoint = "SetWindowText", CharSet = CharSet.Auto)]
-		public static extern bool SetWindowText(IntPtr hWnd, [MarshalAs(UnmanagedType.LPTStr)] string text);
+		///// <summary>
+		///// IMEÌReLXgðæ¾·éB
+		///// </summary>
+		///// <param name="hwnd">hwnd</param>
+		///// <returns>ReLXgÌ|C^</returns>
+		//[DllImport("imm32.dll", EntryPoint = "ImmGetContext", CharSet = CharSet.Auto)]
+		//public static extern IntPtr ImmGetContext(IntPtr hwnd);
+
+		///// <summary>
+		///// IMEÌóÔðÏX·éB
+		///// </summary>
+		///// <param name="hIMC">IMEÌReLXgÌ|C^</param>
+		///// <param name="fOpen">IMEðJ­©Ç¤©</param>
+		///// <returns>bool</returns>
+		//[DllImport("imm32.dll", EntryPoint = "ImmSetOpenStatus", CharSet = CharSet.Auto)]
+		//public static extern bool ImmSetOpenStatus(IntPtr hIMC, bool fOpen);
+
+		//public delegate bool EnumWindowsProc(IntPtr hWnd, object lParam);
+
+		//[DllImport("user32", EntryPoint = "EnumWindows", CharSet = CharSet.Auto)]
+		//public static extern int EnumWindows(EnumWindowsProc lpEnumFunc, object lParam);
+
+		//[DllImport("user32", EntryPoint = "GetWindowThreadProcessId", CharSet = CharSet.Auto)]
+		//public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int ProcessId);
 
 
-		public static readonly IntPtr HWND_TOP = IntPtr.Zero;
-		public static readonly IntPtr HWND_BOTTOM = (IntPtr)1;
-		public static readonly IntPtr HWND_TOPMOST = (IntPtr)(-1);
-		public static readonly IntPtr HWND_NOTOPMOST = (IntPtr)(-2);
-
-		[DllImport("user32", EntryPoint = "GetWindowRect", CharSet = CharSet.Auto)]
-		public static extern int GetWindowRect(IntPtr hWnd, ref Rectangle rect);
-
-		[DllImport("user32", EntryPoint = "IsWindow", CharSet = CharSet.Auto)]
-		public static extern bool IsWindow(IntPtr hWnd);
+		//[DllImport("user32", EntryPoint = "SetWindowText", CharSet = CharSet.Auto)]
+		//public static extern bool SetWindowText(IntPtr hWnd, [MarshalAs(UnmanagedType.LPTStr)] string text);
 
 
+		//public static readonly IntPtr HWND_TOP = IntPtr.Zero;
+		//public static readonly IntPtr HWND_BOTTOM = (IntPtr)1;
+		//public static readonly IntPtr HWND_TOPMOST = (IntPtr)(-1);
+		//public static readonly IntPtr HWND_NOTOPMOST = (IntPtr)(-2);
 
-		[DllImport("user32", EntryPoint = "IsWindowVisible", CharSet = CharSet.Auto)]
-		public static extern bool IsWindowVisible(IntPtr Handle);
+		//[DllImport("user32", EntryPoint = "GetWindowRect", CharSet = CharSet.Auto)]
+		//public static extern int GetWindowRect(IntPtr hWnd, ref Rectangle rect);
 
-		[DllImport("user32", EntryPoint = "IsWindowEnabled", CharSet = CharSet.Auto)]
-		public static extern bool IsWindowEnabled(IntPtr Handle);
-
-		[DllImport("user32", EntryPoint = "EnableWindow", CharSet = CharSet.Auto)]
-		public static extern bool IsWindowEnabled(IntPtr Handle, bool enable);
+		//[DllImport("user32", EntryPoint = "IsWindow", CharSet = CharSet.Auto)]
+		//public static extern bool IsWindow(IntPtr hWnd);
 
 
 
+		//[DllImport("user32", EntryPoint = "IsWindowVisible", CharSet = CharSet.Auto)]
+		//public static extern bool IsWindowVisible(IntPtr Handle);
 
-		[DllImport("user32.dll", EntryPoint = "GetKeyboardState", CharSet = CharSet.Auto)]
-		internal static extern int GetKeyboardState(byte[] lpKeyState);
+		//[DllImport("user32", EntryPoint = "IsWindowEnabled", CharSet = CharSet.Auto)]
+		//public static extern bool IsWindowEnabled(IntPtr Handle);
 
-		public static byte[] GetKeyboardState() {
-			byte[] keyState = new byte[256];
-			int result = GetKeyboardState(keyState);
-			if (result == 0) {
-				throw new Win32Exception();
-			}
-			return keyState;
-		}
+		//[DllImport("user32", EntryPoint = "EnableWindow", CharSet = CharSet.Auto)]
+		//public static extern bool IsWindowEnabled(IntPtr Handle, bool enable);
 
 
-		[DllImport("user32.dll", EntryPoint = "GetDC", CharSet = CharSet.Auto)]
-		public static extern IntPtr GetDeviceContext(IntPtr hWnd);
 
-		[DllImport("user32.dll", EntryPoint = "ReleaseDC", CharSet = CharSet.Auto)]
-		public static extern IntPtr ReleaseDeviceContext(IntPtr hWnd, IntPtr hDc);
 
-		[DllImport("gdi32.dll", EntryPoint = "BitBlt", CharSet = CharSet.Auto)]
-		public static extern bool BitBlt(IntPtr hdcDst, int xDst, int yDsk, int width, int height, IntPtr hdcSrc, int xSrc, int ySrc, int rasterOp);
+		//[DllImport("user32.dll", EntryPoint = "GetKeyboardState", CharSet = CharSet.Auto)]
+		//internal static extern int GetKeyboardState(byte[] lpKeyState);
+
+		//public static byte[] GetKeyboardState() {
+		//	byte[] keyState = new byte[256];
+		//	int result = GetKeyboardState(keyState);
+		//	if (result == 0) {
+		//		throw new Win32Exception();
+		//	}
+		//	return keyState;
+		//}
+
+
+		//[DllImport("user32.dll", EntryPoint = "GetDC", CharSet = CharSet.Auto)]
+		//public static extern IntPtr GetDeviceContext(IntPtr hWnd);
+
+		//[DllImport("user32.dll", EntryPoint = "ReleaseDC", CharSet = CharSet.Auto)]
+		//public static extern IntPtr ReleaseDeviceContext(IntPtr hWnd, IntPtr hDc);
+
+		//[DllImport("gdi32.dll", EntryPoint = "BitBlt", CharSet = CharSet.Auto)]
+		//public static extern bool BitBlt(IntPtr hdcDst, int xDst, int yDsk, int width, int height, IntPtr hdcSrc, int xSrc, int ySrc, int rasterOp);
 		/*
 		public static System.Drawing.Rectangle GetTotalBound(){
 				int x, y, w, h;
@@ -199,20 +199,20 @@ namespace BExplorer.Shell {
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool DestroyIcon(IntPtr hIcon);
 
-		[DllImport("kernel32", EntryPoint = "GetLogicalDrives", CharSet = CharSet.Auto)]
-		internal static extern long InternalGetLogicalDrives();
+		//[DllImport("kernel32", EntryPoint = "GetLogicalDrives", CharSet = CharSet.Auto)]
+		//internal static extern long InternalGetLogicalDrives();
 
-		[Obsolete]
-		public static string[] GetLogicalDrives() {
-			List<string> drives = new List<string>();
-			long d = Win32Api.InternalGetLogicalDrives();
-			for (int i = 0; i < 26; i++) {
-				if (((1 << i) & d) > 0) {
-					drives.Add(((char)('A' + i)) + ":\\");
-				}
-			}
-			return drives.ToArray();
-		}
+		//[Obsolete]
+		//public static string[] GetLogicalDrives() {
+		//	List<string> drives = new List<string>();
+		//	long d = Win32Api.InternalGetLogicalDrives();
+		//	for (int i = 0; i < 26; i++) {
+		//		if (((1 << i) & d) > 0) {
+		//			drives.Add(((char)('A' + i)) + ":\\");
+		//		}
+		//	}
+		//	return drives.ToArray();
+		//}
 
 	}
 

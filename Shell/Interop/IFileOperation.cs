@@ -5,13 +5,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
 	[ComImport]
 	[Guid("947aab5f-0a5c-4c13-b4d6-4bf7836fc9f8")]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IFileOperation
-	{
+	internal interface IFileOperation {
 		uint Advise(IFileOperationProgressSink pfops);
 		void Unadvise(uint dwCookie);
 

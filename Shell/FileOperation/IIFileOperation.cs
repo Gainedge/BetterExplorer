@@ -95,6 +95,7 @@ namespace BExplorer.Shell {
 			_fileOperation.DeleteItem(source, null);
 		}
 
+		/*
 		[Obsolete("Not Used", true)]
 		public void NewItem(string folderName, string name, FileAttributes attrs) {
 			ThrowIfDisposed();
@@ -108,7 +109,7 @@ namespace BExplorer.Shell {
 			ThrowIfDisposed();
 			_fileOperation.NewItem(folderName, attrs, name, string.Empty, _callbackSink);
 		}
-
+		*/
 		public void PerformOperations() {
 			ThrowIfDisposed();
 			try {

@@ -105,7 +105,6 @@
     <Compile Include="FileOperation\Theme.cs" />
     <Compile Include="Groups\LVGROUP.cs" />
     <Compile Include="Groups\ListViewGroupEx.cs" />
-    <Compile Include="Icons.cs" />
     <Compile Include="Interop\IThumbnailCache.cs" />
     <Compile Include="Interop\IAssocHandler.cs" />
     <Compile Include="Interop\ComReleaser.cs" />
@@ -113,6 +112,9 @@
     <Compile Include="Interop\IFileOperationProgressSink.cs" />
     <Compile Include="Interop\IFileOperation.cs" />
     <Compile Include="NavigationLog.cs" />
+    <Compile Include="SysImageList.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="__Obsolete\RoundedRectangle.cs" />
     <Compile Include="DragDropHelper.cs" />
     <Compile Include="ShellTreeViewEx.cs">
@@ -182,7 +184,6 @@
     <Compile Include="ShellViewEx.Designer.cs">
       <DependentUpon>ShellViewEx.cs</DependentUpon>
     </Compile>
-    <Compile Include="SysImageList.cs" />
     <Compile Include="ToolTip.xaml.cs">
       <DependentUpon>ToolTip.xaml</DependentUpon>
     </Compile>
