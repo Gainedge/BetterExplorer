@@ -314,6 +314,11 @@ namespace BExplorer.Shell {
 		}
 		*/
 
+		/// <summary>
+		/// Converts a File/Folder path into a proper string used to create a <see cref="ShellItem"/>
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
 		public static String ToShellParsingName(this String path) {
 			if (path.IndexOf("::") == 0 && !path.StartsWith(@"\\")) {
 				return String.Format("shell:{0}", path);

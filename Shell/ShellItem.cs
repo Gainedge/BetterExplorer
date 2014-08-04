@@ -659,7 +659,7 @@ namespace BExplorer.Shell {
 					String displayName = String.Empty;
 					GetName(funcs[i], out path);
 					GetUIName(funcs[i], out displayName);
-					assocList.Add(new AssociationItem(this) { DisplayName = displayName, ApplicationPath = path});
+					assocList.Add(new AssociationItem(this) { DisplayName = displayName, ApplicationPath = path });
 					Marshal.Release(funcs[i]);
 					Marshal.Release(funcpUnk);
 					Marshal.Release(getNamepFunc);
@@ -1288,13 +1288,25 @@ namespace BExplorer.Shell {
 				var enumHandlers = Marshal.GetObjectForIUnknown(result) as IEnumAssocHandlers;
 				IAssocHandler assoc = null;
 				uint items = 0;
-				while (enumHandlers.Next(1, out assoc, out items ) == HResult.S_OK) {
+				while (enumHandlers.Next(1, out assoc, out items) == HResult.S_OK) {
 					var h = assoc;
 				}
 			}
 		}
 		#endregion
 
+
+		public static ShellItem ToShellParsingName(String path) {
+			if (path.IndexOf("::") == 0 && !path.StartsWith(@"\\")) {
+				return new ShellItem(String.Format("shell:{0}", path));
+			}
+			else if (!path.EndsWith(Path.DirectorySeparatorChar.ToString())) {
+				return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+			}
+			else {
+				return new ShellItem(path);
+			}
+		}
 
 	}
 }
