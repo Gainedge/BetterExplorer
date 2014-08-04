@@ -1045,7 +1045,7 @@ namespace BExplorer.Shell {
 
 		#region Static Stuff
 
-		internal static bool RunningVista { get { return Environment.OSVersion.Version.Major >= 6; } }
+		private static bool RunningVista { get { return Environment.OSVersion.Version.Major >= 6; } }
 		private static MD5CryptoServiceProvider hashProvider = new MD5CryptoServiceProvider();
 
 		/// <summary>

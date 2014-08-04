@@ -621,23 +621,23 @@ namespace BExplorer.Shell {
 		private ImageList large = new ImageList(ImageListSize.Large);
 		//private ShellItem m_CurrentFolder;
 		private ShellViewStyle m_View;
-		private SyncQueue<int> overlayQueue = new SyncQueue<int>(3000);
+		private SyncQueue<int> overlayQueue = new SyncQueue<int>(); //3000
 		private Dictionary<int, int> overlays = new Dictionary<int, int>();
 		private Thread _OverlaysLoadingThread;
 		private Thread _ShieldLoadingThread;
 		private F.Timer selectionTimer = new F.Timer();
 		private Dictionary<int, int> shieldedIcons = new Dictionary<int, int>();
-		private SyncQueue<int> shieldQueue = new SyncQueue<int>(3000);
+		private SyncQueue<int> shieldQueue = new SyncQueue<int>(); //3000
 		private ImageList small = new ImageList(ImageListSize.SystemSmall);
 		private Thread _IconLoadingThread;
 		private Thread _UpdateSubitemValuesThread;
 		private ConcurrentDictionary<int, ConcurrentDictionary<Collumns, object>> SubItems = new ConcurrentDictionary<int, ConcurrentDictionary<Collumns, object>>();
-		private SyncQueue<int> ThumbnailsForCacheLoad = new SyncQueue<int>(5000);
-		private SyncQueue<Tuple<int, int, PROPERTYKEY>> ItemsForSubitemsUpdate = new SyncQueue<Tuple<int, int, PROPERTYKEY>>(5000);
+		private SyncQueue<int> ThumbnailsForCacheLoad = new SyncQueue<int>(); //5000
+		private SyncQueue<Tuple<int, int, PROPERTYKEY>> ItemsForSubitemsUpdate = new SyncQueue<Tuple<int, int, PROPERTYKEY>>(); //5000
 		private List<int> cachedIndexes = new List<int>();
 		private ConcurrentBag<Tuple<int, PROPERTYKEY, object>> SubItemValues = new ConcurrentBag<Tuple<int, PROPERTYKEY, object>>();
 		private ManualResetEvent resetEvent = new ManualResetEvent(true);
-		private SyncQueue<int> waitingThumbnails = new SyncQueue<int>(3000);
+		private SyncQueue<int> waitingThumbnails = new SyncQueue<int>(); //3000
 		private List<int> _CuttedIndexes = new List<int>();
 		private int LastI = 0;
 		private int CurrentI = 0;

@@ -37,8 +37,8 @@ namespace BExplorer.Shell {
 		private ShellView _ShellListView;
 		private List<IntPtr> UpdatedImages = new List<IntPtr>();
 		private List<IntPtr> CheckedFroChilds = new List<IntPtr>();
-		private SyncQueue<IntPtr> imagesQueue = new SyncQueue<IntPtr>(7000);
-		private SyncQueue<IntPtr> childsQueue = new SyncQueue<IntPtr>(7000);
+		private SyncQueue<IntPtr> imagesQueue = new SyncQueue<IntPtr>(); //7000
+		private SyncQueue<IntPtr> childsQueue = new SyncQueue<IntPtr>(); //7000
 		private Thread imagesThread;
 		private Thread childsThread;
 		private Boolean isFromTreeview;
