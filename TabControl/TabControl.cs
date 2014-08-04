@@ -265,9 +265,10 @@ namespace Wpf.Controls {
 		//public event EventHandler<CancelEventArgs> TabItemAdding;
 		//public event EventHandler<TabItemEventArgs> TabItemAdded;
 		//public event EventHandler<NewTabItemEventArgs> NewTabItem;
+		/*
 		private event EventHandler<TabItemCancelEventArgs> TabItemClosing;
 		private event EventHandler<TabItemEventArgs> TabItemClosed;
-
+		*/
 		#endregion Events
 
 		#region Tab Stuff
@@ -340,6 +341,7 @@ namespace Wpf.Controls {
 			if (allowReopening)
 				this.ReopenableTabs.Add(tabItem.log);
 
+			/*
 			// gives an opertunity to cancel the removal of the tabitem
 			var c = new TabItemCancelEventArgs(tabItem);
 			if (TabItemClosing != null)
@@ -347,18 +349,21 @@ namespace Wpf.Controls {
 
 			if (c.Cancel)
 				return;
+			*/
 
-			if (ItemsSource != null) {
+			if (ItemsSource == null)
+				this.Items.Remove(tabItem);
+			else {
 				var list = ItemsSource as IList;
 				object listItem = ItemContainerGenerator.ItemFromContainer(tabItem);
 				if (listItem != null && list != null)
 					list.Remove(listItem);
 			}
-			else
-				this.Items.Remove(tabItem);
 
+			/*
 			if (TabItemClosed != null)
 				TabItemClosed(this, new TabItemEventArgs(tabItem));
+			*/
 		}
 
 		public void CloneTabItem(TabItem theTab) {
