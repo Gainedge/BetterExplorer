@@ -198,6 +198,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public string FileSystemPath { get { return GetDisplayName(SIGDN.FILESYSPATH); } }
 
+		/*
 		/// <summary>
 		/// Gets a value indicating whether the item is a file system item
 		/// or the child of a file system item.
@@ -209,14 +210,12 @@ namespace BExplorer.Shell {
 				return sfgao != 0;
 			}
 		}
-
+		*/
 
 		/// <summary>
 		/// Gets a PIDL representing the item.
 		/// </summary>
 		public IntPtr Pidl { get { return GetIDListFromObject(ComInterface); } }
-
-
 
 		/// <summary>
 		/// Gets a value indicating whether the item is a folder.
@@ -230,8 +229,6 @@ namespace BExplorer.Shell {
 				return sfgao != 0 && sfgao2 == 0;
 			}
 		}
-
-
 
 		/// <summary>
 		/// Gets a value indicating whether the item has subfolders.
@@ -255,10 +252,12 @@ namespace BExplorer.Shell {
 
 		public bool IsShared { get { return COM_Attribute_Check(SFGAO.SHARE); } }
 
+		/*
 		/// <summary>
 		/// Gets a value indicating whether the item is read-only.
 		/// </summary>
 		public bool IsReadOnly { get { return COM_Attribute_Check(SFGAO.READONLY); } }
+		*/
 
 		public bool IsHidden {
 			get {
