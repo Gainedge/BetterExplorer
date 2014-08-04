@@ -222,6 +222,7 @@ namespace BExplorer.Shell {
 		Small = 0x1,
 	}
 	*/
+
 	[Flags]
 	public enum SHGetFileInfoOptions : uint {
 		Icon = 0x000000100,    // get icon
@@ -246,6 +247,8 @@ namespace BExplorer.Shell {
 		OverlayIndex = 0x000000040,    // Get the index of the overlay
 	}
 
+
+	/// <summary>Provides attributes for files and directories.</summary>
 	[Flags]
 	public enum FileAttributes : uint {
 		None = 0x00000000,
@@ -265,18 +268,83 @@ namespace BExplorer.Shell {
 	/// This works on XP or higher.
 	/// </remarks>
 	public class ImageList : IDisposable {
+
+		#region SHFileInfo
+
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		public struct SHFileInfo {
+			public IntPtr hIcon;
+			public int iIcon;
+			public uint dwAttributes;
+			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+			public string szDisplayName;
+			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+			public string szTypeName;
+		}
+
+		#endregion
+
+		#region Locals
+
 		private ImageListSize _Size;
 		private IImageList2 _ImageList;
 		private static Guid IID_ImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
 		private static Guid IID_ImageList2 = new Guid("192B9D83-50FC-457B-90A0-2B82A8B5DAE1");
 
+		#endregion
 
-		public ImageList(ImageListSize size) {
-			this._Size = size;
-			this._SizePixels = new Lazy<Int32Size>(this.GetSizePixels);
-			var hresult = Win32Api.SHGetImageList(size, ref IID_ImageList2, out this._ImageList);
-			Marshal.ThrowExceptionForHR(hresult);
+		#region Property
+
+		/*
+		public void SetSize(int size) {
+			ImageList_Destroy(this.Handle);
+			this._ImageList = Marshal.GetObjectForIUnknown(ImageList_Create(size, size, 0x00020000 | 0x00000020, 30, 30)) as IImageList2;
+			this._ImageList.SetImageCount(3000);
 		}
+		*/
+		private Lazy<Int32Size> _SizePixels;
+
+		public ImageListSize Size {
+			get {
+				return this._Size;
+			}
+		}
+
+		public int Width {
+			get {
+				return this._SizePixels.Value.Width;
+			}
+		}
+
+		public int Height {
+			get {
+				return this._SizePixels.Value.Height;
+			}
+		}
+
+		public IntPtr Handle {
+			get {
+				return Marshal.GetIUnknownForObject(this._ImageList);
+			}
+		}
+
+		/*
+		public static ImageListSize MaxSize {
+			get {
+				if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
+					if (Environment.OSVersion.Version.Major >= 6) {
+						return ImageListSize.Jumbo;
+					}
+					else {
+						return ImageListSize.ExtraLarge;
+					}
+				}
+				return ImageListSize.Jumbo;
+			}
+		}
+		*/
+
+		#endregion
 
 		#region Method
 
@@ -296,16 +364,7 @@ namespace BExplorer.Shell {
 				return shfi.iIcon;
 			}
 		}
-		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-		public struct SHFileInfo {
-			public IntPtr hIcon;
-			public int iIcon;
-			public uint dwAttributes;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-			public string szDisplayName;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-			public string szTypeName;
-		}
+
 
 
 		/// <summary>
@@ -440,61 +499,6 @@ namespace BExplorer.Shell {
 		public static extern bool ImageList_Destroy(IntPtr himl);
 		#endregion
 
-		#region Property
-		public void SetSize(int size) {
-			ImageList_Destroy(this.Handle);
-			this._ImageList = Marshal.GetObjectForIUnknown(ImageList_Create(size, size, 0x00020000 | 0x00000020, 30, 30)) as IImageList2;
-			this._ImageList.SetImageCount(3000);
-			//this._ImageList.SetIconSize(size, size);
-			int pi = -1;
-			//this._ImageList.GetImageCount(ref pi);
-			//var obj = (ShellObject)KnownFolders.Windows;
-			//for (int i = 0; i < 30; i++)
-			//{
-			//  var res = this._ImageList.Replace(i, obj.GetShellThumbnail(size).GetHbitmap(), IntPtr.Zero);
-			//}
-		}
-		public ImageListSize Size {
-			get {
-				return this._Size;
-			}
-		}
-
-		private Lazy<Int32Size> _SizePixels;
-		public int Width {
-			get {
-				return this._SizePixels.Value.Width;
-			}
-		}
-
-		public int Height {
-			get {
-				return this._SizePixels.Value.Height;
-			}
-		}
-
-		public IntPtr Handle {
-			get {
-				return Marshal.GetIUnknownForObject(this._ImageList);
-			}
-		}
-
-		public static ImageListSize MaxSize {
-			get {
-				if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
-					if (Environment.OSVersion.Version.Major >= 6) {
-						return ImageListSize.Jumbo;
-					}
-					else {
-						return ImageListSize.ExtraLarge;
-					}
-				}
-				return ImageListSize.Jumbo;
-			}
-		}
-
-		#endregion
-
 		#region IDisposable
 
 		private bool _Disposed = false;
@@ -518,6 +522,14 @@ namespace BExplorer.Shell {
 		}
 
 		#endregion
+
+		public ImageList(ImageListSize size) {
+			this._Size = size;
+			this._SizePixels = new Lazy<Int32Size>(this.GetSizePixels);
+			var hresult = Win32Api.SHGetImageList(size, ref IID_ImageList2, out this._ImageList);
+			Marshal.ThrowExceptionForHR(hresult);
+		}
+
 	}
 
 	#region enum
