@@ -66,6 +66,8 @@ namespace BExplorer.Shell {
 		public Int32 iIndent;
 	}
 	*/
+
+
 	public enum LVCF {
 		LVCF_FMT = 0x1,
 		LVCF_WIDTH = 0x2,
@@ -126,6 +128,7 @@ namespace BExplorer.Shell {
 		public int uAlign;
 	}
 
+	/*
 	[StructLayout(LayoutKind.Sequential)]
 	public struct NMTVCUSTOMDRAW {
 		// 104/136  
@@ -134,6 +137,7 @@ namespace BExplorer.Shell {
 		public int clrTextBk;
 		public int iLevel;
 	}
+	*/
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct NMITEMACTIVATE {
