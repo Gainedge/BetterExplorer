@@ -3583,15 +3583,52 @@ namespace BetterExplorer {
 			}
 		}
 
+		private Process Rename_CheckChanged_Helper() {
+			String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
+			string dir = Path.GetDirectoryName(CurrentexePath);
+			string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
+			Process proc = new Process();
+			proc.StartInfo = new ProcessStartInfo {
+				FileName = ExePath,
+				Verb = "runas",
+				UseShellExecute = true,
+				Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
+			};
+			proc.Start();
+			Thread.Sleep(1000);
 
-		private void chkIsDefault_CheckChanged(object sender, RoutedEventArgs e) {
-			if (isOnLoad) return;
-
-
-
+			return proc;
 		}
 
 
+		private void chkIsDefault_CheckChanged(object sender, RoutedEventArgs e) {
+			if (isOnLoad) return;
+			var proc = Rename_CheckChanged_Helper();
+
+			if (chkIsDefault.IsChecked == true) {
+				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
+				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x77654");
+				proc.WaitForExit();
+				if (proc.ExitCode == -1) {
+					isOnLoad = true;
+					(sender as Fluent.CheckBox).IsChecked = false;
+					isOnLoad = false;
+					MessageBox.Show("Can't set Better Explorer as default!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				}
+			}
+			else {
+				WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x77655");
+				proc.WaitForExit();
+				if (proc.ExitCode == -1) {
+					isOnLoad = true;
+					(sender as Fluent.CheckBox).IsChecked = true;
+					isOnLoad = false;
+					MessageBox.Show("Can't restore default filemanager!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				}
+			}
+		}
+
+		/*
 		private void chkIsDefault_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
 				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
@@ -3618,7 +3655,7 @@ namespace BetterExplorer {
 			}
 
 		}
-
+		
 		//public const int WM_COPYDATA = 0x4A;
 		private void chkIsDefault_Unchecked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
@@ -3644,6 +3681,68 @@ namespace BetterExplorer {
 				}
 			}
 		}
+		*/
+
+
+
+		private void chkTreeExpand_CheckChanged(object sender, RoutedEventArgs e) {
+			if (isOnLoad) return;
+			var proc = Rename_CheckChanged_Helper();
+
+			if (chkTreeExpand.IsChecked == true) {
+				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
+				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88775");
+				proc.WaitForExit();
+			}
+			else {
+				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
+				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88776");
+				proc.WaitForExit();
+			}
+		}
+
+		/*
+		private void chkTreeExpand_Checked(object sender, RoutedEventArgs e) {
+			if (!isOnLoad) {
+				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
+				string dir = Path.GetDirectoryName(CurrentexePath);
+				string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
+				Process proc = new Process();
+				proc.StartInfo = new ProcessStartInfo {
+					FileName = ExePath,
+					Verb = "runas",
+					UseShellExecute = true,
+					Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
+				};
+
+				proc.Start();
+				Thread.Sleep(1000);
+				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
+				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88775");
+				proc.WaitForExit();
+			}
+		}
+
+		private void chkTreeExpand_Unchecked(object sender, RoutedEventArgs e) {
+			if (!isOnLoad) {
+				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
+				string dir = Path.GetDirectoryName(CurrentexePath);
+				string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
+				Process proc = new Process();
+				proc.StartInfo = new ProcessStartInfo {
+					FileName = ExePath,
+					Verb = "runas",
+					UseShellExecute = true,
+					Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
+				};
+				proc.Start();
+				Thread.Sleep(1000);
+				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
+				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88776");
+				proc.WaitForExit();
+			}
+		}
+		*/
 
 		private void chkIsTerraCopyEnabled_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
@@ -3703,47 +3802,6 @@ namespace BetterExplorer {
 			ShellListView.ShowCheckboxes = false;
 			//this.isCheckModeEnabled = false;
 			ShellListView.RefreshContents();
-		}
-
-		private void chkTreeExpand_Checked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-				string dir = Path.GetDirectoryName(CurrentexePath);
-				string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
-				Process proc = new Process();
-				proc.StartInfo = new ProcessStartInfo {
-					FileName = ExePath,
-					Verb = "runas",
-					UseShellExecute = true,
-					Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
-				};
-
-				proc.Start();
-				Thread.Sleep(1000);
-				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
-				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88775");
-				proc.WaitForExit();
-			}
-		}
-
-		private void chkTreeExpand_Unchecked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-				string dir = Path.GetDirectoryName(CurrentexePath);
-				string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
-				Process proc = new Process();
-				proc.StartInfo = new ProcessStartInfo {
-					FileName = ExePath,
-					Verb = "runas",
-					UseShellExecute = true,
-					Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
-				};
-				proc.Start();
-				Thread.Sleep(1000);
-				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
-				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88776");
-				proc.WaitForExit();
-			}
 		}
 
 		private void chkOverwriteImages_Checked(object sender, RoutedEventArgs e) {
