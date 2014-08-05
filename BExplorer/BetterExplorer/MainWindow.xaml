@@ -918,10 +918,10 @@
 											<Ribbon:SeparatorTabItem Margin="0,0,0,5" Header="{DynamicResource btnNavigationCP}" />
 											<StackPanel Orientation="Horizontal">
 												<Ribbon:CheckBox x:Name="chkTreeExpand"
-										 Checked="chkTreeExpand_Checked"
+										 Checked="chkTreeExpand_CheckChanged"
 										 Header="{DynamicResource chkTreeExpandCP}"
 										 Ribbon:KeyTip.Keys="T"
-										 Unchecked="chkTreeExpand_Unchecked">
+										 Unchecked="chkTreeExpand_CheckChanged">
 													<Ribbon:CheckBox.ToolTip>
 														<Ribbon:ScreenTip Title="{DynamicResource chkTreeExpandTCP}"
 												Width="250"

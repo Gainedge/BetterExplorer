@@ -3559,30 +3559,6 @@ namespace BetterExplorer {
 
 		#region Registry Setting Changes / BetterExplorerOperations Calls / Action Log
 
-		private void btnSetCurrentasStartup_Click(object sender, RoutedEventArgs e) {
-			backstage.IsOpen = true;
-			string CurrentLocString = ShellListView.CurrentFolder.ParsingName;
-			tcMain.StartUpLocation = CurrentLocString;
-			btnSetCurrentasStartup.Header = ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY);
-			btnSetCurrentasStartup.Icon = ShellListView.CurrentFolder.Thumbnail.BitmapSource;
-
-			Utilities.SetRegistryValue("StartUpLoc", CurrentLocString);
-		}
-
-		private void chkIsFlyout_Checked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				Utilities.SetRegistryValue("HFlyoutEnabled", 1);
-				//IsHFlyoutEnabled = true;
-			}
-		}
-
-		private void chkIsFlyout_Unchecked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				Utilities.SetRegistryValue("HFlyoutEnabled", 0);
-				//IsHFlyoutEnabled = false;
-			}
-		}
-
 		private Process Rename_CheckChanged_Helper() {
 			String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
 			string dir = Path.GetDirectoryName(CurrentexePath);
@@ -3599,7 +3575,6 @@ namespace BetterExplorer {
 
 			return proc;
 		}
-
 
 		private void chkIsDefault_CheckChanged(object sender, RoutedEventArgs e) {
 			if (isOnLoad) return;
@@ -3628,63 +3603,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		/*
-		private void chkIsDefault_Checked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-				string dir = Path.GetDirectoryName(CurrentexePath);
-				string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
-				Process proc = new Process();
-				proc.StartInfo = new ProcessStartInfo {
-					FileName = ExePath,
-					Verb = "runas",
-					UseShellExecute = true,
-					Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
-				};
-				proc.Start();
-				Thread.Sleep(1000);
-				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
-				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x77654");
-				proc.WaitForExit();
-				if (proc.ExitCode == -1) {
-					isOnLoad = true;
-					(sender as Fluent.CheckBox).IsChecked = false;
-					isOnLoad = false;
-					MessageBox.Show("Can't set Better Explorer as default!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-				}
-			}
-
-		}
-		
-		//public const int WM_COPYDATA = 0x4A;
-		private void chkIsDefault_Unchecked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-				string dir = Path.GetDirectoryName(CurrentexePath);
-				string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
-				Process proc = new Process();
-				proc.StartInfo = new ProcessStartInfo {
-					FileName = ExePath,
-					Verb = "runas",
-					UseShellExecute = true,
-					Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
-				};
-				proc.Start();
-				Thread.Sleep(1000);
-				WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x77655");
-				proc.WaitForExit();
-				if (proc.ExitCode == -1) {
-					isOnLoad = true;
-					(sender as Fluent.CheckBox).IsChecked = true;
-					isOnLoad = false;
-					MessageBox.Show("Can't restore default filemanager!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-				}
-			}
-		}
-		*/
-
-
-
 		private void chkTreeExpand_CheckChanged(object sender, RoutedEventArgs e) {
 			if (isOnLoad) return;
 			var proc = Rename_CheckChanged_Helper();
@@ -3701,48 +3619,31 @@ namespace BetterExplorer {
 			}
 		}
 
-		/*
-		private void chkTreeExpand_Checked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-				string dir = Path.GetDirectoryName(CurrentexePath);
-				string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
-				Process proc = new Process();
-				proc.StartInfo = new ProcessStartInfo {
-					FileName = ExePath,
-					Verb = "runas",
-					UseShellExecute = true,
-					Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
-				};
 
-				proc.Start();
-				Thread.Sleep(1000);
-				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
-				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88775");
-				proc.WaitForExit();
+		private void btnSetCurrentasStartup_Click(object sender, RoutedEventArgs e) {
+			backstage.IsOpen = true;
+			string CurrentLocString = ShellListView.CurrentFolder.ParsingName;
+			tcMain.StartUpLocation = CurrentLocString;
+			btnSetCurrentasStartup.Header = ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY);
+			btnSetCurrentasStartup.Icon = ShellListView.CurrentFolder.Thumbnail.BitmapSource;
+
+			Utilities.SetRegistryValue("StartUpLoc", CurrentLocString);
+		}
+
+		private void chkIsFlyout_Checked(object sender, RoutedEventArgs e) {
+			if (!isOnLoad) {
+				Utilities.SetRegistryValue("HFlyoutEnabled", 1);
+				//IsHFlyoutEnabled = true;
 			}
 		}
 
-		private void chkTreeExpand_Unchecked(object sender, RoutedEventArgs e) {
+		private void chkIsFlyout_Unchecked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
-				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-				string dir = Path.GetDirectoryName(CurrentexePath);
-				string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
-				Process proc = new Process();
-				proc.StartInfo = new ProcessStartInfo {
-					FileName = ExePath,
-					Verb = "runas",
-					UseShellExecute = true,
-					Arguments = "/env /user:" + "Administrator " + "\"" + ExePath + "\"",
-				};
-				proc.Start();
-				Thread.Sleep(1000);
-				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
-				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88776");
-				proc.WaitForExit();
+				Utilities.SetRegistryValue("HFlyoutEnabled", 0);
+				//IsHFlyoutEnabled = false;
 			}
 		}
-		*/
+
 
 		private void chkIsTerraCopyEnabled_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
