@@ -3583,6 +3583,15 @@ namespace BetterExplorer {
 			}
 		}
 
+
+		private void chkIsDefault_CheckChanged(object sender, RoutedEventArgs e) {
+			if (isOnLoad) return;
+
+
+
+		}
+
+
 		private void chkIsDefault_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
 				String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
@@ -3598,8 +3607,7 @@ namespace BetterExplorer {
 				proc.Start();
 				Thread.Sleep(1000);
 				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
-				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"),
-								0, "0x77654");
+				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x77654");
 				proc.WaitForExit();
 				if (proc.ExitCode == -1) {
 					isOnLoad = true;

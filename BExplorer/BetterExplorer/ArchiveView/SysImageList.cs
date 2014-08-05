@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using FIcon = BExplorer.Shell.Interop.FileIcon;
 
 namespace SystemImageList {
 
@@ -199,8 +200,6 @@ namespace SystemImageList {
 		   uint cbFileInfo,
 		   uint uFlags);
 
-		[DllImport("user32.dll")]
-		private static extern int DestroyIcon(IntPtr hIcon);
 
 		private const int FILE_ATTRIBUTE_NORMAL = 0x80;
 		private const int FILE_ATTRIBUTE_DIRECTORY = 0x10;
@@ -212,19 +211,6 @@ namespace SystemImageList {
 		private const int FORMAT_MESSAGE_FROM_SYSTEM = 0x1000;
 		private const int FORMAT_MESSAGE_IGNORE_INSERTS = 0x200;
 		private const int FORMAT_MESSAGE_MAX_WIDTH_MASK = 0xFF;
-
-		[DllImport("kernel32")]
-		private extern static int FormatMessage(
-		   int dwFlags,
-		   IntPtr lpSource,
-		   int dwMessageId,
-		   int dwLanguageId,
-		   string lpBuffer,
-		   uint nSize,
-		   int argumentsLong);
-
-		[DllImport("kernel32")]
-		private extern static int GetLastError();
 
 		[DllImport("comctl32")]
 		private extern static int ImageList_Draw(
@@ -272,35 +258,6 @@ namespace SystemImageList {
 
 		#endregion UnmanagedCode
 
-		#region Private Enumerations
-
-		[Flags]
-		private enum SHGetFileInfoConstants : int {
-			SHGFI_ICON = 0x100,                // get icon
-			SHGFI_DISPLAYNAME = 0x200,         // get display name
-			SHGFI_TYPENAME = 0x400,            // get type name
-			SHGFI_ATTRIBUTES = 0x800,          // get attributes
-			SHGFI_ICONLOCATION = 0x1000,       // get icon location
-			SHGFI_EXETYPE = 0x2000,            // return exe type
-			SHGFI_SYSICONINDEX = 0x4000,       // get system icon index
-			SHGFI_LINKOVERLAY = 0x8000,        // put a link overlay on icon
-			SHGFI_SELECTED = 0x10000,          // show icon in selected state
-			SHGFI_ATTR_SPECIFIED = 0x20000,    // get only specified attributes
-			SHGFI_LARGEICON = 0x0,             // get large icon
-			SHGFI_SMALLICON = 0x1,             // get small icon
-			SHGFI_OPENICON = 0x2,              // get open icon
-			SHGFI_SHELLICONSIZE = 0x4,         // get shell size icon
-
-			//SHGFI_PIDL = 0x8,                  // pszPath is a pidl
-			SHIL_JUMBO = 0x4,
-
-			SHGFI_USEFILEATTRIBUTES = 0x10,     // use passed dwFileAttribute
-			SHGFI_ADDOVERLAYS = 0x000000020,     // apply the appropriate overlays
-			SHGFI_OVERLAYINDEX = 0x000000040     // Get the index of the overlay
-		}
-
-		#endregion Private Enumerations
-
 		#region Private ImageList structures
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -316,6 +273,7 @@ namespace SystemImageList {
 			private int x;
 			private int y;
 		}
+
 
 		[StructLayout(LayoutKind.Sequential)]
 		private struct IMAGELISTDRAWPARAMS {
@@ -400,12 +358,10 @@ namespace SystemImageList {
 			   ref int pi);
 
 			[PreserveSig]
-			int Draw(
-			   ref IMAGELISTDRAWPARAMS pimldp);
+			int Draw(ref IMAGELISTDRAWPARAMS pimldp);
 
 			[PreserveSig]
-			int Remove(
-			   int i);
+			int Remove(int i);
 
 			[PreserveSig]
 			int GetIcon(
@@ -414,9 +370,7 @@ namespace SystemImageList {
 			   ref IntPtr picon);
 
 			[PreserveSig]
-			int GetImageInfo(
-			   int i,
-			   ref IMAGEINFO pImageInfo);
+			int GetImageInfo(int i, ref IMAGEINFO pImageInfo);
 
 			[PreserveSig]
 			int Copy(
@@ -436,41 +390,28 @@ namespace SystemImageList {
 			   ref IntPtr ppv);
 
 			[PreserveSig]
-			int Clone(
-			   ref Guid riid,
-			   ref IntPtr ppv);
+			int Clone(ref Guid riid, ref IntPtr ppv);
 
 			[PreserveSig]
-			int GetImageRect(
-			   int i,
-			   ref RECT prc);
+			int GetImageRect(int i, ref RECT prc);
 
 			[PreserveSig]
-			int GetIconSize(
-			   ref int cx,
-			   ref int cy);
+			int GetIconSize(ref int cx, ref int cy);
 
 			[PreserveSig]
-			int SetIconSize(
-			   int cx,
-			   int cy);
+			int SetIconSize(int cx, int cy);
 
 			[PreserveSig]
-			int GetImageCount(
-			   ref int pi);
+			int GetImageCount(ref int pi);
 
 			[PreserveSig]
-			int SetImageCount(
-			   int uNewCount);
+			int SetImageCount(int uNewCount);
 
 			[PreserveSig]
-			int SetBkColor(
-			   int clrBk,
-			   ref int pclr);
+			int SetBkColor(int clrBk, ref int pclr);
 
 			[PreserveSig]
-			int GetBkColor(
-			   ref int pclr);
+			int GetBkColor(ref int pclr);
 
 			[PreserveSig]
 			int BeginDrag(
@@ -488,13 +429,10 @@ namespace SystemImageList {
 			   int y);
 
 			[PreserveSig]
-			int DragLeave(
-			   IntPtr hwndLock);
+			int DragLeave(IntPtr hwndLock);
 
 			[PreserveSig]
-			int DragMove(
-			   int x,
-			   int y);
+			int DragMove(int x, int y);
 
 			[PreserveSig]
 			int SetDragCursorImage(
@@ -504,8 +442,7 @@ namespace SystemImageList {
 			   int dyHotspot);
 
 			[PreserveSig]
-			int DragShowNolock(
-			   int fShow);
+			int DragShowNolock(int fShow);
 
 			[PreserveSig]
 			int GetDragImage(
@@ -515,14 +452,10 @@ namespace SystemImageList {
 			   ref IntPtr ppv);
 
 			[PreserveSig]
-			int GetItemFlags(
-			   int i,
-			   ref int dwFlags);
+			int GetItemFlags(int i, ref int dwFlags);
 
 			[PreserveSig]
-			int GetOverlayImage(
-			   int iOverlay,
-			   ref int piIndex);
+			int GetOverlayImage(int iOverlay, ref int piIndex);
 		};
 
 		#endregion Private ImageList COM Interop (XP)
@@ -654,23 +587,18 @@ namespace SystemImageList {
 		/// <param name="iconState">Flags specifying the state of the icon
 		/// returned.</param>
 		/// <returns>Index of the icon</returns>
-		public int IconIndex(
-		   string fileName,
-		   bool forceLoadFromDisk,
-		   ShellIconStateConstants iconState
-		   ) {
-			SHGetFileInfoConstants dwFlags =
-			 SHGetFileInfoConstants.SHGFI_SYSICONINDEX;
+		public int IconIndex(string fileName, bool forceLoadFromDisk, ShellIconStateConstants iconState) {
+			FIcon.SHGetFileInfoConstants dwFlags = FIcon.SHGetFileInfoConstants.SHGFI_SYSICONINDEX;
 			int dwAttr = 0;
 			if (size == SysImageListSize.smallIcons) {
-				dwFlags |= SHGetFileInfoConstants.SHGFI_SMALLICON;
+				dwFlags |= FIcon.SHGetFileInfoConstants.SHGFI_SMALLICON;
 			}
 
 			// We can choose whether to access the disk or not. If you don't
 			// hit the disk, you may get the wrong icon if the icon is
 			// not cached. Also only works for files.
 			if (!forceLoadFromDisk) {
-				dwFlags |= SHGetFileInfoConstants.SHGFI_USEFILEATTRIBUTES;
+				dwFlags |= FIcon.SHGetFileInfoConstants.SHGFI_USEFILEATTRIBUTES;
 				dwAttr = FILE_ATTRIBUTE_NORMAL;
 			}
 			else {
@@ -907,11 +835,11 @@ namespace SystemImageList {
 			}
 			else {
 				// Prepare flags:
-				SHGetFileInfoConstants dwFlags =
-				 SHGetFileInfoConstants.SHGFI_USEFILEATTRIBUTES |
-				 SHGetFileInfoConstants.SHGFI_SYSICONINDEX;
+				FIcon.SHGetFileInfoConstants dwFlags =
+					FIcon.SHGetFileInfoConstants.SHGFI_USEFILEATTRIBUTES |
+					FIcon.SHGetFileInfoConstants.SHGFI_SYSICONINDEX;
 				if (size == SysImageListSize.smallIcons) {
-					dwFlags |= SHGetFileInfoConstants.SHGFI_SMALLICON;
+					dwFlags |= FIcon.SHGetFileInfoConstants.SHGFI_SMALLICON;
 				}
 				// Get image list
 				SHFILEINFO shfi = new SHFILEINFO();

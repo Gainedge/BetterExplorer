@@ -6,21 +6,18 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
 	/// <summary>
 	/// Enables extraction of icons for any file type from
 	/// the Shell.
 	/// </summary>
-	public class FileIcon : IDisposable
-	{
+	public class FileIcon : IDisposable {
 
 		#region UnmanagedCode
 		private const int MAX_PATH = 260;
 
 		[StructLayout(LayoutKind.Sequential)]
-		private struct SHFILEINFO
-		{
+		private struct SHFILEINFO {
 			public IntPtr hIcon;
 			public int iIcon;
 			public int dwAttributes;
@@ -30,10 +27,8 @@ namespace BExplorer.Shell.Interop
 			public string szTypeName;
 		}
 
-		public void Dispose()
-		{
-			if (fileIcon != null)
-			{
+		public void Dispose() {
+			if (fileIcon != null) {
 				fileIcon.Dispose();
 				fileIcon = null;
 			}
@@ -80,8 +75,7 @@ namespace BExplorer.Shell.Interop
 
 		#region Enumerations
 		[Flags]
-		public enum SHGetFileInfoConstants : int
-		{
+		public enum SHGetFileInfoConstants : int {
 			SHGFI_ICON = 0x100,                // get icon 
 			SHGFI_DISPLAYNAME = 0x200,         // get display name 
 			SHGFI_TYPENAME = 0x400,            // get type name 
@@ -96,7 +90,13 @@ namespace BExplorer.Shell.Interop
 			SHGFI_SMALLICON = 0x1,             // get small icon 
 			SHGFI_OPENICON = 0x2,              // get open icon 
 			SHGFI_SHELLICONSIZE = 0x4,         // get shell size icon 
+
 			//SHGFI_PIDL = 0x8,                  // pszPath is a pidl 
+
+			/// <summary>Transfered from SystemImageList. I don't know if its needed O.o!</summary>
+			SHIL_JUMBO = 0x4,
+
+
 			SHGFI_USEFILEATTRIBUTES = 0x10,     // use passed dwFileAttribute 
 			SHGFI_ADDOVERLAYS = 0x000000020,     // apply the appropriate overlays
 			SHGFI_OVERLAYINDEX = 0x000000040     // Get the index of the overlay
@@ -107,14 +107,11 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Gets/sets the flags used to extract the icon
 		/// </summary>
-		public FileIcon.SHGetFileInfoConstants Flags
-		{
-			get
-			{
+		public FileIcon.SHGetFileInfoConstants Flags {
+			get {
 				return flags;
 			}
-			set
-			{
+			set {
 				flags = value;
 			}
 		}
@@ -122,14 +119,11 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Gets/sets the filename to get the icon for
 		/// </summary>
-		public string FileName
-		{
-			get
-			{
+		public string FileName {
+			get {
 				return fileName;
 			}
-			set
-			{
+			set {
 				fileName = value;
 			}
 		}
@@ -137,10 +131,8 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Gets the icon for the chosen file
 		/// </summary>
-		public Icon ShellIcon
-		{
-			get
-			{
+		public Icon ShellIcon {
+			get {
 				return fileIcon;
 			}
 		}
@@ -149,10 +141,8 @@ namespace BExplorer.Shell.Interop
 		/// Gets the display name for the selected file
 		/// if the SHGFI_DISPLAYNAME flag was set.
 		/// </summary>
-		public string DisplayName
-		{
-			get
-			{
+		public string DisplayName {
+			get {
 				return displayName;
 			}
 		}
@@ -161,10 +151,8 @@ namespace BExplorer.Shell.Interop
 		/// Gets the type name for the selected file
 		/// if the SHGFI_TYPENAME flag was set.
 		/// </summary>
-		public string TypeName
-		{
-			get
-			{
+		public string TypeName {
+			get {
 				return typeName;
 			}
 		}
@@ -173,8 +161,7 @@ namespace BExplorer.Shell.Interop
 		///  Gets the information for the specified 
 		///  file name and flags.
 		/// </summary>
-		public void GetInfo()
-		{
+		public void GetInfo() {
 			fileIcon = null;
 			typeName = "";
 			displayName = "";
@@ -184,10 +171,8 @@ namespace BExplorer.Shell.Interop
 
 			int ret = SHGetFileInfo(
 				 fileName, 0, ref shfi, shfiSize, (uint)(flags));
-			if (ret != 0)
-			{
-				if (shfi.hIcon != IntPtr.Zero)
-				{
+			if (ret != 0) {
+				if (shfi.hIcon != IntPtr.Zero) {
 					fileIcon = System.Drawing.Icon.FromHandle(shfi.hIcon);
 					// Now owned by the GDI+ object
 					//DestroyIcon(shfi.hIcon);
@@ -195,8 +180,7 @@ namespace BExplorer.Shell.Interop
 				typeName = shfi.szTypeName;
 				displayName = shfi.szDisplayName;
 			}
-			else
-			{
+			else {
 
 				int err = GetLastError();
 				Console.WriteLine("Error {0}", err);
@@ -216,8 +200,7 @@ namespace BExplorer.Shell.Interop
 		/// class.  Specify the filename and call GetInfo()
 		/// to retrieve an icon.
 		/// </summary>
-		public FileIcon()
-		{
+		public FileIcon() {
 			flags = SHGetFileInfoConstants.SHGFI_ICON |
 				 SHGetFileInfoConstants.SHGFI_DISPLAYNAME |
 				 SHGetFileInfoConstants.SHGFI_TYPENAME |
@@ -232,8 +215,7 @@ namespace BExplorer.Shell.Interop
 		/// <param name="fileName">The filename to get the icon, 
 		/// display name and type name for</param>
 		public FileIcon(string fileName)
-			: this()
-		{
+			: this() {
 			this.fileName = fileName;
 			GetInfo();
 		}
@@ -246,8 +228,7 @@ namespace BExplorer.Shell.Interop
 		/// for</param>
 		/// <param name="flags">The flags to use when extracting the
 		/// icon and other shell information.</param>
-		public FileIcon(string fileName, FileIcon.SHGetFileInfoConstants flags)
-		{
+		public FileIcon(string fileName, FileIcon.SHGetFileInfoConstants flags) {
 			this.fileName = fileName;
 			this.flags = flags;
 			GetInfo();

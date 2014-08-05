@@ -391,10 +391,10 @@
 										<Ribbon:SeparatorTabItem Margin="0,0,0,15" Header="Other Settings" />
 										<StackPanel Orientation="Horizontal">
 											<Ribbon:CheckBox x:Name="chkIsDefault"
-										 Checked="chkIsDefault_Checked"
+										 Checked="chkIsDefault_CheckChanged"
 										 Header="{DynamicResource chkIsDefault}"
 										 Ribbon:KeyTip.Keys="V"
-										 Unchecked="chkIsDefault_Unchecked">
+										 Unchecked="chkIsDefault_CheckChanged">
 												<Ribbon:CheckBox.ToolTip>
 													<!--  Title="{DynamicResource chkIsDefaultHCP}"  -->
 													<Ribbon:ScreenTip Title="{DynamicResource chkIsDefault}"
