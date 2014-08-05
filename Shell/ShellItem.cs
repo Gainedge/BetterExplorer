@@ -103,12 +103,7 @@ namespace BExplorer.Shell {
 				Uri uri = ((ShellItem)value).ToUri();
 
 				if (destinationType == typeof(string)) {
-					if (uri.Scheme == "file") {
-						return uri.LocalPath;
-					}
-					else {
-						return uri.ToString();
-					}
+					return uri.Scheme == "file" ? uri.LocalPath : uri.ToString();
 				}
 				else if (destinationType == typeof(InstanceDescriptor)) {
 					return new InstanceDescriptor(typeof(ShellItem).GetConstructor(new Type[] { typeof(string) }), new object[] { uri.ToString() });
@@ -278,7 +273,7 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets a value that determines if this ShellObject is a link or shortcut.
 		/// </summary>
-		public bool IsLink {
+		internal bool IsLink {
 			get {
 				try {
 					return COM_Attribute_Check(SFGAO.LINK);
@@ -316,7 +311,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public bool IsNetworkPath {
+		internal bool IsNetworkPath {
 			get {
 				//TODO: Test
 

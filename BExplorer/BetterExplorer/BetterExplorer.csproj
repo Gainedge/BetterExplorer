@@ -362,7 +362,6 @@
     <Compile Include="MoreColumns.Designer.cs">
       <DependentUpon>MoreColumns.cs</DependentUpon>
     </Compile>
-    <Compile Include="__Obsolete\NetworkBrowser.cs" />
     <Compile Include="HelperClasses\SafeThread.cs" />
     <Compile Include="ShareWizzard.cs">
       <SubType>Form</SubType>
@@ -1206,7 +1205,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!--   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
