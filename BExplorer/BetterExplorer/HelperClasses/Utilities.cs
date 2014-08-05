@@ -123,5 +123,11 @@ namespace BetterExplorer {
 			*/
 		}//TODO: Move somewhere else later
 
+
+		public static string AppDirectoryItem(string FileName) {
+			String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
+			string dir = System.IO.Path.GetDirectoryName(CurrentexePath);
+			return System.IO.Path.Combine(dir, FileName);
+		}
 	}
 }

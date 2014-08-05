@@ -901,10 +901,8 @@ namespace BetterExplorer {
 		private void miCreateSymlink_Click(object sender, RoutedEventArgs e) {
 			StringCollection DropList = System.Windows.Forms.Clipboard.GetFileDropList();
 			string PathForDrop = ShellListView.CurrentFolder.ParsingName.Replace(@"\\", @"\");
+			string ExePath = Utilities.AppDirectoryItem("BetterExplorerOperations.exe");
 
-			String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-			string dir = Path.GetDirectoryName(CurrentexePath);
-			string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
 
 			int winhandle = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
 
@@ -3560,9 +3558,7 @@ namespace BetterExplorer {
 		#region Registry Setting Changes / BetterExplorerOperations Calls / Action Log
 
 		private Process Rename_CheckChanged_Helper() {
-			String CurrentexePath = System.Reflection.Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-			string dir = Path.GetDirectoryName(CurrentexePath);
-			string ExePath = Path.Combine(dir, @"BetterExplorerOperations.exe");
+			string ExePath = Utilities.AppDirectoryItem("BetterExplorerOperations.exe");
 			Process proc = new Process();
 			proc.StartInfo = new ProcessStartInfo {
 				FileName = ExePath,
