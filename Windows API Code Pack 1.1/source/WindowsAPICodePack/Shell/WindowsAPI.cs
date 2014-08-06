@@ -1005,20 +1005,7 @@ namespace WindowsHelper {
 			public const int NOSCROLLTIPS = 0x20;
 		}
 		#endregion
-
-		/// <summary>
-		/// Returns the IShellFolder interface from IShellItem
-		/// </summary>
-		/// <param name="sitem">The IShellItem represented like ShellObject</param>
-		/// <returns></returns>
-		public static IShellFolder GetIShellFolder(ShellObject sitem) {
-			IShellFolder result;
-			((IShellItem2)sitem.nativeShellItem).BindToHandler(IntPtr.Zero,
-				BHID.SFObject, typeof(IShellFolder).GUID, out result);
-			return result;
-		}
-
-
+		
 		public static IntPtr SendStringMessage(IntPtr hWnd, byte[] array, int startIndex, int length) {
 			IntPtr ptr = Marshal.AllocHGlobal(IntPtr.Size * 3 + length);
 			Marshal.WriteIntPtr(ptr, 0, IntPtr.Zero);
@@ -2787,10 +2774,10 @@ namespace WindowsHelper {
 		[DllImport("shell32.dll", SetLastError = true)]
 		public static extern bool SHObjectProperties(IntPtr hwnd, uint shopObjectType, [MarshalAs(UnmanagedType.LPWStr)] string pszObjectName, [MarshalAs(UnmanagedType.LPWStr)] string pszPropertyPage);
 
-
+		/*
 		[DllImport("shell32.dll", EntryPoint = "#165", CharSet = CharSet.Unicode)]
 		public static extern ERROR SHCreateDirectory(IShellView hwnd, string pszPath);
-
+		*/
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		private static extern IntPtr ILCreateFromPath([MarshalAs(UnmanagedType.LPTStr)] string pszPath);
 

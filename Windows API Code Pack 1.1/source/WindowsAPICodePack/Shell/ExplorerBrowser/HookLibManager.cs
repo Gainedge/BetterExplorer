@@ -75,9 +75,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate int InitHookLibDelegate(IntPtr fpHookResult);
 
+		/*
 		public enum HookCheckPoint {
 			Initial,
 		}
+		*/
 
 		// Unmarked hooks exist only to set other hooks.
 		private enum Hooks {
@@ -210,6 +212,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 			return false;
 		}
 
+		/*
 		static string UppercaseFirst(string s) {
 			if (string.IsNullOrEmpty(s)) {
 				return string.Empty;
@@ -218,6 +221,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 			a[0] = char.ToUpper(a[0]);
 			return new string(a);
 		}
+		*/
 
 		private static bool DeleteItem(IntPtr sourceItems) {
 
@@ -317,7 +321,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 			}
 		}
 
-
+		/*
 		public static void DeleteToRecycleBin(ShellObject[] SelectedItems) {
 			string Files = "";
 			foreach (ShellObject selectedItem in SelectedItems) {
@@ -329,9 +333,13 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 			}
 			RecycleBin.Send(Files);
 		}
+		*/
+
+		/*
 		public static void CheckHooks() {
 			//TODO:
 		}
+		*/
 
 		public static void ClearHookMemmmory() {
 			if (Hookptr != IntPtr.Zero) {

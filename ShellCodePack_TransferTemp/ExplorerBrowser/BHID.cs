@@ -1,7 +1,26 @@
 using System;
-using System.Linq;
-using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Runtime.Versioning;
+using System.Runtime.InteropServices.ComTypes;
+using System.Windows.Forms;
+using MS.WindowsAPICodePack.Internal;
+using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 using Microsoft.WindowsAPICodePack.Shell;
+using System.IO;
+using Microsoft.Win32;
+using System.Security;
+using System.Diagnostics;
+using Microsoft.WindowsAPICodePack.Controls;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
+using System.Xml;
+using System.Xml.Linq;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 	/// <summary>

@@ -236,26 +236,10 @@
     <Compile Include="Common\SortColumn.cs" />
     <Compile Include="ComReleaser.cs" />
     <Compile Include="CopyEngineResult.cs" />
-    <Compile Include="ExplorerBrowser\BHID.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\Collumns.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\CommonControlException.cs">
+    <Compile Include="Interop\ExplorerBrowser\CommonControlException.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExplorerBrowser\DropData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\ExplorerBrowser.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\ExplorerBrowser.WPF.xaml.cs">
-      <DependentUpon>ExplorerBrowser.WPF.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\ExplorerBrowserContentOptions.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExplorerBrowser\ExplorerBrowserEnums.cs">
@@ -267,19 +251,10 @@
     <Compile Include="ExplorerBrowser\ExplorerBrowserPaneVisibility.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExplorerBrowser\ExplorerBrowserViewEvents.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ExplorerBrowser\HelperClasses.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExplorerBrowser\HookLibManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ExplorerBrowser\NativeWindowController.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\NavigationLog.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExplorerBrowser\NavigationLogEnums.cs">
@@ -288,13 +263,7 @@
     <Compile Include="ExplorerBrowser\NavigationLogEvents.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExplorerBrowser\NavigationOptions.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ExplorerBrowser\ShellViewDragDrop.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\SubClass.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ExplorerBrowser\TreeViewWrapper.cs">
@@ -335,8 +304,12 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IFileOperation.cs" />
     <Compile Include="IFileOperationProgressSink.cs" />
+    <Compile Include="Interop\ExplorerBrowser\POINT.cs" />
     <Compile Include="Windows API\IAsyncDataObject.cs" />
     <Compile Include="Interop\Common\IntPtrExtensions.cs" />
+    <Compile Include="Windows API\ShellCOMInterfaces.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Windows API\ShellLink.cs" />
     <Compile Include="Windows API\ShellNativeStructs.cs" />
     <Compile Include="Interop\ShellObjectWatcher\ShellObjectWatcherNativeMethods.cs" />
@@ -345,10 +318,6 @@
     <Compile Include="Interop\Common\WindowUtilities.cs" />
     <Compile Include="KnownFolders\IKnownFolder.cs" />
     <Compile Include="Windows API\ShellCOMClasses.cs" />
-    <Compile Include="Interop\ExplorerBrowser\ExplorerBrowserCOMGuids.cs">
-    </Compile>
-    <Compile Include="Interop\ExplorerBrowser\ExplorerBrowserCOMInterfaces.cs" />
-    <Compile Include="Interop\ExplorerBrowser\ExplorerBrowserNativeMethods.cs" />
     <Compile Include="KnownFolders\DefinitionOptions.cs" />
     <Compile Include="KnownFolders\FolderCategory.cs" />
     <Compile Include="KnownFolders\FolderProperties.cs" />
@@ -442,7 +411,6 @@
     <Compile Include="Interop\Dialogs\DialogsCOMClasses.cs" />
     <Compile Include="Windows API\ShellCOMGuids.cs" />
     <Compile Include="Windows API\ShellNativeMethods.cs" />
-    <Compile Include="Windows API\ShellCOMInterfaces.cs" />
     <Compile Include="Interop\Dialogs\DialogsCOMInterfaces.cs" />
     <Compile Include="Common\ShellSavedSearchCollection.cs" />
     <Compile Include="PropertySystem\ShellProperty.cs" />
@@ -468,9 +436,6 @@
     <Compile Include="SysImageList.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ContextShellMenu.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="_Transfered\DelRecycleBin.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -481,10 +446,6 @@
     <None Include="ExplorerBrowser\ExplorerBrowserDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ExplorerBrowser\ExplorerBrowser.WPF.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="FileOperations\CollisionDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

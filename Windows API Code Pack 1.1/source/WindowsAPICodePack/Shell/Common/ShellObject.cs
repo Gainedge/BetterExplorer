@@ -33,17 +33,17 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		}
 
 		/*
-        /// <summary>
-        /// Indicates whether this feature is supported on the current platform.
-        /// </summary>
-        public static bool IsPlatformSupported
-        {
-            get
-            {
-                // We need Windows Vista onwards ...
-                return CoreHelpers.RunningOnVista;
-            }
-        }
+		/// <summary>
+		/// Indicates whether this feature is supported on the current platform.
+		/// </summary>
+		public static bool IsPlatformSupported
+		{
+			get
+			{
+				// We need Windows Vista onwards ...
+				return CoreHelpers.RunningOnVista;
+			}
+		}
 		*/
 		#endregion
 
@@ -52,7 +52,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		/// <summary>
 		/// Internal member to keep track of the native IShellItem2
 		/// </summary>
-		internal IShellItem2 nativeShellItem;
+		public IShellItem2 nativeShellItem;
 
 		#endregion
 
@@ -240,26 +240,26 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		}
 
 		/*
-        public IntPtr PIDL2
-        {
-            get
-            {
-                // Get teh PIDL for the ShellItem
-                if (_internalPIDL2 == IntPtr.Zero && NativeShellItem != null)
-                {
-                    IntPtr a = new IntPtr(), b = new IntPtr(), c = new IntPtr();
-                    IParentAndItem ipi = (IParentAndItem)NativeShellItem;
-                    ipi.GetParentAndItem(out a, out b, out c);
-                    _internalPIDL2 = c;
-                }
+		public IntPtr PIDL2
+		{
+			get
+			{
+				// Get teh PIDL for the ShellItem
+				if (_internalPIDL2 == IntPtr.Zero && NativeShellItem != null)
+				{
+					IntPtr a = new IntPtr(), b = new IntPtr(), c = new IntPtr();
+					IParentAndItem ipi = (IParentAndItem)NativeShellItem;
+					ipi.GetParentAndItem(out a, out b, out c);
+					_internalPIDL2 = c;
+				}
 
-                return _internalPIDL2;
-            }
-            set
-            {
-                this._internalPIDL2 = value;
-            }
-        }
+				return _internalPIDL2;
+			}
+			set
+			{
+				this._internalPIDL2 = value;
+			}
+		}
 		*/
 
 		/// <summary>
@@ -334,27 +334,27 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		}
 
 		/*
-        public bool IsRemovable
-        {
-            get
-            {
-                try
-                {
-                    ShellFileGetAttributesOptions sfgao;
-                    NativeShellItem.GetAttributes(ShellFileGetAttributesOptions.Removable, out sfgao);
-                    return (sfgao & ShellFileGetAttributesOptions.Removable) != 0;
-                }
-                catch (FileNotFoundException)
-                {
-                    return false;
-                }
-                catch (NullReferenceException)
-                {
-                    // NativeShellItem is null
-                    return false;
-                }
-            }
-        }
+		public bool IsRemovable
+		{
+			get
+			{
+				try
+				{
+					ShellFileGetAttributesOptions sfgao;
+					NativeShellItem.GetAttributes(ShellFileGetAttributesOptions.Removable, out sfgao);
+					return (sfgao & ShellFileGetAttributesOptions.Removable) != 0;
+				}
+				catch (FileNotFoundException)
+				{
+					return false;
+				}
+				catch (NullReferenceException)
+				{
+					// NativeShellItem is null
+					return false;
+				}
+			}
+		}
 		*/
 
 		public bool IsDrive {
@@ -372,27 +372,27 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		}
 
 		/*
-        public bool IsNetworkPath
-        {
-          get
-          {
-            if (!ParsingName.StartsWith("::"))
-            {
-              if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\"))
-              {
-                string rootPath = System.IO.Path.GetPathRoot(ParsingName); // get drive's letter
-                System.IO.DriveInfo driveInfo = new System.IO.DriveInfo(rootPath); // get info about the drive
-                return driveInfo.DriveType == DriveType.Network; // return true if a network drive
-              }
+		public bool IsNetworkPath
+		{
+		  get
+		  {
+			if (!ParsingName.StartsWith("::"))
+			{
+			  if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\"))
+			  {
+				string rootPath = System.IO.Path.GetPathRoot(ParsingName); // get drive's letter
+				System.IO.DriveInfo driveInfo = new System.IO.DriveInfo(rootPath); // get info about the drive
+				return driveInfo.DriveType == DriveType.Network; // return true if a network drive
+			  }
 
-              return true; // is a UNC path 
-            }
-            else
-            {
-              return false;
-            }
-          }
-        }
+			  return true; // is a UNC path 
+			}
+			else
+			{
+			  return false;
+			}
+		  }
+		}
 		*/
 
 		public bool IsNetDrive {

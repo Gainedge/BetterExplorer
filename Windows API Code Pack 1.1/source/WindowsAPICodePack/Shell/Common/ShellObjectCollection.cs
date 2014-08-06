@@ -7,136 +7,121 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.WindowsAPICodePack.Shell.Resources;
 
-namespace Microsoft.WindowsAPICodePack.Shell
-{
-    /// <summary>
-    /// An ennumerable list of ShellObjects
-    /// </summary>
-    public class ShellObjectCollection : IEnumerable, IDisposable, IList<ShellObject>
-    {
-        private List<ShellObject> content = new List<ShellObject>();
+namespace Microsoft.WindowsAPICodePack.Shell {
+	/// <summary>
+	/// An ennumerable list of ShellObjects
+	/// </summary>
+	public class ShellObjectCollection : IEnumerable, IDisposable, IList<ShellObject> {
+		private List<ShellObject> content = new List<ShellObject>();
 
-        bool readOnly;
-        bool isDisposed;
+		bool readOnly;
+		bool isDisposed;
 
-        #region construction/disposal/finialization
-        /// <summary>
-        /// Creates a ShellObject collection from an IShellItemArray
-        /// </summary>
-        /// <param name="iArray">IShellItemArray pointer</param>
-        /// <param name="readOnly">Indicates whether the collection shouldbe read-only or not</param>
-        internal ShellObjectCollection(IShellItemArray iArray, bool readOnly)
-        {
-            this.readOnly = readOnly;
+		#region construction/disposal/finialization
+		/// <summary>
+		/// Creates a ShellObject collection from an IShellItemArray
+		/// </summary>
+		/// <param name="iArray">IShellItemArray pointer</param>
+		/// <param name="readOnly">Indicates whether the collection shouldbe read-only or not</param>
+		public ShellObjectCollection(IShellItemArray iArray, bool readOnly) {
+			this.readOnly = readOnly;
 
-            if (iArray != null)
-            {
-                try
-                {
-                    uint itemCount = 0;
-                    iArray.GetCount(out itemCount);
-                    content.Capacity = (int)itemCount;
-                    for (uint index = 0; index < itemCount; index++)
-                    {
-                        IShellItem iShellItem = null;
-                        iArray.GetItemAt(index, out iShellItem);
-                        content.Add(ShellObjectFactory.Create(iShellItem));
-                    }
-                }
-                finally
-                {
-                    Marshal.ReleaseComObject(iArray);
-                }
-            }
-        }
+			if (iArray != null) {
+				try {
+					uint itemCount = 0;
+					iArray.GetCount(out itemCount);
+					content.Capacity = (int)itemCount;
+					for (uint index = 0; index < itemCount; index++) {
+						IShellItem iShellItem = null;
+						iArray.GetItemAt(index, out iShellItem);
+						content.Add(ShellObjectFactory.Create(iShellItem));
+					}
+				}
+				finally {
+					Marshal.ReleaseComObject(iArray);
+				}
+			}
+		}
 
-        /// <summary>
-        /// Creates a ShellObjectCollection from an IDataObject passed during Drop operation.
-        /// </summary>
-        /// <param name="dataObject">An object that implements the IDataObject COM interface.</param>
-        /// <returns>ShellObjectCollection created from the given IDataObject</returns>
-        public static ShellObjectCollection FromDataObject(System.Runtime.InteropServices.ComTypes.IDataObject dataObject)
-        {
-            IShellItemArray shellItemArray;
-            Guid iid = new Guid(ShellIIDGuid.IShellItemArray);
-            ShellNativeMethods.SHCreateShellItemArrayFromDataObject(dataObject, ref iid, out shellItemArray);
-            return new ShellObjectCollection(shellItemArray, true);
-        }
+		/// <summary>
+		/// Creates a ShellObjectCollection from an IDataObject passed during Drop operation.
+		/// </summary>
+		/// <param name="dataObject">An object that implements the IDataObject COM interface.</param>
+		/// <returns>ShellObjectCollection created from the given IDataObject</returns>
+		public static ShellObjectCollection FromDataObject(System.Runtime.InteropServices.ComTypes.IDataObject dataObject) {
+			IShellItemArray shellItemArray;
+			Guid iid = new Guid(ShellIIDGuid.IShellItemArray);
+			ShellNativeMethods.SHCreateShellItemArrayFromDataObject(dataObject, ref iid, out shellItemArray);
+			return new ShellObjectCollection(shellItemArray, true);
+		}
 
-        public static ShellObjectCollection FromShellItem(IShellItem dataObject) {
-          IShellItemArray shellItemArray;
-          Guid iid = new Guid(ShellIIDGuid.IShellItemArray);
-          ShellNativeMethods.SHCreateShellItemArrayFromShellItem(dataObject, ref iid, out shellItemArray);
-          return new ShellObjectCollection(shellItemArray, true);
-        }
+		/*
+		public static ShellObjectCollection FromShellItem(IShellItem dataObject) {
+			IShellItemArray shellItemArray;
+			Guid iid = new Guid(ShellIIDGuid.IShellItemArray);
+			ShellNativeMethods.SHCreateShellItemArrayFromShellItem(dataObject, ref iid, out shellItemArray);
+			return new ShellObjectCollection(shellItemArray, true);
+		}
+		*/
+		/// <summary>
+		/// Constructs an empty ShellObjectCollection
+		/// </summary>
+		public ShellObjectCollection() {
+			// Left empty
+		}
 
-        /// <summary>
-        /// Constructs an empty ShellObjectCollection
-        /// </summary>
-        public ShellObjectCollection()
-        {
-            // Left empty
-        }
+		/// <summary>
+		/// Finalizer
+		/// </summary>
+		~ShellObjectCollection() {
+			Dispose(false);
+		}
 
-        /// <summary>
-        /// Finalizer
-        /// </summary>
-        ~ShellObjectCollection()
-        {
-            Dispose(false);
-        }
+		/// <summary>
+		/// Standard Dispose pattern
+		/// </summary>
+		public void Dispose() {
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
-        /// <summary>
-        /// Standard Dispose pattern
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+		/// <summary>
+		/// Standard Dispose patterns 
+		/// </summary>
+		/// <param name="disposing">Indicates that this is being called from Dispose(), rather than the finalizer.</param>
+		protected virtual void Dispose(bool disposing) {
+			if (isDisposed == false) {
+				if (disposing) {
+					foreach (ShellObject shellObject in content) {
+						shellObject.Dispose();
+					}
 
-        /// <summary>
-        /// Standard Dispose patterns 
-        /// </summary>
-        /// <param name="disposing">Indicates that this is being called from Dispose(), rather than the finalizer.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (isDisposed == false)
-            {
-                if (disposing)
-                {
-                    foreach (ShellObject shellObject in content)
-                    {
-                        shellObject.Dispose();
-                    }
+					content.Clear();
+				}
 
-                    content.Clear();
-                }
+				isDisposed = true;
+			}
+		}
+		#endregion
 
-                isDisposed = true;
-            }
-        }
-        #endregion
+		#region implementation
 
-        #region implementation
+		/// <summary>
+		/// Item count
+		/// </summary>
+		public int Count { get { return content.Count; } }
 
-        /// <summary>
-        /// Item count
-        /// </summary>
-        public int Count { get { return content.Count; } }
+		/// <summary>
+		/// Collection enumeration
+		/// </summary>
+		/// <returns></returns>
+		public System.Collections.IEnumerator GetEnumerator() {
+			foreach (ShellObject obj in content) {
+				yield return obj;
+			}
+		}
 
-        /// <summary>
-        /// Collection enumeration
-        /// </summary>
-        /// <returns></returns>
-        public System.Collections.IEnumerator GetEnumerator()
-        {
-            foreach (ShellObject obj in content)
-            {
-                yield return obj;
-            }
-        }
-
+		/*
         /// <summary>
         /// Builds the data for the CFSTR_SHELLIDLIST Drag and Clipboard data format from the 
         /// ShellObjects in the collection.
@@ -220,184 +205,160 @@ namespace Microsoft.WindowsAPICodePack.Shell
             // return CIDA stream 
             return mstream;
         }
-        #endregion
+		*/
+		#endregion
 
-        #region IList<ShellObject> Members
+		#region IList<ShellObject> Members
 
-        /// <summary>
-        /// Returns the index of a particualr shell object in the collection
-        /// </summary>
-        /// <param name="item">The item to search for.</param>
-        /// <returns>The index of the item found, or -1 if not found.</returns>
-        public int IndexOf(ShellObject item)
-        {
-            return content.IndexOf(item);
-        }
+		/// <summary>
+		/// Returns the index of a particualr shell object in the collection
+		/// </summary>
+		/// <param name="item">The item to search for.</param>
+		/// <returns>The index of the item found, or -1 if not found.</returns>
+		public int IndexOf(ShellObject item) {
+			return content.IndexOf(item);
+		}
 
-        /// <summary>
-        /// Inserts a new shell object into the collection.
-        /// </summary>
-        /// <param name="index">The index at which to insert.</param>
-        /// <param name="item">The item to insert.</param>
-        public void Insert(int index, ShellObject item)
-        {
-            if (readOnly)
-            {
-                throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionInsertReadOnly);
-            }
+		/// <summary>
+		/// Inserts a new shell object into the collection.
+		/// </summary>
+		/// <param name="index">The index at which to insert.</param>
+		/// <param name="item">The item to insert.</param>
+		public void Insert(int index, ShellObject item) {
+			if (readOnly) {
+				throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionInsertReadOnly);
+			}
 
-            content.Insert(index, item);
-        }
+			content.Insert(index, item);
+		}
 
-        /// <summary>
-        /// Removes the specified ShellObject from the collection
-        /// </summary>
-        /// <param name="index">The index to remove at.</param>
-        public void RemoveAt(int index)
-        {
-            if (readOnly)
-            {
-                throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionRemoveReadOnly);
-            }
+		/// <summary>
+		/// Removes the specified ShellObject from the collection
+		/// </summary>
+		/// <param name="index">The index to remove at.</param>
+		public void RemoveAt(int index) {
+			if (readOnly) {
+				throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionRemoveReadOnly);
+			}
 
-            content.RemoveAt(index);
-        }
+			content.RemoveAt(index);
+		}
 
-        /// <summary>
-        /// The collection indexer
-        /// </summary>
-        /// <param name="index">The index of the item to retrieve.</param>
-        /// <returns>The ShellObject at the specified index</returns>
-        public ShellObject this[int index]
-        {
-            get
-            {
-                return content[index];
-            }
-            set
-            {
-                if (readOnly)
-                {
-                    throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionInsertReadOnly);
-                }
+		/// <summary>
+		/// The collection indexer
+		/// </summary>
+		/// <param name="index">The index of the item to retrieve.</param>
+		/// <returns>The ShellObject at the specified index</returns>
+		public ShellObject this[int index] {
+			get {
+				return content[index];
+			}
+			set {
+				if (readOnly) {
+					throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionInsertReadOnly);
+				}
 
-                content[index] = value;
-            }
-        }
+				content[index] = value;
+			}
+		}
 
-        #endregion
+		#endregion
 
-        #region ICollection<ShellObject> Members
+		#region ICollection<ShellObject> Members
 
-        /// <summary>
-        /// Adds a ShellObject to the collection,
-        /// </summary>
-        /// <param name="item">The ShellObject to add.</param>
-        public void Add(ShellObject item)
-        {
-            if (readOnly)
-            {
-                throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionInsertReadOnly);
-            }
+		/// <summary>
+		/// Adds a ShellObject to the collection,
+		/// </summary>
+		/// <param name="item">The ShellObject to add.</param>
+		public void Add(ShellObject item) {
+			if (readOnly) {
+				throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionInsertReadOnly);
+			}
 
-            content.Add(item);
-        }
+			content.Add(item);
+		}
 
-        /// <summary>
-        /// Clears the collection of ShellObjects.
-        /// </summary>
-        public void Clear()
-        {
-            if (readOnly)
-            {
-                throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionRemoveReadOnly);
-            }
+		/// <summary>
+		/// Clears the collection of ShellObjects.
+		/// </summary>
+		public void Clear() {
+			if (readOnly) {
+				throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionRemoveReadOnly);
+			}
 
-            content.Clear();
-        }
+			content.Clear();
+		}
 
-        /// <summary>
-        /// Determines if the collection contains a particular ShellObject.
-        /// </summary>
-        /// <param name="item">The ShellObject.</param>
-        /// <returns>true, if the ShellObject is in the list, false otherwise.</returns>
-        public bool Contains(ShellObject item)
-        {
-            return content.Contains(item);
-        }
+		/// <summary>
+		/// Determines if the collection contains a particular ShellObject.
+		/// </summary>
+		/// <param name="item">The ShellObject.</param>
+		/// <returns>true, if the ShellObject is in the list, false otherwise.</returns>
+		public bool Contains(ShellObject item) {
+			return content.Contains(item);
+		}
 
-        /// <summary>
-        /// Copies the ShellObjects in the collection to a ShellObject array.
-        /// </summary>
-        /// <param name="array">The destination to copy to.</param>
-        /// <param name="arrayIndex">The index into the array at which copying will commence.</param>
-        public void CopyTo(ShellObject[] array, int arrayIndex)
-        {
-            if (array == null) { throw new ArgumentNullException("array"); }
-            if (array.Length < arrayIndex + content.Count)
-            {
-                throw new ArgumentException(LocalizedMessages.ShellObjectCollectionArrayTooSmall, "array");
-            }
+		/// <summary>
+		/// Copies the ShellObjects in the collection to a ShellObject array.
+		/// </summary>
+		/// <param name="array">The destination to copy to.</param>
+		/// <param name="arrayIndex">The index into the array at which copying will commence.</param>
+		public void CopyTo(ShellObject[] array, int arrayIndex) {
+			if (array == null) { throw new ArgumentNullException("array"); }
+			if (array.Length < arrayIndex + content.Count) {
+				throw new ArgumentException(LocalizedMessages.ShellObjectCollectionArrayTooSmall, "array");
+			}
 
-            for (int index = 0; index < content.Count; index++)
-            {
-                array[index + arrayIndex] = content[index];
-            }
-        }
+			for (int index = 0; index < content.Count; index++) {
+				array[index + arrayIndex] = content[index];
+			}
+		}
 
-        /// <summary>
-        /// Retrieves the number of ShellObjects in the collection
-        /// </summary>
-        int ICollection<ShellObject>.Count
-        {
-            get
-            {
-                return content.Count;
-            }
-        }
+		/// <summary>
+		/// Retrieves the number of ShellObjects in the collection
+		/// </summary>
+		int ICollection<ShellObject>.Count {
+			get {
+				return content.Count;
+			}
+		}
 
-        /// <summary>
-        /// If true, the contents of the collection are immutable.
-        /// </summary>
-        public bool IsReadOnly
-        {
-            get
-            {
-                return readOnly;
-            }
-        }
+		/// <summary>
+		/// If true, the contents of the collection are immutable.
+		/// </summary>
+		public bool IsReadOnly {
+			get {
+				return readOnly;
+			}
+		}
 
-        /// <summary>
-        /// Removes a particular ShellObject from the list.
-        /// </summary>
-        /// <param name="item">The ShellObject to remove.</param>
-        /// <returns>True if the item could be removed, false otherwise.</returns>
-        public bool Remove(ShellObject item)
-        {
-            if (readOnly)
-            {
-                throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionRemoveReadOnly);
-            }
+		/// <summary>
+		/// Removes a particular ShellObject from the list.
+		/// </summary>
+		/// <param name="item">The ShellObject to remove.</param>
+		/// <returns>True if the item could be removed, false otherwise.</returns>
+		public bool Remove(ShellObject item) {
+			if (readOnly) {
+				throw new InvalidOperationException(LocalizedMessages.ShellObjectCollectionRemoveReadOnly);
+			}
 
-            return content.Remove(item);
-        }
+			return content.Remove(item);
+		}
 
-        #endregion
+		#endregion
 
-        #region IEnumerable<ShellObject> Members
+		#region IEnumerable<ShellObject> Members
 
-        /// <summary>
-        /// Allows for enumeration through the list of ShellObjects in the collection.
-        /// </summary>
-        /// <returns>The IEnumerator interface to use for enumeration.</returns>
-        IEnumerator<ShellObject> IEnumerable<ShellObject>.GetEnumerator()
-        {
-            foreach (ShellObject obj in content)
-            {
-                yield return obj;
-            }
-        }
+		/// <summary>
+		/// Allows for enumeration through the list of ShellObjects in the collection.
+		/// </summary>
+		/// <returns>The IEnumerator interface to use for enumeration.</returns>
+		IEnumerator<ShellObject> IEnumerable<ShellObject>.GetEnumerator() {
+			foreach (ShellObject obj in content) {
+				yield return obj;
+			}
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

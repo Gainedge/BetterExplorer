@@ -339,7 +339,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					case HResult.NoInterface:
 					case HResult.Fail:
 #if LOG_KNOWN_COM_ERRORS
-                                      Debugger.Log( 2, "ExplorerBrowser", "Unable to obtain view. Error=" + e.ToString( ) );
+									  Debugger.Log( 2, "ExplorerBrowser", "Unable to obtain view. Error=" + e.ToString( ) );
 #endif
 						return null;
 
@@ -364,7 +364,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					case HResult.NoInterface:
 					case HResult.Fail:
 #if LOG_KNOWN_COM_ERRORS
-                                      Debugger.Log( 2, "ExplorerBrowser", "Unable to obtain view. Error=" + e.ToString( ) );
+									  Debugger.Log( 2, "ExplorerBrowser", "Unable to obtain view. Error=" + e.ToString( ) );
 #endif
 						return null;
 
@@ -2217,7 +2217,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					break;
 				default:
 #if LOG_UNKNOWN_PANES
-                              System.Diagnostics.Debugger.Log( 4, "ExplorerBrowser", "unknown pane view state. id=" + explorerPane.ToString( ) );
+							  System.Diagnostics.Debugger.Log( 4, "ExplorerBrowser", "unknown pane view state. id=" + explorerPane.ToString( ) );
 #endif
 					peps = VisibilityToPaneState(PaneVisibilityState.Show);
 					break;
@@ -2562,7 +2562,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					}
 
 					if (buttonPressed == 0x0008) //Ctrl is down
-                              {
+							  {
 						if (Wheel_delta < 0) {
 
 							if (ContentOptions.ThumbnailSize > 34) {
