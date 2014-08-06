@@ -264,6 +264,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
             return CreateLeafCondition(canonicalName, value, operation);
         }
 
+		/*
         /// <summary>
         /// Creates a leaf condition node that represents a comparison of property value and Integer value. 
         /// Overload method takes a DateTime parameter for the comparison value.
@@ -288,7 +289,9 @@ namespace Microsoft.WindowsAPICodePack.Shell
             }
             return CreateLeafCondition(canonicalName, value, operation);
         }
+		*/
 
+		/*
         /// <summary>
         /// Creates a condition node that is a logical conjunction ("AND") or disjunction ("OR") 
         /// of a collection of subconditions.
@@ -335,6 +338,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
             return new SearchCondition(result);
         }
+		*/
 
         /// <summary>
         /// Creates a condition node that is a logical negation (NOT) of another condition 

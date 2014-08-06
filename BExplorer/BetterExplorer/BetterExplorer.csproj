@@ -723,6 +723,10 @@
       <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
       <Name>SevenZip2010</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\ShellCodePack_TransferTemp\ShellCodePack_TransferTemp.csproj">
+      <Project>{87682054-f1e9-4114-beea-20a9fa811906}</Project>
+      <Name>ShellCodePack_TransferTemp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Shell\Shell.csproj">
       <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
       <Name>Shell</Name>
@@ -1205,7 +1209,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!--   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />

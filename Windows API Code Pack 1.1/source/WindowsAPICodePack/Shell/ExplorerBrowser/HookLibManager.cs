@@ -29,15 +29,14 @@ using Microsoft.WindowsAPICodePack.Shell.FileOperations;
 using WindowsHelper;
 using System.Windows.Input;
 
-namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
-{
-	public class HookLibManager
-	{
+namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
+	[Obsolete("Don't Use", false)]
+	public class HookLibManager {
 		public static bool IsCustomDialog = false;
 		//public static ExplorerBrowser Browser;
 		private static IntPtr _hHookLib;
-    private static IntPtr Hookptr;
-    public static Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser explorer;
+		private static IntPtr Hookptr;
+		public static Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser explorer;
 		public static SynchronizationContext SyncContext;
 		private static readonly int[] HookStatus = Enumerable.Repeat(-1, Enum.GetNames(typeof(Hooks)).Length).ToArray();
 
@@ -55,8 +54,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 		private delegate bool DeleteItemCallback(IntPtr SourceItems);
 
 		[StructLayout(LayoutKind.Sequential)]
-		private struct CallbackStruct
-		{
+		private struct CallbackStruct {
 			public HookLibCallback cbHookResult;
 			public NewWindowCallback cbNewWindow;
 			public CopyItemCallback cbCopyItem;
@@ -65,8 +63,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			public DeleteItemCallback cbDeleteItem;
 		}
 
-		private static readonly CallbackStruct callbackStruct = new CallbackStruct()
-		{
+		private static readonly CallbackStruct callbackStruct = new CallbackStruct() {
 			cbHookResult = HookResult,
 			cbCopyItem = CopyItem,
 			cbMoveItem = MoveItem,
@@ -78,14 +75,12 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		private delegate int InitHookLibDelegate(IntPtr fpHookResult);
 
-		public enum HookCheckPoint
-		{
+		public enum HookCheckPoint {
 			Initial,
 		}
 
 		// Unmarked hooks exist only to set other hooks.
-		private enum Hooks
-		{
+		private enum Hooks {
 			CoCreateInstance = 0,           // Treeview Middle-click; FileCopyOperations
 			RegisterDragDrop,               // DragDrop
 			SHCreateShellFolderView,
@@ -105,33 +100,27 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			CopyItem,
 		}
 
-		public static void Initialize()
-		{
+		public static void Initialize() {
 			if (_hHookLib != IntPtr.Zero) return;
 			string installPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
 			string filename = IntPtr.Size == 8 ? "BEHookLib64.dll" : "BEHookLib32.dll";
 			_hHookLib = WindowsAPI.LoadLibrary(Path.Combine(installPath, filename));
 			int retcode = -1;
-			if (_hHookLib == IntPtr.Zero)
-			{
+			if (_hHookLib == IntPtr.Zero) {
 				int error = Marshal.GetLastWin32Error();
 				//TODO: error should be logged;
 			}
-			else
-			{
+			else {
 				IntPtr pFunc = WindowsAPI.GetProcAddress(_hHookLib, "Initialize");
-				if (pFunc != IntPtr.Zero)
-				{
+				if (pFunc != IntPtr.Zero) {
 					InitHookLibDelegate initialize = (InitHookLibDelegate)
 									Marshal.GetDelegateForFunctionPointer(pFunc, typeof(InitHookLibDelegate));
-					try
-					{
-            Hookptr = Marshal.AllocCoTaskMem(Marshal.SizeOf(callbackStruct));
-            Marshal.StructureToPtr(callbackStruct, Hookptr, true);
-            retcode = initialize(Hookptr);
+					try {
+						Hookptr = Marshal.AllocCoTaskMem(Marshal.SizeOf(callbackStruct));
+						Marshal.StructureToPtr(callbackStruct, Hookptr, true);
+						retcode = initialize(Hookptr);
 					}
-					catch (Exception e)
-					{
+					catch (Exception e) {
 						//TODO: Erors should be logged
 					}
 
@@ -142,19 +131,15 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			//TODO: here Errors should be logged
 		}
 
-		private static void HookResult(int hookId, int retcode)
-		{
-			lock (callbackStruct.cbHookResult)
-			{
+		private static void HookResult(int hookId, int retcode) {
+			lock (callbackStruct.cbHookResult) {
 				HookStatus[hookId] = retcode;
 			}
 		}
 
 
-		private static bool CopyItem(IFileOperation pthis, IntPtr sourceItems, IntPtr destinationFolder)
-		{
-			if (!IsCustomDialog)
-			{
+		private static bool CopyItem(IFileOperation pthis, IntPtr sourceItems, IntPtr destinationFolder) {
+			if (!IsCustomDialog) {
 				return false;
 			}
 
@@ -164,8 +149,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			var shellobj = ShellObjectFactory.Create((IShellItem)destinationObject);
 			var destinationLocation = shellobj.ParsingName;
 			shellobj.Dispose();
-			u.Post((o) =>
-					{
+			u.Post((o) => {
 						var sourceItemsCollection =
 								ShellObjectCollection.FromDataObject(
 										(System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject)
@@ -176,8 +160,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 						var tempWindow = new Shell.FileOperations.FileOperation(sourceItemsCollection, destinationLocation);
 						var currentDialog = win.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
 
-						if (currentDialog == null)
-						{
+						if (currentDialog == null) {
 							currentDialog = new FileOperationDialog();
 							tempWindow.ParentContents = currentDialog;
 							currentDialog.Owner = win;
@@ -185,8 +168,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 							tempWindow.Visibility = Visibility.Collapsed;
 							currentDialog.Contents.Add(tempWindow);
 						}
-						else
-						{
+						else {
 							tempWindow.ParentContents = currentDialog;
 							tempWindow.Visibility = Visibility.Collapsed;
 							currentDialog.Contents.Add(tempWindow);
@@ -196,8 +178,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			return true;
 		}
 
-		private static bool MoveItem(IntPtr sourceItems, IntPtr destinationFolder)
-		{
+		private static bool MoveItem(IntPtr sourceItems, IntPtr destinationFolder) {
 			if (!IsCustomDialog)
 				return false;
 
@@ -205,20 +186,17 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			var sourceObject = Marshal.GetObjectForIUnknown(sourceItems);
 			var sourceItemsCollection = ShellObjectCollection.FromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)sourceObject).Select(c => c.ParsingName).ToArray();
 			var destinationLocation = ShellObjectFactory.Create((IShellItem)destinationObject).ParsingName;
-			SyncContext.Post((o) =>
-			{
+			SyncContext.Post((o) => {
 				var tempWindow = new Shell.FileOperations.FileOperation(sourceItemsCollection, destinationLocation, OperationType.Move);
 				var currentDialog = System.Windows.Application.Current.MainWindow.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
-				if (currentDialog == null)
-				{
+				if (currentDialog == null) {
 					currentDialog = new FileOperationDialog();
 					tempWindow.ParentContents = currentDialog;
 					currentDialog.Owner = System.Windows.Application.Current.MainWindow;
 					tempWindow.Visibility = Visibility.Collapsed;
 					currentDialog.Contents.Add(tempWindow);
 				}
-				else
-				{
+				else {
 					tempWindow.ParentContents = currentDialog;
 					tempWindow.Visibility = Visibility.Collapsed;
 					currentDialog.Contents.Add(tempWindow);
@@ -227,16 +205,13 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			return true;
 		}
 
-		private static bool RenameItem(IntPtr SourceItems, String DestinationName)
-		{
-      explorer.IsRenameStarted = false;
+		private static bool RenameItem(IntPtr SourceItems, String DestinationName) {
+			explorer.IsRenameStarted = false;
 			return false;
 		}
 
-		static string UppercaseFirst(string s)
-		{
-			if (string.IsNullOrEmpty(s))
-			{
+		static string UppercaseFirst(string s) {
+			if (string.IsNullOrEmpty(s)) {
 				return string.Empty;
 			}
 			char[] a = s.ToCharArray();
@@ -244,12 +219,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			return new string(a);
 		}
 
-		private static bool DeleteItem(IntPtr sourceItems)
-		{
-      
-			if (!IsCustomDialog)
-			{
-        explorer.SetExplorerFocus();
+		private static bool DeleteItem(IntPtr sourceItems) {
+
+			if (!IsCustomDialog) {
+				explorer.SetExplorerFocus();
 				return false;
 			}
 
@@ -263,11 +236,9 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			return true;
 		}
 
-		public static void ShowDeleteDialog(string[] sourceItemsCollection, Window win, bool isMoveToRB)
-		{
+		public static void ShowDeleteDialog(string[] sourceItemsCollection, Window win, bool isMoveToRB) {
 			var confirmationDialog = new FODeleteDialog();
-			if (sourceItemsCollection.Count() == 1)
-			{
+			if (sourceItemsCollection.Count() == 1) {
 				ShellObject item = ShellObject.FromParsingName(sourceItemsCollection[0]);
 				item.Thumbnail.CurrentSize = new Size(96, 96);
 				confirmationDialog.MessageCaption = string.Format("{0} {1}", win.FindResource("btnDeleteCP"),
@@ -278,16 +249,14 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 					win.FindResource((item.IsLink ? "txtShortcut" : item.IsFolder ? "txtAccusativeFolder" : "txtFile")) as string;
 				confirmationDialog.MessageIcon = item.Thumbnail.BitmapSource;
 				confirmationDialog.MessageText = isMoveToRB
-                                                                                     ? string.Format((string)win.FindResource("txtConfirmDeleteObject"), itemTypeName, win.FindResource("txtRecycleBin"))
-																					 : string.Format((string) win.FindResource("txtConfirmRemoveObject"), itemTypeName);
+																					 ? string.Format((string)win.FindResource("txtConfirmDeleteObject"), itemTypeName, win.FindResource("txtRecycleBin"))
+																					 : string.Format((string)win.FindResource("txtConfirmRemoveObject"), itemTypeName);
 				confirmationDialog.FileInfo = item.Name + "\n";
-				if (item.IsFolder)
-				{
-                    confirmationDialog.FileInfo += string.Format("{0}: {1} ", win.FindResource("btnODateCCP") as string,
+				if (item.IsFolder) {
+					confirmationDialog.FileInfo += string.Format("{0}: {1} ", win.FindResource("btnODateCCP") as string,
 																											 item.Properties.GetProperty("System.DateCreated").ValueAsObject);
 				}
-				else if (item.IsLink)
-				{
+				else if (item.IsLink) {
 					var targetPath = item.Properties.GetProperty("System.Link.TargetParsingPath").ValueAsObject as string;
 					confirmationDialog.FileInfo += string.Format("{0}: {1}\n({2}) ",
 																											 win.FindResource("txtLocation") as string, Path.GetFileNameWithoutExtension(targetPath),
@@ -298,45 +267,41 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 					var fileInfo = string.Format("{0}: {1}\n", win.FindResource("txtType"),
 																			 item.Properties.System.ItemTypeText.ValueAsObject);
 
-					if (item.Properties.System.ItemAuthors.Value != null)
-					{
-                        fileInfo += string.Format("{0}: {1}\n", win.FindResource("btnAuthorCP"),
+					if (item.Properties.System.ItemAuthors.Value != null) {
+						fileInfo += string.Format("{0}: {1}\n", win.FindResource("btnAuthorCP"),
 																			string.Join(";", item.Properties.System.ItemAuthors.Value));
 					}
-					string[] sizes = {"B", "KB", "MB", "GB"};
-					var len = (ulong) item.Properties.System.Size.ValueAsObject;
+					string[] sizes = { "B", "KB", "MB", "GB" };
+					var len = (ulong)item.Properties.System.Size.ValueAsObject;
 					int order = 0;
 					while (len >= 1000 && order + 1 < sizes.Length) // using SI system, not IEC
 					{
 						order++;
-						len = len/1000;
+						len = len / 1000;
 					}
 					// Adjust the format string to your preferences. For example "{0:0.#}{1}" would
 					// show a single decimal place, and no space.
 					string result = String.Format("{0:0.##} {1}", len, sizes[order]);
 					fileInfo += string.Format("{0}: {1}\n", win.FindResource("txtFileSize"), result);
-                    fileInfo += string.Format("{0}: {1}\n", win.FindResource("btnODateModCP") as string,
+					fileInfo += string.Format("{0}: {1}\n", win.FindResource("btnODateModCP") as string,
 																		item.Properties.GetProperty("System.DateModified").ValueAsObject);
 					confirmationDialog.FileInfo += fileInfo;
 				}
 			}
-			else
-			{
+			else {
 				confirmationDialog.MessageCaption = win.FindResource("txtDeleteSeveralItems") as string;
 				confirmationDialog.MessageText = isMoveToRB
-																					 ? string.Format((string) win.FindResource("txtConfirmDeleteObjects"), sourceItemsCollection.Count())
-																					 : string.Format((string) win.FindResource("txtConfirmRemoveObjects"), sourceItemsCollection.Count());
+																					 ? string.Format((string)win.FindResource("txtConfirmDeleteObjects"), sourceItemsCollection.Count())
+																					 : string.Format((string)win.FindResource("txtConfirmRemoveObjects"), sourceItemsCollection.Count());
 			}
 
 			confirmationDialog.Owner = win;
-			if (confirmationDialog.ShowDialog() == true)
-			{
+			if (confirmationDialog.ShowDialog() == true) {
 				var tempWindow =
 					new Shell.FileOperations.FileOperation(sourceItemsCollection, String.Empty, OperationType.Delete, isMoveToRB);
 				var currentDialog = win.OwnedWindows.OfType<FileOperationDialog>().SingleOrDefault();
 
-				if (currentDialog == null)
-				{
+				if (currentDialog == null) {
 					currentDialog = new FileOperationDialog();
 					tempWindow.ParentContents = currentDialog;
 					currentDialog.Owner = win;
@@ -344,8 +309,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 					tempWindow.Visibility = Visibility.Collapsed;
 					currentDialog.Contents.Add(tempWindow);
 				}
-				else
-				{
+				else {
 					tempWindow.ParentContents = currentDialog;
 					tempWindow.Visibility = Visibility.Collapsed;
 					currentDialog.Contents.Add(tempWindow);
@@ -354,13 +318,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 		}
 
 
-		public static void DeleteToRecycleBin(ShellObject[] SelectedItems)
-		{
+		public static void DeleteToRecycleBin(ShellObject[] SelectedItems) {
 			string Files = "";
-			foreach (ShellObject selectedItem in SelectedItems)
-			{
-				if (Files == "")
-				{
+			foreach (ShellObject selectedItem in SelectedItems) {
+				if (Files == "") {
 					Files = selectedItem.ParsingName;
 				}
 				else
@@ -368,17 +329,14 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser
 			}
 			RecycleBin.Send(Files);
 		}
-		public static void CheckHooks()
-		{
+		public static void CheckHooks() {
 			//TODO:
 		}
 
-    public static void ClearHookMemmmory()
-    {
-      if (Hookptr != IntPtr.Zero)
-      {
-        Marshal.FreeCoTaskMem(Hookptr);
-      }
-    }
+		public static void ClearHookMemmmory() {
+			if (Hookptr != IntPtr.Zero) {
+				Marshal.FreeCoTaskMem(Hookptr);
+			}
+		}
 	}
 }

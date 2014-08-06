@@ -17,6 +17,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 	/// <summary>
 	/// Interaction logic for FileOperation.xaml
 	/// </summary>
+	[Obsolete("Do Not Use", true)]
 	public partial class FileOperation : UserControl {
 		public String[] SourceItemsCollection { get; set; }
 		public String DestinationLocation { get; set; }
@@ -818,18 +819,18 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 					Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
 									  (Action)(() => {
 
-											  prOverallProgress.Value++;
+										  prOverallProgress.Value++;
 
-											  lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((prOverallProgress.Value / prOverallProgress.Maximum) * 100D, 2));
-											  var et = DateTime.Now.Subtract(OperationStartTime);
-											  lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
-											  try {
-												  lblTimeLeft.Text = new DateTime((TimeSpan.FromSeconds((int)(et.TotalSeconds / prOverallProgress.Value * (prOverallProgress.Maximum - prOverallProgress.Value)))).Ticks).ToString("HH:mm:ss");
-											  }
-											  catch (Exception) {
+										  lblProgress.Text = String.Format("{0}{1:F2} % complete", (CurrentStatus == 2 ? "Paused - " : String.Empty), Math.Round((prOverallProgress.Value / prOverallProgress.Maximum) * 100D, 2));
+										  var et = DateTime.Now.Subtract(OperationStartTime);
+										  lblTime.Text = new DateTime(et.Ticks).ToString("HH:mm:ss");
+										  try {
+											  lblTimeLeft.Text = new DateTime((TimeSpan.FromSeconds((int)(et.TotalSeconds / prOverallProgress.Value * (prOverallProgress.Maximum - prOverallProgress.Value)))).Ticks).ToString("HH:mm:ss");
+										  }
+										  catch (Exception) {
 
-											  }
-										  }));
+										  }
+									  }));
 					var dt = DateTime.Now;
 					var secs = dt.Subtract(LastMeasuredTime).Seconds;
 					if (secs > 0) {

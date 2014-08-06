@@ -6,6 +6,7 @@ namespace ZiadSpace.Util {
 	/// Helps perform certain operations on primative types
 	/// that deal with bits
 	/// </summary>
+	[Obsolete("Do Not Use", true)]
 	public sealed class BitHelper {
 		/// <summary>
 		/// The max number of bits in byte

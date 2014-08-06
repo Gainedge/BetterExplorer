@@ -22,6 +22,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
   /// <summary>
   /// Interaction logic for FileOperationDialog.xaml
   /// </summary>
+  [Obsolete("Will Be moved to Shell", false)]
   public partial class FileOperationDialog : Window {
 
     private bool IsShown = false;

@@ -17,6 +17,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsPresentationFoundation
         /// <summary>
         /// Creates a new instance of this class.
         /// </summary>
+		[System.Obsolete("Not Used", true)]
         public CommandLink()
         {
             // Throw PlatformNotSupportedException if the user is not running Vista or beyond

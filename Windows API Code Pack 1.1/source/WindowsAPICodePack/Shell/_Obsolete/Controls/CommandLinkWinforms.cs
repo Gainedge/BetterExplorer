@@ -12,7 +12,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms
     /// <summary>
     /// Implements a CommandLink button that can be used in 
     /// WinForms user interfaces.
-    /// </summary>    
+    /// </summary> 
+	[Obsolete("Not Used", true)]
     public class CommandLink : Button
     {
         /// <summary>

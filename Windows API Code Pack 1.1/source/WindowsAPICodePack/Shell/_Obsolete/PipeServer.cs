@@ -11,8 +11,10 @@ using System.Threading;
 namespace PipesServer
 {
     // Delegate for passing received message back to caller
+	[Obsolete("Not Used", true)]
     public delegate void DelegateMessage(string Reply);
 
+	[Obsolete("Not Used", true)]
     public class PipeServer
     {
         public event DelegateMessage PipeMessage;

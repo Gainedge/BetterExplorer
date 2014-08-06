@@ -7,6 +7,7 @@ using System.Diagnostics;
 
 namespace ReparsePoints
 {
+	[Obsolete("Not Used", true)]
 	public class ReparsePoint
 	{
 		// This is based on the code at http://www.flexhex.com/docs/articles/hard-links.phtml

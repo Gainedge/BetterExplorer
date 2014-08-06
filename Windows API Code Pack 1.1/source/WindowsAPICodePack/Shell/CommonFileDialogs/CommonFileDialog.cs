@@ -487,7 +487,7 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
 
             if (!CoreErrorHelper.Succeeded(retCode))
             {
-                throw new CommonControlException(LocalizedMessages.CommonFileDialogCannotCreateShellItem, Marshal.GetExceptionForHR(retCode));
+				throw new Microsoft.WindowsAPICodePack.Controls.CommonControlException(LocalizedMessages.CommonFileDialogCannotCreateShellItem, Marshal.GetExceptionForHR(retCode));
             }
 
             // Add the shellitem to the places list
