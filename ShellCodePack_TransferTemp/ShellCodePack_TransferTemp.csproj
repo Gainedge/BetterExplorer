@@ -91,6 +91,28 @@
     </Compile>
     <Compile Include="ExplorerBrowser\SubClass.cs" />
     <Compile Include="ExplorerBrowser\TreeViewWrapper.cs" />
+    <Compile Include="FileOperations\CollisionDialog.xaml.cs">
+      <DependentUpon>CollisionDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileOperations\CollisionItem.xaml.cs">
+      <DependentUpon>CollisionItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileOperations\FileOperation.xaml.cs">
+      <DependentUpon>FileOperation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileOperations\FileOperationDialog.xaml.cs">
+      <DependentUpon>FileOperationDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileOperations\FODeleteDialog.xaml.cs">
+      <DependentUpon>FODeleteDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FileOperations\MessageReceiver.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileOperations\MessageReceiver.Designer.cs">
+      <DependentUpon>MessageReceiver.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileOperations\Theme.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\LocalizedMessages.Designer.cs">
       <DependentUpon>LocalizedMessages.resx</DependentUpon>
@@ -113,6 +135,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FileOperations\MessageReceiver.resx">
+      <DependentUpon>MessageReceiver.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\LocalizedMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedMessages.Designer.cs</LastGenOutput>
@@ -121,6 +146,28 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ExplorerBrowser\ExplorerBrowserDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="FileOperations\CollisionDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FileOperations\CollisionItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FileOperations\FileOperation.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FileOperations\FileOperationDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="FileOperations\FODeleteDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

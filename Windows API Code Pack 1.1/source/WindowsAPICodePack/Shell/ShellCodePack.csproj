@@ -229,9 +229,11 @@
     <Compile Include="Common\ShellFolderItems.cs" />
     <Compile Include="Common\ShellHelper.cs" />
     <Compile Include="Common\ShellItemArray.cs" />
+    <Compile Include="Common\ShellObjectCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Common\ShellObjectFactory.cs" />
     <Compile Include="Common\ShellThumbnail.cs" />
-    <Compile Include="Common\ShellObjectCollection.cs" />
     <Compile Include="Common\DefaultShellImageSizes.cs" />
     <Compile Include="Common\SortColumn.cs" />
     <Compile Include="ComReleaser.cs" />
@@ -240,12 +242,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions.cs" />
-    <Compile Include="FileOperations\CollisionDialog.xaml.cs">
-      <DependentUpon>CollisionDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FileOperations\CollisionItem.xaml.cs">
-      <DependentUpon>CollisionItem.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DesktopWindowManager\DesktopWindowManagerNativeMethods.cs" />
     <Compile Include="DesktopWindowManager\GlassEvents.cs" />
     <Compile Include="DesktopWindowManager\GlassForm.cs">
@@ -255,22 +251,6 @@
     <Compile Include="FileOperation.cs" />
     <Compile Include="FileOperationFlags.cs" />
     <Compile Include="FileOperationProgressSink.cs" />
-    <Compile Include="FileOperations\FileOperation.xaml.cs">
-      <DependentUpon>FileOperation.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FileOperations\FileOperationDialog.xaml.cs">
-      <DependentUpon>FileOperationDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FileOperations\FODeleteDialog.xaml.cs">
-      <DependentUpon>FODeleteDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FileOperations\MessageReceiver.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FileOperations\MessageReceiver.Designer.cs">
-      <DependentUpon>MessageReceiver.cs</DependentUpon>
-    </Compile>
-    <Compile Include="FileOperations\Theme.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IFileOperation.cs" />
     <Compile Include="IFileOperationProgressSink.cs" />
@@ -415,28 +395,6 @@
     <None Include="Design\ShellObjects.cd" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="FileOperations\CollisionDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="FileOperations\CollisionItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="FileOperations\FileOperation.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="FileOperations\FileOperationDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="FileOperations\FODeleteDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -456,9 +414,6 @@
   <ItemGroup>
     <EmbeddedResource Include="DesktopWindowManager\GlassForm.resx">
       <DependentUpon>GlassForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FileOperations\MessageReceiver.resx">
-      <DependentUpon>MessageReceiver.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\LocalizedMessages.resx">
       <Generator>ResXFileCodeGenerator</Generator>

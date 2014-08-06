@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="Microsoft.WindowsAPICodePack.Shell.FileOperations.FileOperation"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:progress="clr-namespace:RateBar;assembly=RateBar"
+             mc:Ignorable="d" Height="246.5" Width="421" Unloaded="FO_Unloaded" Loaded="UserControl_Loaded" >
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Button}" x:Key="ControlBtnStyle" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" Background="Transparent">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#FFEEEEEE"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="1"/>
+                                <Setter TargetName="border" Property="CornerRadius" Value="0.5"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="Black"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="16"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="16"/>
+            <ColumnDefinition Width="10"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="1">
+            <TextBlock x:Name="lblOperation" Text="Copying " VerticalAlignment="Center"/>
+            <TextBlock x:Name="lblItemsCount" VerticalAlignment="Center"/>
+            <TextBlock Text=" items from " VerticalAlignment="Center"/>
+            <TextBlock x:Name="lblFrom" VerticalAlignment="Center"/>
+            <TextBlock Text=" to " VerticalAlignment="Center"/>
+            <TextBlock x:Name="lblTo" VerticalAlignment="Center"/>
+        </StackPanel>
+        <TextBlock x:Name="lblProgress" Grid.Column="1" Grid.ColumnSpan="4" Grid.Row="3" FontSize="16" Text="0% complete" VerticalAlignment="Center"/>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="4">
+            <TextBlock FontSize="14" Text="Name:" Height="16"/>
+            <TextBlock x:Name="lblFileName" FontSize="14" Text="" VerticalAlignment="Center" Height="16" Margin="5,0,0,0"/>
+        </StackPanel>
+        
+        <Button x:Name="btnPause" Grid.Column="3" Grid.Row="3" Height="16" VerticalAlignment="Center" Width="16" Style="{StaticResource ControlBtnStyle}" Click="btnPause_Click" >
+            <Image x:Name="imgPause" Source="pack://application:,,,/BetterExplorer;Component/Images/pause.png" Width="12" Height="12" />
+        </Button>
+        <Button x:Name="btnStop" Grid.Column="5" Grid.Row="3" Height="16" VerticalAlignment="Center" Width="16" Style="{StaticResource ControlBtnStyle}" Click="btnStop_Click" >
+            <Image Source="pack://application:,,,/BetterExplorer;Component/Images/stop.png" Width="12" Height="12"/>
+        </Button>
+        <ProgressBar x:Name="prFileProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="5" Height="16" Visibility="Visible"/>
+        <progress:RateGraph x:Name="prOverallProgress" Grid.Column="1" Grid.ColumnSpan="5" Grid.Row="7" Height="88" Width="380" ValueChanged="prOverallProgress_ValueChanged" Maximum="100" Loaded="prOverallProgress_Loaded"/>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8" Margin="0,5,195,0" Height="18" VerticalAlignment="Top">
+            <TextBlock Text="Speed:" VerticalAlignment="Center" Visibility="Visible"/>
+            <Image Source="pack://application:,,,/BetterExplorer;Component/Images/speed16.png" Width="24" Height="24" ToolTip="Speed" VerticalAlignment="Center" Visibility="Collapsed"/>
+            <TextBlock Name="lblSpeed" Margin="5,1,0,1" Text="Calculating..." VerticalAlignment="Center" ToolTip="Speed" Width="73"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8" Margin="0,5,0,0" Height="18" VerticalAlignment="Top" Grid.ColumnSpan="5" HorizontalAlignment="Right" Width="124" ToolTip="Time Elapsed">
+            <TextBlock Text="Time Elapsed:" VerticalAlignment="Center" Visibility="Visible"/>
+            <Image Source="pack://application:,,,/BetterExplorer;Component/Images/timeelapsed24.png" Width="18" Height="18" Visibility="Collapsed"/>
+            <TextBlock Name="lblTime" Text="00:00:00" Margin="3,1,0,1" Grid.Column="2" Grid.Row="8" VerticalAlignment="Center" Grid.ColumnSpan="4" HorizontalAlignment="Right" Width="49" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="8" Margin="0,25,0,0" Height="18" VerticalAlignment="Top" Grid.ColumnSpan="5" HorizontalAlignment="Right" Width="140" ToolTip="Time Remaining">
+            <TextBlock Text="Time Remaining:" VerticalAlignment="Center" Visibility="Visible"/>
+            <Image Source="pack://application:,,,/BetterExplorer;Component/Images/timeremaining24.png" Width="18" Height="18" Visibility="Collapsed"/>
+            <TextBlock Name="lblTimeLeft" Margin="3,0,0,0" Text="-- : -- : --" Grid.Column="2" Grid.Row="8" VerticalAlignment="Top" Grid.ColumnSpan="4" HorizontalAlignment="Right" Width="49" Height="18"/>
+        </StackPanel>
+        
+    </Grid>
+</UserControl>
