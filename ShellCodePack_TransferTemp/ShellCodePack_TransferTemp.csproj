@@ -62,19 +62,35 @@
     <Compile Include="ExplorerBrowser\BHID.cs" />
     <Compile Include="ExplorerBrowser\Collumns.cs" />
     <Compile Include="ExplorerBrowser\ContextShellMenu.cs" />
+    <Compile Include="ExplorerBrowser\DropData.cs" />
     <Compile Include="ExplorerBrowser\ExplorerBrowser.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ExplorerBrowser\ExplorerBrowserCOMGuids.cs" />
     <Compile Include="ExplorerBrowser\ExplorerBrowserCOMInterfaces.cs" />
     <Compile Include="ExplorerBrowser\ExplorerBrowserContentOptions.cs" />
+    <Compile Include="ExplorerBrowser\ExplorerBrowserEnums.cs" />
+    <Compile Include="ExplorerBrowser\ExplorerBrowserEvents.cs" />
     <Compile Include="ExplorerBrowser\ExplorerBrowserNativeMethods.cs" />
+    <Compile Include="ExplorerBrowser\ExplorerBrowserPaneVisibility.cs" />
     <Compile Include="ExplorerBrowser\ExplorerBrowserViewEvents.cs" />
+    <Compile Include="ExplorerBrowser\HelperClasses.cs" />
     <Compile Include="ExplorerBrowser\HookLibManager.cs" />
+    <Compile Include="ExplorerBrowser\NativeWindowController.cs" />
     <Compile Include="ExplorerBrowser\NavigationLog.cs" />
+    <Compile Include="ExplorerBrowser\NavigationLogEnums.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExplorerBrowser\NavigationLogEvents.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ExplorerBrowser\NavigationOptions.cs" />
     <Compile Include="ExplorerBrowser\ShellCOMGuids.cs" />
+    <Compile Include="ExplorerBrowser\ShellViewDragDrop.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ExplorerBrowser\SubClass.cs" />
+    <Compile Include="ExplorerBrowser\TreeViewWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources\LocalizedMessages.Designer.cs">
       <DependentUpon>LocalizedMessages.resx</DependentUpon>
@@ -102,6 +118,9 @@
       <LastGenOutput>LocalizedMessages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ExplorerBrowser\ExplorerBrowserDiagram.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

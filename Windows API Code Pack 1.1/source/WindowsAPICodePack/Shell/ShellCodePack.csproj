@@ -239,36 +239,6 @@
     <Compile Include="Interop\ExplorerBrowser\CommonControlException.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ExplorerBrowser\DropData.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\ExplorerBrowserEnums.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\ExplorerBrowserEvents.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\ExplorerBrowserPaneVisibility.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\HelperClasses.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\NativeWindowController.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\NavigationLogEnums.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\NavigationLogEvents.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\ShellViewDragDrop.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\TreeViewWrapper.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="FileOperations\CollisionDialog.xaml.cs">
       <DependentUpon>CollisionDialog.xaml</DependentUpon>
@@ -443,7 +413,6 @@
   <ItemGroup>
     <None Include="Design\ShellThumbnailClassDiagram.cd" />
     <None Include="Design\ShellObjects.cd" />
-    <None Include="ExplorerBrowser\ExplorerBrowserDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="FileOperations\CollisionDialog.xaml">
