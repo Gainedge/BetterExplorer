@@ -7,22 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BExplorer.Shell.Interop
-{
-	#region ShellLink Object
+namespace BExplorer.Shell.Interop {
 	/// <summary>
 	/// Summary description for ShellLink.
 	/// </summary>
-	public class ShellLink : IDisposable
-	{
+	public class ShellLink : IDisposable {
 		#region ComInterop for IShellLink
 
 		#region IPersist Interface
 		[ComImportAttribute()]
 		[GuidAttribute("0000010C-0000-0000-C000-000000000046")]
 		[InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
-		private interface IPersist
-		{
+		private interface IPersist {
 			[PreserveSig]
 			//[helpstring("Returns the class identifier for the componentobject")]
 			void GetClassID(out Guid pClassID);
@@ -33,8 +29,7 @@ namespace BExplorer.Shell.Interop
 		[ComImportAttribute()]
 		[GuidAttribute("0000010B-0000-0000-C000-000000000046")]
 		[InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
-		private interface IPersistFile
-		{
+		private interface IPersistFile {
 			// can't get this to go if I extend IPersist, so put it here:
 			[PreserveSig]
 			void GetClassID(out Guid pClassID);
@@ -66,8 +61,7 @@ namespace BExplorer.Shell.Interop
 		[ComImportAttribute()]
 		[GuidAttribute("000214EE-0000-0000-C000-000000000046")]
 		[InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
-		private interface IShellLinkA
-		{
+		private interface IShellLinkA {
 			//[helpstring("Retrieves the path and filename of a shell link object")]
 			void GetPath(
 				 [Out(), MarshalAs(UnmanagedType.LPStr)] StringBuilder pszFile,
@@ -150,8 +144,7 @@ namespace BExplorer.Shell.Interop
 		[ComImportAttribute()]
 		[GuidAttribute("000214F9-0000-0000-C000-000000000046")]
 		[InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
-		private interface IShellLinkW
-		{
+		private interface IShellLinkW {
 			//[helpstring("Retrieves the path and filename of a shell link
 			// object")]
 			void GetPath(
@@ -246,15 +239,13 @@ namespace BExplorer.Shell.Interop
 		#endregion
 
 		#region Private IShellLink enumerations
-		private enum EShellLinkGP : uint
-		{
+		private enum EShellLinkGP : uint {
 			SLGP_SHORTPATH = 1,
 			SLGP_UNCPRIORITY = 2
 		}
 
 		[Flags]
-		private enum EShowWindowFlags : uint
-		{
+		private enum EShowWindowFlags : uint {
 			SW_HIDE = 0,
 			SW_SHOWNORMAL = 1,
 			SW_NORMAL = 1,
@@ -276,8 +267,7 @@ namespace BExplorer.Shell.Interop
 
 		[StructLayoutAttribute(LayoutKind.Sequential, Pack = 4, Size = 0,
 		 CharSet = CharSet.Unicode)]
-		private struct _WIN32_FIND_DATAW
-		{
+		private struct _WIN32_FIND_DATAW {
 			public uint dwFileAttributes;
 			public _FILETIME ftCreationTime;
 			public _FILETIME ftLastAccessTime;
@@ -294,8 +284,7 @@ namespace BExplorer.Shell.Interop
 
 		[StructLayoutAttribute(LayoutKind.Sequential, Pack = 4, Size = 0,
 		 CharSet = CharSet.Ansi)]
-		private struct _WIN32_FIND_DATAA
-		{
+		private struct _WIN32_FIND_DATAA {
 			public uint dwFileAttributes;
 			public _FILETIME ftCreationTime;
 			public _FILETIME ftLastAccessTime;
@@ -311,16 +300,14 @@ namespace BExplorer.Shell.Interop
 		}
 
 		[StructLayoutAttribute(LayoutKind.Sequential, Pack = 4, Size = 0)]
-		private struct _FILETIME
-		{
+		private struct _FILETIME {
 			public uint dwLowDateTime;
 			public uint dwHighDateTime;
 		}
 		#endregion
 
 		#region UnManaged Methods
-		private class UnManagedMethods
-		{
+		private class UnManagedMethods {
 			[DllImport("Shell32", CharSet = CharSet.Auto)]
 			internal extern static int ExtractIconEx(
 				 [MarshalAs(UnmanagedType.LPTStr)] 
@@ -343,8 +330,7 @@ namespace BExplorer.Shell.Interop
 		/// targets are resolved.
 		/// </summary>
 		[Flags]
-		public enum EShellLinkResolveFlags : uint
-		{
+		public enum EShellLinkResolveFlags : uint {
 			/// <summary>
 			/// Allow any match during resolution.  Has no effect
 			/// on ME/2000 or above, use the other flags instead.
@@ -408,8 +394,7 @@ namespace BExplorer.Shell.Interop
 			SLR_UPDATE = 0x4
 		}
 
-		public enum LinkDisplayMode : uint
-		{
+		public enum LinkDisplayMode : uint {
 			edmNormal = EShowWindowFlags.SW_NORMAL,
 			edmMinimized = EShowWindowFlags.SW_SHOWMINNOACTIVE,
 			edmMaximized = EShowWindowFlags.SW_MAXIMIZE
@@ -427,14 +412,11 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Creates an instance of the Shell Link object.
 		/// </summary>
-		public ShellLink()
-		{
-			if (System.Environment.OSVersion.Platform == PlatformID.Win32NT)
-			{
+		public ShellLink() {
+			if (System.Environment.OSVersion.Platform == PlatformID.Win32NT) {
 				linkW = (IShellLinkW)new CShellLink();
 			}
-			else
-			{
+			else {
 				linkA = (IShellLinkA)new CShellLink();
 			}
 		}
@@ -445,8 +427,7 @@ namespace BExplorer.Shell.Interop
 		/// </summary>
 		/// <param name="linkFile">The Shortcut file to open</param>
 		public ShellLink(string linkFile)
-			: this()
-		{
+			: this() {
 			Open(linkFile);
 		}
 		#endregion
@@ -455,23 +436,19 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Call dispose just in case it hasn't happened yet
 		/// </summary>
-		~ShellLink()
-		{
+		~ShellLink() {
 			Dispose();
 		}
 
 		/// <summary>
 		/// Dispose the object, releasing the COM ShellLink object
 		/// </summary>
-		public void Dispose()
-		{
-			if (linkW != null)
-			{
+		public void Dispose() {
+			if (linkW != null) {
 				Marshal.ReleaseComObject(linkW);
 				linkW = null;
 			}
-			if (linkA != null)
-			{
+			if (linkA != null) {
 				Marshal.ReleaseComObject(linkA);
 				linkA = null;
 			}
@@ -479,14 +456,11 @@ namespace BExplorer.Shell.Interop
 		#endregion
 
 		#region Implementation
-		public string ShortCutFile
-		{
-			get
-			{
+		public string ShortCutFile {
+			get {
 				return this.shortcutFile;
 			}
-			set
-			{
+			set {
 				this.shortcutFile = value;
 			}
 		}
@@ -495,63 +469,51 @@ namespace BExplorer.Shell.Interop
 		/// Gets a System.Drawing.Icon containing the icon for this
 		/// ShellLink object.
 		/// </summary>
-		public Icon LargeIcon
-		{
-			get
-			{
+		public Icon LargeIcon {
+			get {
 				return getIcon(true);
 			}
 		}
 
-		public Icon SmallIcon
-		{
-			get
-			{
+		public Icon SmallIcon {
+			get {
 				return getIcon(false);
 			}
 		}
 
-		private Icon getIcon(bool large)
-		{
+		private Icon getIcon(bool large) {
 			// Get icon index and path:
 			int iconIndex = 0;
 			StringBuilder iconPath = new StringBuilder(260, 260);
-			if (linkA == null)
-			{
+			if (linkA == null) {
 				linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
 			}
-			else
-			{
+			else {
 				linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
 			}
 			string iconFile = iconPath.ToString();
 
 			// If there are no details set for the icon, then we must use
 			// the shell to get the icon for the target:
-			if (iconFile.Length == 0)
-			{
+			if (iconFile.Length == 0) {
 				// Use the FileIcon object to get the icon:
 				FileIcon.SHGetFileInfoConstants flags =
 				 FileIcon.SHGetFileInfoConstants.SHGFI_ICON |
 					 FileIcon.SHGetFileInfoConstants.SHGFI_ATTRIBUTES;
-				if (large)
-				{
+				if (large) {
 					flags = flags | FileIcon.SHGetFileInfoConstants.SHGFI_LARGEICON;
 				}
-				else
-				{
+				else {
 					flags = flags | FileIcon.SHGetFileInfoConstants.SHGFI_SMALLICON;
 				}
 				FileIcon fileIcon = new FileIcon(Target, flags);
 				return fileIcon.ShellIcon;
 			}
-			else
-			{
+			else {
 				// Use ExtractIconEx to get the icon:
 				IntPtr[] hIconEx = new IntPtr[1] { IntPtr.Zero };
 				int iconCount = 0;
-				if (large)
-				{
+				if (large) {
 					iconCount = UnManagedMethods.ExtractIconEx(
 						 iconFile,
 						 iconIndex,
@@ -559,8 +521,7 @@ namespace BExplorer.Shell.Interop
 						 null,
 						 1);
 				}
-				else
-				{
+				else {
 					iconCount = UnManagedMethods.ExtractIconEx(
 						 iconFile,
 						 iconIndex,
@@ -570,8 +531,7 @@ namespace BExplorer.Shell.Interop
 				}
 				// If success then return as a GDI+ object
 				Icon icon = null;
-				if (hIconEx[0] != IntPtr.Zero)
-				{
+				if (hIconEx[0] != IntPtr.Zero) {
 					icon = Icon.FromHandle(hIconEx[0]);
 					//UnManagedMethods.DestroyIcon(hIconEx[0]);
 				}
@@ -582,44 +542,35 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Gets the path to the file containing the icon for this shortcut.
 		/// </summary>
-		public string IconPath
-		{
-			get
-			{
+		public string IconPath {
+			get {
 				StringBuilder iconPath = new StringBuilder(260, 260);
 				int iconIndex = 0;
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					linkW.GetIconLocation(iconPath, iconPath.Capacity, out
                 iconIndex);
 				}
-				else
-				{
+				else {
 					linkA.GetIconLocation(iconPath, iconPath.Capacity, out
                 iconIndex);
 				}
 				return iconPath.ToString();
 			}
-			set
-			{
+			set {
 				StringBuilder iconPath = new StringBuilder(260, 260);
 				int iconIndex = 0;
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					linkW.GetIconLocation(iconPath, iconPath.Capacity, out
                 iconIndex);
 				}
-				else
-				{
+				else {
 					linkA.GetIconLocation(iconPath, iconPath.Capacity, out
                 iconIndex);
 				}
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					linkW.SetIconLocation(value, iconIndex);
 				}
-				else
-				{
+				else {
 					linkA.SetIconLocation(value, iconIndex);
 				}
 			}
@@ -628,44 +579,35 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Gets the index of this icon within the icon path's resources
 		/// </summary>
-		public int IconIndex
-		{
-			get
-			{
+		public int IconIndex {
+			get {
 				StringBuilder iconPath = new StringBuilder(260, 260);
 				int iconIndex = 0;
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					linkW.GetIconLocation(iconPath, iconPath.Capacity, out
                 iconIndex);
 				}
-				else
-				{
+				else {
 					linkA.GetIconLocation(iconPath, iconPath.Capacity, out
                 iconIndex);
 				}
 				return iconIndex;
 			}
-			set
-			{
+			set {
 				StringBuilder iconPath = new StringBuilder(260, 260);
 				int iconIndex = 0;
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					linkW.GetIconLocation(iconPath, iconPath.Capacity, out
                 iconIndex);
 				}
-				else
-				{
+				else {
 					linkA.GetIconLocation(iconPath, iconPath.Capacity, out
                 iconIndex);
 				}
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					linkW.SetIconLocation(iconPath.ToString(), value);
 				}
-				else
-				{
+				else {
 					linkA.SetIconLocation(iconPath.ToString(), value);
 				}
 			}
@@ -674,42 +616,33 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Gets/sets the fully qualified path to the link's target
 		/// </summary>
-		public string Target
-		{
-			get
-			{
+		public string Target {
+			get {
 				StringBuilder target = new StringBuilder(260, 260);
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					_WIN32_FIND_DATAW fd = new _WIN32_FIND_DATAW();
 					linkW.GetPath(target, target.Capacity, ref fd,
 					 (uint)EShellLinkGP.SLGP_UNCPRIORITY);
 				}
-				else
-				{
+				else {
 					_WIN32_FIND_DATAA fd = new _WIN32_FIND_DATAA();
 					linkA.GetPath(target, target.Capacity, ref fd,
 					 (uint)EShellLinkGP.SLGP_UNCPRIORITY);
 				}
 				return target.ToString();
 			}
-			set
-			{
-				if (linkA == null)
-				{
+			set {
+				if (linkA == null) {
 					linkW.SetPath(value);
 				}
-				else
-				{
+				else {
 					linkA.SetPath(value);
 				}
 			}
 		}
 
-		public IntPtr TargetPIDL
-		{
-			get
-			{
+		public IntPtr TargetPIDL {
+			get {
 				IntPtr pidl = IntPtr.Zero;
 				linkW.GetIDList(out pidl);
 				return pidl;
@@ -719,29 +652,22 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Gets/sets the Working Directory for the Link
 		/// </summary>
-		public string WorkingDirectory
-		{
-			get
-			{
+		public string WorkingDirectory {
+			get {
 				StringBuilder path = new StringBuilder(260, 260);
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					linkW.GetWorkingDirectory(path, path.Capacity);
 				}
-				else
-				{
+				else {
 					linkA.GetWorkingDirectory(path, path.Capacity);
 				}
 				return path.ToString();
 			}
-			set
-			{
-				if (linkA == null)
-				{
+			set {
+				if (linkA == null) {
 					linkW.SetWorkingDirectory(value);
 				}
-				else
-				{
+				else {
 					linkA.SetWorkingDirectory(value);
 				}
 			}
@@ -750,29 +676,22 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Gets/sets the description of the link
 		/// </summary>
-		public string Description
-		{
-			get
-			{
+		public string Description {
+			get {
 				StringBuilder description = new StringBuilder(1024, 1024);
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					linkW.GetDescription(description, description.Capacity);
 				}
-				else
-				{
+				else {
 					linkA.GetDescription(description, description.Capacity);
 				}
 				return description.ToString();
 			}
-			set
-			{
-				if (linkA == null)
-				{
+			set {
+				if (linkA == null) {
 					linkW.SetDescription(value);
 				}
-				else
-				{
+				else {
 					linkA.SetDescription(value);
 				}
 			}
@@ -781,29 +700,22 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Gets/sets any command line arguments associated with the link
 		/// </summary>
-		public string Arguments
-		{
-			get
-			{
+		public string Arguments {
+			get {
 				StringBuilder arguments = new StringBuilder(260, 260);
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					linkW.GetArguments(arguments, arguments.Capacity);
 				}
-				else
-				{
+				else {
 					linkA.GetArguments(arguments, arguments.Capacity);
 				}
 				return arguments.ToString();
 			}
-			set
-			{
-				if (linkA == null)
-				{
+			set {
+				if (linkA == null) {
 					linkW.SetArguments(value);
 				}
-				else
-				{
+				else {
 					linkA.SetArguments(value);
 				}
 			}
@@ -813,29 +725,22 @@ namespace BExplorer.Shell.Interop
 		/// Gets/sets the initial display mode when the shortcut is
 		/// run
 		/// </summary>
-		public LinkDisplayMode DisplayMode
-		{
-			get
-			{
+		public LinkDisplayMode DisplayMode {
+			get {
 				uint cmd = 0;
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					linkW.GetShowCmd(out cmd);
 				}
-				else
-				{
+				else {
 					linkA.GetShowCmd(out cmd);
 				}
 				return (LinkDisplayMode)cmd;
 			}
-			set
-			{
-				if (linkA == null)
-				{
+			set {
+				if (linkA == null) {
 					linkW.SetShowCmd((uint)value);
 				}
-				else
-				{
+				else {
 					linkA.SetShowCmd((uint)value);
 				}
 			}
@@ -844,29 +749,22 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Gets/sets the HotKey to start the shortcut (if any)
 		/// </summary>
-		public Keys HotKey
-		{
-			get
-			{
+		public Keys HotKey {
+			get {
 				short key = 0;
-				if (linkA == null)
-				{
+				if (linkA == null) {
 					linkW.GetHotkey(out key);
 				}
-				else
-				{
+				else {
 					linkA.GetHotkey(out key);
 				}
 				return (Keys)key;
 			}
-			set
-			{
-				if (linkA == null)
-				{
+			set {
+				if (linkA == null) {
 					linkW.SetHotkey((short)value);
 				}
-				else
-				{
+				else {
 					linkA.SetHotkey((short)value);
 				}
 			}
@@ -875,8 +773,7 @@ namespace BExplorer.Shell.Interop
 		/// <summary>
 		/// Saves the shortcut to ShortCutFile.
 		/// </summary>
-		public void Save()
-		{
+		public void Save() {
 			Save(shortcutFile);
 		}
 
@@ -886,16 +783,13 @@ namespace BExplorer.Shell.Interop
 		/// <param name="linkFile">The shortcut file (.lnk)</param>
 		public void Save(
 			 string linkFile
-			 )
-		{
+			 ) {
 			// Save the object to disk
-			if (linkA == null)
-			{
+			if (linkA == null) {
 				((IPersistFile)linkW).Save(linkFile, true);
 				shortcutFile = linkFile;
 			}
-			else
-			{
+			else {
 				((IPersistFile)linkA).Save(linkFile, true);
 				shortcutFile = linkFile;
 			}
@@ -907,8 +801,7 @@ namespace BExplorer.Shell.Interop
 		/// <param name="linkFile">The shortcut file (.lnk) to load</param>
 		public void Open(
 			 string linkFile
-			 )
-		{
+			 ) {
 			Open(linkFile,
 				 IntPtr.Zero,
 				 (EShellLinkResolveFlags.SLR_ANY_MATCH |
@@ -927,8 +820,7 @@ namespace BExplorer.Shell.Interop
 			 string linkFile,
 			 IntPtr hWnd,
 			 EShellLinkResolveFlags resolveFlags
-			 )
-		{
+			 ) {
 			Open(linkFile,
 				 hWnd,
 				 resolveFlags,
@@ -949,28 +841,23 @@ namespace BExplorer.Shell.Interop
 			 IntPtr hWnd,
 			 EShellLinkResolveFlags resolveFlags,
 			 ushort timeOut
-			 )
-		{
+			 ) {
 			uint flags;
 
 			if ((resolveFlags & EShellLinkResolveFlags.SLR_NO_UI_WITH_MSG_PUMP)
-				 == EShellLinkResolveFlags.SLR_NO_UI_WITH_MSG_PUMP)
-			{
+				 == EShellLinkResolveFlags.SLR_NO_UI_WITH_MSG_PUMP) {
 				flags = (uint)((int)resolveFlags | (timeOut << 16));
 			}
-			else
-			{
+			else {
 				flags = (uint)resolveFlags;
 			}
 
-			if (linkA == null)
-			{
+			if (linkA == null) {
 				((IPersistFile)linkW).Load(linkFile, 0); //STGM_DIRECT)
 				linkW.Resolve(hWnd, flags);
 				this.shortcutFile = linkFile;
 			}
-			else
-			{
+			else {
 				((IPersistFile)linkA).Load(linkFile, 0); //STGM_DIRECT)
 				linkA.Resolve(hWnd, flags);
 				this.shortcutFile = linkFile;
@@ -978,5 +865,4 @@ namespace BExplorer.Shell.Interop
 		}
 		#endregion
 	}
-	#endregion
 }

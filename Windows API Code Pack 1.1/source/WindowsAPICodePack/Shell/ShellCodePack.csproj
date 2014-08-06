@@ -429,6 +429,10 @@
       <Project>{bfbd2f46-ed5f-49a3-abad-9ba571ef073e}</Project>
       <Name>RateBar</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Shell\Shell.csproj">
+      <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
+      <Name>Shell</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="_Obsolete\Interop\" />

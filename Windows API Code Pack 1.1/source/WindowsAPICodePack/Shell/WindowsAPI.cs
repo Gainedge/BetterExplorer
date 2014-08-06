@@ -1005,7 +1005,7 @@ namespace WindowsHelper {
 			public const int NOSCROLLTIPS = 0x20;
 		}
 		#endregion
-		
+
 		public static IntPtr SendStringMessage(IntPtr hWnd, byte[] array, int startIndex, int length) {
 			IntPtr ptr = Marshal.AllocHGlobal(IntPtr.Size * 3 + length);
 			Marshal.WriteIntPtr(ptr, 0, IntPtr.Zero);
@@ -2698,15 +2698,21 @@ namespace WindowsHelper {
 			int SetControlStyle2(NSTCSTYLE2 nstcsMask, NSTCSTYLE2 nstcsStyle);
 		}
 
+		/*
 		[Serializable]
 		public struct PROPERTYKEY {
 			public Guid fmtid;
 			public uint pid;
 		}
+		*/
+
+		/*
 		public enum SORT {
 			DESCENDING = -1,
 			ASCENDING = 1
 		}
+		*/
+
 		[StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 		public struct CM_COLUMNINFO {
 
@@ -2732,12 +2738,15 @@ namespace WindowsHelper {
 			[MarshalAsAttribute(UnmanagedType.ByValTStr, SizeConst = 256)]
 			public string wszName;
 		}
+
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		[Serializable]
 		public struct SORTCOLUMN {
 			public PROPERTYKEY propkey;
 			public SORT direction;
 		}
+		*/
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct Message {

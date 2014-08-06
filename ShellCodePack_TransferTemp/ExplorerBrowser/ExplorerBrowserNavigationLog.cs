@@ -226,12 +226,12 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 	/// A navigation traversal request
 	/// </summary>
 	internal class PendingNavigation {
+		internal ShellObject Location { get; set; }
+		internal int Index { get; set; }
+
 		internal PendingNavigation(ShellObject location, int index) {
 			Location = location;
 			Index = index;
 		}
-
-		internal ShellObject Location { get; set; }
-		internal int Index { get; set; }
 	}
 }

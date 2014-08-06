@@ -25,7 +25,7 @@ using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 using System.Diagnostics;
 using System.Windows.Automation;
 using Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser;
-
+using Collumns = BExplorer.Shell.Collumns;
 
 namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
@@ -107,7 +107,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 		*/
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void GetColumnbyIndex(IShellView view, bool isAll, int index, out WindowsAPI.PROPERTYKEY res);
+		public delegate void GetColumnbyIndex(IShellView view, bool isAll, int index, out BExplorer.Shell.Interop.PROPERTYKEY res);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate IntPtr GetItemName(IFolderView2 view, int index);
@@ -116,19 +116,19 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 		public delegate void GetItemLocation(IShellView view, int index, out int pointx, out int pointy);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void SetColumnInShellView(IShellView view, int count, [MarshalAs(UnmanagedType.LPArray)] WindowsAPI.PROPERTYKEY[] pk);
+		public delegate void SetColumnInShellView(IShellView view, int count, [MarshalAs(UnmanagedType.LPArray)] BExplorer.Shell.Interop.PROPERTYKEY[] pk);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void SetSortColumns(IFolderView2 view, int count, [MarshalAs(UnmanagedType.LPArray)] WindowsAPI.SORTCOLUMN[] pk);
+		public delegate void SetSortColumns(IFolderView2 view, int count, [MarshalAs(UnmanagedType.LPArray)] BExplorer.Shell.Interop.SORTCOLUMN[] pk);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate int GetColumnInfobyIndex(IShellView view, bool isAll, int index, out WindowsAPI.CM_COLUMNINFO res);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate int GetColumnInfobyPK(IShellView view, bool isAll, WindowsAPI.PROPERTYKEY pk, out WindowsAPI.CM_COLUMNINFO res);
+		public delegate int GetColumnInfobyPK(IShellView view, bool isAll, BExplorer.Shell.Interop.PROPERTYKEY pk, out WindowsAPI.CM_COLUMNINFO res);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void GetSortColumns(IShellView view, int index, out WindowsAPI.SORTCOLUMN sc);
+		public delegate void GetSortColumns(IShellView view, int index, out BExplorer.Shell.Interop.SORTCOLUMN sc);
 
 		[Guid("00000101-0000-0000-C000-000000000046")]
 		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -505,10 +505,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 		/// </summary>
 		/// <param name="pk">The propertykey that identifies column</param>
 		/// <param name="Order">The sort order</param>
-		public void SetSortCollumn(WindowsAPI.PROPERTYKEY pk, WindowsAPI.SORT Order) {
+		public void SetSortCollumn(BExplorer.Shell.Interop.PROPERTYKEY pk, BExplorer.Shell.Interop.SORT Order) {
 
 			IFolderView2 ifv2 = GetFolderView2();
-			WindowsAPI.SORTCOLUMN sc = new WindowsAPI.SORTCOLUMN() { propkey = pk, direction = Order };
+			var sc = new BExplorer.Shell.Interop.SORTCOLUMN() { propkey = pk, direction = Order };
 			IntPtr scptr = Marshal.AllocHGlobal(Marshal.SizeOf(sc));
 			Marshal.StructureToPtr(sc, scptr, false);
 			ifv2.SetSortColumns(scptr, 1);
@@ -520,11 +520,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 		/// </summary>
 		/// <param name="pk">The propertykey list that identifies columns</param>
 		/// <param name="Order">The sort order list</param>
-		public void SetSortCollumn(List<WindowsAPI.PROPERTYKEY> pk, List<WindowsAPI.SORT> Order) {
-			WindowsAPI.SORTCOLUMN[] scl = new WindowsAPI.SORTCOLUMN[pk.Count];
+		public void SetSortCollumn(List<BExplorer.Shell.Interop.PROPERTYKEY> pk, List<BExplorer.Shell.Interop.SORT> Order) {
+			var scl = new BExplorer.Shell.Interop.SORTCOLUMN[pk.Count];
 			IFolderView2 ifv2 = GetFolderView2();
 			for (int i = 0; i < pk.Count; i++) {
-				WindowsAPI.SORTCOLUMN sc = new WindowsAPI.SORTCOLUMN() { propkey = pk[i], direction = Order[i] };
+				var sc = new BExplorer.Shell.Interop.SORTCOLUMN() { propkey = pk[i], direction = Order[i] };
 				scl[i] = sc;
 			}
 
@@ -833,7 +833,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				Collumns[] ci = new Collumns[HeaderColsCount];
 				for (int i = 0; i < HeaderColsCount; i++) {
 					Collumns col = new Collumns();
-					WindowsAPI.PROPERTYKEY pk;
+					BExplorer.Shell.Interop.PROPERTYKEY pk;
 					WindowsAPI.CM_COLUMNINFO cmi = new WindowsAPI.CM_COLUMNINFO();
 					Marshal.AllocCoTaskMem(Marshal.SizeOf(cmi));
 					try {
@@ -878,7 +878,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				Collumns[] ci = new Collumns[HeaderColsCount];
 				for (int i = 0; i < HeaderColsCount; i++) {
 					Collumns col = new Collumns();
-					WindowsAPI.PROPERTYKEY pk;
+					BExplorer.Shell.Interop.PROPERTYKEY pk;
 					WindowsAPI.CM_COLUMNINFO cmi = new WindowsAPI.CM_COLUMNINFO();
 					Marshal.AllocCoTaskMem(Marshal.SizeOf(cmi));
 					try {

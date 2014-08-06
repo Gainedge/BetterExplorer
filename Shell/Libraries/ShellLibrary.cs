@@ -19,14 +19,14 @@ namespace BExplorer.Shell {
 		private INativeShellLibrary nativeShellLibrary;
 		private IKnownFolder knownFolder;
 
-		private static Guid[] FolderTypesGuids = 
-				{
-						new Guid(InterfaceGuids.GenericLibrary),
-						new Guid(InterfaceGuids.DocumentsLibrary),
-						new Guid(InterfaceGuids.MusicLibrary),
-						new Guid(InterfaceGuids.PicturesLibrary),
-						new Guid(InterfaceGuids.VideosLibrary)
-				};
+		private static Guid[] FolderTypesGuids = 				
+		{
+			new Guid(InterfaceGuids.GenericLibrary),
+			new Guid(InterfaceGuids.DocumentsLibrary),
+			new Guid(InterfaceGuids.MusicLibrary),
+			new Guid(InterfaceGuids.PicturesLibrary),
+			new Guid(InterfaceGuids.VideosLibrary)
+		};
 
 		#endregion
 
@@ -440,7 +440,7 @@ namespace BExplorer.Shell {
 		/// <param name="nativeShellItem">IShellItem</param>
 		/// <param name="isReadOnly">read-only flag</param>
 		/// <returns>A ShellLibrary Object</returns>
-		internal static ShellLibrary FromShellItem(IShellItem nativeShellItem, bool isReadOnly) {
+		public static ShellLibrary FromShellItem(IShellItem nativeShellItem, bool isReadOnly) {
 
 			INativeShellLibrary nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
 

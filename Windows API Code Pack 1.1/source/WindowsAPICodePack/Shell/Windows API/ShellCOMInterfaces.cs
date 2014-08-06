@@ -867,10 +867,12 @@ namespace Microsoft.WindowsAPICodePack.Shell
         [PreserveSig]
         HResult Resolve(/*[In] ICondition pc, [In] int sqro, [In] ref SYSTEMTIME pstReferenceTime, [Out] out ICondition ppcResolved*/);
 
+		/*
         // Retrieve the condition tree and the "main type" of the solution.
         // ppQueryNode and ppMainType may be NULL.
         [PreserveSig]
         HResult GetQuery([Out, MarshalAs(UnmanagedType.Interface)] out ICondition ppQueryNode, [Out, MarshalAs(UnmanagedType.Interface)] out IEntity ppMainType);
+		*/
 
         // Identify parts of the input string not accounted for.
         // Each parse error is represented by an IRichChunk where the position information
@@ -968,6 +970,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
     {
     }
 
+	/*
     [ComImport,
     Guid("24264891-E80B-4fd3-B7CE-4FF2FAE8931F"),
     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -975,6 +978,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
     {
         // TODO
     }
+	*/ 
     #endregion
 
 #pragma warning restore 108

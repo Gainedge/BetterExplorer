@@ -460,7 +460,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		void SetGroupBy(IntPtr key, bool fAscending);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetGroupBy(out WindowsAPI.PROPERTYKEY pkey, out bool pfAscending);
+		void GetGroupBy(out BExplorer.Shell.Interop.PROPERTYKEY pkey, out bool pfAscending);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void SetViewProperty(IntPtr pidl, IntPtr propkey, object propvar);
@@ -573,9 +573,9 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	[Guid(ExplorerBrowserIIDGuid.IColumnManager)]
 	public interface IColumnManager {
-		void SetColumnInfo([In] ref WindowsAPI.PROPERTYKEY propkey, [In] ref IntPtr pcmci);
+		void SetColumnInfo([In] ref BExplorer.Shell.Interop.PROPERTYKEY propkey, [In] ref IntPtr pcmci);
 
-		void GetColumnInfo(ref WindowsAPI.PROPERTYKEY propkey, out IntPtr pcmci);
+		void GetColumnInfo(ref BExplorer.Shell.Interop.PROPERTYKEY propkey, out IntPtr pcmci);
 
 		void GetColumnCount(CM_ENUM_FLAGS dwFlags, out uint puCount);
 

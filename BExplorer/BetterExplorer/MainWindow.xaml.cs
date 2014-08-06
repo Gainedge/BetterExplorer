@@ -1535,12 +1535,12 @@ namespace BetterExplorer {
 		#region Path to String HelperFunctions / Other HelperFunctions
 
 		public void ExportColumnDataToTextFile(string filename) {
-			Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser eb = new Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser();
+			var eb = new Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser();
 			eb.InitBrowser();
-			Microsoft.WindowsAPICodePack.Controls.WindowsForms.Collumns[] cols = eb.AvailableColumnsList(true);
+			var cols = eb.AvailableColumnsList(true);
 
 			int acount = 0;
-			foreach (Microsoft.WindowsAPICodePack.Controls.WindowsForms.Collumns item in cols) {
+			foreach (var item in cols) {
 				using (StreamWriter sw = new StreamWriter(filename, true)) {
 					// new Tuple<String, PROPERTYKEY, Type>("Date Modified", new PROPERTYKEY(){fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 14}, typeof(DateTime))
 					sw.WriteLine("{\"A" + acount + "\", new Tuple<String, PROPERTYKEY, Type>(\"" + item.Name + "\", new PROPERTYKEY(){fmtid = Guid.Parse(\"" + item.pkey.fmtid + "\"), pid = " + item.pkey.pid + "}, typeof(String))},");

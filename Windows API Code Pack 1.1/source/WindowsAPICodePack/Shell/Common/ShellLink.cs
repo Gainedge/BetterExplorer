@@ -77,7 +77,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
         public ShellObject TargetShellObject
         {
             get {
-              var link = new ShellLinkApi(this.ParsingName);
+				var link = new ShellLinkApi(this.ParsingName);
               var pidl = link.TargetPIDL;
               link.Dispose();
               return ShellObjectFactory.Create(pidl); 

@@ -60,7 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExplorerBrowser\BHID.cs" />
-    <Compile Include="ExplorerBrowser\Collumns.cs" />
     <Compile Include="ExplorerBrowser\ContextShellMenu.cs" />
     <Compile Include="ExplorerBrowser\DropData.cs" />
     <Compile Include="ExplorerBrowser\ExplorerBrowser.cs">
@@ -77,7 +76,7 @@
     <Compile Include="ExplorerBrowser\HelperClasses.cs" />
     <Compile Include="ExplorerBrowser\HookLibManager.cs" />
     <Compile Include="ExplorerBrowser\NativeWindowController.cs" />
-    <Compile Include="ExplorerBrowser\NavigationLog.cs" />
+    <Compile Include="ExplorerBrowser\ExplorerBrowserNavigationLog.cs" />
     <Compile Include="ExplorerBrowser\NavigationLogEnums.cs">
       <SubType>Code</SubType>
     </Compile>
