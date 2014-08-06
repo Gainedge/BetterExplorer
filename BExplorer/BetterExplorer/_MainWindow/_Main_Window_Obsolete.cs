@@ -132,6 +132,7 @@ namespace BetterExplorer {
 			return 0;
 		}
 
+		/*
 		[Obsolete("Never used", true)]
 		private List<char> GetLettersOfVirtualDrives(bool threaded = true) {
 			if (threaded) {
@@ -190,7 +191,7 @@ namespace BetterExplorer {
 			}
 		}
 
-
+		
 		[Obsolete("Not used", true)]
 		private bool IsConnectedToInternet() {
 			//Code source - Codeplex User Salysle
@@ -198,7 +199,7 @@ namespace BetterExplorer {
 			int lngFlags = 0;
 			return WindowsAPI.InternetGetConnectedState(lngFlags, 0);
 		}
-
+		*/
 		//[Obsolete("Not Used!!!", true)]
 		//public bool Activate(bool restoreIfMinimized) {
 		//	if (restoreIfMinimized && WindowState == WindowState.Minimized) {

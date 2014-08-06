@@ -102,9 +102,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 		public static extern uint RegisterClipboardFormat(string lpszFormat);
 		*/
 
-
+		/*
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr GlobalLock(IntPtr hMem);
+		*/
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		public delegate void GetColumnbyIndex(IShellView view, bool isAll, int index, out WindowsAPI.PROPERTYKEY res);
@@ -171,12 +172,11 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			void SetBindOptions(ref BIND_OPTS pbindopts);
 
 		}; // class IBindCtx
+
+		/*
 		[ComImport]
-
 		[Guid("3D8B0590-F691-11d2-8EA9-006097DF5BD4")]
-
 		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-
 		public interface IAsyncOperation {
 
 			[PreserveSig]
@@ -200,37 +200,31 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			Int32 EndOperation(UInt32 hResult, IBindCtx bcReserved, DragDropEffects Effects);
 
 		}
+		*/
+
+
 		[Guid("0000000f-0000-0000-C000-000000000046")]
 		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 		[ComImport]
 		public interface IMoniker {
-			void BindToObject(IBindCtx pbc, IMoniker pmkToLeft,
-												ref Guid riidResult, out Object ppvResult);
-			void BindToStorage(IBindCtx pbc, IMoniker pmkToLeft,
-													ref Guid riidResult, out Object ppvResult);
+			void BindToObject(IBindCtx pbc, IMoniker pmkToLeft, ref Guid riidResult, out Object ppvResult);
+			void BindToStorage(IBindCtx pbc, IMoniker pmkToLeft, ref Guid riidResult, out Object ppvResult);
 			void CommonPrefixWith(IMoniker pmkOther, out IMoniker ppmkPrefix);
-			void ComposeWith(IMoniker pmkRight, bool fOnlyIfNotGeneric,
-												out IMoniker ppmkComposite);
+			void ComposeWith(IMoniker pmkRight, bool fOnlyIfNotGeneric, out IMoniker ppmkComposite);
 			void Enum(bool fForward, out IEnumMoniker ppenumMoniker);
 			void GetClassID(out Guid pClassID);
-			void GetDisplayName(IBindCtx pbc, IMoniker pmkToLeft,
-													out String ppszDisplayName);
+			void GetDisplayName(IBindCtx pbc, IMoniker pmkToLeft, out String ppszDisplayName);
 			void GetSizeMax(out long pcbSize);
-			void GetTimeOfLastChange(IBindCtx pbc, IMoniker pmkToLeft,
-																out FILETIME pFileTime);
+			void GetTimeOfLastChange(IBindCtx pbc, IMoniker pmkToLeft, out FILETIME pFileTime);
 			void Hash(out int pdwHash);
 			void Inverse(out IMoniker ppmk);
 			int IsDirty();
 			void IsEqual(IMoniker pmkOtherMoniker);
-			void IsRunning(IBindCtx pbc, IMoniker pmkToLeft,
-											IMoniker pmkNewlyRunning);
+			void IsRunning(IBindCtx pbc, IMoniker pmkToLeft, IMoniker pmkNewlyRunning);
 			void IsSystemMoniker(out int pdwMksys);
 			void Load(IStream pStm);
-			void ParseDisplayName(IBindCtx pbc, IMoniker pmkToLeft,
-														String pszDisplayName, out int pcbEaten,
-														out IMoniker ppmkOut);
-			void Reduce(IBindCtx pbc, int dwReduceHowFar,
-									ref IMoniker ppmkToLeft, out IMoniker ppmkReduced);
+			void ParseDisplayName(IBindCtx pbc, IMoniker pmkToLeft, String pszDisplayName, out int pcbEaten, out IMoniker ppmkOut);
+			void Reduce(IBindCtx pbc, int dwReduceHowFar, ref IMoniker ppmkToLeft, out IMoniker ppmkReduced);
 			void RelativePathTo(IMoniker pmkOther, out IMoniker ppmkRelPath);
 			void Save(IStream pStm, bool fClearDirty);
 
@@ -265,6 +259,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 		}; // class IEnumMoniker
 
+		/*
 		[ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("0000010E-0000-0000-C000-000000000046")]
 		public interface IDataObject {
 			void GetData([In] ref FORMATETC format, out STGMEDIUM medium);
@@ -281,14 +276,16 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			[PreserveSig]
 			int EnumDAdvise(out IEnumSTATDATA enumAdvise);
 		}
+		*/
 		#endregion
 
 		#region Public Methods
 
+		/*
 		public void SetActiveShell() {
 			WindowsAPI.SetActiveWindow(SysListViewHandle);
 		}
-
+		*/
 
 
 		#endregion
@@ -610,6 +607,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 		/// </summary>
 		public ExplorerBrowserNavigationLog NavigationLog { get; private set; }
 
+		/*
 		/// <summary>
 		/// The name of the property bag used to persist changes to the ExplorerBrowser's view state.
 		/// </summary>
@@ -622,7 +620,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				}
 			}
 		}
-
+		*/
 
 
 		[Browsable(false)]
@@ -633,6 +631,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			set { _Collumns = value; }
 		}
 
+		/*
 		public Bitmap BackgroundImage {
 			get {
 				if (ExplorerBrowser.IsOldSysListView)
@@ -645,6 +644,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					SetBackgroundImage(value);
 			}
 		}
+		*/
 
 		#endregion
 
@@ -660,6 +660,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 		}
 
+		/*
 		/// <summary>
 		/// Sets the column in which current view will be grouped
 		/// </summary>
@@ -672,8 +673,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			ifv2.SetGroupBy(scptr, Asc);
 			Marshal.FreeHGlobal(scptr);
 		}
+		*/
 
-
+		/*
 		public void FormatDrive(IntPtr handle) {
 			string DriveLetter = "";
 			if (SelectedItems.Count > 0) {
@@ -689,7 +691,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 			WindowsAPI.FormatDrive(handle, DriveLetter);
 		}
+		*/
 
+		/*
 		public void CleanupDrive() {
 			string DriveLetter = "";
 			if (SelectedItems.Count > 0) {
@@ -705,6 +709,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 			Process.Start("Cleanmgr.exe", "/d" + DriveLetter.Replace(":\\", ""));
 		}
+		*/
+
+		/*
 		public void DefragDrive() {
 			string DriveLetter = "";
 			if (SelectedItems.Count > 0) {
@@ -720,7 +727,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 			Process.Start(Path.Combine(Environment.SystemDirectory, "dfrgui.exe"), "/u /v " + DriveLetter.Replace("\\", ""));
 		}
+		*/
 
+		/*
 		/// <summary>
 		/// Runs an application as an administrator.
 		/// </summary>
@@ -735,7 +744,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			Process.Start(psi);
 
 		}
+		*/
 
+		/*
 		/// <summary>
 		/// Runs an application as an another user.
 		/// </summary>
@@ -751,11 +762,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			Process.Start(psi);
 
 		}
+		*/
 
+		/*
 		public static void StartCompartabilityWizzard() {
 			Process.Start("msdt.exe", "-id PCWDiagnostic");
 		}
+		*/
 
+		/*
 		public void GetSortColInfo(out WindowsAPI.SORTCOLUMN ci) {
 			try {
 				IFolderView2 ifv2 = GetFolderView2();
@@ -772,8 +787,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				ci = sc;
 			}
 		}
+		*/
 
-
+		/*
 		public void SetColInView(WindowsAPI.PROPERTYKEY pk, bool Remove) {
 
 			if (!Remove) {
@@ -804,6 +820,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				AvailableVisibleColumns = AvailableColumns(false);
 			}
 		}
+		*/
+
 		public Collumns[] AvailableColumns(bool All) {
 			try {
 				Guid iid = new Guid(ExplorerBrowserIIDGuid.IColumnManager);
@@ -887,10 +905,12 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 		}
 
+		/*
 		public void SetAutoSizeColumns() {
 			WindowsAPI.SetFocus(SysListViewHandle);
 			SendKeys.SendWait("^{+}");
 		}
+		*/
 
 		public void DoCopy(object Data) {
 			FileOperationsData DataDrop = (FileOperationsData)Data;
@@ -1050,7 +1070,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 		}
 
-
+		/*
 		public void DeleteToRecycleBin() {
 			string Files = "";
 			foreach (ShellObject selectedItem in SelectedItems) {
@@ -1064,7 +1084,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			GC.WaitForPendingFinalizers();
 			GC.Collect();
 		}
+		*/
 
+		/*
 		public static void DoDelete(object Data) {
 			ShellObjectCollection DataDelete = (ShellObjectCollection)Data;
 
@@ -1078,23 +1100,32 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			DataDelete.Dispose();
 
 		}
+		*/
 
+		/*
 		public void SelectAllItems() {
 			WindowsAPI.SetFocus(SysListViewHandle);
 			SendKeys.SendWait("^a");
 		}
+		*/
+
+		/*
 		public void DeSelectAllItems() {
 			WindowsAPI.SetFocus(SysListViewHandle);
 			IFolderView2 ifv = GetFolderView2();
 			ifv.SelectItem(-1, (uint)WindowsAPI.SVSIF.SVSI_DESELECTOTHERS);
 		}
+		*/
 
+		/*
 		public void SelectItem(int Index) {
 			WindowsAPI.SetFocus(SysListViewHandle);
 			IFolderView2 ifv = GetFolderView2();
 			ifv.SelectItem(Index, (uint)WindowsAPI.SVSIF.SVSI_DESELECTOTHERS);
 		}
+		*/
 
+		/*
 		public void InvertSelection() {
 			WindowsAPI.SetFocus(SysListViewHandle);
 			IFolderView2 ifv2 = GetFolderView2();
@@ -1119,6 +1150,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			Marshal.ReleaseComObject(shv);
 			Marshal.ReleaseComObject(ifv2);
 		}
+		*/
+
 		System.Runtime.InteropServices.ComTypes.IDataObject GetSelectionDataObject() {
 			object result;
 
@@ -1133,11 +1166,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			return (System.Runtime.InteropServices.ComTypes.IDataObject)result;
 		}
 
+		/*
 		public void ShowFileProperties() {
-			if (WindowsAPI.SHMultiFileProperties(GetSelectionDataObject(), 0) != 0 /*S_OK*/) {
+			if (WindowsAPI.SHMultiFileProperties(GetSelectionDataObject(), 0) != 0 /*S_OK/) {
 				throw new Win32Exception();
 			}
 		}
+		*/
+
+		/*
 		private const int SW_SHOW = 5;
 		private const uint SEE_MASK_INVOKEIDLIST = 12;
 		public void ShowFileProperties(string Filename) {
@@ -1149,7 +1186,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			info.fMask = SEE_MASK_INVOKEIDLIST;
 			WindowsAPI.ShellExecuteEx(ref info);
 		}
+		*/
 
+		/*
 		public void EditFile(string Filename) {
 			WindowsAPI.SHELLEXECUTEINFO info = new WindowsAPI.SHELLEXECUTEINFO();
 			info.cbSize = Marshal.SizeOf(info);
@@ -1159,13 +1198,14 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			info.fMask = SEE_MASK_INVOKEIDLIST;
 			WindowsAPI.ShellExecuteEx(ref info);
 		}
+		*/
 
+		/*
 		public void SelectItem(ShellObject Item) {
 			IntPtr pPIDL = IntPtr.Zero;
 			IShellView shv = GetShellView();
 
 			try {
-
 				WindowsAPI.SHGetIDListFromObject(Item.NativeShellItem, out pPIDL);
 
 				if (pPIDL != IntPtr.Zero) {
@@ -1186,7 +1226,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			this.SetExplorerFocus();
 
 		}
+		*/
 
+		/*
 		public void SelectItems(ShellObject[] ShellObjectArray) {
 			IntPtr pIDL = IntPtr.Zero;
 			IFolderView ifv = GetFolderView();
@@ -1210,6 +1252,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			NativePoint pt = new NativePoint(0, 0);
 			ifv.SelectAndPositionItems((uint)ShellObjectArray.Length, PIDLArray, ref pt, WindowsAPI.SVSIF.SVSI_SELECT | WindowsAPI.SVSIF.SVSI_ENSUREVISIBLE | WindowsAPI.SVSIF.SVSI_FOCUSED | WindowsAPI.SVSIF.SVSI_DESELECTOTHERS);
 		}
+		*/
 
 		public void DoRename() {
 			IShellView shv = GetShellView();
@@ -1221,9 +1264,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			Marshal.ReleaseComObject(shv);
 		}
 
-
+		/*
 		public void DoRename(string pathNew, bool IsLiB) {
-
 			if (!IsLiB) {
 				IntPtr pIDL = IntPtr.Zero;
 				IShellView shv = GetShellView();
@@ -1276,14 +1318,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 
 		}
+		*/
 
 		public void SetExplorerFocus() {
 			WindowsAPI.SetFocus(SysListViewHandle);
 
 		}
 
+		/*
 		public void DoRename(IntPtr apidl) {
-
 			IntPtr pIDL = IntPtr.Zero;
 			IShellView shv = GetShellView();
 
@@ -1307,6 +1350,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 
 		}
+		*/
+
 		public bool IsMoveClipboardOperation = false;
 
 		public void DoCut() {
@@ -1354,6 +1399,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 		}
 
+		/*
 		public void GetGroupColInfo(out WindowsAPI.PROPERTYKEY pk, out bool Asc) {
 			try {
 				IFolderView2 ifv2 = GetFolderView2();
@@ -1365,7 +1411,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				Asc = false;
 			}
 		}
+		*/
 
+		/*
 		public string CreateNewFolder() {
 
 			string name = "New Folder";
@@ -1402,7 +1450,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 			return name;
 		}
+		*/
 
+		/*
 		public string CreateNewFolder(string name) {
 			int suffix = 0;
 			string endname = name;
@@ -1438,7 +1488,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 			return endname;
 		}
+		*/
 
+		/*
 		public ShellLibrary CreateNewLibrary() {
 			//      string name = "New Library";
 			//      int suffix = 0;
@@ -1473,7 +1525,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			//      return libcreate.GetDisplayName(DisplayNameType.Default);
 			return CreateNewLibrary("New Library");
 		}
+		*/
 
+		/*
 		public ShellLibrary CreateNewLibrary(string name) {
 			string endname = name;
 			int suffix = 0;
@@ -1501,7 +1555,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 			//return libcreate.GetDisplayName(DisplayNameType.Default);
 		}
+		*/
 
+		/*
 		public List<string> RecommendedPrograms(string ext) {
 			List<string> progs = new List<string>();
 
@@ -1525,21 +1581,27 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 			return progs;
 		}
+		*/
 
+		/*
 		public void SetBackgroundImage(Bitmap Image) {
 			WindowsAPI.SetListViewBackgroundImage(SysListViewHandle, Image);
 		}
+		*/
 
-
-
+		/*
 		public void ShowPropPage(IntPtr HWND, string filename, string proppage) {
 			WindowsAPI.SHObjectProperties(HWND, WindowsAPI.SHOP_FILEPATH, filename, proppage);
 		}
+		*/
 
+		/*
 		public void OpenShareUI() {
 			HResult hr = WindowsAPI.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(SelectedItems[0].ParsingName.Replace(@"\\", @"\")));
 		}
+		*/
 
+		/*
 		public HResult SetFolderIcon(string wszPath, string wszExpandedIconPath, int iIcon) {
 			HResult hr;
 
@@ -1567,7 +1629,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 			return hr;
 		}
+		*/
 
+		/*
 		public HResult ClearFolderIcon(string wszPath) {
 			HResult hr;
 
@@ -1588,7 +1652,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 			return hr;
 		}
+		*/
 
+		/*
 		public void RefreshExplorer() {
 			Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
 			IntPtr view = IntPtr.Zero;
@@ -1603,6 +1669,8 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				}
 			}
 		}
+		*/
+
 
 		/// <summary>
 		/// Clears the Explorer Browser of existing content, fills it with
@@ -1635,9 +1703,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				}
 			}
 		}
-		
+
 		public static WindowsAPI.CM_COLUMNINFO cmi;
-		
+
+		/*
 		public int ColSize(int index) {
 			Guid iid = new Guid(ExplorerBrowserIIDGuid.IShellView);
 			IntPtr view = IntPtr.Zero;
@@ -1646,6 +1715,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			_GetColumnInfobyIndex(isv, false, index, out cmi);
 			return (int)cmi.uWidth;
 		}
+		*/
 
 		/// <summary>
 		/// Navigates within the navigation log. This does not change the set of 
@@ -1657,6 +1727,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			return NavigationLog.NavigateLog(direction);
 		}
 
+		/*
 		/// <summary>
 		/// Navigate within the navigation log. This does not change the set of 
 		/// locations in the navigation log.
@@ -1666,6 +1737,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 		public bool NavigateLogLocation(int navigationLogIndex) {
 			return NavigationLog.NavigateLog(navigationLogIndex);
 		}
+		*/
 		#endregion
 
 		#region events
@@ -1936,6 +2008,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			InitBrowser();
 		}
 
+		/*
 		public bool IsInEditMode() {
 			if (SelectedItems.Count == 0)
 				return false;
@@ -1947,12 +2020,16 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 			return svsif == (WindowsAPI.SVSIF)17;
 		}
+		*/
 
+		/*
 		public static void SetCustomDialogs(Boolean isSet) {
 			IsCustomDialogs = isSet;
 			HookLibManager.IsCustomDialog = isSet;
 		}
+		*/
 
+		/*
 		//Callback procedure used by the window hook
 		private IntPtr CallbackGetMsgProc(int nCode, IntPtr wParam, IntPtr lParam) {
 			if (nCode >= 0) {
@@ -1999,11 +2076,13 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			}
 			return WindowsAPI.CallNextHookEx(hHook_Msg, nCode, wParam, lParam);
 		}
+		*/
 
 		bool SysTreeView_TreeViewClicked(ShellObject item, Keys modkeys, bool middle) {
 			vMouseItemMiddleClick(item);
 			return true;
 		}
+
 		/// <summary>
 		/// Sizes the native control to match the WinForms control wrapper.
 		/// </summary>
@@ -2060,8 +2139,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 		/// <param name="riid">requested interface guid</param>
 		/// <param name="ppvObject">caller-allocated memory for interface pointer</param>
 		/// <returns></returns>
-		HResult IServiceProvider.QueryService(
-				ref Guid guidService, ref Guid riid, out IntPtr ppvObject) {
+		HResult IServiceProvider.QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppvObject) {
 			HResult hr = HResult.Ok;
 
 			if (guidService.CompareTo(new Guid(ExplorerBrowserIIDGuid.IExplorerPaneVisibility)) == 0) {
@@ -2762,24 +2840,27 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 			return makeLong;
 		}
 
+		/*
 		public int MakeLong2(short lowPart, short highPart) {
 			return (int)(((ushort)lowPart) | (uint)(highPart << 16));
 		}
+		*/
 
-		protected const int WM_CHANGEUISTATE = 0x00000127;
-		protected const int UIS_SET = 1;
-		protected const int UIS_CLEAR = 2;
-		protected const int UIS_INITIALIZE = 3;
+		//protected const int WM_CHANGEUISTATE = 0x00000127;
+		//protected const int UIS_SET = 1;
+		//protected const int UIS_CLEAR = 2;
+		//protected const int UIS_INITIALIZE = 3;
 
-		protected const short UISF_HIDEFOCUS = 0x0001;
-		protected const short UISF_HIDEACCEL = 0x0002;
-		protected const short UISF_ACTIVE = 0x0004;
+		//protected const short UISF_HIDEFOCUS = 0x0001;
+		//protected const short UISF_HIDEACCEL = 0x0002;
+		//protected const short UISF_ACTIVE = 0x0004;
 
+		/*
 		public void HideFocusRectangle() {
 			WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
 
 		}
-
+		*/
 		#endregion
 
 		#region view event forwarding

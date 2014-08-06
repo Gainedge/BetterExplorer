@@ -184,57 +184,58 @@ namespace WindowsHelper {
 		}
 
 		/*
-        [Flags]
-        public enum CREDUI_FLAGS
-        {
-            INCORRECT_PASSWORD = 0x1,
-            DO_NOT_PERSIST = 0x2,
-            REQUEST_ADMINISTRATOR = 0x4,
-            EXCLUDE_CERTIFICATES = 0x8,
-            REQUIRE_CERTIFICATE = 0x10,
-            SHOW_SAVE_CHECK_BOX = 0x40,
-            ALWAYS_SHOW_UI = 0x80,
-            REQUIRE_SMARTCARD = 0x100,
-            PASSWORD_ONLY_OK = 0x200,
-            VALIDATE_USERNAME = 0x400,
-            COMPLETE_USERNAME = 0x800,
-            PERSIST = 0x1000,
-            SERVER_CREDENTIAL = 0x4000,
-            EXPECT_CONFIRMATION = 0x20000,
-            GENERIC_CREDENTIALS = 0x40000,
-            USERNAME_TARGET_CREDENTIALS = 0x80000,
-            KEEP_USERNAME = 0x100000,
-        }
+		[Flags]
+		public enum CREDUI_FLAGS
+		{
+			INCORRECT_PASSWORD = 0x1,
+			DO_NOT_PERSIST = 0x2,
+			REQUEST_ADMINISTRATOR = 0x4,
+			EXCLUDE_CERTIFICATES = 0x8,
+			REQUIRE_CERTIFICATE = 0x10,
+			SHOW_SAVE_CHECK_BOX = 0x40,
+			ALWAYS_SHOW_UI = 0x80,
+			REQUIRE_SMARTCARD = 0x100,
+			PASSWORD_ONLY_OK = 0x200,
+			VALIDATE_USERNAME = 0x400,
+			COMPLETE_USERNAME = 0x800,
+			PERSIST = 0x1000,
+			SERVER_CREDENTIAL = 0x4000,
+			EXPECT_CONFIRMATION = 0x20000,
+			GENERIC_CREDENTIALS = 0x40000,
+			USERNAME_TARGET_CREDENTIALS = 0x80000,
+			KEEP_USERNAME = 0x100000,
+		}
 		*/
 
 		/*
-        public enum CredUIReturnCodes
-        {
-            NO_ERROR = 0,
-            ERROR_CANCELLED = 1223,
-            ERROR_NO_SUCH_LOGON_SESSION = 1312,
-            ERROR_NOT_FOUND = 1168,
-            ERROR_INVALID_ACCOUNT_NAME = 1315,
-            ERROR_INSUFFICIENT_BUFFER = 122,
-            ERROR_INVALID_PARAMETER = 87,
-            ERROR_INVALID_FLAGS = 1004,
-        }
+		public enum CredUIReturnCodes
+		{
+			NO_ERROR = 0,
+			ERROR_CANCELLED = 1223,
+			ERROR_NO_SUCH_LOGON_SESSION = 1312,
+			ERROR_NOT_FOUND = 1168,
+			ERROR_INVALID_ACCOUNT_NAME = 1315,
+			ERROR_INSUFFICIENT_BUFFER = 122,
+			ERROR_INVALID_PARAMETER = 87,
+			ERROR_INVALID_FLAGS = 1004,
+		}
 		*/
 
 		/*
-        [DllImport("credui")]
-        public static extern CredUIReturnCodes CredUIPromptForCredentials(ref CREDUI_INFO creditUR,
-          string targetName,
-          IntPtr reserved1,
-          int iError,
-          StringBuilder userName,
-          int maxUserName,
-          StringBuilder password,
-          int maxPassword,
-          [MarshalAs(UnmanagedType.Bool)] ref bool pfSave,
-          CREDUI_FLAGS flags);
+		[DllImport("credui")]
+		public static extern CredUIReturnCodes CredUIPromptForCredentials(ref CREDUI_INFO creditUR,
+		  string targetName,
+		  IntPtr reserved1,
+		  int iError,
+		  StringBuilder userName,
+		  int maxUserName,
+		  StringBuilder password,
+		  int maxPassword,
+		  [MarshalAs(UnmanagedType.Bool)] ref bool pfSave,
+		  CREDUI_FLAGS flags);
 		*/
 
+		/*
 		[DllImport("credui.dll", CharSet = CharSet.Auto)]
 		public static extern bool CredUnPackAuthenticationBuffer(int dwFlags,
 																   IntPtr pAuthBuffer,
@@ -245,7 +246,8 @@ namespace WindowsHelper {
 																   ref int pcchMaxDomainame,
 																   StringBuilder pszPassword,
 																   ref int pcchMaxPassword);
-
+		*/
+		/*
 		[DllImport("credui.dll", CharSet = CharSet.Auto)]
 		public static extern int CredUIPromptForWindowsCredentials(ref CREDUI_INFO notUsedHere,
 																	 int authError,
@@ -257,69 +259,70 @@ namespace WindowsHelper {
 																	 ref bool fSave,
 																	 int flags);
 
+		*/
 
 		/*
-        public static void RunProcesssAsUser(String processPath)
-        {
-            // Setup the flags and variables
-            StringBuilder userPassword = new StringBuilder(), userID = new StringBuilder();
-            CREDUI_INFO credUI = new CREDUI_INFO();
-            credUI.pszCaptionText = "Please enter the credentails for " + ShellObject.FromParsingName(processPath).GetDisplayName(DisplayNameType.Default);
-            credUI.pszMessageText = "DisplayedMessage";
-            credUI.cbSize = Marshal.SizeOf(credUI);
-            uint authPackage = 0;
-            IntPtr outCredBuffer = new IntPtr();
-            uint outCredSize;
-            bool save = false;
-            int result = CredUIPromptForWindowsCredentials(ref credUI,
-                                                       0,
-                                                       ref authPackage,
-                                                       IntPtr.Zero,
-                                                       0,
-                                                       out outCredBuffer,
-                                                       out outCredSize,
-                                                       ref save,
-                                                       1 /* Generic /);
+		public static void RunProcesssAsUser(String processPath)
+		{
+			// Setup the flags and variables
+			StringBuilder userPassword = new StringBuilder(), userID = new StringBuilder();
+			CREDUI_INFO credUI = new CREDUI_INFO();
+			credUI.pszCaptionText = "Please enter the credentails for " + ShellObject.FromParsingName(processPath).GetDisplayName(DisplayNameType.Default);
+			credUI.pszMessageText = "DisplayedMessage";
+			credUI.cbSize = Marshal.SizeOf(credUI);
+			uint authPackage = 0;
+			IntPtr outCredBuffer = new IntPtr();
+			uint outCredSize;
+			bool save = false;
+			int result = CredUIPromptForWindowsCredentials(ref credUI,
+													   0,
+													   ref authPackage,
+													   IntPtr.Zero,
+													   0,
+													   out outCredBuffer,
+													   out outCredSize,
+													   ref save,
+													   1 /* Generic /);
 
-            var usernameBuf = new StringBuilder(100);
-            var passwordBuf = new StringBuilder(100);
-            var domainBuf = new StringBuilder(100);
+			var usernameBuf = new StringBuilder(100);
+			var passwordBuf = new StringBuilder(100);
+			var domainBuf = new StringBuilder(100);
 
-            int maxUserName = 100;
-            int maxDomain = 100;
-            int maxPassword = 100;
-            if (result == 0)
-            {
-              if (CredUnPackAuthenticationBuffer(0, outCredBuffer, outCredSize, usernameBuf, ref maxUserName,
-                                                 domainBuf, ref maxDomain, passwordBuf, ref maxPassword))
-              {
-                //TODO: ms documentation says we should call this but i can't get it to work
-                //SecureZeroMem(outCredBuffer, outCredSize);
+			int maxUserName = 100;
+			int maxDomain = 100;
+			int maxPassword = 100;
+			if (result == 0)
+			{
+			  if (CredUnPackAuthenticationBuffer(0, outCredBuffer, outCredSize, usernameBuf, ref maxUserName,
+												 domainBuf, ref maxDomain, passwordBuf, ref maxPassword))
+			  {
+				//TODO: ms documentation says we should call this but i can't get it to work
+				//SecureZeroMem(outCredBuffer, outCredSize);
 
-                //clear the memory allocated by CredUIPromptForWindowsCredentials 
-                CoTaskMemFree(outCredBuffer);
+				//clear the memory allocated by CredUIPromptForWindowsCredentials 
+				CoTaskMemFree(outCredBuffer);
 
-                SecureString pass = new SecureString();
-                foreach (char _char in passwordBuf.ToString().ToCharArray())
-                {
-                  pass.AppendChar(_char);
-                }
+				SecureString pass = new SecureString();
+				foreach (char _char in passwordBuf.ToString().ToCharArray())
+				{
+				  pass.AppendChar(_char);
+				}
 
-                using (Process p = new Process())
-                {
-                  p.StartInfo.UseShellExecute = true;
-                  p.StartInfo.WorkingDirectory = Path.GetDirectoryName(processPath);
-                  p.StartInfo.FileName = processPath;
-                  p.StartInfo.UserName = usernameBuf.ToString();
-                  p.StartInfo.Password = pass;
-                  p.StartInfo.Domain = domainBuf.ToString();
-                  p.StartInfo.UseShellExecute = false;
-                  p.Start();
-                }
-              }
-            }
-        }
-        */
+				using (Process p = new Process())
+				{
+				  p.StartInfo.UseShellExecute = true;
+				  p.StartInfo.WorkingDirectory = Path.GetDirectoryName(processPath);
+				  p.StartInfo.FileName = processPath;
+				  p.StartInfo.UserName = usernameBuf.ToString();
+				  p.StartInfo.Password = pass;
+				  p.StartInfo.Domain = domainBuf.ToString();
+				  p.StartInfo.UseShellExecute = false;
+				  p.Start();
+				}
+			  }
+			}
+		}
+		*/
 
 
 
@@ -1028,25 +1031,29 @@ namespace WindowsHelper {
 			return result;
 		}
 
-
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
 		public static extern IShellItem SHCreateItemWithParent(
 			[In] IntPtr pidlParent,
 			[In] IShellFolder psfParent,
 			[In] IntPtr pidl,
 			[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+		*/
+
 		/// <summary>
 		/// Returns IShellItem from parent item and pidl
 		/// </summary>
 		/// <param name="parent">The parent folder</param>
 		/// <param name="pidl">the PIDL of the item</param>
 		/// <returns></returns>
+
+		/*
 		public static IShellItem CreateItemWithParent(IShellFolder parent, IntPtr pidl) {
 
 			return SHCreateItemWithParent(IntPtr.Zero,
 										  parent, pidl, typeof(IShellItem).GUID);
 		}
-
+		*/
 
 		//public static ShellObject[] ParseShellIDListArray(System.Runtime.InteropServices.ComTypes.IDataObject pDataObj) {
 		//	List<ShellObject> result = new List<ShellObject>();
@@ -1104,11 +1111,13 @@ namespace WindowsHelper {
 		//	[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
 		//	[Out, MarshalAs(UnmanagedType.LPArray)] IShellItemArray ppv);
 
+		/*
 		public enum SIATTRIBFLAGS {
 			SIATTRIBFLAGS_AND = 1,
 			SIATTRIBFLAGS_APPCOMPAT = 3,
 			SIATTRIBFLAGS_OR = 2
 		}
+		*/
 
 		//[ComImport, Guid("B63EA76D-1F85-456F-A19C-48159EFA858B"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 		//public interface IShellItemArray {
@@ -1156,22 +1165,34 @@ namespace WindowsHelper {
 			return result;
 		}
 		*/
+
+		/*
 		[DllImport("user32.dll")]
 		public static extern uint RegisterClipboardFormat(string lpszFormat);
+		*/
+
+		/*
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr GlobalLock(IntPtr hMem);
+		*/
 
+		/*
 		[DllImport("shell32.dll", PreserveSig = false)]
 		public static extern void SHCreateItemFromIDList(
 			[In] IntPtr pidl,
 			[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
 			[Out, MarshalAs(UnmanagedType.Interface, IidParameterIndex = 2)] out IShellItem ppv);
+		*/
 
+		/*
 		[DllImport("shell32.dll")]
 		public static extern int SHGetIDListFromObject([MarshalAs(UnmanagedType.IUnknown)] object punk, out IntPtr ppidl);
+		*/
 
+		/*
 		[DllImport("wininet.dll")]
 		public static extern bool InternetGetConnectedState(int lpSFlags, int dwReserved);
+		*/
 
 		public static bool IsThis64bitProcess() {
 			return (IntPtr.Size == 8);
@@ -1207,22 +1228,28 @@ namespace WindowsHelper {
 			public long code;
 		}
 
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
+		*/
 
 		public enum MessageFilterInfo : uint {
 			None = 0, AlreadyAllowed = 1, AlreadyDisAllowed = 2, AllowedHigher = 3
 		};
 
+		/*
 		public enum ChangeWindowMessageFilterExAction : uint {
 			Reset = 0, Allow = 1, DisAllow = 2
 		};
+		*/
 
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		public struct CHANGEFILTERSTRUCT {
 			public uint size;
 			public MessageFilterInfo info;
 		}
+		*/
 
 		public static T PtrToStructure<T>(IntPtr p) {
 			return (T)Marshal.PtrToStructure(p, typeof(T));
@@ -3103,13 +3130,15 @@ namespace WindowsHelper {
 											IntPtr lpArgToCompletionRoutine,
 											UInt32 dwTimerLowValue,
 											UInt32 dwTimerHighValue);
+		/*
 		[DllImport("user32.dll")]
-
 		public static extern UInt32 RegisterWindowMessageA(string lpString);
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern IntPtr SetActiveWindow(IntPtr hWnd);
-
+		*/
 		[DllImport("Shlwapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
 
 		public static extern uint AssocQueryString(AssocF flags, AssocStr str, string pszAssoc, string pszExtra, [Out] StringBuilder pszOut, [In][Out] ref uint pcchOut);
