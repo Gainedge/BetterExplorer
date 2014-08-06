@@ -5387,7 +5387,7 @@ namespace BetterExplorer {
 		}
 
 		void edtSearchBox_RequestCancel(object sender, EventArgs e) {
-			this.ShellListView.Cancel = true;
+			//this.ShellListView.Cancel = true;
 		}
 
 		private void btnOpenWith_DropDownOpened(object sender, EventArgs e) {

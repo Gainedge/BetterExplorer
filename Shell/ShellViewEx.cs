@@ -109,6 +109,7 @@ namespace BExplorer.Shell {
 		public ShellItem Folder { get; private set; }
 
 		/// <summary> Gets/sets a value indicating whether the navigation should be canceled. </summary>
+		[Obsolete("Never used")]
 		public bool Cancel { get; private set; }
 
 		public Boolean IsNavigateInSameTab { get; private set; }
@@ -117,7 +118,6 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NavigatingEventArgs"/> class.
 		/// </summary>
-		///
 		/// <param name="folder">The folder being navigated to.</param>
 		/// <param name="isInSameTab"></param>
 		public NavigatingEventArgs(ShellItem folder, bool isInSameTab) {
@@ -338,6 +338,7 @@ namespace BExplorer.Shell {
 		public string KeyJumpString { get; private set; }
 		//public string KeyJumpString { get { return _keyjumpstr; } }
 
+		[Obsolete("Not Used", true)]
 		public List<string> RecommendedPrograms(string ext) {
 			List<string> progs = new List<string>();
 
@@ -369,6 +370,7 @@ namespace BExplorer.Shell {
 		/// which allows the <see cref="ShellView.NavigateBack" /> method to succeed.
 		/// </summary>
 		[Browsable(false)]
+		[Obsolete("Not Used", true)]
 		public bool CanNavigateBack { get { return History.CanNavigateBack; } }
 
 		/// <summary>
@@ -376,6 +378,7 @@ namespace BExplorer.Shell {
 		/// which allows the <see cref="ShellView.NavigateForward" /> method to succeed.
 		/// </summary>
 		[Browsable(false)]
+		[Obsolete("Not Used", true)]
 		public bool CanNavigateForward { get { return History.CanNavigateForward; } }
 
 		/// <summary>
@@ -576,7 +579,7 @@ namespace BExplorer.Shell {
 
 		public int CurrentRefreshedItemIndex = -1;
 
-		public Boolean Cancel = false;
+		//public Boolean Cancel = false;
 		#endregion Public Members
 
 		#region Private Members
@@ -607,10 +610,13 @@ namespace BExplorer.Shell {
 		private Bitmap ExeFallBack256;
 		private Bitmap ExeFallBack32;
 		private Bitmap ExeFallBack48;
+		[Obsolete("Not Used", true)]
 		private Bitmap Shield16;
+		[Obsolete("Not Used", true)]
 		private Bitmap Shield256;
 		[Obsolete("Never Actually Used")]
 		private Bitmap Shield32;
+		[Obsolete("Not Used", true)]
 		private Bitmap Shield48;
 		private int ShieldIconIndex;
 		private ImageList extra = new ImageList(ImageListSize.ExtraLarge);
@@ -681,9 +687,9 @@ namespace BExplorer.Shell {
 			ExeFallBack16 = small.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
 
 			Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_SHIELD, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
-			Shield48 = extra.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
-			Shield256 = jumbo.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
-			Shield16 = small.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
+			//Shield48 = extra.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
+			//Shield256 = jumbo.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
+			//Shield16 = small.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
 			ShieldIconIndex = defIconInfo.iSysIconIndex;
 
 			this.KeyDown += ShellView_KeyDown;
@@ -1571,7 +1577,7 @@ namespace BExplorer.Shell {
 			//this._Editor.SelectAll();
 		}
 
-		public void EndLabelEdit(Boolean isCancel = false) {
+		private void EndLabelEdit(Boolean isCancel = false) {
 			if (this.EndItemLabelEdit != null) {
 				this.EndItemLabelEdit.Invoke(this, EventArgs.Empty);
 			}
@@ -2698,6 +2704,7 @@ namespace BExplorer.Shell {
 		public void ShowPropPage(IntPtr HWND, string filename, string proppage) {
 			Shell32.SHObjectProperties(HWND, 0x2, filename, proppage);
 		}
+
 		public void ShowFileProperties(string Filename) {
 			Shell32.SHELLEXECUTEINFO info = new Shell32.SHELLEXECUTEINFO();
 			info.cbSize = Marshal.SizeOf(info);
@@ -3305,7 +3312,7 @@ namespace BExplorer.Shell {
 			this.ItemForRename = -1;
 			//if (isInSameTab)
 			//	SaveSettingsToDatabase(this.CurrentFolder);
-			this.Cancel = false;
+			//this.Cancel = false;
 			//if (destination != this.CurrentFolder) {
 
 

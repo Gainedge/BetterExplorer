@@ -131,7 +131,7 @@ namespace BExplorer.Shell {
 		/// Gets the underlying <see cref="IShellItem"/> COM interface.
 		/// </summary>
 		public IShellItem ComInterface { get { return m_ComInterface; } protected set { m_ComInterface = value; } }
-		//public IShellItem ComInterface { get { return m_ComInterface; } }
+
 		protected IShellItem m_ComInterface;
 
 		private ShellThumbnail thumbnail;
@@ -145,7 +145,7 @@ namespace BExplorer.Shell {
 		internal int OverlayIconIndex { get; set; }
 		internal IExtractIconPWFlags IconType { get; private set; }
 		public String CachedParsingName { get; private set; }
-		public IntPtr ILPidl { get { return Shell32.ILFindLastID(Pidl); } }
+		internal IntPtr ILPidl { get { return Shell32.ILFindLastID(Pidl); } }
 
 		/// <summary>
 		/// Gets the thumbnail of the ShellObject.
@@ -637,6 +637,7 @@ namespace BExplorer.Shell {
 		/// Returns an <see cref="ComTypes.IDataObject"/> representing the
 		/// item. This object is used in drag and drop operations.
 		/// </summary>
+		[Obsolete("Not Used", true)]
 		public System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject() {
 			IntPtr res;
 			HResult result = ComInterface.BindToHandler(IntPtr.Zero, BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID, out res);
