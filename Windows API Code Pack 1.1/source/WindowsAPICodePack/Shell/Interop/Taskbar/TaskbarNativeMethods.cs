@@ -31,10 +31,12 @@ namespace Microsoft.WindowsAPICodePack.Taskbar {
 		Paused = 0x8
 	}
 
+	/*
 	internal enum TaskbarActiveTabSetting {
 		UseMdiThumbnail = 0x1,
 		UseMdiLivePreview = 0x2
 	}
+	*/
 
 	internal enum ThumbButtonMask {
 		Bitmap = 0x1,
