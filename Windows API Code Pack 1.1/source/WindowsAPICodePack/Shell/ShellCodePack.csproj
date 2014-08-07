@@ -347,9 +347,6 @@
     <Compile Include="Taskbar\ThumbnailToolbarProxyWindow.cs" />
     <Compile Include="Taskbar\UserRemovedJumpListItemsEventArg.cs" />
     <Compile Include="WindowsAPI.cs" />
-    <Compile Include="SysImageList.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Design\ShellThumbnailClassDiagram.cd" />

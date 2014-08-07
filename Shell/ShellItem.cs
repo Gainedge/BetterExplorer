@@ -40,13 +40,13 @@ namespace BExplorer.Shell {
 	public enum ShellIconType {
 
 		/// <summary>The system large icon type</summary>
-		LargeIcon = SHGFI.LARGEICON,
+		LargeIcon = (int)SHGFI.LargeIcon,
 
 		/// <summary>The system shell icon type</summary>
-		ShellIcon = SHGFI.SHELLICONSIZE,
+		ShellIcon = (int)SHGFI.ShellIconSize,
 
 		/// <summary>The system small icon type</summary>
-		SmallIcon = SHGFI.SMALLICON,
+		SmallIcon = (int)SHGFI.SmallIcon,
 	}
 
 	/// <summary>
@@ -56,10 +56,10 @@ namespace BExplorer.Shell {
 	public enum ShellIconFlags {
 
 		/// <summary>The icon is displayed opened.</summary>
-		OpenIcon = SHGFI.ICON,
+		OpenIcon = (int)SHGFI.Icon,
 
 		/// <summary>Get the overlay for the icon as well.</summary>
-		OverlayIndex = SHGFI.OVERLAYINDEX
+		OverlayIndex = (int)SHGFI.OverlayIndex
 	}
 
 	internal class ShellItemConverter : TypeConverter {
@@ -172,8 +172,8 @@ namespace BExplorer.Shell {
 				SHFILEINFO info = new SHFILEINFO();
 				IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info,
 						Marshal.SizeOf(info),
-						SHGFI.ADDOVERLAYS | SHGFI.ICON |
-						SHGFI.SHELLICONSIZE | SHGFI.PIDL);
+						SHGFI.AddOverlays | SHGFI.Icon |
+						SHGFI.ShellIconSize | SHGFI.PIDL);
 
 				if (result == IntPtr.Zero) {
 					throw new Exception("Error retrieving shell folder icon");
@@ -770,7 +770,7 @@ namespace BExplorer.Shell {
 			SHFILEINFO info = new SHFILEINFO();
 			IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info,
 					Marshal.SizeOf(info),
-					SHGFI.ICON | SHGFI.SYSICONINDEX | SHGFI.OVERLAYINDEX | SHGFI.PIDL |
+					SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL |
 					(SHGFI)type | (SHGFI)flags);
 
 			if (result == IntPtr.Zero) {
@@ -785,7 +785,7 @@ namespace BExplorer.Shell {
 			SHFILEINFO info = new SHFILEINFO();
 			IntPtr result = Shell32.SHGetFileInfo(pidl, 0, out info,
 					Marshal.SizeOf(info),
-					SHGFI.ICON | SHGFI.SYSICONINDEX | SHGFI.OVERLAYINDEX | SHGFI.PIDL |
+					SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL |
 					(SHGFI)type | (SHGFI)flags);
 
 			if (result == IntPtr.Zero) {

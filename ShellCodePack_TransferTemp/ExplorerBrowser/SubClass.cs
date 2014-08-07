@@ -14,11 +14,11 @@ using WindowsHelper;
 namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 	[System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
 	public class SubclassHWND : NativeWindow {
-		public Microsoft.WindowsAPICodePack.Controls.WindowsForms.ImageList jumbo = new Microsoft.WindowsAPICodePack.Controls.WindowsForms.ImageList(ImageListSize.Jumbo);
-		public Microsoft.WindowsAPICodePack.Controls.WindowsForms.ImageList extra = new Microsoft.WindowsAPICodePack.Controls.WindowsForms.ImageList(ImageListSize.ExtraLarge);
-		public Microsoft.WindowsAPICodePack.Controls.WindowsForms.ImageList large = new Microsoft.WindowsAPICodePack.Controls.WindowsForms.ImageList(ImageListSize.Large);
-		public Microsoft.WindowsAPICodePack.Controls.WindowsForms.ImageList syssmall = new Microsoft.WindowsAPICodePack.Controls.WindowsForms.ImageList(ImageListSize.SystemSmall);
-		public Microsoft.WindowsAPICodePack.Controls.WindowsForms.ImageList small = new Microsoft.WindowsAPICodePack.Controls.WindowsForms.ImageList(ImageListSize.Small);
+		public BExplorer.Shell.ImageList jumbo = new BExplorer.Shell.ImageList(BExplorer.Shell.ImageListSize.Jumbo);
+		public BExplorer.Shell.ImageList extra = new BExplorer.Shell.ImageList(BExplorer.Shell.ImageListSize.ExtraLarge);
+		public BExplorer.Shell.ImageList large = new BExplorer.Shell.ImageList(BExplorer.Shell.ImageListSize.Large);
+		public BExplorer.Shell.ImageList syssmall = new BExplorer.Shell.ImageList(BExplorer.Shell.ImageListSize.SystemSmall);
+		public BExplorer.Shell.ImageList small = new BExplorer.Shell.ImageList(BExplorer.Shell.ImageListSize.Small);
 		private Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser Browser;
 		private IntPtr SysListviewhandle;
 		public const int CDRF_DODEFAULT = 0x00000000;

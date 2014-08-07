@@ -2420,11 +2420,11 @@ namespace BetterExplorer {
 				IntPtr Res = IntPtr.Zero;
 				if (pIDL != IntPtr.Zero && !ShellListView.CurrentFolder.IsFileSystem) {
 					//if (!ShellListView.CurrentFolder.IsFileSystem) {
-					Res = WindowsAPI.SHGetFileInfo(pIDL, 0, ref sfi, (uint)Marshal.SizeOf(sfi), WindowsAPI.SHGFI.IconLocation | WindowsAPI.SHGFI.SmallIcon | WindowsAPI.SHGFI.PIDL);
+					Res = WindowsAPI.SHGetFileInfo(pIDL, 0, ref sfi, (uint)Marshal.SizeOf(sfi), SHGFI.IconLocation | SHGFI.SmallIcon | SHGFI.PIDL);
 				}
 
 				if (ShellListView.CurrentFolder.IsFileSystem) {
-					WindowsAPI.SHGetFileInfo(ShellListView.CurrentFolder.ParsingName, 0, ref sfi, (uint)Marshal.SizeOf(sfi), (uint)WindowsAPI.SHGFI.IconLocation | (uint)WindowsAPI.SHGFI.SmallIcon);
+					WindowsAPI.SHGetFileInfo(ShellListView.CurrentFolder.ParsingName, 0, ref sfi, (uint)Marshal.SizeOf(sfi), (uint)SHGFI.IconLocation | (uint)SHGFI.SmallIcon);
 				}
 
 				System.Windows.Shell.JumpList.AddToRecentCategory(new JumpTask() {
