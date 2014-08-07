@@ -29,16 +29,16 @@ namespace FileOperations {
 
 		public void CopyItem(string source, string destination, string newName) {
 			ThrowIfDisposed();
-			using (ComReleaser<IShellItem> sourceItem = CreateShellItem(source))
-			using (ComReleaser<IShellItem> destinationItem = CreateShellItem(destination)) {
+			using (BExplorer.Shell.Interop.ComReleaser<IShellItem> sourceItem = CreateShellItem(source))
+			using (BExplorer.Shell.Interop.ComReleaser<IShellItem> destinationItem = CreateShellItem(destination)) {
 				_fileOperation.CopyItem(sourceItem.Item, destinationItem.Item, newName, null);
 			}
 		}
 
 		public void MoveItem(string source, string destination, string newName) {
 			ThrowIfDisposed();
-			using (ComReleaser<IShellItem> sourceItem = CreateShellItem(source))
-			using (ComReleaser<IShellItem> destinationItem = CreateShellItem(destination)) {
+			using (BExplorer.Shell.Interop.ComReleaser<IShellItem> sourceItem = CreateShellItem(source))
+			using (BExplorer.Shell.Interop.ComReleaser<IShellItem> destinationItem = CreateShellItem(destination)) {
 				_fileOperation.MoveItem(sourceItem.Item, destinationItem.Item, newName, null);
 			}
 		}
@@ -69,7 +69,7 @@ namespace FileOperations {
 			}
 		}
 		*/
-		
+
 		public void PerformOperations() {
 			ThrowIfDisposed();
 			try {
@@ -93,8 +93,8 @@ namespace FileOperations {
 			}
 		}
 
-		private static ComReleaser<IShellItem> CreateShellItem(string path) {
-			return new ComReleaser<IShellItem>(
+		private static BExplorer.Shell.Interop.ComReleaser<IShellItem> CreateShellItem(string path) {
+			return new BExplorer.Shell.Interop.ComReleaser<IShellItem>(
 				(IShellItem)SHCreateItemFromParsingName(path, null, ref _shellItemGuid));
 		}
 

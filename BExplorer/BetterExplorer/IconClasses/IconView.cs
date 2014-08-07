@@ -64,7 +64,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnLoad_Click(object sender, EventArgs e) {
-			CommonOpenFileDialog dlg = new CommonOpenFileDialog("Select icon file");
+			var dlg = new CommonOpenFileDialog("Select icon file");
 			dlg.AllowNonFileSystemItems = false;
 			dlg.Filters.Add(new CommonFileDialogFilter("Icon Files", "*.exe;*.dll;*.icl; *.ico"));
 			if (dlg.ShowDialog(this.Handle) == CommonFileDialogResult.Ok) {

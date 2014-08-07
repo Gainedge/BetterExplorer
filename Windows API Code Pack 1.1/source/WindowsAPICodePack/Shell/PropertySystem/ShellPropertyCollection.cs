@@ -22,7 +22,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem
         /// Creates a new Property collection given an IPropertyStore object
         /// </summary>
         /// <param name="nativePropertyStore">IPropertyStore</param>
-        internal ShellPropertyCollection(IPropertyStore nativePropertyStore)
+        public ShellPropertyCollection(IPropertyStore nativePropertyStore)
             : base(new List<IShellProperty>())
         {
             NativePropertyStore = nativePropertyStore;

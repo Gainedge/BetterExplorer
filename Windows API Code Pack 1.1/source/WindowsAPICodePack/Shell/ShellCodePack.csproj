@@ -216,10 +216,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonFileDialogs\CommonSaveFileDialog.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Common\NativePoint.cs" />
+    <Compile Include="Common\CoreErrorHelper.cs" />
     <Compile Include="Common\NativeRect.cs" />
     <Compile Include="Common\ShellException.cs" />
     <Compile Include="Common\ShellFileSystemFolder.cs" />
@@ -236,7 +233,6 @@
     <Compile Include="Common\ShellThumbnail.cs" />
     <Compile Include="Common\DefaultShellImageSizes.cs" />
     <Compile Include="Common\SortColumn.cs" />
-    <Compile Include="ComReleaser.cs" />
     <Compile Include="CopyEngineResult.cs" />
     <Compile Include="Interop\ExplorerBrowser\CommonControlException.cs">
       <SubType>Code</SubType>
@@ -277,26 +273,6 @@
     <Compile Include="Windows API\ShellEnums.cs" />
     <Compile Include="Common\ShellLibrary.cs" />
     <Compile Include="Common\ShellObject.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialog.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogButton.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogCheckBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogComboBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogControl.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogControlCollection.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogFilter.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogFilterCollection.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogFolderChangeEventArgs.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogGroupBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogLabel.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogMenu.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogProminentControl.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogRadioButtonList.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogResult.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogSeperator.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogStandardFilters.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogTextBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonOpenFileDialog.cs" />
-    <Compile Include="CommonFileDialogs\ICommonFileDialogIndexedControls.cs" />
     <Compile Include="Interop\KnownFolders\KnownFoldersCOMGuids.cs" />
     <Compile Include="Interop\KnownFolders\KnownFoldersCOMInterfaces.cs" />
     <Compile Include="Interop\KnownFolders\KnownFoldersNativeMethods.cs" />
@@ -351,10 +327,8 @@
     <Compile Include="PropertySystem\ShellPropertyCollection.cs" />
     <Compile Include="PropertySystem\ShellPropertyDescription.cs" />
     <Compile Include="PropertySystem\ShellPropertyDescriptionsCache.cs" />
-    <Compile Include="Interop\Dialogs\DialogsCOMClasses.cs" />
     <Compile Include="Windows API\ShellCOMGuids.cs" />
     <Compile Include="Windows API\ShellNativeMethods.cs" />
-    <Compile Include="Interop\Dialogs\DialogsCOMInterfaces.cs" />
     <Compile Include="Common\ShellSavedSearchCollection.cs" />
     <Compile Include="PropertySystem\ShellProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -403,7 +377,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\LocalizedMessages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedMessages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>

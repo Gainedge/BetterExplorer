@@ -152,7 +152,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
                     MessageListener listener;
                     if (_listeners.TryGetValue(hwnd, out listener))
                     {
-                        Message message = new Message(hwnd, msg, wparam, lparam, 0, new NativePoint());
+						Message message = new Message(hwnd, msg, wparam, lparam, 0, new BExplorer.Shell.Interop.NativePoint());
                         listener.MessageReceived.SafeRaise(listener, new WindowMessageEventArgs(message));
                     }
                     break;

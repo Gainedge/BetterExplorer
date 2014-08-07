@@ -1,29 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
-namespace BExplorer.Shell.Interop {
+namespace Microsoft.WindowsAPICodePack.Shell {
 	/// <summary>
 	/// A wrapper for the native POINT structure.
 	/// </summary>
+	[System.Obsolete("BExplorer.Shell.Interop.NativePoint", true)]
 	[StructLayout(LayoutKind.Sequential)]
 	public struct NativePoint {
-
-		/// <summary>
-		/// The X coordinate of the point
-		/// </summary>        
-		public int X { get; set; }
-
-		/// <summary>
-		/// The Y coordinate of the point
-		/// </summary>                                
-		public int Y { get; set; }
-
-
-
 		/// <summary>
 		/// Initialize the NativePoint
 		/// </summary>
@@ -35,6 +18,15 @@ namespace BExplorer.Shell.Interop {
 			Y = y;
 		}
 
+		/// <summary>
+		/// The X coordinate of the point
+		/// </summary>        
+		public int X { get; set; }
+
+		/// <summary>
+		/// The Y coordinate of the point
+		/// </summary>                                
+		public int Y { get; set; }
 
 		/// <summary>
 		/// Determines if two NativePoints are equal.
@@ -75,4 +67,5 @@ namespace BExplorer.Shell.Interop {
 			return hash;
 		}
 	}
+
 }

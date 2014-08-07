@@ -113,7 +113,7 @@ namespace BetterExplorer
 
         private string ChooseLocation()
         {
-            CommonOpenFileDialog dlg = new CommonOpenFileDialog();
+            var dlg = new CommonOpenFileDialog();
             dlg.IsFolderPicker = true;
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
             {

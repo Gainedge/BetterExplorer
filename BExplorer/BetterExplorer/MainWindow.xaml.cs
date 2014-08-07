@@ -1169,7 +1169,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnctOther_Click(object sender, RoutedEventArgs e) {
-			CommonOpenFileDialog dlg = new CommonOpenFileDialog();
+			var dlg = new CommonOpenFileDialog();
 			dlg.IsFolderPicker = true;
 			if (dlg.ShowDialog() == CommonFileDialogResult.Ok) {
 				SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Copy);
@@ -2625,7 +2625,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnChooseLocation_Click(object sender, RoutedEventArgs e) {
-			CommonOpenFileDialog dlg = new CommonOpenFileDialog();
+			var dlg = new CommonOpenFileDialog();
 			dlg.IsFolderPicker = true;
 			if (dlg.ShowDialog() == CommonFileDialogResult.Ok) {
 				txtExtractLocation.Text = dlg.FileName;
@@ -4559,7 +4559,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnChangeTabsFolder_Click(object sender, RoutedEventArgs e) {
-			CommonOpenFileDialog ctf = new CommonOpenFileDialog("Change Tab Folder");
+			var ctf = new CommonOpenFileDialog("Change Tab Folder");
 			ctf.IsFolderPicker = true;
 			ctf.Multiselect = false;
 			ctf.InitialDirectory = new DirectoryInfo(sstdir).Parent.FullName;

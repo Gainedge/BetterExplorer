@@ -387,13 +387,13 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		void GetFocusedItem(out int piItem);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetItemPosition(IntPtr pidl, out NativePoint ppt);
+		void GetItemPosition(IntPtr pidl, out BExplorer.Shell.Interop.NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSpacing([Out] out NativePoint ppt);
+		void GetSpacing([Out] out BExplorer.Shell.Interop.NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetDefaultSpacing(out NativePoint ppt);
+		void GetDefaultSpacing(out BExplorer.Shell.Interop.NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetAutoArrange();
@@ -402,7 +402,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		void SelectItem(int iItem, uint dwFlags);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SelectAndPositionItems(uint cidl, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] apidl, ref NativePoint apt, WindowsHelper.WindowsAPI.SVSIF dwFlags);
+		void SelectAndPositionItems(uint cidl, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] apidl, ref BExplorer.Shell.Interop.NativePoint apt, WindowsHelper.WindowsAPI.SVSIF dwFlags);
 	}
 
 	[ComImport,
@@ -438,13 +438,13 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		void GetFocusedItem(out int piItem);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetItemPosition(IntPtr pidl, out NativePoint ppt);
+		void GetItemPosition(IntPtr pidl, out BExplorer.Shell.Interop.NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSpacing([Out] out NativePoint ppt);
+		void GetSpacing([Out] out BExplorer.Shell.Interop.NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetDefaultSpacing(out NativePoint ppt);
+		void GetDefaultSpacing(out BExplorer.Shell.Interop.NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetAutoArrange();
@@ -453,7 +453,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		void SelectItem(int iItem, uint dwFlags);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SelectAndPositionItems(uint cidl, IntPtr apidl, ref NativePoint apt, uint dwFlags);
+		void SelectAndPositionItems(uint cidl, IntPtr apidl, ref BExplorer.Shell.Interop.NativePoint apt, uint dwFlags);
 
 		// IFolderView2
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]

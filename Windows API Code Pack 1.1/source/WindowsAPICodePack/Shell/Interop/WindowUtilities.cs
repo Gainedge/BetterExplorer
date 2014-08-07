@@ -10,11 +10,11 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	internal static class WindowUtilities {
 
 		internal static System.Drawing.Point GetParentOffsetOfChild(IntPtr hwnd, IntPtr hwndParent) {
-			var childScreenCoord = new NativePoint();
+			var childScreenCoord = new BExplorer.Shell.Interop.NativePoint();
 
 			TabbedThumbnailNativeMethods.ClientToScreen(hwnd, ref childScreenCoord);
 
-			var parentScreenCoord = new NativePoint();
+			var parentScreenCoord = new BExplorer.Shell.Interop.NativePoint();
 
 			TabbedThumbnailNativeMethods.ClientToScreen(hwndParent, ref parentScreenCoord);
 
@@ -26,7 +26,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		}
 
 		internal static System.Drawing.Size GetNonClientArea(IntPtr hwnd) {
-			var c = new NativePoint();
+			var c = new BExplorer.Shell.Interop.NativePoint();
 
 			TabbedThumbnailNativeMethods.ClientToScreen(hwnd, ref c);
 

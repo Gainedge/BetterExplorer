@@ -24,7 +24,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		*/
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-		internal static extern int SHCreateItemFromParsingName(
+		public static extern int SHCreateItemFromParsingName(
 			[MarshalAs(UnmanagedType.LPWStr)] string path,
 			// The following parameter is not used - binding context.
 			IntPtr pbc,
@@ -32,7 +32,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			[MarshalAs(UnmanagedType.Interface)] out IShellItem2 shellItem);
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-		internal static extern int SHCreateItemFromParsingName(
+		public static extern int SHCreateItemFromParsingName(
 			[MarshalAs(UnmanagedType.LPWStr)] string path,
 			// The following parameter is not used - binding context.
 			IntPtr pbc,

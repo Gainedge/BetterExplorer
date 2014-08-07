@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+// Stephen Toub
 
-namespace BExplorer.Shell.Interop {
-	public class ComReleaser<T> : IDisposable where T : class {
+using System;
+using System.Runtime.InteropServices;
+
+namespace FileOperations {
+	[Obsolete("Use BExplorer.Shell.Interop.ComReleaser", true)]
+	class ComReleaser<T> : IDisposable where T : class {
 		private T _obj;
 
 		public ComReleaser(T obj) {
