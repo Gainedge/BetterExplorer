@@ -347,9 +347,6 @@
     <Compile Include="Taskbar\ThumbnailToolbarProxyWindow.cs" />
     <Compile Include="Taskbar\UserRemovedJumpListItemsEventArg.cs" />
     <Compile Include="WindowsAPI.cs" />
-    <Compile Include="_Obsolete\Common\EventHandlerExtensionMethods.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SysImageList.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -396,7 +393,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="_Obsolete\Interop\" />
+    <Folder Include="_Obsolete\" />
     <Folder Include="_Transfered\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

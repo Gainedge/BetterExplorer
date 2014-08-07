@@ -152,7 +152,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
 			// Create a native shellitem from our path
 			IShellItem2 nativeShellItem;
-			Guid guid = new Guid(ShellIIDGuid.IShellItem2);
+			Guid guid = new Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellItem2);
 			int retCode = ShellNativeMethods.SHCreateItemFromParsingName(parsingName, IntPtr.Zero, ref guid, out nativeShellItem);
 
 			if (!CoreErrorHelper.Succeeded(retCode)) {
@@ -170,7 +170,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			// Throw exception if not running on Win7 or newer.
 			CoreHelpers.ThrowIfNotVista();
 
-			Guid guid = new Guid(ShellIIDGuid.IShellItem2);
+			Guid guid = new Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellItem2);
 
 			IShellItem2 nativeShellItem;
 

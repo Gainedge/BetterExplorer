@@ -105,7 +105,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem
         {
             IPropertyStore nativePropertyStore = null;
 
-            Guid guid = new Guid(ShellIIDGuid.IPropertyStore);
+			Guid guid = new Guid(BExplorer.Shell.Interop.InterfaceGuids.IPropertyStore);
             int hr = shellObj.NativeShellItem2.GetPropertyStore(
                    GetPropertyStoreOptions.BestEffort,
                    ref guid,

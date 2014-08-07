@@ -85,96 +85,108 @@ namespace WindowsHelper {
 		}
 		*/
 
-		/// <summary>
-		/// Possible flags for the SHFileOperation method.
-		/// </summary>
-		[Flags]
-		public enum FileOperationFlags : ushort {
-			/// <summary>
-			/// Do not show a dialog during the process
-			/// </summary>
-			FOF_SILENT = 0x0004,
-			/// <summary>
-			/// Do not ask the user to confirm selection
-			/// </summary>
-			FOF_NOCONFIRMATION = 0x0010,
-			/// <summary>
-			/// Delete the file to the recycle bin.  (Required flag to send a file to the bin
-			/// </summary>
-			FOF_ALLOWUNDO = 0x0040,
-			/// <summary>
-			/// Do not show the names of the files or folders that are being recycled.
-			/// </summary>
-			FOF_SIMPLEPROGRESS = 0x0100,
-			/// <summary>
-			/// Surpress errors, if any occur during the process.
-			/// </summary>
-			FOF_NOERRORUI = 0x0400,
-			/// <summary>
-			/// Warn if files are too big to fit in the recycle bin and will need
-			/// to be deleted completely.
-			/// </summary>
-			FOF_WANTNUKEWARNING = 0x4000,
-		}
 
-		/// <summary>
-		/// File Operation Function Type for SHFileOperation
-		/// </summary>
-		public enum FileOperationType : uint {
-			/// <summary>
-			/// Move the objects
-			/// </summary>
-			FO_MOVE = 0x0001,
-			/// <summary>
-			/// Copy the objects
-			/// </summary>
-			FO_COPY = 0x0002,
-			/// <summary>
-			/// Delete (or recycle) the objects
-			/// </summary>
-			FO_DELETE = 0x0003,
-			/// <summary>
-			/// Rename the object(s)
-			/// </summary>
-			FO_RENAME = 0x0004,
-		}
+		/*
+		///// <summary>
+		///// Possible flags for the SHFileOperation method.
+		///// </summary>
+		//[Flags]
+		//public enum FileOperationFlags : ushort {
+		//	/// <summary>
+		//	/// Do not show a dialog during the process
+		//	/// </summary>
+		//	FOF_SILENT = 0x0004,
+		//	/// <summary>
+		//	/// Do not ask the user to confirm selection
+		//	/// </summary>
+		//	FOF_NOCONFIRMATION = 0x0010,
+		//	/// <summary>
+		//	/// Delete the file to the recycle bin.  (Required flag to send a file to the bin
+		//	/// </summary>
+		//	FOF_ALLOWUNDO = 0x0040,
+		//	/// <summary>
+		//	/// Do not show the names of the files or folders that are being recycled.
+		//	/// </summary>
+		//	FOF_SIMPLEPROGRESS = 0x0100,
+		//	/// <summary>
+		//	/// Surpress errors, if any occur during the process.
+		//	/// </summary>
+		//	FOF_NOERRORUI = 0x0400,
+		//	/// <summary>
+		//	/// Warn if files are too big to fit in the recycle bin and will need
+		//	/// to be deleted completely.
+		//	/// </summary>
+		//	FOF_WANTNUKEWARNING = 0x4000,
+		//}
+		*/
 
+		/*
+		///// <summary>
+		///// File Operation Function Type for SHFileOperation
+		///// </summary>
+		//public enum FileOperationType : uint {
+		//	/// <summary>
+		//	/// Move the objects
+		//	/// </summary>
+		//	FO_MOVE = 0x0001,
+		//	/// <summary>
+		//	/// Copy the objects
+		//	/// </summary>
+		//	FO_COPY = 0x0002,
+		//	/// <summary>
+		//	/// Delete (or recycle) the objects
+		//	/// </summary>
+		//	FO_DELETE = 0x0003,
+		//	/// <summary>
+		//	/// Rename the object(s)
+		//	/// </summary>
+		//	FO_RENAME = 0x0004,
+		//}
+		*/
+
+		/*
 		/// <summary>
 		/// SHFILEOPSTRUCT for SHFileOperation from COM
 		/// </summary>
-		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 1)]
-		public struct SHFILEOPSTRUCT_x86 {
-			public IntPtr hwnd;
-			[MarshalAs(UnmanagedType.U4)]
-			public FileOperationType wFunc;
-			public string pFrom;
-			public string pTo;
-			public FileOperationFlags fFlags;
-			[MarshalAs(UnmanagedType.Bool)]
-			public bool fAnyOperationsAborted;
-			public IntPtr hNameMappings;
-			public string lpszProgressTitle;
-		}
+		//[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 1)]
+		//public struct SHFILEOPSTRUCT_x86 {
+		//	public IntPtr hwnd;
+		//	[MarshalAs(UnmanagedType.U4)]
+		//	public FileOperationType wFunc;
+		//	public string pFrom;
+		//	public string pTo;
+		//	public BExplorer.Shell.Windows.WindowsAPI.FileOperationFlags fFlags;
+		//	[MarshalAs(UnmanagedType.Bool)]
+		//	public bool fAnyOperationsAborted;
+		//	public IntPtr hNameMappings;
+		//	public string lpszProgressTitle;
+		//}
+		*/
 
-		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-		public struct SHFILEOPSTRUCT_x64 {
-			public IntPtr hwnd;
-			[MarshalAs(UnmanagedType.U4)]
-			public FileOperationType wFunc;
-			public string pFrom;
-			public string pTo;
-			public FileOperationFlags fFlags;
-			[MarshalAs(UnmanagedType.Bool)]
-			public bool fAnyOperationsAborted;
-			public IntPtr hNameMappings;
-			public string lpszProgressTitle;
-		}
-
+		/*
+		//[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		//public struct SHFILEOPSTRUCT_x64 {
+		//	public IntPtr hwnd;
+		//	[MarshalAs(UnmanagedType.U4)]
+		//	public FileOperationType wFunc;
+		//	public string pFrom;
+		//	public string pTo;
+		//	public BExplorer.Shell.Windows.WindowsAPI.FileOperationFlags fFlags;
+		//	[MarshalAs(UnmanagedType.Bool)]
+		//	public bool fAnyOperationsAborted;
+		//	public IntPtr hNameMappings;
+		//	public string lpszProgressTitle;
+		//}
+		*/
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto, EntryPoint = "SHFileOperation")]
 		public static extern int SHFileOperation_x86(ref SHFILEOPSTRUCT_x86 FileOp);
+		*/
 
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto, EntryPoint = "SHFileOperation")]
 		public static extern int SHFileOperation_x64(ref SHFILEOPSTRUCT_x64 FileOp);
+		*/
 
 		/*
 		[DllImport("user32")]
@@ -373,6 +385,7 @@ namespace WindowsHelper {
 		}
 		*/
 
+		/*
 		/// <summary>
 		/// Standart Window messages
 		/// </summary>
@@ -560,7 +573,7 @@ namespace WindowsHelper {
 			WM_MDICASCADE = 0x0227,
 			WM_MDIICONARRANGE = 0x0228,
 			WM_MDIGETACTIVE = 0x0229,
-			/* D&D messages */
+			/* D&D messages /
 			//public const uint WM_DROPOBJECT     = 0x022A;
 			//public const uint WM_QUERYDROPOBJECT  = 0x022B;
 			//public const uint WM_BEGINDRAG      = 0x022C;
@@ -619,7 +632,7 @@ namespace WindowsHelper {
 			WM_ASYNC_MESSAGE = 0x0403,
 			WM_REFLECT = WM_USER + 0x1c00
 		}
-
+		*/
 		/*
 		/// <summary>
 		/// Button pressed states
@@ -665,48 +678,49 @@ namespace WindowsHelper {
 		}
 
 
+		/*
 		public static class LVM {
-			const int FIRST = 0x1000;				// LVM_FIRST
-			public const int SETIMAGELIST = (FIRST + 3);		// LVM_SETIMAGELIST
-			public const int GETNEXTITEM = (FIRST + 12);		// LVM_GETNEXTITEM
-			public const int GETITEMRECT = (FIRST + 14);		// LVM_GETITEMRECT
-			public const int HITTEST = (FIRST + 18);		// LVM_HITTEST
-			public const int REDRAWITEMS = (FIRST + 21);		// LVM_REDRAWITEMS
-			public const int GETEDITCONTROL = (FIRST + 24);		// LVM_GETEDITCONTROL
-			public const int GETHEADER = (FIRST + 31);		// LVM_GETHEADER
-			public const int GETITEMSTATE = (FIRST + 44);		// LVM_GETITEMSTATE
-			public const int GETITEMSPACING = (FIRST + 51);		// LVM_GETITEMSPACING
-			public const int SETEXTENDEDLISTVIEWSTYLE = (FIRST + 54);		// LVM_SETEXTENDEDLISTVIEWSTYLE
-			public const int GETEXTENDEDLISTVIEWSTYLE = (FIRST + 55);		// LVM_GETEXTENDEDLISTVIEWSTYLE
-			public const int GETSUBITEMRECT = (FIRST + 56);		// LVM_GETSUBITEMRECT
-			public const int GETHOTITEM = (FIRST + 61);		// LVM_GETHOTITEM
-			public const int GETITEMW = (FIRST + 75);		// LVM_GETITEMW
-			public const int GETSTRINGWIDTHW = (FIRST + 87);		// LVM_GETSTRINGWIDTHW	
-			public const int SETBKIMAGEW = (FIRST + 138);		// LVM_SETBKIMAGEW
-			public const int GETVIEW = (FIRST + 143);		// LVM_GETVIEW
-			public const int SETGROUPINFO = (FIRST + 147);		// LVM_SETGROUPINFO
-			public const int GETSELECTEDCOLUMN = (FIRST + 174);		// LVM_GETSELECTEDCOLUMN
-			public const int SETCOLUMNWIDTH = (FIRST + 30);		// LVM_SETCOLUMNWIDTH
-			public const int GETCOLUMNWIDTH = (FIRST + 29);		// LVM_GETCOLUMNWIDTH
-			public const int ENSUREVISIBLE = (FIRST + 19);
-			public const int ISITEMVISIBLE = (FIRST + 182);
+			//const int FIRST = 0x1000;				// LVM_FIRST
+			//public const int SETIMAGELIST = (FIRST + 3);		// LVM_SETIMAGELIST
+			//public const int GETNEXTITEM = (FIRST + 12);		// LVM_GETNEXTITEM
+			//public const int GETITEMRECT = (FIRST + 14);		// LVM_GETITEMRECT
+			//public const int HITTEST = (FIRST + 18);		// LVM_HITTEST
+			//public const int REDRAWITEMS = (FIRST + 21);		// LVM_REDRAWITEMS
+			//public const int GETEDITCONTROL = (FIRST + 24);		// LVM_GETEDITCONTROL
+			//public const int GETHEADER = (FIRST + 31);		// LVM_GETHEADER
+			//public const int GETITEMSTATE = (FIRST + 44);		// LVM_GETITEMSTATE
+			//public const int GETITEMSPACING = (FIRST + 51);		// LVM_GETITEMSPACING
+			//public const int SETEXTENDEDLISTVIEWSTYLE = (FIRST + 54);		// LVM_SETEXTENDEDLISTVIEWSTYLE
+			//public const int GETEXTENDEDLISTVIEWSTYLE = (FIRST + 55);		// LVM_GETEXTENDEDLISTVIEWSTYLE
+			//public const int GETSUBITEMRECT = (FIRST + 56);		// LVM_GETSUBITEMRECT
+			//public const int GETHOTITEM = (FIRST + 61);		// LVM_GETHOTITEM
+			//public const int GETITEMW = (FIRST + 75);		// LVM_GETITEMW
+			//public const int GETSTRINGWIDTHW = (FIRST + 87);		// LVM_GETSTRINGWIDTHW	
+			//public const int SETBKIMAGEW = (FIRST + 138);		// LVM_SETBKIMAGEW
+			//public const int GETVIEW = (FIRST + 143);		// LVM_GETVIEW
+			//public const int SETGROUPINFO = (FIRST + 147);		// LVM_SETGROUPINFO
+			//public const int GETSELECTEDCOLUMN = (FIRST + 174);		// LVM_GETSELECTEDCOLUMN
+			//public const int SETCOLUMNWIDTH = (FIRST + 30);		// LVM_SETCOLUMNWIDTH
+			//public const int GETCOLUMNWIDTH = (FIRST + 29);		// LVM_GETCOLUMNWIDTH
+			//public const int ENSUREVISIBLE = (FIRST + 19);
+			//public const int ISITEMVISIBLE = (FIRST + 182);
 
-			public const int LVIR_BOUNDS = 0;
-			public const int LVIR_ICON = 1;
-			public const int LVIR_LABEL = 2;
-			public const int LV_VIEW_ICON = 0x0000;
-			public const int LV_VIEW_DETAILS = 0x0001;
-			public const int LV_VIEW_SMALLICON = 0x0002;
-			public const int LV_VIEW_LIST = 0x0003;
-			public const int LV_VIEW_TILE = 0x0004;
-			public const int LVIF_TEXT = 0x00000001;
-			public const int LVIF_STATE = 0x00000008;
-			public const int LVNI_SELECTED = 0x0002;
-			public const int LVSIL_GROUPHEADER = 3;
-			public const int LVGF_STATE = 0x00000004;
-			public const int LVGF_TITLEIMAGE = 0x00001000;
-			public const int LVGS_COLLAPSED = 0x00000001;
-			public const int LVGS_COLLAPSIBLE = 0x00000008;
+			//public const int LVIR_BOUNDS = 0;
+			//public const int LVIR_ICON = 1;
+			//public const int LVIR_LABEL = 2;
+			//public const int LV_VIEW_ICON = 0x0000;
+			//public const int LV_VIEW_DETAILS = 0x0001;
+			//public const int LV_VIEW_SMALLICON = 0x0002;
+			//public const int LV_VIEW_LIST = 0x0003;
+			//public const int LV_VIEW_TILE = 0x0004;
+			//public const int LVIF_TEXT = 0x00000001;
+			//public const int LVIF_STATE = 0x00000008;
+			//public const int LVNI_SELECTED = 0x0002;
+			//public const int LVSIL_GROUPHEADER = 3;
+			//public const int LVGF_STATE = 0x00000004;
+			//public const int LVGF_TITLEIMAGE = 0x00001000;
+			//public const int LVGS_COLLAPSED = 0x00000001;
+			//public const int LVGS_COLLAPSIBLE = 0x00000008;
 
 			// -> LVIS
 			//public const int LVIS_FOCUSED		= 0x0001;
@@ -718,6 +732,7 @@ namespace WindowsHelper {
 			//public const int LVS_EX_TRANSPARENTBKGND = 0x00400000; // Background is painted by the parent via WM_PRINTCLIENT
 			//public const int LVS_EX_TRANSPARENTSHADOWTEXT = 0x00800000;  // Enable shadow text on transparent backgrounds only (useful with bitmaps)
 		}
+		*/
 
 		/*
 		public static class EM {

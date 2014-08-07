@@ -2454,15 +2454,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					}
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_ACTIVATEAPP) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_ACTIVATEAPP) {
 					MessageBox.Show("Active");
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_SETFOCUS) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_SETFOCUS) {
 					MessageBox.Show("Active");
 				}
 				// Catch Left Mouse Click key
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_LBUTTONDOWN)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_LBUTTONDOWN)) {
 
 					if (KeyUP != null) {
 						ExplorerKeyUPEventArgs args = new ExplorerKeyUPEventArgs();
@@ -2503,7 +2503,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 				}
 
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_LBUTTONUP)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_LBUTTONUP)) {
 					//IsPressedLKButton = false;
 					IsMouseClickOnHeader = false;
 					//WindowsAPI.ReleaseCapture();
@@ -2518,7 +2518,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					}
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_XBUTTONUP) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_XBUTTONUP) {
 					switch (HiWord((uint)m.WParam)) {
 						case 1:
 							NavigateLogLocation(NavigationLogDirection.Backward);
@@ -2532,13 +2532,13 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				bool h = false;
 
 
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_SYSCOMMAND)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_SYSCOMMAND)) {
 
 
 
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSEWHEEL) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MOUSEWHEEL) {
 					Int64 Wheel_delta = HiWord((Int64)m.WParam);
 					var buttonPressed = LoWord((Int64)m.WParam);
 					if (MouseWheel != null) {
@@ -2590,16 +2590,16 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					}
 				}
 
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSE_ENTER)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MOUSE_ENTER)) {
 					//WindowsAPI.SetFocus(SysListViewHandle);
 				}
 
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSE_LEAVE)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MOUSE_LEAVE)) {
 					ExplorerBrowserMouseLeave.Invoke(this, null);
 				}
 
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_KEYDOWN) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_KEYDOWN) {
 					// Catch ESC key
 					if (((int)m.WParam == 27))
 						OnEscKey();
@@ -2670,7 +2670,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 						WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
 					}
 				}
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_KEYUP) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_KEYUP) {
 					if (KeyUP != null) {
 						ExplorerKeyUPEventArgs args = new ExplorerKeyUPEventArgs();
 						args.Key = (int)m.WParam;
@@ -2692,7 +2692,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				}
 
 
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSEMOVE)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MOUSEMOVE)) {
 
 					var rr = new BExplorer.Shell.Interop.User32.RECT();
 					WindowsAPI.GetWindowRect(new HandleRef(this, SysListViewHandle), out rr);
@@ -2757,7 +2757,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_PAINT || m.Msg == (int)WindowsAPI.WndMsg.WM_CREATE) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_PAINT || m.Msg == (int)BExplorer.Shell.Interop.WM.WM_CREATE) {
 					if (IsOldSysListView) {
 
 						WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
@@ -2765,7 +2765,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_MBUTTONUP) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MBUTTONUP) {
 					AutomationElement ae = AutomationElement.FromPoint(new System.Windows.Point(Cursor.Position.X, Cursor.Position.Y));
 					ShellObject item = null;
 					if (ae.Current.ClassName == "UIItem") {
@@ -2788,10 +2788,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					}
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_CONTEXTMENU) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_CONTEXTMENU) {
 					return false;
 				}
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_MENUCOMMAND) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MENUCOMMAND) {
 				}
 				Invoke(new MethodInvoker(
 						delegate {

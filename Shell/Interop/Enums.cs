@@ -5,8 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
 	/// <summary>
 	/// The STGM constants are flags that indicate 
 	/// conditions for creating and deleting the object and access modes 
@@ -19,8 +18,7 @@ namespace BExplorer.Shell.Interop
 	/// </summary>
 	[Flags]
 	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue", Justification = "Follows native api.")]
-	public enum AccessModes
-	{
+	public enum AccessModes {
 		/// <summary>
 		/// Indicates that, in direct mode, each change to a storage 
 		/// or stream element is written as it occurs.
@@ -133,43 +131,37 @@ namespace BExplorer.Shell.Interop
 
 	#region Shell Library Enums
 
-	internal enum LibraryFolderFilter
-	{
+	internal enum LibraryFolderFilter {
 		ForceFileSystem = 1,
 		StorageItems = 2,
 		AllItems = 3
 	};
 
 	[Flags]
-	internal enum LibraryOptions
-	{
+	internal enum LibraryOptions {
 		Default = 0,
 		PinnedToNavigationPane = 0x1,
 		MaskAll = 0x1
 	};
 
-	internal enum DefaultSaveFolderType
-	{
+	internal enum DefaultSaveFolderType {
 		Detect = 1,
 		Private = 2,
 		Public = 3
 	};
 
-	internal enum LibrarySaveOptions
-	{
+	internal enum LibrarySaveOptions {
 		FailIfThere = 0,
 		OverrideExisting = 1,
 		MakeUniqueName = 2
 	};
 
-	internal enum LibraryManageDialogOptions
-	{
+	internal enum LibraryManageDialogOptions {
 		Default = 0,
 		NonIndexableLocationWarning = 1
 	};
 
-	public enum LibraryFolderType
-	{
+	public enum LibraryFolderType {
 		/// <summary>
 		/// General Items
 		/// </summary>
@@ -200,25 +192,23 @@ namespace BExplorer.Shell.Interop
 	#endregion
 
 
-	public enum PerceivedType
-	{
-		Application	= 8,
-		Audio	= 3,
-		Compressed	= 5,
-		Contacts	= 10,
-		Custom = -3,	
-		Document= 6,	
-		Folder	= -1,
-		GameMedia	= 9,
-		Image	= 2,
-		System	= 7,
-		Text	= 1,
-		Unknown	= 0,
-		Unspecified	= -2,
+	public enum PerceivedType {
+		Application = 8,
+		Audio = 3,
+		Compressed = 5,
+		Contacts = 10,
+		Custom = -3,
+		Document = 6,
+		Folder = -1,
+		GameMedia = 9,
+		Image = 2,
+		System = 7,
+		Text = 1,
+		Unknown = 0,
+		Unspecified = -2,
 		Video = 4,
 	}
-	public enum LVBKIF : int
-	{
+	public enum LVBKIF : int {
 
 		SOURCE_NONE = 0x00000000,
 
@@ -242,8 +232,7 @@ namespace BExplorer.Shell.Interop
 
 	}
 
-	public struct LVBKIMAGE
-	{
+	public struct LVBKIMAGE {
 
 		public LVBKIF ulFlags;
 
@@ -258,22 +247,19 @@ namespace BExplorer.Shell.Interop
 		public int yOffsetPercent;
 
 	};
-	public struct PROPERTYKEY
-	{
+	public struct PROPERTYKEY {
 		public Guid fmtid;
 		public int pid;
 	}
 
-	[StructLayout(LayoutKind.Sequential, Pack=2)]
-	public struct REFPROPERTYKEY
-	{
+	[StructLayout(LayoutKind.Sequential, Pack = 2)]
+	public struct REFPROPERTYKEY {
 		public Guid fmtid;
 		public int pid;
 	}
 
 	[Flags]
-	public enum SIIGBF
-	{
+	public enum SIIGBF {
 		ResizeToFit = 0x00,
 		BiggerSizeOk = 0x01,
 		MemoryOnly = 0x02,
@@ -282,16 +268,14 @@ namespace BExplorer.Shell.Interop
 		InCacheOnly = 0x10,
 	}
 
-	public struct Size
-	{
+	public struct Size {
 
 		public int Height { get; set; }
 		public int Width { get; set; }
 	}
 
 	[Flags]
-	public enum ThumbnailOptions
-	{
+	public enum ThumbnailOptions {
 		Extract = 0x00000000,
 		InCacheOnly = 0x00000001,
 		FastExtract = 0x00000002,
@@ -323,8 +307,7 @@ namespace BExplorer.Shell.Interop
 		byte[] rgbKey;
 	}
 	[Flags]
-	public enum ThumbnailCacheOptions
-	{
+	public enum ThumbnailCacheOptions {
 		Default = 0x00000000,
 		LowQuality = 0x00000001,
 		Cached = 0x00000002,
@@ -333,8 +316,7 @@ namespace BExplorer.Shell.Interop
 	/// <summary>
 	/// Thumbnail Alpha Types
 	/// </summary>
-	public enum ThumbnailAlphaType
-	{
+	public enum ThumbnailAlphaType {
 		/// <summary>
 		/// Let the system decide.
 		/// </summary>
@@ -352,15 +334,13 @@ namespace BExplorer.Shell.Interop
 	}
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-	internal struct ThumbnailId
-	{
+	internal struct ThumbnailId {
 		[MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 16)]
 		byte rgbKey;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct BITMAP
-	{
+	public struct BITMAP {
 		public int bmType;
 		public int bmWidth;
 		public int bmHeight;
@@ -370,17 +350,17 @@ namespace BExplorer.Shell.Interop
 		public IntPtr bmBits;
 	}
 
-	public enum SICHINTF
-	{
+	public enum SICHINTF {
 		SICHINT_DISPLAY = 0x00000000,
 		SICHINT_CANONICAL = 0x10000000,
 		SICHINT_TEST_FILESYSPATH_IF_NOT_EQUAL = 0x20000000,
 		SICHINT_ALLFIELDS = unchecked((int)0x80000000)
 	}
 
-
-	public enum WM
-	{
+	/// <summary>
+	/// Standard Window messages
+	/// </summary>
+	public enum WM {
 		WM_NULL = 0x0000,
 		WM_CREATE = 0x0001,
 		WM_DESTROY = 0x0002,
@@ -624,8 +604,7 @@ namespace BExplorer.Shell.Interop
 		WM_REFLECT = WM_USER + 0x1c00
 	}
 
-	public enum HDN
-	{
+	public enum HDN {
 		HDN_FIRST = -300,
 		HDN_LAST = -399,
 		HDN_ITEMCHANGINGA = (HDN_FIRST - 0),
@@ -658,8 +637,7 @@ namespace BExplorer.Shell.Interop
 		HDN_OVERFLOWCLICK = (HDN_FIRST - 19),
 	}
 
-	public enum LVNI
-	{
+	public enum LVNI {
 		LVNI_ALL = 0x0000,
 		LVNI_FOCUSED = 0x0001,
 		LVNI_SELECTED = 0x0002,
@@ -668,8 +646,7 @@ namespace BExplorer.Shell.Interop
 		LVNI_STATEMASK = (LVNI_FOCUSED | LVNI_SELECTED | LVNI_CUT | LVNI_DROPHILITED),
 	}
 
-	public enum ListViewExtendedStyles
-	{
+	public enum ListViewExtendedStyles {
 		LVS_EX_AUTOAUTOARRANGE = 0x1000000,
 		/// <summary>
 		/// LVS_EX_GRIDLINES
@@ -768,22 +745,19 @@ namespace BExplorer.Shell.Interop
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct POINT
-	{
+	public struct POINT {
 		public int x;
 		public int y;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct LVITEMINDEX
-	{
+	public struct LVITEMINDEX {
 		public int iItem;
 		public int iGroup;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct LVHITTESTINFO
-	{
+	public struct LVHITTESTINFO {
 		public POINT pt;
 		public uint flags;
 		public int iItem;

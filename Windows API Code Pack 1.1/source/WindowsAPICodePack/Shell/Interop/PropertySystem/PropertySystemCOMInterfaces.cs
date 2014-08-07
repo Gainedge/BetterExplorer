@@ -14,7 +14,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 	#region Property System COM Interfaces
 
 	[ComImport]
-	[Guid(ShellIIDGuid.IPropertyStoreCapabilities)]
+	[Guid(BExplorer.Shell.Interop.InterfaceGuids.IPropertyStoreCapabilities)]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	interface IPropertyStoreCapabilities {
 		HResult IsPropertyWritable([In]ref PropertyKey propertyKey);
@@ -24,7 +24,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 	/// An in-memory property store cache
 	/// </summary>
 	[ComImport]
-	[Guid(ShellIIDGuid.IPropertyStoreCache)]
+	[Guid(BExplorer.Shell.Interop.InterfaceGuids.IPropertyStoreCache)]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	interface IPropertyStoreCache {
 		/// <summary>
@@ -70,7 +70,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 	/// A property store
 	/// </summary>
 	[ComImport]
-	[Guid(ShellIIDGuid.IPropertyStore)]
+	[Guid(BExplorer.Shell.Interop.InterfaceGuids.IPropertyStore)]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IPropertyStore {
 		/// <summary>
@@ -118,7 +118,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IPropertyDescriptionList),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IPropertyDescriptionList),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IPropertyDescriptionList {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -128,7 +128,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IPropertyDescription),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IPropertyDescription),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IPropertyDescription {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -191,7 +191,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IPropertyDescription2),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IPropertyDescription2),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	internal interface IPropertyDescription2 : IPropertyDescription {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -260,7 +260,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IPropertyEnumType),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IPropertyEnumType),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IPropertyEnumType {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -280,7 +280,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IPropertyEnumType2),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IPropertyEnumType2),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	internal interface IPropertyEnumType2 : IPropertyEnumType {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -304,7 +304,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 
 
 	[ComImport,
-	Guid(ShellIIDGuid.IPropertyEnumTypeList),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IPropertyEnumTypeList),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IPropertyEnumTypeList {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]

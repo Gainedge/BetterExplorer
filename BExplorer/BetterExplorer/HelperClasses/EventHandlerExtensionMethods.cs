@@ -11,6 +11,8 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	/// </summary>
 	[Obsolete("Do Not Use", true)]
 	public static class EventHandlerExtensionMethods {
+
+		/*
 		/// <summary>
 		/// Safely raises an event using EventArgs.Empty
 		/// </summary>
@@ -21,6 +23,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 				eventHandler(sender, EventArgs.Empty);
 			}
 		}
+		*/
 
 		/// <summary>
 		/// Safely raises an event.
@@ -35,6 +38,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			}
 		}
 
+		/*
 		/// <summary>
 		/// Safely raises an event using EventArgs.Empty
 		/// </summary>
@@ -43,5 +47,6 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		public static void SafeRaise(this EventHandler<EventArgs> eventHandler, object sender) {
 			SafeRaise(eventHandler, sender, EventArgs.Empty);
 		}
+		*/
 	}
 }

@@ -42,14 +42,14 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 		}
 		[System.Security.Permissions.PermissionSet(System.Security.Permissions.SecurityAction.Demand, Name = "FullTrust")]
 		protected override void WndProc(ref Message m) {
-			if (m.Msg == (int)WindowsAPI.WndMsg.WM_CONTEXTMENU) {
+			if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_CONTEXTMENU) {
 				this.Browser.IsRenameStarted = true;
 				ShellObject[] dirs = this.Browser.SelectedItems.ToArray();
 				ContextShellMenu cm1 = new ContextShellMenu(this.Browser, this.Browser.SelectedItems.Count > 0 ? ShellViewGetItemObject.Selection : ShellViewGetItemObject.Background);
 				cm1.ShowContextMenu(Cursor.Position);//new System.Drawing.Point(GetCursorPosition().X, GetCursorPosition().Y));
 				return;
 			}
-			if (m.Msg == (int)WindowsAPI.WndMsg.WM_EXITMENULOOP) {
+			if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_EXITMENULOOP) {
 				//this.IsRenameStarted = false;
 			}
 			if (m.Msg == 78) {
@@ -115,7 +115,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 										break;
 									case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
 										// before a subitem drawn
-										if ((nmlvcd.nmcd.uItemState & (WindowsAPI.CDIS.HOT | WindowsAPI.CDIS.DROPHILITED)) != 0 || 0 != WindowsAPI.SendMessage(this.SysListviewhandle, WindowsAPI.LVM.GETITEMSTATE, index, (int)WindowsAPI.LVIS.LVIS_SELECTED)) {
+										if ((nmlvcd.nmcd.uItemState & (WindowsAPI.CDIS.HOT | WindowsAPI.CDIS.DROPHILITED)) != 0 || 0 != WindowsAPI.SendMessage(this.SysListviewhandle, BExplorer.Shell.Interop.LVM.GETITEMSTATE, index, (int)WindowsAPI.LVIS.LVIS_SELECTED)) {
 											// hot, drophilited or selected.
 											if (nmlvcd.iSubItem == 0) {
 												// do default to draw hilite bar
@@ -148,7 +148,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 
 											iconBounds.Left = 1;
 
-											WindowsAPI.SendMessage(this.SysListviewhandle, WindowsAPI.LVM.GETITEMRECT, index, ref iconBounds);
+											WindowsAPI.SendMessage(this.SysListviewhandle, BExplorer.Shell.Interop.LVM.GETITEMRECT, index, ref iconBounds);
 
 											//using (Graphics graphics = Graphics.FromHdc(nmlvcd.nmcd.hdc))
 											//{

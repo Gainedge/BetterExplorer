@@ -558,7 +558,7 @@ namespace Microsoft.WindowsAPICodePack.Dialogs {
 			showState = DialogShowState.Closed;
 
 			// Create return information.
-			if (CoreErrorHelper.Matches(hresult, (int)HResult.Win32ErrorCanceled)) {
+			if (Microsoft.WindowsAPICodePack.Shell.CoreErrorHelper_Help.Matches(hresult, (int)HResult.Win32ErrorCanceled)) {
 				canceled = true;
 				result = CommonFileDialogResult.Cancel;
 				filenames.Clear();

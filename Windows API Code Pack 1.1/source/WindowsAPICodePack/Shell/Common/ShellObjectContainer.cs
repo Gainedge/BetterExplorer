@@ -30,7 +30,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
             {
                 if (nativeShellFolder == null)
                 {
-                    Guid guid = new Guid(ShellIIDGuid.IShellFolder);
+					Guid guid = new Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellFolder);
                     Guid handler = new Guid(ShellBHIDGuid.ShellFolderObject);
 
                     HResult hr = NativeShellItem.BindToHandler(

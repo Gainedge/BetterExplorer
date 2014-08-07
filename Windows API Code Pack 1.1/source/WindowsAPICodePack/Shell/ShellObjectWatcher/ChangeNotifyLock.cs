@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Microsoft.WindowsAPICodePack.Shell.Interop;
 using MS.WindowsAPICodePack.Internal;
+using BExplorer.Shell.Interop;
 
 namespace Microsoft.WindowsAPICodePack.Shell
 {
@@ -24,7 +25,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
                 var notifyStruct = pidl.MarshalAs<ShellNativeMethods.ShellNotifyStruct>();
 
-                Guid guid = new Guid(ShellIIDGuid.IShellItem2);
+				Guid guid = new Guid(InterfaceGuids.IShellItem2);
                 if (notifyStruct.item1 != IntPtr.Zero &&
                     (((ShellObjectChangeTypes)_event) & ShellObjectChangeTypes.SystemImageUpdate) == ShellObjectChangeTypes.None)
                 {

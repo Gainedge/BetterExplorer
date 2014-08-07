@@ -16,11 +16,11 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			[MarshalAs(UnmanagedType.Interface)] out IShellItemArray iShellItemArray);
 
 		/*
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern int SHCreateShellItemArrayFromShellItem(
-            IShellItem pdo,
-            ref Guid riid,
-            [MarshalAs(UnmanagedType.Interface)] out IShellItemArray iShellItemArray);
+		[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+		internal static extern int SHCreateShellItemArrayFromShellItem(
+			IShellItem pdo,
+			ref Guid riid,
+			[MarshalAs(UnmanagedType.Interface)] out IShellItemArray iShellItemArray);
 		*/
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
@@ -173,11 +173,11 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		#region IContextMenu
 		[DllImport("user32.dll")]
 		public static extern bool SetMenuInfo(IntPtr hmenu,
-			ref MENUINFO lpcmi);
+			ref BExplorer.Shell.Interop.MENUINFO lpcmi);
 
 		[DllImport("user32.dll")]
 		public static extern bool GetMenuInfo(IntPtr hmenu,
-			ref MENUINFO lpcmi);
+			ref BExplorer.Shell.Interop.MENUINFO lpcmi);
 
 		[DllImport("user32.dll")]
 		public static extern int GetMenuItemCount(IntPtr hMenu);

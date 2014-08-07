@@ -107,7 +107,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IShellItem),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellItem),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IShellItem {
 		// Not supported: IBindCtx.
@@ -140,7 +140,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IShellItem2),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellItem2),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IShellItem2 : IShellItem {
 		// Not supported: IBindCtx.
@@ -216,7 +216,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IShellItemArray),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellItemArray),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IShellItemArray {
 		// Not supported: IBindCtx.
@@ -266,19 +266,19 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IShellLibrary),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellLibrary),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	internal interface IShellLibrary {
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		HResult LoadLibraryFromItem(
 			[In, MarshalAs(UnmanagedType.Interface)] IShellItem library,
-			[In] AccessModes grfMode);
+			[In] BExplorer.Shell.Interop.AccessModes grfMode);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void LoadLibraryFromKnownFolder(
 			[In] ref Guid knownfidLibrary,
-			[In] AccessModes grfMode);
+			[In] BExplorer.Shell.Interop.AccessModes grfMode);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void AddFolder([In, MarshalAs(UnmanagedType.Interface)] IShellItem location);
@@ -397,7 +397,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
 
 	[ComImport,
-	Guid(ShellIIDGuid.IShellFolder),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellFolder),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
 	ComConversionLoss]
 	public interface IShellFolder {
@@ -505,7 +505,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 */
 
 	[ComImport,
-	Guid(ShellIIDGuid.IEnumIDList),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IEnumIDList),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IEnumIDList {
 		[PreserveSig]
@@ -526,7 +526,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IShellLinkW),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellLinkW),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	internal interface IShellLinkW {
 		void GetPath(
@@ -573,7 +573,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.CShellLink),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.CShellLink),
 	ClassInterface(ClassInterfaceType.None)]
 	internal class CShellLink { }
 
@@ -614,7 +614,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	}
 
 	[ComImport(),
-	Guid(ShellIIDGuid.ICondition),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.ICondition),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	internal interface ICondition : IPersistStream {
 		// Summary:
@@ -692,7 +692,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	};
 
 	[ComImport,
-	Guid(ShellIIDGuid.IRichChunk),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IRichChunk),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	internal interface IRichChunk {
 		// The position *pFirstPos is zero-based.
@@ -703,7 +703,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
 	[ComImport]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	[Guid(ShellIIDGuid.IEnumUnknown)]
+	[Guid(BExplorer.Shell.Interop.InterfaceGuids.IEnumUnknown)]
 	internal interface IEnumUnknown {
 		[PreserveSig]
 		HResult Next(UInt32 requestedNumber, ref IntPtr buffer, ref UInt32 fetchedNumber);
@@ -717,7 +717,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
 
 	[ComImport,
-	Guid(ShellIIDGuid.IConditionFactory),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IConditionFactory),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	internal interface IConditionFactory {
 		[PreserveSig]
@@ -755,14 +755,14 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	[ComImport,
 	ClassInterface(ClassInterfaceType.None),
 	TypeLibType(TypeLibTypeFlags.FCanCreate),
-	Guid(ShellCLSIDGuid.ConditionFactory)]
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.ConditionFactory)]
 	internal class ConditionFactoryCoClass {
 	}
 
 
 
 	[ComImport,
-	Guid(ShellIIDGuid.ISearchFolderItemFactory),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.ISearchFolderItemFactory),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	internal interface ISearchFolderItemFactory {
 		[PreserveSig]
@@ -814,12 +814,12 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	[ComImport,
 	ClassInterface(ClassInterfaceType.None),
 	TypeLibType(TypeLibTypeFlags.FCanCreate),
-	Guid(ShellCLSIDGuid.SearchFolderItemFactory)]
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.SearchFolderItemFactory)]
 	internal class SearchFolderItemFactoryCoClass {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IQuerySolution),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IQuerySolution),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	interface IQuerySolution : IConditionFactory {
 		[PreserveSig]
@@ -865,7 +865,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IQueryParser),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IQueryParser),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	internal interface IQueryParser {
 		// Parse parses an input string, producing a query solution.
@@ -907,7 +907,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	}
 
 	[ComImport,
-	Guid(ShellIIDGuid.IQueryParserManager),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IQueryParserManager),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	internal interface IQueryParserManager {
 		// Create a query parser loaded with the schema for a certain catalog localize to a certain language, and initialized with
@@ -939,7 +939,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	[ComImport,
 	ClassInterface(ClassInterfaceType.None),
 	TypeLibType(TypeLibTypeFlags.FCanCreate),
-	Guid(ShellCLSIDGuid.QueryParserManager)]
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.QueryParserManager)]
 	internal class QueryParserManagerCoClass {
 	}
 
