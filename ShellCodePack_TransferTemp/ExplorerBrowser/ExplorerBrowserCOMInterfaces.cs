@@ -1017,7 +1017,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		public IShellView psvPrev;
 		public uint pfs; // const
 		public IntPtr psbOwner; // IShellBrowser
-		public WindowsAPI.RECT prcView; // RECT
+		public BExplorer.Shell.Interop.User32.RECT prcView; // RECT
 		public Guid pvid; // const
 
 		public IntPtr hwndView;

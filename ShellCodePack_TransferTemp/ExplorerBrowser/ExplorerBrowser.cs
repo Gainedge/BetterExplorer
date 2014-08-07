@@ -2472,7 +2472,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 					if (!IsOldSysListView) {
 						//WindowsAPI.SetFocus(SysListViewHandle);
-						WindowsAPI.RECT r = new WindowsAPI.RECT();
+						var r = new BExplorer.Shell.Interop.User32.RECT();
 						WindowsAPI.GetWindowRect(new HandleRef(this, SysListViewHandle), out r);
 						var reclv = r.ToRectangle();
 						IsMouseClickOnHeader = Cursor.Position.Y >= reclv.Top && Cursor.Position.Y <= reclv.Top + 29;
@@ -2543,7 +2543,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					var buttonPressed = LoWord((Int64)m.WParam);
 					if (MouseWheel != null) {
 						SetUpShellViewHandles(false);
-						WindowsAPI.RECT reclv = new WindowsAPI.RECT();
+						var reclv = new BExplorer.Shell.Interop.User32.RECT();
 						var b = WindowsAPI.GetWindowRect(new HandleRef(this, SysListViewHandle), out reclv);
 						//Rectangle reclv = ;
 
@@ -2694,7 +2694,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSEMOVE)) {
 
-					WindowsAPI.RECT rr = new WindowsAPI.RECT();
+					var rr = new BExplorer.Shell.Interop.User32.RECT();
 					WindowsAPI.GetWindowRect(new HandleRef(this, SysListViewHandle), out rr);
 					Rectangle reclv = rr.ToRectangle();
 					Rectangle rec2 = new Rectangle(reclv.X + 1, reclv.Y + 30, reclv.Width - 3,
@@ -2915,7 +2915,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				  IntPtr s4 = WindowsAPI.FindWindowEx(SysListViewHandle, IntPtr.Zero, "CtrlNotifySink", null);
 				  IntPtr s5 = WindowsAPI.FindWindowEx(SysListViewHandle, s4, "CtrlNotifySink", null);
 				  VScrollHandle = WindowsAPI.FindWindowEx(s5, IntPtr.Zero, "ScrollBar", null);
-				  WindowsAPI.RECT rscroll = new WindowsAPI.RECT();
+				  var rscroll = new BExplorer.Shell.Interop.User32.RECT();
 				  WindowsAPI.GetWindowRect(new HandleRef(this, VScrollHandle), out rscroll);
 
 				  if (isHandle) {
