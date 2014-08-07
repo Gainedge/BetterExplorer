@@ -2755,7 +2755,7 @@ namespace WindowsHelper {
 			public IntPtr wParam;
 			public IntPtr lParam;
 			public uint time;
-			public Microsoft.WindowsAPICodePack.Controls.POINT pt;
+			public BExplorer.Shell.Interop.POINT pt;
 		}
 
 		[ComImport, SuppressUnmanagedCodeSecurity, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("00000114-0000-0000-C000-000000000046")]

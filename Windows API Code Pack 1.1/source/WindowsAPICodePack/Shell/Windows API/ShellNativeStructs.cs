@@ -95,7 +95,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
       [MarshalAs(UnmanagedType.LPWStr)]
       public string TitleW;
 
-      public POINT InvokePoint;
+      public BExplorer.Shell.Interop.POINT InvokePoint;
     }
 
 

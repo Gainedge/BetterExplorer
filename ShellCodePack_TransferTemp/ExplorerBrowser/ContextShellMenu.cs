@@ -295,7 +295,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			invoke.Mask = CMIC.Unicode | CMIC.PtInvoke |
 				((Control.ModifierKeys & Keys.Control) != 0 ? CMIC.ControlDown : 0) |
 				((Control.ModifierKeys & Keys.Shift) != 0 ? CMIC.ShiftDown : 0);
-			POINT pt = new POINT();
+			var pt = new BExplorer.Shell.Interop.POINT();
 			pt.x = ptInvoke.X;
 			pt.y = ptInvoke.Y;
 			invoke.InvokePoint = pt;

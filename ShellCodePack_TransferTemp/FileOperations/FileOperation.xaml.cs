@@ -515,7 +515,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 							if (itemInfo.IsReadOnly)
 								File.SetAttributes(item, System.IO.FileAttributes.Normal);
 							if (this.DeleteToRB)
-								RecycleBin.SendSilent(item);
+								BExplorer.Shell.RecycleBin.SendSilent(item);
 							else
 								File.Delete(item);
 							Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
@@ -525,7 +525,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 						}
 						else {
 							if (this.DeleteToRB) {
-								RecycleBin.SendSilent(item);
+								BExplorer.Shell.RecycleBin.SendSilent(item);
 							}
 							else {
 								DeleteAllFilesFromDir(new DirectoryInfo(item));

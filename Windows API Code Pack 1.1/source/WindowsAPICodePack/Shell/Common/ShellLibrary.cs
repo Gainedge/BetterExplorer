@@ -14,7 +14,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	/// <summary>
 	/// A Shell Library in the Shell Namespace
 	/// </summary>
-	[Obsolete("Do Not Use!!!", true)]
+	[Obsolete("Do Not Use!!!", false)]
 	public sealed class ShellLibrary : ShellContainer, IList<ShellFileSystemFolder> {
 		#region Private Fields
 

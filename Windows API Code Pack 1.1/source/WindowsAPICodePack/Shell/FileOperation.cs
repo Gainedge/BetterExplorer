@@ -43,27 +43,33 @@ namespace FileOperations {
 			}
 		}
 
+		/*
 		public void RenameItem(string source, string newName) {
 			ThrowIfDisposed();
 			using (ComReleaser<IShellItem> sourceItem = CreateShellItem(source)) {
 				_fileOperation.RenameItem(sourceItem.Item, newName, null);
 			}
 		}
+		*/
 
+		/*
 		public void DeleteItem(string source) {
 			ThrowIfDisposed();
 			using (ComReleaser<IShellItem> sourceItem = CreateShellItem(source)) {
 				_fileOperation.DeleteItem(sourceItem.Item, null);
 			}
 		}
+		*/
 
+		/*
 		public void NewItem(string folderName, string name, FileAttributes attrs) {
 			ThrowIfDisposed();
 			using (ComReleaser<IShellItem> folderItem = CreateShellItem(folderName)) {
 				_fileOperation.NewItem(folderItem.Item, attrs, name, string.Empty, _callbackSink);
 			}
 		}
-
+		*/
+		
 		public void PerformOperations() {
 			ThrowIfDisposed();
 			try {

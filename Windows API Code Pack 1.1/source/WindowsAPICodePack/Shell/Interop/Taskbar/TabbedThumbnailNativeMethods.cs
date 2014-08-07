@@ -54,9 +54,11 @@ namespace Microsoft.WindowsAPICodePack.Taskbar
             IntPtr pvAttributeValue,
             uint cbAttribute);
 
+		
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetWindowRect(IntPtr hwnd, ref NativeRect rect);
+		
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -74,12 +76,13 @@ namespace Microsoft.WindowsAPICodePack.Taskbar
             return true;
         }
 
+		
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool ClientToScreen(
             IntPtr hwnd,
             ref NativePoint point);
-
+		
 
         [DllImport("gdi32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]

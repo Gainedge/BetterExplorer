@@ -11,10 +11,12 @@ namespace Microsoft.WindowsAPICodePack.Shell.Interop
 
     internal static class ShellObjectWatcherNativeMethods
     {
+		/*
         [DllImport("Ole32.dll")]
         public static extern HResult CreateBindCtx(
             int reserved, // must be 0
             [Out] out IBindCtx bindCtx);
+		*/
 
         [DllImport("User32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern uint RegisterClassEx(

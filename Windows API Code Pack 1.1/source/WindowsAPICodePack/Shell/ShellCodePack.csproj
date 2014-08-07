@@ -254,9 +254,9 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IFileOperation.cs" />
     <Compile Include="IFileOperationProgressSink.cs" />
-    <Compile Include="Interop\ExplorerBrowser\POINT.cs" />
+    <Compile Include="Interop\IntPtrExtensions.cs" />
+    <Compile Include="Interop\WindowUtilities.cs" />
     <Compile Include="Windows API\IAsyncDataObject.cs" />
-    <Compile Include="Interop\Common\IntPtrExtensions.cs" />
     <Compile Include="Windows API\ShellCOMInterfaces.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -265,7 +265,6 @@
     <Compile Include="Interop\ShellObjectWatcher\ShellObjectWatcherNativeMethods.cs" />
     <Compile Include="Notifications.cs" />
     <Compile Include="PropertySystem\PropertySystemException.cs" />
-    <Compile Include="Interop\Common\WindowUtilities.cs" />
     <Compile Include="KnownFolders\IKnownFolder.cs" />
     <Compile Include="Windows API\ShellCOMClasses.cs" />
     <Compile Include="KnownFolders\DefinitionOptions.cs" />
@@ -386,9 +385,6 @@
     <Compile Include="SysImageList.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_Transfered\DelRecycleBin.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Design\ShellThumbnailClassDiagram.cd" />
@@ -436,6 +432,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="_Obsolete\Interop\" />
+    <Folder Include="_Transfered\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
