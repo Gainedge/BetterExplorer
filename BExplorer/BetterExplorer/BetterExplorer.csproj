@@ -221,9 +221,6 @@
     <Compile Include="ArchiveView\ArchiveProcressScreen.designer.cs">
       <DependentUpon>ArchiveProcressScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="ArchiveView\ArchiveViewWindow.xaml.cs">
-      <DependentUpon>ArchiveViewWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Application\AppCommands.cs" />
     <Compile Include="AutoUpload.cs" />
     <Compile Include="ConditionalSelect\ConditionalSelectClasses.cs" />
@@ -245,12 +242,6 @@
     <Compile Include="HelperClasses\PathStringCombiner.cs" />
     <Compile Include="HelperClasses\Utilities.cs" />
     <Compile Include="HelperClasses\WindowExtensions.cs" />
-    <Compile Include="MessageReceiver.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MessageReceiver.Designer.cs">
-      <DependentUpon>MessageReceiver.cs</DependentUpon>
-    </Compile>
     <Compile Include="PieChart\PieChart\ColourConverter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -366,12 +357,6 @@
       <DependentUpon>MoreColumns.cs</DependentUpon>
     </Compile>
     <Compile Include="HelperClasses\SafeThread.cs" />
-    <Compile Include="ShareWizzard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ShareWizzard.Designer.cs">
-      <DependentUpon>ShareWizzard.cs</DependentUpon>
-    </Compile>
     <Compile Include="ConditionalSelect\StringSearchCriteriaDialog.xaml.cs">
       <DependentUpon>StringSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
@@ -400,10 +385,6 @@
     </Compile>
     <Compile Include="_MainWindow\MainWindow_Updating.cs" />
     <Compile Include="_MainWindow\_Main_Window_Obsolete.cs" />
-    <Page Include="ArchiveView\ArchiveViewWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="ConditionalSelect\ConditionalSelectComboBoxItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -662,9 +643,6 @@
     <EmbeddedResource Include="ArchiveView\CreateArchive.resx">
       <DependentUpon>CreateArchive.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MessageReceiver.resx">
-      <DependentUpon>MessageReceiver.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PreviewMedia.resx">
       <DependentUpon>PreviewMedia.cs</DependentUpon>
     </EmbeddedResource>
@@ -677,9 +655,6 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ShareWizzard.resx">
-      <DependentUpon>ShareWizzard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Updater\UpdateWizard.resx">
       <DependentUpon>UpdateWizard.cs</DependentUpon>
@@ -726,10 +701,6 @@
       <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
       <Name>SevenZip2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ShellCodePack_TransferTemp\ShellCodePack_TransferTemp.csproj">
-      <Project>{87682054-f1e9-4114-beea-20a9fa811906}</Project>
-      <Name>ShellCodePack_TransferTemp</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Shell\Shell.csproj">
       <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
       <Name>Shell</Name>
@@ -741,10 +712,6 @@
     <ProjectReference Include="..\..\UsbEject\UsbEject.csproj">
       <Project>{ae269158-dfa5-4dd7-8afc-f45faf2b958c}</Project>
       <Name>UsbEject</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\ShellCodePack.csproj">
-      <Project>{aa0c00cb-8699-4f37-bfae-40ca87acc06d}</Project>
-      <Name>ShellCodePack</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WpfControlLibrary1\BetterExplorerControls.csproj">
       <Project>{04270710-e358-46d4-83e5-eb7a9323cce7}</Project>
@@ -1212,7 +1179,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <!--   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />

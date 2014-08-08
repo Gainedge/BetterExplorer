@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Shell;
 using SevenZip;
+using BExplorer.Shell;
 
 namespace BetterExplorer {
 
@@ -30,14 +31,14 @@ namespace BetterExplorer {
 			radioButton1.Checked = true;
 		}
 
-		public ArchiveCreateWizard(ShellObjectCollection list) {
+		public ArchiveCreateWizard(ShellItem[] list) {
 			InitializeComponent();
 			//LoadStrings();
 			radioButton1.Checked = true;
 			ListFilesToBeAdded(list);
 		}
 
-		public ArchiveCreateWizard(ShellObjectCollection list, string output_folder) {
+		public ArchiveCreateWizard(ShellItem[] list, string output_folder) {
 			InitializeComponent();
 			//LoadStrings();
 			radioButton1.Checked = true;
@@ -57,8 +58,8 @@ namespace BetterExplorer {
 			label13.Text = (win.FindResource("txtPassword") as string);
 		}
 
-		public void ListFilesToBeAdded(ShellObjectCollection list) {
-			foreach (ShellObject item in list) {
+		public void ListFilesToBeAdded(ShellItem[] list) {
+			foreach (ShellItem item in list) {
 				if (item.IsFolder == true) {
 					try {
 						System.IO.DirectoryInfo dd = new System.IO.DirectoryInfo(item.ParsingName);

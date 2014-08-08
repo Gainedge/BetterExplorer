@@ -32,18 +32,16 @@ using BExplorer.Shell.Interop;
 using Fluent;
 using LTR.IO.ImDisk;
 using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using Microsoft.WindowsAPICodePack.Shell.FileOperations;
-using Microsoft.WindowsAPICodePack.Taskbar;
 using NAppUpdate.Framework;
 using SevenZip;
 using Shell32;
-using WindowsHelper;
 using wyDay.Controls;
 using Clipboards = System.Windows.Forms.Clipboard;
 using ContextMenu = Fluent.ContextMenu;
 using MenuItem = Fluent.MenuItem;
 using Odyssey.Controls;
+using BExplorer.Shell.Taskbar;
+using BExplorer.Shell.CommonFileDialogs;
 
 
 namespace BetterExplorer {
@@ -149,7 +147,6 @@ namespace BetterExplorer {
 
 		List<BExplorer.Shell.LVItemColor> LVItemsColor { get; set; }
 		ContextMenu chcm;
-		MessageReceiver r;
 		#endregion
 
 		#endregion
@@ -904,7 +901,7 @@ namespace BetterExplorer {
 			string ExePath = Utilities.AppDirectoryItem("BetterExplorerOperations.exe");
 
 
-			int winhandle = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
+			int winhandle = (int)User32.getWindowId(null, "BetterExplorerOperations");
 
 			List<ShellItem> items = new List<ShellItem>();
 			foreach (string item in DropList) {
@@ -937,7 +934,7 @@ namespace BetterExplorer {
 
 				proc.Start();
 				Thread.Sleep(1000);
-				int res = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88779", sources, drops, "", "", "");
+				//int res = WindowsAPI.sendWindowsStringMessage((int)User32.getWindowId(null, "BetterExplorerOperations"), 0, "0x88779", sources, drops, "", "", "");
 				proc.WaitForExit();
 				if (proc.ExitCode == 1)
 					MessageBox.Show("Error in creating symlink", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -946,14 +943,12 @@ namespace BetterExplorer {
 
 		private void btnHistory_Click(object sender, RoutedEventArgs e) {
 			ShellListView.ShowPropPage(this.Handle, ShellListView.GetFirstSelectedItem().ParsingName,
-				WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "twext.dll"), 1024, "Previous Versions"));
+				User32.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "twext.dll"), 1024, "Previous Versions"));
 		}
 
 		private void btnBackstageExit_Click(object sender, RoutedEventArgs e) {
 			//! We call Shutdown() so to explicit shutdown the app regardless of windows closing cancel flag.
-			if (r != null)
-				r.Close();
-
+			
 			Application.Current.Shutdown();
 		}
 
@@ -1146,9 +1141,8 @@ namespace BetterExplorer {
 		}
 
 		private void btnmtOther_Click(object sender, RoutedEventArgs e) {
-			CommonOpenFileDialog dlg = new CommonOpenFileDialog();
-			dlg.IsFolderPicker = true;
-			if (dlg.ShowDialog() == CommonFileDialogResult.Ok) {
+			var dlg = new FolderSelectDialog();
+			if (dlg.ShowDialog() == true) {
 				SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Move);
 			}
 		}
@@ -1169,9 +1163,8 @@ namespace BetterExplorer {
 		}
 
 		private void btnctOther_Click(object sender, RoutedEventArgs e) {
-			var dlg = new CommonOpenFileDialog();
-			dlg.IsFolderPicker = true;
-			if (dlg.ShowDialog() == CommonFileDialogResult.Ok) {
+			var dlg = new FolderSelectDialog();
+			if (dlg.ShowDialog() == true) {
 				SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Copy);
 			}
 			ShellListView.Focus();
@@ -1192,7 +1185,7 @@ namespace BetterExplorer {
 
 		private void btnNewItem_Click(object sender, RoutedEventArgs e) {
 			var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE() { fShowAllObjects = 0 };
-			WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
+			BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
 		}
 
 		private void btnOpenWith_Click(object sender, RoutedEventArgs e) {
@@ -1479,11 +1472,11 @@ namespace BetterExplorer {
 		}
 
 		private void btnPin_Click(object sender, RoutedEventArgs e) {
-			WindowsAPI.PinUnpinToTaskbar(ShellListView.GetFirstSelectedItem().ParsingName);
+			User32.PinUnpinToTaskbar(ShellListView.GetFirstSelectedItem().ParsingName);
 		}
 
 		private void btnPinToStart_Click(object sender, RoutedEventArgs e) {
-			WindowsAPI.PinUnpinToStartMenu(ShellListView.GetFirstSelectedItem().ParsingName);
+			User32.PinUnpinToStartMenu(ShellListView.GetFirstSelectedItem().ParsingName);
 			//if (ShellListView.GetSelectedItemsCount() == 1)
 			//{
 			//    ShellLink link = new ShellLink();
@@ -2078,29 +2071,9 @@ namespace BetterExplorer {
 				UpdateRecycleBinInfos();
 			});
 
-
-
-			r = new MessageReceiver();
-			r.OnMessageReceived += r_OnMessageReceived;
-			r.Show();
-
 			bool exitApp = false;
 
 			try {
-				Task.Run(() => {
-					if (WindowsAPI.getOSInfo() == WindowsAPI.OsVersionInfo.Windows8) {
-						var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
-						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, false);
-						if (state.fShowStatusBar == 1) {
-							var newState = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
-							newState.fShowStatusBar = 0;
-							WindowsAPI.SHGetSetSettings(ref newState, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, true);
-						}
-					}
-				});
-
-
-
 				//Sets up FileSystemWatcher for Favorites folder
 				try {
 					//TODO: Find out why we gave this, it is NEVER USED. After this method I assume it will be disposed!!
@@ -2128,7 +2101,7 @@ namespace BetterExplorer {
 				//Load the ShellSettings
 				IsCalledFromLoading = true;
 				var statef = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
-				WindowsAPI.SHGetSetSettings(ref statef, WindowsAPI.SSF.SSF_SHOWALLOBJECTS | WindowsAPI.SSF.SSF_SHOWEXTENSIONS, false);
+				BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref statef, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS | BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, false);
 				chkHiddenFiles.IsChecked = (statef.fShowAllObjects == 1);
 				ShellListView.ShowHidden = chkHiddenFiles.IsChecked.Value;
 				ShellTree.IsShowHiddenItems = chkHiddenFiles.IsChecked.Value;
@@ -2175,7 +2148,7 @@ namespace BetterExplorer {
 
 				//Set up Version Info
 				verNumber.Content = "Version " + (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
-				lblArchitecture.Content = WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()) ? "64-bit version" : "32-bit version";
+				lblArchitecture.Content = Kernel32.IsThis64bitProcess() ? "64-bit version" : "32-bit version";
 
 				//'set StartUp location
 				if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized") {
@@ -2267,9 +2240,6 @@ namespace BetterExplorer {
 		}
 
 		private void RibbonWindow_Closing(object sender, CancelEventArgs e) {
-			if (App.isStartNewWindows) {
-				if (r != null) r.Close();
-			}
 
 			if (this.OwnedWindows.OfType<BExplorer.Shell.FileOperationDialog>().Count() > 0) {
 				if (MessageBox.Show("Are you sure you want to cancel all running file operation tasks?", "", MessageBoxButton.YesNo) == MessageBoxResult.No) {
@@ -2401,15 +2371,15 @@ namespace BetterExplorer {
 			try {
 				//uint iAttribute;
 				pIDL = this.ShellListView.CurrentFolder.AbsolutePidl;
-				WindowsAPI.SHFILEINFO sfi = new WindowsAPI.SHFILEINFO();
+				SHFILEINFO sfi = new SHFILEINFO();
 				IntPtr Res = IntPtr.Zero;
 				if (pIDL != IntPtr.Zero && !ShellListView.CurrentFolder.IsFileSystem) {
 					//if (!ShellListView.CurrentFolder.IsFileSystem) {
-					Res = WindowsAPI.SHGetFileInfo(pIDL, 0, ref sfi, (uint)Marshal.SizeOf(sfi), SHGFI.IconLocation | SHGFI.SmallIcon | SHGFI.PIDL);
+					Res = BExplorer.Shell.Interop.Shell32.SHGetFileInfo(pIDL, 0, out sfi, Marshal.SizeOf(sfi), SHGFI.IconLocation | SHGFI.SmallIcon | SHGFI.PIDL);
 				}
 
 				if (ShellListView.CurrentFolder.IsFileSystem) {
-					WindowsAPI.SHGetFileInfo(ShellListView.CurrentFolder.ParsingName, 0, ref sfi, (uint)Marshal.SizeOf(sfi), (uint)SHGFI.IconLocation | (uint)SHGFI.SmallIcon);
+					BExplorer.Shell.Interop.Shell32.SHGetFileInfo(Marshal.StringToHGlobalAuto(ShellListView.CurrentFolder.ParsingName), 0, out sfi, Marshal.SizeOf(sfi), SHGFI.IconLocation | SHGFI.SmallIcon);
 				}
 
 				System.Windows.Shell.JumpList.AddToRecentCategory(new JumpTask() {
@@ -2610,9 +2580,8 @@ namespace BetterExplorer {
 		}
 
 		private void btnChooseLocation_Click(object sender, RoutedEventArgs e) {
-			var dlg = new CommonOpenFileDialog();
-			dlg.IsFolderPicker = true;
-			if (dlg.ShowDialog() == CommonFileDialogResult.Ok) {
+			var dlg = new FolderSelectDialog();
+			if (dlg.ShowDialog() == true) {
 				txtExtractLocation.Text = dlg.FileName;
 			}
 		}
@@ -2661,10 +2630,10 @@ namespace BetterExplorer {
 				CAI.Show(this.GetWin32Window());
 			}
 			catch (Exception exception) {
-				var dialog = new TaskDialog();
-				dialog.StandardButtons = TaskDialogStandardButtons.Ok;
-				dialog.Text = exception.Message;
-				dialog.Show();
+				//var dialog = new TaskDialog();
+				//dialog.StandardButtons = TaskDialogStandardButtons.Ok;
+				//dialog.Text = exception.Message;
+				//dialog.Show();
 			}
 		}
 
@@ -2817,21 +2786,21 @@ namespace BetterExplorer {
 
 		private void Button_Click_3(object sender, RoutedEventArgs e) {
 			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
-			TaskDialog td = new TaskDialog();
-			td.Caption = "Reset Library";
-			td.Icon = TaskDialogStandardIcon.Warning;
-			td.Text = "Would you like to reset this library to the default settings?";
-			td.InstructionText = "Reset Library Properties?";
-			td.FooterIcon = TaskDialogStandardIcon.Information;
-			//td.FooterText = "This will reset all the properties to default properties for library type";
-			td.DetailsCollapsedLabel = "More Info";
-			td.DetailsExpandedLabel = "More Info";
-			td.DetailsExpandedText = "This will undo all changes you have made to this library, and reset it to its default state.";
-			td.DetailsExpanded = false;
-			td.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter;
-			td.StandardButtons = TaskDialogStandardButtons.Yes | TaskDialogStandardButtons.No;
-			td.OwnerWindowHandle = this.Handle;
-			if (td.Show() == TaskDialogResult.Yes) {
+			//TaskDialog td = new TaskDialog();
+			//td.Caption = "Reset Library";
+			//td.Icon = TaskDialogStandardIcon.Warning;
+			//td.Text = "Would you like to reset this library to the default settings?";
+			//td.InstructionText = "Reset Library Properties?";
+			//td.FooterIcon = TaskDialogStandardIcon.Information;
+			////td.FooterText = "This will reset all the properties to default properties for library type";
+			//td.DetailsCollapsedLabel = "More Info";
+			//td.DetailsExpandedLabel = "More Info";
+			//td.DetailsExpandedText = "This will undo all changes you have made to this library, and reset it to its default state.";
+			//td.DetailsExpanded = false;
+			//td.ExpansionMode = TaskDialogExpandedDetailsLocation.ExpandFooter;
+			//td.StandardButtons = TaskDialogStandardButtons.Yes | TaskDialogStandardButtons.No;
+			//td.OwnerWindowHandle = this.Handle;
+			//if (td.Show() == TaskDialogResult.Yes) {
 				if (ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "documents" &&
 								 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "music" &&
 								 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "videos" &&
@@ -2842,7 +2811,7 @@ namespace BetterExplorer {
 					lib.IconResourceId = new IconReference(@"C:\Windows\System32\imageres.dll", 187);
 					lib.Close();
 				}
-			}
+			//}
 		}
 
 		#endregion
@@ -3004,7 +2973,7 @@ namespace BetterExplorer {
 				delegate() {
 					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 					state.fShowAllObjects = 1;
-					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
+					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
 					ShellListView.ShowHidden = true;
 					ShellTree.RefreshContents();
 				}
@@ -3017,7 +2986,7 @@ namespace BetterExplorer {
 				delegate() {
 					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 					state.fShowAllObjects = 0;
-					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
+					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
 					ShellListView.ShowHidden = false;
 					ShellTree.RefreshContents();
 				}
@@ -3030,7 +2999,7 @@ namespace BetterExplorer {
 				delegate() {
 					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 					state.fShowExtensions = 1;
-					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
+					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, true);
 					ShellListView.RefreshContents();
 				}
 			));
@@ -3042,7 +3011,7 @@ namespace BetterExplorer {
 				delegate() {
 					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 					state.fShowExtensions = 0;
-					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
+					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, true);
 					ShellListView.RefreshContents();
 				}
 			));
@@ -3247,11 +3216,11 @@ namespace BetterExplorer {
 		#region Share Tab Commands (excluding Archive)
 
 		private void btnMapDrive_Click(object sender, RoutedEventArgs e) {
-			WindowsAPI.MapDrive(this.Handle, ShellListView.SelectedItems.Count() == 1 ? ShellListView.GetFirstSelectedItem().ParsingName : String.Empty);
+			//WindowsAPI.MapDrive(this.Handle, ShellListView.SelectedItems.Count() == 1 ? ShellListView.GetFirstSelectedItem().ParsingName : String.Empty);
 		}
 
 		private void btnDisconectDrive_Click(object sender, RoutedEventArgs e) {
-			WindowsAPI.WNetDisconnectDialog(this.Handle, 1);
+			//WindowsAPI.WNetDisconnectDialog(this.Handle, 1);
 		}
 
 		[Obsolete("Does Nothing")]
@@ -3260,7 +3229,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnAdvancedSecurity_Click(object sender, RoutedEventArgs e) {
-			ShellListView.ShowPropPage(this.Handle, ShellListView.GetFirstSelectedItem().ParsingName, WindowsAPI.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 9046, "Security1"));
+			ShellListView.ShowPropPage(this.Handle, ShellListView.GetFirstSelectedItem().ParsingName, User32.LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 9046, "Security1"));
 		}
 
 		#endregion
@@ -3562,25 +3531,25 @@ namespace BetterExplorer {
 			var proc = Rename_CheckChanged_Helper();
 
 			if (chkIsDefault.IsChecked == true) {
-				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
-				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x77654");
-				proc.WaitForExit();
-				if (proc.ExitCode == -1) {
-					isOnLoad = true;
-					(sender as Fluent.CheckBox).IsChecked = false;
-					isOnLoad = false;
-					MessageBox.Show("Can't set Better Explorer as default!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-				}
+				//int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
+				//int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x77654");
+				//proc.WaitForExit();
+				//if (proc.ExitCode == -1) {
+				//	isOnLoad = true;
+				//	(sender as Fluent.CheckBox).IsChecked = false;
+				//	isOnLoad = false;
+				//	MessageBox.Show("Can't set Better Explorer as default!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				//}
 			}
 			else {
-				WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x77655");
-				proc.WaitForExit();
-				if (proc.ExitCode == -1) {
-					isOnLoad = true;
-					(sender as Fluent.CheckBox).IsChecked = true;
-					isOnLoad = false;
-					MessageBox.Show("Can't restore default filemanager!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-				}
+				//WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x77655");
+				//proc.WaitForExit();
+				//if (proc.ExitCode == -1) {
+				//	isOnLoad = true;
+				//	(sender as Fluent.CheckBox).IsChecked = true;
+				//	isOnLoad = false;
+				//	MessageBox.Show("Can't restore default filemanager!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				//}
 			}
 		}
 
@@ -3589,14 +3558,14 @@ namespace BetterExplorer {
 			var proc = Rename_CheckChanged_Helper();
 
 			if (chkTreeExpand.IsChecked == true) {
-				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
-				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88775");
-				proc.WaitForExit();
+				//int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
+				//int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88775");
+				//proc.WaitForExit();
 			}
 			else {
-				int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
-				int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88776");
-				proc.WaitForExit();
+				//int h = (int)WindowsAPI.getWindowId(null, "BetterExplorerOperations");
+				//int jj = WindowsAPI.sendWindowsStringMessage((int)WindowsAPI.getWindowId(null, "BetterExplorerOperations"), 0, "0x88776");
+				//proc.WaitForExit();
 			}
 		}
 
@@ -4544,11 +4513,10 @@ namespace BetterExplorer {
 		}
 
 		private void btnChangeTabsFolder_Click(object sender, RoutedEventArgs e) {
-			var ctf = new CommonOpenFileDialog("Change Tab Folder");
-			ctf.IsFolderPicker = true;
-			ctf.Multiselect = false;
+			var ctf = new FolderSelectDialog();
+			ctf.Title = "Change Tab Folder";
 			ctf.InitialDirectory = new DirectoryInfo(sstdir).Parent.FullName;
-			if (ctf.ShowDialog() == CommonFileDialogResult.Ok) {
+			if (ctf.ShowDialog() == true) {
 				Utilities.SetRegistryValue("SavedTabsDirectory", ctf.FileName + "\\");
 				txtDefSaveTabs.Text = ctf.FileName + "\\";
 				sstdir = ctf.FileName + "\\";
@@ -4645,14 +4613,14 @@ namespace BetterExplorer {
 													 btnRecycleBin.UpdateLayout();
 													 lblRBItems.Visibility = System.Windows.Visibility.Visible;
 													 lblRBItems.Text = String.Format("{0} Items", count);
-													 lblRBSize.Text = WindowsAPI.StrFormatByteSize(size);
+													 lblRBSize.Text = ShlWapi.StrFormatByteSize(size);
 													 lblRBSize.Visibility = System.Windows.Visibility.Visible;
 												 }));
 			}
 		}
 
 		private void miEmptyRB_Click(object sender, RoutedEventArgs e) {
-			WindowsAPI.SHEmptyRecycleBin(this.Handle, string.Empty, 0);
+			BExplorer.Shell.Interop.Shell32.SHEmptyRecycleBin(this.Handle, string.Empty, 0);
 			UpdateRecycleBinInfos();
 		}
 
@@ -4842,7 +4810,7 @@ namespace BetterExplorer {
 		#region Misc
 
 		public MainWindow() {
-			TaskbarManager.Instance.ApplicationId = "{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}";
+			TaskBar.SetCurrentProcessAppId("{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}");
 
 			CommandBinding cbNavigateBack = new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click);
 			this.CommandBindings.Add(cbNavigateBack);
@@ -5004,7 +4972,7 @@ namespace BetterExplorer {
 		private void beNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e) {
 			this.Visibility = Visibility.Visible;
 			if (this.WindowState == WindowState.Minimized) {
-				WindowsAPI.ShowWindow(Handle, (int)WindowsAPI.ShowCommands.SW_RESTORE);
+				User32.ShowWindow(Handle, User32.ShowWindowCommands.Restore);
 			}
 
 			this.Activate();
@@ -5084,7 +5052,7 @@ namespace BetterExplorer {
 				link.Save(loc);
 				link.Dispose();
 
-				WindowsAPI.PinUnpinToStartMenu(loc);
+				User32.PinUnpinToStartMenu(loc);
 			}
 
 			if (ShellListView.GetSelectedCount() == 0) {
@@ -5095,7 +5063,7 @@ namespace BetterExplorer {
 				link.Save(loc);
 				link.Dispose();
 
-				WindowsAPI.PinUnpinToStartMenu(loc);
+				User32.PinUnpinToStartMenu(loc);
 			}
 		}
 

@@ -59,60 +59,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonFileDialogs\CommonFileDialog.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogButton.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogCheckBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogComboBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogControl.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogControlCollection.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogFilter.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogFilterCollection.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogFolderChangeEventArgs.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogGroupBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogLabel.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogMenu.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogProminentControl.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogRadioButtonList.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogResult.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogSeperator.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogStandardFilters.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogTextBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonOpenFileDialog.cs" />
-    <Compile Include="CommonFileDialogs\CommonSaveFileDialog.cs" />
-    <Compile Include="CommonFileDialogs\Dialogs\DialogsCOMClasses.cs" />
-    <Compile Include="CommonFileDialogs\Dialogs\DialogsCOMInterfaces.cs" />
-    <Compile Include="CommonFileDialogs\ICommonFileDialogIndexedControls.cs" />
-    <Compile Include="ExplorerBrowser\BHID.cs" />
-    <Compile Include="ExplorerBrowser\ContextShellMenu.cs" />
-    <Compile Include="ExplorerBrowser\DropData.cs" />
-    <Compile Include="ExplorerBrowser\ExplorerBrowser.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\ExplorerBrowserCOMGuids.cs" />
-    <Compile Include="ExplorerBrowser\ExplorerBrowserCOMInterfaces.cs" />
-    <Compile Include="ExplorerBrowser\ExplorerBrowserContentOptions.cs" />
-    <Compile Include="ExplorerBrowser\ExplorerBrowserEnums.cs" />
-    <Compile Include="ExplorerBrowser\ExplorerBrowserEvents.cs" />
-    <Compile Include="ExplorerBrowser\ExplorerBrowserNativeMethods.cs" />
-    <Compile Include="ExplorerBrowser\ExplorerBrowserPaneVisibility.cs" />
-    <Compile Include="ExplorerBrowser\ExplorerBrowserViewEvents.cs" />
-    <Compile Include="ExplorerBrowser\HelperClasses.cs" />
-    <Compile Include="ExplorerBrowser\HookLibManager.cs" />
-    <Compile Include="ExplorerBrowser\NativeWindowController.cs" />
-    <Compile Include="ExplorerBrowser\ExplorerBrowserNavigationLog.cs" />
-    <Compile Include="ExplorerBrowser\NavigationLogEnums.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\NavigationLogEvents.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\NavigationOptions.cs" />
-    <Compile Include="ExplorerBrowser\ShellCOMGuids.cs" />
-    <Compile Include="ExplorerBrowser\ShellViewDragDrop.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ExplorerBrowser\SubClass.cs" />
-    <Compile Include="ExplorerBrowser\TreeViewWrapper.cs" />
     <Compile Include="FileOperations\CollisionDialog.xaml.cs">
       <DependentUpon>CollisionDialog.xaml</DependentUpon>
     </Compile>
@@ -165,9 +111,6 @@
       <LastGenOutput>LocalizedMessages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ExplorerBrowser\ExplorerBrowserDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="FileOperations\CollisionDialog.xaml">

@@ -16,7 +16,7 @@ using System.Globalization;
 using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Interop;
-using WindowsHelper;
+
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
 
@@ -269,7 +269,7 @@ namespace BetterExplorer {
 				if (!Check || args.CommandLineArgs[1] == "t") {
 					win.Visibility = Visibility.Visible;
 					if (win.WindowState == WindowState.Minimized) {
-						WindowsAPI.ShowWindow(hwnd, (int)WindowsAPI.ShowCommands.SW_RESTORE);
+						User32.ShowWindow(hwnd, User32.ShowWindowCommands.Restore);
 					};
 
 					sho = new ShellItem(StartUpLocation.ToShellParsingName());

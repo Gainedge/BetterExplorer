@@ -867,6 +867,9 @@ namespace BExplorer.Shell.Interop {
 			public IntPtr hProcess;
 		}
 
+		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+		public static extern int SHEmptyRecycleBin(IntPtr hWnd, string pszRootPath, uint dwFlags);
+
 		[DllImport("shell32.dll", SetLastError = true)]
 		static extern IntPtr CommandLineToArgvW(
 				[MarshalAs(UnmanagedType.LPWStr)] string lpCmdLine, out int pNumArgs);
@@ -891,6 +894,13 @@ namespace BExplorer.Shell.Interop {
 
 		[DllImport("shell32.dll")]
 		public static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, [Out()] out IntPtr pidl, uint sfgaoIn, [Out()] out uint psfgaoOut);
+
+		[DllImport("shell32.dll")]
+		public static extern void SetCurrentProcessExplicitAppUserModelID(
+				[MarshalAs(UnmanagedType.LPWStr)] string AppID);
+		[DllImport("shell32.dll")]
+		public static extern void GetCurrentProcessExplicitAppUserModelID(
+				[Out(), MarshalAs(UnmanagedType.LPWStr)] out string AppID);
 
 		public enum SHSTOCKICONID : uint {
 			SIID_DOCNOASSOC = 0,

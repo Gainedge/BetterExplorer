@@ -13,7 +13,6 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
-using Microsoft.WindowsAPICodePack.Shell;
 
 using WindowsHelper;
 
@@ -82,7 +81,7 @@ namespace FileOperation {
 			Text = String.Format("FO{0}", SourceHandle);
 			MessageReceiverHandle = WindowsAPI.FindWindow(null, "FOMR" + SourceHandle);
 			label1.Text = MessageReceiverHandle.ToString();
-			WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOWINC, IntPtr.Zero, IntPtr.Zero);
+			//WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOWINC, IntPtr.Zero, IntPtr.Zero);
 		}
 
 

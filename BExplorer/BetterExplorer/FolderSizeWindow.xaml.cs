@@ -11,7 +11,8 @@ using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
 using Microsoft.WindowsAPICodePack.Shell;
-using WindowsHelper;
+using BExplorer.Shell;
+using BExplorer.Shell.Interop;
 //using WPFPieChart;
 
 namespace BetterExplorer {
@@ -140,7 +141,7 @@ namespace BetterExplorer {
 
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 		private struct WIN32_FIND_DATA {
-			public FileAttributes dwFileAttributes;
+			public System.IO.FileAttributes dwFileAttributes;
 			public FILETIME ftCreationTime;
 			public FILETIME ftLastAccessTime;
 			public FILETIME ftLastWriteTime;
@@ -183,7 +184,7 @@ namespace BetterExplorer {
 
 		private ObservableCollection<FolderSizeInfoClass> FInfo;
 		private List<FolderSizeInfoClass> FSI = new List<FolderSizeInfoClass>();
-		private List<ShellObject> shol = new List<ShellObject>();
+		private List<ShellItem> shol = new List<ShellItem>();
 
 		//private int AllDirsCount = 0;
 
@@ -288,7 +289,7 @@ namespace BetterExplorer {
 			//    valueList.Add(new KeyValuePair<string, long>(item.Name, GetFolderSize(item.FullName, true)));
 			//}
 			//chart1.DataContext = valueList;
-			pieChartLayout1.legend1.Head.Text = ShellObject.FromParsingName(dir).GetDisplayName(DisplayNameType.Default);
+			pieChartLayout1.legend1.Head.Text =  new ShellItem(dir).DisplayName;
 			bgw = new BackgroundWorker();
 			bgw.DoWork += new DoWorkEventHandler(bgw_DoWork);
 			bgw.WorkerReportsProgress = true;
@@ -334,7 +335,7 @@ namespace BetterExplorer {
 					if (bgw.CancellationPending)
 						break;
 
-					if ((findData.dwFileAttributes & FileAttributes.Directory) != 0) {
+					if ((findData.dwFileAttributes & System.IO.FileAttributes.Directory) != 0) {
 						if (findData.cFileName != "." && findData.cFileName != "..") {
 							folders++;
 
@@ -415,13 +416,12 @@ namespace BetterExplorer {
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
-				WindowsAPI.SetProcessWorkingSetSize(System.Diagnostics.Process.GetCurrentProcess().Handle, -1, -1);
+				BExplorer.Shell.Interop.Shell32.SetProcessWorkingSetSize(System.Diagnostics.Process.GetCurrentProcess().Handle, -1, -1);
 			}
 		}
 
-		private void GetFilesRec(ShellObject path) {
-			ShellContainer con = (ShellContainer)ShellContainer.FromParsingName(path.ParsingName);
-			foreach (ShellObject item in con) {
+		private void GetFilesRec(ShellItem path) {
+			foreach (ShellItem item in path) {
 				try {
 					if (item.IsFolder) {
 						try {
@@ -437,7 +437,6 @@ namespace BetterExplorer {
 				catch (Exception) {
 				}
 			}
-			con.Dispose();
 		}
 
 		private void Window_Closing(object sender, CancelEventArgs e) {
@@ -447,7 +446,7 @@ namespace BetterExplorer {
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
 			if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
-				WindowsAPI.SetProcessWorkingSetSize(System.Diagnostics.Process.GetCurrentProcess().Handle, -1, -1);
+				BExplorer.Shell.Interop.Shell32.SetProcessWorkingSetSize(System.Diagnostics.Process.GetCurrentProcess().Handle, -1, -1);
 			}
 		}
 	}

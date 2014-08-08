@@ -1,6 +1,7 @@
-﻿using System.Drawing;
+﻿using BExplorer.Shell.Interop;
+using System;
+using System.Drawing;
 using System.Windows.Forms;
-using WindowsHelper;
 
 namespace BetterExplorer {
 
@@ -34,8 +35,8 @@ namespace BetterExplorer {
 				Ypos = pos.Y;
 			}
 			try {
-				WindowsAPI.ShowWindow(this.Handle, 4);
-				WindowsAPI.SetWindowPos(this.Handle, WindowsAPI.HWND_TOPMOST, Xpos + 2, Ypos + 2, 0, 0, WindowsAPI.SWP_NOSIZE | WindowsAPI.SWP_NOACTIVATE);
+				User32.ShowWindow(this.Handle, (User32.ShowWindowCommands)4);
+				User32.SetWindowPos(this.Handle, (IntPtr)(-1), Xpos + 2, Ypos + 2, 0, 0, User32.SetWindowPosFlags.IgnoreResize | User32.SetWindowPosFlags.DoNotActivate);
 			}
 			catch {
 			}
@@ -59,8 +60,8 @@ namespace BetterExplorer {
 			}
 
 			try {
-				WindowsAPI.SetWindowPos(this.Handle, WindowsAPI.HWND_TOPMOST, Xpos + 2, Ypos + 2, 0, 0,
-						WindowsAPI.SWP_NOSIZE | WindowsAPI.SWP_NOACTIVATE);
+				User32.SetWindowPos(this.Handle, (IntPtr)(-1), Xpos + 2, Ypos + 2, 0, 0,
+						User32.SetWindowPosFlags.IgnoreResize | User32.SetWindowPosFlags.DoNotActivate);
 			}
 			catch {
 			}
@@ -71,8 +72,8 @@ namespace BetterExplorer {
 				CreateParams baseParams = base.CreateParams;
 
 				baseParams.ExStyle |= (int)(
-				  WindowsAPI.WS_EX_NOACTIVATE |
-				  WindowsAPI.WS_EX_TOOLWINDOW);
+					User32.WindowStylesEx.WS_EX_NOACTIVATE |
+				  User32.WindowStylesEx.WS_EX_TOOLWINDOW);
 
 				return baseParams;
 			}

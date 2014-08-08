@@ -13,7 +13,6 @@ using System.IO;
 using Microsoft.Win32;
 using System.Security;
 using System.Diagnostics;
-using Microsoft.WindowsAPICodePack.Controls;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
@@ -21,6 +20,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Windows;
 using System.Windows.Interop;
+using BExplorer.Shell.Interop;
 
 namespace WindowsHelper {
 	public class WindowsAPI {
@@ -985,39 +985,7 @@ namespace WindowsHelper {
 
 
 		#region FolderViewOptions
-		/// <summary>
-		/// Exposes methods that allow control of folder view options specific to the Windows 7 and later views.
-		///Members
-		///The IFolderViewOptions interface inherits from the IUnknown interface. IFolderViewOptions also has the following types of members:
-		///<b><i>Remarks</i></b>
-		///<para><b>When to Implement:</b>
-		///An implementation of this interface is provided with Windows as part of CLSID_ExplorerBrowser and CLSID_ShellBrowser. Third parties do not implement this interface.</para>
-		///<para><b>When to Use:</b>
-		///By default, the Windows 7 item view does not support custom positioning, custom ordering, or hyperlinks, which were supported in the Windows Vista list view. Use this interface when you require those features of the older view. If, at some later time, the item view adds support for those features, these options will automatically use the newer view rather than continuing to revert to the older view as they currently do.
-		///Use this interface to turn off animation and scroll tip view options new to Windows 7.
-		///Use this interface to retrieve the current view settings for all of those options.</para>
-		/// </summary>
-		[ComImport, SuppressUnmanagedCodeSecurity, Guid("3cc974d2-b302-4d36-ad3e-06d93f695d3f"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-		public interface IFolderViewOptions {
-			/// <summary>
-			/// Sets specified options for the view.
-			/// </summary>
-			/// <param name="fvoMask">Type: FOLDERVIEWOPTIONS
-			/// A bitmask made up of one or more of the FOLDERVIEWOPTIONS flags to indicate which options' are being changed. Values in fvoFlags not included in this mask are ignored.
-			/// </param>
-			/// <param name="fvoFlags">Type: FOLDERVIEWOPTIONS
-			/// A bitmask that contains the new values for the options specified in fvoMask. To enable an option, the bitmask should include the FOLDERVIEWOPTIONS flag for that option. To disable an option, the bit used for that FOLDERVIEWOPTIONS flag should be 0.</param>
-			/// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
-			[PreserveSig]
-			HResult SetFolderViewOptions(int fvoMask, int fvoFlags);
-			/// <summary>
-			/// 
-			/// </summary>
-			/// <param name="pfvoFlags"></param>
-			/// <returns></returns>
-			[PreserveSig]
-			HResult GetFolderViewOptions(out int pfvoFlags);
-		}
+	
 
 		/// <summary>
 		/// Used by methods of the IFolderViewOptions interface to activate Windows Vista options not supported by default in Windows 7 and later systems as well as deactivating new Windows 7 options.
@@ -2740,60 +2708,7 @@ namespace WindowsHelper {
 			NSTCS_SHOWREFRESHBUTTON = unchecked((int)0x80000000)
 		}
 
-		[ComImport, SuppressUnmanagedCodeSecurity, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("028212A3-B627-47e9-8856-C14265554E4F")]
-		public interface INameSpaceTreeControl {
-			[PreserveSig]
-			int Initialize(IntPtr hwndParent, ref BExplorer.Shell.Interop.User32.RECT prc, int nsctsFlags);
-			[PreserveSig]
-			int TreeAdvise(IntPtr punk, out int pdwCookie);
-			[PreserveSig]
-			int TreeUnadvise(int dwCookie);
-			[PreserveSig]
-			int AppendRoot(IShellItem psiRoot, int grfEnumFlags, int grfRootStyle, /*IShellItemFilter*/ IntPtr pif);
-			[PreserveSig]
-			int InsertRoot(int iIndex, IShellItem psiRoot, int grfEnumFlags, int grfRootStyle, /*IShellItemFilter*/ IntPtr pif);
-			[PreserveSig]
-			int RemoveRoot(IShellItem psiRoot);
-			[PreserveSig]
-			int RemoveAllRoots();
-			[PreserveSig]
-			int GetRootItems(out /*IShellItemArray*/ IntPtr ppsiaRootItems);
-			[PreserveSig]
-			int SetItemState(IShellItem psi, int nstcisMask, int nstcisFlags);
-			[PreserveSig]
-			int GetItemState(IShellItem psi, int nstcisMask, out int pnstcisFlags);
-			[PreserveSig]
-			int GetSelectedItems(out /*IShellItemArray*/ IntPtr psiaItems);
-			[PreserveSig]
-			int GetItemCustomState(IShellItem psi, out int piStateNumber);
-			[PreserveSig]
-			int SetItemCustomState(IShellItem psi, int iStateNumber);
-			[PreserveSig]
-			int EnsureItemVisible(IShellItem psi);
-			[PreserveSig]
-			int SetTheme(string pszTheme);
-			[PreserveSig]
-			int GetNextItem(IShellItem psi, int nstcgi, out IShellItem ppsiNext);
-			[PreserveSig]
-			int HitTest([In] ref System.Drawing.Point ppt, out IShellItem ppsiOut);
-			[PreserveSig]
-			int GetItemRect(IShellItem psi, out BExplorer.Shell.Interop.User32.RECT prect);
-			[PreserveSig]
-			int CollapseAll();
-		}
-
-		[ComImport, SuppressUnmanagedCodeSecurity, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("7cc7aed8-290e-49bc-8945-c1401cc9306c")]
-		public interface INameSpaceTreeControl2 : INameSpaceTreeControl {
-			[PreserveSig]
-			int GetControlStyle(NSTCSTYLE nstcsMask, out NSTCSTYLE pnstcsStyle);
-			[PreserveSig]
-			int GetControlStyle2(NSTCSTYLE2 nstcsMask, out NSTCSTYLE2 pnstcsStyle);
-			[PreserveSig]
-			int SetControlStyle(NSTCSTYLE nstcsMask, NSTCSTYLE nstcsStyle);
-			[PreserveSig]
-			int SetControlStyle2(NSTCSTYLE2 nstcsMask, NSTCSTYLE2 nstcsStyle);
-		}
-
+		
 		/*
 		[Serializable]
 		public struct PROPERTYKEY {
@@ -3420,7 +3335,7 @@ namespace WindowsHelper {
 		public static bool IsPinnedToTaskbar(string executablePath) {
 			foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedTaskbarItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk")) {
 
-				var shortcut = new ShellLinkApi(pinnedShortcut);
+				var shortcut = new ShellLink(pinnedShortcut);
 				if (shortcut.Target == executablePath)
 					return true;
 			}

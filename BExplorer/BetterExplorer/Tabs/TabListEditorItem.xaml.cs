@@ -13,6 +13,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using BExplorer.Shell;
+using BExplorer.Shell.CommonFileDialogs;
 
 namespace BetterExplorer {
 	/// <summary>
@@ -37,11 +39,11 @@ namespace BetterExplorer {
 			set {
 				try {
 					loc.Content = value;
-					ShellObject o = ShellObject.FromParsingName(value);
+					var o = new ShellItem(value);
 					o.Thumbnail.CurrentSize = new System.Windows.Size(24, 24);
-					o.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+					o.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.IconOnly;
 					folicon.Source = o.Thumbnail.BitmapSource;
-					title.Content = o.GetDisplayName(DisplayNameType.Default);
+					title.Content = o.DisplayName;
 					o.Dispose();
 				}
 				catch {
@@ -123,9 +125,8 @@ namespace BetterExplorer {
 		}
 
 		private void button1_Click(object sender, RoutedEventArgs e) {
-			var dlg = new CommonOpenFileDialog();
-			dlg.IsFolderPicker = true;
-			if (dlg.ShowDialog() == CommonFileDialogResult.Ok) {
+			var dlg = new FolderSelectDialog();
+			if (dlg.ShowDialog() == true) {
 				editpath.Text = dlg.FileName;
 			}
 		}

@@ -30,11 +30,9 @@ using ContextMenu = Fluent.ContextMenu;
 using System.Globalization;
 using NAppUpdate.Framework;
 using BetterExplorerControls;
-using Microsoft.WindowsAPICodePack.Shell.FileOperations;
 using wyDay.Controls;
 using System.Security.Principal;
 using Shell32;
-using Microsoft.WindowsAPICodePack.Taskbar;
 using BetterExplorer.Networks;
 using System.Xml.Linq;
 using System.Text;
@@ -45,7 +43,6 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
-using WindowsHelper;
 
 namespace BetterExplorer {
 	partial class MainWindow {

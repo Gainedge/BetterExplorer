@@ -6,9 +6,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.WindowsAPICodePack.Shell;
-using WindowsHelper;
 
 namespace BetterExplorer {
 
@@ -22,7 +20,7 @@ namespace BetterExplorer {
 
 		public IconView() {
 			InitializeComponent();
-			WindowsAPI.SetWindowTheme(lvIcons.Handle, "explorer", 0);
+			UxTheme.SetWindowTheme(lvIcons.Handle, "explorer", 0);
 		}
 
 		public void LoadIcons(ShellView shellView, bool isLibrary) {
@@ -64,10 +62,11 @@ namespace BetterExplorer {
 		}
 
 		private void btnLoad_Click(object sender, EventArgs e) {
-			var dlg = new CommonOpenFileDialog("Select icon file");
-			dlg.AllowNonFileSystemItems = false;
-			dlg.Filters.Add(new CommonFileDialogFilter("Icon Files", "*.exe;*.dll;*.icl; *.ico"));
-			if (dlg.ShowDialog(this.Handle) == CommonFileDialogResult.Ok) {
+			var dlg = new System.Windows.Forms.OpenFileDialog();
+			dlg.AutoUpgradeEnabled = true;
+			dlg.Title = "Select icon file";
+			dlg.Filter = "Icon Files |*.exe;*.dll;*.icl; *.ico";
+			if (dlg.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {
 				tbLibrary.Text = dlg.FileName;
 			}
 			BackgroundWorker bw = new BackgroundWorker();

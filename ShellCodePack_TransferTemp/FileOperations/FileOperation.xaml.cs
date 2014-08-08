@@ -1,5 +1,4 @@
-﻿using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -61,15 +60,15 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 			this.LoadTimer.Tick += LoadTimer_Tick;
 			this.LoadTimer.Start();
 			InitializeComponent();
-			ShellObject firstSourceItem = ShellObject.FromParsingName(SourceItemsCollection[0]);
-			lblFrom.Text = firstSourceItem.Parent.GetDisplayName(DisplayNameType.Default);
-			if (!String.IsNullOrEmpty(this.DestinationLocation)) {
-				ShellObject destinationObject = ShellObject.FromParsingName(DestinationLocation);
-				lblTo.Text = destinationObject.GetDisplayName(DisplayNameType.Default);
-				destinationObject.Dispose();
-			}
-			firstSourceItem.Parent.Dispose();
-			firstSourceItem.Dispose();
+			//ShellObject firstSourceItem = ShellObject.FromParsingName(SourceItemsCollection[0]);
+			//lblFrom.Text = firstSourceItem.Parent.GetDisplayName(DisplayNameType.Default);
+			//if (!String.IsNullOrEmpty(this.DestinationLocation)) {
+			//	ShellObject destinationObject = ShellObject.FromParsingName(DestinationLocation);
+			//	lblTo.Text = destinationObject.GetDisplayName(DisplayNameType.Default);
+			//	destinationObject.Dispose();
+			//}
+			//firstSourceItem.Parent.Dispose();
+			//firstSourceItem.Dispose();
 
 			CopyThread = new Thread(StartOperation) { IsBackground = false };
 			CopyThread.Start();
@@ -193,382 +192,382 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 		}
 
 		void StartOperation() {
-			CurrentStatus = 1;
-			var isBreak = false;
-			_block.WaitOne();
-			List<KeyValuePair<String, String>> collection = new List<KeyValuePair<String, string>>();
-			List<Tuple<String, String, String, Int32>> CopyItems = new List<Tuple<String, String, String, Int32>>();
-			List<CollisionInfo> colissions = new List<CollisionInfo>();
-			int itemIndex = 0;
-			Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-					   (Action)(() => {
-						   //this.prOverallProgress.IsIndeterminate = true;
-						   lblProgress.Text = "Counting Files";
-					   }));
-			totalSize = 0;
-			if (this.OperationType == FileOperations.OperationType.Copy) {
+			//CurrentStatus = 1;
+			//var isBreak = false;
+			//_block.WaitOne();
+			//List<KeyValuePair<String, String>> collection = new List<KeyValuePair<String, string>>();
+			//List<Tuple<String, String, String, Int32>> CopyItems = new List<Tuple<String, String, String, Int32>>();
+			//List<CollisionInfo> colissions = new List<CollisionInfo>();
+			//int itemIndex = 0;
+			//Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//		   (Action)(() => {
+			//			   //this.prOverallProgress.IsIndeterminate = true;
+			//			   lblProgress.Text = "Counting Files";
+			//		   }));
+			//totalSize = 0;
+			//if (this.OperationType == FileOperations.OperationType.Copy) {
 
-				foreach (var item in SourceItemsCollection) {
-					var shellobj = ShellObject.FromParsingName(item);
-					if (shellobj.IsFolder && shellobj.Properties.System.FileExtension.Value == null) {
-						var newName = String.Empty;
-						if (shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName) {
-							var dest = System.IO.Path.Combine(DestinationLocation, System.IO.Path.GetFileName(item));
-							if (Directory.Exists(dest)) {
-								int suffix = 0;
-								newName = dest;
+			//	foreach (var item in SourceItemsCollection) {
+			//		//var shellobj = ShellObject.FromParsingName(item);
+			//		//if (shellobj.IsFolder && shellobj.Properties.System.FileExtension.Value == null) {
+			//		//	var newName = String.Empty;
+			//		//	if (shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName) {
+			//		//		var dest = System.IO.Path.Combine(DestinationLocation, System.IO.Path.GetFileName(item));
+			//		//		if (Directory.Exists(dest)) {
+			//		//			int suffix = 0;
+			//		//			newName = dest;
 
-								do {
-									newName = String.Format("{0} - Copy ({1})", dest, ++suffix);
-								} while (Directory.Exists(newName));
-							}
-						}
-						CopyFolder(item, newName == String.Empty ? DestinationLocation : newName, ref CopyItems, ref colissions, newName != String.Empty);
-					}
-					else {
+			//		//			do {
+			//		//				newName = String.Format("{0} - Copy ({1})", dest, ++suffix);
+			//		//			} while (Directory.Exists(newName));
+			//		//		}
+			//		//	}
+			//			CopyFolder(item, newName == String.Empty ? DestinationLocation : newName, ref CopyItems, ref colissions, newName != String.Empty);
+			//		}
+			//		else {
 
-						CopyFiles(item, DestinationLocation, ref CopyItems, ref colissions, shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName);
-					}
-					//var count = 0;
-					//if (shellobj.IsFolder && shellobj.Properties.System.FileExtension.Value == null)
-					//{
-					//  FileInfo[] files = new DirectoryInfo(item).GetFiles("*.*", SearchOption.AllDirectories);
-					//  count += files.Count();
-					//  totalSize += (ulong)files.Sum(c => c.Length);
-					//}
-					//else
-					//{
-					//  count++;
-					//  totalSize += shellobj.Properties.System.Size.Value.HasValue ? shellobj.Properties.System.Size.Value.Value : 0;
-					//}
+			//			//CopyFiles(item, DestinationLocation, ref CopyItems, ref colissions, shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName);
+			//		}
+			//		//var count = 0;
+			//		//if (shellobj.IsFolder && shellobj.Properties.System.FileExtension.Value == null)
+			//		//{
+			//		//  FileInfo[] files = new DirectoryInfo(item).GetFiles("*.*", SearchOption.AllDirectories);
+			//		//  count += files.Count();
+			//		//  totalSize += (ulong)files.Sum(c => c.Length);
+			//		//}
+			//		//else
+			//		//{
+			//		//  count++;
+			//		//  totalSize += shellobj.Properties.System.Size.Value.HasValue ? shellobj.Properties.System.Size.Value.Value : 0;
+			//		//}
 
-					//Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-					//          (Action)(() =>
-					//          {
-					//            lblItemsCount.Text = count.ToString();
-					//            lblProgress.Text = String.Format("Counting Files - {0}", WindowsAPI.StrFormatByteSize((long)totalSize));
-					//          }));
-					shellobj.Dispose();
-				}
+			//		//Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//		//          (Action)(() =>
+			//		//          {
+			//		//            lblItemsCount.Text = count.ToString();
+			//		//            lblProgress.Text = String.Format("Counting Files - {0}", WindowsAPI.StrFormatByteSize((long)totalSize));
+			//		//          }));
+			//		//shellobj.Dispose();
+			//	}
 
-				if (colissions.Count > 0) {
-					Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-							 (Action)(() => {
-								 CollisionDialog dlg = new CollisionDialog(colissions, ShellObject.FromParsingName(SourceItemsCollection[0]).Parent, ShellObject.FromParsingName(DestinationLocation));
+			//	if (colissions.Count > 0) {
+			//		Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//				 (Action)(() => {
+			//					 //CollisionDialog dlg = new CollisionDialog(colissions, ShellObject.FromParsingName(SourceItemsCollection[0]).Parent, ShellObject.FromParsingName(DestinationLocation));
 
-								 dlg.Owner = ParentContents;
+			//					 //dlg.Owner = ParentContents;
 
-								 if (dlg.ShowDialog() == true) {
-									 colissions = dlg.collisions;
-								 }
-								 else {
-									 CopyItems.Clear();
-									 colissions.Clear();
-								 }
-							 }));
-				}
-				itemIndex = 0;
-				var itemsForSkip = colissions.Where(c => (!c.IsChecked & !c.IsCheckedC) || (!c.IsChecked & c.IsCheckedC)).Select(c => c.index).ToArray();
-				foreach (var itemIndexRemove in itemsForSkip.OrderByDescending(c => c)) {
-					CopyItems.RemoveAt(itemIndexRemove);
-				}
-				CopyItemsCount = CopyItems.Where(c => c.Item4 == 0).Count();
-				Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-						 (Action)(delegate { lblItemsCount.Text = CopyItems.Count().ToString(CultureInfo.InvariantCulture); }));
-				if (CopyItems.Count == 0) {
-					CloseCurrentTask();
-				}
-				Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-						   (Action)(() => {
-							   //this.prOverallProgress.IsIndeterminate = false;
-						   }));
-			}
-
-			if (OperationType == FileOperations.OperationType.Move) {
-				if (Path.GetPathRoot(SourceItemsCollection[0]) == Path.GetPathRoot(DestinationLocation)) {
-					foreach (var item in this.SourceItemsCollection) {
-						ShFileOperation(item, Path.Combine(DestinationLocation, Path.GetFileName(item)), BExplorer.Shell.Windows.WindowsAPI.FileOperationType.FO_MOVE);
-					}
-					CloseCurrentTask();
-				}
-				else {
-					foreach (var item in SourceItemsCollection) {
-						var shellobj = ShellObject.FromParsingName(item);
-						if (shellobj.IsFolder && shellobj.Properties.System.FileExtension.Value == null) {
-							var newName = String.Empty;
-							if (shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName) {
-								var dest = System.IO.Path.Combine(DestinationLocation, System.IO.Path.GetFileName(item));
-								if (Directory.Exists(dest)) {
-									int suffix = 0;
-									newName = dest;
-
-									do {
-										newName = String.Format("{0} - Copy ({1})", dest, ++suffix);
-									} while (Directory.Exists(newName));
-								}
-							}
-							CopyFolder(item, newName == String.Empty ? DestinationLocation : newName, ref CopyItems, ref colissions, newName != String.Empty);
-						}
-						else {
-
-							CopyFiles(item, DestinationLocation, ref CopyItems, ref colissions, shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName);
-						}
-
-						shellobj.Dispose();
-					}
-
-					if (colissions.Count > 0) {
-						Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-								 (Action)(() => {
-									 CollisionDialog dlg = new CollisionDialog(colissions, ShellObject.FromParsingName(SourceItemsCollection[0]).Parent, ShellObject.FromParsingName(DestinationLocation));
-
-									 dlg.Owner = ParentContents;
-
-									 if (dlg.ShowDialog() == true) {
-										 colissions = dlg.collisions;
-									 }
-									 else {
-										 CopyItems.Clear();
-										 colissions.Clear();
-									 }
-								 }));
-					}
-					itemIndex = 0;
-					var itemsForSkip = colissions.Where(c => (!c.IsChecked & !c.IsCheckedC) || (!c.IsChecked & c.IsCheckedC)).Select(c => c.index).ToArray();
-					foreach (var itemIndexRemove in itemsForSkip.OrderByDescending(c => c)) {
-						CopyItems.RemoveAt(itemIndexRemove);
-					}
-					CopyItemsCount = CopyItems.Where(c => c.Item4 == 0).Count();
-					Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-							 (Action)(delegate { lblItemsCount.Text = CopyItems.Count().ToString(CultureInfo.InvariantCulture); }));
-
-					if (CopyItems.Count == 0) {
-						CloseCurrentTask();
-					}
-
-					var collectionArray = CopyItems.ToArray().OrderByDescending(c => c.Item4);
-					//Parallel.ForEach(collectionArray, file =>
-					foreach (var file in collectionArray) {
-						if (file.Item4 == 0) {
-							var currentItem = colissions.Where(c => c.itemPath == file.Item1).SingleOrDefault();
-							try {
-								if (currentItem != null) {
-									if (!currentItem.IsCheckedC && currentItem.IsChecked) {
-										ProcessItems(file.Item1, file.Item2);
-									}
-									else if (currentItem.IsCheckedC && currentItem.IsChecked) {
-										ProcessItems(file.Item1, file.Item3);
-									}
-								}
-								else {
-									ProcessItems(file.Item1, file.Item3);
-								}
-							}
-							catch (UnauthorizedAccessException) {
-								IsNeedAdminFO = true;
-								isBreak = true;
-								break;
-							}
-							catch (ThreadAbortException) {
-								CloseCurrentTask();
-							}
-							catch (Exception ex) {
-								Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-									  (Action)(() => {
-										  prFileProgress.Foreground = Brushes.Red;
-										  prOverallProgress.Foreground = Brushes.Red;
-										  Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
-									  }));
-								MessageBox.Show(ex.Message);
-							}
-						}
-					}
-
-
-				}
-			}
-			int counter = 0;
-
-			if (this.OperationType != FileOperations.OperationType.Delete) {
-				var collectionArray = CopyItems.ToArray().OrderByDescending(c => c.Item4);
-				//Parallel.ForEach(collectionArray, file =>
-				foreach (var file in collectionArray) {
-					if (this.Cancel) {
-						CloseCurrentTask();
-						break;
-					}
-					switch (this.OperationType) {
-						case OperationType.Copy:
-							if (file.Item4 == 1) {
-								if (!Directory.Exists(file.Item2))
-									try {
-										Directory.CreateDirectory(file.Item2);
-									}
-									catch (UnauthorizedAccessException) {
-										StartAdminProcess(CopyItems, colissions, false);
-										isBreak = true;
-										break;
-									}
-							}
-							else {
-								var currentItem = colissions.Where(c => c.itemPath == file.Item1).SingleOrDefault();
-								try {
-									if (currentItem != null) {
-										if (!currentItem.IsCheckedC && currentItem.IsChecked) {
-											ProcessItems(file.Item1, file.Item2);
-										}
-										else if (currentItem.IsCheckedC && currentItem.IsChecked) {
-											ProcessItems(file.Item1, file.Item3);
-										}
-									}
-									else {
-										ProcessItems(file.Item1, file.Item3);
-									}
-								}
-								catch (UnauthorizedAccessException) {
-									IsNeedAdminFO = true;
-									isBreak = true;
-									break;
-								}
-								catch (ThreadAbortException) {
-									CloseCurrentTask();
-								}
-								catch (Exception ex) {
-
-									Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-										 (Action)(() => {
-											 prFileProgress.Foreground = Brushes.Red;
-											 prOverallProgress.Foreground = Brushes.Red;
-											 Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
-										 }));
-									MessageBox.Show(ex.Message);
-								}
-							};
-							break;
-						case OperationType.Move:
-							break;
-						case OperationType.Rename:
-							break;
-						case OperationType.Decomress:
-							break;
-						case OperationType.Compress:
-							break;
-					}
-
-					itemIndex++;
-				}//);
-				if (IsNeedAdminFO)
-					StartAdminProcess(CopyItems, colissions, OperationType == FileOperations.OperationType.Move);
-			}
-			else {
-				foreach (var item in SourceItemsCollection) {
-					var count = 0;
-					var itemObj = ShellObject.FromParsingName(item);
-					if (itemObj.IsFolder && itemObj.Properties.System.FileExtension.Value == null) {
-						FileInfo[] files = new DirectoryInfo(item).GetFiles("*.*", SearchOption.AllDirectories);
-						count += files.Count();
-						totalSize += (ulong)files.Sum(c => c.Length);
-					}
-					else {
-						count++;
-						totalSize += itemObj.Properties.System.Size.Value.HasValue ? itemObj.Properties.System.Size.Value.Value : 0;
-					}
-
-					Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-							  (Action)(() => {
-								  lblItemsCount.Text = count.ToString();
-								  lblProgress.Text = String.Format("Counting Files - {0}", WindowsAPI.StrFormatByteSize((long)totalSize));
-							  }));
-					itemObj.Dispose();
-				}
-				Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-							(Action)(() => {
-								//this.prOverallProgress.IsIndeterminate = false;
-							}));
-				Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-									 (Action)(() => {
-										 var count = 0;
-										 if (!this.DeleteToRB) {
-											 foreach (var item in this.SourceItemsCollection) {
-												 var itemObj = ShellObject.FromParsingName(item);
-												 if (itemObj.IsFolder && itemObj.Properties.System.FileExtension.Value == null) {
-													 DirectoryInfo di = new DirectoryInfo(item);
-													 count += di.GetDirectories("*", SearchOption.AllDirectories).Count() + di.GetFiles("*.*", SearchOption.AllDirectories).Count();
-													 count++;
-												 }
-												 else {
-													 count++;
-												 }
-											 }
-										 }
-										 prFileProgress.Visibility = System.Windows.Visibility.Collapsed;
-										 prOverallProgress.Maximum = this.DeleteToRB ? this.SourceItemsCollection.Count() : count;
-									 }));
-				var isError = false;
-				foreach (var item in this.SourceItemsCollection) {
-					_block.WaitOne();
-					try {
-						var itemObj = ShellObject.FromParsingName(item);
-
-						if (!itemObj.IsFolder || (itemObj.Properties.System.FileExtension.Value != null && itemObj.Properties.System.FileExtension.Value.ToLowerInvariant() == ".zip")) {
-							var itemInfo = new FileInfo(item);
-							if (itemInfo.IsReadOnly)
-								File.SetAttributes(item, System.IO.FileAttributes.Normal);
-							if (this.DeleteToRB)
-								BExplorer.Shell.RecycleBin.SendSilent(item);
-							else
-								File.Delete(item);
-							Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-							 (Action)(() => {
-								 prOverallProgress.Value++;
-							 }));
-						}
-						else {
-							if (this.DeleteToRB) {
-								BExplorer.Shell.RecycleBin.SendSilent(item);
-							}
-							else {
-								DeleteAllFilesFromDir(new DirectoryInfo(item));
-								DeleteFolderRecursive(new DirectoryInfo(item));
-							}
-						}
-						itemObj.Dispose();
-					}
-					catch (UnauthorizedAccessException) {
-						IsNeedAdminFO = true;
-						break;
-					}
-					catch (ThreadAbortException) {
-						CloseCurrentTask();
-					}
-					catch (Exception ex) {
-						isError = true;
-						Dispatcher.Invoke(DispatcherPriority.Background,
-						 (Action)(() => {
-							 prOverallProgress.Foreground = Brushes.Red;
-							 Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
-						 }));
-						_block.Reset();
-						MessageBox.Show(ex.Message);
-					}
-				}
-				if (IsNeedAdminFO) {
-					if (OperationType == FileOperations.OperationType.Delete) {
-						var CopyItemsForDelete = this.SourceItemsCollection.Select(c => new Tuple<string, string, string, int>(c, String.Empty, string.Empty, 0)).ToList();
-						StartAdminProcess(CopyItemsForDelete, null, false, true, this.DeleteToRB);
-					}
-				}
-				if (!isError)
-					CloseCurrentTask();
-			}
-
-
-			////If we have MoveOperation to same volume it is basically a rename opearion that happend immediately so we close the window
-			//if (OperationType == OperationType.Move)
-			//{
-			//    if (System.IO.Path.GetPathRoot(CopyItems[0].Item1) == System.IO.Path.GetPathRoot(DestinationLocation))
-			//        CloseCurrentTask();
+			//					 //if (dlg.ShowDialog() == true) {
+			//						// colissions = dlg.collisions;
+			//					 //}
+			//					 //else {
+			//						// CopyItems.Clear();
+			//						// colissions.Clear();
+			//					 //}
+			//				 }));
+			//	}
+			//	itemIndex = 0;
+			//	var itemsForSkip = colissions.Where(c => (!c.IsChecked & !c.IsCheckedC) || (!c.IsChecked & c.IsCheckedC)).Select(c => c.index).ToArray();
+			//	foreach (var itemIndexRemove in itemsForSkip.OrderByDescending(c => c)) {
+			//		CopyItems.RemoveAt(itemIndexRemove);
+			//	}
+			//	CopyItemsCount = CopyItems.Where(c => c.Item4 == 0).Count();
+			//	Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//			 (Action)(delegate { lblItemsCount.Text = CopyItems.Count().ToString(CultureInfo.InvariantCulture); }));
+			//	if (CopyItems.Count == 0) {
+			//		//CloseCurrentTask();
+			//	}
+			//	Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//			   (Action)(() => {
+			//				   //this.prOverallProgress.IsIndeterminate = false;
+			//			   }));
 			//}
+
+			//if (OperationType == FileOperations.OperationType.Move) {
+			//	if (Path.GetPathRoot(SourceItemsCollection[0]) == Path.GetPathRoot(DestinationLocation)) {
+			//		foreach (var item in this.SourceItemsCollection) {
+			//			ShFileOperation(item, Path.Combine(DestinationLocation, Path.GetFileName(item)), BExplorer.Shell.Windows.WindowsAPI.FileOperationType.FO_MOVE);
+			//		}
+			//		CloseCurrentTask();
+			//	}
+			//	else {
+			//		foreach (var item in SourceItemsCollection) {
+			//			var shellobj = ShellObject.FromParsingName(item);
+			//			if (shellobj.IsFolder && shellobj.Properties.System.FileExtension.Value == null) {
+			//				var newName = String.Empty;
+			//				if (shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName) {
+			//					var dest = System.IO.Path.Combine(DestinationLocation, System.IO.Path.GetFileName(item));
+			//					if (Directory.Exists(dest)) {
+			//						int suffix = 0;
+			//						newName = dest;
+
+			//						do {
+			//							newName = String.Format("{0} - Copy ({1})", dest, ++suffix);
+			//						} while (Directory.Exists(newName));
+			//					}
+			//				}
+			//				CopyFolder(item, newName == String.Empty ? DestinationLocation : newName, ref CopyItems, ref colissions, newName != String.Empty);
+			//			}
+			//			else {
+
+			//				CopyFiles(item, DestinationLocation, ref CopyItems, ref colissions, shellobj.Parent.ParsingName == ShellObject.FromParsingName(DestinationLocation).ParsingName);
+			//			}
+
+			//			shellobj.Dispose();
+			//		}
+
+			//		if (colissions.Count > 0) {
+			//			Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//					 (Action)(() => {
+			//						 CollisionDialog dlg = new CollisionDialog(colissions, ShellObject.FromParsingName(SourceItemsCollection[0]).Parent, ShellObject.FromParsingName(DestinationLocation));
+
+			//						 dlg.Owner = ParentContents;
+
+			//						 if (dlg.ShowDialog() == true) {
+			//							 colissions = dlg.collisions;
+			//						 }
+			//						 else {
+			//							 CopyItems.Clear();
+			//							 colissions.Clear();
+			//						 }
+			//					 }));
+			//		}
+			//		itemIndex = 0;
+			//		var itemsForSkip = colissions.Where(c => (!c.IsChecked & !c.IsCheckedC) || (!c.IsChecked & c.IsCheckedC)).Select(c => c.index).ToArray();
+			//		foreach (var itemIndexRemove in itemsForSkip.OrderByDescending(c => c)) {
+			//			CopyItems.RemoveAt(itemIndexRemove);
+			//		}
+			//		CopyItemsCount = CopyItems.Where(c => c.Item4 == 0).Count();
+			//		Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//				 (Action)(delegate { lblItemsCount.Text = CopyItems.Count().ToString(CultureInfo.InvariantCulture); }));
+
+			//		if (CopyItems.Count == 0) {
+			//			CloseCurrentTask();
+			//		}
+
+			//		var collectionArray = CopyItems.ToArray().OrderByDescending(c => c.Item4);
+			//		//Parallel.ForEach(collectionArray, file =>
+			//		foreach (var file in collectionArray) {
+			//			if (file.Item4 == 0) {
+			//				var currentItem = colissions.Where(c => c.itemPath == file.Item1).SingleOrDefault();
+			//				try {
+			//					if (currentItem != null) {
+			//						if (!currentItem.IsCheckedC && currentItem.IsChecked) {
+			//							ProcessItems(file.Item1, file.Item2);
+			//						}
+			//						else if (currentItem.IsCheckedC && currentItem.IsChecked) {
+			//							ProcessItems(file.Item1, file.Item3);
+			//						}
+			//					}
+			//					else {
+			//						ProcessItems(file.Item1, file.Item3);
+			//					}
+			//				}
+			//				catch (UnauthorizedAccessException) {
+			//					IsNeedAdminFO = true;
+			//					isBreak = true;
+			//					break;
+			//				}
+			//				catch (ThreadAbortException) {
+			//					CloseCurrentTask();
+			//				}
+			//				catch (Exception ex) {
+			//					Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//						  (Action)(() => {
+			//							  prFileProgress.Foreground = Brushes.Red;
+			//							  prOverallProgress.Foreground = Brushes.Red;
+			//							  Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
+			//						  }));
+			//					MessageBox.Show(ex.Message);
+			//				}
+			//			}
+			//		}
+
+
+			//	}
+			//}
+			//int counter = 0;
+
+			//if (this.OperationType != FileOperations.OperationType.Delete) {
+			//	var collectionArray = CopyItems.ToArray().OrderByDescending(c => c.Item4);
+			//	//Parallel.ForEach(collectionArray, file =>
+			//	foreach (var file in collectionArray) {
+			//		if (this.Cancel) {
+			//			CloseCurrentTask();
+			//			break;
+			//		}
+			//		switch (this.OperationType) {
+			//			case OperationType.Copy:
+			//				if (file.Item4 == 1) {
+			//					if (!Directory.Exists(file.Item2))
+			//						try {
+			//							Directory.CreateDirectory(file.Item2);
+			//						}
+			//						catch (UnauthorizedAccessException) {
+			//							StartAdminProcess(CopyItems, colissions, false);
+			//							isBreak = true;
+			//							break;
+			//						}
+			//				}
+			//				else {
+			//					var currentItem = colissions.Where(c => c.itemPath == file.Item1).SingleOrDefault();
+			//					try {
+			//						if (currentItem != null) {
+			//							if (!currentItem.IsCheckedC && currentItem.IsChecked) {
+			//								ProcessItems(file.Item1, file.Item2);
+			//							}
+			//							else if (currentItem.IsCheckedC && currentItem.IsChecked) {
+			//								ProcessItems(file.Item1, file.Item3);
+			//							}
+			//						}
+			//						else {
+			//							ProcessItems(file.Item1, file.Item3);
+			//						}
+			//					}
+			//					catch (UnauthorizedAccessException) {
+			//						IsNeedAdminFO = true;
+			//						isBreak = true;
+			//						break;
+			//					}
+			//					catch (ThreadAbortException) {
+			//						CloseCurrentTask();
+			//					}
+			//					catch (Exception ex) {
+
+			//						Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//							 (Action)(() => {
+			//								 prFileProgress.Foreground = Brushes.Red;
+			//								 prOverallProgress.Foreground = Brushes.Red;
+			//								 Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
+			//							 }));
+			//						MessageBox.Show(ex.Message);
+			//					}
+			//				};
+			//				break;
+			//			case OperationType.Move:
+			//				break;
+			//			case OperationType.Rename:
+			//				break;
+			//			case OperationType.Decomress:
+			//				break;
+			//			case OperationType.Compress:
+			//				break;
+			//		}
+
+			//		itemIndex++;
+			//	}//);
+			//	if (IsNeedAdminFO)
+			//		StartAdminProcess(CopyItems, colissions, OperationType == FileOperations.OperationType.Move);
+			//}
+			//else {
+			//	foreach (var item in SourceItemsCollection) {
+			//		var count = 0;
+			//		var itemObj = ShellObject.FromParsingName(item);
+			//		if (itemObj.IsFolder && itemObj.Properties.System.FileExtension.Value == null) {
+			//			FileInfo[] files = new DirectoryInfo(item).GetFiles("*.*", SearchOption.AllDirectories);
+			//			count += files.Count();
+			//			totalSize += (ulong)files.Sum(c => c.Length);
+			//		}
+			//		else {
+			//			count++;
+			//			totalSize += itemObj.Properties.System.Size.Value.HasValue ? itemObj.Properties.System.Size.Value.Value : 0;
+			//		}
+
+			//		Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//				  (Action)(() => {
+			//					  lblItemsCount.Text = count.ToString();
+			//					  lblProgress.Text = String.Format("Counting Files - {0}", WindowsAPI.StrFormatByteSize((long)totalSize));
+			//				  }));
+			//		itemObj.Dispose();
+			//	}
+			//	Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//				(Action)(() => {
+			//					//this.prOverallProgress.IsIndeterminate = false;
+			//				}));
+			//	Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//						 (Action)(() => {
+			//							 var count = 0;
+			//							 if (!this.DeleteToRB) {
+			//								 foreach (var item in this.SourceItemsCollection) {
+			//									 var itemObj = ShellObject.FromParsingName(item);
+			//									 if (itemObj.IsFolder && itemObj.Properties.System.FileExtension.Value == null) {
+			//										 DirectoryInfo di = new DirectoryInfo(item);
+			//										 count += di.GetDirectories("*", SearchOption.AllDirectories).Count() + di.GetFiles("*.*", SearchOption.AllDirectories).Count();
+			//										 count++;
+			//									 }
+			//									 else {
+			//										 count++;
+			//									 }
+			//								 }
+			//							 }
+			//							 prFileProgress.Visibility = System.Windows.Visibility.Collapsed;
+			//							 prOverallProgress.Maximum = this.DeleteToRB ? this.SourceItemsCollection.Count() : count;
+			//						 }));
+			//	var isError = false;
+			//	foreach (var item in this.SourceItemsCollection) {
+			//		_block.WaitOne();
+			//		try {
+			//			var itemObj = ShellObject.FromParsingName(item);
+
+			//			if (!itemObj.IsFolder || (itemObj.Properties.System.FileExtension.Value != null && itemObj.Properties.System.FileExtension.Value.ToLowerInvariant() == ".zip")) {
+			//				var itemInfo = new FileInfo(item);
+			//				if (itemInfo.IsReadOnly)
+			//					File.SetAttributes(item, System.IO.FileAttributes.Normal);
+			//				if (this.DeleteToRB)
+			//					BExplorer.Shell.RecycleBin.SendSilent(item);
+			//				else
+			//					File.Delete(item);
+			//				Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//				 (Action)(() => {
+			//					 prOverallProgress.Value++;
+			//				 }));
+			//			}
+			//			else {
+			//				if (this.DeleteToRB) {
+			//					BExplorer.Shell.RecycleBin.SendSilent(item);
+			//				}
+			//				else {
+			//					DeleteAllFilesFromDir(new DirectoryInfo(item));
+			//					DeleteFolderRecursive(new DirectoryInfo(item));
+			//				}
+			//			}
+			//			itemObj.Dispose();
+			//		}
+			//		catch (UnauthorizedAccessException) {
+			//			IsNeedAdminFO = true;
+			//			break;
+			//		}
+			//		catch (ThreadAbortException) {
+			//			CloseCurrentTask();
+			//		}
+			//		catch (Exception ex) {
+			//			isError = true;
+			//			Dispatcher.Invoke(DispatcherPriority.Background,
+			//			 (Action)(() => {
+			//				 prOverallProgress.Foreground = Brushes.Red;
+			//				 Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
+			//			 }));
+			//			_block.Reset();
+			//			MessageBox.Show(ex.Message);
+			//		}
+			//	}
+			//	if (IsNeedAdminFO) {
+			//		if (OperationType == FileOperations.OperationType.Delete) {
+			//			var CopyItemsForDelete = this.SourceItemsCollection.Select(c => new Tuple<string, string, string, int>(c, String.Empty, string.Empty, 0)).ToList();
+			//			StartAdminProcess(CopyItemsForDelete, null, false, true, this.DeleteToRB);
+			//		}
+			//	}
+			//	if (!isError)
+			//		CloseCurrentTask();
+			//}
+
+
+			//////If we have MoveOperation to same volume it is basically a rename opearion that happend immediately so we close the window
+			////if (OperationType == OperationType.Move)
+			////{
+			////    if (System.IO.Path.GetPathRoot(CopyItems[0].Item1) == System.IO.Path.GetPathRoot(DestinationLocation))
+			////        CloseCurrentTask();
+			////}
 
 		}
 
@@ -588,13 +587,13 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 				} while (File.Exists(newName + System.IO.Path.GetExtension(sourceFile)));
 			}
 			CopyItems.Add(new Tuple<string, string, string, int>(sourceFile, dest, newName == String.Empty ? dest : newName + System.IO.Path.GetExtension(sourceFile), 0));
-			var shellObj = ShellObject.FromParsingName(sourceFile);
-			totalSize += shellObj.Properties.System.Size.Value.HasValue ? shellObj.Properties.System.Size.Value.Value : 0;
-			Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-					 (Action)(() => {
-						 lblProgress.Text = "Counting Files - " + WindowsAPI.StrFormatByteSize((long)totalSize);
-					 }));
-			shellObj.Dispose();
+			//var shellObj = ShellObject.FromParsingName(sourceFile);
+			//totalSize += shellObj.Properties.System.Size.Value.HasValue ? shellObj.Properties.System.Size.Value.Value : 0;
+			//Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+			//		 (Action)(() => {
+			//			 lblProgress.Text = "Counting Files - " + WindowsAPI.StrFormatByteSize((long)totalSize);
+			//		 }));
+			//shellObj.Dispose();
 		}
 
 		public void CopyFolder(string sourceFolder, string destFolder, ref List<Tuple<String, String, String, Int32>> CopyItems, ref List<CollisionInfo> collisions, bool isSameFolder) {
@@ -615,14 +614,14 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 						newName = String.Format("{0} - Copy ({1})", indexDot == -1 ? dest : dest.Remove(indexDot), ++suffix);
 					} while (File.Exists(newName + System.IO.Path.GetExtension(file)));
 				}
-				CopyItems.Add(new Tuple<string, string, string, int>(file, dest, newName == String.Empty ? dest : newName + System.IO.Path.GetExtension(file), 0));
-				var shellObj = ShellObject.FromParsingName(file);
-				totalSize += shellObj.Properties.System.Size.Value.HasValue ? shellObj.Properties.System.Size.Value.Value : 0;
-				Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
-						 (Action)(() => {
-							 lblProgress.Text = "Counting Files - " + WindowsAPI.StrFormatByteSize((long)totalSize);
-						 }));
-				shellObj.Dispose();
+				//CopyItems.Add(new Tuple<string, string, string, int>(file, dest, newName == String.Empty ? dest : newName + System.IO.Path.GetExtension(file), 0));
+				//var shellObj = ShellObject.FromParsingName(file);
+				//totalSize += shellObj.Properties.System.Size.Value.HasValue ? shellObj.Properties.System.Size.Value.Value : 0;
+				//Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
+				//		 (Action)(() => {
+				//			 lblProgress.Text = "Counting Files - " + WindowsAPI.StrFormatByteSize((long)totalSize);
+				//		 }));
+				//shellObj.Dispose();
 			}
 			string[] folders = Directory.GetDirectories(sourceFolder);
 			foreach (string folder in folders) {
@@ -638,7 +637,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 					   (Action)(() => {
 						   prFileProgress.Foreground = Brushes.Red;
 						   prOverallProgress.Foreground = Brushes.Red;
-						   Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
+						   //Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Error);
 					   }));
 		}
 
@@ -766,7 +765,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 				}
 				prFileProgress.Foreground = Brushes.Orange;
 				prOverallProgress.Foreground = Brushes.Orange;
-				Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Paused);
+				//Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Paused);
 				lblProgress.Text = "Paused - " + lblProgress.Text;
 				CurrentStatus = 2;
 			}
@@ -784,7 +783,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 					prFileProgress.Foreground = new SolidColorBrush(Color.FromRgb(0x01, 0xD3, 0x28));
 					prOverallProgress.Foreground = new SolidColorBrush(Color.FromRgb(0x01, 0xD3, 0x28));
 				}
-				Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Normal);
+				//Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.Normal);
 			}
 		}
 
@@ -912,14 +911,14 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
 						if (parentWindow.Contents.Count == 0) {
 							parentWindow.Close();
-							Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.NoProgress);
+							//Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.NoProgress);
 						}
 					}
 					else {
 						ParentContents.Contents.Remove(this);
 						if (ParentContents.Contents.Count == 0) {
 							ParentContents.Close();
-							Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.NoProgress);
+							//Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.NoProgress);
 						}
 					}
 					if (mr != null)

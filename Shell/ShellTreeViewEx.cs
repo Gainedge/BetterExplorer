@@ -492,22 +492,12 @@ namespace BExplorer.Shell {
 									itemNode.SelectedImageIndex = itemNode.ImageIndex;
 								}
 								else {
-									itemNode.ImageIndex = this.folderImageListIndex;//item.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
+									itemNode.ImageIndex = this.folderImageListIndex;
 								}
 
 							}
 							itemNode.Nodes.Add("<!EMPTY!>");
-							//this.ShellTreeView.BeginInvoke((Action)(() =>
-							//{
-
 							nodesTemp.Add(itemNode);
-							//if (!sho.IsNetDrive && !sho.IsNetworkPath)
-							//{
-							//	SetNodeImage(itemNode.Handle, item.AbsolutePidl, treeHandle, !(itemNode.Parent != null && (itemNode.Parent.Tag as ShellItem).ParsingName == KnownFolders.Links.ParsingName));
-							//}
-
-
-							//}));
 							Application.DoEvents();
 						}
 						return nodesTemp;
@@ -540,7 +530,7 @@ namespace BExplorer.Shell {
 				if (sho.IsLink) {
 					try {
 						var shellLink = new ShellLink(sho.ParsingName);
-						var linkTarget = shellLink.TargetPIDL;// sho.GetPropertyValue(SystemProperties.LinkTarget, typeof(String)).Value.ToString().ToShellParsingName();
+						var linkTarget = shellLink.TargetPIDL;
 						linkSho = new ShellItem(linkTarget);
 						shellLink.Dispose();
 					}

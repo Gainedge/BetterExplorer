@@ -10,7 +10,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
-using WindowsHelper;
+using BExplorer.Shell.Interop;
 
 namespace BetterExplorer {
 	public partial class UpdateWizard : Form {
@@ -22,7 +22,7 @@ namespace BetterExplorer {
 			this.StartPosition = FormStartPosition.CenterParent;
 			this.CurrentUpdater = updater;
 			InitializeComponent();
-			WindowsHelper.WindowsAPI.SetWindowTheme(this.lvAvailableUpdates.Handle, "Explorer", 0);
+			UxTheme.SetWindowTheme(this.lvAvailableUpdates.Handle, "Explorer", 0);
 			foreach (var item in this.CurrentUpdater.AvailableUpdates) {
 				ListViewItem lvi = new ListViewItem(item.Name);
 				switch (item.Type) {
@@ -87,7 +87,7 @@ namespace BetterExplorer {
 					lblCurrentDownload.Text = String.Format("Downloading {0}", item.SubItems[0].Text);
 					CurrentUpdater.DownloadUpdater(item.SubItems[4].Text, Path.GetFileName(item.SubItems[4].Text));
 					this.UpdateLocalPaths.Add(Path.Combine(CurrentUpdater.LocalUpdaterLocation, Path.GetFileName(item.SubItems[4].Text)));
-					if (WindowsAPI.Is64bitProcess(Process.GetCurrentProcess()))
+					if (Kernel32.IsThis64bitProcess())
 						this.UpdateLocalPaths.Add(Path.Combine(CurrentUpdater.LocalUpdaterLocation, Path.GetFileName(item.SubItems[5].Text)));
 				}
 			}

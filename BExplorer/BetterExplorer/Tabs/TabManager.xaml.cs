@@ -11,8 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.IO;
-using Microsoft.WindowsAPICodePack.Shell;
 using Microsoft.Win32;
+using BExplorer.Shell;
 
 namespace BetterExplorer.Tabs {
 	/// <summary>
@@ -37,8 +37,8 @@ namespace BetterExplorer.Tabs {
 		public List<string> LoadListOfTabListFiles() {
 			var o = new List<string>();
 			foreach (string item in Directory.GetFiles(GetSavedTabsLocation())) {
-				ShellObject obj = ShellObject.FromParsingName(item);
-				o.Add(Utilities.RemoveExtensionsFromFile(obj.GetDisplayName(DisplayNameType.Default), Utilities.GetExtension(item)));
+				var obj = new ShellItem(item);
+				o.Add(Utilities.RemoveExtensionsFromFile(obj.DisplayName, Utilities.GetExtension(item)));
 			}
 			return o;
 		}

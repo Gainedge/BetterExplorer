@@ -104,7 +104,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
     public void SetTaskbarProgress()
     {
-      Taskbar.TaskbarManager.Instance.SetProgressValue(this.OveralProgress/this.Contents.Count, 100);
+      //Taskbar.TaskbarManager.Instance.SetProgressValue(this.OveralProgress/this.Contents.Count, 100);
       
     }
 
@@ -112,8 +112,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
       foreach (FileOperation item in this.Contents) {
         item.Cancel = true;
       }
-      Taskbar.TaskbarManager.Instance.SetProgressValue(0, 100);
-      Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.NoProgress);
+      //Taskbar.TaskbarManager.Instance.SetProgressValue(0, 100);
+      //Taskbar.TaskbarManager.Instance.SetProgressState(Taskbar.TaskbarProgressBarState.NoProgress);
     }
 
   }

@@ -216,139 +216,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\CoreErrorHelper.cs" />
-    <Compile Include="Common\NativeRect.cs" />
-    <Compile Include="Common\ShellException.cs" />
-    <Compile Include="Common\ShellFileSystemFolder.cs" />
-    <Compile Include="Common\ShellFile.cs" />
-    <Compile Include="Common\ShellFolder.cs" />
-    <Compile Include="Common\ShellFolderItems.cs" />
-    <Compile Include="Common\ShellHelper.cs" />
-    <Compile Include="Common\ShellItemArray.cs" />
-    <Compile Include="Common\ShellObjectCollection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Common\ShellObjectFactory.cs" />
-    <Compile Include="Common\ShellThumbnail.cs" />
-    <Compile Include="Common\DefaultShellImageSizes.cs" />
-    <Compile Include="Common\SortColumn.cs" />
-    <Compile Include="CopyEngineResult.cs" />
-    <Compile Include="Interop\ExplorerBrowser\CommonControlException.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Extensions.cs" />
-    <Compile Include="FileOperation.cs" />
-    <Compile Include="FileOperationProgressSink.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IFileOperation.cs" />
-    <Compile Include="IFileOperationProgressSink.cs" />
-    <Compile Include="Interop\IntPtrExtensions.cs" />
-    <Compile Include="Interop\WindowUtilities.cs" />
-    <Compile Include="Windows API\IAsyncDataObject.cs" />
-    <Compile Include="Windows API\ShellCOMInterfaces.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Windows API\ShellLink.cs" />
-    <Compile Include="Windows API\ShellNativeStructs.cs" />
-    <Compile Include="Interop\ShellObjectWatcher\ShellObjectWatcherNativeMethods.cs" />
-    <Compile Include="Notifications.cs" />
-    <Compile Include="PropertySystem\PropertySystemException.cs" />
-    <Compile Include="KnownFolders\IKnownFolder.cs" />
-    <Compile Include="Windows API\ShellCOMClasses.cs" />
-    <Compile Include="KnownFolders\DefinitionOptions.cs" />
-    <Compile Include="KnownFolders\FolderCategory.cs" />
-    <Compile Include="KnownFolders\FolderProperties.cs" />
-    <Compile Include="KnownFolders\FoldersIdentifiers.cs" />
-    <Compile Include="KnownFolders\FolderTypes.cs" />
-    <Compile Include="KnownFolders\KnownFolderHelper.cs" />
-    <Compile Include="KnownFolders\KnownFolders.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="KnownFolders\KnownFolderSettings.cs" />
-    <Compile Include="KnownFolders\RedirectionCapabilities.cs" />
-    <Compile Include="KnownFolders\RetrievalOptions.cs" />
-    <Compile Include="Common\ShellSearchConnector.cs" />
-    <Compile Include="Windows API\ShellEnums.cs" />
-    <Compile Include="Common\ShellLibrary.cs" />
-    <Compile Include="Common\ShellObject.cs" />
-    <Compile Include="Interop\KnownFolders\KnownFoldersCOMGuids.cs" />
-    <Compile Include="Interop\KnownFolders\KnownFoldersCOMInterfaces.cs" />
-    <Compile Include="Interop\KnownFolders\KnownFoldersNativeMethods.cs" />
-    <Compile Include="Interop\PropertySystem\PropertySystemCOMInterfaces.cs" />
-    <Compile Include="Interop\PropertySystem\PropertySystemNativeMethods.cs" />
-    <Compile Include="Interop\Taskbar\TabbedThumbnailNativeMethods.cs" />
-    <Compile Include="Interop\Taskbar\TaskbarCOMInterfaces.cs" />
-    <Compile Include="PropertySystem\ShellProperties.cs" />
-    <Compile Include="PropertySystem\ShellPropertyEnums.cs" />
-    <Compile Include="PropertySystem\ShellPropertyEnumType.cs" />
-    <Compile Include="KnownFolders\FileSystemKnownFolder.cs" />
-    <Compile Include="Common\ShellNonFileSystemItem.cs" />
-    <Compile Include="Common\ShellNonFileSystemFolder.cs" />
-    <Compile Include="KnownFolders\NonFileSystemKnownFolder.cs" />
-    <Compile Include="Common\ShellThumbnailEnums.cs" />
-    <Compile Include="Common\ShellSearchCollection.cs" />
-    <Compile Include="Common\ShellObjectContainer.cs" />
-    <Compile Include="Common\ShellLink.cs" />
-    <Compile Include="PropertySystem\ShellPropertyFactory.cs" />
-    <Compile Include="PropertySystem\ShellPropertyWriter.cs" />
-    <Compile Include="PropertySystem\StronglyTypedProperties.cs" />
-    <Compile Include="PropertySystem\SystemProperties.cs" />
-    <Compile Include="PropertySystem\WindowProperties.cs" />
-    <Compile Include="Resources\LocalizedMessages.Designer.cs">
-      <DependentUpon>LocalizedMessages.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="ShellObjectWatcher\ChangeNotifyEventManager.cs" />
-    <Compile Include="ShellObjectWatcher\ChangeNotifyLock.cs" />
-    <Compile Include="ShellObjectWatcher\MessageListener.cs" />
-    <Compile Include="ShellObjectWatcher\MessageListenerFilter.cs" />
-    <Compile Include="ShellObjectWatcher\ShellObjectNotificationEventArgs.cs" />
-    <Compile Include="ShellObjectWatcher\ShellObjectWatcher.cs" />
-    <Compile Include="ShellObjectWatcher\ShellObjectWatcherEnums.cs" />
-    <Compile Include="Taskbar\JumpListCustomCategoryCollection.cs" />
-    <Compile Include="Taskbar\JumpListItemCollection.cs" />
-    <Compile Include="Taskbar\JumpListLink.cs" />
-    <Compile Include="Taskbar\JumpListSeparator.cs" />
-    <Compile Include="Taskbar\TabbedThumbnailClosedEventArgs.cs" />
-    <Compile Include="Taskbar\TabbedThumbnailScreenCapture.cs" />
-    <Compile Include="Taskbar\TabbedThumbnailManager.cs" />
-    <Compile Include="Taskbar\TabbedThumbnailBitmapRequestedEventArgs.cs" />
-    <Compile Include="Taskbar\TabbedThumbnailEventArgs.cs" />
-    <Compile Include="Taskbar\TabbedThumbnail.cs" />
-    <Compile Include="Taskbar\TabbedThumbnailProxyWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Taskbar\TaskbarEnums.cs" />
-    <Compile Include="Interop\Taskbar\TaskbarNativeMethods.cs" />
-    <Compile Include="PropertySystem\IShellProperty.cs" />
-    <Compile Include="PropertySystem\ShellPropertyCollection.cs" />
-    <Compile Include="PropertySystem\ShellPropertyDescription.cs" />
-    <Compile Include="PropertySystem\ShellPropertyDescriptionsCache.cs" />
-    <Compile Include="Windows API\ShellCOMGuids.cs" />
-    <Compile Include="Windows API\ShellNativeMethods.cs" />
-    <Compile Include="Common\ShellSavedSearchCollection.cs" />
-    <Compile Include="PropertySystem\ShellProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Taskbar\JumpListCustomCategory.cs" />
-    <Compile Include="Taskbar\JumpList.cs" />
-    <Compile Include="Taskbar\JumpListItem.cs" />
-    <Compile Include="Taskbar\TaskbarList.cs" />
-    <Compile Include="Taskbar\TaskbarManager.cs">
-    </Compile>
-    <Compile Include="Taskbar\TaskbarInterfaces.cs" />
-    <Compile Include="Taskbar\TaskbarWindow.cs" />
-    <Compile Include="Taskbar\TaskbarWindowManager.cs" />
-    <Compile Include="Taskbar\ThumbnailButton.cs" />
-    <Compile Include="Taskbar\ThumbnailButtonClickedEventArgs.cs" />
-    <Compile Include="Taskbar\ThumbnailToolbarManager.cs" />
-    <Compile Include="Taskbar\ThumbnailToolbarProxyWindow.cs" />
-    <Compile Include="Taskbar\UserRemovedJumpListItemsEventArg.cs" />
     <Compile Include="WindowsAPI.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Design\ShellThumbnailClassDiagram.cd" />
-    <None Include="Design\ShellObjects.cd" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -368,16 +237,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\LocalizedMessages.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>LocalizedMessages.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <CodeAnalysisDictionary Include="CustomDictionary.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\..\..\Progress\RateBar.csproj">
       <Project>{bfbd2f46-ed5f-49a3-abad-9ba571ef073e}</Project>
       <Name>RateBar</Name>
@@ -387,10 +246,7 @@
       <Name>Shell</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="_Obsolete\" />
-    <Folder Include="_Transfered\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

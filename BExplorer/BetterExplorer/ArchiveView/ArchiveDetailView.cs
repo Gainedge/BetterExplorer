@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SevenZip;
 using SystemImageList;
+using BExplorer.Shell.Interop;
 
 namespace BetterExplorer
 {
@@ -29,7 +30,7 @@ namespace BetterExplorer
             //_iconReader = new IconReader();
             //archiveTree.ImageList = new ImageList();
             //_iconReader.ReadIcons(pathIconLibrary).ForEach(o => archiveTree.ImageList.Images.Add(o.Icon));
-            WindowsHelper.WindowsAPI.SetWindowTheme(lvArchiveDetails.Handle, "Explorer", null);
+            UxTheme.SetWindowTheme(lvArchiveDetails.Handle, "Explorer", 0);
             SysImageListHelper.SetListViewImageList(lvArchiveDetails, lst, false);
             SevenZipExtractor.SetLibraryPath(IntPtr.Size == 8 ? "7z64.dll" : "7z32.dll");
             _pathArchive = pathArchive;

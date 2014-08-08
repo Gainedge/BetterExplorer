@@ -17,7 +17,9 @@
 // Boston, MA 2110-1301, USA.
 //
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 
 #pragma warning disable 1591
 
@@ -279,7 +281,192 @@ namespace BExplorer.Shell.Interop {
 		DROPHILITED = 0x1000,
 	}
 
+	
+
 	public class User32 {
+		public static readonly string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
+		//public static readonly string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\Start Menu\\";
+		public static bool IsPinnedToTaskbar(string executablePath) {
+			foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedTaskbarItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk")) {
+
+				var shortcut = new ShellLink(pinnedShortcut);
+				if (shortcut.Target == executablePath)
+					return true;
+			}
+
+			return false;
+		}
+
+		/*
+		public static bool IsPinnedToStartMenu(string executablePath) {
+			foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedStartMenuItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk")) {
+
+				//               var shortcut = new ShellLinkClass.ShellLink(pinnedShortcut);
+				//              if (shortcut.Target == executablePath)
+				//                 return true;
+			}
+
+			return false;
+		}
+		*/
+		public static void PinUnpinToTaskbar(string filePath) {
+			PinUnpinTaskbar(filePath, !IsPinnedToTaskbar(filePath));
+		}
+
+		/*
+		public static void UnpinFromTaskbar(string filePath) {
+			PinUnpinTaskbar(filePath, false);
+		}
+		*/
+		private static void PinUnpinTaskbar(string filePath, bool pin) {
+			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
+
+			// create the shell application object
+			dynamic shellApplication = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"));
+
+			string path = Path.GetDirectoryName(filePath);
+			string fileName = Path.GetFileName(filePath);
+
+			dynamic directory = shellApplication.NameSpace(path);
+			dynamic link = directory.ParseName(fileName);
+
+			dynamic verbs = link.Verbs();
+			for (int i = 0; i < verbs.Count(); i++) {
+				dynamic verb = verbs.Item(i);
+				string verbName = verb.Name.Replace(@"&", string.Empty).ToLower();
+
+				if ((pin && verbName.Equals(LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5386, "pin to taskbar").Replace(@"&", string.Empty).ToLower()))
+				|| (!pin && verbName.Equals(LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5387, "unpin from taskbar").Replace(@"&", string.Empty).ToLower()))
+				) {
+					verb.DoIt();
+				}
+			}
+
+			shellApplication = null;
+		}
+
+		public static void PinUnpinToStartMenu(string filePath) {
+			PinUnpinStartMenu(filePath, !IsPinnedToTaskbar(filePath));
+		}
+
+		/*
+		public static void UnpinFromStartMenu(string filePath) {
+			PinUnpinStartMenu(filePath, false);
+		}
+		*/
+
+		private static void PinUnpinStartMenu(string filePath, bool pin) {
+			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
+
+			// create the shell application object
+			dynamic shellApplication = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"));
+
+			string path = Path.GetDirectoryName(filePath);
+			string fileName = Path.GetFileName(filePath);
+
+			dynamic directory = shellApplication.NameSpace(path);
+			dynamic link = directory.ParseName(fileName);
+
+			dynamic verbs = link.Verbs();
+			for (int i = 0; i < verbs.Count(); i++) {
+				dynamic verb = verbs.Item(i);
+				string verbName = verb.Name.Replace(@"&", string.Empty).ToLower();
+
+				if ((pin && verbName.Equals("pin to start menu"))
+				|| (!pin && verbName.Equals("unpin from start menu"))
+				) {
+					verb.DoIt();
+				}
+			}
+
+			shellApplication = null;
+		}
+
+		public enum OsVersionInfo {
+			Unknown,
+			Windows95,
+			Windows98,
+			Windows98SE,
+			WindowsME,
+			WindowsNT351,
+			WindowsNT40,
+			Windows2000,
+			WindowsXP,
+			WindowsVista,
+			Windows7,
+			Windows2008Server,
+			Windows8
+		}
+
+		/*
+		public int getOSArchitecture() {
+			string pa = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
+			return ((String.IsNullOrEmpty(pa) || String.Compare(pa, 0, "x86", 0, 3, true) == 0) ? 32 : 64);
+		}
+		*/
+
+		/// <summary>
+		/// Gets the operating system version
+		/// </summary>
+		/// <returns>OsVersionInfo object that contains windows version</returns>
+		public static OsVersionInfo getOSInfo() {
+			//Get Operating system information.
+			OperatingSystem os = Environment.OSVersion;
+			//Get version information about the os.
+			Version vs = os.Version;
+
+			//Variable to hold our return value
+			OsVersionInfo operatingSystem = new OsVersionInfo();
+
+			if (os.Platform == PlatformID.Win32Windows) {
+				//This is a pre-NT version of Windows
+				switch (vs.Minor) {
+					case 0:
+						operatingSystem = OsVersionInfo.Windows95;
+						break;
+					case 10:
+						if (vs.Revision.ToString() == "2222A")
+							operatingSystem = OsVersionInfo.Windows98SE;
+						else
+							operatingSystem = OsVersionInfo.Windows98;
+						break;
+					case 90:
+						operatingSystem = OsVersionInfo.WindowsME;
+						break;
+					default:
+						break;
+				}
+			} else if (os.Platform == PlatformID.Win32NT) {
+				switch (vs.Major) {
+					case 3:
+						operatingSystem = OsVersionInfo.WindowsNT351;
+						break;
+					case 4:
+						operatingSystem = OsVersionInfo.WindowsNT40;
+						break;
+					case 5:
+						if (vs.Minor == 0)
+							operatingSystem = OsVersionInfo.Windows2000;
+						else
+							operatingSystem = OsVersionInfo.WindowsXP;
+						break;
+					case 6:
+						if (vs.Minor == 0)
+							operatingSystem = OsVersionInfo.WindowsVista;
+						else if (vs.Minor == 1)
+							operatingSystem = OsVersionInfo.Windows7;
+						else
+							operatingSystem = OsVersionInfo.Windows8;
+						break;
+					default:
+						operatingSystem = OsVersionInfo.Unknown;
+						break;
+				}
+			}
+			return operatingSystem;
+
+		}
+
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetSubMenu(IntPtr hMenu, int nPos);
 		/// <summary>The GetForegroundWindow function returns a handle to the foreground window.</summary>
@@ -502,6 +689,38 @@ namespace BExplorer.Shell.Interop {
 
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+		public static IntPtr getWindowId(string className, string windowName) {
+			return FindWindow(className, windowName);
+		}
+
+		public static string LoadResourceString(string libraryName, uint ident, string defaultText) {
+			IntPtr libraryHandle = LoadLibrary(libraryName);
+			String Text = defaultText;
+			if (libraryHandle != IntPtr.Zero) {
+				StringBuilder sb = new StringBuilder(1024);
+				int size = LoadString(libraryHandle, ident, sb, 1024);
+				if (size > 0)
+					Text = sb.ToString();
+			}
+			FreeLibrary(libraryHandle);
+			return Text;
+		}
+		[DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
+		public static extern IntPtr LoadLibrary(string lpFileName);
+
+		/*
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+		public static extern IntPtr GetModuleHandle(string lpModuleName);
+		*/
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto)]
+		public static extern int LoadString(IntPtr hInstance, uint uID, StringBuilder lpBuffer, int nBufferMax);
+
+		[DllImport("kernel32.dll")]
+		public static extern bool FreeLibrary(IntPtr hModule);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RECT {
