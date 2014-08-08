@@ -349,6 +349,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		HResult QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppvObject);
 	};
 
+	/*
 	[ComImport,
 	 Guid(ExplorerBrowserIIDGuid.IShellFolderView),
 	 InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -360,6 +361,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		HResult SetClipboard(bool bMove);
 	};
+	*/
 
 	/*
 	//[ComImport,
@@ -1016,6 +1018,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 			[MarshalAs(UnmanagedType.IUnknown)] out object ppv);
 	}
 
+	/*
 	public struct SV2CVW2_PARAMS {
 		public uint cbSize;
 
@@ -1027,6 +1030,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 
 		public IntPtr hwndView;
 	}
+	*/
 
 	//public struct POINT {
 	//  public long x;
