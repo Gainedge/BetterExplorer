@@ -23,12 +23,10 @@ namespace BetterExplorer {
 			};
 
 			if (item.Icon != null) {
-				if (item.Icon is String) {
+				if (item.Icon is String)
 					rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
-				}
-				else {
+				else
 					rils.Icon = (item.Icon as Image).Source;
-				}
 			}
 
 			if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery) {

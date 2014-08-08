@@ -29,51 +29,6 @@ namespace BetterExplorer {
 		//private AggregateCatalog catalog;
 		public static bool isStartMinimized = false, isStartNewWindows = false, isStartWithStartupTab = false;
 
-		//[Import("MainWindow")]
-		//public new Window MainWindow
-		//{
-		//    get { return base.MainWindow; }
-		//    set { base.MainWindow = value; }
-		//}
-
-		/*
-		/// <summary>
-		/// Raises the <see cref="E:System.Windows.Application.Activated"/> event.
-		/// </summary>
-		/// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
-		protected override void OnActivated(EventArgs e) {
-			base.OnActivated(e);
-
-			try {
-				var win = MainWindow as MainWindow;
-				if (win == null) return;
-
-				//Aaron Canpf => Bookmark
-				// add 1st args
-				//win.ApendArgs(Environment.GetCommandLineArgs());
-			}
-			catch { }
-		}
-		*/
-
-		/*
-		protected override void OnExit(ExitEventArgs e) {
-			base.OnExit(e);
-
-			//if (container != null)
-			//{
-			//    container.Dispose();
-			//}
-
-			//if (catalog != null)
-			//{
-			//    catalog.Dispose();
-			//}
-		}
-		*/
-
-
-
 		#region Unused
 
 		void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e) {
@@ -195,8 +150,11 @@ namespace BetterExplorer {
 			bool dmi = true;
 
 			if (e.Args != null && e.Args.Count() > 0) {
-				dmi = e.Args.Any((x) => x == "/nw");
-				isStartWithStartupTab = e.Args.Any((x) => x == "/norestore");
+				//dmi = e.Args.Any((x) => x == "/nw");
+				//isStartWithStartupTab = e.Args.Any((x) => x == "/norestore");
+
+				dmi = e.Args.Contains("/nw");
+				isStartWithStartupTab = e.Args.Contains("/norestore");
 
 				//TODO: Consider Refactoring this so [e.Args[0] != "-minimized"] is inside the switch 
 				if (e.Args[0] != "-minimized")
@@ -212,11 +170,6 @@ namespace BetterExplorer {
 			}
 
 			base.OnStartup(e);
-			//RegistryKey rk = Registry.CurrentUser;
-			//RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-			//if (rks == null)
-			//	rks = rk.CreateSubKey(@"Software\BExplorer");
-
 			try {
 				var regLocale = Utilities.GetRegistryValue("Locale", "").ToString();
 				Locale = String.IsNullOrEmpty(regLocale) ? CultureInfo.CurrentUICulture.Name : regLocale;

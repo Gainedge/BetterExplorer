@@ -2090,7 +2090,11 @@ namespace BExplorer.Shell {
 									this.EndLabelEdit();
 
 								ToolTip.HideTooltip();
+
 								selectionTimer.Interval = 100;
+
+								//TODO: Fix this
+								selectionTimer.Tick -= selectionTimer_Tick;
 								selectionTimer.Tick += selectionTimer_Tick;
 								this._IsDragSelect = nlv.uNewState;
 								if (IsGroupsEnabled) {
@@ -3289,15 +3293,6 @@ namespace BExplorer.Shell {
 		}
 
 		public void Navigate(ShellItem destination, Boolean isReload = false, Boolean isInSameTab = false) {
-			//if (!this._IsNavigationInProgress) {
-			//	this.Cancel = false;
-			//} else {
-			//	this.Cancel = false;
-			//}
-			//while (this._IsNavigationInProgress) {
-			//	Thread.Sleep(2);
-			//	F.Application.DoEvents();
-			//}
 			this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
 			this.SetSortIcon(this.LastSortedColumnIndex, SortOrder.None);
 			this.Notifications.UnregisterChangeNotify();
@@ -3315,6 +3310,8 @@ namespace BExplorer.Shell {
 			SubItems.Clear();
 			CurrentI = 0;
 			LastI = 0;
+
+			//TODO: Find out if we can remove the following code!
 			Tuple<int, PROPERTYKEY, object> tmp = null;
 			while (!SubItemValues.IsEmpty) {
 				SubItemValues.TryTake(out tmp);
@@ -3324,26 +3321,12 @@ namespace BExplorer.Shell {
 			SubItems.Clear();
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
 			this.ItemForRename = -1;
-			//if (isInSameTab)
-			//	SaveSettingsToDatabase(this.CurrentFolder);
-			//this.Cancel = false;
-			//if (destination != this.CurrentFolder) {
-
-
-			//}
-
-
 
 			if (destination == null)
 				return;
-
-			if (ToolTip == null) {
+			if (ToolTip == null)
 				this.ToolTip = new ToolTip();
-			}
-			//if (this.CurrentFolder != null) {
-			//	if (destination.ParsingName == this.CurrentFolder.ParsingName && !isReload)
-			//		return;
-			//}
+
 			var folderSettings = new FolderSettings();
 			var isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
 			this.SetSortIcon(folderSettings.SortColumn, folderSettings.SortOrder);
@@ -3383,12 +3366,13 @@ namespace BExplorer.Shell {
 				this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
 			}
 
-			if (!(isThereSettings && folderSettings.SortColumn != null))
+			//if (!(isThereSettings && folderSettings.SortColumn != null))
+			if (!isThereSettings)
 				this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++);
 
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 
-			if (!(isThereSettings)) {
+			if (!isThereSettings) {
 				this.LastSortedColumnIndex = 0;
 				this.LastSortOrder = SortOrder.Ascending;
 				this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
@@ -3401,7 +3385,8 @@ namespace BExplorer.Shell {
 			}
 			catch { }
 
-			if (!(isThereSettings && folderSettings.SortColumn != null))
+			//if (!(isThereSettings && folderSettings.SortColumn != null))
+			if (!isThereSettings)
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 			if (IsGroupsEnabled) {
 				this.Groups.Clear();
@@ -3423,6 +3408,7 @@ namespace BExplorer.Shell {
 			this.Focus();
 
 		}
+
 		private static int Compare(ShellItem x, ShellItem y) {
 			return String.Compare(x.DisplayName, y.DisplayName);
 		}

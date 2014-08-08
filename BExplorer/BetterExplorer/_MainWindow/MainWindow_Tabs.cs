@@ -104,33 +104,12 @@ namespace BetterExplorer {
 		}
 
 		private void ConstructMoveToCopyToMenu() {
-			//TODO: Find the parts that will cause the errors and put the try catch around them ONLY or fix the issue!!!
-
-			//Func<string, RoutedEventHandler, BitmapSource, MenuItem> Builder = (ResourceName, EventHandler, Bitmap) => {
-			//	MenuItem Item = new MenuItem();
-			//	Item.Focusable = false;
-			//	Item.Header = FindResource(ResourceName);
-
-			//	if (EventHandler != null) Item.Click += EventHandler;
-			//	if (Bitmap != null) Item.Icon = Bitmap;
-			//	return Item;
-			//};
-
 			btnMoveto.Items.Clear();
 			btnCopyto.Items.Clear();
 
 			ShellItem sod = (ShellItem)KnownFolders.Desktop;
 			sod.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			sod.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-
-			/*
-			var OtherLocationMove = Builder("miOtherDestCP", new RoutedEventHandler(btnmtOther_Click), null);
-			var OtherLocationCopy = Builder("miOtherDestCP", new RoutedEventHandler(btnctOther_Click), null);
-			var mimDesktop = Builder("btnctDesktopCP", new RoutedEventHandler(btnmtDesktop_Click), sod.Thumbnail.BitmapSource);
-			var micDesktop = Builder("btnctDesktopCP", new RoutedEventHandler(btnctDesktop_Click), sod.Thumbnail.BitmapSource);
-			*/
-
-
 
 			var OtherLocationMove = Utilities.Build_MenuItem(FindResource("miOtherDestCP"), onClick: new RoutedEventHandler(btnmtOther_Click));
 			var OtherLocationCopy = Utilities.Build_MenuItem(FindResource("miOtherDestCP"), onClick: new RoutedEventHandler(btnctOther_Click));
@@ -146,8 +125,6 @@ namespace BetterExplorer {
 				sodc.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 				sodc.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 
-				//mimDocuments = Builder("btnctDocumentsCP", new RoutedEventHandler(btnmtDocuments_Click), sodc.Thumbnail.BitmapSource);
-				//micDocuments = Builder("btnctDocumentsCP", new RoutedEventHandler(btnctDocuments_Click), sodc.Thumbnail.BitmapSource);
 				mimDocuments = Utilities.Build_MenuItem(FindResource("btnctDocumentsCP"), icon: sodc.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnmtDocuments_Click));
 				micDocuments = Utilities.Build_MenuItem(FindResource("btnctDocumentsCP"), icon: sodc.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnctDocuments_Click));
 			}
@@ -162,10 +139,6 @@ namespace BetterExplorer {
 				ShellItem sodd = (ShellItem)KnownFolders.Downloads;
 				sodd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 				sodd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-
-
-				//mimDownloads = Builder("btnctDownloadsCP", new RoutedEventHandler(btnmtDounloads_Click), sodd.Thumbnail.BitmapSource);
-				//micDownloads = Builder("btnctDownloadsCP", new RoutedEventHandler(btnctDounloads_Click), sodd.Thumbnail.BitmapSource);
 
 				mimDownloads = Utilities.Build_MenuItem(FindResource("btnctDownloadsCP"), icon: sodd.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnmtDounloads_Click));
 				micDownloads = Utilities.Build_MenuItem(FindResource("btnctDownloadsCP"), icon: sodd.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnctDounloads_Click));
@@ -211,29 +184,10 @@ namespace BetterExplorer {
 						so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 						so.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 
-						//var mim =
-						//MenuItem mim = new MenuItem();
-						//mim.Header = item.ShellObject.GetDisplayName(SIGDN.NORMALDISPLAY);
-						//mim.Focusable = false;
-						//mim.Tag = item.ShellObject;
-						//mim.Icon = so.Thumbnail.BitmapSource;
-						//mim.Click += new RoutedEventHandler(mim_Click);
-						//btnMoveto.Items.Add(mim);
-
 						btnMoveto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.GetDisplayName(SIGDN.NORMALDISPLAY), item.ShellObject,
 																	 so.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(mim_Click)));
 
 						btnCopyto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.GetDisplayName(SIGDN.NORMALDISPLAY), item.ShellObject, so.Thumbnail.BitmapSource));
-
-
-						//MenuItem mic = new MenuItem();
-						//mic.Focusable = false;
-						//mic.Header = item.ShellObject.GetDisplayName(SIGDN.NORMALDISPLAY);
-						//mic.Tag = item.ShellObject;
-						//mic.Icon = so.Thumbnail.BitmapSource;
-						//mic.Click += new RoutedEventHandler(mimc_Click);
-
-						//btnCopyto.Items.Add(mic);
 					}
 					catch {
 						//Do nothing if ShellItem is not available anymore and close the problematic item

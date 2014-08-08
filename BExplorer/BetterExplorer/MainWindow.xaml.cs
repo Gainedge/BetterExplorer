@@ -2279,7 +2279,9 @@ namespace BetterExplorer {
 				ConstructMoveToCopyToMenu();
 				SetUpJumpListOnNavComplete();
 				SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
-				SetupUIOnSelectOrNavigate(true);
+				
+				//TODO:	Date: 8/8/2014	User: Aaron Campf	Note: Make sure the following code is okay to comment out!!!
+				//SetupUIOnSelectOrNavigate(true);
 			}));
 
 			if (this.IsInfoPaneEnabled) {

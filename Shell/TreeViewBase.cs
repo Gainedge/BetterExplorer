@@ -5,10 +5,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace BExplorer.Shell
-{
-	public class TreeViewBase : TreeView
-	{
+namespace BExplorer.Shell {
+	public class TreeViewBase : TreeView {
 		#region Event Handlers
 		public event EventHandler VerticalScroll;
 		#endregion
@@ -31,17 +29,14 @@ namespace BExplorer.Shell
 		#endregion
 
 		#region Initializer
-		public TreeViewBase()
-		{
+		public TreeViewBase() {
 			SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.EnableNotifyMessage, true);
 		}
 		#endregion
 
 		#region Overrides
-		protected override void OnPaint(PaintEventArgs e)
-		{
-			if (GetStyle(ControlStyles.UserPaint))
-			{
+		protected override void OnPaint(PaintEventArgs e) {
+			if (GetStyle(ControlStyles.UserPaint)) {
 				Message m = new Message();
 				m.HWnd = Handle;
 				m.Msg = WM_PRINTCLIENT;
@@ -52,17 +47,14 @@ namespace BExplorer.Shell
 			}
 			base.OnPaint(e);
 		}
-		protected override void OnNotifyMessage(Message m)
-		{
+		protected override void OnNotifyMessage(Message m) {
 			//Filter out the WM_ERASEBKGND message
-			if (m.Msg != WM_ERASEBKGND)
-			{
+			if (m.Msg != WM_ERASEBKGND) {
 				base.OnNotifyMessage(m);
 			}
 		}
 
-		protected override void OnHandleCreated(EventArgs e)
-		{
+		protected override void OnHandleCreated(EventArgs e) {
 			base.OnHandleCreated(e);
 			SetDoubleBuffer();
 			SetExpandoesStyle();
@@ -70,29 +62,23 @@ namespace BExplorer.Shell
 			UxTheme.SetWindowTheme(this.Handle, "Explorer", 0);
 
 		}
-		protected override void WndProc(ref Message m)
-		{
-            if (m.Msg == WM_ERASEBKGND)
-            {
-                m.Result = IntPtr.Zero;
-                return;
-            }
-						if (m.Msg == 277)
-						{
-							if (VerticalScroll != null)
-							{
-								VerticalScroll.Invoke(this, EventArgs.Empty);
-							}
-						}
-			
+		protected override void WndProc(ref Message m) {
+			if (m.Msg == WM_ERASEBKGND) {
+				m.Result = IntPtr.Zero;
+				return;
+			}
+			if (m.Msg == 277) {
+				if (VerticalScroll != null) {
+					VerticalScroll.Invoke(this, EventArgs.Empty);
+				}
+			}
+
 			base.WndProc(ref m);
 		}
-		protected override CreateParams CreateParams
-		{
-			get
-			{
+		protected override CreateParams CreateParams {
+			get {
 				CreateParams cp = base.CreateParams;
-				cp.Style |=  0x8000;
+				cp.Style |= 0x8000;
 				return cp;
 			}
 		}
@@ -100,14 +86,12 @@ namespace BExplorer.Shell
 
 		#region Unmanaged
 		[DllImport("user32.dll")]
-		public static extern int SendMessage(IntPtr hWnd, int Msg,
-				IntPtr wParam, IntPtr lParam); 
+		public static extern int SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
 		#endregion
 
 		#region Private Methods
 
-		private void SetExpandoesStyle()
-		{
+		private void SetExpandoesStyle() {
 			int Style = 0;
 
 			Style |= TVS_EX_FADEINOUTEXPANDOS;
@@ -115,8 +99,7 @@ namespace BExplorer.Shell
 			if (Style != 0)
 				SendMessage(this.Handle, TVM_SETEXTENDEDSTYLE, (IntPtr)TVS_EX_FADEINOUTEXPANDOS, (IntPtr)Style);
 		}
-		private void SetDoubleBuffer()
-		{
+		private void SetDoubleBuffer() {
 			int Style = 0;
 
 			Style |= TVS_EX_DOUBLEBUFFER;
