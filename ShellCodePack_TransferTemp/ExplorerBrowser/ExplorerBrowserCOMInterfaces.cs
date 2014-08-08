@@ -24,41 +24,43 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		ViewOrderFlag = unchecked((int)0x80000000)
 	}
 
-	[Flags]
-	internal enum FolderOptions {
-		AutoArrange = 0x00000001,
-		AbbreviatedNames = 0x00000002,
-		SnapToGrid = 0x00000004,
-		OwnerData = 0x00000008,
-		BestFitWindow = 0x00000010,
-		Desktop = 0x00000020,
-		SingleSelection = 0x00000040,
-		NoSubfolders = 0x00000080,
-		Transparent = 0x00000100,
-		NoClientEdge = 0x00000200,
-		NoScroll = 0x00000400,
-		AlignLeft = 0x00000800,
-		NoIcons = 0x00001000,
-		ShowSelectionAlways = 0x00002000,
-		NoVisible = 0x00004000,
-		SingleClickActivate = 0x00008000,
-		NoWebView = 0x00010000,
-		HideFilenames = 0x00020000,
-		CheckSelect = 0x00040000,
-		NoEnumRefresh = 0x00080000,
-		NoGrouping = 0x00100000,
-		FullRowSelect = 0x00200000,
-		NoFilters = 0x00400000,
-		NoColumnHeaders = 0x00800000,
-		NoHeaderInAllViews = 0x01000000,
-		ExtendedTiles = 0x02000000,
-		TriCheckSelect = 0x04000000,
-		AutoCheckSelect = 0x08000000,
-		NoBrowserViewState = 0x10000000,
-		SubsetGroups = 0x20000000,
-		UseSearchFolders = 0x40000000,
-		AllowRightToLeftReading = unchecked((int)0x80000000)
-	}
+	/*
+	//[Flags]
+	//internal enum FolderOptions {
+	//	AutoArrange = 0x00000001,
+	//	AbbreviatedNames = 0x00000002,
+	//	SnapToGrid = 0x00000004,
+	//	OwnerData = 0x00000008,
+	//	BestFitWindow = 0x00000010,
+	//	Desktop = 0x00000020,
+	//	SingleSelection = 0x00000040,
+	//	NoSubfolders = 0x00000080,
+	//	Transparent = 0x00000100,
+	//	NoClientEdge = 0x00000200,
+	//	NoScroll = 0x00000400,
+	//	AlignLeft = 0x00000800,
+	//	NoIcons = 0x00001000,
+	//	ShowSelectionAlways = 0x00002000,
+	//	NoVisible = 0x00004000,
+	//	SingleClickActivate = 0x00008000,
+	//	NoWebView = 0x00010000,
+	//	HideFilenames = 0x00020000,
+	//	CheckSelect = 0x00040000,
+	//	NoEnumRefresh = 0x00080000,
+	//	NoGrouping = 0x00100000,
+	//	FullRowSelect = 0x00200000,
+	//	NoFilters = 0x00400000,
+	//	NoColumnHeaders = 0x00800000,
+	//	NoHeaderInAllViews = 0x01000000,
+	//	ExtendedTiles = 0x02000000,
+	//	TriCheckSelect = 0x04000000,
+	//	AutoCheckSelect = 0x08000000,
+	//	NoBrowserViewState = 0x10000000,
+	//	SubsetGroups = 0x20000000,
+	//	UseSearchFolders = 0x40000000,
+	//	AllowRightToLeftReading = unchecked((int)0x80000000)
+	//}
+	*/
 
 	internal enum FolderViewMode {
 		Auto = -1,
@@ -86,7 +88,8 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	internal class FolderSettings {
 		public FolderViewMode ViewMode;
-		public FolderOptions Options;
+		//public FolderOptions Options;
+		public BExplorer.Shell.Interop.FOLDERFLAGS Options;
 	}
 
 	[Flags]
@@ -1027,7 +1030,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 	//  public long x;
 	//  public long y;
 	//}
-	
+
 	/*
 	[ComImport,
 	Guid("88E39E80-3578-11CF-AE69-08002B2E1262"),
