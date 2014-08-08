@@ -476,9 +476,10 @@ namespace BExplorer.Shell {
 						foreach (var item in sho.Where(w => sho.IsFileSystem || Path.GetExtension(sho.ParsingName).ToLowerInvariant() == ".library-ms" ? ((w.IsFolder || w.IsLink) && (this.IsShowHiddenItems ? true : w.IsHidden == false)) : true)) {
 							var itemNode = new TreeNode(item.DisplayName);
 							ShellItem itemReal = null;
-							if (item.Parent != null && item.Parent.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName){
+							if (item.Parent != null && item.Parent.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
 								itemReal = ShellItem.ToShellParsingName(item.ParsingName);
-							} else {
+							}
+							else {
 								itemReal = item;
 							}
 							itemNode.Tag = itemReal;
@@ -675,13 +676,12 @@ namespace BExplorer.Shell {
 			else
 				e.Effect = System.Windows.Forms.DragDropEffects.None;
 
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 			Win32Point wp = new Win32Point();
 			wp.x = e.X;
 			wp.y = e.Y;
 
 			if (e.Data.GetDataPresent("DragImageBits"))
-				dropHelper.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+				DragDropHelper.ToIDropTargetHelper().DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
 		}
 
 		void ShellTreeView_DragOver(object sender, DragEventArgs e) {
@@ -723,7 +723,6 @@ namespace BExplorer.Shell {
 			else
 				e.Effect = System.Windows.Forms.DragDropEffects.None;
 
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 			Win32Point wp = new Win32Point();
 			wp.x = e.X;
 			wp.y = e.Y;
@@ -751,22 +750,20 @@ namespace BExplorer.Shell {
 			//_LastSelectedIndexByDragDrop = row;
 
 			if (e.Data.GetDataPresent("DragImageBits"))
-				dropHelper.DragOver(ref wp, (int)e.Effect);
+				DragDropHelper.ToIDropTargetHelper().DragOver(ref wp, (int)e.Effect);
 		}
 
 		void ShellTreeView_DragLeave(object sender, EventArgs e) {
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
-			dropHelper.DragLeave();
+			DragDropHelper.ToIDropTargetHelper().DragLeave();
 		}
 		void ShellTreeView_DragDrop(object sender, DragEventArgs e) {
 			var hittestInfo = this.ShellTreeView.HitTest(PointToClient(new System.Drawing.Point(e.X, e.Y)));
 			ShellItem destination = null;
-			if (hittestInfo.Node != null) {
-				destination = hittestInfo.Node.Tag as ShellItem;
-			}
-			else {
+			if (hittestInfo.Node == null)
 				e.Effect = DragDropEffects.None;
-			}
+			else
+				destination = hittestInfo.Node.Tag as ShellItem;
+
 			switch (e.Effect) {
 				case System.Windows.Forms.DragDropEffects.All:
 					break;
@@ -787,13 +784,12 @@ namespace BExplorer.Shell {
 					break;
 			}
 
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 			Win32Point wp = new Win32Point();
 			wp.x = e.X;
 			wp.y = e.Y;
 
 			if (e.Data.GetDataPresent("DragImageBits"))
-				dropHelper.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+				DragDropHelper.ToIDropTargetHelper().Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
 
 			//if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop))
 			//{

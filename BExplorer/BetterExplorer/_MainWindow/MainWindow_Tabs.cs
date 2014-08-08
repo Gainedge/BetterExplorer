@@ -19,10 +19,18 @@ namespace BetterExplorer {
 			var InitialTabs = Utilities.GetRegistryValue("OpenedTabs", "").ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			if (InitialTabs.Length == 0 || !IsrestoreTabs) {
 				var sho = new ShellItem(tcMain.StartUpLocation.ToShellParsingName());
+
+				if (tcMain.Items.OfType<Wpf.Controls.TabItem>().Any())
+					ShellListView.Navigate(sho);
+				else
+					tcMain.NewTab(sho, true);
+
+				/*
 				if (tcMain.Items.OfType<Wpf.Controls.TabItem>().Count() == 0)
 					tcMain.NewTab(sho, true);
 				else
 					ShellListView.Navigate(sho);
+				*/
 			}
 			if (IsrestoreTabs) {
 				isOnLoad = true;
@@ -31,14 +39,15 @@ namespace BetterExplorer {
 					try {
 						i++;
 						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
+							/*
 							if (i == InitialTabs.Length) {
 								//tcMain.SelectedIndex = InitialTabs.Length - 2;
 							}
-
+							*/
 							continue;
 						}
 
-						tcMain.NewTab(str.ToShellParsingName(), i == InitialTabs.Length);
+						tcMain.NewTab(ShellItem.ToShellParsingName(str), i == InitialTabs.Length);
 						if (i == InitialTabs.Count()) {
 							ShellItem sho = new ShellItem(str.ToShellParsingName());
 							ShellListView.Navigate(sho);

@@ -948,7 +948,7 @@ namespace BetterExplorer {
 
 		private void btnBackstageExit_Click(object sender, RoutedEventArgs e) {
 			//! We call Shutdown() so to explicit shutdown the app regardless of windows closing cancel flag.
-			
+
 			Application.Current.Shutdown();
 		}
 
@@ -2801,16 +2801,16 @@ namespace BetterExplorer {
 			//td.StandardButtons = TaskDialogStandardButtons.Yes | TaskDialogStandardButtons.No;
 			//td.OwnerWindowHandle = this.Handle;
 			//if (td.Show() == TaskDialogResult.Yes) {
-				if (ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "documents" &&
-								 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "music" &&
-								 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "videos" &&
-								 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "pictures") {
-					ShellLibrary lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().DisplayName, false);
-					lib.IsPinnedToNavigationPane = true;
-					lib.LibraryType = LibraryFolderType.Generic;
-					lib.IconResourceId = new IconReference(@"C:\Windows\System32\imageres.dll", 187);
-					lib.Close();
-				}
+			if (ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "documents" &&
+							 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "music" &&
+							 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "videos" &&
+							 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "pictures") {
+				ShellLibrary lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().DisplayName, false);
+				lib.IsPinnedToNavigationPane = true;
+				lib.LibraryType = LibraryFolderType.Generic;
+				lib.IconResourceId = new IconReference(@"C:\Windows\System32\imageres.dll", 187);
+				lib.Close();
+			}
 			//}
 		}
 
@@ -3860,11 +3860,10 @@ namespace BetterExplorer {
 					break;
 			}
 
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 			BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
 			wpt.x = (int)pt.X;
 			wpt.y = (int)pt.Y;
-			dropHelper.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+			DragDropHelper.ToIDropTargetHelper().Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 		}
 
 		void bbi_DragOver(object sender, DragEventArgs e) {
@@ -3880,16 +3879,14 @@ namespace BetterExplorer {
 			Win32Point ptw = new Win32Point();
 			GetCursorPos(ref ptw);
 			e.Handled = true;
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 			BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
 			wpt.x = (int)ptw.X;
 			wpt.y = (int)ptw.Y;
-			dropHelper.DragOver(ref wpt, (int)e.Effects);
+			DragDropHelper.ToIDropTargetHelper().DragOver(ref wpt, (int)e.Effects);
 		}
 
 		void bbi_DragLeave(object sender, DragEventArgs e) {
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
-			dropHelper.DragLeave();
+			DragDropHelper.ToIDropTargetHelper().DragLeave();
 		}
 
 		void bbi_DragEnter(object sender, DragEventArgs e) {
@@ -3903,11 +3900,10 @@ namespace BetterExplorer {
 			Win32Point ptw = new Win32Point();
 			GetCursorPos(ref ptw);
 			e.Effects = DragDropEffects.None;
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 			BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
 			wpt.x = (int)ptw.X;
 			wpt.y = (int)ptw.Y;
-			dropHelper.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+			DragDropHelper.ToIDropTargetHelper().DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 		}
 
 		#endregion
@@ -4358,11 +4354,10 @@ namespace BetterExplorer {
 					e.Effects = DragDropEffects.None;
 				}
 
-				IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 				BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
 				wpt.x = (int)pt.X;
 				wpt.y = (int)pt.Y;
-				dropHelper.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+				DragDropHelper.ToIDropTargetHelper().Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 			}
 
 		}
@@ -4382,17 +4377,15 @@ namespace BetterExplorer {
 			e.Handled = true;
 
 			if (e.Data.GetType() != typeof(Wpf.Controls.TabItem)) {
-				IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
 				BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
 				wpt.x = (int)ptw.X;
 				wpt.y = (int)ptw.Y;
-				dropHelper.DragOver(ref wpt, (int)e.Effects);
+				DragDropHelper.ToIDropTargetHelper().DragOver(ref wpt, (int)e.Effects);
 			}
 		}
 
 		void newt_DragLeave(object sender, DragEventArgs e) {
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
-			dropHelper.DragLeave();
+			DragDropHelper.ToIDropTargetHelper().DragLeave();
 		}
 
 		void newt_DragEnter(object sender, DragEventArgs e) {
@@ -4422,11 +4415,8 @@ namespace BetterExplorer {
 			var tabItemSource = e.Data.GetData(typeof(Wpf.Controls.TabItem)) as Wpf.Controls.TabItem;
 			//TODO: fix this!!!
 			if (tabItemSource == null) {
-				IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
-				BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
-				wpt.x = (int)ptw.X;
-				wpt.y = (int)ptw.Y;
-				dropHelper.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+				var wpt = new BExplorer.Shell.Win32Point() { x = ptw.X, y = ptw.Y };
+				DragDropHelper.ToIDropTargetHelper().DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 			}
 			else if (e.Data.GetDataPresent(typeof(Wpf.Controls.TabItem))) {
 				e.Effects = DragDropEffects.Move;
