@@ -34,7 +34,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// <param name="state"></param>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult GetState(ref PropertyKey key, [Out] out PropertyStoreCacheState state);
+		HResult GetState(ref PropertyKey key, [Out] out BExplorer.Shell.Interop.PropertyStoreCacheState state);
 
 		/// <summary>
 		/// Gets the valeu and state of a property in the cache
@@ -44,7 +44,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// <param name="state"></param>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult GetValueAndState(ref PropertyKey propKey, [Out] PropVariant pv, [Out] out PropertyStoreCacheState state);
+		HResult GetValueAndState(ref PropertyKey propKey, [Out] PropVariant pv, [Out] out BExplorer.Shell.Interop.PropertyStoreCacheState state);
 
 		/// <summary>
 		/// Sets the state of a property in the cache.
@@ -53,7 +53,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// <param name="state"></param>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult SetState(ref PropertyKey propKey, PropertyStoreCacheState state);
+		HResult SetState(ref PropertyKey propKey, BExplorer.Shell.Interop.PropertyStoreCacheState state);
 
 		/// <summary>
 		/// Sets the value and state in the cache.
@@ -63,7 +63,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// <param name="state"></param>
 		/// <returns></returns>
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult SetValueAndState(ref PropertyKey propKey, [In] PropVariant pv, PropertyStoreCacheState state);
+		HResult SetValueAndState(ref PropertyKey propKey, [In] PropVariant pv, BExplorer.Shell.Interop.PropertyStoreCacheState state);
 	}
 
 	/// <summary>
