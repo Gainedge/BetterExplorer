@@ -146,29 +146,29 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		HResult GetEditInvitation(out IntPtr ppszInvite);
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult GetTypeFlags([In] PropertyTypeOptions mask, out PropertyTypeOptions ppdtFlags);
+		HResult GetTypeFlags([In] BExplorer.Shell.Interop.PropertyTypeOptions mask, out BExplorer.Shell.Interop.PropertyTypeOptions ppdtFlags);
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult GetViewFlags(out PropertyViewOptions ppdvFlags);
+		HResult GetViewFlags(out BExplorer.Shell.Interop.PropertyViewOptions ppdvFlags);
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		HResult GetDefaultColumnWidth(out uint pcxChars);
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult GetDisplayType(out PropertyDisplayType pdisplaytype);
+		HResult GetDisplayType(out BExplorer.Shell.Interop.PropertyDisplayType pdisplaytype);
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult GetColumnState(out PropertyColumnStateOptions pcsFlags);
+		HResult GetColumnState(out BExplorer.Shell.Interop.PropertyColumnStateOptions pcsFlags);
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult GetGroupingRange(out PropertyGroupingRange pgr);
+		HResult GetGroupingRange(out BExplorer.Shell.Interop.PropertyGroupingRange pgr);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetRelativeDescriptionType(out PropertySystemNativeMethods.RelativeDescriptionType prdt);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetRelativeDescription([In] PropVariant propvar1, [In] PropVariant propvar2, [MarshalAs(UnmanagedType.LPWStr)] out string ppszDesc1, [MarshalAs(UnmanagedType.LPWStr)] out string ppszDesc2);
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult GetSortDescription(out PropertySortDescription psd);
+		HResult GetSortDescription(out BExplorer.Shell.Interop.PropertySortDescription psd);
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		HResult GetSortDescriptionLabel([In] bool fDescending, out IntPtr ppszDescription);
@@ -177,7 +177,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		HResult GetAggregationType(out PropertyAggregationType paggtype);
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult GetConditionType(out PropertyConditionType pcontype, out PropertyConditionOperation popDefault);
+		HResult GetConditionType(out BExplorer.Shell.Interop.PropertyConditionType pcontype, out BExplorer.Shell.Interop.PropertyConditionOperation popDefault);
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		HResult GetEnumTypeList([In] ref Guid riid, [Out, MarshalAs(UnmanagedType.Interface)] out IPropertyEnumTypeList ppv);
@@ -205,17 +205,17 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetEditInvitation([MarshalAs(UnmanagedType.LPWStr)] out string ppszInvite);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetTypeFlags([In] PropertyTypeOptions mask, out PropertyTypeOptions ppdtFlags);
+		void GetTypeFlags([In] BExplorer.Shell.Interop.PropertyTypeOptions mask, out BExplorer.Shell.Interop.PropertyTypeOptions ppdtFlags);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetViewFlags(out PropertyViewOptions ppdvFlags);
+		void GetViewFlags(out BExplorer.Shell.Interop.PropertyViewOptions ppdvFlags);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetDefaultColumnWidth(out uint pcxChars);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetDisplayType(out PropertyDisplayType pdisplaytype);
+		void GetDisplayType(out BExplorer.Shell.Interop.PropertyDisplayType pdisplaytype);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetColumnState(out uint pcsFlags);
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetGroupingRange(out PropertyGroupingRange pgr);
+		void GetGroupingRange(out BExplorer.Shell.Interop.PropertyGroupingRange pgr);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetRelativeDescriptionType(out PropertySystemNativeMethods.RelativeDescriptionType prdt);
@@ -228,7 +228,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		   [MarshalAs(UnmanagedType.LPWStr)] out string ppszDesc2);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSortDescription(out PropertySortDescription psd);
+		void GetSortDescription(out BExplorer.Shell.Interop.PropertySortDescription psd);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetSortDescriptionLabel([In] int fDescending, [MarshalAs(UnmanagedType.LPWStr)] out string ppszDescription);
@@ -238,8 +238,8 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetConditionType(
-			out PropertyConditionType pcontype,
-			out PropertyConditionOperation popDefault);
+			out BExplorer.Shell.Interop.PropertyConditionType pcontype,
+			out BExplorer.Shell.Interop.PropertyConditionOperation popDefault);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetEnumTypeList([In] ref Guid riid, out IntPtr ppv);
@@ -264,7 +264,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IPropertyEnumType {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetEnumType([Out] out PropEnumType penumtype);
+		void GetEnumType([Out] out BExplorer.Shell.Interop.PropEnumType penumtype);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetValue([Out] PropVariant ppropvar);
@@ -284,7 +284,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	internal interface IPropertyEnumType2 : IPropertyEnumType {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetEnumType([Out] out PropEnumType penumtype);
+		void GetEnumType([Out] out BExplorer.Shell.Interop.PropEnumType penumtype);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetValue([Out] PropVariant ppropvar);

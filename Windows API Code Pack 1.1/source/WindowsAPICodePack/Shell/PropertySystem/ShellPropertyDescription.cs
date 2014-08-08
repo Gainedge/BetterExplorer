@@ -20,18 +20,18 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		private string displayName;
 		private string editInvitation;
 		private VarEnum? varEnumType = null;
-		private PropertyDisplayType? displayType;
+		private BExplorer.Shell.Interop.PropertyDisplayType? displayType;
 		private PropertyAggregationType? aggregationTypes;
 		private uint? defaultColumWidth;
-		private PropertyTypeOptions? propertyTypeFlags;
-		private PropertyViewOptions? propertyViewFlags;
+		private BExplorer.Shell.Interop.PropertyTypeOptions? propertyTypeFlags;
+		private BExplorer.Shell.Interop.PropertyViewOptions? propertyViewFlags;
 		private Type valueType;
 		private ReadOnlyCollection<ShellPropertyEnumType> propertyEnumTypes;
-		private PropertyColumnStateOptions? columnState;
-		private PropertyConditionType? conditionType;
-		private PropertyConditionOperation? conditionOperation;
-		private PropertyGroupingRange? groupingRange;
-		private PropertySortDescription? sortDescription;
+		private BExplorer.Shell.Interop.PropertyColumnStateOptions? columnState;
+		private BExplorer.Shell.Interop.PropertyConditionType? conditionType;
+		private BExplorer.Shell.Interop.PropertyConditionOperation? conditionOperation;
+		private BExplorer.Shell.Interop.PropertyGroupingRange? groupingRange;
+		private BExplorer.Shell.Interop.PropertySortDescription? sortDescription;
 
 		#endregion
 
@@ -140,10 +140,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// <summary>
 		/// Gets the current data type used to display the property.
 		/// </summary>
-		public PropertyDisplayType DisplayType {
+		public BExplorer.Shell.Interop.PropertyDisplayType DisplayType {
 			get {
 				if (NativePropertyDescription != null && displayType == null) {
-					PropertyDisplayType tempDisplayType;
+					BExplorer.Shell.Interop.PropertyDisplayType tempDisplayType;
 
 					HResult hr = NativePropertyDescription.GetDisplayType(out tempDisplayType);
 
@@ -152,7 +152,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 					}
 				}
 
-				return displayType.HasValue ? displayType.Value : default(PropertyDisplayType);
+				return displayType.HasValue ? displayType.Value : default(BExplorer.Shell.Interop.PropertyDisplayType);
 			}
 		}
 
@@ -232,11 +232,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// Gets the column state flag, which describes how the property 
 		/// should be treated by interfaces or APIs that use this flag.
 		/// </summary>
-		public PropertyColumnStateOptions ColumnState {
+		public BExplorer.Shell.Interop.PropertyColumnStateOptions ColumnState {
 			get {
 				// If default/first value, try to get it again, otherwise used the cached one.
 				if (NativePropertyDescription != null && columnState == null) {
-					PropertyColumnStateOptions state;
+					BExplorer.Shell.Interop.PropertyColumnStateOptions state;
 
 					HResult hr = NativePropertyDescription.GetColumnState(out state);
 
@@ -245,7 +245,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 					}
 				}
 
-				return columnState.HasValue ? columnState.Value : default(PropertyColumnStateOptions);
+				return columnState.HasValue ? columnState.Value : default(BExplorer.Shell.Interop.PropertyColumnStateOptions);
 			}
 		}
 
@@ -257,12 +257,12 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// </summary>
 		/// <remarks>For more information, see the <c>conditionType</c> attribute 
 		/// of the <c>typeInfo</c> element in the property's .propdesc file.</remarks>
-		public PropertyConditionType ConditionType {
+		public BExplorer.Shell.Interop.PropertyConditionType ConditionType {
 			get {
 				// If default/first value, try to get it again, otherwise used the cached one.
 				if (NativePropertyDescription != null && conditionType == null) {
-					PropertyConditionType tempConditionType;
-					PropertyConditionOperation tempConditionOperation;
+					BExplorer.Shell.Interop.PropertyConditionType tempConditionType;
+					BExplorer.Shell.Interop.PropertyConditionOperation tempConditionOperation;
 
 					HResult hr = NativePropertyDescription.GetConditionType(out tempConditionType, out tempConditionOperation);
 
@@ -272,7 +272,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 					}
 				}
 
-				return conditionType.HasValue ? conditionType.Value : default(PropertyConditionType);
+				return conditionType.HasValue ? conditionType.Value : default(BExplorer.Shell.Interop.PropertyConditionType);
 			}
 		}
 
@@ -285,12 +285,12 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// </summary>
 		/// <remarks>For more information, see the <c>conditionType</c> attribute of the 
 		/// <c>typeInfo</c> element in the property's .propdesc file.</remarks>
-		public PropertyConditionOperation ConditionOperation {
+		public BExplorer.Shell.Interop.PropertyConditionOperation ConditionOperation {
 			get {
 				// If default/first value, try to get it again, otherwise used the cached one.
 				if (NativePropertyDescription != null && conditionOperation == null) {
-					PropertyConditionType tempConditionType;
-					PropertyConditionOperation tempConditionOperation;
+					BExplorer.Shell.Interop.PropertyConditionType tempConditionType;
+					BExplorer.Shell.Interop.PropertyConditionOperation tempConditionOperation;
 
 					HResult hr = NativePropertyDescription.GetConditionType(out tempConditionType, out tempConditionOperation);
 
@@ -300,7 +300,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 					}
 				}
 
-				return conditionOperation.HasValue ? conditionOperation.Value : default(PropertyConditionOperation);
+				return conditionOperation.HasValue ? conditionOperation.Value : default(BExplorer.Shell.Interop.PropertyConditionOperation);
 			}
 		}
 
@@ -310,11 +310,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// <remarks>The information retrieved by this method comes from 
 		/// the <c>groupingRange</c> attribute of the <c>typeInfo</c> element in the 
 		/// property's .propdesc file.</remarks>
-		public PropertyGroupingRange GroupingRange {
+		public BExplorer.Shell.Interop.PropertyGroupingRange GroupingRange {
 			get {
 				// If default/first value, try to get it again, otherwise used the cached one.
 				if (NativePropertyDescription != null && groupingRange == null) {
-					PropertyGroupingRange tempGroupingRange;
+					BExplorer.Shell.Interop.PropertyGroupingRange tempGroupingRange;
 
 					HResult hr = NativePropertyDescription.GetGroupingRange(out tempGroupingRange);
 
@@ -323,7 +323,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 					}
 				}
 
-				return groupingRange.HasValue ? groupingRange.Value : default(PropertyGroupingRange);
+				return groupingRange.HasValue ? groupingRange.Value : default(BExplorer.Shell.Interop.PropertyGroupingRange);
 			}
 		}
 
@@ -334,11 +334,11 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// <remarks>The settings retrieved by this method are set 
 		/// through the <c>sortDescription</c> attribute of the <c>labelInfo</c> 
 		/// element in the property's .propdesc file.</remarks>
-		public PropertySortDescription SortDescription {
+		public BExplorer.Shell.Interop.PropertySortDescription SortDescription {
 			get {
 				// If default/first value, try to get it again, otherwise used the cached one.
 				if (NativePropertyDescription != null && sortDescription == null) {
-					PropertySortDescription tempSortDescription;
+					BExplorer.Shell.Interop.PropertySortDescription tempSortDescription;
 
 					HResult hr = NativePropertyDescription.GetSortDescription(out tempSortDescription);
 
@@ -347,7 +347,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 					}
 				}
 
-				return sortDescription.HasValue ? sortDescription.Value : default(PropertySortDescription);
+				return sortDescription.HasValue ? sortDescription.Value : default(BExplorer.Shell.Interop.PropertySortDescription);
 			}
 		}
 
@@ -379,33 +379,33 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// <summary>
 		/// Gets a set of flags that describe the uses and capabilities of the property.
 		/// </summary>
-		public PropertyTypeOptions TypeFlags {
+		public BExplorer.Shell.Interop.PropertyTypeOptions TypeFlags {
 			get {
 				if (NativePropertyDescription != null && propertyTypeFlags == null) {
-					PropertyTypeOptions tempFlags;
+					BExplorer.Shell.Interop.PropertyTypeOptions tempFlags;
 
-					HResult hr = NativePropertyDescription.GetTypeFlags(PropertyTypeOptions.MaskAll, out tempFlags);
+					HResult hr = NativePropertyDescription.GetTypeFlags(BExplorer.Shell.Interop.PropertyTypeOptions.MaskAll, out tempFlags);
 
-					propertyTypeFlags = CoreErrorHelper.Succeeded(hr) ? tempFlags : default(PropertyTypeOptions);
+					propertyTypeFlags = CoreErrorHelper.Succeeded(hr) ? tempFlags : default(BExplorer.Shell.Interop.PropertyTypeOptions);
 				}
 
-				return propertyTypeFlags.HasValue ? propertyTypeFlags.Value : default(PropertyTypeOptions);
+				return propertyTypeFlags.HasValue ? propertyTypeFlags.Value : default(BExplorer.Shell.Interop.PropertyTypeOptions);
 			}
 		}
 
 		/// <summary>
 		/// Gets the current set of flags governing the property's view.
 		/// </summary>
-		public PropertyViewOptions ViewFlags {
+		public BExplorer.Shell.Interop.PropertyViewOptions ViewFlags {
 			get {
 				if (NativePropertyDescription != null && propertyViewFlags == null) {
-					PropertyViewOptions tempFlags;
+					BExplorer.Shell.Interop.PropertyViewOptions tempFlags;
 					HResult hr = NativePropertyDescription.GetViewFlags(out tempFlags);
 
-					propertyViewFlags = CoreErrorHelper.Succeeded(hr) ? tempFlags : default(PropertyViewOptions);
+					propertyViewFlags = CoreErrorHelper.Succeeded(hr) ? tempFlags : default(BExplorer.Shell.Interop.PropertyViewOptions);
 				}
 
-				return propertyViewFlags.HasValue ? propertyViewFlags.Value : default(PropertyViewOptions);
+				return propertyViewFlags.HasValue ? propertyViewFlags.Value : default(BExplorer.Shell.Interop.PropertyViewOptions);
 			}
 		}
 
