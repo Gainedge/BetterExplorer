@@ -256,7 +256,6 @@
     <Compile Include="WindowsSearch\ShellSearchConnector.cs" />
     <Compile Include="WindowsSearch\ShellSearchFolder.cs" />
     <Compile Include="_Plugin Interfaces\IShellItemEx.cs" />
-    <Compile Include="__Transfered\DelRecycleBin.cs" />
     <Compile Include="__Transfered\Icons\IconFile.cs" />
     <Compile Include="__Transfered\Icons\IconReader.cs" />
     <Compile Include="__Transfered\Icons\IconUtilities.cs" />
