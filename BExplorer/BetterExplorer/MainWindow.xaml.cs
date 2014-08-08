@@ -42,6 +42,7 @@ using MenuItem = Fluent.MenuItem;
 using Odyssey.Controls;
 using BExplorer.Shell.Taskbar;
 using BExplorer.Shell.CommonFileDialogs;
+using DropTargetHelper = BExplorer.Shell.DropTargetHelper.Get;
 
 
 namespace BetterExplorer {
@@ -76,25 +77,15 @@ namespace BetterExplorer {
 
 		#region DLLImports
 
-		#region Cursor
-
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		internal static extern bool GetCursorPos(ref Win32Point pt);
+		internal static extern bool GetCursorPos(ref BExplorer.Shell.Win32Point pt);
 
-		[StructLayout(LayoutKind.Sequential)]
-		internal struct Win32Point {
-			public Int32 X;
-			public Int32 Y;
-		};
+		//[DllImport("user32.dll", SetLastError = true)]
+		//private static extern int RegisterHotKey(IntPtr hwnd, int id, int fsModifiers, int vk);
 
-		#endregion
-
-		[DllImport("user32.dll", SetLastError = true)]
-		private static extern int RegisterHotKey(IntPtr hwnd, int id, int fsModifiers, int vk);
-
-		[DllImport("user32.dll", SetLastError = true)]
-		private static extern int UnregisterHotKey(IntPtr hwnd, int id);
+		//[DllImport("user32.dll", SetLastError = true)]
+		//private static extern int UnregisterHotKey(IntPtr hwnd, int id);
 
 		[DllImport("winmm.dll")]
 		static extern Int32 mciSendString(String command, StringBuilder buffer, Int32 bufferSize, IntPtr hwndCallback);
@@ -105,7 +96,7 @@ namespace BetterExplorer {
 
 		#region Public member
 		public bool IsrestoreTabs;
-		public static UpdateManager Updater;
+		//public static UpdateManager Updater;
 		#endregion
 
 		#region Private Members
@@ -127,7 +118,7 @@ namespace BetterExplorer {
 
 		private List<string> Archives = new List<string>(new[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
 		private List<string> Images = new List<string>(new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
-		private List<string> VirDisks = new List<string>(new[] { ".iso", ".bin", ".vhd" });
+		//private List<string> VirDisks = new List<string>(new[] { ".iso", ".bin", ".vhd" });
 		private string SelectedArchive = "";
 		private bool KeepBackstageOpen = false;
 		private string ICON_DLLPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
@@ -135,7 +126,7 @@ namespace BetterExplorer {
 		string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
 		string logdir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\ActionLog\\";
 		string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
-		string naddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\NetworkAccounts\\";
+		//string naddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\NetworkAccounts\\";
 		string sstdir;
 		bool OverwriteOnRotate = false;
 		NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
@@ -338,11 +329,7 @@ namespace BetterExplorer {
 				MessageBox.Show("BetterExplorer had an issue loading the visible columns for the current view. You might not be able to sort or group items.", ex.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 
-			Separator sp = new Separator();
-			sp.Focusable = false;
-			btnSort.Items.Add(sp);
-
-
+			btnSort.Items.Add(new Separator() { Focusable = false });
 			misa = Utilities.Build_MenuItem(FindResource("miAscending"), checkable: true, GroupName: "GR1", onClick: misa_Click);
 			misd = Utilities.Build_MenuItem(FindResource("miDescending"), checkable: true, GroupName: "GR1", onClick: misd_Click);
 
@@ -359,9 +346,7 @@ namespace BetterExplorer {
 			misng = Utilities.Build_MenuItem("(none)", GroupName: "GR3", checkable: true, isChecked: ShellListView.LastGroupCollumn == null, onClick: misng_Click);
 
 			btnGroup.Items.Add(misng);
-			Separator spg = new Separator();
-			btnGroup.Items.Add(spg);
-
+			btnGroup.Items.Add(new Separator());
 
 			misag = Utilities.Build_MenuItem(FindResource("miAscending"), checkable: true, GroupName: "GR4", onClick: misag_Click);
 			misdg = Utilities.Build_MenuItem(FindResource("miDescending"), checkable: true, GroupName: "GR4", onClick: misag_Click);
@@ -455,6 +440,7 @@ namespace BetterExplorer {
 
 			btnMoreColls.Tag = allAvailColls;
 		}
+
 		#endregion
 
 		void misd_Click(object sender, RoutedEventArgs e) {
@@ -498,12 +484,12 @@ namespace BetterExplorer {
 		}
 
 		void micm_Click(object sender, RoutedEventArgs e) {
-			MoreColumns fMoreCollumns = new MoreColumns();
+			var fMoreCollumns = new MoreColumns();
 			fMoreCollumns.PopulateAvailableColumns((List<Collumns>)(sender as FrameworkElement).Tag, ShellListView, this.PointToScreen(Mouse.GetPosition(this)));
 		}
 
 		void mic_Click(object sender, RoutedEventArgs e) {
-			MenuItem mi = (sender as MenuItem);
+			var mi = (sender as MenuItem);
 			Collumns col = (Collumns)mi.Tag;
 			ShellListView.SetColInView(col, !mi.IsChecked);
 		}
@@ -523,7 +509,6 @@ namespace BetterExplorer {
 				lib.Close();
 			}
 		}
-
 
 		void fsw_Renamed(object sender, RenamedEventArgs e) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal,
@@ -3834,7 +3819,7 @@ namespace BetterExplorer {
 
 
 		void bbi_Drop(object sender, DragEventArgs e) {
-			System.Windows.Point pt = e.GetPosition(sender as IInputElement);
+			var pt = e.GetPosition(sender as IInputElement);
 
 			if (((sender as BreadcrumbItem).Data as ShellItem).IsFileSystem)
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
@@ -3860,10 +3845,8 @@ namespace BetterExplorer {
 					break;
 			}
 
-			BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
-			wpt.x = (int)pt.X;
-			wpt.y = (int)pt.Y;
-			DragDropHelper.ToIDropTargetHelper().Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+			var wpt = new BExplorer.Shell.Win32Point() { X = (int)pt.X, Y = (int)pt.Y };
+			DropTargetHelper.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 		}
 
 		void bbi_DragOver(object sender, DragEventArgs e) {
@@ -3876,17 +3859,15 @@ namespace BetterExplorer {
 				e.Effects = DragDropEffects.None;
 			}
 
-			Win32Point ptw = new Win32Point();
+			var ptw = new Win32Point();
 			GetCursorPos(ref ptw);
 			e.Handled = true;
-			BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
-			wpt.x = (int)ptw.X;
-			wpt.y = (int)ptw.Y;
-			DragDropHelper.ToIDropTargetHelper().DragOver(ref wpt, (int)e.Effects);
+			var wpt = new BExplorer.Shell.Win32Point() { X = ptw.X, Y = ptw.Y };
+			DropTargetHelper.Create.DragOver(ref wpt, (int)e.Effects);
 		}
 
 		void bbi_DragLeave(object sender, DragEventArgs e) {
-			DragDropHelper.ToIDropTargetHelper().DragLeave();
+			DropTargetHelper.Create.DragLeave();
 		}
 
 		void bbi_DragEnter(object sender, DragEventArgs e) {
@@ -3901,9 +3882,9 @@ namespace BetterExplorer {
 			GetCursorPos(ref ptw);
 			e.Effects = DragDropEffects.None;
 			BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
-			wpt.x = (int)ptw.X;
-			wpt.y = (int)ptw.Y;
-			DragDropHelper.ToIDropTargetHelper().DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+			wpt.X = (int)ptw.X;
+			wpt.Y = (int)ptw.Y;
+			DropTargetHelper.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 		}
 
 		#endregion
@@ -4354,10 +4335,8 @@ namespace BetterExplorer {
 					e.Effects = DragDropEffects.None;
 				}
 
-				BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
-				wpt.x = (int)pt.X;
-				wpt.y = (int)pt.Y;
-				DragDropHelper.ToIDropTargetHelper().Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+				var wpt = new BExplorer.Shell.Win32Point() { X = (int)pt.X, Y = (int)pt.Y };
+				DropTargetHelper.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 			}
 
 		}
@@ -4365,12 +4344,10 @@ namespace BetterExplorer {
 		void newt_DragOver(object sender, DragEventArgs e) {
 			e.Handled = true;
 
-			if ((sender as Wpf.Controls.TabItem).ShellObject.IsFileSystem) {
+			if ((sender as Wpf.Controls.TabItem).ShellObject.IsFileSystem)
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
-			}
-			else {
+			else
 				e.Effects = DragDropEffects.None;
-			}
 
 			Win32Point ptw = new Win32Point();
 			GetCursorPos(ref ptw);
@@ -4378,14 +4355,14 @@ namespace BetterExplorer {
 
 			if (e.Data.GetType() != typeof(Wpf.Controls.TabItem)) {
 				BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
-				wpt.x = (int)ptw.X;
-				wpt.y = (int)ptw.Y;
-				DragDropHelper.ToIDropTargetHelper().DragOver(ref wpt, (int)e.Effects);
+				wpt.X = (int)ptw.X;
+				wpt.Y = (int)ptw.Y;
+				DropTargetHelper.Create.DragOver(ref wpt, (int)e.Effects);
 			}
 		}
 
 		void newt_DragLeave(object sender, DragEventArgs e) {
-			DragDropHelper.ToIDropTargetHelper().DragLeave();
+			DropTargetHelper.Create.DragLeave();
 		}
 
 		void newt_DragEnter(object sender, DragEventArgs e) {
@@ -4415,8 +4392,8 @@ namespace BetterExplorer {
 			var tabItemSource = e.Data.GetData(typeof(Wpf.Controls.TabItem)) as Wpf.Controls.TabItem;
 			//TODO: fix this!!!
 			if (tabItemSource == null) {
-				var wpt = new BExplorer.Shell.Win32Point() { x = ptw.X, y = ptw.Y };
-				DragDropHelper.ToIDropTargetHelper().DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+				var wpt = new BExplorer.Shell.Win32Point() { X = ptw.X, Y = ptw.Y };
+				DropTargetHelper.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 			}
 			else if (e.Data.GetDataPresent(typeof(Wpf.Controls.TabItem))) {
 				e.Effects = DragDropEffects.Move;

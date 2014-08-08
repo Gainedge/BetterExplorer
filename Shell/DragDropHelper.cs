@@ -7,8 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BExplorer.Shell {
-	#region DataObject
 
+	#region DataObject - Removed
+
+	/*
 	/// <summary>
 	/// Implements the COM version of IDataObject including SetData.
 	/// </summary>
@@ -26,6 +28,7 @@ namespace BExplorer.Shell {
 	/// System.Windows.DataObject data = new System.Windows.DataObject(new DragDropLib.DataObject());
 	/// </code>
 	/// </remarks>
+	[Obsolete("", true)]
 	[ComVisible(true)]
 	public class DataObject : IDataObject, IDisposable {
 		#region Unmanaged functions
@@ -366,15 +369,16 @@ namespace BExplorer.Shell {
 			#endregion
 		}
 	}
+	*/
 
-	#endregion // DataObject
+	#endregion // DataObject - Removed
 
 	#region Native structures
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Win32Point {
-		public int x;
-		public int y;
+		//Made X and Y Uppercase
+		public int X, Y;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -412,46 +416,45 @@ namespace BExplorer.Shell {
 
 	#endregion // IDragSourceHelper
 
-	#region IDropTargetHelper
 
-	[ComVisible(true)]
-	[ComImport]
-	[Guid("4657278B-411B-11D2-839A-00C04FD918D0")]
-	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IDropTargetHelper {
-		void DragEnter(
-				[In] IntPtr hwndTarget,
-				[In, MarshalAs(UnmanagedType.Interface)] IDataObject dataObject,
-				[In] ref Win32Point pt,
-				[In] int effect);
+	namespace DropTargetHelper {
+		[ComVisible(true)]
+		[ComImport]
+		[Guid("4657278B-411B-11D2-839A-00C04FD918D0")]
+		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+		public interface IDropTargetHelper {
+			void DragEnter(
+					[In] IntPtr hwndTarget,
+					[In, MarshalAs(UnmanagedType.Interface)] IDataObject dataObject,
+					[In] ref Win32Point pt,
+					[In] int effect);
 
-		void DragLeave();
+			void DragLeave();
 
-		void DragOver(
-				[In] ref Win32Point pt,
-				[In] int effect);
+			void DragOver(
+					[In] ref Win32Point pt,
+					[In] int effect);
 
-		void Drop(
-				[In, MarshalAs(UnmanagedType.Interface)] IDataObject dataObject,
-				[In] ref Win32Point pt,
-				[In] int effect);
+			void Drop(
+					[In, MarshalAs(UnmanagedType.Interface)] IDataObject dataObject,
+					[In] ref Win32Point pt,
+					[In] int effect);
 
-		void Show(
-				[In] bool show);
-	}
+			void Show(
+					[In] bool show);
+		}
 
-	#endregion // IDropTargetHelper
 
-	#region DragDropHelper
+		[ComImport]
+		[Guid("4657278A-411B-11d2-839A-00C04FD918D0")]
+		public class DragDropHelper { }
 
-	[System.Diagnostics.DebuggerStepThrough]
-	[ComImport]
-	[Guid("4657278A-411B-11d2-839A-00C04FD918D0")]
-	public class DragDropHelper {
-		public static IDropTargetHelper ToIDropTargetHelper() {
-			return (IDropTargetHelper)new DragDropHelper();
+		public static class Get {
+			public static IDropTargetHelper Create {
+				get {
+					return (IDropTargetHelper)new DragDropHelper();
+				}
+			}
 		}
 	}
-
-	#endregion // DragDropHelper
 }

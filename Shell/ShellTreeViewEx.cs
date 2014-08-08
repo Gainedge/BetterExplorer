@@ -677,11 +677,12 @@ namespace BExplorer.Shell {
 				e.Effect = System.Windows.Forms.DragDropEffects.None;
 
 			Win32Point wp = new Win32Point();
-			wp.x = e.X;
-			wp.y = e.Y;
+			wp.X = e.X;
+			wp.Y = e.Y;
 
-			if (e.Data.GetDataPresent("DragImageBits"))
-				DragDropHelper.ToIDropTargetHelper().DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+			if (e.Data.GetDataPresent("DragImageBits")) {
+				DropTargetHelper.Get.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+			}
 		}
 
 		void ShellTreeView_DragOver(object sender, DragEventArgs e) {
@@ -724,8 +725,8 @@ namespace BExplorer.Shell {
 				e.Effect = System.Windows.Forms.DragDropEffects.None;
 
 			Win32Point wp = new Win32Point();
-			wp.x = e.X;
-			wp.y = e.Y;
+			wp.X = e.X;
+			wp.Y = e.Y;
 
 			//int row = -1;
 			//int collumn = -1;
@@ -750,12 +751,13 @@ namespace BExplorer.Shell {
 			//_LastSelectedIndexByDragDrop = row;
 
 			if (e.Data.GetDataPresent("DragImageBits"))
-				DragDropHelper.ToIDropTargetHelper().DragOver(ref wp, (int)e.Effect);
+				DropTargetHelper.Get.Create.DragOver(ref wp, (int)e.Effect);
 		}
 
 		void ShellTreeView_DragLeave(object sender, EventArgs e) {
-			DragDropHelper.ToIDropTargetHelper().DragLeave();
+			DropTargetHelper.Get.Create.DragLeave();
 		}
+
 		void ShellTreeView_DragDrop(object sender, DragEventArgs e) {
 			var hittestInfo = this.ShellTreeView.HitTest(PointToClient(new System.Drawing.Point(e.X, e.Y)));
 			ShellItem destination = null;
@@ -785,11 +787,11 @@ namespace BExplorer.Shell {
 			}
 
 			Win32Point wp = new Win32Point();
-			wp.x = e.X;
-			wp.y = e.Y;
+			wp.X = e.X;
+			wp.Y = e.Y;
 
 			if (e.Data.GetDataPresent("DragImageBits"))
-				DragDropHelper.ToIDropTargetHelper().Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+				DropTargetHelper.Get.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
 
 			//if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop))
 			//{

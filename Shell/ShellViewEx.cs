@@ -1368,20 +1368,16 @@ namespace BExplorer.Shell {
 					break;
 			}
 
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
-			Win32Point wp = new Win32Point();
-			wp.x = e.X;
-			wp.y = e.Y;
+			var wp = new Win32Point() { X = e.X, Y = e.Y };
 
 			if (e.Data.GetDataPresent("DragImageBits"))
-				dropHelper.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+				DropTargetHelper.Get.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
 			if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop))
 				this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
 		}
 
 		protected override void OnDragLeave(EventArgs e) {
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
-			dropHelper.DragLeave();
+			DropTargetHelper.Get.Create.DragLeave();
 		}
 
 		protected override void OnDragOver(F.DragEventArgs e) {
@@ -1410,10 +1406,7 @@ namespace BExplorer.Shell {
 			else
 				e.Effect = F.DragDropEffects.Copy;
 
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
-			Win32Point wp = new Win32Point();
-			wp.x = e.X;
-			wp.y = e.Y;
+			var wp = new Win32Point() { X = e.X, Y = e.Y };
 
 			int row = -1;
 			int collumn = -1;
@@ -1433,7 +1426,7 @@ namespace BExplorer.Shell {
 			_LastSelectedIndexByDragDrop = row;
 
 			if (e.Data.GetDataPresent("DragImageBits"))
-				dropHelper.DragOver(ref wp, (int)e.Effect);
+				DropTargetHelper.Get.Create.DragOver(ref wp, (int)e.Effect);
 		}
 
 		protected override void OnDragEnter(F.DragEventArgs e) {
@@ -1462,13 +1455,10 @@ namespace BExplorer.Shell {
 			else
 				e.Effect = F.DragDropEffects.Copy;
 
-			IDropTargetHelper dropHelper = (IDropTargetHelper)new DragDropHelper();
-			Win32Point wp = new Win32Point();
-			wp.x = e.X;
-			wp.y = e.Y;
+			Win32Point wp = new Win32Point() { X = e.X, Y = e.Y };
 
 			if (e.Data.GetDataPresent("DragImageBits"))
-				dropHelper.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+				DropTargetHelper.Get.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
 		}
 
 		protected override void OnQueryContinueDrag(F.QueryContinueDragEventArgs e) {
