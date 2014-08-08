@@ -43,7 +43,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			bool isFolder = (sfgao & ShellFileGetAttributesOptions.Folder) != 0;
 
 			// Shell Library
-			ShellLibrary shellLibrary = null;
+			//ShellLibrary shellLibrary = null;
 
 			// Create the right type of ShellObject based on the above information 
 
@@ -54,10 +54,11 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			// 2. Check if this is a container or a single item (entity)
 			else if (isFolder) {
 				// 3. If this is a folder, check for types: Shell Library, Shell Folder or Search Container
-				if (itemType == ".library-ms" && (shellLibrary = ShellLibrary.FromShellItem(nativeShellItem2, true)) != null) {
-					return shellLibrary; // we already created this above while checking for Library
-				}
-				else if (itemType == ".searchconnector-ms") {
+				//if (itemType == ".library-ms" && (shellLibrary = ShellLibrary.FromShellItem(nativeShellItem2, true)) != null) {
+				//	return shellLibrary; // we already created this above while checking for Library
+				//}
+				//else 
+					if (itemType == ".searchconnector-ms") {
 					return new ShellSearchConnector(nativeShellItem2);
 				}
 				else if (itemType == ".search-ms") {

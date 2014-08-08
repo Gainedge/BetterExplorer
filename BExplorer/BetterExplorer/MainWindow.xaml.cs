@@ -1534,21 +1534,6 @@ namespace BetterExplorer {
 
 		#region Path to String HelperFunctions / Other HelperFunctions
 
-		public void ExportColumnDataToTextFile(string filename) {
-			var eb = new Microsoft.WindowsAPICodePack.Controls.WindowsForms.ExplorerBrowser();
-			eb.InitBrowser();
-			var cols = eb.AvailableColumnsList(true);
-
-			int acount = 0;
-			foreach (var item in cols) {
-				using (StreamWriter sw = new StreamWriter(filename, true)) {
-					// new Tuple<String, PROPERTYKEY, Type>("Date Modified", new PROPERTYKEY(){fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 14}, typeof(DateTime))
-					sw.WriteLine("{\"A" + acount + "\", new Tuple<String, PROPERTYKEY, Type>(\"" + item.Name + "\", new PROPERTYKEY(){fmtid = Guid.Parse(\"" + item.pkey.fmtid + "\"), pid = " + item.pkey.pid + "}, typeof(String))},");
-					acount++;
-				}
-			}
-		}
-
 		private Visibility BooleanToVisibiliy(bool value) {
 			return value ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
 		}
@@ -5115,7 +5100,6 @@ namespace BetterExplorer {
 		}
 
 		private void tmpButtonB_Click(object sender, RoutedEventArgs e) {
-			ExportColumnDataToTextFile(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\ColumnData.txt");
 		}
 
 		private void RibbonWindow_PreviewKeyDown(object sender, KeyEventArgs e) {

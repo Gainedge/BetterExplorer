@@ -31,7 +31,6 @@ using System.Globalization;
 using NAppUpdate.Framework;
 using BetterExplorerControls;
 using Microsoft.WindowsAPICodePack.Shell.FileOperations;
-using Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser;
 using wyDay.Controls;
 using System.Security.Principal;
 using Shell32;

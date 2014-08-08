@@ -1765,7 +1765,31 @@ namespace BExplorer.Shell {
 							if (Items.Count == 0 || Items.Count - 1 < nmlv.item.iItem)
 								break;
 							var currentItem = Items[nmlv.item.iItem];
+
 							if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
+								IShellItem2 com2 = (IShellItem2)currentItem.ComInterface;
+								Guid guidIP = new Guid(InterfaceGuids.IPropertyStore);
+								IPropertyStore propStored = null;
+								com2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guidIP, out propStored);
+								PROPERTYKEY pkd = Defaults.AllColumnsPKeys.First().Value.Item2;
+								PropVariant pvard = new PropVariant();
+								if (!(propStored != null && propStored.GetValue(ref pkd, pvard) == HResult.S_OK)) {
+									ShellItem theItem = Items.SingleOrDefault(s => s.GetHashCode() == currentItem.GetHashCode());
+									if (theItem != null) {
+										Items.Remove(theItem);
+										if (this.IsGroupsEnabled) {
+											this.SetGroupOrder(false);
+										}
+										this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+
+										if (this.ItemUpdated != null)
+											this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, currentItem, null, -1));
+									}
+								}
+								if (propStored != null) {
+									Marshal.ReleaseComObject(propStored);
+								}
+								pvard.Dispose();
 								if (nmlv.item.iSubItem == 0) {
 									nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (!String.IsNullOrEmpty(NewName) ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
 									Marshal.StructureToPtr(nmlv, m.LParam, false);

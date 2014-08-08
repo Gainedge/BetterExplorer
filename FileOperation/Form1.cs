@@ -14,9 +14,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using Microsoft.WindowsAPICodePack.Shell;
-using Microsoft.WindowsAPICodePack.Shell.FileOperations;
-using PipesClient;
-using PipesServer;
+
 using WindowsHelper;
 
 namespace FileOperation {
@@ -31,10 +29,10 @@ namespace FileOperation {
 		private uint WM_FOPAUSE = WindowsAPI.RegisterWindowMessage("BE_FOPAUSE");
 		private uint WM_FOSTOP = WindowsAPI.RegisterWindowMessage("BE_FOSTOP");
 		private uint WM_FOERROR = WindowsAPI.RegisterWindowMessage("BE_FOERROR");
-		private PipeClient _pipeClient;
-		private PipeServer _pipeServer;
+		//private PipeClient _pipeClient;
+		//private PipeServer _pipeServer;
 		private ManualResetEvent _block, _block2;
-		private OperationType OPType { get; set; }
+		//private OperationType OPType { get; set; }
 		private int CurrentStatus = -1;
 		private bool IsShown = true;
 		private Thread CopyThread;
@@ -56,16 +54,16 @@ namespace FileOperation {
 		public Form1() {
 			InitializeComponent();
 			try {
-				WindowsHelper.WindowsAPI.CHANGEFILTERSTRUCT filterStatus = new WindowsHelper.WindowsAPI.CHANGEFILTERSTRUCT();
-				filterStatus.size = (uint)Marshal.SizeOf(filterStatus);
-				filterStatus.info = 0;
-				WindowsAPI.ChangeWindowMessageFilterEx(Handle, 0x4A, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
-				WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOWINC, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
-				WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOBEGIN, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
-				WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOEND, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
-				WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOPAUSE, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
-				WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOSTOP, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
-				WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOERROR, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+				//WindowsHelper.WindowsAPI.CHANGEFILTERSTRUCT filterStatus = new WindowsHelper.WindowsAPI.CHANGEFILTERSTRUCT();
+				//filterStatus.size = (uint)Marshal.SizeOf(filterStatus);
+				//filterStatus.info = 0;
+				//WindowsAPI.ChangeWindowMessageFilterEx(Handle, 0x4A, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+				//WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOWINC, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+				//WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOBEGIN, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+				//WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOEND, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+				//WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOPAUSE, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+				//WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOSTOP, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
+				//WindowsAPI.ChangeWindowMessageFilterEx(Handle, WM_FOERROR, WindowsAPI.ChangeWindowMessageFilterExAction.Allow, ref filterStatus);
 			}
 			catch (Exception) {
 				Close();
@@ -89,84 +87,84 @@ namespace FileOperation {
 
 
 		void CopyFiles() {
-			CurrentStatus = 1;
-			_block.WaitOne();
-			foreach (var item in SourceItemsCollection.Where(c => c.Item3 == 0)) {
-				OldBytes = 0;
-				if (this.OPType == OperationType.Copy) {
-					if (item.Item3 == 1) {
-						if (!Directory.Exists(item.Item2))
-							try {
-								Directory.CreateDirectory(item.Item2);
-							}
-							catch (UnauthorizedAccessException) {
-								WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
-								Environment.Exit(5);
-							}
-					}
-					else {
-						try {
-							ProcessItems(item.Item1, item.Item2);
-						}
-						catch (Exception) {
-							WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
-							Environment.Exit(5);
-						}
+			//CurrentStatus = 1;
+			//_block.WaitOne();
+			//foreach (var item in SourceItemsCollection.Where(c => c.Item3 == 0)) {
+			//	OldBytes = 0;
+			//	if (this.OPType == OperationType.Copy) {
+			//		if (item.Item3 == 1) {
+			//			if (!Directory.Exists(item.Item2))
+			//				try {
+			//					Directory.CreateDirectory(item.Item2);
+			//				}
+			//				catch (UnauthorizedAccessException) {
+			//					WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
+			//					Environment.Exit(5);
+			//				}
+			//		}
+			//		else {
+			//			try {
+			//				ProcessItems(item.Item1, item.Item2);
+			//			}
+			//			catch (Exception) {
+			//				WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
+			//				Environment.Exit(5);
+			//			}
 
-					};
-				}
-				else if (this.OPType == OperationType.Move) {
-					if (item.Item3 == 0) {
+			//		};
+			//	}
+			//	else if (this.OPType == OperationType.Move) {
+			//		if (item.Item3 == 0) {
 
-						try {
-							ProcessItems(item.Item1, item.Item2);
-						}
-						catch (Exception) {
-							WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
-							Environment.Exit(5);
-						}
-					}
+			//			try {
+			//				ProcessItems(item.Item1, item.Item2);
+			//			}
+			//			catch (Exception) {
+			//				WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
+			//				Environment.Exit(5);
+			//			}
+			//		}
 
-					foreach (var dir in this.SourceItemsCollection.Select(c => ShellObject.FromParsingName(c.Item1)).ToArray().Where(c => c.IsFolder)) {
-						DeleteFolderRecursive(new DirectoryInfo(dir.ParsingName));
-					}
-					GC.WaitForPendingFinalizers();
-					GC.Collect();
-				}
-				else if (this.OPType == OperationType.Delete) {
-					foreach (var entry in this.SourceItemsCollection) {
-						_block.WaitOne();
-						try {
+			//		foreach (var dir in this.SourceItemsCollection.Select(c => ShellObject.FromParsingName(c.Item1)).ToArray().Where(c => c.IsFolder)) {
+			//			DeleteFolderRecursive(new DirectoryInfo(dir.ParsingName));
+			//		}
+			//		GC.WaitForPendingFinalizers();
+			//		GC.Collect();
+			//	}
+			//	else if (this.OPType == OperationType.Delete) {
+			//		foreach (var entry in this.SourceItemsCollection) {
+			//			_block.WaitOne();
+			//			try {
 
-							if (!Directory.Exists(entry.Item1) || (Path.GetExtension(entry.Item1).ToLowerInvariant() == ".zip")) {
-								var itemInfo = new FileInfo(entry.Item1);
-								if (itemInfo.IsReadOnly)
-									File.SetAttributes(entry.Item1, FileAttributes.Normal);
-								if (this.DeleteToRB)
-									Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(entry.Item1, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-								else
-									File.Delete(entry.Item1);
+			//				if (!Directory.Exists(entry.Item1) || (Path.GetExtension(entry.Item1).ToLowerInvariant() == ".zip")) {
+			//					var itemInfo = new FileInfo(entry.Item1);
+			//					if (itemInfo.IsReadOnly)
+			//						File.SetAttributes(entry.Item1, FileAttributes.Normal);
+			//					if (this.DeleteToRB)
+			//						Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(entry.Item1, Microsoft.VisualBasic.FileIO.UIOption.OnlyErrorDialogs, Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+			//					else
+			//						File.Delete(entry.Item1);
 
-								byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("{0}|{1}|{2}|{3}", 1, 0, totaltransfered, entry.Item1));
-								WindowsAPI.SendStringMessage(MessageReceiverHandle, data, 0, data.Length);
-							}
-							else {
-								if (this.DeleteToRB) {
-									RecycleBin.SendSilent(entry.Item1);
-								}
-								else {
-									DeleteAllFilesFromDir(new DirectoryInfo(entry.Item1));
-									DeleteFolderRecursive(new DirectoryInfo(entry.Item1));
-								}
-							}
-						}
-						catch (Exception) {
-							WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
-							Environment.Exit(5);
-						}
-					}
-				}
-			}
+			//					byte[] data = System.Text.Encoding.Unicode.GetBytes(String.Format("{0}|{1}|{2}|{3}", 1, 0, totaltransfered, entry.Item1));
+			//					WindowsAPI.SendStringMessage(MessageReceiverHandle, data, 0, data.Length);
+			//				}
+			//				else {
+			//					if (this.DeleteToRB) {
+			//						RecycleBin.SendSilent(entry.Item1);
+			//					}
+			//					else {
+			//						DeleteAllFilesFromDir(new DirectoryInfo(entry.Item1));
+			//						DeleteFolderRecursive(new DirectoryInfo(entry.Item1));
+			//					}
+			//				}
+			//			}
+			//			catch (Exception) {
+			//				WindowsAPI.SendMessage(MessageReceiverHandle, WM_FOERROR, IntPtr.Zero, IntPtr.Zero);
+			//				Environment.Exit(5);
+			//			}
+			//		}
+			//	}
+			//}
 		}
 
 
@@ -230,14 +228,14 @@ namespace FileOperation {
 							WindowsAPI.SendStringMessage(MessageReceiverHandle, data, 0, data.Length);
 							if (i == l) {
 								//procCompleted++;
-								if (this.OPType == OperationType.Move) {
-									r.Close();
-									r.Dispose();
-									FileInfo fi = new FileInfo(src);
-									if (fi.IsReadOnly)
-										fi.IsReadOnly = false;
-									fi.Delete();
-								}
+								//if (this.OPType == OperationType.Move) {
+								//	r.Close();
+								//	r.Dispose();
+								//	FileInfo fi = new FileInfo(src);
+								//	if (fi.IsReadOnly)
+								//		fi.IsReadOnly = false;
+								//	fi.Delete();
+								//}
 							}
 
 							//if (totaltransfered == total)
@@ -313,15 +311,15 @@ namespace FileOperation {
 				IntPtr dataPtr = Marshal.ReadIntPtr(m.LParam, IntPtr.Size * 2);
 				Marshal.Copy(dataPtr, b, 0, b.Length);
 				string newMessage = System.Text.Encoding.Unicode.GetString(b);
-				if (newMessage.StartsWith("END FO INIT|COPY")) {
-					this.OPType = OperationType.Copy;
-				}
-				if (newMessage.StartsWith("END FO INIT|MOVE")) {
-					this.OPType = OperationType.Move;
-				}
-				if (newMessage.StartsWith("END FO INIT|DELETE")) {
-					this.OPType = OperationType.Delete;
-				}
+				//if (newMessage.StartsWith("END FO INIT|COPY")) {
+				//	this.OPType = OperationType.Copy;
+				//}
+				//if (newMessage.StartsWith("END FO INIT|MOVE")) {
+				//	this.OPType = OperationType.Move;
+				//}
+				//if (newMessage.StartsWith("END FO INIT|DELETE")) {
+				//	this.OPType = OperationType.Delete;
+				//}
 				if (newMessage.Contains("DeleteTORB"))
 					this.DeleteToRB = true;
 

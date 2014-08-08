@@ -470,21 +470,25 @@ namespace BExplorer.Shell {
 					var sho = e.Node.Tag as ShellItem;
 					ShellItem lvSho = this.ShellListView != null && this.ShellListView.CurrentFolder != null ? this.ShellListView.CurrentFolder : null;
 					var node = e.Node;
-					var treeHandle = this.ShellTreeView.Handle;
 					node.Nodes.Add("Searching for folders...");
 					var nodes = await Task.Run(() => {
 						var nodesTemp = new List<TreeNode>();
-						var gg = sho.ToArray();
 						foreach (var item in sho.Where(w => sho.IsFileSystem || Path.GetExtension(sho.ParsingName).ToLowerInvariant() == ".library-ms" ? ((w.IsFolder || w.IsLink) && (this.IsShowHiddenItems ? true : w.IsHidden == false)) : true)) {
 							var itemNode = new TreeNode(item.DisplayName);
-							itemNode.Tag = item;
+							ShellItem itemReal = null;
+							if (item.Parent != null && item.Parent.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName){
+								itemReal = ShellItem.ToShellParsingName(item.ParsingName);
+							} else {
+								itemReal = item;
+							}
+							itemNode.Tag = itemReal;
 
 							if (sho.IsNetDrive || sho.IsNetworkPath) {
 								itemNode.ImageIndex = this.folderImageListIndex;
 							}
 							else {
-								if (item.IconType == IExtractIconPWFlags.GIL_PERCLASS) {
-									itemNode.ImageIndex = item.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
+								if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS) {
+									itemNode.ImageIndex = itemReal.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 									itemNode.SelectedImageIndex = itemNode.ImageIndex;
 								}
 								else {
@@ -526,7 +530,6 @@ namespace BExplorer.Shell {
 		}
 
 		void ShellTreeView_AfterExpand(object sender, TreeViewEventArgs e) {
-
 			GC.Collect();
 		}
 
