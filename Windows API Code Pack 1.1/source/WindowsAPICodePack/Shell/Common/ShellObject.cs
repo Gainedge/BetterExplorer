@@ -806,7 +806,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 				if (ifirst != null && isecond != null) {
 					int result = 0;
 					HResult hr = ifirst.Compare(
-						isecond, SICHINTF.SICHINT_ALLFIELDS, out result);
+						isecond, BExplorer.Shell.Interop.SICHINTF.SICHINT_ALLFIELDS, out result);
 
 					areEqual = (hr == HResult.Ok) && (result == 0);
 				}

@@ -57,17 +57,22 @@ namespace BExplorer.Shell.Interop {
 		public int fMask;
 		public IntPtr hwnd;
 		public IntPtr lpVerb;
-		[MarshalAs(UnmanagedType.LPStr)] public string lpParameters;
+		[MarshalAs(UnmanagedType.LPStr)]
+		public string lpParameters;
 		[MarshalAs(UnmanagedType.LPStr)]
 		public string lpDirectory;
 		public int nShow;
 		public int dwHotKey;
 		public IntPtr hIcon;
-		[MarshalAs(UnmanagedType.LPStr)] public string lpTitle;
+		[MarshalAs(UnmanagedType.LPStr)]
+		public string lpTitle;
 		public IntPtr lpVerbW;
-		[MarshalAs(UnmanagedType.LPStr)] public string lpParametersW;
-		[MarshalAs(UnmanagedType.LPStr)] public string lpDirectoryW;
-		[MarshalAs(UnmanagedType.LPStr)] public string lpTitleW;
+		[MarshalAs(UnmanagedType.LPStr)]
+		public string lpParametersW;
+		[MarshalAs(UnmanagedType.LPStr)]
+		public string lpDirectoryW;
+		[MarshalAs(UnmanagedType.LPStr)]
+		public string lpTitleW;
 		public Point ptInvoke;
 	}
 
@@ -89,8 +94,7 @@ namespace BExplorer.Shell.Interop {
 	[Guid("000214e4-0000-0000-c000-000000000046")]
 	public interface IContextMenu {
 		[PreserveSig]
-		HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
-														 int idCmdLast, CMF uFlags);
+		HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst, int idCmdLast, CMF uFlags);
 
 		void InvokeCommand(ref CMINVOKECOMMANDINFOEX pici);
 

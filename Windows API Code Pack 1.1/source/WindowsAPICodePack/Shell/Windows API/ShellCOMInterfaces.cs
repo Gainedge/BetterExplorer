@@ -27,13 +27,15 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	#region COM Interfaces
 
 	#region IContextMenu
+
+
 	[ComImport]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	[Guid("000214e4-0000-0000-c000-000000000046")]
+	[Obsolete("I WILL REMOVE THIS EVENTUALLY!!!")]
 	public interface IContextMenu {
 		[PreserveSig]
-		HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
-								 int idCmdLast, CMF uFlags);
+		HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst, int idCmdLast, CMF uFlags);
 
 		void InvokeCommand(ref CMINVOKECOMMANDINFO pici);
 
@@ -43,9 +45,11 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			int cch);
 	}
 
+
 	[ComImport]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	[Guid("000214f4-0000-0000-c000-000000000046")]
+	[Obsolete("I WILL REMOVE THIS EVENTUALLY!!!")]
 	public interface IContextMenu2 : IContextMenu {
 		[PreserveSig]
 		new HResult QueryContextMenu(IntPtr hMenu, uint indexMenu,
@@ -66,6 +70,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	[ComImport]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	[Guid("bcfce0a0-ec17-11d0-8d10-00a0c90f2719")]
+	[Obsolete("I WILL REMOVE THIS EVENTUALLY!!!")]
 	public interface IContextMenu3 : IContextMenu2 {
 		[PreserveSig]
 		new HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
@@ -137,7 +142,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		HResult Compare(
 			[In, MarshalAs(UnmanagedType.Interface)] IShellItem psi,
-			[In] SICHINTF hint,
+			[In] BExplorer.Shell.Interop.SICHINTF hint,
 			out int piOrder);
 	}
 
@@ -914,27 +919,28 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		HResult RestatePropertyValueToString([In] ICondition pCondition, [In] bool fUseEnglish, [Out, MarshalAs(UnmanagedType.LPWStr)] out string ppszPropertyName, [Out, MarshalAs(UnmanagedType.LPWStr)] out string ppszQueryString);
 	}
 
-	[ComImport,
-	Guid(BExplorer.Shell.Interop.InterfaceGuids.IQueryParserManager),
-	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	internal interface IQueryParserManager {
-		// Create a query parser loaded with the schema for a certain catalog localize to a certain language, and initialized with
-		// standard defaults. One valid value for riid is IID_IQueryParser.
-		[PreserveSig]
-		HResult CreateLoadedParser([In, MarshalAs(UnmanagedType.LPWStr)] string pszCatalog, [In] ushort langidForKeywords, [In] ref Guid riid, [Out] out IQueryParser ppQueryParser);
+	/*
+	//[ComImport,
+	//Guid(BExplorer.Shell.Interop.InterfaceGuids.IQueryParserManager),
+	//InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	//internal interface IQueryParserManager {
+	//	// Create a query parser loaded with the schema for a certain catalog localize to a certain language, and initialized with
+	//	// standard defaults. One valid value for riid is IID_IQueryParser.
+	//	[PreserveSig]
+	//	HResult CreateLoadedParser([In, MarshalAs(UnmanagedType.LPWStr)] string pszCatalog, [In] ushort langidForKeywords, [In] ref Guid riid, [Out] out IQueryParser ppQueryParser);
 
-		// In addition to setting AQS/NQS and automatic wildcard for the given query parser, this sets up standard named entity handlers and
-		// sets the keyboard locale as locale for word breaking.
-		[PreserveSig]
-		HResult InitializeOptions([In] bool fUnderstandNQS, [In] bool fAutoWildCard, [In] IQueryParser pQueryParser);
+	//	// In addition to setting AQS/NQS and automatic wildcard for the given query parser, this sets up standard named entity handlers and
+	//	// sets the keyboard locale as locale for word breaking.
+	//	[PreserveSig]
+	//	HResult InitializeOptions([In] bool fUnderstandNQS, [In] bool fAutoWildCard, [In] IQueryParser pQueryParser);
 
-		// Change one of the settings for the query parser manager, such as the name of the schema binary, or the location of the localized and unlocalized
-		// schema binaries. By default, the settings point to the schema binaries used by Windows Shell.
-		[PreserveSig]
-		HResult SetOption([In] QueryParserManagerOption option, [In] PropVariant pOptionValue);
+	//	// Change one of the settings for the query parser manager, such as the name of the schema binary, or the location of the localized and unlocalized
+	//	// schema binaries. By default, the settings point to the schema binaries used by Windows Shell.
+	//	[PreserveSig]
+	//	HResult SetOption([In] QueryParserManagerOption option, [In] PropVariant pOptionValue);
 
-	};
-
+	//};
+	*/
 	/*
 	[ComImport,
 	Guid(ShellIIDGuid.IQueryParserManager),
@@ -944,12 +950,14 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	}
 	*/
 
-	[ComImport,
-	ClassInterface(ClassInterfaceType.None),
-	TypeLibType(TypeLibTypeFlags.FCanCreate),
-	Guid(BExplorer.Shell.Interop.InterfaceGuids.QueryParserManager)]
-	internal class QueryParserManagerCoClass {
-	}
+	/*
+	//[ComImport,
+	//ClassInterface(ClassInterfaceType.None),
+	//TypeLibType(TypeLibTypeFlags.FCanCreate),
+	//Guid(BExplorer.Shell.Interop.InterfaceGuids.QueryParserManager)]
+	//internal class QueryParserManagerCoClass {
+	//}
+	*/
 
 	/*
 	[ComImport,
