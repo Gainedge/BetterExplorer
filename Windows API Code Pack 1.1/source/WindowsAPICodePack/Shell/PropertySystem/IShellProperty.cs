@@ -21,7 +21,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem
         /// <param name="format">One or more <c>PropertyDescriptionFormat</c> flags 
         /// chosen to produce the desired display format.</param>
         /// <returns>The formatted value as a string.</returns>
-        string FormatForDisplay(PropertyDescriptionFormatOptions format);
+        string FormatForDisplay(BExplorer.Shell.Interop.PropertyDescriptionFormatOptions format);
 
         /// <summary>
         /// Get the property description object.

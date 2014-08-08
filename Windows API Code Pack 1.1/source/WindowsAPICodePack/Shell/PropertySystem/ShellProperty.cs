@@ -227,9 +227,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// cannot be formatted for display.</param>
 		/// <returns>True if the method successfully locates the formatted string; otherwise 
 		/// False.</returns>
-		public bool TryFormatForDisplay(PropertyDescriptionFormatOptions format, out string formattedString) {
-
-
+		public bool TryFormatForDisplay(BExplorer.Shell.Interop.PropertyDescriptionFormatOptions format, out string formattedString) {
 			if (Description == null || Description.NativePropertyDescription == null) {
 				// We cannot do anything without a property description
 				formattedString = null;
@@ -264,7 +262,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem {
 		/// that indicate the desired format.</param>
 		/// <returns>The formatted value as a string, or null if this property 
 		/// cannot be formatted for display.</returns>
-		public string FormatForDisplay(PropertyDescriptionFormatOptions format) {
+		public string FormatForDisplay(BExplorer.Shell.Interop.PropertyDescriptionFormatOptions format) {
 			string formattedString;
 
 			if (Description == null || Description.NativePropertyDescription == null) {
