@@ -220,7 +220,6 @@
     <Compile Include="Common\NativeRect.cs" />
     <Compile Include="Common\ShellException.cs" />
     <Compile Include="Common\ShellFileSystemFolder.cs" />
-    <Compile Include="Common\IconReference.cs" />
     <Compile Include="Common\ShellFile.cs" />
     <Compile Include="Common\ShellFolder.cs" />
     <Compile Include="Common\ShellFolderItems.cs" />

@@ -54,6 +54,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem
         /// Gets the image reference path and icon index associated with a property value. 
         /// This API is only available in Windows 7.
         /// </summary>
-        IconReference IconReference { get; }
+        BExplorer.Shell.Interop.IconReference IconReference { get; }
     }
 }

@@ -187,11 +187,11 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		/// <summary>
 		/// The Resource Reference to the icon.
 		/// </summary>
-		public IconReference IconResourceId {
+		public BExplorer.Shell.Interop.IconReference IconResourceId {
 			get {
 				string iconRef;
 				nativeShellLibrary.GetIcon(out iconRef);
-				return new IconReference(iconRef);
+				return new BExplorer.Shell.Interop.IconReference(iconRef);
 			}
 
 			set {
