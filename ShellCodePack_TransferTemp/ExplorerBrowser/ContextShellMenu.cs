@@ -129,7 +129,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		/// <see cref="Form.WndProc"/> method.
 		/// </returns>
 		public bool HandleMenuMessage(ref Message m) {
-			if ((m.Msg == (int)WindowsAPI.WndMsg.WM_COMMAND) && ((int)m.WParam >= m_CmdFirst)) {
+			if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_COMMAND) && ((int)m.WParam >= m_CmdFirst)) {
 				InvokeCommand((int)m.WParam - m_CmdFirst);
 				return true;
 			}
@@ -237,7 +237,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 				}
 
 				int command = ShellNativeMethods.TrackPopupMenuEx(menu.Handle,
-					TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
+					BExplorer.Shell.Interop.TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
 					IntPtr.Zero);
 				if (command > 0) {
 					string info = string.Empty;
@@ -295,7 +295,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			invoke.Mask = CMIC.Unicode | CMIC.PtInvoke |
 				((Control.ModifierKeys & Keys.Control) != 0 ? CMIC.ControlDown : 0) |
 				((Control.ModifierKeys & Keys.Shift) != 0 ? CMIC.ShiftDown : 0);
-			POINT pt = new POINT();
+			var pt = new BExplorer.Shell.Interop.POINT();
 			pt.x = ptInvoke.X;
 			pt.y = ptInvoke.Y;
 			invoke.InvokePoint = pt;
@@ -376,10 +376,10 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		}
 
 		void TagManagedMenuItems(Menu menu, int tag) {
-			MENUINFO info = new MENUINFO();
+			var info = new BExplorer.Shell.Interop.MENUINFO();
 
 			info.cbSize = Marshal.SizeOf(info);
-			info.fMask = MIM.MIM_MENUDATA;
+			info.fMask = BExplorer.Shell.Interop.MIM.MIM_MENUDATA;
 			info.dwMenuData = tag;
 
 			foreach (MenuItem item in menu.MenuItems) {
@@ -498,11 +498,11 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			const int tag = 0xAB;
 			List<int> remove = new List<int>();
 			int count = ShellNativeMethods.GetMenuItemCount(menu.Handle);
-			MENUINFO menuInfo = new MENUINFO();
+			var menuInfo = new BExplorer.Shell.Interop.MENUINFO();
 			MENUITEMINFO itemInfo = new MENUITEMINFO();
 
 			menuInfo.cbSize = Marshal.SizeOf(menuInfo);
-			menuInfo.fMask = MIM.MIM_MENUDATA;
+			menuInfo.fMask = BExplorer.Shell.Interop.MIM.MIM_MENUDATA;
 			itemInfo.cbSize = (uint)Marshal.SizeOf(itemInfo);
 			itemInfo.fMask = (uint)MIIM.MIIM_ID | (uint)MIIM.MIIM_SUBMENU;
 

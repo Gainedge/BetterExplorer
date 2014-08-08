@@ -16,15 +16,15 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			[MarshalAs(UnmanagedType.Interface)] out IShellItemArray iShellItemArray);
 
 		/*
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern int SHCreateShellItemArrayFromShellItem(
-            IShellItem pdo,
-            ref Guid riid,
-            [MarshalAs(UnmanagedType.Interface)] out IShellItemArray iShellItemArray);
+		[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+		internal static extern int SHCreateShellItemArrayFromShellItem(
+			IShellItem pdo,
+			ref Guid riid,
+			[MarshalAs(UnmanagedType.Interface)] out IShellItemArray iShellItemArray);
 		*/
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-		internal static extern int SHCreateItemFromParsingName(
+		public static extern int SHCreateItemFromParsingName(
 			[MarshalAs(UnmanagedType.LPWStr)] string path,
 			// The following parameter is not used - binding context.
 			IntPtr pbc,
@@ -32,7 +32,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			[MarshalAs(UnmanagedType.Interface)] out IShellItem2 shellItem);
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-		internal static extern int SHCreateItemFromParsingName(
+		public static extern int SHCreateItemFromParsingName(
 			[MarshalAs(UnmanagedType.LPWStr)] string path,
 			// The following parameter is not used - binding context.
 			IntPtr pbc,
@@ -97,7 +97,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			[In] IntPtr hwndOwner,
 			[In] string title,
 			[In] string instruction,
-			[In] LibraryManageDialogOptions lmdOptions);
+			[In] BExplorer.Shell.Interop.LibraryManageDialogOptions lmdOptions);
 
 		#endregion
 
@@ -173,11 +173,11 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		#region IContextMenu
 		[DllImport("user32.dll")]
 		public static extern bool SetMenuInfo(IntPtr hmenu,
-			ref MENUINFO lpcmi);
+			ref BExplorer.Shell.Interop.MENUINFO lpcmi);
 
 		[DllImport("user32.dll")]
 		public static extern bool GetMenuInfo(IntPtr hmenu,
-			ref MENUINFO lpcmi);
+			ref BExplorer.Shell.Interop.MENUINFO lpcmi);
 
 		[DllImport("user32.dll")]
 		public static extern int GetMenuItemCount(IntPtr hMenu);
@@ -192,7 +192,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
 		[DllImport("user32.dll")]
 		public static extern int TrackPopupMenuEx(IntPtr hmenu,
-			TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
+			BExplorer.Shell.Interop.TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
 		#endregion
 		internal const int InPlaceStringTruncated = 0x00401A0;
 

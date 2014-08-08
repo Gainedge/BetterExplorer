@@ -21,7 +21,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem
         /// <param name="format">One or more <c>PropertyDescriptionFormat</c> flags 
         /// chosen to produce the desired display format.</param>
         /// <returns>The formatted value as a string.</returns>
-        string FormatForDisplay(PropertyDescriptionFormatOptions format);
+        string FormatForDisplay(BExplorer.Shell.Interop.PropertyDescriptionFormatOptions format);
 
         /// <summary>
         /// Get the property description object.
@@ -54,6 +54,6 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem
         /// Gets the image reference path and icon index associated with a property value. 
         /// This API is only available in Windows 7.
         /// </summary>
-        IconReference IconReference { get; }
+        BExplorer.Shell.Interop.IconReference IconReference { get; }
     }
 }

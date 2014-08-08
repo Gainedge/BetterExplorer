@@ -5,13 +5,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
 	[ComImport]
 	[Guid("04b0f1a7-9490-44bc-96e1-4296a31252e2")]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IFileOperationProgressSink
-	{
+	public interface IFileOperationProgressSink {
 		void StartOperations();
 		void FinishOperations(uint hrResult);
 

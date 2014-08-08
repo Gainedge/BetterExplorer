@@ -5,7 +5,7 @@ using Microsoft.WindowsAPICodePack.Shell;
 
 namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem
 {
-    internal class ShellPropertyDescriptionsCache
+	public class ShellPropertyDescriptionsCache
     {
         private ShellPropertyDescriptionsCache()
         {

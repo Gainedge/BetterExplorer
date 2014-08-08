@@ -79,17 +79,17 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 
 		private bool TreeControl_MessageCaptured(ref Message msg) {
 			switch (msg.Msg) {
-				case (int)WindowsAPI.WndMsg.WM_USER:
+				case (int)BExplorer.Shell.Interop.WM.WM_USER:
 					fPreventSelChange = false;
 					break;
 
-				case (int)WindowsAPI.WndMsg.WM_MBUTTONUP:
+				case (int)BExplorer.Shell.Interop.WM.WM_MBUTTONUP:
 					if (treeControl != null && TreeViewClicked != null) {
 						HandleClick(WindowsAPI.PointFromLPARAM(msg.LParam), Control.ModifierKeys, true);
 					}
 					break;
 
-				case (int)WindowsAPI.WndMsg.WM_DESTROY:
+				case (int)BExplorer.Shell.Interop.WM.WM_DESTROY:
 					if (treeControl != null) {
 						Marshal.ReleaseComObject(treeControl);
 						treeControl = null;
@@ -100,7 +100,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 		}
 
 		private bool ParentControl_MessageCaptured(ref Message msg) {
-			if (msg.Msg == (int)WindowsAPI.WndMsg.WM_NOTIFY) {
+			if (msg.Msg == (int)BExplorer.Shell.Interop.WM.WM_NOTIFY) {
 				WindowsAPI.NMHDR nmhdr = (WindowsAPI.NMHDR)Marshal.PtrToStructure(msg.LParam, typeof(WindowsAPI.NMHDR));
 				switch ((int)nmhdr.code) {
 					case -2: /* NM_CLICK */
@@ -109,7 +109,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 							WindowsAPI.ScreenToClient(nmhdr.hwndFrom, ref pt);
 							if (HandleClick(pt, Control.ModifierKeys, false)) {
 								fPreventSelChange = true;
-								WindowsAPI.PostMessage(nmhdr.hwndFrom, (int)WindowsAPI.WndMsg.WM_USER, IntPtr.Zero, IntPtr.Zero);
+								WindowsAPI.PostMessage(nmhdr.hwndFrom, (int)BExplorer.Shell.Interop.WM.WM_USER, IntPtr.Zero, IntPtr.Zero);
 								return true;
 							}
 						}

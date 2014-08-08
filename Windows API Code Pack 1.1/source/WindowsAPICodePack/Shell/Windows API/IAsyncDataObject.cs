@@ -6,194 +6,178 @@ using System.Runtime.InteropServices;
 
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
-using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
+//using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 
-namespace Microsoft.WindowsAPICodePack.Shell
+namespace Microsoft.WindowsAPICodePack.Shell {
+	#region IAsyncOperation
 
-{
-    #region IAsyncOperation
+	[ComImport]
 
-    [ComImport]
+	[Guid("3D8B0590-F691-11d2-8EA9-006097DF5BD4")]
 
-    [Guid("3D8B0590-F691-11d2-8EA9-006097DF5BD4")]
+	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	public interface IAsyncOperation {
 
-    public interface IAsyncOperation
-    {
+		[PreserveSig]
 
-        [PreserveSig]
+		Int32 SetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] Boolean DoOpAsync);
 
-        Int32 SetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] Boolean DoOpAsync);
+		[PreserveSig]
 
-        [PreserveSig]
+		Int32 GetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] out Boolean IsOpAsync);
 
-        Int32 GetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] out Boolean IsOpAsync);
+		[PreserveSig]
 
-        [PreserveSig]
+		Int32 StartOperation(IBindCtx bcReserved);
 
-        Int32 StartOperation(IBindCtx bcReserved);
+		[PreserveSig]
 
-        [PreserveSig]
+		Int32 InOperation([MarshalAs(UnmanagedType.VariantBool)] out Boolean InAsyncOp);
 
-        Int32 InOperation([MarshalAs(UnmanagedType.VariantBool)] out Boolean InAsyncOp);
+		[PreserveSig]
 
-        [PreserveSig]
+		Int32 EndOperation(UInt32 hResult, IBindCtx bcReserved, DragDropEffects Effects);
 
-        Int32 EndOperation(UInt32 hResult, IBindCtx bcReserved, DragDropEffects Effects);
+	}
 
-    }
+	#endregion
 
-    #endregion
+	[ClassInterface(ClassInterfaceType.None)]
+	public class AsyncDataObject : System.Windows.Forms.DataObject, IAsyncOperation {
 
-    [ClassInterface(ClassInterfaceType.None)]
-    public class AsyncDataObject : System.Windows.Forms.DataObject, IAsyncOperation
-    {
+		#region Constants
 
-        #region Constants
+		protected const int S_OK = 0x00000000;
 
-        protected const int S_OK = 0x00000000;
+		protected const int S_FALSE = 0x00000001;
 
-        protected const int S_FALSE = 0x00000001;
+		#endregion
 
-        #endregion
+		#region Fields
 
-        #region Fields
+		protected Boolean asynchMode;
 
-        protected Boolean asynchMode;
+		protected Boolean inAsyncOperation;
 
-        protected Boolean inAsyncOperation;
+		#endregion
 
-        #endregion
+		#region Events
 
-        #region Events
+		public event EventHandler StartAsynchOperation;
 
-        public event EventHandler StartAsynchOperation;
+		public event EventHandler StopAsynchOperation;
 
-        public event EventHandler StopAsynchOperation;
+		#endregion
 
-        #endregion
+		#region Constructors
 
-        #region Constructors
+		public AsyncDataObject()
 
-        public AsyncDataObject()
+			: base() {
 
-            : base()
-        {
+			this.asynchMode = false;
 
-            this.asynchMode = false;
+			this.inAsyncOperation = false;
 
-            this.inAsyncOperation = false;
+		}
 
-        }
+		public AsyncDataObject(System.Runtime.InteropServices.ComTypes.IDataObject data)
 
-        public AsyncDataObject(System.Runtime.InteropServices.ComTypes.IDataObject data)
+			: base(data) {
 
-            : base(data)
-        {
+			this.asynchMode = false;
 
-            this.asynchMode = false;
+			this.inAsyncOperation = false;
 
-            this.inAsyncOperation = false;
+		}
 
-        }
 
 
+		public AsyncDataObject(String format, Object data)
 
-        public AsyncDataObject(String format, Object data)
+			: base(format, data) {
 
-            : base(format, data)
-        {
+			this.asynchMode = false;
 
-            this.asynchMode = false;
+			this.inAsyncOperation = false;
 
-            this.inAsyncOperation = false;
+		}
 
-        }
+		#endregion
 
-        #endregion
+		#region System.Runtime.InteropServices.ComTypes.IAsyncOperation Members
 
-        #region System.Runtime.InteropServices.ComTypes.IAsyncOperation Members
+		public virtual Int32 SetAsyncMode(Boolean DoOpAsync) {
 
-        public virtual Int32 SetAsyncMode(Boolean DoOpAsync)
-        {
+			this.asynchMode = DoOpAsync;
 
-            this.asynchMode = DoOpAsync;
+			return S_OK;
 
-            return S_OK;
+		}
 
-        }
+		public virtual Int32 GetAsyncMode(out Boolean IsOpAsync) {
 
-        public virtual Int32 GetAsyncMode(out Boolean IsOpAsync)
-        {
+			IsOpAsync = this.asynchMode;
 
-            IsOpAsync = this.asynchMode;
+			return S_OK;
 
-            return S_OK;
+		}
 
-        }
+		public virtual Int32 StartOperation(IBindCtx bcReserved) {
+			this.inAsyncOperation = true;
 
-        public virtual Int32 StartOperation(IBindCtx bcReserved)
-        {
-            this.inAsyncOperation = true;
+			this.OnStartAsynchOperation();
 
-            this.OnStartAsynchOperation();
+			return S_OK;
+		}
 
-            return S_OK;
-        }
 
 
+		public virtual Int32 InOperation(out Boolean InAsyncOp) {
 
-        public virtual Int32 InOperation(out Boolean InAsyncOp)
-        {
+			InAsyncOp = this.inAsyncOperation;
 
-            InAsyncOp = this.inAsyncOperation;
+			return S_OK;
 
-            return S_OK;
+		}
 
-        }
+		public virtual Int32 EndOperation(uint hResult, IBindCtx bcReserved, DragDropEffects Effects) {
+			this.inAsyncOperation = false;
 
-        public virtual Int32 EndOperation(uint hResult, IBindCtx bcReserved, DragDropEffects Effects)
-        {
-            this.inAsyncOperation = false;
+			this.OnStopAsynchOperation();
 
-            this.OnStopAsynchOperation();
+			return S_OK;
+		}
 
-            return S_OK;
-        }
 
 
+		#endregion
 
-        #endregion
+		#region Events processings
 
-        #region Events processings
+		protected void OnStartAsynchOperation() {
 
-        protected void OnStartAsynchOperation()
-        {
+			if (this.StartAsynchOperation != null) {
 
-            if (this.StartAsynchOperation != null)
-            {
+				this.StartAsynchOperation(this, new EventArgs());
 
-                this.StartAsynchOperation(this, new EventArgs());
+			}
 
-            }
+		}
 
-        }
+		protected void OnStopAsynchOperation() {
 
-        protected void OnStopAsynchOperation()
-        {
+			if (this.StopAsynchOperation != null) {
 
-            if (this.StopAsynchOperation != null)
-            {
+				this.StopAsynchOperation(this, new EventArgs());
 
-                this.StopAsynchOperation(this, new EventArgs());
+			}
 
-            }
+		}
 
-        }
-
-        #endregion
-    }
+		#endregion
+	}
 
 
 }

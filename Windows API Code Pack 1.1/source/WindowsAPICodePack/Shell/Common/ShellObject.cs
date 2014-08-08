@@ -98,7 +98,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		virtual internal IShellItem2 NativeShellItem2 {
 			get {
 				if (nativeShellItem == null && ParsingName != null) {
-					Guid guid = new Guid(ShellIIDGuid.IShellItem2);
+					Guid guid = new Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellItem2);
 					int retCode = ShellNativeMethods.SHCreateItemFromParsingName(ParsingName, IntPtr.Zero, ref guid, out nativeShellItem);
 
 					if (nativeShellItem == null || !CoreErrorHelper.Succeeded(retCode)) {
@@ -806,7 +806,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 				if (ifirst != null && isecond != null) {
 					int result = 0;
 					HResult hr = ifirst.Compare(
-						isecond, SICHINTF.SICHINT_ALLFIELDS, out result);
+						isecond, BExplorer.Shell.Interop.SICHINTF.SICHINT_ALLFIELDS, out result);
 
 					areEqual = (hr == HResult.Ok) && (result == 0);
 				}

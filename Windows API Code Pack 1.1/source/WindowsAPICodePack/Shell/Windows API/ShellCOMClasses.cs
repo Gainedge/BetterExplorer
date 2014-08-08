@@ -3,20 +3,17 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Microsoft.WindowsAPICodePack.Shell
-{
-    [ComImport,
-    Guid(ShellIIDGuid.IShellLibrary),
-    CoClass(typeof(ShellLibraryCoClass))]
-    internal interface INativeShellLibrary : IShellLibrary
-    {
-    }
+namespace Microsoft.WindowsAPICodePack.Shell {
+	[ComImport,
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellLibrary),
+	CoClass(typeof(ShellLibraryCoClass))]
+	internal interface INativeShellLibrary : IShellLibrary {
+	}
 
-    [ComImport,
-    ClassInterface(ClassInterfaceType.None),
-    TypeLibType(TypeLibTypeFlags.FCanCreate),
-    Guid(ShellCLSIDGuid.ShellLibrary)]
-    internal class ShellLibraryCoClass
-    {
-    }
+	[ComImport,
+	ClassInterface(ClassInterfaceType.None),
+	TypeLibType(TypeLibTypeFlags.FCanCreate),
+	Guid(BExplorer.Shell.Interop.InterfaceGuids.ShellLibrary)]
+	internal class ShellLibraryCoClass {
+	}
 }

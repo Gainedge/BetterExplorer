@@ -54,7 +54,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 				return (ExplorerBrowserContentSectionOptions)folderSettings.Options;
 			}
 			set {
-				folderSettings.Options = (FolderOptions)value | FolderOptions.UseSearchFolders;
+				folderSettings.Options = (BExplorer.Shell.Interop.FOLDERFLAGS)value | BExplorer.Shell.Interop.FOLDERFLAGS.UseSearchFolders;
 				if (eb.explorerBrowserControl != null) {
 					eb.explorerBrowserControl.SetFolderSettings(folderSettings);
 				}
@@ -208,16 +208,16 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		}
 
 		private bool IsFlagSet(ExplorerBrowserContentSectionOptions flag) {
-			return (folderSettings.Options & (FolderOptions)flag) != 0;
+			return (folderSettings.Options & (BExplorer.Shell.Interop.FOLDERFLAGS)flag) != 0;
 		}
 
 		private void SetFlag(ExplorerBrowserContentSectionOptions flag, bool value) {
 
 			if (value) {
-				folderSettings.Options |= (FolderOptions)flag | FolderOptions.AutoArrange | FolderOptions.SnapToGrid | FolderOptions.UseSearchFolders;
+				folderSettings.Options |= (BExplorer.Shell.Interop.FOLDERFLAGS)flag | BExplorer.Shell.Interop.FOLDERFLAGS.AutoArrange | BExplorer.Shell.Interop.FOLDERFLAGS.SnapToGrid | BExplorer.Shell.Interop.FOLDERFLAGS.UseSearchFolders;
 			}
 			else {
-				folderSettings.Options = folderSettings.Options & ~(FolderOptions)flag;
+				folderSettings.Options = folderSettings.Options & ~(BExplorer.Shell.Interop.FOLDERFLAGS)flag;
 			}
 			if (eb.explorerBrowserControl != null) {
 				eb.explorerBrowserControl.SetFolderSettings(folderSettings);

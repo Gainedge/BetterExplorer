@@ -6,11 +6,11 @@ using MS.WindowsAPICodePack.Internal;
 
 namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem
 {
-    internal static class PropertySystemNativeMethods
+	public static class PropertySystemNativeMethods
     {
         #region Property Definitions
 
-        internal enum RelativeDescriptionType
+		public enum RelativeDescriptionType
         {
             General,
             Date,
@@ -49,7 +49,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.PropertySystem
         );
 
         [DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern int PSGetPropertyDescriptionListFromString(
+		public static extern int PSGetPropertyDescriptionListFromString(
             [In, MarshalAs(UnmanagedType.LPWStr)] string pszPropList,
             [In] ref Guid riid,
             out IPropertyDescriptionList ppv

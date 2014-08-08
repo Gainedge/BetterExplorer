@@ -2454,15 +2454,15 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					}
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_ACTIVATEAPP) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_ACTIVATEAPP) {
 					MessageBox.Show("Active");
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_SETFOCUS) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_SETFOCUS) {
 					MessageBox.Show("Active");
 				}
 				// Catch Left Mouse Click key
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_LBUTTONDOWN)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_LBUTTONDOWN)) {
 
 					if (KeyUP != null) {
 						ExplorerKeyUPEventArgs args = new ExplorerKeyUPEventArgs();
@@ -2472,7 +2472,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 					if (!IsOldSysListView) {
 						//WindowsAPI.SetFocus(SysListViewHandle);
-						WindowsAPI.RECT r = new WindowsAPI.RECT();
+						var r = new BExplorer.Shell.Interop.User32.RECT();
 						WindowsAPI.GetWindowRect(new HandleRef(this, SysListViewHandle), out r);
 						var reclv = r.ToRectangle();
 						IsMouseClickOnHeader = Cursor.Position.Y >= reclv.Top && Cursor.Position.Y <= reclv.Top + 29;
@@ -2503,7 +2503,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 				}
 
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_LBUTTONUP)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_LBUTTONUP)) {
 					//IsPressedLKButton = false;
 					IsMouseClickOnHeader = false;
 					//WindowsAPI.ReleaseCapture();
@@ -2518,7 +2518,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					}
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_XBUTTONUP) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_XBUTTONUP) {
 					switch (HiWord((uint)m.WParam)) {
 						case 1:
 							NavigateLogLocation(NavigationLogDirection.Backward);
@@ -2532,18 +2532,18 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				bool h = false;
 
 
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_SYSCOMMAND)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_SYSCOMMAND)) {
 
 
 
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSEWHEEL) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MOUSEWHEEL) {
 					Int64 Wheel_delta = HiWord((Int64)m.WParam);
 					var buttonPressed = LoWord((Int64)m.WParam);
 					if (MouseWheel != null) {
 						SetUpShellViewHandles(false);
-						WindowsAPI.RECT reclv = new WindowsAPI.RECT();
+						var reclv = new BExplorer.Shell.Interop.User32.RECT();
 						var b = WindowsAPI.GetWindowRect(new HandleRef(this, SysListViewHandle), out reclv);
 						//Rectangle reclv = ;
 
@@ -2590,16 +2590,16 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					}
 				}
 
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSE_ENTER)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MOUSE_ENTER)) {
 					//WindowsAPI.SetFocus(SysListViewHandle);
 				}
 
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSE_LEAVE)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MOUSE_LEAVE)) {
 					ExplorerBrowserMouseLeave.Invoke(this, null);
 				}
 
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_KEYDOWN) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_KEYDOWN) {
 					// Catch ESC key
 					if (((int)m.WParam == 27))
 						OnEscKey();
@@ -2670,7 +2670,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 						WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
 					}
 				}
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_KEYUP) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_KEYUP) {
 					if (KeyUP != null) {
 						ExplorerKeyUPEventArgs args = new ExplorerKeyUPEventArgs();
 						args.Key = (int)m.WParam;
@@ -2692,9 +2692,9 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				}
 
 
-				if ((m.Msg == (int)WindowsAPI.WndMsg.WM_MOUSEMOVE)) {
+				if ((m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MOUSEMOVE)) {
 
-					WindowsAPI.RECT rr = new WindowsAPI.RECT();
+					var rr = new BExplorer.Shell.Interop.User32.RECT();
 					WindowsAPI.GetWindowRect(new HandleRef(this, SysListViewHandle), out rr);
 					Rectangle reclv = rr.ToRectangle();
 					Rectangle rec2 = new Rectangle(reclv.X + 1, reclv.Y + 30, reclv.Width - 3,
@@ -2757,7 +2757,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_PAINT || m.Msg == (int)WindowsAPI.WndMsg.WM_CREATE) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_PAINT || m.Msg == (int)BExplorer.Shell.Interop.WM.WM_CREATE) {
 					if (IsOldSysListView) {
 
 						WindowsAPI.SendMessage(SysListViewHandle, 296, MAKELONG(1, 1), 0);
@@ -2765,7 +2765,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_MBUTTONUP) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MBUTTONUP) {
 					AutomationElement ae = AutomationElement.FromPoint(new System.Windows.Point(Cursor.Position.X, Cursor.Position.Y));
 					ShellObject item = null;
 					if (ae.Current.ClassName == "UIItem") {
@@ -2788,10 +2788,10 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 					}
 				}
 
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_CONTEXTMENU) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_CONTEXTMENU) {
 					return false;
 				}
-				if (m.Msg == (int)WindowsAPI.WndMsg.WM_MENUCOMMAND) {
+				if (m.Msg == (int)BExplorer.Shell.Interop.WM.WM_MENUCOMMAND) {
 				}
 				Invoke(new MethodInvoker(
 						delegate {
@@ -2915,7 +2915,7 @@ namespace Microsoft.WindowsAPICodePack.Controls.WindowsForms {
 				  IntPtr s4 = WindowsAPI.FindWindowEx(SysListViewHandle, IntPtr.Zero, "CtrlNotifySink", null);
 				  IntPtr s5 = WindowsAPI.FindWindowEx(SysListViewHandle, s4, "CtrlNotifySink", null);
 				  VScrollHandle = WindowsAPI.FindWindowEx(s5, IntPtr.Zero, "ScrollBar", null);
-				  WindowsAPI.RECT rscroll = new WindowsAPI.RECT();
+				  var rscroll = new BExplorer.Shell.Interop.User32.RECT();
 				  WindowsAPI.GetWindowRect(new HandleRef(this, VScrollHandle), out rscroll);
 
 				  if (isHandle) {

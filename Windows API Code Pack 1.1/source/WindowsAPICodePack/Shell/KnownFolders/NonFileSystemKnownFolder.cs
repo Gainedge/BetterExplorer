@@ -20,7 +20,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
         #region Internal Constructors
 
-        internal NonFileSystemKnownFolder(IShellItem2 shellItem) : base(shellItem) { }
+		internal NonFileSystemKnownFolder(IShellItem2 shellItem) : base(shellItem) { }
 
         internal NonFileSystemKnownFolder(IKnownFolderNative kf)
         {
@@ -29,7 +29,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
             // Set the native shell item
             // and set it on the base class (ShellObject)
-            Guid guid = new Guid(ShellIIDGuid.IShellItem2);
+			Guid guid = new Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellItem2);
             knownFolderNative.GetShellItem(0, ref guid, out nativeShellItem);
         }
 

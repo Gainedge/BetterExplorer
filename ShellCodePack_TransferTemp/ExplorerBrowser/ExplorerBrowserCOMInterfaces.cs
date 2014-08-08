@@ -24,41 +24,43 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		ViewOrderFlag = unchecked((int)0x80000000)
 	}
 
-	[Flags]
-	internal enum FolderOptions {
-		AutoArrange = 0x00000001,
-		AbbreviatedNames = 0x00000002,
-		SnapToGrid = 0x00000004,
-		OwnerData = 0x00000008,
-		BestFitWindow = 0x00000010,
-		Desktop = 0x00000020,
-		SingleSelection = 0x00000040,
-		NoSubfolders = 0x00000080,
-		Transparent = 0x00000100,
-		NoClientEdge = 0x00000200,
-		NoScroll = 0x00000400,
-		AlignLeft = 0x00000800,
-		NoIcons = 0x00001000,
-		ShowSelectionAlways = 0x00002000,
-		NoVisible = 0x00004000,
-		SingleClickActivate = 0x00008000,
-		NoWebView = 0x00010000,
-		HideFilenames = 0x00020000,
-		CheckSelect = 0x00040000,
-		NoEnumRefresh = 0x00080000,
-		NoGrouping = 0x00100000,
-		FullRowSelect = 0x00200000,
-		NoFilters = 0x00400000,
-		NoColumnHeaders = 0x00800000,
-		NoHeaderInAllViews = 0x01000000,
-		ExtendedTiles = 0x02000000,
-		TriCheckSelect = 0x04000000,
-		AutoCheckSelect = 0x08000000,
-		NoBrowserViewState = 0x10000000,
-		SubsetGroups = 0x20000000,
-		UseSearchFolders = 0x40000000,
-		AllowRightToLeftReading = unchecked((int)0x80000000)
-	}
+	/*
+	//[Flags]
+	//internal enum FolderOptions {
+	//	AutoArrange = 0x00000001,
+	//	AbbreviatedNames = 0x00000002,
+	//	SnapToGrid = 0x00000004,
+	//	OwnerData = 0x00000008,
+	//	BestFitWindow = 0x00000010,
+	//	Desktop = 0x00000020,
+	//	SingleSelection = 0x00000040,
+	//	NoSubfolders = 0x00000080,
+	//	Transparent = 0x00000100,
+	//	NoClientEdge = 0x00000200,
+	//	NoScroll = 0x00000400,
+	//	AlignLeft = 0x00000800,
+	//	NoIcons = 0x00001000,
+	//	ShowSelectionAlways = 0x00002000,
+	//	NoVisible = 0x00004000,
+	//	SingleClickActivate = 0x00008000,
+	//	NoWebView = 0x00010000,
+	//	HideFilenames = 0x00020000,
+	//	CheckSelect = 0x00040000,
+	//	NoEnumRefresh = 0x00080000,
+	//	NoGrouping = 0x00100000,
+	//	FullRowSelect = 0x00200000,
+	//	NoFilters = 0x00400000,
+	//	NoColumnHeaders = 0x00800000,
+	//	NoHeaderInAllViews = 0x01000000,
+	//	ExtendedTiles = 0x02000000,
+	//	TriCheckSelect = 0x04000000,
+	//	AutoCheckSelect = 0x08000000,
+	//	NoBrowserViewState = 0x10000000,
+	//	SubsetGroups = 0x20000000,
+	//	UseSearchFolders = 0x40000000,
+	//	AllowRightToLeftReading = unchecked((int)0x80000000)
+	//}
+	*/
 
 	internal enum FolderViewMode {
 		Auto = -1,
@@ -86,7 +88,8 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 	[StructLayout(LayoutKind.Sequential, Pack = 4)]
 	internal class FolderSettings {
 		public FolderViewMode ViewMode;
-		public FolderOptions Options;
+		//public FolderOptions Options;
+		public BExplorer.Shell.Interop.FOLDERFLAGS Options;
 	}
 
 	[Flags]
@@ -346,6 +349,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		HResult QueryService(ref Guid guidService, ref Guid riid, out IntPtr ppvObject);
 	};
 
+	/*
 	[ComImport,
 	 Guid(ExplorerBrowserIIDGuid.IShellFolderView),
 	 InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -357,58 +361,61 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		[MethodImpl(MethodImplOptions.InternalCall)]
 		HResult SetClipboard(bool bMove);
 	};
+	*/
 
-	[ComImport,
-	 Guid(ExplorerBrowserIIDGuid.IFolderView),
-	 InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IFolderView {
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetCurrentViewMode([Out] out uint pViewMode);
+	/*
+	//[ComImport,
+	// Guid(ExplorerBrowserIIDGuid.IFolderView),
+	// InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	//public interface IFolderView {
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetCurrentViewMode([Out] out uint pViewMode);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SetCurrentViewMode(uint ViewMode);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void SetCurrentViewMode(uint ViewMode);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetFolder(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetFolder(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void Item(int iItemIndex, out IntPtr ppidl);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void Item(int iItemIndex, out IntPtr ppidl);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void ItemCount(uint uFlags, out int pcItems);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void ItemCount(uint uFlags, out int pcItems);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void Items(uint uFlags, ref Guid riid, [Out, MarshalAs(UnmanagedType.IUnknown)] out object ppv);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void Items(uint uFlags, ref Guid riid, [Out, MarshalAs(UnmanagedType.IUnknown)] out object ppv);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSelectionMarkedItem(out int piItem);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetSelectionMarkedItem(out int piItem);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetFocusedItem(out int piItem);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetFocusedItem(out int piItem);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetItemPosition(IntPtr pidl, out NativePoint ppt);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetItemPosition(IntPtr pidl, out BExplorer.Shell.Interop.NativePoint ppt);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSpacing([Out] out NativePoint ppt);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetSpacing([Out] out BExplorer.Shell.Interop.NativePoint ppt);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetDefaultSpacing(out NativePoint ppt);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetDefaultSpacing(out BExplorer.Shell.Interop.NativePoint ppt);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetAutoArrange();
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetAutoArrange();
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SelectItem(int iItem, uint dwFlags);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void SelectItem(int iItem, uint dwFlags);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SelectAndPositionItems(uint cidl, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] apidl, ref NativePoint apt, WindowsHelper.WindowsAPI.SVSIF dwFlags);
-	}
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void SelectAndPositionItems(uint cidl, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] apidl, ref BExplorer.Shell.Interop.NativePoint apt, WindowsHelper.WindowsAPI.SVSIF dwFlags);
+	//}
+	*/
 
 	[ComImport,
 	 Guid(ExplorerBrowserIIDGuid.IFolderView2),
 	 InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IFolderView2 : IFolderView {
+	public interface IFolderView2 : BExplorer.Shell.Interop.IFolderView {
 		// IFolderView
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -438,13 +445,13 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		void GetFocusedItem(out int piItem);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetItemPosition(IntPtr pidl, out NativePoint ppt);
+		void GetItemPosition(IntPtr pidl, out BExplorer.Shell.Interop.NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSpacing([Out] out NativePoint ppt);
+		void GetSpacing([Out] out BExplorer.Shell.Interop.NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetDefaultSpacing(out NativePoint ppt);
+		void GetDefaultSpacing(out BExplorer.Shell.Interop.NativePoint ppt);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetAutoArrange();
@@ -453,7 +460,7 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		void SelectItem(int iItem, uint dwFlags);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SelectAndPositionItems(uint cidl, IntPtr apidl, ref NativePoint apt, uint dwFlags);
+		void SelectAndPositionItems(uint cidl, IntPtr apidl, ref BExplorer.Shell.Interop.NativePoint apt, uint dwFlags);
 
 		// IFolderView2
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -1011,23 +1018,25 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 			[MarshalAs(UnmanagedType.IUnknown)] out object ppv);
 	}
 
+	/*
 	public struct SV2CVW2_PARAMS {
 		public uint cbSize;
 
 		public IShellView psvPrev;
 		public uint pfs; // const
 		public IntPtr psbOwner; // IShellBrowser
-		public WindowsAPI.RECT prcView; // RECT
+		public BExplorer.Shell.Interop.User32.RECT prcView; // RECT
 		public Guid pvid; // const
 
 		public IntPtr hwndView;
 	}
+	*/
 
 	//public struct POINT {
 	//  public long x;
 	//  public long y;
 	//}
-	
+
 	/*
 	[ComImport,
 	Guid("88E39E80-3578-11CF-AE69-08002B2E1262"),

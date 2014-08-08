@@ -59,6 +59,29 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonFileDialogs\CommonFileDialog.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogButton.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogCheckBox.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogComboBox.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogControl.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogControlCollection.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogFilter.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogFilterCollection.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogFolderChangeEventArgs.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogGroupBox.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogLabel.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogMenu.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogProminentControl.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogRadioButtonList.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogResult.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogSeperator.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogStandardFilters.cs" />
+    <Compile Include="CommonFileDialogs\CommonFileDialogTextBox.cs" />
+    <Compile Include="CommonFileDialogs\CommonOpenFileDialog.cs" />
+    <Compile Include="CommonFileDialogs\CommonSaveFileDialog.cs" />
+    <Compile Include="CommonFileDialogs\Dialogs\DialogsCOMClasses.cs" />
+    <Compile Include="CommonFileDialogs\Dialogs\DialogsCOMInterfaces.cs" />
+    <Compile Include="CommonFileDialogs\ICommonFileDialogIndexedControls.cs" />
     <Compile Include="ExplorerBrowser\BHID.cs" />
     <Compile Include="ExplorerBrowser\ContextShellMenu.cs" />
     <Compile Include="ExplorerBrowser\DropData.cs" />

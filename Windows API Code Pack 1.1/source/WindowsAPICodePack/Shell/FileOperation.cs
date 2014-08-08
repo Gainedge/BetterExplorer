@@ -21,7 +21,7 @@ namespace FileOperations {
 			_callbackSink = callbackSink;
 			_fileOperation = isAdmin ? (IFileOperation)Activator.CreateInstance(_fileOperationType) : (IFileOperation)Activator.CreateInstance(_fileOperationType);
 			//_fileOperation.SetProgressDialog(null);
-			_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR);
+			_fileOperation.SetOperationFlags(BExplorer.Shell.Interop.FileOperationFlags.FOF_NOCONFIRMMKDIR);
 			if (_callbackSink != null) _sinkCookie = _fileOperation.Advise(_callbackSink);
 			if (owner != null) _fileOperation.SetOwnerWindow((uint)owner.Handle);
 		}
@@ -29,40 +29,46 @@ namespace FileOperations {
 
 		public void CopyItem(string source, string destination, string newName) {
 			ThrowIfDisposed();
-			using (ComReleaser<IShellItem> sourceItem = CreateShellItem(source))
-			using (ComReleaser<IShellItem> destinationItem = CreateShellItem(destination)) {
+			using (BExplorer.Shell.Interop.ComReleaser<IShellItem> sourceItem = CreateShellItem(source))
+			using (BExplorer.Shell.Interop.ComReleaser<IShellItem> destinationItem = CreateShellItem(destination)) {
 				_fileOperation.CopyItem(sourceItem.Item, destinationItem.Item, newName, null);
 			}
 		}
 
 		public void MoveItem(string source, string destination, string newName) {
 			ThrowIfDisposed();
-			using (ComReleaser<IShellItem> sourceItem = CreateShellItem(source))
-			using (ComReleaser<IShellItem> destinationItem = CreateShellItem(destination)) {
+			using (BExplorer.Shell.Interop.ComReleaser<IShellItem> sourceItem = CreateShellItem(source))
+			using (BExplorer.Shell.Interop.ComReleaser<IShellItem> destinationItem = CreateShellItem(destination)) {
 				_fileOperation.MoveItem(sourceItem.Item, destinationItem.Item, newName, null);
 			}
 		}
 
+		/*
 		public void RenameItem(string source, string newName) {
 			ThrowIfDisposed();
 			using (ComReleaser<IShellItem> sourceItem = CreateShellItem(source)) {
 				_fileOperation.RenameItem(sourceItem.Item, newName, null);
 			}
 		}
+		*/
 
+		/*
 		public void DeleteItem(string source) {
 			ThrowIfDisposed();
 			using (ComReleaser<IShellItem> sourceItem = CreateShellItem(source)) {
 				_fileOperation.DeleteItem(sourceItem.Item, null);
 			}
 		}
+		*/
 
+		/*
 		public void NewItem(string folderName, string name, FileAttributes attrs) {
 			ThrowIfDisposed();
 			using (ComReleaser<IShellItem> folderItem = CreateShellItem(folderName)) {
 				_fileOperation.NewItem(folderItem.Item, attrs, name, string.Empty, _callbackSink);
 			}
 		}
+		*/
 
 		public void PerformOperations() {
 			ThrowIfDisposed();
@@ -87,8 +93,8 @@ namespace FileOperations {
 			}
 		}
 
-		private static ComReleaser<IShellItem> CreateShellItem(string path) {
-			return new ComReleaser<IShellItem>(
+		private static BExplorer.Shell.Interop.ComReleaser<IShellItem> CreateShellItem(string path) {
+			return new BExplorer.Shell.Interop.ComReleaser<IShellItem>(
 				(IShellItem)SHCreateItemFromParsingName(path, null, ref _shellItemGuid));
 		}
 

@@ -259,7 +259,7 @@ namespace SystemImageList {
 		#endregion UnmanagedCode
 
 		#region Private ImageList structures
-
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		private struct RECT {
 			private int left;
@@ -267,13 +267,14 @@ namespace SystemImageList {
 			private int right;
 			private int bottom;
 		}
-
+		*/
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		private struct POINT {
 			private int x;
 			private int y;
 		}
-
+		*/
 
 		[StructLayout(LayoutKind.Sequential)]
 		private struct IMAGELISTDRAWPARAMS {
@@ -302,7 +303,7 @@ namespace SystemImageList {
 			public IntPtr hbmMask;
 			public int Unused1;
 			public int Unused2;
-			public RECT rcImage;
+			public BExplorer.Shell.Interop.User32.RECT rcImage;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -393,7 +394,7 @@ namespace SystemImageList {
 			int Clone(ref Guid riid, ref IntPtr ppv);
 
 			[PreserveSig]
-			int GetImageRect(int i, ref RECT prc);
+			int GetImageRect(int i, ref BExplorer.Shell.Interop.User32.RECT prc);
 
 			[PreserveSig]
 			int GetIconSize(ref int cx, ref int cy);
@@ -446,8 +447,8 @@ namespace SystemImageList {
 
 			[PreserveSig]
 			int GetDragImage(
-			   ref POINT ppt,
-			   ref POINT pptHotspot,
+			   ref BExplorer.Shell.Interop.POINT ppt,
+			   ref BExplorer.Shell.Interop.POINT pptHotspot,
 			   ref Guid riid,
 			   ref IntPtr ppv);
 

@@ -7,7 +7,7 @@ using System.Runtime.Versioning;
 using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Forms;
 using MS.WindowsAPICodePack.Internal;
-using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
+//using Microsoft.WindowsAPICodePack.Controls.WindowsForms;
 using Microsoft.WindowsAPICodePack.Shell;
 using System.IO;
 using Microsoft.Win32;
@@ -25,6 +25,7 @@ using System.Windows.Interop;
 namespace WindowsHelper {
 	public class WindowsAPI {
 
+		/*
 		[ComImport()]
 		[Guid("000214fa-0000-0000-c000-000000000046")]
 		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -57,7 +58,9 @@ namespace WindowsHelper {
 			[PreserveSig]
 			int Extract([MarshalAs(UnmanagedType.LPWStr)] string pszFile, uint nIconIndex, out IntPtr phiconLarge, out IntPtr phiconSmall, uint nIconSize);
 		}
+		*/
 
+		/*
 		[Flags()]
 		public enum IExtractIconuFlags : uint {
 			GIL_ASYNC = 0x0020,
@@ -67,7 +70,9 @@ namespace WindowsHelper {
 			GIL_OPENICON = 0x0001,
 			GIL_CHECKSHIELD = 0x0200
 		}
+		*/
 
+		/*
 		[Flags()]
 		public enum IExtractIconpwFlags : uint {
 			GIL_DONTCACHE = 0x0010,
@@ -78,102 +83,119 @@ namespace WindowsHelper {
 			GIL_SHIELD = 0x0200,//Windows Vista only
 			GIL_FORCENOSHIELD = 0x0400//Windows Vista only
 		}
+		*/
 
-		/// <summary>
-		/// Possible flags for the SHFileOperation method.
-		/// </summary>
-		[Flags]
-		public enum FileOperationFlags : ushort {
-			/// <summary>
-			/// Do not show a dialog during the process
-			/// </summary>
-			FOF_SILENT = 0x0004,
-			/// <summary>
-			/// Do not ask the user to confirm selection
-			/// </summary>
-			FOF_NOCONFIRMATION = 0x0010,
-			/// <summary>
-			/// Delete the file to the recycle bin.  (Required flag to send a file to the bin
-			/// </summary>
-			FOF_ALLOWUNDO = 0x0040,
-			/// <summary>
-			/// Do not show the names of the files or folders that are being recycled.
-			/// </summary>
-			FOF_SIMPLEPROGRESS = 0x0100,
-			/// <summary>
-			/// Surpress errors, if any occur during the process.
-			/// </summary>
-			FOF_NOERRORUI = 0x0400,
-			/// <summary>
-			/// Warn if files are too big to fit in the recycle bin and will need
-			/// to be deleted completely.
-			/// </summary>
-			FOF_WANTNUKEWARNING = 0x4000,
-		}
 
-		/// <summary>
-		/// File Operation Function Type for SHFileOperation
-		/// </summary>
-		public enum FileOperationType : uint {
-			/// <summary>
-			/// Move the objects
-			/// </summary>
-			FO_MOVE = 0x0001,
-			/// <summary>
-			/// Copy the objects
-			/// </summary>
-			FO_COPY = 0x0002,
-			/// <summary>
-			/// Delete (or recycle) the objects
-			/// </summary>
-			FO_DELETE = 0x0003,
-			/// <summary>
-			/// Rename the object(s)
-			/// </summary>
-			FO_RENAME = 0x0004,
-		}
+		/*
+		///// <summary>
+		///// Possible flags for the SHFileOperation method.
+		///// </summary>
+		//[Flags]
+		//public enum FileOperationFlags : ushort {
+		//	/// <summary>
+		//	/// Do not show a dialog during the process
+		//	/// </summary>
+		//	FOF_SILENT = 0x0004,
+		//	/// <summary>
+		//	/// Do not ask the user to confirm selection
+		//	/// </summary>
+		//	FOF_NOCONFIRMATION = 0x0010,
+		//	/// <summary>
+		//	/// Delete the file to the recycle bin.  (Required flag to send a file to the bin
+		//	/// </summary>
+		//	FOF_ALLOWUNDO = 0x0040,
+		//	/// <summary>
+		//	/// Do not show the names of the files or folders that are being recycled.
+		//	/// </summary>
+		//	FOF_SIMPLEPROGRESS = 0x0100,
+		//	/// <summary>
+		//	/// Surpress errors, if any occur during the process.
+		//	/// </summary>
+		//	FOF_NOERRORUI = 0x0400,
+		//	/// <summary>
+		//	/// Warn if files are too big to fit in the recycle bin and will need
+		//	/// to be deleted completely.
+		//	/// </summary>
+		//	FOF_WANTNUKEWARNING = 0x4000,
+		//}
+		*/
 
+		/*
+		///// <summary>
+		///// File Operation Function Type for SHFileOperation
+		///// </summary>
+		//public enum FileOperationType : uint {
+		//	/// <summary>
+		//	/// Move the objects
+		//	/// </summary>
+		//	FO_MOVE = 0x0001,
+		//	/// <summary>
+		//	/// Copy the objects
+		//	/// </summary>
+		//	FO_COPY = 0x0002,
+		//	/// <summary>
+		//	/// Delete (or recycle) the objects
+		//	/// </summary>
+		//	FO_DELETE = 0x0003,
+		//	/// <summary>
+		//	/// Rename the object(s)
+		//	/// </summary>
+		//	FO_RENAME = 0x0004,
+		//}
+		*/
+
+		/*
 		/// <summary>
 		/// SHFILEOPSTRUCT for SHFileOperation from COM
 		/// </summary>
-		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 1)]
-		public struct SHFILEOPSTRUCT_x86 {
-			public IntPtr hwnd;
-			[MarshalAs(UnmanagedType.U4)]
-			public FileOperationType wFunc;
-			public string pFrom;
-			public string pTo;
-			public FileOperationFlags fFlags;
-			[MarshalAs(UnmanagedType.Bool)]
-			public bool fAnyOperationsAborted;
-			public IntPtr hNameMappings;
-			public string lpszProgressTitle;
-		}
+		//[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 1)]
+		//public struct SHFILEOPSTRUCT_x86 {
+		//	public IntPtr hwnd;
+		//	[MarshalAs(UnmanagedType.U4)]
+		//	public FileOperationType wFunc;
+		//	public string pFrom;
+		//	public string pTo;
+		//	public BExplorer.Shell.Windows.WindowsAPI.FileOperationFlags fFlags;
+		//	[MarshalAs(UnmanagedType.Bool)]
+		//	public bool fAnyOperationsAborted;
+		//	public IntPtr hNameMappings;
+		//	public string lpszProgressTitle;
+		//}
+		*/
 
-		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-		public struct SHFILEOPSTRUCT_x64 {
-			public IntPtr hwnd;
-			[MarshalAs(UnmanagedType.U4)]
-			public FileOperationType wFunc;
-			public string pFrom;
-			public string pTo;
-			public FileOperationFlags fFlags;
-			[MarshalAs(UnmanagedType.Bool)]
-			public bool fAnyOperationsAborted;
-			public IntPtr hNameMappings;
-			public string lpszProgressTitle;
-		}
-
+		/*
+		//[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		//public struct SHFILEOPSTRUCT_x64 {
+		//	public IntPtr hwnd;
+		//	[MarshalAs(UnmanagedType.U4)]
+		//	public FileOperationType wFunc;
+		//	public string pFrom;
+		//	public string pTo;
+		//	public BExplorer.Shell.Windows.WindowsAPI.FileOperationFlags fFlags;
+		//	[MarshalAs(UnmanagedType.Bool)]
+		//	public bool fAnyOperationsAborted;
+		//	public IntPtr hNameMappings;
+		//	public string lpszProgressTitle;
+		//}
+		*/
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto, EntryPoint = "SHFileOperation")]
 		public static extern int SHFileOperation_x86(ref SHFILEOPSTRUCT_x86 FileOp);
+		*/
 
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto, EntryPoint = "SHFileOperation")]
 		public static extern int SHFileOperation_x64(ref SHFILEOPSTRUCT_x64 FileOp);
+		*/
 
+		/*
 		[DllImport("user32")]
 		public static extern int ReleaseCapture();
+		*/
 
 		#region Credentials
+
+		/*
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 		public struct CREDUI_INFO {
 			public int cbSize;
@@ -182,6 +204,7 @@ namespace WindowsHelper {
 			public string pszCaptionText;
 			public IntPtr hbmBanner;
 		}
+		*/
 
 		/*
 		[Flags]
@@ -362,6 +385,7 @@ namespace WindowsHelper {
 		}
 		*/
 
+		/*
 		/// <summary>
 		/// Standart Window messages
 		/// </summary>
@@ -549,7 +573,7 @@ namespace WindowsHelper {
 			WM_MDICASCADE = 0x0227,
 			WM_MDIICONARRANGE = 0x0228,
 			WM_MDIGETACTIVE = 0x0229,
-			/* D&D messages */
+			/* D&D messages /
 			//public const uint WM_DROPOBJECT     = 0x022A;
 			//public const uint WM_QUERYDROPOBJECT  = 0x022B;
 			//public const uint WM_BEGINDRAG      = 0x022C;
@@ -608,7 +632,7 @@ namespace WindowsHelper {
 			WM_ASYNC_MESSAGE = 0x0403,
 			WM_REFLECT = WM_USER + 0x1c00
 		}
-
+		*/
 		/*
 		/// <summary>
 		/// Button pressed states
@@ -654,48 +678,49 @@ namespace WindowsHelper {
 		}
 
 
+		/*
 		public static class LVM {
-			const int FIRST = 0x1000;				// LVM_FIRST
-			public const int SETIMAGELIST = (FIRST + 3);		// LVM_SETIMAGELIST
-			public const int GETNEXTITEM = (FIRST + 12);		// LVM_GETNEXTITEM
-			public const int GETITEMRECT = (FIRST + 14);		// LVM_GETITEMRECT
-			public const int HITTEST = (FIRST + 18);		// LVM_HITTEST
-			public const int REDRAWITEMS = (FIRST + 21);		// LVM_REDRAWITEMS
-			public const int GETEDITCONTROL = (FIRST + 24);		// LVM_GETEDITCONTROL
-			public const int GETHEADER = (FIRST + 31);		// LVM_GETHEADER
-			public const int GETITEMSTATE = (FIRST + 44);		// LVM_GETITEMSTATE
-			public const int GETITEMSPACING = (FIRST + 51);		// LVM_GETITEMSPACING
-			public const int SETEXTENDEDLISTVIEWSTYLE = (FIRST + 54);		// LVM_SETEXTENDEDLISTVIEWSTYLE
-			public const int GETEXTENDEDLISTVIEWSTYLE = (FIRST + 55);		// LVM_GETEXTENDEDLISTVIEWSTYLE
-			public const int GETSUBITEMRECT = (FIRST + 56);		// LVM_GETSUBITEMRECT
-			public const int GETHOTITEM = (FIRST + 61);		// LVM_GETHOTITEM
-			public const int GETITEMW = (FIRST + 75);		// LVM_GETITEMW
-			public const int GETSTRINGWIDTHW = (FIRST + 87);		// LVM_GETSTRINGWIDTHW	
-			public const int SETBKIMAGEW = (FIRST + 138);		// LVM_SETBKIMAGEW
-			public const int GETVIEW = (FIRST + 143);		// LVM_GETVIEW
-			public const int SETGROUPINFO = (FIRST + 147);		// LVM_SETGROUPINFO
-			public const int GETSELECTEDCOLUMN = (FIRST + 174);		// LVM_GETSELECTEDCOLUMN
-			public const int SETCOLUMNWIDTH = (FIRST + 30);		// LVM_SETCOLUMNWIDTH
-			public const int GETCOLUMNWIDTH = (FIRST + 29);		// LVM_GETCOLUMNWIDTH
-			public const int ENSUREVISIBLE = (FIRST + 19);
-			public const int ISITEMVISIBLE = (FIRST + 182);
+			//const int FIRST = 0x1000;				// LVM_FIRST
+			//public const int SETIMAGELIST = (FIRST + 3);		// LVM_SETIMAGELIST
+			//public const int GETNEXTITEM = (FIRST + 12);		// LVM_GETNEXTITEM
+			//public const int GETITEMRECT = (FIRST + 14);		// LVM_GETITEMRECT
+			//public const int HITTEST = (FIRST + 18);		// LVM_HITTEST
+			//public const int REDRAWITEMS = (FIRST + 21);		// LVM_REDRAWITEMS
+			//public const int GETEDITCONTROL = (FIRST + 24);		// LVM_GETEDITCONTROL
+			//public const int GETHEADER = (FIRST + 31);		// LVM_GETHEADER
+			//public const int GETITEMSTATE = (FIRST + 44);		// LVM_GETITEMSTATE
+			//public const int GETITEMSPACING = (FIRST + 51);		// LVM_GETITEMSPACING
+			//public const int SETEXTENDEDLISTVIEWSTYLE = (FIRST + 54);		// LVM_SETEXTENDEDLISTVIEWSTYLE
+			//public const int GETEXTENDEDLISTVIEWSTYLE = (FIRST + 55);		// LVM_GETEXTENDEDLISTVIEWSTYLE
+			//public const int GETSUBITEMRECT = (FIRST + 56);		// LVM_GETSUBITEMRECT
+			//public const int GETHOTITEM = (FIRST + 61);		// LVM_GETHOTITEM
+			//public const int GETITEMW = (FIRST + 75);		// LVM_GETITEMW
+			//public const int GETSTRINGWIDTHW = (FIRST + 87);		// LVM_GETSTRINGWIDTHW	
+			//public const int SETBKIMAGEW = (FIRST + 138);		// LVM_SETBKIMAGEW
+			//public const int GETVIEW = (FIRST + 143);		// LVM_GETVIEW
+			//public const int SETGROUPINFO = (FIRST + 147);		// LVM_SETGROUPINFO
+			//public const int GETSELECTEDCOLUMN = (FIRST + 174);		// LVM_GETSELECTEDCOLUMN
+			//public const int SETCOLUMNWIDTH = (FIRST + 30);		// LVM_SETCOLUMNWIDTH
+			//public const int GETCOLUMNWIDTH = (FIRST + 29);		// LVM_GETCOLUMNWIDTH
+			//public const int ENSUREVISIBLE = (FIRST + 19);
+			//public const int ISITEMVISIBLE = (FIRST + 182);
 
-			public const int LVIR_BOUNDS = 0;
-			public const int LVIR_ICON = 1;
-			public const int LVIR_LABEL = 2;
-			public const int LV_VIEW_ICON = 0x0000;
-			public const int LV_VIEW_DETAILS = 0x0001;
-			public const int LV_VIEW_SMALLICON = 0x0002;
-			public const int LV_VIEW_LIST = 0x0003;
-			public const int LV_VIEW_TILE = 0x0004;
-			public const int LVIF_TEXT = 0x00000001;
-			public const int LVIF_STATE = 0x00000008;
-			public const int LVNI_SELECTED = 0x0002;
-			public const int LVSIL_GROUPHEADER = 3;
-			public const int LVGF_STATE = 0x00000004;
-			public const int LVGF_TITLEIMAGE = 0x00001000;
-			public const int LVGS_COLLAPSED = 0x00000001;
-			public const int LVGS_COLLAPSIBLE = 0x00000008;
+			//public const int LVIR_BOUNDS = 0;
+			//public const int LVIR_ICON = 1;
+			//public const int LVIR_LABEL = 2;
+			//public const int LV_VIEW_ICON = 0x0000;
+			//public const int LV_VIEW_DETAILS = 0x0001;
+			//public const int LV_VIEW_SMALLICON = 0x0002;
+			//public const int LV_VIEW_LIST = 0x0003;
+			//public const int LV_VIEW_TILE = 0x0004;
+			//public const int LVIF_TEXT = 0x00000001;
+			//public const int LVIF_STATE = 0x00000008;
+			//public const int LVNI_SELECTED = 0x0002;
+			//public const int LVSIL_GROUPHEADER = 3;
+			//public const int LVGF_STATE = 0x00000004;
+			//public const int LVGF_TITLEIMAGE = 0x00001000;
+			//public const int LVGS_COLLAPSED = 0x00000001;
+			//public const int LVGS_COLLAPSIBLE = 0x00000008;
 
 			// -> LVIS
 			//public const int LVIS_FOCUSED		= 0x0001;
@@ -707,6 +732,7 @@ namespace WindowsHelper {
 			//public const int LVS_EX_TRANSPARENTBKGND = 0x00400000; // Background is painted by the parent via WM_PRINTCLIENT
 			//public const int LVS_EX_TRANSPARENTSHADOWTEXT = 0x00800000;  // Enable shadow text on transparent backgrounds only (useful with bitmaps)
 		}
+		*/
 
 		/*
 		public static class EM {
@@ -762,7 +788,7 @@ namespace WindowsHelper {
 			public NMHDR hdr;
 			public int dwDrawStage;
 			public IntPtr hdc;
-			public RECT rc;
+			public BExplorer.Shell.Interop.User32.RECT rc;
 			public IntPtr dwItemSpec;
 			public CDIS uItemState;
 			public IntPtr lItemlParam;
@@ -781,7 +807,7 @@ namespace WindowsHelper {
 			public int iIconPhase;
 			public int iPartId;
 			public int iStateId;
-			public RECT rcText;
+			public BExplorer.Shell.Interop.User32.RECT rcText;
 			public int uAlign;
 		}
 
@@ -839,6 +865,7 @@ namespace WindowsHelper {
 		}
 		*/
 		#endregion
+
 		#region SendMessage
 		[DllImport("User32.dll")]
 		public static extern uint RegisterWindowMessage(string lpString);
@@ -1220,9 +1247,11 @@ namespace WindowsHelper {
 		public static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
 		*/
 
+		/*
 		public enum MessageFilterInfo : uint {
 			None = 0, AlreadyAllowed = 1, AlreadyDisAllowed = 2, AllowedHigher = 3
 		};
+		*/
 
 		/*
 		public enum ChangeWindowMessageFilterExAction : uint {
@@ -1242,20 +1271,28 @@ namespace WindowsHelper {
 			return (T)Marshal.PtrToStructure(p, typeof(T));
 		}
 
+		/*
 		[DllImport("kernel32.dll", SetLastError = true)]
 		[return: System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.I1)]
 		public static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, SYMBOLIC_LINK_FLAG dwFlags);
+		*/
 
+		/*
 		public enum SYMBOLIC_LINK_FLAG {
 			File = 0,
 			Directory = 1
 		}
+		*/
 
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool BringWindowToTop(IntPtr hWnd);
+		*/
 
+		/*
 		[DllImport("ole32.dll")]
 		public static extern void CoTaskMemFree(IntPtr pv);
+		*/
 
 		[ComImport]
 		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -1269,6 +1306,7 @@ namespace WindowsHelper {
 					 System.Drawing.Point pt, ref int pdwEffect);
 		}
 
+		/*
 		[StructLayoutAttribute(LayoutKind.Sequential)]
 		public struct LVITEM {
 			public uint mask;
@@ -1281,6 +1319,7 @@ namespace WindowsHelper {
 			public int iImage;
 			public IntPtr lParam;
 		}
+		*/
 
 		[DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
 		public static extern long StrFormatByteSize(
@@ -1318,6 +1357,7 @@ namespace WindowsHelper {
 		/// <i>dwItem2</i> is not used and should be <see langword="null"/>.</para>
 		/// </remarks>
 
+		/*
 		[Flags]
 		public enum HChangeNotifyEventID {
 			/// <summary>
@@ -1498,9 +1538,9 @@ namespace WindowsHelper {
 			SHCNE_UPDATEIMAGE = 0x00008000,
 
 			SHCNE_UPDATEITEM = 0x00002000,
-
-
 		}
+		*/
+
 		#endregion // enum HChangeNotifyEventID
 
 		#region public enum HChangeNotifyFlags
@@ -1508,6 +1548,8 @@ namespace WindowsHelper {
 		/// Flags that indicate the meaning of the <i>dwItem1</i> and <i>dwItem2</i> parameters.
 		/// The uFlags parameter must be one of the following values.
 		/// </summary>
+
+		/*
 		[Flags]
 		public enum HChangeNotifyFlags {
 			/// <summary>
@@ -1555,9 +1597,11 @@ namespace WindowsHelper {
 			/// </summary>
 			SHCNF_FLUSHNOWAIT = 0x2000
 		}
+		*/
 		#endregion // enum HChangeNotifyFlags
 
 
+		/*
 		/// <summary>
 		/// Notifies the system of an event that an application has performed. 
 		/// An application should use this function if it performs an action that may affect the Shell.
@@ -1572,7 +1616,7 @@ namespace WindowsHelper {
 										   HChangeNotifyFlags uFlags,
 										   IntPtr dwItem1,
 										   IntPtr dwItem2);
-
+		*/
 
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr GlobalAlloc(uint uFlags, UIntPtr dwBytes);
@@ -1637,13 +1681,14 @@ namespace WindowsHelper {
 			public string lpProvider = null;
 		}
 
-
+		/*
 		[Flags]
 		public enum DisconnectDialogFlags :
 		  int {
 			UpdateProfile = 0x00000001,
 			NoForce = 0x00000040,
 		}
+		*/
 
 		[Flags]
 		public enum ConnectDialogFlags :
@@ -1665,7 +1710,7 @@ namespace WindowsHelper {
 			public int DeviceNumber;
 		}
 
-
+		/*
 		[StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 		public struct DisconnectDialogInfo {
 			public uint StructureSize;
@@ -1676,7 +1721,7 @@ namespace WindowsHelper {
 			public string RemoteName;
 			public DisconnectDialogFlags Flags;
 		}
-
+		*/
 
 		[DllImport("mpr.dll", EntryPoint = "WNetConnectionDialog", SetLastError = true, CharSet = CharSet.Auto)]
 		public static extern int WNetConnectionDialog(IntPtr whnd, int dwType);
@@ -1693,8 +1738,10 @@ namespace WindowsHelper {
 		[DllImport("mpr.dll", EntryPoint = "WNetDisconnectDialog", SetLastError = true, CharSet = CharSet.Auto)]
 		public static extern int WNetDisconnectDialog(IntPtr whnd, int dwType);
 
+		/*
 		[DllImport("mpr.dll", CharSet = CharSet.Auto)]
 		public static extern int WNetDisconnectDialog1(DisconnectDialogInfo disConnDlgStruct);
+		*/
 
 		public static void MapDrive(IntPtr owner, String remotePath) {
 			if (String.IsNullOrEmpty(remotePath) || !PathIsNetworkPath(remotePath)) {
@@ -1719,8 +1766,12 @@ namespace WindowsHelper {
 			}
 		}
 
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern uint SendInput(uint nInputs, INPUT pInputs, int cbSize);
+		*/
+
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		public struct MOUSEINPUT {
 
@@ -1731,7 +1782,9 @@ namespace WindowsHelper {
 			uint time;
 			IntPtr dwExtraInfo;
 		}
+		*/
 
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		public struct KEYBDINPUT {
 			public ushort wVk;
@@ -1740,14 +1793,18 @@ namespace WindowsHelper {
 			public uint time;
 			public IntPtr dwExtraInfo;
 		}
+		*/
 
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		public struct HARDWAREINPUT {
 			uint uMsg;
 			ushort wParamL;
 			ushort wParamH;
 		}
+		*/
 
+		/*
 		[StructLayout(LayoutKind.Explicit)]
 		public struct INPUT {
 			[FieldOffset(0)]
@@ -1759,47 +1816,51 @@ namespace WindowsHelper {
 			[FieldOffset(4)] //[FieldOffset(8)] for x64
 			public HARDWAREINPUT hi;
 		}
+		*/
 
-		[Flags]
-		public enum SHGFI : uint {
-			/// <summary>get icon</summary>
-			Icon = 0x000000100,
-			/// <summary>get display name</summary>
-			DisplayName = 0x000000200,
-			/// <summary>get type name</summary>
-			TypeName = 0x000000400,
-			/// <summary>get attributes</summary>
-			Attributes = 0x000000800,
-			/// <summary>get icon location</summary>
-			IconLocation = 0x000001000,
-			/// <summary>return exe type</summary>
-			ExeType = 0x000002000,
-			/// <summary>get system icon index</summary>
-			SysIconIndex = 0x000004000,
-			/// <summary>put a link overlay on icon</summary>
-			LinkOverlay = 0x000008000,
-			/// <summary>show icon in selected state</summary>
-			Selected = 0x000010000,
-			/// <summary>get only specified attributes</summary>
-			Attr_Specified = 0x000020000,
-			/// <summary>get large icon</summary>
-			LargeIcon = 0x000000000,
-			/// <summary>get small icon</summary>
-			SmallIcon = 0x000000001,
-			/// <summary>get open icon</summary>
-			OpenIcon = 0x000000002,
-			/// <summary>get shell size icon</summary>
-			ShellIconSize = 0x000000004,
-			/// <summary>pszPath is a pidl</summary>
-			PIDL = 0x000000008,
-			/// <summary>use passed dwFileAttribute</summary>
-			UseFileAttributes = 0x000000010,
-			/// <summary>apply the appropriate overlays</summary>
-			AddOverlays = 0x000000020,
-			/// <summary>Get the index of the overlay in the upper 8 bits of the iIcon</summary>
-			OverlayIndex = 0x000000040,
-		}
+		/*
+		//[Flags]
+		//public enum SHGFI : uint {
+		//	/// <summary>get icon</summary>
+		//	Icon = 0x000000100,
+		//	/// <summary>get display name</summary>
+		//	DisplayName = 0x000000200,
+		//	/// <summary>get type name</summary>
+		//	TypeName = 0x000000400,
+		//	/// <summary>get attributes</summary>
+		//	Attributes = 0x000000800,
+		//	/// <summary>get icon location</summary>
+		//	IconLocation = 0x000001000,
+		//	/// <summary>return exe type</summary>
+		//	ExeType = 0x000002000,
+		//	/// <summary>get system icon index</summary>
+		//	SysIconIndex = 0x000004000,
+		//	/// <summary>put a link overlay on icon</summary>
+		//	LinkOverlay = 0x000008000,
+		//	/// <summary>show icon in selected state</summary>
+		//	Selected = 0x000010000,
+		//	/// <summary>get only specified attributes</summary>
+		//	Attr_Specified = 0x000020000,
+		//	/// <summary>get large icon</summary>
+		//	LargeIcon = 0x000000000,
+		//	/// <summary>get small icon</summary>
+		//	SmallIcon = 0x000000001,
+		//	/// <summary>get open icon</summary>
+		//	OpenIcon = 0x000000002,
+		//	/// <summary>get shell size icon</summary>
+		//	ShellIconSize = 0x000000004,
+		//	/// <summary>pszPath is a pidl</summary>
+		//	PIDL = 0x000000008,
+		//	/// <summary>use passed dwFileAttribute</summary>
+		//	UseFileAttributes = 0x000000010,
+		//	/// <summary>apply the appropriate overlays</summary>
+		//	AddOverlays = 0x000000020,
+		//	/// <summary>Get the index of the overlay in the upper 8 bits of the iIcon</summary>
+		//	OverlayIndex = 0x000000040,
+		//}
+		*/
 
+		/*
 		[Flags]
 		internal enum CLSCTX {
 			CLSCTX_INPROC_SERVER = 0x1,
@@ -1817,7 +1878,9 @@ namespace WindowsHelper {
 			CLSCTX_SERVER = CLSCTX_INPROC_SERVER | CLSCTX_LOCAL_SERVER | CLSCTX_REMOTE_SERVER,
 			CLSCTX_ALL = CLSCTX_SERVER | CLSCTX_INPROC_HANDLER
 		}
+		*/
 
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct BIND_OPTS3 {
 			internal uint cbStruct;
@@ -1830,17 +1893,22 @@ namespace WindowsHelper {
 			object pServerInfo; // will be passing null, so type doesn't matter
 			internal IntPtr hwnd;
 		}
-
+		*/
+		/*
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetMessageExtraInfo();
+		*/
 
+		/*
 		[DllImport("ole32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = false)]
 		[return: MarshalAs(UnmanagedType.Interface)]
 		internal static extern object CoGetObject(
 		   string pszName,
 		   [In] ref BIND_OPTS3 pBindOptions,
 		   [In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
+		*/
 
+		/*
 		[return: MarshalAs(UnmanagedType.Interface)]
 		public static object LaunchElevatedCOMObject(Guid Clsid, Guid InterfaceID) {
 			string CLSID = Clsid.ToString("B"); // B formatting directive: returns {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx} 
@@ -1855,7 +1923,7 @@ namespace WindowsHelper {
 
 			return (retVal);
 		}
-
+		*/
 		//[ComImport]
 		//[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 		//[Guid("000214e4-0000-0000-c000-000000000046")]
@@ -1943,7 +2011,7 @@ namespace WindowsHelper {
 			SVGIO_TYPE_MASK = 0x0000000F,
 		}
 
-
+		/*
 		public static string GetAssoc(string pszAssoc, AssocF flags, AssocStr str) {
 			uint pcchOut = 0;
 			AssocQueryString(flags, str, pszAssoc, null, null, ref pcchOut);
@@ -1951,6 +2019,8 @@ namespace WindowsHelper {
 			AssocQueryString(flags, str, pszAssoc, null, pszOut, ref pcchOut);
 			return pszOut.ToString();
 		}
+		*/
+
 
 		/// <summary>
 		/// The GetDriveType function determines whether a disk drive is a removable, fixed, CD-ROM, RAM disk, or network drive
@@ -1959,11 +2029,14 @@ namespace WindowsHelper {
 		[DllImport("kernel32.dll")]
 		public static extern DriveType GetDriveType([MarshalAs(UnmanagedType.LPStr)] string lpRootPathName);
 
+		/*
 		private const int LVM_FIRST = 0x1000;
 		public const int LVM_SETICONSPACING = LVM_FIRST + 53;
 		private const int LVM_SETBKIMAGE = (LVM_FIRST + 138);
 		private const int LVM_GETBKIMAGE = (LVM_FIRST + 139);
+		*/
 
+		/*
 		public enum LVBKIF : int {
 
 			SOURCE_NONE = 0x00000000,
@@ -1987,7 +2060,9 @@ namespace WindowsHelper {
 			FLAG_ALPHABLEND = 0x20000000
 
 		}
+		*/
 
+		/*
 		public struct LVBKIMAGE {
 
 			public LVBKIF ulFlags;
@@ -2003,7 +2078,9 @@ namespace WindowsHelper {
 			public int yOffsetPercent;
 
 		};
+		*/
 
+		/*
 		public static void SetListViewBackgroundImage(IntPtr lvHandle, Bitmap bitmap) {
 
 			LVBKIMAGE lvBkImage = new LVBKIMAGE();
@@ -2027,7 +2104,8 @@ namespace WindowsHelper {
 			Marshal.FreeHGlobal(lbkImageptr);
 
 		}
-
+		*/
+		/*
 		public static Bitmap GetListViewBackgroundImage(IntPtr lvHandle) {
 
 			LVBKIMAGE lvBkImage = new LVBKIMAGE();
@@ -2045,6 +2123,8 @@ namespace WindowsHelper {
 				return Bitmap.FromHbitmap(lvBkImage.hbm);
 
 		}
+		*/
+
 
 		public static string LoadResourceString(string libraryName, uint ident, string defaultText) {
 			IntPtr libraryHandle = LoadLibrary(libraryName);
@@ -2061,8 +2141,10 @@ namespace WindowsHelper {
 		[DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
 		public static extern IntPtr LoadLibrary(string lpFileName);
 
+		/*
 		[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
 		public static extern IntPtr GetModuleHandle(string lpModuleName);
+		*/
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern int LoadString(IntPtr hInstance, uint uID, StringBuilder lpBuffer, int nBufferMax);
@@ -2076,28 +2158,35 @@ namespace WindowsHelper {
 		public static extern int SendMessage(IntPtr hWnd, MSG Msg,
 			int wParam, int lParam);
 
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr SendMessage(
 			IntPtr hWnd, uint Msg, IntPtr wParam, string lParam);
-
+		*/
 		[DllImport("user32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, int Msg,
-			int wParam, ref  RECT lparam);
+			int wParam, ref  BExplorer.Shell.Interop.User32.RECT lparam);
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, int Msg,
 			IntPtr wParam, ref LVBKIMAGE lParam);
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern int SendMessage(int hWnd, int Msg,
 			int wParam, int lParam);
+		*/
 
 		[DllImport("user32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, MSG Msg,
 			int wParam, ref LVITEMA lParam);
 
+		/*
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, int lParam);
+		*/
 
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
 		public struct LVITEMA {
@@ -2138,12 +2227,13 @@ namespace WindowsHelper {
 		}
 
 		[DllImport("shell32.dll")]
-		public extern static void SHGetSetSettings(ref SHELLSTATE lpss, SSF dwMask, bool bSet);
+		public extern static void SHGetSetSettings(ref BExplorer.Shell.Interop.Shell32.SHELLSTATE lpss, SSF dwMask, bool bSet);
 
+		/*
 		[DllImport("shell32.dll", EntryPoint = "#162", CharSet = CharSet.Unicode)]
 		public static extern IntPtr SHSimpleIDListFromPath(string szPath);
+		*/
 
-		#region SSF
 		[Flags]
 		public enum SSF {
 			SSF_SHOWALLOBJECTS = 0x00000001,
@@ -2171,297 +2261,295 @@ namespace WindowsHelper {
 			SSF_SHOWSTARTPAGE = 0x00400000,
 			SSF_SHOWSTATUSBAR = 0x04000000
 		}
-		#endregion
 
-		#region SHELLSTATE
-		[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-		public struct SHELLSTATE {
+		/*
+		//[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+		//public struct SHELLSTATE {
 
-			/// fShowAllObjects : 1
-			///fShowExtensions : 1
-			///fNoConfirmRecycle : 1
-			///fShowSysFiles : 1
-			///fShowCompColor : 1
-			///fDoubleClickInWebView : 1
-			///fDesktopHTML : 1
-			///fWin95Classic : 1
-			///fDontPrettyPath : 1
-			///fShowAttribCol : 1
-			///fMapNetDrvBtn : 1
-			///fShowInfoTip : 1
-			///fHideIcons : 1
-			///fWebView : 1
-			///fFilter : 1
-			///fShowSuperHidden : 1
-			///fNoNetCrawling : 1
-			public uint bitvector1;
+		//	/// fShowAllObjects : 1
+		//	///fShowExtensions : 1
+		//	///fNoConfirmRecycle : 1
+		//	///fShowSysFiles : 1
+		//	///fShowCompColor : 1
+		//	///fDoubleClickInWebView : 1
+		//	///fDesktopHTML : 1
+		//	///fWin95Classic : 1
+		//	///fDontPrettyPath : 1
+		//	///fShowAttribCol : 1
+		//	///fMapNetDrvBtn : 1
+		//	///fShowInfoTip : 1
+		//	///fHideIcons : 1
+		//	///fWebView : 1
+		//	///fFilter : 1
+		//	///fShowSuperHidden : 1
+		//	///fNoNetCrawling : 1
+		//	public uint bitvector1;
 
-			/// DWORD->unsigned int
-			public uint dwWin95Unused;
+		//	/// DWORD->unsigned int
+		//	public uint dwWin95Unused;
 
-			/// UINT->unsigned int
-			public uint uWin95Unused;
+		//	/// UINT->unsigned int
+		//	public uint uWin95Unused;
 
-			/// LONG->int
-			public int lParamSort;
+		//	/// LONG->int
+		//	public int lParamSort;
 
-			/// int
-			public int iSortDirection;
+		//	/// int
+		//	public int iSortDirection;
 
-			/// UINT->unsigned int
-			public uint version;
+		//	/// UINT->unsigned int
+		//	public uint version;
 
-			/// UINT->unsigned int
-			public uint uNotUsed;
+		//	/// UINT->unsigned int
+		//	public uint uNotUsed;
 
-			/// fSepProcess : 1
-			///fStartPanelOn : 1
-			///fShowStartPage : 1
-			///fSpareFlags : 13
-			public uint bitvector2;
-			public uint bitvector3;
+		//	/// fSepProcess : 1
+		//	///fStartPanelOn : 1
+		//	///fShowStartPage : 1
+		//	///fSpareFlags : 13
+		//	public uint bitvector2;
+		//	public uint bitvector3;
 
-			public uint fShowAllObjects {
-				get {
-					return ((uint)((this.bitvector1 & 1u)));
-				}
-				set {
-					this.bitvector1 = ((uint)((value | this.bitvector1)));
-				}
-			}
+		//	public uint fShowAllObjects {
+		//		get {
+		//			return ((uint)((this.bitvector1 & 1u)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)((value | this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowExtensions {
-				get {
-					return ((uint)(((this.bitvector1 & 2u)
-								/ 2)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 2)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowExtensions {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 2u)
+		//						/ 2)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 2)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fNoConfirmRecycle {
-				get {
-					return ((uint)(((this.bitvector1 & 4u)
-								/ 4)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 4)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fNoConfirmRecycle {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 4u)
+		//						/ 4)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 4)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowSysFiles {
-				get {
-					return ((uint)(((this.bitvector1 & 8u)
-								/ 8)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 8)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowSysFiles {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 8u)
+		//						/ 8)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 8)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowCompColor {
-				get {
-					return ((uint)(((this.bitvector1 & 16u)
-								/ 16)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 16)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowCompColor {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 16u)
+		//						/ 16)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 16)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fDoubleClickInWebView {
-				get {
-					return ((uint)(((this.bitvector1 & 32u)
-								/ 32)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 32)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fDoubleClickInWebView {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 32u)
+		//						/ 32)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 32)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fDesktopHTML {
-				get {
-					return ((uint)(((this.bitvector1 & 64u)
-								/ 64)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 64)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fDesktopHTML {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 64u)
+		//						/ 64)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 64)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fWin95Classic {
-				get {
-					return ((uint)(((this.bitvector1 & 128u)
-								/ 128)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 128)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fWin95Classic {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 128u)
+		//						/ 128)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 128)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fDontPrettyPath {
-				get {
-					return ((uint)(((this.bitvector1 & 256u)
-								/ 256)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 256)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fDontPrettyPath {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 256u)
+		//						/ 256)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 256)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowAttribCol {
-				get {
-					return ((uint)(((this.bitvector1 & 512u)
-								/ 512)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 512)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowAttribCol {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 512u)
+		//						/ 512)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 512)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fMapNetDrvBtn {
-				get {
-					return ((uint)(((this.bitvector1 & 1024u)
-								/ 1024)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 1024)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fMapNetDrvBtn {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 1024u)
+		//						/ 1024)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 1024)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowInfoTip {
-				get {
-					return ((uint)(((this.bitvector1 & 2048u)
-								/ 2048)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 2048)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowInfoTip {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 2048u)
+		//						/ 2048)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 2048)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fHideIcons {
-				get {
-					return ((uint)(((this.bitvector1 & 4096u)
-								/ 4096)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 4096)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fHideIcons {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 4096u)
+		//						/ 4096)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 4096)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fWebView {
-				get {
-					return ((uint)(((this.bitvector1 & 8192u)
-								/ 8192)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 8192)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fWebView {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 8192u)
+		//						/ 8192)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 8192)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fFilter {
-				get {
-					return ((uint)(((this.bitvector1 & 16384u)
-								/ 16384)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 16384)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fFilter {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 16384u)
+		//						/ 16384)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 16384)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowSuperHidden {
-				get {
-					return ((uint)(((this.bitvector1 & 32768u)
-								/ 32768)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 32768)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowSuperHidden {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 32768u)
+		//						/ 32768)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 32768)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fNoNetCrawling {
-				get {
-					return ((uint)(((this.bitvector1 & 65536u)
-								/ 65536)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 65536)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fNoNetCrawling {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 65536u)
+		//						/ 65536)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 65536)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fSepProcess {
-				get {
-					return ((uint)((this.bitvector2 & 1u)));
-				}
-				set {
-					this.bitvector2 = ((uint)((value | this.bitvector2)));
-				}
-			}
+		//	public uint fSepProcess {
+		//		get {
+		//			return ((uint)((this.bitvector2 & 1u)));
+		//		}
+		//		set {
+		//			this.bitvector2 = ((uint)((value | this.bitvector2)));
+		//		}
+		//	}
 
-			public uint fStartPanelOn {
-				get {
-					return ((uint)(((this.bitvector2 & 2u)
-								/ 2)));
-				}
-				set {
-					this.bitvector2 = ((uint)(((value * 2)
-								| this.bitvector2)));
-				}
-			}
+		//	public uint fStartPanelOn {
+		//		get {
+		//			return ((uint)(((this.bitvector2 & 2u)
+		//						/ 2)));
+		//		}
+		//		set {
+		//			this.bitvector2 = ((uint)(((value * 2)
+		//						| this.bitvector2)));
+		//		}
+		//	}
 
-			public uint fShowStartPage {
-				get {
-					return ((uint)(((this.bitvector2 & 4u)
-								/ 4)));
-				}
-				set {
-					this.bitvector2 = ((uint)(((value * 4)
-								| this.bitvector2)));
-				}
-			}
+		//	public uint fShowStartPage {
+		//		get {
+		//			return ((uint)(((this.bitvector2 & 4u)
+		//						/ 4)));
+		//		}
+		//		set {
+		//			this.bitvector2 = ((uint)(((value * 4)
+		//						| this.bitvector2)));
+		//		}
+		//	}
 
-			public uint fShowStatusBar {
-				get {
-					return ((uint)(((this.bitvector2 & 64u)
-								/ 64)));
-				}
-				set {
-					this.bitvector2 = ((uint)(((value * 64)
-								| this.bitvector2)));
-				}
-			}
+		//	public uint fShowStatusBar {
+		//		get {
+		//			return ((uint)(((this.bitvector2 & 64u)
+		//						/ 64)));
+		//		}
+		//		set {
+		//			this.bitvector2 = ((uint)(((value * 64)
+		//						| this.bitvector2)));
+		//		}
+		//	}
 
-			public uint fSpareFlags {
-				get {
-					return ((uint)(((this.bitvector2 & 65528u)
-								/ 8)));
-				}
-				set {
-					this.bitvector2 = ((uint)(((value * 8)
-								| this.bitvector2)));
-				}
-			}
-		}
-		#endregion
-
-
+		//	public uint fSpareFlags {
+		//		get {
+		//			return ((uint)(((this.bitvector2 & 65528u)
+		//						/ 8)));
+		//		}
+		//		set {
+		//			this.bitvector2 = ((uint)(((value * 8)
+		//						| this.bitvector2)));
+		//		}
+		//	}
+		//}
+		*/
+		/*
 		public enum ListViewExtendedStyles {
 			/// <summary>
 			/// LVS_EX_GRIDLINES
@@ -2554,8 +2642,9 @@ namespace WindowsHelper {
 
 			AutosizeColumns = 0x10000000
 		}
+		*/
 
-
+		/*
 		public static void SetListViewExtendedStyle(IntPtr HWND, ListViewExtendedStyles exStyle, int stylesint) {
 			ListViewExtendedStyles styles;
 			styles = (ListViewExtendedStyles)SendMessage(HWND, (int)ListViewMessages.GetExtendedStyle, 0, 0);
@@ -2569,12 +2658,15 @@ namespace WindowsHelper {
 			}
 
 		}
+		*/
 
+		/*
 		public enum ListViewMessages {
 			First = 0x1000,
 			SetExtendedStyle = (First + 54),
 			GetExtendedStyle = (First + 55),
 		}
+		*/
 
 		[DllImport("ole32.dll")]
 		public static extern int RegisterDragDrop(IntPtr hwnd, IDropTarget pDropTarget);
@@ -2582,13 +2674,17 @@ namespace WindowsHelper {
 		[DllImport("ole32.dll")]
 		public static extern int RevokeDragDrop(IntPtr hwnd);
 
+		/*
 		public static Guid IID_IDataObject {
 			get { return new Guid("0000010e-0000-0000-C000-000000000046"); }
 		}
-
+		*/
+		/*
 		public static Guid IID_IDropTarget {
 			get { return new Guid("00000122-0000-0000-C000-000000000046"); }
 		}
+		*/
+
 		public static System.Drawing.Point PointFromLPARAM(IntPtr lParam) {
 			return new System.Drawing.Point(
 				(short)(((int)lParam) & 0xffff),
@@ -2647,7 +2743,7 @@ namespace WindowsHelper {
 		[ComImport, SuppressUnmanagedCodeSecurity, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("028212A3-B627-47e9-8856-C14265554E4F")]
 		public interface INameSpaceTreeControl {
 			[PreserveSig]
-			int Initialize(IntPtr hwndParent, ref WindowsHelper.WindowsAPI.RECT prc, int nsctsFlags);
+			int Initialize(IntPtr hwndParent, ref BExplorer.Shell.Interop.User32.RECT prc, int nsctsFlags);
 			[PreserveSig]
 			int TreeAdvise(IntPtr punk, out int pdwCookie);
 			[PreserveSig]
@@ -2681,7 +2777,7 @@ namespace WindowsHelper {
 			[PreserveSig]
 			int HitTest([In] ref System.Drawing.Point ppt, out IShellItem ppsiOut);
 			[PreserveSig]
-			int GetItemRect(IShellItem psi, out WindowsHelper.WindowsAPI.RECT prect);
+			int GetItemRect(IShellItem psi, out BExplorer.Shell.Interop.User32.RECT prect);
 			[PreserveSig]
 			int CollapseAll();
 		}
@@ -2748,6 +2844,7 @@ namespace WindowsHelper {
 		}
 		*/
 
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		public struct Message {
 			public IntPtr hwnd;
@@ -2755,8 +2852,9 @@ namespace WindowsHelper {
 			public IntPtr wParam;
 			public IntPtr lParam;
 			public uint time;
-			public Microsoft.WindowsAPICodePack.Controls.POINT pt;
+			public BExplorer.Shell.Interop.POINT pt;
 		}
+		*/
 
 		[ComImport, SuppressUnmanagedCodeSecurity, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("00000114-0000-0000-C000-000000000046")]
 		public interface IOleWindow {
@@ -2766,6 +2864,7 @@ namespace WindowsHelper {
 			int ContextSensitiveHelp(bool fEnterMode);
 		}
 
+		/*
 		public enum ERROR {
 			SUCCESS,
 			FILE_EXISTS = 80,
@@ -2774,36 +2873,48 @@ namespace WindowsHelper {
 			FILENAME_EXCED_RANGE = 206,
 			CANCELLED = 1223,
 		}
+		*/
 
+		/*
 		[DllImport("Ntshrui.dll")]
 		public static extern HResult ShowShareFolderUI(IntPtr hwndParent, IntPtr pszPath);
+		*/
 
 
-		public const uint SHOP_FILEPATH = 0x2;
+		//public const uint SHOP_FILEPATH = 0x2;
+		/*
 		[DllImport("shell32.dll", SetLastError = true)]
 		public static extern bool SHObjectProperties(IntPtr hwnd, uint shopObjectType, [MarshalAs(UnmanagedType.LPWStr)] string pszObjectName, [MarshalAs(UnmanagedType.LPWStr)] string pszPropertyPage);
+		*/
 
 		/*
 		[DllImport("shell32.dll", EntryPoint = "#165", CharSet = CharSet.Unicode)]
 		public static extern ERROR SHCreateDirectory(IShellView hwnd, string pszPath);
 		*/
+
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		private static extern IntPtr ILCreateFromPath([MarshalAs(UnmanagedType.LPTStr)] string pszPath);
-
+		*/
+		/*
 		[DllImport("shell32.dll")]
 		public static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, [Out()] out IntPtr pidl, uint sfgaoIn, [Out()] out uint psfgaoOut);
-
+		*/
 		[DllImport("shell32.dll")]
 		public static extern IntPtr ILFindLastID(IntPtr pidl);
 		[DllImport("user32.dll")]
 		public static extern bool ScreenToClient(IntPtr hwnd, ref System.Drawing.Point lpPoint);
-		public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+		//public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
+
+		/*
 		[DllImport("kernel32.dll")]
 		public static extern int GetCurrentThreadId();
 		[DllImport("user32.dll")]
 		public static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hInstance, int dwThreadId);
-		[DllImport("shell32.dll", SetLastError = true)]
+				[DllImport("shell32.dll", SetLastError = true)]
 		public static extern int SHMultiFileProperties(System.Runtime.InteropServices.ComTypes.IDataObject pdtobj, int flags);
+		*/
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern IntPtr SendMessage(IntPtr handle, int messg, IntPtr wparam, IntPtr lparam);
@@ -2826,8 +2937,10 @@ namespace WindowsHelper {
 			}, IntPtr.Zero);
 			return ret;
 		}
+		/*
 		[DllImport("user32.dll")]
 		public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+		*/
 		public static string GetClassName(IntPtr hwnd) {
 			StringBuilder lpClassName = new StringBuilder(260);
 			GetClassName(hwnd, lpClassName, lpClassName.Capacity);
@@ -2846,13 +2959,16 @@ namespace WindowsHelper {
 			}
 		}
 
+		/*
 		[DllImport("oleacc.dll")]
 		public static extern int AccessibleObjectFromWindow(
 			 IntPtr hwnd,
 			 uint id,
 			 ref Guid iid,
 			 [In, Out, MarshalAs(UnmanagedType.IUnknown)] ref object ppvObject);
+		*/
 
+		/*
 		[DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
 		public static extern bool CreateProcessAsUser(
 			IntPtr hToken,
@@ -2866,14 +2982,16 @@ namespace WindowsHelper {
 			string lpCurrentDirectory,
 			ref STARTUPINFO lpStartupInfo,
 			out PROCESS_INFORMATION lpProcessInformation);
-
+		*/
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		public class SECURITY_ATTRIBUTES {
 			public int nLength;
 			public unsafe byte* lpSecurityDescriptor;
 			public int bInheritHandle;
 		}
-
+		*/
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		public struct PROCESS_INFORMATION {
 			public IntPtr hProcess;
@@ -2881,6 +2999,8 @@ namespace WindowsHelper {
 			public int dwProcessId;
 			public int dwThreadId;
 		}
+		*/
+		/*
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 		public struct STARTUPINFO {
 			public Int32 cb;
@@ -2902,6 +3022,8 @@ namespace WindowsHelper {
 			public IntPtr hStdOutput;
 			public IntPtr hStdError;
 		}
+		*/
+		/*
 		public enum LOGON_TYPE {
 			LOGON32_LOGON_INTERACTIVE = 2,
 			LOGON32_LOGON_NETWORK,
@@ -2911,12 +3033,16 @@ namespace WindowsHelper {
 			LOGON32_LOGON_NETWORK_CLEARTEXT,
 			LOGON32_LOGON_NEW_CREDENTIALS
 		}
+		*/
+		/*
 		public enum LOGON_PROVIDER {
 			LOGON32_PROVIDER_DEFAULT,
 			LOGON32_PROVIDER_WINNT35,
 			LOGON32_PROVIDER_WINNT40,
 			LOGON32_PROVIDER_WINNT50
 		}
+		*/
+		/*
 		[Flags]
 		public enum CreationFlags {
 			CREATE_BREAKAWAY_FROM_JOB = 0x01000000,
@@ -2934,14 +3060,16 @@ namespace WindowsHelper {
 			DETACHED_PROCESS = 0x00000008,
 			EXTENDED_STARTUPINFO_PRESENT = 0x00080000
 		}
-
+		*/
+		/*
 		[DllImport(@"User32", SetLastError = true, EntryPoint = "RegisterPowerSettingNotification",
 		 CallingConvention = CallingConvention.StdCall)]
 		public static extern IntPtr RegisterPowerSettingNotification(
 			IntPtr hRecipient,
 			ref Guid PowerSettingGuid,
 			Int32 Flags);
-
+		*/
+		/*
 		public const int WM_POWERBROADCAST = 0x0218;
 
 		public static Guid GUID_BATTERY_PERCENTAGE_REMAINING = new Guid("A7AD8041-B45A-4CAE-87A3-EECBB468A9E1");
@@ -2953,7 +3081,9 @@ namespace WindowsHelper {
 		public static Guid GUID_MIN_POWER_SAVINGS = new Guid(0x8C5E7FDA, 0xE8BF, 0x4A96, 0x9A, 0x85, 0xA6, 0xE2, 0x3A, 0x8C, 0x63, 0x5C);
 		// Typical Power Savings - Fairly aggressive power savings measures are used.
 		public static Guid GUID_TYPICAL_POWER_SAVINGS = new Guid(0x381B4222, 0xF694, 0x41F0, 0x96, 0x85, 0xFF, 0x5B, 0xB2, 0x60, 0xDF, 0x2E);
+		*/
 
+		/*
 		// Win32 decls and defs
 		//
 		public const int PBT_APMQUERYSUSPEND = 0x0000;
@@ -2973,7 +3103,9 @@ namespace WindowsHelper {
 
 		public const int DEVICE_NOTIFY_WINDOW_HANDLE = 0x00000000;
 		public const int DEVICE_NOTIFY_SERVICE_HANDLE = 0x00000001;
+		*/
 
+		/*
 		// This structure is sent when the PBT_POWERSETTINGSCHANGE message is sent.
 		// It describes the power setting that has changed and contains data about the change
 		[StructLayout(LayoutKind.Sequential, Pack = 4)]
@@ -2982,18 +3114,21 @@ namespace WindowsHelper {
 			public uint DataLength;
 			public byte Data;
 		}
+		*/
 
-
+		/*
 		[DllImport(@"SHLWAPI", CharSet = CharSet.Auto)]
 		[return: MarshalAsAttribute(UnmanagedType.Bool)]
 		// [ResourceExposure(ResourceScope.None)]
 		public static extern bool PathIsDirectory([MarshalAsAttribute(UnmanagedType.LPWStr), In] string pszPath);
+		*/
 
-
+		/*
 		[DllImport(@"User32", EntryPoint = "UnregisterPowerSettingNotification",
 		 CallingConvention = CallingConvention.StdCall)]
 		public static extern bool UnregisterPowerSettingNotification(
 			IntPtr handle);
+		*/
 
 		//Possible values for lpOperation
 		//"edit"
@@ -3002,6 +3137,7 @@ namespace WindowsHelper {
 		//"open"
 		//"print"
 
+		/*
 		/// <summary>
 		/// Invoke win32 shell
 		/// </summary>
@@ -3020,8 +3156,9 @@ namespace WindowsHelper {
 			string lpParameters,
 			string lpDirectory,
 			ShowCommands nShowCmd);
-
-		public static uint PW_CLINETONLY = 0x1;
+		*/
+		//public static uint PW_CLINETONLY = 0x1;
+		/*
 		public enum ShellEvents {
 			HSHELL_WINDOWCREATED = 1,
 			HSHELL_WINDOWDESTROYED = 2,
@@ -3034,22 +3171,32 @@ namespace WindowsHelper {
 			HSHELL_ACCESSIBILITYSTATE = 11,
 			HSHELL_FLASH = 0x8006
 		}
+		*/
+		/*
 		public struct DWM_BLURBEHIND {
 			public int dwFlags;
 			public bool fEnable;
 			public System.IntPtr hRgnBlur;//HRGN
 			public bool fTransitionOnMaximized;
 		}
+		*/
+		/*
 		[DllImport("gdi32.dll")]
 		public static extern IntPtr CreateRectRgn(int nLeftRect, int nTopRect, int nRightRect,
 		   int nBottomRect);
-
+		*/
+		/*
 		[DllImport("gdi32.dll")]
 		public static extern IntPtr CreateRoundRectRgn(int x1, int y1, int x2, int y2,
 		   int cx, int cy);
+		*/
+		/*
 		[DllImport("dwmapi")]
 		public static extern int DwmEnableBlurBehindWindow(
 					System.IntPtr hWnd, ref DWM_BLURBEHIND pBlurBehind);
+		*/
+
+		/*
 		[DllImport("dwmapi.dll")]
 		public static extern int DwmRegisterThumbnail(IntPtr dest, IntPtr src, out IntPtr thumb);
 		[DllImport("dwmapi.dll")]
@@ -3058,6 +3205,9 @@ namespace WindowsHelper {
 		public static extern int DwmQueryThumbnailSourceSize(IntPtr thumb, out PSIZE size);
 		[DllImport("dwmapi.dll")]
 		public static extern int DwmUpdateThumbnailProperties(IntPtr hThumb, ref DWM_THUMBNAIL_PROPERTIES props);
+		*/
+
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		public struct DWM_THUMBNAIL_PROPERTIES {
 			public int dwFlags;
@@ -3067,7 +3217,9 @@ namespace WindowsHelper {
 			public bool fVisible;
 			public bool fSourceClientAreaOnly;
 		}
+		*/
 
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		public struct Rect {
 			public Rect(int left, int top, int right, int bottom) {
@@ -3082,11 +3234,16 @@ namespace WindowsHelper {
 			public int Right;
 			public int Bottom;
 		}
+		*/
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		public struct PSIZE {
 			public int x;
 			public int y;
 		}
+		*/
+
+		/*
 		[Flags()]
 		public enum DwmThumbnailFlags : uint {
 			DWM_TNP_RECTDESTINATION = 0x1,
@@ -3095,9 +3252,11 @@ namespace WindowsHelper {
 			DWM_TNP_VISIBLE = 0x8,
 			DWM_TNP_SOURCECLIENTAREAONLY = 0x10
 		}
+		*/
 
-		public delegate void TimerSetDelegate();
-		public delegate void TimerCompleteDelegate();
+		//public delegate void TimerSetDelegate();
+		//public delegate void TimerCompleteDelegate();
+		/*
 		public const int WAIT_ABANDONED = 0x80,
 		   WAIT_ABANDONED_0 = 0x80,
 		   WAIT_FAILED = -1,
@@ -3120,12 +3279,16 @@ namespace WindowsHelper {
 		   QS_ALLEVENTS = (QS_INPUT | QS_POSTMESSAGE | QS_TIMER | QS_PAINT | QS_HOTKEY),
 		   QS_ALLINPUT = (QS_SENDMESSAGE | QS_PAINT | QS_TIMER | QS_POSTMESSAGE |
 			   QS_MOUSEBUTTON | QS_MOUSEMOVE | QS_HOTKEY | QS_KEY);
-		public const UInt32 INFINITE = 0xFFFFFFFF;
+		*/
 
+		//public const UInt32 INFINITE = 0xFFFFFFFF;
+
+		/*
 		public delegate void TimerAPCProc(
 											IntPtr lpArgToCompletionRoutine,
 											UInt32 dwTimerLowValue,
 											UInt32 dwTimerHighValue);
+		*/
 		/*
 		[DllImport("user32.dll")]
 		public static extern UInt32 RegisterWindowMessageA(string lpString);
@@ -3135,12 +3298,13 @@ namespace WindowsHelper {
 		[DllImport("user32.dll")]
 		public static extern IntPtr SetActiveWindow(IntPtr hWnd);
 		*/
+
+		/*
 		[DllImport("Shlwapi.dll", SetLastError = true, CharSet = CharSet.Auto)]
-
 		public static extern uint AssocQueryString(AssocF flags, AssocStr str, string pszAssoc, string pszExtra, [Out] StringBuilder pszOut, [In][Out] ref uint pcchOut);
-
+		*/
+		/*
 		[Flags]
-
 		public enum AssocF {
 
 			Init_NoRemapCLSID = 0x1,
@@ -3166,7 +3330,9 @@ namespace WindowsHelper {
 			IgnoreBaseClass = 0x200
 
 		}
+		*/
 
+		/*
 		public enum AssocStr {
 
 			Command = 1,
@@ -3190,15 +3356,21 @@ namespace WindowsHelper {
 			DDETopic
 
 		}
+		*/
 
+		/*
 		[DllImport("kernel32.dll")]
 		public static extern void ExitThread(uint dwExitCode);
-
+		*/
+		/*
 		[DllImport("kernel32.dll")]
 		static extern bool TerminateThread(IntPtr hThread, uint dwExitCode);
+		*/
 
 		[DllImport("ole32.dll")]
 		public static extern int CoCreateInstance([In] ref Guid rclsid, IntPtr pUnkOuter, uint dwClsContext, [In] ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
+
+		/*
 		/// <summary>
 		/// Formats a Drive
 		/// </summary>
@@ -3208,23 +3380,26 @@ namespace WindowsHelper {
 		/// <param name="options"></param>
 		/// <returns></returns>
 		[DllImport("shell32.dll")]
-		public static extern uint SHFormatDrive(IntPtr hwnd, uint drive, SHFormatFlags fmtID,
-							   SHFormatOptions options);
-
+		public static extern uint SHFormatDrive(IntPtr hwnd, uint drive, SHFormatFlags fmtID, SHFormatOptions options);
+		*/
+		/*
 		public enum SHFormatFlags : uint {
 			SHFMT_ID_DEFAULT = 0xFFFF,
 		}
-
+		*/
+		/*
 		[Flags]
 		public enum SHFormatOptions : uint {
 			SHFMT_OPT_FULL = 0x1,
 			SHFMT_OPT_SYSONLY = 0x2,
 		}
+		*/
 
-		public const uint SHFMT_ERROR = 0xFFFFFFFF;
-		public const uint SHFMT_CANCEL = 0xFFFFFFFE;
-		public const uint SHFMT_NOFORMAT = 0xFFFFFFD;
+		//public const uint SHFMT_ERROR = 0xFFFFFFFF;
+		//public const uint SHFMT_CANCEL = 0xFFFFFFFE;
+		//public const uint SHFMT_NOFORMAT = 0xFFFFFFD;
 
+		/*
 		/// <summary>
 		/// Format a Drive by givven Drive letter
 		/// </summary>
@@ -3238,10 +3413,10 @@ namespace WindowsHelper {
 				 SHFormatOptions.SHFMT_OPT_FULL);
 			return Result;
 		}
-
+		*/
 
 		public static readonly string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
-		public static readonly string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\Start Menu\\";
+		//public static readonly string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\Start Menu\\";
 		public static bool IsPinnedToTaskbar(string executablePath) {
 			foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedTaskbarItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk")) {
 
@@ -3253,6 +3428,7 @@ namespace WindowsHelper {
 			return false;
 		}
 
+		/*
 		public static bool IsPinnedToStartMenu(string executablePath) {
 			foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedStartMenuItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk")) {
 
@@ -3263,15 +3439,16 @@ namespace WindowsHelper {
 
 			return false;
 		}
-
+		*/
 		public static void PinUnpinToTaskbar(string filePath) {
 			PinUnpinTaskbar(filePath, !IsPinnedToTaskbar(filePath));
 		}
 
+		/*
 		public static void UnpinFromTaskbar(string filePath) {
 			PinUnpinTaskbar(filePath, false);
 		}
-
+		*/
 		private static void PinUnpinTaskbar(string filePath, bool pin) {
 			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
 
@@ -3303,9 +3480,11 @@ namespace WindowsHelper {
 			PinUnpinStartMenu(filePath, !IsPinnedToTaskbar(filePath));
 		}
 
+		/*
 		public static void UnpinFromStartMenu(string filePath) {
 			PinUnpinStartMenu(filePath, false);
 		}
+		*/
 
 		private static void PinUnpinStartMenu(string filePath, bool pin) {
 			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
@@ -3334,12 +3513,17 @@ namespace WindowsHelper {
 			shellApplication = null;
 		}
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetFocus();
+		*/
 
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern bool ShellExecuteEx(ref SHELLEXECUTEINFO lpExecInfo);
+		*/
 
+		/*
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 		public struct SHELLEXECUTEINFO {
 			public int cbSize;
@@ -3363,85 +3547,111 @@ namespace WindowsHelper {
 			public IntPtr hIcon;
 			public IntPtr hProcess;
 		}
+		*/
 
 		//        [DllImport("user32.dll")]
 		//        public static extern bool TrackPopupMenu(IntPtr hMenu, uint uFlags, int x, int y,
 		//           int nReserved, IntPtr hWnd, IntPtr prcRect);
+		/*
 		[DllImport("user32.dll")]
 		public static extern int TrackPopupMenu(IntPtr hMenu, uint uFlags, int x, int y,
 		   int nReserved, IntPtr hWnd, IntPtr prcRect);
-
+		*/
 		//[DllImport("user32.dll")]
 		//public static extern bool GetMenuItemInfo(IntPtr hMenu, uint uItem, bool fByPosition, ref ShellContextMenu.MENUITEMINFO lpmii);
-
+		/*
 		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-
 		public static extern Boolean DeregisterShellHookWindow(IntPtr hwnd);
-
+		
 		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-
 		public static extern Boolean RegisterShellHookWindow(IntPtr hwnd);
 
 		[DllImport("kernel32", SetLastError = true, ExactSpelling = true)]
 		public static extern UInt32 SleepEx(UInt32 dwMilliseconds, bool bAlertable);
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern int GetWindowText(IntPtr hWnd, StringBuilder title, int size);
+		*/
 
+		/*
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr CreateWaitableTimer(IntPtr lpTimerAttributes, bool bManualReset, string lpTimerName);
+		*/
 
+		/*
 		[DllImport("kernel32.dll")]
 		public static extern bool SetWaitableTimer(IntPtr hTimer,
 			[In] ref long pDueTime, int lPeriod,
 			TimerAPCProc pfnCompletionRoutine,
 			IntPtr lpArgToCompletionRoutine, bool fResume);
+		*/
 
+		/*
 		[DllImport("ole32.dll")]
 		public static extern void CoFreeUnusedLibraries();
+		*/
 
 		[DllImport("kernel32.dll")]
 		public static extern bool SetProcessWorkingSetSize(IntPtr proc, int min, int max);
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool EnumThreadWindows(uint dwThreadId, EnumThreadDelegate lpfn, IntPtr lParam);
+		*/
 
+		/*
 		public delegate bool EnumThreadDelegate(IntPtr hwnd, IntPtr lParam);
+		*/
 
+		/*
 		// When you don't want the ProcessId, use this overload and pass IntPtr.Zero for the second parameter
 		[DllImport("user32.dll")]
 		static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool IsWindow(IntPtr hWnd);
+		*/
 
 		[DllImport("user32.dll")]
 		public static extern bool IsChild(IntPtr hWndParent, IntPtr hWnd);
 
+		/*
 		[DllImport("kernel32.dll")]
 		public static extern bool CancelWaitableTimer(IntPtr hTimer);
+		*/
 
+		/*
 		[DllImport("gdi32.dll")]
 		public static extern IntPtr CreateCompatibleBitmap(IntPtr hdc, int nWidth,
 		   int nHeight);
-
+		*/
+		/*
 		[DllImport("gdi32.dll", ExactSpelling = true, PreserveSig = true, SetLastError = true)]
 		public static extern IntPtr SelectObject(IntPtr hdc, IntPtr hgdiobj);
-
+		*/
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool InvalidateRect(
 		IntPtr hWnd,
 		ref Rectangle lpRect,
 		bool bErase);
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		public extern static bool UpdateWindow(IntPtr wnd);
-
+		
 
 		[DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
 		public static extern Int32 WaitForSingleObject(IntPtr Handle, uint Wait);
@@ -3456,38 +3666,49 @@ namespace WindowsHelper {
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool IsIconic(IntPtr hWnd);
+		*/
 
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool GetWindowRect(HandleRef hwnd, out RECT lpRect);
+		public static extern bool GetWindowRect(HandleRef hwnd, out BExplorer.Shell.Interop.User32.RECT lpRect);
 
+		/*
 		[DllImport("user32.dll", SetLastError = false)]
 		public static extern IntPtr GetDesktopWindow();
+		*/
 
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
 
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, IntPtr windowTitle);
+		*/
 
 		[return: MarshalAs(UnmanagedType.Bool)]
 		[DllImport("user32.dll", SetLastError = true)]
-		public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam,
-		   IntPtr lParam);
+		public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
+		/*
 		[DllImport("User32.dll", SetLastError = true)]
 		public static extern bool PrintWindow(IntPtr hwnd, IntPtr hDC, uint nFlags);
+		*/
 
-		public const int SC_CLOSE = 0xF060;
-		public const int WM_SYSCOMMAND = 0x0112;
+		//public const int SC_CLOSE = 0xF060;
+		//public const int WM_SYSCOMMAND = 0x0112;
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern bool FlashWindow(IntPtr hwnd, bool bInvert);
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
+		*/
 
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		public struct FLASHWINFO {
 			public UInt32 cbSize;
@@ -3496,6 +3717,7 @@ namespace WindowsHelper {
 			public UInt32 uCount;
 			public UInt32 dwTimeout;
 		}
+		*/
 
 
 		[Serializable, StructLayout(LayoutKind.Sequential)]
@@ -3545,7 +3767,7 @@ namespace WindowsHelper {
 		}
 
 
-
+		/*
 		//Stop flashing. The system restores the window to its original state.
 		public const UInt32 FLASHW_STOP = 0;
 		//Flash the window caption.
@@ -3559,27 +3781,37 @@ namespace WindowsHelper {
 		public const UInt32 FLASHW_TIMER = 4;
 		//Flash continuously until the window comes to the foreground.
 		public const UInt32 FLASHW_TIMERNOFG = 12;
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		private static extern uint RealGetWindowClass(IntPtr hWnd, StringBuilder pszType, uint cchType);
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern int EnumWindows(EnumWindowsCallback lpEnumFunc, int lParam);
 		public delegate bool EnumWindowsCallback(IntPtr hwnd, int lParam);
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern ulong GetWindowLongA(IntPtr hWnd, int nIndex);
-
+		*/
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, IntPtr pvParam, SPIF fWinIni);
+		*/
 
+		/*
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern bool SystemParametersInfo(
 		   int uAction, int uParam, ref bool lpvParam,
 		   int flags);
+		*/
 
-
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, ref RECT pvParam, SPIF fWinIni);
@@ -3587,27 +3819,32 @@ namespace WindowsHelper {
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, String pvParam, SPIF fWinIni);
+		*/
 
 		[DllImport("user32.dll", ExactSpelling = true, CharSet = CharSet.Auto)]
 		public static extern IntPtr GetParent(IntPtr hWnd);
 
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, ref ANIMATIONINFO pvParam, SPIF fWinIni);
+		*/
 
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool EnumChildWindows(IntPtr hwndParent, EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
+		/*
 		[DllImport("user32")]
 		public static extern int SetLayeredWindowAttributes(IntPtr hWnd, byte crey,
 		 byte alpha, int flags);
+		*/
 
+		/*
 		[DllImport("user32")]
 		public static extern int SetWindowLong(IntPtr hWnd, int index, int dwNewLong);
-
-		public const int LWA_ALPHA = 0x2;
-		public const int LWA_COLORKEY = 0x1;
+		*/
+		//public const int LWA_ALPHA = 0x2;
+		//public const int LWA_COLORKEY = 0x1;
 
 		//public delegate bool Win32Callback(IntPtr hwnd, IntPtr lParam);
 		//[DllImport("user32.Dll")]
@@ -3615,12 +3852,17 @@ namespace WindowsHelper {
 		//public static extern bool EnumChildWindows(IntPtr parentHandle, Win32Callback callback, IntPtr lParam);
 
 		public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+		/*
 		/// <summary>
 		/// The GetForegroundWindow function returns a handle to the foreground window.
 		/// </summary>
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetForegroundWindow();
+		*/
 
+		/*
+		[Obsolete("Use BExplorer.Shell.Interop.User32", true)]
 		[StructLayout(LayoutKind.Sequential)]
 		public struct RECT {
 			public int Left;        // x position of upper-left corner
@@ -3628,8 +3870,9 @@ namespace WindowsHelper {
 			public int Right;       // x position of lower-right corner
 			public int Bottom;      // y position of lower-right corner
 		}
+		*/
 
-		#region SPI
+		/*
 		/// <summary>
 		/// SPI_ System-wide parameter - Used in SystemParametersInfo function
 		/// </summary>
@@ -4134,7 +4377,7 @@ namespace WindowsHelper {
 			/// Same as SPI_SETSCREENSAVERRUNNING.
 			/// </summary>
 			SPI_SCREENSAVERRUNNING = SPI_SETSCREENSAVERRUNNING,
-			//#endif /* WINVER >= 0x0400 */
+			//#endif /* WINVER >= 0x0400 /
 
 			/// <summary>
 			/// Retrieves information about the FilterKeys accessibility feature. The pvParam parameter must point to a FILTERKEYS structure
@@ -4227,7 +4470,7 @@ namespace WindowsHelper {
 			/// Windows Server 2003, Windows XP/2000/NT:  Not supported. The user controls this feature through the control panel.
 			/// </summary>
 			SPI_SETSERIALKEYS = 0x003F,
-			//#endif /* WINVER >= 0x0400 */
+			//#endif /* WINVER >= 0x0400 /
 
 			/// <summary>
 			/// Retrieves information about the SoundSentry accessibility feature. The pvParam parameter must point to a SOUNDSENTRY structure
@@ -4257,7 +4500,7 @@ namespace WindowsHelper {
 			/// Windows 95:  Not supported.
 			/// </summary>
 			SPI_SETSNAPTODEFBUTTON = 0x0060,
-			//#endif /* _WIN32_WINNT >= 0x0400 */
+			//#endif /* _WIN32_WINNT >= 0x0400 /
 
 			//#if (_WIN32_WINNT >= 0x0400) || (_WIN32_WINDOWS > 0x0400)
 			/// <summary>
@@ -4378,7 +4621,7 @@ namespace WindowsHelper {
 			/// Windows NT, Windows Me/98/95:  This value is not supported.
 			/// </summary>
 			SPI_GETDESKWALLPAPER = 0x0073,
-			//#endif /* WINVER >= 0x0500 */
+			//#endif /* WINVER >= 0x0500 /
 
 			//#if(WINVER >= 0x0500)
 			/// <summary>
@@ -4679,7 +4922,7 @@ namespace WindowsHelper {
 			/// or FALSE if the screensaver will be deactivated by simulated input.
 			/// </summary>
 			SPI_SETBLOCKSENDINPUTRESETS = 0x1027,
-			//#endif /* _WIN32_WINNT >= 0x0501 */
+			//#endif /* _WIN32_WINNT >= 0x0501 /
 
 			/// <summary>
 			/// Determines whether UI effects are enabled or disabled. The pvParam parameter must point to a BOOL variable that receives TRUE
@@ -4832,8 +5075,9 @@ namespace WindowsHelper {
 			/// </summary>
 			SPI_SETFONTSMOOTHINGORIENTATION = 0x2013,
 		}
-		#endregion // SPI
+		*/
 
+		/*
 		public enum SPIF {
 
 			None = 0x00,
@@ -4845,6 +5089,7 @@ namespace WindowsHelper {
 			SPIF_SENDWININICHANGE = 0x02
 
 		}
+		*/
 
 		/// <summary>
 		/// ANIMATIONINFO specifies animation effects associated with user actions.
@@ -4876,19 +5121,26 @@ namespace WindowsHelper {
 			public Int32 iMinAnimate;
 		}
 
+		/*
 		[DllImport("user32")]
 		public extern static int IsWindowVisible(
 			IntPtr hWnd);
+		*/
 
-		public static readonly ulong TARGETWINDOW = WS_VISIBLE;
+		//public static readonly ulong TARGETWINDOW = WS_VISIBLE;
 		//        public static readonly ulong TARGETWINDOW = WS_EX_APPWINDOW;
 
+		/*
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr GetCurrentProcess();
+		*/
 
+		/*
 		[DllImport("kernel32.dll")]
 		public static extern bool SetPriorityClass(IntPtr hProcess, uint dwPriorityClass);
+		*/
 
+		/*
 		public enum DWPriorityClass {
 			ABOVE_NORMAL_PRIORITY_CLASS = 0x00008000,
 			BELOW_NORMAL_PRIORITY_CLASS = 0x00004000,
@@ -4899,7 +5151,8 @@ namespace WindowsHelper {
 			PROCESS_MODE_BACKGROUND_END = 0x00200000,
 			REALTIME_PRIORITY_CLASS = 0x00000100
 
-		} ;
+		}
+		*/
 
 		[DllImport("user32", CharSet = CharSet.Unicode, SetLastError = true, ExactSpelling = true)]
 		public static extern IntPtr SetFocus(IntPtr hWnd);
@@ -4907,31 +5160,39 @@ namespace WindowsHelper {
 		[DllImport("user32.dll")]
 		public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 		public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
-		public static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
-		public static readonly IntPtr HWND_TOP = new IntPtr(0);
-		public static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+		//public static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
+		//public static readonly IntPtr HWND_TOP = new IntPtr(0);
+		//public static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
 		public const UInt32 SWP_NOSIZE = 0x0001;
-		public const UInt32 SWP_NOMOVE = 0x0002;
-		public const UInt32 SWP_NOZORDER = 0x0004;
-		public const UInt32 SWP_NOREDRAW = 0x0008;
+		//public const UInt32 SWP_NOMOVE = 0x0002;
+		//public const UInt32 SWP_NOZORDER = 0x0004;
+		//public const UInt32 SWP_NOREDRAW = 0x0008;
 		public const UInt32 SWP_NOACTIVATE = 0x0010;
-		public const UInt32 SWP_FRAMECHANGED = 0x0020;  /* The frame changed: send WM_NCCALCSIZE */
-		public const UInt32 SWP_SHOWWINDOW = 0x0040;
-		public const UInt32 SWP_HIDEWINDOW = 0x0080;
-		public const UInt32 SWP_NOCOPYBITS = 0x0100;
-		public const UInt32 SWP_NOOWNERZORDER = 0x0200;  /* Don't do owner Z ordering */
-		public const UInt32 SWP_NOSENDCHANGING = 0x0400;  /* Don't send WM_WINDOWPOSCHANGING */
+		//public const UInt32 SWP_FRAMECHANGED = 0x0020;  /* The frame changed: send WM_NCCALCSIZE */
+		//public const UInt32 SWP_SHOWWINDOW = 0x0040;
+		//public const UInt32 SWP_HIDEWINDOW = 0x0080;
+		//public const UInt32 SWP_NOCOPYBITS = 0x0100;
+		//public const UInt32 SWP_NOOWNERZORDER = 0x0200;  /* Don't do owner Z ordering */
+		//public const UInt32 SWP_NOSENDCHANGING = 0x0400;  /* Don't send WM_WINDOWPOSCHANGING */
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetTopWindow(IntPtr hWnd);
+		*/
+
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+		*/
 
+		/*
 		public static int GWL_ID = (-12);
 		public static int GWL_STYLE = (-16);
 		public static int GWL_EXSTYLE = (-20);
+		*/
 
 		// Window Styles
 		public const UInt32 WS_OVERLAPPED = 0;
@@ -4989,16 +5250,22 @@ namespace WindowsHelper {
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern IntPtr SHGetFileInfo(string pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbFileInfo, uint uFlags);
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
-		public static extern IntPtr SHGetFileInfo(IntPtr pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbFileInfo, SHGFI uFlags);
+		public static extern IntPtr SHGetFileInfo(IntPtr pszPath, uint dwFileAttributes, ref SHFILEINFO psfi, uint cbFileInfo, BExplorer.Shell.Interop.SHGFI uFlags);
 
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern int Shell_GetCachedImageIndex(string pwszIconPath, int iIconIndex, uint uIconFlags);
+		*/
 
+		/*
 		[DllImport("Shlwapi.dll", CharSet = CharSet.Auto)]
 		public static extern string PathFindFileName(string pPath);
+		*/
 
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern void SHUpdateImage(string pszHashItem, int iIndex, uint uFlags, int iImageIndex);
+		*/
 
 		/// <summary>Maximal Length of unmanaged Windows-Path-strings</summary>
 		private const int MAX_PATH = 260;
@@ -5023,9 +5290,12 @@ namespace WindowsHelper {
 			public string szTypeName;
 		};
 
+		/*
 		[DllImport("Shell32.dll", CharSet = CharSet.Auto)]
 		public static extern HResult SHGetSetFolderCustomSettings(ref LPSHFOLDERCUSTOMSETTINGS pfcs, string pszPath, UInt32 dwReadWrite);
+		*/
 
+		/*
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 		public struct LPSHFOLDERCUSTOMSETTINGS {
 			public UInt32 dwSize;
@@ -5044,6 +5314,7 @@ namespace WindowsHelper {
 			public string pszLogo;
 			public UInt32 cchLogo;
 		}
+		*/
 
 		public static UInt32 FCS_READ = 0x00000001;
 		public static UInt32 FCS_FORCEWRITE = 0x00000002;
@@ -5060,23 +5331,31 @@ namespace WindowsHelper {
 		public static UInt32 SHGFI_ICONLOCATION = 0x000001000;
 
 
-
+		/*
 		[DllImport("user32.dll")]
 		public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+		*/
 
+		/*
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr OpenProcess(UInt32 dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);
+		*/
 
+		/*
 		[DllImport("psapi.dll")]
 		public static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName, [In] [MarshalAs(UnmanagedType.U4)] int nSize);
+		*/
 
+		/*
 		[DllImport("kernel32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool CloseHandle(IntPtr hObject);
+		*/
 
 		[DllImport("user32")]
 		public static extern bool ShowWindow(IntPtr hwnd, int nCmdShow);
 
+		/*
 		public enum SW {
 			HIDE = 0,
 			SHOWNORMAL = 1,
@@ -5094,24 +5373,36 @@ namespace WindowsHelper {
 			FORCEMINIMIZE = 11,
 			MAX = 11
 		}
+		*/
+
 		[DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
 		public static extern int SetWindowTheme(IntPtr hWnd, String pszSubAppName, String pszSubIdList);
 
+		/*
 		[DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
 		public static extern int SetWindowTheme(IntPtr hWnd, int pszSubAppName, String pszSubIdList);
+		*/
 
 		[DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
 		public static extern int SetWindowTheme(IntPtr hWnd, String pszSubAppName, int pszSubIdList);
 
+		/*
 		[DllImport("uxtheme.dll", ExactSpelling = true, CharSet = CharSet.Unicode)]
 		public static extern int SetWindowTheme(IntPtr hWnd, int pszSubAppName, int pszSubIdList);
+		*/
 
+		/*
 		[DllImport("shell32.dll")]
 		static extern IntPtr ExtractIcon(IntPtr hInst, string lpszExeFileName, int nIconIndex);
+		*/
+
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		static extern uint ExtractIconEx(string szFileName, int nIconIndex,
 		   IntPtr[] phiconLarge, IntPtr[] phiconSmall, uint nIcons);
+		*/
 
+		/*
 		public static string GetWindowName(IntPtr Hwnd) {
 			// This function gets the name of a window from its handle
 			var Title = new StringBuilder(256);
@@ -5119,9 +5410,9 @@ namespace WindowsHelper {
 
 			return Title.ToString().Trim();
 		}
+		*/
 
-
-
+		/*
 		public static Icon GetSmallIcon(string PathDLL, int Index) {
 			IntPtr[] hDummy = new IntPtr[1] { IntPtr.Zero };
 			IntPtr[] hIconEx = new IntPtr[1] { IntPtr.Zero };
@@ -5129,6 +5420,8 @@ namespace WindowsHelper {
 			Icon extractedIcon = (Icon)Icon.FromHandle(hIconEx[0]).Clone();
 			return extractedIcon;
 		}
+		*/
+		/*
 		public static string GetWindowClass(IntPtr Hwnd) {
 			// This function gets the name of a window class from a window handle
 			var Title = new StringBuilder(256);
@@ -5136,20 +5429,30 @@ namespace WindowsHelper {
 
 			return Title.ToString().Trim();
 		}
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetShellWindow();
+		*/
 
+		/*
 		public const uint GA_PARENT = 1;
 		public const uint GA_ROOT = 2;
 		public const uint GA_ROOTOWNER = 3;
+		*/
 
+		/*
 		[DllImport("user32.dll", ExactSpelling = true)]
 		public static extern IntPtr GetAncestor(IntPtr hwnd, uint gaFlags);
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetLastActivePopup(IntPtr hWnd);
+		*/
 
+		/*
 		public static string GetWindowModuleFileName(IntPtr hWnd) {
 			uint processId = 0;
 			const int nChars = 1024;
@@ -5160,11 +5463,15 @@ namespace WindowsHelper {
 			CloseHandle(hProcess);
 			return (filename.ToString());
 		}
+		*/
 
+		/*
 		[ComImport, Guid("13709620-C279-11CE-A49E-444553540000")]
 		public class Shell32 {
 		}
+		*/
 
+		/*
 		[ComImport, Guid("D8F015C0-C278-11CE-A49E-444553540000")]
 		[InterfaceType(ComInterfaceType.InterfaceIsIDispatch)]
 		public interface IShellDispatch {
@@ -5173,7 +5480,9 @@ namespace WindowsHelper {
 
 			void UndoMinimizeALL();
 		}
+		*/
 
+		/*
 		public sealed class Shell : IDisposable {
 			Shell32 shell;
 			IShellDispatch shellDispatch;
@@ -5212,7 +5521,9 @@ namespace WindowsHelper {
 				}
 			}
 		}
+		*/
 
+		/*
 		public static string Serialize<T>(T value) {
 
 			if (value == null) {
@@ -5233,7 +5544,9 @@ namespace WindowsHelper {
 				return textWriter.ToString();
 			}
 		}
+		*/
 
+		/*
 		public static T Deserialize<T>(string xml) {
 
 			if (string.IsNullOrEmpty(xml)) {
@@ -5251,14 +5564,18 @@ namespace WindowsHelper {
 				}
 			}
 		}
+		*/
 
+		/*
 		public static void SerializeToXmlFile<T>(T obj, string fileName) {
 			using (var fileStream = new FileStream(fileName, FileMode.Create)) {
 				var ser = new XmlSerializer(obj.GetType());
 				ser.Serialize(fileStream, obj);
 			}
 		}
+		*/
 
+		/*
 		public static T DeserializeFromXmlFile<T>(string xml) {
 			T result;
 			var ser = new XmlSerializer(typeof(T));
@@ -5267,22 +5584,26 @@ namespace WindowsHelper {
 			}
 			return result;
 		}
+		*/
 
-
-
+		/*
 		[Serializable]
 		public struct FileCopyResultInfo {
 			public long FileProgressValue;
 			public long OveralProgressValue;
 		}
+		*/
 
+		/*
 		[Serializable]
 		public struct FileCopySourceInfo {
 			public string[] SourceFileNames;
 			public string DestinationName;
 		}
+		*/
 
 		#region WindowsVersion
+
 		public enum OsVersionInfo {
 			Unknown,
 			Windows95,
@@ -5298,10 +5619,13 @@ namespace WindowsHelper {
 			Windows2008Server,
 			Windows8
 		}
+
+		/*
 		public int getOSArchitecture() {
 			string pa = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
 			return ((String.IsNullOrEmpty(pa) || String.Compare(pa, 0, "x86", 0, 3, true) == 0) ? 32 : 64);
 		}
+		*/
 
 		/// <summary>
 		/// Gets the operating system version
@@ -5365,6 +5689,7 @@ namespace WindowsHelper {
 			return operatingSystem;
 
 		}
+		/*
 		public string getOSInfoString() {
 			//Get Operating system information.
 			OperatingSystem os = Environment.OSVersion;
@@ -5434,9 +5759,11 @@ namespace WindowsHelper {
 			//Return the information we've gathered.
 			return operatingSystem;
 		}
+		*/
 		#endregion
 	}
 
+	/*
 	public static class SystemWindows {
 		#region Constants
 
@@ -5489,49 +5816,51 @@ namespace WindowsHelper {
 
 		#endregion
 	}
+	*/
 
+	/*
 	public static class WNM {
-		const int NM_FIRST = 0;
-		public const int NM_KILLFOCUS = (NM_FIRST - 8);
-		public const int NM_CUSTOMDRAW = (NM_FIRST - 12);
+		//const int NM_FIRST = 0;
+		//public const int NM_KILLFOCUS = (NM_FIRST - 8);
+		//public const int NM_CUSTOMDRAW = (NM_FIRST - 12);
 
-		const int TTN_FIRST = -520;
-		public const int TTN_SHOW = (TTN_FIRST - 1);
-		public const int TTN_GETDISPINFOW = (TTN_FIRST - 10);
+		//const int TTN_FIRST = -520;
+		//public const int TTN_SHOW = (TTN_FIRST - 1);
+		//public const int TTN_GETDISPINFOW = (TTN_FIRST - 10);
 
-		const int RBN_FIRST = -831;
-		public const int RBN_HEIGHTCHANGE = (RBN_FIRST - 0);
-		public const int RBN_BEGINDRAG = (RBN_FIRST - 4);
-		public const int RBN_ENDDRAG = (RBN_FIRST - 5);
+		//const int RBN_FIRST = -831;
+		//public const int RBN_HEIGHTCHANGE = (RBN_FIRST - 0);
+		//public const int RBN_BEGINDRAG = (RBN_FIRST - 4);
+		//public const int RBN_ENDDRAG = (RBN_FIRST - 5);
 
-		const int LVN_FIRST = -100;
-		public const int LVN_ITEMCHANGED = (LVN_FIRST - 1);
-		public const int LVN_DELETEITEM = (LVN_FIRST - 3);
-		public const int LVN_BEGINDRAG = (LVN_FIRST - 9);
-		public const int LVN_BEGINRDRAG = (LVN_FIRST - 11);
-		public const int LVN_ITEMACTIVATE = (LVN_FIRST - 14);
-		public const int LVN_ODSTATECHANGED = (LVN_FIRST - 15);
-		public const int LVN_HOTTRACK = (LVN_FIRST - 21);
-		public const int LVN_KEYDOWN = (LVN_FIRST - 55);
-		public const int LVN_GETINFOTIP = (LVN_FIRST - 58);
-		public const int LVN_GETDISPINFOW = (LVN_FIRST - 77);
-		public const int LVN_SETDISPINFOA = (LVN_FIRST - 51);
-		public const int LVN_BEGINSCROLL = (LVN_FIRST - 80);
+		//const int LVN_FIRST = -100;
+		//public const int LVN_ITEMCHANGED = (LVN_FIRST - 1);
+		//public const int LVN_DELETEITEM = (LVN_FIRST - 3);
+		//public const int LVN_BEGINDRAG = (LVN_FIRST - 9);
+		//public const int LVN_BEGINRDRAG = (LVN_FIRST - 11);
+		//public const int LVN_ITEMACTIVATE = (LVN_FIRST - 14);
+		//public const int LVN_ODSTATECHANGED = (LVN_FIRST - 15);
+		//public const int LVN_HOTTRACK = (LVN_FIRST - 21);
+		//public const int LVN_KEYDOWN = (LVN_FIRST - 55);
+		//public const int LVN_GETINFOTIP = (LVN_FIRST - 58);
+		//public const int LVN_GETDISPINFOW = (LVN_FIRST - 77);
+		//public const int LVN_SETDISPINFOA = (LVN_FIRST - 51);
+		//public const int LVN_BEGINSCROLL = (LVN_FIRST - 80);
 		//public const int LVN_ITEMACTIVATE = (LVN_FIRST-14)
 
-		const int UDN_FIRST = -721;        // updown
-		public const int UDN_DELTAPOS = (UDN_FIRST - 1);
+		//const int UDN_FIRST = -721;        // updown
+		//public const int UDN_DELTAPOS = (UDN_FIRST - 1);
 	}
+	*/
 
+	/*
 	public class FileInfoPair {
 		public ShellObject source { get; set; }
 		public string PathDestination { get; set; }
 		public string PathDestinationRenamed { get; set; }
 	}
+	*/
 
-
-
-	#region ChangeWallpaper
 	public class Wallpaper {
 		public Wallpaper() { }
 
@@ -5589,7 +5918,4 @@ namespace WindowsHelper {
 				SPIF_UPDATEINIFILE | SPIF_SENDWININICHANGE);
 		}
 	}
-	#endregion
-
-
 }

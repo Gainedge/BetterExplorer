@@ -216,14 +216,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonFileDialogs\CommonSaveFileDialog.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Common\NativePoint.cs" />
+    <Compile Include="Common\CoreErrorHelper.cs" />
     <Compile Include="Common\NativeRect.cs" />
     <Compile Include="Common\ShellException.cs" />
     <Compile Include="Common\ShellFileSystemFolder.cs" />
-    <Compile Include="Common\IconReference.cs" />
     <Compile Include="Common\ShellFile.cs" />
     <Compile Include="Common\ShellFolder.cs" />
     <Compile Include="Common\ShellFolderItems.cs" />
@@ -236,27 +232,19 @@
     <Compile Include="Common\ShellThumbnail.cs" />
     <Compile Include="Common\DefaultShellImageSizes.cs" />
     <Compile Include="Common\SortColumn.cs" />
-    <Compile Include="ComReleaser.cs" />
     <Compile Include="CopyEngineResult.cs" />
     <Compile Include="Interop\ExplorerBrowser\CommonControlException.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Extensions.cs" />
-    <Compile Include="DesktopWindowManager\DesktopWindowManagerNativeMethods.cs" />
-    <Compile Include="DesktopWindowManager\GlassEvents.cs" />
-    <Compile Include="DesktopWindowManager\GlassForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DesktopWindowManager\GlassWindow.cs" />
     <Compile Include="FileOperation.cs" />
-    <Compile Include="FileOperationFlags.cs" />
     <Compile Include="FileOperationProgressSink.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IFileOperation.cs" />
     <Compile Include="IFileOperationProgressSink.cs" />
-    <Compile Include="Interop\ExplorerBrowser\POINT.cs" />
+    <Compile Include="Interop\IntPtrExtensions.cs" />
+    <Compile Include="Interop\WindowUtilities.cs" />
     <Compile Include="Windows API\IAsyncDataObject.cs" />
-    <Compile Include="Interop\Common\IntPtrExtensions.cs" />
     <Compile Include="Windows API\ShellCOMInterfaces.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -265,7 +253,6 @@
     <Compile Include="Interop\ShellObjectWatcher\ShellObjectWatcherNativeMethods.cs" />
     <Compile Include="Notifications.cs" />
     <Compile Include="PropertySystem\PropertySystemException.cs" />
-    <Compile Include="Interop\Common\WindowUtilities.cs" />
     <Compile Include="KnownFolders\IKnownFolder.cs" />
     <Compile Include="Windows API\ShellCOMClasses.cs" />
     <Compile Include="KnownFolders\DefinitionOptions.cs" />
@@ -284,26 +271,6 @@
     <Compile Include="Windows API\ShellEnums.cs" />
     <Compile Include="Common\ShellLibrary.cs" />
     <Compile Include="Common\ShellObject.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialog.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogButton.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogCheckBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogComboBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogControl.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogControlCollection.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogFilter.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogFilterCollection.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogFolderChangeEventArgs.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogGroupBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogLabel.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogMenu.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogProminentControl.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogRadioButtonList.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogResult.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogSeperator.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogStandardFilters.cs" />
-    <Compile Include="CommonFileDialogs\CommonFileDialogTextBox.cs" />
-    <Compile Include="CommonFileDialogs\CommonOpenFileDialog.cs" />
-    <Compile Include="CommonFileDialogs\ICommonFileDialogIndexedControls.cs" />
     <Compile Include="Interop\KnownFolders\KnownFoldersCOMGuids.cs" />
     <Compile Include="Interop\KnownFolders\KnownFoldersCOMInterfaces.cs" />
     <Compile Include="Interop\KnownFolders\KnownFoldersNativeMethods.cs" />
@@ -358,10 +325,8 @@
     <Compile Include="PropertySystem\ShellPropertyCollection.cs" />
     <Compile Include="PropertySystem\ShellPropertyDescription.cs" />
     <Compile Include="PropertySystem\ShellPropertyDescriptionsCache.cs" />
-    <Compile Include="Interop\Dialogs\DialogsCOMClasses.cs" />
     <Compile Include="Windows API\ShellCOMGuids.cs" />
     <Compile Include="Windows API\ShellNativeMethods.cs" />
-    <Compile Include="Interop\Dialogs\DialogsCOMInterfaces.cs" />
     <Compile Include="Common\ShellSavedSearchCollection.cs" />
     <Compile Include="PropertySystem\ShellProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -380,15 +345,6 @@
     <Compile Include="Taskbar\ThumbnailToolbarProxyWindow.cs" />
     <Compile Include="Taskbar\UserRemovedJumpListItemsEventArg.cs" />
     <Compile Include="WindowsAPI.cs" />
-    <Compile Include="_Obsolete\Common\EventHandlerExtensionMethods.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SysImageList.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="_Transfered\DelRecycleBin.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Design\ShellThumbnailClassDiagram.cd" />
@@ -412,11 +368,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DesktopWindowManager\GlassForm.resx">
-      <DependentUpon>GlassForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\LocalizedMessages.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>LocalizedMessages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -435,7 +388,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="_Obsolete\Interop\" />
+    <Folder Include="_Obsolete\" />
+    <Folder Include="_Transfered\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -287,7 +287,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 			if (OperationType == FileOperations.OperationType.Move) {
 				if (Path.GetPathRoot(SourceItemsCollection[0]) == Path.GetPathRoot(DestinationLocation)) {
 					foreach (var item in this.SourceItemsCollection) {
-						ShFileOperation(item, Path.Combine(DestinationLocation, Path.GetFileName(item)), WindowsAPI.FileOperationType.FO_MOVE);
+						ShFileOperation(item, Path.Combine(DestinationLocation, Path.GetFileName(item)), BExplorer.Shell.Windows.WindowsAPI.FileOperationType.FO_MOVE);
 					}
 					CloseCurrentTask();
 				}
@@ -515,7 +515,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 							if (itemInfo.IsReadOnly)
 								File.SetAttributes(item, System.IO.FileAttributes.Normal);
 							if (this.DeleteToRB)
-								RecycleBin.SendSilent(item);
+								BExplorer.Shell.RecycleBin.SendSilent(item);
 							else
 								File.Delete(item);
 							Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background,
@@ -525,7 +525,7 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 						}
 						else {
 							if (this.DeleteToRB) {
-								RecycleBin.SendSilent(item);
+								BExplorer.Shell.RecycleBin.SendSilent(item);
 							}
 							else {
 								DeleteAllFilesFromDir(new DirectoryInfo(item));
@@ -1117,24 +1117,24 @@ namespace Microsoft.WindowsAPICodePack.Shell.FileOperations {
 
 		}
 
-		private void ShFileOperation(String src, String dst, WindowsAPI.FileOperationType type) {
+		private void ShFileOperation(String src, String dst, BExplorer.Shell.Windows.WindowsAPI.FileOperationType type) {
 			if (IntPtr.Size == 8) {
-				WindowsAPI.SHFILEOPSTRUCT_x64 fs = new WindowsAPI.SHFILEOPSTRUCT_x64();
+				var fs = new BExplorer.Shell.Windows.WindowsAPI.SHFILEOPSTRUCT_x64();
 				fs.wFunc = type;
 				// important to double-terminate the string.
 				fs.pFrom = src + '\0' + '\0';
 				fs.pTo = dst + '\0' + '\0';
-				fs.fFlags = WindowsAPI.FileOperationFlags.FOF_ALLOWUNDO | WindowsAPI.FileOperationFlags.FOF_SILENT;
-				WindowsAPI.SHFileOperation_x64(ref fs);
+				fs.fFlags = BExplorer.Shell.Windows.WindowsAPI.FileOperationFlags.FOF_ALLOWUNDO | BExplorer.Shell.Windows.WindowsAPI.FileOperationFlags.FOF_SILENT;
+				BExplorer.Shell.Windows.WindowsAPI.SHFileOperation_x64(ref fs);
 			}
 			else {
-				WindowsAPI.SHFILEOPSTRUCT_x86 fs = new WindowsAPI.SHFILEOPSTRUCT_x86();
+				var fs = new BExplorer.Shell.Windows.WindowsAPI.SHFILEOPSTRUCT_x86();
 				fs.wFunc = type;
 				// important to double-terminate the string.
 				fs.pFrom = src + '\0' + '\0';
 				fs.pTo = dst + '\0' + '\0';
-				fs.fFlags = WindowsAPI.FileOperationFlags.FOF_ALLOWUNDO | WindowsAPI.FileOperationFlags.FOF_SILENT;
-				WindowsAPI.SHFileOperation_x86(ref fs);
+				fs.fFlags = BExplorer.Shell.Windows.WindowsAPI.FileOperationFlags.FOF_ALLOWUNDO | BExplorer.Shell.Windows.WindowsAPI.FileOperationFlags.FOF_SILENT;
+				BExplorer.Shell.Windows.WindowsAPI.SHFileOperation_x86(ref fs);
 			}
 		}
 

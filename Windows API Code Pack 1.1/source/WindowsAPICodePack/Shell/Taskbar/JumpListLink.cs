@@ -76,7 +76,7 @@ namespace Microsoft.WindowsAPICodePack.Taskbar
         /// <summary>
         /// Gets or sets the icon reference (location and index) of the link's icon.
         /// </summary>
-        public IconReference IconReference { get; set; }
+        public BExplorer.Shell.Interop.IconReference IconReference { get; set; }
 
         /// <summary>
         /// Gets or sets the object's arguments (passed to the command line).
