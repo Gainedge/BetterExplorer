@@ -361,57 +361,59 @@ namespace Microsoft.WindowsAPICodePack.Controls {
 		HResult SetClipboard(bool bMove);
 	};
 
-	[ComImport,
-	 Guid(ExplorerBrowserIIDGuid.IFolderView),
-	 InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IFolderView {
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetCurrentViewMode([Out] out uint pViewMode);
+	/*
+	//[ComImport,
+	// Guid(ExplorerBrowserIIDGuid.IFolderView),
+	// InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	//public interface IFolderView {
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetCurrentViewMode([Out] out uint pViewMode);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SetCurrentViewMode(uint ViewMode);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void SetCurrentViewMode(uint ViewMode);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetFolder(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetFolder(ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void Item(int iItemIndex, out IntPtr ppidl);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void Item(int iItemIndex, out IntPtr ppidl);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void ItemCount(uint uFlags, out int pcItems);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void ItemCount(uint uFlags, out int pcItems);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void Items(uint uFlags, ref Guid riid, [Out, MarshalAs(UnmanagedType.IUnknown)] out object ppv);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void Items(uint uFlags, ref Guid riid, [Out, MarshalAs(UnmanagedType.IUnknown)] out object ppv);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSelectionMarkedItem(out int piItem);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetSelectionMarkedItem(out int piItem);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetFocusedItem(out int piItem);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetFocusedItem(out int piItem);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetItemPosition(IntPtr pidl, out BExplorer.Shell.Interop.NativePoint ppt);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetItemPosition(IntPtr pidl, out BExplorer.Shell.Interop.NativePoint ppt);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetSpacing([Out] out BExplorer.Shell.Interop.NativePoint ppt);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetSpacing([Out] out BExplorer.Shell.Interop.NativePoint ppt);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetDefaultSpacing(out BExplorer.Shell.Interop.NativePoint ppt);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetDefaultSpacing(out BExplorer.Shell.Interop.NativePoint ppt);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void GetAutoArrange();
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void GetAutoArrange();
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SelectItem(int iItem, uint dwFlags);
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void SelectItem(int iItem, uint dwFlags);
 
-		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		void SelectAndPositionItems(uint cidl, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] apidl, ref BExplorer.Shell.Interop.NativePoint apt, WindowsHelper.WindowsAPI.SVSIF dwFlags);
-	}
+	//	[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
+	//	void SelectAndPositionItems(uint cidl, [MarshalAs(UnmanagedType.LPArray)] IntPtr[] apidl, ref BExplorer.Shell.Interop.NativePoint apt, WindowsHelper.WindowsAPI.SVSIF dwFlags);
+	//}
+	*/
 
 	[ComImport,
 	 Guid(ExplorerBrowserIIDGuid.IFolderView2),
 	 InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IFolderView2 : IFolderView {
+	public interface IFolderView2 : BExplorer.Shell.Interop.IFolderView {
 		// IFolderView
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
