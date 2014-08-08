@@ -85,7 +85,7 @@ namespace BExplorer.Shell.Interop {
 
 	}
 
-	internal static class WNM {
+	public static class WNM {
 		const int NM_FIRST = 0;
 		public const int NM_KILLFOCUS = (NM_FIRST - 8);
 		public const int NM_CUSTOMDRAW = (NM_FIRST - 12);
@@ -115,6 +115,8 @@ namespace BExplorer.Shell.Interop {
 		public const int LVN_GETDISPINFOW = (LVN_FIRST - 77);
 		public const int LVN_SETDISPINFOA = (LVN_FIRST - 51);
 		public const int LVN_BEGINSCROLL = (LVN_FIRST - 80);
+
+
 		public const int LVN_ENDSCROLL = (LVN_FIRST - 81);
 		public const int LVN_COLUMNCLICK = (LVN_FIRST - 8);
 		public const int LVN_INCREMENTALSEARCH = (LVN_FIRST - 63);

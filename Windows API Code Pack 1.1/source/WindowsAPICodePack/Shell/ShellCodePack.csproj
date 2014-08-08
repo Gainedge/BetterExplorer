@@ -239,7 +239,6 @@
     </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="FileOperation.cs" />
-    <Compile Include="FileOperationFlags.cs" />
     <Compile Include="FileOperationProgressSink.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IFileOperation.cs" />

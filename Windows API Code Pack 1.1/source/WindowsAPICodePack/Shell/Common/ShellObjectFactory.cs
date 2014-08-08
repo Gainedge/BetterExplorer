@@ -25,7 +25,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			}
 
 			// A lot of APIs need IShellItem2, so just keep a copy of it here
-			IShellItem2 nativeShellItem2 = nativeShellItem as IShellItem2;
+			var nativeShellItem2 = nativeShellItem as IShellItem2;
 
 			// Get the System.ItemType property
 			string itemType = ShellHelper.GetItemType(nativeShellItem2);

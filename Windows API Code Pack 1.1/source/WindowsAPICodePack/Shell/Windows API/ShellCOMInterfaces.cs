@@ -150,7 +150,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			[In] IntPtr pbc,
 			[In] ref Guid bhid,
 			[In] ref Guid riid,
-			[Out, MarshalAs(UnmanagedType.Interface)] out IShellFolder ppv);
+			[Out, MarshalAs(UnmanagedType.Interface)] out BExplorer.Shell.Interop.IShellFolder ppv);
 
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -214,6 +214,8 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetBool([In] ref PropertyKey key, out int pf);
 	}
+
+
 
 	[ComImport,
 	Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellItemArray),
@@ -289,7 +291,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		HResult GetFolders(
-			[In] LibraryFolderFilter lff,
+			[In] BExplorer.Shell.Interop.LibraryFolderFilter lff,
 			[In] ref Guid riid,
 			[MarshalAs(UnmanagedType.Interface)] out IShellItemArray ppv);
 
@@ -302,23 +304,23 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetDefaultSaveFolder(
-			[In] DefaultSaveFolderType dsft,
+			[In] BExplorer.Shell.Interop.DefaultSaveFolderType dsft,
 			[In] ref Guid riid,
 			[MarshalAs(UnmanagedType.Interface)] out IShellItem ppv);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void SetDefaultSaveFolder(
-			[In] DefaultSaveFolderType dsft,
+			[In] BExplorer.Shell.Interop.DefaultSaveFolderType dsft,
 			[In, MarshalAs(UnmanagedType.Interface)] IShellItem si);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetOptions(
-			out LibraryOptions lofOptions);
+			out BExplorer.Shell.Interop.LibraryOptions lofOptions);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void SetOptions(
-			[In] LibraryOptions lofMask,
-			[In] LibraryOptions lofOptions);
+			[In] BExplorer.Shell.Interop.LibraryOptions lofMask,
+			[In] BExplorer.Shell.Interop.LibraryOptions lofOptions);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void GetFolderType(out Guid ftid);
@@ -339,14 +341,14 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		void Save(
 			[In, MarshalAs(UnmanagedType.Interface)] IShellItem folderToSaveIn,
 			[In, MarshalAs(UnmanagedType.LPWStr)] string libraryName,
-			[In] LibrarySaveOptions lsf,
+			[In] BExplorer.Shell.Interop.LibrarySaveOptions lsf,
 			[MarshalAs(UnmanagedType.Interface)] out IShellItem2 savedTo);
 
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void SaveInKnownFolder(
 			[In] ref Guid kfidToSaveIn,
 			[In, MarshalAs(UnmanagedType.LPWStr)] string libraryName,
-			[In] LibrarySaveOptions lsf,
+			[In] BExplorer.Shell.Interop.LibrarySaveOptions lsf,
 			[MarshalAs(UnmanagedType.Interface)] out IShellItem2 savedTo);
 	};
 
@@ -396,6 +398,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	*/
 
 
+
 	[ComImport,
 	Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellFolder),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown),
@@ -412,7 +415,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 				ref SFGAO pdwAttributes);
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-		HResult EnumObjects([In] IntPtr hwnd, [In] ShellFolderEnumerationOptions grfFlags, [MarshalAs(UnmanagedType.Interface)] out IEnumIDList ppenumIDList);
+		HResult EnumObjects([In] IntPtr hwnd, [In] ShellFolderEnumerationOptions grfFlags, [MarshalAs(UnmanagedType.Interface)] out BExplorer.Shell.Interop.IEnumIDList ppenumIDList);
 
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
@@ -443,6 +446,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		void SetNameOf([In] IntPtr hwnd, [In] ref IntPtr pidl, [In, MarshalAs(UnmanagedType.LPWStr)] string pszName, [In] uint uFlags, [Out] IntPtr ppidlOut);
 	}
+
 
 	/*
 	[ComImport,
@@ -504,6 +508,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 	}
 */
 
+	/*
 	[ComImport,
 	Guid(BExplorer.Shell.Interop.InterfaceGuids.IEnumIDList),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -524,6 +529,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		HResult Clone([MarshalAs(UnmanagedType.Interface)] out IEnumIDList ppenum);
 	}
+	*/
 
 	[ComImport,
 	Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellLinkW),
@@ -662,7 +668,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		[PreserveSig]
 		HResult GetComparisonInfo(
 			[Out, MarshalAs(UnmanagedType.LPWStr)] out string ppszPropertyName,
-			[Out] out SearchConditionOperation pcop,
+			[Out] out BExplorer.Shell.Interop.SearchConditionOperation pcop,
 			[Out] PropVariant ppropvar);
 
 		// If this is not a leaf node, E_FAIL will be returned.
@@ -729,7 +735,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		[PreserveSig]
 		HResult MakeLeaf(
 			[In, MarshalAs(UnmanagedType.LPWStr)] string pszPropertyName,
-			[In] SearchConditionOperation cop,
+			[In] BExplorer.Shell.Interop.SearchConditionOperation cop,
 			[In, MarshalAs(UnmanagedType.LPWStr)] string pszValueType,
 			[In] PropVariant ppropvar,
 			IRichChunk richChunk1,
@@ -831,7 +837,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		[PreserveSig]
 		HResult MakeLeaf(
 			[In, MarshalAs(UnmanagedType.LPWStr)] string pszPropertyName,
-			[In] SearchConditionOperation cop,
+			[In] BExplorer.Shell.Interop.SearchConditionOperation cop,
 			[In, MarshalAs(UnmanagedType.LPWStr)] string pszValueType,
 			[In] PropVariant ppropvar,
 			IRichChunk richChunk1,

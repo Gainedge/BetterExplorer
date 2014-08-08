@@ -29,7 +29,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
                 if (notifyStruct.item1 != IntPtr.Zero &&
                     (((ShellObjectChangeTypes)_event) & ShellObjectChangeTypes.SystemImageUpdate) == ShellObjectChangeTypes.None)
                 {
-                    IShellItem2 nativeShellItem;
+					Microsoft.WindowsAPICodePack.Shell.IShellItem2 nativeShellItem;
                     if (CoreErrorHelper.Succeeded(ShellNativeMethods.SHCreateItemFromIDList(
                         notifyStruct.item1, ref guid, out nativeShellItem)))
                     {

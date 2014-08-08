@@ -1191,7 +1191,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnNewItem_Click(object sender, RoutedEventArgs e) {
-			WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE() { fShowAllObjects = 0 };
+			var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE() { fShowAllObjects = 0 };
 			WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
 		}
 
@@ -2104,10 +2104,10 @@ namespace BetterExplorer {
 			try {
 				Task.Run(() => {
 					if (WindowsAPI.getOSInfo() == WindowsAPI.OsVersionInfo.Windows8) {
-						WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
+						var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 						WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, false);
 						if (state.fShowStatusBar == 1) {
-							WindowsAPI.SHELLSTATE newState = new WindowsAPI.SHELLSTATE();
+							var newState = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 							newState.fShowStatusBar = 0;
 							WindowsAPI.SHGetSetSettings(ref newState, WindowsAPI.SSF.SSF_SHOWSTATUSBAR, true);
 						}
@@ -2142,7 +2142,7 @@ namespace BetterExplorer {
 
 				//Load the ShellSettings
 				IsCalledFromLoading = true;
-				var statef = new WindowsAPI.SHELLSTATE();
+				var statef = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 				WindowsAPI.SHGetSetSettings(ref statef, WindowsAPI.SSF.SSF_SHOWALLOBJECTS | WindowsAPI.SSF.SSF_SHOWEXTENSIONS, false);
 				chkHiddenFiles.IsChecked = (statef.fShowAllObjects == 1);
 				ShellListView.ShowHidden = chkHiddenFiles.IsChecked.Value;
@@ -3017,7 +3017,7 @@ namespace BetterExplorer {
 			if (IsCalledFromLoading) return;
 			Dispatcher.BeginInvoke(new Action(
 				delegate() {
-					var state = new WindowsAPI.SHELLSTATE();
+					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 					state.fShowAllObjects = 1;
 					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
 					ShellListView.ShowHidden = true;
@@ -3030,7 +3030,7 @@ namespace BetterExplorer {
 			if (IsCalledFromLoading) return;
 			Dispatcher.BeginInvoke(new Action(
 				delegate() {
-					var state = new WindowsAPI.SHELLSTATE();
+					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 					state.fShowAllObjects = 0;
 					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWALLOBJECTS, true);
 					ShellListView.ShowHidden = false;
@@ -3043,7 +3043,7 @@ namespace BetterExplorer {
 			if (IsCalledFromLoading) return;
 			Dispatcher.BeginInvoke(new Action(
 				delegate() {
-					var state = new WindowsAPI.SHELLSTATE();
+					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 					state.fShowExtensions = 1;
 					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
 					ShellListView.RefreshContents();
@@ -3055,7 +3055,7 @@ namespace BetterExplorer {
 			if (IsCalledFromLoading) return;
 			Dispatcher.BeginInvoke(new Action(
 				delegate() {
-					WindowsAPI.SHELLSTATE state = new WindowsAPI.SHELLSTATE();
+					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 					state.fShowExtensions = 0;
 					WindowsAPI.SHGetSetSettings(ref state, WindowsAPI.SSF.SSF_SHOWEXTENSIONS, true);
 					ShellListView.RefreshContents();

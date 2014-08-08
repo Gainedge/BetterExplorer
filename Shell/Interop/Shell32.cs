@@ -378,7 +378,7 @@ namespace BExplorer.Shell.Interop {
 		public IntPtr cStr;
 	}
 
-	class Shell32 {
+	public class Shell32 {
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		public static extern IntPtr SHChangeNotification_Lock(
 				IntPtr windowHandle,
@@ -1135,23 +1135,6 @@ namespace BExplorer.Shell.Interop {
 		[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
 		public struct SHELLSTATE {
 
-			/// fShowAllObjects : 1
-			///fShowExtensions : 1
-			///fNoConfirmRecycle : 1
-			///fShowSysFiles : 1
-			///fShowCompColor : 1
-			///fDoubleClickInWebView : 1
-			///fDesktopHTML : 1
-			///fWin95Classic : 1
-			///fDontPrettyPath : 1
-			///fShowAttribCol : 1
-			///fMapNetDrvBtn : 1
-			///fShowInfoTip : 1
-			///fHideIcons : 1
-			///fWebView : 1
-			///fFilter : 1
-			///fShowSuperHidden : 1
-			///fNoNetCrawling : 1
 			public uint bitvector1;
 
 			/// DWORD->unsigned int

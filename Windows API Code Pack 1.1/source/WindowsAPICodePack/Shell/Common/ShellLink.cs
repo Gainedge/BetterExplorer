@@ -16,7 +16,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
         #region Internal Constructors
 
-        public ShellLink(IShellItem2 shellItem)
+		public ShellLink(IShellItem2 shellItem)
         {
             nativeShellItem = shellItem;
         }

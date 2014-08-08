@@ -21,7 +21,7 @@ namespace FileOperations {
 			_callbackSink = callbackSink;
 			_fileOperation = isAdmin ? (IFileOperation)Activator.CreateInstance(_fileOperationType) : (IFileOperation)Activator.CreateInstance(_fileOperationType);
 			//_fileOperation.SetProgressDialog(null);
-			_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR);
+			_fileOperation.SetOperationFlags(BExplorer.Shell.Interop.FileOperationFlags.FOF_NOCONFIRMMKDIR);
 			if (_callbackSink != null) _sinkCookie = _fileOperation.Advise(_callbackSink);
 			if (owner != null) _fileOperation.SetOwnerWindow((uint)owner.Handle);
 		}

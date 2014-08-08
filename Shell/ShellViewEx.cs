@@ -14,11 +14,11 @@ using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using BExplorer.Shell.Interop;
 using Microsoft.Win32;
 using SQLite = System.Data.SQLite;
 using F = System.Windows.Forms;
 using System.Threading.Tasks;
+using BExplorer.Shell.Interop;
 
 namespace BExplorer.Shell {
 

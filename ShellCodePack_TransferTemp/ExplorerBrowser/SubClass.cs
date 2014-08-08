@@ -57,10 +57,10 @@ namespace Microsoft.WindowsAPICodePack.Shell.ExplorerBrowser {
 				WindowsAPI.NMHDR nmhdr = new WindowsAPI.NMHDR();
 				nmhdr = (WindowsAPI.NMHDR)m.GetLParam(nmhdr.GetType());
 				switch ((int)nmhdr.code) {
-					case WNM.LVN_GETINFOTIP:
+					case BExplorer.Shell.Interop.WNM.LVN_GETINFOTIP:
 						//TODO: Write here the code for the tooltip flyout
 						break;
-					case WNM.NM_CUSTOMDRAW:
+					case BExplorer.Shell.Interop.WNM.NM_CUSTOMDRAW:
 						if (!this.Browser.NavigationLog.CurrentLocation.IsSearchFolder) {
 							if (nmhdr.hwndFrom == this.SysListviewhandle) {
 

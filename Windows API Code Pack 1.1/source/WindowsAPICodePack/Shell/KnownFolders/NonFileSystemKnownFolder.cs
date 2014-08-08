@@ -20,7 +20,7 @@ namespace Microsoft.WindowsAPICodePack.Shell
 
         #region Internal Constructors
 
-        internal NonFileSystemKnownFolder(IShellItem2 shellItem) : base(shellItem) { }
+		internal NonFileSystemKnownFolder(IShellItem2 shellItem) : base(shellItem) { }
 
         internal NonFileSystemKnownFolder(IKnownFolderNative kf)
         {

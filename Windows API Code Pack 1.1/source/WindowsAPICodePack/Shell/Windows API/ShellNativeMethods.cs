@@ -97,7 +97,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			[In] IntPtr hwndOwner,
 			[In] string title,
 			[In] string instruction,
-			[In] LibraryManageDialogOptions lmdOptions);
+			[In] BExplorer.Shell.Interop.LibraryManageDialogOptions lmdOptions);
 
 		#endregion
 
@@ -192,7 +192,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
 		[DllImport("user32.dll")]
 		public static extern int TrackPopupMenuEx(IntPtr hmenu,
-			TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
+			BExplorer.Shell.Interop.TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
 		#endregion
 		internal const int InPlaceStringTruncated = 0x00401A0;
 

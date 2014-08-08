@@ -2227,7 +2227,7 @@ namespace WindowsHelper {
 		}
 
 		[DllImport("shell32.dll")]
-		public extern static void SHGetSetSettings(ref SHELLSTATE lpss, SSF dwMask, bool bSet);
+		public extern static void SHGetSetSettings(ref BExplorer.Shell.Interop.Shell32.SHELLSTATE lpss, SSF dwMask, bool bSet);
 
 		/*
 		[DllImport("shell32.dll", EntryPoint = "#162", CharSet = CharSet.Unicode)]
@@ -2262,292 +2262,293 @@ namespace WindowsHelper {
 			SSF_SHOWSTATUSBAR = 0x04000000
 		}
 
-		[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
-		public struct SHELLSTATE {
+		/*
+		//[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
+		//public struct SHELLSTATE {
 
-			/// fShowAllObjects : 1
-			///fShowExtensions : 1
-			///fNoConfirmRecycle : 1
-			///fShowSysFiles : 1
-			///fShowCompColor : 1
-			///fDoubleClickInWebView : 1
-			///fDesktopHTML : 1
-			///fWin95Classic : 1
-			///fDontPrettyPath : 1
-			///fShowAttribCol : 1
-			///fMapNetDrvBtn : 1
-			///fShowInfoTip : 1
-			///fHideIcons : 1
-			///fWebView : 1
-			///fFilter : 1
-			///fShowSuperHidden : 1
-			///fNoNetCrawling : 1
-			public uint bitvector1;
+		//	/// fShowAllObjects : 1
+		//	///fShowExtensions : 1
+		//	///fNoConfirmRecycle : 1
+		//	///fShowSysFiles : 1
+		//	///fShowCompColor : 1
+		//	///fDoubleClickInWebView : 1
+		//	///fDesktopHTML : 1
+		//	///fWin95Classic : 1
+		//	///fDontPrettyPath : 1
+		//	///fShowAttribCol : 1
+		//	///fMapNetDrvBtn : 1
+		//	///fShowInfoTip : 1
+		//	///fHideIcons : 1
+		//	///fWebView : 1
+		//	///fFilter : 1
+		//	///fShowSuperHidden : 1
+		//	///fNoNetCrawling : 1
+		//	public uint bitvector1;
 
-			/// DWORD->unsigned int
-			public uint dwWin95Unused;
+		//	/// DWORD->unsigned int
+		//	public uint dwWin95Unused;
 
-			/// UINT->unsigned int
-			public uint uWin95Unused;
+		//	/// UINT->unsigned int
+		//	public uint uWin95Unused;
 
-			/// LONG->int
-			public int lParamSort;
+		//	/// LONG->int
+		//	public int lParamSort;
 
-			/// int
-			public int iSortDirection;
+		//	/// int
+		//	public int iSortDirection;
 
-			/// UINT->unsigned int
-			public uint version;
+		//	/// UINT->unsigned int
+		//	public uint version;
 
-			/// UINT->unsigned int
-			public uint uNotUsed;
+		//	/// UINT->unsigned int
+		//	public uint uNotUsed;
 
-			/// fSepProcess : 1
-			///fStartPanelOn : 1
-			///fShowStartPage : 1
-			///fSpareFlags : 13
-			public uint bitvector2;
-			public uint bitvector3;
+		//	/// fSepProcess : 1
+		//	///fStartPanelOn : 1
+		//	///fShowStartPage : 1
+		//	///fSpareFlags : 13
+		//	public uint bitvector2;
+		//	public uint bitvector3;
 
-			public uint fShowAllObjects {
-				get {
-					return ((uint)((this.bitvector1 & 1u)));
-				}
-				set {
-					this.bitvector1 = ((uint)((value | this.bitvector1)));
-				}
-			}
+		//	public uint fShowAllObjects {
+		//		get {
+		//			return ((uint)((this.bitvector1 & 1u)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)((value | this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowExtensions {
-				get {
-					return ((uint)(((this.bitvector1 & 2u)
-								/ 2)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 2)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowExtensions {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 2u)
+		//						/ 2)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 2)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fNoConfirmRecycle {
-				get {
-					return ((uint)(((this.bitvector1 & 4u)
-								/ 4)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 4)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fNoConfirmRecycle {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 4u)
+		//						/ 4)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 4)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowSysFiles {
-				get {
-					return ((uint)(((this.bitvector1 & 8u)
-								/ 8)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 8)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowSysFiles {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 8u)
+		//						/ 8)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 8)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowCompColor {
-				get {
-					return ((uint)(((this.bitvector1 & 16u)
-								/ 16)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 16)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowCompColor {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 16u)
+		//						/ 16)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 16)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fDoubleClickInWebView {
-				get {
-					return ((uint)(((this.bitvector1 & 32u)
-								/ 32)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 32)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fDoubleClickInWebView {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 32u)
+		//						/ 32)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 32)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fDesktopHTML {
-				get {
-					return ((uint)(((this.bitvector1 & 64u)
-								/ 64)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 64)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fDesktopHTML {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 64u)
+		//						/ 64)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 64)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fWin95Classic {
-				get {
-					return ((uint)(((this.bitvector1 & 128u)
-								/ 128)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 128)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fWin95Classic {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 128u)
+		//						/ 128)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 128)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fDontPrettyPath {
-				get {
-					return ((uint)(((this.bitvector1 & 256u)
-								/ 256)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 256)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fDontPrettyPath {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 256u)
+		//						/ 256)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 256)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowAttribCol {
-				get {
-					return ((uint)(((this.bitvector1 & 512u)
-								/ 512)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 512)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowAttribCol {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 512u)
+		//						/ 512)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 512)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fMapNetDrvBtn {
-				get {
-					return ((uint)(((this.bitvector1 & 1024u)
-								/ 1024)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 1024)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fMapNetDrvBtn {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 1024u)
+		//						/ 1024)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 1024)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowInfoTip {
-				get {
-					return ((uint)(((this.bitvector1 & 2048u)
-								/ 2048)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 2048)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowInfoTip {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 2048u)
+		//						/ 2048)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 2048)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fHideIcons {
-				get {
-					return ((uint)(((this.bitvector1 & 4096u)
-								/ 4096)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 4096)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fHideIcons {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 4096u)
+		//						/ 4096)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 4096)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fWebView {
-				get {
-					return ((uint)(((this.bitvector1 & 8192u)
-								/ 8192)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 8192)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fWebView {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 8192u)
+		//						/ 8192)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 8192)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fFilter {
-				get {
-					return ((uint)(((this.bitvector1 & 16384u)
-								/ 16384)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 16384)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fFilter {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 16384u)
+		//						/ 16384)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 16384)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fShowSuperHidden {
-				get {
-					return ((uint)(((this.bitvector1 & 32768u)
-								/ 32768)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 32768)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fShowSuperHidden {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 32768u)
+		//						/ 32768)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 32768)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fNoNetCrawling {
-				get {
-					return ((uint)(((this.bitvector1 & 65536u)
-								/ 65536)));
-				}
-				set {
-					this.bitvector1 = ((uint)(((value * 65536)
-								| this.bitvector1)));
-				}
-			}
+		//	public uint fNoNetCrawling {
+		//		get {
+		//			return ((uint)(((this.bitvector1 & 65536u)
+		//						/ 65536)));
+		//		}
+		//		set {
+		//			this.bitvector1 = ((uint)(((value * 65536)
+		//						| this.bitvector1)));
+		//		}
+		//	}
 
-			public uint fSepProcess {
-				get {
-					return ((uint)((this.bitvector2 & 1u)));
-				}
-				set {
-					this.bitvector2 = ((uint)((value | this.bitvector2)));
-				}
-			}
+		//	public uint fSepProcess {
+		//		get {
+		//			return ((uint)((this.bitvector2 & 1u)));
+		//		}
+		//		set {
+		//			this.bitvector2 = ((uint)((value | this.bitvector2)));
+		//		}
+		//	}
 
-			public uint fStartPanelOn {
-				get {
-					return ((uint)(((this.bitvector2 & 2u)
-								/ 2)));
-				}
-				set {
-					this.bitvector2 = ((uint)(((value * 2)
-								| this.bitvector2)));
-				}
-			}
+		//	public uint fStartPanelOn {
+		//		get {
+		//			return ((uint)(((this.bitvector2 & 2u)
+		//						/ 2)));
+		//		}
+		//		set {
+		//			this.bitvector2 = ((uint)(((value * 2)
+		//						| this.bitvector2)));
+		//		}
+		//	}
 
-			public uint fShowStartPage {
-				get {
-					return ((uint)(((this.bitvector2 & 4u)
-								/ 4)));
-				}
-				set {
-					this.bitvector2 = ((uint)(((value * 4)
-								| this.bitvector2)));
-				}
-			}
+		//	public uint fShowStartPage {
+		//		get {
+		//			return ((uint)(((this.bitvector2 & 4u)
+		//						/ 4)));
+		//		}
+		//		set {
+		//			this.bitvector2 = ((uint)(((value * 4)
+		//						| this.bitvector2)));
+		//		}
+		//	}
 
-			public uint fShowStatusBar {
-				get {
-					return ((uint)(((this.bitvector2 & 64u)
-								/ 64)));
-				}
-				set {
-					this.bitvector2 = ((uint)(((value * 64)
-								| this.bitvector2)));
-				}
-			}
+		//	public uint fShowStatusBar {
+		//		get {
+		//			return ((uint)(((this.bitvector2 & 64u)
+		//						/ 64)));
+		//		}
+		//		set {
+		//			this.bitvector2 = ((uint)(((value * 64)
+		//						| this.bitvector2)));
+		//		}
+		//	}
 
-			public uint fSpareFlags {
-				get {
-					return ((uint)(((this.bitvector2 & 65528u)
-								/ 8)));
-				}
-				set {
-					this.bitvector2 = ((uint)(((value * 8)
-								| this.bitvector2)));
-				}
-			}
-		}
-
+		//	public uint fSpareFlags {
+		//		get {
+		//			return ((uint)(((this.bitvector2 & 65528u)
+		//						/ 8)));
+		//		}
+		//		set {
+		//			this.bitvector2 = ((uint)(((value * 8)
+		//						| this.bitvector2)));
+		//		}
+		//	}
+		//}
+		*/
 		/*
 		public enum ListViewExtendedStyles {
 			/// <summary>
@@ -5817,38 +5818,40 @@ namespace WindowsHelper {
 	}
 	*/
 
+	/*
 	public static class WNM {
-		const int NM_FIRST = 0;
-		public const int NM_KILLFOCUS = (NM_FIRST - 8);
-		public const int NM_CUSTOMDRAW = (NM_FIRST - 12);
+		//const int NM_FIRST = 0;
+		//public const int NM_KILLFOCUS = (NM_FIRST - 8);
+		//public const int NM_CUSTOMDRAW = (NM_FIRST - 12);
 
-		const int TTN_FIRST = -520;
-		public const int TTN_SHOW = (TTN_FIRST - 1);
-		public const int TTN_GETDISPINFOW = (TTN_FIRST - 10);
+		//const int TTN_FIRST = -520;
+		//public const int TTN_SHOW = (TTN_FIRST - 1);
+		//public const int TTN_GETDISPINFOW = (TTN_FIRST - 10);
 
-		const int RBN_FIRST = -831;
-		public const int RBN_HEIGHTCHANGE = (RBN_FIRST - 0);
-		public const int RBN_BEGINDRAG = (RBN_FIRST - 4);
-		public const int RBN_ENDDRAG = (RBN_FIRST - 5);
+		//const int RBN_FIRST = -831;
+		//public const int RBN_HEIGHTCHANGE = (RBN_FIRST - 0);
+		//public const int RBN_BEGINDRAG = (RBN_FIRST - 4);
+		//public const int RBN_ENDDRAG = (RBN_FIRST - 5);
 
-		const int LVN_FIRST = -100;
-		public const int LVN_ITEMCHANGED = (LVN_FIRST - 1);
-		public const int LVN_DELETEITEM = (LVN_FIRST - 3);
-		public const int LVN_BEGINDRAG = (LVN_FIRST - 9);
-		public const int LVN_BEGINRDRAG = (LVN_FIRST - 11);
-		public const int LVN_ITEMACTIVATE = (LVN_FIRST - 14);
-		public const int LVN_ODSTATECHANGED = (LVN_FIRST - 15);
-		public const int LVN_HOTTRACK = (LVN_FIRST - 21);
-		public const int LVN_KEYDOWN = (LVN_FIRST - 55);
-		public const int LVN_GETINFOTIP = (LVN_FIRST - 58);
-		public const int LVN_GETDISPINFOW = (LVN_FIRST - 77);
-		public const int LVN_SETDISPINFOA = (LVN_FIRST - 51);
-		public const int LVN_BEGINSCROLL = (LVN_FIRST - 80);
+		//const int LVN_FIRST = -100;
+		//public const int LVN_ITEMCHANGED = (LVN_FIRST - 1);
+		//public const int LVN_DELETEITEM = (LVN_FIRST - 3);
+		//public const int LVN_BEGINDRAG = (LVN_FIRST - 9);
+		//public const int LVN_BEGINRDRAG = (LVN_FIRST - 11);
+		//public const int LVN_ITEMACTIVATE = (LVN_FIRST - 14);
+		//public const int LVN_ODSTATECHANGED = (LVN_FIRST - 15);
+		//public const int LVN_HOTTRACK = (LVN_FIRST - 21);
+		//public const int LVN_KEYDOWN = (LVN_FIRST - 55);
+		//public const int LVN_GETINFOTIP = (LVN_FIRST - 58);
+		//public const int LVN_GETDISPINFOW = (LVN_FIRST - 77);
+		//public const int LVN_SETDISPINFOA = (LVN_FIRST - 51);
+		//public const int LVN_BEGINSCROLL = (LVN_FIRST - 80);
 		//public const int LVN_ITEMACTIVATE = (LVN_FIRST-14)
 
-		const int UDN_FIRST = -721;        // updown
-		public const int UDN_DELTAPOS = (UDN_FIRST - 1);
+		//const int UDN_FIRST = -721;        // updown
+		//public const int UDN_DELTAPOS = (UDN_FIRST - 1);
 	}
+	*/
 
 	/*
 	public class FileInfoPair {

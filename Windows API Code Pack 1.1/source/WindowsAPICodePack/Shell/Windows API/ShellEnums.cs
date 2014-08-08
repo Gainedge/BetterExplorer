@@ -7,62 +7,72 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
 	#region Shell Library Enums
 
+	/*
 	internal enum LibraryFolderFilter {
 		ForceFileSystem = 1,
 		StorageItems = 2,
 		AllItems = 3
 	};
+	*/
 
-	[Flags]
-	internal enum LibraryOptions {
-		Default = 0,
-		PinnedToNavigationPane = 0x1,
-		MaskAll = 0x1
-	};
+	/*
+	//[Flags]
+	//internal enum LibraryOptions {
+	//	Default = 0,
+	//	PinnedToNavigationPane = 0x1,
+	//	MaskAll = 0x1
+	//};
+	*/
 
+	/*
 	internal enum DefaultSaveFolderType {
 		Detect = 1,
 		Private = 2,
 		Public = 3
 	};
+	*/
 
+	/*
 	internal enum LibrarySaveOptions {
 		FailIfThere = 0,
 		OverrideExisting = 1,
 		MakeUniqueName = 2
 	};
+	*/
 
+	/*
 	internal enum LibraryManageDialogOptions {
 		Default = 0,
 		NonIndexableLocationWarning = 1
 	};
-
+	*/
 
 	#endregion
 
-	[Flags]
-	public enum TPM {
-		TPM_LEFTBUTTON = 0x0000,
-		TPM_RIGHTBUTTON = 0x0002,
-		TPM_LEFTALIGN = 0x0000,
-		TPM_CENTERALIGN = 0x000,
-		TPM_RIGHTALIGN = 0x000,
-		TPM_TOPALIGN = 0x0000,
-		TPM_VCENTERALIGN = 0x0010,
-		TPM_BOTTOMALIGN = 0x0020,
-		TPM_HORIZONTAL = 0x0000,
-		TPM_VERTICAL = 0x0040,
-		TPM_NONOTIFY = 0x0080,
-		TPM_RETURNCMD = 0x0100,
-		TPM_RECURSE = 0x0001,
-		TPM_HORPOSANIMATION = 0x0400,
-		TPM_HORNEGANIMATION = 0x0800,
-		TPM_VERPOSANIMATION = 0x1000,
-		TPM_VERNEGANIMATION = 0x2000,
-		TPM_NOANIMATION = 0x4000,
-		TPM_LAYOUTRTL = 0x8000,
-	}
-
+	/*
+	//[Flags]
+	//public enum TPM {
+	//	TPM_LEFTBUTTON = 0x0000,
+	//	TPM_RIGHTBUTTON = 0x0002,
+	//	TPM_LEFTALIGN = 0x0000,
+	//	TPM_CENTERALIGN = 0x000,
+	//	TPM_RIGHTALIGN = 0x000,
+	//	TPM_TOPALIGN = 0x0000,
+	//	TPM_VCENTERALIGN = 0x0010,
+	//	TPM_BOTTOMALIGN = 0x0020,
+	//	TPM_HORIZONTAL = 0x0000,
+	//	TPM_VERTICAL = 0x0040,
+	//	TPM_NONOTIFY = 0x0080,
+	//	TPM_RETURNCMD = 0x0100,
+	//	TPM_RECURSE = 0x0001,
+	//	TPM_HORPOSANIMATION = 0x0400,
+	//	TPM_HORNEGANIMATION = 0x0800,
+	//	TPM_VERPOSANIMATION = 0x1000,
+	//	TPM_VERNEGANIMATION = 0x2000,
+	//	TPM_NOANIMATION = 0x4000,
+	//	TPM_LAYOUTRTL = 0x8000,
+	//}
+	*/
 	[Flags]
 	public enum CMF : uint {
 		NORMAL = 0x00000000,
@@ -548,6 +558,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		PkeyMask = unchecked((int)0x81044000),
 	}
 
+	[Obsolete("Try using BExplorer.Shell.Interop.SHCONTF!!!!")]
 	[Flags]
 	public enum ShellFolderEnumerationOptions {
 		CheckingForChildren = 0x0010,
@@ -731,87 +742,89 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		ForceMinimize = 11
 	}
 
-	/// <summary>
-	/// Provides a set of flags to be used with <see cref="Microsoft.WindowsAPICodePack.Shell.SearchCondition"/> 
-	/// to indicate the operation in <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionFactory"/> methods.
-	/// </summary>
-	public enum SearchConditionOperation {
-		/// <summary>
-		/// An implicit comparison between the value of the property and the value of the constant.
-		/// </summary>
-		Implicit = 0,
+	/*
+	///// <summary>
+	///// Provides a set of flags to be used with <see cref="Microsoft.WindowsAPICodePack.Shell.SearchCondition"/> 
+	///// to indicate the operation in <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionFactory"/> methods.
+	///// </summary>
+	//public enum SearchConditionOperation {
+	//	/// <summary>
+	//	/// An implicit comparison between the value of the property and the value of the constant.
+	//	/// </summary>
+	//	Implicit = 0,
 
-		/// <summary>
-		/// The value of the property and the value of the constant must be equal.
-		/// </summary>
-		Equal = 1,
+	//	/// <summary>
+	//	/// The value of the property and the value of the constant must be equal.
+	//	/// </summary>
+	//	Equal = 1,
 
-		/// <summary>
-		/// The value of the property and the value of the constant must not be equal.
-		/// </summary>
-		NotEqual = 2,
+	//	/// <summary>
+	//	/// The value of the property and the value of the constant must not be equal.
+	//	/// </summary>
+	//	NotEqual = 2,
 
-		/// <summary>
-		/// The value of the property must be less than the value of the constant.
-		/// </summary>
-		LessThan = 3,
+	//	/// <summary>
+	//	/// The value of the property must be less than the value of the constant.
+	//	/// </summary>
+	//	LessThan = 3,
 
-		/// <summary>
-		/// The value of the property must be greater than the value of the constant.
-		/// </summary>
-		GreaterThan = 4,
+	//	/// <summary>
+	//	/// The value of the property must be greater than the value of the constant.
+	//	/// </summary>
+	//	GreaterThan = 4,
 
-		/// <summary>
-		/// The value of the property must be less than or equal to the value of the constant.
-		/// </summary>
-		LessThanOrEqual = 5,
+	//	/// <summary>
+	//	/// The value of the property must be less than or equal to the value of the constant.
+	//	/// </summary>
+	//	LessThanOrEqual = 5,
 
-		/// <summary>
-		/// The value of the property must be greater than or equal to the value of the constant.
-		/// </summary>
-		GreaterThanOrEqual = 6,
+	//	/// <summary>
+	//	/// The value of the property must be greater than or equal to the value of the constant.
+	//	/// </summary>
+	//	GreaterThanOrEqual = 6,
 
-		/// <summary>
-		/// The value of the property must begin with the value of the constant.
-		/// </summary>
-		ValueStartsWith = 7,
+	//	/// <summary>
+	//	/// The value of the property must begin with the value of the constant.
+	//	/// </summary>
+	//	ValueStartsWith = 7,
 
-		/// <summary>
-		/// The value of the property must end with the value of the constant.
-		/// </summary>
-		ValueEndsWith = 8,
+	//	/// <summary>
+	//	/// The value of the property must end with the value of the constant.
+	//	/// </summary>
+	//	ValueEndsWith = 8,
 
-		/// <summary>
-		/// The value of the property must contain the value of the constant.
-		/// </summary>
-		ValueContains = 9,
+	//	/// <summary>
+	//	/// The value of the property must contain the value of the constant.
+	//	/// </summary>
+	//	ValueContains = 9,
 
-		/// <summary>
-		/// The value of the property must not contain the value of the constant.
-		/// </summary>
-		ValueNotContains = 10,
+	//	/// <summary>
+	//	/// The value of the property must not contain the value of the constant.
+	//	/// </summary>
+	//	ValueNotContains = 10,
 
-		/// <summary>
-		/// The value of the property must match the value of the constant, where '?' 
-		/// matches any single character and '*' matches any sequence of characters.
-		/// </summary>
-		DosWildcards = 11,
+	//	/// <summary>
+	//	/// The value of the property must match the value of the constant, where '?' 
+	//	/// matches any single character and '*' matches any sequence of characters.
+	//	/// </summary>
+	//	DosWildcards = 11,
 
-		/// <summary>
-		/// The value of the property must contain a word that is the value of the constant.
-		/// </summary>
-		WordEqual = 12,
+	//	/// <summary>
+	//	/// The value of the property must contain a word that is the value of the constant.
+	//	/// </summary>
+	//	WordEqual = 12,
 
-		/// <summary>
-		/// The value of the property must contain a word that begins with the value of the constant.
-		/// </summary>
-		WordStartsWith = 13,
+	//	/// <summary>
+	//	/// The value of the property must contain a word that begins with the value of the constant.
+	//	/// </summary>
+	//	WordStartsWith = 13,
 
-		/// <summary>
-		/// The application is free to interpret this in any suitable way.
-		/// </summary>
-		ApplicationSpecific = 14
-	}
+	//	/// <summary>
+	//	/// The application is free to interpret this in any suitable way.
+	//	/// </summary>
+	//	ApplicationSpecific = 14
+	//}
+	*/
 
 	/// <summary>
 	/// Set of flags to be used with <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionFactory"/>.
@@ -1166,29 +1179,33 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		TVM_SETITEMW = 4415,
 	}
 
-	[Flags]
-	public enum TVIF {
-		TVIF_TEXT = 0x0001,
-		TVIF_IMAGE = 0x0002,
-		TVIF_PARAM = 0x0004,
-		TVIF_STATE = 0x0008,
-		TVIF_HANDLE = 0x0010,
-		TVIF_SELECTEDIMAGE = 0x0020,
-		TVIF_CHILDREN = 0x0040,
-		TVIF_INTEGRAL = 0x0080,
-	}
+	/*
+	//[Flags]
+	//public enum TVIF {
+	//	TVIF_TEXT = 0x0001,
+	//	TVIF_IMAGE = 0x0002,
+	//	TVIF_PARAM = 0x0004,
+	//	TVIF_STATE = 0x0008,
+	//	TVIF_HANDLE = 0x0010,
+	//	TVIF_SELECTEDIMAGE = 0x0020,
+	//	TVIF_CHILDREN = 0x0040,
+	//	TVIF_INTEGRAL = 0x0080,
+	//}
+	*/
 
-	[Flags]
-	public enum TVIS {
-		TVIS_SELECTED = 0x0002,
-		TVIS_CUT = 0x0004,
-		TVIS_DROPHILITED = 0x0008,
-		TVIS_BOLD = 0x0010,
-		TVIS_EXPANDED = 0x0020,
-		TVIS_EXPANDEDONCE = 0x0040,
-		TVIS_EXPANDPARTIAL = 0x0080,
-		TVIS_OVERLAYMASK = 0x0F00,
-		TVIS_STATEIMAGEMASK = 0xF000,
-		TVIS_USERMASK = 0xF000,
-	}
+	/*
+	//[Flags]
+	//public enum TVIS {
+	//	TVIS_SELECTED = 0x0002,
+	//	TVIS_CUT = 0x0004,
+	//	TVIS_DROPHILITED = 0x0008,
+	//	TVIS_BOLD = 0x0010,
+	//	TVIS_EXPANDED = 0x0020,
+	//	TVIS_EXPANDEDONCE = 0x0040,
+	//	TVIS_EXPANDPARTIAL = 0x0080,
+	//	TVIS_OVERLAYMASK = 0x0F00,
+	//	TVIS_STATEIMAGEMASK = 0xF000,
+	//	TVIS_USERMASK = 0xF000,
+	//}
+	*/
 }

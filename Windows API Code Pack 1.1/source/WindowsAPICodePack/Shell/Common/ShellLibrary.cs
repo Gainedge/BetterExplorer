@@ -99,9 +99,9 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			this.Name = libraryName;
 			Guid guid = new Guid(BExplorer.Shell.Interop.InterfaceGuids.Libraries);
 
-			LibrarySaveOptions flags = overwrite ?
-					LibrarySaveOptions.OverrideExisting :
-					LibrarySaveOptions.FailIfThere;
+			var flags = overwrite ?
+					BExplorer.Shell.Interop.LibrarySaveOptions.OverrideExisting :
+					BExplorer.Shell.Interop.LibrarySaveOptions.FailIfThere;
 
 			nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
 			nativeShellLibrary.SaveInKnownFolder(ref guid, libraryName, flags, out nativeShellItem);
@@ -125,9 +125,9 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 			this.Name = libraryName;
 			Guid guid = knownFolder.FolderId;
 
-			LibrarySaveOptions flags = overwrite ?
-					LibrarySaveOptions.OverrideExisting :
-					LibrarySaveOptions.FailIfThere;
+			var flags = overwrite ?
+					BExplorer.Shell.Interop.LibrarySaveOptions.OverrideExisting :
+					BExplorer.Shell.Interop.LibrarySaveOptions.FailIfThere;
 
 			nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
 			nativeShellLibrary.SaveInKnownFolder(ref guid, libraryName, flags, out nativeShellItem);
@@ -152,9 +152,9 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
 			this.Name = libraryName;
 
-			LibrarySaveOptions flags = overwrite ?
-					LibrarySaveOptions.OverrideExisting :
-					LibrarySaveOptions.FailIfThere;
+			var flags = overwrite ?
+					BExplorer.Shell.Interop.LibrarySaveOptions.OverrideExisting :
+					BExplorer.Shell.Interop.LibrarySaveOptions.FailIfThere;
 
 			Guid guid = new Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellItem);
 
@@ -255,7 +255,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 				IShellItem saveFolderItem;
 
 				nativeShellLibrary.GetDefaultSaveFolder(
-					DefaultSaveFolderType.Detect,
+					BExplorer.Shell.Interop.DefaultSaveFolderType.Detect,
 					ref guid,
 					out saveFolderItem);
 
@@ -278,7 +278,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 				ShellNativeMethods.SHCreateItemFromParsingName(fullPath, IntPtr.Zero, ref guid, out saveFolderItem);
 
 				nativeShellLibrary.SetDefaultSaveFolder(
-					DefaultSaveFolderType.Detect,
+					BExplorer.Shell.Interop.DefaultSaveFolderType.Detect,
 					saveFolderItem);
 
 				nativeShellLibrary.Commit();
@@ -291,25 +291,25 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 		/// </summary>
 		public bool IsPinnedToNavigationPane {
 			get {
-				LibraryOptions flags = LibraryOptions.PinnedToNavigationPane;
+				var flags = BExplorer.Shell.Interop.LibraryOptions.PinnedToNavigationPane;
 
 				nativeShellLibrary.GetOptions(out flags);
 
 				return (
-					(flags & LibraryOptions.PinnedToNavigationPane) ==
-					LibraryOptions.PinnedToNavigationPane);
+					(flags & BExplorer.Shell.Interop.LibraryOptions.PinnedToNavigationPane) ==
+					BExplorer.Shell.Interop.LibraryOptions.PinnedToNavigationPane);
 			}
 			set {
-				LibraryOptions flags = LibraryOptions.Default;
+				var flags = BExplorer.Shell.Interop.LibraryOptions.Default;
 
 				if (value) {
-					flags |= LibraryOptions.PinnedToNavigationPane;
+					flags |= BExplorer.Shell.Interop.LibraryOptions.PinnedToNavigationPane;
 				}
 				else {
-					flags &= ~LibraryOptions.PinnedToNavigationPane;
+					flags &= ~BExplorer.Shell.Interop.LibraryOptions.PinnedToNavigationPane;
 				}
 
-				nativeShellLibrary.SetOptions(LibraryOptions.PinnedToNavigationPane, flags);
+				nativeShellLibrary.SetOptions(BExplorer.Shell.Interop.LibraryOptions.PinnedToNavigationPane, flags);
 				nativeShellLibrary.Commit();
 			}
 		}
@@ -493,8 +493,8 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 					title,
 					instruction,
 					allowAllLocations ?
-					   LibraryManageDialogOptions.NonIndexableLocationWarning :
-					   LibraryManageDialogOptions.Default);
+					   BExplorer.Shell.Interop.LibraryManageDialogOptions.NonIndexableLocationWarning :
+					   BExplorer.Shell.Interop.LibraryManageDialogOptions.Default);
 			});
 
 			staWorker.SetApartmentState(ApartmentState.STA);
@@ -668,7 +668,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 
 			Guid shellItemArrayGuid = new Guid(BExplorer.Shell.Interop.InterfaceGuids.IShellItemArray);
 
-			HResult hr = nativeShellLibrary.GetFolders(LibraryFolderFilter.AllItems, ref shellItemArrayGuid, out itemArray);
+			HResult hr = nativeShellLibrary.GetFolders(BExplorer.Shell.Interop.LibraryFolderFilter.AllItems, ref shellItemArrayGuid, out itemArray);
 
 			if (!CoreErrorHelper.Succeeded(hr)) { return list; }
 

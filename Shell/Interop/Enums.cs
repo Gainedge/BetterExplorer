@@ -131,32 +131,32 @@ namespace BExplorer.Shell.Interop {
 
 	#region Shell Library Enums
 
-	internal enum LibraryFolderFilter {
+	public enum LibraryFolderFilter {
 		ForceFileSystem = 1,
 		StorageItems = 2,
 		AllItems = 3
 	};
 
 	[Flags]
-	internal enum LibraryOptions {
+	public enum LibraryOptions {
 		Default = 0,
 		PinnedToNavigationPane = 0x1,
 		MaskAll = 0x1
 	};
 
-	internal enum DefaultSaveFolderType {
+	public enum DefaultSaveFolderType {
 		Detect = 1,
 		Private = 2,
 		Public = 3
 	};
 
-	internal enum LibrarySaveOptions {
+	public enum LibrarySaveOptions {
 		FailIfThere = 0,
 		OverrideExisting = 1,
 		MakeUniqueName = 2
 	};
 
-	internal enum LibraryManageDialogOptions {
+	public enum LibraryManageDialogOptions {
 		Default = 0,
 		NonIndexableLocationWarning = 1
 	};

@@ -237,7 +237,7 @@ namespace Microsoft.WindowsAPICodePack.Shell {
 				}
 
 				int command = ShellNativeMethods.TrackPopupMenuEx(menu.Handle,
-					TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
+					BExplorer.Shell.Interop.TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
 					IntPtr.Zero);
 				if (command > 0) {
 					string info = string.Empty;
