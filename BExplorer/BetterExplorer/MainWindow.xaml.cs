@@ -55,18 +55,17 @@ namespace BetterExplorer {
 		[Obsolete("Can remove move this!!! Someone should!!!")]
 		public bool IsCalledFromLoading;
 
-		[Obsolete("Find a way to remove this!")]
 		public bool isOnLoad;
 
 
-		[Obsolete("Does nothing")]
-		private bool IsCloseLastTabCloseApp;
+		//[Obsolete("Does nothing")]
+		//private bool IsCloseLastTabCloseApp;
 
 		[Obsolete("Does nothing")]
 		private void chkIsLastTabCloseApp_Click(object sender, RoutedEventArgs e) {
-			var b = this.chkIsLastTabCloseApp.IsChecked;
-			if (b != null)
-				this.IsCloseLastTabCloseApp = b.Value;
+			//var b = this.chkIsLastTabCloseApp.IsChecked;
+			//if (b != null)
+			//	this.IsCloseLastTabCloseApp = b.Value;
 		}
 
 
@@ -2279,7 +2278,7 @@ namespace BetterExplorer {
 				ConstructMoveToCopyToMenu();
 				SetUpJumpListOnNavComplete();
 				SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
-				
+
 				//TODO:	Date: 8/8/2014	User: Aaron Campf	Note: Make sure the following code is okay to comment out!!!
 				//SetupUIOnSelectOrNavigate(true);
 			}));

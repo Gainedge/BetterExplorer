@@ -10,7 +10,7 @@ namespace BExplorer.Shell {
 		public static void AddDefaultColumns(this ShellView shellView) {
 
 			LVCOLUMN column = new LVCOLUMN();
-			column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH  | LVCF.LVCF_MINWIDTH;
+			column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_MINWIDTH;
 			column.cx = 75;
 			column.iSubItem = 0;
 			column.pszText = "Name";
@@ -358,6 +358,7 @@ namespace BExplorer.Shell {
 		/// Convert and Collumns structure to LVCOLUMN (Native Listview Column)
 		/// </summary>
 		/// <param name="col">the column</param>
+		/// <param name="isDetails"></param>
 		/// <returns>resulting LVCOLUMN structure</returns>
 		public static LVCOLUMN ToNativeColumn(this Collumns col, bool isDetails = false) {
 			LVCOLUMN column = new LVCOLUMN();

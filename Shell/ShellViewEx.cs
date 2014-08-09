@@ -312,9 +312,8 @@ namespace BExplorer.Shell {
 		/// <summary> Triggers the Navigating event. </summary>
 		[DebuggerStepThrough()]
 		public virtual void OnNavigating(NavigatingEventArgs ea) {
-			EventHandler<NavigatingEventArgs> handler = Navigating;
-			if (handler != null)
-				handler(this, ea);
+			if (Navigating != null)
+				Navigating(this, ea);
 		}
 
 		#endregion Event Handler
@@ -355,6 +354,7 @@ namespace BExplorer.Shell {
 			return progs;
 		}
 
+		/*
 		/// <summary>
 		/// Returns the index of the first item whose display name starts with the search string.
 		/// </summary>
@@ -362,9 +362,10 @@ namespace BExplorer.Shell {
 		/// <returns> The index of an item within the list view. </returns>
 		[Obsolete("Never Used", true)]
 		private int GetFirstIndexOf(string search) { return GetFirstIndexOf(search, 0); }
+		*/
 
 
-
+		/*
 		/// <summary>
 		/// Gets a value indicating whether a previous page in navigation history is available,
 		/// which allows the <see cref="ShellView.NavigateBack" /> method to succeed.
@@ -372,7 +373,9 @@ namespace BExplorer.Shell {
 		[Browsable(false)]
 		[Obsolete("Not Used", true)]
 		public bool CanNavigateBack { get { return History.CanNavigateBack; } }
+		*/
 
+		/*
 		/// <summary>
 		/// Gets a value indicating whether a subsequent page in navigation history is available,
 		/// which allows the <see cref="ShellView.NavigateForward" /> method to succeed.
@@ -380,6 +383,7 @@ namespace BExplorer.Shell {
 		[Browsable(false)]
 		[Obsolete("Not Used", true)]
 		public bool CanNavigateForward { get { return History.CanNavigateForward; } }
+		*/
 
 		/// <summary>
 		/// Gets a value indicating whether the folder currently being browsed by the <see
@@ -583,7 +587,7 @@ namespace BExplorer.Shell {
 		#endregion Public Members
 
 		#region Private Members
-		private Boolean _IsNavigationInProgress = false;
+		//private Boolean _IsNavigationInProgress = false;
 
 		[Obsolete("Never Actually Used")]
 		private Boolean _IsInRenameMode = false;
@@ -1342,6 +1346,7 @@ namespace BExplorer.Shell {
 			this.HitTest(PointToClient(new System.Drawing.Point(e.X, e.Y)), out row, out collumn);
 			ShellItem destination = row != -1 ? Items[row] : CurrentFolder;
 
+			//TODO: Find out if we can remove this select and just use an If Then
 			switch (e.Effect) {
 				case F.DragDropEffects.All:
 					break;
@@ -2032,8 +2037,7 @@ namespace BExplorer.Shell {
 							shieldQueue.Clear();
 							//! to be revised this for performace
 							try {
-								if (MaintenanceThread != null && MaintenanceThread.IsAlive)
-									MaintenanceThread.Abort();
+								if (MaintenanceThread != null && MaintenanceThread.IsAlive) MaintenanceThread.Abort();
 								MaintenanceThread = new Thread(() => {
 									while (ItemsForSubitemsUpdate.queue.Count > 0) {
 										//Thread.Sleep(1);
@@ -2232,12 +2236,8 @@ namespace BExplorer.Shell {
 								ShellContextMenu cm = new ShellContextMenu(new ShellItem[1] { this.CurrentFolder }, SVGIO.SVGIO_BACKGROUND);
 								cm.ShowContextMenu(this, itemActivate.ptAction, CMF.CANRENAME, true);
 							}
-							else {
-								//MessageBox.Show(MousePosition.X.ToString() + ", " + MousePosition.Y.ToString());
-								if (ColumnHeaderRightClick != null) {
-									ColumnHeaderRightClick(this, new MouseEventArgs(F.MouseButtons.Right, 1, MousePosition.X, MousePosition.Y, 0));
-								}
-								//MessageBox.Show("Header RClick!!!!!");
+							else if (ColumnHeaderRightClick != null) {
+								ColumnHeaderRightClick(this, new MouseEventArgs(F.MouseButtons.Right, 1, MousePosition.X, MousePosition.Y, 0));
 							}
 							break;
 
@@ -2313,18 +2313,17 @@ namespace BExplorer.Shell {
 											break;
 
 										case CustomDraw.CDDS_ITEMPREPAINT | CustomDraw.CDDS_SUBITEM:
-											if (textColor != null) {
+											if (textColor == null) {
+												m.Result = (IntPtr)CustomDraw.CDRF_DODEFAULT;
+											}
+											else {
 												nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
 												Marshal.StructureToPtr(nmlvcd, m.LParam, false);
 												m.Result = (IntPtr)CustomDraw.CDRF_NEWFONT;
 											}
-											else {
-												m.Result = (IntPtr)CustomDraw.CDRF_DODEFAULT;
-											}
 											break;
 
 										case CustomDraw.CDDS_ITEMPOSTPAINT:
-
 											if (nmlvcd.clrTextBk != 0) {
 												var itemBounds = nmlvcd.nmcd.rc;
 												LVITEMINDEX lvi = new LVITEMINDEX();
@@ -3196,10 +3195,9 @@ namespace BExplorer.Shell {
 		public void NavigateForward(ShellItem folder) {
 			History.MoveForward(folder);
 			CurrentFolder = folder;
-
-			//OnNavigated(new NavigatedEventArgs(m_CurrentFolder));
 		}
 
+		/*
 		/// <summary>
 		/// Navigates the <see cref="ShellView"/> control to the next folder
 		/// in the navigation history.
@@ -3231,6 +3229,7 @@ namespace BExplorer.Shell {
 			CurrentFolder = History.MoveForward();
 			//OnNavigated(new NavigatedEventArgs(m_CurrentFolder));
 		}
+		*/
 
 		/// <summary>
 		/// Navigates the <see cref="ShellView"/> control backwards to the
@@ -3256,10 +3255,9 @@ namespace BExplorer.Shell {
 		public void NavigateBack(ShellItem folder) {
 			History.MoveBack(folder);
 			CurrentFolder = folder;
-			//RecreateShellView();
-			//OnNavigated(new NavigatedEventArgs(m_CurrentFolder));
 		}
 
+		/*
 		/// <summary>
 		/// Navigates the <see cref="ShellView"/> control to the previous folder
 		/// in the navigation history.
@@ -3291,10 +3289,13 @@ namespace BExplorer.Shell {
 			//RecreateShellView();
 			//OnNavigated(new NavigatedEventArgs(m_CurrentFolder));
 		}
-
+		*/
 		public void Navigate(ShellItem destination, Boolean isReload = false, Boolean isInSameTab = false) {
 			this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
-			this.SetSortIcon(this.LastSortedColumnIndex, SortOrder.None);
+
+			//TODO: Check the following Change
+			//Note:	User:	Aaron Campf	Date: 8/9/2014	Message: The below SetSortIcon(...) seems to have no effect as it is called later
+			//this.SetSortIcon(this.LastSortedColumnIndex, SortOrder.None);
 			this.Notifications.UnregisterChangeNotify();
 			overlays.Clear();
 			shieldedIcons.Clear();
@@ -3316,8 +3317,8 @@ namespace BExplorer.Shell {
 			while (!SubItemValues.IsEmpty) {
 				SubItemValues.TryTake(out tmp);
 			}
-			if (tmp != null)
-				tmp = null;
+
+			if (tmp != null) tmp = null;
 			SubItems.Clear();
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
 			this.ItemForRename = -1;
@@ -3329,7 +3330,10 @@ namespace BExplorer.Shell {
 
 			var folderSettings = new FolderSettings();
 			var isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
-			this.SetSortIcon(folderSettings.SortColumn, folderSettings.SortOrder);
+
+			//TODO: Check the following Change
+			//Note:	User:	Aaron Campf	Date: 8/9/2014	Message: The below SetSortIcon(...) seems to have no effect as it is called later
+			//this.SetSortIcon(folderSettings.SortColumn, folderSettings.SortOrder);
 
 			this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
 			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
@@ -3337,7 +3341,8 @@ namespace BExplorer.Shell {
 
 			var e = destination.GetEnumerator();
 			var i = 0;
-			this._IsNavigationInProgress = true;
+			//this._IsNavigationInProgress = true;
+
 			while (e.MoveNext()) {
 				F.Application.DoEvents();
 				if (this.Items.Count > 0 && this.Items.Last().Parent != e.Current.Parent) {
@@ -3354,9 +3359,11 @@ namespace BExplorer.Shell {
 					LastI = CurrentI;
 				}
 			}
-			this._IsNavigationInProgress = false;
 
-			if (isThereSettings && folderSettings.SortColumn != null) {
+			//this._IsNavigationInProgress = false;
+
+			//if (isThereSettings && folderSettings.SortColumn != null) {
+			if (isThereSettings) {
 				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder, false);
 			}
 			else if (destination.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant()) {
@@ -3372,12 +3379,19 @@ namespace BExplorer.Shell {
 
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 
+			//TODO: Check the following Change
+			/*
+			 * Note:	User:	Aaron Campf	Date: 8/9/2014	
+			 * Message: The following code was commented out because it resorts the items AFTER we just sorted them in the [if (isThereSettings)]
+			 */
+
+			/*
 			if (!isThereSettings) {
 				this.LastSortedColumnIndex = 0;
 				this.LastSortOrder = SortOrder.Ascending;
 				this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
 			}
-
+			*/
 
 			Notifications.RegisterChangeNotify(this.Handle, destination, true);
 			try {
@@ -4008,6 +4022,7 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, index, ref item);
 		}
 
+		/*
 		[Obsolete("Never Used", true)]
 		private void RemoveDropHighLightItemByIndex(int index) {
 			LVITEM item = new LVITEM();
@@ -4016,6 +4031,7 @@ namespace BExplorer.Shell {
 			item.state = 0;
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, index, ref item);
 		}
+		*/
 
 		public Boolean IsFocusAllowed = true;
 
@@ -4319,8 +4335,9 @@ namespace BExplorer.Shell {
 			this.ResumeLayout();
 		}
 
-
+		[Obsolete("This seems to have no effect")]
 		private void SetSortIcon(int columnIndex, SortOrder order) {
+			//TODO: Find out if we really need this!!
 			IntPtr columnHeader = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETHEADER, 0, 0);
 			for (int columnNumber = 0; columnNumber <= this.Collumns.Count - 1; columnNumber++) {
 				var item = new HDITEM {

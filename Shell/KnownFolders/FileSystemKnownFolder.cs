@@ -156,10 +156,10 @@ namespace BExplorer.Shell {
 
 		#region IKnownFolder Members
 
-		/// <summary>
-		/// Gets the path for this known folder.
-		/// </summary>
-		/// <value>A <see cref="System.String"/> object.</value>
+		///// <summary>
+		///// Gets the path for this known folder.
+		///// </summary>
+		///// <value>A <see cref="System.String"/> object.</value>
 		//public override string Path
 		//{
 		//    get { return KnownFolderSettings.Path; }

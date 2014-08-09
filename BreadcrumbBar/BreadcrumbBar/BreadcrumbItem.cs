@@ -585,6 +585,8 @@ namespace Odyssey.Controls {
 		public object GetTraceItem(ShellItem trace) {
 			//this.ApplyTemplate();
 			return Items.OfType<ShellItem>().SingleOrDefault(s => s!=null && s.GetHashCode() == trace.GetHashCode());
+			
+			//TODO: Can we delete the below dead code?
 			foreach (object item in Items.OfType<ShellItem>().ToArray()) {
 				BreadcrumbItem bcItem = ContainerFromItem(item);
 				var rootValue = bcItem.DataContext as ShellItem;

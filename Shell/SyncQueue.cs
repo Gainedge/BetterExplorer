@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BExplorer.Shell {
 
-	[Obsolete("I do not think this actually does anything that a list could not.")]
+	[Obsolete("Can't we just use Queue directly")]
 	public class SyncQueue<T> {
 		/*
 		public class OverloadEventArgs : EventArgs {

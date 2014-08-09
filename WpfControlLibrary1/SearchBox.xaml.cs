@@ -43,9 +43,7 @@ namespace BetterExplorerControls {
 		#region Properties
 		public string FullSearchTerms { get { return CompileTerms(); } }
 
-		[Obsolete("Likely becoming private soon", false)]
 		public string KindCondition { private get; set; }
-
 
 		private static readonly RoutedEvent BeginSearchEvent =
 			EventManager.RegisterRoutedEvent("BeginSearch", RoutingStrategy.Direct, typeof(SearchEventHandler), typeof(SearchBox));
