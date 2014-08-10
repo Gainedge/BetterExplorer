@@ -10,6 +10,7 @@ namespace BExplorer.Shell {
 	/// Represents a registered file system Known Folder
 	/// </summary>
 	public class FileSystemKnownFolder : ShellItem, IKnownFolder {
+
 		#region Private Fields
 
 		private IKnownFolderNative knownFolderNative;
@@ -21,7 +22,7 @@ namespace BExplorer.Shell {
 
 		internal FileSystemKnownFolder(IShellItem shellItem) : base(shellItem) { }
 
-		IShellItem nativeShellItem;
+		//IShellItem nativeShellItem;
 
 		internal static FileSystemKnownFolder Create(IKnownFolderNative kf) {
 			Debug.Assert(kf != null);
@@ -55,6 +56,7 @@ namespace BExplorer.Shell {
 		}
 		*/
 
+		/*
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileSystemKnownFolder"/> class.
 		/// </summary>
@@ -71,8 +73,9 @@ namespace BExplorer.Shell {
 		/// A <see cref="Uri"/> containing the location of the FileSystemKnownFolder.
 		/// </param>
 		public FileSystemKnownFolder(Uri uri) : base(uri) { }
+		*/
 
-
+		/*
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileSystemKnownFolder"/> class.
 		/// </summary>
@@ -89,7 +92,9 @@ namespace BExplorer.Shell {
 		/// A string containing a Uri with the location of the FileSystemKnownFolder.
 		/// </param>
 		public FileSystemKnownFolder(string path) : base(path) { }
+		*/
 
+		/*
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileSystemKnownFolder"/> class.
 		/// </summary>
@@ -102,6 +107,9 @@ namespace BExplorer.Shell {
 		/// location of the folder.
 		/// </param>
 		public FileSystemKnownFolder(Environment.SpecialFolder folder) : base(folder) { }
+		*/
+
+		/*
 		/// <summary>
 		/// Initializes a new instance of the <see cref="FileSystemKnownFolder"/> class.
 		/// </summary>
@@ -115,8 +123,15 @@ namespace BExplorer.Shell {
 		/// The name of the child item.
 		/// </param>
 		public FileSystemKnownFolder(ShellItem parent, string name) : base(parent, name) { }
+		*/
+
+		/*
 		internal FileSystemKnownFolder(IntPtr pidl) : base(pidl) { }
+		*/
+
+		/*
 		internal FileSystemKnownFolder(ShellItem parent, IntPtr pidl) : base(parent, pidl) { }
+		*/
 
 		#endregion
 
@@ -130,9 +145,11 @@ namespace BExplorer.Shell {
 					// Need to use the PIDL to get the native IKnownFolder interface.
 
 					// Get the PIDL for the ShellItem
+					/*
 					if (nativeShellItem != null && base.Pidl == IntPtr.Zero) {
 						base.ComInterface = nativeShellItem;
 					}
+					*/
 
 					// If we have a valid PIDL, get the native IKnownFolder
 					if (base.Pidl != IntPtr.Zero) {
@@ -308,8 +325,6 @@ namespace BExplorer.Shell {
 		}
 
 		#endregion
-
-
 
 
 		FileAttributes IKnownFolder.FileAttributes {
