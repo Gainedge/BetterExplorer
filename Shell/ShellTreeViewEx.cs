@@ -639,34 +639,8 @@ namespace BExplorer.Shell {
 		}
 
 		void ShellTreeView_DragEnter(object sender, DragEventArgs e) {
-			if ((e.KeyState & (8 + 32)) == (8 + 32) && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
-				// KeyState 8 + 32 = CTL + ALT 
-
-				// Link drag-and-drop effect.
-				e.Effect = F.DragDropEffects.Link;
-			}
-			else if ((e.KeyState & 32) == 32 && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
-				// ALT KeyState for link.
-				e.Effect = F.DragDropEffects.Link;
-			}
-			else if ((e.KeyState & 4) == 4 && (e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
-				// SHIFT KeyState for move.
-				e.Effect = F.DragDropEffects.Move;
-			}
-			else if ((e.KeyState & 8) == 8 && (e.AllowedEffect & F.DragDropEffects.Copy) == F.DragDropEffects.Copy) {
-				// CTL KeyState for copy.
-				e.Effect = F.DragDropEffects.Copy;
-			}
-			else if ((e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
-				// By default, the drop action should be move, if allowed.
-				e.Effect = F.DragDropEffects.Move;
-			}
-			else
-				e.Effect = F.DragDropEffects.None;
-
-			Win32Point wp = new Win32Point();
-			wp.X = e.X;
-			wp.Y = e.Y;
+			var wp = new Win32Point() { X = e.X, Y = e.Y };
+			ShellView.Drag_SetEffect(e);
 
 			if (e.Data.GetDataPresent("DragImageBits")) {
 				DropTargetHelper.Get.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
@@ -674,69 +648,8 @@ namespace BExplorer.Shell {
 		}
 
 		void ShellTreeView_DragOver(object sender, DragEventArgs e) {
-			if ((e.KeyState & (8 + 32)) == (8 + 32) &&
-				(e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
-				// KeyState 8 + 32 = CTL + ALT 
-
-				// Link drag-and-drop effect.
-				e.Effect = F.DragDropEffects.Link;
-
-			}
-			else if ((e.KeyState & 32) == 32 &&
-				(e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
-
-				// ALT KeyState for link.
-				e.Effect = F.DragDropEffects.Link;
-
-			}
-			else if ((e.KeyState & 4) == 4 &&
-				(e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
-
-				// SHIFT KeyState for move.
-				e.Effect = F.DragDropEffects.Move;
-
-			}
-			else if ((e.KeyState & 8) == 8 &&
-				(e.AllowedEffect & F.DragDropEffects.Copy) == F.DragDropEffects.Copy) {
-
-				// CTL KeyState for copy.
-				e.Effect = F.DragDropEffects.Copy;
-
-			}
-			else if ((e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
-
-				// By default, the drop action should be move, if allowed.
-				e.Effect = F.DragDropEffects.Move;
-
-			}
-			else
-				e.Effect = F.DragDropEffects.None;
-
-			Win32Point wp = new Win32Point();
-			wp.X = e.X;
-			wp.Y = e.Y;
-
-			//int row = -1;
-			//int collumn = -1;
-			//this.HitTest(PointToClient(new System.Drawing.Point(e.X, e.Y)), out row, out collumn);
-
-			//if (_LastSelectedIndexByDragDrop != -1 && !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop))
-			//{
-			//	this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
-			//}
-
-			//if (row != -1)
-			//{
-			//	this.SelectItemByIndex(row);
-			//}
-			//else
-			//{
-			//	if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop))
-			//	{
-			//		this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
-			//	}
-			//}
-			//_LastSelectedIndexByDragDrop = row;
+			var wp = new Win32Point() { X = e.X, Y = e.Y };
+			ShellView.Drag_SetEffect(e);
 
 			if (e.Data.GetDataPresent("DragImageBits"))
 				DropTargetHelper.Get.Create.DragOver(ref wp, (int)e.Effect);

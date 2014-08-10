@@ -1394,7 +1394,7 @@ namespace BExplorer.Shell {
 
 
 
-		private void Drag_SetEffect(F.DragEventArgs e) {
+		internal static void Drag_SetEffect(F.DragEventArgs e) {
 			if ((e.KeyState & (8 + 32)) == (8 + 32) && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
 				// KeyState 8 + 32 = CTL + ALT
 
