@@ -2843,7 +2843,7 @@ namespace BExplorer.Shell {
 				//foreach (var item in this.SelectedItems.Select(s => s.ComInterface).ToArray()) {
 				foreach (var item in Items) {
 					if (Copy)
-						fo.CopyItem(item, destination.ComInterface, null);
+						fo.CopyItem(item, destination.ComInterface, null); //Might require String.Empty
 					else
 						fo.MoveItem(item, destination.ComInterface, null);
 				}
@@ -2858,26 +2858,8 @@ namespace BExplorer.Shell {
 		}
 
 		public void DoCopy(System.Windows.IDataObject dataObject, ShellItem destination) {
-			var handle = this.Handle;
-			var thread = new Thread(() => {
-				var shellItemArray = dataObject.ToShellItemArray();
-				var items = shellItemArray.ToArray();
-				try {
-					IIFileOperation fo = new IIFileOperation(handle);
-					foreach (var item in items) {
-						fo.CopyItem(item, destination.ComInterface, String.Empty);
-					}
-
-					fo.PerformOperations();
-				}
-				catch (SecurityException) {
-					throw;
-				}
-			});
-			thread.SetApartmentState(ApartmentState.STA);
-			thread.Start();
+			Do_Copy_OR_Move_Helper(true, destination, dataObject.ToShellItemArray().ToArray());
 		}
-
 
 		public void DoCopy(F.IDataObject dataObject, ShellItem destination) {
 			var handle = this.Handle;
@@ -2938,24 +2920,27 @@ namespace BExplorer.Shell {
 		}
 
 		public void DoMove(System.Windows.IDataObject dataObject, ShellItem destination) {
-			var handle = this.Handle;
-			var thread = new Thread(() => {
-				var shellItemArray = dataObject.ToShellItemArray();
-				var items = shellItemArray.ToArray();
-				try {
-					IIFileOperation fo = new IIFileOperation(handle);
-					foreach (var item in items) {
-						fo.MoveItem(item, destination.ComInterface, null);
-					}
+			Do_Copy_OR_Move_Helper(false, destination, dataObject.ToShellItemArray().ToArray());
+			/*
+			//var handle = this.Handle;
+			//var thread = new Thread(() => {
+			//	var shellItemArray = dataObject.ToShellItemArray();
+			//	var items = shellItemArray.ToArray();
+			//	try {
+			//		IIFileOperation fo = new IIFileOperation(handle);
+			//		foreach (var item in items) {
+			//			fo.MoveItem(item, destination.ComInterface, null);
+			//		}
 
-					fo.PerformOperations();
-				}
-				catch (SecurityException) {
-					throw;
-				}
-			});
-			thread.SetApartmentState(ApartmentState.STA);
-			thread.Start();
+			//		fo.PerformOperations();
+			//	}
+			//	catch (SecurityException) {
+			//		throw;
+			//	}
+			//});
+			//thread.SetApartmentState(ApartmentState.STA);
+			//thread.Start();
+			*/
 		}
 
 		public void DoMove(ShellItem destination) {
