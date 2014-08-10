@@ -3353,9 +3353,12 @@ namespace BExplorer.Shell {
 			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
 				ResizeIcons(16);
 
-			var e = destination.GetEnumerator();
-			var i = 0;
 			//this._IsNavigationInProgress = true;
+
+
+			/*
+			var i = 0;
+			var e = destination.GetEnumerator();
 
 			while (e.MoveNext()) {
 				F.Application.DoEvents();
@@ -3373,6 +3376,25 @@ namespace BExplorer.Shell {
 					LastI = CurrentI;
 				}
 			}
+			*/
+						
+			foreach (var Shell in destination) {
+				F.Application.DoEvents();
+				if (this.Items.Count > 0 && this.Items.Last().Parent != Shell.Parent) {
+					break;
+				}
+				if (this.ShowHidden ? true : !Shell.IsHidden)
+					this.Items.Add(Shell);
+				CurrentI++;
+				if (CurrentI - LastI >= (destination.IsSearchFolder ? 70 : 2350)) {
+					F.Application.DoEvents();
+					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+					if (destination.IsSearchFolder)
+						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+					LastI = CurrentI;
+				}
+			}
+
 
 			//this._IsNavigationInProgress = false;
 
@@ -3388,8 +3410,11 @@ namespace BExplorer.Shell {
 			}
 
 			//if (!(isThereSettings && folderSettings.SortColumn != null))
-			if (!isThereSettings)
+
+			if (!isThereSettings) {
+				var i = 0;
 				this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++);
+			}
 
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 
