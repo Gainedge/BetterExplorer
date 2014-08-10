@@ -4282,12 +4282,14 @@ namespace BExplorer.Shell {
 
 		#endregion Private Methods
 
+		/*
 		#region Unmanaged
 
 		[UnmanagedFunctionPointer(CallingConvention.Winapi, CharSet = CharSet.Unicode)]
 		public delegate int funcInvoke(IntPtr refer, [In] IntPtr pdo);
 
 		#endregion Unmanaged
+		*/
 
 		#region Database
 
