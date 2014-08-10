@@ -33,6 +33,7 @@ namespace BExplorer.Shell {
 		#region Private Constructor
 
 		private ShellLibrary() {
+
 		}
 
 		//Construct the ShellLibrary object from a native Shell Library

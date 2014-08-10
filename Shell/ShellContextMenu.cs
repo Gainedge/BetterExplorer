@@ -233,7 +233,6 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Invokes the Delete command on the shell item.
 		/// </summary>
-		[Obsolete("Not Used", true)]
 		public void InvokeDelete() {
 			//CMINVOKECOMMANDINFO invoke = new CMINVOKECOMMANDINFO();
 			//invoke.cbSize = Marshal.SizeOf(invoke);
