@@ -1931,7 +1931,7 @@ namespace BExplorer.Shell {
 							}
 							else {
 								SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
-								this.SetGroupOrder(); //this.SetGroupOrder(false);
+								this.SetGroupOrder(false);
 							}
 
 
@@ -2242,7 +2242,7 @@ namespace BExplorer.Shell {
 							else if (nmhdrHdn.iItem == -1) {
 								NMITEMACTIVATE itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
 								ShellContextMenu cm = new ShellContextMenu(new ShellItem[1] { this.CurrentFolder }, SVGIO.SVGIO_BACKGROUND);
-								cm.ShowContextMenu(this, itemActivate.ptAction, CMF.CANRENAME, true);
+								cm.ShowContextMenu(this, itemActivate.ptAction, 0, true);
 							}
 							else if (ColumnHeaderRightClick != null) {
 								ColumnHeaderRightClick(this, new MouseEventArgs(F.MouseButtons.Right, 1, MousePosition.X, MousePosition.Y, 0));
