@@ -2836,11 +2836,12 @@ namespace BExplorer.Shell {
 			thread.Start();
 		}
 
-		private void Do_Copy_OR_Move_Helper(bool Copy, ShellItem destination) {
+		private void Do_Copy_OR_Move_Helper(bool Copy, ShellItem destination, IShellItem[] Items) {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
 				IIFileOperation fo = new IIFileOperation(handle);
-				foreach (var item in this.SelectedItems.Select(s => s.ComInterface).ToArray()) {
+				//foreach (var item in this.SelectedItems.Select(s => s.ComInterface).ToArray()) {
+				foreach (var item in Items) {
 					if (Copy)
 						fo.CopyItem(item, destination.ComInterface, null);
 					else
@@ -2853,8 +2854,30 @@ namespace BExplorer.Shell {
 		}
 
 		public void DoCopy(ShellItem destination) {
-			Do_Copy_OR_Move_Helper(true, destination);
+			Do_Copy_OR_Move_Helper(true, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
 		}
+
+		public void DoCopy(System.Windows.IDataObject dataObject, ShellItem destination) {
+			var handle = this.Handle;
+			var thread = new Thread(() => {
+				var shellItemArray = dataObject.ToShellItemArray();
+				var items = shellItemArray.ToArray();
+				try {
+					IIFileOperation fo = new IIFileOperation(handle);
+					foreach (var item in items) {
+						fo.CopyItem(item, destination.ComInterface, String.Empty);
+					}
+
+					fo.PerformOperations();
+				}
+				catch (SecurityException) {
+					throw;
+				}
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
+		}
+
 
 		public void DoCopy(F.IDataObject dataObject, ShellItem destination) {
 			var handle = this.Handle;
@@ -2884,26 +2907,7 @@ namespace BExplorer.Shell {
 			thread.Start();
 		}
 
-		public void DoCopy(System.Windows.IDataObject dataObject, ShellItem destination) {
-			var handle = this.Handle;
-			var thread = new Thread(() => {
-				var shellItemArray = dataObject.ToShellItemArray();
-				var items = shellItemArray.ToArray();
-				try {
-					IIFileOperation fo = new IIFileOperation(handle);
-					foreach (var item in items) {
-						fo.CopyItem(item, destination.ComInterface, String.Empty);
-					}
 
-					fo.PerformOperations();
-				}
-				catch (SecurityException) {
-					throw;
-				}
-			});
-			thread.SetApartmentState(ApartmentState.STA);
-			thread.Start();
-		}
 
 		public void DoMove(F.IDataObject dataObject, ShellItem destination) {
 			var handle = this.Handle;
@@ -2955,18 +2959,7 @@ namespace BExplorer.Shell {
 		}
 
 		public void DoMove(ShellItem destination) {
-			Do_Copy_OR_Move_Helper(false, destination);
-			return;
-			var handle = this.Handle;
-			var thread = new Thread(() => {
-				IIFileOperation fo = new IIFileOperation(handle);
-				foreach (var item in this.SelectedItems.Select(s => s.ComInterface).ToArray()) {
-					fo.MoveItem(item, destination.ComInterface, null);
-				}
-				fo.PerformOperations();
-			});
-			thread.SetApartmentState(ApartmentState.STA);
-			thread.Start();
+			Do_Copy_OR_Move_Helper(false, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
 		}
 
 		public void DeleteSelectedFiles(Boolean isRecycling) {
