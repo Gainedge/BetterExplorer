@@ -407,10 +407,12 @@ namespace BExplorer.Shell {
 		public ShellItem CurrentFolder { get; set; }
 
 
+		/*
 		///<summary> Gets the <see cref="ShellView" />'s navigation history. </summary>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		protected ShellHistory History { get; private set; }
+		*/
 
 		public int IconSize { get; private set; }
 
@@ -684,7 +686,7 @@ namespace BExplorer.Shell {
 			_ShieldLoadingThread.Start();
 			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
 			_UpdateSubitemValuesThread.Start();
-			History = new ShellHistory();
+			//History = new ShellHistory();
 			_ResetTimer.Interval = 200;
 			_ResetTimer.Tick += resetTimer_Tick;
 
@@ -2266,7 +2268,7 @@ namespace BExplorer.Shell {
 								RedrawWindow();
 							if (this.ToolTip != null && this.ToolTip.IsVisible)
 								this.ToolTip.HideTooltip();
-							OnLostFocus();
+							//OnLostFocus();
 							this.Focus();
 							break;
 
@@ -3406,11 +3408,12 @@ namespace BExplorer.Shell {
 			*/
 
 			Notifications.RegisterChangeNotify(this.Handle, destination, true);
+			/*
 			try {
 				History.Add(destination);
 			}
 			catch { }
-
+			*/
 			//if (!(isThereSettings && folderSettings.SortColumn != null))
 			if (!isThereSettings)
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
@@ -4246,11 +4249,13 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		internal void OnLostFocus() {
 			if (LostFocus != null) {
 				LostFocus(this, EventArgs.Empty);
 			}
 		}
+		*/
 
 		internal void OnSelectionChanged() {
 			if (SelectionChanged != null) {
