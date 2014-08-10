@@ -2853,6 +2853,37 @@ namespace BExplorer.Shell {
 			thread.Start();
 		}
 
+		private void Do_Copy_OR_Move_Helper_2(bool Copy, ShellItem destination, F.IDataObject dataObject) {
+			var handle = this.Handle;
+			var thread = new Thread(() => {
+				IShellItemArray shellItemArray = null;
+				IShellItem[] items = null;
+				if (((F.DataObject)dataObject).ContainsFileDropList()) {
+					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => new ShellItem(s.ToShellParsingName()).ComInterface).ToArray();
+				}
+				else {
+					shellItemArray = dataObject.ToShellItemArray();
+					items = shellItemArray.ToArray();
+				}
+				try {
+					IIFileOperation fo = new IIFileOperation(handle);
+					foreach (var item in items) {
+						if (Copy)
+							fo.CopyItem(item, destination.ComInterface, String.Empty);
+						else
+							fo.MoveItem(item, destination.ComInterface, null);
+					}
+
+					fo.PerformOperations();
+				}
+				catch (SecurityException) {
+					throw;
+				}
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
+		}
+
 		public void DoCopy(ShellItem destination) {
 			Do_Copy_OR_Move_Helper(true, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
 		}
@@ -2862,89 +2893,19 @@ namespace BExplorer.Shell {
 		}
 
 		public void DoCopy(F.IDataObject dataObject, ShellItem destination) {
-			var handle = this.Handle;
-			var thread = new Thread(() => {
-				IShellItemArray shellItemArray = null;
-				IShellItem[] items = null;
-				if (((F.DataObject)dataObject).ContainsFileDropList()) {
-					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => new ShellItem(s.ToShellParsingName()).ComInterface).ToArray();
-				}
-				else {
-					shellItemArray = dataObject.ToShellItemArray();
-					items = shellItemArray.ToArray();
-				}
-				try {
-					IIFileOperation fo = new IIFileOperation(handle);
-					foreach (var item in items) {
-						fo.CopyItem(item, destination.ComInterface, String.Empty);
-					}
-
-					fo.PerformOperations();
-				}
-				catch (SecurityException) {
-					throw;
-				}
-			});
-			thread.SetApartmentState(ApartmentState.STA);
-			thread.Start();
-		}
-
-
-
-		public void DoMove(F.IDataObject dataObject, ShellItem destination) {
-			var handle = this.Handle;
-			var thread = new Thread(() => {
-				IShellItemArray shellItemArray = null;
-				IShellItem[] items = null;
-				if (((F.DataObject)dataObject).ContainsFileDropList()) {
-					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => new ShellItem(s.ToShellParsingName()).ComInterface).ToArray();
-				}
-				else {
-					shellItemArray = dataObject.ToShellItemArray();
-					items = shellItemArray.ToArray();
-				}
-				try {
-					IIFileOperation fo = new IIFileOperation(handle);
-					foreach (var item in items) {
-						fo.MoveItem(item, destination.ComInterface, null);
-					}
-
-					fo.PerformOperations();
-				}
-				catch (SecurityException) {
-					throw;
-				}
-			});
-			thread.SetApartmentState(ApartmentState.STA);
-			thread.Start();
+			Do_Copy_OR_Move_Helper_2(true, destination, dataObject);
 		}
 
 		public void DoMove(System.Windows.IDataObject dataObject, ShellItem destination) {
 			Do_Copy_OR_Move_Helper(false, destination, dataObject.ToShellItemArray().ToArray());
-			/*
-			//var handle = this.Handle;
-			//var thread = new Thread(() => {
-			//	var shellItemArray = dataObject.ToShellItemArray();
-			//	var items = shellItemArray.ToArray();
-			//	try {
-			//		IIFileOperation fo = new IIFileOperation(handle);
-			//		foreach (var item in items) {
-			//			fo.MoveItem(item, destination.ComInterface, null);
-			//		}
-
-			//		fo.PerformOperations();
-			//	}
-			//	catch (SecurityException) {
-			//		throw;
-			//	}
-			//});
-			//thread.SetApartmentState(ApartmentState.STA);
-			//thread.Start();
-			*/
 		}
 
 		public void DoMove(ShellItem destination) {
 			Do_Copy_OR_Move_Helper(false, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
+		}
+
+		public void DoMove(F.IDataObject dataObject, ShellItem destination) {
+			Do_Copy_OR_Move_Helper_2(false, destination, dataObject);
 		}
 
 		public void DeleteSelectedFiles(Boolean isRecycling) {
