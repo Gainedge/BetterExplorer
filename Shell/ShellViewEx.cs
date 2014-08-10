@@ -3440,7 +3440,7 @@ namespace BExplorer.Shell {
 
 			const int LVM_SETOWNERDATACALLBACK = 0x10BB;
 			x = User32.SendMessage(this.LVHandle, LVM_SETOWNERDATACALLBACK, 0, 0);
-			IsGroupsEnabled = false;
+			//IsGroupsEnabled = false;
 			this.LastGroupCollumn = null;
 
 			//Aaron Campf
@@ -3459,7 +3459,7 @@ namespace BExplorer.Shell {
 			const int LVM_ENABLEGROUPVIEW = 0x1000 + 157;
 
 			x = (int)User32.SendMessage(this.LVHandle, LVM_ENABLEGROUPVIEW, 1, 0);
-			IsGroupsEnabled = true;
+			//IsGroupsEnabled = true;
 		}
 
 		/// <summary>
