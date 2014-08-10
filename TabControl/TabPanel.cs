@@ -106,7 +106,7 @@ namespace Wpf.Controls {
 		}
 		#endregion
 
-		#region Dependency Properties
+		#region Dependancy Properties
 
 		/// <summary>
 		/// CanScrollLeftOrUp Dependancy Property
@@ -618,14 +618,15 @@ namespace Wpf.Controls {
 		private static void SetDimensions(TabItem tabItem) {
 			if (tabItem.Dimension == null) {
 				// store the original size specifications of the tab
-				tabItem.Dimension = new Dimension {
-					Height = tabItem.Height,
-					Width = tabItem.Width,
-					MaxHeight = tabItem.MaxHeight,
-					MaxWidth = tabItem.MaxWidth,
-					MinHeight = tabItem.MinHeight,
-					MinWidth = tabItem.MinWidth
-				};
+				tabItem.Dimension =
+						new Dimension {
+							Height = tabItem.Height,
+							Width = tabItem.Width,
+							MaxHeight = tabItem.MaxHeight,
+							MaxWidth = tabItem.MaxWidth,
+							MinHeight = tabItem.MinHeight,
+							MinWidth = tabItem.MinWidth
+						};
 			}
 			else {
 				// restore the original values for the tab

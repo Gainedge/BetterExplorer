@@ -566,6 +566,8 @@ namespace BExplorer.Shell {
 		}
 
 		void ShellTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
+
+
 			if (e.Button == System.Windows.Forms.MouseButtons.Right) {
 				//this.ShellTreeView.SelectedNode = e.Node;
 				ShellContextMenu cm = new ShellContextMenu(e.Node.Tag as ShellItem);

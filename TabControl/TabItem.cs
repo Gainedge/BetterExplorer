@@ -15,17 +15,11 @@ namespace Wpf.Controls {
 		public static readonly DependencyProperty IconProperty = DependencyProperty.Register("Icon", typeof(object), typeof(TabItem), new UIPropertyMetadata(null));
 		public static readonly DependencyProperty AllowDeleteProperty = DependencyProperty.Register("AllowDelete", typeof(bool), typeof(TabItem), new UIPropertyMetadata(true));
 
-		/// <summary>List of currently selected items (the strings are the parsed name of the actual ShellItem)</summary>
 		public List<String> SelectedItems = new List<String>();
-
-		/// <summary>The Navigation History (Log) of the tab</summary>
+		//TODO: Fix [log] The Navigation Log starts out null!
 		public NavigationLog log = new NavigationLog();
-
-		/// <summary>The current shell item the tab is on</summary>
 		public ShellItem ShellObject { get; set; }
-
-		/// <summary>The ContextMenu for the tab's header in the TabControl</summary>
-		public ContextMenu mnu { get; private set; }
+		public ContextMenu mnu { get; set; }
 
 
 		/// <summary>
@@ -37,7 +31,7 @@ namespace Wpf.Controls {
 		/// Provides a place to display an Icon on the Header and on the DropDown Context Menu
 		/// </summary>
 		public object Icon {
-			get { return GetValue(IconProperty); }
+			get { return (object)GetValue(IconProperty); }
 			set { SetValue(IconProperty, value); }
 		}
 

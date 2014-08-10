@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop {
+namespace BExplorer.Shell.Interop
+{
 	/// <summary>
 	/// A refence to an icon resource 
 	/// </summary>    
-	public struct IconReference {
+	public struct IconReference
+	{
 		#region Private members
 
 		private string moduleName;
@@ -23,8 +25,10 @@ namespace BExplorer.Shell.Interop {
 		/// <param name="moduleName">String specifying the name of an executable file, DLL, or icon file</param>
 		/// <param name="resourceId">Zero-based index of the icon</param>
 		public IconReference(string moduleName, int resourceId)
-			: this() {
-			if (string.IsNullOrEmpty(moduleName)) {
+			: this()
+		{
+			if (string.IsNullOrEmpty(moduleName))
+			{
 				throw new ArgumentNullException("moduleName");
 			}
 
@@ -39,14 +43,17 @@ namespace BExplorer.Shell.Interop {
 		/// </summary>
 		/// <param name="refPath">Reference path for the icon consiting of the module name and resource id.</param>
 		public IconReference(string refPath)
-			: this() {
-			if (string.IsNullOrEmpty(refPath)) {
+			: this()
+		{
+			if (string.IsNullOrEmpty(refPath))
+			{
 				throw new ArgumentNullException("refPath");
 			}
 
 			string[] refParams = refPath.Split(commaSeparator);
 
-			if (refParams.Length != 2 || string.IsNullOrEmpty(refParams[0]) || string.IsNullOrEmpty(refParams[1])) {
+			if (refParams.Length != 2 || string.IsNullOrEmpty(refParams[0]) || string.IsNullOrEmpty(refParams[1]))
+			{
 				throw new ArgumentException("", "refPath");
 			}
 
@@ -59,12 +66,16 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// String specifying the name of an executable file, DLL, or icon file
 		/// </summary>
-		public string ModuleName {
-			get {
+		public string ModuleName
+		{
+			get
+			{
 				return moduleName;
 			}
-			set {
-				if (string.IsNullOrEmpty(value)) {
+			set
+			{
+				if (string.IsNullOrEmpty(value))
+				{
 					throw new ArgumentNullException("value");
 				}
 				moduleName = value;
@@ -79,18 +90,23 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Reference to a specific icon within a EXE, DLL or icon file.
 		/// </summary>
-		public string ReferencePath {
-			get {
+		public string ReferencePath
+		{
+			get
+			{
 				return referencePath;
 			}
-			set {
-				if (string.IsNullOrEmpty(value)) {
+			set
+			{
+				if (string.IsNullOrEmpty(value))
+				{
 					throw new ArgumentNullException("value");
 				}
 
 				string[] refParams = value.Split(commaSeparator);
 
-				if (refParams.Length != 2 || string.IsNullOrEmpty(refParams[0]) || string.IsNullOrEmpty(refParams[1])) {
+				if (refParams.Length != 2 || string.IsNullOrEmpty(refParams[0]) || string.IsNullOrEmpty(refParams[1]))
+				{
 					throw new ArgumentException("", "value");
 				}
 
@@ -107,7 +123,8 @@ namespace BExplorer.Shell.Interop {
 		/// <param name="icon1">First object to compare.</param>
 		/// <param name="icon2">Second object to compare.</param>
 		/// <returns>True if icon1 equals icon1; false otherwise.</returns>
-		public static bool operator ==(IconReference icon1, IconReference icon2) {
+		public static bool operator ==(IconReference icon1, IconReference icon2)
+		{
 			return (icon1.moduleName == icon2.moduleName) &&
 					(icon1.referencePath == icon2.referencePath) &&
 					(icon1.ResourceId == icon2.ResourceId);
@@ -119,7 +136,8 @@ namespace BExplorer.Shell.Interop {
 		/// <param name="icon1">First object to compare.</param>
 		/// <param name="icon2">Second object to compare.</param>
 		/// <returns>True if icon1 does not equals icon1; false otherwise.</returns>
-		public static bool operator !=(IconReference icon1, IconReference icon2) {
+		public static bool operator !=(IconReference icon1, IconReference icon2)
+		{
 			return !(icon1 == icon2);
 		}
 
@@ -128,7 +146,8 @@ namespace BExplorer.Shell.Interop {
 		/// </summary>
 		/// <param name="obj">The object to compare</param>
 		/// <returns>Returns true if the objects are equal; false otherwise.</returns>
-		public override bool Equals(object obj) {
+		public override bool Equals(object obj)
+		{
 			if (obj == null || !(obj is IconReference)) { return false; }
 			return (this == (IconReference)obj);
 		}
@@ -137,7 +156,8 @@ namespace BExplorer.Shell.Interop {
 		/// Generates a nearly unique hashcode for this structure.
 		/// </summary>
 		/// <returns>A hash code.</returns>
-		public override int GetHashCode() {
+		public override int GetHashCode()
+		{
 			int hash = this.moduleName.GetHashCode();
 			hash = hash * 31 + this.referencePath.GetHashCode();
 			hash = hash * 31 + this.ResourceId.GetHashCode();

@@ -31,8 +31,6 @@ namespace Wpf.Controls {
 		public string StartUpLocation = KnownFolders.Libraries.ParsingName;
 		public DragEventHandler newt_DragEnter, newt_DragOver, newt_Drop;
 		public MouseEventHandler newt_PreviewMouseMove;
-
-		/// <summary>An <see cref="Action">Action</see> that is fired after a new tab is created</summary> 
 		public Action ConstructMoveToCopyToMenu;
 		public bool isGoingBackOrForward;
 
