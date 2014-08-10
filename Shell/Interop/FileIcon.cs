@@ -158,15 +158,11 @@ namespace BExplorer.Shell.Interop {
 				DisplayName = shfi.szDisplayName;
 			}
 			else {
-
 				int err = GetLastError();
 				Console.WriteLine("Error {0}", err);
 				string txtS = new string('\0', 256);
 				int len = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, IntPtr.Zero, err, 0, txtS, 256, 0);
 				Console.WriteLine("Len {0} text {1}", len, txtS);
-
-				// throw exception
-
 			}
 		}
 
