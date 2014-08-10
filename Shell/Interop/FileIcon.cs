@@ -28,9 +28,9 @@ namespace BExplorer.Shell.Interop {
 		}
 
 		public void Dispose() {
-			if (fileIcon != null) {
-				fileIcon.Dispose();
-				fileIcon = null;
+			if (ShellIcon != null) {
+				ShellIcon.Dispose();
+				ShellIcon = null;
 			}
 		}
 		[DllImport("shell32")]
@@ -41,8 +41,10 @@ namespace BExplorer.Shell.Interop {
 			 uint cbFileInfo,
 			 uint uFlags);
 
+		/*
 		[DllImport("user32.dll")]
 		private static extern int DestroyIcon(IntPtr hIcon);
+		*/
 
 		private const int FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x100;
 		private const int FORMAT_MESSAGE_ARGUMENT_ARRAY = 0x2000;
@@ -66,11 +68,10 @@ namespace BExplorer.Shell.Interop {
 		#endregion
 
 		#region Member Variables
-		private string fileName;
-		private string displayName;
-		private string typeName;
-		private SHGetFileInfoConstants flags;
-		private Icon fileIcon;
+		//private string displayName;
+		//private string typeName;
+		//private SHGetFileInfoConstants flags;
+		//private Icon fileIcon;
 		#endregion
 
 		#region Enumerations
@@ -104,90 +105,64 @@ namespace BExplorer.Shell.Interop {
 		#endregion
 
 		#region Implementation
+
+
 		/// <summary>
 		/// Gets/sets the flags used to extract the icon
 		/// </summary>
-		public FileIcon.SHGetFileInfoConstants Flags {
-			get {
-				return flags;
-			}
-			set {
-				flags = value;
-			}
-		}
+		public FileIcon.SHGetFileInfoConstants Flags { get; set; }
 
 		/// <summary>
 		/// Gets/sets the filename to get the icon for
 		/// </summary>
-		public string FileName {
-			get {
-				return fileName;
-			}
-			set {
-				fileName = value;
-			}
-		}
+		public string FileName { get; set; }
 
 		/// <summary>
 		/// Gets the icon for the chosen file
 		/// </summary>
-		public Icon ShellIcon {
-			get {
-				return fileIcon;
-			}
-		}
+		public Icon ShellIcon { get; private set; }
+
 
 		/// <summary>
 		/// Gets the display name for the selected file
 		/// if the SHGFI_DISPLAYNAME flag was set.
 		/// </summary>
-		public string DisplayName {
-			get {
-				return displayName;
-			}
-		}
+		public string DisplayName { get; private set; }
 
 		/// <summary>
 		/// Gets the type name for the selected file
 		/// if the SHGFI_TYPENAME flag was set.
 		/// </summary>
-		public string TypeName {
-			get {
-				return typeName;
-			}
-		}
+		public string TypeName { get; private set; }
 
 		/// <summary>
 		///  Gets the information for the specified 
 		///  file name and flags.
 		/// </summary>
 		public void GetInfo() {
-			fileIcon = null;
-			typeName = "";
-			displayName = "";
+			ShellIcon = null;
+			TypeName = "";
+			DisplayName = "";
 
 			SHFILEINFO shfi = new SHFILEINFO();
 			uint shfiSize = (uint)Marshal.SizeOf(shfi.GetType());
 
-			int ret = SHGetFileInfo(
-				 fileName, 0, ref shfi, shfiSize, (uint)(flags));
+			int ret = SHGetFileInfo(FileName, 0, ref shfi, shfiSize, (uint)(Flags));
 			if (ret != 0) {
 				if (shfi.hIcon != IntPtr.Zero) {
-					fileIcon = System.Drawing.Icon.FromHandle(shfi.hIcon);
+					ShellIcon = System.Drawing.Icon.FromHandle(shfi.hIcon);
 					// Now owned by the GDI+ object
 					//DestroyIcon(shfi.hIcon);
 				}
-				typeName = shfi.szTypeName;
-				displayName = shfi.szDisplayName;
+				TypeName = shfi.szTypeName;
+				DisplayName = shfi.szDisplayName;
 			}
 			else {
 
 				int err = GetLastError();
 				Console.WriteLine("Error {0}", err);
 				string txtS = new string('\0', 256);
-				int len = FormatMessage(
-					 FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-					 IntPtr.Zero, err, 0, txtS, 256, 0);
+				int len = FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, IntPtr.Zero, err, 0, txtS, 256, 0);
 				Console.WriteLine("Len {0} text {1}", len, txtS);
 
 				// throw exception
@@ -201,11 +176,11 @@ namespace BExplorer.Shell.Interop {
 		/// to retrieve an icon.
 		/// </summary>
 		public FileIcon() {
-			flags = SHGetFileInfoConstants.SHGFI_ICON |
-				 SHGetFileInfoConstants.SHGFI_DISPLAYNAME |
-				 SHGetFileInfoConstants.SHGFI_TYPENAME |
-				 SHGetFileInfoConstants.SHGFI_ATTRIBUTES |
-				 SHGetFileInfoConstants.SHGFI_EXETYPE;
+			Flags = SHGetFileInfoConstants.SHGFI_ICON |
+					SHGetFileInfoConstants.SHGFI_DISPLAYNAME |
+					SHGetFileInfoConstants.SHGFI_TYPENAME |
+					SHGetFileInfoConstants.SHGFI_ATTRIBUTES |
+					SHGetFileInfoConstants.SHGFI_EXETYPE;
 		}
 		/// <summary>
 		/// Constructs a new instance of the FileIcon class
@@ -216,7 +191,7 @@ namespace BExplorer.Shell.Interop {
 		/// display name and type name for</param>
 		public FileIcon(string fileName)
 			: this() {
-			this.fileName = fileName;
+			this.FileName = fileName;
 			GetInfo();
 		}
 		/// <summary>
@@ -229,8 +204,8 @@ namespace BExplorer.Shell.Interop {
 		/// <param name="flags">The flags to use when extracting the
 		/// icon and other shell information.</param>
 		public FileIcon(string fileName, FileIcon.SHGetFileInfoConstants flags) {
-			this.fileName = fileName;
-			this.flags = flags;
+			this.FileName = fileName;
+			this.Flags = flags;
 			GetInfo();
 		}
 

@@ -317,8 +317,10 @@ namespace BExplorer.Shell.Interop {
 				 IntPtr[] phIconSmall,
 				 int nIcons);
 
+			/*
 			[DllImport("user32")]
 			internal static extern int DestroyIcon(IntPtr hIcon);
+			*/
 		}
 		#endregion
 

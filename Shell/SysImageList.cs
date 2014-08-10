@@ -195,6 +195,7 @@ namespace BExplorer.Shell {
 				return bitmap;
 		}
 		*/
+
 		[DllImport("USER32.DLL", EntryPoint = "DestroyIcon", CharSet = CharSet.Auto)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool DestroyIcon(IntPtr hIcon);
