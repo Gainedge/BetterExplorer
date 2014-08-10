@@ -9,6 +9,7 @@ using BExplorer.Shell.Interop;
 using System.Runtime.InteropServices;
 using System.IO;
 using System.Security;
+using F = System.Windows.Forms;
 
 namespace BExplorer.Shell {
 	public partial class ShellTreeViewEx : UserControl {
@@ -191,7 +192,7 @@ namespace BExplorer.Shell {
 			this.ShellTreeView = new TreeViewBase();
 			this.ShellTreeView.Dock = DockStyle.Fill;
 			this.ShellTreeView.BackColor = Color.White;
-			this.ShellTreeView.BorderStyle = System.Windows.Forms.BorderStyle.None;
+			this.ShellTreeView.BorderStyle = F.BorderStyle.None;
 			this.ShellTreeView.AllowDrop = true;
 			this.ShellTreeView.HideSelection = false;
 			this.ShellTreeView.ShowLines = false;
@@ -339,7 +340,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public void DoMove(System.Windows.Forms.IDataObject dataObject, ShellItem destination) {
+		public void DoMove(F.IDataObject dataObject, ShellItem destination) {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
 				var shellItemArray = dataObject.ToShellItemArray();
@@ -360,7 +361,7 @@ namespace BExplorer.Shell {
 			thread.Start();
 
 		}
-		public void DoCopy(System.Windows.Forms.IDataObject dataObject, ShellItem destination) {
+		public void DoCopy(F.IDataObject dataObject, ShellItem destination) {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
 				var shellItemArray = dataObject.ToShellItemArray();
@@ -387,7 +388,7 @@ namespace BExplorer.Shell {
 
 			var handle = this.Handle;
 			var thread = new Thread(() => {
-				var dataObject = System.Windows.Forms.Clipboard.GetDataObject();
+				var dataObject = F.Clipboard.GetDataObject();
 				var dragDropEffect = System.Windows.DragDropEffects.Copy;
 				var dropEffect = dataObject.ToDropEffect();
 				var shellItemArray = dataObject.ToShellItemArray();
@@ -424,11 +425,11 @@ namespace BExplorer.Shell {
 			this.cuttedNode = this.ShellTreeView.SelectedNode;
 			var selectedItems = new ShellItem[1];
 			selectedItems[0] = this.ShellTreeView.SelectedNode.Tag as ShellItem;
-			System.Windows.Forms.IDataObject ddataObject = new System.Windows.Forms.DataObject();
+			var ddataObject = new F.DataObject();
 			// Copy or Cut operation (5 = copy; 2 = cut)
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 2, 0, 0, 0 }));
 			ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
-			System.Windows.Forms.Clipboard.SetDataObject(ddataObject, true);
+			F.Clipboard.SetDataObject(ddataObject, true);
 
 		}
 		public void CopySelectedFiles() {
@@ -437,10 +438,10 @@ namespace BExplorer.Shell {
 			var selectedItems = new ShellItem[1];
 			selectedItems[0] = this.ShellTreeView.SelectedNode.Tag as ShellItem;
 			//System.Runtime.InteropServices.ComTypes.IDataObject dataObject = GetIDataObject(this.SelectedItems.ToArray(), out dataObjPtr);
-			System.Windows.Forms.DataObject ddataObject = new System.Windows.Forms.DataObject();
+			var ddataObject = new F.DataObject();
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 5, 0, 0, 0 }));
 			ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
-			System.Windows.Forms.Clipboard.SetDataObject(ddataObject, true);
+			F.Clipboard.SetDataObject(ddataObject, true);
 
 		}
 		#endregion
@@ -561,17 +562,17 @@ namespace BExplorer.Shell {
 				System.Runtime.InteropServices.ComTypes.IDataObject dataObject = shellItem.GetIDataObject(out dataObjPtr);
 
 				uint ef = 0;
-				Shell32.SHDoDragDrop(this.ShellListView.Handle, dataObject, null, unchecked((uint)System.Windows.Forms.DragDropEffects.All | (uint)System.Windows.Forms.DragDropEffects.Link), out ef);
+				Shell32.SHDoDragDrop(this.ShellListView.Handle, dataObject, null, unchecked((uint)F.DragDropEffects.All | (uint)F.DragDropEffects.Link), out ef);
 			}
 		}
 
 		void ShellTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
-			if (e.Button == System.Windows.Forms.MouseButtons.Right) {
+			if (e.Button == F.MouseButtons.Right) {
 				//this.ShellTreeView.SelectedNode = e.Node;
 				ShellContextMenu cm = new ShellContextMenu(e.Node.Tag as ShellItem);
 				cm.ShowContextMenu(this, e.Location, CMF.CANRENAME);
 			}
-			else if (e.Button == System.Windows.Forms.MouseButtons.Left) {
+			else if (e.Button == F.MouseButtons.Left) {
 				this._IsNavigate = true;
 			}
 
@@ -638,43 +639,30 @@ namespace BExplorer.Shell {
 		}
 
 		void ShellTreeView_DragEnter(object sender, DragEventArgs e) {
-			if ((e.KeyState & (8 + 32)) == (8 + 32) &&
-						(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Link) == System.Windows.Forms.DragDropEffects.Link) {
+			if ((e.KeyState & (8 + 32)) == (8 + 32) && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
 				// KeyState 8 + 32 = CTL + ALT 
 
 				// Link drag-and-drop effect.
-				e.Effect = System.Windows.Forms.DragDropEffects.Link;
-
+				e.Effect = F.DragDropEffects.Link;
 			}
-			else if ((e.KeyState & 32) == 32 &&
-				(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Link) == System.Windows.Forms.DragDropEffects.Link) {
-
+			else if ((e.KeyState & 32) == 32 && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
 				// ALT KeyState for link.
-				e.Effect = System.Windows.Forms.DragDropEffects.Link;
-
+				e.Effect = F.DragDropEffects.Link;
 			}
-			else if ((e.KeyState & 4) == 4 &&
-				(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Move) == System.Windows.Forms.DragDropEffects.Move) {
-
+			else if ((e.KeyState & 4) == 4 && (e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
 				// SHIFT KeyState for move.
-				e.Effect = System.Windows.Forms.DragDropEffects.Move;
-
+				e.Effect = F.DragDropEffects.Move;
 			}
-			else if ((e.KeyState & 8) == 8 &&
-				(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Copy) == System.Windows.Forms.DragDropEffects.Copy) {
-
+			else if ((e.KeyState & 8) == 8 && (e.AllowedEffect & F.DragDropEffects.Copy) == F.DragDropEffects.Copy) {
 				// CTL KeyState for copy.
-				e.Effect = System.Windows.Forms.DragDropEffects.Copy;
-
+				e.Effect = F.DragDropEffects.Copy;
 			}
-			else if ((e.AllowedEffect & System.Windows.Forms.DragDropEffects.Move) == System.Windows.Forms.DragDropEffects.Move) {
-
+			else if ((e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
 				// By default, the drop action should be move, if allowed.
-				e.Effect = System.Windows.Forms.DragDropEffects.Move;
-
+				e.Effect = F.DragDropEffects.Move;
 			}
 			else
-				e.Effect = System.Windows.Forms.DragDropEffects.None;
+				e.Effect = F.DragDropEffects.None;
 
 			Win32Point wp = new Win32Point();
 			wp.X = e.X;
@@ -687,42 +675,42 @@ namespace BExplorer.Shell {
 
 		void ShellTreeView_DragOver(object sender, DragEventArgs e) {
 			if ((e.KeyState & (8 + 32)) == (8 + 32) &&
-				(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Link) == System.Windows.Forms.DragDropEffects.Link) {
+				(e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
 				// KeyState 8 + 32 = CTL + ALT 
 
 				// Link drag-and-drop effect.
-				e.Effect = System.Windows.Forms.DragDropEffects.Link;
+				e.Effect = F.DragDropEffects.Link;
 
 			}
 			else if ((e.KeyState & 32) == 32 &&
-				(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Link) == System.Windows.Forms.DragDropEffects.Link) {
+				(e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
 
 				// ALT KeyState for link.
-				e.Effect = System.Windows.Forms.DragDropEffects.Link;
+				e.Effect = F.DragDropEffects.Link;
 
 			}
 			else if ((e.KeyState & 4) == 4 &&
-				(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Move) == System.Windows.Forms.DragDropEffects.Move) {
+				(e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
 
 				// SHIFT KeyState for move.
-				e.Effect = System.Windows.Forms.DragDropEffects.Move;
+				e.Effect = F.DragDropEffects.Move;
 
 			}
 			else if ((e.KeyState & 8) == 8 &&
-				(e.AllowedEffect & System.Windows.Forms.DragDropEffects.Copy) == System.Windows.Forms.DragDropEffects.Copy) {
+				(e.AllowedEffect & F.DragDropEffects.Copy) == F.DragDropEffects.Copy) {
 
 				// CTL KeyState for copy.
-				e.Effect = System.Windows.Forms.DragDropEffects.Copy;
+				e.Effect = F.DragDropEffects.Copy;
 
 			}
-			else if ((e.AllowedEffect & System.Windows.Forms.DragDropEffects.Move) == System.Windows.Forms.DragDropEffects.Move) {
+			else if ((e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
 
 				// By default, the drop action should be move, if allowed.
-				e.Effect = System.Windows.Forms.DragDropEffects.Move;
+				e.Effect = F.DragDropEffects.Move;
 
 			}
 			else
-				e.Effect = System.Windows.Forms.DragDropEffects.None;
+				e.Effect = F.DragDropEffects.None;
 
 			Win32Point wp = new Win32Point();
 			wp.X = e.X;
@@ -767,20 +755,20 @@ namespace BExplorer.Shell {
 				destination = hittestInfo.Node.Tag as ShellItem;
 
 			switch (e.Effect) {
-				case System.Windows.Forms.DragDropEffects.All:
+				case F.DragDropEffects.All:
 					break;
-				case System.Windows.Forms.DragDropEffects.Copy:
+				case F.DragDropEffects.Copy:
 					this.DoCopy(e.Data, destination);
 					break;
-				case System.Windows.Forms.DragDropEffects.Link:
+				case F.DragDropEffects.Link:
 					System.Windows.MessageBox.Show("link");
 					break;
-				case System.Windows.Forms.DragDropEffects.Move:
+				case F.DragDropEffects.Move:
 					this.DoMove(e.Data, destination);
 					break;
-				case System.Windows.Forms.DragDropEffects.None:
+				case F.DragDropEffects.None:
 					break;
-				case System.Windows.Forms.DragDropEffects.Scroll:
+				case F.DragDropEffects.Scroll:
 					break;
 				default:
 					break;
