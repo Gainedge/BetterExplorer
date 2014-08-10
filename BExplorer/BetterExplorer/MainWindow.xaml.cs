@@ -5004,9 +5004,8 @@ namespace BetterExplorer {
 		}
 
 		private void btnNewItem_DropDownOpened(object sender, EventArgs e) {
-			ShellContextMenu mnu = new ShellContextMenu(this.ShellListView, this.ShellListView.CurrentFolder, 0);
-			var controlPos = btnNewItem.TransformToAncestor(Application.Current.MainWindow)
-											.Transform(new System.Windows.Point(0, 0));
+			ShellContextMenu mnu = new ShellContextMenu(this.ShellListView, 0);
+			var controlPos = btnNewItem.TransformToAncestor(Application.Current.MainWindow).Transform(new System.Windows.Point(0, 0));
 			var tempPoint = PointToScreen(new System.Windows.Point(controlPos.X, controlPos.Y));
 			mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnNewItem.ActualHeight));
 			btnNewItem.IsDropDownOpen = false;

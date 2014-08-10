@@ -66,16 +66,46 @@ namespace BExplorer.Shell {
 	/// example <see cref="InvokeDelete"/> and <see cref="InvokeRename"/>.
 	/// </remarks>
 	public class ShellContextMenu {
+
+		const int m_CmdFirst = 0x8000;
+		MessageWindow m_MessageWindow;
+		IContextMenu m_ComInterface;
+		IContextMenu2 m_ComInterface2;
+		IContextMenu3 m_ComInterface3;
+
+		/// <summary>The ShellView the ContextMenu is associated with</summary>
 		private ShellView _ShellView { get; set; }
-		private ShellTreeViewEx _ShellTreeView { get; set; }
-		public ShellContextMenu(ShellView shellView, ShellItem dirItem, int menuType) {
+
+		/// <summary>
+		/// Gets the underlying COM <see cref="IContextMenu"/> interface.
+		/// </summary>
+		[Obsolete("Never Used")]
+		public IContextMenu ComInterface {
+			get { return m_ComInterface; }
+			set { m_ComInterface = value; }
+		}
+
+
+
+
+
+		//[Obsolete("Never Used")]
+		//private ShellTreeViewEx _ShellTreeView { get; set; }
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ShellContextMenu"/> class.
+		/// </summary>
+		/// <param name="shellView">The ShellView the ContextMenu is associated with</param>
+		/// <param name="menuType"></param>
+		public ShellContextMenu(ShellView shellView, int menuType) {
 			this._ShellView = shellView;
+
 			IntPtr iContextMenu = IntPtr.Zero;
 
 			if (menuType == 0)
-				this.GetNewContextMenu(dirItem, out iContextMenu, out m_ComInterface);
+				this.GetNewContextMenu(_ShellView.CurrentFolder, out iContextMenu, out m_ComInterface);
 			else
-				this.GetOpenWithContextMenu(dirItem, out iContextMenu, out m_ComInterface);
+				this.GetOpenWithContextMenu(_ShellView.CurrentFolder, out iContextMenu, out m_ComInterface);
 
 			m_ComInterface2 = m_ComInterface as IContextMenu2;
 			m_ComInterface3 = m_ComInterface as IContextMenu3;
@@ -94,19 +124,20 @@ namespace BExplorer.Shell {
 		}
 
 		/// <summary>
-		/// Initialises a new instance of the <see cref="ShellContextMenu"/> 
-		/// class.
+		/// Initializes a new instance of the <see cref="ShellContextMenu"/> class.
 		/// </summary>
 		/// 
 		/// <param name="items">
 		/// The items to which the context menu should refer.
 		/// </param>
+		/// <param name="svgio"></param>
 		public ShellContextMenu(ShellItem[] items, SVGIO svgio = SVGIO.SVGIO_SELECTION) {
 			//this._ShellView = view;
 			//this._ShellTreeView = tree;
 			if (svgio == SVGIO.SVGIO_BACKGROUND) {
 				Initialize(items[0]);
-			} else {
+			}
+			else {
 				Initialize(items);
 			}
 
@@ -167,7 +198,8 @@ namespace BExplorer.Shell {
 				//		}
 				//	}
 				//}
-			} else if (m.Msg == (int)WM.WM_MENUCHAR) {
+			}
+			else if (m.Msg == (int)WM.WM_MENUCHAR) {
 				if ((m_ComInterface3 != null)) {
 					var ptr = IntPtr.Zero;
 					hr = (int)m_ComInterface3.HandleMenuMsg2(m.Msg, m.WParam, m.LParam, out ptr);
@@ -238,13 +270,11 @@ namespace BExplorer.Shell {
 		/// Form's message handler.
 		/// </remarks>
 		/// 
-		/// <param name="menu">
-		/// The menu to populate.
-		/// </param>
+		/// <param name="menu">The menu to populate.</param>
+		/// <param name="additionalFlags"></param>
 		public void Populate(Menu menu, CMF additionalFlags) {
 			RemoveShellMenuItems(menu);
-			m_ComInterface.QueryContextMenu(menu.Handle, 0,
-					m_CmdFirst, int.MaxValue, CMF.EXPLORE | additionalFlags);
+			m_ComInterface.QueryContextMenu(menu.Handle, 0, m_CmdFirst, int.MaxValue, CMF.EXPLORE | additionalFlags);
 		}
 		/// <summary>
 		/// Shows a context menu for a shell item.
@@ -258,6 +288,8 @@ namespace BExplorer.Shell {
 		/// The position on <paramref name="control"/> that the menu
 		/// should be displayed at.
 		/// </param>
+		/// <param name="aditionalFlags"></param>
+		/// <param name="IsOnEmpty"></param>
 		public void ShowContextMenu(Control control, Point pos, CMF aditionalFlags = 0, bool IsOnEmpty = false) {
 			using (ContextMenu menu = new ContextMenu()) {
 				pos = control.PointToScreen(pos);
@@ -271,14 +303,14 @@ namespace BExplorer.Shell {
 					if (isSep) {
 						User32.DeleteMenu(menu.Handle, count - 1, MF.MF_BYPOSITION);
 					}
-				} 
+				}
 
 				if (IsOnEmpty) {
 					User32.DeleteMenu(menu.Handle, 0, MF.MF_BYPOSITION);
 					User32.DeleteMenu(menu.Handle, 0, MF.MF_BYPOSITION);
 					User32.DeleteMenu(menu.Handle, 0, MF.MF_BYPOSITION);
 					User32.DeleteMenu(menu.Handle, 0, MF.MF_BYPOSITION);
-					User32.DeleteMenu(menu.Handle, 0, MF.MF_BYPOSITION); 
+					User32.DeleteMenu(menu.Handle, 0, MF.MF_BYPOSITION);
 				}
 				if (User32.GetMenuItemInfo(menu.Handle, 1, true, ref itemInfo)) {
 					if ((itemInfo.fType & 2048) != 0) {
@@ -353,7 +385,8 @@ namespace BExplorer.Shell {
 						InvokeCommand((int)item, pos);
 					}
 				}
-			} else {
+			}
+			else {
 				using (ContextMenu menu = new ContextMenu()) {
 					Populate(menu, CMF.NORMAL);
 					int command = User32.TrackPopupMenuEx(menu.Handle,
@@ -364,13 +397,6 @@ namespace BExplorer.Shell {
 					}
 				}
 			}
-		}
-		/// <summary>
-		/// Gets the underlying COM <see cref="IContextMenu"/> interface.
-		/// </summary>
-		public IContextMenu ComInterface {
-			get { return m_ComInterface; }
-			set { m_ComInterface = value; }
 		}
 
 		void Initialize(ShellItem[] items) {
@@ -384,11 +410,13 @@ namespace BExplorer.Shell {
 				if (parent == null) {
 					if (items[n] == ShellItem.Desktop) {
 						parent = ShellItem.Desktop;
-					} else {
+					}
+					else {
 						parent = items[n].Parent;
 
 					}
-				} else {
+				}
+				else {
 					if (items[n].Parent != parent) {
 						throw new Exception("All shell items must have the same parent");
 					}
@@ -401,7 +429,8 @@ namespace BExplorer.Shell {
 				var view = Marshal.GetObjectForIUnknown(ishellViewPtr) as IShellView;
 				view.GetItemObject(SVGIO.SVGIO_BACKGROUND, typeof(IContextMenu).GUID, out result);
 				Marshal.ReleaseComObject(view);
-			} else {
+			}
+			else {
 				parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero,
 						(uint)pidls.Length, pidls,
 						typeof(IContextMenu).GUID, 0, out result);
@@ -474,7 +503,8 @@ namespace BExplorer.Shell {
 					// If the item has no submenu we can't get the tag, so 
 					// check its ID to determine if it was added by the shell.
 					if (itemInfo.wID >= m_CmdFirst) remove.Add(n);
-				} else {
+				}
+				else {
 					User32.GetMenuInfo(itemInfo.hSubMenu, ref menuInfo);
 					if (menuInfo.dwMenuData != tag) remove.Add(n);
 				}
@@ -513,10 +543,12 @@ namespace BExplorer.Shell {
 						Marshal.ReleaseComObject(iShellExtInit);
 						Marshal.Release(iShellExtInitPtr);
 						return true;
-					} finally {
+					}
+					finally {
 
 					}
-				} else {
+				}
+				else {
 					if (iContextMenu != null) {
 						Marshal.ReleaseComObject(iContextMenu);
 						iContextMenu = null;
@@ -529,7 +561,8 @@ namespace BExplorer.Shell {
 
 					return false;
 				}
-			} else {
+			}
+			else {
 				iContextMenuPtr = IntPtr.Zero;
 				iContextMenu = null;
 				return false;
@@ -561,18 +594,21 @@ namespace BExplorer.Shell {
 						Marshal.ReleaseComObject(iShellExtInit);
 						Marshal.Release(iShellExtInitPtr);
 						return true;
-					} finally {
+					}
+					finally {
 
 					}
-				} else {
+				}
+				else {
 					if (iContextMenu != null) {
 						Marshal.ReleaseComObject(iContextMenu);
 						iContextMenu = null;
 					}
-					
+
 					return false;
 				}
-			} else {
+			}
+			else {
 				iContextMenuPtr = IntPtr.Zero;
 				iContextMenu = null;
 				return false;
@@ -592,11 +628,5 @@ namespace BExplorer.Shell {
 
 			ShellContextMenu m_Parent;
 		}
-
-		MessageWindow m_MessageWindow;
-		IContextMenu m_ComInterface;
-		IContextMenu2 m_ComInterface2;
-		IContextMenu3 m_ComInterface3;
-		const int m_CmdFirst = 0x8000;
 	}
 }
