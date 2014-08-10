@@ -157,9 +157,6 @@
     <Compile Include="Interop\Gdi32.cs" />
     <Compile Include="Interop\IThumbnail.cs" />
     <Compile Include="Interop\UxTheme.cs" />
-    <Compile Include="Interop\WIC\ComTypes\WinCodec.cs" />
-    <Compile Include="Interop\WIC\ComTypes\WinCodecSdk.cs" />
-    <Compile Include="Interop\WIC\GenericAccessRights.cs" />
     <Compile Include="KnownFolders\DefinitionOptions.cs" />
     <Compile Include="KnownFolders\FileSystemKnownFolder.cs" />
     <Compile Include="KnownFolders\FolderCategory.cs" />
