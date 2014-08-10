@@ -113,22 +113,24 @@ namespace BExplorer.Shell {
 		public IntPtr lItemlParam;
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
-	public struct NMLVCUSTOMDRAW {
-		// 104/136  
-		public NMCUSTOMDRAW nmcd;
-		public int clrText;
-		public int clrTextBk;
-		public int iSubItem;
-		public int dwItemType;
-		public int clrFace;
-		public int iIconEffect;
-		public int iIconPhase;
-		public int iPartId;
-		public int iStateId;
-		public User32.RECT rcText;
-		public int uAlign;
-	}
+	/*
+	//[StructLayout(LayoutKind.Sequential)]
+	//public struct NMLVCUSTOMDRAW {
+	//	// 104/136  
+	//	public NMCUSTOMDRAW nmcd;
+	//	public int clrText;
+	//	public int clrTextBk;
+	//	public int iSubItem;
+	//	public int dwItemType;
+	//	public int clrFace;
+	//	public int iIconEffect;
+	//	public int iIconPhase;
+	//	public int iPartId;
+	//	public int iStateId;
+	//	public User32.RECT rcText;
+	//	public int uAlign;
+	//}
+	*/
 
 	/*
 	[StructLayout(LayoutKind.Sequential)]

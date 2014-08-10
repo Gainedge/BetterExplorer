@@ -28,11 +28,68 @@ namespace BExplorer.Shell {
 			this.Owner = item;
 		}
 
+
+		public void Invoke() {
+			//TODO: Test these changes!!
+			RegistryKey root = Registry.ClassesRoot;
+			var applications = root.OpenSubKey("Applications", RegistryKeyPermissionCheck.ReadSubTree);
+			var currentApplication = applications.OpenSubKey(Path.GetFileName(this.ApplicationPath), RegistryKeyPermissionCheck.ReadSubTree);
+
+			Action OnFail = () => {
+				Process.Start(this.ApplicationPath, "\"" + this.Owner.ParsingName + "\"");
+				applications.Close();
+				root.Close();
+			};
+
+			if (currentApplication == null) {
+				OnFail();
+				return;
+			}
+
+			var command = currentApplication.OpenSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadSubTree);
+			if (command == null) {
+				command = currentApplication.OpenSubKey(@"shell\edit\command", RegistryKeyPermissionCheck.ReadSubTree);
+			}
+
+			if (command == null) {
+				OnFail();
+				return;
+			}
+
+			var commandValue = command.GetValue("").ToString();
+			var argsArray = Shell32.CommandLineToArgs(commandValue).ToList();
+			var executable = argsArray[0];
+			argsArray.RemoveAt(0);
+			for (int i = 0; i < argsArray.Count; i++) {
+				if (argsArray[i] != "%1" && argsArray[i] != "%L" && argsArray[i].ToLowerInvariant().Contains("photoviewer.dll")) {
+					argsArray[i] = "\"" + argsArray[i].Replace(",", "") + "\",";
+				}
+				else if ((argsArray[i] == "%1" || argsArray[i] == "%L") && !argsArray[i].ToLowerInvariant().Contains("photoviewer.dll")) {
+					argsArray[i] = "\"" + argsArray[i] + "\"";
+				}
+			}
+
+			var args = String.Join(" ", argsArray).Replace("%1", this.Owner.ParsingName).Replace("%L", this.Owner.ParsingName).Replace(@"\\", @"\");
+			commandValue = Environment.ExpandEnvironmentVariables(commandValue);
+			Process.Start(executable, args);
+
+			command.Close();
+			currentApplication.Close();
+			applications.Close();
+			root.Close();
+		}
+
+
+		/*
 		public void Invoke() {
 			RegistryKey root = Registry.ClassesRoot;
 			var applications = root.OpenSubKey("Applications", RegistryKeyPermissionCheck.ReadSubTree);
 			var currentApplication = applications.OpenSubKey(Path.GetFileName(this.ApplicationPath), RegistryKeyPermissionCheck.ReadSubTree);
-			if (currentApplication != null) {
+
+			if (currentApplication == null) {
+				Process.Start(this.ApplicationPath, "\"" + this.Owner.ParsingName + "\"");
+			}
+			else {
 				var commandKey = currentApplication.OpenSubKey(@"shell\open\command", RegistryKeyPermissionCheck.ReadSubTree);
 				if (commandKey != null) {
 					var commandValue = commandKey.GetValue("").ToString();
@@ -41,8 +98,9 @@ namespace BExplorer.Shell {
 					argsArray.RemoveAt(0);
 					for (int i = 0; i < argsArray.Count; i++) {
 						if (argsArray[i] != "%1" && argsArray[i] != "%L" && argsArray[i].ToLowerInvariant().Contains("photoviewer.dll")) {
-							argsArray[i] = "\"" + argsArray[i].Replace(",","") + "\",";
-						} else if ((argsArray[i] == "%1" || argsArray[i] == "%L") && !argsArray[i].ToLowerInvariant().Contains("photoviewer.dll")) {
+							argsArray[i] = "\"" + argsArray[i].Replace(",", "") + "\",";
+						}
+						else if ((argsArray[i] == "%1" || argsArray[i] == "%L") && !argsArray[i].ToLowerInvariant().Contains("photoviewer.dll")) {
 							argsArray[i] = "\"" + argsArray[i] + "\"";
 						}
 					}
@@ -50,9 +108,13 @@ namespace BExplorer.Shell {
 					commandValue = Environment.ExpandEnvironmentVariables(commandValue);
 					Process.Start(executable, args);
 					commandKey.Close();
-				} else {
+				}
+				else {
 					var commandKeyEdit = currentApplication.OpenSubKey(@"shell\edit\command", RegistryKeyPermissionCheck.ReadSubTree);
-					if (commandKeyEdit != null) {
+					if (commandKeyEdit == null) {
+						Process.Start(this.ApplicationPath, "\"" + this.Owner.ParsingName + "\"");
+					}
+					else {
 						var commandValue = commandKeyEdit.GetValue("").ToString();
 						var argsArray = Shell32.CommandLineToArgs(commandValue).ToList();
 						var executable = argsArray[0];
@@ -60,7 +122,8 @@ namespace BExplorer.Shell {
 						for (int i = 0; i < argsArray.Count; i++) {
 							if (argsArray[i] != "%1" && argsArray[i] != "%L" && argsArray[i].ToLowerInvariant().Contains("photoviewer.dll")) {
 								argsArray[i] = "\"" + argsArray[i].Replace(",", "") + "\",";
-							} else if ((argsArray[i] == "%1" || argsArray[i] == "%L") && !argsArray[i].ToLowerInvariant().Contains("photoviewer.dll")) {
+							}
+							else if ((argsArray[i] == "%1" || argsArray[i] == "%L") && !argsArray[i].ToLowerInvariant().Contains("photoviewer.dll")) {
 								argsArray[i] = "\"" + argsArray[i] + "\"";
 							}
 						}
@@ -68,18 +131,14 @@ namespace BExplorer.Shell {
 						commandValue = Environment.ExpandEnvironmentVariables(commandValue);
 						Process.Start(executable, args);
 						commandKeyEdit.Close();
-
-					} else {
-						Process.Start(this.ApplicationPath, "\"" + this.Owner.ParsingName + "\"");
 					}
 				}
 				currentApplication.Close();
-			} else {
-				Process.Start(this.ApplicationPath, "\"" + this.Owner.ParsingName + "\"");
 			}
+
 			applications.Close();
 			root.Close();
 		}
-		
+		*/
 	}
 }
