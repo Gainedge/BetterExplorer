@@ -232,6 +232,7 @@ namespace BExplorer.Shell.Interop {
 
 	}
 
+	/*
 	public struct LVBKIMAGE {
 
 		public LVBKIF ulFlags;
@@ -247,6 +248,7 @@ namespace BExplorer.Shell.Interop {
 		public int yOffsetPercent;
 
 	};
+	*/ 
 	public struct PROPERTYKEY {
 		public Guid fmtid;
 		public int pid;

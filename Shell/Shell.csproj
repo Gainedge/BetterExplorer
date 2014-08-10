@@ -258,7 +258,6 @@
     <Compile Include="_Plugin Interfaces\IShellItemEx.cs" />
     <Compile Include="__Transfered\Icons\IconFile.cs" />
     <Compile Include="__Transfered\Icons\IconReader.cs" />
-    <Compile Include="__Transfered\Icons\IconUtilities.cs" />
     <Compile Include="__Transfered\JunctionPoint.cs" />
     <Compile Include="__Transfered\WindowsAPI.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />

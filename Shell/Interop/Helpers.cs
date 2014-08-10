@@ -7,73 +7,67 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
-	public static class Helpers
-	{
+namespace BExplorer.Shell.Interop {
+	public static class Helpers {
 		/// <summary>
-    /// Change the opacity of an image
-    /// </summary>
-    /// <param name="originalImage">The original image</param>
-    /// <param name="opacity">Opacity, where 1.0 is no opacity, 0.0 is full transparency</param>
-    /// <returns>The changed image</returns>
-    public static Bitmap ChangeImageOpacity(Bitmap originalImage, double opacity)
-    {
-        if ((originalImage.PixelFormat & PixelFormat.Indexed) == PixelFormat.Indexed)
-        {
-            // Cannot modify an image with indexed colors
-            return originalImage;
-        }
+		/// Change the opacity of an image
+		/// </summary>
+		/// <param name="originalImage">The original image</param>
+		/// <param name="opacity">Opacity, where 1.0 is no opacity, 0.0 is full transparency</param>
+		/// <returns>The changed image</returns>
+		public static Bitmap ChangeImageOpacity(Bitmap originalImage, double opacity) {
+			if ((originalImage.PixelFormat & PixelFormat.Indexed) == PixelFormat.Indexed) {
+				// Cannot modify an image with indexed colors
+				return originalImage;
+			}
 
-        Bitmap bmp = (Bitmap)originalImage.Clone();
+			Bitmap bmp = (Bitmap)originalImage.Clone();
 
-        // Specify a pixel format.
-        PixelFormat pxf = PixelFormat.Format32bppArgb;
+			// Specify a pixel format.
+			PixelFormat pxf = PixelFormat.Format32bppArgb;
 
-        // Lock the bitmap's bits.
-        Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-        BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadWrite, pxf);
+			// Lock the bitmap's bits.
+			Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
+			BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadWrite, pxf);
 
-        // Get the address of the first line.
-        IntPtr ptr = bmpData.Scan0;
+			// Get the address of the first line.
+			IntPtr ptr = bmpData.Scan0;
 
-        // Declare an array to hold the bytes of the bitmap.
-        // This code is specific to a bitmap with 32 bits per pixels 
-        // (32 bits = 4 bytes, 3 for RGB and 1 byte for alpha).
-        int numBytes = bmp.Width * bmp.Height * 4;
-        byte[] argbValues = new byte[numBytes];
+			// Declare an array to hold the bytes of the bitmap.
+			// This code is specific to a bitmap with 32 bits per pixels 
+			// (32 bits = 4 bytes, 3 for RGB and 1 byte for alpha).
+			int numBytes = bmp.Width * bmp.Height * 4;
+			byte[] argbValues = new byte[numBytes];
 
-        // Copy the ARGB values into the array.
-        System.Runtime.InteropServices.Marshal.Copy(ptr, argbValues, 0, numBytes);
+			// Copy the ARGB values into the array.
+			System.Runtime.InteropServices.Marshal.Copy(ptr, argbValues, 0, numBytes);
 
-        // Manipulate the bitmap, such as changing the
-        // RGB values for all pixels in the the bitmap.
-        for (int counter = 0; counter < argbValues.Length; counter += 4)
-        {
-            // argbValues is in format BGRA (Blue, Green, Red, Alpha)
+			// Manipulate the bitmap, such as changing the
+			// RGB values for all pixels in the the bitmap.
+			for (int counter = 0; counter < argbValues.Length; counter += 4) {
+				// argbValues is in format BGRA (Blue, Green, Red, Alpha)
 
-            // If 100% transparent, skip pixel
-            if (argbValues[counter + 4 - 1] == 0)
-                continue;
+				// If 100% transparent, skip pixel
+				if (argbValues[counter + 4 - 1] == 0)
+					continue;
 
-            int pos = 0;
-            pos++; // B value
-            pos++; // G value
-            pos++; // R value
+				int pos = 0;
+				pos++; // B value
+				pos++; // G value
+				pos++; // R value
 
-            argbValues[counter + pos] = (byte) (argbValues[counter + pos] * opacity);
-        }
+				argbValues[counter + pos] = (byte)(argbValues[counter + pos] * opacity);
+			}
 
-        // Copy the ARGB values back to the bitmap
-        System.Runtime.InteropServices.Marshal.Copy(argbValues, 0, ptr, numBytes);
+			// Copy the ARGB values back to the bitmap
+			System.Runtime.InteropServices.Marshal.Copy(argbValues, 0, ptr, numBytes);
 
-        // Unlock the bits.
-        bmp.UnlockBits(bmpData);
+			// Unlock the bits.
+			bmp.UnlockBits(bmpData);
 
-        return bmp;
-    }
-		public static Bitmap ChangeOpacity(Image img, float opacityvalue)
-		{
+			return bmp;
+		}
+		public static Bitmap ChangeOpacity(Image img, float opacityvalue) {
 			Bitmap bmp = new Bitmap(img.Width, img.Height); // Determining Width and Height of Source Image
 			Graphics graphics = Graphics.FromImage(bmp);
 			ColorMatrix colormatrix = new ColorMatrix();
@@ -84,16 +78,14 @@ namespace BExplorer.Shell.Interop
 			graphics.Dispose();   // Releasing all resource used by graphics
 			return bmp;
 		}
-		internal static string GetParsingName(IShellItem shellItem)
-		{
+		internal static string GetParsingName(IShellItem shellItem) {
 			if (shellItem == null) { return null; }
 
 			string path = null;
 
 			IntPtr pszPath = shellItem.GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING);
 
-			if (pszPath != IntPtr.Zero)
-			{
+			if (pszPath != IntPtr.Zero) {
 				path = Marshal.PtrToStringAuto(pszPath);
 				Marshal.FreeCoTaskMem(pszPath);
 				pszPath = IntPtr.Zero;
@@ -103,10 +95,10 @@ namespace BExplorer.Shell.Interop
 
 		}
 
-		public static void SetListViewBackgroundImage(IntPtr lvHandle, Bitmap bitmap)
-		{
+		/*
+		public static void SetListViewBackgroundImage(IntPtr lvHandle, Bitmap bitmap) {
 
-			LVBKIMAGE lvBkImage = new LVBKIMAGE();
+			var lvBkImage = new LVBKIMAGE();
 
 			lvBkImage.ulFlags = LVBKIF.STYLE_WATERMARK | LVBKIF.FLAG_ALPHABLEND;
 
@@ -127,5 +119,6 @@ namespace BExplorer.Shell.Interop
 			Marshal.FreeHGlobal(lbkImageptr);
 
 		}
+		*/
 	}
 }

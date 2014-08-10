@@ -592,8 +592,8 @@ namespace BExplorer.Shell {
 		#region Private Members
 		//private Boolean _IsNavigationInProgress = false;
 
-		[Obsolete("Never Actually Used")]
-		private Boolean _IsInRenameMode = false;
+		//[Obsolete("Never Actually Used")]
+		//private Boolean _IsInRenameMode = false;
 
 
 		//private ShellHistory m_History;
@@ -617,37 +617,37 @@ namespace BExplorer.Shell {
 		private Bitmap ExeFallBack256;
 		private Bitmap ExeFallBack32;
 		private Bitmap ExeFallBack48;
-		[Obsolete("Not Used", true)]
-		private Bitmap Shield16;
-		[Obsolete("Not Used", true)]
-		private Bitmap Shield256;
-		[Obsolete("Never Actually Used")]
-		private Bitmap Shield32;
-		[Obsolete("Not Used", true)]
-		private Bitmap Shield48;
+		//[Obsolete("Not Used", true)]
+		//private Bitmap Shield16;
+		//[Obsolete("Not Used", true)]
+		//private Bitmap Shield256;
+		//[Obsolete("Never Actually Used")]
+		//private Bitmap Shield32;
+		//[Obsolete("Not Used", true)]
+		//private Bitmap Shield48;
 		private int ShieldIconIndex;
 		private ImageList extra = new ImageList(ImageListSize.ExtraLarge);
-		private List<int> IndexesWithThumbnail = new List<int>();
-		[Obsolete("Never Actually Used")]
-		private bool IsDoubleNavFinished = false;
+		//private List<int> IndexesWithThumbnail = new List<int>();
+		//[Obsolete("Never Actually Used")]
+		//private bool IsDoubleNavFinished = false;
 		private ImageList jumbo = new ImageList(ImageListSize.Jumbo);
 		private ImageList large = new ImageList(ImageListSize.Large);
 		//private ShellItem m_CurrentFolder;
 		private ShellViewStyle m_View;
 		private SyncQueue<int> overlayQueue = new SyncQueue<int>(); //3000
-		private Dictionary<int, int> overlays = new Dictionary<int, int>();
+		//private Dictionary<int, int> overlays = new Dictionary<int, int>();
 		private Thread _OverlaysLoadingThread;
 		private Thread _ShieldLoadingThread;
 		private F.Timer selectionTimer = new F.Timer();
-		private Dictionary<int, int> shieldedIcons = new Dictionary<int, int>();
+		//private Dictionary<int, int> shieldedIcons = new Dictionary<int, int>();
 		private SyncQueue<int> shieldQueue = new SyncQueue<int>(); //3000
 		private ImageList small = new ImageList(ImageListSize.SystemSmall);
 		private Thread _IconLoadingThread;
 		private Thread _UpdateSubitemValuesThread;
-		private ConcurrentDictionary<int, ConcurrentDictionary<Collumns, object>> SubItems = new ConcurrentDictionary<int, ConcurrentDictionary<Collumns, object>>();
+		//private ConcurrentDictionary<int, ConcurrentDictionary<Collumns, object>> SubItems = new ConcurrentDictionary<int, ConcurrentDictionary<Collumns, object>>();
 		private SyncQueue<int> ThumbnailsForCacheLoad = new SyncQueue<int>(); //5000
 		private SyncQueue<Tuple<int, int, PROPERTYKEY>> ItemsForSubitemsUpdate = new SyncQueue<Tuple<int, int, PROPERTYKEY>>(); //5000
-		private List<int> cachedIndexes = new List<int>();
+		//private List<int> cachedIndexes = new List<int>();
 		private ConcurrentBag<Tuple<int, PROPERTYKEY, object>> SubItemValues = new ConcurrentBag<Tuple<int, PROPERTYKEY, object>>();
 		private ManualResetEvent resetEvent = new ManualResetEvent(true);
 		private SyncQueue<int> waitingThumbnails = new SyncQueue<int>(); //3000
@@ -1545,7 +1545,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void BeginLabelEdit(int itemIndex) {
-			this._IsInRenameMode = true;
+			//this._IsInRenameMode = true;
 			this.IsFocusAllowed = false;
 			this.ItemForRename = itemIndex;
 			if (this.BeginItemLabelEdit != null) {
@@ -2785,7 +2785,7 @@ namespace BExplorer.Shell {
 		public void RenameItem(int index) {
 			this.Focus();
 			this.BeginLabelEdit(index);
-			this._IsInRenameMode = true;
+			//this._IsInRenameMode = true;
 		}
 
 		public void RenameSelectedItem() {
@@ -2996,7 +2996,7 @@ namespace BExplorer.Shell {
 				IconSize = value;
 				//this.Cancel = true;
 				cache.Clear();
-				cachedIndexes.Clear();
+				//cachedIndexes.Clear();
 				ThumbnailsForCacheLoad.Clear();
 				waitingThumbnails.Clear();
 				foreach (var obj in this.Items) {
@@ -3090,6 +3090,7 @@ namespace BExplorer.Shell {
 			this.Focus();
 		}
 
+		/*
 		public void DropHighLightIndex(int index, bool ensureVisisble = false) {
 			LVITEM lvi = new LVITEM();
 			lvi.mask = LVIF.LVIF_STATE;
@@ -3100,6 +3101,7 @@ namespace BExplorer.Shell {
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISISBLE, index, 0);
 			this.Focus();
 		}
+		*/
 
 		private void UpdateColsInView(bool isDetails = false) {
 			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
@@ -3174,6 +3176,7 @@ namespace BExplorer.Shell {
 			this.SelectItems(selectedItems);
 		}
 
+		/*
 		/// <summary>
 		/// Navigates the <see cref="ShellView"/> control forwards to the
 		/// requested folder in the navigation history.
@@ -3200,6 +3203,7 @@ namespace BExplorer.Shell {
 			History.MoveForward(folder);
 			CurrentFolder = folder;
 		}
+		*/
 
 		/*
 		/// <summary>
@@ -3235,6 +3239,7 @@ namespace BExplorer.Shell {
 		}
 		*/
 
+		/*
 		/// <summary>
 		/// Navigates the <see cref="ShellView"/> control backwards to the
 		/// requested folder in the navigation history.
@@ -3260,6 +3265,7 @@ namespace BExplorer.Shell {
 			History.MoveBack(folder);
 			CurrentFolder = folder;
 		}
+		*/
 
 		/*
 		/// <summary>
@@ -3301,18 +3307,18 @@ namespace BExplorer.Shell {
 			//Note:	User:	Aaron Campf	Date: 8/9/2014	Message: The below SetSortIcon(...) seems to have no effect as it is called later
 			//this.SetSortIcon(this.LastSortedColumnIndex, SortOrder.None);
 			this.Notifications.UnregisterChangeNotify();
-			overlays.Clear();
-			shieldedIcons.Clear();
+			//overlays.Clear();
+			//shieldedIcons.Clear();
 			cache.Clear();
 			Items.Clear();
-			cachedIndexes.Clear();
+			//cachedIndexes.Clear();
 			ItemsForSubitemsUpdate.Clear();
 			waitingThumbnails.Clear();
 			overlayQueue.Clear();
 			shieldQueue.Clear();
 			this.cache.Clear();
 			this._CuttedIndexes.Clear();
-			SubItems.Clear();
+			//SubItems.Clear();
 			CurrentI = 0;
 			LastI = 0;
 
@@ -3323,7 +3329,7 @@ namespace BExplorer.Shell {
 			}
 
 			if (tmp != null) tmp = null;
-			SubItems.Clear();
+			//SubItems.Clear();
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
 			this.ItemForRename = -1;
 
@@ -3416,7 +3422,7 @@ namespace BExplorer.Shell {
 			this.OnNavigated(new NavigatedEventArgs(destination, this.CurrentFolder, isInSameTab));
 			this.CurrentFolder = destination;
 
-			IsDoubleNavFinished = false;
+			//IsDoubleNavFinished = false;
 			//AutosizeAllColumns(this.View != ShellViewStyle.Details ? -2 : -1);
 
 			//if (this.View != ShellViewStyle.Details)
@@ -3427,9 +3433,11 @@ namespace BExplorer.Shell {
 
 		}
 
+		/*
 		private static int Compare(ShellItem x, ShellItem y) {
 			return String.Compare(x.DisplayName, y.DisplayName);
 		}
+		*/
 
 		public void DisableGroups() {
 			this.Groups.Clear();
@@ -3813,9 +3821,11 @@ namespace BExplorer.Shell {
 			});
 		}
 
+		/*
 		public static void StartCompartabilityWizzard() {
 			Process.Start("msdt.exe", "-id PCWDiagnostic");
 		}
+		*/
 
 		public void CleanupDrive() {
 			string DriveLetter = "";
@@ -3951,10 +3961,12 @@ namespace BExplorer.Shell {
 			//return libcreate.GetDisplayName(DisplayNameType.Default);
 		}
 
+		/*
 		[Obsolete("Never Used", true)]
 		private void SetLVBackgroundImage(Bitmap bitmap) {
 			Helpers.SetListViewBackgroundImage(this.LVHandle, bitmap);
 		}
+		*/
 
 		public HResult SetFolderIcon(string wszPath, string wszExpandedIconPath, int iIcon) {
 			HResult hr;
@@ -4062,7 +4074,7 @@ namespace BExplorer.Shell {
 					if (mainWin.IsActive || !isActiveCheck) {
 						if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)) {
 							var res = User32.SetFocus(this.LVHandle);
-							this._IsInRenameMode = false;
+							//this._IsInRenameMode = false;
 						}
 					}
 				}
@@ -4115,6 +4127,7 @@ namespace BExplorer.Shell {
 			return Found == null ? 0 : Found.Index;
 		}
 
+		/*
 		private static BitmapFrame CreateResizedImage(IntPtr hBitmap, int width, int height, int margin) {
 			var source = Imaging.CreateBitmapSourceFromHBitmap(
 															hBitmap,
@@ -4134,6 +4147,7 @@ namespace BExplorer.Shell {
 			target.Render(targetVisual);
 			return BitmapFrame.Create(target);
 		}
+		*/
 
 		/// <summary>
 		/// Returns the index of the first item whose display name starts with the search string.
@@ -4184,6 +4198,7 @@ namespace BExplorer.Shell {
 			*/
 		}
 
+		/*
 		[Obsolete("Never Used", true)]
 		private string GetStringFromAcceptedKeyCodeString(string str) {
 			str = str.ToUpperInvariant();
@@ -4203,7 +4218,7 @@ namespace BExplorer.Shell {
 				return "";
 			}
 		}
-
+		*/
 		private void StartProcessInCurrentDirectory(ShellItem item) {
 			Process.Start(new ProcessStartInfo() {
 				FileName = item.ParsingName,

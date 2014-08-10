@@ -368,13 +368,15 @@ namespace BExplorer.Shell.Interop {
 
 				// delete HBitmap to avoid memory leaks
 				Gdi32.DeleteObject(hBitmap);
-			} finally {
+			}
+			finally {
 				if (bmp != null) Marshal.ReleaseComObject(bmp);
 			}
 
 			return returnValue;
 		}
 
+		/*
 		public static Bitmap CopyHBitmapToBitmap(IntPtr nativeHBitmap) {
 			// Get width, height and the address of the pixel data for the native HBitmap
 			BITMAP bitmapStruct = new BITMAP();
@@ -398,7 +400,7 @@ namespace BExplorer.Shell.Interop {
 			// Return the managed bitmap, clone of the native HBitmap, with correct transparency
 			return managedBitmapReal;
 		}
-
+		*/
 		public Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap) {
 			Bitmap bmp = Bitmap.FromHbitmap(nativeHBitmap);
 
