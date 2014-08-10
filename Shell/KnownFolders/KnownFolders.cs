@@ -12,6 +12,7 @@ namespace BExplorer.Shell {
 	/// Defines properties for known folders that identify the path of standard known folders.
 	/// </summary>
 	public static class KnownFolders {
+
 		/// <summary>
 		/// Gets a strongly-typed read-only collection of all the registered known folders.
 		/// </summary>
@@ -68,8 +69,7 @@ namespace BExplorer.Shell {
 		/// <value> An <see cref="IKnownFolder" /> object. </value>
 		public static IKnownFolder Computer {
 			get {
-				return GetKnownFolder(
-						FolderIdentifiers.Computer);
+				return GetKnownFolder(FolderIdentifiers.Computer);
 			}
 		}
 
@@ -77,8 +77,7 @@ namespace BExplorer.Shell {
 		/// <value> An <see cref="IKnownFolder" /> object. </value>
 		public static IKnownFolder Conflict {
 			get {
-				return GetKnownFolder(
-						FolderIdentifiers.Conflict);
+				return GetKnownFolder(FolderIdentifiers.Conflict);
 			}
 		}
 
@@ -86,8 +85,7 @@ namespace BExplorer.Shell {
 		/// <value> An <see cref="IKnownFolder" /> object. </value>
 		public static IKnownFolder ControlPanel {
 			get {
-				return GetKnownFolder(
-						FolderIdentifiers.ControlPanel);
+				return GetKnownFolder(FolderIdentifiers.ControlPanel);
 			}
 		}
 
@@ -95,8 +93,7 @@ namespace BExplorer.Shell {
 		/// <value> An <see cref="IKnownFolder" /> object. </value>
 		public static IKnownFolder Desktop {
 			get {
-				return GetKnownFolder(
-						FolderIdentifiers.Desktop);
+				return GetKnownFolder(FolderIdentifiers.Desktop);
 			}
 		}
 
