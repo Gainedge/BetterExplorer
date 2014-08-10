@@ -1392,7 +1392,9 @@ namespace BExplorer.Shell {
 			DropTargetHelper.Get.Create.DragLeave();
 		}
 
-		protected override void OnDragOver(F.DragEventArgs e) {
+
+
+		private void Drag_SetEffect(F.DragEventArgs e) {
 			if ((e.KeyState & (8 + 32)) == (8 + 32) && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
 				// KeyState 8 + 32 = CTL + ALT
 
@@ -1417,8 +1419,12 @@ namespace BExplorer.Shell {
 			}
 			else
 				e.Effect = F.DragDropEffects.Copy;
+		}
 
+		protected override void OnDragOver(F.DragEventArgs e) {
 			var wp = new Win32Point() { X = e.X, Y = e.Y };
+			Drag_SetEffect(e);
+
 
 			int row = -1;
 			int collumn = -1;
@@ -1442,32 +1448,8 @@ namespace BExplorer.Shell {
 		}
 
 		protected override void OnDragEnter(F.DragEventArgs e) {
-			if ((e.KeyState & (8 + 32)) == (8 + 32) && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
-				// KeyState 8 + 32 = CTL + ALT
-
-				// Link drag-and-drop effect.
-				e.Effect = F.DragDropEffects.Link;
-			}
-			else if ((e.KeyState & 32) == 32 && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
-				// ALT KeyState for link.
-				e.Effect = F.DragDropEffects.Link;
-			}
-			else if ((e.KeyState & 4) == 4 && (e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
-				// SHIFT KeyState for move.
-				e.Effect = F.DragDropEffects.Move;
-			}
-			else if ((e.KeyState & 8) == 8 && (e.AllowedEffect & F.DragDropEffects.Copy) == F.DragDropEffects.Copy) {
-				// CTL KeyState for copy.
-				e.Effect = F.DragDropEffects.Copy;
-			}
-			else if ((e.AllowedEffect & F.DragDropEffects.Move) == F.DragDropEffects.Move) {
-				// By default, the drop action should be move, if allowed.
-				e.Effect = F.DragDropEffects.Move;
-			}
-			else
-				e.Effect = F.DragDropEffects.Copy;
-
-			Win32Point wp = new Win32Point() { X = e.X, Y = e.Y };
+			var wp = new Win32Point() { X = e.X, Y = e.Y };
+			Drag_SetEffect(e);
 
 			if (e.Data.GetDataPresent("DragImageBits"))
 				DropTargetHelper.Get.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
@@ -2830,8 +2812,8 @@ namespace BExplorer.Shell {
 		public void PasteAvailableFiles() {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
+				//var dragDropEffect = System.Windows.DragDropEffects.Copy;
 				var dataObject = F.Clipboard.GetDataObject();
-				var dragDropEffect = System.Windows.DragDropEffects.Copy;
 				var dropEffect = dataObject.ToDropEffect();
 				var shellItemArray = dataObject.ToShellItemArray();
 				var items = shellItemArray.ToArray();
@@ -2854,17 +2836,24 @@ namespace BExplorer.Shell {
 			thread.Start();
 		}
 
-		public void DoCopy(ShellItem destination) {
+		private void Do_Copy_OR_Move_Helper(bool Copy, ShellItem destination) {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
 				IIFileOperation fo = new IIFileOperation(handle);
 				foreach (var item in this.SelectedItems.Select(s => s.ComInterface).ToArray()) {
-					fo.CopyItem(item, destination.ComInterface, null);
+					if (Copy)
+						fo.CopyItem(item, destination.ComInterface, null);
+					else
+						fo.MoveItem(item, destination.ComInterface, null);
 				}
 				fo.PerformOperations();
 			});
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
+		}
+
+		public void DoCopy(ShellItem destination) {
+			Do_Copy_OR_Move_Helper(true, destination);
 		}
 
 		public void DoCopy(F.IDataObject dataObject, ShellItem destination) {
@@ -2966,6 +2955,8 @@ namespace BExplorer.Shell {
 		}
 
 		public void DoMove(ShellItem destination) {
+			Do_Copy_OR_Move_Helper(false, destination);
+			return;
 			var handle = this.Handle;
 			var thread = new Thread(() => {
 				IIFileOperation fo = new IIFileOperation(handle);
