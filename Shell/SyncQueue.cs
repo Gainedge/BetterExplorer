@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace BExplorer.Shell {
 
 	[Obsolete("Can't we just use Queue directly")]
+	[System.Diagnostics.DebuggerStepThrough]
 	public class SyncQueue<T> {
 		/*
 		public class OverloadEventArgs : EventArgs {

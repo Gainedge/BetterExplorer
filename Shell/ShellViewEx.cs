@@ -331,7 +331,10 @@ namespace BExplorer.Shell {
 		public int ItemForRename { get; set; }
 		public bool IsRenameNeeded { get; set; }
 
-		public Boolean IsGroupsEnabled { get; set; }
+		//public Boolean IsGroupsEnabled { get; private set; }
+		public Boolean IsGroupsEnabled { get { return LastGroupCollumn != null; } }
+
+
 
 		/// <summary> Returns the key jump string as it currently is.</summary>
 		public string KeyJumpString { get; private set; }
@@ -1903,6 +1906,19 @@ namespace BExplorer.Shell {
 
 						case WNM.LVN_COLUMNCLICK:
 							NMLISTVIEW nlcv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
+
+							/*
+							if (!this.IsGroupsEnabled) {
+								SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
+							}
+							else {
+								if (this.LastGroupCollumn != this.Collumns[nlcv.iSubItem]) {
+									SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
+								}
+								this.SetGroupOrder(); //this.SetGroupOrder(false);
+							}
+							*/
+
 							if (!this.IsGroupsEnabled) {
 								SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
 							}
@@ -1911,22 +1927,10 @@ namespace BExplorer.Shell {
 							}
 							else {
 								SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
-								this.SetGroupOrder(false);
+								this.SetGroupOrder(); //this.SetGroupOrder(false);
 							}
-							/*
-							if (this.IsGroupsEnabled) {
-								if (this.LastGroupCollumn == this.Collumns[nlcv.iSubItem]) {
-									this.SetGroupOrder();
-								}
-								else {
-									SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
-									this.SetGroupOrder(false);
-								}
-							}
-							else {
-								SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
-							}
-							*/
+
+
 							break;
 
 						case WNM.LVN_GETINFOTIP:
@@ -3438,7 +3442,9 @@ namespace BExplorer.Shell {
 			x = User32.SendMessage(this.LVHandle, LVM_SETOWNERDATACALLBACK, 0, 0);
 			IsGroupsEnabled = false;
 			this.LastGroupCollumn = null;
-			this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
+
+			//Aaron Campf
+			//this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
 		}
 
 		public void EnableGroups() {
@@ -3456,7 +3462,13 @@ namespace BExplorer.Shell {
 			IsGroupsEnabled = true;
 		}
 
-		public void GenerateGroupsFromColumn(Collumns col, Boolean reversed = false) {
+		/// <summary>
+		/// Generates Groups
+		/// </summary>
+		/// <param name="col">The column you want to group by</param>
+		/// <param name="reversed">Reverse order (This needs to be explained better)</param>
+		public void GenerateGroupsFromColumn(Collumns col, Boolean reversed = false) { //TODO: Document Better!
+			if (col == null) return;
 			int LVM_INSERTGROUP = 0x1000 + 145;
 			this.Groups.Clear();
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
@@ -3574,12 +3586,19 @@ namespace BExplorer.Shell {
 			this.LastGroupCollumn = col;
 			this.LastGroupOrder = reversed ? SortOrder.Descending : SortOrder.Ascending;
 
+			//TODO: Check the following Change
+			//Note:	User:	Aaron Campf	Date: 8/9/2014	Message: The below code did not set the icon properly
+			/*
 			if (this.Collumns[this.LastSortedColumnIndex] == col || reversed)
 				this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
-
+			*/
 			RefreshItemsCountInternal();
 		}
 
+		/// <summary>
+		/// Sets the Sort order of the Groups
+		/// </summary>
+		/// <param name="reverse">Reverse the Current Sort Order?</param>
 		public void SetGroupOrder(Boolean reverse = true) {
 			this.GenerateGroupsFromColumn(this.LastGroupCollumn, reverse ? this.LastGroupOrder == SortOrder.Ascending : false);
 		}
@@ -4335,9 +4354,14 @@ namespace BExplorer.Shell {
 			this.ResumeLayout();
 		}
 
-		[Obsolete("This seems to have no effect")]
+		/// <summary>
+		/// This is only to be used in SetSortCollumn(...)
+		/// </summary>
+		/// <param name="columnIndex"></param>
+		/// <param name="order"></param>
 		private void SetSortIcon(int columnIndex, SortOrder order) {
-			//TODO: Find out if we really need this!!
+			//TODO: Consider Merging this into SetSortCollumn(...)
+
 			IntPtr columnHeader = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETHEADER, 0, 0);
 			for (int columnNumber = 0; columnNumber <= this.Collumns.Count - 1; columnNumber++) {
 				var item = new HDITEM {

@@ -2910,6 +2910,7 @@ namespace BetterExplorer {
 			var Sort = ascitem.IsChecked ? System.Windows.Forms.SortOrder.Ascending : System.Windows.Forms.SortOrder.Descending;
 			ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), Sort);
 		}
+		
 		void misng_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
 			item.IsChecked = true;
@@ -2917,7 +2918,6 @@ namespace BetterExplorer {
 				this.ShellListView.DisableGroups();
 			}
 		}
-
 
 		private void inRibbonGallery1_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			switch (ViewGallery.SelectedIndex) {
