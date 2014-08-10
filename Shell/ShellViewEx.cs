@@ -205,8 +205,10 @@ namespace BExplorer.Shell {
 
 		public event EventHandler<NavigatingEventArgs> Navigating;
 
+		/*
 		/// <summary> Occurs when the control loses focus </summary>
 		public new event EventHandler LostFocus;
+		*/
 
 		/// <summary> Occurs when the <see cref="ShellView" /> control navigates to a new folder. </summary>
 		public event EventHandler<NavigatedEventArgs> Navigated;
