@@ -212,15 +212,16 @@ namespace SystemImageList {
 		private const int FORMAT_MESSAGE_IGNORE_INSERTS = 0x200;
 		private const int FORMAT_MESSAGE_MAX_WIDTH_MASK = 0xFF;
 
-		[DllImport("comctl32")]
-		private extern static int ImageList_Draw(
-		   IntPtr hIml,
-		   int i,
-		   IntPtr hdcDst,
-		   int x,
-		   int y,
-		   int fStyle);
-
+		/*
+		//[DllImport("comctl32")]
+		//private extern static int ImageList_Draw(
+		//   IntPtr hIml,
+		//   int i,
+		//   IntPtr hdcDst,
+		//   int x,
+		//   int y,
+		//   int fStyle);
+		*/
 		[DllImport("comctl32")]
 		private extern static int ImageList_DrawIndirect(
 		   ref IMAGELISTDRAWPARAMS pimldp);
@@ -268,6 +269,7 @@ namespace SystemImageList {
 			private int bottom;
 		}
 		*/
+
 		/*
 		[StructLayout(LayoutKind.Sequential)]
 		private struct POINT {
@@ -657,16 +659,19 @@ namespace SystemImageList {
 		   ImageListDrawItemConstants flags
 		   ) {
 			if (iImageList == null) {
-				int ret = ImageList_Draw(
-				   hIml,
-				   index,
-				   hdc,
-				   x,
-				   y,
-				   (int)flags);
+				//int ret = BExplorer.Shell.Interop.ComCtl32.ImageList_Draw(
+				BExplorer.Shell.Interop.ComCtl32.ImageList_Draw(
+					hIml,
+					index,
+					hdc,
+					x,
+					y,
+					/*(int)flags*/
+					(uint)flags
+				);
 			}
 			else {
-				IMAGELISTDRAWPARAMS pimldp = new IMAGELISTDRAWPARAMS();
+				var pimldp = new IMAGELISTDRAWPARAMS();
 				pimldp.hdcDst = hdc;
 				pimldp.cbSize = Marshal.SizeOf(pimldp.GetType());
 				pimldp.i = index;

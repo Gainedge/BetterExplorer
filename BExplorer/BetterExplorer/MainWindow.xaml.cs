@@ -2705,12 +2705,9 @@ namespace BetterExplorer {
 		private void btnOLItem_Click(object sender, RoutedEventArgs e) {
 			ShellLibrary lib = null;
 			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
-			if (ShellListView.GetSelectedCount() == 1) {
-				lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			}
-			else {
-				lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			}
+
+			var NeededFile = ShellListView.GetSelectedCount() == 1 ? ShellListView.GetFirstSelectedItem() : ShellListView.CurrentFolder;
+			lib = ShellLibrary.Load(NeededFile.GetDisplayName(SIGDN.NORMALDISPLAY), false);
 			switch ((sender as MenuItem).Tag.ToString()) {
 				case "gu":
 					lib.LibraryType = LibraryFolderType.Generic;
@@ -2740,12 +2737,9 @@ namespace BetterExplorer {
 		private void chkPinNav_CheckChanged(object sender, RoutedEventArgs e) {
 			ShellLibrary lib = null;
 			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
-			if (ShellListView.GetSelectedCount() == 1) {
-				lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			}
-			else {
-				lib = ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			}
+
+			var NeededFile = ShellListView.GetSelectedCount() == 1 ? ShellListView.GetFirstSelectedItem() : ShellListView.CurrentFolder;
+			lib = ShellLibrary.Load(NeededFile.GetDisplayName(SIGDN.NORMALDISPLAY), false);
 			if (!IsFromSelectionOrNavigation) {
 				lib.IsPinnedToNavigationPane = e.RoutedEvent.Name == "Checked";
 			}
@@ -2754,8 +2748,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnChangeLibIcon_Click(object sender, RoutedEventArgs e) {
-			IconView iv = new IconView();
-			iv.LoadIcons(ShellListView, true);
+			new IconView().LoadIcons(ShellListView, true);
 		}
 
 		private void btnManageLib_Click(object sender, RoutedEventArgs e) {
@@ -3486,8 +3479,7 @@ namespace BetterExplorer {
 
 		#region Folder Tools Commands
 		private void btnChangeFoldericon_Click(object sender, RoutedEventArgs e) {
-			IconView iv = new IconView();
-			iv.LoadIcons(this.ShellListView, false);
+			new IconView().LoadIcons(this.ShellListView, false);
 		}
 
 		private void btnClearFoldericon_Click(object sender, RoutedEventArgs e) {

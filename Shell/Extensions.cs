@@ -52,6 +52,7 @@ namespace BExplorer.Shell {
 		public LVITEM_NOTEXT item;
 	}
 	*/
+
 	/*
 	[StructLayout(LayoutKind.Sequential)]
 	public struct LVITEM_NOTEXT {

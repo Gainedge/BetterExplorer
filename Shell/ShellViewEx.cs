@@ -1634,6 +1634,11 @@ namespace BExplorer.Shell {
 								}
 								Notifications.NotificationsReceived.Remove(info);
 							}
+
+							//
+							//TODO: Can we replace all of these if(...) with a switch?
+							//
+
 							//TODO: Should this be and Elser If(...)?
 							if (info.Notification == ShellNotifications.SHCNE.SHCNE_UPDATEITEM) {
 								var obj = new ShellItem(info.Item1);
@@ -2158,18 +2163,16 @@ namespace BExplorer.Shell {
 										else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
 											var shellLink = new ShellLink(selectedItem.ParsingName);
 											var newSho = new ShellItem(shellLink.TargetPIDL);
-											if (newSho.IsFolder) {
+											if (newSho.IsFolder)
 												Navigate(newSho);
-											}
-											else {
+											else
 												StartProcessInCurrentDirectory(newSho);
-											}
+
 											shellLink.Dispose();
 										}
 										else {
 											StartProcessInCurrentDirectory(selectedItem);
 										}
-
 										break;
 								}
 
@@ -3355,29 +3358,6 @@ namespace BExplorer.Shell {
 
 			//this._IsNavigationInProgress = true;
 
-
-			/*
-			var i = 0;
-			var e = destination.GetEnumerator();
-
-			while (e.MoveNext()) {
-				F.Application.DoEvents();
-				if (this.Items.Count > 0 && this.Items.Last().Parent != e.Current.Parent) {
-					break;
-				}
-				if (this.ShowHidden ? true : !e.Current.IsHidden)
-					this.Items.Add(e.Current);
-				CurrentI++;
-				if (CurrentI - LastI >= (destination.IsSearchFolder ? 70 : 2350)) {
-					F.Application.DoEvents();
-					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-					if (destination.IsSearchFolder)
-						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-					LastI = CurrentI;
-				}
-			}
-			*/
-						
 			foreach (var Shell in destination) {
 				F.Application.DoEvents();
 				if (this.Items.Count > 0 && this.Items.Last().Parent != Shell.Parent) {

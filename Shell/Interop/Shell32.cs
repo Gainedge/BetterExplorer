@@ -757,9 +757,7 @@ namespace BExplorer.Shell.Interop {
 		public static extern Boolean CloseHandle(IntPtr handle);
 
 		[DllImport("shell32.dll", EntryPoint = "#2")]
-		public static extern uint SHChangeNotifyRegister(IntPtr hWnd,
-				SHCNRF fSources, SHCNE fEvents, uint wMsg, int cEntries,
-				ref SHChangeNotifyEntry pFsne);
+		public static extern uint SHChangeNotifyRegister(IntPtr hWnd, SHCNRF fSources, SHCNE fEvents, uint wMsg, int cEntries, ref SHChangeNotifyEntry pFsne);
 
 		[DllImport("shell32.dll", EntryPoint = "#4")]
 		public static extern bool SHChangeNotifyUnregister(uint hNotify);

@@ -49,6 +49,7 @@ namespace BExplorer.Shell.Interop {
 		LVIS_STATEIMAGEMASK = 0xF000,
 	}
 
+	/*
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 	public struct LVITEM {
 		public LVIF mask;
@@ -62,6 +63,7 @@ namespace BExplorer.Shell.Interop {
 		public int iImage;
 		public int lParam;
 	}
+	*/
 
 	public enum LVSIL {
 		LVSIL_NORMAL = 0,
@@ -122,6 +124,7 @@ namespace BExplorer.Shell.Interop {
 		MIM_APPLYTOSUBMENUS = 0x80000000,
 	}
 
+	/*
 	public enum MK {
 		MK_LBUTTON = 0x0001,
 		MK_RBUTTON = 0x0002,
@@ -130,6 +133,7 @@ namespace BExplorer.Shell.Interop {
 		MK_MBUTTON = 0x0010,
 		MK_ALT = 0x1000,
 	}
+	*/
 
 	public enum MSG {
 		FIRST = 0x1000,
@@ -281,7 +285,7 @@ namespace BExplorer.Shell.Interop {
 		DROPHILITED = 0x1000,
 	}
 
-	
+
 
 	public class User32 {
 		public static readonly string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
@@ -436,7 +440,8 @@ namespace BExplorer.Shell.Interop {
 					default:
 						break;
 				}
-			} else if (os.Platform == PlatformID.Win32NT) {
+			}
+			else if (os.Platform == PlatformID.Win32NT) {
 				switch (vs.Major) {
 					case 3:
 						operatingSystem = OsVersionInfo.WindowsNT351;
@@ -473,6 +478,13 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetForegroundWindow();
 		// For Windows Mobile, replace user32.dll with coredll.dll
+
+
+		/// <summary>
+		/// Gives focus to a given window.
+		/// </summary>
+		/// <param name="hWnd"></param>
+		/// <returns></returns>
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SetForegroundWindow(IntPtr hWnd);
