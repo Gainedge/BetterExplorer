@@ -571,9 +571,7 @@ namespace SystemImageList {
 		/// icon,
 		/// otherwise only hit the disk if no cached icon is available.</param>
 		/// <returns>Index of the icon</returns>
-		public int IconIndex(
-		   string fileName,
-		   bool forceLoadFromDisk) {
+		public int IconIndex(string fileName, bool forceLoadFromDisk) {
 			return IconIndex(
 			   fileName,
 			   forceLoadFromDisk,
@@ -633,14 +631,8 @@ namespace SystemImageList {
 		/// <param name="index">Index of image to draw</param>
 		/// <param name="x">X Position to draw at</param>
 		/// <param name="y">Y Position to draw at</param>
-		public void DrawImage(
-		   IntPtr hdc,
-		   int index,
-		   int x,
-		   int y
-		   ) {
-			DrawImage(hdc, index, x, y,
-			 ImageListDrawItemConstants.ILD_TRANSPARENT);
+		public void DrawImage(IntPtr hdc, int index, int x, int y) {
+			DrawImage(hdc, index, x, y, ImageListDrawItemConstants.ILD_TRANSPARENT);
 		}
 
 		/// <summary>
@@ -651,13 +643,7 @@ namespace SystemImageList {
 		/// <param name="x">X Position to draw at</param>
 		/// <param name="y">Y Position to draw at</param>
 		/// <param name="flags">Drawing flags</param>
-		public void DrawImage(
-		   IntPtr hdc,
-		   int index,
-		   int x,
-		   int y,
-		   ImageListDrawItemConstants flags
-		   ) {
+		public void DrawImage(IntPtr hdc, int index, int x, int y, ImageListDrawItemConstants flags) {
 			if (iImageList == null) {
 				//int ret = BExplorer.Shell.Interop.ComCtl32.ImageList_Draw(
 				BExplorer.Shell.Interop.ComCtl32.ImageList_Draw(
@@ -666,7 +652,7 @@ namespace SystemImageList {
 					hdc,
 					x,
 					y,
-					/*(int)flags*/
+					//(int)flags
 					(uint)flags
 				);
 			}

@@ -5242,14 +5242,12 @@ namespace BetterExplorer {
 		}
 
 		void bcbc_OnEditModeToggle(object sender, Odyssey.Controls.EditModeToggleEventArgs e) {
+			this.ShellListView.IsFocusAllowed = e.IsExit;
 			if (!e.IsExit) {
-				this.ShellListView.IsFocusAllowed = false;
 				this.bcbc.Focus();
 			}
-			else {
-				this.ShellListView.IsFocusAllowed = true;
-			}
 		}
+
 		bool _IsBreadcrumbBarSelectionChnagedAllowed = false;
 		private void bcbc_SelectedChanged(object sender, RoutedEventArgs e) {
 
@@ -5272,20 +5270,14 @@ namespace BetterExplorer {
 			if (e.Mode == Odyssey.Controls.PathConversionEventArgs.ConversionMode.EditToDisplay && _IsBreadcrumbBarSelectionChnagedAllowed) {
 				Int64 pidl;
 				bool isValidPidl = Int64.TryParse(newPath.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
-				ShellItem item = null;
 				try {
-					if (isValidPidl) {
-						item = new ShellItem((IntPtr)pidl);
-					}
-					else {
-						item = new ShellItem(newPath.ToShellParsingName());
-					}
+					ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(newPath.ToShellParsingName());
+
 					if (item != this.ShellListView.CurrentFolder) {
 						//this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
 						//this.ShellListView.CurrentFolder = item;
 						this.ShellListView.Navigate(item, false, true);
 					}
-					//}
 				}
 				catch { }
 			}

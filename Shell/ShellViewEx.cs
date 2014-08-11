@@ -2260,7 +2260,7 @@ namespace BExplorer.Shell {
 						case CustomDraw.NM_CUSTOMDRAW: {
 								if (nmhdr.hwndFrom == this.LVHandle) {
 									User32.SendMessage(this.LVHandle, 296, User32.MAKELONG(1, 1), 0);
-									var nmlvcd = (User32.NMLVCUSTOMDRAW)m.GetLParam(typeof(User32.NMLVCUSTOMDRAW));
+									var nmlvcd = (User32.NMLVCUSTOMDRAW)m.GetLParam(typeof(BExplorer.Shell.Interop.User32.NMLVCUSTOMDRAW));
 									var index = (int)nmlvcd.nmcd.dwItemSpec;
 									var hdc = nmlvcd.nmcd.hdc;
 									if (nmlvcd.dwItemType == 1)
