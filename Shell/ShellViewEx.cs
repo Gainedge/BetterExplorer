@@ -2345,12 +2345,11 @@ namespace BExplorer.Shell {
 												lvItemImageMask.stateMask = LVIS.LVIS_STATEIMAGEMASK;
 
 												if (sho != null) {
-													string shoExtension = sho.Extension;
-
 													if (sho.OverlayIconIndex == -1) {
 														overlayQueue.Enqueue(index);
 													}
 													if (sho.IsShielded == -1) {
+														string shoExtension = sho.Extension;
 														if (shoExtension == ".exe" || shoExtension == ".com" || shoExtension == ".bat")
 															shieldQueue.Enqueue(index);
 													}
