@@ -3217,7 +3217,7 @@ namespace BExplorer.Shell {
 		public void Navigate_Full(ShellItem destination, bool SaveFolderSettings, Boolean isInSameTab = false) {
 			SaveSettingsToDatabase(this.CurrentFolder);
 
-			if (!destination.IsFolder) return;
+			if (destination == null || !destination.IsFolder) return;
 			CurrentFolder = destination;
 			Navigate(destination, isInSameTab);
 		}
@@ -3250,7 +3250,6 @@ namespace BExplorer.Shell {
 			CurrentI = 0;
 			LastI = 0;
 
-			//TODO: Find out if we can remove the following code!
 			Tuple<int, PROPERTYKEY, object> tmp = null;
 			while (!SubItemValues.IsEmpty) {
 				SubItemValues.TryTake(out tmp);
@@ -3717,7 +3716,8 @@ namespace BExplorer.Shell {
 						IPropertyStore propStore = null;
 						isi2.GetPropertyStore(GetPropertyStoreOptions.Default, ref guid, out propStore);
 						if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-							if (SubItemValues.ToArray().Count(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid) == 0) {
+							//if (SubItemValues.ToArray().Count(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid) == 0) {
+							if (!SubItemValues.Any(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid)) {
 								SubItemValues.Add(new Tuple<int, PROPERTYKEY, object>(hash, pk, pvar.Value));
 								this.RedrawItem(index.Item1);
 							}
