@@ -3242,7 +3242,7 @@ namespace BExplorer.Shell {
 
 			//TODO: Check the following Change
 			//Note:	User:	Aaron Campf	Date: 8/9/2014	Message: The below SetSortIcon(...) seems to have no effect as it is called later
-			//this.SetSortIcon(this.LastSortedColumnIndex, SortOrder.None);
+			this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
 			this.Notifications.UnregisterChangeNotify();
 			//overlays.Clear();
 			//shieldedIcons.Clear();
@@ -3278,9 +3278,7 @@ namespace BExplorer.Shell {
 			var folderSettings = new FolderSettings();
 			var isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
 
-			//TODO: Check the following Change
-			//Note:	User:	Aaron Campf	Date: 8/9/2014	Message: The below SetSortIcon(...) seems to have no effect as it is called later
-			//this.SetSortIcon(folderSettings.SortColumn, folderSettings.SortOrder);
+			this.SetSortIcon(folderSettings.SortColumn, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
 
 			this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
 			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
@@ -3328,19 +3326,12 @@ namespace BExplorer.Shell {
 
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 
-			//TODO: Check the following Change
-			/*
-			 * Note:	User:	Aaron Campf	Date: 8/9/2014	
-			 * Message: The following code was commented out because it resorts the items AFTER we just sorted them in the [if (isThereSettings)]
-			 */
-
-			/*
 			if (!isThereSettings) {
 				this.LastSortedColumnIndex = 0;
 				this.LastSortOrder = SortOrder.Ascending;
-				this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
+				//this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
 			}
-			*/
+
 
 			Notifications.RegisterChangeNotify(this.Handle, destination, true);
 			/*
