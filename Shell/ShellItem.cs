@@ -164,12 +164,13 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public string ParsingName { get { return GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING); } }
 
+		/*
 		/// <summary>
 		/// Gets the item's shell icon.
 		/// </summary>
 		internal Icon ShellIcon {
 			get {
-				SHFILEINFO info = new SHFILEINFO();
+				var info = new SHFILEINFO();
 				IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info,
 						Marshal.SizeOf(info),
 						SHGFI.AddOverlays | SHGFI.Icon |
@@ -182,6 +183,7 @@ namespace BExplorer.Shell {
 				return Icon.FromHandle(info.hIcon);
 			}
 		}
+		*/
 
 		/// <summary>
 		/// Gets the normal display name of the item.
