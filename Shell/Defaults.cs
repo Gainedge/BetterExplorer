@@ -28,7 +28,7 @@ namespace BExplorer.Shell {
 			column2.fmt = LVCFMT.LEFT;
 			User32.SendMessage(shellView.LVHandle, BExplorer.Shell.Interop.MSG.LVM_INSERTCOLUMN, 1, ref column2);
 
-			shellView.Collumns.Add(column2.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 }, typeof(String), false, 150));
+			shellView.Collumns.Add(column2.ToCollumns(new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 }, typeof(Type), false, 150));
 
 
 			LVCOLUMN column3 = new LVCOLUMN();
@@ -240,7 +240,7 @@ namespace BExplorer.Shell {
 						{"A179", new Tuple<String, PROPERTYKEY, Type, int>("Participants", new PROPERTYKEY(){fmtid = Guid.Parse("d4d0aa16-9948-41a4-aa85-d97ff9646993"), pid = 100}, typeof(String),75)},
 						{"A180", new Tuple<String, PROPERTYKEY, Type, int>("Path", new PROPERTYKEY(){fmtid = Guid.Parse("e3e0584c-b788-4a5a-bb20-7f5a44c9acdd"), pid = 7}, typeof(String),75)},
 						{"A181", new Tuple<String, PROPERTYKEY, Type, int>("By location", new PROPERTYKEY(){fmtid = Guid.Parse("23620678-ccd4-47c0-9963-95a8405678a3"), pid = 100}, typeof(String),75)},
-						{"A182", new Tuple<String, PROPERTYKEY, Type, int>("Type", new PROPERTYKEY(){fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 4}, typeof(String),150)},
+						{"A182", new Tuple<String, PROPERTYKEY, Type, int>("Type", new PROPERTYKEY(){fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 4}, typeof(Type),150)},
 						{"A183", new Tuple<String, PROPERTYKEY, Type, int>("Contact names", new PROPERTYKEY(){fmtid = Guid.Parse("dea7c82c-1d89-4a66-9427-a4e3debabcb1"), pid = 100}, typeof(String),75)},
 						{"A184", new Tuple<String, PROPERTYKEY, Type, int>("Entry type", new PROPERTYKEY(){fmtid = Guid.Parse("95beb1fc-326d-4644-b396-cd3ed90e6ddf"), pid = 100}, typeof(String),75)},
 						{"A185", new Tuple<String, PROPERTYKEY, Type, int>("Language", new PROPERTYKEY(){fmtid = Guid.Parse("d5cdd502-2e9c-101b-9397-08002b2cf9ae"), pid = 28}, typeof(String),75)},
@@ -379,5 +379,6 @@ namespace BExplorer.Shell {
 	public static class SystemProperties {
 		public static PROPERTYKEY FileSize = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 12 };
 		public static PROPERTYKEY LinkTarget = new PROPERTYKEY() { fmtid = Guid.Parse("b9b4b3fc-2b51-4a42-b5d8-324146afcf25"), pid = 2 };
+		public static PROPERTYKEY FileType = new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 };
 	}
 }
