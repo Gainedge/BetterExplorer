@@ -36,7 +36,7 @@
   </PostinstrumentEvent>
   <Binaries>
     <ProjBinary>
-      <Path>BExplorer\BetterExplorer\obj\x86\Debug\BetterExplorer.exe</Path>
+      <Path>BExplorer\BetterExplorer\obj\Debug\BetterExplorer.exe</Path>
       <ArgumentTimestamp>01/01/0001 00:00:00</ArgumentTimestamp>
       <Instrument>true</Instrument>
       <Sample>true</Sample>
@@ -85,6 +85,9 @@
     </Report>
     <Report>
       <Path>BetterExplorer140808(6).vsp</Path>
+    </Report>
+    <Report>
+      <Path>BetterExplorer140811.vsp</Path>
     </Report>
   </Reports>
   <Launches>

@@ -13,6 +13,7 @@ using F = System.Windows.Forms;
 
 namespace BExplorer.Shell {
 	public partial class ShellTreeViewEx : UserControl {
+
 		#region Event Handlers
 		public event EventHandler<TreeNodeMouseClickEventArgs> NodeClick;
 		#endregion
@@ -21,7 +22,7 @@ namespace BExplorer.Shell {
 		public TreeViewBase ShellTreeView;
 		public Boolean IsShowHiddenItems { get; set; }
 		public ShellView ShellListView {
-			get {
+			private get {
 				return _ShellListView;
 			}
 			set {
