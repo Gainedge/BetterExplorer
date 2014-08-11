@@ -262,47 +262,6 @@ namespace BExplorer.Shell {
 			if (Navigated != null) {
 				Navigated(this, e);
 			}
-			//this.FolderSizes.Clear();
-			//LPCSHCOLUMNINIT lpi = new LPCSHCOLUMNINIT();
-			//lpi.wszFolder = e.Folder.ParsingName + "\0";
-			//if (ICP != null)
-			//{
-			//	await Task.Run(() =>
-			//	{
-			//		this.BeginInvoke(new MethodInvoker(() =>
-			//		{
-			//			this.FolderSizes.Clear();
-			//			ICP.Initialize(lpi);
-			//			foreach (var item in this.CurrentFolder)
-			//			{
-			//				var pn = item.ParsingName;
-			//				LPCSHCOLUMNID lid = new LPCSHCOLUMNID();
-			//				lid.fmtid = Guid.Parse("04DAAD08-70EF-450E-834A-DCFAF9B48748");
-			//				lid.pid = 0;
-			//				LPCSHCOLUMNDATA ldata = new LPCSHCOLUMNDATA();
-			//				ldata.dwFileAttributes = item.IsFolder ? (uint)FileAttributes.Directory : 0;
-			//				//ldata.dwFileAttributes = (uint)FileAttributes.Directory;
-			//				if (!item.IsFolder)
-			//				{
-			//					ldata.pwszExt = Path.GetExtension(item.ParsingName);
-			//				}
-			//				ldata.wszFile = pn + "\0";
-			//				object o = 0;
-			//				this.ICP.GetItemData(lid, ldata, out o);
-			//				if (o != null)
-			//				{
-			//					if (this.FolderSizes.ContainsKey(pn))
-			//						this.FolderSizes[pn] = o.ToString();
-			//					else
-			//						this.FolderSizes.TryAdd(pn, o.ToString());
-			//				}
-
-			// Thread.Sleep(1); //Application.DoEvents();
-
-			//			}
-			//		}));
-			//	});
-			//}
 		}
 
 		private void OnItemDisplayed(ShellItem item, int index) {
@@ -3218,7 +3177,7 @@ namespace BExplorer.Shell {
 			SaveSettingsToDatabase(this.CurrentFolder);
 
 			if (destination == null || !destination.IsFolder) return;
-			CurrentFolder = destination;
+			//CurrentFolder = destination;
 			Navigate(destination, isInSameTab);
 		}
 
@@ -3340,8 +3299,11 @@ namespace BExplorer.Shell {
 			}
 
 			//dest.Dispose();
-			this.OnNavigated(new NavigatedEventArgs(destination, this.CurrentFolder, isInSameTab));
+
+
+			var NavArgs = new NavigatedEventArgs(destination, this.CurrentFolder, isInSameTab);
 			this.CurrentFolder = destination;
+			this.OnNavigated(NavArgs);
 
 			//IsDoubleNavFinished = false;
 			//AutosizeAllColumns(this.View != ShellViewStyle.Details ? -2 : -1);
@@ -3351,7 +3313,6 @@ namespace BExplorer.Shell {
 			//else
 			//	AutosizeAllColumns(-1);
 			this.Focus();
-
 		}
 
 		/*

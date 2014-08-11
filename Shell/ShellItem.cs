@@ -321,6 +321,11 @@ namespace BExplorer.Shell {
 					return false;
 				}
 				else if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\")) {
+					//TODO: Find a better way of doing the following code
+					if (ParsingName == "") {
+						return false;
+					}
+
 					string rootPath = System.IO.Path.GetPathRoot(ParsingName);	// get drive's letter
 					DriveInfo driveInfo = new DriveInfo(rootPath);				// get info about the drive
 					return driveInfo.DriveType == DriveType.Network;			// return true if a network drive

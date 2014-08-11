@@ -342,9 +342,7 @@ namespace BetterExplorer {
 			btnSort.Items.Add(misa);
 			btnSort.Items.Add(misd);
 
-			misng = Utilities.Build_MenuItem("(none)", GroupName: "GR3", checkable: true, isChecked: ShellListView.LastGroupCollumn == null, onClick: misng_Click);
-
-			btnGroup.Items.Add(misng);
+			btnGroup.Items.Add(Utilities.Build_MenuItem("(none)", GroupName: "GR3", checkable: true, isChecked: ShellListView.LastGroupCollumn == null, onClick: misng_Click));
 			btnGroup.Items.Add(new Separator());
 
 			misag = Utilities.Build_MenuItem(FindResource("miAscending"), checkable: true, GroupName: "GR4", onClick: misag_Click);
@@ -369,15 +367,25 @@ namespace BetterExplorer {
 			btnMoreColls.Items.Clear();
 			chcm.Items.Clear();
 
+			//TODO: Find out why we are using a for(...) here!
 			for (int j = 1; j < 10; j++) {
+				//TODO: Try to remove this Try Catch!!
 				try {
-					MenuItem mic = Utilities.Build_MenuItem(allAvailColls[j].Name, allAvailColls[j], checkable: true, onClick: mic_Click);
-					//MenuItem mic = new MenuItem();
-					//mic.Header = AllAvailColls[j].Name;
-					//mic.Tag = AllAvailColls[j];
-					//mic.Click += mic_Click;
-					//mic.Focusable = false;
-					//mic.IsCheckable = true;
+					var IsChecked = ShellListView.Collumns.Any(col => col.pkey.fmtid == allAvailColls[j].pkey.fmtid && col.pkey.pid == allAvailColls[j].pkey.pid);
+					btnMoreColls.Items.Add(
+						Utilities.Build_MenuItem(allAvailColls[j].Name, allAvailColls[j], checkable: true, onClick: mic_Click, isChecked: IsChecked)
+					);
+					chcm.Items.Add(
+						Utilities.Build_MenuItem(allAvailColls[j].Name, allAvailColls[j], checkable: true, onClick: mic_Click, isChecked: IsChecked)
+					);
+				}
+				catch (Exception) {
+				}
+
+
+				/*
+				try {
+					MenuItem mic = Utilities.Build_MenuItem(allAvailColls[j].Name, allAvailColls[j], checkable: true, onClick: mic_Click);		
 					foreach (Collumns col in ShellListView.Collumns) {
 						if (col.pkey.fmtid == allAvailColls[j].pkey.fmtid && col.pkey.pid == allAvailColls[j].pkey.pid) {
 							mic.IsChecked = true;
@@ -390,13 +398,6 @@ namespace BetterExplorer {
 
 				try {
 					MenuItem mic = Utilities.Build_MenuItem(allAvailColls[j].Name, allAvailColls[j], checkable: true, onClick: mic_Click);
-
-					//MenuItem mic = new MenuItem();
-					//mic.Header = AllAvailColls[j].Name;
-					//mic.Tag = AllAvailColls[j];
-					//mic.Click += mic_Click;
-					//mic.Focusable = false;
-					//mic.IsCheckable = true;
 					foreach (Collumns col in ShellListView.Collumns) {
 						if (col.pkey.fmtid == allAvailColls[j].pkey.fmtid && col.pkey.pid == allAvailColls[j].pkey.pid) {
 							mic.IsChecked = true;
@@ -406,6 +407,7 @@ namespace BetterExplorer {
 				}
 				catch (Exception) {
 				}
+				*/
 			}
 
 			int ItemsCount = ShellListView.GetItemsCount();
@@ -415,64 +417,25 @@ namespace BetterExplorer {
 			spSelItems.Visibility = sbiSelItemsCount.Visibility;
 
 			btnMoreColls.Items.Add(new Separator());
-
 			btnMoreColls.Items.Add(Utilities.Build_MenuItem(FindResource("btnMoreColCP"), allAvailColls, onClick: micm_Click));
-
-			//MenuItem micm = new MenuItem();
-			//micm.Header = FindResource("btnMoreColCP");
-			//micm.Focusable = false;
-			//btnMoreColls.Tag = AllAvailColls;
-			//micm.Tag = AllAvailColls;
-			//micm.Click += new RoutedEventHandler(micm_Click);
-			//btnMoreColls.Items.Add(micm);
+			btnMoreColls.Tag = allAvailColls;
 
 			chcm.Items.Add(new Separator());
-
 			chcm.Items.Add(Utilities.Build_MenuItem(FindResource("btnMoreColCP"), allAvailColls, onClick: micm_Click));
-
-			//MenuItem michm = new MenuItem();
-			//michm.Header = FindResource("btnMoreColCP");
-			//michm.Focusable = false;
-			//michm.Tag = AllAvailColls;
-			//michm.Click += new RoutedEventHandler(micm_Click);
-			//chcm.Items.Add(michm);
-
-			btnMoreColls.Tag = allAvailColls;
 		}
 
 		#endregion
 
 		void misd_Click(object sender, RoutedEventArgs e) {
-			//TODO: Test
 			foreach (var item in btnSort.Items.OfType<MenuItem>().Where(item => item.IsChecked && item != (sender as MenuItem))) {
 				ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), System.Windows.Forms.SortOrder.Descending);
 			}
-			/*
-			foreach (object item in btnSort.Items) {
-				if (item is MenuItem) {
-					if (((MenuItem)item).IsChecked && ((MenuItem)item != (sender as MenuItem))) {
-						ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)((MenuItem)item).Tag), System.Windows.Forms.SortOrder.Descending);
-					}
-				}
-			}
-			*/
 		}
 
 		void misa_Click(object sender, RoutedEventArgs e) {
-			//TODO: Test
 			foreach (var item in btnSort.Items.OfType<MenuItem>().Where(item => item.IsChecked && item != (sender as MenuItem))) {
 				ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), System.Windows.Forms.SortOrder.Ascending);
 			}
-
-			/*
-			foreach (object item in btnSort.Items) {
-				if (item is MenuItem) {
-					if (((MenuItem)item).IsChecked && ((MenuItem)item != (sender as MenuItem))) {
-						ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)((MenuItem)item).Tag), System.Windows.Forms.SortOrder.Ascending);
-					}
-				}
-			}
-			*/
 		}
 
 		void timerv_Tick(object sender, EventArgs e) {
@@ -2355,13 +2318,13 @@ namespace BetterExplorer {
 			var pIDL = IntPtr.Zero;
 
 			try {
-				//uint iAttribute;
 				pIDL = this.ShellListView.CurrentFolder.AbsolutePidl;
 				SHFILEINFO sfi = new SHFILEINFO();
-				IntPtr Res = IntPtr.Zero;
+
+				//TODO: Why do we even have this if(...)
 				if (pIDL != IntPtr.Zero && !ShellListView.CurrentFolder.IsFileSystem) {
 					//if (!ShellListView.CurrentFolder.IsFileSystem) {
-					Res = BExplorer.Shell.Interop.Shell32.SHGetFileInfo(pIDL, 0, out sfi, Marshal.SizeOf(sfi), SHGFI.IconLocation | SHGFI.SmallIcon | SHGFI.PIDL);
+					IntPtr Res = BExplorer.Shell.Interop.Shell32.SHGetFileInfo(pIDL, 0, out sfi, Marshal.SizeOf(sfi), SHGFI.IconLocation | SHGFI.SmallIcon | SHGFI.PIDL);
 				}
 
 				if (ShellListView.CurrentFolder.IsFileSystem) {
