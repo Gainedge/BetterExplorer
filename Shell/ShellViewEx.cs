@@ -404,7 +404,7 @@ namespace BExplorer.Shell {
 		/// the <see cref="ShellView" />.
 		/// </summary>
 		[Browsable(false)]
-		public ShellItem CurrentFolder { get; set; }
+		public ShellItem CurrentFolder { get; private set; }
 
 
 		/*

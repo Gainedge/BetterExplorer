@@ -3891,8 +3891,7 @@ namespace BetterExplorer {
 				if (edtSearchBox.FullSearchTerms != "") {
 					SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
 					ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
-					//var test = searchFolder.ParsingName;
-					this.ShellListView.CurrentFolder = searchFolder;
+					//this.ShellListView.CurrentFolder = searchFolder;
 					//ShellListView.Navigate(searchFolder, false, false);
 					ShellListView.Navigate_Full(searchFolder, false);
 				}
