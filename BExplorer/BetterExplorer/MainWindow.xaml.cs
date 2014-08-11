@@ -2784,7 +2784,7 @@ namespace BetterExplorer {
 							 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "music" &&
 							 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "videos" &&
 							 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "pictures") {
-				ShellLibrary lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().DisplayName, false);
+				var lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().DisplayName, false);
 				lib.IsPinnedToNavigationPane = true;
 				lib.LibraryType = LibraryFolderType.Generic;
 				lib.IconResourceId = new IconReference(@"C:\Windows\System32\imageres.dll", 187);
@@ -2799,12 +2799,12 @@ namespace BetterExplorer {
 
 		private void leftNavBut_Click(object sender, RoutedEventArgs e) {
 			tcMain.isGoingBackOrForward = true;
-			ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack(), false, true);
+			ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack(), true);
 		}
 
 		private void rightNavBut_Click(object sender, RoutedEventArgs e) {
 			tcMain.isGoingBackOrForward = true;
-			ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateForward(), false, true);
+			ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateForward(), true);
 		}
 
 		private void downArrow_Click(object sender, RoutedEventArgs e) {
@@ -2843,7 +2843,7 @@ namespace BetterExplorer {
 				NavigationLog nl = (tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
 				(sender as MenuItem).IsChecked = true;
 				nl.CurrentLocPos = cmHistory.Items.IndexOf((sender as MenuItem));
-				ShellListView.Navigate(item, false, true);
+				ShellListView.Navigate(item, true);
 			}
 		}
 
@@ -3893,7 +3893,8 @@ namespace BetterExplorer {
 					ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
 					//var test = searchFolder.ParsingName;
 					this.ShellListView.CurrentFolder = searchFolder;
-					ShellListView.Navigate(searchFolder, false, false);
+					//ShellListView.Navigate(searchFolder, false, false);
+					ShellListView.Navigate_Full(searchFolder, false);
 				}
 			}
 			catch (Exception ex) {
@@ -4243,9 +4244,11 @@ namespace BetterExplorer {
 				var item = (sender as System.Windows.Forms.Timer).Tag as ShellItem;
 				//this.ShellListView.Cancel = true;
 				if (item != this.ShellListView.CurrentFolder || item.IsSearchFolder) {
-					this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
-					this.ShellListView.CurrentFolder = item;
-					ShellListView.Navigate(item, false, false);
+					//this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
+					//this.ShellListView.CurrentFolder = item;
+					//ShellListView.Navigate(item, false, false);
+
+					ShellListView.Navigate_Full(item, true);
 				}
 				(sender as System.Windows.Forms.Timer).Stop();
 			}
@@ -5273,10 +5276,11 @@ namespace BetterExplorer {
 				try {
 					ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(newPath.ToShellParsingName());
 
+					//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
 					if (item != this.ShellListView.CurrentFolder) {
 						//this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
 						//this.ShellListView.CurrentFolder = item;
-						this.ShellListView.Navigate(item, false, true);
+						this.ShellListView.Navigate(item, true);
 					}
 				}
 				catch { }
