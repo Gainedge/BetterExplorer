@@ -363,7 +363,8 @@ namespace BetterExplorer {
 			this.ShellListView.SetGroupOrder();
 		}
 
-		private void SetupColumnsButton(List<Collumns> allAvailColls) {
+		private void SetupColumnsButton() {
+			var allAvailColls = this.ShellListView.AllAvailableColumns;
 			btnMoreColls.Items.Clear();
 			chcm.Items.Clear();
 
@@ -2219,7 +2220,7 @@ namespace BetterExplorer {
 		#region On Navigated
 
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
-			SetupColumnsButton(this.ShellListView.AllAvailableColumns);
+			SetupColumnsButton();
 			SetSortingAndGroupingButtons();
 			//SetUpBreadcrumbbarOnNavComplete(e);
 
@@ -2230,7 +2231,6 @@ namespace BetterExplorer {
 			}
 
 			tcMain.isGoingBackOrForward = false;
-
 
 			SetupUIonNavComplete(e);
 
@@ -2290,7 +2290,7 @@ namespace BetterExplorer {
 				miRestoreALLRB.Visibility = Visibility.Collapsed;
 			}
 			int selectedItemsCount = ShellListView.GetSelectedCount();
-			bool IsChanged = (selectedItemsCount > 0);
+
 			bool isFuncAvail;
 			if (selectedItemsCount == 1) {
 				isFuncAvail = ShellListView.GetFirstSelectedItem().IsFileSystem || ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName;
@@ -2300,6 +2300,8 @@ namespace BetterExplorer {
 					ctgFolderTools.Visibility = Visibility.Collapsed;
 				isFuncAvail = true;
 			}
+
+			bool IsChanged = (selectedItemsCount > 0);
 			btnCopy.IsEnabled = IsChanged;
 			//btnPathCopy.IsEnabled = IsChanged;
 			btnCut.IsEnabled = IsChanged;

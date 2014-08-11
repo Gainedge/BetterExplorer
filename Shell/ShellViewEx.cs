@@ -289,7 +289,8 @@ namespace BExplorer.Shell {
 
 		public String NewName { get; set; }
 
-		public int ItemForRename { get; set; }
+		public int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
+
 		public bool IsRenameNeeded { get; set; }
 
 		//public Boolean IsGroupsEnabled { get; private set; }
@@ -573,7 +574,7 @@ namespace BExplorer.Shell {
 		private ShellItem _kpreselitem = null;
 		private LVIS _IsDragSelect = 0;
 		private BackgroundWorker bw = new BackgroundWorker();
-		private ConcurrentDictionary<int, Bitmap> cache = new ConcurrentDictionary<int, Bitmap>();
+		//private ConcurrentDictionary<int, Bitmap> cache = new ConcurrentDictionary<int, Bitmap>();
 		private Thread _IconCacheLoadingThread;
 
 		private Bitmap ExeFallBack16;
@@ -615,8 +616,8 @@ namespace BExplorer.Shell {
 		private ManualResetEvent resetEvent = new ManualResetEvent(true);
 		private SyncQueue<int> waitingThumbnails = new SyncQueue<int>(); //3000
 		private List<int> _CuttedIndexes = new List<int>();
-		private int LastI = 0;
-		private int CurrentI = 0;
+		//private int LastI = 0;
+		//private int CurrentI = 0;
 		private const int SW_SHOW = 5;
 		private const uint SEE_MASK_INVOKEIDLIST = 12;
 		private int _LastSelectedIndexByDragDrop = -1;
@@ -2892,7 +2893,7 @@ namespace BExplorer.Shell {
 		public void ResizeIcons(int value) {
 			try {
 				IconSize = value;
-				cache.Clear();
+				//cache.Clear();
 				ThumbnailsForCacheLoad.Clear();
 				waitingThumbnails.Clear();
 				foreach (var obj in this.Items) {
@@ -3027,7 +3028,6 @@ namespace BExplorer.Shell {
 				this.LastSortedColumnIndex = colIndex;
 				this.LastSortOrder = Order;
 			}
-			var i = 0;
 			if (Order == SortOrder.Ascending) {
 				this.Items = this.Items.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(this.Collumns[colIndex].pkey, typeof(String)).Value).ToList();
 			}
@@ -3035,6 +3035,7 @@ namespace BExplorer.Shell {
 				this.Items = this.Items.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(this.Collumns[colIndex].pkey, typeof(String)).Value).ToList();
 			}
 
+			var i = 0;
 			this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++);
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 			this.SetSortIcon(colIndex, Order);
@@ -3191,23 +3192,18 @@ namespace BExplorer.Shell {
 			this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
 
 			//TODO: Check the following Change
-			//Note:	User:	Aaron Campf	Date: 8/9/2014	Message: The below SetSortIcon(...) seems to have no effect as it is called later
-			this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
+			//Note:	User:	Aaron Campf	Date: 8/11/2014	Message: The below SetSortIcon(...) seems to have no effect as it is called later
+			//this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
+
 			this.Notifications.UnregisterChangeNotify();
-			//overlays.Clear();
-			//shieldedIcons.Clear();
-			cache.Clear();
+			//cache.Clear();
 			Items.Clear();
-			//cachedIndexes.Clear();
 			ItemsForSubitemsUpdate.Clear();
 			waitingThumbnails.Clear();
 			overlayQueue.Clear();
 			shieldQueue.Clear();
-			this.cache.Clear();
+			//this.cache.Clear();
 			this._CuttedIndexes.Clear();
-			//SubItems.Clear();
-			CurrentI = 0;
-			LastI = 0;
 
 			Tuple<int, PROPERTYKEY, object> tmp = null;
 			while (!SubItemValues.IsEmpty) {
@@ -3215,7 +3211,6 @@ namespace BExplorer.Shell {
 			}
 
 			if (tmp != null) tmp = null;
-			//SubItems.Clear();
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
 			this.ItemForRename = -1;
 
@@ -3227,14 +3222,14 @@ namespace BExplorer.Shell {
 			var folderSettings = new FolderSettings();
 			var isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
 
+			//TODO: Figure out if the folder is actually sorted and we are not incorrectly setting the sort icon.
 			this.SetSortIcon(folderSettings.SortColumn, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
 
 			this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
 			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
 				ResizeIcons(16);
 
-			//this._IsNavigationInProgress = true;
-
+			int CurrentI = 0, LastI = 0;
 			foreach (var Shell in destination) {
 				F.Application.DoEvents();
 				if (this.Items.Count > 0 && this.Items.Last().Parent != Shell.Parent) {
@@ -3252,10 +3247,6 @@ namespace BExplorer.Shell {
 				}
 			}
 
-
-			//this._IsNavigationInProgress = false;
-
-			//if (isThereSettings && folderSettings.SortColumn != null) {
 			if (isThereSettings) {
 				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder, false);
 			}
@@ -3265,8 +3256,6 @@ namespace BExplorer.Shell {
 			else {
 				this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
 			}
-
-			//if (!(isThereSettings && folderSettings.SortColumn != null))
 
 			if (!isThereSettings) {
 				var i = 0;
@@ -3278,18 +3267,11 @@ namespace BExplorer.Shell {
 			if (!isThereSettings) {
 				this.LastSortedColumnIndex = 0;
 				this.LastSortOrder = SortOrder.Ascending;
-				//this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
 			}
 
 
 			Notifications.RegisterChangeNotify(this.Handle, destination, true);
-			/*
-			try {
-				History.Add(destination);
-			}
-			catch { }
-			*/
-			//if (!(isThereSettings && folderSettings.SortColumn != null))
+
 			if (!isThereSettings)
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 			if (IsGroupsEnabled) {
@@ -3298,14 +3280,10 @@ namespace BExplorer.Shell {
 				GenerateGroupsFromColumn(this.Collumns.First());
 			}
 
-			//dest.Dispose();
-
-
 			var NavArgs = new NavigatedEventArgs(destination, this.CurrentFolder, isInSameTab);
 			this.CurrentFolder = destination;
 			this.OnNavigated(NavArgs);
 
-			//IsDoubleNavFinished = false;
 			//AutosizeAllColumns(this.View != ShellViewStyle.Details ? -2 : -1);
 
 			//if (this.View != ShellViewStyle.Details)
@@ -3338,12 +3316,11 @@ namespace BExplorer.Shell {
 		}
 
 		public void EnableGroups() {
-			VirtualGrouping g = new VirtualGrouping(this);
+			var g = new VirtualGrouping(this);
 
 			const int LVM_SETOWNERDATACALLBACK = 0x10BB;
 			IntPtr ptr = Marshal.GetComInterfaceForObject(g, typeof(IOwnerDataCallback));
 			var x = User32.SendMessage(this.LVHandle, LVM_SETOWNERDATACALLBACK, ptr, IntPtr.Zero);
-			//System.Diagnostics.Debug.WriteLine(x);
 			Marshal.Release(ptr);
 
 			const int LVM_ENABLEGROUPVIEW = 0x1000 + 157;
