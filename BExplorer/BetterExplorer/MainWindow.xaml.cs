@@ -1627,7 +1627,13 @@ namespace BetterExplorer {
 			this.Editor.Visibility = System.Windows.Visibility.Visible;
 			this.Editor.IsOpen = true;
 			this.txtEditor.Focus();
-			this.txtEditor.SelectAll();
+			if (this.chkExtensions.IsChecked.Value) {
+				var lastIndexOfDot = this.txtEditor.Text.LastIndexOf(".");
+				this.txtEditor.SelectionStart = 0;
+				this.txtEditor.SelectionLength = lastIndexOfDot;
+			} else {
+				this.txtEditor.SelectAll();
+			}
 		}
 
 
