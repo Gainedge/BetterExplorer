@@ -105,10 +105,16 @@ namespace Odyssey.Controls {
 						FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsArrange,
 						RootPropertyChanged));
 
+		/*
 		public static readonly DependencyProperty SelectedItemProperty =
 				DependencyProperty.Register("SelectedItem", typeof(object), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
 						FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsMeasure,
 						SelectedItemPropertyChanged));
+		*/
+		public static readonly DependencyProperty SelectedItemProperty =
+				DependencyProperty.Register("SelectedItem", typeof(object), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
+						FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsMeasure));
+
 
 		private static readonly DependencyPropertyKey SelectedBreadcrumbPropertyKey =
 				DependencyProperty.RegisterReadOnly("SelectedBreadcrumb", typeof(BreadcrumbItem), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
@@ -335,9 +341,8 @@ namespace Odyssey.Controls {
 		/// </summary>
 		[Obsolete("Use Path2", false)]
 		private string Path {
-			get { 
-				//return (string)GetValue(PathProperty);
-				return comboBox.Text;
+			get {
+				return (string)GetValue(PathProperty);
 			}
 			set { SetValue(PathProperty, value); }
 		}
@@ -867,14 +872,15 @@ namespace Odyssey.Controls {
 			bar.OnRootChanged(e.OldValue, e.NewValue);
 		}
 
-
+		/*
+		[Obsolete("Get Help removing this")]
 		private static void SelectedItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			bar.OnSelectedItemChanged(e.OldValue, e.NewValue);
 		}
+		*/
 
-
-
+		/*
 		/// <summary>
 		/// Occurs when the selected item of an embedded BreadcrumbItem is changed.
 		/// </summary>
@@ -882,6 +888,7 @@ namespace Odyssey.Controls {
 		/// <param name="newValue"></param>
 		protected virtual void OnSelectedItemChanged(object oldvalue, object newValue) {
 		}
+		*/
 
 		/// <summary>
 		/// Occurs when the Root property is changed.
