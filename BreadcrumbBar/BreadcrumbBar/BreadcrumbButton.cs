@@ -253,8 +253,7 @@ namespace Odyssey.Controls {
 			while (parent != null && !(parent is BreadcrumbBar)) parent = VisualTreeHelper.GetParent(parent) as FrameworkElement;
 			BreadcrumbBar bar = parent as BreadcrumbBar;
 			if (bar != null) {
-				//bar.Path = (dataItem as ShellItem).ParsingName;
-				bar.SetPath((dataItem as ShellItem).ParsingName);
+				bar.Path = (dataItem as ShellItem).ParsingName;
 			}
 		}
 

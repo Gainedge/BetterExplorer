@@ -187,13 +187,11 @@ namespace Odyssey.Controls {
 		public static readonly RoutedEvent PathChangedEvent = EventManager.RegisterRoutedEvent("PathChanged",
 				RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<string>), typeof(BreadcrumbBar));
 
-		/*
 		/// <summary>
 		/// Occurs before acessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
 		/// </summary>
 		public static readonly RoutedEvent PopulateItemsEvent = EventManager.RegisterRoutedEvent("PopulateItems",
 				RoutingStrategy.Bubble, typeof(BreadcrumbItemEventHandler), typeof(BreadcrumbBar));
-		*/
 
 		/// <summary>
 		/// Occurs when a path needs to be converted between display path and edit path.
@@ -280,7 +278,6 @@ namespace Odyssey.Controls {
 			remove { RemoveHandler(PathChangedEvent, value); }
 		}
 
-		/*
 		/// <summary>
 		/// Occurs before accessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
 		/// </summary>
@@ -288,7 +285,6 @@ namespace Odyssey.Controls {
 			add { AddHandler(BreadcrumbBar.PopulateItemsEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.PopulateItemsEvent, value); }
 		}
-		*/
 
 
 		#endregion
@@ -337,24 +333,9 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the selected path.
 		/// </summary>
-		private string Path {
-			get {
-				return (string)GetValue(PathProperty);
-			}
+		public string Path {
+			get { return (string)GetValue(PathProperty); }
 			set { SetValue(PathProperty, value); }
-		}
-
-		public void SetPath(string Path) {
-
-
-			this.Path = Path;
-
-			/*
-			this.initPath = Path;
-			BuildBreadcrumbsFromPath(Path);
-			*/
-
-			//bar.Path = bar.initPath = newPath;
 		}
 
 
@@ -524,7 +505,7 @@ namespace Odyssey.Controls {
 		/// Traces the specified path and builds the associated BreadcrumbItems.
 		/// </summary>
 		/// <param name="path">The traces separated by the SepearatorString property.</param>
-		private void BuildBreadcrumbsFromPath(string newPath) {
+		private bool BuildBreadcrumbsFromPath(string newPath) {
 			var e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.EditToDisplay, newPath, Root, PathConversionEvent);
 			RaiseEvent(e);
 			//_allowSelectionChnaged = false;
@@ -536,7 +517,7 @@ namespace Odyssey.Controls {
 			BreadcrumbItem item = RootItem;
 			if (item == null) {
 				this.Path = null;
-				return;
+				return false;
 			}
 			newPath = RemoveLastEmptySeparator(newPath);
 			//newPath = newPath == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : newPath;
@@ -588,7 +569,7 @@ namespace Odyssey.Controls {
 			if (length != itemIndex.Count) {
 				//recover the last path:
 				Path = GetDisplayPath();
-				return;
+				return false;
 			}
 
 			// temporarily remove the SelectionChangedEvent handler to minimize processing of events while building the breadcrumb items:
@@ -620,7 +601,7 @@ namespace Odyssey.Controls {
 				AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
 				//_allowSelectionChnaged = true;
 			}
-			return;
+			return true;
 		}
 
 		/// <summary>
@@ -723,7 +704,6 @@ namespace Odyssey.Controls {
 			remove { RemoveHandler(BreadcrumbBar.PathConversionEvent, value); }
 		}
 
-		/*
 		/// <summary>
 		/// Occurs before acessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
 		/// </summary>
@@ -731,7 +711,7 @@ namespace Odyssey.Controls {
 			BreadcrumbItemEventArgs args = new BreadcrumbItemEventArgs(item, BreadcrumbBar.PopulateItemsEvent);
 			RaiseEvent(args);
 		}
-		*/
+
 		/// <summary>
 		/// Occurs when the dropdown of a BreadcrumbItem is opened.
 		/// </summary>
@@ -1326,21 +1306,6 @@ namespace Odyssey.Controls {
 
 				object[] array = new object[] { RootItem };
 				return array.GetEnumerator();
-			}
-		}
-
-		[Obsolete("Try to remove this")]
-		private void OnPopulateItems(BreadcrumbItem e) {
-			//Odyssey.Controls.BreadcrumbItem item = e.Item;
-			if (e.Items.Count == 0) {
-				if (e.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
-					foreach (ShellItem s in KnownFolders.Computer) {
-						e.Items.Add(s);
-					}
-				}
-
-				//this._IsBreadcrumbBarSelectionChnagedAllowed = true;
-				//e.Handled = true;
 			}
 		}
 

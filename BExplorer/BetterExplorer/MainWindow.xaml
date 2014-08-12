@@ -3003,7 +3003,7 @@
 							Width="219"
 							MinWidth="150" />
 			</Grid.ColumnDefinitions>
-			<odc:BreadcrumbBar x:Name="bcbc" Focusable="True" PathConversion="path_conversation" TraceBinding="{Binding DisplayName}" ImageBinding="{Binding Thumbnail.SmallBitmapSource}" Loaded="bcbc_Loaded" SelectedBreadcrumbChanged="bcbc_SelectedChanged" BreadcrumbItemDropDownOpened="bcbc_BreadcrumbItemDropDownOpened" BreadcrumbItemDropDownClosed="bcbc_BreadcrumbItemDropDownClosed" PathChanged="path_changed" >
+			<odc:BreadcrumbBar x:Name="bcbc" Focusable="True" PopulateItems="pop_items" PathConversion="path_conversation" TraceBinding="{Binding DisplayName}" ImageBinding="{Binding Thumbnail.SmallBitmapSource}" Loaded="bcbc_Loaded" SelectedBreadcrumbChanged="bcbc_SelectedChanged" BreadcrumbItemDropDownOpened="bcbc_BreadcrumbItemDropDownOpened" BreadcrumbItemDropDownClosed="bcbc_BreadcrumbItemDropDownClosed" PathChanged="path_changed" >
 				<odc:BreadcrumbBar.Buttons>
 					<Button Click="Refresh_Click">
 						<Image Source="Images\Refresh16.png" Stretch="None" />
@@ -3058,9 +3058,9 @@
 						 ParentWindow="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
 						 IsOpen="False"
 						 Placement="AbsolutePoint"
-						 AllowsTransparency="True" PopupAnimation="Fade" Closed="Editor_Closed">
+						 AllowsTransparency="True" PopupAnimation="Fade" Closed="Editor_Closed" Opened="Editor_Opened">
 			<Grid Grid.Row="1" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
-				<TextBox x:Name="txtEditor" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" TextChanged="txtEditor_TextChanged" AllowDrop="False" IsTabStop="False"/>
+				<TextBox x:Name="txtEditor" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" TextChanged="txtEditor_TextChanged" PreviewKeyDown="txtEditor_PreviewKeyDown" AllowDrop="False" IsTabStop="False"/>
 			</Grid>
 		</controls:AirspacePopup>
 
