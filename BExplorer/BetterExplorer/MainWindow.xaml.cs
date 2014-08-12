@@ -5175,22 +5175,6 @@ namespace BetterExplorer {
 		private void pop_items(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			bcbc.pop_items(e.Item);
 			this._IsBreadcrumbBarSelectionChnagedAllowed = e.Item.Items.Count == 0;
-
-
-
-			/*
-			Odyssey.Controls.BreadcrumbItem item = e.Item;
-			if (item.Items.Count == 0) {
-				if (item.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
-					foreach (ShellItem s in KnownFolders.Computer) {
-						item.Items.Add(s);
-					}
-				}
-
-				this._IsBreadcrumbBarSelectionChnagedAllowed = true;
-				e.Handled = true;
-			}
-			*/
 		}
 
 		private void Refresh_Click(object sender, RoutedEventArgs e) {
@@ -5202,9 +5186,9 @@ namespace BetterExplorer {
 
 		private void bcbc_Loaded(object sender, RoutedEventArgs e) {
 			this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
-			foreach (ShellItem item in ((ShellItem)KnownFolders.Desktop).Where(w => w.IsFolder)) {
-				this.bcbc.RootItem.Items.Add(item);
-			}
+			//foreach (ShellItem item in ((ShellItem)KnownFolders.Desktop).Where(w => w.IsFolder)) {
+			//	this.bcbc.RootItem.Items.Add(item);
+			//}
 			this.bcbc.UpdateLayout();
 			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 			this.bcbc.OnEditModeToggle += bcbc_OnEditModeToggle;
@@ -5218,9 +5202,6 @@ namespace BetterExplorer {
 		}
 
 		bool _IsBreadcrumbBarSelectionChnagedAllowed = false;
-		private void bcbc_SelectedChanged(object sender, RoutedEventArgs e) {
-
-		}
 
 		private void bcbc_BreadcrumbItemDropDownOpened(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			this.ShellListView.IsFocusAllowed = false;
