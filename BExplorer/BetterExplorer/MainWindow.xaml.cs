@@ -5209,6 +5209,7 @@ namespace BetterExplorer {
 			this.ShellListView.IsFocusAllowed = true;
 		}
 
+		[Obsolete("Replace with path_changed")]
 		private void path_conversation(object sender, Odyssey.Controls.PathConversionEventArgs e) {
 			var newPath = e.DisplayPath;
 			if (newPath != null && newPath.StartsWith("%")) {
@@ -5222,8 +5223,6 @@ namespace BetterExplorer {
 
 					//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
 					if (item != this.ShellListView.CurrentFolder) {
-						//this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
-						//this.ShellListView.CurrentFolder = item;
 						this.ShellListView.Navigate(item, true);
 					}
 				}
@@ -5234,6 +5233,7 @@ namespace BetterExplorer {
 		private void path_changed(object sender, RoutedPropertyChangedEventArgs<string> e) {
 
 		}
+
 		private void edtSearchBox_Loaded(object sender, RoutedEventArgs e) {
 			this.edtSearchBox.RequestCancel += edtSearchBox_RequestCancel;
 		}

@@ -264,6 +264,7 @@ namespace Odyssey.Controls {
 			remove { RemoveHandler(BreadcrumbBar.SelectedBreadcrumbChangedEvent, value); }
 		}
 
+		
 		/// <summary>
 		/// Occurs when the Path property is changed.
 		/// </summary>
@@ -271,7 +272,7 @@ namespace Odyssey.Controls {
 			add { AddHandler(PathChangedEvent, value); }
 			remove { RemoveHandler(PathChangedEvent, value); }
 		}
-
+		
 		/// <summary>
 		/// Occurs before accessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
 		/// </summary>
