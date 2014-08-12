@@ -333,9 +333,13 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the selected path.
 		/// </summary>
-		public string Path {
+		internal string Path {
 			get { return (string)GetValue(PathProperty); }
 			set { SetValue(PathProperty, value); }
+		}
+
+		public void PathSet(string Path) {
+			BuildBreadcrumbsFromPath(Path);
 		}
 
 

@@ -1643,7 +1643,7 @@ namespace BetterExplorer {
 			this._IsBreadcrumbBarSelectionChnagedAllowed = false;
 			//if (!e.IsNavigateInSameTab || e.Folder == this.ShellListView.CurrentFolder)
 			this.bcbc.PathConversion -= path_conversation;
-			this.bcbc.Path = e.Folder.IsSearchFolder ? e.Folder.Pidl.ToString() : e.Folder.ParsingName;
+			this.bcbc.PathSet(e.Folder.IsSearchFolder ? e.Folder.Pidl.ToString() : e.Folder.ParsingName);
 			this.bcbc.PathConversion += path_conversation;
 			var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 			if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
@@ -5186,11 +5186,8 @@ namespace BetterExplorer {
 
 		private void bcbc_Loaded(object sender, RoutedEventArgs e) {
 			this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
-			//foreach (ShellItem item in ((ShellItem)KnownFolders.Desktop).Where(w => w.IsFolder)) {
-			//	this.bcbc.RootItem.Items.Add(item);
-			//}
 			this.bcbc.UpdateLayout();
-			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
+			this.bcbc.PathSet(this.ShellListView.CurrentFolder.ParsingName);
 			this.bcbc.OnEditModeToggle += bcbc_OnEditModeToggle;
 		}
 
