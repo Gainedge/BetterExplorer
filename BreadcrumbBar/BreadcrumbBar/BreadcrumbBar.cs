@@ -333,7 +333,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the selected path.
 		/// </summary>
-		internal string Path {
+		private string Path {
 			get { return (string)GetValue(PathProperty); }
 			set { SetValue(PathProperty, value); }
 		}

@@ -235,7 +235,8 @@ namespace Odyssey.Controls {
 					menuItem.ItemTemplate = ItemTemplate;
 					menuItem.ItemTemplateSelector = ItemTemplateSelector;
 					contextMenu.Items.Add(menuItem);
-				} else {
+				}
+				else {
 					contextMenu.Items.Add(item);
 				}
 			}
@@ -253,7 +254,8 @@ namespace Odyssey.Controls {
 			while (parent != null && !(parent is BreadcrumbBar)) parent = VisualTreeHelper.GetParent(parent) as FrameworkElement;
 			BreadcrumbBar bar = parent as BreadcrumbBar;
 			if (bar != null) {
-				bar.Path = (dataItem as ShellItem).ParsingName;
+				//bar.Path = (dataItem as ShellItem).ParsingName;
+				bar.PathSet((dataItem as ShellItem).ParsingName);
 			}
 		}
 
@@ -266,7 +268,7 @@ namespace Odyssey.Controls {
 		/// <param name="dataItem"></param>
 		private void RemoveSelectedItem(object dataItem) {
 			//var data = (dataItem as BreadcrumbItem).Data as ShellItem;
-			if (dataItem != null && dataItem.Equals(SelectedItem)) 
+			if (dataItem != null && dataItem.Equals(SelectedItem))
 				SelectedItem = null;
 		}
 
