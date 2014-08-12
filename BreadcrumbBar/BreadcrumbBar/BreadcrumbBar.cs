@@ -333,9 +333,22 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the selected path.
 		/// </summary>
-		private string {
-			get { return (string)GetValue(PathProperty); }
+		[Obsolete("Use Path2", false)]
+		private string Path {
+			get { 
+				//return (string)GetValue(PathProperty);
+				return comboBox.Text;
+			}
 			set { SetValue(PathProperty, value); }
+		}
+
+		private string Path2 {
+			get {
+				return comboBox.Text;
+			}
+			set {
+				comboBox.Text = value;
+			}
 		}
 
 		public void PathSet(string Path) {
@@ -509,7 +522,7 @@ namespace Odyssey.Controls {
 		/// Traces the specified path and builds the associated BreadcrumbItems.
 		/// </summary>
 		/// <param name="path">The traces separated by the SepearatorString property.</param>
-		private bool BuildBreadcrumbsFromPath(string newPath) {
+		private void BuildBreadcrumbsFromPath(string newPath) {
 			var e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.EditToDisplay, newPath, Root, PathConversionEvent);
 			RaiseEvent(e);
 			//_allowSelectionChnaged = false;
@@ -521,7 +534,7 @@ namespace Odyssey.Controls {
 			BreadcrumbItem item = RootItem;
 			if (item == null) {
 				this.Path = null;
-				return false;
+				return;
 			}
 			newPath = RemoveLastEmptySeparator(newPath);
 			//newPath = newPath == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : newPath;
@@ -573,7 +586,7 @@ namespace Odyssey.Controls {
 			if (length != itemIndex.Count) {
 				//recover the last path:
 				Path = GetDisplayPath();
-				return false;
+				return;
 			}
 
 			// temporarily remove the SelectionChangedEvent handler to minimize processing of events while building the breadcrumb items:
@@ -603,9 +616,8 @@ namespace Odyssey.Controls {
 			}
 			finally {
 				AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
-				//_allowSelectionChnaged = true;
 			}
-			return true;
+			return;
 		}
 
 		/// <summary>
