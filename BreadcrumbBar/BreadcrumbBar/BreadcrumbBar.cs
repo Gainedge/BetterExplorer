@@ -37,14 +37,6 @@ using System.Threading;
 //###################################################################################
 namespace Odyssey.Controls {
 
-	/*
-	WORK ON THIS SO ITS NOT UGLY!!!!
-	try to move the code from the MainWindow into here
-	*/
-
-
-
-
 	/// <summary>
 	/// A breadcrumb bar the contains breadcrumb items, a dropdown control, additional buttons and a progress bar.
 	/// </summary>
@@ -146,10 +138,10 @@ namespace Odyssey.Controls {
 
 		public static readonly DependencyProperty PathProperty =
 				DependencyProperty.Register("Path", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata(null, PathPropertyChanged));
-		/*
+
 		public static readonly DependencyProperty DropDownItemsSourceProperty =
-			DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(BreadcrumbBar), new UIPropertyMetadata(null, DropDownItemsSourcePropertyChanged));
-		*/
+DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(BreadcrumbBar), new UIPropertyMetadata(null, DropDownItemsSourcePropertyChanged));
+
 
 		public static readonly DependencyProperty SelectedDropDownIndexProperty =
 				DependencyProperty.Register("SelectedDropDownIndex", typeof(int), typeof(BreadcrumbBar), new UIPropertyMetadata(-1));
@@ -214,14 +206,12 @@ namespace Odyssey.Controls {
 
 		private static RoutedUICommand showDropDownCommand = new RoutedUICommand("Show DropDown", "ShowDropDownCommand", typeof(BreadcrumbBar));
 
-		/*
 		/// <summary>
 		/// This command selects the BreadcrumbItem that is specified as Parameter. 
 		/// </summary>
 		public static RoutedUICommand SelectTraceCommand {
 			get { return selectTraceCommand; }
 		}
-		*/
 
 		/// <summary>
 		/// This command selects the root.
@@ -253,7 +243,6 @@ namespace Odyssey.Controls {
 
 		#region Events
 
-		/*
 		/// <summary>
 		/// Occurs after a BreadcrumbItem is created for which to apply additional properties.
 		/// </summary>
@@ -261,8 +250,6 @@ namespace Odyssey.Controls {
 			add { AddHandler(BreadcrumbBar.ApplyPropertiesEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.ApplyPropertiesEvent, value); }
 		}
-		*/
-
 
 		/// <summary>
 		/// Occurs when the selected BreadcrumbItem is changed.
@@ -271,6 +258,7 @@ namespace Odyssey.Controls {
 			add { AddHandler(BreadcrumbBar.SelectedBreadcrumbChangedEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.SelectedBreadcrumbChangedEvent, value); }
 		}
+
 
 		/// <summary>
 		/// Occurs when the Path property is changed.
@@ -282,14 +270,13 @@ namespace Odyssey.Controls {
 
 		/*
 		/// <summary>
-		/// Occurs before accessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
+		/// Occurs before acessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
 		/// </summary>
 		public event BreadcrumbItemEventHandler PopulateItems {
 			add { AddHandler(BreadcrumbBar.PopulateItemsEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.PopulateItemsEvent, value); }
 		}
 		*/
-
 
 		#endregion
 
@@ -400,7 +387,7 @@ namespace Odyssey.Controls {
 		}
 
 
-		/*
+
 		/// <summary>
 		/// Gets or sets the DataSource for the DropDownItems of the combobox.
 		/// </summary>
@@ -408,7 +395,7 @@ namespace Odyssey.Controls {
 			get { return (IEnumerable)GetValue(DropDownItemsSourceProperty); }
 			set { SetValue(DropDownItemsSourceProperty, value); }
 		}
-		*/
+
 
 		/// <summary>
 		/// Gets or sets whether the combobox dropdown is opened.
@@ -427,6 +414,9 @@ namespace Odyssey.Controls {
 			set { SetValue(SeparatorStringProperty, value); }
 		}
 
+
+
+
 		private ObservableCollection<ButtonBase> buttons = new ObservableCollection<ButtonBase>();
 
 		/// <summary>
@@ -435,6 +425,7 @@ namespace Odyssey.Controls {
 		public ObservableCollection<ButtonBase> Buttons {
 			get { return buttons; }
 		}
+
 
 
 		/// <summary>A helper class to store the DropDownItems since ItemCollection has no public creator:</summary>
@@ -447,6 +438,7 @@ namespace Odyssey.Controls {
 			get { return comboBoxControlItems.Items; }
 		}
 
+
 		/// <summary>
 		/// Gets whether the dropdown has items.
 		/// </summary>
@@ -455,7 +447,27 @@ namespace Odyssey.Controls {
 			private set { SetValue(HasDropDownItemsProperty, value); }
 		}
 
+
+
 		#endregion
+
+
+
+
+		#region Obsolete
+
+
+		[Obsolete("Not Used", true)]
+		protected virtual void OnSelectedBreadcrumbChanged(DependencyPropertyChangedEventArgs e) {
+			if (SelectedBreadcrumb != null) SelectedBreadcrumb.SelectedItem = null;
+		}
+
+		#endregion
+
+
+
+
+
 
 		/// <summary>
 		/// Creates a new BreadcrumbBar.
@@ -495,6 +507,13 @@ namespace Odyssey.Controls {
 			}
 		}
 
+
+
+
+
+
+
+
 		static void PathPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			string newPath = e.NewValue as string;
@@ -519,7 +538,8 @@ namespace Odyssey.Controls {
 				RaiseEvent(args);
 			}
 		}
-
+		//public String aa { get; set; }
+		//static bool _allowSelectionChnaged = true;
 		/// <summary>
 		/// Traces the specified path and builds the associated BreadcrumbItems.
 		/// </summary>
@@ -637,6 +657,12 @@ namespace Odyssey.Controls {
 			return path;
 		}
 
+		static void DropDownItemsSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+			BreadcrumbBar bar = d as BreadcrumbBar;
+
+			bar.comboBoxControlItems.ItemsSource = e.NewValue as IEnumerable;
+		}
+
 		/// <summary>
 		/// Occurs when the IsDropDownOpen property is changed.
 		/// </summary>
@@ -694,6 +720,7 @@ namespace Odyssey.Controls {
 				OnPopulateItems(parent.SelectedBreadcrumb);
 			}
 		}
+
 
 		private void breadcrumbItemDropDownChangedEvent(object sender, RoutedEventArgs e) {
 			BreadcrumbItem breadcrumb = e.Source as BreadcrumbItem;
@@ -844,7 +871,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
-		/*
+
 		/// <summary>
 		/// Gets or sets the DataTemplateSelector for the overflow items.
 		/// </summary>
@@ -852,9 +879,7 @@ namespace Odyssey.Controls {
 			get { return (DataTemplateSelector)GetValue(OverflowItemTemplateSelectorProperty); }
 			set { SetValue(OverflowItemTemplateSelectorProperty, value); }
 		}
-		*/
 
-		/*
 		/// <summary>
 		/// Gets or set the DataTemplate for the OverflowItem.
 		/// </summary>
@@ -862,7 +887,7 @@ namespace Odyssey.Controls {
 			get { return (DataTemplate)GetValue(OverflowItemTemplateProperty); }
 			set { SetValue(OverflowItemTemplateProperty, value); }
 		}
-		*/
+
 
 
 
@@ -966,7 +991,7 @@ namespace Odyssey.Controls {
 
 
 
-		/*
+
 		/// <summary>
 		/// Gets or sets the TemplateSelector for an embedded BreadcrumbItem.
 		/// </summary>
@@ -974,9 +999,8 @@ namespace Odyssey.Controls {
 			get { return (DataTemplateSelector)GetValue(BreadcrumbItemTemplateSelectorProperty); }
 			set { SetValue(BreadcrumbItemTemplateSelectorProperty, value); }
 		}
-		*/
 
-		/*
+
 		/// <summary>
 		/// Gets or sets the Template for an embedded BreadcrumbItem.
 		/// </summary>
@@ -984,7 +1008,6 @@ namespace Odyssey.Controls {
 			get { return (DataTemplate)GetValue(BreadcrumbItemTemplateProperty); }
 			set { SetValue(BreadcrumbItemTemplateProperty, value); }
 		}
-		*/
 
 
 		/// <summary>
@@ -1104,7 +1127,6 @@ namespace Odyssey.Controls {
 			return e.EditPath;
 		}
 
-		/*
 		/// <summary>
 		/// Gets the path of the specified BreadcrumbItem.
 		/// </summary>
@@ -1122,7 +1144,6 @@ namespace Odyssey.Controls {
 			RaiseEvent(e);
 			return e.EditPath;
 		}
-		*/
 
 		/// <summary>
 		/// Gets the display path from the traces of the BreacrumbItems.
@@ -1174,7 +1195,7 @@ namespace Odyssey.Controls {
 
 
 
-		/*
+
 		/// <summary>
 		/// Gets or sets the ItemsPanelTemplate for the DropDownItems of the combobox.
 		/// </summary>
@@ -1182,9 +1203,8 @@ namespace Odyssey.Controls {
 			get { return (ItemsPanelTemplate)GetValue(DropDownItemsPanelProperty); }
 			set { SetValue(DropDownItemsPanelProperty, value); }
 		}
-		*/
 
-		/*
+
 		/// <summary>
 		/// Gets or sets the ItemsPanelTemplateSelector for the DropDownItems of the combobox.
 		/// </summary>
@@ -1192,9 +1212,8 @@ namespace Odyssey.Controls {
 			get { return (DataTemplateSelector)GetValue(DropDownItemTemplateSelectorProperty); }
 			set { SetValue(DropDownItemTemplateSelectorProperty, value); }
 		}
-		*/
 
-		/*
+
 		/// <summary>
 		/// Gets or sets the DataTemplate for the DropDownItems of the combobox.
 		/// </summary>
@@ -1202,7 +1221,7 @@ namespace Odyssey.Controls {
 			get { return (DataTemplate)GetValue(DropDownItemTemplateProperty); }
 			set { SetValue(DropDownItemTemplateProperty, value); }
 		}
-		*/
+
 
 		/// <summary>
 		/// Gets or sets whether the breadcrumb bar can change to edit mode where the path can be edited.
@@ -1212,7 +1231,7 @@ namespace Odyssey.Controls {
 			set { SetValue(IsEditableProperty, value); }
 		}
 
-		/*
+
 		/// <summary>
 		/// Gets or sets the SelectedIndex of the combobox.
 		/// </summary>
@@ -1220,7 +1239,7 @@ namespace Odyssey.Controls {
 			get { return (int)GetValue(SelectedDropDownIndexProperty); }
 			set { SetValue(SelectedDropDownIndexProperty, value); }
 		}
-		*/
+
 
 		/// <summary>
 		/// Gets or sets the current progress indicator value.
@@ -1246,7 +1265,6 @@ namespace Odyssey.Controls {
 			return value;
 		}
 
-		/*
 		/// <summary>
 		/// Occurs when the ProgressValue is changed.
 		/// </summary>
@@ -1254,7 +1272,6 @@ namespace Odyssey.Controls {
 			add { AddHandler(BreadcrumbBar.ProgressValueChangedEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.ProgressValueChangedEvent, value); }
 		}
-		*/
 
 		static void ProgressValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			//            RoutedPropertyChangedEventArgs<double> args = new RoutedPropertyChangedEventArgs<double>((double)e.OldValue, (double)e.NewValue,BreadcrumbBar.ProgessValueChangedEvent);
@@ -1263,12 +1280,10 @@ namespace Odyssey.Controls {
 			bar.RaiseEvent(args);
 		}
 
-		/*
 		protected override void OnMouseLeave(MouseEventArgs e) {
 			//if (this.IsKeyboardFocusWithin) this.Focus();
 			base.OnMouseLeave(e);
 		}
-		*/
 
 		static object CoerceProgressMaximum(DependencyObject d, object baseValue) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
