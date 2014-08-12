@@ -3178,7 +3178,6 @@ namespace BExplorer.Shell {
 			SaveSettingsToDatabase(this.CurrentFolder);
 
 			if (destination == null || !destination.IsFolder) return;
-			//CurrentFolder = destination;
 			Navigate(destination, isInSameTab);
 		}
 

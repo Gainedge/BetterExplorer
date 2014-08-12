@@ -547,7 +547,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			ShellItem shellItem = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(newPathToShellParsingName);
 
 			var traces = new List<ShellItem>() { shellItem };
-			//traces.Add(shellItem);
 			while (shellItem != null && shellItem.Parent != null) {
 				traces.Add(shellItem.Parent);
 				shellItem = shellItem.Parent;
@@ -556,19 +555,17 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			if (traces.Count == 0) RootItem.SelectedItem = null;
 			traces.Reverse();
 
-
-			int index = 0;
-
 			var itemIndex = new List<Tuple<int, ShellItem>>();
-
-			// if the root is specified as first trace, then skip:
+			int index = 0;
 			int length = traces.Count;
 			int max = breadcrumbsToHide;
+			// if the root is specified as first trace, then skip:
 			if (max > 0 && traces[index].GetHashCode() == (shellItem.GetHashCode())) {
 				length--;
 				index++;
 				max--;
 			}
+
 			for (int i = index; i < traces.Count; i++) {
 				//Why do we have [if (item == null) break;] It seems like we add an if to the For(...) or it should NEVER be null
 				if (item == null) break;
@@ -587,6 +584,8 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 
 				item = container;
 			}
+
+
 			if (length != itemIndex.Count) {
 				//recover the last path:
 				Path = GetDisplayPath();
