@@ -1631,7 +1631,8 @@ namespace BetterExplorer {
 				var lastIndexOfDot = this.txtEditor.Text.LastIndexOf(".");
 				this.txtEditor.SelectionStart = 0;
 				this.txtEditor.SelectionLength = lastIndexOfDot;
-			} else {
+			}
+			else {
 				this.txtEditor.SelectAll();
 			}
 		}
@@ -5159,28 +5160,15 @@ namespace BetterExplorer {
 		private void pop_items(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			Odyssey.Controls.BreadcrumbItem item = e.Item;
 			if (item.Items.Count == 0) {
-				PopulateFolders(item);
+				if (item.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
+					foreach (ShellItem s in KnownFolders.Computer) {
+						item.Items.Add(s);
+					}
+				}
+
+				this._IsBreadcrumbBarSelectionChnagedAllowed = true;
 				e.Handled = true;
 			}
-		}
-
-		private async void PopulateFolders(Odyssey.Controls.BreadcrumbItem item) {
-			//Dispatcher.Invoke(DispatcherPriority.Normal,
-			//	(Action)(() => {
-			if (item.Items.Count > 0) {
-				this._IsBreadcrumbBarSelectionChnagedAllowed = true;
-				return;
-			}
-			string trace = item.TraceValue;
-			var shellitem = item.DataContext as ShellItem;
-			if (trace.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
-				foreach (ShellItem s in KnownFolders.Computer) {
-					item.Items.Add(s);
-				}
-			}
-
-			this._IsBreadcrumbBarSelectionChnagedAllowed = true;
-			//}));
 		}
 		*/
 
