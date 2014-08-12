@@ -873,7 +873,6 @@ namespace Odyssey.Controls {
 		}
 
 		/*
-		[Obsolete("Get Help removing this")]
 		private static void SelectedItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			bar.OnSelectedItemChanged(e.OldValue, e.NewValue);
@@ -897,7 +896,7 @@ namespace Odyssey.Controls {
 		/// <param name="newValue"></param>
 		public virtual void OnRootChanged(object oldValue, object newValue) {
 			newValue = GetFirstItem(newValue);
-			BreadcrumbItem oldRoot = oldValue as BreadcrumbItem;
+			var oldRoot = oldValue as BreadcrumbItem;
 			if (oldRoot != null) {
 				oldRoot.IsRoot = false;
 			}
@@ -907,14 +906,13 @@ namespace Odyssey.Controls {
 				Path = null;
 			}
 			else {
-				BreadcrumbItem root = newValue as BreadcrumbItem;
+				var root = newValue as BreadcrumbItem;
 
-				if (root == null) {
+				if (root == null)
 					root = BreadcrumbItem.CreateItem(newValue);
-				}
-				if (root != null) {
+				else
 					root.IsRoot = true;
-				}
+
 				this.RemoveLogicalChild(oldValue);
 				RootItem = root;
 				if (root != null) {
