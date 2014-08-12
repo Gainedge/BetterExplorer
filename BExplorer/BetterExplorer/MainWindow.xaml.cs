@@ -5171,7 +5171,14 @@ namespace BetterExplorer {
 			//FocusManager.SetIsFocusScope(this.txtEditor, true);
 		}
 
+
 		private void pop_items(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
+			bcbc.pop_items(e.Item);
+			this._IsBreadcrumbBarSelectionChnagedAllowed = e.Item.Items.Count == 0;
+
+
+
+			/*
 			Odyssey.Controls.BreadcrumbItem item = e.Item;
 			if (item.Items.Count == 0) {
 				if (item.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
@@ -5183,6 +5190,7 @@ namespace BetterExplorer {
 				this._IsBreadcrumbBarSelectionChnagedAllowed = true;
 				e.Handled = true;
 			}
+			*/
 		}
 
 		private void Refresh_Click(object sender, RoutedEventArgs e) {

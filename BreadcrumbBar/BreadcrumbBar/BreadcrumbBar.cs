@@ -1311,6 +1311,18 @@ namespace Odyssey.Controls {
 
 
 
+		public void pop_items(BreadcrumbItem e) {
+			if (e.Items.Count == 0) {
+				if (e.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
+					foreach (ShellItem s in KnownFolders.Computer) {
+						e.Items.Add(s);
+					}
+				}
+			}
+		}
+
+
+
 		#region IAddChild Members
 
 		public void AddChild(object value) {
