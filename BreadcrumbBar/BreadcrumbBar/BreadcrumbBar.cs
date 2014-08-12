@@ -150,8 +150,9 @@ namespace Odyssey.Controls {
 		public static readonly DependencyProperty SeparatorStringProperty =
 				DependencyProperty.Register("SeparatorString", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata("\\"));
 
-		public static readonly DependencyProperty PathProperty =
-				DependencyProperty.Register("Path", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata(null, PathPropertyChanged));
+		//public static readonly DependencyProperty PathProperty =
+		//		DependencyProperty.Register("Path", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata(null, PathPropertyChanged));
+
 		/*
 		public static readonly DependencyProperty DropDownItemsSourceProperty =
 			DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(BreadcrumbBar), new UIPropertyMetadata(null, DropDownItemsSourcePropertyChanged));
@@ -336,30 +337,32 @@ namespace Odyssey.Controls {
 			set { SetValue(RootProperty, value); }
 		}
 
+		//public static readonly DependencyProperty PathProperty =
+		//	DependencyProperty.Register("Path", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
+
+
+		private string _Path = "";
 		/// <summary>
 		/// Gets or sets the selected path.
 		/// </summary>
-		[Obsolete("Use Path2", false)]
-		private string Path {
-			get {
-				return (string)GetValue(PathProperty);
-			}
-			set { SetValue(PathProperty, value); }
-		}
-
-		private string Path2 {
-			get {
-				return comboBox.Text;
+		public string Path {
+			private get {
+				return _Path;
 			}
 			set {
-				comboBox.Text = value;
+				if (_Path == value) return;
+				var OldValue = _Path;
+				_Path = value;
+
+				if (IsInitialized) {
+					BuildBreadcrumbsFromPath(value);
+					OnPathChanged(OldValue, value);
+				}
+				else {
+					_Path = initPath = value;
+				}
 			}
 		}
-
-		public void PathSet(string Path) {
-			BuildBreadcrumbsFromPath(Path);
-		}
-
 
 		/// <summary>
 		/// Gets or sets the selected item.
@@ -498,6 +501,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
+		/*
 		static void PathPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			string newPath = e.NewValue as string;
@@ -510,7 +514,7 @@ namespace Odyssey.Controls {
 				bar.Path = bar.initPath = newPath;
 			}
 		}
-
+		*/
 
 		/// <summary>
 		/// Occurs when the Path property is changed.
