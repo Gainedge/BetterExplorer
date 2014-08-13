@@ -673,6 +673,10 @@
       <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
       <Name>BEHelper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BreadcrumbBar\Odyssey.Controls.csproj">
+      <Project>{333fdc55-6b47-4a64-a2df-a4c5823fac74}</Project>
+      <Name>Odyssey.Controls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ConsoleControl\ConsoleControl.csproj">
       <Project>{737CC7F2-EC7C-4800-B7EB-72637E892C42}</Project>
       <Name>ConsoleControl</Name>

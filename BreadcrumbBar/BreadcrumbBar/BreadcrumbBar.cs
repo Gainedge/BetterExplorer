@@ -88,10 +88,12 @@ namespace Odyssey.Controls {
 
 		public static readonly DependencyProperty CollapsedTracesProperty = CollapsedTracesPropertyKey.DependencyProperty;
 
+		/*
 		public static readonly DependencyProperty RootProperty =
 				DependencyProperty.Register("Root", typeof(object), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
 						FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsArrange,
 						RootPropertyChanged));
+		*/
 
 		/*
 		public static readonly DependencyProperty SelectedItemProperty =
@@ -322,6 +324,9 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the root of the breadcrumb which can be a hierarchical data source or a BreadcrumbItem.
 		/// </summary>
+		public ShellItem Root { get; set; }
+
+		/*
 		public ShellItem Root {
 			get {
 				return (ShellItem)GetValue(RootProperty);
@@ -330,7 +335,7 @@ namespace Odyssey.Controls {
 				SetValue(RootProperty, value);
 			}
 		}
-
+		*/
 		//public static readonly DependencyProperty PathProperty =
 		//	DependencyProperty.Register("Path", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
 
