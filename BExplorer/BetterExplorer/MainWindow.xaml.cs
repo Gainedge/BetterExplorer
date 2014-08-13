@@ -5211,6 +5211,7 @@ namespace BetterExplorer {
 			this.ShellListView.IsFocusAllowed = true;
 		}
 
+		/*
 		[Obsolete("Replace with path_changed")]
 		private void path_conversation(object sender, Odyssey.Controls.PathConversionEventArgs e) {
 			var newPath = e.DisplayPath;
@@ -5227,6 +5228,7 @@ namespace BetterExplorer {
 				catch { }
 			}
 		}
+		*/
 
 		private void path_changed(object sender, RoutedPropertyChangedEventArgs<string> e) {
 			Int64 pidl;
