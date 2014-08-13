@@ -5184,12 +5184,12 @@ namespace BetterExplorer {
 		}
 
 
-
+		/*
 		private void pop_items(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			bcbc.pop_items(e.Item);
 			bcbc._IsBreadcrumbBarSelectionChnagedAllowed = e.Item.Items.Count == 0;
 		}
-
+		*/
 
 
 

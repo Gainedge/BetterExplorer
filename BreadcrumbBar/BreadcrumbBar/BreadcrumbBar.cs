@@ -58,22 +58,28 @@ namespace Odyssey.Controls {
 		public static readonly DependencyProperty HasDropDownItemsProperty =
 				DependencyProperty.Register("HasDropDownItems", typeof(bool), typeof(BreadcrumbBar), new UIPropertyMetadata(false));
 
+		/*
 		public static readonly DependencyProperty DropDownItemsPanelProperty =
 				DependencyProperty.Register("DropDownItemsPanel", typeof(ItemsPanelTemplate), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
+		*/
 
 		private static readonly DependencyPropertyKey IsRootSelectedPropertyKey =
 				DependencyProperty.RegisterReadOnly("IsRootSelected", typeof(bool), typeof(BreadcrumbBar), new UIPropertyMetadata(true));
 
 		public static readonly DependencyProperty IsRootSelectedProperty = IsRootSelectedPropertyKey.DependencyProperty;
 
+
 		public static readonly DependencyProperty DropDownItemTemplateProperty =
 				DependencyProperty.Register("DropDownItemTemplate", typeof(DataTemplate), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
 
+		/*
 		public static readonly DependencyProperty IsEditableProperty =
 				DependencyProperty.Register("IsEditable", typeof(bool), typeof(BreadcrumbBar), new UIPropertyMetadata(true));
+		*/
 
 		public static readonly DependencyProperty DropDownItemTemplateSelectorProperty =
 				DependencyProperty.Register("DropDownItemTemplateSelector", typeof(DataTemplateSelector), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
+
 
 		public static readonly DependencyProperty OverflowItemTemplateSelectorProperty =
 				DependencyProperty.Register("OverflowItemTemplateSelector", typeof(DataTemplateSelector), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
@@ -88,12 +94,12 @@ namespace Odyssey.Controls {
 
 		public static readonly DependencyProperty CollapsedTracesProperty = CollapsedTracesPropertyKey.DependencyProperty;
 
-		
+
 		public static readonly DependencyProperty RootProperty =
 				DependencyProperty.Register("Root", typeof(object), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
 						FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsArrange,
 						RootPropertyChanged));
-		
+
 
 		/*
 		public static readonly DependencyProperty SelectedItemProperty =
@@ -139,8 +145,10 @@ namespace Odyssey.Controls {
 		public static readonly DependencyProperty IsDropDownOpenProperty =
 		DependencyProperty.Register("IsDropDownOpen", typeof(bool), typeof(BreadcrumbBar), new UIPropertyMetadata(false, IsDropDownOpenChanged));
 
+		/*
 		public static readonly DependencyProperty SeparatorStringProperty =
 				DependencyProperty.Register("SeparatorString", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata("\\"));
+		*/
 
 		//public static readonly DependencyProperty PathProperty =
 		//		DependencyProperty.Register("Path", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata(null, PathPropertyChanged));
@@ -334,7 +342,7 @@ namespace Odyssey.Controls {
 				SetValue(RootProperty, value);
 			}
 		}
-		
+
 		//public static readonly DependencyProperty PathProperty =
 		//	DependencyProperty.Register("Path", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
 
@@ -396,8 +404,8 @@ namespace Odyssey.Controls {
 		/// Gets the Root BreadcrumbItem.
 		/// </summary>
 		public BreadcrumbItem RootItem {
-			get { 
-				return (BreadcrumbItem)GetValue(RootItemProperty); 
+			get {
+				return (BreadcrumbItem)GetValue(RootItemProperty);
 			}
 			protected set {
 				SetValue(RootItemPropertyKey, value);
@@ -425,11 +433,13 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the string that is used to separate between traces.
 		/// </summary>
+		public string SeparatorString { get; set; }
+		/*
 		public string SeparatorString {
 			get { return (string)GetValue(SeparatorStringProperty); }
 			set { SetValue(SeparatorStringProperty, value); }
 		}
-
+		*/
 		private ObservableCollection<ButtonBase> buttons = new ObservableCollection<ButtonBase>();
 
 		/// <summary>
@@ -464,6 +474,7 @@ namespace Odyssey.Controls {
 		/// </summary>
 		public BreadcrumbBar()
 			: base() {
+			this.SeparatorString = "\\";
 			comboBoxControlItems = new ItemsControl();
 			Binding b = new Binding("HasItems");
 			b.Source = comboBoxControlItems;
@@ -1197,10 +1208,11 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets whether the breadcrumb bar can change to edit mode where the path can be edited.
 		/// </summary>
-		public bool IsEditable {
-			get { return (bool)GetValue(IsEditableProperty); }
-			set { SetValue(IsEditableProperty, value); }
-		}
+		public bool IsEditable { get; set; }
+		//public bool IsEditable {
+		//	get { return (bool)GetValue(IsEditableProperty); }
+		//	set { SetValue(IsEditableProperty, value); }
+		//}
 
 		/*
 		/// <summary>
@@ -1315,6 +1327,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
+		/*
 		public void pop_items(BreadcrumbItem e) {
 			if (e.Items.Count == 0) {
 				if (e.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
@@ -1324,6 +1337,7 @@ namespace Odyssey.Controls {
 				}
 			}
 		}
+		*/
 
 		private string path_conversation(Odyssey.Controls.PathConversionEventArgs.ConversionMode Mode) {
 			string newPath = GetDisplayPath();  //= e.DisplayPath;
