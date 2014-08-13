@@ -361,7 +361,12 @@ namespace Odyssey.Controls {
 				_Path = value;
 
 				if (IsInitialized) {
-					OnPathChanged(OldValue, value);
+					BuildBreadcrumbsFromPath(Path);
+
+					if (IsLoaded & newValue != null) {
+						var args = new RoutedPropertyChangedEventArgs<string>(oldValue, newValue, PathChangedEvent);
+						RaiseEvent(args);
+					}
 				}
 				else {
 					_Path = initPath = value;
@@ -459,6 +464,7 @@ namespace Odyssey.Controls {
 			get { return comboBoxControlItems.Items; }
 		}
 
+		/*
 		/// <summary>
 		/// Gets whether the dropdown has items.
 		/// </summary>
@@ -466,6 +472,7 @@ namespace Odyssey.Controls {
 			get { return (bool)GetValue(HasDropDownItemsProperty); }
 			private set { SetValue(HasDropDownItemsProperty, value); }
 		}
+		*/
 
 		#endregion Properties
 
@@ -523,6 +530,7 @@ namespace Odyssey.Controls {
 		}
 		*/
 
+		/*
 		/// <summary>
 		/// Occurs when the Path property is changed.
 		/// </summary>
@@ -534,6 +542,7 @@ namespace Odyssey.Controls {
 				RaiseEvent(args);
 			}
 		}
+		*/
 
 		/// <summary>
 		/// Traces the specified path and builds the associated BreadcrumbItems.
@@ -697,9 +706,8 @@ namespace Odyssey.Controls {
 			}
 			//Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 
-
-
 			Path = GetDisplayPath();
+			/*
 			return;
 			string newPath = GetDisplayPath();  //= e.DisplayPath;
 			if (newPath != null && newPath.StartsWith("%")) {
@@ -715,6 +723,7 @@ namespace Odyssey.Controls {
 			}
 
 			Path = newPath;
+			*/
 		}
 
 		private void breadcrumbItemTraceValueChanged(object sender, RoutedEventArgs e) {
