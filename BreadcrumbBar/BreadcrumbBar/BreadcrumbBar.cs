@@ -697,6 +697,10 @@ namespace Odyssey.Controls {
 			}
 			//Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 
+
+
+			Path = GetDisplayPath();
+			return;
 			string newPath = GetDisplayPath();  //= e.DisplayPath;
 			if (newPath != null && newPath.StartsWith("%")) {
 				newPath = Environment.ExpandEnvironmentVariables(newPath);
