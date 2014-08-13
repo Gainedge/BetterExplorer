@@ -2236,6 +2236,7 @@ namespace BetterExplorer {
 		#region On Navigated
 
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
+			NavigationController_Why();
 			SetupColumnsButton();
 			SetSortingAndGroupingButtons();
 			//SetUpBreadcrumbbarOnNavComplete(e);
@@ -5244,6 +5245,12 @@ namespace BetterExplorer {
 			ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(e.NewValue.ToShellParsingName());
 			NavigationController(item);
 		}
+
+		private void NavigationController_Why() {
+			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
+			this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
+		}
+
 
 		private void NavigationController(ShellItem Destination) {
 			//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
