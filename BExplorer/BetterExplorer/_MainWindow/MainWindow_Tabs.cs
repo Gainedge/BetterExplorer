@@ -21,7 +21,8 @@ namespace BetterExplorer {
 				var sho = new ShellItem(tcMain.StartUpLocation.ToShellParsingName());
 
 				if (tcMain.Items.OfType<Wpf.Controls.TabItem>().Any())
-					ShellListView.Navigate(sho);
+					//ShellListView.Navigate(sho);
+					NavigationController(sho);
 				else
 					tcMain.NewTab(sho, true);
 
@@ -250,8 +251,8 @@ namespace BetterExplorer {
 							//this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
 							//this.ShellListView.CurrentFolder = tab.ShellObject;
 							//ShellListView.Navigate(tab.ShellObject, false, false);
-
-							ShellListView.Navigate_Full(tab.ShellObject, true);
+							//ShellListView.Navigate_Full(tab.ShellObject, true);
+							NavigationController(tab.ShellObject);
 						}
 					}
 					else {

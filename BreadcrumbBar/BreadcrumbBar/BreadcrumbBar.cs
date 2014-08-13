@@ -673,8 +673,10 @@ namespace Odyssey.Controls {
 
 		private void breadcrumbItemTraceValueChanged(object sender, RoutedEventArgs e) {
 			if (e.OriginalSource == RootItem) {
+				_IsBreadcrumbBarSelectionChnagedAllowed = false;
 				Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 			}
+			_IsBreadcrumbBarSelectionChnagedAllowed = true;
 		}
 
 		private void breadcrumbItemSelectionChangedEvent(object sender, RoutedEventArgs e) {

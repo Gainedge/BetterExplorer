@@ -920,7 +920,8 @@ namespace BetterExplorer {
 			ShellLink lnk = new ShellLink(obj.ParsingName);
 
 			var obj2 = new ShellItem(lnk.TargetPIDL);
-			ShellListView.Navigate(obj2);
+			//ShellListView.Navigate(obj2);
+			NavigationController(obj2);
 
 			lnk.Dispose();
 			obj.Dispose();
@@ -2779,12 +2780,14 @@ namespace BetterExplorer {
 
 		private void leftNavBut_Click(object sender, RoutedEventArgs e) {
 			tcMain.isGoingBackOrForward = true;
-			ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack(), true);
+			//ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack(), true);
+			NavigationController((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack());
 		}
 
 		private void rightNavBut_Click(object sender, RoutedEventArgs e) {
 			tcMain.isGoingBackOrForward = true;
-			ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateForward(), true);
+			//ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateForward(), true);
+			NavigationController((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateForward());
 		}
 
 		private void downArrow_Click(object sender, RoutedEventArgs e) {
@@ -2823,7 +2826,9 @@ namespace BetterExplorer {
 				NavigationLog nl = (tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
 				(sender as MenuItem).IsChecked = true;
 				nl.CurrentLocPos = cmHistory.Items.IndexOf((sender as MenuItem));
-				ShellListView.Navigate(item, true);
+				//ShellListView.Navigate(item, true);
+
+				NavigationController(item);
 			}
 		}
 
@@ -3873,7 +3878,8 @@ namespace BetterExplorer {
 					ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
 					//this.ShellListView.CurrentFolder = searchFolder;
 					//ShellListView.Navigate(searchFolder, false, false);
-					ShellListView.Navigate_Full(searchFolder, false);
+					//ShellListView.Navigate_Full(searchFolder, false);
+					NavigationController(searchFolder);
 				}
 			}
 			catch (Exception ex) {
@@ -4226,8 +4232,8 @@ namespace BetterExplorer {
 					//this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
 					//this.ShellListView.CurrentFolder = item;
 					//ShellListView.Navigate(item, false, false);
-
-					ShellListView.Navigate_Full(item, true);
+					//ShellListView.Navigate_Full(item, true);
+					NavigationController(item);
 				}
 				(sender as System.Windows.Forms.Timer).Stop();
 			}
@@ -4567,7 +4573,8 @@ namespace BetterExplorer {
 		}
 
 		private void miOpenRB_Click(object sender, RoutedEventArgs e) {
-			ShellListView.Navigate((ShellItem)KnownFolders.RecycleBin);
+			//ShellListView.Navigate((ShellItem)KnownFolders.RecycleBin);
+			NavigationController((ShellItem)KnownFolders.RecycleBin);
 		}
 
 		private void miRestoreRBItems_Click(object sender, RoutedEventArgs e) {
@@ -4684,7 +4691,8 @@ namespace BetterExplorer {
 		private void ctrlConsole_OnConsoleInput(object sender, Tuple<string> args) {
 
 			if (args.Item1.Trim().ToLowerInvariant().StartsWith("cd")) {
-				this.ShellListView.Navigate(new ShellItem(args.Item1.ToLowerInvariant().Replace("cd", String.Empty).Replace("/d", String.Empty).Trim()));
+				//this.ShellListView.Navigate(new ShellItem(args.Item1.ToLowerInvariant().Replace("cd", String.Empty).Replace("/d", String.Empty).Trim()));
+				NavigationController(new ShellItem(args.Item1.ToLowerInvariant().Replace("cd", String.Empty).Replace("/d", String.Empty).Trim()));
 			}
 			Fluent.MenuItem cmi = new MenuItem();
 			cmi.Header = args.Item1;
@@ -5241,16 +5249,21 @@ namespace BetterExplorer {
 			//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
 
 			#region AddedForNow
-			this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);			
+			if (bcbc.Root == null) {
+				this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
+			}
 			#endregion
 
 
 
-			if (Destination != this.ShellListView.CurrentFolder) {
-				this.ShellListView.Navigate(Destination, true);
+			if (Destination != this.ShellListView.CurrentFolder && bcbc._IsBreadcrumbBarSelectionChnagedAllowed) {
+				//this.ShellListView.Navigate(Destination, true);
+				this.ShellListView.Navigate_Full(Destination, true);
 				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 				this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
 			}
+
+			bcbc._IsBreadcrumbBarSelectionChnagedAllowed = true;
 		}
 
 
