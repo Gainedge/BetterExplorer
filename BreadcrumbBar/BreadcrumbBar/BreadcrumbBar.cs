@@ -58,10 +58,10 @@ namespace Odyssey.Controls {
 		public static readonly DependencyProperty HasDropDownItemsProperty =
 				DependencyProperty.Register("HasDropDownItems", typeof(bool), typeof(BreadcrumbBar), new UIPropertyMetadata(false));
 
-		/*
+
 		public static readonly DependencyProperty DropDownItemsPanelProperty =
 				DependencyProperty.Register("DropDownItemsPanel", typeof(ItemsPanelTemplate), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
-		*/
+
 
 		private static readonly DependencyPropertyKey IsRootSelectedPropertyKey =
 				DependencyProperty.RegisterReadOnly("IsRootSelected", typeof(bool), typeof(BreadcrumbBar), new UIPropertyMetadata(true));
@@ -219,7 +219,9 @@ namespace Odyssey.Controls {
 		/// This command shows the drop down part of the combobox.
 		/// </summary>
 		public static RoutedUICommand ShowDropDownCommand {
-			get { return showDropDownCommand; }
+			get {
+				return showDropDownCommand;
+			}
 		}
 
 		private static RoutedUICommand showDropDownCommand = new RoutedUICommand("Show DropDown", "ShowDropDownCommand", typeof(BreadcrumbBar));
@@ -315,11 +317,13 @@ namespace Odyssey.Controls {
 		/// </summary>
 		public BindingBase ImageBinding { get; set; }
 
+		/*
 		/// <summary>
 		/// On initializing, it is possible that the Path property is set before the RootItem property, thus the declarative xaml Path would be overwritten by settings the
 		/// RootItem property later. To avoid this affect, setting the Path also sets initPath on initializing and after initializing, the Path is restored by this value:
 		/// </summary>
 		private string initPath;
+		*/
 
 		/// <summary>
 		/// Gets whether the selected breadcrumb is the RootItem.
@@ -368,9 +372,9 @@ namespace Odyssey.Controls {
 						RaiseEvent(args);
 					}
 				}
-				else {
-					_Path = initPath = value;
-				}
+				//else {
+				//	_Path = initPath = value;
+				//}
 			}
 		}
 
@@ -464,7 +468,6 @@ namespace Odyssey.Controls {
 			get { return comboBoxControlItems.Items; }
 		}
 
-		/*
 		/// <summary>
 		/// Gets whether the dropdown has items.
 		/// </summary>
@@ -472,7 +475,6 @@ namespace Odyssey.Controls {
 			get { return (bool)GetValue(HasDropDownItemsProperty); }
 			private set { SetValue(HasDropDownItemsProperty, value); }
 		}
-		*/
 
 		#endregion Properties
 
@@ -493,7 +495,7 @@ namespace Odyssey.Controls {
 			AddHandler(BreadcrumbItem.TraceChangedEvent, new RoutedEventHandler(breadcrumbItemTraceValueChanged));
 			//AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectionChangedEvent));
 			AddHandler(BreadcrumbItem.DropDownPressedChangedEvent, new RoutedEventHandler(breadcrumbItemDropDownChangedEvent));
-			AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(buttonClickedEvent));
+			//AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(buttonClickedEvent));
 			traces.Add(null);
 
 			InputBindings.Add(new KeyBinding(BreadcrumbBar.ShowDropDownCommand, new KeyGesture(Key.Down, ModifierKeys.Alt)));
@@ -548,7 +550,7 @@ namespace Odyssey.Controls {
 		/// Traces the specified path and builds the associated BreadcrumbItems.
 		/// </summary>
 		/// <param name="path">The traces separated by the SepearatorString property.</param>
-		public void BuildBreadcrumbsFromPath(string newPath) {
+		internal void BuildBreadcrumbsFromPath(string newPath) {
 			/*
 			var e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.EditToDisplay, newPath, Root, PathConversionEvent);
 			RaiseEvent(e);
@@ -670,22 +672,22 @@ namespace Odyssey.Controls {
 		protected virtual void OnDropDownOpenChanged(bool oldValue, bool newValue) {
 			if (comboBox != null && newValue) {
 				SetInputState();
-				if (IsEditable) {
-					comboBox.Visibility = Visibility.Visible;
-					comboBox.IsDropDownOpen = true;
-				}
+				//if (IsEditable) {
+				comboBox.Visibility = Visibility.Visible;
+				comboBox.IsDropDownOpen = true;
+				//}
 			}
 		}
 
 		private static void SelectRootCommandExecuted(object sender, ExecutedRoutedEventArgs e) {
-			BreadcrumbItem item = e.Parameter as BreadcrumbItem;
+			var item = e.Parameter as BreadcrumbItem;
 			if (item != null) {
 				item.SelectedItem = null;
 			}
 		}
 
 		private static void SelectTraceCommandExecuted(object sender, ExecutedRoutedEventArgs e) {
-			BreadcrumbItem item = e.Parameter as BreadcrumbItem;
+			var item = e.Parameter as BreadcrumbItem;
 			if (item != null) {
 				item.SelectedItem = null;
 			}
@@ -693,11 +695,11 @@ namespace Odyssey.Controls {
 
 		private static void ShowDropDownExecuted(object sender, ExecutedRoutedEventArgs e) {
 			BreadcrumbBar bar = sender as BreadcrumbBar;
-			if (bar.IsEditable && bar.DropDownItems.Count > 0) bar.IsDropDownOpen = true;
+			if (/*bar.IsEditable &&*/ bar.DropDownItems.Count > 0) bar.IsDropDownOpen = true;
 		}
 
 		private void breadcrumbItemSelectedItemChanged(object sender, RoutedEventArgs e) {
-			BreadcrumbItem breadcrumb = e.OriginalSource as BreadcrumbItem;
+			var breadcrumb = e.OriginalSource as BreadcrumbItem;
 			if (breadcrumb != null && breadcrumb.SelectedBreadcrumb != null) breadcrumb = breadcrumb.SelectedBreadcrumb;
 			SelectedBreadcrumb = breadcrumb;
 
@@ -729,12 +731,13 @@ namespace Odyssey.Controls {
 		private void breadcrumbItemTraceValueChanged(object sender, RoutedEventArgs e) {
 			if (e.OriginalSource == RootItem) {
 				_IsBreadcrumbBarSelectionChnagedAllowed = false;
-
 				Path = GetDisplayPath();
+				_IsBreadcrumbBarSelectionChnagedAllowed = true;
 				//Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 			}
-			_IsBreadcrumbBarSelectionChnagedAllowed = true;
 		}
+
+
 
 		/*
 		private void breadcrumbItemSelectionChangedEvent(object sender, RoutedEventArgs e) {
@@ -755,6 +758,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
+		/*
 		/// <summary>
 		/// Remove the focus from a button when it was clicked.
 		/// </summary>
@@ -763,6 +767,7 @@ namespace Odyssey.Controls {
 				//this.Focus();
 			}
 		}
+		*/
 
 		/*
 		/// <summary>
@@ -1058,6 +1063,7 @@ namespace Odyssey.Controls {
 			Exit(false);
 		}
 
+		/*
 		protected override void OnInitialized(EventArgs e) {
 			base.OnInitialized(e);
 			if (initPath != null) {
@@ -1065,6 +1071,7 @@ namespace Odyssey.Controls {
 				BuildBreadcrumbsFromPath(Path);
 			}
 		}
+		*/
 
 		private void comboBox_KeyDown(object sender, KeyEventArgs e) {
 			switch (e.Key) {
@@ -1118,7 +1125,7 @@ namespace Odyssey.Controls {
 		}
 
 		public void SetInputState() {
-			if (comboBox != null && IsEditable && comboBox.Visibility != System.Windows.Visibility.Visible) {
+			if (comboBox != null /*&& IsEditable*/ && comboBox.Visibility != System.Windows.Visibility.Visible) {
 				if (this.OnEditModeToggle != null) {
 					this.OnEditModeToggle.Invoke(comboBox, new EditModeToggleEventArgs(false));
 				}
@@ -1235,10 +1242,13 @@ namespace Odyssey.Controls {
 		}
 		*/
 
+		/*
 		/// <summary>
 		/// Gets or sets whether the breadcrumb bar can change to edit mode where the path can be edited.
 		/// </summary>
 		public bool IsEditable { get; set; }
+		*/
+
 		//public bool IsEditable {
 		//	get { return (bool)GetValue(IsEditableProperty); }
 		//	set { SetValue(IsEditableProperty, value); }
@@ -1389,6 +1399,8 @@ namespace Odyssey.Controls {
 		*/
 
 		public Action<ShellItem> OnNavigate;
+
+		[Obsolete("Try to Remove")]
 		public bool _IsBreadcrumbBarSelectionChnagedAllowed;
 
 		/*

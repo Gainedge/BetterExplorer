@@ -130,6 +130,9 @@ namespace Odyssey.Controls {
 
 			RoutedPropertyChangedEventArgs<object> args = new RoutedPropertyChangedEventArgs<object>(e.OldValue, e.NewValue, TraceChangedEvent);
 			item.RaiseEvent(args);
+			//if (args.OriginalSource == item.BreadcrumbBar.RootItem) {
+			//	item.BreadcrumbBar.BuildBreadcrumbsFromPath(item.BreadcrumbBar.GetDisplayPath());
+			//}
 		}
 
 		/// <summary>

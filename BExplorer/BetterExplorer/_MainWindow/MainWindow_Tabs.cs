@@ -245,23 +245,23 @@ namespace BetterExplorer {
 			if (tab == null) return;
 			tcMain.isGoingBackOrForward = tab.log.HistoryItemsList.Count != 0;
 			try {
-				if (true/*tab.ShellObject != ShellListView.CurrentFolder*/) {
-					if (!Keyboard.IsKeyDown(Key.Tab)) {
-						if (tab.ShellObject != this.ShellListView.CurrentFolder || tab.ShellObject.IsSearchFolder) {
-							//this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
-							//this.ShellListView.CurrentFolder = tab.ShellObject;
-							//ShellListView.Navigate(tab.ShellObject, false, false);
-							//ShellListView.Navigate_Full(tab.ShellObject, true);
-							NavigationController(tab.ShellObject);
-						}
-					}
-					else {
-						t.Interval = 500;
-						t.Tag = tab.ShellObject;
-						t.Tick += new EventHandler(t_Tick);
-						t.Start();
+				//if (true/*tab.ShellObject != ShellListView.CurrentFolder*/) {
+				if (!Keyboard.IsKeyDown(Key.Tab)) {
+					if (tab.ShellObject != this.ShellListView.CurrentFolder || tab.ShellObject.IsSearchFolder) {
+						//this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
+						//this.ShellListView.CurrentFolder = tab.ShellObject;
+						//ShellListView.Navigate(tab.ShellObject, false, false);
+						//ShellListView.Navigate_Full(tab.ShellObject, true);
+						NavigationController(tab.ShellObject);
 					}
 				}
+				else {
+					t.Interval = 500;
+					t.Tag = tab.ShellObject;
+					t.Tick += new EventHandler(t_Tick);
+					t.Start();
+				}
+				//}
 			}
 			catch (StackOverflowException) {
 			}

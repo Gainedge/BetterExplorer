@@ -5253,7 +5253,7 @@ namespace BetterExplorer {
 
 		private void NavigationController_Why() {
 			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
-			this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
+			//this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
 		}
 
 
@@ -5272,7 +5272,7 @@ namespace BetterExplorer {
 				//this.ShellListView.Navigate(Destination, true);
 				this.ShellListView.Navigate_Full(Destination, true);
 				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
-				this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
+				//this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
 			}
 
 			bcbc._IsBreadcrumbBarSelectionChnagedAllowed = true;
