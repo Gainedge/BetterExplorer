@@ -363,8 +363,8 @@ namespace Odyssey.Controls {
 				if (IsInitialized) {
 					BuildBreadcrumbsFromPath(Path);
 
-					if (IsLoaded & newValue != null) {
-						var args = new RoutedPropertyChangedEventArgs<string>(oldValue, newValue, PathChangedEvent);
+					if (IsLoaded & _Path != null) {
+						var args = new RoutedPropertyChangedEventArgs<string>(OldValue, _Path, PathChangedEvent);
 						RaiseEvent(args);
 					}
 				}
