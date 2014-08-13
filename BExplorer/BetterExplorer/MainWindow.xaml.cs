@@ -1645,10 +1645,10 @@ namespace BetterExplorer {
 
 
 
-			//if (!e.IsNavigateInSameTab || e.Folder == this.ShellListView.CurrentFolder)
-			//this.bcbc.PathConversion -= path_conversation;
-			this.bcbc.Path = e.Folder.IsSearchFolder ? e.Folder.Pidl.ToString() : e.Folder.ParsingName;
-			//this.bcbc.PathConversion += path_conversation;
+			////if (!e.IsNavigateInSameTab || e.Folder == this.ShellListView.CurrentFolder)
+			////this.bcbc.PathConversion -= path_conversation;
+			//this.bcbc.Path = e.Folder.IsSearchFolder ? e.Folder.Pidl.ToString() : e.Folder.ParsingName;
+			////this.bcbc.PathConversion += path_conversation;
 
 
 
@@ -5239,8 +5239,17 @@ namespace BetterExplorer {
 
 		private void NavigationController(ShellItem Destination) {
 			//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
+
+			#region AddedForNow
+			this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);			
+			#endregion
+
+
+
 			if (Destination != this.ShellListView.CurrentFolder) {
 				this.ShellListView.Navigate(Destination, true);
+				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
+				this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
 			}
 		}
 

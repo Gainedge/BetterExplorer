@@ -512,7 +512,7 @@ namespace Odyssey.Controls {
 		/// Traces the specified path and builds the associated BreadcrumbItems.
 		/// </summary>
 		/// <param name="path">The traces separated by the SepearatorString property.</param>
-		private void BuildBreadcrumbsFromPath(string newPath) {
+		public void BuildBreadcrumbsFromPath(string newPath) {
 			/*
 			var e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.EditToDisplay, newPath, Root, PathConversionEvent);
 			RaiseEvent(e);

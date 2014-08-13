@@ -3168,7 +3168,7 @@ namespace BExplorer.Shell {
 
 			int CurrentI = 0, LastI = 0;
 			foreach (var Shell in destination) {
-				F.Application.DoEvents();
+				//F.Application.DoEvents();
 				if (this.Items.Count > 0 && this.Items.Last().Parent != Shell.Parent) {
 					break;
 				}
