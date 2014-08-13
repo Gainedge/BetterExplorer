@@ -5220,11 +5220,7 @@ namespace BetterExplorer {
 				bool isValidPidl = Int64.TryParse(newPath.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
 				try {
 					ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(newPath.ToShellParsingName());
-
-					//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
-					if (item != this.ShellListView.CurrentFolder) {
-						this.ShellListView.Navigate(item, true);
-					}
+					NavigationController(item);
 				}
 				catch { }
 			}
@@ -5251,6 +5247,17 @@ namespace BetterExplorer {
 			//mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnOpenWith.ActualHeight), 1);
 			//btnOpenWith.IsDropDownOpen = false;
 		}
+
+
+
+		private void NavigationController(ShellItem Destination) {
+			//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
+			if (Destination != this.ShellListView.CurrentFolder) {
+				this.ShellListView.Navigate(Destination, true);
+			}
+		}
+
+
 
 	}
 }

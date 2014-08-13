@@ -50,7 +50,8 @@ namespace BetterExplorer {
 						tcMain.NewTab(ShellItem.ToShellParsingName(str), i == InitialTabs.Length);
 						if (i == InitialTabs.Count()) {
 							ShellItem sho = new ShellItem(str.ToShellParsingName());
-							ShellListView.Navigate(sho);
+							//ShellListView.Navigate(sho);
+							NavigationController(sho);
 							(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = sho;
 							(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = sho.ParsingName;
 						}
@@ -64,11 +65,15 @@ namespace BetterExplorer {
 				if (tcMain.Items.Count == 0) {
 					tcMain.NewTab();
 
+					string idk = tcMain.StartUpLocation.StartsWith("::") ? tcMain.StartUpLocation.ToShellParsingName() : tcMain.StartUpLocation.Replace("\"", "");
+					NavigationController(new ShellItem(idk));
+
+					/*
 					if (tcMain.StartUpLocation.StartsWith("::"))
 						ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation.ToShellParsingName()));
 					else
 						ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation.Replace("\"", "")));
-
+					*/
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
 				}
@@ -91,7 +96,8 @@ namespace BetterExplorer {
 					Close();
 				}
 				else {
-					ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation));
+					//ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation));
+					NavigationController(new ShellItem(tcMain.StartUpLocation));
 				}
 				return;
 			}
