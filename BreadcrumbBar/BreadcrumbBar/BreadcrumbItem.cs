@@ -292,7 +292,7 @@ namespace Odyssey.Controls {
 		/// Occurs when the Overflow property is changed.
 		/// </summary>
 		public static readonly RoutedEvent OverflowChangedEvent = EventManager.RegisterRoutedEvent("OverflowChanged",
-				RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(BreadcrumbItem));
+			RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(BreadcrumbItem));
 
 		/// <summary>
 		/// Occurs when the Overflow property is changed.
@@ -318,7 +318,8 @@ namespace Odyssey.Controls {
 				if (width > constraint.Width || (IsRoot && SelectedItem != null)) {
 					headerControl.Visibility = Visibility.Collapsed;
 				}
-			} else if (headerControl != null) headerControl.Visibility = Visibility.Visible;
+			}
+			else if (headerControl != null) headerControl.Visibility = Visibility.Visible;
 			IsOverflow = headerControl != null ? headerControl.Visibility != Visibility.Visible : false;
 
 			Size result = base.MeasureOverride(constraint);
@@ -329,7 +330,8 @@ namespace Odyssey.Controls {
 		protected override void OnSelectionChanged(SelectionChangedEventArgs e) {
 			if (SelectedItem == null) {
 				SelectedBreadcrumb = null;
-			} else {
+			}
+			else {
 				SelectedBreadcrumb = ContainerFromItem(SelectedItem);
 			}
 			base.OnSelectionChanged(e);
@@ -365,22 +367,25 @@ namespace Odyssey.Controls {
 
 		public static readonly DependencyProperty SelectedBreadcrumbProperty = SelectedBreadcrumbPropertyKey.DependencyProperty;
 
-
+		/*
 		public DataTemplateSelector BreadcrumbTemplateSelector { get; set; }
+		*/
 
+		/*
 		public DataTemplate BreadcrumbItemTemplate { get; set; }
-
+		*/
 
 		public DataTemplateSelector OverflowItemTemplateSelector {
 			get { return (DataTemplateSelector)GetValue(OverflowItemTemplateSelectorProperty); }
 			set { SetValue(OverflowItemTemplateSelectorProperty, value); }
 		}
 
+		/*
 		public DataTemplate OverflowItemTemplate {
 			get { return (DataTemplate)GetValue(OverflowItemTemplateProperty); }
 			set { SetValue(OverflowItemTemplateProperty, value); }
 		}
-
+		*/
 
 
 
@@ -462,7 +467,8 @@ namespace Odyssey.Controls {
 			HierarchicalDataTemplate hdt = template as HierarchicalDataTemplate;
 			if (template != null) {
 				root.Header = template.LoadContent();
-			} else {
+			}
+			else {
 				root.Header = item;
 			}
 			root.DataContext = item;
@@ -521,11 +527,13 @@ namespace Odyssey.Controls {
 			DataTemplateKey key;
 			if (xml != null) {
 				key = new DataTemplateKey(xml.XPath);
-			} else {
+			}
+			else {
 				XmlNode node = item as XmlNode;
 				if (node != null) {
 					key = new DataTemplateKey(node.Name);
-				} else {
+				}
+				else {
 					key = new DataTemplateKey(item.GetType());
 				}
 			}
@@ -543,7 +551,7 @@ namespace Odyssey.Controls {
 			Trace = e.Trace;
 		}
 
-
+		/*
 		/// <summary>
 		/// Gets the string trace that is used to build the path.
 		/// </summary>
@@ -555,6 +563,7 @@ namespace Odyssey.Controls {
 			this.RaiseEvent(e);
 			return e.TraceValue;
 		}
+		*/
 
 		/// <summary>
 		/// Gets the Trace string from the Trace property.
@@ -569,7 +578,8 @@ namespace Odyssey.Controls {
 				if (Header != null) {
 					if (Header.ToString().ToLower().StartsWith("system.")) {
 						return Trace.ToString();
-					} else {
+					}
+					else {
 						return Header.ToString();
 					}
 				}
@@ -584,8 +594,8 @@ namespace Odyssey.Controls {
 		/// <returns>An object included in Items, otherwise null.</returns>
 		public object GetTraceItem(ShellItem trace) {
 			//this.ApplyTemplate();
-			return Items.OfType<ShellItem>().SingleOrDefault(s => s!=null && s.GetHashCode() == trace.GetHashCode());
-			
+			return Items.OfType<ShellItem>().SingleOrDefault(s => s != null && s.GetHashCode() == trace.GetHashCode());
+
 			//TODO: Can we delete the below dead code?
 			foreach (object item in Items.OfType<ShellItem>().ToArray()) {
 				BreadcrumbItem bcItem = ContainerFromItem(item);
@@ -597,7 +607,7 @@ namespace Odyssey.Controls {
 						//MessageBox.Show("V:" + value.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING));
 						return item;
 					}
-					
+
 					while (value.Parent != null) {
 						if (value != null && value.Parent.GetHashCode() == rootValue.GetHashCode()) {
 							//MessageBox.Show("VP:" + value.Parent.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING));
@@ -606,7 +616,8 @@ namespace Odyssey.Controls {
 						value = value.Parent;
 					}
 					//if (value != null && value.Equals(trace)) return item;
-				} else return null;
+				}
+				else return null;
 			}
 			return null;
 		}
@@ -647,10 +658,9 @@ namespace Odyssey.Controls {
 
 		// Using a DependencyProperty as the backing store for IsButtonVisible.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty IsButtonVisibleProperty =
-				DependencyProperty.Register("IsButtonVisible", typeof(bool), typeof(BreadcrumbItem), new UIPropertyMetadata(true));
+			DependencyProperty.Register("IsButtonVisible", typeof(bool), typeof(BreadcrumbItem), new UIPropertyMetadata(true));
 
-
-
+		/*
 		/// <summary>
 		/// Gets or sets whether the Image is visible.
 		/// </summary>
@@ -658,13 +668,14 @@ namespace Odyssey.Controls {
 			get { return (bool)GetValue(IsImageVisibleProperty); }
 			set { SetValue(IsImageVisibleProperty, value); }
 		}
+		*/
 
+		/*
 		/// <summary>
 		/// Gets or sets whether the Image is visible.
 		/// </summary>
 		public static readonly DependencyProperty IsImageVisibleProperty =
 				DependencyProperty.Register("IsImageVisible", typeof(bool), typeof(BreadcrumbItem), new UIPropertyMetadata(false));
-
-
+		*/
 	}
 }

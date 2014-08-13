@@ -1,25 +1,17 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Markup;
+using System.Windows.Media;
 using BExplorer.Shell;
-using System.Windows.Threading;
-using System.Threading;
 
 //###################################################################################
 // Odyssey.Controls
@@ -36,6 +28,10 @@ using System.Threading;
 // ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
 //###################################################################################
 namespace Odyssey.Controls {
+	/*
+	WORK ON THIS SO ITS NOT UGLY!!!!
+	try to move the code from the MainWindow into here
+	*/
 
 	/// <summary>
 	/// A breadcrumb bar the contains breadcrumb items, a dropdown control, additional buttons and a progress bar.
@@ -53,15 +49,14 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets the number of the first breadcrumb to hide in the path if descending breadcrumbs are selected.
 		/// </summary>
-		const int breadcrumbsToHide = 1;
+		private const int breadcrumbsToHide = 1;
 
-		#endregion
+		#endregion Constants
 
 		#region Dependency Properties
 
 		public static readonly DependencyProperty HasDropDownItemsProperty =
 				DependencyProperty.Register("HasDropDownItems", typeof(bool), typeof(BreadcrumbBar), new UIPropertyMetadata(false));
-
 
 		public static readonly DependencyProperty DropDownItemsPanelProperty =
 				DependencyProperty.Register("DropDownItemsPanel", typeof(ItemsPanelTemplate), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
@@ -90,6 +85,7 @@ namespace Odyssey.Controls {
 
 		private static readonly DependencyPropertyKey CollapsedTracesPropertyKey =
 				DependencyProperty.RegisterReadOnly("CollapsedTraces", typeof(IEnumerable), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
+
 		public static readonly DependencyProperty CollapsedTracesProperty = CollapsedTracesPropertyKey.DependencyProperty;
 
 		public static readonly DependencyProperty RootProperty =
@@ -97,15 +93,22 @@ namespace Odyssey.Controls {
 						FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsArrange,
 						RootPropertyChanged));
 
+		/*
 		public static readonly DependencyProperty SelectedItemProperty =
 				DependencyProperty.Register("SelectedItem", typeof(object), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
 						FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsMeasure,
 						SelectedItemPropertyChanged));
+		*/
+
+		public static readonly DependencyProperty SelectedItemProperty =
+				DependencyProperty.Register("SelectedItem", typeof(object), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
+						FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		private static readonly DependencyPropertyKey SelectedBreadcrumbPropertyKey =
 				DependencyProperty.RegisterReadOnly("SelectedBreadcrumb", typeof(BreadcrumbItem), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
 						FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsArrange,
 						SelectedBreadcrumbPropertyChanged));
+
 		public static readonly DependencyProperty SelectedBreadcrumbProperty = SelectedBreadcrumbPropertyKey.DependencyProperty;
 
 		public static readonly DependencyProperty IsOverflowPressedProperty =
@@ -115,6 +118,7 @@ namespace Odyssey.Controls {
 				DependencyProperty.RegisterReadOnly("RootItem", typeof(BreadcrumbItem), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
 						FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsMeasure
 						));
+
 		private static readonly DependencyProperty RootItemProperty = RootItemPropertyKey.DependencyProperty;
 
 		public static readonly DependencyProperty BreadcrumbItemTemplateSelectorProperty =
@@ -136,12 +140,13 @@ namespace Odyssey.Controls {
 		public static readonly DependencyProperty SeparatorStringProperty =
 				DependencyProperty.Register("SeparatorString", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata("\\"));
 
-		public static readonly DependencyProperty PathProperty =
-				DependencyProperty.Register("Path", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata(null, PathPropertyChanged));
+		//public static readonly DependencyProperty PathProperty =
+		//		DependencyProperty.Register("Path", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata(null, PathPropertyChanged));
 
+		/*
 		public static readonly DependencyProperty DropDownItemsSourceProperty =
-DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(BreadcrumbBar), new UIPropertyMetadata(null, DropDownItemsSourcePropertyChanged));
-
+			DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(BreadcrumbBar), new UIPropertyMetadata(null, DropDownItemsSourcePropertyChanged));
+		*/
 
 		public static readonly DependencyProperty SelectedDropDownIndexProperty =
 				DependencyProperty.Register("SelectedDropDownIndex", typeof(int), typeof(BreadcrumbBar), new UIPropertyMetadata(-1));
@@ -155,9 +160,10 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 
 		public static readonly DependencyProperty ProgressMinimumProperty =
 				DependencyProperty.Register("ProgressMinimum", typeof(double), typeof(BreadcrumbBar), new UIPropertyMetadata(0.0, null, CoerceProgressMinimum));
+
 		public event EventHandler<EditModeToggleEventArgs> OnEditModeToggle;
 
-		#endregion
+		#endregion Dependency Properties
 
 		#region RoutedEvents
 
@@ -185,13 +191,15 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		public static readonly RoutedEvent PopulateItemsEvent = EventManager.RegisterRoutedEvent("PopulateItems",
 				RoutingStrategy.Bubble, typeof(BreadcrumbItemEventHandler), typeof(BreadcrumbBar));
 
+		/*
 		/// <summary>
 		/// Occurs when a path needs to be converted between display path and edit path.
 		/// </summary>
 		public static readonly RoutedEvent PathConversionEvent = EventManager.RegisterRoutedEvent("PathConversion",
 				RoutingStrategy.Bubble, typeof(PathConversionEventHandler), typeof(BreadcrumbBar));
+		*/
 
-		#endregion
+		#endregion RoutedEvents
 
 		#region RoutedUICommand
 
@@ -204,12 +212,14 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 
 		private static RoutedUICommand showDropDownCommand = new RoutedUICommand("Show DropDown", "ShowDropDownCommand", typeof(BreadcrumbBar));
 
+		/*
 		/// <summary>
-		/// This command selects the BreadcrumbItem that is specified as Parameter. 
+		/// This command selects the BreadcrumbItem that is specified as Parameter.
 		/// </summary>
 		public static RoutedUICommand SelectTraceCommand {
 			get { return selectTraceCommand; }
 		}
+		*/
 
 		/// <summary>
 		/// This command selects the root.
@@ -220,9 +230,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 
 		private static RoutedUICommand selectRootCommand = new RoutedUICommand("Select", "SelectRootCommand", typeof(BreadcrumbBar));
 		private static RoutedUICommand selectTraceCommand = new RoutedUICommand("Select", "SelectTraceCommand", typeof(BreadcrumbBar));
-
-
-
 
 		static BreadcrumbBar() {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(BreadcrumbBar), new FrameworkPropertyMetadata(typeof(BreadcrumbBar)));
@@ -237,10 +244,11 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			CommandManager.RegisterClassCommandBinding(typeof(FrameworkElement), new CommandBinding(showDropDownCommand, ShowDropDownExecuted));
 		}
 
-		#endregion
+		#endregion RoutedUICommand
 
 		#region Events
 
+		/*
 		/// <summary>
 		/// Occurs after a BreadcrumbItem is created for which to apply additional properties.
 		/// </summary>
@@ -248,6 +256,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			add { AddHandler(BreadcrumbBar.ApplyPropertiesEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.ApplyPropertiesEvent, value); }
 		}
+		*/
 
 		/// <summary>
 		/// Occurs when the selected BreadcrumbItem is changed.
@@ -267,21 +276,20 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		}
 
 		/// <summary>
-		/// Occurs before acessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
+		/// Occurs before accessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
 		/// </summary>
 		public event BreadcrumbItemEventHandler PopulateItems {
 			add { AddHandler(BreadcrumbBar.PopulateItemsEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.PopulateItemsEvent, value); }
 		}
 
-		#endregion
+		#endregion Events
 
 		#region Properties
 
 		private ObservableCollection<object> traces;
 		private ComboBox comboBox;
 		private BreadcrumbButton rootButton;
-
 
 		/// <summary>
 		/// Gets or sets the TraceBinding property that will be set to every child BreadcrumbItem. This is not a dependency property!
@@ -293,7 +301,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		/// </summary>
 		public BindingBase ImageBinding { get; set; }
 
-
 		/// <summary>
 		/// On initializing, it is possible that the Path property is set before the RootItem property, thus the declarative xaml Path would be overwritten by settings the
 		/// RootItem property later. To avoid this affect, setting the Path also sets initPath on initializing and after initializing, the Path is restored by this value:
@@ -301,13 +308,12 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		private string initPath;
 
 		/// <summary>
-		/// Gets whether the selected breadcrumb is the RootItem. 
+		/// Gets whether the selected breadcrumb is the RootItem.
 		/// </summary>
 		public bool IsRootSelected {
 			get { return (bool)GetValue(IsRootSelectedProperty); }
 			private set { SetValue(IsRootSelectedPropertyKey, value); }
 		}
-
 
 		/// <summary>
 		/// Gets or sets the root of the breadcrumb which can be a hierarchical data source or a BreadcrumbItem.
@@ -317,14 +323,32 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			set { SetValue(RootProperty, value); }
 		}
 
+		//public static readonly DependencyProperty PathProperty =
+		//	DependencyProperty.Register("Path", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
+
+		private string _Path = "";
+
 		/// <summary>
 		/// Gets or sets the selected path.
 		/// </summary>
 		public string Path {
-			get { return (string)GetValue(PathProperty); }
-			set { SetValue(PathProperty, value); }
-		}
+			private get {
+				return _Path;
+			}
+			set {
+				if (_Path == value) return;
+				var OldValue = _Path;
+				_Path = value;
 
+				if (IsInitialized) {
+					BuildBreadcrumbsFromPath(value);
+					OnPathChanged(OldValue, value);
+				}
+				else {
+					_Path = initPath = value;
+				}
+			}
+		}
 
 		/// <summary>
 		/// Gets or sets the selected item.
@@ -334,15 +358,13 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			private set { SetValue(SelectedItemProperty, value); }
 		}
 
-
 		/// <summary>
-		/// Gets the collapsed traces. 
+		/// Gets the collapsed traces.
 		/// </summary>
 		public IEnumerable CollapsedTraces {
 			get { return (IEnumerable)GetValue(CollapsedTracesProperty); }
 			private set { SetValue(CollapsedTracesPropertyKey, value); }
 		}
-
 
 		private BreadcrumbItem selectedBreadcrumb;
 
@@ -367,8 +389,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 		}
 
-
-
+		/*
 		/// <summary>
 		/// Gets or sets the DataSource for the DropDownItems of the combobox.
 		/// </summary>
@@ -376,7 +397,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return (IEnumerable)GetValue(DropDownItemsSourceProperty); }
 			set { SetValue(DropDownItemsSourceProperty, value); }
 		}
-
+		*/
 
 		/// <summary>
 		/// Gets or sets whether the combobox dropdown is opened.
@@ -386,7 +407,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			set { SetValue(IsDropDownOpenProperty, value); }
 		}
 
-
 		/// <summary>
 		/// Gets or sets the string that is used to separate between traces.
 		/// </summary>
@@ -395,19 +415,14 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			set { SetValue(SeparatorStringProperty, value); }
 		}
 
-
-
-
 		private ObservableCollection<ButtonBase> buttons = new ObservableCollection<ButtonBase>();
 
 		/// <summary>
 		/// Gets the collection of buttons to appear on the right of the breadcrumb bar.
-		/// </summary>		
+		/// </summary>
 		public ObservableCollection<ButtonBase> Buttons {
 			get { return buttons; }
 		}
-
-
 
 		/// <summary>A helper class to store the DropDownItems since ItemCollection has no public creator:</summary>
 		private ItemsControl comboBoxControlItems;
@@ -419,7 +434,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return comboBoxControlItems.Items; }
 		}
 
-
 		/// <summary>
 		/// Gets whether the dropdown has items.
 		/// </summary>
@@ -428,27 +442,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			private set { SetValue(HasDropDownItemsProperty, value); }
 		}
 
-
-
-		#endregion
-
-
-
-
-		#region Obsolete
-
-
-		[Obsolete("Not Used", true)]
-		protected virtual void OnSelectedBreadcrumbChanged(DependencyPropertyChangedEventArgs e) {
-			if (SelectedBreadcrumb != null) SelectedBreadcrumb.SelectedItem = null;
-		}
-
-		#endregion
-
-
-
-
-
+		#endregion Properties
 
 		/// <summary>
 		/// Creates a new BreadcrumbBar.
@@ -472,13 +466,13 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			InputBindings.Add(new KeyBinding(BreadcrumbBar.ShowDropDownCommand, new KeyGesture(Key.Down, ModifierKeys.Alt)));
 		}
 
-		static void IsDropDownOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+		private static void IsDropDownOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 
 			bar.OnDropDownOpenChanged((bool)e.OldValue, (bool)e.NewValue);
 		}
 
-		static void SelectedBreadcrumbPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+		private static void SelectedBreadcrumbPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			BreadcrumbItem selected = e.NewValue as BreadcrumbItem;
 			bar.IsRootSelected = selected == bar.RootItem;
@@ -488,13 +482,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 		}
 
-
-
-
-
-
-
-
+		/*
 		static void PathPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			string newPath = e.NewValue as string;
@@ -507,7 +495,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				bar.Path = bar.initPath = newPath;
 			}
 		}
-
+		*/
 
 		/// <summary>
 		/// Occurs when the Path property is changed.
@@ -519,17 +507,19 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				RaiseEvent(args);
 			}
 		}
-		//public String aa { get; set; }
-		//static bool _allowSelectionChnaged = true;
+
 		/// <summary>
 		/// Traces the specified path and builds the associated BreadcrumbItems.
 		/// </summary>
 		/// <param name="path">The traces separated by the SepearatorString property.</param>
-		private bool BuildBreadcrumbsFromPath(string newPath) {
+		public void BuildBreadcrumbsFromPath(string newPath) {
+			/*
 			var e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.EditToDisplay, newPath, Root, PathConversionEvent);
 			RaiseEvent(e);
 			//_allowSelectionChnaged = false;
 			newPath = e.DisplayPath;
+			*/
+
 			//aa = newPath;
 			if (newPath != null && newPath.StartsWith("%")) {
 				newPath = Environment.ExpandEnvironmentVariables(newPath);
@@ -537,7 +527,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			BreadcrumbItem item = RootItem;
 			if (item == null) {
 				this.Path = null;
-				return false;
+				return;
 			}
 			newPath = RemoveLastEmptySeparator(newPath);
 			//newPath = newPath == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : newPath;
@@ -585,11 +575,10 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				item = container;
 			}
 
-
 			if (length != itemIndex.Count) {
 				//recover the last path:
 				Path = GetDisplayPath();
-				return false;
+				return;
 			}
 
 			// temporarily remove the SelectionChangedEvent handler to minimize processing of events while building the breadcrumb items:
@@ -619,9 +608,8 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 			finally {
 				AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
-				//_allowSelectionChnaged = true;
 			}
-			return true;
+			return;
 		}
 
 		/// <summary>
@@ -636,12 +624,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				path = path.Remove(path.Length - sepLength, sepLength);
 			}
 			return path;
-		}
-
-		static void DropDownItemsSourcePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-			BreadcrumbBar bar = d as BreadcrumbBar;
-
-			bar.comboBoxControlItems.ItemsSource = e.NewValue as IEnumerable;
 		}
 
 		/// <summary>
@@ -686,13 +668,15 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			if (SelectedBreadcrumb != null) {
 				SelectedItem = SelectedBreadcrumb.Data;
 			}
-			Path = GetEditPath();
+			Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 		}
 
 		private void breadcrumbItemTraceValueChanged(object sender, RoutedEventArgs e) {
 			if (e.OriginalSource == RootItem) {
-				Path = GetEditPath();
+				_IsBreadcrumbBarSelectionChnagedAllowed = false;
+				Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 			}
+			_IsBreadcrumbBarSelectionChnagedAllowed = true;
 		}
 
 		private void breadcrumbItemSelectionChangedEvent(object sender, RoutedEventArgs e) {
@@ -701,7 +685,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				OnPopulateItems(parent.SelectedBreadcrumb);
 			}
 		}
-
 
 		private void breadcrumbItemDropDownChangedEvent(object sender, RoutedEventArgs e) {
 			BreadcrumbItem breadcrumb = e.Source as BreadcrumbItem;
@@ -713,7 +696,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 		}
 
-
 		/// <summary>
 		/// Remove the focus from a button when it was clicked.
 		/// </summary>
@@ -723,6 +705,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 		}
 
+		/*
 		/// <summary>
 		/// Occurs when a path needs to be converted between display path and edit path.
 		/// </summary>
@@ -730,6 +713,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			add { AddHandler(BreadcrumbBar.PathConversionEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.PathConversionEvent, value); }
 		}
+		*/
 
 		/// <summary>
 		/// Occurs before acessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
@@ -771,16 +755,11 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			RaiseEvent(args);
 		}
 
-
-
 		protected override Size ArrangeOverride(Size arrangeBounds) {
 			Size size = base.ArrangeOverride(arrangeBounds);
 			CheckOverflowImage();
 			return size;
 		}
-
-
-
 
 		/// <summary>
 		/// Check what image to display in the drop down button of the overflow button:
@@ -842,7 +821,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			return image;
 		}
 
-		void menuItem_Click(object sender, RoutedEventArgs e) {
+		private void menuItem_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = e.Source as MenuItem;
 			if (RootItem != null && item != null) {
 				object dataItem = item.Tag;
@@ -851,7 +830,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 		}
 
-
+		/*
 		/// <summary>
 		/// Gets or sets the DataTemplateSelector for the overflow items.
 		/// </summary>
@@ -859,7 +838,9 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return (DataTemplateSelector)GetValue(OverflowItemTemplateSelectorProperty); }
 			set { SetValue(OverflowItemTemplateSelectorProperty, value); }
 		}
+		*/
 
+		/*
 		/// <summary>
 		/// Gets or set the DataTemplate for the OverflowItem.
 		/// </summary>
@@ -867,23 +848,21 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return (DataTemplate)GetValue(OverflowItemTemplateProperty); }
 			set { SetValue(OverflowItemTemplateProperty, value); }
 		}
-
-
-
+		*/
 
 		private static void RootPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			bar.OnRootChanged(e.OldValue, e.NewValue);
 		}
 
-
+		/*
 		private static void SelectedItemPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			bar.OnSelectedItemChanged(e.OldValue, e.NewValue);
 		}
+		*/
 
-
-
+		/*
 		/// <summary>
 		/// Occurs when the selected item of an embedded BreadcrumbItem is changed.
 		/// </summary>
@@ -891,6 +870,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		/// <param name="newValue"></param>
 		protected virtual void OnSelectedItemChanged(object oldvalue, object newValue) {
 		}
+		*/
 
 		/// <summary>
 		/// Occurs when the Root property is changed.
@@ -899,7 +879,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 		/// <param name="newValue"></param>
 		public virtual void OnRootChanged(object oldValue, object newValue) {
 			newValue = GetFirstItem(newValue);
-			BreadcrumbItem oldRoot = oldValue as BreadcrumbItem;
+			var oldRoot = oldValue as BreadcrumbItem;
 			if (oldRoot != null) {
 				oldRoot.IsRoot = false;
 			}
@@ -909,14 +889,13 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				Path = null;
 			}
 			else {
-				BreadcrumbItem root = newValue as BreadcrumbItem;
+				var root = newValue as BreadcrumbItem;
 
-				if (root == null) {
+				if (root == null)
 					root = BreadcrumbItem.CreateItem(newValue);
-				}
-				if (root != null) {
+				else
 					root.IsRoot = true;
-				}
+
 				this.RemoveLogicalChild(oldValue);
 				RootItem = root;
 				if (root != null) {
@@ -942,11 +921,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			return entity;
 		}
 
-
-
-
-
-
 		/// <summary>
 		/// Gets whether the Overflow button is pressed.
 		/// </summary>
@@ -968,10 +942,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			if (IsOverflowPressed) BuildTraces();
 		}
 
-
-
-
-
+		/*
 		/// <summary>
 		/// Gets or sets the TemplateSelector for an embedded BreadcrumbItem.
 		/// </summary>
@@ -979,8 +950,9 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return (DataTemplateSelector)GetValue(BreadcrumbItemTemplateSelectorProperty); }
 			set { SetValue(BreadcrumbItemTemplateSelectorProperty, value); }
 		}
+		*/
 
-
+		/*
 		/// <summary>
 		/// Gets or sets the Template for an embedded BreadcrumbItem.
 		/// </summary>
@@ -988,7 +960,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return (DataTemplate)GetValue(BreadcrumbItemTemplateProperty); }
 			set { SetValue(BreadcrumbItemTemplateProperty, value); }
 		}
-
+		*/
 
 		/// <summary>
 		/// Gets the overflow mode for the Overflow BreadcrumbButton (PART_Root).
@@ -997,8 +969,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return (BreadcrumbButton.ButtonMode)GetValue(OverflowModeProperty); }
 			private set { SetValue(OverflowModePropertyKey, value); }
 		}
-
-
 
 		public override void OnApplyTemplate() {
 			base.OnApplyTemplate();
@@ -1016,16 +986,17 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 		}
 
-		void comboBox_Loaded(object sender, RoutedEventArgs e) {
+		private void comboBox_Loaded(object sender, RoutedEventArgs e) {
 			TextBox tb = (TextBox)comboBox.Template.FindName("PART_EditableTextBox", comboBox);
 			if (tb != null) {
 				tb.LostKeyboardFocus += tb_LostKeyboardFocus;
 			}
 		}
 
-		void tb_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
+		private void tb_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
 			Exit(false);
 		}
+
 		protected override void OnInitialized(EventArgs e) {
 			base.OnInitialized(e);
 			if (initPath != null) {
@@ -1034,7 +1005,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 		}
 
-		void comboBox_KeyDown(object sender, KeyEventArgs e) {
+		private void comboBox_KeyDown(object sender, KeyEventArgs e) {
 			switch (e.Key) {
 				case Key.Escape: Exit(false); break;
 				case Key.Enter:
@@ -1043,10 +1014,12 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 					}
 					Exit(true);
 					break;
+
 				default: return;
 			}
 			e.Handled = true;
 		}
+
 		/*
 		void comboBox_IsKeyboardFocusWithinChanged(object sender, DependencyPropertyChangedEventArgs e) {
 			//bool isKeyboardFocusWithin = (bool)e.NewValue;
@@ -1068,6 +1041,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			base.OnPreviewMouseLeftButtonDown(e);
 		}
 		*/
+
 		protected override void OnMouseDown(MouseButtonEventArgs e) {
 			if (e.Handled) return;
 			if (e.ChangedButton == MouseButton.Left && e.LeftButton == MouseButtonState.Pressed) {
@@ -1076,10 +1050,9 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 			//MessageBox.Show(((FrameworkElement)((FrameworkElement)Mouse.DirectlyOver).Parent).Parent.ToString());
 			base.OnMouseDown(e);
-
 		}
 
-		void rootButton_Click(object sender, RoutedEventArgs e) {
+		private void rootButton_Click(object sender, RoutedEventArgs e) {
 			SetInputState();
 		}
 
@@ -1096,17 +1069,20 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 		}
 
+		/*
 		/// <summary>
 		/// Gets the edit path from the tracess of the BreacrumbItems.
 		/// </summary>
 		/// <returns></returns>
 		public string GetEditPath() {
 			string displayPath = GetDisplayPath();
-			PathConversionEventArgs e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.DisplayToEdit, displayPath, Root, PathConversionEvent);
+			var e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.DisplayToEdit, displayPath, Root, PathConversionEvent);
 			RaiseEvent(e);
 			return e.EditPath;
 		}
+		*/
 
+		/*
 		/// <summary>
 		/// Gets the path of the specified BreadcrumbItem.
 		/// </summary>
@@ -1124,6 +1100,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			RaiseEvent(e);
 			return e.EditPath;
 		}
+		*/
 
 		/// <summary>
 		/// Gets the display path from the traces of the BreacrumbItems.
@@ -1139,7 +1116,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 				//if (sb.Length > 0) sb.Append(separator);
 				if (index >= breadcrumbsToHide || item.SelectedItem == null) {
 					//	sb.Append(item.GetTracePathValue());
-
 				}
 				index++;
 				result = item.TraceValue == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : (item.Data as ShellItem).ParsingName;
@@ -1148,7 +1124,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 
 			return result;
 		}
-
 
 		/// <summary>
 		/// Do what's necassary to do when the BreadcrumbBar has lost focus.
@@ -1163,19 +1138,13 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 		}
 
-		void comboBox_DropDownClosed(object sender, EventArgs e) {
+		private void comboBox_DropDownClosed(object sender, EventArgs e) {
 			//shouldExit = true;
 			IsDropDownOpen = false;
 			Path = comboBox.Text;
 		}
 
-
-
-
-
-
-
-
+		/*
 		/// <summary>
 		/// Gets or sets the ItemsPanelTemplate for the DropDownItems of the combobox.
 		/// </summary>
@@ -1183,8 +1152,9 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return (ItemsPanelTemplate)GetValue(DropDownItemsPanelProperty); }
 			set { SetValue(DropDownItemsPanelProperty, value); }
 		}
+		*/
 
-
+		/*
 		/// <summary>
 		/// Gets or sets the ItemsPanelTemplateSelector for the DropDownItems of the combobox.
 		/// </summary>
@@ -1192,8 +1162,9 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return (DataTemplateSelector)GetValue(DropDownItemTemplateSelectorProperty); }
 			set { SetValue(DropDownItemTemplateSelectorProperty, value); }
 		}
+		*/
 
-
+		/*
 		/// <summary>
 		/// Gets or sets the DataTemplate for the DropDownItems of the combobox.
 		/// </summary>
@@ -1201,7 +1172,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return (DataTemplate)GetValue(DropDownItemTemplateProperty); }
 			set { SetValue(DropDownItemTemplateProperty, value); }
 		}
-
+		*/
 
 		/// <summary>
 		/// Gets or sets whether the breadcrumb bar can change to edit mode where the path can be edited.
@@ -1211,7 +1182,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			set { SetValue(IsEditableProperty, value); }
 		}
 
-
+		/*
 		/// <summary>
 		/// Gets or sets the SelectedIndex of the combobox.
 		/// </summary>
@@ -1219,7 +1190,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return (int)GetValue(SelectedDropDownIndexProperty); }
 			set { SetValue(SelectedDropDownIndexProperty, value); }
 		}
-
+		*/
 
 		/// <summary>
 		/// Gets or sets the current progress indicator value.
@@ -1229,14 +1200,13 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			set { SetValue(ProgressValueProperty, value); }
 		}
 
-
 		/// <summary>
 		/// Check the desired value for ProgressValue and asure that it is between Minimum and Maximum:
 		/// </summary>
 		/// <param name="d"></param>
 		/// <param name="baseValue"></param>
 		/// <returns>The value between mimimum and maximum.</returns>
-		static object CoerceProgressValue(DependencyObject d, object baseValue) {
+		private static object CoerceProgressValue(DependencyObject d, object baseValue) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			double value = (double)baseValue;
 			if (value > bar.ProgressMaximum) value = bar.ProgressMaximum;
@@ -1245,6 +1215,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			return value;
 		}
 
+		/*
 		/// <summary>
 		/// Occurs when the ProgressValue is changed.
 		/// </summary>
@@ -1252,20 +1223,23 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			add { AddHandler(BreadcrumbBar.ProgressValueChangedEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.ProgressValueChangedEvent, value); }
 		}
+		*/
 
-		static void ProgressValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+		private static void ProgressValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			//            RoutedPropertyChangedEventArgs<double> args = new RoutedPropertyChangedEventArgs<double>((double)e.OldValue, (double)e.NewValue,BreadcrumbBar.ProgessValueChangedEvent);
 			RoutedEventArgs args = new RoutedEventArgs(BreadcrumbBar.ProgressValueChangedEvent);
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			bar.RaiseEvent(args);
 		}
 
+		/*
 		protected override void OnMouseLeave(MouseEventArgs e) {
 			//if (this.IsKeyboardFocusWithin) this.Focus();
 			base.OnMouseLeave(e);
 		}
+		*/
 
-		static object CoerceProgressMaximum(DependencyObject d, object baseValue) {
+		private static object CoerceProgressMaximum(DependencyObject d, object baseValue) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			double value = (double)baseValue;
 			if (value < bar.ProgressMimimum) value = bar.ProgressMimimum;
@@ -1275,8 +1249,7 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			return value;
 		}
 
-
-		static object CoerceProgressMinimum(DependencyObject d, object baseValue) {
+		private static object CoerceProgressMinimum(DependencyObject d, object baseValue) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			double value = (double)baseValue;
 			if (value > bar.ProgressMaximum) value = bar.ProgressMaximum;
@@ -1293,7 +1266,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			set { SetValue(ProgressMaximumProperty, value); }
 		}
 
-
 		/// <summary>
 		/// Gets or sets the minimum progess value.
 		/// </summary>
@@ -1301,7 +1273,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			get { return (double)GetValue(ProgressMinimumProperty); }
 			set { SetValue(ProgressMinimumProperty, value); }
 		}
-
 
 		protected override IEnumerator LogicalChildren {
 			get {
@@ -1324,6 +1295,36 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			}
 		}
 
+		public void pop_items(BreadcrumbItem e) {
+			if (e.Items.Count == 0) {
+				if (e.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
+					foreach (ShellItem s in KnownFolders.Computer) {
+						e.Items.Add(s);
+					}
+				}
+			}
+		}
+
+		private string path_conversation(Odyssey.Controls.PathConversionEventArgs.ConversionMode Mode) {
+			string newPath = GetDisplayPath();  //= e.DisplayPath;
+			if (newPath != null && newPath.StartsWith("%")) {
+				newPath = Environment.ExpandEnvironmentVariables(newPath);
+			}
+			if (Mode == Odyssey.Controls.PathConversionEventArgs.ConversionMode.EditToDisplay && _IsBreadcrumbBarSelectionChnagedAllowed) {
+				_IsBreadcrumbBarSelectionChnagedAllowed = false;
+
+				Int64 pidl;
+				bool isValidPidl = Int64.TryParse(newPath.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
+				ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(newPath.ToShellParsingName());
+				OnNavigate(item);
+			}
+
+			return newPath;
+		}
+
+
+		public Action<ShellItem> OnNavigate;
+		public bool _IsBreadcrumbBarSelectionChnagedAllowed;
 
 
 		#region IAddChild Members
@@ -1336,7 +1337,6 @@ DependencyProperty.Register("DropDownItemsSource", typeof(IEnumerable), typeof(B
 			AddChild(text);
 		}
 
-		#endregion
-
+		#endregion IAddChild Members
 	}
 }

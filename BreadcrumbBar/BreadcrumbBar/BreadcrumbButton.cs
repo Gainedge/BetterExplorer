@@ -235,7 +235,8 @@ namespace Odyssey.Controls {
 					menuItem.ItemTemplate = ItemTemplate;
 					menuItem.ItemTemplateSelector = ItemTemplateSelector;
 					contextMenu.Items.Add(menuItem);
-				} else {
+				}
+				else {
 					contextMenu.Items.Add(item);
 				}
 			}
@@ -266,7 +267,7 @@ namespace Odyssey.Controls {
 		/// <param name="dataItem"></param>
 		private void RemoveSelectedItem(object dataItem) {
 			//var data = (dataItem as BreadcrumbItem).Data as ShellItem;
-			if (dataItem != null && dataItem.Equals(SelectedItem)) 
+			if (dataItem != null && dataItem.Equals(SelectedItem))
 				SelectedItem = null;
 		}
 
