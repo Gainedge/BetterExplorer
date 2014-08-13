@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
-using Microsoft.WindowsAPICodePack.Dialogs;
+//using Microsoft.WindowsAPICodePack.Dialogs;
 using SevenZip;
 
 namespace BetterExplorer {
@@ -85,11 +85,13 @@ namespace BetterExplorer {
 				Done();
 			}
 			catch (Exception ex) {
+				/*
 				var dialog = new TaskDialog();
 				dialog.StandardButtons = TaskDialogStandardButtons.Ok;
 				dialog.Text = ex.Message;
 				dialog.Show();
 				Invoke(new InvokeNone(Dispose));
+				*/ 
 			}
 		}
 
@@ -254,10 +256,12 @@ namespace BetterExplorer {
 				}
 			}
 			catch (Exception ex) {
+				/*
 				var dialog = new TaskDialog();
 				dialog.StandardButtons = TaskDialogStandardButtons.Ok;
 				dialog.Text = ex.Message;
 				dialog.Show();
+				*/ 
 			}
 		}
 

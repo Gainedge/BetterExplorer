@@ -5183,10 +5183,15 @@ namespace BetterExplorer {
 			//MessageBox.Show(FocusManager.GetFocusedElement(this).ToString());
 		}
 
+
+
 		private void pop_items(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			bcbc.pop_items(e.Item);
 			bcbc._IsBreadcrumbBarSelectionChnagedAllowed = e.Item.Items.Count == 0;
 		}
+
+
+
 
 		private void Refresh_Click(object sender, RoutedEventArgs e) {
 			this.ShellListView.RefreshContents();

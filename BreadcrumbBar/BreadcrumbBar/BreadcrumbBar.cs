@@ -39,7 +39,7 @@ namespace Odyssey.Controls {
 	[ContentProperty("Root")]
 	[TemplatePart(Name = partComboBox)]
 	[TemplatePart(Name = partRoot)]
-	public class BreadcrumbBar : Control, IAddChild {
+	public class BreadcrumbBar : Control /*, IAddChild*/ {
 
 		#region Constants
 
@@ -185,11 +185,13 @@ namespace Odyssey.Controls {
 		public static readonly RoutedEvent PathChangedEvent = EventManager.RegisterRoutedEvent("PathChanged",
 				RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<string>), typeof(BreadcrumbBar));
 
+		/*
 		/// <summary>
 		/// Occurs before acessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
 		/// </summary>
 		public static readonly RoutedEvent PopulateItemsEvent = EventManager.RegisterRoutedEvent("PopulateItems",
 				RoutingStrategy.Bubble, typeof(BreadcrumbItemEventHandler), typeof(BreadcrumbBar));
+		*/
 
 		/*
 		/// <summary>
@@ -275,6 +277,7 @@ namespace Odyssey.Controls {
 			remove { RemoveHandler(PathChangedEvent, value); }
 		}
 
+		/*
 		/// <summary>
 		/// Occurs before accessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
 		/// </summary>
@@ -282,6 +285,7 @@ namespace Odyssey.Controls {
 			add { AddHandler(BreadcrumbBar.PopulateItemsEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.PopulateItemsEvent, value); }
 		}
+		*/
 
 		#endregion Events
 
@@ -318,9 +322,13 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the root of the breadcrumb which can be a hierarchical data source or a BreadcrumbItem.
 		/// </summary>
-		public object Root {
-			get { return (object)GetValue(RootProperty); }
-			set { SetValue(RootProperty, value); }
+		public ShellItem Root {
+			get {
+				return (ShellItem)GetValue(RootProperty);
+			}
+			set {
+				SetValue(RootProperty, value);
+			}
 		}
 
 		//public static readonly DependencyProperty PathProperty =
@@ -458,7 +466,7 @@ namespace Odyssey.Controls {
 			CollapsedTraces = traces;
 			AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
 			AddHandler(BreadcrumbItem.TraceChangedEvent, new RoutedEventHandler(breadcrumbItemTraceValueChanged));
-			AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectionChangedEvent));
+			//AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectionChangedEvent));
 			AddHandler(BreadcrumbItem.DropDownPressedChangedEvent, new RoutedEventHandler(breadcrumbItemDropDownChangedEvent));
 			AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(buttonClickedEvent));
 			traces.Add(null);
@@ -560,7 +568,7 @@ namespace Odyssey.Controls {
 				//Why do we have [if (item == null) break;] It seems like we add an if to the For(...) or it should NEVER be null
 				if (item == null) break;
 				var trace = traces[i];
-				OnPopulateItems(item);
+				//OnPopulateItems(item);
 				object next = item.GetTraceItem(trace);
 				if (next == null && (item.Data as ShellItem) == trace.Parent) {
 					//missingItem = item;
@@ -679,12 +687,14 @@ namespace Odyssey.Controls {
 			_IsBreadcrumbBarSelectionChnagedAllowed = true;
 		}
 
+		/*
 		private void breadcrumbItemSelectionChangedEvent(object sender, RoutedEventArgs e) {
-			BreadcrumbItem parent = e.Source as BreadcrumbItem;
-			if (parent != null && parent.SelectedBreadcrumb != null) {
-				OnPopulateItems(parent.SelectedBreadcrumb);
-			}
+			//BreadcrumbItem parent = e.Source as BreadcrumbItem;
+			//if (parent != null && parent.SelectedBreadcrumb != null) {
+			//	OnPopulateItems(parent.SelectedBreadcrumb);
+			//}
 		}
+		*/
 
 		private void breadcrumbItemDropDownChangedEvent(object sender, RoutedEventArgs e) {
 			BreadcrumbItem breadcrumb = e.Source as BreadcrumbItem;
@@ -715,6 +725,7 @@ namespace Odyssey.Controls {
 		}
 		*/
 
+		/*
 		/// <summary>
 		/// Occurs before acessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
 		/// </summary>
@@ -722,6 +733,7 @@ namespace Odyssey.Controls {
 			BreadcrumbItemEventArgs args = new BreadcrumbItemEventArgs(item, BreadcrumbBar.PopulateItemsEvent);
 			RaiseEvent(args);
 		}
+		*/
 
 		/// <summary>
 		/// Occurs when the dropdown of a BreadcrumbItem is opened.
@@ -879,9 +891,9 @@ namespace Odyssey.Controls {
 		/// <param name="newValue"></param>
 		public virtual void OnRootChanged(object oldValue, object newValue) {
 			newValue = GetFirstItem(newValue);
-			var oldRoot = oldValue as BreadcrumbItem;
-			if (oldRoot != null) {
-				oldRoot.IsRoot = false;
+			//if (oldRoot != null) {
+			if (oldValue is BreadcrumbItem) {
+				((BreadcrumbItem)oldValue).IsRoot = false;
 			}
 
 			if (newValue == null) {
@@ -1326,11 +1338,11 @@ namespace Odyssey.Controls {
 		public Action<ShellItem> OnNavigate;
 		public bool _IsBreadcrumbBarSelectionChnagedAllowed;
 
-
+		/*
 		#region IAddChild Members
 
 		public void AddChild(object value) {
-			this.Root = value;
+			this.Root = (ShellItem)value;
 		}
 
 		public void AddText(string text) {
@@ -1338,5 +1350,7 @@ namespace Odyssey.Controls {
 		}
 
 		#endregion IAddChild Members
+		*/
+
 	}
 }
