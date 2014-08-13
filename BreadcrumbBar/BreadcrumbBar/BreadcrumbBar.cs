@@ -1401,7 +1401,7 @@ namespace Odyssey.Controls {
 		public Action<ShellItem> OnNavigate;
 
 		[Obsolete("Try to Remove")]
-		public bool _IsBreadcrumbBarSelectionChnagedAllowed;
+		public bool _IsBreadcrumbBarSelectionChnagedAllowed { get; private set; }
 
 		/*
 		#region IAddChild Members

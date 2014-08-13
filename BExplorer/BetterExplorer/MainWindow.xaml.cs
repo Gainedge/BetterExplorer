@@ -1641,7 +1641,7 @@ namespace BetterExplorer {
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
-			this.bcbc._IsBreadcrumbBarSelectionChnagedAllowed = false;
+			//this.bcbc._IsBreadcrumbBarSelectionChnagedAllowed = false;
 			this.bcbc.OnNavigate = NavigationController;
 
 
@@ -5275,7 +5275,7 @@ namespace BetterExplorer {
 				//this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
 			}
 
-			bcbc._IsBreadcrumbBarSelectionChnagedAllowed = true;
+			//bcbc._IsBreadcrumbBarSelectionChnagedAllowed = true;
 		}
 
 
