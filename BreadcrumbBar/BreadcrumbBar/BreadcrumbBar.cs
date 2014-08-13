@@ -695,13 +695,30 @@ namespace Odyssey.Controls {
 			if (SelectedBreadcrumb != null) {
 				SelectedItem = SelectedBreadcrumb.Data;
 			}
-			Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
+			//Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
+
+			string newPath = GetDisplayPath();  //= e.DisplayPath;
+			if (newPath != null && newPath.StartsWith("%")) {
+				newPath = Environment.ExpandEnvironmentVariables(newPath);
+			}
+			if (_IsBreadcrumbBarSelectionChnagedAllowed) {
+				_IsBreadcrumbBarSelectionChnagedAllowed = false;
+
+				Int64 pidl;
+				bool isValidPidl = Int64.TryParse(newPath.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
+				ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(newPath.ToShellParsingName());
+				OnNavigate(item);
+			}
+
+			Path = newPath;
 		}
 
 		private void breadcrumbItemTraceValueChanged(object sender, RoutedEventArgs e) {
 			if (e.OriginalSource == RootItem) {
 				_IsBreadcrumbBarSelectionChnagedAllowed = false;
-				Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
+
+				Path = GetDisplayPath();
+				//Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 			}
 			_IsBreadcrumbBarSelectionChnagedAllowed = true;
 		}
@@ -1339,6 +1356,7 @@ namespace Odyssey.Controls {
 		}
 		*/
 
+		/*
 		private string path_conversation(Odyssey.Controls.PathConversionEventArgs.ConversionMode Mode) {
 			string newPath = GetDisplayPath();  //= e.DisplayPath;
 			if (newPath != null && newPath.StartsWith("%")) {
@@ -1355,7 +1373,7 @@ namespace Odyssey.Controls {
 
 			return newPath;
 		}
-
+		*/
 
 		public Action<ShellItem> OnNavigate;
 		public bool _IsBreadcrumbBarSelectionChnagedAllowed;
