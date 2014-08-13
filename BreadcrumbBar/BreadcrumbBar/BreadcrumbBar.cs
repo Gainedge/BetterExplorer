@@ -88,12 +88,12 @@ namespace Odyssey.Controls {
 
 		public static readonly DependencyProperty CollapsedTracesProperty = CollapsedTracesPropertyKey.DependencyProperty;
 
-		/*
+		
 		public static readonly DependencyProperty RootProperty =
 				DependencyProperty.Register("Root", typeof(object), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
 						FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsArrange,
 						RootPropertyChanged));
-		*/
+		
 
 		/*
 		public static readonly DependencyProperty SelectedItemProperty =
@@ -321,12 +321,11 @@ namespace Odyssey.Controls {
 			private set { SetValue(IsRootSelectedPropertyKey, value); }
 		}
 
+		//public ShellItem Root { get; set; }
+
 		/// <summary>
 		/// Gets or sets the root of the breadcrumb which can be a hierarchical data source or a BreadcrumbItem.
-		/// </summary>
-		public ShellItem Root { get; set; }
-
-		/*
+		/// </summary>		
 		public ShellItem Root {
 			get {
 				return (ShellItem)GetValue(RootProperty);
@@ -335,7 +334,7 @@ namespace Odyssey.Controls {
 				SetValue(RootProperty, value);
 			}
 		}
-		*/
+		
 		//public static readonly DependencyProperty PathProperty =
 		//	DependencyProperty.Register("Path", typeof(string), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
 
@@ -354,7 +353,6 @@ namespace Odyssey.Controls {
 				_Path = value;
 
 				if (IsInitialized) {
-					BuildBreadcrumbsFromPath(value);
 					OnPathChanged(OldValue, value);
 				}
 				else {
@@ -392,11 +390,15 @@ namespace Odyssey.Controls {
 			}
 		}
 
+		//public BreadcrumbItem RootItem { get; set; }
+
 		/// <summary>
 		/// Gets the Root BreadcrumbItem.
 		/// </summary>
 		public BreadcrumbItem RootItem {
-			get { return (BreadcrumbItem)GetValue(RootItemProperty); }
+			get { 
+				return (BreadcrumbItem)GetValue(RootItemProperty); 
+			}
 			protected set {
 				SetValue(RootItemPropertyKey, value);
 			}
@@ -515,7 +517,8 @@ namespace Odyssey.Controls {
 		/// </summary>
 		protected virtual void OnPathChanged(string oldValue, string newValue) {
 			BuildBreadcrumbsFromPath(Path);
-			if (IsLoaded) {
+
+			if (IsLoaded & newValue != null) {
 				var args = new RoutedPropertyChangedEventArgs<string>(oldValue, newValue, PathChangedEvent);
 				RaiseEvent(args);
 			}
