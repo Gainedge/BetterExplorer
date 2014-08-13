@@ -191,11 +191,13 @@ namespace Odyssey.Controls {
 		public static readonly RoutedEvent PopulateItemsEvent = EventManager.RegisterRoutedEvent("PopulateItems",
 				RoutingStrategy.Bubble, typeof(BreadcrumbItemEventHandler), typeof(BreadcrumbBar));
 
+		/*
 		/// <summary>
 		/// Occurs when a path needs to be converted between display path and edit path.
 		/// </summary>
 		public static readonly RoutedEvent PathConversionEvent = EventManager.RegisterRoutedEvent("PathConversion",
 				RoutingStrategy.Bubble, typeof(PathConversionEventHandler), typeof(BreadcrumbBar));
+		*/
 
 		#endregion RoutedEvents
 
@@ -264,7 +266,7 @@ namespace Odyssey.Controls {
 			remove { RemoveHandler(BreadcrumbBar.SelectedBreadcrumbChangedEvent, value); }
 		}
 
-		
+
 		/// <summary>
 		/// Occurs when the Path property is changed.
 		/// </summary>
@@ -272,7 +274,7 @@ namespace Odyssey.Controls {
 			add { AddHandler(PathChangedEvent, value); }
 			remove { RemoveHandler(PathChangedEvent, value); }
 		}
-		
+
 		/// <summary>
 		/// Occurs before accessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
 		/// </summary>
@@ -511,10 +513,13 @@ namespace Odyssey.Controls {
 		/// </summary>
 		/// <param name="path">The traces separated by the SepearatorString property.</param>
 		private void BuildBreadcrumbsFromPath(string newPath) {
+			/*
 			var e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.EditToDisplay, newPath, Root, PathConversionEvent);
 			RaiseEvent(e);
 			//_allowSelectionChnaged = false;
 			newPath = e.DisplayPath;
+			*/
+
 			//aa = newPath;
 			if (newPath != null && newPath.StartsWith("%")) {
 				newPath = Environment.ExpandEnvironmentVariables(newPath);
@@ -663,12 +668,12 @@ namespace Odyssey.Controls {
 			if (SelectedBreadcrumb != null) {
 				SelectedItem = SelectedBreadcrumb.Data;
 			}
-			Path = GetEditPath();
+			Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 		}
 
 		private void breadcrumbItemTraceValueChanged(object sender, RoutedEventArgs e) {
 			if (e.OriginalSource == RootItem) {
-				Path = GetEditPath();
+				Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 			}
 		}
 
@@ -698,6 +703,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
+		/*
 		/// <summary>
 		/// Occurs when a path needs to be converted between display path and edit path.
 		/// </summary>
@@ -705,6 +711,7 @@ namespace Odyssey.Controls {
 			add { AddHandler(BreadcrumbBar.PathConversionEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.PathConversionEvent, value); }
 		}
+		*/
 
 		/// <summary>
 		/// Occurs before acessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
@@ -1060,16 +1067,18 @@ namespace Odyssey.Controls {
 			}
 		}
 
+		/*
 		/// <summary>
 		/// Gets the edit path from the tracess of the BreacrumbItems.
 		/// </summary>
 		/// <returns></returns>
 		public string GetEditPath() {
 			string displayPath = GetDisplayPath();
-			PathConversionEventArgs e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.DisplayToEdit, displayPath, Root, PathConversionEvent);
+			var e = new PathConversionEventArgs(PathConversionEventArgs.ConversionMode.DisplayToEdit, displayPath, Root, PathConversionEvent);
 			RaiseEvent(e);
 			return e.EditPath;
 		}
+		*/
 
 		/*
 		/// <summary>
@@ -1293,6 +1302,28 @@ namespace Odyssey.Controls {
 				}
 			}
 		}
+
+		private string path_conversation(Odyssey.Controls.PathConversionEventArgs.ConversionMode Mode) {
+			string newPath = GetDisplayPath();  //= e.DisplayPath;
+			if (newPath != null && newPath.StartsWith("%")) {
+				newPath = Environment.ExpandEnvironmentVariables(newPath);
+			}
+			if (Mode == Odyssey.Controls.PathConversionEventArgs.ConversionMode.EditToDisplay && _IsBreadcrumbBarSelectionChnagedAllowed) {
+				_IsBreadcrumbBarSelectionChnagedAllowed = false;
+
+				Int64 pidl;
+				bool isValidPidl = Int64.TryParse(newPath.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
+				ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(newPath.ToShellParsingName());
+				OnNavigate(item);
+			}
+
+			return newPath;
+		}
+
+
+		public Action<ShellItem> OnNavigate;
+		public bool _IsBreadcrumbBarSelectionChnagedAllowed;
+
 
 		#region IAddChild Members
 

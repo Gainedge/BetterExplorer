@@ -1640,11 +1640,19 @@ namespace BetterExplorer {
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
-			this._IsBreadcrumbBarSelectionChnagedAllowed = false;
+			this.bcbc._IsBreadcrumbBarSelectionChnagedAllowed = false;
+			this.bcbc.OnNavigate = NavigationController;
+
+
+
 			//if (!e.IsNavigateInSameTab || e.Folder == this.ShellListView.CurrentFolder)
-			this.bcbc.PathConversion -= path_conversation;
+			//this.bcbc.PathConversion -= path_conversation;
 			this.bcbc.Path = e.Folder.IsSearchFolder ? e.Folder.Pidl.ToString() : e.Folder.ParsingName;
-			this.bcbc.PathConversion += path_conversation;
+			//this.bcbc.PathConversion += path_conversation;
+
+
+
+
 			var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 			if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
 				if (tab.SelectedItems != null) {
@@ -5135,6 +5143,16 @@ namespace BetterExplorer {
 
 		#endregion
 
+		private void btnOpenWith_DropDownOpened(object sender, EventArgs e) {
+			//this.ShellListView.GetFirstSelectedItem().GetAssocList();
+			//ShellContextMenu mnu = new ShellContextMenu(this.ShellListView, this.ShellListView.GetFirstSelectedItem(), 1);
+			//var controlPos = btnNewItem.TransformToAncestor(Application.Current.MainWindow)
+			//								.Transform(new System.Windows.Point(0, 0));
+			//var tempPoint = PointToScreen(new System.Windows.Point(controlPos.X, controlPos.Y));
+			//mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnOpenWith.ActualHeight), 1);
+			//btnOpenWith.IsDropDownOpen = false;
+		}
+
 		private void RibbonWindow_StateChanged(object sender, EventArgs e) {
 			if (this.WindowState != System.Windows.WindowState.Minimized) {
 				focusTimer.Interval = 500;
@@ -5147,17 +5165,6 @@ namespace BetterExplorer {
 			this.ShellListView.NewName = this.txtEditor.Text;
 		}
 
-		private void txtEditor_PreviewKeyDown(object sender, KeyEventArgs e) {
-			//if (e.Key == Key.Escape)
-			//{
-			//	this.ShellListView.EndLabelEdit(true);
-			//}
-			//if (e.Key == Key.Enter)
-			//{
-			//	this.ShellListView.EndLabelEdit();
-			//}
-		}
-
 		private void Editor_Closed(object sender, EventArgs e) {
 			this.ShellListView.Focus();
 			var index = this.ShellListView.ItemForRename;
@@ -5167,14 +5174,9 @@ namespace BetterExplorer {
 			//MessageBox.Show(FocusManager.GetFocusedElement(this).ToString());
 		}
 
-		private void Editor_Opened(object sender, EventArgs e) {
-			//FocusManager.SetIsFocusScope(this.txtEditor, true);
-		}
-
-
 		private void pop_items(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			bcbc.pop_items(e.Item);
-			this._IsBreadcrumbBarSelectionChnagedAllowed = e.Item.Items.Count == 0;
+			bcbc._IsBreadcrumbBarSelectionChnagedAllowed = e.Item.Items.Count == 0;
 		}
 
 		private void Refresh_Click(object sender, RoutedEventArgs e) {
@@ -5198,7 +5200,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		bool _IsBreadcrumbBarSelectionChnagedAllowed = false;
+		//bool _IsBreadcrumbBarSelectionChnagedAllowed = false;
 
 		private void bcbc_BreadcrumbItemDropDownOpened(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			this.ShellListView.IsFocusAllowed = false;
@@ -5215,7 +5217,7 @@ namespace BetterExplorer {
 			if (newPath != null && newPath.StartsWith("%")) {
 				newPath = Environment.ExpandEnvironmentVariables(newPath);
 			}
-			if (e.Mode == Odyssey.Controls.PathConversionEventArgs.ConversionMode.EditToDisplay && _IsBreadcrumbBarSelectionChnagedAllowed) {
+			if (e.Mode == Odyssey.Controls.PathConversionEventArgs.ConversionMode.EditToDisplay && bcbc._IsBreadcrumbBarSelectionChnagedAllowed) {
 				Int64 pidl;
 				bool isValidPidl = Int64.TryParse(newPath.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
 				try {
@@ -5227,28 +5229,11 @@ namespace BetterExplorer {
 		}
 
 		private void path_changed(object sender, RoutedPropertyChangedEventArgs<string> e) {
-
+			Int64 pidl;
+			bool isValidPidl = Int64.TryParse(e.NewValue.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
+			ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(e.NewValue.ToShellParsingName());
+			NavigationController(item);
 		}
-
-		private void edtSearchBox_Loaded(object sender, RoutedEventArgs e) {
-			this.edtSearchBox.RequestCancel += edtSearchBox_RequestCancel;
-		}
-
-		void edtSearchBox_RequestCancel(object sender, EventArgs e) {
-			//this.ShellListView.Cancel = true;
-		}
-
-		private void btnOpenWith_DropDownOpened(object sender, EventArgs e) {
-			//this.ShellListView.GetFirstSelectedItem().GetAssocList();
-			//ShellContextMenu mnu = new ShellContextMenu(this.ShellListView, this.ShellListView.GetFirstSelectedItem(), 1);
-			//var controlPos = btnNewItem.TransformToAncestor(Application.Current.MainWindow)
-			//								.Transform(new System.Windows.Point(0, 0));
-			//var tempPoint = PointToScreen(new System.Windows.Point(controlPos.X, controlPos.Y));
-			//mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnOpenWith.ActualHeight), 1);
-			//btnOpenWith.IsDropDownOpen = false;
-		}
-
-
 
 		private void NavigationController(ShellItem Destination) {
 			//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
