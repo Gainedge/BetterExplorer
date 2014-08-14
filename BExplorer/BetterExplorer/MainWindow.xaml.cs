@@ -5202,13 +5202,6 @@ namespace BetterExplorer {
 			this.bcbc.BeginAnimation(Odyssey.Controls.BreadcrumbBar.ProgressValueProperty, da);
 		}
 
-		private void bcbc_Loaded(object sender, RoutedEventArgs e) {
-			this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
-			this.bcbc.UpdateLayout();
-			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
-			this.bcbc.OnEditModeToggle += bcbc_OnEditModeToggle;
-		}
-
 		void bcbc_OnEditModeToggle(object sender, Odyssey.Controls.EditModeToggleEventArgs e) {
 			this.ShellListView.IsFocusAllowed = e.IsExit;
 			if (!e.IsExit) {
@@ -5246,15 +5239,6 @@ namespace BetterExplorer {
 		}
 		*/
 
-		private void path_changed(object sender, RoutedPropertyChangedEventArgs<string> e) {
-			/*
-			Int64 pidl;
-			bool isValidPidl = Int64.TryParse(e.NewValue.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
-			ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(e.NewValue.ToShellParsingName());
-			NavigationController(item);
-			*/
-		}
-
 		/*
 		private void NavigationController_Why() {
 			NavigationController(this.ShellListView.CurrentFolder);
@@ -5271,8 +5255,5 @@ namespace BetterExplorer {
 
 			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 		}
-
-
-
 	}
 }
