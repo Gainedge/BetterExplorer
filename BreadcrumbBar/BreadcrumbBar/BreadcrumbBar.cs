@@ -366,12 +366,8 @@ namespace Odyssey.Controls {
 		/// Gets or sets the selected item.
 		/// </summary>
 		public ShellItem SelectedItem {
-			get {
-				return (ShellItem)GetValue(SelectedItemProperty);
-			}
-			private set {
-				SetValue(SelectedItemProperty, value);
-			}
+			get { return (ShellItem)GetValue(SelectedItemProperty); }
+			private set { SetValue(SelectedItemProperty, value); }
 		}
 
 		/*
@@ -391,10 +387,7 @@ namespace Odyssey.Controls {
 		/// </summary>
 		public BreadcrumbItem SelectedBreadcrumb {
 			get { return (BreadcrumbItem)GetValue(SelectedBreadcrumbProperty); }
-			private set {
-				//selectedBreadcrumb = value;
-				SetValue(SelectedBreadcrumbPropertyKey, value);
-			}
+			private set { SetValue(SelectedBreadcrumbPropertyKey, value); }
 		}
 
 		//public BreadcrumbItem RootItem { get; set; }
@@ -403,12 +396,8 @@ namespace Odyssey.Controls {
 		/// Gets the Root BreadcrumbItem.
 		/// </summary>
 		public BreadcrumbItem RootItem {
-			get {
-				return (BreadcrumbItem)GetValue(RootItemProperty);
-			}
-			protected set {
-				SetValue(RootItemPropertyKey, value);
-			}
+			get { return (BreadcrumbItem)GetValue(RootItemProperty); }
+			protected set { SetValue(RootItemPropertyKey, value); }
 		}
 
 		/*
@@ -439,14 +428,11 @@ namespace Odyssey.Controls {
 			set { SetValue(SeparatorStringProperty, value); }
 		}
 		*/
-		private ObservableCollection<ButtonBase> buttons = new ObservableCollection<ButtonBase>();
 
 		/// <summary>
 		/// Gets the collection of buttons to appear on the right of the breadcrumb bar.
 		/// </summary>
-		public ObservableCollection<ButtonBase> Buttons {
-			get { return buttons; }
-		}
+		public ObservableCollection<ButtonBase> Buttons { get; set; }
 
 		/// <summary>A helper class to store the DropDownItems since ItemCollection has no public creator:</summary>
 		private ItemsControl comboBoxControlItems;
@@ -454,9 +440,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the DropDownItems for the combobox.
 		/// </summary>
-		public ItemCollection DropDownItems {
-			get { return comboBoxControlItems.Items; }
-		}
+		public ItemCollection DropDownItems { get { return comboBoxControlItems.Items; } }
 
 		/// <summary>
 		/// Gets whether the dropdown has items.
@@ -476,7 +460,7 @@ namespace Odyssey.Controls {
 			this.SeparatorString = "\\";
 			this.Root = ((ShellItem)KnownFolders.Desktop);
 			//this.PathChanged += OnPathChanged;
-			Buttons =  new ObservableCollection<ButtonBase>();
+			Buttons = new ObservableCollection<ButtonBase>();
 
 			comboBoxControlItems = new ItemsControl();
 			Binding b = new Binding("HasItems");

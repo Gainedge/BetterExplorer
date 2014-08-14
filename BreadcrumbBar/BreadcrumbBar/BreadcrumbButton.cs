@@ -229,7 +229,7 @@ namespace Odyssey.Controls {
 					menuItem.Icon = image;
 
 					menuItem.Click += new RoutedEventHandler(item_Click);
-					var data = bi.Data as ShellItem;
+					var data = bi.Data;
 					if (item != null && (item.Equals(SelectedItem) || data == (ShellItem)SelectedItem)) menuItem.FontWeight = FontWeights.Bold;
 					menuItem.ItemTemplate = ItemTemplate;
 					menuItem.ItemTemplateSelector = ItemTemplateSelector;
@@ -272,7 +272,7 @@ namespace Odyssey.Controls {
 
 		/// <summary>
 		/// Gets or sets the selectedItem.
-		/// </summary>
+		/// </summary>	
 		public object SelectedItem {
 			get { return (object)GetValue(SelectedItemProperty); }
 			set { SetValue(SelectedItemProperty, value); }
