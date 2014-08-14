@@ -50,21 +50,20 @@ namespace Odyssey.Controls {
 		}
 
 		#region Dependency Properties
-		public static readonly DependencyProperty ImageProperty =
+		private static readonly DependencyProperty ImageProperty =
 				DependencyProperty.Register("Image", typeof(object), typeof(BreadcrumbButton), new UIPropertyMetadata(null));
 
-		public static readonly DependencyProperty SelectedItemProperty =
+		private static readonly DependencyProperty SelectedItemProperty =
 				DependencyProperty.Register("SelectedItem", typeof(object), typeof(BreadcrumbButton), new UIPropertyMetadata(null, SelectedItemChangedEvent));
 
 
 		#endregion
 
 		#region RoutedEvents
-		public static readonly RoutedEvent SelectedItemChanged = EventManager.RegisterRoutedEvent("SelectedItemChanged",
-			 RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(BreadcrumbButton));
+		private static readonly RoutedEvent SelectedItemChanged = EventManager.RegisterRoutedEvent("SelectedItemChanged",
+			RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(BreadcrumbButton));
 
-		public static readonly RoutedEvent ClickEvent = EventManager.RegisterRoutedEvent("Click",
-			 RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(BreadcrumbButton));
+		private static readonly RoutedEvent ClickEvent = EventManager.RegisterRoutedEvent("Click", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(BreadcrumbButton));
 		#endregion
 
 		private ContextMenu contextMenu;
