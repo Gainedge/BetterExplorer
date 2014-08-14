@@ -846,6 +846,7 @@ namespace Odyssey.Controls {
 			OverflowMode = isOverflow ? BreadcrumbButton.ButtonMode.Overflow : BreadcrumbButton.ButtonMode.Breadcrumb;
 		}
 
+		/*
 		/// <summary>
 		/// Build the list of traces for the overflow button.
 		/// </summary>
@@ -886,7 +887,8 @@ namespace Odyssey.Controls {
 				item = item.SelectedBreadcrumb;
 			}
 		}
-
+		*/
+		
 		private object GetImage(ImageSource imageSource) {
 			if (imageSource == null) return null;
 			Image image = new Image();
@@ -1016,8 +1018,46 @@ namespace Odyssey.Controls {
 		/// </summary>
 		protected virtual void OnOverflowPressedChanged() {
 			// rebuild the list of tracess to show in the popup of the overflow button:
-			if (IsOverflowPressed) BuildTraces();
+			if (!IsOverflowPressed) return;
+
+			BreadcrumbItem item = RootItem;
+
+			traces.Clear();
+			if (item != null && item.IsOverflow) {
+				foreach (object trace in item.Items) {
+					MenuItem menuItem = new MenuItem();
+					menuItem.Tag = trace;
+					BreadcrumbItem bcItem = item.ContainerFromItem(trace);
+					menuItem.Header = bcItem.TraceValue;
+					menuItem.Click += new RoutedEventHandler(menuItem_Click);
+					menuItem.Icon = GetImage(bcItem != null ? bcItem.Image : null);
+					if (trace == RootItem.SelectedItem) menuItem.FontWeight = FontWeights.Bold;
+					traces.Add(menuItem);
+				}
+				traces.Insert(0, new Separator());
+				MenuItem rootMenuItem = new MenuItem();
+				rootMenuItem.Header = item.TraceValue;
+				rootMenuItem.Command = BreadcrumbBar.SelectRootCommand;
+				rootMenuItem.CommandParameter = item;
+				rootMenuItem.Icon = GetImage(item.Image);
+				traces.Insert(0, rootMenuItem);
+			}
+
+			item = item != null ? item.SelectedBreadcrumb : null;
+
+			while (item != null) {
+				if (!item.IsOverflow) break;
+				MenuItem traceMenuItem = new MenuItem();
+				traceMenuItem.Header = item.TraceValue;
+				traceMenuItem.Command = BreadcrumbBar.SelectRootCommand;
+				traceMenuItem.CommandParameter = item;
+				traceMenuItem.Icon = GetImage(item.Image);
+				traces.Insert(0, traceMenuItem);
+				item = item.SelectedBreadcrumb;
+			}
 		}
+
+		
 
 		/*
 		/// <summary>
