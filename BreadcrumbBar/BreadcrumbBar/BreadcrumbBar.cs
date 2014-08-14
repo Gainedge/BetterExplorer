@@ -217,11 +217,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// This command shows the drop down part of the combobox.
 		/// </summary>
-		public static RoutedUICommand ShowDropDownCommand {
-			get {
-				return showDropDownCommand;
-			}
-		}
+		public static RoutedUICommand ShowDropDownCommand { get { return showDropDownCommand; } }
 
 		private static RoutedUICommand showDropDownCommand = new RoutedUICommand("Show DropDown", "ShowDropDownCommand", typeof(BreadcrumbBar));
 
@@ -237,9 +233,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// This command selects the root.
 		/// </summary>
-		public static RoutedUICommand SelectRootCommand {
-			get { return selectRootCommand; }
-		}
+		public static RoutedUICommand SelectRootCommand { get { return selectRootCommand; } }
 
 		private static RoutedUICommand selectRootCommand = new RoutedUICommand("Select", "SelectRootCommand", typeof(BreadcrumbBar));
 		private static RoutedUICommand selectTraceCommand = new RoutedUICommand("Select", "SelectTraceCommand", typeof(BreadcrumbBar));
@@ -248,9 +242,7 @@ namespace Odyssey.Controls {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(BreadcrumbBar), new FrameworkPropertyMetadata(typeof(BreadcrumbBar)));
 			BorderThicknessProperty.OverrideMetadata(typeof(BreadcrumbBar), new FrameworkPropertyMetadata(new Thickness(1)));
 			BorderBrushProperty.OverrideMetadata(typeof(BreadcrumbBar), new FrameworkPropertyMetadata(Brushes.Black));
-			Color c = new Color();
-			c.R = 245; c.G = 245; c.B = 245; c.A = 255;
-			BackgroundProperty.OverrideMetadata(typeof(BreadcrumbBar), new FrameworkPropertyMetadata(new SolidColorBrush(c)));
+			BackgroundProperty.OverrideMetadata(typeof(BreadcrumbBar), new FrameworkPropertyMetadata(new SolidColorBrush(new Color() { R = 245, G = 245, B = 245, A = 255 })));
 
 			CommandManager.RegisterClassCommandBinding(typeof(FrameworkElement), new CommandBinding(selectRootCommand, SelectRootCommandExecuted));
 			CommandManager.RegisterClassCommandBinding(typeof(FrameworkElement), new CommandBinding(selectTraceCommand, SelectTraceCommandExecuted));
@@ -293,6 +285,7 @@ namespace Odyssey.Controls {
 
 		#region Properties
 
+		/// <summary>Occurs after navigation has occured</summary>
 		public Action<ShellItem> OnNavigate { get; set; }
 		private bool breadcrumbItemTraceValueChanged_IsFired { get; set; }
 		private ObservableCollection<object> traces;
