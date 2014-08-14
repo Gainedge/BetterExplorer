@@ -240,7 +240,8 @@
                                              Background="Transparent"
                                              BorderThickness="0"
                                              Template="{StaticResource progressBarTemplate}"/>
-								<local:BreadcrumbButton  ItemsSource="{TemplateBinding CollapsedTraces}"  Grid.Column="0"
+								<!--ItemsSource="{TemplateBinding CollapsedTraces}"-->
+								<local:BreadcrumbButton   Grid.Column="0"
                                                          x:Name="PART_Root"
                                                          MinWidth="0"
                                                          EnableVisualButtonStyle="False"

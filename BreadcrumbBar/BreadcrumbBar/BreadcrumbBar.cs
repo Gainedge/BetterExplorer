@@ -89,11 +89,12 @@ namespace Odyssey.Controls {
 				DependencyProperty.Register("OverflowItemTemplate", typeof(DataTemplate), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
 						FrameworkPropertyMetadataOptions.Inherits));
 
+		/*
 		private static readonly DependencyPropertyKey CollapsedTracesPropertyKey =
 				DependencyProperty.RegisterReadOnly("CollapsedTraces", typeof(IEnumerable), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
 
 		public static readonly DependencyProperty CollapsedTracesProperty = CollapsedTracesPropertyKey.DependencyProperty;
-
+		*/
 
 		public static readonly DependencyProperty RootProperty =
 				DependencyProperty.Register("Root", typeof(object), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
@@ -380,6 +381,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
+		/*
 		/// <summary>
 		/// Gets the collapsed traces.
 		/// </summary>
@@ -387,6 +389,7 @@ namespace Odyssey.Controls {
 			get { return (IEnumerable)GetValue(CollapsedTracesProperty); }
 			private set { SetValue(CollapsedTracesPropertyKey, value); }
 		}
+		*/
 
 		//private BreadcrumbItem selectedBreadcrumb;
 
@@ -487,7 +490,7 @@ namespace Odyssey.Controls {
 			this.SetBinding(BreadcrumbBar.HasDropDownItemsProperty, b);
 
 			traces = new ObservableCollection<object>();
-			CollapsedTraces = traces;
+			//CollapsedTraces = traces;
 			AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
 			AddHandler(BreadcrumbItem.TraceChangedEvent, new RoutedEventHandler(breadcrumbItemTraceValueChanged));
 			//AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectionChangedEvent));
