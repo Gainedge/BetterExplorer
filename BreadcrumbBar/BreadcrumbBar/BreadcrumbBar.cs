@@ -368,8 +368,14 @@ namespace Odyssey.Controls {
 					BuildBreadcrumbsFromPath(Path);
 
 					if (IsLoaded & _Path != null) {
-						var args = new RoutedPropertyChangedEventArgs<string>(OldValue, _Path, PathChangedEvent);
-						RaiseEvent(args);
+						//var args = new RoutedPropertyChangedEventArgs<string>(OldValue, _Path, PathChangedEvent);
+						//RaiseEvent(args);
+
+
+						Int64 pidl;
+						bool isValidPidl = Int64.TryParse(_Path.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
+						ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(_Path.ToShellParsingName());
+						OnNavigate(item);
 					}
 				}
 				//else {

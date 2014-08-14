@@ -1642,7 +1642,9 @@ namespace BetterExplorer {
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
 			//this.bcbc._IsBreadcrumbBarSelectionChnagedAllowed = false;
-			this.bcbc.OnNavigate = NavigationController;
+			if (this.bcbc.OnNavigate == null) {
+				this.bcbc.OnNavigate = NavigationController;
+			}
 
 
 
@@ -5268,6 +5270,10 @@ namespace BetterExplorer {
 			//	this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
 			//}
 			//#endregion
+
+			if (this.bcbc.OnNavigate == null) {
+				this.bcbc.OnNavigate = NavigationController;
+			}
 
 			if (Destination != this.ShellListView.CurrentFolder && bcbc._IsBreadcrumbBarSelectionChnagedAllowed) {
 				//this.ShellListView.Navigate(Destination, true);
