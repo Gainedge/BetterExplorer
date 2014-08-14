@@ -381,9 +381,13 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the selected item.
 		/// </summary>
-		public object SelectedItem {
-			get { return (object)GetValue(SelectedItemProperty); }
-			private set { SetValue(SelectedItemProperty, value); }
+		public ShellItem SelectedItem {
+			get {
+				return (ShellItem)GetValue(SelectedItemProperty);
+			}
+			private set {
+				SetValue(SelectedItemProperty, value);
+			}
 		}
 
 		/// <summary>
@@ -394,7 +398,7 @@ namespace Odyssey.Controls {
 			private set { SetValue(CollapsedTracesPropertyKey, value); }
 		}
 
-		private BreadcrumbItem selectedBreadcrumb;
+		//private BreadcrumbItem selectedBreadcrumb;
 
 		/// <summary>
 		/// Gets the selected BreadcrumbItem
@@ -402,7 +406,7 @@ namespace Odyssey.Controls {
 		public BreadcrumbItem SelectedBreadcrumb {
 			get { return (BreadcrumbItem)GetValue(SelectedBreadcrumbProperty); }
 			private set {
-				selectedBreadcrumb = value;
+				//selectedBreadcrumb = value;
 				SetValue(SelectedBreadcrumbPropertyKey, value);
 			}
 		}
@@ -484,6 +488,7 @@ namespace Odyssey.Controls {
 		public BreadcrumbBar()
 			: base() {
 			this.SeparatorString = "\\";
+			this.Root = ((ShellItem)KnownFolders.Desktop);
 			comboBoxControlItems = new ItemsControl();
 			Binding b = new Binding("HasItems");
 			b.Source = comboBoxControlItems;
@@ -642,7 +647,7 @@ namespace Odyssey.Controls {
 				}
 				if (item2 != null) item2.SelectedItem = null;
 				SelectedBreadcrumb = item2;
-				SelectedItem = item2 != null ? item2.Data : null;
+				SelectedItem = (ShellItem)(item2 != null ? item2.Data : null);
 			}
 			finally {
 				AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
@@ -704,7 +709,7 @@ namespace Odyssey.Controls {
 			SelectedBreadcrumb = breadcrumb;
 
 			if (SelectedBreadcrumb != null) {
-				SelectedItem = SelectedBreadcrumb.Data;
+				SelectedItem = (ShellItem)SelectedBreadcrumb.Data;
 			}
 			//Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 
@@ -967,8 +972,8 @@ namespace Odyssey.Controls {
 				if (root != null) {
 					if (LogicalTreeHelper.GetParent(root) == null) this.AddLogicalChild(root);
 				}
-				SelectedItem = root != null ? root.DataContext : null;
-				if (IsInitialized) SelectedBreadcrumb = root; else selectedBreadcrumb = root;
+				SelectedItem = root != null ? (ShellItem)root.DataContext : null;
+				if (IsInitialized) SelectedBreadcrumb = root;// else selectedBreadcrumb = root;
 			}
 		}
 

@@ -223,9 +223,10 @@ namespace Odyssey.Controls {
 			ApplyBinding();
 		}
 
-		public object Data {
+		public ShellItem Data {
 			get {
-				return DataContext != null ? DataContext : this;
+				//return DataContext != null ? DataContext : this;
+				return (ShellItem)DataContext;
 			}
 		}
 

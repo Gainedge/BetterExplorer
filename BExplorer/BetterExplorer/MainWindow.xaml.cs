@@ -2236,7 +2236,7 @@ namespace BetterExplorer {
 		#region On Navigated
 
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
-			NavigationController_Why();
+			NavigationController(this.ShellListView.CurrentFolder);
 			SetupColumnsButton();
 			SetSortingAndGroupingButtons();
 			//SetUpBreadcrumbbarOnNavComplete(e);
@@ -5251,22 +5251,23 @@ namespace BetterExplorer {
 			NavigationController(item);
 		}
 
+		/*
 		private void NavigationController_Why() {
-			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
-			//this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
-		}
+			NavigationController(this.ShellListView.CurrentFolder);
 
+			//this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
+			////this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
+		}
+		*/
 
 		private void NavigationController(ShellItem Destination) {
 			//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
 
-			#region AddedForNow
-			if (bcbc.Root == null) {
-				this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
-			}
-			#endregion
-
-
+			//#region AddedForNow
+			//if (bcbc.Root == null) {
+			//	this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
+			//}
+			//#endregion
 
 			if (Destination != this.ShellListView.CurrentFolder && bcbc._IsBreadcrumbBarSelectionChnagedAllowed) {
 				//this.ShellListView.Navigate(Destination, true);
