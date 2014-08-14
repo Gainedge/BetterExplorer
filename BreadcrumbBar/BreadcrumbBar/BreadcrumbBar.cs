@@ -578,7 +578,7 @@ namespace Odyssey.Controls {
 				var trace = traces[i];
 				//OnPopulateItems(item);
 				object next = item.GetTraceItem(trace);
-				if (next == null && (item.Data as ShellItem) == trace.Parent) {
+				if (next == null && item.Data == trace.Parent) {
 					//missingItem = item;
 					//lItem = trace;
 					item.Items.Add(trace);
@@ -620,7 +620,7 @@ namespace Odyssey.Controls {
 				}
 				if (item2 != null) item2.SelectedItem = null;
 				SelectedBreadcrumb = item2;
-				SelectedItem = (ShellItem)(item2 != null ? item2.Data : null);
+				SelectedItem = item2 != null ? item2.Data : null;
 			}
 			finally {
 				AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
@@ -682,7 +682,7 @@ namespace Odyssey.Controls {
 			SelectedBreadcrumb = breadcrumb;
 
 			if (SelectedBreadcrumb != null) {
-				SelectedItem = (ShellItem)SelectedBreadcrumb.Data;
+				SelectedItem = SelectedBreadcrumb.Data;
 			}
 			//Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 
@@ -1147,7 +1147,7 @@ namespace Odyssey.Controls {
 					this.OnEditModeToggle.Invoke(comboBox, new EditModeToggleEventArgs(false));
 				}
 				if (this.SelectedBreadcrumb != null && this.SelectedBreadcrumb.Data != null) {
-					comboBox.Text = (this.SelectedBreadcrumb.Data as ShellItem).GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING);
+					comboBox.Text = this.SelectedBreadcrumb.Data.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING);
 				}
 				comboBox.Visibility = Visibility.Visible;
 				comboBox.Focus();
@@ -1203,7 +1203,7 @@ namespace Odyssey.Controls {
 					//	sb.Append(item.GetTracePathValue());
 				}
 				index++;
-				result = item.TraceValue == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : (item.Data as ShellItem).ParsingName;
+				result = item.TraceValue == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : item.Data.ParsingName;
 				item = item.SelectedBreadcrumb;
 			}
 

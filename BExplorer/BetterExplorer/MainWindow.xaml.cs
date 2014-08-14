@@ -3802,7 +3802,7 @@ namespace BetterExplorer {
 		void bbi_Drop(object sender, DragEventArgs e) {
 			var pt = e.GetPosition(sender as IInputElement);
 
-			if (((sender as BreadcrumbItem).Data as ShellItem).IsFileSystem)
+			if ((sender as BreadcrumbItem).Data.IsFileSystem)
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 			else
 				e.Effects = DragDropEffects.None;
@@ -3811,12 +3811,12 @@ namespace BetterExplorer {
 				case DragDropEffects.All:
 					break;
 				case DragDropEffects.Copy:
-					this.ShellListView.DoCopy(e.Data, ((sender as BreadcrumbItem).Data as ShellItem));
+					this.ShellListView.DoCopy(e.Data, (sender as BreadcrumbItem).Data);
 					break;
 				case DragDropEffects.Link:
 					break;
 				case DragDropEffects.Move:
-					this.ShellListView.DoMove(e.Data, ((sender as BreadcrumbItem).Data as ShellItem));
+					this.ShellListView.DoMove(e.Data, (sender as BreadcrumbItem).Data);
 					break;
 				case DragDropEffects.None:
 					break;
@@ -3833,7 +3833,7 @@ namespace BetterExplorer {
 		void bbi_DragOver(object sender, DragEventArgs e) {
 			e.Handled = true;
 
-			if (((sender as BreadcrumbItem).Data as ShellItem).IsFileSystem) {
+			if ((sender as BreadcrumbItem).Data.IsFileSystem) {
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 			}
 			else {
@@ -3852,7 +3852,7 @@ namespace BetterExplorer {
 		}
 
 		void bbi_DragEnter(object sender, DragEventArgs e) {
-			if (((sender as BreadcrumbItem).Data as ShellItem).IsFileSystem) {
+			if ((sender as BreadcrumbItem).Data.IsFileSystem) {
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 			}
 			else {
