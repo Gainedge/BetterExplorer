@@ -21,7 +21,7 @@ using MenuItem = Fluent.MenuItem;
 using System.Windows.Shell;
 using System.Windows.Media.Animation;
 using System.Collections.Specialized;
-using Microsoft.WindowsAPICodePack.Dialogs;
+//using Microsoft.WindowsAPICodePack.Dialogs;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Windows.Threading;

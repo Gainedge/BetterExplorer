@@ -1641,8 +1641,10 @@ namespace BetterExplorer {
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
-			this.bcbc._IsBreadcrumbBarSelectionChnagedAllowed = false;
-			this.bcbc.OnNavigate = NavigationController;
+			//this.bcbc._IsBreadcrumbBarSelectionChnagedAllowed = false;
+			if (this.bcbc.OnNavigate == null) {
+				this.bcbc.OnNavigate = NavigationController;
+			}
 
 
 
@@ -2236,7 +2238,7 @@ namespace BetterExplorer {
 		#region On Navigated
 
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
-			NavigationController_Why();
+			NavigationController(this.ShellListView.CurrentFolder);
 			SetupColumnsButton();
 			SetSortingAndGroupingButtons();
 			//SetUpBreadcrumbbarOnNavComplete(e);
@@ -5183,10 +5185,15 @@ namespace BetterExplorer {
 			//MessageBox.Show(FocusManager.GetFocusedElement(this).ToString());
 		}
 
+
+		/*
 		private void pop_items(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			bcbc.pop_items(e.Item);
 			bcbc._IsBreadcrumbBarSelectionChnagedAllowed = e.Item.Items.Count == 0;
 		}
+		*/
+
+
 
 		private void Refresh_Click(object sender, RoutedEventArgs e) {
 			this.ShellListView.RefreshContents();
@@ -5246,31 +5253,36 @@ namespace BetterExplorer {
 			NavigationController(item);
 		}
 
+		/*
 		private void NavigationController_Why() {
-			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
-			this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
-		}
+			NavigationController(this.ShellListView.CurrentFolder);
 
+			//this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
+			////this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
+		}
+		*/
 
 		private void NavigationController(ShellItem Destination) {
 			//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
 
-			#region AddedForNow
-			if (bcbc.Root == null) {
-				this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
+			//#region AddedForNow
+			//if (bcbc.Root == null) {
+			//	this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
+			//}
+			//#endregion
+
+			if (this.bcbc.OnNavigate == null) {
+				this.bcbc.OnNavigate = NavigationController;
 			}
-			#endregion
-
-
 
 			if (Destination != this.ShellListView.CurrentFolder && bcbc._IsBreadcrumbBarSelectionChnagedAllowed) {
 				//this.ShellListView.Navigate(Destination, true);
 				this.ShellListView.Navigate_Full(Destination, true);
 				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
-				this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
+				//this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
 			}
 
-			bcbc._IsBreadcrumbBarSelectionChnagedAllowed = true;
+			//bcbc._IsBreadcrumbBarSelectionChnagedAllowed = true;
 		}
 
 

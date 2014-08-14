@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.WindowsAPICodePack.Dialogs;
+//using Microsoft.WindowsAPICodePack.Dialogs;
 using SevenZip;
 using SystemImageList;
 using BExplorer.Shell.Interop;
@@ -192,12 +192,13 @@ namespace BetterExplorer
         {
             var sevenZipExtractor = new SevenZipExtractor(_pathArchive);
             var check = sevenZipExtractor.Check();
-            
+            /*
             var dialog = new TaskDialog();
             dialog.Text = check ? CHECK_OKE : CHECK_ERROR;
             dialog.StandardButtons = TaskDialogStandardButtons.Ok;
             
             dialog.Show();
+			*/ 
         }
 
         private void lvArchiveDetails_ItemActivate(object sender, EventArgs e)

@@ -130,6 +130,9 @@ namespace Odyssey.Controls {
 
 			RoutedPropertyChangedEventArgs<object> args = new RoutedPropertyChangedEventArgs<object>(e.OldValue, e.NewValue, TraceChangedEvent);
 			item.RaiseEvent(args);
+			//if (args.OriginalSource == item.BreadcrumbBar.RootItem) {
+			//	item.BreadcrumbBar.BuildBreadcrumbsFromPath(item.BreadcrumbBar.GetDisplayPath());
+			//}
 		}
 
 		/// <summary>
@@ -220,9 +223,10 @@ namespace Odyssey.Controls {
 			ApplyBinding();
 		}
 
-		public object Data {
+		public ShellItem Data {
 			get {
-				return DataContext != null ? DataContext : this;
+				//return DataContext != null ? DataContext : this;
+				return (ShellItem)DataContext;
 			}
 		}
 
