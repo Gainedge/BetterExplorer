@@ -5247,10 +5247,12 @@ namespace BetterExplorer {
 		*/
 
 		private void path_changed(object sender, RoutedPropertyChangedEventArgs<string> e) {
+			/*
 			Int64 pidl;
 			bool isValidPidl = Int64.TryParse(e.NewValue.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
 			ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(e.NewValue.ToShellParsingName());
 			NavigationController(item);
+			*/
 		}
 
 		/*
@@ -5263,26 +5265,11 @@ namespace BetterExplorer {
 		*/
 
 		private void NavigationController(ShellItem Destination) {
-			//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
-
-			//#region AddedForNow
-			//if (bcbc.Root == null) {
-			//	this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
-			//}
-			//#endregion
-
-			if (this.bcbc.OnNavigate == null) {
-				this.bcbc.OnNavigate = NavigationController;
-			}
-
-			if (Destination != this.ShellListView.CurrentFolder && bcbc._IsBreadcrumbBarSelectionChnagedAllowed) {
-				//this.ShellListView.Navigate(Destination, true);
+			if (Destination != this.ShellListView.CurrentFolder) {
 				this.ShellListView.Navigate_Full(Destination, true);
-				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
-				//this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
 			}
 
-			//bcbc._IsBreadcrumbBarSelectionChnagedAllowed = true;
+			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 		}
 
 

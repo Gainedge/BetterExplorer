@@ -95,6 +95,9 @@
     <Report>
       <Path>BetterExplorer140811(2).vsp</Path>
     </Report>
+    <Report>
+      <Path>BetterExplorer140813.vsp</Path>
+    </Report>
   </Reports>
   <Launches>
     <ProjBinary>

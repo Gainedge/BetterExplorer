@@ -192,8 +192,6 @@ namespace Odyssey.Controls {
 		public static readonly RoutedEvent SelectedBreadcrumbChangedEvent = EventManager.RegisterRoutedEvent("SelectedBreadcrumbChanged",
 				RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<BreadcrumbItem>), typeof(BreadcrumbBar));
 
-		public static readonly RoutedEvent PathChangedEvent = EventManager.RegisterRoutedEvent("PathChanged",
-				RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<string>), typeof(BreadcrumbBar));
 
 		/*
 		/// <summary>
@@ -280,15 +278,6 @@ namespace Odyssey.Controls {
 			remove { RemoveHandler(BreadcrumbBar.SelectedBreadcrumbChangedEvent, value); }
 		}
 
-
-		/// <summary>
-		/// Occurs when the Path property is changed.
-		/// </summary>
-		public event RoutedPropertyChangedEventHandler<string> PathChanged {
-			add { AddHandler(PathChangedEvent, value); }
-			remove { RemoveHandler(PathChangedEvent, value); }
-		}
-
 		/*
 		/// <summary>
 		/// Occurs before accessing the Items property of a BreadcrumbItem. This event can be used to populate the Items on demand.
@@ -303,6 +292,8 @@ namespace Odyssey.Controls {
 
 		#region Properties
 
+		public Action<ShellItem> OnNavigate { get; set; }
+		private bool breadcrumbItemTraceValueChanged_IsFired { get; set; }
 		private ObservableCollection<object> traces;
 		private ComboBox comboBox;
 		private BreadcrumbButton rootButton;
@@ -339,12 +330,8 @@ namespace Odyssey.Controls {
 		/// Gets or sets the root of the breadcrumb which can be a hierarchical data source or a BreadcrumbItem.
 		/// </summary>		
 		public ShellItem Root {
-			get {
-				return (ShellItem)GetValue(RootProperty);
-			}
-			set {
-				SetValue(RootProperty, value);
-			}
+			get { return (ShellItem)GetValue(RootProperty); }
+			set { SetValue(RootProperty, value); }
 		}
 
 		//public static readonly DependencyProperty PathProperty =
@@ -355,6 +342,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the selected path.
 		/// </summary>
+		/// <remarks>Nothing will be changed if the new path is the same as the old path</remarks>
 		public string Path {
 			private get {
 				return _Path;
@@ -367,11 +355,7 @@ namespace Odyssey.Controls {
 				if (IsInitialized) {
 					BuildBreadcrumbsFromPath(Path);
 
-					if (IsLoaded & _Path != null) {
-						//var args = new RoutedPropertyChangedEventArgs<string>(OldValue, _Path, PathChangedEvent);
-						//RaiseEvent(args);
-
-
+					if (IsLoaded && !breadcrumbItemTraceValueChanged_IsFired && _Path != null) {
 						Int64 pidl;
 						bool isValidPidl = Int64.TryParse(_Path.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
 						ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(_Path.ToShellParsingName());
@@ -495,6 +479,8 @@ namespace Odyssey.Controls {
 			: base() {
 			this.SeparatorString = "\\";
 			this.Root = ((ShellItem)KnownFolders.Desktop);
+			//this.PathChanged += OnPathChanged;
+
 			comboBoxControlItems = new ItemsControl();
 			Binding b = new Binding("HasItems");
 			b.Source = comboBoxControlItems;
@@ -741,10 +727,9 @@ namespace Odyssey.Controls {
 
 		private void breadcrumbItemTraceValueChanged(object sender, RoutedEventArgs e) {
 			if (e.OriginalSource == RootItem) {
-				_IsBreadcrumbBarSelectionChnagedAllowed = false;
+				breadcrumbItemTraceValueChanged_IsFired = true;
 				Path = GetDisplayPath();
-				_IsBreadcrumbBarSelectionChnagedAllowed = true;
-				//Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
+				breadcrumbItemTraceValueChanged_IsFired = false;
 			}
 		}
 
@@ -888,7 +873,7 @@ namespace Odyssey.Controls {
 			}
 		}
 		*/
-		
+
 		private object GetImage(ImageSource imageSource) {
 			if (imageSource == null) return null;
 			Image image = new Image();
@@ -1057,7 +1042,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
-		
+
 
 		/*
 		/// <summary>
@@ -1449,11 +1434,6 @@ namespace Odyssey.Controls {
 		}
 		*/
 
-		public Action<ShellItem> OnNavigate;
-
-		[Obsolete("Try to Remove")]
-		public bool _IsBreadcrumbBarSelectionChnagedAllowed { get; private set; }
-
 		/*
 		#region IAddChild Members
 
@@ -1467,6 +1447,34 @@ namespace Odyssey.Controls {
 
 		#endregion IAddChild Members
 		*/
+
+
+		#region Path Changed Obsolete
+
+		/*
+		public static readonly RoutedEvent PathChangedEvent = EventManager.RegisterRoutedEvent("PathChanged",
+				RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<string>), typeof(BreadcrumbBar));
+
+
+		/// <summary>
+		/// Occurs when the Path property is changed.
+		/// </summary>
+		public event RoutedPropertyChangedEventHandler<string> PathChanged {
+			add { AddHandler(PathChangedEvent, value); }
+			remove { RemoveHandler(PathChangedEvent, value); }
+		}
+
+
+		private void OnPathChanged(object sender, RoutedPropertyChangedEventArgs<string> e) {
+			Int64 pidl;
+			bool isValidPidl = Int64.TryParse(e.NewValue.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
+			ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(e.NewValue.ToShellParsingName());
+			if (OnNavigate != null) OnNavigate(item);
+		}
+		*/
+
+		#endregion
+
 
 	}
 }
