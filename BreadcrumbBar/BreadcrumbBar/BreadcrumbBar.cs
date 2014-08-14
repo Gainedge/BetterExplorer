@@ -439,11 +439,14 @@ namespace Odyssey.Controls {
 			set { SetValue(SeparatorStringProperty, value); }
 		}
 		*/
+		private ObservableCollection<ButtonBase> buttons = new ObservableCollection<ButtonBase>();
 
 		/// <summary>
 		/// Gets the collection of buttons to appear on the right of the breadcrumb bar.
 		/// </summary>
-		public ObservableCollection<ButtonBase> Buttons { get; private set; }
+		public ObservableCollection<ButtonBase> Buttons {
+			get { return buttons; }
+		}
 
 		/// <summary>A helper class to store the DropDownItems since ItemCollection has no public creator:</summary>
 		private ItemsControl comboBoxControlItems;
@@ -473,7 +476,7 @@ namespace Odyssey.Controls {
 			this.SeparatorString = "\\";
 			this.Root = ((ShellItem)KnownFolders.Desktop);
 			//this.PathChanged += OnPathChanged;
-			Buttons = new ObservableCollection<ButtonBase>();
+			Buttons =  new ObservableCollection<ButtonBase>();
 
 			comboBoxControlItems = new ItemsControl();
 			Binding b = new Binding("HasItems");
