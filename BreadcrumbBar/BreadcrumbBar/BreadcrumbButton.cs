@@ -256,7 +256,7 @@ namespace Odyssey.Controls {
 				bar.Path = (dataItem as ShellItem).ParsingName;
 			}
 		}
-
+		/*
 		/// <summary>
 		/// When a BreadcrumbItem is selected from a dropdown menu, the SelectedItem of the new selected item must be set to null.
 		/// Since no event is raised when a DependencyProperty is assigned to it's current value, this cannot be recognized at this place,
@@ -269,12 +269,13 @@ namespace Odyssey.Controls {
 			if (dataItem != null && dataItem.Equals(SelectedItem))
 				SelectedItem = null;
 		}
+		*/
 
 		/// <summary>
 		/// Gets or sets the selectedItem.
 		/// </summary>	
 		public object SelectedItem {
-			get { return (object)GetValue(SelectedItemProperty); }
+			private get { return GetValue(SelectedItemProperty); }
 			set { SetValue(SelectedItemProperty, value); }
 		}
 
@@ -299,7 +300,7 @@ namespace Odyssey.Controls {
 			base.OnMouseEnter(e);
 		}
 
-
+		
 		private static void OverflowPressedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			BreadcrumbButton button = d as BreadcrumbButton;
 			button.OnOverflowPressedChanged();
