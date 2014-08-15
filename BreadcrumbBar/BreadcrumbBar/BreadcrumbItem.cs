@@ -384,12 +384,12 @@ namespace Odyssey.Controls {
 			set { SetValue(OverflowItemTemplateSelectorProperty, value); }
 		}
 
-		/*
+		
 		public DataTemplate OverflowItemTemplate {
 			get { return (DataTemplate)GetValue(OverflowItemTemplateProperty); }
 			set { SetValue(OverflowItemTemplateProperty, value); }
 		}
-		*/
+		
 
 
 
