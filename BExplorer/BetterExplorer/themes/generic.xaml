@@ -597,18 +597,19 @@
 																						 Background="Transparent"
 																						 BorderThickness="0"
 																						 Template="{StaticResource progressBarTemplate}"/>
-								<!--ItemsSource="{TemplateBinding CollapsedTraces}"-->
-								<odc:BreadcrumbButton   Grid.Column="0"
-																												 x:Name="PART_Root"
-																												 MinWidth="0"
-																												 EnableVisualButtonStyle="False"
-																												 Mode="{TemplateBinding OverflowMode}"
-																												SelectedItem="{Binding SelectedItem,RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}"
-																												ItemTemplate="{TemplateBinding OverflowItemTemplate}"
-																												 IsImageVisible="True"
-																												 Image="{Binding SelectedBreadcrumb.Image, RelativeSource={RelativeSource TemplatedParent}}"
-																												ItemTemplateSelector="{TemplateBinding OverflowItemTemplateSelector}"
-																												IsDropDownPressed="{Binding IsOverflowPressed,RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" >
+								<odc:BreadcrumbButton
+													ItemsSource="{TemplateBinding CollapsedTraces}"
+													Grid.Column="0"
+													x:Name="PART_Root"
+													MinWidth="0"
+													EnableVisualButtonStyle="False"
+													Mode="{TemplateBinding OverflowMode}"
+													SelectedItem="{Binding SelectedItem,RelativeSource={RelativeSource TemplatedParent},Mode=TwoWay}"
+													ItemTemplate="{TemplateBinding OverflowItemTemplate}"
+													IsImageVisible="True"
+													Image="{Binding SelectedBreadcrumb.Image, RelativeSource={RelativeSource TemplatedParent}}"
+													ItemTemplateSelector="{TemplateBinding OverflowItemTemplateSelector}"
+													IsDropDownPressed="{Binding IsOverflowPressed,RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" >
 								</odc:BreadcrumbButton>
 								<ContentPresenter x:Name="container" Grid.Column="1" Content="{Binding RootItem,RelativeSource={RelativeSource TemplatedParent}}"/>
 								<ToggleButton x:Name="dropDown" Grid.Column="2" 
