@@ -28,10 +28,6 @@ using BExplorer.Shell;
 // ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
 //###################################################################################
 namespace Odyssey.Controls {
-	/*
-	WORK ON THIS SO ITS NOT UGLY!!!!
-	try to move the code from the MainWindow into here
-	*/
 
 	/// <summary>
 	/// A breadcrumb bar the contains breadcrumb items, a dropdown control, additional buttons and a progress bar.
@@ -476,7 +472,7 @@ namespace Odyssey.Controls {
 			AddHandler(BreadcrumbItem.TraceChangedEvent, new RoutedEventHandler(breadcrumbItemTraceValueChanged));
 			AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectionChangedEvent));
 			AddHandler(BreadcrumbItem.DropDownPressedChangedEvent, new RoutedEventHandler(breadcrumbItemDropDownChangedEvent));
-			AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(buttonClickedEvent));
+			//AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(buttonClickedEvent));
 			traces.Add(null);
 
 			InputBindings.Add(new KeyBinding(BreadcrumbBar.ShowDropDownCommand, new KeyGesture(Key.Down, ModifierKeys.Alt)));
@@ -746,7 +742,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
-
+		/*
 		/// <summary>
 		/// Remove the focus from a button when it was clicked.
 		/// </summary>
@@ -755,7 +751,7 @@ namespace Odyssey.Controls {
 				//this.Focus();
 			}
 		}
-
+		*/
 
 		/*
 		/// <summary>
