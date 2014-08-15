@@ -39,7 +39,7 @@ namespace Odyssey.Controls {
 	[ContentProperty("Root")]
 	[TemplatePart(Name = partComboBox)]
 	[TemplatePart(Name = partRoot)]
-	public class BreadcrumbBar : Control , IAddChild {
+	public class BreadcrumbBar : Control, IAddChild {
 
 		#region Constants
 
@@ -89,12 +89,12 @@ namespace Odyssey.Controls {
 				DependencyProperty.Register("OverflowItemTemplate", typeof(DataTemplate), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
 						FrameworkPropertyMetadataOptions.Inherits));
 
-		
+
 		private static readonly DependencyPropertyKey CollapsedTracesPropertyKey =
 				DependencyProperty.RegisterReadOnly("CollapsedTraces", typeof(IEnumerable), typeof(BreadcrumbBar), new UIPropertyMetadata(null));
 
 		public static readonly DependencyProperty CollapsedTracesProperty = CollapsedTracesPropertyKey.DependencyProperty;
-		
+
 
 		public static readonly DependencyProperty RootProperty =
 				DependencyProperty.Register("Root", typeof(object), typeof(BreadcrumbBar), new FrameworkPropertyMetadata(null,
@@ -161,7 +161,7 @@ namespace Odyssey.Controls {
 
 		public static readonly DependencyProperty SelectedDropDownIndexProperty =
 				DependencyProperty.Register("SelectedDropDownIndex", typeof(int), typeof(BreadcrumbBar), new UIPropertyMetadata(-1));
-		
+
 		public static readonly DependencyProperty ProgressValueProperty =
 				DependencyProperty.Register("ProgressValue", typeof(double), typeof(BreadcrumbBar),
 				new UIPropertyMetadata((double)0.0, ProgressValuePropertyChanged, CoerceProgressValue));
@@ -171,7 +171,7 @@ namespace Odyssey.Controls {
 
 		public static readonly DependencyProperty ProgressMinimumProperty =
 				DependencyProperty.Register("ProgressMinimum", typeof(double), typeof(BreadcrumbBar), new UIPropertyMetadata(0.0, null, CoerceProgressMinimum));
-		
+
 		public event EventHandler<EditModeToggleEventArgs> OnEditModeToggle;
 
 		#endregion Dependency Properties
@@ -221,14 +221,14 @@ namespace Odyssey.Controls {
 
 		private static RoutedUICommand showDropDownCommand = new RoutedUICommand("Show DropDown", "ShowDropDownCommand", typeof(BreadcrumbBar));
 
-		
+
 		/// <summary>
 		/// This command selects the BreadcrumbItem that is specified as Parameter.
 		/// </summary>
 		public static RoutedUICommand SelectTraceCommand {
 			get { return selectTraceCommand; }
 		}
-		
+
 
 		/// <summary>
 		/// This command selects the root.
@@ -253,7 +253,7 @@ namespace Odyssey.Controls {
 
 		#region Events
 
-		
+
 		/// <summary>
 		/// Occurs after a BreadcrumbItem is created for which to apply additional properties.
 		/// </summary>
@@ -261,7 +261,7 @@ namespace Odyssey.Controls {
 			add { AddHandler(BreadcrumbBar.ApplyPropertiesEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.ApplyPropertiesEvent, value); }
 		}
-		
+
 
 		/// <summary>
 		/// Occurs when the selected BreadcrumbItem is changed.
@@ -370,7 +370,7 @@ namespace Odyssey.Controls {
 			private set { SetValue(SelectedItemProperty, value); }
 		}
 
-		
+
 		/// <summary>
 		/// Gets the collapsed traces.
 		/// </summary>
@@ -378,7 +378,7 @@ namespace Odyssey.Controls {
 			get { return (IEnumerable)GetValue(CollapsedTracesProperty); }
 			private set { SetValue(CollapsedTracesPropertyKey, value); }
 		}
-		
+
 
 		//private BreadcrumbItem selectedBreadcrumb;
 
@@ -389,8 +389,6 @@ namespace Odyssey.Controls {
 			get { return (BreadcrumbItem)GetValue(SelectedBreadcrumbProperty); }
 			private set { SetValue(SelectedBreadcrumbPropertyKey, value); }
 		}
-
-		//public BreadcrumbItem RootItem { get; set; }
 
 		/// <summary>
 		/// Gets the Root BreadcrumbItem.
@@ -459,6 +457,11 @@ namespace Odyssey.Controls {
 			: base() {
 			this.SeparatorString = "\\";
 			this.Root = ((ShellItem)KnownFolders.Desktop);
+
+			foreach (ShellItem item in ((ShellItem)KnownFolders.Desktop).Where(w => w.IsFolder)) {
+				this.RootItem.Items.Add(item);
+			}
+
 			//this.PathChanged += OnPathChanged;
 			Buttons = new ObservableCollection<ButtonBase>();
 
@@ -633,7 +636,7 @@ namespace Odyssey.Controls {
 		/// Remove the last separator string from the path if there is no additional trace.
 		/// </summary>
 		/// <param name="path">The path from which to remove the last separator.</param>
-		/// <returns>The path without an unecassary last separator.</returns>
+		/// <returns>The path without an unnecessary last separator.</returns>
 		private string RemoveLastEmptySeparator(string path) {
 			path = path.Trim();
 			int sepLength = SeparatorString.Length;
@@ -737,7 +740,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
-		
+
 		/// <summary>
 		/// Remove the focus from a button when it was clicked.
 		/// </summary>
@@ -746,7 +749,7 @@ namespace Odyssey.Controls {
 				//this.Focus();
 			}
 		}
-		
+
 
 		/*
 		/// <summary>
@@ -814,7 +817,7 @@ namespace Odyssey.Controls {
 			OverflowMode = isOverflow ? BreadcrumbButton.ButtonMode.Overflow : BreadcrumbButton.ButtonMode.Breadcrumb;
 		}
 
-		
+
 		/// <summary>
 		/// Build the list of traces for the overflow button.
 		/// </summary>
@@ -855,7 +858,7 @@ namespace Odyssey.Controls {
 				item = item.SelectedBreadcrumb;
 			}
 		}
-		
+
 
 		private object GetImage(ImageSource imageSource) {
 			if (imageSource == null) return null;
@@ -877,7 +880,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
-		
+
 		/// <summary>
 		/// Gets or sets the DataTemplateSelector for the overflow items.
 		/// </summary>
@@ -885,9 +888,9 @@ namespace Odyssey.Controls {
 			get { return (DataTemplateSelector)GetValue(OverflowItemTemplateSelectorProperty); }
 			set { SetValue(OverflowItemTemplateSelectorProperty, value); }
 		}
-		
 
-		
+
+
 		/// <summary>
 		/// Gets or set the DataTemplate for the OverflowItem.
 		/// </summary>
@@ -895,7 +898,7 @@ namespace Odyssey.Controls {
 			get { return (DataTemplate)GetValue(OverflowItemTemplateProperty); }
 			set { SetValue(OverflowItemTemplateProperty, value); }
 		}
-		
+
 
 		private static void RootPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
@@ -1027,7 +1030,7 @@ namespace Odyssey.Controls {
 
 
 
-		
+
 		/// <summary>
 		/// Gets or sets the TemplateSelector for an embedded BreadcrumbItem.
 		/// </summary>
@@ -1035,9 +1038,9 @@ namespace Odyssey.Controls {
 			get { return (DataTemplateSelector)GetValue(BreadcrumbItemTemplateSelectorProperty); }
 			set { SetValue(BreadcrumbItemTemplateSelectorProperty, value); }
 		}
-		
 
-		
+
+
 		/// <summary>
 		/// Gets or sets the Template for an embedded BreadcrumbItem.
 		/// </summary>
@@ -1045,7 +1048,7 @@ namespace Odyssey.Controls {
 			get { return (DataTemplate)GetValue(BreadcrumbItemTemplateProperty); }
 			set { SetValue(BreadcrumbItemTemplateProperty, value); }
 		}
-		
+
 
 		/// <summary>
 		/// Gets the overflow mode for the Overflow BreadcrumbButton (PART_Root).
@@ -1213,7 +1216,7 @@ namespace Odyssey.Controls {
 		}
 
 		/// <summary>
-		/// Do what's necassary to do when the BreadcrumbBar has lost focus.
+		/// Do what's necessary to do when the BreadcrumbBar has lost focus.
 		/// </summary>
 		public void Exit(bool updatePath) {
 			if (comboBox != null) {
@@ -1231,7 +1234,7 @@ namespace Odyssey.Controls {
 			Path = comboBox.Text;
 		}
 
-		
+
 		/// <summary>
 		/// Gets or sets the ItemsPanelTemplate for the DropDownItems of the combobox.
 		/// </summary>
@@ -1239,9 +1242,9 @@ namespace Odyssey.Controls {
 			get { return (ItemsPanelTemplate)GetValue(DropDownItemsPanelProperty); }
 			set { SetValue(DropDownItemsPanelProperty, value); }
 		}
-		
 
-		
+
+
 		/// <summary>
 		/// Gets or sets the ItemsPanelTemplateSelector for the DropDownItems of the combobox.
 		/// </summary>
@@ -1249,9 +1252,9 @@ namespace Odyssey.Controls {
 			get { return (DataTemplateSelector)GetValue(DropDownItemTemplateSelectorProperty); }
 			set { SetValue(DropDownItemTemplateSelectorProperty, value); }
 		}
-		
 
-		
+
+
 		/// <summary>
 		/// Gets or sets the DataTemplate for the DropDownItems of the combobox.
 		/// </summary>
@@ -1259,7 +1262,7 @@ namespace Odyssey.Controls {
 			get { return (DataTemplate)GetValue(DropDownItemTemplateProperty); }
 			set { SetValue(DropDownItemTemplateProperty, value); }
 		}
-		
+
 
 		/*
 		/// <summary>
@@ -1282,7 +1285,7 @@ namespace Odyssey.Controls {
 			get { return (int)GetValue(SelectedDropDownIndexProperty); }
 			set { SetValue(SelectedDropDownIndexProperty, value); }
 		}
-		
+
 
 		/// <summary>
 		/// Gets or sets the current progress indicator value.
@@ -1307,7 +1310,7 @@ namespace Odyssey.Controls {
 			return value;
 		}
 
-		
+
 		/// <summary>
 		/// Occurs when the ProgressValue is changed.
 		/// </summary>
@@ -1315,7 +1318,7 @@ namespace Odyssey.Controls {
 			add { AddHandler(BreadcrumbBar.ProgressValueChangedEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.ProgressValueChangedEvent, value); }
 		}
-		
+
 
 		private static void ProgressValuePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
 			//            RoutedPropertyChangedEventArgs<double> args = new RoutedPropertyChangedEventArgs<double>((double)e.OldValue, (double)e.NewValue,BreadcrumbBar.ProgessValueChangedEvent);
@@ -1330,7 +1333,7 @@ namespace Odyssey.Controls {
 			base.OnMouseLeave(e);
 		}
 		*/
-		
+
 		private static object CoerceProgressMaximum(DependencyObject d, object baseValue) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			double value = (double)baseValue;
@@ -1340,9 +1343,9 @@ namespace Odyssey.Controls {
 
 			return value;
 		}
-		
 
-		
+
+
 		private static object CoerceProgressMinimum(DependencyObject d, object baseValue) {
 			BreadcrumbBar bar = d as BreadcrumbBar;
 			double value = (double)baseValue;
@@ -1351,9 +1354,9 @@ namespace Odyssey.Controls {
 
 			return value;
 		}
-		
 
-		
+
+
 		/// <summary>
 		/// Gets or sets the maximum progress value.
 		/// </summary>
@@ -1361,7 +1364,7 @@ namespace Odyssey.Controls {
 			get { return (double)GetValue(ProgressMaximumProperty); }
 			set { SetValue(ProgressMaximumProperty, value); }
 		}
-		
+
 
 
 		/// <summary>
@@ -1371,7 +1374,7 @@ namespace Odyssey.Controls {
 			get { return (double)GetValue(ProgressMinimumProperty); }
 			set { SetValue(ProgressMinimumProperty, value); }
 		}
-		
+
 
 
 		protected override IEnumerator LogicalChildren {
@@ -1394,7 +1397,7 @@ namespace Odyssey.Controls {
 				return array.GetEnumerator();
 			}
 		}
-		
+
 
 		public void pop_items(BreadcrumbItem e) {
 			if (e.Items.Count == 0) {
@@ -1426,7 +1429,7 @@ namespace Odyssey.Controls {
 		}
 		*/
 
-		
+
 		#region IAddChild Members
 
 		public void AddChild(object value) {
@@ -1438,7 +1441,7 @@ namespace Odyssey.Controls {
 		}
 
 		#endregion IAddChild Members
-	
+
 
 
 		#region Path Changed Obsolete
