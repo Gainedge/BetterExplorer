@@ -471,7 +471,7 @@ namespace Odyssey.Controls {
 			//CollapsedTraces = traces;
 			AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
 			AddHandler(BreadcrumbItem.TraceChangedEvent, new RoutedEventHandler(breadcrumbItemTraceValueChanged));
-			//AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectionChangedEvent));
+			AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectionChangedEvent));
 			AddHandler(BreadcrumbItem.DropDownPressedChangedEvent, new RoutedEventHandler(breadcrumbItemDropDownChangedEvent));
 			//AddHandler(ButtonBase.ClickEvent, new RoutedEventHandler(buttonClickedEvent));
 			traces.Add(null);
@@ -577,6 +577,7 @@ namespace Odyssey.Controls {
 				if (item == null) break;
 				var trace = traces[i];
 				//OnPopulateItems(item);
+				pop_items(item);
 				object next = item.GetTraceItem(trace);
 				if (next == null && item.Data == trace.Parent) {
 					//missingItem = item;
@@ -716,14 +717,15 @@ namespace Odyssey.Controls {
 
 
 
-		/*
+
 		private void breadcrumbItemSelectionChangedEvent(object sender, RoutedEventArgs e) {
-			//BreadcrumbItem parent = e.Source as BreadcrumbItem;
-			//if (parent != null && parent.SelectedBreadcrumb != null) {
-			//	OnPopulateItems(parent.SelectedBreadcrumb);
-			//}
+			BreadcrumbItem parent = e.Source as BreadcrumbItem;
+			if (parent != null && parent.SelectedBreadcrumb != null) {
+				//OnPopulateItems(parent.SelectedBreadcrumb);
+				pop_items(parent.SelectedBreadcrumb);
+			}
 		}
-		*/
+
 
 		private void breadcrumbItemDropDownChangedEvent(object sender, RoutedEventArgs e) {
 			BreadcrumbItem breadcrumb = e.Source as BreadcrumbItem;
@@ -1384,7 +1386,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
-		/*
+
 		public void pop_items(BreadcrumbItem e) {
 			if (e.Items.Count == 0) {
 				if (e.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
@@ -1394,7 +1396,7 @@ namespace Odyssey.Controls {
 				}
 			}
 		}
-		*/
+
 
 		/*
 		private string path_conversation(Odyssey.Controls.PathConversionEventArgs.ConversionMode Mode) {
