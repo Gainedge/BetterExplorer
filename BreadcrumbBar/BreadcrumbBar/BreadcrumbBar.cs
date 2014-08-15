@@ -39,7 +39,7 @@ namespace Odyssey.Controls {
 	[ContentProperty("Root")]
 	[TemplatePart(Name = partComboBox)]
 	[TemplatePart(Name = partRoot)]
-	public class BreadcrumbBar : Control, IAddChild {
+	public class BreadcrumbBar : Control/*, IAddChild*/ {
 
 		#region Constants
 
@@ -579,8 +579,8 @@ namespace Odyssey.Controls {
 				//Why do we have [if (item == null) break;] It seems like we add an if to the For(...) or it should NEVER be null
 				if (item == null) break;
 				var trace = traces[i];
-				//OnPopulateItems(item);
-				pop_items(item);
+				////OnPopulateItems(item);
+				//pop_items(item);
 				object next = item.GetTraceItem(trace);
 				if (next == null && item.Data == trace.Parent) {
 					//missingItem = item;
@@ -724,8 +724,14 @@ namespace Odyssey.Controls {
 		private void breadcrumbItemSelectionChangedEvent(object sender, RoutedEventArgs e) {
 			BreadcrumbItem parent = e.Source as BreadcrumbItem;
 			if (parent != null && parent.SelectedBreadcrumb != null) {
-				//OnPopulateItems(parent.SelectedBreadcrumb);
-				pop_items(parent.SelectedBreadcrumb);
+				////OnPopulateItems(parent.SelectedBreadcrumb);
+				if (parent.SelectedBreadcrumb.Items.Count == 0) {
+					if (parent.SelectedBreadcrumb.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
+						foreach (ShellItem s in KnownFolders.Computer) {
+							parent.SelectedBreadcrumb.Items.Add(s);
+						}
+					}
+				}
 			}
 		}
 
@@ -805,18 +811,10 @@ namespace Odyssey.Controls {
 
 		protected override Size ArrangeOverride(Size arrangeBounds) {
 			Size size = base.ArrangeOverride(arrangeBounds);
-			CheckOverflowImage();
-			return size;
-		}
-
-		/// <summary>
-		/// Check what image to display in the drop down button of the overflow button:
-		/// </summary>
-		private void CheckOverflowImage() {
 			bool isOverflow = (RootItem != null && RootItem.SelectedBreadcrumb != null && RootItem.SelectedBreadcrumb.IsOverflow);
 			OverflowMode = isOverflow ? BreadcrumbButton.ButtonMode.Overflow : BreadcrumbButton.ButtonMode.Breadcrumb;
+			return size;
 		}
-
 
 		/// <summary>
 		/// Build the list of traces for the overflow button.
@@ -928,7 +926,7 @@ namespace Odyssey.Controls {
 		/// <param name="oldValue"></param>
 		/// <param name="newValue"></param>
 		public virtual void OnRootChanged(object oldValue, object newValue) {
-			newValue = GetFirstItem(newValue);
+			//newValue = GetFirstItem(newValue);
 			//if (oldRoot != null) {
 			if (oldValue is BreadcrumbItem) {
 				((BreadcrumbItem)oldValue).IsRoot = false;
@@ -944,7 +942,8 @@ namespace Odyssey.Controls {
 				if (root == null) {
 					root = BreadcrumbItem.CreateItem(newValue);
 					root.IsRoot = true;
-				} else
+				}
+				else
 					root.IsRoot = true;
 
 				this.RemoveLogicalChild(oldValue);
@@ -956,7 +955,7 @@ namespace Odyssey.Controls {
 				if (IsInitialized) SelectedBreadcrumb = root;// else selectedBreadcrumb = root;
 			}
 		}
-
+		/*
 		/// <summary>
 		/// Gets the first item of the specified value if it is a collection, otherwise it returns the value itself.
 		/// </summary>
@@ -971,7 +970,7 @@ namespace Odyssey.Controls {
 			}
 			return entity;
 		}
-
+		*/
 		/// <summary>
 		/// Gets whether the Overflow button is pressed.
 		/// </summary>
@@ -1399,7 +1398,7 @@ namespace Odyssey.Controls {
 			}
 		}
 
-
+		/*
 		public void pop_items(BreadcrumbItem e) {
 			if (e.Items.Count == 0) {
 				if (e.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
@@ -1408,7 +1407,7 @@ namespace Odyssey.Controls {
 					}
 				}
 			}
-		}
+		}*/
 
 
 		/*
@@ -1430,7 +1429,7 @@ namespace Odyssey.Controls {
 		}
 		*/
 
-
+		/*
 		#region IAddChild Members
 
 		public void AddChild(object value) {
@@ -1442,12 +1441,12 @@ namespace Odyssey.Controls {
 		}
 
 		#endregion IAddChild Members
+		*/
 
-
-
-		#region Path Changed Obsolete
 
 		/*
+		#region Path Changed Obsolete
+
 		public static readonly RoutedEvent PathChangedEvent = EventManager.RegisterRoutedEvent("PathChanged",
 				RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<string>), typeof(BreadcrumbBar));
 
@@ -1467,9 +1466,9 @@ namespace Odyssey.Controls {
 			ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(e.NewValue.ToShellParsingName());
 			if (OnNavigate != null) OnNavigate(item);
 		}
-		*/
 
 		#endregion
+		*/
 
 
 	}
