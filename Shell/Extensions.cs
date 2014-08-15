@@ -1,5 +1,6 @@
 ﻿using BExplorer.Shell.Interop;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -524,6 +525,14 @@ namespace BExplorer.Shell {
 		public static extern void ILFree(IntPtr pidl);
 		[DllImport("shell32.dll", CharSet = CharSet.None)]
 		public static extern int ILGetSize(IntPtr pidl);
+
+		public static void Clear(this ConcurrentBag<Tuple<int, PROPERTYKEY, object>> bag){
+			Tuple<int, PROPERTYKEY, object> tmp = null;
+			while (!bag.IsEmpty) {
+				bag.TryTake(out tmp);
+				if (tmp != null) tmp = null;
+			}
+		}
 
 		public static MemoryStream CreateShellIDList(this ShellItem[] items) {
 			// first convert all files into pidls list

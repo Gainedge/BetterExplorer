@@ -3128,26 +3128,16 @@ namespace BExplorer.Shell {
 		public void Navigate(ShellItem destination, Boolean isInSameTab = false) {
 			this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
 
-			//TODO: Check the following Change
-			//Note:	User:	Aaron Campf	Date: 8/11/2014	Message: The below SetSortIcon(...) seems to have no effect as it is called later
-			//this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
-
+			//Unregister notifications and clear all collections
 			this.Notifications.UnregisterChangeNotify();
-			//cache.Clear();
 			Items.Clear();
 			ItemsForSubitemsUpdate.Clear();
 			waitingThumbnails.Clear();
 			overlayQueue.Clear();
 			shieldQueue.Clear();
-			//this.cache.Clear();
 			this._CuttedIndexes.Clear();
-
-			Tuple<int, PROPERTYKEY, object> tmp = null;
-			while (!SubItemValues.IsEmpty) {
-				SubItemValues.TryTake(out tmp);
-			}
-
-			if (tmp != null) tmp = null;
+			this.SubItemValues.Clear();
+			//Clear the LsitView
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
 			this.ItemForRename = -1;
 
@@ -3168,16 +3158,15 @@ namespace BExplorer.Shell {
 
 			int CurrentI = 0, LastI = 0;
 			foreach (var Shell in destination) {
-				F.Application.DoEvents();
 				if (this.Items.Count > 0 && this.Items.Last().Parent != Shell.Parent) {
 					break;
 				}
 				if (this.ShowHidden ? true : !Shell.IsHidden)
 					this.Items.Add(Shell);
 				CurrentI++;
-				if (CurrentI - LastI >= (destination.IsSearchFolder ? 70 : 2350)) {
+				if (CurrentI - LastI >= (destination.IsSearchFolder ? 70 : 2000)) {
 					F.Application.DoEvents();
-					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+					this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
 					if (destination.IsSearchFolder)
 						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 					LastI = CurrentI;
