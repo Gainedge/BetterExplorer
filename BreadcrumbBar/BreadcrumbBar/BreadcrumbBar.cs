@@ -941,9 +941,10 @@ namespace Odyssey.Controls {
 			else {
 				var root = newValue as BreadcrumbItem;
 
-				if (root == null)
+				if (root == null) {
 					root = BreadcrumbItem.CreateItem(newValue);
-				else
+					root.IsRoot = true;
+				} else
 					root.IsRoot = true;
 
 				this.RemoveLogicalChild(oldValue);
