@@ -3802,7 +3802,7 @@ namespace BetterExplorer {
 		void bbi_Drop(object sender, DragEventArgs e) {
 			var pt = e.GetPosition(sender as IInputElement);
 
-			if (((sender as BreadcrumbItem).Data as ShellItem).IsFileSystem)
+			if ((sender as BreadcrumbItem).Data.IsFileSystem)
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 			else
 				e.Effects = DragDropEffects.None;
@@ -3811,12 +3811,12 @@ namespace BetterExplorer {
 				case DragDropEffects.All:
 					break;
 				case DragDropEffects.Copy:
-					this.ShellListView.DoCopy(e.Data, ((sender as BreadcrumbItem).Data as ShellItem));
+					this.ShellListView.DoCopy(e.Data, (sender as BreadcrumbItem).Data);
 					break;
 				case DragDropEffects.Link:
 					break;
 				case DragDropEffects.Move:
-					this.ShellListView.DoMove(e.Data, ((sender as BreadcrumbItem).Data as ShellItem));
+					this.ShellListView.DoMove(e.Data, (sender as BreadcrumbItem).Data);
 					break;
 				case DragDropEffects.None:
 					break;
@@ -3833,7 +3833,7 @@ namespace BetterExplorer {
 		void bbi_DragOver(object sender, DragEventArgs e) {
 			e.Handled = true;
 
-			if (((sender as BreadcrumbItem).Data as ShellItem).IsFileSystem) {
+			if ((sender as BreadcrumbItem).Data.IsFileSystem) {
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 			}
 			else {
@@ -3852,7 +3852,7 @@ namespace BetterExplorer {
 		}
 
 		void bbi_DragEnter(object sender, DragEventArgs e) {
-			if (((sender as BreadcrumbItem).Data as ShellItem).IsFileSystem) {
+			if ((sender as BreadcrumbItem).Data.IsFileSystem) {
 				e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 			}
 			else {
@@ -5202,13 +5202,6 @@ namespace BetterExplorer {
 			this.bcbc.BeginAnimation(Odyssey.Controls.BreadcrumbBar.ProgressValueProperty, da);
 		}
 
-		private void bcbc_Loaded(object sender, RoutedEventArgs e) {
-			this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
-			this.bcbc.UpdateLayout();
-			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
-			this.bcbc.OnEditModeToggle += bcbc_OnEditModeToggle;
-		}
-
 		void bcbc_OnEditModeToggle(object sender, Odyssey.Controls.EditModeToggleEventArgs e) {
 			this.ShellListView.IsFocusAllowed = e.IsExit;
 			if (!e.IsExit) {
@@ -5246,13 +5239,6 @@ namespace BetterExplorer {
 		}
 		*/
 
-		private void path_changed(object sender, RoutedPropertyChangedEventArgs<string> e) {
-			Int64 pidl;
-			bool isValidPidl = Int64.TryParse(e.NewValue.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
-			ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(e.NewValue.ToShellParsingName());
-			NavigationController(item);
-		}
-
 		/*
 		private void NavigationController_Why() {
 			NavigationController(this.ShellListView.CurrentFolder);
@@ -5263,29 +5249,11 @@ namespace BetterExplorer {
 		*/
 
 		private void NavigationController(ShellItem Destination) {
-			//TODO: Shouldn't we use this.ShellListView.Navigate_Full(item, true);??
-
-			//#region AddedForNow
-			//if (bcbc.Root == null) {
-			//	this.bcbc.Root = ((ShellItem)KnownFolders.Desktop);
-			//}
-			//#endregion
-
-			if (this.bcbc.OnNavigate == null) {
-				this.bcbc.OnNavigate = NavigationController;
-			}
-
-			if (Destination != this.ShellListView.CurrentFolder && bcbc._IsBreadcrumbBarSelectionChnagedAllowed) {
-				//this.ShellListView.Navigate(Destination, true);
+			if (Destination != this.ShellListView.CurrentFolder) {
 				this.ShellListView.Navigate_Full(Destination, true);
-				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
-				//this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
 			}
 
-			//bcbc._IsBreadcrumbBarSelectionChnagedAllowed = true;
+			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 		}
-
-
-
 	}
 }
