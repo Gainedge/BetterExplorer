@@ -5165,7 +5165,7 @@ namespace BetterExplorer {
 		}
 
 		private void RibbonWindow_StateChanged(object sender, EventArgs e) {
-			if (this.WindowState != System.Windows.WindowState.Minimized) {
+			if (this.WindowState != System.Windows.WindowState.Minimized && this.IsActive == true) {
 				focusTimer.Interval = 500;
 				focusTimer.Tick += focusTimer_Tick;
 				focusTimer.Start();
@@ -5196,10 +5196,10 @@ namespace BetterExplorer {
 
 
 		private void Refresh_Click(object sender, RoutedEventArgs e) {
-			this.ShellListView.RefreshContents();
 			DoubleAnimation da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 1, 100)));
 			da.FillBehavior = FillBehavior.Stop;
 			this.bcbc.BeginAnimation(Odyssey.Controls.BreadcrumbBar.ProgressValueProperty, da);
+			this.ShellListView.RefreshContents();
 		}
 
 		void bcbc_OnEditModeToggle(object sender, Odyssey.Controls.EditModeToggleEventArgs e) {
@@ -5252,8 +5252,8 @@ namespace BetterExplorer {
 			if (Destination != this.ShellListView.CurrentFolder) {
 				this.ShellListView.Navigate_Full(Destination, true);
 			}
-
-			this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
+			if (this.ShellListView.CurrentFolder != null)
+				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 		}
 	}
 }

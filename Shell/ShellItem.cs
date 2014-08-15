@@ -67,8 +67,7 @@ namespace BExplorer.Shell {
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) {
 			if (sourceType == typeof(string)) {
 				return true;
-			}
-			else {
+			} else {
 				return base.CanConvertFrom(context, sourceType);
 			}
 		}
@@ -76,8 +75,7 @@ namespace BExplorer.Shell {
 		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) {
 			if (destinationType == typeof(InstanceDescriptor)) {
 				return true;
-			}
-			else {
+			} else {
 				return base.CanConvertTo(context, destinationType);
 			}
 		}
@@ -88,12 +86,10 @@ namespace BExplorer.Shell {
 
 				if (s.Length == 0) {
 					return ShellItem.Desktop;
-				}
-				else {
+				} else {
 					return new ShellItem(s);
 				}
-			}
-			else {
+			} else {
 				return base.ConvertFrom(context, culture, value);
 			}
 		}
@@ -104,8 +100,7 @@ namespace BExplorer.Shell {
 
 				if (destinationType == typeof(string)) {
 					return uri.Scheme == "file" ? uri.LocalPath : uri.ToString();
-				}
-				else if (destinationType == typeof(InstanceDescriptor)) {
+				} else if (destinationType == typeof(InstanceDescriptor)) {
 					return new InstanceDescriptor(typeof(ShellItem).GetConstructor(new Type[] { typeof(string) }), new object[] { uri.ToString() });
 				}
 			}
@@ -227,6 +222,16 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		public bool IsValidShellFolder{
+			get {
+				try {
+					var folder = this.GetIShellFolder();
+					return true;
+				} catch {
+					return false;
+				}
+			}
+		}
 		/// <summary>
 		/// Gets a value indicating whether the item has subfolders.
 		/// </summary>
@@ -240,8 +245,7 @@ namespace BExplorer.Shell {
 				//TODO: try removing this Try Catch!
 				try {
 					return COM_Attribute_Check(SFGAO.FILESYSTEM);
-				}
-				catch {
+				} catch {
 					return false;
 				}
 			}
@@ -261,11 +265,9 @@ namespace BExplorer.Shell {
 			get {
 				try {
 					return COM_Attribute_Check(SFGAO.HIDDEN);
-				}
-				catch (FileNotFoundException) {
+				} catch (FileNotFoundException) {
 					return false;
-				}
-				catch (NullReferenceException) {
+				} catch (NullReferenceException) {
 					// NativeShellItem is null
 					return false;
 				}
@@ -279,11 +281,9 @@ namespace BExplorer.Shell {
 			get {
 				try {
 					return COM_Attribute_Check(SFGAO.LINK);
-				}
-				catch (FileNotFoundException) {
+				} catch (FileNotFoundException) {
 					return false;
-				}
-				catch (NullReferenceException) {
+				} catch (NullReferenceException) {
 					// NativeShellItem is null
 					return false;
 				}
@@ -306,8 +306,7 @@ namespace BExplorer.Shell {
 			get {
 				try {
 					return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) != DriveType.Network;
-				}
-				catch {
+				} catch {
 					return false;
 				}
 			}
@@ -319,8 +318,7 @@ namespace BExplorer.Shell {
 
 				if (ParsingName.StartsWith("::")) {
 					return false;
-				}
-				else if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\")) {
+				} else if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\")) {
 					//TODO: Find a better way of doing the following code
 					if (ParsingName == "") {
 						return false;
@@ -329,8 +327,7 @@ namespace BExplorer.Shell {
 					string rootPath = System.IO.Path.GetPathRoot(ParsingName);	// get drive's letter
 					DriveInfo driveInfo = new DriveInfo(rootPath);				// get info about the drive
 					return driveInfo.DriveType == DriveType.Network;			// return true if a network drive
-				}
-				else {
+				} else {
 					return true; // is a UNC path
 				}
 
@@ -341,8 +338,7 @@ namespace BExplorer.Shell {
 			get {
 				try {
 					return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) == DriveType.Network;
-				}
-				catch {
+				} catch {
 					return false;
 				}
 			}
@@ -352,8 +348,7 @@ namespace BExplorer.Shell {
 			get {
 				try {
 					return (!ParsingName.StartsWith("::") && !IsFileSystem && !ParsingName.StartsWith(@"\\") && !ParsingName.Contains(":\\")) || ParsingName.EndsWith(".search-ms");
-				}
-				catch {
+				} catch {
 					return false;
 				}
 			}
@@ -369,11 +364,9 @@ namespace BExplorer.Shell {
 
 				if (result == HResult.S_OK) {
 					return new ShellItem(item);
-				}
-				else if (result == HResult.MK_E_NOOBJECT) {
+				} else if (result == HResult.MK_E_NOOBJECT) {
 					return null;
-				}
-				else {
+				} else {
 					Marshal.ThrowExceptionForHR((int)result);
 					return null;
 				}
@@ -402,8 +395,7 @@ namespace BExplorer.Shell {
 				try {
 					IntPtr relativePidl = Shell32.ILFindLastID(Pidl);
 					Parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, 1, new IntPtr[] { relativePidl }, typeof(IQueryInfo).GUID, 0, out result);
-				}
-				catch (Exception) {
+				} catch (Exception) {
 					return string.Empty;
 				}
 
@@ -498,8 +490,7 @@ namespace BExplorer.Shell {
 				string result = Marshal.PtrToStringUni(resultPtr);
 				Marshal.FreeCoTaskMem(resultPtr);
 				return result;
-			}
-			catch (Exception) {
+			} catch (Exception) {
 				return String.Empty;
 			}
 		}
@@ -550,8 +541,7 @@ namespace BExplorer.Shell {
 				iextract = null;
 				str = null;
 				return flags;
-			}
-			catch (Exception) {
+			} catch (Exception) {
 				if (ishellfolder != null)
 					Marshal.ReleaseComObject(ishellfolder);
 				if (iextract != null)
@@ -586,8 +576,7 @@ namespace BExplorer.Shell {
 					Marshal.ReleaseComObject(iextract);
 				str = null;
 				return flags;
-			}
-			catch (Exception) {
+			} catch (Exception) {
 				if (ishellfolder != null)
 					Marshal.ReleaseComObject(ishellfolder);
 				if (iextract != null)
@@ -895,12 +884,10 @@ namespace BExplorer.Shell {
 			if (Shell32.SHGetSpecialFolderLocation(IntPtr.Zero, (CSIDL)folder, out pidl) == HResult.S_OK) {
 				try {
 					ComInterface = CreateItemFromIDList(pidl);
-				}
-				finally {
+				} finally {
 					Shell32.ILFree(pidl);
 				}
-			}
-			else {
+			} else {
 				// SHGetSpecialFolderLocation does not support many common
 				// CSIDL values on Windows 98, but SHGetFolderPath in
 				// ShFolder.dll does, so fall back to it if necessary. We
@@ -936,8 +923,7 @@ namespace BExplorer.Shell {
 				// create the new item. Folders other than Desktop don't
 				// seem to implement ParseDisplayName properly.
 				ComInterface = CreateItemFromParsingName(Path.Combine(parent.FileSystemPath, name));
-			}
-			else {
+			} else {
 				IShellFolder folder = parent.GetIShellFolder();
 				uint eaten;
 				IntPtr pidl;
@@ -947,8 +933,7 @@ namespace BExplorer.Shell {
 
 				try {
 					ComInterface = CreateItemFromIDList(pidl);
-				}
-				finally {
+				} finally {
 					Shell32.ILFree(pidl);
 				}
 			}
@@ -1013,8 +998,7 @@ namespace BExplorer.Shell {
 					Marshal.Copy(Pidl, pidlData, 0, (int)size);
 					byte[] hashData = ShellItem.hashProvider.ComputeHash(pidlData);
 					hashValue = BitConverter.ToInt32(hashData, 0);
-				}
-				else {
+				} else {
 					hashValue = 0;
 				}
 			}
@@ -1086,8 +1070,7 @@ namespace BExplorer.Shell {
 
 					try {
 						item = CreateItemFromIDList(pidl);
-					}
-					finally {
+					} finally {
 						Shell32.ILFree(pidl);
 					}
 
@@ -1108,8 +1091,7 @@ namespace BExplorer.Shell {
 			if (separatorIndex != -1) {
 				knownFolder = path.Substring(0, separatorIndex);
 				restOfPath = path.Substring(separatorIndex + 1);
-			}
-			else {
+			} else {
 				knownFolder = path;
 				restOfPath = string.Empty;
 			}
@@ -1134,8 +1116,7 @@ namespace BExplorer.Shell {
 		private static IShellItem CreateItemFromIDList(IntPtr pidl) {
 			if (RunningVista) {
 				return Shell32.SHCreateItemFromIDList(pidl, typeof(IShellItem).GUID);
-			}
-			else {
+			} else {
 				return new Interop.VistaBridge.ShellItemImpl(pidl, false);
 			}
 		}
@@ -1143,8 +1124,7 @@ namespace BExplorer.Shell {
 		private static IShellItem CreateItemFromParsingName(string path) {
 			if (RunningVista) {
 				return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
-			}
-			else {
+			} else {
 				IShellFolder desktop = Desktop.GetIShellFolder();
 				uint attributes = 0;
 				uint eaten;
@@ -1158,8 +1138,7 @@ namespace BExplorer.Shell {
 		private static IShellItem CreateItemWithParent(ShellItem parent, IntPtr pidl) {
 			if (RunningVista) {
 				return Shell32.SHCreateItemWithParent(IntPtr.Zero, parent.GetIShellFolder(), pidl, typeof(IShellItem).GUID);
-			}
-			else {
+			} else {
 				Interop.VistaBridge.ShellItemImpl impl = (Interop.VistaBridge.ShellItemImpl)parent.ComInterface;
 				return new Interop.VistaBridge.ShellItemImpl(Shell32.ILCombine(impl.Pidl, pidl), true);
 			}
@@ -1168,8 +1147,7 @@ namespace BExplorer.Shell {
 		private static IntPtr GetIDListFromObject(IShellItem item) {
 			if (RunningVista) {
 				return item != null ? Shell32.SHGetIDListFromObject(item) : IntPtr.Zero;
-			}
-			else {
+			} else {
 				return ((Interop.VistaBridge.ShellItemImpl)item).Pidl;
 			}
 		}
@@ -1179,8 +1157,7 @@ namespace BExplorer.Shell {
 
 			if (folder.EnumObjects(IntPtr.Zero, flags, out result) == HResult.S_OK) {
 				return result;
-			}
-			else {
+			} else {
 				return null;
 			}
 		}
@@ -1273,11 +1250,9 @@ namespace BExplorer.Shell {
 		private void Initialize(Uri uri) {
 			if (uri.Scheme == "file") {
 				ComInterface = CreateItemFromParsingName(uri.LocalPath);
-			}
-			else if (uri.Scheme == "shell") {
+			} else if (uri.Scheme == "shell") {
 				InitializeFromShellUri(uri);
-			}
-			else {
+			} else {
 				throw new InvalidOperationException("Invalid URI scheme");
 			}
 		}
@@ -1315,11 +1290,9 @@ namespace BExplorer.Shell {
 		public static ShellItem ToShellParsingName(String path) {
 			if (path.IndexOf("::") == 0 && !path.StartsWith(@"\\")) {
 				return new ShellItem(String.Format("shell:{0}", path));
-			}
-			else if (!path.EndsWith(Path.DirectorySeparatorChar.ToString())) {
+			} else if (!path.EndsWith(Path.DirectorySeparatorChar.ToString())) {
 				return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
-			}
-			else {
+			} else {
 				return new ShellItem(path);
 			}
 		} //TODO: Consider making this a constructor!

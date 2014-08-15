@@ -180,7 +180,14 @@ namespace Odyssey.Controls {
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				var data = this.DataContext as ShellItem;
 				if (data != null && data.ParsingName != KnownFolders.Computer.ParsingName && data.ParsingName != KnownFolders.Desktop.ParsingName && !data.IsSearchFolder) {
-					var aditionalItems = data.Where(w => w.IsFolder).ToArray();
+					var aditionalItems = new List<ShellItem>();
+					foreach (var item in data) {
+						try {
+							if (item.IsFolder) {
+								aditionalItems.Add(item);
+							}
+						} catch {	}
+					}
 					this.ItemsSource = aditionalItems;
 				}
 			}));

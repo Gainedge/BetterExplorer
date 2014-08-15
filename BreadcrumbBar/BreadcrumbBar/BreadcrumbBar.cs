@@ -720,11 +720,11 @@ namespace Odyssey.Controls {
 		private void breadcrumbItemSelectionChangedEvent(object sender, RoutedEventArgs e) {
 			BreadcrumbItem parent = e.Source as BreadcrumbItem;
 			if (parent != null && parent.SelectedBreadcrumb != null) {
-				////OnPopulateItems(parent.SelectedBreadcrumb);
 				if (parent.SelectedBreadcrumb.Items.Count == 0) {
 					if (parent.SelectedBreadcrumb.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
 						foreach (ShellItem s in KnownFolders.Computer) {
-							parent.SelectedBreadcrumb.Items.Add(s);
+							if (s.IsValidShellFolder)
+								parent.SelectedBreadcrumb.Items.Add(s);
 						}
 					}
 				}
