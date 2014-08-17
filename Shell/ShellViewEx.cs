@@ -4210,6 +4210,11 @@ namespace BExplorer.Shell {
 							folderSetting.SortColumn = Int32.Parse(lastSortedColumnIndex);
 							folderSetting.SortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), lastSortOrder);
 						}
+
+						/* New Stuff */
+
+						//this.Collumns
+						this.LastGroupOrder = Values["LastGroupOrder"] == "Ascending" ? SortOrder.Ascending : SortOrder.Descending;
 					}
 				}
 
@@ -4233,26 +4238,63 @@ namespace BExplorer.Shell {
 			var Reader = command1.ExecuteReader();
 			var sql = Reader.Read() ?
 									@"UPDATE foldersettings
-									SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn, View = @View, LastSortedColumn = @LastSortedColumn
+									SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn, View = @View, LastSortedColumn = @LastSortedColumn, @Columns
 									WHERE Path = @Path"
 									:
-									@"INSERT into foldersettings (Path, LastSortOrder, LastGroupOrder, LastGroupCollumn, View, LastSortedColumn)
-									VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn)";
+									@"INSERT into foldersettings (Path, LastSortOrder, LastGroupOrder, LastGroupCollumn, View, LastSortedColumn, Columns)
+									VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn, @Columns)";
+
+
+			var Columns_XML = new System.Xml.Linq.XElement("Columns");
+			foreach (var Column in Collumns) {
+				var XML = new System.Xml.Linq.XElement("Column");
+				XML.Add(new System.Xml.Linq.XAttribute("ID", Column.ID == null ? "" : Column.ID.ToString()));
+				Columns_XML.Add(XML);
+				//Columns_XML.Add(SerializeObject(Column));
+			}
+
+
+			var Values = new Dictionary<string, string>() {
+				{ "Path", destination.ParsingName },
+				{ "LastSortOrder", LastSortOrder.ToString() },
+				{ "LastGroupOrder", LastGroupOrder.ToString() },
+				{ "LastGroupCollumn", LastGroupCollumn == null ? null : LastGroupCollumn.ID },
+				{ "View", View.ToString() },
+				{ "LastSortedColumn", LastSortedColumnIndex.ToString() },
+
+				/*New Values */
+
+				{ "Columns", this.Collumns.Select(x => x.Name).Aggregate((x , y) => x + ", " + y) }
+			};
 
 			var command2 = new SQLite.SQLiteCommand(sql, m_dbConnection);
+			foreach (var item in Values) {
+				command2.Parameters.AddWithValue(item.Key, item.Value);
+			}
+
+			/*
 			command2.Parameters.AddWithValue("Path", destination.ParsingName);
 			command2.Parameters.AddWithValue("LastSortOrder", LastSortOrder.ToString());
 			command2.Parameters.AddWithValue("LastGroupOrder", LastGroupOrder.ToString());
 			command2.Parameters.AddWithValue("LastGroupCollumn", LastGroupCollumn == null ? null : LastGroupCollumn.ID);
 			command2.Parameters.AddWithValue("View", View.ToString());
 			command2.Parameters.AddWithValue("LastSortedColumn", LastSortedColumnIndex.ToString()); //Figure out how to do this later
-
+			*/
 			//
 			command2.ExecuteNonQuery();
 			Reader.Close();
 			m_dbConnection.Close();
 		}
 
+		/*
+		public static string SerializeObject<T>(T toSerialize) {
+			var xmlSerializer = new System.Xml.Serialization.XmlSerializer(toSerialize.GetType());
+			StringWriter textWriter = new StringWriter();
+
+			xmlSerializer.Serialize(textWriter, toSerialize);
+			return textWriter.ToString();
+		}
+		*/
 		#endregion Database
 
 		private void AutosizeColumn(int index, int autosizeStyle) {
