@@ -423,14 +423,19 @@ namespace Odyssey.Controls {
 		/// </summary>
 		public ItemCollection DropDownItems { get { return comboBoxControlItems.Items; } }
 
+		
 		/// <summary>
 		/// Gets whether the dropdown has items.
 		/// </summary>
 		public bool HasDropDownItems {
-			get { return (bool)GetValue(HasDropDownItemsProperty); }
-			private set { SetValue(HasDropDownItemsProperty, value); }
+			get {
+				return false;//return (bool)GetValue(HasDropDownItemsProperty); 
+			}
+			private set { 
+				//SetValue(HasDropDownItemsProperty, value);
+			}
 		}
-
+		
 		#endregion Properties
 
 		/// <summary>

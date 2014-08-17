@@ -1350,6 +1350,9 @@ namespace BExplorer.Shell {
 			if (newUri == null) {
 				return null;
 			}
+			else if (!Directory.Exists(newUri.AbsolutePath.Replace("%20", " "))) {
+				return null;
+			}
 			else {
 				var Shell = new ShellItem(newUri);
 				Shell.Initialize(newUri);
