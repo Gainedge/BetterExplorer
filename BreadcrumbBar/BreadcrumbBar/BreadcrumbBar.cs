@@ -578,7 +578,7 @@ namespace Odyssey.Controls {
 				////OnPopulateItems(item);
 				//pop_items(item);
 				object next = item.GetTraceItem(trace);
-				if (next == null && item.Data == trace.Parent) {
+				if (next == null && item.Data.GetHashCode() == trace.Parent.GetHashCode()) {
 					//missingItem = item;
 					//lItem = trace;
 					item.Items.Add(trace);
@@ -606,7 +606,7 @@ namespace Odyssey.Controls {
 					if (item == null) break;
 					if (item2.Items.OfType<ShellItem>().Count() == 1) {
 						var firstItem = item2.Items.OfType<ShellItem>().First();
-						if (firstItem != key.Item2) {
+						if (firstItem.GetHashCode() != key.Item2.GetHashCode()) {
 							item2.Items.Clear();
 							item2.Items.Add(key.Item2);
 						}
@@ -615,7 +615,7 @@ namespace Odyssey.Controls {
 						item2.Items.Add(key.Item2);
 					}
 
-					item2.SelectedIndex = key.Item1;
+					item2.SelectedIndex = item2.Items.IndexOf(item2.Items.OfType<ShellItem>().Where(w => w.GetHashCode() == key.Item2.GetHashCode()).SingleOrDefault());
 					item2 = item2.SelectedBreadcrumb;
 				}
 				if (item2 != null) item2.SelectedItem = null;

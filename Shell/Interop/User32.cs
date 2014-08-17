@@ -176,6 +176,8 @@ namespace BExplorer.Shell.Interop {
 		LVM_GETITEMINDEXRECT = (FIRST + 209),
 		LVM_REMOVEALLGROUPS = (FIRST + 160),
 		LVM_SETITEMINDEXSTATE = (FIRST + 210),
+		LVM_GETCOLUMNORDERARRAY = (FIRST + 59),
+		LVM_GETCOLUMNWIDTH = (FIRST + 29),
 
 	}
 
@@ -547,6 +549,10 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("user32.dll")]
 		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,
 				int wParam, int lParam);
+
+		[DllImport("user32.dll")]
+		public extern static int SendMessage(IntPtr hwnd, uint msg, int count,
+		[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I4), In, Out]int[]orderArray);
 
 		[DllImport("user32.dll")]
 		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,

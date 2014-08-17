@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace BExplorer.Shell {
 	//TODO: Consider moving Database Code/Logic here
@@ -16,5 +17,9 @@ namespace BExplorer.Shell {
 		public Int32 SortColumn { get; set; }
 		/// <summary>The sort direction</summary>
 		public SortOrder SortOrder { get; set; }
+		/// <summary>
+		/// The columns that should be displayed into the view
+		/// </summary>
+		public XElement Columns { get; set; }
 	}
 }
