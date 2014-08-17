@@ -3570,18 +3570,40 @@ namespace BExplorer.Shell
 					foreach (var collumn in folderSettings.Columns.Elements())
 					{
 						var theColumn = this.AllAvailableColumns.Where(w => w.ID == collumn.Attribute("ID").Value).Single();
-						if (theColumn.ID != "A0" && this.Collumns.Count(c => c.ID == theColumn.ID) == 0)
+						if (this.Collumns.Count(c => c.ID == theColumn.ID) == 0)
 						{
 							if (collumn.Attribute("Width").Value != "0")
-								theColumn.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
+							{
+								int width = Convert.ToInt32(collumn.Attribute("Width").Value);
+								theColumn.Width = width;
+							}
 							this.Collumns.Add(theColumn);
-							var column = theColumn.ToNativeColumn(this.View == ShellViewStyle.Details);
+							var column = theColumn.ToNativeColumn(folderSettings.View == ShellViewStyle.Details);
 							User32.SendMessage(this.LVHandle, Interop.MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
-							if (this.View != ShellViewStyle.Details)
+							if (folderSettings.View != ShellViewStyle.Details)
 							{
 								this.AutosizeColumn(this.Collumns.Count - 1, -2);
 							}
 						}
+						else
+						{
+							int colIndex = this.Collumns.IndexOf(this.Collumns.SingleOrDefault(s => s.ID == theColumn.ID));
+							this.Collumns.RemoveAt(colIndex);
+							User32.SendMessage(this.LVHandle, Interop.MSG.LVM_DELETECOLUMN, colIndex, 0);
+							if (collumn.Attribute("Width").Value != "0")
+							{
+								int width = Convert.ToInt32(collumn.Attribute("Width").Value);
+								theColumn.Width = width;
+							}
+							this.Collumns.Add(theColumn);
+							var column = theColumn.ToNativeColumn(folderSettings.View == ShellViewStyle.Details);
+							User32.SendMessage(this.LVHandle, Interop.MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
+							if (folderSettings.View != ShellViewStyle.Details)
+							{
+								this.AutosizeColumn(this.Collumns.Count - 1, -2);
+							}
+						}
+						
 					}
 				}
 
