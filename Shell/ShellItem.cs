@@ -1350,15 +1350,15 @@ namespace BExplorer.Shell {
 			if (newUri == null) {
 				return null;
 			}
+			else if (newUri.AbsolutePath.StartsWith("shell")) {
+			}
 			else if (!Directory.Exists(newUri.AbsolutePath.Replace("%20", " "))) {
 				return null;
 			}
-			else {
-				var Shell = new ShellItem(newUri);
-				Shell.Initialize(newUri);
-				Shell.Constructor_Helper();
-				return Shell;
-			}
+			var Shell = new ShellItem(newUri);
+			Shell.Initialize(newUri);
+			Shell.Constructor_Helper();
+			return Shell;
 		}//TODO: Start using this safe Constructor more
 
 	}
