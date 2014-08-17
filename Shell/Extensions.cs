@@ -327,7 +327,7 @@ namespace BExplorer.Shell {
 		/// <returns></returns>
 		[Obsolete("Replaced with ShellItem.ToShellParsingName")]
 		public static String ToShellParsingName(this String path) {
-			if (path.IndexOf("::") == 0 && !path.StartsWith(@"\\")) {
+			if (path.StartsWith("::") && !path.StartsWith(@"\\")) {
 				return String.Format("shell:{0}", path);
 			}
 			else if (!path.EndsWith(Path.DirectorySeparatorChar.ToString())) {
@@ -526,7 +526,7 @@ namespace BExplorer.Shell {
 		[DllImport("shell32.dll", CharSet = CharSet.None)]
 		public static extern int ILGetSize(IntPtr pidl);
 
-		public static void Clear(this ConcurrentBag<Tuple<int, PROPERTYKEY, object>> bag){
+		public static void Clear(this ConcurrentBag<Tuple<int, PROPERTYKEY, object>> bag) {
 			Tuple<int, PROPERTYKEY, object> tmp = null;
 			while (!bag.IsEmpty) {
 				bag.TryTake(out tmp);
