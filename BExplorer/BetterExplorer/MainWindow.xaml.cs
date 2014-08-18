@@ -2128,11 +2128,19 @@ namespace BetterExplorer {
 				}
 				//this.Activate(true);
 
+				if (!File.Exists("Settings.xml")) return;
+				var Settings = XElement.Load("Settings.xml");
+
+				var Data = bcbc.DropDownItems;
+				if (Settings.Element("DropDownItems") != null) {
+					foreach (var item in Settings.Element("DropDownItems").Elements()) {
+						bcbc.DropDownItems.Add(item.Value);
+					}
+				}
 			}
 			catch (Exception exe) {
 				MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
-
 		}
 
 		void _keyjumpTimer_Tick(object sender, EventArgs e) {
@@ -2206,7 +2214,6 @@ namespace BetterExplorer {
 		}
 
 		private void RibbonWindow_Closing(object sender, CancelEventArgs e) {
-
 			//if (this.OwnedWindows.OfType<BExplorer.Shell.FileOperationDialog>().Count() > 0) {
 			if (this.OwnedWindows.OfType<BExplorer.Shell.FileOperationDialog>().Any()) {
 				if (MessageBox.Show("Are you sure you want to cancel all running file operation tasks?", "", MessageBoxButton.YesNo) == MessageBoxResult.No) {
@@ -2231,7 +2238,23 @@ namespace BetterExplorer {
 			this.WindowState = System.Windows.WindowState.Minimized;
 			this.Visibility = System.Windows.Visibility.Hidden;
 
+			if (!File.Exists("Settings.xml")) {
+				new XElement("Settings").Save("Settings.xml");
+			}
+			var Data = bcbc.DropDownItems;
 
+			var Settings = XElement.Load("Settings.xml");
+			if (Settings.Element("DropDownItems") == null)
+				Settings.Add(new XElement("DropDownItems"));
+			else
+				Settings.Element("DropDownItems").RemoveAll();
+
+
+			foreach (var item in bcbc.DropDownItems.OfType<string>().Reverse().Take(15)) {
+				Settings.Element("DropDownItems").Add(new XElement("Item", item));
+			}
+
+			Settings.Save("Settings.xml");
 		}
 
 		#endregion
