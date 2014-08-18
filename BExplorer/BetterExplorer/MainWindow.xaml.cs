@@ -2148,66 +2148,67 @@ namespace BetterExplorer {
 		private void SaveSettings(String openedTabs) {
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-			rks.SetValue(@"LastWindowWidth", this.Width);
-			rks.SetValue(@"LastWindowHeight", this.Height);
-			rks.SetValue(@"LastWindowPosLeft", this.Left);
-			rks.SetValue(@"LastWindowPosTop", this.Top);
+			rks.SetValue("LastWindowWidth", this.Width);
+			rks.SetValue("LastWindowHeight", this.Height);
+			rks.SetValue("LastWindowPosLeft", this.Left);
+			rks.SetValue("LastWindowPosTop", this.Top);
 			if (btnBlue.IsChecked == true) {
-				rks.SetValue(@"CurrentTheme", "Blue");
+				rks.SetValue("CurrentTheme", "Blue");
 			}
 			else if (btnSilver.IsChecked == true) {
-				rks.SetValue(@"CurrentTheme", "Silver");
+				rks.SetValue("CurrentTheme", "Silver");
 			}
 			else if (btnBlack.IsChecked == true) {
-				rks.SetValue(@"CurrentTheme", "Black");
+				rks.SetValue("CurrentTheme", "Black");
 			}
 			else if (btnGreen.IsChecked == true) {
-				rks.SetValue(@"CurrentTheme", "Green");
+				rks.SetValue("CurrentTheme", "Green");
 			}
 			switch (this.WindowState) {
 				case System.Windows.WindowState.Maximized:
-					rks.SetValue(@"LastWindowState", 2);
+					rks.SetValue("LastWindowState", 2);
 					break;
 				case System.Windows.WindowState.Minimized:
-					rks.SetValue(@"LastWindowState", 1);
+					rks.SetValue("LastWindowState", 1);
 					break;
 				case System.Windows.WindowState.Normal:
-					rks.SetValue(@"LastWindowState", 0);
+					rks.SetValue("LastWindowState", 0);
 					break;
 				default:
-					rks.SetValue(@"LastWindowState", -1);
+					rks.SetValue("LastWindowState", -1);
 					break;
 			}
 
-			rks.SetValue(@"IsRibonMinimized", TheRibbon.IsMinimized);
-			rks.SetValue(@"OpenedTabs", openedTabs);
-			rks.SetValue(@"RTLMode", FlowDirection == System.Windows.FlowDirection.RightToLeft ? "true" : "false");
-			rks.SetValue(@"AutoSwitchFolderTools", Convert.ToInt32(asFolder));
-			rks.SetValue(@"AutoSwitchArchiveTools", Convert.ToInt32(asArchive));
-			rks.SetValue(@"AutoSwitchImageTools", Convert.ToInt32(asImage));
-			rks.SetValue(@"AutoSwitchApplicationTools", Convert.ToInt32(asApplication));
-			rks.SetValue(@"AutoSwitchLibraryTools", Convert.ToInt32(asLibrary));
-			rks.SetValue(@"AutoSwitchDriveTools", Convert.ToInt32(asDrive));
-			rks.SetValue(@"AutoSwitchVirtualDriveTools", Convert.ToInt32(asVirtualDrive));
-			//rks.SetValue(@"IsLastTabCloseApp", Convert.ToInt32(this.IsCloseLastTabCloseApp));
-			rks.SetValue(@"IsLastTabCloseApp", Convert.ToInt32(chkIsLastTabCloseApp.IsChecked.Value));
+			rks.SetValue("IsRibonMinimized", TheRibbon.IsMinimized);
+			rks.SetValue("OpenedTabs", openedTabs);
+			rks.SetValue("RTLMode", FlowDirection == System.Windows.FlowDirection.RightToLeft ? "true" : "false");
+			rks.SetValue("AutoSwitchFolderTools", Convert.ToInt32(asFolder));
+			rks.SetValue("AutoSwitchArchiveTools", Convert.ToInt32(asArchive));
+			rks.SetValue("AutoSwitchImageTools", Convert.ToInt32(asImage));
+			rks.SetValue("AutoSwitchApplicationTools", Convert.ToInt32(asApplication));
+			rks.SetValue("AutoSwitchLibraryTools", Convert.ToInt32(asLibrary));
+			rks.SetValue("AutoSwitchDriveTools", Convert.ToInt32(asDrive));
+			rks.SetValue("AutoSwitchVirtualDriveTools", Convert.ToInt32(asVirtualDrive));
+			//rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(this.IsCloseLastTabCloseApp));
+			rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(chkIsLastTabCloseApp.IsChecked.Value));
 
-			rks.SetValue(@"IsConsoleShown", this.IsConsoleShown ? 1 : 0);
-			rks.SetValue(@"TabBarAlignment", this.TabbaBottom.IsChecked == true ? "bottom" : "top");
+			rks.SetValue("IsConsoleShown", this.IsConsoleShown ? 1 : 0);
+			rks.SetValue("TabBarAlignment", this.TabbaBottom.IsChecked == true ? "bottom" : "top");
 
 			if (this.IsPreviewPaneEnabled)
-				rks.SetValue(@"PreviewPaneWidth", (int)clPreview.ActualWidth, RegistryValueKind.DWord);
+				rks.SetValue("PreviewPaneWidth", (int)clPreview.ActualWidth, RegistryValueKind.DWord);
 			if (this.IsInfoPaneEnabled)
-				rks.SetValue(@"InfoPaneHeight", (int)rPreviewPane.ActualHeight, RegistryValueKind.DWord);
+				rks.SetValue("InfoPaneHeight", (int)rPreviewPane.ActualHeight, RegistryValueKind.DWord);
 			if (this.IsConsoleShown)
-				rks.SetValue(@"CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
+				rks.SetValue("CmdWinHeight", rCommandPrompt.ActualHeight, RegistryValueKind.DWord);
 
 			rks.Close();
 		}
 
 		private void RibbonWindow_Closing(object sender, CancelEventArgs e) {
 
-			if (this.OwnedWindows.OfType<BExplorer.Shell.FileOperationDialog>().Count() > 0) {
+			//if (this.OwnedWindows.OfType<BExplorer.Shell.FileOperationDialog>().Count() > 0) {
+			if (this.OwnedWindows.OfType<BExplorer.Shell.FileOperationDialog>().Any()) {
 				if (MessageBox.Show("Are you sure you want to cancel all running file operation tasks?", "", MessageBoxButton.YesNo) == MessageBoxResult.No) {
 					e.Cancel = true;
 					return;
@@ -2225,12 +2226,12 @@ namespace BetterExplorer {
 			this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
 			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", this.bcbc.DropDownItems.OfType<String>().Select(s => s).ToList());
 			AddToLog("Session Ended");
-			//if (!App.isStartNewWindows) {
 			e.Cancel = true;
 			App.isStartMinimized = true;
 			this.WindowState = System.Windows.WindowState.Minimized;
 			this.Visibility = System.Windows.Visibility.Hidden;
-			//}
+
+
 		}
 
 		#endregion
