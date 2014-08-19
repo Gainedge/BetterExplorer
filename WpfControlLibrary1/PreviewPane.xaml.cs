@@ -43,7 +43,8 @@ namespace BetterExplorerControls {
 		private void Setup_PreviewPane() {
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				if (SelectedItem != null) {
-					if (Browser.SelectedItems.Count == 0) return;
+					if (!Browser.SelectedItems.Any()) return;
+					if (this.SelectedItem.IsFolder) return;
 
 					this.SelectedItem.Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
 					this.SelectedItem.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;

@@ -4814,7 +4814,8 @@ namespace BetterExplorer {
 			this.Editor.Visibility = System.Windows.Visibility.Visible;
 			this.Editor.IsOpen = true;
 			this.txtEditor.Focus();
-			if (this.chkExtensions.IsChecked.Value) {
+
+			if (this.chkExtensions.IsChecked.Value & this.txtEditor.Text.Contains(".")) {
 				var lastIndexOfDot = this.txtEditor.Text.LastIndexOf(".");
 				this.txtEditor.SelectionStart = 0;
 				this.txtEditor.SelectionLength = lastIndexOfDot;
