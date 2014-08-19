@@ -2231,7 +2231,7 @@ namespace BetterExplorer {
 				SaveSettings(OpenedTabs);
 			}
 			this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
-			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", this.bcbc.DropDownItems.OfType<String>().Select(s => s).ToList());
+			//SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", this.bcbc.DropDownItems.OfType<String>().Select(s => s).ToList());
 			AddToLog("Session Ended");
 			e.Cancel = true;
 			App.isStartMinimized = true;
@@ -3810,7 +3810,7 @@ namespace BetterExplorer {
 			if (!backstage.IsOpen)
 				ShellListView.Focus();
 		}
-
+		/*
 		private void SaveHistoryToFile(string relativepath, List<String> history) {
 			// Write each entry to a file. (the "false" parameter makes sure the file is overwritten.)
 			using (StreamWriter sw = new StreamWriter(relativepath, false, Encoding.UTF8)) {
@@ -3821,7 +3821,7 @@ namespace BetterExplorer {
 			}
 
 		}
-
+		*/
 
 		void bbi_Drop(object sender, DragEventArgs e) {
 			var pt = e.GetPosition(sender as IInputElement);
@@ -5189,7 +5189,7 @@ namespace BetterExplorer {
 		}
 
 		private void RibbonWindow_StateChanged(object sender, EventArgs e) {
-			if (this.WindowState != System.Windows.WindowState.Minimized && this.IsActive == true) {
+			if (this.WindowState != System.Windows.WindowState.Minimized && this.IsActive) {
 				focusTimer.Interval = 500;
 				focusTimer.Tick += focusTimer_Tick;
 				focusTimer.Start();
@@ -5273,9 +5273,9 @@ namespace BetterExplorer {
 		*/
 
 		private void NavigationController(ShellItem Destination) {
-			if (Destination != this.ShellListView.CurrentFolder) {
+			if (Destination != this.ShellListView.CurrentFolder) 
 				this.ShellListView.Navigate_Full(Destination, true);
-			}
+			
 			if (this.ShellListView.CurrentFolder != null)
 				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 		}
