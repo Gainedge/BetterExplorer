@@ -3871,7 +3871,7 @@ namespace BExplorer.Shell {
 		}
 		*/
 
-		public HResult SetFolderIcon(string wszPath, string wszExpandedIconPath, int iIcon) {
+		public void SetFolderIcon(string wszPath, string wszExpandedIconPath, int iIcon) {
 			HResult hr;
 
 			Shell32.LPSHFOLDERCUSTOMSETTINGS fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS();
@@ -3898,7 +3898,7 @@ namespace BExplorer.Shell {
 			Items[this.GetFirstSelectedItemIndex()] = new ShellItem(wszPath);
 			//this.UpdateItem(this.SelectedIndexes[0]);
 			this.RefreshItem(this.SelectedIndexes[0]);
-			return hr;
+			//return hr;
 		}
 
 		public HResult ClearFolderIcon(string wszPath) {

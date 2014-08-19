@@ -291,8 +291,8 @@ namespace BExplorer.Shell.Interop {
 
 
 	public class User32 {
-		public static readonly string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
-		public static readonly string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\StartMenu\\";//Changed \\Start Menu
+		private const string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
+		private const string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\StartMenu\\";
 		public static bool IsPinnedToTaskbar(string executablePath) {
 			var Test = Directory.GetFiles(string.Format(UserPinnedTaskbarItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk");
 			return Test.Any(pinnedShortcut => new ShellLink(pinnedShortcut).Target == executablePath);
@@ -320,10 +320,10 @@ namespace BExplorer.Shell.Interop {
 			dynamic verbs = link.Verbs();
 			for (int i = 0; i < verbs.Count(); i++) {
 				dynamic verb = verbs.Item(i);
-				string verbName = verb.Name.Replace(@"&", string.Empty).ToLower();
+				string verbName = verb.Name.Replace("&", string.Empty).ToLower();
 
-				if ((pin && verbName.Equals(LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5386, "pin to taskbar").Replace(@"&", string.Empty).ToLower()))
-				|| (!pin && verbName.Equals(LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5387, "unpin from taskbar").Replace(@"&", string.Empty).ToLower()))
+				if ((pin && verbName.Equals(LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5386, "pin to taskbar").Replace("&", string.Empty).ToLower()))
+				|| (!pin && verbName.Equals(LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5387, "unpin from taskbar").Replace("&", string.Empty).ToLower()))
 				) {
 					verb.DoIt();
 				}
@@ -377,7 +377,7 @@ namespace BExplorer.Shell.Interop {
 			dynamic verbs = link.Verbs();
 			for (int i = 0; i < verbs.Count(); i++) {
 				dynamic verb = verbs.Item(i);
-				string verbName = verb.Name.Replace(@"&", string.Empty).ToLower();
+				string verbName = verb.Name.Replace("&", string.Empty).ToLower();
 
 				if ((pin && verbName.Equals("pin to start menu")) || (!pin && verbName.Equals("unpin from start menu"))) {
 					verb.DoIt();
