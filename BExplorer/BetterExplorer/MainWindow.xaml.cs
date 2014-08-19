@@ -2128,11 +2128,19 @@ namespace BetterExplorer {
 				}
 				//this.Activate(true);
 
+				if (!File.Exists("Settings.xml")) return;
+				var Settings = XElement.Load("Settings.xml");
+
+				var Data = bcbc.DropDownItems;
+				if (Settings.Element("DropDownItems") != null) {
+					foreach (var item in Settings.Element("DropDownItems").Elements()) {
+						bcbc.DropDownItems.Add(item.Value);
+					}
+				}
 			}
 			catch (Exception exe) {
 				MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
-
 		}
 
 		void _keyjumpTimer_Tick(object sender, EventArgs e) {
@@ -2206,7 +2214,6 @@ namespace BetterExplorer {
 		}
 
 		private void RibbonWindow_Closing(object sender, CancelEventArgs e) {
-
 			//if (this.OwnedWindows.OfType<BExplorer.Shell.FileOperationDialog>().Count() > 0) {
 			if (this.OwnedWindows.OfType<BExplorer.Shell.FileOperationDialog>().Any()) {
 				if (MessageBox.Show("Are you sure you want to cancel all running file operation tasks?", "", MessageBoxButton.YesNo) == MessageBoxResult.No) {
@@ -2224,14 +2231,30 @@ namespace BetterExplorer {
 				SaveSettings(OpenedTabs);
 			}
 			this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
-			SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", this.bcbc.DropDownItems.OfType<String>().Select(s => s).ToList());
+			//SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", this.bcbc.DropDownItems.OfType<String>().Select(s => s).ToList());
 			AddToLog("Session Ended");
 			e.Cancel = true;
 			App.isStartMinimized = true;
 			this.WindowState = System.Windows.WindowState.Minimized;
 			this.Visibility = System.Windows.Visibility.Hidden;
 
+			if (!File.Exists("Settings.xml")) {
+				new XElement("Settings").Save("Settings.xml");
+			}
+			var Data = bcbc.DropDownItems;
 
+			var Settings = XElement.Load("Settings.xml");
+			if (Settings.Element("DropDownItems") == null)
+				Settings.Add(new XElement("DropDownItems"));
+			else
+				Settings.Element("DropDownItems").RemoveAll();
+
+
+			foreach (var item in bcbc.DropDownItems.OfType<string>().Reverse().Take(15)) {
+				Settings.Element("DropDownItems").Add(new XElement("Item", item));
+			}
+
+			Settings.Save("Settings.xml");
 		}
 
 		#endregion
@@ -3787,7 +3810,7 @@ namespace BetterExplorer {
 			if (!backstage.IsOpen)
 				ShellListView.Focus();
 		}
-
+		/*
 		private void SaveHistoryToFile(string relativepath, List<String> history) {
 			// Write each entry to a file. (the "false" parameter makes sure the file is overwritten.)
 			using (StreamWriter sw = new StreamWriter(relativepath, false, Encoding.UTF8)) {
@@ -3798,7 +3821,7 @@ namespace BetterExplorer {
 			}
 
 		}
-
+		*/
 
 		void bbi_Drop(object sender, DragEventArgs e) {
 			var pt = e.GetPosition(sender as IInputElement);
@@ -5166,7 +5189,7 @@ namespace BetterExplorer {
 		}
 
 		private void RibbonWindow_StateChanged(object sender, EventArgs e) {
-			if (this.WindowState != System.Windows.WindowState.Minimized && this.IsActive == true) {
+			if (this.WindowState != System.Windows.WindowState.Minimized && this.IsActive) {
 				focusTimer.Interval = 500;
 				focusTimer.Tick += focusTimer_Tick;
 				focusTimer.Start();
@@ -5250,9 +5273,9 @@ namespace BetterExplorer {
 		*/
 
 		private void NavigationController(ShellItem Destination) {
-			if (Destination != this.ShellListView.CurrentFolder) {
+			if (Destination != this.ShellListView.CurrentFolder) 
 				this.ShellListView.Navigate_Full(Destination, true);
-			}
+			
 			if (this.ShellListView.CurrentFolder != null)
 				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 		}
