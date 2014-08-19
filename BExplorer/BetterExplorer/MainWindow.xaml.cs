@@ -4792,11 +4792,13 @@ namespace BetterExplorer {
 
 		#region ShellListView
 
+		[Obsolete("try to move this into ShellViewEx")]
 		void ShellListView_EndItemLabelEdit(object sender, EventArgs e) {
 			this.Editor.Visibility = System.Windows.Visibility.Collapsed;
 			this.Editor.IsOpen = false;
 		}
-
+		
+		[Obsolete("try to move this into ShellViewEx")]
 		void ShellListView_BeginItemLabelEdit(object sender, RenameEventArgs e) {
 			var isSmall = this.ShellListView.IconSize == 16;
 			var itemRect = this.ShellListView.GetItemBounds(e.ItemIndex, 0);
