@@ -1408,7 +1408,7 @@
 								Icon="Images\open16.png"
 								IsEnabled="False"
 								Ribbon:KeyTip.Keys="O"
-								Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small" DropDownOpened="btnOpenWith_DropDownOpened"/>
+								Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small" />
 					<Ribbon:Button x:Name="btnEdit"
 						 Click="btnEdit_Click"
 						 Header="{DynamicResource btnEditCP}"

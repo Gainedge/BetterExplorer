@@ -5178,16 +5178,6 @@ namespace BetterExplorer {
 
 		#endregion
 
-		private void btnOpenWith_DropDownOpened(object sender, EventArgs e) {
-			//this.ShellListView.GetFirstSelectedItem().GetAssocList();
-			//ShellContextMenu mnu = new ShellContextMenu(this.ShellListView, this.ShellListView.GetFirstSelectedItem(), 1);
-			//var controlPos = btnNewItem.TransformToAncestor(Application.Current.MainWindow)
-			//								.Transform(new System.Windows.Point(0, 0));
-			//var tempPoint = PointToScreen(new System.Windows.Point(controlPos.X, controlPos.Y));
-			//mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnOpenWith.ActualHeight), 1);
-			//btnOpenWith.IsDropDownOpen = false;
-		}
-
 		private void RibbonWindow_StateChanged(object sender, EventArgs e) {
 			if (this.WindowState != System.Windows.WindowState.Minimized && this.IsActive) {
 				focusTimer.Interval = 500;
