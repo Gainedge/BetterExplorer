@@ -1416,15 +1416,6 @@ namespace BetterExplorer {
 
 		private void btnPinToStart_Click(object sender, RoutedEventArgs e) {
 			User32.PinUnpinToStartMenu(ShellListView.GetFirstSelectedItem().ParsingName);
-			//if (ShellListView.GetSelectedItemsCount() == 1)
-			//{
-			//    ShellLink link = new ShellLink();
-			//    link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
-			//    link.Target =  ShellListView.GetFirstSelectedItem().ParsingName;
-			//    link.Save(KnownFolders.StartMenu.ParsingName + @"\" +
-			//         ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY) + ".lnk");
-			//    link.Dispose();
-			//}
 		}
 
 		private void btnRunAs_Click(object sender, RoutedEventArgs e) {

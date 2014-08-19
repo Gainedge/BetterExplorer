@@ -294,12 +294,8 @@ namespace BExplorer.Shell.Interop {
 		public static readonly string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
 		public static readonly string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\StartMenu\\";//Changed \\Start Menu
 		public static bool IsPinnedToTaskbar(string executablePath) {
-			foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedTaskbarItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk")) {
-				if (new ShellLink(pinnedShortcut).Target == executablePath)
-					return true;
-			}
-
-			return false;
+			var Test = Directory.GetFiles(string.Format(UserPinnedTaskbarItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk");
+			return Test.Any(pinnedShortcut => new ShellLink(pinnedShortcut).Target == executablePath);
 		}
 
 		public static bool IsPinnedToStartMenu(string executablePath) {
@@ -307,14 +303,34 @@ namespace BExplorer.Shell.Interop {
 			return Test.Any(pinnedShortcut => new ShellLink(pinnedShortcut).Target == executablePath);
 		}
 		public static void PinUnpinToTaskbar(string filePath) {
-			PinUnpinTaskbar(filePath, !IsPinnedToTaskbar(filePath));
+			//PinUnpinTaskbar(filePath, !IsPinnedToTaskbar(filePath));
+			var pin = IsPinnedToTaskbar(filePath);
+
+			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
+
+			// create the shell application object
+			dynamic shellApplication = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"));
+
+			string path = Path.GetDirectoryName(filePath);
+			string fileName = Path.GetFileName(filePath);
+
+			dynamic directory = shellApplication.NameSpace(path);
+			dynamic link = directory.ParseName(fileName);
+
+			dynamic verbs = link.Verbs();
+			for (int i = 0; i < verbs.Count(); i++) {
+				dynamic verb = verbs.Item(i);
+				string verbName = verb.Name.Replace(@"&", string.Empty).ToLower();
+
+				if ((pin && verbName.Equals(LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5386, "pin to taskbar").Replace(@"&", string.Empty).ToLower()))
+				|| (!pin && verbName.Equals(LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5387, "unpin from taskbar").Replace(@"&", string.Empty).ToLower()))
+				) {
+					verb.DoIt();
+				}
+			}
 		}
 
 		/*
-		public static void UnpinFromTaskbar(string filePath) {
-			PinUnpinTaskbar(filePath, false);
-		}
-		*/
 		private static void PinUnpinTaskbar(string filePath, bool pin) {
 			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
 
@@ -341,9 +357,34 @@ namespace BExplorer.Shell.Interop {
 
 			shellApplication = null;
 		}
+		*/
 
 		public static void PinUnpinToStartMenu(string filePath) {
-			PinUnpinStartMenu(filePath, !IsPinnedToStartMenu(filePath));
+			//PinUnpinStartMenu(filePath, !IsPinnedToStartMenu(filePath));
+			var pin = IsPinnedToStartMenu(filePath);
+
+			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
+
+			// create the shell application object
+			dynamic shellApplication = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"));
+
+			string path = Path.GetDirectoryName(filePath);
+			string fileName = Path.GetFileName(filePath);
+
+			dynamic directory = shellApplication.NameSpace(path);
+			dynamic link = directory.ParseName(fileName);
+
+			dynamic verbs = link.Verbs();
+			for (int i = 0; i < verbs.Count(); i++) {
+				dynamic verb = verbs.Item(i);
+				string verbName = verb.Name.Replace(@"&", string.Empty).ToLower();
+
+				if ((pin && verbName.Equals("pin to start menu")) || (!pin && verbName.Equals("unpin from start menu"))) {
+					verb.DoIt();
+				}
+			}
+
+			shellApplication = null;
 		}
 
 		/*
@@ -351,7 +392,7 @@ namespace BExplorer.Shell.Interop {
 			PinUnpinStartMenu(filePath, false);
 		}
 		*/
-
+		/*
 		private static void PinUnpinStartMenu(string filePath, bool pin) {
 			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
 
@@ -376,6 +417,7 @@ namespace BExplorer.Shell.Interop {
 
 			shellApplication = null;
 		}
+		*/
 
 		public enum OsVersionInfo {
 			Unknown,
