@@ -4175,34 +4175,34 @@ namespace BetterExplorer {
 			var rb = KnownFolders.RecycleBin;
 			int count = rb.Count(); //TODO: Find out if we can remove [count]
 
-			if (rb.Count() == 0) {
-				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
-												 (ThreadStart)(() => {
-													 miEmptyRB.Visibility = System.Windows.Visibility.Collapsed;
-													 miRestoreALLRB.Visibility = System.Windows.Visibility.Collapsed;
-													 miRestoreRBItems.Visibility = System.Windows.Visibility.Collapsed;
-													 btnRecycleBin.LargeIcon = @"..\Images\RecycleBinEmpty32.png";
-													 btnRecycleBin.Icon = @"..\Images\RecycleBinEmpty16.png";
-													 lblRBItems.Text = "0 Items";
-													 lblRBItems.Visibility = System.Windows.Visibility.Collapsed;
-													 lblRBSize.Text = "0 bytes";
-													 lblRBSize.Visibility = System.Windows.Visibility.Collapsed;
-												 }));
-			}
-			else {
+			if (rb.Any()) {
 				var size = (long)rb.Where(c => c.IsFolder == false || !String.IsNullOrEmpty(Path.GetExtension(c.ParsingName))).Sum(c => c.GetPropertyValue(SystemProperties.FileSize, typeof(long)).IsNullOrEmpty ? 0 : (long)Convert.ToDouble(c.GetPropertyValue(SystemProperties.FileSize, typeof(long)).Value));
 				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
 												 (ThreadStart)(() => {
-													 miRestoreALLRB.Visibility = System.Windows.Visibility.Visible;
-													 miEmptyRB.Visibility = System.Windows.Visibility.Visible;
+													 miRestoreALLRB.Visibility = Visibility.Visible;
+													 miEmptyRB.Visibility = Visibility.Visible;
 													 btnRecycleBin.LargeIcon = @"..\Images\RecycleBinFull32.png";
 													 btnRecycleBin.Icon = @"..\Images\RecycleBinFull16.png";
 													 btnRecycleBin.UpdateLayout();
-													 lblRBItems.Visibility = System.Windows.Visibility.Visible;
+													 lblRBItems.Visibility = Visibility.Visible;
 													 lblRBItems.Text = String.Format("{0} Items", count);
 													 lblRBSize.Text = ShlWapi.StrFormatByteSize(size);
-													 lblRBSize.Visibility = System.Windows.Visibility.Visible;
+													 lblRBSize.Visibility = Visibility.Visible;
 												 }));
+			}
+			else {
+				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
+								 (ThreadStart)(() => {
+									 miEmptyRB.Visibility = Visibility.Collapsed;
+									 miRestoreALLRB.Visibility = Visibility.Collapsed;
+									 miRestoreRBItems.Visibility = Visibility.Collapsed;
+									 btnRecycleBin.LargeIcon = @"..\Images\RecycleBinEmpty32.png";
+									 btnRecycleBin.Icon = @"..\Images\RecycleBinEmpty16.png";
+									 lblRBItems.Text = "0 Items";
+									 lblRBItems.Visibility = Visibility.Collapsed;
+									 lblRBSize.Text = "0 bytes";
+									 lblRBSize.Visibility = Visibility.Collapsed;
+								 }));
 			}
 		}
 
@@ -4797,7 +4797,7 @@ namespace BetterExplorer {
 			this.Editor.Visibility = System.Windows.Visibility.Collapsed;
 			this.Editor.IsOpen = false;
 		}
-		
+
 		[Obsolete("try to move this into ShellViewEx")]
 		void ShellListView_BeginItemLabelEdit(object sender, RenameEventArgs e) {
 			var isSmall = this.ShellListView.IconSize == 16;
