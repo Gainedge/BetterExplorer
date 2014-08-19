@@ -408,7 +408,7 @@ namespace BExplorer.Shell
 
 		public List<ShellItem> Items { get; private set; }
 
-		public Dictionary<ShellItem, int> ItemsHashed { get; private set; }
+		public Dictionary<ShellItem, int> ItemsHashed { get; set; }
 
 		public int LastSortedColumnIndex { get; private set; }
 
@@ -1645,6 +1645,7 @@ namespace BExplorer.Shell
 						}
 					}
 				}
+				ItemForRename = -1;
 			}
 			this.IsFocusAllowed = true;
 			//	this._Editor.Text = String.Empty;
@@ -1846,36 +1847,6 @@ namespace BExplorer.Shell
 
 							if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT)
 							{
-								if (currentItem.IsFileSystem && (currentItem.Parent != null && currentItem.Parent.ParsingName != KnownFolders.Computer.ParsingName))
-								{
-									IShellItem2 com2 = (IShellItem2)currentItem.ComInterface;
-									Guid guidIP = new Guid(InterfaceGuids.IPropertyStore);
-									IPropertyStore propStored = null;
-									com2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guidIP, out propStored);
-									PROPERTYKEY pkd = SystemProperties.FileType;
-									PropVariant pvard = new PropVariant();
-									if (propStored == null || (propStored != null && propStored.GetValue(ref pkd, pvard) != HResult.S_OK) || pvard.Value == null || String.IsNullOrEmpty(pvard.Value.ToString()))
-									{
-										ShellItem theItem = Items.SingleOrDefault(s => s.GetHashCode() == currentItem.GetHashCode());
-										if (theItem != null)
-										{
-											Items.Remove(theItem);
-											if (this.IsGroupsEnabled)
-											{
-												this.SetGroupOrder(false);
-											}
-											this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
-
-											if (this.ItemUpdated != null)
-												this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, currentItem, null, -1));
-										}
-									}
-									if (propStored != null)
-									{
-										Marshal.ReleaseComObject(propStored);
-									}
-									pvard.Dispose();
-								}
 								if (nmlv.item.iSubItem == 0)
 								{
 									nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (!String.IsNullOrEmpty(NewName) ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
@@ -3187,7 +3158,9 @@ namespace BExplorer.Shell
 			var handle = this.Handle;
 			var thread = new Thread(() =>
 			{
-				IIFileOperation fo = new IIFileOperation(handle, isRecycling);
+				FOperationProgressSink sink = new FOperationProgressSink(this);
+				IIFileOperation fo = new IIFileOperation(sink, handle, isRecycling);
+				fo.OnOperationComplete += fo_OnOperationComplete;
 				foreach (var item in this.SelectedItems.Select(s => s.ComInterface).ToArray())
 				{
 					fo.DeleteItem(item);
@@ -3196,6 +3169,23 @@ namespace BExplorer.Shell
 			});
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
+		}
+
+		void fo_OnOperationComplete(object sender, OperationEventArgs e) {
+			var obj = new ShellItem(e.Item);
+			if (!String.IsNullOrEmpty(obj.ParsingName)) {
+				ShellItem theItem = this.Items.SingleOrDefault(s => s.GetHashCode() == obj.GetHashCode());
+				if (theItem != null) {
+					this.Items.Remove(theItem);
+					if (this.IsGroupsEnabled) {
+						this.SetGroupOrder(false);
+					}
+					this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+
+					if (this.ItemUpdated != null)
+						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
+				}
+			}
 		}
 
 		public void RenameShellItem(IShellItem item, String newName)

@@ -17,7 +17,7 @@ namespace BExplorer.Shell {
 		private static readonly Guid CLSID_FileOperation = new Guid("3ad05575-8857-4850-9277-11b85bdb8e09");
 		private static readonly Type _fileOperationType = Type.GetTypeFromCLSID(CLSID_FileOperation);
 		private static Guid _shellItemGuid = typeof(IShellItem).GUID;
-
+		public event EventHandler<OperationEventArgs> OnOperationComplete;
 
 		private bool _disposed;
 		private IFileOperation _fileOperation;
@@ -31,6 +31,9 @@ namespace BExplorer.Shell {
 		public IIFileOperation(FileOperationProgressSink callbackSink, Boolean isRecycle) : this(callbackSink, IntPtr.Zero, isRecycle) { }
 		public IIFileOperation(FileOperationProgressSink callbackSink, IntPtr owner, Boolean isRecycle) {
 			_callbackSink = callbackSink;
+			if (_callbackSink != null) {
+				_callbackSink.OnOperationComplete += _callbackSink_OnOperationComplete;
+			}
 			_fileOperation = (IFileOperation)Activator.CreateInstance(_fileOperationType);
 			//_fileOperation.SetProgressDialog(null);
 			if (isRecycle)
@@ -39,6 +42,10 @@ namespace BExplorer.Shell {
 				_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR);
 			if (_callbackSink != null) _sinkCookie = _fileOperation.Advise(_callbackSink);
 			if (owner != IntPtr.Zero) _fileOperation.SetOwnerWindow((uint)owner);
+		}
+
+		void _callbackSink_OnOperationComplete(object sender, OperationEventArgs e) {
+			if (this.OnOperationComplete != null) this.OnOperationComplete.Invoke(this, e);
 		}
 
 		[Obsolete("Not Used", true)]

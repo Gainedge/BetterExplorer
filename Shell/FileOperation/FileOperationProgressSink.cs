@@ -9,8 +9,16 @@ using System.Threading.Tasks;
 
 namespace BExplorer.Shell
 {
+	public class OperationEventArgs : EventArgs{
+		public IShellItem Item {get; private set;}
+
+		public OperationEventArgs(IShellItem item){
+			this.Item = item;
+		}
+	}
 	public class FileOperationProgressSink : IFileOperationProgressSink
 	{
+		public event EventHandler<OperationEventArgs> OnOperationComplete;
 		public virtual void StartOperations()
 		{
 			TraceAction("StartOperations", "", 0);
@@ -75,9 +83,10 @@ namespace BExplorer.Shell
 				uint dwFlags, IShellItem psiItem,
 				uint hrDelete, IShellItem psiNewlyCreated)
 		{
-			var item = new ShellItem(psiItem);
-			Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_DELETE, Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, item.Pidl, IntPtr.Zero);
-			item.Dispose();
+			if (OnOperationComplete != null) this.OnOperationComplete.Invoke(this, new OperationEventArgs(psiItem));
+			//var item = new ShellItem(psiItem);
+			//Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_DELETE, Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, item.Pidl, IntPtr.Zero);
+			//item.Dispose();
 			TraceAction("PostDeleteItem", psiItem, hrDelete);
 		}
 
