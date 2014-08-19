@@ -20,6 +20,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Linq;
 
 #pragma warning disable 1591
 
@@ -291,30 +292,20 @@ namespace BExplorer.Shell.Interop {
 
 	public class User32 {
 		public static readonly string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
-		//public static readonly string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\Start Menu\\";
+		public static readonly string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\StartMenu\\";//Changed \\Start Menu
 		public static bool IsPinnedToTaskbar(string executablePath) {
 			foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedTaskbarItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk")) {
-
-				var shortcut = new ShellLink(pinnedShortcut);
-				if (shortcut.Target == executablePath)
+				if (new ShellLink(pinnedShortcut).Target == executablePath)
 					return true;
 			}
 
 			return false;
 		}
 
-		/*
 		public static bool IsPinnedToStartMenu(string executablePath) {
-			foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedStartMenuItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk")) {
-
-				//               var shortcut = new ShellLinkClass.ShellLink(pinnedShortcut);
-				//              if (shortcut.Target == executablePath)
-				//                 return true;
-			}
-
-			return false;
+			var Test = Directory.GetFiles(string.Format(UserPinnedStartMenuItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk");
+			return Test.Any(pinnedShortcut => new ShellLink(pinnedShortcut).Target == executablePath);
 		}
-		*/
 		public static void PinUnpinToTaskbar(string filePath) {
 			PinUnpinTaskbar(filePath, !IsPinnedToTaskbar(filePath));
 		}
@@ -352,7 +343,7 @@ namespace BExplorer.Shell.Interop {
 		}
 
 		public static void PinUnpinToStartMenu(string filePath) {
-			PinUnpinStartMenu(filePath, !IsPinnedToTaskbar(filePath));
+			PinUnpinStartMenu(filePath, !IsPinnedToStartMenu(filePath));
 		}
 
 		/*
@@ -378,9 +369,7 @@ namespace BExplorer.Shell.Interop {
 				dynamic verb = verbs.Item(i);
 				string verbName = verb.Name.Replace(@"&", string.Empty).ToLower();
 
-				if ((pin && verbName.Equals("pin to start menu"))
-				|| (!pin && verbName.Equals("unpin from start menu"))
-				) {
+				if ((pin && verbName.Equals("pin to start menu")) || (!pin && verbName.Equals("unpin from start menu"))) {
 					verb.DoIt();
 				}
 			}
@@ -552,7 +541,7 @@ namespace BExplorer.Shell.Interop {
 
 		[DllImport("user32.dll")]
 		public extern static int SendMessage(IntPtr hwnd, uint msg, int count,
-		[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I4), In, Out]int[]orderArray);
+		[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I4), In, Out]int[] orderArray);
 
 		[DllImport("user32.dll")]
 		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,

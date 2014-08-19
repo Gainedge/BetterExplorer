@@ -65,7 +65,7 @@
 					PopupActivation="DoubleClick"
 					ToolTipText="Better Explorer (A better filemanager for windows)"
 					TrayMouseDoubleClick="beNotifyIcon_TrayMouseDoubleClick"
-					Visibility="Visible" Grid.ColumnSpan="2">
+					Visibility="Visible" Grid.ColumnSpan="2" d:IsHidden="True">
 
 			<ni:TaskbarIcon.ContextMenu>
 				<ContextMenu>
@@ -1165,7 +1165,7 @@
 							Header="{DynamicResource tbHomeCP}"
 							Indent="7"
 							ReduceOrder="Clipboard,Organize,Open,Tabs,Select,Select,Select,Organize,Open,Organize,Clipboard,Tabs,Open,Tabs"
-							Ribbon:KeyTip.Keys="H">
+							Ribbon:KeyTip.Keys="H" d:IsHidden="True">
 				<Ribbon:RibbonGroupBox x:Name="Clipboard" Header="{DynamicResource tgClipboardCP}">
 					<Ribbon:Button x:Name="btnCopy"
 						 CanAddToQuickAccessToolBar="True"
@@ -1632,7 +1632,7 @@
 							Indent="7"
 							ReduceOrder="Network,Network,Compress,Compress,Compress,Network"
 							Ribbon:KeyTip.Keys="S"
-							Visibility="Visible">
+							Visibility="Visible" d:IsHidden="True">
 				<Ribbon:RibbonGroupBox x:Name="Compress"
 								 Header="{DynamicResource tgCompressCP}"
 								 Ribbon:KeyTip.Keys="C">
@@ -1705,7 +1705,7 @@
 							Header="{DynamicResource tbViewCP}"
 							Indent="7"
 							ReduceOrder="CurrentView,CurrentView,ShowHide,Layout,Layout,Layout,Panes,Panes,ShowHide,ShowHide,CurrentView,Panes"
-							Ribbon:KeyTip.Keys="V">
+							Ribbon:KeyTip.Keys="V" d:IsHidden="True">
 				<Ribbon:RibbonGroupBox x:Name="Panes"
 								 Header="{DynamicResource tbPanesCP}"
 								 Ribbon:KeyTip.Keys="P">
@@ -2010,7 +2010,7 @@
 											Mode=OneWay}"
 							Header="{DynamicResource tbManageCP}"
 							ReduceOrder="ManageLibrary,ManageLibrary,ManageLibrary"
-							Ribbon:KeyTip.Keys="L">
+							Ribbon:KeyTip.Keys="L" d:IsHidden="True">
 				<Ribbon:RibbonGroupBox x:Name="ManageLibrary"
 								 Header="{DynamicResource tgLibraryCP}"
 								 IsLauncherVisible="False"
@@ -2095,7 +2095,7 @@
 			<Ribbon:RibbonTabItem Group="{Binding ElementName=ctgDrive,
 											Mode=OneWay}"
 							Header="{DynamicResource tabDriveCP}"
-							Ribbon:KeyTip.Keys="D">
+							Ribbon:KeyTip.Keys="D" d:IsHidden="True">
 				<Ribbon:RibbonGroupBox Header="{DynamicResource tbManageCP}"
 								 IsLauncherVisible="False"
 								 Ribbon:KeyTip.Keys="M">
@@ -2178,8 +2178,8 @@
 								Ribbon:KeyTip.Keys="P"
 								Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large">
 						<Ribbon:MenuItem x:Name="btnPinToStart"
-							 Click="btnPinToStart_Click"
-							 Header="Pin to Start" />
+							Click="btnPinToStart_Click"
+							Header="Pin to Start" />
 					</Ribbon:SplitButton>
 					<Separator />
 					<Ribbon:Button x:Name="btnRunAsAdmin"
@@ -2202,7 +2202,7 @@
 			<Ribbon:RibbonTabItem Group="{Binding ElementName=ctgVirtualDisk,
 											Mode=OneWay}"
 							Header="{DynamicResource tbManageCP}"
-							Ribbon:KeyTip.Keys="V">
+							Ribbon:KeyTip.Keys="V" d:IsHidden="True">
 				<Ribbon:RibbonGroupBox Header="">
 					<Ribbon:Button x:Name="btnAdvMountIso"
 						 Click="btnAdvMountIso_Click"
@@ -2230,7 +2230,7 @@
 											Mode=OneWay}"
 							Header="{DynamicResource tbManageCP}"
 							ReduceOrder="imgView,imgView,imgView,imgEdit"
-							Ribbon:KeyTip.Keys="I">
+							Ribbon:KeyTip.Keys="I" d:IsHidden="True">
 				<Ribbon:RibbonGroupBox x:Name="imgEdit"
 								 Header="{DynamicResource tgImgEditCP}"
 								 IsLauncherVisible="False"
@@ -2408,7 +2408,7 @@
 											Mode=OneWay}"
 							Header="{DynamicResource tbManageCP}"
 							ReduceOrder="grpExtract,grpManArchive,grpExtract,grpManArchive,grpManArchive"
-							Ribbon:KeyTip.Keys="A">
+							Ribbon:KeyTip.Keys="A" d:IsHidden="True">
 				<Ribbon:RibbonGroupBox x:Name="grpExtract"
 								 Header="{DynamicResource tgExtractCP}"
 								 IsLauncherEnabled="False"
@@ -2534,7 +2534,7 @@
 			<Ribbon:RibbonTabItem Group="{Binding ElementName=ctgFolderTools,
 											Mode=OneWay}"
 							Header="{DynamicResource tbManageCP}"
-							Ribbon:KeyTip.Keys="M">
+							Ribbon:KeyTip.Keys="M" d:IsHidden="True">
 				<Ribbon:RibbonGroupBox Header="{DynamicResource tgFolderIconCP}"
 								 IsLauncherVisible="False"
 								 Ribbon:KeyTip.Keys="I">
@@ -2568,7 +2568,7 @@
 											Mode=OneWay}"
 							Header="{DynamicResource tabSearchCP}"
 							ReduceOrder="tsgKind,tsgKind,tsgOther,tsgOther,tsgKind,tsgOther"
-							Ribbon:KeyTip.Keys="S">
+							Ribbon:KeyTip.Keys="S" d:IsHidden="True">
 				<!--
 			<Ribbon:RibbonGroupBox Header="Modifiers" IsLauncherVisible="False" Name="tsgModifiers">
 			<Ribbon:ToggleButton Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle" Header="AND" Tag="AND" GroupName="b1" Visibility="Collapsed"/>
@@ -2799,7 +2799,7 @@
 			HorizontalAlignment="Left"
 			VerticalAlignment="Top"
 			Click="btnUpLevel_Click"
-			ToolTip="{DynamicResource txtLevelUp}">
+			ToolTip="{DynamicResource txtLevelUp}" d:IsHidden="True">
 			<Button.Template>
 				<ControlTemplate TargetType="{x:Type Button}">
 					<Grid>
@@ -2846,7 +2846,7 @@
 			Height="30"
 			Margin="10,3,0,0"
 			HorizontalAlignment="Left"
-			VerticalAlignment="Top">
+			VerticalAlignment="Top" d:IsHidden="True">
 
 			<Grid.Background>
 				<ImageBrush x:Name="Normal" ImageSource="/BetterExplorer;component/Images/back.png" />
@@ -2994,7 +2994,7 @@
 			Grid.Row="1"
 			Height="24"
 			Margin="118,6,5,0"
-			VerticalAlignment="Top" Grid.ColumnSpan="2">
+			VerticalAlignment="Top" Grid.ColumnSpan="2" d:IsHidden="True">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition x:Name="breadcrumbBarColumn"
 							Width="484*"
@@ -3045,7 +3045,7 @@
 						 AllowsTransparency="True"
 						 Placement="Center"
 						 Width="{Binding ElementName=ShellViewHost, Path=ActualWidth}"
-						 Height="{Binding ElementName=ShellViewHost, Path=ActualHeight}" Margin="312,0,211.761,0">
+						 Height="{Binding ElementName=ShellViewHost, Path=ActualHeight}" Margin="312,0,211.761,0" d:IsHidden="True">
 			<Grid Grid.Row="1" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center" >
 				<Border Height="Auto" Width="Auto" Opacity="0.5" CornerRadius="5" VerticalAlignment="Center" HorizontalAlignment="Center" Background="White" BorderBrush="Black" BorderThickness="2">
 					<TextBlock FontSize="20" Margin="3,1,3,1" x:Name="txtKeyJump" Text="" Foreground="Black" />
@@ -3058,7 +3058,7 @@
 						 ParentWindow="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
 						 IsOpen="False"
 						 Placement="AbsolutePoint"
-						 AllowsTransparency="True" PopupAnimation="Fade">
+						 AllowsTransparency="True" PopupAnimation="Fade" d:IsHidden="True">
 			<Grid Grid.Row="1" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
 				<TextBox x:Name="txtEditor" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" TextChanged="txtEditor_TextChanged" AllowDrop="False" IsTabStop="False"/>
 			</Grid>
@@ -3069,9 +3069,9 @@
 				 Grid.Row="2"
 				 Grid.ColumnSpan="2"
 				 Height="1"
-				 Fill="Gray" />
-		<tabcontrol:TabControl x:Name="tcMain" Grid.Row="3" Grid.ColumnSpan="2" Panel.ZIndex="99" TabItemMinWidth="100" TabItemMaxWidth="300" TabItemMinHeight="20" TabItemMaxHeight="25" Height="25" SelectionChanged="tcMain_SelectionChanged"/>
-		<Grid Grid.Row="4" Background="White" Grid.ColumnSpan="2">
+				 Fill="Gray" d:IsHidden="True" />
+		<tabcontrol:TabControl x:Name="tcMain" Grid.Row="3" Grid.ColumnSpan="2" Panel.ZIndex="99" TabItemMinWidth="100" TabItemMaxWidth="300" TabItemMinHeight="20" TabItemMaxHeight="25" Height="25" SelectionChanged="tcMain_SelectionChanged" d:IsHidden="True"/>
+		<Grid Grid.Row="4" Background="White" Grid.ColumnSpan="2" d:IsHidden="True">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
 				<ColumnDefinition x:Name="clPreviewSplitter" Width="2" />
@@ -3122,9 +3122,9 @@
 
 		<GridSplitter Grid.Row="5"
 					Height="2"
-					HorizontalAlignment="Stretch" Grid.ColumnSpan="2" />
+					HorizontalAlignment="Stretch" Grid.ColumnSpan="2" d:IsHidden="True" />
 
-		<Grid Grid.Row="6" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Background="White">
+		<Grid Grid.Row="6" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Background="White" d:IsHidden="True">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*"/>

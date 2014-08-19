@@ -1031,15 +1031,6 @@ namespace BetterExplorer {
 
 
 		private void btnProperties_Click(object sender, RoutedEventArgs e) {
-			/*
-			if (ShellListView.SelectedItems.Count() > 0) {
-				ShellListView.ShowFileProperties();
-			}
-			else {
-				ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
-			}
-			*/
-			//We must have a file selected!
 			ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
 			ShellListView.Focus();
 		}
@@ -1232,8 +1223,7 @@ namespace BetterExplorer {
 															.Where(w => {
 																var root = Path.GetPathRoot(w.ShellObject.ParsingName);
 																return root != null && (w.ShellObject.IsFileSystem &&
-																																				root.ToLowerInvariant() ==
-																																				String.Format("{0}:\\", DriveLetter).ToLowerInvariant());
+																						root.ToLowerInvariant() == String.Format("{0}:\\", DriveLetter).ToLowerInvariant());
 															}).ToArray();
 													foreach (Wpf.Controls.TabItem tab in tabsForRemove) {
 														CloseTab(tab, false);
@@ -5263,9 +5253,9 @@ namespace BetterExplorer {
 		*/
 
 		private void NavigationController(ShellItem Destination) {
-			if (Destination != this.ShellListView.CurrentFolder) 
+			if (Destination != this.ShellListView.CurrentFolder)
 				this.ShellListView.Navigate_Full(Destination, true);
-			
+
 			if (this.ShellListView.CurrentFolder != null)
 				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 		}
