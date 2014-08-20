@@ -284,7 +284,8 @@ namespace BExplorer.Shell {
 		public List<ListViewGroupEx> Groups = new List<ListViewGroupEx>();
 		public ShellNotifications Notifications = new ShellNotifications();
 
-		public String NewName { get; set; }
+		[Obsolete("Convert this into a method", false)]
+		public String NewName { private get; set; }
 
 		public int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
 
@@ -1485,6 +1486,12 @@ namespace BExplorer.Shell {
 			labelBounds.Left = mode;
 			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
+		}
+
+
+		public void Test_ChangeName(string NewName) {
+			//this.NewName = NewName;
+			//EndLabelEdit();
 		}
 
 		private void BeginLabelEdit(int itemIndex) {

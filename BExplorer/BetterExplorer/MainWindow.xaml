@@ -3060,7 +3060,7 @@
 						 Placement="AbsolutePoint"
 						 AllowsTransparency="True" PopupAnimation="Fade">
 			<Grid Grid.Row="1" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
-				<TextBox x:Name="txtEditor" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" TextChanged="txtEditor_TextChanged" AllowDrop="False" IsTabStop="False"/>
+				<TextBox x:Name="txtEditor" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" AllowDrop="False" IsTabStop="False" />
 			</Grid>
 		</controls:AirspacePopup>
 

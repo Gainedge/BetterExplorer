@@ -2811,7 +2811,7 @@ namespace BetterExplorer {
 		}
 		*/
 
-	
+
 
 		#endregion
 
@@ -4172,7 +4172,7 @@ namespace BetterExplorer {
 
 		public void UpdateRecycleBinInfos() {
 			var rb = KnownFolders.RecycleBin;
-			int count = rb.Count(); 
+			int count = rb.Count();
 			//TODO: Find out if we can remove the Dispatcher.BeginInvoke(...)
 
 			if (rb.Any()) {
@@ -4795,6 +4795,9 @@ namespace BetterExplorer {
 		void ShellListView_EndItemLabelEdit(object sender, EventArgs e) {
 			this.Editor.Visibility = System.Windows.Visibility.Collapsed;
 			this.Editor.IsOpen = false;
+
+			this.ShellListView.NewName = this.txtEditor.Text;
+			//ShellListView.Test_ChangeName(this.txtEditor.Text);
 		}
 
 		[Obsolete("try to move this into ShellViewEx")]
@@ -4825,6 +4828,7 @@ namespace BetterExplorer {
 				this.txtEditor.SelectAll();
 			}
 		}
+
 
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
@@ -5162,10 +5166,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void txtEditor_TextChanged(object sender, TextChangedEventArgs e) {
-			this.ShellListView.NewName = this.txtEditor.Text;
-		}
-
 		private void Editor_Closed(object sender, EventArgs e) {
 			this.ShellListView.Focus();
 			var index = this.ShellListView.ItemForRename;
@@ -5249,5 +5249,7 @@ namespace BetterExplorer {
 			if (this.ShellListView.CurrentFolder != null)
 				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 		}
+
+
 	}
 }
