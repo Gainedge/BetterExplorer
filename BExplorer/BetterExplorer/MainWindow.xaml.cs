@@ -5168,20 +5168,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void Editor_Closed(object sender, EventArgs e) {
-			this.ShellListView.Focus();
-
-			/*
-			var index = this.ShellListView.ItemForRename;
-			this.ShellListView.ItemForRename = -1;
-			this.ShellListView.UpdateItem(index);
-			*/
-
-			//FocusManager.SetIsFocusScope(this, true);
-			//MessageBox.Show(FocusManager.GetFocusedElement(this).ToString());
-		}
-
-
 		/*
 		private void pop_items(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			bcbc.pop_items(e.Item);

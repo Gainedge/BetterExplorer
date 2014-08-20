@@ -292,6 +292,8 @@ namespace BExplorer.Shell {
 
 		[Obsolete("Try to remove this!!")]
 		private int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
+		private bool ItemForRealName_IsAny { get { return ItemForRename != -1; } }
+
 
 		public bool IsRenameNeeded { get; set; }
 
@@ -739,7 +741,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void ShellView_KeyDown(object sender, KeyEventArgs e) {
-			if (this.ItemForRename != -1) {
+			if (ItemForRealName_IsAny) {
 				if (e.KeyCode == Keys.Escape) {
 					this.EndLabelEdit(true);
 				}
@@ -1498,7 +1500,7 @@ namespace BExplorer.Shell {
 			//EndLabelEdit();
 
 
-			if (ItemForRename != -1 && this.Items != null && this.Items.Count >= ItemForRename) {
+			if (ItemForRealName_IsAny && this.Items != null && this.Items.Count >= ItemForRename) {
 				var item = this.Items[ItemForRename];
 				if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
 					RenameShellItem(item.ComInterface, NewName);
@@ -1939,7 +1941,10 @@ namespace BExplorer.Shell {
 						case WNM.LVN_ITEMACTIVATE:
 							if (this.ToolTip != null && this.ToolTip.IsVisible)
 								this.ToolTip.HideTooltip();
-							if (this.ItemForRename == -1) {
+							if (ItemForRealName_IsAny) {
+								this.EndLabelEdit();
+							}
+							else {
 								var iac = new NMITEMACTIVATE();
 								iac = (NMITEMACTIVATE)m.GetLParam(iac.GetType());
 								try {
@@ -1964,9 +1969,7 @@ namespace BExplorer.Shell {
 								catch (Exception) {
 								}
 							}
-							else {
-								this.EndLabelEdit();
-							}
+
 							break;
 
 						case WNM.LVN_BEGINSCROLL:
@@ -2033,7 +2036,7 @@ namespace BExplorer.Shell {
 
 							NMLISTVIEW nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 							if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE) {
-								if (this.ItemForRename != -1 && nlv.iItem != -1 && nlv.iItem != this.ItemForRename)
+								if (ItemForRealName_IsAny && nlv.iItem != -1 && nlv.iItem != this.ItemForRename)
 									this.EndLabelEdit();
 
 								ToolTip.HideTooltip();
@@ -2079,7 +2082,7 @@ namespace BExplorer.Shell {
 							if (KeyDown != null) {
 								KeyDown(this, new KeyEventArgs(key));
 							}
-							if (this.ItemForRename == -1) {
+							if (!ItemForRealName_IsAny) {
 								switch (nkd.wVKey) {
 									case (short)Keys.F2:
 										RenameSelectedItem();
