@@ -1492,6 +1492,18 @@ namespace BExplorer.Shell {
 		public void Test_ChangeName(string NewName) {
 			//this.NewName = NewName;
 			//EndLabelEdit();
+
+
+			if (ItemForRename != -1 && this.Items != null && this.Items.Count >= ItemForRename) {
+				var item = this.Items[ItemForRename];
+				if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
+					RenameShellItem(item.ComInterface, NewName);
+					NewName = String.Empty;
+					this.RedrawWindow();
+				}
+				ItemForRename = -1;
+			}
+			this.IsFocusAllowed = true;
 		}
 
 		private void BeginLabelEdit(int itemIndex) {
@@ -1529,10 +1541,7 @@ namespace BExplorer.Shell {
 			if (this.EndItemLabelEdit != null) {
 				this.EndItemLabelEdit.Invoke(this, EventArgs.Empty);
 			}
-			//if (this._Editor.Visible)
-			//{
-			//this._Editor.Visible = false;
-			//this._Editor.Hide();
+			/*
 			if (ItemForRename != -1 && this.Items != null && this.Items.Count >= ItemForRename) {
 				var item = this.Items[ItemForRename];
 				if (!String.IsNullOrEmpty(NewName)) {
@@ -1547,8 +1556,7 @@ namespace BExplorer.Shell {
 				ItemForRename = -1;
 			}
 			this.IsFocusAllowed = true;
-			//	this._Editor.Text = String.Empty;
-			//}
+			*/
 		}
 
 		protected override void WndProc(ref Message m) {

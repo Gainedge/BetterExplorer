@@ -1585,7 +1585,7 @@ namespace BetterExplorer {
 			this.ShellListView.Navigating += ShellListView_Navigating;
 			this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 			this.ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
-			this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
+			this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit; //ShellListView_EndItemLabelEdit;
 		}
 
 		protected override void OnSourceInitialized(EventArgs e) {
@@ -4796,8 +4796,9 @@ namespace BetterExplorer {
 			this.Editor.Visibility = System.Windows.Visibility.Collapsed;
 			this.Editor.IsOpen = false;
 
-			this.ShellListView.NewName = this.txtEditor.Text;
-			//ShellListView.Test_ChangeName(this.txtEditor.Text);
+
+			//this.ShellListView.NewName = this.txtEditor.Text;
+			ShellListView.Test_ChangeName(this.txtEditor.Text);
 		}
 
 		[Obsolete("try to move this into ShellViewEx")]
