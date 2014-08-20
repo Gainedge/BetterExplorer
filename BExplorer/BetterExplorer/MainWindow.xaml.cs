@@ -851,13 +851,14 @@ namespace BetterExplorer {
 
 			int winhandle = (int)User32.getWindowId(null, "BetterExplorerOperations");
 
-			List<ShellItem> items = new List<ShellItem>();
+			List<ShellItem> items = new List<ShellItem>(DropList.OfType<string>().Select(o => new ShellItem(o)));
+			/*
 			foreach (string item in DropList) {
 				ShellItem o = new ShellItem(item);
 				items.Add(o);
 				AddToLog(String.Format(@"Created Symbolic Link at {0}\\{1} linked to {2}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY), o.ParsingName));
 			}
-
+			*/
 			string sources = PathStringCombiner.CombinePaths(items, ";", true);
 			string drops = PathStringCombiner.CombinePathsWithSinglePath(PathForDrop + @"\", items, false);
 
