@@ -1408,7 +1408,7 @@
 								Icon="Images\open16.png"
 								IsEnabled="False"
 								Ribbon:KeyTip.Keys="O"
-								Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small" DropDownOpened="btnOpenWith_DropDownOpened"/>
+								Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Small" />
 					<Ribbon:Button x:Name="btnEdit"
 						 Click="btnEdit_Click"
 						 Header="{DynamicResource btnEditCP}"
@@ -2178,8 +2178,8 @@
 								Ribbon:KeyTip.Keys="P"
 								Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large">
 						<Ribbon:MenuItem x:Name="btnPinToStart"
-							 Click="btnPinToStart_Click"
-							 Header="Pin to Start" />
+							Click="btnPinToStart_Click"
+							Header="Pin to Start" />
 					</Ribbon:SplitButton>
 					<Separator />
 					<Ribbon:Button x:Name="btnRunAsAdmin"

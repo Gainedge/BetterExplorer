@@ -20,6 +20,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Linq;
 
 #pragma warning disable 1591
 
@@ -290,40 +291,46 @@ namespace BExplorer.Shell.Interop {
 
 
 	public class User32 {
-		public static readonly string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
-		//public static readonly string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\Start Menu\\";
+		private const string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
+		private const string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\StartMenu\\";
 		public static bool IsPinnedToTaskbar(string executablePath) {
-			foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedTaskbarItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk")) {
-
-				var shortcut = new ShellLink(pinnedShortcut);
-				if (shortcut.Target == executablePath)
-					return true;
-			}
-
-			return false;
+			var Test = Directory.GetFiles(string.Format(UserPinnedTaskbarItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk");
+			return Test.Any(pinnedShortcut => new ShellLink(pinnedShortcut).Target == executablePath);
 		}
 
-		/*
 		public static bool IsPinnedToStartMenu(string executablePath) {
-			foreach (string pinnedShortcut in Directory.GetFiles(string.Format(UserPinnedStartMenuItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk")) {
-
-				//               var shortcut = new ShellLinkClass.ShellLink(pinnedShortcut);
-				//              if (shortcut.Target == executablePath)
-				//                 return true;
-			}
-
-			return false;
+			var Test = Directory.GetFiles(string.Format(UserPinnedStartMenuItemsPath, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)), "*.lnk");
+			return Test.Any(pinnedShortcut => new ShellLink(pinnedShortcut).Target == executablePath);
 		}
-		*/
 		public static void PinUnpinToTaskbar(string filePath) {
-			PinUnpinTaskbar(filePath, !IsPinnedToTaskbar(filePath));
+			//PinUnpinTaskbar(filePath, !IsPinnedToTaskbar(filePath));
+			var pin = IsPinnedToTaskbar(filePath);
+
+			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
+
+			// create the shell application object
+			dynamic shellApplication = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"));
+
+			string path = Path.GetDirectoryName(filePath);
+			string fileName = Path.GetFileName(filePath);
+
+			dynamic directory = shellApplication.NameSpace(path);
+			dynamic link = directory.ParseName(fileName);
+
+			dynamic verbs = link.Verbs();
+			for (int i = 0; i < verbs.Count(); i++) {
+				dynamic verb = verbs.Item(i);
+				string verbName = verb.Name.Replace("&", string.Empty).ToLower();
+
+				if ((pin && verbName.Equals(LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5386, "pin to taskbar").Replace("&", string.Empty).ToLower()))
+				|| (!pin && verbName.Equals(LoadResourceString(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll"), 5387, "unpin from taskbar").Replace("&", string.Empty).ToLower()))
+				) {
+					verb.DoIt();
+				}
+			}
 		}
 
 		/*
-		public static void UnpinFromTaskbar(string filePath) {
-			PinUnpinTaskbar(filePath, false);
-		}
-		*/
 		private static void PinUnpinTaskbar(string filePath, bool pin) {
 			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
 
@@ -350,9 +357,34 @@ namespace BExplorer.Shell.Interop {
 
 			shellApplication = null;
 		}
+		*/
 
 		public static void PinUnpinToStartMenu(string filePath) {
-			PinUnpinStartMenu(filePath, !IsPinnedToTaskbar(filePath));
+			//PinUnpinStartMenu(filePath, !IsPinnedToStartMenu(filePath));
+			var pin = IsPinnedToStartMenu(filePath);
+
+			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
+
+			// create the shell application object
+			dynamic shellApplication = Activator.CreateInstance(Type.GetTypeFromProgID("Shell.Application"));
+
+			string path = Path.GetDirectoryName(filePath);
+			string fileName = Path.GetFileName(filePath);
+
+			dynamic directory = shellApplication.NameSpace(path);
+			dynamic link = directory.ParseName(fileName);
+
+			dynamic verbs = link.Verbs();
+			for (int i = 0; i < verbs.Count(); i++) {
+				dynamic verb = verbs.Item(i);
+				string verbName = verb.Name.Replace("&", string.Empty).ToLower();
+
+				if ((pin && verbName.Equals("pin to start menu")) || (!pin && verbName.Equals("unpin from start menu"))) {
+					verb.DoIt();
+				}
+			}
+
+			shellApplication = null;
 		}
 
 		/*
@@ -360,7 +392,7 @@ namespace BExplorer.Shell.Interop {
 			PinUnpinStartMenu(filePath, false);
 		}
 		*/
-
+		/*
 		private static void PinUnpinStartMenu(string filePath, bool pin) {
 			if (!File.Exists(filePath)) throw new FileNotFoundException(filePath);
 
@@ -378,15 +410,14 @@ namespace BExplorer.Shell.Interop {
 				dynamic verb = verbs.Item(i);
 				string verbName = verb.Name.Replace(@"&", string.Empty).ToLower();
 
-				if ((pin && verbName.Equals("pin to start menu"))
-				|| (!pin && verbName.Equals("unpin from start menu"))
-				) {
+				if ((pin && verbName.Equals("pin to start menu")) || (!pin && verbName.Equals("unpin from start menu"))) {
 					verb.DoIt();
 				}
 			}
 
 			shellApplication = null;
 		}
+		*/
 
 		public enum OsVersionInfo {
 			Unknown,
@@ -552,7 +583,7 @@ namespace BExplorer.Shell.Interop {
 
 		[DllImport("user32.dll")]
 		public extern static int SendMessage(IntPtr hwnd, uint msg, int count,
-		[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I4), In, Out]int[]orderArray);
+		[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I4), In, Out]int[] orderArray);
 
 		[DllImport("user32.dll")]
 		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,
