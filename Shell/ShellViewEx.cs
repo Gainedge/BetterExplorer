@@ -284,8 +284,10 @@ namespace BExplorer.Shell {
 		public List<ListViewGroupEx> Groups = new List<ListViewGroupEx>();
 		public ShellNotifications Notifications = new ShellNotifications();
 
+		/*
 		[Obsolete("Convert this into a method", false)]
 		public String NewName { private get; set; }
+		*/
 
 		public int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
 
@@ -1721,7 +1723,8 @@ namespace BExplorer.Shell {
 
 							if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
 								if (nmlv.item.iSubItem == 0) {
-									nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (!String.IsNullOrEmpty(NewName) ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
+									//nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (!String.IsNullOrEmpty(NewName) ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
+									nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
 									Marshal.StructureToPtr(nmlv, m.LParam, false);
 								}
 								else if (isSmallIcons) {
