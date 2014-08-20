@@ -2663,6 +2663,7 @@ namespace BExplorer.Shell {
 
 		private void RedrawItem(int index) {
 			//F.Application.DoEvents();
+			if (index >= Items.Count - 1) return;
 			var sho = Items[index];
 			//F.Application.DoEvents();
 			var itemBounds = new User32.RECT();

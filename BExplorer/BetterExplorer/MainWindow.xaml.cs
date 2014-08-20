@@ -2625,21 +2625,33 @@ namespace BetterExplorer {
 
 		#region Hide items
 
-		[Obsolete("Does Nothing")]
 		private void btnHideSelItems_Click(object sender, RoutedEventArgs e) {
+			foreach (var item in ShellListView.SelectedItems.Where(x => x.IsFolder)) {
+				var di = new DirectoryInfo(item.FileSystemPath);
+				di.Attributes |= System.IO.FileAttributes.Hidden;
+			}
+			foreach (var item in ShellListView.SelectedItems.Where(x => !x.IsFolder & !x.IsNetDrive & !x.IsDrive)) {
+				var di = new FileInfo(item.FileSystemPath);
+				di.Attributes |= System.IO.FileAttributes.Hidden;
+			}
+
+			ShellListView.RefreshContents();
+		}
+
+		[Obsolete("Why do we have this")]
+		private void miHideItems_Click(object sender, RoutedEventArgs e) {
 			//FIXME:
 			//ShellItemCollection SelItems = ShellListView.SelectedItems;
 			//pd = new IProgressDialog(this.Handle);
 			//pd.Title = "Applying attributes";
 			//pd.CancelMessage = "Please wait while the operation is cancelled";
-			//pd.Maximum = (uint)SelItems.Count;
+			//pd.Maximum = 100;
 			//pd.Value = 0;
 			//pd.Line1 = "Applying attributes to:";
 			//pd.Line3 = "Calculating Time Remaining...";
 			//pd.ShowDialog(IProgressDialog.PROGDLG.Normal, IProgressDialog.PROGDLG.AutoTime, IProgressDialog.PROGDLG.NoMinimize);
-			//Thread hthread = new Thread(new ParameterizedThreadStart(DoHideShow));
+			//Thread hthread = new Thread(new ParameterizedThreadStart(DoHideShowWithChilds));
 			//hthread.Start(SelItems);
-
 		}
 
 		//bool IsHidingUserCancel = false;
@@ -2799,21 +2811,7 @@ namespace BetterExplorer {
 		}
 		*/
 
-		[Obsolete("Why do we have this")]
-		private void miHideItems_Click(object sender, RoutedEventArgs e) {
-			//FIXME:
-			//ShellItemCollection SelItems = ShellListView.SelectedItems;
-			//pd = new IProgressDialog(this.Handle);
-			//pd.Title = "Applying attributes";
-			//pd.CancelMessage = "Please wait while the operation is cancelled";
-			//pd.Maximum = 100;
-			//pd.Value = 0;
-			//pd.Line1 = "Applying attributes to:";
-			//pd.Line3 = "Calculating Time Remaining...";
-			//pd.ShowDialog(IProgressDialog.PROGDLG.Normal, IProgressDialog.PROGDLG.AutoTime, IProgressDialog.PROGDLG.NoMinimize);
-			//Thread hthread = new Thread(new ParameterizedThreadStart(DoHideShowWithChilds));
-			//hthread.Start(SelItems);
-		}
+	
 
 		#endregion
 
@@ -4174,36 +4172,37 @@ namespace BetterExplorer {
 
 		public void UpdateRecycleBinInfos() {
 			var rb = KnownFolders.RecycleBin;
-			int count = rb.Count(); //TODO: Find out if we can remove [count]
+			int count = rb.Count(); 
+			//TODO: Find out if we can remove the Dispatcher.BeginInvoke(...)
 
 			if (rb.Any()) {
 				var size = (long)rb.Where(c => c.IsFolder == false || !String.IsNullOrEmpty(Path.GetExtension(c.ParsingName))).Sum(c => c.GetPropertyValue(SystemProperties.FileSize, typeof(long)).IsNullOrEmpty ? 0 : (long)Convert.ToDouble(c.GetPropertyValue(SystemProperties.FileSize, typeof(long)).Value));
 				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
-												 (ThreadStart)(() => {
-													 miRestoreALLRB.Visibility = Visibility.Visible;
-													 miEmptyRB.Visibility = Visibility.Visible;
-													 btnRecycleBin.LargeIcon = @"..\Images\RecycleBinFull32.png";
-													 btnRecycleBin.Icon = @"..\Images\RecycleBinFull16.png";
-													 btnRecycleBin.UpdateLayout();
-													 lblRBItems.Visibility = Visibility.Visible;
-													 lblRBItems.Text = String.Format("{0} Items", count);
-													 lblRBSize.Text = ShlWapi.StrFormatByteSize(size);
-													 lblRBSize.Visibility = Visibility.Visible;
-												 }));
+								(ThreadStart)(() => {
+									miRestoreALLRB.Visibility = Visibility.Visible;
+									miEmptyRB.Visibility = Visibility.Visible;
+									btnRecycleBin.LargeIcon = @"..\Images\RecycleBinFull32.png";
+									btnRecycleBin.Icon = @"..\Images\RecycleBinFull16.png";
+									btnRecycleBin.UpdateLayout();
+									lblRBItems.Visibility = Visibility.Visible;
+									lblRBItems.Text = String.Format("{0} Items", count);
+									lblRBSize.Text = ShlWapi.StrFormatByteSize(size);
+									lblRBSize.Visibility = Visibility.Visible;
+								}));
 			}
 			else {
 				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
-								 (ThreadStart)(() => {
-									 miEmptyRB.Visibility = Visibility.Collapsed;
-									 miRestoreALLRB.Visibility = Visibility.Collapsed;
-									 miRestoreRBItems.Visibility = Visibility.Collapsed;
-									 btnRecycleBin.LargeIcon = @"..\Images\RecycleBinEmpty32.png";
-									 btnRecycleBin.Icon = @"..\Images\RecycleBinEmpty16.png";
-									 lblRBItems.Text = "0 Items";
-									 lblRBItems.Visibility = Visibility.Collapsed;
-									 lblRBSize.Text = "0 bytes";
-									 lblRBSize.Visibility = Visibility.Collapsed;
-								 }));
+								(ThreadStart)(() => {
+									miEmptyRB.Visibility = Visibility.Collapsed;
+									miRestoreALLRB.Visibility = Visibility.Collapsed;
+									miRestoreRBItems.Visibility = Visibility.Collapsed;
+									btnRecycleBin.LargeIcon = @"..\Images\RecycleBinEmpty32.png";
+									btnRecycleBin.Icon = @"..\Images\RecycleBinEmpty16.png";
+									lblRBItems.Text = "0 Items";
+									lblRBItems.Visibility = Visibility.Collapsed;
+									lblRBSize.Text = "0 bytes";
+									lblRBSize.Visibility = Visibility.Collapsed;
+								}));
 			}
 		}
 
@@ -4213,14 +4212,13 @@ namespace BetterExplorer {
 		}
 
 		private void miOpenRB_Click(object sender, RoutedEventArgs e) {
-			//ShellListView.Navigate((ShellItem)KnownFolders.RecycleBin);
 			NavigationController((ShellItem)KnownFolders.RecycleBin);
 		}
 
 		private void miRestoreRBItems_Click(object sender, RoutedEventArgs e) {
 			foreach (ShellItem item in ShellListView.SelectedItems.ToArray()) {
 				//TODO: Fix this
-				//RestoreFromRB(item.Name);
+				RestoreFromRB(item.FileSystemPath);
 			}
 			UpdateRecycleBinInfos();
 		}
