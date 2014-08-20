@@ -244,7 +244,8 @@ namespace BExplorer.Shell {
 
 		public event EventHandler<RenameEventArgs> BeginItemLabelEdit;
 
-		public event EventHandler EndItemLabelEdit;
+		/// <summary>Raised whenever file/folder name is finished editing. Boolean: is event canceled</summary>
+		public event EventHandler<bool> EndItemLabelEdit;
 
 		/// <summary> Raised when the timer finishes for the Key Jump timer. </summary>
 		public event EventHandler KeyJumpTimerDone;
@@ -289,7 +290,8 @@ namespace BExplorer.Shell {
 		public String NewName { private get; set; }
 		*/
 
-		public int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
+		[Obsolete("Try to remove this!!")]
+		private int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
 
 		public bool IsRenameNeeded { get; set; }
 
@@ -1541,7 +1543,7 @@ namespace BExplorer.Shell {
 
 		private void EndLabelEdit(Boolean isCancel = false) {
 			if (this.EndItemLabelEdit != null) {
-				this.EndItemLabelEdit.Invoke(this, EventArgs.Empty);
+				this.EndItemLabelEdit.Invoke(this, !isCancel);
 			}
 			/*
 			if (ItemForRename != -1 && this.Items != null && this.Items.Count >= ItemForRename) {
@@ -1943,24 +1945,15 @@ namespace BExplorer.Shell {
 								try {
 									ShellItem selectedItem = Items[iac.iItem];
 									if (selectedItem.IsFolder) {
-										//this.SaveSettingsToDatabase(this.CurrentFolder);
-										//CurrentFolder = selectedItem;
-										//Navigate(selectedItem, false, true);
-
 										Navigate_Full(selectedItem, true);
 									}
 									else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
 										var shellLink = new ShellLink(selectedItem.ParsingName);
 										var newSho = new ShellItem(shellLink.TargetPIDL);
-										if (newSho.IsFolder) {
-											//this.SaveSettingsToDatabase(this.CurrentFolder);
-											//CurrentFolder = newSho;
-											//Navigate(newSho, false, true);
+										if (newSho.IsFolder)
 											Navigate_Full(newSho, true);
-										}
-										else {
+										else
 											StartProcessInCurrentDirectory(newSho);
-										}
 
 										shellLink.Dispose();
 									}
@@ -2202,8 +2195,10 @@ namespace BExplorer.Shell {
 							break;
 
 						case WNM.NM_KILLFOCUS:
+							/*
 							if (this.ItemForRename != -1)
 								EndLabelEdit();
+							*/
 							if (IsGroupsEnabled)
 								RedrawWindow();
 							if (this.ToolTip != null && this.ToolTip.IsVisible)

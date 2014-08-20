@@ -4792,13 +4792,14 @@ namespace BetterExplorer {
 		#region ShellListView
 
 		[Obsolete("try to move this into ShellViewEx")]
-		void ShellListView_EndItemLabelEdit(object sender, EventArgs e) {
+		void ShellListView_EndItemLabelEdit(object sender, bool e) {
 			this.Editor.Visibility = System.Windows.Visibility.Collapsed;
 			this.Editor.IsOpen = false;
 
 
 			//this.ShellListView.NewName = this.txtEditor.Text;
-			ShellListView.Test_ChangeName(this.txtEditor.Text);
+			if (e)
+				ShellListView.Test_ChangeName(this.txtEditor.Text);
 		}
 
 		[Obsolete("try to move this into ShellViewEx")]
@@ -5169,9 +5170,13 @@ namespace BetterExplorer {
 
 		private void Editor_Closed(object sender, EventArgs e) {
 			this.ShellListView.Focus();
+
+			/*
 			var index = this.ShellListView.ItemForRename;
 			this.ShellListView.ItemForRename = -1;
 			this.ShellListView.UpdateItem(index);
+			*/
+
 			//FocusManager.SetIsFocusScope(this, true);
 			//MessageBox.Show(FocusManager.GetFocusedElement(this).ToString());
 		}
