@@ -15,7 +15,7 @@ namespace BExplorer.Shell.Interop {
 
 		void SetOperationFlags(FileOperationFlags dwOperationFlags);
 		void SetProgressMessage([MarshalAs(UnmanagedType.LPWStr)] string pszMessage);
-		void SetProgressDialog([MarshalAs(UnmanagedType.Interface)] object popd);
+		void SetProgressDialog([MarshalAs(UnmanagedType.Interface)] IOperationsProgressDialog popd);
 		void SetProperties([MarshalAs(UnmanagedType.Interface)] object pproparray);
 		void SetOwnerWindow(uint hwndParent);
 

@@ -35,7 +35,8 @@ namespace BExplorer.Shell {
 				_callbackSink.OnOperationComplete += _callbackSink_OnOperationComplete;
 			}
 			_fileOperation = (IFileOperation)Activator.CreateInstance(_fileOperationType);
-			//_fileOperation.SetProgressDialog(null);
+			//TestDialog dlg = new TestDialog();
+			//_fileOperation.SetProgressDialog(dlg);
 			if (isRecycle)
 				_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_ALLOWUNDO);
 			else

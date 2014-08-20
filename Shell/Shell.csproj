@@ -96,6 +96,8 @@
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
     <Compile Include="FOperationProgressSink.cs" />
+    <Compile Include="Interop\IOperationsProgressDialog.cs" />
+    <Compile Include="Interop\TestDialog.cs" />
     <Compile Include="Interop\Wallpaer.cs" />
     <Compile Include="Reflector.cs" />
     <Compile Include="CommonFileDialogs\FolderSelectDialog.cs" />
