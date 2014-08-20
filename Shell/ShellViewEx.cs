@@ -3179,7 +3179,9 @@ namespace BExplorer.Shell {
 		/// <param name="SaveFolderSettings">Should the folder's settings be saved?</param>
 		/// <param name="isInSameTab"></param>
 		public void Navigate_Full(ShellItem destination, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false) {
-			SaveSettingsToDatabase(this.CurrentFolder);
+			if (SaveFolderSettings) {
+				SaveSettingsToDatabase(this.CurrentFolder);
+			}
 
 			if (destination == null || !destination.IsFolder) return;
 			Navigate(destination, isInSameTab, refresh);
@@ -3190,8 +3192,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="destination">The folder you want to navigate to.</param>
 		/// <param name="isInSameTab"></param>
-		[Obsolete("Try to use Navigate_Full!!")]
-		public void Navigate(ShellItem destination, Boolean isInSameTab = false, bool refresh = false) {
+		private void Navigate(ShellItem destination, Boolean isInSameTab = false, bool refresh = false) {
 			if (!refresh)
 				this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
 
