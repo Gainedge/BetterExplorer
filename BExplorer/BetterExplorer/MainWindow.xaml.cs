@@ -995,22 +995,13 @@ namespace BetterExplorer {
 			this.ShellListView.Focus();
 			string path = "";
 
-			//bool IsLib = false;
 			IsRenameFromCreate = true;
 			if (ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName) {
 				path = ShellListView.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString()).DisplayName;
-				//IsLib = true;
 			}
 			else {
 				path = ShellListView.CreateNewFolder(FindResource("btnNewFolderCP").ToString());
 			}
-
-			//WindowsAPI.SHChangeNotify(WindowsAPI.HChangeNotifyEventID.SHCNE_MKDIR,
-			//WindowsAPI.HChangeNotifyFlags.SHCNF_PATHW | WindowsAPI.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, Marshal.StringToHGlobalAuto(path.Replace(@"\\", @"\")), IntPtr.Zero);
-
-			//IsLibW = IsLib;
-			//IsAfterFolderCreate = true;
-			//this.ShellListView.Focus();
 		}
 
 
