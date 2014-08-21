@@ -993,15 +993,12 @@ namespace BetterExplorer {
 		private void Button_Click_2(object sender, RoutedEventArgs e) {
 			//We should focus the ListView or on some circumstances new folder does not start renaming after folder is created
 			this.ShellListView.Focus();
-			string path = "";
-
 			IsRenameFromCreate = true;
-			if (ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName) {
-				path = ShellListView.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString()).DisplayName;
-			}
-			else {
-				path = ShellListView.CreateNewFolder(FindResource("btnNewFolderCP").ToString());
-			}
+
+			if (ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName)
+				ShellListView.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString()).DisplayName;
+			else
+				ShellListView.CreateNewFolder(FindResource("btnNewFolderCP").ToString());
 		}
 
 
