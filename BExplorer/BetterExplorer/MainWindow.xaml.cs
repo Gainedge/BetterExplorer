@@ -4798,7 +4798,7 @@ namespace BetterExplorer {
 
 
 			//this.ShellListView.NewName = this.txtEditor.Text;
-			ShellListView.Test_ChangeName(this.txtEditor.Text, e);
+			ShellListView.FileNameChangeAttempt(this.txtEditor.Text, e);
 		}
 
 		[Obsolete("try to move this into ShellViewEx")]

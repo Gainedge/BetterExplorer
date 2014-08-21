@@ -1493,7 +1493,7 @@ namespace BExplorer.Shell {
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
 
-		public void Test_ChangeName(string NewName, bool Cancel) {
+		public void FileNameChangeAttempt(string NewName, bool Cancel) {
 			if (ItemForRealName_IsAny && this.Items != null && this.Items.Count >= ItemForRename) {
 				var item = this.Items[ItemForRename];
 				//if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
