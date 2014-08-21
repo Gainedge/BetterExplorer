@@ -3058,8 +3058,7 @@
 						 ParentWindow="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
 						 IsOpen="False"
 						 Placement="AbsolutePoint"
-						 AllowsTransparency="True" PopupAnimation="Fade"
-						 Closed="Editor_Closed">
+						 AllowsTransparency="True" PopupAnimation="Fade">
 			<Grid Grid.Row="1" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
 				<TextBox x:Name="txtEditor" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" AllowDrop="False" IsTabStop="False" />
 			</Grid>

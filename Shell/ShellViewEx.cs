@@ -1919,8 +1919,7 @@ namespace BExplorer.Shell {
 								this.ToolTip.HideTooltip();
 							if (ItemForRealName_IsAny) {
 								this.EndLabelEdit();
-							}
-							else {
+							} else {
 								var iac = new NMITEMACTIVATE();
 								iac = (NMITEMACTIVATE)m.GetLParam(iac.GetType());
 								try {
@@ -1932,22 +1931,14 @@ namespace BExplorer.Shell {
 										var newSho = new ShellItem(shellLink.TargetPIDL);
 										if (newSho.IsFolder)
 											Navigate_Full(newSho, true);
-										}
-										else {
-											StartProcessInCurrentDirectory(newSho);
-
-										shellLink.Dispose();
 									} else {
 										StartProcessInCurrentDirectory(selectedItem);
 									}
 								} catch (Exception) {
 								}
-								catch (Exception) {
-								}
+
 							}
-							else {
-								this.EndLabelEdit();
-							}
+
 							break;
 
 						case WNM.LVN_BEGINSCROLL:
@@ -3133,7 +3124,7 @@ namespace BExplorer.Shell {
 		/// <param name="isInSameTab"></param>
 		public void Navigate_Full(ShellItem destination, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false) {
 			if (SaveFolderSettings) {
-			SaveSettingsToDatabase(this.CurrentFolder);
+				SaveSettingsToDatabase(this.CurrentFolder);
 			}
 
 			if (destination == null || !destination.IsFolder) return;
@@ -3919,7 +3910,7 @@ namespace BExplorer.Shell {
 					}
 				}
 			}
-			//On Exception do nothing (usually it happens on app exit)
+				//On Exception do nothing (usually it happens on app exit)
 			catch { }
 
 			//}
