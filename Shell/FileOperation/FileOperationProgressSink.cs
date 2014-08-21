@@ -18,7 +18,7 @@ namespace BExplorer.Shell
 	}
 	public class FileOperationProgressSink : IFileOperationProgressSink
 	{
-		public event EventHandler<OperationEventArgs> OnOperationComplete;
+
 		public virtual void StartOperations()
 		{
 			TraceAction("StartOperations", "", 0);
@@ -66,7 +66,7 @@ namespace BExplorer.Shell
 		}
 
 		public virtual void PostCopyItem(
-				uint dwFlags, IShellItem psiItem,
+				TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem,
 				IShellItem psiDestinationFolder, string pszNewName,
 				uint hrCopy, IShellItem psiNewlyCreated)
 		{
@@ -80,10 +80,9 @@ namespace BExplorer.Shell
 		}
 
 		public virtual void PostDeleteItem(
-				uint dwFlags, IShellItem psiItem,
+				TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem,
 				uint hrDelete, IShellItem psiNewlyCreated)
 		{
-			if (OnOperationComplete != null) this.OnOperationComplete.Invoke(this, new OperationEventArgs(psiItem));
 			//var item = new ShellItem(psiItem);
 			//Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_DELETE, Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, item.Pidl, IntPtr.Zero);
 			//item.Dispose();
