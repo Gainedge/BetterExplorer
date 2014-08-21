@@ -101,7 +101,7 @@ namespace BetterExplorer {
 		#region Private Members
 		private bool asFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
 		private MenuItem misa, misd, misag, misdg, misng;
-		private bool IsInfoPaneEnabled, IsNavigationPaneEnabled, IsConsoleShown, IsPreviewPaneEnabled;
+		private bool IsInfoPaneEnabled, IsConsoleShown, IsPreviewPaneEnabled;
 		private int PreviewPaneWidth = 120, InfoPaneHeight = 150;
 		private ShellTreeViewEx ShellTree = new ShellTreeViewEx();
 		private ShellView ShellListView = new ShellView();
@@ -1437,6 +1437,7 @@ namespace BetterExplorer {
 			return value ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
 		}
 
+		/*
 		List<DependencyObject> hitTestList = null;
 		HitTestResultBehavior CollectAllVisuals_Callback(HitTestResult result) {
 			if (result == null || result.VisualHit == null)
@@ -1445,6 +1446,7 @@ namespace BetterExplorer {
 			hitTestList.Add(result.VisualHit);
 			return HitTestResultBehavior.Continue;
 		}
+		*/
 
 		private void AddToLog(string value) {
 			try {
@@ -1482,10 +1484,8 @@ namespace BetterExplorer {
 
 		private void CheckBox_Unchecked(object sender, RoutedEventArgs e) {
 			if (isOnLoad) return;
-
 			Utilities.SetRegistryValue("CheckForUpdates", 0);
 			IsUpdateCheck = false;
-
 		}
 
 		private void rbCheckInterval_Click(object sender, RoutedEventArgs e) {
@@ -1524,14 +1524,6 @@ namespace BetterExplorer {
 							item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 							item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 							btnFavorites.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.Thumbnail.BitmapSource, onClick: mif_Click));
-
-							//MenuItem mi = new MenuItem();
-							//mi.Header = item.GetDisplayName(SIGDN.NORMALDISPLAY);
-							//mi.Tag = item;
-							//mi.Focusable = false;
-							//mi.Icon = item.Thumbnail.BitmapSource;
-							//mi.Click += new RoutedEventHandler(mif_Click);
-							//btnFavorites.Items.Add(mi);
 						}
 						catch (Exception) {
 						}
@@ -1557,7 +1549,7 @@ namespace BetterExplorer {
 			this.ShellListView.Navigating += ShellListView_Navigating;
 			this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 			this.ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
-			this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit; //ShellListView_EndItemLabelEdit;
+			this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
 		}
 
 		protected override void OnSourceInitialized(EventArgs e) {
@@ -1569,7 +1561,7 @@ namespace BetterExplorer {
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.CreateSubKey(@"Software\BExplorer");
 
-			switch (Convert.ToString(rks.GetValue(@"CurrentTheme", "Blue"))) {
+			switch (Convert.ToString(rks.GetValue("CurrentTheme", "Blue"))) {
 				case "Blue":
 					btnBlue.IsChecked = true;
 					break;
@@ -1587,9 +1579,9 @@ namespace BetterExplorer {
 					break;
 			}
 
-			LastUpdateCheck = DateTime.FromBinary(Convert.ToInt64(rks.GetValue(@"LastUpdateCheck", 0)));
+			LastUpdateCheck = DateTime.FromBinary(Convert.ToInt64(rks.GetValue("LastUpdateCheck", 0)));
 
-			UpdateCheckInterval = (int)rks.GetValue(@"CheckInterval", 7);
+			UpdateCheckInterval = (int)rks.GetValue("CheckInterval", 7);
 
 			switch (UpdateCheckInterval) {
 				case 1:
@@ -1603,7 +1595,7 @@ namespace BetterExplorer {
 					break;
 			}
 
-			UpdateCheckType = (int)rks.GetValue(@"UpdateCheckType", 1);
+			UpdateCheckType = (int)rks.GetValue("UpdateCheckType", 1);
 
 			switch (UpdateCheckType) {
 				case 0:
@@ -1614,31 +1606,20 @@ namespace BetterExplorer {
 					break;
 			}
 
-
-			int HFlyoutEnabled = (int)rks.GetValue(@"HFlyoutEnabled", 0);
-
-			int UpdateCheck = (int)rks.GetValue(@"CheckForUpdates", 1);
-			IsUpdateCheck = (UpdateCheck == 1);
+			IsUpdateCheck = (int)rks.GetValue("CheckForUpdates", 1) == 1;
 			chkUpdateCheck.IsChecked = IsUpdateCheck;
 
-			int UpdateCheckStartup = (int)rks.GetValue(@"CheckForUpdatesStartup", 1);
-			IsUpdateCheckStartup = (UpdateCheckStartup == 1);
+			IsUpdateCheckStartup = (int)rks.GetValue("CheckForUpdatesStartup", 1) == 1;
 			chkUpdateStartupCheck.IsChecked = IsUpdateCheckStartup;
 
-			int isConsoleShown = (int)rks.GetValue(@"IsConsoleShown", 0);
-			IsConsoleShown = (isConsoleShown == 1);
+			IsConsoleShown = (int)rks.GetValue("IsConsoleShown", 0) == 1;
 			btnConsolePane.IsChecked = this.IsConsoleShown;
+			chkIsFlyout.IsChecked = (int)rks.GetValue("HFlyoutEnabled", 0) == 1;
 
-			//IsHFlyoutEnabled = (HFlyoutEnabled == 1);
-			//chkIsFlyout.IsChecked = IsHFlyoutEnabled;
-			chkIsFlyout.IsChecked = (HFlyoutEnabled == 1);
-
-			int InfoPaneEnabled = (int)rks.GetValue(@"InfoPaneEnabled", 0);
-
-			IsInfoPaneEnabled = (InfoPaneEnabled == 1);
+			IsInfoPaneEnabled = (int)rks.GetValue("InfoPaneEnabled", 0) == 1;
 			btnInfoPane.IsChecked = IsInfoPaneEnabled;
 
-			InfoPaneHeight = (int)rks.GetValue(@"InfoPaneHeight", 150);
+			InfoPaneHeight = (int)rks.GetValue("InfoPaneHeight", 150);
 
 			if (IsInfoPaneEnabled) {
 				rPreviewPane.Height = new GridLength(InfoPaneHeight);
@@ -1649,12 +1630,10 @@ namespace BetterExplorer {
 				rPreviewPaneSplitter.Height = new GridLength(0);
 			}
 
-			int PreviewPaneEnabled = (int)rks.GetValue(@"PreviewPaneEnabled", 0);
-
-			IsPreviewPaneEnabled = (PreviewPaneEnabled == 1);
+			IsPreviewPaneEnabled = (int)rks.GetValue("PreviewPaneEnabled", 0) == 1;
 			btnPreviewPane.IsChecked = IsPreviewPaneEnabled;
 
-			PreviewPaneWidth = (int)rks.GetValue(@"PreviewPaneWidth", 120);
+			PreviewPaneWidth = (int)rks.GetValue("PreviewPaneWidth", 120);
 
 			if (IsPreviewPaneEnabled) {
 				clPreview.Width = new GridLength((double)PreviewPaneWidth);
@@ -1665,34 +1644,11 @@ namespace BetterExplorer {
 				clPreviewSplitter.Width = new GridLength(0);
 			}
 
-			int NavigationPaneEnabled = (int)rks.GetValue(@"NavigationPaneEnabled", 1);
-
-			IsNavigationPaneEnabled = (NavigationPaneEnabled == 1);
-			btnNavigationPane.IsChecked = IsNavigationPaneEnabled;
-
-			//isCheckModeEnabled = ShellListView.ShowCheckboxes;
-			//chkShowCheckBoxes.IsChecked = isCheckModeEnabled;
-
+			btnNavigationPane.IsChecked = (int)rks.GetValue("NavigationPaneEnabled", 1) == 1;
 			chkShowCheckBoxes.IsChecked = ShellListView.ShowCheckboxes;
-
-			int ExFileOpEnabled = (int)rks.GetValue(@"FileOpExEnabled", 0);
-			//IsExtendedFileOpEnabled = (ExFileOpEnabled == 1);
-			//ShellListView.IsExFileOpEnabled = IsExtendedFileOpEnabled;
-			//chkIsTerraCopyEnabled.IsChecked = IsExtendedFileOpEnabled;
-			chkIsTerraCopyEnabled.IsChecked = (ExFileOpEnabled == 1);
-
-			int cfoEnabled = (int)rks.GetValue(@"IsCustomFO", 0);
-			chkIsCFO.IsChecked = cfoEnabled == 1;
-
-			/*
-			int CompartibleRename = (int)rks.GetValue(@"CompartibleRename", 1);
-			IsCompartibleRename = (CompartibleRename == 1);
-			*/
-
-			//chkIsCompartibleRename.IsChecked = IsCompartibleRename;
-
-			int RestoreTabs = (int)rks.GetValue(@"IsRestoreTabs", 1);
-			IsrestoreTabs = (RestoreTabs == 1);
+			chkIsTerraCopyEnabled.IsChecked = (int)rks.GetValue("FileOpExEnabled", 0) == 1;
+			chkIsCFO.IsChecked = (int)rks.GetValue("IsCustomFO", 0) == 1;
+			IsrestoreTabs = (int)rks.GetValue("IsRestoreTabs", 1) == 1;
 
 			chkIsRestoreTabs.IsChecked = IsrestoreTabs;
 
@@ -1701,30 +1657,25 @@ namespace BetterExplorer {
 				IsrestoreTabs = false;
 			}
 
-			int IsLastTabCloseApp = (int)rks.GetValue(@"IsLastTabCloseApp", 1);
-			//IsCloseLastTabCloseApp = (IsLastTabCloseApp == 1);
-			//this.chkIsLastTabCloseApp.IsChecked = IsCloseLastTabCloseApp;
-			this.chkIsLastTabCloseApp.IsChecked = (IsLastTabCloseApp == 1);
+			this.chkIsLastTabCloseApp.IsChecked = (int)rks.GetValue("IsLastTabCloseApp", 1) == 1;
+			bool LogActions = (int)rks.GetValue("EnableActionLog", 0) == 1;
 
-
-			int LogActions = (int)rks.GetValue(@"EnableActionLog", 0);
-
-			canlogactions = (LogActions == 1);
+			canlogactions = LogActions;
 			chkLogHistory.IsChecked = canlogactions;
-			if (LogActions == 1) {
-				chkLogHistory.Visibility = System.Windows.Visibility.Visible;
-				ShowLogsBorder.Visibility = System.Windows.Visibility.Visible;
-				paddinglbl8.Visibility = System.Windows.Visibility.Visible;
+			if (LogActions) {
+				chkLogHistory.Visibility = Visibility.Visible;
+				ShowLogsBorder.Visibility = Visibility.Visible;
+				paddinglbl8.Visibility = Visibility.Visible;
 			}
 
 			// load settings for auto-switch to contextual tab
-			asFolder = ((int)rks.GetValue(@"AutoSwitchFolderTools", 0) == 1);
-			asArchive = ((int)rks.GetValue(@"AutoSwitchArchiveTools", 1) == 1);
-			asImage = ((int)rks.GetValue(@"AutoSwitchImageTools", 1) == 1);
-			asApplication = ((int)rks.GetValue(@"AutoSwitchApplicationTools", 0) == 1);
-			asLibrary = ((int)rks.GetValue(@"AutoSwitchLibraryTools", 1) == 1);
-			asDrive = ((int)rks.GetValue(@"AutoSwitchDriveTools", 1) == 1);
-			asVirtualDrive = ((int)rks.GetValue(@"AutoSwitchVirtualDriveTools", 0) == 1);
+			asFolder = (int)rks.GetValue("AutoSwitchFolderTools", 0) == 1;
+			asArchive = (int)rks.GetValue("AutoSwitchArchiveTools", 1) == 1;
+			asImage = (int)rks.GetValue("AutoSwitchImageTools", 1) == 1;
+			asApplication = (int)rks.GetValue("AutoSwitchApplicationTools", 0) == 1;
+			asLibrary = (int)rks.GetValue("AutoSwitchLibraryTools", 1) == 1;
+			asDrive = (int)rks.GetValue("AutoSwitchDriveTools", 1) == 1;
+			asVirtualDrive = (int)rks.GetValue("AutoSwitchVirtualDriveTools", 0) == 1;
 
 
 			chkFolder.IsChecked = asFolder;
@@ -1736,12 +1687,12 @@ namespace BetterExplorer {
 			chkVirtualTools.IsChecked = asVirtualDrive;
 
 			// load OverwriteOnImages setting (default is false)
-			int oor = (int)rks.GetValue(@"OverwriteImageWhileEditing", 0);
-			OverwriteOnRotate = (oor == 1);
-			chkOverwriteImages.IsChecked = (oor == 1);
+			bool oor = (int)rks.GetValue("OverwriteImageWhileEditing", 0) == 1;
+			OverwriteOnRotate = oor;
+			chkOverwriteImages.IsChecked = oor;
 
 			// load Saved Tabs Directory location (if different from default)
-			string tdir = Convert.ToString(rks.GetValue(@"SavedTabsDirectory", satdir));
+			string tdir = Convert.ToString(rks.GetValue("SavedTabsDirectory", satdir));
 			txtDefSaveTabs.Text = tdir;
 			sstdir = tdir;
 
@@ -1796,9 +1747,8 @@ namespace BetterExplorer {
 			}
 
 			if (App.isStartMinimized) {
-				this.Visibility = System.Windows.Visibility.Hidden;
-				this.WindowState = System.Windows.WindowState.Minimized;
-				//this.ShowInTaskbar = false;
+				this.Visibility = Visibility.Hidden;
+				this.WindowState = WindowState.Minimized;
 			}
 
 			if (!TheRibbon.IsMinimized) {
@@ -1862,17 +1812,10 @@ namespace BetterExplorer {
 				catch {
 				}
 
-				//Set up breadcrumb bar drag/drop functionality
-				//breadcrumbBarControl1.SetDragHandlers(new DragEventHandler(bbi_DragEnter), new DragEventHandler(bbi_DragLeave), new DragEventHandler(bbi_DragOver), new DragEventHandler(bbi_Drop));
-
 				//Set up Favorites Menu
 				Task.Run(() => {
 					SetUpFavoritesMenu();
 				});
-
-				//Set up ListView Color codes 
-				//ShellListView.LVItemsColorCodes = this.LVItemsColor;
-
 
 				//Load the ShellSettings
 				IsCalledFromLoading = true;
@@ -1925,7 +1868,6 @@ namespace BetterExplorer {
 				else {
 					InitializeInitialTabs();
 				}
-				//this.Activate(true);
 
 				if (!File.Exists("Settings.xml")) return;
 				var Settings = XElement.Load("Settings.xml");
