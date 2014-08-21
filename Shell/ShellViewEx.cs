@@ -677,8 +677,7 @@ namespace BExplorer.Shell {
 		#region Events
 
 		private void selectionTimer_Tick(object sender, EventArgs e) {
-			int getFirstSelectedItemIndex = this.GetFirstSelectedItemIndex();
-			if (this.ItemForRename != getFirstSelectedItemIndex)
+			if (this.ItemForRename != this.GetFirstSelectedItemIndex())
 				this.EndLabelEdit();
 			if (MouseButtons != F.MouseButtons.Left) {
 				//RedrawWindow();
@@ -1494,17 +1493,11 @@ namespace BExplorer.Shell {
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
 
-
 		public void Test_ChangeName(string NewName) {
-			//this.NewName = NewName;
-			//EndLabelEdit();
-
-
 			if (ItemForRealName_IsAny && this.Items != null && this.Items.Count >= ItemForRename) {
 				var item = this.Items[ItemForRename];
 				if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
 					RenameShellItem(item.ComInterface, NewName);
-					NewName = String.Empty;
 					this.RedrawWindow();
 				}
 				ItemForRename = -1;
