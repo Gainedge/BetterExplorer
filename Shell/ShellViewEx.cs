@@ -4342,17 +4342,11 @@ namespace BExplorer.Shell {
 		public void FileNameChangeAttempt(string NewName, bool Cancel) {
 			if (ItemForRealName_IsAny && this.Items != null && this.Items.Count >= ItemForRename) {
 				var item = this.Items[ItemForRename];
-				//if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
 				if (!Cancel) {
-					//Note: Just added this in
 					ItemForRename = -1;
-					//Note: Just added this in
-
 					RenameShellItem(item.ComInterface, NewName);
 				}
 				this.RedrawWindow();
-				//}
-				//ItemForRename = -1;
 			}
 			this.IsFocusAllowed = true;
 		}
