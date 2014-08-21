@@ -3560,73 +3560,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		//private void MenuItem_Checked(object sender, RoutedEventArgs e) {
-		//	e.Handled = true;
-		//	bool isThereChecked = false;
-
-		//	//TODO: Test
-		//	foreach (var item in ((sender as MenuItem).Parent as SplitButton).Items.OfType<MenuItem>()) {
-		//		if (item.IsChecked) {
-		//			isThereChecked = true;
-		//			break;
-		//		}
-		//	}
-
-		//	/*
-		//	foreach (object item in ((sender as MenuItem).Parent as SplitButton).Items) {
-		//		if (item is MenuItem) {
-		//			if ((item as MenuItem).IsChecked) {
-		//				isThereChecked = true;
-		//				break;
-		//			}
-		//		}
-		//	}
-		//	*/
-		//	((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
-		//}
-
-		//private void MenuItem_Unchecked(object sender, RoutedEventArgs e) {
-		//	e.Handled = true;
-		//	bool isThereChecked = false;
-
-
-		//	//TODO: Test
-		//	foreach (var item in ((sender as MenuItem).Parent as SplitButton).Items.OfType<MenuItem>()) {
-		//		if (item.IsChecked) {
-		//			isThereChecked = true;
-		//			break;
-		//		}
-		//	}
-
-		//	/*
-		//	foreach (object item in ((sender as MenuItem).Parent as SplitButton).Items) {
-		//		if (item is MenuItem) {
-		//			if ((item as MenuItem).IsChecked) {
-		//				isThereChecked = true;
-		//				break;
-		//			}
-		//		}
-		//	}
-		//	*/
-
-		//	((sender as MenuItem).Parent as SplitButton).IsChecked = isThereChecked;
-		//}
-
-		[Obsolete("This does nothing")]
-		private void MenuItem_Click_2(object sender, RoutedEventArgs e) {
-			e.Handled = true;
-			//(sender as MenuItem).IsChecked = !(sender as MenuItem).IsChecked;
-		}
-
-		/*
-		private void ctgSearch_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
-			System.Windows.Forms.MessageBox.Show("Feature not added");
-			//if (((System.Windows.Visibility)e.NewValue) == System.Windows.Visibility.Collapsed)
-			//    TheRibbon.SelectedTabItem = HomeTab;
-		}
-		*/
-
-
 		private void MenuItem_Click_3(object sender, RoutedEventArgs e) {
 			edtSearchBox.ModifiedCondition = (string)((FrameworkElement)sender).Tag;
 			dmsplit.IsChecked = true;
@@ -3854,11 +3787,13 @@ namespace BetterExplorer {
 			}
 		}
 
+		/*
 		private void tcMain_MouseUp(object sender, MouseButtonEventArgs e) {
 			if (e.ChangedButton == MouseButton.Middle) {
 				tcMain.CloneTabItem(tcMain.SelectedItem as Wpf.Controls.TabItem);
 			}
 		}
+		*/
 
 		private void GoToSearchBox(object sender, ExecutedRoutedEventArgs e) {
 			edtSearchBox.Focus();
