@@ -244,7 +244,8 @@ namespace BExplorer.Shell {
 
 		public event EventHandler<RenameEventArgs> BeginItemLabelEdit;
 
-		public event EventHandler EndItemLabelEdit;
+		/// <summary>Raised whenever file/folder name is finished editing. Boolean: is event canceled</summary>
+		public event EventHandler<bool> EndItemLabelEdit;
 
 		/// <summary> Raised when the timer finishes for the Key Jump timer. </summary>
 		public event EventHandler KeyJumpTimerDone;
@@ -284,9 +285,15 @@ namespace BExplorer.Shell {
 		public List<ListViewGroupEx> Groups = new List<ListViewGroupEx>();
 		public ShellNotifications Notifications = new ShellNotifications();
 
-		public String NewName { get; set; }
+		/*
+		[Obsolete("Convert this into a method", false)]
+		public String NewName { private get; set; }
+		*/
 
-		public int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
+		[Obsolete("Try to remove this!!")]
+		private int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
+		private bool ItemForRealName_IsAny { get { return ItemForRename != -1; } }
+
 
 		public bool IsRenameNeeded { get; set; }
 
@@ -669,8 +676,7 @@ namespace BExplorer.Shell {
 		#region Events
 
 		private void selectionTimer_Tick(object sender, EventArgs e) {
-			int getFirstSelectedItemIndex = this.GetFirstSelectedItemIndex();
-			if (this.ItemForRename != getFirstSelectedItemIndex)
+			if (this.ItemForRename != this.GetFirstSelectedItemIndex())
 				this.EndLabelEdit();
 			if (MouseButtons != F.MouseButtons.Left) {
 				//RedrawWindow();
@@ -732,7 +738,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void ShellView_KeyDown(object sender, KeyEventArgs e) {
-			if (this.ItemForRename != -1) {
+			if (ItemForRealName_IsAny) {
 				if (e.KeyCode == Keys.Escape) {
 					this.EndLabelEdit(true);
 				}
@@ -1478,6 +1484,18 @@ namespace BExplorer.Shell {
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
 
+		public void Test_ChangeName(string NewName) {
+			if (ItemForRealName_IsAny && this.Items != null && this.Items.Count >= ItemForRename) {
+				var item = this.Items[ItemForRename];
+				if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
+					RenameShellItem(item.ComInterface, NewName);
+					this.RedrawWindow();
+				}
+				ItemForRename = -1;
+			}
+			this.IsFocusAllowed = true;
+		}
+
 		private void BeginLabelEdit(int itemIndex) {
 			//this._IsInRenameMode = true;
 			this.IsFocusAllowed = false;
@@ -1511,12 +1529,9 @@ namespace BExplorer.Shell {
 
 		private void EndLabelEdit(Boolean isCancel = false) {
 			if (this.EndItemLabelEdit != null) {
-				this.EndItemLabelEdit.Invoke(this, EventArgs.Empty);
+				this.EndItemLabelEdit.Invoke(this, !isCancel);
 			}
-			//if (this._Editor.Visible)
-			//{
-			//this._Editor.Visible = false;
-			//this._Editor.Hide();
+			/*
 			if (ItemForRename != -1 && this.Items != null && this.Items.Count >= ItemForRename) {
 				var item = this.Items[ItemForRename];
 				if (!String.IsNullOrEmpty(NewName)) {
@@ -1530,8 +1545,7 @@ namespace BExplorer.Shell {
 				}
 			}
 			this.IsFocusAllowed = true;
-			//	this._Editor.Text = String.Empty;
-			//}
+			*/
 		}
 
 		protected override void WndProc(ref Message m) {
@@ -1701,7 +1715,8 @@ namespace BExplorer.Shell {
 
 							if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
 								if (nmlv.item.iSubItem == 0) {
-									nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (!String.IsNullOrEmpty(NewName) ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
+									//nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (!String.IsNullOrEmpty(NewName) ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
+									nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
 									Marshal.StructureToPtr(nmlv, m.LParam, false);
 								} else if (isSmallIcons) {
 									//TODO: Try to remove the Try Catch
@@ -1902,28 +1917,24 @@ namespace BExplorer.Shell {
 						case WNM.LVN_ITEMACTIVATE:
 							if (this.ToolTip != null && this.ToolTip.IsVisible)
 								this.ToolTip.HideTooltip();
-							if (this.ItemForRename == -1) {
+							if (ItemForRealName_IsAny) {
+								this.EndLabelEdit();
+							}
+							else {
 								var iac = new NMITEMACTIVATE();
 								iac = (NMITEMACTIVATE)m.GetLParam(iac.GetType());
 								try {
 									ShellItem selectedItem = Items[iac.iItem];
 									if (selectedItem.IsFolder) {
-										//this.SaveSettingsToDatabase(this.CurrentFolder);
-										//CurrentFolder = selectedItem;
-										//Navigate(selectedItem, false, true);
-
 										Navigate_Full(selectedItem, true);
 									} else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
 										var shellLink = new ShellLink(selectedItem.ParsingName);
 										var newSho = new ShellItem(shellLink.TargetPIDL);
-										if (newSho.IsFolder) {
-											//this.SaveSettingsToDatabase(this.CurrentFolder);
-											//CurrentFolder = newSho;
-											//Navigate(newSho, false, true);
+										if (newSho.IsFolder)
 											Navigate_Full(newSho, true);
-										} else {
-											StartProcessInCurrentDirectory(newSho);
 										}
+										else {
+											StartProcessInCurrentDirectory(newSho);
 
 										shellLink.Dispose();
 									} else {
@@ -1931,7 +1942,10 @@ namespace BExplorer.Shell {
 									}
 								} catch (Exception) {
 								}
-							} else {
+								catch (Exception) {
+								}
+							}
+							else {
 								this.EndLabelEdit();
 							}
 							break;
@@ -1999,8 +2013,10 @@ namespace BExplorer.Shell {
 
 							NMLISTVIEW nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 							if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE) {
-								if (this.ItemForRename != -1 && nlv.iItem != -1 && nlv.iItem != this.ItemForRename)
+								/*
+								if (ItemForRealName_IsAny && nlv.iItem != -1 && nlv.iItem != this.ItemForRename)
 									this.EndLabelEdit();
+								*/
 
 								ToolTip.HideTooltip();
 
@@ -2044,7 +2060,7 @@ namespace BExplorer.Shell {
 							if (KeyDown != null) {
 								KeyDown(this, new KeyEventArgs(key));
 							}
-							if (this.ItemForRename == -1) {
+							if (!ItemForRealName_IsAny) {
 								switch (nkd.wVKey) {
 									case (short)Keys.F2:
 										RenameSelectedItem();
@@ -2155,8 +2171,10 @@ namespace BExplorer.Shell {
 							break;
 
 						case WNM.NM_KILLFOCUS:
+							/*
 							if (this.ItemForRename != -1)
 								EndLabelEdit();
+							*/
 							if (IsGroupsEnabled)
 								RedrawWindow();
 							if (this.ToolTip != null && this.ToolTip.IsVisible)
@@ -2615,6 +2633,7 @@ namespace BExplorer.Shell {
 
 		private void RedrawItem(int index) {
 			//F.Application.DoEvents();
+			if (index >= Items.Count - 1) return;
 			var sho = Items[index];
 			//F.Application.DoEvents();
 			var itemBounds = new User32.RECT();
@@ -3113,7 +3132,9 @@ namespace BExplorer.Shell {
 		/// <param name="SaveFolderSettings">Should the folder's settings be saved?</param>
 		/// <param name="isInSameTab"></param>
 		public void Navigate_Full(ShellItem destination, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false) {
+			if (SaveFolderSettings) {
 			SaveSettingsToDatabase(this.CurrentFolder);
+			}
 
 			if (destination == null || !destination.IsFolder) return;
 			Navigate(destination, isInSameTab, refresh);
@@ -3124,8 +3145,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="destination">The folder you want to navigate to.</param>
 		/// <param name="isInSameTab"></param>
-		[Obsolete("Try to use Navigate_Full!!")]
-		public void Navigate(ShellItem destination, Boolean isInSameTab = false, bool refresh = false) {
+		private void Navigate(ShellItem destination, Boolean isInSameTab = false, bool refresh = false) {
 			if (!refresh)
 				this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
 
@@ -3899,7 +3919,7 @@ namespace BExplorer.Shell {
 					}
 				}
 			}
-				//On Exception do nothing (usually it happens on app exit)
+			//On Exception do nothing (usually it happens on app exit)
 			catch { }
 
 			//}
