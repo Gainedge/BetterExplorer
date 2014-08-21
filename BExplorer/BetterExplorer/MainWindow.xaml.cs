@@ -100,7 +100,7 @@ namespace BetterExplorer {
 
 		#region Private Members
 		private bool asFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
-		private MenuItem misa, misd, misag, misdg, misng;
+		private MenuItem misa, misd, misag, misdg;
 		private bool IsInfoPaneEnabled, IsConsoleShown, IsPreviewPaneEnabled;
 		private int PreviewPaneWidth = 120, InfoPaneHeight = 150;
 		private ShellTreeViewEx ShellTree = new ShellTreeViewEx();
@@ -217,14 +217,14 @@ namespace BetterExplorer {
 			if (rks == null) return;
 
 
-			this.Width = Convert.ToDouble(rks.GetValue(@"LastWindowWidth", "640"));
-			this.Height = Convert.ToDouble(rks.GetValue(@"LastWindowHeight", "480"));
+			this.Width = Convert.ToDouble(rks.GetValue("LastWindowWidth", "640"));
+			this.Height = Convert.ToDouble(rks.GetValue("LastWindowHeight", "480"));
 
 			System.Drawing.Point Location = new System.Drawing.Point();
 			try {
 				Location = new System.Drawing.Point(
-					Convert.ToInt32(rks.GetValue(@"LastWindowPosLeft", "0")),
-					Convert.ToInt32(rks.GetValue(@"LastWindowPosTop", "0"))
+					Convert.ToInt32(rks.GetValue("LastWindowPosLeft", "0")),
+					Convert.ToInt32(rks.GetValue("LastWindowPosTop", "0"))
 				);
 			}
 			catch { }
@@ -233,7 +233,7 @@ namespace BetterExplorer {
 				this.Top = Location.Y;
 			}
 
-			switch (Convert.ToInt32(rks.GetValue(@"LastWindowState"))) {
+			switch (Convert.ToInt32(rks.GetValue("LastWindowState"))) {
 				case 2:
 					this.WindowState = WindowState.Maximized;
 					break;
@@ -248,17 +248,17 @@ namespace BetterExplorer {
 					break;
 			}
 
-			int isGlassOnRibonMinimized = (int)rks.GetValue(@"RibbonMinimizedGlass", 1);
+			int isGlassOnRibonMinimized = (int)rks.GetValue("RibbonMinimizedGlass", 1);
 			this.IsGlassOnRibonMinimized = isGlassOnRibonMinimized == 1;
 			chkRibbonMinimizedGlass.IsChecked = this.IsGlassOnRibonMinimized;
 
-			TheRibbon.IsMinimized = Convert.ToBoolean(rks.GetValue(@"IsRibonMinimized", false));
+			TheRibbon.IsMinimized = Convert.ToBoolean(rks.GetValue("IsRibonMinimized", false));
 
 			//CommandPrompt window size
-			this.CommandPromptWinHeight = Convert.ToDouble(rks.GetValue(@"CmdWinHeight", 100));
+			this.CommandPromptWinHeight = Convert.ToDouble(rks.GetValue("CmdWinHeight", 100));
 			rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
 
-			if ((int)rks.GetValue(@"IsConsoleShown", 0) == 1) {
+			if ((int)rks.GetValue("IsConsoleShown", 0) == 1) {
 				rCommandPrompt.MinHeight = 100;
 				rCommandPrompt.Height = new GridLength(this.CommandPromptWinHeight);
 				spCommandPrompt.Height = GridLength.Auto;
@@ -439,12 +439,14 @@ namespace BetterExplorer {
 			}
 		}
 
+		/*
 		void timerv_Tick(object sender, EventArgs e) {
 			var da = new DoubleAnimation(CurrentProgressValue, CurrentProgressValue + 1, new Duration(new TimeSpan(0, 0, 2)));
 			da.FillBehavior = FillBehavior.Stop;
 			CurrentProgressValue = CurrentProgressValue + 1;
 			(sender as DispatcherTimer).Stop();
 		}
+		*/
 
 		void micm_Click(object sender, RoutedEventArgs e) {
 			var fMoreCollumns = new MoreColumns();
@@ -517,65 +519,6 @@ namespace BetterExplorer {
 					}
 				}));
 		}
-
-		//bool IsSelectionRized = false;
-		//BackgroundWorker bwSelectionChanged = new BackgroundWorker();
-		//'Selection change (when an item is selected in a folder)
-
-		/*
-		private Boolean SetupEditButton(string item) {			
-			RegistryKey rg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\" + Path.GetExtension(item) + @"\OpenWithProgids");
-			if (rg == null) return false;
-
-			string filetype = rg.GetValueNames()[0];
-			rg.Close();
-
-			using (var rgtype = Registry.ClassesRoot.OpenSubKey(filetype + @"\shell\edit\command")) {
-				return !(rgtype == null);	
-			}
-			//TODO: Remove the following Comment!
-			//else {
-			//	//RegistryKey rgtypeopen = Registry.ClassesRoot.OpenSubKey(filetype + @"\shell\open\command");
-			//	//if (rgtypeopen != null)
-			//	//{
-			//	//  string editcommand = (string)rgtypeopen.GetValue("");
-
-			//	//  isEditAvailable = true;
-			//	//  EditComm = editcommand.Replace("\"", "");
-			//	//  rgtypeopen.Close();
-			//	//}
-			//	//else
-			//	//{
-			//	//  isEditAvailable = false;
-			//	//}
-			//	isEditAvailable = false;
-			//}
-
-
-			//try
-			//{
-			//  Shell32.Shell shell = new Shell();
-			//  Shell32.Folder folder = null;
-			//  folder = shell.NameSpace(Path.GetDirectoryName(item));
-
-			//  var itemInternal = folder.Items().OfType<Shell32.FolderItem>().ToArray()[0];
-			//  if (itemInternal != null)
-			//  {
-			//    isEditAvailable = itemInternal.Verbs().OfType<FolderItemVerb>().Select(s => s.Name).Contains("&Edit");
-			//  }
-			//  item = null;
-			//  folder = null;
-			//  shell = null;
-			//}
-			//catch (Exception)
-			//{
-			//  isEditAvailable = false;
-			//}
-
-			//return isEditAvailable;
-		} //TODO: Inline
-		*/
-
 
 		private void SetUpOpenWithButton(ShellItem SelectedItem) {
 			btnOpenWith.Items.Clear();
@@ -712,17 +655,6 @@ namespace BetterExplorer {
 
 				btnDefSave.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.Thumbnail.BitmapSource, GroupName: "GRDS1", checkable: true,
 																isChecked: item.ParsingName == lib.DefaultSaveFolder, onClick: miItem_Click));
-
-
-				//MenuItem miItem = new MenuItem();
-				//miItem.Header = item.GetDisplayName(SIGDN.NORMALDISPLAY);
-				//miItem.Tag = item;
-				//miItem.Icon = item.Thumbnail.BitmapSource;
-				//miItem.GroupName = "GRDS1";
-				//miItem.IsCheckable = true;
-				//miItem.IsChecked = item.ParsingName == lib.DefaultSaveFolder;
-				//miItem.Click += new RoutedEventHandler(miItem_Click);
-				//btnDefSave.Items.Add(miItem);
 			}
 
 			btnDefSave.IsEnabled = !(lib.Count == 0);
@@ -1658,11 +1590,10 @@ namespace BetterExplorer {
 			}
 
 			this.chkIsLastTabCloseApp.IsChecked = (int)rks.GetValue("IsLastTabCloseApp", 1) == 1;
-			bool LogActions = (int)rks.GetValue("EnableActionLog", 0) == 1;
 
-			canlogactions = LogActions;
+			canlogactions = (int)rks.GetValue("EnableActionLog", 0) == 1;
 			chkLogHistory.IsChecked = canlogactions;
-			if (LogActions) {
+			if (canlogactions) {
 				chkLogHistory.Visibility = Visibility.Visible;
 				ShowLogsBorder.Visibility = Visibility.Visible;
 				paddinglbl8.Visibility = Visibility.Visible;
