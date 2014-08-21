@@ -996,7 +996,7 @@ namespace BetterExplorer {
 			IsRenameFromCreate = true;
 
 			if (ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName)
-				ShellListView.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString()).DisplayName;
+				ShellListView.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString());
 			else
 				ShellListView.CreateNewFolder(FindResource("btnNewFolderCP").ToString());
 		}
