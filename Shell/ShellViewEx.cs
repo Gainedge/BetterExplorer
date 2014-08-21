@@ -1493,13 +1493,15 @@ namespace BExplorer.Shell {
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
 
-		public void Test_ChangeName(string NewName) {
+		public void Test_ChangeName(string NewName, bool Cancel) {
 			if (ItemForRealName_IsAny && this.Items != null && this.Items.Count >= ItemForRename) {
 				var item = this.Items[ItemForRename];
-				if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
+				//if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
+				if (!Cancel) {
 					RenameShellItem(item.ComInterface, NewName);
-					this.RedrawWindow();
 				}
+				this.RedrawWindow();
+				//}
 				ItemForRename = -1;
 			}
 			this.IsFocusAllowed = true;
@@ -1538,7 +1540,7 @@ namespace BExplorer.Shell {
 
 		private void EndLabelEdit(Boolean isCancel = false) {
 			if (this.EndItemLabelEdit != null) {
-				this.EndItemLabelEdit.Invoke(this, !isCancel);
+				this.EndItemLabelEdit.Invoke(this, isCancel);
 			}
 			/*
 			if (ItemForRename != -1 && this.Items != null && this.Items.Count >= ItemForRename) {
@@ -1728,14 +1730,13 @@ namespace BExplorer.Shell {
 							if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
 								if (nmlv.item.iSubItem == 0) {
 									//nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (!String.IsNullOrEmpty(NewName) ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
+									nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
 									if (this.ItemForRealName_IsAny) {
 										if (this.GetFirstSelectedItemIndex() == nmlv.item.iItem) {
 											nmlv.item.pszText = "";
 										}
 									}
-									else {
-										nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
-									}
+
 									Marshal.StructureToPtr(nmlv, m.LParam, false);
 								}
 								else if (isSmallIcons) {
