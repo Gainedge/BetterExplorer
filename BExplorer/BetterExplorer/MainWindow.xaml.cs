@@ -4943,7 +4943,7 @@ namespace BetterExplorer {
 
 			if (!tcMain.isGoingBackOrForward) {
 				var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
-				if (Current.ForwardEntries.Count() > 1) Current.ClearForwardItems();
+				if (Current.ForwardEntries.Any) Current.ClearForwardItems();
 				if (Current.CurrentLocation != e.Folder) Current.CurrentLocation = e.Folder;
 			}
 
