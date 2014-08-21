@@ -1489,15 +1489,12 @@ namespace BetterExplorer {
 		}
 
 		private void rbCheckInterval_Click(object sender, RoutedEventArgs e) {
-			if (rbDaily.IsChecked.Value) {
+			if (rbDaily.IsChecked.Value)
 				UpdateCheckInterval = 1;
-			}
-			else if (rbMonthly.IsChecked.Value) {
+			else if (rbMonthly.IsChecked.Value)
 				UpdateCheckInterval = 30;
-			}
-			else {
+			else
 				UpdateCheckInterval = 7;
-			}
 
 			Utilities.SetRegistryValue("CheckInterval", UpdateCheckInterval);
 		}
