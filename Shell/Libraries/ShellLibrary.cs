@@ -372,7 +372,6 @@ namespace BExplorer.Shell {
 		/// <param name="isReadOnly">If <B>true</B>, loads the library in read-only mode.</param>
 		/// <returns>A ShellLibrary Object</returns>
 		public static ShellLibrary Load(string libraryName, bool isReadOnly) {
-
 			IKnownFolder kf = KnownFolders.Libraries;
 			string librariesFolderPath = (kf != null) ? kf.Path : string.Empty;
 

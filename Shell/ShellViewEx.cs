@@ -3809,8 +3809,6 @@ namespace BExplorer.Shell {
 			}
 
 			return new ShellLibrary(endname, false);
-
-			//return libcreate.GetDisplayName(DisplayNameType.Default);
 		}
 
 		/*
@@ -4346,11 +4344,15 @@ namespace BExplorer.Shell {
 				var item = this.Items[ItemForRename];
 				//if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
 				if (!Cancel) {
+					//Note: Just added this in
+					ItemForRename = -1;
+					//Note: Just added this in
+
 					RenameShellItem(item.ComInterface, NewName);
 				}
 				this.RedrawWindow();
 				//}
-				ItemForRename = -1;
+				//ItemForRename = -1;
 			}
 			this.IsFocusAllowed = true;
 		}
