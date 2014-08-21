@@ -2036,8 +2036,10 @@ namespace BExplorer.Shell {
 
 							NMLISTVIEW nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 							if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE) {
+								/*
 								if (ItemForRealName_IsAny && nlv.iItem != -1 && nlv.iItem != this.ItemForRename)
 									this.EndLabelEdit();
+								*/
 
 								ToolTip.HideTooltip();
 
