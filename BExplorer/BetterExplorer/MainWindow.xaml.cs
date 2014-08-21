@@ -1835,8 +1835,6 @@ namespace BetterExplorer {
 			}
 		}
 
-
-
 		private void SetsUpJumpList() {
 			//sets up Jump List
 			try {
@@ -1922,18 +1920,7 @@ namespace BetterExplorer {
 				//'set up Explorer control
 				InitializeExplorerControl();
 
-
 				ViewGallery.SelectedIndex = 2;
-				// set up history on breadcrumb bar (currently missing try-catch statement in order to catch error)
-				try {
-					Task.Run(() => {
-						//breadcrumbBarControl1.ClearHistory();
-						//breadcrumbBarControl1.HistoryItems = ReadHistoryFromFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt");
-					});
-				}
-				catch (FileNotFoundException) {
-					logger.Warn(String.Format("History file not found at location:{0}\\history.txt", Environment.SpecialFolder.LocalApplicationData));
-				}
 
 				AddToLog("Session Began");
 				isOnLoad = false;
@@ -1981,12 +1968,6 @@ namespace BetterExplorer {
 			catch (Exception exe) {
 				MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
-		}
-
-		void _keyjumpTimer_Tick(object sender, EventArgs e) {
-			//key jump done
-			KeyJumpGrid.IsOpen = false;
-			(sender as System.Windows.Forms.Timer).Stop();
 		}
 
 		#endregion
@@ -2508,11 +2489,7 @@ namespace BetterExplorer {
 		}
 
 		private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
-			try {
-				ShellListView.ResizeIcons((int)e.NewValue);
-			}
-			catch (NullReferenceException) {
-			}
+			ShellListView.ResizeIcons((int)e.NewValue);
 		}
 
 		private void btnRefresh_Click(object sender, RoutedEventArgs e) {
@@ -2585,7 +2562,7 @@ namespace BetterExplorer {
 		}
 
 		private void chkHiddenFiles_Unchecked(object sender, RoutedEventArgs e) {
-			if (IsCalledFromLoading) return;
+			if (IsCalledFromLoading) return; 
 			Dispatcher.BeginInvoke(new Action(
 				delegate() {
 					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
@@ -4890,6 +4867,12 @@ namespace BetterExplorer {
 				_keyjumpTimer.Stop();
 				_keyjumpTimer.Start();
 			}
+		}
+
+		void _keyjumpTimer_Tick(object sender, EventArgs e) {
+			//key jump done
+			KeyJumpGrid.IsOpen = false;
+			(sender as System.Windows.Forms.Timer).Stop();
 		}
 
 		void ShellListView_KeyJumpKeyDown(object sender, System.Windows.Forms.KeyEventArgs e) {

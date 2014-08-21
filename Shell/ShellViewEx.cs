@@ -1493,72 +1493,6 @@ namespace BExplorer.Shell {
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
 
-		public void FileNameChangeAttempt(string NewName, bool Cancel) {
-			if (ItemForRealName_IsAny && this.Items != null && this.Items.Count >= ItemForRename) {
-				var item = this.Items[ItemForRename];
-				//if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
-				if (!Cancel) {
-					RenameShellItem(item.ComInterface, NewName);
-				}
-				this.RedrawWindow();
-				//}
-				ItemForRename = -1;
-			}
-			this.IsFocusAllowed = true;
-		}
-
-		private void BeginLabelEdit(int itemIndex) {
-			//this._IsInRenameMode = true;
-			this.IsFocusAllowed = false;
-			this.ItemForRename = itemIndex;
-			if (this.BeginItemLabelEdit != null) {
-				this.BeginItemLabelEdit.Invoke(this, new RenameEventArgs(itemIndex));
-			}
-
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_UPDATE, itemIndex, 0);
-			RedrawWindow();
-
-			//LVITEMINDEX lviLe = new LVITEMINDEX();
-			//lviLe.iItem = itemIndex;
-			//lviLe.iGroup = this.GetGroupIndex(itemIndex);
-			//var labelBounds = new User32.RECT();
-			//labelBounds.Left = 2;
-			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
-			//var size = TextRenderer.MeasureText(this.Items[itemIndex].DisplayName, this._Editor.Font);
-			//this._Editor.Width = labelBounds.Right - labelBounds.Left + 4;
-			//this._Editor.Height = labelBounds.Bottom - labelBounds.Top + 4;
-			//this._Editor.Location = new System.Drawing.Point(labelBounds.Left - 2, labelBounds.Top - 2);
-			//this._Editor.Text = this.Items[itemIndex].DisplayName;
-			//this._Editor.Tag = itemIndex;
-			////User32.SetParent(this._Editor.Handle, this.LVHandle);
-			//this._Editor.Parent = this;
-			////User32.ShowWindow(this._Editor.Handle, User32.ShowWindowCommands.Show);
-			//this._Editor.Show();
-			////this._Editor.Focus();
-			//this._Editor.SelectAll();
-		}
-
-		private void EndLabelEdit(Boolean isCancel = false) {
-			if (this.EndItemLabelEdit != null) {
-				this.EndItemLabelEdit.Invoke(this, isCancel);
-			}
-			/*
-			if (ItemForRename != -1 && this.Items != null && this.Items.Count >= ItemForRename) {
-				var item = this.Items[ItemForRename];
-				if (!String.IsNullOrEmpty(NewName)) {
-					if (!isCancel && item != null) {
-						if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
-							RenameShellItem(item.ComInterface, NewName);
-							NewName = String.Empty;
-							this.RedrawWindow();
-						}
-					}
-				}
-			}
-			this.IsFocusAllowed = true;
-			*/
-		}
-
 		protected override void WndProc(ref Message m) {
 			try {
 				bool isSmallIcons = (View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details);
@@ -4034,6 +3968,14 @@ namespace BExplorer.Shell {
 			this.Focus();
 		}
 
+		public void AutosizeAllColumns(int autosizeParam) {
+			this.SuspendLayout();
+			for (int i = 0; i < this.Collumns.Count; i++) {
+				AutosizeColumn(i, autosizeParam);
+			}
+			this.ResumeLayout();
+		}
+
 		#endregion Public Methods
 
 		#region Private Methods
@@ -4247,6 +4189,52 @@ namespace BExplorer.Shell {
 			}
 			return resultString;
 		}
+
+
+		/// <summary>
+		/// This is only to be used in SetSortCollumn(...)
+		/// </summary>
+		/// <param name="columnIndex"></param>
+		/// <param name="order"></param>
+		private void SetSortIcon(int columnIndex, SortOrder order) {
+			//TODO: Consider Merging this into SetSortCollumn(...)
+
+			IntPtr columnHeader = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETHEADER, 0, 0);
+			for (int columnNumber = 0; columnNumber <= this.Collumns.Count - 1; columnNumber++) {
+				var item = new HDITEM {
+					mask = HDITEM.Mask.Format
+				};
+
+				if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_GETITEM, columnNumber, ref item) == IntPtr.Zero) {
+					throw new Win32Exception();
+				}
+
+				if (order != SortOrder.None && columnNumber == columnIndex) {
+					switch (order) {
+						case SortOrder.Ascending:
+							item.fmt &= ~HDITEM.Format.SortDown;
+							item.fmt |= HDITEM.Format.SortUp;
+							break;
+						case SortOrder.Descending:
+							item.fmt &= ~HDITEM.Format.SortUp;
+							item.fmt |= HDITEM.Format.SortDown;
+							break;
+					}
+				}
+				else {
+					item.fmt &= ~HDITEM.Format.SortDown & ~HDITEM.Format.SortUp;
+				}
+
+				if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_SETITEM, columnNumber, ref item) == IntPtr.Zero) {
+					throw new Win32Exception();
+				}
+			}
+		}
+
+		private void AutosizeColumn(int index, int autosizeStyle) {
+			User32.SendMessage(this.LVHandle, LVM.SETCOLUMNWIDTH, index, autosizeStyle);
+		}
+
 		#endregion Private Methods
 
 		#region Database
@@ -4351,56 +4339,41 @@ namespace BExplorer.Shell {
 		}
 		#endregion Database
 
-		private void AutosizeColumn(int index, int autosizeStyle) {
-			User32.SendMessage(this.LVHandle, LVM.SETCOLUMNWIDTH, index, autosizeStyle);
-		}
-		public void AutosizeAllColumns(int autosizeParam) {
-			this.SuspendLayout();
-			for (int i = 0; i < this.Collumns.Count; i++) {
-				AutosizeColumn(i, autosizeParam);
+		#region Rename File
+
+		public void FileNameChangeAttempt(string NewName, bool Cancel) {
+			if (ItemForRealName_IsAny && this.Items != null && this.Items.Count >= ItemForRename) {
+				var item = this.Items[ItemForRename];
+				//if (NewName.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
+				if (!Cancel) {
+					RenameShellItem(item.ComInterface, NewName);
+				}
+				this.RedrawWindow();
+				//}
+				ItemForRename = -1;
 			}
-			this.ResumeLayout();
+			this.IsFocusAllowed = true;
 		}
 
-		/// <summary>
-		/// This is only to be used in SetSortCollumn(...)
-		/// </summary>
-		/// <param name="columnIndex"></param>
-		/// <param name="order"></param>
-		private void SetSortIcon(int columnIndex, SortOrder order) {
-			//TODO: Consider Merging this into SetSortCollumn(...)
+		private void BeginLabelEdit(int itemIndex) {
+			//this._IsInRenameMode = true;
+			this.IsFocusAllowed = false;
+			this.ItemForRename = itemIndex;
+			if (this.BeginItemLabelEdit != null) {
+				this.BeginItemLabelEdit.Invoke(this, new RenameEventArgs(itemIndex));
+			}
 
-			IntPtr columnHeader = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETHEADER, 0, 0);
-			for (int columnNumber = 0; columnNumber <= this.Collumns.Count - 1; columnNumber++) {
-				var item = new HDITEM {
-					mask = HDITEM.Mask.Format
-				};
+			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_UPDATE, itemIndex, 0);
+			RedrawWindow();
+		}
 
-				if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_GETITEM, columnNumber, ref item) == IntPtr.Zero) {
-					throw new Win32Exception();
-				}
-
-				if (order != SortOrder.None && columnNumber == columnIndex) {
-					switch (order) {
-						case SortOrder.Ascending:
-							item.fmt &= ~HDITEM.Format.SortDown;
-							item.fmt |= HDITEM.Format.SortUp;
-							break;
-						case SortOrder.Descending:
-							item.fmt &= ~HDITEM.Format.SortUp;
-							item.fmt |= HDITEM.Format.SortDown;
-							break;
-					}
-				}
-				else {
-					item.fmt &= ~HDITEM.Format.SortDown & ~HDITEM.Format.SortUp;
-				}
-
-				if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_SETITEM, columnNumber, ref item) == IntPtr.Zero) {
-					throw new Win32Exception();
-				}
+		private void EndLabelEdit(Boolean isCancel = false) {
+			if (this.EndItemLabelEdit != null) {
+				this.EndItemLabelEdit.Invoke(this, isCancel);
 			}
 		}
+
+		#endregion
 
 	}
 }
