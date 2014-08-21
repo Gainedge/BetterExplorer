@@ -1054,7 +1054,7 @@ namespace BetterExplorer {
 
 		private void btnmtOther_Click(object sender, RoutedEventArgs e) {
 			var dlg = new FolderSelectDialog();
-			if (dlg.ShowDialog() == true) {
+			if (dlg.ShowDialog()) {
 				SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Move);
 			}
 		}
@@ -1105,9 +1105,13 @@ namespace BetterExplorer {
 		}
 
 		private void btnEdit_Click(object sender, RoutedEventArgs e) {
-			//TODO: Code this!!
-			System.Windows.Forms.MessageBox.Show("This button currently does nothing");
-			//ShellListView.EditFile( ShellListView.GetFirstSelectedItem().ParsingName);
+			new Process() {
+				StartInfo = new ProcessStartInfo {
+					FileName = ShellListView.GetFirstSelectedItem().FileSystemPath,
+					Verb = "edit",
+					UseShellExecute = true,
+				}
+			}.Start();
 		}
 
 		private void btnFavorites_Click(object sender, RoutedEventArgs e) {
