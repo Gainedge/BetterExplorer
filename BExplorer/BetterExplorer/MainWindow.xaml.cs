@@ -2562,7 +2562,7 @@ namespace BetterExplorer {
 		}
 
 		private void chkHiddenFiles_Unchecked(object sender, RoutedEventArgs e) {
-			if (IsCalledFromLoading) return; 
+			if (IsCalledFromLoading) return;
 			Dispatcher.BeginInvoke(new Action(
 				delegate() {
 					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
@@ -3786,14 +3786,6 @@ namespace BetterExplorer {
 				(sender as System.Windows.Forms.Timer).Stop();
 			}
 		}
-
-		/*
-		private void tcMain_MouseUp(object sender, MouseButtonEventArgs e) {
-			if (e.ChangedButton == MouseButton.Middle) {
-				tcMain.CloneTabItem(tcMain.SelectedItem as Wpf.Controls.TabItem);
-			}
-		}
-		*/
 
 		private void GoToSearchBox(object sender, ExecutedRoutedEventArgs e) {
 			edtSearchBox.Focus();
