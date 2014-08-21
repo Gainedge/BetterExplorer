@@ -929,13 +929,8 @@ namespace BetterExplorer {
 		}
 
 		private void btnCopy_Click(object sender, RoutedEventArgs e) {
-			StringCollection sc = new StringCollection();
+			var sc = new StringCollection();
 			sc.AddRange(ShellListView.SelectedItems.Select(x => x.ParsingName).ToArray());
-
-			//foreach (ShellItem item in ShellListView.SelectedItems) {
-			//	sc.Add(item.ParsingName);
-			//}
-
 			System.Windows.Forms.Clipboard.SetFileDropList(sc);
 		}
 
@@ -974,7 +969,6 @@ namespace BetterExplorer {
 			}
 		}
 
-
 		private void btnSelAll_Click(object sender, RoutedEventArgs e) {
 			ShellListView.SelectAll();
 		}
@@ -985,17 +979,6 @@ namespace BetterExplorer {
 
 		// Delete > Send to Recycle Bin
 		private void MenuItem_Click(object sender, RoutedEventArgs e) {
-			string path = null;
-			foreach (ShellItem item in ShellListView.SelectedItems) {
-				if (string.IsNullOrEmpty(path)) {
-					path = item.ParsingName;
-				}
-				else {
-					path = String.Format("{0} {1}", path, item.ParsingName);
-				}
-			}
-
-			AddToLog(String.Format("The following files have been moved to the Recycle Bin: {0}", path));
 			ShellListView.DeleteSelectedFiles(true);
 		}
 
@@ -3882,10 +3865,6 @@ namespace BetterExplorer {
 				wpt.Y = (int)ptw.Y;
 				DropTargetHelper.Create.DragOver(ref wpt, (int)e.Effects);
 			}
-		}
-
-		void newt_DragLeave(object sender, DragEventArgs e) {
-			DropTargetHelper.Create.DragLeave();
 		}
 
 		void newt_DragEnter(object sender, DragEventArgs e) {
