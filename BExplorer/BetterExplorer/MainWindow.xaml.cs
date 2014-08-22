@@ -691,11 +691,6 @@ namespace BetterExplorer {
 			btnPasetShC.IsEnabled = e.Item1.GetDataPresent(DataFormats.FileDrop) || e.Item1.GetDataPresent("Shell IDList Array");
 		}
 
-		[Obsolete("How do I activate this event and why would I want to do it!!!")]
-		private void TheRibbon_IsCollapsedChanged(object sender, DependencyPropertyChangedEventArgs e) {
-			this.edtSearchBox.Visibility = this.BooleanToVisibiliy(!(bool)e.NewValue);
-		}
-
 		#endregion
 
 		#region Conditional Select

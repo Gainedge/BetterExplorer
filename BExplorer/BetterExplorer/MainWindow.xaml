@@ -80,7 +80,6 @@
 					 Background="White"
 					 CanCustomizeQuickAccessToolBar="True"
 					 Focusable="False"
-					 IsCollapsedChanged="TheRibbon_IsCollapsedChanged"
 					 CustomizeQuickAccessToolbar="TheRibbon_CustomizeQuickAccessToolbar"
 					 SizeChanged="TheRibbon_SizeChanged">
 			<Ribbon:Ribbon.ToolBarItems>
