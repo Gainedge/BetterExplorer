@@ -985,7 +985,6 @@ namespace BetterExplorer {
 				SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Move);
 			}
 		}
-
 		private void SetFOperation(String fileName, BExplorer.Shell.OperationType opType) {
 			var obj = new ShellItem(fileName);
 			if (opType == BExplorer.Shell.OperationType.Copy)
