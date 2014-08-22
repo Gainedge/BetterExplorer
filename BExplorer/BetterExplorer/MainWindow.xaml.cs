@@ -4865,43 +4865,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		/*
-		private void SetUpBreadcrumbbarOnNavComplete(NavigatedEventArgs e) {
-			//this.breadcrumbBarControl1.LoadDirectory(e.Folder);
-
-			//this._IsBreadcrumbBarSelectionChnagedAllowed = true;
-			//this.bcbc.UpdateLayout();
-			//this.bcbc.Path = e.Folder.ParsingName;
-			//this.breadcrumbBarControl1.LastPath = e.Folder.ParsingName;
-			//var folder = e.isInSameTab ? e.Folder : e.Folder;
-			//this.Title = "Better Explorer - " + e.Folder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
-			//e.Folder.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-			//e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			//try {
-			//	Wpf.Controls.TabItem selectedTabItem = (tcMain.SelectedItem as Wpf.Controls.TabItem);
-			//	selectedTabItem.Header = folder.DisplayName;
-			//	selectedTabItem.Icon = e.Folder.Thumbnail.BitmapSource;
-			//	selectedTabItem.ShellObject = e.Folder;
-			//	selectedTabItem.ToolTip = e.Folder.ParsingName;
-			//} catch (Exception) {
-			//}
-
-			//try {
-
-			//Wpf.Controls.TabItem it = new Closable_TabItem();
-			//CreateTabbarRKMenu(it);
-
-			//(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).Path = ShellListView.CurrentFolder;
-
-			if (!tcMain.isGoingBackOrForward) {
-				var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
-				if (Current.ForwardEntries.Count() > 1) Current.ClearForwardItems();
-				if (Current.CurrentLocation != e.Folder) Current.CurrentLocation = e.Folder;
-			}
-
-			tcMain.isGoingBackOrForward = false;
-		}
-		*/
 		#endregion
 
 		private void RibbonWindow_StateChanged(object sender, EventArgs e) {
@@ -4911,15 +4874,6 @@ namespace BetterExplorer {
 				focusTimer.Start();
 			}
 		}
-
-		/*
-		private void pop_items(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
-			bcbc.pop_items(e.Item);
-			bcbc._IsBreadcrumbBarSelectionChnagedAllowed = e.Item.Items.Count == 0;
-		}
-		*/
-
-
 
 		private void Refresh_Click(object sender, RoutedEventArgs e) {
 			DoubleAnimation da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 1, 100)));
@@ -4935,8 +4889,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		//bool _IsBreadcrumbBarSelectionChnagedAllowed = false;
-
 		private void bcbc_BreadcrumbItemDropDownOpened(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			this.ShellListView.IsFocusAllowed = false;
 			this.bcbc.Focus();
@@ -4945,34 +4897,6 @@ namespace BetterExplorer {
 		private void bcbc_BreadcrumbItemDropDownClosed(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) {
 			this.ShellListView.IsFocusAllowed = true;
 		}
-
-		/*
-		[Obsolete("Replace with path_changed")]
-		private void path_conversation(object sender, Odyssey.Controls.PathConversionEventArgs e) {
-			var newPath = e.DisplayPath;
-			if (newPath != null && newPath.StartsWith("%")) {
-				newPath = Environment.ExpandEnvironmentVariables(newPath);
-			}
-			if (e.Mode == Odyssey.Controls.PathConversionEventArgs.ConversionMode.EditToDisplay && bcbc._IsBreadcrumbBarSelectionChnagedAllowed) {
-				Int64 pidl;
-				bool isValidPidl = Int64.TryParse(newPath.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
-				try {
-					ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(newPath.ToShellParsingName());
-					NavigationController(item);
-				}
-				catch { }
-			}
-		}
-		*/
-
-		/*
-		private void NavigationController_Why() {
-			NavigationController(this.ShellListView.CurrentFolder);
-
-			//this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
-			////this.bcbc.BuildBreadcrumbsFromPath(this.ShellListView.CurrentFolder.ParsingName);
-		}
-		*/
 
 		private void NavigationController(ShellItem Destination) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
