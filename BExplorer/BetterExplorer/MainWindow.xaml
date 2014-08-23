@@ -20,7 +20,6 @@
 					 MinWidth="640"
 					 MinHeight="480"
 					 Closing="RibbonWindow_Closing"
-					 GotFocus="RibbonWindow_GotFocus"
 					 Initialized="RibbonWindow_Initialized"
 					 Loaded="Window_Loaded"
 					 MouseRightButtonUp="RibbonWindow_MouseRightButtonUp"
@@ -847,7 +846,7 @@
 											 LargeIcon="Images\BlueTheme.png"
 											 Ribbon:KeyTip.Keys="G"
 											 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large"
-											 Visibility="Collapsed" />
+											 />
 										</StackPanel>
 										<Ribbon:SeparatorTabItem Margin="0,100,0,0"
 											 VerticalAlignment="Top"

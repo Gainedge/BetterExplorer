@@ -834,7 +834,6 @@ namespace BetterExplorer {
 			Process.Start(k, "/nw");
 		}
 
-
 		void miow_Click(object sender, RoutedEventArgs e) {
 			MenuItem item = (sender as MenuItem);
 			var assocItem = (AssociationItem)item.Tag;
@@ -985,6 +984,7 @@ namespace BetterExplorer {
 				SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Move);
 			}
 		}
+		
 		private void SetFOperation(String fileName, BExplorer.Shell.OperationType opType) {
 			var obj = new ShellItem(fileName);
 			if (opType == BExplorer.Shell.OperationType.Copy)
@@ -1941,32 +1941,37 @@ namespace BetterExplorer {
 					Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Office2010/{0}.xaml", ThemeName)) });
 				}
 				Application.Current.Resources.EndInit();
+
+				Utilities.SetRegistryValue("CurrentTheme", ThemeName);
 			}));
 		}
 
 		private void btnSilver_Click(object sender, RoutedEventArgs e) {
 			ChangeRibbonTheme("Silver");
-			Utilities.SetRegistryValue("CurrentTheme", "Silver");
+			//Utilities.SetRegistryValue("CurrentTheme", "Silver");
 			KeepBackstageOpen = true;
 		}
 
 		private void btnBlue_Click(object sender, RoutedEventArgs e) {
 			ChangeRibbonTheme("Blue");
-			Utilities.SetRegistryValue("CurrentTheme", "Blue");
+			//Utilities.SetRegistryValue("CurrentTheme", "Blue");
 			KeepBackstageOpen = true;
 		}
 
 		private void btnBlack_Click(object sender, RoutedEventArgs e) {
 			ChangeRibbonTheme("Black");
-			btnBlack.IsChecked = true;
-
-			Utilities.SetRegistryValue("CurrentTheme", "Black");
+			//btnBlack.IsChecked = true;
+			//Utilities.SetRegistryValue("CurrentTheme", "Black");
 			KeepBackstageOpen = true;
 		}
 
 		private void btnGreen_Click(object sender, RoutedEventArgs e) {
-			ChangeRibbonThemeL("Green");
-			Utilities.SetRegistryValue("CurrentTheme", "Green");
+			//ChangeRibbonThemeL("Green");
+
+			ChangeRibbonTheme("Green");
+
+
+			//Utilities.SetRegistryValue("CurrentTheme", "Green");
 			KeepBackstageOpen = true;
 		}
 
@@ -4468,7 +4473,7 @@ namespace BetterExplorer {
 
 			// loads current Ribbon color theme
 			try {
-				switch (Convert.ToString(rks.GetValue(@"CurrentTheme", "Blue"))) {
+				switch (Convert.ToString(rks.GetValue("CurrentTheme", "Blue"))) {
 					case "Blue":
 						ChangeRibbonTheme("Blue");
 						break;
