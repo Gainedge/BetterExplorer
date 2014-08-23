@@ -1743,13 +1743,13 @@
 						</Ribbon:ToggleButton.ToolTip>
 					</Ribbon:ToggleButton>
 					<Ribbon:ToggleButton x:Name="btnInfoPane"
-								 Checked="btnInfoPane_Checked"
+								 Checked="btnInfoPane_CheckChanged"
 								 Header="{DynamicResource btnInfoCP}"
 								 Icon="Images\detailpane16.png"
 								 LargeIcon="Images\detailpane32.png"
 								 Ribbon:KeyTip.Keys="IP"
 								 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle"
-								 Unchecked="btnInfoPane_Unchecked">
+								 Unchecked="btnInfoPane_CheckChanged">
 						<Ribbon:ToggleButton.ToolTip>
 							<!--  "{DynamicResource btnInfoTCP}"  -->
 							<Ribbon:ScreenTip Title="{DynamicResource btnInfoCP}"

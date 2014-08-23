@@ -3161,29 +3161,45 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void btnInfoPane_Unchecked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				//ChangePaneVisibility(0x1, false);
+		private void btnInfoPane_CheckChanged(object sender, RoutedEventArgs e) {
+			if (isOnLoad) {
+			}
+			else if (e.RoutedEvent.Name == "Checked") {
+				this.rPreviewPane.Height = new GridLength(this.InfoPaneHeight);
+				this.rPreviewPaneSplitter.Height = new GridLength(1);
+				Utilities.SetRegistryValue("InfoPaneEnabled", 1);
+				this.IsInfoPaneEnabled = true;
+			}
+			else {
 				this.rPreviewPane.Height = new GridLength(0);
 				this.rPreviewPaneSplitter.Height = new GridLength(0);
 				Utilities.SetRegistryValue("InfoPaneEnabled", 0);
 				this.IsInfoPaneEnabled = false;
 				var selectedItem = ShellListView.SelectedItems.FirstOrDefault();
-				if (selectedItem != null) {
-					//PreviewPanel.FillPreviewPane(Explorer);
-				}
+			}
+		}
+
+
+		/*
+		private void btnInfoPane_Unchecked(object sender, RoutedEventArgs e) {
+			if (!isOnLoad) {
+				this.rPreviewPane.Height = new GridLength(0);
+				this.rPreviewPaneSplitter.Height = new GridLength(0);
+				Utilities.SetRegistryValue("InfoPaneEnabled", 0);
+				this.IsInfoPaneEnabled = false;
+				var selectedItem = ShellListView.SelectedItems.FirstOrDefault();
 			}
 		}
 
 		private void btnInfoPane_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
-				//ChangePaneVisibility(0x1, true);
 				this.rPreviewPane.Height = new GridLength(this.InfoPaneHeight);
 				this.rPreviewPaneSplitter.Height = new GridLength(1);
 				Utilities.SetRegistryValue("InfoPaneEnabled", 1);
 				this.IsInfoPaneEnabled = true;
 			}
 		}
+		*/
 
 		#endregion
 
@@ -3289,9 +3305,6 @@ namespace BetterExplorer {
 				if (edtSearchBox.FullSearchTerms != "") {
 					SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
 					ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
-					//this.ShellListView.CurrentFolder = searchFolder;
-					//ShellListView.Navigate(searchFolder, false, false);
-					//ShellListView.Navigate_Full(searchFolder, false);
 					NavigationController(searchFolder);
 				}
 			}
