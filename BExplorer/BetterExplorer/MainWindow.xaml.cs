@@ -3188,15 +3188,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		// Legacy Pane Code
-		private void chkIsInfoPane_Checked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				IsInfoPaneEnabled = true;
-				Utilities.SetRegistryValue("InfoPaneEnabled", 1);
-				//ChangePaneVisibility(0x1, true);
-			}
-		}
-
 		private void chkIsInfoPane_Unchecked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
 				Utilities.SetRegistryValue("InfoPaneEnabled", 0);
