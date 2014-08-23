@@ -3188,15 +3188,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void chkIsInfoPane_Unchecked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				Utilities.SetRegistryValue("InfoPaneEnabled", 0);
-				IsInfoPaneEnabled = false;
-				//ShellListView.NavigationOptions.PaneVisibility.Details = PaneVisibilityState.Hide;
-				//ShellListView.Navigate(ShellListView.CurrentFolder);
-			}
-		}
-
 		private void chkIsPreviewPane_Unchecked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
 				Utilities.SetRegistryValue("PreviewPaneEnabled", 0);
