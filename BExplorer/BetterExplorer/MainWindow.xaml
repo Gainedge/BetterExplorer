@@ -1726,13 +1726,13 @@
 						</Ribbon:ToggleButton.ToolTip>
 					</Ribbon:ToggleButton>
 					<Ribbon:ToggleButton x:Name="btnPreviewPane"
-								 Checked="btnPreviewPane_Checked"
+								 Checked="btnPreviewPane_CheckChanged"
 								 Header="{DynamicResource btnPreviewCP}"
 								 Icon="Images\prevpane16.png"
 								 LargeIcon="Images\prevpane32.png"
 								 Ribbon:KeyTip.Keys="PP"
 								 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Middle,Middle,Middle"
-								 Unchecked="btnPreviewPane_Unchecked">
+								 Unchecked="btnPreviewPane_CheckChanged">
 						<Ribbon:ToggleButton.ToolTip>
 							<!--  "{DynamicResource btnNavigationTCP}"  -->
 							<Ribbon:ScreenTip Title="{DynamicResource btnNavigationCP}"

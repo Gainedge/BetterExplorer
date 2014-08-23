@@ -3138,6 +3138,31 @@ namespace BetterExplorer {
 			}
 		}
 
+		private void btnPreviewPane_CheckChanged(object sender, RoutedEventArgs e) {
+			if (isOnLoad) {
+			}
+			else if (e.RoutedEvent.Name == "Checked") {
+				this.clPreview.Width = new GridLength((double)this.PreviewPaneWidth);
+				this.clPreviewSplitter.Width = new GridLength(1);
+				var selectedItem = ShellListView.SelectedItems.FirstOrDefault();
+				if (selectedItem != null && selectedItem.IsFileSystem && ShellListView.GetSelectedCount() == 1 && !selectedItem.IsFolder) {
+					this.Previewer.FileName = selectedItem.ParsingName;
+				}
+
+				Utilities.SetRegistryValue("PreviewPaneEnabled", 1);
+				this.IsPreviewPaneEnabled = true;
+			}
+			else {
+				this.clPreview.Width = new GridLength(0);
+				this.clPreviewSplitter.Width = new GridLength(0);
+				this.Previewer.FileName = null;
+				Utilities.SetRegistryValue("PreviewPaneEnabled", 0);
+				this.IsPreviewPaneEnabled = false;
+
+			}
+		}
+
+		/*
 		private void btnPreviewPane_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
 				this.clPreview.Width = new GridLength((double)this.PreviewPaneWidth);
@@ -3161,6 +3186,7 @@ namespace BetterExplorer {
 				this.IsPreviewPaneEnabled = false;
 			}
 		}
+		*/
 
 		private void btnInfoPane_Unchecked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
@@ -3185,26 +3211,6 @@ namespace BetterExplorer {
 				this.IsInfoPaneEnabled = true;
 			}
 		}
-
-		private void chkIsPreviewPane_Unchecked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				Utilities.SetRegistryValue("PreviewPaneEnabled", 0);
-				IsPreviewPaneEnabled = false;
-				//ShellListView.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Hide;
-				//ShellListView.Navigate(ShellListView.CurrentFolder);
-			}
-		}
-
-		private void chkIsPreviewPane_Checked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				Utilities.SetRegistryValue("PreviewPaneEnabled", 1);
-				IsPreviewPaneEnabled = true;
-				//ShellListView.NavigationOptions.PaneVisibility.Preview = PaneVisibilityState.Show;
-				//ShellListView.SetState();
-				//ShellListView.Navigate(ShellListView.CurrentFolder);
-			}
-		}
-
 
 		#endregion
 
