@@ -3158,35 +3158,8 @@ namespace BetterExplorer {
 				this.Previewer.FileName = null;
 				Utilities.SetRegistryValue("PreviewPaneEnabled", 0);
 				this.IsPreviewPaneEnabled = false;
-
 			}
 		}
-
-		/*
-		private void btnPreviewPane_Checked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				this.clPreview.Width = new GridLength((double)this.PreviewPaneWidth);
-				this.clPreviewSplitter.Width = new GridLength(1);
-				var selectedItem = ShellListView.SelectedItems.FirstOrDefault();
-				if (selectedItem != null && selectedItem.IsFileSystem && ShellListView.GetSelectedCount() == 1 && !selectedItem.IsFolder) {
-					this.Previewer.FileName = selectedItem.ParsingName;
-				}
-
-				Utilities.SetRegistryValue("PreviewPaneEnabled", 1);
-				this.IsPreviewPaneEnabled = true;
-			}
-		}
-
-		private void btnPreviewPane_Unchecked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				this.clPreview.Width = new GridLength(0);
-				this.clPreviewSplitter.Width = new GridLength(0);
-				this.Previewer.FileName = null;
-				Utilities.SetRegistryValue("PreviewPaneEnabled", 0);
-				this.IsPreviewPaneEnabled = false;
-			}
-		}
-		*/
 
 		private void btnInfoPane_Unchecked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
@@ -3222,6 +3195,7 @@ namespace BetterExplorer {
 			if (!backstage.IsOpen)
 				ShellListView.Focus();
 		}
+
 		/*
 		private void SaveHistoryToFile(string relativepath, List<String> history) {
 			// Write each entry to a file. (the "false" parameter makes sure the file is overwritten.)
@@ -3235,6 +3209,7 @@ namespace BetterExplorer {
 		}
 		*/
 
+		/*
 		void bbi_Drop(object sender, DragEventArgs e) {
 			var pt = e.GetPosition(sender as IInputElement);
 
@@ -3303,6 +3278,7 @@ namespace BetterExplorer {
 			wpt.Y = (int)ptw.Y;
 			DropTargetHelper.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 		}
+		*/
 
 		#endregion
 
