@@ -3128,25 +3128,15 @@ namespace BetterExplorer {
 		private void btnNavigationPane_CheckChanged(object sender, RoutedEventArgs e) {
 			if (isOnLoad) {
 			}
-			else if (e.RoutedEvent.Name == "Checked")
+			else if (e.RoutedEvent.Name == "Checked") {
 				TreeGrid.ColumnDefinitions[0].Width = new GridLength(200);
-			else
+				Utilities.SetRegistryValue("NavigationPaneEnabled", 1);
+			}
+			else {
 				TreeGrid.ColumnDefinitions[0].Width = new GridLength(1);
+				Utilities.SetRegistryValue("NavigationPaneEnabled", 0);
+			}
 		}
-
-		/*
-		[Obsolete("Does Nothing")]
-		private void btnNavigationPane_Checked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad)
-				TreeGrid.ColumnDefinitions[0].Width = new GridLength(200);
-		}
-
-		[Obsolete("Does Nothing")]
-		private void btnNavigationPane_Unchecked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad)
-				TreeGrid.ColumnDefinitions[0].Width = new GridLength(0);
-		}
-		*/
 
 		private void btnPreviewPane_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
