@@ -3323,8 +3323,6 @@ namespace BetterExplorer {
 
 		#region Search
 
-		int CurrentProgressValue = 0;
-
 		public void DoSearch() {
 			try {
 				if (edtSearchBox.FullSearchTerms != "") {
@@ -3598,7 +3596,6 @@ namespace BetterExplorer {
 
 		void gli_Click(object sender, NavigationLogEventArgs e) {
 			tcMain.ReOpenTab(e.NavigationLog);
-			//reopenabletabs.Remove((sender as UndoCloseGalleryItem).nav);
 			btnUndoClose.IsEnabled = tcMain.ReopenableTabs.Count != 0;
 		}
 
@@ -3614,12 +3611,7 @@ namespace BetterExplorer {
 		void t_Tick(object sender, EventArgs e) {
 			if (!Keyboard.IsKeyDown(Key.Tab)) {
 				var item = (sender as System.Windows.Forms.Timer).Tag as ShellItem;
-				//this.ShellListView.Cancel = true;
 				if (item != this.ShellListView.CurrentFolder || item.IsSearchFolder) {
-					//this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
-					//this.ShellListView.CurrentFolder = item;
-					//ShellListView.Navigate(item, false, false);
-					//ShellListView.Navigate_Full(item, true);
 					NavigationController(item);
 				}
 				(sender as System.Windows.Forms.Timer).Stop();
