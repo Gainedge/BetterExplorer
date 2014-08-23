@@ -1709,13 +1709,13 @@
 								 Header="{DynamicResource tbPanesCP}"
 								 Ribbon:KeyTip.Keys="P">
 					<Ribbon:ToggleButton x:Name="btnNavigationPane"
-								 Checked="btnNavigationPane_Checked"
+								 Checked="btnNavigationPane_CheckChanged"
 								 Header="{DynamicResource btnNavigationCP}"
 								 Icon="Images\navpane16.png"
 								 LargeIcon="Images\navpane32.png"
 								 Ribbon:KeyTip.Keys="NP"
 								 Ribbon:RibbonAttachedProperties.RibbonSizeDefinition="Large,Middle,Middle"
-								 Unchecked="btnNavigationPane_Unchecked">
+								 Unchecked="btnNavigationPane_CheckChanged">
 						<Ribbon:ToggleButton.ToolTip>
 							<!--  "{DynamicResource btnNavigationTCP}"  -->
 							<Ribbon:ScreenTip Title="{DynamicResource btnNavigationCP}"
@@ -3092,14 +3092,14 @@
 					HorizontalAlignment="Stretch"
 					VerticalAlignment="Center"
 					Background="LightBlue" />
-			<Grid Grid.Column="0" Grid.Row="2" Background="White" ClipToBounds="True">
+			<Grid x:Name="TreeGrid" Grid.Column="0" Grid.Row="2" Background="White" ClipToBounds="True">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="200"/>
 					<ColumnDefinition Width="2"/>
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
 				<Helper:NoFlickerWindowsFormsHost x:Name="ShellTreeHost" Grid.Column="0" Background="White"/>
-				<GridSplitter Grid.Column="1" Width="2" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="LightGray"/>
+				<GridSplitter x:Name="TreeSplitter" Grid.Column="1" Width="2" HorizontalAlignment="Center" VerticalAlignment="Stretch" Background="LightGray"/>
 				<Helper:NoFlickerWindowsFormsHost x:Name="ShellViewHost" Grid.Column="2" Background="White"/>
 			</Grid>
 			<GridSplitter Grid.Row="2"
