@@ -3140,7 +3140,6 @@ namespace BetterExplorer {
 
 		private void btnPreviewPane_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
-				//ChangePaneVisibility(0x2, true);
 				this.clPreview.Width = new GridLength((double)this.PreviewPaneWidth);
 				this.clPreviewSplitter.Width = new GridLength(1);
 				var selectedItem = ShellListView.SelectedItems.FirstOrDefault();
@@ -3155,7 +3154,6 @@ namespace BetterExplorer {
 
 		private void btnPreviewPane_Unchecked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
-				//ChangePaneVisibility(0x2, false);
 				this.clPreview.Width = new GridLength(0);
 				this.clPreviewSplitter.Width = new GridLength(0);
 				this.Previewer.FileName = null;
