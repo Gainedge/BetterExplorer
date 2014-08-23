@@ -163,10 +163,12 @@ namespace BetterExplorer {
 			fAbout.ShowDialog();
 		}
 
+		/*
 		private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e) {
 			ScrollViewer scviewer = (sender as ScrollViewer);
 			scviewer.ScrollToHorizontalOffset(scviewer.HorizontalOffset - e.Delta);
 		}
+		*/
 
 		private void btnBugtracker_Click(object sender, RoutedEventArgs e) {
 			Process.Start("http://bugtracker.better-explorer.com");
