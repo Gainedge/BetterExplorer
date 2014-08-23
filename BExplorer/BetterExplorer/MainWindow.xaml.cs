@@ -3179,38 +3179,19 @@ namespace BetterExplorer {
 			}
 		}
 
-
-		/*
-		private void btnInfoPane_Unchecked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				this.rPreviewPane.Height = new GridLength(0);
-				this.rPreviewPaneSplitter.Height = new GridLength(0);
-				Utilities.SetRegistryValue("InfoPaneEnabled", 0);
-				this.IsInfoPaneEnabled = false;
-				var selectedItem = ShellListView.SelectedItems.FirstOrDefault();
-			}
-		}
-
-		private void btnInfoPane_Checked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				this.rPreviewPane.Height = new GridLength(this.InfoPaneHeight);
-				this.rPreviewPaneSplitter.Height = new GridLength(1);
-				Utilities.SetRegistryValue("InfoPaneEnabled", 1);
-				this.IsInfoPaneEnabled = true;
-			}
-		}
-		*/
-
 		#endregion
 
 		#region Breadcrumb Bar
 
-
+		/*
 		private void RibbonWindow_GotFocus(object sender, RoutedEventArgs e) {
-			//breadcrumbBarControl1.ExitEditMode_IfNeeded();
+			//'Try To Remove this Method!!'
+
+			////breadcrumbBarControl1.ExitEditMode_IfNeeded();
 			if (!backstage.IsOpen)
 				ShellListView.Focus();
 		}
+		*/
 
 		/*
 		private void SaveHistoryToFile(string relativepath, List<String> history) {
