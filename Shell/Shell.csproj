@@ -121,7 +121,6 @@
     <Compile Include="Interop\IFileOperationProgressSink.cs" />
     <Compile Include="Interop\IFileOperation.cs" />
     <Compile Include="NavigationLog.cs" />
-    <Compile Include="ShellViewListItem.cs" />
     <Compile Include="SysImageList.cs">
       <SubType>Code</SubType>
     </Compile>

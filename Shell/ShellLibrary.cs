@@ -407,16 +407,13 @@ namespace BExplorer.Shell {
 		/// <param name="isReadOnly">If <B>true</B>, opens the library in read-only mode.</param>
 		/// <returns>A ShellLibrary Object</returns>
 		public static ShellLibrary Load(string libraryName, string folderPath, bool isReadOnly) {
-
 			// Create the shell item path
 			string shellItemPath = System.IO.Path.Combine(folderPath, libraryName + FileExtension);
-			ShellItem item = new ShellItem(shellItemPath);
+			var item = new ShellItem(shellItemPath);
 
 			IShellItem nativeShellItem = item.ComInterface;
-			INativeShellLibrary nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
-			AccessModes flags = isReadOnly ?
-							AccessModes.Read :
-							AccessModes.ReadWrite;
+			var nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
+			var flags = isReadOnly ? AccessModes.Read : AccessModes.ReadWrite;
 			nativeShellLibrary.LoadLibraryFromItem(nativeShellItem, flags);
 
 			ShellLibrary library = new ShellLibrary(nativeShellLibrary);
@@ -439,16 +436,11 @@ namespace BExplorer.Shell {
 		/// <param name="isReadOnly">read-only flag</param>
 		/// <returns>A ShellLibrary Object</returns>
 		public static ShellLibrary FromShellItem(IShellItem nativeShellItem, bool isReadOnly) {
-
-			INativeShellLibrary nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
-
-			AccessModes flags = isReadOnly ?
-							AccessModes.Read :
-							AccessModes.ReadWrite;
+			var nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
+			var flags = isReadOnly ? AccessModes.Read : AccessModes.ReadWrite;
 
 			nativeShellLibrary.LoadLibraryFromItem(nativeShellItem, flags);
-
-			ShellLibrary library = new ShellLibrary(nativeShellLibrary);
+			var library = new ShellLibrary(nativeShellLibrary);
 			library.ComInterface = (IShellItem)nativeShellItem;
 
 			return library;

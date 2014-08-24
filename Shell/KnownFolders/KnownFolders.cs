@@ -13,6 +13,7 @@ namespace BExplorer.Shell {
 	/// </summary>
 	public static class KnownFolders {
 
+		/*
 		/// <summary>
 		/// Gets a strongly-typed read-only collection of all the registered known folders.
 		/// </summary>
@@ -21,7 +22,9 @@ namespace BExplorer.Shell {
 				return GetAllFolders();
 			}
 		}
+		*/
 
+		/*
 		private static ReadOnlyCollection<IKnownFolder> GetAllFolders() {
 			// Should this method be thread-safe?? (It'll take a while to get a list of all the
 			// known folders, create the managed wrapper and return the read-only collection.
@@ -58,6 +61,56 @@ namespace BExplorer.Shell {
 
 			return new ReadOnlyCollection<IKnownFolder>(foldersList);
 		}
+		*/
+
+
+		/// <summary>
+		/// Gets a strongly-typed read-only collection of all the registered known folders.
+		/// </summary>
+		public static ReadOnlyCollection<IKnownFolder> All {
+			get {
+				// Should this method be thread-safe?? (It'll take a while to get a list of all the
+				// known folders, create the managed wrapper and return the read-only collection.
+
+				IList<IKnownFolder> foldersList = new List<IKnownFolder>();
+				uint count;
+				IntPtr folders = IntPtr.Zero;
+
+				try {
+					KnownFolderManagerClass knownFolderManager = new KnownFolderManagerClass();
+					knownFolderManager.GetFolderIds(out folders, out count);
+
+					if (count > 0 && folders != IntPtr.Zero) {
+						// Loop through all the KnownFolderID elements
+						for (int i = 0; i < count; i++) {
+							// Read the current pointer
+							IntPtr current = new IntPtr(folders.ToInt64() + (Marshal.SizeOf(typeof(Guid)) * i));
+
+							// Convert to Guid
+							Guid knownFolderID = (Guid)Marshal.PtrToStructure(current, typeof(Guid));
+
+							IKnownFolder kf = KnownFolderHelper.FromKnownFolderIdInternal(knownFolderID);
+
+							// Add to our collection if it's not null (some folders might not exist on
+							// the system or we could have an exception that resulted in the null return
+							// from above method call
+							if (kf != null) { foldersList.Add(kf); }
+						}
+					}
+				}
+				finally {
+					if (folders != IntPtr.Zero) { Marshal.FreeCoTaskMem(folders); }
+				}
+
+				return new ReadOnlyCollection<IKnownFolder>(foldersList);
+			}
+		}
+
+
+
+
+
+
 
 		private static IKnownFolder GetKnownFolder(Guid guid) {
 			return KnownFolderHelper.FromKnownFolderId(guid);

@@ -114,6 +114,7 @@ namespace BExplorer.Shell {
 			return kf;
 		}
 
+		/*
 		/// <summary>
 		/// Returns a known folder given its shell path, such as <c>C:\users\public\documents</c> or 
 		/// <c>::{645FF040-5081-101B-9F08-00AA002F954E}</c> for the Recycle Bin.
@@ -123,7 +124,8 @@ namespace BExplorer.Shell {
 		public static IKnownFolder FromPath(string path) {
 			return KnownFolderHelper.FromParsingName(path);
 		}
-
+		*/
+		
 		/// <summary>
 		/// Returns a known folder given its shell namespace parsing name, such as 
 		/// <c>::{645FF040-5081-101B-9F08-00AA002F954E}</c> for the Recycle Bin.
@@ -138,6 +140,13 @@ namespace BExplorer.Shell {
 			k.FindFolderFromPath(parsingName, 0, out folder);
 			return (IKnownFolder)folder;
 		}
+
+		/// <summary>
+		/// Returns a known folder given its shell path, such as <c>C:\users\public\documents</c> or 
+		/// <c>::{645FF040-5081-101B-9F08-00AA002F954E}</c> for the Recycle Bin.
+		/// </summary>
+		/// <param name="parsingName">The path for the requested known folder; either a physical path or a virtual path.</param>
+		/// <returns>A known folder representing the specified name.</returns>
 		public static IKnownFolder FromParsingName(string parsingName) {
 			if (parsingName == null) {
 				throw new ArgumentNullException("parsingName");
