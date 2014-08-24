@@ -3601,7 +3601,6 @@ namespace BetterExplorer {
 
 		private void btnUndoClose_Click(object sender, RoutedEventArgs e) {
 			tcMain.ReOpenTab(tcMain.ReopenableTabs[tcMain.ReopenableTabs.Count - 1]);
-			//reopenabletabs.RemoveAt(reopenabletabs.Count - 1);
 			btnUndoClose.IsEnabled = tcMain.ReopenableTabs.Count != 0;
 		}
 
@@ -3845,7 +3844,7 @@ namespace BetterExplorer {
 			var ctf = new FolderSelectDialog();
 			ctf.Title = "Change Tab Folder";
 			ctf.InitialDirectory = new DirectoryInfo(sstdir).Parent.FullName;
-			if (ctf.ShowDialog() == true) {
+			if (ctf.ShowDialog()) {
 				Utilities.SetRegistryValue("SavedTabsDirectory", ctf.FileName + "\\");
 				txtDefSaveTabs.Text = ctf.FileName + "\\";
 				sstdir = ctf.FileName + "\\";
@@ -3961,6 +3960,14 @@ namespace BetterExplorer {
 		}
 
 		private bool DoVerb(Shell32.FolderItem Item, string Verb) {
+			//TODO: Test
+			var Found = Item.Verbs().OfType<FolderItemVerb>().SingleOrDefault(FIVerb => FIVerb.Name.ToUpper().Contains(Verb.ToUpper()));
+			if (Found != null) Found.DoIt();
+			return Found != null;
+
+			/**********************************/
+			/**********************************/
+
 			foreach (FolderItemVerb FIVerb in Item.Verbs()) {
 				if (FIVerb.Name.ToUpper().Contains(Verb.ToUpper())) {
 					FIVerb.DoIt();
