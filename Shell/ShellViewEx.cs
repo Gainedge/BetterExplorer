@@ -4344,7 +4344,10 @@ namespace BExplorer.Shell {
 				var item = this.Items[ItemForRename];
 				if (!Cancel) {
 					ItemForRename = -1;
-					RenameShellItem(item.ComInterface, NewName);
+
+					if (item.DisplayName != NewName) {
+						RenameShellItem(item.ComInterface, NewName);
+					}
 				}
 				this.RedrawWindow();
 			}
