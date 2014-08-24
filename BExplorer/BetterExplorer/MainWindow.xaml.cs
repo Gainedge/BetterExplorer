@@ -2804,10 +2804,6 @@ namespace BetterExplorer {
 			}
 		}
 
-
-
-
-
 		//[Obsolete("Merge into a multi control event using RotateImages just like Convert_Images(...)!!!!")]
 		//private void btnRotateLeft_Click(object sender, RoutedEventArgs e) {
 		//	RotateImages(RotateFlipType.Rotate270FlipNone, "_Rotated270");
@@ -2896,8 +2892,6 @@ namespace BetterExplorer {
 		//	*/
 		//}
 
-
-
 		private void btnResize_Click(object sender, RoutedEventArgs e) {
 			ResizeImage.Open(ShellListView.GetFirstSelectedItem());
 		}
@@ -2905,6 +2899,7 @@ namespace BetterExplorer {
 		#endregion
 
 		#region Folder Tools Commands
+
 		private void btnChangeFoldericon_Click(object sender, RoutedEventArgs e) {
 			new IconView().LoadIcons(this.ShellListView, false);
 		}
@@ -2912,6 +2907,7 @@ namespace BetterExplorer {
 		private void btnClearFoldericon_Click(object sender, RoutedEventArgs e) {
 			ShellListView.ClearFolderIcon(ShellListView.GetFirstSelectedItem().ParsingName);
 		}
+
 		#endregion
 
 		#region Registry Setting Changes / BetterExplorerOperations Calls / Action Log
@@ -2974,7 +2970,6 @@ namespace BetterExplorer {
 			}
 		}
 
-
 		private void btnSetCurrentasStartup_Click(object sender, RoutedEventArgs e) {
 			backstage.IsOpen = true;
 			string CurrentLocString = ShellListView.CurrentFolder.ParsingName;
@@ -2984,8 +2979,6 @@ namespace BetterExplorer {
 
 			Utilities.SetRegistryValue("StartUpLoc", CurrentLocString);
 		}
-
-
 
 		private void chkIsFlyout_CheckChanged(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
@@ -3054,8 +3047,6 @@ namespace BetterExplorer {
 			Utilities.SetRegistryValue("SearchBarWidth", SearchBarColumn.Width.Value);
 		}
 
-		// e.RoutedEvent.Name == "Checked"
-
 		private void chkShowCheckBoxes_CheckChanged(object sender, RoutedEventArgs e) {
 			ShellListView.ShowCheckboxes = e.RoutedEvent.Name == "Checked";
 			ShellListView.RefreshContents();
@@ -3102,15 +3093,21 @@ namespace BetterExplorer {
 			if (!TheRibbon.IsMinimized) {
 			}
 			else if (chkRibbonMinimizedGlass.IsChecked.Value) {
-				System.Windows.Point p = ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+				var p = ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
 				this.GlassBorderThickness = new Thickness(8, p.Y, 8, 8);
 			}
 			else {
-				System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+				var p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
 				this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
 			}
 		}
 
+		private void chkLogHistory_Checked(object sender, RoutedEventArgs e) {
+			canlogactions = e.RoutedEvent.Name == "Checked";
+			Utilities.SetRegistryValue("EnableActionLog", e.RoutedEvent.Name == "Checked" ? 1 : 0);
+		}
+
+		/*
 		private void chkLogHistory_Checked(object sender, RoutedEventArgs e) {
 			canlogactions = true;
 			Utilities.SetRegistryValue("EnableActionLog", 1);
@@ -3120,7 +3117,7 @@ namespace BetterExplorer {
 			canlogactions = false;
 			Utilities.SetRegistryValue("EnableActionLog", 0);
 		}
-
+		*/
 		private void btnShowLogs_Click(object sender, RoutedEventArgs e) {
 			try {
 				if (!Directory.Exists(logdir)) Directory.CreateDirectory(logdir);
