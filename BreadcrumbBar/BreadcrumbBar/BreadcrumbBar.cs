@@ -339,6 +339,12 @@ namespace Odyssey.Controls {
 						Int64 pidl;
 						bool isValidPidl = Int64.TryParse(_Path.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
 						ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : ShellItem.TryCreate(_Path);
+
+						//TODO: Find a better way of doing this!!!
+						if (item == null && this.SelectedItem.DisplayName == "Computer") {
+							item = new ShellItem(Environment.SpecialFolder.MyComputer);
+						}
+
 						if (item != null)
 							OnNavigate(item);
 					}
@@ -675,26 +681,8 @@ namespace Odyssey.Controls {
 			if (SelectedBreadcrumb != null) {
 				SelectedItem = SelectedBreadcrumb.Data;
 			}
-			//Path = path_conversation(PathConversionEventArgs.ConversionMode.DisplayToEdit); //GetEditPath();
 
 			Path = GetDisplayPath();
-			/*
-			return;
-			string newPath = GetDisplayPath();  //= e.DisplayPath;
-			if (newPath != null && newPath.StartsWith("%")) {
-				newPath = Environment.ExpandEnvironmentVariables(newPath);
-			}
-			if (_IsBreadcrumbBarSelectionChnagedAllowed) {
-				_IsBreadcrumbBarSelectionChnagedAllowed = false;
-
-				Int64 pidl;
-				bool isValidPidl = Int64.TryParse(newPath.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
-				ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(newPath.ToShellParsingName());
-				OnNavigate(item);
-			}
-
-			Path = newPath;
-			*/
 		}
 
 		private void breadcrumbItemTraceValueChanged(object sender, RoutedEventArgs e) {
@@ -706,7 +694,7 @@ namespace Odyssey.Controls {
 		}
 
 		private void breadcrumbItemSelectionChangedEvent(object sender, RoutedEventArgs e) {
-			BreadcrumbItem parent = e.Source as BreadcrumbItem;
+			var parent = e.Source as BreadcrumbItem;
 			if (parent != null && parent.SelectedBreadcrumb != null) {
 				if (parent.SelectedBreadcrumb.Items.Count == 0) {
 					if (parent.SelectedBreadcrumb.TraceValue.Equals(((ShellItem)KnownFolders.Computer).DisplayName)) {
