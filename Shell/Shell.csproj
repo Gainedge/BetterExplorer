@@ -100,7 +100,7 @@
     <Compile Include="Interop\TestDialog.cs" />
     <Compile Include="Interop\Wallpaer.cs" />
     <Compile Include="Reflector.cs" />
-    <Compile Include="CommonFileDialogs\FolderSelectDialog.cs" />
+    <Compile Include="FolderSelectDialog.cs" />
     <Compile Include="FolderSettings.cs" />
     <Compile Include="FileOperation\AsyncUnbuffCopy.cs" />
     <Compile Include="FileOperation\FileOperationProgressSink.cs" />
@@ -143,7 +143,7 @@
     <Compile Include="Interop\CredUI.cs" />
     <Compile Include="Interop\Helpers.cs" />
     <Compile Include="Interop\ShellNotifications.cs" />
-    <Compile Include="Libraries\ShellLibrary.cs" />
+    <Compile Include="ShellLibrary.cs" />
     <Compile Include="SyncQueue.cs" />
     <Compile Include="Collumns.cs" />
     <Compile Include="Defaults.cs" />
@@ -188,7 +188,7 @@
     <Compile Include="ShellViewEx.Designer.cs">
       <DependentUpon>ShellViewEx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Taskbar\TaskBar.cs" />
+    <Compile Include="TaskBar.cs" />
     <Compile Include="ToolTip.xaml.cs">
       <DependentUpon>ToolTip.xaml</DependentUpon>
     </Compile>
@@ -238,7 +238,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ShellContextMenu.cs" />
-    <Compile Include="ShellHistory.cs" />
     <Compile Include="ShellItem.cs" />
     <Compile Include="ShellNotificationListener.cs">
       <SubType>Component</SubType>
@@ -253,10 +252,10 @@
     <Compile Include="WindowsSearch\ShellSearchConnector.cs" />
     <Compile Include="WindowsSearch\ShellSearchFolder.cs" />
     <Compile Include="_Plugin Interfaces\IShellItemEx.cs" />
-    <Compile Include="__Transfered\Icons\IconFile.cs" />
-    <Compile Include="__Transfered\Icons\IconReader.cs" />
-    <Compile Include="__Transfered\JunctionPoint.cs" />
-    <Compile Include="__Transfered\WindowsAPI.cs" />
+    <Compile Include="Icons\IconFile.cs" />
+    <Compile Include="Icons\IconReader.cs" />
+    <Compile Include="JunctionPoint.cs" />
+    <Compile Include="WindowsAPI.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
