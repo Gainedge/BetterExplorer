@@ -102,6 +102,7 @@ namespace BExplorer.Shell {
 		public IntPtr pitem;
 	}
 
+	/*
 	[StructLayout(LayoutKind.Sequential)]
 	public struct NMCUSTOMDRAW {
 		// 48/80	
@@ -113,6 +114,7 @@ namespace BExplorer.Shell {
 		public CDIS uItemState;
 		public IntPtr lItemlParam;
 	}
+	*/
 
 	/*
 	//[StructLayout(LayoutKind.Sequential)]
