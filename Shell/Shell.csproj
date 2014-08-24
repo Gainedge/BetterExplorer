@@ -97,7 +97,6 @@
     <Compile Include="AssociationItem.cs" />
     <Compile Include="FOperationProgressSink.cs" />
     <Compile Include="Interop\IOperationsProgressDialog.cs" />
-    <Compile Include="Interop\TestDialog.cs" />
     <Compile Include="Interop\Wallpaer.cs" />
     <Compile Include="Reflector.cs" />
     <Compile Include="FolderSelectDialog.cs" />
@@ -174,7 +173,6 @@
     <Compile Include="KnownFolders\KnownFolderSettings.cs" />
     <Compile Include="KnownFolders\NonFileSystemKnownFolder.cs" />
     <Compile Include="KnownFolders\RedirectionCapabilities.cs" />
-    <Compile Include="KnownFolders\RetrievalOptions.cs" />
     <Compile Include="LinqProgress.cs" />
     <Compile Include="LVItemColor.cs" />
     <Compile Include="Interop\Enums.cs" />
@@ -247,8 +245,6 @@
     <Compile Include="WindowsSearch\SearchCondition.cs" />
     <Compile Include="WindowsSearch\SearchConditionFactory.cs" />
     <Compile Include="WindowsSearch\ShellSavedSearchCollection.cs" />
-    <Compile Include="WindowsSearch\ShellSearchCollection.cs" />
-    <Compile Include="WindowsSearch\ShellSearchConnector.cs" />
     <Compile Include="WindowsSearch\ShellSearchFolder.cs" />
     <Compile Include="_Plugin Interfaces\IShellItemEx.cs" />
     <Compile Include="Icons\IconFile.cs" />
