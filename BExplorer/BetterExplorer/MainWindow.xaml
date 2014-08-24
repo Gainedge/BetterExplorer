@@ -407,10 +407,10 @@
 										</StackPanel>
 										<Label x:Name="paddinglbl6" Content="         " />
 										<Ribbon:CheckBox x:Name="chkIsTerraCopyEnabled"
-									 Checked="chkIsTerraCopyEnabled_Checked"
+									 Checked="chkIsTerraCopyEnabled_CheckChanged"
 									 Header="{DynamicResource chkIsTerraCopyEnabled}"
 									 Ribbon:KeyTip.Keys="T"
-									 Unchecked="chkIsTerraCopyEnabled_Unchecked">
+									 Unchecked="chkIsTerraCopyEnabled_CheckChanged">
 											<Ribbon:CheckBox.ToolTip>
 												<!--  Title="{DynamicResource chkIsTerraCopyEnabledHCP}"  -->
 												<Ribbon:ScreenTip Title="{DynamicResource chkIsTerraCopyEnabled}"
@@ -446,10 +446,10 @@
 										</Ribbon:CheckBox>
 										<Label Name="paddinglbl9" Content="         " />
 										<Ribbon:CheckBox x:Name="chkIsRestoreTabs"
-									 Checked="chkIsRestoreTabs_Checked"
+									 Checked="chkIsRestoreTabs_CheckChanged"
 									 Header="{DynamicResource cbIsResttoreCP}"
 									 Ribbon:KeyTip.Keys="R"
-									 Unchecked="chkIsRestoreTabs_Unchecked">
+									 Unchecked="chkIsRestoreTabs_CheckChanged">
 											<Ribbon:CheckBox.ToolTip>
 												<Ribbon:ScreenTip Title="{DynamicResource cbIsResttoreCP}"
 											Width="250"
@@ -935,10 +935,10 @@
 												 Visibility="Collapsed" />
 											<Ribbon:CheckBox x:Name="chkIsFlyout"
 										 Margin="0,0,0,10"
-										 Checked="chkIsFlyout_Checked"
+										 Checked="chkIsFlyout_CheckChanged"
 										 Header="Show Hover Flyout (incomplete, experimental feature)"
 										 Ribbon:KeyTip.Keys="H"
-										 Unchecked="chkIsFlyout_Unchecked"
+										 Unchecked="chkIsFlyout_CheckChanged"
 										 Visibility="Collapsed">
 												<Ribbon:CheckBox.ToolTip>
 													<Ribbon:ScreenTip Title="Show Hover Flyout"
@@ -953,7 +953,7 @@
 										 Checked="chkOverwriteImages_Checked"
 										 Header="{DynamicResource chkEditOverwrite}"
 										 Ribbon:KeyTip.Keys="V"
-										 Unchecked="chkOverwriteImages_Unchecked">
+										 Unchecked="chkOverwriteImages_Checked">
 												<Ribbon:CheckBox.ToolTip>
 													<Ribbon:ScreenTip Title="{DynamicResource chkEditOverwrite}"
 											Width="250"
@@ -1936,10 +1936,10 @@
 								 Header="{DynamicResource tgShowHideCP}"
 								 Ribbon:KeyTip.Keys="SH">
 					<Ribbon:CheckBox x:Name="chkShowCheckBoxes"
-							 Checked="chkShowCheckBoxes_Checked"
+							 Checked="chkShowCheckBoxes_CheckChanged"
 							 Header="{DynamicResource chkShowCheckBoxesCP}"
 							 Ribbon:KeyTip.Keys="C"
-							 Unchecked="chkShowCheckBoxes_Unchecked">
+							 Unchecked="chkShowCheckBoxes_CheckChanged">
 						<Ribbon:CheckBox.ToolTip>
 							<Ribbon:ScreenTip Title="{DynamicResource chkShowCheckBoxesCP}"
 								Width="250"

@@ -984,7 +984,7 @@ namespace BetterExplorer {
 				SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Move);
 			}
 		}
-		
+
 		private void SetFOperation(String fileName, BExplorer.Shell.OperationType opType) {
 			var obj = new ShellItem(fileName);
 			if (opType == BExplorer.Shell.OperationType.Copy)
@@ -1921,6 +1921,7 @@ namespace BetterExplorer {
 
 		#region Change Ribbon Color (Theme)
 
+		/*
 		public void ChangeRibbonThemeL(string ThemeName) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
 				Resources.BeginInit();
@@ -1929,17 +1930,17 @@ namespace BetterExplorer {
 				Resources.EndInit();
 			}));
 		}
+		*/
 
 		public void ChangeRibbonTheme(string ThemeName, bool IsMetro = false) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
 				Application.Current.Resources.BeginInit();
 				Application.Current.Resources.MergedDictionaries.RemoveAt(1);
-				if (IsMetro) {
+				if (IsMetro)
 					Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Metro/{0}.xaml", "White")) });
-				}
-				else {
+				else
 					Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Office2010/{0}.xaml", ThemeName)) });
-				}
+
 				Application.Current.Resources.EndInit();
 
 				Utilities.SetRegistryValue("CurrentTheme", ThemeName);
@@ -1948,30 +1949,24 @@ namespace BetterExplorer {
 
 		private void btnSilver_Click(object sender, RoutedEventArgs e) {
 			ChangeRibbonTheme("Silver");
-			//Utilities.SetRegistryValue("CurrentTheme", "Silver");
 			KeepBackstageOpen = true;
 		}
 
 		private void btnBlue_Click(object sender, RoutedEventArgs e) {
 			ChangeRibbonTheme("Blue");
-			//Utilities.SetRegistryValue("CurrentTheme", "Blue");
 			KeepBackstageOpen = true;
 		}
 
 		private void btnBlack_Click(object sender, RoutedEventArgs e) {
 			ChangeRibbonTheme("Black");
-			//btnBlack.IsChecked = true;
-			//Utilities.SetRegistryValue("CurrentTheme", "Black");
 			KeepBackstageOpen = true;
 		}
 
 		private void btnGreen_Click(object sender, RoutedEventArgs e) {
-			//ChangeRibbonThemeL("Green");
+			System.Windows.Forms.MessageBox.Show("This does not work");
+			return;
 
 			ChangeRibbonTheme("Green");
-
-
-			//Utilities.SetRegistryValue("CurrentTheme", "Green");
 			KeepBackstageOpen = true;
 		}
 
@@ -2048,6 +2043,7 @@ namespace BetterExplorer {
 		//    CreateArchive_Show(OutArchiveFormat.Tar);
 		//}
 
+
 		private void miExtractToLocation_Click(object sender, RoutedEventArgs e) {
 			var selectedItems = ShellListView.SelectedItems.Select(item => item.ParsingName).ToList();
 
@@ -2068,6 +2064,7 @@ namespace BetterExplorer {
 				//dialog.Show();
 			}
 		}
+
 
 		private void miExtractHere_Click(object sender, RoutedEventArgs e) {
 			string FileName = ShellListView.GetFirstSelectedItem().ParsingName;
@@ -2245,13 +2242,11 @@ namespace BetterExplorer {
 
 		private void leftNavBut_Click(object sender, RoutedEventArgs e) {
 			tcMain.isGoingBackOrForward = true;
-			//ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack(), true);
 			NavigationController((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack());
 		}
 
 		private void rightNavBut_Click(object sender, RoutedEventArgs e) {
 			tcMain.isGoingBackOrForward = true;
-			//ShellListView.Navigate((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateForward(), true);
 			NavigationController((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateForward());
 		}
 
@@ -2266,15 +2261,6 @@ namespace BetterExplorer {
 
 					cmHistory.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.Thumbnail.BitmapSource,
 																 checkable: true, isChecked: i == nl.CurrentLocPos, GroupName: "G1", onClick: miItems_Click));
-					//MenuItem mi = new MenuItem();
-					//mi.Header = item.GetDisplayName(SIGDN.NORMALDISPLAY);
-					//mi.Tag = item;
-					//mi.Icon = item.Thumbnail.BitmapSource;
-					//mi.IsCheckable = true;
-					//mi.IsChecked = (i == nl.CurrentLocPos);
-					//mi.GroupName = "G1";
-					//mi.Click += new RoutedEventHandler(miItems_Click);
-					//cmHistory.Items.Add(mi);
 				}
 				i++;
 			}
@@ -2291,8 +2277,6 @@ namespace BetterExplorer {
 				NavigationLog nl = (tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
 				(sender as MenuItem).IsChecked = true;
 				nl.CurrentLocPos = cmHistory.Items.IndexOf((sender as MenuItem));
-				//ShellListView.Navigate(item, true);
-
 				NavigationController(item);
 			}
 		}
@@ -2300,7 +2284,6 @@ namespace BetterExplorer {
 		private void btnUpLevel_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.CanNavigateParent) ShellListView.NavigateParent();
 		}
-
 
 		#endregion
 
@@ -3002,39 +2985,55 @@ namespace BetterExplorer {
 			Utilities.SetRegistryValue("StartUpLoc", CurrentLocString);
 		}
 
+
+
+		private void chkIsFlyout_CheckChanged(object sender, RoutedEventArgs e) {
+			if (!isOnLoad) {
+				Utilities.SetRegistryValue("HFlyoutEnabled", e.RoutedEvent.Name == "Checked" ? 1 : 0);
+			}
+		}
+
+		/*
 		private void chkIsFlyout_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
 				Utilities.SetRegistryValue("HFlyoutEnabled", 1);
-				//IsHFlyoutEnabled = true;
 			}
 		}
 
 		private void chkIsFlyout_Unchecked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
 				Utilities.SetRegistryValue("HFlyoutEnabled", 0);
-				//IsHFlyoutEnabled = false;
+			}
+		}
+		*/
+
+		private void chkIsTerraCopyEnabled_CheckChanged(object sender, RoutedEventArgs e) {
+			if (!isOnLoad) {
+				Utilities.SetRegistryValue("FileOpExEnabled", e.RoutedEvent.Name == "Checked" ? 1 : 0);
 			}
 		}
 
-
+		/*
 		private void chkIsTerraCopyEnabled_Checked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
 				Utilities.SetRegistryValue("FileOpExEnabled", 1);
-				//IsExtendedFileOpEnabled = true;
 			}
 		}
 
 		private void chkIsTerraCopyEnabled_Unchecked(object sender, RoutedEventArgs e) {
 			if (!isOnLoad) {
 				Utilities.SetRegistryValue("FileOpExEnabled", 0);
-				//IsExtendedFileOpEnabled = false;
 			}
 		}
+		*/
 
-		private void chkIsCompartibleRename_Checked(object sender, RoutedEventArgs e) {
-			Utilities.SetRegistryValue("CompartibleRename", 1);
+
+		private void chkIsRestoreTabs_CheckChanged(object sender, RoutedEventArgs e) {
+			IsrestoreTabs = e.RoutedEvent.Name == "Checked";
+			Utilities.SetRegistryValue("IsRestoreTabs", IsrestoreTabs ? 1 : 0);
 		}
 
+		/*
 		private void chkIsRestoreTabs_Checked(object sender, RoutedEventArgs e) {
 			IsrestoreTabs = true;
 			Utilities.SetRegistryValue("IsRestoreTabs", 1);
@@ -3044,18 +3043,8 @@ namespace BetterExplorer {
 			IsrestoreTabs = false;
 			Utilities.SetRegistryValue("IsRestoreTabs", 0);
 		}
+		*/
 
-		private void chkIsVistaStyleListView_Checked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				Utilities.SetRegistryValue("IsVistaStyleListView", 1);
-			}
-		}
-
-		private void chkIsVistaStyleListView_Unchecked(object sender, RoutedEventArgs e) {
-			if (!isOnLoad) {
-				Utilities.SetRegistryValue("IsVistaStyleListView", 0);
-			}
-		}
 
 		private void gridSplitter1_DragCompleted(object sender, DragCompletedEventArgs e) {
 			Utilities.SetRegistryValue("SearchBarWidth", SearchBarColumn.Width.Value);
@@ -3065,18 +3054,32 @@ namespace BetterExplorer {
 			Utilities.SetRegistryValue("SearchBarWidth", SearchBarColumn.Width.Value);
 		}
 
+		// e.RoutedEvent.Name == "Checked"
+
+		private void chkShowCheckBoxes_CheckChanged(object sender, RoutedEventArgs e) {
+			ShellListView.ShowCheckboxes = e.RoutedEvent.Name == "Checked";
+			ShellListView.RefreshContents();
+		}
+
+		/*
 		private void chkShowCheckBoxes_Checked(object sender, RoutedEventArgs e) {
 			ShellListView.ShowCheckboxes = true;
-			//this.isCheckModeEnabled = true;
 			ShellListView.RefreshContents();
 		}
 
 		private void chkShowCheckBoxes_Unchecked(object sender, RoutedEventArgs e) {
 			ShellListView.ShowCheckboxes = false;
-			//this.isCheckModeEnabled = false;
 			ShellListView.RefreshContents();
 		}
+		*/
 
+
+		private void chkOverwriteImages_Checked(object sender, RoutedEventArgs e) {
+			OverwriteOnRotate = e.RoutedEvent.Name == "Checked";
+			Utilities.SetRegistryValue("OverwriteImageWhileEditing", e.RoutedEvent.Name == "Checked" ? 1 : 0);
+		}
+
+		/*
 		private void chkOverwriteImages_Checked(object sender, RoutedEventArgs e) {
 			OverwriteOnRotate = true;
 			Utilities.SetRegistryValue("OverwriteImageWhileEditing", 1);
@@ -3086,6 +3089,7 @@ namespace BetterExplorer {
 			OverwriteOnRotate = false;
 			Utilities.SetRegistryValue("OverwriteImageWhileEditing", 0);
 		}
+		*/
 
 		private void chkIsCFO_Click(object sender, RoutedEventArgs e) {
 			Utilities.SetRegistryValue("IsCustomFO", chkIsCFO.IsChecked.Value == true ? 1 : 0);
