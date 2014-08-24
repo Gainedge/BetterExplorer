@@ -3102,7 +3102,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void chkLogHistory_Checked(object sender, RoutedEventArgs e) {
+		private void chkLogHistory_CheckChanged(object sender, RoutedEventArgs e) {
 			canlogactions = e.RoutedEvent.Name == "Checked";
 			Utilities.SetRegistryValue("EnableActionLog", e.RoutedEvent.Name == "Checked" ? 1 : 0);
 		}
@@ -3183,7 +3183,7 @@ namespace BetterExplorer {
 				this.rPreviewPaneSplitter.Height = new GridLength(0);
 				Utilities.SetRegistryValue("InfoPaneEnabled", 0);
 				this.IsInfoPaneEnabled = false;
-				var selectedItem = ShellListView.SelectedItems.FirstOrDefault();
+				//var selectedItem = ShellListView.SelectedItems.FirstOrDefault();
 			}
 		}
 
@@ -3464,6 +3464,11 @@ namespace BetterExplorer {
 
 		#region AutoSwitch
 
+		private void chkFolder_CheckChanged(object sender, RoutedEventArgs e) {
+			asFolder = e.RoutedEvent.Name == "Checked";
+		}
+
+		/*
 		private void chkFolder_Checked(object sender, RoutedEventArgs e) {
 			asFolder = true;
 		}
@@ -3471,7 +3476,14 @@ namespace BetterExplorer {
 		private void chkFolder_Unchecked(object sender, RoutedEventArgs e) {
 			asFolder = false;
 		}
+		*/
 
+
+		private void chkDrive_CheckChanged(object sender, RoutedEventArgs e) {
+			asDrive = e.RoutedEvent.Name == "Checked";
+		}
+
+		/*
 		private void chkDrive_Checked(object sender, RoutedEventArgs e) {
 			asDrive = true;
 		}
@@ -3479,7 +3491,14 @@ namespace BetterExplorer {
 		private void chkDrive_Unchecked(object sender, RoutedEventArgs e) {
 			asDrive = false;
 		}
+		*/
 
+
+		private void chkArchive_CheckChanged(object sender, RoutedEventArgs e) {
+			asArchive = e.RoutedEvent.Name == "Checked";
+		}
+
+		/*
 		private void chkArchive_Checked(object sender, RoutedEventArgs e) {
 			asArchive = true;
 		}
@@ -3487,7 +3506,14 @@ namespace BetterExplorer {
 		private void chkArchive_Unchecked(object sender, RoutedEventArgs e) {
 			asArchive = false;
 		}
+		*/
 
+
+		private void chkApp_CheckChanged(object sender, RoutedEventArgs e) {
+			asApplication = e.RoutedEvent.Name == "Checked";
+		}
+
+		/*
 		private void chkApp_Checked(object sender, RoutedEventArgs e) {
 			asApplication = true;
 		}
@@ -3495,7 +3521,13 @@ namespace BetterExplorer {
 		private void chkApp_Unchecked(object sender, RoutedEventArgs e) {
 			asApplication = false;
 		}
+		*/
 
+		private void chkImage_CheckChanged(object sender, RoutedEventArgs e) {
+			asImage = e.RoutedEvent.Name == "Checked";
+		}
+
+		/*
 		private void chkImage_Checked(object sender, RoutedEventArgs e) {
 			asImage = true;
 		}
@@ -3503,7 +3535,14 @@ namespace BetterExplorer {
 		private void chkImage_Unchecked(object sender, RoutedEventArgs e) {
 			asImage = false;
 		}
+		*/
 
+
+		private void chkLibrary_CheckChanged(object sender, RoutedEventArgs e) {
+			asLibrary = e.RoutedEvent.Name == "Checked";
+		}
+
+		/*
 		private void chkLibrary_Checked(object sender, RoutedEventArgs e) {
 			asLibrary = true;
 		}
@@ -3511,8 +3550,13 @@ namespace BetterExplorer {
 		private void chkLibrary_Unchecked(object sender, RoutedEventArgs e) {
 			asLibrary = false;
 		}
+		*/
 
+		private void chkVirtualTools_CheckChanged(object sender, RoutedEventArgs e) {
+			asVirtualDrive = e.RoutedEvent.Name == "Checked";
+		}
 
+		/*
 		private void chkVirtualTools_Checked(object sender, RoutedEventArgs e) {
 			asVirtualDrive = true;
 		}
@@ -3520,7 +3564,7 @@ namespace BetterExplorer {
 		private void chkVirtualTools_Unchecked(object sender, RoutedEventArgs e) {
 			asVirtualDrive = false;
 		}
-
+		*/
 		#endregion
 
 		#region Tabs
