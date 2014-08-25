@@ -408,18 +408,6 @@ namespace BExplorer.Shell {
 						this.SelectedIndexes.Remove(index);
 					else
 						selItems.Add(Item);
-
-					//: Try removing this Try Catch!
-					/*
-					try {
-						selItems.Add(this.Items[index]);
-
-						//DraggedItemIndexes.Add(index);
-					}
-					catch (Exception) {
-						this.SelectedIndexes.Remove(index);
-					}
-					*/
 				}
 				return selItems;
 			}
@@ -724,13 +712,10 @@ namespace BExplorer.Shell {
 
 		private void ShellView_MouseUp(object sender, MouseEventArgs e) {
 			if (_IsDragSelect == LVIS.LVIS_SELECTED) {
-				if (selectionTimer.Enabled) {
+				if (selectionTimer.Enabled)
 					selectionTimer.Stop();
-					selectionTimer.Start();
-				}
-				else {
-					selectionTimer.Start();
-				}
+
+				selectionTimer.Start();
 			}
 		}
 
@@ -1644,8 +1629,11 @@ namespace BExplorer.Shell {
 						if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 					}
 
+					/*
 					NMHDR nmhdr = new NMHDR();
 					nmhdr = (NMHDR)m.GetLParam(nmhdr.GetType());
+					*/
+					var nmhdr = (NMHDR)m.GetLParam(nmhdr.GetType());
 					switch ((int)nmhdr.code) {
 						case WNM.LVN_ENDLABELEDITW:
 							var nmlvedit = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
@@ -4343,7 +4331,7 @@ namespace BExplorer.Shell {
 			if (ItemForRealName_IsAny && this.Items != null && this.Items.Count >= ItemForRename) {
 				var item = this.Items[ItemForRename];
 				if (!Cancel) {
-					
+
 
 					if (item.DisplayName != NewName) {
 						RenameShellItem(item.ComInterface, NewName);

@@ -269,7 +269,7 @@ namespace Odyssey.Controls {
 
 		#region Properties
 
-		/// <summary>Occurs after navigation has occured</summary>
+		/// <summary>Occurs after navigation has occurred</summary>
 		public Action<ShellItem> OnNavigate { get; set; }
 
 		private bool breadcrumbItemTraceValueChanged_IsFired { get; set; }
@@ -781,6 +781,7 @@ namespace Odyssey.Controls {
 			return size;
 		}
 
+		/*
 		/// <summary>
 		/// Build the list of traces for the overflow button.
 		/// </summary>
@@ -822,6 +823,7 @@ namespace Odyssey.Controls {
 				item = item.SelectedBreadcrumb;
 			}
 		}
+		*/
 
 		private object GetImage(ImageSource imageSource) {
 			if (imageSource == null) return null;
@@ -1038,6 +1040,7 @@ namespace Odyssey.Controls {
 				tb.LostKeyboardFocus += (x, y) => Exit(false);
 			}
 		}
+
 		/*
 		private void tb_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e) {
 			Exit(false);
