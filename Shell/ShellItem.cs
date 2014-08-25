@@ -1337,20 +1337,15 @@ namespace BExplorer.Shell {
 
 		public static ShellItem TryCreate(string path) {
 			Uri newUri;
-			if (path.StartsWith("::") && !path.StartsWith(@"\\")) {
+			if (path.StartsWith("::") && !path.StartsWith(@"\\"))
 				Uri.TryCreate(String.Format("shell:{0}", path), UriKind.Absolute, out newUri);
-			}
-			else {
+			else
 				Uri.TryCreate(path, UriKind.Absolute, out newUri);
-			}
 
-			if (newUri == null) {
+			if (newUri == null)
 				return null;
-			}
-			var Shell = new ShellItem(newUri);
-			Shell.Initialize(newUri);
-			Shell.Constructor_Helper();
-			return Shell;
+			else
+				return new ShellItem(newUri);
 		}//TODO: Start using this safe Constructor more
 
 	}
