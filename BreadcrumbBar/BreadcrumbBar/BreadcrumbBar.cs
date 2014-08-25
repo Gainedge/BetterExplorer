@@ -337,14 +337,8 @@ namespace Odyssey.Controls {
 
 					if (IsLoaded && !breadcrumbItemTraceValueChanged_IsFired && _Path != null) {
 						Int64 pidl;
-						bool isValidPidl = Int64.TryParse(_Path.ToShellParsingName().TrimEnd(Char.Parse(@"\")), out pidl);
+						bool isValidPidl = Int64.TryParse(_Path.TrimEnd(Char.Parse(@"\")), out pidl);
 						ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : ShellItem.TryCreate(_Path);
-
-						//TODO: Find a better way of doing this!!!
-						if (item == null && this.SelectedItem.DisplayName == "Computer") {
-							item = new ShellItem(Environment.SpecialFolder.MyComputer);
-						}
-
 						if (item != null)
 							OnNavigate(item);
 					}
