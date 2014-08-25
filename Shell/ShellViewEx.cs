@@ -4343,7 +4343,7 @@ namespace BExplorer.Shell {
 			if (ItemForRealName_IsAny && this.Items != null && this.Items.Count >= ItemForRename) {
 				var item = this.Items[ItemForRename];
 				if (!Cancel) {
-					ItemForRename = -1;
+					
 
 					if (item.DisplayName != NewName) {
 						RenameShellItem(item.ComInterface, NewName);
@@ -4351,6 +4351,7 @@ namespace BExplorer.Shell {
 				}
 				this.RedrawWindow();
 			}
+			ItemForRename = -1;
 			this.IsFocusAllowed = true;
 		}
 
@@ -4369,6 +4370,7 @@ namespace BExplorer.Shell {
 		private void EndLabelEdit(Boolean isCancel = false) {
 			if (this.EndItemLabelEdit != null) {
 				this.EndItemLabelEdit.Invoke(this, isCancel);
+				this.ItemForRename = -1;
 			}
 		}
 

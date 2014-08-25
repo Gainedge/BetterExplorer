@@ -1340,9 +1340,6 @@ namespace BExplorer.Shell {
 			if (path.StartsWith("::") && !path.StartsWith(@"\\")) {
 				Uri.TryCreate(String.Format("shell:{0}", path), UriKind.Absolute, out newUri);
 			}
-			//else if (!path.EndsWith(Path.DirectorySeparatorChar.ToString())) {
-			//	Uri.TryCreate(String.Format("{0}{1}", path, Path.DirectorySeparatorChar), UriKind.Absolute, out newUri);
-			//}
 			else {
 				Uri.TryCreate(path, UriKind.Absolute, out newUri);
 			}
@@ -1350,11 +1347,6 @@ namespace BExplorer.Shell {
 			if (newUri == null) {
 				return null;
 			}
-			//else if (newUri.AbsolutePath.StartsWith("shell")) {
-			//}
-			//else if (!Directory.Exists(newUri.AbsolutePath.Replace("%20", " "))) {
-			//	return null;
-			//}
 			var Shell = new ShellItem(newUri);
 			Shell.Initialize(newUri);
 			Shell.Constructor_Helper();
