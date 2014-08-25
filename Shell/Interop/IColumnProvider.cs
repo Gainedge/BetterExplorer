@@ -5,11 +5,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
 	[ComVisible(false)]
-	public enum LVCFMT
-	{
+	public enum LVCFMT {
 		LEFT = 0x0000,
 		RIGHT = 0x0001,
 		CENTER = 0x0002,
@@ -20,8 +18,7 @@ namespace BExplorer.Shell.Interop
 		SPLITBUTTON = 0x1000000
 	}
 	[Flags, ComVisible(false)]
-	public enum SHCOLSTATE
-	{
+	public enum SHCOLSTATE {
 		TYPE_STR = 0x1,
 		TYPE_INT = 0x2,
 		TYPE_DATE = 0x3,
@@ -35,8 +32,7 @@ namespace BExplorer.Shell.Interop
 	}
 
 	[ComVisible(false), StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-	public class LPCSHCOLUMNINIT
-	{
+	public class LPCSHCOLUMNINIT {
 		public uint dwFlags; //ulong
 		public uint dwReserved; //ulong
 		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
@@ -44,22 +40,19 @@ namespace BExplorer.Shell.Interop
 	}
 
 	[ComVisible(false), StructLayout(LayoutKind.Sequential)]
-	public struct SHCOLUMNID
-	{
+	public struct SHCOLUMNID {
 		public Guid fmtid; //GUID
 		public uint pid; //DWORD
 	}
 
 	[ComVisible(false), StructLayout(LayoutKind.Sequential)]
-	public class LPCSHCOLUMNID
-	{
+	public class LPCSHCOLUMNID {
 		public Guid fmtid; //GUID
 		public uint pid; //DWORD
 	}
 
 	[ComVisible(false), StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
-	public struct SHCOLUMNINFO
-	{
+	public struct SHCOLUMNINFO {
 		public SHCOLUMNID scid; //SHCOLUMNID
 		public ushort vt; //VARTYPE
 		public LVCFMT fmt; //DWORD
@@ -72,8 +65,7 @@ namespace BExplorer.Shell.Interop
 	}
 
 	[ComVisible(false), StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-	public class LPCSHCOLUMNDATA
-	{
+	public class LPCSHCOLUMNDATA {
 		public uint dwFlags; //ulong
 		public uint dwFileAttributes; //dword
 		public uint dwReserved; //ulong
@@ -83,6 +75,7 @@ namespace BExplorer.Shell.Interop
 		public string wszFile; //[MAX_PATH]; wchar
 	}
 
+	/*
 	[ComVisible(false), ComImport, Guid("E8025004-1C42-11d2-BE2C-00A0C9A83DA1"),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IColumnProvider
@@ -97,7 +90,7 @@ namespace BExplorer.Shell.Interop
 		/// simultaneously from multiple threads.
 		/// </summary>
 		[PreserveSig()]
-		int GetItemData(LPCSHCOLUMNID pscid, LPCSHCOLUMNDATA pscd, out object /*VARIANT */ pvarData);
+		int GetItemData(LPCSHCOLUMNID pscid, LPCSHCOLUMNDATA pscd, out object /*VARIANT -/ pvarData);
 	}
-
+	*/
 }
