@@ -199,7 +199,6 @@
     <Compile Include="FilterItem.cs" />
     <Compile Include="Interop\BHID.cs" />
     <Compile Include="Interop\ComCtl32.cs" />
-    <Compile Include="Interop\ICommDlgBrowser.cs" />
     <Compile Include="Interop\IContextMenu.cs" />
     <Compile Include="Interop\IDropSource.cs" />
     <Compile Include="Interop\IOleCommandTarget.cs" />
