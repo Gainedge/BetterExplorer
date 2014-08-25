@@ -77,8 +77,7 @@ namespace BExplorer.Shell.Interop {
 
 	[ComVisible(false), ComImport, Guid("E8025004-1C42-11d2-BE2C-00A0C9A83DA1"),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	public interface IColumnProvider
-	{
+	public interface IColumnProvider {
 		[PreserveSig()]
 		int Initialize(LPCSHCOLUMNINIT psci);
 		[PreserveSig()]
@@ -89,6 +88,6 @@ namespace BExplorer.Shell.Interop {
 		/// simultaneously from multiple threads.
 		/// </summary>
 		[PreserveSig()]
-		int GetItemData(LPCSHCOLUMNID pscid, LPCSHCOLUMNDATA pscd, out object /*VARIANT -/ pvarData);
+		int GetItemData(LPCSHCOLUMNID pscid, LPCSHCOLUMNDATA pscd, out object /*VARIANT */ pvarData);
 	}
 }

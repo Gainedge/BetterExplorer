@@ -201,7 +201,6 @@
     <Compile Include="Interop\ComCtl32.cs" />
     <Compile Include="Interop\IContextMenu.cs" />
     <Compile Include="Interop\IDropSource.cs" />
-    <Compile Include="Interop\IOleCommandTarget.cs" />
     <Compile Include="Interop\IQueryInfo.cs" />
     <Compile Include="Interop\IServiceProvider.cs" />
     <Compile Include="Interop\IShellBrowser.cs" />
