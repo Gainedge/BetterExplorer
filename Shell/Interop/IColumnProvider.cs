@@ -75,7 +75,6 @@ namespace BExplorer.Shell.Interop {
 		public string wszFile; //[MAX_PATH]; wchar
 	}
 
-	/*
 	[ComVisible(false), ComImport, Guid("E8025004-1C42-11d2-BE2C-00A0C9A83DA1"),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	public interface IColumnProvider
@@ -92,5 +91,4 @@ namespace BExplorer.Shell.Interop {
 		[PreserveSig()]
 		int GetItemData(LPCSHCOLUMNID pscid, LPCSHCOLUMNDATA pscd, out object /*VARIANT -/ pvarData);
 	}
-	*/
 }
