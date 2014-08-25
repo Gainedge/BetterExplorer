@@ -1904,7 +1904,7 @@ namespace BExplorer.Shell {
 							ThumbnailsForCacheLoad.Clear();
 							overlayQueue.Clear();
 							shieldQueue.Clear();
-							//! to be revised this for performace
+							//! to be revised this for performance
 							try {
 								if (MaintenanceThread != null && MaintenanceThread.IsAlive) MaintenanceThread.Abort();
 								MaintenanceThread = new Thread(() => {
@@ -1941,7 +1941,6 @@ namespace BExplorer.Shell {
 							catch (ThreadAbortException) {
 							}
 							GC.Collect();
-
 							break;
 
 						case WNM.LVN_ENDSCROLL:
@@ -4000,67 +3999,20 @@ namespace BExplorer.Shell {
 		/// </param>
 		/// <returns> The index of an item within the list view. </returns>
 		private int GetFirstIndexOf(string search, int startindex) {
-			//bool found = false;
 			int i = startindex;
-
-
 			while (true) {
-				//TODO: Check
 				if (i >= Items.Count) {
-					//found = true;
-					//i = -1;
 					return -1;
 				}
 				else if (Items[i].GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(search.ToUpperInvariant())) {
-					//found = true;
 					return i;
 				}
 				else {
 					i++;
 				}
 			}
-
-
-			/*
-			while (!found) {
-				//TODO: Check
-				if (i >= Items.Count) {
-					found = true;
-					i = -1;
-				}
-				else if (Items[i].GetDisplayName(SIGDN.NORMALDISPLAY).ToUpperInvariant().StartsWith(search.ToUpperInvariant())) {
-					found = true;
-				}
-				else {
-					i++;
-				}
-			}
-
-			return i;
-			*/
 		}
 
-		/*
-		[Obsolete("Never Used", true)]
-		private string GetStringFromAcceptedKeyCodeString(string str) {
-			str = str.ToUpperInvariant();
-			if (str.Length == 1) {
-				return str;
-			}
-			else if (str == "SPACE") {
-				return " ";
-			}
-			else if (str == "OEMPERIOD") {
-				return ".";
-			}
-			else if (str == "OEMMINUS") {
-				return "-";
-			}
-			else {
-				return "";
-			}
-		}
-		*/
 		private void StartProcessInCurrentDirectory(ShellItem item) {
 			Process.Start(new ProcessStartInfo() {
 				FileName = item.ParsingName,
