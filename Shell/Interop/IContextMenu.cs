@@ -76,6 +76,7 @@ namespace BExplorer.Shell.Interop {
 		public Point ptInvoke;
 	}
 
+	/*
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 	public struct CMINVOKECOMMANDINFO_ByIndex {
 		public int cbSize;
@@ -88,6 +89,7 @@ namespace BExplorer.Shell.Interop {
 		public int dwHotKey;
 		public IntPtr hIcon;
 	}
+	*/
 
 	[ComImport]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
