@@ -1480,8 +1480,6 @@ namespace BExplorer.Shell {
 
 		protected override void WndProc(ref Message m) {
 			try {
-				bool isSmallIcons = (View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details);
-
 				//TODO: Remove Extra If(...)
 				if (m.Msg == (int)WM.WM_PARENTNOTIFY) {
 					if (User32.LOWORD((int)m.WParam) == (int)WM.WM_MBUTTONDOWN) {
@@ -1657,7 +1655,7 @@ namespace BExplorer.Shell {
 
 									Marshal.StructureToPtr(nmlv, m.LParam, false);
 								}
-								else if (isSmallIcons) {
+								else if (View == ShellViewStyle.List || View == ShellViewStyle.SmallIcon || View == ShellViewStyle.Details) {
 									//TODO: Try to remove the Try Catch
 									try {
 										var hash = currentItem.GetHashCode();
