@@ -1629,11 +1629,7 @@ namespace BExplorer.Shell {
 						if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 					}
 
-					/*
-					NMHDR nmhdr = new NMHDR();
-					nmhdr = (NMHDR)m.GetLParam(nmhdr.GetType());
-					*/
-					var nmhdr = (NMHDR)m.GetLParam(nmhdr.GetType());
+					var nmhdr = (NMHDR)m.GetLParam(new NMHDR().GetType());
 					switch ((int)nmhdr.code) {
 						case WNM.LVN_ENDLABELEDITW:
 							var nmlvedit = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
