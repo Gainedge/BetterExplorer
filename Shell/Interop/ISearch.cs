@@ -165,6 +165,7 @@ namespace BExplorer.Shell.Interop {
 		Last = 5
 	}
 
+	/*
 	/// <summary>
 	/// The direction in which the items are sorted.
 	/// </summary>
@@ -187,6 +188,7 @@ namespace BExplorer.Shell.Interop {
 		/// </summary>
 		Ascending = 1,
 	}
+	*/
 
 	/// <summary>
 	/// Provides a set of flags to be used with IQueryParser::SetOption and 
@@ -473,7 +475,7 @@ namespace BExplorer.Shell.Interop {
 		// Make a deep copy of this ICondition.
 		[PreserveSig]
 		HResult Clone([Out()] out ICondition ppc);
-	};
+	}
 
 	[ComImport,
 		Guid(InterfaceGuids.IRichChunk),
@@ -525,13 +527,15 @@ namespace BExplorer.Shell.Interop {
 		[PreserveSig]
 		HResult Resolve(/*[In] ICondition pc, [In] STRUCTURED_QUERY_RESOLVE_OPTION sqro, [In] ref SYSTEMTIME pstReferenceTime, [Out] out ICondition ppcResolved*/);
 
-	};
+	}
 
+	/*
 	[ComImport,
 	Guid(InterfaceGuids.IConditionFactory),
 	CoClass(typeof(ConditionFactoryCoClass))]
 	internal interface INativeConditionFactory : IConditionFactory {
 	}
+	*/
 
 	[ComImport,
 	ClassInterface(ClassInterfaceType.None),
@@ -581,13 +585,15 @@ namespace BExplorer.Shell.Interop {
 
 		[PreserveSig]
 		HResult GetIDList([Out] IntPtr ppidl);
-	};
+	}
 
+	/*
 	[ComImport,
 	Guid(InterfaceGuids.ISearchFolderItemFactory),
 	CoClass(typeof(SearchFolderItemFactoryCoClass))]
 	internal interface INativeSearchFolderItemFactory : ISearchFolderItemFactory {
 	}
+	*/
 
 	[ComImport,
 	ClassInterface(ClassInterfaceType.None),
@@ -701,13 +707,15 @@ namespace BExplorer.Shell.Interop {
 		[PreserveSig]
 		HResult SetOption([In] QueryParserManagerOption option, [In] PropVariant pOptionValue);
 
-	};
+	}
 
+	/*
 	[ComImport,
 	Guid(InterfaceGuids.IQueryParserManager),
 	CoClass(typeof(QueryParserManagerCoClass))]
 	internal interface INativeQueryParserManager : IQueryParserManager {
 	}
+	*/
 
 	[ComImport,
 	ClassInterface(ClassInterfaceType.None),
