@@ -123,29 +123,26 @@ namespace BExplorer.Shell {
 
 		#region Properties
 		private static ShellItem m_Desktop;
-
 		private int? hashValue;
-		public int IsShielded = -1;
-
-		/// <summary>
-		/// Gets the underlying <see cref="IShellItem"/> COM interface.
-		/// </summary>
-		public IShellItem ComInterface { get { return m_ComInterface; } protected set { m_ComInterface = value; } }
-
-		protected IShellItem m_ComInterface;
-
 		private ShellThumbnail thumbnail;
-
+		protected IShellItem m_ComInterface;
+		//public bool ISRedrawed { get; set; }
+		//public Bitmap ThumbnailIcon { get; set; }
 		internal bool IsNeedRefreshing { get; set; }
 		internal bool IsThumbnailLoaded { get; set; }
-		public bool IsIconLoaded { get; set; }
-		//public bool ISRedrawed { get; set; }
 		internal bool IsInitialised { get; set; }
-		//public Bitmap ThumbnailIcon { get; set; }
 		internal int OverlayIconIndex { get; set; }
 		internal IExtractIconPWFlags IconType { get; private set; }
-		public String CachedParsingName { get; private set; }
 		internal IntPtr ILPidl { get { return Shell32.ILFindLastID(Pidl); } }
+
+		/// <summary>Add Documentation</summary>
+		public int IsShielded = -1;
+
+		/// <summary>Add Documentation</summary>
+		public bool IsIconLoaded { get; set; }
+
+		/// <summary>Add Documentation</summary>
+		public String CachedParsingName { get; private set; }
 
 		/// <summary>
 		/// Gets the thumbnail of the ShellObject.
@@ -157,7 +154,10 @@ namespace BExplorer.Shell {
 			}
 		}
 
-
+		/// <summary>
+		/// Gets the underlying <see cref="IShellItem"/> COM interface.
+		/// </summary>
+		public IShellItem ComInterface { get { return m_ComInterface; } protected set { m_ComInterface = value; } }
 
 		/// <summary>
 		/// Gets the item's parsing name.
@@ -1324,17 +1324,19 @@ namespace BExplorer.Shell {
 		/// <param name="path">The path you want to convert</param>
 		/// <returns></returns>
 		public static ShellItem ToShellParsingName(String path) {
-			if (path.StartsWith("::") && !path.StartsWith(@"\\")) {
+			if (path.StartsWith("::") && !path.StartsWith(@"\\"))
 				return new ShellItem(String.Format("shell:{0}", path));
-			}
-			else if (!path.EndsWith(Path.DirectorySeparatorChar.ToString())) {
+			else if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
 				return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
-			}
-			else {
+			else
 				return new ShellItem(path);
-			}
 		} //TODO: Consider making this a constructor!
 
+		/// <summary>
+		/// Tries to create a new <see cref="ShellItem"/> using Path/Uri (As String)
+		/// </summary>
+		/// <param name="path">Path/Uri (As String)</param>
+		/// <returns>New ShellItem or null if could not be created</returns>
 		public static ShellItem TryCreate(string path) {
 			Uri newUri;
 			if (path.StartsWith("::") && !path.StartsWith(@"\\"))

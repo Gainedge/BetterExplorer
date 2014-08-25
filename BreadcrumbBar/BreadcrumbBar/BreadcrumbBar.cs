@@ -785,6 +785,7 @@ namespace Odyssey.Controls {
 		/// Build the list of traces for the overflow button.
 		/// </summary>
 		private void BuildTraces() {
+			throw new Exception();
 			BreadcrumbItem item = RootItem;
 
 			traces.Clear();
