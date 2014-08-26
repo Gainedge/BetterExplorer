@@ -3867,7 +3867,7 @@ namespace BetterExplorer {
 		private void btnSavedTabs_DropDownOpened(object sender, EventArgs e) {
 			stGallery.Items.Clear();
 			foreach (string item in LoadListOfTabListFiles()) {
-				SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item);
+				var gli = new SavedTabsListGalleryItem(item);
 				gli.Directory = sstdir;
 				gli.Click += gli_Click;
 				gli.SetUpTooltip((FindResource("tabTabsCP") as string));
@@ -3878,7 +3878,7 @@ namespace BetterExplorer {
 		private void miTabManager_Click(object sender, RoutedEventArgs e) {
 			string sstdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
 			if (Directory.Exists(sstdir)) {
-				BetterExplorer.Tabs.TabManager man = new Tabs.TabManager();
+				var man = new Tabs.TabManager();
 				man.MainForm = this;
 				man.Show();
 			}

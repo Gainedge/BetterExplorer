@@ -76,6 +76,7 @@ namespace BExplorer.Shell {
 		/// <summary>The ShellView the ContextMenu is associated with</summary>
 		private ShellView _ShellView { get; set; }
 
+		/*
 		/// <summary>
 		/// Gets the underlying COM <see cref="IContextMenu"/> interface.
 		/// </summary>
@@ -84,8 +85,7 @@ namespace BExplorer.Shell {
 			get { return m_ComInterface; }
 			set { m_ComInterface = value; }
 		}
-
-
+		*/
 
 
 
@@ -230,6 +230,7 @@ namespace BExplorer.Shell {
 			return false;
 		}
 
+		/*
 		/// <summary>
 		/// Invokes the Delete command on the shell item.
 		/// </summary>
@@ -247,7 +248,9 @@ namespace BExplorer.Shell {
 			//	if (e.ErrorCode != unchecked((int)0x800704C7)) throw;
 			//}
 		}
+		*/
 
+		/*
 		/// <summary>
 		/// Invokes the Rename command on the shell item.
 		/// </summary>
@@ -259,6 +262,7 @@ namespace BExplorer.Shell {
 			if (this._ShellView != null)
 				this._ShellView.RenameSelectedItem();
 		}
+		*/
 
 		/// <summary>
 		/// Populates a <see cref="Menu"/> with the context menu items for
@@ -277,6 +281,7 @@ namespace BExplorer.Shell {
 			RemoveShellMenuItems(menu);
 			m_ComInterface.QueryContextMenu(menu.Handle, 0, m_CmdFirst, int.MaxValue, CMF.EXPLORE | additionalFlags);
 		}
+
 		/// <summary>
 		/// Shows a context menu for a shell item.
 		/// </summary>
@@ -469,6 +474,7 @@ namespace BExplorer.Shell {
 			invoke.ptInvoke = pt;
 			m_ComInterface.InvokeCommand(ref invoke);
 		}
+
 		void TagManagedMenuItems(Menu menu, int tag) {
 			MENUINFO info = new MENUINFO();
 
