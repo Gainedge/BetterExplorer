@@ -1903,6 +1903,7 @@ namespace BExplorer.Shell {
 							overlayQueue.Clear();
 							shieldQueue.Clear();
 							//! to be revised this for performance
+							/*
 							try {
 								if (MaintenanceThread != null && MaintenanceThread.IsAlive) MaintenanceThread.Abort();
 								MaintenanceThread = new Thread(() => {
@@ -1938,6 +1939,7 @@ namespace BExplorer.Shell {
 							}
 							catch (ThreadAbortException) {
 							}
+							*/ 
 							GC.Collect();
 							break;
 
