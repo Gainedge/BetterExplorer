@@ -4251,10 +4251,10 @@ namespace BetterExplorer {
 				sbiItemsCount.Visibility = ItemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;
 				sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
 			}
-			if (e.UpdateType == ItemUpdateType.Created && (IsRenameFromCreate || this.ShellListView.IsRenameNeeded)) {
+			if (e.UpdateType == ItemUpdateType.Created && (IsRenameFromCreate /*|| this.ShellListView.IsRenameNeeded*/)) {
 				this.ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
 				ShellListView.RenameItem(e.NewItemIndex);
-				this.ShellListView.IsRenameNeeded = false;
+				//this.ShellListView.IsRenameNeeded = false;
 			}
 
 			IsRenameFromCreate = false; //Note: Moved this below the if(...) to ensure it WILL always end up being false
