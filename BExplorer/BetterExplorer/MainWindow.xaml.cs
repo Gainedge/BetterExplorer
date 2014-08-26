@@ -915,14 +915,16 @@ namespace BetterExplorer {
 			ShellListView.DeleteSelectedFiles(false);
 		}
 
+		/*
 		[Obsolete("Try to remove")]
 		public bool IsRenameFromCreate = false;
+		*/
 
 		// New Folder/Library
 		private void Button_Click_2(object sender, RoutedEventArgs e) {
 			//We should focus the ListView or on some circumstances new folder does not start renaming after folder is created
 			this.ShellListView.Focus();
-			IsRenameFromCreate = true;
+			//IsRenameFromCreate = true;
 
 			if (ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName)
 				ShellListView.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString());
@@ -4251,13 +4253,13 @@ namespace BetterExplorer {
 				sbiItemsCount.Visibility = ItemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;
 				sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
 			}
-			if (e.UpdateType == ItemUpdateType.Created && (IsRenameFromCreate /*|| this.ShellListView.IsRenameNeeded*/)) {
+			if (e.UpdateType == ItemUpdateType.Created) { // && (IsRenameFromCreate /*|| this.ShellListView.IsRenameNeeded*/)) {
 				this.ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
 				ShellListView.RenameItem(e.NewItemIndex);
 				//this.ShellListView.IsRenameNeeded = false;
 			}
 
-			IsRenameFromCreate = false; //Note: Moved this below the if(...) to ensure it WILL always end up being false
+			//IsRenameFromCreate = false; //Note: Moved this below the if(...) to ensure it WILL always end up being false
 			this.ShellListView.Focus();
 		}
 
