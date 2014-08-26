@@ -184,9 +184,11 @@ namespace BetterExplorer {
 			}
 		}
 
+		/*
 		private void RibbonWindow_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
 			IsRenameFromCreate = true;
 		}
+		*/
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
 			//TODO:	[Date: 5/6/2014]	Test this code change
@@ -913,6 +915,7 @@ namespace BetterExplorer {
 			ShellListView.DeleteSelectedFiles(false);
 		}
 
+		[Obsolete("Try to remove")]
 		public bool IsRenameFromCreate = false;
 
 		// New Folder/Library
