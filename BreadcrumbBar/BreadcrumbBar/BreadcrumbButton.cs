@@ -130,7 +130,7 @@ namespace Odyssey.Controls {
 					Point relativePoint = this.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
 					Point realCoordinates = Application.Current.MainWindow.PointToScreen(relativePoint);
 					ShellContextMenu cm = new ShellContextMenu(new[] { data });
-					cm.ShowContextMenu(new System.Drawing.Point((int)realCoordinates.X, (int)realCoordinates.Y + (int)this.ActualHeight));
+					cm.ShowContextMenu(new System.Drawing.Point((int)realCoordinates.X, (int)realCoordinates.Y + (int)this.ActualHeight), 1);
 				}
 			}
 			if (isPressed) {
