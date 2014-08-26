@@ -2481,7 +2481,7 @@ namespace BExplorer.Shell {
 														}
 													}
 													if (!sho.IsInitialised) {
-														OnItemDisplayed(sho, index);
+														//OnItemDisplayed(sho, index);
 														sho.IsInitialised = true;
 													}
 												}
