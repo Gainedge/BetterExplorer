@@ -871,7 +871,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnRename_Click(object sender, RoutedEventArgs e) {
-			IsRenameFromCreate = false;
+			//IsRenameFromCreate = false;
 			ShellListView.RenameSelectedItem();
 		}
 
@@ -4254,9 +4254,10 @@ namespace BetterExplorer {
 			if (e.UpdateType == ItemUpdateType.Created && (IsRenameFromCreate || this.ShellListView.IsRenameNeeded)) {
 				this.ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
 				ShellListView.RenameItem(e.NewItemIndex);
-				IsRenameFromCreate = false;
 				this.ShellListView.IsRenameNeeded = false;
 			}
+
+			IsRenameFromCreate = false; //Note: Moved this below the if(...) to ensure it WILL always end up being false
 			this.ShellListView.Focus();
 		}
 
