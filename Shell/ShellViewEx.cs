@@ -639,7 +639,7 @@ namespace BExplorer.Shell {
 			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
 			_UpdateSubitemValuesThread.Start();
 			//History = new ShellHistory();
-			_ResetTimer.Interval = 200;
+			_ResetTimer.Interval = 500;
 			_ResetTimer.Tick += resetTimer_Tick;
 
 			Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
@@ -1899,9 +1899,10 @@ namespace BExplorer.Shell {
 							_ResetTimer.Stop();
 							//this.Cancel = true;
 							ToolTip.HideTooltip();
-							ThumbnailsForCacheLoad.Clear();
-							overlayQueue.Clear();
-							shieldQueue.Clear();
+							//waitingThumbnails.Clear();
+							//ThumbnailsForCacheLoad.Clear();
+							//overlayQueue.Clear();
+							//shieldQueue.Clear();
 							//! to be revised this for performance
 							/*
 							try {
@@ -1940,7 +1941,7 @@ namespace BExplorer.Shell {
 							catch (ThreadAbortException) {
 							}
 							*/ 
-							GC.Collect();
+							//GC.Collect();
 							break;
 
 						case WNM.LVN_ENDSCROLL:
@@ -2194,7 +2195,7 @@ namespace BExplorer.Shell {
 											break;
 
 										case CustomDraw.CDDS_ITEMPOSTPAINT:
-											if (nmlvcd.clrTextBk != 0) {
+											if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0 ) {
 												var itemBounds = nmlvcd.nmcd.rc;
 												LVITEMINDEX lvi = new LVITEMINDEX();
 												lvi.iItem = index;
@@ -3125,7 +3126,7 @@ namespace BExplorer.Shell {
 		private void Navigate(ShellItem destination, Boolean isInSameTab = false, bool refresh = false) {
 			if (!refresh)
 				this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
-
+			resetEvent.Reset();
 			//Unregister notifications and clear all collections
 			this.Notifications.UnregisterChangeNotify();
 			Items.Clear();
@@ -3135,6 +3136,7 @@ namespace BExplorer.Shell {
 			shieldQueue.Clear();
 			this._CuttedIndexes.Clear();
 			this.SubItemValues.Clear();
+
 			//Clear the LsitView
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
 			this.ItemForRename = -1;
@@ -3218,7 +3220,7 @@ namespace BExplorer.Shell {
 					LastI = CurrentI;
 				}
 			}
-
+			resetEvent.Set();
 			if (isThereSettings) {
 
 				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder, false);
@@ -3530,21 +3532,21 @@ namespace BExplorer.Shell {
 		public void _IconsLoadingThreadRun() {
 			while (true) {
 				//resetEvent.WaitOne();
-				Thread.Sleep(1);
+				//Thread.Sleep(1);
 				//Application.DoEvents();
 
 				try {
 					var index = waitingThumbnails.Dequeue();
 					//if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero)
 					//	continue;
-					//var itemBounds = new User32.RECT();
-					//LVITEMINDEX lvi = new LVITEMINDEX();
-					//lvi.iItem = index;
-					//lvi.iGroup = this.GetGroupIndex(index);
-					//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-					//Rectangle r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
-					//if (!r.IntersectsWith(this.ClientRectangle))
-					//	continue;
+					var itemBounds = new User32.RECT();
+					LVITEMINDEX lvi = new LVITEMINDEX();
+					lvi.iItem = index;
+					lvi.iGroup = this.GetGroupIndex(index);
+					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+					Rectangle r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+					if (!r.IntersectsWith(this.ClientRectangle))
+						continue;
 					resetEvent.WaitOne();
 					var sho = Items[index];
 					ShellItem temp = !(sho.IsNetDrive || sho.IsNetworkPath) && sho.ParsingName.StartsWith("::") ? sho : new ShellItem(sho.ParsingName);
@@ -3578,10 +3580,16 @@ namespace BExplorer.Shell {
 		public void _IconCacheLoadingThreadRun() {
 			while (true) {
 				resetEvent.WaitOne();
-				Thread.Sleep(1);
 				try {
 					var index = ThumbnailsForCacheLoad.Dequeue();
-					if (index >= Items.Count) {
+					var itemBounds = new User32.RECT();
+					LVITEMINDEX lvi = new LVITEMINDEX();
+					lvi.iItem = index;
+					lvi.iGroup = this.GetGroupIndex(index);
+					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+					Rectangle r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+					if (index >= Items.Count || !r.IntersectsWith(this.ClientRectangle))
+					{
 						continue;
 					}
 					var sho = Items[index];
