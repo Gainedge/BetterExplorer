@@ -184,9 +184,11 @@ namespace BetterExplorer {
 			}
 		}
 
+		/*
 		private void RibbonWindow_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
 			IsRenameFromCreate = true;
 		}
+		*/
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
 			//TODO:	[Date: 5/6/2014]	Test this code change
@@ -869,7 +871,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnRename_Click(object sender, RoutedEventArgs e) {
-			IsRenameFromCreate = false;
+			//IsRenameFromCreate = false;
 			ShellListView.RenameSelectedItem();
 		}
 
@@ -913,13 +915,16 @@ namespace BetterExplorer {
 			ShellListView.DeleteSelectedFiles(false);
 		}
 
+		/*
+		[Obsolete("Try to remove")]
 		public bool IsRenameFromCreate = false;
+		*/
 
 		// New Folder/Library
 		private void Button_Click_2(object sender, RoutedEventArgs e) {
 			//We should focus the ListView or on some circumstances new folder does not start renaming after folder is created
 			this.ShellListView.Focus();
-			IsRenameFromCreate = true;
+			//IsRenameFromCreate = true;
 
 			if (ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName)
 				ShellListView.CreateNewLibrary(FindResource("btnNewLibraryCP").ToString());
@@ -1471,7 +1476,7 @@ namespace BetterExplorer {
 			this.ShellListView.ColumnHeaderRightClick += ShellListView_ColumnHeaderRightClick;
 			this.ShellListView.KeyJumpKeyDown += ShellListView_KeyJumpKeyDown;
 			this.ShellListView.KeyJumpTimerDone += ShellListView_KeyJumpTimerDone;
-			this.ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
+			//this.ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
 			this.ShellListView.Navigating += ShellListView_Navigating;
 			this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 			this.ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
@@ -3862,7 +3867,7 @@ namespace BetterExplorer {
 		private void btnSavedTabs_DropDownOpened(object sender, EventArgs e) {
 			stGallery.Items.Clear();
 			foreach (string item in LoadListOfTabListFiles()) {
-				SavedTabsListGalleryItem gli = new SavedTabsListGalleryItem(item);
+				var gli = new SavedTabsListGalleryItem(item);
 				gli.Directory = sstdir;
 				gli.Click += gli_Click;
 				gli.SetUpTooltip((FindResource("tabTabsCP") as string));
@@ -3873,7 +3878,7 @@ namespace BetterExplorer {
 		private void miTabManager_Click(object sender, RoutedEventArgs e) {
 			string sstdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
 			if (Directory.Exists(sstdir)) {
-				BetterExplorer.Tabs.TabManager man = new Tabs.TabManager();
+				var man = new Tabs.TabManager();
 				man.MainForm = this;
 				man.Show();
 			}
@@ -4191,7 +4196,7 @@ namespace BetterExplorer {
 			}
 		}
 
-
+		/*
 		[Obsolete("I don't think we need this")]
 		void ShellListView_ItemDisplayed(object sender, ItemDisplayedEventArgs e) {
 			//Date: 8/19/2014	User: Aaron	Note: Added [return;] because the following code seems pointless
@@ -4207,7 +4212,7 @@ namespace BetterExplorer {
 				}
 			}
 		}
-
+		*/
 		void ShellTree_NodeClick(object sender, System.Windows.Forms.TreeNodeMouseClickEventArgs e) {
 			if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
 				if (e.Node != null && e.Node.Tag != null)
@@ -4248,12 +4253,13 @@ namespace BetterExplorer {
 				sbiItemsCount.Visibility = ItemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;
 				sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
 			}
-			if (e.UpdateType == ItemUpdateType.Created && (IsRenameFromCreate || this.ShellListView.IsRenameNeeded)) {
+			if (e.UpdateType == ItemUpdateType.Created) { // && (IsRenameFromCreate /*|| this.ShellListView.IsRenameNeeded*/)) {
 				this.ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
 				ShellListView.RenameItem(e.NewItemIndex);
-				IsRenameFromCreate = false;
-				this.ShellListView.IsRenameNeeded = false;
+				//this.ShellListView.IsRenameNeeded = false;
 			}
+
+			//IsRenameFromCreate = false; //Note: Moved this below the if(...) to ensure it WILL always end up being false
 			this.ShellListView.Focus();
 		}
 

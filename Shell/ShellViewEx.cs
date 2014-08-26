@@ -130,6 +130,7 @@ namespace BExplorer.Shell {
 		}
 	}
 
+	/*
 	public class ItemDisplayedEventArgs : EventArgs, IDisposable {
 
 		public ShellItem DisplayedItem { get; private set; }
@@ -148,6 +149,7 @@ namespace BExplorer.Shell {
 			}
 		}
 	}
+	*/
 
 	public enum ItemUpdateType {
 		Renamed,
@@ -198,7 +200,7 @@ namespace BExplorer.Shell {
 		/// <summary> Occurs when the control gains focus </summary>
 		public new event EventHandler GotFocus;
 
-		public event EventHandler<ItemDisplayedEventArgs> ItemDisplayed;
+		//public event EventHandler<ItemDisplayedEventArgs> ItemDisplayed;
 
 		public event EventHandler<NavigatingEventArgs> Navigating;
 
@@ -261,12 +263,12 @@ namespace BExplorer.Shell {
 				Navigated(this, e);
 			}
 		}
-
+		/*
 		private void OnItemDisplayed(ShellItem item, int index) {
 			if (ItemDisplayed != null) {
 				ItemDisplayed(this, new ItemDisplayedEventArgs(item, index));
 			}
-		}
+		}*/
 
 		/// <summary> Triggers the Navigating event. </summary>
 		[DebuggerStepThrough()]
@@ -294,8 +296,10 @@ namespace BExplorer.Shell {
 		private int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
 		private bool ItemForRealName_IsAny { get { return ItemForRename != -1; } }
 
-
+		/*
+		[Obsolete("I think we can safely remove this")]
 		public bool IsRenameNeeded { get; set; }
+		*/
 
 		//public Boolean IsGroupsEnabled { get; private set; }
 		public Boolean IsGroupsEnabled { get { return LastGroupCollumn != null; } }
@@ -1940,7 +1944,7 @@ namespace BExplorer.Shell {
 							}
 							catch (ThreadAbortException) {
 							}
-							*/ 
+							*/
 							//GC.Collect();
 							break;
 
@@ -2195,7 +2199,7 @@ namespace BExplorer.Shell {
 											break;
 
 										case CustomDraw.CDDS_ITEMPOSTPAINT:
-											if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0 ) {
+											if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0) {
 												var itemBounds = nmlvcd.nmcd.rc;
 												LVITEMINDEX lvi = new LVITEMINDEX();
 												lvi.iItem = index;
@@ -2479,7 +2483,7 @@ namespace BExplorer.Shell {
 														}
 													}
 													if (!sho.IsInitialised) {
-														OnItemDisplayed(sho, index);
+														//OnItemDisplayed(sho, index);
 														sho.IsInitialised = true;
 													}
 												}
@@ -3588,8 +3592,7 @@ namespace BExplorer.Shell {
 					lvi.iGroup = this.GetGroupIndex(index);
 					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 					Rectangle r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
-					if (index >= Items.Count || !r.IntersectsWith(this.ClientRectangle))
-					{
+					if (index >= Items.Count || !r.IntersectsWith(this.ClientRectangle)) {
 						continue;
 					}
 					var sho = Items[index];

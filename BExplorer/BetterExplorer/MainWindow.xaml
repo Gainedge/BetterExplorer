@@ -22,7 +22,6 @@
 					 Closing="RibbonWindow_Closing"
 					 Initialized="RibbonWindow_Initialized"
 					 Loaded="Window_Loaded"
-					 MouseRightButtonUp="RibbonWindow_MouseRightButtonUp"
 					 ResizeMode="CanResizeWithGrip"
 					 SizeChanged="RibbonWindow_SizeChanged"
 					 TextOptions.TextFormattingMode="Display"
