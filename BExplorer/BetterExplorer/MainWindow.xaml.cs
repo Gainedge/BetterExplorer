@@ -1471,7 +1471,7 @@ namespace BetterExplorer {
 			this.ShellListView.ColumnHeaderRightClick += ShellListView_ColumnHeaderRightClick;
 			this.ShellListView.KeyJumpKeyDown += ShellListView_KeyJumpKeyDown;
 			this.ShellListView.KeyJumpTimerDone += ShellListView_KeyJumpTimerDone;
-			this.ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
+			//this.ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
 			this.ShellListView.Navigating += ShellListView_Navigating;
 			this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 			this.ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
@@ -4191,7 +4191,7 @@ namespace BetterExplorer {
 			}
 		}
 
-
+		/*
 		[Obsolete("I don't think we need this")]
 		void ShellListView_ItemDisplayed(object sender, ItemDisplayedEventArgs e) {
 			//Date: 8/19/2014	User: Aaron	Note: Added [return;] because the following code seems pointless
@@ -4207,7 +4207,7 @@ namespace BetterExplorer {
 				}
 			}
 		}
-
+		*/
 		void ShellTree_NodeClick(object sender, System.Windows.Forms.TreeNodeMouseClickEventArgs e) {
 			if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
 				if (e.Node != null && e.Node.Tag != null)
