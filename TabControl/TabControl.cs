@@ -35,7 +35,7 @@ namespace Wpf.Controls {
 		/// <summary>An <see cref="Action">Action</see> that is fired after a new tab is created</summary> 
 		public Action ConstructMoveToCopyToMenu;
 
-		[Obsolete("This is not being used anymore", false)]
+		[Obsolete("Try to calculate this and not use a property", false)]
 		public bool isGoingBackOrForward;
 
 		// TemplatePart controls

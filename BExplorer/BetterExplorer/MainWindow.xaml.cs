@@ -2243,8 +2243,6 @@ namespace BetterExplorer {
 		#region Navigation (Back/Forward Arrows) and Up Button
 
 		private void leftNavBut_Click(object sender, RoutedEventArgs e) {
-			isGoingBackOrForward_Test((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack());
-
 			tcMain.isGoingBackOrForward = true;
 			NavigationController((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack());
 		}
@@ -4277,15 +4275,6 @@ namespace BetterExplorer {
 		#endregion
 
 		#region On Navigated
-
-		void isGoingBackOrForward_Test(ShellItem Destination) {
-			var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
-			tcMain.isGoingBackOrForward = true;
-			NavigationController(Destination);
-			Current.ClearForwardItems();
-			if (Current.CurrentLocation != Destination) Current.CurrentLocation = Destination;
-		}
-
 
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
 			NavigationController(this.ShellListView.CurrentFolder);
