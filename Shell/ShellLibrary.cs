@@ -1,6 +1,5 @@
 ﻿//Copyright (c) Microsoft Corporation.  All rights reserved.
 
-using BExplorer.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,18 +7,21 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
+using BExplorer.Shell.Interop;
 
 namespace BExplorer.Shell {
+
 	/// <summary>
 	/// A Shell Library in the Shell Namespace
 	/// </summary>
 	public sealed class ShellLibrary : ShellItem, IList<ShellItem> {
+
 		#region Private Fields
 
 		private INativeShellLibrary nativeShellLibrary;
 		private IKnownFolder knownFolder;
 
-		private static Guid[] FolderTypesGuids = 				
+		private static Guid[] FolderTypesGuids =
 		{
 			new Guid(InterfaceGuids.GenericLibrary),
 			new Guid(InterfaceGuids.DocumentsLibrary),
@@ -28,7 +30,7 @@ namespace BExplorer.Shell {
 			new Guid(InterfaceGuids.VideosLibrary)
 		};
 
-		#endregion
+		#endregion Private Fields
 
 		#region Private Constructor
 
@@ -42,7 +44,7 @@ namespace BExplorer.Shell {
 		}
 
 		/// <summary>
-		/// Creates a shell library in the Libraries Known Folder, 
+		/// Creates a shell library in the Libraries Known Folder,
 		/// using the given IKnownFolder
 		/// </summary>
 		/// <param name="sourceKnownFolder">KnownFolder from which to create the new Shell Library</param>
@@ -55,10 +57,7 @@ namespace BExplorer.Shell {
 			knownFolder = sourceKnownFolder;
 
 			nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
-
-			AccessModes flags = isReadOnly ?
-							AccessModes.Read :
-							AccessModes.ReadWrite;
+			var flags = isReadOnly ? AccessModes.Read : AccessModes.ReadWrite;
 
 			// Get the IShellItem2
 			base.ComInterface = ((ShellItem)sourceKnownFolder).ComInterface;
@@ -77,12 +76,12 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		#endregion
+		#endregion Private Constructor
 
 		#region Public Constructors
 
 		/// <summary>
-		/// Creates a shell library in the Libraries Known Folder, 
+		/// Creates a shell library in the Libraries Known Folder,
 		/// using the given shell library name.
 		/// </summary>
 		/// <param name="libraryName">The name of this library</param>
@@ -96,23 +95,22 @@ namespace BExplorer.Shell {
 			this.Name = libraryName;
 			Guid guid = new Guid(InterfaceGuids.Libraries);
 
-			LibrarySaveOptions flags = overwrite ?
-							LibrarySaveOptions.OverrideExisting :
-							LibrarySaveOptions.FailIfThere;
+			var flags = overwrite ? LibrarySaveOptions.OverrideExisting : LibrarySaveOptions.FailIfThere;
 
 			nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
 			nativeShellLibrary.SaveInKnownFolder(ref guid, libraryName, flags, out m_ComInterface);
 		}
 
 		/// <summary>
-		/// Creates a shell library in a given Known Folder, 
+		/// Creates a shell library in a given Known Folder,
 		/// using the given shell library name.
 		/// </summary>
 		/// <param name="libraryName">The name of this library</param>
 		/// <param name="sourceKnownFolder">The known folder</param>
 		/// <param name="overwrite">Override an existing library with the same name</param>
 		public ShellLibrary(string libraryName, IKnownFolder sourceKnownFolder, bool overwrite)
-			: this() {
+			: this(libraryName, overwrite) {
+			/*
 			if (string.IsNullOrEmpty(libraryName)) {
 				throw new ArgumentException("Library Name Empty!", "libraryName");
 			}
@@ -122,16 +120,17 @@ namespace BExplorer.Shell {
 			this.Name = libraryName;
 			Guid guid = knownFolder.FolderId;
 
-			LibrarySaveOptions flags = overwrite ?
-							LibrarySaveOptions.OverrideExisting :
-							LibrarySaveOptions.FailIfThere;
+			var flags = overwrite ? LibrarySaveOptions.OverrideExisting : LibrarySaveOptions.FailIfThere;
 
 			nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
 			nativeShellLibrary.SaveInKnownFolder(ref guid, libraryName, flags, out m_ComInterface);
+			*/
+
+			knownFolder = sourceKnownFolder;
 		}
 
 		/// <summary>
-		/// Creates a shell library in a given local folder, 
+		/// Creates a shell library in a given local folder,
 		/// using the given shell library name.
 		/// </summary>
 		/// <param name="libraryName">The name of this library</param>
@@ -159,12 +158,12 @@ namespace BExplorer.Shell {
 			nativeShellLibrary.Save(shellItemIn, libraryName, flags, out m_ComInterface);
 		}
 
-		#endregion
+		#endregion Public Constructors
 
 		#region Public Properties
 
 		/// <summary>
-		/// The name of the library, every library must 
+		/// The name of the library, every library must
 		/// have a name
 		/// </summary>
 		/// <exception cref="COMException">Will throw if no Icon is set</exception>
@@ -182,6 +181,7 @@ namespace BExplorer.Shell {
 		//}
 
 		public string Name { get; set; }
+
 		/// <summary>
 		/// The Resource Reference to the icon.
 		/// </summary>
@@ -191,7 +191,6 @@ namespace BExplorer.Shell {
 				nativeShellLibrary.GetIcon(out iconRef);
 				return new IconReference(iconRef);
 			}
-
 			set {
 				nativeShellLibrary.SetIcon(value.ReferencePath);
 				nativeShellLibrary.Commit();
@@ -209,7 +208,6 @@ namespace BExplorer.Shell {
 
 				return GetFolderTypefromGuid(folderTypeGuid);
 			}
-
 			set {
 				Guid guid = FolderTypesGuids[(int)value];
 				nativeShellLibrary.SetFolderType(ref guid);
@@ -225,7 +223,6 @@ namespace BExplorer.Shell {
 			get {
 				Guid folderTypeGuid;
 				nativeShellLibrary.GetFolderType(out folderTypeGuid);
-
 				return folderTypeGuid;
 			}
 		}
@@ -240,10 +237,10 @@ namespace BExplorer.Shell {
 		}
 
 		/// <summary>
-		/// By default, this folder is the first location 
-		/// added to the library. The default save folder 
-		/// is both the default folder where files can 
-		/// be saved, and also where the library XML 
+		/// By default, this folder is the first location
+		/// added to the library. The default save folder
+		/// is both the default folder where files can
+		/// be saved, and also where the library XML
 		/// file will be saved, if no other path is specified
 		/// </summary>
 		public string DefaultSaveFolder {
@@ -276,7 +273,7 @@ namespace BExplorer.Shell {
 		}
 
 		/// <summary>
-		/// Whether the library will be pinned to the 
+		/// Whether the library will be pinned to the
 		/// Explorer Navigation Pane
 		/// </summary>
 		public bool IsPinnedToNavigationPane {
@@ -298,7 +295,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		#endregion
+		#endregion Public Properties
 
 		#region Public Methods
 
@@ -309,20 +306,18 @@ namespace BExplorer.Shell {
 			this.Dispose();
 		}
 
-		#endregion
+		#endregion Public Methods
 
 		#region Internal Properties
 
 		internal const string FileExtension = ".library-ms";
 
-
-
-		#endregion
+		#endregion Internal Properties
 
 		#region Static Shell Library methods
 
 		/// <summary>
-		/// Get a the known folder FOLDERID_Libraries 
+		/// Get a the known folder FOLDERID_Libraries
 		/// </summary>
 		public static IKnownFolder LibrariesKnownFolder {
 			get {
@@ -352,7 +347,6 @@ namespace BExplorer.Shell {
 		//        throw;
 		//    }
 		//}
-
 
 		private static ShellLibrary Load_Helper(IShellItem nativeShellItem, string libraryName, bool isReadOnly) {
 			INativeShellLibrary nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
@@ -479,7 +473,6 @@ namespace BExplorer.Shell {
 			staWorker.SetApartmentState(ApartmentState.STA);
 			staWorker.Start();
 			staWorker.Join();
-
 		}
 
 		/// <summary>
@@ -540,7 +533,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		#endregion
+		#endregion Static Shell Library methods
 
 		#region Collection Members
 
@@ -568,11 +561,10 @@ namespace BExplorer.Shell {
 		}
 
 		/// <summary>
-		/// Clear all items of this Library 
+		/// Clear all items of this Library
 		/// </summary>
 		public void Clear() {
-			List<ShellItem> list = ItemsList;
-			foreach (ShellItem folder in list) {
+			foreach (ShellItem folder in ItemsList) {
 				nativeShellLibrary.RemoveFolder(folder.ComInterface);
 			}
 
@@ -585,7 +577,7 @@ namespace BExplorer.Shell {
 		/// <param name="item">The item to remove.</param>
 		/// <returns><B>true</B> if the item was removed.</returns>
 		public bool Remove(ShellItem item) {
-			if (item == null) { throw new ArgumentNullException("item"); }
+			if (item == null) throw new ArgumentNullException("item");
 
 			try {
 				nativeShellLibrary.RemoveFolder(item.ComInterface);
@@ -608,7 +600,7 @@ namespace BExplorer.Shell {
 			return Remove(item);
 		}
 
-		#endregion
+		#endregion Collection Members
 
 		#region Disposable Pattern
 
@@ -632,13 +624,11 @@ namespace BExplorer.Shell {
 			Dispose(false);
 		}
 
-		#endregion
+		#endregion Disposable Pattern
 
 		#region Private Properties
 
-		private List<ShellItem> ItemsList {
-			get { return GetFolders(); }
-		}
+		private List<ShellItem> ItemsList { get { return GetFolders(); } }
 
 		private List<ShellItem> GetFolders() {
 			List<ShellItem> list = new List<ShellItem>();
@@ -668,7 +658,7 @@ namespace BExplorer.Shell {
 			return list;
 		}
 
-		#endregion
+		#endregion Private Properties
 
 		#region IEnumerable<ShellFileSystemFolder> Members
 
@@ -680,7 +670,7 @@ namespace BExplorer.Shell {
 			return ItemsList.GetEnumerator();
 		}
 
-		#endregion
+		#endregion IEnumerable<ShellFileSystemFolder> Members
 
 		#region IEnumerable Members
 
@@ -692,10 +682,9 @@ namespace BExplorer.Shell {
 			return ItemsList.GetEnumerator();
 		}
 
-		#endregion
+		#endregion IEnumerable Members
 
 		#region ICollection<ShellFileSystemFolder> Members
-
 
 		/// <summary>
 		/// Determines if an item with the specified path exists in the collection.
@@ -723,7 +712,7 @@ namespace BExplorer.Shell {
 			return ItemsList.Any(folder => string.Equals(item.ParsingName, folder.ParsingName, StringComparison.OrdinalIgnoreCase));
 		}
 
-		#endregion
+		#endregion ICollection<ShellFileSystemFolder> Members
 
 		#region IList<FileSystemFolder> Members
 
@@ -769,7 +758,8 @@ namespace BExplorer.Shell {
 				throw new NotImplementedException();
 			}
 		}
-		#endregion
+
+		#endregion IList<FileSystemFolder> Members
 
 		#region ICollection<ShellFileSystemFolder> Members
 
@@ -796,7 +786,7 @@ namespace BExplorer.Shell {
 			get { return false; }
 		}
 
-		#endregion
+		#endregion ICollection<ShellFileSystemFolder> Members
 
 		/// <summary>
 		/// Indicates whether this feature is supported on the current platform.
@@ -808,5 +798,4 @@ namespace BExplorer.Shell {
 			}
 		}
 	}
-
 }
