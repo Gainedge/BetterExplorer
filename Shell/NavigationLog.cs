@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BExplorer.Shell;
 
 namespace BExplorer.Shell {
 
@@ -20,7 +19,6 @@ namespace BExplorer.Shell {
 
 		// <summary>Can the user navigate forwards?</summary>
 		public bool CanNavigateForwards { get { return !(CurrentLocPos == HistoryItemsList.Count - 1 || HistoryItemsList.Count == 0); } }
-
 
 		private List<ShellItem> ForwardEntries {
 			//TODO: I think these are actually Backwards Entries not Forwards
@@ -43,7 +41,7 @@ namespace BExplorer.Shell {
 		// <summary>Gets the current ShellItem in HistoryItemsList or Sets the item by adding it to HistoryItemsList and</summary>
 		/// <summary>Represents the current ShellItem the user is at</summary>
 		/// <remarks>
-		/// Gets the item from <see cref="HistoryItemsList"/> at index <see cref="CurrentLocPos"/> (or null if Count = 0). 
+		/// Gets the item from <see cref="HistoryItemsList"/> at index <see cref="CurrentLocPos"/> (or null if Count = 0).
 		/// Sets the Location by adding the ShellItem to <see cref="HistoryItemsList"/> and setting it as the <see cref="CurrentLocPos"/>
 		/// </remarks>
 		public ShellItem CurrentLocation {
@@ -57,8 +55,6 @@ namespace BExplorer.Shell {
 		}
 
 		#endregion Properties
-
-
 
 		public NavigationLog() {
 			HistoryItemsList = new List<ShellItem>();
@@ -77,13 +73,11 @@ namespace BExplorer.Shell {
 			return HistoryItemsList[CurrentLocPos > HistoryItemsList.Count - 1 ? HistoryItemsList.Count - 1 : CurrentLocPos];
 		}
 
-
 		/// <summary>Removes any Items Forward of the current position</summary>
 		[System.Obsolete("Try to make this private")]
 		public void ClearForwardItems() {
 			ForwardEntries.ForEach(item => HistoryItemsList.Remove(item));
 		}
-
 
 		/// <summary>Clears all items then adds all items from <param name="log">the log</param></summary>
 		public void ImportData(NavigationLog log) {
@@ -98,6 +92,5 @@ namespace BExplorer.Shell {
 			CurrentLocPos = HistoryItems.Count - 1;
 		}
 		*/
-
 	}
 }
