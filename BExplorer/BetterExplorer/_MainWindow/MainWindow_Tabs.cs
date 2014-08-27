@@ -243,7 +243,7 @@ namespace BetterExplorer {
 
 		private void SelectTab(Wpf.Controls.TabItem tab) {
 			if (tab == null) return;
-			tcMain.isGoingBackOrForward = tab.log.HistoryItemsList.Count != 0;
+			tcMain.isGoingBackOrForward = tab.log.HistoryItemsList.Any();
 			try {
 				if (!Keyboard.IsKeyDown(Key.Tab)) {
 					if (tab.ShellObject != this.ShellListView.CurrentFolder || tab.ShellObject.IsSearchFolder) {

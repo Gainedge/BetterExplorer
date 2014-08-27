@@ -413,7 +413,7 @@ namespace BetterExplorer {
 				*/
 			}
 
-			int ItemsCount = ShellListView.GetItemsCount();
+			int ItemsCount = ShellListView.Items.Count;
 			sbiItemsCount.Visibility = ItemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;
 			sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
 			sbiSelItemsCount.Visibility = ShellListView.GetSelectedCount() == 0 ? Visibility.Collapsed : Visibility.Visible;
@@ -640,7 +640,7 @@ namespace BetterExplorer {
 				}
 			}
 
-			btnSelAll.IsEnabled = selectedItemsCount != ShellListView.GetItemsCount();
+			btnSelAll.IsEnabled = selectedItemsCount != ShellListView.Items.Count;
 			btnSelNone.IsEnabled = selectedItemsCount > 0;
 			btnShare.IsEnabled = selectedItemsCount == 1 && selectedItem.IsFolder;
 			btnAdvancedSecurity.IsEnabled = selectedItemsCount == 1;
@@ -876,7 +876,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnPathCopy_Click(object sender, RoutedEventArgs e) {
-			if (ShellListView.SelectedItems.Count() > 1) {
+			if (ShellListView.SelectedItems.Count > 1) {
 				string path = null;
 				foreach (ShellItem item in ShellListView.SelectedItems) {
 					if (string.IsNullOrEmpty(path)) {
@@ -889,7 +889,7 @@ namespace BetterExplorer {
 
 				Clipboards.SetText(path);
 			}
-			else if (ShellListView.SelectedItems.Count() == 1) {
+			else if (ShellListView.SelectedItems.Count == 1) {
 				Clipboards.SetText(ShellListView.GetFirstSelectedItem().ParsingName);
 			}
 			else {
@@ -1047,7 +1047,7 @@ namespace BetterExplorer {
 
 		private void btnFavorites_Click(object sender, RoutedEventArgs e) {
 			var selectedItems = ShellListView.SelectedItems;
-			if (selectedItems.Count() == 1) {
+			if (selectedItems.Count == 1) {
 				ShellLink link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.GetFirstSelectedItem().ParsingName;
@@ -1055,7 +1055,7 @@ namespace BetterExplorer {
 				link.Dispose();
 			}
 
-			if (selectedItems.Count() == 0) {
+			if (selectedItems.Count == 0) {
 				ShellLink link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.CurrentFolder.ParsingName;
@@ -2151,11 +2151,10 @@ namespace BetterExplorer {
 		#region Library Commands
 
 		private void btnOLItem_Click(object sender, RoutedEventArgs e) {
-			ShellLibrary lib = null;
 			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
-
 			var NeededFile = ShellListView.GetSelectedCount() == 1 ? ShellListView.GetFirstSelectedItem() : ShellListView.CurrentFolder;
-			lib = ShellLibrary.Load(NeededFile.GetDisplayName(SIGDN.NORMALDISPLAY), false);
+			var lib = ShellLibrary.Load(NeededFile.GetDisplayName(SIGDN.NORMALDISPLAY), false);
+
 			switch ((sender as MenuItem).Tag.ToString()) {
 				case "gu":
 					lib.LibraryType = LibraryFolderType.Generic;
@@ -2183,14 +2182,12 @@ namespace BetterExplorer {
 		}
 
 		private void chkPinNav_CheckChanged(object sender, RoutedEventArgs e) {
-			ShellLibrary lib = null;
 			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
-
 			var NeededFile = ShellListView.GetSelectedCount() == 1 ? ShellListView.GetFirstSelectedItem() : ShellListView.CurrentFolder;
-			lib = ShellLibrary.Load(NeededFile.GetDisplayName(SIGDN.NORMALDISPLAY), false);
-			if (!IsFromSelectionOrNavigation) {
+			var lib = ShellLibrary.Load(NeededFile.GetDisplayName(SIGDN.NORMALDISPLAY), false);
+
+			if (!IsFromSelectionOrNavigation)
 				lib.IsPinnedToNavigationPane = e.RoutedEvent.Name == "Checked";
-			}
 
 			lib.Close();
 		}
@@ -2246,6 +2243,8 @@ namespace BetterExplorer {
 		#region Navigation (Back/Forward Arrows) and Up Button
 
 		private void leftNavBut_Click(object sender, RoutedEventArgs e) {
+			isGoingBackOrForward_Test((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack());
+
 			tcMain.isGoingBackOrForward = true;
 			NavigationController((tcMain.SelectedItem as Wpf.Controls.TabItem).log.NavigateBack());
 		}
@@ -2627,7 +2626,7 @@ namespace BetterExplorer {
 		#region Share Tab Commands (excluding Archive)
 
 		private void btnMapDrive_Click(object sender, RoutedEventArgs e) {
-			//WindowsAPI.MapDrive(this.Handle, ShellListView.SelectedItems.Count() == 1 ? ShellListView.GetFirstSelectedItem().ParsingName : String.Empty);
+			//WindowsAPI.MapDrive(this.Handle, ShellListView.SelectedItems.Count( == 1 ? ShellListView.GetFirstSelectedItem().ParsingName : String.Empty);
 		}
 
 		private void btnDisconectDrive_Click(object sender, RoutedEventArgs e) {
@@ -4249,7 +4248,7 @@ namespace BetterExplorer {
 
 		void ShellListView_ItemUpdated(object sender, ItemUpdatedEventArgs e) {
 			if (e.UpdateType != ItemUpdateType.Renamed && e.UpdateType != ItemUpdateType.Updated) {
-				int ItemsCount = ShellListView.GetItemsCount();
+				int ItemsCount = ShellListView.Items.Count;
 				sbiItemsCount.Visibility = ItemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;
 				sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
 			}
@@ -4279,18 +4278,47 @@ namespace BetterExplorer {
 
 		#region On Navigated
 
+		void isGoingBackOrForward_Test(ShellItem Destination) {
+			var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
+			tcMain.isGoingBackOrForward = true;
+			NavigationController(Destination);
+			Current.ClearForwardItems();
+			if (Current.CurrentLocation != Destination) Current.CurrentLocation = Destination;
+		}
+
+
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
 			NavigationController(this.ShellListView.CurrentFolder);
 			SetupColumnsButton();
 			SetSortingAndGroupingButtons();
 			//SetUpBreadcrumbbarOnNavComplete(e);
 
+
+			var Current_Test = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
+			bool isGoingBackOrForward_Test;
+			if (!Current_Test.HistoryItemsList.Any()) {
+				isGoingBackOrForward_Test = false;
+			}
+			else if (Current_Test.HistoryItemsList.Count == Current_Test.CurrentLocPos + 1) {
+				isGoingBackOrForward_Test = false;
+			}
+
+			/*
+			else if (Current_Test.HistoryItemsList[Current_Test.CurrentLocPos] == e.Folder) {
+				isGoingBackOrForward_Test = false;
+			}
+			*/
+
+
+
+
+
 			if (!tcMain.isGoingBackOrForward) {
 				var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
-				//if (Current.ForwardEntries.Any()) Current.ClearForwardItems();
 				Current.ClearForwardItems();
 				if (Current.CurrentLocation != e.Folder) Current.CurrentLocation = e.Folder;
 			}
+
 
 			tcMain.isGoingBackOrForward = false;
 
@@ -4345,25 +4373,26 @@ namespace BetterExplorer {
 			btnSizeChart.IsEnabled = e.Folder.IsFileSystem;
 			btnAutosizeColls.IsEnabled = ShellListView.View == ShellViewStyle.Details;
 
+			//TODO: Find out if the following 2 if(...) can be combined using &&
 			if (e.Folder.ParsingName == KnownFolders.RecycleBin.ParsingName) {
-				if (ShellListView.GetItemsCount() > 0) miRestoreALLRB.Visibility = Visibility.Visible;
+				if (ShellListView.Items.Any()) miRestoreALLRB.Visibility = Visibility.Visible;
 			}
 			else {
 				miRestoreALLRB.Visibility = Visibility.Collapsed;
 			}
-			int selectedItemsCount = ShellListView.GetSelectedCount();
 
 			bool isFuncAvail;
+			int selectedItemsCount = ShellListView.GetSelectedCount();
 			if (selectedItemsCount == 1) {
 				isFuncAvail = ShellListView.GetFirstSelectedItem().IsFileSystem || ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName;
 			}
 			else {
+				isFuncAvail = true;
 				if (!(ShellListView.CurrentFolder.IsFolder && !ShellListView.CurrentFolder.IsDrive && !ShellListView.CurrentFolder.IsSearchFolder))
 					ctgFolderTools.Visibility = Visibility.Collapsed;
-				isFuncAvail = true;
 			}
 
-			bool IsChanged = (selectedItemsCount > 0);
+			bool IsChanged = selectedItemsCount > 0;
 			btnCopy.IsEnabled = IsChanged;
 			//btnPathCopy.IsEnabled = IsChanged;
 			btnCut.IsEnabled = IsChanged;

@@ -3939,7 +3939,7 @@ namespace BExplorer.Shell {
 			Shell32.FormatDrive(handle, DriveLetter);
 		}
 
-		public int GetItemsCount() { return this.Items.Count; }
+		//public int GetItemsCount() { return this.Items.Count; }
 
 		public int GetSelectedCount() {
 			return (int)User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETSELECTEDCOUNT, 0, 0);

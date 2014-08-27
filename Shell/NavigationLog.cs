@@ -15,16 +15,16 @@ namespace BExplorer.Shell {
 		public int CurrentLocPos { get; set; }
 
 		/// <summary>Can the user navigate backwards?</summary>
-		public bool CanNavigateBackwards { get { return !(CurrentLocPos == 0 || HistoryItemsList.Count == 0); } }
+		public bool CanNavigateBackwards { get { return CurrentLocPos != 0 || !HistoryItemsList.Any(); } }
 
-		// <summary>Can the user navigate forwards?</summary>
-		public bool CanNavigateForwards { get { return !(CurrentLocPos == HistoryItemsList.Count - 1 || HistoryItemsList.Count == 0); } }
+		/// <summary>Can the user navigate forwards?</summary>
+		public bool CanNavigateForwards { get { return CurrentLocPos != HistoryItemsList.Count - 1 || !HistoryItemsList.Any(); } }
 
 		private List<ShellItem> ForwardEntries {
 			//TODO: I think these are actually Backwards Entries not Forwards
 			get {
 				//TODO: Test
-				return HistoryItemsList.Skip(CurrentLocPos).ToList();
+				return HistoryItemsList.Skip(CurrentLocPos +1).ToList();
 
 				/*
 				var _ForwardEntries = new List<ShellItem>();

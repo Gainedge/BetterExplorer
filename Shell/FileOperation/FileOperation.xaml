@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:progress="clr-namespace:RateBar;assembly=RateBar"
-             mc:Ignorable="d" Height="246.5" Width="421" Loaded="UserControl_Loaded" >
+             mc:Ignorable="d" Height="246.5" Width="421">
     <UserControl.Resources>
         <Style TargetType="{x:Type Button}" x:Key="ControlBtnStyle" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Template">

@@ -16,6 +16,8 @@ namespace BExplorer.Shell {
 	/// Interaction logic for FileOperation.xaml
 	/// </summary>
 	public partial class FileOperation : UserControl {
+		//TODO: Someone delete the comments if possible!!!
+
 		public String[] SourceItemsCollection { get; set; }
 		public String DestinationLocation { get; set; }
 		public FileOperationDialog ParentContents { get; set; }
@@ -1347,10 +1349,11 @@ namespace BExplorer.Shell {
 		//         }
 		//       }
 
+		/*
 		private void UserControl_Loaded(object sender, RoutedEventArgs e) {
 			//this.isloaded = true;
 		}
-
+		*/
 
 
 	}
