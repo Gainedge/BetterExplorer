@@ -22,8 +22,7 @@ namespace BExplorer.Shell {
 		public bool CanNavigateForwards { get { return !(CurrentLocPos == HistoryItemsList.Count - 1 || HistoryItemsList.Count == 0); } }
 
 
-		[System.Obsolete("Try to make this private")]
-		public List<ShellItem> ForwardEntries {
+		private List<ShellItem> ForwardEntries {
 			//TODO: I think these are actually Backwards Entries not Forwards
 			get {
 				//TODO: Test
@@ -49,7 +48,7 @@ namespace BExplorer.Shell {
 		/// </remarks>
 		public ShellItem CurrentLocation {
 			get {
-				return HistoryItemsList.Count == 0 ? null : HistoryItemsList[CurrentLocPos];
+				return HistoryItemsList.Any() ? HistoryItemsList[CurrentLocPos] : null;
 			}
 			set {
 				HistoryItemsList.Add(value);
@@ -79,6 +78,7 @@ namespace BExplorer.Shell {
 		}
 
 
+		/// <summary>Removes any Items Forward of the current position</summary>
 		[System.Obsolete("Try to make this private")]
 		public void ClearForwardItems() {
 			ForwardEntries.ForEach(item => HistoryItemsList.Remove(item));
