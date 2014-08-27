@@ -247,7 +247,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public string DefaultSaveFolder {
 			get {
-				Guid guid = new Guid(InterfaceGuids.IShellItem);
+				var guid = new Guid(InterfaceGuids.IShellItem);
 
 				IShellItem saveFolderItem;
 
@@ -266,7 +266,7 @@ namespace BExplorer.Shell {
 
 				string fullPath = new DirectoryInfo(value).FullName;
 
-				Guid guid = new Guid(InterfaceGuids.IShellItem);
+				var guid = new Guid(InterfaceGuids.IShellItem);
 				IShellItem saveFolderItem = Shell32.SHCreateItemFromParsingName(fullPath, IntPtr.Zero, guid);
 
 				nativeShellLibrary.SetDefaultSaveFolder(DefaultSaveFolderType.Detect, saveFolderItem);
