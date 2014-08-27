@@ -504,20 +504,12 @@ namespace BetterExplorer {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 				(Action)(() => {
 					if (Path.GetExtension(e.FullPath).ToLowerInvariant() == ".lnk") {
-						ShellItem so = new ShellItem(e.FullPath);
+						var so = new ShellItem(e.FullPath);
 						so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 						so.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 						ImageSource icon = so.Thumbnail.BitmapSource;
 
-
 						btnFavorites.Items.Add(Utilities.Build_MenuItem(so.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY), so, icon, onClick: mif_Click));
-
-						//MenuItem mi = new MenuItem();
-						//mi.Header = so.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
-						//mi.Tag = so;
-						//mi.Icon = icon;
-						//mi.Click += new RoutedEventHandler(mif_Click);
-						//btnFavorites.Items.Add(mi);
 					}
 				}));
 		}
@@ -532,6 +524,7 @@ namespace BetterExplorer {
 		}
 
 		private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, ShellItem selectedItem) {
+			
 			#region Search Contextual Tab
 			ctgSearch.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.IsSearchFolder);
 			if (ctgSearch.Visibility == Visibility.Visible && !ShellListView.CurrentFolder.IsSearchFolder) {
@@ -648,9 +641,11 @@ namespace BetterExplorer {
 		}
 
 		private void SetupLibrariesTab(ShellLibrary lib) {
+
 			IsFromSelectionOrNavigation = true;
 			chkPinNav.IsChecked = lib.IsPinnedToNavigationPane;
 			IsFromSelectionOrNavigation = false;
+
 			foreach (ShellItem item in lib) {
 				item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 				item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
@@ -2185,6 +2180,7 @@ namespace BetterExplorer {
 			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
 			var NeededFile = ShellListView.GetSelectedCount() == 1 ? ShellListView.GetFirstSelectedItem() : ShellListView.CurrentFolder;
 			var lib = ShellLibrary.Load(NeededFile.GetDisplayName(SIGDN.NORMALDISPLAY), false);
+
 
 			if (!IsFromSelectionOrNavigation)
 				lib.IsPinnedToNavigationPane = e.RoutedEvent.Name == "Checked";
@@ -4210,13 +4206,13 @@ namespace BetterExplorer {
 			}
 		}
 		*/
+		
 		void ShellTree_NodeClick(object sender, System.Windows.Forms.TreeNodeMouseClickEventArgs e) {
 			if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
 				if (e.Node != null && e.Node.Tag != null)
 					tcMain.NewTab(e.Node.Tag as ShellItem, false);
 			}
 		}
-
 
 		System.Windows.Forms.Timer _keyjumpTimer = new System.Windows.Forms.Timer();
 
