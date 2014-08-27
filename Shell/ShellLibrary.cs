@@ -180,7 +180,7 @@ namespace BExplorer.Shell {
 		//    }
 		//}
 
-		public string Name { get; set; }
+		private string Name { get; set; }
 
 		/// <summary>
 		/// The Resource Reference to the icon.
@@ -215,6 +215,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		/// <summary>
 		/// The Guid of the Library type
 		/// </summary>
@@ -226,6 +227,7 @@ namespace BExplorer.Shell {
 				return folderTypeGuid;
 			}
 		}
+		*/
 
 		private static LibraryFolderType GetFolderTypefromGuid(Guid folderTypeGuid) {
 			for (int i = 0; i < FolderTypesGuids.Length; i++) {
