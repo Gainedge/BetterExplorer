@@ -3836,10 +3836,19 @@ namespace BExplorer.Shell {
 				Shell32.HChangeNotifyFlags.SHCNF_DWORD | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, IntPtr.Zero, (IntPtr)sfi.iIcon);
 			}
 
+
+
+
 			Items[this.GetFirstSelectedItemIndex()] = new ShellItem(wszPath);
-			//this.UpdateItem(this.SelectedIndexes[0]);
 			this.RefreshItem(this.SelectedIndexes[0]);
-			//return hr;
+
+			/*
+			 * Code for defaulting to current folder
+			if (this.GetFirstSelectedItemIndex() != -1) {
+				Items[this.GetFirstSelectedItemIndex()] = new ShellItem(wszPath);
+				this.RefreshItem(this.SelectedIndexes[0]);
+			}
+			*/ 
 		}
 
 		public HResult ClearFolderIcon(string wszPath) {

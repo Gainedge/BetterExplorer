@@ -2893,8 +2893,8 @@ namespace BetterExplorer {
 		}
 
 		private void btnClearFoldericon_Click(object sender, RoutedEventArgs e) {
-			var Item = ShellListView.GetFirstSelectedItem() == null ? ShellListView.CurrentFolder : ShellListView.GetFirstSelectedItem();
-			ShellListView.ClearFolderIcon(Item.ParsingName);
+			//var Item = ShellListView.GetFirstSelectedItem() == null ? ShellListView.CurrentFolder : ShellListView.GetFirstSelectedItem();
+			ShellListView.ClearFolderIcon(ShellListView.GetFirstSelectedItem().ParsingName);
 		}
 
 		#endregion

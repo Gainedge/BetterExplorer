@@ -104,7 +104,7 @@ namespace BetterExplorer {
 								//IconReader ir = new IconReader();
 								icons = IconReader.ReadIcons(Params.ToString(), new System.Drawing.Size(48, 48));
 								foreach (IconFile icon in icons) {
-									ListViewItem lvi = new ListViewItem("#" + icon.Index.ToString());
+									var lvi = new ListViewItem("#" + icon.Index.ToString());
 									lvi.Tag = icon.Index;
 									lvIcons.Items.Add(lvi);
 								}
@@ -116,27 +116,22 @@ namespace BetterExplorer {
 			var itemIndex = ShellView.GetFirstSelectedItemIndex();
 			this.ShellView.CurrentRefreshedItemIndex = itemIndex;
 			if (IsLibrary) {
-				BExplorer.Shell.ShellLibrary lib = null;
+				var lib = ShellView.GetFirstSelectedItem() != null ?
+					BExplorer.Shell.ShellLibrary.Load(ShellView.GetFirstSelectedItem().DisplayName, false) :
+					BExplorer.Shell.ShellLibrary.Load(ShellView.CurrentFolder.DisplayName, false);
 
-
-
-				try {
-					lib = BExplorer.Shell.ShellLibrary.Load(ShellView.GetFirstSelectedItem().DisplayName, false);
-				}
-				catch {
-					lib = BExplorer.Shell.ShellLibrary.Load(ShellView.CurrentFolder.DisplayName, false);
-				}
 				lib.IconResourceId = new BExplorer.Shell.Interop.IconReference(tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
 				lib.Close();
 
-				var item = ShellView.Items[itemIndex];
-				item.IsIconLoaded = false;
+				ShellView.Items[itemIndex].IsIconLoaded = false;
 				ShellView.RefreshItem(ShellView.GetFirstSelectedItemIndex(), true);
 			}
 			else {
 				//var Item = ShellView.GetFirstSelectedItem() == null ? ShellView.CurrentFolder : ShellView.GetFirstSelectedItem();
 				ShellView.SetFolderIcon(ShellView.GetFirstSelectedItem().ParsingName, tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
 			}
+
+			this.Close();
 		}
 
 		private BackgroundWorker bw = new BackgroundWorker();
