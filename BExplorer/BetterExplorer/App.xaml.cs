@@ -127,11 +127,10 @@ namespace BetterExplorer {
 		}
 
 		protected override void OnStartup(StartupEventArgs e) {
+			string Locale = ""; bool dmi = true;
+
 			Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
-			string Locale = "";
-			bool dmi = true;
 
 			if (e.Args != null && e.Args.Any()) {
 				dmi = e.Args.Contains("/nw");

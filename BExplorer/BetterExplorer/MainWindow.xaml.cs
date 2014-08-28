@@ -4268,26 +4268,6 @@ namespace BetterExplorer {
 			SetSortingAndGroupingButtons();
 			//SetUpBreadcrumbbarOnNavComplete(e);
 
-
-			var Current_Test = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
-			bool isGoingBackOrForward_Test;
-			if (!Current_Test.HistoryItemsList.Any()) {
-				isGoingBackOrForward_Test = false;
-			}
-			else if (Current_Test.HistoryItemsList.Count == Current_Test.CurrentLocPos + 1) {
-				isGoingBackOrForward_Test = false;
-			}
-
-			/*
-			else if (Current_Test.HistoryItemsList[Current_Test.CurrentLocPos] == e.Folder) {
-				isGoingBackOrForward_Test = false;
-			}
-			*/
-
-
-
-
-
 			if (!tcMain.isGoingBackOrForward) {
 				var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
 				Current.ClearForwardItems();
@@ -4542,7 +4522,6 @@ namespace BetterExplorer {
 
 			// loads current UI language (uses en-US if default)
 			try {
-
 				string loc;
 				if (Convert.ToString(rks.GetValue("Locale", ":null:")) == ":null:") {
 					//load current UI language in case there is no specified registry value
@@ -4553,7 +4532,6 @@ namespace BetterExplorer {
 				}
 
 				((App)Application.Current).SelectCulture(loc, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\translation.xaml");
-
 			}
 			catch (Exception ex) {
 				MessageBox.Show(String.Format("An error occurred while trying to load the locale data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "Locale Load Error - " + ex);
