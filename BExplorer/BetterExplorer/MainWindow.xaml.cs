@@ -55,6 +55,9 @@ namespace BetterExplorer {
 		[Obsolete("Can remove move this!!! Someone should!!!")]
 		public bool IsCalledFromLoading;
 
+		[Obsolete("Do we really need this?!!")]
+		bool ReadyToChangeLanguage;
+
 		public bool isOnLoad;
 
 
@@ -864,25 +867,12 @@ namespace BetterExplorer {
 		}
 
 		private void btnPathCopy_Click(object sender, RoutedEventArgs e) {
-			if (ShellListView.SelectedItems.Count > 1) {
-				string path = null;
-				foreach (ShellItem item in ShellListView.SelectedItems) {
-					if (string.IsNullOrEmpty(path)) {
-						path = item.ParsingName;
-					}
-					else {
-						path = String.Format("{0}\r\n{1}", path, item.ParsingName);
-					}
-				}
-
-				Clipboards.SetText(path);
-			}
-			else if (ShellListView.SelectedItems.Count == 1) {
+			if (ShellListView.SelectedItems.Count > 1)
+				Clipboards.SetText(ShellListView.SelectedItems.Select(item => "\r\n" + item.ParsingName).Aggregate((x, y) => x + y).Trim());
+			else if (ShellListView.SelectedItems.Count == 1)
 				Clipboards.SetText(ShellListView.GetFirstSelectedItem().ParsingName);
-			}
-			else {
+			else
 				Clipboards.SetText(ShellListView.CurrentFolder.ParsingName);
-			}
 		}
 
 		private void btnSelAll_Click(object sender, RoutedEventArgs e) {
@@ -4076,19 +4066,25 @@ namespace BetterExplorer {
 				mnuIncludeInLibrary.Items.Clear();
 
 				foreach (ShellItem lib in KnownFolders.Libraries) {
+					lib.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+					mnuIncludeInLibrary.Items.Add(
+						Utilities.Build_MenuItem(lib.DisplayName, ShellLibrary.Load(Path.GetFileNameWithoutExtension(lib.ParsingName), true),
+												 lib.Thumbnail.BitmapSource, onClick: mli_Click)
+					);
+
+					/*
 					Fluent.MenuItem mli = new MenuItem();
 					mli.Header = lib.DisplayName;
-					lib.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 					mli.Icon = lib.Thumbnail.BitmapSource;
 					mli.Tag = ShellLibrary.Load(Path.GetFileNameWithoutExtension(lib.ParsingName), true);
 					mli.Click += mli_Click;
 					mnuIncludeInLibrary.Items.Add(mli);
+					*/
 				}
 
 				mnuIncludeInLibrary.Items.Add(new Separator());
 
-				Fluent.MenuItem mln = new MenuItem();
-				mln.Header = "Create new library";
+				var mln = new MenuItem() { Header = "Create new library" };
 				mln.Click += mln_Click;
 				mnuIncludeInLibrary.Items.Add(mln);
 
