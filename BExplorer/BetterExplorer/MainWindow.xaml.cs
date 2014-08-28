@@ -524,7 +524,7 @@ namespace BetterExplorer {
 		}
 
 		private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, ShellItem selectedItem) {
-			
+
 			#region Search Contextual Tab
 			ctgSearch.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.IsSearchFolder);
 			if (ctgSearch.Visibility == Visibility.Visible && !ShellListView.CurrentFolder.IsSearchFolder) {
@@ -543,7 +543,7 @@ namespace BetterExplorer {
 
 			#region Drive Contextual Tab
 			ctgDrive.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.IsDrive || (selectedItemsCount == 1 && selectedItem != null && (selectedItem.IsDrive || (selectedItem.Parent != null && selectedItem.Parent.IsDrive))));
-			if (asDrive && ctgDrive.Visibility == Visibility.Visible && (selectedItem != null && selectedItem.IsDrive)) {
+			if (asDrive && ctgDrive.Visibility == Visibility.Visible && selectedItem != null && selectedItem.IsDrive) {
 				TheRibbon.SelectedTabItem = ctgDrive.Items[0];
 			}
 			#endregion
@@ -600,6 +600,7 @@ namespace BetterExplorer {
 				TheRibbon.SelectedTabItem = ctgVirtualDisk.Items[0];
 			}
 			#endregion
+
 		}
 
 		private void SetUpStatusBarOnSelectOrNavigate(int selectedItemsCount) {
@@ -641,7 +642,6 @@ namespace BetterExplorer {
 		}
 
 		private void SetupLibrariesTab(ShellLibrary lib) {
-
 			IsFromSelectionOrNavigation = true;
 			chkPinNav.IsChecked = lib.IsPinnedToNavigationPane;
 			IsFromSelectionOrNavigation = false;
@@ -4206,7 +4206,7 @@ namespace BetterExplorer {
 			}
 		}
 		*/
-		
+
 		void ShellTree_NodeClick(object sender, System.Windows.Forms.TreeNodeMouseClickEventArgs e) {
 			if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
 				if (e.Node != null && e.Node.Tag != null)
