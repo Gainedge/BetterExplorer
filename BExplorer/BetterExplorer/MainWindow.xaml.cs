@@ -159,8 +159,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnAbout_Click(object sender, RoutedEventArgs e) {
-			fmAbout fAbout = new fmAbout(this);
-			fAbout.ShowDialog();
+			new fmAbout(this).ShowDialog();
 		}
 
 		/*
@@ -283,7 +282,7 @@ namespace BetterExplorer {
 
 					this.LVItemsColor = docs.Root.Elements("ItemColorRow")
 						.Select(element => new BExplorer.Shell.LVItemColor(element.Elements().ToArray()[0].Value,
-																			 System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value)))).ToList();
+																		   System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value)))).ToList();
 				}
 			});
 		}
@@ -466,12 +465,12 @@ namespace BetterExplorer {
 			ShellItem SaveLoc = mi.Tag as ShellItem;
 
 			if (ShellListView.CurrentFolder.ParsingName.Contains(KnownFolders.Libraries.ParsingName) && ShellListView.CurrentFolder.ParsingName.EndsWith("library-ms")) {
-				ShellLibrary lib = ShellLibrary.Load(ShellListView.CurrentFolder.DisplayName, false);
+				var lib = ShellLibrary.Load(ShellListView.CurrentFolder.DisplayName, false);
 				lib.DefaultSaveFolder = SaveLoc.ParsingName;
 				lib.Close();
 			}
 			else if (ShellListView.GetFirstSelectedItem().ParsingName.Contains(KnownFolders.Libraries.ParsingName)) {
-				ShellLibrary lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().DisplayName, false);
+				var lib = ShellLibrary.Load(ShellListView.GetFirstSelectedItem().DisplayName, false);
 				lib.DefaultSaveFolder = SaveLoc.ParsingName;
 				lib.Close();
 			}
@@ -771,7 +770,7 @@ namespace BetterExplorer {
 
 			int winhandle = (int)User32.getWindowId(null, "BetterExplorerOperations");
 
-			List<ShellItem> items = new List<ShellItem>(DropList.OfType<string>().Select(o => new ShellItem(o)));
+			var items = new List<ShellItem>(DropList.OfType<string>().Select(o => new ShellItem(o)));
 			/*
 			foreach (string item in DropList) {
 				ShellItem o = new ShellItem(item);
@@ -793,7 +792,7 @@ namespace BetterExplorer {
 			//	string drop = String.Format(@"{0}\{1}", PathForDrop, items[val].GetDisplayName(SIGDN.NORMALDISPLAY));
 			//}
 
-			using (Process proc = new Process()) {
+			using (var proc = new Process()) {
 				proc.StartInfo = new ProcessStartInfo {
 					FileName = ExePath,
 					Verb = "runas",
@@ -911,8 +910,10 @@ namespace BetterExplorer {
 		}
 
 		private void btnProperties_Click(object sender, RoutedEventArgs e) {
-			ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
-			ShellListView.Focus();
+			//ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
+			//ShellListView.Focus();
+
+			ShellListView.ShowPropPage(this.Handle, ShellListView.GetFirstSelectedItem().ParsingName, "");
 		}
 
 		private void btnInvSel_Click(object sender, RoutedEventArgs e) {
@@ -1025,7 +1026,7 @@ namespace BetterExplorer {
 		private void btnFavorites_Click(object sender, RoutedEventArgs e) {
 			var selectedItems = ShellListView.SelectedItems;
 			if (selectedItems.Count == 1) {
-				ShellLink link = new ShellLink();
+				var link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.GetFirstSelectedItem().ParsingName;
 				link.Save(String.Format(@"{0}\{1}.lnk", KnownFolders.Links.ParsingName, ShellListView.GetFirstSelectedItem().GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY)));
@@ -1033,7 +1034,7 @@ namespace BetterExplorer {
 			}
 
 			if (selectedItems.Count == 0) {
-				ShellLink link = new ShellLink();
+				var link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.CurrentFolder.ParsingName;
 				link.Save(String.Format(@"{0}\{1}.lnk", KnownFolders.Links.ParsingName, ShellListView.CurrentFolder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY)));
@@ -1710,7 +1711,7 @@ namespace BetterExplorer {
 				//Sets up FileSystemWatcher for Favorites folder
 				try {
 					//TODO: Find out why we gave this, it is NEVER USED. After this method I assume it will be disposed!!
-					FileSystemWatcher fsw = new FileSystemWatcher(KnownFolders.Links.ParsingName);
+					var fsw = new FileSystemWatcher(KnownFolders.Links.ParsingName);
 					fsw.Created += fsw_Created;
 					fsw.Deleted += fsw_Deleted;
 					fsw.Renamed += fsw_Renamed;
