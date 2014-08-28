@@ -6,36 +6,27 @@ using System.IO;
 
 namespace BetterExplorerShell {
 	static class Program {
+
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
 		[STAThread]
 		static void Main(string[] args) {
-			//Application.EnableVisualStyles();
-			//Application.SetCompatibleTextRenderingDefault(false);
-			//Application.Run(new Form1());
 			if (!ExecuteControlPanelItem(args[0])) {
-				String bexplorerPath = Path.GetDirectoryName(Application.ExecutablePath);
-				bexplorerPath += @"\BetterExplorer.exe";
-
-				System.Diagnostics.ProcessStartInfo procStartInfo =
-					new System.Diagnostics.ProcessStartInfo(bexplorerPath, String.Format("\"{0}\"", args[0]));
+				var bexplorerPath = Path.GetDirectoryName(Application.ExecutablePath) + @"\BetterExplorer.exe";
+				var procStartInfo = new System.Diagnostics.ProcessStartInfo(bexplorerPath, String.Format("\"{0}\"", args[0]));
 
 				// Now we create a process, assign its ProcessStartInfo and start it
-				System.Diagnostics.Process proc = new System.Diagnostics.Process();
-				proc.StartInfo = procStartInfo;
-
-
+				var proc = new System.Diagnostics.Process() { StartInfo = procStartInfo };
 				proc.Start();
 			}
 		}
 
 		static public bool ExecuteControlPanelItem(String cmd) {
 			// Discard control panel items
-			String cpName = @"::{26EE0668-A00A-44D7-9371-BEB064C98683}";
+			const String cpName = @"::{26EE0668-A00A-44D7-9371-BEB064C98683}";
 
 			int cpIndex = cmd.IndexOf(cpName);
-
 			if (cpIndex != 0) return false;
 
 
@@ -48,13 +39,10 @@ namespace BetterExplorerShell {
 
 			cmd = cmd.Replace("Fonts", "::{BD84B380-8CA2-1069-AB1D-08000948F534}");
 
-			System.Diagnostics.ProcessStartInfo procStartInfo =
-				new System.Diagnostics.ProcessStartInfo(explorerPath, String.Format("shell:{0}", cmd));
+			var procStartInfo = new System.Diagnostics.ProcessStartInfo(explorerPath, String.Format("shell:{0}", cmd));
 
 			// Now we create a process, assign its ProcessStartInfo and start it
-			System.Diagnostics.Process proc = new System.Diagnostics.Process();
-			proc.StartInfo = procStartInfo;
-
+			var proc = new System.Diagnostics.Process() { StartInfo = procStartInfo };
 			proc.Start();
 			return true;
 		}

@@ -25,21 +25,7 @@ namespace BetterExplorer {
 	/// Interaction logic for App.xaml
 	/// </summary>
 	public partial class App : Application {
-		//private CompositionContainer container;
-		//private AggregateCatalog catalog;
-		public static bool isStartMinimized = false, isStartNewWindows = false, isStartWithStartupTab = false;
-
-		#region Unused
-
-		void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e) {
-			//TODO: add code for sleep, resume, etc. modes
-		}
-
-		void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e) {
-			//TODO: Add code for lock and other reasons
-		}
-
-		#endregion
+		public static bool isStartMinimized = false, /*isStartNewWindows = false,*/ isStartWithStartupTab = false;
 
 		#region Culture
 
@@ -51,7 +37,7 @@ namespace BetterExplorer {
 			if (culture == ":null:")
 				culture = CultureInfo.InstalledUICulture.Name;
 			// List all our resources      
-			List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>(Application.Current.Resources.MergedDictionaries);
+			var dictionaryList = new List<ResourceDictionary>(Application.Current.Resources.MergedDictionaries);
 			// We want our specific culture      
 			string requestedCulture = string.Format("Locale.{0}.xaml", culture);
 			ResourceDictionary resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
@@ -84,9 +70,9 @@ namespace BetterExplorer {
 			if (culture == ":null:")
 				culture = CultureInfo.InstalledUICulture.Name;
 			// List all our resources      
-			List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>(Application.Current.Resources.MergedDictionaries);
+			var dictionaryList = new List<ResourceDictionary>(Application.Current.Resources.MergedDictionaries);
 
-			ResourceDictionary resourceDictionary = Utilities.Load(filename);
+			var resourceDictionary = Utilities.Load(filename);
 			if (resourceDictionary == null) {
 				// if not found, then try from the application's resources
 				string requestedCulture = string.Format("Locale.{0}.xaml", culture);
@@ -121,14 +107,14 @@ namespace BetterExplorer {
 		#region UnhandledException
 
 		void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
-			Exception lastException = (Exception)e.ExceptionObject;
-			NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+			var lastException = (Exception)e.ExceptionObject;
+			var logger = NLog.LogManager.GetCurrentClassLogger();
 			logger.Fatal(lastException);
 		}
 
 		void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e) {
-			Exception lastException = e.Exception;
-			NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+			var lastException = e.Exception;
+			var logger = NLog.LogManager.GetCurrentClassLogger();
 			logger.Fatal(lastException);
 		}
 
@@ -143,28 +129,21 @@ namespace BetterExplorer {
 		protected override void OnStartup(StartupEventArgs e) {
 			Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-			SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
-			SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
 
 			string Locale = "";
 			bool dmi = true;
 
-			if (e.Args != null && e.Args.Count() > 0) {
-				//dmi = e.Args.Any((x) => x == "/nw");
-				//isStartWithStartupTab = e.Args.Any((x) => x == "/norestore");
-
+			if (e.Args != null && e.Args.Any()) {
 				dmi = e.Args.Contains("/nw");
 				isStartWithStartupTab = e.Args.Contains("/norestore");
 
-				//TODO: Consider Refactoring this so [e.Args[0] != "-minimized"] is inside the switch 
 				if (e.Args[0] != "-minimized")
 					this.Properties["cmd"] = e.Args[0];
 				else
 					isStartMinimized = true;
 			}
 
-			isStartNewWindows = dmi;
-			if (isStartNewWindows) {
+			if (dmi) {
 				if (!ApplicationInstanceManager.CreateSingleInstance(Assembly.GetExecutingAssembly().GetName().Name, SingleInstanceCallback))
 					return; // exit, if same app. is running
 			}
@@ -179,9 +158,6 @@ namespace BetterExplorer {
 				MessageBox.Show(String.Format("A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {0}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.", Locale));
 				Shutdown();
 			}
-
-			//rks.Close();
-			//rk.Close();
 		}
 
 		private void CreateInitialTab(MainWindow win, ShellItem sho) {
@@ -203,10 +179,12 @@ namespace BetterExplorer {
 		/// <param name="sender">The sender.</param>
 		/// <param name="args">The <see cref="SingleInstanceApplication.InstanceCallbackEventArgs"/> instance containing the event data.</param>
 		private void SingleInstanceCallback(object sender, InstanceCallbackEventArgs args) {
-			string StartUpLocation = KnownFolders.Libraries.ParsingName;
-			RegistryKey rk = Registry.CurrentUser;
-			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", false);
-			StartUpLocation = rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+			//string StartUpLocation = KnownFolders.Libraries.ParsingName;
+			//RegistryKey rk = Registry.CurrentUser;
+			//RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", false);
+			//StartUpLocation = rks.GetValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+			var StartUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+
 
 			if (args == null || Dispatcher == null) return;
 			Action<bool> d = (bool x) => {
@@ -238,11 +216,11 @@ namespace BetterExplorer {
 					}
 				}
 
-				//TODO: Try refactoring [Worker] away 
 				if (!isStartMinimized || win.tcMain.Items.Count == 0) {
 					CreateInitialTab(win, sho);
 				}
-				else if ((int)rks.GetValue(@"IsRestoreTabs", 1) == 0) {
+				//else if ((int)rks.GetValue("IsRestoreTabs", 1) == 0) {
+				else if ((int)Utilities.GetRegistryValue("IsRestoreTabs", "1") == 0) {
 					win.tcMain.Items.Clear();
 					CreateInitialTab(win, sho);
 				}
@@ -252,8 +230,8 @@ namespace BetterExplorer {
 					CreateInitialTab(win, sho);
 				}
 
-				rks.Close();
-				rk.Close();
+				//rks.Close();
+				//rk.Close();
 
 				win.Activate();
 				win.Topmost = true;  // important

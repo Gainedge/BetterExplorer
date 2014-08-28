@@ -647,7 +647,6 @@ namespace BetterExplorer {
 		}
 
 		private void SetupUIOnSelectOrNavigate(bool isNavigate = false) {
-			//private void SetupUIOnSelectOrNavigate(int SelItemsCount, bool isNavigate = false) {
 			var SelItemsCount = ShellListView.GetSelectedCount();
 
 			btnDefSave.Items.Clear();
@@ -672,7 +671,6 @@ namespace BetterExplorer {
 			SetUpButtonsStateOnSelectOrNavigate(SelItemsCount, selectedItem);
 		}
 
-		[Obsolete("try to remove this if possible")]
 		bool IsFromSelectionOrNavigation = false;
 		// background worker code removed. hopefully we don't need it still... Lol.
 
@@ -920,7 +918,6 @@ namespace BetterExplorer {
 				ShellListView.CreateNewFolder(FindResource("btnNewFolderCP").ToString());
 		}
 
-
 		private void btnProperties_Click(object sender, RoutedEventArgs e) {
 			ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
 			ShellListView.Focus();
@@ -934,7 +931,7 @@ namespace BetterExplorer {
 			StringCollection DropList = System.Windows.Forms.Clipboard.GetFileDropList();
 			string PathForDrop = ShellListView.CurrentFolder.ParsingName;
 			foreach (string item in DropList) {
-				using (ShellLink shortcut = new ShellLink()) {
+				using (var shortcut = new ShellLink()) {
 					ShellItem o = new ShellItem(item);
 					shortcut.Target = item;
 					shortcut.WorkingDirectory = System.IO.Path.GetDirectoryName(item);
@@ -4492,50 +4489,32 @@ namespace BetterExplorer {
 		public MainWindow() {
 			TaskBar.SetCurrentProcessAppId("{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}");
 
-			CommandBinding cbNavigateBack = new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click);
-			this.CommandBindings.Add(cbNavigateBack);
-			CommandBinding cbNavigateFF = new CommandBinding(AppCommands.RoutedNavigateFF, rightNavBut_Click);
-			this.CommandBindings.Add(cbNavigateFF);
-			CommandBinding cbNavigateUp = new CommandBinding(AppCommands.RoutedNavigateUp, btnUpLevel_Click);
-			this.CommandBindings.Add(cbNavigateUp);
-			CommandBinding cbGoToSearchBox = new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox);
-			this.CommandBindings.Add(cbGoToSearchBox);
-
-
-
-			CommandBinding cbnewtab = new CommandBinding(AppCommands.RoutedNewTab, (sender, e) =>
-				tcMain.NewTab()
-			);
-			this.CommandBindings.Add(cbnewtab);
-			CommandBinding cbGotoCombo = new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this.ShellListView.IsFocusAllowed = false; this.bcbc.SetInputState(); });
-			this.CommandBindings.Add(cbGotoCombo);
-
-			CommandBinding cbChangeTab = new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {
-				t.Stop();
-				int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
-				tcMain.SelectedItem = tcMain.Items[selIndex];
-			});
-			this.CommandBindings.Add(cbChangeTab);
-
-			CommandBinding cbCloseTab = new CommandBinding(AppCommands.RoutedCloseTab, (sender, e) => {
-				if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-					Close();
-					return;
+			this.CommandBindings.AddRange(new[]
+				{ 
+					new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click),
+					new CommandBinding(AppCommands.RoutedNavigateUp, btnUpLevel_Click),
+					new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox),
+					new CommandBinding(AppCommands.RoutedNewTab, (sender, e) => tcMain.NewTab()),
+					new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this.ShellListView.IsFocusAllowed = false; this.bcbc.SetInputState(); }),
+					new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {
+						t.Stop();
+						int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
+						tcMain.SelectedItem = tcMain.Items[selIndex];
+					}),
+					new CommandBinding(AppCommands.RoutedCloseTab, (sender, e) => {
+						if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
+							Close();
+							return;
+						}
+						int CurSelIndex = tcMain.SelectedIndex;
+						tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
+						tcMain.Items.RemoveAt(CurSelIndex);
+					})
 				}
-
-				int CurSelIndex = tcMain.SelectedIndex;
-				tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
-				tcMain.Items.RemoveAt(CurSelIndex);
-			});
-
-			this.CommandBindings.Add(cbCloseTab);
-
+			);
 
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-
-			//   ExplorerBrowser.SetCustomDialogs(false);//Convert.ToInt32(rks.GetValue(@"IsCustomFO", 0)) == 1);
-			//ExplorerBrowser.IsOldSysListView = Convert.ToInt32(rks.GetValue(@"IsVistaStyleListView", 1)) == 1;
 
 			// loads current Ribbon color theme
 			try {
@@ -4565,12 +4544,12 @@ namespace BetterExplorer {
 			try {
 
 				string loc;
-				if (Convert.ToString(rks.GetValue(@"Locale", ":null:")) == ":null:") {
+				if (Convert.ToString(rks.GetValue("Locale", ":null:")) == ":null:") {
 					//load current UI language in case there is no specified registry value
 					loc = Thread.CurrentThread.CurrentUICulture.Name; ;
 				}
 				else {
-					loc = Convert.ToString(rks.GetValue(@"Locale", ":null:"));
+					loc = Convert.ToString(rks.GetValue("Locale", ":null:"));
 				}
 
 				((App)Application.Current).SelectCulture(loc, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\translation.xaml");
@@ -4581,10 +4560,10 @@ namespace BetterExplorer {
 			}
 
 			// gets values from registry to be applied after initialization
-			string lohc = Convert.ToString(rks.GetValue(@"Locale", ":null:"));
-			double sbw = Convert.ToDouble(rks.GetValue(@"SearchBarWidth", "220"));
-			string rtlused = Convert.ToString(rks.GetValue(@"RTLMode", "notset"));
-			string tabba = Convert.ToString(rks.GetValue(@"TabBarAlignment", "top"));
+			string lohc = Convert.ToString(rks.GetValue("Locale", ":null:"));
+			double sbw = Convert.ToDouble(rks.GetValue("SearchBarWidth", "220"));
+			string rtlused = Convert.ToString(rks.GetValue("RTLMode", "notset"));
+			string tabba = Convert.ToString(rks.GetValue("TabBarAlignment", "top"));
 
 			rks.Close();
 			rk.Close();
@@ -4592,10 +4571,6 @@ namespace BetterExplorer {
 
 			//Main Initialization routine
 			InitializeComponent();
-
-			//isOnLoad = true;
-			////chkOldSysListView.IsChecked = ExplorerBrowser.IsOldSysListView;
-			//isOnLoad = false;
 
 			// sets up ComboBox to select the current UI language
 			foreach (TranslationComboBoxItem item in this.TranslationComboBox.Items) {
@@ -4613,11 +4588,6 @@ namespace BetterExplorer {
 
 			// sets size of search bar
 			this.SearchBarColumn.Width = new GridLength(sbw);
-
-			/*
-			// store 1st value
-			PreviouseWindowState = WindowState;
-			*/
 
 			// attach to event (used to store prev. win. state)
 			//FIXME: fix the event
@@ -4639,14 +4609,8 @@ namespace BetterExplorer {
 			else
 				TabbaTop.IsChecked = true;
 
-
 			// allows user to change language
 			ReadyToChangeLanguage = true;
-			/*
-			Task.Run(() => {
-				LoadInternalList();
-			});
-			*/
 		}
 
 		private void beNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e) {
