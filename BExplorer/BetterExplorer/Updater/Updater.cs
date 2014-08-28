@@ -186,17 +186,10 @@ namespace BetterExplorer {
 				updateXML.Load(this.ServerCheckLocation);
 				foreach (XmlNode updateNode in updateXML.DocumentElement.ChildNodes) {
 					var updateType = (UpdateTypes)Convert.ToInt32(updateNode.ChildNodes[1].InnerText);
-					if (updateType != UpdateTypes.Nightly & updateType != UpdateTypes.Alpha & updateType != UpdateTypes.Beta) {
-						this.AvailableUpdates.Add(new Update() {
-							Name = updateNode.Attributes["Name"].Value,
-							Version = updateNode.ChildNodes[0].InnerText,
-							Type = (UpdateTypes)Convert.ToInt32(updateNode.ChildNodes[1].InnerText),
-							RequiredVersion = updateNode.ChildNodes[2].InnerText,
-							UpdaterFilePath = updateNode.ChildNodes[3].InnerText,
-							UpdaterFilePath64 = updateNode.ChildNodes[4].InnerText
-						});
-					}
-					else if (IsCheckForTestBuilds) {
+
+					var Check = updateType != UpdateTypes.Nightly & updateType != UpdateTypes.Alpha & updateType != UpdateTypes.Beta;
+					Check = Check || IsCheckForTestBuilds;
+					if (Check) {
 						this.AvailableUpdates.Add(new Update() {
 							Name = updateNode.Attributes["Name"].Value,
 							Version = updateNode.ChildNodes[0].InnerText,
