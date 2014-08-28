@@ -646,29 +646,32 @@ namespace BetterExplorer {
 			lib.Close();
 		}
 
-		private void SetupUIOnSelectOrNavigate(bool isNavigate = false) {
-			var SelItemsCount = ShellListView.GetSelectedCount();
+		[Obsolete("Inline this code", true)]
+		private void SetupUIOnSelectOrNavigate() {
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+				var SelItemsCount = ShellListView.GetSelectedCount();
 
-			btnDefSave.Items.Clear();
-			var selectedItem = this.ShellListView.GetFirstSelectedItem();
-			if (selectedItem != null && !isNavigate) {
-				btnOpenWith.Items.Clear();
-				foreach (var item in selectedItem.GetAssocList()) {
-					btnOpenWith.Items.Add(Utilities.Build_MenuItem(item.DisplayName, item, item.Icon, ToolTip: item.ApplicationPath, onClick: miow_Click));
+				btnDefSave.Items.Clear();
+				var selectedItem = this.ShellListView.GetFirstSelectedItem();
+				if (selectedItem != null) {
+					btnOpenWith.Items.Clear();
+					foreach (var item in selectedItem.GetAssocList()) {
+						btnOpenWith.Items.Add(Utilities.Build_MenuItem(item.DisplayName, item, item.Icon, ToolTip: item.ApplicationPath, onClick: miow_Click));
+					}
+
+					btnOpenWith.IsEnabled = btnOpenWith.HasItems;
 				}
 
-				btnOpenWith.IsEnabled = btnOpenWith.HasItems;
-			}
-
-			if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && SelItemsCount == 1) {
-				this.Previewer.FileName = selectedItem.ParsingName;
-			}
-			else if (!String.IsNullOrEmpty(this.Previewer.FileName)) {
-				this.Previewer.FileName = null;
-			}
-			//Set up ribbon contextual tabs on selection changed
-			SetUpRibbonTabsVisibilityOnSelectOrNavigate(SelItemsCount, selectedItem);
-			SetUpButtonsStateOnSelectOrNavigate(SelItemsCount, selectedItem);
+				if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && SelItemsCount == 1) {
+					this.Previewer.FileName = selectedItem.ParsingName;
+				}
+				else if (!String.IsNullOrEmpty(this.Previewer.FileName)) {
+					this.Previewer.FileName = null;
+				}
+				//Set up ribbon contextual tabs on selection changed
+				SetUpRibbonTabsVisibilityOnSelectOrNavigate(SelItemsCount, selectedItem);
+				SetUpButtonsStateOnSelectOrNavigate(SelItemsCount, selectedItem);
+			}));
 		}
 
 		bool IsFromSelectionOrNavigation = false;
@@ -4250,9 +4253,7 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_SelectionChanged(object sender, EventArgs e) {
-			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-				SetupUIOnSelectOrNavigate();
-			}));
+			SetupUIOnSelectOrNavigate();
 
 			if (this.IsInfoPaneEnabled) {
 				Task.Run(() => this.DetailsPanel.FillPreviewPane(this.ShellListView));
@@ -4269,6 +4270,7 @@ namespace BetterExplorer {
 			NavigationController(this.ShellListView.CurrentFolder);
 			SetupColumnsButton();
 			SetSortingAndGroupingButtons();
+			SetupUIOnSelectOrNavigate();
 
 			if (!tcMain.isGoingBackOrForward) {
 				var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
@@ -4451,9 +4453,6 @@ namespace BetterExplorer {
 		private void NavigationController(ShellItem Destination) {
 			if (Destination != this.ShellListView.CurrentFolder) {
 				this.ShellListView.Navigate_Full(Destination, true);
-				Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-					SetupUIOnSelectOrNavigate();
-				}));
 			}
 
 			if (this.ShellListView.CurrentFolder != null)
