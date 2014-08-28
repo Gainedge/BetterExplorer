@@ -116,6 +116,8 @@ namespace BetterExplorer {
 			var lastException = e.Exception;
 			var logger = NLog.LogManager.GetCurrentClassLogger();
 			logger.Fatal(lastException);
+
+			e.Handled = true;
 		}
 
 		#endregion
@@ -128,7 +130,6 @@ namespace BetterExplorer {
 
 		protected override void OnStartup(StartupEventArgs e) {
 			string Locale = ""; bool dmi = true;
-
 			Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
@@ -182,10 +183,9 @@ namespace BetterExplorer {
 			//RegistryKey rk = Registry.CurrentUser;
 			//RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", false);
 			//StartUpLocation = rks.GetValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+			if (args == null || Dispatcher == null) return;
 			var StartUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
 
-
-			if (args == null || Dispatcher == null) return;
 			Action<bool> d = (bool x) => {
 				var win = MainWindow as MainWindow;
 				var hwnd = (HwndSource.FromVisual(win) as HwndSource).Handle;

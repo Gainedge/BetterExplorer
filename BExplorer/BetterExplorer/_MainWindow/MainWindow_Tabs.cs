@@ -21,17 +21,9 @@ namespace BetterExplorer {
 				var sho = new ShellItem(tcMain.StartUpLocation.ToShellParsingName());
 
 				if (tcMain.Items.OfType<Wpf.Controls.TabItem>().Any())
-					//ShellListView.Navigate(sho);
 					NavigationController(sho);
 				else
 					tcMain.NewTab(sho, true);
-
-				/*
-				if (tcMain.Items.OfType<Wpf.Controls.TabItem>().Count() == 0)
-					tcMain.NewTab(sho, true);
-				else
-					ShellListView.Navigate(sho);
-				*/
 			}
 			if (IsrestoreTabs) {
 				isOnLoad = true;
@@ -40,18 +32,12 @@ namespace BetterExplorer {
 					try {
 						i++;
 						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
-							/*
-							if (i == InitialTabs.Length) {
-								//tcMain.SelectedIndex = InitialTabs.Length - 2;
-							}
-							*/
 							continue;
 						}
 
 						tcMain.NewTab(ShellItem.ToShellParsingName(str), i == InitialTabs.Length);
 						if (i == InitialTabs.Count()) {
 							ShellItem sho = new ShellItem(str.ToShellParsingName());
-							//ShellListView.Navigate(sho);
 							NavigationController(sho);
 							(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = sho;
 							(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = sho.ParsingName;
@@ -67,26 +53,13 @@ namespace BetterExplorer {
 					tcMain.NewTab();
 
 					string idk = tcMain.StartUpLocation.StartsWith("::") ? tcMain.StartUpLocation.ToShellParsingName() : tcMain.StartUpLocation.Replace("\"", "");
-					NavigationController(new ShellItem(idk));
-
-					/*
-					if (tcMain.StartUpLocation.StartsWith("::"))
-						ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation.ToShellParsingName()));
-					else
-						ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation.Replace("\"", "")));
-					*/
+					NavigationController(new ShellItem(idk));				
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
 				}
 
 				isOnLoad = false;
 			}
-			//breadcrumbBarControl1.ExitEditMode_IfNeeded(true);
-
-			//if (tcMain.Items.Count == 1)
-			//	tcMain.SelectedIndex = 0;
-
-			//ShellVView.Visibility = System.Windows.Visibility.Hidden;
 		}
 
 

@@ -117,6 +117,9 @@ namespace BetterExplorer {
 			this.ShellView.CurrentRefreshedItemIndex = itemIndex;
 			if (IsLibrary) {
 				BExplorer.Shell.ShellLibrary lib = null;
+
+
+
 				try {
 					lib = BExplorer.Shell.ShellLibrary.Load(ShellView.GetFirstSelectedItem().DisplayName, false);
 				}
@@ -131,6 +134,7 @@ namespace BetterExplorer {
 				ShellView.RefreshItem(ShellView.GetFirstSelectedItemIndex(), true);
 			}
 			else {
+				//var Item = ShellView.GetFirstSelectedItem() == null ? ShellView.CurrentFolder : ShellView.GetFirstSelectedItem();
 				ShellView.SetFolderIcon(ShellView.GetFirstSelectedItem().ParsingName, tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
 			}
 		}

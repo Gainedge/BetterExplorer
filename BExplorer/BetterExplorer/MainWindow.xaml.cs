@@ -639,7 +639,7 @@ namespace BetterExplorer {
 				item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 
 				btnDefSave.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.Thumbnail.BitmapSource, GroupName: "GRDS1", checkable: true,
-																isChecked: item.ParsingName == lib.DefaultSaveFolder, onClick: miItem_Click));
+															  isChecked: item.ParsingName == lib.DefaultSaveFolder, onClick: miItem_Click));
 			}
 
 			btnDefSave.IsEnabled = !(lib.Count == 0);
@@ -2893,7 +2893,8 @@ namespace BetterExplorer {
 		}
 
 		private void btnClearFoldericon_Click(object sender, RoutedEventArgs e) {
-			ShellListView.ClearFolderIcon(ShellListView.GetFirstSelectedItem().ParsingName);
+			var Item = ShellListView.GetFirstSelectedItem() == null ? ShellListView.CurrentFolder : ShellListView.GetFirstSelectedItem();
+			ShellListView.ClearFolderIcon(Item.ParsingName);
 		}
 
 		#endregion
@@ -4268,7 +4269,6 @@ namespace BetterExplorer {
 			NavigationController(this.ShellListView.CurrentFolder);
 			SetupColumnsButton();
 			SetSortingAndGroupingButtons();
-			//SetUpBreadcrumbbarOnNavComplete(e);
 
 			if (!tcMain.isGoingBackOrForward) {
 				var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
@@ -4287,9 +4287,6 @@ namespace BetterExplorer {
 				ConstructMoveToCopyToMenu();
 				SetUpJumpListOnNavComplete();
 				SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
-
-				//TODO:	Date: 8/8/2014	User: Aaron Campf	Note: Make sure the following code is okay to comment out!!!
-				//SetupUIOnSelectOrNavigate(true);
 			}));
 
 			if (this.IsInfoPaneEnabled) {
@@ -4526,7 +4523,7 @@ namespace BetterExplorer {
 				string loc;
 				if (Convert.ToString(rks.GetValue("Locale", ":null:")) == ":null:") {
 					//load current UI language in case there is no specified registry value
-					loc = Thread.CurrentThread.CurrentUICulture.Name; ;
+					loc = Thread.CurrentThread.CurrentUICulture.Name;
 				}
 				else {
 					loc = Convert.ToString(rks.GetValue("Locale", ":null:"));
