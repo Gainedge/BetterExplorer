@@ -103,9 +103,6 @@ namespace BetterExplorer {
 		private int PreviewPaneWidth = 120, InfoPaneHeight = 150;
 		private ShellTreeViewEx ShellTree = new ShellTreeViewEx();
 		private ShellView ShellListView = new ShellView();
-
-
-
 		private bool IsUpdateCheck;
 		private bool IsUpdateCheckStartup;
 		private ClipboardMonitor cbm = new ClipboardMonitor();
@@ -126,7 +123,7 @@ namespace BetterExplorer {
 		//string naddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\NetworkAccounts\\";
 		string sstdir;
 		bool OverwriteOnRotate = false;
-		NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+		//NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
 		DateTime LastUpdateCheck;
 		Int32 UpdateCheckInterval;
@@ -514,15 +511,6 @@ namespace BetterExplorer {
 				}));
 		}
 
-		private void SetUpOpenWithButton(ShellItem SelectedItem) {
-			btnOpenWith.Items.Clear();
-			foreach (var item in SelectedItem.GetAssocList()) {
-				btnOpenWith.Items.Add(Utilities.Build_MenuItem(item.DisplayName, item, item.Icon, ToolTip: item.ApplicationPath, onClick: miow_Click));
-			}
-
-			btnOpenWith.IsEnabled = btnOpenWith.HasItems;
-		}
-
 		private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, ShellItem selectedItem) {
 
 			#region Search Contextual Tab
@@ -665,7 +653,12 @@ namespace BetterExplorer {
 			btnDefSave.Items.Clear();
 			var selectedItem = this.ShellListView.GetFirstSelectedItem();
 			if (selectedItem != null && !isNavigate) {
-				SetUpOpenWithButton(selectedItem);
+				btnOpenWith.Items.Clear();
+				foreach (var item in selectedItem.GetAssocList()) {
+					btnOpenWith.Items.Add(Utilities.Build_MenuItem(item.DisplayName, item, item.Icon, ToolTip: item.ApplicationPath, onClick: miow_Click));
+				}
+
+				btnOpenWith.IsEnabled = btnOpenWith.HasItems;
 			}
 
 			if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && SelItemsCount == 1) {
@@ -4932,5 +4925,6 @@ namespace BetterExplorer {
 		}
 
 		#endregion
+
 	}
 }
