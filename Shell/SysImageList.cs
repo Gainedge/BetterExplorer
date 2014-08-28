@@ -16,7 +16,9 @@ namespace BExplorer.Shell {
 		//public static extern int ExtractIconEx([MarshalAs(UnmanagedType.LPTStr)] string file, int index, out IntPtr largeIconHandle, out IntPtr smallIconHandle, int icons);
 
 		[DllImport("shell32.dll", EntryPoint = "SHGetFileInfo", CharSet = CharSet.Auto)]
-		public static extern IntPtr SHGetFileInfo(IntPtr pszPath, FileAttributes attr, ref ImageList.SHFileInfo psfi, int cbSizeFileInfo, SHGetFileInfoOptions uFlags);
+		public static extern IntPtr SHGetFileInfo(IntPtr pszPath, FileAttributes attr, ref SHFILEINFO psfi, int cbSizeFileInfo, SHGetFileInfoOptions uFlags);
+		//Note:	Date: 8/28/2014	User: Aaron Campf	Message: Replaces below code with above code
+		//public static extern IntPtr SHGetFileInfo(IntPtr pszPath, FileAttributes attr, ref ImageList.SHFileInfo psfi, int cbSizeFileInfo, SHGetFileInfoOptions uFlags);
 
 		[DllImport("shell32.dll", EntryPoint = "#727")]
 		public extern static int SHGetImageList(ImageListSize iImageList, ref Guid riid, out IImageList2 ppv);
@@ -226,26 +228,26 @@ namespace BExplorer.Shell {
 
 	[Flags]
 	public enum SHGetFileInfoOptions : uint {
-		Icon = 0x000000100,    // get icon
-		DisplayName = 0x000000200,    // get display name
-		TypeName = 0x000000400,    // get type name
-		Attributes = 0x000000800,    // get attributes
-		IconLocation = 0x000001000,    // get icon location
-		ExeType = 0x000002000,    // return exe type
-		SysIconIndex = 0x000004000,    // get system icon index
-		LinkOverlay = 0x000008000,    // put a link overlay on icon
-		Selected = 0x000010000,    // show icon in selected state
+		Icon = 0x000000100,					// get icon
+		DisplayName = 0x000000200,			// get display name
+		TypeName = 0x000000400,				// get type name
+		Attributes = 0x000000800,			// get attributes
+		IconLocation = 0x000001000,			// get icon location
+		ExeType = 0x000002000,				// return exe type
+		SysIconIndex = 0x000004000,			// get system icon index
+		LinkOverlay = 0x000008000,			// put a link overlay on icon
+		Selected = 0x000010000,				// show icon in selected state
 		// (NTDDI_VERSION >= NTDDI_WIN2K)
-		SpecifiedAttributes = 0x000020000,    // get only specified attributes
-		LargeIcon = 0x000000000,    // get large icon
-		SmallIcon = 0x000000001,    // get small icon
-		OpenIcon = 0x000000002,    // get open icon
-		ShellIconSize = 0x000000004,    // get shell size icon
-		Pidl = 0x000000008,    // pszPath is a pidl
+		SpecifiedAttributes = 0x000020000,	// get only specified attributes
+		LargeIcon = 0x000000000,			// get large icon
+		SmallIcon = 0x000000001,			// get small icon
+		OpenIcon = 0x000000002,				// get open icon
+		ShellIconSize = 0x000000004,		// get shell size icon
+		Pidl = 0x000000008,					// pszPath is a pidl
 		UseFileAttributes = 0x000000010,    // use passed dwFileAttribute
 		// (_WIN32_IE >= 0x0500)
-		AddOverlays = 0x000000020,    // apply the appropriate overlays
-		OverlayIndex = 0x000000040,    // Get the index of the overlay
+		AddOverlays = 0x000000020,			// apply the appropriate overlays
+		OverlayIndex = 0x000000040,			// Get the index of the overlay
 	}
 
 
@@ -270,26 +272,26 @@ namespace BExplorer.Shell {
 	/// </remarks>
 	public class ImageList : IDisposable {
 
+		/*
 		#region SHFileInfo
-
-		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-		public struct SHFileInfo {
-			public IntPtr hIcon;
-			public int iIcon;
-			public uint dwAttributes;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-			public string szDisplayName;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-			public string szTypeName;
-		}
-
+		//[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		//public struct SHFileInfo {
+		//	public IntPtr hIcon;
+		//	public int iIcon;
+		//	public uint dwAttributes;
+		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+		//	public string szDisplayName;
+		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+		//	public string szTypeName;
+		//}
 		#endregion
+		*/
 
 		#region Locals
 
 		//private ImageListSize _Size;
 		private IImageList2 _ImageList;
-		private static Guid IID_ImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
+		//private static Guid IID_ImageList = new Guid("46EB5926-582E-4017-9FDF-E8998DAA0950");
 		private static Guid IID_ImageList2 = new Guid("192B9D83-50FC-457B-90A0-2B82A8B5DAE1");
 
 		#endregion
@@ -353,7 +355,7 @@ namespace BExplorer.Shell {
 		[Obsolete("Consider Inlining")]
 		private int GetIconIndex(IntPtr path) {
 			var options = SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.Pidl;
-			var shfi = new SHFileInfo();
+			var shfi = new SHFILEINFO();
 			var shfiSize = Marshal.SizeOf(shfi.GetType());
 			IntPtr retVal = Win32Api.SHGetFileInfo(path, FileAttributes.None, ref shfi, shfiSize, options);
 			if (shfi.hIcon != IntPtr.Zero) {
@@ -378,7 +380,7 @@ namespace BExplorer.Shell {
 		/// <returns></returns>
 		public int GetIconIndexWithOverlay(IntPtr path, out int overlayIndex) {
 			var options = SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.OverlayIndex | SHGetFileInfoOptions.Icon | SHGetFileInfoOptions.AddOverlays | SHGetFileInfoOptions.Pidl;
-			var shfi = new SHFileInfo();
+			var shfi = new SHFILEINFO();
 			var shfiSize = Marshal.SizeOf(shfi.GetType());
 			IntPtr retVal = Win32Api.SHGetFileInfo(path, FileAttributes.None, ref shfi, shfiSize, options);
 			if (shfi.hIcon != IntPtr.Zero) {

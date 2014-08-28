@@ -190,13 +190,11 @@ namespace SystemImageList {
 
 		#region UnmanagedCode
 
-		private const int MAX_PATH = 260;
-
 		[DllImport("shell32")]
 		private static extern IntPtr SHGetFileInfo(
 		   string pszPath,
 		   int dwFileAttributes,
-		   ref SHFILEINFO psfi,
+		   ref BExplorer.Shell.Interop.SHFILEINFO psfi,
 		   uint cbFileInfo,
 		   uint uFlags);
 
@@ -309,18 +307,22 @@ namespace SystemImageList {
 			public BExplorer.Shell.Interop.User32.RECT rcImage;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		private struct SHFILEINFO {
-			public IntPtr hIcon;
-			public int iIcon;
-			public int dwAttributes;
+		/*
+		//private const int MAX_PATH = 260;
 
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
-			public string szDisplayName;
+		//[StructLayout(LayoutKind.Sequential)]
+		//private struct SHFILEINFO {
+		//	public IntPtr hIcon;
+		//	public int iIcon;
+		//	public int dwAttributes;
 
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-			public string szTypeName;
+		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
+		//	public string szDisplayName;
+
+		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+		//	public string szTypeName;
 		}
+		*/
 
 		#endregion Private ImageList structures
 
@@ -591,7 +593,7 @@ namespace SystemImageList {
 			// sFileSpec can be any file. You can specify a
 			// file that does not exist and still get the
 			// icon, for example sFileSpec = "C:\PANTS.DOC"
-			SHFILEINFO shfi = new SHFILEINFO();
+			var shfi = new BExplorer.Shell.Interop.SHFILEINFO();
 			uint shfiSize = (uint)Marshal.SizeOf(shfi.GetType());
 			IntPtr retVal = SHGetFileInfo(
 			   fileName, dwAttr, ref shfi, shfiSize,
@@ -787,14 +789,12 @@ namespace SystemImageList {
 			}
 			else {
 				// Prepare flags:
-				FIcon.SHGetFileInfoConstants dwFlags =
-					FIcon.SHGetFileInfoConstants.SHGFI_USEFILEATTRIBUTES |
-					FIcon.SHGetFileInfoConstants.SHGFI_SYSICONINDEX;
+				var dwFlags = FIcon.SHGetFileInfoConstants.SHGFI_USEFILEATTRIBUTES | FIcon.SHGetFileInfoConstants.SHGFI_SYSICONINDEX;
 				if (size == SysImageListSize.smallIcons) {
 					dwFlags |= FIcon.SHGetFileInfoConstants.SHGFI_SMALLICON;
 				}
 				// Get image list
-				SHFILEINFO shfi = new SHFILEINFO();
+				var shfi = new BExplorer.Shell.Interop.SHFILEINFO();
 				uint shfiSize = (uint)Marshal.SizeOf(shfi.GetType());
 
 				// Call SHGetFileInfo to get the image list handle

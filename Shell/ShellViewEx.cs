@@ -1705,18 +1705,18 @@ namespace BExplorer.Shell {
 												//if (propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
 												String val = String.Empty;
 												if (pvar.Value != null) {
-													if (currentCollumn.CollumnType == typeof(DateTime)) 
+													if (currentCollumn.CollumnType == typeof(DateTime))
 														val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
-													else if (currentCollumn.CollumnType == typeof(long)) 
+													else if (currentCollumn.CollumnType == typeof(long))
 														val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0")));
-														//ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
-													else if (currentCollumn.CollumnType == typeof(PerceivedType)) 
+													//ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
+													else if (currentCollumn.CollumnType == typeof(PerceivedType))
 														val = ((PerceivedType)pvar.Value).ToString();
-													else if (currentCollumn.CollumnType == typeof(FileAttributes)) 
+													else if (currentCollumn.CollumnType == typeof(FileAttributes))
 														val = this.GetFilePropertiesString(pvar.Value);
-													else 
+													else
 														val = pvar.Value.ToString();
-													
+
 													nmlv.item.pszText = val;
 													Marshal.StructureToPtr(nmlv, m.LParam, false);
 													pvar.Dispose();
@@ -3821,7 +3821,7 @@ namespace BExplorer.Shell {
 
 			if (hr == HResult.S_OK) {
 				// Update the icon cache
-				SHFILEINFO sfi = new SHFILEINFO();
+				var sfi = new SHFILEINFO();
 				var res = Shell32.SHGetFileInfo(Marshal.StringToHGlobalAuto(wszPath), 0, out sfi, (int)Marshal.SizeOf(sfi), SHGFI.IconLocation);
 				int iIconIndex = Shell32.Shell_GetCachedImageIndex(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0);
 				Shell32.SHUpdateImage(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0, iIconIndex);
@@ -3842,7 +3842,7 @@ namespace BExplorer.Shell {
 				Items[this.GetFirstSelectedItemIndex()] = new ShellItem(wszPath);
 				this.RefreshItem(this.SelectedIndexes[0]);
 			}
-			*/ 
+			*/
 		}
 
 		public HResult ClearFolderIcon(string wszPath) {
@@ -3854,7 +3854,7 @@ namespace BExplorer.Shell {
 			hr = Shell32.SHGetSetFolderCustomSettings(ref fcs, wszPath, Shell32.FCS_FORCEWRITE);
 			if (hr == HResult.S_OK) {
 				// Update the icon cache
-				SHFILEINFO sfi = new SHFILEINFO();
+				var sfi = new SHFILEINFO();
 				Shell32.SHGetFileInfo(Marshal.StringToHGlobalAuto(wszPath.Replace(@"\\", @"\")), 0, out sfi, (int)Marshal.SizeOf(sfi), SHGFI.IconLocation);
 				int iIconIndex = Shell32.Shell_GetCachedImageIndex(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0);
 				Shell32.SHUpdateImage(sfi.szDisplayName.Replace(@"\\", @"\"), sfi.iIcon, 0, iIconIndex);

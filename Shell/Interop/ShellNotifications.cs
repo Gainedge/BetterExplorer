@@ -31,7 +31,7 @@ namespace BExplorer.Shell.Interop {
 
 		#region DllImports
 
-		
+
 		[DllImport("shell32.dll", EntryPoint = "#2", CharSet = CharSet.Auto)]
 		private static extern uint SHChangeNotifyRegister(
 						IntPtr hWnd,
@@ -83,19 +83,23 @@ namespace BExplorer.Shell.Interop {
 			[MarshalAs(UnmanagedType.Bool)]
 			public Boolean Recursively;
 		}
-		[StructLayout(LayoutKind.Sequential)]
-		private struct SHFILEINFO {
-			public SHFILEINFO(bool b) {
-				hIcon = IntPtr.Zero; iIcon = 0; dwAttributes = 0; szDisplayName = ""; szTypeName = "";
-			}
-			public IntPtr hIcon;
-			public int iIcon;
-			public uint dwAttributes;
-			[MarshalAs(UnmanagedType.LPStr, SizeConst = 260)]
-			public string szDisplayName;
-			[MarshalAs(UnmanagedType.LPStr, SizeConst = 80)]
-			public string szTypeName;
-		};
+
+		/*
+		//[StructLayout(LayoutKind.Sequential)]
+		//private struct SHFILEINFO {
+		//	public SHFILEINFO(bool b) {
+		//		hIcon = IntPtr.Zero; iIcon = 0; dwAttributes = 0; szDisplayName = ""; szTypeName = "";
+		//	}
+		//	public IntPtr hIcon;
+		//	public int iIcon;
+		//	public uint dwAttributes;
+		//	[MarshalAs(UnmanagedType.LPStr, SizeConst = 260)]
+		//	public string szDisplayName;
+		//	[MarshalAs(UnmanagedType.LPStr, SizeConst = 80)]
+		//	public string szTypeName;
+		//};
+		*/
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct SHNOTIFYSTRUCT {
 			public IntPtr dwItem1;

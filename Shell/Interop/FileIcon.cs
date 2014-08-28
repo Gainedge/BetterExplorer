@@ -14,18 +14,19 @@ namespace BExplorer.Shell.Interop {
 	public class FileIcon : IDisposable {
 
 		#region UnmanagedCode
-		private const int MAX_PATH = 260;
-
-		[StructLayout(LayoutKind.Sequential)]
-		private struct SHFILEINFO {
-			public IntPtr hIcon;
-			public int iIcon;
-			public int dwAttributes;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
-			public string szDisplayName;
-			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-			public string szTypeName;
-		}
+		/*
+		//private const int MAX_PATH = 260;
+		//[StructLayout(LayoutKind.Sequential)]
+		//private struct SHFILEINFO {
+		//	public IntPtr hIcon;
+		//	public int iIcon;
+		//	public int dwAttributes;
+		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
+		//	public string szDisplayName;
+		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
+		//	public string szTypeName;
+		//}
+		*/
 
 		public void Dispose() {
 			if (ShellIcon != null) {
