@@ -311,7 +311,7 @@ namespace BExplorer.Shell.Interop {
 			[DllImport("Shell32", CharSet = CharSet.Auto)]
 			internal extern static int ExtractIconEx(
 				 [MarshalAs(UnmanagedType.LPTStr)] 
-            string lpszFile,
+			string lpszFile,
 				 int nIconIndex,
 				 IntPtr[] phIconLarge,
 				 IntPtr[] phIconSmall,
@@ -459,34 +459,22 @@ namespace BExplorer.Shell.Interop {
 
 		#region Implementation
 		public string ShortCutFile {
-			get {
-				return this.shortcutFile;
-			}
-			set {
-				this.shortcutFile = value;
-			}
+			get { return this.shortcutFile; }
+			set { this.shortcutFile = value; }
 		}
 
 		/// <summary>
 		/// Gets a System.Drawing.Icon containing the icon for this
 		/// ShellLink object.
 		/// </summary>
-		public Icon LargeIcon {
-			get {
-				return getIcon(true);
-			}
-		}
+		public Icon LargeIcon { get { return getIcon(true); } }
 
-		public Icon SmallIcon {
-			get {
-				return getIcon(false);
-			}
-		}
+		public Icon SmallIcon { get { return getIcon(false); } }
 
 		private Icon getIcon(bool large) {
 			// Get icon index and path:
 			int iconIndex = 0;
-			StringBuilder iconPath = new StringBuilder(260, 260);
+			var iconPath = new StringBuilder(260, 260);
 			if (linkA == null) {
 				linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
 			}
@@ -499,9 +487,7 @@ namespace BExplorer.Shell.Interop {
 			// the shell to get the icon for the target:
 			if (iconFile.Length == 0) {
 				// Use the FileIcon object to get the icon:
-				FileIcon.SHGetFileInfoConstants flags =
-				 FileIcon.SHGetFileInfoConstants.SHGFI_ICON |
-					 FileIcon.SHGetFileInfoConstants.SHGFI_ATTRIBUTES;
+				var flags = FileIcon.SHGetFileInfoConstants.SHGFI_ICON | FileIcon.SHGetFileInfoConstants.SHGFI_ATTRIBUTES;
 				if (large) {
 					flags = flags | FileIcon.SHGetFileInfoConstants.SHGFI_LARGEICON;
 				}
@@ -514,23 +500,15 @@ namespace BExplorer.Shell.Interop {
 			else {
 				// Use ExtractIconEx to get the icon:
 				IntPtr[] hIconEx = new IntPtr[1] { IntPtr.Zero };
-				int iconCount = 0;
+				int iconCount = UnManagedMethods.ExtractIconEx(iconFile, iconIndex, large ? hIconEx : null, null, 1);
+				/*
 				if (large) {
-					iconCount = UnManagedMethods.ExtractIconEx(
-						 iconFile,
-						 iconIndex,
-						 hIconEx,
-						 null,
-						 1);
+					iconCount = UnManagedMethods.ExtractIconEx(iconFile, iconIndex, hIconEx, null, 1);
 				}
 				else {
-					iconCount = UnManagedMethods.ExtractIconEx(
-						 iconFile,
-						 iconIndex,
-						 null,
-						 hIconEx,
-						 1);
+					iconCount = UnManagedMethods.ExtractIconEx(iconFile, iconIndex, null, hIconEx, 1);
 				}
+				*/
 				// If success then return as a GDI+ object
 				Icon icon = null;
 				if (hIconEx[0] != IntPtr.Zero) {
@@ -546,35 +524,33 @@ namespace BExplorer.Shell.Interop {
 		/// </summary>
 		public string IconPath {
 			get {
-				StringBuilder iconPath = new StringBuilder(260, 260);
+				var iconPath = new StringBuilder(260, 260);
 				int iconIndex = 0;
-				if (linkA == null) {
-					linkW.GetIconLocation(iconPath, iconPath.Capacity, out
-                iconIndex);
-				}
-				else {
-					linkA.GetIconLocation(iconPath, iconPath.Capacity, out
-                iconIndex);
-				}
+				if (linkA == null)
+					linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
+				else
+					linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
+
 				return iconPath.ToString();
 			}
 			set {
-				StringBuilder iconPath = new StringBuilder(260, 260);
+				var iconPath = new StringBuilder(260, 260);
 				int iconIndex = 0;
 				if (linkA == null) {
-					linkW.GetIconLocation(iconPath, iconPath.Capacity, out
-                iconIndex);
-				}
-				else {
-					linkA.GetIconLocation(iconPath, iconPath.Capacity, out
-                iconIndex);
-				}
-				if (linkA == null) {
+					linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
 					linkW.SetIconLocation(value, iconIndex);
 				}
 				else {
+					linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
 					linkA.SetIconLocation(value, iconIndex);
 				}
+
+				/*
+				if (linkA == null)
+					linkW.SetIconLocation(value, iconIndex);
+				else
+					linkA.SetIconLocation(value, iconIndex);
+				*/
 			}
 		}
 
@@ -583,35 +559,35 @@ namespace BExplorer.Shell.Interop {
 		/// </summary>
 		public int IconIndex {
 			get {
-				StringBuilder iconPath = new StringBuilder(260, 260);
+				var iconPath = new StringBuilder(260, 260);
 				int iconIndex = 0;
 				if (linkA == null) {
-					linkW.GetIconLocation(iconPath, iconPath.Capacity, out
-                iconIndex);
+					linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
 				}
 				else {
-					linkA.GetIconLocation(iconPath, iconPath.Capacity, out
-                iconIndex);
+					linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
 				}
 				return iconIndex;
 			}
 			set {
-				StringBuilder iconPath = new StringBuilder(260, 260);
+				var iconPath = new StringBuilder(260, 260);
 				int iconIndex = 0;
 				if (linkA == null) {
-					linkW.GetIconLocation(iconPath, iconPath.Capacity, out
-                iconIndex);
+					linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
+					linkW.SetIconLocation(iconPath.ToString(), value);
 				}
 				else {
-					linkA.GetIconLocation(iconPath, iconPath.Capacity, out
-                iconIndex);
+					linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
+					linkA.SetIconLocation(iconPath.ToString(), value);
 				}
+				/*
 				if (linkA == null) {
 					linkW.SetIconLocation(iconPath.ToString(), value);
 				}
 				else {
 					linkA.SetIconLocation(iconPath.ToString(), value);
 				}
+				*/
 			}
 		}
 
@@ -620,26 +596,22 @@ namespace BExplorer.Shell.Interop {
 		/// </summary>
 		public string Target {
 			get {
-				StringBuilder target = new StringBuilder(260, 260);
+				var target = new StringBuilder(260, 260);
 				if (linkA == null) {
-					_WIN32_FIND_DATAW fd = new _WIN32_FIND_DATAW();
-					linkW.GetPath(target, target.Capacity, ref fd,
-					 (uint)EShellLinkGP.SLGP_UNCPRIORITY);
+					var fd = new _WIN32_FIND_DATAW();
+					linkW.GetPath(target, target.Capacity, ref fd, (uint)EShellLinkGP.SLGP_UNCPRIORITY);
 				}
 				else {
-					_WIN32_FIND_DATAA fd = new _WIN32_FIND_DATAA();
-					linkA.GetPath(target, target.Capacity, ref fd,
-					 (uint)EShellLinkGP.SLGP_UNCPRIORITY);
+					var fd = new _WIN32_FIND_DATAA();
+					linkA.GetPath(target, target.Capacity, ref fd, (uint)EShellLinkGP.SLGP_UNCPRIORITY);
 				}
 				return target.ToString();
 			}
 			set {
-				if (linkA == null) {
+				if (linkA == null)
 					linkW.SetPath(value);
-				}
-				else {
+				else
 					linkA.SetPath(value);
-				}
 			}
 		}
 
