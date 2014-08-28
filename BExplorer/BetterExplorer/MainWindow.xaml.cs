@@ -4452,12 +4452,12 @@ namespace BetterExplorer {
 		}
 
 		private void NavigationController(ShellItem Destination) {
-			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-				SetupUIOnSelectOrNavigate();
-			}));
-
-			if (Destination != this.ShellListView.CurrentFolder)
+			if (Destination != this.ShellListView.CurrentFolder) {
 				this.ShellListView.Navigate_Full(Destination, true);
+				Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+					SetupUIOnSelectOrNavigate();
+				}));
+			}
 
 			if (this.ShellListView.CurrentFolder != null)
 				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
@@ -4564,16 +4564,9 @@ namespace BetterExplorer {
 				rtlused = (this.TranslationComboBox.SelectedItem as TranslationComboBoxItem).UsesRTL ? "true" : "false";
 			}
 
-
-			// sets size of search bar
 			this.SearchBarColumn.Width = new GridLength(sbw);
 
-			// attach to event (used to store prev. win. state)
-			//FIXME: fix the event
-			//LayoutUpdated += Window_LayoutUpdated;
-
 			// prepares RTL mode
-
 			FlowDirection = rtlused == "true" ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 
 			if (rtlset) { //TODO: Find out if we can merge this with [if (!rtlset)]
