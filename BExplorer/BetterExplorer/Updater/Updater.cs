@@ -182,8 +182,9 @@ namespace BetterExplorer {
 		public Boolean LoadUpdateFile() {
 			try {
 				this.AvailableUpdates.Clear();
-				XmlDocument updateXML = new XmlDocument();
+				var updateXML = new XmlDocument();
 				updateXML.Load(this.ServerCheckLocation);
+
 				foreach (XmlNode updateNode in updateXML.DocumentElement.ChildNodes) {
 					var updateType = (UpdateTypes)Convert.ToInt32(updateNode.ChildNodes[1].InnerText);
 
@@ -200,6 +201,7 @@ namespace BetterExplorer {
 						});
 					}
 				}
+
 				Version vCurrent = new Version(CurrentVersion);
 				Version vOnline = new Version(this.AvailableUpdates[0].Version);
 				return (this.AvailableUpdates.Count > 0 && vOnline > vCurrent);
