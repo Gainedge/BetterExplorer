@@ -3606,6 +3606,7 @@ namespace BetterExplorer {
 			}
 		}
 
+		/*
 		[Obsolete("try to remove!!")]
 		void t_Tick(object sender, EventArgs e) {
 			//'Try Removing this!!!! 
@@ -3617,6 +3618,7 @@ namespace BetterExplorer {
 				(sender as System.Windows.Forms.Timer).Stop();
 			}
 		}
+		*/
 
 		private void GoToSearchBox(object sender, ExecutedRoutedEventArgs e) {
 			edtSearchBox.Focus();
@@ -4274,7 +4276,6 @@ namespace BetterExplorer {
 				if (Current.CurrentLocation != e.Folder) Current.CurrentLocation = e.Folder;
 			}
 
-
 			tcMain.isGoingBackOrForward = false;
 
 			SetupUIonNavComplete(e);
@@ -4477,7 +4478,7 @@ namespace BetterExplorer {
 					new CommandBinding(AppCommands.RoutedNewTab, (sender, e) => tcMain.NewTab()),
 					new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this.ShellListView.IsFocusAllowed = false; this.bcbc.SetInputState(); }),
 					new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {
-						t.Stop();
+						//t.Stop();
 						int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
 						tcMain.SelectedItem = tcMain.Items[selIndex];
 					}),

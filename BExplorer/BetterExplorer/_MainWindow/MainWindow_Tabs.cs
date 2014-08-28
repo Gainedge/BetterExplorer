@@ -217,8 +217,10 @@ namespace BetterExplorer {
 			btnCopyto.Items.Add(OtherLocationCopy);
 		}
 
+		/*
 		[Obsolete("Remove this or move it into TabControls!!!!!!!!!!!")]
 		private System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
+		*/
 
 		private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			if (e.RemovedItems.Count > 0) {
@@ -244,22 +246,24 @@ namespace BetterExplorer {
 		private void SelectTab(Wpf.Controls.TabItem tab) {
 			if (tab == null) return;
 			tcMain.isGoingBackOrForward = tab.log.HistoryItemsList.Any();
-			try {
-				if (!Keyboard.IsKeyDown(Key.Tab)) {
-					if (tab.ShellObject != this.ShellListView.CurrentFolder || tab.ShellObject.IsSearchFolder) {
-						NavigationController(tab.ShellObject);
-					}
-				}
-				else {
-					t.Interval = 500;
-					t.Tag = tab.ShellObject;
-					t.Tick += new EventHandler(t_Tick);
-					t.Start();
-				}
-				//}
+			//try {
+			//if (!Keyboard.IsKeyDown(Key.Tab)) {
+			if (tab.ShellObject != this.ShellListView.CurrentFolder || tab.ShellObject.IsSearchFolder) {
+				NavigationController(tab.ShellObject);
 			}
-			catch (StackOverflowException) {
-			}
+			//}
+			/*
+		else {
+			t.Interval = 500;
+			t.Tag = tab.ShellObject;
+			t.Tick += new EventHandler(t_Tick);
+			t.Start();
+		}
+		*/
+			//}
+			//}
+			//catch (StackOverflowException) {
+			//}
 		}
 
 		public List<string> LoadListOfTabListFiles() {
