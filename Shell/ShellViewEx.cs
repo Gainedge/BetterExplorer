@@ -1627,9 +1627,11 @@ namespace BExplorer.Shell {
 					else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW) {
 						if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 					}
+					/*
 					else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW) {
 						if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 					}
+					*/
 
 					var nmhdr = (NMHDR)m.GetLParam(new NMHDR().GetType());
 					switch ((int)nmhdr.code) {
@@ -1685,8 +1687,7 @@ namespace BExplorer.Shell {
 										}
 										else {
 											ShellItem temp = !(currentItem.IsNetDrive || currentItem.IsNetworkPath) && !currentItem.ParsingName.StartsWith("::") ?
-												new ShellItem(currentItem.ParsingName) : currentItem;
-
+													new ShellItem(currentItem.ParsingName) : currentItem;
 
 											/*
 											if (!(currentItem.IsNetDrive || currentItem.IsNetworkPath) && !currentItem.ParsingName.StartsWith("::")) 
@@ -1694,8 +1695,8 @@ namespace BExplorer.Shell {
 											else 
 												temp = currentItem;
 											*/
-											IShellItem2 isi2 = (IShellItem2)temp.ComInterface;
-											Guid guid = new Guid(InterfaceGuids.IPropertyStore);
+											var isi2 = (IShellItem2)temp.ComInterface;
+											var guid = new Guid(InterfaceGuids.IPropertyStore);
 											IPropertyStore propStore = null;
 											isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
 											PROPERTYKEY pk = currentCollumn.pkey;
@@ -1704,22 +1705,18 @@ namespace BExplorer.Shell {
 												//if (propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
 												String val = String.Empty;
 												if (pvar.Value != null) {
-													if (currentCollumn.CollumnType == typeof(DateTime)) {
+													if (currentCollumn.CollumnType == typeof(DateTime)) 
 														val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
-													}
-													else if (currentCollumn.CollumnType == typeof(long)) {
-														val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0"))); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
-													}
-													else if (currentCollumn.CollumnType == typeof(PerceivedType)) {
+													else if (currentCollumn.CollumnType == typeof(long)) 
+														val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0")));
+														//ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
+													else if (currentCollumn.CollumnType == typeof(PerceivedType)) 
 														val = ((PerceivedType)pvar.Value).ToString();
-													}
-													else if (currentCollumn.CollumnType == typeof(FileAttributes)) {
-														var resultString = this.GetFilePropertiesString(pvar.Value);
-														val = resultString;
-													}
-													else {
+													else if (currentCollumn.CollumnType == typeof(FileAttributes)) 
+														val = this.GetFilePropertiesString(pvar.Value);
+													else 
 														val = pvar.Value.ToString();
-													}
+													
 													nmlv.item.pszText = val;
 													Marshal.StructureToPtr(nmlv, m.LParam, false);
 													pvar.Dispose();
@@ -1804,8 +1801,6 @@ namespace BExplorer.Shell {
 								SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
 								this.SetGroupOrder(false);
 							}
-
-
 							break;
 
 						case WNM.LVN_GETINFOTIP:
@@ -1892,7 +1887,6 @@ namespace BExplorer.Shell {
 								}
 								catch (Exception) {
 								}
-
 							}
 
 							break;

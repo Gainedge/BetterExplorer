@@ -609,7 +609,7 @@ namespace BetterExplorer {
 			btnRename.IsEnabled = selectedItem != null && (selectedItem.IsFileSystem || (selectedItem.Parent != null && selectedItem.Parent.Equals(KnownFolders.Libraries)));
 			btnProperties3.IsEnabled = selectedItemsCount > 0;
 			if (selectedItem != null) {
-				RegistryKey rg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\" + Path.GetExtension(selectedItem.ParsingName) + @"\OpenWithProgids");
+				var rg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\" + Path.GetExtension(selectedItem.ParsingName) + @"\OpenWithProgids");
 				if (rg == null)
 					btnEdit.IsEnabled = false;
 				else {
@@ -646,7 +646,6 @@ namespace BetterExplorer {
 			lib.Close();
 		}
 
-		[Obsolete("Inline this code", true)]
 		private void SetupUIOnSelectOrNavigate() {
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				var SelItemsCount = ShellListView.GetSelectedCount();
@@ -689,7 +688,7 @@ namespace BetterExplorer {
 		private void miSelAllByType_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.GetSelectedCount() > 0) {
 				var flt = new List<string>();
-				PROPERTYKEY typePK = new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 };
+				var typePK = new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 };
 
 				foreach (ShellItem item in ShellListView.SelectedItems) {
 					flt.Add(item.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant());
@@ -707,7 +706,7 @@ namespace BetterExplorer {
 		private void miSelAllByDate_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.GetSelectedCount() > 0) {
 				var flt = new List<DateTime>();
-				PROPERTYKEY typePK = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 15 };
+				var typePK = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 15 };
 
 				foreach (ShellItem item in ShellListView.SelectedItems) {
 					flt.Add(DateTime.Parse(item.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date);

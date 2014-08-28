@@ -200,7 +200,6 @@ namespace SystemImageList {
 		   uint cbFileInfo,
 		   uint uFlags);
 
-
 		private const int FILE_ATTRIBUTE_NORMAL = 0x80;
 		private const int FILE_ATTRIBUTE_DIRECTORY = 0x10;
 
@@ -222,6 +221,7 @@ namespace SystemImageList {
 		//   int y,
 		//   int fStyle);
 		*/
+
 		[DllImport("comctl32")]
 		private extern static int ImageList_DrawIndirect(
 		   ref IMAGELISTDRAWPARAMS pimldp);
@@ -260,6 +260,7 @@ namespace SystemImageList {
 		#endregion UnmanagedCode
 
 		#region Private ImageList structures
+
 		/*
 		[StructLayout(LayoutKind.Sequential)]
 		private struct RECT {
@@ -479,19 +480,13 @@ namespace SystemImageList {
 		/// <summary>
 		/// Gets the hImageList handle
 		/// </summary>
-		public IntPtr Handle {
-			get {
-				return this.hIml;
-			}
-		}
+		public IntPtr Handle { get { return this.hIml; } }
 
 		/// <summary>
 		/// Gets/sets the size of System Image List to retrieve.
 		/// </summary>
 		public SysImageListSize ImageListSize {
-			get {
-				return size;
-			}
+			get { return size; }
 			set {
 				size = value;
 				create();
@@ -501,21 +496,17 @@ namespace SystemImageList {
 		/// <summary>
 		/// Returns the size of the Image List Icons.
 		/// </summary>
-		public System.Drawing.Size Size {
+		public Size Size {
 			get {
 				int cx = 0;
 				int cy = 0;
 				if (iImageList == null) {
-					ImageList_GetIconSize(
-					   hIml,
-					   ref cx,
-					   ref cy);
+					ImageList_GetIconSize(hIml, ref cx, ref cy);
 				}
 				else {
 					iImageList.GetIconSize(ref cx, ref cy);
 				}
-				System.Drawing.Size sz = new System.Drawing.Size(
-				   cx, cy);
+				var sz = new Size(cx, cy);
 				return sz;
 			}
 		}
@@ -535,16 +526,10 @@ namespace SystemImageList {
 
 			IntPtr hIcon = IntPtr.Zero;
 			if (iImageList == null) {
-				hIcon = ImageList_GetIcon(
-				   hIml,
-				   index,
-				   (int)ImageListDrawItemConstants.ILD_TRANSPARENT);
+				hIcon = ImageList_GetIcon(hIml, index, (int)ImageListDrawItemConstants.ILD_TRANSPARENT);
 			}
 			else {
-				iImageList.GetIcon(
-				   index,
-				   (int)ImageListDrawItemConstants.ILD_TRANSPARENT,
-				   ref hIcon);
+				iImageList.GetIcon(index, (int)ImageListDrawItemConstants.ILD_TRANSPARENT, ref hIcon);
 			}
 
 			if (hIcon != IntPtr.Zero) {
@@ -572,10 +557,7 @@ namespace SystemImageList {
 		/// otherwise only hit the disk if no cached icon is available.</param>
 		/// <returns>Index of the icon</returns>
 		public int IconIndex(string fileName, bool forceLoadFromDisk) {
-			return IconIndex(
-			   fileName,
-			   forceLoadFromDisk,
-			   ShellIconStateConstants.ShellIconStateNormal);
+			return IconIndex(fileName, forceLoadFromDisk, ShellIconStateConstants.ShellIconStateNormal);
 		}
 
 		/// <summary>
@@ -681,15 +663,7 @@ namespace SystemImageList {
 		/// <param name="flags">Drawing flags</param>
 		/// <param name="cx">Width to draw</param>
 		/// <param name="cy">Height to draw</param>
-		public void DrawImage(
-		   IntPtr hdc,
-		   int index,
-		   int x,
-		   int y,
-		   ImageListDrawItemConstants flags,
-		   int cx,
-		   int cy
-		   ) {
+		public void DrawImage(IntPtr hdc, int index, int x, int y, ImageListDrawItemConstants flags, int cx, int cy) {
 			IMAGELISTDRAWPARAMS pimldp = new IMAGELISTDRAWPARAMS();
 			pimldp.hdcDst = hdc;
 			pimldp.cbSize = Marshal.SizeOf(pimldp.GetType());
@@ -729,19 +703,8 @@ namespace SystemImageList {
 		/// then the alpha component is applied to the icon. Otherwise if
 		/// ILS_SATURATE is included, then the (R,G,B) components are used
 		/// to saturate the image.</param>
-		public void DrawImage(
-		   IntPtr hdc,
-		   int index,
-		   int x,
-		   int y,
-		   ImageListDrawItemConstants flags,
-		   int cx,
-		   int cy,
-		   System.Drawing.Color foreColor,
-		   ImageListDrawStateConstants stateFlags,
-		   System.Drawing.Color saturateColorOrAlpha,
-		   System.Drawing.Color glowOrShadowColor
-		   ) {
+		public void DrawImage(IntPtr hdc, int index, int x, int y, ImageListDrawItemConstants flags, int cx, int cy, Color foreColor,
+			ImageListDrawStateConstants stateFlags, Color saturateColorOrAlpha, Color glowOrShadowColor) {
 			IMAGELISTDRAWPARAMS pimldp = new IMAGELISTDRAWPARAMS();
 			pimldp.hdcDst = hdc;
 			pimldp.cbSize = Marshal.SizeOf(pimldp.GetType());
@@ -750,18 +713,15 @@ namespace SystemImageList {
 			pimldp.y = y;
 			pimldp.cx = cx;
 			pimldp.cy = cy;
-			pimldp.rgbFg = Color.FromArgb(0,
-			   foreColor.R, foreColor.G, foreColor.B).ToArgb();
+			pimldp.rgbFg = Color.FromArgb(0, foreColor.R, foreColor.G, foreColor.B).ToArgb();
 			Console.WriteLine("{0}", pimldp.rgbFg);
 			pimldp.fStyle = (int)flags;
 			pimldp.fState = (int)stateFlags;
-			if ((stateFlags & ImageListDrawStateConstants.ILS_ALPHA) ==
-			   ImageListDrawStateConstants.ILS_ALPHA) {
+			if ((stateFlags & ImageListDrawStateConstants.ILS_ALPHA) == ImageListDrawStateConstants.ILS_ALPHA) {
 				// Set the alpha:
 				pimldp.Frame = (int)saturateColorOrAlpha.A;
 			}
-			else if ((stateFlags & ImageListDrawStateConstants.ILS_SATURATE) ==
-			   ImageListDrawStateConstants.ILS_SATURATE) {
+			else if ((stateFlags & ImageListDrawStateConstants.ILS_SATURATE) == ImageListDrawStateConstants.ILS_SATURATE) {
 				// discard alpha channel:
 				saturateColorOrAlpha = Color.FromArgb(0,
 				   saturateColorOrAlpha.R,
@@ -947,11 +907,7 @@ namespace SystemImageList {
 		/// <param name="sysImageList">System Image List to associate</param>
 		/// <param name="forStateImages">Whether to add ImageList as
 		/// StateImageList</param>
-		public static void SetListViewImageList(
-		   ListView listView,
-		   SysImageList sysImageList,
-		   bool forStateImages
-		   ) {
+		public static void SetListViewImageList(ListView listView, SysImageList sysImageList, bool forStateImages) {
 			IntPtr wParam = (IntPtr)LVSIL_NORMAL;
 			if (sysImageList.ImageListSize == SysImageListSize.smallIcons) {
 				wParam = (IntPtr)LVSIL_SMALL;
@@ -959,11 +915,8 @@ namespace SystemImageList {
 			if (forStateImages) {
 				wParam = (IntPtr)LVSIL_STATE;
 			}
-			SendMessage(
-			   listView.Handle,
-			   LVM_SETIMAGELIST,
-			   wParam,
-			   sysImageList.Handle);
+
+			SendMessage(listView.Handle, LVM_SETIMAGELIST, wParam, sysImageList.Handle);
 		}
 
 		/// <summary>
@@ -974,20 +927,13 @@ namespace SystemImageList {
 		/// <param name="sysImageList">System Image List to associate</param>
 		/// <param name="forStateImages">Whether to add ImageList as
 		/// StateImageList</param>
-		public static void SetTreeViewImageList(
-		   TreeView treeView,
-		   SysImageList sysImageList,
-		   bool forStateImages
-		   ) {
+		public static void SetTreeViewImageList(TreeView treeView, SysImageList sysImageList, bool forStateImages) {
 			IntPtr wParam = (IntPtr)TVSIL_NORMAL;
 			if (forStateImages) {
 				wParam = (IntPtr)TVSIL_STATE;
 			}
-			SendMessage(
-			   treeView.Handle,
-			   TVM_SETIMAGELIST,
-			   wParam,
-			   sysImageList.Handle);
+
+			SendMessage(treeView.Handle, TVM_SETIMAGELIST, wParam, sysImageList.Handle);
 		}
 	}
 
