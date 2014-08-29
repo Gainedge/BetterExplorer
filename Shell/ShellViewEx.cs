@@ -2134,246 +2134,180 @@ namespace BExplorer.Shell {
 							break;
 
 						case CustomDraw.NM_CUSTOMDRAW: {
-								if (nmhdr.hwndFrom == this.LVHandle) {
-									User32.SendMessage(this.LVHandle, 296, User32.MAKELONG(1, 1), 0);
-									var nmlvcd = (User32.NMLVCUSTOMDRAW)m.GetLParam(typeof(BExplorer.Shell.Interop.User32.NMLVCUSTOMDRAW));
-									var index = (int)nmlvcd.nmcd.dwItemSpec;
-									var hdc = nmlvcd.nmcd.hdc;
-									if (nmlvcd.dwItemType == 1)
-										return;
-									ShellItem sho = null;
+							if (nmhdr.hwndFrom == this.LVHandle) {
+								User32.SendMessage(this.LVHandle, 296, User32.MAKELONG(1, 1), 0);
+								var nmlvcd = (User32.NMLVCUSTOMDRAW)m.GetLParam(typeof(BExplorer.Shell.Interop.User32.NMLVCUSTOMDRAW));
+								var index = (int)nmlvcd.nmcd.dwItemSpec;
+								var hdc = nmlvcd.nmcd.hdc;
+								if (nmlvcd.dwItemType == 1)
+									return;
+								ShellItem sho = null;
+								if (Items.Count > index) {
+									sho = Items[index];
+								}
 
-									if (Items.Count > index) {
-										sho = Items[index];
-									}
-
-									//TODO: Consider [if (Items.Count > index) {] AND [if (sho != null)] Into 1 [If]
-									System.Drawing.Color? textColor = null;
-									if (sho != null) {
-										if (this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0) {
-											if (!String.IsNullOrEmpty(sho.Extension)) {
-												var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(sho.Extension)).Count() > 0;
-												if (extItemsAvailable) {
-													var color = this.LVItemsColorCodes.Where(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).Select(c => c.TextColor).SingleOrDefault();
-													textColor = color;
-												}
+								//TODO: Consider [if (Items.Count > index) {] AND [if (sho != null)] Into 1 [If]
+								System.Drawing.Color? textColor = null;
+								if (sho != null) {
+									if (this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0) {
+										if (!String.IsNullOrEmpty(sho.Extension)) {
+											var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(sho.Extension)).Count() > 0;
+											if (extItemsAvailable) {
+												var color = this.LVItemsColorCodes.Where(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).Select(c => c.TextColor).SingleOrDefault();
+												textColor = color;
 											}
 										}
 									}
-									switch (nmlvcd.nmcd.dwDrawStage) {
-										case CustomDraw.CDDS_PREPAINT:
-											m.Result = (IntPtr)(CustomDraw.CDRF_NOTIFYITEMDRAW | CustomDraw.CDRF_NOTIFYPOSTPAINT | 0x40);
-											break;
+								}
 
-										case CustomDraw.CDDS_POSTPAINT:
-											m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
-											break;
+								switch (nmlvcd.nmcd.dwDrawStage) {
+									case CustomDraw.CDDS_PREPAINT:
+										m.Result = (IntPtr)(CustomDraw.CDRF_NOTIFYITEMDRAW | CustomDraw.CDRF_NOTIFYPOSTPAINT | 0x40);
+										break;
 
-										case CustomDraw.CDDS_ITEMPREPAINT:
-											if (textColor != null) {
-												nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
-												Marshal.StructureToPtr(nmlvcd, m.LParam, false);
+									case CustomDraw.CDDS_POSTPAINT:
+										m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
+										break;
 
-												m.Result = (IntPtr)(CustomDraw.CDRF_NEWFONT | CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
-											}
-											else {
-												m.Result = (IntPtr)(CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
-											}
-											break;
+									case CustomDraw.CDDS_ITEMPREPAINT:
+										if (textColor != null) {
+											nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
+											Marshal.StructureToPtr(nmlvcd, m.LParam, false);
 
-										case CustomDraw.CDDS_ITEMPREPAINT | CustomDraw.CDDS_SUBITEM:
-											if (textColor == null) {
-												m.Result = (IntPtr)CustomDraw.CDRF_DODEFAULT;
-											}
-											else {
-												nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
-												Marshal.StructureToPtr(nmlvcd, m.LParam, false);
-												m.Result = (IntPtr)CustomDraw.CDRF_NEWFONT;
-											}
-											break;
+											m.Result = (IntPtr)(CustomDraw.CDRF_NEWFONT | CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
+										}
+										else {
+											m.Result = (IntPtr)(CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
+										}
+										break;
 
-										case CustomDraw.CDDS_ITEMPOSTPAINT:
-											if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0) {
-												var itemBounds = nmlvcd.nmcd.rc;
-												LVITEMINDEX lvi = new LVITEMINDEX();
-												lvi.iItem = index;
-												lvi.iGroup = this.GetGroupIndex(index);
-												//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+									case CustomDraw.CDDS_ITEMPREPAINT | CustomDraw.CDDS_SUBITEM:
+										if (textColor == null) {
+											m.Result = (IntPtr)CustomDraw.CDRF_DODEFAULT;
+										}
+										else {
+											nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
+											Marshal.StructureToPtr(nmlvcd, m.LParam, false);
+											m.Result = (IntPtr)CustomDraw.CDRF_NEWFONT;
+										}
+										break;
 
-												var iconBounds = new User32.RECT();
+									case CustomDraw.CDDS_ITEMPOSTPAINT:
+										if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0) {
+											var itemBounds = nmlvcd.nmcd.rc;
+											LVITEMINDEX lvi = new LVITEMINDEX();
+											lvi.iItem = index;
+											lvi.iGroup = this.GetGroupIndex(index);
+											//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 
-												iconBounds.Left = 1;
+											var iconBounds = new User32.RECT();
 
-												User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref iconBounds);
+											iconBounds.Left = 1;
 
-												LVITEM lvItem = new LVITEM();
-												lvItem.iItem = index;
-												lvItem.iGroupId = lvi.iGroup;
-												lvItem.iGroup = lvi.iGroup;
-												lvItem.mask = LVIF.LVIF_STATE;
-												lvItem.stateMask = LVIS.LVIS_SELECTED;
+											User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref iconBounds);
 
-												LVITEM lvItemImageMask = new LVITEM();
-												lvItemImageMask.iItem = index;
-												lvItemImageMask.iGroupId = lvi.iGroup;
-												lvItemImageMask.iGroup = lvi.iGroup;
-												lvItemImageMask.mask = LVIF.LVIF_STATE;
-												lvItemImageMask.stateMask = LVIS.LVIS_STATEIMAGEMASK;
+											LVITEM lvItem = new LVITEM();
+											lvItem.iItem = index;
+											lvItem.iGroupId = lvi.iGroup;
+											lvItem.iGroup = lvi.iGroup;
+											lvItem.mask = LVIF.LVIF_STATE;
+											lvItem.stateMask = LVIS.LVIS_SELECTED;
 
-												if (sho != null) {
-													if (sho.OverlayIconIndex == -1) {
-														overlayQueue.Enqueue(index);
+											LVITEM lvItemImageMask = new LVITEM();
+											lvItemImageMask.iItem = index;
+											lvItemImageMask.iGroupId = lvi.iGroup;
+											lvItemImageMask.iGroup = lvi.iGroup;
+											lvItemImageMask.mask = LVIF.LVIF_STATE;
+											lvItemImageMask.stateMask = LVIS.LVIS_STATEIMAGEMASK;
+
+											if (sho != null) {
+												if (sho.OverlayIconIndex == -1) {
+													overlayQueue.Enqueue(index);
+												}
+												if (sho.IsShielded == -1) {
+													string shoExtension = sho.Extension;
+													if (shoExtension == ".exe" || shoExtension == ".com" || shoExtension == ".bat")
+														shieldQueue.Enqueue(index);
+												}
+												if (IconSize != 16) {
+													var thumbnail = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
+													if (sho.IsNeedRefreshing) {
+														thumbnail = sho.Thumbnail.RefreshThumbnail((uint)IconSize);
+														sho.IsNeedRefreshing = false;
 													}
-													if (sho.IsShielded == -1) {
-														string shoExtension = sho.Extension;
-														if (shoExtension == ".exe" || shoExtension == ".com" || shoExtension == ".bat")
-															shieldQueue.Enqueue(index);
-													}
-													if (IconSize != 16) {
-														var thumbnail = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
-														if (sho.IsNeedRefreshing) {
-															thumbnail = sho.Thumbnail.RefreshThumbnail((uint)IconSize);
-															sho.IsNeedRefreshing = false;
-														}
-														if (thumbnail != null) {
-															if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize) || thumbnail.Width == thumbnail.Height && thumbnail.Width != IconSize)) {
-																ThumbnailsForCacheLoad.Enqueue(index);
-															}
-															else {
-																sho.IsThumbnailLoaded = true;
-																sho.IsNeedRefreshing = false;
-															}
-															using (Graphics g = Graphics.FromHdc(hdc)) {
-																var cutFlag = User32.SendMessage(this.LVHandle, Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
-																if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
-																	thumbnail = Helpers.ChangeOpacity(thumbnail, 0.5f);
-																g.DrawImageUnscaled(thumbnail, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - thumbnail.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height));
-
-																if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
-																	var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
-
-																	if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12)) {
-																		res = User32.SendMessage(this.LVHandle, Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
-																		var checkboxOffsetH = 14;
-																		var checkboxOffsetV = 2;
-																		if (View == ShellViewStyle.Tile || View == ShellViewStyle.SmallIcon)
-																			checkboxOffsetH = 2;
-																		if (View == ShellViewStyle.Tile)
-																			checkboxOffsetV = 1;
-
-																		CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
-																			lvItem.state != 0 ? F.VisualStyles.CheckBoxState.CheckedNormal : F.VisualStyles.CheckBoxState.UncheckedNormal
-																		);
-
-																		//if (lvItem.state != 0) {
-																		//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), F.VisualStyles.CheckBoxState.CheckedNormal);
-																		//}
-																		//else {
-																		//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), F.VisualStyles.CheckBoxState.UncheckedNormal);
-																		//}
-																	}
-																}
-															}
-															thumbnail.Dispose();
-															thumbnail = null;
+													if (thumbnail != null) {
+														if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize) || thumbnail.Width == thumbnail.Height && thumbnail.Width != IconSize)) {
+															ThumbnailsForCacheLoad.Enqueue(index);
 														}
 														else {
-															if (!sho.IsThumbnailLoaded)
-																ThumbnailsForCacheLoad.Enqueue(index);
-															if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
-																var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
-																if (icon != null) {
-																	sho.IsIconLoaded = true;
-																	using (Graphics g = Graphics.FromHdc(hdc)) {
-																		var cutFlag = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
-																		if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
-																			icon = Helpers.ChangeOpacity(icon, 0.5f);
-																		g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
+															sho.IsThumbnailLoaded = true;
+															sho.IsNeedRefreshing = false;
+														}
+														using (Graphics g = Graphics.FromHdc(hdc)) {
+															var cutFlag = User32.SendMessage(this.LVHandle, Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
+															if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+																thumbnail = Helpers.ChangeOpacity(thumbnail, 0.5f);
+															g.DrawImageUnscaled(thumbnail, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - thumbnail.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height));
 
-																		if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
-																			var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
+															if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
+																var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
 
-																			if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12)) {
-																				var checkboxOffsetH = 14;
-																				var checkboxOffsetV = 2;
+																if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12)) {
+																	res = User32.SendMessage(this.LVHandle, Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
+																	var checkboxOffsetH = 14;
+																	var checkboxOffsetV = 2;
+																	if (View == ShellViewStyle.Tile || View == ShellViewStyle.SmallIcon)
+																		checkboxOffsetH = 2;
+																	if (View == ShellViewStyle.Tile)
+																		checkboxOffsetV = 1;
 
-																				//TODO: Check this. why is [View == ShellViewStyle.Tile] being used 2 times
-																				if (View == ShellViewStyle.Tile || View == ShellViewStyle.SmallIcon)
-																					checkboxOffsetH = 2;
-																				if (View == ShellViewStyle.Tile)
-																					checkboxOffsetV = 1;
-																				res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
-																				CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
-																					lvItem.state != 0 ? F.VisualStyles.CheckBoxState.CheckedNormal : F.VisualStyles.CheckBoxState.UncheckedNormal
-																				);
-																			}
-																		}
-																	}
-																	icon.Dispose();
-																}
-															}
-															else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
-																if (!sho.IsIconLoaded) {
-																	waitingThumbnails.Enqueue(index);
-																	using (Graphics g = Graphics.FromHdc(hdc)) {
-																		if (IconSize == 16) {
-																			g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-																		}
-																		else if (IconSize <= 48) {
-																			g.DrawImage(ExeFallBack48, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-																		}
-																		else if (IconSize <= 256) {
-																			g.DrawImage(ExeFallBack256, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-																		}
-																	}
-																}
-																else {
-																	Bitmap icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
-																	if (icon != null) {
-																		sho.IsIconLoaded = true;
-																		using (Graphics g = Graphics.FromHdc(hdc)) {
-																			var cutFlag = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
-																			if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
-																				icon = Helpers.ChangeOpacity(icon, 0.5f);
-																			g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
+																	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
+																		lvItem.state != 0 ? F.VisualStyles.CheckBoxState.CheckedNormal : F.VisualStyles.CheckBoxState.UncheckedNormal
+																	);
 
-																			if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
-																				var res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
-
-																				if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12)) {
-																					var checkboxOffsetH = 14;
-																					var checkboxOffsetV = 2;
-
-																					//TODO: Check this. why is [View == ShellViewStyle.Tile] being used 2 times
-																					if (View == ShellViewStyle.Tile || View == ShellViewStyle.SmallIcon)
-																						checkboxOffsetH = 2;
-																					if (View == ShellViewStyle.Tile)
-																						checkboxOffsetV = 1;
-
-																					res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
-																					CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
-																						lvItem.state != 0 ? F.VisualStyles.CheckBoxState.CheckedNormal : F.VisualStyles.CheckBoxState.UncheckedNormal
-																					);
-																				}
-																			}
-																		}
-																		icon.Dispose();
-																	}
+																	//if (lvItem.state != 0) {
+																	//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), F.VisualStyles.CheckBoxState.CheckedNormal);
+																	//}
+																	//else {
+																	//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), F.VisualStyles.CheckBoxState.UncheckedNormal);
+																	//}
 																}
 															}
 														}
+														thumbnail.Dispose();
+														thumbnail = null;
 													}
 													else {
-														sho.IsThumbnailLoaded = true;
+														if (!sho.IsThumbnailLoaded)
+															ThumbnailsForCacheLoad.Enqueue(index);
 														if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
 															var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 															if (icon != null) {
 																sho.IsIconLoaded = true;
 																using (Graphics g = Graphics.FromHdc(hdc)) {
-																	var cutFlag = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
+																	var cutFlag = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
 																	if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																		icon = Helpers.ChangeOpacity(icon, 0.5f);
 																	g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
+
+																	if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
+																		var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
+
+																		if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12)) {
+																			var checkboxOffsetH = 14;
+																			var checkboxOffsetV = 2;
+
+																			//TODO: Check this. why is [View == ShellViewStyle.Tile] being used 2 times
+																			if (View == ShellViewStyle.Tile || View == ShellViewStyle.SmallIcon)
+																				checkboxOffsetH = 2;
+																			if (View == ShellViewStyle.Tile)
+																				checkboxOffsetV = 1;
+																			res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
+																			CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
+																				lvItem.state != 0 ? F.VisualStyles.CheckBoxState.CheckedNormal : F.VisualStyles.CheckBoxState.UncheckedNormal
+																			);
+																		}
+																	}
 																}
 																icon.Dispose();
 															}
@@ -2382,7 +2316,15 @@ namespace BExplorer.Shell {
 															if (!sho.IsIconLoaded) {
 																waitingThumbnails.Enqueue(index);
 																using (Graphics g = Graphics.FromHdc(hdc)) {
-																	g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+																	if (IconSize == 16) {
+																		g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+																	}
+																	else if (IconSize <= 48) {
+																		g.DrawImage(ExeFallBack48, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+																	}
+																	else if (IconSize <= 256) {
+																		g.DrawImage(ExeFallBack256, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+																	}
 																}
 															}
 															else {
@@ -2394,96 +2336,152 @@ namespace BExplorer.Shell {
 																		if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																			icon = Helpers.ChangeOpacity(icon, 0.5f);
 																		g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
+
+																		if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
+																			var res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
+
+																			if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12)) {
+																				var checkboxOffsetH = 14;
+																				var checkboxOffsetV = 2;
+
+																				//TODO: Check this. why is [View == ShellViewStyle.Tile] being used 2 times
+																				if (View == ShellViewStyle.Tile || View == ShellViewStyle.SmallIcon)
+																					checkboxOffsetH = 2;
+																				if (View == ShellViewStyle.Tile)
+																					checkboxOffsetV = 1;
+
+																				res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
+																				CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
+																					lvItem.state != 0 ? F.VisualStyles.CheckBoxState.CheckedNormal : F.VisualStyles.CheckBoxState.UncheckedNormal
+																				);
+																			}
+																		}
 																	}
 																	icon.Dispose();
 																}
 															}
 														}
 													}
-
-
-													//TODO: Double Check
-													if (sho.OverlayIconIndex > 0) {
-														if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
-															small.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - 16));
-														}
-														else if (this.IconSize > 180) {
-															jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
-														}
-														else if (this.IconSize > 64) {
-															extra.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 50));
-														}
-														else {
-															large.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 32));
-														}
-													}
-
-													/*
-													if (sho.OverlayIconIndex > 0) {
-														if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
-															small.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - 16));
-														}
-														else {
-															if (this.IconSize > 180) {
-																jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+												}
+												else {
+													sho.IsThumbnailLoaded = true;
+													if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
+														var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
+														if (icon != null) {
+															sho.IsIconLoaded = true;
+															using (Graphics g = Graphics.FromHdc(hdc)) {
+																var cutFlag = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
+																if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+																	icon = Helpers.ChangeOpacity(icon, 0.5f);
+																g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
 															}
-															else
-																if (this.IconSize > 64) {
-																	extra.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 50));
-																}
-																else {
-																	large.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 32));
-																}
+															icon.Dispose();
 														}
 													}
-													*/
-
-													//TODO: Check Change, I think its correct
-													if (sho.IsShielded > 0) {
-														if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
-															small.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
-														}
-														else if (this.IconSize > 180) {
-															jumbo.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - this.IconSize / 3, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
-														}
-														else if (this.IconSize > 64) {
-															extra.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 60, iconBounds.Bottom - 50));
+													else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
+														if (!sho.IsIconLoaded) {
+															waitingThumbnails.Enqueue(index);
+															using (Graphics g = Graphics.FromHdc(hdc)) {
+																g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+															}
 														}
 														else {
-															large.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 42, iconBounds.Bottom - 32));
+															Bitmap icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
+															if (icon != null) {
+																sho.IsIconLoaded = true;
+																using (Graphics g = Graphics.FromHdc(hdc)) {
+																	var cutFlag = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
+																	if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+																		icon = Helpers.ChangeOpacity(icon, 0.5f);
+																	g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
+																}
+																icon.Dispose();
+															}
 														}
-													}
-
-													if (View == ShellViewStyle.Tile) {
-														var lableBounds = new User32.RECT();
-
-														lableBounds.Left = 2;
-
-														User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
-
-														using (Graphics g = Graphics.FromHdc(hdc)) {
-															StringFormat fmt = new StringFormat();
-															fmt.Trimming = StringTrimming.EllipsisCharacter;
-															fmt.Alignment = StringAlignment.Center;
-															fmt.Alignment = StringAlignment.Near;
-															fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
-															fmt.LineAlignment = StringAlignment.Center;
-															RectangleF lblrectTiles = new RectangleF(lableBounds.Left, itemBounds.Top + 4, lableBounds.Right - lableBounds.Left, 20);
-															Font font = System.Drawing.SystemFonts.IconTitleFont;
-															SolidBrush textBrush = new SolidBrush(textColor == null ? System.Drawing.SystemColors.ControlText : textColor.Value);
-															g.DrawString(sho.DisplayName, font, textBrush, lblrectTiles, fmt);
-															font.Dispose();
-															textBrush.Dispose();
-														}
-													}
-													if (!sho.IsInitialised) {
-														//OnItemDisplayed(sho, index);
-														sho.IsInitialised = true;
 													}
 												}
+
+
+												//TODO: Double Check
+												if (sho.OverlayIconIndex > 0) {
+													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
+														small.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - 16));
+													}
+													else if (this.IconSize > 180) {
+														jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+													}
+													else if (this.IconSize > 64) {
+														extra.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 50));
+													}
+													else {
+														large.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 32));
+													}
+												}
+
+												/*
+												if (sho.OverlayIconIndex > 0) {
+													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
+														small.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - 16));
+													}
+													else {
+														if (this.IconSize > 180) {
+															jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+														}
+														else
+															if (this.IconSize > 64) {
+																extra.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 50));
+															}
+															else {
+																large.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 32));
+															}
+													}
+												}
+												*/
+
+												//TODO: Check Change, I think its correct
+												if (sho.IsShielded > 0) {
+													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
+														small.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
+													}
+													else if (this.IconSize > 180) {
+														jumbo.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - this.IconSize / 3, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+													}
+													else if (this.IconSize > 64) {
+														extra.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 60, iconBounds.Bottom - 50));
+													}
+													else {
+														large.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 42, iconBounds.Bottom - 32));
+													}
+												}
+
+												if (View == ShellViewStyle.Tile) {
+													var lableBounds = new User32.RECT() { Left = 2 };
+
+													User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
+
+													using (Graphics g = Graphics.FromHdc(hdc)) {
+														StringFormat fmt = new StringFormat();
+														fmt.Trimming = StringTrimming.EllipsisCharacter;
+														fmt.Alignment = StringAlignment.Center;
+														fmt.Alignment = StringAlignment.Near;
+														fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
+														fmt.LineAlignment = StringAlignment.Center;
+														RectangleF lblrectTiles = new RectangleF(lableBounds.Left, itemBounds.Top + 4, lableBounds.Right - lableBounds.Left, 20);
+														Font font = System.Drawing.SystemFonts.IconTitleFont;
+														SolidBrush textBrush = new SolidBrush(textColor == null ? System.Drawing.SystemColors.ControlText : textColor.Value);
+														g.DrawString(sho.DisplayName, font, textBrush, lblrectTiles, fmt);
+														font.Dispose();
+														textBrush.Dispose();
+													}
+												}
+												if (!sho.IsInitialised) {
+													//OnItemDisplayed(sho, index);
+													sho.IsInitialised = true;
+												}
 											}
-											m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
-											break;
+										}
+										m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
+										break;
 									}
 								}
 							}
@@ -2590,6 +2588,7 @@ namespace BExplorer.Shell {
 			Shell32.SHObjectProperties(HWND, 0x2, filename, proppage);
 		}
 
+		/*
 		public void ShowFileProperties(string Filename) {
 			Shell32.SHELLEXECUTEINFO info = new Shell32.SHELLEXECUTEINFO();
 			info.cbSize = Marshal.SizeOf(info);
@@ -2599,6 +2598,7 @@ namespace BExplorer.Shell {
 			info.fMask = SEE_MASK_INVOKEIDLIST;
 			Shell32.ShellExecuteEx(ref info);
 		}
+		*/
 
 		private void RedrawItem(int index) {
 			//F.Application.DoEvents();
@@ -2607,7 +2607,7 @@ namespace BExplorer.Shell {
 			//F.Application.DoEvents();
 			var itemBounds = new User32.RECT();
 			itemBounds.Left = 1;
-			LVITEMINDEX lvi = new LVITEMINDEX();
+			var lvi = new LVITEMINDEX();
 			lvi.iItem = index;
 			lvi.iGroup = this.GetGroupIndex(index);
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
