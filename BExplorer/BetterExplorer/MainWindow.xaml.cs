@@ -55,8 +55,10 @@ namespace BetterExplorer {
 		[Obsolete("Can remove move this!!! Someone should!!!")]
 		public bool IsCalledFromLoading;
 
+		/*
 		[Obsolete("Do we really need this?!!")]
 		bool ReadyToChangeLanguage;
+		*/
 
 		public bool isOnLoad;
 
@@ -479,7 +481,7 @@ namespace BetterExplorer {
 		void fsw_Renamed(object sender, RenamedEventArgs e) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 				(Action)(() => {
-					foreach (MenuItem item in btnFavorites.Items) {
+					foreach (MenuItem item in btnFavorites.Items.OfType<MenuItem>()) {
 						if ((item.Tag as ShellItem).ParsingName == e.OldFullPath)
 							item.Header = Path.GetFileNameWithoutExtension(e.Name);
 					}
@@ -489,13 +491,17 @@ namespace BetterExplorer {
 		void fsw_Deleted(object sender, FileSystemEventArgs e) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 				(Action)(() => {
+					/*
 					MenuItem ItemForRemove = null;
-					foreach (MenuItem item in btnFavorites.Items) {
+					foreach (MenuItem item in btnFavorites.Items.OfType<MenuItem>()) {
 						if (item.Header.ToString() == Path.GetFileNameWithoutExtension(e.Name))
 							ItemForRemove = item;
 					}
-
 					btnFavorites.Items.Remove(ItemForRemove);
+					*/
+
+					btnFavorites.Items.Remove(btnFavorites.Items.OfType<MenuItem>().Single(item => item.Header.ToString() == Path.GetFileNameWithoutExtension(e.Name)));
+										
 				}));
 		}
 
@@ -1419,23 +1425,20 @@ namespace BetterExplorer {
 		#region On Startup
 
 		private void SetUpFavoritesMenu() {
-			//TODO: Fix these [try catch]s a try catch in a [foreach] NO!
 			Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
-				try {
-					btnFavorites.Visibility = Visibility.Visible;
-					foreach (ShellItem item in KnownFolders.Links.Where(w => !w.IsHidden)) {
-						//TODO: Try to remove this try catch
-						try {
-							item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-							item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-							btnFavorites.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.Thumbnail.BitmapSource, onClick: mif_Click));
-						}
-						catch (Exception) {
-						}
-					}
-				}
-				catch (Exception) {
-					btnFavorites.Visibility = Visibility.Collapsed;
+				btnFavorites.Visibility = Visibility.Visible;
+
+				var OpenFavorites = new MenuItem() { Header = "Open Favorites" };
+				var Path = ((ShellItem)KnownFolders.Links).FileSystemPath;
+				OpenFavorites.Click += (x, y) => Process.Start(Path);
+
+				btnFavorites.Items.Add(OpenFavorites);
+				btnFavorites.Items.Add(new Separator());
+
+				foreach (ShellItem item in KnownFolders.Links.Where(w => !w.IsHidden)) {
+					item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+					item.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+					btnFavorites.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.Thumbnail.BitmapSource, onClick: mif_Click));
 				}
 			}));
 		}
@@ -2619,18 +2622,18 @@ namespace BetterExplorer {
 		#region Change Language
 
 		private void TranslationComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			if (ReadyToChangeLanguage) {
+			if (this.IsLoaded) {
 				Utilities.SetRegistryValue("Locale", ((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
 				((App)Application.Current).SelectCulture(((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
 
 				if (ShellListView.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
-					btnCreateFolder.Header = FindResource("btnNewLibraryCP");  //"New Library";
-					stNewFolder.Title = FindResource("btnNewLibraryCP").ToString();//"New Library";
+					btnCreateFolder.Header = FindResource("btnNewLibraryCP");		//"New Library";
+					stNewFolder.Title = FindResource("btnNewLibraryCP").ToString();	//"New Library";
 					stNewFolder.Text = "Creates a new library in the current folder.";
 				}
 				else {
-					btnCreateFolder.Header = FindResource("btnNewFolderCP");//"New Folder";
-					stNewFolder.Title = FindResource("btnNewFolderCP").ToString(); //"New Folder";
+					btnCreateFolder.Header = FindResource("btnNewFolderCP");		//"New Folder";
+					stNewFolder.Title = FindResource("btnNewFolderCP").ToString();	//"New Folder";
 					stNewFolder.Text = "Creates a new folder in the current folder";
 				}
 			}
@@ -4569,7 +4572,7 @@ namespace BetterExplorer {
 				TabbaTop.IsChecked = true;
 
 			// allows user to change language
-			ReadyToChangeLanguage = true;
+			//ReadyToChangeLanguage = true;
 		}
 
 		private void beNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e) {
