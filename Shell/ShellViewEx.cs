@@ -3293,30 +3293,21 @@ namespace BExplorer.Shell {
 			this.Groups.Clear();
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
 			const int LVM_ENABLEGROUPVIEW = 0x1000 + 157;
-			var x = User32.SendMessage(this.LVHandle, LVM_ENABLEGROUPVIEW, 0, 0);
-			//System.Diagnostics.Debug.WriteLine(x);
-
+			User32.SendMessage(this.LVHandle, LVM_ENABLEGROUPVIEW, 0, 0);
 			const int LVM_SETOWNERDATACALLBACK = 0x10BB;
-			x = User32.SendMessage(this.LVHandle, LVM_SETOWNERDATACALLBACK, 0, 0);
-			//IsGroupsEnabled = false;
+			User32.SendMessage(this.LVHandle, LVM_SETOWNERDATACALLBACK, 0, 0);
 			this.LastGroupCollumn = null;
-
-			//Aaron Campf
-			//this.SetSortIcon(this.LastSortedColumnIndex, this.LastSortOrder);
 		}
 
 		public void EnableGroups() {
-			var g = new VirtualGrouping(this);
+			IntPtr ptr = Marshal.GetComInterfaceForObject(new VirtualGrouping(this), typeof(IOwnerDataCallback));
 
 			const int LVM_SETOWNERDATACALLBACK = 0x10BB;
-			IntPtr ptr = Marshal.GetComInterfaceForObject(g, typeof(IOwnerDataCallback));
-			var x = User32.SendMessage(this.LVHandle, LVM_SETOWNERDATACALLBACK, ptr, IntPtr.Zero);
+			User32.SendMessage(this.LVHandle, LVM_SETOWNERDATACALLBACK, ptr, IntPtr.Zero);
 			Marshal.Release(ptr);
 
 			const int LVM_ENABLEGROUPVIEW = 0x1000 + 157;
-
-			x = (int)User32.SendMessage(this.LVHandle, LVM_ENABLEGROUPVIEW, 1, 0);
-			//IsGroupsEnabled = true;
+			User32.SendMessage(this.LVHandle, LVM_ENABLEGROUPVIEW, 1, 0);
 		}
 
 		/// <summary>

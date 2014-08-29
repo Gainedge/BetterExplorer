@@ -2256,7 +2256,7 @@ namespace BetterExplorer {
 		}
 
 		void miItems_Click(object sender, RoutedEventArgs e) {
-			ShellItem item = (ShellItem)(sender as MenuItem).Tag;
+			var item = (ShellItem)(sender as MenuItem).Tag;
 			if (item != null) {
 				tcMain.isGoingBackOrForward = true;
 				NavigationLog nl = (tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
