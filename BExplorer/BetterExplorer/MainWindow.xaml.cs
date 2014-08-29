@@ -827,19 +827,15 @@ namespace BetterExplorer {
 		}
 
 		void miow_Click(object sender, RoutedEventArgs e) {
-			MenuItem item = (sender as MenuItem);
-			var assocItem = (AssociationItem)item.Tag;
+			var assocItem = (AssociationItem)(sender as MenuItem).Tag;
 			assocItem.Invoke();
 		}
 
 		void mif_Click(object sender, RoutedEventArgs e) {
-			MenuItem item = (sender as MenuItem);
-
-			var obj = (item.Tag as ShellItem);
+			var obj = ((sender as MenuItem).Tag as ShellItem);
 			ShellLink lnk = new ShellLink(obj.ParsingName);
 
 			var obj2 = new ShellItem(lnk.TargetPIDL);
-			//ShellListView.Navigate(obj2);
 			NavigationController(obj2);
 
 			lnk.Dispose();
@@ -2315,8 +2311,7 @@ namespace BetterExplorer {
 		}
 
 		void misng_Click(object sender, RoutedEventArgs e) {
-			MenuItem item = (sender as MenuItem);
-			item.IsChecked = true;
+			(sender as MenuItem).IsChecked = true;
 			if (this.ShellListView.IsGroupsEnabled) {
 				this.ShellListView.DisableGroups();
 			}
