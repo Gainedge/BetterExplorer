@@ -3586,12 +3586,12 @@ namespace BetterExplorer {
 
 		private void btnUndoClose_Click(object sender, RoutedEventArgs e) {
 			tcMain.ReOpenTab(tcMain.ReopenableTabs[tcMain.ReopenableTabs.Count - 1]);
-			btnUndoClose.IsEnabled = tcMain.ReopenableTabs.Count != 0;
+			btnUndoClose.IsEnabled = tcMain.ReopenableTabs.Any();
 		}
 
 		void gli_Click(object sender, NavigationLogEventArgs e) {
 			tcMain.ReOpenTab(e.NavigationLog);
-			btnUndoClose.IsEnabled = tcMain.ReopenableTabs.Count != 0;
+			btnUndoClose.IsEnabled = tcMain.ReopenableTabs.Any();
 		}
 
 		void gli_Click(object sender, Tuple<string> e) {
@@ -3659,8 +3659,6 @@ namespace BetterExplorer {
 				}
 			}
 			else {
-				System.Windows.Point pt = e.GetPosition(sender as IInputElement);
-
 				if ((sender as Wpf.Controls.TabItem).ShellObject.IsFileSystem) {
 					e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
 
@@ -3687,6 +3685,7 @@ namespace BetterExplorer {
 					e.Effects = DragDropEffects.None;
 				}
 
+				System.Windows.Point pt = e.GetPosition(sender as IInputElement);
 				var wpt = new BExplorer.Shell.Win32Point() { X = (int)pt.X, Y = (int)pt.Y };
 				DropTargetHelper.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 			}
@@ -3706,9 +3705,7 @@ namespace BetterExplorer {
 			e.Handled = true;
 
 			if (e.Data.GetType() != typeof(Wpf.Controls.TabItem)) {
-				BExplorer.Shell.Win32Point wpt = new BExplorer.Shell.Win32Point();
-				wpt.X = (int)ptw.X;
-				wpt.Y = (int)ptw.Y;
+				var wpt = new BExplorer.Shell.Win32Point() { X = (int)ptw.X, Y = (int)ptw.Y };
 				DropTargetHelper.Create.DragOver(ref wpt, (int)e.Effects);
 			}
 		}
@@ -3733,8 +3730,7 @@ namespace BetterExplorer {
 				e.Effects = DragDropEffects.None;
 			}
 
-
-			Win32Point ptw = new Win32Point();
+			var ptw = new Win32Point();
 			GetCursorPos(ref ptw);
 			e.Effects = DragDropEffects.None;
 			var tabItemSource = e.Data.GetData(typeof(Wpf.Controls.TabItem)) as Wpf.Controls.TabItem;
@@ -3788,7 +3784,7 @@ namespace BetterExplorer {
 			if (Name == null) return;
 
 			//if (ntl.dialogresult) {
-			if (!System.IO.Directory.Exists(sstdir)) System.IO.Directory.CreateDirectory(sstdir);
+			if (!Directory.Exists(sstdir)) Directory.CreateDirectory(sstdir);
 
 			SavedTabsList.SaveTabList(list, String.Format("{0}{1}.txt", sstdir, Name));
 			miTabManager.IsEnabled = true;
@@ -3813,7 +3809,7 @@ namespace BetterExplorer {
 		private void btnUndoClose_DropDownOpened(object sender, EventArgs e) {
 			rotGallery.Items.Clear();
 			foreach (NavigationLog item in tcMain.ReopenableTabs) {
-				UndoCloseGalleryItem gli = new UndoCloseGalleryItem();
+				var gli = new UndoCloseGalleryItem();
 				gli.LoadData(item);
 				gli.Click += gli_Click;
 				rotGallery.Items.Add(gli);
@@ -3847,8 +3843,18 @@ namespace BetterExplorer {
 		}
 
 		private void btnSavedTabs_DropDownOpened(object sender, EventArgs e) {
+			var o = new List<string>();
+
+			if (System.IO.Directory.Exists(sstdir)) {
+				foreach (string item in System.IO.Directory.GetFiles(sstdir)) {
+					ShellItem obj = new ShellItem(item);
+					o.Add(Utilities.RemoveExtensionsFromFile(obj.GetDisplayName(SIGDN.NORMALDISPLAY), Utilities.GetExtension(item)));
+				}
+			}
+
+
 			stGallery.Items.Clear();
-			foreach (string item in LoadListOfTabListFiles()) {
+			foreach (string item in o) {
 				var gli = new SavedTabsListGalleryItem(item);
 				gli.Directory = sstdir;
 				gli.Click += gli_Click;
