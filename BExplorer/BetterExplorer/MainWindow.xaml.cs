@@ -3845,13 +3845,12 @@ namespace BetterExplorer {
 		private void btnSavedTabs_DropDownOpened(object sender, EventArgs e) {
 			var o = new List<string>();
 
-			if (System.IO.Directory.Exists(sstdir)) {
-				foreach (string item in System.IO.Directory.GetFiles(sstdir)) {
-					ShellItem obj = new ShellItem(item);
+			if (Directory.Exists(sstdir)) {
+				foreach (string item in Directory.GetFiles(sstdir)) {
+					var obj = new ShellItem(item);
 					o.Add(Utilities.RemoveExtensionsFromFile(obj.GetDisplayName(SIGDN.NORMALDISPLAY), Utilities.GetExtension(item)));
 				}
 			}
-
 
 			stGallery.Items.Clear();
 			foreach (string item in o) {

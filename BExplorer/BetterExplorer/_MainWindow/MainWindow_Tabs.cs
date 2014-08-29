@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
 using MenuItem = Fluent.MenuItem;
 
 namespace BetterExplorer {
-
 	//TODO: Find a way to move CloseTab(...) into TabControl
 	partial class MainWindow {
+
 		private void InitializeInitialTabs() {
 			tcMain_Setup(null, null);
 
@@ -37,7 +34,7 @@ namespace BetterExplorer {
 
 						tcMain.NewTab(ShellItem.ToShellParsingName(str), i == InitialTabs.Length);
 						if (i == InitialTabs.Count()) {
-							ShellItem sho = new ShellItem(str.ToShellParsingName());
+							var sho = new ShellItem(str.ToShellParsingName());
 							NavigationController(sho);
 							(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = sho;
 							(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = sho.ParsingName;
@@ -53,7 +50,7 @@ namespace BetterExplorer {
 					tcMain.NewTab();
 
 					string idk = tcMain.StartUpLocation.StartsWith("::") ? tcMain.StartUpLocation.ToShellParsingName() : tcMain.StartUpLocation.Replace("\"", "");
-					NavigationController(new ShellItem(idk));				
+					NavigationController(new ShellItem(idk));
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
 				}
@@ -62,32 +59,46 @@ namespace BetterExplorer {
 			}
 		}
 
+		private void SelectTab(Wpf.Controls.TabItem tab) {
+			if (tab == null) return;
+			//tcMain.isGoingBackOrForward = tab.log.HistoryItemsList.Any();
+			//if (!Keyboard.IsKeyDown(Key.Tab)) {
+			if (tab.ShellObject != this.ShellListView.CurrentFolder || tab.ShellObject.IsSearchFolder) {
+				tcMain.isGoingBackOrForward = true;
+				NavigationController(tab.ShellObject);
+			}
+			//}
+			/*
+			else {
+				t.Interval = 500;
+				t.Tag = tab.ShellObject;
+				t.Tick += new EventHandler(t_Tick);
+				t.Start();
+			}
+			*/
+			//}
+			//}
+		}
 
 		private void CloseTab(Wpf.Controls.TabItem thetab, bool allowreopening = true) {
 			if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-				//if (this.IsCloseLastTabCloseApp) {
-				if (chkIsLastTabCloseApp.IsChecked.Value) {
+				if (chkIsLastTabCloseApp.IsChecked.Value)
 					Close();
-				}
-				else {
-					//ShellListView.Navigate(new ShellItem(tcMain.StartUpLocation));
+				else
 					NavigationController(new ShellItem(tcMain.StartUpLocation));
-				}
-				return;
 			}
-
-			tcMain.RemoveTabItem(thetab, allowreopening);
-
-			ConstructMoveToCopyToMenu();
-
-			SelectTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
+			else {
+				tcMain.RemoveTabItem(thetab, allowreopening);
+				ConstructMoveToCopyToMenu();
+				SelectTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
+			}
 		}
 
 		private void ConstructMoveToCopyToMenu() {
 			btnMoveto.Items.Clear();
 			btnCopyto.Items.Clear();
 
-			ShellItem sod = (ShellItem)KnownFolders.Desktop;
+			var sod = (ShellItem)KnownFolders.Desktop;
 			sod.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			sod.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 
@@ -96,12 +107,9 @@ namespace BetterExplorer {
 			var mimDesktop = Utilities.Build_MenuItem(FindResource("btnctDesktopCP"), icon: sod.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnmtDesktop_Click));
 			var micDesktop = Utilities.Build_MenuItem(FindResource("btnctDesktopCP"), icon: sod.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnctDesktop_Click));
 
-
-
-
 			MenuItem mimDocuments = new MenuItem(), micDocuments = new MenuItem();
 			try {
-				ShellItem sodc = (ShellItem)KnownFolders.Documents;
+				var sodc = (ShellItem)KnownFolders.Documents;
 				sodc.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 				sodc.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 
@@ -168,7 +176,7 @@ namespace BetterExplorer {
 
 				if (IsAdditem && item.ShellObject.IsFileSystem) {
 					try {
-						ShellItem so = new ShellItem(item.ShellObject.ParsingName);
+						var so = new ShellItem(item.ShellObject.ParsingName);
 						so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 						so.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 
@@ -213,32 +221,9 @@ namespace BetterExplorer {
 				btnUndoClose.Items.Add(item.CurrentLocation);
 			}
 			this.ShellListView.Focus();
-
 		}
 
-		private void SelectTab(Wpf.Controls.TabItem tab) {
-			if (tab == null) return;
-			tcMain.isGoingBackOrForward = tab.log.HistoryItemsList.Any();
-			//try {
-			//if (!Keyboard.IsKeyDown(Key.Tab)) {
-			if (tab.ShellObject != this.ShellListView.CurrentFolder || tab.ShellObject.IsSearchFolder) {
-				NavigationController(tab.ShellObject);
-			}
-			//}
-			/*
-		else {
-			t.Interval = 500;
-			t.Tag = tab.ShellObject;
-			t.Tick += new EventHandler(t_Tick);
-			t.Start();
-		}
-		*/
-			//}
-			//}
-			//catch (StackOverflowException) {
-			//}
-		}
-
+		/*
 		public List<string> LoadListOfTabListFiles() {
 			var o = new List<string>();
 
@@ -250,5 +235,6 @@ namespace BetterExplorer {
 			}
 			return o;
 		}
+		*/
 	}
 }
