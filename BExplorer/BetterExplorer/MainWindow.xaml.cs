@@ -137,6 +137,9 @@ namespace BetterExplorer {
 
 		List<BExplorer.Shell.LVItemColor> LVItemsColor { get; set; }
 		ContextMenu chcm;
+
+		System.Windows.Forms.Timer focusTimer = new System.Windows.Forms.Timer() { Interval = 500 };
+
 		#endregion
 
 		#endregion
@@ -501,7 +504,7 @@ namespace BetterExplorer {
 					*/
 
 					btnFavorites.Items.Remove(btnFavorites.Items.OfType<MenuItem>().Single(item => item.Header.ToString() == Path.GetFileNameWithoutExtension(e.Name)));
-										
+
 				}));
 		}
 
@@ -1345,7 +1348,7 @@ namespace BetterExplorer {
 		#region Path to String HelperFunctions / Other HelperFunctions
 
 		private Visibility BooleanToVisibiliy(bool value) {
-			return value ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+			return value ? Visibility.Visible : Visibility.Collapsed;
 		}
 
 		/*
@@ -1785,6 +1788,8 @@ namespace BetterExplorer {
 						bcbc.DropDownItems.Add(item.Value);
 					}
 				}
+
+				focusTimer.Tick += focusTimer_Tick;
 			}
 			catch (Exception exe) {
 				MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -4070,15 +4075,6 @@ namespace BetterExplorer {
 						Utilities.Build_MenuItem(lib.DisplayName, ShellLibrary.Load(Path.GetFileNameWithoutExtension(lib.ParsingName), true),
 												 lib.Thumbnail.BitmapSource, onClick: mli_Click)
 					);
-
-					/*
-					Fluent.MenuItem mli = new MenuItem();
-					mli.Header = lib.DisplayName;
-					mli.Icon = lib.Thumbnail.BitmapSource;
-					mli.Tag = ShellLibrary.Load(Path.GetFileNameWithoutExtension(lib.ParsingName), true);
-					mli.Click += mli_Click;
-					mnuIncludeInLibrary.Items.Add(mli);
-					*/
 				}
 
 				mnuIncludeInLibrary.Items.Add(new Separator());
@@ -4095,14 +4091,14 @@ namespace BetterExplorer {
 		}
 
 		void mln_Click(object sender, RoutedEventArgs e) {
-			ShellLibrary lib = ShellListView.CreateNewLibrary(ShellListView.GetFirstSelectedItem().DisplayName);
+			var lib = ShellListView.CreateNewLibrary(ShellListView.GetFirstSelectedItem().DisplayName);
 			if (ShellListView.GetFirstSelectedItem().IsFolder) {
 				lib.Add(ShellListView.GetFirstSelectedItem().ParsingName);
 			}
 		}
 
 		void mli_Click(object sender, RoutedEventArgs e) {
-			ShellLibrary lib = ShellLibrary.Load(((ShellItem)(sender as Fluent.MenuItem).Tag).DisplayName, false);
+			var lib = ShellLibrary.Load(((ShellItem)(sender as Fluent.MenuItem).Tag).DisplayName, false);
 			if (ShellListView.GetFirstSelectedItem().IsFolder) {
 				lib.Add(ShellListView.GetFirstSelectedItem().ParsingName);
 			}
@@ -4150,8 +4146,6 @@ namespace BetterExplorer {
 				this.txtEditor.SelectAll();
 			}
 		}
-
-
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
@@ -4634,15 +4628,17 @@ namespace BetterExplorer {
 			btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
 		}
 
+		/*
 		void r_OnMessageReceived(object sender, EventArgs e) {
 			new Thread(() => {
 				Thread.Sleep(1000);
 				UpdateRecycleBinInfos();
 			}).Start();
 		}
+		*/
 
 		private void btnNewItem_DropDownOpened(object sender, EventArgs e) {
-			ShellContextMenu mnu = new ShellContextMenu(this.ShellListView, 0);
+			var mnu = new ShellContextMenu(this.ShellListView, 0);
 			var controlPos = btnNewItem.TransformToAncestor(Application.Current.MainWindow).Transform(new System.Windows.Point(0, 0));
 			var tempPoint = PointToScreen(new System.Windows.Point(controlPos.X, controlPos.Y));
 			mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnNewItem.ActualHeight));
@@ -4652,7 +4648,7 @@ namespace BetterExplorer {
 		private void mnuPinToStart_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.GetSelectedCount() == 1) {
 				string loc = KnownFolders.StartMenu.ParsingName + @"\" + ShellListView.GetFirstSelectedItem().DisplayName + ".lnk";
-				ShellLink link = new ShellLink();
+				var link = new ShellLink();
 				link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 				link.Target = ShellListView.GetFirstSelectedItem().ParsingName;
 				link.Save(loc);
@@ -4674,6 +4670,7 @@ namespace BetterExplorer {
 		}
 
 		private void tmpButtonB_Click(object sender, RoutedEventArgs e) {
+			MessageBox.Show("This button currently does nothing");
 		}
 
 		private void RibbonWindow_PreviewKeyDown(object sender, KeyEventArgs e) {
@@ -4700,7 +4697,7 @@ namespace BetterExplorer {
 		}
 
 		private void ToolBar_SizeChanged(object sender, SizeChangedEventArgs e) {
-			ToolBar toolBar = sender as ToolBar;
+			var toolBar = sender as ToolBar;
 			var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
 			if (overflowGrid != null) {
 				overflowGrid.Visibility = toolBar.HasOverflowItems ? Visibility.Visible : Visibility.Collapsed;
@@ -4793,16 +4790,19 @@ namespace BetterExplorer {
 			}
 		}
 
-		System.Windows.Forms.Timer focusTimer = new System.Windows.Forms.Timer();
 		private void RibbonWindow_Activated(object sender, EventArgs e) {
-			focusTimer.Interval = 500;
-			focusTimer.Tick += focusTimer_Tick;
 			focusTimer.Start();
+		}
+
+		private void RibbonWindow_StateChanged(object sender, EventArgs e) {
+			if (this.WindowState != System.Windows.WindowState.Minimized && this.IsActive) {
+				focusTimer.Start();
+			}
 		}
 
 		void focusTimer_Tick(object sender, EventArgs e) {
 			this.ShellListView.Focus();
-			(sender as System.Windows.Forms.Timer).Stop();
+			focusTimer.Stop();
 		}
 
 		public Dictionary<string, IRibbonControl> GetAllButtonsAsDictionary() {
@@ -4819,16 +4819,8 @@ namespace BetterExplorer {
 			return rb;
 		}
 
-		private void RibbonWindow_StateChanged(object sender, EventArgs e) {
-			if (this.WindowState != System.Windows.WindowState.Minimized && this.IsActive) {
-				focusTimer.Interval = 500;
-				focusTimer.Tick += focusTimer_Tick;
-				focusTimer.Start();
-			}
-		}
-
 		private void Refresh_Click(object sender, RoutedEventArgs e) {
-			DoubleAnimation da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 1, 100)));
+			var da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 1, 100)));
 			da.FillBehavior = FillBehavior.Stop;
 			this.bcbc.BeginAnimation(Odyssey.Controls.BreadcrumbBar.ProgressValueProperty, da);
 			this.ShellListView.RefreshContents();
