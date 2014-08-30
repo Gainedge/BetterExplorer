@@ -164,12 +164,11 @@ namespace BetterExplorer {
 			sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 
-			Wpf.Controls.TabItem newt = new Wpf.Controls.TabItem();
+			var newt = new Wpf.Controls.TabItem(sho);
 			newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
 			newt.Icon = sho.Thumbnail.BitmapSource;
 			newt.PreviewMouseMove += newt_PreviewMouseMove;
 			newt.ToolTip = sho.ParsingName;
-			newt.ShellObject = sho;
 			win.tcMain.CloneTabItem(newt);
 		}
 

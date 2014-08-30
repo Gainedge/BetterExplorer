@@ -19,7 +19,7 @@ namespace Wpf.Controls {
 		public List<String> SelectedItems = new List<String>();
 
 		/// <summary>The Navigation History (Log) of the tab</summary>
-		public NavigationLog log = new NavigationLog();
+		public NavigationLog log;//= new NavigationLog();
 
 		/// <summary>The current shell item the tab is on</summary>
 		public ShellItem ShellObject { get; set; }
@@ -55,6 +55,12 @@ namespace Wpf.Controls {
 		static TabItem() {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(Wpf.Controls.TabItem), new FrameworkPropertyMetadata(typeof(Wpf.Controls.TabItem)));
 		}
+
+		public TabItem(ShellItem ShellObject) {
+			this.ShellObject = ShellObject;
+			log = new NavigationLog(ShellObject);
+		}
+
 
 		/// <summary>
 		/// OnApplyTemplate override

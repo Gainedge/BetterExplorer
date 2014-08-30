@@ -2261,7 +2261,7 @@ namespace BetterExplorer {
 				tcMain.isGoingBackOrForward = true;
 				NavigationLog nl = (tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
 				(sender as MenuItem).IsChecked = true;
-				nl.CurrentLocPos = cmHistory.Items.IndexOf((sender as MenuItem));
+				nl.CurrentLocPos = cmHistory.Items.IndexOf(sender);
 				NavigationController(item);
 			}
 		}

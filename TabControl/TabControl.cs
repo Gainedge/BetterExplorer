@@ -281,8 +281,7 @@ namespace Wpf.Controls {
 			DefPath.Thumbnail.CurrentSize = new Size(16, 16);
 			DefPath.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.IconOnly;
 			SelectNewTabOnCreate = IsNavigate;
-			var newt = new Wpf.Controls.TabItem() {
-				ShellObject = DefPath,
+			var newt = new Wpf.Controls.TabItem(DefPath) {
 				Header = DefPath.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY),
 				Icon = DefPath.Thumbnail.BitmapSource,
 				ToolTip = DefPath.ParsingName,
@@ -371,10 +370,9 @@ namespace Wpf.Controls {
 
 		public void CloneTabItem(TabItem theTab) {
 			int i = this.SelectedIndex;
-			TabItem newt = new TabItem();
+			var newt = new TabItem(theTab.ShellObject);
 			newt.Header = theTab.Header;
 			newt.Icon = theTab.Icon;
-			newt.ShellObject = theTab.ShellObject;
 			newt.ToolTip = theTab.ShellObject.ParsingName;
 			newt.AllowDrop = true;
 			newt.log.CurrentLocation = theTab.ShellObject;
@@ -464,7 +462,7 @@ namespace Wpf.Controls {
 		/// </summary>
 		/// <returns></returns>
 		protected override DependencyObject GetContainerForItemOverride() {
-			return new TabItem();
+			return new TabItem((ShellItem)KnownFolders.Desktop);
 		}
 
 		protected override void OnPreviewKeyDown(KeyEventArgs e) {
