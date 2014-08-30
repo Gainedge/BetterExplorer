@@ -45,7 +45,8 @@ namespace BExplorer.Shell {
 		/// </remarks>
 		public ShellItem CurrentLocation {
 			get {
-				return HistoryItemsList.Any() ? HistoryItemsList[CurrentLocPos] : null;
+				return HistoryItemsList.ElementAtOrDefault(CurrentLocPos);
+				//return HistoryItemsList.Any() ? HistoryItemsList[CurrentLocPos] : null;
 			}
 			set {
 				HistoryItemsList.Add(value);
