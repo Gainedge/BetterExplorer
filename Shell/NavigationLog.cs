@@ -86,12 +86,5 @@ namespace BExplorer.Shell {
 			HistoryItemsList.AddRange(log.HistoryItemsList);
 			CurrentLocPos = HistoryItemsList.LastIndexOf(log.CurrentLocation);
 		}
-
-		/*
-		private void NavigateOnwards(ShellItem loc) {
-			HistoryItems.Add(loc);
-			CurrentLocPos = HistoryItems.Count - 1;
-		}
-		*/
 	}
 }
