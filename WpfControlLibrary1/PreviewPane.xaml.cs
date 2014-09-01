@@ -45,6 +45,8 @@ namespace BetterExplorerControls {
 				if (SelectedItem != null) {
 					if (!Browser.SelectedItems.Any()) return;
 					if (this.SelectedItem.IsFolder) return;
+
+					//http://www.codeproject.com/Articles/7987/Retrieve-detailed-information-of-a-File
 					var sh = new Shell32.ShellClass();
 					Shell32.Folder dir = sh.NameSpace(System.IO.Path.GetDirectoryName(SelectedItem.ParsingName));
 					Shell32.FolderItem item = dir.ParseName(System.IO.Path.GetFileName(SelectedItem.ParsingName));
