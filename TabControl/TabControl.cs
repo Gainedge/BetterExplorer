@@ -569,7 +569,7 @@ namespace Wpf.Controls {
 		[Obsolete("Exactly the same as OnCoerceAllowDeleteCallback(...)")]
 		private object OnCoerceAllowAddNewCallback(object basevalue) {
 			if (ItemsSource != null) {
-				IList list = ItemsSource as IList;
+				var list = ItemsSource as IList;
 				if (list != null) {
 					return list.IsFixedSize ? false : basevalue;
 				}
@@ -581,7 +581,7 @@ namespace Wpf.Controls {
 		[Obsolete("Exactly the same as OnCoerceAllowAddNewCallback(...)")]
 		private object OnCoerceAllowDeleteCallback(object basevalue) {
 			if (ItemsSource != null) {
-				IList list = ItemsSource as IList;
+				var list = ItemsSource as IList;
 				if (list != null) {
 					return list.IsFixedSize ? false : basevalue;
 				}

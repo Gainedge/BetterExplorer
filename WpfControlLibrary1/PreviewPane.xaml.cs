@@ -73,22 +73,6 @@ namespace BetterExplorerControls {
 				return;
 
 			Setup_PreviewPane();
-			//Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
-			//{
-			/*
-			ShellItem selectedItemsFirst = null;
-			if (this.Browser != null && this.Browser.GetSelectedCount() == 1) {
-				selectedItemsFirst = this.Browser.SelectedItems.First();
-				selectedItemsFirst.Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
-				selectedItemsFirst.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
-				selectedItemsFirst.Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
-				icon.Source = selectedItemsFirst.Thumbnail.BitmapSource;
-
-				txtDisplayName.Text = DisplayName;
-			}
-			*/
-
-			//}));
 		}
 
 		public void FillPreviewPane(ShellView browser) {
@@ -96,19 +80,6 @@ namespace BetterExplorerControls {
 				this.Browser = browser;
 
 			Setup_PreviewPane();
-			/*
-			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-				if (this.Browser.GetSelectedCount() == 1) {
-					this.SelectedItems = this.Browser.SelectedItems.ToArray();
-					this.SelectedItems[0].Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
-					this.SelectedItems[0].Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
-					this.SelectedItems[0].Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
-					icon.Source = this.SelectedItems[0].Thumbnail.BitmapSource;
-
-					txtDisplayName.Text = DisplayName;
-				}
-			}));
-			*/
 		}
 	}
 }

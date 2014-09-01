@@ -582,14 +582,20 @@ namespace BetterExplorer {
 			#region Image Context Tab
 			ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
 			if (ctgImage.Visibility == Visibility.Visible) {
-				Bitmap cvt = new Bitmap(selectedItem.ParsingName);
+				try {
+					Bitmap cvt = new Bitmap(selectedItem.ParsingName);
 
-				imgSizeDisplay.WidthData = cvt.Width.ToString();
-				imgSizeDisplay.HeightData = cvt.Height.ToString();
+					imgSizeDisplay.WidthData = cvt.Width.ToString();
+					imgSizeDisplay.HeightData = cvt.Height.ToString();
 
-				if (asImage) TheRibbon.SelectedTabItem = ctgImage.Items[0];
+					if (asImage) TheRibbon.SelectedTabItem = ctgImage.Items[0];
 
-				cvt.Dispose();
+					cvt.Dispose();
+				}
+				catch (Exception) {
+					MessageBox.Show("Image was invalid");
+				}
+
 			}
 			#endregion
 
