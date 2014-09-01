@@ -583,7 +583,7 @@ namespace BetterExplorer {
 			ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
 			if (ctgImage.Visibility == Visibility.Visible) {
 				try {
-					Bitmap cvt = new Bitmap(selectedItem.ParsingName);
+					var cvt = new Bitmap(selectedItem.ParsingName);
 
 					imgSizeDisplay.WidthData = cvt.Width.ToString();
 					imgSizeDisplay.HeightData = cvt.Height.ToString();
@@ -595,7 +595,6 @@ namespace BetterExplorer {
 				catch (Exception) {
 					MessageBox.Show("Image was invalid");
 				}
-
 			}
 			#endregion
 

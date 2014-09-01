@@ -45,6 +45,27 @@ namespace BetterExplorerControls {
 				if (SelectedItem != null) {
 					if (!Browser.SelectedItems.Any()) return;
 					if (this.SelectedItem.IsFolder) return;
+					var sh = new Shell32.ShellClass();
+					Shell32.Folder dir = sh.NameSpace(System.IO.Path.GetDirectoryName(SelectedItem.ParsingName));
+					Shell32.FolderItem item = dir.ParseName(System.IO.Path.GetFileName(SelectedItem.ParsingName));
+
+					// loop through the Folder Items
+					for (int i = 0; i < 30; i++) {
+						// read the current detail Info from the FolderItem Object
+						//(Retrieves details about an item in a folder. For example, its size, type, or the time of its last modification.)
+						// some examples:
+						// 0 Retrieves the name of the item. 
+						// 1 Retrieves the size of the item. 
+						// 2 Retrieves the type of the item. 
+						// 3 Retrieves the date and time that the item was last modified. 
+						// 4 Retrieves the attributes of the item. 
+						// -1 Retrieves the info tip information for the item. 
+
+						string det = dir.GetDetailsOf(item, i);
+						// Create a helper Object for holding the current Information
+						// an put it into a ArrayList
+					}
+
 
 					this.SelectedItem.Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
 					this.SelectedItem.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
