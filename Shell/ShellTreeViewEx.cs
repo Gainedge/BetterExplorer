@@ -381,9 +381,9 @@ namespace BExplorer.Shell {
 				var shellItemArray = dataObject.ToShellItemArray();
 				var items = shellItemArray.ToArray();
 				try {
-					IIFileOperation fo = new IIFileOperation(handle);
+					var fo = new IIFileOperation(handle);
 					foreach (var item in items) {
-						fo.CopyItem(item, destination.ComInterface, String.Empty);
+						fo.CopyItem(item, destination);
 					}
 
 					fo.PerformOperations();
@@ -409,10 +409,10 @@ namespace BExplorer.Shell {
 				var shellItemArray = dataObject.ToShellItemArray();
 				var items = shellItemArray.ToArray();
 				try {
-					IIFileOperation fo = new IIFileOperation(handle);
+					var fo = new IIFileOperation(handle);
 					foreach (var item in items) {
 						if (dropEffect == System.Windows.DragDropEffects.Copy) {
-							fo.CopyItem(item, selectedItem.ComInterface, String.Empty);
+							fo.CopyItem(item, selectedItem);
 						}
 						else {
 							fo.MoveItem(item, selectedItem.ComInterface, null);

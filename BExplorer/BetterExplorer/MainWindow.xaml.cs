@@ -664,7 +664,7 @@ namespace BetterExplorer {
 															  isChecked: item.ParsingName == lib.DefaultSaveFolder, onClick: miItem_Click));
 			}
 
-			btnDefSave.IsEnabled = !(lib.Count == 0);
+			btnDefSave.IsEnabled = lib.Count != 0;
 			lib.Close();
 		}
 

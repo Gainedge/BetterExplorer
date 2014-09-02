@@ -473,7 +473,6 @@ namespace ConsoleControl {
 				// Get the input.
 				string input = richTextBoxConsole.Text.Substring(inputStart, richTextBoxConsole.SelectionStart - inputStart);
 				WriteInput(input, Color.White);
-
 			}
 		}
 

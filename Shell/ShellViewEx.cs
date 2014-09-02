@@ -679,10 +679,11 @@ namespace BExplorer.Shell {
 		#region Events
 
 		private void selectionTimer_Tick(object sender, EventArgs e) {
-			if (this.ItemForRename != this.GetFirstSelectedItemIndex())
+			if (this.ItemForRename != this.GetFirstSelectedItemIndex()) {
+				(sender as F.Timer).Stop();
 				this.EndLabelEdit();
+			}
 			if (MouseButtons != F.MouseButtons.Left) {
-				//RedrawWindow();
 				OnSelectionChanged();
 				if (KeyJumpTimerDone != null) {
 					KeyJumpTimerDone(this, EventArgs.Empty);
@@ -1492,12 +1493,6 @@ namespace BExplorer.Shell {
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
 
-		private void wndProc_UpdateItems() {
-
-		}
-
-
-
 		protected override void WndProc(ref Message m) {
 			try {
 
@@ -1987,7 +1982,7 @@ namespace BExplorer.Shell {
 							#region Case
 							//RedrawWindow();
 
-							NMLISTVIEW nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
+							var nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 							if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE) {
 								/*
 								if (ItemForRealName_IsAny && nlv.iItem != -1 && nlv.iItem != this.ItemForRename)
@@ -2005,7 +2000,7 @@ namespace BExplorer.Shell {
 								if (IsGroupsEnabled) {
 									if (nlv.iItem != -1) {
 										var itemBounds = new User32.RECT();
-										LVITEMINDEX lvi = new LVITEMINDEX();
+										var lvi = new LVITEMINDEX();
 										lvi.iItem = nlv.iItem;
 										lvi.iGroup = this.GetGroupIndex(nlv.iItem);
 										User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
@@ -2037,7 +2032,7 @@ namespace BExplorer.Shell {
 						case WNM.LVN_KEYDOWN:
 							#region Case
 							var nkd = (NMLVKEYDOWN)m.GetLParam(typeof(NMLVKEYDOWN));
-							Keys key = (Keys)((int)nkd.wVKey);
+							var key = (Keys)((int)nkd.wVKey);
 							if (KeyDown != null) {
 								KeyDown(this, new KeyEventArgs(key));
 							}
@@ -2176,6 +2171,7 @@ namespace BExplorer.Shell {
 						case CustomDraw.NM_CUSTOMDRAW: {
 								#region Case
 								if (nmhdr.hwndFrom == this.LVHandle) {
+									#region Starting
 									User32.SendMessage(this.LVHandle, 296, User32.MAKELONG(1, 1), 0);
 									var nmlvcd = (User32.NMLVCUSTOMDRAW)m.GetLParam(typeof(BExplorer.Shell.Interop.User32.NMLVCUSTOMDRAW));
 									var index = (int)nmlvcd.nmcd.dwItemSpec;
@@ -2192,6 +2188,7 @@ namespace BExplorer.Shell {
 											textColor = color;
 										}
 									}
+									#endregion
 
 									switch (nmlvcd.nmcd.dwDrawStage) {
 										case CustomDraw.CDDS_PREPAINT:
@@ -2750,7 +2747,7 @@ namespace BExplorer.Shell {
 					IIFileOperation fo = new IIFileOperation(sink, handle, true);
 					foreach (var item in items) {
 						if (dropEffect == System.Windows.DragDropEffects.Copy)
-							fo.CopyItem(item, this.CurrentFolder.ComInterface, String.Empty);
+							fo.CopyItem(item, this.CurrentFolder);
 						else
 							fo.MoveItem(item, this.CurrentFolder.ComInterface, null);
 					}
@@ -2776,7 +2773,7 @@ namespace BExplorer.Shell {
 				IIFileOperation fo = new IIFileOperation(handle);
 				foreach (var item in Items) {
 					if (Copy)
-						fo.CopyItem(item, destination.ComInterface, null); //Might require String.Empty
+						fo.CopyItem(item, destination); //Might require String.Empty
 					else
 						fo.MoveItem(item, destination.ComInterface, null);
 				}
@@ -2802,7 +2799,7 @@ namespace BExplorer.Shell {
 					var fo = new IIFileOperation(handle);
 					foreach (var item in items) {
 						if (Copy)
-							fo.CopyItem(item, destination.ComInterface, String.Empty);
+							fo.CopyItem(item, destination);
 						else
 							fo.MoveItem(item, destination.ComInterface, null);
 					}
@@ -2845,8 +2842,8 @@ namespace BExplorer.Shell {
 			var handle = this.Handle;
 			var view = this;
 			var thread = new Thread(() => {
-				FOperationProgressSink sink = new FOperationProgressSink(view);
-				IIFileOperation fo = new IIFileOperation(sink, handle, isRecycling);
+				var sink = new FOperationProgressSink(view);
+				var fo = new IIFileOperation(sink, handle, isRecycling);
 				foreach (var item in this.SelectedItems.Select(s => s.ComInterface).ToArray()) {
 					fo.DeleteItem(item);
 				}
@@ -2857,7 +2854,7 @@ namespace BExplorer.Shell {
 		}
 
 		public void RenameShellItem(IShellItem item, String newName) {
-			IIFileOperation fo = new IIFileOperation(true);
+			var fo = new IIFileOperation(true);
 			fo.RenameItem(item, newName);
 			fo.PerformOperations();
 		}
@@ -4101,6 +4098,7 @@ namespace BExplorer.Shell {
 
 		internal void OnSelectionChanged() {
 			if (SelectionChanged != null) {
+
 
 				SelectionChanged(this, EventArgs.Empty);
 			}
