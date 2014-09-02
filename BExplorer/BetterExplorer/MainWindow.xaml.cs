@@ -179,13 +179,11 @@ namespace BetterExplorer {
 		}
 
 		private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e) {
-			if (((Boolean)e.NewValue))
-			{
+			if (((Boolean)e.NewValue)) {
 				this.ShellListView.IsFocusAllowed = false;
 				backstage.Focus();
 			}
-			else
-			{
+			else {
 				this.ShellListView.IsFocusAllowed = true;
 			}
 			autoUpdater.Visibility = Visibility.Visible;
@@ -204,7 +202,6 @@ namespace BetterExplorer {
 		*/
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
-			//TODO:	[Date: 5/6/2014]	Test this code change
 			if (TheRibbon.IsMinimized && this.IsGlassOnRibonMinimized) {
 				System.Windows.Point p = ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
 				this.GlassBorderThickness = new Thickness(8, this.WindowState == WindowState.Maximized ? p.Y : p.Y - 2, 8, 8);
@@ -1542,6 +1539,7 @@ namespace BetterExplorer {
 			chkIsFlyout.IsChecked = (int)rks.GetValue("HFlyoutEnabled", 0) == 1;
 
 			IsInfoPaneEnabled = (int)rks.GetValue("InfoPaneEnabled", 0) == 1;
+			IsInfoPaneEnabled = false; //Since the user cannot disable it right now, it should always be disabled
 			btnInfoPane.IsChecked = IsInfoPaneEnabled;
 
 			InfoPaneHeight = (int)rks.GetValue("InfoPaneHeight", 150);
@@ -2640,8 +2638,7 @@ namespace BetterExplorer {
 
 		#region Change Language
 
-		private void TranslationComboBox_DropDownOpened(object sender, EventArgs e)
-		{
+		private void TranslationComboBox_DropDownOpened(object sender, EventArgs e) {
 			(sender as Fluent.ComboBox).Focus();
 		}
 
