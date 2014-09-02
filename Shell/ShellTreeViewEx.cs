@@ -281,6 +281,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		[System.Diagnostics.DebuggerStepThrough]
 		public void LoadTreeImages() {
 			while (true) {
 				var handle = imagesQueue.Dequeue();

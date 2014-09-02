@@ -43,6 +43,8 @@ namespace BExplorer.Shell {
 			//base.PreCopyItem(dwFlags, psiItem, psiDestinationFolder, pszNewName);
 		}
 		public override void PostCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrCopy, IShellItem psiNewlyCreated) {
+			if (psiNewlyCreated == null)
+				return;
 			var theNewItem = new ShellItem(psiNewlyCreated);
 			Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
 			Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);

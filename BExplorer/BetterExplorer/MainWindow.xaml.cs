@@ -674,6 +674,9 @@ namespace BetterExplorer {
 
 				btnDefSave.Items.Clear();
 				var selectedItem = this.ShellListView.GetFirstSelectedItem();
+				//if (selectedItem != null && !(System.IO.File.Exists(selectedItem.FileSystemPath) || System.IO.Directory.Exists(selectedItem.FileSystemPath))) 
+				//	selectedItem = null;
+
 				if (selectedItem != null) {
 					btnOpenWith.Items.Clear();
 					foreach (var item in selectedItem.GetAssocList()) {
@@ -1648,9 +1651,7 @@ namespace BetterExplorer {
 			rk.Close();
 
 
-
-
-			ShellItem sho = new ShellItem(StartUpLocation.ToShellParsingName());
+			var sho = new ShellItem(StartUpLocation.ToShellParsingName());
 			btnSetCurrentasStartup.Header = sho.DisplayName;
 			sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			btnSetCurrentasStartup.Icon = sho.Thumbnail.SmallBitmapSource;

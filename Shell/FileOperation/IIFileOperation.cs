@@ -118,7 +118,6 @@ namespace BExplorer.Shell {
 			catch {
 
 			}
-
 		}
 
 		private void ThrowIfDisposed() {

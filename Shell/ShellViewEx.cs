@@ -1357,8 +1357,6 @@ namespace BExplorer.Shell {
 			DropTargetHelper.Get.Create.DragLeave();
 		}
 
-
-
 		internal static void Drag_SetEffect(F.DragEventArgs e) {
 			if ((e.KeyState & (8 + 32)) == (8 + 32) && (e.AllowedEffect & F.DragDropEffects.Link) == F.DragDropEffects.Link) {
 				// KeyState 8 + 32 = CTL + ALT
@@ -1420,9 +1418,11 @@ namespace BExplorer.Shell {
 				DropTargetHelper.Get.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
 		}
 
+		/*
 		protected override void OnQueryContinueDrag(F.QueryContinueDragEventArgs e) {
 			base.OnQueryContinueDrag(e);
 		}
+		*/
 
 		protected override void OnGiveFeedback(F.GiveFeedbackEventArgs e) {
 			e.UseDefaultCursors = false;
@@ -1492,8 +1492,16 @@ namespace BExplorer.Shell {
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
 
+		private void wndProc_UpdateItems() {
+
+		}
+
+
+
 		protected override void WndProc(ref Message m) {
 			try {
+
+				#region Staring
 				//TODO: Remove Extra If(...)
 				if (m.Msg == (int)WM.WM_PARENTNOTIFY) {
 					if (User32.LOWORD((int)m.WParam) == (int)WM.WM_MBUTTONDOWN) {
@@ -1501,6 +1509,9 @@ namespace BExplorer.Shell {
 					}
 				}
 				base.WndProc(ref m);
+				#endregion
+
+				#region m.Msg == ShellNotifications.WM_SHNOTIFY
 				if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
 					if (Notifications.NotificationReceipt(m.WParam, m.LParam)) {
 						foreach (NotifyInfos info in Notifications.NotificationsReceived.ToArray()) {
@@ -1627,10 +1638,13 @@ namespace BExplorer.Shell {
 					}
 					this.Focus();
 				}
+				#endregion
 
+				#region m.Msg == 78
 				if (m.Msg == 78) {
+
+					#region Starting
 					var nmhdrHeader = (NMHEADER)(m.GetLParam(typeof(NMHEADER)));
-					//TODO: Combine Else If(...)s and Remove If for MessageBox
 					if (nmhdrHeader.hdr.code == (int)HDN.HDN_DROPDOWN) {
 						F.MessageBox.Show(nmhdrHeader.iItem.ToString());
 					}
@@ -1642,18 +1656,22 @@ namespace BExplorer.Shell {
 						if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 					}
 					*/
+					#endregion
 
 					var nmhdr = (NMHDR)m.GetLParam(new NMHDR().GetType());
 					switch ((int)nmhdr.code) {
 						case WNM.LVN_ENDLABELEDITW:
+							#region Case
 							var nmlvedit = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
 							if (!String.IsNullOrEmpty(nmlvedit.item.pszText)) {
 								RenameShellItem(this.Items[nmlvedit.item.iItem].ComInterface, nmlvedit.item.pszText);
 								this.RedrawWindow();
 							}
 							break;
+							#endregion
 
 						case WNM.LVN_GETDISPINFOW:
+							#region Case
 							var nmlv = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
 							if (Items.Count == 0 || Items.Count - 1 < nmlv.item.iItem)
 								break;
@@ -1785,22 +1803,11 @@ namespace BExplorer.Shell {
 							}
 
 							break;
+							#endregion
 
 						case WNM.LVN_COLUMNCLICK:
-							NMLISTVIEW nlcv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
-
-							/*
-							if (!this.IsGroupsEnabled) {
-								SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
-							}
-							else {
-								if (this.LastGroupCollumn != this.Collumns[nlcv.iSubItem]) {
-									SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
-								}
-								this.SetGroupOrder(); //this.SetGroupOrder(false);
-							}
-							*/
-
+							#region Case
+							var nlcv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 							if (!this.IsGroupsEnabled) {
 								SetSortCollumn(nlcv.iSubItem, this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
 							}
@@ -1812,8 +1819,10 @@ namespace BExplorer.Shell {
 								this.SetGroupOrder(false);
 							}
 							break;
+							#endregion
 
 						case WNM.LVN_GETINFOTIP:
+							#region Case
 							NMLVGETINFOTIP nmGetInfoTip = (NMLVGETINFOTIP)m.GetLParam(typeof(NMLVGETINFOTIP));
 							if (this.Items.Count == 0)
 								break;
@@ -1831,10 +1840,11 @@ namespace BExplorer.Shell {
 							ToolTip.Left = -500;
 							ToolTip.Top = -500;
 							ToolTip.ShowTooltip();
-
 							break;
+							#endregion
 
 						case WNM.LVN_ODFINDITEM:
+							#region Case
 							if (this.ToolTip != null && this.ToolTip.IsVisible)
 								this.ToolTip.HideTooltip();
 							var findItem = (NMLVFINDITEM)m.GetLParam(typeof(NMLVFINDITEM));
@@ -1858,20 +1868,25 @@ namespace BExplorer.Shell {
 										this.SelectItemByIndex(selindOver, true, true);
 								}
 							}
-
 							break;
+							#endregion
 
-						case WNM.LVN_INCREMENTALSEARCH:
+						case WNM.LVN_INCREMENTALSEARCH: //TODO: Deal with this useless code
+							#region Case
 							var incrementalSearch = (NMLVFINDITEM)m.GetLParam(typeof(NMLVFINDITEM));
 							break;
+							#endregion
 
 						case -175:
+							#region Case
 							var nmlvLe = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
 							BeginLabelEdit(nmlvLe.item.iItem);
 							m.Result = (IntPtr)1;
 							break;
+							#endregion
 
 						case WNM.LVN_ITEMACTIVATE:
+							#region Case
 							if (this.ToolTip != null && this.ToolTip.IsVisible)
 								this.ToolTip.HideTooltip();
 							if (ItemForRealName_IsAny) {
@@ -1898,10 +1913,11 @@ namespace BExplorer.Shell {
 								catch (Exception) {
 								}
 							}
-
 							break;
+							#endregion
 
 						case WNM.LVN_BEGINSCROLL:
+							#region Case
 							this.EndLabelEdit();
 							resetEvent.Reset();
 							_ResetTimer.Stop();
@@ -1951,18 +1967,24 @@ namespace BExplorer.Shell {
 							*/
 							//GC.Collect();
 							break;
+							#endregion
 
 						case WNM.LVN_ENDSCROLL:
+							#region Case
 							//this.Cancel = false;
 							_ResetTimer.Start();
 							//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 							break;
+							#endregion
 
 						case -100:
+							#region Case
 							F.MessageBox.Show("AM");
 							break;
+							#endregion
 
 						case WNM.LVN_ITEMCHANGED:
+							#region Case
 							//RedrawWindow();
 
 							NMLISTVIEW nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
@@ -2003,14 +2025,18 @@ namespace BExplorer.Shell {
 							}
 
 							break;
+							#endregion
 
 						case WNM.LVN_ODSTATECHANGED:
+							#region Case
 							//RedrawWindow();
 							OnSelectionChanged();
 							break;
+							#endregion
 
 						case WNM.LVN_KEYDOWN:
-							NMLVKEYDOWN nkd = (NMLVKEYDOWN)m.GetLParam(typeof(NMLVKEYDOWN));
+							#region Case
+							var nkd = (NMLVKEYDOWN)m.GetLParam(typeof(NMLVKEYDOWN));
 							Keys key = (Keys)((int)nkd.wVKey);
 							if (KeyDown != null) {
 								KeyDown(this, new KeyEventArgs(key));
@@ -2066,41 +2092,38 @@ namespace BExplorer.Shell {
 								}
 							}
 							break;
+							#endregion
 
-						case WNM.LVN_GROUPINFO:
+						case WNM.LVN_GROUPINFO: //TODO: Deal with this useless code
+							#region Case
 							//RedrawWindow();
 							break;
 
+							#endregion
+
 						case WNM.LVN_HOTTRACK:
-							NMLISTVIEW nlvHotTrack = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
+							#region Case
+							var nlvHotTrack = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 							if (nlvHotTrack.iItem != ToolTip.ItemIndex) {
 								ToolTip.HideTooltip();
 							}
 							this.Focus();
 							break;
+							#endregion
 
 						case WNM.LVN_BEGINDRAG:
-							//uint CFSTR_SHELLIDLIST =
-							//	User32.RegisterClipboardFormat("Shell IDList Array");
-							//	F.DataObject dobj = new F.DataObject("")
-							//Task.Run(() =>
-							//{
-							//	this.BeginInvoke(new MethodInvoker(() =>
-							//	{
+							#region Case
 							this.DraggedItemIndexes.Clear();
 							IntPtr dataObjPtr = IntPtr.Zero;
 							System.Runtime.InteropServices.ComTypes.IDataObject dataObject = this.SelectedItems.ToArray().GetIDataObject(out dataObjPtr);
 
 							uint ef = 0;
 							Shell32.SHDoDragDrop(this.Handle, dataObject, null, unchecked((uint)F.DragDropEffects.All | (uint)F.DragDropEffects.Link), out ef);
-
-							//	}));
-							//});
-							//Ole32.DoDragDrop(ddataObject, this, F.DragDropEffects.All, out effect);
-							//DragSourceHelper.DoDragDrop(this, new System.Drawing.Point(0, 0), F.DragDropEffects.Copy, new KeyValuePair<string, object>("Shell IDList Array", new ShellItemArray(this.SelectedItems.Select(s => s.m_ComInterface).ToArray())));
 							break;
+							#endregion
 
 						case WNM.NM_RCLICK:
+							#region Case
 							var nmhdrHdn = (NMHEADER)(m.GetLParam(typeof(NMHEADER)));
 							if (nmhdrHdn.iItem != -1 && nmhdrHdn.hdr.hwndFrom == this.LVHandle) {
 								var selitems = this.SelectedItems;
@@ -2117,11 +2140,15 @@ namespace BExplorer.Shell {
 								ColumnHeaderRightClick(this, new MouseEventArgs(F.MouseButtons.Right, 1, MousePosition.X, MousePosition.Y, 0));
 							}
 							break;
+							#endregion
 
-						case WNM.NM_CLICK:
+						case WNM.NM_CLICK: //TODO: Deal with this useless code
+							#region Case
 							break;
+							#endregion
 
 						case WNM.NM_SETFOCUS:
+							#region Case
 							if (IsGroupsEnabled)
 								RedrawWindow();
 							if (this.ToolTip != null && this.ToolTip.IsVisible)
@@ -2129,8 +2156,10 @@ namespace BExplorer.Shell {
 							OnGotFocus();
 							this.IsFocusAllowed = true;
 							break;
+							#endregion
 
 						case WNM.NM_KILLFOCUS:
+							#region Case
 							/*
 							if (this.ItemForRename != -1)
 								EndLabelEdit();
@@ -2142,8 +2171,10 @@ namespace BExplorer.Shell {
 							//OnLostFocus();
 							this.Focus();
 							break;
+							#endregion
 
 						case CustomDraw.NM_CUSTOMDRAW: {
+								#region Case
 								if (nmhdr.hwndFrom == this.LVHandle) {
 									User32.SendMessage(this.LVHandle, 296, User32.MAKELONG(1, 1), 0);
 									var nmlvcd = (User32.NMLVCUSTOMDRAW)m.GetLParam(typeof(BExplorer.Shell.Interop.User32.NMLVCUSTOMDRAW));
@@ -2151,35 +2182,32 @@ namespace BExplorer.Shell {
 									var hdc = nmlvcd.nmcd.hdc;
 									if (nmlvcd.dwItemType == 1)
 										return;
-									ShellItem sho = null;
-									if (Items.Count > index) {
-										sho = Items[index];
-									}
+									ShellItem sho = Items.Count > index ? Items[index] : null;
 
-									//TODO: Consider [if (Items.Count > index) {] AND [if (sho != null)] Into 1 [If]
 									System.Drawing.Color? textColor = null;
-									if (sho != null) {
-										if (this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0) {
-											if (!String.IsNullOrEmpty(sho.Extension)) {
-												var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(sho.Extension)).Count() > 0;
-												if (extItemsAvailable) {
-													var color = this.LVItemsColorCodes.Where(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).Select(c => c.TextColor).SingleOrDefault();
-													textColor = color;
-												}
-											}
+									if (sho != null && this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0 && !String.IsNullOrEmpty(sho.Extension)) {
+										var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(sho.Extension)).Count() > 0;
+										if (extItemsAvailable) {
+											var color = this.LVItemsColorCodes.Where(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).Select(c => c.TextColor).SingleOrDefault();
+											textColor = color;
 										}
 									}
 
 									switch (nmlvcd.nmcd.dwDrawStage) {
 										case CustomDraw.CDDS_PREPAINT:
+											#region Case
 											m.Result = (IntPtr)(CustomDraw.CDRF_NOTIFYITEMDRAW | CustomDraw.CDRF_NOTIFYPOSTPAINT | 0x40);
 											break;
+											#endregion
 
 										case CustomDraw.CDDS_POSTPAINT:
+											#region Case
 											m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
 											break;
+											#endregion
 
 										case CustomDraw.CDDS_ITEMPREPAINT:
+											#region Case
 											if (textColor != null) {
 												nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
 												Marshal.StructureToPtr(nmlvcd, m.LParam, false);
@@ -2190,8 +2218,10 @@ namespace BExplorer.Shell {
 												m.Result = (IntPtr)(CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
 											}
 											break;
+											#endregion
 
 										case CustomDraw.CDDS_ITEMPREPAINT | CustomDraw.CDDS_SUBITEM:
+											#region Case
 											if (textColor == null) {
 												m.Result = (IntPtr)CustomDraw.CDRF_DODEFAULT;
 											}
@@ -2201,11 +2231,13 @@ namespace BExplorer.Shell {
 												m.Result = (IntPtr)CustomDraw.CDRF_NEWFONT;
 											}
 											break;
+											#endregion
 
 										case CustomDraw.CDDS_ITEMPOSTPAINT:
+											#region Case
 											if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0) {
 												var itemBounds = nmlvcd.nmcd.rc;
-												LVITEMINDEX lvi = new LVITEMINDEX();
+												var lvi = new LVITEMINDEX();
 												lvi.iItem = index;
 												lvi.iGroup = this.GetGroupIndex(index);
 												//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
@@ -2492,14 +2524,18 @@ namespace BExplorer.Shell {
 											}
 											m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
 											break;
+											#endregion
 									}
 								}
+								#endregion
 							}
 							break;
 					}
 				}
+				#endregion
+
 			}
-			catch (Exception ex) {
+			catch (Exception) {
 				resetEvent.Set();
 				base.DefWndProc(ref m);
 			}
@@ -2763,7 +2799,7 @@ namespace BExplorer.Shell {
 					items = shellItemArray.ToArray();
 				}
 				try {
-					IIFileOperation fo = new IIFileOperation(handle);
+					var fo = new IIFileOperation(handle);
 					foreach (var item in items) {
 						if (Copy)
 							fo.CopyItem(item, destination.ComInterface, String.Empty);
@@ -3918,13 +3954,15 @@ namespace BExplorer.Shell {
 		public void Focus(Boolean isActiveCheck = true) {
 			try {
 				if (User32.GetForegroundWindow() != this.LVHandle) {
-					var mainWin = System.Windows.Application.Current.MainWindow;
-					if (mainWin.IsActive || !isActiveCheck) {
-						if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)) {
-							var res = User32.SetFocus(this.LVHandle);
-							//this._IsInRenameMode = false;
+					this.Invoke(new MethodInvoker(() => {
+						var mainWin = System.Windows.Application.Current.MainWindow;
+						if (mainWin.IsActive || !isActiveCheck) {
+							if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)) {
+								var res = User32.SetFocus(this.LVHandle);
+								//this._IsInRenameMode = false;
+							}
 						}
-					}
+					}));
 				}
 			}
 			//On Exception do nothing (usually it happens on app exit)
@@ -4063,6 +4101,7 @@ namespace BExplorer.Shell {
 
 		internal void OnSelectionChanged() {
 			if (SelectionChanged != null) {
+
 				SelectionChanged(this, EventArgs.Empty);
 			}
 		}
