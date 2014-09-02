@@ -1828,8 +1828,8 @@ namespace BExplorer.Shell {
 							ToolTip.CurrentItem = itemInfotip;
 							ToolTip.ItemIndex = nmGetInfoTip.iItem;
 							ToolTip.Type = nmGetInfoTip.dwFlags;
-							ToolTip.Left = Cursor.Position.X;
-							ToolTip.Top = Cursor.Position.Y;
+							ToolTip.Left = -500;
+							ToolTip.Top = -500;
 							ToolTip.ShowTooltip();
 
 							break;
@@ -3472,17 +3472,17 @@ namespace BExplorer.Shell {
 
 		public void _ShieldLoadingThreadRun() {
 			while (true) {
-				//Application.DoEvents();
-
-				//while (shieldQueue.Count == 0)
-				//{
-				//	Thread.Sleep(5);
-				//}
 				resetEvent.WaitOne();
-				Thread.Sleep(4);
 				try {
 					var index = shieldQueue.Dequeue();
-					//Application.DoEvents();
+					var itemBounds = new User32.RECT();
+					LVITEMINDEX lvi = new LVITEMINDEX();
+					lvi.iItem = index;
+					lvi.iGroup = this.GetGroupIndex(index);
+					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+					Rectangle r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+					if (!r.IntersectsWith(this.ClientRectangle))
+						continue;
 					var shoTemp = Items[index];
 					ShellItem sho = !(shoTemp.IsNetDrive || shoTemp.IsNetworkPath) && shoTemp.ParsingName.StartsWith("::") ? shoTemp : new ShellItem(shoTemp.ParsingName);
 
@@ -3495,8 +3495,6 @@ namespace BExplorer.Shell {
 					if (shieldOverlay > 0) {
 						this.RedrawItem(index);
 					}
-
-					//Application.DoEvents();
 				}
 				catch {
 				}
@@ -3505,19 +3503,16 @@ namespace BExplorer.Shell {
 
 		public void _OverlaysLoadingThreadRun() {
 			while (true) {
-				//Application.DoEvents();
-
-				//while (overlayQueue.Count == 0)
-				//{
-				//	Thread.Sleep(5);
-				//}
-				Thread.Sleep(3);
 				try {
 					var index = overlayQueue.Dequeue();
-
-					//if (this.Cancel)
-					//	continue;
-					//Application.DoEvents();
+					var itemBounds = new User32.RECT();
+					LVITEMINDEX lvi = new LVITEMINDEX();
+					lvi.iItem = index;
+					lvi.iGroup = this.GetGroupIndex(index);
+					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+					Rectangle r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+					if (!r.IntersectsWith(this.ClientRectangle))
+						continue;
 					var shoTemp = Items[index];
 					ShellItem sho = !(shoTemp.IsNetDrive || shoTemp.IsNetworkPath) && shoTemp.ParsingName.StartsWith("::") ? shoTemp : new ShellItem(shoTemp.ParsingName);
 
@@ -3527,7 +3522,6 @@ namespace BExplorer.Shell {
 					if (overlayIndex > 0)
 						RedrawItem(index);
 					resetEvent.WaitOne();
-					//Application.DoEvents();
 				}
 				catch (Exception) {
 				}

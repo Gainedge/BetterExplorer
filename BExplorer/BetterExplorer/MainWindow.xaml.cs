@@ -179,6 +179,15 @@ namespace BetterExplorer {
 		}
 
 		private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e) {
+			if (((Boolean)e.NewValue))
+			{
+				this.ShellListView.IsFocusAllowed = false;
+				backstage.Focus();
+			}
+			else
+			{
+				this.ShellListView.IsFocusAllowed = true;
+			}
 			autoUpdater.Visibility = Visibility.Visible;
 			autoUpdater.UpdateLayout();
 
@@ -2630,6 +2639,11 @@ namespace BetterExplorer {
 		#endregion
 
 		#region Change Language
+
+		private void TranslationComboBox_DropDownOpened(object sender, EventArgs e)
+		{
+			(sender as Fluent.ComboBox).Focus();
+		}
 
 		private void TranslationComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			if (this.IsLoaded) {

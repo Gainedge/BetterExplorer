@@ -16,7 +16,7 @@
 	ScrollViewer.VerticalScrollBarVisibility="Disabled"
 	ShowActivated="False"
 	Topmost="False">
-  <Grid>
+	<Grid>
 		<Border CornerRadius="4" Margin="1" Padding="3" BorderBrush="DarkGray" BorderThickness="1">
 			<Border.Background>
 				<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -25,7 +25,7 @@
 					<GradientStop Color="Gainsboro" Offset="1.0"/>
 				</LinearGradientBrush>
 			</Border.Background>
-			<TextBlock Text="{Binding Contents, UpdateSourceTrigger=PropertyChanged}" Margin="2" TextAlignment="Left" TextWrapping="NoWrap"/>
+			<TextBlock Text="{Binding Contents, UpdateSourceTrigger=PropertyChanged}" Margin="2" TextAlignment="Left" TextWrapping="NoWrap" SizeChanged="TextBlock_SizeChanged"/>
 		</Border>
 	</Grid>
 </Window>

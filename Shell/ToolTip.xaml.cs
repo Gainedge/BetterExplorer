@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -56,6 +57,7 @@ namespace BExplorer.Shell
 		void DelayTimer_Tick(object sender, EventArgs e)
 		{
 			DelayTimer.Stop();
+			//DelayTimer.Tick -= DelayTimer_Tick;
 
 			Thread t = new Thread(() =>
 			{
@@ -110,5 +112,14 @@ namespace BExplorer.Shell
 			handlers(this, new PropertyChangedEventArgs(propertyName));
 		}
 		#endregion
+
+		private void TextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
+		{
+			var textBlock = sender as TextBlock;
+			var xPos = System.Windows.Forms.Cursor.Position.X + textBlock.ActualWidth > Screen.GetWorkingArea(System.Windows.Forms.Cursor.Position).Width ? System.Windows.Forms.Cursor.Position.X - textBlock.ActualWidth : System.Windows.Forms.Cursor.Position.X;
+			var yPos = System.Windows.Forms.Cursor.Position.Y + textBlock.ActualHeight > Screen.GetWorkingArea(System.Windows.Forms.Cursor.Position).Height ? System.Windows.Forms.Cursor.Position.Y - textBlock.ActualHeight : System.Windows.Forms.Cursor.Position.Y;
+			this.Left = xPos;
+			this.Top = yPos;
+		}
 	}
 }
