@@ -243,10 +243,14 @@ namespace BExplorer.Shell {
 	}
 	*/
 
+	/*
 	public struct INTEROP_SIZE {
 		public int cx;
 		public int cy;
 	}
+	*/
+
+	/*
 	[StructLayout(LayoutKind.Sequential)]
 	public struct LVTILEVIEWINFO {
 		public int cbSize;
@@ -256,6 +260,7 @@ namespace BExplorer.Shell {
 		public int cLines;
 		public INTEROP_SIZE rcLabelMargin;
 	}
+	*/
 
 	public static class Extensions {
 
@@ -454,7 +459,7 @@ namespace BExplorer.Shell {
 		/// <param name="shellItemArray">The Interface you want to convert</param>
 		/// <returns></returns>
 		public static IShellItem[] ToArray(this IShellItemArray shellItemArray) {
-			List<IShellItem> items = new List<IShellItem>();
+			var items = new List<IShellItem>();
 			if (shellItemArray != null) {
 				try {
 					uint itemCount = 0;
@@ -479,7 +484,7 @@ namespace BExplorer.Shell {
 		/// <returns></returns>
 		public static IShellItemArray ToShellItemArray(this IDataObject dataobject) {
 			IShellItemArray shellItemArray;
-			Guid iid = new Guid(InterfaceGuids.IShellItemArray);
+			var iid = new Guid(InterfaceGuids.IShellItemArray);
 			Shell32.SHCreateShellItemArrayFromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)dataobject, iid, out shellItemArray);
 			return shellItemArray;
 		}
@@ -491,19 +496,19 @@ namespace BExplorer.Shell {
 		/// <returns></returns>
 		public static IShellItemArray ToShellItemArray(this System.Windows.IDataObject dataobject) {
 			IShellItemArray shellItemArray;
-			Guid iid = new Guid(InterfaceGuids.IShellItemArray);
+			var iid = new Guid(InterfaceGuids.IShellItemArray);
 			Shell32.SHCreateShellItemArrayFromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)dataobject, iid, out shellItemArray);
 			return shellItemArray;
 		}
 
 		public static System.Windows.DragDropEffects ToDropEffect(this IDataObject dataObject) {
-			System.Windows.DragDropEffects dragDropEffect = System.Windows.DragDropEffects.Copy;
+			var dragDropEffect = System.Windows.DragDropEffects.Copy;
 			if (dataObject.GetDataPresent("Preferred DropEffect")) {
 				object data = dataObject.GetData("Preferred DropEffect", true);
 
 				if (data is System.IO.Stream) {
-					Stream stream = (Stream)data;
-					StreamReader reader = new StreamReader(stream);
+					var stream = (Stream)data;
+					var reader = new StreamReader(stream);
 					int value = reader.Read();
 					stream.Position = 0; // This had no apparent effect
 

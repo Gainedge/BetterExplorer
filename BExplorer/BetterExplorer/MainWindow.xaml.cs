@@ -179,13 +179,11 @@ namespace BetterExplorer {
 		}
 
 		private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e) {
-			if (((Boolean)e.NewValue))
-			{
+			if (((Boolean)e.NewValue)) {
 				this.ShellListView.IsFocusAllowed = false;
 				backstage.Focus();
 			}
-			else
-			{
+			else {
 				this.ShellListView.IsFocusAllowed = true;
 			}
 			autoUpdater.Visibility = Visibility.Visible;
@@ -204,7 +202,6 @@ namespace BetterExplorer {
 		*/
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
-			//TODO:	[Date: 5/6/2014]	Test this code change
 			if (TheRibbon.IsMinimized && this.IsGlassOnRibonMinimized) {
 				System.Windows.Point p = ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
 				this.GlassBorderThickness = new Thickness(8, this.WindowState == WindowState.Maximized ? p.Y : p.Y - 2, 8, 8);
@@ -667,7 +664,7 @@ namespace BetterExplorer {
 															  isChecked: item.ParsingName == lib.DefaultSaveFolder, onClick: miItem_Click));
 			}
 
-			btnDefSave.IsEnabled = !(lib.Count == 0);
+			btnDefSave.IsEnabled = lib.Count != 0;
 			lib.Close();
 		}
 
@@ -677,6 +674,9 @@ namespace BetterExplorer {
 
 				btnDefSave.Items.Clear();
 				var selectedItem = this.ShellListView.GetFirstSelectedItem();
+				//if (selectedItem != null && !(System.IO.File.Exists(selectedItem.FileSystemPath) || System.IO.Directory.Exists(selectedItem.FileSystemPath))) 
+				//	selectedItem = null;
+
 				if (selectedItem != null) {
 					btnOpenWith.Items.Clear();
 					foreach (var item in selectedItem.GetAssocList()) {
@@ -1542,6 +1542,7 @@ namespace BetterExplorer {
 			chkIsFlyout.IsChecked = (int)rks.GetValue("HFlyoutEnabled", 0) == 1;
 
 			IsInfoPaneEnabled = (int)rks.GetValue("InfoPaneEnabled", 0) == 1;
+			IsInfoPaneEnabled = false; //Since the user cannot disable it right now, it should always be disabled
 			btnInfoPane.IsChecked = IsInfoPaneEnabled;
 
 			InfoPaneHeight = (int)rks.GetValue("InfoPaneHeight", 150);
@@ -1650,9 +1651,7 @@ namespace BetterExplorer {
 			rk.Close();
 
 
-
-
-			ShellItem sho = new ShellItem(StartUpLocation.ToShellParsingName());
+			var sho = new ShellItem(StartUpLocation.ToShellParsingName());
 			btnSetCurrentasStartup.Header = sho.DisplayName;
 			sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			btnSetCurrentasStartup.Icon = sho.Thumbnail.SmallBitmapSource;
@@ -2640,8 +2639,7 @@ namespace BetterExplorer {
 
 		#region Change Language
 
-		private void TranslationComboBox_DropDownOpened(object sender, EventArgs e)
-		{
+		private void TranslationComboBox_DropDownOpened(object sender, EventArgs e) {
 			(sender as Fluent.ComboBox).Focus();
 		}
 
@@ -4255,8 +4253,9 @@ namespace BetterExplorer {
 				sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
 			}
 			if (e.UpdateType == ItemUpdateType.Created) { // && (IsRenameFromCreate /*|| this.ShellListView.IsRenameNeeded*/)) {
-				this.ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
-				ShellListView.RenameItem(e.NewItemIndex);
+				ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
+				ShellListView.RenameSelectedItem();
+				//ShellListView.RenameItem(e.NewItemIndex);
 				//this.ShellListView.IsRenameNeeded = false;
 			}
 

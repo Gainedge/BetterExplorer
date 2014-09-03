@@ -5,10 +5,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
-	internal static class PropVariantNativeMethods
-	{
+namespace BExplorer.Shell.Interop {
+	internal static class PropVariantNativeMethods {
 		[DllImport("Ole32.dll", PreserveSig = false)] // returns hresult
 		internal extern static void PropVariantClear([In, Out] PropVariant pvar);
 
@@ -35,8 +33,10 @@ namespace BExplorer.Shell.Interop
 		[return: MarshalAs(UnmanagedType.IUnknown)]
 		internal extern static object SafeArrayGetElement(IntPtr psa, ref int rgIndices);
 
+		/*
 		[DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true, PreserveSig = false)]
 		internal static extern void InitPropVariantFromPropVariantVectorElem([In] PropVariant propvarIn, uint iElem, [Out] PropVariant ppropvar);
+		*/
 
 		[DllImport("propsys.dll", CharSet = CharSet.Unicode, SetLastError = true, PreserveSig = false)]
 		internal static extern void InitPropVariantFromFileTime([In] ref System.Runtime.InteropServices.ComTypes.FILETIME pftIn, [Out] PropVariant ppropvar);

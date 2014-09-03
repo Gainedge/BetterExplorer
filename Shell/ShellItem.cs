@@ -157,7 +157,7 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets the underlying <see cref="IShellItem"/> COM interface.
 		/// </summary>
-		public IShellItem ComInterface { get { return m_ComInterface; } protected set { m_ComInterface = value; } }
+		internal IShellItem ComInterface { get { return m_ComInterface; } set { m_ComInterface = value; } }
 
 		/// <summary>
 		/// Gets the item's parsing name.
@@ -445,6 +445,7 @@ namespace BExplorer.Shell {
 		/// <returns>
 		/// An enumerator over all child items.
 		/// </returns>
+		[System.Diagnostics.DebuggerNonUserCode]
 		public IEnumerator<ShellItem> GetEnumerator() {
 			return GetEnumerator(SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN |
 					SHCONTF.NONFOLDERS | SHCONTF.FASTITEMS | SHCONTF.ENABLE_ASYNC);
@@ -462,6 +463,7 @@ namespace BExplorer.Shell {
 		/// <returns>
 		/// An enumerator over all child items.
 		/// </returns>
+		[System.Diagnostics.DebuggerNonUserCode]
 		public IEnumerator<ShellItem> GetEnumerator(SHCONTF filter) {
 			IShellFolder folder = GetIShellFolder();
 			IEnumIDList enumId = GetIEnumIDList(folder, filter);

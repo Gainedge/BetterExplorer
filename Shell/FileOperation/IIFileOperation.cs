@@ -10,13 +10,15 @@ using System.Windows.Interop;
 
 namespace BExplorer.Shell {
 	public class IIFileOperation : IDisposable {
+		/*
 		[DllImport("shell32.dll", SetLastError = true, CharSet = CharSet.Unicode, PreserveSig = false)]
 		[return: MarshalAs(UnmanagedType.Interface)]
 		private static extern object SHCreateItemFromParsingName([MarshalAs(UnmanagedType.LPWStr)] string pszPath, IBindCtx pbc, ref Guid riid);
+		*/
 
 		private static readonly Guid CLSID_FileOperation = new Guid("3ad05575-8857-4850-9277-11b85bdb8e09");
 		private static readonly Type _fileOperationType = Type.GetTypeFromCLSID(CLSID_FileOperation);
-		private static Guid _shellItemGuid = typeof(IShellItem).GUID;
+		//private static Guid _shellItemGuid = typeof(IShellItem).GUID;
 
 		private bool _disposed;
 		private IFileOperation _fileOperation;
@@ -31,8 +33,6 @@ namespace BExplorer.Shell {
 		public IIFileOperation(FileOperationProgressSink callbackSink, IntPtr owner, Boolean isRecycle) {
 			_callbackSink = callbackSink;
 			_fileOperation = (IFileOperation)Activator.CreateInstance(_fileOperationType);
-			//TestDialog dlg = new TestDialog();
-			//_fileOperation.SetProgressDialog(dlg);
 			if (isRecycle)
 				_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_ALLOWUNDO);
 			else
@@ -41,27 +41,31 @@ namespace BExplorer.Shell {
 			if (owner != IntPtr.Zero) _fileOperation.SetOwnerWindow((uint)owner);
 		}
 
-		[Obsolete("Not Used", true)]
-		public void CopyItem(string source, string destination, string newName) {
+		public void CopyItem(IShellItem source, ShellItem destination) {
 			ThrowIfDisposed();
-			using (ComReleaser<IShellItem> sourceItem = CreateShellItem(source))
-			using (ComReleaser<IShellItem> destinationItem = CreateShellItem(destination)) {
-				_fileOperation.CopyItem(sourceItem.Item, destinationItem.Item, newName, null);
-			}
-		}
 
-		public void CopyItem(IShellItem source, IShellItem destination, string newName) {
-			ThrowIfDisposed();
-			_fileOperation.CopyItem(source, destination, newName, null);
-		}
+			/*
+			 * Attempt to fix files not being created
+			 * 
+			var Name = System.IO.Path.GetFileName(Helpers.GetParsingName(source));
+			var Teest = Name.Split(new string[] { "." }, StringSplitOptions.None).Last();
+			var T1 = Name.Substring(0, Name.Length - (Teest.Length + 1));
+			var i = 1;
+			//while (System.IO.File.Exists(Name) || System.IO.Directory.Exists(Name)) {
 
-		[Obsolete("Not Used", true)]
-		public void MoveItem(string source, string destination, string newName) {
-			ThrowIfDisposed();
-			using (ComReleaser<IShellItem> sourceItem = CreateShellItem(source))
-			using (ComReleaser<IShellItem> destinationItem = CreateShellItem(destination)) {
-				_fileOperation.MoveItem(sourceItem.Item, destinationItem.Item, newName, null);
+			while (
+				!destination.Any(x => {
+					return x.DisplayName == Name;
+				})) {
+
+				Name = T1 + " - Copy (" + i + ")" + "." + Teest;
+				i++;
 			}
+
+			_fileOperation.CopyItem(source, destination.ComInterface, Name, null);
+			*/
+
+			_fileOperation.CopyItem(source, destination.ComInterface, "", null);
 		}
 
 		public void MoveItem(IShellItem source, IShellItem destination, string newName) {
@@ -69,6 +73,7 @@ namespace BExplorer.Shell {
 			_fileOperation.MoveItem(source, destination, newName, null);
 		}
 
+		/*
 		[Obsolete("Not Used", true)]
 		public void RenameItem(string source, string newName) {
 			ThrowIfDisposed();
@@ -76,12 +81,14 @@ namespace BExplorer.Shell {
 				_fileOperation.RenameItem(sourceItem.Item, newName, null);
 			}
 		}
+		*/
 
 		public void RenameItem(IShellItem source, string newName) {
 			ThrowIfDisposed();
 			_fileOperation.RenameItem(source, newName, null);
 		}
 
+		/*
 		[Obsolete("Not Used", true)]
 		public void DeleteItem(string source) {
 			ThrowIfDisposed();
@@ -89,6 +96,7 @@ namespace BExplorer.Shell {
 				_fileOperation.DeleteItem(sourceItem.Item, null);
 			}
 		}
+		*/
 
 		public void DeleteItem(IShellItem source) {
 			ThrowIfDisposed();
@@ -110,6 +118,7 @@ namespace BExplorer.Shell {
 			_fileOperation.NewItem(folderName, attrs, name, string.Empty, _callbackSink);
 		}
 		*/
+
 		public void PerformOperations() {
 			ThrowIfDisposed();
 			try {
@@ -118,7 +127,6 @@ namespace BExplorer.Shell {
 			catch {
 
 			}
-
 		}
 
 		private void ThrowIfDisposed() {
@@ -133,9 +141,10 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		private static ComReleaser<IShellItem> CreateShellItem(string path) {
 			return new ComReleaser<IShellItem>((IShellItem)SHCreateItemFromParsingName(path, null, ref _shellItemGuid));
 		}
-
+		*/
 	}
 }

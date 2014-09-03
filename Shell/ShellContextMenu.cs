@@ -301,7 +301,7 @@ namespace BExplorer.Shell {
 				pos = control.PointToScreen(pos);
 				Populate(menu, aditionalFlags);
 				int count = User32.GetMenuItemCount(menu.Handle);
-				MENUITEMINFO itemInfo = new MENUITEMINFO();
+				var itemInfo = new MENUITEMINFO();
 				itemInfo.cbSize = (uint)Marshal.SizeOf(itemInfo);
 				itemInfo.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA;
 				if (User32.GetMenuItemInfo(menu.Handle, count - 1, true, ref itemInfo)) {
@@ -342,19 +342,13 @@ namespace BExplorer.Shell {
 
 					switch (info) {
 						case "rename":
-							if (control is ShellView) {
-								(control as ShellView).RenameSelectedItem();
-							}
+							if (control is ShellView) (control as ShellView).RenameSelectedItem();
 							break;
 						case "cut":
-							if (control is ShellView) {
-								(control as ShellView).CutSelectedFiles();
-							}
+							if (control is ShellView) (control as ShellView).CutSelectedFiles();
 							break;
 						case "copy":
-							if (control is ShellView) {
-								(control as ShellView).CopySelectedFiles();
-							}
+							if (control is ShellView) (control as ShellView).CopySelectedFiles();
 							break;
 						default:
 							InvokeCommand(command - m_CmdFirst, pos);
