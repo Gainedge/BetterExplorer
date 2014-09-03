@@ -305,11 +305,7 @@ namespace BExplorer.Shell {
 		[Obsolete("Try to remove this!!")]
 		private int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
 		private bool ItemForRealName_IsAny { get { return ItemForRename != -1; } }
-
-		/*
-		[Obsolete("I think we can safely remove this")]
 		public bool IsRenameNeeded { get; set; }
-		*/
 
 		//public Boolean IsGroupsEnabled { get; private set; }
 		public Boolean IsGroupsEnabled { get { return LastGroupCollumn != null; } }

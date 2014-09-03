@@ -43,29 +43,12 @@ namespace BExplorer.Shell {
 
 		public void CopyItem(IShellItem source, ShellItem destination) {
 			ThrowIfDisposed();
-
-			/*
-			 * Attempt to fix files not being created
-			 * 
-			var Name = System.IO.Path.GetFileName(Helpers.GetParsingName(source));
-			var Teest = Name.Split(new string[] { "." }, StringSplitOptions.None).Last();
-			var T1 = Name.Substring(0, Name.Length - (Teest.Length + 1));
-			var i = 1;
-			//while (System.IO.File.Exists(Name) || System.IO.Directory.Exists(Name)) {
-
-			while (
-				!destination.Any(x => {
-					return x.DisplayName == Name;
-				})) {
-
-				Name = T1 + " - Copy (" + i + ")" + "." + Teest;
-				i++;
+			var item = new ShellItem(source);
+			if (item.Parent.Equals(destination))
+			{
+				_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_RENAMEONCOLLISION);
 			}
-
-			_fileOperation.CopyItem(source, destination.ComInterface, Name, null);
-			*/
-
-			_fileOperation.CopyItem(source, destination.ComInterface, "", null);
+			_fileOperation.CopyItem(source, destination.ComInterface, null, null);
 		}
 
 		public void MoveItem(IShellItem source, IShellItem destination, string newName) {

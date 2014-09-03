@@ -381,7 +381,7 @@ namespace BExplorer.Shell {
 						int cmdID = command - m_CmdFirst;
 						var verb = cmdID == 1 ? "newFolder" : cmdID == 2 ? ".lnk" : newItems[cmdID - 3];
 						var item = Marshal.StringToHGlobalAuto(verb);
-						//this._ShellView.IsRenameNeeded = true;
+						this._ShellView.IsRenameNeeded = true;
 						InvokeCommand((int)item, pos);
 					}
 				}

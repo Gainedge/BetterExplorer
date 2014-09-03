@@ -15,14 +15,18 @@ namespace BExplorer.Shell {
 			this._View = view;
 			this.CurrentFolder = view.CurrentFolder;
 		}
+		public FOperationProgressSink()
+		{
+			//For the situation when no need to have ShellVioew included
+		}
+		
 		public override void UpdateProgress(uint iWorkTotal, uint iWorkSoFar) {
 			base.UpdateProgress(iWorkTotal, iWorkSoFar);
 		}
 		public override void PreDeleteItem(uint dwFlags, IShellItem psiItem) {
-			//Thread.Sleep(100000);
 			base.PreDeleteItem(dwFlags, psiItem);
 		}
-		public override void PostDeleteItem(TRANSFER_SOURCE_FLAGS dwFlags, Interop.IShellItem psiItem, uint hrDelete, Interop.IShellItem psiNewlyCreated) {
+		public override void PostDeleteItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, uint hrDelete, IShellItem psiNewlyCreated) {
 			var obj = new ShellItem(psiItem);
 			if (!String.IsNullOrEmpty(obj.ParsingName)) {
 				if (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder)) {
@@ -39,10 +43,11 @@ namespace BExplorer.Shell {
 
 		}
 		public override void PreCopyItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName) {
-			var item = new ShellItem(psiItem);
+			//DO NOT REMOVE!!!!
 			//base.PreCopyItem(dwFlags, psiItem, psiDestinationFolder, pszNewName);
 		}
 		public override void PostCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrCopy, IShellItem psiNewlyCreated) {
+			System.Windows.Forms.Application.DoEvents();
 			if (psiNewlyCreated == null)
 				return;
 			var theNewItem = new ShellItem(psiNewlyCreated);
@@ -50,16 +55,16 @@ namespace BExplorer.Shell {
 			Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR : Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
-
-			//base.PostCopyItem(dwFlags, psiItem, psiDestinationFolder, pszNewName, hrCopy, psiNewlyCreated);
 		}
 		public override void PostMoveItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrMove, IShellItem psiNewlyCreated) {
+			System.Windows.Forms.Application.DoEvents();
+			if (psiNewlyCreated == null)
+				return;
 			var theNewItem = new ShellItem(psiNewlyCreated);
 			Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
 			Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR : Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
-			//base.PostMoveItem(dwFlags, psiItem, psiDestinationFolder, pszNewName, hrMove, psiNewlyCreated);
 		}
 	}
 }
