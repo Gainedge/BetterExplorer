@@ -96,6 +96,7 @@
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
     <Compile Include="FOperationProgressSink.cs" />
+    <Compile Include="Icons\Icons.cs" />
     <Compile Include="Interop\IOperationsProgressDialog.cs" />
     <Compile Include="Interop\Wallpaer.cs" />
     <Compile Include="Reflector.cs" />
@@ -110,7 +111,6 @@
     <Compile Include="FileOperation\FileOperationDialog.xaml.cs">
       <DependentUpon>FileOperationDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileOperation\Theme.cs" />
     <Compile Include="Groups\LVGROUP.cs" />
     <Compile Include="Groups\ListViewGroupEx.cs" />
     <Compile Include="Interop\IThumbnailCache.cs" />

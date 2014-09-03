@@ -11,7 +11,7 @@ using Microsoft.WindowsAPICodePack.Shell;
 namespace BetterExplorer {
 
 	public partial class IconView : Form {
-		private List<IconFile> icons = null;
+		private List<BExplorer.Shell.Icons.IconFile> icons = null;
 		private ShellView ShellView;
 		private bool IsLibrary;
 		private VisualStyleRenderer ItemSelectedRenderer = new VisualStyleRenderer("Explorer::ListView", 1, 3);
@@ -62,14 +62,15 @@ namespace BetterExplorer {
 		}
 
 		private void btnLoad_Click(object sender, EventArgs e) {
-			var dlg = new System.Windows.Forms.OpenFileDialog();
-			dlg.AutoUpgradeEnabled = true;
-			dlg.Title = "Select icon file";
-			dlg.Filter = "Icon Files |*.exe;*.dll;*.icl; *.ico";
+			var dlg = new System.Windows.Forms.OpenFileDialog() {
+				AutoUpgradeEnabled = true, Title = "Select icon file", Filter = "Icon Files |*.exe;*.dll;*.icl; *.ico"
+			};
+
 			if (dlg.ShowDialog(this) == System.Windows.Forms.DialogResult.OK) {
 				tbLibrary.Text = dlg.FileName;
 			}
-			BackgroundWorker bw = new BackgroundWorker();
+
+			var bw = new BackgroundWorker();
 			bw.DoWork += new DoWorkEventHandler(bw_DoWork);
 			bw.WorkerReportsProgress = true;
 			bw.WorkerSupportsCancellation = true;
@@ -81,10 +82,8 @@ namespace BetterExplorer {
 		private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
 			lvIcons.BeginUpdate();
 			lvIcons.Items.Clear();
-			foreach (IconFile icon in icons) {
-				ListViewItem lvi = new ListViewItem("#" + icon.Index.ToString());
-				lvi.Tag = icon.Index;
-				lvIcons.Items.Add(lvi);
+			foreach (BExplorer.Shell.Icons.IconFile icon in icons) {
+				lvIcons.Items.Add(new ListViewItem("#" + icon.Index.ToString()) { Tag = icon.Index });
 			}
 
 			lvIcons.EndUpdate();
@@ -92,8 +91,7 @@ namespace BetterExplorer {
 		}
 
 		private void bw_DoWork(object sender, DoWorkEventArgs e) {
-			//IconReader ir = new IconReader();
-			icons = IconReader.ReadIcons(tbLibrary.Text, new System.Drawing.Size(48, 48));
+			icons = BExplorer.Shell.Icons.ReadIcons(tbLibrary.Text, new System.Drawing.Size(48, 48));
 		}
 
 		private void LoadIcons(object Params) {
@@ -101,12 +99,9 @@ namespace BetterExplorer {
 							delegate {
 								lvIcons.BeginUpdate();
 								lvIcons.Items.Clear();
-								//IconReader ir = new IconReader();
-								icons = IconReader.ReadIcons(Params.ToString(), new System.Drawing.Size(48, 48));
-								foreach (IconFile icon in icons) {
-									var lvi = new ListViewItem("#" + icon.Index.ToString());
-									lvi.Tag = icon.Index;
-									lvIcons.Items.Add(lvi);
+								icons = BExplorer.Shell.Icons.ReadIcons(Params.ToString(), new System.Drawing.Size(48, 48));
+								foreach (BExplorer.Shell.Icons.IconFile icon in icons) {
+									lvIcons.Items.Add(new ListViewItem("#" + icon.Index.ToString()) { Tag = icon.Index });
 								}
 								lvIcons.EndUpdate();
 							}));
