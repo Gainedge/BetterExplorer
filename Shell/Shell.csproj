@@ -150,7 +150,6 @@
     <Compile Include="Interop\PropVariant.cs" />
     <Compile Include="Interop\PropVariantNativeMethods.cs" />
     <Compile Include="Interop\IColumnProvider.cs" />
-    <Compile Include="Interop\IColumnManager.cs" />
     <Compile Include="Interop\FileIcon.cs" />
     <Compile Include="Interop\ShellLink.cs" />
     <Compile Include="Interop\KnownFoldersCOM.cs" />
