@@ -1,26 +1,38 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
+
+	/*
+	[StructLayout(LayoutKind.Sequential)]
+	[Serializable]
+	public struct SORTCOLUMN {
+		public PROPERTYKEY propkey;
+		public SORT direction;
+	}
+	*/
+
+	/*
+	public enum SORT {
+		DESCENDING = -1,
+		ASCENDING = 1
+	}
+	*/
+
+	/*
 	public enum CM_ENUM_FLAGS
 	{
 		CM_ENUM_ALL = 0x00000001,
 		CM_ENUM_VISIBLE = 0x00000002
 	};
+	*/
 
+	/*
 	[ComImport]
 	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
 	[Guid(InterfaceGuids.IColumnManager)]
 	public interface IColumnManager
 	{
-
 		[PreserveSig]
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		HResult SetColumnInfo([In] PROPERTYKEY propkey, [In] IntPtr pcmci);
@@ -40,16 +52,12 @@ namespace BExplorer.Shell.Interop
 		[MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
 		HResult SetColumns([In][MarshalAs(UnmanagedType.LPArray)] PROPERTYKEY[] rgkeyOrder, uint cVisible);
 	}
+	*/
 
-	public enum SORT
-	{
-		DESCENDING = -1,
-		ASCENDING = 1
-	}
+	/*
 	[StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 	public struct CM_COLUMNINFO
 	{
-
 		/// DWORD->unsigned int
 		public int cbSize;
 
@@ -72,14 +80,9 @@ namespace BExplorer.Shell.Interop
 		[MarshalAsAttribute(UnmanagedType.ByValTStr, SizeConst = 256)]
 		public string wszName;
 	}
-	[StructLayout(LayoutKind.Sequential)]
-	[Serializable]
-	public struct SORTCOLUMN
-	{
-		public PROPERTYKEY propkey;
-		public SORT direction;
-	}
+	*/
 
+	/*
 	public enum CM_MASK
 	{
 		CM_MASK_WIDTH = 0x00000001,
@@ -103,5 +106,5 @@ namespace BExplorer.Shell.Interop
 		CM_WIDTH_USEDEFAULT = -1,
 		CM_WIDTH_AUTOSIZE = -2
 	}
-
+	*/
 }

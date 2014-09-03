@@ -3097,6 +3097,7 @@ namespace BExplorer.Shell {
 		/// <param name="destination">The folder you want to navigate to.</param>
 		/// <param name="SaveFolderSettings">Should the folder's settings be saved?</param>
 		/// <param name="isInSameTab"></param>
+		/// <param name="refresh">Should the List be Refreshed?</param>
 		public void Navigate_Full(ShellItem destination, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false) {
 			if (SaveFolderSettings) {
 				SaveSettingsToDatabase(this.CurrentFolder);
@@ -3111,9 +3112,9 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="destination">The folder you want to navigate to.</param>
 		/// <param name="isInSameTab"></param>
+		/// <param name="refresh">Should the List be Refreshed?</param>
 		private void Navigate(ShellItem destination, Boolean isInSameTab = false, bool refresh = false) {
 			if (!refresh) {
-				//this.OnNavigating(new NavigatingEventArgs(destination, isInSameTab));
 				if (Navigating != null)
 					Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 			}
@@ -3147,8 +3148,7 @@ namespace BExplorer.Shell {
 						var theColumn = this.AllAvailableColumns.Where(w => w.ID == collumn.Attribute("ID").Value).Single();
 						if (this.Collumns.Count(c => c.ID == theColumn.ID) == 0) {
 							if (collumn.Attribute("Width").Value != "0") {
-								int width = Convert.ToInt32(collumn.Attribute("Width").Value);
-								theColumn.Width = width;
+								theColumn.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
 							}
 							this.Collumns.Add(theColumn);
 							var column = theColumn.ToNativeColumn(folderSettings.View == ShellViewStyle.Details);
@@ -3162,8 +3162,7 @@ namespace BExplorer.Shell {
 							this.Collumns.RemoveAt(colIndex);
 							User32.SendMessage(this.LVHandle, Interop.MSG.LVM_DELETECOLUMN, colIndex, 0);
 							if (collumn.Attribute("Width").Value != "0") {
-								int width = Convert.ToInt32(collumn.Attribute("Width").Value);
-								theColumn.Width = width;
+								theColumn.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
 							}
 							this.Collumns.Add(theColumn);
 							var column = theColumn.ToNativeColumn(folderSettings.View == ShellViewStyle.Details);
@@ -3177,7 +3176,6 @@ namespace BExplorer.Shell {
 				}
 
 				IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
-
 				for (int i = 0; i < this.Collumns.Count; i++) {
 					this.Collumns[i].SetSplitButton(headerhandle, i);
 				}
@@ -3213,7 +3211,6 @@ namespace BExplorer.Shell {
 			}
 			resetEvent.Set();
 			if (isThereSettings) {
-
 				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder, false);
 			}
 			else if (destination.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant()) {
@@ -3302,25 +3299,25 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
 			if (col.CollumnType == typeof(String)) {
 				var i = reversed ? 3 : 0;
-				ListViewGroupEx testgrn = new ListViewGroupEx();
+				var testgrn = new ListViewGroupEx();
 				testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("0") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("9")).ToArray();
 				testgrn.Header = String.Format("0 - 9 ({0})", testgrn.Items.Count());
 				testgrn.Index = reversed ? i-- : i++;
 				this.Groups.Add(testgrn);
 
-				ListViewGroupEx testgr = new ListViewGroupEx();
+				var testgr = new ListViewGroupEx();
 				testgr.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("A") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("H")).ToArray();
 				testgr.Header = String.Format("A - H ({0})", testgr.Items.Count());
 				testgr.Index = reversed ? i-- : i++;
 				this.Groups.Add(testgr);
 
-				ListViewGroupEx testgr2 = new ListViewGroupEx();
+				var testgr2 = new ListViewGroupEx();
 				testgr2.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("I") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("P")).ToArray();
 				testgr2.Header = String.Format("I - P ({0})", testgr2.Items.Count());
 				testgr2.Index = reversed ? i-- : i++;
 				this.Groups.Add(testgr2);
 
-				ListViewGroupEx testgr3 = new ListViewGroupEx();
+				var testgr3 = new ListViewGroupEx();
 				testgr3.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("Q") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("Z")).ToArray();
 				testgr3.Header = String.Format("Q - Z ({0})", testgr3.Items.Count());
 				testgr3.Index = reversed ? i-- : i++;
@@ -3336,37 +3333,37 @@ namespace BExplorer.Shell {
 			}
 			else if (col.CollumnType == typeof(long)) {
 				var j = reversed ? 7 : 0;
-				ListViewGroupEx uspec = new ListViewGroupEx();
+				var uspec = new ListViewGroupEx();
 				uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
 				uspec.Header = String.Format("Unspecified ({0})", uspec.Items.Count());
 				uspec.Index = reversed ? j-- : j++;
 				this.Groups.Add(uspec);
 
-				ListViewGroupEx testgrn = new ListViewGroupEx();
+				var testgrn = new ListViewGroupEx();
 				testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) == 0 && !w.IsFolder).ToArray();
 				testgrn.Header = String.Format("Empty ({0})", testgrn.Items.Count());
 				testgrn.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgrn);
 
-				ListViewGroupEx testgr = new ListViewGroupEx();
+				var testgr = new ListViewGroupEx();
 				testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 10 * 1024).ToArray();
 				testgr.Header = String.Format("Very Small ({0})", testgr.Items.Count());
 				testgr.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr);
 
-				ListViewGroupEx testgr2 = new ListViewGroupEx();
+				var testgr2 = new ListViewGroupEx();
 				testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 100 * 1024).ToArray();
 				testgr2.Header = String.Format("Small ({0})", testgr2.Items.Count());
 				testgr2.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr2);
 
-				ListViewGroupEx testgr3 = new ListViewGroupEx();
+				var testgr3 = new ListViewGroupEx();
 				testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 1 * 1024 * 1024).ToArray();
 				testgr3.Header = String.Format("Medium ({0})", testgr3.Items.Count());
 				testgr3.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr3);
 
-				ListViewGroupEx testgr4 = new ListViewGroupEx();
+				var testgr4 = new ListViewGroupEx();
 				testgr4.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 16 * 1024 * 1024).ToArray();
 				testgr4.Header = String.Format("Big ({0})", testgr4.Items.Count());
 				testgr4.Index = reversed ? j-- : j++;
@@ -3378,7 +3375,7 @@ namespace BExplorer.Shell {
 				testgr5.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr5);
 
-				ListViewGroupEx testgr6 = new ListViewGroupEx();
+				var testgr6 = new ListViewGroupEx();
 				testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 128 * 1024 * 1024).ToArray();
 				testgr6.Header = String.Format("Gigantic ({0})", testgr6.Items.Count());
 				testgr6.Index = reversed ? j-- : j++;
@@ -3397,7 +3394,7 @@ namespace BExplorer.Shell {
 				var i = reversed ? groups.Count() - 1 : 0;
 				foreach (var group in groups) {
 					var groupItems = group.Select(s => s).ToArray();
-					ListViewGroupEx gr = new ListViewGroupEx();
+					var gr = new ListViewGroupEx();
 					gr.Items = groupItems;
 					gr.Header = String.Format("{0} ({1})", group.Key.ToString(), groupItems.Count());
 					gr.Index = reversed ? i-- : i++;
@@ -3433,18 +3430,14 @@ namespace BExplorer.Shell {
 
 		[DebuggerStepThrough]
 		public ShellItem GetFirstSelectedItem() {
-			LVITEMINDEX lvi = new LVITEMINDEX();
-			lvi.iItem = -1;
-			lvi.iGroup = 0;
+			var lvi = new LVITEMINDEX() { iItem = -1, iGroup = 0 };
 			User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
 			if (lvi.iItem == -1 || this.Items.Count < lvi.iItem) return null;
 			return this.Items[lvi.iItem];
 		}
 
 		public int GetFirstSelectedItemIndex() {
-			LVITEMINDEX lvi = new LVITEMINDEX();
-			lvi.iItem = -1;
-			lvi.iGroup = 0;
+			var lvi = new LVITEMINDEX() { iItem = -1, iGroup = 0 };
 			User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
 			if (lvi.iItem == -1) return -1;
 			return lvi.iItem;
@@ -3742,9 +3735,7 @@ namespace BExplorer.Shell {
 				*/
 			} while (Directory.Exists(endname) || File.Exists(endname));
 
-			ERROR result = Shell32.SHCreateDirectory(IntPtr.Zero, endname);
-
-			switch (result) {
+			switch (Shell32.SHCreateDirectory(IntPtr.Zero, endname)) {
 				case ERROR.FILE_EXISTS:
 				case ERROR.ALREADY_EXISTS:
 					throw new IOException("The directory already exists");

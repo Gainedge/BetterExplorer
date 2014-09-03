@@ -142,7 +142,7 @@ namespace BExplorer.Shell.Interop {
 		/// Supports direct mode for single-writer, multireader file operations. 
 		/// </summary>
 		DirectSingleWriterMultipleReader = 0x00400000
-	};
+	}
 
 
 
@@ -152,31 +152,31 @@ namespace BExplorer.Shell.Interop {
 		ForceFileSystem = 1,
 		StorageItems = 2,
 		AllItems = 3
-	};
+	}
 
 	[Flags]
 	public enum LibraryOptions {
 		Default = 0,
 		PinnedToNavigationPane = 0x1,
 		MaskAll = 0x1
-	};
+	}
 
 	public enum DefaultSaveFolderType {
 		Detect = 1,
 		Private = 2,
 		Public = 3
-	};
+	}
 
 	public enum LibrarySaveOptions {
 		FailIfThere = 0,
 		OverrideExisting = 1,
 		MakeUniqueName = 2
-	};
+	}
 
 	public enum LibraryManageDialogOptions {
 		Default = 0,
 		NonIndexableLocationWarning = 1
-	};
+	}
 
 	public enum LibraryFolderType {
 		/// <summary>
@@ -275,11 +275,13 @@ namespace BExplorer.Shell.Interop {
 		public int pid;
 	}
 
+	/*
 	[StructLayout(LayoutKind.Sequential, Pack = 2)]
 	public struct REFPROPERTYKEY {
 		public Guid fmtid;
 		public int pid;
 	}
+	*/
 
 	[Flags]
 	public enum SIIGBF {

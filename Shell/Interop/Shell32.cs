@@ -86,10 +86,12 @@ namespace BExplorer.Shell.Interop {
 		COMPUTERSNEARME = 0x003d,
 	}
 
+	/*
 	public enum FFFP_MODE {
 		EXACTMATCH,
 		NEARESTPARENTMATCH,
 	}
+	*/
 
 	[Flags]
 	public enum FOLDERFLAGS {
@@ -326,6 +328,7 @@ namespace BExplorer.Shell.Interop {
 		public FOLDERFLAGS fFlags;
 	}
 
+	/*
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 	public struct KNOWNFOLDER_DEFINITION {
 		public int category;
@@ -342,6 +345,7 @@ namespace BExplorer.Shell.Interop {
 		public int kfdFlags;
 		public Guid ftidType;
 	}
+	*/
 
 	public struct SHChangeNotifyEntry {
 		public IntPtr pidl;
@@ -379,32 +383,30 @@ namespace BExplorer.Shell.Interop {
 	}
 
 	public class Shell32 {
+
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
-		public static extern IntPtr SHChangeNotification_Lock(
-				IntPtr windowHandle,
-				int processId,
-				out IntPtr pidl,
-				out uint lEvent);
+		public static extern IntPtr SHChangeNotification_Lock(IntPtr windowHandle, int processId, out IntPtr pidl, out uint lEvent);
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern Boolean SHChangeNotification_Unlock(IntPtr hLock);
+		*/
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
 		public static extern void SHCreateShellItemArrayFromDataObject(
-					[In] System.Runtime.InteropServices.ComTypes.IDataObject pdo,
-					[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
-					[MarshalAs(UnmanagedType.Interface)] out IShellItemArray ppv);
+			[In] System.Runtime.InteropServices.ComTypes.IDataObject pdo,
+			[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid,
+			[MarshalAs(UnmanagedType.Interface)] out IShellItemArray ppv);
 
 		[DllImport("Shell32", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.Winapi, SetLastError = true)]
 		internal static extern int SHShowManageLibraryUI(
-				[In, MarshalAs(UnmanagedType.Interface)] IShellItem library,
-				[In] IntPtr hwndOwner,
-				[In] string title,
-				[In] string instruction,
-				[In] LibraryManageDialogOptions lmdOptions);
+			[In, MarshalAs(UnmanagedType.Interface)] IShellItem library,
+			[In] IntPtr hwndOwner,
+			[In] string title,
+			[In] string instruction,
+			[In] LibraryManageDialogOptions lmdOptions);
 
-		#region enum HChangeNotifyEventID
 		/// <summary>
 		/// Describes the event that has occurred.
 		/// Typically, only one event is specified at a time.
@@ -421,7 +423,6 @@ namespace BExplorer.Shell.Interop {
 		/// in the system image list that has changed.
 		/// <i>dwItem2</i> is not used and should be <see langword="null"/>.</para>
 		/// </remarks>
-
 		[Flags]
 		public enum HChangeNotifyEventID {
 			/// <summary>
@@ -605,9 +606,7 @@ namespace BExplorer.Shell.Interop {
 
 
 		}
-		#endregion // enum HChangeNotifyEventID
 
-		#region public enum HChangeNotifyFlags
 		/// <summary>
 		/// Flags that indicate the meaning of the <i>dwItem1</i> and <i>dwItem2</i> parameters.
 		/// The uFlags parameter must be one of the following values.
@@ -659,8 +658,6 @@ namespace BExplorer.Shell.Interop {
 			/// </summary>
 			SHCNF_FLUSHNOWAIT = 0x2000
 		}
-		#endregion // enum HChangeNotifyFlags
-
 
 		/// <summary>
 		/// Notifies the system of an event that an application has performed. 
@@ -672,10 +669,8 @@ namespace BExplorer.Shell.Interop {
 		/// <param name="dwItem1">Optional. First event-dependent value.</param>
 		/// <param name="dwItem2">Optional. Second event-dependent value.</param>
 		[DllImport("shell32.dll")]
-		public static extern void SHChangeNotify(HChangeNotifyEventID wEventId,
-																			 HChangeNotifyFlags uFlags,
-																			 IntPtr dwItem1,
-																			 IntPtr dwItem2);
+		public static extern void SHChangeNotify(HChangeNotifyEventID wEventId, HChangeNotifyFlags uFlags, IntPtr dwItem1, IntPtr dwItem2);
+
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern int Shell_GetCachedImageIndex(string pwszIconPath, int iIconIndex, uint uIconFlags);
 
@@ -719,7 +714,7 @@ namespace BExplorer.Shell.Interop {
 		public static UInt32 FCSM_LOGO = 0x00000020;
 		public static UInt32 FCSM_FLAGS = 0x00000040;
 
-		public static UInt32 SHGFI_ICONLOCATION = 0x000001000;
+		//public static UInt32 SHGFI_ICONLOCATION = 0x000001000;
 
 		[DllImport("shell32.dll", EntryPoint = "#660")]
 		public static extern bool FileIconInit(bool bFullInit);
@@ -730,8 +725,10 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("shell32.dll", EntryPoint = "#25")]
 		public static extern IntPtr ILCombine(IntPtr pidl1, IntPtr pidl2);
 
+		/*
 		[DllImport("shell32.dll")]
 		public static extern IntPtr ILCreateFromPath(string pszPath);
+		*/
 
 		[DllImport("shell32.dll", EntryPoint = "#16")]
 		public static extern IntPtr ILFindLastID(IntPtr pidl);
@@ -743,18 +740,18 @@ namespace BExplorer.Shell.Interop {
 		public static extern bool ILIsEqual(IntPtr pidl1, IntPtr pidl2);
 
 		[DllImport("shell32.dll", EntryPoint = "#23")]
-		public static extern bool ILIsParent(IntPtr pidl1, IntPtr pidl2,
-				bool fImmediate);
+		public static extern bool ILIsParent(IntPtr pidl1, IntPtr pidl2, bool fImmediate);
 
 		[DllImport("shell32.dll", EntryPoint = "#17")]
 		public static extern bool ILRemoveLastID(IntPtr pidl);
 
 		[DllImport("shell32.dll", EntryPoint = "#71")]
-		public static extern bool Shell_GetImageLists(out IntPtr lphimlLarge,
-				out IntPtr lphimlSmall);
+		public static extern bool Shell_GetImageLists(out IntPtr lphimlLarge, out IntPtr lphimlSmall);
 
+		/*
 		[System.Runtime.InteropServices.DllImport("Kernel32.dll")]
 		public static extern Boolean CloseHandle(IntPtr handle);
+		*/
 
 		[DllImport("shell32.dll", EntryPoint = "#2")]
 		public static extern uint SHChangeNotifyRegister(IntPtr hWnd, SHCNRF fSources, SHCNE fEvents, uint wMsg, int cEntries, ref SHChangeNotifyEntry pFsne);
@@ -787,9 +784,7 @@ namespace BExplorer.Shell.Interop {
 		public static extern IShellFolder SHGetDesktopFolder();
 
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
-		public static extern IntPtr SHGetFileInfo(IntPtr pszPath,
-				int dwFileAttributes, out SHFILEINFO psfi, int cbFileInfo,
-				SHGFI uFlags);
+		public static extern IntPtr SHGetFileInfo(IntPtr pszPath, int dwFileAttributes, out SHFILEINFO psfi, int cbFileInfo, SHGFI uFlags);
 
 		[DllImport("shfolder.dll")]
 		public static extern HResult SHGetFolderPath(
@@ -800,13 +795,7 @@ namespace BExplorer.Shell.Interop {
 				[Out] StringBuilder pszPath);
 
 		[DllImport("shell32.dll")]
-		public static extern HResult SHDoDragDrop(
-			IntPtr hwnd,
-			IDataObject pdtobj,
-			IDropSource pdsrc,
-			uint dwEffect,
-			out uint pdwEffect
-			);
+		public static extern HResult SHDoDragDrop(IntPtr hwnd, IDataObject pdtobj, IDropSource pdsrc, uint dwEffect, out uint pdwEffect);
 
 		public enum ASSOC_FILTER {
 			ASSOC_FILTER_NONE = 0x00000000,
@@ -823,23 +812,21 @@ namespace BExplorer.Shell.Interop {
 		public extern static HResult SHAssocEnumHandlers([MarshalAs(UnmanagedType.LPWStr)] string pszExtra, [In] ASSOC_FILTER afFilter, out IntPtr ppEnumHandler);
 
 		[DllImport("shell32.dll", PreserveSig = false)]
-		public static extern IntPtr SHGetIDListFromObject(
-				[In, MarshalAs(UnmanagedType.IUnknown)] object punk);
+		public static extern IntPtr SHGetIDListFromObject([In, MarshalAs(UnmanagedType.IUnknown)] object punk);
 
 		[DllImport("shell32.dll")]
-		public static extern bool SHGetPathFromIDList(
-				[In] IntPtr pidl,
-				[Out] StringBuilder pszPath);
+		public static extern bool SHGetPathFromIDList([In] IntPtr pidl, [Out] StringBuilder pszPath);
 
 		[DllImport("shell32.dll")]
-		public static extern HResult SHGetSpecialFolderLocation(IntPtr hwndOwner,
-				CSIDL nFolder, out IntPtr ppidl);
+		public static extern HResult SHGetSpecialFolderLocation(IntPtr hwndOwner, CSIDL nFolder, out IntPtr ppidl);
 
+		/*
 		[DllImport("shell32.dll", SetLastError = true)]
 		public static extern int SHMultiFileProperties(System.Runtime.InteropServices.ComTypes.IDataObject pdtobj, int flags);
 
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern bool ShellExecuteEx(ref SHELLEXECUTEINFO lpExecInfo);
+		
 
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 		public struct SHELLEXECUTEINFO {
@@ -864,13 +851,13 @@ namespace BExplorer.Shell.Interop {
 			public IntPtr hIcon;
 			public IntPtr hProcess;
 		}
+		*/
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		public static extern int SHEmptyRecycleBin(IntPtr hWnd, string pszRootPath, uint dwFlags);
 
 		[DllImport("shell32.dll", SetLastError = true)]
-		static extern IntPtr CommandLineToArgvW(
-				[MarshalAs(UnmanagedType.LPWStr)] string lpCmdLine, out int pNumArgs);
+		static extern IntPtr CommandLineToArgvW([MarshalAs(UnmanagedType.LPWStr)] string lpCmdLine, out int pNumArgs);
 
 		public static string[] CommandLineToArgs(string commandLine) {
 			int argc;
@@ -894,11 +881,12 @@ namespace BExplorer.Shell.Interop {
 		public static extern void SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string name, IntPtr bindingContext, [Out()] out IntPtr pidl, uint sfgaoIn, [Out()] out uint psfgaoOut);
 
 		[DllImport("shell32.dll")]
-		public static extern void SetCurrentProcessExplicitAppUserModelID(
-				[MarshalAs(UnmanagedType.LPWStr)] string AppID);
+		public static extern void SetCurrentProcessExplicitAppUserModelID([MarshalAs(UnmanagedType.LPWStr)] string AppID);
+
+		/*
 		[DllImport("shell32.dll")]
-		public static extern void GetCurrentProcessExplicitAppUserModelID(
-				[Out(), MarshalAs(UnmanagedType.LPWStr)] out string AppID);
+		public static extern void GetCurrentProcessExplicitAppUserModelID([Out(), MarshalAs(UnmanagedType.LPWStr)] out string AppID);
+		*/
 
 		public enum SHSTOCKICONID : uint {
 			SIID_DOCNOASSOC = 0,
@@ -1039,6 +1027,8 @@ namespace BExplorer.Shell.Interop {
 
 			return pidl;
 		}
+
+		/*
 		internal static IntPtr PidlFromShellItem(IShellItem nativeShellItem) {
 			IntPtr unknown = Marshal.GetIUnknownForObject(nativeShellItem);
 			return PidlFromUnknown(unknown);
@@ -1054,6 +1044,7 @@ namespace BExplorer.Shell.Interop {
 				return IntPtr.Zero;
 			}
 		}
+		*/
 
 		[DllImport("kernel32.dll")]
 		public static extern bool SetProcessWorkingSetSize(IntPtr proc, int min, int max);
@@ -1061,8 +1052,10 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("shell32.dll")]
 		public extern static void SHGetSetSettings(ref SHELLSTATE lpss, SSF dwMask, bool bSet);
 
+		/*
 		[DllImport("shell32.dll", EntryPoint = "#162", CharSet = CharSet.Unicode)]
 		public static extern IntPtr SHSimpleIDListFromPath(string szPath);
+		*/
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
 		internal static extern uint ILGetSize(IntPtr pidl);
@@ -1076,8 +1069,7 @@ namespace BExplorer.Shell.Interop {
 		/// <param name="options"></param>
 		/// <returns></returns>
 		[DllImport("shell32.dll")]
-		private static extern uint SHFormatDrive(IntPtr hwnd, uint drive, SHFormatFlags fmtID,
-													 SHFormatOptions options);
+		private static extern uint SHFormatDrive(IntPtr hwnd, uint drive, SHFormatFlags fmtID, SHFormatOptions options);
 
 		public enum SHFormatFlags : uint {
 			SHFMT_ID_DEFAULT = 0xFFFF,
@@ -1089,12 +1081,14 @@ namespace BExplorer.Shell.Interop {
 			SHFMT_OPT_SYSONLY = 0x2,
 		}
 
+		/*
 		public const uint SHFMT_ERROR = 0xFFFFFFFF;
 		public const uint SHFMT_CANCEL = 0xFFFFFFFE;
 		public const uint SHFMT_NOFORMAT = 0xFFFFFFD;
+		*/
 
 		/// <summary>
-		/// Format a Drive by givven Drive letter
+		/// Format a Drive by given Drive letter
 		/// </summary>
 		/// <param name="DriveLetter">The Drive letter</param>
 		/// <returns>Error or Success Code</returns>
@@ -1107,8 +1101,6 @@ namespace BExplorer.Shell.Interop {
 			return Result;
 		}
 
-
-		#region SSF
 		[Flags]
 		public enum SSF {
 			SSF_SHOWALLOBJECTS = 0x00000001,
@@ -1137,9 +1129,7 @@ namespace BExplorer.Shell.Interop {
 			SSF_SHOWSTATUSBAR = 0x04000000,
 			SSF_AUTOCHECKSELECT = 0x00800000,
 		}
-		#endregion
 
-		#region SHELLSTATE
 		[System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
 		public struct SHELLSTATE {
 
@@ -1419,7 +1409,5 @@ namespace BExplorer.Shell.Interop {
 				}
 			}
 		}
-		#endregion
-
 	}
 }

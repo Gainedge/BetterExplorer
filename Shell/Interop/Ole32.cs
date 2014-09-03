@@ -3,7 +3,7 @@
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either 
+// License as published by the Free Software Foundation; either
 // version 2 of the License, or (at your option) any later version.
 //
 // This program is distributed in the hope that it will be useful,
@@ -11,16 +11,13 @@
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public 
-// License along with this program; if not, write to the Free 
-// Software Foundation, Inc., 51 Franklin Street, Fifth Floor,  
+// You should have received a copy of the GNU Lesser General Public
+// License along with this program; if not, write to the Free
+// Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 // Boston, MA 2110-1301, USA.
 //
 using System;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
-using System.Windows.Forms;
-using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 #pragma warning disable 1591
 
@@ -29,34 +26,12 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("ole32.dll")]
 		public static extern void CoTaskMemFree(IntPtr pv);
 
-		/*
-		[DllImport("ole32.dll")]
-		public static extern int DoDragDrop(ComTypes.IDataObject pDataObject,
-			IDropSource pDropSource, DragDropEffects dwOKEffect,
-			out DragDropEffects pdwEffect);
-
-		[DllImport("ole32.dll")]
-		public static extern int RegisterDragDrop(IntPtr hwnd, System.Windows.Forms.IDropTarget pDropTarget);
-
-		[DllImport("ole32.dll")]
-		public static extern int RevokeDragDrop(IntPtr hwnd);
-		*/
+		[DllImport("ole32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern HResult CoCreateInstance(ref Guid rclsid, IntPtr pUnkOuter, CLSCTX dwClsContext, ref Guid riid, out IntPtr ppv);
 
 		public static Guid IID_IDataObject {
 			get { return new Guid("0000010e-0000-0000-C000-000000000046"); }
 		}
-
-		/*
-		public static Guid IID_IDropTarget {
-			get { return new Guid("00000122-0000-0000-C000-000000000046"); }
-		}
-
-		[DllImport("ole32.dll")]
-		public static extern int CoMarshalInterThreadInterfaceInStream([In] ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] object pUnk, out IStream ppStm);
-
-		[DllImport("ole32.dll")]
-		public static extern int CoGetInterfaceAndReleaseStream(IStream pStm, [In] ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
-		*/
 
 		// Are used in activation calls to indicate the execution contexts in which an object is to be run
 		[Flags]
@@ -85,6 +60,31 @@ namespace BExplorer.Shell.Interop {
 		}
 
 		/*
+		[DllImport("ole32.dll")]
+		public static extern int DoDragDrop(ComTypes.IDataObject pDataObject,
+			IDropSource pDropSource, DragDropEffects dwOKEffect,
+			out DragDropEffects pdwEffect);
+
+		[DllImport("ole32.dll")]
+		public static extern int RegisterDragDrop(IntPtr hwnd, System.Windows.Forms.IDropTarget pDropTarget);
+
+		[DllImport("ole32.dll")]
+		public static extern int RevokeDragDrop(IntPtr hwnd);
+		*/
+
+		/*
+		public static Guid IID_IDropTarget {
+			get { return new Guid("00000122-0000-0000-C000-000000000046"); }
+		}
+
+		[DllImport("ole32.dll")]
+		public static extern int CoMarshalInterThreadInterfaceInStream([In] ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] object pUnk, out IStream ppStm);
+
+		[DllImport("ole32.dll")]
+		public static extern int CoGetInterfaceAndReleaseStream(IStream pStm, [In] ref Guid riid, [MarshalAs(UnmanagedType.IUnknown)] out object ppv);
+		*/
+
+		/*
 		[StructLayout(LayoutKind.Sequential)]
 		internal struct BIND_OPTS3 {
 			internal uint cbStruct;
@@ -99,14 +99,6 @@ namespace BExplorer.Shell.Interop {
 		}
 		*/
 
-		[DllImport("ole32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		public static extern HResult CoCreateInstance(
-				ref Guid rclsid,
-				IntPtr pUnkOuter,
-				CLSCTX dwClsContext,
-				ref Guid riid,
-				out IntPtr ppv);
-
 		/*
 		// Retrieves a data object that you can use to access the contents of the clipboard
 		[DllImport("ole32.dll", CharSet = CharSet.Auto, SetLastError = true)]
@@ -115,7 +107,7 @@ namespace BExplorer.Shell.Interop {
 		public static Guid CLSID_DragDropHelper = new Guid("{4657278A-411B-11d2-839A-00C04FD918D0}");
 		public static Guid CLSID_NewMenu = new Guid("{D969A300-E7FF-11d0-A93B-00A0C90F2719}");
 		public static Guid IID_IDragSourceHelper = new Guid("{DE5BF786-477A-11d2-839D-00C04FD918D0}");
-		public static Guid IID_IDropTargetHelper = new Guid("{4657278B-411B-11d2-839A-00C04FD918D0}");		
+		public static Guid IID_IDropTargetHelper = new Guid("{4657278B-411B-11d2-839A-00C04FD918D0}");
 
 		[DllImport("ole32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = false)]
 		[return: MarshalAs(UnmanagedType.Interface)]
@@ -123,7 +115,7 @@ namespace BExplorer.Shell.Interop {
 
 		[return: MarshalAs(UnmanagedType.Interface)]
 		public static object LaunchElevatedCOMObject(Guid Clsid, Guid InterfaceID) {
-			string CLSID = Clsid.ToString("B"); // B formatting directive: returns {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx} 
+			string CLSID = Clsid.ToString("B"); // B formatting directive: returns {xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}
 			string monikerName = "Elevation:Administrator!new:" + CLSID;
 
 			BIND_OPTS3 bo = new BIND_OPTS3();
