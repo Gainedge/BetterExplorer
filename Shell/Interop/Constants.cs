@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace BExplorer.Shell.Interop {
+
 	public static class InterfaceGuids {
 		// IID GUID strings for relevant Shell COM interfaces.
 		public const string IExplorerBrowser = "DFD3B6B5-C10C-4BE9-85F6-A66969F402F6";
@@ -187,36 +188,6 @@ namespace BExplorer.Shell.Interop {
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	internal struct NativeFolderDefinition {
-		internal FolderCategory category;
-		internal IntPtr name;
-		internal IntPtr description;
-		internal Guid parentId;
-		internal IntPtr relativePath;
-		internal IntPtr parsingName;
-		internal IntPtr tooltip;
-		internal IntPtr localizedName;
-		internal IntPtr icon;
-		internal IntPtr security;
-		internal UInt32 attributes;
-		internal DefinitionOptions definitionOptions;
-		internal Guid folderTypeId;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct NMITEMACTIVATE {
-		public NMHDR hdr;
-		public int iItem;
-		public int iSubItem;
-		public int uNewState;
-		public int uOldState;
-		public int uChanged;
-		public Point ptAction;
-		public IntPtr lParam;
-		public int uKeyFlags;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
 	public struct HDITEM {
 		public Mask mask;
 		public int cxy;
@@ -246,8 +217,41 @@ namespace BExplorer.Shell.Interop {
 			SortUp = 0x400,     // HDF_SORTUP
 			HDF_SPLITBUTTON = 0x01000000,
 		};
-	};
+	}
 
+	[StructLayout(LayoutKind.Sequential)]
+	internal struct NativeFolderDefinition {
+		internal FolderCategory category;
+		internal IntPtr name;
+		internal IntPtr description;
+		internal Guid parentId;
+		internal IntPtr relativePath;
+		internal IntPtr parsingName;
+		internal IntPtr tooltip;
+		internal IntPtr localizedName;
+		internal IntPtr icon;
+		internal IntPtr security;
+		internal UInt32 attributes;
+		internal DefinitionOptions definitionOptions;
+		internal Guid folderTypeId;
+	}
+
+	/*
+	[StructLayout(LayoutKind.Sequential)]
+	public struct NMITEMACTIVATE {
+		public NMHDR hdr;
+		public int iItem;
+		public int iSubItem;
+		public int uNewState;
+		public int uOldState;
+		public int uChanged;
+		public Point ptAction;
+		public IntPtr lParam;
+		public int uKeyFlags;
+	}
+	*/
+
+	/*
 	[StructLayout(LayoutKind.Sequential)]
 	public struct NMHDDISPINFO {
 		public NMHDR hdr;
@@ -258,6 +262,7 @@ namespace BExplorer.Shell.Interop {
 		public int iImage;
 		public IntPtr lParam;
 	}
+	*/
 
 	public static class CustomDraw {
 		public const int CDRF_DODEFAULT = 0x00000000;

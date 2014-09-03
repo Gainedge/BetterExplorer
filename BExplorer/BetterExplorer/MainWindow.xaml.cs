@@ -52,28 +52,6 @@ namespace BetterExplorer {
 	/// </summary>
 	public partial class MainWindow : Fluent.RibbonWindow {
 
-		[Obsolete("Can remove move this!!! Someone should!!!")]
-		public bool IsCalledFromLoading;
-
-		/*
-		[Obsolete("Do we really need this?!!")]
-		bool ReadyToChangeLanguage;
-		*/
-
-		public bool isOnLoad;
-
-
-		//[Obsolete("Does nothing")]
-		//private bool IsCloseLastTabCloseApp;
-
-		[Obsolete("Does nothing")]
-		private void chkIsLastTabCloseApp_Click(object sender, RoutedEventArgs e) {
-			//var b = this.chkIsLastTabCloseApp.IsChecked;
-			//if (b != null)
-			//	this.IsCloseLastTabCloseApp = b.Value;
-		}
-
-
 		[Obsolete("Try to remove. Items are added and removed but this has no functionality")]
 		NetworkAccountManager nam = new NetworkAccountManager();
 
@@ -97,11 +75,12 @@ namespace BetterExplorer {
 		#region Variables and Constants
 
 		#region Public member
-		public bool IsrestoreTabs;
+		private bool IsrestoreTabs;
 		//public static UpdateManager Updater;
 		#endregion
 
 		#region Private Members
+		private bool IsCalledFromLoading, isOnLoad;
 		private bool asFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
 		private MenuItem misa, misd, misag, misdg;
 		private bool IsInfoPaneEnabled, IsConsoleShown, IsPreviewPaneEnabled;
@@ -114,21 +93,16 @@ namespace BetterExplorer {
 		private ContextMenu cmHistory = new ContextMenu();
 		private System.Windows.Shell.JumpList AppJL = new System.Windows.Shell.JumpList();
 		private IntPtr Handle;
-
 		private List<string> Archives = new List<string>(new[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
 		private List<string> Images = new List<string>(new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
-		//private List<string> VirDisks = new List<string>(new[] { ".iso", ".bin", ".vhd" });
 		private string SelectedArchive = "";
 		private bool KeepBackstageOpen = false;
-		private string ICON_DLLPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
 		bool canlogactions = false;
 		string sessionid = DateTime.UtcNow.ToFileTimeUtc().ToString();
 		string logdir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\ActionLog\\";
 		string satdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
-		//string naddir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\NetworkAccounts\\";
 		string sstdir;
 		bool OverwriteOnRotate = false;
-		//NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 		System.Windows.Forms.Timer updateCheckTimer = new System.Windows.Forms.Timer();
 		DateTime LastUpdateCheck;
 		Int32 UpdateCheckInterval;
@@ -1130,7 +1104,8 @@ namespace BetterExplorer {
 																						root.ToLowerInvariant() == String.Format("{0}:\\", DriveLetter).ToLowerInvariant());
 															}).ToArray();
 													foreach (Wpf.Controls.TabItem tab in tabsForRemove) {
-														CloseTab(tab, false);
+														//CloseTab(tab, false);
+														tcMain.RemoveTabItem(tab);
 													}
 												}));
 							}
@@ -1583,7 +1558,7 @@ namespace BetterExplorer {
 				IsrestoreTabs = false;
 			}
 
-			this.chkIsLastTabCloseApp.IsChecked = (int)rks.GetValue("IsLastTabCloseApp", 1) == 1;
+			//this.chkIsLastTabCloseApp.IsChecked = (int)rks.GetValue("IsLastTabCloseApp", 1) == 1;
 
 			canlogactions = (int)rks.GetValue("EnableActionLog", 0) == 1;
 			chkLogHistory.IsChecked = canlogactions;
@@ -1744,10 +1719,10 @@ namespace BetterExplorer {
 				IsCalledFromLoading = true;
 				var statef = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 				BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref statef, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS | BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, false);
-				chkHiddenFiles.IsChecked = (statef.fShowAllObjects == 1);
+				chkHiddenFiles.IsChecked = statef.fShowAllObjects == 1;
 				ShellListView.ShowHidden = chkHiddenFiles.IsChecked.Value;
 				ShellTree.IsShowHiddenItems = chkHiddenFiles.IsChecked.Value;
-				chkExtensions.IsChecked = (statef.fShowExtensions == 1);
+				chkExtensions.IsChecked = statef.fShowExtensions == 1;
 				IsCalledFromLoading = false;
 
 				isOnLoad = true;
@@ -1858,7 +1833,7 @@ namespace BetterExplorer {
 			rks.SetValue("AutoSwitchDriveTools", Convert.ToInt32(asDrive));
 			rks.SetValue("AutoSwitchVirtualDriveTools", Convert.ToInt32(asVirtualDrive));
 			//rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(this.IsCloseLastTabCloseApp));
-			rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(chkIsLastTabCloseApp.IsChecked.Value));
+			//rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(chkIsLastTabCloseApp.IsChecked.Value));
 
 			rks.SetValue("IsConsoleShown", this.IsConsoleShown ? 1 : 0);
 			rks.SetValue("TabBarAlignment", this.TabbaBottom.IsChecked == true ? "bottom" : "top");
@@ -2126,6 +2101,7 @@ namespace BetterExplorer {
 
 		private void btnViewArchive_Click(object sender, RoutedEventArgs e) {
 			var name = ShellListView.SelectedItems.First().ParsingName;
+			string ICON_DLLPATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
 			var archiveDetailView = new ArchiveDetailView(ICON_DLLPATH, name);
 			archiveDetailView.Show(this.GetWin32Window());
 
@@ -3592,7 +3568,9 @@ namespace BetterExplorer {
 		}
 
 		private void btnTabCloseC_Click(object sender, RoutedEventArgs e) {
-			CloseTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
+			//CloseTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
+
+			tcMain.RemoveTabItem(tcMain.SelectedItem as Wpf.Controls.TabItem);
 		}
 
 		/*
@@ -3717,7 +3695,7 @@ namespace BetterExplorer {
 			else
 				e.Effects = DragDropEffects.None;
 
-			Win32Point ptw = new Win32Point();
+			var ptw = new Win32Point();
 			GetCursorPos(ref ptw);
 			e.Handled = true;
 
@@ -4184,15 +4162,12 @@ namespace BetterExplorer {
 			this.Title = "Better Explorer - " + e.Folder.GetDisplayName(BExplorer.Shell.Interop.SIGDN.NORMALDISPLAY);
 			e.Folder.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 			e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			Wpf.Controls.TabItem selectedTabItem = (tcMain.SelectedItem as Wpf.Controls.TabItem);
-			try {
-				selectedTabItem.Header = e.Folder.DisplayName;
-				selectedTabItem.Icon = e.Folder.Thumbnail.BitmapSource;
-				selectedTabItem.ShellObject = e.Folder;
-				selectedTabItem.ToolTip = e.Folder.ParsingName;
-			}
-			catch (Exception) {
-			}
+
+			var selectedTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
+			selectedTabItem.Header = e.Folder.DisplayName;
+			selectedTabItem.Icon = e.Folder.Thumbnail.BitmapSource;
+			selectedTabItem.ShellObject = e.Folder;
+			selectedTabItem.ToolTip = e.Folder.ParsingName;
 		}
 
 		/*
@@ -4255,11 +4230,9 @@ namespace BetterExplorer {
 			if (e.UpdateType == ItemUpdateType.Created && this.ShellListView.IsRenameNeeded) {
 				ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
 				ShellListView.RenameSelectedItem();
-				//ShellListView.RenameItem(e.NewItemIndex);
 				this.ShellListView.IsRenameNeeded = false;
 			}
 
-			//IsRenameFromCreate = false; //Note: Moved this below the if(...) to ensure it WILL always end up being false
 			this.ShellListView.Focus();
 		}
 
@@ -4378,7 +4351,7 @@ namespace BetterExplorer {
 
 			try {
 				pIDL = this.ShellListView.CurrentFolder.AbsolutePidl;
-				SHFILEINFO sfi = new SHFILEINFO();
+				var sfi = new SHFILEINFO();
 
 				//TODO: Why do we even have this if(...)
 				if (pIDL != IntPtr.Zero && !ShellListView.CurrentFolder.IsFileSystem) {
@@ -4443,11 +4416,7 @@ namespace BetterExplorer {
 				ctgVirtualDisk.Visibility = Visibility.Collapsed;
 				ctgExe.Visibility = Visibility.Collapsed;
 
-				try {
-					SetupLibrariesTab(ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false));
-				}
-				catch {
-				}
+				SetupLibrariesTab(ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false));
 			}
 			else if (!ShellListView.CurrentFolder.ParsingName.ToLowerInvariant().EndsWith("library-ms")) {
 				btnDefSave.Items.Clear();
@@ -4478,46 +4447,40 @@ namespace BetterExplorer {
 			TaskBar.SetCurrentProcessAppId("{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}");
 
 			this.CommandBindings.AddRange(new[]
-				{ 
-					new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click),
-					new CommandBinding(AppCommands.RoutedNavigateUp, btnUpLevel_Click),
-					new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox),
-					new CommandBinding(AppCommands.RoutedNewTab, (sender, e) => tcMain.NewTab()),
-					new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this.ShellListView.IsFocusAllowed = false; this.bcbc.SetInputState(); }),
-					new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {
-						//t.Stop();
-						int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
-						tcMain.SelectedItem = tcMain.Items[selIndex];
-					}),
-					new CommandBinding(AppCommands.RoutedCloseTab, (sender, e) => {
-						if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-							Close();
-							return;
-						}
-						int CurSelIndex = tcMain.SelectedIndex;
-						tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
-						tcMain.Items.RemoveAt(CurSelIndex);
-					})
-				}
-			);
+			{ 
+				new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click),
+				new CommandBinding(AppCommands.RoutedNavigateUp, btnUpLevel_Click),
+				new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox),
+				new CommandBinding(AppCommands.RoutedNewTab, (sender, e) => tcMain.NewTab()),
+				new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this.ShellListView.IsFocusAllowed = false; this.bcbc.SetInputState(); }),
+				new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {
+					//t.Stop();
+					int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
+					tcMain.SelectedItem = tcMain.Items[selIndex];
+				}),
+				new CommandBinding(AppCommands.RoutedCloseTab, (sender, e) => {
+					if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
+						Close();
+						return;
+					}
+					int CurSelIndex = tcMain.SelectedIndex;
+					tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
+					tcMain.Items.RemoveAt(CurSelIndex);
+				})
+			});
 
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
 
 			// loads current Ribbon color theme
 			try {
-				switch (Convert.ToString(rks.GetValue("CurrentTheme", "Blue"))) {
+				var Color = Convert.ToString(rks.GetValue("CurrentTheme", "Blue"));
+				switch (Color) {
 					case "Blue":
-						ChangeRibbonTheme("Blue");
-						break;
 					case "Silver":
-						ChangeRibbonTheme("Silver");
-						break;
 					case "Black":
-						ChangeRibbonTheme("Black");
-						break;
 					case "Green":
-						ChangeRibbonTheme("Green");
+						ChangeRibbonTheme(Color);
 						break;
 					default:
 						ChangeRibbonTheme("Blue");
@@ -4530,15 +4493,17 @@ namespace BetterExplorer {
 
 			// loads current UI language (uses en-US if default)
 			try {
-				string loc;
+				string loc = Convert.ToString(rks.GetValue("Locale", ":null:")) == ":null:" ?	//load current UI language in case there is no specified registry value
+							 Thread.CurrentThread.CurrentUICulture.Name : Convert.ToString(rks.GetValue("Locale", ":null:"));
+				/*
 				if (Convert.ToString(rks.GetValue("Locale", ":null:")) == ":null:") {
-					//load current UI language in case there is no specified registry value
+					
 					loc = Thread.CurrentThread.CurrentUICulture.Name;
 				}
 				else {
 					loc = Convert.ToString(rks.GetValue("Locale", ":null:"));
 				}
-
+				*/
 				((App)Application.Current).SelectCulture(loc, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\translation.xaml");
 			}
 			catch (Exception ex) {
@@ -4843,8 +4808,7 @@ namespace BetterExplorer {
 		}
 
 		private void Refresh_Click(object sender, RoutedEventArgs e) {
-			var da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 1, 100)));
-			da.FillBehavior = FillBehavior.Stop;
+			var da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 1, 100))) { FillBehavior = FillBehavior.Stop };
 			this.bcbc.BeginAnimation(Odyssey.Controls.BreadcrumbBar.ProgressValueProperty, da);
 			this.ShellListView.RefreshContents();
 		}

@@ -352,8 +352,9 @@ namespace Wpf.Controls {
 			if (c.Cancel)
 				return;
 			*/
-
-			if (ItemsSource == null)
+			if (this.Items.OfType<TabItem>().Count() == 1) {
+			}
+			else if (ItemsSource == null)
 				this.Items.Remove(tabItem);
 			else {
 				var list = ItemsSource as IList;
@@ -361,22 +362,14 @@ namespace Wpf.Controls {
 				if (listItem != null && list != null)
 					list.Remove(listItem);
 			}
-
-			/*
-			if (TabItemClosed != null)
-				TabItemClosed(this, new TabItemEventArgs(tabItem));
-			*/
 		}
 
 		public void CloneTabItem(TabItem theTab) {
 			int i = this.SelectedIndex;
-			var newt = new TabItem(theTab.ShellObject);
-			newt.Header = theTab.Header;
-			newt.Icon = theTab.Icon;
-			newt.ToolTip = theTab.ShellObject.ParsingName;
-			newt.AllowDrop = true;
+			var newt = new TabItem(theTab.ShellObject) {
+				Header = theTab.Header, Icon = theTab.Icon, ToolTip = theTab.ShellObject.ParsingName, AllowDrop = true, SelectedItems = theTab.SelectedItems
+			};
 			newt.log.CurrentLocation = theTab.ShellObject;
-			newt.SelectedItems = theTab.SelectedItems;
 			newt.log.ImportData(theTab.log);
 			if (i == -1 || i == this.Items.Count - 1 || AddNewTabToEnd)
 				this.Items.Add(newt);
@@ -406,16 +399,11 @@ namespace Wpf.Controls {
 			_toggleButton = this.Template.FindName("PART_DropDown", this) as ToggleButton;
 			if (_toggleButton != null) {
 				// create a context menu for the togglebutton
-				ContextMenu cm = new ContextMenu { PlacementTarget = _toggleButton, Placement = PlacementMode.Bottom };
+				var cm = new ContextMenu { PlacementTarget = _toggleButton, Placement = PlacementMode.Bottom };
 
 				// create a binding between the togglebutton's IsChecked Property
 				// and the Context Menu's IsOpen Property
-				Binding b = new Binding {
-					Source = _toggleButton,
-					Mode = BindingMode.TwoWay,
-					Path = new PropertyPath(ToggleButton.IsCheckedProperty)
-				};
-
+				var b = new Binding { Source = _toggleButton, Mode = BindingMode.TwoWay, Path = new PropertyPath(ToggleButton.IsCheckedProperty) };
 				cm.SetBinding(ContextMenu.IsOpenProperty, b);
 
 				_toggleButton.ContextMenu = cm;

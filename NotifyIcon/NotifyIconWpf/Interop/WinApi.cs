@@ -52,7 +52,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop {
 		[DllImport("USER32.DLL", SetLastError = true)]
 		public static extern bool DestroyWindow(IntPtr hWnd);
 
-
 		/// <summary>
 		/// Gives focus to a given window.
 		/// </summary>
@@ -60,7 +59,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop {
 		/// <returns></returns>
 		[DllImport("USER32.DLL")]
 		public static extern bool SetForegroundWindow(IntPtr hWnd);
-
 
 		/// <summary>
 		/// Gets the maximum number of milliseconds that can elapse between a
@@ -72,7 +70,6 @@ namespace Hardcodet.Wpf.TaskbarNotification.Interop {
 		/// consider the mouse action a double-click.</returns>
 		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
 		public static extern int GetDoubleClickTime();
-
 
 		/// <summary>
 		/// Gets the screen coordinates of the current mouse position.

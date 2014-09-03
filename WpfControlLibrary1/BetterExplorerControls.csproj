@@ -102,7 +102,6 @@
   <ItemGroup>
     <Compile Include="AirspacePopup.cs" />
     <Compile Include="WatermarkedTextBox.cs" />
-    <Compile Include="Helpers\PropertyPathHelper.cs" />
     <Compile Include="ImageSizeDisplay.xaml.cs">
       <DependentUpon>ImageSizeDisplay.xaml</DependentUpon>
     </Compile>

@@ -197,6 +197,7 @@ namespace BExplorer.Shell {
 		public IntPtr lParam;
 	}
 
+	/*
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 	public struct LVSETINFOTIP {
 		public int cbSize;
@@ -204,7 +205,8 @@ namespace BExplorer.Shell {
 		public string pszText;
 		public int iItem;
 		public int iSubItem;
-	};
+	}
+	*/
 
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 	public struct LVFINDINFO {
@@ -530,6 +532,7 @@ namespace BExplorer.Shell {
 
 		[DllImport("shell32.dll", CharSet = CharSet.None)]
 		public static extern void ILFree(IntPtr pidl);
+
 		[DllImport("shell32.dll", CharSet = CharSet.None)]
 		public static extern int ILGetSize(IntPtr pidl);
 

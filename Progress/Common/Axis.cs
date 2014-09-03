@@ -10,13 +10,11 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace RateBar
-{
+namespace RateBar {
 	/// <summary>
 	/// Axis Control
 	/// </summary>
-	public class Axis : ContentControl
-	{
+	public class Axis : ContentControl {
 		#region Locals
 
 		private Canvas canvas;
@@ -34,8 +32,7 @@ namespace RateBar
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Axis"/> class.
 		/// </summary>
-		public Axis()
-		{
+		public Axis() {
 			#region Initialize Defaults
 
 			this.IsHitTestVisible = false;
@@ -54,7 +51,7 @@ namespace RateBar
 			#endregion
 
 			this.UpdateUI();
-			
+
 		}
 
 		#region Properties
@@ -65,8 +62,7 @@ namespace RateBar
 		/// <value>
 		/// 	<c>true</c> if the horizontal grid is visible; otherwise, <c>false</c>.
 		/// </value>
-		public bool HorizontalGridVisible
-		{
+		public bool HorizontalGridVisible {
 			get { return this.horizontalGridVisible; }
 			set { this.horizontalGridVisible = value; }
 		}
@@ -77,11 +73,9 @@ namespace RateBar
 		/// <value>
 		/// The horizontal grid line count.
 		/// </value>
-		public int HorizontalGridLineCount
-		{
+		public int HorizontalGridLineCount {
 			get { return this.horizontalGridLineCount; }
-			set
-			{
+			set {
 				if (value < 0)
 					throw new ArgumentOutOfRangeException("The HorizontalGridLineCount must be at least 1");
 
@@ -95,11 +89,9 @@ namespace RateBar
 		/// <value>
 		/// The vertical grid line count.
 		/// </value>
-		public int VerticalGridLineCount
-		{
+		public int VerticalGridLineCount {
 			get { return this.verticalGridLineCount; }
-			set
-			{
+			set {
 				if (value < 0)
 					throw new ArgumentOutOfRangeException("The VerticalGridLineCount must be at least 1");
 
@@ -113,11 +105,9 @@ namespace RateBar
 		/// <value>
 		/// 	<c>true</c> if the vertical grid is visible; otherwise, <c>false</c>.
 		/// </value>
-		public bool VerticalGridVisible
-		{
+		public bool VerticalGridVisible {
 			get { return this.verticalGridVisible; }
-			set
-			{
+			set {
 				this.verticalGridVisible = value;
 			}
 		}
@@ -128,11 +118,9 @@ namespace RateBar
 		/// <value>
 		/// The brush.
 		/// </value>
-		public Brush Brush
-		{
+		public Brush Brush {
 			get { return this.brush; }
-			set
-			{
+			set {
 				this.brush = value;
 			}
 		}
@@ -143,11 +131,9 @@ namespace RateBar
 		/// <value>
 		/// The thickness.
 		/// </value>
-		public Double Thickness
-		{
+		public Double Thickness {
 			get { return this.thickness; }
-			set
-			{
+			set {
 				this.thickness = value;
 			}
 		}
@@ -157,8 +143,7 @@ namespace RateBar
 		/// <summary>
 		/// Update the Rendering of the Control when the render size changes
 		/// </summary>
-		protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
-		{
+		protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo) {
 			base.OnRenderSizeChanged(sizeInfo);
 			this.UpdateUI();
 		}
@@ -166,11 +151,10 @@ namespace RateBar
 		/// <summary>
 		/// Render the control
 		/// </summary>
-		private void UpdateUI()
-		{
+		private void UpdateUI() {
 			if (Double.IsNaN(this.Height) || Double.IsNaN(this.Width))
 				return;
-	
+
 			this.canvas.Children.Clear();
 
 			RenderHorizontalGrid();
@@ -180,8 +164,7 @@ namespace RateBar
 		/// <summary>
 		/// Render the Horizontal Grid
 		/// </summary>
-		protected virtual void RenderHorizontalGrid()
-		{
+		protected virtual void RenderHorizontalGrid() {
 			// We aren't displaying the horizontal grid
 			if (this.HorizontalGridVisible == false)
 				return;
@@ -190,10 +173,8 @@ namespace RateBar
 			Double relativeHeight = this.RenderSize.Height / (double)this.HorizontalGridLineCount;
 
 			// Render each line
-			for (int i = 0; i <= this.HorizontalGridLineCount; i++)
-			{
-				Line line = new Line()
-				{
+			for (int i = 0; i <= this.HorizontalGridLineCount; i++) {
+				Line line = new Line() {
 					X1 = 0,
 					X2 = this.Width,
 					Y1 = (double)i * relativeHeight,
@@ -208,8 +189,7 @@ namespace RateBar
 		/// <summary>
 		/// Render the Vertical Grid
 		/// </summary>
-		protected virtual void RenderVerticalGrid()
-		{
+		protected virtual void RenderVerticalGrid() {
 			// We aren't displaying the horizontal grid
 			if (this.VerticalGridVisible == false)
 				return;
@@ -218,10 +198,8 @@ namespace RateBar
 			Double relativeWidth = this.RenderSize.Width / (double)this.VerticalGridLineCount;
 
 			// Render each line
-			for (int i = 0; i <= this.VerticalGridLineCount; i++)
-			{
-				Line line = new Line()
-				{
+			for (int i = 0; i <= this.VerticalGridLineCount; i++) {
+				Line line = new Line() {
 					X1 = (double)i * relativeWidth,
 					X2 = (double)i * relativeWidth,
 					Y1 = 0,
@@ -241,11 +219,9 @@ namespace RateBar
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		/// <inheritdoc />
-		public void FirePropertyChangedEvent(object sender, PropertyChangedEventArgs e)
-		{
+		public void FirePropertyChangedEvent(object sender, PropertyChangedEventArgs e) {
 			PropertyChangedEventHandler handler = this.PropertyChanged;
-			if (handler != null)
-			{
+			if (handler != null) {
 				handler(sender, e);
 			}
 		}

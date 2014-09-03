@@ -74,6 +74,7 @@ namespace Wpf.Controls {
 				button.PreviewMouseLeftButtonDown += (sender, e) => {
 					// get the parent tabcontrol
 					TabControl tc = Helper.FindParentControl<TabControl>(this);
+					
 					if (tc == null)
 						return;
 					// remove this tabitem from the parent tabcontrol

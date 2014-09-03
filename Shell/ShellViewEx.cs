@@ -16,6 +16,8 @@ using SQLite = System.Data.SQLite;
 using F = System.Windows.Forms;
 using BExplorer.Shell.Interop;
 using System.Xml.Linq;
+using DPoint = System.Drawing.Point;
+using Input = System.Windows.Input;
 
 namespace BExplorer.Shell {
 
@@ -446,12 +448,12 @@ namespace BExplorer.Shell {
 			get { return _showCheckBoxes; }
 			set {
 				if (value) {
-					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.CheckBoxes, (int)ListViewExtendedStyles.CheckBoxes);
-					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT);
+					User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.CheckBoxes, (int)ListViewExtendedStyles.CheckBoxes);
+					User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT);
 				}
 				else {
-					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.CheckBoxes, 0);
-					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT, 0);
+					User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.CheckBoxes, 0);
+					User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT, 0);
 				}
 				_showCheckBoxes = value;
 			}
@@ -474,35 +476,35 @@ namespace BExplorer.Shell {
 				var iconsize = 16;
 				switch (value) {
 					case ShellViewStyle.ExtraLargeIcon:
-						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(256);
 						iconsize = 256;
 						RefreshItemsCountInternal();
 						break;
 
 					case ShellViewStyle.LargeIcon:
-						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(96);
 						iconsize = 96;
 						RefreshItemsCountInternal();
 						break;
 
 					case ShellViewStyle.Medium:
-						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(48);
 						iconsize = 48;
 						RefreshItemsCountInternal();
 						break;
 
 					case ShellViewStyle.SmallIcon:
-						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_SMALLICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_SMALLICON, 0);
 						ResizeIcons(16);
 						iconsize = 16;
 						RefreshItemsCountInternal();
 						break;
 
 					case ShellViewStyle.List:
-						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_LIST, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_LIST, 0);
 						ResizeIcons(16);
 						iconsize = 16;
 						RefreshItemsCountInternal();
@@ -510,7 +512,7 @@ namespace BExplorer.Shell {
 
 					case ShellViewStyle.Details:
 						this.UpdateColsInView(true);
-						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_DETAILS, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_DETAILS, 0);
 						ResizeIcons(16);
 						iconsize = 16;
 						RefreshItemsCountInternal();
@@ -520,7 +522,7 @@ namespace BExplorer.Shell {
 						break;
 
 					case ShellViewStyle.Tile:
-						User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_TILE, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_TILE, 0);
 						ResizeIcons(48);
 						iconsize = 48;
 						RefreshItemsCountInternal();
@@ -529,7 +531,7 @@ namespace BExplorer.Shell {
 						//tvi.dwMask = (int)LVTVIM.LVTVIM_COLUMNS | (int)LVTVIM.LVTVIM_TILESIZE;
 						//tvi.dwFlags = (int)LVTVIF.LVTVIF_AUTOSIZE;
 						//tvi.cLines = 4;
-						//var a = User32.SendMessage(this.LVHandle, (int)BExplorer.Shell.Interop.MSG.LVM_SETTILEVIEWINFO, 0, tvi);
+						//var a = User32.SendMessage(this.LVHandle, (int)MSG.LVM_SETTILEVIEWINFO, 0, tvi);
 						break;
 
 					case ShellViewStyle.Thumbstrip:
@@ -1292,7 +1294,7 @@ namespace BExplorer.Shell {
 			if (e == Keys.Escape) {
 				foreach (var index in this._CuttedIndexes) {
 					var item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_CUT, state = 0 };
-					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMSTATE, index, ref item);
+					User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMSTATE, index, ref item);
 				}
 				this._CuttedIndexes.Clear();
 				F.Clipboard.Clear();
@@ -1312,7 +1314,7 @@ namespace BExplorer.Shell {
 		protected override void OnDragDrop(F.DragEventArgs e) {
 			int row = -1;
 			int collumn = -1;
-			this.HitTest(PointToClient(new System.Drawing.Point(e.X, e.Y)), out row, out collumn);
+			this.HitTest(PointToClient(new DPoint(e.X, e.Y)), out row, out collumn);
 			ShellItem destination = row != -1 ? Items[row] : CurrentFolder;
 
 			//TODO: Find out if we can remove this select and just use an If Then
@@ -1387,7 +1389,7 @@ namespace BExplorer.Shell {
 
 			int row = -1;
 			int collumn = -1;
-			this.HitTest(PointToClient(new System.Drawing.Point(e.X, e.Y)), out row, out collumn);
+			this.HitTest(PointToClient(new DPoint(e.X, e.Y)), out row, out collumn);
 
 			if (_LastSelectedIndexByDragDrop != -1 && !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop)) {
 				this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
@@ -1463,7 +1465,7 @@ namespace BExplorer.Shell {
 					Items[itemIndex] = obj2;
 					ItemsHashed.Remove(theItem);
 					ItemsHashed.Add(obj2, itemIndex);
-					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, itemIndex, 0);
+					User32.SendMessage(this.LVHandle, MSG.LVM_UPDATE, itemIndex, 0);
 					if (this.IsGroupsEnabled) {
 						this.SetGroupOrder(false);
 					}
@@ -1484,7 +1486,7 @@ namespace BExplorer.Shell {
 			lviLe.iGroup = this.GetGroupIndex(index);
 			var labelBounds = new User32.RECT();
 			labelBounds.Left = mode;
-			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
+			User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
 
@@ -1593,8 +1595,7 @@ namespace BExplorer.Shell {
 							if (info.Notification == ShellNotifications.SHCNE.SHCNE_DRIVEADD) {
 								//TODO: Check Change. Moved [obj] Inside the If(...)
 								if (this.CurrentFolder.Equals(KnownFolders.Computer)) {
-									var obj = new ShellItem(info.Item1);
-									this.InsertNewItem(obj);
+									this.InsertNewItem(new ShellItem(info.Item1));
 								}
 
 								Notifications.NotificationsReceived.Remove(info);
@@ -1608,7 +1609,7 @@ namespace BExplorer.Shell {
 									ItemsHashed.Remove(obj);
 									if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 
-									User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+									User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 								}
 
 								Notifications.NotificationsReceived.Remove(info);
@@ -1648,7 +1649,7 @@ namespace BExplorer.Shell {
 					*/
 					#endregion
 
-					var nmhdr = (NMHDR)m.GetLParam(new NMHDR().GetType());
+					var nmhdr = (NMHDR)m.GetLParam(typeof(NMHDR));
 					switch ((int)nmhdr.code) {
 						case WNM.LVN_ENDLABELEDITW:
 							#region Case
@@ -1718,7 +1719,7 @@ namespace BExplorer.Shell {
 											IPropertyStore propStore = null;
 											isi2.GetPropertyStore(GetPropertyStoreOptions.FastPropertiesOnly, ref guid, out propStore);
 											PROPERTYKEY pk = currentCollumn.pkey;
-											PropVariant pvar = new PropVariant();
+											var pvar = new PropVariant();
 											if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
 												//if (propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
 												String val = String.Empty;
@@ -1883,24 +1884,19 @@ namespace BExplorer.Shell {
 								this.EndLabelEdit();
 							}
 							else {
-								var iac = new NMITEMACTIVATE();
-								iac = (NMITEMACTIVATE)m.GetLParam(iac.GetType());
-								try {
-									ShellItem selectedItem = Items[iac.iItem];
-									if (selectedItem.IsFolder) {
-										Navigate_Full(selectedItem, true);
-									}
-									else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
-										var shellLink = new ShellLink(selectedItem.ParsingName);
-										var newSho = new ShellItem(shellLink.TargetPIDL);
-										if (newSho.IsFolder)
-											Navigate_Full(newSho, true);
-									}
-									else {
-										StartProcessInCurrentDirectory(selectedItem);
-									}
+								var iac = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
+								ShellItem selectedItem = Items[iac.iItem];
+								if (selectedItem.IsFolder) {
+									Navigate_Full(selectedItem, true);
 								}
-								catch (Exception) {
+								else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
+									var shellLink = new ShellLink(selectedItem.ParsingName);
+									var newSho = new ShellItem(shellLink.TargetPIDL);
+									if (newSho.IsFolder)
+										Navigate_Full(newSho, true);
+								}
+								else {
+									StartProcessInCurrentDirectory(selectedItem);
 								}
 							}
 							break;
@@ -2027,8 +2023,7 @@ namespace BExplorer.Shell {
 						case WNM.LVN_KEYDOWN:
 							#region Case
 							var nkd = (NMLVKEYDOWN)m.GetLParam(typeof(NMLVKEYDOWN));
-							var key = (Keys)((int)nkd.wVKey);
-							ShellView_KeyDown(key);
+							ShellView_KeyDown((Keys)((int)nkd.wVKey));
 
 							if (!ItemForRealName_IsAny) {
 								switch (nkd.wVKey) {
@@ -2060,8 +2055,9 @@ namespace BExplorer.Shell {
 								this.Focus();
 							}
 							else {
-								System.Windows.Input.InputManager.Current.ProcessInput(new System.Windows.Input.KeyEventArgs(System.Windows.Input.Keyboard.PrimaryDevice,
-										System.Windows.Input.Keyboard.PrimaryDevice.ActiveSource, Environment.TickCount, System.Windows.Input.KeyInterop.KeyFromVirtualKey(nkd.wVKey)) {
+								Input.InputManager.Current.ProcessInput(
+									new Input.KeyEventArgs(Input.Keyboard.PrimaryDevice, Input.Keyboard.PrimaryDevice.ActiveSource, Environment.TickCount,
+										Input.KeyInterop.KeyFromVirtualKey(nkd.wVKey)) {
 											RoutedEvent = System.Windows.Controls.Control.KeyDownEvent
 										});
 								m.Result = (IntPtr)1;
@@ -2114,15 +2110,17 @@ namespace BExplorer.Shell {
 						case WNM.NM_RCLICK:
 							#region Case
 							var nmhdrHdn = (NMHEADER)(m.GetLParam(typeof(NMHEADER)));
+							var itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
+
 							if (nmhdrHdn.iItem != -1 && nmhdrHdn.hdr.hwndFrom == this.LVHandle) {
 								var selitems = this.SelectedItems;
-								NMITEMACTIVATE itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
-								ShellContextMenu cm = new ShellContextMenu(selitems.ToArray());
+								//var itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
+								var cm = new ShellContextMenu(selitems.ToArray());
 								cm.ShowContextMenu(this, itemActivate.ptAction, CMF.CANRENAME);
 							}
 							else if (nmhdrHdn.iItem == -1) {
-								NMITEMACTIVATE itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
-								ShellContextMenu cm = new ShellContextMenu(new ShellItem[1] { this.CurrentFolder }, SVGIO.SVGIO_BACKGROUND);
+								//var itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
+								var cm = new ShellContextMenu(new ShellItem[1] { this.CurrentFolder }, SVGIO.SVGIO_BACKGROUND);
 								cm.ShowContextMenu(this, itemActivate.ptAction, 0, true);
 							}
 							else if (ColumnHeaderRightClick != null) {
@@ -2167,7 +2165,7 @@ namespace BExplorer.Shell {
 							if (nmhdr.hwndFrom == this.LVHandle) {
 								#region Starting
 								User32.SendMessage(this.LVHandle, 296, User32.MAKELONG(1, 1), 0);
-								var nmlvcd = (User32.NMLVCUSTOMDRAW)m.GetLParam(typeof(BExplorer.Shell.Interop.User32.NMLVCUSTOMDRAW));
+								var nmlvcd = (User32.NMLVCUSTOMDRAW)m.GetLParam(typeof(User32.NMLVCUSTOMDRAW));
 								var index = (int)nmlvcd.nmcd.dwItemSpec;
 								var hdc = nmlvcd.nmcd.hdc;
 								if (nmlvcd.dwItemType == 1)
@@ -2231,27 +2229,16 @@ namespace BExplorer.Shell {
 											var lvi = new LVITEMINDEX();
 											lvi.iItem = index;
 											lvi.iGroup = this.GetGroupIndex(index);
-											//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+											//User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 
-											var iconBounds = new User32.RECT();
-
-											iconBounds.Left = 1;
-
-											User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref iconBounds);
-
-											LVITEM lvItem = new LVITEM();
-											lvItem.iItem = index;
-											lvItem.iGroupId = lvi.iGroup;
-											lvItem.iGroup = lvi.iGroup;
-											lvItem.mask = LVIF.LVIF_STATE;
-											lvItem.stateMask = LVIS.LVIS_SELECTED;
-
-											LVITEM lvItemImageMask = new LVITEM();
-											lvItemImageMask.iItem = index;
-											lvItemImageMask.iGroupId = lvi.iGroup;
-											lvItemImageMask.iGroup = lvi.iGroup;
-											lvItemImageMask.mask = LVIF.LVIF_STATE;
-											lvItemImageMask.stateMask = LVIS.LVIS_STATEIMAGEMASK;
+											var iconBounds = new User32.RECT() { Left = 1 };
+											User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref iconBounds);
+											var lvItem = new LVITEM() {
+												iItem = index, iGroupId = lvi.iGroup, iGroup = lvi.iGroup, mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED
+											};
+											var lvItemImageMask = new LVITEM() {
+												iItem = index, iGroupId = lvi.iGroup, iGroup = lvi.iGroup, mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_STATEIMAGEMASK
+											};
 
 											if (sho != null) {
 												if (sho.OverlayIconIndex == -1) {
@@ -2276,17 +2263,17 @@ namespace BExplorer.Shell {
 															sho.IsThumbnailLoaded = true;
 															sho.IsNeedRefreshing = false;
 														}
-														using (Graphics g = Graphics.FromHdc(hdc)) {
+														using (var g = Graphics.FromHdc(hdc)) {
 															var cutFlag = User32.SendMessage(this.LVHandle, Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
 															if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																thumbnail = Helpers.ChangeOpacity(thumbnail, 0.5f);
 															g.DrawImageUnscaled(thumbnail, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - thumbnail.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height));
 
 															if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
-																var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
+																var res = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
 
 																if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12)) {
-																	res = User32.SendMessage(this.LVHandle, Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
+																	res = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMW, 0, ref lvItem);
 																	var checkboxOffsetH = 14;
 																	var checkboxOffsetV = 2;
 																	if (View == ShellViewStyle.Tile || View == ShellViewStyle.SmallIcon)
@@ -2294,15 +2281,15 @@ namespace BExplorer.Shell {
 																	if (View == ShellViewStyle.Tile)
 																		checkboxOffsetV = 1;
 
-																	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
+																	CheckBoxRenderer.DrawCheckBox(g, new DPoint(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
 																		lvItem.state != 0 ? F.VisualStyles.CheckBoxState.CheckedNormal : F.VisualStyles.CheckBoxState.UncheckedNormal
 																	);
 
 																	//if (lvItem.state != 0) {
-																	//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), F.VisualStyles.CheckBoxState.CheckedNormal);
+																	//	CheckBoxRenderer.DrawCheckBox(g, new DPoint(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), F.VisualStyles.CheckBoxState.CheckedNormal);
 																	//}
 																	//else {
-																	//	CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), F.VisualStyles.CheckBoxState.UncheckedNormal);
+																	//	CheckBoxRenderer.DrawCheckBox(g, new DPoint(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV), F.VisualStyles.CheckBoxState.UncheckedNormal);
 																	//}
 																}
 															}
@@ -2317,7 +2304,7 @@ namespace BExplorer.Shell {
 															var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 															if (icon != null) {
 																sho.IsIconLoaded = true;
-																using (Graphics g = Graphics.FromHdc(hdc)) {
+																using (var g = Graphics.FromHdc(hdc)) {
 																	var cutFlag = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
 																	if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																		icon = Helpers.ChangeOpacity(icon, 0.5f);
@@ -2336,7 +2323,7 @@ namespace BExplorer.Shell {
 																			if (View == ShellViewStyle.Tile)
 																				checkboxOffsetV = 1;
 																			res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
-																			CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
+																			CheckBoxRenderer.DrawCheckBox(g, new DPoint(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
 																				lvItem.state != 0 ? F.VisualStyles.CheckBoxState.CheckedNormal : F.VisualStyles.CheckBoxState.UncheckedNormal
 																			);
 																		}
@@ -2348,7 +2335,7 @@ namespace BExplorer.Shell {
 														else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
 															if (!sho.IsIconLoaded) {
 																waitingThumbnails.Enqueue(index);
-																using (Graphics g = Graphics.FromHdc(hdc)) {
+																using (var g = Graphics.FromHdc(hdc)) {
 																	if (IconSize == 16) {
 																		g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
 																	}
@@ -2364,14 +2351,14 @@ namespace BExplorer.Shell {
 																Bitmap icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 																if (icon != null) {
 																	sho.IsIconLoaded = true;
-																	using (Graphics g = Graphics.FromHdc(hdc)) {
-																		var cutFlag = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
+																	using (var g = Graphics.FromHdc(hdc)) {
+																		var cutFlag = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
 																		if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																			icon = Helpers.ChangeOpacity(icon, 0.5f);
 																		g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
 
 																		if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
-																			var res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
+																			var res = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
 
 																			if ((nmlvcd.nmcd.uItemState & CDIS.HOT) == CDIS.HOT || (uint)lvItemImageMask.state == (2 << 12)) {
 																				var checkboxOffsetH = 14;
@@ -2383,8 +2370,8 @@ namespace BExplorer.Shell {
 																				if (View == ShellViewStyle.Tile)
 																					checkboxOffsetV = 1;
 
-																				res = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMW, 0, ref lvItem);
-																				CheckBoxRenderer.DrawCheckBox(g, new System.Drawing.Point(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
+																				res = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMW, 0, ref lvItem);
+																				CheckBoxRenderer.DrawCheckBox(g, new DPoint(itemBounds.Left + checkboxOffsetH, itemBounds.Top + checkboxOffsetV),
 																					lvItem.state != 0 ? F.VisualStyles.CheckBoxState.CheckedNormal : F.VisualStyles.CheckBoxState.UncheckedNormal
 																				);
 																			}
@@ -2402,8 +2389,8 @@ namespace BExplorer.Shell {
 														var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 														if (icon != null) {
 															sho.IsIconLoaded = true;
-															using (Graphics g = Graphics.FromHdc(hdc)) {
-																var cutFlag = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
+															using (var g = Graphics.FromHdc(hdc)) {
+																var cutFlag = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
 																if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																	icon = Helpers.ChangeOpacity(icon, 0.5f);
 																g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
@@ -2422,8 +2409,8 @@ namespace BExplorer.Shell {
 															Bitmap icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
 															if (icon != null) {
 																sho.IsIconLoaded = true;
-																using (Graphics g = Graphics.FromHdc(hdc)) {
-																	var cutFlag = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
+																using (var g = Graphics.FromHdc(hdc)) {
+																	var cutFlag = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
 																	if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																		icon = Helpers.ChangeOpacity(icon, 0.5f);
 																	g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
@@ -2438,34 +2425,34 @@ namespace BExplorer.Shell {
 												//TODO: Double Check
 												if (sho.OverlayIconIndex > 0) {
 													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
-														small.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - 16));
+														small.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - 16));
 													}
 													else if (this.IconSize > 180) {
-														jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+														jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
 													}
 													else if (this.IconSize > 64) {
-														extra.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 50));
+														extra.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 50));
 													}
 													else {
-														large.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 32));
+														large.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 32));
 													}
 												}
 
 												/*
 												if (sho.OverlayIconIndex > 0) {
 													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
-														small.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - 16));
+														small.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - 16));
 													}
 													else {
 														if (this.IconSize > 180) {
-															jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+															jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
 														}
 														else
 															if (this.IconSize > 64) {
-																extra.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 50));
+																extra.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 50));
 															}
 															else {
-																large.DrawOverlay(hdc, sho.OverlayIconIndex, new System.Drawing.Point(iconBounds.Left + 10, iconBounds.Bottom - 32));
+																large.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 32));
 															}
 													}
 												}
@@ -2474,34 +2461,34 @@ namespace BExplorer.Shell {
 												//TODO: Check Change, I think its correct
 												if (sho.IsShielded > 0) {
 													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
-														small.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
+														small.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
 													}
 													else if (this.IconSize > 180) {
-														jumbo.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - this.IconSize / 3, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+														jumbo.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - this.IconSize / 3, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
 													}
 													else if (this.IconSize > 64) {
-														extra.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 60, iconBounds.Bottom - 50));
+														extra.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - 60, iconBounds.Bottom - 50));
 													}
 													else {
-														large.DrawIcon(hdc, sho.IsShielded, new System.Drawing.Point(iconBounds.Right - 42, iconBounds.Bottom - 32));
+														large.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - 42, iconBounds.Bottom - 32));
 													}
 												}
 
 												if (View == ShellViewStyle.Tile) {
 													var lableBounds = new User32.RECT() { Left = 2 };
+													User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
 
-													User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
-
-													using (Graphics g = Graphics.FromHdc(hdc)) {
-														StringFormat fmt = new StringFormat();
+													using (var g = Graphics.FromHdc(hdc)) {
+														var fmt = new StringFormat();
 														fmt.Trimming = StringTrimming.EllipsisCharacter;
 														fmt.Alignment = StringAlignment.Center;
 														fmt.Alignment = StringAlignment.Near;
 														fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
 														fmt.LineAlignment = StringAlignment.Center;
-														RectangleF lblrectTiles = new RectangleF(lableBounds.Left, itemBounds.Top + 4, lableBounds.Right - lableBounds.Left, 20);
+
+														var lblrectTiles = new RectangleF(lableBounds.Left, itemBounds.Top + 4, lableBounds.Right - lableBounds.Left, 20);
 														Font font = System.Drawing.SystemFonts.IconTitleFont;
-														SolidBrush textBrush = new SolidBrush(textColor == null ? System.Drawing.SystemColors.ControlText : textColor.Value);
+														var textBrush = new SolidBrush(textColor == null ? System.Drawing.SystemColors.ControlText : textColor.Value);
 														g.DrawString(sho.DisplayName, font, textBrush, lblrectTiles, fmt);
 														font.Dispose();
 														textBrush.Dispose();
@@ -2561,7 +2548,7 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETIMAGELIST, 0, il.Handle);
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETIMAGELIST, 1, ils.Handle);
 			//User32.SendMessage(this.LVHandle, 4170, 0, 0);
-			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SET, 1, ils.Handle);
+			//User32.SendMessage(this.LVHandle, MSG.LVM_SET, 1, ils.Handle);
 			UxTheme.SetWindowTheme(this.LVHandle, "Explorer", 0);
 
 			this.View = ShellViewStyle.Medium;
@@ -2575,8 +2562,8 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.InfoTip, (int)ListViewExtendedStyles.InfoTip);
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.UnderlineHot, (int)ListViewExtendedStyles.UnderlineHot);
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.AutosizeColumns, (int)ListViewExtendedStyles.AutosizeColumns);
-			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.colum, (int)ListViewExtendedStyles.AutosizeColumns);
-			//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.TrackSelect, (int)ListViewExtendedStyles.TrackSelect);
+			//User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.colum, (int)ListViewExtendedStyles.AutosizeColumns);
+			//User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.TrackSelect, (int)ListViewExtendedStyles.TrackSelect);
 			//CurrentFolder = (ShellItem) KnownFolders.Desktop;
 			this.Focus();
 			User32.SetForegroundWindow(this.LVHandle);
@@ -2856,7 +2843,7 @@ namespace BExplorer.Shell {
 
 		public void SelectAll() {
 			var item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
-			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMSTATE, -1, ref item);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMSTATE, -1, ref item);
 			this.Focus();
 		}
 
@@ -2865,7 +2852,7 @@ namespace BExplorer.Shell {
 			foreach (ShellItem item in ShellObjectArray) {
 				var lvii = new LVITEMINDEX() { iItem = ItemsHashed[item], iGroup = this.GetGroupIndex(ItemsHashed[item]) };
 				var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
-				User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
+				User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
 			}
 			this.Focus();
 		}
@@ -2959,7 +2946,7 @@ namespace BExplorer.Shell {
 
 			var i = 0;
 			this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++);
-			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 			this.SetSortIcon(colIndex, Order);
 			this.SelectItems(selectedItems);
 		}
@@ -3443,7 +3430,7 @@ namespace BExplorer.Shell {
 			index = Queue.Dequeue();
 			var itemBounds = new User32.RECT();
 			var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+			User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 			var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 
 			if (UseComplexCheck)
@@ -3464,7 +3451,7 @@ namespace BExplorer.Shell {
 					var index = shieldQueue.Dequeue();
 					var itemBounds = new User32.RECT();
 					var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+					User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 					var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 					if (!r.IntersectsWith(this.ClientRectangle))
 						continue;
@@ -3497,7 +3484,7 @@ namespace BExplorer.Shell {
 					var index = overlayQueue.Dequeue();
 					var itemBounds = new User32.RECT();
 					var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+					User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 					var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 					if (!r.IntersectsWith(this.ClientRectangle))
 						continue;
@@ -3526,7 +3513,7 @@ namespace BExplorer.Shell {
 					var index = waitingThumbnails.Dequeue();
 					var itemBounds = new User32.RECT();
 					var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+					User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 					var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 					if (!r.IntersectsWith(this.ClientRectangle))
 						continue;
@@ -3620,7 +3607,7 @@ namespace BExplorer.Shell {
 					}
 				}
 				catch {
-					//User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_UPDATE, index.Item1, 0);
+					//User32.SendMessage(this.LVHandle, MSG.LVM_UPDATE, index.Item1, 0);
 				}
 			}
 		}
@@ -3851,7 +3838,7 @@ namespace BExplorer.Shell {
 		public void DeSelectAllItems() {
 			var item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = 0 };
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, -1, ref item);
-			this.Focus(); //TODO: Find out if we need this line!
+			this.Focus();
 		}
 
 		private void DeselectItemByIndex(int index) {
@@ -4111,13 +4098,13 @@ namespace BExplorer.Shell {
 		private void SetSortIcon(int columnIndex, SortOrder order) {
 			//TODO: Consider Merging this into SetSortCollumn(...)
 
-			IntPtr columnHeader = User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETHEADER, 0, 0);
+			IntPtr columnHeader = User32.SendMessage(this.LVHandle, MSG.LVM_GETHEADER, 0, 0);
 			for (int columnNumber = 0; columnNumber <= this.Collumns.Count - 1; columnNumber++) {
 				var item = new HDITEM {
 					mask = HDITEM.Mask.Format
 				};
 
-				if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_GETITEM, columnNumber, ref item) == IntPtr.Zero) {
+				if (User32.SendMessage(columnHeader, MSG.HDM_GETITEM, columnNumber, ref item) == IntPtr.Zero) {
 					throw new Win32Exception();
 				}
 
@@ -4137,7 +4124,7 @@ namespace BExplorer.Shell {
 					item.fmt &= ~HDITEM.Format.SortDown & ~HDITEM.Format.SortUp;
 				}
 
-				if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_SETITEM, columnNumber, ref item) == IntPtr.Zero) {
+				if (User32.SendMessage(columnHeader, MSG.HDM_SETITEM, columnNumber, ref item) == IntPtr.Zero) {
 					throw new Win32Exception();
 				}
 			}

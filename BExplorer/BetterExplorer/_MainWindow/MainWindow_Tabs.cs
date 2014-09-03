@@ -80,12 +80,13 @@ namespace BetterExplorer {
 			//}
 		}
 
+		/*
 		private void CloseTab(Wpf.Controls.TabItem thetab, bool allowreopening = true) {
 			if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-				if (chkIsLastTabCloseApp.IsChecked.Value)
-					Close();
-				else
-					NavigationController(new ShellItem(tcMain.StartUpLocation));
+				//if (chkIsLastTabCloseApp.IsChecked.Value)
+				//	Close();
+				//else
+				NavigationController(new ShellItem(tcMain.StartUpLocation));
 			}
 			else {
 				tcMain.RemoveTabItem(thetab, allowreopening);
@@ -93,7 +94,7 @@ namespace BetterExplorer {
 				SelectTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
 			}
 		}
-
+		*/
 		private void ConstructMoveToCopyToMenu() {
 			btnMoveto.Items.Clear();
 			btnCopyto.Items.Clear();
@@ -124,7 +125,7 @@ namespace BetterExplorer {
 
 			MenuItem mimDownloads = new MenuItem(), micDownloads = new MenuItem();
 			try {
-				ShellItem sodd = (ShellItem)KnownFolders.Downloads;
+				var sodd = (ShellItem)KnownFolders.Downloads;
 				sodd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 				sodd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 
@@ -153,25 +154,14 @@ namespace BetterExplorer {
 			btnCopyto.Items.Add(micDesktop);
 			btnCopyto.Items.Add(new Separator());
 
-			foreach (var item in tcMain.Items.OfType<Wpf.Controls.TabItem>().ToList()) {
+			foreach (var item in tcMain.Items.OfType<Wpf.Controls.TabItem>()) {
 				bool IsAdditem = true;
 
 				foreach (object mii in btnCopyto.Items.OfType<MenuItem>().Where(mii => (mii as MenuItem).Tag != null)) {
 					if (((mii as MenuItem).Tag as ShellItem) == item.ShellObject) {
 						IsAdditem = false;
 						break;
-					}
-					/*
-					foreach (object mii in btnCopyto.Items) {
-						if (mii is MenuItem) {
-							if ((mii as MenuItem).Tag != null) {
-								if (((mii as MenuItem).Tag as ShellItem) == item.ShellObject) {
-									IsAdditem = false;
-									break;
-								}
-							}
-						}
-					 */
+					}			
 				}
 
 				if (IsAdditem && item.ShellObject.IsFileSystem) {
@@ -187,7 +177,9 @@ namespace BetterExplorer {
 					}
 					catch {
 						//Do nothing if ShellItem is not available anymore and close the problematic item
-						CloseTab(item);
+						//CloseTab(item);
+						tcMain.RemoveTabItem(item);
+
 					}
 				}
 			}
