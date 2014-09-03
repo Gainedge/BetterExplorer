@@ -129,7 +129,6 @@
     <Compile Include="ShellTreeViewEx.Designer.cs">
       <DependentUpon>ShellTreeViewEx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interop\IAsyncOperation.cs" />
     <Compile Include="Interop\EnumUnknownClass.cs" />
     <Compile Include="Interop\ShellItemArray.cs" />
     <Compile Include="Interop\PropertySystemNativeMethods.cs" />
