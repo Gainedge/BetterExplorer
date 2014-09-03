@@ -206,8 +206,6 @@ namespace BExplorer.Shell.Interop {
 		PtInvoke = 0x20000000
 	}
 
-
-
 	[Flags]
 	public enum TPM {
 		TPM_LEFTBUTTON = 0x0000,
@@ -287,8 +285,6 @@ namespace BExplorer.Shell.Interop {
 		OTHERSIDEHOT = 0x0800,
 		DROPHILITED = 0x1000,
 	}
-
-
 
 	public class User32 {
 		private const string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
@@ -419,6 +415,7 @@ namespace BExplorer.Shell.Interop {
 		}
 		*/
 
+		/*
 		public enum OsVersionInfo {
 			Unknown,
 			Windows95,
@@ -434,6 +431,7 @@ namespace BExplorer.Shell.Interop {
 			Windows2008Server,
 			Windows8
 		}
+		*/
 
 		/*
 		public int getOSArchitecture() {
@@ -442,6 +440,7 @@ namespace BExplorer.Shell.Interop {
 		}
 		*/
 
+		/*
 		/// <summary>
 		/// Gets the operating system version
 		/// </summary>
@@ -504,9 +503,13 @@ namespace BExplorer.Shell.Interop {
 			return operatingSystem;
 
 		}
+		*/
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetSubMenu(IntPtr hMenu, int nPos);
+		*/
+
 		/// <summary>The GetForegroundWindow function returns a handle to the foreground window.</summary>
 		[DllImport("user32.dll")]
 		public static extern IntPtr GetForegroundWindow();
@@ -525,122 +528,122 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("user32", CharSet = CharSet.Unicode, SetLastError = true, ExactSpelling = true)]
 		public static extern IntPtr SetFocus(IntPtr hWnd);
 
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
-
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr SetActiveWindow(IntPtr hWnd);
+		*/
 
 
 		[DllImport("user32.dll")]
-		public static extern bool DeleteMenu(IntPtr hMenu, int uPosition,
-				MF uFlags);
+		public static extern bool DeleteMenu(IntPtr hMenu, int uPosition, MF uFlags);
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern bool DestroyWindow(IntPtr hWnd);
 
 		[DllImport("user32.dll")]
 		public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
-
+		
 		[DllImport("User32.dll")]
 		public static extern HResult SendMessage(IntPtr hWnd, int msg, int wParam, LVTILEVIEWINFO lParam);
+		*/
 
 		[DllImport("User32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref LVGROUP2 lParam);
 
+		/*
 		[DllImport("User32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, LVFINDINFO lParam);
+		*/
 
 		[DllImport("User32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref LVHITTESTINFO lParam);
 
+		/*
 		[DllImport("user32.dll")]
-		public static extern IntPtr EnumChildWindows(IntPtr parentHandle,
-				Win32Callback callback, IntPtr lParam);
+		public static extern IntPtr EnumChildWindows(IntPtr parentHandle, Win32Callback callback, IntPtr lParam);
+		*/
 
 		[DllImport("user32.dll")]
-		public static extern bool GetMenuInfo(IntPtr hmenu,
-				ref MENUINFO lpcmi);
+		public static extern bool GetMenuInfo(IntPtr hmenu, ref MENUINFO lpcmi);
 
 		[DllImport("user32.dll")]
 		public static extern int GetMenuItemCount(IntPtr hMenu);
 
 		[DllImport("user32.dll")]
-		public static extern bool GetMenuItemInfo(IntPtr hMenu, int uItem,
-				bool fByPosition, ref MENUITEMINFO lpmii);
+		public static extern bool GetMenuItemInfo(IntPtr hMenu, int uItem, bool fByPosition, ref MENUITEMINFO lpmii);
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern uint RegisterClipboardFormat(string lpszFormat);
-
+		*/
 
 		[DllImport("user32")]
 		public static extern int DestroyIcon(IntPtr hIcon);
 
 		[DllImport("user32.dll")]
-		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,
-				int wParam, int lParam);
+		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg, int wParam, int lParam);
 
 		[DllImport("user32.dll")]
-		public extern static int SendMessage(IntPtr hwnd, uint msg, int count,
-		[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I4), In, Out]int[] orderArray);
+		public extern static int SendMessage(IntPtr hwnd, uint msg, int count, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I4), In, Out]int[] orderArray);
+
+		/*
+		[DllImport("user32.dll")]
+		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg, IntPtr wParam, IntPtr lParam);
 
 		[DllImport("user32.dll")]
-		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,
-				IntPtr wParam, IntPtr lParam);
+		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg, ref LVITEMINDEX wParam, int lParam);
+		*/
 
 		[DllImport("user32.dll")]
-		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,
-				ref LVITEMINDEX wParam, int lParam);
+		public static extern int SendMessage(IntPtr hWnd, MSG Msg, int wParam, ref LVCOLUMN lParam);
 
 		[DllImport("user32.dll")]
-		public static extern int SendMessage(IntPtr hWnd, MSG Msg,
-				int wParam, ref LVCOLUMN lParam);
+		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg, int wParam, ref HDITEM lParam);
 
 		[DllImport("user32.dll")]
-		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg,
-				int wParam, ref HDITEM lParam);
+		public static extern int SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+
+		/*
+		[DllImport("user32.dll")]
+		public static extern int SendMessage(IntPtr hWnd, MSG Msg, int wParam, ref RECT lparam);
+		*/
 
 		[DllImport("user32.dll")]
-		public static extern int SendMessage(IntPtr hWnd, int Msg,
-				IntPtr wParam, IntPtr lParam);
+		public static extern int SendMessage(IntPtr hWnd, MSG Msg, ref LVITEMINDEX wParam, ref RECT lparam);
 
 		[DllImport("user32.dll")]
-		public static extern int SendMessage(IntPtr hWnd, MSG Msg,
-				int wParam, ref RECT lparam);
+		public static extern int SendMessage(IntPtr hWnd, MSG Msg, int wParam, ref Shell.LVITEM lParam);
 
 		[DllImport("user32.dll")]
-		public static extern int SendMessage(IntPtr hWnd, MSG Msg,
-				ref LVITEMINDEX wParam, ref RECT lparam);
+		public static extern int SendMessage(IntPtr hWnd, MSG Msg, ref LVITEMINDEX wparam, ref Shell.LVITEM lParam);
 
 		[DllImport("user32.dll")]
-		public static extern int SendMessage(IntPtr hWnd, MSG Msg,
-				int wParam, ref Shell.LVITEM lParam);
+		public static extern int SendMessage(IntPtr hWnd, MSG Msg, int wParam, IntPtr lParam);
 
 		[DllImport("user32.dll")]
-		public static extern int SendMessage(IntPtr hWnd, MSG Msg,
-				ref LVITEMINDEX wparam, ref Shell.LVITEM lParam);
+		public static extern int SendMessage(IntPtr hWnd, MSG Msg, int wParam, ref TVITEMW lParam);
 
-		[DllImport("user32.dll")]
-		public static extern int SendMessage(IntPtr hWnd, MSG Msg,
-				int wParam, IntPtr lParam);
-
-		[DllImport("user32.dll")]
-		public static extern int SendMessage(IntPtr hWnd, MSG Msg,
-				int wParam, ref TVITEMW lParam);
-
+		/*
 		[DllImport("User32.dll", CharSet = CharSet.Auto)]
 		public static extern UInt32 PrivateExtractIcons(String lpszFile, int nIconIndex, int cxIcon, int cyIcon, IntPtr[] phicon, IntPtr[] piconid, UInt32 nIcons, UInt32 flags);
+		*/
 
 		[DllImport("user32.dll")]
-		public static extern bool SetMenuInfo(IntPtr hmenu,
-				ref MENUINFO lpcmi);
+		public static extern bool SetMenuInfo(IntPtr hmenu, ref MENUINFO lpcmi);
 
+		/*
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
+		*/
 
+		/*
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int GetWindowLong(IntPtr hwnd, int index);
+		*/
 
 		[Flags()]
 		public enum SetWindowPosFlags : uint {
@@ -703,9 +706,7 @@ namespace BExplorer.Shell.Interop {
 		}
 
 		[DllImport("user32.dll")]
-		public static extern bool SetWindowPos(IntPtr hWnd,
-				IntPtr hWndInsertAfter, int X, int Y, int cx, int cy,
-				SetWindowPosFlags uFlags);
+		public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, SetWindowPosFlags uFlags);
 
 		/// <summary>
 		/// The MoveWindow function changes the position and dimensions of the specified window. For a top-level window, the position and dimensions are relative to the upper-left corner of the screen. For a child window, they are relative to the upper-left corner of the parent window's client area.
@@ -727,17 +728,23 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("user32.dll")]
 		public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);
+		*/
 
 		[DllImport("user32.dll")]
-		public static extern int TrackPopupMenuEx(IntPtr hmenu,
-				TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
+		public static extern int TrackPopupMenuEx(IntPtr hmenu, TPM fuFlags, int x, int y, IntPtr hwnd, IntPtr lptpm);
 
+		/*
 		public delegate bool Win32Callback(IntPtr hwnd, IntPtr lParam);
+		*/
 
+		/*
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
+		*/
+
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
@@ -757,6 +764,7 @@ namespace BExplorer.Shell.Interop {
 			FreeLibrary(libraryHandle);
 			return Text;
 		}
+
 		[DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
 		public static extern IntPtr LoadLibrary(string lpFileName);
 
@@ -819,11 +827,13 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
+		/*
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, LVSETINFOTIP lParam);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, LVNI lParam);
+		*/
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern int SendMessage(IntPtr hWnd, int Msg, ref LVITEMINDEX wParam, LVNI lParam);
@@ -831,9 +841,11 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
 		public static extern LVIS SendMessage(IntPtr hWnd, MSG Msg, int wParam, LVIS lParam);
 
+		/*
 		public const int WM_CHANGEUISTATE = 296;
 		public const int UIS_SET = 1;
 		public const int UISF_HIDEFOCUS = 0x1;
+		*/
 
 		public static short LOWORD(int dw) {
 			short loWord = 0;
@@ -856,8 +868,10 @@ namespace BExplorer.Shell.Interop {
 			return makeLong;
 		}
 
+		/*
 		[DllImport("user32.dll")]
 		public static extern bool UpdateWindow(IntPtr hWnd);
+		*/
 
 		[Flags]
 		public enum WindowStylesEx : uint {

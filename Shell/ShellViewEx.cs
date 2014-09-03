@@ -2669,13 +2669,8 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REDRAWITEMS, index, index);
 		}
 
-		public void RenameItem(int index) {
-			this.Focus();
-			//this.BeginLabelEdit(index);
-			////this._IsInRenameMode = true;
-
-
-			//this._IsInRenameMode = true;
+		private void RenameItem(int index) {
+			//this.Focus();
 			this.IsFocusAllowed = false;
 			this.ItemForRename = index;
 			if (this.BeginItemLabelEdit != null) {
@@ -3911,7 +3906,7 @@ namespace BExplorer.Shell {
 						var mainWin = System.Windows.Application.Current.MainWindow;
 						if (mainWin.IsActive || !isActiveCheck) {
 							if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)) {
-								var res = User32.SetFocus(this.LVHandle);
+								User32.SetFocus(this.LVHandle); //var res = 
 								//this._IsInRenameMode = false;
 							}
 						}
@@ -3925,10 +3920,10 @@ namespace BExplorer.Shell {
 		}
 
 		public void FormatDrive(IntPtr handle) {
-			string DriveLetter = "";
-			if (SelectedItems.Count > 0)
-				DriveLetter = Directory.GetLogicalDrives().Contains(SelectedItems[0].ParsingName) ? SelectedItems[0].ParsingName : this.CurrentFolder.ParsingName;
-			else
+			string DriveLetter =
+				SelectedItems.Count > 0 ?
+				DriveLetter = Directory.GetLogicalDrives().Contains(SelectedItems[0].ParsingName) ? SelectedItems[0].ParsingName : this.CurrentFolder.ParsingName
+				:
 				DriveLetter = this.CurrentFolder.ParsingName;
 
 			Shell32.FormatDrive(handle, DriveLetter);
@@ -3946,10 +3941,9 @@ namespace BExplorer.Shell {
 			for (int n = 0; n < itemCount; ++n) {
 				var state = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMSTATE, n, LVIS.LVIS_SELECTED);
 
-				LVITEM item_new = new LVITEM();
-				item_new.mask = LVIF.LVIF_STATE;
-				item_new.stateMask = LVIS.LVIS_SELECTED;
-				item_new.state = (state & LVIS.LVIS_SELECTED) == LVIS.LVIS_SELECTED ? 0 : LVIS.LVIS_SELECTED;
+				var item_new = new LVITEM() {
+					mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = (state & LVIS.LVIS_SELECTED) == LVIS.LVIS_SELECTED ? 0 : LVIS.LVIS_SELECTED
+				};
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, n, ref item_new);
 			}
 			this.Focus();

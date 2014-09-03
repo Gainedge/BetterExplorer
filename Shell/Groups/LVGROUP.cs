@@ -148,6 +148,7 @@ namespace BExplorer.Shell
 		LVGF_SUBSETITEMS = 0x10000
 	}
 
+	/*
 	/// <summary>
 	/// This mask indicates which members of a GROUPMETRICS structure are valid
 	/// </summary>
@@ -174,7 +175,9 @@ namespace BExplorer.Shell
 		/// </summary>
 		LVGMF_TEXTCOLOR = 4
 	}
+	*/
 
+	/*
 	[StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
 	public struct LVGROUP
 	{
@@ -191,6 +194,7 @@ namespace BExplorer.Shell
 		public uint state;
 		public uint uAlign;
 	}
+	*/
 
 	[StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
 	public struct LVGROUP2

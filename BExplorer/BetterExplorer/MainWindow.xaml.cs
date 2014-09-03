@@ -4253,8 +4253,9 @@ namespace BetterExplorer {
 				sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
 			}
 			if (e.UpdateType == ItemUpdateType.Created) { // && (IsRenameFromCreate /*|| this.ShellListView.IsRenameNeeded*/)) {
-				this.ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
-				ShellListView.RenameItem(e.NewItemIndex);
+				ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
+				ShellListView.RenameSelectedItem();
+				//ShellListView.RenameItem(e.NewItemIndex);
 				//this.ShellListView.IsRenameNeeded = false;
 			}
 

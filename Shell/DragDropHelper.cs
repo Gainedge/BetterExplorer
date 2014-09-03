@@ -381,12 +381,14 @@ namespace BExplorer.Shell {
 		public int X, Y;
 	}
 
+	/*
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Win32Size {
-		public int cx;
-		public int cy;
+		public int cx, cy;
 	}
+	*/
 
+	/*
 	[StructLayout(LayoutKind.Sequential)]
 	public struct ShDragImage {
 		public Win32Size sizeDragImage;
@@ -394,11 +396,13 @@ namespace BExplorer.Shell {
 		public IntPtr hbmpDragImage;
 		public int crColorKey;
 	}
+	*/
 
 	#endregion // Native structures
 
 	#region IDragSourceHelper
 
+	/*
 	[ComVisible(true)]
 	[ComImport]
 	[Guid("DE5BF786-477A-11D2-839D-00C04FD918D0")]
@@ -413,6 +417,7 @@ namespace BExplorer.Shell {
 				[In] ref Win32Point pt,
 				[In, MarshalAs(UnmanagedType.Interface)] IDataObject dataObject);
 	}
+*/
 
 	#endregion // IDragSourceHelper
 
