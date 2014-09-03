@@ -3473,6 +3473,7 @@ namespace BExplorer.Shell {
 		public void _ShieldLoadingThreadRun() {
 			while (true) {
 				resetEvent.WaitOne();
+				Thread.Sleep(1);
 				try {
 					var index = shieldQueue.Dequeue();
 					var itemBounds = new User32.RECT();
@@ -3504,6 +3505,7 @@ namespace BExplorer.Shell {
 		public void _OverlaysLoadingThreadRun() {
 			while (true) {
 				try {
+					Thread.Sleep(2);
 					var index = overlayQueue.Dequeue();
 					var itemBounds = new User32.RECT();
 					LVITEMINDEX lvi = new LVITEMINDEX();

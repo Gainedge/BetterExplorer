@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using BExplorer.Shell;
 using System.Linq;
+using System;
 
 namespace BetterExplorerControls {
 
@@ -62,8 +63,8 @@ namespace BetterExplorerControls {
 						// 3 Retrieves the date and time that the item was last modified. 
 						// 4 Retrieves the attributes of the item. 
 						// -1 Retrieves the info tip information for the item. 
-
-						string det = dir.GetDetailsOf(item, i);
+						string colName = dir.GetDetailsOf(String.Empty, i);
+						string value = dir.GetDetailsOf(item, i);
 						// Create a helper Object for holding the current Information
 						// an put it into a ArrayList
 					}
