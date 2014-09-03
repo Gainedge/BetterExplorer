@@ -6,28 +6,15 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media;
 
-namespace BExplorer.Shell
-{
-	static public class Theme
-	{
-		public static bool IsWin7
-		{
-			get { return Name == "Windows 7"; }
-		}
+namespace BExplorer.Shell {
+	static public class Theme {
+		private static string Name { get; set; }
+		private static bool IsWin7 { get { return Name == "Windows 7"; } }
+		//public static ResizeMode ResizeMode { get { return IsWin7 ? ResizeMode.NoResize : ResizeMode.CanMinimize; } }
+		public static Brush Background { get { return IsWin7 ? Brushes.WhiteSmoke : Brushes.White; } }
 
-		public static string Name { get; set; }
-		public static ResizeMode ResizeMode
-		{
-			get { return IsWin7 ? ResizeMode.NoResize : ResizeMode.CanMinimize; }
-		}
-		public static Brush Background
-		{
-			get { return IsWin7 ? Brushes.WhiteSmoke : Brushes.White; }
-		}
-
-		static Theme()
-		{
-			Name =  (Environment.OSVersion.Version.ToString().StartsWith("6.1") ? "Windows 7" : "Windows 8");
+		static Theme() {
+			Name = (Environment.OSVersion.Version.ToString().StartsWith("6.1") ? "Windows 7" : "Windows 8");
 		}
 	}
 }

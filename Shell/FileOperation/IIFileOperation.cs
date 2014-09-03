@@ -33,19 +33,17 @@ namespace BExplorer.Shell {
 		public IIFileOperation(FileOperationProgressSink callbackSink, IntPtr owner, Boolean isRecycle) {
 			_callbackSink = callbackSink;
 			_fileOperation = (IFileOperation)Activator.CreateInstance(_fileOperationType);
-			if (isRecycle)
-				_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_ALLOWUNDO);
-			else
-				_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR);
+
+			var Flags = isRecycle ? FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_ALLOWUNDO : FileOperationFlags.FOF_NOCONFIRMMKDIR;
+			_fileOperation.SetOperationFlags(Flags);
+
 			if (_callbackSink != null) _sinkCookie = _fileOperation.Advise(_callbackSink);
 			if (owner != IntPtr.Zero) _fileOperation.SetOwnerWindow((uint)owner);
 		}
 
 		public void CopyItem(IShellItem source, ShellItem destination) {
 			ThrowIfDisposed();
-			var item = new ShellItem(source);
-			if (item.Parent.Equals(destination))
-			{
+			if (new ShellItem(source).Parent.Equals(destination)) {
 				_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_RENAMEONCOLLISION);
 			}
 			_fileOperation.CopyItem(source, destination.ComInterface, null, null);

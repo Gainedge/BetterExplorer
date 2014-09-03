@@ -83,6 +83,7 @@ namespace BExplorer.Shell {
 				blockFO = null;
 			}
 		}
+
 		private void AsyncReadFile() {
 
 			var md5 = MD5.Create();
