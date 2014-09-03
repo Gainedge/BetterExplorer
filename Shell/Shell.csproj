@@ -173,7 +173,6 @@
     <Compile Include="LinqProgress.cs" />
     <Compile Include="LVItemColor.cs" />
     <Compile Include="Interop\Enums.cs" />
-    <Compile Include="Interop\IFolderView.cs" />
     <Compile Include="Interop\NativePoint.cs" />
     <Compile Include="Interop\Constants.cs" />
     <Compile Include="ShellViewEx.cs">

@@ -537,14 +537,14 @@ namespace BExplorer.Shell.Interop {
 	}
 	*/
 
+	/*
 	[ComImport,
 	ClassInterface(ClassInterfaceType.None),
 	TypeLibType(TypeLibTypeFlags.FCanCreate),
 	Guid(InterfaceGuids.ConditionFactory)]
 	internal class ConditionFactoryCoClass {
 	}
-
-
+	*/
 
 	[ComImport,
 	Guid(InterfaceGuids.ISearchFolderItemFactory),

@@ -3294,8 +3294,8 @@ namespace BetterExplorer {
 		public void DoSearch() {
 			try {
 				if (edtSearchBox.FullSearchTerms != "") {
-					SearchCondition searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
-					ShellSearchFolder searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
+					var searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
+					var searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
 					NavigationController(searchFolder);
 				}
 			}

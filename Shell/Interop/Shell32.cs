@@ -382,7 +382,7 @@ namespace BExplorer.Shell.Interop {
 		public IntPtr cStr;
 	}
 
-	public class Shell32 {
+	public static class Shell32 {
 
 		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]

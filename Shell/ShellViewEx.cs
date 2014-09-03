@@ -2738,7 +2738,7 @@ namespace BExplorer.Shell {
 				var fo = new IIFileOperation(handle);
 				foreach (var item in Items) {
 					if (Copy)
-						fo.CopyItem(item, destination); //Might require String.Empty
+						fo.CopyItem(item, destination);
 					else
 						fo.MoveItem(item, destination.ComInterface, null);
 				}
@@ -2834,8 +2834,7 @@ namespace BExplorer.Shell {
 					obj.IsIconLoaded = false;
 				}
 				var il = new F.ImageList() { ImageSize = new System.Drawing.Size(value, value) };
-				var ils = new F.ImageList();
-				ils.ImageSize = new System.Drawing.Size(16, 16);
+				var ils = new F.ImageList() { ImageSize = new System.Drawing.Size(16, 16) };
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETIMAGELIST, 0, il.Handle);
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETIMAGELIST, 1, ils.Handle);
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETICONSPACING, 0, (IntPtr)User32.MAKELONG(value + 28, value + 42));
@@ -3114,9 +3113,8 @@ namespace BExplorer.Shell {
 		/// <param name="isInSameTab"></param>
 		/// <param name="refresh">Should the List be Refreshed?</param>
 		private void Navigate(ShellItem destination, Boolean isInSameTab = false, bool refresh = false) {
-			if (!refresh) {
-				if (Navigating != null)
-					Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
+			if (!refresh && Navigating != null) {
+				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 			}
 			resetEvent.Reset();
 			//Unregister notifications and clear all collections
@@ -3245,11 +3243,8 @@ namespace BExplorer.Shell {
 
 			var NavArgs = new NavigatedEventArgs(destination, this.CurrentFolder, isInSameTab);
 			this.CurrentFolder = destination;
-			if (!refresh) {
-				//this.OnNavigated(NavArgs);
-				if (Navigated != null) {
-					Navigated(this, NavArgs);
-				}
+			if (!refresh && Navigated != null) {
+				Navigated(this, NavArgs);
 			}
 			//AutosizeAllColumns(this.View != ShellViewStyle.Details ? -2 : -1);
 
@@ -3369,7 +3364,7 @@ namespace BExplorer.Shell {
 				testgr4.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr4);
 
-				ListViewGroupEx testgr5 = new ListViewGroupEx();
+				var testgr5 = new ListViewGroupEx();
 				testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 16 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 128 * 1024 * 1024).ToArray();
 				testgr5.Header = String.Format("Huge ({0})", testgr5.Items.Count());
 				testgr5.Index = reversed ? j-- : j++;
@@ -3443,20 +3438,37 @@ namespace BExplorer.Shell {
 			return lvi.iItem;
 		}
 
+
+		private bool ThreadRun_Helper(SyncQueue<int> Queue, bool UseComplexCheck, ref int index) {
+			index = Queue.Dequeue();
+			var itemBounds = new User32.RECT();
+			var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
+			User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+			var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+
+			if (UseComplexCheck)
+				return index >= Items.Count || !r.IntersectsWith(this.ClientRectangle);
+			else
+				return r.IntersectsWith(this.ClientRectangle);
+		}
+
 		public void _ShieldLoadingThreadRun() {
 			while (true) {
 				resetEvent.WaitOne();
 				Thread.Sleep(1);
 				try {
+					int index = 0;
+					if (!ThreadRun_Helper(shieldQueue, false, ref index)) continue;
+
+					/*
 					var index = shieldQueue.Dequeue();
 					var itemBounds = new User32.RECT();
-					LVITEMINDEX lvi = new LVITEMINDEX();
-					lvi.iItem = index;
-					lvi.iGroup = this.GetGroupIndex(index);
+					var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
 					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-					Rectangle r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+					var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 					if (!r.IntersectsWith(this.ClientRectangle))
 						continue;
+					*/
 					var shoTemp = Items[index];
 					ShellItem sho = !(shoTemp.IsNetDrive || shoTemp.IsNetworkPath) && shoTemp.ParsingName.StartsWith("::") ? shoTemp : new ShellItem(shoTemp.ParsingName);
 
@@ -3477,17 +3489,19 @@ namespace BExplorer.Shell {
 
 		public void _OverlaysLoadingThreadRun() {
 			while (true) {
+				Thread.Sleep(2);
 				try {
-					Thread.Sleep(2);
+					int index = 0;
+					if (!ThreadRun_Helper(overlayQueue, false, ref index)) continue;
+					/*
 					var index = overlayQueue.Dequeue();
 					var itemBounds = new User32.RECT();
-					LVITEMINDEX lvi = new LVITEMINDEX();
-					lvi.iItem = index;
-					lvi.iGroup = this.GetGroupIndex(index);
+					var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
 					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-					Rectangle r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+					var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 					if (!r.IntersectsWith(this.ClientRectangle))
 						continue;
+					*/
 					var shoTemp = Items[index];
 					ShellItem sho = !(shoTemp.IsNetDrive || shoTemp.IsNetworkPath) && shoTemp.ParsingName.StartsWith("::") ? shoTemp : new ShellItem(shoTemp.ParsingName);
 
@@ -3505,22 +3519,18 @@ namespace BExplorer.Shell {
 
 		public void _IconsLoadingThreadRun() {
 			while (true) {
-				//resetEvent.WaitOne();
-				//Thread.Sleep(1);
-				//Application.DoEvents();
-
 				try {
+					int index = 0;
+					if (!ThreadRun_Helper(waitingThumbnails, false, ref index)) continue;
+					/*
 					var index = waitingThumbnails.Dequeue();
-					//if (User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_ISITEMVISIBLE, index, 0) == IntPtr.Zero)
-					//	continue;
 					var itemBounds = new User32.RECT();
-					LVITEMINDEX lvi = new LVITEMINDEX();
-					lvi.iItem = index;
-					lvi.iGroup = this.GetGroupIndex(index);
+					var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
 					User32.SendMessage(this.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-					Rectangle r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+					var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 					if (!r.IntersectsWith(this.ClientRectangle))
 						continue;
+					*/
 					resetEvent.WaitOne();
 					var sho = Items[index];
 					ShellItem temp = !(sho.IsNetDrive || sho.IsNetworkPath) && sho.ParsingName.StartsWith("::") ? sho : new ShellItem(sho.ParsingName);
@@ -3528,23 +3538,9 @@ namespace BExplorer.Shell {
 					var icon = temp.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 					if (icon != null) {
 						sho.IsIconLoaded = true;
-						//sho.IsNeedRefreshing = false;
-						//if (!cache.ContainsKey(index)) {
-						//	cache.TryAdd(index, new Bitmap(icon));
-						//	this.RedrawItem(index);
-						//	icon.Dispose();
-						//	icon = null;
-						//}
-						//else {
-						//	cache[index] = new Bitmap(icon);
-						//	this.RedrawItem(index);
-						//	icon.Dispose();
-						//	icon = null;
-						//}
 						this.RedrawItem(index);
 					}
 
-					//Application.DoEvents();
 				}
 				catch {
 				}
@@ -3555,16 +3551,18 @@ namespace BExplorer.Shell {
 			while (true) {
 				resetEvent.WaitOne();
 				try {
+					int index = 0;
+					if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
+					/*
 					var index = ThumbnailsForCacheLoad.Dequeue();
 					var itemBounds = new User32.RECT();
-					LVITEMINDEX lvi = new LVITEMINDEX();
-					lvi.iItem = index;
-					lvi.iGroup = this.GetGroupIndex(index);
+					var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
 					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-					Rectangle r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+					var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 					if (index >= Items.Count || !r.IntersectsWith(this.ClientRectangle)) {
 						continue;
 					}
+					*/
 					var sho = Items[index];
 					var thumb = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
 					sho.IsThumbnailLoaded = true;
@@ -3595,22 +3593,24 @@ namespace BExplorer.Shell {
 						//Application.DoEvents();
 
 						var currentItem = Items[index.Item1];
-						ShellItem temp = null;
+						ShellItem temp = currentItem.ParsingName.StartsWith("::") && currentItem.IsNetDrive ? currentItem : new ShellItem(currentItem.ParsingName);
+
+						/*
 						if (!(currentItem.IsNetDrive || currentItem.IsNetworkPath) && !currentItem.ParsingName.StartsWith("::")) {
 							temp = new ShellItem(currentItem.ParsingName);
 						}
 						else {
 							temp = currentItem;
 						}
+						*/
 						int hash = currentItem.GetHashCode();
-						IShellItem2 isi2 = (IShellItem2)temp.ComInterface;
+						var isi2 = (IShellItem2)temp.ComInterface;
 						var pvar = new PropVariant();
 						var pk = index.Item3;
-						Guid guid = new Guid(InterfaceGuids.IPropertyStore);
+						var guid = new Guid(InterfaceGuids.IPropertyStore);
 						IPropertyStore propStore = null;
 						isi2.GetPropertyStore(GetPropertyStoreOptions.Default, ref guid, out propStore);
 						if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-							//if (SubItemValues.ToArray().Count(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid) == 0) {
 							if (!SubItemValues.Any(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid)) {
 								SubItemValues.Add(new Tuple<int, PROPERTYKEY, object>(hash, pk, pvar.Value));
 								this.RedrawItem(index.Item1);
@@ -3782,13 +3782,9 @@ namespace BExplorer.Shell {
 
 		public void SetFolderIcon(string wszPath, string wszExpandedIconPath, int iIcon) {
 			HResult hr;
-
-			Shell32.LPSHFOLDERCUSTOMSETTINGS fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS();
+			var fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS() { iIconIndex = iIcon, cchIconFile = 0, dwMask = Shell32.FCSM_ICONFILE };
 			fcs.dwSize = (uint)Marshal.SizeOf(fcs);
-			fcs.dwMask = Shell32.FCSM_ICONFILE;
 			fcs.pszIconFile = wszExpandedIconPath.Replace(@"\\", @"\");
-			fcs.cchIconFile = 0;
-			fcs.iIconIndex = iIcon;
 
 			// Set the folder icon
 			hr = Shell32.SHGetSetFolderCustomSettings(ref fcs, wszPath.Replace(@"\\", @"\"), Shell32.FCS_FORCEWRITE);
@@ -3804,9 +3800,6 @@ namespace BExplorer.Shell {
 				Shell32.HChangeNotifyFlags.SHCNF_DWORD | Shell32.HChangeNotifyFlags.SHCNF_FLUSHNOWAIT, IntPtr.Zero, (IntPtr)sfi.iIcon);
 			}
 
-
-
-
 			Items[this.GetFirstSelectedItemIndex()] = new ShellItem(wszPath);
 			this.RefreshItem(this.SelectedIndexes[0]);
 
@@ -3821,10 +3814,9 @@ namespace BExplorer.Shell {
 
 		public HResult ClearFolderIcon(string wszPath) {
 			HResult hr;
-
-			Shell32.LPSHFOLDERCUSTOMSETTINGS fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS();
+			var fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS() { dwMask = Shell32.FCSM_ICONFILE };
 			fcs.dwSize = (uint)Marshal.SizeOf(fcs);
-			fcs.dwMask = Shell32.FCSM_ICONFILE;
+
 			hr = Shell32.SHGetSetFolderCustomSettings(ref fcs, wszPath, Shell32.FCS_FORCEWRITE);
 			if (hr == HResult.S_OK) {
 				// Update the icon cache
@@ -3843,34 +3835,27 @@ namespace BExplorer.Shell {
 
 		public void DefragDrive() {
 			string DriveLetter = "";
-			if (SelectedItems.Count > 0) {
-				if (Directory.GetLogicalDrives().Contains(SelectedItems[0].ParsingName)) {
+			if (SelectedItems.Any()) {
+				if (Directory.GetLogicalDrives().Contains(SelectedItems[0].ParsingName))
 					DriveLetter = SelectedItems[0].ParsingName;
-				}
-				else {
+				else
 					DriveLetter = this.CurrentFolder.ParsingName;
-				}
 			}
 			else {
 				DriveLetter = this.CurrentFolder.ParsingName;
 			}
+
 			Process.Start(Path.Combine(Environment.SystemDirectory, "dfrgui.exe"), "/u /v " + DriveLetter.Replace("\\", ""));
 		}
 
 		public void DeSelectAllItems() {
-			LVITEM item = new LVITEM();
-			item.mask = LVIF.LVIF_STATE;
-			item.stateMask = LVIS.LVIS_SELECTED;
-			item.state = 0;
+			var item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = 0 };
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, -1, ref item);
-			this.Focus();
+			this.Focus(); //TODO: Find out if we need this line!
 		}
 
 		private void DeselectItemByIndex(int index) {
-			LVITEM item = new LVITEM();
-			item.mask = LVIF.LVIF_STATE;
-			item.stateMask = LVIS.LVIS_SELECTED;
-			item.state = 0;
+			LVITEM item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = 0 };
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, index, ref item);
 		}
 
@@ -3929,10 +3914,10 @@ namespace BExplorer.Shell {
 
 			for (int n = 0; n < itemCount; ++n) {
 				var state = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMSTATE, n, LVIS.LVIS_SELECTED);
-
 				var item_new = new LVITEM() {
 					mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = (state & LVIS.LVIS_SELECTED) == LVIS.LVIS_SELECTED ? 0 : LVIS.LVIS_SELECTED
 				};
+
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, n, ref item_new);
 			}
 			this.Focus();

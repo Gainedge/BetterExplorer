@@ -338,8 +338,8 @@ namespace BExplorer.Shell {
 					}
 
 					string rootPath = System.IO.Path.GetPathRoot(ParsingName);	// get drive's letter
-					DriveInfo driveInfo = new DriveInfo(rootPath);				// get info about the drive
-					return driveInfo.DriveType == DriveType.Network;			// return true if a network drive
+					//var driveInfo = new DriveInfo(rootPath);				// get info about the drive
+					return new DriveInfo(rootPath).DriveType == DriveType.Network;			// return true if a network drive
 				}
 				else {
 					return true; // is a UNC path
