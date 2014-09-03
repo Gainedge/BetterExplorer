@@ -4,13 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
 	/// <summary>
 	/// Defines the read-only properties for default shell icon sizes.
 	/// </summary>
-	public static class DefaultIconSize
-	{
+	public static class DefaultIconSize {
 		/// <summary>
 		/// The small size property for a 16x16 pixel Shell Icon.
 		/// </summary>
@@ -41,8 +39,7 @@ namespace BExplorer.Shell.Interop
 	/// <summary>
 	/// Defines the read-only properties for default shell thumbnail sizes.
 	/// </summary>
-	public static class DefaultThumbnailSize
-	{
+	public static class DefaultThumbnailSize {
 		/// <summary>
 		/// Gets the small size property for a 32x32 pixel Shell Thumbnail.
 		/// </summary>

@@ -1,195 +1,133 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿//using System;
+//using System.Runtime.InteropServices;
+//using System.Runtime.InteropServices.ComTypes;
+//using System.Windows;
 
-namespace BExplorer.Shell.Interop
-{
-	 #region IAsyncOperation
+//namespace BExplorer.Shell.Interop {
 
-		[ComImport]
+//	#region IAsyncOperation
 
-		[Guid("3D8B0590-F691-11d2-8EA9-006097DF5BD4")]
+//	[ComImport]
+//	[Guid("3D8B0590-F691-11d2-8EA9-006097DF5BD4")]
+//	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+//	public interface IAsyncOperation {
 
-		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+//		[PreserveSig]
+//		Int32 SetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] Boolean DoOpAsync);
 
-		public interface IAsyncOperation
-		{
+//		[PreserveSig]
+//		Int32 GetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] out Boolean IsOpAsync);
 
-				[PreserveSig]
+//		[PreserveSig]
+//		Int32 StartOperation(IBindCtx bcReserved);
 
-				Int32 SetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] Boolean DoOpAsync);
+//		[PreserveSig]
+//		Int32 InOperation([MarshalAs(UnmanagedType.VariantBool)] out Boolean InAsyncOp);
 
-				[PreserveSig]
+//		[PreserveSig]
+//		Int32 EndOperation(UInt32 hResult, IBindCtx bcReserved, DragDropEffects Effects);
+//	}
 
-				Int32 GetAsyncMode([MarshalAs(UnmanagedType.VariantBool)] out Boolean IsOpAsync);
+//	#endregion IAsyncOperation
 
-				[PreserveSig]
+//	[ClassInterface(ClassInterfaceType.None)]
+//	public class AsyncDataObject : System.Windows.Forms.DataObject, IAsyncOperation {
 
-				Int32 StartOperation(IBindCtx bcReserved);
+//		#region Constants
 
-				[PreserveSig]
+//		protected const int S_OK = 0x00000000;
+//		protected const int S_FALSE = 0x00000001;
 
-				Int32 InOperation([MarshalAs(UnmanagedType.VariantBool)] out Boolean InAsyncOp);
+//		#endregion Constants
 
-				[PreserveSig]
+//		#region Fields
 
-				Int32 EndOperation(UInt32 hResult, IBindCtx bcReserved, DragDropEffects Effects);
+//		protected Boolean asynchMode;
+//		protected Boolean inAsyncOperation;
 
-		}
+//		#endregion Fields
 
-		#endregion
+//		#region Events
 
-		[ClassInterface(ClassInterfaceType.None)]
-		public class AsyncDataObject : System.Windows.Forms.DataObject, IAsyncOperation
-		{
+//		public event EventHandler StartAsynchOperation;
+//		public event EventHandler StopAsynchOperation;
 
-				#region Constants
+//		#endregion Events
 
-				protected const int S_OK = 0x00000000;
+//		#region Constructors
 
-				protected const int S_FALSE = 0x00000001;
+//		public AsyncDataObject()
+//			: base() {
+//			this.asynchMode = false;
+//			this.inAsyncOperation = false;
+//		}
 
-				#endregion
+//		public AsyncDataObject(System.Runtime.InteropServices.ComTypes.IDataObject data)
+//			: base(data) {
+//			this.asynchMode = false;
+//			this.inAsyncOperation = false;
+//		}
 
-				#region Fields
+//		public AsyncDataObject(String format, Object data)
+//			: base(format, data) {
+//			this.asynchMode = false;
+//			this.inAsyncOperation = false;
+//		}
 
-				protected Boolean asynchMode;
+//		#endregion Constructors
 
-				protected Boolean inAsyncOperation;
+//		#region System.Runtime.InteropServices.ComTypes.IAsyncOperation Members
 
-				#endregion
+//		public virtual Int32 SetAsyncMode(Boolean DoOpAsync) {
+//			this.asynchMode = DoOpAsync;
 
-				#region Events
+//			return S_OK;
+//		}
 
-				public event EventHandler StartAsynchOperation;
+//		public virtual Int32 GetAsyncMode(out Boolean IsOpAsync) {
+//			IsOpAsync = this.asynchMode;
 
-				public event EventHandler StopAsynchOperation;
+//			return S_OK;
+//		}
 
-				#endregion
+//		public virtual Int32 StartOperation(IBindCtx bcReserved) {
+//			this.inAsyncOperation = true;
 
-				#region Constructors
+//			this.OnStartAsynchOperation();
 
-				public AsyncDataObject()
+//			return S_OK;
+//		}
 
-						: base()
-				{
+//		public virtual Int32 InOperation(out Boolean InAsyncOp) {
+//			InAsyncOp = this.inAsyncOperation;
 
-						this.asynchMode = false;
+//			return S_OK;
+//		}
 
-						this.inAsyncOperation = false;
+//		public virtual Int32 EndOperation(uint hResult, IBindCtx bcReserved, DragDropEffects Effects) {
+//			this.inAsyncOperation = false;
 
-				}
+//			this.OnStopAsynchOperation();
 
-				public AsyncDataObject(System.Runtime.InteropServices.ComTypes.IDataObject data)
+//			return S_OK;
+//		}
 
-						: base(data)
-				{
+//		#endregion System.Runtime.InteropServices.ComTypes.IAsyncOperation Members
 
-						this.asynchMode = false;
+//		#region Events Processing
 
-						this.inAsyncOperation = false;
+//		protected void OnStartAsynchOperation() {
+//			if (this.StartAsynchOperation != null) {
+//				this.StartAsynchOperation(this, new EventArgs());
+//			}
+//		}
 
-				}
+//		protected void OnStopAsynchOperation() {
+//			if (this.StopAsynchOperation != null) {
+//				this.StopAsynchOperation(this, new EventArgs());
+//			}
+//		}
 
-
-
-				public AsyncDataObject(String format, Object data)
-
-						: base(format, data)
-				{
-
-						this.asynchMode = false;
-
-						this.inAsyncOperation = false;
-
-				}
-
-				#endregion
-
-				#region System.Runtime.InteropServices.ComTypes.IAsyncOperation Members
-
-				public virtual Int32 SetAsyncMode(Boolean DoOpAsync)
-				{
-
-						this.asynchMode = DoOpAsync;
-
-						return S_OK;
-
-				}
-
-				public virtual Int32 GetAsyncMode(out Boolean IsOpAsync)
-				{
-
-						IsOpAsync = this.asynchMode;
-
-						return S_OK;
-
-				}
-
-				public virtual Int32 StartOperation(IBindCtx bcReserved)
-				{
-						this.inAsyncOperation = true;
-
-						this.OnStartAsynchOperation();
-
-						return S_OK;
-				}
-
-
-
-				public virtual Int32 InOperation(out Boolean InAsyncOp)
-				{
-
-						InAsyncOp = this.inAsyncOperation;
-
-						return S_OK;
-
-				}
-
-				public virtual Int32 EndOperation(uint hResult, IBindCtx bcReserved, DragDropEffects Effects)
-				{
-						this.inAsyncOperation = false;
-
-						this.OnStopAsynchOperation();
-
-						return S_OK;
-				}
-
-
-
-				#endregion
-
-				#region Events processings
-
-				protected void OnStartAsynchOperation()
-				{
-
-						if (this.StartAsynchOperation != null)
-						{
-
-								this.StartAsynchOperation(this, new EventArgs());
-
-						}
-
-				}
-
-				protected void OnStopAsynchOperation()
-				{
-
-						if (this.StopAsynchOperation != null)
-						{
-
-								this.StopAsynchOperation(this, new EventArgs());
-
-						}
-
-				}
-
-				#endregion
-		}
-}
+//		#endregion Events Processings
+//	}
+//}

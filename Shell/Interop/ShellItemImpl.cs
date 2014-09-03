@@ -69,7 +69,7 @@ namespace BExplorer.Shell.Interop.VistaBridge {
 				IShellFolder parentFolder = GetParent().GetIShellFolder();
 				IntPtr childPidl = Shell32.ILFindLastID(Pidl);
 				var builder = new StringBuilder(512);
-				STRRET strret = new STRRET();
+				var strret = new STRRET();
 
 				parentFolder.GetDisplayNameOf(childPidl, (SHGNO)((int)sigdnName & 0xffff), out strret);
 				ShlWapi.StrRetToBuf(ref strret, childPidl, builder, (uint)builder.Capacity);

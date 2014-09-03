@@ -18,6 +18,7 @@ namespace BExplorer.Shell.Interop {
 			public IntPtr hbmBanner;
 		}
 
+		/*
 		[Flags]
 		public enum CREDUI_FLAGS {
 			INCORRECT_PASSWORD = 0x1,
@@ -38,7 +39,9 @@ namespace BExplorer.Shell.Interop {
 			USERNAME_TARGET_CREDENTIALS = 0x80000,
 			KEEP_USERNAME = 0x100000,
 		}
+		*/
 
+		/*
 		public enum CredUIReturnCodes {
 			NO_ERROR = 0,
 			ERROR_CANCELLED = 1223,
@@ -49,7 +52,9 @@ namespace BExplorer.Shell.Interop {
 			ERROR_INVALID_PARAMETER = 87,
 			ERROR_INVALID_FLAGS = 1004,
 		}
+		*/
 
+		/*
 		[DllImport("credui")]
 		public static extern CredUIReturnCodes CredUIPromptForCredentials(ref CREDUI_INFO creditUR,
 			string targetName,
@@ -61,6 +66,7 @@ namespace BExplorer.Shell.Interop {
 			int maxPassword,
 			[MarshalAs(UnmanagedType.Bool)] ref bool pfSave,
 			CREDUI_FLAGS flags);
+		*/
 
 		[DllImport("credui.dll", CharSet = CharSet.Auto)]
 		public static extern bool CredUnPackAuthenticationBuffer(
@@ -89,12 +95,12 @@ namespace BExplorer.Shell.Interop {
 		public static void RunProcesssAsUser(String processPath) {
 			// Setup the flags and variables
 			StringBuilder userPassword = new StringBuilder(), userID = new StringBuilder();
-			CREDUI_INFO credUI = new CREDUI_INFO();
+			var credUI = new CREDUI_INFO();
 			credUI.pszCaptionText = "Please enter the credentails for " + new ShellItem(processPath).DisplayName;
 			credUI.pszMessageText = "DisplayedMessage";
 			credUI.cbSize = Marshal.SizeOf(credUI);
 			uint authPackage = 0;
-			IntPtr outCredBuffer = new IntPtr();
+			var outCredBuffer = new IntPtr();
 			uint outCredSize;
 			bool save = false;
 			int result = CredUIPromptForWindowsCredentials(
@@ -116,20 +122,19 @@ namespace BExplorer.Shell.Interop {
 			int maxDomain = 100;
 			int maxPassword = 100;
 			if (result == 0) {
-				if (CredUnPackAuthenticationBuffer(0, outCredBuffer, outCredSize, usernameBuf, ref maxUserName,
-																					 domainBuf, ref maxDomain, passwordBuf, ref maxPassword)) {
+				if (CredUnPackAuthenticationBuffer(0, outCredBuffer, outCredSize, usernameBuf, ref maxUserName, domainBuf, ref maxDomain, passwordBuf, ref maxPassword)) {
 					//TODO: ms documentation says we should call this but i can't get it to work
 					//SecureZeroMem(outCredBuffer, outCredSize);
 
 					//clear the memory allocated by CredUIPromptForWindowsCredentials
 					Ole32.CoTaskMemFree(outCredBuffer);
 
-					SecureString pass = new SecureString();
+					var pass = new SecureString();
 					foreach (char _char in passwordBuf.ToString().ToCharArray()) {
 						pass.AppendChar(_char);
 					}
 
-					using (Process p = new Process()) {
+					using (var p = new Process()) {
 						p.StartInfo.UseShellExecute = true;
 						p.StartInfo.WorkingDirectory = Path.GetDirectoryName(processPath);
 						p.StartInfo.FileName = processPath;
