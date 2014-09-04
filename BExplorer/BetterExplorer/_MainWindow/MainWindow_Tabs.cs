@@ -160,8 +160,7 @@ namespace BetterExplorer {
 				foreach (object mii in btnCopyto.Items.OfType<MenuItem>().Where(mii => (mii as MenuItem).Tag != null)) {
 					if (((mii as MenuItem).Tag as ShellItem) == item.ShellObject) {
 						IsAdditem = false;
-						break;
-					}			
+					}
 				}
 
 				if (IsAdditem && item.ShellObject.IsFileSystem) {
