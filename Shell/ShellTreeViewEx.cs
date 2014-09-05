@@ -121,25 +121,21 @@ namespace BExplorer.Shell {
 
 		private void SetNodeImage(IntPtr node, IntPtr pidl, IntPtr m_TreeViewHandle, Boolean isOverlayed) {
 			try {
-				TVITEMW itemInfo = new TVITEMW();
+				var itemInfo = new TVITEMW();
 
 				// We need to set the images for the item by sending a
 				// TVM_SETITEMW message, as we need to set the overlay images,
 				// and the .Net TreeView API does not support overlays.
-				itemInfo.mask = TVIF.TVIF_IMAGE | TVIF.TVIF_SELECTEDIMAGE |
-												TVIF.TVIF_STATE;
+				itemInfo.mask = TVIF.TVIF_IMAGE | TVIF.TVIF_SELECTEDIMAGE | TVIF.TVIF_STATE;
 				itemInfo.hItem = node;
-				itemInfo.iImage = ShellItem.GetSystemImageListIndex(pidl,
-							ShellIconType.SmallIcon, ShellIconFlags.OverlayIndex);
+				itemInfo.iImage = ShellItem.GetSystemImageListIndex(pidl, ShellIconType.SmallIcon, ShellIconFlags.OverlayIndex);
 				if (isOverlayed) {
 					itemInfo.state = (TVIS)(itemInfo.iImage >> 16);
 					itemInfo.stateMask = TVIS.TVIS_OVERLAYMASK;
 				}
-				itemInfo.iSelectedImage = ShellItem.GetSystemImageListIndex(pidl,
-						ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
+				itemInfo.iSelectedImage = ShellItem.GetSystemImageListIndex(pidl, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 				this.UpdatedImages.Add(node);
-				User32.SendMessage(m_TreeViewHandle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW,
-						0, ref itemInfo);
+				User32.SendMessage(m_TreeViewHandle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW, 0, ref itemInfo);
 			}
 			catch (Exception) {
 			}

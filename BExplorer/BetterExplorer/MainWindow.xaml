@@ -3006,7 +3006,7 @@
 			</Grid.ColumnDefinitions>
 			<odc:BreadcrumbBar x:Name="bcbc" Focusable="True" TraceBinding="{Binding DisplayName}" ImageBinding="{Binding Thumbnail.SmallBitmapSource}" BreadcrumbItemDropDownOpened="bcbc_BreadcrumbItemDropDownOpened" BreadcrumbItemDropDownClosed="bcbc_BreadcrumbItemDropDownClosed" OnNavigate="NavigationController" OnEditModeToggle="bcbc_OnEditModeToggle">
 				<odc:BreadcrumbBar.Buttons>
-					<Button Click="Refresh_Click">
+					<Button Click="btnRefresh_Click">
 						<Image Source="Images\Refresh16.png" Stretch="None" />
 					</Button>
 				</odc:BreadcrumbBar.Buttons>

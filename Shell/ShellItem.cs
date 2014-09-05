@@ -38,7 +38,6 @@ namespace BExplorer.Shell {
 	/// Enumerates the types of shell icons.
 	/// </summary>
 	public enum ShellIconType {
-
 		/// <summary>The system large icon type</summary>
 		LargeIcon = (int)SHGFI.LargeIcon,
 
@@ -54,7 +53,6 @@ namespace BExplorer.Shell {
 	/// </summary>
 	[Flags]
 	public enum ShellIconFlags {
-
 		/// <summary>The icon is displayed opened.</summary>
 		OpenIcon = (int)SHGFI.Icon,
 
@@ -716,43 +714,16 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public IShellFolder GetIShellFolder() {
 			IntPtr res;
-			HResult result = ComInterface.BindToHandler(IntPtr.Zero, BHID.SFObject, typeof(IShellFolder).GUID, out res);
-			IShellFolder iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res, typeof(IShellFolder));
+			ComInterface.BindToHandler(IntPtr.Zero, BHID.SFObject, typeof(IShellFolder).GUID, out res); //HResult result = 
+			var iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res, typeof(IShellFolder));
 			return iShellFolder;
 		}
 
 		public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) {
-			PropVariant pvar = new PropVariant();
-			IShellItem2 isi2 = (IShellItem2)ComInterface;
+			var pvar = new PropVariant();
+			var isi2 = (IShellItem2)ComInterface;
 			isi2.GetProperty(ref pkey, pvar);
 			return pvar;
-
-			//TODO: do we need all of the above code
-
-
-			/*
-			if (isi2.GetProperty(ref pkey, pvar) != HResult.S_OK) {
-				//String value = String.Empty;
-				//if (pvar.Value != null)
-				//{
-				//	//if (currentCollumn.CollumnType == typeof(DateTime))
-				//	//{
-				//	//	value = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
-				//	//}
-				//	//else if (currentCollumn.CollumnType == typeof(long))
-				//	//{
-				//	//	value = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0"))); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
-				//	//}
-				//	//else
-				//	//{
-				//	//	value = pvar.Value.ToString();
-				//	//}
-				//}
-				//nmlv.item.pszText = value;
-				//Marshal.StructureToPtr(nmlv, m.LParam, false);
-			}
-			return pvar;
-			*/
 		}
 
 		/// <summary>
@@ -787,11 +758,9 @@ namespace BExplorer.Shell {
 		///
 		/// <returns></returns>
 		public int GetSystemImageListIndex(ShellIconType type, ShellIconFlags flags) {
-			SHFILEINFO info = new SHFILEINFO();
-			IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info,
-					Marshal.SizeOf(info),
-					SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL |
-					(SHGFI)type | (SHGFI)flags);
+			var info = new SHFILEINFO();
+			IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info, Marshal.SizeOf(info),
+												  SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
 
 			if (result == IntPtr.Zero) {
 				throw new Exception("Error retrieving shell folder icon");
@@ -802,11 +771,9 @@ namespace BExplorer.Shell {
 		}
 
 		public static int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
-			SHFILEINFO info = new SHFILEINFO();
-			IntPtr result = Shell32.SHGetFileInfo(pidl, 0, out info,
-					Marshal.SizeOf(info),
-					SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL |
-					(SHGFI)type | (SHGFI)flags);
+			var info = new SHFILEINFO();
+			IntPtr result = Shell32.SHGetFileInfo(pidl, 0, out info, Marshal.SizeOf(info),
+												  SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
 
 			if (result == IntPtr.Zero) {
 				throw new Exception("Error retrieving shell folder icon");

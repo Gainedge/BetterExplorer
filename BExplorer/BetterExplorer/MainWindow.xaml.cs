@@ -289,17 +289,8 @@ namespace BetterExplorer {
 		#region ViewEnumerationComplete
 
 		private void SetSortingAndGroupingButtons() {
-			//FIXME: fix sorting and grouping
 			btnSort.Items.Clear();
 			btnGroup.Items.Clear();
-
-			// SORTCOLUMN sc = new SORTCOLUMN();
-
-			//ShellListView.GetSortColInfo(out sc);
-			// PROPERTYKEY pkg = new PROPERTYKEY();
-			//ShellListView.GetGroupColInfo(out pkg, out GroupDir);
-
-			//bool GroupDir = false;
 
 			try {
 				foreach (Collumns item in ShellListView.Collumns.Where(x => x != null)) {
@@ -2279,15 +2270,10 @@ namespace BetterExplorer {
 			ShellListView.ResizeIcons((int)e.NewValue);
 		}
 
-		private void btnRefresh_Click(object sender, RoutedEventArgs e) {
-			ShellListView.RefreshContents();
-			ShellTree.RefreshContents();
-		}
-
 		void mi_Click(object sender, RoutedEventArgs e) {
-			MenuItem item = (sender as MenuItem);
+			var item = (sender as MenuItem);
 			var parentButton = item.Parent as Fluent.DropDownButton;
-			MenuItem ascitem = (MenuItem)parentButton.Items[parentButton.Items.IndexOf(misa)];
+			var ascitem = (MenuItem)parentButton.Items[parentButton.Items.IndexOf(misa)];
 
 			var Sort = ascitem.IsChecked ? System.Windows.Forms.SortOrder.Ascending : System.Windows.Forms.SortOrder.Descending;
 			ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), Sort);
@@ -2751,7 +2737,7 @@ namespace BetterExplorer {
 			}
 
 			foreach (ShellItem item in ShellListView.SelectedItems) {
-				System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
+				var cvt = new Bitmap(item.ParsingName);
 				cvt.RotateFlip(Rotation);
 				if (OverwriteOnRotate) {
 					cvt.Save(item.ParsingName);
@@ -4739,8 +4725,7 @@ namespace BetterExplorer {
 			GroupBox1.Items.Add(DropDown);
 
 			foreach (var Node in XDoc.Elements("Shortcut")) {
-				var Item = new MenuItem();
-				Item.Header = Node.Attribute("Name").Value;
+				var Item = new MenuItem() { Header = Node.Attribute("Name").Value };
 				Item.Click += (x, y) => {
 					Process.Start(Node.Attribute("Path").Value);
 				};
@@ -4793,10 +4778,13 @@ namespace BetterExplorer {
 			return rb;
 		}
 
-		private void Refresh_Click(object sender, RoutedEventArgs e) {
+		private void btnRefresh_Click(object sender, RoutedEventArgs e) {
 			var da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 1, 100))) { FillBehavior = FillBehavior.Stop };
 			this.bcbc.BeginAnimation(Odyssey.Controls.BreadcrumbBar.ProgressValueProperty, da);
-			this.ShellListView.RefreshContents();
+
+			ShellListView.RefreshContents();
+			SetSortingAndGroupingButtons();
+			SetupUIOnSelectOrNavigate();
 		}
 
 		void bcbc_OnEditModeToggle(object sender, Odyssey.Controls.EditModeToggleEventArgs e) {
