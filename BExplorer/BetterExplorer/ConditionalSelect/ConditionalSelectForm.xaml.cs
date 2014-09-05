@@ -31,7 +31,7 @@ namespace BetterExplorer {
 		}
 
 		public static void Open(ShellView ShellListView) {
-			ConditionalSelectForm csf = new ConditionalSelectForm();
+			var csf = new ConditionalSelectForm();
 			csf.ShowDialog();
 			if (!csf.CancelAction) {
 				csf.ConditionallySelectFiles(csf.csd, ShellListView);
@@ -88,11 +88,6 @@ namespace BetterExplorer {
 			}
 			else {
 				Matches_Name.AddRange(shells.Where((x) => !Directory.Exists(x.ParsingName)));
-				//foreach (ShellItem item in shells) {
-				//	if (!Directory.Exists(item.ParsingName)) {
-				//		l1shells.Add(item);
-				//	}
-				//}
 			}
 
 			if (csd.FilterByFileSize) {
@@ -208,27 +203,13 @@ namespace BetterExplorer {
 			return outshells;
 		}
 
-		private void namecheck_Checked(object sender, RoutedEventArgs e) {
-			if (!this.IsLoaded) return;
-			this.namefilter.IsEnabled = true;
-			this.namequery.IsEnabled = true;
-			this.namecase.IsEnabled = true;
-		}
-
-		private void namecheck_Unchecked(object sender, RoutedEventArgs e) {
-			if (!this.IsLoaded) return;
-			this.namefilter.IsEnabled = false;
-			this.namequery.IsEnabled = false;
-			this.namecase.IsEnabled = false;
-		}
-
 		private void sizecheck_Checked(object sender, RoutedEventArgs e) {
 			if (!this.IsLoaded) return;
 			this.sizefilter.IsEnabled = true;
 			this.sizequery1.IsEnabled = true;
 			this.sizequery2.IsEnabled = true;
 			this.sizebox1.IsEnabled = true;
-			ConditionalSelectComboBoxItem i = (ConditionalSelectComboBoxItem)sizefilter.SelectedItem;
+			var i = (ConditionalSelectComboBoxItem)sizefilter.SelectedItem;
 			if (i.IdentifyingName == "Between" || i.IdentifyingName == "NotBetween") {
 				this.sizequery2.IsEnabled = true;
 				this.sizebox2.IsEnabled = true;
@@ -261,40 +242,30 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void dccheck_Checked(object sender, RoutedEventArgs e) {
+
+		private void namecheck_CheckChanged(object sender, RoutedEventArgs e) {
 			if (!this.IsLoaded) return;
-			this.dcfilter.IsEnabled = true;
-			this.dcquery.IsEnabled = true;
+			this.namefilter.IsEnabled = e.RoutedEvent.Name == "Checked";
+			this.namequery.IsEnabled = e.RoutedEvent.Name == "Checked";
+			this.namecase.IsEnabled = e.RoutedEvent.Name == "Checked";
 		}
 
-		private void dccheck_Unchecked(object sender, RoutedEventArgs e) {
+		private void dccheck_CheckChanged(object sender, RoutedEventArgs e) {
 			if (!this.IsLoaded) return;
-			this.dcfilter.IsEnabled = false;
-			this.dcquery.IsEnabled = false;
+			this.dcfilter.IsEnabled = e.RoutedEvent.Name == "Checked";
+			this.dcquery.IsEnabled = e.RoutedEvent.Name == "Checked"; ;
 		}
 
-		private void dmcheck_Checked(object sender, RoutedEventArgs e) {
+		private void dmcheck_CheckChanged(object sender, RoutedEventArgs e) {
 			if (!this.IsLoaded) return;
-			this.dmfilter.IsEnabled = true;
-			this.dmquery.IsEnabled = true;
+			this.dmfilter.IsEnabled = e.RoutedEvent.Name == "Checked";
+			this.dmquery.IsEnabled = e.RoutedEvent.Name == "Checked";
 		}
 
-		private void dmcheck_Unchecked(object sender, RoutedEventArgs e) {
+		private void dacheck_CheckChanged(object sender, RoutedEventArgs e) {
 			if (!this.IsLoaded) return;
-			this.dmfilter.IsEnabled = false;
-			this.dmquery.IsEnabled = false;
-		}
-
-		private void dacheck_Checked(object sender, RoutedEventArgs e) {
-			if (!this.IsLoaded) return;
-			this.dafilter.IsEnabled = true;
-			this.daquery.IsEnabled = true;
-		}
-
-		private void dacheck_Unchecked(object sender, RoutedEventArgs e) {
-			if (!this.IsLoaded) return;
-			this.dafilter.IsEnabled = false;
-			this.daquery.IsEnabled = false;
+			this.dafilter.IsEnabled = e.RoutedEvent.Name == "Checked";
+			this.daquery.IsEnabled = e.RoutedEvent.Name == "Checked";
 		}
 
 		private void button2_Click(object sender, RoutedEventArgs e) {

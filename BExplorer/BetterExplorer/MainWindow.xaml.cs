@@ -686,34 +686,20 @@ namespace BetterExplorer {
 
 		private void miSelAllByType_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.GetSelectedCount() > 0) {
-				var flt = new List<string>();
 				var typePK = new PROPERTYKEY() { fmtid = Guid.Parse("B725F130-47EF-101A-A5F1-02608C9EEBAC"), pid = 4 };
-
-				foreach (ShellItem item in ShellListView.SelectedItems) {
-					flt.Add(item.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant());
-				}
-
+				var flt = ShellListView.SelectedItems.Select(item => item.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant());
 				var items = ShellListView.Items.Where(w => flt.Contains(w.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant())).ToArray();
-
 				ShellListView.SelectItems(items);
-				items = null;
 				btnCondSel.IsDropDownOpen = false;
 			}
-
 		}
 
 		private void miSelAllByDate_Click(object sender, RoutedEventArgs e) {
 			if (ShellListView.GetSelectedCount() > 0) {
-				var flt = new List<DateTime>();
 				var typePK = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 15 };
-
-				foreach (ShellItem item in ShellListView.SelectedItems) {
-					flt.Add(DateTime.Parse(item.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date);
-				}
-				ShellListView.SelectItems(
-					ShellListView.Items.Where(w => flt.Contains(DateTime.Parse(w.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date)).ToArray()
-				);
-
+				var flt = ShellListView.SelectedItems.Select(item => DateTime.Parse(item.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date);
+				var items = ShellListView.Items.Where(w => flt.Contains(DateTime.Parse(w.GetPropertyValue(typePK, typeof(String)).Value.ToString().ToLowerInvariant()).Date)).ToArray();
+				ShellListView.SelectItems(items);
 				btnCondSel.IsDropDownOpen = false;
 			}
 		}

@@ -157,8 +157,8 @@ namespace BetterExplorer {
 			foreach (var item in tcMain.Items.OfType<Wpf.Controls.TabItem>()) {
 				bool IsAdditem = true;
 
-				foreach (object mii in btnCopyto.Items.OfType<MenuItem>().Where(mii => (mii as MenuItem).Tag != null)) {
-					if (((mii as MenuItem).Tag as ShellItem) == item.ShellObject) {
+				foreach (var mii in btnCopyto.Items.OfType<MenuItem>().Where(x => x.Tag != null)) {
+					if ((mii.Tag as ShellItem) == item.ShellObject) {
 						IsAdditem = false;
 					}
 				}
@@ -178,7 +178,6 @@ namespace BetterExplorer {
 						//Do nothing if ShellItem is not available anymore and close the problematic item
 						//CloseTab(item);
 						tcMain.RemoveTabItem(item);
-
 					}
 				}
 			}
