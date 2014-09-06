@@ -3426,15 +3426,15 @@ namespace BExplorer.Shell {
 		}
 
 
-		private bool ThreadRun_Helper(SyncQueue<int> Queue, bool UseComplexCheck, ref int index) {
-			index = Queue.Dequeue();
+		private bool ThreadRun_Helper(SyncQueue<int> queue, bool useComplexCheck, ref int index) {
+			index = queue.Dequeue();
 			var itemBounds = new User32.RECT();
 			var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
 			User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 			var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 
-			if (UseComplexCheck)
-				return index >= Items.Count || !r.IntersectsWith(this.ClientRectangle);
+			if (useComplexCheck)
+				return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
 			else
 				return r.IntersectsWith(this.ClientRectangle);
 		}
@@ -3507,18 +3507,8 @@ namespace BExplorer.Shell {
 		public void _IconsLoadingThreadRun() {
 			while (true) {
 				try {
-					int index = 0;
+					int index = this.Items.Count - 1;
 					if (!ThreadRun_Helper(waitingThumbnails, false, ref index)) continue;
-					/*
-					var index = waitingThumbnails.Dequeue();
-					var itemBounds = new User32.RECT();
-					var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-					User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-					var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
-					if (!r.IntersectsWith(this.ClientRectangle))
-						continue;
-					*/
-					resetEvent.WaitOne();
 					var sho = Items[index];
 					ShellItem temp = !(sho.IsNetDrive || sho.IsNetworkPath) && sho.ParsingName.StartsWith("::") ? sho : new ShellItem(sho.ParsingName);
 
@@ -3527,6 +3517,7 @@ namespace BExplorer.Shell {
 						sho.IsIconLoaded = true;
 						this.RedrawItem(index);
 					}
+					resetEvent.WaitOne();
 
 				}
 				catch {
@@ -3536,20 +3527,9 @@ namespace BExplorer.Shell {
 
 		public void _IconCacheLoadingThreadRun() {
 			while (true) {
-				resetEvent.WaitOne();
 				try {
-					int index = 0;
+					int index = this.Items.Count - 1;
 					if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
-					/*
-					var index = ThumbnailsForCacheLoad.Dequeue();
-					var itemBounds = new User32.RECT();
-					var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-					var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
-					if (index >= Items.Count || !r.IntersectsWith(this.ClientRectangle)) {
-						continue;
-					}
-					*/
 					var sho = Items[index];
 					var thumb = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
 					sho.IsThumbnailLoaded = true;
@@ -3559,6 +3539,7 @@ namespace BExplorer.Shell {
 						thumb.Dispose();
 						thumb = null;
 					}
+					resetEvent.WaitOne();
 				}
 				catch {
 				}
