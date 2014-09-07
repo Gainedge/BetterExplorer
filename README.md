@@ -3,6 +3,10 @@ BetterExplorer
 
 A Better Explorer filemanager repository
 
+Issues
+==============
+http://bugtracker.better-explorer.com/
+
 
 How to build and test Better Explorer
 ======================================
