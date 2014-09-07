@@ -72,14 +72,8 @@ namespace BetterExplorer {
 
 		#endregion
 
-		#region Variables and Constants
-
-		#region Public member
-		private bool IsrestoreTabs;
-		//public static UpdateManager Updater;
-		#endregion
-
 		#region Private Members
+		private bool IsrestoreTabs;
 		private bool IsCalledFromLoading, isOnLoad;
 		private bool asFolder = false, asImage = false, asArchive = false, asDrive = false, asApplication = false, asLibrary = false, asVirtualDrive = false;
 		private MenuItem misa, misd, misag, misdg;
@@ -113,8 +107,6 @@ namespace BetterExplorer {
 		ContextMenu chcm;
 
 		System.Windows.Forms.Timer focusTimer = new System.Windows.Forms.Timer() { Interval = 500 };
-
-		#endregion
 
 		#endregion
 
@@ -796,8 +788,7 @@ namespace BetterExplorer {
 
 		private void btnNewWindow_Click(object sender, RoutedEventArgs e) {
 			// creates a new window
-			var k = System.Reflection.Assembly.GetExecutingAssembly().Location;
-			Process.Start(k, "/nw");
+			Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location, "/nw");
 		}
 
 		void miow_Click(object sender, RoutedEventArgs e) {
@@ -806,14 +797,10 @@ namespace BetterExplorer {
 		}
 
 		void mif_Click(object sender, RoutedEventArgs e) {
-			var obj = ((sender as MenuItem).Tag as ShellItem);
-			ShellLink lnk = new ShellLink(obj.ParsingName);
-
-			var obj2 = new ShellItem(lnk.TargetPIDL);
-			NavigationController(obj2);
-
-			lnk.Dispose();
-			obj.Dispose();
+			using (var obj = (sender as MenuItem).Tag as ShellItem)
+			using (var lnk = new ShellLink(obj.ParsingName)) {
+				NavigationController(new ShellItem(lnk.TargetPIDL));
+			}
 		}
 
 		private void btnCopy_Click(object sender, RoutedEventArgs e) {
@@ -880,9 +867,6 @@ namespace BetterExplorer {
 		}
 
 		private void btnProperties_Click(object sender, RoutedEventArgs e) {
-			//ShellListView.ShowFileProperties(ShellListView.CurrentFolder.ParsingName);
-			//ShellListView.Focus();
-
 			ShellListView.ShowPropPage(this.Handle, ShellListView.GetFirstSelectedItem().ParsingName, "");
 		}
 
@@ -895,9 +879,9 @@ namespace BetterExplorer {
 			string PathForDrop = ShellListView.CurrentFolder.ParsingName;
 			foreach (string item in DropList) {
 				using (var shortcut = new ShellLink()) {
-					ShellItem o = new ShellItem(item);
+					var o = new ShellItem(item);
 					shortcut.Target = item;
-					shortcut.WorkingDirectory = System.IO.Path.GetDirectoryName(item);
+					shortcut.WorkingDirectory = Path.GetDirectoryName(item);
 					shortcut.Description = o.GetDisplayName(SIGDN.NORMALDISPLAY);
 					shortcut.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
 					shortcut.Save(String.Format("{0}\\{1}.lnk", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY)));
@@ -1065,7 +1049,7 @@ namespace BetterExplorer {
 		private void EjectDisk(char DriveLetter) {
 			Thread t = new Thread(() => {
 				Thread.Sleep(10);
-				VolumeDeviceClass vdc = new VolumeDeviceClass();
+				var vdc = new VolumeDeviceClass();
 				foreach (Volume item in vdc.Devices) {
 					if (GetDriveLetterFromDrivePath(item.LogicalDrive) == DriveLetter) {
 						var veto = item.Eject(false);
@@ -1164,8 +1148,7 @@ namespace BetterExplorer {
 				return;
 			}
 
-			MountIso mi = new MountIso();
-			mi.Owner = this;
+			var mi = new MountIso() { Owner = this };
 			mi.ShowDialog();
 			if (mi.yep) {
 				string DriveLetter = String.Format("{0}:", mi.chkPreselect.IsChecked == true ? ImDiskAPI.FindFreeDriveLetter() : (char)mi.cbbLetter.SelectedItem);
@@ -1333,7 +1316,7 @@ namespace BetterExplorer {
 				if (canlogactions) {
 					if (!Directory.Exists(logdir)) Directory.CreateDirectory(logdir);
 
-					using (StreamWriter sw = new StreamWriter(String.Format("{0}{1}.txt", logdir, sessionid), true)) {
+					using (var sw = new StreamWriter(String.Format("{0}{1}.txt", logdir, sessionid), true)) {
 						sw.WriteLine(DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString() + " : " + value);
 					}
 				}
@@ -1735,9 +1718,7 @@ namespace BetterExplorer {
 
 				//'set StartUp location
 				if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized") {
-					String cmd = Application.Current.Properties["cmd"].ToString();
-
-					if (cmd == "/nw")
+					if (Application.Current.Properties["cmd"].ToString() == "/nw")
 						tcMain.NewTab(ShellListView.CurrentFolder, true);
 				}
 				else {
@@ -1747,7 +1728,6 @@ namespace BetterExplorer {
 				if (!File.Exists("Settings.xml")) return;
 				var Settings = XElement.Load("Settings.xml");
 
-				var Data = bcbc.DropDownItems;
 				if (Settings.Element("DropDownItems") != null) {
 					foreach (var item in Settings.Element("DropDownItems").Elements()) {
 						bcbc.DropDownItems.Add(item.Value);
@@ -3672,7 +3652,7 @@ namespace BetterExplorer {
 			e.Handled = true;
 
 			if (e.Data.GetType() != typeof(Wpf.Controls.TabItem)) {
-				var wpt = new BExplorer.Shell.Win32Point() { X = (int)ptw.X, Y = (int)ptw.Y };
+				var wpt = new BExplorer.Shell.Win32Point() { X = ptw.X, Y = ptw.Y };
 				DropTargetHelper.Create.DragOver(ref wpt, (int)e.Effects);
 			}
 		}
