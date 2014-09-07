@@ -4121,7 +4121,7 @@ namespace BetterExplorer {
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
-			if (this.bcbc.OnNavigate == null)
+			//if (this.bcbc.OnNavigate == null)
 				this.bcbc.OnNavigate = NavigationController;
 
 			var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;

@@ -2707,7 +2707,11 @@ namespace BExplorer.Shell {
 							fo.CopyItem(item, this.CurrentFolder);
 						else
 							fo.MoveItem(item, this.CurrentFolder.ComInterface, null);
+						Marshal.ReleaseComObject(item);
 					}
+					Marshal.ReleaseComObject(shellItemArray);
+					shellItemArray = null;
+					items = null;
 
 					fo.PerformOperations();
 				}

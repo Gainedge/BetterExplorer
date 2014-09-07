@@ -55,6 +55,7 @@ namespace BExplorer.Shell {
 			Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR : Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
+			theNewItem.Dispose();
 		}
 		public override void PostMoveItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrMove, IShellItem psiNewlyCreated) {
 			System.Windows.Forms.Application.DoEvents();
@@ -65,6 +66,7 @@ namespace BExplorer.Shell {
 			Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR : Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
+			theNewItem.Dispose();
 		}
 	}
 }

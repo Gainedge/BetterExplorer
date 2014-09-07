@@ -1295,8 +1295,20 @@ namespace BExplorer.Shell {
 		public static ShellItem ToShellParsingName(String path) {
 			if (path.StartsWith("::") && !path.StartsWith(@"\\"))
 				return new ShellItem(String.Format("shell:{0}", path));
-			else if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
-				return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+			//else 
+			//	if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+			//	return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+			else if (!path.StartsWith(@"\\"))
+			{
+				if (path.Contains(":"))
+				{
+					return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+				}
+				else
+				{
+					return new ShellItem(@"\\" + String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+				}
+			}
 			else
 				return new ShellItem(path);
 		} //TODO: Consider making this a constructor!

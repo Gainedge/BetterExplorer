@@ -157,7 +157,7 @@ namespace BExplorer.Shell {
 
 			for (int i = 0; i < directories.Length; i++) {
 				if (i == 0) {
-					items.Add(new ShellItem(directories[i].ToShellParsingName()));
+					items.Add(ShellItem.ToShellParsingName(directories[i]));// new ShellItem(directories[i].ToShellParsingName()));
 				}
 				else {
 					string path = String.Empty;
@@ -169,7 +169,7 @@ namespace BExplorer.Shell {
 							path = String.Format("{0}{1}{2}", path, Path.DirectorySeparatorChar, directories[j]);
 						}
 					}
-					var shellItem = new ShellItem(path.ToShellParsingName());
+					var shellItem = ShellItem.ToShellParsingName(path);
 					items.Add(shellItem);
 				}
 			}
