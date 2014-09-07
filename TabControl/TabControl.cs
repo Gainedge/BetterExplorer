@@ -410,10 +410,10 @@ namespace Wpf.Controls {
 				_toggleButton.Checked += DropdownButton_Checked;
 			}
 
-			ScrollViewer scrollViewer = this.Template.FindName("PART_ScrollViewer", this) as ScrollViewer;
+			var scrollViewer = this.Template.FindName("PART_ScrollViewer", this) as ScrollViewer;
 
 			// set up event handlers for the RepeatButtons Click event
-			RepeatButton repeatLeft = this.Template.FindName("PART_RepeatLeft", this) as RepeatButton;
+			var repeatLeft = this.Template.FindName("PART_RepeatLeft", this) as RepeatButton;
 			if (repeatLeft != null) {
 				repeatLeft.Click += delegate {
 					if (scrollViewer != null)
@@ -421,7 +421,7 @@ namespace Wpf.Controls {
 				};
 			}
 
-			RepeatButton repeatRight = this.Template.FindName("PART_RepeatRight", this) as RepeatButton;
+			var repeatRight = this.Template.FindName("PART_RepeatRight", this) as RepeatButton;
 			if (repeatRight != null) {
 				repeatRight.Click += delegate {
 					if (scrollViewer != null)
@@ -507,7 +507,7 @@ namespace Wpf.Controls {
 			base.OnItemsChanged(e);
 
 			if (e.Action == NotifyCollectionChangedAction.Add && SelectNewTabOnCreate) {
-				TabItem tabItem = (TabItem)this.ItemContainerGenerator.ContainerFromItem(e.NewItems[e.NewItems.Count - 1]);
+				var tabItem = (TabItem)this.ItemContainerGenerator.ContainerFromItem(e.NewItems[e.NewItems.Count - 1]);
 				SelectedItem = tabItem;
 
 				TabPanel itemsHost = Helper.FindVirtualizingTabPanel(this);
@@ -614,7 +614,7 @@ namespace Wpf.Controls {
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private void ContextMenuItem_Click(object sender, RoutedEventArgs e) {
-			MenuItem mi = sender as MenuItem;
+			var mi = sender as MenuItem;
 			if (mi == null) return;
 
 			int index;
