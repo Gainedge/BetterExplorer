@@ -6,6 +6,10 @@ Issues
 ==============
 http://bugtracker.better-explorer.com/
 
+Contribute
+==============
+If you want help contributing email us at aaroncampf@gmail.com
+
 
 How to build and test Better Explorer
 ======================================
