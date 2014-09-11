@@ -36,6 +36,7 @@ namespace Wpf.Controls {
 		public Action ConstructMoveToCopyToMenu;
 
 		public bool isGoingBackOrForward;
+		public bool IsSelectionHandled = false;
 
 		// TemplatePart controls
 		private ToggleButton _toggleButton;
@@ -295,6 +296,7 @@ namespace Wpf.Controls {
 
 			try {
 				Items.Add(newt);
+				IsSelectionHandled = !IsNavigate;
 			}
 			catch (Exception) {
 
@@ -505,7 +507,9 @@ namespace Wpf.Controls {
 
 		protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e) {
 			base.OnItemsChanged(e);
-
+			if (e.Action == NotifyCollectionChangedAction.Add && !SelectNewTabOnCreate) {
+				this.IsSelectionHandled = true;
+			} 
 			if (e.Action == NotifyCollectionChangedAction.Add && SelectNewTabOnCreate) {
 				var tabItem = (TabItem)this.ItemContainerGenerator.ContainerFromItem(e.NewItems[e.NewItems.Count - 1]);
 				SelectedItem = tabItem;

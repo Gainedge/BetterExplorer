@@ -19,13 +19,12 @@ namespace BExplorer.Shell {
 		#region Event Handlers
 
 		public event EventHandler<TreeNodeMouseClickEventArgs> NodeClick;
-
+		public event EventHandler<NavigatedEventArgs> AfterSelect;
 		#endregion Event Handlers
 
 		#region Public Members
 
 		public TreeViewBase ShellTreeView;
-
 		public Boolean IsShowHiddenItems { get; set; }
 
 		public ShellView ShellListView {
@@ -553,8 +552,11 @@ namespace BExplorer.Shell {
 				}
 
 				this.isFromTreeview = true;
-				if (this._IsNavigate)
+				if (this._IsNavigate) {
 					this.ShellListView.Navigate_Full(linkSho ?? sho, true, true);
+					if (this.ShellListView.CurrentFolder != null && this.AfterSelect != null)
+						this.AfterSelect.Invoke(this, new NavigatedEventArgs(this.ShellListView.CurrentFolder, null));
+				}
 
 				this._IsNavigate = false;
 				this.isFromTreeview = false;

@@ -674,6 +674,8 @@ namespace BExplorer.Shell {
 			//this.KeyDown += ShellView_KeyDown;
 			this.MouseUp += ShellView_MouseUp;
 			//this.GotFocus += ShellView_GotFocus;
+			selectionTimer.Interval = 300;
+			selectionTimer.Tick += selectionTimer_Tick;
 		}
 
 		#endregion Initializer
@@ -681,16 +683,16 @@ namespace BExplorer.Shell {
 		#region Events
 
 		private void selectionTimer_Tick(object sender, EventArgs e) {
-			if (this.ItemForRename != this.GetFirstSelectedItemIndex()) {
-				(sender as F.Timer).Stop();
-				this.EndLabelEdit();
-			}
 			if (MouseButtons != F.MouseButtons.Left) {
 				OnSelectionChanged();
 				if (KeyJumpTimerDone != null) {
 					KeyJumpTimerDone(this, EventArgs.Empty);
 				}
 				(sender as F.Timer).Stop();
+			}
+			if (this.ItemForRename != this.GetFirstSelectedItemIndex()) {
+				(sender as F.Timer).Stop();
+				this.EndLabelEdit();
 			}
 		}
 
@@ -1540,6 +1542,9 @@ namespace BExplorer.Shell {
 										if (this.ItemUpdated != null)
 											this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
 									}
+								} 
+								else {
+										this.RefreshItem(this.ItemsHashed[exisitingItem], true);
 								}
 								//else
 								//{
@@ -1982,11 +1987,7 @@ namespace BExplorer.Shell {
 
 								ToolTip.HideTooltip();
 
-								selectionTimer.Interval = 100;
-
-								//TODO: Fix this
-								selectionTimer.Tick -= selectionTimer_Tick;
-								selectionTimer.Tick += selectionTimer_Tick;
+								
 								this._IsDragSelect = nlv.uNewState;
 								if (IsGroupsEnabled) {
 									if (nlv.iItem != -1) {
@@ -2257,7 +2258,17 @@ namespace BExplorer.Shell {
 													}
 													if (thumbnail != null) {
 														if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize) || thumbnail.Width == thumbnail.Height && thumbnail.Width != IconSize)) {
-															ThumbnailsForCacheLoad.Enqueue(index);
+															if (sho.IsImage) {
+																using (Stream stream = File.OpenRead(sho.ParsingName)) {
+																	using (Image sourceImage = Image.FromStream(stream, false, false)) {
+																		if (thumbnail.Width != sourceImage.Width || thumbnail.Height != sourceImage.Height) {
+																			ThumbnailsForCacheLoad.Enqueue(index);
+																		}
+																	}
+																}
+															} else {
+																ThumbnailsForCacheLoad.Enqueue(index);
+															}
 														}
 														else {
 															sho.IsThumbnailLoaded = true;
@@ -2353,8 +2364,10 @@ namespace BExplorer.Shell {
 																	sho.IsIconLoaded = true;
 																	using (var g = Graphics.FromHdc(hdc)) {
 																		var cutFlag = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
-																		if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+																		var newSho = ShellItem.ToShellParsingName(sho.ParsingName);
+																		if (newSho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																			icon = Helpers.ChangeOpacity(icon, 0.5f);
+																		//newSho.Dispose();
 																		g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
 
 																		if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
@@ -4264,5 +4277,17 @@ namespace BExplorer.Shell {
 
 		#endregion
 
+
+		public void OpenShareUI() {
+			HResult hr = Shell32.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(this.GetFirstSelectedItem().ParsingName.Replace(@"\\", @"\")));
+		}
+
+		public void MapDrive(IntPtr intPtr, string path) {
+			Shell32.MapDrive(intPtr, path);
+		}
+
+		public void DisconnectDrive(IntPtr handle, int type) {
+			Shell32.WNetDisconnectDialog(handle, type);
+		}
 	}
 }

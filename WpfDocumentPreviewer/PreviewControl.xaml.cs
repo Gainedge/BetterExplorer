@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -37,11 +38,15 @@ namespace WpfDocumentPreviewer {
 			get { return System.IO.Path.GetFileName(fileName); }
 			set {
 				fileName = value;
-				SetFileName(fileName);
-				if (!String.IsNullOrEmpty(fileName)) {
-					RaisePropertyChanged("ImageSource");
-				}
-				RaisePropertyChanged("FileName");
+				Task.Run(() => {
+
+
+					SetFileName(fileName);
+					if (!String.IsNullOrEmpty(fileName)) {
+						RaisePropertyChanged("ImageSource");
+					}
+					RaisePropertyChanged("FileName");
+				});
 			}
 		}
 
@@ -66,42 +71,52 @@ namespace WpfDocumentPreviewer {
 
 				Guid? previewGuid = Guid.Empty;
 				if (previewHandlerHost1.Open(fileName, out previewGuid) == false) {
-					if ((previewGuid != null && previewGuid.Value != Guid.Empty) || !Images.Contains(System.IO.Path.GetExtension(fileName))) {
-						wb1.Visibility = Visibility.Visible;
-						var activeX = wb1.GetType().InvokeMember("ActiveXInstance",
-							BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
-							null, wb1, new object[] { }) as SHDocVw.WebBrowser;
-						activeX.FileDownload += activeX_FileDownload;
-						wb1.Navigate(fileName);
-						imgh1.Visibility = Visibility.Collapsed;
-						wfh1.Visibility = Visibility.Collapsed;
-					}
-					else {
-						wb1.Visibility = Visibility.Collapsed;
-						imageSrc = new Bitmap(fileName);
+					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+						(Action)(() => {
+							if ((previewGuid != null && previewGuid.Value != Guid.Empty) || !Images.Contains(System.IO.Path.GetExtension(fileName))) {
+								wb1.Visibility = Visibility.Visible;
+								var activeX = wb1.GetType().InvokeMember("ActiveXInstance",
+									BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+									null, wb1, new object[] { }) as SHDocVw.WebBrowser;
+								activeX.FileDownload += activeX_FileDownload;
+								wb1.Navigate(fileName);
+								imgh1.Visibility = Visibility.Collapsed;
+								wfh1.Visibility = Visibility.Collapsed;
+							} else {
+								wb1.Visibility = Visibility.Collapsed;
+								imageSrc = new Bitmap(fileName);
 
-						img1.Image = imageSrc;
-						imgh1.Visibility = Visibility.Visible;
-						wfh1.Visibility = Visibility.Collapsed;
-					}
+								img1.Image = imageSrc;
+								img1.Refresh();
+								img1.Update();
+								imgh1.Visibility = Visibility.Visible;
+								wfh1.Visibility = Visibility.Collapsed;
+							}
+						}));
 				}
 				else {
-					imgh1.Visibility = Visibility.Collapsed;
-					wb1.Visibility = Visibility.Collapsed;
-					wfh1.Visibility = Visibility.Visible;
+					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+						(Action)(() => {
+							imgh1.Visibility = Visibility.Collapsed;
+							wb1.Visibility = Visibility.Collapsed;
+							wfh1.Visibility = Visibility.Visible;
+						}));
 				}
+				
 			}
 			else {
-				Guid? previewGuid = Guid.Empty;
-				previewHandlerHost1.Open(fileName, out previewGuid);
-				wb1.Visibility = Visibility.Collapsed;
-				wfh1.Visibility = Visibility.Visible;
-				imgh1.Visibility = Visibility.Collapsed;
-				img1.Image = null;
-				if (imageSrc != null)
-					imageSrc.Dispose();
+				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+						(Action)(() => {
+							Guid? previewGuid = Guid.Empty;
+							previewHandlerHost1.Open(fileName, out previewGuid);
+							wb1.Visibility = Visibility.Collapsed;
+							wfh1.Visibility = Visibility.Visible;
+							imgh1.Visibility = Visibility.Collapsed;
+							img1.Image = null;
+							if (imageSrc != null)
+								imageSrc.Dispose();
+						}));
 			}
-
 		}
 
 		void activeX_FileDownload(bool ActiveDocument, ref bool Cancel) {

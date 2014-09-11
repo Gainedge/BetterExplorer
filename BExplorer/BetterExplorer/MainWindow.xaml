@@ -1636,7 +1636,7 @@
 							Visibility="Visible">
 				<Ribbon:RibbonGroupBox x:Name="Compress"
 								 Header="{DynamicResource tgCompressCP}"
-								 Ribbon:KeyTip.Keys="C">
+								 Ribbon:KeyTip.Keys="C" Visibility="Collapsed">
 					<Ribbon:Button x:Name="btnCreateArchive"
 						 Click="btnCreateArchive_Click"
 						 Header="{DynamicResource btnMakeArchiveCP}"

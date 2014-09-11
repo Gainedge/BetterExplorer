@@ -368,6 +368,22 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		public bool IsImage {
+			get {
+				switch (this.Extension.ToLowerInvariant()) {
+					case ".jpg":
+					case ".png":
+					case ".jpeg":
+					case ".gif":
+					case ".tiff":
+					case ".bmp":
+						return true;
+					default:
+						return false;
+				}
+			}
+		}
+
 		/// <summary>
 		/// Gets the item's parent.
 		/// </summary>
@@ -517,57 +533,58 @@ namespace BExplorer.Shell {
 
 		private IExtractIconPWFlags GetIconType() {
 			var parsingName = this.ParsingName.ToLowerInvariant();
-			if (this.IsLink)
-				return IExtractIconPWFlags.GIL_PERINSTANCE | IExtractIconPWFlags.GIL_FORCENOSHIELD;
-			if (parsingName.ToLowerInvariant().EndsWith(".htm") || parsingName.ToLowerInvariant().EndsWith(".html") || parsingName.ToLowerInvariant().EndsWith(".xml"))
-				return IExtractIconPWFlags.GIL_PERCLASS | IExtractIconPWFlags.GIL_FORCENOSHIELD;
-			IExtractIcon iextract = null;
-			IShellFolder ishellfolder = null;
-			StringBuilder str = null;
-			IntPtr result;
+			if (this.IsLink || parsingName.ToLowerInvariant().EndsWith(".exe") || parsingName.ToLowerInvariant().EndsWith(".com") || parsingName.ToLowerInvariant().EndsWith(".bat") || parsingName.ToLowerInvariant().EndsWith(".msi"))
+				return IExtractIconPWFlags.GIL_PERINSTANCE;
+			else if (this.IsFolder) {
+				IExtractIcon iextract = null;
+				IShellFolder ishellfolder = null;
+				StringBuilder str = null;
+				IntPtr result;
 
-			if (this.Parent == null) {
-				return 0;
-			}
+				if (this.Parent == null) {
+					return 0;
+				}
 
-			try {
-				var guid = new Guid("000214fa-0000-0000-c000-000000000046");
-				uint res = 0;
-				ishellfolder = this.Parent.GetIShellFolder();
-				IntPtr[] pidls = new IntPtr[1];
-				pidls[0] = Shell32.ILFindLastID(this.Pidl);
-				ishellfolder.GetUIObjectOf(
-					IntPtr.Zero,
-					1,
-					pidls,
-					ref guid,
-					res,
-					out result
-				);
-				if (result == IntPtr.Zero) {
+				try {
+					var guid = new Guid("000214fa-0000-0000-c000-000000000046");
+					uint res = 0;
+					ishellfolder = this.Parent.GetIShellFolder();
+					IntPtr[] pidls = new IntPtr[1];
+					pidls[0] = Shell32.ILFindLastID(this.Pidl);
+					ishellfolder.GetUIObjectOf(
+						IntPtr.Zero,
+						1,
+						pidls,
+						ref guid,
+						res,
+						out result
+					);
+					if (result == IntPtr.Zero) {
+						pidls = null;
+						Marshal.ReleaseComObject(ishellfolder);
+						return IExtractIconPWFlags.GIL_PERCLASS;
+					}
+					iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
+					str = new StringBuilder(512);
+					int index = -1;
+					IExtractIconPWFlags flags;
+					iextract.GetIconLocation(IExtractIconUFlags.GIL_ASYNC, str, 512, out index, out flags);
 					pidls = null;
 					Marshal.ReleaseComObject(ishellfolder);
-					return IExtractIconPWFlags.GIL_PERCLASS;
-				}
-				iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
-				str = new StringBuilder(512);
-				int index = -1;
-				IExtractIconPWFlags flags;
-				iextract.GetIconLocation(IExtractIconUFlags.GIL_ASYNC, str, 512, out index, out flags);
-				pidls = null;
-				Marshal.ReleaseComObject(ishellfolder);
-				Marshal.ReleaseComObject(iextract);
-				ishellfolder = null;
-				iextract = null;
-				str = null;
-				return flags;
-			}
-			catch (Exception) {
-				if (ishellfolder != null)
-					Marshal.ReleaseComObject(ishellfolder);
-				if (iextract != null)
 					Marshal.ReleaseComObject(iextract);
-				return 0;
+					ishellfolder = null;
+					iextract = null;
+					str = null;
+					return flags;
+				} catch (Exception) {
+					if (ishellfolder != null)
+						Marshal.ReleaseComObject(ishellfolder);
+					if (iextract != null)
+						Marshal.ReleaseComObject(iextract);
+					return 0;
+				}
+			} else {
+				return IExtractIconPWFlags.GIL_PERCLASS;
 			}
 		}
 
@@ -1302,11 +1319,17 @@ namespace BExplorer.Shell {
 			{
 				if (path.Contains(":"))
 				{
-					return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+					return new ShellItem(String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString()));
 				}
 				else
 				{
-					return new ShellItem(@"\\" + String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+
+					try {
+						return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+					} catch (Exception ex) {
+						return new ShellItem(@"\\" + String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+						throw;
+					}
 				}
 			}
 			else

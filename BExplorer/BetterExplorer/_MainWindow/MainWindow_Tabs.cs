@@ -203,13 +203,16 @@ namespace BetterExplorer {
 			}
 
 			if (e.AddedItems.Count == 0) return;
-			SelectTab(e.AddedItems[0] as Wpf.Controls.TabItem);
+			if (!tcMain.IsSelectionHandled) {
+				SelectTab(e.AddedItems[0] as Wpf.Controls.TabItem);
 
-			//btnUndoClose
-			btnUndoClose.Items.Clear();
-			foreach (var item in tcMain.ReopenableTabs) {
-				btnUndoClose.Items.Add(item.CurrentLocation);
+				//btnUndoClose
+				btnUndoClose.Items.Clear();
+				foreach (var item in tcMain.ReopenableTabs) {
+					btnUndoClose.Items.Add(item.CurrentLocation);
+				}
 			}
+			tcMain.IsSelectionHandled = false;
 			this.ShellListView.Focus();
 		}
 

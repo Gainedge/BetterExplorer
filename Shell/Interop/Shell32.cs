@@ -1100,6 +1100,128 @@ namespace BExplorer.Shell.Interop {
 					 SHFormatOptions.SHFMT_OPT_FULL);
 			return Result;
 		}
+		[DllImport("kernel32.dll")]
+		public static extern IntPtr GlobalAlloc(uint uFlags, UIntPtr dwBytes);
+		[DllImport("kernel32.dll")]
+		public static extern IntPtr GlobalFree(IntPtr hMem);
+		[DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory")]
+		static extern void CopyMemory(IntPtr destination, NETRESOURCE source, uint length);
+		[DllImport("shlwapi.dll", CharSet = CharSet.Unicode)]
+		public static extern bool PathIsNetworkPath(string pszPath);
+		public enum ResourceScope {
+			RESOURCE_CONNECTED = 1,
+			RESOURCE_GLOBALNET,
+			RESOURCE_REMEMBERED,
+			RESOURCE_RECENT,
+			RESOURCE_CONTEXT
+		}
+		public enum ResourceType {
+			RESOURCETYPE_ANY,
+			RESOURCETYPE_DISK,
+			RESOURCETYPE_PRINT,
+			RESOURCETYPE_RESERVED
+		}
+		public enum ResourceUsage {
+			RESOURCEUSAGE_CONNECTABLE = 0x00000001,
+			RESOURCEUSAGE_CONTAINER = 0x00000002,
+			RESOURCEUSAGE_NOLOCALDEVICE = 0x00000004,
+			RESOURCEUSAGE_SIBLING = 0x00000008,
+			RESOURCEUSAGE_ATTACHED = 0x00000010,
+			RESOURCEUSAGE_ALL = (RESOURCEUSAGE_CONNECTABLE | RESOURCEUSAGE_CONTAINER | RESOURCEUSAGE_ATTACHED),
+		}
+		public enum ResourceDisplayType {
+			RESOURCEDISPLAYTYPE_GENERIC,
+			RESOURCEDISPLAYTYPE_DOMAIN,
+			RESOURCEDISPLAYTYPE_SERVER,
+			RESOURCEDISPLAYTYPE_SHARE,
+			RESOURCEDISPLAYTYPE_FILE,
+			RESOURCEDISPLAYTYPE_GROUP,
+			RESOURCEDISPLAYTYPE_NETWORK,
+			RESOURCEDISPLAYTYPE_ROOT,
+			RESOURCEDISPLAYTYPE_SHAREADMIN,
+			RESOURCEDISPLAYTYPE_DIRECTORY,
+			RESOURCEDISPLAYTYPE_TREE,
+			RESOURCEDISPLAYTYPE_NDSCONTAINER
+		}
+		[StructLayout(LayoutKind.Sequential)]
+		public class NETRESOURCE {
+			public ResourceScope dwScope = 0;
+			public ResourceType dwType = 0;
+			public ResourceDisplayType dwDisplayType = 0;
+			public ResourceUsage dwUsage = 0;
+			public string lpLocalName = null;
+			public IntPtr lpRemoteName = IntPtr.Zero;
+			public string lpComment = null;
+			public string lpProvider = null;
+		}
+
+		[DllImport("Ntshrui.dll")]
+		public static extern HResult ShowShareFolderUI(IntPtr hwndParent, IntPtr pszPath);
+		[Flags]
+		public enum DisconnectDialogFlags :
+		int {
+			UpdateProfile = 0x00000001,
+			NoForce = 0x00000040,
+		}
+		[Flags]
+		public enum ConnectDialogFlags :
+		int {
+			ReadOnlyPath = 0x00000001,
+			// Conn_point = 0x00000002,
+			UseMru = 0x00000004,
+			HideBox = 0x00000008,
+			Persist = 0x00000010,
+			NotPersist = 0x00000020,
+		}
+		public struct ConnectDialogInfo {
+			public uint StructureSize;
+			public IntPtr Owner;
+			public IntPtr ConnectResource;
+			public ConnectDialogFlags Flags;
+			public int DeviceNumber;
+		}
+		[StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		public struct DisconnectDialogInfo {
+			public uint StructureSize;
+			public IntPtr Owner;
+			[MarshalAs(UnmanagedType.LPTStr, SizeConst = 200)]
+			public string LocalName;
+			[MarshalAs(UnmanagedType.LPTStr, SizeConst = 200)]
+			public string RemoteName;
+			public DisconnectDialogFlags Flags;
+		}
+		[DllImport("mpr.dll", EntryPoint = "WNetConnectionDialog", SetLastError = true, CharSet = CharSet.Auto)]
+		public static extern int WNetConnectionDialog(IntPtr whnd, int dwType);
+		[DllImport("mpr.dll", CharSet = CharSet.Auto)]
+		public static extern int WNetConnectionDialog1(ConnectDialogInfo connDlgStruct);
+		/// <summary>
+		/// Disconnect Mapped Network Drive dialog
+		/// </summary>
+		/// <param name="whnd"></param>
+		/// <param name="dwType"></param>
+		/// <returns></returns>
+		[DllImport("mpr.dll", EntryPoint = "WNetDisconnectDialog", SetLastError = true, CharSet = CharSet.Auto)]
+		public static extern int WNetDisconnectDialog(IntPtr whnd, int dwType);
+		[DllImport("mpr.dll", CharSet = CharSet.Auto)]
+		public static extern int WNetDisconnectDialog1(DisconnectDialogInfo disConnDlgStruct);
+		public static void MapDrive(IntPtr owner, String remotePath) {
+			if (String.IsNullOrEmpty(remotePath) || !PathIsNetworkPath(remotePath)) {
+				WNetConnectionDialog(owner, 1);
+			} else {
+				ConnectDialogInfo info = new ConnectDialogInfo();
+				info.Owner = owner;
+				info.Flags = ConnectDialogFlags.Persist | ConnectDialogFlags.ReadOnlyPath;
+				NETRESOURCE res = new NETRESOURCE();
+				res.dwType = ResourceType.RESOURCETYPE_DISK;
+				res.lpRemoteName = Marshal.StringToHGlobalAuto(remotePath);
+				IntPtr resptr = GlobalAlloc(0x0040 | 0x0000, (UIntPtr)Marshal.SizeOf(res));
+				CopyMemory(resptr, res, (uint)Marshal.SizeOf(res));
+				info.ConnectResource = resptr;
+				info.StructureSize = (uint)Marshal.SizeOf(info);
+				var result = WNetConnectionDialog1(info);
+				GlobalFree(resptr);
+			}
+		} 
 
 		[Flags]
 		public enum SSF {
