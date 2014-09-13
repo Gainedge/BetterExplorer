@@ -2513,8 +2513,10 @@ namespace BExplorer.Shell
 														using (var g = Graphics.FromHdc(hdc))
 														{
 															var cutFlag = User32.SendMessage(this.LVHandle, Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
-															if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+															var newSho = ShellItem.ToShellParsingName(sho.ParsingName);
+															if (newSho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																thumbnail = Helpers.ChangeOpacity(thumbnail, 0.5f);
+															newSho.Dispose();
 															g.DrawImageUnscaled(thumbnail, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - thumbnail.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height));
 
 															if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List)
@@ -2560,10 +2562,11 @@ namespace BExplorer.Shell
 																using (var g = Graphics.FromHdc(hdc))
 																{
 																	var cutFlag = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
-																	if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+																	var newSho = ShellItem.ToShellParsingName(sho.ParsingName);
+																	if (newSho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																		icon = Helpers.ChangeOpacity(icon, 0.5f);
 																	g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
-
+																	newSho.Dispose();
 																	if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List)
 																	{
 																		var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
@@ -2621,7 +2624,7 @@ namespace BExplorer.Shell
 																		var newSho = ShellItem.ToShellParsingName(sho.ParsingName);
 																		if (newSho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																			icon = Helpers.ChangeOpacity(icon, 0.5f);
-																		//newSho.Dispose();
+																		newSho.Dispose();
 																		g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
 
 																		if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List)
@@ -2664,9 +2667,11 @@ namespace BExplorer.Shell
 															using (var g = Graphics.FromHdc(hdc))
 															{
 																var cutFlag = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
-																if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+																var newSho = ShellItem.ToShellParsingName(sho.ParsingName);
+																if (newSho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																	icon = Helpers.ChangeOpacity(icon, 0.5f);
 																g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
+																newSho.Dispose();
 															}
 															icon.Dispose();
 														}
@@ -2690,9 +2695,11 @@ namespace BExplorer.Shell
 																using (var g = Graphics.FromHdc(hdc))
 																{
 																	var cutFlag = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
-																	if (sho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+																	var newSho = ShellItem.ToShellParsingName(sho.ParsingName);
+																	if (newSho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
 																		icon = Helpers.ChangeOpacity(icon, 0.5f);
 																	g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
+																	newSho.Dispose();
 																}
 																icon.Dispose();
 															}
