@@ -867,7 +867,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnProperties_Click(object sender, RoutedEventArgs e) {
-			ShellListView.ShowPropPage(this.Handle, ShellListView.GetFirstSelectedItem().ParsingName, "");
+			ShellListView.ShowFileProperties();
 		}
 
 		private void btnInvSel_Click(object sender, RoutedEventArgs e) {

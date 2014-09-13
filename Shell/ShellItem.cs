@@ -1035,7 +1035,7 @@ namespace BExplorer.Shell {
 		/// display order.
 		/// </returns>
 		public int Compare(ShellItem item) {
-			int result = ComInterface.Compare(item.ComInterface, SICHINT.DISPLAY);
+			int result = this.Equals(item) ? 0 : 1;
 			return result;
 		}
 
@@ -1353,6 +1353,43 @@ namespace BExplorer.Shell {
 			else
 				return new ShellItem(newUri);
 		}//TODO: Start using this safe Constructor more
+
+	}
+	public class ProductComparer : IEqualityComparer<ShellItem>
+	{
+		// Products are equal if their names and product numbers are equal.
+		public bool Equals(ShellItem x, ShellItem y)
+		{
+
+			//Check whether the compared objects reference the same data.
+			if (x.Equals(y)) return true;
+			return false;
+
+			//Check whether any of the compared objects is null.
+			//if (Object.ReferenceEquals(x, null) || Object.ReferenceEquals(y, null))
+			//	return false;
+
+			////Check whether the products' properties are equal.
+			//return x.Code == y.Code && x.Name == y.Name;
+		}
+
+		// If Equals() returns true for a pair of objects 
+		// then GetHashCode() must return the same value for these objects.
+
+		public int GetHashCode(ShellItem product)
+		{
+			//Check whether the object is null
+			if (Object.ReferenceEquals(product, null)) return 0;
+
+			//Get hash code for the Name field if it is not null.
+			int hashProductName = product.CachedParsingName == null ? 0 : product.CachedParsingName.GetHashCode();
+
+			////Get hash code for the Code field.
+			//int hashProductCode = product.Code.GetHashCode();
+
+			//Calculate the hash code for the product.
+			return hashProductName;
+		}
 
 	}
 }

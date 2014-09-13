@@ -820,10 +820,10 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("shell32.dll")]
 		public static extern HResult SHGetSpecialFolderLocation(IntPtr hwndOwner, CSIDL nFolder, out IntPtr ppidl);
 
-		/*
+		
 		[DllImport("shell32.dll", SetLastError = true)]
 		public static extern int SHMultiFileProperties(System.Runtime.InteropServices.ComTypes.IDataObject pdtobj, int flags);
-
+		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern bool ShellExecuteEx(ref SHELLEXECUTEINFO lpExecInfo);
 		
