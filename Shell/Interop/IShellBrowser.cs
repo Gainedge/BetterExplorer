@@ -23,6 +23,7 @@ using System.Runtime.InteropServices;
 
 namespace BExplorer.Shell.Interop
 {
+
     public enum FCW
     {
         FCW_STATUS = 0x0001,
@@ -58,7 +59,6 @@ namespace BExplorer.Shell.Interop
         SBSP_REDIRECT = 0x40000000,
         SBSP_INITIATEDBYHLINKFRAME = 0x80000000,
     }
-
     [ComImport]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     [Guid("000214E2-0000-0000-C000-000000000046")]

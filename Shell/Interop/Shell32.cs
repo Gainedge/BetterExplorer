@@ -384,14 +384,14 @@ namespace BExplorer.Shell.Interop {
 
 	public static class Shell32 {
 
-		/*
+	
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		public static extern IntPtr SHChangeNotification_Lock(IntPtr windowHandle, int processId, out IntPtr pidl, out uint lEvent);
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern Boolean SHChangeNotification_Unlock(IntPtr hLock);
-		*/
+	
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
 		public static extern void SHCreateShellItemArrayFromDataObject(

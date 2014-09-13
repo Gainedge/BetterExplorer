@@ -39,7 +39,7 @@ namespace BExplorer.Shell.Interop {
 						SHCNE fEvents,
 						uint wMsg,
 						int cEntries,
-						[MarshalAs(UnmanagedType.LPArray)] SHChangeNotifyEntry[] pFsne);
+						ref SHChangeNotifyEntry pFsne);
 
 		/*
 		[DllImport("shell32.dll", EntryPoint = "#4", CharSet = CharSet.Auto)]
@@ -66,13 +66,13 @@ namespace BExplorer.Shell.Interop {
 			[In, Out, MarshalAs(UnmanagedType.LPTStr)] String pszPath);
 		*/
 
-		/*
+
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		private static extern uint SHGetSpecialFolderLocation(
 			IntPtr hWnd,
 			CSIDL nFolder,
 			out IntPtr Pidl);
-		*/
+	
 
 		#endregion
 
@@ -418,7 +418,6 @@ namespace BExplorer.Shell.Interop {
 		#endregion
 		*/
 
-		/*
 		#region SHGetFolderLocationReturnValues Enum
 		public enum SHGetFolderLocationReturnValues : uint {
 			/// <summary>
@@ -435,7 +434,7 @@ namespace BExplorer.Shell.Interop {
 			E_INVALIDARG = 0x80070057
 		}
 		#endregion
-		*/
+
 
 		/*
 		[DllImport("shell32.dll")]
@@ -444,7 +443,7 @@ namespace BExplorer.Shell.Interop {
 
 		#region Register Functions
 
-		/*
+		
 		/// <summary>
 		/// Register a form handle
 		/// This form will receive a WM_SHNOTIFY when a notification occures
@@ -477,13 +476,13 @@ namespace BExplorer.Shell.Interop {
 				hWnd,
 				//SHCNF.SHCNF_TYPE | SHCNF.SHCNF_IDLIST,
 				SHCNRF.ShellLevel,
-				SHCNE.SHCNE_ALLEVENTS | SHCNE.SHCNE_INTERRUPT,
+				SHCNE.SHCNE_ALLEVENTS,
 				WM_SHNOTIFY,
 				1,
-				changenetrys);
+				ref changeentry);
 			return (notifyid);
 		}
-		*/
+		
 
 		public ulong RegisterChangeNotify(IntPtr hWnd, ShellItem item, bool Recursively) {
 			IntPtr handle = IntPtr.Zero;
@@ -498,11 +497,11 @@ namespace BExplorer.Shell.Interop {
 			//TODO: Make sure this works even though [MarshalAs(UnmanagedType.LPArray)]
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
-				SHCNRF.InterruptLevel | SHCNRF.ShellLevel,
-				SHCNE.SHCNE_ALLEVENTS | SHCNE.SHCNE_INTERRUPT,
+				SHCNRF.InterruptLevel | SHCNRF.ShellLevel | SHCNRF.RecursiveInterrupt | SHCNRF.NewDelivery,
+				SHCNE.SHCNE_ALLEVENTS,
 				WM_SHNOTIFY,
 				1,
-				changenetrys);
+				ref changeentry);
 			return (notifyid);
 		}
 
@@ -520,41 +519,39 @@ namespace BExplorer.Shell.Interop {
 		}
 		#endregion
 
-		/*
+		
 		#region Pidl functions
 
-		/*
-		/// <summary>
-		/// Get the path from a Pidl value
-		/// </summary>
-		/// <param name="Pidl">Pidl of the path</param>
-		/// <returns>Path</returns>
-		public static string GetPathFromPidl(IntPtr Pidl) {
-			string Path = new String('\0', MAX_PATH);
-			return (SHGetPathFromIDList(Pidl, Path) ? Path.ToString().TrimEnd('\0') : "");
-		}
-		-/
- 
-		/*
-		/// <summary>
-		/// Do not work
-		/// If someone has a solution please tell me (caudalth@etu.utc.fr)
-		/// </summary>
-		/// <param name="Pidl"></param>
-		/// <returns></returns>
-		public static string GetDisplayNameFromPidl(IntPtr Pidl) {
-			SHFILEINFO fileinfo = new SHFILEINFO(true);
-			SHGetFileInfoA(
-				(uint)Pidl,
-				0,
-				out fileinfo,
-				(uint)Marshal.SizeOf(fileinfo),
-				SHGFI.SHGFI_PIDL | SHGFI.SHGFI_DISPLAYNAME);
-			return (fileinfo.szDisplayName);
-		}
-		-/
+		
+		///// <summary>
+		///// Get the path from a Pidl value
+		///// </summary>
+		///// <param name="Pidl">Pidl of the path</param>
+		///// <returns>Path</returns>
+		//public static string GetPathFromPidl(IntPtr Pidl) {
+		//	string Path = new String('\0', MAX_PATH);
+		//	return (SHGetPathFromIDList(Pidl, Path) ? Path.ToString().TrimEnd('\0') : "");
+		//}
 
-		/*
+		///// <summary>
+		///// Do not work
+		///// If someone has a solution please tell me (caudalth@etu.utc.fr)
+		///// </summary>
+		///// <param name="Pidl"></param>
+		///// <returns></returns>
+		//public static string GetDisplayNameFromPidl(IntPtr Pidl) {
+		//	SHFILEINFO fileinfo = new SHFILEINFO(true);
+		//	SHGetFileInfoA(
+		//		(uint)Pidl,
+		//		0,
+		//		out fileinfo,
+		//		(uint)Marshal.SizeOf(fileinfo),
+		//		SHGFI.SHGFI_PIDL | SHGFI.SHGFI_DISPLAYNAME);
+		//	return (fileinfo.szDisplayName);
+		//}
+		
+
+		
 		/// <summary>
 		/// Get the Pidl from a special folder ID
 		/// </summary>
@@ -570,10 +567,10 @@ namespace BExplorer.Shell.Interop {
 				out pIdl);
 			return (pIdl);
 		}
-		-/
+
  
 		#endregion
-		*/
+		
 
 		#region Notification Function
 		/// <summary>
@@ -583,22 +580,31 @@ namespace BExplorer.Shell.Interop {
 		/// <param name="lParam"></param>
 		/// <returns>True if this is a new notification</returns>
 		public bool NotificationReceipt(IntPtr wParam, IntPtr lParam) {
-			SHNOTIFYSTRUCT shNotify = (SHNOTIFYSTRUCT)Marshal.PtrToStructure(
-				wParam,
-				typeof(SHNOTIFYSTRUCT));
-			NotifyInfos info = new NotifyInfos((SHCNE)(int)lParam);
+			IntPtr ptr;
+			uint eventID;
+			var lockPtr = Shell32.SHChangeNotification_Lock(wParam, (int)lParam, out ptr, out eventID);
+			try {
+				
+				SHNOTIFYSTRUCT shNotify = (SHNOTIFYSTRUCT)Marshal.PtrToStructure(
+					ptr,
+					typeof(SHNOTIFYSTRUCT));
+				NotifyInfos info = new NotifyInfos((SHCNE)(int)eventID);
 
-			//Not supported notifications
-			if (info.Notification == SHCNE.SHCNE_FREESPACE ||
-				info.Notification == SHCNE.SHCNE_UPDATEIMAGE)
-				return (false);
+				//Not supported notifications
+				if (info.Notification == SHCNE.SHCNE_FREESPACE ||
+					info.Notification == SHCNE.SHCNE_UPDATEIMAGE)
+					return (false);
 
-			info.Item1 = shNotify.dwItem1;
-			info.Item2 = shNotify.dwItem2;
+				info.Item1 = shNotify.dwItem1;
+				info.Item2 = shNotify.dwItem2;
 
-			// Was this notification in the received notifications ?
-			if (NotificationsReceived.Contains(info)) return (false);
-			NotificationsReceived.Add(info);
+				// Was this notification in the received notifications ?
+				if (NotificationsReceived.Contains(info)) return (false);
+				NotificationsReceived.Add(info);
+			} finally {
+				if (lockPtr != IntPtr.Zero)
+					Shell32.SHChangeNotification_Unlock(lockPtr);
+			}
 			return (true);
 			//DisplayName1 = GetDisplayNameFromPidl(shNotify.dwItem1);
 			//DisplayName2 = GetDisplayNameFromPidl(shNotify.dwItem2);
