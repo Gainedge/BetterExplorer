@@ -229,5 +229,33 @@ namespace BetterExplorer {
 			return o;
 		}
 		*/
+
+
+		public void HandleStartup() {
+			var args = Environment.GetCommandLineArgs();
+			//args = new[] { "t" };
+
+			if (args == null || args == null || args.Count() < 2) return;
+			if (this == null) return;
+
+			if (args[1] == "/nw") {
+				new MainWindow().Show();
+			}
+			else if (args[1] == "t") {
+				System.Windows.Forms.MessageBox.Show("Test");
+
+				this.Visibility = Visibility.Visible;
+				if (this.WindowState == WindowState.Minimized) {
+					User32.ShowWindow((System.Windows.Interop.HwndSource.FromVisual(this) as System.Windows.Interop.HwndSource).Handle, User32.ShowWindowCommands.Restore);
+				};
+
+				tcMain.NewTab();
+			}
+			else {
+				var sho = new ShellItem(args[1].ToShellParsingName());
+				tcMain.NewTab(sho, false);
+			}
+
+		}
 	}
 }

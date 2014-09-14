@@ -1646,7 +1646,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void Window_Loaded(object sender, RoutedEventArgs e) {
+		private void Window_Loaded(object sender, RoutedEventArgs e) {			
 			_keyjumpTimer.Interval = 1000;
 			_keyjumpTimer.Tick += _keyjumpTimer_Tick;
 
@@ -1744,6 +1744,9 @@ namespace BetterExplorer {
 			catch (Exception exe) {
 				MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
+
+
+			HandleStartup(); 
 		}
 
 		#endregion
@@ -2963,12 +2966,12 @@ namespace BetterExplorer {
 		/*
 		private void chkIsRestoreTabs_Checked(object sender, RoutedEventArgs e) {
 			IsrestoreTabs = true;
-			Utilities.SetRegistryValue("IsRestoreTabs", 1);
+			Utilities.SetRegistryValue("Is_RestoreTabs", 1);
 		}
 
 		private void chkIsRestoreTabs_Unchecked(object sender, RoutedEventArgs e) {
 			IsrestoreTabs = false;
-			Utilities.SetRegistryValue("IsRestoreTabs", 0);
+			Utilities.SetRegistryValue("Is_RestoreTabs", 0);
 		}
 		*/
 
@@ -4106,7 +4109,7 @@ namespace BetterExplorer {
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 			if (this.ShellListView.CurrentFolder == null) return;
 			//if (this.bcbc.OnNavigate == null)
-				this.bcbc.OnNavigate = NavigationController;
+			this.bcbc.OnNavigate = NavigationController;
 
 			var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 			if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
@@ -4210,65 +4213,64 @@ namespace BetterExplorer {
 			if (e.OldFolder != this.ShellListView.CurrentFolder) {
 				NavigationController(this.ShellListView.CurrentFolder);
 			}
-				SetupColumnsButton();
-				SetSortingAndGroupingButtons();
-				SetupUIOnSelectOrNavigate();
+			SetupColumnsButton();
+			SetSortingAndGroupingButtons();
+			SetupUIOnSelectOrNavigate();
 
-				if (!tcMain.isGoingBackOrForward) {
-					var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
-					Current.ClearForwardItems();
-					if (Current.CurrentLocation != e.Folder) Current.CurrentLocation = e.Folder;
-				}
+			if (!tcMain.isGoingBackOrForward) {
+				var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
+				Current.ClearForwardItems();
+				if (Current.CurrentLocation != e.Folder) Current.CurrentLocation = e.Folder;
+			}
 
-				tcMain.isGoingBackOrForward = false;
+			tcMain.isGoingBackOrForward = false;
 
-				SetupUIonNavComplete(e);
+			SetupUIonNavComplete(e);
 
-				if (this.IsConsoleShown)
-					ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+			if (this.IsConsoleShown)
+				ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
 
-				Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-					ConstructMoveToCopyToMenu();
-					SetUpJumpListOnNavComplete();
-					SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
-				}));
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+				ConstructMoveToCopyToMenu();
+				SetUpJumpListOnNavComplete();
+				SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
+			}));
 
-				if (this.IsInfoPaneEnabled) {
-					Task.Run(() => {
-						this.DetailsPanel.FillPreviewPane(this.ShellListView);
-					});
-				}
-				if (e.OldFolder != this.ShellListView.CurrentFolder) {
-					var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
-					selectedItem.Header = this.ShellListView.CurrentFolder.DisplayName;
-					selectedItem.Icon = this.ShellListView.CurrentFolder.Thumbnail.SmallBitmapSource;
-					selectedItem.ShellObject = this.ShellListView.CurrentFolder;
-					if (selectedItem != null) {
-						var selectedPaths = selectedItem.SelectedItems;
-						if (selectedPaths != null && selectedPaths.Count > 0) {
-							foreach (var path in selectedPaths.ToArray()) {
-								var sho = this.ShellListView.Items.Where(w => w.CachedParsingName == path).SingleOrDefault();
-								if (sho != null) {
-									var index = this.ShellListView.ItemsHashed[sho];
-									this.ShellListView.SelectItemByIndex(index, true);
-									selectedPaths.Remove(path);
-								}
+			if (this.IsInfoPaneEnabled) {
+				Task.Run(() => {
+					this.DetailsPanel.FillPreviewPane(this.ShellListView);
+				});
+			}
+			if (e.OldFolder != this.ShellListView.CurrentFolder) {
+				var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
+				selectedItem.Header = this.ShellListView.CurrentFolder.DisplayName;
+				selectedItem.Icon = this.ShellListView.CurrentFolder.Thumbnail.SmallBitmapSource;
+				selectedItem.ShellObject = this.ShellListView.CurrentFolder;
+				if (selectedItem != null) {
+					var selectedPaths = selectedItem.SelectedItems;
+					if (selectedPaths != null && selectedPaths.Count > 0) {
+						foreach (var path in selectedPaths.ToArray()) {
+							var sho = this.ShellListView.Items.Where(w => w.CachedParsingName == path).SingleOrDefault();
+							if (sho != null) {
+								var index = this.ShellListView.ItemsHashed[sho];
+								this.ShellListView.SelectItemByIndex(index, true);
+								selectedPaths.Remove(path);
 							}
 						}
-						else
-						{
-							this.ShellListView.ScrollToTop();
-						}
+					}
+					else {
+						this.ShellListView.ScrollToTop();
 					}
 				}
+			}
 
-				//This initially setup the statusbar after program opens
-				Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-					SetUpStatusBarOnSelectOrNavigate(ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount());
-				}));
+			//This initially setup the statusbar after program opens
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+				SetUpStatusBarOnSelectOrNavigate(ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount());
+			}));
 
-				this.ShellListView.Focus();
-			
+			this.ShellListView.Focus();
+
 		}
 
 		private void SetupUIonNavComplete(NavigatedEventArgs e) {
@@ -4398,7 +4400,7 @@ namespace BetterExplorer {
 				this.ShellListView.Navigate_Full(Destination, true);
 			}
 			if (this.ShellListView.CurrentFolder != null)
-					this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
+				this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 		}
 
 		#endregion
