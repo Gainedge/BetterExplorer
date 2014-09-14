@@ -629,46 +629,25 @@ namespace BExplorer.Shell
 		private Bitmap ExeFallBack256;
 		private Bitmap ExeFallBack32;
 		private Bitmap ExeFallBack48;
-		//[Obsolete("Not Used", true)]
-		//private Bitmap Shield16;
-		//[Obsolete("Not Used", true)]
-		//private Bitmap Shield256;
-		//[Obsolete("Never Actually Used")]
-		//private Bitmap Shield32;
-		//[Obsolete("Not Used", true)]
-		//private Bitmap Shield48;
 		private int ShieldIconIndex;
 		private int _SharedIconIndex;
 		private ImageList extra = new ImageList(ImageListSize.ExtraLarge);
-		//private List<int> IndexesWithThumbnail = new List<int>();
-		//[Obsolete("Never Actually Used")]
-		//private bool IsDoubleNavFinished = false;
 		private ImageList jumbo = new ImageList(ImageListSize.Jumbo);
 		private ImageList large = new ImageList(ImageListSize.Large);
-		//private ShellItem m_CurrentFolder;
 		private ShellViewStyle m_View;
 		private SyncQueue<int> overlayQueue = new SyncQueue<int>(); //3000
-		//private Dictionary<int, int> overlays = new Dictionary<int, int>();
 		private Thread _OverlaysLoadingThread;
-		private Thread _ShieldLoadingThread;
 		private F.Timer selectionTimer = new F.Timer();
-		//private Dictionary<int, int> shieldedIcons = new Dictionary<int, int>();
 		private SyncQueue<int> shieldQueue = new SyncQueue<int>(); //3000
 		private ImageList small = new ImageList(ImageListSize.SystemSmall);
 		private Thread _IconLoadingThread;
 		private Thread _UpdateSubitemValuesThread;
-		//private ConcurrentDictionary<int, ConcurrentDictionary<Collumns, object>> SubItems = new ConcurrentDictionary<int, ConcurrentDictionary<Collumns, object>>();
 		private SyncQueue<int> ThumbnailsForCacheLoad = new SyncQueue<int>(); //5000
 		private SyncQueue<Tuple<int, int, PROPERTYKEY>> ItemsForSubitemsUpdate = new SyncQueue<Tuple<int, int, PROPERTYKEY>>(); //5000
-		//private List<int> cachedIndexes = new List<int>();
 		private ConcurrentBag<Tuple<int, PROPERTYKEY, object>> SubItemValues = new ConcurrentBag<Tuple<int, PROPERTYKEY, object>>();
 		private ManualResetEvent resetEvent = new ManualResetEvent(true);
 		private SyncQueue<int> waitingThumbnails = new SyncQueue<int>(); //3000
 		private List<int> _CuttedIndexes = new List<int>();
-		//private int LastI = 0;
-		//private int CurrentI = 0;
-		//private const int SW_SHOW = 5;
-		//private const uint SEE_MASK_INVOKEIDLIST = 12;
 		private int _LastSelectedIndexByDragDrop = -1;
 
 		#endregion Private Members
@@ -685,19 +664,15 @@ namespace BExplorer.Shell
 			this.LVItemsColorCodes = new List<LVItemColor>();
 			this.AllAvailableColumns = this.AvailableColumns();
 			this.AllowDrop = true;
-			_IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
+			_IconLoadingThread = new Thread(_IconsLoadingThreadRun) { Priority = ThreadPriority.Normal };
 			_IconLoadingThread.Start();
-			_IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
-			_IconCacheLoadingThread.SetApartmentState(ApartmentState.STA);
+			_IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { Priority = ThreadPriority.Normal };
 			_IconCacheLoadingThread.Start();
-			_OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
+			_OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { Priority = ThreadPriority.Normal };
 			_OverlaysLoadingThread.Start();
-			_ShieldLoadingThread = new Thread(_ShieldLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
-			_ShieldLoadingThread.Start();
-			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
+			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.Normal };
 			_UpdateSubitemValuesThread.Start();
-			//History = new ShellHistory();
-			_ResetTimer.Interval = 300;
+			_ResetTimer.Interval = 500;
 			_ResetTimer.Tick += resetTimer_Tick;
 
 			var defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
@@ -708,9 +683,6 @@ namespace BExplorer.Shell
 			ExeFallBack16 = small.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
 
 			Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_SHIELD, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
-			//Shield48 = extra.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
-			//Shield256 = jumbo.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
-			//Shield16 = small.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
 			ShieldIconIndex = defIconInfo.iSysIconIndex;
 
 			Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_SHARE, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
@@ -778,7 +750,6 @@ namespace BExplorer.Shell
 		private void resetTimer_Tick(object sender, EventArgs e)
 		{
 			(sender as F.Timer).Stop();
-			F.Application.DoEvents();
 			resetEvent.Set();
 			//RedrawWindow();
 			//GC.WaitForPendingFinalizers();
@@ -2447,6 +2418,7 @@ namespace BExplorer.Shell
 											var lvi = new LVITEMINDEX();
 											lvi.iItem = index;
 											lvi.iGroup = this.GetGroupIndex(index);
+											HResult thumbnailResult;
 											//User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 
 											var iconBounds = new User32.RECT() { Left = 1 };
@@ -2474,15 +2446,12 @@ namespace BExplorer.Shell
 												{
 													overlayQueue.Enqueue(index);
 												}
-												if (sho.IsShielded == -1)
-												{
-													string shoExtension = sho.Extension;
-													if (shoExtension == ".exe" || shoExtension == ".com" || shoExtension == ".bat")
-														shieldQueue.Enqueue(index);
-												}
+	
 												if (IconSize != 16)
 												{
-													var thumbnail = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
+													WTS_CACHEFLAGS flags;
+													Bitmap thumbnail = null;
+													thumbnailResult = sho.Thumbnail.ExtractCachedThumbnail((uint)IconSize, out thumbnail, out flags);
 													if (sho.IsNeedRefreshing)
 													{
 														thumbnail = sho.Thumbnail.RefreshThumbnail((uint)IconSize);
@@ -2490,25 +2459,9 @@ namespace BExplorer.Shell
 													}
 													if (thumbnail != null)
 													{
-														if (((thumbnail.Width > thumbnail.Height && thumbnail.Width != IconSize) || (thumbnail.Width < thumbnail.Height && thumbnail.Height != IconSize) || thumbnail.Width == thumbnail.Height && thumbnail.Width != IconSize))
+														if ((flags & WTS_CACHEFLAGS.WTS_LOWQUALITY) == WTS_CACHEFLAGS.WTS_LOWQUALITY)
 														{
-															if (sho.IsImage)
-															{
-																using (Stream stream = File.OpenRead(sho.ParsingName))
-																{
-																	using (Image sourceImage = Image.FromStream(stream, false, false))
-																	{
-																		if (thumbnail.Width != sourceImage.Width || thumbnail.Height != sourceImage.Height)
-																		{
-																			ThumbnailsForCacheLoad.Enqueue(index);
-																		}
-																	}
-																}
-															}
-															else
-															{
-																ThumbnailsForCacheLoad.Enqueue(index);
-															}
+															ThumbnailsForCacheLoad.Enqueue(index);
 														}
 														else
 														{
@@ -2563,7 +2516,7 @@ namespace BExplorer.Shell
 													}
 													else
 													{
-														if (!sho.IsThumbnailLoaded)
+														if (!sho.IsThumbnailLoaded && thumbnailResult != HResult.WTS_E_FAILEDEXTRACTION)
 															ThumbnailsForCacheLoad.Enqueue(index);
 														if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS)
 														{
@@ -2775,27 +2728,7 @@ namespace BExplorer.Shell
 													}
 												}
 
-												/*
-												if (sho.OverlayIconIndex > 0) {
-													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon) {
-														small.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - 16));
-													}
-													else {
-														if (this.IconSize > 180) {
-															jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
-														}
-														else
-															if (this.IconSize > 64) {
-																extra.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 50));
-															}
-															else {
-																large.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 32));
-															}
-													}
-												}
-												*/
-
-												//TODO: Check Change, I think its correct
+												
 												if (sho.IsShielded > 0)
 												{
 													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon)
@@ -3574,7 +3507,6 @@ namespace BExplorer.Shell
 			}
 			newItems = null;
 			removedItems = null;
-			GC.Collect();
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 		}
 
@@ -3590,7 +3522,7 @@ namespace BExplorer.Shell
 			{
 				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 			}
-			resetEvent.Reset();
+			//resetEvent.Reset();
 			//Unregister notifications and clear all collections
 			this.Notifications.UnregisterChangeNotify();
 			Items.Clear();
@@ -4048,7 +3980,14 @@ namespace BExplorer.Shell
 					ShellItem temp = !(sho.IsNetDrive || sho.IsNetworkPath) && sho.ParsingName.StartsWith("::") ? sho : new ShellItem(sho.ParsingName);
 
 					var icon = temp.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
-					if (icon != null)
+					var shieldOverlay = 0;
+					if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0)
+					{
+						shieldOverlay = ShieldIconIndex;
+					}
+
+					sho.IsShielded = shieldOverlay;
+					if (icon != null || shieldOverlay > 0)
 					{
 						sho.IsIconLoaded = true;
 						this.RedrawItem(index);

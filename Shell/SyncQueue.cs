@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace BExplorer.Shell {
 
-	[Obsolete("I think we can replace with System.Collections.Concurrent.ConcurrentQueue[T]")]
 	[System.Diagnostics.DebuggerStepThrough]
 	public class SyncQueue<T> {
 		/*

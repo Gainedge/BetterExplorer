@@ -376,6 +376,35 @@ namespace BExplorer.Shell.Interop {
 			return returnValue;
 		}
 
+		public HResult ExtractCachedThumbnail(uint iconSize, out Bitmap thumbnail, out WTS_CACHEFLAGS flags)
+		{
+			HResult res = HResult.S_OK;
+			Bitmap returnValue = null;
+			ISharedBitmap bmp = null;
+			WTS_THUMBNAILID thumbId;
+			try
+			{
+				res = ThumbnailCache.GetThumbnail(this.shellItemNative, iconSize, WTS_FLAGS.WTS_INCACHEONLY | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE, out bmp, out flags, out thumbId);
+				IntPtr hBitmap = IntPtr.Zero;
+				if (bmp != null)
+					bmp.GetSharedBitmap(out hBitmap);
+
+				// return a System.Drawing.Bitmap from the hBitmap
+
+				if (hBitmap != IntPtr.Zero)
+					returnValue = GetBitmapFromHBitmap(hBitmap);
+
+				// delete HBitmap to avoid memory leaks
+				Gdi32.DeleteObject(hBitmap);
+			}
+			finally
+			{
+				if (bmp != null) Marshal.ReleaseComObject(bmp);
+			}
+			thumbnail = returnValue;
+			return res;
+		}
+
 		/*
 		public static Bitmap CopyHBitmapToBitmap(IntPtr nativeHBitmap) {
 			// Get width, height and the address of the pixel data for the native HBitmap

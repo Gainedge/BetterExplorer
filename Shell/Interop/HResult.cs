@@ -37,5 +37,6 @@ namespace BExplorer.Shell.Interop
         OLE_E_ADVISENOTSUPPORTED = unchecked((int)80040003),
         MK_E_NOOBJECT = unchecked((int)0x800401E5),
 				E_INVALIDARG = unchecked((int)0x80070057),
+				WTS_E_FAILEDEXTRACTION = unchecked((int)0x8004b200),
     }
 }
