@@ -285,19 +285,20 @@ namespace BExplorer.Shell {
 				var hash = -1;
 				var pidl = IntPtr.Zero;
 				var visible = false;
-				this.ShellTreeView.Invoke((Action)(() => {
+				this.Invoke((Action)(() => {
 					node = TreeNode.FromHandle(ShellTreeView, handle);
 					if (node != null)
 					{
 						var newItem = ShellItem.ToShellParsingName((node.Tag as ShellItem).ParsingName);
-						if (node != null)
+						if (node != null && newItem != null)
 						{
 							treeHandle = this.ShellTreeView.Handle;
 							hash = newItem.GetHashCode();
 							pidl = newItem.AbsolutePidl;
 							visible = node.IsVisible;
+							newItem.Dispose();
 						}
-						newItem.Dispose();
+						
 					}
 				}));
 				if (visible) {
@@ -319,7 +320,7 @@ namespace BExplorer.Shell {
 				var pidl = IntPtr.Zero;
 				Thread.Sleep(2);
 				Application.DoEvents();
-				this.ShellTreeView.Invoke((Action)(() => {
+				this.Invoke((Action)(() => {
 					node = TreeNode.FromHandle(ShellTreeView, handle);
 					treeHandle = this.ShellTreeView.Handle;
 					if (node != null) {

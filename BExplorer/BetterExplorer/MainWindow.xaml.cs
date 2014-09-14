@@ -4245,7 +4245,7 @@ namespace BetterExplorer {
 					selectedItem.ShellObject = this.ShellListView.CurrentFolder;
 					if (selectedItem != null) {
 						var selectedPaths = selectedItem.SelectedItems;
-						if (selectedPaths != null) {
+						if (selectedPaths != null && selectedPaths.Count > 0) {
 							foreach (var path in selectedPaths.ToArray()) {
 								var sho = this.ShellListView.Items.Where(w => w.CachedParsingName == path).SingleOrDefault();
 								if (sho != null) {
@@ -4254,6 +4254,10 @@ namespace BetterExplorer {
 									selectedPaths.Remove(path);
 								}
 							}
+						}
+						else
+						{
+							this.ShellListView.ScrollToTop();
 						}
 					}
 				}

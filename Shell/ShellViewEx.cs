@@ -678,26 +678,26 @@ namespace BExplorer.Shell
 		/// <summary> Main constructor </summary>
 		public ShellView()
 		{
-			this.SetStyle(ControlStyles.OptimizedDoubleBuffer , true);
+			this.SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.Opaque | ControlStyles.ContainerControl | ControlStyles.CacheText , true);
 			this.ItemForRename = -1;
 			InitializeComponent();
 			this.Items = new List<ShellItem>();
 			this.LVItemsColorCodes = new List<LVItemColor>();
 			this.AllAvailableColumns = this.AvailableColumns();
 			this.AllowDrop = true;
-			_IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.AboveNormal };
+			_IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
 			_IconLoadingThread.Start();
-			_IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.AboveNormal };
+			_IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
 			_IconCacheLoadingThread.SetApartmentState(ApartmentState.STA);
 			_IconCacheLoadingThread.Start();
-			_OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.AboveNormal };
+			_OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
 			_OverlaysLoadingThread.Start();
-			_ShieldLoadingThread = new Thread(_ShieldLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.AboveNormal };
+			_ShieldLoadingThread = new Thread(_ShieldLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
 			_ShieldLoadingThread.Start();
-			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { IsBackground = true, Priority = ThreadPriority.AboveNormal };
+			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
 			_UpdateSubitemValuesThread.Start();
 			//History = new ShellHistory();
-			_ResetTimer.Interval = 1000;
+			_ResetTimer.Interval = 300;
 			_ResetTimer.Tick += resetTimer_Tick;
 
 			var defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
@@ -779,6 +779,7 @@ namespace BExplorer.Shell
 		{
 			(sender as F.Timer).Stop();
 			F.Application.DoEvents();
+			resetEvent.Set();
 			//RedrawWindow();
 			//GC.WaitForPendingFinalizers();
 			//GC.Collect();
@@ -1632,10 +1633,17 @@ namespace BExplorer.Shell
 								case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
 									break;
 								case ShellNotifications.SHCNE.SHCNE_NETSHARE:
-									break;
 								case ShellNotifications.SHCNE.SHCNE_NETUNSHARE:
-									break;
 								case ShellNotifications.SHCNE.SHCNE_ATTRIBUTES:
+									var obj = new ShellItem(info.Item1);
+									var exisitingItem = this.ItemsHashed.Where(w => w.Key.Equals(obj)).SingleOrDefault();
+									if (exisitingItem.Key != null)
+									{
+										this.RefreshItem(exisitingItem.Value, true);
+										if (this.ItemUpdated != null)
+											this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Updated, obj, null, exisitingItem.Value));
+									}
+									Notifications.NotificationsReceived.Remove(info);
 									break;
 								case ShellNotifications.SHCNE.SHCNE_UPDATEITEM:
 									break;
@@ -1779,19 +1787,7 @@ namespace BExplorer.Shell
 
 								Notifications.NotificationsReceived.Remove(info);
 							}
-							//TODO: Should this be and Else If(...)?
-							if (info.Notification == ShellNotifications.SHCNE.SHCNE_ATTRIBUTES)
-							{
-								var obj = new ShellItem(info.Item1);
-								var exisitingItem = this.ItemsHashed.Where(w => w.Key.Equals(obj)).SingleOrDefault();
-								if (exisitingItem.Key != null)
-								{
-									this.RefreshItem(exisitingItem.Value, true);
-									if (this.ItemUpdated != null)
-										this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Updated, obj, null, exisitingItem.Value));
-								}
-								Notifications.NotificationsReceived.Remove(info);
-							}
+							
 						}
 					}
 					this.Focus();
@@ -2158,7 +2154,7 @@ namespace BExplorer.Shell
 							//this.Cancel = false;
 							//F.Application.DoEvents();
 							_ResetTimer.Start();
-							resetEvent.Set();
+							
 							//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 							break;
 							#endregion
@@ -2445,7 +2441,7 @@ namespace BExplorer.Shell
 
 									case CustomDraw.CDDS_ITEMPOSTPAINT:
 										#region Case
-										if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0)
+										if (nmlvcd.clrTextBk != 0)
 										{
 											var itemBounds = nmlvcd.nmcd.rc;
 											var lvi = new LVITEMINDEX();
@@ -3539,7 +3535,6 @@ namespace BExplorer.Shell
 
 		private void UnvalidateDirectory()
 		{
-			resetEvent.Reset();
 			var newItems = this.CurrentFolder.Where(w => this.ShowHidden ? true : w.IsHidden == this.ShowHidden).ToArray();
 			var removedItems = this.Items.Except(newItems, new ProductComparer());
 			foreach (var obj in removedItems.ToArray())
@@ -4011,7 +4006,7 @@ namespace BExplorer.Shell
 		{
 			while (true)
 			{
-				Thread.Sleep(2);
+				//Thread.Sleep(2);
 				try
 				{
 					int index = 0;
@@ -4026,7 +4021,7 @@ namespace BExplorer.Shell
 						continue;
 					*/
 					var shoTemp = Items[index];
-					ShellItem sho = !(shoTemp.IsNetDrive || shoTemp.IsNetworkPath) && shoTemp.ParsingName.StartsWith("::") ? shoTemp : new ShellItem(shoTemp.ParsingName);
+					ShellItem sho = !(shoTemp.IsNetDrive || shoTemp.IsNetworkPath) && shoTemp.ParsingName.StartsWith("::") ? shoTemp : ShellItem.ToShellParsingName(shoTemp.ParsingName);
 
 					int overlayIndex = 0;
 					small.GetIconIndexWithOverlay(sho.Pidl, out overlayIndex);
@@ -4226,7 +4221,10 @@ namespace BExplorer.Shell
 			return name;
 		}
 		*/
-
+		public void ScrollToTop()
+		{
+			var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISISBLE, 0, 0);
+		}
 		public string CreateNewFolder(string name = "New Folder")
 		{
 			int suffix = 0;
