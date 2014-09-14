@@ -287,11 +287,17 @@ namespace BExplorer.Shell {
 				var visible = false;
 				this.ShellTreeView.Invoke((Action)(() => {
 					node = TreeNode.FromHandle(ShellTreeView, handle);
-					if (node != null) {
-						treeHandle = this.ShellTreeView.Handle;
-						hash = (node.Tag as ShellItem).GetHashCode();
-						pidl = (node.Tag as ShellItem).AbsolutePidl;
-						visible = node.IsVisible;
+					if (node != null)
+					{
+						var newItem = ShellItem.ToShellParsingName((node.Tag as ShellItem).ParsingName);
+						if (node != null)
+						{
+							treeHandle = this.ShellTreeView.Handle;
+							hash = newItem.GetHashCode();
+							pidl = newItem.AbsolutePidl;
+							visible = node.IsVisible;
+						}
+						newItem.Dispose();
 					}
 				}));
 				if (visible) {

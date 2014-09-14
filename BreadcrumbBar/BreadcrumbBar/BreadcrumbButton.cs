@@ -177,21 +177,28 @@ namespace Odyssey.Controls {
 			if (dropDownBtn != null) {
 				dropDownBtn.MouseDown += new MouseButtonEventHandler(dropDownBtn_MouseDown);
 			}
-			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+			
+			base.OnApplyTemplate();
+			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
+			{
 				var data = this.DataContext as ShellItem;
-				if (data != null && data.ParsingName != KnownFolders.Computer.ParsingName && data.ParsingName != KnownFolders.Desktop.ParsingName && !data.IsSearchFolder) {
+				if (data != null && data.ParsingName != KnownFolders.Computer.ParsingName && data.ParsingName != KnownFolders.Desktop.ParsingName && !data.IsSearchFolder)
+				{
 					var aditionalItems = new List<ShellItem>();
-					foreach (var item in data) {
-						try {
-							if (item.IsFolder) {
+					foreach (var item in data)
+					{
+						try
+						{
+							if (item.IsFolder)
+							{
 								aditionalItems.Add(item);
 							}
-						} catch {	}
+						}
+						catch { }
 					}
 					this.ItemsSource = aditionalItems;
 				}
 			}));
-			base.OnApplyTemplate();
 		}
 
 		void dropDownBtn_MouseDown(object sender, MouseButtonEventArgs e) {

@@ -461,7 +461,7 @@ namespace BExplorer.Shell {
 		/// </returns>
 		[System.Diagnostics.DebuggerNonUserCode]
 		public IEnumerator<ShellItem> GetEnumerator() {
-			return GetEnumerator(SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN |
+			return GetEnumerator(SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.INIT_ON_FIRST_NEXT | SHCONTF.STORAGE | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.INIT_ON_FIRST_NEXT |
 					SHCONTF.NONFOLDERS | SHCONTF.FASTITEMS | SHCONTF.ENABLE_ASYNC);
 		}
 
@@ -1181,7 +1181,6 @@ namespace BExplorer.Shell {
 				return null;
 			}
 		}
-
 		#endregion Static Stuff
 
 		#region Dispose
