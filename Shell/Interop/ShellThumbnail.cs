@@ -69,6 +69,7 @@ namespace BExplorer.Shell.Interop {
 		/// Native shellItem
 		/// </summary>
 		private IShellItem shellItemNative;
+		private ShellItem _Item;
 
 		/// <summary>
 		/// Internal member to keep track of the current size
@@ -91,6 +92,7 @@ namespace BExplorer.Shell.Interop {
 		/// <param name="shellObject"></param>
 		internal ShellThumbnail(ShellItem shellObject) {
 			if (shellObject != null && shellObject.ComInterface != null) {
+				_Item = shellObject;
 				shellItemNative = shellObject.ComInterface;
 				if (ThumbnailCache == null) {
 					Guid IID_IUnknown = new Guid("00000000-0000-0000-C000-000000000046");
@@ -404,7 +406,6 @@ namespace BExplorer.Shell.Interop {
 			thumbnail = returnValue;
 			return res;
 		}
-
 		/*
 		public static Bitmap CopyHBitmapToBitmap(IntPtr nativeHBitmap) {
 			// Get width, height and the address of the pixel data for the native HBitmap
@@ -430,6 +431,9 @@ namespace BExplorer.Shell.Interop {
 			return managedBitmapReal;
 		}
 		*/
+		public IntPtr GetHBitmap() {
+			return GetHBitmap(new System.Windows.Size(48, 48));
+		}
 		public Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap) {
 			Bitmap bmp = Bitmap.FromHbitmap(nativeHBitmap);
 

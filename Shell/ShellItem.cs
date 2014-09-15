@@ -820,9 +820,13 @@ namespace BExplorer.Shell {
 		#region Constructors
 
 		private void Constructor_Helper() {
-			this.IconType = GetIconType();
-			this.CachedParsingName = this.ParsingName;
-			this.OverlayIconIndex = -1;
+			try {
+				this.IconType = GetIconType();
+				this.CachedParsingName = this.ParsingName;
+				this.OverlayIconIndex = -1;
+			} catch (Exception) {
+
+			}
 		} //TODO: Figure out if this should be added in protected ShellItem() { }
 
 		[Obsolete("Try to remove this!!!")]
