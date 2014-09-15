@@ -377,6 +377,29 @@ namespace BExplorer.Shell.Interop {
 
 			return returnValue;
 		}
+		public IntPtr RefreshThumbnailPtr(uint iconSize)
+		{
+			IntPtr returnValue = IntPtr.Zero;
+			ISharedBitmap bmp = null;
+			WTS_CACHEFLAGS cacheFlags;
+			WTS_THUMBNAILID thumbId;
+			try
+			{
+				ThumbnailCache.GetThumbnail(this.shellItemNative, iconSize, WTS_FLAGS.WTS_FORCEEXTRACTION | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE, out bmp, out cacheFlags, out thumbId);
+				IntPtr hBitmap = IntPtr.Zero;
+				if (bmp != null)
+					bmp.GetSharedBitmap(out hBitmap);
+
+				// return a System.Drawing.Bitmap from the hBitmap
+				returnValue = hBitmap;
+			}
+			finally
+			{
+				if (bmp != null) Marshal.ReleaseComObject(bmp);
+			}
+
+			return returnValue;
+		}
 
 		public HResult ExtractCachedThumbnail(uint iconSize, out Bitmap thumbnail, out WTS_CACHEFLAGS flags)
 		{
@@ -398,6 +421,34 @@ namespace BExplorer.Shell.Interop {
 
 				// delete HBitmap to avoid memory leaks
 				Gdi32.DeleteObject(hBitmap);
+			}
+			finally
+			{
+				if (bmp != null) Marshal.ReleaseComObject(bmp);
+			}
+			thumbnail = returnValue;
+			return res;
+		}
+		public HResult ExtractCachedThumbnail(uint iconSize, out IntPtr thumbnail, out WTS_CACHEFLAGS flags)
+		{
+			HResult res = HResult.S_OK;
+			IntPtr returnValue = IntPtr.Zero;
+			ISharedBitmap bmp = null;
+			WTS_THUMBNAILID thumbId;
+			try
+			{
+				res = ThumbnailCache.GetThumbnail(this.shellItemNative, iconSize, WTS_FLAGS.WTS_INCACHEONLY | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE, out bmp, out flags, out thumbId);
+				IntPtr hBitmap = IntPtr.Zero;
+				if (bmp != null)
+					bmp.GetSharedBitmap(out hBitmap);
+				returnValue = hBitmap;
+				// return a System.Drawing.Bitmap from the hBitmap
+
+				//if (hBitmap != IntPtr.Zero)
+				//	returnValue = GetBitmapFromHBitmap(hBitmap);
+
+				//// delete HBitmap to avoid memory leaks
+				//Gdi32.DeleteObject(hBitmap);
 			}
 			finally
 			{
@@ -431,8 +482,10 @@ namespace BExplorer.Shell.Interop {
 			return managedBitmapReal;
 		}
 		*/
-		public IntPtr GetHBitmap() {
-			return GetHBitmap(new System.Windows.Size(48, 48));
+		public IntPtr GetHBitmap(int iconSize) {
+			this.FormatOption = ShellThumbnailFormatOption.IconOnly;
+			this.RetrievalOption = ShellThumbnailRetrievalOption.Default;
+			return GetHBitmap(new System.Windows.Size(iconSize, iconSize));
 		}
 		public Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap) {
 			Bitmap bmp = Bitmap.FromHbitmap(nativeHBitmap);
