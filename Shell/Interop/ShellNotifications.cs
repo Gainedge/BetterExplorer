@@ -475,7 +475,7 @@ namespace BExplorer.Shell.Interop {
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
 				//SHCNF.SHCNF_TYPE | SHCNF.SHCNF_IDLIST,
-				SHCNRF.ShellLevel,
+				SHCNRF.InterruptLevel | SHCNRF.ShellLevel | SHCNRF.RecursiveInterrupt | SHCNRF.NewDelivery,
 				SHCNE.SHCNE_ALLEVENTS,
 				WM_SHNOTIFY,
 				1,
@@ -599,7 +599,7 @@ namespace BExplorer.Shell.Interop {
 				info.Item2 = shNotify.dwItem2;
 
 				// Was this notification in the received notifications ?
-				if (NotificationsReceived.Contains(info)) return (false);
+				//if (NotificationsReceived.Contains(info)) return (false);
 				NotificationsReceived.Add(info);
 			} finally {
 				if (lockPtr != IntPtr.Zero)

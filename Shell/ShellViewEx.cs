@@ -672,7 +672,7 @@ namespace BExplorer.Shell
 			_OverlaysLoadingThread.Start();
 			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.Normal };
 			_UpdateSubitemValuesThread.Start();
-			_ResetTimer.Interval = 50;
+			_ResetTimer.Interval = 500;
 			_ResetTimer.Tick += resetTimer_Tick;
 
 			var defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
@@ -1557,153 +1557,7 @@ namespace BExplorer.Shell
 			User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
-		//------
-		private const int SRCCOPY = 0xCC0020;
 
-		[System.Runtime.InteropServices.DllImportAttribute("gdi32.dll")]
-		private static extern int BitBlt(
-			IntPtr hdcDest,     // handle to destination DC (device context)
-			int nXDest,         // x-coord of destination upper-left corner
-			int nYDest,         // y-coord of destination upper-left corner
-			int nWidth,         // width of destination rectangle
-			int nHeight,        // height of destination rectangle
-			IntPtr hdcSrc,      // handle to source DC
-			int nXSrc,          // x-coordinate of source upper-left corner
-			int nYSrc,          // y-coordinate of source upper-left corner
-			int dwRop  // raster operation code
-			);
-
-		[DllImport("gdi32.dll", EntryPoint = "GdiAlphaBlend")]
-		public static extern bool AlphaBlend(IntPtr hdcDest, int nXOriginDest, int nYOriginDest,
-			 int nWidthDest, int nHeightDest,
-			 IntPtr hdcSrc, int nXOriginSrc, int nYOriginSrc, int nWidthSrc, int nHeightSrc,
-			 BLENDFUNCTION blendFunction);
-		[StructLayout(LayoutKind.Sequential)]
-		public struct BLENDFUNCTION {
-			byte BlendOp;
-			byte BlendFlags;
-			byte SourceConstantAlpha;
-			byte AlphaFormat;
-
-			public BLENDFUNCTION(byte op, byte flags, byte alpha, byte format) {
-				BlendOp = op;
-				BlendFlags = flags;
-				SourceConstantAlpha = alpha;
-				AlphaFormat = format;
-			}
-		}
-
-		const byte AC_SRC_OVER = 0x00;
-		const byte AC_SRC_ALPHA = 0x01;
-
-		[System.Runtime.InteropServices.DllImportAttribute("gdi32.dll")]
-		public static extern IntPtr CreateCompatibleDC(IntPtr hdc);
-
-		[System.Runtime.InteropServices.DllImportAttribute("gdi32.dll")]
-		public static extern IntPtr SelectObject(IntPtr hdc, IntPtr obj);
-
-		[System.Runtime.InteropServices.DllImportAttribute("gdi32.dll")]
-		public static extern void DeleteObject(IntPtr obj);
-		[DllImport("gdi32.dll", EntryPoint = "CreateCompatibleBitmap")]
-		static extern IntPtr CreateCompatibleBitmap([In] IntPtr hdc, int nWidth, int nHeight);
-		[DllImport("gdi32.dll")]
-		static extern bool GetBitmapDimensionEx(IntPtr hBitmap, out BExplorer.Shell.Interop.Size lpDimension);
-
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct BITMAP
-		{
-			public Int32 bmType;
-			public Int32 bmWidth;
-			public Int32 bmHeight;
-			public Int32 bmWidthBytes;
-			public Int16 bmPlanes;
-			public Int16 bmBitsPixel;
-			public IntPtr bmBits;
-		}
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct BITMAPINFOHEADER
-		{
-			public int biSize;
-			public int biWidth;
-			public int biHeight;
-			public Int16 biPlanes;
-			public Int16 biBitCount;
-			public int biCompression;
-			public int biSizeImage;
-			public int biXPelsPerMeter;
-			public int biYPelsPerMeter;
-			public int biClrUsed;
-			public int bitClrImportant;
-		}
-		[StructLayout(LayoutKind.Sequential, Pack = 4)]
-		private struct DIBSECTION
-		{
-			public BITMAP dsBm;
-			public BITMAPINFOHEADER dsBmih;
-			public int dsBitField1;
-			public int dsBitField2;
-			public int dsBitField3;
-			public IntPtr dshSection;
-			public int dsOffset;
-		}
-		[DllImport("gdi32", CharSet = CharSet.Auto, EntryPoint = "GetObject")]
-		private static extern int GetObjectBitmap(IntPtr hObject, int nCount, ref
-       BITMAP lpObject);
-		[DllImport("gdi32", CharSet = CharSet.Auto, EntryPoint = "GetObject")]
-		private static extern int GetObjectDIBSection(IntPtr hObject, int nCount,
-		 IntPtr lpObject);
-
-		[DllImport("gdi32.dll")]
-		static extern int GetObject(IntPtr hgdiobj, int cbBuffer, IntPtr lpvObject);
-		private BITMAP GetHBitmapInfo(IntPtr hBitmap) {
-			BITMAP bmData = new BITMAP();
-			//GetObject(hBitmap, Marshal.SizeOf(typeof(BITMAP)), bmData);
-			return bmData;
-		}
-		private void BitBltDraw(IntPtr destDC, IntPtr hBitmap, int x, int y, int iconSize, Boolean useBitBlt = false) {
-			IntPtr destCDC = CreateCompatibleDC(destDC);
-			IntPtr oldSource = SelectObject(destCDC, hBitmap);
-			AlphaBlend(destDC, x, y, iconSize, iconSize, destCDC, 0, 0, iconSize, iconSize, new BLENDFUNCTION(AC_SRC_OVER, 0, 0xff, AC_SRC_ALPHA));
-			SelectObject(destCDC, oldSource);
-			DeleteObject(destCDC);
-			DeleteObject(oldSource);
-			DeleteObject(hBitmap);
-		}
-		private void BitBltDrawu(IntPtr destDC, IntPtr hBitmap, int x, int y, int iconSize, Boolean useBitBlt = false)
-		{
-			BITMAP bmp = new BITMAP();
-			GCHandle hndl = GCHandle.Alloc(bmp, GCHandleType.Pinned);
-
-			IntPtr ptrToBitmap = hndl.AddrOfPinnedObject();
-			//var fg =  GetObject(hBitmap, Marshal.SizeOf(typeof(BITMAP)), ptrToBitmap);
-			//bmp = (BITMAP)Marshal.PtrToStructure(ptrToBitmap, typeof(BITMAP));
-			DIBSECTION dibsection = new DIBSECTION();
-			GetObjectDIBSection(hBitmap, Marshal.SizeOf(typeof(DIBSECTION)), ptrToBitmap);
-			dibsection = (DIBSECTION)Marshal.PtrToStructure(ptrToBitmap, typeof(DIBSECTION));
-			Interop.Size sz = new Interop.Size();
-			//GetBitmapDimensionEx(hBitmap, out )
-			hndl.Free();
-			IntPtr destCDC = CreateCompatibleDC(destDC);
-			//BITMAPINFO bmpInfo = new BITMAPINFO();
-			//var header = new BITMAPINFOHEADER();
-			//header.biBitCount = 32;
-			//header.biPlanes = 1;
-			//header.biCompression = BitmapCompressionMode.BI_RGB;
-			//header.biSize = (uint)Marshal.SizeOf(header);
-			//header.biWidth = 48;
-			//header.biHeight = 48;
-			//header.biSizeImage = (uint)48 * (uint)48 * 4;
-			//bmpInfo.bmiHeader = header;
-			//IntPtr bits;
-			//var newHBitmap = CreateDIBSection(destCDC, ref bmpInfo, 0, out bits, IntPtr.Zero, 0);
-			IntPtr oldSource = SelectObject(destCDC, hBitmap);
-			AlphaBlend(destDC, x, y, iconSize, iconSize, destCDC, 0, 0, iconSize, iconSize, new BLENDFUNCTION(AC_SRC_OVER, 0, 0xff, AC_SRC_ALPHA));
-			SelectObject(destCDC, oldSource);
-			DeleteObject(destCDC);
-			DeleteObject(oldSource);
-			DeleteObject(hBitmap);
-		}
-		//------
 		[HandleProcessCorruptedStateExceptions]
 		protected override void WndProc(ref Message m)
 		{
@@ -1831,7 +1685,7 @@ namespace BExplorer.Shell
 								}
 								else
 								{
-									this.RefreshItem(this.ItemsHashed[exisitingItem], true);
+									this.RefreshItem(this.Items.IndexOf(exisitingItem), true);
 								}
 								//else
 								//{
@@ -2452,7 +2306,10 @@ namespace BExplorer.Shell
 								var hdc = nmlvcd.nmcd.hdc;
 								if (nmlvcd.dwItemType == 1)
 									return;
-								ShellItem sho = Items.Count > index ? Items[index] : null;
+
+								ShellItem sho = Items.Count > index ? Items[index]: null;
+
+
 
 								System.Drawing.Color? textColor = null;
 								if (sho != null && this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0 && !String.IsNullOrEmpty(sho.Extension))
@@ -2541,6 +2398,7 @@ namespace BExplorer.Shell
 
 											if (sho != null)
 											{
+												var cutFlag = (User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT) & LVIS.LVIS_CUT) == LVIS.LVIS_CUT;
 												if (sho.OverlayIconIndex == -1)
 												{
 													overlayQueue.Enqueue(index);
@@ -2548,22 +2406,19 @@ namespace BExplorer.Shell
 	
 												if (IconSize != 16)
 												{
-													//var hbitmapa = sho.Thumbnail.GetHBitmap(IconSize);
-													//BitBltDrawu(hdc, hbitmapa, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize);
 													WTS_CACHEFLAGS flags;
 													Bitmap thumbnail = null;
 													IntPtr hThumbnail = IntPtr.Zero;
 													thumbnailResult = sho.Thumbnail.ExtractCachedThumbnail((uint)IconSize, out thumbnail, out flags);
-													if (sho.IsNeedRefreshing)
+													if (thumbnail != null && sho.IsNeedRefreshing)
 													{
 														thumbnail = sho.Thumbnail.RefreshThumbnail((uint)IconSize);
 														using (var g = Graphics.FromHdc(hdc))
 														{
+															if (sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index))
+																thumbnail = Helpers.ChangeOpacity(thumbnail, 0.5f);
 															g.DrawImageUnscaled(thumbnail, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - thumbnail.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height));
 														}
-														//Interop.Size size = new Interop.Size();
-														//GetBitmapDimensionEx(hThumbnail, out size);
-														//BitBltDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - 48) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - 48) / 2, IconSize, true);
 														sho.IsNeedRefreshing = false;
 													}
 													if (thumbnail != null || hThumbnail != IntPtr.Zero)
@@ -2574,12 +2429,10 @@ namespace BExplorer.Shell
 														}
 														else
 														{
-															//sho.Thumbnail.ExtractCachedThumbnail((uint)IconSize, out hThumbnail, out flags);
-															//var bmp = Bitmap.FromHbitmap(hThumbnail);
-															//var bmData = GetHBitmapInfo(hThumbnail);
-															//BitBltDraw(hdc, thumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - thumbnail.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - thumbnail.Height) / 2, IconSize, true);
 															using (var g = Graphics.FromHdc(hdc))
 															{
+																if (sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index))
+																	thumbnail = Helpers.ChangeOpacity(thumbnail, 0.5f);
 																g.DrawImageUnscaled(thumbnail, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - thumbnail.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height));
 															}
 															sho.IsThumbnailLoaded = true;
@@ -2592,48 +2445,30 @@ namespace BExplorer.Shell
 															ThumbnailsForCacheLoad.Enqueue(index);
 															if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
 																var hbitmap = sho.Thumbnail.GetHBitmap(IconSize);
-																BitBltDraw(hdc, hbitmap, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize);
-																//Bitmap icon = null; sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
-																
-																//if (icon != null) {
-																	//thumbnail = icon;
+		
+																Gdi32.BitBltDraw(hdc, hbitmap, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
 																	sho.IsIconLoaded = true;
-																//}
 															} else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
 																if (!sho.IsIconLoaded) {
 																	waitingThumbnails.Enqueue(index);
-																	//using (var g = Graphics.FromHdc(hdc)) {
-																	//	if (IconSize == 16) {
-																	//		g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-																	//	} else if (IconSize <= 48) {
-																	//		g.DrawImage(ExeFallBack48, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-																	//	} else if (IconSize <= 256) {
-																	//		g.DrawImage(ExeFallBack256, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-																	//	}
-																	//}
+																	using (var g = Graphics.FromHdc(hdc)) {
+																		if (IconSize == 16) {
+																			g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+																		} else if (IconSize <= 48) {
+																			g.DrawImage(ExeFallBack48, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+																		} else if (IconSize <= 256) {
+																			g.DrawImage(ExeFallBack256, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+																		}
+																	}
 																} else {
-																	//var icon = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.IconOnly);
-																	//if (icon != null) {
-																	//	thumbnail = icon;
 																	var hIconExe = sho.Thumbnail.GetHBitmap(IconSize);
-																	BitBltDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize);
+																	Gdi32.BitBltDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
 																		sho.IsIconLoaded = true;
 																	//}
 																}
 															}
 													}
 													using (var g = Graphics.FromHdc(hdc)) {
-														//var cutFlag = User32.SendMessage(this.LVHandle, Shell.Interop.MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
-														//var newSho = ShellItem.ToShellParsingName(sho.CachedParsingName);
-														//if (newSho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
-														//	thumbnail = Helpers.ChangeOpacity(thumbnail, 0.5f);
-														//newSho.Dispose();
-														try {
-															//g.DrawImageUnscaled(thumbnail, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - thumbnail.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - thumbnail.Height) / 2, thumbnail.Width, thumbnail.Height));
-														} catch (Exception) {
-
-														}
-
 														if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
 															var res = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
 
@@ -2652,8 +2487,8 @@ namespace BExplorer.Shell
 															}
 														}
 													}
-													//thumbnail.Dispose();
-													//thumbnail = null;
+													thumbnail.Dispose();
+													thumbnail = null;
 												}
 												else
 												{
@@ -2667,9 +2502,8 @@ namespace BExplorer.Shell
 															sho.IsIconLoaded = true;
 															using (var g = Graphics.FromHdcInternal(hdc))
 															{
-																var cutFlag = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
 																var newSho = ShellItem.ToShellParsingName(sho.CachedParsingName);
-																if (newSho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+																if (newSho.IsHidden || cutFlag  || this._CuttedIndexes.Contains(index))
 																	icon = Helpers.ChangeOpacity(icon, 0.5f);
 																try
 																{
@@ -2704,9 +2538,8 @@ namespace BExplorer.Shell
 														}
 													}
 													using (var g = Graphics.FromHdcInternal(hdc)) {
-														var cutFlag = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMSTATE, index, LVIS.LVIS_CUT);
 														var newSho = ShellItem.ToShellParsingName(sho.CachedParsingName);
-														if (newSho.IsHidden || cutFlag != 0 || this._CuttedIndexes.Contains(index))
+														if (newSho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index))
 															icon = Helpers.ChangeOpacity(icon, 0.5f);
 														try {
 															g.DrawImageUnscaled(icon, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - icon.Width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - icon.Height) / 2, icon.Width, icon.Height));
@@ -2805,7 +2638,7 @@ namespace BExplorer.Shell
 												}
 											}
 										}
-										//m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
+										m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
 										break;
 										#endregion
 								}
@@ -2877,7 +2710,7 @@ namespace BExplorer.Shell
 			this.Focus();
 			User32.SetForegroundWindow(this.LVHandle);
 			UxTheme.SetWindowTheme(this.LVHandle, "Explorer", 0);
-			Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
+			//Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e)
@@ -2962,11 +2795,15 @@ namespace BExplorer.Shell
 		{
 			if (IsForceRedraw)
 			{
-				this.Items[index] = new ShellItem(this.Items[index].Pidl);
+				this.Items[index] = ShellItem.ToShellParsingName(this.Items[index].ParsingName);
 				this.Items[index].IsNeedRefreshing = true;
+				this.Items[index].IsInvalid = true;
 				this.Items[index].OverlayIconIndex = -1;
 			}
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REDRAWITEMS, index, index);
+			if (this.IsGroupsEnabled) {
+				this.RedrawWindow();
+			}
 		}
 
 		private void RenameItem(int index)
@@ -3322,7 +3159,7 @@ namespace BExplorer.Shell
 			}
 
 			var i = 0;
-			this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++);
+			this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++, new ShellItemComparer());
 			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 			this.SetSortIcon(colIndex, Order);
 			this.SelectItems(selectedItems);
@@ -3475,7 +3312,7 @@ namespace BExplorer.Shell
 		private void UnvalidateDirectory()
 		{
 			var newItems = this.CurrentFolder.Where(w => this.ShowHidden ? true : w.IsHidden == this.ShowHidden).ToArray();
-			var removedItems = this.Items.Except(newItems, new ProductComparer());
+			var removedItems = this.Items.Except(newItems, new ShellItemComparer());
 			foreach (var obj in removedItems.ToArray())
 			{
 				Items.Remove(obj);
@@ -3530,7 +3367,7 @@ namespace BExplorer.Shell
 			}
 			//resetEvent.Reset();
 			//Unregister notifications and clear all collections
-			//this.Notifications.UnregisterChangeNotify();
+			this.Notifications.UnregisterChangeNotify();
 			Items.Clear();
 			ItemsForSubitemsUpdate.Clear();
 			waitingThumbnails.Clear();
@@ -3650,7 +3487,7 @@ namespace BExplorer.Shell
 			if (!isThereSettings)
 			{
 				var i = 0;
-				this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++);
+				this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++, new ShellItemComparer());
 			}
 
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -3662,7 +3499,7 @@ namespace BExplorer.Shell
 			}
 
 
-			//Notifications.RegisterChangeNotify(this.Handle, destination, true);
+			Notifications.RegisterChangeNotify(this.Handle, destination, true);
 
 			if (!isThereSettings)
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
@@ -3898,54 +3735,12 @@ namespace BExplorer.Shell
 			else
 				return r.IntersectsWith(this.ClientRectangle);
 		}
-
-		public void _ShieldLoadingThreadRun()
-		{
-			while (true)
-			{
-				resetEvent.WaitOne();
-				Thread.Sleep(1);
-				try
-				{
-					int index = 0;
-					if (!ThreadRun_Helper(shieldQueue, false, ref index)) continue;
-
-					/*
-					var index = shieldQueue.Dequeue();
-					var itemBounds = new User32.RECT();
-					var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-					User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
-					var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
-					if (!r.IntersectsWith(this.ClientRectangle))
-						continue;
-					*/
-					var shoTemp = Items[index];
-					ShellItem sho = !(shoTemp.IsNetDrive || shoTemp.IsNetworkPath) && shoTemp.ParsingName.StartsWith("::") ? shoTemp : new ShellItem(shoTemp.ParsingName);
-
-					var shieldOverlay = 0;
-					if ((sho.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0)
-					{
-						shieldOverlay = ShieldIconIndex;
-					}
-
-					shoTemp.IsShielded = shieldOverlay;
-					if (shieldOverlay > 0)
-					{
-						this.RedrawItem(index);
-					}
-				}
-				catch
-				{
-				}
-			}
-		}
-
 		public void _OverlaysLoadingThreadRun()
 		{
 			while (true)
 			{
-				Thread.Sleep(2);
-				F.Application.DoEvents();
+				//Thread.Sleep(2);
+				//F.Application.DoEvents();
 				try
 				{
 					int index = 0;
@@ -4008,7 +3803,6 @@ namespace BExplorer.Shell
 			{
 				try
 				{
-					F.Application.DoEvents();
 					int index = this.Items.Count - 1;
 					if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
 					var sho = Items[index];

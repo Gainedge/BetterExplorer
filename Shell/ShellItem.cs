@@ -127,6 +127,7 @@ namespace BExplorer.Shell {
 		//public bool ISRedrawed { get; set; }
 		//public Bitmap ThumbnailIcon { get; set; }
 		internal bool IsNeedRefreshing { get; set; }
+		internal bool IsInvalid { get; set; }
 		internal bool IsThumbnailLoaded { get; set; }
 		internal bool IsInitialised { get; set; }
 		internal int OverlayIconIndex { get; set; }
@@ -257,7 +258,9 @@ namespace BExplorer.Shell {
 		}
 
 		public bool IsShared { get { return COM_Attribute_Check(SFGAO.SHARE); } }
-
+		public void UnValidate() {
+				COM_Attribute_Check(SFGAO.VALIDATE);
+		}
 		/*
 		/// <summary>
 		/// Gets a value indicating whether the item is read-only.
@@ -1285,8 +1288,14 @@ namespace BExplorer.Shell {
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		private bool COM_Attribute_Check(SFGAO Check) {
 			SFGAO sfgao;
-			ComInterface.GetAttributes(Check, out sfgao);
-			return sfgao != 0;
+			if (IsInvalid) {
+				var sho = ShellItem.ToShellParsingName(this.ParsingName);
+				sho.m_ComInterface.GetAttributes(Check, out sfgao);
+				sho.Dispose();
+			} else {
+				ComInterface.GetAttributes(Check, out sfgao);
+			}
+			return (sfgao & Check) != 0;
 		}
 
 		/*
@@ -1358,7 +1367,7 @@ namespace BExplorer.Shell {
 		}//TODO: Start using this safe Constructor more
 
 	}
-	public class ProductComparer : IEqualityComparer<ShellItem>
+	public class ShellItemComparer : IEqualityComparer<ShellItem>
 	{
 		// Products are equal if their names and product numbers are equal.
 		public bool Equals(ShellItem x, ShellItem y)
