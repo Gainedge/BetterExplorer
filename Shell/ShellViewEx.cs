@@ -2403,7 +2403,7 @@ namespace BExplorer.Shell
 												{
 													overlayQueue.Enqueue(index);
 												}
-	
+												
 												if (IconSize != 16)
 												{
 													WTS_CACHEFLAGS flags;
@@ -2447,6 +2447,7 @@ namespace BExplorer.Shell
 																var hbitmap = sho.Thumbnail.GetHBitmap(IconSize);
 		
 																Gdi32.BitBltDraw(hdc, hbitmap, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+																
 																	sho.IsIconLoaded = true;
 															} else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
 																if (!sho.IsIconLoaded) {
@@ -2485,6 +2486,75 @@ namespace BExplorer.Shell
 																	lvItem.state != 0 ? F.VisualStyles.CheckBoxState.CheckedNormal : F.VisualStyles.CheckBoxState.UncheckedNormal
 																);
 															}
+														}
+													}
+													if (sho.OverlayIconIndex > 0)
+													{
+														if (this.IconSize > 180)
+														{
+															jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+														}
+														else if (this.IconSize > 64)
+														{
+															extra.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 50));
+														}
+														else
+														{
+															large.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 32));
+														}
+													}
+													if (sho.IsShielded > 0)
+													{
+														if (this.IconSize > 180)
+														{
+															jumbo.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - this.IconSize / 3, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+														}
+														else if (this.IconSize > 64)
+														{
+															extra.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - 60, iconBounds.Bottom - 50));
+														}
+														else
+														{
+															large.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - 42, iconBounds.Bottom - 32));
+														}
+													}
+													var newItem = ShellItem.ToShellParsingName(sho.CachedParsingName);
+													if (newItem.IsShared)
+													{
+														if (this.IconSize > 180)
+														{
+															jumbo.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - this.IconSize / 3, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+														}
+														else if (this.IconSize > 64)
+														{
+															extra.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - 60, iconBounds.Bottom - 50));
+														}
+														else
+														{
+															large.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - 42, iconBounds.Bottom - 32));
+														}
+													}
+													newItem.Dispose();
+													if (View == ShellViewStyle.Tile)
+													{
+														var lableBounds = new User32.RECT() { Left = 2 };
+														User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
+
+														using (var g = Graphics.FromHdc(hdc))
+														{
+															var fmt = new StringFormat();
+															fmt.Trimming = StringTrimming.EllipsisCharacter;
+															fmt.Alignment = StringAlignment.Center;
+															fmt.Alignment = StringAlignment.Near;
+															fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
+															fmt.LineAlignment = StringAlignment.Center;
+
+															var lblrectTiles = new RectangleF(lableBounds.Left, itemBounds.Top + 4, lableBounds.Right - lableBounds.Left, 20);
+															Font font = System.Drawing.SystemFonts.IconTitleFont;
+															var textBrush = new SolidBrush(textColor == null ? System.Drawing.SystemColors.ControlText : textColor.Value);
+															g.DrawString(sho.DisplayName, font, textBrush, lblrectTiles, fmt);
+															font.Dispose();
+															textBrush.Dispose();
 														}
 													}
 													thumbnail.Dispose();
@@ -2547,90 +2617,28 @@ namespace BExplorer.Shell
 														}
 														newSho.Dispose();
 													}
+													if (sho.OverlayIconIndex > 0)
+													{
+															small.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - 16));
+														
+													}
+													if (sho.IsShielded > 0)
+													{
+														
+															small.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
+														
+													}
+													var newItem = ShellItem.ToShellParsingName(sho.CachedParsingName);
+													if (newItem.IsShared)
+													{
+														
+															small.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
+														
+													}
+													newItem.Dispose();
 													icon.Dispose();
 												}
-												if (View == ShellViewStyle.Tile) {
-													var lableBounds = new User32.RECT() { Left = 2 };
-													User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
 
-													using (var g = Graphics.FromHdc(hdc)) {
-														var fmt = new StringFormat();
-														fmt.Trimming = StringTrimming.EllipsisCharacter;
-														fmt.Alignment = StringAlignment.Center;
-														fmt.Alignment = StringAlignment.Near;
-														fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
-														fmt.LineAlignment = StringAlignment.Center;
-
-														var lblrectTiles = new RectangleF(lableBounds.Left, itemBounds.Top + 4, lableBounds.Right - lableBounds.Left, 20);
-														Font font = System.Drawing.SystemFonts.IconTitleFont;
-														var textBrush = new SolidBrush(textColor == null ? System.Drawing.SystemColors.ControlText : textColor.Value);
-														g.DrawString(sho.DisplayName, font, textBrush, lblrectTiles, fmt);
-														font.Dispose();
-														textBrush.Dispose();
-													}
-												}
-												//TODO: Double Check
-												if (sho.OverlayIconIndex > 0)
-												{
-													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon)
-													{
-														small.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - 16));
-													}
-													else if (this.IconSize > 180)
-													{
-														jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
-													}
-													else if (this.IconSize > 64)
-													{
-														extra.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 50));
-													}
-													else
-													{
-														large.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 32));
-													}
-												}
-
-												
-												if (sho.IsShielded > 0)
-												{
-													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon)
-													{
-														small.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
-													}
-													else if (this.IconSize > 180)
-													{
-														jumbo.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - this.IconSize / 3, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
-													}
-													else if (this.IconSize > 64)
-													{
-														extra.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - 60, iconBounds.Bottom - 50));
-													}
-													else
-													{
-														large.DrawIcon(hdc, sho.IsShielded, new DPoint(iconBounds.Right - 42, iconBounds.Bottom - 32));
-													}
-												}
-												var newItem = ShellItem.ToShellParsingName(sho.CachedParsingName);
-												if (newItem.IsShared)
-												{
-													if (this.View == ShellViewStyle.Details || this.View == ShellViewStyle.List || this.View == ShellViewStyle.SmallIcon)
-													{
-														small.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
-													}
-													else if (this.IconSize > 180)
-													{
-														jumbo.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - this.IconSize / 3, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
-													}
-													else if (this.IconSize > 64)
-													{
-														extra.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - 60, iconBounds.Bottom - 50));
-													}
-													else
-													{
-														large.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - 42, iconBounds.Bottom - 32));
-													}
-												}
-												newItem.Dispose();
 												if (!sho.IsInitialised)
 												{
 													//OnItemDisplayed(sho, index);
