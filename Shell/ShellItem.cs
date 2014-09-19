@@ -329,22 +329,23 @@ namespace BExplorer.Shell {
 			get {
 				//TODO: Test
 
-				if (ParsingName.StartsWith("::")) {
-					return false;
-				}
-				else if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\")) {
-					//TODO: Find a better way of doing the following code
-					if (ParsingName == "") {
-						return false;
-					}
+				//if (ParsingName.StartsWith("::")) {
+				//	return false;
+				//}
+				//else if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\")) {
+				//	//TODO: Find a better way of doing the following code
+				//	if (ParsingName == "") {
+				//		return false;
+				//	}
 
-					string rootPath = System.IO.Path.GetPathRoot(ParsingName);	// get drive's letter
-					//var driveInfo = new DriveInfo(rootPath);				// get info about the drive
-					return new DriveInfo(rootPath).DriveType == DriveType.Network;			// return true if a network drive
-				}
-				else {
-					return true; // is a UNC path
-				}
+				//	string rootPath = System.IO.Path.GetPathRoot(ParsingName);	// get drive's letter
+				//	//var driveInfo = new DriveInfo(rootPath);				// get info about the drive
+				//	return new DriveInfo(rootPath).DriveType == DriveType.Network;			// return true if a network drive
+				//}
+				//else {
+				//	return true; // is a UNC path
+				//}
+				return Shell32.PathIsNetworkPath(this.ParsingName);
 
 			}
 		}
@@ -352,7 +353,8 @@ namespace BExplorer.Shell {
 		public bool IsNetDrive {
 			get {
 				try {
-					return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) == DriveType.Network;
+					//return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) == DriveType.Network;
+					return Shell32.PathIsNetworkPath(this.ParsingName);
 				}
 				catch {
 					return false;

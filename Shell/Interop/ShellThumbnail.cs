@@ -10,6 +10,8 @@ using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
 namespace BExplorer.Shell.Interop {
+
+	#region Enums
 	// <summary>
 	/// Represents the different retrieval options for the thumbnail or icon,
 	/// such as extracting the thumbnail or icon from a file, 
@@ -58,17 +60,24 @@ namespace BExplorer.Shell.Interop {
 		/// The IconOnly behavior returns only the icon, never the thumbnail.
 		/// </summary>
 		IconOnly = SIIGBF.IconOnly,
-	}
+	} 
+	#endregion
+
 	/// <summary>
 	/// Represents a thumbnail or an icon for a ShellObject.
 	/// </summary>
 	public class ShellThumbnail : IDisposable {
-		#region Private members
+
+		#region Private Members
 
 		/// <summary>
 		/// Native shellItem
 		/// </summary>
 		private IShellItem shellItemNative;
+
+		/// <summary>
+		/// The shellItem that corresponds to the Thumbnail
+		/// </summary>
 		private ShellItem _Item;
 
 		/// <summary>
@@ -76,36 +85,11 @@ namespace BExplorer.Shell.Interop {
 		/// </summary>
 		private System.Windows.Size currentSize = new System.Windows.Size(256, 256);
 
-		#endregion
-		private static IThumbnailCache ThumbnailCache;
-		#region Constructors
-
-		public void Dispose() {
-			if (shellItemNative != null) {
-				Marshal.FinalReleaseComObject(shellItemNative);
-				shellItemNative = null;
-			}
-		}
 		/// <summary>
-		/// Internal constructor that takes in a parent ShellObject.
+		/// The Thumbnail cache instance
 		/// </summary>
-		/// <param name="shellObject"></param>
-		internal ShellThumbnail(ShellItem shellObject) {
-			if (shellObject != null && shellObject.ComInterface != null) {
-				_Item = shellObject;
-				shellItemNative = shellObject.ComInterface;
-				if (ThumbnailCache == null) {
-					Guid IID_IUnknown = new Guid("00000000-0000-0000-C000-000000000046");
-					Guid CLSID_LocalThumbnailCache = new Guid("50EF4544-AC9F-4A8E-B21B-8A26180DB13F");
-
-					IntPtr cachePointer;
-					Ole32.CoCreateInstance(ref CLSID_LocalThumbnailCache, IntPtr.Zero, Ole32.CLSCTX.INPROC, ref IID_IUnknown, out cachePointer);
-
-					ThumbnailCache = (IThumbnailCache)Marshal.GetObjectForIUnknown(cachePointer);
-				}
-			}
-		}
-
+		private static IThumbnailCache ThumbnailCache;
+		private ShellThumbnailFormatOption formatOption = ShellThumbnailFormatOption.Default;
 		#endregion
 
 		#region Public properties
@@ -148,30 +132,6 @@ namespace BExplorer.Shell.Interop {
 		public BitmapSource BitmapSource { get { return GetBitmapSource(CurrentSize); } }
 
 		/// <summary>
-		/// Gets the thumbnail or icon image in <see cref="System.Drawing.Icon"/> format. 
-		/// Null is returned if the ShellObject does not have a thumbnail or icon image.
-		/// </summary>
-		public Icon Icon {
-			get {
-				try {
-					return Icon.FromHandle(Bitmap.GetHicon());
-				}
-				catch {
-					return null;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets the thumbnail or icon in small size and <see cref="System.Drawing.Bitmap"/> format.
-		/// </summary>
-		public Bitmap SmallBitmap {
-			get {
-				return GetBitmap(DefaultIconSize.Small, DefaultThumbnailSize.Small);
-			}
-		}
-
-		/// <summary>
 		/// Gets the thumbnail or icon in small size and <see cref="System.Windows.Media.Imaging.BitmapSource"/> format.
 		/// </summary>
 		public BitmapSource SmallBitmapSource {
@@ -181,86 +141,11 @@ namespace BExplorer.Shell.Interop {
 		}
 
 		/// <summary>
-		/// Gets the thumbnail or icon in small size and <see cref="System.Drawing.Icon"/> format.
-		/// </summary>
-		public Icon SmallIcon { get { return Icon.FromHandle(SmallBitmap.GetHicon()); } }
-
-		/// <summary>
-		/// Gets the thumbnail or icon in Medium size and <see cref="System.Drawing.Bitmap"/> format.
-		/// </summary>
-		public Bitmap MediumBitmap {
-			get {
-				return GetBitmap(DefaultIconSize.Medium, DefaultThumbnailSize.Medium);
-			}
-		}
-
-		/// <summary>
-		/// Gets the thumbnail or icon in medium size and <see cref="System.Windows.Media.Imaging.BitmapSource"/> format.
-		/// </summary>
-		public BitmapSource MediumBitmapSource {
-			get {
-				return GetBitmapSource(DefaultIconSize.Medium, DefaultThumbnailSize.Medium);
-			}
-		}
-
-		/// <summary>
-		/// Gets the thumbnail or icon in Medium size and <see cref="System.Drawing.Icon"/> format.
-		/// </summary>
-		public Icon MediumIcon { get { return Icon.FromHandle(MediumBitmap.GetHicon()); } }
-
-		/// <summary>
-		/// Gets the thumbnail or icon in large size and <see cref="System.Drawing.Bitmap"/> format.
-		/// </summary>
-		public Bitmap LargeBitmap {
-			get {
-				return GetBitmap(DefaultIconSize.Large, DefaultThumbnailSize.Large);
-			}
-		}
-
-		/// <summary>
-		/// Gets the thumbnail or icon in large size and <see cref="System.Windows.Media.Imaging.BitmapSource"/> format.
-		/// </summary>
-		public BitmapSource LargeBitmapSource {
-			get {
-				return GetBitmapSource(DefaultIconSize.Large, DefaultThumbnailSize.Large);
-			}
-		}
-
-		/// <summary>
-		/// Gets the thumbnail or icon in Large size and <see cref="System.Drawing.Icon"/> format.
-		/// </summary>
-		public Icon LargeIcon { get { return Icon.FromHandle(LargeBitmap.GetHicon()); } }
-
-		/// <summary>
-		/// Gets the thumbnail or icon in extra large size and <see cref="System.Drawing.Bitmap"/> format.
-		/// </summary>
-		public Bitmap ExtraLargeBitmap {
-			get {
-				return GetBitmap(DefaultIconSize.ExtraLarge, DefaultThumbnailSize.ExtraLarge);
-			}
-		}
-
-		/// <summary>
-		/// Gets the thumbnail or icon in Extra Large size and <see cref="System.Windows.Media.Imaging.BitmapSource"/> format.
-		/// </summary>
-		public BitmapSource ExtraLargeBitmapSource {
-			get {
-				return GetBitmapSource(DefaultIconSize.ExtraLarge, DefaultThumbnailSize.ExtraLarge);
-			}
-		}
-
-		/// <summary>
-		/// Gets the thumbnail or icon in Extra Large size and <see cref="System.Drawing.Icon"/> format.
-		/// </summary>
-		public Icon ExtraLargeIcon { get { return Icon.FromHandle(ExtraLargeBitmap.GetHicon()); } }
-
-		/// <summary>
 		/// Gets or sets a value that determines if the current retrieval option is cache or extract, cache only, or from memory only.
 		/// The default is cache or extract.
 		/// </summary>
 		public ShellThumbnailRetrievalOption RetrievalOption { get; set; }
 
-		private ShellThumbnailFormatOption formatOption = ShellThumbnailFormatOption.Default;
 		/// <summary>
 		/// Gets or sets a value that determines if the current format option is thumbnail or icon, thumbnail only, or icon only.
 		/// The default is thumbnail or icon.
@@ -292,6 +177,36 @@ namespace BExplorer.Shell.Interop {
 		/// If the caller wants a higher quality image stretch, they should pass this flag and do it themselves.
 		/// </remarks>
 		public bool AllowBiggerSize { get; set; }
+
+		#endregion
+
+		#region Constructors
+
+		public void Dispose() {
+			if (shellItemNative != null) {
+				Marshal.FinalReleaseComObject(shellItemNative);
+				shellItemNative = null;
+			}
+		}
+		/// <summary>
+		/// Internal constructor that takes in a parent ShellObject.
+		/// </summary>
+		/// <param name="shellObject"></param>
+		internal ShellThumbnail(ShellItem shellObject) {
+			if (shellObject != null && shellObject.ComInterface != null) {
+				_Item = shellObject;
+				shellItemNative = shellObject.ComInterface;
+				if (ThumbnailCache == null) {
+					Guid IID_IUnknown = new Guid("00000000-0000-0000-C000-000000000046");
+					Guid CLSID_LocalThumbnailCache = new Guid("50EF4544-AC9F-4A8E-B21B-8A26180DB13F");
+
+					IntPtr cachePointer;
+					Ole32.CoCreateInstance(ref CLSID_LocalThumbnailCache, IntPtr.Zero, Ole32.CLSCTX.INPROC, ref IID_IUnknown, out cachePointer);
+
+					ThumbnailCache = (IThumbnailCache)Marshal.GetObjectForIUnknown(cachePointer);
+				}
+			}
+		}
 
 		#endregion
 
@@ -339,185 +254,7 @@ namespace BExplorer.Shell.Interop {
 			else {
 				return IntPtr.Zero;
 			}
-			//else if ((uint)hr == 0x8004B200 && FormatOption == ShellThumbnailFormatOption.ThumbnailOnly)
-			//{
-			//    // Thumbnail was requested, but this ShellItem doesn't have a thumbnail.
-			//    throw new InvalidOperationException(LocalizedMessages.ShellThumbnailDoesNotHaveThumbnail, Marshal.GetExceptionForHR((int)hr));
-			//}
-			//else if ((uint)hr == 0x80040154) // REGDB_E_CLASSNOTREG
-			//{
-			//    throw new NotSupportedException(LocalizedMessages.ShellThumbnailNoHandler, Marshal.GetExceptionForHR((int)hr));
-			//}
 
-			//throw new ShellException(hr);
-		}
-
-		public Bitmap RefreshThumbnail(uint iconSize) {
-			Bitmap returnValue = null;
-			ISharedBitmap bmp = null;
-			WTS_CACHEFLAGS cacheFlags;
-			WTS_THUMBNAILID thumbId;
-			try {
-				ThumbnailCache.GetThumbnail(this.shellItemNative, iconSize, WTS_FLAGS.WTS_FORCEEXTRACTION | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE, out bmp, out cacheFlags, out thumbId);
-				IntPtr hBitmap = IntPtr.Zero;
-				if (bmp != null)
-					bmp.GetSharedBitmap(out hBitmap);
-
-				// return a System.Drawing.Bitmap from the hBitmap
-
-				if (hBitmap != IntPtr.Zero)
-					returnValue = GetBitmapFromHBitmap(hBitmap);
-
-				// delete HBitmap to avoid memory leaks
-				Gdi32.DeleteObject(hBitmap);
-			}
-			finally {
-				if (bmp != null) Marshal.ReleaseComObject(bmp);
-			}
-
-			return returnValue;
-		}
-		public IntPtr RefreshThumbnailPtr(uint iconSize)
-		{
-			IntPtr returnValue = IntPtr.Zero;
-			ISharedBitmap bmp = null;
-			WTS_CACHEFLAGS cacheFlags;
-			WTS_THUMBNAILID thumbId;
-			try
-			{
-				ThumbnailCache.GetThumbnail(this.shellItemNative, iconSize, WTS_FLAGS.WTS_FORCEEXTRACTION | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE, out bmp, out cacheFlags, out thumbId);
-				IntPtr hBitmap = IntPtr.Zero;
-				if (bmp != null)
-					bmp.GetSharedBitmap(out hBitmap);
-
-				// return a System.Drawing.Bitmap from the hBitmap
-				returnValue = hBitmap;
-			}
-			finally
-			{
-				if (bmp != null) Marshal.ReleaseComObject(bmp);
-			}
-
-			return returnValue;
-		}
-
-		public HResult ExtractCachedThumbnail(uint iconSize, out Bitmap thumbnail, out WTS_CACHEFLAGS flags)
-		{
-			HResult res = HResult.S_OK;
-			Bitmap returnValue = null;
-			ISharedBitmap bmp = null;
-			WTS_THUMBNAILID thumbId;
-			try
-			{
-				res = ThumbnailCache.GetThumbnail(this.shellItemNative, iconSize, WTS_FLAGS.WTS_INCACHEONLY | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE, out bmp, out flags, out thumbId);
-				IntPtr hBitmap = IntPtr.Zero;
-				if (bmp != null)
-					bmp.GetSharedBitmap(out hBitmap);
-
-				// return a System.Drawing.Bitmap from the hBitmap
-
-				if (hBitmap != IntPtr.Zero)
-					returnValue = GetBitmapFromHBitmap(hBitmap);
-
-				// delete HBitmap to avoid memory leaks
-				Gdi32.DeleteObject(hBitmap);
-			}
-			finally
-			{
-				if (bmp != null) Marshal.ReleaseComObject(bmp);
-			}
-			thumbnail = returnValue;
-			return res;
-		}
-		public HResult ExtractCachedThumbnail(uint iconSize, out IntPtr thumbnail, out WTS_CACHEFLAGS flags)
-		{
-			HResult res = HResult.S_OK;
-			IntPtr returnValue = IntPtr.Zero;
-			ISharedBitmap bmp = null;
-			WTS_THUMBNAILID thumbId;
-			try
-			{
-				res = ThumbnailCache.GetThumbnail(this.shellItemNative, iconSize, WTS_FLAGS.WTS_INCACHEONLY | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE, out bmp, out flags, out thumbId);
-				IntPtr hBitmap = IntPtr.Zero;
-				if (bmp != null)
-					bmp.GetSharedBitmap(out hBitmap);
-				returnValue = hBitmap;
-				// return a System.Drawing.Bitmap from the hBitmap
-
-				//if (hBitmap != IntPtr.Zero)
-				//	returnValue = GetBitmapFromHBitmap(hBitmap);
-
-				//// delete HBitmap to avoid memory leaks
-				//Gdi32.DeleteObject(hBitmap);
-			}
-			finally
-			{
-				if (bmp != null) Marshal.ReleaseComObject(bmp);
-			}
-			thumbnail = returnValue;
-			return res;
-		}
-		/*
-		public static Bitmap CopyHBitmapToBitmap(IntPtr nativeHBitmap) {
-			// Get width, height and the address of the pixel data for the native HBitmap
-			BITMAP bitmapStruct = new BITMAP();
-			Gdi32.GetObjectBitmap(nativeHBitmap, Marshal.SizeOf(bitmapStruct), ref bitmapStruct);
-
-			// Create a managed bitmap that has its pixel data pointing to the pixel data of the native HBitmap
-			// No memory is allocated for its pixel data
-			Bitmap managedBitmapPointer = new Bitmap(
-					bitmapStruct.bmWidth, bitmapStruct.bmHeight, bitmapStruct.bmWidth * 4, PixelFormat.Format32bppArgb, bitmapStruct.bmBits);
-
-			// Create a managed bitmap and allocate memory for pixel data
-			Bitmap managedBitmapReal = new Bitmap(bitmapStruct.bmWidth, bitmapStruct.bmHeight, PixelFormat.Format32bppArgb);
-
-			// Copy the pixels of the native HBitmap into the canvas of the managed bitmap
-			Graphics graphics = Graphics.FromImage(managedBitmapReal);
-			graphics.DrawImage(managedBitmapPointer, 0, 0);
-			graphics.Dispose();
-			// Delete the native HBitmap object and free memory
-			Gdi32.DeleteObject(nativeHBitmap);
-
-			// Return the managed bitmap, clone of the native HBitmap, with correct transparency
-			return managedBitmapReal;
-		}
-		*/
-		public IntPtr GetHBitmap(int iconSize) {
-			this.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			this.RetrievalOption = ShellThumbnailRetrievalOption.Default;
-			return GetHBitmap(new System.Windows.Size(iconSize, iconSize));
-		}
-		public Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap) {
-			Bitmap bmp = Bitmap.FromHbitmap(nativeHBitmap);
-
-			if (Bitmap.GetPixelFormatSize(bmp.PixelFormat) < 32) {
-				//bmp.MakeTransparent(Color.Black);
-				return bmp;
-			}
-
-			BitmapData bmpData;
-
-			if (IsAlphaBitmap(bmp, out bmpData)) {
-				Bitmap resBmp = GetlAlphaBitmapFromBitmapData(bmpData);
-				//bmp.Dispose();
-				bmpData = null;
-				return resBmp;
-			}
-			bmpData = null;
-			//if (bmp.GetPixel(1, 1) == Color.FromArgb(255, Color.Black) && RetrievalOption == ShellThumbnailRetrievalOption.CacheOnly)
-			//  return null;
-			//bmp.MakeTransparent(Color.FromArgb(255, Color.Black));
-			return bmp;
-		}
-
-		public static Bitmap GetlAlphaBitmapFromBitmapData(BitmapData bmpData) {
-			Bitmap b = new Bitmap(
-							bmpData.Width,
-							bmpData.Height,
-							bmpData.Stride,
-							PixelFormat.Format32bppArgb,
-							bmpData.Scan0);
-			return b;
 		}
 
 		public static bool IsAlphaBitmap(Bitmap bmp, out BitmapData bmpData) {
@@ -592,6 +329,78 @@ namespace BExplorer.Shell.Interop {
 			return null;
 		}
 
+		private static Bitmap GetlAlphaBitmapFromBitmapData(BitmapData bmpData) {
+			Bitmap b = new Bitmap(
+							bmpData.Width,
+							bmpData.Height,
+							bmpData.Stride,
+							PixelFormat.Format32bppArgb,
+							bmpData.Scan0);
+			return b;
+		}
+		#endregion
+
+		#region Public Methods
+		public Boolean RefreshThumbnail(uint iconSize) {
+
+			ISharedBitmap bmp = null;
+			WTS_CACHEFLAGS cacheFlags;
+			WTS_THUMBNAILID thumbId;
+			Boolean result = false;
+			try {
+				if (ThumbnailCache.GetThumbnail(this.shellItemNative, iconSize, WTS_FLAGS.WTS_FORCEEXTRACTION | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE, out bmp, out cacheFlags, out thumbId) != HResult.WTS_E_FAILEDEXTRACTION) {
+					result = true;
+				}
+			} finally {
+				if (bmp != null) Marshal.ReleaseComObject(bmp);
+			}
+			return result;
+		}
+		public HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false) {
+			HResult res = HResult.S_OK;
+			ISharedBitmap bmp = null;
+			WTS_THUMBNAILID thumbId;
+			try {
+				retrieved = false;
+				res = ThumbnailCache.GetThumbnail(this.shellItemNative, iconSize, isRefresh ? (WTS_FLAGS.WTS_FORCEEXTRACTION | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE) : (WTS_FLAGS.WTS_INCACHEONLY | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE), out bmp, out flags, out thumbId);
+				IntPtr hBitmap = IntPtr.Zero;
+				if (bmp != null) {
+					bmp.GetSharedBitmap(out hBitmap);
+					retrieved = true;
+
+					int width;
+					int height;
+					Gdi32.ConvertPixelByPixel(hBitmap, out width, out height);
+					Gdi32.NativeDraw(hdc, hBitmap, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, isHidden);
+					Gdi32.DeleteObject(hBitmap);
+				}
+			} finally {
+				if (bmp != null) Marshal.ReleaseComObject(bmp);
+			}
+			return res;
+		}
+		public IntPtr GetHBitmap(int iconSize) {
+			this.FormatOption = ShellThumbnailFormatOption.IconOnly;
+			this.RetrievalOption = ShellThumbnailRetrievalOption.Default;
+			return GetHBitmap(new System.Windows.Size(iconSize, iconSize));
+		}
+		public Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap) {
+			Bitmap bmp = Bitmap.FromHbitmap(nativeHBitmap);
+
+			if (Bitmap.GetPixelFormatSize(bmp.PixelFormat) < 32) {
+				return bmp;
+			}
+
+			BitmapData bmpData;
+
+			if (IsAlphaBitmap(bmp, out bmpData)) {
+				Bitmap resBmp = GetlAlphaBitmapFromBitmapData(bmpData);
+				bmpData = null;
+				return resBmp;
+			}
+			bmpData = null;
+			return bmp;
+		}
 		#endregion
 
 	}

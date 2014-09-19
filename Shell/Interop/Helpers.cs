@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BExplorer.Shell.Interop {
 	public static class Helpers {
 
-		/*
+		
 		/// <summary>
 		/// Change the opacity of an image
 		/// </summary>
@@ -69,7 +69,7 @@ namespace BExplorer.Shell.Interop {
 
 			return bmp;
 		}
-		*/
+		
 
 		public static Bitmap ChangeOpacity(Image img, float opacityvalue) {
 			Bitmap bmp = new Bitmap(img.Width, img.Height); // Determining Width and Height of Source Image
@@ -101,7 +101,7 @@ namespace BExplorer.Shell.Interop {
 
 		}
 
-		/*
+
 		public static void SetListViewBackgroundImage(IntPtr lvHandle, Bitmap bitmap) {
 
 			var lvBkImage = new LVBKIMAGE();
@@ -125,6 +125,6 @@ namespace BExplorer.Shell.Interop {
 			Marshal.FreeHGlobal(lbkImageptr);
 
 		}
-		*/
+
 	}
 }

@@ -67,7 +67,7 @@ namespace BExplorer.Shell {
 				m.Result = IntPtr.Zero;
 				return;
 			}
-			if (m.Msg == 277) {
+			if (m.Msg == 0x0115) {
 				if (VerticalScroll != null) {
 					VerticalScroll.Invoke(this, EventArgs.Empty);
 				}

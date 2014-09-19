@@ -42,7 +42,7 @@ namespace BExplorer.Shell {
 		#region Private Members
 
 		private TreeNode cuttedNode { get; set; }
-
+		private ManualResetEvent _ResetEvent = new ManualResetEvent(true);
 		private int folderImageListIndex;
 		private ShellView _ShellListView;
 		private List<IntPtr> UpdatedImages = new List<IntPtr>();
@@ -222,6 +222,8 @@ namespace BExplorer.Shell {
 			this.ShellTreeView.MouseMove += ShellListView_MouseMove;
 			this.ShellTreeView.MouseEnter += ShellTreeView_MouseEnter;
 			this.ShellTreeView.MouseLeave += ShellTreeView_MouseLeave;
+			this.ShellTreeView.MouseWheel += ShellTreeView_MouseWheel;
+			this.ShellTreeView.VerticalScroll += ShellTreeView_VerticalScroll;
 			if (this.ShellListView != null) {
 				this.ShellListView.Navigated += ShellListView_Navigated;
 			}
@@ -237,6 +239,16 @@ namespace BExplorer.Shell {
 			childsThread = new Thread(new ThreadStart(LoadChilds));
 			childsThread.IsBackground = true;
 			childsThread.Start();
+		}
+
+		void ShellTreeView_VerticalScroll(object sender, EventArgs e) {
+			childsQueue.Clear();
+			imagesQueue.Clear();
+		}
+
+		void ShellTreeView_MouseWheel(object sender, MouseEventArgs e) {
+			childsQueue.Clear();
+			imagesQueue.Clear();
 		}
 
 		private void ShellTreeView_MouseLeave(object sender, EventArgs e) {
@@ -279,6 +291,7 @@ namespace BExplorer.Shell {
 		[System.Diagnostics.DebuggerStepThrough]
 		public void LoadTreeImages() {
 			while (true) {
+				this._ResetEvent.WaitOne();
 				var handle = imagesQueue.Dequeue();
 				TreeNode node = null;
 				IntPtr treeHandle = IntPtr.Zero;
@@ -315,13 +328,14 @@ namespace BExplorer.Shell {
 
 		public void LoadChilds() {
 			while (true) {
+				this._ResetEvent.WaitOne();
 				var handle = childsQueue.Dequeue();
 				TreeNode node = null;
 				IntPtr treeHandle = IntPtr.Zero;
 				var visible = true;
 				var pidl = IntPtr.Zero;
-				Thread.Sleep(2);
-				Application.DoEvents();
+				//Thread.Sleep(2);
+				//Application.DoEvents();
 				this.Invoke((Action)(() => {
 					node = TreeNode.FromHandle(ShellTreeView, handle);
 					treeHandle = this.ShellTreeView.Handle;
@@ -485,6 +499,7 @@ namespace BExplorer.Shell {
 
 		private async void ShellTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
 			if (e.Action == TreeViewAction.Expand) {
+				this._ResetEvent.Reset();
 				if (e.Node.Nodes.Count > 0 && e.Node.Nodes[0].Text == "<!EMPTY!>") {
 					e.Node.Nodes.Clear();
 					imagesQueue.Clear();
@@ -544,6 +559,7 @@ namespace BExplorer.Shell {
 
 		private void ShellTreeView_AfterExpand(object sender, TreeViewEventArgs e) {
 			GC.Collect();
+			this._ResetEvent.Set();
 		}
 
 		private void ShellTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
@@ -569,7 +585,7 @@ namespace BExplorer.Shell {
 
 				this._IsNavigate = false;
 				this.isFromTreeview = false;
-				e.Node.Expand();
+				//e.Node.Expand();
 			}
 		}
 

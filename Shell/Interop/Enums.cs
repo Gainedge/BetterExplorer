@@ -222,7 +222,7 @@ namespace BExplorer.Shell.Interop {
 		Video = 4,
 	}
 
-	/*
+	
 	public enum LVBKIF : int {
 		SOURCE_NONE = 0x00000000,
 
@@ -244,9 +244,9 @@ namespace BExplorer.Shell.Interop {
 
 		FLAG_ALPHABLEND = 0x20000000
 	}
-	*/
+	
 
-	/*
+	
 	public struct LVBKIMAGE {
 		public LVBKIF ulFlags;
 
@@ -260,7 +260,7 @@ namespace BExplorer.Shell.Interop {
 
 		public int yOffsetPercent;
 	};
-	*/
+	
 
 	public struct PROPERTYKEY {
 		public Guid fmtid;
