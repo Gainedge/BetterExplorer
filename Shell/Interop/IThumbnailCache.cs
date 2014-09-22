@@ -16,15 +16,15 @@ namespace BExplorer.Shell.Interop {
 				[In] uint cxyRequestedThumbSize,
 				[In] WTS_FLAGS flags /*default:  WTS_FLAGS.WTS_EXTRACT*/,
 				[Out][MarshalAs(UnmanagedType.Interface)] out ISharedBitmap ppvThumb,
-				[Out] out WTS_CACHEFLAGS pOutFlags,
-				[Out] out WTS_THUMBNAILID pThumbnailID
+				[Out] WTS_CACHEFLAGS pOutFlags,
+				[Out] WTS_THUMBNAILID pThumbnailID
 		);
 		[PreserveSig]
 		HResult GetThumbnailByID(
 				[In, MarshalAs(UnmanagedType.Struct)] WTS_THUMBNAILID thumbnailID,
 				[In] uint cxyRequestedThumbSize,
 				[Out][MarshalAs(UnmanagedType.Interface)] out ISharedBitmap ppvThumb,
-				[Out] out WTS_CACHEFLAGS pOutFlags
+				[Out] WTS_CACHEFLAGS pOutFlags
 		);
 	}
 }

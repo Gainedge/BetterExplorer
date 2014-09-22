@@ -28,6 +28,8 @@ namespace BExplorer.Shell.Interop {
 
 		[DllImport("ole32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern HResult CoCreateInstance(ref Guid rclsid, IntPtr pUnkOuter, CLSCTX dwClsContext, ref Guid riid, out IntPtr ppv);
+		[DllImport("ole32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		public static extern HResult CoCreateInstance(Guid rclsid, IntPtr pUnkOuter, CLSCTX dwClsContext, Guid riid, out IntPtr ppv);
 
 		public static Guid IID_IDataObject {
 			get { return new Guid("0000010e-0000-0000-C000-000000000046"); }

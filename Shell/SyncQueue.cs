@@ -39,7 +39,8 @@ namespace BExplorer.Shell {
 					//if (OnQueueOverload != null) OnQueueOverload.Invoke(this, new OverloadEventArgs(true));
 				}
 				*/
-				queue.Enqueue(item);
+				//if (!queue.Contains(item))
+					queue.Enqueue(item);
 				if (queue.Count == 1) {
 					// wake up any blocked dequeue
 					System.Threading.Monitor.PulseAll(queue);

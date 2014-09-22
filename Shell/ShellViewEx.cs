@@ -2409,7 +2409,18 @@ namespace BExplorer.Shell
 												{
 													WTS_CACHEFLAGS flags;
 													bool retrieved = false;
-													thumbnailResult = sho.Thumbnail.ExtractAndDrawThumbnail(hdc, (uint)IconSize, out flags, iconBounds, out retrieved, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+													IntPtr hThumbnail = IntPtr.Zero;
+													//thumbnailResult = sho.Thumbnail.ExtractAndDrawThumbnail(hdc, (uint)IconSize, out flags, iconBounds, out retrieved, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+													hThumbnail = sho.Thumbnail.GetHBitmap(IconSize, true);
+													int width = 0;
+													int height = 0;
+													if (hThumbnail != IntPtr.Zero)
+													{
+														Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
+														Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+														Gdi32.DeleteObject(hThumbnail);
+														retrieved = true;
+													}
 													if (retrieved && sho.IsNeedRefreshing)
 													{
 														sho.Thumbnail.ExtractAndDrawThumbnail(hdc, (uint)IconSize, out flags, iconBounds, out retrieved, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index), true);
@@ -2417,7 +2428,7 @@ namespace BExplorer.Shell
 													}
 													if (retrieved)
 													{
-														if ((flags & WTS_CACHEFLAGS.WTS_LOWQUALITY) == WTS_CACHEFLAGS.WTS_LOWQUALITY)
+														if ((width > height && width != IconSize ) || (height > width && height != IconSize) || (width == height && width != IconSize))
 														{
 															ThumbnailsForCacheLoad.Enqueue(index);
 														}
@@ -2429,7 +2440,7 @@ namespace BExplorer.Shell
 													}
 													else
 													{
-														if (!sho.IsThumbnailLoaded && thumbnailResult != HResult.WTS_E_FAILEDEXTRACTION)
+														if (!sho.IsThumbnailLoaded)
 															ThumbnailsForCacheLoad.Enqueue(index);
 															if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
 																var hbitmap = sho.Thumbnail.GetHBitmap(IconSize);
@@ -3772,13 +3783,14 @@ namespace BExplorer.Shell
 					int index = 0;
 					if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
 					var sho = Items[index];
-					var result = sho.Thumbnail.RefreshThumbnail((uint)IconSize);
+					var result = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);//sho.Thumbnail.RefreshThumbnail((uint)IconSize);
 					sho.IsThumbnailLoaded = true;
 					sho.IsNeedRefreshing = false;
-					if (result) {
-						Thread.Sleep(100);
+					if (result != null) {
+						//Thread.Sleep(100);
 						F.Application.DoEvents();
 						this.RefreshItem(index);
+						result.Dispose();
 					}
 					
 				}

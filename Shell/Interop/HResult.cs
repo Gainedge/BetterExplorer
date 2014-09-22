@@ -38,5 +38,10 @@ namespace BExplorer.Shell.Interop
         MK_E_NOOBJECT = unchecked((int)0x800401E5),
 				E_INVALIDARG = unchecked((int)0x80070057),
 				WTS_E_FAILEDEXTRACTION = unchecked((int)0x8004b200),
+				WTS_E_EXTRACTIONTIMEDOUT = unchecked((int)0x8004b201),
+				WTS_E_SURROGATEUNAVAILABLE = unchecked((int)0x8004b202),
+				WTS_E_FASTEXTRACTIONNOTSUPPORTED = unchecked((int)0x8004b203),
+				WTS_E_DATAFILEUNAVAILABLE = unchecked((int)0x8004b204),
+				STG_E_FILENOTFOUND = unchecked((int)0x80030002),
     }
 }
