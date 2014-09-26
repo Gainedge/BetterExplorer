@@ -132,8 +132,9 @@ namespace BetterExplorer {
 			string Locale = ""; bool dmi = true;
 			Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+			
 			if (e.Args != null && e.Args.Any()) {
-				dmi = e.Args.Contains("/nw");
+				dmi = e.Args.Contains("/nw") || e.Args[0] == "t";
 				isStartWithStartupTab = e.Args.Contains("/norestore");
 
 				if (e.Args[0] != "-minimized")
@@ -142,17 +143,12 @@ namespace BetterExplorer {
 					isStartMinimized = true;
 			}
 
-			if (dmi) {
-				if (!ApplicationInstanceManager.CreateSingleInstance(Assembly.GetExecutingAssembly().GetName().Name, (x, y) => (MainWindow as MainWindow).HandleStartup()))
-					return; // exit, if same app. is running
-			}
-
-			/*
+			
 			if (dmi) {
 				if (!ApplicationInstanceManager.CreateSingleInstance(Assembly.GetExecutingAssembly().GetName().Name, SingleInstanceCallback))
 					return; // exit, if same app. is running
 			}
-			*/
+			
 			base.OnStartup(e);
 
 			try {
@@ -166,7 +162,6 @@ namespace BetterExplorer {
 			}
 		}
 
-		[Obsolete("Replaced with HandleStartup()", false)]
 		private void CreateInitialTab(MainWindow win, ShellItem sho) {
 			sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 			sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
@@ -185,12 +180,7 @@ namespace BetterExplorer {
 		/// <param name="sender">The sender.</param>
 		/// <param name="args">The <see cref="SingleInstanceApplication.InstanceCallbackEventArgs"/> instance containing the event data.</param>
 		/// 
-		[Obsolete("Replaced with HandleStartup()", true)]
 		private void SingleInstanceCallback(object sender, InstanceCallbackEventArgs args) {
-			//string StartUpLocation = KnownFolders.Libraries.ParsingName;
-			//RegistryKey rk = Registry.CurrentUser;
-			//RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", false);
-			//StartUpLocation = rks.GetValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
 			if (args == null || Dispatcher == null) return;
 			var StartUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
 
@@ -200,25 +190,24 @@ namespace BetterExplorer {
 				if (!x) return;
 				if (args == null || args.CommandLineArgs == null || !args.CommandLineArgs.Any()) return;
 				if (win == null) return;
-
 				if (args.CommandLineArgs[1] == "/nw") {
-					new MainWindow().Show();
+					var mainWin = new MainWindow();
+					mainWin.IsMultipleWindowsOpened = true;
+					mainWin.Show();
 				}
 				else {
 					ShellItem sho = null;
-					if (args.CommandLineArgs.First() == "t") {
+					if (args.CommandLineArgs[1] == "t") {
 						win.Visibility = Visibility.Visible;
 						if (win.WindowState == WindowState.Minimized) {
 							User32.ShowWindow((HwndSource.FromVisual(win) as HwndSource).Handle, User32.ShowWindowCommands.Restore);
 						};
 
-						System.Windows.Forms.MessageBox.Show("Test");
-
-						sho = new ShellItem(StartUpLocation.ToShellParsingName());
+						sho = ShellItem.ToShellParsingName(StartUpLocation);
 					}
 					else {
 						String cmd = args.CommandLineArgs[1];
-						sho = new ShellItem(cmd.ToShellParsingName());
+						sho = ShellItem.ToShellParsingName(cmd);
 					}
 
 					if (!isStartMinimized || win.tcMain.Items.Count == 0) {
@@ -230,58 +219,10 @@ namespace BetterExplorer {
 					}
 					else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
 						String cmd = args.CommandLineArgs[1];
-						sho = new ShellItem(cmd.ToShellParsingName());
+						sho = ShellItem.ToShellParsingName(cmd);
 						CreateInitialTab(win, sho);
 					}
 				}
-
-
-				/*
-				if (!x) return;
-				if (!(args != null && args.CommandLineArgs != null)) return;
-				if (win == null) return;
-				
-				var Check = args.CommandLineArgs.Any() && args.CommandLineArgs[1] != null && args.CommandLineArgs[1] != "-minimized";
-				if (!Check || args.CommandLineArgs[1] == "t") {
-					win.Visibility = Visibility.Visible;
-					if (win.WindowState == WindowState.Minimized) {
-						User32.ShowWindow(hwnd, User32.ShowWindowCommands.Restore);
-					};
-
-					sho = new ShellItem(StartUpLocation.ToShellParsingName());
-				}
-				else if (Check && args.CommandLineArgs[1] != "t") {
-					if (args.CommandLineArgs[1] == "/nw") {
-						new MainWindow().Show();
-						return;
-					}
-					else {
-						String cmd = args.CommandLineArgs[1];
-						sho = new ShellItem(cmd.ToShellParsingName());
-					}
-				}
-				
-
-
-				if (!isStartMinimized || win.tcMain.Items.Count == 0) {
-					CreateInitialTab(win, sho);
-				}
-				//else if ((int)rks.GetValue("Is_RestoreTabs", 1) == 0) {
-				else if ((int)Utilities.GetRegistryValue("Is_RestoreTabs", "1") == 0) {
-					win.tcMain.Items.Clear();
-					CreateInitialTab(win, sho);
-				}
-				else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
-					String cmd = args.CommandLineArgs[1];
-					sho = new ShellItem(cmd.ToShellParsingName());
-					CreateInitialTab(win, sho);
-				}
-				*/
-
-
-				//rks.Close();
-				//rk.Close();
-
 				win.Activate();
 				win.Topmost = true;  // important
 				win.Topmost = false; // important

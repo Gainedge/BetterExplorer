@@ -728,6 +728,9 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("user32.dll")]
 		public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
 
+		[DllImport("user32.dll")]
+		public static extern void PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+
 		/*
 		[DllImport("user32.dll")]
 		public static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);

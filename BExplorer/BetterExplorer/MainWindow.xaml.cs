@@ -59,7 +59,7 @@ namespace BetterExplorer {
 
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		internal static extern bool GetCursorPos(ref BExplorer.Shell.Win32Point pt);
+		internal static extern bool GetCursorPos(ref BExplorer.Shell.DataObject.Win32Point pt);
 
 		//[DllImport("user32.dll", SetLastError = true)]
 		//private static extern int RegisterHotKey(IntPtr hwnd, int id, int fsModifiers, int vk);
@@ -109,6 +109,8 @@ namespace BetterExplorer {
 		System.Windows.Forms.Timer focusTimer = new System.Windows.Forms.Timer() { Interval = 500 };
 
 		#endregion
+
+		public bool IsMultipleWindowsOpened { get; set; }
 
 		#region Events
 
@@ -782,8 +784,10 @@ namespace BetterExplorer {
 
 		private void btnBackstageExit_Click(object sender, RoutedEventArgs e) {
 			//! We call Shutdown() so to explicit shutdown the app regardless of windows closing cancel flag.
-
-			Application.Current.Shutdown();
+			if (this.IsMultipleWindowsOpened)
+				this.Close();
+			else
+				Application.Current.Shutdown();
 		}
 
 		private void btnNewWindow_Click(object sender, RoutedEventArgs e) {
@@ -1745,8 +1749,6 @@ namespace BetterExplorer {
 				MessageBox.Show(String.Format("An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{0}\r\n\r\n{1}", exe.Message, exe), "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 
-
-			HandleStartup(); 
 		}
 
 		#endregion
@@ -1833,10 +1835,15 @@ namespace BetterExplorer {
 			this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
 			//SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", this.bcbc.DropDownItems.OfType<String>().Select(s => s).ToList());
 			AddToLog("Session Ended");
-			e.Cancel = true;
-			App.isStartMinimized = true;
-			this.WindowState = System.Windows.WindowState.Minimized;
-			this.Visibility = System.Windows.Visibility.Hidden;
+			if (!this.IsMultipleWindowsOpened) {
+				e.Cancel = true;
+				App.isStartMinimized = true;
+
+				this.WindowState = System.Windows.WindowState.Minimized;
+				this.Visibility = System.Windows.Visibility.Hidden;
+			} else {
+				beNotifyIcon.Visibility = System.Windows.Visibility.Collapsed;
+			}
 
 			if (!File.Exists("Settings.xml")) {
 				new XElement("Settings").Save("Settings.xml");
@@ -3640,7 +3647,7 @@ namespace BetterExplorer {
 				}
 
 				System.Windows.Point pt = e.GetPosition(sender as IInputElement);
-				var wpt = new BExplorer.Shell.Win32Point() { X = (int)pt.X, Y = (int)pt.Y };
+				var wpt = new BExplorer.Shell.DataObject.Win32Point() { X = (int)pt.X, Y = (int)pt.Y };
 				DropTargetHelper.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 			}
 
@@ -3654,12 +3661,12 @@ namespace BetterExplorer {
 			else
 				e.Effects = DragDropEffects.None;
 
-			var ptw = new Win32Point();
+			var ptw = new BExplorer.Shell.DataObject.Win32Point();
 			GetCursorPos(ref ptw);
 			e.Handled = true;
 
 			if (e.Data.GetType() != typeof(Wpf.Controls.TabItem)) {
-				var wpt = new BExplorer.Shell.Win32Point() { X = ptw.X, Y = ptw.Y };
+				var wpt = new BExplorer.Shell.DataObject.Win32Point() { X = ptw.X, Y = ptw.Y };
 				DropTargetHelper.Create.DragOver(ref wpt, (int)e.Effects);
 			}
 		}
@@ -3684,13 +3691,13 @@ namespace BetterExplorer {
 				e.Effects = DragDropEffects.None;
 			}
 
-			var ptw = new Win32Point();
+			var ptw = new BExplorer.Shell.DataObject.Win32Point();
 			GetCursorPos(ref ptw);
 			e.Effects = DragDropEffects.None;
 			var tabItemSource = e.Data.GetData(typeof(Wpf.Controls.TabItem)) as Wpf.Controls.TabItem;
 			//TODO: fix this!!!
 			if (tabItemSource == null) {
-				var wpt = new BExplorer.Shell.Win32Point() { X = ptw.X, Y = ptw.Y };
+				var wpt = new BExplorer.Shell.DataObject.Win32Point() { X = ptw.X, Y = ptw.Y };
 				DropTargetHelper.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 			}
 			else if (e.Data.GetDataPresent(typeof(Wpf.Controls.TabItem))) {

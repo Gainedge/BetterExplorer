@@ -128,6 +128,7 @@ namespace BExplorer.Shell {
 		//public Bitmap ThumbnailIcon { get; set; }
 		internal bool IsNeedRefreshing { get; set; }
 		internal bool IsInvalid { get; set; }
+		internal bool IsOnlyLowQuality { get; set; }
 		internal bool IsThumbnailLoaded { get; set; }
 		internal bool IsInitialised { get; set; }
 		internal int OverlayIconIndex { get; set; }

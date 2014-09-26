@@ -680,7 +680,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void ShellTreeView_DragEnter(object sender, DragEventArgs e) {
-			var wp = new Win32Point() { X = e.X, Y = e.Y };
+			var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
 			ShellView.Drag_SetEffect(e);
 
 			if (e.Data.GetDataPresent("DragImageBits")) {
@@ -689,7 +689,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void ShellTreeView_DragOver(object sender, DragEventArgs e) {
-			var wp = new Win32Point() { X = e.X, Y = e.Y };
+			var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
 			ShellView.Drag_SetEffect(e);
 
 			if (e.Data.GetDataPresent("DragImageBits"))
@@ -734,7 +734,7 @@ namespace BExplorer.Shell {
 					break;
 			}
 
-			Win32Point wp = new Win32Point();
+			BExplorer.Shell.DataObject.Win32Point wp = new BExplorer.Shell.DataObject.Win32Point();
 			wp.X = e.X;
 			wp.Y = e.Y;
 

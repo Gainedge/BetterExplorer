@@ -19,6 +19,7 @@ using System.Xml.Linq;
 using DPoint = System.Drawing.Point;
 using Input = System.Windows.Input;
 using System.Runtime.ExceptionServices;
+using BExplorer.Shell.DropTargetHelper;
 
 namespace BExplorer.Shell
 {
@@ -323,7 +324,7 @@ namespace BExplorer.Shell
 		[Obsolete("Convert this into a method", false)]
 		public String NewName { private get; set; }
 		*/
-
+		private System.Runtime.InteropServices.ComTypes.IDataObject dataObject { get; set; }
 		[Obsolete("Try to remove this!!")]
 		private int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
 		private bool ItemForRealName_IsAny { get { return ItemForRename != -1; } }
@@ -664,7 +665,7 @@ namespace BExplorer.Shell
 			this.LVItemsColorCodes = new List<LVItemColor>();
 			this.AllAvailableColumns = this.AvailableColumns();
 			this.AllowDrop = true;
-			_IconLoadingThread = new Thread(_IconsLoadingThreadRun) {IsBackground = true, Priority = ThreadPriority.BelowNormal };
+			_IconLoadingThread = new Thread(_IconsLoadingThreadRun) {IsBackground = true, Priority = ThreadPriority.AboveNormal };
 			_IconLoadingThread.Start();
 			_IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
 			_IconCacheLoadingThread.Start();
@@ -1356,6 +1357,11 @@ namespace BExplorer.Shell
 
 		protected override void OnDragDrop(F.DragEventArgs e)
 		{
+			BExplorer.Shell.DataObject.DropDescription desc = new DataObject.DropDescription();
+			desc.type = 1;
+			desc.szMessage = "Copy To %1";
+			desc.szInsert = "Test";
+			((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
 			int row = -1;
 			int collumn = -1;
 			this.HitTest(PointToClient(new DPoint(e.X, e.Y)), out row, out collumn);
@@ -1390,7 +1396,7 @@ namespace BExplorer.Shell
 						break;
 				}
 			}
-			var wp = new Win32Point() { X = e.X, Y = e.Y };
+			var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
 
 			if (e.Data.GetDataPresent("DragImageBits"))
 				DropTargetHelper.Get.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
@@ -1438,7 +1444,8 @@ namespace BExplorer.Shell
 
 		protected override void OnDragOver(F.DragEventArgs e)
 		{
-			var wp = new Win32Point() { X = e.X, Y = e.Y };
+			
+			var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
 			Drag_SetEffect(e);
 
 			int row = -1;
@@ -1449,10 +1456,37 @@ namespace BExplorer.Shell
 			{
 				this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
 			}
-
+			BExplorer.Shell.DataObject.DropDescription descinvalid = new DataObject.DropDescription();
+			descinvalid.type = (int)BExplorer.Shell.DataObject.DropImageType.Invalid;
+			((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(descinvalid);
 			if (row != -1)
 			{
 				this.SelectItemByIndex(row);
+				BExplorer.Shell.DataObject.DropDescription desc = new DataObject.DropDescription();
+				switch (e.Effect) {
+					case System.Windows.Forms.DragDropEffects.Copy:
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Copy;
+						desc.szMessage = "Copy To %1";
+						break;
+					case System.Windows.Forms.DragDropEffects.Link:
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Link;
+						desc.szMessage = "Link To %1";
+						break;
+					case System.Windows.Forms.DragDropEffects.Move:
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Move;
+						desc.szMessage = "Move To %1";
+						break;
+					case System.Windows.Forms.DragDropEffects.None:
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.None;
+						desc.szMessage = "";
+						break;
+					default:
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Invalid;
+						desc.szMessage = "";
+						break;
+				}
+				desc.szInsert = this.Items[row].DisplayName;
+				((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
 			}
 			else if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop))
 			{
@@ -1467,26 +1501,81 @@ namespace BExplorer.Shell
 
 		protected override void OnDragEnter(F.DragEventArgs e)
 		{
-			var wp = new Win32Point() { X = e.X, Y = e.Y };
+			//BExplorer.Shell.DataObject.DropDescription desc = new DataObject.DropDescription();
+			//desc.type = 1;
+			//desc.szMessage = "Copy To %1";
+			//desc.szInsert = "Test";
+			//((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
+			var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
 			Drag_SetEffect(e);
 
-			if (e.Data.GetDataPresent("DragImageBits"))
+			if (e.Data.GetDataPresent("DragImageBits")) {
 				DropTargetHelper.Get.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+			}
 		}
 
-		/*
+		
 		protected override void OnQueryContinueDrag(F.QueryContinueDragEventArgs e) {
+			if (e.EscapePressed) {
+				e.Action = F.DragAction.Cancel;
+			}
+			if (e.KeyState == 0) {
+				e.Action = F.DragAction.Drop;
+			}
 			base.OnQueryContinueDrag(e);
 		}
-		*/
+		
 
 		protected override void OnGiveFeedback(F.GiveFeedbackEventArgs e)
 		{
-			e.UseDefaultCursors = false;
-			Cursor.Current = Cursors.Arrow;
+			e.UseDefaultCursors = true;
+			var doo = new F.DataObject(dataObject);
+			if (doo.GetDataPresent("DragWindow")) {
+				IntPtr hwnd = GetIntPtrFromData(doo.GetData("DragWindow"));
+				User32.PostMessage(hwnd, 0x403, IntPtr.Zero, IntPtr.Zero);
+			} else {
+				e.UseDefaultCursors = true;
+			}
+
+			if (IsDropDescriptionValid(dataObject)) {
+				e.UseDefaultCursors = false;
+				Cursor.Current = Cursors.Arrow;
+			} else {
+				e.UseDefaultCursors = true;
+			}
+
 			base.OnGiveFeedback(e);
 			F.Application.DoEvents();
 		}
+
+		private static bool IsDropDescriptionValid(System.Runtime.InteropServices.ComTypes.IDataObject dataObject) {
+			object data = dataObject.GetDropDescription();
+			if (data is BExplorer.Shell.DataObject.DropDescription)
+				return (BExplorer.Shell.DataObject.DropImageType)((BExplorer.Shell.DataObject.DropDescription)data).type != BExplorer.Shell.DataObject.DropImageType.Invalid;
+			return false;
+		}
+
+		private IntPtr GetIntPtrFromData(object data) {
+			byte[] buf = null;
+
+			if (data is MemoryStream) {
+				buf = new byte[4];
+				if (4 != ((MemoryStream)data).Read(buf, 0, 4))
+					throw new ArgumentException("Could not read an IntPtr from the MemoryStream");
+			}
+			if (data is byte[]) {
+				buf = (byte[])data;
+				if (buf.Length < 4)
+					throw new ArgumentException("Could not read an IntPtr from the byte array");
+			}
+
+			if (buf == null)
+				throw new ArgumentException("Could not read an IntPtr from the " + data.GetType().ToString());
+
+			int p = (buf[3] << 24) | (buf[2] << 16) | (buf[1] << 8) | buf[0];
+			return new IntPtr(p);
+		}
+
 
 		public Int32 InsertNewItem(ShellItem obj)
 		{
@@ -2233,10 +2322,16 @@ namespace BExplorer.Shell
 							#region Case
 							this.DraggedItemIndexes.Clear();
 							IntPtr dataObjPtr = IntPtr.Zero;
-							System.Runtime.InteropServices.ComTypes.IDataObject dataObject = this.SelectedItems.ToArray().GetIDataObject(out dataObjPtr);
-
+							dataObject = this.SelectedItems.ToArray().GetIDataObject(out dataObjPtr);
 							uint ef = 0;
-							Shell32.SHDoDragDrop(this.Handle, dataObject, null, unchecked((uint)F.DragDropEffects.All | (uint)F.DragDropEffects.Link), out ef);
+							var ishell2 = (BExplorer.Shell.DataObject.IDragSourceHelper2)new DragDropHelper();
+							ishell2.SetFlags(1);
+							var wp = new BExplorer.Shell.DataObject.Win32Point();
+							wp.X = Cursor.Position.X;
+							wp.Y = Cursor.Position.Y;
+							ishell2.InitializeFromWindow(this.Handle, ref wp , dataObject);
+							DoDragDrop(dataObject, F.DragDropEffects.All | F.DragDropEffects.Link);
+							//Shell32.SHDoDragDrop(this.Handle, dataObject, null, unchecked((uint)F.DragDropEffects.All | (uint)F.DragDropEffects.Link), out ef);
 							break;
 							#endregion
 
@@ -2428,7 +2523,7 @@ namespace BExplorer.Shell
 													}
 													if (retrieved)
 													{
-														if ((width > height && width != IconSize ) || (height > width && height != IconSize) || (width == height && width != IconSize))
+														if (((width > height && width != IconSize ) || (height > width && height != IconSize) || (width == height && width != IconSize)) && sho.IsOnlyLowQuality == false)
 														{
 															ThumbnailsForCacheLoad.Enqueue(index);
 														}
@@ -3740,7 +3835,7 @@ namespace BExplorer.Shell
 				resetEvent.WaitOne();
 				try
 				{
-					int index = this.Items.Count - 1;
+					int index = 0;
 					if (!ThreadRun_Helper(waitingThumbnails, false, ref index)) continue;
 					var sho = Items[index];
 					if (!sho.IsIconLoaded) {
@@ -3783,11 +3878,16 @@ namespace BExplorer.Shell
 					int index = 0;
 					if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
 					var sho = Items[index];
-					var result = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);//sho.Thumbnail.RefreshThumbnail((uint)IconSize);
+					var result = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
 					sho.IsThumbnailLoaded = true;
 					sho.IsNeedRefreshing = false;
 					if (result != null) {
 						//Thread.Sleep(100);
+						if ((result.Width > result.Height && result.Width != IconSize) || (result.Width < result.Height && result.Height != IconSize) || (result.Width == result.Height && result.Width != IconSize)) {
+							sho.IsOnlyLowQuality = true;
+						} else {
+							sho.IsOnlyLowQuality = false;
+						}
 						F.Application.DoEvents();
 						this.RefreshItem(index);
 						result.Dispose();
@@ -4631,5 +4731,28 @@ namespace BExplorer.Shell
 		{
 			Shell32.WNetDisconnectDialog(handle, type);
 		}
+
+		#region IDropSource Members
+
+		public new HResult QueryContinueDrag(bool fEscapePressed, int grfKeyState) {
+			if (grfKeyState == 0) {
+				return HResult.DRAGDROP_S_DROP;
+			}
+			if (fEscapePressed)
+				return HResult.DRAGDROP_S_CANCEL;
+			return HResult.S_OK;
+		}
+
+		public new HResult GiveFeedback(int dwEffect) {
+			//dwEffect = (int)F.DragDropEffects.All;
+			System.Windows.Forms.DataObject doo = new F.DataObject(dataObject);
+			var obj = doo.GetData("DropDescription");
+			if (obj != null) {
+				var uu = 1;
+			}
+			return HResult.S_OK;
+		}
+
+		#endregion
 	}
 }
