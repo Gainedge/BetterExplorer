@@ -510,7 +510,8 @@ namespace BExplorer.Shell {
 			Move = (int)DragDropEffects.Move,
 			Link = (int)DragDropEffects.Link,
 			Label = 6,
-			Warning = 7
+			Warning = 7,
+			NoImage = 8
 		}
 
 		#endregion // Native structures

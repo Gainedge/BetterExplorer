@@ -1250,7 +1250,7 @@ namespace BetterExplorer {
 		#region Application Tools
 
 		private void btnRunAsAdmin_Click(object sender, RoutedEventArgs e) {
-			ShellListView.RunExeAsAdmin(ShellListView.GetFirstSelectedItem().ParsingName);
+			ShellView.RunExeAsAdmin(ShellListView.GetFirstSelectedItem().ParsingName);
 		}
 
 		private void btnPin_Click(object sender, RoutedEventArgs e) {

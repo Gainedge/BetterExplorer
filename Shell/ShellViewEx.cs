@@ -319,76 +319,11 @@ namespace BExplorer.Shell
 		public List<Collumns> Collumns = new List<Collumns>();
 		public List<ListViewGroupEx> Groups = new List<ListViewGroupEx>();
 		public ShellNotifications Notifications = new ShellNotifications();
-
-		/*
-		[Obsolete("Convert this into a method", false)]
-		public String NewName { private get; set; }
-		*/
-		private System.Runtime.InteropServices.ComTypes.IDataObject dataObject { get; set; }
-		[Obsolete("Try to remove this!!")]
-		private int ItemForRename { get; set; } //TODO: Find out why this is used in so many places and try to stop that!!!!!
-		private bool ItemForRealName_IsAny { get { return ItemForRename != -1; } }
 		public bool IsRenameNeeded { get; set; }
-
-		//public Boolean IsGroupsEnabled { get; private set; }
 		public Boolean IsGroupsEnabled { get { return LastGroupCollumn != null; } }
-
-
 
 		/// <summary> Returns the key jump string as it currently is.</summary>
 		public string KeyJumpString { get; private set; }
-		//public string KeyJumpString { get { return _keyjumpstr; } }
-
-		[Obsolete("Not Used", true)]
-		public List<string> RecommendedPrograms(string ext)
-		{
-			List<string> progs = new List<string>();
-
-			using (RegistryKey rk = Registry.ClassesRoot.OpenSubKey(ext + @"\OpenWithList"))
-			{
-				if (rk != null) progs.AddRange(rk.GetSubKeyNames());
-				//foreach (string item in rk.GetSubKeyNames()) progs.Add(item);
-			}
-
-			using (RegistryKey rk = Registry.ClassesRoot.OpenSubKey(ext + @"\OpenWithProgids"))
-			{
-				if (rk != null) progs.AddRange(rk.GetValueNames());
-				//foreach (string item in rk.GetValueNames()) progs.Add(item);				
-			}
-
-			return progs;
-		}
-
-		/*
-		/// <summary>
-		/// Returns the index of the first item whose display name starts with the search string.
-		/// </summary>
-		/// <param name="search"> The string for which to search for. </param>
-		/// <returns> The index of an item within the list view. </returns>
-		[Obsolete("Never Used", true)]
-		private int GetFirstIndexOf(string search) { return GetFirstIndexOf(search, 0); }
-		*/
-
-
-		/*
-		/// <summary>
-		/// Gets a value indicating whether a previous page in navigation history is available,
-		/// which allows the <see cref="ShellView.NavigateBack" /> method to succeed.
-		/// </summary>
-		[Browsable(false)]
-		[Obsolete("Not Used", true)]
-		public bool CanNavigateBack { get { return History.CanNavigateBack; } }
-		*/
-
-		/*
-		/// <summary>
-		/// Gets a value indicating whether a subsequent page in navigation history is available,
-		/// which allows the <see cref="ShellView.NavigateForward" /> method to succeed.
-		/// </summary>
-		[Browsable(false)]
-		[Obsolete("Not Used", true)]
-		public bool CanNavigateForward { get { return History.CanNavigateForward; } }
-		*/
 
 		/// <summary>
 		/// Gets a value indicating whether the folder currently being browsed by the <see
@@ -406,13 +341,6 @@ namespace BExplorer.Shell
 		[Browsable(false)]
 		public ShellItem CurrentFolder { get; private set; }
 
-
-		/*
-		///<summary> Gets the <see cref="ShellView" />'s navigation history. </summary>
-		[Browsable(false)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		protected ShellHistory History { get; private set; }
-		*/
 
 		public int IconSize { get; private set; }
 
@@ -451,29 +379,6 @@ namespace BExplorer.Shell
 				return selItems;
 			}
 		}
-
-		private List<int> SelectedIndexes
-		{
-			get
-			{
-				List<int> selItems = new List<int>();
-				int iStart = -1;
-				LVITEMINDEX lvi = new LVITEMINDEX();
-				while (lvi.iItem != -1)
-				{
-					lvi.iItem = iStart;
-					lvi.iGroup = this.GetGroupIndex(iStart);
-					User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
-					iStart = lvi.iItem;
-
-					//TODO: Find out if we even need this IF Then
-					if (lvi.iItem != -1) selItems.Add(lvi.iItem);
-				}
-
-				return selItems;
-			}
-		}
-
 		public Boolean ShowCheckboxes
 		{
 			get { return _showCheckBoxes; }
@@ -598,34 +503,44 @@ namespace BExplorer.Shell
 		}
 
 		public int CurrentRefreshedItemIndex = -1;
-
-		//public Boolean Cancel = false;
 		#endregion Public Members
 
 		#region Private Members
-		//private Boolean _IsNavigationInProgress = false;
 
-		//[Obsolete("Never Actually Used")]
-		//private Boolean _IsInRenameMode = false;
+		private List<int> SelectedIndexes
+		{
+			get
+			{
+				List<int> selItems = new List<int>();
+				int iStart = -1;
+				LVITEMINDEX lvi = new LVITEMINDEX();
+				while (lvi.iItem != -1)
+				{
+					lvi.iItem = iStart;
+					lvi.iGroup = this.GetGroupIndex(iStart);
+					User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
+					iStart = lvi.iItem;
 
+					//TODO: Find out if we even need this IF Then
+					if (lvi.iItem != -1) selItems.Add(lvi.iItem);
+				}
 
-		//private ShellHistory m_History;
-		//private int _iconSize;
+				return selItems;
+			}
+		}
+		private bool ItemForRealName_IsAny { get { return ItemForRename != -1; } }
+		private int ItemForRename { get; set; } 
+		private System.Runtime.InteropServices.ComTypes.IDataObject dataObject { get; set; }
 		private Boolean _showCheckBoxes = false;
-
 		private Boolean _ShowHidden;
-
 		private F.Timer _ResetTimer = new F.Timer();
 		private Thread MaintenanceThread;
 		private List<Int32> DraggedItemIndexes = new List<int>();
 		private F.Timer _KeyJumpTimer = new F.Timer();
-		//private string _keyjumpstr = "";
 		private ShellItem _kpreselitem = null;
 		private LVIS _IsDragSelect = 0;
 		private BackgroundWorker bw = new BackgroundWorker();
-		//private ConcurrentDictionary<int, Bitmap> cache = new ConcurrentDictionary<int, Bitmap>();
 		private Thread _IconCacheLoadingThread;
-
 		private Bitmap ExeFallBack16;
 		private Bitmap ExeFallBack256;
 		private Bitmap ExeFallBack32;
@@ -1357,16 +1272,12 @@ namespace BExplorer.Shell
 
 		protected override void OnDragDrop(F.DragEventArgs e)
 		{
-			BExplorer.Shell.DataObject.DropDescription desc = new DataObject.DropDescription();
-			desc.type = 1;
-			desc.szMessage = "Copy To %1";
-			desc.szInsert = "Test";
-			((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
+		
 			int row = -1;
 			int collumn = -1;
 			this.HitTest(PointToClient(new DPoint(e.X, e.Y)), out row, out collumn);
 			ShellItem destination = row != -1 ? Items[row] : CurrentFolder;
-			if (!destination.IsFolder) {
+			if (!destination.IsFolder || this.DraggedItemIndexes.Contains(row)) {
 				e.Effect = F.DragDropEffects.None;
 			} else {
 				//TODO: Find out if we can remove this select and just use an If Then
@@ -1400,6 +1311,8 @@ namespace BExplorer.Shell
 
 			if (e.Data.GetDataPresent("DragImageBits"))
 				DropTargetHelper.Get.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+			else
+				base.OnDragDrop(e);
 			if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop))
 				this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
 		}
@@ -1486,6 +1399,19 @@ namespace BExplorer.Shell
 						break;
 				}
 				desc.szInsert = this.Items[row].DisplayName;
+				if (this.DraggedItemIndexes.Contains(row) || !this.Items[row].IsFolder)
+				{
+					if (this.Items[row].Extension.ToLowerInvariant() == ".exe")
+					{
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Copy;
+						desc.szMessage = "Open With %1";
+					}
+					else
+					{
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Invalid;
+						desc.szMessage = "";
+					}
+				}
 				((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
 			}
 			else if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop))
@@ -1496,32 +1422,31 @@ namespace BExplorer.Shell
 			_LastSelectedIndexByDragDrop = row;
 
 			if (e.Data.GetDataPresent("DragImageBits"))
+			{
 				DropTargetHelper.Get.Create.DragOver(ref wp, (int)e.Effect);
+			}
+			else
+			{
+				base.OnDragEnter(e);
+			}
 		}
 
 		protected override void OnDragEnter(F.DragEventArgs e)
 		{
-			//BExplorer.Shell.DataObject.DropDescription desc = new DataObject.DropDescription();
-			//desc.type = 1;
-			//desc.szMessage = "Copy To %1";
-			//desc.szInsert = "Test";
-			//((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
 			var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
 			Drag_SetEffect(e);
 
 			if (e.Data.GetDataPresent("DragImageBits")) {
 				DropTargetHelper.Get.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
 			}
+			else
+			{
+				base.OnDragEnter(e);
+			}
 		}
 
 		
 		protected override void OnQueryContinueDrag(F.QueryContinueDragEventArgs e) {
-			if (e.EscapePressed) {
-				e.Action = F.DragAction.Cancel;
-			}
-			if (e.KeyState == 0) {
-				e.Action = F.DragAction.Drop;
-			}
 			base.OnQueryContinueDrag(e);
 		}
 		
@@ -1544,9 +1469,43 @@ namespace BExplorer.Shell
 				e.UseDefaultCursors = true;
 			}
 
+			if (IsShowingLayered(doo))
+			{
+				e.UseDefaultCursors = false;
+				Cursor.Current = Cursors.Arrow;
+			}
+			else
+			{
+				e.UseDefaultCursors = true;
+			}
+
 			base.OnGiveFeedback(e);
-			F.Application.DoEvents();
 		}
+		private bool IsShowingLayered(F.DataObject dataObject)
+		{
+			if (dataObject.GetDataPresent("IsShowingLayered"))
+			{
+				object data = dataObject.GetData("IsShowingLayered");
+				if (data != null)
+					return GetBooleanFromData(data);
+			}
+
+			return false;
+		}
+
+		private static bool GetBooleanFromData(object data)
+		{
+			if (data is Stream)
+			{
+				Stream stream = data as Stream;
+				BinaryReader reader = new BinaryReader(stream);
+				return reader.ReadBoolean();
+			}
+			// Anything else isn't supported for now
+			return false;
+		}
+
+
 
 		private static bool IsDropDescriptionValid(System.Runtime.InteropServices.ComTypes.IDataObject dataObject) {
 			object data = dataObject.GetDropDescription();
@@ -1555,7 +1514,7 @@ namespace BExplorer.Shell
 			return false;
 		}
 
-		private IntPtr GetIntPtrFromData(object data) {
+		private static IntPtr GetIntPtrFromData(object data) {
 			byte[] buf = null;
 
 			if (data is MemoryStream) {
@@ -1638,7 +1597,7 @@ namespace BExplorer.Shell
 		}
 
 		public System.Windows.Rect GetItemBounds(int index, int mode)
-		{
+		{ 
 			LVITEMINDEX lviLe = new LVITEMINDEX();
 			lviLe.iItem = index;
 			lviLe.iGroup = this.GetGroupIndex(index);
@@ -2722,7 +2681,6 @@ namespace BExplorer.Shell
 			catch (Exception)
 			{
 				resetEvent.Set();
-				//base.DefWndProc(ref m);
 			}
 		}
 
@@ -2771,7 +2729,6 @@ namespace BExplorer.Shell
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.AutosizeColumns, (int)ListViewExtendedStyles.AutosizeColumns);
 			//User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.colum, (int)ListViewExtendedStyles.AutosizeColumns);
 			//User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.TrackSelect, (int)ListViewExtendedStyles.TrackSelect);
-			//CurrentFolder = (ShellItem) KnownFolders.Desktop;
 			this.Focus();
 			User32.SetForegroundWindow(this.LVHandle);
 			UxTheme.SetWindowTheme(this.LVHandle, "Explorer", 0);
@@ -2813,24 +2770,9 @@ namespace BExplorer.Shell
 
 		public void ShowPropPage(IntPtr HWND, string filename, string proppage) { Shell32.SHObjectProperties(HWND, 0x2, filename, proppage); }
 
-		/*
-		public void ShowFileProperties(string Filename) {
-			Shell32.SHELLEXECUTEINFO info = new Shell32.SHELLEXECUTEINFO();
-			info.cbSize = Marshal.SizeOf(info);
-			info.lpVerb = "properties";
-			info.lpFile = Filename;
-			info.nShow = SW_SHOW;
-			info.fMask = SEE_MASK_INVOKEIDLIST;
-			Shell32.ShellExecuteEx(ref info);
-		}
-		*/
 
 		private void RedrawItem(int index)
 		{
-			//F.Application.DoEvents();
-			//if (index >= Items.Count - 1) return;
-			//var sho = Items[index];
-			//F.Application.DoEvents();
 			var itemBounds = new User32.RECT() { Left = 1 };
 			var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
@@ -2864,6 +2806,7 @@ namespace BExplorer.Shell
 				this.Items[index].IsNeedRefreshing = true;
 				this.Items[index].IsInvalid = true;
 				this.Items[index].OverlayIconIndex = -1;
+				this.Items[index].IsOnlyLowQuality = false;
 			}
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REDRAWITEMS, index, index);
 			if (this.IsGroupsEnabled) {
@@ -2873,7 +2816,6 @@ namespace BExplorer.Shell
 
 		private void RenameItem(int index)
 		{
-			//this.Focus();
 			this.IsFocusAllowed = false;
 			this.ItemForRename = index;
 			if (this.BeginItemLabelEdit != null)
@@ -2896,8 +2838,6 @@ namespace BExplorer.Shell
 			}
 
 			this._CuttedIndexes.AddRange(this.SelectedIndexes.ToArray());
-			var dataObjPtr = IntPtr.Zero;
-			//System.Runtime.InteropServices.ComTypes.IDataObject dataObject = GetIDataObject(this.SelectedItems.ToArray(), out dataObjPtr);
 			var ddataObject = new F.DataObject();
 			// Copy or Cut operation (5 = copy; 2 = cut)
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 2, 0, 0, 0 }));
@@ -2907,9 +2847,8 @@ namespace BExplorer.Shell
 
 		public void CopySelectedFiles()
 		{
-			IntPtr dataObjPtr = IntPtr.Zero;
-			//System.Runtime.InteropServices.ComTypes.IDataObject dataObject = GetIDataObject(this.SelectedItems.ToArray(), out dataObjPtr);
 			var ddataObject = new F.DataObject();
+			// Copy or Cut operation (5 = copy; 2 = cut)
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 5, 0, 0, 0 }));
 			ddataObject.SetData("Shell IDList Array", true, this.SelectedItems.ToArray().CreateShellIDList());
 			F.Clipboard.SetDataObject(ddataObject, true);
@@ -2978,7 +2917,7 @@ namespace BExplorer.Shell
 			IShellItem[] items = null;
 			if (((F.DataObject)dataObject).ContainsFileDropList())
 			{
-				items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => new ShellItem(s.ToShellParsingName()).ComInterface).ToArray();
+				items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
 			}
 			else
 			{
@@ -3069,7 +3008,6 @@ namespace BExplorer.Shell
 			try
 			{
 				IconSize = value;
-				//cache.Clear();
 				ThumbnailsForCacheLoad.Clear();
 				waitingThumbnails.Clear();
 				foreach (var obj in this.Items)
@@ -3089,7 +3027,7 @@ namespace BExplorer.Shell
 
 		/// <summary> Runs an application as an administrator. </summary>
 		/// <param name="ExePath"> The path of the application. </param>
-		public void RunExeAsAdmin(string ExePath)
+		public static void RunExeAsAdmin(string ExePath)
 		{
 			Process.Start(new ProcessStartInfo
 			{
@@ -3135,19 +3073,6 @@ namespace BExplorer.Shell
 			if (ensureVisisble) User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISISBLE, index, 0);
 			this.Focus();
 		}
-
-		/*
-		public void DropHighLightIndex(int index, bool ensureVisisble = false) {
-			LVITEM lvi = new LVITEM();
-			lvi.mask = LVIF.LVIF_STATE;
-			lvi.stateMask = LVIS.LVIS_DROPHILITED | LVIS.LVIS_SELECTED;
-			lvi.state = LVIS.LVIS_DROPHILITED | LVIS.LVIS_SELECTED;
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, index, ref lvi);
-			if (ensureVisisble)
-				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISISBLE, index, 0);
-			this.Focus();
-		}
-		*/
 
 		private void UpdateColsInView(bool isDetails = false)
 		{
@@ -3230,132 +3155,6 @@ namespace BExplorer.Shell
 			this.SelectItems(selectedItems);
 		}
 
-		/*
-		/// <summary>
-		/// Navigates the <see cref="ShellView"/> control forwards to the
-		/// requested folder in the navigation history.
-		/// </summary>
-		///
-		/// <remarks>
-		/// The WebBrowser control maintains a history list of all the folders
-		/// visited during a session. You can use the
-		/// <see cref="NavigateForward"/> method to implement a drop-down menu
-		/// on a <b>Forward</b> button similar to the one in Windows Explorer,
-		/// which will allow your users to return to a folder in the 'forward'
-		/// navigation history.
-		/// </remarks>
-		///
-		/// <param name="folder">
-		/// The folder to navigate to.
-		/// </param>
-		///
-		/// <exception cref="Exception">
-		/// The requested folder is not present in the
-		/// <see cref="ShellView"/>'s 'forward' history.
-		/// </exception>
-		public void NavigateForward(ShellItem folder) {
-			History.MoveForward(folder);
-			CurrentFolder = folder;
-		}
-		*/
-
-		/*
-		/// <summary>
-		/// Navigates the <see cref="ShellView"/> control to the next folder
-		/// in the navigation history.
-		/// </summary>
-		///
-		/// <remarks>
-		/// <para>
-		/// The WebBrowser control maintains a history list of all the folders
-		/// visited during a session. You can use the <see cref="NavigateForward"/>
-		/// method to implement a <b>Forward</b> button similar to the one
-		/// in Windows Explorer, allowing your users to return to the next
-		/// folder in the navigation history after navigating backward.
-		/// </para>
-		///
-		/// <para>
-		/// Use the <see cref="CanNavigateForward"/> property to determine
-		/// whether the navigation history is available and contains a folder
-		/// located after the current one.  This property is useful, for
-		/// example, to change the enabled state of a <b>Forward</b> button
-		/// when the ShellView control navigates to or leaves the end of the
-		/// navigation history.
-		/// </para>
-		/// </remarks>
-		///
-		/// <exception cref="InvalidOperationException">
-		/// There is no history to navigate forwards through.
-		/// </exception>
-		public void NavigateForward() {
-			CurrentFolder = History.MoveForward();
-			//OnNavigated(new NavigatedEventArgs(m_CurrentFolder));
-		}
-		*/
-
-		/*
-		/// <summary>
-		/// Navigates the <see cref="ShellView"/> control backwards to the
-		/// requested folder in the navigation history.
-		/// </summary>
-		///
-		/// <remarks>
-		/// The WebBrowser control maintains a history list of all the folders
-		/// visited during a session. You can use the <see cref="NavigateBack"/>
-		/// method to implement a drop-down menu on a <b>Back</b> button similar
-		/// to the one in Windows Explorer, which will allow your users to return
-		/// to a previous folder in the navigation history.
-		/// </remarks>
-		///
-		/// <param name="folder">
-		/// The folder to navigate to.
-		/// </param>
-		///
-		/// <exception cref="Exception">
-		/// The requested folder is not present in the
-		/// <see cref="ShellView"/>'s 'back' history.
-		/// </exception>
-		public void NavigateBack(ShellItem folder) {
-			History.MoveBack(folder);
-			CurrentFolder = folder;
-		}
-		*/
-
-		/*
-		/// <summary>
-		/// Navigates the <see cref="ShellView"/> control to the previous folder
-		/// in the navigation history.
-		/// </summary>
-		///
-		/// <remarks>
-		/// <para>
-		/// The WebBrowser control maintains a history list of all the folders
-		/// visited during a session. You can use the <see cref="NavigateBack"/>
-		/// method to implement a <b>Back</b> button similar to the one in
-		/// Windows Explorer, which will allow your users to return to a
-		/// previous folder in the navigation history.
-		/// </para>
-		///
-		/// <para>
-		/// Use the <see cref="CanNavigateBack"/> property to determine whether
-		/// the navigation history is available and contains a previous page.
-		/// This property is useful, for example, to change the enabled state
-		/// of a Back button when the ShellView control navigates to or leaves
-		/// the beginning of the navigation history.
-		/// </para>
-		/// </remarks>
-		///
-		/// <exception cref="InvalidOperationException">
-		/// There is no history to navigate backwards through.
-		/// </exception>
-		public void NavigateBack() {
-			CurrentFolder = History.MoveBack();
-			//RecreateShellView();
-			//OnNavigated(new NavigatedEventArgs(m_CurrentFolder));
-		}
-		*/
-
-
 		/// <summary>
 		/// Navigate to a folder, set it as the current folder and optionally save the folder's settings to the database.
 		/// </summary>
@@ -3430,7 +3229,6 @@ namespace BExplorer.Shell
 			{
 				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 			}
-			//resetEvent.Reset();
 			//Unregister notifications and clear all collections
 			this.Notifications.UnregisterChangeNotify();
 			Items.Clear();
@@ -3590,11 +3388,6 @@ namespace BExplorer.Shell
 			this.Focus();
 		}
 
-		/*
-		private static int Compare(ShellItem x, ShellItem y) {
-			return String.Compare(x.DisplayName, y.DisplayName);
-		}
-		*/
 
 		public void DisableGroups()
 		{
@@ -3750,13 +3543,6 @@ namespace BExplorer.Shell
 
 			this.LastGroupCollumn = col;
 			this.LastGroupOrder = reversed ? SortOrder.Descending : SortOrder.Ascending;
-
-			//TODO: Check the following Change
-			//Note:	User:	Aaron Campf	Date: 8/9/2014	Message: The below code did not set the icon properly
-			/*
-			if (this.Collumns[this.LastSortedColumnIndex] == col || reversed)
-				this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
-			*/
 			RefreshItemsCountInternal();
 		}
 
@@ -3804,7 +3590,6 @@ namespace BExplorer.Shell
 		{
 			while (true)
 			{
-				//Thread.Sleep(2);
 				F.Application.DoEvents();
 				resetEvent.WaitOne();
 				try
@@ -3872,7 +3657,6 @@ namespace BExplorer.Shell
 			while (true)
 			{
 				resetEvent.WaitOne();
-				//F.Application.DoEvents();
 				try
 				{
 					int index = 0;
@@ -3882,7 +3666,6 @@ namespace BExplorer.Shell
 					sho.IsThumbnailLoaded = true;
 					sho.IsNeedRefreshing = false;
 					if (result != null) {
-						//Thread.Sleep(100);
 						if ((result.Width > result.Height && result.Width != IconSize) || (result.Width < result.Height && result.Height != IconSize) || (result.Width == result.Height && result.Width != IconSize)) {
 							sho.IsOnlyLowQuality = true;
 						} else {
@@ -3908,28 +3691,12 @@ namespace BExplorer.Shell
 				resetEvent.WaitOne();
 				Thread.Sleep(1);
 				var index = ItemsForSubitemsUpdate.Dequeue();
-				//if (this.Cancel)
-				//	continue;
 				try
 				{
 					if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero)
 					{
-						//	continue;
-						//if (this.Cancel)
-						//	continue;
-						//Application.DoEvents();
-
 						var currentItem = Items[index.Item1];
 						ShellItem temp = currentItem.ParsingName.StartsWith("::") && currentItem.IsNetDrive ? currentItem : new ShellItem(currentItem.ParsingName);
-
-						/*
-						if (!(currentItem.IsNetDrive || currentItem.IsNetworkPath) && !currentItem.ParsingName.StartsWith("::")) {
-							temp = new ShellItem(currentItem.ParsingName);
-						}
-						else {
-							temp = currentItem;
-						}
-						*/
 						int hash = currentItem.GetHashCode();
 						var isi2 = (IShellItem2)temp.ComInterface;
 						var pvar = new PropVariant();
@@ -3951,7 +3718,6 @@ namespace BExplorer.Shell
 				catch
 				{
 					F.Application.DoEvents();
-					//User32.SendMessage(this.LVHandle, MSG.LVM_UPDATE, index.Item1, 0);
 				}
 			}
 		}
@@ -3970,11 +3736,11 @@ namespace BExplorer.Shell
 			});
 		}
 
-		/*
+		
 		public static void StartCompartabilityWizzard() {
 			Process.Start("msdt.exe", "-id PCWDiagnostic");
 		}
-		*/
+		
 
 		public void CleanupDrive()
 		{
@@ -3987,54 +3753,7 @@ namespace BExplorer.Shell
 			Process.Start("Cleanmgr.exe", "/d" + DriveLetter.Replace(":\\", ""));
 		}
 
-		/*
-		public string CreateNewFolder() {
-			string name = "New Folder";
-			int suffix = 0;
-
-			do {
-				//TODO: Check
-				if (this.CurrentFolder.Parent == null) {
-					name = String.Format("{0}\\New Folder ({1})", this.CurrentFolder.ParsingName, ++suffix);
-				}
-				else if (this.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
-					ShellLibrary lib = ShellLibrary.Load(this.CurrentFolder.DisplayName, true);
-					name = String.Format("{0}\\New Folder ({1})", lib.DefaultSaveFolder, ++suffix);
-					lib.Close();
-				}
-				else {
-					name = String.Format("{0}\\New Folder ({1})", this.CurrentFolder.ParsingName, ++suffix);
-				}
-
-				/*
-				if (this.CurrentFolder.Parent != null) {
-					if (this.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
-						ShellLibrary lib = ShellLibrary.Load(this.CurrentFolder.DisplayName, true);
-						name = String.Format("{0}\\New Folder ({1})", lib.DefaultSaveFolder, ++suffix);
-						lib.Close();
-					}
-					else
-						name = String.Format("{0}\\New Folder ({1})", this.CurrentFolder.ParsingName, ++suffix);
-				}
-				else
-					name = String.Format("{0}\\New Folder ({1})", this.CurrentFolder.ParsingName, ++suffix);
-				/
-			} while (Directory.Exists(name) || File.Exists(name));
-
-			ERROR result = Shell32.SHCreateDirectory(IntPtr.Zero, name);
-
-			switch (result) {
-				case ERROR.FILE_EXISTS:
-				case ERROR.ALREADY_EXISTS:
-					throw new IOException("The directory already exists");
-				case ERROR.BAD_PATHNAME:
-					throw new IOException("Bad pathname");
-				case ERROR.FILENAME_EXCED_RANGE:
-					throw new IOException("The filename is too long");
-			}
-			return name;
-		}
-		*/
+		
 		public void ScrollToTop()
 		{
 			var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISISBLE, 0, 0);
@@ -4062,19 +3781,6 @@ namespace BExplorer.Shell
 					endname = String.Format("{0}\\" + name + " ({1})", this.CurrentFolder.ParsingName, ++suffix);
 				}
 
-				/*
-				if (this.CurrentFolder.Parent != null) {
-					if (this.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
-						ShellLibrary lib = ShellLibrary.Load(this.CurrentFolder.DisplayName, true);
-						endname = String.Format("{0}\\" + name + " ({1})", lib.DefaultSaveFolder, ++suffix);
-						lib.Close();
-					}
-					else
-						endname = String.Format("{0}\\" + name + " ({1})", this.CurrentFolder.ParsingName, ++suffix);
-				}
-				else
-					endname = String.Format("{0}\\" + name + " ({1})", this.CurrentFolder.ParsingName, ++suffix);
-				*/
 			} while (Directory.Exists(endname) || File.Exists(endname));
 
 			switch (Shell32.SHCreateDirectory(IntPtr.Zero, endname))
@@ -4152,14 +3858,6 @@ namespace BExplorer.Shell
 
 			Items[this.GetFirstSelectedItemIndex()] = new ShellItem(wszPath);
 			this.RefreshItem(this.SelectedIndexes[0]);
-
-			/*
-			 * Code for defaulting to current folder
-			if (this.GetFirstSelectedItemIndex() != -1) {
-				Items[this.GetFirstSelectedItemIndex()] = new ShellItem(wszPath);
-				this.RefreshItem(this.SelectedIndexes[0]);
-			}
-			*/
 		}
 
 		public HResult ClearFolderIcon(string wszPath)
@@ -4738,9 +4436,13 @@ namespace BExplorer.Shell
 			if (grfKeyState == 0) {
 				return HResult.DRAGDROP_S_DROP;
 			}
+			else
+			{
+				return HResult.S_OK;
+			}
 			if (fEscapePressed)
 				return HResult.DRAGDROP_S_CANCEL;
-			return HResult.S_OK;
+			return HResult.DRAGDROP_S_DROP;
 		}
 
 		public new HResult GiveFeedback(int dwEffect) {
