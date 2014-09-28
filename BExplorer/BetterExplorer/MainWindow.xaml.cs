@@ -4188,6 +4188,10 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_ItemUpdated(object sender, ItemUpdatedEventArgs e) {
+			if (e.NewItem.ParsingName.Contains("$RECYCLE.BIN"))
+			{
+				this.UpdateRecycleBinInfos();
+			}
 			if (e.UpdateType != ItemUpdateType.Renamed && e.UpdateType != ItemUpdateType.Updated) {
 				int ItemsCount = ShellListView.Items.Count;
 				sbiItemsCount.Visibility = ItemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;

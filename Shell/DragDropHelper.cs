@@ -36,6 +36,8 @@ namespace BExplorer.Shell {
 				// Set the data
 				System.Runtime.InteropServices.ComTypes.IDataObject dataObjectCOM = (System.Runtime.InteropServices.ComTypes.IDataObject)dataObject;
 				dataObjectCOM.SetData(ref formatETC, ref medium, true);
+			} catch (NotImplementedException) {
+				Marshal.FreeHGlobal(pDD);
 			} catch {
 				// If we failed, we need to free the HGLOBAL memory
 				Marshal.FreeHGlobal(pDD);

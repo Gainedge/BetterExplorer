@@ -1277,7 +1277,7 @@ namespace BExplorer.Shell
 			int collumn = -1;
 			this.HitTest(PointToClient(new DPoint(e.X, e.Y)), out row, out collumn);
 			ShellItem destination = row != -1 ? Items[row] : CurrentFolder;
-			if (!destination.IsFolder || this.DraggedItemIndexes.Contains(row)) {
+			if (!destination.IsFolder || (this.DraggedItemIndexes.Count > 0 && this.DraggedItemIndexes.Contains(row))) {
 				e.Effect = F.DragDropEffects.None;
 			} else {
 				//TODO: Find out if we can remove this select and just use an If Then
@@ -1427,7 +1427,7 @@ namespace BExplorer.Shell
 			}
 			else
 			{
-				base.OnDragEnter(e);
+				base.OnDragOver(e);
 			}
 		}
 
@@ -1641,9 +1641,15 @@ namespace BExplorer.Shell
 								case ShellNotifications.SHCNE.SHCNE_DELETE:
 								case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
 									Notifications.NotificationsReceived.Remove(info);
-									var sho = new ShellItem(info.Item1);
-									if (sho.Parent.Equals(this.CurrentFolder) || sho.Equals(this.CurrentFolder))
-										this.UnvalidateDirectory();
+									if (info.Item1 != IntPtr.Zero)
+									{
+										var sho = new ShellItem(info.Item1);
+										if (sho != null && sho.Parent != null && (sho.Parent.Equals(this.CurrentFolder) || sho.Equals(this.CurrentFolder)))
+											this.UnvalidateDirectory();
+
+										if (this.ItemUpdated != null)
+											this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, sho, null, -1));
+									}
 									break;
 								case ShellNotifications.SHCNE.SHCNE_RMDIR:
 									break;
@@ -2678,7 +2684,7 @@ namespace BExplorer.Shell
 				#endregion
 
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
 				resetEvent.Set();
 			}
@@ -2732,13 +2738,14 @@ namespace BExplorer.Shell
 			this.Focus();
 			User32.SetForegroundWindow(this.LVHandle);
 			UxTheme.SetWindowTheme(this.LVHandle, "Explorer", 0);
-			//Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
+			Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e)
 		{
 			try
 			{
+				this.Notifications.UnregisterChangeNotify();
 				if (_IconLoadingThread.IsAlive)
 					_IconLoadingThread.Abort();
 				if (_IconCacheLoadingThread.IsAlive)
@@ -3230,7 +3237,7 @@ namespace BExplorer.Shell
 				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 			}
 			//Unregister notifications and clear all collections
-			this.Notifications.UnregisterChangeNotify();
+			//this.Notifications.UnregisterChangeNotify();
 			Items.Clear();
 			ItemsForSubitemsUpdate.Clear();
 			waitingThumbnails.Clear();
@@ -3362,7 +3369,7 @@ namespace BExplorer.Shell
 			}
 
 
-			Notifications.RegisterChangeNotify(this.Handle, destination, true);
+			//Notifications.RegisterChangeNotify(this.Handle, destination, true);
 
 			if (!isThereSettings)
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
