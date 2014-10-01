@@ -1336,7 +1336,7 @@
 								 Header="{DynamicResource tgNewCP}"
 								 Ribbon:KeyTip.Keys="NG">
 					<Ribbon:Button x:Name="btnCreateFolder"
-						 Click="Button_Click_2"
+						 Click="btnNewFolder_Library"
 						 Focusable="False"
 						 Header="{DynamicResource btnNewFolderCP}"
 						 Icon="Images\folder_new16.png"
