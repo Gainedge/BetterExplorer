@@ -4188,7 +4188,8 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_ItemUpdated(object sender, ItemUpdatedEventArgs e) {
-			if (e.NewItem.ParsingName.Contains("$RECYCLE.BIN"))
+			
+			if (e.UpdateType == ItemUpdateType.RecycleBin)
 			{
 				this.UpdateRecycleBinInfos();
 			}
