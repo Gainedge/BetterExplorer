@@ -4264,59 +4264,80 @@ namespace BExplorer.Shell
 
 		#region Database
 
-		private Boolean LoadSettingsFromDatabase(ShellItem directory, out FolderSettings folderSettings)
-		{
+		private Boolean LoadSettingsFromDatabase(ShellItem directory, out FolderSettings folderSettings) {
 			var result = false;
 			var folderSetting = new FolderSettings();
-			try
-			{
+			try {
 				var m_dbConnection = new SQLite.SQLiteConnection("Data Source=Settings.sqlite;Version=3;");
 				m_dbConnection.Open();
 
 				var command1 = new SQLite.SQLiteCommand("SELECT * FROM foldersettings WHERE Path=@0", m_dbConnection);
 				command1.Parameters.AddWithValue("0", directory.ParsingName);
 
-				//var sql = "";
 				var Reader = command1.ExecuteReader();
-				if (Reader.Read())
-				{
-					var Values = Reader.GetValues();
-					if (Values.Count > 0)
-					{
-						result = true;
-						var view = Values.GetValues("View").FirstOrDefault();
-						var lastSortedColumnIndex = Values.GetValues("LastSortedColumn").FirstOrDefault();
-						var lastSortOrder = Values.GetValues("LastSortOrder").FirstOrDefault();
-						if (view != null)
-						{
-							folderSetting.View = (ShellViewStyle)Enum.Parse(typeof(ShellViewStyle), view);
-						}
-						if (lastSortedColumnIndex != null)
-						{
-							folderSetting.SortColumn = Int32.Parse(lastSortedColumnIndex);
-							folderSetting.SortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), lastSortOrder);
-						}
 
-						/* New Stuff */
-						var collumns = Values.GetValues("Columns").FirstOrDefault();
+				//TODO: Test the following changes
+				//Should I change the column types so it uses integers as well as strings???
 
-						folderSetting.Columns = collumns != null ? XElement.Parse(collumns) : null;
-						//this.Collumns
-						this.LastGroupOrder = Values["LastGroupOrder"] == "Ascending" ? SortOrder.Ascending : SortOrder.Descending;
+				if (Reader.Read()) {
+					result = true;
+					var view = Reader["View"] as string;
+					var lastSortedColumnIndex = Reader["LastSortedColumn"] as string;
+					var lastSortOrder = Reader["LastSortOrder"] as string;
+
+					if (!string.IsNullOrWhiteSpace(view)) {
+						folderSetting.View = (ShellViewStyle)Enum.Parse(typeof(ShellViewStyle), view);
 					}
+
+					if (!string.IsNullOrWhiteSpace(lastSortedColumnIndex)) {
+						folderSetting.SortColumn = Int32.Parse(lastSortedColumnIndex);
+						folderSetting.SortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), lastSortOrder);
+					}
+
+					var collumns = Reader["Columns"] as string;
+					folderSetting.Columns = collumns != null ? XElement.Parse(collumns) : null;
+					this.LastGroupOrder = Reader["LastGroupOrder"] as string == "Ascending" ? SortOrder.Ascending : SortOrder.Descending;
+
+					/* New Stuff */
+					IconSize = int.Parse(Reader["IconSize"] as string);
 				}
 
+				/*
+				if (Reader.Read()) {               
+						 var Values = Reader.GetValues();
+						 if (Values.Count > 0) {
+								  result = true;
+								  var view = Values.GetValues("View").FirstOrDefault();
+								  var lastSortedColumnIndex = Values.GetValues("LastSortedColumn").FirstOrDefault();
+								  var lastSortOrder = Values.GetValues("LastSortOrder").FirstOrDefault();
+								 if (!string.IsNullOrWhiteSpace(view)) {
+										  folderSetting.View = (ShellViewStyle)Enum.Parse(typeof(ShellViewStyle), view);
+								 }
+								  if (!string.IsNullOrWhiteSpace(lastSortedColumnIndex)) {
+										  folderSetting.SortColumn = Int32.Parse(lastSortedColumnIndex);
+										  folderSetting.SortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), lastSortOrder);
+								 }
+ 
+ 
+								  var collumns = Values.GetValues("Columns").FirstOrDefault();
+ 
+								  folderSetting.Columns = collumns != null ? XElement.Parse(collumns) : null;
+								  this.LastGroupOrder = Values["LastGroupOrder"] == "Ascending" ? SortOrder.Ascending : SortOrder.Descending;
+ 
+								 /* New Stuff -/
+								 IconSize = int.Parse(Values["IconSize"]);
+						 }
+				}
+				*/
 				Reader.Close();
 			}
-			catch (Exception)
-			{
+			catch (Exception) {
 			}
 			folderSettings = folderSetting;
 			return result;
 		}
 
-		public void SaveSettingsToDatabase(ShellItem destination)
-		{
+		public void SaveSettingsToDatabase(ShellItem destination) {
 			if (CurrentFolder == null) return;
 			if (!CurrentFolder.IsFolder) return;
 
@@ -4327,20 +4348,19 @@ namespace BExplorer.Shell
 			command1.Parameters.AddWithValue("Path", destination.ParsingName);
 			var Reader = command1.ExecuteReader();
 			var sql = Reader.Read() ?
-									@"UPDATE foldersettings
-									SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn, View = @View, LastSortedColumn = @LastSortedColumn, Columns = @Columns
-									WHERE Path = @Path"
-									:
-									@"INSERT into foldersettings (Path, LastSortOrder, LastGroupOrder, LastGroupCollumn, View, LastSortedColumn, Columns)
-									VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn, @Columns)";
+																 @"UPDATE foldersettings
+                                                                               SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn, View = @View, LastSortedColumn = @LastSortedColumn, Columns = @Columns, IconSize = @IconSize
+                                                                               WHERE Path = @Path"
+																 :
+																 @"INSERT into foldersettings (Path, LastSortOrder, LastGroupOrder, LastGroupCollumn, View, LastSortedColumn, Columns, IconSize)
+                                                                               VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn, @Columns, @IconSize)";
 
 
 			int[] orders = new int[this.Collumns.Count];
 			User32.SendMessage(this.LVHandle, (uint)Interop.MSG.LVM_GETCOLUMNORDERARRAY, orders.Length, orders);
 
 			var Columns_XML = new System.Xml.Linq.XElement("Columns");
-			foreach (var index in orders)
-			{
+			foreach (var index in orders) {
 				var collumn = this.Collumns[index];
 				var width = (int)User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETCOLUMNWIDTH, index, 0);
 				var XML = new System.Xml.Linq.XElement("Column");
@@ -4349,30 +4369,31 @@ namespace BExplorer.Shell
 				Columns_XML.Add(XML);
 			}
 
-
 			var Values = new Dictionary<string, string>() {
-				{ "Path", destination.ParsingName },
-				{ "LastSortOrder", LastSortOrder.ToString() },
-				{ "LastGroupOrder", LastGroupOrder.ToString() },
-				{ "LastGroupCollumn", LastGroupCollumn == null ? null : LastGroupCollumn.ID },
-				{ "View", View.ToString() },
-				{ "LastSortedColumn", LastSortedColumnIndex.ToString() },
-
-				/*New Values */
-
-				{ "Columns", Columns_XML.ToString()}
-			};
+                                   { "Path", destination.ParsingName },
+                                   { "LastSortOrder", LastSortOrder.ToString() },
+                                   { "LastGroupOrder", LastGroupOrder.ToString() },
+                                   { "LastGroupCollumn", LastGroupCollumn == null ? null : LastGroupCollumn.ID },
+                                   { "View", View.ToString() },
+                                   { "LastSortedColumn", LastSortedColumnIndex.ToString() },
+                                   { "Columns", Columns_XML.ToString()},
+ 
+ 
+                                   /*New Values */
+                                   //{ "IsGrouped", this.IsGroupsEnabled.ToString() },
+                                   { "IconSize", this.IconSize.ToString() }
+                          };
 
 			var command2 = new SQLite.SQLiteCommand(sql, m_dbConnection);
-			foreach (var item in Values)
-			{
+			foreach (var item in Values) {
 				command2.Parameters.AddWithValue(item.Key, item.Value);
 			}
 			command2.ExecuteNonQuery();
 			Reader.Close();
 			m_dbConnection.Close();
 		}
-		#endregion Database
+
+		#endregion Database 
 
 		#region Rename File
 
