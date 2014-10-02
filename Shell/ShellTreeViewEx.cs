@@ -16,6 +16,13 @@ namespace BExplorer.Shell {
 
 	public partial class ShellTreeViewEx : UserControl {
 
+		/*
+		 * Should we use HashSets not Lists?
+		 * http://stackoverflow.com/questions/150750/hashset-vs-list-performance
+		 * http://blog.goyello.com/2013/01/30/6-more-things-c-developers-should-not-do/
+		 * http://www.c-sharpcorner.com/UploadFile/0f68f2/comparative-analysis-of-list-hashset-and-sortedset/
+		 */
+
 		#region Event Handlers
 
 		public event EventHandler<TreeNodeMouseClickEventArgs> NodeClick;
@@ -64,7 +71,7 @@ namespace BExplorer.Shell {
 			this.UpdatedImages.Clear();
 			this.CheckedFroChilds.Clear();
 			var favoritesItem = (ShellItem)KnownFolders.Links;
-			TreeNode favoritesRoot = new TreeNode((favoritesItem).DisplayName);
+			var favoritesRoot = new TreeNode((favoritesItem).DisplayName);
 			favoritesRoot.Tag = KnownFolders.Links;
 			favoritesRoot.ImageIndex = ((ShellItem)KnownFolders.Favorites).GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 			favoritesRoot.SelectedImageIndex = favoritesRoot.ImageIndex;
@@ -72,7 +79,7 @@ namespace BExplorer.Shell {
 				favoritesRoot.Nodes.Add("<!EMPTY!>");
 
 			var librariesItem = (ShellItem)KnownFolders.Libraries;
-			TreeNode librariesRoot = new TreeNode(librariesItem.DisplayName);
+			var librariesRoot = new TreeNode(librariesItem.DisplayName);
 			librariesRoot.Tag = KnownFolders.Libraries;
 			librariesRoot.ImageIndex = librariesItem.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 			librariesRoot.SelectedImageIndex = librariesRoot.ImageIndex;
@@ -80,7 +87,7 @@ namespace BExplorer.Shell {
 				librariesRoot.Nodes.Add("<!EMPTY!>");
 
 			var computerItem = (ShellItem)KnownFolders.Computer;
-			TreeNode computerRoot = new TreeNode(computerItem.DisplayName);
+			var computerRoot = new TreeNode(computerItem.DisplayName);
 			computerRoot.Tag = KnownFolders.Computer;
 			computerRoot.ImageIndex = computerItem.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 			computerRoot.SelectedImageIndex = computerRoot.ImageIndex;
@@ -95,17 +102,30 @@ namespace BExplorer.Shell {
 
 			ShellTreeView.Nodes.Add(favoritesRoot);
 			favoritesRoot.Expand();
+
+			//TODO: Test this code out!
+			ShellTreeView.Nodes.AddRange(new[] {
+				new TreeNode(), librariesRoot, new TreeNode(), computerRoot, new TreeNode(), networkRoot
+			});
+
+			/*
 			ShellTreeView.Nodes.Add(new TreeNode());
 			ShellTreeView.Nodes.Add(librariesRoot);
 			ShellTreeView.Nodes.Add(new TreeNode());
 			ShellTreeView.Nodes.Add(computerRoot);
 			ShellTreeView.Nodes.Add(new TreeNode());
 			ShellTreeView.Nodes.Add(networkRoot);
+			*/
+
+
 			librariesRoot.Expand();
 			computerRoot.Expand();
 		}
 
+
+		/*
 		private void CheckForChildFolders(IntPtr node, IntPtr pidl, IntPtr m_TreeViewHandle, IntPtr parentHandle) {
+			//TODO: can we remove the try catch or at least shrink it to only include [User32.SendMessage(...)]
 			try {
 				var sho = new ShellItem(pidl);
 				if (!sho.HasSubFolders) {
@@ -117,6 +137,7 @@ namespace BExplorer.Shell {
 			catch (Exception) {
 			}
 		}
+		*/
 
 		private void SetNodeImage(IntPtr node, IntPtr pidl, IntPtr m_TreeViewHandle, Boolean isOverlayed) {
 			try {
@@ -147,12 +168,9 @@ namespace BExplorer.Shell {
 			var listNodes = this.ShellTreeView.Nodes.OfType<TreeNode>().ToList();
 			listNodes.AddRange(this.ShellTreeView.Nodes.OfType<TreeNode>().SelectMany(s => s.Nodes.OfType<TreeNode>()).ToArray());
 			var nodes = listNodes.ToArray();
-			var separators = new char[] {
-				Path.DirectorySeparatorChar,
-				Path.AltDirectorySeparatorChar
-			};
+			var separators = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
 			var directories = item.ParsingName.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-			List<ShellItem> items = new List<ShellItem>();
+			var items = new List<ShellItem>();
 
 			for (int i = 0; i < directories.Length; i++) {
 				if (i == 0) {
@@ -168,13 +186,33 @@ namespace BExplorer.Shell {
 							path = String.Format("{0}{1}{2}", path, Path.DirectorySeparatorChar, directories[j]);
 						}
 					}
-					var shellItem = ShellItem.ToShellParsingName(path);
-					items.Add(shellItem);
+					//var shellItem = ShellItem.ToShellParsingName(path);
+					items.Add(ShellItem.ToShellParsingName(path));
 				}
 			}
 
 			foreach (var sho in items) {
-				var theNode = nodes.Where(wr => wr.Tag != null).Where(w => (w.Tag as ShellItem) != null && (w.Tag as ShellItem).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
+				//TODO: Test Change
+				//Note: Should we use FirstOrDefault() NOT SingleOrDefault() ??
+
+				var theNode = nodes.Where(w => w.Tag is ShellItem && ((ShellItem)w.Tag).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
+				//var theNode = nodes.Where(wr => wr.Tag != null).Where(w => (w.Tag as ShellItem) != null && (w.Tag as ShellItem).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
+
+				if (theNode == null) {
+					return;
+				}
+				else if (items.Last() == sho) {
+					if (this.ShellTreeView.SelectedNode != theNode) {
+						this.ShellTreeView.SelectedNode = theNode;
+						theNode.EnsureVisible();
+					}
+				}
+				else {
+					theNode.Expand();
+					nodes = theNode.Nodes.OfType<TreeNode>().ToArray();
+				}
+
+				/*
 				if (theNode != null) {
 					if (items.Last() == sho) {
 						if (this.ShellTreeView.SelectedNode != theNode) {
@@ -190,6 +228,47 @@ namespace BExplorer.Shell {
 				else {
 					return;
 				}
+				*/
+			}
+
+			foreach (var sho in items) {
+				//TODO: Test Change
+				//Note: Should we use FirstOrDefault() NOT SingleOrDefault() ??
+				var theNode = nodes.Where(wr => wr.Tag is ShellItem && ((ShellItem)wr.Tag).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
+				//var theNode = nodes.Where(wr => wr.Tag != null).Where(w => w.Tag is ShellItem && ((ShellItem)w.Tag).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
+				//var theNode = nodes.Where(wr => wr.Tag != null).Where(w => (w.Tag as ShellItem) != null && (w.Tag as ShellItem).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
+
+				if (theNode == null) {
+					return;
+				}
+				else if (items.Last() == sho) {
+					if (this.ShellTreeView.SelectedNode != theNode) {
+						this.ShellTreeView.SelectedNode = theNode;
+						theNode.EnsureVisible();
+					}
+				}
+				else {
+					theNode.Expand();
+					nodes = theNode.Nodes.OfType<TreeNode>().ToArray();
+				}
+
+				/*
+				if (theNode != null) {
+					if (items.Last() == sho) {
+						if (this.ShellTreeView.SelectedNode != theNode) {
+							this.ShellTreeView.SelectedNode = theNode;
+							theNode.EnsureVisible();
+						}
+					}
+					else {
+						theNode.Expand();
+						nodes = theNode.Nodes.OfType<TreeNode>().ToArray();
+					}
+				}
+				else {
+					return;
+				}
+				*/
 			}
 		}
 
@@ -229,15 +308,12 @@ namespace BExplorer.Shell {
 			}
 			SystemImageList.UseSystemImageList(ShellTreeView);
 			ShellTreeView.FullRowSelect = true;
-			Shell32.SHSTOCKICONINFO defIconInfo = new Shell32.SHSTOCKICONINFO();
-			defIconInfo.cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO));
+			var defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
 			Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_FOLDER, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
 			this.folderImageListIndex = defIconInfo.iSysIconIndex;
-			imagesThread = new Thread(new ThreadStart(LoadTreeImages));
-			imagesThread.IsBackground = true;
+			imagesThread = new Thread(new ThreadStart(LoadTreeImages)) { IsBackground = true };
 			imagesThread.Start();
-			childsThread = new Thread(new ThreadStart(LoadChilds));
-			childsThread.IsBackground = true;
+			childsThread = new Thread(new ThreadStart(LoadChilds)) { IsBackground = true };
 			childsThread.Start();
 		}
 
@@ -336,25 +412,50 @@ namespace BExplorer.Shell {
 				var pidl = IntPtr.Zero;
 				//Thread.Sleep(2);
 				//Application.DoEvents();
+
+				//! Why do we have an invoke here
 				this.Invoke((Action)(() => {
 					node = TreeNode.FromHandle(ShellTreeView, handle);
 					treeHandle = this.ShellTreeView.Handle;
 					if (node != null) {
 						visible = node.IsVisible;
-						pidl = (node.Tag as ShellItem).Pidl;
+						pidl = ((ShellItem)node.Tag).Pidl;
 					}
 				}));
 
 				if (!visible || pidl == IntPtr.Zero)
 					continue;
 
-				if (node != null) {
-					var childItem = node.Nodes.OfType<TreeNode>().FirstOrDefault();
-					if (childItem != null) {
-						var nodeHandle = childItem.Handle;
+				/*
+				 * TODO:Find out if the following change is worth making
+				 
+				 if (node != null) {
+				 var childItem = node.Nodes.OfType<TreeNode>().FirstOrDefault();
+				 if (childItem != null) {
+				 if (childItem != null) { ... }				 
+				*/
 
-						CheckForChildFolders(nodeHandle, pidl, treeHandle, handle);
+				if (node != null && node.Nodes.Count > 0) {
+					var childItem = node.Nodes[0]; //node.Nodes.OfType<TreeNode>().FirstOrDefault();
+					var nodeHandle = childItem.Handle;
+
+					//TODO: Try to remove this Try Catch! It's slowing this down!!
+					//TODO: Have the try catch only around the error causing code
+					try {
+						//TODO: Find out if we could just use the path here to increase performance!!
+						//Example" System.IO.Directory.GetDirectories("...").Any()
+
+						var sho = new ShellItem(pidl);
+						if (!sho.HasSubFolders) {
+							User32.SendMessage(treeHandle, BExplorer.Shell.Interop.MSG.TVM_DELETEITEM, 0, nodeHandle);
+						}
+						this.CheckedFroChilds.Add(handle);
+						sho.Dispose();
 					}
+					catch (Exception) {
+					}
+
+					//CheckForChildFolders(nodeHandle, pidl, treeHandle, handle);
 				}
 			}
 		}
@@ -378,7 +479,7 @@ namespace BExplorer.Shell {
 				var shellItemArray = dataObject.ToShellItemArray();
 				var items = shellItemArray.ToArray();
 				try {
-					IIFileOperation fo = new IIFileOperation(handle);
+					var fo = new IIFileOperation(handle);
 					foreach (var item in items) {
 						fo.MoveItem(item, destination.ComInterface, null);
 					}
@@ -422,7 +523,7 @@ namespace BExplorer.Shell {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
 				var dataObject = F.Clipboard.GetDataObject();
-				var dragDropEffect = System.Windows.DragDropEffects.Copy;
+				//var dragDropEffect = System.Windows.DragDropEffects.Copy;
 				var dropEffect = dataObject.ToDropEffect();
 				var shellItemArray = dataObject.ToShellItemArray();
 				var items = shellItemArray.ToArray();
@@ -448,17 +549,21 @@ namespace BExplorer.Shell {
 		}
 
 		public void CutSelectedFiles() {
-			TVITEMW item = new TVITEMW();
-			item.hItem = this.ShellTreeView.SelectedNode.Handle;
-			item.mask = TVIF.TVIF_STATE;
-			item.stateMask = TVIS.TVIS_CUT;
-			item.state = TVIS.TVIS_CUT;
-			User32.SendMessage(this.ShellTreeView.Handle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW,
-						0, ref item);
+			var item = new TVITEMW() {
+				mask = TVIF.TVIF_STATE,
+				stateMask = TVIS.TVIS_CUT,
+				state = TVIS.TVIS_CUT,
+				hItem = this.ShellTreeView.SelectedNode.Handle,
+			};
+
+			User32.SendMessage(this.ShellTreeView.Handle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW, 0, ref item);
 
 			this.cuttedNode = this.ShellTreeView.SelectedNode;
-			var selectedItems = new ShellItem[1];
-			selectedItems[0] = this.ShellTreeView.SelectedNode.Tag as ShellItem;
+			//var selectedItems = new ShellItem[1];
+			//selectedItems[0] = this.ShellTreeView.SelectedNode.Tag as ShellItem;
+			var selectedItems = new[] { this.ShellTreeView.SelectedNode.Tag as ShellItem };
+
+
 			var ddataObject = new F.DataObject();
 			// Copy or Cut operation (5 = copy; 2 = cut)
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 2, 0, 0, 0 }));
@@ -467,10 +572,11 @@ namespace BExplorer.Shell {
 		}
 
 		public void CopySelectedFiles() {
-			IntPtr dataObjPtr = IntPtr.Zero;
+			//IntPtr dataObjPtr = IntPtr.Zero;
 
-			var selectedItems = new ShellItem[1];
-			selectedItems[0] = this.ShellTreeView.SelectedNode.Tag as ShellItem;
+			//var selectedItems = new ShellItem[1];
+			//selectedItems[0] = this.ShellTreeView.SelectedNode.Tag as ShellItem;
+			var selectedItems = new[] { this.ShellTreeView.SelectedNode.Tag as ShellItem };
 			//System.Runtime.InteropServices.ComTypes.IDataObject dataObject = GetIDataObject(this.SelectedItems.ToArray(), out dataObjPtr);
 			var ddataObject = new F.DataObject();
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 5, 0, 0, 0 }));
@@ -504,7 +610,7 @@ namespace BExplorer.Shell {
 					e.Node.Nodes.Clear();
 					imagesQueue.Clear();
 					childsQueue.Clear();
-					var sho = e.Node.Tag as ShellItem;
+					var sho = (ShellItem)e.Node.Tag;
 					ShellItem lvSho = this.ShellListView != null && this.ShellListView.CurrentFolder != null ? this.ShellListView.CurrentFolder : null;
 					var node = e.Node;
 					node.Nodes.Add("Searching for folders...");
@@ -521,6 +627,7 @@ namespace BExplorer.Shell {
 							}
 							itemNode.Tag = itemReal;
 
+							/*
 							if (sho.IsNetDrive || sho.IsNetworkPath) {
 								itemNode.ImageIndex = this.folderImageListIndex;
 							}
@@ -533,6 +640,19 @@ namespace BExplorer.Shell {
 									itemNode.ImageIndex = this.folderImageListIndex;
 								}
 							}
+							*/
+
+							if (sho.IsNetDrive || sho.IsNetworkPath) {
+								itemNode.ImageIndex = this.folderImageListIndex;
+							}
+							else if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS) {
+								itemNode.ImageIndex = itemReal.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
+								itemNode.SelectedImageIndex = itemNode.ImageIndex;
+							}
+							else {
+								itemNode.ImageIndex = this.folderImageListIndex;
+							}
+
 							itemNode.Nodes.Add("<!EMPTY!>");
 							nodesTemp.Add(itemNode);
 							Application.DoEvents();
@@ -609,7 +729,7 @@ namespace BExplorer.Shell {
 		private void ShellTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
 			if (e.Button == F.MouseButtons.Right) {
 				//this.ShellTreeView.SelectedNode = e.Node;
-				ShellContextMenu cm = new ShellContextMenu(e.Node.Tag as ShellItem);
+				var cm = new ShellContextMenu(e.Node.Tag as ShellItem);
 				cm.ShowContextMenu(this, e.Location, CMF.CANRENAME);
 			}
 			else if (e.Button == F.MouseButtons.Left) {
@@ -623,7 +743,7 @@ namespace BExplorer.Shell {
 					if (e.Label.IndexOfAny(new char[] { '@', '.', ',', '!' }) == -1) {
 						// Stop editing without canceling the label change.
 						e.Node.EndEdit(false);
-						IIFileOperation fo = new IIFileOperation(this.Handle);
+						var fo = new IIFileOperation(this.Handle);
 						fo.RenameItem((e.Node.Tag as ShellItem).ComInterface, e.Label);
 						fo.PerformOperations();
 					}
@@ -638,11 +758,9 @@ namespace BExplorer.Shell {
 					}
 				}
 				else {
-					/* Cancel the label edit action, inform the user, and
-						 place the node in edit mode again. */
+					/* Cancel the label edit action, inform the user, and place the node in edit mode again. */
 					e.CancelEdit = true;
-					MessageBox.Show("Invalid tree node label.\nThe label cannot be blank",
-						 "Node Label Edit");
+					MessageBox.Show("Invalid tree node label.\nThe label cannot be blank", "Node Label Edit");
 					e.Node.BeginEdit();
 				}
 			}
@@ -668,13 +786,8 @@ namespace BExplorer.Shell {
 				this.RenameSelectedNode();
 			}
 			if (e.KeyCode == Keys.Escape) {
-				TVITEMW item = new TVITEMW();
-				item.hItem = this.cuttedNode.Handle;
-				item.mask = TVIF.TVIF_STATE;
-				item.stateMask = TVIS.TVIS_CUT;
-				item.state = 0;
-				User32.SendMessage(this.ShellTreeView.Handle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW,
-							0, ref item);
+				var item = new TVITEMW() { mask = TVIF.TVIF_STATE, stateMask = TVIS.TVIS_CUT, state = 0, hItem = this.cuttedNode.Handle };
+				User32.SendMessage(this.ShellTreeView.Handle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW, 0, ref item);
 				Clipboard.Clear();
 			}
 		}
@@ -734,9 +847,7 @@ namespace BExplorer.Shell {
 					break;
 			}
 
-			BExplorer.Shell.DataObject.Win32Point wp = new BExplorer.Shell.DataObject.Win32Point();
-			wp.X = e.X;
-			wp.Y = e.Y;
+			var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
 
 			if (e.Data.GetDataPresent("DragImageBits"))
 				DropTargetHelper.Get.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);

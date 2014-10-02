@@ -1605,7 +1605,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void Window_Loaded(object sender, RoutedEventArgs e) {			
+		private void Window_Loaded(object sender, RoutedEventArgs e) {
 			_keyjumpTimer.Interval = 1000;
 			_keyjumpTimer.Tick += _keyjumpTimer_Tick;
 
@@ -3612,12 +3612,11 @@ namespace BetterExplorer {
 		}
 
 		private void stGallery_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			try {
+			if (e.AddedItems.Count > 0) {
 				(e.AddedItems[0] as SavedTabsListGalleryItem).PerformClickEvent();
 			}
-			catch {
-			}
 		}
+
 
 		private void btnSavedTabs_DropDownOpened(object sender, EventArgs e) {
 			var o = new List<string>();
@@ -4004,9 +4003,8 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_ItemUpdated(object sender, ItemUpdatedEventArgs e) {
-			
-			if (e.UpdateType == ItemUpdateType.RecycleBin)
-			{
+
+			if (e.UpdateType == ItemUpdateType.RecycleBin) {
 				this.UpdateRecycleBinInfos();
 			}
 			if (e.UpdateType != ItemUpdateType.Renamed && e.UpdateType != ItemUpdateType.Updated) {
