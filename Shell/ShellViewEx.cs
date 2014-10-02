@@ -2505,9 +2505,7 @@ namespace BExplorer.Shell {
 					_OverlaysLoadingThread.Abort();
 				if (_UpdateSubitemValuesThread.IsAlive)
 					_UpdateSubitemValuesThread.Abort();
-			} 
-			catch (ThreadAbortException) { } 
-			catch { }
+			} catch (ThreadAbortException) { } catch { }
 			base.OnHandleDestroyed(e);
 		}
 
@@ -3002,7 +3000,7 @@ namespace BExplorer.Shell {
 				this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
 			}
 
-			
+
 
 			if (!isThereSettings) {
 				var i = 0;
@@ -3029,7 +3027,7 @@ namespace BExplorer.Shell {
 			} else {
 				this.DisableGroups();
 			}
-			
+
 
 			var NavArgs = new NavigatedEventArgs(destination, this.CurrentFolder, isInSameTab);
 			this.CurrentFolder = destination;
@@ -3790,11 +3788,9 @@ namespace BExplorer.Shell {
 				command1.Parameters.AddWithValue("0", directory.ParsingName);
 
 				var Reader = command1.ExecuteReader();
-				if (Reader.Read())
-				{
+				if (Reader.Read()) {
 					var Values = Reader.GetValues();
-					if (Values.Count > 0)
-					{
+					if (Values.Count > 0) {
 						result = true;
 						var view = Values.GetValues("View").FirstOrDefault();
 						var iconSize = Values.GetValues("IconSize").FirstOrDefault();
@@ -3802,20 +3798,18 @@ namespace BExplorer.Shell {
 						var lastSortOrder = Values.GetValues("LastSortOrder").FirstOrDefault();
 						var lastGroupedColumnId = Values.GetValues("LastGroupCollumn").FirstOrDefault();
 						var lastGroupoupOrder = Values.GetValues("LastGroupOrder").FirstOrDefault();
-						if (view != null)
-						{
+						if (view != null) {
 							folderSetting.View = (ShellViewStyle)Enum.Parse(typeof(ShellViewStyle), view);
 						}
-						if (lastSortedColumnIndex != null)
-						{
+						if (lastSortedColumnIndex != null) {
 							folderSetting.SortColumn = Int32.Parse(lastSortedColumnIndex);
 							folderSetting.SortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), lastSortOrder);
 						}
 
 						folderSetting.GroupCollumn = lastGroupedColumnId;
-						folderSetting.GroupOrder = lastGroupoupOrder == SortOrder.Ascending.ToString() ? SortOrder.Ascending : SortOrder.Descending;;
+						folderSetting.GroupOrder = lastGroupoupOrder == SortOrder.Ascending.ToString() ? SortOrder.Ascending : SortOrder.Descending; ;
 
- 
+
 						var collumns = Values.GetValues("Columns").FirstOrDefault();
 
 						folderSetting.Columns = collumns != null ? XElement.Parse(collumns) : null;
@@ -3827,17 +3821,15 @@ namespace BExplorer.Shell {
 
 					}
 				}
-				
+
 				Reader.Close();
-			}
-			catch (Exception)
-			{
+			} catch (Exception) {
 			}
 			folderSettings = folderSetting;
 			return result;
 		}
 
-		
+
 
 		public void SaveSettingsToDatabase(ShellItem destination) {
 			if (CurrentFolder == null) return;
