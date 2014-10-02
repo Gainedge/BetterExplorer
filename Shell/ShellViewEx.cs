@@ -2903,8 +2903,6 @@ namespace BExplorer.Shell {
 			if (!refresh && Navigating != null) {
 				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 			}
-			//Unregister notifications and clear all collections
-			//this.Notifications.UnregisterChangeNotify();
 			Items.Clear();
 			ItemsForSubitemsUpdate.Clear();
 			waitingThumbnails.Clear();
@@ -2973,6 +2971,10 @@ namespace BExplorer.Shell {
 			this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
 			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
 				ResizeIcons(16);
+			else {
+				if (folderSettings.IconSize >= 16)
+					this.ResizeIcons(folderSettings.IconSize);
+			}
 
 			int CurrentI = 0, LastI = 0;
 			foreach (var Shell in destination) {
@@ -3000,6 +3002,8 @@ namespace BExplorer.Shell {
 				this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
 			}
 
+			
+
 			if (!isThereSettings) {
 				var i = 0;
 				this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++, new ShellItemComparer());
@@ -3012,28 +3016,27 @@ namespace BExplorer.Shell {
 				this.LastSortOrder = SortOrder.Ascending;
 			}
 
-
-			//Notifications.RegisterChangeNotify(this.Handle, destination, true);
-
 			if (!isThereSettings)
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-			if (IsGroupsEnabled) {
-				this.Groups.Clear();
-				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
-				GenerateGroupsFromColumn(this.Collumns.First());
+			if (!String.IsNullOrEmpty(folderSettings.GroupCollumn)) {
+				var colData = this.AllAvailableColumns.Where(w => w.ID == folderSettings.GroupCollumn).SingleOrDefault();
+				if (colData != null) {
+					this.EnableGroups();
+					this.GenerateGroupsFromColumn(colData, folderSettings.GroupOrder == SortOrder.Descending);
+				} else {
+					this.DisableGroups();
+				}
+			} else {
+				this.DisableGroups();
 			}
+			
 
 			var NavArgs = new NavigatedEventArgs(destination, this.CurrentFolder, isInSameTab);
 			this.CurrentFolder = destination;
 			if (!refresh && Navigated != null) {
 				Navigated(this, NavArgs);
 			}
-			//AutosizeAllColumns(this.View != ShellViewStyle.Details ? -2 : -1);
 
-			//if (this.View != ShellViewStyle.Details)
-			//	AutosizeAllColumns(-2);
-			//else
-			//	AutosizeAllColumns(-1);
 			this.Focus();
 		}
 
@@ -3046,6 +3049,7 @@ namespace BExplorer.Shell {
 			const int LVM_SETOWNERDATACALLBACK = 0x10BB;
 			User32.SendMessage(this.LVHandle, LVM_SETOWNERDATACALLBACK, 0, 0);
 			this.LastGroupCollumn = null;
+			this.LastGroupOrder = SortOrder.None;
 		}
 
 		public void EnableGroups() {
@@ -3180,6 +3184,7 @@ namespace BExplorer.Shell {
 
 			this.LastGroupCollumn = col;
 			this.LastGroupOrder = reversed ? SortOrder.Descending : SortOrder.Ascending;
+			this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
 			RefreshItemsCountInternal();
 		}
 
@@ -3792,8 +3797,11 @@ namespace BExplorer.Shell {
 					{
 						result = true;
 						var view = Values.GetValues("View").FirstOrDefault();
+						var iconSize = Values.GetValues("IconSize").FirstOrDefault();
 						var lastSortedColumnIndex = Values.GetValues("LastSortedColumn").FirstOrDefault();
 						var lastSortOrder = Values.GetValues("LastSortOrder").FirstOrDefault();
+						var lastGroupedColumnId = Values.GetValues("LastGroupCollumn").FirstOrDefault();
+						var lastGroupoupOrder = Values.GetValues("LastGroupOrder").FirstOrDefault();
 						if (view != null)
 						{
 							folderSetting.View = (ShellViewStyle)Enum.Parse(typeof(ShellViewStyle), view);
@@ -3804,17 +3812,22 @@ namespace BExplorer.Shell {
 							folderSetting.SortOrder = (SortOrder)Enum.Parse(typeof(SortOrder), lastSortOrder);
 						}
 
+						folderSetting.GroupCollumn = lastGroupedColumnId;
+						folderSetting.GroupOrder = lastGroupoupOrder == SortOrder.Ascending.ToString() ? SortOrder.Ascending : SortOrder.Descending;;
+
  
 						var collumns = Values.GetValues("Columns").FirstOrDefault();
 
 						folderSetting.Columns = collumns != null ? XElement.Parse(collumns) : null;
-						this.LastGroupOrder = Values["LastGroupOrder"] == "Ascending" ? SortOrder.Ascending : SortOrder.Descending;
- 
-								 /* New Stuff -/
-								 IconSize = int.Parse(Values["IconSize"]);
+						if (String.IsNullOrEmpty(iconSize)) {
+							folderSetting.IconSize = 48;
+						} else {
+							folderSetting.IconSize = Int32.Parse(iconSize);
+						}
+
 					}
 				}
-				*/
+				
 				Reader.Close();
 			}
 			catch (Exception)
@@ -3823,6 +3836,8 @@ namespace BExplorer.Shell {
 			folderSettings = folderSetting;
 			return result;
 		}
+
+		
 
 		public void SaveSettingsToDatabase(ShellItem destination) {
 			if (CurrentFolder == null) return;
@@ -3835,8 +3850,9 @@ namespace BExplorer.Shell {
 			command1.Parameters.AddWithValue("Path", destination.ParsingName);
 			var Reader = command1.ExecuteReader();
 			var sql = Reader.Read() ?
-									@"UPDATE foldersettings
-                                                                               SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn, View = @View, LastSortedColumn = @LastSortedColumn, Columns = @Columns, IconSize = @IconSize
+									@"UPDATE foldersettings 
+										SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn, 
+												View = @View, LastSortedColumn = @LastSortedColumn, Columns = @Columns, IconSize = @IconSize
 									WHERE Path = @Path"
 									:
 																 @"INSERT into foldersettings (Path, LastSortOrder, LastGroupOrder, LastGroupCollumn, View, LastSortedColumn, Columns, IconSize)
@@ -3863,12 +3879,8 @@ namespace BExplorer.Shell {
 				{ "LastGroupCollumn", LastGroupCollumn == null ? null : LastGroupCollumn.ID },
 				{ "View", View.ToString() },
 				{ "LastSortedColumn", LastSortedColumnIndex.ToString() },
-                                   { "Columns", Columns_XML.ToString()},
-
-
-				/*New Values */
-                                   //{ "IsGrouped", this.IsGroupsEnabled.ToString() },
-                                   { "IconSize", this.IconSize.ToString() }
+        { "Columns", Columns_XML.ToString()},
+        { "IconSize", this.IconSize.ToString() }
 			};
 
 			var command2 = new SQLite.SQLiteCommand(sql, m_dbConnection);
