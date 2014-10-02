@@ -3836,11 +3836,11 @@ namespace BExplorer.Shell {
 			var Reader = command1.ExecuteReader();
 			var sql = Reader.Read() ?
 									@"UPDATE foldersettings
-                                                                               SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn, View = @View, LastSortedColumn = @LastSortedColumn, Columns = @Columns, IconSize = @IconSize
+																			   SET Path = @Path, LastSortOrder = @LastSortOrder, LastGroupOrder = @LastGroupOrder, LastGroupCollumn = @LastGroupCollumn, View = @View, LastSortedColumn = @LastSortedColumn, Columns = @Columns, IconSize = @IconSize
 									WHERE Path = @Path"
 									:
 																 @"INSERT into foldersettings (Path, LastSortOrder, LastGroupOrder, LastGroupCollumn, View, LastSortedColumn, Columns, IconSize)
-                                                                               VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn, @Columns, @IconSize)";
+																			   VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn, @Columns, @IconSize)";
 
 
 			int[] orders = new int[this.Collumns.Count];
@@ -3863,12 +3863,12 @@ namespace BExplorer.Shell {
 				{ "LastGroupCollumn", LastGroupCollumn == null ? null : LastGroupCollumn.ID },
 				{ "View", View.ToString() },
 				{ "LastSortedColumn", LastSortedColumnIndex.ToString() },
-                                   { "Columns", Columns_XML.ToString()},
+								   { "Columns", Columns_XML.ToString()},
 
 
 				/*New Values */
-                                   //{ "IsGrouped", this.IsGroupsEnabled.ToString() },
-                                   { "IconSize", this.IconSize.ToString() }
+								   //{ "IsGrouped", this.IsGroupsEnabled.ToString() },
+								   { "IconSize", this.IconSize.ToString() }
 			};
 
 			var command2 = new SQLite.SQLiteCommand(sql, m_dbConnection);
