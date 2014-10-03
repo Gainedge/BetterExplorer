@@ -607,21 +607,18 @@ namespace BetterExplorer {
 
 		private void SetupUIOnSelectOrNavigate() {
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-				var SelItemsCount = ShellListView.GetSelectedCount();
-
 				btnDefSave.Items.Clear();
+				btnOpenWith.Items.Clear();
+				var SelItemsCount = ShellListView.GetSelectedCount();
 				var selectedItem = this.ShellListView.GetFirstSelectedItem();
-				//if (selectedItem != null && !(System.IO.File.Exists(selectedItem.FileSystemPath) || System.IO.Directory.Exists(selectedItem.FileSystemPath))) 
-				//	selectedItem = null;
 
 				if (selectedItem != null) {
-					btnOpenWith.Items.Clear();
 					foreach (var item in selectedItem.GetAssocList()) {
 						btnOpenWith.Items.Add(Utilities.Build_MenuItem(item.DisplayName, item, item.Icon, ToolTip: item.ApplicationPath, onClick: miow_Click));
 					}
-
-					btnOpenWith.IsEnabled = btnOpenWith.HasItems;
 				}
+
+				btnOpenWith.IsEnabled = btnOpenWith.HasItems;
 
 				if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && SelItemsCount == 1) {
 					this.Previewer.FileName = selectedItem.ParsingName;
@@ -2256,10 +2253,11 @@ namespace BetterExplorer {
 			if (IsCalledFromLoading) return;
 			Dispatcher.BeginInvoke(new Action(
 				delegate() {
-					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
-					state.fShowAllObjects = 1;
+					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE() { fShowAllObjects = 1 };
 					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
 					ShellListView.ShowHidden = true;
+
+					ShellTree.IsShowHiddenItems = true;
 					ShellTree.RefreshContents();
 				}
 			));
@@ -2269,10 +2267,11 @@ namespace BetterExplorer {
 			if (IsCalledFromLoading) return;
 			Dispatcher.BeginInvoke(new Action(
 				delegate() {
-					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
-					state.fShowAllObjects = 0;
+					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE() { fShowAllObjects = 0 };
 					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
 					ShellListView.ShowHidden = false;
+
+					ShellTree.IsShowHiddenItems = false;
 					ShellTree.RefreshContents();
 				}
 			));
@@ -3617,7 +3616,6 @@ namespace BetterExplorer {
 			}
 		}
 
-
 		private void btnSavedTabs_DropDownOpened(object sender, EventArgs e) {
 			var o = new List<string>();
 
@@ -4003,7 +4001,6 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_ItemUpdated(object sender, ItemUpdatedEventArgs e) {
-
 			if (e.UpdateType == ItemUpdateType.RecycleBin) {
 				this.UpdateRecycleBinInfos();
 			}

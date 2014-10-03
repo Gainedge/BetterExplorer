@@ -21,6 +21,12 @@ namespace BExplorer.Shell {
 		 * http://stackoverflow.com/questions/150750/hashset-vs-list-performance
 		 * http://blog.goyello.com/2013/01/30/6-more-things-c-developers-should-not-do/
 		 * http://www.c-sharpcorner.com/UploadFile/0f68f2/comparative-analysis-of-list-hashset-and-sortedset/
+		 * 
+		 * 
+		 * Performance Test Code!
+		 * http://stackoverflow.com/questions/25615764/list-add-vs-hashset-add-for-small-collections-in-c-sharp
+		 * 
+		 * I think HashSets are actually worse as the lists are to small
 		 */
 
 		#region Event Handlers
@@ -52,8 +58,12 @@ namespace BExplorer.Shell {
 		private ManualResetEvent _ResetEvent = new ManualResetEvent(true);
 		private int folderImageListIndex;
 		private ShellView _ShellListView;
+
+		//private HashSet<IntPtr> UpdatedImages = new HashSet<IntPtr>();
+		//private HashSet<IntPtr> CheckedFroChilds = new HashSet<IntPtr>();
 		private List<IntPtr> UpdatedImages = new List<IntPtr>();
 		private List<IntPtr> CheckedFroChilds = new List<IntPtr>();
+
 		private SyncQueue<IntPtr> imagesQueue = new SyncQueue<IntPtr>(); //7000
 		private SyncQueue<IntPtr> childsQueue = new SyncQueue<IntPtr>(); //7000
 		private Thread imagesThread;
@@ -616,7 +626,7 @@ namespace BExplorer.Shell {
 					node.Nodes.Add("Searching for folders...");
 					var nodes = await Task.Run(() => {
 						var nodesTemp = new List<TreeNode>();
-						foreach (var item in sho.Where(w => sho.IsFileSystem || Path.GetExtension(sho.ParsingName).ToLowerInvariant() == ".library-ms" ? ((w.IsFolder || w.IsLink) && (this.IsShowHiddenItems ? true : w.IsHidden == false)) : true)) {
+						foreach (var item in sho.Where(w => sho.IsFileSystem || Path.GetExtension(sho.ParsingName).ToLowerInvariant() == ".library-ms" ? (w.IsFolder || w.IsLink) && this.IsShowHiddenItems ? true : !w.IsHidden : true)) {
 							var itemNode = new TreeNode(item.DisplayName);
 							ShellItem itemReal = null;
 							if (item.Parent != null && item.Parent.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
