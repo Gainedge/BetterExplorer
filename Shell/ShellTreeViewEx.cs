@@ -56,20 +56,17 @@ namespace BExplorer.Shell {
 
 		private TreeNode cuttedNode { get; set; }
 		private ManualResetEvent _ResetEvent = new ManualResetEvent(true);
-		private int folderImageListIndex;
+		private Int32 folderImageListIndex;
 		private ShellView _ShellListView;
-
-		//private HashSet<IntPtr> UpdatedImages = new HashSet<IntPtr>();
-		//private HashSet<IntPtr> CheckedFroChilds = new HashSet<IntPtr>();
 		private List<IntPtr> UpdatedImages = new List<IntPtr>();
 		private List<IntPtr> CheckedFroChilds = new List<IntPtr>();
-
 		private SyncQueue<IntPtr> imagesQueue = new SyncQueue<IntPtr>(); //7000
 		private SyncQueue<IntPtr> childsQueue = new SyncQueue<IntPtr>(); //7000
 		private Thread imagesThread;
 		private Thread childsThread;
 		private Boolean isFromTreeview;
 		private Boolean _IsNavigate;
+		private String _EmptyItemString = "<!EMPTY!>";
 
 		#endregion Private Members
 
@@ -85,8 +82,9 @@ namespace BExplorer.Shell {
 			favoritesRoot.Tag = KnownFolders.Links;
 			favoritesRoot.ImageIndex = ((ShellItem)KnownFolders.Favorites).GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 			favoritesRoot.SelectedImageIndex = favoritesRoot.ImageIndex;
+
 			if (favoritesItem.Count() > 0)
-				favoritesRoot.Nodes.Add("<!EMPTY!>");
+				favoritesRoot.Nodes.Add(_EmptyItemString);
 
 			var librariesItem = (ShellItem)KnownFolders.Libraries;
 			var librariesRoot = new TreeNode(librariesItem.DisplayName);
@@ -94,7 +92,7 @@ namespace BExplorer.Shell {
 			librariesRoot.ImageIndex = librariesItem.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 			librariesRoot.SelectedImageIndex = librariesRoot.ImageIndex;
 			if (librariesItem.HasSubFolders)
-				librariesRoot.Nodes.Add("<!EMPTY!>");
+				librariesRoot.Nodes.Add(_EmptyItemString);
 
 			var computerItem = (ShellItem)KnownFolders.Computer;
 			var computerRoot = new TreeNode(computerItem.DisplayName);
@@ -102,13 +100,14 @@ namespace BExplorer.Shell {
 			computerRoot.ImageIndex = computerItem.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 			computerRoot.SelectedImageIndex = computerRoot.ImageIndex;
 			if (computerItem.HasSubFolders)
-				computerRoot.Nodes.Add("<!EMPTY!>");
+				computerRoot.Nodes.Add(_EmptyItemString);
 
 			var networkItem = (ShellItem)KnownFolders.Network;
 			var networkRoot = new TreeNode(networkItem.DisplayName);
 			networkRoot.Tag = networkItem;
 			networkRoot.ImageIndex = networkItem.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 			networkRoot.SelectedImageIndex = networkRoot.ImageIndex;
+			networkRoot.Nodes.Add(_EmptyItemString);
 
 			ShellTreeView.Nodes.Add(favoritesRoot);
 			favoritesRoot.Expand();
@@ -118,36 +117,9 @@ namespace BExplorer.Shell {
 				new TreeNode(), librariesRoot, new TreeNode(), computerRoot, new TreeNode(), networkRoot
 			});
 
-			/*
-			ShellTreeView.Nodes.Add(new TreeNode());
-			ShellTreeView.Nodes.Add(librariesRoot);
-			ShellTreeView.Nodes.Add(new TreeNode());
-			ShellTreeView.Nodes.Add(computerRoot);
-			ShellTreeView.Nodes.Add(new TreeNode());
-			ShellTreeView.Nodes.Add(networkRoot);
-			*/
-
-
 			librariesRoot.Expand();
 			computerRoot.Expand();
 		}
-
-
-		/*
-		private void CheckForChildFolders(IntPtr node, IntPtr pidl, IntPtr m_TreeViewHandle, IntPtr parentHandle) {
-			//TODO: can we remove the try catch or at least shrink it to only include [User32.SendMessage(...)]
-			try {
-				var sho = new ShellItem(pidl);
-				if (!sho.HasSubFolders) {
-					User32.SendMessage(m_TreeViewHandle, BExplorer.Shell.Interop.MSG.TVM_DELETEITEM, 0, node);
-				}
-				this.CheckedFroChilds.Add(parentHandle);
-				sho.Dispose();
-			}
-			catch (Exception) {
-			}
-		}
-		*/
 
 		private void SetNodeImage(IntPtr node, IntPtr pidl, IntPtr m_TreeViewHandle, Boolean isOverlayed) {
 			try {
@@ -166,8 +138,7 @@ namespace BExplorer.Shell {
 				itemInfo.iSelectedImage = ShellItem.GetSystemImageListIndex(pidl, ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 				this.UpdatedImages.Add(node);
 				User32.SendMessage(m_TreeViewHandle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW, 0, ref itemInfo);
-			}
-			catch (Exception) {
+			} catch (Exception) {
 			}
 		}
 
@@ -185,14 +156,12 @@ namespace BExplorer.Shell {
 			for (int i = 0; i < directories.Length; i++) {
 				if (i == 0) {
 					items.Add(ShellItem.ToShellParsingName(directories[i]));// new ShellItem(directories[i].ToShellParsingName()));
-				}
-				else {
+				} else {
 					string path = String.Empty;
 					for (int j = 0; j <= i; j++) {
 						if (j == 0) {
 							path = directories[j];
-						}
-						else {
+						} else {
 							path = String.Format("{0}{1}{2}", path, Path.DirectorySeparatorChar, directories[j]);
 						}
 					}
@@ -210,75 +179,30 @@ namespace BExplorer.Shell {
 
 				if (theNode == null) {
 					return;
-				}
-				else if (items.Last() == sho) {
+				} else if (items.Last() == sho) {
 					if (this.ShellTreeView.SelectedNode != theNode) {
 						this.ShellTreeView.SelectedNode = theNode;
 						theNode.EnsureVisible();
 					}
-				}
-				else {
+				} else {
 					theNode.Expand();
 					nodes = theNode.Nodes.OfType<TreeNode>().ToArray();
 				}
-
-				/*
-				if (theNode != null) {
-					if (items.Last() == sho) {
-						if (this.ShellTreeView.SelectedNode != theNode) {
-							this.ShellTreeView.SelectedNode = theNode;
-							theNode.EnsureVisible();
-						}
-					}
-					else {
-						theNode.Expand();
-						nodes = theNode.Nodes.OfType<TreeNode>().ToArray();
-					}
-				}
-				else {
-					return;
-				}
-				*/
 			}
 
 			foreach (var sho in items) {
-				//TODO: Test Change
-				//Note: Should we use FirstOrDefault() NOT SingleOrDefault() ??
 				var theNode = nodes.Where(wr => wr.Tag is ShellItem && ((ShellItem)wr.Tag).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
-				//var theNode = nodes.Where(wr => wr.Tag != null).Where(w => w.Tag is ShellItem && ((ShellItem)w.Tag).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
-				//var theNode = nodes.Where(wr => wr.Tag != null).Where(w => (w.Tag as ShellItem) != null && (w.Tag as ShellItem).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
-
 				if (theNode == null) {
 					return;
-				}
-				else if (items.Last() == sho) {
+				} else if (items.Last() == sho) {
 					if (this.ShellTreeView.SelectedNode != theNode) {
 						this.ShellTreeView.SelectedNode = theNode;
 						theNode.EnsureVisible();
 					}
-				}
-				else {
+				} else {
 					theNode.Expand();
 					nodes = theNode.Nodes.OfType<TreeNode>().ToArray();
 				}
-
-				/*
-				if (theNode != null) {
-					if (items.Last() == sho) {
-						if (this.ShellTreeView.SelectedNode != theNode) {
-							this.ShellTreeView.SelectedNode = theNode;
-							theNode.EnsureVisible();
-						}
-					}
-					else {
-						theNode.Expand();
-						nodes = theNode.Nodes.OfType<TreeNode>().ToArray();
-					}
-				}
-				else {
-					return;
-				}
-				*/
 			}
 		}
 
@@ -390,7 +314,12 @@ namespace BExplorer.Shell {
 						if (node != null) {
 							var item = node.Tag as ShellItem;
 							if (item != null) {
-								var newItem = ShellItem.ToShellParsingName(item.ParsingName);
+								ShellItem newItem = null;
+								try {
+									newItem = ShellItem.ToShellParsingName(item.ParsingName);
+								} catch (Exception) {
+									newItem = item;
+								}
 								if (node != null && newItem != null && this.ShellTreeView != null) {
 									treeHandle = this.ShellTreeView.Handle;
 									hash = newItem.GetHashCode();
@@ -420,10 +349,8 @@ namespace BExplorer.Shell {
 				IntPtr treeHandle = IntPtr.Zero;
 				var visible = true;
 				var pidl = IntPtr.Zero;
-				//Thread.Sleep(2);
-				//Application.DoEvents();
 
-				//! Why do we have an invoke here
+				//! Why do we have an invoke here -> Because we have TreeNode.FromHandle that accept the control inside thread
 				this.Invoke((Action)(() => {
 					node = TreeNode.FromHandle(ShellTreeView, handle);
 					treeHandle = this.ShellTreeView.Handle;
@@ -436,36 +363,23 @@ namespace BExplorer.Shell {
 				if (!visible || pidl == IntPtr.Zero)
 					continue;
 
-				/*
-				 * TODO:Find out if the following change is worth making
-				 
-				 if (node != null) {
-				 var childItem = node.Nodes.OfType<TreeNode>().FirstOrDefault();
-				 if (childItem != null) {
-				 if (childItem != null) { ... }				 
-				*/
-
 				if (node != null && node.Nodes.Count > 0) {
-					var childItem = node.Nodes[0]; //node.Nodes.OfType<TreeNode>().FirstOrDefault();
-					var nodeHandle = childItem.Handle;
+					var childItem = node.Nodes[0];
+					if (childItem != null) {
+						var nodeHandle = childItem.Handle;
 
-					//TODO: Try to remove this Try Catch! It's slowing this down!!
-					//TODO: Have the try catch only around the error causing code
-					try {
-						//TODO: Find out if we could just use the path here to increase performance!!
-						//Example" System.IO.Directory.GetDirectories("...").Any()
-
-						var sho = new ShellItem(pidl);
-						if (!sho.HasSubFolders) {
-							User32.SendMessage(treeHandle, BExplorer.Shell.Interop.MSG.TVM_DELETEITEM, 0, nodeHandle);
+						//TODO: Try to remove this Try Catch! It's slowing this down!!
+						//TODO: Have the try catch only around the error causing code
+						try {
+							var sho = new ShellItem(pidl);
+							if (!sho.HasSubFolders) {
+								User32.SendMessage(treeHandle, BExplorer.Shell.Interop.MSG.TVM_DELETEITEM, 0, nodeHandle);
+							}
+							this.CheckedFroChilds.Add(handle);
+							sho.Dispose();
+						} catch (Exception) {
 						}
-						this.CheckedFroChilds.Add(handle);
-						sho.Dispose();
 					}
-					catch (Exception) {
-					}
-
-					//CheckForChildFolders(nodeHandle, pidl, treeHandle, handle);
 				}
 			}
 		}
@@ -495,8 +409,7 @@ namespace BExplorer.Shell {
 					}
 
 					fo.PerformOperations();
-				}
-				catch (SecurityException) {
+				} catch (SecurityException) {
 					throw;
 				}
 			});
@@ -516,8 +429,7 @@ namespace BExplorer.Shell {
 					}
 
 					fo.PerformOperations();
-				}
-				catch (SecurityException) {
+				} catch (SecurityException) {
 					throw;
 				}
 			});
@@ -529,11 +441,9 @@ namespace BExplorer.Shell {
 			var selectedItem = this.ShellTreeView.SelectedNode.Tag as ShellItem;
 			if (selectedItem == null)
 				return;
-
 			var handle = this.Handle;
 			var thread = new Thread(() => {
 				var dataObject = F.Clipboard.GetDataObject();
-				//var dragDropEffect = System.Windows.DragDropEffects.Copy;
 				var dropEffect = dataObject.ToDropEffect();
 				var shellItemArray = dataObject.ToShellItemArray();
 				var items = shellItemArray.ToArray();
@@ -542,15 +452,13 @@ namespace BExplorer.Shell {
 					foreach (var item in items) {
 						if (dropEffect == System.Windows.DragDropEffects.Copy) {
 							fo.CopyItem(item, selectedItem);
-						}
-						else {
+						} else {
 							fo.MoveItem(item, selectedItem.ComInterface, null);
 						}
 					}
 
 					fo.PerformOperations();
-				}
-				catch (SecurityException) {
+				} catch (SecurityException) {
 					throw;
 				}
 			});
@@ -569,11 +477,7 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.ShellTreeView.Handle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW, 0, ref item);
 
 			this.cuttedNode = this.ShellTreeView.SelectedNode;
-			//var selectedItems = new ShellItem[1];
-			//selectedItems[0] = this.ShellTreeView.SelectedNode.Tag as ShellItem;
 			var selectedItems = new[] { this.ShellTreeView.SelectedNode.Tag as ShellItem };
-
-
 			var ddataObject = new F.DataObject();
 			// Copy or Cut operation (5 = copy; 2 = cut)
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 2, 0, 0, 0 }));
@@ -582,12 +486,7 @@ namespace BExplorer.Shell {
 		}
 
 		public void CopySelectedFiles() {
-			//IntPtr dataObjPtr = IntPtr.Zero;
-
-			//var selectedItems = new ShellItem[1];
-			//selectedItems[0] = this.ShellTreeView.SelectedNode.Tag as ShellItem;
 			var selectedItems = new[] { this.ShellTreeView.SelectedNode.Tag as ShellItem };
-			//System.Runtime.InteropServices.ComTypes.IDataObject dataObject = GetIDataObject(this.SelectedItems.ToArray(), out dataObjPtr);
 			var ddataObject = new F.DataObject();
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 5, 0, 0, 0 }));
 			ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
@@ -602,12 +501,8 @@ namespace BExplorer.Shell {
 			e.DrawDefault = !String.IsNullOrEmpty(e.Node.Text);
 			if (e.Node.Tag != null) {
 				var item = e.Node.Tag as ShellItem;
-
-				//if (item != null && item.Parent != null && (item.Parent.IsNetDrive || item.Parent.IsNetworkPath))
-				//{
 				if (!UpdatedImages.Contains(e.Node.Handle))
 					imagesQueue.Enqueue(e.Node.Handle);
-				//}
 				if (!CheckedFroChilds.Contains(e.Node.Handle))
 					childsQueue.Enqueue(e.Node.Handle);
 			}
@@ -616,7 +511,7 @@ namespace BExplorer.Shell {
 		private async void ShellTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
 			if (e.Action == TreeViewAction.Expand) {
 				this._ResetEvent.Reset();
-				if (e.Node.Nodes.Count > 0 && e.Node.Nodes[0].Text == "<!EMPTY!>") {
+				if (e.Node.Nodes.Count > 0 && e.Node.Nodes[0].Text == this._EmptyItemString) {
 					e.Node.Nodes.Clear();
 					imagesQueue.Clear();
 					childsQueue.Clear();
@@ -626,13 +521,12 @@ namespace BExplorer.Shell {
 					node.Nodes.Add("Searching for folders...");
 					var nodes = await Task.Run(() => {
 						var nodesTemp = new List<TreeNode>();
-						foreach (var item in sho.Where(w => sho.IsFileSystem || Path.GetExtension(sho.ParsingName).ToLowerInvariant() == ".library-ms" ? (w.IsFolder || w.IsLink) && this.IsShowHiddenItems ? true : !w.IsHidden : true)) {
+						foreach (var item in sho.Where(w => sho.IsFileSystem || Path.GetExtension(sho.ParsingName).ToLowerInvariant() == ".library-ms" ? ((w.IsFolder || w.IsLink) && (this.IsShowHiddenItems ? true : w.IsHidden == false)) : true)) {
 							var itemNode = new TreeNode(item.DisplayName);
 							ShellItem itemReal = null;
 							if (item.Parent != null && item.Parent.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
 								itemReal = ShellItem.ToShellParsingName(item.ParsingName);
-							}
-							else {
+							} else {
 								itemReal = item;
 							}
 							itemNode.Tag = itemReal;
@@ -654,16 +548,14 @@ namespace BExplorer.Shell {
 
 							if (sho.IsNetDrive || sho.IsNetworkPath) {
 								itemNode.ImageIndex = this.folderImageListIndex;
-							}
-							else if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS) {
+							} else if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS) {
 								itemNode.ImageIndex = itemReal.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 								itemNode.SelectedImageIndex = itemNode.ImageIndex;
-							}
-							else {
+							} else {
 								itemNode.ImageIndex = this.folderImageListIndex;
 							}
 
-							itemNode.Nodes.Add("<!EMPTY!>");
+							itemNode.Nodes.Add(this._EmptyItemString);
 							nodesTemp.Add(itemNode);
 							Application.DoEvents();
 						}
@@ -702,8 +594,7 @@ namespace BExplorer.Shell {
 						var linkTarget = shellLink.TargetPIDL;
 						linkSho = new ShellItem(linkTarget);
 						shellLink.Dispose();
-					}
-					catch { }
+					} catch { }
 				}
 
 				this.isFromTreeview = true;
@@ -741,8 +632,7 @@ namespace BExplorer.Shell {
 				//this.ShellTreeView.SelectedNode = e.Node;
 				var cm = new ShellContextMenu(e.Node.Tag as ShellItem);
 				cm.ShowContextMenu(this, e.Location, CMF.CANRENAME);
-			}
-			else if (e.Button == F.MouseButtons.Left) {
+			} else if (e.Button == F.MouseButtons.Left) {
 				this._IsNavigate = true;
 			}
 		}
@@ -756,8 +646,7 @@ namespace BExplorer.Shell {
 						var fo = new IIFileOperation(this.Handle);
 						fo.RenameItem((e.Node.Tag as ShellItem).ComInterface, e.Label);
 						fo.PerformOperations();
-					}
-					else {
+					} else {
 						/* Cancel the label edit action, inform the user, and
 							 place the node in edit mode again. */
 						e.CancelEdit = true;
@@ -766,8 +655,7 @@ namespace BExplorer.Shell {
 							 "Node Label Edit");
 						e.Node.BeginEdit();
 					}
-				}
-				else {
+				} else {
 					/* Cancel the label edit action, inform the user, and place the node in edit mode again. */
 					e.CancelEdit = true;
 					MessageBox.Show("Invalid tree node label.\nThe label cannot be blank", "Node Label Edit");

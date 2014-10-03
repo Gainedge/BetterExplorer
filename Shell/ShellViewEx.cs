@@ -2603,25 +2603,45 @@ namespace BExplorer.Shell {
 			var thread = new Thread(() => {
 				var dataObject = F.Clipboard.GetDataObject();
 				var dropEffect = dataObject.ToDropEffect();
-				var shellItemArray = dataObject.ToShellItemArray();
-				var items = shellItemArray.ToArray();
-				try {
-					var sink = new FOperationProgressSink(view);
-					var fo = new IIFileOperation(sink, handle, true);
-					foreach (var item in items) {
-						if (dropEffect == System.Windows.DragDropEffects.Copy)
-							fo.CopyItem(item, this.CurrentFolder);
-						else
-							fo.MoveItem(item, this.CurrentFolder.ComInterface, null);
-						Marshal.ReleaseComObject(item);
-					}
-					Marshal.ReleaseComObject(shellItemArray);
-					shellItemArray = null;
-					items = null;
+				if (dataObject.GetDataPresent("Shell IDList Array")) {
+					var shellItemArray = dataObject.ToShellItemArray();
+					var items = shellItemArray.ToArray();
+					try {
+						var sink = new FOperationProgressSink(view);
+						var fo = new IIFileOperation(sink, handle, true);
+						foreach (var item in items) {
+							if (dropEffect == System.Windows.DragDropEffects.Copy)
+								fo.CopyItem(item, this.CurrentFolder);
+							else
+								fo.MoveItem(item, this.CurrentFolder.ComInterface, null);
+							Marshal.ReleaseComObject(item);
+						}
+						Marshal.ReleaseComObject(shellItemArray);
+						shellItemArray = null;
+						items = null;
 
-					fo.PerformOperations();
-				} catch (SecurityException) {
-					throw;
+						fo.PerformOperations();
+					} catch (SecurityException) {
+						throw;
+					}
+				} else if (dataObject.GetDataPresent("FileDrop")) {
+					var items = ((String[])dataObject.GetData("FileDrop")).Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
+					try {
+						var sink = new FOperationProgressSink(view);
+						var fo = new IIFileOperation(sink, handle, true);
+						foreach (var item in items) {
+							if (dropEffect == System.Windows.DragDropEffects.Copy)
+								fo.CopyItem(item, this.CurrentFolder);
+							else
+								fo.MoveItem(item, this.CurrentFolder.ComInterface, null);
+							Marshal.ReleaseComObject(item);
+						}
+						items = null;
+
+						fo.PerformOperations();
+					} catch (SecurityException) {
+						throw;
+					}
 				}
 			});
 			thread.SetApartmentState(ApartmentState.STA);

@@ -12,7 +12,7 @@ namespace BExplorer.Shell {
 		#endregion
 
 		#region Public Members
-		public const int TVS_EX_AUTOHSCROLL = 0x8000;
+		public const int TVS_EX_AUTOHSCROLL = 0x0020;
 		public const int TVS_EX_FADEINOUTEXPANDOS = 0x0040;
 		#endregion
 

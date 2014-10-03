@@ -13,16 +13,17 @@
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing)
-			{
-				if (components != null)
-				{
+			if (disposing) {
+				if (components != null) {
 					components.Dispose();
 				}
-				if (_ShellListView != null)
-				{
+				if (_ShellListView != null) {
 					_ShellListView.Dispose();
 					_ShellListView = null;
+				}
+				if (_ResetEvent != null) {
+					_ResetEvent.Dispose();
+					_ResetEvent = null;
 				}
 			}
 			base.Dispose(disposing);
