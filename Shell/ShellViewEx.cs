@@ -1392,7 +1392,7 @@ namespace BExplorer.Shell {
 
 			base.OnGiveFeedback(e);
 		}
-		private bool IsShowingLayered(F.DataObject dataObject) {
+		public static bool IsShowingLayered(F.DataObject dataObject) {
 			if (dataObject.GetDataPresent("IsShowingLayered")) {
 				object data = dataObject.GetData("IsShowingLayered");
 				if (data != null)
@@ -1414,14 +1414,14 @@ namespace BExplorer.Shell {
 
 
 
-		private static bool IsDropDescriptionValid(System.Runtime.InteropServices.ComTypes.IDataObject dataObject) {
+		public static bool IsDropDescriptionValid(System.Runtime.InteropServices.ComTypes.IDataObject dataObject) {
 			object data = dataObject.GetDropDescription();
 			if (data is BExplorer.Shell.DataObject.DropDescription)
 				return (BExplorer.Shell.DataObject.DropImageType)((BExplorer.Shell.DataObject.DropDescription)data).type != BExplorer.Shell.DataObject.DropImageType.Invalid;
 			return false;
 		}
 
-		private static IntPtr GetIntPtrFromData(object data) {
+		public static IntPtr GetIntPtrFromData(object data) {
 			byte[] buf = null;
 
 			if (data is MemoryStream) {

@@ -3417,7 +3417,10 @@ namespace BetterExplorer {
 			else if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
 				DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
 		}
-
+		void newt_Leave(object sender, DragEventArgs e)
+		{
+			DropTargetHelper.Create.DragLeave();
+		}
 		void newt_Drop(object sender, DragEventArgs e) {
 			e.Handled = true;
 			var tabItemTarget = e.Source as Wpf.Controls.TabItem;
@@ -4540,6 +4543,7 @@ namespace BetterExplorer {
 			tcMain.newt_DragEnter = newt_DragEnter;
 			tcMain.newt_DragOver = newt_DragOver;
 			tcMain.newt_Drop = newt_Drop;
+			tcMain.newt_Leave = newt_Leave;
 			tcMain.newt_PreviewMouseMove = newt_PreviewMouseMove;
 			tcMain.ConstructMoveToCopyToMenu += ConstructMoveToCopyToMenu;
 			tcMain.DefaultTabPath = tcMain.StartUpLocation.ToShellParsingName();

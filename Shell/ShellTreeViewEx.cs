@@ -67,6 +67,7 @@ namespace BExplorer.Shell {
 		private Boolean isFromTreeview;
 		private Boolean _IsNavigate;
 		private String _EmptyItemString = "<!EMPTY!>";
+		private System.Runtime.InteropServices.ComTypes.IDataObject _DataObject { get; set; }
 
 		#endregion Private Members
 
@@ -232,6 +233,7 @@ namespace BExplorer.Shell {
 			this.ShellTreeView.DragOver += ShellTreeView_DragOver;
 			this.ShellTreeView.DragLeave += ShellTreeView_DragLeave;
 			this.ShellTreeView.DragDrop += ShellTreeView_DragDrop;
+			this.ShellTreeView.GiveFeedback += ShellTreeView_GiveFeedback;
 			this.ShellTreeView.MouseMove += ShellListView_MouseMove;
 			this.ShellTreeView.MouseEnter += ShellTreeView_MouseEnter;
 			this.ShellTreeView.MouseLeave += ShellTreeView_MouseLeave;
@@ -249,6 +251,43 @@ namespace BExplorer.Shell {
 			imagesThread.Start();
 			childsThread = new Thread(new ThreadStart(LoadChilds)) { IsBackground = true };
 			childsThread.Start();
+		}
+
+		void ShellTreeView_GiveFeedback(object sender, GiveFeedbackEventArgs e)
+		{
+			e.UseDefaultCursors = true;
+			var doo = new System.Windows.Forms.DataObject(this._DataObject);
+			if (doo.GetDataPresent("DragWindow"))
+			{
+				IntPtr hwnd = ShellView.GetIntPtrFromData(doo.GetData("DragWindow"));
+				User32.PostMessage(hwnd, 0x403, IntPtr.Zero, IntPtr.Zero);
+			}
+			else
+			{
+				e.UseDefaultCursors = true;
+			}
+
+			if (ShellView.IsDropDescriptionValid(this._DataObject))
+			{
+				e.UseDefaultCursors = false;
+				Cursor.Current = Cursors.Arrow;
+			}
+			else
+			{
+				e.UseDefaultCursors = true;
+			}
+
+			if (ShellView.IsShowingLayered(doo))
+			{
+				e.UseDefaultCursors = false;
+				Cursor.Current = Cursors.Arrow;
+			}
+			else
+			{
+				e.UseDefaultCursors = true;
+			}
+
+			base.OnGiveFeedback(e);
 		}
 
 		void ShellTreeView_VerticalScroll(object sender, EventArgs e) {
@@ -400,8 +439,16 @@ namespace BExplorer.Shell {
 		public void DoMove(F.IDataObject dataObject, ShellItem destination) {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
-				var shellItemArray = dataObject.ToShellItemArray();
-				var items = shellItemArray.ToArray();
+				IShellItem[] items = new IShellItem[0];
+				if (dataObject.GetDataPresent("FileDrop"))
+				{
+					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
+				}
+				else
+				{
+					var shellItemArray = dataObject.ToShellItemArray();
+					items = shellItemArray.ToArray();
+				}
 				try {
 					var fo = new IIFileOperation(handle);
 					foreach (var item in items) {
@@ -420,8 +467,16 @@ namespace BExplorer.Shell {
 		public void DoCopy(F.IDataObject dataObject, ShellItem destination) {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
-				var shellItemArray = dataObject.ToShellItemArray();
-				var items = shellItemArray.ToArray();
+				IShellItem[] items = new IShellItem[0];
+				if (dataObject.GetDataPresent("FileDrop"))
+				{
+					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
+				}
+				else
+				{
+					var shellItemArray = dataObject.ToShellItemArray();
+					items = shellItemArray.ToArray();
+				}
 				try {
 					var fo = new IIFileOperation(handle);
 					foreach (var item in items) {
@@ -445,8 +500,16 @@ namespace BExplorer.Shell {
 			var thread = new Thread(() => {
 				var dataObject = F.Clipboard.GetDataObject();
 				var dropEffect = dataObject.ToDropEffect();
-				var shellItemArray = dataObject.ToShellItemArray();
-				var items = shellItemArray.ToArray();
+				IShellItem[] items = new IShellItem[0];
+				if (dataObject.GetDataPresent("FileDrop"))
+				{
+					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
+				}
+				else
+				{
+					var shellItemArray = dataObject.ToShellItemArray();
+					items = shellItemArray.ToArray();
+				}
 				try {
 					var fo = new IIFileOperation(handle);
 					foreach (var item in items) {
@@ -530,21 +593,6 @@ namespace BExplorer.Shell {
 								itemReal = item;
 							}
 							itemNode.Tag = itemReal;
-
-							/*
-							if (sho.IsNetDrive || sho.IsNetworkPath) {
-								itemNode.ImageIndex = this.folderImageListIndex;
-							}
-							else {
-								if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS) {
-									itemNode.ImageIndex = itemReal.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
-									itemNode.SelectedImageIndex = itemNode.ImageIndex;
-								}
-								else {
-									itemNode.ImageIndex = this.folderImageListIndex;
-								}
-							}
-							*/
 
 							if (sho.IsNetDrive || sho.IsNetworkPath) {
 								itemNode.ImageIndex = this.folderImageListIndex;
@@ -691,20 +739,59 @@ namespace BExplorer.Shell {
 		}
 
 		private void ShellTreeView_DragEnter(object sender, DragEventArgs e) {
+			this._DataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data;
 			var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
 			ShellView.Drag_SetEffect(e);
 
-			if (e.Data.GetDataPresent("DragImageBits")) {
+			if (e.Data.GetDataPresent("DragImageBits"))
+			{
 				DropTargetHelper.Get.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
 			}
+			else
+				base.OnDragEnter(e);
 		}
 
 		private void ShellTreeView_DragOver(object sender, DragEventArgs e) {
 			var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
 			ShellView.Drag_SetEffect(e);
+			BExplorer.Shell.DataObject.DropDescription descinvalid = new DataObject.DropDescription();
+			descinvalid.type = (int)BExplorer.Shell.DataObject.DropImageType.Invalid;
+			((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(descinvalid);
+			var node = this.ShellTreeView.GetNodeAt(PointToClient(new Point(e.X, e.Y)));
+			if (node != null && !String.IsNullOrEmpty(node.Text) && node.Text != this._EmptyItemString)
+			{
+				User32.SendMessage(this.ShellTreeView.Handle, BExplorer.Shell.Interop.MSG.TVM_SETHOT, 0, node.Handle);
+				BExplorer.Shell.DataObject.DropDescription desc = new DataObject.DropDescription();
+				switch (e.Effect) {
+					case System.Windows.Forms.DragDropEffects.Copy:
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Copy;
+						desc.szMessage = "Copy To %1";
+						break;
+					case System.Windows.Forms.DragDropEffects.Link:
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Link;
+						desc.szMessage = "Link To %1";
+						break;
+					case System.Windows.Forms.DragDropEffects.Move:
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Move;
+						desc.szMessage = "Move To %1";
+						break;
+					case System.Windows.Forms.DragDropEffects.None:
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.None;
+						desc.szMessage = "";
+						break;
+					default:
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Invalid;
+						desc.szMessage = "";
+						break;
+				}
+				desc.szInsert = node.Text;
+				((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
+			}
 
 			if (e.Data.GetDataPresent("DragImageBits"))
 				DropTargetHelper.Get.Create.DragOver(ref wp, (int)e.Effect);
+			else
+				base.OnDragOver(e);
 		}
 
 		private void ShellTreeView_DragLeave(object sender, EventArgs e) {
@@ -712,7 +799,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void ShellTreeView_DragDrop(object sender, DragEventArgs e) {
-			var hittestInfo = this.ShellTreeView.HitTest(PointToClient(new System.Drawing.Point(e.X, e.Y)));
+			var hittestInfo = this.ShellTreeView.HitTest(PointToClient(new Point(e.X, e.Y)));
 			ShellItem destination = null;
 			if (hittestInfo.Node == null)
 				e.Effect = DragDropEffects.None;
@@ -720,9 +807,6 @@ namespace BExplorer.Shell {
 				destination = hittestInfo.Node.Tag as ShellItem;
 
 			switch (e.Effect) {
-				case F.DragDropEffects.All:
-					break;
-
 				case F.DragDropEffects.Copy:
 					this.DoCopy(e.Data, destination);
 					break;
@@ -735,9 +819,8 @@ namespace BExplorer.Shell {
 					this.DoMove(e.Data, destination);
 					break;
 
+				case F.DragDropEffects.All:
 				case F.DragDropEffects.None:
-					break;
-
 				case F.DragDropEffects.Scroll:
 					break;
 
@@ -749,11 +832,8 @@ namespace BExplorer.Shell {
 
 			if (e.Data.GetDataPresent("DragImageBits"))
 				DropTargetHelper.Get.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
-
-			//if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop))
-			//{
-			//	this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
-			//}
+			else
+				base.OnDragDrop(e);
 		}
 
 		#endregion Events

@@ -29,7 +29,7 @@ namespace Wpf.Controls {
 		#region Properties
 
 		public string StartUpLocation = KnownFolders.Libraries.ParsingName;
-		public DragEventHandler newt_DragEnter, newt_DragOver, newt_Drop;
+		public DragEventHandler newt_DragEnter, newt_DragOver, newt_Drop, newt_Leave;
 		public MouseEventHandler newt_PreviewMouseMove;
 
 		/// <summary>An <see cref="Action">Action</see> that is fired after a new tab is created</summary> 
@@ -293,6 +293,7 @@ namespace Wpf.Controls {
 			newt.DragOver += new DragEventHandler(newt_DragOver);
 			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
 			newt.Drop += new DragEventHandler(newt_Drop);
+			newt.DragLeave += newt_Leave;
 
 			try {
 				Items.Add(newt);
