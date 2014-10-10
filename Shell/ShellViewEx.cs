@@ -531,7 +531,7 @@ namespace BExplorer.Shell {
 		private ManualResetEvent resetEvent = new ManualResetEvent(true);
 		private SyncQueue<int> waitingThumbnails = new SyncQueue<int>(); //3000
 		private List<int> _CuttedIndexes = new List<int>();
-		private int _LastSelectedIndexByDragDrop = -1;
+		private int _LastDropHighLightedItemIndex = -1;
 
 		#endregion Private Members
 
@@ -1214,37 +1214,34 @@ namespace BExplorer.Shell {
 		#region Overrides
 
 		protected override void OnDragDrop(F.DragEventArgs e) {
-
 			int row = -1;
 			int collumn = -1;
 			this.HitTest(PointToClient(new DPoint(e.X, e.Y)), out row, out collumn);
 			ShellItem destination = row != -1 ? Items[row] : CurrentFolder;
 			if (!destination.IsFolder || (this.DraggedItemIndexes.Count > 0 && this.DraggedItemIndexes.Contains(row))) {
-				e.Effect = F.DragDropEffects.None;
+				if ((e.Effect == F.DragDropEffects.Link || e.Effect == F.DragDropEffects.Copy) && destination.Parent != null && destination.Parent.IsFolder) {
+					if (e.Effect == F.DragDropEffects.Copy) {
+						this.DoCopy(e.Data, destination);
+					}
+				} else
+					e.Effect = F.DragDropEffects.None;
 			} else {
-				//TODO: Find out if we can remove this select and just use an If Then
 				switch (e.Effect) {
-					case F.DragDropEffects.All:
-						break;
-
 					case F.DragDropEffects.Copy:
 						this.DoCopy(e.Data, destination);
 						break;
-
 					case F.DragDropEffects.Link:
-						System.Windows.MessageBox.Show("link");
+						System.Windows.MessageBox.Show("Link creation not implemented yet!", "Not implemented", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 						break;
 
 					case F.DragDropEffects.Move:
 						this.DoMove(e.Data, destination);
 						break;
 
+					case F.DragDropEffects.All:
 					case F.DragDropEffects.None:
-						break;
-
 					case F.DragDropEffects.Scroll:
 						break;
-
 					default:
 						break;
 				}
@@ -1255,11 +1252,13 @@ namespace BExplorer.Shell {
 				DropTargetHelper.Get.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
 			else
 				base.OnDragDrop(e);
-			if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop))
-				this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
+			this.RefreshItem(_LastDropHighLightedItemIndex);
+			_LastDropHighLightedItemIndex = -1;
 		}
 
 		protected override void OnDragLeave(EventArgs e) {
+			this.RefreshItem(_LastDropHighLightedItemIndex);
+			_LastDropHighLightedItemIndex = -1;
 			DropTargetHelper.Get.Create.DragLeave();
 		}
 
@@ -1293,15 +1292,13 @@ namespace BExplorer.Shell {
 			int row = -1;
 			int collumn = -1;
 			this.HitTest(PointToClient(new DPoint(e.X, e.Y)), out row, out collumn);
-
-			if (_LastSelectedIndexByDragDrop != -1 && !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop)) {
-				this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
-			}
 			BExplorer.Shell.DataObject.DropDescription descinvalid = new DataObject.DropDescription();
 			descinvalid.type = (int)BExplorer.Shell.DataObject.DropImageType.Invalid;
 			((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(descinvalid);
 			if (row != -1) {
-				this.SelectItemByIndex(row);
+				this.RefreshItem(_LastDropHighLightedItemIndex);
+				this._LastDropHighLightedItemIndex = row;
+				this.RefreshItem(row);
 				BExplorer.Shell.DataObject.DropDescription desc = new DataObject.DropDescription();
 				switch (e.Effect) {
 					case System.Windows.Forms.DragDropEffects.Copy:
@@ -1310,7 +1307,7 @@ namespace BExplorer.Shell {
 						break;
 					case System.Windows.Forms.DragDropEffects.Link:
 						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Link;
-						desc.szMessage = "Link To %1";
+						desc.szMessage = "Create Link in %1";
 						break;
 					case System.Windows.Forms.DragDropEffects.Move:
 						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Move;
@@ -1327,21 +1324,32 @@ namespace BExplorer.Shell {
 				}
 				desc.szInsert = this.Items[row].DisplayName;
 				if (this.DraggedItemIndexes.Contains(row) || !this.Items[row].IsFolder) {
-					if (this.Items[row].Extension.ToLowerInvariant() == ".exe") {
+					if (this.Items[row].Extension == ".exe") {
 						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Copy;
 						desc.szMessage = "Open With %1";
 					} else {
-						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Invalid;
-						desc.szMessage = "";
+						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.None;
+						desc.szMessage = "Cant Drop Here!";
 					}
 				}
 				((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
-			} else if (_LastSelectedIndexByDragDrop != -1 & !DraggedItemIndexes.Contains(_LastSelectedIndexByDragDrop)) {
-				this.DeselectItemByIndex(_LastSelectedIndexByDragDrop);
+			} else {
+				this.RefreshItem(_LastDropHighLightedItemIndex);
+				this._LastDropHighLightedItemIndex = -1;
+				if (e.Effect == F.DragDropEffects.Link) {
+					BExplorer.Shell.DataObject.DropDescription desc = new DataObject.DropDescription();
+					desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Link;
+					desc.szMessage = "Create Link in %1";
+					desc.szInsert = this.CurrentFolder.DisplayName;
+					((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
+				} else if (e.Effect == F.DragDropEffects.Copy) {
+					BExplorer.Shell.DataObject.DropDescription desc = new DataObject.DropDescription();
+					desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Link;
+					desc.szMessage = "Create a copy in %1";
+					desc.szInsert = this.CurrentFolder.DisplayName;
+					((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
+				}
 			}
-
-			_LastSelectedIndexByDragDrop = row;
-
 			if (e.Data.GetDataPresent("DragImageBits")) {
 				DropTargetHelper.Get.Create.DragOver(ref wp, (int)e.Effect);
 			} else {
@@ -2209,6 +2217,14 @@ namespace BExplorer.Shell {
 
 									case CustomDraw.CDDS_ITEMPREPAINT:
 										#region Case
+										if ((nmlvcd.nmcd.uItemState & CDIS.DROPHILITED) == CDIS.DROPHILITED && index != _LastDropHighLightedItemIndex) {
+											nmlvcd.nmcd.uItemState = CDIS.DEFAULT;
+											Marshal.StructureToPtr(nmlvcd, m.LParam, false);
+										}
+										if (index == _LastDropHighLightedItemIndex) {
+											nmlvcd.nmcd.uItemState |= CDIS.DROPHILITED;
+											Marshal.StructureToPtr(nmlvcd, m.LParam, false);
+										}
 										if (textColor != null) {
 											nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
 											Marshal.StructureToPtr(nmlvcd, m.LParam, false);
@@ -2239,7 +2255,6 @@ namespace BExplorer.Shell {
 											var lvi = new LVITEMINDEX();
 											lvi.iItem = index;
 											lvi.iGroup = this.GetGroupIndex(index);
-											HResult thumbnailResult;
 											var iconBounds = new User32.RECT() { Left = 1 };
 											User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref iconBounds);
 											var lvItem = new LVITEM() {
@@ -2558,7 +2573,14 @@ namespace BExplorer.Shell {
 			}
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REDRAWITEMS, index, index);
 			if (this.IsGroupsEnabled) {
-				this.RedrawWindow();
+				var itemBounds = this.GetItemBounds(index, 0);
+				var rect = new User32.RECT() {
+					Left = (int)itemBounds.Left,
+					Right = (int)itemBounds.Right,
+					Top = (int)itemBounds.Top,
+					Bottom = (int)itemBounds.Bottom,
+				};
+				this.RedrawWindow(rect);
 			}
 		}
 
@@ -2794,6 +2816,14 @@ namespace BExplorer.Shell {
 
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
 			if (ensureVisisble) User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISISBLE, index, 0);
+			this.Focus();
+		}
+
+		public void DropHighLightItemByIndex(int index) {
+			var lvii = new LVITEMINDEX() { iItem = -1, iGroup = this.GetGroupIndex(index) };
+			var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_DROPHILITED, state = LVIS.LVIS_DROPHILITED };
+			var u = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
+
 			this.Focus();
 		}
 
@@ -3656,7 +3686,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void RedrawWindow(User32.RECT rect) {
-			User32.RedrawWindow(this.LVHandle, ref rect, IntPtr.Zero, 0x0001/*RDW_INVALIDATE*/| 0x100);
+			User32.InvalidateRect(this.LVHandle, ref rect, false);
 		}
 
 		/*

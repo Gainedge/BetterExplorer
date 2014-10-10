@@ -72,7 +72,7 @@ namespace BExplorer.Shell.Interop {
 			IntPtr hWnd,
 			CSIDL nFolder,
 			out IntPtr Pidl);
-	
+
 
 		#endregion
 
@@ -443,7 +443,7 @@ namespace BExplorer.Shell.Interop {
 
 		#region Register Functions
 
-		
+
 		/// <summary>
 		/// Register a form handle
 		/// This form will receive a WM_SHNOTIFY when a notification occures
@@ -482,7 +482,7 @@ namespace BExplorer.Shell.Interop {
 				ref changeentry);
 			return (notifyid);
 		}
-		
+
 
 		public ulong RegisterChangeNotify(IntPtr hWnd, ShellItem item, bool Recursively) {
 			IntPtr handle = IntPtr.Zero;
@@ -519,10 +519,10 @@ namespace BExplorer.Shell.Interop {
 		}
 		#endregion
 
-		
+
 		#region Pidl functions
 
-		
+
 		///// <summary>
 		///// Get the path from a Pidl value
 		///// </summary>
@@ -549,9 +549,9 @@ namespace BExplorer.Shell.Interop {
 		//		SHGFI.SHGFI_PIDL | SHGFI.SHGFI_DISPLAYNAME);
 		//	return (fileinfo.szDisplayName);
 		//}
-		
 
-		
+
+
 		/// <summary>
 		/// Get the Pidl from a special folder ID
 		/// </summary>
@@ -568,9 +568,9 @@ namespace BExplorer.Shell.Interop {
 			return (pIdl);
 		}
 
- 
+
 		#endregion
-		
+
 
 		#region Notification Function
 		/// <summary>
@@ -584,7 +584,7 @@ namespace BExplorer.Shell.Interop {
 			uint eventID;
 			var lockPtr = Shell32.SHChangeNotification_Lock(wParam, (int)lParam, out ptr, out eventID);
 			try {
-				
+
 				SHNOTIFYSTRUCT shNotify = (SHNOTIFYSTRUCT)Marshal.PtrToStructure(
 					ptr,
 					typeof(SHNOTIFYSTRUCT));

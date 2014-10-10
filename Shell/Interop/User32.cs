@@ -179,7 +179,7 @@ namespace BExplorer.Shell.Interop {
 		LVM_SETITEMINDEXSTATE = (FIRST + 210),
 		LVM_GETCOLUMNORDERARRAY = (FIRST + 59),
 		LVM_GETCOLUMNWIDTH = (FIRST + 29),
-		TVM_SETHOT = 0x1100+58,
+		TVM_SETHOT = 0x1100 + 58,
 
 	}
 
@@ -727,6 +727,9 @@ namespace BExplorer.Shell.Interop {
 		public static extern bool RedrawWindow(IntPtr hWnd, ref RECT lprcUpdate, IntPtr hrgnUpdate, uint flags);
 
 		[DllImport("user32.dll")]
+		public static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);
+
+		[DllImport("user32.dll")]
 		public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
 
 		[DllImport("user32.dll")]
@@ -857,8 +860,7 @@ namespace BExplorer.Shell.Interop {
 			ushort mask = 0x8000;
 			if ((dw & 0x8000) != 0) {
 				loWord = (short)(mask | andResult);
-			}
-			else {
+			} else {
 				loWord = (short)andResult;
 			}
 			return loWord;

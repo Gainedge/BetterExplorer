@@ -384,14 +384,14 @@ namespace BExplorer.Shell.Interop {
 
 	public static class Shell32 {
 
-	
+
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		public static extern IntPtr SHChangeNotification_Lock(IntPtr windowHandle, int processId, out IntPtr pidl, out uint lEvent);
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern Boolean SHChangeNotification_Unlock(IntPtr hLock);
-	
+
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
 		public static extern void SHCreateShellItemArrayFromDataObject(
@@ -820,7 +820,7 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("shell32.dll")]
 		public static extern HResult SHGetSpecialFolderLocation(IntPtr hwndOwner, CSIDL nFolder, out IntPtr ppidl);
 
-		
+
 		[DllImport("shell32.dll", SetLastError = true)]
 		public static extern int SHMultiFileProperties(System.Runtime.InteropServices.ComTypes.IDataObject pdtobj, int flags);
 		/*
@@ -871,8 +871,7 @@ namespace BExplorer.Shell.Interop {
 					args[i] = Marshal.PtrToStringUni(p);
 				}
 				return args;
-			}
-			finally {
+			} finally {
 				Marshal.FreeHGlobal(argv);
 			}
 		}
@@ -1019,8 +1018,7 @@ namespace BExplorer.Shell.Interop {
 				SHParseDisplayName(
 									name, IntPtr.Zero, out pidl, 0,
 									out sfgao);
-			}
-			catch (Exception) {
+			} catch (Exception) {
 
 
 			}
@@ -1221,7 +1219,7 @@ namespace BExplorer.Shell.Interop {
 				var result = WNetConnectionDialog1(info);
 				GlobalFree(resptr);
 			}
-		} 
+		}
 
 		[Flags]
 		public enum SSF {

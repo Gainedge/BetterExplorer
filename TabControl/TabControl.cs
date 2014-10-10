@@ -30,6 +30,7 @@ namespace Wpf.Controls {
 
 		public string StartUpLocation = KnownFolders.Libraries.ParsingName;
 		public DragEventHandler newt_DragEnter, newt_DragOver, newt_Drop, newt_Leave;
+		public GiveFeedbackEventHandler newt_GiveFeedback;
 		public MouseEventHandler newt_PreviewMouseMove;
 
 		/// <summary>An <see cref="Action">Action</see> that is fired after a new tab is created</summary> 
@@ -294,7 +295,7 @@ namespace Wpf.Controls {
 			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
 			newt.Drop += new DragEventHandler(newt_Drop);
 			newt.DragLeave += newt_Leave;
-
+			newt.GiveFeedback += newt_GiveFeedback;
 			try {
 				Items.Add(newt);
 				IsSelectionHandled = !IsNavigate;

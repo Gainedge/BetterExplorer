@@ -60,7 +60,7 @@ namespace BExplorer.Shell.Interop {
 		/// The IconOnly behavior returns only the icon, never the thumbnail.
 		/// </summary>
 		IconOnly = SIIGBF.IconOnly,
-	} 
+	}
 	#endregion
 
 	/// <summary>
@@ -221,15 +221,13 @@ namespace BExplorer.Shell.Interop {
 
 			if (RetrievalOption == ShellThumbnailRetrievalOption.CacheOnly) {
 				flags |= SIIGBF.InCacheOnly;
-			}
-			else if (RetrievalOption == ShellThumbnailRetrievalOption.MemoryOnly) {
+			} else if (RetrievalOption == ShellThumbnailRetrievalOption.MemoryOnly) {
 				flags |= SIIGBF.MemoryOnly;
 			}
 
 			if (FormatOption == ShellThumbnailFormatOption.IconOnly) {
 				flags |= SIIGBF.IconOnly;
-			}
-			else if (FormatOption == ShellThumbnailFormatOption.ThumbnailOnly) {
+			} else if (FormatOption == ShellThumbnailFormatOption.ThumbnailOnly) {
 				flags |= SIIGBF.ThumbnailOnly;
 			}
 
@@ -250,8 +248,7 @@ namespace BExplorer.Shell.Interop {
 			// Options passed in: Resize to fit
 			HResult hr = ((IShellItemImageFactory)shellItemNative).GetImage(nativeSIZE, CalculateFlags(), out hbitmap);
 
-			if (hr == HResult.S_OK) { return hbitmap; }
-			else {
+			if (hr == HResult.S_OK) { return hbitmap; } else {
 				return IntPtr.Zero;
 			}
 
@@ -272,8 +269,7 @@ namespace BExplorer.Shell.Interop {
 						}
 					}
 				}
-			}
-			finally {
+			} finally {
 				bmp.UnlockBits(bmpData);
 
 			}
@@ -381,13 +377,10 @@ namespace BExplorer.Shell.Interop {
 			return res;
 		}
 		public IntPtr GetHBitmap(int iconSize, bool isThumbnail = false) {
-			if (isThumbnail)
-			{
+			if (isThumbnail) {
 				this.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
 				this.RetrievalOption = ShellThumbnailRetrievalOption.CacheOnly;
-			}
-			else
-			{
+			} else {
 				this.FormatOption = ShellThumbnailFormatOption.IconOnly;
 				this.RetrievalOption = ShellThumbnailRetrievalOption.Default;
 			}

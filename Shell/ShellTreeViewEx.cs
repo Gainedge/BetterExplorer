@@ -253,37 +253,27 @@ namespace BExplorer.Shell {
 			childsThread.Start();
 		}
 
-		void ShellTreeView_GiveFeedback(object sender, GiveFeedbackEventArgs e)
-		{
+		void ShellTreeView_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
 			e.UseDefaultCursors = true;
 			var doo = new System.Windows.Forms.DataObject(this._DataObject);
-			if (doo.GetDataPresent("DragWindow"))
-			{
+			if (doo.GetDataPresent("DragWindow")) {
 				IntPtr hwnd = ShellView.GetIntPtrFromData(doo.GetData("DragWindow"));
 				User32.PostMessage(hwnd, 0x403, IntPtr.Zero, IntPtr.Zero);
-			}
-			else
-			{
+			} else {
 				e.UseDefaultCursors = true;
 			}
 
-			if (ShellView.IsDropDescriptionValid(this._DataObject))
-			{
+			if (ShellView.IsDropDescriptionValid(this._DataObject)) {
 				e.UseDefaultCursors = false;
 				Cursor.Current = Cursors.Arrow;
-			}
-			else
-			{
+			} else {
 				e.UseDefaultCursors = true;
 			}
 
-			if (ShellView.IsShowingLayered(doo))
-			{
+			if (ShellView.IsShowingLayered(doo)) {
 				e.UseDefaultCursors = false;
 				Cursor.Current = Cursors.Arrow;
-			}
-			else
-			{
+			} else {
 				e.UseDefaultCursors = true;
 			}
 
@@ -440,12 +430,9 @@ namespace BExplorer.Shell {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
 				IShellItem[] items = new IShellItem[0];
-				if (dataObject.GetDataPresent("FileDrop"))
-				{
+				if (dataObject.GetDataPresent("FileDrop")) {
 					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
-				}
-				else
-				{
+				} else {
 					var shellItemArray = dataObject.ToShellItemArray();
 					items = shellItemArray.ToArray();
 				}
@@ -468,12 +455,9 @@ namespace BExplorer.Shell {
 			var handle = this.Handle;
 			var thread = new Thread(() => {
 				IShellItem[] items = new IShellItem[0];
-				if (dataObject.GetDataPresent("FileDrop"))
-				{
+				if (dataObject.GetDataPresent("FileDrop")) {
 					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
-				}
-				else
-				{
+				} else {
 					var shellItemArray = dataObject.ToShellItemArray();
 					items = shellItemArray.ToArray();
 				}
@@ -501,12 +485,9 @@ namespace BExplorer.Shell {
 				var dataObject = F.Clipboard.GetDataObject();
 				var dropEffect = dataObject.ToDropEffect();
 				IShellItem[] items = new IShellItem[0];
-				if (dataObject.GetDataPresent("FileDrop"))
-				{
+				if (dataObject.GetDataPresent("FileDrop")) {
 					items = ((F.DataObject)dataObject).GetFileDropList().OfType<String>().Select(s => ShellItem.ToShellParsingName(s).ComInterface).ToArray();
-				}
-				else
-				{
+				} else {
 					var shellItemArray = dataObject.ToShellItemArray();
 					items = shellItemArray.ToArray();
 				}
@@ -743,11 +724,9 @@ namespace BExplorer.Shell {
 			var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
 			ShellView.Drag_SetEffect(e);
 
-			if (e.Data.GetDataPresent("DragImageBits"))
-			{
+			if (e.Data.GetDataPresent("DragImageBits")) {
 				DropTargetHelper.Get.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
-			}
-			else
+			} else
 				base.OnDragEnter(e);
 		}
 
@@ -758,8 +737,7 @@ namespace BExplorer.Shell {
 			descinvalid.type = (int)BExplorer.Shell.DataObject.DropImageType.Invalid;
 			((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(descinvalid);
 			var node = this.ShellTreeView.GetNodeAt(PointToClient(new Point(e.X, e.Y)));
-			if (node != null && !String.IsNullOrEmpty(node.Text) && node.Text != this._EmptyItemString)
-			{
+			if (node != null && !String.IsNullOrEmpty(node.Text) && node.Text != this._EmptyItemString) {
 				User32.SendMessage(this.ShellTreeView.Handle, BExplorer.Shell.Interop.MSG.TVM_SETHOT, 0, node.Handle);
 				BExplorer.Shell.DataObject.DropDescription desc = new DataObject.DropDescription();
 				switch (e.Effect) {
@@ -769,7 +747,7 @@ namespace BExplorer.Shell {
 						break;
 					case System.Windows.Forms.DragDropEffects.Link:
 						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Link;
-						desc.szMessage = "Link To %1";
+						desc.szMessage = "Create Link in %1";
 						break;
 					case System.Windows.Forms.DragDropEffects.Move:
 						desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Move;
