@@ -1993,18 +1993,8 @@ namespace BExplorer.Shell {
 
 						case WNM.LVN_ITEMCHANGED:
 							#region Case
-							//RedrawWindow();
-
 							var nlv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 							if ((nlv.uChanged & LVIF.LVIF_STATE) == LVIF.LVIF_STATE) {
-								/*
-								if (ItemForRealName_IsAny && nlv.iItem != -1 && nlv.iItem != this.ItemForRename)
-									this.EndLabelEdit();
-								*/
-
-								ToolTip.HideTooltip();
-
-
 								this._IsDragSelect = nlv.uNewState;
 								if (IsGroupsEnabled) {
 									if (nlv.iItem != -1) {
@@ -2018,10 +2008,6 @@ namespace BExplorer.Shell {
 										RedrawWindow();
 									}
 								}
-								//if ((nlv.uNewState & LVIS.LVIS_SELECTED) == 0)
-								//{
-								//RedrawWindow();
-								//}
 								if (!selectionTimer.Enabled) {
 									selectionTimer.Start();
 								}
@@ -2104,8 +2090,9 @@ namespace BExplorer.Shell {
 							var nlvHotTrack = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 							if (nlvHotTrack.iItem != ToolTip.ItemIndex) {
 								ToolTip.HideTooltip();
+								this.Focus();
 							}
-							this.Focus();
+							
 							break;
 							#endregion
 
@@ -2155,8 +2142,6 @@ namespace BExplorer.Shell {
 							#region Case
 							if (IsGroupsEnabled)
 								RedrawWindow();
-							if (this.ToolTip != null && this.ToolTip.IsVisible)
-								this.ToolTip.HideTooltip();
 							ShellView_GotFocus();
 							this.IsFocusAllowed = true;
 							break;
@@ -2164,10 +2149,8 @@ namespace BExplorer.Shell {
 
 						case WNM.NM_KILLFOCUS:
 							#region Case
-							/*
 							if (this.ItemForRename != -1)
 								EndLabelEdit();
-							*/
 							if (IsGroupsEnabled)
 								RedrawWindow();
 							if (this.ToolTip != null && this.ToolTip.IsVisible)

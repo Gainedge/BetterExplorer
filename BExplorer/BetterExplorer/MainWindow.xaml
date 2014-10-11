@@ -36,6 +36,37 @@
 			<DataTemplate DataType="{x:Type shell:ShellItem}">
 				<TextBlock Text="{Binding DisplayName}"/>
 			</DataTemplate>
+			<Style x:Key="TextBoxStyle1" BasedOn="{x:Null}" TargetType="{x:Type TextBox}">
+				<Setter Property="BorderThickness" Value="1"/>
+				<Setter Property="Padding" Value="0"/>
+				<Setter Property="AllowDrop" Value="true"/>
+				<Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+				<Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+				<Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type TextBox}">
+							<Border x:Name="border" Background="White" BorderBrush="Black" CornerRadius="0" BorderThickness="1">
+								<ScrollViewer Margin="1"  x:Name="PART_ContentHost" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+							</Border>
+							<ControlTemplate.Triggers>
+
+								<Trigger Property="IsFocused" Value="True">
+									<Setter Property="BorderBrush" TargetName="border" Value="Black"/>
+								</Trigger>
+
+								<Trigger Property="IsEnabled" Value="False">
+									<Setter Property="Opacity" TargetName="border" Value="1"/>
+								</Trigger>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter Property="BorderBrush" TargetName="border" Value="Black"/>
+								</Trigger>
+
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
 		</ResourceDictionary>
 	</Ribbon:RibbonWindow.Resources>
 
@@ -3059,9 +3090,10 @@
 						 ParentWindow="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
 						 IsOpen="False"
 						 Placement="AbsolutePoint"
-						 AllowsTransparency="True" PopupAnimation="Fade">
+						 AllowsTransparency="True" PopupAnimation="None">
 			<Grid Grid.Row="1" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
-				<TextBox x:Name="txtEditor" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" AllowDrop="False" IsTabStop="False" />
+				<TextBox x:Name="txtEditor" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" AllowDrop="False" IsTabStop="False" Style="{StaticResource TextBoxStyle1}" >
+				</TextBox>
 			</Grid>
 		</controls:AirspacePopup>
 

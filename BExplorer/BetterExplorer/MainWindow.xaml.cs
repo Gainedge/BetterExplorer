@@ -3456,7 +3456,6 @@ namespace BetterExplorer {
 
 			var ptw = new BExplorer.Shell.DataObject.Win32Point();
 			GetCursorPos(ref ptw);
-			e.Handled = true;
 
 			if (e.Data.GetType() != typeof(Wpf.Controls.TabItem)) {
 				var wpt = new BExplorer.Shell.DataObject.Win32Point() { X = ptw.X, Y = ptw.Y };
@@ -4495,31 +4494,29 @@ namespace BetterExplorer {
 		}
 
 		private void newt_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
-			e.Handled = true;
-			e.UseDefaultCursors = true;
-			var doo = new System.Windows.Forms.DataObject(this._TabDropData);
-			if (doo.GetDataPresent("DragWindow")) {
-				IntPtr hwnd = ShellView.GetIntPtrFromData(doo.GetData("DragWindow"));
-				User32.PostMessage(hwnd, 0x403, IntPtr.Zero, IntPtr.Zero);
-			} else {
+				e.Handled = true;
 				e.UseDefaultCursors = true;
-			}
+				var doo = new System.Windows.Forms.DataObject(this._TabDropData);
+				if (doo.GetDataPresent("DragWindow")) {
+					IntPtr hwnd = ShellView.GetIntPtrFromData(doo.GetData("DragWindow"));
+					User32.PostMessage(hwnd, 0x403, IntPtr.Zero, IntPtr.Zero);
+				} else {
+					e.UseDefaultCursors = true;
+				}
 
-			if (ShellView.IsDropDescriptionValid(this._TabDropData)) {
-				e.UseDefaultCursors = false;
-				Cursor = Cursors.Arrow;
-			} else {
-				e.UseDefaultCursors = true;
-			}
+				if (ShellView.IsDropDescriptionValid(this._TabDropData)) {
+					e.UseDefaultCursors = false;
+					Cursor = Cursors.Arrow;
+				} else {
+					e.UseDefaultCursors = true;
+				}
 
-			if (ShellView.IsShowingLayered(doo)) {
-				e.UseDefaultCursors = false;
-				Cursor = Cursors.Arrow;
-			} else {
-				e.UseDefaultCursors = true;
-			}
-
-			//base.OnGiveFeedback(e);
+				if (ShellView.IsShowingLayered(doo)) {
+					e.UseDefaultCursors = false;
+					Cursor = Cursors.Arrow;
+				} else {
+					e.UseDefaultCursors = true;
+				}
 		}
 
 		private void RibbonWindow_Activated(object sender, EventArgs e) {
