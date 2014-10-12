@@ -336,7 +336,10 @@ namespace BExplorer.Shell {
 		/// <returns></returns>
 		[Obsolete("Replaced with ShellItem.ToShellParsingName")]
 		public static String ToShellParsingName(this String path) {
-			if (path.StartsWith("::") && !path.StartsWith(@"\\")) {
+			if (path.StartsWith("%"))
+			{
+				return Environment.ExpandEnvironmentVariables(path);
+			} else if (path.StartsWith("::") && !path.StartsWith(@"\\")) {
 				return String.Format("shell:{0}", path);
 			}
 			else if (!path.EndsWith(Path.DirectorySeparatorChar.ToString())) {

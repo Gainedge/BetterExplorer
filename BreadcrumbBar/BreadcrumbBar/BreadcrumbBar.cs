@@ -329,7 +329,6 @@ namespace Odyssey.Controls {
 			}
 			set {
 				if (_Path == value) return;
-				var OldValue = _Path;
 				_Path = value;
 
 				if (IsInitialized) {
@@ -338,7 +337,7 @@ namespace Odyssey.Controls {
 					if (IsLoaded && !breadcrumbItemTraceValueChanged_IsFired && _Path != null) {
 						Int64 pidl;
 						bool isValidPidl = Int64.TryParse(_Path.TrimEnd(Char.Parse(@"\")), out pidl);
-						ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : ShellItem.TryCreate(_Path);
+						ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : ShellItem.ToShellParsingName(_Path);
 						if (item != null)
 							OnNavigate(item);
 					}

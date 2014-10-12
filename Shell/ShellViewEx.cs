@@ -1543,14 +1543,12 @@ namespace BExplorer.Shell {
 								case ShellNotifications.SHCNE.SHCNE_MKDIR:
 								case ShellNotifications.SHCNE.SHCNE_DELETE:
 								case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
-									Notifications.NotificationsReceived.Remove(info);
 									if (info.Item1 != IntPtr.Zero) {
 										var sho = new ShellItem(info.Item1);
 										if (sho != null && sho.Parent != null && (sho.Parent.Equals(this.CurrentFolder) || sho.Equals(this.CurrentFolder)))
 											this.UnvalidateDirectory();
-
-
 									}
+									Notifications.NotificationsReceived.Remove(info);
 									break;
 								case ShellNotifications.SHCNE.SHCNE_RMDIR:
 									break;
