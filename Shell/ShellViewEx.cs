@@ -300,11 +300,10 @@ namespace BExplorer.Shell {
 		#region Public Members
 
 		public ToolTip ToolTip;
+		public MessageHandler MessageHandlerWindow;
 		public List<Collumns> AllAvailableColumns = new List<Collumns>();
 		public List<Collumns> Collumns = new List<Collumns>();
 		public List<ListViewGroupEx> Groups = new List<ListViewGroupEx>();
-		public ShellNotifications Notifications = new ShellNotifications();
-		public ShellNotifications NotificationsRB = new ShellNotifications();
 		public bool IsRenameNeeded { get; set; }
 		public Boolean IsGroupsEnabled { get { return LastGroupCollumn != null; } }
 
@@ -1463,7 +1462,7 @@ namespace BExplorer.Shell {
 			return itemIndex;
 		}
 
-		private void UpdateItem(ShellItem obj1, ShellItem obj2) {
+		public void UpdateItem(ShellItem obj1, ShellItem obj2) {
 			if (this.CurrentRefreshedItemIndex != -1) {
 				ShellItem tempItem = Items.SingleOrDefault(s => s.CachedParsingName == obj2.CachedParsingName);
 				if (tempItem == null) {
@@ -1510,6 +1509,15 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
+		public void RaiseRecycleBinUpdated() {
+			if (this.ItemUpdated != null)
+				this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.RecycleBin, null, null, -1));
+		}
+
+		public void RaiseItemUpdated(ItemUpdateType type, ShellItem old, ShellItem newItem, int index) {
+			if (this.ItemUpdated != null)
+				this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(type, newItem, old, index));
+		}
 
 		[HandleProcessCorruptedStateExceptions]
 		protected override void WndProc(ref Message m) {
@@ -1523,188 +1531,6 @@ namespace BExplorer.Shell {
 					}
 				}
 				
-				#endregion
-
-				#region m.Msg == ShellNotifications.WM_SHNOTIFY
-				if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
-					if (NotificationsRB.NotificationReceipt(m.WParam, m.LParam)) {
-						foreach (NotifyInfos info in NotificationsRB.NotificationsReceived.ToArray()) {
-							NotificationsRB.NotificationsReceived.Remove(info);
-						}
-						if (this.ItemUpdated != null)
-							this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.RecycleBin, null, null, -1));
-					}
-					if (Notifications.NotificationReceipt(m.WParam, m.LParam)) {
-						foreach (NotifyInfos info in Notifications.NotificationsReceived.ToArray()) {
-							switch (info.Notification) {
-								case ShellNotifications.SHCNE.SHCNE_RENAMEITEM:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_CREATE:
-								case ShellNotifications.SHCNE.SHCNE_MKDIR:
-								case ShellNotifications.SHCNE.SHCNE_DELETE:
-								case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
-								case ShellNotifications.SHCNE.SHCNE_UPDATEITEM:
-									if (info.Item1 != IntPtr.Zero) {
-										var sho = new ShellItem(info.Item1);
-										if (sho != null && sho.Parent != null && (sho.Parent.Equals(this.CurrentFolder) || sho.Equals(this.CurrentFolder)))
-											this.UnvalidateDirectory();
-									}
-									Notifications.NotificationsReceived.Remove(info);
-									break;
-								case ShellNotifications.SHCNE.SHCNE_RMDIR:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_NETSHARE:
-								case ShellNotifications.SHCNE.SHCNE_NETUNSHARE:
-								case ShellNotifications.SHCNE.SHCNE_ATTRIBUTES:
-									var obj = new ShellItem(info.Item1);
-									if (obj.Parent.Equals(this.CurrentFolder) || obj.Equals(this.CurrentFolder)) {
-										var exisitingItem = this.ItemsHashed.Where(w => w.Key.Equals(obj)).SingleOrDefault();
-										if (exisitingItem.Key != null) {
-											this.RefreshItem(exisitingItem.Value, true);
-											if (this.ItemUpdated != null)
-												this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Updated, obj, null, exisitingItem.Value));
-										}
-									}
-									Notifications.NotificationsReceived.Remove(info);
-									break;
-								case ShellNotifications.SHCNE.SHCNE_SERVERDISCONNECT:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_UPDATEIMAGE:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_DRIVEADDGUI:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_FREESPACE:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_EXTENDED_EVENT:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_ASSOCCHANGED:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_DISKEVENTS:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_GLOBALEVENTS:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_ALLEVENTS:
-									break;
-								case ShellNotifications.SHCNE.SHCNE_INTERRUPT:
-									break;
-								default:
-									break;
-							}
-							//if (info.Notification == ShellNotifications.SHCNE.SHCNE_MKDIR) {
-							//	var obj = new ShellItem(info.Item1);
-							//	if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
-							//		var itemIndex = InsertNewItem(obj);
-							//		if (this.ItemUpdated != null)
-							//			this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
-							//	} else {
-							//		var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
-							//		if (affectedItem != null) {
-							//			var index = this.Items.IndexOf(affectedItem);
-							//			this.RefreshItem(index, true);
-							//		}
-							//	}
-							//	Notifications.NotificationsReceived.Remove(info);
-							//}
-
-							//
-							//TODO: Can we replace all of these if(...) with a switch?
-							//
-
-							//TODO: Should this be and Elser If(...)?
-							if (info.Notification == ShellNotifications.SHCNE.SHCNE_UPDATEITEM) {
-								var obj = new ShellItem(info.Item1);
-								var exisitingItem = this.Items.Where(w => w.Equals(obj)).SingleOrDefault();
-								if (exisitingItem == null) {
-									//TODO: Check Changes to If(...)
-									if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
-										var itemIndex = InsertNewItem(obj);
-										this.RefreshItem(itemIndex, true);
-										if (this.ItemUpdated != null)
-											this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
-									}
-								} else {
-									this.RefreshItem(this.Items.IndexOf(exisitingItem), true);
-								}
-								//else
-								//{
-								//	Items.Remove(obj);
-								//	ItemsHashed.Remove(obj);
-								//	if (obj.Extension.ToLowerInvariant() != ".tmp")
-								//	{
-								//		if (obj.Parent.Equals(this.CurrentFolder))
-								//		{
-								//			var itemIndex = InsertNewItem(obj);
-								//			if (this.ItemUpdated != null)
-								//				this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
-								//		}
-								//	}
-								//}
-								Notifications.NotificationsReceived.Remove(info);
-							}
-							//TODO: Should this be and Else If(...)?
-							if (info.Notification == ShellNotifications.SHCNE.SHCNE_RMDIR) {
-								var obj = new ShellItem(info.Item1);
-								if (!String.IsNullOrEmpty(obj.ParsingName)) {
-									ShellItem theItem = Items.SingleOrDefault(s => s.Equals(obj));
-									if (theItem != null) {
-										Items.Remove(theItem);
-										if (this.IsGroupsEnabled) {
-											this.SetGroupOrder(false);
-										}
-										this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
-
-										if (this.ItemUpdated != null)
-											this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
-									}
-								}
-								Notifications.NotificationsReceived.Remove(info);
-							}
-							//TODO: Should this be and Else If(...)?
-							if (info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER || info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEITEM) {
-								ShellItem obj1 = new ShellItem(info.Item1), obj2 = new ShellItem(info.Item2);
-								if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName)) {
-									UpdateItem(obj1, obj2);
-								}
-								Notifications.NotificationsReceived.Remove(info);
-							}
-							//TODO: Should this be and Else If(...)?
-							if (info.Notification == ShellNotifications.SHCNE.SHCNE_DRIVEADD) {
-								//TODO: Check Change. Moved [obj] Inside the If(...)
-								if (this.CurrentFolder.Equals(KnownFolders.Computer)) {
-									this.InsertNewItem(new ShellItem(info.Item1));
-								}
-
-								Notifications.NotificationsReceived.Remove(info);
-							}
-							//TODO: Should this be and Else If(...)?
-							if (info.Notification == ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED) {
-								//TODO: Check Change. Moved [obj] Inside the If(...)
-								if (this.CurrentFolder.Equals(KnownFolders.Computer)) {
-									var obj = new ShellItem(info.Item1);
-									Items.Remove(obj);
-									ItemsHashed.Remove(obj);
-									if (this.IsGroupsEnabled) this.SetGroupOrder(false);
-
-									User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-								}
-
-								Notifications.NotificationsReceived.Remove(info);
-							}
-
-						}
-					}
-					this.Focus();
-				}
 				#endregion
 				base.WndProc(ref m);
 				#region m.Msg == 78
@@ -1746,11 +1572,15 @@ namespace BExplorer.Shell {
 							if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
 								if (nmlv.item.iSubItem == 0) {
 									//nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (!String.IsNullOrEmpty(NewName) ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
-									nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
-									if (this.ItemForRealName_IsAny) {
-										if (this.GetFirstSelectedItemIndex() == nmlv.item.iItem) {
-											nmlv.item.pszText = "";
+									try {
+										nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
+										if (this.ItemForRealName_IsAny) {
+											if (this.GetFirstSelectedItemIndex() == nmlv.item.iItem) {
+												nmlv.item.pszText = "";
+											}
 										}
+									} catch (Exception) {
+
 									}
 
 									Marshal.StructureToPtr(nmlv, m.LParam, false);
@@ -2445,6 +2275,7 @@ namespace BExplorer.Shell {
 
 		protected override void OnHandleCreated(EventArgs e) {
 			base.OnHandleCreated(e);
+			MessageHandlerWindow = new MessageHandler(this);
 
 			var il = new F.ImageList() { ImageSize = new System.Drawing.Size(48, 48) };
 			var ils = new F.ImageList() { ImageSize = new System.Drawing.Size(16, 16) };
@@ -2483,15 +2314,16 @@ namespace BExplorer.Shell {
 			this.Focus();
 			User32.SetForegroundWindow(this.LVHandle);
 			UxTheme.SetWindowTheme(this.LVHandle, "Explorer", 0);
-			Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
-			this.NotificationsRB.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_BITBUCKET, true);
+			MessageHandlerWindow.Show();
+// 			var dwin = User32.GetShellWindow();
+// 			F.MessageBox.Show(dwin.ToString());
+			
 
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e) {
 			try {
-				this.NotificationsRB.UnregisterChangeNotify();
-				this.Notifications.UnregisterChangeNotify();
+				this.MessageHandlerWindow.Close();
 				if (_IconLoadingThread.IsAlive)
 					_IconLoadingThread.Abort();
 				if (_IconCacheLoadingThread.IsAlive)
@@ -2543,9 +2375,9 @@ namespace BExplorer.Shell {
 
 		public void RefreshContents() { Navigate_Full(this.CurrentFolder, true, refresh: true); }
 
-		public void RefreshItem(int index, Boolean IsForceRedraw = false) {
+		public void RefreshItem(int index, Boolean IsForceRedraw = false, Boolean convertName = true) {
 			if (IsForceRedraw) {
-				this.Items[index] = ShellItem.ToShellParsingName(this.Items[index].ParsingName);
+				this.Items[index] = convertName ? ShellItem.ToShellParsingName(this.Items[index].ParsingName) : new ShellItem(this.Items[index].CachedParsingName);
 				this.Items[index].IsNeedRefreshing = true;
 				this.Items[index].IsInvalid = true;
 				this.Items[index].OverlayIconIndex = -1;
@@ -2886,7 +2718,7 @@ namespace BExplorer.Shell {
 			Navigate(destination, isInSameTab, refresh);
 		}
 
-		private void UnvalidateDirectory() {
+		public void UnvalidateDirectory() {
 			var newItems = this.CurrentFolder.Where(w => this.ShowHidden ? true : w.IsHidden == this.ShowHidden).ToArray();
 			var removedItems = this.Items.Except(newItems, new ShellItemComparer());
 			foreach (var obj in removedItems.ToArray()) {
@@ -2921,6 +2753,10 @@ namespace BExplorer.Shell {
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 		}
 
+
+
+
+
 		/// <summary>
 		/// Navigate to a folder.
 		/// </summary>
@@ -2931,6 +2767,7 @@ namespace BExplorer.Shell {
 			if (!refresh && Navigating != null) {
 				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 			}
+			
 			Items.Clear();
 			ItemsForSubitemsUpdate.Clear();
 			waitingThumbnails.Clear();
@@ -2945,6 +2782,8 @@ namespace BExplorer.Shell {
 
 			if (destination == null)
 				return;
+
+			MessageHandlerWindow.ReinitNotify(destination);
 			if (ToolTip == null)
 				this.ToolTip = new ToolTip();
 
@@ -3066,6 +2905,45 @@ namespace BExplorer.Shell {
 			}
 
 			this.Focus();
+		}
+
+		void FsWatcher_Created(object sender, FileSystemEventArgs e) {
+				var obj = new ShellItem(e.FullPath);
+				var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
+				if (existingItem == null) {
+					if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
+						var itemIndex = InsertNewItem(obj);
+						if (this.ItemUpdated != null)
+							this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
+					} else {
+						var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
+						if (affectedItem != null) {
+							var index = this.Items.IndexOf(affectedItem);
+							this.RefreshItem(index, true);
+						}
+					}
+				}
+		}
+
+		void FsWatcher_Changed(object sender, FileSystemEventArgs e) {
+			//if (e.FullPath == @"\") return;
+			try {
+				this.RefreshItem(this.Items.IndexOf(new ShellItem(e.FullPath)), true, false);
+			} catch (FileNotFoundException) {
+			}
+		}
+
+		void FsWatcher_Deleted(object sender, FileSystemEventArgs e) {
+			var obj = Items.Where(w => w.CachedParsingName.ToLowerInvariant() == e.FullPath.ToLowerInvariant()).SingleOrDefault();
+			if (obj == null) { return; }
+			Items.Remove(obj);
+			if (this.IsGroupsEnabled) {
+				this.SetGroupOrder(false);
+			}
+			this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+
+			if (this.ItemUpdated != null)
+				this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
 		}
 
 

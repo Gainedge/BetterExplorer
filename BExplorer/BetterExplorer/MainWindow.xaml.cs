@@ -1015,7 +1015,7 @@ namespace BetterExplorer {
 													this.beNotifyIcon.ShowBalloonTip("Information", String.Format("It is safe to remove {0}", item.LogicalDrive), Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
 													var tabsForRemove = tcMain.Items.OfType<Wpf.Controls.TabItem>()
 															.Where(w => {
-																var root = Path.GetPathRoot(w.ShellObject.ParsingName);
+																var root = Path.GetPathRoot(w.ShellObject.ParsingName.ToShellParsingName());
 																return root != null && (w.ShellObject.IsFileSystem &&
 																						root.ToLowerInvariant() == String.Format("{0}:\\", DriveLetter).ToLowerInvariant());
 															}).ToArray();
@@ -1070,9 +1070,10 @@ namespace BetterExplorer {
 		}
 
 		private void btnEjectDevice_Click(object sender, RoutedEventArgs e) {
-			if (ShellListView.GetFirstSelectedItem().GetDriveInfo() != null) {
-				if (ShellListView.GetFirstSelectedItem().GetDriveInfo().DriveType == DriveType.Removable) {
-					EjectDisk(GetDriveLetterFromDrivePath(ShellListView.GetFirstSelectedItem().ParsingName));
+			var firstSelectedItem = ShellListView.GetFirstSelectedItem();
+			if (firstSelectedItem.GetDriveInfo() != null) {
+				if (firstSelectedItem.GetDriveInfo().DriveType == DriveType.Removable || firstSelectedItem.GetDriveInfo().DriveType == DriveType.Fixed) {
+					EjectDisk(GetDriveLetterFromDrivePath(firstSelectedItem.ParsingName));
 				}
 			}
 		}

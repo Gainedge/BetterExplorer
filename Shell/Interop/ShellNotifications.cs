@@ -39,7 +39,8 @@ namespace BExplorer.Shell.Interop {
 						SHCNE fEvents,
 						uint wMsg,
 						int cEntries,
-						ref SHChangeNotifyEntry pFsne);
+						[MarshalAs(UnmanagedType.LPArray)]
+						SHChangeNotifyEntry[] pFsne);
 
 		/*
 		[DllImport("shell32.dll", EntryPoint = "#4", CharSet = CharSet.Auto)]
@@ -475,11 +476,11 @@ namespace BExplorer.Shell.Interop {
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
 				//SHCNF.SHCNF_TYPE | SHCNF.SHCNF_IDLIST,
-				SHCNRF.InterruptLevel | SHCNRF.ShellLevel | SHCNRF.RecursiveInterrupt | SHCNRF.NewDelivery,
+				SHCNRF.InterruptLevel | SHCNRF.ShellLevel | SHCNRF.NewDelivery,
 				SHCNE.SHCNE_ALLEVENTS,
 				WM_SHNOTIFY,
 				1,
-				ref changeentry);
+				changenetrys);
 			return (notifyid);
 		}
 
@@ -497,11 +498,11 @@ namespace BExplorer.Shell.Interop {
 			//TODO: Make sure this works even though [MarshalAs(UnmanagedType.LPArray)]
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
-				SHCNRF.InterruptLevel | SHCNRF.ShellLevel | SHCNRF.RecursiveInterrupt | SHCNRF.NewDelivery,
+				SHCNRF.InterruptLevel | SHCNRF.ShellLevel  | SHCNRF.NewDelivery,
 				SHCNE.SHCNE_ALLEVENTS,
 				WM_SHNOTIFY,
 				1,
-				ref changeentry);
+				changenetrys);
 			return (notifyid);
 		}
 
@@ -589,6 +590,7 @@ namespace BExplorer.Shell.Interop {
 					ptr,
 					typeof(SHNOTIFYSTRUCT));
 				NotifyInfos info = new NotifyInfos((SHCNE)(int)eventID);
+				//System.Windows.Forms.MessageBox.Show(info.Notification.ToString());
 
 				//Not supported notifications
 				if (info.Notification == SHCNE.SHCNE_FREESPACE ||

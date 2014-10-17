@@ -1,0 +1,168 @@
+﻿using BExplorer.Shell.Interop;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace BExplorer.Shell {
+	public partial class MessageHandler : Form {
+		public ShellNotifications Notifications = new ShellNotifications();
+		public ShellNotifications NotificationsRB = new ShellNotifications();
+		private ShellView _ParentShellView;
+		public MessageHandler(ShellView parentShellView) {
+			this._ParentShellView = parentShellView;
+			InitializeComponent();
+		}
+		public void ReinitNotify(ShellItem item) {
+			if (Notifications != null) {
+				Notifications.UnregisterChangeNotify();
+				Notifications.RegisterChangeNotify(this.Handle, item, false);
+			}
+		}
+		protected override void OnHandleCreated(EventArgs e) {
+			base.OnHandleCreated(e);
+			this.NotificationsRB.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_BITBUCKET, true);
+		}
+		protected override void OnHandleDestroyed(EventArgs e) {
+			Notifications.UnregisterChangeNotify();
+			NotificationsRB.UnregisterChangeNotify();
+			base.OnHandleDestroyed(e);
+		}
+
+		protected override void WndProc(ref Message m) {
+			base.WndProc(ref m);
+			if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
+				if (NotificationsRB.NotificationReceipt(m.WParam, m.LParam)) {
+					foreach (NotifyInfos info in NotificationsRB.NotificationsReceived.ToArray()) {
+						NotificationsRB.NotificationsReceived.Remove(info);
+					}
+					this._ParentShellView.RaiseRecycleBinUpdated();
+				}
+				if (Notifications.NotificationReceipt(m.WParam, m.LParam)) {
+					foreach (NotifyInfos info in Notifications.NotificationsReceived.ToArray()) {
+						switch (info.Notification) {
+							case ShellNotifications.SHCNE.SHCNE_RENAMEITEM:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_CREATE:
+							case ShellNotifications.SHCNE.SHCNE_MKDIR:
+								var obj = new ShellItem(info.Item1);
+								var existingItem = this._ParentShellView.Items.SingleOrDefault(s => s.Equals(obj));
+								if (existingItem == null && (obj.Parent != null && obj.Parent.Equals(this._ParentShellView.CurrentFolder))) {
+									if (obj.Extension.ToLowerInvariant() != ".tmp") {
+										var itemIndex = this._ParentShellView.InsertNewItem(obj);
+										this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Created, null, obj, itemIndex);
+									} else {
+										var affectedItem = this._ParentShellView.Items.SingleOrDefault(s => s.Equals(obj.Parent));
+										if (affectedItem != null) {
+											var index = this._ParentShellView.Items.IndexOf(affectedItem);
+											this._ParentShellView.RefreshItem(index, true);
+										}
+									}
+								}
+								break;
+							case ShellNotifications.SHCNE.SHCNE_RMDIR:
+							case ShellNotifications.SHCNE.SHCNE_DELETE:
+								var objDeleteF = new ShellItem(info.Item1);
+								if (!String.IsNullOrEmpty(objDeleteF.ParsingName)) {
+									ShellItem theItem = this._ParentShellView.Items.SingleOrDefault(s => s.Equals(objDeleteF));
+									if (theItem != null) {
+										this._ParentShellView.Items.Remove(theItem);
+										if (this._ParentShellView.IsGroupsEnabled) this._ParentShellView.SetGroupOrder(false);
+										this._ParentShellView.SetSortCollumn(this._ParentShellView.LastSortedColumnIndex, this._ParentShellView.LastSortOrder, false);
+									}
+								}
+								break;
+							case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
+							case ShellNotifications.SHCNE.SHCNE_UPDATEITEM:
+								var objUpdate = new ShellItem(info.Item1);
+								var exisitingItem = this._ParentShellView.Items.Where(w => w.Equals(objUpdate)).SingleOrDefault();
+								if (exisitingItem != null) {
+									this._ParentShellView.RefreshItem(this._ParentShellView.Items.IndexOf(exisitingItem), true);
+								}
+								objUpdate.Dispose();
+								break;
+							case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_NETSHARE:
+							case ShellNotifications.SHCNE.SHCNE_NETUNSHARE:
+							case ShellNotifications.SHCNE.SHCNE_ATTRIBUTES:
+								var objNetA = new ShellItem(info.Item1);
+								var exisitingItemNetA = this._ParentShellView.ItemsHashed.Where(w => w.Key.Equals(objNetA)).SingleOrDefault();
+								if (exisitingItemNetA.Key != null) {
+									this._ParentShellView.RefreshItem(exisitingItemNetA.Value, true);
+									this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Updated, null, objNetA, exisitingItemNetA.Value);
+								}
+								break;
+							case ShellNotifications.SHCNE.SHCNE_SERVERDISCONNECT:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_UPDATEIMAGE:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DRIVEADDGUI:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_FREESPACE:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_EXTENDED_EVENT:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_ASSOCCHANGED:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DISKEVENTS:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_GLOBALEVENTS:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_ALLEVENTS:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_INTERRUPT:
+								break;
+							default:
+								break;
+						}
+						
+						//TODO: Should this be and Else If(...)?
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER || info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEITEM) {
+							ShellItem obj1 = new ShellItem(info.Item1), obj2 = new ShellItem(info.Item2);
+							if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName)) {
+								this._ParentShellView.UpdateItem(obj1, obj2);
+							}
+						}
+						//TODO: Should this be and Else If(...)?
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_DRIVEADD) {
+							//TODO: Check Change. Moved [obj] Inside the If(...)
+							if (this._ParentShellView.CurrentFolder.Equals(KnownFolders.Computer)) {
+								this._ParentShellView.InsertNewItem(new ShellItem(info.Item1));
+							}
+						}
+						//TODO: Should this be and Else If(...)?
+						if (info.Notification == ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED) {
+							//TODO: Check Change. Moved [obj] Inside the If(...)
+							if (this._ParentShellView.CurrentFolder.Equals(KnownFolders.Computer)) {
+								var obj = new ShellItem(info.Item1);
+								this._ParentShellView.Items.Remove(obj);
+								this._ParentShellView.ItemsHashed.Remove(obj);
+								if (this._ParentShellView.IsGroupsEnabled) this._ParentShellView.SetGroupOrder(false);
+
+								User32.SendMessage(this._ParentShellView.LVHandle, MSG.LVM_SETITEMCOUNT, this._ParentShellView.Items.Count, 0);
+							}
+						}
+						if (Notifications.NotificationsReceived.Contains(info))
+							Notifications.NotificationsReceived.Remove(info);
+					}
+				}
+				this._ParentShellView.Focus();
+			}
+		}
+	}
+}

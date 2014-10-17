@@ -1179,6 +1179,9 @@ namespace BExplorer.Shell.Interop {
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool ShowWindow(IntPtr hWnd, ShowWindowCommands nCmdShow);
 
+		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+		public static extern IntPtr GetShellWindow(); 
+
 
 	}
 }

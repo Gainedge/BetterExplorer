@@ -522,10 +522,9 @@ namespace BExplorer.Shell {
 		}
 
 		private IExtractIconPWFlags GetIconType() {
-			var parsingName = this.ParsingName.ToLowerInvariant();
-			if (this.IsLink || parsingName.ToLowerInvariant().EndsWith(".exe") || parsingName.ToLowerInvariant().EndsWith(".com") || parsingName.ToLowerInvariant().EndsWith(".bat") || parsingName.ToLowerInvariant().EndsWith(".msi"))
+			if (this.Extension == ".exe" || this.Extension ==  ".com" || this.Extension == ".bat" || this.Extension == ".msi")
 				return IExtractIconPWFlags.GIL_PERINSTANCE;
-			else if (this.IsFolder) {
+			if (this.IsFolder) {
 				IExtractIcon iextract = null;
 				IShellFolder ishellfolder = null;
 				StringBuilder str = null;
@@ -1304,7 +1303,7 @@ namespace BExplorer.Shell {
 			//	return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
 			else if (!path.StartsWith(@"\\")) {
 				if (path.Contains(":")) {
-					return new ShellItem(String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString()));
+					return new ShellItem(String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty :  Path.DirectorySeparatorChar.ToString()));
 				} else {
 
 					try {
