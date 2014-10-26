@@ -28,7 +28,7 @@
 					 WindowState="Maximized"
 					 d:DesignHeight="768"
 					 d:DesignWidth="852"
-					 mc:Ignorable="d" PreviewKeyDown="RibbonWindow_PreviewKeyDown" Icon="Images/explorer16.png" Activated="RibbonWindow_Activated" StateChanged="RibbonWindow_StateChanged">
+					 mc:Ignorable="d" PreviewKeyDown="RibbonWindow_PreviewKeyDown" Icon="Explorer.ico" Activated="RibbonWindow_Activated" StateChanged="RibbonWindow_StateChanged">
 
 	<Ribbon:RibbonWindow.Resources>
 		<ResourceDictionary>

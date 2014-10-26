@@ -67,6 +67,7 @@ namespace BExplorer.Shell {
 		private Boolean isFromTreeview;
 		private Boolean _IsNavigate;
 		private String _EmptyItemString = "<!EMPTY!>";
+		private ShellNotifications _NotificationNetWork = new ShellNotifications();
 		private System.Runtime.InteropServices.ComTypes.IDataObject _DataObject { get; set; }
 
 		#endregion Private Members
@@ -281,13 +282,13 @@ namespace BExplorer.Shell {
 		}
 
 		void ShellTreeView_VerticalScroll(object sender, EventArgs e) {
-			childsQueue.Clear();
-			imagesQueue.Clear();
+			//childsQueue.Clear();
+			//imagesQueue.Clear();
 		}
 
 		void ShellTreeView_MouseWheel(object sender, MouseEventArgs e) {
-			childsQueue.Clear();
-			imagesQueue.Clear();
+			//childsQueue.Clear();
+			//imagesQueue.Clear();
 		}
 
 		private void ShellTreeView_MouseLeave(object sender, EventArgs e) {
@@ -337,33 +338,54 @@ namespace BExplorer.Shell {
 				var hash = -1;
 				var pidl = IntPtr.Zero;
 				var visible = false;
+				
 				this.Invoke((Action)(() => {
 					if (this.ShellTreeView != null) {
 						node = TreeNode.FromHandle(ShellTreeView, handle);
+						treeHandle = ShellTreeView.Handle;
 						if (node != null) {
-							var item = node.Tag as ShellItem;
-							if (item != null) {
-								ShellItem newItem = null;
-								try {
-									newItem = ShellItem.ToShellParsingName(item.ParsingName);
-								} catch (Exception) {
-									newItem = item;
-								}
-								if (node != null && newItem != null && this.ShellTreeView != null) {
-									treeHandle = this.ShellTreeView.Handle;
-									hash = newItem.GetHashCode();
-									pidl = newItem.AbsolutePidl;
-									visible = node.IsVisible;
-									newItem.Dispose();
-								}
-							}
+							visible = node.IsVisible;
 						}
+						//if (node != null) {
+						//	var item = node.Tag as ShellItem;
+						//	if (item != null) {
+						//		ShellItem newItem = null;
+						//		try {
+						//			newItem = ShellItem.ToShellParsingName(item.ParsingName);
+						//		} catch (Exception) {
+						//			newItem = item;
+						//		}
+						//		if (node != null && newItem != null && this.ShellTreeView != null) {
+						//			treeHandle = this.ShellTreeView.Handle;
+						//			hash = newItem.GetHashCode();
+						//			pidl = newItem.AbsolutePidl;
+						//			visible = node.IsVisible;
+						//			newItem.Dispose();
+						//		}
+						//	}
+						//}
 					}
 				}));
+				if (node != null) {
+					var item = node.Tag as ShellItem;
+					if (item != null) {
+						ShellItem newItem = null;
+						try {
+							newItem = ShellItem.ToShellParsingName(item.ParsingName);
+						} catch (Exception) {
+							newItem = item;
+						}
+						if (node != null && newItem != null) {
+							hash = newItem.GetHashCode();
+							pidl = newItem.AbsolutePidl;
+							newItem.Dispose();
+						}
+					}
+				}
 				if (visible) {
 					var nodeHandle = handle;
-					Thread.Sleep(1);
-					Application.DoEvents();
+					//Thread.Sleep(1);
+					//Application.DoEvents();
 
 					SetNodeImage(nodeHandle, pidl, treeHandle, !(node.Parent != null && (node.Parent.Tag as ShellItem).ParsingName == KnownFolders.Links.ParsingName));
 				}
@@ -545,7 +567,7 @@ namespace BExplorer.Shell {
 			e.DrawDefault = !String.IsNullOrEmpty(e.Node.Text);
 			if (e.Node.Tag != null) {
 				var item = e.Node.Tag as ShellItem;
-				if (!UpdatedImages.Contains(e.Node.Handle))
+				if (!UpdatedImages.Contains(e.Node.Handle) && (item.Parent != null && item.Parent.ParsingName != KnownFolders.Network.ParsingName))
 					imagesQueue.Enqueue(e.Node.Handle);
 				if (!CheckedFroChilds.Contains(e.Node.Handle))
 					childsQueue.Enqueue(e.Node.Handle);
@@ -575,9 +597,9 @@ namespace BExplorer.Shell {
 							}
 							itemNode.Tag = itemReal;
 
-							if (sho.IsNetDrive || sho.IsNetworkPath) {
+							if ((sho.IsNetDrive || sho.IsNetworkPath) && sho.ParsingName != KnownFolders.Network.ParsingName) {
 								itemNode.ImageIndex = this.folderImageListIndex;
-							} else if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS) {
+							} else if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS || sho.ParsingName == KnownFolders.Network.ParsingName) {
 								itemNode.ImageIndex = itemReal.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 								itemNode.SelectedImageIndex = itemNode.ImageIndex;
 							} else {
@@ -586,7 +608,7 @@ namespace BExplorer.Shell {
 
 							itemNode.Nodes.Add(this._EmptyItemString);
 							nodesTemp.Add(itemNode);
-							Application.DoEvents();
+							//Application.DoEvents();
 						}
 						return nodesTemp;
 					});
@@ -826,8 +848,87 @@ namespace BExplorer.Shell {
 			InitializeComponent();
 
 			InitRootItems();
+			this._NotificationNetWork.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_NETWORK, false);
 		}
 
 		#endregion Initializer
+		protected override void OnHandleDestroyed(EventArgs e) {
+			this._NotificationNetWork.UnregisterChangeNotify();
+			base.OnHandleDestroyed(e);
+		}
+		protected override void WndProc(ref Message m) {
+			base.WndProc(ref m);
+			if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
+				//MessageBox.Show("1");
+				if (_NotificationNetWork.NotificationReceipt(m.WParam, m.LParam)) {
+					foreach (NotifyInfos info in _NotificationNetWork.NotificationsReceived.ToArray()) {
+						switch (info.Notification) {
+							case ShellNotifications.SHCNE.SHCNE_RENAMEITEM:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_MKDIR:
+							case ShellNotifications.SHCNE.SHCNE_CREATE:
+								var sho = new ShellItem(info.Item1);
+								var existingItem = this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.OfType<TreeNode>().Where(w => w.Tag != null && (w.Tag as ShellItem).ParsingName == sho.ParsingName).SingleOrDefault();
+								if (existingItem != null)
+									break;
+								TreeNode node = new TreeNode(sho.DisplayName);
+								node.ImageIndex = sho.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);// this.folderImageListIndex;
+								node.SelectedImageIndex = node.ImageIndex;
+								node.Tag = sho;
+								this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.Add(node);
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DELETE:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_RMDIR:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_NETSHARE:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_NETUNSHARE:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_ATTRIBUTES:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_UPDATEITEM:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_SERVERDISCONNECT:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_UPDATEIMAGE:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DRIVEADDGUI:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_FREESPACE:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_EXTENDED_EVENT:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_ASSOCCHANGED:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DISKEVENTS:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_GLOBALEVENTS:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_ALLEVENTS:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_INTERRUPT:
+								break;
+							default:
+								break;
+						}
+						_NotificationNetWork.NotificationsReceived.Remove(info);
+					}
+
+				}
+			}
+		}
 	}
 }

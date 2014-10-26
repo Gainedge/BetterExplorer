@@ -30,8 +30,8 @@ namespace BExplorer.Shell {
 			this.NotificationsRB.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_BITBUCKET, true);
 		}
 		protected override void OnHandleDestroyed(EventArgs e) {
-			Notifications.UnregisterChangeNotify();
 			NotificationsRB.UnregisterChangeNotify();
+			Notifications.UnregisterChangeNotify();
 			base.OnHandleDestroyed(e);
 		}
 
@@ -84,6 +84,9 @@ namespace BExplorer.Shell {
 								var exisitingItem = this._ParentShellView.Items.Where(w => w.Equals(objUpdate)).SingleOrDefault();
 								if (exisitingItem != null) {
 									this._ParentShellView.RefreshItem(this._ParentShellView.Items.IndexOf(exisitingItem), true);
+								}
+								if (objUpdate != null && this._ParentShellView.CurrentFolder != null && objUpdate.ParsingName == this._ParentShellView.CurrentFolder.ParsingName) {
+									this._ParentShellView.UnvalidateDirectory();
 								}
 								objUpdate.Dispose();
 								break;

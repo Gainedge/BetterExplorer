@@ -180,6 +180,7 @@ namespace BExplorer.Shell.Interop {
 		LVM_GETCOLUMNORDERARRAY = (FIRST + 59),
 		LVM_GETCOLUMNWIDTH = (FIRST + 29),
 		TVM_SETHOT = 0x1100 + 58,
+		LVM_SETSELECTEDCOLUMN  = (FIRST + 140),
 
 	}
 
@@ -607,6 +608,9 @@ namespace BExplorer.Shell.Interop {
 
 		[DllImport("user32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+
+		[DllImport("user32.dll")]
+		public static extern int SendMessage(IntPtr hWnd, int Msg, ref Guid wParam, IntPtr lParam);
 
 		/*
 		[DllImport("user32.dll")]

@@ -1256,8 +1256,12 @@ namespace BExplorer.Shell {
 		}
 
 		protected override void OnDragLeave(EventArgs e) {
-			this.RefreshItem(_LastDropHighLightedItemIndex);
-			_LastDropHighLightedItemIndex = -1;
+			try {
+				this.RefreshItem(_LastDropHighLightedItemIndex);
+				_LastDropHighLightedItemIndex = -1;
+			} catch {
+
+			}
 			DropTargetHelper.Get.Create.DragLeave();
 		}
 
@@ -1382,22 +1386,24 @@ namespace BExplorer.Shell {
 			} else {
 				e.UseDefaultCursors = true;
 			}
-
 			if (IsDropDescriptionValid(dataObject)) {
 				e.UseDefaultCursors = false;
 				Cursor.Current = Cursors.Arrow;
 			} else {
 				e.UseDefaultCursors = true;
 			}
-
 			if (IsShowingLayered(doo)) {
 				e.UseDefaultCursors = false;
 				Cursor.Current = Cursors.Arrow;
+				
 			} else {
 				e.UseDefaultCursors = true;
 			}
+			
 
-			base.OnGiveFeedback(e);
+			
+
+			//base.OnGiveFeedback(e);
 		}
 		public static bool IsShowingLayered(F.DataObject dataObject) {
 			if (dataObject.GetDataPresent("IsShowingLayered")) {
@@ -2035,6 +2041,14 @@ namespace BExplorer.Shell {
 											nmlvcd.nmcd.uItemState |= CDIS.DROPHILITED;
 											Marshal.StructureToPtr(nmlvcd, m.LParam, false);
 										}
+										//using (var graphics = Graphics.FromHdc(hdc)) {
+										//	graphics.FillRectangle(Brushes.WhiteSmoke, new RectangleF(nmlvcd.nmcd.rc.Left, nmlvcd.nmcd.rc.Top, nmlvcd.nmcd.rc.Right - nmlvcd.nmcd.rc.Left, nmlvcd.nmcd.rc.Bottom - nmlvcd.nmcd.rc.Top));
+										//}
+										//if (this.View == ShellViewStyle.Details) {
+										//	nmlvcd.clrTextBk = ColorTranslator.ToWin32(Color.WhiteSmoke);
+										//	Marshal.StructureToPtr(nmlvcd, m.LParam, false);
+										//}
+
 										if (textColor != null) {
 											nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
 											Marshal.StructureToPtr(nmlvcd, m.LParam, false);
@@ -2048,6 +2062,10 @@ namespace BExplorer.Shell {
 
 									case CustomDraw.CDDS_ITEMPREPAINT | CustomDraw.CDDS_SUBITEM:
 										#region Case
+										//if (this.View == ShellViewStyle.Details && nmlvcd.iSubItem > 0) {
+										//	nmlvcd.clrTextBk = ColorTranslator.ToWin32(Color.WhiteSmoke);
+										//	Marshal.StructureToPtr(nmlvcd, m.LParam, false);
+										//}
 										if (textColor == null) {
 											m.Result = (IntPtr)CustomDraw.CDRF_DODEFAULT;
 										} else {
@@ -2123,6 +2141,11 @@ namespace BExplorer.Shell {
 
 															sho.IsIconLoaded = true;
 														} else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
+															if (sho.Parent != null && (sho.Parent.ParsingName == KnownFolders.Network.ParsingName || sho.Parent.IsSearchFolder)) {
+																var hIconExe = sho.Thumbnail.GetHBitmap(IconSize);
+																Gdi32.NativeDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+																sho.IsIconLoaded = true;
+															} else
 															if (!sho.IsIconLoaded) {
 																waitingThumbnails.Enqueue(index);
 																using (var g = Graphics.FromHdc(hdc)) {
@@ -2377,11 +2400,15 @@ namespace BExplorer.Shell {
 
 		public void RefreshItem(int index, Boolean IsForceRedraw = false, Boolean convertName = true) {
 			if (IsForceRedraw) {
-				this.Items[index] = convertName ? ShellItem.ToShellParsingName(this.Items[index].ParsingName) : new ShellItem(this.Items[index].CachedParsingName);
-				this.Items[index].IsNeedRefreshing = true;
-				this.Items[index].IsInvalid = true;
-				this.Items[index].OverlayIconIndex = -1;
-				this.Items[index].IsOnlyLowQuality = false;
+				try {
+					this.Items[index] = convertName ? ShellItem.ToShellParsingName(this.Items[index].ParsingName) : new ShellItem(this.Items[index].CachedParsingName);
+					this.Items[index].IsNeedRefreshing = true;
+					this.Items[index].IsInvalid = true;
+					this.Items[index].OverlayIconIndex = -1;
+					this.Items[index].IsOnlyLowQuality = false;
+				} catch {
+					//In case the event late and the file is not there anymore or changed catch the exception
+				}
 			}
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REDRAWITEMS, index, index);
 			if (this.IsGroupsEnabled) {
@@ -2699,6 +2726,7 @@ namespace BExplorer.Shell {
 			this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++, new ShellItemComparer());
 			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 			this.SetSortIcon(colIndex, Order);
+			User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, this.LastSortedColumnIndex, 0);
 			this.SelectItems(selectedItems);
 		}
 
@@ -2723,13 +2751,12 @@ namespace BExplorer.Shell {
 			var removedItems = this.Items.Except(newItems, new ShellItemComparer());
 			foreach (var obj in removedItems.ToArray()) {
 				Items.Remove(obj);
+				this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
 				if (this.IsGroupsEnabled) {
 					this.SetGroupOrder(false);
 				}
-				this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
-
-				if (this.ItemUpdated != null)
-					this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
+				//if (this.ItemUpdated != null)
+				//	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
 			}
 			foreach (var obj in newItems) {
 				F.Application.DoEvents();
@@ -2737,8 +2764,8 @@ namespace BExplorer.Shell {
 				if (existingItem == null) {
 					if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
 						var itemIndex = InsertNewItem(obj);
-						if (this.ItemUpdated != null)
-							this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
+						//if (this.ItemUpdated != null)
+						//	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
 					} else {
 						var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
 						if (affectedItem != null) {
@@ -2790,6 +2817,14 @@ namespace BExplorer.Shell {
 			var folderSettings = new FolderSettings();
 			var isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
 
+			this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
+			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
+				ResizeIcons(16);
+			else {
+				if (folderSettings.IconSize >= 16)
+					this.ResizeIcons(folderSettings.IconSize);
+			}
+
 			if (isThereSettings) {
 				if (folderSettings.Columns != null) {
 					this.RemoveAllCollumns();
@@ -2823,25 +2858,23 @@ namespace BExplorer.Shell {
 					}
 				}
 
-				IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
-				for (int i = 0; i < this.Collumns.Count; i++) {
-					this.Collumns[i].SetSplitButton(headerhandle, i);
-				}
+				
+				
 			} else {
 				this.RemoveAllCollumns();
 				this.AddDefaultColumns(false, true);
 			}
+			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
+			for (int i = 0; i < this.Collumns.Count; i++) {
+				this.Collumns[i].SetSplitButton(headerhandle, i);
+			}
+			if (this.View != ShellViewStyle.Details)
+				AutosizeAllColumns(-2);
 
 			//TODO: Figure out if the folder is actually sorted and we are not incorrectly setting the sort icon.
 			this.SetSortIcon(folderSettings.SortColumn, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
 
-			this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
-			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
-				ResizeIcons(16);
-			else {
-				if (folderSettings.IconSize >= 16)
-					this.ResizeIcons(folderSettings.IconSize);
-			}
+			
 
 			int CurrentI = 0, LastI = 0;
 			foreach (var Shell in destination) {
