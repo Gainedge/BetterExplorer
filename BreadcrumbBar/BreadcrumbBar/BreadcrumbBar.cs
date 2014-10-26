@@ -337,9 +337,16 @@ namespace Odyssey.Controls {
 					if (IsLoaded && !breadcrumbItemTraceValueChanged_IsFired && _Path != null) {
 						Int64 pidl;
 						bool isValidPidl = Int64.TryParse(_Path.TrimEnd(Char.Parse(@"\")), out pidl);
-						ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : ShellItem.ToShellParsingName(_Path);
-						if (item != null)
-							OnNavigate(item);
+						try
+						{
+							ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : ShellItem.ToShellParsingName(_Path);
+							if (item != null)
+								OnNavigate(item);
+						}
+						catch (Exception)
+						{
+							//FIXME: fix this exception in case of searchfolder!!!!
+						}
 					}
 				}
 			}
