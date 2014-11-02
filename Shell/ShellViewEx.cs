@@ -1837,7 +1837,8 @@ namespace BExplorer.Shell {
 							} else {
 								var iac = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
 								ShellItem selectedItem = Items[iac.iItem];
-								if (selectedItem.IsFolder) {
+								if (selectedItem.IsFolder)
+								{
 									Navigate_Full(selectedItem, true);
 								} else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
 									var shellLink = new ShellLink(selectedItem.ParsingName);
@@ -2865,12 +2866,19 @@ namespace BExplorer.Shell {
 			this.fsw.Changed -= fsw_Changed;
 			this.fsw.EnableRaisingEvents = false;
 			if (destination.IsFileSystem || destination.IsNetworkPath) {
-				
-				this.fsw.Path = destination.ParsingName;
-				this.fsw.EnableRaisingEvents = true;
-				this.fsw.Created += fsw_Created;
-				this.fsw.Deleted += fsw_Deleted;
-				this.fsw.Changed += fsw_Changed;
+
+				try
+				{
+					this.fsw.Path = destination.ParsingName;
+					this.fsw.EnableRaisingEvents = true;
+					this.fsw.Created += fsw_Created;
+					this.fsw.Deleted += fsw_Deleted;
+					this.fsw.Changed += fsw_Changed;
+				}
+				catch 
+				{
+					//In case of invalid path
+				}
 			}
 			if (ToolTip == null)
 				this.ToolTip = new ToolTip();

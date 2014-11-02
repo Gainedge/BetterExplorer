@@ -208,7 +208,21 @@ namespace BExplorer.Shell {
 		/// Gets a PIDL representing the item.
 		/// </summary>
 		public IntPtr Pidl { get { return GetIDListFromObject(ComInterface); } }
-
+		public bool IsBrowsable
+		{
+			get
+			{
+				//TODO: try removing this Try Catch!
+				try
+				{
+					return COM_Attribute_Check(SFGAO.BROWSABLE);
+				}
+				catch
+				{
+					return false;
+				}
+			}
+		}
 		/// <summary>
 		/// Gets a value indicating whether the item is a folder.
 		/// </summary>

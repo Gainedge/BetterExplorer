@@ -68,6 +68,7 @@ namespace BExplorer.Shell {
 		private Boolean _IsNavigate;
 		private String _EmptyItemString = "<!EMPTY!>";
 		private ShellNotifications _NotificationNetWork = new ShellNotifications();
+		private ShellNotifications _NotificationGlobal = new ShellNotifications();
 		private System.Runtime.InteropServices.ComTypes.IDataObject _DataObject { get; set; }
 
 		#endregion Private Members
@@ -636,7 +637,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void ShellTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
-			var sho = e.Node.Tag as ShellItem;
+			var sho = e.Node != null ? e.Node.Tag as ShellItem : null;
 			if (sho != null) {
 				ShellItem linkSho = null;
 				if (sho.IsLink) {
@@ -849,17 +850,83 @@ namespace BExplorer.Shell {
 
 			InitRootItems();
 			this._NotificationNetWork.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_NETWORK, false);
+			this._NotificationGlobal.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, false);
 		}
 
 		#endregion Initializer
 		protected override void OnHandleDestroyed(EventArgs e) {
 			this._NotificationNetWork.UnregisterChangeNotify();
+			this._NotificationGlobal.UnregisterChangeNotify();
 			base.OnHandleDestroyed(e);
 		}
 		protected override void WndProc(ref Message m) {
 			base.WndProc(ref m);
 			if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
 				//MessageBox.Show("1");
+				if (this._NotificationGlobal.NotificationReceipt(m.WParam, m.LParam))
+				{
+					var computerNode = this.ShellTreeView.Nodes.OfType<TreeNode>().Single(s => s.Tag != null && (s.Tag as ShellItem).ParsingName == KnownFolders.Computer.ParsingName);
+					foreach (NotifyInfos info in this._NotificationGlobal.NotificationsReceived.ToArray())
+					{
+						switch (info.Notification)
+						{
+							case ShellNotifications.SHCNE.SHCNE_RENAMEITEM:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_MKDIR:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_RMDIR:
+								break;
+							case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
+							case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
+								var objDm = new ShellItem(info.Item1);
+								var exisitingMItem = computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).ParsingName == objDm.ParsingName);
+								if (exisitingMItem != null)
+								{
+									exisitingMItem.Text = objDm.DisplayName;
+									exisitingMItem.ImageIndex = objDm.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
+									exisitingMItem.SelectedImageIndex = exisitingMItem.ImageIndex;
+								}
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
+								var objDr = new ShellItem(info.Item1);
+								try
+								{
+									computerNode.Nodes.Remove(computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).ParsingName == objDr.ParsingName));
+								}
+								catch (NullReferenceException)
+								{
+
+								}
+								objDr.Dispose();
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
+								var objDa = new ShellItem(info.Item1);
+								var exisitingItem = computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).ParsingName == objDa.ParsingName);
+								if (exisitingItem == null)
+								{
+									var newDrive = new TreeNode(objDa.DisplayName);
+									newDrive.Tag = objDa;
+									newDrive.ImageIndex = objDa.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
+									newDrive.SelectedImageIndex = newDrive.ImageIndex;
+									if (objDa.HasSubFolders)
+										newDrive.Nodes.Add(_EmptyItemString);
+									var nodesList = computerNode.Nodes.OfType<TreeNode>().Where(w => w.Tag != null).Select(s => s.Tag as ShellItem).ToList();
+									nodesList.Add(objDa);
+									nodesList = nodesList.OrderBy(o => o.ParsingName).ToList();
+									var indexToInsert = nodesList.IndexOf(objDa);
+									nodesList = null;
+									GC.Collect();
+									computerNode.Nodes.Insert(indexToInsert, newDrive);
+								}
+								break;
+							case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
+								break;
+							default:
+								break;
+						}
+						this._NotificationGlobal.NotificationsReceived.Remove(info);
+					}
+				}
 				if (_NotificationNetWork.NotificationReceipt(m.WParam, m.LParam)) {
 					foreach (NotifyInfos info in _NotificationNetWork.NotificationsReceived.ToArray()) {
 						switch (info.Notification) {

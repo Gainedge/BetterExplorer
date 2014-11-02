@@ -29,7 +29,7 @@ namespace BExplorer.Shell {
 		protected override void OnHandleCreated(EventArgs e) {
 			base.OnHandleCreated(e);
 			this.NotificationsRB.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_BITBUCKET, true);
-			this.NotificationsGlobal.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
+			this.NotificationsGlobal.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, false);
 		}
 		protected override void OnHandleDestroyed(EventArgs e) {
 			NotificationsRB.UnregisterChangeNotify();
@@ -61,8 +61,17 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_RMDIR:
 								break;
 							case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
-								break;
 							case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
+								if (this._ParentShellView.CurrentFolder.ParsingName == KnownFolders.Computer.ParsingName)
+								{
+									var objMedia = new ShellItem(info.Item1);
+									var exisitingItem = this._ParentShellView.Items.Where(w => w.Equals(objMedia)).SingleOrDefault();
+									if (exisitingItem != null)
+									{
+										this._ParentShellView.UpdateItem(this._ParentShellView.Items.IndexOf(exisitingItem));
+									}
+									objMedia.Dispose();
+								}
 								break;
 							case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
 								var obj = new ShellItem(info.Item1);
