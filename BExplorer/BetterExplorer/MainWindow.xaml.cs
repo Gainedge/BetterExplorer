@@ -155,18 +155,18 @@ namespace BetterExplorer {
 		}
 
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
-			if (TheRibbon.IsMinimized && this.IsGlassOnRibonMinimized) {
-				System.Windows.Point p = ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-				this.GlassBorderThickness = new Thickness(8, this.WindowState == WindowState.Maximized ? p.Y : p.Y - 2, 8, 8);
-			} else if (this.IsGlassOnRibonMinimized) {
-				System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
-				this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight + 2, 8, 8);
-			}
+			//if (TheRibbon.IsMinimized && this.IsGlassOnRibonMinimized) {
+			//	System.Windows.Point p = ShellViewHost.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+			//	this.GlassBorderThickness = new Thickness(8, this.WindowState == WindowState.Maximized ? p.Y : p.Y - 2, 8, 8);
+			//} else if (this.IsGlassOnRibonMinimized) {
+			//	System.Windows.Point p = backstage.TransformToAncestor(this).Transform(new System.Windows.Point(0, 0));
+			//	this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight + 2, 8, 8);
+			//}
 
-			try {
-				this.SetBlur(!TheRibbon.IsMinimized);
-			} catch (Exception) {
-			}
+			//try {
+			//	this.SetBlur(!TheRibbon.IsMinimized);
+			//} catch (Exception) {
+			//}
 		}
 
 		private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e) {
@@ -1373,8 +1373,8 @@ namespace BetterExplorer {
 				case "Black":
 					btnBlack.IsChecked = true;
 					break;
-				case "Green":
-					btnGreen.IsChecked = true;
+				case "Metro":
+					btnMetro.IsChecked = true;
 					break;
 				default:
 					btnBlue.IsChecked = true;
@@ -1581,7 +1581,6 @@ namespace BetterExplorer {
 		private void Window_Loaded(object sender, RoutedEventArgs e) {
 			_keyjumpTimer.Interval = 1000;
 			_keyjumpTimer.Tick += _keyjumpTimer_Tick;
-
 			ShellTreeHost.Child = ShellTree;
 			ShellViewHost.Child = ShellListView;
 
@@ -1687,8 +1686,8 @@ namespace BetterExplorer {
 				rks.SetValue("CurrentTheme", "Silver");
 			} else if (btnBlack.IsChecked == true) {
 				rks.SetValue("CurrentTheme", "Black");
-			} else if (btnGreen.IsChecked == true) {
-				rks.SetValue("CurrentTheme", "Green");
+			} else if (btnMetro.IsChecked == true) {
+				rks.SetValue("CurrentTheme", "Metro");
 			}
 			switch (this.WindowState) {
 				case System.Windows.WindowState.Maximized:
@@ -1784,20 +1783,30 @@ namespace BetterExplorer {
 		#region Change Ribbon Color (Theme)
 
 		public void ChangeRibbonTheme(string ThemeName, bool IsMetro = false) {
-			Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
+			Dispatcher.BeginInvoke(IsMetro ? DispatcherPriority.ApplicationIdle : DispatcherPriority.Render, (ThreadStart)(() => {
+				var owner = Window.GetWindow(this);
 				Application.Current.Resources.BeginInit();
-				Application.Current.Resources.MergedDictionaries.RemoveAt(1);
-				if (IsMetro)
-					Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Metro/{0}.xaml", "White")) });
-				else
+				
+				if (IsMetro) {
+					Application.Current.Resources.MergedDictionaries.RemoveAt(1);
+					Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Office2013/Generic.xaml") });
+				} else {
+					Application.Current.Resources.MergedDictionaries.RemoveAt(1);
 					Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Office2010/{0}.xaml", ThemeName)) });
+				}
 
 				Application.Current.Resources.EndInit();
+
+				if (owner != null) {
+					owner.Style = null;
+					owner.Style = owner.FindResource("RibbonWindowStyle") as Style;
+					owner.Style = null;
+				}
 
 				Utilities.SetRegistryValue("CurrentTheme", ThemeName);
 			}));
 		}
-
+		
 		private void btnSilver_Click(object sender, RoutedEventArgs e) {
 			ChangeRibbonTheme("Silver");
 			KeepBackstageOpen = true;
@@ -1814,10 +1823,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnGreen_Click(object sender, RoutedEventArgs e) {
-			System.Windows.Forms.MessageBox.Show("This does not work");
-			return;
-
-			ChangeRibbonTheme("Green");
+			ChangeRibbonTheme("Metro", true);
 			KeepBackstageOpen = true;
 		}
 
@@ -3973,7 +3979,12 @@ namespace BetterExplorer {
 				ShellListView.RenameSelectedItem();
 				this.ShellListView.IsRenameNeeded = false;
 			}
-
+			if (e.UpdateType == ItemUpdateType.DriveRemoved) {
+				foreach (var tab in this.tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray().Where(w => w.ShellObject.ParsingName.StartsWith(e.NewItem.ParsingName)))
+				{
+					this.tcMain.RemoveTabItem(tab, false);
+				}
+			}
 			this.ShellListView.Focus();
 		}
 
@@ -4218,6 +4229,9 @@ namespace BetterExplorer {
 					case "Black":
 					case "Green":
 						ChangeRibbonTheme(Color);
+						break;
+					case "Metro":
+						ChangeRibbonTheme(Color, true);
 						break;
 					default:
 						ChangeRibbonTheme("Blue");

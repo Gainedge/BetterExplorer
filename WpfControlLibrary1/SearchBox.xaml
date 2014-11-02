@@ -26,7 +26,7 @@
 			Name="SFilters" 
 			Header="Filters" 
 			Icon="Images\filter16.png" 
-			my:RibbonAttachedProperties.RibbonSize="Small" 
+			SizeDefinition="Small" 
 			Width="30" Height="22" 
 			CanAddToQuickAccessToolBar="False" 
 			ToolTip="Filters" 
@@ -35,6 +35,6 @@
 			HorizontalAlignment="Right" 
 			Margin="0,0,24,0" Cursor="Hand" 
 			/>
-		<my:Button Background="Transparent" Height="22" Name="SStartEnd" my:RibbonAttachedProperties.RibbonSize="Small" Header="Search" Icon="Images\search.png" CanAddToQuickAccessToolBar="False" ToolTip="Search" Click="SStartEnd_Click" HorizontalAlignment="Right" Width="24" IsEnabled="False"/>
+		<my:Button Background="Transparent" Height="22" Name="SStartEnd" SizeDefinition="Small" Header="Search" Icon="Images\search.png" CanAddToQuickAccessToolBar="False" ToolTip="Search" Click="SStartEnd_Click" HorizontalAlignment="Right" Width="24" IsEnabled="False"/>
 	</Grid>
 </UserControl>

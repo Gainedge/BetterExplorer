@@ -163,6 +163,7 @@ namespace BExplorer.Shell {
 		Created,
 		Deleted,
 		Updated,
+		DriveRemoved,
 		RecycleBin
 	}
 
@@ -326,7 +327,6 @@ namespace BExplorer.Shell {
 		[Browsable(false)]
 		public ShellItem CurrentFolder { get; private set; }
 
-
 		public int IconSize { get; private set; }
 
 		public List<ShellItem> Items { get; private set; }
@@ -473,6 +473,7 @@ namespace BExplorer.Shell {
 		}
 
 		public int CurrentRefreshedItemIndex = -1;
+		public FileSystemWatcher fsw = new FileSystemWatcher();
 		#endregion Public Members
 
 		#region Private Members
@@ -574,6 +575,54 @@ namespace BExplorer.Shell {
 			//this.GotFocus += ShellView_GotFocus;
 			selectionTimer.Interval = 500;
 			selectionTimer.Tick += selectionTimer_Tick;
+			
+		}
+
+		void fsw_Changed(object sender, FileSystemEventArgs e) {
+			try {
+				var objUpdate = new ShellItem(e.FullPath);
+				var exisitingItem = this.Items.Where(w => w.Equals(objUpdate)).SingleOrDefault();
+				if (exisitingItem != null) {
+					this.RefreshItem(this.Items.IndexOf(exisitingItem), true);
+				}
+				if (objUpdate != null && this.CurrentFolder != null && objUpdate.ParsingName == this.CurrentFolder.ParsingName) {
+					this.UnvalidateDirectory();
+				}
+				objUpdate.Dispose();
+			} catch (FileNotFoundException) {
+
+			}
+		}
+
+		void fsw_Deleted(object sender, FileSystemEventArgs e) {
+			
+			if (!String.IsNullOrEmpty(e.FullPath)) {
+				ShellItem theItem = this.Items.SingleOrDefault(s => s.ParsingName.ToLowerInvariant() == e.FullPath.ToLowerInvariant());
+				if (theItem != null) {
+					this.Items.Remove(theItem);
+					if (this.IsGroupsEnabled) this.SetGroupOrder(false);
+					this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+				}
+			}
+		}
+
+		void fsw_Created(object sender, FileSystemEventArgs e) {
+			var obj = new ShellItem(e.FullPath);
+			var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
+			if (existingItem == null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
+				if (obj.Extension.ToLowerInvariant() != ".tmp") {
+					var itemIndex = this.InsertNewItem(obj);
+// 					this.Invoke(new MethodInvoker(() => {
+// 						this.RaiseItemUpdated(ItemUpdateType.Created, null, obj, itemIndex);
+// 					}));
+				} else {
+					var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
+					if (affectedItem != null) {
+						var index = this.Items.IndexOf(affectedItem);
+						this.RefreshItem(index, true);
+					}
+				}
+			}
 		}
 
 		#endregion Initializer
@@ -2811,6 +2860,18 @@ namespace BExplorer.Shell {
 				return;
 
 			MessageHandlerWindow.ReinitNotify(destination);
+			this.fsw.Created -= fsw_Created;
+			this.fsw.Deleted -= fsw_Deleted;
+			this.fsw.Changed -= fsw_Changed;
+			this.fsw.EnableRaisingEvents = false;
+			if (destination.IsFileSystem || destination.IsNetworkPath) {
+				
+				this.fsw.Path = destination.ParsingName;
+				this.fsw.EnableRaisingEvents = true;
+				this.fsw.Created += fsw_Created;
+				this.fsw.Deleted += fsw_Deleted;
+				this.fsw.Changed += fsw_Changed;
+			}
 			if (ToolTip == null)
 				this.ToolTip = new ToolTip();
 
@@ -2939,46 +3000,6 @@ namespace BExplorer.Shell {
 
 			this.Focus();
 		}
-
-		void FsWatcher_Created(object sender, FileSystemEventArgs e) {
-				var obj = new ShellItem(e.FullPath);
-				var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
-				if (existingItem == null) {
-					if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
-						var itemIndex = InsertNewItem(obj);
-						if (this.ItemUpdated != null)
-							this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
-					} else {
-						var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
-						if (affectedItem != null) {
-							var index = this.Items.IndexOf(affectedItem);
-							this.RefreshItem(index, true);
-						}
-					}
-				}
-		}
-
-		void FsWatcher_Changed(object sender, FileSystemEventArgs e) {
-			//if (e.FullPath == @"\") return;
-			try {
-				this.RefreshItem(this.Items.IndexOf(new ShellItem(e.FullPath)), true, false);
-			} catch (FileNotFoundException) {
-			}
-		}
-
-		void FsWatcher_Deleted(object sender, FileSystemEventArgs e) {
-			var obj = Items.Where(w => w.CachedParsingName.ToLowerInvariant() == e.FullPath.ToLowerInvariant()).SingleOrDefault();
-			if (obj == null) { return; }
-			Items.Remove(obj);
-			if (this.IsGroupsEnabled) {
-				this.SetGroupOrder(false);
-			}
-			this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
-
-			if (this.ItemUpdated != null)
-				this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
-		}
-
 
 		public void DisableGroups() {
 			this.Groups.Clear();

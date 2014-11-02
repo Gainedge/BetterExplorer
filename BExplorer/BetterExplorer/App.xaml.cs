@@ -132,7 +132,34 @@ namespace BetterExplorer {
 			string Locale = ""; bool dmi = true;
 			Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-			
+			//RegistryKey rk = Registry.CurrentUser;
+			//RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+
+			//// loads current Ribbon color theme
+			//try {
+			//	var Color = Convert.ToString(rks.GetValue("CurrentTheme", "Blue"));
+			//	switch (Color) {
+			//		case "Blue":
+			//		case "Silver":
+			//		case "Black":
+			//		case "Green":
+			//			Application.Current.Resources.MergedDictionaries.RemoveAt(0);
+			//			Application.Current.Resources.MergedDictionaries.Insert(0, new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Generic.xaml") });
+			//			break;
+			//		case "Metro":
+			//			Application.Current.Resources.MergedDictionaries.RemoveAt(0);
+			//			Application.Current.Resources.MergedDictionaries.Insert(0, new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Office2013/Generic.xaml") });
+			//			break;
+			//		default:
+			//			Application.Current.Resources.MergedDictionaries.RemoveAt(0);
+			//			Application.Current.Resources.MergedDictionaries.Insert(0, new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Generic.xaml") });
+			//			break;
+			//	}
+			//} catch (Exception ex) {
+			//	MessageBox.Show(String.Format("An error occurred while trying to load the theme data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "RibbonTheme Error - " + ex.ToString());
+			//}
+			//rks.Close();
+			//rk.Close();
 			if (e.Args != null && e.Args.Any()) {
 				dmi = e.Args.Contains("/nw") || e.Args[0] == "t";
 				isStartWithStartupTab = e.Args.Contains("/norestore");

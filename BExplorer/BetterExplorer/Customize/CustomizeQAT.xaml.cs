@@ -46,8 +46,8 @@ namespace BetterExplorer {
 
 			#region DO NOT DELETE (yet) [From: Aaron Campf]
 			var AllMenuItems = MainForm.TheRibbon.QuickAccessItems.Select(x => x.Target).ToList();
-			var Controls = (from control in MainForm.TheRibbon.QuickAccessToolbarItems
-							select control.Key as Control into newControl
+			var Controls = (from control in MainForm.TheRibbon.QuickAccessItems
+							select control as Control into newControl
 							where !AllMenuItems.Any(x => x.Name == newControl.Name)
 							select newControl).ToList();
 			#endregion
@@ -55,7 +55,7 @@ namespace BetterExplorer {
 			AllMenuItems.AddRange(Controls);
 			//Here add visible elements since we want to show in that dialog only visible elements into the QAT.
 			//Maybe have to find a way to show all elements even not visible and do some handling to display them properly
-			foreach (var item in MainForm.TheRibbon.QuickAccessToolbarItems.Select(s => s.Key as Control).ToList()) {
+			foreach (var item in MainForm.TheRibbon.QuickAccessItems.Select(s => s as Control).ToList()) {
 				QATControls.Items.Add(GetRibbonItemListDisplay(item as IRibbonControl));
 			}
 		}

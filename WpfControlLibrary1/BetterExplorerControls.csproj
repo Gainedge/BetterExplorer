@@ -83,6 +83,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fluent, Version=2.1.0.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\BExplorer\BetterExplorer\Fluent.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -156,10 +160,6 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\fluent_528456d5eb19\Fluent\Fluent\Fluent dotNET 4.5.csproj">
-      <Project>{d9903e8a-5fc4-43c6-a48d-806742704de8}</Project>
-      <Name>Fluent dotNET 4.5</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Shell\Shell.csproj">
       <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
       <Name>Shell</Name>

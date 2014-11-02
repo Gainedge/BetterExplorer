@@ -5,7 +5,6 @@ VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterExplorer", "BExplorer\BetterExplorer\BetterExplorer.csproj", "{BBD6B64A-5617-4F6C-A5CE-5156365BF33E}"
 	ProjectSection(ProjectDependencies) = postProject
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8} = {D9903E8A-5FC4-43C6-A48D-806742704DE8}
 		{2AAB3F8C-A802-4986-A35D-3C6D0A6BA566} = {2AAB3F8C-A802-4986-A35D-3C6D0A6BA566}
 		{CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64} = {CCB727C4-6B08-4FCE-BC23-A6D5D47BFB64}
 	EndProjectSection
@@ -27,8 +26,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsbEject", "UsbEject\UsbEject.csproj", "{AE269158-DFA5-4DD7-8AFC-F45FAF2B958C}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ImDiskNet", "ImDiskNet\ImDiskNet.vbproj", "{3EFCB6F8-EF7E-4F60-A0DE-BB197240FCC9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fluent dotNET 4.5", "fluent_528456d5eb19\Fluent\Fluent\Fluent dotNET 4.5.csproj", "{D9903E8A-5FC4-43C6-A48D-806742704DE8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfDocumentPreviewer", "WpfDocumentPreviewer\WpfDocumentPreviewer.csproj", "{6A63405A-B6BB-4095-B48C-E720DE021482}"
 EndProject
@@ -381,34 +378,6 @@ Global
 		{3EFCB6F8-EF7E-4F60-A0DE-BB197240FCC9}.Release|Win32.ActiveCfg = Release|Any CPU
 		{3EFCB6F8-EF7E-4F60-A0DE-BB197240FCC9}.Release|x64.ActiveCfg = Release|Any CPU
 		{3EFCB6F8-EF7E-4F60-A0DE-BB197240FCC9}.Release|x86.ActiveCfg = Release|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.CodeAnalysisDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.CodeAnalysisDebug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.CodeAnalysisDebug|Win32.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.CodeAnalysisDebug|x64.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.CodeAnalysisDebug|x86.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Deploy|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Deploy|Any CPU.Build.0 = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Deploy|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Deploy|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Deploy|Win32.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Deploy|x64.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Deploy|x86.ActiveCfg = Debug|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Release|Win32.ActiveCfg = Release|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Release|x64.ActiveCfg = Release|Any CPU
-		{D9903E8A-5FC4-43C6-A48D-806742704DE8}.Release|x86.ActiveCfg = Release|Any CPU
 		{6A63405A-B6BB-4095-B48C-E720DE021482}.CodeAnalysisDebug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6A63405A-B6BB-4095-B48C-E720DE021482}.CodeAnalysisDebug|Any CPU.Build.0 = Debug|Any CPU
 		{6A63405A-B6BB-4095-B48C-E720DE021482}.CodeAnalysisDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -640,9 +609,6 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		VisualSVNWorkingCopyRoot = .
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 	GlobalSection(NDepend) = preSolution
 		Project = ".\BFExplorer.ndproj"
