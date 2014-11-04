@@ -67,6 +67,7 @@ namespace BExplorer.Shell {
 		private Boolean isFromTreeview;
 		private Boolean _IsNavigate;
 		private String _EmptyItemString = "<!EMPTY!>";
+		private Boolean _AcceptSelection = true;
 		private ShellNotifications _NotificationNetWork = new ShellNotifications();
 		private ShellNotifications _NotificationGlobal = new ShellNotifications();
 		private System.Runtime.InteropServices.ComTypes.IDataObject _DataObject { get; set; }
@@ -241,6 +242,7 @@ namespace BExplorer.Shell {
 			this.ShellTreeView.MouseLeave += ShellTreeView_MouseLeave;
 			this.ShellTreeView.MouseWheel += ShellTreeView_MouseWheel;
 			this.ShellTreeView.VerticalScroll += ShellTreeView_VerticalScroll;
+			this.ShellTreeView.BeforeSelect += ShellTreeView_BeforeSelect;
 			if (this.ShellListView != null) {
 				this.ShellListView.Navigated += ShellListView_Navigated;
 			}
@@ -253,6 +255,10 @@ namespace BExplorer.Shell {
 			imagesThread.Start();
 			childsThread = new Thread(new ThreadStart(LoadChilds)) { IsBackground = true };
 			childsThread.Start();
+		}
+
+		void ShellTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e) {
+
 		}
 
 		void ShellTreeView_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
@@ -339,7 +345,7 @@ namespace BExplorer.Shell {
 				var hash = -1;
 				var pidl = IntPtr.Zero;
 				var visible = false;
-				
+
 				this.Invoke((Action)(() => {
 					if (this.ShellTreeView != null) {
 						node = TreeNode.FromHandle(ShellTreeView, handle);
@@ -576,6 +582,8 @@ namespace BExplorer.Shell {
 		}
 
 		private async void ShellTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
+			if (e.Action == TreeViewAction.Collapse)
+				this._AcceptSelection = false;
 			if (e.Action == TreeViewAction.Expand) {
 				this._ResetEvent.Reset();
 				if (e.Node.Nodes.Count > 0 && e.Node.Nodes[0].Text == this._EmptyItemString) {
@@ -637,6 +645,10 @@ namespace BExplorer.Shell {
 		}
 
 		private void ShellTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
+			if (!this._AcceptSelection) {
+				this._AcceptSelection = true;
+				return;
+			}
 			var sho = e.Node != null ? e.Node.Tag as ShellItem : null;
 			if (sho != null) {
 				ShellItem linkSho = null;
@@ -652,13 +664,10 @@ namespace BExplorer.Shell {
 				this.isFromTreeview = true;
 				if (this._IsNavigate) {
 					this.ShellListView.Navigate_Full(linkSho ?? sho, true, true);
-					if (this.ShellListView.CurrentFolder != null && this.AfterSelect != null)
-						this.AfterSelect.Invoke(this, new NavigatedEventArgs(this.ShellListView.CurrentFolder, null));
 				}
 
 				this._IsNavigate = false;
 				this.isFromTreeview = false;
-				//e.Node.Expand();
 			}
 		}
 
@@ -681,11 +690,13 @@ namespace BExplorer.Shell {
 
 		private void ShellTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
 			if (e.Button == F.MouseButtons.Right) {
-				//this.ShellTreeView.SelectedNode = e.Node;
-				var cm = new ShellContextMenu(e.Node.Tag as ShellItem);
-				cm.ShowContextMenu(this, e.Location, CMF.CANRENAME);
+				if (e.Node.Tag != null) {
+					var cm = new ShellContextMenu(e.Node.Tag as ShellItem);
+					cm.ShowContextMenu(this, e.Location, CMF.CANRENAME);
+				}
 			} else if (e.Button == F.MouseButtons.Left) {
-				this._IsNavigate = true;
+				if (e.X > e.Node.Bounds.Left - 5 - 16)
+					this._IsNavigate = true;
 			}
 		}
 
@@ -863,13 +874,10 @@ namespace BExplorer.Shell {
 			base.WndProc(ref m);
 			if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
 				//MessageBox.Show("1");
-				if (this._NotificationGlobal.NotificationReceipt(m.WParam, m.LParam))
-				{
+				if (this._NotificationGlobal.NotificationReceipt(m.WParam, m.LParam)) {
 					var computerNode = this.ShellTreeView.Nodes.OfType<TreeNode>().Single(s => s.Tag != null && (s.Tag as ShellItem).ParsingName == KnownFolders.Computer.ParsingName);
-					foreach (NotifyInfos info in this._NotificationGlobal.NotificationsReceived.ToArray())
-					{
-						switch (info.Notification)
-						{
+					foreach (NotifyInfos info in this._NotificationGlobal.NotificationsReceived.ToArray()) {
+						switch (info.Notification) {
 							case ShellNotifications.SHCNE.SHCNE_RENAMEITEM:
 								break;
 							case ShellNotifications.SHCNE.SHCNE_MKDIR:
@@ -880,8 +888,7 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
 								var objDm = new ShellItem(info.Item1);
 								var exisitingMItem = computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).ParsingName == objDm.ParsingName);
-								if (exisitingMItem != null)
-								{
+								if (exisitingMItem != null) {
 									exisitingMItem.Text = objDm.DisplayName;
 									exisitingMItem.ImageIndex = objDm.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
 									exisitingMItem.SelectedImageIndex = exisitingMItem.ImageIndex;
@@ -889,12 +896,9 @@ namespace BExplorer.Shell {
 								break;
 							case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
 								var objDr = new ShellItem(info.Item1);
-								try
-								{
+								try {
 									computerNode.Nodes.Remove(computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).ParsingName == objDr.ParsingName));
-								}
-								catch (NullReferenceException)
-								{
+								} catch (NullReferenceException) {
 
 								}
 								objDr.Dispose();
@@ -902,8 +906,7 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
 								var objDa = new ShellItem(info.Item1);
 								var exisitingItem = computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).ParsingName == objDa.ParsingName);
-								if (exisitingItem == null)
-								{
+								if (exisitingItem == null) {
 									var newDrive = new TreeNode(objDa.DisplayName);
 									newDrive.Tag = objDa;
 									newDrive.ImageIndex = objDa.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
