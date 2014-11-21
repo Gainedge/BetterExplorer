@@ -1438,9 +1438,9 @@
 								Click="btnOpenWith_Click"
 								Header="{DynamicResource btnOpenCP}"
 								Icon="Images\open16.png"
-								IsEnabled="False"
+								IsEnabled="True"
 								Ribbon:KeyTip.Keys="O"
-								SizeDefinition="Middle,Middle,Small" />
+								SizeDefinition="Middle,Middle,Small" DropDownOpened="btnOpenWith_DropDownOpened" />
 					<Ribbon:Button x:Name="btnEdit"
 						 Click="btnEdit_Click"
 						 Header="{DynamicResource btnEditCP}"

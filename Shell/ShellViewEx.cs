@@ -597,7 +597,7 @@ namespace BExplorer.Shell {
 		void fsw_Deleted(object sender, FileSystemEventArgs e) {
 
 			if (!String.IsNullOrEmpty(e.FullPath)) {
-				ShellItem theItem = this.Items.SingleOrDefault(s => s.ParsingName.ToLowerInvariant() == e.FullPath.ToLowerInvariant());
+				ShellItem theItem = this.Items.ToArray().SingleOrDefault(s => s.ParsingName.ToLowerInvariant() == e.FullPath.ToLowerInvariant());
 				if (theItem != null) {
 					this.Items.Remove(theItem);
 					if (this.IsGroupsEnabled) this.SetGroupOrder(false);
@@ -607,21 +607,27 @@ namespace BExplorer.Shell {
 		}
 
 		void fsw_Created(object sender, FileSystemEventArgs e) {
-			var obj = new ShellItem(e.FullPath);
-			var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
-			if (existingItem == null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
-				if (obj.Extension.ToLowerInvariant() != ".tmp") {
-					var itemIndex = this.InsertNewItem(obj);
-					// 					this.Invoke(new MethodInvoker(() => {
-					// 						this.RaiseItemUpdated(ItemUpdateType.Created, null, obj, itemIndex);
-					// 					}));
-				} else {
-					var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
-					if (affectedItem != null) {
-						var index = this.Items.IndexOf(affectedItem);
-						this.RefreshItem(index, true);
+			if (!File.Exists(e.FullPath) && !Directory.Exists(e.FullPath))
+				return;
+			try {
+				var obj = new ShellItem(e.FullPath);
+				var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
+				if (existingItem == null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
+					if (obj.Extension.ToLowerInvariant() != ".tmp") {
+						var itemIndex = this.InsertNewItem(obj);
+						// 					this.Invoke(new MethodInvoker(() => {
+						this.RaiseItemUpdated(ItemUpdateType.Created, null, obj, itemIndex);
+						// 					}));
+					} else {
+						var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
+						if (affectedItem != null) {
+							var index = this.Items.IndexOf(affectedItem);
+							this.RefreshItem(index, true);
+						}
 					}
 				}
+			} catch (Exception) {
+
 			}
 		}
 
@@ -1574,7 +1580,7 @@ namespace BExplorer.Shell {
 				this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(type, newItem, old, index));
 		}
 
-		[HandleProcessCorruptedStateExceptions]
+		
 		protected override void WndProc(ref Message m) {
 			try {
 
@@ -1999,15 +2005,15 @@ namespace BExplorer.Shell {
 							#region Case
 							var nmhdrHdn = (NMHEADER)(m.GetLParam(typeof(NMHEADER)));
 							var itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
+              if (this.ToolTip != null)
+                this.ToolTip.HideTooltip();
 
 							if (nmhdrHdn.iItem != -1 && nmhdrHdn.hdr.hwndFrom == this.LVHandle) {
 								var selitems = this.SelectedItems;
-								//var itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
 								var cm = new ShellContextMenu(selitems.ToArray());
 								cm.ShowContextMenu(this, itemActivate.ptAction, CMF.CANRENAME);
 							} else if (nmhdrHdn.iItem == -1) {
-								//var itemActivate = (NMITEMACTIVATE)m.GetLParam(typeof(NMITEMACTIVATE));
-								var cm = new ShellContextMenu(new ShellItem[1] { this.CurrentFolder }, SVGIO.SVGIO_BACKGROUND);
+								var cm = new ShellContextMenu(new ShellItem[1] { this.CurrentFolder }, SVGIO.SVGIO_BACKGROUND, this);
 								cm.ShowContextMenu(this, itemActivate.ptAction, 0, true);
 							} else if (ColumnHeaderRightClick != null) {
 								ColumnHeaderRightClick(this, new MouseEventArgs(F.MouseButtons.Right, 1, MousePosition.X, MousePosition.Y, 0));
@@ -2685,9 +2691,13 @@ namespace BExplorer.Shell {
 		public void SelectItems(ShellItem[] ShellObjectArray) {
 			this.DeSelectAllItems();
 			foreach (ShellItem item in ShellObjectArray) {
-				var lvii = new LVITEMINDEX() { iItem = ItemsHashed[item], iGroup = this.GetGroupIndex(ItemsHashed[item]) };
-				var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
-				User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
+				try {
+					var lvii = new LVITEMINDEX() { iItem = ItemsHashed[item], iGroup = this.GetGroupIndex(ItemsHashed[item]) };
+					var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
+					User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
+				} catch (Exception) {
+					//catch the given key was not found. It happen on fast delete of items
+				}
 			}
 			this.Focus();
 		}

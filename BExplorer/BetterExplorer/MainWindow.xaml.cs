@@ -595,31 +595,37 @@ namespace BetterExplorer {
 		private void SetupUIOnSelectOrNavigate() {
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				btnDefSave.Items.Clear();
-				btnOpenWith.Items.Clear();
-				var SelItemsCount = ShellListView.GetSelectedCount();
-				var selectedItem = this.ShellListView.GetFirstSelectedItem();
+ 				var selItemsCount = ShellListView.GetSelectedCount();
+ 				var selectedItem = this.ShellListView.GetFirstSelectedItem();
+        if (selectedItem != null) {
+          var mnu = new ShellContextMenu(this.ShellListView, 1);
 
-				if (selectedItem != null) {
-					foreach (var item in selectedItem.GetAssocList()) {
-						btnOpenWith.Items.Add(Utilities.Build_MenuItem(item.DisplayName, item, item.Icon, ToolTip: item.ApplicationPath, onClick: miow_Click));
-					}
-				}
+          try {
+            var controlPos = btnOpenWith.TransformToAncestor(Application.Current.MainWindow).Transform(new System.Windows.Point(0, 0));
+            var tempPoint = PointToScreen(new System.Windows.Point(controlPos.X, controlPos.Y));
+            var itemMenuCount = mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnOpenWith.ActualHeight), 1, false);
 
-				btnOpenWith.IsEnabled = btnOpenWith.HasItems;
+            btnOpenWith.IsEnabled = itemMenuCount > 0 && selItemsCount == 1;
+          } catch (Exception) {
 
-				if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && SelItemsCount == 1) {
+            btnOpenWith.IsEnabled = false;
+          }
+        } else {
+          btnOpenWith.IsEnabled = false;
+        }
+
+				if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && selItemsCount == 1) {
 					this.Previewer.FileName = selectedItem.ParsingName;
 				} else if (!String.IsNullOrEmpty(this.Previewer.FileName)) {
 					this.Previewer.FileName = null;
 				}
 				//Set up ribbon contextual tabs on selection changed
-				SetUpRibbonTabsVisibilityOnSelectOrNavigate(SelItemsCount, selectedItem);
-				SetUpButtonsStateOnSelectOrNavigate(SelItemsCount, selectedItem);
+				SetUpRibbonTabsVisibilityOnSelectOrNavigate(selItemsCount, selectedItem);
+				SetUpButtonsStateOnSelectOrNavigate(selItemsCount, selectedItem);
 			}));
 		}
 
 		bool IsFromSelectionOrNavigation = false;
-		// background worker code removed. hopefully we don't need it still... Lol.
 
 		void cbm_ClipboardChanged(object sender, Tuple<System.Windows.Forms.IDataObject> e) {
 			btnPaste.IsEnabled = e.Item1.GetDataPresent(DataFormats.FileDrop) || e.Item1.GetDataPresent("Shell IDList Array");
@@ -683,7 +689,13 @@ namespace BetterExplorer {
 
 		private void miJunctionpoint_Click(object sender, RoutedEventArgs e) {
 			string PathForDrop = ShellListView.CurrentFolder.ParsingName.Replace(@"\\", @"\");
-			foreach (string item in System.Windows.Forms.Clipboard.GetFileDropList()) {
+      var files = new String[0];
+      if (System.Windows.Forms.Clipboard.ContainsData("Shell IDList Array")) {
+        files = System.Windows.Forms.Clipboard.GetDataObject().ToShellItemArray().ToArray().Select(s => new ShellItem(s).ParsingName).ToArray();
+      } else {
+        files = System.Windows.Forms.Clipboard.GetFileDropList().OfType<string>().ToArray();
+      }
+			foreach (string item in files) {
 				ShellItem o = new ShellItem(item);
 				JunctionPointUtils.JunctionPoint.Create(String.Format(@"{0}\{1}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY)), o.ParsingName, true);
 				AddToLog(String.Format(@"Created Junction Point at {0}\{1} linked to {2}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY), o.ParsingName));
@@ -3326,7 +3338,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnTabClone_Click(object sender, RoutedEventArgs e) {
-			tcMain.CloneTabItem(tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem);
+			tcMain.CloneTabItem(tcMain.SelectedItem as Wpf.Controls.TabItem);
 		}
 
 		private void btnTabCloseC_Click(object sender, RoutedEventArgs e) {
@@ -3966,26 +3978,27 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_ItemUpdated(object sender, ItemUpdatedEventArgs e) {
-			if (e.UpdateType == ItemUpdateType.RecycleBin) {
-				this.UpdateRecycleBinInfos();
-			}
-			if (e.UpdateType != ItemUpdateType.Renamed && e.UpdateType != ItemUpdateType.Updated) {
-				int ItemsCount = ShellListView.Items.Count;
-				sbiItemsCount.Visibility = ItemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;
-				sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
-			}
-			if (e.UpdateType == ItemUpdateType.Created && this.ShellListView.IsRenameNeeded) {
-				ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
-				ShellListView.RenameSelectedItem();
-				this.ShellListView.IsRenameNeeded = false;
-			}
-			if (e.UpdateType == ItemUpdateType.DriveRemoved) {
-				foreach (var tab in this.tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray().Where(w => w.ShellObject.ParsingName.StartsWith(e.NewItem.ParsingName)))
-				{
-					this.tcMain.RemoveTabItem(tab, false);
+			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
+				if (e.UpdateType == ItemUpdateType.RecycleBin) {
+					this.UpdateRecycleBinInfos();
 				}
-			}
-			this.ShellListView.Focus();
+				if (e.UpdateType != ItemUpdateType.Renamed && e.UpdateType != ItemUpdateType.Updated) {
+					int ItemsCount = ShellListView.Items.Count;
+					sbiItemsCount.Visibility = ItemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;
+					sbiItemsCount.Content = ItemsCount == 1 ? "1 item" : ItemsCount + " items";
+				}
+				if (e.UpdateType == ItemUpdateType.Created && this.ShellListView.IsRenameNeeded) {
+					ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
+					ShellListView.RenameSelectedItem();
+					this.ShellListView.IsRenameNeeded = false;
+				}
+				if (e.UpdateType == ItemUpdateType.DriveRemoved) {
+					foreach (var tab in this.tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray().Where(w => w.ShellObject.ParsingName.StartsWith(e.NewItem.ParsingName))) {
+						this.tcMain.RemoveTabItem(tab, false);
+					}
+				}
+				this.ShellListView.Focus();
+			}));
 		}
 
 		void ShellListView_SelectionChanged(object sender, EventArgs e) {
@@ -4003,12 +4016,13 @@ namespace BetterExplorer {
 		#region On Navigated
 
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
+      SetupUIOnSelectOrNavigate();
 			if (e.OldFolder != this.ShellListView.CurrentFolder) {
 				NavigationController(this.ShellListView.CurrentFolder);
 			}
 			SetupColumnsButton();
 			SetSortingAndGroupingButtons();
-			SetupUIOnSelectOrNavigate();
+			
 
 			if (!tcMain.isGoingBackOrForward) {
 				var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
@@ -4356,10 +4370,12 @@ namespace BetterExplorer {
 
 		private void btnNewItem_DropDownOpened(object sender, EventArgs e) {
 			var mnu = new ShellContextMenu(this.ShellListView, 0);
+			
 			var controlPos = btnNewItem.TransformToAncestor(Application.Current.MainWindow).Transform(new System.Windows.Point(0, 0));
 			var tempPoint = PointToScreen(new System.Windows.Point(controlPos.X, controlPos.Y));
 			mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnNewItem.ActualHeight));
 			btnNewItem.IsDropDownOpen = false;
+			//mnu.GeneratetestMenu(this.ShellListView.GetFirstSelectedItem());
 		}
 
 		private void mnuPinToStart_Click(object sender, RoutedEventArgs e) {
@@ -4589,6 +4605,16 @@ namespace BetterExplorer {
 		}
 
 		#endregion
+
+    private void btnOpenWith_DropDownOpened(object sender, EventArgs e) {
+      var mnu = new ShellContextMenu(this.ShellListView, 1);
+
+      var controlPos = btnOpenWith.TransformToAncestor(Application.Current.MainWindow).Transform(new System.Windows.Point(0, 0));
+      var tempPoint = PointToScreen(new System.Windows.Point(controlPos.X, controlPos.Y));
+      mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnOpenWith.ActualHeight), 1);
+      btnOpenWith.IsDropDownOpen = false;
+
+    }
 
 	}
 }

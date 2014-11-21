@@ -19,6 +19,7 @@
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
 #pragma warning disable 1591
@@ -98,7 +99,8 @@ namespace BExplorer.Shell.Interop {
 		[PreserveSig]
 		HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst, int idCmdLast, CMF uFlags);
 
-		void InvokeCommand(ref CMINVOKECOMMANDINFOEX pici);
+		[PreserveSig]
+		HResult InvokeCommand(ref CMINVOKECOMMANDINFOEX pici);
 
 		[PreserveSig]
 		HResult GetCommandString(int idcmd, uint uflags, int reserved,
@@ -114,8 +116,8 @@ namespace BExplorer.Shell.Interop {
 		new HResult QueryContextMenu(IntPtr hMenu, uint indexMenu,
 				int idCmdFirst, int idCmdLast,
 				CMF uFlags);
-
-		void InvokeCommand(ref CMINVOKECOMMANDINFOEX pici);
+		[PreserveSig]
+		new HResult InvokeCommand(ref CMINVOKECOMMANDINFOEX pici);
 
 		[PreserveSig]
 		HResult GetCommandString(int idcmd, uint uflags, int reserved,
@@ -157,7 +159,7 @@ namespace BExplorer.Shell.Interop {
 		[PreserveSig()]
 		int Initialize(
 				IntPtr pidlFolder,
-				IntPtr lpdobj,
+				IDataObject lpdobj,
 				uint hKeyProgID);
 	}
 }

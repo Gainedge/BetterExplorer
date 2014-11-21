@@ -94,7 +94,7 @@ namespace BExplorer.Shell.Interop {
 		public IntPtr hbmpChecked;
 		public IntPtr hbmpUnchecked;
 		public IntPtr dwItemData;
-		public IntPtr dwTypeData;
+		public String dwTypeData;
 		public uint cch;
 		public IntPtr hbmpItem;
 	}
@@ -289,6 +289,9 @@ namespace BExplorer.Shell.Interop {
 	}
 
 	public class User32 {
+		[DllImport("user32.dll")]
+		public static extern uint GetMenuItemID(IntPtr hMenu, int nPos);
+
 		private const string UserPinnedTaskbarItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\TaskBar\\";
 		private const string UserPinnedStartMenuItemsPath = "{0}\\Microsoft\\Internet Explorer\\Quick Launch\\User Pinned\\StartMenu\\";
 		public static bool IsPinnedToTaskbar(string executablePath) {
@@ -585,6 +588,29 @@ namespace BExplorer.Shell.Interop {
 
 		[DllImport("user32")]
 		public static extern int DestroyIcon(IntPtr hIcon);
+		[DllImport("user32.dll")]
+		public static extern IntPtr CreatePopupMenu();
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern bool AppendMenu(IntPtr hMenu, MenuFlags uFlags, uint uIDNewItem, string lpNewItem);
+
+    [Flags]
+    public enum MenuFlags : uint {
+      MF_STRING = 0,
+      MF_BYPOSITION = 0x400,
+      MF_SEPARATOR = 0x800,
+      MF_REMOVE = 0x1000,
+      MF_POPUP = 0x00000010,
+    }
+
+    [DllImport("user32.dll")]
+    public static extern bool InsertMenuItem(IntPtr hMenu, uint uItem, bool fByPosition, [In] ref MENUITEMINFO lpmii);
+
+    [DllImport("user32.dll")]
+    public static extern IntPtr GetSubMenu(IntPtr hMenu, int nPos);
+
+		[DllImport("user32.dll")]
+		public static extern bool DestroyMenu(IntPtr hMenu);
 
 		[DllImport("user32.dll")]
 		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg, int wParam, int lParam);
