@@ -219,6 +219,7 @@ namespace BExplorer.Shell {
 						
 						//TODO: Should this be and Else If(...)?
 						if (info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER || info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEITEM) {
+              this._ParentShellView.IsRenameInProgress = false;
 							ShellItem obj1 = new ShellItem(info.Item1), obj2 = new ShellItem(info.Item2);
 							if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName)) {
 								this._ParentShellView.UpdateItem(obj1, obj2);

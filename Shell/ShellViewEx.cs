@@ -580,6 +580,9 @@ namespace BExplorer.Shell {
 
 		void fsw_Changed(object sender, FileSystemEventArgs e) {
 			try {
+        if (e.ChangeType == WatcherChangeTypes.Renamed) {
+          this.IsRenameInProgress = false;
+        }
 				var objUpdate = new ShellItem(e.FullPath);
 				var exisitingItem = this.Items.Where(w => w.Equals(objUpdate)).SingleOrDefault();
 				if (exisitingItem != null) {
@@ -644,7 +647,7 @@ namespace BExplorer.Shell {
 				}
 
 			}
-			if (this.ItemForRename != this.GetFirstSelectedItemIndex()) {
+			if (this.ItemForRename != this.GetFirstSelectedItemIndex() && !this.IsRenameInProgress) {
 				(sender as F.Timer).Stop();
 				this.EndLabelEdit();
 			}
@@ -1950,7 +1953,8 @@ namespace BExplorer.Shell {
 								m.Result = (IntPtr)1;
 								switch (nkd.wVKey) {
 									case (short)Keys.Enter:
-										this.EndLabelEdit();
+                    if (!this.IsRenameInProgress)
+										  this.EndLabelEdit();
 										this.Focus();
 										break;
 
@@ -2037,8 +2041,8 @@ namespace BExplorer.Shell {
 
 						case WNM.NM_KILLFOCUS:
 							#region Case
-							if (this.ItemForRename != -1)
-								EndLabelEdit();
+              if (this.ItemForRename != -1 && !this.IsRenameInProgress)
+                EndLabelEdit();
 							if (IsGroupsEnabled)
 								RedrawWindow();
 							if (this.ToolTip != null && this.ToolTip.IsVisible)
@@ -2649,7 +2653,7 @@ namespace BExplorer.Shell {
 		}
 
 		public void RenameShellItem(IShellItem item, String newName) {
-			var fo = new IIFileOperation(true);
+			var fo = new IIFileOperation(this.LVHandle);
 			fo.RenameItem(item, newName);
 			fo.PerformOperations();
 		}
@@ -2972,7 +2976,7 @@ namespace BExplorer.Shell {
 			if (isThereSettings) {
 				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder, false);
 			} else if (destination.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant()) {
-				this.Items = this.Items.ToList();
+				this.Items = this.Items.OrderBy(o => o.ParsingName).ToList();
 			} else {
 				this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
 			}
@@ -3863,7 +3867,7 @@ namespace BExplorer.Shell {
 		#endregion Database
 
 		#region Rename File
-
+    public bool IsRenameInProgress = false;
 		public void FileNameChangeAttempt(string NewName, bool Cancel) {
 			if (ItemForRealName_IsAny && this.Items != null && this.Items.Count >= ItemForRename) {
 				var item = this.Items[ItemForRename];
@@ -3871,6 +3875,7 @@ namespace BExplorer.Shell {
 
 
 					if (item.DisplayName != NewName) {
+            IsRenameInProgress = true;
 						RenameShellItem(item.ComInterface, NewName);
 					}
 				}

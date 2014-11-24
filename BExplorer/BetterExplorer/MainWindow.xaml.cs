@@ -3867,16 +3867,16 @@ namespace BetterExplorer {
 
 		[Obsolete("try to move this into ShellViewEx")]
 		void ShellListView_EndItemLabelEdit(object sender, bool e) {
-			this.Editor.Visibility = System.Windows.Visibility.Collapsed;
-			this.Editor.IsOpen = false;
-
-
 			//this.ShellListView.NewName = this.txtEditor.Text;
 			ShellListView.FileNameChangeAttempt(this.txtEditor.Text, e);
+      this.Editor.Visibility = System.Windows.Visibility.Collapsed;
+      this.Editor.IsOpen = false;
 		}
 
 		[Obsolete("try to move this into ShellViewEx")]
 		void ShellListView_BeginItemLabelEdit(object sender, RenameEventArgs e) {
+      if (this.Editor.IsOpen)
+        return;
 			var isSmall = this.ShellListView.IconSize == 16;
 			var itemRect = this.ShellListView.GetItemBounds(e.ItemIndex, 0);
 			var itemLabelRect = this.ShellListView.GetItemBounds(e.ItemIndex, 2);
@@ -4614,6 +4614,32 @@ namespace BetterExplorer {
       mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnOpenWith.ActualHeight), 1);
       btnOpenWith.IsDropDownOpen = false;
 
+    }
+
+    private void btnSort_DropDownOpened(object sender, EventArgs e) {
+      var button = sender as DropDownButton;
+      foreach (MenuItem item in button.Items) {
+        var column = item.Tag as Collumns;
+        if (column == this.ShellListView.Collumns[this.ShellListView.LastSortedColumnIndex]) {
+          item.IsChecked = true;
+          break;
+        }
+      }
+      button.Items.OfType<MenuItem>().Last().IsChecked = this.ShellListView.LastSortOrder == System.Windows.Forms.SortOrder.Descending;
+      button.Items.OfType<MenuItem>().ToArray()[button.Items.OfType<MenuItem>().Count() - 2].IsChecked = this.ShellListView.LastSortOrder == System.Windows.Forms.SortOrder.Ascending;
+    }
+
+    private void btnGroup_DropDownOpened(object sender, EventArgs e) {
+      var button = sender as DropDownButton;
+      foreach (MenuItem item in button.Items) {
+        var column = item.Tag as Collumns;
+        if (column == this.ShellListView.LastGroupCollumn) {
+          item.IsChecked = true;
+          break;
+        }
+      }
+      button.Items.OfType<MenuItem>().Last().IsChecked = this.ShellListView.LastGroupOrder == System.Windows.Forms.SortOrder.Descending;
+      button.Items.OfType<MenuItem>().ToArray()[button.Items.OfType<MenuItem>().Count() - 2].IsChecked = this.ShellListView.LastGroupOrder == System.Windows.Forms.SortOrder.Ascending;
     }
 
 	}

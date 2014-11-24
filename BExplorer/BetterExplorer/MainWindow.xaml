@@ -1929,7 +1929,7 @@
 								 Focusable="False"
 								 LargeIcon="Images\sort32.png"
 								 Ribbon:KeyTip.Keys="S"
-								 SizeDefinition="Large,Large,Small">
+								 SizeDefinition="Large,Large,Small" DropDownOpened="btnSort_DropDownOpened">
 						<Ribbon:DropDownButton.ToolTip>
 							<!--  "{DynamicResource btnSortHCP}"  -->
 							<Ribbon:ScreenTip Title="{DynamicResource btnSortByCP}"
@@ -1944,7 +1944,7 @@
 								 Icon="Images\groupby16.png"
 								 Ribbon:KeyTip.Keys="G"
 								 Focusable="False"
-								 SizeDefinition="Middle,Small,Small" />
+								 SizeDefinition="Middle,Small,Small" DropDownOpened="btnGroup_DropDownOpened" />
 					<Ribbon:Button x:Name="btnAutosizeColls"
 						 Click="btnAutosizeColls_Click"
 						 Header="{DynamicResource btnAutoSizeColCP}"

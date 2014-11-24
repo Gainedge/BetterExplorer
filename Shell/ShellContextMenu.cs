@@ -209,7 +209,7 @@ namespace BExplorer.Shell {
     /// <param name="additionalFlags"></param>
     public void Populate(Menu menu, CMF additionalFlags) {
       //RemoveShellMenuItems(menu);
-      m_ComInterface.QueryContextMenu(menu.Handle, 0, m_CmdFirst, int.MaxValue, CMF.EXPLORE | additionalFlags);
+      m_ComInterface.QueryContextMenu(menu.Handle, 0, m_CmdFirst, int.MaxValue, CMF.EXPLORE | additionalFlags | (Control.ModifierKeys == Keys.Shift ? CMF.EXTENDEDVERBS : 0));
     }
     IntPtr _NewMenuPtr = IntPtr.Zero;
     /// <summary>
@@ -245,144 +245,84 @@ namespace BExplorer.Shell {
         }
 
         if (IsOnEmpty) {
-          User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-          User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-          User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-          User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-          User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-          User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-          User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-          User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-          if (!(control as ShellView).CurrentFolder.IsDrive && (control as ShellView).CurrentFolder.IsFileSystem)
-            User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-        }
-        if (control is ShellView && !(control as ShellView).CurrentFolder.IsDrive && (control as ShellView).CurrentFolder.IsFileSystem) {
-          if (User32.GetMenuItemInfo(mnu.Handle, 1, true, ref itemInfo)) {
-            if ((itemInfo.fType & 2048) != 0) {
-              User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-              User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-            }
-          }
+          this.RemoveDefaultExplorerItems(mnu, control, ref itemInfo);
         }
         User32.GetMenuItemInfo(mnu.Handle, User32.GetMenuItemCount(mnu.Handle) - 3, true, ref itemInfo);
         if (itemInfo.hSubMenu == IntPtr.Zero) {
           User32.GetMenuItemInfo(mnu.Handle, User32.GetMenuItemCount(mnu.Handle) - 1, true, ref itemInfo);
         }
-        _NewMenuPtr = itemInfo.hSubMenu;
+        this._NewMenuPtr = itemInfo.hSubMenu;
 
         if (IsOnEmpty) {
-          this.GenerateMenuItem(view, "Thumbstrip", 259, _ShellView.View == ShellViewStyle.Thumbstrip);
-          this.GenerateMenuItem(view, "Content", 258, _ShellView.View == ShellViewStyle.Content);
-          this.GenerateMenuItem(view, "Tiles", 257, _ShellView.View == ShellViewStyle.Tile);
-          this.GenerateMenuItem(view, "Details", 256, _ShellView.View == ShellViewStyle.Details);
-          this.GenerateMenuItem(view, "List", 255, _ShellView.View == ShellViewStyle.List);
-          this.GenerateMenuItem(view, "Small icon", 254, _ShellView.View == ShellViewStyle.SmallIcon);
-          this.GenerateMenuItem(view, "Medium", 253, _ShellView.View == ShellViewStyle.Medium);
-          this.GenerateMenuItem(view, "Large Icon", 252, _ShellView.View == ShellViewStyle.LargeIcon);
-          this.GenerateMenuItem(view, "Extra Large Icon", 251, _ShellView.View == ShellViewStyle.ExtraLargeIcon);
-
-          this.GenerateSeparator(mnu);
-
-          this.GenerateMenuItemExecutable(mnu, "Refresh", 250);
-
-          var colID = 261 + this._ShellView.Collumns.Count;
-
-          var colGroupID = colID + this._ShellView.Collumns.Count + 1;
-
-          var collist = new List<Collumns>();
-          collist.AddRange(this._ShellView.Collumns);
-          collist.Reverse();
-          foreach (Collumns collumn in collist) {
-            this.GenerateMenuItem(sortMenu, collumn.Name, colID--, collumn == this._ShellView.Collumns[this._ShellView.LastSortedColumnIndex]);
-          }
-
-          foreach (Collumns collumn in collist) {
-            this.GenerateMenuItem(groupMenu, collumn.Name, colGroupID--, collumn == this._ShellView.LastGroupCollumn);
-          }
-          this.GenerateMenuItem(groupMenu, "(None)", 260, this._ShellView.LastGroupCollumn == null);
-          collist.Clear();
-          collist = null;
-
-          this.GenerateSubmenu(groupMenu, mnu, "Group by");
-
-          this.GenerateSubmenu(sortMenu, mnu, "Sort by");
-
-          this.GenerateSubmenu(view, mnu, "View");
-
-
+          this.GenerateExplorerBackgroundMenuItems(view, mnu, sortMenu, groupMenu);
         }
-        var duplicatedSeparators = new List<int>();
-        int newCount = User32.GetMenuItemCount(mnu.Handle);
-        for (int i = 0; i < newCount - 1; i++) {
-          var info = new MENUITEMINFO();
-          info.cbSize = (uint)Marshal.SizeOf(info);
-          info.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU;
-          if (User32.GetMenuItemInfo(mnu.Handle, i, true, ref info)) {
-            var isSep = (info.fType & 2048) != 0;
-            if (isSep) {
-              var info2 = new MENUITEMINFO();
-              info2.cbSize = (uint)Marshal.SizeOf(info2);
-              info2.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU;
-              if (User32.GetMenuItemInfo(mnu.Handle, i + 1, true, ref info2)) {
-                var isSep2 = (info2.fType & 2048) != 0;
-                if (isSep2) {
-                  duplicatedSeparators.Add(i + 1);
-                }
-              }
-            }
-          }
-        }
-        duplicatedSeparators.Reverse();
-        duplicatedSeparators.ForEach(a => User32.DeleteMenu(mnu.Handle, a, MF.MF_BYPOSITION));
+
+        this.RemoveDuplicatedSeparators(mnu);
+        
         int command = User32.TrackPopupMenuEx(mnu.Handle,
             TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
             IntPtr.Zero);
         if (command > 0 && command < m_CmdFirst) {
           switch (command) {
+            case 245:
+              this._ShellView.SetGroupOrder(false);
+              break;
+            case 246:
+              this._ShellView.SetGroupOrder();
+              break;
+            case 247:
+              this._ShellView.SetSortCollumn(this._ShellView.LastSortedColumnIndex, System.Windows.Forms.SortOrder.Ascending);
+              break;
+            case 248:
+              this._ShellView.SetSortCollumn(this._ShellView.LastSortedColumnIndex, System.Windows.Forms.SortOrder.Descending);
+              break;
+            case 249:
+              this._ShellView.PasteAvailableFiles();
+              break;
             case 250:
-              _ShellView.RefreshContents();
+              this._ShellView.RefreshContents();
               break;
             case 251:
-              _ShellView.View = ShellViewStyle.ExtraLargeIcon;
+              this._ShellView.View = ShellViewStyle.ExtraLargeIcon;
               break;
             case 252:
-              _ShellView.View = ShellViewStyle.LargeIcon;
+              this._ShellView.View = ShellViewStyle.LargeIcon;
               break;
             case 253:
-              _ShellView.View = ShellViewStyle.Medium;
+              this._ShellView.View = ShellViewStyle.Medium;
               break;
             case 254:
-              _ShellView.View = ShellViewStyle.SmallIcon;
+              this._ShellView.View = ShellViewStyle.SmallIcon;
               break;
             case 255:
-              _ShellView.View = ShellViewStyle.List;
+              this._ShellView.View = ShellViewStyle.List;
               break;
             case 256:
-              _ShellView.View = ShellViewStyle.Details;
+              this._ShellView.View = ShellViewStyle.Details;
               break;
             case 257:
-              _ShellView.View = ShellViewStyle.Tile;
+              this._ShellView.View = ShellViewStyle.Tile;
               break;
             case 258:
-              _ShellView.View = ShellViewStyle.Content;
+              this._ShellView.View = ShellViewStyle.Content;
               break;
             case 259:
-              _ShellView.View = ShellViewStyle.Thumbstrip;
+              this._ShellView.View = ShellViewStyle.Thumbstrip;
               break;
             case 260:
               if (this._ShellView.IsGroupsEnabled) {
-                _ShellView.DisableGroups();
+                this._ShellView.DisableGroups();
               }
               break;
             default:
               break;
           }
-          if (command >= 262 && command <= 262 + _ShellView.Collumns.Count) {
+          if (command >= 262 && command <= 262 + this._ShellView.Collumns.Count) {
             this._ShellView.SetSortCollumn(command - 262, SortOrder.Ascending);
           } else if (command > 260) {
             if (!this._ShellView.IsGroupsEnabled)
               this._ShellView.EnableGroups();
-            this._ShellView.GenerateGroupsFromColumn(this._ShellView.Collumns[command - (262 + _ShellView.Collumns.Count) - 1], false);
+            this._ShellView.GenerateGroupsFromColumn(this._ShellView.Collumns[command - (262 + this._ShellView.Collumns.Count) - 1], false);
           }
         }
         if (command > m_CmdFirst) {
@@ -415,8 +355,8 @@ namespace BExplorer.Shell {
         }
 
         if (command == 0) {
-          if (_ShellView != null)
-            _ShellView.IsRenameNeeded = false;
+          if (this._ShellView != null)
+            this._ShellView.IsRenameNeeded = false;
         }
         User32.DestroyMenu(mnu.Handle);
         view.Dispose();
@@ -494,6 +434,101 @@ namespace BExplorer.Shell {
       }
     }
 
+    private void GenerateExplorerBackgroundMenuItems(ContextMenu view, ContextMenu mnu, ContextMenu sortMenu, ContextMenu groupMenu) {
+      this.GenerateMenuItem(view, "Thumbstrip", 259, _ShellView.View == ShellViewStyle.Thumbstrip);
+      this.GenerateMenuItem(view, "Content", 258, _ShellView.View == ShellViewStyle.Content);
+      this.GenerateMenuItem(view, "Tiles", 257, _ShellView.View == ShellViewStyle.Tile);
+      this.GenerateMenuItem(view, "Details", 256, _ShellView.View == ShellViewStyle.Details);
+      this.GenerateMenuItem(view, "List", 255, _ShellView.View == ShellViewStyle.List);
+      this.GenerateMenuItem(view, "Small icon", 254, _ShellView.View == ShellViewStyle.SmallIcon);
+      this.GenerateMenuItem(view, "Medium", 253, _ShellView.View == ShellViewStyle.Medium);
+      this.GenerateMenuItem(view, "Large Icon", 252, _ShellView.View == ShellViewStyle.LargeIcon);
+      this.GenerateMenuItem(view, "Extra Large Icon", 251, _ShellView.View == ShellViewStyle.ExtraLargeIcon);
+
+      if (this._ShellView.CurrentFolder.IsFileSystem && (Clipboard.ContainsData(DataFormats.FileDrop) || Clipboard.ContainsData("Shell IDList Array"))) {
+        this.GenerateSeparator(mnu);
+        this.GenerateMenuItemExecutable(mnu, "Paste", 249);
+      }
+
+      this.GenerateSeparator(mnu);
+
+      this.GenerateMenuItemExecutable(mnu, "Refresh", 250);
+
+      var colID = 261 + this._ShellView.Collumns.Count;
+
+      var colGroupID = colID + this._ShellView.Collumns.Count + 1;
+
+      var collist = new List<Collumns>();
+      collist.AddRange(this._ShellView.Collumns);
+      collist.Reverse();
+      this.GenerateMenuItem(sortMenu, "Descending", 248, this._ShellView.LastSortOrder == System.Windows.Forms.SortOrder.Descending);
+      this.GenerateMenuItem(sortMenu, "Ascending", 247, this._ShellView.LastSortOrder == System.Windows.Forms.SortOrder.Ascending);
+      this.GenerateSeparator(sortMenu);
+      foreach (Collumns collumn in collist) {
+        this.GenerateMenuItem(sortMenu, collumn.Name, colID--, collumn == this._ShellView.Collumns[this._ShellView.LastSortedColumnIndex]);
+      }
+      this.GenerateMenuItem(groupMenu, "Descending", 246, this._ShellView.LastGroupOrder == System.Windows.Forms.SortOrder.Descending);
+      this.GenerateMenuItem(groupMenu, "Ascending", 245, this._ShellView.LastGroupOrder == System.Windows.Forms.SortOrder.Ascending);
+      this.GenerateSeparator(groupMenu);
+      foreach (Collumns collumn in collist) {
+        this.GenerateMenuItem(groupMenu, collumn.Name, colGroupID--, collumn == this._ShellView.LastGroupCollumn);
+      }
+      this.GenerateMenuItem(groupMenu, "(None)", 260, this._ShellView.LastGroupCollumn == null);
+      collist.Clear();
+      collist = null;
+
+      this.GenerateSubmenu(groupMenu, mnu, "Group by");
+
+      this.GenerateSubmenu(sortMenu, mnu, "Sort by");
+
+      this.GenerateSubmenu(view, mnu, "View");
+    }
+    private void RemoveDuplicatedSeparators(ContextMenu mnu) {
+      var duplicatedSeparators = new List<int>();
+      int newCount = User32.GetMenuItemCount(mnu.Handle);
+      for (int i = 0; i < newCount - 1; i++) {
+        var info = new MENUITEMINFO();
+        info.cbSize = (uint)Marshal.SizeOf(info);
+        info.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU;
+        if (User32.GetMenuItemInfo(mnu.Handle, i, true, ref info)) {
+          var isSep = (info.fType & 2048) != 0;
+          if (isSep) {
+            var info2 = new MENUITEMINFO();
+            info2.cbSize = (uint)Marshal.SizeOf(info2);
+            info2.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU;
+            if (User32.GetMenuItemInfo(mnu.Handle, i + 1, true, ref info2)) {
+              var isSep2 = (info2.fType & 2048) != 0;
+              if (isSep2) {
+                duplicatedSeparators.Add(i + 1);
+              }
+            }
+          }
+        }
+      }
+      duplicatedSeparators.Reverse();
+      duplicatedSeparators.ForEach(a => User32.DeleteMenu(mnu.Handle, a, MF.MF_BYPOSITION));
+    }
+    private void RemoveDefaultExplorerItems(ContextMenu mnu, Control control, ref BExplorer.Shell.Interop.MENUITEMINFO itemInfo) {
+      User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+      User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+      User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+      User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+      User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+      User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+      User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+      User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+      if (!(control as ShellView).CurrentFolder.IsDrive && (control as ShellView).CurrentFolder.IsFileSystem) {
+        User32.GetMenuItemInfo(mnu.Handle, 1, true, ref itemInfo);
+        if ((itemInfo.fType & 2048) != 0) {
+          User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+        } else {
+          if (User32.GetMenuItemID(mnu.Handle, 1) - m_CmdFirst == 1) {
+            User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+            User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+          }
+        }
+      }
+    }
     private void GenerateSubmenu(ContextMenu child, ContextMenu parent, String header) {
       MENUITEMINFO miiview = new MENUITEMINFO();
       miiview.cbSize = (uint)Marshal.SizeOf(miiview);
