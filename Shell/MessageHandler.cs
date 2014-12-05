@@ -153,6 +153,10 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_DELETE:
 								var objDeleteF = new ShellItem(info.Item1);
 								if (!String.IsNullOrEmpty(objDeleteF.ParsingName)) {
+                  if (objDeleteF.ParsingName.EndsWith(".library-ms") && this._ParentShellView.IsLibraryInModify) {
+                    this._ParentShellView.IsLibraryInModify = false;
+                    break;
+                  }
 									ShellItem theItem = this._ParentShellView.Items.SingleOrDefault(s => s.Equals(objDeleteF));
 									if (theItem != null) {
 										this._ParentShellView.Items.Remove(theItem);
@@ -200,6 +204,7 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
 								break;
 							case ShellNotifications.SHCNE.SHCNE_FREESPACE:
+                this._ParentShellView.UnvalidateDirectory();
 								break;
 							case ShellNotifications.SHCNE.SHCNE_EXTENDED_EVENT:
 								break;

@@ -616,7 +616,15 @@ namespace BExplorer.Shell {
               }
 
               itemNode.Nodes.Add(this._EmptyItemString);
-              nodesTemp.Add(itemNode);
+              if (item.ParsingName.EndsWith(".library-ms")) {
+                var library = ShellLibrary.Load(item.DisplayName, false);
+                if (library.IsPinnedToNavigationPane) {
+                  nodesTemp.Add(itemNode);
+                }
+                library.Close();
+              } else {
+                nodesTemp.Add(itemNode);
+              }
               //Application.DoEvents();
             }
             return nodesTemp;

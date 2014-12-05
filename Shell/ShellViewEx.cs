@@ -306,6 +306,8 @@ namespace BExplorer.Shell {
 		public List<Collumns> Collumns = new List<Collumns>();
 		public List<ListViewGroupEx> Groups = new List<ListViewGroupEx>();
 		public bool IsRenameNeeded { get; set; }
+    public bool IsLibraryInModify { get; set; }
+    public bool IsFileExtensionShown { get; set; }
 		public Boolean IsGroupsEnabled { get { return LastGroupCollumn != null; } }
 
 		/// <summary> Returns the key jump string as it currently is.</summary>
@@ -1555,10 +1557,15 @@ namespace BExplorer.Shell {
 					}
 					this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
 					RedrawWindow();
-					if (this.ItemUpdated != null)
-						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, ItemsHashed[obj2]));
-
-					this.SelectItemByIndex(ItemsHashed[obj2], true, true);
+          var obj2Real = this.Items.SingleOrDefault(s => s.CachedParsingName == obj2.CachedParsingName);
+          if (this.ItemUpdated != null) {
+            if (obj2Real != null) {
+              this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, ItemsHashed[obj2Real]));
+            }
+          }
+          if (obj2Real != null) {
+            this.SelectItemByIndex(ItemsHashed[obj2Real], true, true);
+          }
 				}
 			}
 			this.CurrentRefreshedItemIndex = -1;
@@ -1620,7 +1627,8 @@ namespace BExplorer.Shell {
 							#region Case
 							var nmlvedit = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
 							if (!String.IsNullOrEmpty(nmlvedit.item.pszText)) {
-								RenameShellItem(this.Items[nmlvedit.item.iItem].ComInterface, nmlvedit.item.pszText);
+                var item = this.Items[nmlvedit.item.iItem];
+								RenameShellItem(item.ComInterface, nmlvedit.item.pszText, !this.IsFileExtensionShown, item.Extension );
 								this.RedrawWindow();
 							}
 							break;
@@ -2652,9 +2660,9 @@ namespace BExplorer.Shell {
 			thread.Start();
 		}
 
-		public void RenameShellItem(IShellItem item, String newName) {
+		public void RenameShellItem(IShellItem item, String newName, Boolean isAddFileExtension, String extension = "") {
 			var fo = new IIFileOperation(this.LVHandle);
-			fo.RenameItem(item, newName);
+			fo.RenameItem(item, isAddFileExtension ? newName + extension : newName);
 			fo.PerformOperations();
 		}
 
@@ -3497,7 +3505,8 @@ namespace BExplorer.Shell {
 						var mainWin = System.Windows.Application.Current.MainWindow;
 						if (mainWin.IsActive || !isActiveCheck) {
 							if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)) {
-								User32.SetFocus(this.LVHandle); //var res = 
+                if (User32.GetForegroundWindow() == new System.Windows.Interop.WindowInteropHelper(System.Windows.Application.Current.MainWindow).Handle)
+								  User32.SetFocus(this.LVHandle); //var res = 
 								//this._IsInRenameMode = false;
 							}
 						}
@@ -3876,7 +3885,7 @@ namespace BExplorer.Shell {
 
 					if (item.DisplayName != NewName) {
             IsRenameInProgress = true;
-						RenameShellItem(item.ComInterface, NewName);
+						RenameShellItem(item.ComInterface, NewName, !this.IsFileExtensionShown, item.Extension);
 					}
 				}
 				this.RedrawWindow();

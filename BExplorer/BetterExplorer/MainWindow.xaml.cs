@@ -480,8 +480,7 @@ namespace BetterExplorer {
 			#endregion
 
 			#region Library Context Tab
-			var h = ShellListView.CurrentFolder.Equals(KnownFolders.Libraries);
-			ctgLibraries.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.Equals(KnownFolders.Libraries) || (selectedItemsCount == 1 && selectedItem.Parent != null && selectedItem.Parent.Equals(KnownFolders.Libraries)));
+      ctgLibraries.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && ShellListView.CurrentFolder.Equals(KnownFolders.Libraries)) || (selectedItemsCount == 1 && selectedItem.Parent != null && selectedItem.Parent.Equals(KnownFolders.Libraries)));
 
 			if (ctgLibraries.Visibility == Visibility.Visible && asLibrary) {
 				TheRibbon.SelectedTabItem = ctgLibraries.Items[0];
@@ -494,6 +493,9 @@ namespace BetterExplorer {
 				if (selectedItemsCount == 1)
 					SetupLibrariesTab(ShellLibrary.Load(ShellListView.CurrentFolder.DisplayName, false));
 			}
+      if (selectedItemsCount == 0) {
+        ctgLibraries.Visibility = Visibility.Collapsed;
+      }
 			#endregion
 
 			#region Archive Contextual Tab
@@ -613,7 +615,7 @@ namespace BetterExplorer {
         } else {
           btnOpenWith.IsEnabled = false;
         }
-
+        btnNewItem.IsEnabled = this.ShellListView.CurrentFolder.IsFileSystem || this.ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName;
 				if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && selItemsCount == 1) {
 					this.Previewer.FileName = selectedItem.ParsingName;
 				} else if (!String.IsNullOrEmpty(this.Previewer.FileName)) {
@@ -1626,6 +1628,7 @@ namespace BetterExplorer {
 				ShellListView.ShowHidden = chkHiddenFiles.IsChecked.Value;
 				ShellTree.IsShowHiddenItems = chkHiddenFiles.IsChecked.Value;
 				chkExtensions.IsChecked = statef.fShowExtensions == 1;
+        this.ShellListView.IsFileExtensionShown = statef.fShowExtensions == 1;
 				IsCalledFromLoading = false;
 
 				isOnLoad = true;
@@ -2013,6 +2016,7 @@ namespace BetterExplorer {
 		#region Library Commands
 
 		private void btnOLItem_Click(object sender, RoutedEventArgs e) {
+      this.ShellListView.IsLibraryInModify = true;
 			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
 			var NeededFile = ShellListView.GetSelectedCount() == 1 ? ShellListView.GetFirstSelectedItem() : ShellListView.CurrentFolder;
 			var lib = ShellLibrary.Load(NeededFile.GetDisplayName(SIGDN.NORMALDISPLAY), false);
@@ -2044,9 +2048,10 @@ namespace BetterExplorer {
 		}
 
 		private void chkPinNav_CheckChanged(object sender, RoutedEventArgs e) {
+      this.ShellListView.IsLibraryInModify = true;
 			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
 			var NeededFile = ShellListView.GetSelectedCount() == 1 ? ShellListView.GetFirstSelectedItem() : ShellListView.CurrentFolder;
-			var lib = ShellLibrary.Load(NeededFile.GetDisplayName(SIGDN.NORMALDISPLAY), false);
+			var lib = ShellLibrary.Load(NeededFile.DisplayName, false);
 
 
 			if (!IsFromSelectionOrNavigation)
@@ -2087,6 +2092,7 @@ namespace BetterExplorer {
 			//td.StandardButtons = TaskDialogStandardButtons.Yes | TaskDialogStandardButtons.No;
 			//td.OwnerWindowHandle = this.Handle;
 			//if (td.Show() == TaskDialogResult.Yes) {
+      this.ShellListView.IsLibraryInModify = true;
 			if (ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "documents" &&
 							 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "music" &&
 							 ShellListView.GetFirstSelectedItem().GetDisplayName(SIGDN.NORMALDISPLAY).ToLowerInvariant() != "videos" &&
@@ -2268,6 +2274,7 @@ namespace BetterExplorer {
 					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 					state.fShowExtensions = 1;
 					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, true);
+          this.ShellListView.IsFileExtensionShown = true;
 					ShellListView.RefreshContents();
 				}
 			));
@@ -2280,6 +2287,7 @@ namespace BetterExplorer {
 					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
 					state.fShowExtensions = 0;
 					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, true);
+          this.ShellListView.IsFileExtensionShown = false;
 					ShellListView.RefreshContents();
 				}
 			));
@@ -3946,8 +3954,15 @@ namespace BetterExplorer {
 
 		void ShellTree_NodeClick(object sender, System.Windows.Forms.TreeNodeMouseClickEventArgs e) {
 			if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
-				if (e.Node != null && e.Node.Tag != null)
-					tcMain.NewTab(e.Node.Tag as ShellItem, false);
+        if (e.Node != null && e.Node.Tag != null) {
+          var item = e.Node.Tag as ShellItem;
+          if (item != null && item.IsLink) {
+            var shellLink = new ShellLink(item.ParsingName);
+            item = new ShellItem(shellLink.TargetPIDL);
+          }
+          if (item != null)
+            tcMain.NewTab(item, false);
+        }
 			}
 		}
 
@@ -4172,15 +4187,17 @@ namespace BetterExplorer {
 		}
 
 		private void SetUpButtonVisibilityOnNavComplete(bool isinLibraries) {
+      var selectedCount = this.ShellListView.GetSelectedCount();
 			if (ShellListView.CurrentFolder.ParsingName.Contains(KnownFolders.Libraries.ParsingName) && ShellListView.CurrentFolder.ParsingName != KnownFolders.Libraries.ParsingName) {
-				ctgLibraries.Visibility = Visibility.Visible;
+        if (selectedCount == 1) {
+          ctgLibraries.Visibility = Visibility.Visible;
+          SetupLibrariesTab(ShellLibrary.Load(ShellListView.CurrentFolder.DisplayName, false));
+        }
 				ctgFolderTools.Visibility = Visibility.Collapsed;
 				ctgImage.Visibility = Visibility.Collapsed;
 				ctgArchive.Visibility = Visibility.Collapsed;
 				ctgVirtualDisk.Visibility = Visibility.Collapsed;
 				ctgExe.Visibility = Visibility.Collapsed;
-
-				SetupLibrariesTab(ShellLibrary.Load(ShellListView.CurrentFolder.GetDisplayName(SIGDN.NORMALDISPLAY), false));
 			} else if (!ShellListView.CurrentFolder.ParsingName.ToLowerInvariant().EndsWith("library-ms")) {
 				btnDefSave.Items.Clear();
 				ctgLibraries.Visibility = Visibility.Collapsed;

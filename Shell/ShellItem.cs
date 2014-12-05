@@ -295,7 +295,7 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets a value that determines if this ShellObject is a link or shortcut.
 		/// </summary>
-		internal bool IsLink {
+		public bool IsLink {
 			get {
 				try {
 					return COM_Attribute_Check(SFGAO.LINK);

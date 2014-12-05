@@ -111,6 +111,7 @@ namespace BetterExplorer {
 			var itemIndex = ShellView.GetFirstSelectedItemIndex();
 			this.ShellView.CurrentRefreshedItemIndex = itemIndex;
 			if (IsLibrary) {
+        this.ShellView.IsLibraryInModify = true;
 				var lib = ShellView.GetFirstSelectedItem() != null ?
 					BExplorer.Shell.ShellLibrary.Load(ShellView.GetFirstSelectedItem().DisplayName, false) :
 					BExplorer.Shell.ShellLibrary.Load(ShellView.CurrentFolder.DisplayName, false);

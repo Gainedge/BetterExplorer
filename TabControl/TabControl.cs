@@ -298,7 +298,7 @@ namespace Wpf.Controls {
 			newt.GiveFeedback += newt_GiveFeedback;
 			try {
 				Items.Add(newt);
-				IsSelectionHandled = !IsNavigate;
+				IsSelectionHandled = false;
 			}
 			catch (Exception) {
 
