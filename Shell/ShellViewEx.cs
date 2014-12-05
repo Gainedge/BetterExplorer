@@ -548,11 +548,11 @@ namespace BExplorer.Shell {
 			this.LVItemsColorCodes = new List<LVItemColor>();
 			this.AllAvailableColumns = this.AvailableColumns();
 			this.AllowDrop = true;
-			_IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.AboveNormal };
+			_IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
 			_IconLoadingThread.Start();
-			_IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
+      _IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
 			_IconCacheLoadingThread.Start();
-			_OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.Normal };
+      _OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
 			_OverlaysLoadingThread.Start();
 			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
 			_UpdateSubitemValuesThread.Start();
@@ -575,7 +575,7 @@ namespace BExplorer.Shell {
 			//this.KeyDown += ShellView_KeyDown;
 			this.MouseUp += ShellView_MouseUp;
 			//this.GotFocus += ShellView_GotFocus;
-			selectionTimer.Interval = 500;
+			selectionTimer.Interval = 600;
 			selectionTimer.Tick += selectionTimer_Tick;
 
 		}
@@ -2862,6 +2862,8 @@ namespace BExplorer.Shell {
 		/// <param name="isInSameTab"></param>
 		/// <param name="refresh">Should the List be Refreshed?</param>
 		private void Navigate(ShellItem destination, Boolean isInSameTab = false, bool refresh = false) {
+      resetEvent.Reset();
+      _ResetTimer.Stop();
 			if (!refresh && Navigating != null) {
 				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 			}
@@ -2980,7 +2982,7 @@ namespace BExplorer.Shell {
 					LastI = CurrentI;
 				}
 			}
-			resetEvent.Set();
+			//resetEvent.Set();
 			if (isThereSettings) {
 				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder, false);
 			} else if (destination.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant()) {
@@ -3023,7 +3025,7 @@ namespace BExplorer.Shell {
 			if (!refresh && Navigated != null) {
 				Navigated(this, NavArgs);
 			}
-
+      this._ResetTimer.Start();
 			this.Focus();
 		}
 
@@ -3212,7 +3214,7 @@ namespace BExplorer.Shell {
 		}
 		public void _OverlaysLoadingThreadRun() {
 			while (true) {
-				F.Application.DoEvents();
+				//F.Application.DoEvents();
 				resetEvent.WaitOne();
 				try {
 					int index = 0;
@@ -3227,7 +3229,7 @@ namespace BExplorer.Shell {
 						RedrawItem(index);
 
 				} catch (Exception) {
-					F.Application.DoEvents();
+					//F.Application.DoEvents();
 				}
 			}
 		}
@@ -3261,7 +3263,7 @@ namespace BExplorer.Shell {
 
 
 				} catch {
-					F.Application.DoEvents();
+					//F.Application.DoEvents();
 				}
 			}
 		}
@@ -3282,13 +3284,13 @@ namespace BExplorer.Shell {
 						} else {
 							sho.IsOnlyLowQuality = false;
 						}
-						F.Application.DoEvents();
+						//F.Application.DoEvents();
 						this.RefreshItem(index);
 						result.Dispose();
 					}
 
 				} catch {
-					F.Application.DoEvents();
+					//F.Application.DoEvents();
 				}
 			}
 		}

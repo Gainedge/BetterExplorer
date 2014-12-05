@@ -7,7 +7,7 @@ using BExplorer.Shell.Interop;
 using MenuItem = Fluent.MenuItem;
 
 namespace BetterExplorer {
-	//TODO: Find a way to move CloseTab(...) into TabControl
+
 	partial class MainWindow {
 
 		private void InitializeInitialTabs() {
@@ -80,21 +80,6 @@ namespace BetterExplorer {
 			//}
 		}
 
-		/*
-		private void CloseTab(Wpf.Controls.TabItem thetab, bool allowreopening = true) {
-			if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-				//if (chkIsLastTabCloseApp.IsChecked.Value)
-				//	Close();
-				//else
-				NavigationController(new ShellItem(tcMain.StartUpLocation));
-			}
-			else {
-				tcMain.RemoveTabItem(thetab, allowreopening);
-				ConstructMoveToCopyToMenu();
-				SelectTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
-			}
-		}
-		*/
 		private void ConstructMoveToCopyToMenu() {
 			btnMoveto.Items.Clear();
 			btnCopyto.Items.Clear();
@@ -176,7 +161,6 @@ namespace BetterExplorer {
 					}
 					catch {
 						//Do nothing if ShellItem is not available anymore and close the problematic item
-						//CloseTab(item);
 						tcMain.RemoveTabItem(item);
 					}
 				}
@@ -188,13 +172,10 @@ namespace BetterExplorer {
 			btnCopyto.Items.Add(OtherLocationCopy);
 		}
 
-		/*
-		[Obsolete("Remove this or move it into TabControls!!!!!!!!!!!")]
-		private System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-		*/
-
+    Wpf.Controls.TabItem CurrentTabItem;
 		private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			if (e.RemovedItems.Count > 0) {
+
 				var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
 
 				if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
@@ -211,24 +192,20 @@ namespace BetterExplorer {
 				foreach (var item in tcMain.ReopenableTabs) {
 					btnUndoClose.Items.Add(item.CurrentLocation);
 				}
-			}
-			tcMain.IsSelectionHandled = false;
+      } 
+      else {
+        if (e.RemovedItems[0] == this.CurrentTabItem) {
+          e.Handled = true;
+          tcMain.IsSelectionHandled = false;
+          tcMain.SelectedItem = e.RemovedItems[0];
+          this.CurrentTabItem = null;
+        } 
+      }
+      tcMain.IsSelectionHandled = false;
 			this.ShellListView.Focus();
 		}
 
-		/*
-		public List<string> LoadListOfTabListFiles() {
-			var o = new List<string>();
-
-			if (System.IO.Directory.Exists(sstdir)) {
-				foreach (string item in System.IO.Directory.GetFiles(sstdir)) {
-					ShellItem obj = new ShellItem(item);
-					o.Add(Utilities.RemoveExtensionsFromFile(obj.GetDisplayName(SIGDN.NORMALDISPLAY), Utilities.GetExtension(item)));
-				}
-			}
-			return o;
-		}
-		*/
+		
 
 	}
 }

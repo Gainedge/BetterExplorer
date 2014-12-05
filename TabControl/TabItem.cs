@@ -110,6 +110,9 @@ namespace Wpf.Controls {
 
 		private void TabItem_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) {
 			e.Handled = true;
+      TabControl tc = Helper.FindParentControl<TabControl>(this);
+      if (tc == null) return;
+      tc.IsSelectionHandled = false;
 		}
 
 		private void TabItem_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -11,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Threading;
 using BExplorer.Shell;
 
 //###################################################################################
@@ -531,98 +533,97 @@ namespace Odyssey.Controls {
 			*/
 
 			//aa = newPath;
-			if (newPath != null && newPath.StartsWith("%")) {
-				newPath = Environment.ExpandEnvironmentVariables(newPath);
-			}
-			BreadcrumbItem item = RootItem;
-			if (item == null) {
-				//this.Path = null;
-				return;
-			}
-			newPath = RemoveLastEmptySeparator(newPath);
-			//newPath = newPath == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : newPath;
-			string newPathToShellParsingName = newPath.ToShellParsingName();
-			Int64 pidl;
-			bool isValidPidl = Int64.TryParse(RemoveLastEmptySeparator(newPathToShellParsingName), out pidl);
-			ShellItem shellItem = isValidPidl ? new ShellItem((IntPtr)pidl) : ShellItem.TryCreate(newPathToShellParsingName);// new ShellItem(newPathToShellParsingName);
-			if (shellItem == null) return;
+      Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+        if (newPath != null && newPath.StartsWith("%")) {
+          newPath = Environment.ExpandEnvironmentVariables(newPath);
+        }
+        BreadcrumbItem item = RootItem;
+        if (item == null) {
+          //this.Path = null;
+          return;
+        }
+        newPath = RemoveLastEmptySeparator(newPath);
+        //newPath = newPath == ((ShellItem)KnownFolders.Desktop).DisplayName ? KnownFolders.Desktop.ParsingName : newPath;
+        string newPathToShellParsingName = newPath.ToShellParsingName();
+        Int64 pidl;
+        bool isValidPidl = Int64.TryParse(RemoveLastEmptySeparator(newPathToShellParsingName), out pidl);
+        ShellItem shellItem = isValidPidl ? new ShellItem((IntPtr)pidl) : ShellItem.TryCreate(newPathToShellParsingName);// new ShellItem(newPathToShellParsingName);
+        if (shellItem == null) return;
 
 
-			var traces = new List<ShellItem>() { shellItem };
-			while (shellItem != null && shellItem.Parent != null) {
-				traces.Add(shellItem.Parent);
-				shellItem = shellItem.Parent;
-			}
+        var traces = new List<ShellItem>() { shellItem };
+        while (shellItem != null && shellItem.Parent != null) {
+          traces.Add(shellItem.Parent);
+          shellItem = shellItem.Parent;
+        }
 
-			if (traces.Count == 0) RootItem.SelectedItem = null;
-			traces.Reverse();
+        if (traces.Count == 0) RootItem.SelectedItem = null;
+        traces.Reverse();
 
-			var itemIndex = new List<Tuple<int, ShellItem>>();
-			int index = 0;
-			int length = traces.Count;
-			int max = breadcrumbsToHide;
-			// if the root is specified as first trace, then skip:
-			if (max > 0 && traces[index].GetHashCode() == (shellItem.GetHashCode())) {
-				length--;
-				index++;
-				max--;
-			}
+        var itemIndex = new List<Tuple<int, ShellItem>>();
+        int index = 0;
+        int length = traces.Count;
+        int max = breadcrumbsToHide;
+        // if the root is specified as first trace, then skip:
+        if (max > 0 && traces[index].GetHashCode() == (shellItem.GetHashCode())) {
+          length--;
+          index++;
+          max--;
+        }
 
-			for (int i = index; i < traces.Count; i++) {
-				//Why do we have [if (item == null) break;] It seems like we add an if to the For(...) or it should NEVER be null
-				if (item == null) break;
-				var trace = traces[i];
-				////OnPopulateItems(item);
-				//pop_items(item);
-				object next = item.GetTraceItem(trace);
-				if (next == null && item.Data.GetHashCode() == trace.Parent.GetHashCode()) {
-					//missingItem = item;
-					//lItem = trace;
-					item.Items.Add(trace);
-					next = item.GetTraceItem(trace);
-				}
-				if (next == null) break;
-				itemIndex.Add(new Tuple<int, ShellItem>(item.Items.IndexOf(next), trace));
-				BreadcrumbItem container = item.ContainerFromItem(next);
+        for (int i = index; i < traces.Count; i++) {
+          //Why do we have [if (item == null) break;] It seems like we add an if to the For(...) or it should NEVER be null
+          if (item == null) break;
+          var trace = traces[i];
+          ////OnPopulateItems(item);
+          //pop_items(item);
+          object next = item.GetTraceItem(trace);
+          if (next == null && item.Data.GetHashCode() == trace.Parent.GetHashCode()) {
+            //missingItem = item;
+            //lItem = trace;
+            item.Items.Add(trace);
+            next = item.GetTraceItem(trace);
+          }
+          if (next == null) break;
+          itemIndex.Add(new Tuple<int, ShellItem>(item.Items.IndexOf(next), trace));
+          BreadcrumbItem container = item.ContainerFromItem(next);
 
-				item = container;
-			}
+          item = container;
+        }
 
-			if (length != itemIndex.Count) {
-				//recover the last path:
-				Path = GetDisplayPath();
-				return;
-			}
+        if (length != itemIndex.Count) {
+          //recover the last path:
+          Path = GetDisplayPath();
+          return;
+        }
 
-			// temporarily remove the SelectionChangedEvent handler to minimize processing of events while building the breadcrumb items:
-			RemoveHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
+        // temporarily remove the SelectionChangedEvent handler to minimize processing of events while building the breadcrumb items:
+        RemoveHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
 
-			try {
-				var item2 = RootItem;
-				foreach (var key in itemIndex) {
-					if (item == null) break;
-					if (item2.Items.OfType<ShellItem>().Count() == 1) {
-						var firstItem = item2.Items.OfType<ShellItem>().First();
-						if (firstItem.GetHashCode() != key.Item2.GetHashCode()) {
-							item2.Items.Clear();
-							item2.Items.Add(key.Item2);
-						}
-					}
-					else if (item2.Items.OfType<ShellItem>().Count() == 0) {
-						item2.Items.Add(key.Item2);
-					}
+        try {
+          var item2 = RootItem;
+          foreach (var key in itemIndex) {
+            if (item == null) break;
+            if (item2.Items.OfType<ShellItem>().Count() == 1) {
+              var firstItem = item2.Items.OfType<ShellItem>().First();
+              if (firstItem.GetHashCode() != key.Item2.GetHashCode()) {
+                item2.Items.Clear();
+                item2.Items.Add(key.Item2);
+              }
+            } else if (item2.Items.OfType<ShellItem>().Count() == 0) {
+              item2.Items.Add(key.Item2);
+            }
 
-					item2.SelectedIndex = item2.Items.IndexOf(item2.Items.OfType<ShellItem>().Where(w => w.GetHashCode() == key.Item2.GetHashCode()).SingleOrDefault());
-					item2 = item2.SelectedBreadcrumb;
-				}
-				if (item2 != null) item2.SelectedItem = null;
-				SelectedBreadcrumb = item2;
-				SelectedItem = item2 != null ? item2.Data : null;
-			}
-			finally {
-				AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
-			}
-			return;
+            item2.SelectedIndex = item2.Items.IndexOf(item2.Items.OfType<ShellItem>().Where(w => w.GetHashCode() == key.Item2.GetHashCode()).SingleOrDefault());
+            item2 = item2.SelectedBreadcrumb;
+          }
+          if (item2 != null) item2.SelectedItem = null;
+          SelectedBreadcrumb = item2;
+          SelectedItem = item2 != null ? item2.Data : null;
+        } finally {
+          AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
+        }
+      }));
 		}
 
 		/// <summary>

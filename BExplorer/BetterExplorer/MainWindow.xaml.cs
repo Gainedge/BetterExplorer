@@ -2206,6 +2206,7 @@ namespace BetterExplorer {
 		}
 
 		private void inRibbonGallery1_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+      e.Handled = true;
 			switch (ViewGallery.SelectedIndex) {
 				case 0:
 					ShellListView.View = ShellViewStyle.ExtraLargeIcon;
@@ -2514,6 +2515,7 @@ namespace BetterExplorer {
 		}
 
 		private void TranslationComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+      e.Handled = true;
 			if (this.IsLoaded) {
 				Utilities.SetRegistryValue("Locale", ((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
 				((App)Application.Current).SelectCulture(((TranslationComboBoxItem)e.AddedItems[0]).LocaleCode);
@@ -3581,6 +3583,7 @@ namespace BetterExplorer {
 		}
 
 		private void rotGallery_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+      e.Handled = true;
 			var Item = (e.AddedItems[0] as UndoCloseGalleryItem);
 			if (Item != null) {
 				Item.PerformClickEvent();
@@ -3599,6 +3602,7 @@ namespace BetterExplorer {
 		}
 
 		private void stGallery_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+      e.Handled = true;
 			if (e.AddedItems.Count > 0) {
 				(e.AddedItems[0] as SavedTabsListGalleryItem).PerformClickEvent();
 			}
@@ -4568,10 +4572,14 @@ namespace BetterExplorer {
 		}
 
 		private void RibbonWindow_Activated(object sender, EventArgs e) {
+      this.CurrentTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
+      tcMain.IsSelectionHandled = true;
 			focusTimer.Start();
 		}
 
 		private void RibbonWindow_StateChanged(object sender, EventArgs e) {
+      this.CurrentTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
+      tcMain.IsSelectionHandled = true;
 			if (this.WindowState != System.Windows.WindowState.Minimized && this.IsActive) {
 				focusTimer.Start();
 			}
