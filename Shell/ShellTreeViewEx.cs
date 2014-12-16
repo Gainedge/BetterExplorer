@@ -383,9 +383,13 @@ namespace BExplorer.Shell {
               newItem = item;
             }
             if (node != null && newItem != null) {
-              hash = newItem.GetHashCode();
-              pidl = newItem.AbsolutePidl;
-              newItem.Dispose();
+              try {
+                hash = newItem.GetHashCode();
+                pidl = newItem.AbsolutePidl;
+                newItem.Dispose();
+              } catch (Exception) {
+
+              }
             }
           }
         }
@@ -958,7 +962,9 @@ namespace BExplorer.Shell {
                   node.ImageIndex = sho.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);// this.folderImageListIndex;
                   node.SelectedImageIndex = node.ImageIndex;
                   node.Tag = sho;
-                  this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.Add(node);
+                  if (sho.Parent != null && sho.Parent.ParsingName == KnownFolders.Network.ParsingName) {
+                    this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.Add(node);
+                  }
                 } catch (AccessViolationException) {
 
                 }

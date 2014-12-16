@@ -130,6 +130,9 @@ namespace BExplorer.Shell {
 		internal IExtractIconPWFlags IconType { get; private set; }
 		internal IntPtr ILPidl { get { return Shell32.ILFindLastID(Pidl); } }
 
+    public static IntPtr MessageHandle = IntPtr.Zero;
+    public static Boolean IsCareForMessageHadle = true;
+
 		/// <summary>Add Documentation</summary>
 		public int IsShielded = -1;
 
@@ -1168,7 +1171,7 @@ namespace BExplorer.Shell {
 		private static IEnumIDList GetIEnumIDList(IShellFolder folder, SHCONTF flags) {
 			IEnumIDList result;
 
-			if (folder.EnumObjects(IntPtr.Zero, flags, out result) == HResult.S_OK) {
+			if (folder.EnumObjects(IsCareForMessageHadle ? MessageHandle : IntPtr.Zero, flags, out result) == HResult.S_OK) {
 				return result;
 			} else {
 				return null;

@@ -81,10 +81,19 @@ namespace Wpf.Controls {
 					tc.RemoveTabItem(this);
 				};
 			}
-
+      this.PreviewMouseLeftButtonUp += TabItem_PreviewMouseLeftButtonUp;
 			this.PreviewMouseDoubleClick += TabItem_PreviewMouseDoubleClick;
 			this.MouseRightButtonUp += TabItem_MouseRightButtonUp;
 		}
+
+    void TabItem_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+      e.Handled = true;
+      TabControl tc = Helper.FindParentControl<TabControl>(this);
+      if (tc == null) return;
+      tc.IsSelectionHandled = false;
+      tc.CurrentTabItem = this;
+      tc.RaiseTabClick(this);
+    }
 
 		/// <summary>
 		/// OnMouseEnter, Create and Display a Tooltip

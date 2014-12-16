@@ -185,6 +185,7 @@ namespace Odyssey.Controls {
 				if (data != null && data.ParsingName != KnownFolders.Computer.ParsingName && data.ParsingName != KnownFolders.Desktop.ParsingName && !data.IsSearchFolder)
 				{
 					var aditionalItems = new List<ShellItem>();
+          ShellItem.IsCareForMessageHadle = false;
 					foreach (var item in data)
 					{
 						try
@@ -196,6 +197,7 @@ namespace Odyssey.Controls {
 						}
 						catch { }
 					}
+          ShellItem.IsCareForMessageHadle = true;
 					this.ItemsSource = aditionalItems;
 				}
 			}));

@@ -19,6 +19,8 @@ using DPoint = System.Drawing.Point;
 using Input = System.Windows.Input;
 using System.Runtime.ExceptionServices;
 using BExplorer.Shell.DropTargetHelper;
+using System.Security.Permissions;
+using System.Threading.Tasks;
 
 namespace BExplorer.Shell {
 
@@ -2355,6 +2357,7 @@ namespace BExplorer.Shell {
 
 			} catch (Exception ex) {
 				resetEvent.Set();
+        base.DefWndProc(ref m);
 			}
 		}
 
@@ -2405,6 +2408,7 @@ namespace BExplorer.Shell {
 			User32.SetForegroundWindow(this.LVHandle);
 			UxTheme.SetWindowTheme(this.LVHandle, "Explorer", 0);
 			MessageHandlerWindow.Show();
+      ShellItem.MessageHandle = this.LVHandle;
 			// 			var dwin = User32.GetShellWindow();
 			// 			F.MessageBox.Show(dwin.ToString());
 
@@ -2850,23 +2854,20 @@ namespace BExplorer.Shell {
 			removedItems = null;
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 		}
-
-
-
-
-
-		/// <summary>
+    /// <summary>
 		/// Navigate to a folder.
 		/// </summary>
 		/// <param name="destination">The folder you want to navigate to.</param>
 		/// <param name="isInSameTab"></param>
 		/// <param name="refresh">Should the List be Refreshed?</param>
+    [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
 		private void Navigate(ShellItem destination, Boolean isInSameTab = false, bool refresh = false) {
-      resetEvent.Reset();
-      _ResetTimer.Stop();
+      
 			if (!refresh && Navigating != null) {
 				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 			}
+
+      ReloadThreads();
 
 			Items.Clear();
 			ItemsForSubitemsUpdate.Clear();
@@ -2875,6 +2876,9 @@ namespace BExplorer.Shell {
 			shieldQueue.Clear();
 			this._CuttedIndexes.Clear();
 			this.SubItemValues.Clear();
+
+      resetEvent.Reset();
+      _ResetTimer.Stop();
 
 			//Clear the LsitView
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
@@ -2963,25 +2967,26 @@ namespace BExplorer.Shell {
 			//TODO: Figure out if the folder is actually sorted and we are not incorrectly setting the sort icon.
 			this.SetSortIcon(folderSettings.SortColumn, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
 
-
-
-			int CurrentI = 0, LastI = 0;
-			foreach (var Shell in destination) {
-				F.Application.DoEvents();
-				if (this.Items.Count > 0 && this.Items.Last().Parent != Shell.Parent) {
-					break;
-				}
-				if (this.ShowHidden ? true : !Shell.IsHidden)
-					this.Items.Add(Shell);
-				CurrentI++;
-				if (CurrentI - LastI >= (destination.IsSearchFolder ? 70 : 2000)) {
-					F.Application.DoEvents();
-					this.SetSortCollumn(isThereSettings ? folderSettings.SortColumn : 0, isThereSettings ? folderSettings.SortOrder : SortOrder.Ascending, false);
-					if (destination.IsSearchFolder)
-						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-					LastI = CurrentI;
-				}
-			}
+      int CurrentI = 0, LastI = 0;
+      foreach (var shellItem in destination) {
+        F.Application.DoEvents();
+        if (this.Items.Count > 0 && this.Items.Last().Parent != shellItem.Parent) {
+          break;
+        }
+        if (this.ShowHidden ? true : !shellItem.IsHidden) {
+          if (!this.Items.Contains(shellItem)) {
+            this.Items.Add(shellItem);
+          }
+        }
+        CurrentI++;
+        if (CurrentI - LastI >= (destination.IsSearchFolder ? 70 : 2000)) {
+          F.Application.DoEvents();
+          this.SetSortCollumn(isThereSettings ? folderSettings.SortColumn : 0, isThereSettings ? folderSettings.SortOrder : SortOrder.Ascending, false);
+          if (destination.IsSearchFolder)
+            Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+          LastI = CurrentI;
+        }
+      }
 			//resetEvent.Set();
 			if (isThereSettings) {
 				SetSortCollumn(folderSettings.SortColumn, folderSettings.SortOrder, false);
@@ -3214,7 +3219,7 @@ namespace BExplorer.Shell {
 		}
 		public void _OverlaysLoadingThreadRun() {
 			while (true) {
-				//F.Application.DoEvents();
+				F.Application.DoEvents();
 				resetEvent.WaitOne();
 				try {
 					int index = 0;
@@ -3229,7 +3234,7 @@ namespace BExplorer.Shell {
 						RedrawItem(index);
 
 				} catch (Exception) {
-					//F.Application.DoEvents();
+					F.Application.DoEvents();
 				}
 			}
 		}
@@ -3237,6 +3242,8 @@ namespace BExplorer.Shell {
 		public void _IconsLoadingThreadRun() {
 			while (true) {
 				resetEvent.WaitOne();
+        //Thread.Sleep(1);
+        F.Application.DoEvents();
 				try {
 					int index = 0;
 					if (!ThreadRun_Helper(waitingThumbnails, false, ref index)) continue;
@@ -3263,7 +3270,7 @@ namespace BExplorer.Shell {
 
 
 				} catch {
-					//F.Application.DoEvents();
+					F.Application.DoEvents();
 				}
 			}
 		}
@@ -3290,7 +3297,7 @@ namespace BExplorer.Shell {
 					}
 
 				} catch {
-					//F.Application.DoEvents();
+					F.Application.DoEvents();
 				}
 			}
 		}
@@ -3299,6 +3306,7 @@ namespace BExplorer.Shell {
 			while (true) {
 				resetEvent.WaitOne();
 				Thread.Sleep(1);
+        F.Application.DoEvents();
 				var index = ItemsForSubitemsUpdate.Dequeue();
 				try {
 					if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero) {
@@ -3562,6 +3570,25 @@ namespace BExplorer.Shell {
 		#endregion Public Methods
 
 		#region Private Methods
+
+
+
+
+
+    private void ReloadThreads() {
+      this._IconLoadingThread.Abort();
+      this._IconCacheLoadingThread.Abort();
+      this._OverlaysLoadingThread.Abort();
+      this._UpdateSubitemValuesThread.Abort();
+      this._IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
+      this._IconLoadingThread.Start();
+      this._IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
+      this._IconCacheLoadingThread.Start();
+      this._OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
+      this._OverlaysLoadingThread.Start();
+      this._UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
+      this._UpdateSubitemValuesThread.Start();
+    }
 
 		private int GetGroupIndex(int itemIndex) {
 			if (itemIndex == -1 || itemIndex >= this.Items.Count) return 0;

@@ -38,6 +38,7 @@ namespace Wpf.Controls {
 
 		public bool isGoingBackOrForward;
 		public bool IsSelectionHandled = false;
+    public Wpf.Controls.TabItem CurrentTabItem;
 
 		// TemplatePart controls
 		private ToggleButton _toggleButton;
@@ -270,6 +271,7 @@ namespace Wpf.Controls {
 		//public event EventHandler<CancelEventArgs> TabItemAdding;
 		//public event EventHandler<TabItemEventArgs> TabItemAdded;
 		//public event EventHandler<NewTabItemEventArgs> NewTabItem;
+    public event EventHandler<TabClickEventArgs> OnTabClicked;
 		/*
 		private event EventHandler<TabItemCancelEventArgs> TabItemClosing;
 		private event EventHandler<TabItemEventArgs> TabItemClosed;
@@ -666,7 +668,11 @@ namespace Wpf.Controls {
 		internal IEnumerable GetItems() {
 			return IsUsingItemsSource ? ItemsSource : Items;
 		}
-
+    public void RaiseTabClick(TabItem tab) {
+      if (this.OnTabClicked != null) {
+        this.OnTabClicked.Invoke(this, new TabClickEventArgs(tab));
+      }
+    }
 		internal int GetTabsCount() {
 			if (BindingOperations.IsDataBound(this, ItemsSourceProperty)) {
 				IList list = ItemsSource as IList;
@@ -712,4 +718,10 @@ namespace Wpf.Controls {
 			}
 		}
 	}
+  public class TabClickEventArgs : EventArgs {
+    public TabItem ClickedItem { get; private set; }
+    public TabClickEventArgs(TabItem tab) {
+      this.ClickedItem = tab;
+    }
+  }
 }

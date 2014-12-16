@@ -66,6 +66,25 @@ namespace BetterExplorer {
 			if (tab.ShellObject != this.ShellListView.CurrentFolder || tab.ShellObject.IsSearchFolder) {
 				tcMain.isGoingBackOrForward = true;
 				NavigationController(tab.ShellObject);
+        var selectedItem = tab;
+        selectedItem.Header = this.ShellListView.CurrentFolder.DisplayName;
+        selectedItem.Icon = this.ShellListView.CurrentFolder.Thumbnail.SmallBitmapSource;
+        selectedItem.ShellObject = this.ShellListView.CurrentFolder;
+        if (selectedItem != null) {
+          var selectedPaths = selectedItem.SelectedItems;
+          if (selectedPaths != null && selectedPaths.Count > 0) {
+            foreach (var path in selectedPaths.ToArray()) {
+              var sho = this.ShellListView.Items.Where(w => w.CachedParsingName == path).SingleOrDefault();
+              if (sho != null) {
+                var index = this.ShellListView.ItemsHashed[sho];
+                this.ShellListView.SelectItemByIndex(index, true);
+                selectedPaths.Remove(path);
+              }
+            }
+          } else {
+            this.ShellListView.ScrollToTop();
+          }
+        }
 			}
 			//}
 			/*
@@ -172,7 +191,7 @@ namespace BetterExplorer {
 			btnCopyto.Items.Add(OtherLocationCopy);
 		}
 
-    Wpf.Controls.TabItem CurrentTabItem;
+
 		private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 			if (e.RemovedItems.Count > 0) {
 
@@ -184,22 +203,32 @@ namespace BetterExplorer {
 			}
 
 			if (e.AddedItems.Count == 0) return;
-			if (!tcMain.IsSelectionHandled) {
-				SelectTab(e.AddedItems[0] as Wpf.Controls.TabItem);
+      var newTab = e.AddedItems[0] as Wpf.Controls.TabItem;
+      if (this.ShellListView.CurrentFolder != newTab.ShellObject && tcMain.CurrentTabItem == null) {
+        SelectTab(newTab);
+      } else {
+        if (!tcMain.IsSelectionHandled) {
+          SelectTab(newTab);
 
-				//btnUndoClose
-				btnUndoClose.Items.Clear();
-				foreach (var item in tcMain.ReopenableTabs) {
-					btnUndoClose.Items.Add(item.CurrentLocation);
-				}
-      } 
-      else {
-        if (e.RemovedItems[0] == this.CurrentTabItem) {
-          e.Handled = true;
-          tcMain.IsSelectionHandled = false;
-          tcMain.SelectedItem = e.RemovedItems[0];
-          this.CurrentTabItem = null;
-        } 
+          //btnUndoClose
+          btnUndoClose.Items.Clear();
+          foreach (var item in tcMain.ReopenableTabs) {
+            btnUndoClose.Items.Add(item.CurrentLocation);
+          }
+        } else {
+          if (e.RemovedItems.Count == 0) {
+            e.Handled = true;
+            SelectTab(newTab);
+            tcMain.SelectedItem = e.AddedItems[0];
+          } else {
+            if (e.RemovedItems[0] == tcMain.CurrentTabItem) {
+              e.Handled = true;
+              tcMain.IsSelectionHandled = false;
+              tcMain.SelectedItem = e.RemovedItems[0];
+              tcMain.CurrentTabItem = null;
+            }
+          }
+        }
       }
       tcMain.IsSelectionHandled = false;
 			this.ShellListView.Focus();
