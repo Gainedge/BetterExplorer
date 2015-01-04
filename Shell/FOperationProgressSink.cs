@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace BExplorer.Shell {
 	public class FOperationProgressSink : FileOperationProgressSink {
@@ -21,12 +23,13 @@ namespace BExplorer.Shell {
 		}
 		
 		public override void UpdateProgress(uint iWorkTotal, uint iWorkSoFar) {
-			base.UpdateProgress(iWorkTotal, iWorkSoFar);
+			//base.UpdateProgress(iWorkTotal, iWorkSoFar);
 		}
 		public override void PreDeleteItem(uint dwFlags, IShellItem psiItem) {
-			base.PreDeleteItem(dwFlags, psiItem);
+			//base.PreDeleteItem(dwFlags, psiItem);
 		}
 		public override void PostDeleteItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, uint hrDelete, IShellItem psiNewlyCreated) {
+			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 			//var obj = new ShellItem(psiItem);
 			//if (!String.IsNullOrEmpty(obj.ParsingName)) {
 			//	if (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder)) {
@@ -44,6 +47,16 @@ namespace BExplorer.Shell {
 			//	Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, obj.Parent.Pidl, IntPtr.Zero);
 			//Shell32.SHChangeNotify(obj.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
 			//	Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, obj.Pidl, IntPtr.Zero);
+			if (psiItem != null)
+			{
+				Marshal.ReleaseComObject(psiItem);
+				psiItem = null;
+			}
+			if (psiNewlyCreated != null)
+			{
+				Marshal.ReleaseComObject(psiNewlyCreated);
+				psiNewlyCreated = null;
+			}
 			
 		}
 		public override void PreCopyItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName) {
@@ -51,6 +64,7 @@ namespace BExplorer.Shell {
 			//base.PreCopyItem(dwFlags, psiItem, psiDestinationFolder, pszNewName);
 		}
 		public override void PostCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrCopy, IShellItem psiNewlyCreated) {
+			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 			//System.Windows.Forms.Application.DoEvents();
 			//if (psiNewlyCreated == null)
 			//	return;
@@ -60,8 +74,19 @@ namespace BExplorer.Shell {
 			//Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR : Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 			//		Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			//theNewItem.Dispose();
+			if (psiItem != null)
+			{
+				Marshal.ReleaseComObject(psiItem);
+				psiItem = null;
+			}
+			if (psiNewlyCreated != null)
+			{
+				Marshal.ReleaseComObject(psiNewlyCreated);
+				psiNewlyCreated = null;
+			}
 		}
 		public override void PostMoveItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrMove, IShellItem psiNewlyCreated) {
+			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 			//System.Windows.Forms.Application.DoEvents();
 			//if (psiNewlyCreated == null)
 			//	return;
@@ -71,6 +96,16 @@ namespace BExplorer.Shell {
 			//Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR : Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 			//		Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			//theNewItem.Dispose();
+			if (psiItem != null)
+			{
+				Marshal.ReleaseComObject(psiItem);
+				psiItem = null;
+			}
+			if (psiNewlyCreated != null)
+			{
+				Marshal.ReleaseComObject(psiNewlyCreated);
+				psiNewlyCreated = null;
+			}
 		}
 	}
 }

@@ -481,7 +481,7 @@ namespace BExplorer.Shell {
 		#endregion Public Members
 
 		#region Private Members
-
+		private System.Windows.Forms.Timer _UnvalidateTimer = new System.Windows.Forms.Timer();
 		private List<int> SelectedIndexes {
 			get {
 				List<int> selItems = new List<int>();
@@ -597,6 +597,9 @@ namespace BExplorer.Shell {
 				}
 				objUpdate.Dispose();
 			} catch (FileNotFoundException) {
+
+			}
+			catch (ArgumentOutOfRangeException){
 
 			}
 		}
@@ -2369,6 +2372,9 @@ namespace BExplorer.Shell {
 		protected override void OnHandleCreated(EventArgs e) {
 			base.OnHandleCreated(e);
 			MessageHandlerWindow = new MessageHandler(this);
+			this._UnvalidateTimer.Interval = 1000;
+			this._UnvalidateTimer.Tick += _UnvalidateTimer_Tick;
+			this._UnvalidateTimer.Stop();
 
 			var il = new F.ImageList() { ImageSize = new System.Drawing.Size(48, 48) };
 			var ils = new F.ImageList() { ImageSize = new System.Drawing.Size(16, 16) };
@@ -2413,6 +2419,52 @@ namespace BExplorer.Shell {
 			// 			F.MessageBox.Show(dwin.ToString());
 
 
+		}
+
+		void _UnvalidateTimer_Tick(object sender, EventArgs e)
+		{
+			var newItems = this.CurrentFolder.Where(w => this.ShowHidden ? true : w.IsHidden == this.ShowHidden).ToArray();
+			var removedItems = this.Items.Except(newItems, new ShellItemComparer());
+			foreach (var obj in removedItems.ToArray())
+			{
+				Items.Remove(obj);
+				this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+				if (this.IsGroupsEnabled)
+				{
+					this.SetGroupOrder(false);
+				}
+				obj.Dispose();
+				//if (this.ItemUpdated != null)
+				//	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
+			}
+			foreach (var obj in newItems)
+			{
+				F.Application.DoEvents();
+				var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
+				if (existingItem == null)
+				{
+					if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder))
+					{
+						var itemIndex = InsertNewItem(obj);
+						//if (this.ItemUpdated != null)
+						//	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
+					}
+					else
+					{
+						var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
+						if (affectedItem != null)
+						{
+							var index = this.Items.IndexOf(affectedItem);
+							this.RefreshItem(index, true);
+						}
+					}
+				}
+				obj.Dispose();
+			}
+			newItems = null;
+			removedItems = null;
+			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+			this._UnvalidateTimer.Stop();
 		}
 
 		protected override void OnHandleDestroyed(EventArgs e) {
@@ -2578,6 +2630,7 @@ namespace BExplorer.Shell {
 			});
 			thread.SetApartmentState(ApartmentState.STA);
 			thread.Start();
+			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 		}
 
 		private void Do_Copy_OR_Move_Helper(bool Copy, ShellItem destination, IShellItem[] Items) {
@@ -2792,13 +2845,13 @@ namespace BExplorer.Shell {
 				this.LastSortOrder = Order;
 			}
 			if (Order == SortOrder.Ascending) {
-				this.Items = this.Items.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(this.Collumns[colIndex].pkey, typeof(String)).Value).ToList();
+				this.Items = this.Items.ToArray().Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(this.Collumns.ToArray()[colIndex].pkey, typeof(String)).Value).ToList();
 			} else {
-				this.Items = this.Items.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(this.Collumns[colIndex].pkey, typeof(String)).Value).ToList();
+				this.Items = this.Items.ToArray().Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(this.Collumns.ToArray()[colIndex].pkey, typeof(String)).Value).ToList();
 			}
 
 			var i = 0;
-			this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++, new ShellItemComparer());
+			this.ItemsHashed = this.Items.ToArray().Distinct().ToDictionary(k => k, el => i++, new ShellItemComparer());
 			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 			this.SetSortIcon(colIndex, Order);
 			User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, this.LastSortedColumnIndex, 0);
@@ -2822,37 +2875,15 @@ namespace BExplorer.Shell {
 		}
 
 		public void UnvalidateDirectory() {
-			var newItems = this.CurrentFolder.Where(w => this.ShowHidden ? true : w.IsHidden == this.ShowHidden).ToArray();
-			var removedItems = this.Items.Except(newItems, new ShellItemComparer());
-			foreach (var obj in removedItems.ToArray()) {
-				Items.Remove(obj);
-				this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
-				if (this.IsGroupsEnabled) {
-					this.SetGroupOrder(false);
-				}
-				//if (this.ItemUpdated != null)
-				//	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
+			if (this._UnvalidateTimer.Enabled)
+			{
+				this._UnvalidateTimer.Stop();
+				this._UnvalidateTimer.Start();
 			}
-			foreach (var obj in newItems) {
-				F.Application.DoEvents();
-				var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
-				if (existingItem == null) {
-					if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
-						var itemIndex = InsertNewItem(obj);
-						//if (this.ItemUpdated != null)
-						//	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
-					} else {
-						var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
-						if (affectedItem != null) {
-							var index = this.Items.IndexOf(affectedItem);
-							this.RefreshItem(index, true);
-						}
-					}
-				}
+			else
+			{
+				this._UnvalidateTimer.Start();
 			}
-			newItems = null;
-			removedItems = null;
-			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 		}
     /// <summary>
 		/// Navigate to a folder.
@@ -2862,7 +2893,7 @@ namespace BExplorer.Shell {
 		/// <param name="refresh">Should the List be Refreshed?</param>
     [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
 		private void Navigate(ShellItem destination, Boolean isInSameTab = false, bool refresh = false) {
-      
+			this._UnvalidateTimer.Stop();
 			if (!refresh && Navigating != null) {
 				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 			}
@@ -3266,10 +3297,15 @@ namespace BExplorer.Shell {
 							Gdi32.DeleteObject(icon);
 							this.RedrawItem(index);
 						}
+						if ((sho.IsNetDrive || sho.IsNetworkPath) && !sho.ParsingName.StartsWith("::"))
+						{
+							temp.Dispose();
+						}
 					}
 
 
 				} catch {
+
 					F.Application.DoEvents();
 				}
 			}
@@ -3278,11 +3314,12 @@ namespace BExplorer.Shell {
 		public void _IconCacheLoadingThreadRun() {
 			while (true) {
 				resetEvent.WaitOne();
+				Bitmap result = null;
 				try {
 					int index = 0;
 					if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
 					var sho = Items[index];
-					var result = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
+					result = sho.GetShellThumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
 					sho.IsThumbnailLoaded = true;
 					sho.IsNeedRefreshing = false;
 					if (result != null) {
@@ -3294,9 +3331,15 @@ namespace BExplorer.Shell {
 						//F.Application.DoEvents();
 						this.RefreshItem(index);
 						result.Dispose();
+						result = null;
 					}
 
 				} catch {
+					if (result != null)
+					{
+						result.Dispose();
+						result = null;
+					}
 					F.Application.DoEvents();
 				}
 			}
@@ -3326,6 +3369,7 @@ namespace BExplorer.Shell {
 							}
 							pvar.Dispose();
 						}
+						temp.Dispose();
 					}
 				} catch {
 					F.Application.DoEvents();

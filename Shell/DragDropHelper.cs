@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
@@ -50,6 +51,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="dataObject">The DataObject.</param>
 		/// <returns>The DropDescription, if set.</returns>
+		[HandleProcessCorruptedStateExceptions]
 		public static object GetDropDescription(this System.Runtime.InteropServices.ComTypes.IDataObject dataObject) {
 			System.Runtime.InteropServices.ComTypes.FORMATETC formatETC;
 			FillFormatETC(DropDescriptionFormat, TYMED.TYMED_HGLOBAL, out formatETC);
@@ -59,6 +61,7 @@ namespace BExplorer.Shell {
 				dataObject.GetData(ref formatETC, out medium);
 				try {
 					return (BExplorer.Shell.DataObject.DropDescription)Marshal.PtrToStructure(medium.unionmember, typeof(BExplorer.Shell.DataObject.DropDescription));
+				} catch (AccessViolationException){
 				} finally {
 					ReleaseStgMedium(ref medium);
 				}

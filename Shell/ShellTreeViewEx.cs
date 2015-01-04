@@ -178,7 +178,8 @@ namespace BExplorer.Shell {
         //TODO: Test Change
         //Note: Should we use FirstOrDefault() NOT SingleOrDefault() ??
 
-        var theNode = nodes.Where(w => w.Tag is ShellItem && ((ShellItem)w.Tag).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
+        var theNodes = nodes.Where(w => w.Tag is ShellItem && ((ShellItem)w.Tag).GetHashCode() == sho.GetHashCode()).ToList();
+				var theNode = theNodes.FirstOrDefault();
         //var theNode = nodes.Where(wr => wr.Tag != null).Where(w => (w.Tag as ShellItem) != null && (w.Tag as ShellItem).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
 
         if (theNode == null) {
@@ -192,10 +193,15 @@ namespace BExplorer.Shell {
           theNode.Expand();
           nodes = theNode.Nodes.OfType<TreeNode>().ToArray();
         }
+				if (theNodes.Count() > 1)
+				{
+					theNodes.Skip(1).ToList().ForEach(d => this.ShellTreeView.SelectedNode.Parent.Nodes.Remove(d));
+				}
       }
 
       foreach (var sho in items) {
-        var theNode = nodes.Where(wr => wr.Tag is ShellItem && ((ShellItem)wr.Tag).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
+        var theNodes = nodes.Where(wr => wr.Tag is ShellItem && ((ShellItem)wr.Tag).GetHashCode() == sho.GetHashCode()).ToArray();
+				var theNode = theNodes.FirstOrDefault();
         if (theNode == null) {
           return;
         } else if (items.Last() == sho) {
@@ -207,7 +213,13 @@ namespace BExplorer.Shell {
           theNode.Expand();
           nodes = theNode.Nodes.OfType<TreeNode>().ToArray();
         }
+				if (theNodes.Count() > 1)
+				{
+					theNodes.Skip(1).ToList().ForEach(d => this.ShellTreeView.SelectedNode.Parent.Nodes.Remove(d));
+				}
       }
+
+			
     }
 
     private void InitTreeView() {
@@ -576,13 +588,22 @@ namespace BExplorer.Shell {
 
     private void ShellTreeView_DrawNode(object sender, DrawTreeNodeEventArgs e) {
       e.DrawDefault = !String.IsNullOrEmpty(e.Node.Text);
-      if (e.Node.Tag != null) {
-        var item = e.Node.Tag as ShellItem;
-        if (!UpdatedImages.Contains(e.Node.Handle) && (item.Parent != null && item.Parent.ParsingName != KnownFolders.Network.ParsingName))
-          imagesQueue.Enqueue(e.Node.Handle);
-        if (!CheckedFroChilds.Contains(e.Node.Handle))
-          childsQueue.Enqueue(e.Node.Handle);
-      }
+			try
+			{
+				if (e.Node.Tag != null)
+				{
+					var item = e.Node.Tag as ShellItem;
+					if (!UpdatedImages.Contains(e.Node.Handle) && (item != null && item.Parent != null && item.Parent.ParsingName != KnownFolders.Network.ParsingName))
+						imagesQueue.Enqueue(e.Node.Handle);
+					if (!CheckedFroChilds.Contains(e.Node.Handle))
+						childsQueue.Enqueue(e.Node.Handle);
+				}
+			}
+			catch (Exception)
+			{
+				e.DrawDefault = true;
+				//Do Nothing but prevent UI freeze
+			}
     }
 
     private async void ShellTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
@@ -598,48 +619,69 @@ namespace BExplorer.Shell {
           ShellItem lvSho = this.ShellListView != null && this.ShellListView.CurrentFolder != null ? this.ShellListView.CurrentFolder : null;
           var node = e.Node;
           node.Nodes.Add("Searching for folders...");
-          var nodes = await Task.Run(() => {
-            var nodesTemp = new List<TreeNode>();
-            foreach (var item in sho.Where(w => sho.IsFileSystem || Path.GetExtension(sho.ParsingName).ToLowerInvariant() == ".library-ms" ? ((w.IsFolder || w.IsLink) && (this.IsShowHiddenItems ? true : w.IsHidden == false)) : true)) {
-              var itemNode = new TreeNode(item.DisplayName);
-              ShellItem itemReal = null;
-              if (item.Parent != null && item.Parent.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
-                itemReal = ShellItem.ToShellParsingName(item.ParsingName);
-              } else {
-                itemReal = item;
-              }
-              itemNode.Tag = itemReal;
+					Thread t = new Thread(() =>
+					{
 
-              if ((sho.IsNetDrive || sho.IsNetworkPath) && sho.ParsingName != KnownFolders.Network.ParsingName) {
-                itemNode.ImageIndex = this.folderImageListIndex;
-              } else if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS || sho.ParsingName == KnownFolders.Network.ParsingName) {
-                itemNode.ImageIndex = itemReal.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
-                itemNode.SelectedImageIndex = itemNode.ImageIndex;
-              } else {
-                itemNode.ImageIndex = this.folderImageListIndex;
-              }
 
-              itemNode.Nodes.Add(this._EmptyItemString);
-              if (item.ParsingName.EndsWith(".library-ms")) {
-                var library = ShellLibrary.Load(item.DisplayName, false);
-                if (library.IsPinnedToNavigationPane) {
-                  nodesTemp.Add(itemNode);
-                }
-                library.Close();
-              } else {
-                nodesTemp.Add(itemNode);
-              }
-              //Application.DoEvents();
-            }
-            return nodesTemp;
-          });
+						//var nodes = await Task.Run(() => {
+						var nodesTemp = new List<TreeNode>();
+						foreach (var item in sho.Where(w => sho.IsFileSystem || Path.GetExtension(sho.ParsingName).ToLowerInvariant() == ".library-ms" ? ((w.IsFolder || w.IsLink) && (this.IsShowHiddenItems ? true : w.IsHidden == false)) : true))
+						{
+							var itemNode = new TreeNode(item.DisplayName);
+							ShellItem itemReal = null;
+							if (item.Parent != null && item.Parent.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
+							{
+								itemReal = ShellItem.ToShellParsingName(item.ParsingName);
+							}
+							else
+							{
+								itemReal = item;
+							}
+							itemNode.Tag = itemReal;
 
-          if (node.Nodes.Count == 1 && node.Nodes[0].Text == "Searching for folders...")
-            node.Nodes.RemoveAt(0);
-          node.Nodes.AddRange(nodes.ToArray());
+							if ((sho.IsNetDrive || sho.IsNetworkPath) && sho.ParsingName != KnownFolders.Network.ParsingName)
+							{
+								itemNode.ImageIndex = this.folderImageListIndex;
+							}
+							else if (itemReal.IconType == IExtractIconPWFlags.GIL_PERCLASS || sho.ParsingName == KnownFolders.Network.ParsingName)
+							{
+								itemNode.ImageIndex = itemReal.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
+								itemNode.SelectedImageIndex = itemNode.ImageIndex;
+							}
+							else
+							{
+								itemNode.ImageIndex = this.folderImageListIndex;
+							}
 
-          if (lvSho != null)
-            SelectItem(lvSho);
+							itemNode.Nodes.Add(this._EmptyItemString);
+							if (item.ParsingName.EndsWith(".library-ms"))
+							{
+								var library = ShellLibrary.Load(item.DisplayName, false);
+								if (library.IsPinnedToNavigationPane)
+								{
+									nodesTemp.Add(itemNode);
+								}
+								library.Close();
+							}
+							else
+							{
+								nodesTemp.Add(itemNode);
+							}
+							//Application.DoEvents();
+						}
+						//return nodesTemp;
+						//});
+						this.Invoke((Action)(() =>
+						{
+							if (node.Nodes.Count == 1 && node.Nodes[0].Text == "Searching for folders...")
+								node.Nodes.RemoveAt(0);
+							node.Nodes.AddRange(nodesTemp.ToArray());
+						}));
+
+						if (lvSho != null)
+							SelectItem(lvSho);
+					});
+					t.Start();
         }
       }
     }
@@ -955,14 +997,14 @@ namespace BExplorer.Shell {
               case ShellNotifications.SHCNE.SHCNE_CREATE:
                 try {
                   var sho = new ShellItem(info.Item1);
-                  var existingItem = this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.OfType<TreeNode>().Where(w => w.Tag != null && (w.Tag as ShellItem).ParsingName == sho.ParsingName).FirstOrDefault();
-                  if (existingItem != null)
+                  var existingItem = this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.OfType<TreeNode>().Where(w => (w.Tag as ShellItem) != null && (w.Tag as ShellItem).ParsingName == sho.ParsingName).Count();
+                  if (existingItem > 0)
                     break;
                   TreeNode node = new TreeNode(sho.DisplayName);
                   node.ImageIndex = sho.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);// this.folderImageListIndex;
                   node.SelectedImageIndex = node.ImageIndex;
                   node.Tag = sho;
-                  if (sho.Parent != null && sho.Parent.ParsingName == KnownFolders.Network.ParsingName) {
+                  if (sho != null && sho.Parent != null && sho.Parent.ParsingName == KnownFolders.Network.ParsingName) {
                     this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.Add(node);
                   }
                 } catch (AccessViolationException) {
