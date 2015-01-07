@@ -54,11 +54,13 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		[Obsolete("Not Used", true)]
 		public static FilterItem[] ParseFilterString(string filterString) {
 			int dummy;
 			return ParseFilterString(filterString, string.Empty, out dummy);
 		}
+		*/
 
 		/// <summary>
 		/// Takes a string (representing a list of filters like: "txt|All files|") and converts it into a FilterItem[]
@@ -69,7 +71,7 @@ namespace BExplorer.Shell {
 		/// <returns></returns>
 		public static FilterItem[] ParseFilterString(string filterString, string existing, out int existingIndex) {
 			//TODO: Find out why we have existingIndex
-			List<FilterItem> result = new List<FilterItem>();
+			var result = new List<FilterItem>();
 			existingIndex = -1;
 
 			string[] items = filterString != string.Empty ? filterString.Split('|') : new string[0];
