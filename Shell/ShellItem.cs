@@ -65,7 +65,8 @@ namespace BExplorer.Shell {
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) {
 			if (sourceType == typeof(string)) {
 				return true;
-			} else {
+			}
+			else {
 				return base.CanConvertFrom(context, sourceType);
 			}
 		}
@@ -73,7 +74,8 @@ namespace BExplorer.Shell {
 		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) {
 			if (destinationType == typeof(InstanceDescriptor)) {
 				return true;
-			} else {
+			}
+			else {
 				return base.CanConvertTo(context, destinationType);
 			}
 		}
@@ -84,10 +86,12 @@ namespace BExplorer.Shell {
 
 				if (s.Length == 0) {
 					return ShellItem.Desktop;
-				} else {
+				}
+				else {
 					return new ShellItem(s);
 				}
-			} else {
+			}
+			else {
 				return base.ConvertFrom(context, culture, value);
 			}
 		}
@@ -98,7 +102,8 @@ namespace BExplorer.Shell {
 
 				if (destinationType == typeof(string)) {
 					return uri.Scheme == "file" ? uri.LocalPath : uri.ToString();
-				} else if (destinationType == typeof(InstanceDescriptor)) {
+				}
+				else if (destinationType == typeof(InstanceDescriptor)) {
 					return new InstanceDescriptor(typeof(ShellItem).GetConstructor(new Type[] { typeof(string) }), new object[] { uri.ToString() });
 				}
 			}
@@ -130,8 +135,8 @@ namespace BExplorer.Shell {
 		internal IExtractIconPWFlags IconType { get; private set; }
 		internal IntPtr ILPidl { get { return Shell32.ILFindLastID(Pidl); } }
 
-    public static IntPtr MessageHandle = IntPtr.Zero;
-    public static Boolean IsCareForMessageHadle = true;
+		public static IntPtr MessageHandle = IntPtr.Zero;
+		public static Boolean IsCareForMessageHadle = true;
 
 		/// <summary>Add Documentation</summary>
 		public int IsShielded = -1;
@@ -210,18 +215,21 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets a PIDL representing the item.
 		/// </summary>
-		public IntPtr Pidl { get { return GetIDListFromObject(ComInterface); } }
-		public bool IsBrowsable
-		{
-			get
-			{
+		public IntPtr Pidl {
+			get {
+				if (RunningVista)
+					return ComInterface != null ? Shell32.SHGetIDListFromObject(ComInterface) : IntPtr.Zero;
+				else
+					return ((Interop.VistaBridge.ShellItemImpl)ComInterface).Pidl;
+			}
+		}
+		public bool IsBrowsable {
+			get {
 				//TODO: try removing this Try Catch!
-				try
-				{
+				try {
 					return COM_Attribute_Check(SFGAO.BROWSABLE);
 				}
-				catch
-				{
+				catch {
 					return false;
 				}
 			}
@@ -244,7 +252,8 @@ namespace BExplorer.Shell {
 				try {
 					var folder = this.GetIShellFolder();
 					return true;
-				} catch {
+				}
+				catch {
 					return false;
 				}
 			}
@@ -264,7 +273,8 @@ namespace BExplorer.Shell {
 				//TODO: try removing this Try Catch!
 				try {
 					return COM_Attribute_Check(SFGAO.FILESYSTEM);
-				} catch {
+				}
+				catch {
 					return false;
 				}
 			}
@@ -286,9 +296,11 @@ namespace BExplorer.Shell {
 			get {
 				try {
 					return COM_Attribute_Check(SFGAO.HIDDEN);
-				} catch (FileNotFoundException) {
+				}
+				catch (FileNotFoundException) {
 					return false;
-				} catch (NullReferenceException) {
+				}
+				catch (NullReferenceException) {
 					// NativeShellItem is null
 					return false;
 				}
@@ -302,9 +314,11 @@ namespace BExplorer.Shell {
 			get {
 				try {
 					return COM_Attribute_Check(SFGAO.LINK);
-				} catch (FileNotFoundException) {
+				}
+				catch (FileNotFoundException) {
 					return false;
-				} catch (NullReferenceException) {
+				}
+				catch (NullReferenceException) {
 					// NativeShellItem is null
 					return false;
 				}
@@ -327,7 +341,8 @@ namespace BExplorer.Shell {
 			get {
 				try {
 					return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) != DriveType.Network;
-				} catch {
+				}
+				catch {
 					return false;
 				}
 			}
@@ -363,7 +378,8 @@ namespace BExplorer.Shell {
 				try {
 					//return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) == DriveType.Network;
 					return Shell32.PathIsNetworkPath(this.ParsingName);
-				} catch {
+				}
+				catch {
 					return false;
 				}
 			}
@@ -373,7 +389,8 @@ namespace BExplorer.Shell {
 			get {
 				try {
 					return (!ParsingName.StartsWith("::") && !IsFileSystem && !ParsingName.StartsWith(@"\\") && !ParsingName.Contains(":\\")) || ParsingName.EndsWith(".search-ms");
-				} catch {
+				}
+				catch {
 					return false;
 				}
 			}
@@ -405,9 +422,11 @@ namespace BExplorer.Shell {
 
 				if (result == HResult.S_OK) {
 					return new ShellItem(item);
-				} else if (result == HResult.MK_E_NOOBJECT) {
+				}
+				else if (result == HResult.MK_E_NOOBJECT) {
 					return null;
-				} else {
+				}
+				else {
 					Marshal.ThrowExceptionForHR((int)result);
 					return null;
 				}
@@ -436,7 +455,8 @@ namespace BExplorer.Shell {
 				try {
 					IntPtr relativePidl = Shell32.ILFindLastID(Pidl);
 					Parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, 1, new IntPtr[] { relativePidl }, typeof(IQueryInfo).GUID, 0, out result);
-				} catch (Exception) {
+				}
+				catch (Exception) {
 					return string.Empty;
 				}
 
@@ -488,25 +508,41 @@ namespace BExplorer.Shell {
 		[System.Diagnostics.DebuggerNonUserCode]
 		public IEnumerator<ShellItem> GetEnumerator(SHCONTF filter) {
 			IShellFolder folder = GetIShellFolder();
-			IEnumIDList enumId = GetIEnumIDList(folder, filter);
-			uint count;
-			IntPtr pidl;
-			HResult result;
+			IEnumIDList enumId;// = GetIEnumIDList(folder, filter);
 
-			if (enumId == null) {
+			//TODO: Check this code
+			if (folder.EnumObjects(IsCareForMessageHadle ? MessageHandle : IntPtr.Zero, filter, out enumId) != HResult.S_OK) {
+				//enumId = null;
 				yield break;
 			}
 
-			result = enumId.Next(1, out pidl, out count);
+			//if (enumId == null) yield break;
+
+			uint count;
+			IntPtr pidl;
+			//HResult result;			
+
+			HResult result = enumId.Next(1, out pidl, out count);
 			while (result == HResult.S_OK) {
-				yield return new ShellItem(this, pidl);
+				var Item = new ShellItem();
+				//Item.ComInterface = CreateItemWithParent(this, pidl);
+
+				if (RunningVista) {
+					Item.ComInterface = Shell32.SHCreateItemWithParent(IntPtr.Zero, this.GetIShellFolder(), pidl, typeof(IShellItem).GUID);
+				}
+				else {
+					Interop.VistaBridge.ShellItemImpl impl = (Interop.VistaBridge.ShellItemImpl)this.ComInterface;
+					Item.ComInterface = new Interop.VistaBridge.ShellItemImpl(Shell32.ILCombine(impl.Pidl, pidl), true);
+				}
+
+				Item.Constructor_Helper();
+				yield return Item;
+
 				Shell32.ILFree(pidl);
 				result = enumId.Next(1, out pidl, out count);
 			}
 
-			if (result != HResult.S_FALSE) {
-				Marshal.ThrowExceptionForHR((int)result);
-			}
+			if (result != HResult.S_FALSE) Marshal.ThrowExceptionForHR((int)result);
 
 			yield break;
 		}
@@ -533,37 +569,33 @@ namespace BExplorer.Shell {
 				string result = Marshal.PtrToStringUni(resultPtr);
 				Marshal.FreeCoTaskMem(resultPtr);
 				return result;
-			} catch (Exception) {
+			}
+			catch (Exception) {
 				return String.Empty;
 			}
 		}
 
 		private IExtractIconPWFlags GetIconType() {
-			if (this.Extension == ".exe" || this.Extension ==  ".com" || this.Extension == ".bat" || this.Extension == ".msi")
+			if (this.Extension == ".exe" || this.Extension == ".com" || this.Extension == ".bat" || this.Extension == ".msi")
 				return IExtractIconPWFlags.GIL_PERINSTANCE;
-			if (this.IsFolder) {
+			else if (this.IsFolder) {
 				IExtractIcon iextract = null;
 				IShellFolder ishellfolder = null;
-				StringBuilder str = null;
 				IntPtr result;
-
-				if (this.Parent == null) {
-					return 0;
-				}
-
+				if (this.Parent == null) return 0;
 				try {
 					var guid = new Guid("000214fa-0000-0000-c000-000000000046");
 					uint res = 0;
 					ishellfolder = this.Parent.GetIShellFolder();
-					IntPtr[] pidls = new IntPtr[1];
+					var pidls = new IntPtr[1];
 					pidls[0] = Shell32.ILFindLastID(this.Pidl);
 					ishellfolder.GetUIObjectOf(
-						IntPtr.Zero,
-						1,
-						pidls,
-						ref guid,
-						res,
-						out result
+							 IntPtr.Zero,
+							 1,
+							 pidls,
+							 ref guid,
+							 res,
+							 out result
 					);
 					if (result == IntPtr.Zero) {
 						pidls = null;
@@ -571,25 +603,25 @@ namespace BExplorer.Shell {
 						return IExtractIconPWFlags.GIL_PERCLASS;
 					}
 					iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
-					str = new StringBuilder(512);
 					int index = -1;
 					IExtractIconPWFlags flags;
-					iextract.GetIconLocation(IExtractIconUFlags.GIL_ASYNC, str, 512, out index, out flags);
+					iextract.GetIconLocation(IExtractIconUFlags.GIL_ASYNC, new StringBuilder(512), 512, out index, out flags);
 					pidls = null;
 					Marshal.ReleaseComObject(ishellfolder);
 					Marshal.ReleaseComObject(iextract);
 					ishellfolder = null;
 					iextract = null;
-					str = null;
 					return flags;
-				} catch (Exception) {
+				}
+				catch (Exception) {
 					if (ishellfolder != null)
 						Marshal.ReleaseComObject(ishellfolder);
 					if (iextract != null)
 						Marshal.ReleaseComObject(iextract);
 					return 0;
 				}
-			} else {
+			}
+			else {
 				return IExtractIconPWFlags.GIL_PERCLASS;
 			}
 		}
@@ -599,6 +631,7 @@ namespace BExplorer.Shell {
 			IShellFolder ishellfolder = null;
 			StringBuilder str = null;
 			IntPtr result;
+			IExtractIconPWFlags flags = 0;
 			try {
 				var guid = new Guid("000214fa-0000-0000-c000-000000000046");
 				uint res = 0;
@@ -611,24 +644,21 @@ namespace BExplorer.Shell {
 				iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
 				str = new StringBuilder(512);
 				int index = -1;
-				IExtractIconPWFlags flags;
 				iextract.GetIconLocation(IExtractIconUFlags.GIL_CHECKSHIELD, str, 512, out index, out flags);
 				pidls = null;
-				if (ishellfolder != null)
-					Marshal.ReleaseComObject(ishellfolder);
-				if (iextract != null)
-					Marshal.ReleaseComObject(iextract);
-				str = null;
-				return flags;
-			} catch (Exception) {
-				if (ishellfolder != null)
-					Marshal.ReleaseComObject(ishellfolder);
-				if (iextract != null)
-					Marshal.ReleaseComObject(iextract);
-				str = null;
-				return 0;
 			}
+			catch (Exception) {
+			}
+			finally {
+				if (ishellfolder != null)
+					Marshal.ReleaseComObject(ishellfolder);
+				if (iextract != null)
+					Marshal.ReleaseComObject(iextract);
+				str = null;
+			}
+			return flags;
 		}
+
 
 		/*
 		public int GetFallbackIconIndex() {
@@ -673,6 +703,7 @@ namespace BExplorer.Shell {
 			return this.Thumbnail.Bitmap;
 		}
 
+		/*
 		/// <summary>
 		/// Returns an <see cref="ComTypes.IDataObject"/> representing the
 		/// item. This object is used in drag and drop operations.
@@ -682,6 +713,7 @@ namespace BExplorer.Shell {
 			HResult result = ComInterface.BindToHandler(IntPtr.Zero, BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID, out res);
 			return (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(res, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
 		}
+		*/
 
 		public List<AssociationItem> GetAssocList() {
 			var assocList = new List<AssociationItem>();
@@ -828,7 +860,8 @@ namespace BExplorer.Shell {
 				this.IconType = GetIconType();
 				this.CachedParsingName = this.ParsingName;
 				this.OverlayIconIndex = -1;
-			} catch (Exception) {
+			}
+			catch (Exception) {
 
 			}
 		} //TODO: Figure out if this should be added in protected ShellItem() { }
@@ -836,6 +869,7 @@ namespace BExplorer.Shell {
 		[Obsolete("Try to remove this!!!")]
 		protected ShellItem() { }
 
+		/*
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ShellItem"/> class.
 		/// </summary>
@@ -857,6 +891,7 @@ namespace BExplorer.Shell {
 			Initialize(uri);
 			Constructor_Helper();
 		}
+		*/
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ShellItem"/> class.
@@ -898,12 +933,9 @@ namespace BExplorer.Shell {
 			IntPtr pidl;
 
 			if (Shell32.SHGetSpecialFolderLocation(IntPtr.Zero, (CSIDL)folder, out pidl) == HResult.S_OK) {
-				try {
-					ComInterface = CreateItemFromIDList(pidl);
-				} finally {
-					Shell32.ILFree(pidl);
-				}
-			} else {
+				ComInterface = CreateItemFromIDList(pidl);
+			}
+			else {
 				// SHGetSpecialFolderLocation does not support many common
 				// CSIDL values on Windows 98, but SHGetFolderPath in
 				// ShFolder.dll does, so fall back to it if necessary. We
@@ -914,6 +946,7 @@ namespace BExplorer.Shell {
 				Marshal.ThrowExceptionForHR((int)Shell32.SHGetFolderPath(IntPtr.Zero, (CSIDL)folder, IntPtr.Zero, 0, path));
 				ComInterface = CreateItemFromParsingName(path.ToString());
 			}
+
 			Constructor_Helper();
 		}
 
@@ -939,20 +972,17 @@ namespace BExplorer.Shell {
 				// create the new item. Folders other than Desktop don't
 				// seem to implement ParseDisplayName properly.
 				ComInterface = CreateItemFromParsingName(Path.Combine(parent.FileSystemPath, name));
-			} else {
+			}
+			else {
 				IShellFolder folder = parent.GetIShellFolder();
 				uint eaten;
 				IntPtr pidl;
 				uint attributes = 0;
 
 				folder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, name, out eaten, out pidl, ref attributes);
-
-				try {
-					ComInterface = CreateItemFromIDList(pidl);
-				} finally {
-					Shell32.ILFree(pidl);
-				}
+				ComInterface = CreateItemFromIDList(pidl);
 			}
+
 			Constructor_Helper();
 		}
 
@@ -974,10 +1004,12 @@ namespace BExplorer.Shell {
 			this.OverlayIconIndex = -1;
 		} //TODO: Consider adding Constructor_Helper();
 
+		/*
 		internal ShellItem(ShellItem parent, IntPtr pidl) {
 			ComInterface = CreateItemWithParent(parent, pidl);
 			Constructor_Helper();
 		}
+		*/
 
 		#endregion Constructors
 
@@ -1014,7 +1046,8 @@ namespace BExplorer.Shell {
 					Marshal.Copy(Pidl, pidlData, 0, (int)size);
 					byte[] hashData = ShellItem.hashProvider.ComputeHash(pidlData);
 					hashValue = BitConverter.ToInt32(hashData, 0);
-				} else {
+				}
+				else {
 					hashValue = 0;
 				}
 			}
@@ -1086,7 +1119,8 @@ namespace BExplorer.Shell {
 
 					try {
 						item = CreateItemFromIDList(pidl);
-					} finally {
+					}
+					finally {
 						Shell32.ILFree(pidl);
 					}
 
@@ -1107,7 +1141,8 @@ namespace BExplorer.Shell {
 			if (separatorIndex != -1) {
 				knownFolder = path.Substring(0, separatorIndex);
 				restOfPath = path.Substring(separatorIndex + 1);
-			} else {
+			}
+			else {
 				knownFolder = path;
 				restOfPath = string.Empty;
 			}
@@ -1130,17 +1165,22 @@ namespace BExplorer.Shell {
 		}
 
 		private static IShellItem CreateItemFromIDList(IntPtr pidl) {
-			if (RunningVista) {
-				return Shell32.SHCreateItemFromIDList(pidl, typeof(IShellItem).GUID);
-			} else {
-				return new Interop.VistaBridge.ShellItemImpl(pidl, false);
+			try {
+				if (RunningVista)
+					return Shell32.SHCreateItemFromIDList(pidl, typeof(IShellItem).GUID);
+				else
+					return new Interop.VistaBridge.ShellItemImpl(pidl, false);
+			}
+			finally {
+				Shell32.ILFree(pidl);
 			}
 		}
 
 		private static IShellItem CreateItemFromParsingName(string path) {
 			if (RunningVista) {
 				return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
-			} else {
+			}
+			else {
 				IShellFolder desktop = Desktop.GetIShellFolder();
 				uint attributes = 0;
 				uint eaten;
@@ -1151,32 +1191,6 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		private static IShellItem CreateItemWithParent(ShellItem parent, IntPtr pidl) {
-			if (RunningVista) {
-				return Shell32.SHCreateItemWithParent(IntPtr.Zero, parent.GetIShellFolder(), pidl, typeof(IShellItem).GUID);
-			} else {
-				Interop.VistaBridge.ShellItemImpl impl = (Interop.VistaBridge.ShellItemImpl)parent.ComInterface;
-				return new Interop.VistaBridge.ShellItemImpl(Shell32.ILCombine(impl.Pidl, pidl), true);
-			}
-		}
-
-		private static IntPtr GetIDListFromObject(IShellItem item) {
-			if (RunningVista) {
-				return item != null ? Shell32.SHGetIDListFromObject(item) : IntPtr.Zero;
-			} else {
-				return ((Interop.VistaBridge.ShellItemImpl)item).Pidl;
-			}
-		}
-
-		private static IEnumIDList GetIEnumIDList(IShellFolder folder, SHCONTF flags) {
-			IEnumIDList result;
-
-			if (folder.EnumObjects(IsCareForMessageHadle ? MessageHandle : IntPtr.Zero, flags, out result) == HResult.S_OK) {
-				return result;
-			} else {
-				return null;
-			}
-		}
 		#endregion Static Stuff
 
 		#region Dispose
@@ -1265,9 +1279,11 @@ namespace BExplorer.Shell {
 		private void Initialize(Uri uri) {
 			if (uri.Scheme == "file") {
 				ComInterface = CreateItemFromParsingName(uri.LocalPath);
-			} else if (uri.Scheme == "shell") {
+			}
+			else if (uri.Scheme == "shell") {
 				InitializeFromShellUri(uri);
-			} else {
+			}
+			else {
 				throw new InvalidOperationException("Invalid URI scheme");
 			}
 		}
@@ -1279,7 +1295,8 @@ namespace BExplorer.Shell {
 				var sho = ShellItem.ToShellParsingName(this.ParsingName);
 				sho.m_ComInterface.GetAttributes(Check, out sfgao);
 				sho.Dispose();
-			} else {
+			}
+			else {
 				ComInterface.GetAttributes(Check, out sfgao);
 			}
 			return (sfgao & Check) != 0;
@@ -1309,27 +1326,30 @@ namespace BExplorer.Shell {
 		/// <param name="path">The path you want to convert</param>
 		/// <returns></returns>
 		public static ShellItem ToShellParsingName(String path) {
-			if (path.StartsWith("%"))
-			{
+			if (path.StartsWith("%")) {
 				return new ShellItem(Environment.ExpandEnvironmentVariables(path));
-			} else 	if (path.StartsWith("::") && !path.StartsWith(@"\\"))
+			}
+			else if (path.StartsWith("::") && !path.StartsWith(@"\\"))
 				return new ShellItem(String.Format("shell:{0}", path));
 			//else 
 			//	if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
 			//	return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
 			else if (!path.StartsWith(@"\\")) {
 				if (path.Contains(":")) {
-					return new ShellItem(String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty :  Path.DirectorySeparatorChar.ToString()));
-				} else {
+					return new ShellItem(String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString()));
+				}
+				else {
 
 					try {
 						return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
-					} catch (Exception ex) {
+					}
+					catch (Exception ex) {
 						return new ShellItem(@"\\" + String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
 						throw;
 					}
 				}
-			} else
+			}
+			else
 				return new ShellItem(path);
 		} //TODO: Consider making this a constructor!
 
@@ -1345,10 +1365,15 @@ namespace BExplorer.Shell {
 			else
 				Uri.TryCreate(path, UriKind.Absolute, out newUri);
 
-			if (newUri == null)
+			if (newUri == null) {
 				return null;
-			else
-				return new ShellItem(newUri);
+			}
+			else {
+				var Item = new ShellItem();
+				Item.Initialize(newUri);
+				Item.Constructor_Helper();
+				return Item;
+			}
 		}//TODO: Start using this safe Constructor more
 
 	}
