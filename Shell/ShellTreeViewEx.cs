@@ -676,10 +676,11 @@ namespace BExplorer.Shell {
 							if (node.Nodes.Count == 1 && node.Nodes[0].Text == "Searching for folders...")
 								node.Nodes.RemoveAt(0);
 							node.Nodes.AddRange(nodesTemp.ToArray());
+              if (lvSho != null)
+                SelectItem(lvSho);
 						}));
 
-						if (lvSho != null)
-							SelectItem(lvSho);
+						
 					});
 					t.Start();
         }

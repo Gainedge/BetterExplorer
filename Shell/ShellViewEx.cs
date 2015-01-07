@@ -536,6 +536,7 @@ namespace BExplorer.Shell {
 		private SyncQueue<int> waitingThumbnails = new SyncQueue<int>(); //3000
 		private List<int> _CuttedIndexes = new List<int>();
 		private int _LastDropHighLightedItemIndex = -1;
+    private String _NewName { get; set; }
 
 		#endregion Private Members
 
@@ -707,7 +708,21 @@ namespace BExplorer.Shell {
 			User32.SetForegroundWindow(this.LVHandle);
 		}
 
-		private void ShellView_KeyDown(Keys e) {
+		private Boolean ShellView_KeyDown(Keys e) {
+      if (System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.TextBox && e != Keys.Escape && e != Keys.Enter) {
+        var key = System.Windows.Input.KeyInterop.KeyFromVirtualKey((int)e);                    // Key to send
+        var target = System.Windows.Input.Keyboard.FocusedElement as System.Windows.Controls.TextBox;    // Target element
+        var routedEvent = System.Windows.Input.Keyboard.KeyDownEvent; // Event to send
+
+        target.RaiseEvent(
+          new System.Windows.Input.KeyEventArgs(
+            System.Windows.Input.Keyboard.PrimaryDevice,
+            PresentationSource.FromVisual(target),
+            0,
+            key) { RoutedEvent = routedEvent }
+        );
+        return false;
+      }
 			if (ItemForRealName_IsAny) {
 				if (e == Keys.Escape) {
 					this.EndLabelEdit(true);
@@ -715,7 +730,10 @@ namespace BExplorer.Shell {
 				if (e == Keys.F2) {
 					//TODO: implement a conditional selection inside rename textbox!
 				}
-				return;
+        if (e == Keys.Enter) {
+          this.EndLabelEdit();
+        }
+				return false;
 			}
 			if ((Control.ModifierKeys & Keys.Control) == Keys.Control) {
 				switch (e) {
@@ -1271,6 +1289,7 @@ namespace BExplorer.Shell {
 			if (e == Keys.F5) {
 				this.RefreshContents();
 			}
+      return true;
 		}
 
 		#endregion Events
@@ -1536,6 +1555,7 @@ namespace BExplorer.Shell {
 		public void UpdateItem(ShellItem obj1, ShellItem obj2) {
 			if (this.CurrentRefreshedItemIndex != -1) {
 				ShellItem tempItem = Items.SingleOrDefault(s => s.CachedParsingName == obj2.CachedParsingName);
+        User32.SendMessage(this.LVHandle, MSG.LVM_UPDATE, this.CurrentRefreshedItemIndex, 0);
 				if (tempItem == null) {
 					Items.Insert(this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex, obj2);
 					ItemsHashed.Add(obj2, this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex);
@@ -1651,9 +1671,12 @@ namespace BExplorer.Shell {
 									//nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (!String.IsNullOrEmpty(NewName) ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
 									try {
 										nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
+                    //if (!String.IsNullOrEmpty(this._NewName) && this.CurrentRefreshedItemIndex == nmlv.item.iItem) {
+                    //  nmlv.item.pszText = this._NewName;
+                    //}
 										if (this.ItemForRealName_IsAny) {
 											if (this.GetFirstSelectedItemIndex() == nmlv.item.iItem) {
-												nmlv.item.pszText = "";
+												  nmlv.item.pszText = this._NewName;
 											}
 										}
 									} catch (Exception) {
@@ -1929,7 +1952,10 @@ namespace BExplorer.Shell {
 						case WNM.LVN_KEYDOWN:
 							#region Case
 							var nkd = (NMLVKEYDOWN)m.GetLParam(typeof(NMLVKEYDOWN));
-							ShellView_KeyDown((Keys)((int)nkd.wVKey));
+              if (!ShellView_KeyDown((Keys)((int)nkd.wVKey))) {
+                m.Result = (IntPtr)1;
+                break;
+              }
 
 							if (!ItemForRealName_IsAny) {
 								switch (nkd.wVKey) {
@@ -1958,12 +1984,10 @@ namespace BExplorer.Shell {
 
 								this.Focus();
 							} else {
-								Input.InputManager.Current.ProcessInput(
-									new Input.KeyEventArgs(Input.Keyboard.PrimaryDevice, Input.Keyboard.PrimaryDevice.ActiveSource, Environment.TickCount,
-										Input.KeyInterop.KeyFromVirtualKey(nkd.wVKey)) {
-											RoutedEvent = System.Windows.Controls.Control.KeyDownEvent
-										});
-								m.Result = (IntPtr)1;
+                if (System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.TextBox) {
+                  m.Result = (IntPtr)1;
+                  break;
+                }
 								switch (nkd.wVKey) {
 									case (short)Keys.Enter:
                     if (!this.IsRenameInProgress)
@@ -2486,7 +2510,18 @@ namespace BExplorer.Shell {
 
 		#region Public Methods
 
-
+    public void UpdateItemName(String newName) {
+      if (String.IsNullOrEmpty(newName))
+        return;
+      this._NewName = newName;
+      var theItem = this.GetFirstSelectedItem();
+      var oldFullPath = this.GetFirstSelectedItem().ParsingName;
+      var ext = Path.GetExtension(oldFullPath);
+      var dir = Path.GetDirectoryName(oldFullPath);
+      var newFileName = Path.Combine(dir, Path.GetFileNameWithoutExtension(newName) + ext);
+      theItem = new ShellItem(newFileName);
+      this.UpdateItem(this.GetFirstSelectedItemIndex());
+    }
 		public void ShowFileProperties() {
 			IntPtr doPtr = IntPtr.Zero;
 			if (Shell32.SHMultiFileProperties(this.SelectedItems.ToArray().GetIDataObject(out doPtr), 0) != 0 /*S_OK*/) {
@@ -3554,6 +3589,9 @@ namespace BExplorer.Shell {
 		/// <summary> Gives the ShellListView focus </summary>
 		public void Focus(Boolean isActiveCheck = true) {
 			try {
+        if (ItemForRealName_IsAny) {
+          return;
+        }
 				if (User32.GetForegroundWindow() != this.LVHandle) {
 					this.Invoke(new MethodInvoker(() => {
 						var mainWin = System.Windows.Application.Current.MainWindow;

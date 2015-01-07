@@ -3887,8 +3887,11 @@ namespace BetterExplorer {
     void ShellListView_EndItemLabelEdit(object sender, bool e) {
       //this.ShellListView.NewName = this.txtEditor.Text;
       ShellListView.FileNameChangeAttempt(this.txtEditor.Text, e);
+      
       this.Editor.Visibility = System.Windows.Visibility.Collapsed;
       this.Editor.IsOpen = false;
+      if (!e)
+        this.ShellListView.UpdateItemName(this.txtEditor.Text);
     }
 
     [Obsolete("try to move this into ShellViewEx")]
@@ -3919,6 +3922,7 @@ namespace BetterExplorer {
       } else {
         this.txtEditor.SelectAll();
       }
+      Keyboard.Focus(this.txtEditor);
     }
 
     void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
