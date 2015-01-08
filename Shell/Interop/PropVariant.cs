@@ -7,7 +7,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop {
+namespace BExplorer.Shell.Interop
+{
 	/// <summary>
 	/// Represents the OLE struct PROPVARIANT.
 	/// This class is intended for internal use only.
@@ -18,52 +19,61 @@ namespace BExplorer.Shell.Interop {
 	/// </remarks>
 	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Portability", "CA1900:ValueTypeFieldsShouldBePortable", MessageId = "_ptr2")]
 	[StructLayout(LayoutKind.Explicit)]
-	public sealed class PropVariant : IDisposable {
+	public sealed class PropVariant : IDisposable
+	{
 		#region Vector Action Cache
 
 		// A static dictionary of delegates to get data from array's contained within PropVariants
 		private static Dictionary<Type, Action<PropVariant, Array, uint>> _vectorActions = null;
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
-		private static Dictionary<Type, Action<PropVariant, Array, uint>> GenerateVectorActions() {
+		private static Dictionary<Type, Action<PropVariant, Array, uint>> GenerateVectorActions()
+		{
 			Dictionary<Type, Action<PropVariant, Array, uint>> cache = new Dictionary<Type, Action<PropVariant, Array, uint>>();
 
-			cache.Add(typeof(Int16), (pv, array, i) => {
+			cache.Add(typeof(Int16), (pv, array, i) =>
+			{
 				short val;
 				PropVariantNativeMethods.PropVariantGetInt16Elem(pv, i, out val);
 				array.SetValue(val, i);
 			});
 
-			cache.Add(typeof(UInt16), (pv, array, i) => {
+			cache.Add(typeof(UInt16), (pv, array, i) =>
+			{
 				ushort val;
 				PropVariantNativeMethods.PropVariantGetUInt16Elem(pv, i, out val);
 				array.SetValue(val, i);
 			});
 
-			cache.Add(typeof(Int32), (pv, array, i) => {
+			cache.Add(typeof(Int32), (pv, array, i) =>
+			{
 				int val;
 				PropVariantNativeMethods.PropVariantGetInt32Elem(pv, i, out val);
 				array.SetValue(val, i);
 			});
 
-			cache.Add(typeof(UInt32), (pv, array, i) => {
+			cache.Add(typeof(UInt32), (pv, array, i) =>
+			{
 				uint val;
 				PropVariantNativeMethods.PropVariantGetUInt32Elem(pv, i, out val);
 				array.SetValue(val, i);
 			});
 
-			cache.Add(typeof(Int64), (pv, array, i) => {
+			cache.Add(typeof(Int64), (pv, array, i) =>
+			{
 				long val;
 				PropVariantNativeMethods.PropVariantGetInt64Elem(pv, i, out val);
 				array.SetValue(val, i);
 			});
 
-			cache.Add(typeof(UInt64), (pv, array, i) => {
+			cache.Add(typeof(UInt64), (pv, array, i) =>
+			{
 				ulong val;
 				PropVariantNativeMethods.PropVariantGetUInt64Elem(pv, i, out val);
 				array.SetValue(val, i);
 			});
 
-			cache.Add(typeof(DateTime), (pv, array, i) => {
+			cache.Add(typeof(DateTime), (pv, array, i) =>
+			{
 				System.Runtime.InteropServices.ComTypes.FILETIME val;
 				PropVariantNativeMethods.PropVariantGetFileTimeElem(pv, i, out val);
 
@@ -72,13 +82,15 @@ namespace BExplorer.Shell.Interop {
 				array.SetValue(DateTime.FromFileTime(fileTime), i);
 			});
 
-			cache.Add(typeof(Boolean), (pv, array, i) => {
+			cache.Add(typeof(Boolean), (pv, array, i) =>
+			{
 				bool val;
 				PropVariantNativeMethods.PropVariantGetBooleanElem(pv, i, out val);
 				array.SetValue(val, i);
 			});
 
-			cache.Add(typeof(Double), (pv, array, i) => {
+			cache.Add(typeof(Double), (pv, array, i) =>
+			{
 				double val;
 				PropVariantNativeMethods.PropVariantGetDoubleElem(pv, i, out val);
 				array.SetValue(val, i);
@@ -91,16 +103,19 @@ namespace BExplorer.Shell.Interop {
 				array.SetValue(val[0], (int)i);
 			});
 
-			cache.Add(typeof(Decimal), (pv, array, i) => {
+			cache.Add(typeof(Decimal), (pv, array, i) =>
+			{
 				int[] val = new int[4];
-				for (int a = 0; a < val.Length; a++) {
+				for (int a = 0; a < val.Length; a++)
+				{
 					val[a] = Marshal.ReadInt32(pv._ptr2,
 						(int)i * sizeof(decimal) + a * sizeof(int)); //index * size + offset quarter
 				}
 				array.SetValue(new decimal(val), i);
 			});
 
-			cache.Add(typeof(String), (pv, array, i) => {
+			cache.Add(typeof(String), (pv, array, i) =>
+			{
 				string val = string.Empty;
 				PropVariantNativeMethods.PropVariantGetStringElem(pv, i, ref val);
 				array.SetValue(val, i);
@@ -116,11 +131,14 @@ namespace BExplorer.Shell.Interop {
 		/// Attempts to create a PropVariant by finding an appropriate constructor.
 		/// </summary>
 		/// <param name="value">Object from which PropVariant should be created.</param>
-		public static PropVariant FromObject(object value) {
-			if (value == null) {
+		public static PropVariant FromObject(object value)
+		{
+			if (value == null)
+			{
 				return new PropVariant();
 			}
-			else {
+			else
+			{
 				var func = GetDynamicConstructor(value.GetType());
 				return func(value);
 			}
@@ -134,16 +152,20 @@ namespace BExplorer.Shell.Interop {
 		// If no constructor has been cached, it attempts to find/add it.  If it cannot be found
 		// an exception is thrown.
 		// This method looks for a public constructor with the same parameter type as the object.
-		private static Func<object, PropVariant> GetDynamicConstructor(Type type) {
-			lock (_padlock) {
+		private static Func<object, PropVariant> GetDynamicConstructor(Type type)
+		{
+			lock (_padlock)
+			{
 				// initial check, if action is found, return it
 				Func<object, PropVariant> action;
-				if (!_cache.TryGetValue(type, out action)) {
+				if (!_cache.TryGetValue(type, out action))
+				{
 					// iterates through all constructors
 					ConstructorInfo constructor = typeof(PropVariant)
 						.GetConstructor(new Type[] { type });
 
-					if (constructor == null) { // if the method was not found, throw.
+					if (constructor == null)
+					{ // if the method was not found, throw.
 						throw new ArgumentException("");
 					}
 					else // if the method was found, create an expression to call it.
@@ -225,15 +247,18 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Default constrcutor
 		/// </summary>
-		public PropVariant() {
+		public PropVariant()
+		{
 			// left empty
 		}
 
 		/// <summary>
 		/// Set a string value
 		/// </summary>
-		public PropVariant(string value) {
-			if (value == null) {
+		public PropVariant(string value)
+		{
+			if (value == null)
+			{
 				throw new ArgumentException("", "value");
 			}
 
@@ -244,7 +269,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a string vector
 		/// </summary>
-		public PropVariant(string[] value) {
+		public PropVariant(string[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 
 			PropVariantNativeMethods.InitPropVariantFromStringVector(value, (uint)value.Length, this);
@@ -253,7 +279,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a bool vector
 		/// </summary>
-		public PropVariant(bool[] value) {
+		public PropVariant(bool[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 
 			PropVariantNativeMethods.InitPropVariantFromBooleanVector(value, (uint)value.Length, this);
@@ -262,7 +289,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a short vector
 		/// </summary>
-		public PropVariant(short[] value) {
+		public PropVariant(short[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 
 			PropVariantNativeMethods.InitPropVariantFromInt16Vector(value, (uint)value.Length, this);
@@ -271,7 +299,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a short vector
 		/// </summary>
-		public PropVariant(ushort[] value) {
+		public PropVariant(ushort[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 
 			PropVariantNativeMethods.InitPropVariantFromUInt16Vector(value, (uint)value.Length, this);
@@ -281,7 +310,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set an int vector
 		/// </summary>
-		public PropVariant(int[] value) {
+		public PropVariant(int[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 
 			PropVariantNativeMethods.InitPropVariantFromInt32Vector(value, (uint)value.Length, this);
@@ -290,7 +320,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set an uint vector
 		/// </summary>
-		public PropVariant(uint[] value) {
+		public PropVariant(uint[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 
 			PropVariantNativeMethods.InitPropVariantFromUInt32Vector(value, (uint)value.Length, this);
@@ -299,7 +330,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a long vector
 		/// </summary>
-		public PropVariant(long[] value) {
+		public PropVariant(long[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 
 			PropVariantNativeMethods.InitPropVariantFromInt64Vector(value, (uint)value.Length, this);
@@ -308,7 +340,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a ulong vector
 		/// </summary>
-		public PropVariant(ulong[] value) {
+		public PropVariant(ulong[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 
 			PropVariantNativeMethods.InitPropVariantFromUInt64Vector(value, (uint)value.Length, this);
@@ -317,7 +350,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>>
 		/// Set a double vector
 		/// </summary>
-		public PropVariant(double[] value) {
+		public PropVariant(double[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 
 			PropVariantNativeMethods.InitPropVariantFromDoubleVector(value, (uint)value.Length, this);
@@ -327,12 +361,14 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a DateTime vector
 		/// </summary>
-		public PropVariant(DateTime[] value) {
+		public PropVariant(DateTime[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 			System.Runtime.InteropServices.ComTypes.FILETIME[] fileTimeArr =
 				new System.Runtime.InteropServices.ComTypes.FILETIME[value.Length];
 
-			for (int i = 0; i < value.Length; i++) {
+			for (int i = 0; i < value.Length; i++)
+			{
 				fileTimeArr[i] = DateTimeToFileTime(value[i]);
 			}
 
@@ -342,7 +378,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a bool value
 		/// </summary>
-		public PropVariant(bool value) {
+		public PropVariant(bool value)
+		{
 			_valueType = (ushort)VarEnum.VT_BOOL;
 			_int32 = (value == true) ? -1 : 0;
 		}
@@ -350,7 +387,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a DateTime value
 		/// </summary>
-		public PropVariant(DateTime value) {
+		public PropVariant(DateTime value)
+		{
 			_valueType = (ushort)VarEnum.VT_FILETIME;
 
 			System.Runtime.InteropServices.ComTypes.FILETIME ft = DateTimeToFileTime(value);
@@ -361,7 +399,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a byte value
 		/// </summary>
-		public PropVariant(byte value) {
+		public PropVariant(byte value)
+		{
 			_valueType = (ushort)VarEnum.VT_UI1;
 			_byte = value;
 		}
@@ -369,7 +408,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a sbyte value
 		/// </summary>
-		public PropVariant(sbyte value) {
+		public PropVariant(sbyte value)
+		{
 			_valueType = (ushort)VarEnum.VT_I1;
 			_sbyte = value;
 		}
@@ -377,7 +417,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a short value
 		/// </summary>
-		public PropVariant(short value) {
+		public PropVariant(short value)
+		{
 			_valueType = (ushort)VarEnum.VT_I2;
 			_short = value;
 		}
@@ -385,7 +426,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set an unsigned short value
 		/// </summary>
-		public PropVariant(ushort value) {
+		public PropVariant(ushort value)
+		{
 			_valueType = (ushort)VarEnum.VT_UI2;
 			_ushort = value;
 		}
@@ -393,7 +435,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set an int value
 		/// </summary>
-		public PropVariant(int value) {
+		public PropVariant(int value)
+		{
 			_valueType = (ushort)VarEnum.VT_I4;
 			_int32 = value;
 		}
@@ -401,7 +444,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set an unsigned int value
 		/// </summary>
-		public PropVariant(uint value) {
+		public PropVariant(uint value)
+		{
 			_valueType = (ushort)VarEnum.VT_UI4;
 			_uint32 = value;
 		}
@@ -409,7 +453,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a decimal  value
 		/// </summary>
-		public PropVariant(decimal value) {
+		public PropVariant(decimal value)
+		{
 			_decimal = value;
 
 			// It is critical that the value type be set after the decimal value, because they overlap.
@@ -421,7 +466,8 @@ namespace BExplorer.Shell.Interop {
 		/// Create a PropVariant with a contained decimal array.
 		/// </summary>
 		/// <param name="value">Decimal array to wrap.</param>
-		public PropVariant(decimal[] value) {
+		public PropVariant(decimal[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 
 			_valueType = (ushort)(VarEnum.VT_DECIMAL | VarEnum.VT_VECTOR);
@@ -429,7 +475,8 @@ namespace BExplorer.Shell.Interop {
 
 			// allocate required memory for array with 128bit elements
 			_ptr2 = Marshal.AllocCoTaskMem(value.Length * sizeof(decimal));
-			for (int i = 0; i < value.Length; i++) {
+			for (int i = 0; i < value.Length; i++)
+			{
 				int[] bits = decimal.GetBits(value[i]);
 				Marshal.Copy(bits, 0, _ptr2, bits.Length);
 			}
@@ -438,7 +485,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Create a PropVariant containing a float type.
 		/// </summary>        
-		public PropVariant(float value) {
+		public PropVariant(float value)
+		{
 			_valueType = (ushort)VarEnum.VT_R4;
 
 			_float = value;
@@ -447,7 +495,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Creates a PropVariant containing a float[] array.
 		/// </summary>        
-		public PropVariant(float[] value) {
+		public PropVariant(float[] value)
+		{
 			if (value == null) { throw new ArgumentNullException("value"); }
 
 			_valueType = (ushort)(VarEnum.VT_R4 | VarEnum.VT_VECTOR);
@@ -461,7 +510,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a long
 		/// </summary>
-		public PropVariant(long value) {
+		public PropVariant(long value)
+		{
 			_long = value;
 			_valueType = (ushort)VarEnum.VT_I8;
 		}
@@ -469,7 +519,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a ulong
 		/// </summary>
-		public PropVariant(ulong value) {
+		public PropVariant(ulong value)
+		{
 			_valueType = (ushort)VarEnum.VT_UI8;
 			_ulong = value;
 		}
@@ -477,7 +528,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Set a double
 		/// </summary>
-		public PropVariant(double value) {
+		public PropVariant(double value)
+		{
 			_valueType = (ushort)VarEnum.VT_R8;
 			_double = value;
 		}
@@ -490,7 +542,8 @@ namespace BExplorer.Shell.Interop {
 		/// Set an IUnknown value
 		/// </summary>
 		/// <param name="value">The new value to set.</param>
-		internal void SetIUnknown(object value) {
+		internal void SetIUnknown(object value)
+		{
 			_valueType = (ushort)VarEnum.VT_UNKNOWN;
 			_ptr = Marshal.GetIUnknownForObject(value);
 		}
@@ -500,7 +553,8 @@ namespace BExplorer.Shell.Interop {
 		/// Set a safe array value
 		/// </summary>
 		/// <param name="array">The new value to set.</param>
-		internal void SetSafeArray(Array array) {
+		internal void SetSafeArray(Array array)
+		{
 			if (array == null) { throw new ArgumentNullException("array"); }
 			const ushort vtUnknown = 13;
 			IntPtr psa = PropVariantNativeMethods.SafeArrayCreateVector(vtUnknown, 0, (uint)array.Length);
@@ -508,13 +562,15 @@ namespace BExplorer.Shell.Interop {
 			IntPtr pvData = PropVariantNativeMethods.SafeArrayAccessData(psa);
 			try // to remember to release lock on data
 			{
-				for (int i = 0; i < array.Length; ++i) {
+				for (int i = 0; i < array.Length; ++i)
+				{
 					object obj = array.GetValue(i);
 					IntPtr punk = (obj != null) ? Marshal.GetIUnknownForObject(obj) : IntPtr.Zero;
 					Marshal.WriteIntPtr(pvData, i * IntPtr.Size, punk);
 				}
 			}
-			finally {
+			finally
+			{
 				PropVariantNativeMethods.SafeArrayUnaccessData(psa);
 			}
 
@@ -529,7 +585,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Gets or sets the variant type.
 		/// </summary>
-		public VarEnum VarType {
+		public VarEnum VarType
+		{
 			get { return (VarEnum)_valueType; }
 			set { _valueType = (ushort)value; }
 		}
@@ -538,8 +595,10 @@ namespace BExplorer.Shell.Interop {
 		/// Checks if this has an empty or null value
 		/// </summary>
 		/// <returns></returns>
-		public bool IsNullOrEmpty {
-			get {
+		public bool IsNullOrEmpty
+		{
+			get
+			{
 				return (_valueType == (ushort)VarEnum.VT_EMPTY || _valueType == (ushort)VarEnum.VT_NULL);
 			}
 		}
@@ -547,9 +606,12 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Gets the variant value.
 		/// </summary>
-		public object Value {
-			get {
-				switch ((VarEnum)_valueType) {
+		public object Value
+		{
+			get
+			{
+				switch ((VarEnum)_valueType)
+				{
 					case VarEnum.VT_I1:
 						return _sbyte;
 					case VarEnum.VT_UI1:
@@ -633,11 +695,13 @@ namespace BExplorer.Shell.Interop {
 
 		#region Private Methods
 
-		private static long GetFileTimeAsLong(ref System.Runtime.InteropServices.ComTypes.FILETIME val) {
+		private static long GetFileTimeAsLong(ref System.Runtime.InteropServices.ComTypes.FILETIME val)
+		{
 			return (((long)val.dwHighDateTime) << 32) + val.dwLowDateTime;
 		}
 
-		private static System.Runtime.InteropServices.ComTypes.FILETIME DateTimeToFileTime(DateTime value) {
+		private static System.Runtime.InteropServices.ComTypes.FILETIME DateTimeToFileTime(DateTime value)
+		{
 			long hFT = value.ToFileTime();
 			System.Runtime.InteropServices.ComTypes.FILETIME ft =
 				new System.Runtime.InteropServices.ComTypes.FILETIME();
@@ -646,7 +710,8 @@ namespace BExplorer.Shell.Interop {
 			return ft;
 		}
 
-		private object GetBlobData() {
+		private object GetBlobData()
+		{
 			byte[] blobData = new byte[_int32];
 
 			IntPtr pBlobData = _ptr2;
@@ -655,30 +720,36 @@ namespace BExplorer.Shell.Interop {
 			return blobData;
 		}
 
-		private Array GetVector<T>() {
+		private Array GetVector<T>()
+		{
 			int count = PropVariantNativeMethods.PropVariantGetElementCount(this);
 			if (count <= 0) { return null; }
 
-			lock (_padlock) {
-				if (_vectorActions == null) {
+			lock (_padlock)
+			{
+				if (_vectorActions == null)
+				{
 					_vectorActions = GenerateVectorActions();
 				}
 			}
 
 			Action<PropVariant, Array, uint> action;
-			if (!_vectorActions.TryGetValue(typeof(T), out action)) {
+			if (!_vectorActions.TryGetValue(typeof(T), out action))
+			{
 				throw new InvalidCastException("");
 			}
 
 			Array array = new T[count];
-			for (uint i = 0; i < count; i++) {
+			for (uint i = 0; i < count; i++)
+			{
 				action(this, array, i);
 			}
 
 			return array;
 		}
 
-		private static Array CrackSingleDimSafeArray(IntPtr psa) {
+		private static Array CrackSingleDimSafeArray(IntPtr psa)
+		{
 			uint cDims = PropVariantNativeMethods.SafeArrayGetDim(psa);
 			if (cDims != 1)
 				throw new ArgumentException("", "psa");
@@ -689,7 +760,8 @@ namespace BExplorer.Shell.Interop {
 			int n = uBound - lBound + 1; // uBound is inclusive
 
 			object[] array = new object[n];
-			for (int i = lBound; i <= uBound; ++i) {
+			for (int i = lBound; i <= uBound; ++i)
+			{
 				array[i] = PropVariantNativeMethods.SafeArrayGetElement(psa, ref i);
 			}
 
@@ -703,7 +775,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Disposes the object, calls the clear function.
 		/// </summary>
-		public void Dispose() {
+		public void Dispose()
+		{
 			PropVariantNativeMethods.PropVariantClear(this);
 
 			GC.SuppressFinalize(this);
@@ -712,7 +785,8 @@ namespace BExplorer.Shell.Interop {
 		/// <summary>
 		/// Finalizer
 		/// </summary>
-		~PropVariant() {
+		~PropVariant()
+		{
 			Dispose();
 		}
 
@@ -722,7 +796,8 @@ namespace BExplorer.Shell.Interop {
 		/// Provides an simple string representation of the contained data and type.
 		/// </summary>
 		/// <returns></returns>
-		public override string ToString() {
+		public override string ToString()
+		{
 			return string.Format(System.Globalization.CultureInfo.InvariantCulture,
 				"{0}: {1}", Value, VarType.ToString());
 		}

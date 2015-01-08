@@ -101,8 +101,6 @@ namespace BExplorer.Shell {
 			nativeShellLibrary.SaveInKnownFolder(ref guid, libraryName, flags, out m_ComInterface);
 		}
 
-		/*
-		 
 		/// <summary>
 		/// Creates a shell library in a given Known Folder,
 		/// using the given shell library name.
@@ -126,7 +124,7 @@ namespace BExplorer.Shell {
 
 			nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
 			nativeShellLibrary.SaveInKnownFolder(ref guid, libraryName, flags, out m_ComInterface);
-			-/
+			*/
 
 			knownFolder = sourceKnownFolder;
 		}
@@ -159,7 +157,6 @@ namespace BExplorer.Shell {
 			nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
 			nativeShellLibrary.Save(shellItemIn, libraryName, flags, out m_ComInterface);
 		}
-		*/
 
 		#endregion Public Constructors
 
@@ -209,16 +206,7 @@ namespace BExplorer.Shell {
 				Guid folderTypeGuid;
 				nativeShellLibrary.GetFolderType(out folderTypeGuid);
 
-				for (int i = 0; i < FolderTypesGuids.Length; i++) {
-					if (folderTypeGuid.Equals(FolderTypesGuids[i])) {
-						return (LibraryFolderType)i;
-					}
-				}
-
-				throw new ArgumentOutOfRangeException("folderTypeGuid", "Invalid Library Type!");
-
-
-				//return GetFolderTypefromGuid(folderTypeGuid);
+				return GetFolderTypefromGuid(folderTypeGuid);
 			}
 			set {
 				Guid guid = FolderTypesGuids[(int)value];
@@ -241,17 +229,14 @@ namespace BExplorer.Shell {
 		}
 		*/
 
-		/*
 		private static LibraryFolderType GetFolderTypefromGuid(Guid folderTypeGuid) {
 			for (int i = 0; i < FolderTypesGuids.Length; i++) {
 				if (folderTypeGuid.Equals(FolderTypesGuids[i])) {
 					return (LibraryFolderType)i;
 				}
 			}
-
 			throw new ArgumentOutOfRangeException("folderTypeGuid", "Invalid Library Type!");
 		}
-		*/
 
 		/// <summary>
 		/// By default, this folder is the first location
@@ -333,7 +318,6 @@ namespace BExplorer.Shell {
 
 		#region Static Shell Library methods
 
-		/*
 		/// <summary>
 		/// Get a the known folder FOLDERID_Libraries
 		/// </summary>
@@ -342,7 +326,6 @@ namespace BExplorer.Shell {
 				return KnownFolderHelper.FromKnownFolderId(new Guid(InterfaceGuids.Libraries));
 			}
 		}
-		*/
 
 		//public static ShellLibrary Load(ShellObject item, bool isReadOnly)
 		//{
@@ -448,7 +431,6 @@ namespace BExplorer.Shell {
 			*/
 		}
 
-		/*
 		/// <summary>
 		/// Load the library using a number of options
 		/// </summary>
@@ -465,7 +447,6 @@ namespace BExplorer.Shell {
 
 			return library;
 		}
-		*/
 
 		/// <summary>
 		/// Load the library using a number of options
@@ -477,7 +458,6 @@ namespace BExplorer.Shell {
 			return new ShellLibrary(sourceKnownFolder, isReadOnly);
 		}
 
-		/*
 		private static void ShowManageLibraryUI(ShellLibrary shellLibrary, IntPtr windowHandle, string title, string instruction, bool allowAllLocations) {
 			int hr = 0;
 
@@ -496,9 +476,7 @@ namespace BExplorer.Shell {
 			staWorker.Start();
 			staWorker.Join();
 		}
-		*/
 
-		/*
 		/// <summary>
 		/// Shows the library management dialog which enables users to mange the library folders and default save location.
 		/// </summary>
@@ -518,7 +496,6 @@ namespace BExplorer.Shell {
 				ShowManageLibraryUI(shellLibrary, windowHandle, title, instruction, allowAllLocations);
 			}
 		}
-		*/
 
 		/// <summary>
 		/// Shows the library management dialog which enables users to mange the library folders and default save location.
@@ -535,28 +512,10 @@ namespace BExplorer.Shell {
 			// call up into a Worker thread that performs all operations in a
 			// single threaded apartment
 			using (ShellLibrary shellLibrary = ShellLibrary.Load(libraryName, true)) {
-				//ShowManageLibraryUI(shellLibrary, windowHandle, title, instruction, allowAllLocations);
-
-				int hr = 0;
-
-				Thread staWorker = new Thread(() => {
-					hr = Shell32.SHShowManageLibraryUI(
-							shellLibrary.ComInterface,
-							windowHandle,
-							title,
-							instruction,
-							allowAllLocations ?
-								 LibraryManageDialogOptions.NonIndexableLocationWarning :
-								 LibraryManageDialogOptions.Default);
-				});
-
-				staWorker.SetApartmentState(ApartmentState.STA);
-				staWorker.Start();
-				staWorker.Join();
+				ShowManageLibraryUI(shellLibrary, windowHandle, title, instruction, allowAllLocations);
 			}
 		}
 
-		/*
 		/// <summary>
 		/// Shows the library management dialog which enables users to mange the library folders and default save location.
 		/// </summary>
@@ -575,7 +534,7 @@ namespace BExplorer.Shell {
 				ShowManageLibraryUI(shellLibrary, windowHandle, title, instruction, allowAllLocations);
 			}
 		}
-		*/
+
 		#endregion Static Shell Library methods
 
 		#region Collection Members
@@ -607,7 +566,7 @@ namespace BExplorer.Shell {
 		/// Clear all items of this Library
 		/// </summary>
 		public void Clear() {
-			foreach (ShellItem folder in GetFolders()) {
+			foreach (ShellItem folder in ItemsList) {
 				nativeShellLibrary.RemoveFolder(folder.ComInterface);
 			}
 
@@ -671,7 +630,7 @@ namespace BExplorer.Shell {
 
 		#region Private Properties
 
-		//private List<ShellItem> ItemsList { get { return GetFolders(); } }
+		private List<ShellItem> ItemsList { get { return GetFolders(); } }
 
 		private List<ShellItem> GetFolders() {
 			List<ShellItem> list = new List<ShellItem>();
@@ -710,7 +669,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <returns>The enumerator.</returns>
 		new public IEnumerator<ShellItem> GetEnumerator() {
-			return GetFolders().GetEnumerator();
+			return ItemsList.GetEnumerator();
 		}
 
 		#endregion IEnumerable<ShellFileSystemFolder> Members
@@ -722,7 +681,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <returns>The enumerator.</returns>
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-			return GetFolders().GetEnumerator();
+			return ItemsList.GetEnumerator();
 		}
 
 		#endregion IEnumerable Members
@@ -739,7 +698,7 @@ namespace BExplorer.Shell {
 				throw new ArgumentNullException("fullPath");
 			}
 
-			return GetFolders().Any(folder => string.Equals(fullPath, folder.ParsingName, StringComparison.OrdinalIgnoreCase));
+			return ItemsList.Any(folder => string.Equals(fullPath, folder.ParsingName, StringComparison.OrdinalIgnoreCase));
 		}
 
 		/// <summary>
@@ -752,7 +711,7 @@ namespace BExplorer.Shell {
 				throw new ArgumentNullException("item");
 			}
 
-			return GetFolders().Any(folder => string.Equals(item.ParsingName, folder.ParsingName, StringComparison.OrdinalIgnoreCase));
+			return ItemsList.Any(folder => string.Equals(item.ParsingName, folder.ParsingName, StringComparison.OrdinalIgnoreCase));
 		}
 
 		#endregion ICollection<ShellFileSystemFolder> Members
@@ -766,7 +725,7 @@ namespace BExplorer.Shell {
 		/// <param name="item">The item to search for.</param>
 		/// <returns>The index of the item in the collection, or -1 if the item does not exist.</returns>
 		public int IndexOf(ShellItem item) {
-			return GetFolders().IndexOf(item);
+			return ItemsList.IndexOf(item);
 		}
 
 		/// <summary>
@@ -794,7 +753,7 @@ namespace BExplorer.Shell {
 		/// <param name="index">The index of the folder to retrieve.</param>
 		/// <returns>A folder.</returns>
 		public ShellItem this[int index] {
-			get { return GetFolders()[index]; }
+			get { return ItemsList[index]; }
 			set {
 				// Index related options are not supported by IShellLibrary
 				// doesn't support them.
@@ -819,7 +778,7 @@ namespace BExplorer.Shell {
 		/// The count of the items in the list.
 		/// </summary>
 		public int Count {
-			get { return GetFolders().Count; }
+			get { return ItemsList.Count; }
 		}
 
 		/// <summary>

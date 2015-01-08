@@ -180,7 +180,7 @@ namespace BExplorer.Shell.Interop {
 		LVM_GETCOLUMNORDERARRAY = (FIRST + 59),
 		LVM_GETCOLUMNWIDTH = (FIRST + 29),
 		TVM_SETHOT = 0x1100 + 58,
-		LVM_SETSELECTEDCOLUMN = (FIRST + 140),
+		LVM_SETSELECTEDCOLUMN  = (FIRST + 140),
 
 	}
 
@@ -591,23 +591,23 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("user32.dll")]
 		public static extern IntPtr CreatePopupMenu();
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		public static extern bool AppendMenu(IntPtr hMenu, MenuFlags uFlags, uint uIDNewItem, string lpNewItem);
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern bool AppendMenu(IntPtr hMenu, MenuFlags uFlags, uint uIDNewItem, string lpNewItem);
 
-		[Flags]
-		public enum MenuFlags : uint {
-			MF_STRING = 0,
-			MF_BYPOSITION = 0x400,
-			MF_SEPARATOR = 0x800,
-			MF_REMOVE = 0x1000,
-			MF_POPUP = 0x00000010,
-		}
+    [Flags]
+    public enum MenuFlags : uint {
+      MF_STRING = 0,
+      MF_BYPOSITION = 0x400,
+      MF_SEPARATOR = 0x800,
+      MF_REMOVE = 0x1000,
+      MF_POPUP = 0x00000010,
+    }
 
-		[DllImport("user32.dll")]
-		public static extern bool InsertMenuItem(IntPtr hMenu, uint uItem, bool fByPosition, [In] ref MENUITEMINFO lpmii);
+    [DllImport("user32.dll")]
+    public static extern bool InsertMenuItem(IntPtr hMenu, uint uItem, bool fByPosition, [In] ref MENUITEMINFO lpmii);
 
-		[DllImport("user32.dll")]
-		public static extern IntPtr GetSubMenu(IntPtr hMenu, int nPos);
+    [DllImport("user32.dll")]
+    public static extern IntPtr GetSubMenu(IntPtr hMenu, int nPos);
 
 		[DllImport("user32.dll")]
 		public static extern bool DestroyMenu(IntPtr hMenu);
@@ -890,8 +890,7 @@ namespace BExplorer.Shell.Interop {
 			ushort mask = 0x8000;
 			if ((dw & 0x8000) != 0) {
 				loWord = (short)(mask | andResult);
-			}
-			else {
+			} else {
 				loWord = (short)andResult;
 			}
 			return loWord;
@@ -1211,7 +1210,7 @@ namespace BExplorer.Shell.Interop {
 		public static extern bool ShowWindow(IntPtr hWnd, ShowWindowCommands nCmdShow);
 
 		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-		public static extern IntPtr GetShellWindow();
+		public static extern IntPtr GetShellWindow(); 
 
 
 	}
