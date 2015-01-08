@@ -856,14 +856,12 @@ namespace BExplorer.Shell {
 		#region Constructors
 
 		private void Constructor_Helper() {
-			try {
-				this.IconType = GetIconType();
-				this.CachedParsingName = this.ParsingName;
-				this.OverlayIconIndex = -1;
-			}
-			catch (Exception) {
-
-			}
+			//TODO: Test this not that I removed the Try Catch
+			//try {
+			this.IconType = GetIconType();
+			this.CachedParsingName = this.ParsingName;
+			this.OverlayIconIndex = -1;
+			//}
 		} //TODO: Figure out if this should be added in protected ShellItem() { }
 
 		[Obsolete("Try to remove this!!!")]

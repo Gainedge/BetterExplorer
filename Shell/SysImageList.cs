@@ -296,7 +296,7 @@ namespace BExplorer.Shell {
 
 		#endregion
 
-		#region Property
+		//#region Property
 
 		/*
 		public void SetSize(int size) {
@@ -326,11 +326,13 @@ namespace BExplorer.Shell {
 		}
 		*/
 
+		/*
 		private IntPtr Handle {
 			get {
 				return Marshal.GetIUnknownForObject(this._ImageList);
 			}
 		}
+		*/
 
 		/*
 		public static ImageListSize MaxSize {
@@ -348,10 +350,11 @@ namespace BExplorer.Shell {
 		}
 		*/
 
-		#endregion
+		//#endregion
 
 		#region Method
 
+		/*
 		[Obsolete("Consider Inlining")]
 		private int GetIconIndex(IntPtr path) {
 			var options = SHGetFileInfoOptions.SysIconIndex | SHGetFileInfoOptions.Pidl;
@@ -369,7 +372,7 @@ namespace BExplorer.Shell {
 				return shfi.iIcon;
 			}
 		}
-
+		*/
 
 
 		/// <summary>
@@ -428,13 +431,10 @@ namespace BExplorer.Shell {
 			IntPtr hIcon;
 			var hresult = this._ImageList.GetIcon(index, options, out hIcon);
 			Marshal.ThrowExceptionForHR(hresult);
-			if (hIcon != IntPtr.Zero) {
-				Icon icon = Icon.FromHandle(hIcon);
-				return icon;
-			}
-			else {
+			if (hIcon == IntPtr.Zero)
 				throw new Win32Exception();
-			}
+			else
+				return Icon.FromHandle(hIcon);
 		}
 
 		/*
@@ -443,9 +443,11 @@ namespace BExplorer.Shell {
 		}
 		*/
 
+		/*
 		public Icon GetIcon(IntPtr path, ImageListDrawOptions options = ImageListDrawOptions.Normal) {
 			return this.GetIcon(this.GetIconIndex(path), options);
 		}
+		*/
 
 		public struct Int32Size {
 			public static Int32Size Empty {
@@ -462,6 +464,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		private Int32Size GetSizePixels() {
 			int x;
 			int y;
@@ -469,7 +472,7 @@ namespace BExplorer.Shell {
 			Marshal.ThrowExceptionForHR(hresult);
 			return new Int32Size(x, y);
 		}
-
+		*/
 
 		public void DrawOverlay(IntPtr hdc, int overlayIndex, Point location, int newSize = -1) {
 			DrawInternal(hdc, GetIndexOfOverlay(overlayIndex), 0, ImageListDrawOptions.Normal | ImageListDrawOptions.Transparent, ImageListDrawStates.Normal, 0, location, newSize);
@@ -478,14 +481,17 @@ namespace BExplorer.Shell {
 		public void DrawIcon(IntPtr hdc, int index, Point location, int newSize = -1) {
 			DrawInternal(hdc, index, 0, ImageListDrawOptions.Normal | ImageListDrawOptions.Transparent, ImageListDrawStates.Normal, 0, location, newSize);
 		}
+
+		/*
 		public void Draw(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions options, Point location, int newSize = -1) {
 			this.DrawInternal(hdc, index, overlayIndex, options, ImageListDrawStates.Normal, 0, location, newSize);
 		}
+		*/
 
 		private void DrawInternal(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions options, ImageListDrawStates state, int alpha, Point location, int newSize) {
 			var param = new IMAGELISTDRAWPARAMS();
 			param.cbSize = Marshal.SizeOf(param);
-			param.himl = this.Handle;
+			param.himl = Marshal.GetIUnknownForObject(this._ImageList); ;
 			param.hdcDst = hdc;
 			param.rgbBk = -1;
 			param.i = index;
@@ -506,10 +512,15 @@ namespace BExplorer.Shell {
 			Marshal.ThrowExceptionForHR(hresult);
 			return idx;
 		}
+
+		/*
 		[DllImport("comctl32.dll", SetLastError = true)]
 		static extern IntPtr ImageList_Create(int cx, int cy, uint flags, int cInitial, int cGrow);
+		
 		[DllImport("Comctl32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern bool ImageList_Destroy(IntPtr himl);
+		*/
+
 		#endregion
 
 		#region IDisposable
