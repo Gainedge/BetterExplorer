@@ -3890,8 +3890,7 @@ namespace BetterExplorer {
       
       this.Editor.Visibility = System.Windows.Visibility.Collapsed;
       this.Editor.IsOpen = false;
-      if (!e)
-        this.ShellListView.UpdateItemName(this.txtEditor.Text);
+      
     }
 
     [Obsolete("try to move this into ShellViewEx")]
