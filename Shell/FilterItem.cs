@@ -27,7 +27,7 @@ namespace BExplorer.Shell {
 	internal class FilterItem {
 		public string Caption, Filter;
 
-		public FilterItem(string caption, string filter) {
+		private FilterItem(string caption, string filter) {
 			Caption = caption;
 			Filter = filter;
 		}
