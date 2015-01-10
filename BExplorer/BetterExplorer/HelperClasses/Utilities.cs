@@ -68,7 +68,6 @@ namespace BetterExplorer {
 		[System.Diagnostics.DebuggerStepThrough()]
 		public static Fluent.MenuItem Build_MenuItem(Object header = null, Object tag = null, Object icon = null, string name = null, object ToolTip = null,
 			bool focusable = true, bool checkable = false, bool isChecked = false, string GroupName = null, System.Windows.RoutedEventHandler onClick = null) {
-			//TODO: Check if [MenuItem] are focusable by default
 
 			var Item = new Fluent.MenuItem() {
 				Name = name,

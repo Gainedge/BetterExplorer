@@ -26,18 +26,5 @@ namespace BetterExplorer.Networks.FileSystem {
 				_timeCreated = creationdate.Value;
 			}
 		}
-
-		/*
-		/// <summary>
-		/// Return all file system objects (directories, files, etc.) in a directory.
-		/// </summary>
-		/// <returns></returns>
-		public List<FileSystemObject> GetSubItems()
-		{
-			// TODO: Add code for building and then making accessible the sub items of a directory.
-			return new List<FileSystemObject>();
-		}
-		 */
-
 	}
 }

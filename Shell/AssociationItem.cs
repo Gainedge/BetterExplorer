@@ -31,7 +31,6 @@ namespace BExplorer.Shell {
 
 
 		public void Invoke() {
-			//TODO: Test these changes!!
 			RegistryKey root = Registry.ClassesRoot;
 			var applications = root.OpenSubKey("Applications", RegistryKeyPermissionCheck.ReadSubTree);
 			var currentApplication = applications.OpenSubKey(Path.GetFileName(this.ApplicationPath), RegistryKeyPermissionCheck.ReadSubTree);

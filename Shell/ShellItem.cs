@@ -253,7 +253,7 @@ namespace BExplorer.Shell {
 				}
 			}
 		}
-		
+
 		/// <summary>
 		/// Gets a value indicating whether the item has subfolders.
 		/// </summary>
@@ -350,26 +350,7 @@ namespace BExplorer.Shell {
 
 		internal bool IsNetworkPath {
 			get {
-				//TODO: Test
-
-				//if (ParsingName.StartsWith("::")) {
-				//	return false;
-				//}
-				//else if (!ParsingName.StartsWith(@"/") && !ParsingName.StartsWith(@"\")) {
-				//	//TODO: Find a better way of doing the following code
-				//	if (ParsingName == "") {
-				//		return false;
-				//	}
-
-				//	string rootPath = System.IO.Path.GetPathRoot(ParsingName);	// get drive's letter
-				//	//var driveInfo = new DriveInfo(rootPath);				// get info about the drive
-				//	return new DriveInfo(rootPath).DriveType == DriveType.Network;			// return true if a network drive
-				//}
-				//else {
-				//	return true; // is a UNC path
-				//}
 				return Shell32.PathIsNetworkPath(this.ParsingName);
-
 			}
 		}
 
@@ -864,7 +845,7 @@ namespace BExplorer.Shell {
 			this.CachedParsingName = this.ParsingName;
 			this.OverlayIconIndex = -1;
 
-		} //TODO: Figure out if this should be added in protected ShellItem() { }
+		}
 
 		[Obsolete("Try to remove this!!!")]
 		protected ShellItem() { }
@@ -1010,7 +991,7 @@ namespace BExplorer.Shell {
 			ComInterface = comInterface;
 			this.CachedParsingName = this.ParsingName;
 			this.OverlayIconIndex = -1;
-		} //TODO: Consider adding Constructor_Helper();
+		}
 
 		internal ShellItem(ShellItem parent, IntPtr pidl) {
 			ComInterface = CreateItemWithParent(parent, pidl);
@@ -1111,7 +1092,7 @@ namespace BExplorer.Shell {
 		#region Static Stuff
 
 		private static bool RunningVista { get { return Environment.OSVersion.Version.Major >= 6; } }
-		
+
 		private static MD5CryptoServiceProvider hashProvider = new MD5CryptoServiceProvider();
 
 		/// <summary>
@@ -1138,7 +1119,7 @@ namespace BExplorer.Shell {
 		}
 
 		private void InitializeFromShellUri(Uri uri) {
-			//TODO: add shell folders handling here
+			//TO_DO: add shell folders handling here
 			//KnownFolderManager manager = new KnownFolderManager();
 			string path = uri.GetComponents(UriComponents.Path, UriFormat.Unescaped);
 			string knownFolder;
@@ -1311,15 +1292,12 @@ namespace BExplorer.Shell {
 		}
 
 		private void Initialize(Uri uri) {
-			if (uri.Scheme == "file") {
+			if (uri.Scheme == "file")
 				ComInterface = CreateItemFromParsingName(uri.LocalPath);
-			}
-			else if (uri.Scheme == "shell") {
+			else if (uri.Scheme == "shell")
 				InitializeFromShellUri(uri);
-			}
-			else {
+			else
 				throw new InvalidOperationException("Invalid URI scheme");
-			}
 		}
 
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
@@ -1373,11 +1351,10 @@ namespace BExplorer.Shell {
 					return new ShellItem(String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString()));
 				}
 				else {
-
 					try {
 						return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
 					}
-					catch (Exception ex) {
+					catch (Exception) {
 						return new ShellItem(@"\\" + String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
 						throw;
 					}
@@ -1403,7 +1380,7 @@ namespace BExplorer.Shell {
 				return null;
 			else
 				return new ShellItem(newUri);
-		}//TODO: Start using this safe Constructor more
+		}
 
 	}
 	public class ShellItemComparer : IEqualityComparer<ShellItem> {

@@ -123,7 +123,7 @@ namespace BExplorer.Shell.Interop {
 			int maxPassword = 100;
 			if (result == 0) {
 				if (CredUnPackAuthenticationBuffer(0, outCredBuffer, outCredSize, usernameBuf, ref maxUserName, domainBuf, ref maxDomain, passwordBuf, ref maxPassword)) {
-					//TODO: ms documentation says we should call this but i can't get it to work
+					//TO_DO: ms documentation says we should call this but i can't get it to work
 					//SecureZeroMem(outCredBuffer, outCredSize);
 
 					//clear the memory allocated by CredUIPromptForWindowsCredentials

@@ -12,8 +12,6 @@ namespace BetterExplorer {
 	/// Interaction logic for ConditionalSelectForm.xaml
 	/// </summary>
 	public partial class ConditionalSelectForm : Window {
-		//TODO: Fix Selecting By Name!!
-
 		private System.Globalization.CultureInfo ci;
 		public bool CancelAction = true;
 		public ConditionalSelectData csd;
@@ -241,7 +239,6 @@ namespace BetterExplorer {
 				this.sizebox2.IsEnabled = false;
 			}
 		}
-
 
 		private void namecheck_CheckChanged(object sender, RoutedEventArgs e) {
 			if (!this.IsLoaded) return;

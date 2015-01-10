@@ -431,17 +431,6 @@ namespace BExplorer.Shell {
 			var hresult = this._ImageList.GetIcon(index, options, out hIcon);
 			Marshal.ThrowExceptionForHR(hresult);
 
-			//TODO: Test Change
-			/*
-			if (hIcon != IntPtr.Zero) {
-				Icon icon = Icon.FromHandle(hIcon);
-				return icon;
-			}
-			else {
-				throw new Win32Exception();
-			}
-			 */
-
 			if (hIcon == IntPtr.Zero)
 				throw new Win32Exception();
 			else
@@ -454,11 +443,12 @@ namespace BExplorer.Shell {
 		}
 		*/
 
+		[Obsolete("Not Used", true)]
 		public Icon GetIcon(IntPtr path, ImageListDrawOptions options = ImageListDrawOptions.Normal) {
 			return this.GetIcon(this.GetIconIndex(path), options);
 		}
 
-		[Obsolete("Not Used, Try to Delete!!!", true)]
+		[Obsolete("Not Used", true)]
 		public struct Int32Size {
 			public static Int32Size Empty {
 				get { return new Int32Size(); }
@@ -498,22 +488,22 @@ namespace BExplorer.Shell {
 		}
 
 		private void DrawInternal(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions options, ImageListDrawStates state, int alpha, Point location, int newSize) {
-			var param = new IMAGELISTDRAWPARAMS();
-			param.cbSize = Marshal.SizeOf(param);
+			var param = new IMAGELISTDRAWPARAMS() {
+				//himl = this.Handle;
+				himl = Marshal.GetIUnknownForObject(this._ImageList),
+				hdcDst = hdc,
+				rgbBk = -1,
+				i = index,
+				x = location.X,
+				y = location.Y,
 
-			//param.himl = this.Handle;
-			//TODO: Test this change
-			param.himl = Marshal.GetIUnknownForObject(this._ImageList);
+				fStyle = ((int)options | (overlayIndex << 8) | (newSize == -1 ? 0 : (int)ImageListDrawOptions.Scale)),
+				fState = state,
+				Frame = alpha
+			};
 
-			param.hdcDst = hdc;
-			param.rgbBk = -1;
-			param.i = index;
-			param.x = location.X;
-			param.y = location.Y;
 			param.cx = param.cy = newSize == -1 ? 0 : newSize;
-			param.fStyle = ((int)options | (overlayIndex << 8) | (newSize == -1 ? 0 : (int)ImageListDrawOptions.Scale));
-			param.fState = state;
-			param.Frame = alpha;
+			param.cbSize = Marshal.SizeOf(param);
 
 			var hresult = this._ImageList.Draw(ref param);
 			Marshal.ThrowExceptionForHR(hresult);
