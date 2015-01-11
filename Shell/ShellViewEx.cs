@@ -2903,29 +2903,40 @@ namespace BExplorer.Shell {
 		}
 
 		public void SetSortCollumn(int colIndex, SortOrder Order, Boolean reverseOrder = true) {
-			var selectedItems = this.SelectedItems.ToArray();
-			if (colIndex == this.LastSortedColumnIndex && reverseOrder) {
-				// Reverse the current sort direction for this column.
-				this.LastSortOrder = this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
-			}
-			else {
-				// Set the column number that is to be sorted; default to ascending.
-				this.LastSortedColumnIndex = colIndex;
-				this.LastSortOrder = Order;
-			}
-			if (Order == SortOrder.Ascending) {
-				this.Items = this.Items.ToArray().Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(this.Collumns.ToArray()[colIndex].pkey, typeof(String)).Value).ToList();
-			}
-			else {
-				this.Items = this.Items.ToArray().Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(this.Collumns.ToArray()[colIndex].pkey, typeof(String)).Value).ToList();
-			}
+			try
+			{
+				var selectedItems = this.SelectedItems.ToArray();
+				if (colIndex == this.LastSortedColumnIndex && reverseOrder)
+				{
+					// Reverse the current sort direction for this column.
+					this.LastSortOrder = this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
+				}
+				else
+				{
+					// Set the column number that is to be sorted; default to ascending.
+					this.LastSortedColumnIndex = colIndex;
+					this.LastSortOrder = Order;
+				}
+				if (Order == SortOrder.Ascending)
+				{
+					this.Items = this.Items.ToArray().Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(this.Collumns.ToArray()[colIndex].pkey, typeof(String)).Value).ToList();
+				}
+				else
+				{
+					this.Items = this.Items.ToArray().Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(this.Collumns.ToArray()[colIndex].pkey, typeof(String)).Value).ToList();
+				}
 
-			var i = 0;
-			this.ItemsHashed = this.Items.ToArray().Distinct().ToDictionary(k => k, el => i++, new ShellItemComparer());
-			User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-			this.SetSortIcon(colIndex, Order);
-			User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, this.LastSortedColumnIndex, 0);
-			this.SelectItems(selectedItems);
+				var i = 0;
+				this.ItemsHashed = this.Items.ToArray().Distinct().ToDictionary(k => k, el => i++, new ShellItemComparer());
+				User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+				this.SetSortIcon(colIndex, Order);
+				User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, this.LastSortedColumnIndex, 0);
+				this.SelectItems(selectedItems);
+			}
+			catch (Exception)
+			{
+
+			}
 		}
 
 		/// <summary>
