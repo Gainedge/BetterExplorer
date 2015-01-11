@@ -1615,7 +1615,7 @@ namespace BExplorer.Shell {
         this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(type, newItem, old, index));
     }
 
-
+    [HandleProcessCorruptedStateExceptions]
     protected override void WndProc(ref Message m) {
       try {
 
@@ -2449,34 +2449,38 @@ namespace BExplorer.Shell {
 
     void _UnvalidateTimer_Tick(object sender, EventArgs e) {
       var newItems = this.CurrentFolder.Where(w => this.ShowHidden ? true : w.IsHidden == this.ShowHidden).ToArray();
-      var removedItems = this.Items.Except(newItems, new ShellItemComparer());
-      foreach (var obj in removedItems.ToArray()) {
-        Items.Remove(obj);
-        this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
-        if (this.IsGroupsEnabled) {
-          this.SetGroupOrder(false);
+      var removedItems = this.Items.ToArray().Except(newItems, new ShellItemComparer());
+      try {
+        foreach (var obj in removedItems.ToArray()) {
+          Items.Remove(obj);
+          this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+          if (this.IsGroupsEnabled) {
+            this.SetGroupOrder(false);
+          }
+          obj.Dispose();
+          //if (this.ItemUpdated != null)
+          //	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
         }
-        obj.Dispose();
-        //if (this.ItemUpdated != null)
-        //	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
-      }
-      foreach (var obj in newItems) {
-        F.Application.DoEvents();
-        var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
-        if (existingItem == null) {
-          if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
-            var itemIndex = InsertNewItem(obj);
-            //if (this.ItemUpdated != null)
-            //	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
-          } else {
-            var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
-            if (affectedItem != null) {
-              var index = this.Items.IndexOf(affectedItem);
-              this.RefreshItem(index, true);
+        foreach (var obj in newItems) {
+          F.Application.DoEvents();
+          var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
+          if (existingItem == null) {
+            if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
+              var itemIndex = InsertNewItem(obj);
+              //if (this.ItemUpdated != null)
+              //	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
+            } else {
+              var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
+              if (affectedItem != null) {
+                var index = this.Items.IndexOf(affectedItem);
+                this.RefreshItem(index, true);
+              }
             }
           }
+          obj.Dispose();
         }
-        obj.Dispose();
+      } catch (Exception) {
+        //TODO: catch collection modified exception only
       }
       newItems = null;
       removedItems = null;

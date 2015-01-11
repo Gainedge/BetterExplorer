@@ -178,7 +178,7 @@ namespace BExplorer.Shell {
         //TODO: Test Change
         //Note: Should we use FirstOrDefault() NOT SingleOrDefault() ??
 
-        var theNodes = nodes.Where(w => w.Tag is ShellItem && ((ShellItem)w.Tag).GetHashCode() == sho.GetHashCode()).ToList();
+        var theNodes = nodes.Where(w => w.Tag is ShellItem && ((ShellItem)w.Tag).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING) == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING)).ToList();
 				var theNode = theNodes.FirstOrDefault();
         //var theNode = nodes.Where(wr => wr.Tag != null).Where(w => (w.Tag as ShellItem) != null && (w.Tag as ShellItem).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant() == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING).ToLowerInvariant()).SingleOrDefault();
 
@@ -200,7 +200,7 @@ namespace BExplorer.Shell {
       }
 
       foreach (var sho in items) {
-        var theNodes = nodes.Where(wr => wr.Tag is ShellItem && ((ShellItem)wr.Tag).GetHashCode() == sho.GetHashCode()).ToArray();
+        var theNodes = nodes.Where(wr => wr.Tag is ShellItem && ((ShellItem)wr.Tag).GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING) == sho.GetDisplayName(SIGDN.DESKTOPABSOLUTEEDITING)).ToArray();
 				var theNode = theNodes.FirstOrDefault();
         if (theNode == null) {
           return;
@@ -618,6 +618,9 @@ namespace BExplorer.Shell {
           var sho = (ShellItem)e.Node.Tag;
           ShellItem lvSho = this.ShellListView != null && this.ShellListView.CurrentFolder != null ? this.ShellListView.CurrentFolder : null;
           var node = e.Node;
+          if (lvSho != null && sho.ParsingName == lvSho.ParsingName) {
+            this.ShellTreeView.SelectedNode = e.Node;
+          }
           node.Nodes.Add("Searching for folders...");
 					Thread t = new Thread(() =>
 					{
@@ -677,7 +680,10 @@ namespace BExplorer.Shell {
 								node.Nodes.RemoveAt(0);
 							node.Nodes.AddRange(nodesTemp.ToArray());
               if (lvSho != null)
-                SelectItem(lvSho);
+                this.ShellTreeView.SelectedNode = nodesTemp.Where(w => (w.Tag as ShellItem).ParsingName == lvSho.ParsingName).SingleOrDefault();
+              
+              //if (lvSho != null)
+              //  SelectItem(lvSho);
 						}));
 
 						
