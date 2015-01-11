@@ -16,7 +16,7 @@ namespace BetterExplorer.Networks {
 	/// Interaction logic for AddServer.xaml
 	/// </summary>
 	public partial class AddServer : Window {
-		// TODO: Add code for creating an FTP/WebDAV server instance if OK is clicked.
+		// TO_DO: Add code for creating an FTP/WebDAV server instance if OK is clicked.
 
 		public AddServer() {
 			InitializeComponent();

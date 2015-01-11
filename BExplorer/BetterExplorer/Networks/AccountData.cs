@@ -23,8 +23,8 @@ namespace BetterExplorer.Networks {
 		private static extern bool ZeroMemory(ref string Destination, int Length);
 
 
-		// TODO: Add code for storing and retrieving from file
-		// TODO: Decide upon an encryption service (DES, Rjindael, etc.) and add code for
+		// TO_DO: Add code for storing and retrieving from file
+		// TO_DO: Decide upon an encryption service (DES, Rjindael, etc.) and add code for
 		//       "decrypt file to memory" and "encrypt memory to file".
 
 		/*

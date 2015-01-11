@@ -74,41 +74,6 @@ namespace BetterExplorer {
 			return FolderInfoSize;
 		}
 		*/
-
-
-			//private static long GetFolderSize(string dir, bool includesubdirs) {
-			//	//TODO: Test
-			//	long retsize = 0;
-			//	var Selected_SearchOption = includesubdirs ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-			//	try {
-			//		DirectoryInfo data = new DirectoryInfo(dir);
-			//		foreach (FileInfo item in data.GetFiles("*.*", Selected_SearchOption)) {
-			//			retsize += item.Length;
-			//		}
-			//	}
-			//	catch (Exception) {
-			//	}
-
-			//	/*
-			//	try {
-			//		DirectoryInfo data = new DirectoryInfo(dir);
-			//		if (includesubdirs) {
-			//			foreach (FileInfo item in data.GetFiles("*.*", SearchOption.AllDirectories)) {
-			//				retsize += item.Length;
-			//			}
-			//		}
-			//		else {
-			//			foreach (FileInfo item in data.GetFiles("*.*", SearchOption.TopDirectoryOnly)) {
-			//				retsize += item.Length;
-			//			}
-			//		}
-			//	}
-			//	catch (Exception) {
-			//	}
-			//	*/
-			//	return retsize;
-			//}
-
 		}
 
 		#endregion
@@ -289,7 +254,7 @@ namespace BetterExplorer {
 			//    valueList.Add(new KeyValuePair<string, long>(item.Name, GetFolderSize(item.FullName, true)));
 			//}
 			//chart1.DataContext = valueList;
-			pieChartLayout1.legend1.Head.Text =  new ShellItem(dir).DisplayName;
+			pieChartLayout1.legend1.Head.Text = new ShellItem(dir).DisplayName;
 			bgw = new BackgroundWorker();
 			bgw.DoWork += new DoWorkEventHandler(bgw_DoWork);
 			bgw.WorkerReportsProgress = true;

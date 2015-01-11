@@ -37,9 +37,11 @@ namespace BExplorer.Shell {
 				// Set the data
 				System.Runtime.InteropServices.ComTypes.IDataObject dataObjectCOM = (System.Runtime.InteropServices.ComTypes.IDataObject)dataObject;
 				dataObjectCOM.SetData(ref formatETC, ref medium, true);
-			} catch (NotImplementedException) {
+			}
+			catch (NotImplementedException) {
 				Marshal.FreeHGlobal(pDD);
-			} catch {
+			}
+			catch {
 				// If we failed, we need to free the HGLOBAL memory
 				Marshal.FreeHGlobal(pDD);
 				throw;
@@ -61,8 +63,10 @@ namespace BExplorer.Shell {
 				dataObject.GetData(ref formatETC, out medium);
 				try {
 					return (BExplorer.Shell.DataObject.DropDescription)Marshal.PtrToStructure(medium.unionmember, typeof(BExplorer.Shell.DataObject.DropDescription));
-				} catch (AccessViolationException){
-				} finally {
+				}
+				catch (AccessViolationException) {
+				}
+				finally {
 					ReleaseStgMedium(ref medium);
 				}
 			}
@@ -289,17 +293,19 @@ namespace BExplorer.Shell {
 			int ret = DV_E_TYMED;
 
 			// Try to locate the data
-			// TODO: The ret, if not S_OK, is only relevant to the last item
+			// TO_DO: The ret, if not S_OK, is only relevant to the last item
 			foreach (KeyValuePair<FORMATETC, STGMEDIUM> pair in storage) {
 				if ((pair.Key.tymed & format.tymed) > 0) {
 					if (pair.Key.cfFormat == format.cfFormat) {
 						// Found it, return S_OK;
 						return 0;
-					} else {
+					}
+					else {
 						// Found the medium type, but wrong format
 						ret = DV_E_CLIPFORMAT;
 					}
-				} else {
+				}
+				else {
 					// Mismatch on medium type
 					ret = DV_E_TYMED;
 				}
@@ -560,10 +566,10 @@ namespace BExplorer.Shell {
 
 		#endregion // IDragSourceHelper
 
-		
+
 	}
 
-	
+
 	namespace DropTargetHelper {
 		[ComVisible(true)]
 		[ComImport]

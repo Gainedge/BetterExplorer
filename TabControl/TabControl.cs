@@ -280,8 +280,7 @@ namespace Wpf.Controls {
 
 		#region Tab Stuff
 
-		public Wpf.Controls.TabItem NewTab(ShellItem DefPath, bool IsNavigate) {
-			//TODO: figure out what to do with Cloning a tab!
+		public Wpf.Controls.TabItem NewTab(ShellItem DefPath, bool IsNavigate) {			
 			DefPath.Thumbnail.CurrentSize = new Size(16, 16);
 			DefPath.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.IconOnly;
 			SelectNewTabOnCreate = IsNavigate;
@@ -298,6 +297,8 @@ namespace Wpf.Controls {
 			newt.Drop += new DragEventHandler(newt_Drop);
 			newt.DragLeave += newt_Leave;
 			newt.GiveFeedback += newt_GiveFeedback;
+
+			//TODO: Try to remove this Try Catch
 			try {
 				Items.Add(newt);
 				IsSelectionHandled = false;

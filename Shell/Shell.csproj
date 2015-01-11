@@ -189,7 +189,6 @@
     <Compile Include="ShellViewEx.Designer.cs">
       <DependentUpon>ShellViewEx.cs</DependentUpon>
     </Compile>
-    <Compile Include="TaskBar.cs" />
     <Compile Include="ToolTip.xaml.cs">
       <DependentUpon>ToolTip.xaml</DependentUpon>
     </Compile>

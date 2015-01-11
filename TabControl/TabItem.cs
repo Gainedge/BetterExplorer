@@ -74,26 +74,26 @@ namespace Wpf.Controls {
 				button.PreviewMouseLeftButtonDown += (sender, e) => {
 					// get the parent tabcontrol
 					TabControl tc = Helper.FindParentControl<TabControl>(this);
-					
+
 					if (tc == null)
 						return;
 					// remove this tabitem from the parent tabcontrol
 					tc.RemoveTabItem(this);
 				};
 			}
-      this.PreviewMouseLeftButtonUp += TabItem_PreviewMouseLeftButtonUp;
+			this.PreviewMouseLeftButtonUp += TabItem_PreviewMouseLeftButtonUp;
 			this.PreviewMouseDoubleClick += TabItem_PreviewMouseDoubleClick;
 			this.MouseRightButtonUp += TabItem_MouseRightButtonUp;
 		}
 
-    void TabItem_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) {
-      e.Handled = true;
-      TabControl tc = Helper.FindParentControl<TabControl>(this);
-      if (tc == null) return;
-      tc.IsSelectionHandled = false;
-      tc.CurrentTabItem = this;
-      tc.RaiseTabClick(this);
-    }
+		void TabItem_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) {
+			e.Handled = true;
+			TabControl tc = Helper.FindParentControl<TabControl>(this);
+			if (tc == null) return;
+			tc.IsSelectionHandled = false;
+			tc.CurrentTabItem = this;
+			tc.RaiseTabClick(this);
+		}
 
 		/// <summary>
 		/// OnMouseEnter, Create and Display a Tooltip
@@ -119,9 +119,9 @@ namespace Wpf.Controls {
 
 		private void TabItem_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e) {
 			e.Handled = true;
-      TabControl tc = Helper.FindParentControl<TabControl>(this);
-      if (tc == null) return;
-      tc.IsSelectionHandled = false;
+			TabControl tc = Helper.FindParentControl<TabControl>(this);
+			if (tc == null) return;
+			tc.IsSelectionHandled = false;
 		}
 
 		private void TabItem_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) {
@@ -156,8 +156,7 @@ namespace Wpf.Controls {
 
 			this.mnu.Items.Add(new Separator());
 
-			//TODO: fix reopetab
-			MenuItem miundocloser = new MenuItem();
+			var miundocloser = new MenuItem();
 			miundocloser.Header = "Undo close tab";
 			miundocloser.IsEnabled = tc.ReopenableTabs.Count > 0;
 			miundocloser.Tag = "UCTI";
@@ -166,7 +165,6 @@ namespace Wpf.Controls {
 			this.mnu.Items.Add(miundocloser);
 			this.mnu.Items.Add(new Separator());
 
-			//TODO: Fix Context Menu Item [Open in new window]
 			Worker("Open in new window", new RoutedEventHandler(
 				(owner, a) => {
 					System.Diagnostics.Process.Start(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName, this.ShellObject.ParsingName + " /nw");

@@ -270,7 +270,7 @@ namespace BExplorer.Shell {
 	/// <remarks>
 	/// This works on XP or higher.
 	/// </remarks>
-	public class ImageList : IDisposable {
+	internal class ImageList : IDisposable {
 
 		/*
 		#region SHFileInfo
@@ -326,11 +326,13 @@ namespace BExplorer.Shell {
 		}
 		*/
 
+		/*
 		private IntPtr Handle {
 			get {
 				return Marshal.GetIUnknownForObject(this._ImageList);
 			}
 		}
+		*/
 
 		/*
 		public static ImageListSize MaxSize {
@@ -428,13 +430,11 @@ namespace BExplorer.Shell {
 			IntPtr hIcon;
 			var hresult = this._ImageList.GetIcon(index, options, out hIcon);
 			Marshal.ThrowExceptionForHR(hresult);
-			if (hIcon != IntPtr.Zero) {
-				Icon icon = Icon.FromHandle(hIcon);
-				return icon;
-			}
-			else {
+
+			if (hIcon == IntPtr.Zero)
 				throw new Win32Exception();
-			}
+			else
+				return Icon.FromHandle(hIcon);
 		}
 
 		/*
@@ -443,10 +443,12 @@ namespace BExplorer.Shell {
 		}
 		*/
 
+		[Obsolete("Not Used", true)]
 		public Icon GetIcon(IntPtr path, ImageListDrawOptions options = ImageListDrawOptions.Normal) {
 			return this.GetIcon(this.GetIconIndex(path), options);
 		}
 
+		[Obsolete("Not Used", true)]
 		public struct Int32Size {
 			public static Int32Size Empty {
 				get { return new Int32Size(); }
@@ -462,6 +464,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		[Obsolete("Not Used, Try to Delete!!!", true)]
 		private Int32Size GetSizePixels() {
 			int x;
 			int y;
@@ -478,23 +481,29 @@ namespace BExplorer.Shell {
 		public void DrawIcon(IntPtr hdc, int index, Point location, int newSize = -1) {
 			DrawInternal(hdc, index, 0, ImageListDrawOptions.Normal | ImageListDrawOptions.Transparent, ImageListDrawStates.Normal, 0, location, newSize);
 		}
+
+		[Obsolete("Not Used, Try to Delete!!!", true)]
 		public void Draw(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions options, Point location, int newSize = -1) {
 			this.DrawInternal(hdc, index, overlayIndex, options, ImageListDrawStates.Normal, 0, location, newSize);
 		}
 
 		private void DrawInternal(IntPtr hdc, int index, int overlayIndex, ImageListDrawOptions options, ImageListDrawStates state, int alpha, Point location, int newSize) {
-			var param = new IMAGELISTDRAWPARAMS();
-			param.cbSize = Marshal.SizeOf(param);
-			param.himl = this.Handle;
-			param.hdcDst = hdc;
-			param.rgbBk = -1;
-			param.i = index;
-			param.x = location.X;
-			param.y = location.Y;
+			var param = new IMAGELISTDRAWPARAMS() {
+				//himl = this.Handle;
+				himl = Marshal.GetIUnknownForObject(this._ImageList),
+				hdcDst = hdc,
+				rgbBk = -1,
+				i = index,
+				x = location.X,
+				y = location.Y,
+
+				fStyle = ((int)options | (overlayIndex << 8) | (newSize == -1 ? 0 : (int)ImageListDrawOptions.Scale)),
+				fState = state,
+				Frame = alpha
+			};
+
 			param.cx = param.cy = newSize == -1 ? 0 : newSize;
-			param.fStyle = ((int)options | (overlayIndex << 8) | (newSize == -1 ? 0 : (int)ImageListDrawOptions.Scale));
-			param.fState = state;
-			param.Frame = alpha;
+			param.cbSize = Marshal.SizeOf(param);
 
 			var hresult = this._ImageList.Draw(ref param);
 			Marshal.ThrowExceptionForHR(hresult);
@@ -506,8 +515,13 @@ namespace BExplorer.Shell {
 			Marshal.ThrowExceptionForHR(hresult);
 			return idx;
 		}
+
+
+		[Obsolete("Not Used, Try to Delete!!!", true)]
 		[DllImport("comctl32.dll", SetLastError = true)]
 		static extern IntPtr ImageList_Create(int cx, int cy, uint flags, int cInitial, int cGrow);
+
+		[Obsolete("Not Used, Try to Delete!!!", true)]
 		[DllImport("Comctl32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern bool ImageList_Destroy(IntPtr himl);
 		#endregion

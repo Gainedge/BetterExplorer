@@ -468,11 +468,9 @@ namespace BExplorer.Shell.Interop {
 		/// <returns></returns>
 		public ulong RegisterChangeNotify(IntPtr hWnd, CSIDL item, bool Recursively) {
 			if (notifyid != 0) return (0);
-			SHChangeNotifyEntry changeentry = new SHChangeNotifyEntry();
-			changeentry.pIdl = GetPidlFromFolderID(hWnd, item);
-			changeentry.Recursively = Recursively;
-			SHChangeNotifyEntry[] changenetrys = new SHChangeNotifyEntry[1];
-			changenetrys[0] = changeentry;
+			SHChangeNotifyEntry changeentry = new SHChangeNotifyEntry() { pIdl = GetPidlFromFolderID(hWnd, item), Recursively = Recursively };
+			SHChangeNotifyEntry[] changenetrys = new SHChangeNotifyEntry[1] { changeentry };
+			//changenetrys[0] = changeentry;
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
 				//SHCNF.SHCNF_TYPE | SHCNF.SHCNF_IDLIST,
@@ -489,16 +487,13 @@ namespace BExplorer.Shell.Interop {
 			IntPtr handle = IntPtr.Zero;
 			handle = hWnd;
 			if (notifyid != 0) return (0);
-			SHChangeNotifyEntry changeentry = new SHChangeNotifyEntry();
-			changeentry.pIdl = item.Pidl;
-			changeentry.Recursively = Recursively;
-			SHChangeNotifyEntry[] changenetrys = new SHChangeNotifyEntry[1];
-			changenetrys[0] = changeentry;
+			var changeentry = new SHChangeNotifyEntry() { pIdl = item.Pidl, Recursively = Recursively, };
+			var changenetrys = new SHChangeNotifyEntry[1] { changeentry };
+			//changenetrys[0] = changeentry;
 
-			//TODO: Make sure this works even though [MarshalAs(UnmanagedType.LPArray)]
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
-				SHCNRF.InterruptLevel | SHCNRF.ShellLevel  | SHCNRF.NewDelivery,
+				SHCNRF.InterruptLevel | SHCNRF.ShellLevel | SHCNRF.NewDelivery,
 				SHCNE.SHCNE_ALLEVENTS,
 				WM_SHNOTIFY,
 				1,
@@ -516,6 +511,7 @@ namespace BExplorer.Shell.Interop {
 				notifyid = 0;
 				return true;
 			}
+
 			return false;
 		}
 		#endregion
@@ -603,7 +599,8 @@ namespace BExplorer.Shell.Interop {
 				// Was this notification in the received notifications ?
 				//if (NotificationsReceived.Contains(info)) return (false);
 				NotificationsReceived.Add(info);
-			} finally {
+			}
+			finally {
 				if (lockPtr != IntPtr.Zero)
 					Shell32.SHChangeNotification_Unlock(lockPtr);
 			}

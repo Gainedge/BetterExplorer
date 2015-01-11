@@ -7,13 +7,11 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 
 namespace BExplorer.Shell {
-	//TODO: Consider moving Database Code/Logic here
-
 	/// <summary>Container for folder settings stored in the database</summary>
 	public class FolderSettings {
 		/// <summary>Specifies how list items where last displayed in a <see cref="ShellView" /> control.</summary>
 		public ShellViewStyle View { get; set; }
-		public int IconSize { get; set ;}
+		public int IconSize { get; set; }
 		/// <summary>The Column to short</summary>
 		public Int32 SortColumn { get; set; }
 		/// <summary>The sort direction</summary>

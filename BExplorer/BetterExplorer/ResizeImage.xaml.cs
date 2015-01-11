@@ -129,7 +129,7 @@ namespace BetterExplorer {
 		private void TextBoxes_Edited(object sender, TextChangedEventArgs e) {
 			int this_Width = newwidth, This_Heighth = newheight;
 
-			//TODO: Get the Value Before AND after the change THEN deal with keeping the ratio's the same
+			//TO_DO: Get the Value Before AND after the change THEN deal with keeping the ratio's the same
 
 
 			if (textBox1 == null || textBox2 == null || percsetting) {

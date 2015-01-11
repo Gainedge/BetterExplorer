@@ -27,31 +27,18 @@ namespace BExplorer.Shell {
 	internal class FilterItem {
 		public string Caption, Filter;
 
-		public FilterItem(string caption, string filter) {
+		private FilterItem(string caption, string filter) {
 			Caption = caption;
 			Filter = filter;
 		}
 
 		public bool Contains(string filter) {
 			return Filter.Split(',').Any(x => x.Trim() == filter);
-			/*
-			string[] filters = Filter.Split(',');
-			foreach (string s in filters) {
-				if (filter == s.Trim()) return true;
-			}
-			return false;
-			*/
 		}
 
 		public override string ToString() {
 			string filterString = string.Format(" ({0})", Filter);
-
-			if (Caption.EndsWith(filterString)) {
-				return Caption;
-			}
-			else {
-				return Caption + filterString;
-			}
+			return Caption.EndsWith(filterString) ? Caption : Caption + filterString;
 		}
 
 		[Obsolete("Not Used", true)]
@@ -68,8 +55,7 @@ namespace BExplorer.Shell {
 		/// <param name="existingIndex">Not Sure</param>
 		/// <returns></returns>
 		public static FilterItem[] ParseFilterString(string filterString, string existing, out int existingIndex) {
-			//TODO: Find out why we have existingIndex
-			List<FilterItem> result = new List<FilterItem>();
+			var result = new List<FilterItem>();
 			existingIndex = -1;
 
 			string[] items = filterString != string.Empty ? filterString.Split('|') : new string[0];

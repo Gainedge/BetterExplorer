@@ -384,12 +384,12 @@ namespace Odyssey.Controls {
 			set { SetValue(OverflowItemTemplateSelectorProperty, value); }
 		}
 
-		
+
 		public DataTemplate OverflowItemTemplate {
 			get { return (DataTemplate)GetValue(OverflowItemTemplateProperty); }
 			set { SetValue(OverflowItemTemplateProperty, value); }
 		}
-		
+
 
 
 
@@ -528,25 +528,25 @@ namespace Odyssey.Controls {
 
 		private static DataTemplateKey GetResourceKey(object item) {
 			XmlDataProvider xml = item as XmlDataProvider;
-			DataTemplateKey key;
+
 			if (xml != null) {
-				key = new DataTemplateKey(xml.XPath);
+				return new DataTemplateKey(xml.XPath);
 			}
 			else {
-				XmlNode node = item as XmlNode;
-				if (node != null) {
-					key = new DataTemplateKey(node.Name);
-				}
-				else {
-					key = new DataTemplateKey(item.GetType());
-				}
+				var node = item as XmlNode;
+				return node == null ? new DataTemplateKey(item.GetType()) : new DataTemplateKey(node.Name);
+				/*
+				if (node != null) 
+					key = new DataTemplateKey(node.Name);				
+				else 
+					key = new DataTemplateKey(item.GetType());	
+				 */
 			}
-			return key;
 		}
 
 
 		private void ApplyProperties(object item) {
-			ApplyPropertiesEventArgs e = new ApplyPropertiesEventArgs(item, this, BreadcrumbBar.ApplyPropertiesEvent);
+			var e = new ApplyPropertiesEventArgs(item, this, BreadcrumbBar.ApplyPropertiesEvent);
 			e.Image = Image;
 			e.Trace = Trace;
 			e.TraceValue = TraceValue;
@@ -599,31 +599,6 @@ namespace Odyssey.Controls {
 		public object GetTraceItem(ShellItem trace) {
 			//this.ApplyTemplate();
 			return Items.OfType<ShellItem>().SingleOrDefault(s => s != null && s.GetHashCode() == trace.GetHashCode());
-
-			//TODO: Can we delete the below dead code?
-			foreach (object item in Items.OfType<ShellItem>().ToArray()) {
-				BreadcrumbItem bcItem = ContainerFromItem(item);
-				var rootValue = bcItem.DataContext as ShellItem;
-				if (item != null) {
-					//ApplyProperties(item);
-					var value = trace;
-					if (value != null && value.GetHashCode() == rootValue.GetHashCode()) {
-						//MessageBox.Show("V:" + value.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING));
-						return item;
-					}
-
-					while (value.Parent != null) {
-						if (value != null && value.Parent.GetHashCode() == rootValue.GetHashCode()) {
-							//MessageBox.Show("VP:" + value.Parent.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING));
-							return item;
-						}
-						value = value.Parent;
-					}
-					//if (value != null && value.Equals(trace)) return item;
-				}
-				else return null;
-			}
-			return null;
 		}
 
 

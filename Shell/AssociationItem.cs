@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 
 namespace BExplorer.Shell {
 	//TODO: Document this!
+
 	public class AssociationItem {
 		public ShellItem Owner { get; private set; }
 		public String DisplayName { get; set; }
@@ -30,7 +31,6 @@ namespace BExplorer.Shell {
 
 
 		public void Invoke() {
-			//TODO: Test these changes!!
 			RegistryKey root = Registry.ClassesRoot;
 			var applications = root.OpenSubKey("Applications", RegistryKeyPermissionCheck.ReadSubTree);
 			var currentApplication = applications.OpenSubKey(Path.GetFileName(this.ApplicationPath), RegistryKeyPermissionCheck.ReadSubTree);
