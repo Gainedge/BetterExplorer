@@ -3710,29 +3710,24 @@ namespace BetterExplorer {
 		}
 
 		private void miRestoreRBItems_Click(object sender, RoutedEventArgs e) {
+			//TODO: Check these changes
+
 			foreach (ShellItem item in ShellListView.SelectedItems.ToArray()) {
-				RestoreFromRB(item.FileSystemPath);
+				Folder Recycler = new Shell().NameSpace(10);
+				for (int i = 0; i < Recycler.Items().Count; i++) {
+					Shell32.FolderItem FI = Recycler.Items().Item(i);
+					string FileName = Recycler.GetDetailsOf(FI, 0);
+					if (Path.GetExtension(FileName) == "") FileName += Path.GetExtension(FI.Path);
+					//Necessary for systems with hidden file extensions.
+					string FilePath = Recycler.GetDetailsOf(FI, 1);
+					if (item.FileSystemPath == Path.Combine(FilePath, FileName)) {
+						DoVerb(FI, "ESTORE");
+						break;
+					}
+				}
 			}
 
 			UpdateRecycleBinInfos();
-		}
-
-		[Obsolete("Inline!!!")]
-		private bool RestoreFromRB(string Item) {
-			var Shl = new Shell();
-			Folder Recycler = Shl.NameSpace(10);
-			for (int i = 0; i < Recycler.Items().Count; i++) {
-				Shell32.FolderItem FI = Recycler.Items().Item(i);
-				string FileName = Recycler.GetDetailsOf(FI, 0);
-				if (Path.GetExtension(FileName) == "") FileName += Path.GetExtension(FI.Path);
-				//Necessary for systems with hidden file extensions.
-				string FilePath = Recycler.GetDetailsOf(FI, 1);
-				if (Item == Path.Combine(FilePath, FileName)) {
-					DoVerb(FI, "ESTORE");
-					return true;
-				}
-			}
-			return false;
 		}
 
 		private bool DoVerb(Shell32.FolderItem Item, string Verb) {

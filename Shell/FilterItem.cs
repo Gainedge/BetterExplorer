@@ -41,11 +41,13 @@ namespace BExplorer.Shell {
 			return Caption.EndsWith(filterString) ? Caption : Caption + filterString;
 		}
 
+		/*
 		[Obsolete("Not Used", true)]
 		public static FilterItem[] ParseFilterString(string filterString) {
 			int dummy;
 			return ParseFilterString(filterString, string.Empty, out dummy);
 		}
+		*/
 
 		/// <summary>
 		/// Takes a string (representing a list of filters like: "txt|All files|") and converts it into a FilterItem[]
@@ -69,7 +71,7 @@ namespace BExplorer.Shell {
 			}
 
 			for (int n = 0; n < items.Length; n += 2) {
-				FilterItem item = new FilterItem(items[n], items[n + 1]);
+				var item = new FilterItem(items[n], items[n + 1]);
 				result.Add(item);
 				if (item.Filter == existing) existingIndex = result.Count - 1;
 			}

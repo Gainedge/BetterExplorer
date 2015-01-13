@@ -933,47 +933,6 @@ namespace BExplorer.Shell {
 			Constructor_Helper();
 		}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ShellItem"/> class.
-		/// </summary>
-		///
-		/// <remarks>
-		/// Creates a ShellItem which is a named child of <paramref name="parent"/>.
-		/// </remarks>
-		///
-		/// <param name="parent">
-		/// The parent folder of the item.
-		/// </param>
-		///
-		/// <param name="name">
-		/// The name of the child item.
-		/// </param>
-		[Obsolete("Inline", false)]
-		public ShellItem(ShellItem parent, string name) {
-			if (parent.IsFileSystem) {
-				// If the parent folder is in the file system, our best
-				// chance of success is to use the FileSystemPath to
-				// create the new item. Folders other than Desktop don't
-				// seem to implement ParseDisplayName properly.
-				ComInterface = CreateItemFromParsingName(Path.Combine(parent.FileSystemPath, name));
-			}
-			else {
-				IShellFolder folder = parent.GetIShellFolder();
-				uint eaten;
-				IntPtr pidl;
-				uint attributes = 0;
-
-				folder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, name, out eaten, out pidl, ref attributes);
-
-				try {
-					ComInterface = CreateItemFromIDList(pidl);
-				}
-				finally {
-					Shell32.ILFree(pidl);
-				}
-			}
-			Constructor_Helper();
-		}
 
 		public ShellItem(IntPtr pidl) {
 			ComInterface = CreateItemFromIDList(pidl);
@@ -1269,7 +1228,61 @@ namespace BExplorer.Shell {
 		/// <param name="name">
 		/// The name of the child item.
 		/// </param>
-		public ShellItem this[string name] { get { return new ShellItem(this, name); } }
+		public ShellItem this[string name] {
+			get {
+				return new ShellItem(this, name);
+			}
+		}
+
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ShellItem"/> class.
+		/// </summary>
+		///
+		/// <remarks>
+		/// Creates a ShellItem which is a named child of <paramref name="parent"/>.
+		/// </remarks>
+		///
+		/// <param name="parent">
+		/// The parent folder of the item.
+		/// </param>
+		///
+		/// <param name="name">
+		/// The name of the child item.
+		/// </param>
+		[Obsolete("Inline", false)]
+		public ShellItem(ShellItem parent, string name) {
+			if (parent.IsFileSystem) {
+				// If the parent folder is in the file system, our best
+				// chance of success is to use the FileSystemPath to
+				// create the new item. Folders other than Desktop don't
+				// seem to implement ParseDisplayName properly.
+				ComInterface = CreateItemFromParsingName(Path.Combine(parent.FileSystemPath, name));
+			}
+			else {
+				IShellFolder folder = parent.GetIShellFolder();
+				uint eaten;
+				IntPtr pidl;
+				uint attributes = 0;
+
+				folder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, name, out eaten, out pidl, ref attributes);
+
+				try {
+					ComInterface = CreateItemFromIDList(pidl);
+				}
+				finally {
+					Shell32.ILFree(pidl);
+				}
+			}
+			Constructor_Helper();
+		}
+
+
+
+
+
+
+
 
 		/// <summary>
 		/// Returns a string representation of the <see cref="ShellItem"/>.
