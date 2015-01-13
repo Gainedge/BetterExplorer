@@ -614,6 +614,7 @@ namespace BExplorer.Shell {
 				str = null;
 			*/
 
+			/*
 			try {
 				var guid = new Guid("000214fa-0000-0000-c000-000000000046");
 				uint res = 0;
@@ -643,6 +644,35 @@ namespace BExplorer.Shell {
 					Marshal.ReleaseComObject(iextract);
 				str = null;
 				return 0;
+			}
+			*/
+
+			try {
+				var guid = new Guid("000214fa-0000-0000-c000-000000000046");
+				uint res = 0;
+				ishellfolder = this.Parent.GetIShellFolder();
+				IntPtr[] pidls = new IntPtr[1];
+				pidls[0] = Shell32.ILFindLastID(this.Pidl);
+				ishellfolder.GetUIObjectOf(IntPtr.Zero,
+				1, pidls,
+				ref guid, res, out result);
+				iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
+				str = new StringBuilder(512);
+				int index = -1;
+				IExtractIconPWFlags flags;
+				iextract.GetIconLocation(IExtractIconUFlags.GIL_CHECKSHIELD, str, 512, out index, out flags);
+				pidls = null;
+				return flags;
+			}
+			catch (Exception) {
+				return 0;
+			}
+			finally {
+				if (ishellfolder != null)
+					Marshal.ReleaseComObject(ishellfolder);
+				if (iextract != null)
+					Marshal.ReleaseComObject(iextract);
+				str = null;
 			}
 		}
 
@@ -689,6 +719,7 @@ namespace BExplorer.Shell {
 			return this.Thumbnail.Bitmap;
 		}
 
+		/*
 		/// <summary>
 		/// Returns an <see cref="ComTypes.IDataObject"/> representing the
 		/// item. This object is used in drag and drop operations.
@@ -699,6 +730,7 @@ namespace BExplorer.Shell {
 			HResult result = ComInterface.BindToHandler(IntPtr.Zero, BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID, out res);
 			return (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(res, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
 		}
+		*/
 
 		public List<AssociationItem> GetAssocList() {
 			var assocList = new List<AssociationItem>();
@@ -1107,10 +1139,10 @@ namespace BExplorer.Shell {
 			if (knownFolderI != null)
 				ComInterface = (knownFolderI as ShellItem).ComInterface;
 			else if (knownFolder.StartsWith(KnownFolders.Libraries.ParsingName)) {
-				ShellLibrary lib = ShellLibrary.Load(Path.GetFileNameWithoutExtension(knownFolder), true);
-				if (lib != null) {
+				var lib = ShellLibrary.Load(Path.GetFileNameWithoutExtension(knownFolder), true);
+
+				if (lib != null)
 					ComInterface = lib.ComInterface;
-				}
 			}
 
 			//m_ComInterface = manager.GetFolder(knownFolder).CreateShellItem().ComInterface;
@@ -1122,12 +1154,10 @@ namespace BExplorer.Shell {
 
 		private static IShellItem CreateItemFromIDList(IntPtr pidl) {
 			//TODO: Consider moving the Try Finally to here
-			if (RunningVista) {
+			if (RunningVista)
 				return Shell32.SHCreateItemFromIDList(pidl, typeof(IShellItem).GUID);
-			}
-			else {
+			else
 				return new Interop.VistaBridge.ShellItemImpl(pidl, false);
-			}
 		}
 
 		private static IShellItem CreateItemFromParsingName(string path) {
@@ -1158,23 +1188,19 @@ namespace BExplorer.Shell {
 		*/
 
 		private static IntPtr GetIDListFromObject(IShellItem item) {
-			if (RunningVista) {
+			if (RunningVista)
 				return item != null ? Shell32.SHGetIDListFromObject(item) : IntPtr.Zero;
-			}
-			else {
+			else
 				return ((Interop.VistaBridge.ShellItemImpl)item).Pidl;
-			}
 		}
 
 		private static IEnumIDList GetIEnumIDList(IShellFolder folder, SHCONTF flags) {
 			IEnumIDList result;
 
-			if (folder.EnumObjects(IsCareForMessageHadle ? MessageHandle : IntPtr.Zero, flags, out result) == HResult.S_OK) {
+			if (folder.EnumObjects(IsCareForMessageHadle ? MessageHandle : IntPtr.Zero, flags, out result) == HResult.S_OK)
 				return result;
-			}
-			else {
+			else
 				return null;
-			}
 		}
 		#endregion Static Stuff
 
@@ -1287,11 +1313,6 @@ namespace BExplorer.Shell {
 			}
 			Constructor_Helper();
 		}
-
-
-
-
-
 
 
 
