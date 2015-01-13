@@ -953,7 +953,16 @@ namespace BExplorer.Shell {
 		}
 
 		internal ShellItem(ShellItem parent, IntPtr pidl) {
-			ComInterface = CreateItemWithParent(parent, pidl);
+			//ComInterface = CreateItemWithParent(parent, pidl);
+
+			if (RunningVista) {
+				ComInterface = Shell32.SHCreateItemWithParent(IntPtr.Zero, parent.GetIShellFolder(), pidl, typeof(IShellItem).GUID);
+			}
+			else {
+				Interop.VistaBridge.ShellItemImpl impl = (Interop.VistaBridge.ShellItemImpl)parent.ComInterface;
+				ComInterface = new Interop.VistaBridge.ShellItemImpl(Shell32.ILCombine(impl.Pidl, pidl), true);
+			}
+
 			Constructor_Helper();
 		}
 
@@ -1136,6 +1145,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		private static IShellItem CreateItemWithParent(ShellItem parent, IntPtr pidl) {
 			if (RunningVista) {
 				return Shell32.SHCreateItemWithParent(IntPtr.Zero, parent.GetIShellFolder(), pidl, typeof(IShellItem).GUID);
@@ -1145,6 +1155,7 @@ namespace BExplorer.Shell {
 				return new Interop.VistaBridge.ShellItemImpl(Shell32.ILCombine(impl.Pidl, pidl), true);
 			}
 		}
+		*/
 
 		private static IntPtr GetIDListFromObject(IShellItem item) {
 			if (RunningVista) {

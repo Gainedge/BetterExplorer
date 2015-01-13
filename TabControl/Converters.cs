@@ -7,24 +7,25 @@ using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace Wpf.Controls {
-	//[Obsolete("Not Used", true)]
-	//class InverseBooleanConverter : IValueConverter {
 
-	//	public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-	//		bool flag = false;
-	//		if (value is bool) {
-	//			flag = (bool)value;
-	//		}
-	//		else if (value is bool?) {
-	//			bool? nullable = (bool?)value;
-	//			flag = nullable.Value;
-	//		}
+	/// <summary>Used in WPF (trust me)</summary>
+	class InverseBooleanConverter : IValueConverter {
 
-	//		return (flag ? Visibility.Collapsed : Visibility.Visible);
-	//	}
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+			bool flag = false;
+			if (value is bool) {
+				flag = (bool)value;
+			}
+			else if (value is bool?) {
+				bool? nullable = (bool?)value;
+				flag = nullable.Value;
+			}
 
-	//	public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-	//		return value is Visibility && (Visibility)value == Visibility.Collapsed;
-	//	}
-	//}
+			return (flag ? Visibility.Collapsed : Visibility.Visible);
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+			return value is Visibility && (Visibility)value == Visibility.Collapsed;
+		}
+	}
 }
