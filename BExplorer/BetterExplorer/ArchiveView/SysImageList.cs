@@ -259,24 +259,6 @@ namespace SystemImageList {
 
 		#region Private ImageList structures
 
-		/*
-		[StructLayout(LayoutKind.Sequential)]
-		private struct RECT {
-			private int left;
-			private int top;
-			private int right;
-			private int bottom;
-		}
-		*/
-
-		/*
-		[StructLayout(LayoutKind.Sequential)]
-		private struct POINT {
-			private int x;
-			private int y;
-		}
-		*/
-
 		[StructLayout(LayoutKind.Sequential)]
 		private struct IMAGELISTDRAWPARAMS {
 			public int cbSize;
@@ -306,23 +288,6 @@ namespace SystemImageList {
 			public int Unused2;
 			public BExplorer.Shell.Interop.User32.RECT rcImage;
 		}
-
-		/*
-		//private const int MAX_PATH = 260;
-
-		//[StructLayout(LayoutKind.Sequential)]
-		//private struct SHFILEINFO {
-		//	public IntPtr hIcon;
-		//	public int iIcon;
-		//	public int dwAttributes;
-
-		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
-		//	public string szDisplayName;
-
-		//	[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
-		//	public string szTypeName;
-		}
-		*/
 
 		#endregion Private ImageList structures
 
@@ -462,7 +427,7 @@ namespace SystemImageList {
 
 			[PreserveSig]
 			int GetOverlayImage(int iOverlay, ref int piIndex);
-		};
+		}
 
 		#endregion Private ImageList COM Interop (XP)
 
@@ -495,28 +460,29 @@ namespace SystemImageList {
 			}
 		}
 
+		/*
 		/// <summary>
 		/// Returns the size of the Image List Icons.
 		/// </summary>
 		public Size Size {
 			get {
-				int cx = 0;
-				int cy = 0;
-				if (iImageList == null) {
+				int cx = 0,cy = 0;
+
+				if (iImageList == null) 
 					ImageList_GetIconSize(hIml, ref cx, ref cy);
-				}
-				else {
+				else 
 					iImageList.GetIconSize(ref cx, ref cy);
-				}
-				var sz = new Size(cx, cy);
-				return sz;
+
+=				return new Size(cx, cy);
 			}
 		}
+		*/
 
 		#endregion Properties
 
 		#region Methods
 
+		/*
 		/// <summary>
 		/// Returns a GDI+ copy of the icon from the ImageList
 		/// at the specified index.
@@ -539,6 +505,7 @@ namespace SystemImageList {
 			}
 			return icon;
 		}
+		*/
 
 		/// <summary>
 		/// Return the index of the icon for the specified file, always using
@@ -608,6 +575,7 @@ namespace SystemImageList {
 			}
 		}
 
+		/*
 		/// <summary>
 		/// Draws an image
 		/// </summary>
@@ -618,7 +586,9 @@ namespace SystemImageList {
 		public void DrawImage(IntPtr hdc, int index, int x, int y) {
 			DrawImage(hdc, index, x, y, ImageListDrawItemConstants.ILD_TRANSPARENT);
 		}
+		*/
 
+		/*
 		/// <summary>
 		/// Draws an image using the specified flags
 		/// </summary>
@@ -652,7 +622,9 @@ namespace SystemImageList {
 				iImageList.Draw(ref pimldp);
 			}
 		}
+		*/
 
+		/*
 		/// <summary>
 		/// Draws an image using the specified flags and specifies
 		/// the size to clip to (or to stretch to if ILD_SCALE
@@ -683,7 +655,9 @@ namespace SystemImageList {
 				iImageList.Draw(ref pimldp);
 			}
 		}
+		*/
 
+		/*
 		/// <summary>
 		/// Draws an image using the specified flags and state on XP systems.
 		/// </summary>
@@ -745,6 +719,8 @@ namespace SystemImageList {
 				iImageList.Draw(ref pimldp);
 			}
 		}
+		*/
+
 
 		/// <summary>
 		/// Determines if the system is running Windows XP
@@ -812,6 +788,7 @@ namespace SystemImageList {
 		#endregion Methods
 
 		#region Constructor, Dispose, Destructor
+
 
 		/// <summary>
 		/// Creates a Small Icons SystemImageList
@@ -909,16 +886,19 @@ namespace SystemImageList {
 		/// StateImageList</param>
 		public static void SetListViewImageList(ListView listView, SysImageList sysImageList, bool forStateImages) {
 			IntPtr wParam = (IntPtr)LVSIL_NORMAL;
-			if (sysImageList.ImageListSize == SysImageListSize.smallIcons) {
+
+			//TODO: Should this be an If(...) ElseIf(...)
+			if (sysImageList.ImageListSize == SysImageListSize.smallIcons) 
 				wParam = (IntPtr)LVSIL_SMALL;
-			}
-			if (forStateImages) {
+
+			if (forStateImages) 
 				wParam = (IntPtr)LVSIL_STATE;
-			}
+
 
 			SendMessage(listView.Handle, LVM_SETIMAGELIST, wParam, sysImageList.Handle);
 		}
 
+		/*
 		/// <summary>
 		/// Associates a SysImageList with a TreeView control
 		/// </summary>
@@ -935,6 +915,7 @@ namespace SystemImageList {
 
 			SendMessage(treeView.Handle, TVM_SETIMAGELIST, wParam, sysImageList.Handle);
 		}
+		*/ 
 	}
 
 	#endregion SysImageListHelper

@@ -114,9 +114,11 @@ namespace BExplorer.Shell {
 		/// <summary> The folder being navigated to. </summary>
 		public ShellItem Folder { get; private set; }
 
+		/*
 		/// <summary> Gets/sets a value indicating whether the navigation should be canceled. </summary>
 		[Obsolete("Never used")]
 		public bool Cancel { get; private set; }
+		*/
 
 		public Boolean IsNavigateInSameTab { get; private set; }
 
@@ -2048,7 +2050,7 @@ namespace BExplorer.Shell {
 							this.DraggedItemIndexes.Clear();
 							IntPtr dataObjPtr = IntPtr.Zero;
 							dataObject = this.SelectedItems.ToArray().GetIDataObject(out dataObjPtr);
-							uint ef = 0;
+							//uint ef = 0;
 							var ishell2 = (BExplorer.Shell.DataObject.IDragSourceHelper2)new DragDropHelper();
 							ishell2.SetFlags(1);
 							var wp = new BExplorer.Shell.DataObject.Win32Point();
@@ -3619,17 +3621,6 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, index, ref item);
 		}
 
-		/*
-		[Obsolete("Never Used", true)]
-		private void RemoveDropHighLightItemByIndex(int index) {
-		  LVITEM item = new LVITEM();
-		  item.mask = LVIF.LVIF_STATE;
-		  item.stateMask = LVIS.LVIS_SELECTED | LVIS.LVIS_DROPHILITED;
-		  item.state = 0;
-		  User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, index, ref item);
-		}
-		*/
-
 		public Boolean IsFocusAllowed = true;
 
 		/// <summary> Gives the ShellListView focus </summary>
@@ -3721,28 +3712,6 @@ namespace BExplorer.Shell {
 			return Found == null ? 0 : Found.Index;
 		}
 
-		/*
-		private static BitmapFrame CreateResizedImage(IntPtr hBitmap, int width, int height, int margin) {
-		  var source = Imaging.CreateBitmapSourceFromHBitmap(
-								  hBitmap,
-								  IntPtr.Zero,
-								  System.Windows.Int32Rect.Empty,
-								  BitmapSizeOptions.FromEmptyOptions()).Clone();
-		  Gdi32.DeleteObject(hBitmap);
-
-		  var group = new DrawingGroup();
-		  RenderOptions.SetBitmapScalingMode(group, BitmapScalingMode.Fant);
-		  group.Children.Add(new ImageDrawing(source, new Rect(0, 0, width, height)));
-		  var targetVisual = new DrawingVisual();
-		  var targetContext = targetVisual.RenderOpen();
-		  targetContext.DrawDrawing(group);
-		  var target = new RenderTargetBitmap(width, height, 96, 96, PixelFormats.Default);
-		  targetContext.Close();
-		  target.Render(targetVisual);
-		  return BitmapFrame.Create(target);
-		}
-		*/
-
 		/// <summary>
 		/// Returns the index of the first item whose display name starts with the search string.
 		/// </summary>
@@ -3771,30 +3740,12 @@ namespace BExplorer.Shell {
 		}
 
 		private void RedrawWindow() {
-			//User32.RedrawWindow(this.LVHandle, IntPtr.Zero, IntPtr.Zero,
-			//										 0x0001/*RDW_INVALIDATE*/);
 			User32.InvalidateRect(this.LVHandle, IntPtr.Zero, false);
 		}
 
 		private void RedrawWindow(User32.RECT rect) {
 			User32.InvalidateRect(this.LVHandle, ref rect, false);
 		}
-
-		/*
-		internal void OnGotFocus() {
-		  if (GotFocus != null) {
-			GotFocus(this, EventArgs.Empty);
-		  }
-		}
-		*/
-
-		/*
-		internal void OnLostFocus() {
-		  if (LostFocus != null) {
-			LostFocus(this, EventArgs.Empty);
-		  }
-		}
-		*/
 
 		internal void OnSelectionChanged() {
 			if (SelectionChanged != null) {
@@ -3947,8 +3898,8 @@ namespace BExplorer.Shell {
 
 
 		public void SaveSettingsToDatabase(ShellItem destination) {
-			if (CurrentFolder == null) return;
-			if (!CurrentFolder.IsFolder) return;
+			if (CurrentFolder == null || !CurrentFolder.IsFolder) return;
+			//if (!CurrentFolder.IsFolder) return;
 
 			var m_dbConnection = new SQLite.SQLiteConnection("Data Source=Settings.sqlite;Version=3;");
 			m_dbConnection.Open();
@@ -3963,7 +3914,7 @@ namespace BExplorer.Shell {
 						   WHERE Path = @Path"
 						:
 						@"INSERT into foldersettings (Path, LastSortOrder, LastGroupOrder, LastGroupCollumn, View, LastSortedColumn, Columns, IconSize)
-                          VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn, @Columns, @IconSize)";
+						  VALUES (@Path, @LastSortOrder, @LastGroupOrder, @LastGroupCollumn, @View, @LastSortedColumn, @Columns, @IconSize)";
 
 
 			int[] orders = new int[this.Collumns.Count];
@@ -4062,21 +4013,26 @@ namespace BExplorer.Shell {
 			Shell32.WNetDisconnectDialog(handle, type);
 		}
 
+		/*
 		#region IDropSource Members
 
 		public new HResult QueryContinueDrag(bool fEscapePressed, int grfKeyState) {
+			//TODO: Deal with this dead code!
 			if (grfKeyState == 0) {
 				return HResult.DRAGDROP_S_DROP;
 			}
 			else {
 				return HResult.S_OK;
 			}
+			
 			if (fEscapePressed)
 				return HResult.DRAGDROP_S_CANCEL;
 			return HResult.DRAGDROP_S_DROP;
 		}
 
 		public new HResult GiveFeedback(int dwEffect) {
+			//TODO: Deal with this just code!
+
 			//dwEffect = (int)F.DragDropEffects.All;
 			System.Windows.Forms.DataObject doo = new F.DataObject(dataObject);
 			var obj = doo.GetData("DropDescription");
@@ -4087,5 +4043,7 @@ namespace BExplorer.Shell {
 		}
 
 		#endregion
+		*/
+
 	}
 }

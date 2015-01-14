@@ -38,15 +38,20 @@ namespace Wpf.Controls {
 
 		public bool isGoingBackOrForward;
 		public bool IsSelectionHandled = false;
-    public Wpf.Controls.TabItem CurrentTabItem;
+		public Wpf.Controls.TabItem CurrentTabItem;
 
 		// TemplatePart controls
 		private ToggleButton _toggleButton;
 		private ButtonBase _addNewButton;
 		private bool IsFixedSize {
 			get {
+				/*
 				IEnumerable items = GetItems();
 				return items as IList == null || (items as IList).IsFixedSize;
+				*/
+
+				var items = GetItems() as IList;
+				return items == null || items.IsFixedSize;
 			}
 		}
 
@@ -271,7 +276,7 @@ namespace Wpf.Controls {
 		//public event EventHandler<CancelEventArgs> TabItemAdding;
 		//public event EventHandler<TabItemEventArgs> TabItemAdded;
 		//public event EventHandler<NewTabItemEventArgs> NewTabItem;
-    public event EventHandler<TabClickEventArgs> OnTabClicked;
+		public event EventHandler<TabClickEventArgs> OnTabClicked;
 		/*
 		private event EventHandler<TabItemCancelEventArgs> TabItemClosing;
 		private event EventHandler<TabItemEventArgs> TabItemClosed;
@@ -280,7 +285,7 @@ namespace Wpf.Controls {
 
 		#region Tab Stuff
 
-		public Wpf.Controls.TabItem NewTab(ShellItem DefPath, bool IsNavigate) {			
+		public Wpf.Controls.TabItem NewTab(ShellItem DefPath, bool IsNavigate) {
 			DefPath.Thumbnail.CurrentSize = new Size(16, 16);
 			DefPath.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.IconOnly;
 			SelectNewTabOnCreate = IsNavigate;
@@ -350,17 +355,8 @@ namespace Wpf.Controls {
 			if (allowReopening)
 				this.ReopenableTabs.Add(tabItem.log);
 
-			/*
-			// gives an opertunity to cancel the removal of the tabitem
-			var c = new TabItemCancelEventArgs(tabItem);
-			if (TabItemClosing != null)
-				TabItemClosing(tabItem, c);
-
-			if (c.Cancel)
+			if (this.Items.OfType<TabItem>().Count() == 1)
 				return;
-			*/
-			if (this.Items.OfType<TabItem>().Count() == 1) {
-			}
 			else if (ItemsSource == null)
 				this.Items.Remove(tabItem);
 			else {
@@ -514,7 +510,7 @@ namespace Wpf.Controls {
 			base.OnItemsChanged(e);
 			if (e.Action == NotifyCollectionChangedAction.Add && !SelectNewTabOnCreate) {
 				this.IsSelectionHandled = true;
-			} 
+			}
 			if (e.Action == NotifyCollectionChangedAction.Add && SelectNewTabOnCreate) {
 				var tabItem = (TabItem)this.ItemContainerGenerator.ContainerFromItem(e.NewItems[e.NewItems.Count - 1]);
 				SelectedItem = tabItem;
@@ -565,6 +561,14 @@ namespace Wpf.Controls {
 
 		[Obsolete("Exactly the same as OnCoerceAllowDeleteCallback(...)")]
 		private object OnCoerceAllowAddNewCallback(object basevalue) {
+			if (ItemsSource == null)
+				return basevalue;
+			else if (ItemsSource is IList)
+				return (ItemsSource as IList).IsFixedSize ? false : basevalue;
+			else
+				return false;
+
+			/*
 			if (ItemsSource != null) {
 				var list = ItemsSource as IList;
 				if (list != null) {
@@ -573,10 +577,19 @@ namespace Wpf.Controls {
 				return false;
 			}
 			return basevalue;
+			*/
 		}
 
 		[Obsolete("Exactly the same as OnCoerceAllowAddNewCallback(...)")]
 		private object OnCoerceAllowDeleteCallback(object basevalue) {
+			if (ItemsSource == null)
+				return basevalue;
+			else if (ItemsSource is IList)
+				return (ItemsSource as IList).IsFixedSize ? false : basevalue;
+			else
+				return false;
+
+			/*
 			if (ItemsSource != null) {
 				var list = ItemsSource as IList;
 				if (list != null) {
@@ -585,6 +598,7 @@ namespace Wpf.Controls {
 				return false;
 			}
 			return basevalue;
+			*/
 		}
 
 
@@ -628,9 +642,7 @@ namespace Wpf.Controls {
 
 			int index;
 			// get the index of the Header from the manuitems Tag property
-			bool b = int.TryParse(mi.Tag.ToString(), out index);
-
-			if (b) {
+			if (int.TryParse(mi.Tag.ToString(), out index)) {
 				TabItem tabItem = GetTabItem(index);
 				if (tabItem != null) {
 					TabPanel itemsHost = Helper.FindVirtualizingTabPanel(this);
@@ -643,8 +655,7 @@ namespace Wpf.Controls {
 		}
 
 		private void SetAddNewButtonVisibility() {
-			if (this.Template == null)
-				return;
+			if (this.Template == null) return;
 
 			ButtonBase button = this.Template.FindName("PART_NewTabButton", this) as ButtonBase;
 			if (button == null) return;
@@ -669,16 +680,14 @@ namespace Wpf.Controls {
 		internal IEnumerable GetItems() {
 			return IsUsingItemsSource ? ItemsSource : Items;
 		}
-    public void RaiseTabClick(TabItem tab) {
-      if (this.OnTabClicked != null) {
-        this.OnTabClicked.Invoke(this, new TabClickEventArgs(tab));
-      }
-    }
+		public void RaiseTabClick(TabItem tab) {
+			if (this.OnTabClicked != null)
+				this.OnTabClicked.Invoke(this, new TabClickEventArgs(tab));
+		}
 		internal int GetTabsCount() {
 			if (BindingOperations.IsDataBound(this, ItemsSourceProperty)) {
-				IList list = ItemsSource as IList;
-				if (list != null)
-					return list.Count;
+				if (ItemsSource is IList)
+					return (ItemsSource as IList).Count;
 
 				// ItemsSource is only an IEnumerable
 				int i = 0;
@@ -719,10 +728,10 @@ namespace Wpf.Controls {
 			}
 		}
 	}
-  public class TabClickEventArgs : EventArgs {
-    public TabItem ClickedItem { get; private set; }
-    public TabClickEventArgs(TabItem tab) {
-      this.ClickedItem = tab;
-    }
-  }
+	public class TabClickEventArgs : EventArgs {
+		public TabItem ClickedItem { get; private set; }
+		public TabClickEventArgs(TabItem tab) {
+			this.ClickedItem = tab;
+		}
+	}
 }

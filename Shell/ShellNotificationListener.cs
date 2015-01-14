@@ -135,92 +135,61 @@ namespace BExplorer.Shell {
 						case SHCNE.CREATE:
 							if (m_Parent.ItemCreated != null) {
 								ShellItem item = new ShellItem(notify.dwItem1);
-								m_Parent.ItemCreated(m_Parent,
-									new ShellItemEventArgs(item));
+								m_Parent.ItemCreated(m_Parent, new ShellItemEventArgs(new ShellItem(notify.dwItem1)));
 							}
 							break;
 
 						case SHCNE.DELETE:
-							if (m_Parent.ItemDeleted != null) {
-								ShellItem item = new ShellItem(notify.dwItem1);
-								m_Parent.ItemDeleted(m_Parent,
-									new ShellItemEventArgs(item));
-							}
-							break;
+							if (m_Parent.ItemDeleted != null)
+								m_Parent.ItemDeleted(m_Parent, new ShellItemEventArgs(new ShellItem(notify.dwItem1)));
 
+							break;
 						case SHCNE.DRIVEADD:
-							if (m_Parent.DriveAdded != null) {
-								ShellItem item = new ShellItem(notify.dwItem1);
-								m_Parent.DriveAdded(m_Parent,
-									new ShellItemEventArgs(item));
-							}
-							break;
+							if (m_Parent.DriveAdded != null)
+								m_Parent.DriveAdded(m_Parent, new ShellItemEventArgs(new ShellItem(notify.dwItem1)));
 
+							break;
 						case SHCNE.DRIVEREMOVED:
-							if (m_Parent.DriveRemoved != null) {
-								ShellItem item = new ShellItem(notify.dwItem1);
-								m_Parent.DriveRemoved(m_Parent,
-									new ShellItemEventArgs(item));
-							}
-							break;
+							if (m_Parent.DriveRemoved != null)
+								m_Parent.DriveRemoved(m_Parent, new ShellItemEventArgs(new ShellItem(notify.dwItem1)));
 
+							break;
 						case SHCNE.MKDIR:
-							if (m_Parent.FolderCreated != null) {
-								ShellItem item = new ShellItem(notify.dwItem1);
-								m_Parent.FolderCreated(m_Parent,
-									new ShellItemEventArgs(item));
-							}
-							break;
+							if (m_Parent.FolderCreated != null)
+								m_Parent.FolderCreated(m_Parent, new ShellItemEventArgs(new ShellItem(notify.dwItem1)));
 
+							break;
 						case SHCNE.RMDIR:
-							if (m_Parent.FolderDeleted != null) {
-								ShellItem item = new ShellItem(notify.dwItem1);
-								m_Parent.FolderDeleted(m_Parent,
-									new ShellItemEventArgs(item));
-							}
-							break;
+							if (m_Parent.FolderDeleted != null)
+								m_Parent.FolderDeleted(m_Parent, new ShellItemEventArgs(new ShellItem(notify.dwItem1)));
 
+							break;
 						case SHCNE.UPDATEDIR:
-							if (m_Parent.FolderUpdated != null) {
-								ShellItem item = new ShellItem(notify.dwItem1);
-								m_Parent.FolderUpdated(m_Parent,
-									new ShellItemEventArgs(item));
-							}
-							break;
+							if (m_Parent.FolderUpdated != null)
+								m_Parent.FolderUpdated(m_Parent, new ShellItemEventArgs(new ShellItem(notify.dwItem1)));
 
+							break;
 						case SHCNE.UPDATEITEM:
-							if (m_Parent.ItemUpdated != null) {
-								ShellItem item = new ShellItem(notify.dwItem1);
-								m_Parent.ItemUpdated(m_Parent,
-									new ShellItemEventArgs(item));
-							}
-							break;
+							if (m_Parent.ItemUpdated != null)
+								m_Parent.ItemUpdated(m_Parent, new ShellItemEventArgs(new ShellItem(notify.dwItem1)));
 
+							break;
 						case SHCNE.RENAMEFOLDER:
-							if (m_Parent.FolderRenamed != null) {
-								ShellItem item1 = new ShellItem(notify.dwItem1);
-								ShellItem item2 = new ShellItem(notify.dwItem2);
-								m_Parent.FolderRenamed(m_Parent,
-									new ShellItemChangeEventArgs(item1, item2));
-							}
-							break;
+							if (m_Parent.FolderRenamed != null)
+								m_Parent.FolderRenamed(m_Parent, new ShellItemChangeEventArgs(new ShellItem(notify.dwItem1), new ShellItem(notify.dwItem2)));
 
+							break;
 						case SHCNE.RENAMEITEM:
-							if (m_Parent.ItemRenamed != null) {
-								ShellItem item1 = new ShellItem(notify.dwItem1);
-								ShellItem item2 = new ShellItem(notify.dwItem2);
-								m_Parent.ItemRenamed(m_Parent,
-									new ShellItemChangeEventArgs(item1, item2));
-							}
-							break;
+							if (m_Parent.ItemRenamed != null)
+								m_Parent.ItemRenamed(m_Parent, new ShellItemChangeEventArgs(new ShellItem(notify.dwItem1), new ShellItem(notify.dwItem2)));
 
+
+							break;
 						case SHCNE.NETSHARE:
 						case SHCNE.NETUNSHARE:
-							if (m_Parent.SharingChanged != null) {
-								ShellItem item = new ShellItem(notify.dwItem1);
-								m_Parent.SharingChanged(m_Parent,
-									new ShellItemEventArgs(item));
-							}
+							if (m_Parent.SharingChanged != null)
+								m_Parent.SharingChanged(m_Parent, new ShellItemEventArgs(new ShellItem(notify.dwItem1)));
+
 							break;
 					}
 				}
@@ -240,7 +209,6 @@ namespace BExplorer.Shell {
 	/// <summary>
 	/// Provides information of changes in the Windows Shell Namespace.
 	/// </summary>
-	[Obsolete("Being Replace with Tuple<ShellItem>")]
 	public class ShellItemEventArgs : EventArgs {
 		/// <summary>
 		/// The ShellItem that has changed.
@@ -255,9 +223,7 @@ namespace BExplorer.Shell {
 		/// <param name="item">
 		/// The ShellItem that has changed.
 		/// </param>
-		public ShellItemEventArgs(ShellItem item) {
-			Item = item;
-		}
+		public ShellItemEventArgs(ShellItem item) { Item = item; }
 	}
 
 	/// <summary>
