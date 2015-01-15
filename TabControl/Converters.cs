@@ -7,7 +7,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace Wpf.Controls {
-	[Obsolete("Not Used", true)]
+
+	/// <summary>Used in WPF (trust me)</summary>
 	class InverseBooleanConverter : IValueConverter {
 
 		public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {

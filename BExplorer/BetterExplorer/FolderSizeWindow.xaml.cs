@@ -10,7 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using System.Windows.Media;
-using Microsoft.WindowsAPICodePack.Shell;
+//using Microsoft.WindowsAPICodePack.Shell;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
 //using WPFPieChart;
@@ -57,23 +57,6 @@ namespace BetterExplorer {
 			}
 
 			#endregion INotifyPropertyChanged Members
-
-
-			/*
-		[Obsolete("Not used, should remove", true)]
-		public static List<FolderSizeInfoClass> ConstructData(string Dir) {
-			var FolderInfoSize = new List<FolderSizeInfoClass>();
-			DirectoryInfo data = new DirectoryInfo(Dir);
-			foreach (DirectoryInfo item in data.GetDirectories()) {
-				FolderSizeInfoClass fsi = new FolderSizeInfoClass();
-				fsi.FolderSizeLoc = item.Name;
-				fsi.FSize = GetFolderSize(item.FullName, true);
-				FolderInfoSize.Add(fsi);
-			}
-
-			return FolderInfoSize;
-		}
-		*/
 		}
 
 		#endregion
@@ -169,54 +152,6 @@ namespace BetterExplorer {
 		}
 
 		#endregion Constructors
-
-		#region Obsolete
-		/*
-		private long GetFolderSize(string dir, bool includesubdirs) {
-			shol.Clear();
-			long retsize = 0;
-			try {
-				GetFilesRec(ShellObject.FromParsingName(dir));
-				foreach (ShellObject item in shol) {
-					object oo = item.Properties.System.Size.ValueAsObject;
-					retsize += Convert.ToInt64(oo);
-				}
-				//ShellObject o = ShellObject.FromParsingName(dir);
-			}
-			catch (Exception) {
-			}
-
-			return retsize;
-		}
-
-		private void GetAllDirRec(ShellObject path) {
-			AllDirsCount = 0;
-			ShellContainer con = (ShellContainer)ShellContainer.FromParsingName(path.ParsingName);
-			foreach (ShellObject item in con) {
-				try {
-					if (item.IsFolder) {
-						try {
-							AllDirsCount++;
-							GetFilesRec(item);
-						}
-						catch (Exception) {
-						}
-					}
-				}
-				catch (Exception) {
-				}
-			}
-			con.Dispose();
-		}
-
-		private void chartitself_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			MessageBox.Show(e.AddedItems[0].GetType().ToString());
-		}
-
-		private void button1_Click(object sender, RoutedEventArgs e) {
-		}
-		*/
-		#endregion Obsolete
 
 
 		private static bool ExtendGlassFrame(Window window, Thickness margin) {

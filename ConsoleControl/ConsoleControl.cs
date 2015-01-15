@@ -137,6 +137,7 @@ namespace ConsoleControl {
 
 		#region Processing
 
+		/*
 		/// <summary> Runs a process. </summary>
 		/// <param name="fileName">  Name of the file. </param>
 		/// <param name="arguments"> The arguments. </param>
@@ -164,6 +165,7 @@ namespace ConsoleControl {
 			if (IsInputEnabled)
 				richTextBoxConsole.ReadOnly = false;
 		}
+		*/
 
 		/// <summary> Stops the process. </summary>
 		public void StopProcess() {
@@ -374,8 +376,7 @@ namespace ConsoleControl {
 			richTextBoxConsole.MouseUp += richTextBoxConsole_MouseDown;
 		}
 
-		void richTextBoxConsole_MouseDown(object sender, MouseEventArgs e)
-		{
+		void richTextBoxConsole_MouseDown(object sender, MouseEventArgs e) {
 			this.ShellListView.IsFocusAllowed = false;
 			richTextBoxConsole.Focus();
 		}

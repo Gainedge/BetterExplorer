@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
-using Microsoft.WindowsAPICodePack.Shell;
+//using Microsoft.WindowsAPICodePack.Shell;
 
 namespace BetterExplorer {
 
