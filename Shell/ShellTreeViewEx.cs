@@ -931,7 +931,7 @@ namespace BExplorer.Shell {
 					var computerNode = this.ShellTreeView.Nodes.OfType<TreeNode>().Single(s => s.Tag != null && (s.Tag as ShellItem).ParsingName == KnownFolders.Computer.ParsingName);
 					foreach (NotifyInfos info in this._NotificationGlobal.NotificationsReceived.ToArray()) {
 						switch (info.Notification) {
-							case ShellNotifications.SHCNE.SHCNE_RENAMEITEM:
+							case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
 								break;
 							case ShellNotifications.SHCNE.SHCNE_MKDIR:
 								break;

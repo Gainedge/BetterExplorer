@@ -2963,7 +2963,8 @@ namespace BExplorer.Shell {
         } else {
           User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, -1, 0);
         }
-				this.SelectItems(selectedItems);
+        if (!this.IsRenameInProgress)
+				  this.SelectItems(selectedItems);
 			}
 			catch (Exception) {
 
@@ -4051,6 +4052,8 @@ namespace BExplorer.Shell {
         }
         this.ItemForRename = -1;
         this._IsCanceledOperation = isCancel;
+        if (isCancel)
+          this._NewName = String.Empty;
 			}
 		}
 
