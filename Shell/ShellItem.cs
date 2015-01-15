@@ -191,15 +191,28 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets a PIDL representing the item.
 		/// </summary>
-		public IntPtr Pidl {
+    public IntPtr Pidl {
+      get {
+
+        if (RunningVista)
+          return ComInterface != null ? Shell32.SHGetIDListFromObject(ComInterface) : IntPtr.Zero;
+        else
+          return ((Interop.VistaBridge.ShellItemImpl)ComInterface).Pidl;
+
+        //return GetIDListFromObject(ComInterface);
+      }
+    }
+
+		[Obsolete("Not Used", true)]
+		public bool IsBrowsable {
 			get {
-
-				if (RunningVista)
-					return ComInterface != null ? Shell32.SHGetIDListFromObject(ComInterface) : IntPtr.Zero;
-				else
-					return ((Interop.VistaBridge.ShellItemImpl)ComInterface).Pidl;
-
-				//return GetIDListFromObject(ComInterface);
+				//TODO: try removing this Try Catch!
+				try {
+					return COM_Attribute_Check(SFGAO.BROWSABLE);
+				}
+				catch {
+					return false;
+				}
 			}
 		}
 
@@ -351,6 +364,22 @@ namespace BExplorer.Shell {
 				}
 				catch {
 					return false;
+				}
+			}
+		}
+
+		public bool IsImage {
+			get {
+				switch (this.Extension.ToLowerInvariant()) {
+					case ".jpg":
+					case ".png":
+					case ".jpeg":
+					case ".gif":
+					case ".tiff":
+					case ".bmp":
+						return true;
+					default:
+						return false;
 				}
 			}
 		}

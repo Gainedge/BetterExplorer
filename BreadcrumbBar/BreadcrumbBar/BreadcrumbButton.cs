@@ -183,7 +183,7 @@ namespace Odyssey.Controls {
 				var data = this.DataContext as ShellItem;
 				if (data != null && data.ParsingName != KnownFolders.Computer.ParsingName && data.ParsingName != KnownFolders.Desktop.ParsingName && !data.IsSearchFolder) {
 					var aditionalItems = new List<ShellItem>();
-					ShellItem.IsCareForMessageHandle = false;
+          ShellItem.IsCareForMessageHandle = false;
 					foreach (var item in data) {
 						try {
 							if (item.IsFolder) {
@@ -192,7 +192,7 @@ namespace Odyssey.Controls {
 						}
 						catch { }
 					}
-					ShellItem.IsCareForMessageHandle = true;
+          ShellItem.IsCareForMessageHandle = true;
 					this.ItemsSource = aditionalItems;
 				}
 			}));

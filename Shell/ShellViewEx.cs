@@ -114,7 +114,7 @@ namespace BExplorer.Shell {
 		/// <summary> The folder being navigated to. </summary>
 		public ShellItem Folder { get; private set; }
 
-		/*
+ 		/*
 		/// <summary> Gets/sets a value indicating whether the navigation should be canceled. </summary>
 		[Obsolete("Never used")]
 		public bool Cancel { get; private set; }
@@ -1984,12 +1984,15 @@ namespace BExplorer.Shell {
 
               if (nkd.wVKey == (short)Keys.F2 && !(System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.TextBox)) {
                 RenameSelectedItem();
-								switch (nkd.wVKey) {
-									case (short)Keys.F2:
-										RenameSelectedItem();
-										break;
+              }
 
+							if (!ItemForRealName_IsAny && !this.IsRenameInProgress) {
+								switch (nkd.wVKey) {
 									case (short)Keys.Enter:
+                    if (this._IsCanceledOperation) {
+                      //this.IsRenameInProgress = false;
+                      break;
+                    }
 										var selectedItem = this.GetFirstSelectedItem();
 										if (selectedItem.IsFolder) {
 											Navigate(selectedItem);
@@ -2500,7 +2503,8 @@ namespace BExplorer.Shell {
       var removedItems = this.Items.Except(newItems, new ShellItemComparer());
       foreach (var obj in removedItems.ToArray()) {
         Items.Remove(obj);
-        this.SetSortCollumn(this.LastSortedColumnIndex, this.LastSortOrder, false);
+        var col = this.Collumns.Where(w => w.ID == this.LastSortedColumnId).SingleOrDefault();
+        this.SetSortCollumn(col, this.LastSortOrder, false);
         if (this.IsGroupsEnabled) {
           this.SetGroupOrder(false);
         }
@@ -2831,7 +2835,6 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		/*
 		/// <summary> Runs an application as an administrator. </summary>
 		/// <param name="ExePath"> The path of the application. </param>
 		public static void RunExeAsAdmin(string ExePath) {
@@ -2842,7 +2845,6 @@ namespace BExplorer.Shell {
 				Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
 			});
 		}
-		*/
 
 		public void SelectAll() {
 			var item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
@@ -2934,7 +2936,7 @@ namespace BExplorer.Shell {
     public void SetSortCollumn(Collumns column, SortOrder Order, Boolean reverseOrder = true) {
 			try {
 				var selectedItems = this.SelectedItems.ToArray();
-				if (colIndex == this.LastSortedColumnIndex && reverseOrder)
+				if (column.ID == this.LastSortedColumnId && reverseOrder)
 				{
 					// Reverse the current sort direction for this column.
 					this.LastSortOrder = this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending;
@@ -3502,11 +3504,11 @@ namespace BExplorer.Shell {
 			});
 		}
 
-		/*
+
 		public static void StartCompartabilityWizzard() {
 			Process.Start("msdt.exe", "-id PCWDiagnostic");
 		}
-		*/
+
 
 		public void CleanupDrive() {
 			string DriveLetter = "";
@@ -3582,11 +3584,10 @@ namespace BExplorer.Shell {
 			return new ShellLibrary(endname, false);
 		}
 
-		/*
+
 		private void SetLVBackgroundImage(Bitmap bitmap) {
 			Helpers.SetListViewBackgroundImage(this.LVHandle, bitmap);
 		}
-		*/
 
 		public void SetFolderIcon(string wszPath, string wszExpandedIconPath, int iIcon) {
 			var fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS() { iIconIndex = iIcon, cchIconFile = 0, dwMask = Shell32.FCSM_ICONFILE };
@@ -3650,6 +3651,11 @@ namespace BExplorer.Shell {
 			var item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = 0 };
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, -1, ref item);
 			this.Focus();
+		}
+
+		private void DeselectItemByIndex(int index) {
+			LVITEM item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = 0 };
+			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, index, ref item);
 		}
 
 		/*
@@ -4050,19 +4056,6 @@ namespace BExplorer.Shell {
 
 		#endregion
 
-
-		public void OpenShareUI() {
-			HResult hr = Shell32.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(this.GetFirstSelectedItem().ParsingName.Replace(@"\\", @"\")));
-		}
-
-		public void MapDrive(IntPtr intPtr, string path) {
-			Shell32.MapDrive(intPtr, path);
-		}
-
-		public void DisconnectDrive(IntPtr handle, int type) {
-			Shell32.WNetDisconnectDialog(handle, type);
-		}
-
 		#region IDropSource Members
 
 		public new HResult QueryContinueDrag(bool fEscapePressed, int grfKeyState) {
@@ -4092,7 +4085,5 @@ namespace BExplorer.Shell {
 		}
 
 		#endregion
-		*/
-
 	}
 }

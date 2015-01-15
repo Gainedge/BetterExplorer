@@ -103,7 +103,7 @@ namespace BExplorer.Shell.Interop {
 
 		}
 
-		/*
+
 		public static void SetListViewBackgroundImage(IntPtr lvHandle, Bitmap bitmap) {
 
 			var lvBkImage = new LVBKIMAGE();
@@ -127,7 +127,6 @@ namespace BExplorer.Shell.Interop {
 			Marshal.FreeHGlobal(lbkImageptr);
 
 		}
-		*/
 
 	}
 }
