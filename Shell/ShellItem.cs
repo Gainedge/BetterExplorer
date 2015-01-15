@@ -442,13 +442,12 @@ namespace BExplorer.Shell {
 			IEnumIDList enumId = GetIEnumIDList(folder, filter);
 			uint count;
 			IntPtr pidl;
-			HResult result;
 
 			if (enumId == null) {
 				yield break;
 			}
 
-			result = enumId.Next(1, out pidl, out count);
+			HResult result = enumId.Next(1, out pidl, out count);
 			while (result == HResult.S_OK) {
 				yield return new ShellItem(this, pidl);
 				Shell32.ILFree(pidl);

@@ -1184,7 +1184,14 @@ namespace BetterExplorer {
 		#region Application Tools
 
 		private void btnRunAsAdmin_Click(object sender, RoutedEventArgs e) {
-			ShellView.RunExeAsAdmin(ShellListView.GetFirstSelectedItem().ParsingName);
+			//ShellView.RunExeAsAdmin(ShellListView.GetFirstSelectedItem().ParsingName);
+			var FileName = ShellListView.GetFirstSelectedItem().ParsingName;
+			Process.Start(new ProcessStartInfo {
+				FileName = FileName,
+				Verb = "runas",
+				UseShellExecute = true,
+				Arguments = String.Format("/env /user:Administrator \"{0}\"", FileName),
+			});
 		}
 
 		private void btnPin_Click(object sender, RoutedEventArgs e) {
@@ -2493,7 +2500,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnDisconectDrive_Click(object sender, RoutedEventArgs e) {
-			this.ShellListView.DisconnectDrive(this.Handle, 1);
+			BExplorer.Shell.Interop.Shell32.WNetDisconnectDialog(this.Handle, 1);
 		}
 
 		private void Button_Click_4(object sender, RoutedEventArgs e) {

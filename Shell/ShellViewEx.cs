@@ -519,7 +519,9 @@ namespace BExplorer.Shell {
 		private Thread _IconCacheLoadingThread;
 		private Bitmap ExeFallBack16;
 		private Bitmap ExeFallBack256;
-		private Bitmap ExeFallBack32;
+
+		//private Bitmap ExeFallBack32;
+
 		private Bitmap ExeFallBack48;
 		private int ShieldIconIndex;
 		private int _SharedIconIndex;
@@ -2809,6 +2811,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		/// <summary> Runs an application as an administrator. </summary>
 		/// <param name="ExePath"> The path of the application. </param>
 		public static void RunExeAsAdmin(string ExePath) {
@@ -2819,6 +2822,7 @@ namespace BExplorer.Shell {
 				Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
 			});
 		}
+		*/
 
 		public void SelectAll() {
 			var item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
@@ -3467,11 +3471,11 @@ namespace BExplorer.Shell {
 			});
 		}
 
-
+		/*
 		public static void StartCompartabilityWizzard() {
 			Process.Start("msdt.exe", "-id PCWDiagnostic");
 		}
-
+		*/
 
 		public void CleanupDrive() {
 			string DriveLetter = "";
@@ -3547,10 +3551,11 @@ namespace BExplorer.Shell {
 			return new ShellLibrary(endname, false);
 		}
 
-
+		/*
 		private void SetLVBackgroundImage(Bitmap bitmap) {
 			Helpers.SetListViewBackgroundImage(this.LVHandle, bitmap);
 		}
+		*/
 
 		public void SetFolderIcon(string wszPath, string wszExpandedIconPath, int iIcon) {
 			var fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS() { iIconIndex = iIcon, cchIconFile = 0, dwMask = Shell32.FCSM_ICONFILE };
@@ -3616,10 +3621,12 @@ namespace BExplorer.Shell {
 			this.Focus();
 		}
 
+		/*
 		private void DeselectItemByIndex(int index) {
 			LVITEM item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = 0 };
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, index, ref item);
 		}
+		*/
 
 		public Boolean IsFocusAllowed = true;
 
@@ -4009,9 +4016,11 @@ namespace BExplorer.Shell {
 			Shell32.MapDrive(intPtr, path);
 		}
 
+		/*
 		public void DisconnectDrive(IntPtr handle, int type) {
 			Shell32.WNetDisconnectDialog(handle, type);
 		}
+		*/
 
 		/*
 		#region IDropSource Members
