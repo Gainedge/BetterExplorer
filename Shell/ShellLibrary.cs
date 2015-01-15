@@ -444,9 +444,19 @@ namespace BExplorer.Shell {
 			nativeShellLibrary.LoadLibraryFromItem(nativeShellItem, flags);
 			var library = new ShellLibrary(nativeShellLibrary);
 			library.ComInterface = (IShellItem)nativeShellItem;
-
 			return library;
 		}
+
+    public static ShellLibrary FromShellItem(ShellItem shellItem, bool isReadOnly) {
+      var nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
+      var flags = isReadOnly ? AccessModes.Read : AccessModes.ReadWrite;
+
+      nativeShellLibrary.LoadLibraryFromItem(shellItem.ComInterface, flags);
+      var library = new ShellLibrary(nativeShellLibrary);
+      library.ComInterface = (IShellItem)shellItem.ComInterface;
+      library.Name = shellItem.DisplayName;
+      return library;
+    }
 
 		/// <summary>
 		/// Load the library using a number of options

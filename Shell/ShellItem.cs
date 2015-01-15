@@ -146,6 +146,7 @@ namespace BExplorer.Shell {
 
 		/// <summary>Add Documentation</summary>
 		public String CachedParsingName { get; private set; }
+    public String CachedDisplayName { get; private set; }
 
 		/// <summary>
 		/// Gets the thumbnail of the ShellObject.
@@ -160,7 +161,18 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets the underlying <see cref="IShellItem"/> COM interface.
 		/// </summary>
-		internal IShellItem ComInterface { get { return m_ComInterface; } set { m_ComInterface = value; } }
+		internal IShellItem ComInterface { 
+      get {
+        if (m_ComInterface == null && (File.Exists(this.CachedParsingName) || Directory.Exists(this.CachedParsingName))) {
+          var com = new ShellItem(this.CachedParsingName).ComInterface;
+          return com;
+        }
+        return m_ComInterface; 
+      } 
+      set { 
+        m_ComInterface = value; 
+      } 
+    }
 
 		/// <summary>
 		/// Gets the item's parsing name.
@@ -335,12 +347,12 @@ namespace BExplorer.Shell {
 		/// <exception cref="System.ArgumentException">
 		/// path contains one or more of the invalid characters defined in System.IO.Path.GetInvalidPathChars().
 		/// </exception>
-		public String Extension { get { return Path.GetExtension(this.ParsingName).ToLowerInvariant(); } }
+		public String Extension { get { return Path.GetExtension(this.CachedParsingName ?? this.ParsingName).ToLowerInvariant(); } }
 
 		public bool IsDrive {
 			get {
 				try {
-					return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) != DriveType.Network;
+          return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(this.CachedParsingName ?? this.ParsingName) != DriveType.Network;
 				}
 				catch {
 					return false;
@@ -350,7 +362,7 @@ namespace BExplorer.Shell {
 
 		internal bool IsNetworkPath {
 			get {
-				return Shell32.PathIsNetworkPath(this.ParsingName);
+        return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
 			}
 		}
 
@@ -358,7 +370,7 @@ namespace BExplorer.Shell {
 			get {
 				try {
 					//return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) == DriveType.Network;
-					return Shell32.PathIsNetworkPath(this.ParsingName);
+          return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
 				}
 				catch {
 					return false;
@@ -377,7 +389,6 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		[Obsolete("Not Used", true)]
 		public bool IsImage {
 			get {
 				switch (this.Extension.ToLowerInvariant()) {
@@ -843,6 +854,7 @@ namespace BExplorer.Shell {
 		private void Constructor_Helper() {
 			this.IconType = GetIconType();
 			this.CachedParsingName = this.ParsingName;
+      this.CachedDisplayName = this.DisplayName;
 			this.OverlayIconIndex = -1;
 
 		}
@@ -990,6 +1002,7 @@ namespace BExplorer.Shell {
 		public ShellItem(IShellItem comInterface) {
 			ComInterface = comInterface;
 			this.CachedParsingName = this.ParsingName;
+      this.CachedDisplayName = this.DisplayName;
 			this.OverlayIconIndex = -1;
 		}
 

@@ -275,8 +275,11 @@ namespace BetterExplorer {
 
 			try {
 				foreach (Collumns item in ShellListView.Collumns.Where(x => x != null)) {
-					var IsChecked1 = (item.pkey.fmtid == ShellListView.Collumns[ShellListView.LastSortedColumnIndex].pkey.fmtid) && (item.pkey.pid == ShellListView.Collumns[ShellListView.LastSortedColumnIndex].pkey.pid);
-					btnSort.Items.Add(Utilities.Build_MenuItem(item.Name, item, checkable: true, isChecked: IsChecked1, GroupName: "GR2", onClick: mi_Click));
+          var lastSortedColumn = ShellListView.Collumns.Where(w => w.ID == this.ShellListView.LastSortedColumnId).SingleOrDefault();
+          if (lastSortedColumn != null) {
+            var IsChecked1 = (item.pkey.fmtid == lastSortedColumn.pkey.fmtid) && (item.pkey.pid == lastSortedColumn.pkey.pid);
+            btnSort.Items.Add(Utilities.Build_MenuItem(item.Name, item, checkable: true, isChecked: IsChecked1, GroupName: "GR2", onClick: mi_Click));
+          }
 					var IsCheckable2 = ShellListView.LastGroupCollumn != null && (item.pkey.fmtid == ShellListView.LastGroupCollumn.pkey.fmtid) && (item.pkey.pid == ShellListView.LastGroupCollumn.pkey.pid);
 					btnGroup.Items.Add(Utilities.Build_MenuItem(item.Name, item, checkable: true, isChecked: IsCheckable2, GroupName: "GR3", onClick: mig_Click));
 				}
@@ -359,13 +362,13 @@ namespace BetterExplorer {
 
 		void misd_Click(object sender, RoutedEventArgs e) {
 			foreach (var item in btnSort.Items.OfType<MenuItem>().Where(item => item.IsChecked && item != (sender as MenuItem))) {
-				ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), WIN.Forms.SortOrder.Descending);
+				ShellListView.SetSortCollumn((Collumns)item.Tag, WIN.Forms.SortOrder.Descending);
 			}
 		}
 
 		void misa_Click(object sender, RoutedEventArgs e) {
 			foreach (var item in btnSort.Items.OfType<MenuItem>().Where(item => item.IsChecked && item != (sender as MenuItem))) {
-				ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), WIN.Forms.SortOrder.Ascending);
+				ShellListView.SetSortCollumn((Collumns)item.Tag, WIN.Forms.SortOrder.Ascending);
 			}
 		}
 
@@ -2193,7 +2196,7 @@ namespace BetterExplorer {
 			var ascitem = (MenuItem)parentButton.Items[parentButton.Items.IndexOf(misa)];
 
 			var Sort = ascitem.IsChecked ? WIN.Forms.SortOrder.Ascending : WIN.Forms.SortOrder.Descending;
-			ShellListView.SetSortCollumn(ShellListView.Collumns.IndexOf((Collumns)item.Tag), Sort);
+			ShellListView.SetSortCollumn((Collumns)item.Tag, Sort);
 		}
 
 		void misng_Click(object sender, RoutedEventArgs e) {
@@ -4691,7 +4694,7 @@ namespace BetterExplorer {
 			var button = sender as DropDownButton;
 			foreach (MenuItem item in button.Items) {
 				var column = item.Tag as Collumns;
-				if (column == this.ShellListView.Collumns[this.ShellListView.LastSortedColumnIndex]) {
+				if (column == this.ShellListView.Collumns.Where(w => w.ID == this.ShellListView.LastSortedColumnId).SingleOrDefault()) {
 					item.IsChecked = true;
 					break;
 				}

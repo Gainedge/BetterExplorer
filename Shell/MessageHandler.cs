@@ -160,7 +160,8 @@ namespace BExplorer.Shell {
 									if (theItem != null) {
 										this._ParentShellView.Items.Remove(theItem);
 										if (this._ParentShellView.IsGroupsEnabled) this._ParentShellView.SetGroupOrder(false);
-										this._ParentShellView.SetSortCollumn(this._ParentShellView.LastSortedColumnIndex, this._ParentShellView.LastSortOrder, false);
+                    var col = this._ParentShellView.AllAvailableColumns.Where(w => w.ID == this._ParentShellView.LastSortedColumnId).SingleOrDefault();
+										this._ParentShellView.SetSortCollumn(col, this._ParentShellView.LastSortOrder, false);
 									}
 								}
 								break;
@@ -223,11 +224,10 @@ namespace BExplorer.Shell {
 
 						//TODO: Should this be and Else If(...)?
 						if (info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER || info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEITEM) {
-							this._ParentShellView.IsRenameInProgress = false;
-
 							ShellItem obj1 = new ShellItem(info.Item1), obj2 = new ShellItem(info.Item2);
 							if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName))
 								this._ParentShellView.UpdateItem(obj1, obj2);
+              this._ParentShellView.IsRenameInProgress = false;
 						}
 
 						if (Notifications.NotificationsReceived.Contains(info))

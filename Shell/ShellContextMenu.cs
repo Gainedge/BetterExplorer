@@ -271,10 +271,12 @@ namespace BExplorer.Shell {
               this._ShellView.SetGroupOrder();
               break;
             case 247:
-              this._ShellView.SetSortCollumn(this._ShellView.LastSortedColumnIndex, System.Windows.Forms.SortOrder.Ascending);
+              var colasc = this._ShellView.Collumns.Where(w => w.ID == this._ShellView.LastSortedColumnId).SingleOrDefault();
+              this._ShellView.SetSortCollumn(colasc, System.Windows.Forms.SortOrder.Ascending);
               break;
             case 248:
-              this._ShellView.SetSortCollumn(this._ShellView.LastSortedColumnIndex, System.Windows.Forms.SortOrder.Descending);
+              var coldesc = this._ShellView.Collumns.Where(w => w.ID == this._ShellView.LastSortedColumnId).SingleOrDefault();
+              this._ShellView.SetSortCollumn(coldesc, System.Windows.Forms.SortOrder.Descending);
               break;
             case 249:
               this._ShellView.PasteAvailableFiles();
@@ -318,7 +320,7 @@ namespace BExplorer.Shell {
               break;
           }
           if (command >= 262 && command <= 262 + this._ShellView.Collumns.Count) {
-            this._ShellView.SetSortCollumn(command - 262, SortOrder.Ascending);
+            this._ShellView.SetSortCollumn(this._ShellView.Collumns[command - 262], SortOrder.Ascending);
           } else if (command > 260) {
             if (!this._ShellView.IsGroupsEnabled)
               this._ShellView.EnableGroups();
@@ -465,7 +467,7 @@ namespace BExplorer.Shell {
       this.GenerateMenuItem(sortMenu, "Ascending", 247, this._ShellView.LastSortOrder == System.Windows.Forms.SortOrder.Ascending);
       this.GenerateSeparator(sortMenu);
       foreach (Collumns collumn in collist) {
-        this.GenerateMenuItem(sortMenu, collumn.Name, colID--, collumn == this._ShellView.Collumns[this._ShellView.LastSortedColumnIndex]);
+        this.GenerateMenuItem(sortMenu, collumn.Name, colID--, collumn == this._ShellView.Collumns.Where(w => w.ID == this._ShellView.LastSortedColumnId).SingleOrDefault());
       }
       this.GenerateMenuItem(groupMenu, "Descending", 246, this._ShellView.LastGroupOrder == System.Windows.Forms.SortOrder.Descending);
       this.GenerateMenuItem(groupMenu, "Ascending", 245, this._ShellView.LastGroupOrder == System.Windows.Forms.SortOrder.Ascending);

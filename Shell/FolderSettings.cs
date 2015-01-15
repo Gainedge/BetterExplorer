@@ -13,7 +13,7 @@ namespace BExplorer.Shell {
 		public ShellViewStyle View { get; set; }
 		public int IconSize { get; set; }
 		/// <summary>The Column to short</summary>
-		public Int32 SortColumn { get; set; }
+		public String SortColumn { get; set; }
 		/// <summary>The sort direction</summary>
 		public SortOrder SortOrder { get; set; }
 		public String GroupCollumn { get; set; }

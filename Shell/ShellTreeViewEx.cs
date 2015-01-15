@@ -660,7 +660,7 @@ namespace BExplorer.Shell {
 
 							itemNode.Nodes.Add(this._EmptyItemString);
 							if (item.ParsingName.EndsWith(".library-ms")) {
-								var library = ShellLibrary.Load(item.DisplayName, false);
+								var library = ShellLibrary.Load(Path.GetFileNameWithoutExtension(item.ParsingName), false);
 								if (library.IsPinnedToNavigationPane) {
 									nodesTemp.Add(itemNode);
 								}
