@@ -144,7 +144,7 @@ namespace BExplorer.Shell {
 
 		/// <summary>Add Documentation</summary>
 		public String CachedParsingName { get; private set; }
-    public String CachedDisplayName { get; private set; }
+		public String CachedDisplayName { get; private set; }
 
 		/// <summary>
 		/// Gets the thumbnail of the ShellObject.
@@ -159,18 +159,18 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets the underlying <see cref="IShellItem"/> COM interface.
 		/// </summary>
-		internal IShellItem ComInterface { 
-      get {
-        if (m_ComInterface == null && (File.Exists(this.CachedParsingName) || Directory.Exists(this.CachedParsingName))) {
-          var com = new ShellItem(this.CachedParsingName).ComInterface;
-          return com;
-        }
-        return m_ComInterface; 
-      } 
-      set { 
-        m_ComInterface = value; 
-      } 
-    }
+		internal IShellItem ComInterface {
+			get {
+				if (m_ComInterface == null && (File.Exists(this.CachedParsingName) || Directory.Exists(this.CachedParsingName))) {
+					var com = new ShellItem(this.CachedParsingName).ComInterface;
+					return com;
+				}
+				return m_ComInterface;
+			}
+			set {
+				m_ComInterface = value;
+			}
+		}
 
 		/// <summary>
 		/// Gets the item's parsing name.
@@ -191,17 +191,17 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets a PIDL representing the item.
 		/// </summary>
-    public IntPtr Pidl {
-      get {
+		public IntPtr Pidl {
+			get {
 
-        if (RunningVista)
-          return ComInterface != null ? Shell32.SHGetIDListFromObject(ComInterface) : IntPtr.Zero;
-        else
-          return ((Interop.VistaBridge.ShellItemImpl)ComInterface).Pidl;
+				if (RunningVista)
+					return ComInterface != null ? Shell32.SHGetIDListFromObject(ComInterface) : IntPtr.Zero;
+				else
+					return ((Interop.VistaBridge.ShellItemImpl)ComInterface).Pidl;
 
-        //return GetIDListFromObject(ComInterface);
-      }
-    }
+				//return GetIDListFromObject(ComInterface);
+			}
+		}
 
 		[Obsolete("Not Used", true)]
 		public bool IsBrowsable {
@@ -331,7 +331,7 @@ namespace BExplorer.Shell {
 		public bool IsDrive {
 			get {
 				try {
-          return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(this.CachedParsingName ?? this.ParsingName) != DriveType.Network;
+					return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(this.CachedParsingName ?? this.ParsingName) != DriveType.Network;
 				}
 				catch {
 					return false;
@@ -341,7 +341,7 @@ namespace BExplorer.Shell {
 
 		internal bool IsNetworkPath {
 			get {
-        return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
+				return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
 			}
 		}
 
@@ -349,7 +349,7 @@ namespace BExplorer.Shell {
 			get {
 				try {
 					//return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) == DriveType.Network;
-          return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
+					return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
 				}
 				catch {
 					return false;
@@ -546,8 +546,8 @@ namespace BExplorer.Shell {
 					var guid = new Guid("000214fa-0000-0000-c000-000000000046");
 					uint res = 0;
 					ishellfolder = this.Parent.GetIShellFolder();
-					IntPtr[] pidls = new IntPtr[1];
-					pidls[0] = Shell32.ILFindLastID(this.Pidl);
+					var pidls = new IntPtr[1] { Shell32.ILFindLastID(this.Pidl) };
+					//pidls[0] = Shell32.ILFindLastID(this.Pidl);
 					ishellfolder.GetUIObjectOf(
 						IntPtr.Zero,
 						1,
@@ -848,7 +848,7 @@ namespace BExplorer.Shell {
 		private void Constructor_Helper() {
 			this.IconType = GetIconType();
 			this.CachedParsingName = this.ParsingName;
-      this.CachedDisplayName = this.DisplayName;
+			this.CachedDisplayName = this.DisplayName;
 			this.OverlayIconIndex = -1;
 
 		}
@@ -955,7 +955,7 @@ namespace BExplorer.Shell {
 		public ShellItem(IShellItem comInterface) {
 			ComInterface = comInterface;
 			this.CachedParsingName = this.ParsingName;
-      this.CachedDisplayName = this.DisplayName;
+			this.CachedDisplayName = this.DisplayName;
 			this.OverlayIconIndex = -1;
 		}
 

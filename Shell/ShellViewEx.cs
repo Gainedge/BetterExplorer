@@ -141,27 +141,6 @@ namespace BExplorer.Shell {
 		}
 	}
 
-	/*
-	public class ItemDisplayedEventArgs : EventArgs, IDisposable {
-
-	  public ShellItem DisplayedItem { get; private set; }
-
-	  public int DisplayedItemIndex { get; private set; }
-
-	  public ItemDisplayedEventArgs(ShellItem item, int index) {
-	  this.DisplayedItem = item;
-	  this.DisplayedItemIndex = index;
-	  }
-
-	  public void Dispose() {
-	  if (DisplayedItem != null) {
-		DisplayedItem.Dispose();
-		DisplayedItem = null;
-	  }
-	  }
-	}
-	*/
-
 	public enum ItemUpdateType {
 		Renamed,
 		Created,
@@ -210,19 +189,7 @@ namespace BExplorer.Shell {
 
 		#region Event Handler
 
-		/*
-		/// <summary> Occurs when the control gains focus </summary>
-		public new event EventHandler GotFocus;
-		*/
-
-		//public event EventHandler<ItemDisplayedEventArgs> ItemDisplayed;
-
 		public event EventHandler<NavigatingEventArgs> Navigating;
-
-		/*
-		/// <summary> Occurs when the control loses focus </summary>
-		public new event EventHandler LostFocus;
-		*/
 
 		/// <summary> Occurs when the <see cref="ShellView" /> control navigates to a new folder. </summary>
 		public event EventHandler<NavigatedEventArgs> Navigated;
@@ -250,11 +217,6 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public event MouseEventHandler ColumnHeaderRightClick;
 
-		/*
-		/// <summary> Raised whenever a key is pressed </summary>
-		public new event KeyEventHandler KeyDown;
-		*/
-
 		/// <summary>
 		/// Raised whenever a key is pressed, with the intention of doing a key jump. Please use
 		/// <see cref="KeyDown" /> to catch when any key is pressed.
@@ -269,37 +231,6 @@ namespace BExplorer.Shell {
 		/// <summary> Raised when the timer finishes for the Key Jump timer. </summary>
 		public event EventHandler KeyJumpTimerDone;
 
-		/*
-		private void OnViewChanged(ViewChangedEventArgs e) {
-		  if (ViewStyleChanged != null) {
-		  ViewStyleChanged(this, e);
-		  }
-		}
-		*/
-
-		/*
-		private void OnNavigated(NavigatedEventArgs e) {
-		  if (Navigated != null) {
-		  Navigated(this, e);
-		  }
-		}
-		*/
-
-		/*
-		private void OnItemDisplayed(ShellItem item, int index) {
-		  if (ItemDisplayed != null) {
-		  ItemDisplayed(this, new ItemDisplayedEventArgs(item, index));
-		  }
-		}*/
-
-		/*
-		/// <summary> Triggers the Navigating event. </summary>
-		[DebuggerStepThrough()]
-		public virtual void OnNavigating(NavigatingEventArgs ea) {
-		  if (Navigating != null)
-		  Navigating(this, ea);
-		}
-		*/
 		#endregion Event Handler
 
 		#region Public Members
@@ -3406,7 +3337,6 @@ namespace BExplorer.Shell {
 				return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
 			else
 				return r.IntersectsWith(this.ClientRectangle);
-
 		}
 
 		public void _OverlaysLoadingThreadRun() {
@@ -3503,6 +3433,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		[Obsolete("Always fails at [var index =] and NEVER does anything. Fix or REMOVE", true)]
 		public void _UpdateSubitemValuesThreadRun() {
 			while (true) {
 				resetEvent.WaitOne();
