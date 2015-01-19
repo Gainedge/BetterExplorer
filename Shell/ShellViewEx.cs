@@ -3433,7 +3433,6 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		[Obsolete("Always fails at [var index =] and NEVER does anything. Fix or REMOVE", true)]
 		public void _UpdateSubitemValuesThreadRun() {
 			while (true) {
 				resetEvent.WaitOne();
