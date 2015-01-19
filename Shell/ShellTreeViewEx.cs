@@ -430,7 +430,6 @@ namespace BExplorer.Shell {
 				var visible = true;
 				var pidl = IntPtr.Zero;
 
-				//! Why do we have an invoke here -> Because we have TreeNode.FromHandle that accept the control inside thread
 				this.Invoke((Action)(() => {
 					node = TreeNode.FromHandle(ShellTreeView, handle);
 					treeHandle = this.ShellTreeView.Handle;
@@ -439,7 +438,7 @@ namespace BExplorer.Shell {
 						pidl = ((ShellItem)node.Tag).Pidl;
 					}
 				}));
-
+				
 				if (!visible || pidl == IntPtr.Zero)
 					continue;
 
