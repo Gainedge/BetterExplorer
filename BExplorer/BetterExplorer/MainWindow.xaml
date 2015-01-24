@@ -3097,7 +3097,7 @@
 						 Placement="AbsolutePoint"
 						 AllowsTransparency="True" PopupAnimation="None">
       <Grid Grid.Row="1" Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Top" >
-        <TextBox x:Name="txtEditor" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" AllowDrop="False" IsTabStop="False" Style="{StaticResource TextBoxStyle1}" >
+        <TextBox x:Name="txtEditor" TextWrapping="Wrap" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top" AllowDrop="False" IsTabStop="False" Style="{StaticResource TextBoxStyle1}" FocusManager.IsFocusScope="True">
         </TextBox>
       </Grid>
     </controls:AirspacePopup>

@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using BExplorer.Shell.Interop;
 
 namespace BExplorer.Shell
 {
@@ -27,6 +28,7 @@ namespace BExplorer.Shell
 	{
 		private ShellItem _ShellItem;
 		private DispatcherTimer DelayTimer = new DispatcherTimer(DispatcherPriority.Background);
+    private ShellView _View { get; set; }
 
 		public int Type { get; set; }
 		public ShellItem CurrentItem
@@ -46,10 +48,11 @@ namespace BExplorer.Shell
 		public Int32 ItemIndex { get; set; }
 		public String Contents {get; set;}
 		
-		public ToolTip()
+		public ToolTip(ShellView view)
 		{
 			InitializeComponent();
 			this.DataContext = this;
+      this._View = view;
 			DelayTimer.Interval = TimeSpan.FromMilliseconds(700);
 			DelayTimer.Tick += DelayTimer_Tick;
 		}
@@ -74,7 +77,18 @@ namespace BExplorer.Shell
 				RaisePropertyChanged("Contents");
 				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(() =>
 				{
-					this.Show();
+          var lvi = new LVITEMINDEX();
+          lvi.iItem = this.ItemIndex;
+          lvi.iGroup = this._View.GetGroupIndex(this.ItemIndex);
+          var bounds = new User32.RECT();
+          User32.SendMessage(this._View.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref bounds);
+          var rect = new System.Drawing.Rectangle(bounds.Left, bounds.Top, bounds.Right - bounds.Left, bounds.Bottom - bounds.Top);
+          var mousePos = this._View.PointToClient(System.Windows.Forms.Cursor.Position);
+          var isInsideItem = rect.Contains(mousePos);
+          if (isInsideItem)
+            this.Show();
+          else
+            this.Hide();
 				}));
 			});
 			t.SetApartmentState(ApartmentState.STA);

@@ -699,7 +699,7 @@ namespace BExplorer.Shell {
 				else
 					return false;
 			}
-			if ((Control.ModifierKeys & Keys.Control) == Keys.Control) {
+			if ((Control.ModifierKeys & Keys.Control) == Keys.Control && !(System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.TextBox)) {
 				switch (e) {
 					case Keys.A:
 						SelectAll();
@@ -1939,7 +1939,7 @@ namespace BExplorer.Shell {
 								RenameSelectedItem();
 							}
 
-							if (!ItemForRealName_IsAny && !this.IsRenameInProgress) {
+              if (!ItemForRealName_IsAny && !this.IsRenameInProgress && !(System.Windows.Input.Keyboard.FocusedElement is System.Windows.Controls.TextBox)) {
 								switch (nkd.wVKey) {
 									case (short)Keys.Enter:
 										if (this._IsCanceledOperation) {
@@ -2454,36 +2454,39 @@ namespace BExplorer.Shell {
 		void _UnvalidateTimer_Tick(object sender, EventArgs e) {
 			var newItems = this.CurrentFolder.Where(w => this.ShowHidden ? true : w.IsHidden == this.ShowHidden).ToArray();
 			var removedItems = this.Items.Except(newItems, new ShellItemComparer());
-			foreach (var obj in removedItems.ToArray()) {
-				Items.Remove(obj);
-				var col = this.Collumns.Where(w => w.ID == this.LastSortedColumnId).SingleOrDefault();
-				this.SetSortCollumn(col, this.LastSortOrder, false);
-				if (this.IsGroupsEnabled) {
-					this.SetGroupOrder(false);
-				}
-				obj.Dispose();
-				//if (this.ItemUpdated != null)
-				//	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
-			}
-			foreach (var obj in newItems) {
-				F.Application.DoEvents();
-				var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
-				if (existingItem == null) {
-					if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
-						var itemIndex = InsertNewItem(obj);
-						//if (this.ItemUpdated != null)
-						//	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
-					}
-					else {
-						var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
-						if (affectedItem != null) {
-							var index = this.Items.IndexOf(affectedItem);
-							this.RefreshItem(index, true);
-						}
-					}
-				}
-				obj.Dispose();
-			}
+      try {
+        foreach (var obj in removedItems.ToArray()) {
+          Items.Remove(obj);
+          var col = this.Collumns.Where(w => w.ID == this.LastSortedColumnId).SingleOrDefault();
+          this.SetSortCollumn(col, this.LastSortOrder, false);
+          if (this.IsGroupsEnabled) {
+            this.SetGroupOrder(false);
+          }
+          obj.Dispose();
+          //if (this.ItemUpdated != null)
+          //	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Deleted, obj, null, -1));
+        }
+        foreach (var obj in newItems) {
+          F.Application.DoEvents();
+          var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
+          if (existingItem == null) {
+            if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
+              var itemIndex = InsertNewItem(obj);
+              //if (this.ItemUpdated != null)
+              //	this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj, null, itemIndex));
+            } else {
+              var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
+              if (affectedItem != null) {
+                var index = this.Items.IndexOf(affectedItem);
+                this.RefreshItem(index, true);
+              }
+            }
+          }
+          obj.Dispose();
+        }
+      } catch (Exception) {
+
+      }
 			newItems = null;
 			removedItems = null;
 			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -2510,6 +2513,13 @@ namespace BExplorer.Shell {
 		#endregion Overrides
 
 		#region Public Methods
+
+		public int GetGroupIndex(int itemIndex) {
+			if (itemIndex == -1 || itemIndex >= this.Items.Count) return 0;
+			var item = this.Items[itemIndex];
+			var Found = this.Groups.FirstOrDefault(x => x.Items.Contains(item));
+			return Found == null ? 0 : Found.Index;
+		}
 
 		public void OpenShareUI() {
 			HResult hr = Shell32.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(this.GetFirstSelectedItem().ParsingName.Replace(@"\\", @"\")));
@@ -3014,7 +3024,7 @@ namespace BExplorer.Shell {
 				}
 			}
 			if (ToolTip == null)
-				this.ToolTip = new ToolTip();
+				this.ToolTip = new ToolTip(this);
 
 			var folderSettings = new FolderSettings();
 			var isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
@@ -3433,7 +3443,6 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		[Obsolete("Always fails at [var index =] and NEVER does anything. Fix or REMOVE", true)]
 		public void _UpdateSubitemValuesThreadRun() {
 			while (true) {
 				resetEvent.WaitOne();
@@ -3722,13 +3731,6 @@ namespace BExplorer.Shell {
 			this._OverlaysLoadingThread.Start();
 			this._UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
 			this._UpdateSubitemValuesThread.Start();
-		}
-
-		private int GetGroupIndex(int itemIndex) {
-			if (itemIndex == -1 || itemIndex >= this.Items.Count) return 0;
-			var item = this.Items[itemIndex];
-			var Found = this.Groups.FirstOrDefault(x => x.Items.Contains(item));
-			return Found == null ? 0 : Found.Index;
 		}
 
 		/// <summary>

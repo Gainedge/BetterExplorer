@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -13,6 +14,17 @@ using BExplorer.Shell.Interop;
 using F = System.Windows.Forms;
 
 namespace BExplorer.Shell {
+
+  public class NodeSorter : IComparer {
+    public int Compare(object x, object y) {
+      TreeNode tx = (TreeNode)x;
+      TreeNode ty = (TreeNode)y;
+      if (tx.Tag == null || ty.Tag == null)
+        return 0;
+
+      return (tx.Tag as ShellItem).DisplayName.CompareTo((ty.Tag as ShellItem).DisplayName);
+    }
+  }
 
 	public partial class ShellTreeViewEx : UserControl {
 
@@ -146,82 +158,97 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		private void SelectItem(ShellItem item) {
-			if (item.IsSearchFolder)
-				return;
+    public TreeNode FromItem(ShellItem item, TreeNode rootNode) {
+      foreach (TreeNode node in rootNode.Nodes) {
+        if ((node.Tag as ShellItem) != null && (node.Tag as ShellItem).Equals(item)) return node;
+        TreeNode next = FromItem(item, node);
+        if (next != null) return next;
+      }
+      return null;
+    }
 
-			var listNodes = this.ShellTreeView.Nodes.OfType<TreeNode>().ToList();
-			listNodes.AddRange(this.ShellTreeView.Nodes.OfType<TreeNode>().SelectMany(s => s.Nodes.OfType<TreeNode>()).ToArray());
-			var nodes = listNodes.ToArray();
-			var separators = new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
-			var directories = item.ParsingName.Split(separators, StringSplitOptions.RemoveEmptyEntries);
-			var items = new List<ShellItem>();
+    public TreeNode FromItem(ShellItem item) {
+      foreach (TreeNode node in this.ShellTreeView.Nodes) {
+        if ((node.Tag as ShellItem) != null && (node.Tag as ShellItem).Equals(item)) return node;
+        TreeNode next = FromItem(item, node);
+        if (next != null) return next;
+      }
+      return null;
+    }
 
-			for (int i = 0; i < directories.Length; i++) {
-				if (i == 0) {
-					items.Add(ShellItem.ToShellParsingName(directories[i]));// new ShellItem(directories[i].ToShellParsingName()));
-				}
-				else {
-					string path = String.Empty;
-					for (int j = 0; j <= i; j++) {
-						if (j == 0)
-							path = directories[j];
-						else
-							path = String.Format("{0}{1}{2}", path, Path.DirectorySeparatorChar, directories[j]);
-					}
+    Stack<ShellItem> parents = new Stack<ShellItem>();
+    public void FindItem(ShellItem item) {
+      var nodeNext = this.ShellTreeView.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).Equals(item));
+      if (nodeNext == null) {
+        parents.Push(item);
+        if (item.Parent != null) {
+          this.FindItem(item.Parent);
+        }
+      } else {
+        while (parents.Count > 0) {
+          var obj = parents.Pop();
+          var newNode = this.FromItem(obj);
+          if (newNode != null && !newNode.IsExpanded) {
+            newNode.Expand();
+          }
+        }
+      }
+    }
+    public void SelItem(ShellItem item) {
 
-					items.Add(ShellItem.ToShellParsingName(path));
-				}
-			}
+      var node = this.FromItem(item);
+      if (node != null) {
+        this.ShellTreeView.SelectedNode = node;
+        return;
+      }
 
-			foreach (var sho in items) {
-				//TODO: Test Change
-				//Note: Should we use FirstOrDefault() NOT SingleOrDefault() ??
+      this.FindItem(item);
+    }
 
-				var theNodes = nodes.Where(w => w.Tag is ShellItem && ((ShellItem)w.Tag).GetHashCode() == sho.GetHashCode()).ToList();
-				var theNode = theNodes.FirstOrDefault();
+    public void DeleteItem(ShellItem item) {
+      TreeNode itemNode = null;
+      foreach (TreeNode node in this.ShellTreeView.Nodes) {
+        itemNode = this.FromItem(item, node);
+        if (itemNode != null) break;
+      }
 
-				if (theNode == null) {
-					return;
-				}
-				else if (items.Last() == sho) {
-					if (this.ShellTreeView.SelectedNode != theNode) {
-						this.ShellTreeView.SelectedNode = theNode;
-						theNode.EnsureVisible();
-					}
-				}
-				else {
-					theNode.Expand();
-					nodes = theNode.Nodes.OfType<TreeNode>().ToArray();
-				}
+      if (itemNode != null) {
+        itemNode.Remove();
+      }
+    }
 
-				if (theNodes.Count() > 1)
-					theNodes.Skip(1).ToList().ForEach(d => this.ShellTreeView.SelectedNode.Parent.Nodes.Remove(d));
-			}
+    public void AddItem(ShellItem item) {
+      TreeNode itemNode = null;
+      foreach (TreeNode node in this.ShellTreeView.Nodes) {
+        itemNode = this.FromItem(item.Parent, node);
+        if (itemNode != null) break;
+      }
 
-			foreach (var sho in items) {
-				var theNodes = nodes.Where(wr => wr.Tag is ShellItem && ((ShellItem)wr.Tag).GetHashCode() == sho.GetHashCode()).ToArray();
-				var theNode = theNodes.FirstOrDefault();
-				if (theNode == null) {
-					return;
-				}
-				else if (items.Last() == sho) {
-					if (this.ShellTreeView.SelectedNode != theNode) {
-						this.ShellTreeView.SelectedNode = theNode;
-						theNode.EnsureVisible();
-					}
-				}
-				else {
-					theNode.Expand();
-					nodes = theNode.Nodes.OfType<TreeNode>().ToArray();
-				}
-				if (theNodes.Count() > 1) {
-					theNodes.Skip(1).ToList().ForEach(d => this.ShellTreeView.SelectedNode.Parent.Nodes.Remove(d));
-				}
-			}
+      if (itemNode != null) {
+        var node = new TreeNode(item.DisplayName);
+        ShellItem itemReal = null;
+        if (item.Parent != null && item.Parent.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
+          itemReal = ShellItem.ToShellParsingName(item.ParsingName);
+        } else {
+          itemReal = item;
+        }
+        node.Tag = itemReal;
+        node.ImageIndex = itemReal.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
+        node.SelectedImageIndex = node.ImageIndex;
+        var oldnodearray = itemNode.Nodes.OfType<TreeNode>().ToList();
+        oldnodearray.Add(node);
+        var newArray = oldnodearray.OrderBy(o => o.Text).ToArray();
+        this.ShellTreeView.BeginUpdate();
+        itemNode.Nodes.Clear();
+        itemNode.Nodes.AddRange(newArray);
+        this.ShellTreeView.EndUpdate();
+      }
+    }
 
-
-		}
+    public void RenameItem(ShellItem prevItem, ShellItem newItem) {
+      this.DeleteItem(prevItem);
+      this.AddItem(newItem);
+    }
 
 		private void InitTreeView() {
 			this.AllowDrop = true;
@@ -347,8 +374,8 @@ namespace BExplorer.Shell {
 			this.ShellTreeView.Nodes.Clear();
 			InitRootItems();
 
-			if (this.ShellListView != null && this.ShellListView.CurrentFolder != null)
-				SelectItem(this.ShellListView.CurrentFolder);
+      if (this.ShellListView != null && this.ShellListView.CurrentFolder != null)
+        this.SelItem(this.ShellListView.CurrentFolder);
 		}
 
 		[System.Diagnostics.DebuggerStepThrough]
@@ -668,8 +695,8 @@ namespace BExplorer.Shell {
 							if (node.Nodes.Count == 1 && node.Nodes[0].Text == "Searching for folders...")
 								node.Nodes.RemoveAt(0);
 							node.Nodes.AddRange(nodesTemp.ToArray());
-							if (lvSho != null)
-								SelectItem(lvSho);
+              if (lvSho != null)
+                this.SelItem(lvSho);
 						}));
 
 					});
@@ -720,7 +747,7 @@ namespace BExplorer.Shell {
 
 		private void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
 			if (!this.isFromTreeview) {
-				this.SelectItem(e.Folder);
+        this.SelItem(e.Folder);
 			}
 		}
 
@@ -931,10 +958,17 @@ namespace BExplorer.Shell {
 					foreach (NotifyInfos info in this._NotificationGlobal.NotificationsReceived.ToArray()) {
 						switch (info.Notification) {
 							case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
+                var objPrevDir = new ShellItem(info.Item1);
+                var objNewDir = new ShellItem(info.Item2);
+                this.RenameItem(objPrevDir, objNewDir);
 								break;
 							case ShellNotifications.SHCNE.SHCNE_MKDIR:
+                var objAddDir = new ShellItem(info.Item1);
+                this.AddItem(objAddDir);
 								break;
 							case ShellNotifications.SHCNE.SHCNE_RMDIR:
+                var objDelDir = new ShellItem(info.Item1);
+                this.DeleteItem(objDelDir);
 								break;
 							case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
 							case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
