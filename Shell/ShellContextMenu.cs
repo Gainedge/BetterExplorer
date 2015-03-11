@@ -519,7 +519,7 @@ namespace BExplorer.Shell {
       User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
       User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
       User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-      if (!(control as ShellView).CurrentFolder.IsDrive && (control as ShellView).CurrentFolder.IsFileSystem) {
+      if (!(control as ShellView).CurrentFolder.IsDrive && (control as ShellView).CurrentFolder.IsFileSystem && !(control as ShellView).CurrentFolder.IsNetDrive && !(control as ShellView).CurrentFolder.CachedParsingName.StartsWith(@"\\")) {
         User32.GetMenuItemInfo(mnu.Handle, 1, true, ref itemInfo);
         if ((itemInfo.fType & 2048) != 0) {
           User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
@@ -528,6 +528,13 @@ namespace BExplorer.Shell {
             User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
             User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
           }
+        }
+      }
+      if ((control as ShellView).CurrentFolder.IsNetDrive) {
+        User32.GetMenuItemInfo(mnu.Handle, 1, true, ref itemInfo);
+        if ((itemInfo.fType & 2048) != 0) {
+          User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
+          User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
         }
       }
     }
@@ -615,7 +622,7 @@ namespace BExplorer.Shell {
 
     void Initialize(ShellItem item) {
       Guid iise = typeof(IShellExtInit).GUID;
-      var ishellViewPtr = (item.IsDrive || !item.IsFileSystem) ? item.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID) : item.Parent.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID);
+      var ishellViewPtr = (item.IsDrive || !item.IsFileSystem || item.IsNetDrive) ? item.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID) : item.Parent.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID);
       var view = Marshal.GetObjectForIUnknown(ishellViewPtr) as IShellView;
       view.GetItemObject(SVGIO.SVGIO_BACKGROUND, typeof(IContextMenu).GUID, out result);
       Marshal.ReleaseComObject(view);

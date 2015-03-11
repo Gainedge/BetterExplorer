@@ -169,18 +169,18 @@ namespace BetterExplorer {
 
 				if (IsAdditem && item.ShellObject.IsFileSystem) {
 					try {
-						var so = new ShellItem(item.ShellObject.ParsingName);
+						var so = item.ShellObject;
 						so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 						so.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
 
-						btnMoveto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.GetDisplayName(SIGDN.NORMALDISPLAY), item.ShellObject,
+						btnMoveto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.CachedDisplayName, item.ShellObject,
 																	 so.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(mim_Click)));
 
-						btnCopyto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.GetDisplayName(SIGDN.NORMALDISPLAY), item.ShellObject, so.Thumbnail.BitmapSource));
+						btnCopyto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.CachedDisplayName, item.ShellObject, so.Thumbnail.BitmapSource));
 					}
 					catch {
 						//Do nothing if ShellItem is not available anymore and close the problematic item
-						tcMain.RemoveTabItem(item);
+						//tcMain.RemoveTabItem(item);
 					}
 				}
 			}

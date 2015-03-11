@@ -65,7 +65,7 @@ namespace BExplorer.Shell {
 		#endregion Public Members
 
 		#region Private Members
-
+    private string _SearchingForFolders = "Searching for folders...";
 		private TreeNode cuttedNode { get; set; }
 		private ManualResetEvent _ResetEvent = new ManualResetEvent(true);
 		private Int32 folderImageListIndex;
@@ -233,15 +233,20 @@ namespace BExplorer.Shell {
           itemReal = item;
         }
         node.Tag = itemReal;
-        node.ImageIndex = itemReal.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
-        node.SelectedImageIndex = node.ImageIndex;
         var oldnodearray = itemNode.Nodes.OfType<TreeNode>().ToList();
-        oldnodearray.Add(node);
+        if (oldnodearray.SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).Equals(itemReal)) == null)
+          oldnodearray.Add(node);
         var newArray = oldnodearray.OrderBy(o => o.Text).ToArray();
         this.ShellTreeView.BeginUpdate();
         itemNode.Nodes.Clear();
         itemNode.Nodes.AddRange(newArray);
         this.ShellTreeView.EndUpdate();
+        if (itemNode != null && itemNode.Nodes.Count > 0) {
+          var newNode = itemNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).Equals(itemReal));
+          if (newNode != null) {
+            SetNodeImage(newNode.Handle, itemReal.Pidl, this.ShellTreeView.Handle, !(newNode.Parent != null && (newNode.Parent.Tag as ShellItem).ParsingName == KnownFolders.Links.ParsingName));
+          }
+        }
       }
     }
 
@@ -458,12 +463,15 @@ namespace BExplorer.Shell {
 				var pidl = IntPtr.Zero;
 
 				this.Invoke((Action)(() => {
-					node = TreeNode.FromHandle(ShellTreeView, handle);
-					treeHandle = this.ShellTreeView.Handle;
-					if (node != null) {
-						visible = node.IsVisible;
-						pidl = ((ShellItem)node.Tag).Pidl;
-					}
+          if (ShellTreeView != null) {
+            node = TreeNode.FromHandle(ShellTreeView, handle);
+            treeHandle = this.ShellTreeView.Handle;
+            if (node != null) {
+              visible = node.IsVisible;
+              if (node.Tag != null)
+                pidl = ((ShellItem)node.Tag).Pidl;
+            }
+          }
 				}));
 				
 				if (!visible || pidl == IntPtr.Zero)
@@ -650,7 +658,7 @@ namespace BExplorer.Shell {
 					var sho = (ShellItem)e.Node.Tag;
 					ShellItem lvSho = this.ShellListView != null && this.ShellListView.CurrentFolder != null ? this.ShellListView.CurrentFolder : null;
 					var node = e.Node;
-					node.Nodes.Add("Searching for folders...");
+					node.Nodes.Add(this._SearchingForFolders);
 					var t = new Thread(() => {
 						//var nodes = await Task.Run(() => {
 						var nodesTemp = new List<TreeNode>();
@@ -692,7 +700,7 @@ namespace BExplorer.Shell {
 						//return nodesTemp;
 						//});
 						this.Invoke((Action)(() => {
-							if (node.Nodes.Count == 1 && node.Nodes[0].Text == "Searching for folders...")
+							if (node.Nodes.Count == 1 && node.Nodes[0].Text == _SearchingForFolders)
 								node.Nodes.RemoveAt(0);
 							node.Nodes.AddRange(nodesTemp.ToArray());
               if (lvSho != null)
@@ -948,6 +956,7 @@ namespace BExplorer.Shell {
 			this._NotificationGlobal.UnregisterChangeNotify();
 			base.OnHandleDestroyed(e);
 		}
+    private List<String> _PathsToBeAdd = new List<String>();
 		[HandleProcessCorruptedStateExceptions]
 		protected override void WndProc(ref Message m) {
 			base.WndProc(ref m);
@@ -973,7 +982,7 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
 							case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
 								var objDm = new ShellItem(info.Item1);
-								var exisitingMItem = computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).ParsingName == objDm.ParsingName);
+								var exisitingMItem = computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).Equals(objDm));
 								if (exisitingMItem != null) {
 									exisitingMItem.Text = objDm.DisplayName;
 									exisitingMItem.ImageIndex = objDm.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
@@ -992,8 +1001,10 @@ namespace BExplorer.Shell {
 								break;
 							case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
 								var objDa = new ShellItem(info.Item1);
-								var exisitingItem = computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).ParsingName == objDa.ParsingName);
-								if (exisitingItem == null) {
+                
+								var exisitingItem = computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as ShellItem).Equals(objDa));
+                if (exisitingItem == null && this._PathsToBeAdd.Count(c => c.Equals(objDa.CachedParsingName, StringComparison.InvariantCultureIgnoreCase)) == 0) {
+                  this._PathsToBeAdd.Add(objDa.CachedParsingName);
 									var newDrive = new TreeNode(objDa.DisplayName);
 									newDrive.Tag = objDa;
 									newDrive.ImageIndex = objDa.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);
@@ -1007,6 +1018,7 @@ namespace BExplorer.Shell {
 									nodesList = null;
 									GC.Collect();
 									computerNode.Nodes.Insert(indexToInsert, newDrive);
+                  this._PathsToBeAdd.Clear();
 								}
 								break;
 							case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
@@ -1033,7 +1045,14 @@ namespace BExplorer.Shell {
 									node.ImageIndex = sho.GetSystemImageListIndex(ShellIconType.SmallIcon, ShellIconFlags.OpenIcon);// this.folderImageListIndex;
 									node.SelectedImageIndex = node.ImageIndex;
 									node.Tag = sho;
+                  if (sho.HasSubFolders) {
+                    node.Nodes.Add(this._SearchingForFolders);
+                  }
 									if (sho != null && sho.Parent != null && sho.Parent.ParsingName == KnownFolders.Network.ParsingName) {
+                    var firstNode = this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.OfType<TreeNode>().FirstOrDefault();
+                    if (firstNode != null && firstNode.Text.Equals(this._SearchingForFolders)) {
+                      firstNode.Remove();
+                    }
 										this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.Add(node);
 									}
 								}

@@ -42,10 +42,10 @@ namespace BExplorer.Shell {
 			base.WndProc(ref m);
 			if (m.Msg == ShellNotifications.WM_SHNOTIFY) {
 				if (NotificationsRB.NotificationReceipt(m.WParam, m.LParam)) {
+          this._ParentShellView.RaiseRecycleBinUpdated();
 					foreach (NotifyInfos info in NotificationsRB.NotificationsReceived.ToArray()) {
 						NotificationsRB.NotificationsReceived.Remove(info);
 					}
-					this._ParentShellView.RaiseRecycleBinUpdated();
 				}
 				if (NotificationsGlobal.NotificationReceipt(m.WParam, m.LParam)) {
 					foreach (NotifyInfos info in NotificationsGlobal.NotificationsReceived.ToArray()) {
@@ -156,7 +156,7 @@ namespace BExplorer.Shell {
 										this._ParentShellView.IsLibraryInModify = false;
 										break;
 									}
-									ShellItem theItem = this._ParentShellView.Items.SingleOrDefault(s => s.Equals(objDeleteF));
+									ShellItem theItem = this._ParentShellView.Items.ToArray().SingleOrDefault(s => s.Equals(objDeleteF));
 									if (theItem != null) {
 										this._ParentShellView.Items.Remove(theItem);
 										if (this._ParentShellView.IsGroupsEnabled) this._ParentShellView.SetGroupOrder(false);

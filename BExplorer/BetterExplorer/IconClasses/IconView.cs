@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using BExplorer.Shell;
@@ -113,8 +114,8 @@ namespace BetterExplorer {
 			if (IsLibrary) {
         this.ShellView.IsLibraryInModify = true;
 				var lib = ShellView.GetFirstSelectedItem() != null ?
-					BExplorer.Shell.ShellLibrary.Load(ShellView.GetFirstSelectedItem().DisplayName, false) :
-					BExplorer.Shell.ShellLibrary.Load(ShellView.CurrentFolder.DisplayName, false);
+					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(ShellView.GetFirstSelectedItem().CachedParsingName), false) :
+					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(ShellView.CurrentFolder.CachedParsingName), false);
 
 				lib.IconResourceId = new BExplorer.Shell.Interop.IconReference(tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
 				lib.Close();

@@ -129,4 +129,11 @@ namespace BExplorer.Shell.Interop {
 		}
 
 	}
+  public sealed class NaturalStringComparer : IComparer<string> {
+    public static readonly NaturalStringComparer Default = new NaturalStringComparer();
+
+    public int Compare(string x, string y) {
+      return ShlWapi.StrCmpLogicalW(x, y);
+    }
+  }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Runtime.ExceptionServices;
 
 namespace BExplorer.Shell {
 	public class TreeViewBase : TreeView {
@@ -62,18 +63,21 @@ namespace BExplorer.Shell {
 			UxTheme.SetWindowTheme(this.Handle, "Explorer", 0);
 
 		}
+    [HandleProcessCorruptedStateExceptions]
 		protected override void WndProc(ref Message m) {
-			if (m.Msg == WM_ERASEBKGND) {
-				m.Result = IntPtr.Zero;
-				return;
-			}
-			if (m.Msg == 0x0115) {
-				if (VerticalScroll != null) {
-					VerticalScroll.Invoke(this, EventArgs.Empty);
-				}
-			}
+      try {
+        if (m.Msg == WM_ERASEBKGND) {
+          m.Result = IntPtr.Zero;
+          return;
+        }
+        if (m.Msg == 0x0115) {
+          if (VerticalScroll != null) {
+            VerticalScroll.Invoke(this, EventArgs.Empty);
+          }
+        }
 
-			base.WndProc(ref m);
+        base.WndProc(ref m);
+      } catch (AccessViolationException) { }
 		}
 		protected override CreateParams CreateParams {
 			get {
