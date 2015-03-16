@@ -355,11 +355,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		internal bool IsNetworkPath {
-			get {
-				return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
-			}
-		}
+		internal bool IsNetworkPath { get { return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName); } }
 
 		public bool IsNetDrive {
 			get {
@@ -813,9 +809,7 @@ namespace BExplorer.Shell {
 		/// <returns>
 		/// An enumerator over all child items.
 		/// </returns>
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() { return GetEnumerator(); }
 
 		/// <summary>
 		/// Gets the index in the system image list of the icon representing
@@ -1001,10 +995,16 @@ namespace BExplorer.Shell {
 		/// <param name="rightShellObject">Second object to compare.</param>
 		/// <returns>True if leftShellObject equals rightShellObject; false otherwise.</returns>
 		public static bool operator ==(ShellItem leftShellObject, ShellItem rightShellObject) {
+			return leftShellObject == null ?
+				   rightShellObject == null :
+				   leftShellObject.Equals(rightShellObject);
+
+			/*
 			if ((object)leftShellObject == null) {
 				return ((object)rightShellObject == null);
 			}
 			return leftShellObject.Equals(rightShellObject);
+			*/
 		}
 
 		/// <summary>
@@ -1257,12 +1257,7 @@ namespace BExplorer.Shell {
 		/// <param name="name">
 		/// The name of the child item.
 		/// </param>
-		public ShellItem this[string name] {
-			get {
-				return new ShellItem(this, name);
-			}
-		}
-
+		public ShellItem this[string name] { get { return new ShellItem(this, name); } }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ShellItem"/> class.
@@ -1306,14 +1301,10 @@ namespace BExplorer.Shell {
 			Constructor_Helper();
 		}
 
-
-
 		/// <summary>
 		/// Returns a string representation of the <see cref="ShellItem"/>.
 		/// </summary>
-		public override string ToString() {
-			return this.DisplayName;
-		}
+		public override string ToString() { return this.DisplayName; }
 
 		/// <summary>
 		/// Returns a URI representation of the <see cref="ShellItem"/>.
@@ -1478,9 +1469,7 @@ namespace BExplorer.Shell {
 
 	public class ShellItemComparer : IEqualityComparer<ShellItem> {
 		// Products are equal if their names and product numbers are equal.
-		public bool Equals(ShellItem x, ShellItem y) {
-			return x.Equals(y);
-		}
+		public bool Equals(ShellItem x, ShellItem y) { return x.Equals(y); }
 
 		// If Equals() returns true for a pair of objects 
 		// then GetHashCode() must return the same value for these objects.
