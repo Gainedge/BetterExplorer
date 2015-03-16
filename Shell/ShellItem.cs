@@ -206,6 +206,9 @@ namespace BExplorer.Shell {
 		[Obsolete("Not Used", true)]
 		public bool IsBrowsable {
 			get {
+				return COM_Attribute_Check(SFGAO.BROWSABLE);
+
+				/*
 				//TODO: try removing this Try Catch!
 				try {
 					return COM_Attribute_Check(SFGAO.BROWSABLE);
@@ -213,6 +216,7 @@ namespace BExplorer.Shell {
 				catch {
 					return false;
 				}
+				*/
 			}
 		}
 
@@ -257,12 +261,16 @@ namespace BExplorer.Shell {
 		public bool IsFileSystem {
 			get {
 				//TODO: try removing this Try Catch!
+				return COM_Attribute_Check(SFGAO.FILESYSTEM);
+
+				/*
 				try {
 					return COM_Attribute_Check(SFGAO.FILESYSTEM);
 				}
 				catch {
 					return false;
 				}
+				*/
 			}
 		}
 
@@ -285,6 +293,9 @@ namespace BExplorer.Shell {
 		/// <summary>Gets a value indicating whether the item is Hidden.</summary>
 		public bool IsHidden {
 			get {
+				return COM_Attribute_Check(SFGAO.HIDDEN);
+
+				/*
 				try {
 					return COM_Attribute_Check(SFGAO.HIDDEN);
 				}
@@ -295,6 +306,7 @@ namespace BExplorer.Shell {
 					// NativeShellItem is null
 					return false;
 				}
+				*/
 			}
 		}
 
@@ -303,6 +315,9 @@ namespace BExplorer.Shell {
 		/// </summary>
 		public bool IsLink {
 			get {
+				return COM_Attribute_Check(SFGAO.LINK);
+
+				/*
 				try {
 					return COM_Attribute_Check(SFGAO.LINK);
 				}
@@ -313,6 +328,7 @@ namespace BExplorer.Shell {
 					// NativeShellItem is null
 					return false;
 				}
+				*/
 			}
 		}
 
@@ -1354,8 +1370,10 @@ namespace BExplorer.Shell {
 				throw new InvalidOperationException("Invalid URI scheme");
 		}
 
+
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		private bool COM_Attribute_Check(SFGAO Check) {
+			/*
 			SFGAO sfgao;
 			if (IsInvalid) {
 				var sho = ShellItem.ToShellParsingName(this.ParsingName);
@@ -1366,6 +1384,23 @@ namespace BExplorer.Shell {
 				ComInterface.GetAttributes(Check, out sfgao);
 			}
 			return (sfgao & Check) != 0;
+			*/
+
+			try {
+				SFGAO sfgao;
+				if (IsInvalid) {
+					var sho = ShellItem.ToShellParsingName(this.ParsingName);
+					sho.m_ComInterface.GetAttributes(Check, out sfgao);
+					sho.Dispose();
+				}
+				else {
+					ComInterface.GetAttributes(Check, out sfgao);
+				}
+				return (sfgao & Check) != 0;
+			}
+			catch {
+				return false;
+			}
 		}
 
 		/*
