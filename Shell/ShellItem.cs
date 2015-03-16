@@ -1319,7 +1319,8 @@ namespace BExplorer.Shell {
 		/// Returns a URI representation of the <see cref="ShellItem"/>.
 		/// </summary>
 		public Uri ToUri() {
-			StringBuilder path = new StringBuilder("shell:///");
+			//TODO: Consider using just strings to increase performance 
+			var path = new StringBuilder("shell:///");
 
 			if (this.ParsingName.StartsWith("::")) {
 				path.Append(this.ParsingName);
@@ -1328,6 +1329,7 @@ namespace BExplorer.Shell {
 			return new Uri(this.FileSystemPath);
 		}
 
+		[Obsolete("Inline inside the Constructor")]
 		private void Initialize(Uri uri) {
 			if (uri.Scheme == "file")
 				ComInterface = CreateItemFromParsingName(uri.LocalPath);
