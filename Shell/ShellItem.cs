@@ -1465,10 +1465,7 @@ namespace BExplorer.Shell {
 			else
 				Uri.TryCreate(path, UriKind.Absolute, out newUri);
 
-			if (newUri == null)
-				return null;
-			else
-				return new ShellItem(newUri);
+			return newUri == null ? null : new ShellItem(newUri);
 		}
 
 	}
