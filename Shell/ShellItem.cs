@@ -889,6 +889,7 @@ namespace BExplorer.Shell {
 		/// <param name="uri">
 		/// A <see cref="Uri"/> containing the location of the ShellItem.
 		/// </param>
+		[Obsolete("Use ShellItem(string path)", true)]
 		public ShellItem(Uri uri) {
 			Initialize(uri);
 			Constructor_Helper();
@@ -1467,7 +1468,8 @@ namespace BExplorer.Shell {
 			else
 				Uri.TryCreate(path, UriKind.Absolute, out newUri);
 
-			return newUri == null ? null : new ShellItem(newUri);
+			//return newUri == null ? null : new ShellItem(newUri);
+			return newUri == null ? null : new ShellItem(newUri.OriginalString);
 		}
 
 	}
