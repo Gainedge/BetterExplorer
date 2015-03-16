@@ -1426,8 +1426,16 @@ namespace BExplorer.Shell {
 				throw new ArgumentException("the path provided was IsNullOrWhiteSpace", "path");
 			else if (path.StartsWith("%"))
 				return new ShellItem(Environment.ExpandEnvironmentVariables(path));
-			else if (path.StartsWith("::") && !path.StartsWith(@"\\"))
+			else if (path.StartsWith("::"))// && !path.StartsWith(@"\\")) //If Condition 1 is true then so is Condition 2 so Condition 2 is pointless
 				return new ShellItem(String.Format("shell:{0}", path));
+			else if (path.StartsWith(@"\\"))
+				return new ShellItem(path);
+			else if (path.Contains(":"))
+				return new ShellItem(String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString()));
+			else
+				return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+
+			/*
 			else if (!path.StartsWith(@"\\")) {
 				if (path.Contains(":")) {
 					return new ShellItem(String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString()));
@@ -1444,6 +1452,7 @@ namespace BExplorer.Shell {
 			}
 			else
 				return new ShellItem(path);
+			*/
 		} //TODO: Consider making this a constructor!
 
 		/// <summary>
