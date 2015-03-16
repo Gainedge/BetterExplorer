@@ -994,9 +994,9 @@ namespace BExplorer.Shell {
 		/// <param name="leftShellObject">First object to compare.</param>
 		/// <param name="rightShellObject">Second object to compare.</param>
 		/// <returns>True if leftShellObject equals rightShellObject; false otherwise.</returns>
-		public static bool operator ==(ShellItem leftShellObject, ShellItem rightShellObject) {
-			return leftShellObject == null ?
-				   rightShellObject == null :
+		public static bool operator ==(ShellItem leftShellObject, ShellItem rightShellObject) {			
+			return (object)leftShellObject == null ?
+				   (object)rightShellObject == null :
 				   leftShellObject.Equals(rightShellObject);
 
 			/*
