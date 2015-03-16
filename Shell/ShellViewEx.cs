@@ -3298,7 +3298,7 @@ namespace BExplorer.Shell {
     public void _OverlaysLoadingThreadRun() {
       while (true) {
         F.Application.DoEvents();
-        Thread.Sleep(1);
+        //Thread.Sleep(1);
         resetEvent.WaitOne();
         try {
           int index = 0;
@@ -3320,7 +3320,7 @@ namespace BExplorer.Shell {
     public void _IconsLoadingThreadRun() {
       while (true) {
         resetEvent.WaitOne();
-        Thread.Sleep(1);
+        //Thread.Sleep(1);
         F.Application.DoEvents();
         try {
           int index = 0;
@@ -3356,7 +3356,7 @@ namespace BExplorer.Shell {
     public void _IconCacheLoadingThreadRun() {
       while (true) {
         F.Application.DoEvents();
-        Thread.Sleep(1);
+        //Thread.Sleep(1);
         resetEvent.WaitOne();
         Bitmap result = null;
         try {

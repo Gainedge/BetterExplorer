@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BExplorer.Shell._Plugin_Interfaces {
 	public interface IShellItemEx {
 
-		string Name { get; }
+    string DisplayName { get; set; }
 
 		System.Drawing.Icon ShellIcon { get; }
 
