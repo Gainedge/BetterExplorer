@@ -834,7 +834,7 @@ namespace BExplorer.Shell {
 		public int GetSystemImageListIndex(ShellIconType type, ShellIconFlags flags) {
 			var info = new SHFILEINFO();
 			IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info, Marshal.SizeOf(info),
-													SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
+												  SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
 
 			if (result == IntPtr.Zero) {
 				throw new Exception("Error retrieving shell folder icon");
@@ -847,7 +847,7 @@ namespace BExplorer.Shell {
 		public static int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
 			var info = new SHFILEINFO();
 			IntPtr result = Shell32.SHGetFileInfo(pidl, 0, out info, Marshal.SizeOf(info),
-													SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
+												  SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
 
 			if (result == IntPtr.Zero) {
 				throw new Exception("Error retrieving shell folder icon");
@@ -948,7 +948,7 @@ namespace BExplorer.Shell {
 				// try SHGetSpecialFolderLocation first because it returns
 				// a PIDL which is preferable to a path as it can express
 				// virtual folder locations.
-				StringBuilder path = new StringBuilder();
+				var path = new StringBuilder();
 				Marshal.ThrowExceptionForHR((int)Shell32.SHGetFolderPath(IntPtr.Zero, (CSIDL)folder, IntPtr.Zero, 0, path));
 				ComInterface = CreateItemFromParsingName(path.ToString());
 			}
@@ -1048,10 +1048,7 @@ namespace BExplorer.Shell {
 		/// <see langword="this"/> comes after <paramref name="item"/> in
 		/// display order.
 		/// </returns>
-		public int Compare(ShellItem item) {
-			int result = this.Equals(item) ? 0 : 1;
-			return result;
-		}
+		public int Compare(ShellItem item) { return this.Equals(item) ? 0 : 1; }
 
 		/// <see langword="true"/> if the two objects refer to the same
 		/// folder, <see langword="false"/> otherwise.
@@ -1074,9 +1071,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="obj">The object to compare against.</param>
 		/// <returns>Equality result.</returns>
-		public override bool Equals(object obj) {
-			return this.Equals(obj as ShellItem);
-		}
+		public override bool Equals(object obj) { return this.Equals(obj as ShellItem); }
 
 		#endregion Comparisons
 
