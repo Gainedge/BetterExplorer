@@ -1422,6 +1422,13 @@ namespace BExplorer.Shell {
 		/// <param name="path">The path you want to convert</param>
 		/// <returns></returns>
 		public static ShellItem ToShellParsingName(String path) {
+
+			//TODO: Figure out if we should remove this in the release version
+			if (string.IsNullOrWhiteSpace(path)) {
+				throw new ArgumentException("the path provided was IsNullOrWhiteSpace", "path");
+			}
+
+
 			if (path.StartsWith("%")) {
 				return new ShellItem(Environment.ExpandEnvironmentVariables(path));
 			}
