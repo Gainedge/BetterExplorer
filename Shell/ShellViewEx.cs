@@ -550,6 +550,8 @@ namespace BExplorer.Shell {
         if (e.ChangeType == WatcherChangeTypes.Renamed) {
           this.IsRenameInProgress = false;
         }
+        if (!File.Exists(e.FullPath) && !Directory.Exists(e.FullPath))
+          return;
         var objUpdate = new ShellItem(e.FullPath);
         var exisitingItem = this.Items.Where(w => w.Equals(objUpdate)).SingleOrDefault();
         if (exisitingItem != null) {
@@ -3595,16 +3597,16 @@ namespace BExplorer.Shell {
           return;
         }
         if (User32.GetForegroundWindow() != this.LVHandle) {
-          //this.Invoke(new MethodInvoker(() => {
-          var mainWin = System.Windows.Application.Current.MainWindow;
-          if (mainWin.IsActive || !isActiveCheck) {
-            if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)) {
-              if (User32.GetForegroundWindow() == new System.Windows.Interop.WindowInteropHelper(mainWin).Handle)
-                User32.SetFocus(this.LVHandle); //var res = 
-              //this._IsInRenameMode = false;
+          this.Invoke(new MethodInvoker(() => {
+            var mainWin = System.Windows.Application.Current.MainWindow;
+            if (mainWin.IsActive || !isActiveCheck) {
+              if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)) {
+                if (User32.GetForegroundWindow() == new System.Windows.Interop.WindowInteropHelper(mainWin).Handle)
+                  User32.SetFocus(this.LVHandle); //var res = 
+                //this._IsInRenameMode = false;
+              }
             }
-          }
-          //}));
+          }));
         }
       }
         //On Exception do nothing (usually it happens on app exit)

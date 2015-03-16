@@ -580,8 +580,7 @@ namespace BetterExplorer {
           var mnu = new ShellContextMenu(this.ShellListView, 1);
 
           try {
-            var controlPos = btnOpenWith.TransformToAncestor(Application.Current.MainWindow).Transform(new WIN.Point(0, 0));
-            var tempPoint = PointToScreen(new WIN.Point(controlPos.X, controlPos.Y));
+            var tempPoint = btnOpenWith.PointToScreen(new WIN.Point(0, 0));
             var itemMenuCount = mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnOpenWith.ActualHeight), 1, false);
 
             btnOpenWith.IsEnabled = itemMenuCount > 0 && selItemsCount == 1;
@@ -2611,11 +2610,11 @@ namespace BetterExplorer {
           Rotation = RotateFlipType.Rotate90FlipNone;
           DefaultName_Addon = "_Rotated90";
           break;
-        case "btnFlipX_Click":
+        case "btnFlipX":
           Rotation = RotateFlipType.RotateNoneFlipX;
           DefaultName_Addon = "_FlippedX";
           break;
-        case "btnFlipY_Click":
+        case "btnFlipY":
           Rotation = RotateFlipType.RotateNoneFlipY;
           DefaultName_Addon = "_FlippedY";
           break;
@@ -2740,7 +2739,7 @@ namespace BetterExplorer {
     }
 
     private void btnClearFoldericon_Click(object sender, RoutedEventArgs e) {
-      ShellListView.ClearFolderIcon(ShellListView.GetFirstSelectedItem().ParsingName);
+      ShellListView.ClearFolderIcon(ShellListView.GetFirstSelectedItem().CachedParsingName);
     }
 
     #endregion
