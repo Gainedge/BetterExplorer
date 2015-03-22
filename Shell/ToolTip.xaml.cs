@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 
 namespace BExplorer.Shell
@@ -26,12 +27,12 @@ namespace BExplorer.Shell
 	/// </summary>
 	public partial class ToolTip : Window, INotifyPropertyChanged
 	{
-		private ShellItem _ShellItem;
+		private IListItemEx _ShellItem;
 		private DispatcherTimer DelayTimer = new DispatcherTimer(DispatcherPriority.Background);
     private ShellView _View { get; set; }
 
 		public int Type { get; set; }
-		public ShellItem CurrentItem
+		public IListItemEx CurrentItem
 		{
 			get
 			{

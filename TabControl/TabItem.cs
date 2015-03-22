@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using BExplorer.Shell;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace Wpf.Controls {
 
@@ -22,7 +23,7 @@ namespace Wpf.Controls {
 		public NavigationLog log;//= new NavigationLog();
 
 		/// <summary>The current shell item the tab is on</summary>
-		public ShellItem ShellObject { get; set; }
+		public IListItemEx ShellObject { get; set; }
 
 		/// <summary>The ContextMenu for the tab's header in the TabControl</summary>
 		public ContextMenu mnu { get; private set; }
@@ -56,7 +57,7 @@ namespace Wpf.Controls {
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(Wpf.Controls.TabItem), new FrameworkPropertyMetadata(typeof(Wpf.Controls.TabItem)));
 		}
 
-		public TabItem(ShellItem ShellObject) {
+		public TabItem(IListItemEx ShellObject) {
 			this.ShellObject = ShellObject;
 			log = new NavigationLog(ShellObject);
 		}

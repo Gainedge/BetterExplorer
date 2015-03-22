@@ -114,8 +114,8 @@ namespace BetterExplorer {
 			if (IsLibrary) {
         this.ShellView.IsLibraryInModify = true;
 				var lib = ShellView.GetFirstSelectedItem() != null ?
-					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(ShellView.GetFirstSelectedItem().CachedParsingName), false) :
-					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(ShellView.CurrentFolder.CachedParsingName), false);
+					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(ShellView.GetFirstSelectedItem().ParsingName), false) :
+					BExplorer.Shell.ShellLibrary.Load(Path.GetFileNameWithoutExtension(ShellView.CurrentFolder.ParsingName), false);
 
 				lib.IconResourceId = new BExplorer.Shell.Interop.IconReference(tbLibrary.Text, (int)lvIcons.SelectedItems[0].Tag);
 				lib.Close();

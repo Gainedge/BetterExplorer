@@ -336,18 +336,26 @@ namespace BExplorer.Shell {
 		/// <returns></returns>
 		[Obsolete("Replaced with ShellItem.ToShellParsingName")]
 		public static String ToShellParsingName(this String path) {
-			if (path.StartsWith("%"))
-			{
-				return Environment.ExpandEnvironmentVariables(path);
-			} else if (path.StartsWith("::") && !path.StartsWith(@"\\")) {
-				return String.Format("shell:{0}", path);
-			}
-			else if (!path.EndsWith(Path.DirectorySeparatorChar.ToString())) {
-				return String.Format("{0}{1}", path, Path.DirectorySeparatorChar);
-			}
-			else {
-				return path;
-			}
+      if (path.StartsWith("%")) {
+        return Environment.ExpandEnvironmentVariables(path);
+      } else if (path.StartsWith("::") && !path.StartsWith(@"\\"))
+        return String.Format("shell:{0}", path);
+      //else 
+      //	if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+      //	return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+      else if (!path.StartsWith(@"\\")) {
+        if (path.Contains(":")) {
+          return String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString());
+        } else {
+          try {
+            return String.Format("{0}{1}", path, Path.DirectorySeparatorChar);
+          } catch (Exception) {
+            return @"\\" + String.Format("{0}{1}", path, Path.DirectorySeparatorChar);
+            throw;
+          }
+        }
+      } else
+        return path;
 		}
 
 		public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this ShellItem[] items, out IntPtr dataObjectPtr) {

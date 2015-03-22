@@ -282,7 +282,9 @@ namespace BExplorer.Shell.Interop {
 		}
 
 		private Bitmap GetBitmap(System.Windows.Size size) {
+      var ii = ShellItem.ToShellParsingName(this._Item.ParsingName);
 			IntPtr hBitmap = GetHBitmap(size);
+      ii.Dispose();
 
 			// return a System.Drawing.Bitmap from the hBitmap
 			Bitmap returnValue = null;
@@ -296,10 +298,10 @@ namespace BExplorer.Shell.Interop {
 		}
 
 		private BitmapSource GetBitmapSource(System.Windows.Size iconOnlySize, System.Windows.Size thumbnailSize) {
-			if (thumbnailSize == DefaultThumbnailSize.Small) {
-				FormatOption = ShellThumbnailFormatOption.IconOnly;
-				RetrievalOption = ShellThumbnailRetrievalOption.Default;
-			}
+			//if (thumbnailSize == DefaultThumbnailSize.Small) {
+			//	FormatOption = ShellThumbnailFormatOption.IconOnly;
+			//	RetrievalOption = ShellThumbnailRetrievalOption.Default;
+			//}
 			return GetBitmapSource(FormatOption == ShellThumbnailFormatOption.IconOnly ? iconOnlySize : thumbnailSize);
 		}
 

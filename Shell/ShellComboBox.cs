@@ -275,10 +275,10 @@ namespace BExplorer.Shell {
 				try {
 					m_ChangingLocation = true;
 					//m_ShellView.Navigate(m_SelectedFolder);
-					m_ShellView.Navigate_Full(m_SelectedFolder, false);
+					//m_ShellView.Navigate_Full(m_SelectedFolder, false);
 				}
 				catch (Exception) {
-					SelectedFolder = m_ShellView.CurrentFolder;
+					//SelectedFolder = m_ShellView.CurrentFolder;
 				}
 				finally {
 					m_ChangingLocation = false;
@@ -409,7 +409,7 @@ namespace BExplorer.Shell {
 			if (!m_ChangingLocation) {
 				try {
 					m_ChangingLocation = true;
-					SelectedFolder = m_ShellView.CurrentFolder;
+					//SelectedFolder = m_ShellView.CurrentFolder;
 					OnChanged();
 				}
 				finally {

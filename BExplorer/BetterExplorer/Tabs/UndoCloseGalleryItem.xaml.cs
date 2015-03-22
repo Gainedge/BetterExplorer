@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using BetterExplorer;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BetterExplorer {
 	/// <summary>
@@ -30,9 +31,9 @@ namespace BetterExplorer {
 
 		public void LoadData(NavigationLog log) {
 			nav = log;
-			ShellItem obj = log.CurrentLocation;
-			tabTitle.Text = obj.GetDisplayName(SIGDN.NORMALDISPLAY);
-			image1.Source = obj.Thumbnail.BitmapSource;
+			var obj = log.CurrentLocation;
+			tabTitle.Text = obj.DisplayName;
+			image1.Source = obj.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 			this.ToolTip = obj.ParsingName;
 		}
 
@@ -55,7 +56,7 @@ namespace BetterExplorer {
 
 public class NavigationLogEventArgs {
 	private NavigationLog _obj;
-	public ShellItem CurrentLocation { get { return _obj.CurrentLocation; } }
+	public IListItemEx CurrentLocation { get { return _obj.CurrentLocation; } }
 	public NavigationLog NavigationLog { get { return _obj; } }
 
 	public NavigationLogEventArgs(NavigationLog log) {

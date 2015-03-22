@@ -27,6 +27,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
@@ -959,7 +960,7 @@ namespace BExplorer.Shell {
 			this.OverlayIconIndex = -1;
 		}
 
-		internal ShellItem(ShellItem parent, IntPtr pidl) {
+		public ShellItem(ShellItem parent, IntPtr pidl) {
 			//ComInterface = CreateItemWithParent(parent, pidl);
 
 			if (RunningVista) {
@@ -1173,7 +1174,7 @@ namespace BExplorer.Shell {
 		}
 		*/
 
-		private static IEnumIDList GetIEnumIDList(IShellFolder folder, SHCONTF flags) {
+		public static IEnumIDList GetIEnumIDList(IShellFolder folder, SHCONTF flags) {
 			IEnumIDList result;
 
 			if (folder.EnumObjects(IsCareForMessageHandle ? MessageHandle : IntPtr.Zero, flags, out result) == HResult.S_OK)
@@ -1438,21 +1439,21 @@ namespace BExplorer.Shell {
 
 	}
 
-	public class ShellItemComparer : IEqualityComparer<ShellItem> {
+	public class ShellItemComparer : IEqualityComparer<IListItemEx> {
 		// Products are equal if their names and product numbers are equal.
-		public bool Equals(ShellItem x, ShellItem y) {
+    public bool Equals(IListItemEx x, IListItemEx y) {
 			return x.Equals(y);
 		}
 
 		// If Equals() returns true for a pair of objects 
 		// then GetHashCode() must return the same value for these objects.
 
-		public int GetHashCode(ShellItem product) {
+    public int GetHashCode(IListItemEx product) {
 			//Check whether the object is null
 			if (Object.ReferenceEquals(product, null)) return 0;
 
 			//Get hash code for the Name field if it is not null.
-			int hashProductName = product.CachedParsingName == null ? 0 : product.CachedParsingName.GetHashCode();
+			int hashProductName = product.ParsingName == null ? 0 : product.ParsingName.GetHashCode();
 
 			////Get hash code for the Code field.
 			//int hashProductCode = product.Code.GetHashCode();

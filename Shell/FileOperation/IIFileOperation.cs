@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Interop;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
   public class IIFileOperation : IDisposable {
@@ -41,7 +42,7 @@ namespace BExplorer.Shell {
       if (owner != IntPtr.Zero) _fileOperation.SetOwnerWindow((uint)owner);
     }
 
-    public void CopyItem(IShellItem source, ShellItem destination) {
+    public void CopyItem(IShellItem source, IListItemEx destination) {
       ThrowIfDisposed();
       if (new ShellItem(source).Parent.Equals(destination)) {
         _fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_RENAMEONCOLLISION);

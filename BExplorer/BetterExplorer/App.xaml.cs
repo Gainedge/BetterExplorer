@@ -19,6 +19,7 @@ using System.Windows.Interop;
 
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BetterExplorer {
 	/// <summary>
@@ -189,13 +190,11 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void CreateInitialTab(MainWindow win, ShellItem sho) {
-			sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-
+		private void CreateInitialTab(MainWindow win, IListItemEx sho) {
+      var bmpSource = sho.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 			var newt = new Wpf.Controls.TabItem(sho);
-			newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
-			newt.Icon = sho.Thumbnail.BitmapSource;
+			newt.Header = sho.DisplayName;
+			newt.Icon = bmpSource;
 			newt.PreviewMouseMove += newt_PreviewMouseMove;
 			newt.ToolTip = sho.ParsingName;
 			win.tcMain.CloneTabItem(newt);
@@ -223,18 +222,18 @@ namespace BetterExplorer {
 					mainWin.Show();
 				}
 				else {
-					ShellItem sho = null;
+					IListItemEx sho = null;
 					if (args.CommandLineArgs[1] == "t") {
 						win.Visibility = Visibility.Visible;
 						if (win.WindowState == WindowState.Minimized) {
 							User32.ShowWindow((HwndSource.FromVisual(win) as HwndSource).Handle, User32.ShowWindowCommands.Restore);
 						};
 
-						sho = ShellItem.ToShellParsingName(StartUpLocation);
+						sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, StartUpLocation);
 					}
 					else {
 						String cmd = args.CommandLineArgs[1];
-						sho = ShellItem.ToShellParsingName(cmd);
+            sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd);
 					}
 
 					if (!isStartMinimized || win.tcMain.Items.Count == 0) {
@@ -246,7 +245,7 @@ namespace BetterExplorer {
 					}
 					else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
 						String cmd = args.CommandLineArgs[1];
-						sho = ShellItem.ToShellParsingName(cmd);
+            sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd);
 						CreateInitialTab(win, sho);
 					}
 				}

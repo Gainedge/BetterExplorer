@@ -85,7 +85,7 @@ namespace BetterExplorer {
 				}
 			}
 			else {
-				Matches_Name.AddRange(shells.Where((x) => !Directory.Exists(x.ParsingName)));
+				//Matches_Name.AddRange(shells.Where((x) => !Directory.Exists(x.ParsingName)));
 			}
 
 			if (csd.FilterByFileSize) {
@@ -169,7 +169,7 @@ namespace BetterExplorer {
 				Matches_LastAccessed.Add(item);
 			}
 
-			ShellListView.SelectItems(Matches_LastAccessed.ToArray());
+			//ShellListView.SelectItems(Matches_LastAccessed.ToArray());
 			ShellListView.Focus();
 		}
 

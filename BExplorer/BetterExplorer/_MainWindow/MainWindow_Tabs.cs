@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using BExplorer.Shell;
+using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using MenuItem = Fluent.MenuItem;
 
@@ -15,7 +16,7 @@ namespace BetterExplorer {
 
 			var InitialTabs = Utilities.GetRegistryValue("OpenedTabs", "").ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			if (InitialTabs.Length == 0 || !IsrestoreTabs) {
-				var sho = new ShellItem(tcMain.StartUpLocation.ToShellParsingName());
+				var sho = FileSystemListItem.ToFileSystemItem( this.ShellListView.LVHandle, tcMain.StartUpLocation.ToShellParsingName());
 
 				if (tcMain.Items.OfType<Wpf.Controls.TabItem>().Any())
 					NavigationController(sho);
@@ -32,10 +33,10 @@ namespace BetterExplorer {
 							continue;
 						}
 
-						tcMain.NewTab(ShellItem.ToShellParsingName(str), i == InitialTabs.Length);
+						tcMain.NewTab(FileSystemListItem.ToFileSystemItem( this.ShellListView.LVHandle, str.ToShellParsingName()), i == InitialTabs.Length);
 						if (i == InitialTabs.Count()) {
-							var sho = new ShellItem(str.ToShellParsingName());
-							NavigationController(sho);
+              var sho = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, str.ToShellParsingName());
+              NavigationController(sho);
 							(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = sho;
 							(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = sho.ParsingName;
 						}
@@ -50,7 +51,7 @@ namespace BetterExplorer {
 					tcMain.NewTab();
 
 					string idk = tcMain.StartUpLocation.StartsWith("::") ? tcMain.StartUpLocation.ToShellParsingName() : tcMain.StartUpLocation.Replace("\"", "");
-					NavigationController(new ShellItem(idk));
+					NavigationController(FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, idk));
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
 				}
@@ -63,18 +64,19 @@ namespace BetterExplorer {
 			if (tab == null) return;
 			//tcMain.isGoingBackOrForward = tab.log.HistoryItemsList.Any();
 			//if (!Keyboard.IsKeyDown(Key.Tab)) {
-			if (tab.ShellObject != this.ShellListView.CurrentFolder || tab.ShellObject.IsSearchFolder) {
+			if (!tab.ShellObject.Equals(this.ShellListView.CurrentFolder) || tab.ShellObject.IsSearchFolder) {
 				tcMain.isGoingBackOrForward = true;
 				NavigationController(tab.ShellObject);
         var selectedItem = tab;
-        selectedItem.Header = this.ShellListView.CurrentFolder.DisplayName;
-        selectedItem.Icon = this.ShellListView.CurrentFolder.Thumbnail.SmallBitmapSource;
-        selectedItem.ShellObject = this.ShellListView.CurrentFolder;
+        selectedItem.Header = tab.ShellObject.DisplayName;
+        var bmpSource = tab.ShellObject.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+        selectedItem.Icon = bmpSource;
+        selectedItem.ShellObject = tab.ShellObject;
         if (selectedItem != null) {
           var selectedPaths = selectedItem.SelectedItems;
           if (selectedPaths != null && selectedPaths.Count > 0) {
             foreach (var path in selectedPaths.ToArray()) {
-              var sho = this.ShellListView.Items.Where(w => w.CachedParsingName == path).SingleOrDefault();
+              var sho = this.ShellListView.Items.Where(w => w.ParsingName == path).SingleOrDefault();
               if (sho != null) {
                 var index = this.ShellListView.ItemsHashed[sho];
                 this.ShellListView.SelectItemByIndex(index, true);
@@ -170,13 +172,11 @@ namespace BetterExplorer {
 				if (IsAdditem && item.ShellObject.IsFileSystem) {
 					try {
 						var so = item.ShellObject;
-						so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-						so.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+            var bmpSource = so.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+						btnMoveto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.DisplayName, item.ShellObject,
+																	 bmpSource, onClick: new RoutedEventHandler(mim_Click)));
 
-						btnMoveto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.CachedDisplayName, item.ShellObject,
-																	 so.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(mim_Click)));
-
-						btnCopyto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.CachedDisplayName, item.ShellObject, so.Thumbnail.BitmapSource));
+						btnCopyto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.DisplayName, item.ShellObject, bmpSource));
 					}
 					catch {
 						//Do nothing if ShellItem is not available anymore and close the problematic item
@@ -204,7 +204,7 @@ namespace BetterExplorer {
 
 			if (e.AddedItems.Count == 0) return;
       var newTab = e.AddedItems[0] as Wpf.Controls.TabItem;
-      if (this.ShellListView.CurrentFolder != newTab.ShellObject && tcMain.CurrentTabItem == null) {
+      if (this.ShellListView.CurrentFolder == null || !this.ShellListView.CurrentFolder.Equals(newTab.ShellObject) && tcMain.CurrentTabItem == null) {
         SelectTab(newTab);
       } else {
         if (!tcMain.IsSelectionHandled) {

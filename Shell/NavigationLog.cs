@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
 
@@ -9,7 +10,7 @@ namespace BExplorer.Shell {
 		#region Properties
 
 		/// <summary>The locations the user has been to</summary>
-		public List<ShellItem> HistoryItemsList { get; private set; }
+		public List<IListItemEx> HistoryItemsList { get; private set; }
 
 		/// <summary>the position/place/item the user is currently at in the <see cref="HistoryItemsList">History</see> Where -1 = nothing selected</summary>
 		public int CurrentLocPos { get; set; }
@@ -32,7 +33,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		private List<ShellItem> ForwardEntries {
+		private List<IListItemEx> ForwardEntries {
 			get {
 				return HistoryItemsList.Skip(CurrentLocPos + 1).ToList();
 			}
@@ -43,7 +44,7 @@ namespace BExplorer.Shell {
 		/// Gets the item from <see cref="HistoryItemsList"/> at index <see cref="CurrentLocPos"/> (or null if Count = 0).
 		/// Sets the Location by adding the ShellItem to <see cref="HistoryItemsList"/> and setting it as the <see cref="CurrentLocPos"/>
 		/// </remarks>
-		public ShellItem CurrentLocation {
+		public IListItemEx CurrentLocation {
 			get {
 				return HistoryItemsList.ElementAtOrDefault(CurrentLocPos);
 				//return HistoryItemsList.Any() ? HistoryItemsList[CurrentLocPos] : null;
@@ -56,20 +57,20 @@ namespace BExplorer.Shell {
 
 		#endregion Properties
 
-		public NavigationLog(ShellItem StartingLocation) {
-			HistoryItemsList = new List<ShellItem>(new[] { StartingLocation });
+		public NavigationLog(IListItemEx StartingLocation) {
+			HistoryItemsList = new List<IListItemEx>(new[] { StartingLocation });
 			CurrentLocPos = 0; //-1;
 		}
 
 		/// <summary>Navigates backwards one item</summary>
-		public ShellItem NavigateBack() {
+		public IListItemEx NavigateBack() {
 			CurrentLocPos--;
 			//return HistoryItemsList[CurrentLocPos < 0 ? 0 : CurrentLocPos];
 			return HistoryItemsList[CurrentLocPos];
 		}
 
 		/// <summary>Navigates forwards one item</summary>
-		public ShellItem NavigateForward() {
+		public IListItemEx NavigateForward() {
 			CurrentLocPos++;
 			//return HistoryItemsList[CurrentLocPos > HistoryItemsList.Count - 1 ? HistoryItemsList.Count - 1 : CurrentLocPos];
 			return HistoryItemsList[CurrentLocPos];

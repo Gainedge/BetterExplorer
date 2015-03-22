@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using System.Threading;
 using System.Runtime.ExceptionServices;
 using System.Linq;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
   /// <summary>
@@ -107,8 +108,8 @@ namespace BExplorer.Shell {
     /// <param name="item">
     /// The item to which the context menu should refer.
     /// </param>
-    public ShellContextMenu(ShellItem item) {
-      Initialize(new ShellItem[] { item });
+    public ShellContextMenu(IListItemEx item) {
+      Initialize(new IListItemEx[] { item });
     }
 
     /// <summary>
@@ -119,7 +120,7 @@ namespace BExplorer.Shell {
     /// The items to which the context menu should refer.
     /// </param>
     /// <param name="svgio"></param>
-    public ShellContextMenu(ShellItem[] items, SVGIO svgio = SVGIO.SVGIO_SELECTION, ShellView view = null) {
+    public ShellContextMenu(IListItemEx[] items, SVGIO svgio = SVGIO.SVGIO_SELECTION, ShellView view = null) {
       this._ShellView = view;
 
       //this._ShellTreeView = tree;
@@ -519,7 +520,7 @@ namespace BExplorer.Shell {
       User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
       User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
       User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
-      if (!(control as ShellView).CurrentFolder.IsDrive && (control as ShellView).CurrentFolder.IsFileSystem && !(control as ShellView).CurrentFolder.IsNetDrive && !(control as ShellView).CurrentFolder.CachedParsingName.StartsWith(@"\\")) {
+      if (!(control as ShellView).CurrentFolder.IsDrive && (control as ShellView).CurrentFolder.IsFileSystem && !(control as ShellView).CurrentFolder.IsNetworkPath && !(control as ShellView).CurrentFolder.ParsingName.StartsWith(@"\\")) {
         User32.GetMenuItemInfo(mnu.Handle, 1, true, ref itemInfo);
         if ((itemInfo.fType & 2048) != 0) {
           User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
@@ -530,7 +531,7 @@ namespace BExplorer.Shell {
           }
         }
       }
-      if ((control as ShellView).CurrentFolder.IsNetDrive) {
+      if ((control as ShellView).CurrentFolder.IsNetworkPath) {
         User32.GetMenuItemInfo(mnu.Handle, 1, true, ref itemInfo);
         if ((itemInfo.fType & 2048) != 0) {
           User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
@@ -578,16 +579,16 @@ namespace BExplorer.Shell {
       miidetails.fType = 2048;
       User32.InsertMenuItem(view.Handle, 0, true, ref miidetails);
     }
-    void Initialize(ShellItem[] items) {
+    void Initialize(IListItemEx[] items) {
       IntPtr[] pidls = new IntPtr[items.Length];
-      ShellItem parent = null;
+      IListItemEx parent = null;
 
       for (int n = 0; n < items.Length; ++n) {
-        pidls[n] = Shell32.ILFindLastID(items[n].Pidl);
+        pidls[n] = Shell32.ILFindLastID(items[n].PIDL);
 
         if (parent == null) {
           if (items[n] == ShellItem.Desktop) {
-            parent = ShellItem.Desktop;
+            parent = null;// ShellItem.Desktop;
           } else {
             parent = items[n].Parent;
 
@@ -620,9 +621,9 @@ namespace BExplorer.Shell {
 
     IntPtr result = IntPtr.Zero;
 
-    void Initialize(ShellItem item) {
+    void Initialize(IListItemEx item) {
       Guid iise = typeof(IShellExtInit).GUID;
-      var ishellViewPtr = (item.IsDrive || !item.IsFileSystem || item.IsNetDrive) ? item.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID) : item.Parent.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID);
+      var ishellViewPtr = (item.IsDrive || !item.IsFileSystem || item.IsNetworkPath) ? item.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID) : item.Parent.GetIShellFolder().CreateViewObject(IntPtr.Zero, typeof(IShellView).GUID);
       var view = Marshal.GetObjectForIUnknown(ishellViewPtr) as IShellView;
       view.GetItemObject(SVGIO.SVGIO_BACKGROUND, typeof(IContextMenu).GUID, out result);
       Marshal.ReleaseComObject(view);
@@ -641,7 +642,7 @@ namespace BExplorer.Shell {
 
         try {
           IntPtr hhh = IntPtr.Zero;
-          iShellExtInit.Initialize(_ShellView.CurrentFolder.Pidl, null, 0);
+          iShellExtInit.Initialize(_ShellView.CurrentFolder.PIDL, null, 0);
           Marshal.ReleaseComObject(iShellExtInit);
           Marshal.Release(iShellExtInitPtr);
         } catch {
@@ -711,7 +712,7 @@ namespace BExplorer.Shell {
       }
     }
 
-    public bool GetNewContextMenu(ShellItem item, out IntPtr iContextMenuPtr, out IContextMenu iContextMenu) {
+    public bool GetNewContextMenu(IListItemEx item, out IntPtr iContextMenuPtr, out IContextMenu iContextMenu) {
       Guid CLSID_NewMenu = new Guid("{D969A300-E7FF-11d0-A93B-00A0C90F2719}");
       Guid iicm = typeof(IContextMenu).GUID;
       Guid iise = typeof(IShellExtInit).GUID;
@@ -732,7 +733,7 @@ namespace BExplorer.Shell {
               iShellExtInitPtr, typeof(IShellExtInit)) as IShellExtInit;
 
           try {
-            iShellExtInit.Initialize(item.Pidl, null, 0);
+            iShellExtInit.Initialize(item.PIDL, null, 0);
 
             Marshal.ReleaseComObject(iShellExtInit);
             Marshal.Release(iShellExtInitPtr);
@@ -760,7 +761,7 @@ namespace BExplorer.Shell {
       }
     }
 
-    public bool GetOpenWithContextMenu(ShellItem[] itemArray, out IntPtr iContextMenuPtr, out IContextMenu iContextMenu) {
+    public bool GetOpenWithContextMenu(IListItemEx[] itemArray, out IntPtr iContextMenuPtr, out IContextMenu iContextMenu) {
       Guid CLSID_OpenWith = new Guid(0x09799AFB, 0xAD67, 0x11d1, 0xAB, 0xCD, 0x00, 0xC0, 0x4F, 0xC3, 0x09, 0x36);
       Guid iicm = typeof(IContextMenu).GUID;
       Guid iise = typeof(IShellExtInit).GUID;
@@ -781,7 +782,7 @@ namespace BExplorer.Shell {
 
           try {
             IntPtr doPtr;
-            iShellExtInit.Initialize(IntPtr.Zero, itemArray.GetIDataObject(out doPtr), 0);
+            //iShellExtInit.Initialize(IntPtr.Zero, itemArray.GetIDataObject(out doPtr), 0);
 
             Marshal.ReleaseComObject(iShellExtInit);
             Marshal.Release(iShellExtInitPtr);

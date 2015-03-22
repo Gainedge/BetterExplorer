@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
 	/// <summary>A Group of items in <see cref="ShellView"/></summary>
 	public class ListViewGroupEx {
 
 		/// <summary>The ShellItems in the group</summary>
-		public ShellItem[] Items { get; set; }
+		public IListItemEx[] Items { get; set; }
 
 		/// <summary>The Header/Text of the Group</summary>
 		public String Header { get; set; }

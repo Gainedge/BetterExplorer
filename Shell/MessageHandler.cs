@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
 	public partial class MessageHandler : Form {
@@ -20,10 +21,10 @@ namespace BExplorer.Shell {
 			this._ParentShellView = parentShellView;
 			InitializeComponent();
 		}
-		public void ReinitNotify(ShellItem item) {
+		public void ReinitNotify(IListItemEx item) {
 			if (Notifications != null) {
 				Notifications.UnregisterChangeNotify();
-				Notifications.RegisterChangeNotify(this.Handle, item, false);
+				//Notifications.RegisterChangeNotify(this.Handle, item, false);
 			}
 		}
 		protected override void OnHandleCreated(EventArgs e) {
@@ -72,19 +73,19 @@ namespace BExplorer.Shell {
 								}
 								break;
 							case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
-								var obj = new ShellItem(info.Item1);
-								if (this._ParentShellView.CurrentFolder.Equals(KnownFolders.Computer)) {
-									this._ParentShellView.Items.Remove(obj);
-									this._ParentShellView.ItemsHashed.Remove(obj);
-									if (this._ParentShellView.IsGroupsEnabled) this._ParentShellView.SetGroupOrder(false);
+								//var obj = new ShellItem(info.Item1);
+								//if (this._ParentShellView.CurrentFolder.Equals(KnownFolders.Computer)) {
+								//	this._ParentShellView.Items.Remove(obj);
+								//	this._ParentShellView.ItemsHashed.Remove(obj);
+								//	if (this._ParentShellView.IsGroupsEnabled) this._ParentShellView.SetGroupOrder(false);
 
-									User32.SendMessage(this._ParentShellView.LVHandle, MSG.LVM_SETITEMCOUNT, this._ParentShellView.Items.Count, 0);
-								}
-								this._ParentShellView.RaiseItemUpdated(ItemUpdateType.DriveRemoved, null, obj, -1);
+								//	User32.SendMessage(this._ParentShellView.LVHandle, MSG.LVM_SETITEMCOUNT, this._ParentShellView.Items.Count, 0);
+								//}
+								//this._ParentShellView.RaiseItemUpdated(ItemUpdateType.DriveRemoved, null, obj, -1);
 								break;
 							case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
 								if (this._ParentShellView.CurrentFolder.Equals(KnownFolders.Computer)) {
-									this._ParentShellView.InsertNewItem(new ShellItem(info.Item1));
+									//this._ParentShellView.InsertNewItem(new ShellItem(info.Item1));
 								}
 								break;
 							case ShellNotifications.SHCNE.SHCNE_NETSHARE:
@@ -136,8 +137,8 @@ namespace BExplorer.Shell {
 								var existingItem = this._ParentShellView.Items.SingleOrDefault(s => s.Equals(obj));
 								if (existingItem == null && (obj.Parent != null && obj.Parent.Equals(this._ParentShellView.CurrentFolder))) {
 									if (obj.Extension.ToLowerInvariant() != ".tmp") {
-										var itemIndex = this._ParentShellView.InsertNewItem(obj);
-										this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Created, null, obj, itemIndex);
+										//var itemIndex = this._ParentShellView.InsertNewItem(obj);
+										//this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Created, null, obj, itemIndex);
 									}
 									else {
 										var affectedItem = this._ParentShellView.Items.SingleOrDefault(s => s.Equals(obj.Parent));
@@ -156,13 +157,13 @@ namespace BExplorer.Shell {
 										this._ParentShellView.IsLibraryInModify = false;
 										break;
 									}
-									ShellItem theItem = this._ParentShellView.Items.ToArray().SingleOrDefault(s => s.Equals(objDeleteF));
-									if (theItem != null) {
-										this._ParentShellView.Items.Remove(theItem);
-										if (this._ParentShellView.IsGroupsEnabled) this._ParentShellView.SetGroupOrder(false);
-                    var col = this._ParentShellView.AllAvailableColumns.Where(w => w.ID == this._ParentShellView.LastSortedColumnId).SingleOrDefault();
-										this._ParentShellView.SetSortCollumn(col, this._ParentShellView.LastSortOrder, false);
-									}
+									//ShellItem theItem = this._ParentShellView.Items.ToArray().SingleOrDefault(s => s.Equals(objDeleteF));
+									//if (theItem != null) {
+									//	this._ParentShellView.Items.Remove(theItem);
+									//	if (this._ParentShellView.IsGroupsEnabled) this._ParentShellView.SetGroupOrder(false);
+         //           var col = this._ParentShellView.AllAvailableColumns.Where(w => w.ID == this._ParentShellView.LastSortedColumnId).SingleOrDefault();
+									//	this._ParentShellView.SetSortCollumn(col, this._ParentShellView.LastSortOrder, false);
+									//}
 								}
 								break;
 							case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
@@ -192,7 +193,7 @@ namespace BExplorer.Shell {
 								var exisitingItemNetA = this._ParentShellView.ItemsHashed.Where(w => w.Key.Equals(objNetA)).SingleOrDefault();
 								if (exisitingItemNetA.Key != null) {
 									this._ParentShellView.RefreshItem(exisitingItemNetA.Value, true);
-									this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Updated, null, objNetA, exisitingItemNetA.Value);
+									//this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Updated, null, objNetA, exisitingItemNetA.Value);
 								}
 								break;
 							case ShellNotifications.SHCNE.SHCNE_SERVERDISCONNECT:
@@ -224,10 +225,10 @@ namespace BExplorer.Shell {
 
 						//TODO: Should this be and Else If(...)?
 						if (info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER || info.Notification == ShellNotifications.SHCNE.SHCNE_RENAMEITEM) {
-							ShellItem obj1 = new ShellItem(info.Item1), obj2 = new ShellItem(info.Item2);
-							if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName))
-								this._ParentShellView.UpdateItem(obj1, obj2);
-              this._ParentShellView.IsRenameInProgress = false;
+							//ShellItem obj1 = new ShellItem(info.Item1), obj2 = new ShellItem(info.Item2);
+							//if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName))
+							//	this._ParentShellView.UpdateItem(obj1, obj2);
+       //       this._ParentShellView.IsRenameInProgress = false;
 						}
 
 						if (Notifications.NotificationsReceived.Contains(info))

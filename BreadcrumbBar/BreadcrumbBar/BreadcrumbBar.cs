@@ -14,6 +14,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Threading;
 using BExplorer.Shell;
+using BExplorer.Shell._Plugin_Interfaces;
 
 //###################################################################################
 // Odyssey.Controls
@@ -272,7 +273,7 @@ namespace Odyssey.Controls {
 		#region Properties
 
 		/// <summary>Occurs after navigation has occurred</summary>
-		public Action<ShellItem> OnNavigate { get; set; }
+		public Action<IListItemEx> OnNavigate { get; set; }
 
 		private bool breadcrumbItemTraceValueChanged_IsFired { get; set; }
 
@@ -341,7 +342,7 @@ namespace Odyssey.Controls {
 						bool isValidPidl = Int64.TryParse(_Path.TrimEnd(Char.Parse(@"\")), out pidl);
 						try
 						{
-							ShellItem item = isValidPidl ? new ShellItem((IntPtr)pidl) : ShellItem.ToShellParsingName(_Path);
+              var item = isValidPidl ? FileSystemListItem.ToFileSystemItem(IntPtr.Zero, (IntPtr)pidl) : FileSystemListItem.ToFileSystemItem(IntPtr.Zero, _Path);
 							if (item != null)
 								OnNavigate(item);
 						}

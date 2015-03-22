@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Runtime.ExceptionServices;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
 	public class FOperationProgressSink : FileOperationProgressSink {
 		private ShellView _View { get; set; }
-		private ShellItem CurrentFolder { get; set; }
+		private IListItemEx CurrentFolder { get; set; }
 
 		public FOperationProgressSink(ShellView view) {
 			this._View = view;

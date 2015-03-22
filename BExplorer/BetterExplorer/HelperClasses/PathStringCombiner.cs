@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using BExplorer.Shell;
+using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 
 namespace BetterExplorer {
 
 	internal class PathStringCombiner {
 
-		public static string CombinePaths(List<ShellItem> paths, string separatorvalue = ";", bool checkforfolders = false) {
+		public static string CombinePaths(List<IListItemEx> paths, string separatorvalue = ";", bool checkforfolders = false) {
 			string ret = "";
 
 			foreach (ShellItem item in paths) {
@@ -25,7 +26,7 @@ namespace BetterExplorer {
 			return ret;
 		}
 
-		public static string CombinePathsWithSinglePath(string path, List<ShellItem> files, bool checkforfolders = false) {
+		public static string CombinePathsWithSinglePath(string path, List<IListItemEx> files, bool checkforfolders = false) {
 			string ret = "";
 
 			foreach (ShellItem item in files) {

@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using BExplorer.Shell;
 using System.Linq;
 using System;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BetterExplorerControls {
 
@@ -18,7 +19,7 @@ namespace BetterExplorerControls {
 		public ShellView Browser;
 
 		//private BitmapSource Thumbnail { get; set; }
-		private ShellItem SelectedItem { get { return this.Browser != null && this.Browser.GetSelectedCount() > 0 ? this.Browser.SelectedItems[0] : null; } }
+		private IListItemEx SelectedItem { get { return this.Browser != null && this.Browser.GetSelectedCount() > 0 ? this.Browser.SelectedItems[0] : null; } }
 
 		//private String DisplayName { get { return SelectedItem != null ? SelectedItem.DisplayName : String.Empty; } }
 		//private String FileSize { get { return "FileSize: Not Coded"; } }
@@ -70,19 +71,19 @@ namespace BetterExplorerControls {
 					}
 
 
-					this.SelectedItem.Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
-					this.SelectedItem.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
-					this.SelectedItem.Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
-					icon.Source = this.SelectedItem.Thumbnail.BitmapSource;
+					//this.SelectedItem.Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
+					//this.SelectedItem.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
+					//this.SelectedItem.Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
+					//icon.Source = this.SelectedItem.Thumbnail.BitmapSource;
 
-					txtDisplayName.Text = SelectedItem.DisplayName;
-					txtFileType.Text = "Extension: " + SelectedItem.Extension;
-					txtPath.Text = "Location : " + SelectedItem.FileSystemPath;
+					//txtDisplayName.Text = SelectedItem.DisplayName;
+					//txtFileType.Text = "Extension: " + SelectedItem.Extension;
+					//txtPath.Text = "Location : " + SelectedItem.FileSystemPath;
 
-					var OpenWirgList = SelectedItem.GetAssocList();
-					if (OpenWirgList.Any()) {
-						txtOpenWith.Text = "Opens With: " + OpenWirgList.First().DisplayName;
-					}
+					//var OpenWirgList = SelectedItem.GetAssocList();
+					//if (OpenWirgList.Any()) {
+					//	txtOpenWith.Text = "Opens With: " + OpenWirgList.First().DisplayName;
+					//}
 
 					var File = new System.IO.FileInfo(Browser.SelectedItems[0].ParsingName);
 					txtFileSize.Text = "Size: " + File.Length.ToString();

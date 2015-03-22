@@ -276,16 +276,16 @@
 					<Border x:Name="Bd"
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"
-							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+							SnapsToDevicePixels="True"
 							UseLayoutRounding="True">
-						<Grid HorizontalAlignment="Stretch" UseLayoutRounding="True">
+						<Grid HorizontalAlignment="Stretch" UseLayoutRounding="True" SnapsToDevicePixels="True">
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="21"/>
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
 
-							<Image Source="{TemplateBinding Icon}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="16" Height="16" Stretch="None" Margin="5,0,0,0" UseLayoutRounding="True"/>
+              <Image Source="{TemplateBinding Icon}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="16" Height="16" Stretch="None" Margin="5,0,0,0" UseLayoutRounding="True" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="Fant"/>
 
 							<Border Margin="2,0,2,0" Grid.Column="1">
 								<TextBlock
@@ -399,7 +399,7 @@
 
 	<!-- Control Template for TabStripPlacement Top-->
 	<ControlTemplate x:Key="TabControlTabPlacementTop" TargetType="{x:Type l:TabControl}">
-		<Grid SnapsToDevicePixels="{Binding Path=SnapsToDevicePixels, RelativeSource={RelativeSource TemplatedParent}}" KeyboardNavigation.TabNavigation="Local">
+		<Grid SnapsToDevicePixels="{Binding Path=SnapsToDevicePixels, RelativeSource={RelativeSource TemplatedParent}}" KeyboardNavigation.TabNavigation="Local" UseLayoutRounding="True">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto"/>
 				<ColumnDefinition Width="Auto"/>
@@ -748,6 +748,7 @@
 		<Setter Property="VerticalContentAlignment" Value="Stretch" />
 
 		<Setter Property="SnapsToDevicePixels" Value="True"/>
+    <Setter Property="UseLayoutRounding" Value="True"/>
 		<Setter Property="Template" Value="{StaticResource TabControlTabPlacementTop}"/>
 		<Style.Triggers>
 

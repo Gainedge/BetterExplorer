@@ -45,7 +45,7 @@ namespace BExplorer.Shell {
 		public void GetItemGroup(int itemIndex, int occurrenceCount, out int groupIndex) {
 			var itemControlWide = this._VirtualListView.Items[itemIndex];
 			foreach (var group in this._VirtualListView.Groups) {
-				if (group.Items.Count(c => c.CachedParsingName == itemControlWide.CachedParsingName) > 0) {
+				if (group.Items.Count(c => c.ParsingName == itemControlWide.ParsingName) > 0) {
 					groupIndex = group.Index;
 					break;
 				}
