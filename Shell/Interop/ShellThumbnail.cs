@@ -380,9 +380,9 @@ namespace BExplorer.Shell.Interop {
 		}
 		public IntPtr GetHBitmap(int iconSize, bool isThumbnail = false) {
 			if (isThumbnail) {
-				this.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
-				this.RetrievalOption = ShellThumbnailRetrievalOption.CacheOnly;
-			} else {
+        this.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
+        this.RetrievalOption = ShellThumbnailRetrievalOption.Default;
+      } else {
 				this.FormatOption = ShellThumbnailFormatOption.IconOnly;
 				this.RetrievalOption = ShellThumbnailRetrievalOption.Default;
 			}

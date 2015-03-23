@@ -2193,14 +2193,17 @@ namespace BExplorer.Shell {
                               ThumbnailsForCacheLoad.Enqueue(index);
                             if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
                               var hbitmap = sho.GetHBitmap(IconSize, false);
-
+                              Gdi32.ConvertPixelByPixel(hbitmap, out width, out height);
                               Gdi32.NativeDraw(hdc, hbitmap, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+                              Gdi32.DeleteObject(hbitmap);
 
                               sho.IsIconLoaded = true;
                             } else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
                               if (sho.Parent != null && (sho.Parent.ParsingName == KnownFolders.Network.ParsingName || sho.Parent.IsSearchFolder || sho.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName))) {
                                 var hIconExe = sho.GetHBitmap(IconSize, false);
+                                Gdi32.ConvertPixelByPixel(hIconExe, out width, out height);
                                 Gdi32.NativeDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+                                Gdi32.DeleteObject(hIconExe);
                                 sho.IsIconLoaded = true;
                               } else
                                 if (!sho.IsIconLoaded) {
@@ -2216,7 +2219,9 @@ namespace BExplorer.Shell {
                                   }
                                 } else {
                                   var hIconExe = sho.GetHBitmap(IconSize, false);
+                                  Gdi32.ConvertPixelByPixel(hIconExe, out width, out height);
                                   Gdi32.NativeDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+                                  Gdi32.DeleteObject(hIconExe);
                                   sho.IsIconLoaded = true;
                                 }
                             }
@@ -3354,7 +3359,7 @@ namespace BExplorer.Shell {
           if (!sho.IsIconLoaded) {
             var temp = sho;
 
-            var icon = temp.Thumbnail(IconSize, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+            var icon = temp.GetHBitmap(IconSize, false);
 
             var shieldOverlay = 0;
             if (sho.ShieldedIconIndex == -1) {
@@ -3362,10 +3367,10 @@ namespace BExplorer.Shell {
 
               sho.ShieldedIconIndex = shieldOverlay;
             }
-            if (icon != null || shieldOverlay > 0) {
+            if (icon != IntPtr.Zero || shieldOverlay > 0) {
               sho.IsIconLoaded = true;
-              //Gdi32.DeleteObject(icon);
-              icon.Dispose();
+              Gdi32.DeleteObject(icon);
+              //icon.Dispose();
               this.RedrawItem(index);
             }
 

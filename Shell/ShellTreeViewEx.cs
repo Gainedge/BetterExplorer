@@ -221,7 +221,11 @@ namespace BExplorer.Shell {
     public void AddItem(IListItemEx item) {
       TreeNode itemNode = null;
       foreach (TreeNode node in this.ShellTreeView.Nodes) {
-        itemNode = this.FromItem(item.Parent, node);
+        try {
+          itemNode = this.FromItem(item.Parent, node);
+        } catch (Exception) {
+          continue;
+        }
         if (itemNode != null) break;
       }
 
