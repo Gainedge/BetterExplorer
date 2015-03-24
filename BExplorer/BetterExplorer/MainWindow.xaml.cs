@@ -1324,9 +1324,9 @@ namespace BetterExplorer {
       this.ShellListView.KeyJumpTimerDone += ShellListView_KeyJumpTimerDone;
       //this.ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
       this.ShellListView.Navigating += ShellListView_Navigating;
-      //this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
-      //this.ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
-      //this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
+      this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
+      this.ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
+      this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
     }
 
     void ShellTree_AfterSelect(object sender, NavigatedEventArgs e) {
@@ -4192,9 +4192,17 @@ namespace BetterExplorer {
         //if (this.ShellListView.CurrentFolder != null)
         
       }
-      this.bcbc.Path = Destination.ParsingName; //this.ShellListView.CurrentFolder.ParsingName;
+      this.bcbc.Path = RemoveLastEmptySeparator(Destination.ParsingName).ToShellParsingName(); //this.ShellListView.CurrentFolder.ParsingName;
     }
 
+    private string RemoveLastEmptySeparator(string path) {
+      path = path.Trim();
+      int sepLength = 1;
+      if (path.EndsWith(@"\")) {
+        path = path.Remove(path.Length - sepLength, sepLength);
+      }
+      return path;
+    }
     #endregion
 
     #region Misc

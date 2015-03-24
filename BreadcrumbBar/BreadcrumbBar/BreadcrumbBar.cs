@@ -342,7 +342,7 @@ namespace Odyssey.Controls {
 						bool isValidPidl = Int64.TryParse(_Path.TrimEnd(Char.Parse(@"\")), out pidl);
 						try
 						{
-              var item = isValidPidl ? FileSystemListItem.ToFileSystemItem(IntPtr.Zero, (IntPtr)pidl) : FileSystemListItem.ToFileSystemItem(IntPtr.Zero, _Path);
+              var item = isValidPidl ? FileSystemListItem.ToFileSystemItem(IntPtr.Zero, (IntPtr)pidl) : FileSystemListItem.ToFileSystemItem(IntPtr.Zero, _Path.ToShellParsingName());
 							if (item != null)
 								OnNavigate(item);
 						}
@@ -548,7 +548,7 @@ namespace Odyssey.Controls {
         string newPathToShellParsingName = newPath.ToShellParsingName();
         Int64 pidl;
         bool isValidPidl = Int64.TryParse(RemoveLastEmptySeparator(newPathToShellParsingName), out pidl);
-        ShellItem shellItem = isValidPidl ? new ShellItem((IntPtr)pidl) : ShellItem.TryCreate(newPathToShellParsingName);// new ShellItem(newPathToShellParsingName);
+        ShellItem shellItem = isValidPidl ? new ShellItem((IntPtr)pidl) : ShellItem.TryCreate(RemoveLastEmptySeparator(newPathToShellParsingName));// new ShellItem(newPathToShellParsingName);
         if (shellItem == null) return;
 
 
@@ -633,6 +633,8 @@ namespace Odyssey.Controls {
 		/// <param name="path">The path from which to remove the last separator.</param>
 		/// <returns>The path without an unnecessary last separator.</returns>
 		private string RemoveLastEmptySeparator(string path) {
+      if (path.Contains(":") && !(path.StartsWith("shell::") || path.StartsWith("::")))
+        return path;
 			path = path.Trim();
 			int sepLength = SeparatorString.Length;
 			if (path.EndsWith(SeparatorString)) {

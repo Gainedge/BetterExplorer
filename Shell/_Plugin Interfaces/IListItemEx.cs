@@ -40,7 +40,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     IExtractIconPWFlags IconType { get; set; }
 
-    IntPtr ILPidl { get; set; }
+    IntPtr ILPidl { get; }
 
     IntPtr PIDL { get; }
 
@@ -100,7 +100,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false);
 
-    IntPtr GetHBitmap(int iconSize, bool isThumbnail);
+    IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false);
+
+    Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags);
 
     String GetDisplayName(BExplorer.Shell.Interop.SIGDN type);
 

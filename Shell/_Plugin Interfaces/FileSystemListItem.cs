@@ -34,12 +34,14 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public Interop.IExtractIconPWFlags IconType { get; set; }
 
-    public IntPtr ILPidl { get; set; }
+    public IntPtr ILPidl {
+      get {
+        return this._Item.ILPidl;
+      }
+    }
 
     public IntPtr PIDL {
       get {
-        //var item = ShellItem.ToShellParsingName(this.ParsingName);
-        //return item.Pidl;
         return this._Item.Pidl;
       }
     }
@@ -211,8 +213,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public IListItemEx Parent {
       get {
+        if (this._Item.Parent == null)
+          return null;
         var parent = new FileSystemListItem();
-        parent.Initialize(this.ParentHandle, this._Item.Parent.ParsingName.ToShellParsingName(), 0);
+        parent.Initialize(this.ParentHandle, this._Item.Parent.Pidl, 0);
         return parent;
       }
     }
@@ -273,7 +277,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 
     public string ToolTipText {
-      get { return String.Empty; }
+      get { return this._Item.ToolTipText; }
     }
 
     #endregion
@@ -318,8 +322,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     #region IListItemEx Members
 
 
-    public IntPtr GetHBitmap(int iconSize, bool isThumbnail) {
-      var bmp = this._Item.Thumbnail.GetHBitmap(iconSize, isThumbnail);
+    public IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false) {
+      var bmp = this._Item.Thumbnail.GetHBitmap(iconSize, isThumbnail, isForce);
       return bmp;
     }
 
@@ -401,6 +405,15 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
       User32.DestroyIcon(info.hIcon);
       return info.iIcon;
+    }
+
+    #endregion
+
+    #region IListItemEx Members
+
+
+    public Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags) {
+      return this._Item.Thumbnail.RefreshThumbnail((uint)iconSize, out flags);
     }
 
     #endregion

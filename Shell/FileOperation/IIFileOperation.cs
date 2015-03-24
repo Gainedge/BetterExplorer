@@ -44,7 +44,8 @@ namespace BExplorer.Shell {
 
     public void CopyItem(IShellItem source, IListItemEx destination) {
       ThrowIfDisposed();
-      if (new ShellItem(source).Parent.Equals(destination)) {
+      var shellItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, new ShellItem(source).Pidl);
+      if (shellItem.Parent.Equals(destination)) {
         _fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_RENAMEONCOLLISION);
       }
       _fileOperation.CopyItem(source, destination.ComInterface, null, null);

@@ -589,7 +589,7 @@ namespace BExplorer.Shell {
         return;
       try {
         var obj = new FileSystemListItem();
-        obj.Initialize(this.LVHandle, e.FullPath);
+        obj.Initialize(this.LVHandle, e.FullPath.ToShellParsingName());
         var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
         if (existingItem == null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
           if (obj.Extension.ToLowerInvariant() != ".tmp") {
@@ -1985,7 +1985,7 @@ namespace BExplorer.Shell {
               #region Case
               this.DraggedItemIndexes.Clear();
               IntPtr dataObjPtr = IntPtr.Zero;
-              //dataObject = this.SelectedItems.ToArray().GetIDataObject(out dataObjPtr);
+              dataObject = this.SelectedItems.ToArray().GetIDataObject(out dataObjPtr);
               //uint ef = 0;
               var ishell2 = (BExplorer.Shell.DataObject.IDragSourceHelper2)new DragDropHelper();
               ishell2.SetFlags(1);
@@ -2162,7 +2162,7 @@ namespace BExplorer.Shell {
                           WTS_CACHEFLAGS flags;
                           bool retrieved = false;
                           IntPtr hThumbnail = IntPtr.Zero;
-                          //thumbnailResult = sho.ExtractAndDrawThumbnail(hdc, (uint)IconSize, out flags, iconBounds, out retrieved, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+                          //sho.ExtractAndDrawThumbnail(hdc, (uint)IconSize, out flags, iconBounds, out retrieved, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
                           //var shoThumbnail = sho.Thumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
                           hThumbnail = sho.GetHBitmap(IconSize, true);
                           int width = 0;
@@ -2174,11 +2174,13 @@ namespace BExplorer.Shell {
                             retrieved = true;
                           }
                           if (retrieved && sho.IsNeedRefreshing) {
-                            sho.ExtractAndDrawThumbnail(hdc, (uint)IconSize, out flags, iconBounds, out retrieved, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index), true);
+                            //sho.ExtractAndDrawThumbnail(hdc, (uint)IconSize, out flags, iconBounds, out retrieved, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index), true);
                             //var thumb = sho.Thumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default).GetHbitmap();
+                            //var thumb = sho.GetHBitmap(IconSize, true);
                             //Gdi32.ConvertPixelByPixel(thumb, out width, out height);
                             //Gdi32.NativeDraw(hdc, thumb, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
                             //Gdi32.DeleteObject(thumb);
+                            ThumbnailsForCacheLoad.Enqueue(index);
                             sho.IsNeedRefreshing = false;
                           }
                           if (retrieved) {
@@ -2432,7 +2434,6 @@ namespace BExplorer.Shell {
     }
 
     void _UnvalidateTimer_Tick(object sender, EventArgs e) {
-      return;
       var newItems = this.CurrentFolder.Where(w => this.ShowHidden ? true : w.IsHidden == this.ShowHidden).ToArray();
       var removedItems = this.Items.Except(newItems, new ShellItemComparer());
       try {
@@ -2597,7 +2598,7 @@ namespace BExplorer.Shell {
       var ddataObject = new F.DataObject();
       // Copy or Cut operation (5 = copy; 2 = cut)
       ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 2, 0, 0, 0 }));
-      //ddataObject.SetData("Shell IDList Array", true, this.SelectedItems.ToArray().CreateShellIDList());
+      ddataObject.SetData("Shell IDList Array", true, this.SelectedItems.ToArray().CreateShellIDList());
       F.Clipboard.SetDataObject(ddataObject, true);
     }
 
@@ -2605,7 +2606,7 @@ namespace BExplorer.Shell {
       var ddataObject = new F.DataObject();
       // Copy or Cut operation (5 = copy; 2 = cut)
       ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 5, 0, 0, 0 }));
-      //ddataObject.SetData("Shell IDList Array", true, this.SelectedItems.ToArray().CreateShellIDList());
+      ddataObject.SetData("Shell IDList Array", true, this.SelectedItems.ToArray().CreateShellIDList());
       F.Clipboard.SetDataObject(ddataObject, true);
     }
 
@@ -2989,16 +2990,19 @@ namespace BExplorer.Shell {
         this.ToolTip = new ToolTip(this);
 
       var folderSettings = new FolderSettings();
-      var isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
-      var columns = this.AllAvailableColumns.Where(w => w.ID == folderSettings.SortColumn).SingleOrDefault();
+      var isThereSettings = false;
+      var columns = new Collumns();
       int CurrentI = 0, LastI = 0;
+      var isFailed = true;
       foreach (var shellItem in destination) {
         F.Application.DoEvents();
         //if (this.Items.Count > 0 && !this.Items.Last().Parent.Equals(shellItem.Parent)) {
         //  return;
         //}
         CurrentI++;
+        
         if (CurrentI == 1) {
+          isFailed = false;
           User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
           Items.Clear();
           ItemsForSubitemsUpdate.Clear();
@@ -3014,6 +3018,15 @@ namespace BExplorer.Shell {
 
           this.ItemForRename = -1;
           this.LastItemForRename = -1;
+          isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
+          columns = this.AllAvailableColumns.Where(w => w.ID == folderSettings.SortColumn).SingleOrDefault();
+          this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
+          if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
+            ResizeIcons(16);
+          else {
+            if (folderSettings.IconSize >= 16)
+              this.ResizeIcons(folderSettings.IconSize);
+          }
         }
         if (this.ShowHidden ? true : !shellItem.IsHidden) {
           //if (!this.Items.Contains(shellItem)) {
@@ -3029,14 +3042,8 @@ namespace BExplorer.Shell {
         }
       }
 
-
-      this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
-      if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
-        ResizeIcons(16);
-      else {
-        if (folderSettings.IconSize >= 16)
-          this.ResizeIcons(folderSettings.IconSize);
-      }
+      if (isFailed)
+        return;
 
       if (isThereSettings) {
         if (folderSettings.Columns != null) {
@@ -3349,8 +3356,8 @@ namespace BExplorer.Shell {
 
     public void _IconsLoadingThreadRun() {
       while (true) {
+        Thread.Sleep(1);
         resetEvent.WaitOne();
-        //Thread.Sleep(1);
         F.Application.DoEvents();
         try {
           int index = 0;
@@ -3387,14 +3394,16 @@ namespace BExplorer.Shell {
     public void _IconCacheLoadingThreadRun() {
       while (true) {
         F.Application.DoEvents();
-        //Thread.Sleep(1);
+        Thread.Sleep(1);
         resetEvent.WaitOne();
         Bitmap result = null;
         try {
           int index = 0;
           if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
           var sho = Items[index];
-          result = sho.Thumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
+          WTS_CACHEFLAGS flags;
+          var res = sho.RefreshThumb(IconSize, out flags);
+          result = sho.Thumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
           sho.IsThumbnailLoaded = true;
           sho.IsNeedRefreshing = false;
           if (result != null) {
@@ -3403,17 +3412,19 @@ namespace BExplorer.Shell {
             } else {
               sho.IsOnlyLowQuality = false;
             }
+            //sho.IsOnlyLowQuality = (flags & WTS_CACHEFLAGS.WTS_LOWQUALITY) == WTS_CACHEFLAGS.WTS_LOWQUALITY;
             //F.Application.DoEvents();
             this.RefreshItem(index);
             result.Dispose();
             result = null;
+            //temp.Dispose();
           }
 
         } catch {
-          if (result != null) {
-            result.Dispose();
-            result = null;
-          }
+          //if (result != null) {
+          //  result.Dispose();
+          //  result = null;
+          //}
           F.Application.DoEvents();
         }
       }

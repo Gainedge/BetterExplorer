@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -358,8 +359,8 @@ namespace BExplorer.Shell {
         return path;
 		}
 
-		public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this ShellItem[] items, out IntPtr dataObjectPtr) {
-			ShellItem parent = items[0].Parent != null ? items[0].Parent : items[0];
+		public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this IListItemEx[] items, out IntPtr dataObjectPtr) {
+			var parent = items[0].Parent != null ? items[0].Parent : items[0];
 
 			IntPtr[] pidls = new IntPtr[items.Length];
 			for (int i = 0; i < items.Length; i++)
@@ -374,8 +375,8 @@ namespace BExplorer.Shell {
 			return dataObj;
 		}
 
-		public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this ShellItem item, out IntPtr dataObjectPtr) {
-			ShellItem parent = item.Parent != null ? item.Parent : item;
+		public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this IListItemEx item, out IntPtr dataObjectPtr) {
+			var parent = item.Parent != null ? item.Parent : item;
 
 			IntPtr[] pidls = new IntPtr[1];
 			pidls[0] = item.ILPidl;
@@ -555,13 +556,13 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public static MemoryStream CreateShellIDList(this ShellItem[] items) {
+		public static MemoryStream CreateShellIDList(this IListItemEx[] items) {
 			// first convert all files into pidls list
 			int pos = 0;
 			byte[][] pidls = new byte[items.Count()][];
 			foreach (var item in items) {
 				// Get pidl based on name
-				IntPtr pidl = item.Pidl;
+				IntPtr pidl = item.PIDL;
 				int pidlSize = ILGetSize(pidl);
 				// Copy over to our managed array
 				pidls[pos] = new byte[pidlSize];

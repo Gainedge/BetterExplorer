@@ -619,7 +619,7 @@ namespace BExplorer.Shell {
 			var ddataObject = new F.DataObject();
 			// Copy or Cut operation (5 = copy; 2 = cut)
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 2, 0, 0, 0 }));
-			//ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
+			ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
 			F.Clipboard.SetDataObject(ddataObject, true);
 		}
 
@@ -627,7 +627,7 @@ namespace BExplorer.Shell {
 			var selectedItems = new[] { this.ShellTreeView.SelectedNode.Tag as IListItemEx };
 			var ddataObject = new F.DataObject();
 			ddataObject.SetData("Preferred DropEffect", true, new MemoryStream(new byte[] { 5, 0, 0, 0 }));
-			//ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
+			ddataObject.SetData("Shell IDList Array", true, selectedItems.CreateShellIDList());
 			F.Clipboard.SetDataObject(ddataObject, true);
 		}
 
@@ -978,8 +978,10 @@ namespace BExplorer.Shell {
                 this.RenameItem(objPrevDir, objNewDir);
 								break;
 							case ShellNotifications.SHCNE.SHCNE_MKDIR:
-                var objAddDir = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
-                this.AddItem(objAddDir);
+                try {
+                  var objAddDir = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
+                  this.AddItem(objAddDir);
+                } catch (FileNotFoundException) {}
 								break;
 							case ShellNotifications.SHCNE.SHCNE_RMDIR:
                 var objDelDir = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);

@@ -219,11 +219,13 @@ namespace BExplorer.Shell.Interop {
 				flags |= SIIGBF.BiggerSizeOk;
 			}
 
-			if (RetrievalOption == ShellThumbnailRetrievalOption.CacheOnly) {
-				flags |= SIIGBF.InCacheOnly;
-			} else if (RetrievalOption == ShellThumbnailRetrievalOption.MemoryOnly) {
-				flags |= SIIGBF.MemoryOnly;
-			}
+      if (FormatOption != ShellThumbnailFormatOption.IconOnly) {
+        if (RetrievalOption == ShellThumbnailRetrievalOption.CacheOnly) {
+          flags |= SIIGBF.InCacheOnly;
+        } else if (RetrievalOption == ShellThumbnailRetrievalOption.MemoryOnly) {
+          flags |= SIIGBF.MemoryOnly;
+        }
+      }
 
 			if (FormatOption == ShellThumbnailFormatOption.IconOnly) {
 				flags |= SIIGBF.IconOnly;
@@ -282,9 +284,7 @@ namespace BExplorer.Shell.Interop {
 		}
 
 		private Bitmap GetBitmap(System.Windows.Size size) {
-      var ii = ShellItem.ToShellParsingName(this._Item.ParsingName);
 			IntPtr hBitmap = GetHBitmap(size);
-      ii.Dispose();
 
 			// return a System.Drawing.Bitmap from the hBitmap
 			Bitmap returnValue = null;
@@ -339,7 +339,7 @@ namespace BExplorer.Shell.Interop {
 		#endregion
 
 		#region Public Methods
-		public Boolean RefreshThumbnail(uint iconSize) {
+		public Boolean RefreshThumbnail(uint iconSize, out WTS_CACHEFLAGS flags) {
 
 			ISharedBitmap bmp = null;
 			WTS_CACHEFLAGS cacheFlags = WTS_CACHEFLAGS.WTS_DEFAULT;
@@ -352,6 +352,7 @@ namespace BExplorer.Shell.Interop {
 			} finally {
 				if (bmp != null) Marshal.ReleaseComObject(bmp);
 			}
+      flags = cacheFlags;
 			return result;
 		}
 		public HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false) {
@@ -361,7 +362,7 @@ namespace BExplorer.Shell.Interop {
 			WTS_THUMBNAILID thumbId = new WTS_THUMBNAILID();
 			try {
 				retrieved = false;
-				res = ThumbnailCache.GetThumbnail(this._Item.ComInterface, iconSize, isRefresh ? (WTS_FLAGS.WTS_FORCEEXTRACTION | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE) : (WTS_FLAGS.WTS_INCACHEONLY | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE), out bmp, flags, thumbId);
+        res = ThumbnailCache.GetThumbnail(this._Item.ComInterface, iconSize, isRefresh ? (WTS_FLAGS.WTS_FORCEEXTRACTION | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE ) : (WTS_FLAGS.WTS_INCACHEONLY | WTS_FLAGS.WTS_SCALETOREQUESTEDSIZE ), out bmp, flags, thumbId);
 				IntPtr hBitmap = IntPtr.Zero;
 				if (bmp != null) {
 					bmp.GetSharedBitmap(out hBitmap);
@@ -378,10 +379,13 @@ namespace BExplorer.Shell.Interop {
 			}
 			return res;
 		}
-		public IntPtr GetHBitmap(int iconSize, bool isThumbnail = false) {
+    public IntPtr GetHBitmap(int iconSize, bool isThumbnail = false, bool isForce = false) {
 			if (isThumbnail) {
         this.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
-        this.RetrievalOption = ShellThumbnailRetrievalOption.Default;
+        if (isForce)
+          this.RetrievalOption = ShellThumbnailRetrievalOption.Default;
+        else
+          this.RetrievalOption = ShellThumbnailRetrievalOption.CacheOnly;
       } else {
 				this.FormatOption = ShellThumbnailFormatOption.IconOnly;
 				this.RetrievalOption = ShellThumbnailRetrievalOption.Default;

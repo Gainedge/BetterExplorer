@@ -587,14 +587,14 @@ namespace BExplorer.Shell {
         pidls[n] = Shell32.ILFindLastID(items[n].PIDL);
 
         if (parent == null) {
-          if (items[n] == ShellItem.Desktop) {
-            parent = null;// ShellItem.Desktop;
+          if (items[n].ParsingName.Equals(ShellItem.Desktop.ParsingName)) {
+            parent = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, ShellItem.Desktop.Pidl);
           } else {
             parent = items[n].Parent;
 
           }
         } else {
-          if (items[n].Parent != parent) {
+          if (!items[n].Parent.Equals(parent)) {
             throw new Exception("All shell items must have the same parent");
           }
         }
