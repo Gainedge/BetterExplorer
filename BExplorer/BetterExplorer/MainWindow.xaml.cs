@@ -4342,8 +4342,6 @@ namespace BetterExplorer {
     }
 
     void ShellListView_ViewStyleChanged(object sender, BExplorer.Shell.ViewChangedEventArgs e) {
-      Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-        (Action)(() => {
           zoomSlider.Value = e.ThumbnailSize;
           btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
           btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;
@@ -4377,7 +4375,6 @@ namespace BetterExplorer {
           } else if (e.CurrentView == ShellViewStyle.Thumbstrip) {
             ViewGallery.SelectedIndex = 8;
           }
-        }));
     }
 
     private void btnNewItem_DropDownOpened(object sender, EventArgs e) {
