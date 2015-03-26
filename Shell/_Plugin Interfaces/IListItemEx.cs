@@ -10,7 +10,7 @@ using BExplorer.Shell.Interop;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
 
-  public interface IListItemEx : IEnumerable<IListItemEx>, IDisposable, IEquatable<IListItemEx> {
+  public interface IListItemEx : IEnumerable<IListItemEx>, IDisposable, IEquatable<IListItemEx>, IEqualityComparer<IListItemEx> {
 
     IShellItem ComInterface { get; }
 
@@ -37,6 +37,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     Boolean IsInitialised { get; set; }
 
     Int32 OverlayIconIndex { get; set; }
+
+    IntPtr Icon { get; set; }
 
     IExtractIconPWFlags IconType { get; set; }
 

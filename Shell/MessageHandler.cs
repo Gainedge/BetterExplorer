@@ -24,7 +24,7 @@ namespace BExplorer.Shell {
 		public void ReinitNotify(IListItemEx item) {
 			if (Notifications != null) {
 				Notifications.UnregisterChangeNotify();
-				//Notifications.RegisterChangeNotify(this.Handle, item, false);
+				Notifications.RegisterChangeNotify(this.Handle, item, false);
 			}
 		}
 		protected override void OnHandleCreated(EventArgs e) {
@@ -133,12 +133,12 @@ namespace BExplorer.Shell {
 								break;
 							case ShellNotifications.SHCNE.SHCNE_CREATE:
 							case ShellNotifications.SHCNE.SHCNE_MKDIR:
-								var obj = new ShellItem(info.Item1);
+                var obj = FileSystemListItem.ToFileSystemItem(this._ParentShellView.LVHandle, info.Item1);
 								var existingItem = this._ParentShellView.Items.SingleOrDefault(s => s.Equals(obj));
 								if (existingItem == null && (obj.Parent != null && obj.Parent.Equals(this._ParentShellView.CurrentFolder))) {
 									if (obj.Extension.ToLowerInvariant() != ".tmp") {
-										//var itemIndex = this._ParentShellView.InsertNewItem(obj);
-										//this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Created, null, obj, itemIndex);
+										var itemIndex = this._ParentShellView.InsertNewItem(obj);
+										this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Created, null, obj, itemIndex);
 									}
 									else {
 										var affectedItem = this._ParentShellView.Items.SingleOrDefault(s => s.Equals(obj.Parent));
@@ -151,7 +151,7 @@ namespace BExplorer.Shell {
 								break;
 							case ShellNotifications.SHCNE.SHCNE_RMDIR:
 							case ShellNotifications.SHCNE.SHCNE_DELETE:
-								var objDeleteF = new ShellItem(info.Item1);
+                var objDeleteF = FileSystemListItem.ToFileSystemItem(this._ParentShellView.LVHandle, info.Item1);
 								if (!String.IsNullOrEmpty(objDeleteF.ParsingName)) {
 									if (objDeleteF.ParsingName.EndsWith(".library-ms") && this._ParentShellView.IsLibraryInModify) {
 										this._ParentShellView.IsLibraryInModify = false;
@@ -168,12 +168,12 @@ namespace BExplorer.Shell {
 								break;
 							case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
 							case ShellNotifications.SHCNE.SHCNE_UPDATEITEM:
-								var objUpdate = new ShellItem(info.Item1);
+								var objUpdate = FileSystemListItem.ToFileSystemItem(this._ParentShellView.LVHandle, info.Item1);
 								var exisitingItem = this._ParentShellView.Items.Where(w => w.Equals(objUpdate)).SingleOrDefault();
 								if (exisitingItem != null)
 									this._ParentShellView.RefreshItem(this._ParentShellView.Items.IndexOf(exisitingItem), true);
 
-								if (objUpdate != null && this._ParentShellView.CurrentFolder != null && objUpdate.ParsingName == this._ParentShellView.CurrentFolder.ParsingName)
+                if (objUpdate != null && this._ParentShellView.CurrentFolder != null && objUpdate.Equals(this._ParentShellView.CurrentFolder))
 									this._ParentShellView.UnvalidateDirectory();
 
 								objUpdate.Dispose();
@@ -189,7 +189,7 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_NETSHARE:
 							case ShellNotifications.SHCNE.SHCNE_NETUNSHARE:
 							case ShellNotifications.SHCNE.SHCNE_ATTRIBUTES:
-								var objNetA = new ShellItem(info.Item1);
+                var objNetA = FileSystemListItem.ToFileSystemItem(this._ParentShellView.LVHandle, info.Item1);
 								var exisitingItemNetA = this._ParentShellView.ItemsHashed.Where(w => w.Key.Equals(objNetA)).SingleOrDefault();
 								if (exisitingItemNetA.Key != null) {
 									this._ParentShellView.RefreshItem(exisitingItemNetA.Value, true);
@@ -205,7 +205,7 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
 								break;
 							case ShellNotifications.SHCNE.SHCNE_FREESPACE:
-								this._ParentShellView.UnvalidateDirectory();
+								//this._ParentShellView.UnvalidateDirectory();
 								break;
 							case ShellNotifications.SHCNE.SHCNE_EXTENDED_EVENT:
 								break;

@@ -99,6 +99,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       this.IsShared = item.IsShared;
       this.IconType = item.IconType;
       this.IsFolder = item.IsFolder;
+      this.IsSearchFolder = item.IsSearchFolder;
       this._Item = item;
     }
 
@@ -119,7 +120,31 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       this.IsShared = item.IsShared;
       this.IconType = item.IconType;
       this.IsFolder = item.IsFolder;
+      this.IsSearchFolder = item.IsSearchFolder;
       this._Item = item;
+      //item.Dispose();
+    }
+    public ShellSearchFolder searchFolder { get; set; }
+
+    public void InitializeWithShellItem(ShellSearchFolder item, IntPtr lvHandle, int index) {
+      this.DisplayName = item.DisplayName;
+      this.ParsingName = item.ParsingName;
+      this.ItemIndex = index;
+      this.ParentHandle = lvHandle;
+      this.IsFileSystem = item.IsFileSystem;
+      this.IsNetworkPath = item.IsNetworkPath;
+      this.Extension = item.Extension;
+      this.IsDrive = item.IsDrive;
+      this.IsHidden = item.IsHidden;
+      this.OverlayIconIndex = -1;
+      this.ShieldedIconIndex = -1;
+      //this.HasSubFolders = item.HasSubFolders;
+      this.IsShared = item.IsShared;
+      this.IconType = item.IconType;
+      this.IsFolder = item.IsFolder;
+      this.IsSearchFolder = item.IsSearchFolder;
+      this._Item = item;
+      this.searchFolder = item;
       //item.Dispose();
     }
 
@@ -147,6 +172,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       this.IsShared = item.IsShared;
       this.IconType = item.IconType;
       this.IsFolder = item.IsFolder;
+      this.IsSearchFolder = item.IsSearchFolder;
       this._Item = item;
       //item.Dispose();
     }
@@ -161,7 +187,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 
     public IEnumerator<IListItemEx> GetEnumerator() {
-      IShellFolder folder = this._Item.GetIShellFolder();
+      IShellFolder folder = this.GetIShellFolder();
       IEnumIDList enumId = ShellItem.GetIEnumIDList(folder, SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.INIT_ON_FIRST_NEXT | SHCONTF.STORAGE | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.INIT_ON_FIRST_NEXT |
           SHCONTF.NONFOLDERS | SHCONTF.FASTITEMS | SHCONTF.ENABLE_ASYNC);
       uint count;
@@ -189,7 +215,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     }
 
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-      throw new NotImplementedException();
+      return GetEnumerator();
     }
 
     public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) {
@@ -373,6 +399,12 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       return fsItem;
     }
 
+    public static FileSystemListItem ToFileSystemItem(IntPtr parentHandle, ShellSearchFolder folder) {
+      var fsItem = new FileSystemListItem();
+      fsItem.InitializeWithShellItem(folder, parentHandle, 0);
+      return fsItem;
+    }
+
     #region IListItemEx Members
 
 
@@ -414,6 +446,35 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     public Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags) {
       return this._Item.Thumbnail.RefreshThumbnail((uint)iconSize, out flags);
+    }
+
+    #endregion
+
+    #region IListItemEx Members
+
+
+    public IntPtr Icon { get; set; }
+
+    #endregion
+
+    #region IEqualityComparer<IListItemEx> Members
+
+    public bool Equals(IListItemEx x, IListItemEx y) {
+      return x.Equals(y);
+    }
+
+    public int GetHashCode(IListItemEx obj) {
+      return 0;
+      if (Object.ReferenceEquals(obj, null)) return 0;
+
+      //Get hash code for the Name field if it is not null.
+      int hashProductName = obj.ParsingName == null ? 0 : obj.ParsingName.GetHashCode();
+
+      ////Get hash code for the Code field.
+      //int hashProductCode = product.Code.GetHashCode();
+
+      //Calculate the hash code for the product.
+      return hashProductName;
     }
 
     #endregion

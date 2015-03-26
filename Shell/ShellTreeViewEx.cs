@@ -73,8 +73,8 @@ namespace BExplorer.Shell {
 		private ShellView _ShellListView;
 		private List<IntPtr> UpdatedImages = new List<IntPtr>();
 		private List<IntPtr> CheckedFroChilds = new List<IntPtr>();
-		private SyncQueue<IntPtr> imagesQueue = new SyncQueue<IntPtr>(); //7000
-		private SyncQueue<IntPtr> childsQueue = new SyncQueue<IntPtr>(); //7000
+    private ConQueue<IntPtr> imagesQueue = new ConQueue<IntPtr>(); //7000
+    private ConQueue<IntPtr> childsQueue = new ConQueue<IntPtr>(); //7000
 		private Thread imagesThread;
 		private Thread childsThread;
 		private Boolean isFromTreeview;
@@ -196,7 +196,6 @@ namespace BExplorer.Shell {
       }
     }
     public void SelItem(IListItemEx item) {
-
       var node = this.FromItem(item);
       if (node != null) {
         this.ShellTreeView.SelectedNode = node;
@@ -389,7 +388,6 @@ namespace BExplorer.Shell {
         this.SelItem(this.ShellListView.CurrentFolder);
 		}
 
-		[System.Diagnostics.DebuggerStepThrough]
 		public void LoadTreeImages() {
 			while (true) {
 				this._ResetEvent.WaitOne();
@@ -399,60 +397,63 @@ namespace BExplorer.Shell {
 				var hash = -1;
 				var pidl = IntPtr.Zero;
 				var visible = false;
+        if (this.ShellTreeView != null) {
+          this.ShellTreeView.Invoke((Action)(() => {
 
-				this.Invoke((Action)(() => {
-					if (this.ShellTreeView != null) {
-						node = TreeNode.FromHandle(ShellTreeView, handle);
-						treeHandle = ShellTreeView.Handle;
-						if (node != null)
-							visible = node.IsVisible;
+            node = TreeNode.FromHandle(ShellTreeView, handle);
+            treeHandle = ShellTreeView.Handle;
+            if (node != null) {
+              visible = node.IsVisible;
 
-						//if (node != null) {
-						//	var item = node.Tag as ShellItem;
-						//	if (item != null) {
-						//		ShellItem newItem = null;
-						//		try {
-						//			newItem = ShellItem.ToShellParsingName(item.ParsingName);
-						//		} catch (Exception) {
-						//			newItem = item;
-						//		}
-						//		if (node != null && newItem != null && this.ShellTreeView != null) {
-						//			treeHandle = this.ShellTreeView.Handle;
-						//			hash = newItem.GetHashCode();
-						//			pidl = newItem.AbsolutePidl;
-						//			visible = node.IsVisible;
-						//			newItem.Dispose();
-						//		}
-						//	}
-						//}
-					}
-				}));
-				if (node != null) {
-          var item = node.Tag as IListItemEx;
-					if (item != null) {
-            IListItemEx newItem = null;
-						try {
-							newItem = FileSystemListItem.ToFileSystemItem (IntPtr.Zero, item.ParsingName.ToShellParsingName());
-						}
-						catch (Exception) {
-							newItem = item;
-						}
-						if (node != null && newItem != null) {
-							try {
-								hash = newItem.GetHashCode();
-								pidl = newItem.AbsolutePidl;
-								newItem.Dispose();
-							}
-							catch (Exception) {
+              //if (node != null) {
+              //	var item = node.Tag as ShellItem;
+              //	if (item != null) {
+              //		ShellItem newItem = null;
+              //		try {
+              //			newItem = ShellItem.ToShellParsingName(item.ParsingName);
+              //		} catch (Exception) {
+              //			newItem = item;
+              //		}
+              //		if (node != null && newItem != null && this.ShellTreeView != null) {
+              //			treeHandle = this.ShellTreeView.Handle;
+              //			hash = newItem.GetHashCode();
+              //			pidl = newItem.AbsolutePidl;
+              //			visible = node.IsVisible;
+              //			newItem.Dispose();
+              //		}
+              //	}
+              //}
+              var item = node.Tag as IListItemEx;
+              pidl = item.AbsolutePidl;
+            }
 
-							}
-						}
-					}
-				}
+          }));
+        }
+				//if (node != null) {
+    //      var item = node.Tag as IListItemEx;
+				//	if (item != null) {
+    //        //IListItemEx newItem = null;
+				//		//try {
+				//		//	newItem = FileSystemListItem.ToFileSystemItem (IntPtr.Zero, item.ParsingName.ToShellParsingName());
+				//		//}
+				//		//catch (Exception) {
+				//			newItem = item;
+				//		//}
+				//		if (node != null && newItem != null) {
+				//			try {
+				//				pidl = newItem.AbsolutePidl;
+				//				//newItem.Dispose();
+				//			}
+				//			catch (Exception) {
+
+				//			}
+				//		}
+				//	}
+				//}
 				if (visible) {
 					var nodeHandle = handle;
-					//Thread.Sleep(1);
-					//Application.DoEvents();
+					Thread.Sleep(1);
+					Application.DoEvents();
 
           SetNodeImage(nodeHandle, pidl, treeHandle, !(node.Parent != null && (node.Parent.Tag as IListItemEx).ParsingName == KnownFolders.Links.ParsingName));
 				}
@@ -466,21 +467,22 @@ namespace BExplorer.Shell {
 				TreeNode node = null;
 				IntPtr treeHandle = IntPtr.Zero;
 				var visible = true;
-				var pidl = IntPtr.Zero;
+				//var pidl = IntPtr.Zero;
+        if (ShellTreeView != null) {
+          this.ShellTreeView.Invoke((Action)(() => {
 
-				this.Invoke((Action)(() => {
-          if (ShellTreeView != null) {
             node = TreeNode.FromHandle(ShellTreeView, handle);
             treeHandle = this.ShellTreeView.Handle;
             if (node != null) {
               visible = node.IsVisible;
-              if (node.Tag != null)
-                pidl = ((IListItemEx)node.Tag).PIDL;
+              //if (node.Tag != null)
+              //  pidl = ((IListItemEx)node.Tag).PIDL;
             }
-          }
-				}));
+
+          }));
+        }
 				
-				if (!visible || pidl == IntPtr.Zero)
+				if (!visible)
 					continue;
 
 				if (node != null && node.Nodes.Count > 0) {
@@ -491,12 +493,12 @@ namespace BExplorer.Shell {
 						//TODO: Try to remove this Try Catch! It's slowing this down!!
 						//TODO: Have the try catch only around the error causing code
 						try {
-							var sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, pidl);
+              var sho = (node.Tag as IListItemEx);// FileSystemListItem.ToFileSystemItem(IntPtr.Zero, pidl);
 							if (!sho.HasSubFolders) {
 								User32.SendMessage(treeHandle, BExplorer.Shell.Interop.MSG.TVM_DELETEITEM, 0, nodeHandle);
 							}
 							this.CheckedFroChilds.Add(handle);
-							sho.Dispose();
+							//sho.Dispose();
 						}
 						catch (Exception) {
 						}

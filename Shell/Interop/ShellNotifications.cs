@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell.Interop {
 	/// <summary>
@@ -483,11 +484,11 @@ namespace BExplorer.Shell.Interop {
 		}
 
 
-		public ulong RegisterChangeNotify(IntPtr hWnd, ShellItem item, bool Recursively) {
+		public ulong RegisterChangeNotify(IntPtr hWnd, IListItemEx item, bool Recursively) {
 			IntPtr handle = IntPtr.Zero;
 			handle = hWnd;
 			if (notifyid != 0) return (0);
-			var changeentry = new SHChangeNotifyEntry() { pIdl = item.Pidl, Recursively = Recursively, };
+			var changeentry = new SHChangeNotifyEntry() { pIdl = item.PIDL, Recursively = Recursively, };
 			var changenetrys = new SHChangeNotifyEntry[1] { changeentry };
 			//changenetrys[0] = changeentry;
 

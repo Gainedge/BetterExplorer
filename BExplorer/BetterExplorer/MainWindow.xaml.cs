@@ -1330,7 +1330,7 @@ namespace BetterExplorer {
     }
 
     void ShellTree_AfterSelect(object sender, NavigatedEventArgs e) {
-      this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
+      //this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
     }
 
     protected override void OnSourceInitialized(EventArgs e) {
@@ -3038,8 +3038,11 @@ namespace BetterExplorer {
       try {
         if (edtSearchBox.FullSearchTerms != "") {
           var searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
-          //var searchFolder = new ShellSearchFolder(searchCondition, ShellListView.CurrentFolder);
-          //NavigationController(searchFolder);
+          var shellItem = new ShellItem(ShellListView.CurrentFolder.PIDL);
+          var searchFolder = new ShellSearchFolder(searchCondition, shellItem);
+          NavigationController(FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, searchFolder));
+          //shellItem.Dispose();
+          //searchFolder.Dispose();
         }
       } catch (Exception ex) {
         MessageBox.Show(ex.Message, ex.GetType().ToString(), MessageBoxButton.OK);
@@ -4009,7 +4012,7 @@ namespace BetterExplorer {
         //NavigationController(this.ShellListView.CurrentFolder);
       }
       //if (!e.Folder.Equals(this.ShellListView.CurrentFolder)) {
-      this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName.ToShellParsingName();
+      //this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName.ToShellParsingName();
       //}
       
       SetupColumnsButton();
@@ -4192,7 +4195,7 @@ namespace BetterExplorer {
         //if (this.ShellListView.CurrentFolder != null)
         
       }
-      this.bcbc.Path = RemoveLastEmptySeparator(Destination.ParsingName).ToShellParsingName(); //this.ShellListView.CurrentFolder.ParsingName;
+      //this.bcbc.Path = RemoveLastEmptySeparator(Destination.ParsingName).ToShellParsingName(); //this.ShellListView.CurrentFolder.ParsingName;
     }
 
     private string RemoveLastEmptySeparator(string path) {
@@ -4339,39 +4342,42 @@ namespace BetterExplorer {
     }
 
     void ShellListView_ViewStyleChanged(object sender, BExplorer.Shell.ViewChangedEventArgs e) {
-      zoomSlider.Value = e.ThumbnailSize;
-      btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
-      btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;
+      Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+        (Action)(() => {
+          zoomSlider.Value = e.ThumbnailSize;
+          btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
+          btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;
 
-      if (e.CurrentView == ShellViewStyle.ExtraLargeIcon) {
-        ViewGallery.SelectedIndex = 0;
-      } else if (e.CurrentView == ShellViewStyle.LargeIcon) {
-        ViewGallery.SelectedIndex = 1;
-      } else if (e.CurrentView == ShellViewStyle.Medium) {
-        ViewGallery.SelectedIndex = 2;
-        btnSbIcons.IsChecked = true;
-      } else if (e.CurrentView == ShellViewStyle.SmallIcon) {
-        ViewGallery.SelectedIndex = 3;
-      } else {
-        btnSbIcons.IsChecked = false;
-      }
+          if (e.CurrentView == ShellViewStyle.ExtraLargeIcon) {
+            ViewGallery.SelectedIndex = 0;
+          } else if (e.CurrentView == ShellViewStyle.LargeIcon) {
+            ViewGallery.SelectedIndex = 1;
+          } else if (e.CurrentView == ShellViewStyle.Medium) {
+            ViewGallery.SelectedIndex = 2;
+            btnSbIcons.IsChecked = true;
+          } else if (e.CurrentView == ShellViewStyle.SmallIcon) {
+            ViewGallery.SelectedIndex = 3;
+          } else {
+            btnSbIcons.IsChecked = false;
+          }
 
-      if (e.CurrentView == ShellViewStyle.List) {
-        ViewGallery.SelectedIndex = 4;
-      } else if (e.CurrentView == ShellViewStyle.Details) {
-        ViewGallery.SelectedIndex = 5;
-        btnSbDetails.IsChecked = true;
-      } else {
-        btnSbDetails.IsChecked = false;
-      }
+          if (e.CurrentView == ShellViewStyle.List) {
+            ViewGallery.SelectedIndex = 4;
+          } else if (e.CurrentView == ShellViewStyle.Details) {
+            ViewGallery.SelectedIndex = 5;
+            btnSbDetails.IsChecked = true;
+          } else {
+            btnSbDetails.IsChecked = false;
+          }
 
-      if (e.CurrentView == ShellViewStyle.Tile) {
-        ViewGallery.SelectedIndex = 6;
-      } else if (e.CurrentView == ShellViewStyle.Content) {
-        ViewGallery.SelectedIndex = 7;
-      } else if (e.CurrentView == ShellViewStyle.Thumbstrip) {
-        ViewGallery.SelectedIndex = 8;
-      }
+          if (e.CurrentView == ShellViewStyle.Tile) {
+            ViewGallery.SelectedIndex = 6;
+          } else if (e.CurrentView == ShellViewStyle.Content) {
+            ViewGallery.SelectedIndex = 7;
+          } else if (e.CurrentView == ShellViewStyle.Thumbstrip) {
+            ViewGallery.SelectedIndex = 8;
+          }
+        }));
     }
 
     private void btnNewItem_DropDownOpened(object sender, EventArgs e) {

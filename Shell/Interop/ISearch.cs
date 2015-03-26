@@ -587,13 +587,13 @@ namespace BExplorer.Shell.Interop {
 		HResult GetIDList([Out] IntPtr ppidl);
 	}
 
-	/*
+	
 	[ComImport,
 	Guid(InterfaceGuids.ISearchFolderItemFactory),
 	CoClass(typeof(SearchFolderItemFactoryCoClass))]
 	internal interface INativeSearchFolderItemFactory : ISearchFolderItemFactory {
 	}
-	*/
+	
 
 	[ComImport,
 	ClassInterface(ClassInterfaceType.None),

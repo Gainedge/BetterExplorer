@@ -1449,6 +1449,7 @@ namespace BExplorer.Shell {
 		// then GetHashCode() must return the same value for these objects.
 
     public int GetHashCode(IListItemEx product) {
+      return 0;
 			//Check whether the object is null
 			if (Object.ReferenceEquals(product, null)) return 0;
 

@@ -54,7 +54,7 @@ namespace BExplorer.Shell {
 
 
 	public class ConQueue<T> {
-#if !ConcurrentQueue
+#if ConcurrentQueue
 
 		public readonly ConcurrentQueue<T> queue = new ConcurrentQueue<T>();
 
@@ -70,7 +70,13 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="item">The object to add to the System.Collections.Generic.Queue<T>. The value can be null for reference types.</param>
 		public void Enqueue(T item) {
-			queue.Enqueue(item);
+      lock (queue) {
+        queue.Enqueue(item);
+        if (queue.Count == 1) {
+          // wake up any blocked dequeue
+          System.Threading.Monitor.PulseAll(queue);
+        }
+      }
 		}
 
 		/// <summary>
@@ -84,12 +90,16 @@ namespace BExplorer.Shell {
 		/// </Exceptions>
 		public T Dequeue() {
 			T Result;
+      lock (queue) {
+        if (queue.Count == 0) {
+          System.Threading.Monitor.Wait(queue);
+        }
+        if (!queue.TryDequeue(out Result)) {
+          //this.ToString();
 
-			if (!queue.TryDequeue(out Result)) {
-				//this.ToString();
-
-				//throw new ApplicationException("Why!!");
-			}
+          //throw new ApplicationException("Why!!");
+        }
+      }
 
 			return Result;
 		}

@@ -495,9 +495,9 @@ namespace BExplorer.Shell {
     private int _LastDropHighLightedItemIndex = -1;
     private String _NewName { get; set; }
 
-    private ConQueue<int> overlayQueue = new ConQueue<int>(); //3000
-    private ConQueue<int> ThumbnailsForCacheLoad = new ConQueue<int>(); //5000
-    private ConQueue<int> waitingThumbnails = new ConQueue<int>(); //3000
+    private ConQueue<int?> overlayQueue = new ConQueue<int?>(); //3000
+    private ConQueue<int?> ThumbnailsForCacheLoad = new ConQueue<int?>(); //5000
+    private ConQueue<int?> waitingThumbnails = new ConQueue<int?>(); //3000
 
 
 
@@ -553,15 +553,17 @@ namespace BExplorer.Shell {
         }
         if (!File.Exists(e.FullPath) && !Directory.Exists(e.FullPath))
           return;
-        var objUpdate = new ShellItem(e.FullPath);
-        var exisitingItem = this.Items.Where(w => w.Equals(objUpdate)).SingleOrDefault();
-        if (exisitingItem != null) {
-          this.RefreshItem(this.Items.IndexOf(exisitingItem), true);
-        }
-        if (objUpdate != null && this.CurrentFolder != null && objUpdate.Equals(this.CurrentFolder)) {
-          this.UnvalidateDirectory();
-        }
-        objUpdate.Dispose();
+        try {
+          var objUpdate = FileSystemListItem.ToFileSystemItem(this.LVHandle, e.FullPath.ToShellParsingName());
+          var exisitingItem = this.Items.Where(w => w.Equals(objUpdate)).SingleOrDefault();
+          if (exisitingItem != null) {
+            this.RefreshItem(this.Items.IndexOf(exisitingItem), true);
+          }
+          if (objUpdate != null && this.CurrentFolder != null && objUpdate.Equals(this.CurrentFolder)) {
+            this.UnvalidateDirectory();
+          }
+          objUpdate.Dispose();
+        } catch (FileNotFoundException) {}
       } catch (FileNotFoundException) {
 
       } catch (ArgumentOutOfRangeException) {
@@ -2434,6 +2436,7 @@ namespace BExplorer.Shell {
     }
 
     void _UnvalidateTimer_Tick(object sender, EventArgs e) {
+      this._UnvalidateTimer.Stop();
       var newItems = this.CurrentFolder.Where(w => this.ShowHidden ? true : w.IsHidden == this.ShowHidden).ToArray();
       var removedItems = this.Items.Except(newItems, new ShellItemComparer());
       try {
@@ -2474,7 +2477,7 @@ namespace BExplorer.Shell {
       newItems = null;
       removedItems = null;
       Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-      this._UnvalidateTimer.Stop();
+      
     }
 
     protected override void OnHandleDestroyed(EventArgs e) {
@@ -2909,7 +2912,7 @@ namespace BExplorer.Shell {
         }
 
         var i = 0;
-        this.ItemsHashed = this.Items.ToArray().Distinct().ToDictionary(k => k, el => i++, new ShellItemComparer());
+        this.ItemsHashed = this.Items.ToArray().Distinct().ToDictionary(k => k, el => i++);
         User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
         var colIndexReal = this.Collumns.IndexOf(this.Collumns.Where(w => w.ID == this.LastSortedColumnId).SingleOrDefault());
         if (colIndexReal > -1) {
@@ -2958,6 +2961,8 @@ namespace BExplorer.Shell {
     [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
     private async void Navigate(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false) {
       this._UnvalidateTimer.Stop();
+      if (destination.Equals(this.CurrentFolder))
+        return;
       if (!refresh && Navigating != null)
         Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
       Thread t = new Thread(() => {
@@ -2992,55 +2997,63 @@ namespace BExplorer.Shell {
       var folderSettings = new FolderSettings();
       var isThereSettings = false;
       var columns = new Collumns();
-      int CurrentI = 0, LastI = 0;
       var isFailed = true;
-      foreach (var shellItem in destination) {
-        F.Application.DoEvents();
-        //if (this.Items.Count > 0 && !this.Items.Last().Parent.Equals(shellItem.Parent)) {
-        //  return;
-        //}
-        CurrentI++;
-        
-        if (CurrentI == 1) {
-          isFailed = false;
-          User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
-          Items.Clear();
-          ItemsForSubitemsUpdate.Clear();
+      var isRun = false;
+      await Task.Run(() => {
+        int CurrentI = 0, LastI = 0;
+        if (!isRun) {
+          foreach (var shellItem in destination) {
+            //F.Application.DoEvents();
+            //if (this.Items.Count > 0 && !this.Items.Last().Parent.Equals(shellItem.Parent)) {
+            //  return;
+            //}
+            CurrentI++;
 
-          waitingThumbnails.Clear();
-          overlayQueue.Clear();
-          shieldQueue.Clear();
-          this._CuttedIndexes.Clear();
-          this.SubItemValues.Clear();
+            if (CurrentI == 1 && !isRun) {
+              isFailed = false;
+              User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
+              Items.Clear();
+              ItemsForSubitemsUpdate.Clear();
 
-          resetEvent.Reset();
-          _ResetTimer.Stop();
+              waitingThumbnails.Clear();
+              overlayQueue.Clear();
+              shieldQueue.Clear();
+              this._CuttedIndexes.Clear();
+              this.SubItemValues.Clear();
 
-          this.ItemForRename = -1;
-          this.LastItemForRename = -1;
-          isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
-          columns = this.AllAvailableColumns.Where(w => w.ID == folderSettings.SortColumn).SingleOrDefault();
-          this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
-          if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
-            ResizeIcons(16);
-          else {
-            if (folderSettings.IconSize >= 16)
-              this.ResizeIcons(folderSettings.IconSize);
+              resetEvent.Reset();
+              _ResetTimer.Stop();
+
+              this.ItemForRename = -1;
+              this.LastItemForRename = -1;
+              isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
+              columns = this.AllAvailableColumns.Where(w => w.ID == folderSettings.SortColumn).SingleOrDefault();
+              this.Invoke((Action)(() => {
+                this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
+                if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
+                  ResizeIcons(16);
+                else {
+                  if (folderSettings.IconSize >= 16)
+                    this.ResizeIcons(folderSettings.IconSize);
+                }
+              }));
+            }
+            if (this.ShowHidden ? true : !shellItem.IsHidden) {
+              //if (!this.Items.Contains(shellItem)) {
+              this.Items.Add(shellItem);
+              //}
+            }
+            if (CurrentI - LastI >= (destination.IsSearchFolder ? 250 : 2000)) {
+              //F.Application.DoEvents();
+              this.SetSortCollumn(isThereSettings ? columns : this.Collumns.First(), isThereSettings ? folderSettings.SortOrder : SortOrder.Ascending, false);
+              if (destination.IsSearchFolder)
+                Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+              LastI = CurrentI;
+            }
           }
+          isRun = true;
         }
-        if (this.ShowHidden ? true : !shellItem.IsHidden) {
-          //if (!this.Items.Contains(shellItem)) {
-          this.Items.Add(shellItem);
-          //}
-        }
-        if (CurrentI - LastI >= (destination.IsSearchFolder ? 70 : 2000)) {
-          F.Application.DoEvents();
-          this.SetSortCollumn(isThereSettings ? columns : this.Collumns.First(), isThereSettings ? folderSettings.SortOrder : SortOrder.Ascending, false);
-          if (destination.IsSearchFolder)
-            Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-          LastI = CurrentI;
-        }
-      }
+      });
 
       if (isFailed)
         return;
@@ -3108,7 +3121,7 @@ namespace BExplorer.Shell {
 
       if (!isThereSettings) {
         var i = 0;
-        this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++, new ShellItemComparer());
+        this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k, el => i++);
       }
       GC.Collect();
       Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -3316,38 +3329,43 @@ namespace BExplorer.Shell {
     }
 
 
-    private bool ThreadRun_Helper(ConQueue<int> queue, bool useComplexCheck, ref int index) {
+    private bool ThreadRun_Helper(ConQueue<int?> queue, bool useComplexCheck, ref int? index) {
       //TODO: Dimitar, please fix this exception if you can
 
       index = queue.Dequeue();
-      var itemBounds = new User32.RECT();
-      var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-      User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+      if (index != null) {
+        var itemBounds = new User32.RECT();
+        var lvi = new LVITEMINDEX() { iItem = index.Value, iGroup = this.GetGroupIndex(index.Value) };
+        User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 
-      var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+        var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 
-      if (useComplexCheck)
-        return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
-      else
-        return r.IntersectsWith(this.ClientRectangle);
+        if (useComplexCheck)
+          return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
+        else
+          return r.IntersectsWith(this.ClientRectangle);
+      } else {
+        return false;
+      }
     }
 
     public void _OverlaysLoadingThreadRun() {
       while (true) {
-        F.Application.DoEvents();
+        //F.Application.DoEvents();
         //Thread.Sleep(1);
         resetEvent.WaitOne();
         try {
-          int index = 0;
+          int? index = 0;
           if (!ThreadRun_Helper(overlayQueue, false, ref index)) continue;
-          var shoTemp = Items[index];
-          var sho = shoTemp;
+          var shoTemp = Items[index.Value];
+          var sho = FileSystemListItem.ToFileSystemItem(shoTemp.ParentHandle, shoTemp.ParsingName.ToShellParsingName());
 
           int overlayIndex = 0;
           small.GetIconIndexWithOverlay(sho.PIDL, out overlayIndex);
+          sho.Dispose();
           shoTemp.OverlayIconIndex = overlayIndex;
           if (overlayIndex > 0)
-            RedrawItem(index);
+            RedrawItem(index.Value);
         } catch (Exception) {
           F.Application.DoEvents();
         }
@@ -3356,13 +3374,13 @@ namespace BExplorer.Shell {
 
     public void _IconsLoadingThreadRun() {
       while (true) {
-        Thread.Sleep(1);
+        //Thread.Sleep(1);
         resetEvent.WaitOne();
-        F.Application.DoEvents();
+        //F.Application.DoEvents();
         try {
-          int index = 0;
+          int? index = 0;
           if (!ThreadRun_Helper(waitingThumbnails, false, ref index)) continue;
-          var sho = Items[index];
+          var sho = Items[index.Value];
           if (!sho.IsIconLoaded) {
             var temp = sho;
 
@@ -3378,7 +3396,7 @@ namespace BExplorer.Shell {
               sho.IsIconLoaded = true;
               Gdi32.DeleteObject(icon);
               //icon.Dispose();
-              this.RedrawItem(index);
+              this.RedrawItem(index.Value);
             }
 
             //if ((sho.IsNetworkPath) && !sho.ParsingName.StartsWith("::")) temp.Dispose();
@@ -3393,17 +3411,17 @@ namespace BExplorer.Shell {
 
     public void _IconCacheLoadingThreadRun() {
       while (true) {
-        F.Application.DoEvents();
-        Thread.Sleep(1);
+        //F.Application.DoEvents();
+        //Thread.Sleep(1);
         resetEvent.WaitOne();
         Bitmap result = null;
         try {
-          int index = 0;
+          int? index = 0;
           if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
-          var sho = Items[index];
+          var sho = Items[index.Value];
           WTS_CACHEFLAGS flags;
-          var res = sho.RefreshThumb(IconSize, out flags);
-          result = sho.Thumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
+          //var res = sho.RefreshThumb(IconSize, out flags);
+          result = sho.Thumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
           sho.IsThumbnailLoaded = true;
           sho.IsNeedRefreshing = false;
           if (result != null) {
@@ -3414,7 +3432,8 @@ namespace BExplorer.Shell {
             }
             //sho.IsOnlyLowQuality = (flags & WTS_CACHEFLAGS.WTS_LOWQUALITY) == WTS_CACHEFLAGS.WTS_LOWQUALITY;
             //F.Application.DoEvents();
-            this.RefreshItem(index);
+            //sho.Icon = sho.GetHBitmap(IconSize, true, true);
+            this.RefreshItem(index.Value);
             result.Dispose();
             result = null;
             //temp.Dispose();
@@ -3699,18 +3718,22 @@ namespace BExplorer.Shell {
     #region Private Methods
 
     private void ReloadThreads() {
-      this._IconLoadingThread.Abort();
-      this._IconCacheLoadingThread.Abort();
-      this._OverlaysLoadingThread.Abort();
-      this._UpdateSubitemValuesThread.Abort();
-      this._IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
-      this._IconLoadingThread.Start();
-      this._IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
-      this._IconCacheLoadingThread.Start();
-      this._OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
-      this._OverlaysLoadingThread.Start();
-      this._UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
-      this._UpdateSubitemValuesThread.Start();
+      try {
+        this._IconLoadingThread.Abort();
+        this._IconCacheLoadingThread.Abort();
+        this._OverlaysLoadingThread.Abort();
+        this._UpdateSubitemValuesThread.Abort();
+        this._IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
+        this._IconLoadingThread.Start();
+        this._IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
+        this._IconCacheLoadingThread.Start();
+        this._OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
+        this._OverlaysLoadingThread.Start();
+        this._UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
+        this._UpdateSubitemValuesThread.Start();
+      } catch (Exception) {
+
+      }
     }
 
     /// <summary>
