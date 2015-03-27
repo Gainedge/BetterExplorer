@@ -478,5 +478,14 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     }
 
     #endregion
+
+    #region IListItemEx Members
+
+
+    public int GetUniqueID() {
+      return this.ParsingName.GetHashCode();
+    }
+
+    #endregion
   }
 }

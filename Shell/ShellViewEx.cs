@@ -22,6 +22,10 @@ using BExplorer.Shell.DropTargetHelper;
 using System.Security.Permissions;
 using System.Threading.Tasks;
 using BExplorer.Shell._Plugin_Interfaces;
+using System.Data.SQLite;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Data;
 
 namespace BExplorer.Shell {
 
@@ -418,6 +422,14 @@ namespace BExplorer.Shell {
     private System.Windows.Forms.Timer _UnvalidateTimer = new System.Windows.Forms.Timer();
     private System.Windows.Forms.Timer _MaintenanceTimer = new System.Windows.Forms.Timer();
     private string _DBPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite");
+     private SQLite.SQLiteConnection db16 = new SQLite.SQLiteConnection("Data Source=" + @"D:\thumbnail16.sqlite3" + ";Version=3;");
+     private SQLite.SQLiteConnection db48 = new SQLite.SQLiteConnection("Data Source=" + @"D:\thumbnail48.sqlite3" + ";Version=3;");
+     private SQLite.SQLiteConnection db96 = new SQLite.SQLiteConnection("Data Source=" + @"D:\thumbnail96.sqlite3" + ";Version=3;");
+     private SQLite.SQLiteConnection db256 = new SQLite.SQLiteConnection("Data Source=" + @"D:\thumbnail256.sqlite3" + ";Version=3;");
+     private SQLite.SQLiteConnection dbi16 = new SQLite.SQLiteConnection("Data Source=" + @"D:\iconcache16.sqlite3" + ";Version=3;");
+     private SQLite.SQLiteConnection dbi48 = new SQLite.SQLiteConnection("Data Source=" + @"D:\iconcache48.sqlite3" + ";Version=3;");
+     private SQLite.SQLiteConnection dbi96 = new SQLite.SQLiteConnection("Data Source=" + @"D:\iconcache96.sqlite3" + ";Version=3;");
+     private SQLite.SQLiteConnection dbi256 = new SQLite.SQLiteConnection("Data Source=" + @"D:\iconcache256.sqlite3" + ";Version=3;");
     private List<int> SelectedIndexes {
       get {
         var selItems = new List<int>();
@@ -2166,70 +2178,87 @@ namespace BExplorer.Shell {
                           IntPtr hThumbnail = IntPtr.Zero;
                           //sho.ExtractAndDrawThumbnail(hdc, (uint)IconSize, out flags, iconBounds, out retrieved, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
                           //var shoThumbnail = sho.Thumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.CacheOnly);
-                          hThumbnail = sho.GetHBitmap(IconSize, true);
+                          var bmp = RetrieveImageFromDB(IconSize, sho).Result;
+                          hThumbnail = bmp != null ? bmp.GetHbitmap() : IntPtr.Zero;// sho.GetHBitmap(IconSize, true);
                           int width = 0;
                           int height = 0;
                           if (hThumbnail != IntPtr.Zero) {
                             Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
                             Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
                             Gdi32.DeleteObject(hThumbnail);
+                            bmp.Dispose();
                             retrieved = true;
-                          }
-                          if (retrieved && sho.IsNeedRefreshing) {
-                            //sho.ExtractAndDrawThumbnail(hdc, (uint)IconSize, out flags, iconBounds, out retrieved, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index), true);
-                            //var thumb = sho.Thumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default).GetHbitmap();
-                            //var thumb = sho.GetHBitmap(IconSize, true);
-                            //Gdi32.ConvertPixelByPixel(thumb, out width, out height);
-                            //Gdi32.NativeDraw(hdc, thumb, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
-                            //Gdi32.DeleteObject(thumb);
-                            ThumbnailsForCacheLoad.Enqueue(index);
-                            sho.IsNeedRefreshing = false;
-                          }
-                          if (retrieved) {
-                            if (((width > height && width != IconSize) || (height > width && height != IconSize) || (width == height && width != IconSize)) && sho.IsOnlyLowQuality == false) {
-                              ThumbnailsForCacheLoad.Enqueue(index);
-                            } else {
-                              sho.IsThumbnailLoaded = true;
-                              sho.IsNeedRefreshing = false;
-                            }
                           } else {
-                            if (!sho.IsThumbnailLoaded)
-                              ThumbnailsForCacheLoad.Enqueue(index);
-                            if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
-                              var hbitmap = sho.GetHBitmap(IconSize, false);
-                              Gdi32.ConvertPixelByPixel(hbitmap, out width, out height);
-                              Gdi32.NativeDraw(hdc, hbitmap, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
-                              Gdi32.DeleteObject(hbitmap);
-
-                              sho.IsIconLoaded = true;
-                            } else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
-                              if (sho.Parent != null && (sho.Parent.ParsingName == KnownFolders.Network.ParsingName || sho.Parent.IsSearchFolder || sho.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName))) {
-                                var hIconExe = sho.GetHBitmap(IconSize, false);
-                                Gdi32.ConvertPixelByPixel(hIconExe, out width, out height);
-                                Gdi32.NativeDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
-                                Gdi32.DeleteObject(hIconExe);
-                                sho.IsIconLoaded = true;
-                              } else
-                                if (!sho.IsIconLoaded) {
-                                  waitingThumbnails.Enqueue(index);
-                                  using (var g = Graphics.FromHdc(hdc)) {
-                                    if (IconSize == 16) {
-                                      g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-                                    } else if (IconSize <= 48) {
-                                      g.DrawImage(ExeFallBack48, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-                                    } else if (IconSize <= 256) {
-                                      g.DrawImage(ExeFallBack256, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
-                                    }
-                                  }
-                                } else {
-                                  var hIconExe = sho.GetHBitmap(IconSize, false);
-                                  Gdi32.ConvertPixelByPixel(hIconExe, out width, out height);
-                                  Gdi32.NativeDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
-                                  Gdi32.DeleteObject(hIconExe);
-                                  sho.IsIconLoaded = true;
-                                }
-                            }
+                            ThumbnailsForCacheLoad.Enqueue(index);
+                            //if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
+                              var icon = RetrieveImageFromDB(IconSize, sho, true).Result;
+                              hThumbnail = icon != null ? icon.GetHbitmap() : IntPtr.Zero;
+                              if (hThumbnail != IntPtr.Zero) {
+                                Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
+                                Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+                                Gdi32.DeleteObject(hThumbnail);
+                                icon.Dispose();
+                              } else {
+                                sho.IsIconLoaded = false;
+                                waitingThumbnails.Enqueue(index);
+                              }
+                            //}
                           }
+                          //if (retrieved && sho.IsNeedRefreshing) {
+                          //  //sho.ExtractAndDrawThumbnail(hdc, (uint)IconSize, out flags, iconBounds, out retrieved, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index), true);
+                          //  //var thumb = sho.Thumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default).GetHbitmap();
+                          //  //var thumb = sho.GetHBitmap(IconSize, true);
+                          //  //Gdi32.ConvertPixelByPixel(thumb, out width, out height);
+                          //  //Gdi32.NativeDraw(hdc, thumb, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+                          //  //Gdi32.DeleteObject(thumb);
+                          //  ThumbnailsForCacheLoad.Enqueue(index);
+                          //  sho.IsNeedRefreshing = false;
+                          //}
+                          //if (retrieved) {
+                          //  if (((width > height && width != IconSize) || (height > width && height != IconSize) || (width == height && width != IconSize)) && sho.IsOnlyLowQuality == false) {
+                          //    ThumbnailsForCacheLoad.Enqueue(index);
+                          //  } else {
+                          //    sho.IsThumbnailLoaded = true;
+                          //    sho.IsNeedRefreshing = false;
+                          //  }
+                          //} else {
+                          //  if (!sho.IsThumbnailLoaded)
+                          //    ThumbnailsForCacheLoad.Enqueue(index);
+                          //  if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
+                          //    var hbitmap = sho.GetHBitmap(IconSize, false);
+                          //    Gdi32.ConvertPixelByPixel(hbitmap, out width, out height);
+                          //    Gdi32.NativeDraw(hdc, hbitmap, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+                          //    Gdi32.DeleteObject(hbitmap);
+
+                          //    sho.IsIconLoaded = true;
+                          //  } else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
+                          //    if (sho.Parent != null && (sho.Parent.ParsingName == KnownFolders.Network.ParsingName || sho.Parent.IsSearchFolder || sho.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName))) {
+                          //      var hIconExe = sho.GetHBitmap(IconSize, false);
+                          //      Gdi32.ConvertPixelByPixel(hIconExe, out width, out height);
+                          //      Gdi32.NativeDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+                          //      Gdi32.DeleteObject(hIconExe);
+                          //      sho.IsIconLoaded = true;
+                          //    } else
+                          //      if (!sho.IsIconLoaded) {
+                          //        waitingThumbnails.Enqueue(index);
+                          //        using (var g = Graphics.FromHdc(hdc)) {
+                          //          if (IconSize == 16) {
+                          //            g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+                          //          } else if (IconSize <= 48) {
+                          //            g.DrawImage(ExeFallBack48, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+                          //          } else if (IconSize <= 256) {
+                          //            g.DrawImage(ExeFallBack256, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+                          //          }
+                          //        }
+                          //      } else {
+                          //        var hIconExe = sho.GetHBitmap(IconSize, false);
+                          //        Gdi32.ConvertPixelByPixel(hIconExe, out width, out height);
+                          //        Gdi32.NativeDraw(hdc, hIconExe, iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+                          //        Gdi32.DeleteObject(hIconExe);
+                          //        sho.IsIconLoaded = true;
+                          //      }
+                          //  }
+                          //}
                           using (var g = Graphics.FromHdc(hdc)) {
                             if (this.ShowCheckboxes && View != ShellViewStyle.Details && View != ShellViewStyle.List) {
                               var res = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMW, 0, ref lvItemImageMask);
@@ -2357,12 +2386,88 @@ namespace BExplorer.Shell {
       }
     }
 
+    Bitmap FixedSize(Bitmap imgPhoto, int Width, int Height) {
+      int sourceWidth = imgPhoto.Width;
+      int sourceHeight = imgPhoto.Height;
+      int sourceX = 0;
+      int sourceY = 0;
+      int destX = 0;
+      int destY = 0;
+
+      float nPercent = 0;
+      float nPercentW = 0;
+      float nPercentH = 0;
+
+      nPercentW = ((float)Width / (float)sourceWidth);
+      nPercentH = ((float)Height / (float)sourceHeight);
+      if (nPercentH < nPercentW) {
+        nPercent = nPercentH;
+        destX = System.Convert.ToInt16((Width -
+                      (sourceWidth * nPercent)) / 2);
+      } else {
+        nPercent = nPercentW;
+        destY = System.Convert.ToInt16((Height -
+                      (sourceHeight * nPercent)) / 2);
+      }
+
+      int destWidth = (int)(sourceWidth * nPercent);
+      int destHeight = (int)(sourceHeight * nPercent);
+
+      Bitmap bmPhoto = new Bitmap(Width, Height);
+      bmPhoto.SetResolution(imgPhoto.HorizontalResolution,
+                       imgPhoto.VerticalResolution);
+
+      Graphics grPhoto = Graphics.FromImage(bmPhoto);
+      
+      grPhoto.InterpolationMode =
+              InterpolationMode.HighQualityBicubic;
+
+      grPhoto.SmoothingMode = SmoothingMode.HighQuality;
+
+      grPhoto.DrawImage(imgPhoto,
+          new Rectangle(destX, destY, destWidth, destHeight),
+          new Rectangle(sourceX, sourceY, sourceWidth, sourceHeight),
+          GraphicsUnit.Pixel);
+
+      grPhoto.Dispose();
+      return bmPhoto;
+    }
+
+    public static Bitmap ResizeBitmap(Bitmap source, float scale, InterpolationMode quality) {
+      if (source == null)
+        throw new ArgumentNullException("source");
+
+      // Figure out the new size.
+      var width = (int)(source.Width * scale);
+      var height = (int)(source.Height * scale);
+
+      // Create the new bitmap.
+      // Note that Bitmap has a resize constructor, but you can't control the quality.
+      var bmp = new Bitmap(width, height);
+
+      using (var g = Graphics.FromImage(bmp)) {
+        g.InterpolationMode = quality;
+        g.DrawImage(source, new Rectangle(0, 0, width, height));
+        g.Save();
+      }
+
+      return bmp;
+    }
+
     protected override void OnSizeChanged(EventArgs e) {
       base.OnSizeChanged(e);
       User32.MoveWindow(this.LVHandle, 0, 0, this.ClientRectangle.Width, this.ClientRectangle.Height, false);
     }
 
     protected override void OnHandleCreated(EventArgs e) {
+      db16.Open();
+      db48.Open();
+      db96.Open();
+      db256.Open();
+      dbi16.Open();
+      dbi48.Open();
+      dbi96.Open();
+      dbi256.Open();
       base.OnHandleCreated(e);
       MessageHandlerWindow = new MessageHandler(this);
       this._UnvalidateTimer.Interval = 1000;
@@ -3384,7 +3489,7 @@ namespace BExplorer.Shell {
           if (!sho.IsIconLoaded) {
             var temp = sho;
 
-            var icon = temp.GetHBitmap(IconSize, false);
+            var icon = temp.Thumbnail(IconSize, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 
             var shieldOverlay = 0;
             if (sho.ShieldedIconIndex == -1) {
@@ -3392,10 +3497,10 @@ namespace BExplorer.Shell {
 
               sho.ShieldedIconIndex = shieldOverlay;
             }
-            if (icon != IntPtr.Zero || shieldOverlay > 0) {
+            if (icon != null || shieldOverlay > 0) {
+              AddImageToDB(IconSize, temp, true);
               sho.IsIconLoaded = true;
-              Gdi32.DeleteObject(icon);
-              //icon.Dispose();
+              icon.Dispose();
               this.RedrawItem(index.Value);
             }
 
@@ -3403,7 +3508,7 @@ namespace BExplorer.Shell {
           }
 
 
-        } catch {
+        } catch (Exception ex) {
           F.Application.DoEvents();
         }
       }
@@ -3411,8 +3516,8 @@ namespace BExplorer.Shell {
 
     public void _IconCacheLoadingThreadRun() {
       while (true) {
-        //F.Application.DoEvents();
-        //Thread.Sleep(1);
+        F.Application.DoEvents();
+        Thread.Sleep(1);
         resetEvent.WaitOne();
         Bitmap result = null;
         try {
@@ -3421,7 +3526,12 @@ namespace BExplorer.Shell {
           var sho = Items[index.Value];
           WTS_CACHEFLAGS flags;
           //var res = sho.RefreshThumb(IconSize, out flags);
-          result = sho.Thumbnail(IconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
+          var iconSize = 48;
+          if (IconSize > 48 && IconSize <= 96)
+            iconSize = 96;
+          if (IconSize > 96)
+            iconSize = 256;
+          result = sho.Thumbnail(iconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
           sho.IsThumbnailLoaded = true;
           sho.IsNeedRefreshing = false;
           if (result != null) {
@@ -3430,6 +3540,7 @@ namespace BExplorer.Shell {
             } else {
               sho.IsOnlyLowQuality = false;
             }
+            AddImageToDB(IconSize, sho, false);
             //sho.IsOnlyLowQuality = (flags & WTS_CACHEFLAGS.WTS_LOWQUALITY) == WTS_CACHEFLAGS.WTS_LOWQUALITY;
             //F.Application.DoEvents();
             //sho.Icon = sho.GetHBitmap(IconSize, true, true);
@@ -3917,7 +4028,94 @@ namespace BExplorer.Shell {
       return result;
     }
 
+    public byte[] ImageToByte2(Bitmap img) {
+      byte[] byteArray = new byte[0];
+      using (MemoryStream stream = new MemoryStream()) {
+        img.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+        stream.Close();
 
+        byteArray = stream.ToArray();
+      }
+      return byteArray;
+    }
+
+    static byte[] GetBytes(SQLiteDataReader reader)
+    {
+        const int CHUNK_SIZE = 2 * 1024;
+        byte[] buffer = new byte[CHUNK_SIZE];
+        long bytesRead;
+        long fieldOffset = 0;
+        using (MemoryStream stream = new MemoryStream())
+        {
+            while ((bytesRead = reader.GetBytes(0, fieldOffset, buffer, 0, buffer.Length)) > 0)
+            {
+                stream.Write(buffer, 0, (int)bytesRead);
+                fieldOffset += bytesRead;
+            }
+            return stream.ToArray();
+        }
+    }
+
+    private async Task<Bitmap> RetrieveImageFromDB(int iconSize, IListItemEx item, bool isIcon = false) {
+      var isPerInstance = (item.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE;
+      SQLiteConnection con = db16;
+      if (iconSize <= 48 && iconSize > 16) {
+        con = isIcon ? dbi48 : db48;
+      }
+      if (iconSize <= 96 && iconSize > 48) {
+        con = isIcon ? dbi96 : db96;
+      }
+
+      if (iconSize > 96) {
+        con = isIcon ? dbi256 : db256;
+      }
+
+      var command1 = new SQLite.SQLiteCommand("SELECT thumbnail FROM thumbnails WHERE id=@id", con);
+      command1.Parameters.AddWithValue("id", isIcon && !isPerInstance ? item.Extension.GetHashCode() : item.GetUniqueID());
+      var Reader = command1.ExecuteReader();
+      byte[] imageData = null;
+      Bitmap bmp = null;
+      if (await Reader.ReadAsync()){
+        imageData = GetBytes(Reader);
+        using (var ms = new MemoryStream(imageData)) {
+          bmp = new Bitmap(ms);
+        }
+        
+      }
+
+      Reader.Close();
+      return bmp == null ? null : FixedSize(bmp, IconSize, IconSize);
+    }
+
+    private async void AddImageToDB(int iconSize, IListItemEx item, bool isIcon) {
+      var isPerInstance = (item.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE;
+      SQLiteConnection con = isIcon ? dbi16 : db16;
+      var imageSize = 16;
+      if (iconSize <= 48 && iconSize > 16) {
+        con = isIcon ? dbi48 : db48;
+        imageSize = 48;
+      }
+      if (iconSize <= 96 && iconSize > 48) {
+        con = isIcon ? dbi96 : db96;
+        imageSize = 96;
+      }
+
+      if (iconSize > 96) {
+        con = isIcon ? dbi256 : db256;
+        imageSize = 256;
+      }
+      var transaction = con.BeginTransaction(IsolationLevel.ReadCommitted);
+      var command1 = new SQLite.SQLiteCommand("SELECT id FROM thumbnails WHERE id=@id", con);
+      command1.Parameters.AddWithValue("id", isIcon ? item.Extension.GetHashCode() : item.GetUniqueID());
+      var Reader = command1.ExecuteReader();
+      var sql = Reader.Read() ? @"UPDATE thumbnails  SET thumbnail = @thumbnail  WHERE id = @id" : @"INSERT into thumbnails (id, thumbnail) VALUES (@id, @thumbnail)";
+      var command2 = new SQLite.SQLiteCommand(sql, con);
+      command2.Parameters.AddWithValue("id", isIcon && !isPerInstance ? item.Extension.GetHashCode() : item.GetUniqueID());
+      command2.Parameters.AddWithValue("thumbnail", ImageToByte2(item.Thumbnail(imageSize, isIcon ? ShellThumbnailFormatOption.IconOnly : ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default)));
+      await command2.ExecuteNonQueryAsync();
+      transaction.Commit();
+      Reader.Close();
+    }
 
     public void SaveSettingsToDatabase(IListItemEx destination) {
       if (CurrentFolder == null || !CurrentFolder.IsFolder) return;

@@ -110,7 +110,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     IExtractIconPWFlags GetShield();
 
-    int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags); 
+    int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags);
+
+    int GetUniqueID();
 		//Work On This and the TODOList
 
 	}
