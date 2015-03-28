@@ -4033,7 +4033,7 @@ namespace BetterExplorer {
         ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
 
 
-      ConstructMoveToCopyToMenu();
+      //ConstructMoveToCopyToMenu();
       SetUpJumpListOnNavComplete();
       SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
 

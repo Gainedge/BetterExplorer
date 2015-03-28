@@ -131,9 +131,11 @@ namespace BExplorer.Shell.Interop {
 					for (int x = 0; x < dibsection.dsBmih.biWidth; x++)
 						for (int y = 0; y < dibsection.dsBmih.biHeight; y++) {
 							int offset = y * dibsection.dsBmih.biWidth + x;
-							pBits[offset].rgbBlue = (byte)((int)pBits[offset].rgbBlue * (int)pBits[offset].rgbReserved / 255);
-							pBits[offset].rgbGreen = (byte)((int)pBits[offset].rgbGreen * (int)pBits[offset].rgbReserved / 255);
-							pBits[offset].rgbRed = (byte)((int)pBits[offset].rgbRed * (int)pBits[offset].rgbReserved / 255);
+              if (pBits[offset].rgbReserved > 0 && (pBits[offset].rgbBlue > pBits[offset].rgbReserved || pBits[offset].rgbGreen > pBits[offset].rgbReserved || pBits[offset].rgbRed > pBits[offset].rgbReserved)) {
+                pBits[offset].rgbBlue = (byte)((int)pBits[offset].rgbBlue * (int)pBits[offset].rgbReserved / 255);
+                pBits[offset].rgbGreen = (byte)((int)pBits[offset].rgbGreen * (int)pBits[offset].rgbReserved / 255);
+                pBits[offset].rgbRed = (byte)((int)pBits[offset].rgbRed * (int)pBits[offset].rgbReserved / 255);
+              }
 						}
 				}
 			}
