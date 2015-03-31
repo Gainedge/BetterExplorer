@@ -432,7 +432,7 @@ namespace BetterExplorer {
         }));
     }
 
-    private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, ShellItem selectedItem) {
+    private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, IListItemEx selectedItem) {
 
       #region Search Contextual Tab
       ctgSearch.Visibility = BooleanToVisibiliy(ShellListView.CurrentFolder.IsSearchFolder);
@@ -443,7 +443,7 @@ namespace BetterExplorer {
       #endregion
 
       #region Folder Tools Context Tab
-      ctgFolderTools.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && selectedItem.IsFolder && selectedItem.IsFileSystem && !selectedItem.IsDrive && !selectedItem.IsNetDrive));
+      ctgFolderTools.Visibility = BooleanToVisibiliy((selectedItemsCount == 1 && selectedItem.IsFolder && selectedItem.IsFileSystem && !selectedItem.IsDrive && !selectedItem.IsNetworkPath));
 
       if (asFolder && ctgFolderTools.Visibility == Visibility.Visible) {
         TheRibbon.SelectedTabItem = ctgFolderTools.Items[0];
@@ -526,7 +526,7 @@ namespace BetterExplorer {
         sbiSelItemsCount.Content = selectedItemsCount.ToString() + " items selected";
     }
 
-    private void SetUpButtonsStateOnSelectOrNavigate(int selectedItemsCount, ShellItem selectedItem) {
+    private void SetUpButtonsStateOnSelectOrNavigate(int selectedItemsCount, IListItemEx selectedItem) {
       btnCopy.IsEnabled = selectedItemsCount > 0;
       btnCopyto.IsEnabled = selectedItemsCount > 0;
       btnMoveto.IsEnabled = selectedItemsCount > 0;
@@ -599,8 +599,8 @@ namespace BetterExplorer {
           this.Previewer.FileName = null;
         }
         //Set up ribbon contextual tabs on selection changed
-        //SetUpRibbonTabsVisibilityOnSelectOrNavigate(selItemsCount, selectedItem);
-        //SetUpButtonsStateOnSelectOrNavigate(selItemsCount, selectedItem);
+        SetUpRibbonTabsVisibilityOnSelectOrNavigate(selItemsCount, selectedItem);
+        SetUpButtonsStateOnSelectOrNavigate(selItemsCount, selectedItem);
       }));
     }
 
@@ -4033,7 +4033,7 @@ namespace BetterExplorer {
         ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
 
 
-      //ConstructMoveToCopyToMenu();
+      ConstructMoveToCopyToMenu();
       SetUpJumpListOnNavComplete();
       SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
 

@@ -59,7 +59,8 @@ namespace BExplorer.Shell.Interop {
             IntPtr[] apidl,
 			ref SFGAO rgfInOut);
 
-		void GetUIObjectOf(IntPtr hwndOwner, UInt32 cidl, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)]IntPtr[] apidl, [In] ref Guid riid, UInt32 rgfReserved, out IntPtr ppv);
+    [PreserveSig]
+		HResult GetUIObjectOf(IntPtr hwndOwner, UInt32 cidl, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 1)]IntPtr[] apidl, [In] ref Guid riid, UInt32 rgfReserved, out IntPtr ppv);
 
 		void GetDisplayNameOf(IntPtr pidl, SHGNO uFlags, out STRRET pName);
 

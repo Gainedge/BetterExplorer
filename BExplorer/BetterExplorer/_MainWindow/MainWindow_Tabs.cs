@@ -32,14 +32,13 @@ namespace BetterExplorer {
 						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
 							continue;
 						}
-
 						tcMain.NewTab(FileSystemListItem.ToFileSystemItem( this.ShellListView.LVHandle, str.ToShellParsingName()), i == InitialTabs.Length);
-						if (i == InitialTabs.Count()) {
-              var sho = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, str.ToShellParsingName());
-              NavigationController(sho);
-							(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = sho;
-							(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = sho.ParsingName;
-						}
+						//if (i == InitialTabs.Count()) {
+      //        var sho = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, str.ToShellParsingName());
+      //        NavigationController(sho);
+						//	(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = sho;
+						//	(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = sho.ParsingName;
+						//}
 					}
 					catch {
 						//AddToLog(String.Format("Unable to load {0} into a tab!", str));
@@ -202,7 +201,7 @@ namespace BetterExplorer {
 				}
 			}
 
-			if (e.AddedItems.Count == 0) return;
+			if (e.AddedItems.Count == 0 || tcMain.SelectNewTabOnCreate == false) return;
       var newTab = e.AddedItems[0] as Wpf.Controls.TabItem;
       if (this.ShellListView.CurrentFolder == null || !this.ShellListView.CurrentFolder.Equals(newTab.ShellObject) && tcMain.CurrentTabItem == null) {
         SelectTab(newTab);

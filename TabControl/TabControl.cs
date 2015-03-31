@@ -287,7 +287,7 @@ namespace Wpf.Controls {
 		#region Tab Stuff
 
 		public Wpf.Controls.TabItem NewTab(IListItemEx DefPath, bool IsNavigate) {
-			SelectNewTabOnCreate = IsNavigate;
+			SelectNewTabOnCreate = false;
 			var newt = new Wpf.Controls.TabItem(DefPath) {
 				Header = DefPath.DisplayName,
 				Icon = DefPath.ThumbnailSource(16, BExplorer.Shell.Interop.ShellThumbnailFormatOption.IconOnly, BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default),
@@ -306,6 +306,10 @@ namespace Wpf.Controls {
 			try {
 				Items.Add(newt);
 				IsSelectionHandled = false;
+        if (IsNavigate) {
+          SelectNewTabOnCreate = true;
+          this.SelectedItem = newt;
+        }
 			}
 			catch (Exception) {
 
@@ -317,7 +321,7 @@ namespace Wpf.Controls {
 		}
 
 		public Wpf.Controls.TabItem NewTab(string Location, bool IsNavigate = false) {
-			return NewTab(FileSystemListItem.ToFileSystemItem(IntPtr.Zero, Location), IsNavigate);
+			return NewTab(FileSystemListItem.ToFileSystemItem(IntPtr.Zero, Location.ToShellParsingName()), IsNavigate);
 		}
 
 		public void NewTab() {
@@ -367,18 +371,22 @@ namespace Wpf.Controls {
 		}
 
 		public void CloneTabItem(TabItem theTab) {
-			//int i = this.SelectedIndex;
-			//var newt = new TabItem(theTab.ShellObject) {
-			//	Header = theTab.Header, Icon = theTab.Icon, ToolTip = theTab.ShellObject.ParsingName, AllowDrop = true, SelectedItems = theTab.SelectedItems
-			//};
-			//newt.log.CurrentLocation = theTab.ShellObject;
-			//newt.log.ImportData(theTab.log);
-			//if (i == -1 || i == this.Items.Count - 1 || AddNewTabToEnd)
-			//	this.Items.Add(newt);
-			//else
-			//	this.Items.Insert(++i, newt);
+      int i = this.SelectedIndex;
+      var newt = new TabItem(theTab.ShellObject) {
+        Header = theTab.Header,
+        Icon = theTab.Icon,
+        ToolTip = theTab.ShellObject.ParsingName,
+        AllowDrop = true,
+        SelectedItems = theTab.SelectedItems
+      };
+      newt.log.CurrentLocation = theTab.ShellObject;
+      newt.log.ImportData(theTab.log);
+      if (i == -1 || i == this.Items.Count - 1 || AddNewTabToEnd)
+        this.Items.Add(newt);
+      else
+        this.Items.Insert(++i, newt);
 
-			//ConstructMoveToCopyToMenu();
+      ConstructMoveToCopyToMenu();
 		}
 
 		public void CloseAllTabsButThis(TabItem tabItem) {

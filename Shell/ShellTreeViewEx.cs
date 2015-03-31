@@ -301,7 +301,8 @@ namespace BExplorer.Shell {
 			var defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
 			Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_FOLDER, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
 			this.folderImageListIndex = defIconInfo.iSysIconIndex;
-			imagesThread = new Thread(new ThreadStart(LoadTreeImages)) { IsBackground = true };
+			imagesThread = new Thread(new ThreadStart(LoadTreeImages)) { IsBackground = false };
+      imagesThread.SetApartmentState(ApartmentState.STA);
 			imagesThread.Start();
 			childsThread = new Thread(new ThreadStart(LoadChilds)) { IsBackground = true };
 			childsThread.Start();
@@ -390,7 +391,9 @@ namespace BExplorer.Shell {
 
 		public void LoadTreeImages() {
 			while (true) {
-				this._ResetEvent.WaitOne();
+				//this._ResetEvent.WaitOne();
+        Application.DoEvents();
+        Thread.Sleep(1);
 				var handle = imagesQueue.Dequeue();
 				TreeNode node = null;
 				IntPtr treeHandle = IntPtr.Zero;

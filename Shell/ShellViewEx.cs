@@ -248,6 +248,8 @@ namespace BExplorer.Shell {
     public bool IsRenameNeeded { get; set; }
     public bool IsLibraryInModify { get; set; }
     public bool IsFileExtensionShown { get; set; }
+    public bool IsCancelRequested = false;
+    public bool IsNavigationInProgress = false;
     public Boolean IsGroupsEnabled { get { return LastGroupCollumn != null; } }
 
     /// <summary> Returns the key jump string as it currently is.</summary>
@@ -422,14 +424,6 @@ namespace BExplorer.Shell {
     private System.Windows.Forms.Timer _UnvalidateTimer = new System.Windows.Forms.Timer();
     private System.Windows.Forms.Timer _MaintenanceTimer = new System.Windows.Forms.Timer();
     private string _DBPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite");
-     private SQLite.SQLiteConnection db16 = new SQLite.SQLiteConnection("Data Source=" + @"D:\thumbnail16.sqlite3" + ";Version=3;");
-     private SQLite.SQLiteConnection db48 = new SQLite.SQLiteConnection("Data Source=" + @"D:\thumbnail48.sqlite3" + ";Version=3;");
-     private SQLite.SQLiteConnection db96 = new SQLite.SQLiteConnection("Data Source=" + @"D:\thumbnail96.sqlite3" + ";Version=3;");
-     private SQLite.SQLiteConnection db256 = new SQLite.SQLiteConnection("Data Source=" + @"D:\thumbnail256.sqlite3" + ";Version=3;");
-     private SQLite.SQLiteConnection dbi16 = new SQLite.SQLiteConnection("Data Source=" + @"D:\iconcache16.sqlite3" + ";Version=3;");
-     private SQLite.SQLiteConnection dbi48 = new SQLite.SQLiteConnection("Data Source=" + @"D:\iconcache48.sqlite3" + ";Version=3;");
-     private SQLite.SQLiteConnection dbi96 = new SQLite.SQLiteConnection("Data Source=" + @"D:\iconcache96.sqlite3" + ";Version=3;");
-     private SQLite.SQLiteConnection dbi256 = new SQLite.SQLiteConnection("Data Source=" + @"D:\iconcache256.sqlite3" + ";Version=3;");
     private List<int> SelectedIndexes {
       get {
         var selItems = new List<int>();
@@ -2202,7 +2196,7 @@ namespace BExplorer.Shell {
                         if (sho.OverlayIconIndex == -1) {
                           overlayQueue.Enqueue(index);
                         }
-
+                        this.IsCancelRequested = false;
                         if (IconSize != 16) {
                           WTS_CACHEFLAGS flags;
                           bool retrieved = false;
@@ -2220,13 +2214,16 @@ namespace BExplorer.Shell {
                             sho.IsNeedRefreshing = ((width > height && width != IconSize) || (width < height && height != IconSize) || (width == height && width != IconSize)) && !sho.IsOnlyLowQuality;
                             //bmp.Dispose();
                             if (sho.IsNeedRefreshing) {
-                              ThumbnailsForCacheLoad.Enqueue(index);
+                              //ThumbnailsForCacheLoad.Enqueue(index);
+                              this.RetrieveThumbnailByIndex(index);
                               sho.IsThumbnailLoaded = true;
                               sho.IsNeedRefreshing = false;
                             }
                           } else {
-                            if (!sho.IsThumbnailLoaded || sho.IsNeedRefreshing)
-                              ThumbnailsForCacheLoad.Enqueue(index);
+                            if (!sho.IsThumbnailLoaded || sho.IsNeedRefreshing) {
+                              //ThumbnailsForCacheLoad.Enqueue(index);
+                              this.RetrieveThumbnailByIndex(index);
+                            }
                             //if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
                               //var icon = RetrieveImageFromDB(IconSize, sho, true).Result;
                             if (sho.IsIconLoaded || (sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
@@ -2239,12 +2236,14 @@ namespace BExplorer.Shell {
                               } else {
                                 this.DrawDefaultIcons(hdc, sho, iconBounds);
                                 sho.IsIconLoaded = false;
-                                waitingThumbnails.Enqueue(index);
+                               // waitingThumbnails.Enqueue(index);
+                                this.RetrieveIconsByIndex(index);
                               }
                             } else {
                               this.DrawDefaultIcons(hdc, sho, iconBounds);
                               sho.IsIconLoaded = false;
-                              waitingThumbnails.Enqueue(index);
+                              //waitingThumbnails.Enqueue(index);
+                              this.RetrieveIconsByIndex(index);
                             }
                             //}
                           }
@@ -2383,7 +2382,8 @@ namespace BExplorer.Shell {
                             }
                           } else if ((sho.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE) {
                             if (!sho.IsIconLoaded) {
-                              waitingThumbnails.Enqueue(index);
+                              //waitingThumbnails.Enqueue(index);
+                              this.RetrieveIconsByIndex(index);
                               using (Graphics g = Graphics.FromHdcInternal(hdc)) {
                                 g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
                               }
@@ -2509,14 +2509,6 @@ namespace BExplorer.Shell {
     }
 
     protected override void OnHandleCreated(EventArgs e) {
-      //db16.Open();
-      //db48.Open();
-      //db96.Open();
-      //db256.Open();
-      //dbi16.Open();
-      //dbi48.Open();
-      //dbi96.Open();
-      //dbi256.Open();
       base.OnHandleCreated(e);
       MessageHandlerWindow = new MessageHandler(this);
       this._UnvalidateTimer.Interval = 1000;
@@ -2924,7 +2916,7 @@ namespace BExplorer.Shell {
         IconSize = value;
         ThumbnailsForCacheLoad.Clear();
         waitingThumbnails.Clear();
-        foreach (var obj in this.Items) {
+        foreach (var obj in this.Items.ToArray()) {
           obj.IsIconLoaded = false;
           obj.IsNeedRefreshing = true;
         }
@@ -3120,15 +3112,20 @@ namespace BExplorer.Shell {
     /// <param name="refresh">Should the List be Refreshed?</param>
     [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
     private async void Navigate(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false) {
+      if (this.IsNavigationInProgress)
+        return;
+      this.IsCancelRequested = true;
+
       this._UnvalidateTimer.Stop();
       if (destination.Equals(this.CurrentFolder))
         return;
       if (!refresh && Navigating != null)
         Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
-      Thread t = new Thread(() => {
-        ReloadThreads();
-      });
-      t.Start();
+      
+      //Thread t = new Thread(() => {
+      //  ReloadThreads();
+      //});
+      //t.Start();
       //Cleaning!
       
       if (destination == null)
@@ -3139,7 +3136,7 @@ namespace BExplorer.Shell {
       this.fsw.Deleted -= fsw_Deleted;
       this.fsw.Changed -= fsw_Changed;
       this.fsw.EnableRaisingEvents = false;
-      if (destination.IsFileSystem || destination.IsNetworkPath) {
+      if ((destination.IsFileSystem || destination.IsNetworkPath) && (destination.Parent != null && !destination.Parent.ParsingName.Equals(KnownFolders.Network.ParsingName, StringComparison.InvariantCultureIgnoreCase))) {
 
         try {
           this.fsw.Path = destination.ParsingName;
@@ -3161,15 +3158,19 @@ namespace BExplorer.Shell {
       var isRun = false;
       await Task.Run(() => {
         int CurrentI = 0, LastI = 0;
-        if (!isRun) {
+        if (true) {
+
           foreach (var shellItem in destination) {
             //F.Application.DoEvents();
             //if (this.Items.Count > 0 && !this.Items.Last().Parent.Equals(shellItem.Parent)) {
             //  return;
             //}
             CurrentI++;
-
-            if (CurrentI == 1 && !isRun) {
+            this.IsNavigationInProgress = true;
+            if (CurrentI == 1) {
+              if (!destination.Equals(shellItem.Parent)) {
+                break;
+              }
               isFailed = false;
               User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
               Items.Clear();
@@ -3180,7 +3181,6 @@ namespace BExplorer.Shell {
               shieldQueue.Clear();
               this._CuttedIndexes.Clear();
               this.SubItemValues.Clear();
-
               resetEvent.Reset();
               _ResetTimer.Stop();
 
@@ -3204,7 +3204,7 @@ namespace BExplorer.Shell {
               //}
             }
             if (CurrentI - LastI >= (destination.IsSearchFolder ? 250 : 2000)) {
-              //F.Application.DoEvents();
+              F.Application.DoEvents();
               this.SetSortCollumn(isThereSettings ? columns : this.Collumns.First(), isThereSettings ? folderSettings.SortOrder : SortOrder.Ascending, false);
               if (destination.IsSearchFolder)
                 Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -3212,12 +3212,15 @@ namespace BExplorer.Shell {
             }
           }
           isRun = true;
+          this.IsNavigationInProgress = false;
         }
       });
 
-      if (isFailed)
+      if (isFailed) {
+        this.IsNavigationInProgress = false;
         return;
-
+      }
+      
       if (isThereSettings) {
         if (folderSettings.Columns != null) {
           this.RemoveAllCollumns();
@@ -3533,6 +3536,40 @@ namespace BExplorer.Shell {
       }
     }
 
+    private async void RetrieveIconsByIndex(int index) {
+      await Task.Run(() => {
+        if (this.IsCancelRequested)
+          return;
+          Thread.Sleep(1);
+          F.Application.DoEvents();
+          var itemBounds = new User32.RECT();
+          var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
+          User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+
+          var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+
+
+          if (r.IntersectsWith(this.ClientRectangle)) {
+            var sho = Items[index];
+            var temp = FileSystemListItem.ToFileSystemItem(sho.ParentHandle, sho.ParsingName.ToShellParsingName());
+            var icon = temp.GetHBitmap(IconSize, false, true);
+            var shieldOverlay = 0;
+            if (sho.ShieldedIconIndex == -1) {
+              if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = ShieldIconIndex;
+
+              sho.ShieldedIconIndex = shieldOverlay;
+            }
+            if (icon != IntPtr.Zero || shieldOverlay > 0) {
+
+              sho.IsIconLoaded = true;
+              Gdi32.DeleteObject(icon);
+              temp.Dispose();
+              this.RedrawItem(index);
+            }
+          }
+      });
+    }
+
     public void _IconsLoadingThreadRun() {
       while (true) {
         //Thread.Sleep(1);
@@ -3572,6 +3609,38 @@ namespace BExplorer.Shell {
       }
     }
 
+
+    private async void RetrieveThumbnailByIndex(int index) {
+      await Task.Run(() => {
+        if (this.IsCancelRequested)
+          return;
+
+        Thread.Sleep(1);
+        F.Application.DoEvents();
+        var itemBounds = new User32.RECT();
+        var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
+        User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+
+        var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+
+
+        if (r.IntersectsWith(this.ClientRectangle)) {
+          var sho = Items[index];
+          //var temp = FileSystemListItem.ToFileSystemItem(sho.ParentHandle, sho.PIDL);
+          var icon = sho.GetHBitmap(IconSize, true, true);
+          sho.IsThumbnailLoaded = true;
+          sho.IsNeedRefreshing = false;
+          if (icon != IntPtr.Zero ) {
+            int width = 0;
+            int height = 0;
+            Gdi32.ConvertPixelByPixel(icon, out width, out height);
+            sho.IsOnlyLowQuality = (width > height && width != IconSize) || (width < height && height != IconSize) || (width == height && width != IconSize);
+            Gdi32.DeleteObject(icon);
+            this.RedrawItem(index);
+          }
+        }
+      });
+    }
     public void _IconCacheLoadingThreadRun() {
       while (true) {
         //F.Application.DoEvents();
@@ -3891,14 +3960,14 @@ namespace BExplorer.Shell {
 
     private void ReloadThreads() {
       try {
-        this._IconLoadingThread.Abort();
-        this._IconCacheLoadingThread.Abort();
+        //this._IconLoadingThread.Abort();
+        //this._IconCacheLoadingThread.Abort();
         this._OverlaysLoadingThread.Abort();
         this._UpdateSubitemValuesThread.Abort();
-        this._IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
-        this._IconLoadingThread.Start();
-        this._IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
-        this._IconCacheLoadingThread.Start();
+        //this._IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
+        //this._IconLoadingThread.Start();
+        //this._IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
+        //this._IconCacheLoadingThread.Start();
         this._OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
         this._OverlaysLoadingThread.Start();
         this._UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
@@ -4115,74 +4184,6 @@ namespace BExplorer.Shell {
             }
             return stream.ToArray();
         }
-    }
-
-    private async Task<Bitmap> RetrieveImageFromDB(int iconSize, IListItemEx item, bool isIcon = false) {
-      var isPerInstance = (item.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE;
-      SQLiteConnection con = db16;
-      if (iconSize <= 48 && iconSize > 16) {
-        con = isIcon ? dbi48 : db48;
-      }
-      if (iconSize <= 96 && iconSize > 48) {
-        con = isIcon ? dbi96 : db96;
-      }
-
-      if (iconSize > 96) {
-        con = isIcon ? dbi256 : db256;
-      }
-
-      var command1 = new SQLite.SQLiteCommand("SELECT thumbnail FROM thumbnails WHERE id=@id", con);
-      command1.Parameters.AddWithValue("id", isIcon && !isPerInstance ? item.IsFolder ? item.GetUniqueID() : item.Extension.GetHashCode() : item.GetUniqueID());
-      var Reader = command1.ExecuteReader();
-      byte[] imageData = null;
-      Bitmap bmp = null;
-      if (await Reader.ReadAsync()){
-        imageData = GetBytes(Reader);
-        using (var ms = new MemoryStream(imageData)) {
-          bmp = new Bitmap(ms);
-        }
-        
-      }
-
-      Reader.Close();
-      return bmp == null ? null : FixedSize(bmp, IconSize, IconSize);
-    }
-
-    private bool AddImageToDB(int iconSize, IListItemEx item, bool isIcon) {
-      var isPerInstance = (item.IconType & IExtractIconPWFlags.GIL_PERINSTANCE) == IExtractIconPWFlags.GIL_PERINSTANCE;
-      SQLiteConnection con = isIcon ? dbi16 : db16;
-      var imageSize = 16;
-      if (iconSize <= 48 && iconSize > 16) {
-        con = isIcon ? dbi48 : db48;
-        imageSize = 48;
-      }
-      if (iconSize <= 96 && iconSize > 48) {
-        con = isIcon ? dbi96 : db96;
-        imageSize = 96;
-      }
-
-      if (iconSize > 96) {
-        con = isIcon ? dbi256 : db256;
-        imageSize = 256;
-      }
-      var command1 = new SQLite.SQLiteCommand("SELECT id FROM thumbnails WHERE id=@id", con);
-      command1.Parameters.AddWithValue("id", isIcon ? item.IsFolder ? item.GetUniqueID() : item.Extension.GetHashCode() : item.GetUniqueID());
-      var Reader = command1.ExecuteReader();
-      var sql = Reader.Read() ? @"UPDATE thumbnails  SET thumbnail = @thumbnail  WHERE id = @id" : @"INSERT into thumbnails (id, thumbnail) VALUES (@id, @thumbnail)";
-      var command2 = new SQLite.SQLiteCommand(sql, con);
-      command2.Parameters.AddWithValue("id", isIcon && !isPerInstance ? item.IsFolder ? item.GetUniqueID() : item.Extension.GetHashCode() : item.GetUniqueID());
-      var bmp = item.Thumbnail(imageSize, isIcon ? ShellThumbnailFormatOption.IconOnly : ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
-      if (bmp != null) {
-        if ((bmp.Width > bmp.Height && bmp.Width != IconSize) || (bmp.Width < bmp.Height && bmp.Height != IconSize) || (bmp.Width == bmp.Height && bmp.Width != IconSize)) {
-          item.IsOnlyLowQuality = true;
-        } else {
-          item.IsOnlyLowQuality = false;
-        }
-        command2.Parameters.AddWithValue("thumbnail", ImageToByte2(bmp));
-        command2.ExecuteNonQuery();
-      }
-      Reader.Close();
-      return bmp != null;
     }
 
     public void SaveSettingsToDatabase(IListItemEx destination) {

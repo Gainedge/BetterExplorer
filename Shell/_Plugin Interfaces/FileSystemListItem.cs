@@ -199,9 +199,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
       HResult result = enumId.Next(1, out pidl, out count);
       var i = 0;
+      var parentItem = new ShellItem(this.ParsingName.ToShellParsingName());
       while (result == HResult.S_OK) {
         var fsi = new FileSystemListItem();
-        fsi.InitializeWithParent(this._Item, this.ParentHandle, pidl, i++);
+        fsi.InitializeWithParent(parentItem, this.ParentHandle, pidl, i++);
         yield return fsi;
         Shell32.ILFree(pidl);
         result = enumId.Next(1, out pidl, out count);
@@ -211,6 +212,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
         Marshal.ThrowExceptionForHR((int)result);
       }
 
+      parentItem.Dispose();
       yield break;
     }
 
