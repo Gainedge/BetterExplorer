@@ -147,9 +147,7 @@ namespace BExplorer.Shell {
 		public String CachedParsingName { get; private set; }
 		public String CachedDisplayName { get; private set; }
 
-		/// <summary>
-		/// Gets the thumbnail of the ShellObject.
-		/// </summary>
+		/// <summary>Gets the thumbnail of the ShellObject.</summary>
 		public ShellThumbnail Thumbnail {
 			get {
 				if (thumbnail == null) thumbnail = new ShellThumbnail(this);
@@ -162,45 +160,33 @@ namespace BExplorer.Shell {
 		/// </summary>
 		internal IShellItem ComInterface {
 			get {
-				if (m_ComInterface == null && (File.Exists(this.CachedParsingName) || Directory.Exists(this.CachedParsingName))) {
-					var com = new ShellItem(this.CachedParsingName).ComInterface;
-					return com;
-				}
-				return m_ComInterface;
+				if (m_ComInterface == null && (File.Exists(this.CachedParsingName) || Directory.Exists(this.CachedParsingName)))
+					return new ShellItem(this.CachedParsingName).ComInterface;
+				else
+					return m_ComInterface;
 			}
 			set {
 				m_ComInterface = value;
 			}
 		}
 
-		/// <summary>
-		/// Gets the item's parsing name.
-		/// </summary>
+		/// <summary>Gets the item's parsing name.</summary>
 		public string ParsingName { get { return GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING); } }
 
 
-		/// <summary>
-		/// Gets the normal display name of the item.
-		/// </summary>
+		/// <summary>Gets the normal display name of the item.</summary>
 		public string DisplayName { get { return GetDisplayName(SIGDN.NORMALDISPLAY); } }
 
-		/// <summary>
-		/// Gets the file system path of the item.
-		/// </summary>
+		/// <summary>Gets the file system path of the item.</summary>
 		public string FileSystemPath { get { return GetDisplayName(SIGDN.FILESYSPATH); } }
 
-		/// <summary>
-		/// Gets a PIDL representing the item.
-		/// </summary>
+		/// <summary>Gets a PIDL representing the item.</summary>
 		public IntPtr Pidl {
 			get {
-
 				if (RunningVista)
 					return ComInterface != null ? Shell32.SHGetIDListFromObject(ComInterface) : IntPtr.Zero;
 				else
 					return ((Interop.VistaBridge.ShellItemImpl)ComInterface).Pidl;
-
-				//return GetIDListFromObject(ComInterface);
 			}
 		}
 
@@ -432,7 +418,7 @@ namespace BExplorer.Shell {
 				catch (Exception) {
 					return string.Empty;
 				}
-        if (result == IntPtr.Zero) return String.Empty;
+				if (result == IntPtr.Zero) return String.Empty;
 				queryInfo = (IQueryInfo)Marshal.GetTypedObjectForIUnknown(result, typeof(IQueryInfo));
 				queryInfo.GetInfoTip(0x00000001 | 0x00000008, out infoTipPtr);
 				infoTip = Marshal.PtrToStringUni(infoTipPtr);
@@ -1140,9 +1126,9 @@ namespace BExplorer.Shell {
 
 		private static IShellItem CreateItemFromParsingName(string path) {
 			if (RunningVista) {
-        //IShellItem item;
-        //Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID, out item);
-        return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
+				//IShellItem item;
+				//Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID, out item);
+				return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
 			}
 			else {
 				//IShellFolder desktop = Desktop.GetIShellFolder();
@@ -1443,15 +1429,15 @@ namespace BExplorer.Shell {
 
 	public class ShellItemComparer : IEqualityComparer<IListItemEx> {
 		// Products are equal if their names and product numbers are equal.
-    public bool Equals(IListItemEx x, IListItemEx y) {
+		public bool Equals(IListItemEx x, IListItemEx y) {
 			return x.Equals(y);
 		}
 
 		// If Equals() returns true for a pair of objects 
 		// then GetHashCode() must return the same value for these objects.
 
-    public int GetHashCode(IListItemEx product) {
-      return 0;
+		public int GetHashCode(IListItemEx product) {
+			return 0;
 			//Check whether the object is null
 			if (Object.ReferenceEquals(product, null)) return 0;
 
