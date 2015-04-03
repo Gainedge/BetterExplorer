@@ -104,23 +104,21 @@ namespace BetterExplorer {
 			btnMoveto.Items.Clear();
 			btnCopyto.Items.Clear();
 
-			var sod = (ShellItem)KnownFolders.Desktop;
-			sod.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-			sod.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+      var sod = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, ((ShellItem)KnownFolders.Desktop).Pidl);
+      var bmpSourceDesktop = sod.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 
 			var OtherLocationMove = Utilities.Build_MenuItem(FindResource("miOtherDestCP"), onClick: new RoutedEventHandler(btnmtOther_Click));
 			var OtherLocationCopy = Utilities.Build_MenuItem(FindResource("miOtherDestCP"), onClick: new RoutedEventHandler(btnctOther_Click));
-			var mimDesktop = Utilities.Build_MenuItem(FindResource("btnctDesktopCP"), icon: sod.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnmtDesktop_Click));
-			var micDesktop = Utilities.Build_MenuItem(FindResource("btnctDesktopCP"), icon: sod.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnctDesktop_Click));
+			var mimDesktop = Utilities.Build_MenuItem(FindResource("btnctDesktopCP"), icon: bmpSourceDesktop, onClick: new RoutedEventHandler(btnmtDesktop_Click));
+			var micDesktop = Utilities.Build_MenuItem(FindResource("btnctDesktopCP"), icon: bmpSourceDesktop, onClick: new RoutedEventHandler(btnctDesktop_Click));
 
 			MenuItem mimDocuments = new MenuItem(), micDocuments = new MenuItem();
 			try {
-				var sodc = (ShellItem)KnownFolders.Documents;
-				sodc.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-				sodc.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+				var sodc = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, ((ShellItem)KnownFolders.Documents).Pidl);
+        var bmpSourceDocuments = sodc.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 
-				mimDocuments = Utilities.Build_MenuItem(FindResource("btnctDocumentsCP"), icon: sodc.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnmtDocuments_Click));
-				micDocuments = Utilities.Build_MenuItem(FindResource("btnctDocumentsCP"), icon: sodc.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnctDocuments_Click));
+				mimDocuments = Utilities.Build_MenuItem(FindResource("btnctDocumentsCP"), icon: bmpSourceDocuments, onClick: new RoutedEventHandler(btnmtDocuments_Click));
+				micDocuments = Utilities.Build_MenuItem(FindResource("btnctDocumentsCP"), icon: bmpSourceDocuments, onClick: new RoutedEventHandler(btnctDocuments_Click));
 			}
 			catch (Exception) {
 				mimDocuments = null;
@@ -130,12 +128,11 @@ namespace BetterExplorer {
 
 			MenuItem mimDownloads = new MenuItem(), micDownloads = new MenuItem();
 			try {
-				var sodd = (ShellItem)KnownFolders.Downloads;
-				sodd.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-				sodd.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
+				var sodd = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, ((ShellItem)KnownFolders.Downloads).Pidl);
+        var bmpSourceDownloads = sodd.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 
-				mimDownloads = Utilities.Build_MenuItem(FindResource("btnctDownloadsCP"), icon: sodd.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnmtDounloads_Click));
-				micDownloads = Utilities.Build_MenuItem(FindResource("btnctDownloadsCP"), icon: sodd.Thumbnail.BitmapSource, onClick: new RoutedEventHandler(btnctDounloads_Click));
+				mimDownloads = Utilities.Build_MenuItem(FindResource("btnctDownloadsCP"), icon: bmpSourceDownloads, onClick: new RoutedEventHandler(btnmtDounloads_Click));
+				micDownloads = Utilities.Build_MenuItem(FindResource("btnctDownloadsCP"), icon: bmpSourceDownloads, onClick: new RoutedEventHandler(btnctDounloads_Click));
 			}
 			catch (Exception) {
 				micDownloads = null;
@@ -163,7 +160,7 @@ namespace BetterExplorer {
 				bool IsAdditem = true;
 
 				foreach (var mii in btnCopyto.Items.OfType<MenuItem>().Where(x => x.Tag != null)) {
-					if ((mii.Tag as ShellItem) == item.ShellObject) {
+					if ((mii.Tag as IListItemEx).Equals(item.ShellObject)) {
 						IsAdditem = false;
 					}
 				}

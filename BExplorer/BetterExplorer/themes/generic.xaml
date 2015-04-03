@@ -6,6 +6,7 @@
 	 xmlns:Microsoft_Windows_Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
 		>
 
+  <SolidColorBrush x:Key="NotTabItemNormalBackground" Color="#FFF5F5F5"/>
 	<ControlTemplate x:Key="HorizontalScrollBarTemplate" TargetType="{x:Type ScrollBar}">
 		<Grid x:Name="Bg"
 											Background="Transparent"

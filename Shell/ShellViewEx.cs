@@ -463,6 +463,10 @@ namespace BExplorer.Shell {
     private Bitmap FolderFallBack256;
     private Bitmap FolderFallBack48;
 
+    private Bitmap DefaultFallBack16;
+    private Bitmap DefaultFallBack256;
+    private Bitmap DefaultFallBack48;
+
     //private Bitmap ExeFallBack32;
 
     private Bitmap ExeFallBack48;
@@ -531,7 +535,7 @@ namespace BExplorer.Shell {
       _OverlaysLoadingThread.Start();
       _UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
       _UpdateSubitemValuesThread.Start();
-      _ResetTimer.Interval = 500;
+      _ResetTimer.Interval = 150;
       _ResetTimer.Tick += resetTimer_Tick;
 
       var defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
@@ -551,6 +555,11 @@ namespace BExplorer.Shell {
       FolderFallBack48 = extra.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
       FolderFallBack256 = jumbo.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
       FolderFallBack16 = small.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
+
+      Shell32.SHGetStockIconInfo(Shell32.SHSTOCKICONID.SIID_DOCNOASSOC, Shell32.SHGSI.SHGSI_SYSICONINDEX, ref defIconInfo);
+      DefaultFallBack48 = extra.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
+      DefaultFallBack256 = jumbo.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
+      DefaultFallBack16 = small.GetIcon(defIconInfo.iSysIconIndex).ToBitmap();
 
       //this.KeyDown += ShellView_KeyDown;
       this.MouseUp += ShellView_MouseUp;
@@ -672,6 +681,7 @@ namespace BExplorer.Shell {
     private void resetTimer_Tick(object sender, EventArgs e) {
       (sender as F.Timer).Stop();
       resetEvent.Set();
+      this.IsCancelRequested = false;
       //RedrawWindow();
       //GC.WaitForPendingFinalizers();
       //GC.Collect();
@@ -1586,18 +1596,24 @@ namespace BExplorer.Shell {
         if (IconSize == 16) {
           if (sho.IsFolder) {
             g.DrawImage(FolderFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+          } else if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS){
+            g.DrawImage(DefaultFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
           } else {
             g.DrawImage(ExeFallBack16, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
           }
         } else if (IconSize <= 48) {
           if (sho.IsFolder) {
             g.DrawImage(FolderFallBack48, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+          } else if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
+            g.DrawImage(DefaultFallBack48, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
           } else {
             g.DrawImage(ExeFallBack48, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
           }
         } else if (IconSize <= 256) {
           if (sho.IsFolder) {
             g.DrawImage(FolderFallBack256, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
+          } else if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
+            g.DrawImage(DefaultFallBack256, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
           } else {
             g.DrawImage(ExeFallBack256, new Rectangle(iconBounds.Left + (iconBounds.Right - iconBounds.Left - IconSize) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - IconSize) / 2, IconSize, IconSize));
           }
@@ -1870,10 +1886,9 @@ namespace BExplorer.Shell {
                 var selectedItem = Items[iac.iItem];
                 if (selectedItem.IsFolder) {
                   Navigate_Full(selectedItem, true);
-                } else if (selectedItem.IsLink && selectedItem.ParsingName.EndsWith(".lnk")) {
+                } else if (selectedItem.IsLink || selectedItem.ParsingName.EndsWith(".lnk")) {
                   var shellLink = new ShellLink(selectedItem.ParsingName);
-                  var newSho = new FileSystemListItem();
-                  newSho.Initialize(this.LVHandle, shellLink.TargetPIDL);
+                  var newSho = FileSystemListItem.ToFileSystemItem(this.LVHandle, shellLink.TargetPIDL);
                   if (newSho.IsFolder)
                     Navigate_Full(newSho, true);
                 } else {
@@ -1887,6 +1902,7 @@ namespace BExplorer.Shell {
               #region Case
               this.EndLabelEdit();
               resetEvent.Reset();
+              this.IsCancelRequested = true;
               _ResetTimer.Stop();
               ToolTip.HideTooltip();
               break;
@@ -2226,7 +2242,7 @@ namespace BExplorer.Shell {
                             }
                             //if ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
                               //var icon = RetrieveImageFromDB(IconSize, sho, true).Result;
-                            if (sho.IsIconLoaded || (sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS) {
+                            if (sho.IsIconLoaded || ((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS && Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor < 2)) {
                               hThumbnail = sho.GetHBitmap(IconSize, false); //icon != null ? icon.GetHbitmap() : IntPtr.Zero;
                               if (hThumbnail != IntPtr.Zero) {
                                 Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
@@ -2705,15 +2721,15 @@ namespace BExplorer.Shell {
 
     public void RefreshItem(int index, Boolean IsForceRedraw = false, Boolean convertName = true) {
       if (IsForceRedraw) {
-        //try {
-        //  this.Items[index] = convertName ? ShellItem.ToShellParsingName(this.Items[index].ParsingName) : new ShellItem(this.Items[index].ParsingName);
-        //  this.Items[index].IsNeedRefreshing = true;
-        //  this.Items[index].IsInvalid = true;
-        //  this.Items[index].OverlayIconIndex = -1;
-        //  this.Items[index].IsOnlyLowQuality = false;
-        //} catch {
-        //  //In case the event late and the file is not there anymore or changed catch the exception
-        //}
+        try {
+          this.Items[index] = convertName ? FileSystemListItem.ToFileSystemItem(this.LVHandle, this.Items[index].ParsingName.ToShellParsingName()) : FileSystemListItem.ToFileSystemItem(this.LVHandle, this.Items[index].ParsingName.ToShellParsingName());
+          this.Items[index].IsNeedRefreshing = true;
+          this.Items[index].IsInvalid = true;
+          this.Items[index].OverlayIconIndex = -1;
+          this.Items[index].IsOnlyLowQuality = false;
+        } catch {
+          //In case the event late and the file is not there anymore or changed catch the exception
+        }
       }
       User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REDRAWITEMS, index, index);
       if (this.IsGroupsEnabled) {
@@ -3130,8 +3146,9 @@ namespace BExplorer.Shell {
       
       if (destination == null)
         return;
-
-      MessageHandlerWindow.ReinitNotify(destination);
+      this.Invoke((Action)(() => {
+        MessageHandlerWindow.ReinitNotify(destination);
+      }));
       this.fsw.Created -= fsw_Created;
       this.fsw.Deleted -= fsw_Deleted;
       this.fsw.Changed -= fsw_Changed;
@@ -3537,11 +3554,12 @@ namespace BExplorer.Shell {
     }
 
     private async void RetrieveIconsByIndex(int index) {
-      await Task.Run(() => {
+      //await Task.Run(() => {
+      var t = new Thread(() => {
         if (this.IsCancelRequested)
           return;
-          Thread.Sleep(1);
-          F.Application.DoEvents();
+        resetEvent.WaitOne();
+
           var itemBounds = new User32.RECT();
           var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
           User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
@@ -3568,6 +3586,7 @@ namespace BExplorer.Shell {
             }
           }
       });
+      t.Start();
     }
 
     public void _IconsLoadingThreadRun() {
@@ -3615,7 +3634,7 @@ namespace BExplorer.Shell {
         if (this.IsCancelRequested)
           return;
 
-        Thread.Sleep(1);
+        //Thread.Sleep(1);
         F.Application.DoEvents();
         var itemBounds = new User32.RECT();
         var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };

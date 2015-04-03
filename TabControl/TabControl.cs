@@ -76,19 +76,24 @@ namespace Wpf.Controls {
 			set { SetValue(DefaultTabPathProperty, value); }
 		}
 
-		[Obsolete("Never Used")]
+
 		public Brush TabItemNormalBackground {
 			get { return (Brush)GetValue(TabItemNormalBackgroundProperty); }
 			set { SetValue(TabItemNormalBackgroundProperty, value); }
 		}
 
-		[Obsolete("Never Used")]
+    public Brush NotTabItemNormalBackground {
+      get { return (Brush)GetValue(NotTabItemNormalBackgroundProperty); }
+      set { SetValue(NotTabItemNormalBackgroundProperty, value); }
+    }
+
+
 		public Brush TabItemMouseOverBackground {
 			get { return (Brush)GetValue(TabItemMouseOverBackgroundProperty); }
 			set { SetValue(TabItemMouseOverBackgroundProperty, value); }
 		}
 
-		[Obsolete("Never Used")]
+
 		public Brush TabItemSelectedBackground {
 			get { return (Brush)GetValue(TabItemSelectedBackgroundProperty); }
 			set { SetValue(TabItemSelectedBackgroundProperty, value); }
@@ -174,6 +179,7 @@ namespace Wpf.Controls {
 		#region Static
 
 		public static readonly DependencyProperty TabItemNormalBackgroundProperty = DependencyProperty.Register("TabItemNormalBackground", typeof(Brush), typeof(TabControl), new UIPropertyMetadata(null));
+    public static readonly DependencyProperty NotTabItemNormalBackgroundProperty = DependencyProperty.Register("NotTabItemNormalBackground", typeof(Brush), typeof(TabControl), new UIPropertyMetadata(null));
 		public static readonly DependencyProperty TabItemMouseOverBackgroundProperty = DependencyProperty.Register("TabItemMouseOverBackground", typeof(Brush), typeof(TabControl), new UIPropertyMetadata(null));
 		public static readonly DependencyProperty TabItemSelectedBackgroundProperty = DependencyProperty.Register("TabItemSelectedBackground", typeof(Brush), typeof(TabControl), new UIPropertyMetadata(null));
 		public static readonly DependencyPropertyKey IsUsingItemsSourcePropertyKey = DependencyProperty.RegisterReadOnly("IsUsingItemsSource", typeof(bool), typeof(TabControl), new UIPropertyMetadata(false));

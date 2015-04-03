@@ -16,14 +16,15 @@
 	<SolidColorBrush x:Key="TabCloseButtonBrush" Color="#FFADADAD"/>
 
 	<!-- TabItem Brushes -->
-	<SolidColorBrush x:Key="TabItemNormalBackground" Color="WhiteSmoke"/>
-	<SolidColorBrush x:Key="TabItemHoverBackground" Color="LightGray"/>
+  <SolidColorBrush x:Key="TabItemNormalBackground" Color="#D3D3D3"/>
+  <SolidColorBrush x:Key="TabItemHoverBackground" Color="#dadada"/>
 	<SolidColorBrush x:Key="TabItemSelectedBackground" Color="#FFEAF6FB"/>
+  <SolidColorBrush x:Key="NotTabItemNormalBackground" Color="#FFF5F5F5"/>
 
 	<!-- Style for the Repeat Button used to scrool the Tabs to the Left-->
 	<Style x:Key="RepeatButtonScrollLeftOrUpStyle" TargetType="{x:Type RepeatButton}">
 		<Setter Property="Foreground" Value="{StaticResource TabGrayTextBrush}" />
-		<Setter Property="Background" Value="{Binding Path=TabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+    <Setter Property="Background" Value="{Binding Path=NotTabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
 		<Setter Property="BorderBrush" Value="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
 		<Setter Property="SnapsToDevicePixels" Value="True"/>
 		<Setter Property="Template">
@@ -79,7 +80,7 @@
 	<!-- Style for the Repeat Button used to scrool the Tabs to the Right-->
 	<Style x:Key="RepeatButtonScrollRightOrDownStyle" TargetType="{x:Type RepeatButton}">
 		<Setter Property="Foreground" Value="{StaticResource TabGrayTextBrush}" />
-		<Setter Property="Background" Value="{Binding Path=TabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+    <Setter Property="Background" Value="{Binding Path=NotTabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
 		<Setter Property="BorderBrush" Value="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}" />
 		<Setter Property="SnapsToDevicePixels" Value="True"/>
 		<Setter Property="Template">
@@ -136,7 +137,7 @@
 
 	<!-- Style for the Toggle Button which displays a cntext menu listing all the Tab Headers-->
 	<Style x:Key="DropDownToggleButtonStyle" TargetType="{x:Type ToggleButton}">
-		<Setter Property="Background" Value="{Binding Path=TabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+    <Setter Property="Background" Value="{Binding Path=NotTabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
 		<Setter Property="BorderBrush" Value="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
 		<Setter Property="Foreground" Value="{StaticResource TabGrayTextBrush}"/>
 		<Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -177,7 +178,7 @@
 
 	<!-- Style for the New Tab Button -->
 	<Style x:Key="NewTabButtonStyle" TargetType="{x:Type Button}">
-		<Setter Property="Background" Value="{Binding Path=TabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
+    <Setter Property="Background" Value="{Binding Path=NotTabItemNormalBackground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
 		<Setter Property="BorderBrush" Value="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type l:TabControl}}}"/>
 		<Setter Property="Foreground" Value="{StaticResource TabGrayTextBrush}"/>
 		<Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -741,6 +742,7 @@
 		<Setter Property="BorderThickness" Value="1"/>
 
 		<Setter Property="TabItemNormalBackground" Value="{StaticResource TabItemNormalBackground}"/>
+    <Setter Property="NotTabItemNormalBackground" Value="{StaticResource NotTabItemNormalBackground}"/>
 		<Setter Property="TabItemMouseOverBackground" Value="{StaticResource TabItemHoverBackground}"/>
 		<Setter Property="TabItemSelectedBackground" Value="{StaticResource TabItemSelectedBackground}"/>
 

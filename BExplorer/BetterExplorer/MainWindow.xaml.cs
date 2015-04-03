@@ -852,18 +852,18 @@ namespace BetterExplorer {
     }
 
     private void SetFOperation(String fileName, BExplorer.Shell.OperationType opType) {
-      var obj = new ShellItem(fileName);
-      //if (opType == BExplorer.Shell.OperationType.Copy)
-      //  ShellListView.DoCopy(obj);
-      //else if (opType == BExplorer.Shell.OperationType.Move)
-      //  ShellListView.DoMove(obj);
+      var obj = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, fileName.ToShellParsingName());
+      if (opType == BExplorer.Shell.OperationType.Copy)
+        ShellListView.DoCopy(obj);
+      else if (opType == BExplorer.Shell.OperationType.Move)
+        ShellListView.DoMove(obj);
     }
 
-    private void SetFOperation(ShellItem obj, BExplorer.Shell.OperationType opType) {
-      //if (opType == BExplorer.Shell.OperationType.Copy)
-      //  ShellListView.DoCopy(obj);
-      //else if (opType == BExplorer.Shell.OperationType.Move)
-      //  ShellListView.DoMove(obj);
+    private void SetFOperation(IListItemEx obj, BExplorer.Shell.OperationType opType) {
+      if (opType == BExplorer.Shell.OperationType.Copy)
+        ShellListView.DoCopy(obj);
+      else if (opType == BExplorer.Shell.OperationType.Move)
+        ShellListView.DoMove(obj);
     }
 
     private void btnctOther_Click(object sender, RoutedEventArgs e) {
@@ -1629,7 +1629,7 @@ namespace BetterExplorer {
         //'set StartUp location
         if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized") {
           //if (Application.Current.Properties["cmd"].ToString() == "/nw")
-            //tcMain.NewTab(ShellListView.CurrentFolder, true);
+          //tcMain.NewTab(ShellListView.CurrentFolder, true);
         } else {
           InitializeInitialTabs();
         }
@@ -3312,7 +3312,7 @@ namespace BetterExplorer {
     #region Tabs
     void mim_Click(object sender, RoutedEventArgs e) {
       MenuItem mi = sender as MenuItem;
-      SetFOperation((mi.Tag as ShellItem), BExplorer.Shell.OperationType.Move);
+      SetFOperation((mi.Tag as IListItemEx), BExplorer.Shell.OperationType.Move);
     }
 
     private void btnNewTab_Click(object sender, RoutedEventArgs e) {
@@ -3887,15 +3887,16 @@ namespace BetterExplorer {
       if (this.ShellListView.CurrentFolder == null) return;
       //if (this.bcbc.OnNavigate == null)
       //this.bcbc.OnNavigate = NavigationController;
-
-      var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
-      if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
-        if (tab.SelectedItems != null)
-          tab.SelectedItems.AddRange(this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList());
-        else
-          tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
-      }
-      this.Title = "Better Explorer - " + e.Folder.DisplayName;
+      Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
+        var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
+        if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
+          if (tab.SelectedItems != null)
+            tab.SelectedItems.AddRange(this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList());
+          else
+            tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+        }
+        this.Title = "Better Explorer - " + e.Folder.DisplayName;
+      }));
       //e.Folder.Thumbnail.CurrentSize = new WIN.Size(16, 16);
       //e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
 
@@ -4012,30 +4013,33 @@ namespace BetterExplorer {
         //NavigationController(this.ShellListView.CurrentFolder);
       }
       //if (!e.Folder.Equals(this.ShellListView.CurrentFolder)) {
-      //this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName.ToShellParsingName();
+      this.bcbc.SetPathWithoutNavigate(this.ShellListView.CurrentFolder.ParsingName.ToShellParsingName());
       //}
-      
-      SetupColumnsButton();
-      SetSortingAndGroupingButtons();
+      Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+        SetupColumnsButton();
+        SetSortingAndGroupingButtons();
 
 
-      if (!tcMain.isGoingBackOrForward) {
-        var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
-        Current.ClearForwardItems();
-        //if (Current.CurrentLocation != e.Folder) Current.CurrentLocation = e.Folder;
-      }
 
-      tcMain.isGoingBackOrForward = false;
+        if (!tcMain.isGoingBackOrForward) {
+          var Current = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
+          Current.ClearForwardItems();
+          //if (Current.CurrentLocation != e.Folder) Current.CurrentLocation = e.Folder;
+        }
 
-      SetupUIonNavComplete(e);
+        tcMain.isGoingBackOrForward = false;
 
-      if (this.IsConsoleShown)
-        ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+        SetupUIonNavComplete(e);
 
+        if (this.IsConsoleShown)
+          ctrlConsole.ChangeFolder(e.Folder.ParsingName, e.Folder.IsFileSystem);
+      }));
 
-      ConstructMoveToCopyToMenu();
-      SetUpJumpListOnNavComplete();
-      SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
+      Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+        ConstructMoveToCopyToMenu();
+        SetUpJumpListOnNavComplete();
+        SetUpButtonVisibilityOnNavComplete(SetUpNewFolderButtons());
+      }));
 
 
       if (this.IsInfoPaneEnabled) {
@@ -4043,28 +4047,29 @@ namespace BetterExplorer {
           this.DetailsPanel.FillPreviewPane(this.ShellListView);
         });
       }
-      if (e.OldFolder != this.ShellListView.CurrentFolder) {
-        var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
-        selectedItem.Header = this.ShellListView.CurrentFolder.DisplayName;
-        selectedItem.Icon = this.ShellListView.CurrentFolder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
-        selectedItem.ShellObject = this.ShellListView.CurrentFolder;
-        if (selectedItem != null) {
-          var selectedPaths = selectedItem.SelectedItems;
-          if (selectedPaths != null && selectedPaths.Count > 0) {
-            foreach (var path in selectedPaths.ToArray()) {
-              var sho = this.ShellListView.Items.Where(w => w.ParsingName == path).SingleOrDefault();
-              if (sho != null) {
-                var index = this.ShellListView.ItemsHashed[sho];
-                this.ShellListView.SelectItemByIndex(index, true);
-                selectedPaths.Remove(path);
+      Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
+        if (e.OldFolder != this.ShellListView.CurrentFolder) {
+          var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
+          selectedItem.Header = this.ShellListView.CurrentFolder.DisplayName;
+          selectedItem.Icon = this.ShellListView.CurrentFolder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+          selectedItem.ShellObject = this.ShellListView.CurrentFolder;
+          if (selectedItem != null) {
+            var selectedPaths = selectedItem.SelectedItems;
+            if (selectedPaths != null && selectedPaths.Count > 0) {
+              foreach (var path in selectedPaths.ToArray()) {
+                var sho = this.ShellListView.Items.Where(w => w.ParsingName == path).SingleOrDefault();
+                if (sho != null) {
+                  var index = this.ShellListView.ItemsHashed[sho];
+                  this.ShellListView.SelectItemByIndex(index, true);
+                  selectedPaths.Remove(path);
+                }
               }
+            } else {
+              this.ShellListView.ScrollToTop();
             }
-          } else {
-            this.ShellListView.ScrollToTop();
           }
         }
-      }
-      //}));
+      }));
       ////This initially setup the statusbar after program opens
       Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
         SetUpStatusBarOnSelectOrNavigate(ShellListView.SelectedItems == null ? 0 : ShellListView.GetSelectedCount());
@@ -4193,7 +4198,7 @@ namespace BetterExplorer {
         this.ShellListView.Navigate_Full(Destination, true);
 
         //if (this.ShellListView.CurrentFolder != null)
-        
+
       }
       //this.bcbc.Path = RemoveLastEmptySeparator(Destination.ParsingName).ToShellParsingName(); //this.ShellListView.CurrentFolder.ParsingName;
     }
@@ -4253,7 +4258,8 @@ namespace BetterExplorer {
             ChangeRibbonTheme(Color);
             break;
           case "Metro":
-            ChangeRibbonTheme(Color, true);
+            //ChangeRibbonTheme(Color, true);
+            //Do nothing since Metro should be already loaded in App.Startup
             break;
           default:
             ChangeRibbonTheme("Blue");
@@ -4265,17 +4271,8 @@ namespace BetterExplorer {
 
       // loads current UI language (uses en-US if default)
       try {
-        string loc = Convert.ToString(rks.GetValue("Locale", ":null:")) == ":null:" ?	//load current UI language in case there is no specified registry value
-             Thread.CurrentThread.CurrentUICulture.Name : Convert.ToString(rks.GetValue("Locale", ":null:"));
-        /*
-        if (Convert.ToString(rks.GetValue("Locale", ":null:")) == ":null:") {
-					
-          loc = Thread.CurrentThread.CurrentUICulture.Name;
-        }
-        else {
-          loc = Convert.ToString(rks.GetValue("Locale", ":null:"));
-        }
-        */
+        //load current UI language in case there is no specified registry value
+        var loc = Convert.ToString(rks.GetValue("Locale", ":null:")) == ":null:" ?	 Thread.CurrentThread.CurrentUICulture.Name : Convert.ToString(rks.GetValue("Locale", ":null:"));
         ((App)Application.Current).SelectCulture(loc, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\translation.xaml");
       } catch (Exception ex) {
         MessageBox.Show(String.Format("An error occurred while trying to load the locale data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "Locale Load Error - " + ex);
@@ -4342,39 +4339,39 @@ namespace BetterExplorer {
     }
 
     void ShellListView_ViewStyleChanged(object sender, BExplorer.Shell.ViewChangedEventArgs e) {
-          zoomSlider.Value = e.ThumbnailSize;
-          btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
-          btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;
+      zoomSlider.Value = e.ThumbnailSize;
+      btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
+      btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;
 
-          if (e.CurrentView == ShellViewStyle.ExtraLargeIcon) {
-            ViewGallery.SelectedIndex = 0;
-          } else if (e.CurrentView == ShellViewStyle.LargeIcon) {
-            ViewGallery.SelectedIndex = 1;
-          } else if (e.CurrentView == ShellViewStyle.Medium) {
-            ViewGallery.SelectedIndex = 2;
-            btnSbIcons.IsChecked = true;
-          } else if (e.CurrentView == ShellViewStyle.SmallIcon) {
-            ViewGallery.SelectedIndex = 3;
-          } else {
-            btnSbIcons.IsChecked = false;
-          }
+      if (e.CurrentView == ShellViewStyle.ExtraLargeIcon) {
+        ViewGallery.SelectedIndex = 0;
+      } else if (e.CurrentView == ShellViewStyle.LargeIcon) {
+        ViewGallery.SelectedIndex = 1;
+      } else if (e.CurrentView == ShellViewStyle.Medium) {
+        ViewGallery.SelectedIndex = 2;
+        btnSbIcons.IsChecked = true;
+      } else if (e.CurrentView == ShellViewStyle.SmallIcon) {
+        ViewGallery.SelectedIndex = 3;
+      } else {
+        btnSbIcons.IsChecked = false;
+      }
 
-          if (e.CurrentView == ShellViewStyle.List) {
-            ViewGallery.SelectedIndex = 4;
-          } else if (e.CurrentView == ShellViewStyle.Details) {
-            ViewGallery.SelectedIndex = 5;
-            btnSbDetails.IsChecked = true;
-          } else {
-            btnSbDetails.IsChecked = false;
-          }
+      if (e.CurrentView == ShellViewStyle.List) {
+        ViewGallery.SelectedIndex = 4;
+      } else if (e.CurrentView == ShellViewStyle.Details) {
+        ViewGallery.SelectedIndex = 5;
+        btnSbDetails.IsChecked = true;
+      } else {
+        btnSbDetails.IsChecked = false;
+      }
 
-          if (e.CurrentView == ShellViewStyle.Tile) {
-            ViewGallery.SelectedIndex = 6;
-          } else if (e.CurrentView == ShellViewStyle.Content) {
-            ViewGallery.SelectedIndex = 7;
-          } else if (e.CurrentView == ShellViewStyle.Thumbstrip) {
-            ViewGallery.SelectedIndex = 8;
-          }
+      if (e.CurrentView == ShellViewStyle.Tile) {
+        ViewGallery.SelectedIndex = 6;
+      } else if (e.CurrentView == ShellViewStyle.Content) {
+        ViewGallery.SelectedIndex = 7;
+      } else if (e.CurrentView == ShellViewStyle.Thumbstrip) {
+        ViewGallery.SelectedIndex = 8;
+      }
     }
 
     private void btnNewItem_DropDownOpened(object sender, EventArgs e) {

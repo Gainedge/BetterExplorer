@@ -432,7 +432,7 @@ namespace BExplorer.Shell {
 				catch (Exception) {
 					return string.Empty;
 				}
-
+        if (result == IntPtr.Zero) return String.Empty;
 				queryInfo = (IQueryInfo)Marshal.GetTypedObjectForIUnknown(result, typeof(IQueryInfo));
 				queryInfo.GetInfoTip(0x00000001 | 0x00000008, out infoTipPtr);
 				infoTip = Marshal.PtrToStringUni(infoTipPtr);
@@ -1140,7 +1140,9 @@ namespace BExplorer.Shell {
 
 		private static IShellItem CreateItemFromParsingName(string path) {
 			if (RunningVista) {
-				return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
+        //IShellItem item;
+        //Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID, out item);
+        return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
 			}
 			else {
 				//IShellFolder desktop = Desktop.GetIShellFolder();

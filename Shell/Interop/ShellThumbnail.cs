@@ -298,10 +298,10 @@ namespace BExplorer.Shell.Interop {
 		}
 
 		private BitmapSource GetBitmapSource(System.Windows.Size iconOnlySize, System.Windows.Size thumbnailSize) {
-			//if (thumbnailSize == DefaultThumbnailSize.Small) {
-			//	FormatOption = ShellThumbnailFormatOption.IconOnly;
-			//	RetrievalOption = ShellThumbnailRetrievalOption.Default;
-			//}
+      if (thumbnailSize == DefaultThumbnailSize.Small) {
+        FormatOption = ShellThumbnailFormatOption.IconOnly;
+        RetrievalOption = ShellThumbnailRetrievalOption.Default;
+      }
 			return GetBitmapSource(FormatOption == ShellThumbnailFormatOption.IconOnly ? iconOnlySize : thumbnailSize);
 		}
 

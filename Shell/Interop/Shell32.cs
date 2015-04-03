@@ -773,6 +773,13 @@ namespace BExplorer.Shell.Interop {
 				[In] IntPtr pbc,
 				[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
 
+    [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = true)]
+    public static extern HResult SHCreateItemFromParsingName(
+        [In][MarshalAs(UnmanagedType.LPWStr)] string pszPath,
+        [In] IntPtr pbc,
+        [In][MarshalAs(UnmanagedType.LPStruct)] Guid riid,
+        [Out][MarshalAs(UnmanagedType.Interface, IidParameterIndex = 2)] out IShellItem ppv);
+
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
 		public static extern IShellItem SHCreateItemWithParent(
 				[In] IntPtr pidlParent,

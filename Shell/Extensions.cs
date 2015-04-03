@@ -335,8 +335,8 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="path">The path you want to convert</param>
 		/// <returns></returns>
-		[Obsolete("Replaced with ShellItem.ToShellParsingName")]
 		public static String ToShellParsingName(this String path) {
+      if (path.StartsWith("shell::")) return path;
       if (path.StartsWith("%")) {
         return Environment.ExpandEnvironmentVariables(path);
       } else if (path.StartsWith("::") && !path.StartsWith(@"\\"))
