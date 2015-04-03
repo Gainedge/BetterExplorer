@@ -1117,9 +1117,11 @@ namespace BExplorer.Shell {
               case ShellNotifications.SHCNE.SHCNE_RENAMEITEM:
                 break;
               case ShellNotifications.SHCNE.SHCNE_MKDIR:
-              case ShellNotifications.SHCNE.SHCNE_CREATE:
+              //case ShellNotifications.SHCNE.SHCNE_CREATE:
                 try {
                   var sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
+                  if (!sho.Parent.ParsingName.Equals(KnownFolders.Network.ParsingName, StringComparison.InvariantCultureIgnoreCase))
+                    break;
                   var existingItem = this.ShellTreeView.Nodes.OfType<TreeNode>().Last().Nodes.OfType<TreeNode>().Where(w => (w.Tag as IListItemEx) != null && (w.Tag as IListItemEx).ParsingName == sho.ParsingName).Count();
                   if (existingItem > 0)
                     break;
