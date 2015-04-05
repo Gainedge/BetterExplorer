@@ -309,11 +309,12 @@ namespace BExplorer.Shell {
       get { return _showCheckBoxes; }
       set {
         if (value) {
-          User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.CheckBoxes, (int)ListViewExtendedStyles.CheckBoxes);
           User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT);
+          User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.CheckBoxes, (int)ListViewExtendedStyles.CheckBoxes);
+          
         } else {
-          User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.CheckBoxes, 0);
           User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT, 0);
+          User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.CheckBoxes, 0);
         }
         _showCheckBoxes = value;
       }
@@ -3921,7 +3922,7 @@ namespace BExplorer.Shell {
             var mainWin = System.Windows.Application.Current.MainWindow;
             if (mainWin.IsActive || !isActiveCheck) {
               if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)) {
-                if (User32.GetForegroundWindow() == new System.Windows.Interop.WindowInteropHelper(mainWin).Handle)
+                //if (User32.GetForegroundWindow() == new System.Windows.Interop.WindowInteropHelper(mainWin).Handle)
                   User32.SetFocus(this.LVHandle); //var res = 
                 //this._IsInRenameMode = false;
               }
@@ -4272,6 +4273,7 @@ namespace BExplorer.Shell {
             IsRenameInProgress = true;
             this._NewName = NewName;
             this.Invoke((Action)(() => {
+              item.DisplayName = NewName;
               this.RefreshItem(ItemForRename);
               RenameShellItem(item.ComInterface, NewName, !this.IsFileExtensionShown && !item.IsFolder, item.Extension);
             }));
