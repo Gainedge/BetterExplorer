@@ -3134,7 +3134,7 @@ namespace BExplorer.Shell {
       this.IsCancelRequested = true;
 
       this._UnvalidateTimer.Stop();
-      if (destination.Equals(this.CurrentFolder))
+      if (destination.Equals(this.CurrentFolder) && !refresh)
         return;
       if (!refresh && Navigating != null)
         Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
@@ -4273,7 +4273,7 @@ namespace BExplorer.Shell {
             IsRenameInProgress = true;
             this._NewName = NewName;
             this.Invoke((Action)(() => {
-              item.DisplayName = NewName;
+              //item.DisplayName = NewName;
               this.RefreshItem(ItemForRename);
               RenameShellItem(item.ComInterface, NewName, !this.IsFileExtensionShown && !item.IsFolder, item.Extension);
             }));

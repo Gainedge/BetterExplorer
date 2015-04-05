@@ -2094,12 +2094,9 @@ namespace BetterExplorer {
       cmHistory.Items.Clear();
       NavigationLog nl = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
       int i = 0;
-      foreach (ShellItem item in nl.HistoryItemsList) {
+      foreach (var item in nl.HistoryItemsList) {
         if (item != null) {
-          item.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-          item.Thumbnail.CurrentSize = new WIN.Size(16, 16);
-
-          cmHistory.Items.Add(Utilities.Build_MenuItem(item.GetDisplayName(SIGDN.NORMALDISPLAY), item, item.Thumbnail.BitmapSource,
+          cmHistory.Items.Add(Utilities.Build_MenuItem(item.DisplayName, item, item.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default),
                        checkable: true, isChecked: i == nl.CurrentLocPos, GroupName: "G1", onClick: miItems_Click));
         }
         i++;
