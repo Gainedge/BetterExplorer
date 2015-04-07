@@ -187,10 +187,12 @@ namespace BExplorer.Shell {
       } else {
         while (parents.Count > 0) {
           var obj = parents.Pop();
-          var newNode = this.FromItem(obj);
-          if (newNode != null && !newNode.IsExpanded) {
-            newNode.Expand();
-          }
+          this.Invoke((Action)(() => {
+            var newNode = this.FromItem(obj);
+            if (newNode != null && !newNode.IsExpanded) {
+              newNode.Expand();
+            }
+          }));
         }
       }
     }

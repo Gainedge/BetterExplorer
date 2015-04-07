@@ -8,12 +8,14 @@ using BExplorer.Shell.Interop;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
   public class FileSystemListItem : IListItemEx {
-    private ShellItem _Item { get; set; }
-    #region IListItemEx<FileSystemListItem> Members
 
+    #region Private Members
+    private ShellItem _Item { get; set; }
+    #endregion
+
+    #region IListItemEx Members
     public IShellItem ComInterface {
       get {
-        //var item = ShellItem.ToShellParsingName(this.ParsingName);
         return this._Item.ComInterface;
       }
     }
@@ -181,6 +183,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       throw new NotImplementedException();
     }
 
+    public void Initialize(IntPtr lvHandle, IntPtr pidl) {
+      throw new NotImplementedException();
+    }
+
     IListItemEx[] IListItemEx.GetSubItems(bool isEnumHidden) {
       throw new NotImplementedException();
     }
@@ -199,7 +205,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
       HResult result = enumId.Next(1, out pidl, out count);
       var i = 0;
-      var parentItem = new ShellItem(this.ParsingName.ToShellParsingName());
+      var parentItem = this.IsSearchFolder ? this._Item : new ShellItem(this.ParsingName.ToShellParsingName());
       while (result == HResult.S_OK) {
         var fsi = new FileSystemListItem();
         fsi.InitializeWithParent(parentItem, this.ParentHandle, pidl, i++);
@@ -252,37 +258,6 @@ namespace BExplorer.Shell._Plugin_Interfaces {
     public IShellFolder GetIShellFolder() {
       return this._Item.GetIShellFolder();
     }
-    #endregion
-
-
-
-    #region IDisposable Members
-
-    public void Dispose() {
-      if (this._Item != null) {
-        this._Item.Dispose();
-      }
-    }
-
-    #endregion
-
-
-    #region IListItemEx Members
-
-
-    
-
-    #endregion
-
-    #region IListItemEx Members
-
-
-    
-
-    #endregion
-
-    #region IListItemEx Members
-
 
     public bool IsLink {
       get {
@@ -290,104 +265,23 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       }
     }
 
-    #endregion
-
-    #region IListItemEx Members
-
-
-    public void Initialize(IntPtr lvHandle, IntPtr pidl) {
-      throw new NotImplementedException();
-    }
-
-    #endregion
-
-    #region IListItemEx Members
-
-
     public string ToolTipText {
       get { return this._Item.ToolTipText; }
     }
 
-    #endregion
-
-    #region IListItemEx Members
-
-
-    
-
-    #endregion
-
-    #region IListItemEx Members
-
-
-
-
-    #endregion
-
-    #region IListItemEx Members
-
-    #endregion
-
-    #region IListItemEx Members
-
-
-    System.IO.DriveInfo IListItemEx.GetDriveInfo() {
-      throw new NotImplementedException();
+    public System.IO.DriveInfo GetDriveInfo() {
+      return this._Item.GetDriveInfo();
     }
-
-    #endregion
-
-    #region IListItemEx Members
-
 
     public HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false) {
       var res = this._Item.Thumbnail.ExtractAndDrawThumbnail(hdc, iconSize, out flags, iconBounds, out retrieved, isHidden, isRefresh);
       return res;
     }
 
-    #endregion
-
-    #region IListItemEx Members
-
-
     public IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false) {
       var bmp = this._Item.Thumbnail.GetHBitmap(iconSize, isThumbnail, isForce);
       return bmp;
     }
-
-    #endregion
-
-    #region IEquatable<IListItemEx> Members
-
-    public bool Equals(IListItemEx other) {
-      if (other == null) return false;
-      return other.ParsingName.Equals(this.ParsingName, StringComparison.InvariantCultureIgnoreCase);
-    }
-
-    /// <summary>
-    /// Implements the == (equality) operator.
-    /// </summary>
-    /// <param name="leftShellObject">First object to compare.</param>
-    /// <param name="rightShellObject">Second object to compare.</param>
-    /// <returns>True if leftShellObject equals rightShellObject; false otherwise.</returns>
-    public static bool operator ==(FileSystemListItem leftShellObject, FileSystemListItem rightShellObject) {
-      if ((object)leftShellObject == null) {
-        return ((object)rightShellObject == null);
-      }
-      return leftShellObject.Equals(rightShellObject);
-    }
-
-    /// <summary>
-    /// Implements the != (inequality) operator.
-    /// </summary>
-    /// <param name="leftShellObject">First object to compare.</param>
-    /// <param name="rightShellObject">Second object to compare.</param>
-    /// <returns>True if leftShellObject does not equal leftShellObject; false otherwise.</returns>
-    public static bool operator !=(FileSystemListItem leftShellObject, FileSystemListItem rightShellObject) {
-      return !(leftShellObject == rightShellObject);
-    }
-
-    #endregion
 
     public static FileSystemListItem ToFileSystemItem(IntPtr parentHandle, String path) {
       var fsItem = new FileSystemListItem();
@@ -407,26 +301,13 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       return fsItem;
     }
 
-    #region IListItemEx Members
-
-
     public string GetDisplayName(SIGDN type) {
       return this._Item.GetDisplayName(type);
     }
 
-    #endregion
-
-    #region IListItemEx Members
-
-
     public IExtractIconPWFlags GetShield() {
       return this._Item.GetShield();
     }
-
-    #endregion
-
-    #region IListItemEx Members
-
 
     public int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
       var info = new SHFILEINFO();
@@ -441,22 +322,22 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       return info.iIcon;
     }
 
-    #endregion
-
-    #region IListItemEx Members
-
-
     public Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags) {
       return this._Item.Thumbnail.RefreshThumbnail((uint)iconSize, out flags);
     }
 
-    #endregion
-
-    #region IListItemEx Members
-
-
     public IntPtr Icon { get; set; }
 
+    public int GetUniqueID() {
+      return this.ParsingName.GetHashCode();
+    } 
+    #endregion
+
+    #region IEquatable<IListItemEx> Members
+    public bool Equals(IListItemEx other) {
+      if (other == null) return false;
+      return other.ParsingName.Equals(this.ParsingName, StringComparison.InvariantCultureIgnoreCase);
+    }
     #endregion
 
     #region IEqualityComparer<IListItemEx> Members
@@ -481,13 +362,15 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     #endregion
 
-    #region IListItemEx Members
+    #region IDisposable Members
 
-
-    public int GetUniqueID() {
-      return this.ParsingName.GetHashCode();
+    public void Dispose() {
+      if (this._Item != null) {
+        this._Item.Dispose();
+      }
     }
 
     #endregion
+
   }
 }

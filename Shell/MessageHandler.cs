@@ -157,13 +157,13 @@ namespace BExplorer.Shell {
 										this._ParentShellView.IsLibraryInModify = false;
 										break;
 									}
-									//ShellItem theItem = this._ParentShellView.Items.ToArray().SingleOrDefault(s => s.Equals(objDeleteF));
-									//if (theItem != null) {
-									//	this._ParentShellView.Items.Remove(theItem);
-									//	if (this._ParentShellView.IsGroupsEnabled) this._ParentShellView.SetGroupOrder(false);
-         //           var col = this._ParentShellView.AllAvailableColumns.Where(w => w.ID == this._ParentShellView.LastSortedColumnId).SingleOrDefault();
-									//	this._ParentShellView.SetSortCollumn(col, this._ParentShellView.LastSortOrder, false);
-									//}
+									var theItem = this._ParentShellView.Items.ToArray().SingleOrDefault(s => s.Equals(objDeleteF));
+									if (theItem != null) {
+										this._ParentShellView.Items.Remove(theItem);
+										if (this._ParentShellView.IsGroupsEnabled) this._ParentShellView.SetGroupOrder(false);
+                    var col = this._ParentShellView.AllAvailableColumns.Where(w => w.ID == this._ParentShellView.LastSortedColumnId).SingleOrDefault();
+										this._ParentShellView.SetSortCollumn(col, this._ParentShellView.LastSortOrder, false);
+									}
 								}
 								break;
 							case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:

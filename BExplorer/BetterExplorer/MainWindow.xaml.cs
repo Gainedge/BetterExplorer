@@ -494,14 +494,13 @@ namespace BetterExplorer {
       ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
       if (ctgImage.Visibility == Visibility.Visible) {
         try {
-          var cvt = new Bitmap(selectedItem.ParsingName);
+          using (var cvt = new Bitmap(selectedItem.ParsingName)) {
 
-          imgSizeDisplay.WidthData = cvt.Width.ToString();
-          imgSizeDisplay.HeightData = cvt.Height.ToString();
+            imgSizeDisplay.WidthData = cvt.Width.ToString();
+            imgSizeDisplay.HeightData = cvt.Height.ToString();
 
-          if (asImage) TheRibbon.SelectedTabItem = ctgImage.Items[0];
-
-          cvt.Dispose();
+            if (asImage) TheRibbon.SelectedTabItem = ctgImage.Items[0];
+          }
         } catch (Exception) {
           MessageBox.Show("Image was invalid");
         }
@@ -3034,10 +3033,11 @@ namespace BetterExplorer {
     public void DoSearch() {
       try {
         if (edtSearchBox.FullSearchTerms != "") {
-          var searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
-          var shellItem = new ShellItem(ShellListView.CurrentFolder.PIDL);
-          var searchFolder = new ShellSearchFolder(searchCondition, shellItem);
-          NavigationController(FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, searchFolder));
+          //var searchCondition = SearchConditionFactory.ParseStructuredQuery(edtSearchBox.FullSearchTerms);
+          //var shellItem = new ShellItem(ShellListView.CurrentFolder.PIDL);
+          //var searchFolder = new ShellSearchFolder(searchCondition, shellItem);
+          //NavigationController(FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, searchFolder));
+          this.ShellListView.Navigate_Full(edtSearchBox.FullSearchTerms, true, true);
           //shellItem.Dispose();
           //searchFolder.Dispose();
         }
