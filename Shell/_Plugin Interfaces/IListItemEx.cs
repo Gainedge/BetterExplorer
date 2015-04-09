@@ -102,6 +102,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
     HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false);
 
+    HResult NavigationStatus { get; set; }
+
     IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false);
 
     Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags);

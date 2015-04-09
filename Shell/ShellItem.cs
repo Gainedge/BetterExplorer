@@ -467,7 +467,8 @@ namespace BExplorer.Shell {
 		[System.Diagnostics.DebuggerNonUserCode]
 		public IEnumerator<ShellItem> GetEnumerator(SHCONTF filter) {
 			IShellFolder folder = GetIShellFolder();
-			IEnumIDList enumId = GetIEnumIDList(folder, filter);
+      HResult navRes;
+			IEnumIDList enumId = GetIEnumIDList(folder, filter, out navRes);
 			uint count;
 			IntPtr pidl;
 
@@ -1162,10 +1163,11 @@ namespace BExplorer.Shell {
 		}
 		*/
 
-		public static IEnumIDList GetIEnumIDList(IShellFolder folder, SHCONTF flags) {
+		public static IEnumIDList GetIEnumIDList(IShellFolder folder, SHCONTF flags, out HResult navResult) {
 			IEnumIDList result;
-
-			if (folder.EnumObjects(IsCareForMessageHandle ? MessageHandle : IntPtr.Zero, flags, out result) == HResult.S_OK)
+      var res = folder.EnumObjects(IsCareForMessageHandle ? MessageHandle : IntPtr.Zero, flags, out result);
+      navResult = res;
+      if (res == HResult.S_OK)
 				return result;
 			else
 				return null;

@@ -403,13 +403,15 @@ namespace BExplorer.Shell {
         if (this.ShellTreeView != null) {
           this.ShellTreeView.Invoke((Action)(() => {
 
-            node = TreeNode.FromHandle(ShellTreeView, handle);
-            treeHandle = ShellTreeView.Handle;
-            if (node != null) {
-              visible = node.IsVisible;
-              var item = node.Tag as IListItemEx;
-              pidl = item.AbsolutePidl;
-            }
+            try {
+              node = TreeNode.FromHandle(ShellTreeView, handle);
+              treeHandle = ShellTreeView.Handle;
+              if (node != null) {
+                visible = node.IsVisible;
+                var item = node.Tag as IListItemEx;
+                pidl = item.AbsolutePidl;
+              }
+            } catch { }
 
           }));
 

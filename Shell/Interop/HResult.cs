@@ -32,6 +32,7 @@ namespace BExplorer.Shell.Interop
         DATA_S_SAMEFORMATETC = 0x00040130,
         S_OK = 0,
         S_FALSE = 1,
+        E_CANCELED = unchecked((int)0x800704C7),
         E_NOINTERFACE = unchecked((int)0x80004002),
         E_NOTIMPL = unchecked((int)0x80004001),
         OLE_E_ADVISENOTSUPPORTED = unchecked((int)80040003),

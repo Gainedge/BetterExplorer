@@ -191,11 +191,13 @@ namespace BExplorer.Shell._Plugin_Interfaces {
       throw new NotImplementedException();
     }
 
-
+    public HResult NavigationStatus { get; set; }
     public IEnumerator<IListItemEx> GetEnumerator() {
       IShellFolder folder = this.GetIShellFolder();
-      IEnumIDList enumId = ShellItem.GetIEnumIDList(folder, SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.INIT_ON_FIRST_NEXT | SHCONTF.STORAGE | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.INIT_ON_FIRST_NEXT |
-          SHCONTF.NONFOLDERS | SHCONTF.FASTITEMS | SHCONTF.ENABLE_ASYNC);
+      HResult navRes;
+      IEnumIDList enumId = ShellItem.GetIEnumIDList(folder, SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.INIT_ON_FIRST_NEXT |
+          SHCONTF.NONFOLDERS | SHCONTF.STORAGE | SHCONTF.ENABLE_ASYNC, out navRes);
+      this.NavigationStatus = navRes;
       uint count;
       IntPtr pidl;
 
