@@ -4056,7 +4056,7 @@ namespace BetterExplorer {
               foreach (var path in selectedPaths.ToArray()) {
                 var sho = this.ShellListView.Items.Where(w => w.ParsingName == path).SingleOrDefault();
                 if (sho != null) {
-                  var index = this.ShellListView.ItemsHashed[sho];
+                  var index = this.ShellListView.ItemsHashed[sho.GetUniqueID()];
                   this.ShellListView.SelectItemByIndex(index, true);
                   selectedPaths.Remove(path);
                 }
