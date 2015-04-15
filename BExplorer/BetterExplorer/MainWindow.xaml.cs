@@ -1931,7 +1931,7 @@ namespace BetterExplorer {
 				var CAI = new CreateArchive(selectedItems, false, ShellListView.GetFirstSelectedItem().ParsingName);
 				CAI.Show(this.GetWin32Window());
 			}
-			catch (Exception exception) {
+			catch {
 				//var dialog = new TaskDialog();
 				//dialog.StandardButtons = TaskDialogStandardButtons.Ok;
 				//dialog.Text = exception.Message;
