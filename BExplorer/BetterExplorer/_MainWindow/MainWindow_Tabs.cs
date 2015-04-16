@@ -12,8 +12,6 @@ namespace BetterExplorer {
 	partial class MainWindow {
 
 		private void InitializeInitialTabs() {
-			tcMain_Setup(null, null);
-
 			var InitialTabs = Utilities.GetRegistryValue("OpenedTabs", "").ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 			if (InitialTabs.Length == 0 || !IsrestoreTabs) {
 				var sho = FileSystemListItem.ToFileSystemItem( this.ShellListView.LVHandle, tcMain.StartUpLocation.ToShellParsingName());
@@ -187,47 +185,9 @@ namespace BetterExplorer {
 			btnCopyto.Items.Add(OtherLocationCopy);
 		}
 
-
+    Wpf.Controls.TabItem _CurrentlySelectedItem = null;
 		private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-			if (e.RemovedItems.Count > 0) {
-
-				var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
-
-				if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
-					tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
-				}
-			}
-
-			if (e.AddedItems.Count == 0 || tcMain.SelectNewTabOnCreate == false) return;
-      var newTab = e.AddedItems[0] as Wpf.Controls.TabItem;
-      if (this.ShellListView.CurrentFolder == null || !this.ShellListView.CurrentFolder.Equals(newTab.ShellObject) && tcMain.CurrentTabItem == null) {
-        SelectTab(newTab);
-      } else {
-        if (!tcMain.IsSelectionHandled) {
-          SelectTab(newTab);
-
-          //btnUndoClose
-          btnUndoClose.Items.Clear();
-          foreach (var item in tcMain.ReopenableTabs) {
-            btnUndoClose.Items.Add(item.CurrentLocation);
-          }
-        } else {
-          if (e.RemovedItems.Count == 0) {
-            e.Handled = true;
-            SelectTab(newTab);
-            tcMain.SelectedItem = e.AddedItems[0];
-          } else {
-            if (e.RemovedItems[0] == tcMain.CurrentTabItem) {
-              e.Handled = true;
-              tcMain.IsSelectionHandled = false;
-              tcMain.SelectedItem = e.RemovedItems[0];
-              tcMain.CurrentTabItem = null;
-            }
-          }
-        }
-      }
-      tcMain.IsSelectionHandled = false;
-			this.ShellListView.Focus();
+      
 		}
 
 		

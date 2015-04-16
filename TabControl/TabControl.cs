@@ -15,6 +15,17 @@ using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
 
 namespace Wpf.Controls {
+  public delegate void PreviewSelectionChangedEventHandler(object p_oSender, PreviewSelectionChangedEventArgs p_eEventArgs);
+
+  public class PreviewSelectionChangedEventArgs {
+    internal PreviewSelectionChangedEventArgs(IList p_lAddedItems, IList p_lRemovedItems) {
+      this.AddedItems = p_lAddedItems;
+      this.RemovedItems = p_lRemovedItems;
+    }
+    public bool Cancel;
+    public IList AddedItems { get; private set; }
+    public IList RemovedItems { get; private set; }
+  }
 
 	[TemplatePart(Name = "PART_DropDown", Type = typeof(ToggleButton))]
 	[TemplatePart(Name = "PART_RepeatLeft", Type = typeof(RepeatButton))]
@@ -28,11 +39,13 @@ namespace Wpf.Controls {
 		//public static List<NavigationLog> ReopenableTabs = new List<NavigationLog>();
 
 		#region Properties
-
+    public event PreviewSelectionChangedEventHandler PreviewSelectionChanged;
+    private int? m_lLastSelectedIndex;
 		public string StartUpLocation = KnownFolders.Libraries.ParsingName;
 		public DragEventHandler newt_DragEnter, newt_DragOver, newt_Drop, newt_Leave;
 		public GiveFeedbackEventHandler newt_GiveFeedback;
 		public MouseEventHandler newt_PreviewMouseMove;
+    public MouseButtonEventHandler newt_PreviewMouseDown;
 
 		/// <summary>An <see cref="Action">Action</see> that is fired after a new tab is created</summary> 
 		public Action ConstructMoveToCopyToMenu;
@@ -293,6 +306,7 @@ namespace Wpf.Controls {
 		#region Tab Stuff
 
 		public Wpf.Controls.TabItem NewTab(IListItemEx DefPath, bool IsNavigate) {
+      this.IsInTabDragDrop = false;
 			SelectNewTabOnCreate = false;
 			var newt = new Wpf.Controls.TabItem(DefPath) {
 				Header = DefPath.DisplayName,
@@ -304,6 +318,7 @@ namespace Wpf.Controls {
 			newt.DragEnter += new DragEventHandler(newt_DragEnter);
 			newt.DragOver += new DragEventHandler(newt_DragOver);
 			newt.PreviewMouseMove += new MouseEventHandler(newt_PreviewMouseMove);
+      newt.PreviewMouseUp += newt_PreviewMouseDown;
 			newt.Drop += new DragEventHandler(newt_Drop);
 			newt.DragLeave += newt_Leave;
 			newt.GiveFeedback += newt_GiveFeedback;
@@ -322,10 +337,10 @@ namespace Wpf.Controls {
 			}
 
 			ConstructMoveToCopyToMenu();
-
+      this.IsInTabDragDrop = true;
 			return newt;
 		}
-
+    public Boolean IsInTabDragDrop = true;
 		public Wpf.Controls.TabItem NewTab(string Location, bool IsNavigate = false) {
 			return NewTab(FileSystemListItem.ToFileSystemItem(IntPtr.Zero, Location.ToShellParsingName()), IsNavigate);
 		}
@@ -536,6 +551,18 @@ namespace Wpf.Controls {
 			}
 		}
 
+    protected override void OnSelectionChanged(SelectionChangedEventArgs e) {
+      base.OnSelectionChanged(e);
+      PreviewSelectionChangedEventArgs eEventArgs = new PreviewSelectionChangedEventArgs(e.AddedItems, e.RemovedItems);
+      if (m_lLastSelectedIndex.HasValue)
+        if (PreviewSelectionChanged != null)
+          PreviewSelectionChanged(this, eEventArgs);
+      if (eEventArgs.Cancel)
+        this.SelectedIndex = m_lLastSelectedIndex.Value;
+      else
+        m_lLastSelectedIndex = this.SelectedIndex;
+    }
+
 		protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue) {
 			base.OnItemsSourceChanged(oldValue, newValue);
 
@@ -694,6 +721,7 @@ namespace Wpf.Controls {
 			return IsUsingItemsSource ? ItemsSource : Items;
 		}
 		public void RaiseTabClick(TabItem tab) {
+      this.IsInTabDragDrop = false;
 			if (this.OnTabClicked != null)
 				this.OnTabClicked.Invoke(this, new TabClickEventArgs(tab));
 		}

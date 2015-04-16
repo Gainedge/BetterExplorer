@@ -46,6 +46,7 @@ using DropTargetHelper = BExplorer.Shell.DropTargetHelper.Get;
 
 using WIN = System.Windows;
 using BExplorer.Shell._Plugin_Interfaces;
+using System.Windows.Data;
 
 
 namespace BetterExplorer {
@@ -1625,6 +1626,7 @@ namespace BetterExplorer {
         verNumber.Content = "Version " + (Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
         lblArchitecture.Content = Kernel32.IsThis64bitProcess() ? "64-bit version" : "32-bit version";
 
+        tcMain_Setup(null, null);
         //'set StartUp location
         if (Application.Current.Properties["cmd"] != null && Application.Current.Properties["cmd"].ToString() != "-minimized") {
           //if (Application.Current.Properties["cmd"].ToString() == "/nw")
@@ -1648,11 +1650,17 @@ namespace BetterExplorer {
       }
 
     }
-
+    Boolean _IsTabSelectionChangedNotAllowed = true;
     void tcMain_OnTabClicked(object sender, Wpf.Controls.TabClickEventArgs e) {
-      tcMain.SelectedItem = tcMain.CurrentTabItem ?? e.ClickedItem;
+      this.tcMain.IsInTabDragDrop = false;
+      tcMain.SelectedItem = e.ClickedItem;
+      this._IsTabSelectionChangedNotAllowed = false;
+      this._CurrentlySelectedItem = e.ClickedItem;
+      this.SelectTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
+      this.tcMain.IsInTabDragDrop = true;
+      //this._IsTabSelectionChangedAllowed = false;
     }
-
+    
     #endregion
 
     #region On Closing
@@ -3347,14 +3355,23 @@ namespace BetterExplorer {
       edtSearchBox.Focus();
       Keyboard.Focus(edtSearchBox);
     }
-
+    void newt_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
+      tcMain.IsInTabDragDrop = false;
+      //this._IsTabSelectionChangedNotAllowed = tcMain.IsInTabDragDrop;
+    }
     void newt_PreviewMouseMove(object sender, MouseEventArgs e) {
       var tabItem = e.Source as Wpf.Controls.TabItem;
 
-      if (tabItem == null)
+      if (tabItem == null) {
+        tcMain.IsInTabDragDrop = false;
         return;
-      else if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
+      } else if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed) {
+        //if (tabItem.IsSelected) {
+        //  this._IsTabSelectionChangedAllowed = false;
+        //}
+
         DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
+      }
     }
     void newt_Leave(object sender, DragEventArgs e) {
       DropTargetHelper.Create.DragLeave();
@@ -3370,24 +3387,31 @@ namespace BetterExplorer {
           int tabState = -1;
           int targetIndex = tabControl.Items.IndexOf(tabItemTarget);
 
-          /*
-          int sourceIndex = tabControl.Items.IndexOf(tabItemSource);
-          */
+          
+          //int sourceIndex = tabControl.Items.IndexOf(tabItemSource);
+          
 
-          if (!tabItemSource.IsSelected && tabItemTarget.IsSelected)
-            tabState = 1;
-          else if (!tabItemSource.IsSelected && !tabItemTarget.IsSelected)
-            tabState = 2;
-          else
+          //if (!tabItemSource.IsSelected && tabItemTarget.IsSelected)
+          //  tabState = 1;
+          //else if (!tabItemSource.IsSelected && !tabItemTarget.IsSelected)
+          //  tabState = 2;
+          //else
+          //  tabState = 0;
+          if (tabItemSource == this._CurrentlySelectedItem) {
             tabState = 0;
+          } else {
+            tabState = 1;
+          }
 
           tabControl.Items.Remove(tabItemSource);
           tabControl.Items.Insert(targetIndex, tabItemSource);
-
+          tcMain.IsInTabDragDrop = false;
           if (tabState == 1)
-            tabControl.SelectedIndex = tabControl.Items.IndexOf(tabItemSource);
-          else if (tabState == 0)
+            tabControl.SelectedItem = this._CurrentlySelectedItem; //tabControl.Items.IndexOf(tabItemSource);
+          else if (tabState == 0) {
             tabControl.SelectedIndex = targetIndex;
+          }
+          tcMain.IsInTabDragDrop = true;
         }
       } else {
         if ((sender as Wpf.Controls.TabItem).ShellObject.IsFileSystem) {
@@ -3397,12 +3421,12 @@ namespace BetterExplorer {
             case DragDropEffects.All:
               break;
             case DragDropEffects.Copy:
-              //this.ShellListView.DoCopy(e.Data, (sender as Wpf.Controls.TabItem).ShellObject);
+              this.ShellListView.DoCopy(e.Data, (sender as Wpf.Controls.TabItem).ShellObject);
               break;
             case DragDropEffects.Link:
               break;
             case DragDropEffects.Move:
-              //this.ShellListView.DoMove(e.Data, (sender as Wpf.Controls.TabItem).ShellObject);
+              this.ShellListView.DoMove(e.Data, (sender as Wpf.Controls.TabItem).ShellObject);
               break;
             case DragDropEffects.None:
               break;
@@ -3418,16 +3442,24 @@ namespace BetterExplorer {
         WIN.Point pt = e.GetPosition(sender as IInputElement);
         var wpt = new BExplorer.Shell.DataObject.Win32Point() { X = (int)pt.X, Y = (int)pt.Y };
         DropTargetHelper.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+        this._TabDropData = null;
       }
     }
 
     void newt_DragOver(object sender, DragEventArgs e) {
       e.Handled = true;
 
+      var tabItemSource = e.Data.GetData(typeof(Wpf.Controls.TabItem)) as Wpf.Controls.TabItem;
+
       if ((sender as Wpf.Controls.TabItem).ShellObject.IsFileSystem)
         e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
-      else
-        e.Effects = DragDropEffects.None;
+      else {
+        if (tabItemSource != null) {
+          e.Effects = DragDropEffects.Move;
+        } else {
+          e.Effects = DragDropEffects.None;
+        }
+      }
       BExplorer.Shell.DataObject.DropDescription desc = new BExplorer.Shell.DataObject.DropDescription();
 
 
@@ -3881,6 +3913,7 @@ namespace BetterExplorer {
     }
 
     void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
+      //tcMain.IsInTabDragDrop = true;
       if (this.ShellListView.CurrentFolder == null) return;
       //if (this.bcbc.OnNavigate == null)
       //this.bcbc.OnNavigate = NavigationController;
@@ -4044,8 +4077,8 @@ namespace BetterExplorer {
           this.DetailsPanel.FillPreviewPane(this.ShellListView);
         });
       }
-      Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
-        if (e.OldFolder != this.ShellListView.CurrentFolder) {
+      Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
+        //if (e.OldFolder != this.ShellListView.CurrentFolder) {
           var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
           selectedItem.Header = this.ShellListView.CurrentFolder.DisplayName;
           selectedItem.Icon = this.ShellListView.CurrentFolder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
@@ -4065,7 +4098,7 @@ namespace BetterExplorer {
               this.ShellListView.ScrollToTop();
             }
           }
-        }
+        //}
       }));
       ////This initially setup the statusbar after program opens
       Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
@@ -4073,6 +4106,7 @@ namespace BetterExplorer {
       }));
 
       this.ShellListView.Focus();
+      //this._IsTabSelectionChangedAllowed = true;
     }
 
     private void SetupUIonNavComplete(NavigatedEventArgs e) {
@@ -4516,9 +4550,10 @@ namespace BetterExplorer {
       tcMain.newt_Leave = newt_Leave;
       tcMain.newt_GiveFeedback = newt_GiveFeedback;
       tcMain.newt_PreviewMouseMove = newt_PreviewMouseMove;
+      tcMain.newt_PreviewMouseDown = newt_PreviewMouseDown;
       tcMain.ConstructMoveToCopyToMenu += ConstructMoveToCopyToMenu;
       tcMain.DefaultTabPath = tcMain.StartUpLocation.ToShellParsingName();
-
+      tcMain.PreviewSelectionChanged += tcMain_PreviewSelectionChanged;
       tcMain.StartUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
       if (tcMain.StartUpLocation == "") {
         Utilities.SetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName);
@@ -4526,9 +4561,61 @@ namespace BetterExplorer {
       }
     }
 
+    void tcMain_PreviewSelectionChanged(object p_oSender, Wpf.Controls.PreviewSelectionChangedEventArgs e) {
+      if (tcMain.IsInTabDragDrop) {
+        e.Cancel = true;
+        return;
+      }
+      //tcMain.IsInTabDragDrop = true;
+      if (e.RemovedItems.Count > 0) {
+
+        var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
+
+        if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
+          tab.SelectedItems = this.ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+        }
+      }
+
+      if (e.AddedItems.Count == 0 || tcMain.SelectNewTabOnCreate == false) return;
+      var newTab = e.AddedItems[0] as Wpf.Controls.TabItem;
+      if (this.ShellListView.CurrentFolder == null || !this.ShellListView.CurrentFolder.Equals(newTab.ShellObject) && tcMain.CurrentTabItem == null) {
+        SelectTab(newTab);
+      } else {
+        if (!tcMain.IsSelectionHandled) {
+          SelectTab(newTab);
+
+          //btnUndoClose
+          btnUndoClose.Items.Clear();
+          foreach (var item in tcMain.ReopenableTabs) {
+            btnUndoClose.Items.Add(item.CurrentLocation);
+          }
+        } else {
+          if (e.RemovedItems.Count == 0) {
+            e.Cancel = true;
+            SelectTab(newTab);
+            tcMain.SelectedItem = e.AddedItems[0];
+          } else {
+            if (e.RemovedItems[0] == tcMain.CurrentTabItem) {
+              e.Cancel = true;
+              tcMain.IsSelectionHandled = false;
+              tcMain.SelectedItem = e.RemovedItems[0];
+              tcMain.CurrentTabItem = null;
+            }
+          }
+        }
+      }
+      tcMain.IsSelectionHandled = false;
+      this.ShellListView.Focus();
+      this._CurrentlySelectedItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
+    }
+
+    
+
     private void newt_GiveFeedback(object sender, GiveFeedbackEventArgs e) {
       e.Handled = true;
       e.UseDefaultCursors = true;
+      if (this._TabDropData == null)
+        return;
       var doo = new WIN.Forms.DataObject(this._TabDropData);
       if (doo.GetDataPresent("DragWindow")) {
         IntPtr hwnd = ShellView.GetIntPtrFromData(doo.GetData("DragWindow"));
