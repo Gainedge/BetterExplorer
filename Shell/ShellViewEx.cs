@@ -615,8 +615,7 @@ namespace BExplorer.Shell {
       if (!File.Exists(e.FullPath) && !Directory.Exists(e.FullPath))
         return;
       try {
-        var obj = new FileSystemListItem();
-        obj.Initialize(this.LVHandle, e.FullPath.ToShellParsingName());
+        var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, e.FullPath.ToShellParsingName());
         var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
         if (existingItem == null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
           if (obj.Extension.ToLowerInvariant() != ".tmp") {
