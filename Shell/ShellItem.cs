@@ -191,17 +191,7 @@ namespace BExplorer.Shell {
 		}
 
 		[Obsolete("Not Used", true)]
-		public bool IsBrowsable {
-			get {
-				//TODO: try removing this Try Catch!
-				try {
-					return COM_Attribute_Check(SFGAO.BROWSABLE);
-				}
-				catch {
-					return false;
-				}
-			}
-		}
+		public bool IsBrowsable { get { return COM_Attribute_Check(SFGAO.BROWSABLE); } }
 
 		/// <summary>
 		/// Gets a value indicating whether the item is a folder.
@@ -219,7 +209,7 @@ namespace BExplorer.Shell {
 		public bool IsValidShellFolder {
 			get {
 				try {
-					var folder = this.GetIShellFolder();
+					this.GetIShellFolder();
 					return true;
 				}
 				catch {
@@ -241,17 +231,7 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Gets a value indicating whether the item is a file system item.
 		/// </summary>
-		public bool IsFileSystem {
-			get {
-				//TODO: try removing this Try Catch!
-				try {
-					return COM_Attribute_Check(SFGAO.FILESYSTEM);
-				}
-				catch {
-					return false;
-				}
-			}
-		}
+		public bool IsFileSystem { get { return COM_Attribute_Check(SFGAO.FILESYSTEM); } }
 
 		public bool IsShared { get { return COM_Attribute_Check(SFGAO.SHARE); } }
 
@@ -270,34 +250,12 @@ namespace BExplorer.Shell {
 		*/
 
 		/// <summary>Gets a value indicating whether the item is Hidden.</summary>
-		public bool IsHidden {
-			get {
-				try {
-					return COM_Attribute_Check(SFGAO.HIDDEN);
-				}
-				catch {
-					return false;
-				}
-			}
-		}
+		public bool IsHidden { get { return COM_Attribute_Check(SFGAO.HIDDEN); } }
 
 		/// <summary>
 		/// Gets a value that determines if this ShellObject is a link or shortcut.
 		/// </summary>
-		public bool IsLink {
-			get {
-				try {
-					return COM_Attribute_Check(SFGAO.LINK);
-				}
-				catch (FileNotFoundException) {
-					return false;
-				}
-				catch (NullReferenceException) {
-					// NativeShellItem is null
-					return false;
-				}
-			}
-		}
+		public bool IsLink { get { return COM_Attribute_Check(SFGAO.LINK); } }
 
 		/// <summary>Returns the extension of the specified path string.</summary>
 		///<value>

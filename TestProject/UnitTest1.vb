@@ -7,19 +7,12 @@ Public Class UnitTest1
 
 	<TestMethod()>
 	Public Sub TestMethod1()
-		Dim ShellItem As New ShellItem("C:\Temp\211 - Copy.bmp")
+		Dim ShellItem As New ShellItem("C:\temp\New Folder (16)\New folder (17)")
+		MsgBox(ShellItem.IsFileSystem)
+		MsgBox(ShellItem.IsLink)
+
 
 		MsgBox("Hello")
 	End Sub
-
-
-
-	'=======================================================
-	'Service provided by Telerik (www.telerik.com)
-	'Conversion powered by NRefactory.
-	'Twitter: @telerik
-	'Facebook: facebook.com/telerik
-	'=======================================================
-
 
 End Class
