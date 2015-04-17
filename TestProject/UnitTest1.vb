@@ -7,9 +7,8 @@ Public Class UnitTest1
 
 	<TestMethod()>
 	Public Sub TestMethod1()
-		Dim ShellItem As New ShellItem("C:\temp\New Folder (16)\New folder (17)")
-		MsgBox(ShellItem.IsFileSystem)
-		MsgBox(ShellItem.IsLink)
+		Dim ShellItem As New ShellItem("C:\temp\New Folder (16)")
+		Dim Parent = ShellItem.Parent
 
 
 		MsgBox("Hello")
