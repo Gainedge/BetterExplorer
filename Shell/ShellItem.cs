@@ -326,11 +326,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		internal bool IsNetworkPath {
-			get {
-				return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
-			}
-		}
+		internal bool IsNetworkPath { get { return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName); } }
 
 		public bool IsNetDrive {
 			get {
@@ -467,7 +463,7 @@ namespace BExplorer.Shell {
 		[System.Diagnostics.DebuggerNonUserCode]
 		public IEnumerator<ShellItem> GetEnumerator(SHCONTF filter) {
 			IShellFolder folder = GetIShellFolder();
-      HResult navRes;
+			HResult navRes;
 			IEnumIDList enumId = GetIEnumIDList(folder, filter, out navRes);
 			uint count;
 			IntPtr pidl;
@@ -838,7 +834,6 @@ namespace BExplorer.Shell {
 			this.CachedParsingName = this.ParsingName;
 			this.CachedDisplayName = this.DisplayName;
 			this.OverlayIconIndex = -1;
-
 		}
 
 		[Obsolete("Try to remove this!!!")]
@@ -1165,9 +1160,9 @@ namespace BExplorer.Shell {
 
 		public static IEnumIDList GetIEnumIDList(IShellFolder folder, SHCONTF flags, out HResult navResult) {
 			IEnumIDList result;
-      var res = folder.EnumObjects(IsCareForMessageHandle ? MessageHandle : IntPtr.Zero, flags, out result);
-      navResult = res;
-      if (res == HResult.S_OK)
+			var res = folder.EnumObjects(IsCareForMessageHandle ? MessageHandle : IntPtr.Zero, flags, out result);
+			navResult = res;
+			if (res == HResult.S_OK)
 				return result;
 			else
 				return null;
