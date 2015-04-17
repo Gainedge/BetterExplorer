@@ -275,11 +275,7 @@ namespace BExplorer.Shell {
 				try {
 					return COM_Attribute_Check(SFGAO.HIDDEN);
 				}
-				catch (FileNotFoundException) {
-					return false;
-				}
-				catch (NullReferenceException) {
-					// NativeShellItem is null
+				catch {
 					return false;
 				}
 			}
