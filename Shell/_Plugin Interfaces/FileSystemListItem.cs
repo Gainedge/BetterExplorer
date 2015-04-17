@@ -86,72 +86,39 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 
 
-
-		public void Initialize(IntPtr lvHandle, IntPtr pidl, int index) {
-			var item = new ShellItem(pidl);
-			this.DisplayName = item.DisplayName;
-			this.ParsingName = item.ParsingName;
+		private void Initialize_Helper(ShellItem Folder, IntPtr lvHandle, int index) {
+			this.DisplayName = Folder.DisplayName;
+			this.ParsingName = Folder.ParsingName;
 			this.ItemIndex = index;
 			this.ParentHandle = lvHandle;
-			this.IsFileSystem = item.IsFileSystem;
-			this.IsNetworkPath = item.IsNetworkPath;
-			this.Extension = item.Extension;
-			this.IsDrive = item.IsDrive;
-			this.IsHidden = item.IsHidden;
+			this.IsFileSystem = Folder.IsFileSystem;
+			this.IsNetworkPath = Folder.IsNetworkPath;
+			this.Extension = Folder.Extension;
+			this.IsDrive = Folder.IsDrive;
+			this.IsHidden = Folder.IsHidden;
 			this.OverlayIconIndex = -1;
 			this.ShieldedIconIndex = -1;
-			//this.HasSubFolders = item.HasSubFolders;
-			this.IsShared = item.IsShared;
-			this.IconType = item.IconType;
-			this.IsFolder = item.IsFolder;
-			this.IsSearchFolder = item.IsSearchFolder;
-			this._Item = item;
+			this.IsShared = Folder.IsShared;
+			this.IconType = Folder.IconType;
+			this.IsFolder = Folder.IsFolder;
+			this.IsSearchFolder = Folder.IsSearchFolder;
+			this._Item = Folder;
+		}
+
+		public void Initialize(IntPtr lvHandle, IntPtr pidl, int index) {
+			Initialize_Helper(new ShellItem(pidl), lvHandle, index);
 		}
 
 		public void InitializeWithParent(ShellItem parent, IntPtr lvHandle, IntPtr pidl, int index) {
-			var item = new ShellItem(parent, pidl);
-			this.DisplayName = item.DisplayName;
-			this.ParsingName = item.ParsingName;
-			this.ItemIndex = index;
-			this.ParentHandle = lvHandle;
-			this.IsFileSystem = item.IsFileSystem;
-			this.IsNetworkPath = item.IsNetworkPath;
-			this.Extension = item.Extension;
-			this.IsDrive = item.IsDrive;
-			this.IsHidden = item.IsHidden;
-			this.OverlayIconIndex = -1;
-			this.ShieldedIconIndex = -1;
-			//this.HasSubFolders = item.HasSubFolders;
-			this.IsShared = item.IsShared;
-			this.IconType = item.IconType;
-			this.IsFolder = item.IsFolder;
-			this.IsSearchFolder = item.IsSearchFolder;
-			this._Item = item;
-			//item.Dispose();
+			Initialize_Helper(new ShellItem(parent, pidl), lvHandle, index);
 		}
-		public ShellSearchFolder searchFolder { get; set; }
 
 		public void InitializeWithShellItem(ShellSearchFolder item, IntPtr lvHandle, int index) {
-			this.DisplayName = item.DisplayName;
-			this.ParsingName = item.ParsingName;
-			this.ItemIndex = index;
-			this.ParentHandle = lvHandle;
-			this.IsFileSystem = item.IsFileSystem;
-			this.IsNetworkPath = item.IsNetworkPath;
-			this.Extension = item.Extension;
-			this.IsDrive = item.IsDrive;
-			this.IsHidden = item.IsHidden;
-			this.OverlayIconIndex = -1;
-			this.ShieldedIconIndex = -1;
-			//this.HasSubFolders = item.HasSubFolders;
-			this.IsShared = item.IsShared;
-			this.IconType = item.IconType;
-			this.IsFolder = item.IsFolder;
-			this.IsSearchFolder = item.IsSearchFolder;
-			this._Item = item;
+			Initialize_Helper(item, lvHandle, index);
 			this.searchFolder = item;
-			//item.Dispose();
 		}
+
+		public ShellSearchFolder searchFolder { get; set; }
 
 		public Dictionary<Interop.PROPERTYKEY, object> ColumnValues { get; set; }
 
