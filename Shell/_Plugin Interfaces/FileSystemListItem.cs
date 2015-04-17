@@ -14,11 +14,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		#endregion
 
 		#region IListItemEx Members
-		public IShellItem ComInterface {
-			get {
-				return this._Item.ComInterface;
-			}
-		}
+		public IShellItem ComInterface { get { return this._Item.ComInterface; } }
 
 		public string DisplayName { get; set; }
 
@@ -36,23 +32,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public Interop.IExtractIconPWFlags IconType { get; set; }
 
-		public IntPtr ILPidl {
-			get {
-				return this._Item.ILPidl;
-			}
-		}
+		public IntPtr ILPidl { get { return this._Item.ILPidl; } }
 
-		public IntPtr PIDL {
-			get {
-				return this._Item.Pidl;
-			}
-		}
+		public IntPtr PIDL { get { return this._Item.Pidl; } }
 
-		public IntPtr AbsolutePidl {
-			get {
-				return this._Item.AbsolutePidl;
-			}
-		}
+		public IntPtr AbsolutePidl { get { return this._Item.AbsolutePidl; } }
 
 		public int ShieldedIconIndex { get; set; }
 
@@ -68,11 +52,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public bool IsFolder { get; set; }
 
-		public bool HasSubFolders {
-			get {
-				return this._Item.HasSubFolders;
-			}
-		}
+		public bool HasSubFolders { get { return this._Item.HasSubFolders; } }
 
 		public bool IsHidden { get; set; }
 
@@ -83,8 +63,6 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		public bool IsDrive { get; set; }
 
 		public bool IsShared { get; set; }
-
-
 
 		private void Initialize_Helper(ShellItem Folder, IntPtr lvHandle, int index) {
 			this.DisplayName = Folder.DisplayName;
@@ -198,9 +176,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			return GetEnumerator();
 		}
 
-		public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) {
-			return this._Item.GetPropertyValue(pkey, type);
-		}
+		public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) { return this._Item.GetPropertyValue(pkey, type); }
 
 
 		public System.Drawing.Bitmap Thumbnail(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) {
@@ -227,19 +203,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			}
 		}
 
-		public IShellFolder GetIShellFolder() {
-			return this._Item.GetIShellFolder();
-		}
+		public IShellFolder GetIShellFolder() { return this._Item.GetIShellFolder(); }
 
-		public bool IsLink {
-			get {
-				return this._Item.IsLink;
-			}
-		}
+		public bool IsLink { get { return this._Item.IsLink; } }
 
-		public string ToolTipText {
-			get { return this._Item.ToolTipText; }
-		}
+		public string ToolTipText { get { return this._Item.ToolTipText; } }
 
 		public System.IO.DriveInfo GetDriveInfo() {
 			return this._Item.GetDriveInfo();
@@ -273,13 +241,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			return fsItem;
 		}
 
-		public string GetDisplayName(SIGDN type) {
-			return this._Item.GetDisplayName(type);
-		}
+		public string GetDisplayName(SIGDN type) { return this._Item.GetDisplayName(type); }
 
-		public IExtractIconPWFlags GetShield() {
-			return this._Item.GetShield();
-		}
+		public IExtractIconPWFlags GetShield() { return this._Item.GetShield(); }
 
 		public int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
 			var info = new SHFILEINFO();
@@ -300,9 +264,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public IntPtr Icon { get; set; }
 
-		public int GetUniqueID() {
-			return this.ParsingName.GetHashCode();
-		}
+		public int GetUniqueID() { return this.ParsingName.GetHashCode(); }
+
 		#endregion
 
 		#region IEquatable<IListItemEx> Members
@@ -314,9 +277,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		#region IEqualityComparer<IListItemEx> Members
 
-		public bool Equals(IListItemEx x, IListItemEx y) {
-			return x.Equals(y);
-		}
+		public bool Equals(IListItemEx x, IListItemEx y) { return x.Equals(y); }
 
 		public int GetHashCode(IListItemEx obj) {
 			return 0;
@@ -336,11 +297,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		#region IDisposable Members
 
-		public void Dispose() {
-			if (this._Item != null) {
-				this._Item.Dispose();
-			}
-		}
+		public void Dispose() { if (this._Item != null) 				this._Item.Dispose(); }
 
 		#endregion
 
