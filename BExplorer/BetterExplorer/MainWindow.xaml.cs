@@ -883,9 +883,9 @@ namespace BetterExplorer {
 
 		private void btnctOther_Click(object sender, RoutedEventArgs e) {
 			var dlg = new FolderSelectDialog();
-			if (dlg.ShowDialog() == true) {
+			if (dlg.ShowDialog())
 				SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Copy);
-			}
+
 			ShellListView.Focus();
 		}
 

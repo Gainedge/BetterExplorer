@@ -2798,6 +2798,11 @@ namespace BExplorer.Shell {
 					this.LastSortedColumnId = column.ID;
 					this.LastSortOrder = Order;
 				}
+
+				/************************************************************
+				//TODO: Try to upgrade this to use built in LINQ Syntax
+				************************************************************/
+
 				if (column.CollumnType != typeof(String)) {
 					if (Order == SortOrder.Ascending) {
 						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value).ToList();
@@ -2808,6 +2813,8 @@ namespace BExplorer.Shell {
 				}
 				else {
 					if (Order == SortOrder.Ascending) {
+						//TODO: Try to upgrade this to use built in LINQ Syntax
+						//this.Items = from x in itemsArray where this.ShowHidden ? true : !x.IsHidden orderby x.IsFolder,  x.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default)
 						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
 					}
 					else {
@@ -2829,8 +2836,7 @@ namespace BExplorer.Shell {
 				if (!this.IsRenameInProgress)
 					this.SelectItems(selectedItems);
 			}
-			catch (Exception) {
-
+			catch {
 			}
 		}
 
