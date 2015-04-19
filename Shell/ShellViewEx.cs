@@ -2674,6 +2674,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		/// <summary> Runs an application as an administrator. </summary>
 		/// <param name="ExePath"> The path of the application. </param>
 		public static void RunExeAsAdmin(string ExePath) {
@@ -2684,6 +2685,7 @@ namespace BExplorer.Shell {
 				Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
 			});
 		}
+		*/
 
 		public void SelectAll() {
 			var item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
@@ -3691,10 +3693,11 @@ namespace BExplorer.Shell {
 			return new ShellLibrary(endname, false);
 		}
 
-
+		/*
 		private void SetLVBackgroundImage(Bitmap bitmap) {
 			Helpers.SetListViewBackgroundImage(this.LVHandle, bitmap);
 		}
+		*/
 
 		public void SetFolderIcon(string wszPath, string wszExpandedIconPath, int iIcon) {
 			var fcs = new Shell32.LPSHFOLDERCUSTOMSETTINGS() { iIconIndex = iIcon, cchIconFile = 0, dwMask = Shell32.FCSM_ICONFILE };
@@ -3759,10 +3762,12 @@ namespace BExplorer.Shell {
 			this.Focus();
 		}
 
+		/*
 		private void DeselectItemByIndex(int index) {
 			LVITEM item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = 0 };
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, index, ref item);
 		}
+		*/
 
 		/*
 		private void DeselectItemByIndex(int index) {
@@ -4345,6 +4350,7 @@ namespace BExplorer.Shell {
 			folderSettings = folderSetting;
 			return result;
 		}
+
 
 		public byte[] ImageToByte2(Bitmap img) {
 			byte[] byteArray = new byte[0];
