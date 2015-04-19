@@ -135,26 +135,24 @@ namespace BetterExplorer {
 			Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-			RegistryKey rk = Registry.CurrentUser;
-			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
+			RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true);
 
 			//// loads current Ribbon color theme
 			try {
 				var Color = Convert.ToString(rks.GetValue("CurrentTheme", "Blue"));
+				Application.Current.Resources.MergedDictionaries.RemoveAt(1);
+
 				switch (Color) {
 					case "Blue":
 					case "Silver":
 					case "Black":
 					case "Green":
-						Application.Current.Resources.MergedDictionaries.RemoveAt(1);
 						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Office2010/{0}.xaml", Color)) });
 						break;
 					case "Metro":
-						Application.Current.Resources.MergedDictionaries.RemoveAt(1);
 						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Office2013/Generic.xaml") });
 						break;
 					default:
-						Application.Current.Resources.MergedDictionaries.RemoveAt(1);
 						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Office2010/{0}.xaml", Color)) });
 						break;
 				}
@@ -174,11 +172,9 @@ namespace BetterExplorer {
 					isStartMinimized = true;
 			}
 
+			if (dmi && !ApplicationInstanceManager.CreateSingleInstance(Assembly.GetExecutingAssembly().GetName().Name, SingleInstanceCallback))
+				return; // exit, if same app. is running
 
-			if (dmi) {
-				if (!ApplicationInstanceManager.CreateSingleInstance(Assembly.GetExecutingAssembly().GetName().Name, SingleInstanceCallback))
-					return; // exit, if same app. is running
-			}
 
 			base.OnStartup(e);
 
