@@ -3601,6 +3601,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		/// <summary> Runs an application as an another user. </summary>
 		/// <param name="ExePath">  The path of the application. </param>
 		/// <param name="username"> The path of the username to use. </param>
@@ -3612,7 +3613,7 @@ namespace BExplorer.Shell {
 				Arguments = String.Format("/env /user:{0} \"{1}\"", username, ExePath),
 			});
 		}
-
+		*/
 
 		public static void StartCompartabilityWizzard() {
 			Process.Start("msdt.exe", "-id PCWDiagnostic");

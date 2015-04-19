@@ -590,7 +590,7 @@ namespace BExplorer.Shell {
 				pidls = null;
 				return flags;
 			}
-			catch (Exception) {
+			catch {
 				return 0;
 			}
 			finally {
@@ -661,7 +661,8 @@ namespace BExplorer.Shell {
 		public List<AssociationItem> GetAssocList() {
 			var assocList = new List<AssociationItem>();
 			IntPtr enumAssocPtr;
-			var h = Shell32.SHAssocEnumHandlers(Path.GetExtension(ParsingName), Shell32.ASSOC_FILTER.ASSOC_FILTER_RECOMMENDED, out enumAssocPtr);
+			/*var h = */
+			Shell32.SHAssocEnumHandlers(Path.GetExtension(ParsingName), Shell32.ASSOC_FILTER.ASSOC_FILTER_RECOMMENDED, out enumAssocPtr);
 			IntPtr pUnk = Marshal.ReadIntPtr(enumAssocPtr);
 			IntPtr pFunc = Marshal.ReadIntPtr(pUnk + 3 * IntPtr.Size);
 			Shell32.funcNext Next = (Shell32.funcNext)Marshal.GetDelegateForFunctionPointer(pFunc, typeof(Shell32.funcNext));
@@ -715,7 +716,9 @@ namespace BExplorer.Shell {
 			return iShellFolder;
 		}
 
+		[Obsolete("Prameter type is never used")]
 		public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) {
+			//TODO: Remove the parameter type
 			var pvar = new PropVariant();
 			var isi2 = (IShellItem2)ComInterface;
 			isi2.GetProperty(ref pkey, pvar);

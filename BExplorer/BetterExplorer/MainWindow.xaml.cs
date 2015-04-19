@@ -1890,9 +1890,8 @@ namespace BetterExplorer {
 
 		private void btnChooseLocation_Click(object sender, RoutedEventArgs e) {
 			var dlg = new FolderSelectDialog();
-			if (dlg.ShowDialog() == true) {
+			if (dlg.ShowDialog())
 				txtExtractLocation.Text = dlg.FileName;
-			}
 		}
 
 		private void ExtractToLocation(string archive, string output) {

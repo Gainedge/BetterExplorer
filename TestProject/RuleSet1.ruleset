@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="New Rule Set" Description=" " ToolsVersion="12.0">
+  <Rules AnalyzerId="Microsoft.Analyzers.ManagedCodeAnalysis" RuleNamespace="Microsoft.Rules.Managed">
+    <Rule Id="CA1025" Action="Warning" />
+    <Rule Id="CA1041" Action="Warning" />
+    <Rule Id="CA1801" Action="Warning" />
+    <Rule Id="CA1802" Action="Warning" />
+    <Rule Id="CA1804" Action="Warning" />
+    <Rule Id="CA1809" Action="Warning" />
+    <Rule Id="CA1810" Action="Warning" />
+    <Rule Id="CA1811" Action="Warning" />
+    <Rule Id="CA1812" Action="Warning" />
+    <Rule Id="CA1814" Action="Warning" />
+    <Rule Id="CA1821" Action="Warning" />
+    <Rule Id="CA1823" Action="Warning" />
+    <Rule Id="CA2205" Action="Warning" />
+    <Rule Id="CA2207" Action="Warning" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.Analyzers.NativeCodeAnalysis" RuleNamespace="Microsoft.Rules.Native">
+    <Rule Id="C6235" Action="Warning" />
+    <Rule Id="C6236" Action="Warning" />
+    <Rule Id="C6237" Action="Warning" />
+    <Rule Id="C6239" Action="Warning" />
+    <Rule Id="C6240" Action="Warning" />
+    <Rule Id="C6259" Action="Warning" />
+    <Rule Id="C6271" Action="Warning" />
+    <Rule Id="C6281" Action="Warning" />
+    <Rule Id="C6282" Action="Warning" />
+    <Rule Id="C6285" Action="Warning" />
+    <Rule Id="C6286" Action="Warning" />
+    <Rule Id="C6287" Action="Warning" />
+    <Rule Id="C6288" Action="Warning" />
+    <Rule Id="C6289" Action="Warning" />
+    <Rule Id="C6314" Action="Warning" />
+    <Rule Id="C6315" Action="Warning" />
+    <Rule Id="C6316" Action="Warning" />
+    <Rule Id="C6317" Action="Warning" />
+    <Rule Id="C6324" Action="Warning" />
+  </Rules>
+</RuleSet>

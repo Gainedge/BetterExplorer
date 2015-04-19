@@ -116,6 +116,7 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+    <None Include="RuleSet1.ruleset" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shell\Shell.csproj">
