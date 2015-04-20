@@ -34,7 +34,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public IntPtr ILPidl { get { return this._Item.ILPidl; } }
 
-		public IntPtr PIDL { get { return this._Item.Pidl; } }
+		public IntPtr PIDL { get { return this.IsSearchFolder ? this.searchFolder.AbsolutePidl : this._Item.Pidl; } }
 
 		public IntPtr AbsolutePidl { get { return this._Item.AbsolutePidl; } }
 
@@ -195,6 +195,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public IListItemEx Parent {
 			get {
+				if (this.IsSearchFolder) return null;
 				if (this._Item.Parent == null)
 					return null;
 				var parent = new FileSystemListItem();

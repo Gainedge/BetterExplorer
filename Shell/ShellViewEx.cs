@@ -4352,7 +4352,7 @@ namespace BExplorer.Shell {
 			return result;
 		}
 
-
+		/*
 		public byte[] ImageToByte2(Bitmap img) {
 			byte[] byteArray = new byte[0];
 			using (MemoryStream stream = new MemoryStream()) {
@@ -4363,7 +4363,9 @@ namespace BExplorer.Shell {
 			}
 			return byteArray;
 		}
+		*/
 
+		/*
 		static byte[] GetBytes(SQLiteDataReader reader) {
 			const int CHUNK_SIZE = 2 * 1024;
 			byte[] buffer = new byte[CHUNK_SIZE];
@@ -4377,6 +4379,8 @@ namespace BExplorer.Shell {
 				return stream.ToArray();
 			}
 		}
+		*/
+
 
 		public void SaveSettingsToDatabase(IListItemEx destination) {
 			if (CurrentFolder == null || !CurrentFolder.IsFolder) return;
