@@ -85,10 +85,10 @@ namespace ProcessInterface {
 		#endregion Properties
 
 		#region Events/DllImport
-
+		/*
 		[DllImport("kernel32.dll")]
 		private static extern bool SetConsoleOutputCP(uint wCodePageID);
-
+		*/
 		/// <summary>
 		/// Occurs when process output is produced.
 		/// </summary>
@@ -141,7 +141,8 @@ namespace ProcessInterface {
 
 			//  Start the process.
 			try {
-				bool processStarted = Process.Start();
+				//bool processStarted = Process.Start();
+				Process.Start();
 			}
 			catch (Exception e) {
 				//  Trace the exception.
@@ -317,16 +318,20 @@ namespace ProcessInterface {
 				theEvent(this, new ProcessEventArgs(content));
 		}
 
+
+		/*
 		/// <summary>
 		/// Fires the process input event.
 		/// </summary>
 		/// <param name="content">The content.</param>
+		[Obsolete("Not Used", true)]
 		private void FireProcessInputEvent(string content) {
 			//  Get the event and fire it.
 			var theEvent = OnProcessInput;
 			if (theEvent != null)
 				theEvent(this, new ProcessEventArgs(content));
 		}
+		*/
 
 		/// <summary>
 		/// Fires the process exit event.

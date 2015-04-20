@@ -28,14 +28,9 @@ namespace ConsoleControl {
 		private const int WM_VSCROLL = 277;
 		private const int SB_PAGEBOTTOM = 7;
 
-		/// <summary> The internal process interface used to interface with the process. </summary>
-		private ProcessInterface.ProcessInterface processInterace = new ProcessInterface.ProcessInterface();
 
 		/// <summary> Current position that input starts at. </summary>
 		private int inputStart = -1;
-
-		/// <summary> The is input enabled flag. </summary>
-		private bool isInputEnabled = true;
 
 		private bool _ShouldClear = true;
 
@@ -47,10 +42,18 @@ namespace ConsoleControl {
 		/// </summary>
 		private string lastInput;
 
+		/*
+		 * This was never used
 		private IntPtr _cmdhandle;
+		*/
+
+		/*		 
+		/// <summary> The is input enabled flag. </summary>
+		private bool isInputEnabled = true;
 
 		/// <summary> Gets or sets a value indicating whether this instance is input enabled. </summary>
 		/// <value> <c>true</c> if this instance is input enabled; otherwise, <c>false</c>. </value>
+		[Obsolete("Assigned a value but never used")]
 		[Category("Console Control"), Description("If true, the user can key in input.")]
 		private bool IsInputEnabled {
 			get { return isInputEnabled; }
@@ -60,6 +63,7 @@ namespace ConsoleControl {
 					richTextBoxConsole.ReadOnly = !value;
 			}
 		}
+		*/
 
 		/// <summary> The key mappings. </summary>
 		private List<KeyMapping> keyMappings = new List<KeyMapping>();
@@ -70,13 +74,18 @@ namespace ConsoleControl {
 		/// <summary> Occurs when console input is produced. </summary>
 		public event ConsoleEventHanlder OnConsoleInput;
 
+		/// <summary> The internal process interface used to interface with the process. </summary>
+		private ProcessInterface.ProcessInterface processInterace = new ProcessInterface.ProcessInterface();
+
+		/*
 		/// <summary> Gets the process interface. </summary>
 		[Browsable(false)]
 		private ProcessInterface.ProcessInterface Process_Interface { get { return processInterace; } }
+		*/
 
-		/// <summary> Gets the key mappings. </summary>
-		[Browsable(false)]
-		private List<KeyMapping> KeyMappings { get { return keyMappings; } }
+		///// <summary> Gets the key mappings. </summary>
+		//[Browsable(false)]
+		//private List<KeyMapping> KeyMappings { get { return keyMappings; } }
 
 		protected override CreateParams CreateParams {
 			get {
@@ -321,7 +330,9 @@ namespace ConsoleControl {
 
 
 			if (!IsProcessRunning)
-				this._cmdhandle = processInterace.StartProcess("cmd.exe", null);
+				/*this._cmdhandle =*/
+				processInterace.StartProcess("cmd.exe", null);
+
 			this._ShouldClear = true;
 			ClearOutput();
 
@@ -357,7 +368,7 @@ namespace ConsoleControl {
 			ShowDiagnostics = false;
 
 			// Input enabled by default.
-			IsInputEnabled = true;
+			//IsInputEnabled = true;
 
 			// Disable special commands by default.
 			SendKeyboardCommandsToProcess = true;

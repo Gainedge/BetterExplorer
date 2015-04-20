@@ -103,7 +103,7 @@ namespace BExplorer.Shell.Interop {
 
 		}
 
-
+		/*
 		public static void SetListViewBackgroundImage(IntPtr lvHandle, Bitmap bitmap) {
 
 			var lvBkImage = new LVBKIMAGE();
@@ -127,13 +127,13 @@ namespace BExplorer.Shell.Interop {
 			Marshal.FreeHGlobal(lbkImageptr);
 
 		}
-
+		*/
 	}
-  public sealed class NaturalStringComparer : IComparer<string> {
-    public static readonly NaturalStringComparer Default = new NaturalStringComparer();
+	public sealed class NaturalStringComparer : IComparer<string> {
+		public static readonly NaturalStringComparer Default = new NaturalStringComparer();
 
-    public int Compare(string x, string y) {
-      return ShlWapi.StrCmpLogicalW(x, y);
-    }
-  }
+		public int Compare(string x, string y) {
+			return ShlWapi.StrCmpLogicalW(x, y);
+		}
+	}
 }

@@ -829,7 +829,7 @@ namespace BExplorer.Shell {
 		int GetOverlayImage(
 			int iOverlay,
 			out int piIndex);
-	};
+	}
 
 	[ComImportAttribute()]
 	[GuidAttribute("192B9D83-50FC-457B-90A0-2B82A8B5DAE1")]
@@ -849,7 +849,7 @@ namespace BExplorer.Shell {
 		  IntPtr hbmMask,
 		  IntPtr punk,
 		  uint dwFlags);
-	};
+	}
 
 	#endregion
 
