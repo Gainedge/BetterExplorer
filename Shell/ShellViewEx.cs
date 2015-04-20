@@ -3328,6 +3328,7 @@ namespace BExplorer.Shell {
           return;
         resetEvent.WaitOne();
 
+        try {
           var itemBounds = new User32.RECT();
           var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
           User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
@@ -3355,6 +3356,7 @@ namespace BExplorer.Shell {
               this.RedrawItem(index);
             }
           }
+        } catch {  }
       });
       //t.SetApartmentState(ApartmentState.STA);
       t.Start();

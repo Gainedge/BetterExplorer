@@ -3869,6 +3869,7 @@ namespace BetterExplorer {
     [Obsolete("try to move this into ShellViewEx")]
     void ShellListView_EndItemLabelEdit(object sender, bool e) {
       //this.ShellListView.NewName = this.txtEditor.Text;
+
       ShellListView.FileNameChangeAttempt(this.txtEditor.Text, e);
 
       this.Editor.Visibility = WIN.Visibility.Collapsed;
@@ -3878,38 +3879,40 @@ namespace BetterExplorer {
     [Obsolete("try to move this into ShellViewEx")]
     void ShellListView_BeginItemLabelEdit(object sender, RenameEventArgs e) {
       if (this.Editor.IsOpen) return;
-      var isSmall = this.ShellListView.IconSize == 16;
-      if (isSmall) {
-        this.txtEditor.TextWrapping = TextWrapping.WrapWithOverflow;
-        this.txtEditor.TextAlignment = TextAlignment.Left;
-      } else {
-        this.txtEditor.TextWrapping = TextWrapping.Wrap;
-        this.txtEditor.TextAlignment = TextAlignment.Center;
-      }
-      var itemRect = this.ShellListView.GetItemBounds(e.ItemIndex, 0);
-      var itemLabelRect = this.ShellListView.GetItemBounds(e.ItemIndex, 2);
-      this.txtEditor.Text = this.ShellListView.Items[e.ItemIndex].DisplayName;
-      var point = this.ShellViewHost.PointToScreen(new WIN.Point(isSmall ? itemLabelRect.Left : itemRect.Left, itemLabelRect.Top - (isSmall ? 1 : 0)));
-      this.Editor.HorizontalOffset = point.X;
-      this.Editor.VerticalOffset = point.Y;
+      Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
+        var isSmall = this.ShellListView.IconSize == 16;
+        if (isSmall) {
+          this.txtEditor.TextWrapping = TextWrapping.WrapWithOverflow;
+          this.txtEditor.TextAlignment = TextAlignment.Left;
+        } else {
+          this.txtEditor.TextWrapping = TextWrapping.Wrap;
+          this.txtEditor.TextAlignment = TextAlignment.Center;
+        }
+        var itemRect = this.ShellListView.GetItemBounds(e.ItemIndex, 0);
+        var itemLabelRect = this.ShellListView.GetItemBounds(e.ItemIndex, 2);
+        this.txtEditor.Text = this.ShellListView.Items[e.ItemIndex].DisplayName;
+        var point = this.ShellViewHost.PointToScreen(new WIN.Point(isSmall ? itemLabelRect.Left : itemRect.Left, itemLabelRect.Top - (isSmall ? 1 : 0)));
+        this.Editor.HorizontalOffset = point.X;
+        this.Editor.VerticalOffset = point.Y;
 
-      this.txtEditor.MaxWidth = isSmall ? Double.PositiveInfinity : itemRect.Width;
-      this.txtEditor.MaxHeight = isSmall ? itemLabelRect.Height + 2 : Double.PositiveInfinity;
+        this.txtEditor.MaxWidth = isSmall ? Double.PositiveInfinity : itemRect.Width;
+        this.txtEditor.MaxHeight = isSmall ? itemLabelRect.Height + 2 : Double.PositiveInfinity;
 
-      this.Editor.Width = isSmall ? this.txtEditor.Width : itemRect.Width;
-      this.Editor.Height = this.txtEditor.Height + 2;
-      this.Editor.Visibility = WIN.Visibility.Visible;
-      this.Editor.IsOpen = true;
-      this.txtEditor.Focus();
+        this.Editor.Width = isSmall ? this.txtEditor.Width : itemRect.Width;
+        this.Editor.Height = this.txtEditor.Height + 2;
+        this.Editor.Visibility = WIN.Visibility.Visible;
+        this.Editor.IsOpen = true;
+        this.txtEditor.Focus();
 
-      if (this.chkExtensions.IsChecked.Value & this.txtEditor.Text.Contains(".") && !this.ShellListView.GetFirstSelectedItem().IsFolder) {
-        var lastIndexOfDot = this.txtEditor.Text.LastIndexOf(".");
-        this.txtEditor.SelectionStart = 0;
-        this.txtEditor.SelectionLength = lastIndexOfDot;
-      } else {
-        this.txtEditor.SelectAll();
-      }
-      Keyboard.Focus(this.txtEditor);
+        if (this.chkExtensions.IsChecked.Value & this.txtEditor.Text.Contains(".") && !this.ShellListView.GetFirstSelectedItem().IsFolder) {
+          var lastIndexOfDot = this.txtEditor.Text.LastIndexOf(".");
+          this.txtEditor.SelectionStart = 0;
+          this.txtEditor.SelectionLength = lastIndexOfDot;
+        } else {
+          this.txtEditor.SelectAll();
+        }
+        Keyboard.Focus(this.txtEditor);
+      }));
     }
 
     void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
