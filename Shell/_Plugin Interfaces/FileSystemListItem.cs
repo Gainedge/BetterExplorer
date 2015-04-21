@@ -34,7 +34,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public IntPtr ILPidl { get { return this._Item.ILPidl; } }
 
-		public IntPtr PIDL { get { return this.IsSearchFolder ? this.searchFolder.AbsolutePidl : this._Item.Pidl; } }
+		public IntPtr PIDL { get { return this.IsSearchFolder ? Shell32.SHGetIDListFromObject(this.searchFolder.m_SearchComInterface) : this._Item.Pidl; } }
 
 		public IntPtr AbsolutePidl { get { return this._Item.AbsolutePidl; } }
 
@@ -185,6 +185,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		}
 
 		public System.Windows.Media.Imaging.BitmapSource ThumbnailSource(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) {
+      if (this.IsSearchFolder) {
+        this._Item.ComInterface = this.searchFolder.m_SearchComInterface;
+      }
 			this._Item.Thumbnail.CurrentSize = new System.Windows.Size(size, size);
 			this._Item.Thumbnail.RetrievalOption = source;
 			this._Item.Thumbnail.FormatOption = format;
@@ -195,7 +198,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public IListItemEx Parent {
 			get {
-				if (this.IsSearchFolder) return null;
+        if (this.IsSearchFolder) {
+          this._Item.ComInterface = this.searchFolder.m_SearchComInterface;
+        }
+				//if (this.IsSearchFolder) return null;
 				if (this._Item.Parent == null)
 					return null;
 				var parent = new FileSystemListItem();

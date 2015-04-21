@@ -3987,7 +3987,8 @@ namespace BetterExplorer {
 			//tcMain.IsInTabDragDrop = true;
 			if (this.ShellListView.CurrentFolder == null) return;
 			//if (this.bcbc.OnNavigate == null)
-			//this.bcbc.OnNavigate = NavigationController;
+      if (e.Folder.IsSearchFolder)
+        this.bcbc.SetPathWithoutNavigate(e.Folder.PIDL.ToString());
 			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
 				var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 				if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
@@ -4000,12 +4001,13 @@ namespace BetterExplorer {
 			}));
 			//e.Folder.Thumbnail.CurrentSize = new WIN.Size(16, 16);
 			//e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-
-			//var selectedTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
-			//selectedTabItem.Header = e.Folder.DisplayName;
-			//selectedTabItem.Icon = e.Folder.Thumbnail.BitmapSource;
-			//selectedTabItem.ShellObject = e.Folder;
-			//selectedTabItem.ToolTip = e.Folder.ParsingName;
+      if (e.Folder.IsSearchFolder) {
+        var selectedTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
+        selectedTabItem.Header = e.Folder.DisplayName;
+        selectedTabItem.Icon = e.Folder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+        selectedTabItem.ShellObject = e.Folder;
+        selectedTabItem.ToolTip = e.Folder.ParsingName;
+      }
 		}
 
 		/*
@@ -4655,7 +4657,7 @@ namespace BetterExplorer {
 				e.Cancel = true;
 				return;
 			}
-			//tcMain.IsInTabDragDrop = true;
+			
 			if (e.RemovedItems.Count > 0) {
 
 				var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
@@ -4666,6 +4668,7 @@ namespace BetterExplorer {
 			}
 
 			if (e.AddedItems.Count == 0 || tcMain.SelectNewTabOnCreate == false) return;
+      tcMain.IsInTabDragDrop = true;
 			var newTab = e.AddedItems[0] as Wpf.Controls.TabItem;
 			if (this.ShellListView.CurrentFolder == null || !this.ShellListView.CurrentFolder.Equals(newTab.ShellObject) && tcMain.CurrentTabItem == null) {
 				SelectTab(newTab);

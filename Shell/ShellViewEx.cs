@@ -3175,12 +3175,14 @@ namespace BExplorer.Shell {
 				else {
 					this.DisableGroups();
 				}
+
+        var NavArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
+        this.CurrentFolder = this._RequestedCurrentLocation;
+        if (!refresh && Navigated != null)
+          Navigated(this, NavArgs);
 			}));
 
-			var NavArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
-			this.CurrentFolder = this._RequestedCurrentLocation;
-			if (!refresh && Navigated != null)
-				Navigated(this, NavArgs);
+		
 
 			//this._ResetTimer.Start();
 			GC.Collect();
@@ -3422,18 +3424,19 @@ namespace BExplorer.Shell {
 				var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 
 
-				if (r.IntersectsWith(this.ClientRectangle)) {
-					var sho = Items[index];
-					var tempStr = sho.ParsingName.ToShellParsingName();
-					var temp = sho.Parent != null && sho.Parent.IsSearchFolder ? FileSystemListItem.ToFileSystemItem(sho.ParentHandle, tempStr.EndsWith(@":\") ? tempStr : tempStr.TrimEnd(Char.Parse(@"\"))) : sho;//FileSystemListItem.ToFileSystemItem(sho.ParentHandle, tempStr.EndsWith(@":\") ? tempStr : tempStr.TrimEnd(Char.Parse(@"\")));
-					var icon = temp.GetHBitmap(IconSize, false, true);
-					var shieldOverlay = 0;
-					if (sho.ShieldedIconIndex == -1) {
-						if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = ShieldIconIndex;
+        try {
+          if (r.IntersectsWith(this.ClientRectangle)) {
+            var sho = Items[index];
+            var tempStr = sho.ParsingName.ToShellParsingName();
+            var temp = sho.Parent != null && sho.Parent.IsSearchFolder ? FileSystemListItem.ToFileSystemItem(sho.ParentHandle, tempStr.EndsWith(@":\") ? tempStr : tempStr.TrimEnd(Char.Parse(@"\"))) : sho;//FileSystemListItem.ToFileSystemItem(sho.ParentHandle, tempStr.EndsWith(@":\") ? tempStr : tempStr.TrimEnd(Char.Parse(@"\")));
+            var icon = temp.GetHBitmap(IconSize, false, true);
+            var shieldOverlay = 0;
+            if (sho.ShieldedIconIndex == -1) {
+              if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = ShieldIconIndex;
 
-						sho.ShieldedIconIndex = shieldOverlay;
-					}
-					if (icon != IntPtr.Zero || shieldOverlay > 0) {
+              sho.ShieldedIconIndex = shieldOverlay;
+            }
+            if (icon != IntPtr.Zero || shieldOverlay > 0) {
 
               sho.IsIconLoaded = true;
               Gdi32.DeleteObject(icon);
@@ -3442,6 +3445,7 @@ namespace BExplorer.Shell {
               this.RedrawItem(index);
             }
           }
+        } catch {  }
       });
       //t.SetApartmentState(ApartmentState.STA);
       t.Start();

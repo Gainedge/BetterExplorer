@@ -373,6 +373,7 @@ namespace Wpf.Controls {
 		/// </summary>
 		/// <param name="tabItem"></param>
 		public void RemoveTabItem(TabItem tabItem, Boolean allowReopening = true) {
+      this.IsInTabDragDrop = false;
 			if (IsFixedSize)
 				throw new InvalidOperationException("ItemsSource is Fixed Size");
 
