@@ -63,7 +63,7 @@ namespace BExplorer.Shell {
 		}
 		*/
 
-
+		/*
 		/// <summary>
 		/// Gets a strongly-typed read-only collection of all the registered known folders.
 		/// </summary>
@@ -105,10 +105,7 @@ namespace BExplorer.Shell {
 				return new ReadOnlyCollection<IKnownFolder>(foldersList);
 			}
 		}
-
-
-
-
+		*/
 
 
 

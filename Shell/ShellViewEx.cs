@@ -3176,13 +3176,13 @@ namespace BExplorer.Shell {
 					this.DisableGroups();
 				}
 
-        var NavArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
-        this.CurrentFolder = this._RequestedCurrentLocation;
-        if (!refresh && Navigated != null)
-          Navigated(this, NavArgs);
+				var NavArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
+				this.CurrentFolder = this._RequestedCurrentLocation;
+				if (!refresh && Navigated != null)
+					Navigated(this, NavArgs);
 			}));
 
-		
+
 
 			//this._ResetTimer.Start();
 			GC.Collect();
@@ -3225,6 +3225,21 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
 			if (col.CollumnType == typeof(String)) {
 				var i = reversed ? 3 : 0;
+
+				Action<string, string> Add_Group = (string Char1, string Char2) => {
+					var testgrn = new ListViewGroupEx();
+					testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse(Char1) && w.DisplayName.ToUpperInvariant().First() <= Char.Parse(Char2)).ToArray();
+					testgrn.Header = String.Format(Char1 + " - " + Char2 + "({0})", testgrn.Items.Count());
+					testgrn.Index = reversed ? i-- : i++;
+					this.Groups.Add(testgrn);
+				};
+
+				Add_Group("0", "9");
+				Add_Group("A", "H");
+				Add_Group("I", "P");
+				Add_Group("Q", "z");
+
+				/*
 				var testgrn = new ListViewGroupEx();
 				testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("0") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("9")).ToArray();
 				testgrn.Header = String.Format("0 - 9 ({0})", testgrn.Items.Count());
@@ -3248,6 +3263,8 @@ namespace BExplorer.Shell {
 				testgr3.Header = String.Format("Q - Z ({0})", testgr3.Items.Count());
 				testgr3.Index = reversed ? i-- : i++;
 				this.Groups.Add(testgr3);
+				*/
+
 
 				if (reversed)
 					this.Groups.Reverse();
@@ -3259,6 +3276,11 @@ namespace BExplorer.Shell {
 			}
 			else if (col.CollumnType == typeof(long)) {
 				var j = reversed ? 7 : 0;
+
+				/********************************************************
+				Upgrade this to use an Action<>
+				*********************************************************/
+
 				var uspec = new ListViewGroupEx();
 				uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
 				uspec.Header = String.Format("Unspecified ({0})", uspec.Items.Count());
@@ -3306,6 +3328,7 @@ namespace BExplorer.Shell {
 				testgr6.Header = String.Format("Gigantic ({0})", testgr6.Items.Count());
 				testgr6.Index = reversed ? j-- : j++;
 				this.Groups.Add(testgr6);
+
 
 				if (reversed)
 					this.Groups.Reverse();
@@ -3417,39 +3440,40 @@ namespace BExplorer.Shell {
 					return;
 				resetEvent.WaitOne();
 
-          var itemBounds = new User32.RECT();
-          var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
-          User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+				var itemBounds = new User32.RECT();
+				var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
+				User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 
 				var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 
 
-        try {
-          if (r.IntersectsWith(this.ClientRectangle)) {
-            var sho = Items[index];
-            var tempStr = sho.ParsingName.ToShellParsingName();
-            var temp = sho.Parent != null && sho.Parent.IsSearchFolder ? FileSystemListItem.ToFileSystemItem(sho.ParentHandle, tempStr.EndsWith(@":\") ? tempStr : tempStr.TrimEnd(Char.Parse(@"\"))) : sho;//FileSystemListItem.ToFileSystemItem(sho.ParentHandle, tempStr.EndsWith(@":\") ? tempStr : tempStr.TrimEnd(Char.Parse(@"\")));
-            var icon = temp.GetHBitmap(IconSize, false, true);
-            var shieldOverlay = 0;
-            if (sho.ShieldedIconIndex == -1) {
-              if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = ShieldIconIndex;
+				try {
+					if (r.IntersectsWith(this.ClientRectangle)) {
+						var sho = Items[index];
+						var tempStr = sho.ParsingName.ToShellParsingName();
+						var temp = sho.Parent != null && sho.Parent.IsSearchFolder ? FileSystemListItem.ToFileSystemItem(sho.ParentHandle, tempStr.EndsWith(@":\") ? tempStr : tempStr.TrimEnd(Char.Parse(@"\"))) : sho;//FileSystemListItem.ToFileSystemItem(sho.ParentHandle, tempStr.EndsWith(@":\") ? tempStr : tempStr.TrimEnd(Char.Parse(@"\")));
+						var icon = temp.GetHBitmap(IconSize, false, true);
+						var shieldOverlay = 0;
+						if (sho.ShieldedIconIndex == -1) {
+							if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = ShieldIconIndex;
 
-              sho.ShieldedIconIndex = shieldOverlay;
-            }
-            if (icon != IntPtr.Zero || shieldOverlay > 0) {
+							sho.ShieldedIconIndex = shieldOverlay;
+						}
+						if (icon != IntPtr.Zero || shieldOverlay > 0) {
 
-              sho.IsIconLoaded = true;
-              Gdi32.DeleteObject(icon);
-              if (sho.Parent != null && sho.Parent.IsSearchFolder)
-                temp.Dispose();
-              this.RedrawItem(index);
-            }
-          }
-        } catch {  }
-      });
-      //t.SetApartmentState(ApartmentState.STA);
-      t.Start();
-    }
+							sho.IsIconLoaded = true;
+							Gdi32.DeleteObject(icon);
+							if (sho.Parent != null && sho.Parent.IsSearchFolder)
+								temp.Dispose();
+							this.RedrawItem(index);
+						}
+					}
+				}
+				catch { }
+			});
+			//t.SetApartmentState(ApartmentState.STA);
+			t.Start();
+		}
 
 		public void _IconsLoadingThreadRun() {
 			while (true) {
@@ -4212,6 +4236,7 @@ namespace BExplorer.Shell {
 			}
 			m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
 		}
+
 		private void ProcessCustomDraw(ref Message m, ref NMHDR nmhdr) {
 			if (nmhdr.hwndFrom == this.LVHandle) {
 				#region Starting

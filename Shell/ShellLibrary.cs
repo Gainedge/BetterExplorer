@@ -431,6 +431,7 @@ namespace BExplorer.Shell {
 			*/
 		}
 
+
 		/// <summary>
 		/// Load the library using a number of options
 		/// </summary>
@@ -447,16 +448,17 @@ namespace BExplorer.Shell {
 			return library;
 		}
 
-    public static ShellLibrary FromShellItem(ShellItem shellItem, bool isReadOnly) {
-      var nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
-      var flags = isReadOnly ? AccessModes.Read : AccessModes.ReadWrite;
+		public static ShellLibrary FromShellItem(ShellItem shellItem, bool isReadOnly) {
+			var nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
+			var flags = isReadOnly ? AccessModes.Read : AccessModes.ReadWrite;
 
-      nativeShellLibrary.LoadLibraryFromItem(shellItem.ComInterface, flags);
-      var library = new ShellLibrary(nativeShellLibrary);
-      library.ComInterface = (IShellItem)shellItem.ComInterface;
-      library.Name = shellItem.DisplayName;
-      return library;
-    }
+			nativeShellLibrary.LoadLibraryFromItem(shellItem.ComInterface, flags);
+			var library = new ShellLibrary(nativeShellLibrary);
+			library.ComInterface = (IShellItem)shellItem.ComInterface;
+			library.Name = shellItem.DisplayName;
+			return library;
+		}
+
 
 		/// <summary>
 		/// Load the library using a number of options
@@ -602,6 +604,7 @@ namespace BExplorer.Shell {
 			return true;
 		}
 
+		/*
 		/// <summary>
 		/// Remove a folder or search connector
 		/// </summary>
@@ -611,6 +614,7 @@ namespace BExplorer.Shell {
 			ShellItem item = new ShellItem(folderPath);
 			return Remove(item);
 		}
+		*/
 
 		#endregion Collection Members
 
@@ -787,19 +791,16 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// The count of the items in the list.
 		/// </summary>
-		public int Count {
-			get { return ItemsList.Count; }
-		}
+		public int Count { get { return ItemsList.Count; } }
 
 		/// <summary>
 		/// Indicates whether this list is read-only or not.
 		/// </summary>
-		public bool IsReadOnly {
-			get { return false; }
-		}
+		public bool IsReadOnly { get { return false; } }
 
 		#endregion ICollection<ShellFileSystemFolder> Members
 
+		/*
 		/// <summary>
 		/// Indicates whether this feature is supported on the current platform.
 		/// </summary>
@@ -809,5 +810,7 @@ namespace BExplorer.Shell {
 				return true;
 			}
 		}
+		*/
+
 	}
 }
