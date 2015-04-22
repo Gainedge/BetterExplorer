@@ -464,7 +464,7 @@ namespace BExplorer.Shell {
 				return result;
 			}
 			catch (Exception) {
-				return String.Empty;
+        return "Search.search-ms";
 			}
 		}
 
