@@ -597,8 +597,7 @@ namespace BetterExplorer {
 
 						btnOpenWith.IsEnabled = itemMenuCount > 0 && selItemsCount == 1;
 					}
-					catch (Exception) {
-
+					catch {
 						btnOpenWith.IsEnabled = false;
 					}
 				}
@@ -4503,7 +4502,6 @@ namespace BetterExplorer {
 			var tempPoint = PointToScreen(new WIN.Point(controlPos.X, controlPos.Y));
 			mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnNewItem.ActualHeight));
 			btnNewItem.IsDropDownOpen = false;
-			//mnu.GeneratetestMenu(this.ShellListView.GetFirstSelectedItem());
 		}
 
 		private void mnuPinToStart_Click(object sender, RoutedEventArgs e) {
@@ -4799,12 +4797,11 @@ namespace BetterExplorer {
 
 		private void btnOpenWith_DropDownOpened(object sender, EventArgs e) {
 			var mnu = new ShellContextMenu(this.ShellListView, 1);
-
+	
 			var controlPos = btnOpenWith.TransformToAncestor(Application.Current.MainWindow).Transform(new WIN.Point(0, 0));
 			var tempPoint = PointToScreen(new WIN.Point(controlPos.X, controlPos.Y));
 			mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnOpenWith.ActualHeight), 1);
-			btnOpenWith.IsDropDownOpen = false;
-
+			btnOpenWith.IsDropDownOpen = false;		
 		}
 
 		private void btnSort_DropDownOpened(object sender, EventArgs e) {
