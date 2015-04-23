@@ -133,6 +133,8 @@ namespace BExplorer.Shell {
 
 		}
 
+
+		/*
 		/// <summary>
 		/// Handles context menu messages when the <see cref="ShellContextMenu"/>
 		/// is displayed on a Form's main menu bar.
@@ -177,25 +179,79 @@ namespace BExplorer.Shell {
 				if (m.Msg == (int)WM.WM_INITMENUPOPUP && m.WParam == _NewMenuPtr) {
 					_ShellView.IsRenameNeeded = true;
 				}
-				if ((m_ComInterface2 != null)) {
+				if (m_ComInterface2 != null) {
 					hr = (int)m_ComInterface2.HandleMenuMsg(m.Msg, m.WParam, m.LParam);
-					if (hr == 0) {
-						return true;
-					}
+					if (hr == 0) return true;
 				}
 			}
 			else if (m.Msg == (int)WM.WM_MENUCHAR) {
-				if ((m_ComInterface3 != null)) {
+				if (m_ComInterface3 != null) {
 					var ptr = IntPtr.Zero;
 					hr = (int)m_ComInterface3.HandleMenuMsg2(m.Msg, m.WParam, m.LParam, out ptr);
-					if (hr == 0) {
-						return true;
-					}
+					if (hr == 0) return true;
+
 				}
 			}
 			return false;
 		}
+		*/
 
+		/// <summary>
+		/// Handles context menu messages when the <see cref="ShellContextMenu"/>
+		/// is displayed on a Form's main menu bar.
+		/// </summary>
+		/// 
+		/// <remarks>
+		/// <para>
+		/// To display a shell context menu in a Form's main menu, call the
+		/// <see cref="Populate"/> method to populate the menu with the shell
+		/// item's menu items. In addition, you must intercept a number of
+		/// special messages that will be sent to the menu's parent form. To
+		/// do this, you must override <see cref="Form.WndProc"/> like so:
+		/// </para>
+		/// 
+		/// <code>
+		///     protected override void WndProc(ref Message m) {
+		///         if ((m_ContextMenu == null) || (!m_ContextMenu.HandleMenuMessage(ref m))) {
+		///             base.WndProc(ref m);
+		///         }
+		///     }
+		/// </code>
+		/// 
+		/// <para>
+		/// Where m_ContextMenu is the <see cref="ShellContextMenu"/> being shown.
+		/// </para>
+		/// </remarks>
+		/// 
+		/// <param name="m">
+		/// The message to handle.
+		/// </param>
+		/// 
+		/// <returns>
+		/// <see langword="true"/> if the message was a Shell Context Menu
+		/// message, <see langword="false"/> if not. If the method returns false,
+		/// then the message should be passed down to the base class's
+		/// <see cref="Form.WndProc"/> method.
+		/// </returns>
+		public bool HandleMenuMessage(ref Message m) {
+			//For send to menu in the ListView context menu
+			if (m.Msg == (int)WM.WM_INITMENUPOPUP | m.Msg == (int)WM.WM_MEASUREITEM | m.Msg == (int)WM.WM_DRAWITEM) {
+				if (m.Msg == (int)WM.WM_INITMENUPOPUP && m.WParam == _NewMenuPtr) {
+					_ShellView.IsRenameNeeded = true;
+				}
+				if (m_ComInterface2 != null) {
+					return 0 == (int)m_ComInterface2.HandleMenuMsg(m.Msg, m.WParam, m.LParam);
+				}
+			}
+			else if (m.Msg == (int)WM.WM_MENUCHAR) {
+				if (m_ComInterface3 != null) {
+					var ptr = IntPtr.Zero;
+					return 0 == (int)m_ComInterface3.HandleMenuMsg2(m.Msg, m.WParam, m.LParam, out ptr);
+				}
+			}
+
+			return false;
+		}
 
 		/// <summary>
 		/// Populates a <see cref="Menu"/> with the context menu items for
