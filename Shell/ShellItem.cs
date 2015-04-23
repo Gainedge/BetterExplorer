@@ -125,11 +125,11 @@ namespace BExplorer.Shell {
 		private int? hashValue;
 		private ShellThumbnail thumbnail;
 		protected IShellItem m_ComInterface;
-		internal bool IsNeedRefreshing { get; set; }
+		//internal bool IsNeedRefreshing { get; set; }
 		internal bool IsInvalid { get; set; }
-		internal bool IsOnlyLowQuality { get; set; }
-		internal bool IsThumbnailLoaded { get; set; }
-		internal bool IsInitialised { get; set; }
+		//internal bool IsOnlyLowQuality { get; set; }
+		//internal bool IsThumbnailLoaded { get; set; }
+		//internal bool IsInitialised { get; set; }
 		internal int OverlayIconIndex { get; set; }
 		internal IExtractIconPWFlags IconType { get; private set; }
 		internal IntPtr ILPidl { get { return Shell32.ILFindLastID(Pidl); } }
@@ -137,11 +137,11 @@ namespace BExplorer.Shell {
 		public static IntPtr MessageHandle = IntPtr.Zero;
 		public static Boolean IsCareForMessageHandle = true;
 
-		/// <summary>Add Documentation</summary>
-		public int IsShielded = -1;
+		///// <summary>Add Documentation</summary>
+		//public int IsShielded = -1;
 
-		/// <summary>Add Documentation</summary>
-		public bool IsIconLoaded { get; set; }
+		///// <summary>Add Documentation</summary>
+		//public bool IsIconLoaded { get; set; }
 
 		/// <summary>Add Documentation</summary>
 		public String CachedParsingName { get; private set; }
@@ -464,7 +464,7 @@ namespace BExplorer.Shell {
 				return result;
 			}
 			catch (Exception) {
-        return "Search.search-ms";
+				return "Search.search-ms";
 			}
 		}
 

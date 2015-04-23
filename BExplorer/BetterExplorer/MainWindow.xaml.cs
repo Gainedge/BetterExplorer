@@ -2588,7 +2588,7 @@ namespace BetterExplorer {
 				throw new Exception("Invalid Sender");
 			}
 
-			foreach (ShellItem item in ShellListView.SelectedItems) {
+			foreach (var item in ShellListView.SelectedItems) {
 				System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
 				string namen = Utilities.RemoveExtensionsFromFile(item.ParsingName, new System.IO.FileInfo(item.ParsingName).Extension);
 				try {
@@ -2670,7 +2670,7 @@ namespace BetterExplorer {
 					throw new Exception("Invalid sender");
 			}
 
-			foreach (ShellItem item in ShellListView.SelectedItems) {
+			foreach (FileSystemListItem item in ShellListView.SelectedItems) {
 				var cvt = new Bitmap(item.ParsingName);
 				cvt.RotateFlip(Rotation);
 				if (OverwriteOnRotate) {
@@ -3755,7 +3755,7 @@ namespace BetterExplorer {
 		private void miRestoreRBItems_Click(object sender, RoutedEventArgs e) {
 			//TODO: Check these changes
 
-			foreach (ShellItem item in ShellListView.SelectedItems.ToArray()) {
+			foreach (var item in ShellListView.SelectedItems.ToArray()) {
 				Folder Recycler = new Shell().NameSpace(10);
 				for (int i = 0; i < Recycler.Items().Count; i++) {
 					Shell32.FolderItem FI = Recycler.Items().Item(i);
@@ -3987,8 +3987,8 @@ namespace BetterExplorer {
 			//tcMain.IsInTabDragDrop = true;
 			if (this.ShellListView.CurrentFolder == null) return;
 			//if (this.bcbc.OnNavigate == null)
-      if (e.Folder.IsSearchFolder)
-        this.bcbc.SetPathWithoutNavigate(e.Folder.PIDL.ToString());
+			if (e.Folder.IsSearchFolder)
+				this.bcbc.SetPathWithoutNavigate(e.Folder.PIDL.ToString());
 			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
 				var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 				if (tab != null && this.ShellListView.GetSelectedCount() > 0) {
@@ -4001,13 +4001,13 @@ namespace BetterExplorer {
 			}));
 			//e.Folder.Thumbnail.CurrentSize = new WIN.Size(16, 16);
 			//e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-      if (e.Folder.IsSearchFolder) {
-        var selectedTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
-        selectedTabItem.Header = e.Folder.DisplayName;
-        selectedTabItem.Icon = e.Folder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
-        selectedTabItem.ShellObject = e.Folder;
-        selectedTabItem.ToolTip = e.Folder.ParsingName;
-      }
+			if (e.Folder.IsSearchFolder) {
+				var selectedTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
+				selectedTabItem.Header = e.Folder.DisplayName;
+				selectedTabItem.Icon = e.Folder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+				selectedTabItem.ShellObject = e.Folder;
+				selectedTabItem.ToolTip = e.Folder.ParsingName;
+			}
 		}
 
 		/*
@@ -4657,7 +4657,7 @@ namespace BetterExplorer {
 				e.Cancel = true;
 				return;
 			}
-			
+
 			if (e.RemovedItems.Count > 0) {
 
 				var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
@@ -4668,7 +4668,7 @@ namespace BetterExplorer {
 			}
 
 			if (e.AddedItems.Count == 0 || tcMain.SelectNewTabOnCreate == false) return;
-      tcMain.IsInTabDragDrop = true;
+			tcMain.IsInTabDragDrop = true;
 			var newTab = e.AddedItems[0] as Wpf.Controls.TabItem;
 			if (this.ShellListView.CurrentFolder == null || !this.ShellListView.CurrentFolder.Equals(newTab.ShellObject) && tcMain.CurrentTabItem == null) {
 				SelectTab(newTab);
