@@ -858,7 +858,7 @@ namespace BExplorer.Shell {
 					ref iise,
 					out iShellExtInitPtr) == (int)HResult.S_OK) {
 					IShellExtInit iShellExtInit = Marshal.GetTypedObjectForIUnknown(iShellExtInitPtr, typeof(IShellExtInit)) as IShellExtInit;
-
+				
 					try {
 						/*
 						IntPtr doPtr;
