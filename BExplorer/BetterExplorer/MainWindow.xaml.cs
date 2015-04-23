@@ -589,7 +589,7 @@ namespace BetterExplorer {
 				var selItemsCount = ShellListView.GetSelectedCount();
 				var selectedItem = this.ShellListView.GetFirstSelectedItem();
 				if (selectedItem != null) {
-					var mnu = new ShellContextMenu(this.ShellListView, 1);
+					var mnu = new ShellContextMenu(this.ShellListView, false);
 
 					try {
 						var tempPoint = btnOpenWith.PointToScreen(new WIN.Point(0, 0));
@@ -4496,7 +4496,7 @@ namespace BetterExplorer {
 		}
 
 		private void btnNewItem_DropDownOpened(object sender, EventArgs e) {
-			var mnu = new ShellContextMenu(this.ShellListView, 0);
+			var mnu = new ShellContextMenu(this.ShellListView, true);
 
 			var controlPos = btnNewItem.TransformToAncestor(Application.Current.MainWindow).Transform(new WIN.Point(0, 0));
 			var tempPoint = PointToScreen(new WIN.Point(controlPos.X, controlPos.Y));
@@ -4796,12 +4796,12 @@ namespace BetterExplorer {
 		#endregion
 
 		private void btnOpenWith_DropDownOpened(object sender, EventArgs e) {
-			var mnu = new ShellContextMenu(this.ShellListView, 1);
-	
+			var mnu = new ShellContextMenu(this.ShellListView, false);
+
 			var controlPos = btnOpenWith.TransformToAncestor(Application.Current.MainWindow).Transform(new WIN.Point(0, 0));
 			var tempPoint = PointToScreen(new WIN.Point(controlPos.X, controlPos.Y));
 			mnu.ShowContextMenu(new System.Drawing.Point((int)tempPoint.X, (int)tempPoint.Y + (int)btnOpenWith.ActualHeight), 1);
-			btnOpenWith.IsDropDownOpen = false;		
+			btnOpenWith.IsDropDownOpen = false;
 		}
 
 		private void btnSort_DropDownOpened(object sender, EventArgs e) {

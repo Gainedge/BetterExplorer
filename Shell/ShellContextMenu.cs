@@ -71,27 +71,34 @@ namespace BExplorer.Shell {
 	/// </remarks>
 	public class ShellContextMenu {
 
+		#region Locals
 		const int m_CmdFirst = 0x8000;
 		MessageWindow m_MessageWindow;
 		IContextMenu m_ComInterface;
 		IContextMenu2 m_ComInterface2;
 		IContextMenu3 m_ComInterface3;
 
+		IntPtr _NewMenuPtr = IntPtr.Zero;
+
+
 		/// <summary>The ShellView the ContextMenu is associated with</summary>
 		private ShellView _ShellView { get; set; }
+		#endregion
 
+		#region Constructors
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ShellContextMenu"/> class.
 		/// </summary>
 		/// <param name="shellView">The ShellView the ContextMenu is associated with</param>
-		/// <param name="menuType"></param>
-		public ShellContextMenu(ShellView shellView, int menuType) {
+		/// <param name="Use_GetNewContextMenu"></param>
+		[Obsolete("This is a very bad way to handle creating the menu")]
+		public ShellContextMenu(ShellView shellView, bool Use_GetNewContextMenu) {
 			this._ShellView = shellView;
 
 			IntPtr iContextMenu = IntPtr.Zero;
 
-			if (menuType == 0)
+			if (Use_GetNewContextMenu)
 				this.GetNewContextMenu(_ShellView.CurrentFolder, out iContextMenu, out m_ComInterface);
 			else
 				this.GetOpenWithContextMenu(_ShellView.SelectedItems.ToArray(), out iContextMenu, out m_ComInterface);
@@ -100,6 +107,7 @@ namespace BExplorer.Shell {
 			m_ComInterface3 = m_ComInterface as IContextMenu3;
 			m_MessageWindow = new MessageWindow(this);
 		}
+
 		/// <summary>
 		/// Initialises a new instance of the <see cref="ShellContextMenu"/> 
 		/// class.
@@ -120,6 +128,7 @@ namespace BExplorer.Shell {
 		/// The items to which the context menu should refer.
 		/// </param>
 		/// <param name="svgio"></param>
+		/// <param name="shellView">The ShellView the ContextMenu is associated with</param>
 		public ShellContextMenu(IListItemEx[] items, SVGIO svgio = SVGIO.SVGIO_SELECTION, ShellView view = null) {
 			this._ShellView = view;
 
@@ -133,6 +142,7 @@ namespace BExplorer.Shell {
 
 		}
 
+		#endregion
 
 		/*
 		/// <summary>
@@ -270,7 +280,7 @@ namespace BExplorer.Shell {
 			//RemoveShellMenuItems(menu);
 			m_ComInterface.QueryContextMenu(menu.Handle, 0, m_CmdFirst, int.MaxValue, CMF.EXPLORE | additionalFlags | (Control.ModifierKeys == Keys.Shift ? CMF.EXTENDEDVERBS : 0));
 		}
-		IntPtr _NewMenuPtr = IntPtr.Zero;
+
 		/// <summary>
 		/// Shows a context menu for a shell item.
 		/// </summary>
@@ -436,7 +446,7 @@ namespace BExplorer.Shell {
 			result = IntPtr.Zero;
 		}
 
-
+		[Obsolete("Never used and should be removed", true)]
 		private void mnuItem_Click2(object sender, System.Windows.RoutedEventArgs e) {
 			e.Handled = true;
 			var mnuItem = sender as System.Windows.Controls.MenuItem;
@@ -850,8 +860,10 @@ namespace BExplorer.Shell {
 					IShellExtInit iShellExtInit = Marshal.GetTypedObjectForIUnknown(iShellExtInitPtr, typeof(IShellExtInit)) as IShellExtInit;
 
 					try {
+						/*
 						IntPtr doPtr;
-						//iShellExtInit.Initialize(IntPtr.Zero, itemArray.GetIDataObject(out doPtr), 0);
+						iShellExtInit.Initialize(IntPtr.Zero, itemArray.GetIDataObject(out doPtr), 0);
+						*/
 
 						Marshal.ReleaseComObject(iShellExtInit);
 						Marshal.Release(iShellExtInitPtr);
