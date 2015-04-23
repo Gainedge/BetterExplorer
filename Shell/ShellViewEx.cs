@@ -4561,8 +4561,8 @@ namespace BExplorer.Shell {
 
 
 		private void Column_OnClick(int iItem) {
-			switch (iItem) {
-				case 0: //Name
+			switch (this.Collumns[iItem].Name) {
+				case "Name":
 
 					/*
 					Add_Group("0", "9");
@@ -4571,8 +4571,16 @@ namespace BExplorer.Shell {
 					Add_Group("Q", "z");
 					*/
 					break;
+				case "Size":
+					break;
+				case "Date modified":
+					break;
+				case "Date created":
+					break;
+				case "Date accessed":
+					break;
 
-				case 1: //Type
+				case "Type":
 					var Types = new HashSet<string>();
 					foreach (var item in this.Items) {
 						Types.Add(item.Extension);
@@ -4580,7 +4588,7 @@ namespace BExplorer.Shell {
 
 					break;
 				default:
-					F.MessageBox.Show(iItem.ToString());
+					F.MessageBox.Show(this.Collumns[iItem].Name);
 					break;
 			}
 		}
