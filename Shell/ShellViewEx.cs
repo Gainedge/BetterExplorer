@@ -2808,20 +2808,20 @@ namespace BExplorer.Shell {
 
 				if (column.CollumnType != typeof(String)) {
 					if (Order == SortOrder.Ascending) {
-            this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value).ToList();
+						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value).ToList();
 					}
 					else {
-            this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value).ToList();
+						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value).ToList();
 					}
 				}
 				else {
 					if (Order == SortOrder.Ascending) {
 						//TODO: Try to upgrade this to use built in LINQ Syntax
 						//this.Items = from x in itemsArray where this.ShowHidden ? true : !x.IsHidden orderby x.IsFolder,  x.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default)
-            this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
+						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
 					}
 					else {
-            this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
+						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
 					}
 				}
 
@@ -4561,8 +4561,15 @@ namespace BExplorer.Shell {
 
 
 		private void Column_OnClick(int iItem) {
-			switch (this.Collumns[iItem].Name) {
+			F.MessageBox.Show("Finish this");
+			var SelectedColumn = this.Collumns[iItem];
+
+
+			switch (SelectedColumn.Name) {
 				case "Name":
+					var Menu1 = new FilterMenu_Strings();
+					Menu1.SetItems("0 - 9", "A - H", "I - P", "Q - Z");
+					//Menu.Activate(SelectedColumn);
 
 					/*
 					Add_Group("0", "9");
@@ -4585,6 +4592,9 @@ namespace BExplorer.Shell {
 					foreach (var item in this.Items) {
 						Types.Add(item.Extension);
 					}
+
+					var Menu2 = new FilterMenu_Strings();
+					Menu2.SetItems(Types);
 
 					break;
 				default:

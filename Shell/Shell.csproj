@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
+    <Compile Include="Custom ContextMenus\FilterMenu_Strings.cs" />
     <Compile Include="FOperationProgressSink.cs" />
     <Compile Include="Icons.cs" />
     <Compile Include="Interop\IOperationsProgressDialog.cs" />
