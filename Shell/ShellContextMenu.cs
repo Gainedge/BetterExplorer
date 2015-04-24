@@ -860,10 +860,8 @@ namespace BExplorer.Shell {
 					IShellExtInit iShellExtInit = Marshal.GetTypedObjectForIUnknown(iShellExtInitPtr, typeof(IShellExtInit)) as IShellExtInit;
 				
 					try {
-						/*
 						IntPtr doPtr;
 						iShellExtInit.Initialize(IntPtr.Zero, itemArray.GetIDataObject(out doPtr), 0);
-						*/
 
 						Marshal.ReleaseComObject(iShellExtInit);
 						Marshal.Release(iShellExtInitPtr);
