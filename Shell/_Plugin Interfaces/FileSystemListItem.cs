@@ -199,7 +199,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		public IListItemEx Parent {
 			get {
         if (this.IsSearchFolder) {
-          this._Item.ComInterface = this.searchFolder.m_SearchComInterface;
+          //this._Item.ComInterface = this.searchFolder.m_SearchComInterface;
+          return null;
         }
 				//if (this.IsSearchFolder) return null;
 				if (this._Item.Parent == null)

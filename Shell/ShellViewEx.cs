@@ -2807,20 +2807,20 @@ namespace BExplorer.Shell {
 
 				if (column.CollumnType != typeof(String)) {
 					if (Order == SortOrder.Ascending) {
-						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value).ToList();
+            this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value).ToList();
 					}
 					else {
-						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value).ToList();
+            this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value).ToList();
 					}
 				}
 				else {
 					if (Order == SortOrder.Ascending) {
 						//TODO: Try to upgrade this to use built in LINQ Syntax
 						//this.Items = from x in itemsArray where this.ShowHidden ? true : !x.IsHidden orderby x.IsFolder,  x.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default)
-						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
+            this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
 					}
 					else {
-						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
+            this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
 					}
 				}
 
@@ -3021,7 +3021,7 @@ namespace BExplorer.Shell {
 					//}
 				}
 				int delta = CurrentI - LastI;
-				if (delta >= (this._RequestedCurrentLocation.IsSearchFolder ? 30 : 2000)) {
+				if (delta >= (this._RequestedCurrentLocation.IsSearchFolder ? 50 : 2000)) {
 					LastI = CurrentI;
 
 					if (this._RequestedCurrentLocation.IsSearchFolder) {
@@ -4086,7 +4086,7 @@ namespace BExplorer.Shell {
 								else {
 									this.DrawDefaultIcons(hdc, sho, iconBounds);
 									sho.IsIconLoaded = false;
-									if (sho.IsNetworkPath || this._IsSearchNavigating) {
+									if (this._IsSearchNavigating || sho.IsNetworkPath) {
 										waitingThumbnails.Enqueue(index);
 									}
 									else {
@@ -4097,7 +4097,7 @@ namespace BExplorer.Shell {
 							else {
 								this.DrawDefaultIcons(hdc, sho, iconBounds);
 								sho.IsIconLoaded = false;
-								if (sho.IsNetworkPath || this._IsSearchNavigating) {
+								if (this._IsSearchNavigating || sho.IsNetworkPath) {
 									waitingThumbnails.Enqueue(index);
 								}
 								else {

@@ -376,7 +376,7 @@ namespace Odyssey.Controls {
     public void SetPathWithoutNavigate(string path) {
       this._ShouldNavigate = false;
       this.Path = path;
-      this._ShouldNavigate = true;
+      //this._ShouldNavigate = true;
     }
 
     /// <summary>
