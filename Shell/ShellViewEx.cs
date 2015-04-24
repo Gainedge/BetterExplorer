@@ -1676,7 +1676,8 @@ namespace BExplorer.Shell {
 					#region Starting
 					var nmhdrHeader = (NMHEADER)(m.GetLParam(typeof(NMHEADER)));
 					if (nmhdrHeader.hdr.code == (int)HDN.HDN_DROPDOWN)
-						F.MessageBox.Show(nmhdrHeader.iItem.ToString());
+						Column_OnClick(nmhdrHeader.iItem);
+					//F.MessageBox.Show(nmhdrHeader.iItem.ToString());
 					else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
 						if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
@@ -2164,7 +2165,7 @@ namespace BExplorer.Shell {
 				#endregion
 
 			}
-			catch (Exception) {
+			catch {
 			}
 		}
 
@@ -4557,5 +4558,39 @@ namespace BExplorer.Shell {
 		}
 
 		#endregion
+
+
+		private void Column_OnClick(int iItem) {
+			switch (this.Collumns[iItem].Name) {
+				case "Name":
+
+					/*
+					Add_Group("0", "9");
+					Add_Group("A", "H");
+					Add_Group("I", "P");
+					Add_Group("Q", "z");
+					*/
+					break;
+				case "Size":
+					break;
+				case "Date modified":
+					break;
+				case "Date created":
+					break;
+				case "Date accessed":
+					break;
+
+				case "Type":
+					var Types = new HashSet<string>();
+					foreach (var item in this.Items) {
+						Types.Add(item.Extension);
+					}
+
+					break;
+				default:
+					F.MessageBox.Show(this.Collumns[iItem].Name);
+					break;
+			}
+		}
 	}
 }
