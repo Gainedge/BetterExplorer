@@ -343,7 +343,7 @@
 							       FontStyle="Italic"
 							       FontWeight="Bold" />
                     <Label Margin="20,0,40,0"
-							       Content="Aaron Kampf"
+							       Content="Aaron Campf"
 							       FontSize="14"
 							       FontStyle="Italic"
 							       FontWeight="Bold" />
