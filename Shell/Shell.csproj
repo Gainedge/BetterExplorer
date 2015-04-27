@@ -110,6 +110,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
+    <Compile Include="Custom ContextMenus\ColumnMenu.xaml.cs">
+      <DependentUpon>ColumnMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Custom ContextMenus\FilterMenu_Strings.cs" />
     <Compile Include="FOperationProgressSink.cs" />
     <Compile Include="Icons.cs" />
@@ -305,6 +308,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Custom ContextMenus\ColumnMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="FileOperation\FileOperation.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

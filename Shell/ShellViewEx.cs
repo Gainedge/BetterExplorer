@@ -4564,6 +4564,28 @@ namespace BExplorer.Shell {
 			F.MessageBox.Show("Finish this");
 			var SelectedColumn = this.Collumns[iItem];
 
+			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
+			/*
+			var item = new HDITEM {
+				mask = HDITEM.Mask.width 
+			};
+			
+			if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero) {
+				throw new Win32Exception();
+			}
+			*/
+
+			var HItem = new HDITEM {
+				mask = HDITEM.Mask.width
+			};
+
+			if (User32.SendMessage(headerhandle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, iItem, ref HItem) == IntPtr.Zero) {
+				throw new Win32Exception();
+			}
+
+
+
+
 
 			switch (SelectedColumn.Name) {
 				case "Name":

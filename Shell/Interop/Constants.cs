@@ -209,14 +209,14 @@ namespace BExplorer.Shell.Interop {
 		[Flags]
 		public enum Mask {
 			Format = 0x4,       // HDI_FORMAT
-		};
+		}
 
 		[Flags]
 		public enum Format {
 			SortDown = 0x200,   // HDF_SORTDOWN
 			SortUp = 0x400,     // HDF_SORTUP
 			HDF_SPLITBUTTON = 0x01000000,
-		};
+		}
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
