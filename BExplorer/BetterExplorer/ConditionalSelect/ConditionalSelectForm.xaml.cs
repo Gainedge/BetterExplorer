@@ -38,7 +38,6 @@ namespace BetterExplorer {
 
 		private void ConditionallySelectFiles(ConditionalSelectData csd, ShellView ShellListView) {
 			if (csd == null) return;
-			//var shells = ShellListView.Items.ToList();
 
 			//The following items are added
 			var Matches_Name = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
