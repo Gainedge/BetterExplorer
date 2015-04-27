@@ -20,7 +20,7 @@ namespace BExplorer.Shell {
 		public event CheckChanged OnCheckChanged;
 
 		public void SetItems(params string[] Items) {
-			SetItems(Items);
+			SetItems(Items.ToList());
 		}
 
 

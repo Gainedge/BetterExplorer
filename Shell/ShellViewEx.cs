@@ -4575,16 +4575,22 @@ namespace BExplorer.Shell {
 			}
 			*/
 
-			var HItem = new HDITEM {
-				mask = HDITEM.Mask.width
-			};
+			/*
+			var HItem = new HDITEM { mask = HDITEM.Mask.HDI_WIDTH };
 
 			if (User32.SendMessage(headerhandle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, iItem, ref HItem) == IntPtr.Zero) {
 				throw new Win32Exception();
 			}
+			*/
 
+			var ColumnMenu1 = new WpfApplication1.Attempt_1.ColumnMenu();
+			ColumnMenu1.Left = Control.MousePosition.X;
+			ColumnMenu1.Top = Control.MousePosition.Y;
 
+			ColumnMenu1.AddItem("0 - 9");
 
+			ColumnMenu1.Show();
+			return;
 
 
 			switch (SelectedColumn.Name) {

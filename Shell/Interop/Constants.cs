@@ -209,6 +209,9 @@ namespace BExplorer.Shell.Interop {
 		[Flags]
 		public enum Mask {
 			Format = 0x4,       // HDI_FORMAT
+
+			
+			//HDI_WIDTH = 0x1 //Written By Aaron Campf
 		}
 
 		[Flags]
