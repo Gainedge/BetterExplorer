@@ -2252,28 +2252,28 @@ namespace BetterExplorer {
 		private void chkHiddenFiles_Checked(object sender, RoutedEventArgs e) {
 			if (IsCalledFromLoading) return;
 			Dispatcher.BeginInvoke(new Action(
-			  delegate() {
-				  var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE() { fShowAllObjects = 1 };
-				  BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
-				  ShellListView.ShowHidden = true;
+				delegate() {
+					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE() { fShowAllObjects = 1 };
+					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
+					ShellListView.ShowHidden = true;
 
-				  ShellTree.IsShowHiddenItems = true;
-				  ShellTree.RefreshContents();
-			  }
+					ShellTree.IsShowHiddenItems = true;
+					ShellTree.RefreshContents();
+				}
 			));
 		}
 
 		private void chkHiddenFiles_Unchecked(object sender, RoutedEventArgs e) {
 			if (IsCalledFromLoading) return;
 			Dispatcher.BeginInvoke(new Action(
-			  delegate() {
-				  var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE() { fShowAllObjects = 0 };
-				  BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
-				  ShellListView.ShowHidden = false;
+				delegate() {
+					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE() { fShowAllObjects = 0 };
+					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
+					ShellListView.ShowHidden = false;
 
-				  ShellTree.IsShowHiddenItems = false;
-				  ShellTree.RefreshContents();
-			  }
+					ShellTree.IsShowHiddenItems = false;
+					ShellTree.RefreshContents();
+				}
 			));
 		}
 
@@ -2500,7 +2500,8 @@ namespace BetterExplorer {
 		#region Share Tab Commands (excluding Archive)
 
 		private void btnMapDrive_Click(object sender, RoutedEventArgs e) {
-			this.ShellListView.MapDrive(this.Handle, this.ShellListView.SelectedItems.Count() == 1 ? this.ShellListView.GetFirstSelectedItem().ParsingName : String.Empty);
+			BExplorer.Shell.Interop.Shell32.MapDrive(this.Handle, this.ShellListView.SelectedItems.Count() == 1 ? this.ShellListView.GetFirstSelectedItem().ParsingName : String.Empty);
+			//this.ShellListView.MapDrive(this.Handle, this.ShellListView.SelectedItems.Count() == 1 ? this.ShellListView.GetFirstSelectedItem().ParsingName : String.Empty);
 		}
 
 		private void btnDisconectDrive_Click(object sender, RoutedEventArgs e) {

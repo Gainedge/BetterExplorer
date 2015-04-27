@@ -1763,14 +1763,15 @@ namespace BExplorer.Shell {
 											PROPERTYKEY pk = currentCollumn.pkey;
 											var pvar = new PropVariant();
 											if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-												//if (propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
 												String val = String.Empty;
-												if (pvar.Value != null) {
+												if (pvar.Value == null) {
+													ItemsForSubitemsUpdate.Enqueue(new Tuple<int, int, PROPERTYKEY>(nmlv.item.iItem, nmlv.item.iSubItem, pk));
+												}
+												else {
 													if (currentCollumn.CollumnType == typeof(DateTime))
 														val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
 													else if (currentCollumn.CollumnType == typeof(long))
 														val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0")));
-													//ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
 													else if (currentCollumn.CollumnType == typeof(PerceivedType))
 														val = ((PerceivedType)pvar.Value).ToString();
 													else if (currentCollumn.CollumnType == typeof(FileAttributes))
@@ -1782,11 +1783,7 @@ namespace BExplorer.Shell {
 													Marshal.StructureToPtr(nmlv, m.LParam, false);
 													pvar.Dispose();
 												}
-												else {
-													ItemsForSubitemsUpdate.Enqueue(new Tuple<int, int, PROPERTYKEY>(nmlv.item.iItem, nmlv.item.iSubItem, pk));
-												}
 											}
-											//}
 										}
 									}
 									catch {
@@ -2165,7 +2162,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-
+		/*
 		Bitmap FixedSize(Bitmap imgPhoto, int Width, int Height) {
 			int sourceWidth = imgPhoto.Width;
 			int sourceHeight = imgPhoto.Height;
@@ -2213,7 +2210,9 @@ namespace BExplorer.Shell {
 			grPhoto.Dispose();
 			return bmPhoto;
 		}
+		*/
 
+		/*
 		public static Bitmap ResizeBitmap(Bitmap source, float scale, InterpolationMode quality) {
 			if (source == null)
 				throw new ArgumentNullException("source");
@@ -2234,6 +2233,7 @@ namespace BExplorer.Shell {
 
 			return bmp;
 		}
+		*/
 
 		protected override void OnSizeChanged(EventArgs e) {
 			base.OnSizeChanged(e);
@@ -2399,19 +2399,21 @@ namespace BExplorer.Shell {
 		}
 
 		public void OpenShareUI() {
-			HResult hr = Shell32.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(this.GetFirstSelectedItem().ParsingName.Replace(@"\\", @"\")));
+			//HResult hr = Shell32.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(this.GetFirstSelectedItem().ParsingName.Replace(@"\\", @"\")));
+			Shell32.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(this.GetFirstSelectedItem().ParsingName.Replace(@"\\", @"\")));
 		}
 
+		/*
 		public void MapDrive(IntPtr intPtr, string path) {
 			Shell32.MapDrive(intPtr, path);
 		}
+		*/
 
 		public void DisconnectDrive(IntPtr handle, int type) {
 			Shell32.WNetDisconnectDialog(handle, type);
 		}
 
 		public void ShowPropPage(IntPtr HWND, string filename, string proppage) { Shell32.SHObjectProperties(HWND, 0x2, filename, proppage); }
-
 
 		private void RedrawItem(int index) {
 			var itemBounds = new User32.RECT() { Left = 1 };
@@ -3952,6 +3954,7 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 0, 0);
 		}
 
+		[Obsolete("All code has been commented out")]
 		private void RefreshItemsCountInternal() {
 			//User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
 			//User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
@@ -4560,7 +4563,7 @@ namespace BExplorer.Shell {
 		private void Column_OnClick(int iItem) {
 			F.MessageBox.Show("Finish this");
 			var SelectedColumn = this.Collumns[iItem];
-			
+
 			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
 			/*
 			var item = new HDITEM {
