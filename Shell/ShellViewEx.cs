@@ -1732,6 +1732,9 @@ namespace BExplorer.Shell {
 									try {
 										var hash = currentItem.GetHashCode();
 										Collumns currentCollumn = this.Collumns[nmlv.item.iSubItem];
+
+
+										//TODO: Do we really need FirstOrDefault(...) and not just First(...) How do I make it null anyways?
 										var valueCached = SubItemValues.ToArray().FirstOrDefault(s => s.Item1 == hash && s.Item2.fmtid == currentCollumn.pkey.fmtid && s.Item2.pid == currentCollumn.pkey.pid);
 										if (valueCached != null && valueCached.Item3 != null) {
 											String val = String.Empty;
@@ -1753,13 +1756,6 @@ namespace BExplorer.Shell {
 										}
 										else {
 											var temp = currentItem;
-
-											/*
-											if (!(currentItem.IsNetDrive || currentItem.IsNetworkPath) && !currentItem.ParsingName.StartsWith("::")) 
-											  temp = new ShellItem(currentItem.ParsingName);
-											else 
-											  temp = currentItem;
-											*/
 											var isi2 = (IShellItem2)temp.ComInterface;
 											var guid = new Guid(InterfaceGuids.IPropertyStore);
 											IPropertyStore propStore = null;
@@ -3875,6 +3871,7 @@ namespace BExplorer.Shell {
 
 		#region Private Methods
 
+		[Obsolete("Not Used")]
 		private void ReloadThreads() {
 			try {
 				//this._IconLoadingThread.Abort();

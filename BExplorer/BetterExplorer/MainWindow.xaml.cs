@@ -2280,26 +2280,26 @@ namespace BetterExplorer {
 		private void chkExtensions_Checked(object sender, RoutedEventArgs e) {
 			if (IsCalledFromLoading) return;
 			Dispatcher.BeginInvoke(new Action(
-			  delegate() {
-				  var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
-				  state.fShowExtensions = 1;
-				  BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, true);
-				  this.ShellListView.IsFileExtensionShown = true;
-				  ShellListView.RefreshContents();
-			  }
+				delegate() {
+					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
+					state.fShowExtensions = 1;
+					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, true);
+					this.ShellListView.IsFileExtensionShown = true;
+					ShellListView.RefreshContents();
+				}
 			));
 		}
 
 		private void chkExtensions_Unchecked(object sender, RoutedEventArgs e) {
 			if (IsCalledFromLoading) return;
 			Dispatcher.BeginInvoke(new Action(
-			  delegate() {
-				  var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
-				  state.fShowExtensions = 0;
-				  BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, true);
-				  this.ShellListView.IsFileExtensionShown = false;
-				  ShellListView.RefreshContents();
-			  }
+				delegate() {
+					var state = new BExplorer.Shell.Interop.Shell32.SHELLSTATE();
+					state.fShowExtensions = 0;
+					BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWEXTENSIONS, true);
+					this.ShellListView.IsFileExtensionShown = false;
+					ShellListView.RefreshContents();
+				}
 			));
 		}
 
