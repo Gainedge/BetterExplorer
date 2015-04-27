@@ -4563,7 +4563,7 @@ namespace BExplorer.Shell {
 		private void Column_OnClick(int iItem) {
 			F.MessageBox.Show("Finish this");
 			var SelectedColumn = this.Collumns[iItem];
-
+			
 			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
 			/*
 			var item = new HDITEM {
