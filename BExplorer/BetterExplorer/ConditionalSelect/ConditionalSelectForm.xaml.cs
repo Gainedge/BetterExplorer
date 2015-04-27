@@ -38,19 +38,19 @@ namespace BetterExplorer {
 
 		private void ConditionallySelectFiles(ConditionalSelectData csd, ShellView ShellListView) {
 			if (csd == null) return;
-			var shells = ShellListView.Items.ToList();
+			//var shells = ShellListView.Items.ToList();
 
 			//The following items are added
-			var Matches_Name = new List<ShellItem>();
-			var Matches_Size = new List<ShellItem>();
-			var Matches_DateCreated = new List<ShellItem>();
-			var Matches_DateLastModified = new List<ShellItem>();
-			var Matches_LastAccessed = new List<ShellItem>();
+			var Matches_Name = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
+			var Matches_Size = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
+			var Matches_DateCreated = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
+			var Matches_DateLastModified = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
+			var Matches_LastAccessed = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
 
 			ShellListView.DeSelectAllItems();
 
 			if (csd.FilterByFileName) {
-				foreach (ShellItem item in shells) {
+				foreach (var item in ShellListView.Items) {
 					var data = new FileInfo(item.ParsingName);
 					string ToFind = csd.FileNameData.matchCase ? data.Name : data.Name.ToLowerInvariant();
 
@@ -58,27 +58,21 @@ namespace BetterExplorer {
 						case ConditionalSelectParameters.FileNameFilterTypes.Contains:
 							if (ToFind.Contains(csd.FileNameData.matchCase ? csd.FileNameData.query : csd.FileNameData.query.ToLowerInvariant())) Matches_Name.Add(item);
 							break;
-
 						case ConditionalSelectParameters.FileNameFilterTypes.StartsWith:
 							if (ToFind.StartsWith(csd.FileNameData.query)) Matches_Name.Add(item);
 							break;
-
 						case ConditionalSelectParameters.FileNameFilterTypes.EndsWith:
 							if (ToFind.EndsWith(csd.FileNameData.query)) Matches_Name.Add(item);
 							break;
-
 						case ConditionalSelectParameters.FileNameFilterTypes.Equals:
 							if (ToFind == csd.FileNameData.query) Matches_Name.Add(item);
 							break;
-
 						case ConditionalSelectParameters.FileNameFilterTypes.DoesNotContain:
 							if (!ToFind.Contains(csd.FileNameData.query)) Matches_Name.Add(item);
 							break;
-
 						case ConditionalSelectParameters.FileNameFilterTypes.NotEqualTo:
 							if (ToFind != csd.FileNameData.query) Matches_Name.Add(item);
 							break;
-
 						default:
 							break;
 					}
@@ -89,7 +83,7 @@ namespace BetterExplorer {
 			}
 
 			if (csd.FilterByFileSize) {
-				foreach (ShellItem item in Matches_Name) {
+				foreach (var item in Matches_Name) {
 					FileInfo data = new FileInfo(item.ParsingName);
 					switch (csd.FileSizeData.filter) {
 						case ConditionalSelectParameters.FileSizeFilterTypes.LargerThan:
@@ -154,29 +148,72 @@ namespace BetterExplorer {
 				Matches_Size.AddRange(Matches_Name);
 			}
 
-			Func<FileInfo, DateTime> GetCreateDate = (x) => x.CreationTimeUtc;
-			foreach (var item in !csd.FilterByDateCreated ? Matches_Size : DateFilter(Matches_Size, csd.DateCreatedData, GetCreateDate)) {
-				Matches_DateCreated.Add(item);
+			if (csd.FilterByDateCreated) {
+				Func<FileInfo, DateTime> GetCreateDate = (x) => x.CreationTimeUtc;
+				foreach (var item in !csd.FilterByDateCreated ? Matches_Size : DateFilter(Matches_Size, csd.DateCreatedData, GetCreateDate)) {
+					Matches_DateCreated.Add(item);
+				}
 			}
 
-			Func<FileInfo, DateTime> GetDateModified = (x) => x.LastWriteTimeUtc;
-			foreach (var item in !csd.FilterByDateModified ? Matches_Size : DateFilter(Matches_DateCreated, csd.DateModifiedData, GetDateModified)) {
-				Matches_DateLastModified.Add(item);
+			if (csd.FilterByDateModified) {
+				Func<FileInfo, DateTime> GetDateModified = (x) => x.LastWriteTimeUtc;
+				foreach (var item in !csd.FilterByDateModified ? Matches_Size : DateFilter(Matches_DateCreated, csd.DateModifiedData, GetDateModified)) {
+					Matches_DateLastModified.Add(item);
+				}
 			}
 
-			Func<FileInfo, DateTime> GetDateAccessed = (x) => x.LastAccessTimeUtc;
-			foreach (var item in !csd.FilterByDateAccessed ? Matches_DateLastModified : DateFilter(Matches_DateLastModified, csd.DateAccessedData, GetDateAccessed)) {
-				Matches_LastAccessed.Add(item);
+			if (csd.FilterByDateAccessed) {
+				Func<FileInfo, DateTime> GetDateAccessed = (x) => x.LastAccessTimeUtc;
+				foreach (var item in !csd.FilterByDateAccessed ? Matches_DateLastModified : DateFilter(Matches_DateLastModified, csd.DateAccessedData, GetDateAccessed)) {
+					Matches_LastAccessed.Add(item);
+				}
 			}
 
 			//ShellListView.SelectItems(Matches_LastAccessed.ToArray());
+
+
+			//TODO: Inline these!!!
+
+
+			/*
+			ShellListView.SelectedItems.Clear();
+			ShellListView.SelectedItems.AddRange(Matches_Name);
+			ShellListView.SelectedItems.AddRange(Matches_Size);
+			ShellListView.SelectedItems.AddRange(Matches_DateCreated);
+			ShellListView.SelectedItems.AddRange(Matches_DateLastModified);
+			ShellListView.SelectedItems.AddRange(Matches_LastAccessed);
+			*/
+
+			/*
+			var Indexes = new List<int>();
+			Indexes.AddRange(Matches_Name.Select(x => x.ItemIndex));
+			Indexes.AddRange(Matches_Size.Select(x => x.ItemIndex));
+			Indexes.AddRange(Matches_DateCreated.Select(x => x.ItemIndex));
+			Indexes.AddRange(Matches_DateLastModified.Select(x => x.ItemIndex));
+			Indexes.AddRange(Matches_LastAccessed.Select(x => x.ItemIndex));
+
+			foreach (var item in Indexes) {
+				ShellListView.SelectItemByIndex(item);
+			}
+			*/
+
+
+			var SelectedItems = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
+			SelectedItems.AddRange(Matches_Name);
+			SelectedItems.AddRange(Matches_Size);
+			SelectedItems.AddRange(Matches_DateCreated);
+			SelectedItems.AddRange(Matches_DateLastModified);
+			SelectedItems.AddRange(Matches_LastAccessed);
+
+			ShellListView.SelectItems(SelectedItems.ToArray());
+
 			ShellListView.Focus();
 		}
 
-		private List<ShellItem> DateFilter(List<ShellItem> shells, ConditionalSelectParameters.DateParameters filter, Func<FileInfo, DateTime> GetDate) {
-			var outshells = new List<ShellItem>();
+		private List<BExplorer.Shell._Plugin_Interfaces.IListItemEx> DateFilter(List<BExplorer.Shell._Plugin_Interfaces.IListItemEx> shells, ConditionalSelectParameters.DateParameters filter, Func<FileInfo, DateTime> GetDate) {
+			var outshells = new List<BExplorer.Shell._Plugin_Interfaces.IListItemEx>();
 
-			foreach (ShellItem item in shells) {
+			foreach (var item in shells) {
 				FileInfo data = new FileInfo(item.ParsingName);
 				var Date = GetDate(data);
 
@@ -304,10 +341,6 @@ namespace BetterExplorer {
 					namequery.Text = (FindResource("txtFilename") as string);
 				}
 			}
-		}
-
-		private void Button_Click_1(object sender, RoutedEventArgs e) {
-			MessageBox.Show((FindResource("txtSelectFiles") as string), "Resource String");
 		}
 	}
 }

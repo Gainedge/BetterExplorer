@@ -446,6 +446,7 @@ namespace BExplorer.Shell {
 			result = IntPtr.Zero;
 		}
 
+		/*
 		[Obsolete("Never used and should be removed", true)]
 		private void mnuItem_Click2(object sender, System.Windows.RoutedEventArgs e) {
 			e.Handled = true;
@@ -460,6 +461,7 @@ namespace BExplorer.Shell {
 			invoke.lpVerbW = (IntPtr)(command - m_CmdFirst);
 			m_ComInterface.InvokeCommand(ref invoke);
 		}
+		*/
 
 		private List<string> GetNewContextMenuItems() {
 			List<string> newEntrieslist = new List<string>();
@@ -858,7 +860,7 @@ namespace BExplorer.Shell {
 					ref iise,
 					out iShellExtInitPtr) == (int)HResult.S_OK) {
 					IShellExtInit iShellExtInit = Marshal.GetTypedObjectForIUnknown(iShellExtInitPtr, typeof(IShellExtInit)) as IShellExtInit;
-				
+
 					try {
 						IntPtr doPtr;
 						iShellExtInit.Initialize(IntPtr.Zero, itemArray.GetIDataObject(out doPtr), 0);
