@@ -384,7 +384,6 @@ namespace BExplorer.Shell.Interop {
 
 	public static class Shell32 {
 
-
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode)]
 		public static extern IntPtr SHChangeNotification_Lock(IntPtr windowHandle, int processId, out IntPtr pidl, out uint lEvent);
 
@@ -773,12 +772,15 @@ namespace BExplorer.Shell.Interop {
 				[In] IntPtr pbc,
 				[In, MarshalAs(UnmanagedType.LPStruct)] Guid riid);
 
-    [DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = true)]
-    public static extern HResult SHCreateItemFromParsingName(
-        [In][MarshalAs(UnmanagedType.LPWStr)] string pszPath,
-        [In] IntPtr pbc,
-        [In][MarshalAs(UnmanagedType.LPStruct)] Guid riid,
-        [Out][MarshalAs(UnmanagedType.Interface, IidParameterIndex = 2)] out IShellItem ppv);
+		/*
+		[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = true)]
+		public static extern HResult SHCreateItemFromParsingName(
+			[In][MarshalAs(UnmanagedType.LPWStr)] string pszPath,
+			[In] IntPtr pbc,
+			[In][MarshalAs(UnmanagedType.LPStruct)] Guid riid,
+			[Out][MarshalAs(UnmanagedType.Interface, IidParameterIndex = 2)] out IShellItem ppv);
+		*/
+
 
 		[DllImport("shell32.dll", CharSet = CharSet.Unicode, PreserveSig = false)]
 		public static extern IShellItem SHCreateItemWithParent(
@@ -801,8 +803,10 @@ namespace BExplorer.Shell.Interop {
 				[In] uint dwFlags,
 				[Out] StringBuilder pszPath);
 
+		/*
 		[DllImport("shell32.dll")]
 		public static extern HResult SHDoDragDrop(IntPtr hwnd, IDataObject pdtobj, IDropSource pdsrc, uint dwEffect, out uint pdwEffect);
+		*/
 
 		public enum ASSOC_FILTER {
 			ASSOC_FILTER_NONE = 0x00000000,
@@ -828,8 +832,11 @@ namespace BExplorer.Shell.Interop {
 		public static extern HResult SHGetSpecialFolderLocation(IntPtr hwndOwner, CSIDL nFolder, out IntPtr ppidl);
 
 
+		/*
 		[DllImport("shell32.dll", SetLastError = true)]
 		public static extern int SHMultiFileProperties(System.Runtime.InteropServices.ComTypes.IDataObject pdtobj, int flags);
+		*/
+
 		/*
 		[DllImport("shell32.dll", CharSet = CharSet.Auto)]
 		public static extern bool ShellExecuteEx(ref SHELLEXECUTEINFO lpExecInfo);
@@ -878,7 +885,8 @@ namespace BExplorer.Shell.Interop {
 					args[i] = Marshal.PtrToStringUni(p);
 				}
 				return args;
-			} finally {
+			}
+			finally {
 				Marshal.FreeHGlobal(argv);
 			}
 		}
@@ -1025,7 +1033,8 @@ namespace BExplorer.Shell.Interop {
 				SHParseDisplayName(
 									name, IntPtr.Zero, out pidl, 0,
 									out sfgao);
-			} catch (Exception) {
+			}
+			catch (Exception) {
 
 
 			}
@@ -1163,14 +1172,12 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("Ntshrui.dll")]
 		public static extern HResult ShowShareFolderUI(IntPtr hwndParent, IntPtr pszPath);
 		[Flags]
-		public enum DisconnectDialogFlags :
-		int {
+		public enum DisconnectDialogFlags : int {
 			UpdateProfile = 0x00000001,
 			NoForce = 0x00000040,
 		}
 		[Flags]
-		public enum ConnectDialogFlags :
-		int {
+		public enum ConnectDialogFlags : int {
 			ReadOnlyPath = 0x00000001,
 			// Conn_point = 0x00000002,
 			UseMru = 0x00000004,
@@ -1207,12 +1214,17 @@ namespace BExplorer.Shell.Interop {
 		/// <returns></returns>
 		[DllImport("mpr.dll", EntryPoint = "WNetDisconnectDialog", SetLastError = true, CharSet = CharSet.Auto)]
 		public static extern int WNetDisconnectDialog(IntPtr whnd, int dwType);
+
+		/*
 		[DllImport("mpr.dll", CharSet = CharSet.Auto)]
 		public static extern int WNetDisconnectDialog1(DisconnectDialogInfo disConnDlgStruct);
+		*/
+
 		public static void MapDrive(IntPtr owner, String remotePath) {
 			if (String.IsNullOrEmpty(remotePath) || !PathIsNetworkPath(remotePath)) {
 				WNetConnectionDialog(owner, 1);
-			} else {
+			}
+			else {
 				ConnectDialogInfo info = new ConnectDialogInfo();
 				info.Owner = owner;
 				info.Flags = ConnectDialogFlags.Persist | ConnectDialogFlags.ReadOnlyPath;
