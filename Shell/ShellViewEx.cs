@@ -4561,15 +4561,10 @@ namespace BExplorer.Shell {
 
 
 
-
-
-
-
-
 		#region AssocQueryString
+
 		[DllImport("Shlwapi.dll", CharSet = CharSet.Unicode)]
 		public static extern uint AssocQueryString(AssocF flags, AssocStr str, string pszAssoc, string pszExtra, [Out] System.Text.StringBuilder pszOut, ref uint pcchOut);
-
 
 		public enum AssocF {
 			ASSOCF_NONE = 0x00000000,
@@ -4588,7 +4583,7 @@ namespace BExplorer.Shell {
 			ASSOCF_INIT_FIXED_PROGID = 0x00000800,
 			ASSOCF_IS_PROTOCOL = 0x00001000,
 			ASSOCF_INIT_FOR_FILE = 0x00002000
-		};
+		}
 
 		public enum AssocStr {
 			ASSOCSTR_COMMAND,
@@ -4631,9 +4626,13 @@ namespace BExplorer.Shell {
 
 			return sb.ToString();
 		}
+
 		#endregion
 
+
 		private void Column_OnClick(int iItem) {
+			//TODO: Add Filtering, Saving, and Loading columns
+
 			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
 			var rect = new BExplorer.Shell.Interop.User32.RECT();
 
@@ -4668,12 +4667,15 @@ namespace BExplorer.Shell {
 					break;
 
 				case "Type":
-					var Types = new HashSet<string>();
-					foreach (var item in this.Items.Where(x => x.Extension.Any())) {
-						Types.Add(AssocQueryString(AssocStr.ASSOCSTR_FRIENDLYAPPNAME, item.Extension));
-					}
+					ColumnMenu1.AddItems(
+						this.Items.Where(x => x.Extension.Any()).Select(x => x.Extension).Distinct()
+								  .Select(x => new System.Windows.Controls.Label() { Content = AssocQueryString(AssocStr.ASSOCSTR_FRIENDLYAPPNAME, x), Tag = x })
+								  .OrderBy(x => (string)x.Content).ToArray()
+					);
 
-					ColumnMenu1.AddItems(Types.OrderBy(x => x).ToArray());
+					ColumnMenu1.OnCheckChanged += (object sender, RoutedEventArgs e, bool IsChecked) => {
+						F.MessageBox.Show("Test");
+					};
 					break;
 				default:
 					F.MessageBox.Show(this.Collumns[iItem].Name);
