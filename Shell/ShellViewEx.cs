@@ -4561,64 +4561,51 @@ namespace BExplorer.Shell {
 
 
 		private void Column_OnClick(int iItem) {
-			//F.MessageBox.Show("Finish this");
-			var SelectedColumn = this.Collumns[iItem];
-
 			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
-
-      var rect = new BExplorer.Shell.Interop.User32.RECT();
+			var rect = new BExplorer.Shell.Interop.User32.RECT();
 
 			if (User32.SendMessage(headerhandle, BExplorer.Shell.Interop.MSG.HDM_GETITEMDROPDOWNRECT, iItem, ref rect) == 0) {
 				throw new Win32Exception();
 			}
 
-      var pt = this.PointToScreen(new DPoint(rect.Left, rect.Bottom));
-			var ColumnMenu1 = new WpfApplication1.Attempt_1.ColumnMenu();
-			ColumnMenu1.Left = pt.X;
-			ColumnMenu1.Top = pt.Y;
+			var pt = this.PointToScreen(new DPoint(rect.Left, rect.Bottom));
+			var ColumnMenu1 = new WpfApplication1.Attempt_1.ColumnMenu() { Left = pt.X, Top = pt.Y };
 
-			ColumnMenu1.AddItem("0 - 9");
-
-			ColumnMenu1.Show();
-			return;
-
-
+			var SelectedColumn = this.Collumns[iItem];
 			switch (SelectedColumn.Name) {
 				case "Name":
-					var Menu1 = new FilterMenu_Strings();
-					Menu1.SetItems("0 - 9", "A - H", "I - P", "Q - Z");
-					//Menu.Activate(SelectedColumn);
-
-					/*
-					Add_Group("0", "9");
-					Add_Group("A", "H");
-					Add_Group("I", "P");
-					Add_Group("Q", "z");
-					*/
+					ColumnMenu1.AddItems("0 - 9", "A - H", "I - P", "Q - Z", "Other");
 					break;
 				case "Size":
+					ColumnMenu1.AddItems("Tiny (0 - 10 KB)", "Small (10 - 100 KB)", "Medium (100 KB - 1 MB)", "Large (1 - 16 MB)", "Huge (16 - 128 MB)", "Unspecified");
 					break;
+
 				case "Date modified":
+					//Yes I know I'm duplicating Code
+					ColumnMenu1.AddItems("Select a date or date range:").AddItems("A long time ago", "Earlier this year", "Earlier this month", "Last week", "Today");
 					break;
 				case "Date created":
+					ColumnMenu1.AddItems("Select a date or date range:").AddItems("A long time ago", "Earlier this year", "Earlier this month", "Last week", "Today");
 					break;
 				case "Date accessed":
+					ColumnMenu1.AddItems("Select a date or date range:").AddItems("A long time ago", "Earlier this year", "Earlier this month", "Last week", "Today");
 					break;
 
 				case "Type":
 					var Types = new HashSet<string>();
 					foreach (var item in this.Items) {
+						//TODO: Get the ACTUAL application name
 						Types.Add(item.Extension);
 					}
 
-					var Menu2 = new FilterMenu_Strings();
-					Menu2.SetItems(Types);
-
+					ColumnMenu1.AddItems(Types.OrderBy(x => x).ToArray());
 					break;
 				default:
 					F.MessageBox.Show(this.Collumns[iItem].Name);
 					break;
 			}
+
+			ColumnMenu1.Show();
 		}
 	}
 }
