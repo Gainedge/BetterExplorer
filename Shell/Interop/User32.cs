@@ -164,6 +164,7 @@ namespace BExplorer.Shell.Interop {
 		LVM_GETHEADER = (FIRST + 31),
 		HDM_FIRST = 0x1200,
 		HDM_GETITEM = HDM_FIRST + 11,
+    HDM_GETITEMDROPDOWNRECT = HDM_FIRST + 25,
 		HDM_SETITEM = HDM_FIRST + 12,
 		LVM_GETSELECTEDCOUNT = (FIRST + 50),
 		TVM_DELETEITEM = (0x1100 + 1),
@@ -645,6 +646,9 @@ namespace BExplorer.Shell.Interop {
 
 		[DllImport("user32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, MSG Msg, ref LVITEMINDEX wParam, ref RECT lparam);
+
+    [DllImport("user32.dll")]
+    public static extern int SendMessage(IntPtr hWnd, MSG Msg, int wParam, ref RECT lparam);
 
 		[DllImport("user32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, MSG Msg, int wParam, ref Shell.LVITEM lParam);

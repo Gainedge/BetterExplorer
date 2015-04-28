@@ -4561,31 +4561,21 @@ namespace BExplorer.Shell {
 
 
 		private void Column_OnClick(int iItem) {
-			F.MessageBox.Show("Finish this");
+			//F.MessageBox.Show("Finish this");
 			var SelectedColumn = this.Collumns[iItem];
 
 			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
-			/*
-			var item = new HDITEM {
-				mask = HDITEM.Mask.width 
-			};
-			
-			if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero) {
+
+      var rect = new BExplorer.Shell.Interop.User32.RECT();
+
+			if (User32.SendMessage(headerhandle, BExplorer.Shell.Interop.MSG.HDM_GETITEMDROPDOWNRECT, iItem, ref rect) == 0) {
 				throw new Win32Exception();
 			}
-			*/
 
-			/*
-			var HItem = new HDITEM { mask = HDITEM.Mask.HDI_WIDTH };
-
-			if (User32.SendMessage(headerhandle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, iItem, ref HItem) == IntPtr.Zero) {
-				throw new Win32Exception();
-			}
-			*/
-
+      var pt = this.PointToScreen(new DPoint(rect.Left, rect.Bottom));
 			var ColumnMenu1 = new WpfApplication1.Attempt_1.ColumnMenu();
-			ColumnMenu1.Left = Control.MousePosition.X;
-			ColumnMenu1.Top = Control.MousePosition.Y;
+			ColumnMenu1.Left = pt.X;
+			ColumnMenu1.Top = pt.Y;
 
 			ColumnMenu1.AddItem("0 - 9");
 
