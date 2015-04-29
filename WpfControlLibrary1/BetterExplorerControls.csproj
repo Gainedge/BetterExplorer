@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AirspacePopup.cs" />
+    <Compile Include="ListviewColumnDropDown.cs" />
     <Compile Include="WatermarkedTextBox.cs" />
     <Compile Include="ImageSizeDisplay.xaml.cs">
       <DependentUpon>ImageSizeDisplay.xaml</DependentUpon>
@@ -155,6 +156,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SearchBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -207,6 +212,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

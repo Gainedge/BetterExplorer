@@ -1343,11 +1343,29 @@ namespace BetterExplorer {
 			this.ShellListView.KeyJumpKeyDown += ShellListView_KeyJumpKeyDown;
 			this.ShellListView.KeyJumpTimerDone += ShellListView_KeyJumpTimerDone;
 			//this.ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
+      this.ShellListView.OnListViewColumnDropDownClicked += ShellListView_OnListViewColumnDropDownClicked;
 			this.ShellListView.Navigating += ShellListView_Navigating;
 			this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 			this.ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
 			this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
 		}
+
+    void ShellListView_OnListViewColumnDropDownClicked(object sender, ListViewColumnDropDownArgs e) {
+      var menu = new ListviewColumnDropDown();
+      //var ColumnMenu1 = new WpfApplication1.Attempt_1.ColumnMenu();
+      //ColumnMenu1.Left = pt.X;
+      //ColumnMenu1.Top = pt.Y;
+
+      //ColumnMenu1.AddItem("0 - 9");
+      var button = new Fluent.Button();
+      button.SizeDefinition = new Fluent.RibbonControlSizeDefinition("middle,middle,middle");
+      button.Header = "0 - 9";
+      menu.AddItem(button);
+      menu.Placement = System.Windows.Controls.Primitives.PlacementMode.AbsolutePoint;
+      menu.HorizontalOffset = e.ActionPoint.X;
+      menu.VerticalOffset = e.ActionPoint.Y;
+      menu.IsOpen = true;
+    }
 
 		void ShellTree_AfterSelect(object sender, NavigatedEventArgs e) {
 			//this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;

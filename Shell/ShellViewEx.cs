@@ -85,6 +85,15 @@ namespace BExplorer.Shell {
 		}
 	}
 
+  public class ListViewColumnDropDownArgs : EventArgs {
+    public int ColumnIndex { get; set; }
+    public DPoint ActionPoint { get; set; }
+    public ListViewColumnDropDownArgs(int colIndex, DPoint pt) {
+      this.ColumnIndex = colIndex;
+      this.ActionPoint = pt;
+    }
+  }
+
 	public class NavigatedEventArgs : EventArgs, IDisposable {
 		/// <summary> The folder that is navigated to. </summary>
 		public IListItemEx Folder { get; set; }
@@ -198,6 +207,8 @@ namespace BExplorer.Shell {
 
 		/// <summary> Occurs when the <see cref="ShellView" /> control navigates to a new folder. </summary>
 		public event EventHandler<NavigatedEventArgs> Navigated;
+
+    public event EventHandler<ListViewColumnDropDownArgs> OnListViewColumnDropDownClicked;
 
 		/// <summary>
 		/// Occurs when the <see cref="ShellView"/>'s current selection
@@ -4573,13 +4584,11 @@ namespace BExplorer.Shell {
 			}
 
       var pt = this.PointToScreen(new DPoint(rect.Left, rect.Bottom));
-			var ColumnMenu1 = new WpfApplication1.Attempt_1.ColumnMenu();
-			ColumnMenu1.Left = pt.X;
-			ColumnMenu1.Top = pt.Y;
-
-			ColumnMenu1.AddItem("0 - 9");
-
-			ColumnMenu1.Show();
+      if (this.OnListViewColumnDropDownClicked != null) {
+        this.OnListViewColumnDropDownClicked.Invoke(SelectedColumn, new ListViewColumnDropDownArgs(iItem, pt));
+      }
+     
+			//ColumnMenu1.Show();
 			return;
 
 
