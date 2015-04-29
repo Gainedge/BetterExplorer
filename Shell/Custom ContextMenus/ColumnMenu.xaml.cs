@@ -38,28 +38,22 @@ namespace WpfApplication1.Attempt_1 {
 			this.Close();
 		}
 
-		public void SetLocation(Control ParentControl) {
-			Point ParentLocation = ParentControl.PointToScreen(new Point(0, 0));
-
-			this.Left = ParentLocation.X;
-			this.Top = ParentLocation.Y;
-		}
-
 		public List<object> CheckedItems() {
-			return sPanel.Children.OfType<CheckBox>().Where(x => x.IsChecked.Value).Select(x => x.Content).ToList();
+			return Controls.Items.OfType<CheckBox>().Where(x => x.IsChecked.Value).Select(x => x.Content).ToList();
 		}
 
-		public ColumnMenu ClearItems() { sPanel.Children.Clear(); return this; }
-		public ColumnMenu AddItem(object Item) {
-			var CheckBox = new CheckBox();
-			CheckBox.Content = Item;
+		public ColumnMenu ClearItems() { Controls.Items.Clear(); return this; }
 
+		public ColumnMenu AddItems(params object[] Items) {
+			foreach (var item in Items) {
+				var CheckBox = new CheckBox();
+				CheckBox.Content = item;
 
+				CheckBox.Checked += CheckBox_Checked;
+				CheckBox.Unchecked += CheckBox_Unchecked;
 
-			CheckBox.Checked += CheckBox_Checked;
-			CheckBox.Unchecked += CheckBox_Unchecked;
-
-			sPanel.Children.Add(CheckBox);
+				Controls.Items.Add(CheckBox);
+			}
 			return this;
 		}
 
