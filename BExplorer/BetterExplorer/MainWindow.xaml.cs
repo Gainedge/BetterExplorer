@@ -1351,6 +1351,7 @@ namespace BetterExplorer {
 		}
 
 		void ShellListView_OnListViewColumnDropDownClicked(object sender, ListViewColumnDropDownArgs e) {
+			//TODO: Add Events for when an item's check has been changed
 			var menu = new ListviewColumnDropDown() {
 				Placement = System.Windows.Controls.Primitives.PlacementMode.AbsolutePoint,
 				HorizontalOffset = e.ActionPoint.X,
