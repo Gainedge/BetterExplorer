@@ -1343,30 +1343,52 @@ namespace BetterExplorer {
 			this.ShellListView.KeyJumpKeyDown += ShellListView_KeyJumpKeyDown;
 			this.ShellListView.KeyJumpTimerDone += ShellListView_KeyJumpTimerDone;
 			//this.ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
-      this.ShellListView.OnListViewColumnDropDownClicked += ShellListView_OnListViewColumnDropDownClicked;
+			this.ShellListView.OnListViewColumnDropDownClicked += ShellListView_OnListViewColumnDropDownClicked;
 			this.ShellListView.Navigating += ShellListView_Navigating;
 			this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 			this.ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
 			this.ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
 		}
 
-    void ShellListView_OnListViewColumnDropDownClicked(object sender, ListViewColumnDropDownArgs e) {
-      var menu = new ListviewColumnDropDown();
-      //var ColumnMenu1 = new WpfApplication1.Attempt_1.ColumnMenu();
-      //ColumnMenu1.Left = pt.X;
-      //ColumnMenu1.Top = pt.Y;
+		void ShellListView_OnListViewColumnDropDownClicked(object sender, ListViewColumnDropDownArgs e) {
+			var menu = new ListviewColumnDropDown() {
+				Placement = System.Windows.Controls.Primitives.PlacementMode.AbsolutePoint,
+				HorizontalOffset = e.ActionPoint.X,
+				VerticalOffset = e.ActionPoint.Y,
+				IsOpen = true
+			};
 
-      //ColumnMenu1.AddItem("0 - 9");
-      var button = new Fluent.Button();
-      button.SizeDefinition = new Fluent.RibbonControlSizeDefinition("middle,middle,middle");
-      button.Header = "0 - 9";
-      menu.AddItem(button);
-      menu.Placement = System.Windows.Controls.Primitives.PlacementMode.AbsolutePoint;
-      menu.HorizontalOffset = e.ActionPoint.X;
-      menu.VerticalOffset = e.ActionPoint.Y;
-      menu.IsOpen = true;
-    }
+			var Things = new List<string>();
+			var SelectedColumn = this.ShellListView.Collumns[e.ColumnIndex];
+			switch (SelectedColumn.Name) {
+				case "Name":
+					Things.AddRange(new[] { "0 - 9", "A - H", "I - P", "Q - Z", "Other" });
+					break;
+				case "Size":
+					Things.AddRange(new[] { "Tiny (0 - 10 KB)", "Small (10 - 100 KB)", "Medium (100 KB - 1 MB)", "Large (1 - 16 MB)", "Huge (16 - 128 MB)", "Unspecified" });
+					break;
+				case "Date modified":
+					var Container = new ItemsControl();
+					Container.Items.Add("Select a date or date range:");
+					Container.Items.Add(new DatePicker());
+					menu.AddItem(Container);
 
+					Things.AddRange(new[] { "A long time ago", "Earlier this year", "Earlier this month", "Last week", "Today" });
+					break;
+				default:
+					//TODO: Add Column's values
+					break;
+			}
+
+			foreach (var item in Things) {
+				menu.AddItem(new Fluent.Button() {
+					SizeDefinition = new Fluent.RibbonControlSizeDefinition("middle,middle,middle"),
+					Header = item
+				});
+			}
+		}
+
+		[Obsolete("No Code")]
 		void ShellTree_AfterSelect(object sender, NavigatedEventArgs e) {
 			//this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
 		}
@@ -3953,16 +3975,12 @@ namespace BetterExplorer {
 
 		#region ShellListView
 
-		[Obsolete("try to move this into ShellViewEx")]
 		void ShellListView_EndItemLabelEdit(object sender, bool e) {
-			//this.ShellListView.NewName = this.txtEditor.Text;
 			ShellListView.FileNameChangeAttempt(this.txtEditor.Text, e);
-
 			this.Editor.Visibility = WIN.Visibility.Collapsed;
 			this.Editor.IsOpen = false;
 		}
 
-		[Obsolete("try to move this into ShellViewEx")]
 		void ShellListView_BeginItemLabelEdit(object sender, RenameEventArgs e) {
 			if (this.Editor.IsOpen) return;
 			var isSmall = this.ShellListView.IconSize == 16;

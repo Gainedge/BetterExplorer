@@ -110,10 +110,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
-    <Compile Include="Custom ContextMenus\ColumnMenu.xaml.cs">
+    <Compile Include="Custom ContextMenus Remove Soon\ColumnMenu.xaml.cs">
       <DependentUpon>ColumnMenu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Custom ContextMenus\FilterMenu_Strings.cs" />
+    <Compile Include="Custom ContextMenus Remove Soon\FilterMenu_Strings.cs" />
     <Compile Include="FOperationProgressSink.cs" />
     <Compile Include="Icons.cs" />
     <Compile Include="Interop\IOperationsProgressDialog.cs" />
@@ -308,7 +308,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Custom ContextMenus\ColumnMenu.xaml">
+    <Page Include="Custom ContextMenus Remove Soon\ColumnMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

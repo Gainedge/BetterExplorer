@@ -85,14 +85,14 @@ namespace BExplorer.Shell {
 		}
 	}
 
-  public class ListViewColumnDropDownArgs : EventArgs {
-    public int ColumnIndex { get; set; }
-    public DPoint ActionPoint { get; set; }
-    public ListViewColumnDropDownArgs(int colIndex, DPoint pt) {
-      this.ColumnIndex = colIndex;
-      this.ActionPoint = pt;
-    }
-  }
+	public class ListViewColumnDropDownArgs : EventArgs {
+		public int ColumnIndex { get; set; }
+		public DPoint ActionPoint { get; set; }
+		public ListViewColumnDropDownArgs(int colIndex, DPoint pt) {
+			this.ColumnIndex = colIndex;
+			this.ActionPoint = pt;
+		}
+	}
 
 	public class NavigatedEventArgs : EventArgs, IDisposable {
 		/// <summary> The folder that is navigated to. </summary>
@@ -208,7 +208,7 @@ namespace BExplorer.Shell {
 		/// <summary> Occurs when the <see cref="ShellView" /> control navigates to a new folder. </summary>
 		public event EventHandler<NavigatedEventArgs> Navigated;
 
-    public event EventHandler<ListViewColumnDropDownArgs> OnListViewColumnDropDownClicked;
+		public event EventHandler<ListViewColumnDropDownArgs> OnListViewColumnDropDownClicked;
 
 		/// <summary>
 		/// Occurs when the <see cref="ShellView"/>'s current selection
@@ -673,6 +673,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		/*
 		private void _KeyJumpTimer_Tick(object sender, EventArgs e) {
 			if (KeyJumpTimerDone != null) {
 				KeyJumpTimerDone(this, EventArgs.Empty);
@@ -696,6 +697,7 @@ namespace BExplorer.Shell {
 
 			KeyJumpString = "";
 		}
+		*/
 
 		private void resetTimer_Tick(object sender, EventArgs e) {
 			(sender as F.Timer).Stop();
@@ -4571,62 +4573,144 @@ namespace BExplorer.Shell {
 		#endregion
 
 
-		private void Column_OnClick(int iItem) {
-			//F.MessageBox.Show("Finish this");
-			var SelectedColumn = this.Collumns[iItem];
 
+		//#region AssocQueryString
+
+		//[DllImport("Shlwapi.dll", CharSet = CharSet.Unicode)]
+		//public static extern uint AssocQueryString(AssocF flags, AssocStr str, string pszAssoc, string pszExtra, [Out] System.Text.StringBuilder pszOut, ref uint pcchOut);
+
+		//public enum AssocF {
+		//	ASSOCF_NONE = 0x00000000,
+		//	ASSOCF_INIT_NOREMAPCLSID = 0x00000001,
+		//	ASSOCF_INIT_BYEXENAME = 0x00000002,
+		//	ASSOCF_OPEN_BYEXENAME = 0x00000002,
+		//	ASSOCF_INIT_DEFAULTTOSTAR = 0x00000004,
+		//	ASSOCF_INIT_DEFAULTTOFOLDER = 0x00000008,
+		//	ASSOCF_NOUSERSETTINGS = 0x00000010,
+		//	ASSOCF_NOTRUNCATE = 0x00000020,
+		//	ASSOCF_VERIFY = 0x00000040,
+		//	ASSOCF_REMAPRUNDLL = 0x00000080,
+		//	ASSOCF_NOFIXUPS = 0x00000100,
+		//	ASSOCF_IGNOREBASECLASS = 0x00000200,
+		//	ASSOCF_INIT_IGNOREUNKNOWN = 0x00000400,
+		//	ASSOCF_INIT_FIXED_PROGID = 0x00000800,
+		//	ASSOCF_IS_PROTOCOL = 0x00001000,
+		//	ASSOCF_INIT_FOR_FILE = 0x00002000
+		//}
+
+		//public enum AssocStr {
+		//	ASSOCSTR_COMMAND,
+		//	ASSOCSTR_EXECUTABLE,
+		//	ASSOCSTR_FRIENDLYDOCNAME,
+		//	ASSOCSTR_FRIENDLYAPPNAME,
+		//	ASSOCSTR_NOOPEN,
+		//	ASSOCSTR_SHELLNEWVALUE,
+		//	ASSOCSTR_DDECOMMAND,
+		//	ASSOCSTR_DDEIFEXEC,
+		//	ASSOCSTR_DDEAPPLICATION,
+		//	ASSOCSTR_DDETOPIC,
+		//	ASSOCSTR_INFOTIP,
+		//	ASSOCSTR_QUICKTIP,
+		//	ASSOCSTR_TILEINFO,
+		//	ASSOCSTR_CONTENTTYPE,
+		//	ASSOCSTR_DEFAULTICON,
+		//	ASSOCSTR_SHELLEXTENSION,
+		//	ASSOCSTR_DROPTARGET,
+		//	ASSOCSTR_DELEGATEEXECUTE,
+		//	ASSOCSTR_SUPPORTED_URI_PROTOCOLS,
+		//	ASSOCSTR_MAX
+		//}
+
+		//static string AssocQueryString(AssocStr association, string extension) {
+		//	const int S_OK = 0;
+		//	const int S_FALSE = 1;
+
+		//	uint length = 0;
+		//	uint ret = AssocQueryString(AssocF.ASSOCF_NONE, association, extension, null, null, ref length);
+		//	if (ret != S_FALSE) {
+		//		throw new InvalidOperationException("Could not determine associated string");
+		//	}
+
+		//	var sb = new System.Text.StringBuilder((int)length); // (length-1) will probably work too as the marshaller adds null termination
+		//	ret = AssocQueryString(AssocF.ASSOCF_NONE, association, extension, null, sb, ref length);
+		//	if (ret != S_OK) {
+		//		throw new InvalidOperationException("Could not determine associated string");
+		//	}
+
+		//	return sb.ToString();
+		//}
+
+		//#endregion
+
+
+		//private void Column_OnClick(int iItem) {
+		//	//TODO: Add Filtering, Saving, and Loading columns
+
+		//	IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
+		//	var rect = new BExplorer.Shell.Interop.User32.RECT();
+
+		//	if (User32.SendMessage(headerhandle, BExplorer.Shell.Interop.MSG.HDM_GETITEMDROPDOWNRECT, iItem, ref rect) == 0) {
+		//		throw new Win32Exception();
+		//	}
+
+		//	var pt = this.PointToScreen(new DPoint(rect.Left, rect.Bottom));
+		//	var ColumnMenu1 = new WpfApplication1.Attempt_1.ColumnMenu() { Left = pt.X, Top = pt.Y };
+
+		//	var SelectedColumn = this.Collumns[iItem];
+		//	switch (SelectedColumn.Name) {
+		//		case "Name":
+		//			ColumnMenu1.AddItems("0 - 9", "A - H", "I - P", "Q - Z", "Other");
+		//			ColumnMenu1.OnCheckChanged += (object sender, RoutedEventArgs e, bool IsChecked) => {
+		//				F.MessageBox.Show("Test");
+		//			};
+		//			break;
+		//		case "Size":
+		//			ColumnMenu1.AddItems("Tiny (0 - 10 KB)", "Small (10 - 100 KB)", "Medium (100 KB - 1 MB)", "Large (1 - 16 MB)", "Huge (16 - 128 MB)", "Unspecified");
+		//			break;
+
+		//		case "Date modified":
+		//			//Yes I know I'm duplicating Code
+		//			ColumnMenu1.AddItems("Select a date or date range:").AddItems("A long time ago", "Earlier this year", "Earlier this month", "Last week", "Today");
+		//			break;
+		//		case "Date created":
+		//			ColumnMenu1.AddItems("Select a date or date range:").AddItems("A long time ago", "Earlier this year", "Earlier this month", "Last week", "Today");
+		//			break;
+		//		case "Date accessed":
+		//			ColumnMenu1.AddItems("Select a date or date range:").AddItems("A long time ago", "Earlier this year", "Earlier this month", "Last week", "Today");
+		//			break;
+
+		//		case "Type":
+		//			ColumnMenu1.AddItems(
+		//				this.Items.Where(x => x.Extension.Any()).Select(x => x.Extension).Distinct()
+		//						  .Select(x => new System.Windows.Controls.Label() { Content = AssocQueryString(AssocStr.ASSOCSTR_FRIENDLYAPPNAME, x), Tag = x })
+		//						  .OrderBy(x => (string)x.Content).ToArray()
+		//			);
+
+		//			ColumnMenu1.OnCheckChanged += (object sender, RoutedEventArgs e, bool IsChecked) => {
+		//				F.MessageBox.Show("Test");
+		//			};
+		//			break;
+		//		default:
+		//			F.MessageBox.Show(this.Collumns[iItem].Name);
+		//			break;
+		//	}
+
+		//	ColumnMenu1.Show();
+		//}
+
+
+		private void Column_OnClick(int iItem) {
 			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
 
-      var rect = new BExplorer.Shell.Interop.User32.RECT();
+			var rect = new BExplorer.Shell.Interop.User32.RECT();
 
 			if (User32.SendMessage(headerhandle, BExplorer.Shell.Interop.MSG.HDM_GETITEMDROPDOWNRECT, iItem, ref rect) == 0) {
 				throw new Win32Exception();
 			}
 
-      var pt = this.PointToScreen(new DPoint(rect.Left, rect.Bottom));
-      if (this.OnListViewColumnDropDownClicked != null) {
-        this.OnListViewColumnDropDownClicked.Invoke(SelectedColumn, new ListViewColumnDropDownArgs(iItem, pt));
-      }
-     
-			//ColumnMenu1.Show();
-			return;
-
-
-			switch (SelectedColumn.Name) {
-				case "Name":
-					var Menu1 = new FilterMenu_Strings();
-					Menu1.SetItems("0 - 9", "A - H", "I - P", "Q - Z");
-					//Menu.Activate(SelectedColumn);
-
-					/*
-					Add_Group("0", "9");
-					Add_Group("A", "H");
-					Add_Group("I", "P");
-					Add_Group("Q", "z");
-					*/
-					break;
-				case "Size":
-					break;
-				case "Date modified":
-					break;
-				case "Date created":
-					break;
-				case "Date accessed":
-					break;
-
-				case "Type":
-					var Types = new HashSet<string>();
-					foreach (var item in this.Items) {
-						Types.Add(item.Extension);
-					}
-
-					var Menu2 = new FilterMenu_Strings();
-					Menu2.SetItems(Types);
-
-					break;
-				default:
-					F.MessageBox.Show(this.Collumns[iItem].Name);
-					break;
+			var pt = this.PointToScreen(new DPoint(rect.Left, rect.Bottom));
+			if (this.OnListViewColumnDropDownClicked != null) {
+				this.OnListViewColumnDropDownClicked.Invoke(this.Collumns[iItem], new ListViewColumnDropDownArgs(iItem, pt));
 			}
 		}
 	}
