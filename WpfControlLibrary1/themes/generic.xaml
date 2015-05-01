@@ -17,12 +17,14 @@
           <Setter Property="Template">
             <Setter.Value>
               <ControlTemplate TargetType="{x:Type MenuItem}">
-                <Border BorderBrush="Black" BorderThickness="0">
-                  <StackPanel Orientation="Horizontal">
-                    <CheckBox Margin="7,2,2,2" VerticalAlignment="Center" IsChecked="{TemplateBinding IsChecked}"/>
-                    <ContentPresenter x:Name="content"  ContentSource="Header" Margin="15,2,2,2" HorizontalAlignment="Stretch"/>
-                  </StackPanel>
-                </Border>
+                <Grid HorizontalAlignment="Stretch">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*"/>
+                  </Grid.ColumnDefinitions>
+                  <CheckBox Grid.Column="0"  Margin="2,2,2,2" VerticalAlignment="Center" HorizontalAlignment="Center"  IsChecked="{TemplateBinding IsChecked}"/>
+                  <ContentPresenter Grid.Column="1"  x:Name="content"  ContentSource="Header" Margin="2,2,2,2" HorizontalAlignment="Stretch"/>
+                </Grid>
               </ControlTemplate>
             </Setter.Value>
           </Setter>
