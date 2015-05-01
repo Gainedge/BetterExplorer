@@ -1352,6 +1352,7 @@ namespace BetterExplorer {
 
 		void ShellListView_OnListViewColumnDropDownClicked(object sender, ListViewColumnDropDownArgs e) {
 			//TODO: Add Events for when an item's check has been changed
+			var packUri = "pack://application:,,,/BetterExplorer;component/Images/jseverything16.png";
 			var menu = new ListviewColumnDropDown() {
 				Placement = System.Windows.Controls.Primitives.PlacementMode.AbsolutePoint,
 				HorizontalOffset = e.ActionPoint.X,
@@ -1370,8 +1371,8 @@ namespace BetterExplorer {
 					break;
 				case "Date modified":
 					var Container = new ItemsControl();
-					Container.Items.Add("Select a date or date range:");
-					Container.Items.Add(new DatePicker());
+					Container.Items.Add(new MenuItem() { Icon = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource, Header = "Select a date or date range:", HorizontalContentAlignment = HorizontalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch });
+					Container.Items.Add(new Calendar());
 					menu.AddItem(Container);
 
 					Things.AddRange(new[] { "A long time ago", "Earlier this year", "Earlier this month", "Last week", "Today" });
@@ -1382,9 +1383,11 @@ namespace BetterExplorer {
 			}
 
 			foreach (var item in Things) {
-				menu.AddItem(new Fluent.Button() {
-					SizeDefinition = new Fluent.RibbonControlSizeDefinition("middle,middle,middle"),
-					Header = item
+				menu.AddItem(new MenuItem() {
+					Icon = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource,
+					Header = item,
+					HorizontalContentAlignment = HorizontalAlignment.Stretch,
+					HorizontalAlignment = HorizontalAlignment.Stretch
 				});
 			}
 		}
