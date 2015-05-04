@@ -22,7 +22,7 @@
                     <ColumnDefinition Width="30"/>
                     <ColumnDefinition Width="*"/>
                   </Grid.ColumnDefinitions>
-                  <CheckBox Grid.Column="0"  Margin="2,2,2,2" VerticalAlignment="Center" HorizontalAlignment="Center"  IsChecked="{TemplateBinding IsChecked}"/>
+                  <CheckBox Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center"  IsChecked="{TemplateBinding IsChecked}"/>
                   <ContentPresenter Grid.Column="1"  x:Name="content"  ContentSource="Header" Margin="2,2,2,2" HorizontalAlignment="Stretch"/>
                 </Grid>
               </ControlTemplate>
