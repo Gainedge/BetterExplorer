@@ -38,7 +38,7 @@ namespace BetterExplorer.Tabs {
 			var o = new List<string>();
 			foreach (string item in Directory.GetFiles(GetSavedTabsLocation())) {
 				var obj = new ShellItem(item);
-				o.Add(Utilities.RemoveExtensionsFromFile(obj.DisplayName, Utilities.GetExtension(item)));
+				o.Add(Utilities.RemoveExtensionsFromFile(obj.DisplayName, item.Substring(item.LastIndexOf("."))));
 			}
 			return o;
 		}

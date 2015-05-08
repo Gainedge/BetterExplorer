@@ -68,7 +68,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		/// <summary>Call when content content of clipboard is changed</summary>
+		/// <summary>Call when content of clipboard is changed</summary>
 		private void OnClipboardChanged() {
 			try {
 				IDataObject iData = Clipboard.GetDataObject();
@@ -86,6 +86,7 @@ namespace BetterExplorer {
 		}
 	}
 
+	/*
 	/// <summary>Class for recording events of ClipboardChanges</summary>
 	[Obsolete("Being changed into a Tuple<IDataObject>", true)]
 	public class ClipboardChangedEventArgs : EventArgs {
@@ -95,4 +96,5 @@ namespace BetterExplorer {
 			DataObject = dataObject;
 		}
 	}
+	*/
 }

@@ -2721,7 +2721,7 @@ namespace BetterExplorer {
 					cvt.Save(item.ParsingName);
 				}
 				else {
-					string ext = Utilities.GetExtension(item.ParsingName);
+					string ext = item.ParsingName.Substring(item.ParsingName.LastIndexOf("."));
 					string name = item.ParsingName;
 					string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
 					cvt.Save(namen + DefaultName_Addon + ext);
@@ -3718,7 +3718,7 @@ namespace BetterExplorer {
 			if (Directory.Exists(sstdir)) {
 				foreach (string item in Directory.GetFiles(sstdir)) {
 					var obj = new ShellItem(item);
-					o.Add(Utilities.RemoveExtensionsFromFile(obj.GetDisplayName(SIGDN.NORMALDISPLAY), Utilities.GetExtension(item)));
+					o.Add(Utilities.RemoveExtensionsFromFile(obj.GetDisplayName(SIGDN.NORMALDISPLAY), item.Substring(item.LastIndexOf("."))));
 				}
 			}
 
