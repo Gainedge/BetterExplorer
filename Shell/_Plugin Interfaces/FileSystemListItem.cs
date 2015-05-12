@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using BExplorer.Shell.Interop;
+using ThumbnailGenerator;
 
 namespace BExplorer.Shell._Plugin_Interfaces {
 	public class FileSystemListItem : IListItemEx {
@@ -227,8 +228,17 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		}
 
 		public IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false) {
-			var bmp = this._Item.Thumbnail.GetHBitmap(iconSize, isThumbnail, isForce);
-			return bmp;
+			//var bmp = this._Item.Thumbnail.GetHBitmap(iconSize, isThumbnail, isForce);
+			//return bmp;
+      ThumbnailOptions options = ThumbnailOptions.None;
+      if (isThumbnail) {
+        options = ThumbnailOptions.ThumbnailOnly;
+        if (!isForce)
+          options |= ThumbnailOptions.InCacheOnly;
+      } else {
+				options |= ThumbnailOptions.IconOnly;
+			}
+      return WindowsThumbnailProvider.GetThumbnail(this._Item.Pidl, iconSize, iconSize, options); 
 		}
 
 		public static FileSystemListItem ToFileSystemItem(IntPtr parentHandle, String path) {

@@ -113,10 +113,14 @@ namespace BExplorer.Shell.Interop {
 		[DllImport("gdi32.dll", EntryPoint = "GetObject")]
 		public static extern int GetObjectDIBSection(IntPtr hObject, int nCount, ref DIBSECTION lpObject);
 
+    [DllImport("gdi32.dll", EntryPoint = "GetObject")]
+    public static extern int GetObjectBitmap(IntPtr hObject, int nCount, [Out] IntPtr lpObject);
+
+
 		public static void ConvertPixelByPixel(IntPtr ipd, out int width, out int height) {
 			// get the info about the HBITMAP inside the IPictureDisp
 			DIBSECTION dibsection = new DIBSECTION();
-			GetObjectDIBSection(ipd, Marshal.SizeOf(dibsection), ref dibsection);
+			var res = GetObjectDIBSection(ipd, Marshal.SizeOf(dibsection), ref dibsection);
 			width = dibsection.dsBm.bmWidth;
 			height = dibsection.dsBm.bmHeight;
 

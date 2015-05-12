@@ -506,7 +506,7 @@ namespace BExplorer.Shell {
       var t = new Thread(() => {
         Application.DoEvents();
         Thread.Sleep(1);
-        this._ResetEvent.WaitOne();
+        //this._ResetEvent.WaitOne();
         TreeNode node = null;
         IntPtr treeHandle = IntPtr.Zero;
         var visible = true;
@@ -552,7 +552,7 @@ namespace BExplorer.Shell {
 
     public void LoadChilds() {
       while (true) {
-        this._ResetEvent.WaitOne();
+        //this._ResetEvent.WaitOne();
         var handle = childsQueue.Dequeue();
         TreeNode node = null;
         IntPtr treeHandle = IntPtr.Zero;

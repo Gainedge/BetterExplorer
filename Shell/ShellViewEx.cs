@@ -2979,6 +2979,10 @@ namespace BExplorer.Shell {
 				if (CurrentI == 1) {
 					isFailed = false;
 					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
+          //var oldIcons = this.Items.Where(w => w.Icon != IntPtr.Zero).Select(s => s.Icon).ToList();
+          //foreach (var icon in oldIcons) {
+          //  Gdi32.DeleteObject(icon);
+          //}
 					Items.Clear();
 					ItemsForSubitemsUpdate.Clear();
 
@@ -3424,8 +3428,8 @@ namespace BExplorer.Shell {
 			while (true) {
 				//F.Application.DoEvents();
 				//Thread.Sleep(1);
-				if (resetEvent != null)
-					resetEvent.WaitOne();
+				//if (resetEvent != null)
+				//	resetEvent.WaitOne();
 				try {
 					int? index = 0;
 					if (!ThreadRun_Helper(overlayQueue, false, ref index)) continue;
@@ -3450,7 +3454,7 @@ namespace BExplorer.Shell {
 			var t = new Thread(() => {
 				if (this.IsCancelRequested)
 					return;
-				resetEvent.WaitOne();
+				//resetEvent.WaitOne();
 
 				var itemBounds = new User32.RECT();
 				var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
@@ -3474,10 +3478,11 @@ namespace BExplorer.Shell {
 						if (icon != IntPtr.Zero || shieldOverlay > 0) {
 
 							sho.IsIconLoaded = true;
-							Gdi32.DeleteObject(icon);
+
 							if (sho.Parent != null && sho.Parent.IsSearchFolder)
 								temp.Dispose();
 							this.RedrawItem(index);
+              Gdi32.DeleteObject(icon);
 						}
 					}
 				}
@@ -3490,9 +3495,9 @@ namespace BExplorer.Shell {
 		public void _IconsLoadingThreadRun() {
 			while (true) {
 				//Thread.Sleep(1);
-				if (resetEvent != null)
-					resetEvent.WaitOne();
-				F.Application.DoEvents();
+				//if (resetEvent != null)
+				//	resetEvent.WaitOne();
+				//F.Application.DoEvents();
 				try {
 					int? index = 0;
 					if (!ThreadRun_Helper(waitingThumbnails, false, ref index)) continue;
@@ -3522,7 +3527,7 @@ namespace BExplorer.Shell {
 
 				}
 				catch (Exception ex) {
-					F.Application.DoEvents();
+					//F.Application.DoEvents();
 				}
 			}
 		}
@@ -3563,20 +3568,20 @@ namespace BExplorer.Shell {
 			while (true) {
 				//F.Application.DoEvents();
 				//Thread.Sleep(1);
-				if (resetEvent != null)
-					resetEvent.WaitOne();
+				//if (resetEvent != null)
+				//	resetEvent.WaitOne();
 				//Bitmap result = null;
 				try {
 					int? index = 0;
 					if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
 					var sho = Items[index.Value];
-					WTS_CACHEFLAGS flags;
-					//var res = sho.RefreshThumb(IconSize, out flags);
-					var iconSize = 48;
-					if (IconSize > 48 && IconSize <= 96)
-						iconSize = 96;
-					if (IconSize > 96)
-						iconSize = 256;
+					//WTS_CACHEFLAGS flags;
+					////var res = sho.RefreshThumb(IconSize, out flags);
+					//var iconSize = 48;
+					//if (IconSize > 48 && IconSize <= 96)
+					//	iconSize = 96;
+					//if (IconSize > 96)
+					//	iconSize = 256;
 					//result = sho.Thumbnail(iconSize, ShellThumbnailFormatOption.ThumbnailOnly, ShellThumbnailRetrievalOption.Default);
 					var result = sho.GetHBitmap(IconSize, true, true);
 					sho.IsThumbnailLoaded = true;
@@ -3603,15 +3608,15 @@ namespace BExplorer.Shell {
 					//  result.Dispose();
 					//  result = null;
 					//}
-					F.Application.DoEvents();
+					//F.Application.DoEvents();
 				}
 			}
 		}
 
 		public void _UpdateSubitemValuesThreadRun() {
 			while (true) {
-				if (resetEvent != null)
-					resetEvent.WaitOne();
+				//if (resetEvent != null)
+				//	resetEvent.WaitOne();
 				Thread.Sleep(1);
 				F.Application.DoEvents();
 				var index = ItemsForSubitemsUpdate.Dequeue();
@@ -4035,6 +4040,7 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, LVM.SETCOLUMNWIDTH, index, autosizeStyle);
 		}
 
+    [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
 		private void ProcessCustomDrawPostPaint(ref Message m, User32.NMLVCUSTOMDRAW nmlvcd, int index, IntPtr hdc, IListItemEx sho, System.Drawing.Color? textColor) {
 			if (nmlvcd.clrTextBk != 0 && nmlvcd.dwItemType == 0) {
 				var itemBounds = nmlvcd.nmcd.rc;
@@ -4064,6 +4070,7 @@ namespace BExplorer.Shell {
 						overlayQueue.Enqueue(index);
 					}
 					this.IsCancelRequested = false;
+          //resetEvent.Set();
 					if (IconSize != 16) {
 						WTS_CACHEFLAGS flags;
 						bool retrieved = false;
@@ -4089,9 +4096,9 @@ namespace BExplorer.Shell {
 								ThumbnailsForCacheLoad.Enqueue(index);
 								//this.RetrieveThumbnailByIndex(index);
 							}
-							if (sho.IsIconLoaded || (((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS || (!this._IsSearchNavigating && sho.Parent != null && sho.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName, StringComparison.InvariantCultureIgnoreCase)) || (!this._IsSearchNavigating && sho.Parent != null && sho.Parent.ParsingName.Equals(KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase))) &&
-								 Environment.OSVersion.Version.Major == 6 && Environment.OSVersion.Version.Minor < 2)) {
-								hThumbnail = sho.GetHBitmap(IconSize, false);
+							if (sho.IsIconLoaded || (((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS || (!this._IsSearchNavigating && sho.Parent != null && sho.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName, StringComparison.InvariantCultureIgnoreCase)) || (!this._IsSearchNavigating && sho.Parent != null && sho.Parent.ParsingName.Equals(KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase))))) {
+                
+                 hThumbnail = sho.GetHBitmap(IconSize, false);
 								if (hThumbnail != IntPtr.Zero) {
 									Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
 									Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
@@ -4144,8 +4151,7 @@ namespace BExplorer.Shell {
 							}
 							else if (this.IconSize > 64) {
 								extra.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 50));
-							}
-							else {
+              } else {
 								large.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 32));
 							}
 						}
@@ -4166,8 +4172,7 @@ namespace BExplorer.Shell {
 							}
 							else if (this.IconSize > 64) {
 								extra.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - 60, iconBounds.Bottom - 50));
-							}
-							else {
+              }  else {
 								large.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - 42, iconBounds.Bottom - 32));
 							}
 						}
@@ -4232,12 +4237,12 @@ namespace BExplorer.Shell {
 						}
 						if (sho.ShieldedIconIndex > 0) {
 
-							small.DrawIcon(hdc, sho.ShieldedIconIndex, new DPoint(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
+							small.DrawIcon(hdc, sho.ShieldedIconIndex, new DPoint(iconBounds.Right - 9, iconBounds.Bottom - 10), 10);
 
 						}
 						if (sho.IsShared) {
 
-							small.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - 10, iconBounds.Bottom - 10), 8);
+							small.DrawIcon(hdc, this._SharedIconIndex, new DPoint(iconBounds.Right - 9, iconBounds.Bottom - 16));
 
 						}
 					}
@@ -4251,6 +4256,7 @@ namespace BExplorer.Shell {
 			m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
 		}
 
+    [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
 		private void ProcessCustomDraw(ref Message m, ref NMHDR nmhdr) {
 			if (nmhdr.hwndFrom == this.LVHandle) {
 				#region Starting
