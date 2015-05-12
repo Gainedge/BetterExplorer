@@ -31,11 +31,11 @@ namespace BetterExplorer {
 			if (bytes < 1000)
 				return bytes.ToString() + " B";
 			else if (bytes < 1000000)
-				return (Math.Round((bytes / 1000), 2, MidpointRounding.AwayFromZero)).ToString() + " KB";
+				return Math.Round((bytes / 1000), 2, MidpointRounding.AwayFromZero).ToString() + " KB";
 			else if (bytes < 1000000000)
-				return (Math.Round((bytes / 1000000), 2, MidpointRounding.AwayFromZero)).ToString() + " MB";
+				return Math.Round((bytes / 1000000), 2, MidpointRounding.AwayFromZero).ToString() + " MB";
 			else
-				return (Math.Round((bytes / 1000000000), 2, MidpointRounding.AwayFromZero)).ToString() + " GB";
+				return Math.Round((bytes / 1000000000), 2, MidpointRounding.AwayFromZero).ToString() + " GB";
 		}
 	}
 }

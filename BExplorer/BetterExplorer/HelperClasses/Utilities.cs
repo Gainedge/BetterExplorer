@@ -44,10 +44,12 @@ namespace BetterExplorer {
 			return file.EndsWith(ext) ? file.Remove(file.LastIndexOf(ext), ext.Length) : file;
 		}
 
+		/*
 		[System.Diagnostics.DebuggerStepThrough()]
 		public static string GetExtension(string file) {
 			return file.Substring(file.LastIndexOf("."));
 		}
+		*/
 
 		#endregion
 
@@ -106,20 +108,6 @@ namespace BetterExplorer {
 			else {
 				return null;
 			}
-
-			/*
-			try
-			{
-				using (FileStream s = new FileStream(filename, FileMode.Open))
-				{
-					return XamlReader.Load(s) as ResourceDictionary;
-				}
-			}
-			catch
-			{
-				return null;
-			}
-			*/
 		}//TODO: Move somewhere else later
 
 
