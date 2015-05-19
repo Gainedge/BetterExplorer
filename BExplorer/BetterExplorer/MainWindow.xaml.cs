@@ -1362,26 +1362,21 @@ namespace BetterExplorer {
 
 			var Things = new List<string>();
 			var SelectedColumn = this.ShellListView.Collumns[e.ColumnIndex];
-			switch (SelectedColumn.Name) {
-				case "Name":
-					Things.AddRange(new[] { "0 - 9", "A - H", "I - P", "Q - Z", "Other" });
-					break;
-				case "Size":
-					Things.AddRange(new[] { "Tiny (0 - 10 KB)", "Small (10 - 100 KB)", "Medium (100 KB - 1 MB)", "Large (1 - 16 MB)", "Huge (16 - 128 MB)", "Unspecified" });
-					break;
-				case "Date modified":
-					var Container = new ItemsControl();
-					Container.Items.Add(new MenuItem() { Icon = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource, Header = "Select a date or date range:", HorizontalContentAlignment = HorizontalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch });
-					Container.Items.Add(new Calendar());
-					menu.AddItem(Container);
+      if (SelectedColumn.CollumnType == typeof(String)) {
+        Things.AddRange(new[] { "0 - 9", "A - H", "I - P", "Q - Z", "Other" });
+      } else if (SelectedColumn.CollumnType == typeof(DateTime)) {
+        var Container = new ItemsControl();
+        Container.Items.Add(new MenuItem() { Icon = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource, Header = "Select a date or date range:", HorizontalContentAlignment = HorizontalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch });
+        Container.Items.Add(new Calendar() { SelectionMode = CalendarSelectionMode.SingleRange });
+        menu.AddItem(Container);
 
-					Things.AddRange(new[] { "A long time ago", "Earlier this year", "Earlier this month", "Last week", "Today" });
-					break;
-				default:
-					//TODO: Add Column's values
-					break;
-			}
-
+        Things.AddRange(new[] { "A long time ago", "Earlier this year", "Earlier this month", "Last week", "Today" });
+      } else if (SelectedColumn.CollumnType == typeof(long)) {
+        Things.AddRange(new[] { "Tiny (0 - 10 KB)", "Small (10 - 100 KB)", "Medium (100 KB - 1 MB)", "Large (1 - 16 MB)", "Huge (16 - 128 MB)", "Unspecified" });
+      } else if (SelectedColumn.CollumnType == typeof(Type)) {
+        var distictItems = this.ShellListView.Items.Select(s => s.GetPropertyValue(SelectedColumn.pkey, SelectedColumn.CollumnType).Value).Distinct().Cast<String>().ToArray().OrderBy(o => o);
+        Things.AddRange(distictItems);
+      }
 			foreach (var item in Things) {
 				menu.AddItem(new MenuItem() {
 					Icon = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource,
