@@ -499,7 +499,7 @@ namespace BExplorer.Shell {
 
 		private Thread _OverlaysLoadingThread;
 		private F.Timer selectionTimer = new F.Timer();
-		private SyncQueue<int> shieldQueue = new SyncQueue<int>(); //3000
+    private SyncQueue<int> shieldQueue = new SyncQueue<int>(); //3000
 		private ImageList small = new ImageList(ImageListSize.SystemSmall);
 		private Thread _IconLoadingThread;
 		private Thread _UpdateSubitemValuesThread;
@@ -508,7 +508,7 @@ namespace BExplorer.Shell {
 
 
 
-		private SyncQueue<Tuple<int, int, PROPERTYKEY>> ItemsForSubitemsUpdate = new SyncQueue<Tuple<int, int, PROPERTYKEY>>(); //5000
+    private SyncQueue<Tuple<int, int, PROPERTYKEY>> ItemsForSubitemsUpdate = new SyncQueue<Tuple<int, int, PROPERTYKEY>>(); //5000
 
 
 
@@ -522,9 +522,9 @@ namespace BExplorer.Shell {
 		private int _LastDropHighLightedItemIndex = -1;
 		private String _NewName { get; set; }
 
-		private ConQueue<int?> overlayQueue = new ConQueue<int?>(); //3000
-		private ConQueue<int?> ThumbnailsForCacheLoad = new ConQueue<int?>(); //5000
-		private ConQueue<int?> waitingThumbnails = new ConQueue<int?>(); //3000
+    private SyncQueue<int?> overlayQueue = new SyncQueue<int?>(); //3000
+    private SyncQueue<int?> ThumbnailsForCacheLoad = new SyncQueue<int?>(); //5000
+    private SyncQueue<int?> waitingThumbnails = new SyncQueue<int?>(); //3000
 
 
 
@@ -541,13 +541,17 @@ namespace BExplorer.Shell {
 			this.LVItemsColorCodes = new List<LVItemColor>();
 			this.AllAvailableColumns = this.AvailableColumns();
 			this.AllowDrop = true;
-			_IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
+			_IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
+      _IconLoadingThread.SetApartmentState(ApartmentState.STA);
 			_IconLoadingThread.Start();
-			_IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
+			_IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
+      _IconCacheLoadingThread.SetApartmentState(ApartmentState.STA);
 			_IconCacheLoadingThread.Start();
-			_OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
+			_OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
+      _OverlaysLoadingThread.SetApartmentState(ApartmentState.STA);
 			_OverlaysLoadingThread.Start();
 			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
+      _UpdateSubitemValuesThread.SetApartmentState(ApartmentState.STA);
 			_UpdateSubitemValuesThread.Start();
 			_ResetTimer.Interval = 150;
 			_ResetTimer.Tick += resetTimer_Tick;
@@ -3403,7 +3407,7 @@ namespace BExplorer.Shell {
 		}
 
 
-		private bool ThreadRun_Helper(ConQueue<int?> queue, bool useComplexCheck, ref int? index) {
+    private bool ThreadRun_Helper(SyncQueue<int?> queue, bool useComplexCheck, ref int? index) {
 			//TODO: Dimitar, please fix this exception if you can
 
 			index = queue.Dequeue();
@@ -3438,7 +3442,7 @@ namespace BExplorer.Shell {
 
 					int overlayIndex = 0;
 					small.GetIconIndexWithOverlay(sho.PIDL, out overlayIndex);
-					sho.Dispose();
+					//sho.Dispose();
 					shoTemp.OverlayIconIndex = overlayIndex;
 					if (overlayIndex > 0)
 						RedrawItem(index.Value);
@@ -3495,9 +3499,9 @@ namespace BExplorer.Shell {
 		public void _IconsLoadingThreadRun() {
 			while (true) {
 				//Thread.Sleep(1);
-				//if (resetEvent != null)
-				//	resetEvent.WaitOne();
-				//F.Application.DoEvents();
+				if (resetEvent != null)
+					resetEvent.WaitOne();
+				F.Application.DoEvents();
 				try {
 					int? index = 0;
 					if (!ThreadRun_Helper(waitingThumbnails, false, ref index)) continue;
@@ -3566,10 +3570,10 @@ namespace BExplorer.Shell {
 		}
 		public void _IconCacheLoadingThreadRun() {
 			while (true) {
-				//F.Application.DoEvents();
-				//Thread.Sleep(1);
-				//if (resetEvent != null)
-				//	resetEvent.WaitOne();
+				F.Application.DoEvents();
+				Thread.Sleep(1);
+				if (resetEvent != null)
+					resetEvent.WaitOne();
 				//Bitmap result = null;
 				try {
 					int? index = 0;
@@ -4081,7 +4085,7 @@ namespace BExplorer.Shell {
 						if (hThumbnail != IntPtr.Zero) {
 							Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
 							Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
-							Gdi32.DeleteObject(hThumbnail);
+							//Gdi32.DeleteObject(hThumbnail);
 							sho.IsNeedRefreshing = ((width > height && width != IconSize) || (width < height && height != IconSize) || (width == height && width != IconSize)) && !sho.IsOnlyLowQuality;
 							//bmp.Dispose();
 							if (sho.IsNeedRefreshing) {
@@ -4102,7 +4106,7 @@ namespace BExplorer.Shell {
 								if (hThumbnail != IntPtr.Zero) {
 									Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
 									Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
-									Gdi32.DeleteObject(hThumbnail);
+									//Gdi32.DeleteObject(hThumbnail);
 								}
 								else {
 									this.DrawDefaultIcons(hdc, sho, iconBounds);
@@ -4111,7 +4115,8 @@ namespace BExplorer.Shell {
 										waitingThumbnails.Enqueue(index);
 									}
 									else {
-										this.RetrieveIconsByIndex(index);
+										//this.RetrieveIconsByIndex(index);
+                    waitingThumbnails.Enqueue(index);
 									}
 								}
 							}
@@ -4122,7 +4127,8 @@ namespace BExplorer.Shell {
 									waitingThumbnails.Enqueue(index);
 								}
 								else {
-									this.RetrieveIconsByIndex(index);
+									//this.RetrieveIconsByIndex(index);
+                  waitingThumbnails.Enqueue(index);
 								}
 							}
 						}
