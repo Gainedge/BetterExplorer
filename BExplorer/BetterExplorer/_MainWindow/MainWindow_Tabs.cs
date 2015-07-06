@@ -57,8 +57,6 @@ namespace BetterExplorer {
 
 		private void SelectTab(Wpf.Controls.TabItem tab) {
 			if (tab == null) return;
-			//tcMain.isGoingBackOrForward = tab.log.HistoryItemsList.Any();
-			//if (!Keyboard.IsKeyDown(Key.Tab)) {
 			if (!tab.ShellObject.Equals(this.ShellListView.CurrentFolder) || tab.ShellObject.IsSearchFolder) {
 				tcMain.isGoingBackOrForward = true;
 				NavigationController(tab.ShellObject);
@@ -69,7 +67,7 @@ namespace BetterExplorer {
 				selectedItem.ShellObject = tab.ShellObject;
 				if (selectedItem != null) {
 					var selectedPaths = selectedItem.SelectedItems;
-					if (selectedPaths != null && selectedPaths.Count > 0) {
+					if (selectedPaths != null && selectedPaths.Any()) {
 						foreach (var path in selectedPaths.ToArray()) {
 							var sho = this.ShellListView.Items.Where(w => w.ParsingName == path).SingleOrDefault();
 							if (sho != null) {
@@ -84,17 +82,6 @@ namespace BetterExplorer {
 					}
 				}
 			}
-			//}
-			/*
-			else {
-				t.Interval = 500;
-				t.Tag = tab.ShellObject;
-				t.Tick += new EventHandler(t_Tick);
-				t.Start();
-			}
-			*/
-			//}
-			//}
 		}
 
 		private void ConstructMoveToCopyToMenu() {
