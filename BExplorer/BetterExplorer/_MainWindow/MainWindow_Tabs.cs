@@ -172,11 +172,10 @@ namespace BetterExplorer {
 		}
 
 		Wpf.Controls.TabItem _CurrentlySelectedItem = null;
+
+		[Obsolete("I do not think we need this")]
 		private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
 
 		}
-
-
-
 	}
 }
