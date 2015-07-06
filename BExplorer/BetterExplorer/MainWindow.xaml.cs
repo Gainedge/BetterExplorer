@@ -160,6 +160,7 @@ namespace BetterExplorer {
 			}
 		}
 
+		[Obsolete("No Code")]
 		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
 			//if (TheRibbon.IsMinimized && this.IsGlassOnRibonMinimized) {
 			//	WIN.Point p = ShellViewHost.TransformToAncestor(this).Transform(new WIN.Point(0, 0));
@@ -185,7 +186,6 @@ namespace BetterExplorer {
 
 			if (rks == null) return;
 
-
 			this.Width = Convert.ToDouble(rks.GetValue("LastWindowWidth", "640"));
 			this.Height = Convert.ToDouble(rks.GetValue("LastWindowHeight", "480"));
 
@@ -197,6 +197,7 @@ namespace BetterExplorer {
 				);
 			}
 			catch { }
+
 			if (Location != null) {
 				this.Left = Location.X;
 				this.Top = Location.Y;
@@ -250,7 +251,7 @@ namespace BetterExplorer {
 
 					this.LVItemsColor = docs.Root.Elements("ItemColorRow")
 					  .Select(element => new BExplorer.Shell.LVItemColor(element.Elements().ToArray()[0].Value,
-								   System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value)))).ToList();
+										 System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value)))).ToList();
 				}
 			});
 		}
@@ -405,8 +406,7 @@ namespace BetterExplorer {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 			  (Action)(() => {
 				  foreach (MenuItem item in btnFavorites.Items.OfType<MenuItem>()) {
-					  if ((item.Tag as ShellItem).ParsingName == e.OldFullPath)
-						  item.Header = Path.GetFileNameWithoutExtension(e.Name);
+					  if ((item.Tag as ShellItem).ParsingName == e.OldFullPath) item.Header = Path.GetFileNameWithoutExtension(e.Name);
 				  }
 			  }));
 		}
@@ -414,17 +414,7 @@ namespace BetterExplorer {
 		void LinksFolderWarcher_Deleted(object sender, FileSystemEventArgs e) {
 			Dispatcher.BeginInvoke(DispatcherPriority.Normal,
 			  (Action)(() => {
-				  /*
-				  MenuItem ItemForRemove = null;
-				  foreach (MenuItem item in btnFavorites.Items.OfType<MenuItem>()) {
-				  if (item.Header.ToString() == Path.GetFileNameWithoutExtension(e.Name))
-					ItemForRemove = item;
-				  }
-				  btnFavorites.Items.Remove(ItemForRemove);
-				  */
-
 				  btnFavorites.Items.Remove(btnFavorites.Items.OfType<MenuItem>().Single(item => item.Header.ToString() == Path.GetFileNameWithoutExtension(e.Name)));
-
 			  }));
 		}
 
@@ -862,9 +852,8 @@ namespace BetterExplorer {
 
 		private void btnmtOther_Click(object sender, RoutedEventArgs e) {
 			var dlg = new FolderSelectDialog();
-			if (dlg.ShowDialog()) {
+			if (dlg.ShowDialog())
 				SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Move);
-			}
 		}
 
 		private void SetFOperation(String fileName, BExplorer.Shell.OperationType opType) {
@@ -1002,11 +991,11 @@ namespace BetterExplorer {
 									(Action)(() => {
 										this.beNotifyIcon.ShowBalloonTip("Information", String.Format("It is safe to remove {0}", item.LogicalDrive), Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
 										var tabsForRemove = tcMain.Items.OfType<Wpf.Controls.TabItem>()
-										  .Where(w => {
-											  var root = Path.GetPathRoot(w.ShellObject.ParsingName.ToShellParsingName());
-											  return root != null && (w.ShellObject.IsFileSystem &&
-													root.ToLowerInvariant() == String.Format("{0}:\\", DriveLetter).ToLowerInvariant());
-										  }).ToArray();
+											.Where(w => {
+												var root = Path.GetPathRoot(w.ShellObject.ParsingName.ToShellParsingName());
+												return root != null && (w.ShellObject.IsFileSystem &&
+														root.ToLowerInvariant() == String.Format("{0}:\\", DriveLetter).ToLowerInvariant());
+											}).ToArray();
 										foreach (Wpf.Controls.TabItem tab in tabsForRemove) {
 											tcMain.RemoveTabItem(tab);
 										}
@@ -1564,10 +1553,8 @@ namespace BetterExplorer {
 			chkTreeExpand.IsChecked = (int)rksfe.GetValue("NavPaneExpandToCurrentFolder", 0) == 1;
 			rksfe.Close();
 			rkfe.Close();
-
 			rks.Close();
 			rk.Close();
-
 
 			var sho = new ShellItem(StartUpLocation.ToShellParsingName());
 			btnSetCurrentasStartup.Header = sho.DisplayName;
@@ -1620,7 +1607,6 @@ namespace BetterExplorer {
 				AppJL.Apply();
 			}
 			catch {
-
 			}
 		}
 
@@ -1720,11 +1706,11 @@ namespace BetterExplorer {
 
 		}
 
-		Boolean _IsTabSelectionChangedNotAllowed = true;
+		//Boolean _IsTabSelectionChangedNotAllowed = true;
 		void tcMain_OnTabClicked(object sender, Wpf.Controls.TabClickEventArgs e) {
 			this.tcMain.IsInTabDragDrop = false;
 			tcMain.SelectedItem = e.ClickedItem;
-			this._IsTabSelectionChangedNotAllowed = false;
+			//this._IsTabSelectionChangedNotAllowed = false;
 			this._CurrentlySelectedItem = e.ClickedItem;
 			this.SelectTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
 			this.tcMain.IsInTabDragDrop = true;

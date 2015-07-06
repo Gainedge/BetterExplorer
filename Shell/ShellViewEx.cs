@@ -2880,19 +2880,11 @@ namespace BExplorer.Shell {
 			this.IsCancelRequested = true;
 			this.IsNavigationCancelRequested = isCancel;
 			this._UnvalidateTimer.Stop();
-			if (destination.Equals(this.CurrentFolder) && !refresh && !isCancel)
-				return;
-			if (!refresh && Navigating != null)
-				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 
-			//Thread t = new Thread(() => {
-			//  ReloadThreads();
-			//});
-			//t.Start();
-			//Cleaning!
+			if (destination.Equals(this.CurrentFolder) && !refresh && !isCancel) return;
+			if (!refresh && Navigating != null) Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
+			if (destination == null) return;
 
-			if (destination == null)
-				return;
 			resetEvent.Set();
 			this.Invoke((Action)(() => {
 				MessageHandlerWindow.ReinitNotify(destination);
@@ -2902,7 +2894,6 @@ namespace BExplorer.Shell {
 			this.fsw.Changed -= fsw_Changed;
 			this.fsw.EnableRaisingEvents = false;
 			if ((destination.IsFileSystem || destination.IsNetworkPath) && (destination.Parent != null && !destination.Parent.ParsingName.Equals(KnownFolders.Network.ParsingName, StringComparison.InvariantCultureIgnoreCase))) {
-
 				try {
 					this.fsw.Path = destination.ParsingName;
 					this.fsw.EnableRaisingEvents = true;
@@ -2921,10 +2912,10 @@ namespace BExplorer.Shell {
 			var columns = new Collumns();
 			var isFailed = true;
 
-
-			//var isNewNavigation = false;
-			//var isRun = false;
-
+			/*
+			var isNewNavigation = false;
+			var isRun = false;
+			*/
 
 			// await Task.Run(() => {
 			int CurrentI = 0, LastI = 0;
@@ -2932,7 +2923,6 @@ namespace BExplorer.Shell {
 
 			foreach (var shellItem in this._RequestedCurrentLocation) {
 				F.Application.DoEvents();
-
 
 				CurrentI++;
 				if (CurrentI == 1) {
@@ -3013,7 +3003,8 @@ namespace BExplorer.Shell {
 
 				}
 			}
-			isRun = true;
+
+			//isRun = true;
 			this.IsNavigationInProgress = false;
 
 			if ((this._RequestedCurrentLocation.NavigationStatus == HResult.S_OK && isFailed) || (this._RequestedCurrentLocation.NavigationStatus == HResult.S_OK && this.Items.Count == 0)) {
