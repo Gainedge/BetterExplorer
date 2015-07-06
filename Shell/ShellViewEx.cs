@@ -2702,16 +2702,6 @@ namespace BExplorer.Shell {
 			this.Focus();
 		}
 
-		/*
-		public void DropHighLightItemByIndex(int index) {
-		  var lvii = new LVITEMINDEX() { iItem = -1, iGroup = this.GetGroupIndex(index) };
-		  var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_DROPHILITED, state = LVIS.LVIS_DROPHILITED };
-		  var u = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
-
-		  this.Focus();
-		}
-		*/
-
 		private void UpdateColsInView(bool isDetails = false) {
 			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
 			foreach (var col in this.Collumns) {
