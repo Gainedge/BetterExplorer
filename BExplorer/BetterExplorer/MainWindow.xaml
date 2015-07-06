@@ -2120,7 +2120,7 @@
 								 Header=""
 								 IsLauncherVisible="False">
           <Ribbon:Button x:Name="btnResetLibrary"
-						 Click="Button_Click_3"
+						 Click="btnResetLibrary_Click"
 						 Header="{DynamicResource btnResetCP}"
 						 LargeIcon="Images\resetlib32.png"
 						 Ribbon:KeyTip.Keys="R"

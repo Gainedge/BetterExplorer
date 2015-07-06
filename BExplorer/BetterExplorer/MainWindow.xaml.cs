@@ -1188,7 +1188,6 @@ namespace BetterExplorer {
 		#region Application Tools
 
 		private void btnRunAsAdmin_Click(object sender, RoutedEventArgs e) {
-			//ShellView.RunExeAsAdmin(ShellListView.GetFirstSelectedItem().ParsingName);
 			var FileName = ShellListView.GetFirstSelectedItem().ParsingName;
 			Process.Start(new ProcessStartInfo {
 				FileName = FileName,
@@ -1344,7 +1343,6 @@ namespace BetterExplorer {
 			this.ShellListView.ColumnHeaderRightClick += ShellListView_ColumnHeaderRightClick;
 			this.ShellListView.KeyJumpKeyDown += ShellListView_KeyJumpKeyDown;
 			this.ShellListView.KeyJumpTimerDone += ShellListView_KeyJumpTimerDone;
-			//this.ShellListView.ItemDisplayed += ShellListView_ItemDisplayed;
 			this.ShellListView.OnListViewColumnDropDownClicked += ShellListView_OnListViewColumnDropDownClicked;
 			this.ShellListView.Navigating += ShellListView_Navigating;
 			this.ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
@@ -1721,6 +1719,7 @@ namespace BetterExplorer {
 			}
 
 		}
+
 		Boolean _IsTabSelectionChangedNotAllowed = true;
 		void tcMain_OnTabClicked(object sender, Wpf.Controls.TabClickEventArgs e) {
 			this.tcMain.IsInTabDragDrop = false;
@@ -1729,7 +1728,6 @@ namespace BetterExplorer {
 			this._CurrentlySelectedItem = e.ClickedItem;
 			this.SelectTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
 			this.tcMain.IsInTabDragDrop = true;
-			//this._IsTabSelectionChangedAllowed = false;
 		}
 
 		#endregion
@@ -1780,8 +1778,6 @@ namespace BetterExplorer {
 			rks.SetValue("AutoSwitchLibraryTools", Convert.ToInt32(asLibrary));
 			rks.SetValue("AutoSwitchDriveTools", Convert.ToInt32(asDrive));
 			rks.SetValue("AutoSwitchVirtualDriveTools", Convert.ToInt32(asVirtualDrive));
-			//rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(this.IsCloseLastTabCloseApp));
-			//rks.SetValue("IsLastTabCloseApp", Convert.ToInt32(chkIsLastTabCloseApp.IsChecked.Value));
 
 			rks.SetValue("IsConsoleShown", this.IsConsoleShown ? 1 : 0);
 			rks.SetValue("TabBarAlignment", this.TabbaBottom.IsChecked == true ? "bottom" : "top");
@@ -1815,28 +1811,27 @@ namespace BetterExplorer {
 			this.ShellListView.SaveSettingsToDatabase(this.ShellListView.CurrentFolder);
 			//SaveHistoryToFile(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\history.txt", this.bcbc.DropDownItems.OfType<String>().Select(s => s).ToList());
 			AddToLog("Session Ended");
-			if (!this.IsMultipleWindowsOpened) {
+
+
+			if (this.IsMultipleWindowsOpened) {
+				beNotifyIcon.Visibility = WIN.Visibility.Collapsed;
+			}
+			else {
 				e.Cancel = true;
 				App.isStartMinimized = true;
 
 				this.WindowState = WIN.WindowState.Minimized;
 				this.Visibility = WIN.Visibility.Hidden;
 			}
-			else {
-				beNotifyIcon.Visibility = WIN.Visibility.Collapsed;
-			}
 
-			if (!File.Exists("Settings.xml")) {
-				new XElement("Settings").Save("Settings.xml");
-			}
+			if (!File.Exists("Settings.xml")) new XElement("Settings").Save("Settings.xml");
+
 			var Data = bcbc.DropDownItems;
-
 			var Settings = XElement.Load("Settings.xml");
 			if (Settings.Element("DropDownItems") == null)
 				Settings.Add(new XElement("DropDownItems"));
 			else
 				Settings.Element("DropDownItems").RemoveAll();
-
 
 			foreach (var item in bcbc.DropDownItems.OfType<string>().Reverse().Take(15)) {
 				Settings.Element("DropDownItems").Add(new XElement("Item", item));
@@ -1971,12 +1966,6 @@ namespace BetterExplorer {
 		private void miExtractToLocation_Click(object sender, RoutedEventArgs e) {
 			var selectedItems = ShellListView.SelectedItems.Select(item => item.ParsingName).ToList();
 
-			/*
-			var selectedItems = new List<string>();
-			foreach (ShellItem item in ShellListView.SelectedItems) {
-			  selectedItems.Add(item.ParsingName);
-			}
-			*/
 			try {
 				var CAI = new CreateArchive(selectedItems, false, ShellListView.GetFirstSelectedItem().ParsingName);
 				CAI.Show(this.GetWin32Window());
@@ -2131,7 +2120,7 @@ namespace BetterExplorer {
 			}
 		}
 
-		private void Button_Click_3(object sender, RoutedEventArgs e) {
+		private void btnResetLibrary_Click(object sender, RoutedEventArgs e) {
 			this.ShellListView.CurrentRefreshedItemIndex = this.ShellListView.GetFirstSelectedItemIndex();
 			//TaskDialog td = new TaskDialog();
 			//td.Caption = "Reset Library";
