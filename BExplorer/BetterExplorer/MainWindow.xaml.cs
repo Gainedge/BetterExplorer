@@ -597,11 +597,11 @@ namespace BetterExplorer {
 				}
 
 				btnNewItem.IsEnabled = this.ShellListView.CurrentFolder.IsFileSystem || this.ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName;
-				if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && selItemsCount == 1) 		
-					this.Previewer.FileName = selectedItem.ParsingName;				
-				else if (!String.IsNullOrEmpty(this.Previewer.FileName)) 
+				if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && selItemsCount == 1)
+					this.Previewer.FileName = selectedItem.ParsingName;
+				else if (!String.IsNullOrEmpty(this.Previewer.FileName))
 					this.Previewer.FileName = null;
-				
+
 				//Set up ribbon contextual tabs on selection changed
 				SetUpRibbonTabsVisibilityOnSelectOrNavigate(selItemsCount, selectedItem);
 				SetUpButtonsStateOnSelectOrNavigate(selItemsCount, selectedItem);
@@ -733,8 +733,7 @@ namespace BetterExplorer {
 		}
 
 		void miow_Click(object sender, RoutedEventArgs e) {
-			var assocItem = (AssociationItem)(sender as MenuItem).Tag;
-			assocItem.Invoke();
+			((AssociationItem)(sender as MenuItem).Tag).Invoke();
 		}
 
 		void mif_Click(object sender, RoutedEventArgs e) {
@@ -995,6 +994,7 @@ namespace BetterExplorer {
 												return root != null && (w.ShellObject.IsFileSystem &&
 														root.ToLowerInvariant() == String.Format("{0}:\\", DriveLetter).ToLowerInvariant());
 											}).ToArray();
+
 										foreach (Wpf.Controls.TabItem tab in tabsForRemove) {
 											tcMain.RemoveTabItem(tab);
 										}
@@ -1121,9 +1121,9 @@ namespace BetterExplorer {
 						break;
 				}
 
-				if (mi.chkRemovable.IsChecked == true)
+				if (mi.chkRemovable.IsChecked)
 					imflags |= ImDiskFlags.Removable;
-				if (mi.chkReadOnly.IsChecked == true)
+				if (mi.chkReadOnly.IsChecked)
 					imflags |= ImDiskFlags.ReadOnly;
 
 				ImDiskAPI.CreateDevice(size, 0, 0, 0, 0, imflags, ShellListView.GetFirstSelectedItem().ParsingName, false, DriveLetter, IntPtr.Zero);
@@ -1147,7 +1147,7 @@ namespace BetterExplorer {
 
 		private void btnWriteIso_Click(object sender, RoutedEventArgs e) {
 			Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "isoburn.exe"),
-					 string.Format("\"{0}\"", ShellListView.GetFirstSelectedItem().ParsingName));
+				string.Format("\"{0}\"", ShellListView.GetFirstSelectedItem().ParsingName));
 		}
 
 		private void btnUnmountDrive_Click(object sender, RoutedEventArgs e) {
@@ -1306,8 +1306,7 @@ namespace BetterExplorer {
 				btnFavorites.Visibility = Visibility.Visible;
 
 				var OpenFavorites = new MenuItem() { Header = "Open Favorites" };
-				var Path = ((ShellItem)KnownFolders.Links).FileSystemPath;
-				OpenFavorites.Click += (x, y) => Process.Start(Path);
+				OpenFavorites.Click += (x, y) => Process.Start(((ShellItem)KnownFolders.Links).FileSystemPath);
 
 				btnFavorites.Items.Add(OpenFavorites);
 				btnFavorites.Items.Add(new Separator());
