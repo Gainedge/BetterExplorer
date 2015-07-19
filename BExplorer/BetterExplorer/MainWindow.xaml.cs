@@ -144,7 +144,7 @@ namespace BetterExplorer {
 		}
 
 		private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e) {
-			if (((Boolean)e.NewValue)) {
+			if ((Boolean)e.NewValue) {
 				this.ShellListView.IsFocusAllowed = false;
 				backstage.Focus();
 			}
@@ -597,12 +597,11 @@ namespace BetterExplorer {
 				}
 
 				btnNewItem.IsEnabled = this.ShellListView.CurrentFolder.IsFileSystem || this.ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName;
-				if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && selItemsCount == 1) {
-					this.Previewer.FileName = selectedItem.ParsingName;
-				}
-				else if (!String.IsNullOrEmpty(this.Previewer.FileName)) {
+				if (selectedItem != null && selectedItem.IsFileSystem && IsPreviewPaneEnabled && !selectedItem.IsFolder && selItemsCount == 1) 		
+					this.Previewer.FileName = selectedItem.ParsingName;				
+				else if (!String.IsNullOrEmpty(this.Previewer.FileName)) 
 					this.Previewer.FileName = null;
-				}
+				
 				//Set up ribbon contextual tabs on selection changed
 				SetUpRibbonTabsVisibilityOnSelectOrNavigate(selItemsCount, selectedItem);
 				SetUpButtonsStateOnSelectOrNavigate(selItemsCount, selectedItem);
@@ -689,8 +688,8 @@ namespace BetterExplorer {
 			string PathForDrop = ShellListView.CurrentFolder.ParsingName.Replace(@"\\", @"\");
 			string ExePath = Utilities.AppDirectoryItem("BetterExplorerOperations.exe");
 			int winhandle = (int)User32.getWindowId(null, "BetterExplorerOperations");
-			var items = new List<IListItemEx>();// new List<ShellItem>(DropList.OfType<string>().Select(o => new ShellItem(o)));
 
+			var items = new List<IListItemEx>();// new List<ShellItem>(DropList.OfType<string>().Select(o => new ShellItem(o)));
 			string sources = PathStringCombiner.CombinePaths(items, ";", true);
 			string drops = PathStringCombiner.CombinePathsWithSinglePath(PathForDrop + @"\", items, false);
 
