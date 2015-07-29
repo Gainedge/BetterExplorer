@@ -5532,6 +5532,11 @@ namespace BetterExplorer
 			}
 		}
 
+		private void btnResetLibrary_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
 		private void RibbonWindow_Activated(object sender, EventArgs e)
 		{
 			//tcMain.CurrentTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
