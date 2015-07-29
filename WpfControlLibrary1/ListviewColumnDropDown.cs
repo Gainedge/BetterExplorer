@@ -27,5 +27,6 @@ namespace BetterExplorerControls {
       //sPanel.Children.Add(CheckBox);
       //return this;
     }
+
   }
 }

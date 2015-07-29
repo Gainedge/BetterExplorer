@@ -103,7 +103,7 @@ namespace Wpf.Controls {
 		protected override void OnMouseEnter(System.Windows.Input.MouseEventArgs e) {
 			base.OnMouseEnter(e);
 
-			this.ToolTip = this.ShellObject.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING);
+      this.ToolTip = this.ShellObject.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING).Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
 			e.Handled = true;
 		}
 

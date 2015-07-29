@@ -48,7 +48,7 @@ namespace BetterExplorer {
 					string idk = tcMain.StartUpLocation.StartsWith("::") ? tcMain.StartUpLocation.ToShellParsingName() : tcMain.StartUpLocation.Replace("\"", "");
 					NavigationController(FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, idk));
 					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
-					(tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = ShellListView.CurrentFolder.ParsingName;
+          (tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = ShellListView.CurrentFolder.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
 				}
 
 				isOnLoad = false;

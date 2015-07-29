@@ -146,35 +146,38 @@ namespace ConsoleControl {
 
 		#region Processing
 
-		/*
+    Boolean _IsPowerShell = false;
 		/// <summary> Runs a process. </summary>
 		/// <param name="fileName">  Name of the file. </param>
 		/// <param name="arguments"> The arguments. </param>
-		[Obsolete("Making Private soon", false)]
-		private void StartProcess(string fileName, string arguments) {
-			if (!IsProcessRunning) {
-				this._cmdhandle = processInterace.StartProcess("cmd.exe", null);
-
-				ClearOutput();
+		public void StartPowerShell() {
+			if (IsProcessRunning) {
+        processInterace.StopProcess();
 			}
+      _IsPowerShell = true;
+      processInterace.StartProcess("powershell.exe", null);
+      Invoke((Action)(() => {
+        richTextBoxConsole.ReadOnly = false;
+      }));
+      //ClearOutput();
 
-			// Are we showing diagnostics?
-			if (ShowDiagnostics) {
-				WriteOutput("Preparing to run " + fileName, Color.FromArgb(255, 0, 255, 0));
-				if (!string.IsNullOrEmpty(arguments))
-					WriteOutput(" with arguments " + arguments + "." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
-				else
-					WriteOutput("." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
-			}
+			//// Are we showing diagnostics?
+			//if (ShowDiagnostics) {
+			//	WriteOutput("Preparing to run " + fileName, Color.FromArgb(255, 0, 255, 0));
+			//	if (!string.IsNullOrEmpty(arguments))
+			//		WriteOutput(" with arguments " + arguments + "." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
+			//	else
+			//		WriteOutput("." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
+			//}
 
-			// Start the process.
-			this._cmdhandle = processInterace.StartProcess(fileName, arguments);
+			//// Start the process.
+			//this._cmdhandle = processInterace.StartProcess(fileName, arguments);
 
-			// If we enable input, make the control not read only.
-			if (IsInputEnabled)
-				richTextBoxConsole.ReadOnly = false;
+			//// If we enable input, make the control not read only.
+			//if (IsInputEnabled)
+			//	richTextBoxConsole.ReadOnly = false;
 		}
-		*/
+		
 
 		/// <summary> Stops the process. </summary>
 		public void StopProcess() {

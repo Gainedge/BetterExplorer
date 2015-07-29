@@ -32,8 +32,9 @@ namespace BExplorer.Shell {
 		}
     [HandleProcessCorruptedStateExceptions]
 		public override void PostDeleteItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, uint hrDelete, IShellItem psiNewlyCreated) {
+      //this._View.UnvalidateDirectory();
 			//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-			//var obj = new ShellItem(psiItem);
+      
 			//if (!String.IsNullOrEmpty(obj.ParsingName)) {
 			//	if (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder)) {
 			//		ShellItem theItem = this._View.Items.SingleOrDefault(s => s.GetHashCode() == obj.GetHashCode());
@@ -52,6 +53,11 @@ namespace BExplorer.Shell {
 			//	Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, obj.Pidl, IntPtr.Zero);
       try {
         if (psiItem != null) {
+          //var obj = FileSystemListItem.ToFileSystemItem(this._View.LVHandle, new ShellItem(psiItem).Pidl);
+          //Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR,
+          //  Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, obj.Parent.PIDL, IntPtr.Zero);
+          //Shell32.SHChangeNotify(obj.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
+          //  Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, obj.PIDL, IntPtr.Zero);
           Marshal.ReleaseComObject(psiItem);
           psiItem = null;
         }
@@ -80,6 +86,7 @@ namespace BExplorer.Shell {
 			//Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR : Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 			//		Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			//theNewItem.Dispose();
+      //this._View.UnvalidateDirectory();
       try {
         if (psiItem != null) {
           Marshal.ReleaseComObject(psiItem);
@@ -105,6 +112,7 @@ namespace BExplorer.Shell {
 			//Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR : Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 			//		Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			//theNewItem.Dispose();
+      //this._View.UnvalidateDirectory();
       try {
         if (psiItem != null) {
           Marshal.ReleaseComObject(psiItem);

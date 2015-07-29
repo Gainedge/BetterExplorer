@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BExplorer.Shell.Interop;
 using ThumbnailGenerator;
@@ -15,7 +16,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		#endregion
 
 		#region IListItemEx Members
-		public IShellItem ComInterface { get { return this._Item.ComInterface; } }
+		public IShellItem ComInterface => this._Item.ComInterface;
 
 		public string DisplayName { get; set; }
 
@@ -33,11 +34,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public Interop.IExtractIconPWFlags IconType { get; set; }
 
-		public IntPtr ILPidl { get { return this._Item.ILPidl; } }
+		public IntPtr ILPidl => this._Item.ILPidl;
 
-		public IntPtr PIDL { get { return this.IsSearchFolder ? Shell32.SHGetIDListFromObject(this.searchFolder.m_SearchComInterface) : this._Item.Pidl; } }
+		public IntPtr PIDL => this.IsSearchFolder ? Shell32.SHGetIDListFromObject(this.searchFolder.m_SearchComInterface) : this._Item.Pidl;
 
-		public IntPtr AbsolutePidl { get { return this._Item.AbsolutePidl; } }
+		public IntPtr AbsolutePidl => this._Item.AbsolutePidl;
 
 		public int ShieldedIconIndex { get; set; }
 
@@ -53,7 +54,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public bool IsFolder { get; set; }
 
-		public bool HasSubFolders { get { return this._Item.HasSubFolders; } }
+		public bool HasSubFolders => this._Item.HasSubFolders;
 
 		public bool IsHidden { get; set; }
 
@@ -65,23 +66,23 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public bool IsShared { get; set; }
 
-		private void Initialize_Helper(ShellItem Folder, IntPtr lvHandle, int index) {
-			this.DisplayName = Folder.DisplayName;
-			this.ParsingName = Folder.ParsingName;
+		private void Initialize_Helper(ShellItem folder, IntPtr lvHandle, int index) {
+			this.DisplayName = folder.DisplayName;
+			this.ParsingName = folder.ParsingName;
 			this.ItemIndex = index;
 			this.ParentHandle = lvHandle;
-			this.IsFileSystem = Folder.IsFileSystem;
-			this.IsNetworkPath = Folder.IsNetworkPath;
-			this.Extension = Folder.Extension;
-			this.IsDrive = Folder.IsDrive;
-			this.IsHidden = Folder.IsHidden;
+			this.IsFileSystem = folder.IsFileSystem;
+			this.IsNetworkPath = folder.IsNetworkPath;
+			this.Extension = folder.Extension;
+			this.IsDrive = folder.IsDrive;
+			this.IsHidden = folder.IsHidden;
 			this.OverlayIconIndex = -1;
 			this.ShieldedIconIndex = -1;
-			this.IsShared = Folder.IsShared;
-			this.IconType = Folder.IconType;
-			this.IsFolder = Folder.IsFolder;
-			this.IsSearchFolder = Folder.IsSearchFolder;
-			this._Item = Folder;
+			this.IsShared = folder.IsShared;
+			this.IconType = folder.IconType;
+			this.IsFolder = folder.IsFolder;
+			this.IsSearchFolder = folder.IsSearchFolder;
+			this._Item = folder;
 		}
 
 		public void Initialize(IntPtr lvHandle, IntPtr pidl, int index) {
@@ -137,7 +138,56 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		}
 
 		IListItemEx[] IListItemEx.GetSubItems(bool isEnumHidden) {
-			throw new NotImplementedException();
+      TaskScheduler taskScheduler = null;
+      try {
+        taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+      } catch (InvalidOperationException) {
+
+        SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
+        taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+      }
+
+      Task<FileSystemListItem[]> taskk = Task.Factory.StartNew(() => {
+        var fsiList = new List<FileSystemListItem>();
+        IShellFolder folder = this.GetIShellFolder();
+        HResult navRes;
+        IEnumIDList enumId = ShellItem.GetIEnumIDList(folder, SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN  | SHCONTF.FASTITEMS |
+          SHCONTF.NONFOLDERS | SHCONTF.ENABLE_ASYNC, out navRes);
+        this.NavigationStatus = navRes;
+        uint count;
+        IntPtr pidl;
+
+        //if (enumId == null) {
+        //  break;
+        //}
+        System.Windows.Forms.Application.DoEvents();
+        //Thread.Sleep(1);
+        //HResult result = enumId.Next(1, out pidl, out count);
+        var i = 0;
+        var parentItem = this.IsSearchFolder ? this._Item : new ShellItem(this.ParsingName.ToShellParsingName());
+        
+        while (enumId.Next(1, out pidl, out count) == HResult.S_OK) {
+          var fsi = new FileSystemListItem();
+          fsi.InitializeWithParent(parentItem, this.ParentHandle, pidl, i++);
+          fsiList.Add(fsi);
+          Shell32.ILFree(pidl);
+          if (this.IsSearchFolder)
+            Thread.Sleep(1);
+          System.Windows.Forms.Application.DoEvents();
+          //result = enumId.Next(1, out pidl, out count);
+        }
+
+        //if (result != HResult.S_FALSE) {
+        //Marshal.ThrowExceptionForHR((int)result);
+        //}
+
+        parentItem.Dispose();
+        return fsiList.ToArray();
+        //yield break;
+      }, CancellationToken.None, TaskCreationOptions.None, taskScheduler);
+      //taskk.Start(TaskScheduler.FromCurrentSynchronizationContext());
+      taskk.Wait();
+      return taskk.Result;
 		}
 
 		public HResult NavigationStatus { get; set; }

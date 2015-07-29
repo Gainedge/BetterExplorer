@@ -160,9 +160,9 @@ namespace BExplorer.Shell {
 		/// </summary>
 		internal IShellItem ComInterface {
 			get {
-				if (m_ComInterface == null && (File.Exists(this.CachedParsingName) || Directory.Exists(this.CachedParsingName)))
-					return new ShellItem(this.CachedParsingName).ComInterface;
-				else
+				//if (m_ComInterface == null && (File.Exists(this.CachedParsingName) || Directory.Exists(this.CachedParsingName)))
+				//	return new ShellItem(this.CachedParsingName).ComInterface;
+				//else
 					return m_ComInterface;
 			}
 			set {
@@ -1300,14 +1300,14 @@ namespace BExplorer.Shell {
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
 		private bool COM_Attribute_Check(SFGAO Check) {
 			SFGAO sfgao;
-			if (IsInvalid) {
-				var sho = ShellItem.ToShellParsingName(this.ParsingName);
-				sho.m_ComInterface.GetAttributes(Check, out sfgao);
-				sho.Dispose();
-			}
-			else {
+			//if (IsInvalid) {
+			//	//var sho = ShellItem.ToShellParsingName(this.ParsingName);
+			//	ComInterface.GetAttributes(Check, out sfgao);
+			//	//sho.Dispose();
+			//}
+			//else {
 				ComInterface.GetAttributes(Check, out sfgao);
-			}
+			//}
 			return (sfgao & Check) != 0;
 		}
 

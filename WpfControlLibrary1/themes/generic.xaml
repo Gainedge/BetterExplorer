@@ -18,12 +18,7 @@
             <Setter.Value>
               <ControlTemplate TargetType="{x:Type MenuItem}">
                 <Grid HorizontalAlignment="Stretch">
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="30"/>
-                    <ColumnDefinition Width="*"/>
-                  </Grid.ColumnDefinitions>
-                  <CheckBox Grid.Column="0"  VerticalAlignment="Center" HorizontalAlignment="Center"  IsChecked="{TemplateBinding IsChecked}"/>
-                  <ContentPresenter Grid.Column="1"  x:Name="content"  ContentSource="Header" Margin="2,2,2,2" HorizontalAlignment="Stretch"/>
+                  <ContentPresenter x:Name="content"  ContentSource="Header" Margin="0" HorizontalAlignment="Stretch"/>
                 </Grid>
               </ControlTemplate>
             </Setter.Value>
@@ -33,6 +28,4 @@
     </Setter>
     
   </Style>
-
-
 </ResourceDictionary>

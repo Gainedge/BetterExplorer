@@ -311,7 +311,7 @@ namespace Wpf.Controls {
 			var newt = new Wpf.Controls.TabItem(DefPath) {
 				Header = DefPath.DisplayName,
 				Icon = DefPath.ThumbnailSource(16, BExplorer.Shell.Interop.ShellThumbnailFormatOption.IconOnly, BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default),
-				ToolTip = DefPath.ParsingName,
+        ToolTip = DefPath.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\"),
 				AllowDrop = true
 			};
 
@@ -397,7 +397,7 @@ namespace Wpf.Controls {
       var newt = new TabItem(theTab.ShellObject) {
         Header = theTab.Header,
         Icon = theTab.Icon,
-        ToolTip = theTab.ShellObject.ParsingName,
+        ToolTip = theTab.ShellObject.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\"),
         AllowDrop = true,
         SelectedItems = theTab.SelectedItems
       };

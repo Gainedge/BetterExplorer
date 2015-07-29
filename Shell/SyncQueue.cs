@@ -16,6 +16,10 @@ namespace BExplorer.Shell {
 			this.queue.Clear();
 		}
 
+    public int Count() {
+      return this.queue.Count;
+    }
+
 		/// <summary>
 		/// Adds an object to the end of the System.Collections.Generic.Queue<T> then runs System.Threading.Monitor.PulseAll(queue) when queue.Count == 1;
 		/// </summary>

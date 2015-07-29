@@ -116,12 +116,6 @@
     <Compile Include="Interop\WindowsThumbnailProvider.cs" />
     <Compile Include="Interop\IOperationsProgressDialog.cs" />
     <Compile Include="Interop\Wallpaer.cs" />
-    <Compile Include="MessageHandler.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MessageHandler.Designer.cs">
-      <DependentUpon>MessageHandler.cs</DependentUpon>
-    </Compile>
     <Compile Include="Reflector.cs" />
     <Compile Include="FolderSelectDialog.cs" />
     <Compile Include="FolderSettings.cs" />
@@ -264,9 +258,6 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MessageHandler.resx">
-      <DependentUpon>MessageHandler.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <SubType>Designer</SubType>
       <Generator>ResXFileCodeGenerator</Generator>

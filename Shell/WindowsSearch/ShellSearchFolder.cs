@@ -72,6 +72,14 @@ namespace BExplorer.Shell {
 			}
 		}
 
+    public IntPtr PIDLS {
+      get {
+        IntPtr pidl = IntPtr.Zero;
+        NativeSearchFolderItemFactory.GetIDList(pidl);
+        return pidl;
+      }
+    }
+
 		/// <summary>
 		/// Gets the <see cref="Microsoft.WindowsAPICodePack.Shell.SearchCondition"/> of the search.
 		/// When this property is not set, the resulting search will have no filters applied.

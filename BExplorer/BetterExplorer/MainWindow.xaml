@@ -1389,8 +1389,7 @@
 								Text="Creates a new folder in the current folder" />
             </Ribbon:Button.ToolTip>
           </Ribbon:Button>
-          <Ribbon:SplitButton x:Name="btnNewItem"
-								Click="btnNewItem_Click"
+          <Ribbon:DropDownButton x:Name="btnNewItem"
 								DropDownOpened="btnNewItem_DropDownOpened"
 								Header="New item"
 								Icon="Images\newitems16.png"
@@ -3168,13 +3167,13 @@
         <RowDefinition Height="*"/>
       </Grid.RowDefinitions>
       <ToolBar Grid.Row="0" ToolBarTray.IsLocked="True" SizeChanged="ToolBar_SizeChanged">
-        <Ribbon:ToggleButton GroupName="CMDP" Header="CMD" SizeDefinition="Middle" Icon="Images\cmd16.png"/>
-        <Ribbon:ToggleButton GroupName="CMDP" Header="PowerShell" SizeDefinition="Middle" Icon="Images\powershell16.png"/>
+        <Ribbon:ToggleButton GroupName="CMDP" Header="CMD" SizeDefinition="Middle" Icon="Images\cmd16.png" IsChecked="True"/>
+        <Ribbon:ToggleButton GroupName="CMDP" Header="PowerShell" SizeDefinition="Middle" Icon="Images\powershell16.png" Click="btnStartPowerShellClick" IsEnabled="False"/>
         <Separator/>
         <Ribbon:SplitButton x:Name="btnConsoleHistory" Header="History" SizeDefinition="Middle" Icon="Images\history16.png"/>
         <Ribbon:Button Header="Clear" SizeDefinition="Middle" Icon="Images\clear16.png" Click="ConsoleClear_Click"/>
         <Separator/>
-        <Ribbon:ToggleButton Header="Sync" SizeDefinition="Middle" Icon="Images\Sync16.png"/>
+        <Ribbon:ToggleButton Header="Sync" SizeDefinition="Middle" Icon="Images\Sync16.png" IsEnabled="False"/>
       </ToolBar>
       <Helper:NoFlickerWindowsFormsHost x:Name="ctrlConsoleHost"
 										Grid.Row="1"

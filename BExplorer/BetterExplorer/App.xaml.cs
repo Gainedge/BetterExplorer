@@ -20,6 +20,7 @@ using System.Windows.Interop;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
 using BExplorer.Shell._Plugin_Interfaces;
+using System.IO;
 
 namespace BetterExplorer {
 	/// <summary>
@@ -134,8 +135,17 @@ namespace BetterExplorer {
 			string Locale = ""; bool dmi = true;
 			Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+      //System.AppDomain.CurrentDomain.BaseDirectory
+
+      if (!File.Exists(Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite"))) {
+        File.Copy(Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.sqlite"), Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite"));
+      }
 
 			RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true);
+      if (rks == null) {
+        rk.CreateSubKey(@"Software\BExplorer");
+        rks = rk.OpenSubKey(@"Software\BExplorer", true);
+      }
 
 			//// loads current Ribbon color theme
 			try {
@@ -195,7 +205,7 @@ namespace BetterExplorer {
 			newt.Header = sho.DisplayName;
 			newt.Icon = bmpSource;
 			newt.PreviewMouseMove += newt_PreviewMouseMove;
-			newt.ToolTip = sho.ParsingName;
+      newt.ToolTip = sho.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
 			win.tcMain.CloneTabItem(newt);
 		}
 

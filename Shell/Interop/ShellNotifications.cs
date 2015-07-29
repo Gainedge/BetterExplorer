@@ -475,8 +475,8 @@ namespace BExplorer.Shell.Interop {
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
 				//SHCNF.SHCNF_TYPE | SHCNF.SHCNF_IDLIST,
-				SHCNRF.InterruptLevel | SHCNRF.ShellLevel | SHCNRF.NewDelivery,
-				SHCNE.SHCNE_ALLEVENTS,
+        (SHCNRF)0x00FF | (SHCNRF)0x0000 | SHCNRF.NewDelivery,
+        SHCNE.SHCNE_ALLEVENTS | SHCNE.SHCNE_INTERRUPT,
 				WM_SHNOTIFY,
 				1,
 				changenetrys);
@@ -494,8 +494,8 @@ namespace BExplorer.Shell.Interop {
 
 			notifyid = SHChangeNotifyRegister(
 				hWnd,
-				SHCNRF.InterruptLevel | SHCNRF.ShellLevel | SHCNRF.NewDelivery,
-				SHCNE.SHCNE_ALLEVENTS,
+        (SHCNRF)0x00FF | (SHCNRF)0x0000 | SHCNRF.NewDelivery,
+				SHCNE.SHCNE_ALLEVENTS | SHCNE.SHCNE_INTERRUPT,
 				WM_SHNOTIFY,
 				1,
 				changenetrys);
@@ -590,15 +590,15 @@ namespace BExplorer.Shell.Interop {
 				//System.Windows.Forms.MessageBox.Show(info.Notification.ToString());
 
 				//Not supported notifications
-				//if (info.Notification == SHCNE.SHCNE_FREESPACE ||
-				//	info.Notification == SHCNE.SHCNE_UPDATEIMAGE)
-				//	return (false);
+				if (info.Notification == SHCNE.SHCNE_FREESPACE ||
+					info.Notification == SHCNE.SHCNE_UPDATEIMAGE)
+					return (false);
 
 				info.Item1 = shNotify.dwItem1;
 				info.Item2 = shNotify.dwItem2;
 
 				// Was this notification in the received notifications ?
-				//if (NotificationsReceived.Contains(info)) return (false);
+				if (NotificationsReceived.Contains(info)) return (false);
 				NotificationsReceived.Add(info);
 			}
 			finally {

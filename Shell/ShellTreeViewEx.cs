@@ -409,13 +409,16 @@ namespace BExplorer.Shell {
               if (node != null) {
                 visible = node.IsVisible;
                 var item = node.Tag as IListItemEx;
-                pidl = item.AbsolutePidl;
+	              if (item != null)
+	              {
+		              pidl = item.AbsolutePidl;
+	              }
               }
             } catch { }
 
           }));
 
-          if (visible) {
+          if (visible && pidl != IntPtr.Zero) {
             var nodeHandle = handle;
             Thread.Sleep(1);
             Application.DoEvents();
