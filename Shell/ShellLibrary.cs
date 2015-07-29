@@ -162,24 +162,6 @@ namespace BExplorer.Shell {
 
 		#region Public Properties
 
-		/// <summary>
-		/// The name of the library, every library must
-		/// have a name
-		/// </summary>
-		/// <exception cref="COMException">Will throw if no Icon is set</exception>
-		//public override string Name
-		//{
-		//    get
-		//    {
-		//        if (base.DisplayName == null && NativeShellItem != null)
-		//        {
-		//            base.Name = System.IO.Path.GetFileNameWithoutExtension(ShellHelper.GetParsingName(NativeShellItem));
-		//        }
-
-		//        return base.Name;
-		//    }
-		//}
-
 		private string Name { get; set; }
 
 		/// <summary>
@@ -214,20 +196,6 @@ namespace BExplorer.Shell {
 				nativeShellLibrary.Commit();
 			}
 		}
-
-		/*
-		/// <summary>
-		/// The Guid of the Library type
-		/// </summary>
-		/// <exception cref="COMException">Will throw if no Library Type is set</exception>
-		public Guid LibraryTypeId {
-			get {
-				Guid folderTypeGuid;
-				nativeShellLibrary.GetFolderType(out folderTypeGuid);
-				return folderTypeGuid;
-			}
-		}
-		*/
 
 		private static LibraryFolderType GetFolderTypefromGuid(Guid folderTypeGuid) {
 			for (int i = 0; i < FolderTypesGuids.Length; i++) {
@@ -321,34 +289,7 @@ namespace BExplorer.Shell {
 		/// <summary>
 		/// Get a the known folder FOLDERID_Libraries
 		/// </summary>
-		public static IKnownFolder LibrariesKnownFolder {
-			get {
-				return KnownFolderHelper.FromKnownFolderId(new Guid(InterfaceGuids.Libraries));
-			}
-		}
-
-		//public static ShellLibrary Load(ShellObject item, bool isReadOnly)
-		//{
-		//    INativeShellLibrary nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
-		//    AccessModes flags = isReadOnly ?
-		//            AccessModes.Read :
-		//            AccessModes.ReadWrite;
-		//    nativeShellLibrary.LoadLibraryFromItem(item.NativeShellItem2, flags);
-
-		//    ShellLibrary library = new ShellLibrary(nativeShellLibrary);
-		//    try
-		//    {
-		//        library.nativeShellItem = (IShellItem2)item.nativeShellItem;
-		//        library.Name = item.GetDisplayName(DisplayNameType.Default);
-
-		//        return library;
-		//    }
-		//    catch
-		//    {
-		//        library.Dispose();
-		//        throw;
-		//    }
-		//}
+		public static IKnownFolder LibrariesKnownFolder { get { return KnownFolderHelper.FromKnownFolderId(new Guid(InterfaceGuids.Libraries)); } }
 
 		private static ShellLibrary Load_Helper(IShellItem nativeShellItem, string libraryName, bool isReadOnly) {
 			INativeShellLibrary nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
@@ -376,26 +317,10 @@ namespace BExplorer.Shell {
 		public static ShellLibrary Load(string libraryName, bool isReadOnly) {
 			IKnownFolder kf = KnownFolders.Libraries;
 			string librariesFolderPath = kf != null ? kf.Path : string.Empty;
-			Guid guid = new Guid(InterfaceGuids.IShellItem);
+			var guid = new Guid(InterfaceGuids.IShellItem);
 			string shellItemPath = System.IO.Path.Combine(librariesFolderPath, libraryName + FileExtension);
 			IShellItem nativeShellItem = Shell32.SHCreateItemFromParsingName(shellItemPath, IntPtr.Zero, guid);
 			return Load_Helper(nativeShellItem, libraryName, isReadOnly);
-			/*
-			var nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
-			var flags = isReadOnly ? AccessModes.Read : AccessModes.ReadWrite;
-			nativeShellLibrary.LoadLibraryFromItem(nativeShellItem, flags);
-
-			ShellLibrary library = new ShellLibrary(nativeShellLibrary);
-			try {
-				library.ComInterface = (IShellItem)nativeShellItem;
-				library.Name = libraryName;
-				return library;
-			}
-			catch {
-				library.Dispose();
-				throw;
-			}
-			*/
 		}
 
 		/// <summary>
@@ -408,27 +333,8 @@ namespace BExplorer.Shell {
 		public static ShellLibrary Load(string libraryName, string folderPath, bool isReadOnly) {
 			// Create the shell item path
 			string shellItemPath = System.IO.Path.Combine(folderPath, libraryName + FileExtension);
-			//var item = new ShellItem(shellItemPath);
-
 			IShellItem nativeShellItem = new ShellItem(shellItemPath).ComInterface;
 			return Load_Helper(nativeShellItem, libraryName, isReadOnly);
-
-			/*
-			var nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
-			var flags = isReadOnly ? AccessModes.Read : AccessModes.ReadWrite;
-			nativeShellLibrary.LoadLibraryFromItem(nativeShellItem, flags);
-
-			var library = new ShellLibrary(nativeShellLibrary);
-			try {
-				library.ComInterface = (IShellItem2)nativeShellItem;
-				library.Name = libraryName;
-				return library;
-			}
-			catch {
-				library.Dispose();
-				throw;
-			}
-			*/
 		}
 
 
@@ -603,18 +509,6 @@ namespace BExplorer.Shell {
 
 			return true;
 		}
-
-		/*
-		/// <summary>
-		/// Remove a folder or search connector
-		/// </summary>
-		/// <param name="folderPath">The path of the item to remove.</param>
-		/// <returns><B>true</B> if the item was removed.</returns>
-		public bool Remove(string folderPath) {
-			ShellItem item = new ShellItem(folderPath);
-			return Remove(item);
-		}
-		*/
 
 		#endregion Collection Members
 
@@ -799,18 +693,5 @@ namespace BExplorer.Shell {
 		public bool IsReadOnly { get { return false; } }
 
 		#endregion ICollection<ShellFileSystemFolder> Members
-
-		/*
-		/// <summary>
-		/// Indicates whether this feature is supported on the current platform.
-		/// </summary>
-		public static bool IsPlatformSupported {
-			get {
-				// We need Windows 7 onwards ...
-				return true;
-			}
-		}
-		*/
-
 	}
 }

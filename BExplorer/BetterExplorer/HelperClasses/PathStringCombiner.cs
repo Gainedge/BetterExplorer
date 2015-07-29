@@ -25,6 +25,7 @@ namespace BetterExplorer {
 		}
 
 
+		[Obsolete("Inline this")]
 		public static string CombinePathsWithSinglePath(string path, List<IListItemEx> files, bool checkforfolders = false) {
 			//TODO: Consider inlining in the one spot this is used
 			string ret = "";
