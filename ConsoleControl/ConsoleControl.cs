@@ -7,47 +7,49 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-namespace ConsoleControl {
+namespace ConsoleControl
+{
 
-	/// <summary> The console event handler is used for console events. </summary>
-	/// <param name="sender"> The sender. </param>
-	/// <param name="args">  
-	/// The <see cref="ConsoleControl.ConsoleEventArgs" /> instance containing the event data.
-	/// </param>
-	public delegate void ConsoleEventHanlder(object sender, Tuple<string> args);
+    /// <summary> The console event handler is used for console events. </summary>
+    /// <param name="sender"> The sender. </param>
+    /// <param name="args">  
+    /// The <see cref="ConsoleControl.ConsoleEventArgs" /> instance containing the event data.
+    /// </param>
+    public delegate void ConsoleEventHanlder(object sender, Tuple<string> args);
 
-	/// <summary> The Console Control allows you to embed a basic console in your application. </summary>
-	[ToolboxBitmap(typeof(resfinder), "ConsoleControl.ConsoleControl.bmp")]
-	public partial class ConsoleControl : UserControl {
+    /// <summary> The Console Control allows you to embed a basic console in your application. </summary>
+    [ToolboxBitmap(typeof(resfinder), "ConsoleControl.ConsoleControl.bmp")]
+    public partial class ConsoleControl : UserControl
+    {
 
-		#region Properties
+        #region Properties
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
-		private const int WM_VSCROLL = 277;
-		private const int SB_PAGEBOTTOM = 7;
+        private const int WM_VSCROLL = 277;
+        private const int SB_PAGEBOTTOM = 7;
 
 
-		/// <summary> Current position that input starts at. </summary>
-		private int inputStart = -1;
+        /// <summary> Current position that input starts at. </summary>
+        private int inputStart = -1;
 
-		private bool _ShouldClear = true;
+        private bool _ShouldClear = true;
 
-		private bool _IsCodepageSet = false;
+        private bool _IsCodepageSet = false;
 
-		public ShellView ShellListView { get; set; }
-		/// <summary>
-		/// The last input string (used so that we can make sure we don't echo input twice).
-		/// </summary>
-		private string lastInput;
+        public ShellView ShellListView { get; set; }
+        /// <summary>
+        /// The last input string (used so that we can make sure we don't echo input twice).
+        /// </summary>
+        private string lastInput;
 
-		/*
+        /*
 		 * This was never used
 		private IntPtr _cmdhandle;
 		*/
 
-		/*		 
+        /*		 
 		/// <summary> The is input enabled flag. </summary>
 		private bool isInputEnabled = true;
 
@@ -65,234 +67,260 @@ namespace ConsoleControl {
 		}
 		*/
 
-		/// <summary> The key mappings. </summary>
-		private List<KeyMapping> keyMappings = new List<KeyMapping>();
+        /// <summary> The key mappings. </summary>
+        private List<KeyMapping> keyMappings = new List<KeyMapping>();
 
-		/// <summary> Occurs when console output is produced. </summary>
-		private event ConsoleEventHanlder OnConsoleOutput;
+        /// <summary> Occurs when console output is produced. </summary>
+        private event ConsoleEventHanlder OnConsoleOutput;
 
-		/// <summary> Occurs when console input is produced. </summary>
-		public event ConsoleEventHanlder OnConsoleInput;
+        /// <summary> Occurs when console input is produced. </summary>
+        public event ConsoleEventHanlder OnConsoleInput;
 
-		/// <summary> The internal process interface used to interface with the process. </summary>
-		private ProcessInterface.ProcessInterface processInterace = new ProcessInterface.ProcessInterface();
+        /// <summary> The internal process interface used to interface with the process. </summary>
+        private ProcessInterface.ProcessInterface processInterace = new ProcessInterface.ProcessInterface();
 
-		/*
+        /*
 		/// <summary> Gets the process interface. </summary>
 		[Browsable(false)]
 		private ProcessInterface.ProcessInterface Process_Interface { get { return processInterace; } }
 		*/
 
-		///// <summary> Gets the key mappings. </summary>
-		//[Browsable(false)]
-		//private List<KeyMapping> KeyMappings { get { return keyMappings; } }
+        ///// <summary> Gets the key mappings. </summary>
+        //[Browsable(false)]
+        //private List<KeyMapping> KeyMappings { get { return keyMappings; } }
 
-		protected override CreateParams CreateParams {
-			get {
-				CreateParams cp = base.CreateParams;
-				cp.ExStyle |= 0x02000000;
-				return cp;
-			}
-		}
-
-
-
-
-		/// <summary> Gets or sets a value indicating whether [send keyboard commands to process]. </summary>
-		/// <value> <c>true</c> if [send keyboard commands to process]; otherwise, <c>false</c>. </value>
-		[Category("Console Control"), Description("If true, special keyboard commands like Ctrl-C and tab are sent to the process.")]
-		private bool SendKeyboardCommandsToProcess { get; set; }
-
-		/// <summary> Gets a value indicating whether this instance is process running. </summary>
-		/// <value> <c>true</c> if this instance is process running; otherwise, <c>false</c>. </value>
-		[Browsable(false)]
-		public bool IsProcessRunning {
-			get { return processInterace.IsProcessRunning; }
-		}
-
-		/// <summary> Gets or sets a value indicating whether to show diagnostics. </summary>
-		/// <value> <c>true</c> if show diagnostics; otherwise, <c>false</c>. </value>
-		[Category("Console Control"), Description("Show diagnostic information, such as exceptions.")]
-		public bool ShowDiagnostics { get; set; }
-
-		public String LastLinePath { get; set; }
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;
+                return cp;
+            }
+        }
 
 
 
 
-		#endregion Properties
+        /// <summary> Gets or sets a value indicating whether [send keyboard commands to process]. </summary>
+        /// <value> <c>true</c> if [send keyboard commands to process]; otherwise, <c>false</c>. </value>
+        [Category("Console Control"), Description("If true, special keyboard commands like Ctrl-C and tab are sent to the process.")]
+        private bool SendKeyboardCommandsToProcess { get; set; }
 
-		#region Control Events
+        /// <summary> Gets a value indicating whether this instance is process running. </summary>
+        /// <value> <c>true</c> if this instance is process running; otherwise, <c>false</c>. </value>
+        [Browsable(false)]
+        public bool IsProcessRunning
+        {
+            get { return processInterace.IsProcessRunning; }
+        }
 
-		private void btnPaste_Click(object sender, EventArgs e) {
-			MessageBox.Show("this is not correct as it does not write to the stream...I think O.o!");
-			this.richTextBoxConsole.AppendText(System.Windows.Forms.Clipboard.GetText());
-		}
+        /// <summary> Gets or sets a value indicating whether to show diagnostics. </summary>
+        /// <value> <c>true</c> if show diagnostics; otherwise, <c>false</c>. </value>
+        [Category("Console Control"), Description("Show diagnostic information, such as exceptions.")]
+        public bool ShowDiagnostics { get; set; }
 
-		private void btnCopy_Click(object sender, EventArgs e) {
-			System.Windows.Forms.Clipboard.SetText(richTextBoxConsole.SelectedText);
-		}
+        public String LastLinePath { get; set; }
 
-		private void btnClear_Click(object sender, EventArgs e) {
-			this._ShouldClear = true;
-			ClearOutput();
-		}
 
-		private void richTextBoxConsole_TextChanged(object sender, EventArgs e) {
-			SendMessage(richTextBoxConsole.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
-		}
 
-		#endregion Control Events
 
-		#region Processing
+        #endregion Properties
 
-    Boolean _IsPowerShell = false;
-		/// <summary> Runs a process. </summary>
-		/// <param name="fileName">  Name of the file. </param>
-		/// <param name="arguments"> The arguments. </param>
-		public void StartPowerShell() {
-			if (IsProcessRunning) {
-        processInterace.StopProcess();
-			}
-      _IsPowerShell = true;
-      processInterace.StartProcess("powershell.exe", null);
-      Invoke((Action)(() => {
-        richTextBoxConsole.ReadOnly = false;
-      }));
-      //ClearOutput();
+        #region Control Events
 
-			//// Are we showing diagnostics?
-			//if (ShowDiagnostics) {
-			//	WriteOutput("Preparing to run " + fileName, Color.FromArgb(255, 0, 255, 0));
-			//	if (!string.IsNullOrEmpty(arguments))
-			//		WriteOutput(" with arguments " + arguments + "." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
-			//	else
-			//		WriteOutput("." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
-			//}
+        private void btnPaste_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("this is not correct as it does not write to the stream...I think O.o!");
+            this.richTextBoxConsole.AppendText(System.Windows.Forms.Clipboard.GetText());
+        }
 
-			//// Start the process.
-			//this._cmdhandle = processInterace.StartProcess(fileName, arguments);
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.Clipboard.SetText(richTextBoxConsole.SelectedText);
+        }
 
-			//// If we enable input, make the control not read only.
-			//if (IsInputEnabled)
-			//	richTextBoxConsole.ReadOnly = false;
-		}
-		
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            this._ShouldClear = true;
+            ClearOutput();
+        }
 
-		/// <summary> Stops the process. </summary>
-		public void StopProcess() {
-			// Stop the interface.
-			processInterace.StopProcess();
-			this._IsCodepageSet = false;
-		}
+        private void richTextBoxConsole_TextChanged(object sender, EventArgs e)
+        {
+            SendMessage(richTextBoxConsole.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
+        }
 
-		/// <summary> Handles the OnProcessError event of the processInterace control. </summary>
-		/// <param name="sender"> The source of the event. </param>
-		/// <param name="args">  
-		/// The <see cref="Process_Interface.ProcessEventArgs" /> instance containing the event data.
-		/// </param>
-		private void processInterace_OnProcessError(object sender, ProcessInterface.ProcessEventArgs args) {
-			// Write the output, in red
-			WriteOutput(args.Content, Color.Red);
+        #endregion Control Events
 
-			// Fire the output event.
-			FireConsoleOutputEvent(args.Content);
-		}
+        #region Processing
 
-		/// <summary> Handles the OnProcessOutput event of the processInterace control. </summary>
-		/// <param name="sender"> The source of the event. </param>
-		/// <param name="args">  
-		/// The <see cref="Process_Interface.ProcessEventArgs" /> instance containing the event data.
-		/// </param>
-		private void processInterace_OnProcessOutput(object sender, ProcessInterface.ProcessEventArgs args) {
-			// Write the output, in white
-			WriteOutput(args.Content, Color.White);
+        //Boolean _IsPowerShell = false;
 
-			// Fire the output event.
-			FireConsoleOutputEvent(args.Content);
-		}
 
-		/// <summary> Handles the OnProcessInput event of the processInterace control. </summary>
-		/// <param name="sender"> The source of the event. </param>
-		/// <param name="args">  
-		/// The <see cref="Process_Interface.ProcessEventArgs" /> instance containing the event data.
-		/// </param>
-		private void processInterace_OnProcessInput(object sender, ProcessInterface.ProcessEventArgs args) {
-			throw new NotImplementedException();
-		}
+        /// <summary> Runs a process. </summary>
+        /// <param name="fileName">  Name of the file. </param>
+        /// <param name="arguments"> The arguments. </param>
+        public void StartPowerShell()
+        {
+            if (IsProcessRunning) processInterace.StopProcess();
 
-		/// <summary> Handles the OnProcessExit event of the processInterace control. </summary>
-		/// <param name="sender"> The source of the event. </param>
-		/// <param name="args">  
-		/// The <see cref="Process_Interface.ProcessEventArgs" /> instance containing the event data.
-		/// </param>
-		private void processInterace_OnProcessExit(object sender, ProcessInterface.ProcessEventArgs args) {
-			// Are we showing diagnostics?
-			if (ShowDiagnostics) {
-				WriteOutput(System.Environment.NewLine + processInterace.ProcessFileName + " exited.", Color.FromArgb(255, 0, 255, 0));
-			}
+            //_IsPowerShell = true;
 
-			// Read only again.
-			Invoke((Action)(() => {
-				richTextBoxConsole.ReadOnly = true;
-			}));
-		}
 
-		/// <summary> Fires the console output event. </summary>
-		/// <param name="content"> The content. </param>
-		private void FireConsoleOutputEvent(string content) {
-			// Get the event.
-			var theEvent = OnConsoleOutput;
-			if (theEvent != null)
-				theEvent(this, new Tuple<string>(content));
-		}
+            processInterace.StartProcess("powershell.exe", null);
+            Invoke((Action)(() =>
+            {
+                richTextBoxConsole.ReadOnly = false;
+            }));
 
-		/// <summary> Fires the console input event. </summary>
-		/// <param name="content"> The content. </param>
-		private void FireConsoleInputEvent(string content) {
-			// Get the event.
-			var theEvent = OnConsoleInput;
-			if (theEvent != null)
-				theEvent(this, new Tuple<string>(content));
-		}
+            //ClearOutput();
 
-		#endregion Processing
+            //// Are we showing diagnostics?
+            //if (ShowDiagnostics) {
+            //	WriteOutput("Preparing to run " + fileName, Color.FromArgb(255, 0, 255, 0));
+            //	if (!string.IsNullOrEmpty(arguments))
+            //		WriteOutput(" with arguments " + arguments + "." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
+            //	else
+            //		WriteOutput("." + Environment.NewLine, Color.FromArgb(255, 0, 255, 0));
+            //}
 
-		#region Writing
-		public void ClearConsole() {
-			this._ShouldClear = true;
-			ClearOutput();
-		}
-		private void ClearOutput(bool isSendClear = true, bool isClearAfterEnter = true) {
-			if (isClearAfterEnter) {
-				if (isSendClear)
-					//Clear the real console screen
-					WriteInput("cls", Color.Black, false);
-				richTextBoxConsole.SelectedText = "";
-				richTextBoxConsole.Clear();
-				inputStart = 0;
-			}
-		}
+            //// Start the process.
+            //this._cmdhandle = processInterace.StartProcess(fileName, arguments);
 
-		/// <summary> Writes the output to the console control. </summary>
-		/// <param name="output"> The output. </param>
-		/// <param name="color">  The color. </param>
-		private void WriteOutput(string output, Color color) {
-			//if (string.IsNullOrEmpty(lastInput) == false && (output == lastInput || output.Replace("\r\n", "") == lastInput))
-			if (!string.IsNullOrEmpty(lastInput) && (output == lastInput || output.Replace("\r\n", "") == lastInput))
-				return;
-			ClearOutput(false, this._ShouldClear);
-			//else if (!richTextBoxConsole.Created)
-			//	return;
+            //// If we enable input, make the control not read only.
+            //if (IsInputEnabled)
+            //	richTextBoxConsole.ReadOnly = false;
+        }
 
-			//richTextBoxConsole.BeginInvoke((Action)(() => {
-			// Write the output.
-			richTextBoxConsole.SelectionColor = color;
-			richTextBoxConsole.SelectedText += output;
-			inputStart = richTextBoxConsole.SelectionStart;
-			//}));
 
-			/*
+        /// <summary> Stops the process. </summary>
+        public void StopProcess()
+        {
+            // Stop the interface.
+            processInterace.StopProcess();
+            this._IsCodepageSet = false;
+        }
+
+        /// <summary> Handles the OnProcessError event of the processInterace control. </summary>
+        /// <param name="sender"> The source of the event. </param>
+        /// <param name="args">  
+        /// The <see cref="Process_Interface.ProcessEventArgs" /> instance containing the event data.
+        /// </param>
+        private void processInterace_OnProcessError(object sender, ProcessInterface.ProcessEventArgs args)
+        {
+            // Write the output, in red
+            WriteOutput(args.Content, Color.Red);
+
+            // Fire the output event.
+            FireConsoleOutputEvent(args.Content);
+        }
+
+        /// <summary> Handles the OnProcessOutput event of the processInterace control. </summary>
+        /// <param name="sender"> The source of the event. </param>
+        /// <param name="args">  
+        /// The <see cref="Process_Interface.ProcessEventArgs" /> instance containing the event data.
+        /// </param>
+        private void processInterace_OnProcessOutput(object sender, ProcessInterface.ProcessEventArgs args)
+        {
+            // Write the output, in white
+            WriteOutput(args.Content, Color.White);
+
+            // Fire the output event.
+            FireConsoleOutputEvent(args.Content);
+        }
+
+        /// <summary> Handles the OnProcessInput event of the processInterace control. </summary>
+        /// <param name="sender"> The source of the event. </param>
+        /// <param name="args">  
+        /// The <see cref="Process_Interface.ProcessEventArgs" /> instance containing the event data.
+        /// </param>
+        private void processInterace_OnProcessInput(object sender, ProcessInterface.ProcessEventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary> Handles the OnProcessExit event of the processInterace control. </summary>
+        /// <param name="sender"> The source of the event. </param>
+        /// <param name="args">  
+        /// The <see cref="Process_Interface.ProcessEventArgs" /> instance containing the event data.
+        /// </param>
+        private void processInterace_OnProcessExit(object sender, ProcessInterface.ProcessEventArgs args)
+        {
+            // Are we showing diagnostics?
+            if (ShowDiagnostics)
+            {
+                WriteOutput(System.Environment.NewLine + processInterace.ProcessFileName + " exited.", Color.FromArgb(255, 0, 255, 0));
+            }
+
+            // Read only again.
+            Invoke((Action)(() =>
+            {
+                richTextBoxConsole.ReadOnly = true;
+            }));
+        }
+
+        /// <summary> Fires the console output event. </summary>
+        /// <param name="content"> The content. </param>
+        private void FireConsoleOutputEvent(string content)
+        {
+            // Get the event.
+            var theEvent = OnConsoleOutput;
+            if (theEvent != null)
+                theEvent(this, new Tuple<string>(content));
+        }
+
+        /// <summary> Fires the console input event. </summary>
+        /// <param name="content"> The content. </param>
+        private void FireConsoleInputEvent(string content)
+        {
+            // Get the event.
+            var theEvent = OnConsoleInput;
+            if (theEvent != null)
+                theEvent(this, new Tuple<string>(content));
+        }
+
+        #endregion Processing
+
+        #region Writing
+        public void ClearConsole()
+        {
+            this._ShouldClear = true;
+            ClearOutput();
+        }
+        private void ClearOutput(bool isSendClear = true, bool isClearAfterEnter = true)
+        {
+            if (isClearAfterEnter)
+            {
+                if (isSendClear)
+                    //Clear the real console screen
+                    WriteInput("cls", Color.Black, false);
+                richTextBoxConsole.SelectedText = "";
+                richTextBoxConsole.Clear();
+                inputStart = 0;
+            }
+        }
+
+        /// <summary> Writes the output to the console control. </summary>
+        /// <param name="output"> The output. </param>
+        /// <param name="color">  The color. </param>
+        private void WriteOutput(string output, Color color)
+        {
+            //if (string.IsNullOrEmpty(lastInput) == false && (output == lastInput || output.Replace("\r\n", "") == lastInput))
+            if (!string.IsNullOrEmpty(lastInput) && (output == lastInput || output.Replace("\r\n", "") == lastInput))
+                return;
+            ClearOutput(false, this._ShouldClear);
+            //else if (!richTextBoxConsole.Created)
+            //	return;
+
+            //richTextBoxConsole.BeginInvoke((Action)(() => {
+            // Write the output.
+            richTextBoxConsole.SelectionColor = color;
+            richTextBoxConsole.SelectedText += output;
+            inputStart = richTextBoxConsole.SelectionStart;
+            //}));
+
+            /*
 			//Invoke((Action)(() => {
 			//  Write the output.
 			richTextBoxConsole.SelectionColor = color;
@@ -300,102 +328,108 @@ namespace ConsoleControl {
 			inputStart = richTextBoxConsole.SelectionStart;
 			//}));
 			*/
-		}
+        }
 
-		/// <summary> Writes the input to the console control. </summary>
-		/// <param name="input"> The input. </param>
-		/// <param name="color"> The color. </param>
-		/// <param name="isRaiseEvent"> Rise input event or not </param>
-		private void WriteInput(string input, Color color, Boolean isRaiseEvent = true) {
-			//Invoke((Action)(() => {
-			lastInput = input;
+        /// <summary> Writes the input to the console control. </summary>
+        /// <param name="input"> The input. </param>
+        /// <param name="color"> The color. </param>
+        /// <param name="isRaiseEvent"> Rise input event or not </param>
+        private void WriteInput(string input, Color color, Boolean isRaiseEvent = true)
+        {
+            //Invoke((Action)(() => {
+            lastInput = input;
 
-			// Write the input.
-			processInterace.WriteInput(input);
+            // Write the input.
+            processInterace.WriteInput(input);
 
-			// Fire the event.
-			if (isRaiseEvent)
-				FireConsoleInputEvent(input);
-			//}));
-		}
+            // Fire the event.
+            if (isRaiseEvent)
+                FireConsoleInputEvent(input);
+            //}));
+        }
 
-		public void EnqueleInput(string input) {
-			inputStart = richTextBoxConsole.SelectionStart;
-			richTextBoxConsole.SelectionColor = Color.LightBlue;
-			richTextBoxConsole.SelectedText += input;
+        public void EnqueleInput(string input)
+        {
+            inputStart = richTextBoxConsole.SelectionStart;
+            richTextBoxConsole.SelectionColor = Color.LightBlue;
+            richTextBoxConsole.SelectedText += input;
 
-		}
+        }
 
-		public void ChangeFolder(string Folder, bool IsFileSystem) {
-			string Value = null;
+        public void ChangeFolder(string Folder, bool IsFileSystem)
+        {
+            string Value = null;
 
-			richTextBoxConsole.ReadOnly = false;
+            richTextBoxConsole.ReadOnly = false;
 
 
-			if (!IsProcessRunning)
-				/*this._cmdhandle =*/
-				processInterace.StartProcess("cmd.exe", null);
+            if (!IsProcessRunning)
+                /*this._cmdhandle =*/
+                processInterace.StartProcess("cmd.exe", null);
 
-			this._ShouldClear = true;
-			ClearOutput();
+            this._ShouldClear = true;
+            ClearOutput();
 
-			if (IsFileSystem)
-				Value = String.Format("cd /D \"{0}\"", Folder);
-			if (!this._IsCodepageSet) {
-				//Enable UTF-8 for the ConsoleControl
-				WriteInput("chcp 65001", Color.Wheat, false);
-				this._IsCodepageSet = true;
-			}
+            if (IsFileSystem)
+                Value = String.Format("cd /D \"{0}\"", Folder);
+            if (!this._IsCodepageSet)
+            {
+                //Enable UTF-8 for the ConsoleControl
+                WriteInput("chcp 65001", Color.Wheat, false);
+                this._IsCodepageSet = true;
+            }
 
-			WriteInput(Value, Color.Wheat, false);
-			this.LastLinePath = Folder;
-		}
+            WriteInput(Value, Color.Wheat, false);
+            this.LastLinePath = Folder;
+        }
 
-		#endregion Writing
+        #endregion Writing
 
-		/// <summary> Initializes a new instance of the <see cref="ConsoleControl" /> class. </summary>
-		public ConsoleControl() {
-			// Initialize the component.
-			InitializeComponent();
+        /// <summary> Initializes a new instance of the <see cref="ConsoleControl" /> class. </summary>
+        public ConsoleControl()
+        {
+            // Initialize the component.
+            InitializeComponent();
 
-			this.DoubleBuffered = true;
-			this.SetStyle(ControlStyles.UserPaint |
-						  ControlStyles.AllPaintingInWmPaint |
-						  ControlStyles.ResizeRedraw |
-						  ControlStyles.ContainerControl |
-						  ControlStyles.OptimizedDoubleBuffer |
-						  ControlStyles.SupportsTransparentBackColor,
-						  true);
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.UserPaint |
+                          ControlStyles.AllPaintingInWmPaint |
+                          ControlStyles.ResizeRedraw |
+                          ControlStyles.ContainerControl |
+                          ControlStyles.OptimizedDoubleBuffer |
+                          ControlStyles.SupportsTransparentBackColor,
+                          true);
 
-			// Show diagnostics disabled by default.
-			ShowDiagnostics = false;
+            // Show diagnostics disabled by default.
+            ShowDiagnostics = false;
 
-			// Input enabled by default.
-			//IsInputEnabled = true;
+            // Input enabled by default.
+            //IsInputEnabled = true;
 
-			// Disable special commands by default.
-			SendKeyboardCommandsToProcess = true;
+            // Disable special commands by default.
+            SendKeyboardCommandsToProcess = true;
 
-			// Initialize the keymappings.
-			InitialiseKeyMappings();
+            // Initialize the keymappings.
+            InitialiseKeyMappings();
 
-			// Handle process events.
-			processInterace.OnProcessOutput += new ProcessInterface.ProcessEventHanlder(processInterace_OnProcessOutput);
-			processInterace.OnProcessError += new ProcessInterface.ProcessEventHanlder(processInterace_OnProcessError);
-			processInterace.OnProcessInput += new ProcessInterface.ProcessEventHanlder(processInterace_OnProcessInput);
-			processInterace.OnProcessExit += new ProcessInterface.ProcessEventHanlder(processInterace_OnProcessExit);
+            // Handle process events.
+            processInterace.OnProcessOutput += new ProcessInterface.ProcessEventHanlder(processInterace_OnProcessOutput);
+            processInterace.OnProcessError += new ProcessInterface.ProcessEventHanlder(processInterace_OnProcessError);
+            processInterace.OnProcessInput += new ProcessInterface.ProcessEventHanlder(processInterace_OnProcessInput);
+            processInterace.OnProcessExit += new ProcessInterface.ProcessEventHanlder(processInterace_OnProcessExit);
 
-			// Wait for key down messages on the rich text box.
-			richTextBoxConsole.KeyDown += new KeyEventHandler(richTextBoxConsole_KeyDown);
-			richTextBoxConsole.MouseUp += richTextBoxConsole_MouseDown;
-		}
+            // Wait for key down messages on the rich text box.
+            richTextBoxConsole.KeyDown += new KeyEventHandler(richTextBoxConsole_KeyDown);
+            richTextBoxConsole.MouseUp += richTextBoxConsole_MouseDown;
+        }
 
-		void richTextBoxConsole_MouseDown(object sender, MouseEventArgs e) {
-			this.ShellListView.IsFocusAllowed = false;
-			richTextBoxConsole.Focus();
-		}
+        void richTextBoxConsole_MouseDown(object sender, MouseEventArgs e)
+        {
+            this.ShellListView.IsFocusAllowed = false;
+            richTextBoxConsole.Focus();
+        }
 
-		/*
+        /*
 		/// <summary> Gets the internal rich text box. </summary>
 		[Browsable(false)]
 		[Obsolete("Will become private soon", false)]
@@ -406,99 +440,108 @@ namespace ConsoleControl {
 		}
 		*/
 
-		/*
+        /*
 		[Obsolete("Will become private soon", false)]
 		public void ScrollToBottom() {
 			//SendMessage(richTextBoxConsole.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
 		}
 		*/
 
-		/// <summary> Initializes the key mappings. </summary>
-		private void InitialiseKeyMappings() {
-			// Map 'tab'.
-			keyMappings.Add(new KeyMapping(false, false, false, Keys.Tab, "{TAB}", "\t"));
+        /// <summary> Initializes the key mappings. </summary>
+        private void InitialiseKeyMappings()
+        {
+            // Map 'tab'.
+            keyMappings.Add(new KeyMapping(false, false, false, Keys.Tab, "{TAB}", "\t"));
 
-			// Map 'Ctrl-C'.
-			keyMappings.Add(new KeyMapping(true, false, false, Keys.C, "^(c)", "\x03\r\n"));
-		}
+            // Map 'Ctrl-C'.
+            keyMappings.Add(new KeyMapping(true, false, false, Keys.C, "^(c)", "\x03\r\n"));
+        }
 
-		/// <summary> Handles the KeyDown event of the richTextBoxConsole control. </summary>
-		/// <param name="sender"> The source of the event. </param>
-		/// <param name="e">     
-		/// The <see cref="System.Windows.Forms.KeyEventArgs" /> instance containing the event data.
-		/// </param>
-		private void richTextBoxConsole_KeyDown(object sender, KeyEventArgs e) {
-			// Are we sending keyboard commands to the process?
-			if (SendKeyboardCommandsToProcess && IsProcessRunning) {
-				richTextBoxConsole.SelectionColor = Color.White;
-				// Get key mappings for this key event?
-				var mappings = from k in keyMappings
-							   where
-							   k.KeyCode == e.KeyCode &&
-							   k.IsAltPressed == e.Alt &&
-							   k.IsControlPressed == e.Control &&
-							   k.IsShiftPressed == e.Shift
-							   select k;
+        /// <summary> Handles the KeyDown event of the richTextBoxConsole control. </summary>
+        /// <param name="sender"> The source of the event. </param>
+        /// <param name="e">     
+        /// The <see cref="System.Windows.Forms.KeyEventArgs" /> instance containing the event data.
+        /// </param>
+        private void richTextBoxConsole_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Are we sending keyboard commands to the process?
+            if (SendKeyboardCommandsToProcess && IsProcessRunning)
+            {
+                richTextBoxConsole.SelectionColor = Color.White;
+                // Get key mappings for this key event?
+                var mappings = from k in keyMappings
+                               where
+                               k.KeyCode == e.KeyCode &&
+                               k.IsAltPressed == e.Alt &&
+                               k.IsControlPressed == e.Control &&
+                               k.IsShiftPressed == e.Shift
+                               select k;
 
 
-				//if (e.KeyCode == Keys.Tab)
-				//{
-				//	SendKeysEx.SendKeys(this._cmdhandle, "{TAB}");
-				//}
-				//// Go through each mapping, send the message.
-				//foreach (var mapping in mappings) { //TODO: Find out if we need this [For Each]
-				//	//SendKeysEx.SendKeys(this._cmdhandle, mapping.SendKeysMapping);
-				//	//WriteInput(mapping.StreamMapping, Color.Yellow);
-				//	//WriteInput("\x3", Color.White);
-				//}
+                //if (e.KeyCode == Keys.Tab)
+                //{
+                //	SendKeysEx.SendKeys(this._cmdhandle, "{TAB}");
+                //}
+                //// Go through each mapping, send the message.
+                //foreach (var mapping in mappings) { //TODO: Find out if we need this [For Each]
+                //	//SendKeysEx.SendKeys(this._cmdhandle, mapping.SendKeysMapping);
+                //	//WriteInput(mapping.StreamMapping, Color.Yellow);
+                //	//WriteInput("\x3", Color.White);
+                //}
 
-				// If we handled a mapping, we're done here.
-				if (mappings.Count() > 0) {
-					e.SuppressKeyPress = true;
-					return;
-				}
-			}
+                // If we handled a mapping, we're done here.
+                if (mappings.Count() > 0)
+                {
+                    e.SuppressKeyPress = true;
+                    return;
+                }
+            }
 
-			// If we're at the input point and it's backspace, bail.
-			if ((richTextBoxConsole.SelectionStart <= inputStart) && e.KeyCode == Keys.Back) e.SuppressKeyPress = true;
+            // If we're at the input point and it's backspace, bail.
+            if ((richTextBoxConsole.SelectionStart <= inputStart) && e.KeyCode == Keys.Back) e.SuppressKeyPress = true;
 
-			// Are we in the read-only zone?
-			if (richTextBoxConsole.SelectionStart < inputStart) {
-				// Allow arrows and Ctrl-C.
-				if (!(e.KeyCode == Keys.Left ||
-					e.KeyCode == Keys.Right ||
-					e.KeyCode == Keys.Up ||
-					e.KeyCode == Keys.Down ||
-					(e.KeyCode == Keys.C && e.Control))) {
-					e.SuppressKeyPress = true;
-				}
+            // Are we in the read-only zone?
+            if (richTextBoxConsole.SelectionStart < inputStart)
+            {
+                // Allow arrows and Ctrl-C.
+                if (!(e.KeyCode == Keys.Left ||
+                    e.KeyCode == Keys.Right ||
+                    e.KeyCode == Keys.Up ||
+                    e.KeyCode == Keys.Down ||
+                    (e.KeyCode == Keys.C && e.Control)))
+                {
+                    e.SuppressKeyPress = true;
+                }
 
-				if (e.KeyData == (Keys.C | Keys.ControlKey))
-					MessageBox.Show("CTRL");
-				//if (e.KeyCode == Keys.C)
-				//{
-				//    MessageBox.Show(richTextBoxConsole.SelectedText);
-				//    Clipboard.SetText(richTextBoxConsole.SelectedText);
-				//}
-			}
+                if (e.KeyData == (Keys.C | Keys.ControlKey))
+                    MessageBox.Show("CTRL");
+                //if (e.KeyCode == Keys.C)
+                //{
+                //    MessageBox.Show(richTextBoxConsole.SelectedText);
+                //    Clipboard.SetText(richTextBoxConsole.SelectedText);
+                //}
+            }
 
-			// Is it the return key?
-			if (e.KeyCode == Keys.Return) {
-				this._ShouldClear = false;
-				// Get the input.
-				string input = richTextBoxConsole.Text.Substring(inputStart, richTextBoxConsole.SelectionStart - inputStart);
-				WriteInput(input, Color.White);
-			}
-		}
+            // Is it the return key?
+            if (e.KeyCode == Keys.Return)
+            {
+                this._ShouldClear = false;
+                // Get the input.
+                string input = richTextBoxConsole.Text.Substring(inputStart, richTextBoxConsole.SelectionStart - inputStart);
+                WriteInput(input, Color.White);
+            }
+        }
 
-		protected override void OnResize(EventArgs e) {
-			this.Invalidate();
-			base.OnResize(e);
-		}
+        protected override void OnResize(EventArgs e)
+        {
+            this.Invalidate();
+            base.OnResize(e);
+        }
 
-		protected override void OnSizeChanged(EventArgs e) {
-			this.Invalidate();
-			base.OnSizeChanged(e);
-		}
-	}
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            this.Invalidate();
+            base.OnSizeChanged(e);
+        }
+    }
 }

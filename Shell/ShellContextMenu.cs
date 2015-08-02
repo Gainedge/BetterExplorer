@@ -132,21 +132,15 @@ namespace BExplorer.Shell
         /// The items to which the context menu should refer.
         /// </param>
         /// <param name="svgio"></param>
-        /// <param name="shellView">The ShellView the ContextMenu is associated with</param>
+        /// <param name="view">The ShellView the ContextMenu is associated with</param>
         public ShellContextMenu(IListItemEx[] items, SVGIO svgio = SVGIO.SVGIO_SELECTION, ShellView view = null)
         {
             this._ShellView = view;
 
-            //this._ShellTreeView = tree;
             if (svgio == SVGIO.SVGIO_BACKGROUND)
-            {
                 Initialize(items[0]);
-            }
             else
-            {
                 Initialize(items);
-            }
-
         }
 
         #endregion
@@ -291,7 +285,6 @@ namespace BExplorer.Shell
         /// <param name="additionalFlags"></param>
         public void Populate(Menu menu, CMF additionalFlags)
         {
-            //RemoveShellMenuItems(menu);
             m_ComInterface.QueryContextMenu(menu.Handle, 0, m_CmdFirst, int.MaxValue, CMF.EXPLORE | additionalFlags | (Control.ModifierKeys == Keys.Shift ? CMF.EXTENDEDVERBS : 0));
         }
 

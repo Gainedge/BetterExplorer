@@ -173,7 +173,7 @@ namespace BExplorer.Shell
             if (((path == null) || (path == string.Empty)) &&
                 ((m_ShellView != null) &&
                 m_ShellView.CurrentFolder.IsFileSystem &&
-                (m_ShellView.CurrentFolder != ShellItem.Desktop)))
+                (m_ShellView.CurrentFolder != (_Plugin_Interfaces.IListItemEx)ShellItem.Desktop)))
             {
                 path = m_ShellView.CurrentFolder.FileSystemPath;
                 pattern = Text;
