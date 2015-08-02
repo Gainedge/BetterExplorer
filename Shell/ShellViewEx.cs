@@ -277,7 +277,7 @@ public bool Cancel { get; private set; }
         public bool IsCancelRequested;
         public bool IsNavigationCancelRequested = false;
         public bool IsNavigationInProgress = false;
-        public Boolean IsGroupsEnabled { get { return LastGroupCollumn != null; } }
+        public Boolean IsGroupsEnabled => LastGroupCollumn != null;
 
         /// <summary> Returns the key jump string as it currently is.</summary>
         public string KeyJumpString { get; private set; }
@@ -489,7 +489,7 @@ public bool Cancel { get; private set; }
             }
         }
 
-        private bool ItemForRealName_IsAny { get { return ItemForRename != -1; } }
+        private bool ItemForRealName_IsAny => ItemForRename != -1;
         private int ItemForRename { get; set; }
         private bool _IsCanceledOperation { get; set; }
         private int LastItemForRename { get; set; }
