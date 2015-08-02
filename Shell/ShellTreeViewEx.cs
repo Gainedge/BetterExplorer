@@ -461,14 +461,13 @@ namespace BExplorer.Shell
                 Thread.Sleep(1);
                 TreeNode node = null;
                 IntPtr treeHandle = IntPtr.Zero;
-                var hash = -1;
+                //var hash = -1;
                 var pidl = IntPtr.Zero;
                 var visible = false;
                 if (this.ShellTreeView != null)
                 {
                     this.ShellTreeView.Invoke((Action)(() =>
                     {
-
                         try
                         {
                             node = TreeNode.FromHandle(ShellTreeView, handle);
@@ -511,65 +510,25 @@ namespace BExplorer.Shell
                 var handle = imagesQueue.Dequeue();
                 TreeNode node = null;
                 IntPtr treeHandle = IntPtr.Zero;
-                var hash = -1;
+                //var hash = -1;
                 var pidl = IntPtr.Zero;
                 var visible = false;
                 if (this.ShellTreeView != null)
                 {
                     this.ShellTreeView.Invoke((Action)(() =>
                     {
-
                         node = TreeNode.FromHandle(ShellTreeView, handle);
                         treeHandle = ShellTreeView.Handle;
                         if (node != null)
                         {
                             visible = node.IsVisible;
-
-                            //if (node != null) {
-                            //	var item = node.Tag as ShellItem;
-                            //	if (item != null) {
-                            //		ShellItem newItem = null;
-                            //		try {
-                            //			newItem = ShellItem.ToShellParsingName(item.ParsingName);
-                            //		} catch (Exception) {
-                            //			newItem = item;
-                            //		}
-                            //		if (node != null && newItem != null && this.ShellTreeView != null) {
-                            //			treeHandle = this.ShellTreeView.Handle;
-                            //			hash = newItem.GetHashCode();
-                            //			pidl = newItem.AbsolutePidl;
-                            //			visible = node.IsVisible;
-                            //			newItem.Dispose();
-                            //		}
-                            //	}
-                            //}
                             var item = node.Tag as IListItemEx;
                             pidl = item.AbsolutePidl;
                         }
 
                     }));
                 }
-                //if (node != null) {
-                //      var item = node.Tag as IListItemEx;
-                //	if (item != null) {
-                //        //IListItemEx newItem = null;
-                //		//try {
-                //		//	newItem = FileSystemListItem.ToFileSystemItem (IntPtr.Zero, item.ParsingName.ToShellParsingName());
-                //		//}
-                //		//catch (Exception) {
-                //			newItem = item;
-                //		//}
-                //		if (node != null && newItem != null) {
-                //			try {
-                //				pidl = newItem.AbsolutePidl;
-                //				//newItem.Dispose();
-                //			}
-                //			catch (Exception) {
 
-                //			}
-                //		}
-                //	}
-                //}
                 if (visible)
                 {
                     var nodeHandle = handle;
@@ -596,15 +555,10 @@ namespace BExplorer.Shell
                 {
                     this.ShellTreeView.Invoke((Action)(() =>
                     {
-
                         node = TreeNode.FromHandle(ShellTreeView, handle);
                         treeHandle = this.ShellTreeView.Handle;
                         if (node != null)
-                        {
                             visible = node.IsVisible;
-                            //if (node.Tag != null)
-                            //  pidl = ((IListItemEx)node.Tag).PIDL;
-                        }
 
                     }));
                 }
