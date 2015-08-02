@@ -1154,6 +1154,7 @@ namespace BExplorer.Shell.Interop
         /// Format a Drive by given Drive letter
         /// </summary>
         /// <param name="DriveLetter">The Drive letter</param>
+        /// <param name="Handle"></param>
         /// <returns>Error or Success Code</returns>
         public static uint FormatDrive(IntPtr Handle, string DriveLetter)
         {
@@ -1164,6 +1165,7 @@ namespace BExplorer.Shell.Interop
                  SHFormatOptions.SHFMT_OPT_FULL);
             return Result;
         }
+
         [DllImport("kernel32.dll")]
         public static extern IntPtr GlobalAlloc(uint uFlags, UIntPtr dwBytes);
         [DllImport("kernel32.dll")]
@@ -1226,12 +1228,16 @@ namespace BExplorer.Shell.Interop
 
         [DllImport("Ntshrui.dll")]
         public static extern HResult ShowShareFolderUI(IntPtr hwndParent, IntPtr pszPath);
+
+        /*
         [Flags]
         public enum DisconnectDialogFlags : int
         {
             UpdateProfile = 0x00000001,
             NoForce = 0x00000040,
         }
+        */
+
         [Flags]
         public enum ConnectDialogFlags : int
         {
@@ -1250,6 +1256,8 @@ namespace BExplorer.Shell.Interop
             public ConnectDialogFlags Flags;
             public int DeviceNumber;
         }
+
+        /*
         [StructLayoutAttribute(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         public struct DisconnectDialogInfo
         {
@@ -1261,6 +1269,8 @@ namespace BExplorer.Shell.Interop
             public string RemoteName;
             public DisconnectDialogFlags Flags;
         }
+        */
+
         [DllImport("mpr.dll", EntryPoint = "WNetConnectionDialog", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern int WNetConnectionDialog(IntPtr whnd, int dwType);
         [DllImport("mpr.dll", CharSet = CharSet.Auto)]

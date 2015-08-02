@@ -2905,15 +2905,9 @@ namespace BetterExplorer
             //this.ShellListView.MapDrive(this.Handle, this.ShellListView.SelectedItems.Count() == 1 ? this.ShellListView.GetFirstSelectedItem().ParsingName : String.Empty);
         }
 
-        private void btnDisconectDrive_Click(object sender, RoutedEventArgs e)
-        {
-            BExplorer.Shell.Interop.Shell32.WNetDisconnectDialog(this.Handle, 1);
-        }
+        private void btnDisconectDrive_Click(object sender, RoutedEventArgs e) => BExplorer.Shell.Interop.Shell32.WNetDisconnectDialog(this.Handle, 1);
 
-        private void Button_Click_4(object sender, RoutedEventArgs e)
-        {
-            this.ShellListView.OpenShareUI();
-        }
+        private void Button_Click_4(object sender, RoutedEventArgs e) => this.ShellListView.OpenShareUI();
 
         private void btnAdvancedSecurity_Click(object sender, RoutedEventArgs e)
         {
@@ -2924,10 +2918,8 @@ namespace BetterExplorer
 
         #region Change Language
 
-        private void TranslationComboBox_DropDownOpened(object sender, EventArgs e)
-        {
-            (sender as Fluent.ComboBox).Focus();
-        }
+        private void TranslationComboBox_DropDownOpened(object sender, EventArgs e) => (sender as Fluent.ComboBox).Focus();
+
 
         private void TranslationComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -2963,10 +2955,8 @@ namespace BetterExplorer
             rk.Close();
         }
 
-        private void TranslationHelp_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start(TranslationURL.Text);
-        }
+        private void TranslationHelp_Click(object sender, RoutedEventArgs e) => Process.Start(TranslationURL.Text);
+
 
         #endregion
 

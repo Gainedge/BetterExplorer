@@ -2776,11 +2776,9 @@ public void MapDrive(IntPtr intPtr, string path) {
 }
 */
 
-        public void DisconnectDrive(IntPtr handle, int type)
-        {
-            Shell32.WNetDisconnectDialog(handle, type);
-        }
-
+        /*
+       public void DisconnectDrive(IntPtr handle, int type) => Shell32.WNetDisconnectDialog(handle, type);        
+       */
         public void ShowPropPage(IntPtr HWND, string filename, string proppage) { Shell32.SHObjectProperties(HWND, 0x2, filename, proppage); }
 
         private void RedrawItem(int index)
