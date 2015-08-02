@@ -289,7 +289,7 @@ public bool Cancel { get; private set; }
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public bool CanNavigateParent { get { return CurrentFolder != (IListItemEx)ShellItem.Desktop; } }
+        public bool CanNavigateParent => CurrentFolder != (IListItemEx)ShellItem.Desktop;
 
         /// <summary>
         /// Gets/sets a <see cref="ShellItem" /> describing the folder currently being browsed by

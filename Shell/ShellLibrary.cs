@@ -595,37 +595,38 @@ namespace BExplorer.Shell
 
         #region Private Properties
 
-        private List<ShellItem> ItemsList { get { return GetFolders(); } }
-
-        private List<ShellItem> GetFolders()
+        private List<ShellItem> ItemsList
         {
-            List<ShellItem> list = new List<ShellItem>();
-            IShellItemArray itemArray;
+            get
+            {
+                List<ShellItem> list = new List<ShellItem>();
+                IShellItemArray itemArray;
 
-            Guid shellItemArrayGuid = new Guid(InterfaceGuids.IShellItemArray);
+                Guid shellItemArrayGuid = new Guid(InterfaceGuids.IShellItemArray);
 
-            HResult hr = nativeShellLibrary.GetFolders(LibraryFolderFilter.AllItems, ref shellItemArrayGuid, out itemArray);
+                HResult hr = nativeShellLibrary.GetFolders(LibraryFolderFilter.AllItems, ref shellItemArrayGuid, out itemArray);
 
-            if (hr != HResult.S_OK)
+                if (hr != HResult.S_OK)
+                    return list;
+
+                uint count;
+                itemArray.GetCount(out count);
+
+                for (uint i = 0; i < count; ++i)
+                {
+                    IShellItem shellItem;
+                    itemArray.GetItemAt(i, out shellItem);
+                    list.Add(new ShellItem(shellItem as IShellItem));
+                }
+
+                if (itemArray != null)
+                {
+                    Marshal.ReleaseComObject(itemArray);
+                    itemArray = null;
+                }
+
                 return list;
-
-            uint count;
-            itemArray.GetCount(out count);
-
-            for (uint i = 0; i < count; ++i)
-            {
-                IShellItem shellItem;
-                itemArray.GetItemAt(i, out shellItem);
-                list.Add(new ShellItem(shellItem as IShellItem));
             }
-
-            if (itemArray != null)
-            {
-                Marshal.ReleaseComObject(itemArray);
-                itemArray = null;
-            }
-
-            return list;
         }
 
         #endregion Private Properties
@@ -636,10 +637,8 @@ namespace BExplorer.Shell
         /// Retrieves the collection enumerator.
         /// </summary>
         /// <returns>The enumerator.</returns>
-        new public IEnumerator<ShellItem> GetEnumerator()
-        {
-            return ItemsList.GetEnumerator();
-        }
+        new public IEnumerator<ShellItem> GetEnumerator() => ItemsList.GetEnumerator();
+
 
         #endregion IEnumerable<ShellFileSystemFolder> Members
 
@@ -649,10 +648,7 @@ namespace BExplorer.Shell
         /// Retrieves the collection enumerator.
         /// </summary>
         /// <returns>The enumerator.</returns>
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return ItemsList.GetEnumerator();
-        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => ItemsList.GetEnumerator();
 
         #endregion IEnumerable Members
 
@@ -680,11 +676,7 @@ namespace BExplorer.Shell
         /// <returns><B>true</B>, if the folder exists in the collection.</returns>
         public bool Contains(ShellItem item)
         {
-            if (item == null)
-            {
-                throw new ArgumentNullException("item");
-            }
-
+            if (item == null) throw new ArgumentNullException("item");
             return ItemsList.Any(folder => string.Equals(item.ParsingName, folder.ParsingName, StringComparison.OrdinalIgnoreCase));
         }
 
@@ -755,12 +747,12 @@ namespace BExplorer.Shell
         /// <summary>
         /// The count of the items in the list.
         /// </summary>
-        public int Count { get { return ItemsList.Count; } }
+        public int Count => ItemsList.Count;
 
         /// <summary>
         /// Indicates whether this list is read-only or not.
         /// </summary>
-        public bool IsReadOnly { get { return false; } }
+        public bool IsReadOnly => false;
 
         #endregion ICollection<ShellFileSystemFolder> Members
     }

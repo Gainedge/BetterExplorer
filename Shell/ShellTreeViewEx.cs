@@ -559,7 +559,6 @@ namespace BExplorer.Shell
                         treeHandle = this.ShellTreeView.Handle;
                         if (node != null)
                             visible = node.IsVisible;
-
                     }));
                 }
 
@@ -966,7 +965,7 @@ namespace BExplorer.Shell
             {
                 //System.Runtime.InteropServices.ComTypes.IDataObject dataObject = shellItem.GetIDataObject(out dataObjPtr);
 
-                uint ef = 0;
+                //uint ef = 0;
                 //Shell32.SHDoDragDrop(this.ShellListView.Handle, dataObject, null, unchecked((uint)F.DragDropEffects.All | (uint)F.DragDropEffects.Link), out ef);
             }
         }
