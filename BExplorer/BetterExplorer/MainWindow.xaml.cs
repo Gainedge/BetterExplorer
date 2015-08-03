@@ -773,8 +773,11 @@ namespace BetterExplorer
             foreach (string item in files)
             {
                 var o = new ShellItem(item);
-                JunctionPointUtils.JunctionPoint.Create(String.Format(@"{0}\{1}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY)), o.ParsingName, true);
-                AddToLog(String.Format(@"Created Junction Point at {0}\{1} linked to {2}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY), o.ParsingName));
+                //JunctionPointUtils.JunctionPoint.Create(String.Format(@"{0}\{1}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY)), o.ParsingName, true);
+                //AddToLog(String.Format(@"Created Junction Point at {0}\{1} linked to {2}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY), o.ParsingName));
+
+                JunctionPointUtils.JunctionPoint.Create($@"{PathForDrop}\{o.GetDisplayName(SIGDN.NORMALDISPLAY)}", o.ParsingName, true);
+                AddToLog($@"Created Junction Point at {PathForDrop}\{o.GetDisplayName(SIGDN.NORMALDISPLAY)} linked to {o.ParsingName}");
             }
         }
 
@@ -939,49 +942,33 @@ namespace BetterExplorer
                     shortcut.WorkingDirectory = Path.GetDirectoryName(item);
                     shortcut.Description = o.GetDisplayName(SIGDN.NORMALDISPLAY);
                     shortcut.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
+                    /*
                     shortcut.Save(String.Format("{0}\\{1}.lnk", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY)));
                     AddToLog(String.Format("Shortcut created at {0}\\{1} from source {2}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY), item));
+                    */
+                    shortcut.Save(String.Format($"{PathForDrop}\\{o.GetDisplayName(SIGDN.NORMALDISPLAY)}.lnk");
+                    AddToLog($"Shortcut created at {PathForDrop}\\{o.GetDisplayName(SIGDN.NORMALDISPLAY)} from source {item}");
                 }
             }
         }
 
-        private void btnctDocuments_Click(object sender, RoutedEventArgs e)
-        {
-            SetFOperation(KnownFolders.Documents.ParsingName, BExplorer.Shell.OperationType.Copy);
-        }
+        private void btnctDocuments_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Documents.ParsingName, BExplorer.Shell.OperationType.Copy);
+        private void btnctDesktop_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Desktop.ParsingName, BExplorer.Shell.OperationType.Copy);
+        private void btnctDounloads_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Downloads.ParsingName, BExplorer.Shell.OperationType.Copy);
+        private void btnmtDocuments_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Documents.ParsingName, BExplorer.Shell.OperationType.Move);
+        private void btnmtDesktop_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Desktop.ParsingName, BExplorer.Shell.OperationType.Move);
+        private void btnmtDounloads_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Downloads.ParsingName, BExplorer.Shell.OperationType.Move);
+        private void btnCopyto_Click(object sender, RoutedEventArgs e) => btnctOther_Click(sender, e);
+        private void btnMoveto_Click(object sender, RoutedEventArgs e) => btnmtOther_Click(sender, e);
+        private void btnCut_Click(object sender, RoutedEventArgs e) => ShellListView.CutSelectedFiles();
+        private void btnOpenWith_Click(object sender, RoutedEventArgs e) => Process.Start($"\"{ShellListView.GetFirstSelectedItem().ParsingName}\"");
 
-        private void btnctDesktop_Click(object sender, RoutedEventArgs e)
-        {
-            SetFOperation(KnownFolders.Desktop.ParsingName, BExplorer.Shell.OperationType.Copy);
-        }
-
-        private void btnctDounloads_Click(object sender, RoutedEventArgs e)
-        {
-            SetFOperation(KnownFolders.Downloads.ParsingName, BExplorer.Shell.OperationType.Copy);
-        }
-
-        private void btnmtDocuments_Click(object sender, RoutedEventArgs e)
-        {
-            SetFOperation(KnownFolders.Documents.ParsingName, BExplorer.Shell.OperationType.Move);
-        }
-
-        private void btnmtDesktop_Click(object sender, RoutedEventArgs e)
-        {
-            SetFOperation(KnownFolders.Desktop.ParsingName, BExplorer.Shell.OperationType.Move);
-        }
-
-        private void btnmtDounloads_Click(object sender, RoutedEventArgs e)
-        {
-            SetFOperation(KnownFolders.Downloads.ParsingName, BExplorer.Shell.OperationType.Move);
-        }
 
         private void btnmtOther_Click(object sender, RoutedEventArgs e)
         {
             var dlg = new FolderSelectDialog();
             if (dlg.ShowDialog())
-            {
                 SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Move);
-            }
         }
 
         private void SetFOperation(String fileName, BExplorer.Shell.OperationType opType)
@@ -1010,20 +997,8 @@ namespace BetterExplorer
             ShellListView.Focus();
         }
 
-        private void btnCopyto_Click(object sender, RoutedEventArgs e)
-        {
-            btnctOther_Click(sender, e);
-        }
 
-        private void btnMoveto_Click(object sender, RoutedEventArgs e)
-        {
-            btnmtOther_Click(sender, e);
-        }
 
-        private void btnCut_Click(object sender, RoutedEventArgs e)
-        {
-            ShellListView.CutSelectedFiles();
-        }
 
         private void btnNewItem_Click(object sender, RoutedEventArgs e)
         {
@@ -1031,10 +1006,7 @@ namespace BetterExplorer
             BExplorer.Shell.Interop.Shell32.SHGetSetSettings(ref state, BExplorer.Shell.Interop.Shell32.SSF.SSF_SHOWALLOBJECTS, true);
         }
 
-        private void btnOpenWith_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start(String.Format("\"{0}\"", ShellListView.GetFirstSelectedItem().ParsingName));
-        }
+
 
         private void btnEdit_Click(object sender, RoutedEventArgs e)
         {
@@ -1057,7 +1029,8 @@ namespace BetterExplorer
                 var link = new ShellLink();
                 link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
                 link.Target = ShellListView.GetFirstSelectedItem().ParsingName;
-                link.Save(String.Format(@"{0}\{1}.lnk", KnownFolders.Links.ParsingName, ShellListView.GetFirstSelectedItem().DisplayName));
+                //link.Save(String.Format(@"{0}\{1}.lnk", KnownFolders.Links.ParsingName, ShellListView.GetFirstSelectedItem().DisplayName));
+                link.Save($@"{KnownFolders.Links.ParsingName}\{ShellListView.GetFirstSelectedItem().DisplayName}.lnk");
                 link.Dispose();
             }
 
@@ -1066,7 +1039,8 @@ namespace BetterExplorer
                 var link = new ShellLink();
                 link.DisplayMode = ShellLink.LinkDisplayMode.edmNormal;
                 link.Target = ShellListView.CurrentFolder.ParsingName;
-                link.Save(String.Format(@"{0}\{1}.lnk", KnownFolders.Links.ParsingName, ShellListView.CurrentFolder.DisplayName));
+                //link.Save(String.Format(@"{0}\{1}.lnk", KnownFolders.Links.ParsingName, ShellListView.CurrentFolder.DisplayName));
+                link.Save($@"{KnownFolders.Links.ParsingName}\{ShellListView.CurrentFolder.DisplayName}.lnk");
                 link.Dispose();
             }
         }
@@ -1084,15 +1058,11 @@ namespace BetterExplorer
             }
         }
 
-        private void btnCleanDrive_Click(object sender, RoutedEventArgs e)
-        {
-            ShellListView.CleanupDrive();
-        }
+        private void btnCleanDrive_Click(object sender, RoutedEventArgs e) => ShellListView.CleanupDrive();
 
-        private void btnDefragDrive_Click(object sender, RoutedEventArgs e)
-        {
-            ShellListView.DefragDrive();
-        }
+
+        private void btnDefragDrive_Click(object sender, RoutedEventArgs e) => ShellListView.DefragDrive();
+
 
         private char GetDriveLetterFromDrivePath(string path)
         {
