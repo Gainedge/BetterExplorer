@@ -36,7 +36,7 @@ namespace BetterExplorer
             // List all our resources      
             var dictionaryList = new List<ResourceDictionary>(Application.Current.Resources.MergedDictionaries);
             // We want our specific culture      
-            string requestedCulture = $"Locale.{culture}.xaml"; //string.Format("Locale.{0}.xaml", culture);
+            string requestedCulture = $"Locale.{culture}.xaml";
             ResourceDictionary resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
             if (resourceDictionary == null)
             {
@@ -75,7 +75,7 @@ namespace BetterExplorer
             if (resourceDictionary == null)
             {
                 // if not found, then try from the application's resources
-                string requestedCulture = $"Locale.{culture}.xaml"; //string.Format("Locale.{0}.xaml", culture);
+                string requestedCulture = $"Locale.{culture}.xaml";
                 resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
                 if (resourceDictionary == null)
                 {

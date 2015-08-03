@@ -154,7 +154,7 @@ namespace BetterExplorer
             var tag = selectedNode.Tag;
             var archiveFileInfo = (ArchiveFileInfo)tag;
             var sevenZipExtractor = new SevenZipExtractor(_pathArchive);
-            var filePath = String.Format("{0}\\{1}", Path.GetTempPath(), archiveFileInfo.FileName.Split('\\').Last());
+            var filePath = $"{Path.GetTempPath()}\\{archiveFileInfo.FileName.Split('\\').Last()}";
             var fileStream = File.Create(filePath);
             sevenZipExtractor.ExtractFile(archiveFileInfo.FileName, fileStream);
             fileStream.Flush();

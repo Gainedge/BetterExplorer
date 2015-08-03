@@ -251,7 +251,6 @@ namespace BetterExplorer
 
             // please note that the following line won't work if you try this on a network folder, like \\Machine\C$
             // simply remove the \\?\ part in this case or use \\?\UNC\ prefix
-            //findHandle = FindFirstFile(String.Format(@"\\?\{0}\*", directory), out findData);
             IntPtr findHandle = FindFirstFile($@"\\?\{directory}\*", out findData);
             if (findHandle != INVALID_HANDLE_VALUE)
             {
