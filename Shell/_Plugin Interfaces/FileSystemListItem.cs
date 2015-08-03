@@ -242,26 +242,18 @@ namespace BExplorer.Shell._Plugin_Interfaces
             yield break;
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) { return this._Item.GetPropertyValue(pkey, type); }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+        public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) => this._Item.GetPropertyValue(pkey, type);
 
 
-        public System.Drawing.Bitmap Thumbnail(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source)
-        {
-            var bmp = this._Item.GetShellThumbnail(size, format, source);
-            return bmp;
-        }
+        public System.Drawing.Bitmap Thumbnail(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) =>
+            this._Item.GetShellThumbnail(size, format, source);
 
         public System.Windows.Media.Imaging.BitmapSource ThumbnailSource(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source)
         {
             if (this.IsSearchFolder)
-            {
                 this._Item.ComInterface = this.searchFolder.m_SearchComInterface;
-            }
+
             this._Item.Thumbnail.CurrentSize = new System.Windows.Size(size, size);
             this._Item.Thumbnail.RetrievalOption = source;
             this._Item.Thumbnail.FormatOption = format;
@@ -274,14 +266,8 @@ namespace BExplorer.Shell._Plugin_Interfaces
         {
             get
             {
-                if (this.IsSearchFolder)
-                {
-                    //this._Item.ComInterface = this.searchFolder.m_SearchComInterface;
-                    return null;
-                }
-                //if (this.IsSearchFolder) return null;
-                if (this._Item.Parent == null)
-                    return null;
+                if (this.IsSearchFolder || this._Item.Parent == null) return null;
+
                 var parent = new FileSystemListItem();
                 parent.Initialize(this.ParentHandle, this._Item.Parent.Pidl, 0);
                 return parent;
@@ -290,19 +276,16 @@ namespace BExplorer.Shell._Plugin_Interfaces
 
         public IShellFolder GetIShellFolder() { return this._Item.GetIShellFolder(); }
 
-        public bool IsLink { get { return this._Item.IsLink; } }
+        public bool IsLink => this._Item.IsLink;
 
-        public string ToolTipText { get { return this._Item.ToolTipText; } }
+        public string ToolTipText => this._Item.ToolTipText;
 
-        public System.IO.DriveInfo GetDriveInfo()
-        {
-            return this._Item.GetDriveInfo();
-        }
+        public System.IO.DriveInfo GetDriveInfo() => this._Item.GetDriveInfo();
+
 
         public HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false)
         {
-            var res = this._Item.Thumbnail.ExtractAndDrawThumbnail(hdc, iconSize, out flags, iconBounds, out retrieved, isHidden, isRefresh);
-            return res;
+            return this._Item.Thumbnail.ExtractAndDrawThumbnail(hdc, iconSize, out flags, iconBounds, out retrieved, isHidden, isRefresh);
         }
 
         public IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false)
@@ -344,9 +327,9 @@ namespace BExplorer.Shell._Plugin_Interfaces
             return fsItem;
         }
 
-        public string GetDisplayName(SIGDN type) { return this._Item.GetDisplayName(type); }
+        public string GetDisplayName(SIGDN type) => this._Item.GetDisplayName(type);
 
-        public IExtractIconPWFlags GetShield() { return this._Item.GetShield(); }
+        public IExtractIconPWFlags GetShield() => this._Item.GetShield();
 
         public int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags)
         {
@@ -363,14 +346,12 @@ namespace BExplorer.Shell._Plugin_Interfaces
             return info.iIcon;
         }
 
-        public Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags)
-        {
-            return this._Item.Thumbnail.RefreshThumbnail((uint)iconSize, out flags);
-        }
+        public Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags) => this._Item.Thumbnail.RefreshThumbnail((uint)iconSize, out flags);
+
 
         public IntPtr Icon { get; set; }
 
-        public int GetUniqueID() { return this.ParsingName.GetHashCode(); }
+        public int GetUniqueID() => this.ParsingName.GetHashCode();
 
         #endregion
 
@@ -384,7 +365,7 @@ namespace BExplorer.Shell._Plugin_Interfaces
 
         #region IEqualityComparer<IListItemEx> Members
 
-        public bool Equals(IListItemEx x, IListItemEx y) { return x.Equals(y); }
+        public bool Equals(IListItemEx x, IListItemEx y) => x.Equals(y);
 
         public int GetHashCode(IListItemEx obj)
         {
@@ -406,7 +387,8 @@ namespace BExplorer.Shell._Plugin_Interfaces
 
         #region IDisposable Members
 
-        public void Dispose() { if (this._Item != null) this._Item.Dispose(); }
+        //public void Dispose() { if (this._Item != null) this._Item.Dispose(); }
+        public void Dispose() => this._Item?.Dispose();
 
         #endregion
 
