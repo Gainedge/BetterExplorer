@@ -768,17 +768,21 @@ namespace BExplorer.Shell
         /// <returns></returns>
         public int GetSystemImageListIndex(ShellIconType type, ShellIconFlags flags)
         {
-            var info = new SHFILEINFO();
-            IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info, Marshal.SizeOf(info),
-                                                    SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
+            /*
+			var info = new SHFILEINFO();
+			IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info, Marshal.SizeOf(info),
+                SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
 
-            if (result == IntPtr.Zero)
-            {
-                throw new Exception("Error retrieving shell folder icon");
-            }
+			if (result == IntPtr.Zero)
+			{
+				throw new Exception("Error retrieving shell folder icon");
+			}
 
-            User32.DestroyIcon(info.hIcon);
-            return info.iIcon;
+			User32.DestroyIcon(info.hIcon);
+			return info.iIcon;
+            */
+
+            return GetSystemImageListIndex(Pidl, type, flags);
         }
 
         public static int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags)
@@ -788,9 +792,7 @@ namespace BExplorer.Shell
                 SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
 
             if (result == IntPtr.Zero)
-            {
                 throw new Exception("Error retrieving shell folder icon");
-            }
 
             User32.DestroyIcon(info.hIcon);
             return info.iIcon;
@@ -953,10 +955,9 @@ namespace BExplorer.Shell
         public static bool operator ==(ShellItem leftShellObject, ShellItem rightShellObject)
         {
             if ((object)leftShellObject == null)
-            {
                 return ((object)rightShellObject == null);
-            }
-            return leftShellObject.Equals(rightShellObject);
+            else
+                return leftShellObject.Equals(rightShellObject);
         }
 
         /// <summary>
@@ -973,16 +974,17 @@ namespace BExplorer.Shell
             if (!hashValue.HasValue)
             {
                 uint size = Shell32.ILGetSize(Pidl);
-                if (size != 0)
+
+                if (size == 0)
+                {
+                    hashValue = 0;
+                }
+                else
                 {
                     byte[] pidlData = new byte[size];
                     Marshal.Copy(Pidl, pidlData, 0, (int)size);
                     byte[] hashData = ShellItem.hashProvider.ComputeHash(pidlData);
                     hashValue = BitConverter.ToInt32(hashData, 0);
-                }
-                else
-                {
-                    hashValue = 0;
                 }
             }
             return hashValue.Value;
@@ -1035,7 +1037,7 @@ namespace BExplorer.Shell
 
         #region Static Stuff
 
-        private static bool RunningVista { get { return Environment.OSVersion.Version.Major >= 6; } }
+        private static bool RunningVista => Environment.OSVersion.Version.Major >= 6;
 
         private static MD5CryptoServiceProvider hashProvider = new MD5CryptoServiceProvider();
 
