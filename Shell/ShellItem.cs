@@ -1428,7 +1428,6 @@ namespace BExplorer.Shell
         {
             Uri newUri;
 
-            var Test = ;
             if (path.StartsWith("::") && !path.StartsWith(@"\\"))
                 //Uri.TryCreate(String.Format("shell:{0}", path), UriKind.Absolute, out newUri);
                 Uri.TryCreate($"shell:{path}", UriKind.Absolute, out newUri);

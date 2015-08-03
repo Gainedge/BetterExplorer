@@ -946,7 +946,7 @@ namespace BetterExplorer
                     shortcut.Save(String.Format("{0}\\{1}.lnk", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY)));
                     AddToLog(String.Format("Shortcut created at {0}\\{1} from source {2}", PathForDrop, o.GetDisplayName(SIGDN.NORMALDISPLAY), item));
                     */
-                    shortcut.Save(String.Format($"{PathForDrop}\\{o.GetDisplayName(SIGDN.NORMALDISPLAY)}.lnk");
+                    shortcut.Save($"{PathForDrop}\\{o.GetDisplayName(SIGDN.NORMALDISPLAY)}.lnk");
                     AddToLog($"Shortcut created at {PathForDrop}\\{o.GetDisplayName(SIGDN.NORMALDISPLAY)} from source {item}");
                 }
             }
@@ -1049,6 +1049,10 @@ namespace BetterExplorer
 
         #region Drive Tools / Virtual Disk Tools
 
+        private void btnCleanDrive_Click(object sender, RoutedEventArgs e) => ShellListView.CleanupDrive();
+        private void btnDefragDrive_Click(object sender, RoutedEventArgs e) => ShellListView.DefragDrive();
+        private char GetDriveLetterFromDrivePath(string path) => path.Substring(0, 1).ToCharArray()[0];
+
         private void btnFormatDrive_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to do this?", FindResource("btnFormatDriveCP").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
@@ -1058,49 +1062,29 @@ namespace BetterExplorer
             }
         }
 
-        private void btnCleanDrive_Click(object sender, RoutedEventArgs e) => ShellListView.CleanupDrive();
-
-
-        private void btnDefragDrive_Click(object sender, RoutedEventArgs e) => ShellListView.DefragDrive();
-
-
-        private char GetDriveLetterFromDrivePath(string path)
-        {
-            return path.Substring(0, 1).ToCharArray()[0];
-        }
 
         private void OpenCDTray(char DriveLetter)
         {
-            mciSendString(String.Format("open {0}: type CDAudio alias drive{1}", DriveLetter, DriveLetter), null, 0, IntPtr.Zero);
-            mciSendString(String.Format("set drive{0} door open", DriveLetter), null, 0, IntPtr.Zero);
+            mciSendString($"open {DriveLetter}: type CDAudio alias drive{DriveLetter}", null, 0, IntPtr.Zero);
+            mciSendString($"set drive{DriveLetter} door open", null, 0, IntPtr.Zero);
         }
 
         private void CloseCDTray(char DriveLetter)
         {
-            mciSendString(String.Format("open {0}: type CDAudio alias drive{1}", DriveLetter, DriveLetter), null, 0, IntPtr.Zero);
-            mciSendString(String.Format("set drive{0} door closed", DriveLetter), null, 0, IntPtr.Zero);
+            mciSendString($"open {DriveLetter}: type CDAudio alias drive{DriveLetter}", null, 0, IntPtr.Zero);
+            mciSendString($"set drive{DriveLetter} door closed", null, 0, IntPtr.Zero);
         }
 
         private void btnOpenTray_Click(object sender, RoutedEventArgs e)
         {
-            if (ShellListView.GetFirstSelectedItem().GetDriveInfo() != null)
-            {
-                if (ShellListView.GetFirstSelectedItem().GetDriveInfo().DriveType == DriveType.CDRom)
-                {
-                    OpenCDTray(GetDriveLetterFromDrivePath(ShellListView.GetFirstSelectedItem().ParsingName));
-                }
-            }
+            if (ShellListView.GetFirstSelectedItem()?.GetDriveInfo().DriveType == DriveType.CDRom)
+                OpenCDTray(GetDriveLetterFromDrivePath(ShellListView.GetFirstSelectedItem().ParsingName));
         }
 
         private void btnCloseTray_Click(object sender, RoutedEventArgs e)
         {
-            if (ShellListView.GetFirstSelectedItem().GetDriveInfo() != null)
-            {
-                if (ShellListView.GetFirstSelectedItem().GetDriveInfo().DriveType == DriveType.CDRom)
-                {
-                    CloseCDTray(GetDriveLetterFromDrivePath(ShellListView.GetFirstSelectedItem().ParsingName));
-                }
-            }
+            if (ShellListView.GetFirstSelectedItem()?.GetDriveInfo().DriveType == DriveType.CDRom)
+                CloseCDTray(GetDriveLetterFromDrivePath(ShellListView.GetFirstSelectedItem().ParsingName));
         }
 
         private void EjectDisk(char DriveLetter)
@@ -1186,13 +1170,8 @@ namespace BetterExplorer
         private void btnEjectDevice_Click(object sender, RoutedEventArgs e)
         {
             var firstSelectedItem = ShellListView.GetFirstSelectedItem();
-            if (firstSelectedItem.GetDriveInfo() != null)
-            {
-                if (firstSelectedItem.GetDriveInfo().DriveType == DriveType.Removable || firstSelectedItem.GetDriveInfo().DriveType == DriveType.Fixed)
-                {
-                    EjectDisk(GetDriveLetterFromDrivePath(firstSelectedItem.ParsingName));
-                }
-            }
+            if (firstSelectedItem?.GetDriveInfo().DriveType == DriveType.Removable || firstSelectedItem.GetDriveInfo().DriveType == DriveType.Fixed)
+                EjectDisk(GetDriveLetterFromDrivePath(firstSelectedItem.ParsingName));
         }
 
         // Virtual Disk Tools
@@ -1302,7 +1281,7 @@ namespace BetterExplorer
         private void btnWriteIso_Click(object sender, RoutedEventArgs e)
         {
             Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "isoburn.exe"),
-                     string.Format("\"{0}\"", ShellListView.GetFirstSelectedItem().ParsingName));
+                     $"\"{ShellListView.GetFirstSelectedItem().ParsingName}\"");
         }
 
         private void btnUnmountDrive_Click(object sender, RoutedEventArgs e)
@@ -1334,6 +1313,10 @@ namespace BetterExplorer
 
         #region Application Tools
 
+        private void btnPin_Click(object sender, RoutedEventArgs e) => User32.PinUnpinToTaskbar(ShellListView.GetFirstSelectedItem().ParsingName);
+        private void btnPinToStart_Click(object sender, RoutedEventArgs e) => User32.PinUnpinToStartMenu(ShellListView.GetFirstSelectedItem().ParsingName);
+        private void btnRunAs_Click(object sender, RoutedEventArgs e) => CredUI.RunProcesssAsUser(ShellListView.GetFirstSelectedItem().ParsingName);
+
         private void btnRunAsAdmin_Click(object sender, RoutedEventArgs e)
         {
             //ShellView.RunExeAsAdmin(ShellListView.GetFirstSelectedItem().ParsingName);
@@ -1347,24 +1330,11 @@ namespace BetterExplorer
             });
         }
 
-        private void btnPin_Click(object sender, RoutedEventArgs e)
-        {
-            User32.PinUnpinToTaskbar(ShellListView.GetFirstSelectedItem().ParsingName);
-        }
-
-        private void btnPinToStart_Click(object sender, RoutedEventArgs e)
-        {
-            User32.PinUnpinToStartMenu(ShellListView.GetFirstSelectedItem().ParsingName);
-        }
-
-        private void btnRunAs_Click(object sender, RoutedEventArgs e)
-        {
-            CredUI.RunProcesssAsUser(ShellListView.GetFirstSelectedItem().ParsingName);
-        }
-
         #endregion
 
         #region Backstage - Information Tab
+
+        private void Button_Click_7(object sender, RoutedEventArgs e) => Process.Start("http://better-explorer.com/");
 
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {
@@ -1391,19 +1361,11 @@ namespace BetterExplorer
             }
         }
 
-        private void Button_Click_7(object sender, RoutedEventArgs e)
-        {
-            Process.Start("http://better-explorer.com/");
-        }
-
         #endregion
 
         #region Path to String HelperFunctions / Other HelperFunctions
 
-        private Visibility BooleanToVisibiliy(bool value)
-        {
-            return value ? Visibility.Visible : Visibility.Collapsed;
-        }
+        private Visibility BooleanToVisibiliy(bool value) => value ? Visibility.Visible : Visibility.Collapsed;
 
         private void AddToLog(string value)
         {

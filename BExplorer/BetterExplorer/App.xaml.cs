@@ -167,14 +167,14 @@ namespace BetterExplorer
                     case "Black":
                     case "Green":
                         //Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Office2010/{0}.xaml", Color)) });
-                        Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{Color}.xaml" });
+                        Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{Color}.xaml") });
                         break;
                     case "Metro":
                         Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Office2013/Generic.xaml") });
                         break;
                     default:
                         //Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri(String.Format("pack://application:,,,/Fluent;component/Themes/Office2010/{0}.xaml", Color)) });
-                        Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{Color}.xaml" });
+                        Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{Color}.xaml") });
                         break;
                 }
             }
