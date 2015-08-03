@@ -136,7 +136,7 @@ namespace BExplorer.Shell
         //internal bool IsInitialised { get; set; }
         internal int OverlayIconIndex { get; set; }
         internal IExtractIconPWFlags IconType { get; private set; }
-        internal IntPtr ILPidl { get { return Shell32.ILFindLastID(Pidl); } }
+        internal IntPtr ILPidl => Shell32.ILFindLastID(Pidl);
 
         public static IntPtr MessageHandle = IntPtr.Zero;
         public static Boolean IsCareForMessageHandle = true;
@@ -177,14 +177,14 @@ namespace BExplorer.Shell
         }
 
         /// <summary>Gets the item's parsing name.</summary>
-        public string ParsingName { get { return GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING); } }
+        public string ParsingName => GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING);
 
 
         /// <summary>Gets the normal display name of the item.</summary>
-        public string DisplayName { get { return GetDisplayName(SIGDN.NORMALDISPLAY); } }
+        public string DisplayName => GetDisplayName(SIGDN.NORMALDISPLAY);
 
         /// <summary>Gets the file system path of the item.</summary>
-        public string FileSystemPath { get { return GetDisplayName(SIGDN.FILESYSPATH); } }
+        public string FileSystemPath => GetDisplayName(SIGDN.FILESYSPATH);
 
         /// <summary>Gets a PIDL representing the item.</summary>
         public IntPtr Pidl
@@ -199,7 +199,7 @@ namespace BExplorer.Shell
         }
 
         [Obsolete("Not Used", true)]
-        public bool IsBrowsable { get { return COM_Attribute_Check(SFGAO.BROWSABLE); } }
+        public bool IsBrowsable => COM_Attribute_Check(SFGAO.BROWSABLE);
 
         /// <summary>
         /// Gets a value indicating whether the item is a folder.
@@ -235,19 +235,19 @@ namespace BExplorer.Shell
         /// <summary>
         /// Gets a value indicating whether the item has subfolders.
         /// </summary>
-        public bool HasSubFolders { get { return COM_Attribute_Check(SFGAO.HASSUBFOLDER); } }
+        public bool HasSubFolders => COM_Attribute_Check(SFGAO.HASSUBFOLDER);
 
         /*
 		[Obsolete("Not Used", true)]
-		public bool IsDropTarget { get { return COM_Attribute_Check(SFGAO.DROPTARGET); } }
+		public bool IsDropTarget => COM_Attribute_Check(SFGAO.DROPTARGET);
 		*/
 
         /// <summary>
         /// Gets a value indicating whether the item is a file system item.
         /// </summary>
-        public bool IsFileSystem { get { return COM_Attribute_Check(SFGAO.FILESYSTEM); } }
+        public bool IsFileSystem => COM_Attribute_Check(SFGAO.FILESYSTEM);
 
-        public bool IsShared { get { return COM_Attribute_Check(SFGAO.SHARE); } }
+        public bool IsShared => COM_Attribute_Check(SFGAO.SHARE);
 
         /*
 		[Obsolete("Not Used", true)]
@@ -260,16 +260,16 @@ namespace BExplorer.Shell
 		/// <summary>
 		/// Gets a value indicating whether the item is read-only.
 		/// </summary>
-		public bool IsReadOnly { get { return COM_Attribute_Check(SFGAO.READONLY); } }
+		public bool IsReadOnly => COM_Attribute_Check(SFGAO.READONLY);
 		*/
 
         /// <summary>Gets a value indicating whether the item is Hidden.</summary>
-        public bool IsHidden { get { return COM_Attribute_Check(SFGAO.HIDDEN); } }
+        public bool IsHidden => COM_Attribute_Check(SFGAO.HIDDEN);
 
         /// <summary>
         /// Gets a value that determines if this ShellObject is a link or shortcut.
         /// </summary>
-        public bool IsLink { get { return COM_Attribute_Check(SFGAO.LINK); } }
+        public bool IsLink => COM_Attribute_Check(SFGAO.LINK);
 
         /// <summary>Returns the extension of the specified path string.</summary>
         ///<value>
@@ -281,7 +281,7 @@ namespace BExplorer.Shell
         /// <exception cref="System.ArgumentException">
         /// path contains one or more of the invalid characters defined in System.IO.Path.GetInvalidPathChars().
         /// </exception>
-        public String Extension { get { return Path.GetExtension(this.CachedParsingName ?? this.ParsingName).ToLowerInvariant(); } }
+        public String Extension => Path.GetExtension(this.CachedParsingName ?? this.ParsingName).ToLowerInvariant();
 
         public bool IsDrive
         {
@@ -298,7 +298,7 @@ namespace BExplorer.Shell
             }
         }
 
-        internal bool IsNetworkPath { get { return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName); } }
+        internal bool IsNetworkPath => Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
 
         public bool IsNetDrive
         {
@@ -771,7 +771,7 @@ namespace BExplorer.Shell
             /*
 			var info = new SHFILEINFO();
 			IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info, Marshal.SizeOf(info),
-                SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
+				SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
 
 			if (result == IntPtr.Zero)
 			{
@@ -780,7 +780,7 @@ namespace BExplorer.Shell
 
 			User32.DestroyIcon(info.hIcon);
 			return info.iIcon;
-            */
+			*/
 
             return GetSystemImageListIndex(Pidl, type, flags);
         }
@@ -1230,7 +1230,7 @@ namespace BExplorer.Shell
         /// <param name="name">
         /// The name of the child item.
         /// </param>
-        public ShellItem this[string name] { get { return new ShellItem(this, name); } }
+        public ShellItem this[string name] => new ShellItem(this, name);
 
 
         /// <summary>
@@ -1404,11 +1404,13 @@ namespace BExplorer.Shell
                 {
                     try
                     {
-                        return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+                        //return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+                        return new ShellItem($"{path}{Path.DirectorySeparatorChar}");
                     }
                     catch (Exception)
                     {
-                        return new ShellItem(@"\\" + String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+                        //return new ShellItem(@"\\" + String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+                        return new ShellItem($"{path}{Path.DirectorySeparatorChar}");
                         throw;
                     }
                 }
@@ -1425,8 +1427,11 @@ namespace BExplorer.Shell
         public static ShellItem TryCreate(string path)
         {
             Uri newUri;
+
+            var Test = ;
             if (path.StartsWith("::") && !path.StartsWith(@"\\"))
-                Uri.TryCreate(String.Format("shell:{0}", path), UriKind.Absolute, out newUri);
+                //Uri.TryCreate(String.Format("shell:{0}", path), UriKind.Absolute, out newUri);
+                Uri.TryCreate($"shell:{path}", UriKind.Absolute, out newUri);
             else
                 Uri.TryCreate(path, UriKind.Absolute, out newUri);
 

@@ -3898,7 +3898,7 @@ namespace BetterExplorer
 
         void gli_Click(object sender, Tuple<string> e)
         {
-            var list = SavedTabsList.LoadTabList(String.Format("{0}{1}.txt", sstdir, e.Item1));
+            var list = SavedTabsList.LoadTabList($"{sstdir}{e.Item1}.txt" /*String.Format("{0}{1}.txt", sstdir, e.Item1)*/);
             for (int i = 0; i < list.Count; i++)
             {
                 var tabitem = tcMain.NewTab(list[i].ToShellParsingName());
@@ -3928,10 +3928,6 @@ namespace BetterExplorer
             }
             else if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
             {
-                //if (tabItem.IsSelected) {
-                //  this._IsTabSelectionChangedAllowed = false;
-                //}
-
                 DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
             }
         }
@@ -3939,6 +3935,7 @@ namespace BetterExplorer
         {
             DropTargetHelper.Create.DragLeave();
         }
+
         void newt_Drop(object sender, DragEventArgs e)
         {
             e.Handled = true;
@@ -3964,23 +3961,19 @@ namespace BetterExplorer
                     //else
                     //  tabState = 0;
                     if (tabItemSource == this._CurrentlySelectedItem)
-                    {
                         tabState = 0;
-                    }
                     else
-                    {
                         tabState = 1;
-                    }
 
                     tabControl.Items.Remove(tabItemSource);
                     tabControl.Items.Insert(targetIndex, tabItemSource);
                     tcMain.IsInTabDragDrop = false;
+
                     if (tabState == 1)
                         tabControl.SelectedItem = this._CurrentlySelectedItem; //tabControl.Items.IndexOf(tabItemSource);
                     else if (tabState == 0)
-                    {
                         tabControl.SelectedIndex = targetIndex;
-                    }
+
                     tcMain.IsInTabDragDrop = true;
                 }
             }
@@ -4032,14 +4025,10 @@ namespace BetterExplorer
                 e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
             else
             {
-                if (tabItemSource != null)
-                {
-                    e.Effects = DragDropEffects.Move;
-                }
-                else
-                {
+                if (tabItemSource == null)
                     e.Effects = DragDropEffects.None;
-                }
+                else
+                    e.Effects = DragDropEffects.Move;
             }
             BExplorer.Shell.DataObject.DropDescription desc = new BExplorer.Shell.DataObject.DropDescription();
 
@@ -4140,7 +4129,7 @@ namespace BetterExplorer
 
             if (!Directory.Exists(sstdir)) Directory.CreateDirectory(sstdir);
 
-            SavedTabsList.SaveTabList(list, String.Format("{0}{1}.txt", sstdir, Name));
+            SavedTabsList.SaveTabList(list, $"{sstdir}{Name}.txt" /*String.Format("{0}{1}.txt", sstdir, Name)*/);
             miTabManager.IsEnabled = true;
         }
 
@@ -4176,10 +4165,7 @@ namespace BetterExplorer
         {
             e.Handled = true;
             var Item = (e.AddedItems[0] as UndoCloseGalleryItem);
-            if (Item != null)
-            {
-                Item.PerformClickEvent();
-            }
+            Item?.PerformClickEvent();
         }
 
         private void btnChangeTabsFolder_Click(object sender, RoutedEventArgs e)
@@ -4231,20 +4217,13 @@ namespace BetterExplorer
         private void miTabManager_Click(object sender, RoutedEventArgs e)
         {
             string sstdir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\BExplorer_SavedTabs\\";
-            if (Directory.Exists(sstdir))
-            {
-                var man = new Tabs.TabManager();
-                man.MainForm = this;
-                man.Show();
-            }
+            if (Directory.Exists(sstdir)) new Tabs.TabManager() { MainForm = this }.Show();
+
         }
 
         private void RibbonWindow_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (tcMain.SelectedItem != null)
-            {
-                (tcMain.SelectedItem as Wpf.Controls.TabItem).BringIntoView();
-            }
+            if (tcMain.SelectedItem != null) (tcMain.SelectedItem as Wpf.Controls.TabItem).BringIntoView();
         }
 
         #endregion
@@ -4634,11 +4613,8 @@ namespace BetterExplorer
 
         void ShellListView_Navigating(object sender, NavigatingEventArgs e)
         {
-            //tcMain.IsInTabDragDrop = true;
             if (this.ShellListView.CurrentFolder == null) return;
-            //if (this.bcbc.OnNavigate == null)
-            if (e.Folder.IsSearchFolder)
-                this.bcbc.SetPathWithoutNavigate(e.Folder.PIDL.ToString());
+            if (e.Folder.IsSearchFolder) this.bcbc.SetPathWithoutNavigate(e.Folder.PIDL.ToString());
             Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
             {
                 var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
@@ -4651,8 +4627,7 @@ namespace BetterExplorer
                 }
                 this.Title = "Better Explorer - " + e.Folder.DisplayName;
             }));
-            //e.Folder.Thumbnail.CurrentSize = new WIN.Size(16, 16);
-            //e.Folder.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+
             if (e.Folder.IsSearchFolder)
             {
                 Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() =>
@@ -4669,40 +4644,21 @@ namespace BetterExplorer
             }
         }
 
-        /*
-    [Obsolete("I don't think we need this")]
-    void ShellListView_ItemDisplayed(object sender, ItemDisplayedEventArgs e) {
-      //Date: 8/19/2014	User: Aaron	Note: Added [return;] because the following code seems pointless
-      return;
-
-      var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
-      if (selectedItem != null) {
-      var selectedPaths = selectedItem.SelectedItems;
-      var path = e.DisplayedItem.ParsingName;
-      if (selectedPaths != null && selectedPaths.Contains(path)) {
-      this.ShellListView.SelectItemByIndex(e.DisplayedItemIndex, true);
-      selectedPaths.Remove(path);
-      }
-      }
-    }
-    */
-
         void ShellTree_NodeClick(object sender, WIN.Forms.TreeNodeMouseClickEventArgs e)
         {
             if (e.Button == WIN.Forms.MouseButtons.Middle)
             {
-                if (e.Node != null && e.Node.Tag != null)
+                if (e.Node?.Tag != null)//(e.Node != null && e.Node.Tag != null)
                 {
                     var item = e.Node.Tag as IListItemEx;
-                    if (item != null && item.IsLink)
+                    if ((item?.IsLink).Value) //(item != null && item.IsLink)
                     {
                         var shellLink = new ShellLink(item.ParsingName);
                         item = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, shellLink.TargetPIDL);
                         shellLink.Dispose();
                     }
 
-                    if (item != null)
-                        tcMain.NewTab(item, false);
+                    if (item != null) tcMain.NewTab(item, false);
                 }
             }
         }
@@ -4711,19 +4667,15 @@ namespace BetterExplorer
 
         void ShellListView_KeyJumpTimerDone(object sender, EventArgs e)
         {
-            if (_keyjumpTimer != null)
-            {
-                _keyjumpTimer.Stop();
-                _keyjumpTimer.Start();
-            }
+            _keyjumpTimer?.Stop();
+            _keyjumpTimer?.Start();
         }
 
         void _keyjumpTimer_Tick(object sender, EventArgs e)
         {
             //key jump done
             KeyJumpGrid.IsOpen = false;
-            var timer = sender as WIN.Forms.Timer;
-            timer?.Stop();
+            (sender as WIN.Forms.Timer)?.Stop();
         }
 
         void ShellListView_KeyJumpKeyDown(object sender, WIN.Forms.KeyEventArgs e)
@@ -4775,9 +4727,7 @@ namespace BetterExplorer
             SetupUIOnSelectOrNavigate();
 
             if (this.IsInfoPaneEnabled)
-            {
                 Task.Run(() => this.DetailsPanel.FillPreviewPane(this.ShellListView));
-            }
 
             SetUpStatusBarOnSelectOrNavigate(ShellListView.GetSelectedCount());
         }
@@ -4845,7 +4795,7 @@ namespace BetterExplorer
                 if (selectedItem != null)
                 {
                     var selectedPaths = selectedItem.SelectedItems;
-                    if (selectedPaths != null && selectedPaths.Count > 0)
+                    if (selectedPaths?.Count > 0) //(selectedPaths != null && selectedPaths.Count > 0)
                     {
                         foreach (var path in selectedPaths.ToArray())
                         {
@@ -5020,24 +4970,14 @@ namespace BetterExplorer
 
         private void NavigationController(IListItemEx Destination)
         {
-            if (!Destination.Equals(this.ShellListView.CurrentFolder))
-            {
-                this.ShellListView.Navigate_Full(Destination, true);
-
-                //if (this.ShellListView.CurrentFolder != null)
-
-            }
-            //this.bcbc.Path = RemoveLastEmptySeparator(Destination.ParsingName).ToShellParsingName(); //this.ShellListView.CurrentFolder.ParsingName;
+            if (!Destination.Equals(this.ShellListView.CurrentFolder)) this.ShellListView.Navigate_Full(Destination, true);
         }
 
         private string RemoveLastEmptySeparator(string path)
         {
             path = path.Trim();
-            int sepLength = 1;
-            if (path.EndsWith(@"\"))
-            {
-                path = path.Remove(path.Length - sepLength, sepLength);
-            }
+            //int sepLength = 1;
+            if (path.EndsWith(@"\")) path = path.Remove(path.Length - 1, 1);
             return path;
         }
         #endregion
@@ -5171,9 +5111,7 @@ namespace BetterExplorer
         {
             this.Visibility = Visibility.Visible;
             if (this.WindowState == WindowState.Minimized)
-            {
                 User32.ShowWindow(Handle, User32.ShowWindowCommands.Restore);
-            }
 
             this.Activate();
             this.Topmost = true;  // important
@@ -5274,10 +5212,7 @@ namespace BetterExplorer
             }
         }
 
-        private void tmpButtonB_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("This button currently does nothing");
-        }
+        private void tmpButtonB_Click(object sender, RoutedEventArgs e) => MessageBox.Show("This button currently does nothing");
 
         private void RibbonWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -5309,17 +5244,10 @@ namespace BetterExplorer
         {
             var toolBar = sender as ToolBar;
             var overflowGrid = toolBar.Template.FindName("OverflowGrid", toolBar) as FrameworkElement;
-            if (overflowGrid != null)
-            {
-                overflowGrid.Visibility = toolBar.HasOverflowItems ? Visibility.Visible : Visibility.Collapsed;
-            }
+            if (overflowGrid != null) overflowGrid.Visibility = toolBar.HasOverflowItems ? Visibility.Visible : Visibility.Collapsed;
 
             var mainPanelBorder = toolBar.Template.FindName("MainPanelBorder", toolBar) as FrameworkElement;
-            if (mainPanelBorder != null)
-            {
-                var defaultMargin = new Thickness(0, 0, 11, 0);
-                mainPanelBorder.Margin = toolBar.HasOverflowItems ? defaultMargin : new Thickness(0);
-            }
+            if (mainPanelBorder != null) mainPanelBorder.Margin = toolBar.HasOverflowItems ? new Thickness(0, 0, 11, 0) : new Thickness(0);
         }
 
         private void btnPaypal_Click(object sender, RoutedEventArgs e)
@@ -5331,15 +5259,18 @@ namespace BetterExplorer
             string country = "US";                    // AU, US, etc.
             string currency = "USD";                  // AUD, USD, etc.
 
-            url += "https://www.paypal.com/cgi-bin/webscr" +
-                "?cmd=" + "_donations" +
-                "&business=" + business +
-                "&lc=" + country +
-                "&item_name=" + description +
-                "&currency_code=" + currency +
-                "&bn=" + "PP%2dDonationsBF";
+            //url += "https://www.paypal.com/cgi-bin/webscr" +
+            //    "?cmd=" + "_donations" +
+            //    "&business=" + business +
+            //    "&lc=" + country +
+            //    "&item_name=" + description +
+            //    "&currency_code=" + currency +
+            //    "&bn=" + "PP%2dDonationsBF";
 
-            System.Diagnostics.Process.Start(url);
+            url = $"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business={business}&lc={country}&item_name={description}&currency_code={currency}&bn=PP%2dDonationsBF";
+
+
+            Process.Start(url);
         }
 
         private void btnTest_Click(object sender, RoutedEventArgs e)
@@ -5403,6 +5334,7 @@ namespace BetterExplorer
             tcMain.DefaultTabPath = tcMain.StartUpLocation.ToShellParsingName();
             tcMain.PreviewSelectionChanged += tcMain_PreviewSelectionChanged;
             tcMain.StartUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+
             if (tcMain.StartUpLocation == "")
             {
                 Utilities.SetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName);
@@ -5473,8 +5405,6 @@ namespace BetterExplorer
             this.ShellListView.Focus();
             this._CurrentlySelectedItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
         }
-
-
 
         private void newt_GiveFeedback(object sender, GiveFeedbackEventArgs e)
         {
@@ -5573,10 +5503,7 @@ namespace BetterExplorer
         void bcbc_OnEditModeToggle(object sender, Odyssey.Controls.EditModeToggleEventArgs e)
         {
             this.ShellListView.IsFocusAllowed = e.IsExit;
-            if (!e.IsExit)
-            {
-                this.bcbc.Focus();
-            }
+            if (!e.IsExit) this.bcbc.Focus();
         }
 
         private void bcbc_BreadcrumbItemDropDownOpened(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e)
@@ -5585,10 +5512,7 @@ namespace BetterExplorer
             this.bcbc.Focus();
         }
 
-        private void bcbc_BreadcrumbItemDropDownClosed(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e)
-        {
-            this.ShellListView.IsFocusAllowed = true;
-        }
+        private void bcbc_BreadcrumbItemDropDownClosed(object sender, Odyssey.Controls.BreadcrumbItemEventArgs e) => this.ShellListView.IsFocusAllowed = true;
 
         #endregion
 
@@ -5646,10 +5570,7 @@ namespace BetterExplorer
 
         private void btnStartPowerShellClick(object sender, RoutedEventArgs e)
         {
-            if (ctrlConsole.IsProcessRunning)
-            {
-                ctrlConsole.StopProcess();
-            }
+            if (ctrlConsole.IsProcessRunning) ctrlConsole.StopProcess();
             ctrlConsole.StartPowerShell();
         }
 
