@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -32,22 +31,18 @@ using BExplorer.Shell.Interop;
 using Fluent;
 using LTR.IO.ImDisk;
 using Microsoft.Win32;
-using NAppUpdate.Framework;
 using SevenZip;
 using Shell32;
 using wyDay.Controls;
 using Clipboards = System.Windows.Forms.Clipboard;
 using ContextMenu = Fluent.ContextMenu;
 using MenuItem = Fluent.MenuItem;
-using Odyssey.Controls;
 //using BExplorer.Shell.Taskbar;
 using BExplorer.Shell.CommonFileDialogs;
 using DropTargetHelper = BExplorer.Shell.DropTargetHelper.Get;
 
 using WIN = System.Windows;
 using BExplorer.Shell._Plugin_Interfaces;
-using System.Windows.Data;
-using Timer = System.Windows.Forms.Timer;
 
 
 namespace BetterExplorer
@@ -121,6 +116,10 @@ namespace BetterExplorer
 
         #region Events
 
+        private void btnAbout_Click(object sender, RoutedEventArgs e) => new fmAbout(this).ShowDialog();
+        private void btnBugtracker_Click(object sender, RoutedEventArgs e) => Process.Start("http://bugtracker.better-explorer.com");
+        private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e) => CustomizeQAT.Open(this, TheRibbon);
+
         private void btnConsolePane_Click(object sender, RoutedEventArgs e)
         {
             this.IsConsoleShown = btnConsolePane.IsChecked.Value;
@@ -141,15 +140,6 @@ namespace BetterExplorer
             }
         }
 
-        private void btnAbout_Click(object sender, RoutedEventArgs e)
-        {
-            new fmAbout(this).ShowDialog();
-        }
-
-        private void btnBugtracker_Click(object sender, RoutedEventArgs e)
-        {
-            Process.Start("http://bugtracker.better-explorer.com");
-        }
 
         private void backstage_IsOpenChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
@@ -188,10 +178,7 @@ namespace BetterExplorer
             //}
         }
 
-        private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e)
-        {
-            CustomizeQAT.Open(this, TheRibbon);
-        }
+
 
         private void LoadInitialWindowPositionAndState()
         {
