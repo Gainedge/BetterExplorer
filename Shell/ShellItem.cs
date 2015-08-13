@@ -31,516 +31,571 @@ using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
 using ComTypes = System.Runtime.InteropServices.ComTypes;
 
-namespace BExplorer.Shell {
+namespace BExplorer.Shell
+{
 
-	#region Helpers
+    #region Helpers
 
-	/// <summary>
-	/// Enumerates the types of shell icons.
-	/// </summary>
-	public enum ShellIconType {
-		/// <summary>The system large icon type</summary>
-		LargeIcon = (int)SHGFI.LargeIcon,
+    /// <summary>
+    /// Enumerates the types of shell icons.
+    /// </summary>
+    public enum ShellIconType
+    {
+        /// <summary>The system large icon type</summary>
+        LargeIcon = (int)SHGFI.LargeIcon,
 
-		/// <summary>The system shell icon type</summary>
-		ShellIcon = (int)SHGFI.ShellIconSize,
+        /// <summary>The system shell icon type</summary>
+        ShellIcon = (int)SHGFI.ShellIconSize,
 
-		/// <summary>The system small icon type</summary>
-		SmallIcon = (int)SHGFI.SmallIcon,
-	}
+        /// <summary>The system small icon type</summary>
+        SmallIcon = (int)SHGFI.SmallIcon,
+    }
 
-	/// <summary>
-	/// Enumerates the optional styles that can be applied to shell icons.
-	/// </summary>
-	[Flags]
-	public enum ShellIconFlags {
-		/// <summary>The icon is displayed opened.</summary>
-		OpenIcon = (int)SHGFI.Icon,
+    /// <summary>
+    /// Enumerates the optional styles that can be applied to shell icons.
+    /// </summary>
+    [Flags]
+    public enum ShellIconFlags
+    {
+        /// <summary>The icon is displayed opened.</summary>
+        OpenIcon = (int)SHGFI.Icon,
 
-		/// <summary>Get the overlay for the icon as well.</summary>
-		OverlayIndex = (int)SHGFI.OverlayIndex
-	}
+        /// <summary>Get the overlay for the icon as well.</summary>
+        OverlayIndex = (int)SHGFI.OverlayIndex
+    }
 
-	internal class ShellItemConverter : TypeConverter {
+    internal class ShellItemConverter : TypeConverter
+    {
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+        {
+            if (sourceType == typeof(string))
+                return true;
+            else
+                return base.CanConvertFrom(context, sourceType);
+        }
 
-		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType) {
-			if (sourceType == typeof(string)) {
-				return true;
-			}
-			else {
-				return base.CanConvertFrom(context, sourceType);
-			}
-		}
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+        {
+            if (destinationType == typeof(InstanceDescriptor))
+                return true;
+            else
+                return base.CanConvertTo(context, destinationType);
+        }
 
-		public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType) {
-			if (destinationType == typeof(InstanceDescriptor)) {
-				return true;
-			}
-			else {
-				return base.CanConvertTo(context, destinationType);
-			}
-		}
+        public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+        {
+            if (value is string)
+            {
+                string s = (string)value;
 
-		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value) {
-			if (value is string) {
-				string s = (string)value;
+                if (s.Length == 0)
+                    return ShellItem.Desktop;
+                else
+                    return new ShellItem(s);
+            }
+            else
+            {
+                return base.ConvertFrom(context, culture, value);
+            }
+        }
 
-				if (s.Length == 0) {
-					return ShellItem.Desktop;
-				}
-				else {
-					return new ShellItem(s);
-				}
-			}
-			else {
-				return base.ConvertFrom(context, culture, value);
-			}
-		}
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            if (value is ShellItem)
+            {
+                Uri uri = ((ShellItem)value).ToUri();
 
-		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType) {
-			if (value is ShellItem) {
-				Uri uri = ((ShellItem)value).ToUri();
+                if (destinationType == typeof(string))
+                    return uri.Scheme == "file" ? uri.LocalPath : uri.ToString();
+                else if (destinationType == typeof(InstanceDescriptor))
+                    return new InstanceDescriptor(typeof(ShellItem).GetConstructor(new Type[] { typeof(string) }), new object[] { uri.ToString() });
+            }
 
-				if (destinationType == typeof(string)) {
-					return uri.Scheme == "file" ? uri.LocalPath : uri.ToString();
-				}
-				else if (destinationType == typeof(InstanceDescriptor)) {
-					return new InstanceDescriptor(typeof(ShellItem).GetConstructor(new Type[] { typeof(string) }), new object[] { uri.ToString() });
-				}
-			}
-			return base.ConvertTo(context, culture, value, destinationType);
-		}
-	}
+            return base.ConvertTo(context, culture, value, destinationType);
+        }
+    }
 
-	#endregion Helpers
+    #endregion Helpers
 
-	/// <summary>
-	/// Represents an item in the Windows Shell namespace.
-	/// </summary>
-	[TypeConverter(typeof(ShellItemConverter))]
-	public class ShellItem : IEnumerable<ShellItem>, IDisposable {
+    /// <summary>
+    /// Represents an item in the Windows Shell namespace.
+    /// </summary>
+    [TypeConverter(typeof(ShellItemConverter))]
+    public class ShellItem : IEnumerable<ShellItem>, IDisposable
+    {
 
-		#region Properties
-		private static ShellItem m_Desktop;
-		private int? hashValue;
-		private ShellThumbnail thumbnail;
-		protected IShellItem m_ComInterface;
-		//internal bool IsNeedRefreshing { get; set; }
-		internal bool IsInvalid { get; set; }
-		//internal bool IsOnlyLowQuality { get; set; }
-		//internal bool IsThumbnailLoaded { get; set; }
-		//internal bool IsInitialised { get; set; }
-		internal int OverlayIconIndex { get; set; }
-		internal IExtractIconPWFlags IconType { get; private set; }
-		internal IntPtr ILPidl { get { return Shell32.ILFindLastID(Pidl); } }
+        #region Properties
+        private static ShellItem m_Desktop;
+        private int? hashValue;
+        private ShellThumbnail thumbnail;
+        protected IShellItem m_ComInterface;
+        //internal bool IsNeedRefreshing { get; set; }
+        internal bool IsInvalid { get; set; }
+        //internal bool IsOnlyLowQuality { get; set; }
+        //internal bool IsThumbnailLoaded { get; set; }
+        //internal bool IsInitialised { get; set; }
+        internal int OverlayIconIndex { get; set; }
+        internal IExtractIconPWFlags IconType { get; private set; }
+        internal IntPtr ILPidl => Shell32.ILFindLastID(Pidl);
 
-		public static IntPtr MessageHandle = IntPtr.Zero;
-		public static Boolean IsCareForMessageHandle = true;
+        public static IntPtr MessageHandle = IntPtr.Zero;
+        public static Boolean IsCareForMessageHandle = true;
 
-		///// <summary>Add Documentation</summary>
-		//public int IsShielded = -1;
+        ///// <summary>Add Documentation</summary>
+        //public int IsShielded = -1;
 
-		///// <summary>Add Documentation</summary>
-		//public bool IsIconLoaded { get; set; }
+        ///// <summary>Add Documentation</summary>
+        //public bool IsIconLoaded { get; set; }
 
-		/// <summary>Add Documentation</summary>
-		public String CachedParsingName { get; private set; }
-		public String CachedDisplayName { get; private set; }
+        /// <summary>Add Documentation</summary>
+        public String CachedParsingName { get; private set; }
+        public String CachedDisplayName { get; private set; }
 
-		/// <summary>Gets the thumbnail of the ShellObject.</summary>
-		public ShellThumbnail Thumbnail {
-			get {
-				if (thumbnail == null) thumbnail = new ShellThumbnail(this);
-				return thumbnail;
-			}
-		}
+        /// <summary>Gets the thumbnail of the ShellObject.</summary>
+        public ShellThumbnail Thumbnail
+        {
+            get
+            {
+                if (thumbnail == null) thumbnail = new ShellThumbnail(this);
+                return thumbnail;
+            }
+        }
 
-		/// <summary>
-		/// Gets the underlying <see cref="IShellItem"/> COM interface.
-		/// </summary>
-		internal IShellItem ComInterface {
-			get {
-				//if (m_ComInterface == null && (File.Exists(this.CachedParsingName) || Directory.Exists(this.CachedParsingName)))
-				//	return new ShellItem(this.CachedParsingName).ComInterface;
-				//else
-					return m_ComInterface;
-			}
-			set {
-				m_ComInterface = value;
-			}
-		}
+        /// <summary>
+        /// Gets the underlying <see cref="IShellItem"/> COM interface.
+        /// </summary>
+        internal IShellItem ComInterface
+        {
+            get
+            {
+                return m_ComInterface;
+            }
+            set
+            {
+                m_ComInterface = value;
+            }
+        }
 
-		/// <summary>Gets the item's parsing name.</summary>
-		public string ParsingName { get { return GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING); } }
+        /// <summary>Gets the item's parsing name.</summary>
+        public string ParsingName => GetDisplayName(SIGDN.DESKTOPABSOLUTEPARSING);
 
 
-		/// <summary>Gets the normal display name of the item.</summary>
-		public string DisplayName { get { return GetDisplayName(SIGDN.NORMALDISPLAY); } }
+        /// <summary>Gets the normal display name of the item.</summary>
+        public string DisplayName => GetDisplayName(SIGDN.NORMALDISPLAY);
 
-		/// <summary>Gets the file system path of the item.</summary>
-		public string FileSystemPath { get { return GetDisplayName(SIGDN.FILESYSPATH); } }
+        /// <summary>Gets the file system path of the item.</summary>
+        public string FileSystemPath => GetDisplayName(SIGDN.FILESYSPATH);
 
-		/// <summary>Gets a PIDL representing the item.</summary>
-		public IntPtr Pidl {
-			get {
-				if (RunningVista)
-					return ComInterface != null ? Shell32.SHGetIDListFromObject(ComInterface) : IntPtr.Zero;
-				else
-					return ((Interop.VistaBridge.ShellItemImpl)ComInterface).Pidl;
-			}
-		}
+        /// <summary>Gets a PIDL representing the item.</summary>
+        public IntPtr Pidl
+        {
+            get
+            {
+                if (RunningVista)
+                    return ComInterface != null ? Shell32.SHGetIDListFromObject(ComInterface) : IntPtr.Zero;
+                else
+                    return ((Interop.VistaBridge.ShellItemImpl)ComInterface).Pidl;
+            }
+        }
 
+        [Obsolete("Not Used", true)]
+        public bool IsBrowsable => COM_Attribute_Check(SFGAO.BROWSABLE);
+
+        /// <summary>
+        /// Gets a value indicating whether the item is a folder.
+        /// </summary>
+        public bool IsFolder
+        {
+            get
+            {
+                SFGAO sfgao;
+                ComInterface.GetAttributes(SFGAO.FOLDER, out sfgao);
+                SFGAO sfgao2;
+                ComInterface.GetAttributes(SFGAO.STREAM, out sfgao2);
+                return sfgao != 0 && sfgao2 == 0;
+            }
+        }
+
+        public bool IsValidShellFolder
+        {
+            get
+            {
+                try
+                {
+                    this.GetIShellFolder();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the item has subfolders.
+        /// </summary>
+        public bool HasSubFolders => COM_Attribute_Check(SFGAO.HASSUBFOLDER);
+
+        /*
 		[Obsolete("Not Used", true)]
-		public bool IsBrowsable { get { return COM_Attribute_Check(SFGAO.BROWSABLE); } }
-
-		/// <summary>
-		/// Gets a value indicating whether the item is a folder.
-		/// </summary>
-		public bool IsFolder {
-			get {
-				SFGAO sfgao;
-				ComInterface.GetAttributes(SFGAO.FOLDER, out sfgao);
-				SFGAO sfgao2;
-				ComInterface.GetAttributes(SFGAO.STREAM, out sfgao2);
-				return sfgao != 0 && sfgao2 == 0;
-			}
-		}
-
-		public bool IsValidShellFolder {
-			get {
-				try {
-					this.GetIShellFolder();
-					return true;
-				}
-				catch {
-					return false;
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets a value indicating whether the item has subfolders.
-		/// </summary>
-		public bool HasSubFolders { get { return COM_Attribute_Check(SFGAO.HASSUBFOLDER); } }
-
-		/*
-		[Obsolete("Not Used", true)]
-		public bool IsDropTarget { get { return COM_Attribute_Check(SFGAO.DROPTARGET); } }
+		public bool IsDropTarget => COM_Attribute_Check(SFGAO.DROPTARGET);
 		*/
 
-		/// <summary>
-		/// Gets a value indicating whether the item is a file system item.
-		/// </summary>
-		public bool IsFileSystem { get { return COM_Attribute_Check(SFGAO.FILESYSTEM); } }
+        /// <summary>
+        /// Gets a value indicating whether the item is a file system item.
+        /// </summary>
+        public bool IsFileSystem => COM_Attribute_Check(SFGAO.FILESYSTEM);
 
-		public bool IsShared { get { return COM_Attribute_Check(SFGAO.SHARE); } }
+        public bool IsShared => COM_Attribute_Check(SFGAO.SHARE);
 
-		/*
+        /*
 		[Obsolete("Not Used", true)]
 		public void UnValidate() {
 			COM_Attribute_Check(SFGAO.VALIDATE);
 		}
 		*/
 
-		/*
+        /*
 		/// <summary>
 		/// Gets a value indicating whether the item is read-only.
 		/// </summary>
-		public bool IsReadOnly { get { return COM_Attribute_Check(SFGAO.READONLY); } }
+		public bool IsReadOnly => COM_Attribute_Check(SFGAO.READONLY);
 		*/
 
-		/// <summary>Gets a value indicating whether the item is Hidden.</summary>
-		public bool IsHidden { get { return COM_Attribute_Check(SFGAO.HIDDEN); } }
+        /// <summary>Gets a value indicating whether the item is Hidden.</summary>
+        public bool IsHidden => COM_Attribute_Check(SFGAO.HIDDEN);
 
-		/// <summary>
-		/// Gets a value that determines if this ShellObject is a link or shortcut.
-		/// </summary>
-		public bool IsLink { get { return COM_Attribute_Check(SFGAO.LINK); } }
+        /// <summary>
+        /// Gets a value that determines if this ShellObject is a link or shortcut.
+        /// </summary>
+        public bool IsLink => COM_Attribute_Check(SFGAO.LINK);
 
-		/// <summary>Returns the extension of the specified path string.</summary>
-		///<value>
-		///     The extension of the specified path (including the period "."), or null,
-		///     or System.String.Empty. If path is null, System.IO.Path.GetExtension(System.String)
-		///     returns null. If path does not have extension information, System.IO.Path.GetExtension(System.String)
-		///     returns System.String.Empty.
-		/// </value>
-		/// <exception cref="System.ArgumentException">
-		/// path contains one or more of the invalid characters defined in System.IO.Path.GetInvalidPathChars().
-		/// </exception>
-		public String Extension { get { return Path.GetExtension(this.CachedParsingName ?? this.ParsingName).ToLowerInvariant(); } }
+        /// <summary>Returns the extension of the specified path string.</summary>
+        ///<value>
+        ///     The extension of the specified path (including the period "."), or null,
+        ///     or System.String.Empty. If path is null, System.IO.Path.GetExtension(System.String)
+        ///     returns null. If path does not have extension information, System.IO.Path.GetExtension(System.String)
+        ///     returns System.String.Empty.
+        /// </value>
+        /// <exception cref="System.ArgumentException">
+        /// path contains one or more of the invalid characters defined in System.IO.Path.GetInvalidPathChars().
+        /// </exception>
+        public String Extension => Path.GetExtension(this.CachedParsingName ?? this.ParsingName).ToLowerInvariant();
 
-		public bool IsDrive {
-			get {
-				try {
-					return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(this.CachedParsingName ?? this.ParsingName) != DriveType.Network;
-				}
-				catch {
-					return false;
-				}
-			}
-		}
+        public bool IsDrive
+        {
+            get
+            {
+                try
+                {
+                    return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(this.CachedParsingName ?? this.ParsingName) != DriveType.Network;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
 
-		internal bool IsNetworkPath { get { return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName); } }
+        internal bool IsNetworkPath => Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
 
-		public bool IsNetDrive {
-			get {
-				try {
-					//return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) == DriveType.Network;
-					return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
-				}
-				catch {
-					return false;
-				}
-			}
-		}
+        public bool IsNetDrive
+        {
+            get
+            {
+                try
+                {
+                    //return Directory.GetLogicalDrives().Contains(ParsingName) && Kernel32.GetDriveType(ParsingName) == DriveType.Network;
+                    return Shell32.PathIsNetworkPath(this.CachedParsingName ?? this.ParsingName);
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
 
-		public bool IsSearchFolder {
-			get {
-				try {
-					return (!ParsingName.StartsWith("::") && !IsFileSystem && !ParsingName.StartsWith(@"\\") && !ParsingName.Contains(":\\")) || ParsingName.EndsWith(".search-ms");
-				}
-				catch {
-					return false;
-				}
-			}
-		}
+        public bool IsSearchFolder
+        {
+            get
+            {
+                try
+                {
+                    return (!ParsingName.StartsWith("::") && !IsFileSystem && !ParsingName.StartsWith(@"\\") && !ParsingName.Contains(":\\")) || ParsingName.EndsWith(".search-ms");
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+        }
 
-		public bool IsImage {
-			get {
-				switch (this.Extension.ToLowerInvariant()) {
-					case ".jpg":
-					case ".png":
-					case ".jpeg":
-					case ".gif":
-					case ".tiff":
-					case ".bmp":
-						return true;
-					default:
-						return false;
-				}
-			}
-		}
+        public bool IsImage
+        {
+            get
+            {
+                switch (this.Extension.ToLowerInvariant())
+                {
+                    case ".jpg":
+                    case ".png":
+                    case ".jpeg":
+                    case ".gif":
+                    case ".tiff":
+                    case ".bmp":
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        }
 
-		/// <summary>
-		/// Gets the item's parent.
-		/// </summary>
-		public ShellItem Parent {
-			get {
-				IShellItem item;
-				HResult result = ComInterface.GetParent(out item);
+        /// <summary>
+        /// Gets the item's parent.
+        /// </summary>
+        public ShellItem Parent
+        {
+            get
+            {
+                IShellItem item;
+                HResult result = ComInterface.GetParent(out item);
 
-				if (result == HResult.S_OK) {
-					return new ShellItem(item);
-				}
-				else if (result == HResult.MK_E_NOOBJECT) {
-					return null;
-				}
-				else {
-					Marshal.ThrowExceptionForHR((int)result);
-					return null;
-				}
-			}
-		}
+                if (result == HResult.S_OK)
+                {
+                    return new ShellItem(item);
+                }
+                else if (result == HResult.MK_E_NOOBJECT)
+                {
+                    return null;
+                }
+                else
+                {
+                    Marshal.ThrowExceptionForHR((int)result);
+                    return null;
+                }
+            }
+        }
 
-		public IntPtr AbsolutePidl {
-			get {
-				uint attr;
-				IntPtr pidl;
-				Shell32.SHParseDisplayName(this.ParsingName, IntPtr.Zero, out pidl, 0, out attr);
-				return pidl;
-			}
-		}
+        public IntPtr AbsolutePidl
+        {
+            get
+            {
+                uint attr;
+                IntPtr pidl;
+                Shell32.SHParseDisplayName(this.ParsingName, IntPtr.Zero, out pidl, 0, out attr);
+                return pidl;
+            }
+        }
 
-		/// <summary>
-		/// Gets the item's tooltip text.
-		/// </summary>
-		public string ToolTipText {
-			get {
-				IntPtr result;
-				IQueryInfo queryInfo;
-				IntPtr infoTipPtr;
-				string infoTip;
+        /// <summary>
+        /// Gets the item's tooltip text.
+        /// </summary>
+        public string ToolTipText
+        {
+            get
+            {
+                IntPtr result;
+                IQueryInfo queryInfo;
+                IntPtr infoTipPtr;
+                string infoTip;
 
-				try {
-					IntPtr relativePidl = Shell32.ILFindLastID(Pidl);
-					Parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, 1, new IntPtr[] { relativePidl }, typeof(IQueryInfo).GUID, 0, out result);
-				}
-				catch (Exception) {
-					return string.Empty;
-				}
-				if (result == IntPtr.Zero) return String.Empty;
-				queryInfo = (IQueryInfo)Marshal.GetTypedObjectForIUnknown(result, typeof(IQueryInfo));
-				queryInfo.GetInfoTip(0x00000001 | 0x00000008, out infoTipPtr);
-				infoTip = Marshal.PtrToStringUni(infoTipPtr);
-				Ole32.CoTaskMemFree(infoTipPtr);
-				return infoTip;
-			}
-		}
+                try
+                {
+                    IntPtr relativePidl = Shell32.ILFindLastID(Pidl);
+                    Parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, 1, new IntPtr[] { relativePidl }, typeof(IQueryInfo).GUID, 0, out result);
+                }
+                catch (Exception)
+                {
+                    return string.Empty;
+                }
+                if (result == IntPtr.Zero) return String.Empty;
+                queryInfo = (IQueryInfo)Marshal.GetTypedObjectForIUnknown(result, typeof(IQueryInfo));
+                queryInfo.GetInfoTip(0x00000001 | 0x00000008, out infoTipPtr);
+                infoTip = Marshal.PtrToStringUni(infoTipPtr);
+                Ole32.CoTaskMemFree(infoTipPtr);
+                return infoTip;
+            }
+        }
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Value Getters
+        #region Value Getters
 
-		#region Enumerator
+        #region Enumerator
 
-		/// <summary>
-		/// Returns an enumerator detailing the child items of the
-		/// <see cref="ShellItem"/>.
-		/// </summary>
-		///
-		/// <remarks>
-		/// This method returns all child item including hidden
-		/// items.
-		/// </remarks>
-		///
-		/// <returns>
-		/// An enumerator over all child items.
-		/// </returns>
-		[System.Diagnostics.DebuggerNonUserCode]
-		public IEnumerator<ShellItem> GetEnumerator() {
-			return GetEnumerator(SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.INIT_ON_FIRST_NEXT | SHCONTF.STORAGE | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.INIT_ON_FIRST_NEXT |
-					SHCONTF.NONFOLDERS | SHCONTF.FASTITEMS | SHCONTF.ENABLE_ASYNC);
-		}
+        /// <summary>
+        /// Returns an enumerator detailing the child items of the
+        /// <see cref="ShellItem"/>.
+        /// </summary>
+        ///
+        /// <remarks>
+        /// This method returns all child item including hidden
+        /// items.
+        /// </remarks>
+        ///
+        /// <returns>
+        /// An enumerator over all child items.
+        /// </returns>
+        [System.Diagnostics.DebuggerNonUserCode]
+        public IEnumerator<ShellItem> GetEnumerator()
+        {
+            return GetEnumerator(SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.INIT_ON_FIRST_NEXT | SHCONTF.STORAGE | SHCONTF.CHECKING_FOR_CHILDREN | SHCONTF.INIT_ON_FIRST_NEXT |
+                    SHCONTF.NONFOLDERS | SHCONTF.FASTITEMS | SHCONTF.ENABLE_ASYNC);
+        }
 
-		/// <summary>
-		/// Returns an enumerator detailing the child items of the
-		/// <see cref="ShellItem"/>.
-		/// </summary>
-		///
-		/// <param name="filter">
-		/// A filter describing the types of child items to be included.
-		/// </param>
-		///
-		/// <returns>
-		/// An enumerator over all child items.
-		/// </returns>
-		[System.Diagnostics.DebuggerNonUserCode]
-		public IEnumerator<ShellItem> GetEnumerator(SHCONTF filter) {
-			IShellFolder folder = GetIShellFolder();
-			HResult navRes;
-			IEnumIDList enumId = GetIEnumIDList(folder, filter, out navRes);
-			uint count;
-			IntPtr pidl;
+        /// <summary>
+        /// Returns an enumerator detailing the child items of the
+        /// <see cref="ShellItem"/>.
+        /// </summary>
+        ///
+        /// <param name="filter">
+        /// A filter describing the types of child items to be included.
+        /// </param>
+        ///
+        /// <returns>
+        /// An enumerator over all child items.
+        /// </returns>
+        [System.Diagnostics.DebuggerNonUserCode]
+        public IEnumerator<ShellItem> GetEnumerator(SHCONTF filter)
+        {
+            IShellFolder folder = GetIShellFolder();
+            HResult navRes;
+            IEnumIDList enumId = GetIEnumIDList(folder, filter, out navRes);
+            uint count;
+            IntPtr pidl;
 
-			if (enumId == null) {
-				yield break;
-			}
+            if (enumId == null)
+            {
+                yield break;
+            }
 
-			HResult result = enumId.Next(1, out pidl, out count);
-			while (result == HResult.S_OK) {
-				yield return new ShellItem(this, pidl);
-				Shell32.ILFree(pidl);
-				result = enumId.Next(1, out pidl, out count);
-			}
+            HResult result = enumId.Next(1, out pidl, out count);
+            while (result == HResult.S_OK)
+            {
+                yield return new ShellItem(this, pidl);
+                Shell32.ILFree(pidl);
+                result = enumId.Next(1, out pidl, out count);
+            }
 
-			if (result != HResult.S_FALSE) {
-				Marshal.ThrowExceptionForHR((int)result);
-			}
+            if (result != HResult.S_FALSE)
+            {
+                Marshal.ThrowExceptionForHR((int)result);
+            }
 
-			yield break;
-		}
+            yield break;
+        }
 
-		#endregion
+        #endregion
 
 
-		public DriveInfo GetDriveInfo() { return IsDrive || IsNetDrive ? new DriveInfo(ParsingName) : null; }
+        public DriveInfo GetDriveInfo() { return IsDrive || IsNetDrive ? new DriveInfo(ParsingName) : null; }
 
-		/// <summary>
-		/// Returns the name of the item in the specified style.
-		/// </summary>
-		///
-		/// <param name="sigdn">
-		/// The style of display name to return.
-		/// </param>
-		///
-		/// <returns>
-		/// A string containing the display name of the item.
-		/// </returns>
-		public string GetDisplayName(SIGDN sigdn) {
-			try {
-				IntPtr resultPtr = ComInterface.GetDisplayName(sigdn);
-				string result = Marshal.PtrToStringUni(resultPtr);
-				Marshal.FreeCoTaskMem(resultPtr);
-				return result;
-			}
-			catch (Exception) {
-				return "Search.search-ms";
-			}
-		}
+        /// <summary>
+        /// Returns the name of the item in the specified style.
+        /// </summary>
+        ///
+        /// <param name="sigdn">
+        /// The style of display name to return.
+        /// </param>
+        ///
+        /// <returns>
+        /// A string containing the display name of the item.
+        /// </returns>
+        public string GetDisplayName(SIGDN sigdn)
+        {
+            try
+            {
+                IntPtr resultPtr = ComInterface.GetDisplayName(sigdn);
+                string result = Marshal.PtrToStringUni(resultPtr);
+                Marshal.FreeCoTaskMem(resultPtr);
+                return result;
+            }
+            catch (Exception)
+            {
+                return "Search.search-ms";
+            }
+        }
 
-		private IExtractIconPWFlags GetIconType() {
-			if (this.Extension == ".exe" || this.Extension == ".com" || this.Extension == ".bat" || this.Extension == ".msi")
-				return IExtractIconPWFlags.GIL_PERINSTANCE;
+        private IExtractIconPWFlags GetIconType()
+        {
+            if (this.Extension == ".exe" || this.Extension == ".com" || this.Extension == ".bat" || this.Extension == ".msi")
+                return IExtractIconPWFlags.GIL_PERINSTANCE;
 
-			if (this.IsFolder) {
-				IExtractIcon iextract = null;
-				IShellFolder ishellfolder = null;
-				StringBuilder str = null;
-				IntPtr result;
+            if (this.IsFolder)
+            {
+                IExtractIcon iextract = null;
+                IShellFolder ishellfolder = null;
+                StringBuilder str = null;
+                IntPtr result;
 
-				if (this.Parent == null) return 0;
+                if (this.Parent == null) return 0;
 
-				try {
-					var guid = new Guid("000214fa-0000-0000-c000-000000000046");
-					uint res = 0;
-					ishellfolder = this.Parent.GetIShellFolder();
-					var pidls = new IntPtr[1] { Shell32.ILFindLastID(this.Pidl) };
-					//pidls[0] = Shell32.ILFindLastID(this.Pidl);
-					ishellfolder.GetUIObjectOf(
-						IntPtr.Zero,
-						1,
-						pidls,
-						ref guid,
-						res,
-						out result
-					);
-					if (result == IntPtr.Zero) {
-						pidls = null;
-						Marshal.ReleaseComObject(ishellfolder);
-						return IExtractIconPWFlags.GIL_PERCLASS;
-					}
-					iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
-					str = new StringBuilder(512);
-					int index = -1;
-					IExtractIconPWFlags flags;
-					iextract.GetIconLocation(IExtractIconUFlags.GIL_ASYNC, str, 512, out index, out flags);
-					pidls = null;
-					Marshal.ReleaseComObject(ishellfolder);
-					Marshal.ReleaseComObject(iextract);
-					ishellfolder = null;
-					iextract = null;
-					str = null;
-					return flags;
-				}
-				catch (Exception) {
-					if (ishellfolder != null)
-						Marshal.ReleaseComObject(ishellfolder);
-					if (iextract != null)
-						Marshal.ReleaseComObject(iextract);
-					return 0;
-				}
-			}
-			else {
-				return IExtractIconPWFlags.GIL_PERCLASS;
-			}
-		}
+                try
+                {
+                    var guid = new Guid("000214fa-0000-0000-c000-000000000046");
+                    uint res = 0;
+                    ishellfolder = this.Parent.GetIShellFolder();
+                    var pidls = new IntPtr[1] { Shell32.ILFindLastID(this.Pidl) };
+                    //pidls[0] = Shell32.ILFindLastID(this.Pidl);
+                    ishellfolder.GetUIObjectOf(
+                        IntPtr.Zero,
+                        1,
+                        pidls,
+                        ref guid,
+                        res,
+                        out result
+                    );
+                    if (result == IntPtr.Zero)
+                    {
+                        pidls = null;
+                        Marshal.ReleaseComObject(ishellfolder);
+                        return IExtractIconPWFlags.GIL_PERCLASS;
+                    }
+                    iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
+                    str = new StringBuilder(512);
+                    int index = -1;
+                    IExtractIconPWFlags flags;
+                    iextract.GetIconLocation(IExtractIconUFlags.GIL_ASYNC, str, 512, out index, out flags);
+                    pidls = null;
+                    Marshal.ReleaseComObject(ishellfolder);
+                    Marshal.ReleaseComObject(iextract);
+                    ishellfolder = null;
+                    iextract = null;
+                    str = null;
+                    return flags;
+                }
+                catch (Exception)
+                {
+                    if (ishellfolder != null)
+                        Marshal.ReleaseComObject(ishellfolder);
+                    if (iextract != null)
+                        Marshal.ReleaseComObject(iextract);
+                    return 0;
+                }
+            }
+            else
+            {
+                return IExtractIconPWFlags.GIL_PERCLASS;
+            }
+        }
 
-		public IExtractIconPWFlags GetShield() {
-			IExtractIcon iextract = null;
-			IShellFolder ishellfolder = null;
-			StringBuilder str = null;
-			IntPtr result;
+        public IExtractIconPWFlags GetShield()
+        {
+            IExtractIcon iextract = null;
+            IShellFolder ishellfolder = null;
+            StringBuilder str = null;
+            IntPtr result;
 
-			//TODO: Move the duplate code into a finally statment in the Try Catch
-			/*
-			 	if (ishellfolder != null)
+            //TODO: Move the duplate code into a finally statment in the Try Catch
+            /*
+				if (ishellfolder != null)
 					Marshal.ReleaseComObject(ishellfolder);
 				if (iextract != null)
 					Marshal.ReleaseComObject(iextract);
 				str = null;
 			*/
 
-			/*
+            /*
 			try {
 				var guid = new Guid("000214fa-0000-0000-c000-000000000046");
 				uint res = 0;
@@ -573,467 +628,448 @@ namespace BExplorer.Shell {
 			}
 			*/
 
-			try {
-				var guid = new Guid("000214fa-0000-0000-c000-000000000046");
-				uint res = 0;
-				ishellfolder = this.Parent.GetIShellFolder();
-				IntPtr[] pidls = new IntPtr[1];
-				pidls[0] = Shell32.ILFindLastID(this.Pidl);
-				ishellfolder.GetUIObjectOf(IntPtr.Zero,
-				1, pidls,
-				ref guid, res, out result);
-				iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
-				str = new StringBuilder(512);
-				int index = -1;
-				IExtractIconPWFlags flags;
-				iextract.GetIconLocation(IExtractIconUFlags.GIL_CHECKSHIELD, str, 512, out index, out flags);
-				pidls = null;
-				return flags;
-			}
-			catch {
-				return 0;
-			}
-			finally {
-				if (ishellfolder != null)
-					Marshal.ReleaseComObject(ishellfolder);
-				if (iextract != null)
-					Marshal.ReleaseComObject(iextract);
-				str = null;
-			}
-		}
+            try
+            {
+                var guid = new Guid("000214fa-0000-0000-c000-000000000046");
+                uint res = 0;
+                ishellfolder = this.Parent.GetIShellFolder();
+                IntPtr[] pidls = new IntPtr[1];
+                pidls[0] = Shell32.ILFindLastID(this.Pidl);
+                ishellfolder.GetUIObjectOf(IntPtr.Zero,
+                1, pidls,
+                ref guid, res, out result);
+                iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
+                str = new StringBuilder(512);
+                int index = -1;
+                IExtractIconPWFlags flags;
+                iextract.GetIconLocation(IExtractIconUFlags.GIL_CHECKSHIELD, str, 512, out index, out flags);
+                pidls = null;
+                return flags;
+            }
+            catch
+            {
+                return 0;
+            }
+            finally
+            {
+                if (ishellfolder != null)
+                    Marshal.ReleaseComObject(ishellfolder);
+                if (iextract != null)
+                    Marshal.ReleaseComObject(iextract);
+                str = null;
+            }
+        }
 
-		/*
-		public int GetFallbackIconIndex() {
-			try {
-				var guid = new Guid("000214fa-0000-0000-c000-000000000046");
-				IntPtr result;
-				uint res = 0;
-				var ishellfolder = this.Parent.GetIShellFolder();
-				ishellfolder.GetUIObjectOf(IntPtr.Zero,
-				(uint)1, new IntPtr[1] { this.ILPidl },
-				guid, res, out result);
-				var iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
-				var str = new StringBuilder(512);
-				int index = -1;
-				IExtractIconPWFlags flags;
-				iextract.GetIconLocation(IExtractIconUFlags.GIL_DEFAULTICON | IExtractIconUFlags.GIL_FORSHELL | IExtractIconUFlags.GIL_OPENICON, str, 512, out index, out flags);
+        /// <summary>
+        /// Gets the Bitmap of this ShellItem's Icon
+        /// </summary>
+        /// <param name="Size"></param>
+        /// <param name="format"></param>
+        /// <param name="retrieve"></param>
+        /// <returns></returns>
+        internal Bitmap GetShellThumbnail(int Size, ShellThumbnailFormatOption format = ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption retrieve = ShellThumbnailRetrievalOption.Default)
+        {
+            this.Thumbnail.RetrievalOption = retrieve;
+            this.Thumbnail.FormatOption = format;
+            this.Thumbnail.CurrentSize = new System.Windows.Size(Size, Size);
+            return this.Thumbnail.Bitmap;
+        }
 
-				return index;
-			}
-			catch (Exception) {
-				return 0;
-			}
-		}
-		*/
+        public List<AssociationItem> GetAssocList()
+        {
+            var assocList = new List<AssociationItem>();
+            IntPtr enumAssocPtr;
+            /*var h = */
+            Shell32.SHAssocEnumHandlers(Path.GetExtension(ParsingName), Shell32.ASSOC_FILTER.ASSOC_FILTER_RECOMMENDED, out enumAssocPtr);
+            IntPtr pUnk = Marshal.ReadIntPtr(enumAssocPtr);
+            IntPtr pFunc = Marshal.ReadIntPtr(pUnk + 3 * IntPtr.Size);
+            Shell32.funcNext Next = (Shell32.funcNext)Marshal.GetDelegateForFunctionPointer(pFunc, typeof(Shell32.funcNext));
 
-		/*
-		public int GetItemIndexInCollection(ShellItem[] collection) { return Array.IndexOf(collection, this); }
-		*/
+            IntPtr[] funcs = new IntPtr[15];
+            int num;
+            int res = Next(enumAssocPtr, 15, funcs, out num);
+            if (res == 0)
+            {
+                for (int i = 0; i < num; i++)
+                {
+                    var funcpUnk = Marshal.ReadIntPtr(funcs[i]);
+                    var getNamepFunc = Marshal.ReadIntPtr(funcpUnk + 3 * IntPtr.Size);
+                    var getNameUIpFunc = Marshal.ReadIntPtr(funcpUnk + 4 * IntPtr.Size);
+                    Shell32.funcGetName GetName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNamepFunc, typeof(Shell32.funcGetName));
+                    Shell32.funcGetName GetUIName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNameUIpFunc, typeof(Shell32.funcGetName));
+                    String path = String.Empty;
+                    String displayName = String.Empty;
+                    GetName(funcs[i], out path);
+                    GetUIName(funcs[i], out displayName);
+                    assocList.Add(new AssociationItem(this) { DisplayName = displayName, ApplicationPath = path });
+                    Marshal.Release(funcs[i]);
+                    Marshal.Release(funcpUnk);
+                    Marshal.Release(getNamepFunc);
+                    Marshal.Release(getNameUIpFunc);
+                }
+            }
+            Marshal.Release(enumAssocPtr);
+            Marshal.Release(pUnk);
+
+            return assocList;
+        }
+
+        /// <summary>
+        /// Returns an <see cref="IShellFolder"/> representing the
+        /// item.
+        /// </summary>
+        public IShellFolder GetIShellFolder()
+        {
+            IntPtr res;
+            ComInterface.BindToHandler(IntPtr.Zero, BHID.SFObject, typeof(IShellFolder).GUID, out res); //HResult result = 
+            var iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res, typeof(IShellFolder));
+            return iShellFolder;
+        }
+
+        [Obsolete("Prameter type is never used")]
+        public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type)
+        {
+            //TODO: Remove the parameter type
+            var pvar = new PropVariant();
+            var isi2 = (IShellItem2)ComInterface;
+            isi2.GetProperty(ref pkey, pvar);
+            return pvar;
+        }
+
+        /// <summary>
+        /// Returns an enumerator detailing the child items of the
+        /// <see cref="ShellItem"/>.
+        /// </summary>
+        ///
+        /// <remarks>
+        /// This method returns all child item including hidden
+        /// items.
+        /// </remarks>
+        ///
+        /// <returns>
+        /// An enumerator over all child items.
+        /// </returns>
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
 
-		/// <summary>
-		/// Gets the Bitmap of this ShellItem's Icon
-		/// </summary>
-		/// <param name="Size"></param>
-		/// <param name="format"></param>
-		/// <param name="retrieve"></param>
-		/// <returns></returns>
-		internal Bitmap GetShellThumbnail(int Size, ShellThumbnailFormatOption format = ShellThumbnailFormatOption.Default, ShellThumbnailRetrievalOption retrieve = ShellThumbnailRetrievalOption.Default) {
-			this.Thumbnail.RetrievalOption = retrieve;
-			this.Thumbnail.FormatOption = format;
-			this.Thumbnail.CurrentSize = new System.Windows.Size(Size, Size);
-			return this.Thumbnail.Bitmap;
-		}
-
-		/*
-		/// <summary>
-		/// Returns an <see cref="ComTypes.IDataObject"/> representing the
-		/// item. This object is used in drag and drop operations.
-		/// </summary>
-		[Obsolete("Not Used", true)]
-		public System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject() {
-			IntPtr res;
-			HResult result = ComInterface.BindToHandler(IntPtr.Zero, BHID.SFUIObject, typeof(ComTypes.IDataObject).GUID, out res);
-			return (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetTypedObjectForIUnknown(res, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
-		}
-		*/
-
-		public List<AssociationItem> GetAssocList() {
-			var assocList = new List<AssociationItem>();
-			IntPtr enumAssocPtr;
-			/*var h = */
-			Shell32.SHAssocEnumHandlers(Path.GetExtension(ParsingName), Shell32.ASSOC_FILTER.ASSOC_FILTER_RECOMMENDED, out enumAssocPtr);
-			IntPtr pUnk = Marshal.ReadIntPtr(enumAssocPtr);
-			IntPtr pFunc = Marshal.ReadIntPtr(pUnk + 3 * IntPtr.Size);
-			Shell32.funcNext Next = (Shell32.funcNext)Marshal.GetDelegateForFunctionPointer(pFunc, typeof(Shell32.funcNext));
-
-			IntPtr[] funcs = new IntPtr[15];
-			int num;
-			int res = Next(enumAssocPtr, 15, funcs, out num);
-			if (res == 0) {
-				for (int i = 0; i < num; i++) {
-					var funcpUnk = Marshal.ReadIntPtr(funcs[i]);
-					var getNamepFunc = Marshal.ReadIntPtr(funcpUnk + 3 * IntPtr.Size);
-					var getNameUIpFunc = Marshal.ReadIntPtr(funcpUnk + 4 * IntPtr.Size);
-					Shell32.funcGetName GetName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNamepFunc, typeof(Shell32.funcGetName));
-					Shell32.funcGetName GetUIName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNameUIpFunc, typeof(Shell32.funcGetName));
-					String path = String.Empty;
-					String displayName = String.Empty;
-					GetName(funcs[i], out path);
-					GetUIName(funcs[i], out displayName);
-					assocList.Add(new AssociationItem(this) { DisplayName = displayName, ApplicationPath = path });
-					Marshal.Release(funcs[i]);
-					Marshal.Release(funcpUnk);
-					Marshal.Release(getNamepFunc);
-					Marshal.Release(getNameUIpFunc);
-				}
-			}
-			Marshal.Release(enumAssocPtr);
-			Marshal.Release(pUnk);
-
-			return assocList;
-		}
-
-		/*
-		/// <summary>
-		/// Returns an <see cref="IDropTarget"/> representing the
-		/// item. This object is used in drag and drop operations.
-		/// </summary>
-		public IDropTarget GetIDropTarget(System.Windows.Forms.Control control) {
-			IntPtr result = GetIShellFolder().CreateViewObject(control.Handle, typeof(IDropTarget).GUID);
-			return (IDropTarget)Marshal.GetTypedObjectForIUnknown(result, typeof(IDropTarget));
-		}
-		*/
-
-		/// <summary>
-		/// Returns an <see cref="IShellFolder"/> representing the
-		/// item.
-		/// </summary>
-		public IShellFolder GetIShellFolder() {
-			IntPtr res;
-			ComInterface.BindToHandler(IntPtr.Zero, BHID.SFObject, typeof(IShellFolder).GUID, out res); //HResult result = 
-			var iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res, typeof(IShellFolder));
-			return iShellFolder;
-		}
-
-		[Obsolete("Prameter type is never used")]
-		public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) {
-			//TODO: Remove the parameter type
-			var pvar = new PropVariant();
-			var isi2 = (IShellItem2)ComInterface;
-			isi2.GetProperty(ref pkey, pvar);
-			return pvar;
-		}
-
-		/// <summary>
-		/// Returns an enumerator detailing the child items of the
-		/// <see cref="ShellItem"/>.
-		/// </summary>
-		///
-		/// <remarks>
-		/// This method returns all child item including hidden
-		/// items.
-		/// </remarks>
-		///
-		/// <returns>
-		/// An enumerator over all child items.
-		/// </returns>
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
-
-		/// <summary>
-		/// Gets the index in the system image list of the icon representing
-		/// the item.
-		/// </summary>
-		///
-		/// <param name="type">
-		/// The type of icon to retrieve.
-		/// </param>
-		///
-		/// <param name="flags">
-		/// Flags detailing additional information to be conveyed by the icon.
-		/// </param>
-		///
-		/// <returns></returns>
-		public int GetSystemImageListIndex(ShellIconType type, ShellIconFlags flags) {
+        /// <summary>
+        /// Gets the index in the system image list of the icon representing
+        /// the item.
+        /// </summary>
+        ///
+        /// <param name="type">
+        /// The type of icon to retrieve.
+        /// </param>
+        ///
+        /// <param name="flags">
+        /// Flags detailing additional information to be conveyed by the icon.
+        /// </param>
+        ///
+        /// <returns></returns>
+        public int GetSystemImageListIndex(ShellIconType type, ShellIconFlags flags)
+        {
+            /*
 			var info = new SHFILEINFO();
 			IntPtr result = Shell32.SHGetFileInfo(Pidl, 0, out info, Marshal.SizeOf(info),
-													SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
+				SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
 
-			if (result == IntPtr.Zero) {
+			if (result == IntPtr.Zero)
+			{
 				throw new Exception("Error retrieving shell folder icon");
 			}
 
 			User32.DestroyIcon(info.hIcon);
 			return info.iIcon;
-		}
+			*/
 
-		public static int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags) {
-			var info = new SHFILEINFO();
-			IntPtr result = Shell32.SHGetFileInfo(pidl, 0, out info, Marshal.SizeOf(info),
-													SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
+            return GetSystemImageListIndex(Pidl, type, flags);
+        }
 
-			if (result == IntPtr.Zero) {
-				throw new Exception("Error retrieving shell folder icon");
-			}
+        public static int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags)
+        {
+            var info = new SHFILEINFO();
+            IntPtr result = Shell32.SHGetFileInfo(pidl, 0, out info, Marshal.SizeOf(info),
+                SHGFI.Icon | SHGFI.SysIconIndex | SHGFI.OverlayIndex | SHGFI.PIDL | (SHGFI)type | (SHGFI)flags);
 
-			User32.DestroyIcon(info.hIcon);
-			return info.iIcon;
-		}
+            if (result == IntPtr.Zero)
+                throw new Exception("Error retrieving shell folder icon");
 
-		#endregion Value Getters
+            User32.DestroyIcon(info.hIcon);
+            return info.iIcon;
+        }
 
-		#region Constructors
+        #endregion Value Getters
 
-		private void Constructor_Helper() {
-			this.IconType = GetIconType();
-			this.CachedParsingName = this.ParsingName;
-			this.CachedDisplayName = this.DisplayName;
-			this.OverlayIconIndex = -1;
-		}
+        #region Constructors
 
-		[Obsolete("Try to remove this!!!")]
-		protected ShellItem() { }
+        private void Constructor_Helper()
+        {
+            this.IconType = GetIconType();
+            this.CachedParsingName = this.ParsingName;
+            this.CachedDisplayName = this.DisplayName;
+            this.OverlayIconIndex = -1;
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ShellItem"/> class.
-		/// </summary>
-		///
-		/// <remarks>
-		/// Takes a <see cref="Uri"/> containing the location of the ShellItem.
-		/// This constructor accepts URIs using two schemes:
-		///
-		/// - file: A file or folder in the computer's filesystem, e.g.
-		///         file:///D:/Folder
-		/// - shell: A virtual folder, or a file or folder referenced from
-		///          a virtual folder, e.g. shell:///Personal/file.txt
-		/// </remarks>
-		///
-		/// <param name="uri">
-		/// A <see cref="Uri"/> containing the location of the ShellItem.
-		/// </param>
-		public ShellItem(Uri uri) {
-			Initialize(uri);
-			Constructor_Helper();
-		}
+        [Obsolete("Try to remove this!!!")]
+        protected ShellItem() { }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ShellItem"/> class.
-		/// </summary>
-		///
-		/// <remarks>
-		/// Takes a <see cref="string"/> containing the location of the ShellItem.
-		/// This constructor accepts URIs using two schemes:
-		///
-		/// - file: A file or folder in the computer's filesystem, e.g.
-		///         file:///D:/Folder
-		/// - shell: A virtual folder, or a file or folder referenced from
-		///          a virtual folder, e.g. shell:///Personal/file.txt
-		/// </remarks>
-		///
-		/// <param name="path">
-		/// A string containing a Uri with the location of the ShellItem.
-		/// </param>
-		public ShellItem(string path) {
-			Uri newUri = new Uri(path);
-			Initialize(newUri);
-			Constructor_Helper();
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellItem"/> class.
+        /// </summary>
+        ///
+        /// <remarks>
+        /// Takes a <see cref="Uri"/> containing the location of the ShellItem.
+        /// This constructor accepts URIs using two schemes:
+        ///
+        /// - file: A file or folder in the computer's filesystem, e.g.
+        ///         file:///D:/Folder
+        /// - shell: A virtual folder, or a file or folder referenced from
+        ///          a virtual folder, e.g. shell:///Personal/file.txt
+        /// </remarks>
+        ///
+        /// <param name="uri">
+        /// A <see cref="Uri"/> containing the location of the ShellItem.
+        /// </param>
+        public ShellItem(Uri uri)
+        {
+            Initialize(uri);
+            Constructor_Helper();
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ShellItem"/> class.
-		/// </summary>
-		///
-		/// <remarks>
-		/// Takes an <see cref="Environment.SpecialFolder"/> containing the
-		/// location of the folder.
-		/// </remarks>
-		///
-		/// <param name="folder">
-		/// An <see cref="Environment.SpecialFolder"/> containing the
-		/// location of the folder.
-		/// </param>
-		public ShellItem(Environment.SpecialFolder folder) {
-			IntPtr pidl;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellItem"/> class.
+        /// </summary>
+        ///
+        /// <remarks>
+        /// Takes a <see cref="string"/> containing the location of the ShellItem.
+        /// This constructor accepts URIs using two schemes:
+        ///
+        /// - file: A file or folder in the computer's filesystem, e.g.
+        ///         file:///D:/Folder
+        /// - shell: A virtual folder, or a file or folder referenced from
+        ///          a virtual folder, e.g. shell:///Personal/file.txt
+        /// </remarks>
+        ///
+        /// <param name="path">
+        /// A string containing a Uri with the location of the ShellItem.
+        /// </param>
+        public ShellItem(string path)
+        {
+            Uri newUri = new Uri(path);
+            Initialize(newUri);
+            Constructor_Helper();
+        }
 
-			if (Shell32.SHGetSpecialFolderLocation(IntPtr.Zero, (CSIDL)folder, out pidl) == HResult.S_OK) {
-				try {
-					ComInterface = CreateItemFromIDList(pidl);
-				}
-				finally {
-					Shell32.ILFree(pidl);
-				}
-			}
-			else {
-				// SHGetSpecialFolderLocation does not support many common
-				// CSIDL values on Windows 98, but SHGetFolderPath in
-				// ShFolder.dll does, so fall back to it if necessary. We
-				// try SHGetSpecialFolderLocation first because it returns
-				// a PIDL which is preferable to a path as it can express
-				// virtual folder locations.
-				StringBuilder path = new StringBuilder();
-				Marshal.ThrowExceptionForHR((int)Shell32.SHGetFolderPath(IntPtr.Zero, (CSIDL)folder, IntPtr.Zero, 0, path));
-				ComInterface = CreateItemFromParsingName(path.ToString());
-			}
-			Constructor_Helper();
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellItem"/> class.
+        /// </summary>
+        ///
+        /// <remarks>
+        /// Takes an <see cref="Environment.SpecialFolder"/> containing the
+        /// location of the folder.
+        /// </remarks>
+        ///
+        /// <param name="folder">
+        /// An <see cref="Environment.SpecialFolder"/> containing the
+        /// location of the folder.
+        /// </param>
+        public ShellItem(Environment.SpecialFolder folder)
+        {
+            IntPtr pidl;
+
+            if (Shell32.SHGetSpecialFolderLocation(IntPtr.Zero, (CSIDL)folder, out pidl) == HResult.S_OK)
+            {
+                try
+                {
+                    ComInterface = CreateItemFromIDList(pidl);
+                }
+                finally
+                {
+                    Shell32.ILFree(pidl);
+                }
+            }
+            else
+            {
+                // SHGetSpecialFolderLocation does not support many common
+                // CSIDL values on Windows 98, but SHGetFolderPath in
+                // ShFolder.dll does, so fall back to it if necessary. We
+                // try SHGetSpecialFolderLocation first because it returns
+                // a PIDL which is preferable to a path as it can express
+                // virtual folder locations.
+                StringBuilder path = new StringBuilder();
+                Marshal.ThrowExceptionForHR((int)Shell32.SHGetFolderPath(IntPtr.Zero, (CSIDL)folder, IntPtr.Zero, 0, path));
+                ComInterface = CreateItemFromParsingName(path.ToString());
+            }
+            Constructor_Helper();
+        }
 
 
-		public ShellItem(IntPtr pidl) {
-			ComInterface = CreateItemFromIDList(pidl);
-			Constructor_Helper();
-		}
+        public ShellItem(IntPtr pidl)
+        {
+            ComInterface = CreateItemFromIDList(pidl);
+            Constructor_Helper();
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ShellItem"/> class.
-		/// </summary>
-		///
-		/// <param name="comInterface">
-		/// An <see cref="IShellItem"/> representing the folder.
-		/// </param>
-		public ShellItem(IShellItem comInterface) {
-			ComInterface = comInterface;
-			this.CachedParsingName = this.ParsingName;
-			this.CachedDisplayName = this.DisplayName;
-			this.OverlayIconIndex = -1;
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellItem"/> class.
+        /// </summary>
+        ///
+        /// <param name="comInterface">
+        /// An <see cref="IShellItem"/> representing the folder.
+        /// </param>
+        public ShellItem(IShellItem comInterface)
+        {
+            ComInterface = comInterface;
+            this.CachedParsingName = this.ParsingName;
+            this.CachedDisplayName = this.DisplayName;
+            this.OverlayIconIndex = -1;
+        }
 
-		public ShellItem(ShellItem parent, IntPtr pidl) {
-			//ComInterface = CreateItemWithParent(parent, pidl);
+        public ShellItem(ShellItem parent, IntPtr pidl)
+        {
+            //ComInterface = CreateItemWithParent(parent, pidl);
 
-			if (RunningVista) {
-				ComInterface = Shell32.SHCreateItemWithParent(IntPtr.Zero, parent.GetIShellFolder(), pidl, typeof(IShellItem).GUID);
-			}
-			else {
-				Interop.VistaBridge.ShellItemImpl impl = (Interop.VistaBridge.ShellItemImpl)parent.ComInterface;
-				ComInterface = new Interop.VistaBridge.ShellItemImpl(Shell32.ILCombine(impl.Pidl, pidl), true);
-			}
+            if (RunningVista)
+            {
+                ComInterface = Shell32.SHCreateItemWithParent(IntPtr.Zero, parent.GetIShellFolder(), pidl, typeof(IShellItem).GUID);
+            }
+            else
+            {
+                Interop.VistaBridge.ShellItemImpl impl = (Interop.VistaBridge.ShellItemImpl)parent.ComInterface;
+                ComInterface = new Interop.VistaBridge.ShellItemImpl(Shell32.ILCombine(impl.Pidl, pidl), true);
+            }
 
-			Constructor_Helper();
-		}
+            Constructor_Helper();
+        }
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Comparisons
+        #region Comparisons
 
-		/// <summary>
-		/// Implements the == (equality) operator.
-		/// </summary>
-		/// <param name="leftShellObject">First object to compare.</param>
-		/// <param name="rightShellObject">Second object to compare.</param>
-		/// <returns>True if leftShellObject equals rightShellObject; false otherwise.</returns>
-		public static bool operator ==(ShellItem leftShellObject, ShellItem rightShellObject) {
-			if ((object)leftShellObject == null) {
-				return ((object)rightShellObject == null);
-			}
-			return leftShellObject.Equals(rightShellObject);
-		}
+        /// <summary>
+        /// Implements the == (equality) operator.
+        /// </summary>
+        /// <param name="leftShellObject">First object to compare.</param>
+        /// <param name="rightShellObject">Second object to compare.</param>
+        /// <returns>True if leftShellObject equals rightShellObject; false otherwise.</returns>
+        public static bool operator ==(ShellItem leftShellObject, ShellItem rightShellObject)
+        {
+            if ((object)leftShellObject == null)
+                return ((object)rightShellObject == null);
+            else
+                return leftShellObject.Equals(rightShellObject);
+        }
 
-		/// <summary>
-		/// Implements the != (inequality) operator.
-		/// </summary>
-		/// <param name="leftShellObject">First object to compare.</param>
-		/// <param name="rightShellObject">Second object to compare.</param>
-		/// <returns>True if leftShellObject does not equal leftShellObject; false otherwise.</returns>
-		public static bool operator !=(ShellItem leftShellObject, ShellItem rightShellObject) {
-			return !(leftShellObject == rightShellObject);
-		}
+        /// <summary>
+        /// Implements the != (inequality) operator.
+        /// </summary>
+        /// <param name="leftShellObject">First object to compare.</param>
+        /// <param name="rightShellObject">Second object to compare.</param>
+        /// <returns>True if leftShellObject does not equal leftShellObject; false otherwise.</returns>
+        public static bool operator !=(ShellItem leftShellObject, ShellItem rightShellObject) => !(leftShellObject == rightShellObject);
 
-		public override int GetHashCode() {
-			if (!hashValue.HasValue) {
-				uint size = Shell32.ILGetSize(Pidl);
-				if (size != 0) {
-					byte[] pidlData = new byte[size];
-					Marshal.Copy(Pidl, pidlData, 0, (int)size);
-					byte[] hashData = ShellItem.hashProvider.ComputeHash(pidlData);
-					hashValue = BitConverter.ToInt32(hashData, 0);
-				}
-				else {
-					hashValue = 0;
-				}
-			}
-			return hashValue.Value;
-		}
 
-		/// <summary>
-		/// Compares two <see cref="IShellItem"/>s. The comparison is carried
-		/// out by display order.
-		/// </summary>
-		///
-		/// <param name="item">
-		/// The item to compare.
-		/// </param>
-		///
-		/// <returns>
-		/// 0 if the two items are equal. A negative number if
-		/// <see langword="this"/> is before <paramref name="item"/> in
-		/// display order. A positive number if
-		/// <see langword="this"/> comes after <paramref name="item"/> in
-		/// display order.
-		/// </returns>
-		public int Compare(ShellItem item) {
-			int result = this.Equals(item) ? 0 : 1;
-			return result;
-		}
+        public override int GetHashCode()
+        {
+            if (!hashValue.HasValue)
+            {
+                uint size = Shell32.ILGetSize(Pidl);
 
-		/// <see langword="true"/> if the two objects refer to the same
-		/// folder, <see langword="false"/> otherwise.
-		/// <summary>
-		/// Determines if two ShellObjects are identical.
-		/// </summary>
-		/// <param name="other">The ShellObject to comare this one to.</param>
-		/// <returns>True if the ShellObjects are equal, false otherwise.</returns>
-		/// 		
-		public bool Equals(ShellItem other) {
-			if (other == null) return false;
-			if (String.IsNullOrEmpty(this.CachedParsingName) || string.IsNullOrEmpty(other.CachedParsingName))
-				return this.ParsingName == other.ParsingName;
+                if (size == 0)
+                {
+                    hashValue = 0;
+                }
+                else
+                {
+                    byte[] pidlData = new byte[size];
+                    Marshal.Copy(Pidl, pidlData, 0, (int)size);
+                    byte[] hashData = ShellItem.hashProvider.ComputeHash(pidlData);
+                    hashValue = BitConverter.ToInt32(hashData, 0);
+                }
+            }
+            return hashValue.Value;
+        }
 
-			return this.CachedParsingName == other.CachedParsingName;
-		}
+        /// <summary>
+        /// Compares two <see cref="IShellItem"/>s. The comparison is carried
+        /// out by display order.
+        /// </summary>
+        ///
+        /// <param name="item">
+        /// The item to compare.
+        /// </param>
+        ///
+        /// <returns>
+        /// 0 if the two items are equal. A negative number if
+        /// <see langword="this"/> is before <paramref name="item"/> in
+        /// display order. A positive number if
+        /// <see langword="this"/> comes after <paramref name="item"/> in
+        /// display order.
+        /// </returns>
+        public int Compare(ShellItem item) => this.Equals(item) ? 0 : 1;
 
-		/// <summary>
-		/// Returns whether this object is equal to another.
-		/// </summary>
-		/// <param name="obj">The object to compare against.</param>
-		/// <returns>Equality result.</returns>
-		public override bool Equals(object obj) {
-			return this.Equals(obj as ShellItem);
-		}
+        /// <see langword="true"/> if the two objects refer to the same
+        /// folder, <see langword="false"/> otherwise.
+        /// <summary>
+        /// Determines if two ShellObjects are identical.
+        /// </summary>
+        /// <param name="other">The ShellObject to comare this one to.</param>
+        /// <returns>True if the ShellObjects are equal, false otherwise.</returns>
+        /// 		
+        public bool Equals(ShellItem other)
+        {
+            if (other == null) return false;
+            if (String.IsNullOrEmpty(this.CachedParsingName) || string.IsNullOrEmpty(other.CachedParsingName))
+                return this.ParsingName == other.ParsingName;
 
-		#endregion Comparisons
+            return this.CachedParsingName == other.CachedParsingName;
+        }
 
-		#region Static Stuff
+        /// <summary>
+        /// Returns whether this object is equal to another.
+        /// </summary>
+        /// <param name="obj">The object to compare against.</param>
+        /// <returns>Equality result.</returns>
+        public override bool Equals(object obj) => this.Equals(obj as ShellItem);
 
-		private static bool RunningVista { get { return Environment.OSVersion.Version.Major >= 6; } }
 
-		private static MD5CryptoServiceProvider hashProvider = new MD5CryptoServiceProvider();
+        #endregion Comparisons
 
-		/// <summary>
-		/// Gets the Desktop folder.
-		/// </summary>
-		public static ShellItem Desktop {
-			get {
-				if (m_Desktop == null) {
-					IShellItem item;
-					IntPtr pidl;
-					Shell32.SHGetSpecialFolderLocation(IntPtr.Zero, (CSIDL)Environment.SpecialFolder.Desktop, out pidl);
+        #region Static Stuff
 
-					try {
-						item = CreateItemFromIDList(pidl);
-					}
-					finally {
-						Shell32.ILFree(pidl);
-					}
+        private static bool RunningVista => Environment.OSVersion.Version.Major >= 6;
 
-					m_Desktop = new ShellItem(item);
-				}
-				return m_Desktop;
-			}
-		}
+        private static MD5CryptoServiceProvider hashProvider = new MD5CryptoServiceProvider();
 
-		/*
+        /// <summary>
+        /// Gets the Desktop folder.
+        /// </summary>
+        public static ShellItem Desktop
+        {
+            get
+            {
+                if (m_Desktop == null)
+                {
+                    IShellItem item;
+                    IntPtr pidl;
+                    Shell32.SHGetSpecialFolderLocation(IntPtr.Zero, (CSIDL)Environment.SpecialFolder.Desktop, out pidl);
+
+                    try
+                    {
+                        item = CreateItemFromIDList(pidl);
+                    }
+                    finally
+                    {
+                        Shell32.ILFree(pidl);
+                    }
+
+                    m_Desktop = new ShellItem(item);
+                }
+                return m_Desktop;
+            }
+        }
+
+        /*
 		private void InitializeFromShellUri(Uri uri) {
 			//TO_DO: add shell folders handling here
 			//KnownFolderManager manager = new KnownFolderManager();
@@ -1069,32 +1105,36 @@ namespace BExplorer.Shell {
 		}
 		*/
 
-		private static IShellItem CreateItemFromIDList(IntPtr pidl) {
-			//TODO: Consider moving the Try Finally to here
-			if (RunningVista)
-				return Shell32.SHCreateItemFromIDList(pidl, typeof(IShellItem).GUID);
-			else
-				return new Interop.VistaBridge.ShellItemImpl(pidl, false);
-		}
+        private static IShellItem CreateItemFromIDList(IntPtr pidl)
+        {
+            //TODO: Consider moving the Try Finally to here
+            if (RunningVista)
+                return Shell32.SHCreateItemFromIDList(pidl, typeof(IShellItem).GUID);
+            else
+                return new Interop.VistaBridge.ShellItemImpl(pidl, false);
+        }
 
-		private static IShellItem CreateItemFromParsingName(string path) {
-			if (RunningVista) {
-				//IShellItem item;
-				//Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID, out item);
-				return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
-			}
-			else {
-				//IShellFolder desktop = Desktop.GetIShellFolder();
-				uint attributes = 0;
-				uint eaten;
-				IntPtr pidl;
+        private static IShellItem CreateItemFromParsingName(string path)
+        {
+            if (RunningVista)
+            {
+                //IShellItem item;
+                //Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID, out item);
+                return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID);
+            }
+            else
+            {
+                //IShellFolder desktop = Desktop.GetIShellFolder();
+                uint attributes = 0;
+                uint eaten;
+                IntPtr pidl;
 
-				Desktop.GetIShellFolder().ParseDisplayName(IntPtr.Zero, IntPtr.Zero, path, out eaten, out pidl, ref attributes);
-				return new Interop.VistaBridge.ShellItemImpl(pidl, true);
-			}
-		}
+                Desktop.GetIShellFolder().ParseDisplayName(IntPtr.Zero, IntPtr.Zero, path, out eaten, out pidl, ref attributes);
+                return new Interop.VistaBridge.ShellItemImpl(pidl, true);
+            }
+        }
 
-		/*
+        /*
 		private static IShellItem CreateItemWithParent(ShellItem parent, IntPtr pidl) {
 			if (RunningVista) {
 				return Shell32.SHCreateItemWithParent(IntPtr.Zero, parent.GetIShellFolder(), pidl, typeof(IShellItem).GUID);
@@ -1106,7 +1146,7 @@ namespace BExplorer.Shell {
 		}
 		*/
 
-		/*
+        /*
 		private static IntPtr GetIDListFromObject(IShellItem item) {
 			if (RunningVista)
 				return item != null ? Shell32.SHGetIDListFromObject(item) : IntPtr.Zero;
@@ -1115,47 +1155,49 @@ namespace BExplorer.Shell {
 		}
 		*/
 
-		public static IEnumIDList GetIEnumIDList(IShellFolder folder, SHCONTF flags, out HResult navResult) {
-			IEnumIDList result;
-			var res = folder.EnumObjects(IsCareForMessageHandle ? MessageHandle : IntPtr.Zero, flags, out result);
-			navResult = res;
-			if (res == HResult.S_OK)
-				return result;
-			else
-				return null;
-		}
+        public static IEnumIDList GetIEnumIDList(IShellFolder folder, SHCONTF flags, out HResult navResult)
+        {
+            IEnumIDList result;
+            var res = folder.EnumObjects(IsCareForMessageHandle ? MessageHandle : IntPtr.Zero, flags, out result);
+            navResult = res;
+            if (res == HResult.S_OK)
+                return result;
+            else
+                return null;
+        }
 
-		#endregion Static Stuff
+        #endregion Static Stuff
 
-		#region Dispose
+        #region Dispose
 
-		/// <summary>
-		/// Clears up any resources associated with the SystemImageList
-		/// </summary>
-		public void Dispose() {
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+        /// <summary>
+        /// Clears up any resources associated with the SystemImageList
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-		/// <summary>
-		/// Clears up any resources associated with the SystemImageList
-		/// when disposing is true.
-		/// </summary>
-		/// <param name="disposing">Whether the object is being disposed</param>
-		public virtual void Dispose(bool disposing) {
-			if (disposing) {
-				if (ComInterface != null) {
-					Marshal.FinalReleaseComObject(ComInterface);
-				}
-				ComInterface = null;
-			}
-		}
+        /// <summary>
+        /// Clears up any resources associated with the SystemImageList
+        /// when disposing is true.
+        /// </summary>
+        /// <param name="disposing">Whether the object is being disposed</param>
+        public virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (ComInterface != null) Marshal.FinalReleaseComObject(ComInterface);
+                ComInterface = null;
+            }
+        }
 
-		#endregion Dispose
+        #endregion Dispose
 
-		#region Checks
+        #region Checks
 
-		/*
+        /*
 		/// <summary>
 		/// Tests whether the <see cref="ShellItem"/> is the immediate parent
 		/// of another item.
@@ -1167,151 +1209,158 @@ namespace BExplorer.Shell {
 		public bool IsImmediateParentOf(ShellItem item) { return IsFolder && Shell32.ILIsParent(Pidl, item.Pidl, true); }
 		*/
 
-		/// <summary>
-		/// Tests whether the <see cref="ShellItem"/> is the parent of
-		/// another item.
-		/// </summary>
-		///
-		/// <param name="item">
-		/// The potential child item.
-		/// </param>
-		public bool IsParentOf(ShellItem item) { return IsFolder && Shell32.ILIsParent(Pidl, item.Pidl, false); }
+        /// <summary>
+        /// Tests whether the <see cref="ShellItem"/> is the parent of
+        /// another item.
+        /// </summary>
+        ///
+        /// <param name="item">
+        /// The potential child item.
+        /// </param>
+        public bool IsParentOf(ShellItem item) => IsFolder && Shell32.ILIsParent(Pidl, item.Pidl, false);
 
-		#endregion Checks
+        #endregion Checks
 
-		#region Misc
+        #region Misc
 
-		/// <summary>
-		/// Gets a child item.
-		/// </summary>
-		///
-		/// <param name="name">
-		/// The name of the child item.
-		/// </param>
-		public ShellItem this[string name] {
-			get {
-				return new ShellItem(this, name);
-			}
-		}
+        /// <summary>
+        /// Gets a child item.
+        /// </summary>
+        ///
+        /// <param name="name">
+        /// The name of the child item.
+        /// </param>
+        public ShellItem this[string name] => new ShellItem(this, name);
 
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ShellItem"/> class.
-		/// </summary>
-		///
-		/// <remarks>
-		/// Creates a ShellItem which is a named child of <paramref name="parent"/>.
-		/// </remarks>
-		///
-		/// <param name="parent">
-		/// The parent folder of the item.
-		/// </param>
-		///
-		/// <param name="name">
-		/// The name of the child item.
-		/// </param>
-		[Obsolete("Inline", false)]
-		public ShellItem(ShellItem parent, string name) {
-			if (parent.IsFileSystem) {
-				// If the parent folder is in the file system, our best
-				// chance of success is to use the FileSystemPath to
-				// create the new item. Folders other than Desktop don't
-				// seem to implement ParseDisplayName properly.
-				ComInterface = CreateItemFromParsingName(Path.Combine(parent.FileSystemPath, name));
-			}
-			else {
-				IShellFolder folder = parent.GetIShellFolder();
-				uint eaten;
-				IntPtr pidl;
-				uint attributes = 0;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ShellItem"/> class.
+        /// </summary>
+        ///
+        /// <remarks>
+        /// Creates a ShellItem which is a named child of <paramref name="parent"/>.
+        /// </remarks>
+        ///
+        /// <param name="parent">
+        /// The parent folder of the item.
+        /// </param>
+        ///
+        /// <param name="name">
+        /// The name of the child item.
+        /// </param>
+        [Obsolete("Inline", false)]
+        public ShellItem(ShellItem parent, string name)
+        {
+            if (parent.IsFileSystem)
+            {
+                // If the parent folder is in the file system, our best
+                // chance of success is to use the FileSystemPath to
+                // create the new item. Folders other than Desktop don't
+                // seem to implement ParseDisplayName properly.
+                ComInterface = CreateItemFromParsingName(Path.Combine(parent.FileSystemPath, name));
+            }
+            else
+            {
+                IShellFolder folder = parent.GetIShellFolder();
+                uint eaten;
+                IntPtr pidl;
+                uint attributes = 0;
 
-				folder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, name, out eaten, out pidl, ref attributes);
+                folder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, name, out eaten, out pidl, ref attributes);
 
-				try {
-					ComInterface = CreateItemFromIDList(pidl);
-				}
-				finally {
-					Shell32.ILFree(pidl);
-				}
-			}
-			Constructor_Helper();
-		}
+                try
+                {
+                    ComInterface = CreateItemFromIDList(pidl);
+                }
+                finally
+                {
+                    Shell32.ILFree(pidl);
+                }
+            }
+            Constructor_Helper();
+        }
 
 
 
-		/// <summary>
-		/// Returns a string representation of the <see cref="ShellItem"/>.
-		/// </summary>
-		public override string ToString() {
-			return this.DisplayName;
-		}
+        /// <summary>
+        /// Returns a string representation of the <see cref="ShellItem"/>.
+        /// </summary>
+        public override string ToString() => this.DisplayName;
 
-		/// <summary>
-		/// Returns a URI representation of the <see cref="ShellItem"/>.
-		/// </summary>
-		public Uri ToUri() {
-			StringBuilder path = new StringBuilder("shell:///");
+        /// <summary>
+        /// Returns a URI representation of the <see cref="ShellItem"/>.
+        /// </summary>
+        public Uri ToUri()
+        {
+            StringBuilder path = new StringBuilder("shell:///");
 
-			if (this.ParsingName.StartsWith("::")) {
-				path.Append(this.ParsingName);
-				return new Uri(path.ToString());
-			}
-			return new Uri(this.FileSystemPath);
-		}
+            if (this.ParsingName.StartsWith("::"))
+            {
+                path.Append(this.ParsingName);
+                return new Uri(path.ToString());
+            }
+            return new Uri(this.FileSystemPath);
+        }
 
-		private void Initialize(Uri uri) {
-			if (uri.Scheme == "file")
-				ComInterface = CreateItemFromParsingName(uri.LocalPath);
-			else if (uri.Scheme == "shell") {
-				//InitializeFromShellUri(uri);
-				//TO_DO: add shell folders handling here
-				//KnownFolderManager manager = new KnownFolderManager();
-				string path = uri.GetComponents(UriComponents.Path, UriFormat.Unescaped);
-				string knownFolder;
-				string restOfPath;
-				int separatorIndex = path.IndexOf('/');
+        private void Initialize(Uri uri)
+        {
+            if (uri.Scheme == "file")
+                ComInterface = CreateItemFromParsingName(uri.LocalPath);
+            else if (uri.Scheme == "shell")
+            {
+                //InitializeFromShellUri(uri);
+                //TO_DO: add shell folders handling here
+                //KnownFolderManager manager = new KnownFolderManager();
+                string path = uri.GetComponents(UriComponents.Path, UriFormat.Unescaped);
+                string knownFolder;
+                string restOfPath;
+                int separatorIndex = path.IndexOf('/');
 
-				if (separatorIndex != -1) {
-					knownFolder = path.Substring(0, separatorIndex);
-					restOfPath = path.Substring(separatorIndex + 1);
-				}
-				else {
-					knownFolder = path;
-					restOfPath = string.Empty;
-				}
+                if (separatorIndex != -1)
+                {
+                    knownFolder = path.Substring(0, separatorIndex);
+                    restOfPath = path.Substring(separatorIndex + 1);
+                }
+                else
+                {
+                    knownFolder = path;
+                    restOfPath = string.Empty;
+                }
 
-				IKnownFolder knownFolderI = KnownFolderHelper.FromParsingName(knownFolder);
-				if (knownFolderI != null)
-					ComInterface = (knownFolderI as ShellItem).ComInterface;
-				else if (knownFolder.StartsWith(KnownFolders.Libraries.ParsingName)) {
-					var lib = ShellLibrary.Load(Path.GetFileNameWithoutExtension(knownFolder), true);
+                IKnownFolder knownFolderI = KnownFolderHelper.FromParsingName(knownFolder);
+                if (knownFolderI != null)
+                    ComInterface = (knownFolderI as ShellItem).ComInterface;
+                else if (knownFolder.StartsWith(KnownFolders.Libraries.ParsingName))
+                {
+                    var lib = ShellLibrary.Load(Path.GetFileNameWithoutExtension(knownFolder), true);
 
-					if (lib != null)
-						ComInterface = lib.ComInterface;
-				}
+                    if (lib != null)
+                        ComInterface = lib.ComInterface;
+                }
 
-				if (restOfPath != string.Empty)
-					ComInterface = this[restOfPath.Replace('/', '\\')].ComInterface;
-			}
-			else
-				throw new InvalidOperationException("Invalid URI scheme");
-		}
+                if (restOfPath != string.Empty)
+                    ComInterface = this[restOfPath.Replace('/', '\\')].ComInterface;
+            }
+            else
+                throw new InvalidOperationException("Invalid URI scheme");
+        }
 
-		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		private bool COM_Attribute_Check(SFGAO Check) {
-			SFGAO sfgao;
-			//if (IsInvalid) {
-			//	//var sho = ShellItem.ToShellParsingName(this.ParsingName);
-			//	ComInterface.GetAttributes(Check, out sfgao);
-			//	//sho.Dispose();
-			//}
-			//else {
-				ComInterface.GetAttributes(Check, out sfgao);
-			//}
-			return (sfgao & Check) != 0;
-		}
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private bool COM_Attribute_Check(SFGAO Check)
+        {
+            SFGAO sfgao;
+            //if (IsInvalid) {
+            //	//var sho = ShellItem.ToShellParsingName(this.ParsingName);
+            //	ComInterface.GetAttributes(Check, out sfgao);
+            //	//sho.Dispose();
+            //}
+            //else {
+            ComInterface.GetAttributes(Check, out sfgao);
+            //}
+            return (sfgao & Check) != 0;
+        }
 
-		/*
+        /*
 		public void GetAssocHandlers() {
 			if (this.m_ComInterface != null) {
 				var result = IntPtr.Zero;
@@ -1326,83 +1375,96 @@ namespace BExplorer.Shell {
 		}
 		*/
 
-		#endregion
+        #endregion
 
 
-		/// <summary>
-		/// Converts a File/Folder path into a proper string used to create a <see cref="ShellItem"/>
-		/// </summary>
-		/// <param name="path">The path you want to convert</param>
-		/// <returns></returns>
-		public static ShellItem ToShellParsingName(String path) {
-			if (path.StartsWith("%")) {
-				return new ShellItem(Environment.ExpandEnvironmentVariables(path));
-			}
-			else if (path.StartsWith("::") && !path.StartsWith(@"\\"))
-				return new ShellItem(String.Format("shell:{0}", path));
-			//else 
-			//	if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
-			//	return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
-			else if (!path.StartsWith(@"\\")) {
-				if (path.Contains(":")) {
-					return new ShellItem(String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString()));
-				}
-				else {
-					try {
-						return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
-					}
-					catch (Exception) {
-						return new ShellItem(@"\\" + String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
-						throw;
-					}
-				}
-			}
-			else
-				return new ShellItem(path);
-		} //TODO: Consider making this a constructor!
+        /// <summary>
+        /// Converts a File/Folder path into a proper string used to create a <see cref="ShellItem"/>
+        /// </summary>
+        /// <param name="path">The path you want to convert</param>
+        /// <returns></returns>
+        public static ShellItem ToShellParsingName(String path)
+        {
+            if (path.StartsWith("%"))
+            {
+                return new ShellItem(Environment.ExpandEnvironmentVariables(path));
+            }
+            else if (path.StartsWith("::") && !path.StartsWith(@"\\"))
+                return new ShellItem(String.Format("shell:{0}", path));
+            //else 
+            //	if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
+            //	return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+            else if (!path.StartsWith(@"\\"))
+            {
+                if (path.Contains(":"))
+                {
+                    return new ShellItem(String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString()));
+                }
+                else
+                {
+                    try
+                    {
+                        //return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+                        return new ShellItem($"{path}{Path.DirectorySeparatorChar}");
+                    }
+                    catch (Exception)
+                    {
+                        //return new ShellItem(@"\\" + String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
+                        return new ShellItem($"{path}{Path.DirectorySeparatorChar}");
+                        throw;
+                    }
+                }
+            }
+            else
+                return new ShellItem(path);
+        } //TODO: Consider making this a constructor!
 
-		/// <summary>
-		/// Tries to create a new <see cref="ShellItem"/> using Path/Uri (As String)
-		/// </summary>
-		/// <param name="path">Path/Uri (As String)</param>
-		/// <returns>New ShellItem or null if could not be created</returns>
-		public static ShellItem TryCreate(string path) {
-			Uri newUri;
-			if (path.StartsWith("::") && !path.StartsWith(@"\\"))
-				Uri.TryCreate(String.Format("shell:{0}", path), UriKind.Absolute, out newUri);
-			else
-				Uri.TryCreate(path, UriKind.Absolute, out newUri);
+        /// <summary>
+        /// Tries to create a new <see cref="ShellItem"/> using Path/Uri (As String)
+        /// </summary>
+        /// <param name="path">Path/Uri (As String)</param>
+        /// <returns>New ShellItem or null if could not be created</returns>
+        public static ShellItem TryCreate(string path)
+        {
+            Uri newUri;
 
-			if (newUri == null)
-				return null;
-			else
-				return new ShellItem(newUri);
-		}
+            if (path.StartsWith("::") && !path.StartsWith(@"\\"))
+                //Uri.TryCreate(String.Format("shell:{0}", path), UriKind.Absolute, out newUri);
+                Uri.TryCreate($"shell:{path}", UriKind.Absolute, out newUri);
+            else
+                Uri.TryCreate(path, UriKind.Absolute, out newUri);
 
-	}
+            if (newUri == null)
+                return null;
+            else
+                return new ShellItem(newUri);
+        }
 
-	public class ShellItemComparer : IEqualityComparer<IListItemEx> {
-		// Products are equal if their names and product numbers are equal.
-		public bool Equals(IListItemEx x, IListItemEx y) {
-			return x.Equals(y);
-		}
+    }
 
-		// If Equals() returns true for a pair of objects 
-		// then GetHashCode() must return the same value for these objects.
+    public class ShellItemComparer : IEqualityComparer<IListItemEx>
+    {
+        // Products are equal if their names and product numbers are equal.
+        public bool Equals(IListItemEx x, IListItemEx y) => x.Equals(y);
 
-		public int GetHashCode(IListItemEx product) {
-			return 0;
-			//Check whether the object is null
-			if (Object.ReferenceEquals(product, null)) return 0;
 
-			//Get hash code for the Name field if it is not null.
-			int hashProductName = product.ParsingName == null ? 0 : product.ParsingName.GetHashCode();
+        // If Equals() returns true for a pair of objects 
+        // then GetHashCode() must return the same value for these objects.
 
-			////Get hash code for the Code field.
-			//int hashProductCode = product.Code.GetHashCode();
+        public int GetHashCode(IListItemEx product)
+        {
+            return 0;
+            //Check whether the object is null
+            if (Object.ReferenceEquals(product, null)) return 0;
 
-			//Calculate the hash code for the product.
-			return hashProductName;
-		}
-	}
+            //Get hash code for the Name field if it is not null.
+            int hashProductName = product.ParsingName == null ? 0 : product.ParsingName.GetHashCode();
+
+            ////Get hash code for the Code field.
+            //int hashProductCode = product.Code.GetHashCode();
+
+            //Calculate the hash code for the product.
+            return hashProductName;
+        }
+    }
 }

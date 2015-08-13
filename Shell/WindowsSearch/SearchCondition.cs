@@ -5,150 +5,160 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace BExplorer.Shell {
-	/// <summary>
-	/// Exposes properties and methods for retrieving information about a search condition.
-	/// </summary>
-	public class SearchCondition : IDisposable {
-		internal SearchCondition(ICondition nativeSearchCondition) {
-			if (nativeSearchCondition == null) {
-				throw new ArgumentNullException("nativeSearchCondition");
-			}
+namespace BExplorer.Shell
+{
+    /// <summary>
+    /// Exposes properties and methods for retrieving information about a search condition.
+    /// </summary>
+    public class SearchCondition : IDisposable
+    {
+        /// <summary>
+        /// A value (in <see cref="System.String"/> format) to which the property is compared. 
+        /// </summary>
+        public string PropertyValue { get; internal set; }
 
-			NativeSearchCondition = nativeSearchCondition;
+        internal ICondition NativeSearchCondition { get; set; }
 
-			HResult hr = NativeSearchCondition.GetConditionType(out conditionType);
+        private string canonicalName;
+        /// <summary>The name of a property to be compared or NULL for an unspecified property.</summary>
+        public string PropertyCanonicalName { get { return canonicalName; } }
 
-			if (hr != HResult.S_OK) {
-				return;
-			}
 
-			if (ConditionType == SearchConditionType.Leaf) {
-				using (PropVariant propVar = new PropVariant()) {
-					hr = NativeSearchCondition.GetComparisonInfo(out canonicalName, out conditionOperation, propVar);
+        internal SearchCondition(ICondition nativeSearchCondition)
+        {
+            if (nativeSearchCondition == null)
+            {
+                throw new ArgumentNullException("nativeSearchCondition");
+            }
 
-					if (hr != HResult.S_OK) {
-						return;
-					}
+            NativeSearchCondition = nativeSearchCondition;
 
-					PropertyValue = propVar.Value.ToString();
-				}
-			}
-		}
+            HResult hr = NativeSearchCondition.GetConditionType(out conditionType);
 
-		internal ICondition NativeSearchCondition { get; set; }
+            if (hr != HResult.S_OK)
+            {
+                return;
+            }
 
-		private string canonicalName;
-		/// <summary>
-		/// The name of a property to be compared or NULL for an unspecified property.
-		/// </summary>
-		public string PropertyCanonicalName {
-			get { return canonicalName; }
-		}
+            if (ConditionType == SearchConditionType.Leaf)
+            {
+                using (PropVariant propVar = new PropVariant())
+                {
+                    hr = NativeSearchCondition.GetComparisonInfo(out canonicalName, out conditionOperation, propVar);
 
-		private PROPERTYKEY propertyKey;
-		private PROPERTYKEY emptyPropertyKey = new PROPERTYKEY();
-		/// <summary>
-		/// The property key for the property that is to be compared.
-		/// </summary>        
-		public PROPERTYKEY PropertyKey {
-			get {
-				if (propertyKey.fmtid == emptyPropertyKey.fmtid && propertyKey.pid == emptyPropertyKey.pid) {
-					int hr = PropertySystemNativeMethods.PSGetPropertyKeyFromName(PropertyCanonicalName, out propertyKey);
+                    if (hr != HResult.S_OK) return;
 
-				}
+                    PropertyValue = propVar.Value.ToString();
+                }
+            }
+        }
 
-				return propertyKey;
-			}
-		}
+        private PROPERTYKEY propertyKey;
+        private PROPERTYKEY emptyPropertyKey = new PROPERTYKEY();
+        /// <summary>
+        /// The property key for the property that is to be compared.
+        /// </summary>        
+        public PROPERTYKEY PropertyKey
+        {
+            get
+            {
+                if (propertyKey.fmtid == emptyPropertyKey.fmtid && propertyKey.pid == emptyPropertyKey.pid)
+                {
+                    int hr = PropertySystemNativeMethods.PSGetPropertyKeyFromName(PropertyCanonicalName, out propertyKey);
+                }
 
-		/// <summary>
-		/// A value (in <see cref="System.String"/> format) to which the property is compared. 
-		/// </summary>
-		public string PropertyValue { get; internal set; }
+                return propertyKey;
+            }
+        }
 
-		private SearchConditionOperation conditionOperation = SearchConditionOperation.Implicit;
-		/// <summary>
-		/// Search condition operation to be performed on the property/value combination.
-		/// See <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionOperation"/> for more details.
-		/// </summary>        
-		public SearchConditionOperation ConditionOperation {
-			get { return conditionOperation; }
-		}
 
-		private SearchConditionType conditionType = SearchConditionType.Leaf;
-		/// <summary>
-		/// Represents the condition type for the given node. 
-		/// </summary>        
-		public SearchConditionType ConditionType {
-			get { return conditionType; }
-		}
+        private SearchConditionOperation conditionOperation = SearchConditionOperation.Implicit;
+        /// <summary>
+        /// Search condition operation to be performed on the property/value combination.
+        /// See <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionOperation"/> for more details.
+        /// </summary>        
+        public SearchConditionOperation ConditionOperation { get { return conditionOperation; } }
 
-		/// <summary>
-		/// Retrieves an array of the sub-conditions. 
-		/// </summary>
-		public IEnumerable<SearchCondition> GetSubConditions() {
-			// Our list that we'll return
-			List<SearchCondition> subConditionsList = new List<SearchCondition>();
+        private SearchConditionType conditionType = SearchConditionType.Leaf;
+        /// <summary>
+        /// Represents the condition type for the given node. 
+        /// </summary>        
+        public SearchConditionType ConditionType { get { return conditionType; } }
 
-			// Get the sub-conditions from the native API
-			object subConditionObj;
-			Guid guid = new Guid(InterfaceGuids.IEnumUnknown);
+        /// <summary>
+        /// Retrieves an array of the sub-conditions. 
+        /// </summary>
+        public IEnumerable<SearchCondition> GetSubConditions()
+        {
+            // Our list that we'll return
+            List<SearchCondition> subConditionsList = new List<SearchCondition>();
 
-			HResult hr = NativeSearchCondition.GetSubConditions(ref guid, out subConditionObj);
+            // Get the sub-conditions from the native API
+            object subConditionObj;
+            Guid guid = new Guid(InterfaceGuids.IEnumUnknown);
 
-			if (hr != HResult.S_OK) {
-				throw new Exception(hr.ToString());
-			}
+            HResult hr = NativeSearchCondition.GetSubConditions(ref guid, out subConditionObj);
 
-			// Convert each ICondition to SearchCondition
-			if (subConditionObj != null) {
-				IEnumUnknown enumUnknown = subConditionObj as IEnumUnknown;
+            if (hr != HResult.S_OK)
+            {
+                throw new Exception(hr.ToString());
+            }
 
-				IntPtr buffer = IntPtr.Zero;
-				uint fetched = 0;
+            // Convert each ICondition to SearchCondition
+            if (subConditionObj != null)
+            {
+                IEnumUnknown enumUnknown = subConditionObj as IEnumUnknown;
 
-				while (hr == HResult.S_OK) {
-					hr = enumUnknown.Next(1, ref buffer, ref fetched);
+                IntPtr buffer = IntPtr.Zero;
+                uint fetched = 0;
 
-					if (hr == HResult.S_OK && fetched == 1) {
-						subConditionsList.Add(new SearchCondition((ICondition)Marshal.GetObjectForIUnknown(buffer)));
-					}
-				}
-			}
+                while (hr == HResult.S_OK)
+                {
+                    hr = enumUnknown.Next(1, ref buffer, ref fetched);
 
-			return subConditionsList;
-		}
+                    if (hr == HResult.S_OK && fetched == 1)
+                    {
+                        subConditionsList.Add(new SearchCondition((ICondition)Marshal.GetObjectForIUnknown(buffer)));
+                    }
+                }
+            }
 
-		#region IDisposable Members
+            return subConditionsList;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		~SearchCondition() {
-			Dispose(false);
-		}
+        #region IDisposable Members
 
-		/// <summary>
-		/// Release the native objects.
-		/// </summary>
-		public void Dispose() {
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        ~SearchCondition()
+        {
+            Dispose(false);
+        }
 
-		/// <summary>
-		/// Release the native objects.
-		/// </summary>
-		/// <param name="disposing"></param>
-		protected virtual void Dispose(bool disposing) {
-			if (NativeSearchCondition != null) {
-				Marshal.ReleaseComObject(NativeSearchCondition);
-				NativeSearchCondition = null;
-			}
-		}
+        /// <summary>
+        /// Release the native objects.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-		#endregion
+        /// <summary>
+        /// Release the native objects.
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (NativeSearchCondition != null)
+            {
+                Marshal.ReleaseComObject(NativeSearchCondition);
+                NativeSearchCondition = null;
+            }
+        }
 
-	}
+        #endregion
+
+    }
 }

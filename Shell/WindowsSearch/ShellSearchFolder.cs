@@ -88,7 +88,7 @@ namespace BExplorer.Shell {
 			get { return searchCondition; }
 			private set {
 				searchCondition = value;
-				NativeSearchFolderItemFactory.SetCondition(searchCondition.NativeSearchCondition);
+				NativeSearchFolderItemFactory.SetCondition(searchCondition.NativeSearchCondition);              
 			}
 		}
 
