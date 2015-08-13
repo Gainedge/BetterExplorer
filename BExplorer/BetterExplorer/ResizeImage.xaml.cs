@@ -15,6 +15,7 @@ namespace BetterExplorer
         public bool Confirm = false, percsetting = false;
         private Bitmap cvt;
 
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) => cvt.Dispose();
 
         private ResizeImage()
         {
@@ -67,7 +68,6 @@ namespace BetterExplorer
             return bm_dest;
         }
 
-
         private void spinner1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (cvt != null)
@@ -84,13 +84,13 @@ namespace BetterExplorer
             }
         }
 
-        private void button1_Click(object sender, RoutedEventArgs e)
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             Confirm = false;
             this.Close();
         }
 
-        private void button2_Click(object sender, RoutedEventArgs e)
+        private void btnResize_Click(object sender, RoutedEventArgs e)
         {
             Confirm = true;
             this.Close();
@@ -130,11 +130,6 @@ namespace BetterExplorer
 
             newwidth = this_Width;
             newheight = This_Heighth;
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            cvt.Dispose();
         }
     }
 }

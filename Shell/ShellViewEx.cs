@@ -3764,10 +3764,12 @@ Upgrade this to use an Action<>
 
         private bool ThreadRun_Helper(SyncQueue<int?> queue, bool useComplexCheck, ref int? index)
         {
-            //TODO: Dimitar, please fix this exception if you can
-
             index = queue.Dequeue();
-            if (index != null)
+            if (index == null)
+            {
+                return false;
+            }
+            else
             {
                 var itemBounds = new User32.RECT();
                 var lvi = new LVITEMINDEX() { iItem = index.Value, iGroup = this.GetGroupIndex(index.Value) };
@@ -3779,10 +3781,6 @@ Upgrade this to use an Action<>
                     return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
                 else
                     return r.IntersectsWith(this.ClientRectangle);
-            }
-            else
-            {
-                return false;
             }
         }
 

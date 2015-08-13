@@ -199,6 +199,7 @@ namespace BetterExplorer
                 );
             }
             catch { }
+
             if (Location != null)
             {
                 this.Left = Location.X;
@@ -3699,12 +3700,12 @@ namespace BetterExplorer
         {
             //TODO: Test
             var Found = Item.Verbs().OfType<FolderItemVerb>().SingleOrDefault(FIVerb => FIVerb.Name.ToUpper().Contains(Verb.ToUpper()));
-            if (Found != null) Found.DoIt();
+            Found?.DoIt();
             return Found != null;
 
             /**********************************/
             /**********************************/
-
+            /*
             foreach (FolderItemVerb FIVerb in Item.Verbs())
             {
                 if (FIVerb.Name.ToUpper().Contains(Verb.ToUpper()))
@@ -3715,6 +3716,7 @@ namespace BetterExplorer
             }
 
             return false;
+            */
         }
 
         private void miRestoreALLRB_Click(object sender, RoutedEventArgs e)

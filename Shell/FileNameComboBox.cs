@@ -38,17 +38,17 @@ namespace BExplorer.Shell
     public class FileNameComboBox : ComboBox
     {
 
+
+        ShellView m_ShellView;
+        bool m_TryAutoComplete;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FileNameComboBox"/>
         /// class.
         /// </summary>
         [Category("Behaviour")]
         [DefaultValue(null)]
-        public FileFilterComboBox FilterControl
-        {
-            get { return m_FilterControl; }
-            set { m_FilterControl = value; }
-        }
+        public FileFilterComboBox FilterControl { get; set; }
 
         /// <summary>
         /// Gets/sets the <see cref="ShellView"/> control that the 
@@ -108,16 +108,7 @@ namespace BExplorer.Shell
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
-
-            if (e.KeyCode == Keys.Enter)
-            {
-                if ((Text.Length > 0) && (!Open(Text)) &&
-                    (m_FilterControl != null))
-                {
-                    m_FilterControl.Filter = Text;
-                }
-            }
-
+            if (e.KeyCode == Keys.Enter && Text.Length > 0 && !Open(Text) && FilterControl != null) FilterControl.Filter = Text;
             m_TryAutoComplete = false;
         }
 
@@ -217,47 +208,40 @@ namespace BExplorer.Shell
 
         bool Open(string path)
         {
+            //TODO: Someone clean this!
             bool result = false;
 
             if (File.Exists(path))
             {
-                if (FileNameEntered != null)
-                {
-                    FileNameEntered(this, EventArgs.Empty);
-                }
+                FileNameEntered?.Invoke(this, EventArgs.Empty);
                 result = true;
             }
             else if (Directory.Exists(path))
             {
                 if (m_ShellView != null)
                 {
-                    //m_ShellView.Navigate(path);
                     Text = string.Empty;
                     result = true;
                 }
             }
             else
             {
-                OpenParentOf(path);
+                //OpenParentOf(path);
                 Text = Path.GetFileName(path);
             }
 
-            if (!Path.IsPathRooted(path) &&
-                m_ShellView.CurrentFolder.IsFileSystem)
-            {
-                result = Open(Path.Combine(m_ShellView.CurrentFolder.FileSystemPath,
-                                           path));
-            }
+            if (!Path.IsPathRooted(path) && m_ShellView.CurrentFolder.IsFileSystem)
+                result = Open(Path.Combine(m_ShellView.CurrentFolder.FileSystemPath, path));
 
             return result;
         }
 
+        /*
         void OpenParentOf(string path)
         {
             string parent = Path.GetDirectoryName(path);
 
-            if ((parent != null) && (parent.Length > 0) &&
-                Directory.Exists(parent))
+            if ((parent != null) && (parent.Length > 0) && Directory.Exists(parent))
             {
                 if (m_ShellView != null)
                 {
@@ -265,7 +249,9 @@ namespace BExplorer.Shell
                 }
             }
         }
+        */
 
+        [Obsolete("Has no code", true)]
         void m_ShellView_SelectionChanged(object sender, EventArgs e)
         {
             //if ((m_ShellView.SelectedItems.Length > 0) &&
@@ -276,8 +262,5 @@ namespace BExplorer.Shell
             //}
         }
 
-        FileFilterComboBox m_FilterControl;
-        ShellView m_ShellView;
-        bool m_TryAutoComplete;
     }
 }
