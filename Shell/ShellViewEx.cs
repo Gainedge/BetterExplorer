@@ -430,15 +430,19 @@ public bool Cancel { get; private set; }
 
 					case ShellViewStyle.Tile:
 						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_TILE, 0);
+						LVTILEVIEWINFO tvi = new LVTILEVIEWINFO();
+						tvi.cbSize = (uint)Marshal.SizeOf(typeof(LVTILEVIEWINFO));
+						tvi.dwMask = (uint)LVTVIM.LVTVIM_TILESIZE | (uint)LVTVIM.LVTVIM_COLUMNS;
+						tvi.dwFlags = (uint)LVTVIF.LVTVIF_FIXEDSIZE;
+						tvi.cLines = 3;
+						tvi.sizeTile = new INTEROP_SIZE() { cx = 250, cy = 60 };
+						tvi.rcLabelMargin = new User32.RECT();
+						var a = User32.SendMessage(this.LVHandle, (int)MSG.LVM_SETTILEVIEWINFO, 0, tvi);
 						ResizeIcons(48);
 						iconsize = 48;
+
 						RefreshItemsCountInternal();
-						//LVTILEVIEWINFO tvi = new LVTILEVIEWINFO();
-						//tvi.cbSize = Marshal.SizeOf(typeof(LVTILEVIEWINFO));
-						//tvi.dwMask = (int)LVTVIM.LVTVIM_COLUMNS | (int)LVTVIM.LVTVIM_TILESIZE;
-						//tvi.dwFlags = (int)LVTVIF.LVTVIF_AUTOSIZE;
-						//tvi.cLines = 4;
-						//var a = User32.SendMessage(this.LVHandle, (int)MSG.LVM_SETTILEVIEWINFO, 0, tvi);
+						
 						break;
 
 					case ShellViewStyle.Thumbstrip:
@@ -1888,9 +1892,23 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
 								break;
 							var currentItem = Items[nmlv.item.iItem];
 
-							if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT)
-							{
-								if (nmlv.item.iSubItem == 0)
+							//if ((nmlv.item.mask & LVIF.LVIF_COLUMNS) == LVIF.LVIF_COLUMNS)
+							//{
+							//	nmlv.item.cColumns = 3;
+							//	if (3 > 0)
+							//	{
+							//		nmlv.item.puColumns = Marshal.AllocHGlobal(3 * Marshal.SizeOf(typeof(int)));
+							//		int[] columns = new int[3];
+							//		for (int c = 0; c < 3; c++)
+							//		{
+							//			columns[c] = c + 1;
+							//		}
+							//		Marshal.Copy(columns, 0, nmlv.item.puColumns, 3);
+							//	}
+							//}
+
+							if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
+                if (nmlv.item.iSubItem == 0)
 								{
 									//nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : (!String.IsNullOrEmpty(NewName) ? (ItemForRename == nmlv.item.iItem ? "" : currentItem.DisplayName) : currentItem.DisplayName);
 									try
@@ -2027,7 +2045,10 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
 									//	}
 									//}
 								}
+								//nmlv.item.pszText = currentItem.DisplayName;
+								//Marshal.StructureToPtr(nmlv, m.LParam, false);
 							}
+							
 
 							break;
 						#endregion
@@ -2372,8 +2393,8 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
 								EndLabelEdit();
 							if (IsGroupsEnabled)
 								RedrawWindow();
-							if (this.ToolTip != null && this.ToolTip.IsVisible)
-								this.ToolTip.HideTooltip();
+							//if (this.ToolTip != null && this.ToolTip.IsVisible)
+							//	this.ToolTip.HideTooltip();
 							//OnLostFocus();
 							this.Focus();
 							break;
@@ -2426,32 +2447,44 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
 							{
 								this.UnvalidateDirectory();
 							}
+							this.RaiseRecycleBinUpdated();
 							break;
 						case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
-							var objUpdate = FileSystemListItem.ToFileSystemItem(this.LVHandle, Shell32.ILFindLastID(info.Item1));
+							IListItemEx objUpdate = null;
+							try {
+								objUpdate = FileSystemListItem.ToFileSystemItem(this.LVHandle, Shell32.ILFindLastID(info.Item1));
+							}
+							catch {}
 							if (this.CurrentFolder != null &&
-							    (objUpdate.ParsingName.Equals(this.CurrentFolder.ParsingName) ||
-							     objUpdate.ParsingName.Equals(KnownFolders.Desktop.ParsingName) ||
-							     objUpdate.ParsingName.Equals(KnownFolders.RecycleBin.ParsingName)))
+							    (objUpdate.ParsingName.Equals(this.CurrentFolder.ParsingName) 
+									//||
+									//objUpdate.ParsingName.Equals(KnownFolders.RecycleBin.ParsingName)
+							     ))
 							{
-								if (objUpdate.ParsingName.Equals(KnownFolders.RecycleBin.ParsingName))
-								{
-									this.RaiseRecycleBinUpdated();
-								}
-								this.UnvalidateDirectory();
+								//if (objUpdate.ParsingName.Equals(KnownFolders.RecycleBin.ParsingName))
+								//{
+								//	this.RaiseRecycleBinUpdated();
+								//}
+								//else
+								//{
+									this.UnvalidateDirectory();
+								//}
 							}
 							break;
 						case ShellNotifications.SHCNE.SHCNE_UPDATEITEM:
 							//try
 							//{
 							//	// var ggg = new ShellItem(Shell32.ILFindLastID(info.Item1));
-							//	var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-							//	var exisitingItem = this.Items.ToArray().SingleOrDefault(w => w.Equals(objUpdateItem));
-							//	if (exisitingItem != null)
-							//		this.RefreshItem(this.Items.IndexOf(exisitingItem), true);
+							var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
+							if (this.CurrentFolder != null && objUpdateItem.ParsingName.Contains(this.CurrentFolder.ParsingName))
+							{
+								var exisitingUItem = this.Items.ToArray().SingleOrDefault(w => w.Equals(objUpdateItem));
+								if (exisitingUItem != null)
+									this.RefreshItem(this.Items.IndexOf(exisitingUItem), true);
 
-							//	if (objUpdateItem != null && this.CurrentFolder != null && objUpdateItem.Equals(this.CurrentFolder))
-							//		this.UnvalidateDirectory();
+								if (objUpdateItem != null && this.CurrentFolder != null && objUpdateItem.Equals(this.CurrentFolder))
+									this.UnvalidateDirectory();
+							}
 
 							//}
 							//catch
@@ -3150,7 +3183,9 @@ public static void RunExeAsAdmin(string ExePath) {
 			}
 
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
-			if (ensureVisisble) User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISISBLE, index, 0);
+			if (ensureVisisble) {
+				var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, index, 0);
+			}
 			this.Focus();
 		}
 
@@ -3348,14 +3383,27 @@ public void DropHighLightItemByIndex(int index) {
 
 		public void UnvalidateDirectory()
 		{
-			if (this._UnvalidateTimer.Enabled)
-			{
-				this._UnvalidateTimer.Stop();
-				this._UnvalidateTimer.Start();
+			if (this.InvokeRequired) {
+				this.Invoke((Action) (() => {
+					if (this._UnvalidateTimer.Enabled)
+					{
+						this._UnvalidateTimer.Stop();
+						this._UnvalidateTimer.Start();
+					}
+					else
+					{
+						this._UnvalidateTimer.Start();
+					}
+				}));
 			}
-			else
-			{
-				this._UnvalidateTimer.Start();
+			else {
+				if (this._UnvalidateTimer.Enabled) {
+					this._UnvalidateTimer.Stop();
+					this._UnvalidateTimer.Start();
+				}
+				else {
+					this._UnvalidateTimer.Start();
+				}
 			}
 		}
 
@@ -3650,9 +3698,17 @@ public void DropHighLightItemByIndex(int index) {
 
 			this.Invoke((Action)(() =>
 			{
-				if (isThereSettings)
-					this.SetSortCollumn(columns, folderSettings.SortOrder, false);
-				else if (this._RequestedCurrentLocation.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant())
+				if (isThereSettings) {
+					if (columns.ID == "A0" &&
+					    this._RequestedCurrentLocation.ParsingName.ToLowerInvariant() ==
+					    KnownFolders.Computer.ParsingName.ToLowerInvariant()) {
+						this.SetSortCollumn(this.AvailableColumns().Single(s => s.ID == "A180"), SortOrder.Ascending, false);
+					}
+					else {
+						this.SetSortCollumn(columns, folderSettings.SortOrder, false);
+					}
+				} else if (this._RequestedCurrentLocation.ParsingName.ToLowerInvariant() ==
+				         KnownFolders.Computer.ParsingName.ToLowerInvariant())
 					this.Items = this.Items.OrderBy(o => o.ParsingName).ToList();
 				else
 					this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
@@ -4234,7 +4290,7 @@ public static void RunExeAsAnotherUser(string ExePath, string username) {
 
 		public void ScrollToTop()
 		{
-			var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISISBLE, 0, 0);
+			var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, 0, 0);
 		}
 		public string CreateNewFolder(string name = "New Folder")
 		{
@@ -4791,15 +4847,15 @@ private void DeselectItemByIndex(int index) {
 						{
 							if (this.IconSize > 180)
 							{
-								jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - this.IconSize / 3), this.IconSize / 3);
+								jumbo.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left, iconBounds.Bottom - (View == ShellViewStyle.Tile ? 5 : 0) - this.IconSize / 3), this.IconSize / 3);
 							}
 							else if (this.IconSize > 64)
 							{
-								extra.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 50));
+								extra.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10 - (View == ShellViewStyle.Tile ? 5 : 0), iconBounds.Bottom - 50));
 							}
 							else
 							{
-								large.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10, iconBounds.Bottom - 32));
+								large.DrawOverlay(hdc, sho.OverlayIconIndex, new DPoint(iconBounds.Left + 10 - (View == ShellViewStyle.Tile ? 5 : 0), iconBounds.Bottom - 32));
 							}
 						}
 						if (sho.ShieldedIconIndex > 0)
@@ -4846,12 +4902,19 @@ private void DeselectItemByIndex(int index) {
 								fmt.FormatFlags = StringFormatFlags.NoWrap | StringFormatFlags.FitBlackBox;
 								fmt.LineAlignment = StringAlignment.Center;
 
-								var lblrectTiles = new RectangleF(lableBounds.Left, itemBounds.Top + 4, lableBounds.Right - lableBounds.Left, 20);
+								var lblrectTiles = new RectangleF(lableBounds.Left, itemBounds.Top + 6, lableBounds.Right - lableBounds.Left, 15);
 								Font font = System.Drawing.SystemFonts.IconTitleFont;
 								var textBrush = new SolidBrush(textColor ?? System.Drawing.SystemColors.ControlText);
 								g.DrawString(sho.DisplayName, font, textBrush, lblrectTiles, fmt);
 								font.Dispose();
 								textBrush.Dispose();
+								if (this.CurrentFolder.ParsingName.Equals(KnownFolders.Computer.ParsingName) &&
+								    (sho.IsDrive || sho.IsNetworkPath)) {
+									this.DrawComputerTiledModeView(sho, g, lblrectTiles, fmt);
+								}
+								else {
+									this.DrawNormalFolderSubitemsInTiledView(sho, lblrectTiles, g, fmt);
+								}
 							}
 						}
 					}
@@ -4926,6 +4989,53 @@ private void DeselectItemByIndex(int index) {
 				}
 			}
 			m.Result = (IntPtr)CustomDraw.CDRF_SKIPDEFAULT;
+		}
+
+		private void DrawNormalFolderSubitemsInTiledView(IListItemEx sho, RectangleF lblrectTiles, Graphics g, StringFormat fmt) {
+			var lblrectSubiTem2 = new RectangleF(lblrectTiles.Left, lblrectTiles.Bottom + 1, lblrectTiles.Width, 15);
+			var lblrectSubiTem3 = new RectangleF(lblrectTiles.Left, lblrectTiles.Bottom + 17, lblrectTiles.Width, 15);
+			Font subItemFont = System.Drawing.SystemFonts.IconTitleFont;
+			var subItemTextBrush = new SolidBrush(System.Drawing.SystemColors.ControlDarkDark);//new SolidBrush(Color.FromArgb(93, 92, 92));
+      g.DrawString(sho.GetPropertyValue(SystemProperties.FileType, typeof (String)).Value.ToString(),
+				subItemFont, subItemTextBrush, lblrectSubiTem2, fmt);
+			var size = sho.GetPropertyValue(SystemProperties.FileSize, typeof (long)).Value;
+			if (size != null) {
+				g.DrawString(ShlWapi.StrFormatByteSize(long.Parse(size.ToString())),
+					subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
+			}
+			//g.DrawString(sho.GetPropertyValue(this.AvailableColumns().Single(s => s.ID == "A49").pkey, typeof(String)).Value.ToString(), subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
+			subItemFont.Dispose();
+			subItemTextBrush.Dispose();
+		}
+
+		private void DrawComputerTiledModeView(IListItemEx sho, Graphics g, RectangleF lblrectTiles, StringFormat fmt) {
+			var driveInfo = new DriveInfo(sho.ParsingName);
+			if (driveInfo.IsReady) {
+				ProgressBarRenderer.DrawHorizontalBar(g,
+					new Rectangle((int) lblrectTiles.Left, (int) lblrectTiles.Bottom + 4, (int) lblrectTiles.Width - 10, 10));
+				var fullProcent = (100*(driveInfo.TotalSize - driveInfo.AvailableFreeSpace))/driveInfo.TotalSize;
+				var barWidth = (lblrectTiles.Width - 12)*fullProcent/100;
+				var rec = new Rectangle((int) lblrectTiles.Left + 1, (int) lblrectTiles.Bottom + 5, (int) barWidth, 8);
+				var gradRec = new Rectangle(rec.Left, rec.Top - 1, rec.Width, rec.Height + 2);
+				var criticalUsed = fullProcent>=90;
+				var warningUsed = fullProcent>=75;
+				var averageUsed = fullProcent >= 50;
+				var brush = new LinearGradientBrush(gradRec,
+					criticalUsed ? Color.FromArgb(255, 0, 0) : warningUsed ? Color.FromArgb(255, 224, 0) : averageUsed ? Color.FromArgb(0, 220, 255) : Color.FromArgb(199, 248, 165),
+					criticalUsed ? Color.FromArgb(150, 0, 0) : warningUsed ? Color.FromArgb(255, 188, 0) : averageUsed ? Color.FromArgb(43, 84, 235) : Color.FromArgb(101, 247, 0),
+					LinearGradientMode.Vertical);
+				g.FillRectangle(brush, rec);
+				brush.Dispose();
+				var lblrectSubiTem3 = new RectangleF(lblrectTiles.Left, lblrectTiles.Bottom + 16, lblrectTiles.Width, 15);
+				Font subItemFont = System.Drawing.SystemFonts.IconTitleFont;
+				var subItemTextBrush = new SolidBrush(System.Drawing.SystemColors.ControlDarkDark);
+				g.DrawString(
+					$"{ShlWapi.StrFormatByteSize(driveInfo.AvailableFreeSpace)} free of {ShlWapi.StrFormatByteSize(driveInfo.TotalSize)}",
+					subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
+				//g.DrawString(sho.GetPropertyValue(this.AvailableColumns().Single(s => s.ID == "A49").pkey, typeof(String)).Value.ToString(), subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
+				subItemFont.Dispose();
+				subItemTextBrush.Dispose();
+			}
 		}
 
 		[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]

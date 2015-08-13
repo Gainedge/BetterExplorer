@@ -84,12 +84,20 @@ namespace BExplorer.Shell
           var bounds = new User32.RECT();
           User32.SendMessage(this._View.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref bounds);
           var rect = new System.Drawing.Rectangle(bounds.Left, bounds.Top, bounds.Right - bounds.Left, bounds.Bottom - bounds.Top);
-          var mousePos = this._View.PointToClient(System.Windows.Forms.Cursor.Position);
+					var posm = User32.GetCursorPosition();
+					var mousePos = this._View.PointToClient(posm);//System.Windows.Forms.Cursor.Position);
           var isInsideItem = rect.Contains(mousePos);
-          if (isInsideItem)
-            this.Show();
-          else
-            this.Hide();
+
+					var clinetPos = System.Windows.Application.Current.MainWindow.PointFromScreen(new Point(posm.X, posm.Y));
+					
+					if (isInsideItem)
+						this.Show();
+					else
+						this.Hide();
+
+					//this.Left = clinetPos.X;
+					//this.Top = clinetPos.Y;
+
 				}));
 			});
 			t.SetApartmentState(ApartmentState.STA);
@@ -112,8 +120,11 @@ namespace BExplorer.Shell
 		public void HideTooltip()
 		{
 			DelayTimer.Stop();
-			if (this.IsVisible)
+			if (this.IsVisible) {
+				Contents = String.Empty;
+				RaisePropertyChanged("Contents");
 				this.Hide();
+			}
 		}
 
 		#region INotifyPropertyChanged Members
@@ -131,6 +142,8 @@ namespace BExplorer.Shell
 		private void TextBlock_SizeChanged(object sender, SizeChangedEventArgs e)
 		{
 			var textBlock = sender as TextBlock;
+			var posm = User32.GetCursorPosition();
+			var clinetPos = System.Windows.Application.Current.MainWindow.PointFromScreen(new Point(posm.X, posm.Y));
 			var xPos = System.Windows.Forms.Cursor.Position.X + textBlock.ActualWidth > Screen.GetWorkingArea(System.Windows.Forms.Cursor.Position).Width ? System.Windows.Forms.Cursor.Position.X - textBlock.ActualWidth : System.Windows.Forms.Cursor.Position.X;
 			var yPos = System.Windows.Forms.Cursor.Position.Y + textBlock.ActualHeight > Screen.GetWorkingArea(System.Windows.Forms.Cursor.Position).Height ? System.Windows.Forms.Cursor.Position.Y - textBlock.ActualHeight : System.Windows.Forms.Cursor.Position.Y;
 			this.Left = xPos;

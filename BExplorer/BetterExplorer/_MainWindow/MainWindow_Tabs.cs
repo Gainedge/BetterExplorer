@@ -72,7 +72,7 @@ namespace BetterExplorer {
 							var sho = this.ShellListView.Items.Where(w => w.ParsingName == path).SingleOrDefault();
 							if (sho != null) {
 								var index = this.ShellListView.ItemsHashed[sho.GetUniqueID()];
-								this.ShellListView.SelectItemByIndex(index, true);
+								this.ShellListView.SelectItemByIndex(60, true);
 								selectedPaths.Remove(path);
 							}
 						}

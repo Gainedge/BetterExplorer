@@ -2575,7 +2575,10 @@ namespace BetterExplorer
 
 		private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
-			ShellListView.ResizeIcons((int)e.NewValue);
+			if (this.ShellListView.View != ShellViewStyle.Details && this.ShellListView.View != ShellViewStyle.SmallIcon &&
+			    this.ShellListView.View != ShellViewStyle.List) {
+				ShellListView.ResizeIcons((int) e.NewValue);
+			}
 		}
 
 		void mi_Click(object sender, RoutedEventArgs e)
@@ -3010,7 +3013,9 @@ namespace BetterExplorer
 				try
 				{
 					AddToLog("Converted Image from " + item.ParsingName + " to new file " + namen + extension);
-					cvt.Save(namen + extension, format);
+					var newFilePath = namen + extension;
+          cvt.Save(newFilePath, format);
+					this.ShellListView.UnvalidateDirectory();
 				}
 				catch (Exception)
 				{
@@ -3045,25 +3050,6 @@ namespace BetterExplorer
 				TheWall.Set(new Uri(ShellListView.GetFirstSelectedItem().ParsingName), ThisStyle);
 			}));
 		}
-
-
-		//private void RotateImages(RotateFlipType Rotation, string DefaultName_Addon) {
-		//	foreach (ShellItem item in ShellListView.SelectedItems) {
-		//		System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-		//		cvt.RotateFlip(Rotation);
-		//		if (OverwriteOnRotate) {
-		//			cvt.Save(item.ParsingName);
-		//		}
-		//		else {
-		//			string ext = Utilities.GetExtension(item.ParsingName);
-		//			string name = item.ParsingName;
-		//			string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
-		//			cvt.Save(namen + DefaultName_Addon + ext);
-		//		}
-		//		cvt.Dispose();
-		//		AddToLog("Rotated image " + item.ParsingName);
-		//	}
-		//}
 
 		private void RotateImages(object sender, RoutedEventArgs e)
 		{
@@ -3102,107 +3088,22 @@ namespace BetterExplorer
 				}
 				else
 				{
-					string ext = item.ParsingName.Substring(item.ParsingName.LastIndexOf("."));
+					string ext = item.ParsingName.Substring(item.ParsingName.LastIndexOf(".", StringComparison.Ordinal));
 					string name = item.ParsingName;
 					string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
-					cvt.Save(namen + DefaultName_Addon + ext);
+					var newFilePath = namen + DefaultName_Addon + ext;
+          cvt.Save(newFilePath);
+					this.ShellListView.UnvalidateDirectory();
 				}
 				cvt.Dispose();
 				AddToLog("Rotated image " + item.ParsingName);
 			}
 		}
 
-		//[Obsolete("Merge into a multi control event using RotateImages just like Convert_Images(...)!!!!")]
-		//private void btnRotateLeft_Click(object sender, RoutedEventArgs e) {
-		//	RotateImages(RotateFlipType.Rotate270FlipNone, "_Rotated270");
-		//	/*
-		//	foreach (ShellItem item in ShellListView.SelectedItems) {
-		//		System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-		//		cvt.RotateFlip(RotateFlipType.Rotate270FlipNone);
-		//		if (OverwriteOnRotate) {
-		//			cvt.Save(item.ParsingName);
-		//		}
-		//		else {
-		//			string ext = Utilities.GetExtension(item.ParsingName);
-		//			string name = item.ParsingName;
-		//			string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
-		//			cvt.Save(namen + "_Rotated270" + ext);
-		//		}
-		//		cvt.Dispose();
-		//		AddToLog("Rotated image " + item.ParsingName);
-		//	}
-		//	*/
-		//}
-
-		//[Obsolete("Merge into a multi control event using RotateImages just like Convert_Images(...)!!!!")]
-		//private void btnRotateRight_Click(object sender, RoutedEventArgs e) {
-		//	RotateImages(RotateFlipType.Rotate90FlipNone, "_Rotated90");
-		//	/*
-		//	foreach (ShellItem item in ShellListView.SelectedItems) {
-		//		System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-		//		cvt.RotateFlip(RotateFlipType.Rotate90FlipNone);
-		//		if (OverwriteOnRotate) {
-		//			cvt.Save(item.ParsingName);
-		//		}
-		//		else {
-		//			string ext = Utilities.GetExtension(item.ParsingName);
-		//			string name = item.ParsingName;
-		//			string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
-		//			cvt.Save(namen + "_Rotated90" + ext);
-		//		}
-		//		cvt.Dispose();
-		//		AddToLog("Rotated image " + item.ParsingName);
-		//	}
-		//	*/
-		//}
-
-		//[Obsolete("Merge into a multi control event using RotateImages just like Convert_Images(...)!!!!")]
-		//private void btnFlipX_Click(object sender, RoutedEventArgs e) {
-		//	RotateImages(RotateFlipType.RotateNoneFlipX, "_FlippedX");
-		//	/*
-		//	foreach (ShellItem item in ShellListView.SelectedItems) {
-		//		System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-		//		cvt.RotateFlip(RotateFlipType.RotateNoneFlipX);
-		//		if (OverwriteOnRotate) {
-		//			cvt.Save(item.ParsingName);
-		//		}
-		//		else {
-		//			string ext = Utilities.GetExtension(item.ParsingName);
-		//			string name = item.ParsingName;
-		//			string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
-		//			cvt.Save(namen + "_FlippedX" + ext);
-		//		}
-		//		cvt.Dispose();
-		//		AddToLog("Flipped image " + item.ParsingName);
-		//	}
-		//	*/
-		//}
-
-		//[Obsolete("Merge into a multi control event using RotateImages just like Convert_Images(...)!!!!")]
-		//private void btnFlipY_Click(object sender, RoutedEventArgs e) {
-		//	RotateImages(RotateFlipType.RotateNoneFlipY, "_FlippedY");
-		//	/*
-		//	foreach (ShellItem item in ShellListView.SelectedItems) {
-		//		System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-		//		cvt.RotateFlip(RotateFlipType.RotateNoneFlipY);
-		//		if (OverwriteOnRotate) {
-		//			cvt.Save(item.ParsingName);
-		//		}
-		//		else {
-		//			string ext = Utilities.GetExtension(item.ParsingName);
-		//			string name = item.ParsingName;
-		//			string namen = Utilities.RemoveExtensionsFromFile(name, new System.IO.FileInfo(name).Extension);
-		//			cvt.Save(namen + "_FlippedY" + ext);
-		//		}
-		//		cvt.Dispose();
-		//		AddToLog("Flipped image " + item.ParsingName);
-		//	}
-		//	*/
-		//}
-
+		
 		private void btnResize_Click(object sender, RoutedEventArgs e)
 		{
-			//ResizeImage.Open(ShellListView.GetFirstSelectedItem());
+			ResizeImage.Open(ShellListView.GetFirstSelectedItem());
 		}
 
 		#endregion
@@ -4867,11 +4768,11 @@ namespace BetterExplorer
 					{
 						foreach (var path in selectedPaths.ToArray())
 						{
-							var sho = this.ShellListView.Items.Where(w => w.ParsingName == path).SingleOrDefault();
+							var sho = this.ShellListView.Items.SingleOrDefault(w => w.ParsingName == path);
 							if (sho != null)
 							{
 								var index = this.ShellListView.ItemsHashed[sho.GetUniqueID()];
-								this.ShellListView.SelectItemByIndex(index, true);
+								this.ShellListView.SelectItemByIndex(index, path.Equals(selectedPaths.Last()));
 								selectedPaths.Remove(path);
 							}
 						}

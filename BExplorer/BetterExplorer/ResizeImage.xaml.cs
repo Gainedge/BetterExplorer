@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BetterExplorer {
 
@@ -41,7 +42,7 @@ namespace BetterExplorer {
 		*/
 
 
-		public static void Open(ShellItem file) {
+		public static void Open(IListItemEx file) {
 			var f = new ResizeImage();
 
 			f.InitializeComponent();
@@ -84,24 +85,6 @@ namespace BetterExplorer {
 		}
 
 
-
-		//public ResizeImage(ShellObject file, string height, string width, string imagename)
-		//{
-		//    InitializeComponent();
-
-		// textBlock1.Text = imagename + ": " + file.GetDisplayName(DisplayNameType.Default); cvt =
-		// new Bitmap(file.ParsingName); textBlock2.Text = height + ": " + cvt.Height.ToString();
-		// textBlock3.Text = width + ": " + cvt.Width.ToString();
-
-		// spinner1.Value = 100;
-
-		// percsetting = true;
-
-		// textBox1.Text = cvt.Width.ToString(); textBox2.Text = cvt.Height.ToString();
-
-		//    percsetting = false;
-		//}
-
 		private void spinner1_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
 			if (cvt != null) {
 				newwidth = Convert.ToInt32(Math.Round(Convert.ToDouble(cvt.Width * Convert.ToInt32(spinner1.Value) / 100)));
@@ -129,7 +112,7 @@ namespace BetterExplorer {
 		private void TextBoxes_Edited(object sender, TextChangedEventArgs e) {
 			int this_Width = newwidth, This_Heighth = newheight;
 
-			//TO_DO: Get the Value Before AND after the change THEN deal with keeping the ratio's the same
+			//TODO: Get the Value Before AND after the change THEN deal with keeping the ratio's the same
 
 
 			if (textBox1 == null || textBox2 == null || percsetting) {

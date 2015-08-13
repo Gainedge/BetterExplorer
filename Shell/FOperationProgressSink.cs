@@ -26,13 +26,17 @@ namespace BExplorer.Shell {
 		
 		public override void UpdateProgress(uint iWorkTotal, uint iWorkSoFar) {
 			//base.UpdateProgress(iWorkTotal, iWorkSoFar);
+			if (iWorkSoFar == iWorkTotal || iWorkSoFar > iWorkTotal*0.97) {
+				this._View.UnvalidateDirectory();
+			}
 		}
 		public override void PreDeleteItem(uint dwFlags, IShellItem psiItem) {
-			//base.PreDeleteItem(dwFlags, psiItem);
+			base.PreDeleteItem(dwFlags, psiItem);
+			
 		}
     [HandleProcessCorruptedStateExceptions]
 		public override void PostDeleteItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, uint hrDelete, IShellItem psiNewlyCreated) {
-      //this._View.UnvalidateDirectory();
+      this._View.UnvalidateDirectory();
 			//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
       
 			//if (!String.IsNullOrEmpty(obj.ParsingName)) {
@@ -86,7 +90,7 @@ namespace BExplorer.Shell {
 			//Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR : Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 			//		Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			//theNewItem.Dispose();
-      //this._View.UnvalidateDirectory();
+      this._View.UnvalidateDirectory();
       try {
         if (psiItem != null) {
           Marshal.ReleaseComObject(psiItem);
@@ -112,7 +116,7 @@ namespace BExplorer.Shell {
 			//Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR : Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 			//		Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			//theNewItem.Dispose();
-      //this._View.UnvalidateDirectory();
+      this._View.UnvalidateDirectory();
       try {
         if (psiItem != null) {
           Marshal.ReleaseComObject(psiItem);

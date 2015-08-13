@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -229,43 +230,329 @@ namespace BExplorer.Shell {
 		LVFI_NEARESTXY = 0x0040,
 	}
 
-	/*
+	
 	public enum LVTVIM {
 		LVTVIM_COLUMNS = 2,
 		LVTVIM_TILESIZE = 1,
 		LVTVIM_LABELMARGIN = 4,
 	}
-	*/
+	
 
-	/*
+	
 	public enum LVTVIF {
 		LVTVIF_AUTOSIZE = 0,
 		LVTVIF_FIXEDHEIGHT = 2,
 		LVTVIF_FIXEDSIZE = 3,
 		LVTVIF_FIXEDWIDTH = 1,
 	}
-	*/
+	
 
-	/*
+	
 	public struct INTEROP_SIZE {
 		public int cx;
 		public int cy;
 	}
-	*/
+	
 
-	/*
+
 	[StructLayout(LayoutKind.Sequential)]
 	public struct LVTILEVIEWINFO {
-		public int cbSize;
-		public int dwMask;
-		public int dwFlags;
+		public uint cbSize;
+		public uint dwMask;
+		public uint dwFlags;
 		public INTEROP_SIZE sizeTile;
 		public int cLines;
-		public INTEROP_SIZE rcLabelMargin;
+		public User32.RECT rcLabelMargin;
 	}
-	*/
+
+
+	/// <SUMMARY> 
+	/// Inherited child for the class Graphics encapsulating 
+	/// additional functionality for curves and rounded rectangles. 
+	/// </SUMMARY> 
+	public class ExtendedGraphics
+	{
+
+		private Graphics mGraphics;
+		public Graphics Graphics
+		{
+			get { return this.mGraphics; }
+			set { this.mGraphics = value; }
+		}
+
+
+		public ExtendedGraphics(Graphics graphics)
+		{
+			this.Graphics = graphics;
+		}
+
+
+		#region Fills a Rounded Rectangle with integers. 
+		public void FillRoundRectangle(System.Drawing.Brush brush,
+			int x, int y,
+			int width, int height, int radius)
+		{
+
+			float fx = Convert.ToSingle(x);
+			float fy = Convert.ToSingle(y);
+			float fwidth = Convert.ToSingle(width);
+			float fheight = Convert.ToSingle(height);
+			float fradius = Convert.ToSingle(radius);
+			this.FillRoundRectangle(brush, fx, fy,
+				fwidth, fheight, fradius);
+
+		}
+		#endregion
+
+
+		#region Fills a Rounded Rectangle with continuous numbers.
+		public void FillRoundRectangle(System.Drawing.Brush brush,
+			float x, float y,
+			float width, float height, float radius)
+		{
+			RectangleF rectangle = new RectangleF(x, y, width, height);
+			GraphicsPath path = this.GetRoundedRect(rectangle, radius);
+			this.Graphics.FillPath(brush, path);
+		}
+		#endregion
+
+
+		#region Draws a Rounded Rectangle border with integers. 
+		public void DrawRoundRectangle(System.Drawing.Pen pen, int x, int y,
+			int width, int height, int radius)
+		{
+			float fx = Convert.ToSingle(x);
+			float fy = Convert.ToSingle(y);
+			float fwidth = Convert.ToSingle(width);
+			float fheight = Convert.ToSingle(height);
+			float fradius = Convert.ToSingle(radius);
+			this.DrawRoundRectangle(pen, fx, fy, fwidth, fheight, fradius);
+		}
+		#endregion
+
+
+		#region Draws a Rounded Rectangle border with continuous numbers. 
+		public void DrawRoundRectangle(System.Drawing.Pen pen,
+			float x, float y,
+			float width, float height, float radius)
+		{
+			RectangleF rectangle = new RectangleF(x, y, width, height);
+			GraphicsPath path = this.GetRoundedRect(rectangle, radius);
+			this.Graphics.DrawPath(pen, path);
+		}
+		#endregion
+
+
+		#region Get the desired Rounded Rectangle path. 
+		private GraphicsPath GetRoundedRect(RectangleF baseRect,
+			 float radius)
+		{
+			// if corner radius is less than or equal to zero, 
+			// return the original rectangle 
+			if (radius <= 0.0F)
+			{
+				GraphicsPath mPath = new GraphicsPath();
+				mPath.AddRectangle(baseRect);
+				mPath.CloseFigure();
+				return mPath;
+			}
+
+			// if the corner radius is greater than or equal to 
+			// half the width, or height (whichever is shorter) 
+			// then return a capsule instead of a lozenge 
+			if (radius >= (Math.Min(baseRect.Width, baseRect.Height)) / 2.0)
+				return GetCapsule(baseRect);
+
+			// create the arc for the rectangle sides and declare 
+			// a graphics path object for the drawing 
+			float diameter = radius * 2.0F;
+			SizeF sizeF = new SizeF(diameter, diameter);
+			RectangleF arc = new RectangleF(baseRect.Location, sizeF);
+			GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+
+			// top left arc 
+			path.AddArc(arc, 180, 90);
+
+			//// top right arc 
+			//arc.X = baseRect.Right;// - diameter;
+			//path.AddArc(arc, 270, 0);
+			path.AddLine(baseRect.Left + radius, baseRect.Top, baseRect.Right, baseRect.Top);
+			path.AddLine(baseRect.Right, baseRect.Top, baseRect.Right, baseRect.Bottom);
+			// bottom right arc 
+			//arc.Y = baseRect.Bottom - diameter;
+			//path.AddArc(arc, 0, 90);
+
+			path.AddLine(baseRect.Right, baseRect.Bottom, baseRect.Left + radius, baseRect.Bottom);
+			//path.AddLine(baseRect.Right, baseRect.Top, baseRect.Right, baseRect.Bottom);
+
+			// bottom left arc
+			//arc.X = baseRect.Left;
+			//path.AddArc(arc, 360, 90);
+
+			path.AddLine(baseRect.Left, baseRect.Bottom - radius, baseRect.Left, baseRect.Top + radius);
+
+			path.CloseFigure();
+			return path;
+		}
+		#endregion
+
+		#region Gets the desired Capsular path. 
+		private GraphicsPath GetCapsule(RectangleF baseRect)
+		{
+			float diameter;
+			RectangleF arc;
+			GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+			try
+			{
+				if (baseRect.Width > baseRect.Height)
+				{
+					// return horizontal capsule 
+					diameter = baseRect.Height;
+					SizeF sizeF = new SizeF(diameter, diameter);
+					arc = new RectangleF(baseRect.Location, sizeF);
+					path.AddArc(arc, 90, 180);
+					arc.X = baseRect.Right - diameter;
+					path.AddArc(arc, 270, 180);
+				}
+				else if (baseRect.Width < baseRect.Height)
+				{
+					// return vertical capsule 
+					diameter = baseRect.Width;
+					SizeF sizeF = new SizeF(diameter, diameter);
+					arc = new RectangleF(baseRect.Location, sizeF);
+					path.AddArc(arc, 180, 180);
+					arc.Y = baseRect.Bottom - diameter;
+					path.AddArc(arc, 0, 180);
+				}
+				else
+				{
+					// return circle 
+					path.AddEllipse(baseRect);
+				}
+			}
+			catch (Exception ex)
+			{
+				path.AddEllipse(baseRect);
+			}
+			finally
+			{
+				path.CloseFigure();
+			}
+			return path;
+		}
+		#endregion
+	}
 
 	public static class Extensions {
+
+		///// <summary>
+		///// Angles of a rectangle.
+		///// </summary>
+		//public enum RectAngles
+		//{
+		//	None = 0,
+		//	TopLeft = 1,
+		//	TopRight = 2,
+		//	BottomLeft = 4,
+		//	BottomRight = 8,
+		//	All = TopLeft | TopRight | BottomLeft | BottomRight
+		//}
+
+		///// <summary>
+		///// Draw and fill a rounded rectangle.
+		///// </summary>
+		///// <param name="g">The graphics object to use.</param>
+		///// <param name="p">The pen to use to draw the rounded rectangle. If <code>null</code>, the border is not drawn.</param>
+		///// <param name="b">The brush to fill the rounded rectangle. If <code>null</code>, the internal is not filled.</param>
+		///// <param name="r">The rectangle to draw.</param>
+		///// <param name="horizontalDiameter">Horizontal diameter for the rounded angles.</param>
+		///// <param name="verticalDiameter">Vertical diameter for the rounded angles.</param>
+		///// <param name="rectAngles">Angles to round.</param>
+		//public static void DrawAndFillRoundedRectangle(this Graphics g, Pen p, Brush b, Rectangle r, int horizontalDiameter, int verticalDiameter, RectAngles rectAngles)
+		//{
+		//	// get out data
+		//	int x = r.X;
+		//	int y = r.Y;
+		//	int width = r.Width;
+		//	int height = r.Height;
+		//	// adapt horizontal and vertical diameter if the rectangle is too little
+		//	if (width < horizontalDiameter)
+		//		horizontalDiameter = width;
+		//	if (height < verticalDiameter)
+		//		verticalDiameter = height;
+		//	/*
+		//	 * The drawing is the following:
+		//	 *
+		//	 *             a
+		//	 *      P______________Q
+		//	 *    h /              \ b
+		//	 *   W /                \R
+		//	 *    |                  |
+		//	 *  g |                  | c
+		//	 *   V|                  |S
+		//	 *    f\                / d
+		//	 *     U\______________/T
+		//	 *             e
+		//	 */
+		//	bool tl = (rectAngles & RectAngles.TopLeft) != 0,
+		//			tr = (rectAngles & RectAngles.TopRight) != 0,
+		//			br = (rectAngles & RectAngles.BottomRight) != 0,
+		//			bl = (rectAngles & RectAngles.BottomLeft) != 0;
+		//	Point pointP = tl ?
+		//			new Point(x + horizontalDiameter / 2, y) :
+		//			new Point(x, y);
+		//	Point pointQ = tr ?
+		//			new Point(x + width - horizontalDiameter / 2 - 1, y) :
+		//			new Point(x + width - 1, y);
+		//	Point pointR = tr ?
+		//			new Point(x + width - 1, y + verticalDiameter / 2) :
+		//			pointQ;
+		//	Point pointS = br ?
+		//			new Point(x + width - 1, y + height - verticalDiameter / 2 - 1) :
+		//			new Point(x + width - 1, y + height - 1);
+		//	Point pointT = br ?
+		//			new Point(x + width - horizontalDiameter / 2 - 1) :
+		//			pointS;
+		//	Point pointU = bl ?
+		//			new Point(x + horizontalDiameter / 2, y + height - 1) :
+		//			new Point(x, y + height - 1);
+		//	Point pointV = bl ?
+		//			new Point(x, y + height - verticalDiameter / 2 - 1) :
+		//			pointU;
+		//	Point pointW = tl ?
+		//			new Point(x, y + verticalDiameter / 2) :
+		//			pointP;
+		//	using (GraphicsPath gp = new GraphicsPath())
+		//	{
+		//		// a
+		//		gp.AddLine(pointP, pointQ);
+		//		// b
+		//		if (tr)
+		//			gp.AddArc(x + width - horizontalDiameter - 1, y, horizontalDiameter, verticalDiameter, 270, 90);
+		//		// c
+		//		gp.AddLine(pointR, pointS);
+		//		// d
+		//		if (br)
+		//			gp.AddArc(x + width - horizontalDiameter - 1, y + height - verticalDiameter - 1, horizontalDiameter, verticalDiameter, 0, 90);
+		//		// e
+		//		gp.AddLine(pointT, pointU);
+		//		// f
+		//		if (bl)
+		//			gp.AddArc(x, y + height - verticalDiameter - 1, horizontalDiameter, verticalDiameter, 90, 90);
+		//		// g
+		//		gp.AddLine(pointV, pointW);
+		//		// h
+		//		if (tl)
+		//			gp.AddArc(x, y, horizontalDiameter, verticalDiameter, 180, 90);
+		//		// end
+		//		gp.CloseFigure();
+		//		// draw
+		//		if (b != null)
+		//			g.FillPath(b, gp);
+		//		if (p != null)
+		//			g.DrawPath(p, gp);
+		//	}
+		//}
 
 		public static LVGROUP2 ToNativeListViewGroup(this ListViewGroupEx group) {
 			LVGROUP2 nativeGroup = new LVGROUP2();

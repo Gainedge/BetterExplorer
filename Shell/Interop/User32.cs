@@ -17,6 +17,7 @@
 // Boston, MA 2110-1301, USA.
 //
 using System;
+using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -173,7 +174,7 @@ namespace BExplorer.Shell.Interop {
 		LVM_SETBKIMAGE = (FIRST + 138),
 		LVM_GETBKIMAGE = (FIRST + 139),
 		LVM_FINDITEM = (FIRST + 83),
-		LVM_ENSUREVISISBLE = (FIRST + 19),
+		LVM_ENSUREVISIBLE = (FIRST + 19),
 		LVM_ARRANGE = (FIRST + 22),
 		LVM_GETITEMINDEXRECT = (FIRST + 209),
 		LVM_REMOVEALLGROUPS = (FIRST + 160),
@@ -290,6 +291,24 @@ namespace BExplorer.Shell.Interop {
 	}
 
 	public class User32 {
+
+		/// <summary>
+		/// Retrieves the cursor's position, in screen coordinates.
+		/// </summary>
+		/// <see>See MSDN documentation for further information.</see>
+		[DllImport("user32.dll")]
+		public static extern bool GetCursorPos(out POINT lpPoint);
+
+		public static Point GetCursorPosition()
+		{
+			POINT lpPoint;
+			GetCursorPos(out lpPoint);
+			//bool success = User32.GetCursorPos(out lpPoint);
+			// if (!success)
+
+			return new Point(lpPoint.x, lpPoint.y);// lpPoint;
+		}
+
 		[DllImport("user32.dll")]
 		public static extern uint GetMenuItemID(IntPtr hMenu, int nPos);
 
@@ -552,10 +571,12 @@ namespace BExplorer.Shell.Interop {
 
 		[DllImport("user32.dll")]
 		public static extern bool EnableWindow(IntPtr hWnd, bool bEnable);
-		
-		[DllImport("User32.dll")]
-		public static extern HResult SendMessage(IntPtr hWnd, int msg, int wParam, LVTILEVIEWINFO lParam);
 		*/
+
+		[DllImport("User32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		public static extern bool SendMessage(IntPtr hWnd, int msg, int wParam, LVTILEVIEWINFO lParam);
+		
 
 		[DllImport("User32.dll")]
 		public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, ref LVGROUP2 lParam);
