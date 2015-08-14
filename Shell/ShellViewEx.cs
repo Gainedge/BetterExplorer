@@ -4290,7 +4290,7 @@ public static void RunExeAsAnotherUser(string ExePath, string username) {
 
 		public void ScrollToTop()
 		{
-			var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, 0, 0);
+			//var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, 0, 0);
 		}
 		public string CreateNewFolder(string name = "New Folder")
 		{
