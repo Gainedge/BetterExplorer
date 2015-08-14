@@ -3151,7 +3151,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
             }, CancellationToken.None, TaskCreationOptions.None, taskScheduler);
             //taskk.Start(TaskScheduler.FromCurrentSynchronizationContext());
             taskk.Wait();
-            isRun = true;
+            //isRun = true;
             this.IsNavigationInProgress = false;
 
             if ((this._RequestedCurrentLocation.NavigationStatus == HResult.S_OK && isFailed) || (this._RequestedCurrentLocation.NavigationStatus == HResult.S_OK && this.Items.Count == 0))
@@ -3492,10 +3492,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
         /// Sets the Sort order of the Groups
         /// </summary>
         /// <param name="reverse">Reverse the Current Sort Order?</param>
-        public void SetGroupOrder(Boolean reverse = true)
-        {
-            this.GenerateGroupsFromColumn(this.LastGroupCollumn, reverse ? this.LastGroupOrder == SortOrder.Ascending : false);
-        }
+        public void SetGroupOrder(Boolean reverse = true) => GenerateGroupsFromColumn(LastGroupCollumn, reverse ? LastGroupOrder == SortOrder.Ascending : false);
 
         [DebuggerStepThrough]
         public IListItemEx GetFirstSelectedItem()
@@ -3798,7 +3795,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
         public void CleanupDrive()
         {
             string DriveLetter = "";
-            if (SelectedItems.Count > 0)
+            if (SelectedItems.Any())
                 DriveLetter = Directory.GetLogicalDrives().Contains(SelectedItems[0].ParsingName) ? SelectedItems[0].ParsingName : this.CurrentFolder.ParsingName;
             else
                 DriveLetter = this.CurrentFolder.ParsingName;
@@ -4027,34 +4024,6 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
         private new void SuspendLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 0, 0);
         private void RedrawWindow() => User32.InvalidateRect(this.LVHandle, IntPtr.Zero, false);
         private void RedrawWindow(User32.RECT rect) => User32.InvalidateRect(this.LVHandle, ref rect, false);
-
-
-        /*
-        [Obsolete("Not Used")]
-        private void ReloadThreads()
-        {
-            try
-            {
-                //this._IconLoadingThread.Abort();
-                //this._IconCacheLoadingThread.Abort();
-                this._OverlaysLoadingThread.Abort();
-                this._UpdateSubitemValuesThread.Abort();
-                //this._IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
-                //this._IconLoadingThread.Start();
-                //this._IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
-                //this._IconCacheLoadingThread.Start();
-                this._OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
-                this._OverlaysLoadingThread.Start();
-                this._UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
-                this._UpdateSubitemValuesThread.Start();
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-        */
-
 
         /// <summary>
         /// Returns the index of the first item whose display name starts with the search string.

@@ -30,7 +30,6 @@ namespace ConsoleControl
         private const int WM_VSCROLL = 277;
         private const int SB_PAGEBOTTOM = 7;
 
-
         /// <summary> Current position that input starts at. </summary>
         private int inputStart = -1;
 
@@ -44,29 +43,6 @@ namespace ConsoleControl
         /// </summary>
         private string lastInput;
 
-        /*
-		 * This was never used
-		private IntPtr _cmdhandle;
-		*/
-
-        /*		 
-		/// <summary> The is input enabled flag. </summary>
-		private bool isInputEnabled = true;
-
-		/// <summary> Gets or sets a value indicating whether this instance is input enabled. </summary>
-		/// <value> <c>true</c> if this instance is input enabled; otherwise, <c>false</c>. </value>
-		[Obsolete("Assigned a value but never used")]
-		[Category("Console Control"), Description("If true, the user can key in input.")]
-		private bool IsInputEnabled {
-			get { return isInputEnabled; }
-			set {
-				isInputEnabled = value;
-				if (IsProcessRunning)
-					richTextBoxConsole.ReadOnly = !value;
-			}
-		}
-		*/
-
         /// <summary> The key mappings. </summary>
         private List<KeyMapping> keyMappings = new List<KeyMapping>();
 
@@ -79,16 +55,6 @@ namespace ConsoleControl
         /// <summary> The internal process interface used to interface with the process. </summary>
         private ProcessInterface.ProcessInterface processInterace = new ProcessInterface.ProcessInterface();
 
-        /*
-		/// <summary> Gets the process interface. </summary>
-		[Browsable(false)]
-		private ProcessInterface.ProcessInterface Process_Interface { get { return processInterace; } }
-		*/
-
-        ///// <summary> Gets the key mappings. </summary>
-        //[Browsable(false)]
-        //private List<KeyMapping> KeyMappings { get { return keyMappings; } }
-
         protected override CreateParams CreateParams
         {
             get
@@ -99,9 +65,6 @@ namespace ConsoleControl
             }
         }
 
-
-
-
         /// <summary> Gets or sets a value indicating whether [send keyboard commands to process]. </summary>
         /// <value> <c>true</c> if [send keyboard commands to process]; otherwise, <c>false</c>. </value>
         [Category("Console Control"), Description("If true, special keyboard commands like Ctrl-C and tab are sent to the process.")]
@@ -110,10 +73,7 @@ namespace ConsoleControl
         /// <summary> Gets a value indicating whether this instance is process running. </summary>
         /// <value> <c>true</c> if this instance is process running; otherwise, <c>false</c>. </value>
         [Browsable(false)]
-        public bool IsProcessRunning
-        {
-            get { return processInterace.IsProcessRunning; }
-        }
+        public bool IsProcessRunning => processInterace.IsProcessRunning;
 
         /// <summary> Gets or sets a value indicating whether to show diagnostics. </summary>
         /// <value> <c>true</c> if show diagnostics; otherwise, <c>false</c>. </value>
@@ -135,10 +95,7 @@ namespace ConsoleControl
             this.richTextBoxConsole.AppendText(System.Windows.Forms.Clipboard.GetText());
         }
 
-        private void btnCopy_Click(object sender, EventArgs e)
-        {
-            System.Windows.Forms.Clipboard.SetText(richTextBoxConsole.SelectedText);
-        }
+        private void btnCopy_Click(object sender, EventArgs e) => Clipboard.SetText(richTextBoxConsole.SelectedText);
 
         private void btnClear_Click(object sender, EventArgs e)
         {
@@ -146,10 +103,7 @@ namespace ConsoleControl
             ClearOutput();
         }
 
-        private void richTextBoxConsole_TextChanged(object sender, EventArgs e)
-        {
-            SendMessage(richTextBoxConsole.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
-        }
+        private void richTextBoxConsole_TextChanged(object sender, EventArgs e) => SendMessage(richTextBoxConsole.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
 
         #endregion Control Events
 
@@ -262,23 +216,11 @@ namespace ConsoleControl
 
         /// <summary> Fires the console output event. </summary>
         /// <param name="content"> The content. </param>
-        private void FireConsoleOutputEvent(string content)
-        {
-            // Get the event.
-            var theEvent = OnConsoleOutput;
-            if (theEvent != null)
-                theEvent(this, new Tuple<string>(content));
-        }
+        private void FireConsoleOutputEvent(string content) => OnConsoleOutput?.Invoke(this, new Tuple<string>(content));
 
         /// <summary> Fires the console input event. </summary>
         /// <param name="content"> The content. </param>
-        private void FireConsoleInputEvent(string content)
-        {
-            // Get the event.
-            var theEvent = OnConsoleInput;
-            if (theEvent != null)
-                theEvent(this, new Tuple<string>(content));
-        }
+        private void FireConsoleInputEvent(string content) => OnConsoleInput?.Invoke(this, new Tuple<string>(content));
 
         #endregion Processing
 
@@ -292,9 +234,7 @@ namespace ConsoleControl
         {
             if (isClearAfterEnter)
             {
-                if (isSendClear)
-                    //Clear the real console screen
-                    WriteInput("cls", Color.Black, false);
+                if (isSendClear) WriteInput("cls", Color.Black, false);//Clear the real console screen
                 richTextBoxConsole.SelectedText = "";
                 richTextBoxConsole.Clear();
                 inputStart = 0;
@@ -310,24 +250,10 @@ namespace ConsoleControl
             if (!string.IsNullOrEmpty(lastInput) && (output == lastInput || output.Replace("\r\n", "") == lastInput))
                 return;
             ClearOutput(false, this._ShouldClear);
-            //else if (!richTextBoxConsole.Created)
-            //	return;
-
-            //richTextBoxConsole.BeginInvoke((Action)(() => {
             // Write the output.
             richTextBoxConsole.SelectionColor = color;
             richTextBoxConsole.SelectedText += output;
             inputStart = richTextBoxConsole.SelectionStart;
-            //}));
-
-            /*
-			//Invoke((Action)(() => {
-			//  Write the output.
-			richTextBoxConsole.SelectionColor = color;
-			richTextBoxConsole.SelectedText += output;
-			inputStart = richTextBoxConsole.SelectionStart;
-			//}));
-			*/
         }
 
         /// <summary> Writes the input to the console control. </summary>
@@ -371,7 +297,7 @@ namespace ConsoleControl
             ClearOutput();
 
             if (IsFileSystem)
-                Value = String.Format("cd /D \"{0}\"", Folder);
+                Value = $"cd /D \"{Folder}\"";
             if (!this._IsCodepageSet)
             {
                 //Enable UTF-8 for the ConsoleControl
@@ -425,27 +351,10 @@ namespace ConsoleControl
 
         void richTextBoxConsole_MouseDown(object sender, MouseEventArgs e)
         {
+            //TODO: Find out if we need this!
             this.ShellListView.IsFocusAllowed = false;
             richTextBoxConsole.Focus();
         }
-
-        /*
-		/// <summary> Gets the internal rich text box. </summary>
-		[Browsable(false)]
-		[Obsolete("Will become private soon", false)]
-		public RichTextBox InternalRichTextBox {
-			get {
-				return richTextBoxConsole;
-			}
-		}
-		*/
-
-        /*
-		[Obsolete("Will become private soon", false)]
-		public void ScrollToBottom() {
-			//SendMessage(richTextBoxConsole.Handle, WM_VSCROLL, (IntPtr)SB_PAGEBOTTOM, IntPtr.Zero);
-		}
-		*/
 
         /// <summary> Initializes the key mappings. </summary>
         private void InitialiseKeyMappings()
@@ -490,7 +399,7 @@ namespace ConsoleControl
                 //}
 
                 // If we handled a mapping, we're done here.
-                if (mappings.Count() > 0)
+                if (mappings.Any())
                 {
                     e.SuppressKeyPress = true;
                     return;

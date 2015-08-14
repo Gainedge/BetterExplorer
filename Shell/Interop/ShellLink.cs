@@ -389,12 +389,6 @@ namespace BExplorer.Shell.Interop
 
 
 
-
-
-
-
-
-
             SLR_NOSEARCH = 0x10,
             /// <summary>
             /// Do not use distributed link tracking. 
@@ -421,7 +415,7 @@ namespace BExplorer.Shell.Interop
         // Use Unicode (W) under NT, otherwise use ANSI      
         private IShellLinkW linkW;
         private IShellLinkA linkA;
-        private string shortcutFile = "";
+        //private string shortcutFile = "";
         #endregion
 
         #region Constructor
@@ -431,13 +425,9 @@ namespace BExplorer.Shell.Interop
         public ShellLink()
         {
             if (System.Environment.OSVersion.Platform == PlatformID.Win32NT)
-            {
                 linkW = (IShellLinkW)new CShellLink();
-            }
             else
-            {
                 linkA = (IShellLinkA)new CShellLink();
-            }
         }
 
         /// <summary>
@@ -445,21 +435,14 @@ namespace BExplorer.Shell.Interop
         /// from the specified link file
         /// </summary>
         /// <param name="linkFile">The Shortcut file to open</param>
-        public ShellLink(string linkFile)
-            : this()
-        {
-            Open(linkFile);
-        }
+        public ShellLink(string linkFile) : this() { Open(linkFile); }
         #endregion
 
         #region Destructor and Dispose
         /// <summary>
         /// Call dispose just in case it hasn't happened yet
         /// </summary>
-        ~ShellLink()
-        {
-            Dispose();
-        }
+        ~ShellLink() { Dispose(); }
 
         /// <summary>
         /// Dispose the object, releasing the COM ShellLink object
@@ -480,11 +463,7 @@ namespace BExplorer.Shell.Interop
         #endregion
 
         #region Implementation
-        public string ShortCutFile
-        {
-            get { return this.shortcutFile; }
-            set { this.shortcutFile = value; }
-        }
+        public string ShortCutFile { get; set; }
 
         /// <summary>
         /// Gets a System.Drawing.Icon containing the icon for this
@@ -494,19 +473,40 @@ namespace BExplorer.Shell.Interop
 
         public Icon SmallIcon => getIcon(false);
 
+        /// <summary>
+        /// Gets/sets the HotKey to start the shortcut (if any)
+        /// </summary>
+        public Keys HotKey
+        {
+            get
+            {
+                short key = 0;
+                if (linkA == null)
+                    linkW.GetHotkey(out key);
+                else
+                    linkA.GetHotkey(out key);
+
+                return (Keys)key;
+            }
+            set
+            {
+                if (linkA == null)
+                    linkW.SetHotkey((short)value);
+                else
+                    linkA.SetHotkey((short)value);
+            }
+        }
+
         private Icon getIcon(bool large)
         {
             // Get icon index and path:
             int iconIndex = 0;
             var iconPath = new StringBuilder(260, 260);
             if (linkA == null)
-            {
                 linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
-            }
             else
-            {
                 linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
-            }
+
             string iconFile = iconPath.ToString();
 
             // If there are no details set for the icon, then we must use
@@ -515,16 +515,8 @@ namespace BExplorer.Shell.Interop
             {
                 // Use the FileIcon object to get the icon:
                 var flags = FileIcon.SHGetFileInfoConstants.SHGFI_ICON | FileIcon.SHGetFileInfoConstants.SHGFI_ATTRIBUTES;
-                if (large)
-                {
-                    flags = flags | FileIcon.SHGetFileInfoConstants.SHGFI_LARGEICON;
-                }
-                else
-                {
-                    flags = flags | FileIcon.SHGetFileInfoConstants.SHGFI_SMALLICON;
-                }
-                FileIcon fileIcon = new FileIcon(Target, flags);
-                return fileIcon.ShellIcon;
+                flags = flags | (large ? FileIcon.SHGetFileInfoConstants.SHGFI_LARGEICON : FileIcon.SHGetFileInfoConstants.SHGFI_SMALLICON);
+                return new FileIcon(Target, flags).ShellIcon;
             }
             else
             {
@@ -557,8 +549,8 @@ namespace BExplorer.Shell.Interop
         {
             get
             {
-                var iconPath = new StringBuilder(260, 260);
-                int iconIndex = 0;
+                var iconPath = new StringBuilder(260, 260); int iconIndex = 0;
+
                 if (linkA == null)
                     linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
                 else
@@ -600,13 +592,10 @@ namespace BExplorer.Shell.Interop
                 var iconPath = new StringBuilder(260, 260);
                 int iconIndex = 0;
                 if (linkA == null)
-                {
                     linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
-                }
                 else
-                {
                     linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
-                }
+
                 return iconIndex;
             }
             set
@@ -681,26 +670,20 @@ namespace BExplorer.Shell.Interop
             get
             {
                 StringBuilder path = new StringBuilder(260, 260);
+
                 if (linkA == null)
-                {
                     linkW.GetWorkingDirectory(path, path.Capacity);
-                }
                 else
-                {
                     linkA.GetWorkingDirectory(path, path.Capacity);
-                }
+
                 return path.ToString();
             }
             set
             {
                 if (linkA == null)
-                {
                     linkW.SetWorkingDirectory(value);
-                }
                 else
-                {
                     linkA.SetWorkingDirectory(value);
-                }
             }
         }
 
@@ -713,25 +696,18 @@ namespace BExplorer.Shell.Interop
             {
                 StringBuilder description = new StringBuilder(1024, 1024);
                 if (linkA == null)
-                {
                     linkW.GetDescription(description, description.Capacity);
-                }
                 else
-                {
                     linkA.GetDescription(description, description.Capacity);
-                }
+
                 return description.ToString();
             }
             set
             {
                 if (linkA == null)
-                {
                     linkW.SetDescription(value);
-                }
                 else
-                {
                     linkA.SetDescription(value);
-                }
             }
         }
 
@@ -744,25 +720,18 @@ namespace BExplorer.Shell.Interop
             {
                 StringBuilder arguments = new StringBuilder(260, 260);
                 if (linkA == null)
-                {
                     linkW.GetArguments(arguments, arguments.Capacity);
-                }
                 else
-                {
                     linkA.GetArguments(arguments, arguments.Capacity);
-                }
+
                 return arguments.ToString();
             }
             set
             {
                 if (linkA == null)
-                {
                     linkW.SetArguments(value);
-                }
                 else
-                {
                     linkA.SetArguments(value);
-                }
             }
         }
 
@@ -776,162 +745,88 @@ namespace BExplorer.Shell.Interop
             {
                 uint cmd = 0;
                 if (linkA == null)
-                {
                     linkW.GetShowCmd(out cmd);
-                }
                 else
-                {
                     linkA.GetShowCmd(out cmd);
-                }
+
                 return (LinkDisplayMode)cmd;
             }
             set
             {
                 if (linkA == null)
-                {
                     linkW.SetShowCmd((uint)value);
-                }
                 else
-                {
                     linkA.SetShowCmd((uint)value);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets/sets the HotKey to start the shortcut (if any)
-        /// </summary>
-        public Keys HotKey
-        {
-            get
-            {
-                short key = 0;
-                if (linkA == null)
-                {
-                    linkW.GetHotkey(out key);
-                }
-                else
-                {
-                    linkA.GetHotkey(out key);
-                }
-                return (Keys)key;
-            }
-            set
-            {
-                if (linkA == null)
-                {
-                    linkW.SetHotkey((short)value);
-                }
-                else
-                {
-                    linkA.SetHotkey((short)value);
-                }
             }
         }
 
         /// <summary>
         /// Saves the shortcut to ShortCutFile.
         /// </summary>
-        public void Save()
-        {
-            Save(shortcutFile);
-        }
+        public void Save() => Save(ShortCutFile);
 
         /// <summary>
         /// Saves the shortcut to the specified file
         /// </summary>
         /// <param name="linkFile">The shortcut file (.lnk)</param>
-        public void Save(
-             string linkFile
-             )
+        public void Save(string linkFile)
         {
             // Save the object to disk
             if (linkA == null)
-            {
                 ((IPersistFile)linkW).Save(linkFile, true);
-                shortcutFile = linkFile;
-            }
             else
-            {
                 ((IPersistFile)linkA).Save(linkFile, true);
-                shortcutFile = linkFile;
-            }
+
+            ShortCutFile = linkFile;
         }
 
         /// <summary>
         /// Loads a shortcut from the specified file
         /// </summary>
         /// <param name="linkFile">The shortcut file (.lnk) to load</param>
-        public void Open(
-             string linkFile
-             )
-        {
-            Open(linkFile,
-                 IntPtr.Zero,
-                 (EShellLinkResolveFlags.SLR_ANY_MATCH |
-                    EShellLinkResolveFlags.SLR_NO_UI),
-                 1);
-        }
+        public void Open(string linkFile) => Open(linkFile, IntPtr.Zero, (EShellLinkResolveFlags.SLR_ANY_MATCH | EShellLinkResolveFlags.SLR_NO_UI), 1);
 
         /// <summary>
         /// Loads a shortcut from the specified file, and allows flags controlling
-        /// the UI behaviour if the shortcut's target isn't found to be set.
+        /// the UI behavior if the shortcut's target isn't found to be set.
         /// </summary>
         /// <param name="linkFile">The shortcut file (.lnk) to load</param>
         /// <param name="hWnd">The window handle of the application's UI, if any</param>
-        /// <param name="resolveFlags">Flags controlling resolution behaviour</param>
-        public void Open(
-             string linkFile,
-             IntPtr hWnd,
-             EShellLinkResolveFlags resolveFlags
-             )
-        {
-            Open(linkFile,
-                 hWnd,
-                 resolveFlags,
-                 1);
-        }
+        /// <param name="resolveFlags">Flags controlling resolution behavior</param>
+        public void Open(string linkFile, IntPtr hWnd, EShellLinkResolveFlags resolveFlags) => Open(linkFile, hWnd, resolveFlags, 1);
 
         /// <summary>
         /// Loads a shortcut from the specified file, and allows flags controlling
-        /// the UI behaviour if the shortcut's target isn't found to be set.  If
+        /// the UI behavior if the shortcut's target isn't found to be set.  If
         /// no SLR_NO_UI is specified, you can also specify a timeout.
         /// </summary>
         /// <param name="linkFile">The shortcut file (.lnk) to load</param>
         /// <param name="hWnd">The window handle of the application's UI, if any</param>
-        /// <param name="resolveFlags">Flags controlling resolution behaviour</param>
+        /// <param name="resolveFlags">Flags controlling resolution behavior</param>
         /// <param name="timeOut">Timeout if SLR_NO_UI is specified, in ms.</param>
-        public void Open(
-             string linkFile,
-             IntPtr hWnd,
-             EShellLinkResolveFlags resolveFlags,
-             ushort timeOut
-             )
+        public void Open(string linkFile, IntPtr hWnd, EShellLinkResolveFlags resolveFlags, ushort timeOut)
         {
             uint flags;
 
-            if ((resolveFlags & EShellLinkResolveFlags.SLR_NO_UI_WITH_MSG_PUMP)
-                 == EShellLinkResolveFlags.SLR_NO_UI_WITH_MSG_PUMP)
-            {
+            if ((resolveFlags & EShellLinkResolveFlags.SLR_NO_UI_WITH_MSG_PUMP) == EShellLinkResolveFlags.SLR_NO_UI_WITH_MSG_PUMP)
                 flags = (uint)((int)resolveFlags | (timeOut << 16));
-            }
             else
-            {
                 flags = (uint)resolveFlags;
-            }
 
             if (linkA == null)
             {
                 ((IPersistFile)linkW).Load(linkFile, 0); //STGM_DIRECT)
                 linkW.Resolve(hWnd, flags);
-                this.shortcutFile = linkFile;
+                //this.shortcutFile = linkFile;
             }
             else
             {
                 ((IPersistFile)linkA).Load(linkFile, 0); //STGM_DIRECT)
                 linkA.Resolve(hWnd, flags);
-                this.shortcutFile = linkFile;
+                //this.shortcutFile = linkFile;
             }
+
+            this.ShortCutFile = linkFile;
         }
         #endregion
     }

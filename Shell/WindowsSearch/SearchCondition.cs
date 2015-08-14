@@ -21,7 +21,7 @@ namespace BExplorer.Shell
 
         private string canonicalName;
         /// <summary>The name of a property to be compared or NULL for an unspecified property.</summary>
-        public string PropertyCanonicalName { get { return canonicalName; } }
+        public string PropertyCanonicalName => canonicalName;
 
 
         internal SearchCondition(ICondition nativeSearchCondition)
@@ -64,7 +64,7 @@ namespace BExplorer.Shell
             {
                 if (propertyKey.fmtid == emptyPropertyKey.fmtid && propertyKey.pid == emptyPropertyKey.pid)
                 {
-                    int hr = PropertySystemNativeMethods.PSGetPropertyKeyFromName(PropertyCanonicalName, out propertyKey);
+                    PropertySystemNativeMethods.PSGetPropertyKeyFromName(PropertyCanonicalName, out propertyKey);
                 }
 
                 return propertyKey;
@@ -77,13 +77,13 @@ namespace BExplorer.Shell
         /// Search condition operation to be performed on the property/value combination.
         /// See <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionOperation"/> for more details.
         /// </summary>        
-        public SearchConditionOperation ConditionOperation { get { return conditionOperation; } }
+        public SearchConditionOperation ConditionOperation => conditionOperation;
 
         private SearchConditionType conditionType = SearchConditionType.Leaf;
         /// <summary>
         /// Represents the condition type for the given node. 
         /// </summary>        
-        public SearchConditionType ConditionType { get { return conditionType; } }
+        public SearchConditionType ConditionType => conditionType;
 
         /// <summary>
         /// Retrieves an array of the sub-conditions. 
@@ -131,10 +131,8 @@ namespace BExplorer.Shell
         /// <summary>
         /// 
         /// </summary>
-        ~SearchCondition()
-        {
-            Dispose(false);
-        }
+        ~SearchCondition() { Dispose(false); }
+
 
         /// <summary>
         /// Release the native objects.
