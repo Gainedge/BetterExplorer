@@ -541,52 +541,7 @@ namespace BExplorer.Shell
 
         public IExtractIconPWFlags GetShield()
         {
-            IExtractIcon iextract = null;
-            IShellFolder ishellfolder = null;
-            StringBuilder str = null;
-            IntPtr result;
-
-            //TODO: Move the duplate code into a finally statment in the Try Catch
-            /*
-				if (ishellfolder != null)
-					Marshal.ReleaseComObject(ishellfolder);
-				if (iextract != null)
-					Marshal.ReleaseComObject(iextract);
-				str = null;
-			*/
-
-            /*
-			try {
-				var guid = new Guid("000214fa-0000-0000-c000-000000000046");
-				uint res = 0;
-				ishellfolder = this.Parent.GetIShellFolder();
-				IntPtr[] pidls = new IntPtr[1];
-				pidls[0] = Shell32.ILFindLastID(this.Pidl);
-				ishellfolder.GetUIObjectOf(IntPtr.Zero,
-				1, pidls,
-				ref guid, res, out result);
-				iextract = (IExtractIcon)Marshal.GetTypedObjectForIUnknown(result, typeof(IExtractIcon));
-				str = new StringBuilder(512);
-				int index = -1;
-				IExtractIconPWFlags flags;
-				iextract.GetIconLocation(IExtractIconUFlags.GIL_CHECKSHIELD, str, 512, out index, out flags);
-				pidls = null;
-				if (ishellfolder != null)
-					Marshal.ReleaseComObject(ishellfolder);
-				if (iextract != null)
-					Marshal.ReleaseComObject(iextract);
-				str = null;
-				return flags;
-			}
-			catch (Exception) {
-				if (ishellfolder != null)
-					Marshal.ReleaseComObject(ishellfolder);
-				if (iextract != null)
-					Marshal.ReleaseComObject(iextract);
-				str = null;
-				return 0;
-			}
-			*/
+            IExtractIcon iextract = null; IShellFolder ishellfolder = null; StringBuilder str = null; IntPtr result;
 
             try
             {
@@ -686,10 +641,21 @@ namespace BExplorer.Shell
             return iShellFolder;
         }
 
-        [Obsolete("Prameter type is never used")]
+        /*
+        [Obsolete("Parameter type is never used")]
         public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type)
         {
-            //TODO: Remove the parameter type
+            //TODO: Remove Parameter Type
+            var pvar = new PropVariant();
+            var isi2 = (IShellItem2)ComInterface;
+            isi2.GetProperty(ref pkey, pvar);
+            return pvar;
+        }
+        */
+
+        public PropVariant GetPropertyValue(PROPERTYKEY pkey)
+        {
+            //TODO: Remove Parameter Type
             var pvar = new PropVariant();
             var isi2 = (IShellItem2)ComInterface;
             isi2.GetProperty(ref pkey, pvar);
@@ -1247,7 +1213,7 @@ namespace BExplorer.Shell
             if (path.StartsWith("%"))
                 return new ShellItem(Environment.ExpandEnvironmentVariables(path));
             else if (path.StartsWith("::") && !path.StartsWith(@"\\"))
-                return new ShellItem(String.Format("shell:{0}", path));
+                return new ShellItem($"shell:{path}");
             //else 
             //	if (!path.EndsWith(Path.DirectorySeparatorChar.ToString()))
             //	return new ShellItem(String.Format("{0}{1}", path, Path.DirectorySeparatorChar));
@@ -1284,15 +1250,11 @@ namespace BExplorer.Shell
             Uri newUri;
 
             if (path.StartsWith("::") && !path.StartsWith(@"\\"))
-                //Uri.TryCreate(String.Format("shell:{0}", path), UriKind.Absolute, out newUri);
                 Uri.TryCreate($"shell:{path}", UriKind.Absolute, out newUri);
             else
                 Uri.TryCreate(path, UriKind.Absolute, out newUri);
 
-            if (newUri == null)
-                return null;
-            else
-                return new ShellItem(newUri);
+            return newUri == null ? null : new ShellItem(newUri);
         }
 
     }

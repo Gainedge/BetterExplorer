@@ -491,7 +491,7 @@ namespace BExplorer.Shell.Interop
             return (notifyid);
         }
 
-
+        /*
         public ulong RegisterChangeNotify(IntPtr hWnd, IListItemEx item, bool Recursively)
         {
             IntPtr handle = IntPtr.Zero;
@@ -510,6 +510,7 @@ namespace BExplorer.Shell.Interop
                 changenetrys);
             return (notifyid);
         }
+        */
 
         /// <summary>
         /// Unregister the form

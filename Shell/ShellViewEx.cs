@@ -482,7 +482,6 @@ public bool Cancel { get; private set; }
                     User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
                     iStart = lvi.iItem;
 
-                    //TODO: Find out if we even need this IF Then
                     if (lvi.iItem != -1) selItems.Add(lvi.iItem);
                 }
 
@@ -1686,16 +1685,15 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                                         var hash = currentItem.GetHashCode();
                                         Collumns currentCollumn = this.Collumns[nmlv.item.iSubItem];
 
-
-                                        //TODO: Do we really need FirstOrDefault(...) and not just First(...) How do I make it null anyways?
                                         var valueCached = SubItemValues.ToArray().FirstOrDefault(s => s.Item1 == hash && s.Item2.fmtid == currentCollumn.pkey.fmtid && s.Item2.pid == currentCollumn.pkey.pid);
-                                        if (valueCached != null && valueCached.Item3 != null)
+                                        //if (valueCached != null && valueCached.Item3 != null)
+                                        if (valueCached?.Item3 != null)
                                         {
                                             String val = String.Empty;
                                             if (currentCollumn.CollumnType == typeof(DateTime))
                                                 val = ((DateTime)valueCached.Item3).ToString(Thread.CurrentThread.CurrentCulture);
                                             else if (currentCollumn.CollumnType == typeof(long))
-                                                val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(valueCached.Item3.ToString()) / 1024).ToString("# ### ### ##0"))); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
+                                                val = $"{(Math.Ceiling(Convert.ToDouble(valueCached.Item3.ToString()) / 1024).ToString("# ### ### ##0"))} KB";
                                             else if (currentCollumn.CollumnType == typeof(PerceivedType))
                                                 val = ((PerceivedType)valueCached.Item3).ToString();
                                             else if (currentCollumn.CollumnType == typeof(FileAttributes))
@@ -1730,7 +1728,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                                                     if (currentCollumn.CollumnType == typeof(DateTime))
                                                         val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
                                                     else if (currentCollumn.CollumnType == typeof(long))
-                                                        val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0")));
+                                                        val = $"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0")} KB";
                                                     else if (currentCollumn.CollumnType == typeof(PerceivedType))
                                                         val = ((PerceivedType)pvar.Value).ToString();
                                                     else if (currentCollumn.CollumnType == typeof(FileAttributes))
@@ -1843,8 +1841,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
 
                         case WNM.LVN_ITEMACTIVATE:
                             #region Case
-                            if (this.ToolTip != null && this.ToolTip.IsVisible)
-                                this.ToolTip.HideTooltip();
+                            if (this.ToolTip != null && this.ToolTip.IsVisible) this.ToolTip.HideTooltip();
                             if (ItemForRealName_IsAny && this.IsRenameInProgress)
                             {
                                 this.EndLabelEdit();
@@ -1906,9 +1903,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                                     if (nlv.iItem != -1)
                                     {
                                         var itemBounds = new User32.RECT();
-                                        var lvi = new LVITEMINDEX();
-                                        lvi.iItem = nlv.iItem;
-                                        lvi.iGroup = this.GetGroupIndex(nlv.iItem);
+                                        var lvi = new LVITEMINDEX() { iItem = nlv.iItem, iGroup = this.GetGroupIndex(nlv.iItem) };
                                         User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
                                         RedrawWindow(itemBounds);
                                     }
@@ -1917,14 +1912,11 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                                         RedrawWindow();
                                     }
                                 }
+
                                 if (nlv.iItem != LastItemForRename)
-                                {
                                     LastItemForRename = -1;
-                                }
                                 if (!selectionTimer.Enabled)
-                                {
                                     selectionTimer.Start();
-                                }
                             }
 
                             break;
@@ -2840,10 +2832,6 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                     this.LastSortOrder = Order;
                 }
 
-                /************************************************************
-                //TODO: Try to upgrade this to use built in LINQ Syntax
-                   ************************************************************/
-
                 if (column.CollumnType != typeof(String))
                 {
                     if (Order == SortOrder.Ascending)
@@ -2859,8 +2847,6 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                 {
                     if (Order == SortOrder.Ascending)
                     {
-                        //TODO: Try to upgrade this to use built in LINQ Syntax
-                        //this.Items = from x in itemsArray where this.ShowHidden ? true : !x.IsHidden orderby x.IsFolder,  x.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default)
                         this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
                     }
                     else
@@ -3368,7 +3354,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                 {
                     var testgrn = new ListViewGroupEx();
                     testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse(Char1) && w.DisplayName.ToUpperInvariant().First() <= Char.Parse(Char2)).ToArray();
-                    testgrn.Header = String.Format(Char1 + " - " + Char2 + "({0})", testgrn.Items.Count());
+                    testgrn.Header = Char1 + " - " + Char2 + $"({ testgrn.Items.Count()})";
                     testgrn.Index = reversed ? i-- : i++;
                     this.Groups.Add(testgrn);
                 };
@@ -3860,7 +3846,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
             {
                 do
                 {
-                    endname = String.Format(name + "({0})", ++suffix);
+                    endname = name + $"({++suffix})";
                     try
                     {
                         lib = ShellLibrary.Load(endname, true);
@@ -3937,7 +3923,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                 DriveLetter = this.CurrentFolder.ParsingName;
             }
 
-            Process.Start(Path.Combine(Environment.SystemDirectory, "dfrgui.exe"), String.Format("/u /v {0}", DriveLetter.Replace("\\", "")));
+            Process.Start(Path.Combine(Environment.SystemDirectory, "dfrgui.exe"), $"/u /v {DriveLetter.Replace("\\", "")}");
         }
 
         public void DeSelectAllItems()
@@ -4214,13 +4200,10 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                         else
                         {
                             if (!sho.IsThumbnailLoaded || sho.IsNeedRefreshing)
-                            {
                                 ThumbnailsForCacheLoad.Enqueue(index);
-                                //this.RetrieveThumbnailByIndex(index);
-                            }
+
                             if (sho.IsIconLoaded || (((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS || (!this._IsSearchNavigating && sho.Parent != null && sho.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName, StringComparison.InvariantCultureIgnoreCase)) || (!this._IsSearchNavigating && sho.Parent != null && sho.Parent.ParsingName.Equals(KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase)))))
                             {
-
                                 hThumbnail = sho.GetHBitmap(IconSize, false);
                                 if (hThumbnail != IntPtr.Zero)
                                 {
@@ -4231,40 +4214,14 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                                 {
                                     this.DrawDefaultIcons(hdc, sho, iconBounds);
                                     sho.IsIconLoaded = false;
-
-                                    //TODO: Verify that this change is correct
                                     waitingThumbnails.Enqueue(index);
-                                    /*
-                                    if (this._IsSearchNavigating || sho.IsNetworkPath)
-                                    {
-                                        waitingThumbnails.Enqueue(index);
-                                    }
-                                    else
-                                    {
-                                        //this.RetrieveIconsByIndex(index);
-                                        waitingThumbnails.Enqueue(index);
-                                    }
-                                    */
                                 }
                             }
                             else
                             {
                                 this.DrawDefaultIcons(hdc, sho, iconBounds);
                                 sho.IsIconLoaded = false;
-
-                                //TODO: Verify that this change is correct
                                 waitingThumbnails.Enqueue(index);
-                                /*
-                                if (this._IsSearchNavigating || sho.IsNetworkPath)
-                                {
-                                    waitingThumbnails.Enqueue(index);
-                                }
-                                else
-                                {
-                                    //this.RetrieveIconsByIndex(index);
-                                    waitingThumbnails.Enqueue(index);
-                                }
-                                */
                             }
                         }
                         using (var g = Graphics.FromHdc(hdc))
@@ -4659,7 +4616,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                                 { "LastSortedColumn", LastSortedColumnId.ToString() },
                                 { "Columns", Columns_XML.ToString()},
                                 { "IconSize", this.IconSize.ToString() }
-                        };
+            };
 
             var command2 = new SQLite.SQLiteCommand(sql, m_dbConnection);
             foreach (var item in Values)
@@ -4730,42 +4687,11 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
 
         #endregion
 
-        #region IDropSource Members
-
-        public new HResult QueryContinueDrag(bool fEscapePressed, int grfKeyState)
-        {
-            //TODO: Deal with this dead code!
-            if (grfKeyState == 0)
-            {
-                return HResult.DRAGDROP_S_DROP;
-            }
-            else
-            {
-                return HResult.S_OK;
-            }
-
-            if (fEscapePressed)
-                return HResult.DRAGDROP_S_CANCEL;
-            return HResult.DRAGDROP_S_DROP;
-        }
-
         /*
-        public new HResult GiveFeedback(int dwEffect)
-        {
-            /TODO: Deal with this just code!
-
-            //dwEffect = (int)F.DragDropEffects.All;
-            System.Windows.Forms.DataObject doo = new F.DataObject(dataObject);
-            var obj = doo.GetData("DropDescription");
-            if (obj != null)
-            {
-                var uu = 1;
-            }
-            return HResult.S_OK;
-        }
-        */
+        #region IDropSource Members
+        //public new HResult QueryContinueDrag(bool fEscapePressed, int grfKeyState) => grfKeyState == 0 ? HResult.DRAGDROP_S_DROP : HResult.S_OK;
         #endregion
-
+        */
 
         private void Column_OnClick(int iItem)
         {
@@ -4774,15 +4700,10 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
             var rect = new BExplorer.Shell.Interop.User32.RECT();
 
             if (User32.SendMessage(headerhandle, BExplorer.Shell.Interop.MSG.HDM_GETITEMDROPDOWNRECT, iItem, ref rect) == 0)
-            {
                 throw new Win32Exception();
-            }
 
             var pt = this.PointToScreen(new DPoint(rect.Left, rect.Bottom));
-            if (this.OnListViewColumnDropDownClicked != null)
-            {
-                this.OnListViewColumnDropDownClicked.Invoke(this.Collumns[iItem], new ListViewColumnDropDownArgs(iItem, pt));
-            }
+            this.OnListViewColumnDropDownClicked?.Invoke(this.Collumns[iItem], new ListViewColumnDropDownArgs(iItem, pt));
         }
     }
 }

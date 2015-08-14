@@ -1015,8 +1015,8 @@ namespace BetterExplorer
 
         private void CloseCDTray(char DriveLetter)
         {
-            mciSendString(String.Format("open {0}: type CDAudio alias drive{1}", DriveLetter, DriveLetter), null, 0, IntPtr.Zero);
-            mciSendString(String.Format("set drive{0} door closed", DriveLetter), null, 0, IntPtr.Zero);
+            mciSendString($"open {DriveLetter}: type CDAudio alias drive{DriveLetter}", null, 0, IntPtr.Zero);
+            mciSendString($"set drive{DriveLetter} door closed", null, 0, IntPtr.Zero);
         }
 
         private void btnOpenTray_Click(object sender, RoutedEventArgs e)
@@ -1042,20 +1042,19 @@ namespace BetterExplorer
                     if (GetDriveLetterFromDrivePath(item.LogicalDrive) == DriveLetter)
                     {
                         var veto = item.Eject(false);
-                        if (veto != BetterExplorer.UsbEject.Native.PNP_VETO_TYPE.TypeUnknown)
+                        if (veto != Native.PNP_VETO_TYPE.TypeUnknown)
                         {
-                            if (veto == BetterExplorer.UsbEject.Native.PNP_VETO_TYPE.Ok)
+                            if (veto == Native.PNP_VETO_TYPE.Ok)
                             {
                                 Dispatcher.BeginInvoke(WIN.Threading.DispatcherPriority.Normal,
                                     (Action)(() =>
                                     {
-                                        this.beNotifyIcon.ShowBalloonTip("Information", String.Format("It is safe to remove {0}", item.LogicalDrive), Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
+                                        this.beNotifyIcon.ShowBalloonTip("Information", $"It is safe to remove {item.LogicalDrive}", Hardcodet.Wpf.TaskbarNotification.BalloonIcon.Info);
                                         var tabsForRemove = tcMain.Items.OfType<Wpf.Controls.TabItem>()
                                             .Where(w =>
                                             {
                                                 var root = Path.GetPathRoot(w.ShellObject.ParsingName.ToShellParsingName());
-                                                return root != null && (w.ShellObject.IsFileSystem &&
-                                                    root.ToLowerInvariant() == String.Format("{0}:\\", DriveLetter).ToLowerInvariant());
+                                                return root != null && (w.ShellObject.IsFileSystem && root.ToLowerInvariant() == $"{DriveLetter}:\\".ToLowerInvariant());
                                             }).ToArray();
                                         foreach (Wpf.Controls.TabItem tab in tabsForRemove)
                                         {
@@ -1154,7 +1153,7 @@ namespace BetterExplorer
             mi.ShowDialog();
             if (mi.yep)
             {
-                string DriveLetter = String.Format("{0}:", mi.chkPreselect.IsChecked == true ? ImDiskAPI.FindFreeDriveLetter() : (char)mi.cbbLetter.SelectedItem);
+                string DriveLetter = (mi.chkPreselect.IsChecked == true ? ImDiskAPI.FindFreeDriveLetter() : (char)mi.cbbLetter.SelectedItem) + ":";
                 long size = mi.chkPresized.IsChecked == true ? 0 : Convert.ToInt64(mi.txtSize.Text);
 
                 ImDiskFlags imflags;
@@ -1211,7 +1210,7 @@ namespace BetterExplorer
             {
                 //TO_DO: add the code for mounting images with ImDisk. look the example below!
 
-                var freeDriveLetter = String.Format("{0}:", ImDiskAPI.FindFreeDriveLetter());
+                var freeDriveLetter = $"{ImDiskAPI.FindFreeDriveLetter()}:";
                 ImDiskAPI.CreateDevice(0, 0, 0, 0, 0, ImDiskFlags.Auto, ShellListView.GetFirstSelectedItem().ParsingName, false, freeDriveLetter, IntPtr.Zero);
             }
             catch (System.DllNotFoundException)
@@ -2069,7 +2068,7 @@ namespace BetterExplorer
                 }
                 catch (Exception)
                 {
-                    MessageBoxResult wtd = MessageBox.Show(String.Format("The directory {0} already exists. Would you like for BetterExplorer to extract there instead?", OutputLoc), "Folder Exists", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
+                    MessageBoxResult wtd = MessageBox.Show($"The directory {OutputLoc} already exists. Would you like for BetterExplorer to extract there instead?", "Folder Exists", MessageBoxButton.YesNo, MessageBoxImage.Exclamation);
                     switch (wtd)
                     {
                         case MessageBoxResult.Cancel:
@@ -2108,7 +2107,7 @@ namespace BetterExplorer
 
             var archiveProcressScreen = new ArchiveProcressScreen(selectedItems, output, ArchiveAction.Extract, "");
             archiveProcressScreen.ExtractionCompleted += new ArchiveProcressScreen.ExtractionCompleteEventHandler(ExtractionHasCompleted);
-            AddToLog(String.Format("Archive Extracted to {0} from source {1}", output, archive));
+            AddToLog($"Archive Extracted to {output} from source {archive}");
             archiveProcressScreen.Show();
         }
 
@@ -2140,23 +2139,13 @@ namespace BetterExplorer
         {
             var selectedItems = ShellListView.SelectedItems.Select(item => item.ParsingName).ToList();
 
-            /*
-	  var selectedItems = new List<string>();
-	  foreach (ShellItem item in ShellListView.SelectedItems) {
-		selectedItems.Add(item.ParsingName);
-	  }
-	  */
             try
             {
                 var CAI = new CreateArchive(selectedItems, false, ShellListView.GetFirstSelectedItem().ParsingName);
                 CAI.Show(this.GetWin32Window());
             }
-            catch (Exception exception)
+            catch (Exception)
             {
-                //var dialog = new TaskDialog();
-                //dialog.StandardButtons = TaskDialogStandardButtons.Ok;
-                //dialog.Text = exception.Message;
-                //dialog.Show();
             }
         }
 
@@ -2177,7 +2166,7 @@ namespace BetterExplorer
             {
                 Separator = @"\";
             }
-            AddToLog(String.Format("Extracted Archive to {0}{1}{2} from source {3}", DirectoryName, Separator, ArchName, FileName));
+            AddToLog($"Extracted Archive to {DirectoryName}{Separator}{ArchName} from source {FileName}");
             extractor.BeginExtractArchive(DirectoryName + Separator + ArchName);
         }
 
@@ -2205,16 +2194,9 @@ namespace BetterExplorer
             //throw new NotImplementedException();
         }
 
-        private void btnExtract_Click(object sender, RoutedEventArgs e)
-        {
-            miExtractHere_Click(sender, e);
-        }
+        private void btnExtract_Click(object sender, RoutedEventArgs e) => miExtractHere_Click(sender, e);
 
-        private void btnCheckArchive_Click(object sender, RoutedEventArgs e)
-        {
-            Thread trIntegrityCheck = new Thread(new ThreadStart(DoCheck));
-            trIntegrityCheck.Start();
-        }
+        private void btnCheckArchive_Click(object sender, RoutedEventArgs e) => new Thread(new ThreadStart(DoCheck)).Start();
 
 
         private void DoCheck()
@@ -3648,7 +3630,7 @@ namespace BetterExplorer
                             btnRecycleBin.Icon = @"..\Images\RecycleBinFull16.png";
                             btnRecycleBin.UpdateLayout();
                             lblRBItems.Visibility = Visibility.Visible;
-                            lblRBItems.Text = String.Format("{0} Items", count);
+                            lblRBItems.Text = $"{count} Items";
                             lblRBSize.Text = ShlWapi.StrFormatByteSize(size);
                             lblRBSize.Visibility = Visibility.Visible;
 
@@ -4210,7 +4192,7 @@ namespace BetterExplorer
                 WIN.Shell.JumpList.AddToRecentCategory(new JumpTask()
                 {
                     ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
-                    Arguments = String.Format("\"{0}\"", ShellListView.CurrentFolder.ParsingName),
+                    Arguments = $"\"{ShellListView.CurrentFolder.ParsingName}\"",
                     Title = ShellListView.CurrentFolder.DisplayName,
                     IconResourcePath = sfi.szDisplayName,
                     IconResourceIndex = sfi.iIcon

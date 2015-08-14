@@ -290,10 +290,12 @@ namespace BExplorer.Shell.Interop
             return false;
         }
 
+        /*
         private Bitmap GetBitmap(System.Windows.Size iconOnlySize, System.Windows.Size thumbnailSize)
         {
             return GetBitmap(FormatOption == ShellThumbnailFormatOption.IconOnly ? iconOnlySize : thumbnailSize);
         }
+        */
 
         private Bitmap GetBitmap(System.Windows.Size size)
         {
@@ -408,6 +410,7 @@ namespace BExplorer.Shell.Interop
             return res;
         }
 
+        /*
         public IntPtr GetHBitmap(int iconSize, bool isThumbnail = false, bool isForce = false)
         {
             if (isThumbnail)
@@ -423,6 +426,7 @@ namespace BExplorer.Shell.Interop
 
             return GetHBitmap(new System.Windows.Size(iconSize, iconSize));
         }
+        */
 
         public Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap)
         {

@@ -16,7 +16,9 @@ namespace BExplorer.Shell.Interop
     {
         #region ComInterop for IShellLink
 
+        /*
         #region IPersist Interface
+        
         [ComImportAttribute()]
         [GuidAttribute("0000010C-0000-0000-C000-000000000046")]
         [InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
@@ -26,7 +28,9 @@ namespace BExplorer.Shell.Interop
             //[helpstring("Returns the class identifier for the componentobject")]
             void GetClassID(out Guid pClassID);
         }
+        
         #endregion
+        */
 
         #region IPersistFile Interface
         [ComImportAttribute()]
@@ -463,7 +467,8 @@ namespace BExplorer.Shell.Interop
         #endregion
 
         #region Implementation
-        public string ShortCutFile { get; set; }
+
+        //public string ShortCutFile { get; set; }
 
         /// <summary>
         /// Gets a System.Drawing.Icon containing the icon for this
@@ -473,6 +478,7 @@ namespace BExplorer.Shell.Interop
 
         public Icon SmallIcon => getIcon(false);
 
+        /*
         /// <summary>
         /// Gets/sets the HotKey to start the shortcut (if any)
         /// </summary>
@@ -496,6 +502,7 @@ namespace BExplorer.Shell.Interop
                     linkA.SetHotkey((short)value);
             }
         }
+        */
 
         private Icon getIcon(bool large)
         {
@@ -542,6 +549,7 @@ namespace BExplorer.Shell.Interop
             }
         }
 
+        /*
         /// <summary>
         /// Gets the path to the file containing the icon for this shortcut.
         /// </summary>
@@ -571,57 +579,45 @@ namespace BExplorer.Shell.Interop
                 {
                     linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
                     linkA.SetIconLocation(value, iconIndex);
-                }
-
-                /*
-				if (linkA == null)
-					linkW.SetIconLocation(value, iconIndex);
-				else
-					linkA.SetIconLocation(value, iconIndex);
-				*/
+                }       
             }
         }
+        */
 
-        /// <summary>
-        /// Gets the index of this icon within the icon path's resources
-        /// </summary>
-        public int IconIndex
-        {
-            get
-            {
-                var iconPath = new StringBuilder(260, 260);
-                int iconIndex = 0;
-                if (linkA == null)
-                    linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
-                else
-                    linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
+        /*
+       /// <summary>
+       /// Gets the index of this icon within the icon path's resources
+       /// </summary>
+       public int IconIndex
+       {
+           get
+           {
+               var iconPath = new StringBuilder(260, 260);
+               int iconIndex = 0;
+               if (linkA == null)
+                   linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
+               else
+                   linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
 
-                return iconIndex;
-            }
-            set
-            {
-                var iconPath = new StringBuilder(260, 260);
-                int iconIndex = 0;
-                if (linkA == null)
-                {
-                    linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
-                    linkW.SetIconLocation(iconPath.ToString(), value);
-                }
-                else
-                {
-                    linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
-                    linkA.SetIconLocation(iconPath.ToString(), value);
-                }
-                /*
-				if (linkA == null) {
-					linkW.SetIconLocation(iconPath.ToString(), value);
-				}
-				else {
-					linkA.SetIconLocation(iconPath.ToString(), value);
-				}
-				*/
-            }
-        }
+               return iconIndex;
+           }
+           set
+           {
+               var iconPath = new StringBuilder(260, 260);
+               int iconIndex = 0;
+               if (linkA == null)
+               {
+                   linkW.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
+                   linkW.SetIconLocation(iconPath.ToString(), value);
+               }
+               else
+               {
+                   linkA.GetIconLocation(iconPath, iconPath.Capacity, out iconIndex);
+                   linkA.SetIconLocation(iconPath.ToString(), value);
+               }      
+           }
+       }
+       */
 
         /// <summary>
         /// Gets/sets the fully qualified path to the link's target
@@ -711,6 +707,7 @@ namespace BExplorer.Shell.Interop
             }
         }
 
+        /*
         /// <summary>
         /// Gets/sets any command line arguments associated with the link
         /// </summary>
@@ -734,6 +731,7 @@ namespace BExplorer.Shell.Interop
                     linkA.SetArguments(value);
             }
         }
+        */
 
         /// <summary>
         /// Gets/sets the initial display mode when the shortcut is
@@ -760,10 +758,12 @@ namespace BExplorer.Shell.Interop
             }
         }
 
+        /*
         /// <summary>
         /// Saves the shortcut to ShortCutFile.
         /// </summary>
         public void Save() => Save(ShortCutFile);
+        */
 
         /// <summary>
         /// Saves the shortcut to the specified file
@@ -777,7 +777,7 @@ namespace BExplorer.Shell.Interop
             else
                 ((IPersistFile)linkA).Save(linkFile, true);
 
-            ShortCutFile = linkFile;
+            //ShortCutFile = linkFile;
         }
 
         /// <summary>
@@ -817,16 +817,14 @@ namespace BExplorer.Shell.Interop
             {
                 ((IPersistFile)linkW).Load(linkFile, 0); //STGM_DIRECT)
                 linkW.Resolve(hWnd, flags);
-                //this.shortcutFile = linkFile;
             }
             else
             {
                 ((IPersistFile)linkA).Load(linkFile, 0); //STGM_DIRECT)
                 linkA.Resolve(hWnd, flags);
-                //this.shortcutFile = linkFile;
             }
 
-            this.ShortCutFile = linkFile;
+            // this.ShortCutFile = linkFile;
         }
         #endregion
     }

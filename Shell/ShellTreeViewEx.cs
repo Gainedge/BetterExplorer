@@ -565,7 +565,8 @@ namespace BExplorer.Shell
                 if (!visible)
                     return;
 
-                if (node != null && node.Nodes.Count > 0)
+                //if (node != null && node.Nodes.Count > 0)
+                if (node?.Nodes.Count > 0)
                 {
                     var childItem = node.Nodes[0];
                     if (childItem != null)
@@ -573,16 +574,13 @@ namespace BExplorer.Shell
                         var nodeHandle = childItem.Handle;
 
                         //TODO: Try to remove this Try Catch! It's slowing this down!!
-                        //TODO: Have the try catch only around the error causing code
                         try
                         {
-                            var sho = (node.Tag as IListItemEx);// FileSystemListItem.ToFileSystemItem(IntPtr.Zero, pidl);
+                            var sho = (node.Tag as IListItemEx);
                             if (!sho.HasSubFolders)
-                            {
-                                User32.SendMessage(treeHandle, BExplorer.Shell.Interop.MSG.TVM_DELETEITEM, 0, nodeHandle);
-                            }
+                                User32.SendMessage(treeHandle, MSG.TVM_DELETEITEM, 0, nodeHandle);
+
                             this.CheckedFroChilds.Add(handle);
-                            //sho.Dispose();
                         }
                         catch (Exception)
                         {
@@ -631,16 +629,14 @@ namespace BExplorer.Shell
                         var nodeHandle = childItem.Handle;
 
                         //TODO: Try to remove this Try Catch! It's slowing this down!!
-                        //TODO: Have the try catch only around the error causing code
                         try
                         {
-                            var sho = (node.Tag as IListItemEx);// FileSystemListItem.ToFileSystemItem(IntPtr.Zero, pidl);
+                            var sho = (node.Tag as IListItemEx);
                             if (!sho.HasSubFolders)
                             {
-                                User32.SendMessage(treeHandle, BExplorer.Shell.Interop.MSG.TVM_DELETEITEM, 0, nodeHandle);
+                                User32.SendMessage(treeHandle, MSG.TVM_DELETEITEM, 0, nodeHandle);
                             }
                             this.CheckedFroChilds.Add(handle);
-                            //sho.Dispose();
                         }
                         catch (Exception)
                         {
@@ -649,14 +645,6 @@ namespace BExplorer.Shell
                 }
             }
         }
-
-        /*
-        public void RenameNode(TreeNode node) {
-          if (node != null && !node.IsEditing) {
-            node.BeginEdit();
-          }
-        }
-        */
 
         public void RenameSelectedNode()
         {
