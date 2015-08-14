@@ -319,7 +319,7 @@ namespace BExplorer.Shell
         /// <summary>
         /// Get a the known folder FOLDERID_Libraries
         /// </summary>
-        public static IKnownFolder LibrariesKnownFolder { get { return KnownFolderHelper.FromKnownFolderId(new Guid(InterfaceGuids.Libraries)); } }
+        public static IKnownFolder LibrariesKnownFolder => KnownFolderHelper.FromKnownFolderId(new Guid(InterfaceGuids.Libraries));
 
         private static ShellLibrary Load_Helper(IShellItem nativeShellItem, string libraryName, bool isReadOnly)
         {

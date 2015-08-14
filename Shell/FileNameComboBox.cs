@@ -37,18 +37,8 @@ namespace BExplorer.Shell
     /// </remarks>
     public class FileNameComboBox : ComboBox
     {
-
-
-        ShellView m_ShellView;
         bool m_TryAutoComplete;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FileNameComboBox"/>
-        /// class.
-        /// </summary>
-        [Category("Behaviour")]
-        [DefaultValue(null)]
-        public FileFilterComboBox FilterControl { get; set; }
 
         /// <summary>
         /// Gets/sets the <see cref="ShellView"/> control that the 
@@ -57,16 +47,15 @@ namespace BExplorer.Shell
         /// </summary>
         [Category("Behaviour")]
         [DefaultValue(null)]
-        public ShellView ShellView
-        {
-            get { return m_ShellView; }
-            set
-            {
-                DisconnectEventHandlers();
-                m_ShellView = value;
-                ConnectEventHandlers();
-            }
-        }
+        public ShellView ShellView { get; set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileNameComboBox"/>
+        /// class.
+        /// </summary>
+        [Category("Behaviour")]
+        [DefaultValue(null)]
+        public FileFilterComboBox FilterControl { get; set; }
 
         /// <summary>
         /// Occurs when a file name is entered into the 
@@ -86,17 +75,8 @@ namespace BExplorer.Shell
         /// <returns>
         /// true if the specified key is a regular input key; otherwise, false. 
         /// </returns>
-        protected override bool IsInputKey(Keys keyData)
-        {
-            if (keyData == Keys.Enter)
-            {
-                return true;
-            }
-            else
-            {
-                return base.IsInputKey(keyData);
-            }
-        }
+        protected override bool IsInputKey(Keys keyData) => keyData == Keys.Enter ? true : base.IsInputKey(keyData);
+
 
         /// <summary>
         /// Raises the <see cref="Control.KeyDown"/> event.
@@ -152,21 +132,14 @@ namespace BExplorer.Shell
             string[] matches;
             bool rooted = true;
 
-            if ((Text == string.Empty) ||
-                (Text.IndexOfAny(new char[] { '?', '*' }) != -1))
-            {
-                return;
-            }
+            if (Text == string.Empty || Text.IndexOfAny(new char[] { '?', '*' }) != -1) return;
 
             path = Path.GetDirectoryName(Text);
             pattern = Path.GetFileName(Text);
 
-            if (((path == null) || (path == string.Empty)) &&
-                ((m_ShellView != null) &&
-                m_ShellView.CurrentFolder.IsFileSystem &&
-                (m_ShellView.CurrentFolder != ShellItem.Desktop)))
+            if (path == null || path == string.Empty && ShellView != null && ShellView.CurrentFolder.IsFileSystem && ShellView.CurrentFolder != ShellItem.Desktop)
             {
-                path = m_ShellView.CurrentFolder.FileSystemPath;
+                path = ShellView.CurrentFolder.FileSystemPath;
                 pattern = Text;
                 rooted = false;
             }
@@ -190,22 +163,6 @@ namespace BExplorer.Shell
             }
         }
 
-        void ConnectEventHandlers()
-        {
-            if (m_ShellView != null)
-            {
-                m_ShellView.SelectionChanged += new EventHandler(m_ShellView_SelectionChanged);
-            }
-        }
-
-        void DisconnectEventHandlers()
-        {
-            if (m_ShellView != null)
-            {
-                m_ShellView.SelectionChanged -= new EventHandler(m_ShellView_SelectionChanged);
-            }
-        }
-
         bool Open(string path)
         {
             //TODO: Someone clean this!
@@ -218,7 +175,7 @@ namespace BExplorer.Shell
             }
             else if (Directory.Exists(path))
             {
-                if (m_ShellView != null)
+                if (ShellView != null)
                 {
                     Text = string.Empty;
                     result = true;
@@ -230,37 +187,9 @@ namespace BExplorer.Shell
                 Text = Path.GetFileName(path);
             }
 
-            if (!Path.IsPathRooted(path) && m_ShellView.CurrentFolder.IsFileSystem)
-                result = Open(Path.Combine(m_ShellView.CurrentFolder.FileSystemPath, path));
+            if (!Path.IsPathRooted(path) && ShellView.CurrentFolder.IsFileSystem) result = Open(Path.Combine(ShellView.CurrentFolder.FileSystemPath, path));
 
             return result;
         }
-
-        /*
-        void OpenParentOf(string path)
-        {
-            string parent = Path.GetDirectoryName(path);
-
-            if ((parent != null) && (parent.Length > 0) && Directory.Exists(parent))
-            {
-                if (m_ShellView != null)
-                {
-                    //m_ShellView.Navigate(parent);
-                }
-            }
-        }
-        */
-
-        [Obsolete("Has no code", true)]
-        void m_ShellView_SelectionChanged(object sender, EventArgs e)
-        {
-            //if ((m_ShellView.SelectedItems.Length > 0) &&
-            //    (!m_ShellView.SelectedItems[0].IsFolder) &&
-            //    (m_ShellView.SelectedItems[0].IsFileSystem))
-            //{
-            //    Text = Path.GetFileName(m_ShellView.SelectedItems[0].FileSystemPath);
-            //}
-        }
-
     }
 }
