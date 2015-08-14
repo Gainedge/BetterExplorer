@@ -2653,26 +2653,10 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
 
         public void DoCopy(IListItemEx destination) => Do_Copy_OR_Move_Helper(true, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
         public void DoCopy(System.Windows.IDataObject dataObject, IListItemEx destination) => Do_Copy_OR_Move_Helper(true, destination, dataObject.ToShellItemArray().ToArray());
-
-        public void DoCopy(F.IDataObject dataObject, IListItemEx destination)
-        {
-            Do_Copy_OR_Move_Helper_2(true, destination, dataObject);
-        }
-
-        public void DoMove(System.Windows.IDataObject dataObject, IListItemEx destination)
-        {
-            Do_Copy_OR_Move_Helper(false, destination, dataObject.ToShellItemArray().ToArray());
-        }
-
-        public void DoMove(IListItemEx destination)
-        {
-            Do_Copy_OR_Move_Helper(false, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
-        }
-
-        public void DoMove(F.IDataObject dataObject, IListItemEx destination)
-        {
-            Do_Copy_OR_Move_Helper_2(false, destination, dataObject);
-        }
+        public void DoCopy(F.IDataObject dataObject, IListItemEx destination) => Do_Copy_OR_Move_Helper_2(true, destination, dataObject);
+        public void DoMove(System.Windows.IDataObject dataObject, IListItemEx destination) => Do_Copy_OR_Move_Helper(false, destination, dataObject.ToShellItemArray().ToArray());
+        public void DoMove(IListItemEx destination) => Do_Copy_OR_Move_Helper(false, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
+        public void DoMove(F.IDataObject dataObject, IListItemEx destination) => Do_Copy_OR_Move_Helper_2(false, destination, dataObject);
 
         public void DeleteSelectedFiles(Boolean isRecycling)
         {
@@ -2728,19 +2712,6 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
             }
         }
 
-        /*
-/// <summary> Runs an application as an administrator. </summary>
-/// <param name="ExePath"> The path of the application. </param>
-public static void RunExeAsAdmin(string ExePath) {
-	Process.Start(new ProcessStartInfo {
-		FileName = ExePath,
-		Verb = "runas",
-		UseShellExecute = true,
-		Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
-	});
-}
-*/
-
         public void SelectAll()
         {
             var item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
@@ -2782,10 +2753,7 @@ public static void RunExeAsAdmin(string ExePath) {
             }
 
             User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
-            if (ensureVisisble)
-            {
-                var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, index, 0);
-            }
+            if (ensureVisisble) User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, index, 0);
             this.Focus();
         }
 
@@ -2873,8 +2841,8 @@ public static void RunExeAsAdmin(string ExePath) {
                 }
 
                 /************************************************************
-//TODO: Try to upgrade this to use built in LINQ Syntax
-************************************************************/
+                //TODO: Try to upgrade this to use built in LINQ Syntax
+                   ************************************************************/
 
                 if (column.CollumnType != typeof(String))
                 {
@@ -2914,8 +2882,8 @@ public static void RunExeAsAdmin(string ExePath) {
                 {
                     User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, -1, 0);
                 }
-                if (!this.IsRenameInProgress)
-                    this.SelectItems(selectedItems);
+
+                if (!this.IsRenameInProgress) this.SelectItems(selectedItems);
             }
             catch
             {
@@ -2929,46 +2897,32 @@ public static void RunExeAsAdmin(string ExePath) {
         /// <param name="SaveFolderSettings">Should the folder's settings be saved?</param>
         /// <param name="isInSameTab"></param>
         /// <param name="refresh">Should the List be Refreshed?</param>
-        public async void Navigate_Full(IListItemEx destination, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false)
+        public void Navigate_Full(IListItemEx destination, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false)
         {
             this._IsSearchNavigating = false;
-            if (SaveFolderSettings)
-            {
-                SaveSettingsToDatabase(this.CurrentFolder);
-            }
+            if (SaveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
 
             if (destination == null || !destination.IsFolder) return;
-            if (ToolTip == null)
-                this.ToolTip = new ToolTip(this);
+            if (ToolTip == null) this.ToolTip = new ToolTip(this);
             resetEvent.Set();
-            //await Task.Run(() => {
             Navigate(destination, isInSameTab, refresh, this.IsNavigationInProgress);
-            // });
         }
 
         private Boolean _IsSearchNavigating = false;
 
-        public async void Navigate_Full(string query, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false)
+        public void Navigate_Full(string query, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false)
         {
             this._IsSearchNavigating = true;
-            if (SaveFolderSettings)
-            {
-                SaveSettingsToDatabase(this.CurrentFolder);
-            }
+            if (SaveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
 
-            if (ToolTip == null)
-                this.ToolTip = new ToolTip(this);
+            if (ToolTip == null) this.ToolTip = new ToolTip(this);
             resetEvent.Set();
-            //await Task.Run(() => {
             var searchCondition = SearchConditionFactory.ParseStructuredQuery(query);
             var shellItem = new ShellItem(this.CurrentFolder.PIDL);
             var searchFolder = new ShellSearchFolder(searchCondition, shellItem);
             IListItemEx searchItem = null;
-            //this.Invoke((Action)(() => {
             searchItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, searchFolder);
-            //}));
             Navigate(searchItem, isInSameTab, refresh, this.IsNavigationInProgress);
-            //});
         }
 
         public void UnvalidateDirectory()
@@ -3031,7 +2985,7 @@ public static void RunExeAsAdmin(string ExePath) {
         /// <param name="isInSameTab"></param>
         /// <param name="refresh">Should the List be Refreshed?</param>
         [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
-        private async void Navigate(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false, bool isCancel = false)
+        private void Navigate(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false, bool isCancel = false)
         {
             //if (this.IsNavigationInProgress)
             //  return;
@@ -3051,8 +3005,7 @@ public static void RunExeAsAdmin(string ExePath) {
             //t.Start();
             //Cleaning!
 
-            if (destination == null)
-                return;
+            if (destination == null) return;
             resetEvent.Set();
             //this.Invoke((Action)(() => {
             //	MessageHandlerWindow.ReinitNotify(destination);
@@ -3080,8 +3033,8 @@ public static void RunExeAsAdmin(string ExePath) {
             var isThereSettings = false;
             var columns = new Collumns();
             var isFailed = true;
-            var isNewNavigation = false;
-            var isRun = false;
+            //var isNewNavigation = false;
+            //var isRun = false;
             // await Task.Run(() => {
             int CurrentI = 0, LastI = 0;
             this.IsNavigationInProgress = true;
@@ -3244,7 +3197,6 @@ public static void RunExeAsAdmin(string ExePath) {
 
             this.Invoke((Action)(() =>
             {
-
                 if (isThereSettings)
                 {
                     if (folderSettings.Columns != null)
@@ -3287,9 +3239,6 @@ public static void RunExeAsAdmin(string ExePath) {
 
                         }
                     }
-
-
-
                 }
                 else
                 {
@@ -3304,13 +3253,11 @@ public static void RunExeAsAdmin(string ExePath) {
                 this.Collumns[i].SetSplitButton(headerhandle, i);
             }
 
-            if (this.View != ShellViewStyle.Details)
-                AutosizeAllColumns(-2);
+            if (this.View != ShellViewStyle.Details) AutosizeAllColumns(-2);
 
 
             var sortColIndex = this.Collumns.IndexOf(columns);
-            if (sortColIndex > -1)
-                this.SetSortIcon(sortColIndex, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
+            if (sortColIndex > -1) this.SetSortIcon(sortColIndex, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
 
             this.Invoke((Action)(() =>
             {
@@ -3370,8 +3317,6 @@ public static void RunExeAsAdmin(string ExePath) {
                 if (!refresh && Navigated != null)
                     Navigated(this, NavArgs);
             }));
-
-
 
             //this._ResetTimer.Start();
             GC.Collect();
@@ -3433,35 +3378,7 @@ public static void RunExeAsAdmin(string ExePath) {
                 Add_Group("I", "P");
                 Add_Group("Q", "z");
 
-                /*
-var testgrn = new ListViewGroupEx();
-testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("0") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("9")).ToArray();
-testgrn.Header = String.Format("0 - 9 ({0})", testgrn.Items.Count());
-testgrn.Index = reversed ? i-- : i++;
-this.Groups.Add(testgrn);
-
-var testgr = new ListViewGroupEx();
-testgr.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("A") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("H")).ToArray();
-testgr.Header = String.Format("A - H ({0})", testgr.Items.Count());
-testgr.Index = reversed ? i-- : i++;
-this.Groups.Add(testgr);
-
-var testgr2 = new ListViewGroupEx();
-testgr2.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("I") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("P")).ToArray();
-testgr2.Header = String.Format("I - P ({0})", testgr2.Items.Count());
-testgr2.Index = reversed ? i-- : i++;
-this.Groups.Add(testgr2);
-
-var testgr3 = new ListViewGroupEx();
-testgr3.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("Q") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("Z")).ToArray();
-testgr3.Header = String.Format("Q - Z ({0})", testgr3.Items.Count());
-testgr3.Index = reversed ? i-- : i++;
-this.Groups.Add(testgr3);
-*/
-
-
-                if (reversed)
-                    this.Groups.Reverse();
+                if (reversed) this.Groups.Reverse();
 
                 foreach (var group in this.Groups)
                 {
@@ -3474,66 +3391,65 @@ this.Groups.Add(testgr3);
                 var j = reversed ? 7 : 0;
 
                 /********************************************************
-Upgrade this to use an Action<>
-*********************************************************/
+                Upgrade this to use an Action<>
+                *********************************************************/
 
                 var uspec = new ListViewGroupEx();
                 uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
-                uspec.Header = String.Format("Unspecified ({0})", uspec.Items.Count());
+                uspec.Header = $"Unspecified ({uspec.Items.Count()})";
                 uspec.Index = reversed ? j-- : j++;
                 this.Groups.Add(uspec);
 
                 var testgrn = new ListViewGroupEx();
                 testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) == 0 && !w.IsFolder).ToArray();
-                testgrn.Header = String.Format("Empty ({0})", testgrn.Items.Count());
+                testgrn.Header = $"Empty ({testgrn.Items.Count()})";
                 testgrn.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgrn);
 
                 var testgr = new ListViewGroupEx();
                 testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 10 * 1024).ToArray();
-                testgr.Header = String.Format("Very Small ({0})", testgr.Items.Count());
+                testgr.Header = $"Very Small ({testgr.Items.Count()})";
                 testgr.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr);
 
                 var testgr2 = new ListViewGroupEx();
                 testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 100 * 1024).ToArray();
-                testgr2.Header = String.Format("Small ({0})", testgr2.Items.Count());
+                testgr2.Header = $"Small ({testgr2.Items.Count()})";
                 testgr2.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr2);
 
                 var testgr3 = new ListViewGroupEx();
                 testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 1 * 1024 * 1024).ToArray();
-                testgr3.Header = String.Format("Medium ({0})", testgr3.Items.Count());
+                testgr3.Header = $"Medium ({ testgr3.Items.Count()})";
                 testgr3.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr3);
 
                 var testgr4 = new ListViewGroupEx();
                 testgr4.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 16 * 1024 * 1024).ToArray();
-                testgr4.Header = String.Format("Big ({0})", testgr4.Items.Count());
+                testgr4.Header = $"Big ({testgr4.Items.Count()})";
                 testgr4.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr4);
 
                 var testgr5 = new ListViewGroupEx();
                 testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 16 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 128 * 1024 * 1024).ToArray();
-                testgr5.Header = String.Format("Huge ({0})", testgr5.Items.Count());
+                testgr5.Header = $"Huge ({testgr5.Items.Count()})";
                 testgr5.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr5);
 
                 var testgr6 = new ListViewGroupEx();
                 testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 128 * 1024 * 1024).ToArray();
-                testgr6.Header = String.Format("Gigantic ({0})", testgr6.Items.Count());
+                testgr6.Header = $"Gigantic ({testgr6.Items.Count()})";
                 testgr6.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr6);
 
-
-                if (reversed)
-                    this.Groups.Reverse();
-
+                /*
+                if (reversed) this.Groups.Reverse();
                 foreach (var group in this.Groups)
                 {
                     var nativeGroup = group.ToNativeListViewGroup();
                     User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
                 }
+                */
             }
             else
             {
@@ -3549,12 +3465,21 @@ Upgrade this to use an Action<>
                     this.Groups.Add(gr);
                 }
 
+                /*
                 if (reversed) this.Groups.Reverse();
                 foreach (var group in this.Groups)
                 {
                     var nativeGroup = group.ToNativeListViewGroup();
                     User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
                 }
+                */
+            }
+
+            if (reversed) this.Groups.Reverse();
+            foreach (var group in this.Groups)
+            {
+                var nativeGroup = group.ToNativeListViewGroup();
+                User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
             }
 
             this.LastGroupCollumn = col;
