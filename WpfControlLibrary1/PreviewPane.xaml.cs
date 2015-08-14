@@ -19,7 +19,7 @@ namespace BetterExplorerControls {
 		public ShellView Browser;
 
 		//private BitmapSource Thumbnail { get; set; }
-		private IListItemEx SelectedItem { get { return this.Browser != null && this.Browser.GetSelectedCount() > 0 ? this.Browser.SelectedItems[0] : null; } }
+		private IListItemEx SelectedItem  => this.Browser != null && this.Browser.GetSelectedCount() > 0 ? this.Browser.SelectedItems[0] : null;
 
 		//private String DisplayName { get { return SelectedItem != null ? SelectedItem.DisplayName : String.Empty; } }
 		//private String FileSize { get { return "FileSize: Not Coded"; } }

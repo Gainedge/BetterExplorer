@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
@@ -131,24 +127,18 @@ namespace BExplorer.Shell.Interop
         /// Gets the thumbnail or icon image in <see cref="System.Drawing.Bitmap"/> format.
         /// Null is returned if the ShellObject does not have a thumbnail or icon image.
         /// </summary>
-        public Bitmap Bitmap { get { return GetBitmap(CurrentSize); } }
+        public Bitmap Bitmap => GetBitmap(CurrentSize);
 
         /// <summary>
         /// Gets the thumbnail or icon image in <see cref="System.Windows.Media.Imaging.BitmapSource"/> format. 
         /// Null is returned if the ShellObject does not have a thumbnail or icon image.
         /// </summary>
-        public BitmapSource BitmapSource { get { return GetBitmapSource(CurrentSize); } }
+        public BitmapSource BitmapSource => GetBitmapSource(CurrentSize);
 
         /// <summary>
         /// Gets the thumbnail or icon in small size and <see cref="System.Windows.Media.Imaging.BitmapSource"/> format.
         /// </summary>
-        public BitmapSource SmallBitmapSource
-        {
-            get
-            {
-                return GetBitmapSource(DefaultIconSize.Small, DefaultThumbnailSize.Small);
-            }
-        }
+        public BitmapSource SmallBitmapSource => GetBitmapSource(DefaultIconSize.Small, DefaultThumbnailSize.Small);
 
         /// <summary>
         /// Gets or sets a value that determines if the current retrieval option is cache or extract, cache only, or from memory only.
@@ -265,31 +255,20 @@ namespace BExplorer.Shell.Interop
 
         private IntPtr GetHBitmap(System.Windows.Size size)
         {
-            IntPtr hbitmap = IntPtr.Zero;
-
-            if (shellItemNative == null)
-                return IntPtr.Zero;
+            if (shellItemNative == null) return IntPtr.Zero;
             // Create a size structure to pass to the native method
-            Size nativeSIZE = new Size();
-            nativeSIZE.Width = Convert.ToInt32(size.Width);
-            nativeSIZE.Height = Convert.ToInt32(size.Height);
+            var nativeSIZE = new Size() { Width = Convert.ToInt32(size.Width), Height = Convert.ToInt32(size.Height) };
 
             // Use IShellItemImageFactory to get an icon
             // Options passed in: Resize to fit
+            IntPtr hbitmap = IntPtr.Zero;
             HResult hr = ((IShellItemImageFactory)shellItemNative).GetImage(nativeSIZE, CalculateFlags(), out hbitmap);
-
-            if (hr == HResult.S_OK) { return hbitmap; }
-            else
-            {
-                return IntPtr.Zero;
-            }
-
+            return hr == HResult.S_OK ? hbitmap : IntPtr.Zero;
         }
 
         public static bool IsAlphaBitmap(Bitmap bmp, out BitmapData bmpData)
         {
-            Rectangle bmBounds = new Rectangle(0, 0, bmp.Width, bmp.Height);
-
+            var bmBounds = new Rectangle(0, 0, bmp.Width, bmp.Height);
             bmpData = bmp.LockBits(bmBounds, ImageLockMode.ReadOnly, bmp.PixelFormat);
 
             try
@@ -299,18 +278,13 @@ namespace BExplorer.Shell.Interop
                     for (int x = 0; x <= bmpData.Width - 1; x++)
                     {
                         Color pixelColor = Color.FromArgb(Marshal.ReadInt32(bmpData.Scan0, (bmpData.Stride * y) + (4 * x)));
-
-                        if (pixelColor.A >= 0 & pixelColor.A <= 255)
-                        {
-                            return true;
-                        }
+                        if (pixelColor.A >= 0 & pixelColor.A <= 255) return true;
                     }
                 }
             }
             finally
             {
                 bmp.UnlockBits(bmpData);
-
             }
 
             return false;
@@ -433,31 +407,28 @@ namespace BExplorer.Shell.Interop
             }
             return res;
         }
+
         public IntPtr GetHBitmap(int iconSize, bool isThumbnail = false, bool isForce = false)
         {
             if (isThumbnail)
             {
                 this.FormatOption = ShellThumbnailFormatOption.ThumbnailOnly;
-                if (isForce)
-                    this.RetrievalOption = ShellThumbnailRetrievalOption.Default;
-                else
-                    this.RetrievalOption = ShellThumbnailRetrievalOption.CacheOnly;
+                this.RetrievalOption = isForce ? ShellThumbnailRetrievalOption.Default : ShellThumbnailRetrievalOption.CacheOnly;
             }
             else
             {
                 this.FormatOption = ShellThumbnailFormatOption.IconOnly;
                 this.RetrievalOption = ShellThumbnailRetrievalOption.Default;
             }
+
             return GetHBitmap(new System.Windows.Size(iconSize, iconSize));
         }
+
         public Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap)
         {
             Bitmap bmp = Bitmap.FromHbitmap(nativeHBitmap);
 
-            if (Bitmap.GetPixelFormatSize(bmp.PixelFormat) < 32)
-            {
-                return bmp;
-            }
+            if (Bitmap.GetPixelFormatSize(bmp.PixelFormat) < 32) return bmp;
 
             BitmapData bmpData;
 
@@ -467,6 +438,7 @@ namespace BExplorer.Shell.Interop
                 bmpData = null;
                 return resBmp;
             }
+
             bmpData = null;
             return bmp;
         }

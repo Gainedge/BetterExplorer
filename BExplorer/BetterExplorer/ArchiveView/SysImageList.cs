@@ -447,7 +447,7 @@ namespace SystemImageList {
 		/// <summary>
 		/// Gets the hImageList handle
 		/// </summary>
-		public IntPtr Handle { get { return this.hIml; } }
+		public IntPtr Handle => this.hIml;
 
 		/// <summary>
 		/// Gets/sets the size of System Image List to retrieve.

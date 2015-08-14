@@ -44,11 +44,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
             else
             {
-                ContentElement ce = element as ContentElement;
-                if (ce != null)
-                {
-                    ce.AddHandler(routedEvent, handler);
-                }
+                (element as ContentElement)?.AddHandler(routedEvent, handler);
             }
         }
 
@@ -68,11 +64,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             }
             else
             {
-                ContentElement ce = element as ContentElement;
-                if (ce != null)
-                {
-                    ce.RemoveHandler(routedEvent, handler);
-                }
+                (element as ContentElement)?.AddHandler(routedEvent, handler);
             }
         }
 
