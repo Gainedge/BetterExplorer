@@ -1720,7 +1720,7 @@ namespace BetterExplorer
             {
                 AppJL.ShowRecentCategory = true;
                 AppJL.ShowFrequentCategory = true;
-                WIN.Shell.JumpList.SetJumpList(Application.Current, AppJL);
+                JumpList.SetJumpList(Application.Current, AppJL);
                 AppJL.JumpItems.Add(new JumpTask()
                 {
                     ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
@@ -1832,12 +1832,21 @@ namespace BetterExplorer
                 if (!File.Exists("Settings.xml")) return;
                 var Settings = XElement.Load("Settings.xml");
 
+
+                /*
                 if (Settings.Element("DropDownItems") != null)
                 {
                     foreach (var item in Settings.Element("DropDownItems").Elements())
                     {
                         bcbc.DropDownItems.Add(item.Value);
                     }
+                }
+                */
+
+                //TODO: Test this Change
+                foreach (var item in Settings.Element("DropDownItems")?.Elements())
+                {
+                    bcbc.DropDownItems.Add(item.Value);
                 }
 
                 focusTimer.Tick += focusTimer_Tick;
