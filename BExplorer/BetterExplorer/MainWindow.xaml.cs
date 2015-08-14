@@ -1753,7 +1753,7 @@ namespace BetterExplorer
             this.tcMain.OnTabClicked += tcMain_OnTabClicked;
 
             ShellTree.ShellListView = ShellListView;
-            this.ctrlConsole.ShellListView = this.ShellListView;
+            //this.ctrlConsole.ShellListView = this.ShellListView;
 
             //Task.Run(() => {
             UpdateRecycleBinInfos();

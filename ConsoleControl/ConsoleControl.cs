@@ -37,7 +37,8 @@ namespace ConsoleControl
 
         private bool _IsCodepageSet = false;
 
-        public ShellView ShellListView { get; set; }
+        //public ShellView ShellListView { get; set; }
+
         /// <summary>
         /// The last input string (used so that we can make sure we don't echo input twice).
         /// </summary>
@@ -351,8 +352,7 @@ namespace ConsoleControl
 
         void richTextBoxConsole_MouseDown(object sender, MouseEventArgs e)
         {
-            //TODO: Find out if we need this!
-            this.ShellListView.IsFocusAllowed = false;
+            //this.ShellListView.IsFocusAllowed = false;
             richTextBoxConsole.Focus();
         }
 
