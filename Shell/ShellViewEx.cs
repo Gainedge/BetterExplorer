@@ -3790,7 +3790,9 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
         }
 
 
-        public void ScrollToTop() => User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, 0, 0);
+        public void ScrollToTop() {
+          // User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, 0, 0);
+        }
 
         public string CreateNewFolder(string name = "New Folder")
         {
@@ -3813,7 +3815,6 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                 {
                     endname = $"{this.CurrentFolder.ParsingName}\\{name} ({++suffix})";
                 }
-
             } while (Directory.Exists(endname) || File.Exists(endname));
 
             switch (Shell32.SHCreateDirectory(IntPtr.Zero, endname))
