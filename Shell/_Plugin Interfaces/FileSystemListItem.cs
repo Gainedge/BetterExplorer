@@ -243,7 +243,8 @@ namespace BExplorer.Shell._Plugin_Interfaces
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
-        public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) => this._Item.GetPropertyValue(pkey, type);
+        //public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) => this._Item.GetPropertyValue(pkey, type);
+        public PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type) => this._Item.GetPropertyValue(pkey);
 
 
         public System.Drawing.Bitmap Thumbnail(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) =>
@@ -274,7 +275,7 @@ namespace BExplorer.Shell._Plugin_Interfaces
             }
         }
 
-        public IShellFolder GetIShellFolder() { return this._Item.GetIShellFolder(); }
+        public IShellFolder GetIShellFolder()  => this._Item.GetIShellFolder();
 
         public bool IsLink => this._Item.IsLink;
 

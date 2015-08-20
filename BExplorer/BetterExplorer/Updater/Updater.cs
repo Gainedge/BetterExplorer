@@ -53,16 +53,6 @@ namespace BetterExplorer
         /// </summary>
         public string ServerCheckLocation { get; set; }
 
-        /*
-		/// <summary>
-		/// The location of a file on the local system that is used to check if an update exists.
-		/// </summary>
-		public string LocalCheckLocation {
-			get { return loc; }
-			set { loc = value; }
-		}
-		*/
-
         /// <summary>
         /// A string representation of the current version of this software.
         /// </summary>
@@ -81,17 +71,6 @@ namespace BetterExplorer
         #endregion
 
         #region Internal Classes
-
-        [Obsolete("Use Tuple<string>", true)]
-        public class PathEventArgs
-        {
-            public string Path { get; private set; }
-
-            public PathEventArgs(string path = null)
-            {
-                Path = path;
-            }
-        }
 
         public class ExceptionEventArgs
         {
@@ -224,54 +203,6 @@ namespace BetterExplorer
             {
                 OnNoUpdatesNeeded(EventArgs.Empty);
             }
-
-            /*
-			else {
-				try {
-					if (LoadUpdateFile()) {
-						OnUpdateAvailable(EventArgs.Empty);
-						// update available
-					}
-					else {
-						OnNoUpdatesNeeded(EventArgs.Empty);
-						// up-to-date
-					}
-				}
-				catch (Exception ex) {
-					
-					// error
-				}
-			}
-			*/
-
-            /*
-			if (upd) {
-				if (e.Error == null) {
-					try {
-						if (LoadUpdateFile()) {
-							OnUpdateAvailable(EventArgs.Empty);
-							// update available
-						}
-						else {
-							OnNoUpdatesNeeded(EventArgs.Empty);
-							// up-to-date
-						}
-					}
-					catch (Exception ex) {
-						OnErrorOccurredWhileChecking(new ExceptionEventArgs(ex));
-						// error
-					}
-				}
-				else {
-					OnErrorOccurredWhileChecking(new ExceptionEventArgs(e.Error));
-					// error
-				}
-			}
-			else {
-				OnUpdaterDownloadComplete(new PathEventArgs(LocalUpdaterLocation));
-				// ready to install update
-			}
-			*/
         }
 
         void updchk_DownloadProgressChanged(object sender, System.Net.DownloadProgressChangedEventArgs e)

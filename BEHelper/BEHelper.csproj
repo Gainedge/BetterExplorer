@@ -46,12 +46,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Obsolete\AsyncContext.cs" />
-    <Compile Include="Obsolete\AsyncObservableCollection.cs" />
     <Compile Include="TransPicBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Obsolete\IAsyncContext.cs" />
     <Compile Include="NoFlickerWindowsFormsHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

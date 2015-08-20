@@ -482,7 +482,6 @@ public bool Cancel { get; private set; }
                     User32.SendMessage(this.LVHandle, LVM.GETNEXTITEMINDEX, ref lvi, LVNI.LVNI_SELECTED);
                     iStart = lvi.iItem;
 
-                    //TODO: Find out if we even need this IF Then
                     if (lvi.iItem != -1) selItems.Add(lvi.iItem);
                 }
 
@@ -1686,16 +1685,15 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                                         var hash = currentItem.GetHashCode();
                                         Collumns currentCollumn = this.Collumns[nmlv.item.iSubItem];
 
-
-                                        //TODO: Do we really need FirstOrDefault(...) and not just First(...) How do I make it null anyways?
                                         var valueCached = SubItemValues.ToArray().FirstOrDefault(s => s.Item1 == hash && s.Item2.fmtid == currentCollumn.pkey.fmtid && s.Item2.pid == currentCollumn.pkey.pid);
-                                        if (valueCached != null && valueCached.Item3 != null)
+                                        //if (valueCached != null && valueCached.Item3 != null)
+                                        if (valueCached?.Item3 != null)
                                         {
                                             String val = String.Empty;
                                             if (currentCollumn.CollumnType == typeof(DateTime))
                                                 val = ((DateTime)valueCached.Item3).ToString(Thread.CurrentThread.CurrentCulture);
                                             else if (currentCollumn.CollumnType == typeof(long))
-                                                val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(valueCached.Item3.ToString()) / 1024).ToString("# ### ### ##0"))); //ShlWapi.StrFormatByteSize(Convert.ToInt64(pvar.Value.ToString()));
+                                                val = $"{(Math.Ceiling(Convert.ToDouble(valueCached.Item3.ToString()) / 1024).ToString("# ### ### ##0"))} KB";
                                             else if (currentCollumn.CollumnType == typeof(PerceivedType))
                                                 val = ((PerceivedType)valueCached.Item3).ToString();
                                             else if (currentCollumn.CollumnType == typeof(FileAttributes))
@@ -1730,7 +1728,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                                                     if (currentCollumn.CollumnType == typeof(DateTime))
                                                         val = ((DateTime)pvar.Value).ToString(Thread.CurrentThread.CurrentCulture);
                                                     else if (currentCollumn.CollumnType == typeof(long))
-                                                        val = String.Format("{0} KB", (Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0")));
+                                                        val = $"{Math.Ceiling(Convert.ToDouble(pvar.Value.ToString()) / 1024).ToString("# ### ### ##0")} KB";
                                                     else if (currentCollumn.CollumnType == typeof(PerceivedType))
                                                         val = ((PerceivedType)pvar.Value).ToString();
                                                     else if (currentCollumn.CollumnType == typeof(FileAttributes))
@@ -1843,8 +1841,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
 
                         case WNM.LVN_ITEMACTIVATE:
                             #region Case
-                            if (this.ToolTip != null && this.ToolTip.IsVisible)
-                                this.ToolTip.HideTooltip();
+                            if (this.ToolTip != null && this.ToolTip.IsVisible) this.ToolTip.HideTooltip();
                             if (ItemForRealName_IsAny && this.IsRenameInProgress)
                             {
                                 this.EndLabelEdit();
@@ -1906,9 +1903,7 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                                     if (nlv.iItem != -1)
                                     {
                                         var itemBounds = new User32.RECT();
-                                        var lvi = new LVITEMINDEX();
-                                        lvi.iItem = nlv.iItem;
-                                        lvi.iGroup = this.GetGroupIndex(nlv.iItem);
+                                        var lvi = new LVITEMINDEX() { iItem = nlv.iItem, iGroup = this.GetGroupIndex(nlv.iItem) };
                                         User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
                                         RedrawWindow(itemBounds);
                                     }
@@ -1917,14 +1912,11 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
                                         RedrawWindow();
                                     }
                                 }
+
                                 if (nlv.iItem != LastItemForRename)
-                                {
                                     LastItemForRename = -1;
-                                }
                                 if (!selectionTimer.Enabled)
-                                {
                                     selectionTimer.Start();
-                                }
                             }
 
                             break;
@@ -2653,26 +2645,10 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
 
         public void DoCopy(IListItemEx destination) => Do_Copy_OR_Move_Helper(true, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
         public void DoCopy(System.Windows.IDataObject dataObject, IListItemEx destination) => Do_Copy_OR_Move_Helper(true, destination, dataObject.ToShellItemArray().ToArray());
-
-        public void DoCopy(F.IDataObject dataObject, IListItemEx destination)
-        {
-            Do_Copy_OR_Move_Helper_2(true, destination, dataObject);
-        }
-
-        public void DoMove(System.Windows.IDataObject dataObject, IListItemEx destination)
-        {
-            Do_Copy_OR_Move_Helper(false, destination, dataObject.ToShellItemArray().ToArray());
-        }
-
-        public void DoMove(IListItemEx destination)
-        {
-            Do_Copy_OR_Move_Helper(false, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
-        }
-
-        public void DoMove(F.IDataObject dataObject, IListItemEx destination)
-        {
-            Do_Copy_OR_Move_Helper_2(false, destination, dataObject);
-        }
+        public void DoCopy(F.IDataObject dataObject, IListItemEx destination) => Do_Copy_OR_Move_Helper_2(true, destination, dataObject);
+        public void DoMove(System.Windows.IDataObject dataObject, IListItemEx destination) => Do_Copy_OR_Move_Helper(false, destination, dataObject.ToShellItemArray().ToArray());
+        public void DoMove(IListItemEx destination) => Do_Copy_OR_Move_Helper(false, destination, this.SelectedItems.Select(s => s.ComInterface).ToArray());
+        public void DoMove(F.IDataObject dataObject, IListItemEx destination) => Do_Copy_OR_Move_Helper_2(false, destination, dataObject);
 
         public void DeleteSelectedFiles(Boolean isRecycling)
         {
@@ -2728,19 +2704,6 @@ else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW)
             }
         }
 
-        /*
-/// <summary> Runs an application as an administrator. </summary>
-/// <param name="ExePath"> The path of the application. </param>
-public static void RunExeAsAdmin(string ExePath) {
-	Process.Start(new ProcessStartInfo {
-		FileName = ExePath,
-		Verb = "runas",
-		UseShellExecute = true,
-		Arguments = String.Format("/env /user:Administrator \"{0}\"", ExePath),
-	});
-}
-*/
-
         public void SelectAll()
         {
             var item = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
@@ -2782,10 +2745,7 @@ public static void RunExeAsAdmin(string ExePath) {
             }
 
             User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
-            if (ensureVisisble)
-            {
-                var res = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, index, 0);
-            }
+            if (ensureVisisble) User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, index, 0);
             this.Focus();
         }
 
@@ -2872,10 +2832,6 @@ public static void RunExeAsAdmin(string ExePath) {
                     this.LastSortOrder = Order;
                 }
 
-                /************************************************************
-//TODO: Try to upgrade this to use built in LINQ Syntax
-************************************************************/
-
                 if (column.CollumnType != typeof(String))
                 {
                     if (Order == SortOrder.Ascending)
@@ -2891,8 +2847,6 @@ public static void RunExeAsAdmin(string ExePath) {
                 {
                     if (Order == SortOrder.Ascending)
                     {
-                        //TODO: Try to upgrade this to use built in LINQ Syntax
-                        //this.Items = from x in itemsArray where this.ShowHidden ? true : !x.IsHidden orderby x.IsFolder,  x.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default)
                         this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
                     }
                     else
@@ -2914,8 +2868,8 @@ public static void RunExeAsAdmin(string ExePath) {
                 {
                     User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, -1, 0);
                 }
-                if (!this.IsRenameInProgress)
-                    this.SelectItems(selectedItems);
+
+                if (!this.IsRenameInProgress) this.SelectItems(selectedItems);
             }
             catch
             {
@@ -2929,46 +2883,32 @@ public static void RunExeAsAdmin(string ExePath) {
         /// <param name="SaveFolderSettings">Should the folder's settings be saved?</param>
         /// <param name="isInSameTab"></param>
         /// <param name="refresh">Should the List be Refreshed?</param>
-        public async void Navigate_Full(IListItemEx destination, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false)
+        public void Navigate_Full(IListItemEx destination, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false)
         {
             this._IsSearchNavigating = false;
-            if (SaveFolderSettings)
-            {
-                SaveSettingsToDatabase(this.CurrentFolder);
-            }
+            if (SaveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
 
             if (destination == null || !destination.IsFolder) return;
-            if (ToolTip == null)
-                this.ToolTip = new ToolTip(this);
+            if (ToolTip == null) this.ToolTip = new ToolTip(this);
             resetEvent.Set();
-            //await Task.Run(() => {
             Navigate(destination, isInSameTab, refresh, this.IsNavigationInProgress);
-            // });
         }
 
         private Boolean _IsSearchNavigating = false;
 
-        public async void Navigate_Full(string query, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false)
+        public void Navigate_Full(string query, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false)
         {
             this._IsSearchNavigating = true;
-            if (SaveFolderSettings)
-            {
-                SaveSettingsToDatabase(this.CurrentFolder);
-            }
+            if (SaveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
 
-            if (ToolTip == null)
-                this.ToolTip = new ToolTip(this);
+            if (ToolTip == null) this.ToolTip = new ToolTip(this);
             resetEvent.Set();
-            //await Task.Run(() => {
             var searchCondition = SearchConditionFactory.ParseStructuredQuery(query);
             var shellItem = new ShellItem(this.CurrentFolder.PIDL);
             var searchFolder = new ShellSearchFolder(searchCondition, shellItem);
             IListItemEx searchItem = null;
-            //this.Invoke((Action)(() => {
             searchItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, searchFolder);
-            //}));
             Navigate(searchItem, isInSameTab, refresh, this.IsNavigationInProgress);
-            //});
         }
 
         public void UnvalidateDirectory()
@@ -3031,7 +2971,7 @@ public static void RunExeAsAdmin(string ExePath) {
         /// <param name="isInSameTab"></param>
         /// <param name="refresh">Should the List be Refreshed?</param>
         [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
-        private async void Navigate(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false, bool isCancel = false)
+        private void Navigate(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false, bool isCancel = false)
         {
             //if (this.IsNavigationInProgress)
             //  return;
@@ -3051,8 +2991,7 @@ public static void RunExeAsAdmin(string ExePath) {
             //t.Start();
             //Cleaning!
 
-            if (destination == null)
-                return;
+            if (destination == null) return;
             resetEvent.Set();
             //this.Invoke((Action)(() => {
             //	MessageHandlerWindow.ReinitNotify(destination);
@@ -3080,8 +3019,8 @@ public static void RunExeAsAdmin(string ExePath) {
             var isThereSettings = false;
             var columns = new Collumns();
             var isFailed = true;
-            var isNewNavigation = false;
-            var isRun = false;
+            //var isNewNavigation = false;
+            //var isRun = false;
             // await Task.Run(() => {
             int CurrentI = 0, LastI = 0;
             this.IsNavigationInProgress = true;
@@ -3198,7 +3137,7 @@ public static void RunExeAsAdmin(string ExePath) {
             }, CancellationToken.None, TaskCreationOptions.None, taskScheduler);
             //taskk.Start(TaskScheduler.FromCurrentSynchronizationContext());
             taskk.Wait();
-            isRun = true;
+            //isRun = true;
             this.IsNavigationInProgress = false;
 
             if ((this._RequestedCurrentLocation.NavigationStatus == HResult.S_OK && isFailed) || (this._RequestedCurrentLocation.NavigationStatus == HResult.S_OK && this.Items.Count == 0))
@@ -3244,7 +3183,6 @@ public static void RunExeAsAdmin(string ExePath) {
 
             this.Invoke((Action)(() =>
             {
-
                 if (isThereSettings)
                 {
                     if (folderSettings.Columns != null)
@@ -3287,9 +3225,6 @@ public static void RunExeAsAdmin(string ExePath) {
 
                         }
                     }
-
-
-
                 }
                 else
                 {
@@ -3304,13 +3239,11 @@ public static void RunExeAsAdmin(string ExePath) {
                 this.Collumns[i].SetSplitButton(headerhandle, i);
             }
 
-            if (this.View != ShellViewStyle.Details)
-                AutosizeAllColumns(-2);
+            if (this.View != ShellViewStyle.Details) AutosizeAllColumns(-2);
 
 
             var sortColIndex = this.Collumns.IndexOf(columns);
-            if (sortColIndex > -1)
-                this.SetSortIcon(sortColIndex, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
+            if (sortColIndex > -1) this.SetSortIcon(sortColIndex, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
 
             this.Invoke((Action)(() =>
             {
@@ -3371,8 +3304,6 @@ public static void RunExeAsAdmin(string ExePath) {
                     Navigated(this, NavArgs);
             }));
 
-
-
             //this._ResetTimer.Start();
             GC.Collect();
             Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -3423,7 +3354,7 @@ public static void RunExeAsAdmin(string ExePath) {
                 {
                     var testgrn = new ListViewGroupEx();
                     testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse(Char1) && w.DisplayName.ToUpperInvariant().First() <= Char.Parse(Char2)).ToArray();
-                    testgrn.Header = String.Format(Char1 + " - " + Char2 + "({0})", testgrn.Items.Count());
+                    testgrn.Header = Char1 + " - " + Char2 + $"({ testgrn.Items.Count()})";
                     testgrn.Index = reversed ? i-- : i++;
                     this.Groups.Add(testgrn);
                 };
@@ -3433,35 +3364,7 @@ public static void RunExeAsAdmin(string ExePath) {
                 Add_Group("I", "P");
                 Add_Group("Q", "z");
 
-                /*
-var testgrn = new ListViewGroupEx();
-testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("0") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("9")).ToArray();
-testgrn.Header = String.Format("0 - 9 ({0})", testgrn.Items.Count());
-testgrn.Index = reversed ? i-- : i++;
-this.Groups.Add(testgrn);
-
-var testgr = new ListViewGroupEx();
-testgr.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("A") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("H")).ToArray();
-testgr.Header = String.Format("A - H ({0})", testgr.Items.Count());
-testgr.Index = reversed ? i-- : i++;
-this.Groups.Add(testgr);
-
-var testgr2 = new ListViewGroupEx();
-testgr2.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("I") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("P")).ToArray();
-testgr2.Header = String.Format("I - P ({0})", testgr2.Items.Count());
-testgr2.Index = reversed ? i-- : i++;
-this.Groups.Add(testgr2);
-
-var testgr3 = new ListViewGroupEx();
-testgr3.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse("Q") && w.DisplayName.ToUpperInvariant().First() <= Char.Parse("Z")).ToArray();
-testgr3.Header = String.Format("Q - Z ({0})", testgr3.Items.Count());
-testgr3.Index = reversed ? i-- : i++;
-this.Groups.Add(testgr3);
-*/
-
-
-                if (reversed)
-                    this.Groups.Reverse();
+                if (reversed) this.Groups.Reverse();
 
                 foreach (var group in this.Groups)
                 {
@@ -3474,66 +3377,65 @@ this.Groups.Add(testgr3);
                 var j = reversed ? 7 : 0;
 
                 /********************************************************
-Upgrade this to use an Action<>
-*********************************************************/
+                Upgrade this to use an Action<>
+                *********************************************************/
 
                 var uspec = new ListViewGroupEx();
                 uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
-                uspec.Header = String.Format("Unspecified ({0})", uspec.Items.Count());
+                uspec.Header = $"Unspecified ({uspec.Items.Count()})";
                 uspec.Index = reversed ? j-- : j++;
                 this.Groups.Add(uspec);
 
                 var testgrn = new ListViewGroupEx();
                 testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) == 0 && !w.IsFolder).ToArray();
-                testgrn.Header = String.Format("Empty ({0})", testgrn.Items.Count());
+                testgrn.Header = $"Empty ({testgrn.Items.Count()})";
                 testgrn.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgrn);
 
                 var testgr = new ListViewGroupEx();
                 testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 10 * 1024).ToArray();
-                testgr.Header = String.Format("Very Small ({0})", testgr.Items.Count());
+                testgr.Header = $"Very Small ({testgr.Items.Count()})";
                 testgr.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr);
 
                 var testgr2 = new ListViewGroupEx();
                 testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 100 * 1024).ToArray();
-                testgr2.Header = String.Format("Small ({0})", testgr2.Items.Count());
+                testgr2.Header = $"Small ({testgr2.Items.Count()})";
                 testgr2.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr2);
 
                 var testgr3 = new ListViewGroupEx();
                 testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 1 * 1024 * 1024).ToArray();
-                testgr3.Header = String.Format("Medium ({0})", testgr3.Items.Count());
+                testgr3.Header = $"Medium ({ testgr3.Items.Count()})";
                 testgr3.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr3);
 
                 var testgr4 = new ListViewGroupEx();
                 testgr4.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 16 * 1024 * 1024).ToArray();
-                testgr4.Header = String.Format("Big ({0})", testgr4.Items.Count());
+                testgr4.Header = $"Big ({testgr4.Items.Count()})";
                 testgr4.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr4);
 
                 var testgr5 = new ListViewGroupEx();
                 testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 16 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 128 * 1024 * 1024).ToArray();
-                testgr5.Header = String.Format("Huge ({0})", testgr5.Items.Count());
+                testgr5.Header = $"Huge ({testgr5.Items.Count()})";
                 testgr5.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr5);
 
                 var testgr6 = new ListViewGroupEx();
                 testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 128 * 1024 * 1024).ToArray();
-                testgr6.Header = String.Format("Gigantic ({0})", testgr6.Items.Count());
+                testgr6.Header = $"Gigantic ({testgr6.Items.Count()})";
                 testgr6.Index = reversed ? j-- : j++;
                 this.Groups.Add(testgr6);
 
-
-                if (reversed)
-                    this.Groups.Reverse();
-
+                /*
+                if (reversed) this.Groups.Reverse();
                 foreach (var group in this.Groups)
                 {
                     var nativeGroup = group.ToNativeListViewGroup();
                     User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
                 }
+                */
             }
             else
             {
@@ -3549,12 +3451,21 @@ Upgrade this to use an Action<>
                     this.Groups.Add(gr);
                 }
 
+                /*
                 if (reversed) this.Groups.Reverse();
                 foreach (var group in this.Groups)
                 {
                     var nativeGroup = group.ToNativeListViewGroup();
                     User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
                 }
+                */
+            }
+
+            if (reversed) this.Groups.Reverse();
+            foreach (var group in this.Groups)
+            {
+                var nativeGroup = group.ToNativeListViewGroup();
+                User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
             }
 
             this.LastGroupCollumn = col;
@@ -3567,10 +3478,7 @@ Upgrade this to use an Action<>
         /// Sets the Sort order of the Groups
         /// </summary>
         /// <param name="reverse">Reverse the Current Sort Order?</param>
-        public void SetGroupOrder(Boolean reverse = true)
-        {
-            this.GenerateGroupsFromColumn(this.LastGroupCollumn, reverse ? this.LastGroupOrder == SortOrder.Ascending : false);
-        }
+        public void SetGroupOrder(Boolean reverse = true) => GenerateGroupsFromColumn(LastGroupCollumn, reverse ? LastGroupOrder == SortOrder.Ascending : false);
 
         [DebuggerStepThrough]
         public IListItemEx GetFirstSelectedItem()
@@ -3873,7 +3781,7 @@ Upgrade this to use an Action<>
         public void CleanupDrive()
         {
             string DriveLetter = "";
-            if (SelectedItems.Count > 0)
+            if (SelectedItems.Any())
                 DriveLetter = Directory.GetLogicalDrives().Contains(SelectedItems[0].ParsingName) ? SelectedItems[0].ParsingName : this.CurrentFolder.ParsingName;
             else
                 DriveLetter = this.CurrentFolder.ParsingName;
@@ -3939,7 +3847,7 @@ Upgrade this to use an Action<>
             {
                 do
                 {
-                    endname = String.Format(name + "({0})", ++suffix);
+                    endname = name + $"({++suffix})";
                     try
                     {
                         lib = ShellLibrary.Load(endname, true);
@@ -4016,7 +3924,7 @@ Upgrade this to use an Action<>
                 DriveLetter = this.CurrentFolder.ParsingName;
             }
 
-            Process.Start(Path.Combine(Environment.SystemDirectory, "dfrgui.exe"), String.Format("/u /v {0}", DriveLetter.Replace("\\", "")));
+            Process.Start(Path.Combine(Environment.SystemDirectory, "dfrgui.exe"), $"/u /v {DriveLetter.Replace("\\", "")}");
         }
 
         public void DeSelectAllItems()
@@ -4103,34 +4011,6 @@ Upgrade this to use an Action<>
         private new void SuspendLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 0, 0);
         private void RedrawWindow() => User32.InvalidateRect(this.LVHandle, IntPtr.Zero, false);
         private void RedrawWindow(User32.RECT rect) => User32.InvalidateRect(this.LVHandle, ref rect, false);
-
-
-        /*
-        [Obsolete("Not Used")]
-        private void ReloadThreads()
-        {
-            try
-            {
-                //this._IconLoadingThread.Abort();
-                //this._IconCacheLoadingThread.Abort();
-                this._OverlaysLoadingThread.Abort();
-                this._UpdateSubitemValuesThread.Abort();
-                //this._IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
-                //this._IconLoadingThread.Start();
-                //this._IconCacheLoadingThread = new Thread(_IconCacheLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
-                //this._IconCacheLoadingThread.Start();
-                this._OverlaysLoadingThread = new Thread(_OverlaysLoadingThreadRun) { IsBackground = false, Priority = ThreadPriority.BelowNormal };
-                this._OverlaysLoadingThread.Start();
-                this._UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
-                this._UpdateSubitemValuesThread.Start();
-            }
-            catch (Exception)
-            {
-
-            }
-        }
-        */
-
 
         /// <summary>
         /// Returns the index of the first item whose display name starts with the search string.
@@ -4321,13 +4201,10 @@ Upgrade this to use an Action<>
                         else
                         {
                             if (!sho.IsThumbnailLoaded || sho.IsNeedRefreshing)
-                            {
                                 ThumbnailsForCacheLoad.Enqueue(index);
-                                //this.RetrieveThumbnailByIndex(index);
-                            }
+
                             if (sho.IsIconLoaded || (((sho.IconType & IExtractIconPWFlags.GIL_PERCLASS) == IExtractIconPWFlags.GIL_PERCLASS || (!this._IsSearchNavigating && sho.Parent != null && sho.Parent.ParsingName.Equals(KnownFolders.Libraries.ParsingName, StringComparison.InvariantCultureIgnoreCase)) || (!this._IsSearchNavigating && sho.Parent != null && sho.Parent.ParsingName.Equals(KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase)))))
                             {
-
                                 hThumbnail = sho.GetHBitmap(IconSize, false);
                                 if (hThumbnail != IntPtr.Zero)
                                 {
@@ -4338,40 +4215,14 @@ Upgrade this to use an Action<>
                                 {
                                     this.DrawDefaultIcons(hdc, sho, iconBounds);
                                     sho.IsIconLoaded = false;
-
-                                    //TODO: Verify that this change is correct
                                     waitingThumbnails.Enqueue(index);
-                                    /*
-                                    if (this._IsSearchNavigating || sho.IsNetworkPath)
-                                    {
-                                        waitingThumbnails.Enqueue(index);
-                                    }
-                                    else
-                                    {
-                                        //this.RetrieveIconsByIndex(index);
-                                        waitingThumbnails.Enqueue(index);
-                                    }
-                                    */
                                 }
                             }
                             else
                             {
                                 this.DrawDefaultIcons(hdc, sho, iconBounds);
                                 sho.IsIconLoaded = false;
-
-                                //TODO: Verify that this change is correct
                                 waitingThumbnails.Enqueue(index);
-                                /*
-                                if (this._IsSearchNavigating || sho.IsNetworkPath)
-                                {
-                                    waitingThumbnails.Enqueue(index);
-                                }
-                                else
-                                {
-                                    //this.RetrieveIconsByIndex(index);
-                                    waitingThumbnails.Enqueue(index);
-                                }
-                                */
                             }
                         }
                         using (var g = Graphics.FromHdc(hdc))
@@ -4766,7 +4617,7 @@ Upgrade this to use an Action<>
                                 { "LastSortedColumn", LastSortedColumnId.ToString() },
                                 { "Columns", Columns_XML.ToString()},
                                 { "IconSize", this.IconSize.ToString() }
-                        };
+            };
 
             var command2 = new SQLite.SQLiteCommand(sql, m_dbConnection);
             foreach (var item in Values)
@@ -4837,42 +4688,11 @@ Upgrade this to use an Action<>
 
         #endregion
 
-        #region IDropSource Members
-
-        public new HResult QueryContinueDrag(bool fEscapePressed, int grfKeyState)
-        {
-            //TODO: Deal with this dead code!
-            if (grfKeyState == 0)
-            {
-                return HResult.DRAGDROP_S_DROP;
-            }
-            else
-            {
-                return HResult.S_OK;
-            }
-
-            if (fEscapePressed)
-                return HResult.DRAGDROP_S_CANCEL;
-            return HResult.DRAGDROP_S_DROP;
-        }
-
         /*
-        public new HResult GiveFeedback(int dwEffect)
-        {
-            /TODO: Deal with this just code!
-
-            //dwEffect = (int)F.DragDropEffects.All;
-            System.Windows.Forms.DataObject doo = new F.DataObject(dataObject);
-            var obj = doo.GetData("DropDescription");
-            if (obj != null)
-            {
-                var uu = 1;
-            }
-            return HResult.S_OK;
-        }
-        */
+        #region IDropSource Members
+        //public new HResult QueryContinueDrag(bool fEscapePressed, int grfKeyState) => grfKeyState == 0 ? HResult.DRAGDROP_S_DROP : HResult.S_OK;
         #endregion
-
+        */
 
         private void Column_OnClick(int iItem)
         {
@@ -4881,15 +4701,10 @@ Upgrade this to use an Action<>
             var rect = new BExplorer.Shell.Interop.User32.RECT();
 
             if (User32.SendMessage(headerhandle, BExplorer.Shell.Interop.MSG.HDM_GETITEMDROPDOWNRECT, iItem, ref rect) == 0)
-            {
                 throw new Win32Exception();
-            }
 
             var pt = this.PointToScreen(new DPoint(rect.Left, rect.Bottom));
-            if (this.OnListViewColumnDropDownClicked != null)
-            {
-                this.OnListViewColumnDropDownClicked.Invoke(this.Collumns[iItem], new ListViewColumnDropDownArgs(iItem, pt));
-            }
+            this.OnListViewColumnDropDownClicked?.Invoke(this.Collumns[iItem], new ListViewColumnDropDownArgs(iItem, pt));
         }
     }
 }

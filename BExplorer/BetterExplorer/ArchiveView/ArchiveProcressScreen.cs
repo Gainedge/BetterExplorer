@@ -440,7 +440,7 @@ namespace BetterExplorer
             {
                 case ArchiveAction.Compress:
                     _commpressingFileName = "Compressing \"{0}\"";
-                    lbl_compressing_to.Text = String.Format("Compressing to \"{0}\"", _archivePath);
+                    lbl_compressing_to.Text = $"Compressing to \"{_archivePath}\"";
                     _thread = new SafeThread(new ThreadStart(Compress));
                     _thread.ShouldReportThreadAbort = false;
 
@@ -449,13 +449,13 @@ namespace BetterExplorer
 
                 case ArchiveAction.Extract:
                     _commpressingFileName = "Extracting \"{0}\"";
-                    lbl_compressing_to.Text = String.Format("Extracting to \"{0}\"", _archivePath);
+                    lbl_compressing_to.Text = $"Extracting to \"{_archivePath}\"";
                     _thread = new SafeThread(new ThreadStart(Extract));
                     break;
 
                 case ArchiveAction.RemoveFile:
                     _commpressingFileName = "Compressing \"{0}\"";
-                    lbl_compressing_to.Text = String.Format("Compressing to \"{0}\"", _archivePath);
+                    lbl_compressing_to.Text = $"Compressing to \"{_archivePath}\"";
                     _thread = new SafeThread(new ThreadStart(RemoveFile));
                     break;
             }

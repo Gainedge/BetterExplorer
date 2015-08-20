@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime, Path=ProductTitle}" 
     x:Uid="idAboutBox"
-    Style="{DynamicResource AboutDialogStyle}" WindowStartupLocation="CenterOwner" Closed="Window_Closed">
+    Style="{DynamicResource AboutDialogStyle}" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <XmlDataProvider x:Key="aboutProvider" XPath="ApplicationInfo" IsAsynchronous="False" IsInitialLoadEnabled="True">
             <x:XData>

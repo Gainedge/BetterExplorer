@@ -32,255 +32,242 @@ using System.Windows.Resources;
 using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 
-namespace Hardcodet.Wpf.TaskbarNotification {
-	/// <summary>
-	/// Util and extension methods.
-	/// </summary>
-	internal static class Util {
-		public static readonly object SyncRoot = new object();
+namespace Hardcodet.Wpf.TaskbarNotification
+{
+    /// <summary>
+    /// Util and extension methods.
+    /// </summary>
+    internal static class Util
+    {
+        public static readonly object SyncRoot = new object();
 
-		#region IsDesignMode
+        #region IsDesignMode
 
-		private static readonly bool isDesignMode;
+        private static readonly bool isDesignMode;
 
-		/// <summary>
-		/// Checks whether the application is currently in design mode.
-		/// </summary>
-		public static bool IsDesignMode {
-			get { return isDesignMode; }
-		}
+        /// <summary>
+        /// Checks whether the application is currently in design mode.
+        /// </summary>
+        public static bool IsDesignMode => isDesignMode;
 
-		#endregion
+        #endregion
 
-		#region construction
+        #region construction
 
-		static Util() {
-			isDesignMode =
-				(bool)DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty, typeof(FrameworkElement)).Metadata.DefaultValue;
-		}
+        static Util()
+        {
+            isDesignMode = (bool)DependencyPropertyDescriptor.FromProperty(DesignerProperties.IsInDesignModeProperty, typeof(FrameworkElement)).Metadata.DefaultValue;
+        }
 
-		#endregion
+        #endregion
 
-		/*
-		#region CreateHelperWindow
+        #region WriteIconData
 
-		/// <summary>
-		/// Creates an transparent window without dimension that
-		/// can be used to temporarily obtain focus and/or
-		/// be used as a window message sink.
-		/// </summary>
-		/// <returns>Empty window.</returns>
-		public static Window CreateHelperWindow() {
-			return new Window {
-				Width = 0,
-				Height = 0,
-				ShowInTaskbar = false,
-				WindowStyle = WindowStyle.None,
-				AllowsTransparency = true,
-				Opacity = 0
-			};
-		}
+        /// <summary>
+        /// Updates the taskbar icons with data provided by a given
+        /// <see cref="NotifyIconData"/> instance.
+        /// </summary>
+        /// <param name="data">Configuration settings for the NotifyIcon.</param>
+        /// <param name="command">Operation on the icon (e.g. delete the icon).</param>
+        /// <returns>True if the data was successfully written.</returns>
+        /// <remarks>See Shell_NotifyIcon documentation on MSDN for details.</remarks>
+        public static bool WriteIconData(ref NotifyIconData data, NotifyCommand command) => WriteIconData(ref data, command, data.ValidMembers);
 
-		#endregion
-		*/
+        /// <summary>
+        /// Updates the taskbar icons with data provided by a given
+        /// <see cref="NotifyIconData"/> instance.
+        /// </summary>
+        /// <param name="data">Configuration settings for the NotifyIcon.</param>
+        /// <param name="command">Operation on the icon (e.g. delete the icon).</param>
+        /// <param name="flags">Defines which members of the <paramref name="data"/>
+        /// structure are set.</param>
+        /// <returns>True if the data was successfully written.</returns>
+        /// <remarks>See Shell_NotifyIcon documentation on MSDN for details.</remarks>
+        public static bool WriteIconData(ref NotifyIconData data, NotifyCommand command, IconDataMembers flags)
+        {
+            //do nothing if in design mode
+            if (IsDesignMode) return true;
 
-		#region WriteIconData
+            data.ValidMembers = flags;
+            lock (SyncRoot)
+            {
+                return WinApi.Shell_NotifyIcon(command, ref data);
+            }
+        }
 
-		/// <summary>
-		/// Updates the taskbar icons with data provided by a given
-		/// <see cref="NotifyIconData"/> instance.
-		/// </summary>
-		/// <param name="data">Configuration settings for the NotifyIcon.</param>
-		/// <param name="command">Operation on the icon (e.g. delete the icon).</param>
-		/// <returns>True if the data was successfully written.</returns>
-		/// <remarks>See Shell_NotifyIcon documentation on MSDN for details.</remarks>
-		public static bool WriteIconData(ref NotifyIconData data, NotifyCommand command) {
-			return WriteIconData(ref data, command, data.ValidMembers);
-		}
+        #endregion
 
+        #region GetBalloonFlag
 
-		/// <summary>
-		/// Updates the taskbar icons with data provided by a given
-		/// <see cref="NotifyIconData"/> instance.
-		/// </summary>
-		/// <param name="data">Configuration settings for the NotifyIcon.</param>
-		/// <param name="command">Operation on the icon (e.g. delete the icon).</param>
-		/// <param name="flags">Defines which members of the <paramref name="data"/>
-		/// structure are set.</param>
-		/// <returns>True if the data was successfully written.</returns>
-		/// <remarks>See Shell_NotifyIcon documentation on MSDN for details.</remarks>
-		public static bool WriteIconData(ref NotifyIconData data, NotifyCommand command, IconDataMembers flags) {
-			//do nothing if in design mode
-			if (IsDesignMode) return true;
+        /// <summary>
+        /// Gets a <see cref="BalloonFlags"/> enum value that
+        /// matches a given <see cref="BalloonIcon"/>.
+        /// </summary>
+        public static BalloonFlags GetBalloonFlag(this BalloonIcon icon)
+        {
+            switch (icon)
+            {
+                case BalloonIcon.None:
+                    return BalloonFlags.None;
+                case BalloonIcon.Info:
+                    return BalloonFlags.Info;
+                case BalloonIcon.Warning:
+                    return BalloonFlags.Warning;
+                case BalloonIcon.Error:
+                    return BalloonFlags.Error;
+                default:
+                    throw new ArgumentOutOfRangeException("icon");
+            }
+        }
 
-			data.ValidMembers = flags;
-			lock (SyncRoot) {
-				return WinApi.Shell_NotifyIcon(command, ref data);
-			}
-		}
+        #endregion
 
-		#endregion
+        #region ImageSource to Icon
 
-		#region GetBalloonFlag
+        /// <summary>
+        /// Reads a given image resource into a WinForms icon.
+        /// </summary>
+        /// <param name="imageSource">Image source pointing to
+        /// an icon file (*.ico).</param>
+        /// <returns>An icon object that can be used with the
+        /// taskbar area.</returns>
+        public static Icon ToIcon(this ImageSource imageSource)
+        {
+            if (imageSource == null) return null;
 
-		/// <summary>
-		/// Gets a <see cref="BalloonFlags"/> enum value that
-		/// matches a given <see cref="BalloonIcon"/>.
-		/// </summary>
-		public static BalloonFlags GetBalloonFlag(this BalloonIcon icon) {
-			switch (icon) {
-				case BalloonIcon.None:
-					return BalloonFlags.None;
-				case BalloonIcon.Info:
-					return BalloonFlags.Info;
-				case BalloonIcon.Warning:
-					return BalloonFlags.Warning;
-				case BalloonIcon.Error:
-					return BalloonFlags.Error;
-				default:
-					throw new ArgumentOutOfRangeException("icon");
-			}
-		}
+            Uri uri = new Uri(imageSource.ToString());
+            StreamResourceInfo streamInfo = Application.GetResourceStream(uri);
 
-		#endregion
+            if (streamInfo == null)
+            {
+                throw new ArgumentException($"The supplied image source '{imageSource}' could not be resolved.");
+            }
 
-		#region ImageSource to Icon
+            return new Icon(streamInfo.Stream);
+        }
 
-		/// <summary>
-		/// Reads a given image resource into a WinForms icon.
-		/// </summary>
-		/// <param name="imageSource">Image source pointing to
-		/// an icon file (*.ico).</param>
-		/// <returns>An icon object that can be used with the
-		/// taskbar area.</returns>
-		public static Icon ToIcon(this ImageSource imageSource) {
-			if (imageSource == null) return null;
+        #endregion
 
-			Uri uri = new Uri(imageSource.ToString());
-			StreamResourceInfo streamInfo = Application.GetResourceStream(uri);
+        #region evaluate listings
 
-			if (streamInfo == null) {
-				string msg = "The supplied image source '{0}' could not be resolved.";
-				msg = String.Format(msg, imageSource);
-				throw new ArgumentException(msg);
-			}
+        /// <summary>
+        /// Checks a list of candidates for equality to a given
+        /// reference value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value">The evaluated value.</param>
+        /// <param name="candidates">A liste of possible values that are
+        /// regarded valid.</param>
+        /// <returns>True if one of the submitted <paramref name="candidates"/>
+        /// matches the evaluated value. If the <paramref name="candidates"/>
+        /// parameter itself is null, too, the method returns false as well,
+        /// which allows to check with null values, too.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="candidates"/>
+        /// is a null reference.</exception>
+        public static bool Is<T>(this T value, params T[] candidates)
+        {
+            if (candidates == null) return false;
 
-			return new Icon(streamInfo.Stream);
-		}
+            foreach (var t in candidates)
+            {
+                if (value.Equals(t)) return true;
+            }
 
-		#endregion
+            return false;
+        }
 
-		#region evaluate listings
+        #endregion
 
-		/// <summary>
-		/// Checks a list of candidates for equality to a given
-		/// reference value.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="value">The evaluated value.</param>
-		/// <param name="candidates">A liste of possible values that are
-		/// regarded valid.</param>
-		/// <returns>True if one of the submitted <paramref name="candidates"/>
-		/// matches the evaluated value. If the <paramref name="candidates"/>
-		/// parameter itself is null, too, the method returns false as well,
-		/// which allows to check with null values, too.</returns>
-		/// <exception cref="ArgumentNullException">If <paramref name="candidates"/>
-		/// is a null reference.</exception>
-		public static bool Is<T>(this T value, params T[] candidates) {
-			if (candidates == null) return false;
+        #region match MouseEvent to PopupActivation
 
-			foreach (var t in candidates) {
-				if (value.Equals(t)) return true;
-			}
+        /// <summary>
+        /// Checks if a given <see cref="PopupActivationMode"/> is a match for
+        /// an effectively pressed mouse button.
+        /// </summary>
+        public static bool IsMatch(this MouseEvent me, PopupActivationMode activationMode)
+        {
+            switch (activationMode)
+            {
+                case PopupActivationMode.LeftClick:
+                    return me == MouseEvent.IconLeftMouseUp;
+                case PopupActivationMode.RightClick:
+                    return me == MouseEvent.IconRightMouseUp;
+                case PopupActivationMode.LeftOrRightClick:
+                    return me.Is(MouseEvent.IconLeftMouseUp, MouseEvent.IconRightMouseUp);
+                case PopupActivationMode.LeftOrDoubleClick:
+                    return me.Is(MouseEvent.IconLeftMouseUp, MouseEvent.IconDoubleClick);
+                case PopupActivationMode.DoubleClick:
+                    return me.Is(MouseEvent.IconDoubleClick);
+                case PopupActivationMode.MiddleClick:
+                    return me == MouseEvent.IconMiddleMouseUp;
+                case PopupActivationMode.All:
+                    //return true for everything except mouse movements
+                    return me != MouseEvent.MouseMove;
+                default:
+                    throw new ArgumentOutOfRangeException("activationMode");
+            }
+        }
 
-			return false;
-		}
+        #endregion
 
-		#endregion
+        #region execute command
 
-		#region match MouseEvent to PopupActivation
+        /// <summary>
+        /// Executes a given command if its <see cref="ICommand.CanExecute"/> method
+        /// indicates it can run.
+        /// </summary>
+        /// <param name="command">The command to be executed, or a null reference.</param>
+        /// <param name="commandParameter">An optional parameter that is associated with
+        /// the command.</param>
+        /// <param name="target">The target element on which to raise the command.</param>
+        public static void ExecuteIfEnabled(this ICommand command, object commandParameter, IInputElement target)
+        {
+            if (command == null) return;
 
-		/// <summary>
-		/// Checks if a given <see cref="PopupActivationMode"/> is a match for
-		/// an effectively pressed mouse button.
-		/// </summary>
-		public static bool IsMatch(this MouseEvent me, PopupActivationMode activationMode) {
-			switch (activationMode) {
-				case PopupActivationMode.LeftClick:
-					return me == MouseEvent.IconLeftMouseUp;
-				case PopupActivationMode.RightClick:
-					return me == MouseEvent.IconRightMouseUp;
-				case PopupActivationMode.LeftOrRightClick:
-					return me.Is(MouseEvent.IconLeftMouseUp, MouseEvent.IconRightMouseUp);
-				case PopupActivationMode.LeftOrDoubleClick:
-					return me.Is(MouseEvent.IconLeftMouseUp, MouseEvent.IconDoubleClick);
-				case PopupActivationMode.DoubleClick:
-					return me.Is(MouseEvent.IconDoubleClick);
-				case PopupActivationMode.MiddleClick:
-					return me == MouseEvent.IconMiddleMouseUp;
-				case PopupActivationMode.All:
-					//return true for everything except mouse movements
-					return me != MouseEvent.MouseMove;
-				default:
-					throw new ArgumentOutOfRangeException("activationMode");
-			}
-		}
+            var rc = command as RoutedCommand;
+            if (rc != null)
+            {
+                //routed commands work on a target
+                if (rc.CanExecute(commandParameter, target)) rc.Execute(commandParameter, target);
+            }
+            else if (command.CanExecute(commandParameter))
+            {
+                command.Execute(commandParameter);
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region execute command
+        /// <summary>
+        /// Returns a dispatcher for multi-threaded scenarios
+        /// </summary>
+        /// <returns></returns>
+        internal static Dispatcher GetDispatcher(this DispatcherObject source)
+        {
+            //use the application's dispatcher by default
+            if (Application.Current != null) return Application.Current.Dispatcher;
 
-		/// <summary>
-		/// Executes a given command if its <see cref="ICommand.CanExecute"/> method
-		/// indicates it can run.
-		/// </summary>
-		/// <param name="command">The command to be executed, or a null reference.</param>
-		/// <param name="commandParameter">An optional parameter that is associated with
-		/// the command.</param>
-		/// <param name="target">The target element on which to raise the command.</param>
-		public static void ExecuteIfEnabled(this ICommand command, object commandParameter, IInputElement target) {
-			if (command == null) return;
+            //fallback for WinForms environments
+            if (source.Dispatcher != null) return source.Dispatcher;
 
-			RoutedCommand rc = command as RoutedCommand;
-			if (rc != null) {
-				//routed commands work on a target
-				if (rc.CanExecute(commandParameter, target)) rc.Execute(commandParameter, target);
-			}
-			else if (command.CanExecute(commandParameter)) {
-				command.Execute(commandParameter);
-			}
-		}
-
-		#endregion
-
-		/// <summary>
-		/// Returns a dispatcher for multi-threaded scenarios
-		/// </summary>
-		/// <returns></returns>
-		internal static Dispatcher GetDispatcher(this DispatcherObject source) {
-			//use the application's dispatcher by default
-			if (Application.Current != null) return Application.Current.Dispatcher;
-
-			//fallback for WinForms environments
-			if (source.Dispatcher != null) return source.Dispatcher;
-
-			//ultimatively use the thread's dispatcher
-			return Dispatcher.CurrentDispatcher;
-		}
+            //ultimatively use the thread's dispatcher
+            return Dispatcher.CurrentDispatcher;
+        }
 
 
-		/// <summary>
-		/// Checks whether the <see cref="FrameworkElement.DataContextProperty"/>
-		///  is bound or not.
-		/// </summary>
-		/// <param name="element">The element to be checked.</param>
-		/// <returns>True if the data context property is being managed by a
-		/// binding expression.</returns>
-		/// <exception cref="ArgumentNullException">If <paramref name="element"/>
-		/// is a null reference.</exception>
-		public static bool IsDataContextDataBound(this FrameworkElement element) {
-			if (element == null) throw new ArgumentNullException("element");
-			return element.GetBindingExpression(FrameworkElement.DataContextProperty) != null;
-		}
-	}
+        /// <summary>
+        /// Checks whether the <see cref="FrameworkElement.DataContextProperty"/>
+        ///  is bound or not.
+        /// </summary>
+        /// <param name="element">The element to be checked.</param>
+        /// <returns>True if the data context property is being managed by a
+        /// binding expression.</returns>
+        /// <exception cref="ArgumentNullException">If <paramref name="element"/>
+        /// is a null reference.</exception>
+        public static bool IsDataContextDataBound(this FrameworkElement element)
+        {
+            if (element == null) throw new ArgumentNullException("element");
+            return element.GetBindingExpression(FrameworkElement.DataContextProperty) != null;
+        }
+    }
 }

@@ -169,9 +169,7 @@ namespace Hardcodet.Wpf.TaskbarNotification
             if (balloon == null) throw new ArgumentNullException("balloon");
             if (timeout.HasValue && timeout < 500)
             {
-                string msg = "Invalid timeout of {0} milliseconds. Timeout must be at least 500 ms";
-                msg = String.Format(msg, timeout);
-                throw new ArgumentOutOfRangeException("timeout", msg);
+                throw new ArgumentOutOfRangeException("timeout", $"Invalid timeout of {timeout} milliseconds. Timeout must be at least 500 ms");
             }
 
             EnsureNotDisposed();
