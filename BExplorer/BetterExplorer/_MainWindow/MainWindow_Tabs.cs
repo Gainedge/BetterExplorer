@@ -13,8 +13,8 @@ namespace BetterExplorer {
 
 		private void InitializeInitialTabs() {
 			var InitialTabs = Utilities.GetRegistryValue("OpenedTabs", "").ToString().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-			if (InitialTabs.Length == 0 || !IsrestoreTabs) {
-				var sho = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, tcMain.StartUpLocation.ToShellParsingName());
+			if (InitialTabs.Length == 0 || !_IsrestoreTabs) {
+				var sho = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, tcMain.StartUpLocation.ToShellParsingName());
 
 				if (tcMain.Items.OfType<Wpf.Controls.TabItem>().Any())
 					NavigationController(sho);
@@ -23,7 +23,7 @@ namespace BetterExplorer {
 					this.SelectTab(tab);
 				}
 			}
-			if (IsrestoreTabs) {
+			if (_IsrestoreTabs) {
 				isOnLoad = true;
 				int i = 0;
 				foreach (string str in InitialTabs) {
@@ -32,7 +32,7 @@ namespace BetterExplorer {
 						if (str.ToLowerInvariant() == "::{22877a6d-37a1-461a-91b0-dbda5aaebc99}") {
 							continue;
 						}
-						var tab = tcMain.NewTab(FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, str.ToShellParsingName()), i == InitialTabs.Length);
+						var tab = tcMain.NewTab(FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, str.ToShellParsingName()), i == InitialTabs.Length);
 						if (i == InitialTabs.Length)
 							this.SelectTab(tab);
 					}
@@ -46,9 +46,9 @@ namespace BetterExplorer {
 					tcMain.NewTab();
 
 					string idk = tcMain.StartUpLocation.StartsWith("::") ? tcMain.StartUpLocation.ToShellParsingName() : tcMain.StartUpLocation.Replace("\"", "");
-					NavigationController(FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, idk));
-					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = ShellListView.CurrentFolder;
-          (tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = ShellListView.CurrentFolder.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
+					NavigationController(FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, idk));
+					(tcMain.SelectedItem as Wpf.Controls.TabItem).ShellObject = _ShellListView.CurrentFolder;
+          (tcMain.SelectedItem as Wpf.Controls.TabItem).ToolTip = _ShellListView.CurrentFolder.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
 				}
 
 				isOnLoad = false;
@@ -57,7 +57,7 @@ namespace BetterExplorer {
 
 		private void SelectTab(Wpf.Controls.TabItem tab) {
 			if (tab == null) return;
-			if (!tab.ShellObject.Equals(this.ShellListView.CurrentFolder) || tab.ShellObject.IsSearchFolder) {
+			if (!tab.ShellObject.Equals(this._ShellListView.CurrentFolder) || tab.ShellObject.IsSearchFolder) {
 				tcMain.isGoingBackOrForward = true;
 				NavigationController(tab.ShellObject);
 				var selectedItem = tab;
@@ -69,16 +69,16 @@ namespace BetterExplorer {
 					var selectedPaths = selectedItem.SelectedItems;
 					if (selectedPaths != null && selectedPaths.Any()) {
 						foreach (var path in selectedPaths.ToArray()) {
-							var sho = this.ShellListView.Items.Where(w => w.ParsingName == path).SingleOrDefault();
+							var sho = this._ShellListView.Items.Where(w => w.ParsingName == path).SingleOrDefault();
 							if (sho != null) {
-								var index = this.ShellListView.ItemsHashed[sho.GetUniqueID()];
-								this.ShellListView.SelectItemByIndex(60, true);
+								var index = this._ShellListView.ItemsHashed[sho.GetUniqueID()];
+								this._ShellListView.SelectItemByIndex(60, true);
 								selectedPaths.Remove(path);
 							}
 						}
 					}
 					else {
-						this.ShellListView.ScrollToTop();
+						this._ShellListView.ScrollToTop();
 					}
 				}
 			}
@@ -88,7 +88,7 @@ namespace BetterExplorer {
 			btnMoveto.Items.Clear();
 			btnCopyto.Items.Clear();
 
-			var sod = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, ((ShellItem)KnownFolders.Desktop).Pidl);
+			var sod = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, ((ShellItem)KnownFolders.Desktop).Pidl);
 			var bmpSourceDesktop = sod.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 
 			var OtherLocationMove = Utilities.Build_MenuItem(FindResource("miOtherDestCP"), onClick: new RoutedEventHandler(btnmtOther_Click));
@@ -98,7 +98,7 @@ namespace BetterExplorer {
 
 			MenuItem mimDocuments = new MenuItem(), micDocuments = new MenuItem();
 			try {
-				var sodc = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, ((ShellItem)KnownFolders.Documents).Pidl);
+				var sodc = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, ((ShellItem)KnownFolders.Documents).Pidl);
 				var bmpSourceDocuments = sodc.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 
 				mimDocuments = Utilities.Build_MenuItem(FindResource("btnctDocumentsCP"), icon: bmpSourceDocuments, onClick: new RoutedEventHandler(btnmtDocuments_Click));
@@ -112,7 +112,7 @@ namespace BetterExplorer {
 
 			MenuItem mimDownloads = new MenuItem(), micDownloads = new MenuItem();
 			try {
-				var sodd = FileSystemListItem.ToFileSystemItem(this.ShellListView.LVHandle, ((ShellItem)KnownFolders.Downloads).Pidl);
+				var sodd = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, ((ShellItem)KnownFolders.Downloads).Pidl);
 				var bmpSourceDownloads = sodd.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 
 				mimDownloads = Utilities.Build_MenuItem(FindResource("btnctDownloadsCP"), icon: bmpSourceDownloads, onClick: new RoutedEventHandler(btnmtDounloads_Click));
