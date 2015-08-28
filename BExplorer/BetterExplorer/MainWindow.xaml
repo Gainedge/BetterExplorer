@@ -326,17 +326,7 @@
 							       Content="Dimitar Tsenev"
 							       FontSize="14"
 							       FontStyle="Italic"
-							       FontWeight="Bold" />
-                    <Label Margin="20,0,40,0"
-							       Content="Jayke R. Huempfner (JaykeBird)"
-							       FontSize="14"
-							       FontStyle="Italic"
-							       FontWeight="Bold" />
-                    <Label Margin="20,0,40,0"
-							       Content="Sebastien Kerguen"
-							       FontSize="14"
-							       FontStyle="Italic"
-							       FontWeight="Bold" />
+							       FontWeight="DemiBold" />
                     <Label Margin="20,0,40,0"
 							       Content="Markus Lang"
 							       FontSize="14"
@@ -347,6 +337,11 @@
 							       FontSize="14"
 							       FontStyle="Italic"
 							       FontWeight="Bold" />
+                    <Label Margin="20,0,40,0"
+							       Content="Jayke R. Huempfner (JaykeBird)"
+							       FontSize="14"
+							       FontStyle="Normal"
+							       FontWeight="Normal" />
                     <!--<Label Margin="20,0,40,0"
 							 Content="Alexey Barkalov"
 							 FontSize="14"
@@ -363,7 +358,7 @@
 							 Margin="20,0,0,0"
 							 Content="32-bit Version"
 							 FontSize="12" />
-                    <Label Margin="20,0,0,0" Content="© 2014. All right reserved." />
+                    <Label Margin="20,0,0,0" Content="© 2015. All right reserved." />
                     <Ribbon:SeparatorTabItem Margin="0,20,50,0"
 											 Header="Credits"
 											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />

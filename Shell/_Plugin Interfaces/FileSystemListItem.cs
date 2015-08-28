@@ -113,7 +113,13 @@ namespace BExplorer.Shell._Plugin_Interfaces
 
         public IntPtr ParentHandle { get; set; }
 
-        public void Initialize(IntPtr lvHandle, string path, int index)
+	    public static IListItemEx InitializeWithIShellItem(IntPtr lvHandle, IShellItem item) {
+				var fsItem = new FileSystemListItem();
+				fsItem.Initialize(lvHandle, new ShellItem(item).Pidl, 0);
+				return fsItem;
+		}
+
+	    public void Initialize(IntPtr lvHandle, string path, int index)
         {
             var item = new ShellItem(path);
             this.DisplayName = item.DisplayName;
