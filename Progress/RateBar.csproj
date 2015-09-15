@@ -42,7 +42,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.JScript" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -60,7 +59,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\JScriptConverter.cs" />
+    <Compile Include="Common\MathConverter.cs" />
     <Compile Include="Common\RateBase.cs" />
     <Compile Include="RateGraph.xaml.cs">
       <DependentUpon>RateGraph.xaml</DependentUpon>

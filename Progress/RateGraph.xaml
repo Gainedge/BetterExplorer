@@ -1,39 +1,39 @@
-﻿<rb:RateBase x:Class="RateBar.RateGraph" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:rb="clr-namespace:RateBar" mc:Ignorable="d">
-    <RangeBase.Resources>
-      
-        <rb:JScriptConverter x:Key="JScript" TrapExceptions="False"/>
-        <ControlTemplate x:Key="rateGraphTemplate" TargetType="{x:Type rb:RateBase}">
-            <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <rb:Axis Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}" Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualHeight}"/>
-                <Rectangle Fill="#9690EE90" Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualHeight}">
-                    <Rectangle.Width>
-                        <MultiBinding Converter="{StaticResource JScript}" ConverterParameter="values[0]/values[1]*values[2]">
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Value"/>
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Maximum"/>
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Width"/>
-                        </MultiBinding>
-                    </Rectangle.Width>
-                </Rectangle>
-                <Polygon Fill="#FF06B025" x:Name="graph" />
-                <Label Canvas.Left="0" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}" HorizontalContentAlignment="Right" Foreground="Black" Content="{Binding Path=Caption, RelativeSource={RelativeSource TemplatedParent}}">
-                    <Canvas.Bottom>
-                        <MultiBinding Converter="{StaticResource JScript}" ConverterParameter="(values[2]*1)/values[1]*values[0]">
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Rate"/>
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="RateMaximum"/>
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Height"/>
-                        </MultiBinding>
-                    </Canvas.Bottom>
-                </Label>
-                <Line X1="0" X2="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}" Stroke="Black">
-                    <Canvas.Bottom>
-                        <MultiBinding Converter="{StaticResource JScript}" ConverterParameter="(values[2]*1)/values[1]*values[0]">
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Rate"/>
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="RateMaximum"/>
-                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Height"/>
-                        </MultiBinding>
-                    </Canvas.Bottom>
-                </Line>
-            </Canvas>
-        </ControlTemplate>
-    </RangeBase.Resources>
+﻿<rb:RateBase x:Class="RateBar.RateGraph" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:rb="clr-namespace:RateBar" xmlns:math="clr-namespace:IKriv.Wpf"  mc:Ignorable="d">
+  <RangeBase.Resources>
+
+    <math:MathConverter x:Key="Math"/>
+    <ControlTemplate x:Key="rateGraphTemplate" TargetType="{x:Type rb:RateBase}">
+      <Canvas HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <rb:Axis Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}" Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualHeight}"/>
+        <Rectangle Fill="#9690EE90" Height="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualHeight}">
+          <Rectangle.Width>
+            <MultiBinding Converter="{StaticResource Math}" ConverterParameter="(x/y*z)">
+              <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Value"/>
+              <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Maximum"/>
+              <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Width"/>
+            </MultiBinding>
+          </Rectangle.Width>
+        </Rectangle>
+        <Polygon Fill="#FF06B025" x:Name="graph" />
+        <Label Canvas.Left="0" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}" HorizontalContentAlignment="Right" Foreground="Black" Content="{Binding Path=Caption, RelativeSource={RelativeSource TemplatedParent}}">
+          <Canvas.Bottom>
+            <MultiBinding Converter="{StaticResource Math}" ConverterParameter="(z*1)/y*x">
+              <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Rate"/>
+              <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="RateMaximum"/>
+              <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Height"/>
+            </MultiBinding>
+          </Canvas.Bottom>
+        </Label>
+        <Line X1="0" X2="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}" Stroke="Black">
+          <Canvas.Bottom>
+            <MultiBinding Converter="{StaticResource Math}" ConverterParameter="(z*1)/y*x">
+              <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Rate"/>
+              <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="RateMaximum"/>
+              <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Height"/>
+            </MultiBinding>
+          </Canvas.Bottom>
+        </Line>
+      </Canvas>
+    </ControlTemplate>
+  </RangeBase.Resources>
 </rb:RateBase>

@@ -69,10 +69,6 @@
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Fluent, Version=3.0.2.0, Culture=neutral, PublicKeyToken=3e436e32a8c5546f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\FluentRibbon\Fluent.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -96,10 +92,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\FluentRibbon\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -312,6 +304,10 @@
     <ProjectReference Include="..\Progress\RateBar.csproj">
       <Project>{bfbd2f46-ed5f-49a3-abad-9ba571ef073e}</Project>
       <Name>RateBar</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UnbufferedFO\GS.Common.IO\UnbufferedIO.csproj">
+      <Project>{ec0d64f9-9f48-4c35-a3b6-e1d8256b76d9}</Project>
+      <Name>UnbufferedIO</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

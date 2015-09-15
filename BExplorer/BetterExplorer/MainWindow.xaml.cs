@@ -3729,7 +3729,7 @@ item.IsChecked = false;
 			//TaskBar.SetCurrentProcessAppId("{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}");
 
 			//TODO: Test
-			BExplorer.Shell.Interop.Shell32.SetCurrentProcessExplicitAppUserModelID("{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}");
+			//BExplorer.Shell.Interop.Shell32.SetCurrentProcessExplicitAppUserModelID("{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}");
 
 			this.CommandBindings.AddRange(new[]
 			{

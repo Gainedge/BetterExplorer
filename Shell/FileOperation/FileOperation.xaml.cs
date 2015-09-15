@@ -30,9 +30,29 @@ namespace BExplorer.Shell {
 		DateTime OperationStartTime = DateTime.Now;
 		Dictionary<String, long> oldbyteVlaues = new Dictionary<string, long>();
 		DateTime LastMeasuredTime = DateTime.Now;
+		public List<AsyncUnbuffCopy> Operations = new List<AsyncUnbuffCopy>();
 
 		public FileOperation() {
 			InitializeComponent();
+		}
+
+		public void AddOperation(AsyncUnbuffCopy operation) {
+			operation.OnProgress += Operation_OnProgress;
+			this.Operations.Add(operation);
+		}
+
+		private void Operation_OnProgress(object sender, CopyEventArgs e) {
+			Double precentComplete = ((Double)e.BytesTransferred/e.TotalBytes)*100d;
+			Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+						(Action)(() => {
+							this.prOverallProgress.Maximum = 100;
+							this.prOverallProgress.Rate = 60;
+							this.prOverallProgress.Value = precentComplete;
+							if (precentComplete == 100.0) {
+								this.ParentContents.Contents.Remove(this);
+							}
+						}));
+			
 		}
 	}
 

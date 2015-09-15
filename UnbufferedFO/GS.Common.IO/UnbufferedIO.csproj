@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncJob.cs" />
+    <Compile Include="UnmanagedBufferPool.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="OverlappedStreamBuffered.cs" />
     <Compile Include="OverlappedStreamUnbuffered.cs" />
