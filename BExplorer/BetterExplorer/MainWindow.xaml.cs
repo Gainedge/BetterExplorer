@@ -2020,10 +2020,10 @@ selectedItems.Add(item.ParsingName);
 		private void btnManageLib_Click(object sender, RoutedEventArgs e) {
 			this._ShellListView.CurrentRefreshedItemIndex = this._ShellListView.GetFirstSelectedItemIndex();
 			try {
-				ShellLibrary.ShowManageLibraryUI(_ShellListView.GetFirstSelectedItem().DisplayName,
+				ShellLibrary.ShowManageLibraryUI(_ShellListView.GetFirstSelectedItem().ComInterface,
 						this.Handle, "Choose which folders will be in this library", "A library gathers content from all of the folders listed below and puts it all in one window for you to see.", true);
 			} catch {
-				ShellLibrary.ShowManageLibraryUI(_ShellListView.CurrentFolder.DisplayName,
+				ShellLibrary.ShowManageLibraryUI(_ShellListView.CurrentFolder.ComInterface,
 						this.Handle, "Choose which folders will be in this library", "A library gathers content from all of the folders listed below and puts it all in one window for you to see.", true);
 			}
 		}
@@ -3726,11 +3726,6 @@ item.IsChecked = false;
 		#region Misc
 
 		public MainWindow() {
-			//TaskBar.SetCurrentProcessAppId("{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}");
-
-			//TODO: Test
-			//BExplorer.Shell.Interop.Shell32.SetCurrentProcessExplicitAppUserModelID("{A8795DFC-A37C-41E1-BC3D-6BBF118E64AD}");
-
 			this.CommandBindings.AddRange(new[]
 			{
 								new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click),

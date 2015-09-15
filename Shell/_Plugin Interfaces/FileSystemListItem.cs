@@ -229,7 +229,7 @@ namespace BExplorer.Shell._Plugin_Interfaces
 
             HResult result = enumId.Next(1, out pidl, out count);
             var i = 0;
-            var parentItem = this.IsSearchFolder ? this._Item : new ShellItem(this.ParsingName.ToShellParsingName());
+	        var parentItem = new ShellItem(this._Item.Pidl); //this._Item;//this.IsSearchFolder ? this._Item : new ShellItem(this.ParsingName.ToShellParsingName());
             while (result == HResult.S_OK)
             {
                 var fsi = new FileSystemListItem();

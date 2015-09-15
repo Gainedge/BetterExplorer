@@ -418,8 +418,8 @@ namespace BExplorer.Shell
         {
             int hr = 0;
 
-            Thread staWorker = new Thread(() =>
-            {
+            //Thread staWorker = new Thread(() =>
+            //{
                 hr = Shell32.SHShowManageLibraryUI(
                         shellLibrary.ComInterface,
                         windowHandle,
@@ -428,24 +428,44 @@ namespace BExplorer.Shell
                         allowAllLocations ?
                              LibraryManageDialogOptions.NonIndexableLocationWarning :
                              LibraryManageDialogOptions.Default);
-            });
+            //});
 
-            staWorker.SetApartmentState(ApartmentState.STA);
-            staWorker.Start();
-            staWorker.Join();
+            //staWorker.SetApartmentState(ApartmentState.STA);
+            //staWorker.Start();
+            //staWorker.Join();
         }
 
-        /// <summary>
-        /// Shows the library management dialog which enables users to mange the library folders and default save location.
-        /// </summary>
-        /// <param name="libraryName">The name of the library</param>
-        /// <param name="folderPath">The path to the library.</param>
-        /// <param name="windowHandle">The parent window,or IntPtr.Zero for no parent</param>
-        /// <param name="title">A title for the library management dialog, or null to use the library name as the title</param>
-        /// <param name="instruction">An optional help string to display for the library management dialog</param>
-        /// <param name="allowAllLocations">If true, do not show warning dialogs about locations that cannot be indexed</param>
-        /// <remarks>If the library is already open in read-write mode, the dialog will not save the changes.</remarks>
-        public static void ShowManageLibraryUI(string libraryName, string folderPath, IntPtr windowHandle, string title, string instruction, bool allowAllLocations)
+				public static void ShowManageLibraryUI(IShellItem shellLibrary, IntPtr windowHandle, string title, string instruction, bool allowAllLocations) {
+					int hr = 0;
+
+					//Thread staWorker = new Thread(() =>
+					//{
+					hr = Shell32.SHShowManageLibraryUI(
+									shellLibrary,
+									windowHandle,
+									title,
+									instruction,
+									allowAllLocations ?
+											 LibraryManageDialogOptions.NonIndexableLocationWarning :
+											 LibraryManageDialogOptions.Default);
+					//});
+
+					//staWorker.SetApartmentState(ApartmentState.STA);
+					//staWorker.Start();
+					//staWorker.Join();
+				}
+
+		/// <summary>
+		/// Shows the library management dialog which enables users to mange the library folders and default save location.
+		/// </summary>
+		/// <param name="libraryName">The name of the library</param>
+		/// <param name="folderPath">The path to the library.</param>
+		/// <param name="windowHandle">The parent window,or IntPtr.Zero for no parent</param>
+		/// <param name="title">A title for the library management dialog, or null to use the library name as the title</param>
+		/// <param name="instruction">An optional help string to display for the library management dialog</param>
+		/// <param name="allowAllLocations">If true, do not show warning dialogs about locations that cannot be indexed</param>
+		/// <remarks>If the library is already open in read-write mode, the dialog will not save the changes.</remarks>
+		public static void ShowManageLibraryUI(string libraryName, string folderPath, IntPtr windowHandle, string title, string instruction, bool allowAllLocations)
         {
             // this method is not safe for MTA consumption and will blow
             // Access Violations if called from an MTA thread so we wrap this
