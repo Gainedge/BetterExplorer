@@ -308,15 +308,11 @@ namespace Odyssey.Controls
                             bool isValidPidl = Int64.TryParse(_Path.TrimEnd(Char.Parse(@"\")), out pidl);
                             try
                             {
-
-
-
                                 var item = isValidPidl ? FileSystemListItem.ToFileSystemItem(IntPtr.Zero, (IntPtr)pidl) : FileSystemListItem.ToFileSystemItem(IntPtr.Zero, _Path.ToShellParsingName());
                                 if (item != null && this._ShouldNavigate)
                                     OnNavigate(item);
                                 else
                                     this._ShouldNavigate = true;
-
                             }
                             catch (Exception)
                             {
@@ -450,7 +446,6 @@ namespace Odyssey.Controls
         private static void IsDropDownOpenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             BreadcrumbBar bar = d as BreadcrumbBar;
-
             bar.OnDropDownOpenChanged((bool)e.OldValue, (bool)e.NewValue);
         }
 
