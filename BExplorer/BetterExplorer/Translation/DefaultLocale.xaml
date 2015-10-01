@@ -415,5 +415,15 @@
     <system:String x:Key="chkIsCFO">Use custom file operations dialog</system:String>
     <system:String x:Key="chkIsCFO_Tooltip_Title">Custom file operations dialog</system:String>
     <system:String x:Key="chkIsCFO_Tooltip_Text">Enables different copy/move/delete dialogs</system:String>
+    <system:String x:Key="lblLanguageCP_2">Depending on the language, not all commands have been translated.</system:String>
+    <system:String x:Key="chkIsFlyout">Show Hover Flyout (incomplete, experimental feature)</system:String>
+    <system:String x:Key="chkIsFlyout_Tooltip">Display a small box as you move your mouse above files (this is part of a feature that has not been completed yet)</system:String>
+    <system:String x:Key="chkEditOverwrite_Text">When you rotate or flip an image, BetterExplorer saves the rotated or flipped image as a new file by default. If this is checked, BetterExplorer will instead overwrite this file, causing you to lose all previous data associated with it.</system:String>
     <system:String x:Key="blank">v</system:String>
+    <system:String x:Key="blank">v</system:String>
+    <system:String x:Key="blank">v</system:String>
+    <system:String x:Key="blank">v</system:String>
+    <system:String x:Key="blank">v</system:String>
+    <system:String x:Key="blank">v</system:String>
+
 </ResourceDictionary>

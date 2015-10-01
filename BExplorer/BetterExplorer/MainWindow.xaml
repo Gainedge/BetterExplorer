@@ -629,153 +629,206 @@
                                         <!--  <Label Content="Supported codes:" Margin="0,5,0,0" />  -->
                                         <!--  <Label Content="en-US - English(US)" Margin="0,0,0,0" />  -->
                                         <!--  <Label Content="bg-BG - Bulgarian" Margin="0,0,0,0" />  -->
-                                        <Ribbon:ComboBox x:Name="TranslationComboBox"
-										 Width="250"
-										 Height="40"
-										 Margin="0,5,0,0"
-										 HorizontalAlignment="Left"
-										 HorizontalContentAlignment="Stretch"
-										 CanAddToQuickAccessToolBar="False"
-										 DropDownHeight="200"
-										 SelectionChanged="TranslationComboBox_SelectionChanged"
-										 Style="{DynamicResource ComboBoxBackstageStyle}" DropDownOpened="TranslationComboBox_DropDownOpened">
-                                            <controls:TranslationComboBoxItem x:Name="nullLang"
-															LanguageText="Use OS GUI Language"
-															LocaleCode=":null:"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="bgBGLang"
-															CountryFlag="Translation\Flags\BG.gif"
-															LanguageText="Bulgarian (Български)"
-															LocaleCode="bg-BG"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="hrHRLang"
-															CountryFlag="Translation\Flags\HR.gif"
-															LanguageText="Croatian"
-															LocaleCode="hr-HR"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="zhCNLang"
-															CountryFlag="Translation\Flags\CN.gif"
-															LanguageText="Chinese (Simplified)"
-															LocaleCode="zh-CN"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="zhTWLang"
-															CountryFlag="Translation\Flags\TW.gif"
-															LanguageText="Chinese (Traditional)"
-															LocaleCode="zh-TW"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="csCZLang"
-															CountryFlag="Translation\Flags\CZ.gif"
-															LanguageText="Czech"
-															LocaleCode="cs-CZ"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="nlNLLang"
-															CountryFlag="Translation\Flags\NL.gif"
-															LanguageText="Dutch"
-															LocaleCode="nl-NL"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="enGBLang"
-															CountryFlag="Translation\Flags\GB.gif"
-															LanguageText="English (UK)"
-															LocaleCode="en-GB"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="enUSLang"
-															CountryFlag="Translation\Flags\US.gif"
-															LanguageText="English (US)"
-															LocaleCode="en-US"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="fiFILang"
-															CountryFlag="Translation\Flags\FI.gif"
-															LanguageText="Finnish"
-															LocaleCode="fi-FI"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="frFRLang"
-															CountryFlag="Translation\Flags\FR.gif"
-															LanguageText="French"
-															LocaleCode="fr-FR"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="deDELang"
-															CountryFlag="Translation\Flags\DE.gif"
-															LanguageText="German"
-															LocaleCode="de-DE"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="elGRLang"
-															CountryFlag="Translation\Flags\GR.gif"
-															LanguageText="Greek"
-															LocaleCode="el-GR"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="huHULang"
-															CountryFlag="Translation\Flags\HU.gif"
-															LanguageText="Hungarian"
-															LocaleCode="hu-HU"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="itITLang"
-															CountryFlag="Translation\Flags\IT.gif"
-															LanguageText="Italian"
-															LocaleCode="it-IT"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="jaJALang"
-															CountryFlag="Translation\Flags\JP.gif"
-															LanguageText="Japanese (日本語)"
-															LocaleCode="ja-JP"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="koKRLang"
-															CountryFlag="Translation\Flags\KR.gif"
-															LanguageText="Korean"
-															LocaleCode="ko-KR"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="plPLLang"
-															CountryFlag="Translation\Flags\PL.gif"
-															LanguageText="Polish"
-															LocaleCode="pl-PL"
-															UsesRTL="False" />
+                                        <Ribbon:ComboBox 
+                                            x:Name="TranslationComboBox"
+                                            Width="250"
+										    Height="40"
+										    Margin="0,5,0,0"
+										    HorizontalAlignment="Left"
+										    HorizontalContentAlignment="Stretch"
+										    CanAddToQuickAccessToolBar="False"
+										    DropDownHeight="200"
+										    SelectionChanged="TranslationComboBox_SelectionChanged"
+                                            Style="{DynamicResource ComboBoxBackstageStyle}" 
+                                            DropDownOpened="TranslationComboBox_DropDownOpened">
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="nullLang"
+                                                LanguageText="Use OS GUI Language"
+                                                LocaleCode=":null:"
+                                                UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="bgBGLang"
+                                                CountryFlag="Translation\Flags\BG.gif"
+                                                LanguageText="Bulgarian (Български)"
+                                                LocaleCode="bg-BG"
+                                                UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="hrHRLang"
+												CountryFlag="Translation\Flags\HR.gif"
+												LanguageText="Croatian"
+												LocaleCode="hr-HR"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="zhCNLang"
+												CountryFlag="Translation\Flags\CN.gif"
+												LanguageText="Chinese (Simplified)"
+												LocaleCode="zh-CN"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="zhTWLang"
+												CountryFlag="Translation\Flags\TW.gif"
+												LanguageText="Chinese (Traditional)"
+												LocaleCode="zh-TW"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="csCZLang"
+												CountryFlag="Translation\Flags\CZ.gif"
+												LanguageText="Czech"
+												LocaleCode="cs-CZ"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="nlNLLang"
+												CountryFlag="Translation\Flags\NL.gif"
+												LanguageText="Dutch"
+												LocaleCode="nl-NL"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="enGBLang"
+												CountryFlag="Translation\Flags\GB.gif"
+												LanguageText="English (UK)"
+												LocaleCode="en-GB"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="enUSLang"
+												CountryFlag="Translation\Flags\US.gif"
+												LanguageText="English (US)"
+												LocaleCode="en-US"
+												UsesRTL="False"
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="fiFILang"
+												CountryFlag="Translation\Flags\FI.gif"
+												LanguageText="Finnish"
+												LocaleCode="fi-FI"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="frFRLang"
+												CountryFlag="Translation\Flags\FR.gif"
+												LanguageText="French"
+												LocaleCode="fr-FR"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="deDELang"
+												CountryFlag="Translation\Flags\DE.gif"
+												LanguageText="German"
+												LocaleCode="de-DE"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="elGRLang"
+												CountryFlag="Translation\Flags\GR.gif"
+												LanguageText="Greek"
+												LocaleCode="el-GR"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="huHULang"
+											    CountryFlag="Translation\Flags\HU.gif"
+											    LanguageText="Hungarian"
+											    LocaleCode="hu-HU"
+											    UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="itITLang"
+												CountryFlag="Translation\Flags\IT.gif"
+												LanguageText="Italian"
+												LocaleCode="it-IT"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="jaJALang"
+												CountryFlag="Translation\Flags\JP.gif"
+												LanguageText="Japanese (日本語)"
+												LocaleCode="ja-JP"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="koKRLang"
+												CountryFlag="Translation\Flags\KR.gif"
+												LanguageText="Korean"
+												LocaleCode="ko-KR"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="plPLLang"
+												CountryFlag="Translation\Flags\PL.gif"
+												LanguageText="Polish"
+												LocaleCode="pl-PL"
+												UsesRTL="False" 
+                                            />
                                             <controls:TranslationComboBoxItem x:Name="ptBRLang"
 															CountryFlag="Translation\Flags\BR.gif"
 															LanguageText="Portuguese"
 															LocaleCode="pt-BR"
 															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="ruRULang"
-															CountryFlag="Translation\Flags\RU.gif"
-															LanguageText="Russian"
-															LocaleCode="ru-RU"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="esESLang"
-															CountryFlag="Translation\Flags\ES.gif"
-															LanguageText="Spanish"
-															LocaleCode="es-ES"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="svSELang"
-															CountryFlag="Translation\Flags\SE.gif"
-															LanguageText="Swedish"
-															LocaleCode="sv-SE"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="trTRLang"
-															CountryFlag="Translation\Flags\TR.gif"
-															LanguageText="Turkish"
-															LocaleCode="tr-TR"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="ukUALang"
-															CountryFlag="Translation\Flags\UA.gif"
-															LanguageText="Ukrainian"
-															LocaleCode="uk-UA"
-															UsesRTL="False" />
-                                            <controls:TranslationComboBoxItem x:Name="viVNLang"
-															CountryFlag="Translation\Flags\VN.gif"
-															LanguageText="Vietnamese"
-															LocaleCode="vi-VN"
-															UsesRTL="False" />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="ruRULang"
+												CountryFlag="Translation\Flags\RU.gif"
+												LanguageText="Russian"
+												LocaleCode="ru-RU"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="esESLang"
+												CountryFlag="Translation\Flags\ES.gif"
+												LanguageText="Spanish"
+												LocaleCode="es-ES"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="svSELang"
+												CountryFlag="Translation\Flags\SE.gif"
+												LanguageText="Swedish"
+												LocaleCode="sv-SE"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="trTRLang"
+												CountryFlag="Translation\Flags\TR.gif"
+												LanguageText="Turkish"
+												LocaleCode="tr-TR"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="ukUALang"
+												CountryFlag="Translation\Flags\UA.gif"
+												LanguageText="Ukrainian"
+												LocaleCode="uk-UA"
+												UsesRTL="False" 
+                                            />
+                                            <controls:TranslationComboBoxItem 
+                                                x:Name="viVNLang"
+												CountryFlag="Translation\Flags\VN.gif"
+												LanguageText="Vietnamese"
+												LocaleCode="vi-VN"
+												UsesRTL="False" 
+                                            />
                                         </Ribbon:ComboBox>
                                         <Label Content="   " />
                                         <Ribbon:SeparatorTabItem Header="{DynamicResource txtTranslationHelp}" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
                                         <TextBlock Margin="0,5,0,0" Text="{DynamicResource txtHelpWebpage}" />
-                                        <Button x:Name="TranslationHelp"
-							HorizontalAlignment="Left"
-							Background="#01000000"
-							BorderBrush="#01000000"
-							Click="TranslationHelp_Click"
-							Foreground="#FFFF6E00">
-                                            <TextBlock x:Name="TranslationURL"
-								 Text="http://better-explorer.com/help-with-translating/"
-								 TextDecorations="Underline" />
+                                        <Button 
+                                            x:Name="TranslationHelp"
+							                HorizontalAlignment="Left"
+							                Background="#01000000"
+							                BorderBrush="#01000000"
+							                Click="TranslationHelp_Click"
+							                Foreground="#FFFF6E00">
+                                            <TextBlock 
+                                                x:Name="TranslationURL"
+                                                Text="http://better-explorer.com/help-with-translating/"
+                                                TextDecorations="Underline" 
+                                            />
                                         </Button>
                                         <TextBlock Margin="0,10,0,5" Text="{DynamicResource txtTranslationCredits}" />
                                         <TextBlock Text="Bulgarian: Dimitar Tsenev" />
@@ -812,343 +865,443 @@
 					-->
                                     </StackPanel>
                                 </TabItem>
-                                <TabItem HorizontalContentAlignment="Left"
-						 Header="{DynamicResource tabUpdateCP}"
-						 Ribbon:KeyTip.Keys="U">
+                                <TabItem 
+                                    HorizontalContentAlignment="Left"
+                                    Header="{DynamicResource tabUpdateCP}"
+                                    Ribbon:KeyTip.Keys="U">
                                     <Grid Margin="20,5,0,0">
-                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top"
-											 Header="{DynamicResource txtAutoUpdate}"
-											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Ribbon:CheckBox x:Name="chkUpdateCheck"
-									 Margin="5,30,0,0"
-									 VerticalAlignment="Top"
-									 Checked="CheckBox_Checked"
-									 Header="Check for updates"
-									 Unchecked="CheckBox_Unchecked" />
-                                        <Ribbon:CheckBox x:Name="chkUpdateStartupCheck"
-									 Margin="5,50,0,0"
-									 VerticalAlignment="Top"
-									 Click="chkUpdateStartupCheck_Click"
-									 Header="{DynamicResource chkAutoCheck}" />
-                                        <TextBlock Margin="5,80,0,0"
-								 VerticalAlignment="Top"
-								 Text="When an update is available:"
-								 Visibility="Collapsed" />
-                                        <StackPanel Margin="5,100,0,0"
-								VerticalAlignment="Top"
-								Orientation="Vertical"
-								Visibility="Collapsed">
+                                        <Ribbon:SeparatorTabItem 
+                                            VerticalAlignment="Top"
+                                            Header="{DynamicResource txtAutoUpdate}"
+                                            Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}"
+                                        />
+                                        <Ribbon:CheckBox 
+                                            x:Name="chkUpdateCheck"
+									        Margin="5,30,0,0"
+									        VerticalAlignment="Top"
+									        Checked="CheckBox_Checked"
+									        Header="Check for updates"
+									        Unchecked="CheckBox_Unchecked"
+                                        />
+                                        <Ribbon:CheckBox 
+                                            x:Name="chkUpdateStartupCheck"
+									        Margin="5,50,0,0"
+									        VerticalAlignment="Top"
+									        Click="chkUpdateStartupCheck_Click"
+									        Header="{DynamicResource chkAutoCheck}"
+                                        />
+                                        <TextBlock 
+                                            Margin="5,80,0,0"
+                                            VerticalAlignment="Top"
+                                            Text="When an update is available:"
+                                            Visibility="Collapsed" 
+                                        />
+                                        <StackPanel 
+                                            Margin="5,100,0,0"
+                                            VerticalAlignment="Top"
+                                            Orientation="Vertical"
+                                            Visibility="Collapsed">
                                             <Ribbon:RadioButton GroupName="uas" Header="Notify me only" />
                                             <Ribbon:RadioButton GroupName="uas" Header="Download, but do not install" />
                                             <Ribbon:RadioButton GroupName="uas" Header="Download and install update" />
                                         </StackPanel>
-                                        <TextBlock Margin="5,80,0,0"
-								 VerticalAlignment="Top"
-								 Text="{DynamicResource txtCheckHowOften}" />
-                                        <StackPanel Margin="5,100,0,0"
-								VerticalAlignment="Top"
-								Orientation="Vertical">
-                                            <Ribbon:RadioButton x:Name="rbDaily"
-											Click="rbCheckInterval_Click"
-											GroupName="uasi"
-											Header="{DynamicResource chkEveryday}" />
-                                            <Ribbon:RadioButton x:Name="rbWeekly"
-											Click="rbCheckInterval_Click"
-											GroupName="uasi"
-											Header="{DynamicResource chkEveryweek}" />
-                                            <Ribbon:RadioButton x:Name="rbMonthly"
-											Click="rbCheckInterval_Click"
-											GroupName="uasi"
-											Header="{DynamicResource chkEverymonth}" />
+                                        <TextBlock 
+                                            Margin="5,80,0,0"
+                                            VerticalAlignment="Top"
+                                            Text="{DynamicResource txtCheckHowOften}" 
+                                        />
+                                        <StackPanel 
+                                            Margin="5,100,0,0"
+                                            VerticalAlignment="Top"
+                                            Orientation="Vertical">
+                                            <Ribbon:RadioButton
+                                                x:Name="rbDaily"
+                                                Click="rbCheckInterval_Click"
+                                                GroupName="uasi"
+                                                Header="{DynamicResource chkEveryday}" 
+                                            />
+                                            <Ribbon:RadioButton
+                                                x:Name="rbWeekly"
+                                                Click="rbCheckInterval_Click"
+                                                GroupName="uasi"
+                                                Header="{DynamicResource chkEveryweek}"
+                                            />
+                                            <Ribbon:RadioButton 
+                                                x:Name="rbMonthly"
+                                                Click="rbCheckInterval_Click"
+                                                GroupName="uasi"
+                                                Header="{DynamicResource chkEverymonth}" 
+                                            />
                                         </StackPanel>
-                                        <Ribbon:SeparatorTabItem Margin="0,170,0,0"
-											 VerticalAlignment="Top"
-											 Header="{DynamicResource txtUpdateChannel}"
-											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Ribbon:RadioButton x:Name="rbReleases"
-										Margin="5,200,0,0"
-										VerticalAlignment="Top"
-										Click="UpdateTypeCheck_Click"
-										GroupName="uach"
-										Header="{DynamicResource chkReleasesChannel}" />
-                                        <Ribbon:RadioButton x:Name="rbReleasTest"
-										Margin="5,220,0,0"
-										VerticalAlignment="Top"
-										Click="UpdateTypeCheck_Click"
-										GroupName="uach"
-										Header="{DynamicResource chkDevChannel}" />
-                                        <TextBlock Height="30"
-								 Margin="15,240,0,0"
-								 HorizontalAlignment="Left"
-								 VerticalAlignment="Top"
-								 Text="{DynamicResource txtTestBuildWarning}" />
-                                        <Expander Width="250"
-								Margin="5,270,0,0"
-								HorizontalAlignment="Left"
-								VerticalAlignment="Top"
-								Header="{DynamicResource txtAdvancedUpdateSettings}"
-								Visibility="Collapsed">
+                                        <Ribbon:SeparatorTabItem 
+                                            Margin="0,170,0,0"
+                                            VerticalAlignment="Top"
+                                            Header="{DynamicResource txtUpdateChannel}"
+                                            Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}"
+                                        />
+                                        <Ribbon:RadioButton 
+                                            x:Name="rbReleases"
+                                            Margin="5,200,0,0"
+                                            VerticalAlignment="Top"
+                                            Click="UpdateTypeCheck_Click"
+										    GroupName="uach"
+										    Header="{DynamicResource chkReleasesChannel}"
+                                        />
+                                        <Ribbon:RadioButton 
+                                            x:Name="rbReleasTest"
+                                            Margin="5,220,0,0"
+                                            VerticalAlignment="Top"
+                                            Click="UpdateTypeCheck_Click"
+                                            GroupName="uach"
+                                            Header="{DynamicResource chkDevChannel}" 
+                                        />
+                                        <TextBlock 
+                                            Height="30"
+								            Margin="15,240,0,0"
+								            HorizontalAlignment="Left"
+								            VerticalAlignment="Top"
+								            Text="{DynamicResource txtTestBuildWarning}"
+                                        />
+                                        <Expander 
+                                            Width="250"
+                                            Margin="5,270,0,0"
+                                            HorizontalAlignment="Left"
+								            VerticalAlignment="Top"
+								            Header="{DynamicResource txtAdvancedUpdateSettings}"
+								            Visibility="Collapsed">
                                             <Grid>
-                                                <TextBlock Margin="12,12,0,0"
-									 HorizontalAlignment="Left"
-									 VerticalAlignment="Top"
-									 Text="{DynamicResource txtUpdateURL}" />
-                                                <TextBox x:Name="updURL"
-								 Height="23"
-								 Margin="12,34,12,0"
-								 VerticalAlignment="Top" />
+                                                <TextBlock 
+                                                    Margin="12,12,0,0"
+									                HorizontalAlignment="Left"
+									                VerticalAlignment="Top"
+									                Text="{DynamicResource txtUpdateURL}" 
+                                                />
+                                                <TextBox 
+                                                    x:Name="updURL"
+								                    Height="23"
+								                    Margin="12,34,12,0"
+								                    VerticalAlignment="Top"
+                                                />
                                             </Grid>
                                         </Expander>
                                     </Grid>
                                 </TabItem>
                                 <Ribbon:SeparatorTabItem Header="{DynamicResource sepAppearanceCP}" />
-                                <TabItem HorizontalContentAlignment="Left"
-						 Header="{DynamicResource tabRibbonCP}"
-						 Ribbon:KeyTip.Keys="R">
+                                <TabItem 
+                                    HorizontalContentAlignment="Left"
+                                    Header="{DynamicResource tabRibbonCP}"
+                                    Ribbon:KeyTip.Keys="R">
                                     <Grid Margin="20,5,0,0">
-                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top"
-											 Header="{DynamicResource sepRibbonColorCP}"
-											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <StackPanel x:Name="RibbonStack"
-								Height="100"
-								MaxHeight="100"
-								Margin="5,20,0,0"
-								HorizontalAlignment="Left"
-								VerticalAlignment="Top"
-								Focusable="True"
-								Orientation="Horizontal">
-                                            <Ribbon:ToggleButton x:Name="btnSilver"
-											 Click="btnSilver_Click"
-											 Foreground="Black"
-											 GroupName="RSkin"
-											 Header="{DynamicResource btnSilverCP}"
-											 IsChecked="False"
-											 LargeIcon="Images\SilverTheme.png"
-											 Ribbon:KeyTip.Keys="S"
-											 SizeDefinition="Large" />
-                                            <Ribbon:ToggleButton x:Name="btnBlue"
-											 Click="btnBlue_Click"
-											 Foreground="Black"
-											 GroupName="RSkin"
-											 Header="{DynamicResource btnBlueCP}"
-											 IsChecked="False"
-											 LargeIcon="Images\BlueTheme.png"
-											 Ribbon:KeyTip.Keys="B"
-											 SizeDefinition="Large" />
-                                            <Ribbon:ToggleButton x:Name="btnBlack"
-											 Click="btnBlack_Click"
-											 Foreground="Black"
-											 GroupName="RSkin"
-											 Header="{DynamicResource btnBlackCP}"
-											 IsChecked="False"
-											 LargeIcon="Images\BlackTheme.png"
-											 Ribbon:KeyTip.Keys="L"
-											 SizeDefinition="Large" />
-                                            <Ribbon:ToggleButton x:Name="btnMetro"
-											 Click="btnGreen_Click"
-											 Foreground="Black"
-											 GroupName="RSkin"
-											 Header="Metro White"
-											 IsChecked="False"
-											 LargeIcon="Images\SilverTheme.png"
-											 Ribbon:KeyTip.Keys="G"
-											 SizeDefinition="Large"
+                                        <Ribbon:SeparatorTabItem 
+                                            VerticalAlignment="Top"
+                                            Header="{DynamicResource sepRibbonColorCP}"
+                                            Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}"
+                                        />
+                                        <StackPanel 
+                                            x:Name="RibbonStack"
+								            Height="100"
+								            MaxHeight="100"
+								            Margin="5,20,0,0"
+								            HorizontalAlignment="Left"
+								            VerticalAlignment="Top"
+								            Focusable="True"
+								            Orientation="Horizontal">
+                                            <Ribbon:ToggleButton 
+                                                x:Name="btnSilver"
+											    Click="btnSilver_Click"
+											    Foreground="Black"
+											    GroupName="RSkin"
+											    Header="{DynamicResource btnSilverCP}"
+											    IsChecked="False"
+											    LargeIcon="Images\SilverTheme.png"
+											    Ribbon:KeyTip.Keys="S"
+											    SizeDefinition="Large"
+                                            />
+                                            <Ribbon:ToggleButton 
+                                                x:Name="btnBlue"
+											    Click="btnBlue_Click"
+											    Foreground="Black"
+											    GroupName="RSkin"
+											    Header="{DynamicResource btnBlueCP}"
+											    IsChecked="False"
+											    LargeIcon="Images\BlueTheme.png"
+											    Ribbon:KeyTip.Keys="B"
+											    SizeDefinition="Large" 
+                                            />
+                                            <Ribbon:ToggleButton 
+                                                x:Name="btnBlack"
+											    Click="btnBlack_Click"
+											    Foreground="Black"
+											    GroupName="RSkin"
+											    Header="{DynamicResource btnBlackCP}"
+											    IsChecked="False"
+											    LargeIcon="Images\BlackTheme.png"
+											    Ribbon:KeyTip.Keys="L"
+											    SizeDefinition="Large" 
+                                            />
+                                            <Ribbon:ToggleButton 
+                                                x:Name="btnMetro"
+											    Click="btnGreen_Click"
+											    Foreground="Black"
+											    GroupName="RSkin"
+											    Header="Metro White"
+											    IsChecked="False"
+											    LargeIcon="Images\SilverTheme.png"
+											    Ribbon:KeyTip.Keys="G"
+											    SizeDefinition="Large"
 											 />
                                         </StackPanel>
-                                        <Ribbon:SeparatorTabItem Margin="0,100,0,0"
-											 VerticalAlignment="Top"
-											 Header="{DynamicResource sepContextualTabsCP}"
-											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <TextBlock Margin="10,135,0,0"
-								 HorizontalAlignment="Left"
-								 VerticalAlignment="Top"
-								 Text="{DynamicResource lblAutoSwitchCP}" />
-                                        <StackPanel Height="150"
-								Margin="6,150,0,0"
-								HorizontalAlignment="Left"
-								VerticalAlignment="Top"
-								Orientation="Vertical">
-                                            <Ribbon:CheckBox x:Name="chkFolder"
-										 Header="{DynamicResource ctgFolderToolsCP}"
-										 Checked="chkFolder_CheckChanged"
-										 Unchecked="chkFolder_CheckChanged" />
-                                            <Ribbon:CheckBox x:Name="chkDrive"
-										 Header="{DynamicResource ctbDriveToolsCP}"
-										 Checked="chkDrive_CheckChanged"
-										 Unchecked="chkDrive_CheckChanged" />
-                                            <Ribbon:CheckBox x:Name="chkArchive"
-										 Checked="chkArchive_CheckChanged"
-										 Header="{DynamicResource ctbArchiveToolsCP}"
-										 Unchecked="chkArchive_CheckChanged" />
-                                            <Ribbon:CheckBox x:Name="chkApp"
-										 Checked="chkApp_CheckChanged"
-										 Header="{DynamicResource ctbApplicationsCP}"
-										 Unchecked="chkApp_CheckChanged" />
-                                            <Ribbon:CheckBox x:Name="chkImage"
-										 Checked="chkImage_CheckChanged"
-										 Header="{DynamicResource ctbImageToolsCP}"
-										 Unchecked="chkImage_CheckChanged" />
-                                            <Ribbon:CheckBox x:Name="chkLibrary"
-										 Checked="chkLibrary_CheckChanged"
-										 Header="{DynamicResource ctbLibrariesCP}"
-										 Unchecked="chkLibrary_CheckChanged" />
-                                            <Ribbon:CheckBox x:Name="chkVirtualTools"
-										 Checked="chkVirtualTools_CheckChanged"
-										 Header="Virtual Disk Tools"
-										 Unchecked="chkVirtualTools_CheckChanged" />
+                                        <Ribbon:SeparatorTabItem 
+                                            Margin="0,100,0,0"
+                                            VerticalAlignment="Top"
+                                            Header="{DynamicResource sepContextualTabsCP}"
+                                            Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}"
+                                        />
+                                        <TextBlock 
+                                            Margin="10,135,0,0"
+								            HorizontalAlignment="Left"
+								            VerticalAlignment="Top"
+								            Text="{DynamicResource lblAutoSwitchCP}"
+                                        />
+                                        <StackPanel
+                                            Height="150"
+								            Margin="6,150,0,0"
+								            HorizontalAlignment="Left"
+								            VerticalAlignment="Top"
+								            Orientation="Vertical">
+                                            <Ribbon:CheckBox 
+                                                x:Name="chkFolder"
+                                                Header="{DynamicResource ctgFolderToolsCP}"
+                                                Checked="chkFolder_CheckChanged"
+                                                Unchecked="chkFolder_CheckChanged"
+                                            />
+                                            <Ribbon:CheckBox 
+                                                x:Name="chkDrive"
+                                                Header="{DynamicResource ctbDriveToolsCP}"
+                                                Checked="chkDrive_CheckChanged"
+                                                Unchecked="chkDrive_CheckChanged" 
+                                            />
+                                            <Ribbon:CheckBox 
+                                                x:Name="chkArchive"
+                                                Checked="chkArchive_CheckChanged"
+                                                Header="{DynamicResource ctbArchiveToolsCP}"
+                                                Unchecked="chkArchive_CheckChanged" 
+                                            />
+                                            <Ribbon:CheckBox 
+                                                x:Name="chkApp"
+                                                Checked="chkApp_CheckChanged"
+                                                Header="{DynamicResource ctbApplicationsCP}"
+                                                Unchecked="chkApp_CheckChanged" 
+                                            />
+                                            <Ribbon:CheckBox 
+                                                x:Name="chkImage"
+                                                Checked="chkImage_CheckChanged"
+                                                Header="{DynamicResource ctbImageToolsCP}"
+                                                Unchecked="chkImage_CheckChanged" 
+                                            />
+                                            <Ribbon:CheckBox 
+                                                x:Name="chkLibrary"
+                                                Checked="chkLibrary_CheckChanged"
+                                                Header="{DynamicResource ctbLibrariesCP}"
+                                                Unchecked="chkLibrary_CheckChanged"
+                                            />
+                                            <Ribbon:CheckBox 
+                                                x:Name="chkVirtualTools"
+                                                Checked="chkVirtualTools_CheckChanged"
+                                                Header="Virtual Disk Tools"
+                                                Unchecked="chkVirtualTools_CheckChanged"
+                                            />
                                         </StackPanel>
 
-                                        <Ribbon:SeparatorTabItem Margin="0,300,0,0"
-											 VerticalAlignment="Top"
-											 Header="Visual Settings"
-											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <Ribbon:SeparatorTabItem 
+                                            Margin="0,300,0,0"
+										    VerticalAlignment="Top"
+										    Header="Visual Settings"
+										    Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" 
+                                        />
 
-                                        <Ribbon:CheckBox x:Name="chkRibbonMinimizedGlass"
-									 Margin="6,330,0,0"
-									 HorizontalAlignment="Left"
-									 VerticalAlignment="Top"
-									 Click="chkRibbonMinimizedGlass_Click"
-									 Header="Enable glass when ribbon is minimized." />
+                                        <Ribbon:CheckBox 
+                                            x:Name="chkRibbonMinimizedGlass"
+                                            Margin="6,330,0,0"
+									        HorizontalAlignment="Left"
+									        VerticalAlignment="Top"
+									        Click="chkRibbonMinimizedGlass_Click"
+									        Header="Enable glass when ribbon is minimized." 
+                                        />
 
                                     </Grid>
 
                                 </TabItem>
-                                <TabItem HorizontalContentAlignment="Left"
-						 Header="{DynamicResource tabPanesItemsCP}"
-						 Ribbon:KeyTip.Keys="P">
+                                <TabItem 
+                                    HorizontalContentAlignment="Left"
+						            Header="{DynamicResource tabPanesItemsCP}"
+						            Ribbon:KeyTip.Keys="P">
                                     <Grid Margin="20,5,0,0">
-                                        <StackPanel HorizontalAlignment="Stretch"
-								VerticalAlignment="Stretch"
-								Orientation="Vertical">
+                                        <StackPanel 
+                                            HorizontalAlignment="Stretch"                                                    
+                                            VerticalAlignment="Stretch"
+                                            Orientation="Vertical">
                                             <Ribbon:SeparatorTabItem Margin="0,0,0,5" Header="{DynamicResource btnNavigationCP}" />
                                             <StackPanel Orientation="Horizontal">
-                                                <Ribbon:CheckBox x:Name="chkTreeExpand"
-										 Checked="chkTreeExpand_CheckChanged"
-										 Header="{DynamicResource chkTreeExpandCP}"
-										 Ribbon:KeyTip.Keys="T"
-										 Unchecked="chkTreeExpand_CheckChanged">
+                                                <Ribbon:CheckBox 
+                                                    x:Name="chkTreeExpand"
+										            Checked="chkTreeExpand_CheckChanged"
+										            Header="{DynamicResource chkTreeExpandCP}"
+										            Ribbon:KeyTip.Keys="T"
+										            Unchecked="chkTreeExpand_CheckChanged">
                                                     <Ribbon:CheckBox.ToolTip>
-                                                        <Ribbon:ScreenTip Title="{DynamicResource chkTreeExpandTCP}"
-												Width="250"
-												Image="Images\uac48.png"
-												IsRibbonAligned="false"
-												Text="{DynamicResource chkTreeExpandTTX}" />
+                                                        <Ribbon:ScreenTip 
+                                                            Title="{DynamicResource chkTreeExpandTCP}"
+												            Width="250"
+												            Image="Images\uac48.png"
+												            IsRibbonAligned="false"
+												            Text="{DynamicResource chkTreeExpandTTX}"
+                                                        />
                                                     </Ribbon:CheckBox.ToolTip>
                                                 </Ribbon:CheckBox>
                                                 <Image Source="Images\uac16.png" />
                                             </StackPanel>
-                                            <Ribbon:SeparatorTabItem Margin="0,0,0,5"
-												 Header="{DynamicResource sepOptionalCP}"
-												 Visibility="Collapsed" />
-                                            <Ribbon:CheckBox x:Name="chkIsFlyout"
-										 Margin="0,0,0,10"
-										 Checked="chkIsFlyout_CheckChanged"
-										 Header="Show Hover Flyout (incomplete, experimental feature)"
-										 Ribbon:KeyTip.Keys="H"
-										 Unchecked="chkIsFlyout_CheckChanged"
-										 Visibility="Collapsed">
+                                            <Ribbon:SeparatorTabItem 
+                                                Margin="0,0,0,5"
+                                                Header="{DynamicResource sepOptionalCP}"
+                                                Visibility="Collapsed" 
+                                            />
+                                            <Ribbon:CheckBox 
+                                                x:Name="chkIsFlyout"
+										        Margin="0,0,0,10"
+										        Checked="chkIsFlyout_CheckChanged"
+										        Header="{DynamicResource chkIsFlyout}"
+										        Ribbon:KeyTip.Keys="H"
+										        Unchecked="chkIsFlyout_CheckChanged"
+										        Visibility="Collapsed">
                                                 <Ribbon:CheckBox.ToolTip>
-                                                    <Ribbon:ScreenTip Title="Show Hover Flyout"
-											Width="250"
-											IsRibbonAligned="false"
-											Text="Display a small box as you move your mouse above files (this is part of a feature that has not been completed yet)" />
+                                                    <Ribbon:ScreenTip 
+                                                        Title="Show Hover Flyout"
+                                                        Width="250"
+                                                        IsRibbonAligned="false"
+                                                        Text="{DynamicResource chkIsFlyout_Tooltip}" 
+                                                    />
                                                 </Ribbon:CheckBox.ToolTip>
                                             </Ribbon:CheckBox>
                                             <Ribbon:SeparatorTabItem Margin="0,0,0,5" Header="{DynamicResource txtImageEditing}" />
-                                            <Ribbon:CheckBox x:Name="chkOverwriteImages"
-										 Margin="0,0,0,10"
-										 Checked="chkOverwriteImages_Checked"
-										 Header="{DynamicResource chkEditOverwrite}"
-										 Ribbon:KeyTip.Keys="V"
-										 Unchecked="chkOverwriteImages_Checked">
+                                            <Ribbon:CheckBox 
+                                                x:Name="chkOverwriteImages"
+										        Margin="0,0,0,10"
+										        Checked="chkOverwriteImages_Checked"
+										        Header="{DynamicResource chkEditOverwrite}"
+										        Ribbon:KeyTip.Keys="V"
+										        Unchecked="chkOverwriteImages_Checked">
                                                 <Ribbon:CheckBox.ToolTip>
-                                                    <Ribbon:ScreenTip Title="{DynamicResource chkEditOverwrite}"
-											Width="250"
-											IsRibbonAligned="false"
-											Text="When you rotate or flip an image, BetterExplorer saves the rotated or flipped image as a new file by default. If this is checked, BetterExplorer will instead overwrite this file, causing you to lose all previous data associated with it." />
+                                                    <Ribbon:ScreenTip 
+                                                        Title="{DynamicResource chkEditOverwrite}"
+                                                        Width="250"
+                                                        IsRibbonAligned="false"
+                                                        Text="{DynamicResource chkEditOverwrite_Text}" 
+                                                    />
                                                 </Ribbon:CheckBox.ToolTip>
                                             </Ribbon:CheckBox>
                                         </StackPanel>
                                     </Grid>
                                 </TabItem>
-                                <TabItem HorizontalContentAlignment="Left"
-						 Header="{DynamicResource tabTabsCP}"
-						 Ribbon:KeyTip.Keys="T">
+                                <TabItem 
+                                    HorizontalContentAlignment="Left"
+                                    Header="{DynamicResource tabTabsCP}"
+                                    Ribbon:KeyTip.Keys="T">
                                     <Grid Margin="20,5,0,0">
-                                        <Ribbon:SeparatorTabItem VerticalAlignment="Top"
-											 Header="{DynamicResource sepAlignmentCP}"
-											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <Ribbon:SeparatorTabItem 
+                                            VerticalAlignment="Top"
+                                            Header="{DynamicResource sepAlignmentCP}"
+                                            Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" 
+                                        />
                                         <StackPanel Margin="0,35,0,0" Orientation="Vertical">
                                             <TextBlock Text="{DynamicResource lblShowTabBarCP}" />
-                                            <Ribbon:RadioButton x:Name="TabbaTop"
-											Margin="5,5,0,0"
-											Checked="FolderTabs_Placement"
-											GroupName="tba"
-											Header="{DynamicResource chkTabBarTopCP}"
-											Ribbon:KeyTip.Keys="TT" />
-                                            <Ribbon:RadioButton x:Name="TabbaBottom"
-											Margin="5,5,0,0"
-											Checked="FolderTabs_Placement"
-											GroupName="tba"
-											Header="{DynamicResource chkTabBarBottomCP}"
-											Ribbon:KeyTip.Keys="TB" />
+                                            <Ribbon:RadioButton 
+                                                x:Name="TabbaTop"
+											    Margin="5,5,0,0"
+											    Checked="FolderTabs_Placement"
+											    GroupName="tba"
+											    Header="{DynamicResource chkTabBarTopCP}"
+											    Ribbon:KeyTip.Keys="TT" 
+                                            />
+                                            <Ribbon:RadioButton 
+                                                x:Name="TabbaBottom"
+											    Margin="5,5,0,0"
+											    Checked="FolderTabs_Placement"
+											    GroupName="tba"
+											    Header="{DynamicResource chkTabBarBottomCP}"
+											    Ribbon:KeyTip.Keys="TB" 
+                                            />
                                         </StackPanel>
 
-                                        <Ribbon:SeparatorTabItem Margin="0,100,0,0"
-											 VerticalAlignment="Top"
-											 Header="{DynamicResource sepSavedTabsCP}"
-											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Border Margin="5,135,0,0"
-							HorizontalAlignment="Left"
-							VerticalAlignment="Top"
-							BorderBrush="#FF000000"
-							BorderThickness="1">
-                                            <Ribbon:Button x:Name="btnShowTabManager"
-									 Width="Auto"
-									 Height="22"
-									 Margin="0"
-									 HorizontalAlignment="Left"
-									 BorderBrush="Black"
-									 BorderThickness="1"
-									 Click="miTabManager_Click"
-									 Header="{DynamicResource btnShowTabManagerCP}"
-									 Icon="Images\open16.png"
-									 Padding="5,0,5,0"
-									 Ribbon:KeyTip.Keys="T" />
+                                        <Ribbon:SeparatorTabItem 
+                                            Margin="0,100,0,0"
+										    VerticalAlignment="Top"
+										    Header="{DynamicResource sepSavedTabsCP}"
+										    Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <Border 
+                                            Margin="5,135,0,0"
+							                HorizontalAlignment="Left"
+							                VerticalAlignment="Top"
+							                BorderBrush="#FF000000"
+							                BorderThickness="1">
+                                            <Ribbon:Button 
+                                                x:Name="btnShowTabManager"
+									            Width="Auto"
+									            Height="22"
+									            Margin="0"
+									            HorizontalAlignment="Left"
+									            BorderBrush="Black"
+									            BorderThickness="1"
+									            Click="miTabManager_Click"
+									            Header="{DynamicResource btnShowTabManagerCP}"
+									            Icon="Images\open16.png"
+									            Padding="5,0,5,0"
+									            Ribbon:KeyTip.Keys="T" 
+                                            />
                                         </Border>
-                                        <TextBlock Margin="5,165,0,0"
-								 HorizontalAlignment="Left"
-								 VerticalAlignment="Top"
-								 Text="{DynamicResource lblDefSavedTabsLocCP}"
-								 Visibility="Collapsed" />
-                                        <StackPanel Margin="5,180,0,0"
-								HorizontalAlignment="Left"
-								VerticalAlignment="Top"
-								Orientation="Horizontal">
-                                            <Ribbon:TextBox x:Name="txtDefSaveTabs"
-										Width="450"
-										Header="{DynamicResource lblDefSavedTabsLocCP}"
-										IsReadOnly="True"
-										Text="" />
-                                            <Ribbon:Button x:Name="btnChangeTabsFolder"
-									 Width="Auto"
-									 Height="22"
-									 BorderBrush="Black"
-									 BorderThickness="1"
-									 Click="btnChangeTabsFolder_Click"
-									 Header="{DynamicResource txtBrowse}"
-									 Icon="Images\browsefldr16.png"
-									 Padding="5,0,5,0"
-									 Ribbon:KeyTip.Keys="T" />
+                                        <TextBlock 
+                                            Margin="5,165,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Text="{DynamicResource lblDefSavedTabsLocCP}"
+                                            Visibility="Collapsed" 
+                                        />
+                                        <StackPanel 
+                                            Margin="5,180,0,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Top"
+                                            Orientation="Horizontal">
+                                            <Ribbon:TextBox 
+                                                x:Name="txtDefSaveTabs"
+                                                Width="450"
+                                                Header="{DynamicResource lblDefSavedTabsLocCP}"
+                                                IsReadOnly="True"                                                
+                                            />
+                                            <Ribbon:Button 
+                                                x:Name="btnChangeTabsFolder"
+									            Width="Auto"
+									            Height="22"
+									            BorderBrush="Black"
+									            BorderThickness="1"
+									            Click="btnChangeTabsFolder_Click"
+									            Header="{DynamicResource txtBrowse}"
+									            Icon="Images\browsefldr16.png"
+									            Padding="5,0,5,0"
+									            Ribbon:KeyTip.Keys="T" 
+                                            />
                                         </StackPanel>
-                                        <TextBlock Margin="10,210,0,0"
-								 HorizontalAlignment="Left"
-								 VerticalAlignment="Top"
-								 Text="{DynamicResource lblSavedTabsWarningCP}" />
-                                        <Ribbon:SeparatorTabItem Margin="0,240,0,0"
+                                        <TextBlock 
+                                            Margin="10,210,0,0"
+								            HorizontalAlignment="Left"
+								            VerticalAlignment="Top"
+								            Text="{DynamicResource lblSavedTabsWarningCP}"
+                                        />
+                                        <Ribbon:SeparatorTabItem 
+                                            Margin="0,240,0,0"
 											 VerticalAlignment="Top"
 											 Header="Actions"
-											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" 
+                                        />
 
                                         <!--
 									<Ribbon:CheckBox x:Name="chkIsLastTabCloseApp"
@@ -1208,100 +1361,123 @@
 				-->
                             </TabControl>
                         </Ribbon:BackstageTabItem>
-                        <Ribbon:Button x:Name="Exitbutton"
-							 Click="btnBackstageExit_Click"
-							 Content="Exit"
-							 Header="{DynamicResource btnExitCP}"
-							 Icon="Images\exit16.png"
-							 LargeIcon="Images\exit32.png"
-							 Ribbon:KeyTip.Keys="X" />
+                        <Ribbon:Button 
+                            x:Name="Exitbutton"
+						    Click="btnBackstageExit_Click"
+						    Content="Exit"
+						    Header="{DynamicResource btnExitCP}"
+						    Icon="Images\exit16.png"
+						    LargeIcon="Images\exit32.png"
+						    Ribbon:KeyTip.Keys="X" 
+                        />
                     </Ribbon:BackstageTabControl>
                 </Ribbon:Backstage>
             </Ribbon:Ribbon.Menu>
             <Ribbon:Ribbon.ContextualGroups>
-                <Ribbon:RibbonContextualTabGroup x:Name="ctgLibraries"
-										 MinWidth="120"
-										 Background="Purple"
-										 BorderBrush="Magenta"
-										 Header="{DynamicResource ctbLibrariesCP}"
-										 Visibility="Collapsed" />
-                <Ribbon:RibbonContextualTabGroup x:Name="ctgDrive"
-										 MinWidth="100"
-										 Background="LightBlue"
-										 BorderBrush="Blue"
-										 Header="{DynamicResource ctbDriveToolsCP}"
-										 Visibility="Collapsed" />
-                <Ribbon:RibbonContextualTabGroup x:Name="ctgExe"
-										 MinWidth="100"
-										 Background="Red"
-										 BorderBrush="DarkRed"
-										 Header="{DynamicResource ctbApplicationsCP}"
-										 Visibility="Collapsed" />
-                <Ribbon:RibbonContextualTabGroup x:Name="ctgVirtualDisk"
-										 MinWidth="100"
-										 Background="Coral"
-										 BorderBrush="Coral"
-										 Header="Virtual Disk Tools"
-										 Visibility="Collapsed" />
-                <Ribbon:RibbonContextualTabGroup x:Name="ctgImage"
-										 MinWidth="100"
-										 Background="Orange"
-										 BorderBrush="DarkOrange"
-										 Header="{DynamicResource ctbImageToolsCP}"
-										 Visibility="Collapsed" />
-                <Ribbon:RibbonContextualTabGroup x:Name="ctgArchive"
-										 MinWidth="100"
-										 Background="SlateBlue"
-										 BorderBrush="DarkSlateBlue"
-										 Header="{DynamicResource ctbArchiveToolsCP}"
-										 Visibility="Collapsed" />
-                <Ribbon:RibbonContextualTabGroup x:Name="ctgFolderTools"
-										 MinWidth="110"
-										 Background="Goldenrod"
-										 BorderBrush="Peru"
-										 Header="{DynamicResource ctgFolderToolsCP}"
-										 Visibility="Collapsed" />
-                <Ribbon:RibbonContextualTabGroup x:Name="ctgSearch"
-										 MinWidth="100"
-										 Background="Green"
-										 BorderBrush="DarkGreen"
-										 Header="{DynamicResource ctbSearchToolsCP}"
-										 Visibility="Collapsed" />
+                <Ribbon:RibbonContextualTabGroup 
+                    x:Name="ctgLibraries"
+					MinWidth="120"
+					Background="Purple"
+					BorderBrush="Magenta"
+					Header="{DynamicResource ctbLibrariesCP}"
+					Visibility="Collapsed" 
+                />
+                <Ribbon:RibbonContextualTabGroup 
+                    x:Name="ctgDrive"
+					MinWidth="100"
+					Background="LightBlue"
+					BorderBrush="Blue"
+					Header="{DynamicResource ctbDriveToolsCP}"
+					Visibility="Collapsed" 
+                />
+                <Ribbon:RibbonContextualTabGroup 
+                    x:Name="ctgExe"
+					 MinWidth="100"
+					 Background="Red"
+					 BorderBrush="DarkRed"
+					 Header="{DynamicResource ctbApplicationsCP}"
+					 Visibility="Collapsed" 
+                />
+                <Ribbon:RibbonContextualTabGroup 
+                    x:Name="ctgVirtualDisk"
+					MinWidth="100"
+					Background="Coral"
+					BorderBrush="Coral"
+					Header="Virtual Disk Tools"
+					Visibility="Collapsed" 
+                />
+                <Ribbon:RibbonContextualTabGroup 
+                    x:Name="ctgImage"
+				    MinWidth="100"
+				    Background="Orange"
+				    BorderBrush="DarkOrange"
+				    Header="{DynamicResource ctbImageToolsCP}"
+				    Visibility="Collapsed"
+                />
+                <Ribbon:RibbonContextualTabGroup 
+                    x:Name="ctgArchive"
+					 MinWidth="100"
+					 Background="SlateBlue"
+					 BorderBrush="DarkSlateBlue"
+					 Header="{DynamicResource ctbArchiveToolsCP}"
+					 Visibility="Collapsed" 
+                />
+                <Ribbon:RibbonContextualTabGroup 
+                    x:Name="ctgFolderTools"
+				    MinWidth="110"
+				    Background="Goldenrod"
+				    BorderBrush="Peru"
+				    Header="{DynamicResource ctgFolderToolsCP}"
+				    Visibility="Collapsed" 
+                />
+                <Ribbon:RibbonContextualTabGroup 
+                    x:Name="ctgSearch"
+				    MinWidth="100"
+				    Background="Green"
+				    BorderBrush="DarkGreen"
+				    Header="{DynamicResource ctbSearchToolsCP}"
+				    Visibility="Collapsed" 
+                />
                 <!--IsVisibleChanged="ctgSearch_IsVisibleChanged"-->
             </Ribbon:Ribbon.ContextualGroups>
 
-            <Ribbon:RibbonTabItem x:Name="HomeTab"
-							Header="{DynamicResource tbHomeCP}"
-							Indent="7"
-							ReduceOrder="Clipboard,Organize,Open,Tabs,Select,Select,Select,Organize,Open,Organize,Clipboard,Tabs,Open,Tabs"
-							Ribbon:KeyTip.Keys="H">
+            <Ribbon:RibbonTabItem 
+                x:Name="HomeTab"
+				Header="{DynamicResource tbHomeCP}"
+				Indent="7"
+				ReduceOrder="Clipboard,Organize,Open,Tabs,Select,Select,Select,Organize,Open,Organize,Clipboard,Tabs,Open,Tabs"
+				Ribbon:KeyTip.Keys="H">
                 <Ribbon:RibbonGroupBox x:Name="Clipboard" Header="{DynamicResource tgClipboardCP}">
-                    <Ribbon:Button x:Name="btnCopy"
-						 CanAddToQuickAccessToolBar="True"
-						 Click="btnCopy_Click"
-						 Header="{DynamicResource btnCopyCP}"
-						 Icon="Images\Copy16.png"
-						 IsEnabled="False"
-						 LargeIcon="Images\Copy32.png"
-						 Ribbon:KeyTip.Keys="CO">
+                    <Ribbon:Button 
+                        x:Name="btnCopy"
+						CanAddToQuickAccessToolBar="True"
+						Click="btnCopy_Click"
+						Header="{DynamicResource btnCopyCP}"
+						Icon="Images\Copy16.png"
+						IsEnabled="False"
+						LargeIcon="Images\Copy32.png"
+						Ribbon:KeyTip.Keys="CO">
                         <Ribbon:Button.ToolTip>
                             <Ribbon:ScreenTip Title="{DynamicResource btnCopyTCP}"
 								Width="250"
 								Image="Images\Copy48.png"
 								IsRibbonAligned="True"
-								Text="{DynamicResource btnCopyTTX}" />
+								Text="{DynamicResource btnCopyTTX}" 
+                            />
                         </Ribbon:Button.ToolTip>
                         <!--  "{DynamicResource btnCopyTCP}"  -->
                     </Ribbon:Button>
-                    <Ribbon:Button x:Name="btnPaste"
-						 Click="btnPaste_Click"
-						 Header="{DynamicResource btnPasteCP}"
-						 Icon="Images\paste16.png"
-						 IsEnabled="False"
-						 LargeIcon="Images\paste32.png"
-						 Ribbon:KeyTip.Keys="P">
+                    <Ribbon:Button 
+                        x:Name="btnPaste"
+						Click="btnPaste_Click"
+						Header="{DynamicResource btnPasteCP}"
+						Icon="Images\paste16.png"
+						IsEnabled="False"
+						LargeIcon="Images\paste32.png"
+						Ribbon:KeyTip.Keys="P">
                         <Ribbon:Button.ToolTip>
-                            <Ribbon:ScreenTip Title="{DynamicResource btnPasteTCP}"
+                            <Ribbon:ScreenTip 
+                                Title="{DynamicResource btnPasteTCP}"
 								Width="250"
 								Image="Images\paste48.png"
 								IsRibbonAligned="True"
@@ -1309,151 +1485,192 @@
                         </Ribbon:Button.ToolTip>
                         <!--  "{DynamicResource btnPasteTCP}"  -->
                     </Ribbon:Button>
-                    <Ribbon:Button x:Name="btnCut"
-						 Click="btnCut_Click"
-						 Header="{DynamicResource btnCutCP}"
-						 Icon="Images\cut16.png"
-						 IsEnabled="False"
-						 Ribbon:KeyTip.Keys="CU"
-						 SizeDefinition="Middle,Middle,Small" />
-                    <Ribbon:Button x:Name="btnPathCopy"
-						 Click="btnPathCopy_Click"
-						 Header="{DynamicResource btnCopyPathCP}"
-						 Icon="Images\copypath16.png"
-						 IsEnabled="True"
-						 Ribbon:KeyTip.Keys="CP"
-						 SizeDefinition="Middle,Small,Small">
+                    <Ribbon:Button 
+                        x:Name="btnCut"
+						Click="btnCut_Click"
+						Header="{DynamicResource btnCutCP}"
+						Icon="Images\cut16.png"
+						IsEnabled="False"
+						Ribbon:KeyTip.Keys="CU"
+						SizeDefinition="Middle,Middle,Small" 
+                    />
+                    <Ribbon:Button 
+                        x:Name="btnPathCopy"
+						Click="btnPathCopy_Click"
+						Header="{DynamicResource btnCopyPathCP}"
+						Icon="Images\copypath16.png"
+						IsEnabled="True"
+						Ribbon:KeyTip.Keys="CP"
+						SizeDefinition="Middle,Small,Small">
                         <Ribbon:Button.ToolTip>
-                            <Ribbon:ScreenTip Title="{DynamicResource btnCopyPathCP}"
+                            <Ribbon:ScreenTip 
+                                Title="{DynamicResource btnCopyPathCP}"
 								Width="250"
 								Image="Images\copypath32.png"
 								IsRibbonAligned="True"
-								Text="{DynamicResource btnCopyPTTX}" />
+								Text="{DynamicResource btnCopyPTTX}" 
+                            />
                         </Ribbon:Button.ToolTip>
                     </Ribbon:Button>
-                    <Ribbon:SplitButton x:Name="btnPasetShC"
-								Click="btnPasetShC_Click"
-								Header="{DynamicResource btnPasteScCP}"
-								Icon="Images\pastet16.png"
-								IsEnabled="False"
-								Ribbon:KeyTip.Keys="SP"
-								SizeDefinition="Middle,Small,Small">
-                        <Ribbon:MenuItem Click="btnPasetShC_Click"
-							 Focusable="False"
-							 Header="{DynamicResource btnPasteScCP}"
-							 Icon="Images\pastet16.png" />
-                        <Ribbon:MenuItem x:Name="miCreateSymlink"
-							 Click="miCreateSymlink_Click"
-							 Focusable="False"
-							 Header="Create symbolic link" />
-                        <Ribbon:MenuItem x:Name="miJunctionpoint"
-							 Click="miJunctionpoint_Click"
-							 Focusable="False"
-							 Header="Create Junction Point" />
+                    <Ribbon:SplitButton 
+                        x:Name="btnPasetShC"
+						Click="btnPasetShC_Click"
+						Header="{DynamicResource btnPasteScCP}"
+						Icon="Images\pastet16.png"
+						IsEnabled="False"
+						Ribbon:KeyTip.Keys="SP"
+						SizeDefinition="Middle,Small,Small">
+                        <Ribbon:MenuItem 
+                            Click="btnPasetShC_Click"
+						    Focusable="False"
+						    Header="{DynamicResource btnPasteScCP}"
+						    Icon="Images\pastet16.png"
+                        />
+                        <Ribbon:MenuItem 
+                            x:Name="miCreateSymlink"
+							Click="miCreateSymlink_Click"
+							Focusable="False"
+							Header="Create symbolic link" 
+                        />
+                        <Ribbon:MenuItem 
+                            x:Name="miJunctionpoint"
+							Click="miJunctionpoint_Click"
+							Focusable="False"
+							Header="Create Junction Point" 
+                        />
                     </Ribbon:SplitButton>
                 </Ribbon:RibbonGroupBox>
-                <Ribbon:RibbonGroupBox x:Name="Organize"
-								 Header="{DynamicResource tgOrganizeCP}"
-								 Ribbon:KeyTip.Keys="OR">
-                    <Ribbon:SplitButton x:Name="btnCopyto"
-								Click="btnCopyto_Click"
-								Header="{DynamicResource btnCopyToCP}"
-								Icon="Images\copyto16.png"
-								IsEnabled="False"
-								LargeIcon="Images\copyto32.png"
-								Ribbon:KeyTip.Keys="CF">
-                        <MenuItem x:Name="btnctDocuments"
-						Click="btnctDocuments_Click"
-						Focusable="False"
-						Header="{DynamicResource btnctDocumentsCP}"
-						Ribbon:KeyTip.Keys="DO" />
-                        <MenuItem x:Name="btnctDesktop"
-						Click="btnctDesktop_Click"
-						Focusable="False"
-						Header="{DynamicResource btnctDesktopCP}"
-						Ribbon:KeyTip.Keys="DE" />
-                        <MenuItem x:Name="btnctDounloads"
-						Click="btnctDounloads_Click"
-						Focusable="False"
-						Header="{DynamicResource btnctDownloadsCP}"
-						Ribbon:KeyTip.Keys="DN" />
+                <Ribbon:RibbonGroupBox 
+                    x:Name="Organize"
+                    Header="{DynamicResource tgOrganizeCP}"
+                    Ribbon:KeyTip.Keys="OR">
+                    <Ribbon:SplitButton 
+                        x:Name="btnCopyto"
+                        Click="btnCopyto_Click"
+					    Header="{DynamicResource btnCopyToCP}"
+					    Icon="Images\copyto16.png"
+					    IsEnabled="False"
+					    LargeIcon="Images\copyto32.png"
+					    Ribbon:KeyTip.Keys="CF">
+                        <MenuItem 
+                            x:Name="btnctDocuments"
+						    Click="btnctDocuments_Click"
+						    Focusable="False"
+						    Header="{DynamicResource btnctDocumentsCP}"
+						    Ribbon:KeyTip.Keys="DO" 
+                        />
+                        <MenuItem 
+                            x:Name="btnctDesktop"
+                            Click="btnctDesktop_Click"
+						    Focusable="False"
+						    Header="{DynamicResource btnctDesktopCP}"
+						    Ribbon:KeyTip.Keys="DE" 
+                        />
+                        <MenuItem 
+                            x:Name="btnctDounloads"
+						    Click="btnctDounloads_Click"
+						    Focusable="False"
+						    Header="{DynamicResource btnctDownloadsCP}"
+						    Ribbon:KeyTip.Keys="DN" 
+                        />
                         <Separator Focusable="False" />
-                        <MenuItem x:Name="btnctOther"
-						Click="btnctOther_Click"
-						Focusable="False"
-						Header="{DynamicResource miOtherDestCP}"
-						Ribbon:KeyTip.Keys="O" />
+                        <MenuItem 
+                            x:Name="btnctOther"
+						    Click="btnctOther_Click"
+						    Focusable="False"
+						    Header="{DynamicResource miOtherDestCP}"
+						    Ribbon:KeyTip.Keys="O" 
+                        />
                     </Ribbon:SplitButton>
-                    <Ribbon:SplitButton x:Name="btnMoveto"
-								Click="btnMoveto_Click"							 
-								Header="{DynamicResource btnMoveToCP}"
-								Icon="Images\moveto16.png"
-								IsEnabled="False"
-								LargeIcon="Images\moveto32.png"
-								Ribbon:KeyTip.Keys="M">
-                        <MenuItem x:Name="btnmtDocuments"
-						Click="btnmtDocuments_Click"
-						Focusable="False"
-						Header="{DynamicResource btnctDocumentsCP}"
-						Ribbon:KeyTip.Keys="DO" />
-                        <MenuItem x:Name="btnmtDesktop"
-						Click="btnmtDesktop_Click"
-						Focusable="False"
-						Header="{DynamicResource btnctDesktopCP}"
-						Ribbon:KeyTip.Keys="DE" />
-                        <MenuItem x:Name="btnmtDounloads"
-						Click="btnmtDounloads_Click"
-						Focusable="False"
-						Header="{DynamicResource btnctDownloadsCP}"
-						Ribbon:KeyTip.Keys="DN" />
+                    <Ribbon:SplitButton 
+                        x:Name="btnMoveto"
+						Click="btnMoveto_Click"							 
+						Header="{DynamicResource btnMoveToCP}"
+						Icon="Images\moveto16.png"
+						IsEnabled="False"
+						LargeIcon="Images\moveto32.png"
+						Ribbon:KeyTip.Keys="M">
+                        <MenuItem 
+                            x:Name="btnmtDocuments"
+						    Click="btnmtDocuments_Click"
+						    Focusable="False"
+						    Header="{DynamicResource btnctDocumentsCP}"
+						    Ribbon:KeyTip.Keys="DO" 
+                        />
+                        <MenuItem 
+                            x:Name="btnmtDesktop"
+						    Click="btnmtDesktop_Click"
+						    Focusable="False"
+						    Header="{DynamicResource btnctDesktopCP}"
+						    Ribbon:KeyTip.Keys="DE" 
+                        />
+                        <MenuItem 
+                            x:Name="btnmtDounloads"
+                            Click="btnmtDounloads_Click"
+						    Focusable="False"
+						    Header="{DynamicResource btnctDownloadsCP}"
+						    Ribbon:KeyTip.Keys="DN"
+                        />
                         <Separator />
-                        <MenuItem x:Name="btnmtOther"
-						Click="btnmtOther_Click"
-						Header="{DynamicResource miOtherDestCP}"
-						Ribbon:KeyTip.Keys="O" />
+                        <MenuItem 
+                            x:Name="btnmtOther"
+						    Click="btnmtOther_Click"
+						    Header="{DynamicResource miOtherDestCP}"
+						    Ribbon:KeyTip.Keys="O" 
+                        />
                     </Ribbon:SplitButton>
                     <Separator />
-                    <Ribbon:SplitButton x:Name="btnDelete"
-								Click="btnDelete_Click"
-								Header="{DynamicResource btnDeleteCP}"
-								Icon="Images\delete16.png"
-								IsEnabled="False"
-								LargeIcon="Images\delete32.png"
-								Ribbon:KeyTip.Keys="D">
-                        <MenuItem Click="MenuItem_Click"
-						Focusable="False"
-						Header="{DynamicResource miDeltoRB}"
-						Icon="Images\delrb16.png"
-						Ribbon:KeyTip.Keys="R" />
-                        <MenuItem Click="MenuItem_Click_1"
-						Focusable="False"
-						Header="{DynamicResource miDeltoP}"
+                    <Ribbon:SplitButton 
+                        x:Name="btnDelete"
+						Click="btnDelete_Click"
+						Header="{DynamicResource btnDeleteCP}"
 						Icon="Images\delete16.png"
-						Ribbon:KeyTip.Keys="P" />
+						IsEnabled="False"
+						LargeIcon="Images\delete32.png"
+						Ribbon:KeyTip.Keys="D">
+                        <MenuItem 
+                            Click="MenuItem_Click"
+				            Focusable="False"
+				            Header="{DynamicResource miDeltoRB}"
+				            Icon="Images\delrb16.png"
+				            Ribbon:KeyTip.Keys="R" 
+                        />
+                        <MenuItem 
+                            Click="MenuItem_Click_1"
+						    Focusable="False"
+						    Header="{DynamicResource miDeltoP}"
+						    Icon="Images\delete16.png"
+						    Ribbon:KeyTip.Keys="P" 
+                        />
                     </Ribbon:SplitButton>
-                    <Ribbon:Button x:Name="btnRename"
-						 Click="btnRename_Click"
-						 Focusable="False"
-						 Header="{DynamicResource btnRenameCP}"
-						 Icon="Images\rename16.png"
-						 IsEnabled="False"
-						 LargeIcon="Images\rename32.png"
-						 Ribbon:KeyTip.Keys="R" />
+                    <Ribbon:Button 
+                        x:Name="btnRename"
+						Click="btnRename_Click"
+						Focusable="False"
+						Header="{DynamicResource btnRenameCP}"
+						Icon="Images\rename16.png"
+						IsEnabled="False"
+						LargeIcon="Images\rename32.png"
+						Ribbon:KeyTip.Keys="R" 
+                    />
                 </Ribbon:RibbonGroupBox>
-                <Ribbon:RibbonGroupBox x:Name="New"
-								 Header="{DynamicResource tgNewCP}"
-								 Ribbon:KeyTip.Keys="NG">
-                    <Ribbon:Button x:Name="btnCreateFolder"
-						 Click="btnNewFolder_Library"
-						 Focusable="False"
-						 Header="{DynamicResource btnNewFolderCP}"
-						 Icon="Images\folder_new16.png"
-						 LargeIcon="Images\folder_new32.png"
-						 Ribbon:KeyTip.Keys="N"
-						 SizeDefinition="Large"
-						 TextOptions.TextFormattingMode="Display">
+                <Ribbon:RibbonGroupBox 
+                    x:Name="New"
+					 Header="{DynamicResource tgNewCP}"
+					 Ribbon:KeyTip.Keys="NG">
+                    <Ribbon:Button 
+                        x:Name="btnCreateFolder"
+						Click="btnNewFolder_Library"
+						Focusable="False"
+						Header="{DynamicResource btnNewFolderCP}"
+						Icon="Images\folder_new16.png"
+						LargeIcon="Images\folder_new32.png"
+						Ribbon:KeyTip.Keys="N"
+						SizeDefinition="Large"
+						TextOptions.TextFormattingMode="Display">
                         <Ribbon:Button.ToolTip>
-                            <Ribbon:ScreenTip x:Name="stNewFolder"
+                            <Ribbon:ScreenTip 
+                                x:Name="stNewFolder"
 								Title="New Folder"
 								Width="250"
 								Image="Images\folder_new32.png"
