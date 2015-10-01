@@ -535,27 +535,31 @@
                                                     Title="{DynamicResource chkIsCFO_Tooltip_Title}"
                                                     Width="250"
                                                     IsRibbonAligned="false"
-                                                    Text="{DynamicResource chkIsCFO_Tooltip_Text}" 
+                                                    Text="{DynamicResource chkIsCFO_Tooltip_Text}"
                                                 />
                                             </Ribbon:CheckBox.ToolTip>
                                         </Ribbon:CheckBox>
-                                        <Label Name="paddinglbl9" Content="         " />
-                                        <Ribbon:CheckBox x:Name="chkIsRestoreTabs"
-									 Checked="chkIsRestoreTabs_CheckChanged"
-									 Header="{DynamicResource cbIsResttoreCP}"
-									 Ribbon:KeyTip.Keys="R"
-									 Unchecked="chkIsRestoreTabs_CheckChanged">
+                                        <Label Content="         " />
+                                        <Ribbon:CheckBox 
+                                            x:Name="chkIsRestoreTabs"
+                                            Checked="chkIsRestoreTabs_CheckChanged"
+                                            Header="{DynamicResource cbIsResttoreCP}"
+                                            Ribbon:KeyTip.Keys="R"
+                                            Unchecked="chkIsRestoreTabs_CheckChanged">
                                             <Ribbon:CheckBox.ToolTip>
-                                                <Ribbon:ScreenTip Title="{DynamicResource cbIsResttoreCP}"
-											Width="250"
-											IsRibbonAligned="false"
-											Text="{DynamicResource cbIsResttoreTTX}" />
+                                                <Ribbon:ScreenTip 
+                                                    Title="{DynamicResource cbIsResttoreCP}"
+                                                    Width="250"
+                                                    IsRibbonAligned="false"
+                                                    Text="{DynamicResource cbIsResttoreTTX}" 
+                                                />
                                             </Ribbon:CheckBox.ToolTip>
                                         </Ribbon:CheckBox>
                                         <!--  (This is a hidden setting. Use the "IsVistaStyleListView" Registry key to change this setting.)  -->
-                                        <Label Name="paddinglbl10"
-							 Content="         "
-							 Visibility="Collapsed" />
+                                        <Label 
+                                            Content="         "
+                                            Visibility="Collapsed" 
+                                        />
                                         <!--
 						<Ribbon:CheckBox x:Name="chkOldSysListView"
 						Checked="chkIsVistaStyleListView_Checked"
@@ -570,48 +574,56 @@
 						</Ribbon:CheckBox.ToolTip>
 						</Ribbon:CheckBox>
 					-->
-                                        <Label x:Name="paddinglbl8"
-							 Content="         "
-							 Visibility="Collapsed" />
-                                        <Ribbon:CheckBox x:Name="chkLogHistory"
-									 Checked="chkLogHistory_CheckChanged"
-									 Header="{DynamicResource chkLogHistoryCP}"
-									 Ribbon:KeyTip.Keys="L"
-									 Unchecked="chkLogHistory_CheckChanged"
-									 Visibility="Collapsed">
+                                        <Label
+                                            Content="         "
+                                            Visibility="Collapsed" 
+                                        />
+                                        <Ribbon:CheckBox 
+                                            x:Name="chkLogHistory"
+                                            Checked="chkLogHistory_CheckChanged"
+                                            Header="{DynamicResource chkLogHistoryCP}"
+                                            Ribbon:KeyTip.Keys="L"
+                                            Unchecked="chkLogHistory_CheckChanged"
+                                            Visibility="Collapsed">
                                             <Ribbon:CheckBox.ToolTip>
-                                                <Ribbon:ScreenTip Title="{DynamicResource chkLogHistoryCP}"
-											Width="250"
-											IsRibbonAligned="false"
-											Text="{DynamicResource chkLogHistoryHCP}" />
+                                                <Ribbon:ScreenTip 
+                                                    Title="{DynamicResource chkLogHistoryCP}"
+                                                    Width="250"
+                                                    IsRibbonAligned="false"
+                                                    Text="{DynamicResource chkLogHistoryHCP}" 
+                                                 />
                                             </Ribbon:CheckBox.ToolTip>
                                         </Ribbon:CheckBox>
-                                        <Border x:Name="ShowLogsBorder"
-							HorizontalAlignment="Left"
-							BorderBrush="#FF000000"
-							BorderThickness="1"
-							Visibility="Collapsed">
-                                            <Ribbon:Button x:Name="btnShowLogs"
-									 Width="125"
-									 Height="22"
-									 Margin="0"
-									 HorizontalAlignment="Left"
-									 BorderBrush="Black"
-									 BorderThickness="1"
-									 Click="btnShowLogs_Click"
-									 Header="Show All Logs"
-									 Icon="Images\open16.png"
-									 Ribbon:KeyTip.Keys="H" />
+                                        <Border 
+                                            x:Name="ShowLogsBorder"
+                                            HorizontalAlignment="Left"
+                                            BorderBrush="#FF000000"
+                                            BorderThickness="1"
+                                            Visibility="Collapsed">
+                                            <Ribbon:Button 
+                                                x:Name="btnShowLogs"
+                                                Width="125"
+                                                Height="22"
+									            Margin="0"
+									            HorizontalAlignment="Left"
+									            BorderBrush="Black"
+									            BorderThickness="1"
+									            Click="btnShowLogs_Click"
+									            Header="Show All Logs"
+									            Icon="Images\open16.png"
+									            Ribbon:KeyTip.Keys="H"
+                                            />
                                         </Border>
                                     </StackPanel>
                                 </TabItem>
-                                <TabItem Header="{DynamicResource tabLanguageCP}"
-						 Ribbon:KeyTip.Keys="L"
-						 Visibility="Visible">
+                                <TabItem 
+                                    Header="{DynamicResource tabLanguageCP}"
+                                    Ribbon:KeyTip.Keys="L"
+                                    Visibility="Visible">
                                     <StackPanel Margin="20,5,0,0" Orientation="Vertical">
                                         <Ribbon:SeparatorTabItem Header="{DynamicResource sepLanguageCP}" />
                                         <Label Content="{DynamicResource lblLanguageCP}" />
-                                        <Label Content="Depending on the language, not all commands have been translated." Visibility="Collapsed" />
+                                        <Label Content="{DynamicResource lblLanguageCP_2}" Visibility="Collapsed" />
                                         <!--  <TextBox Name="txtLocale" HorizontalAlignment="Left" Margin="0,5,0,0" Width="100" Height="23" />  -->
                                         <!--  <Button Name="btnchangeLocale" Content="Change Locale" Width="90" HorizontalAlignment="Left" Margin="0,5,0,0" HorizontalContentAlignment="Center" Height="22" Click="btnchangeLocale_Click" />  -->
                                         <!--  <Label Content="Supported codes:" Margin="0,5,0,0" />  -->
