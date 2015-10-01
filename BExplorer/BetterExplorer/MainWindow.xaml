@@ -92,7 +92,7 @@
 					IconSource="Explorer.ico"
 					MenuActivation="RightClick"
 					PopupActivation="DoubleClick"
-					ToolTipText="Better Explorer (A better filemanager for windows)"
+					ToolTipText="{DynamicResource beNotifyIcon_ToolTipText}"
 					TrayMouseDoubleClick="beNotifyIcon_TrayMouseDoubleClick"
 					Visibility="Visible" Grid.ColumnSpan="2">
 
@@ -196,64 +196,77 @@
                                     <Ribbon:Button.ToolTip>
                                         <Ribbon:ScreenTip Title="{DynamicResource btnUpdateCheckHCP}"
 										Width="250"
-										DisableReason="Only one window of BetterExplorer can manage updates at any time. Another window may already be managing updates, and you can check for updates on that window. If no other window is open, open a new window to check for updates."
+										DisableReason="{DynamicResource btnUpdateCheckHCP_DisableReason}"
 										IsRibbonAligned="false"
 										Text="{DynamicResource btnUpdateCheckICP}" />
                                     </Ribbon:Button.ToolTip>
                                 </Ribbon:Button>
-                                <Label Margin="105,45,10,0"
-						 HorizontalAlignment="Left"
-						 VerticalAlignment="Top"
-						 Content="{DynamicResource btnUpdateCheckHCP}"
-						 FontSize="12"
-						 FontWeight="Bold" />
-                                <TextBlock Height="50"
-							 Margin="110,75,10,0"
-							 HorizontalAlignment="Left"
-							 VerticalAlignment="Top"
-							 Text="{DynamicResource btnUpdateCheckICP}"
-							 TextWrapping="Wrap" />
-                                <Ribbon:Button Height="88"
-								 Margin="20,140,0,0"
-								 HorizontalAlignment="Left"
-								 VerticalAlignment="Top"
-								 Click="Button_Click_7"
-								 Header="{DynamicResource btnOpenWebsite}"
-								 Icon="Images\webconnect_16.png"
-								 IsDefinitive="True"
-								 LargeIcon="Images\webconnect_32.png"
-								 Ribbon:KeyTip.AutoPlacement="False"
-								 Ribbon:KeyTip.HorizontalAlignment="Center"
-								 Ribbon:KeyTip.Keys="W"
-								 Ribbon:KeyTip.VerticalAlignment="Bottom"
-								 Style="{DynamicResource ButtonBackstageStyle}" />
-                                <Label Margin="105,140,10,0"
-									 HorizontalAlignment="Left"
-									 VerticalAlignment="Top"
-									 Content="{DynamicResource btnOpenWebsiteHCP}"
-									 FontSize="12"
-									 FontWeight="Bold" />
-                                <TextBlock Height="50"
-									 Margin="110,170,10,0"
-									 HorizontalAlignment="Left"
-									 VerticalAlignment="Top"
-									 Text="{DynamicResource btnOpenWebsiteICP}"
-									 TextWrapping="Wrap" />
-                                <Ribbon:Button Height="88"
-								 Margin="20,235,0,0"
-								 HorizontalAlignment="Left"
-								 VerticalAlignment="Top"
-								 Click="btnBugtracker_Click"
-								 Header="{DynamicResource btnBugtracker}"
-								 Icon="Images\bugtrac_16.png"
-								 IsDefinitive="True"
-								 LargeIcon="Images\bugtrac_32.png"
-								 Ribbon:KeyTip.AutoPlacement="False"
-								 Ribbon:KeyTip.HorizontalAlignment="Center"
-								 Ribbon:KeyTip.Keys="R"
-								 Ribbon:KeyTip.VerticalAlignment="Bottom"
-								 Style="{DynamicResource ButtonBackstageStyle}" />
-                                <Button x:Name="btnPaypal"
+                                <Label 
+                                    Margin="105,45,10,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="{DynamicResource btnUpdateCheckHCP}"
+                                    FontSize="12"
+                                    FontWeight="Bold"
+                                />
+                                <TextBlock 
+                                    Height="50"
+                                    Margin="110,75,10,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Text="{DynamicResource btnUpdateCheckICP}"
+                                    TextWrapping="Wrap" 
+                                />
+                                <Ribbon:Button 
+                                    Height="88"
+                                    Margin="20,140,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Click="Button_Click_7"
+                                    Header="{DynamicResource btnOpenWebsite}"
+                                    Icon="Images\webconnect_16.png"
+                                    IsDefinitive="True"
+                                    LargeIcon="Images\webconnect_32.png"
+                                    Ribbon:KeyTip.AutoPlacement="False"
+                                    Ribbon:KeyTip.HorizontalAlignment="Center"
+                                    Ribbon:KeyTip.Keys="W"
+                                    Ribbon:KeyTip.VerticalAlignment="Bottom"
+                                    Style="{DynamicResource ButtonBackstageStyle}" 
+                                />
+                                <Label 
+                                    Margin="105,140,10,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="{DynamicResource btnOpenWebsiteHCP}"
+                                    FontSize="12"
+                                    FontWeight="Bold"
+                                />
+                                <TextBlock 
+                                    Height="50"
+                                    Margin="110,170,10,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Text="{DynamicResource btnOpenWebsiteICP}"
+                                    TextWrapping="Wrap" 
+                                />
+                                <Ribbon:Button 
+                                    Height="88"
+                                    Margin="20,235,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Click="btnBugtracker_Click"
+                                    Header="{DynamicResource btnBugtracker}"
+                                    Icon="Images\bugtrac_16.png"
+                                    IsDefinitive="True"
+                                    LargeIcon="Images\bugtrac_32.png"
+                                    Ribbon:KeyTip.AutoPlacement="False"
+                                    Ribbon:KeyTip.HorizontalAlignment="Center"
+                                    Ribbon:KeyTip.Keys="R"
+                                    Ribbon:KeyTip.VerticalAlignment="Bottom"
+                                    Style="{DynamicResource ButtonBackstageStyle}" 
+                                />
+                                <Button 
+                                    x:Name="btnPaypal"
 									Margin="20,350,0,0"
 									HorizontalAlignment="Left"
 									VerticalAlignment="Top"
@@ -261,16 +274,18 @@
 									Width="280"
 									Height="140"
 									Click="btnPaypal_Click">
-                                    <Image Width="253" Height="120" Source="Images\paypal.png" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Image Width="253" Height="120" Source="Images\paypal.png" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                />
                                 </Button>
-                                <Label 
-                                 x:Name="lbeBugtracker"
-                                 Margin="105,235,10,0"
-								 HorizontalAlignment="Left"
-								 VerticalAlignment="Top"
-								 Content="{DynamicResource lbeBugtracker}"
-								 FontSize="12"
-								 FontWeight="Bold" />
+                                <Label
+                                    x:Name="lbeBugtracker"
+                                    Margin="105,235,10,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top"
+                                    Content="{DynamicResource lbeBugtracker}"
+                                    FontSize="12"
+                                    FontWeight="Bold"
+                                />
                                 <TextBlock
                                     x:Name="txtBugtracker"
                                     Height="50"
@@ -278,74 +293,99 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Top"
                                     Text="{DynamicResource txtBugtracker}"
-                                    TextWrapping="Wrap" />
+                                    TextWrapping="Wrap" 
+                                />
                                 <Separator Grid.Column="0" HorizontalAlignment="Right" />
                                 <Image Grid.Column="1"
-									 Width="400"
-									 Height="100"
-									 Margin="10,20,0,0"
-									 HorizontalAlignment="Left"
-									 VerticalAlignment="Top"
-									 Source="Images\bexplorerlogo.png"
-									 Stretch="Fill" />
-                                <ScrollViewer Grid.Column="1"
-									Margin="20,110,10,0"
+                                       Width="400"
+                                       Height="100"
+                                       Margin="10,20,0,0"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Top"
+                                       Source="Images\bexplorerlogo.png"
+                                       Stretch="Fill" 
+                                />
+                                <ScrollViewer 
+                                    Grid.Column="1"
+                                    Margin="20,110,10,0"
 									HorizontalScrollBarVisibility="Auto"
 									VerticalScrollBarVisibility="Auto">
                                     <StackPanel Margin="1,0,0,1">
-                                        <Controls:AutomaticUpdater x:Name="autoUpdater"
-												 Margin="0,15,50,10"
-												 HorizontalAlignment="Left"
-												 Panel.ZIndex="100"
-												 Animate="True"
-												 DaysBetweenChecks="7"
-												 Focusable="False"
-												 KeepExpanded="True"
-												 UpdateType="OnlyCheck" />
-                                        <Label x:Name="stiUpdate"
-							 Margin="0,25,50,0"
-							 Content="{DynamicResource stUpdateNotAvailableCP}"
-							 FontSize="14"
-							 FontWeight="ExtraBold"
-							 Visibility="Collapsed" />
-                                        <Ribbon:SeparatorTabItem Margin="0,-30,50,0"
-											 Foreground="#FFC71212"
-											 Header=""
-											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Label Margin="0,2,50,0"
-							       Content="{DynamicResource lblBetterExText}"
-							       FontWeight="Bold" />
-                                        <TextBlock Width="500"
-								 Margin="3,2,53,0"
-								 HorizontalAlignment="Left"
-								 Text="{DynamicResource lblBetterExInfo}"
-								 TextWrapping="Wrap" />
-                                        <Ribbon:SeparatorTabItem Margin="0,20,50,0"
-											 Header="{DynamicResource lblDevTeamCP}"
-											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Label Margin="0,2,50,0"
-							       Content="{DynamicResource lblDevelopersHeader}"
-							       FontWeight="Bold" />
-                                        <Label Margin="20,0,40,0"
-							       Content="Dimitar Tsenev"
-							       FontSize="14"
-							       FontStyle="Italic"
-							       FontWeight="DemiBold" />
-                                        <Label Margin="20,0,40,0"
-							       Content="Markus Lang"
-							       FontSize="14"
-							       FontStyle="Italic"
-							       FontWeight="Bold" />
-                                        <Label Margin="20,0,40,0"
-							       Content="Aaron Campf"
-							       FontSize="14"
-							       FontStyle="Italic"
-							       FontWeight="Bold" />
-                                        <Label Margin="20,0,40,0"
-							       Content="Jayke R. Huempfner (JaykeBird)"
-							       FontSize="14"
-							       FontStyle="Normal"
-							       FontWeight="Normal" />
+                                        <Controls:AutomaticUpdater 
+                                            x:Name="autoUpdater"
+                                            Margin="0,15,50,10"
+                                            HorizontalAlignment="Left"
+                                            Panel.ZIndex="100"
+                                            Animate="True"
+                                            DaysBetweenChecks="7"
+                                            Focusable="False"
+                                            KeepExpanded="True"
+                                            UpdateType="OnlyCheck" 
+                                        />
+                                        <Label 
+                                            x:Name="stiUpdate"
+                                            Margin="0,25,50,0"
+                                            Content="{DynamicResource stUpdateNotAvailableCP}"
+                                            FontSize="14"
+                                            FontWeight="ExtraBold"
+                                            Visibility="Collapsed" 
+                                        />
+                                        <Ribbon:SeparatorTabItem 
+                                            Margin="0,-30,50,0"
+                                            Foreground="#FFC71212"
+                                            Header=""
+                                            Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" 
+                                        />
+                                        <Label 
+                                            Margin="0,2,50,0"
+                                            Content="{DynamicResource lblBetterExText}"
+                                            FontWeight="Bold" 
+                                        />
+                                        <TextBlock 
+                                            Width="500"
+                                            Margin="3,2,53,0"
+                                            HorizontalAlignment="Left"
+                                            Text="{DynamicResource lblBetterExInfo}"
+                                            TextWrapping="Wrap" 
+                                        />
+                                        <Ribbon:SeparatorTabItem 
+                                            Margin="0,20,50,0"
+                                            Header="{DynamicResource lblDevTeamCP}"
+                                            Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" 
+                                        />
+                                        <Label 
+                                            Margin="0,2,50,0"
+                                            Content="{DynamicResource lblDevelopersHeader}"
+                                            FontWeight="Bold" 
+                                        />
+                                        <Label 
+                                            Margin="20,0,40,0"
+                                            Content="Dimitar Tsenev"
+                                            FontSize="14"
+                                            FontStyle="Italic"
+                                            FontWeight="DemiBold" 
+                                        />
+                                        <Label 
+                                            Margin="20,0,40,0"
+                                            Content="Markus Lang"
+                                            FontSize="14"
+                                            FontStyle="Italic"
+                                            FontWeight="Bold" 
+                                       />
+                                        <Label 
+                                            Margin="20,0,40,0"
+                                            Content="Aaron Campf"
+                                            FontSize="14"
+                                            FontStyle="Italic"
+                                            FontWeight="Bold" 
+                                        />
+                                        <Label 
+                                            Margin="20,0,40,0"
+                                            Content="Jayke R. Huempfner (JaykeBird)"
+                                            FontSize="14"
+                                            FontStyle="Normal"
+                                            FontWeight="Normal" 
+                                        />
                                         <!--<Label Margin="20,0,40,0"
 							 Content="Alexey Barkalov"
 							 FontSize="14"
@@ -354,24 +394,32 @@
                                         <Ribbon:SeparatorTabItem Margin="0,20,50,0"
 											 Header="{DynamicResource lblAboutBEHeader}"
 											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
-                                        <Label x:Name="verNumber"
-							 Margin="20,0,50,0"
-							 Content="Version Info Data Put Here"
-							 FontSize="12" />
-                                        <Label x:Name="lblArchitecture"
-							 Margin="20,0,0,0"
-							 Content="32-bit Version"
-							 FontSize="12" />
-                                        <Label Margin="20,0,0,0" Content="© 2015. All right reserved." />
-                                        <Ribbon:SeparatorTabItem Margin="0,20,50,0"
-											 Header="Credits"
-											 Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
+                                        <Label 
+                                            x:Name="verNumber"
+                                            Margin="20,0,50,0"
+                                            Content="Version Info Data Put Here"
+                                            FontSize="12" 
+                                        />
+                                        <Label 
+                                            x:Name="lblArchitecture"
+                                            Margin="20,0,0,0"
+                                            Content="32-bit Version"
+                                            FontSize="12" 
+                                        />
+                                        <Label 
+                                            Margin="20,0,0,0" 
+                                            Content="© 2015. All right reserved." 
+                                        />
+                                        <Ribbon:SeparatorTabItem 
+                                            Margin="0,20,50,0"
+                                            Header="Credits"
+                                            Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" 
+                                        />
                                         <Label Content="Fluent Ribbon Control Suite (fluent.codeplex.com)" />
                                         <!--  <Label Content="Qttabbar - a great utility for Windows Explorer"/>  -->
                                         <Label Content="7-Zip - archiving utility (www.7-zip.org)" />
                                         <Label Content="7ZipSharp - a wrapper of 7Zip for .NET" />
                                         <Label Content="Some icons are property of Microsoft® Corporation. All right reserved." />
-
                                     </StackPanel>
                                 </ScrollViewer>
 
@@ -383,37 +431,42 @@
                                 <TabItem Header="{DynamicResource tabShell}"
 						 IsSelected="True"
 						 Ribbon:KeyTip.Keys="S">
-                                    <StackPanel x:Name="ShellStack"
-								Margin="20,5,0,0"
-								HorizontalAlignment="Left"
-								VerticalAlignment="Top"
-								Focusable="True"
-								Orientation="Vertical">
+                                    <StackPanel 
+                                        x:Name="ShellStack"
+                                        Margin="20,5,0,0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Focusable="True"
+                                        Orientation="Vertical">
                                         <Ribbon:SeparatorTabItem Header="{DynamicResource sepStartup}" />
                                         <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
                                             <!--
-						Ribbon:TextBox Name="txtPath" Width="200"/>
-						<Button Name="btnPathPick" Content="..." Width="22" HorizontalContentAlignment="Center" Height="22" Click="btnPathPick_Click" /
-						-->
-                                            <Border HorizontalAlignment="Stretch"
-								VerticalAlignment="Stretch"
-								BorderBrush="#FF000000"
-								BorderThickness="1">
-                                                <Ribbon:Button x:Name="btnSetCurrentasStartup"
-										 Width="Auto"
-										 Margin="0"
-										 BorderBrush="Black"
-										 BorderThickness="1"
-										 CanAddToQuickAccessToolBar="True"
-										 Click="btnSetCurrentasStartup_Click"
-										 Header="Libraries"
-										 Padding="5,0,5,0"
-										 Ribbon:KeyTip.Keys="S">
+                                            Ribbon:TextBox Name="txtPath" Width="200"/>
+                                            <Button Name="btnPathPick" Content="..." Width="22" HorizontalContentAlignment="Center" Height="22" Click="btnPathPick_Click" /
+                                            -->
+                                            <Border 
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                BorderBrush="#FF000000"
+                                                BorderThickness="1">
+                                                <Ribbon:Button 
+                                                    x:Name="btnSetCurrentasStartup"
+                                                    Width="Auto"
+                                                    Margin="0"
+                                                    BorderBrush="Black"
+                                                    BorderThickness="1"
+                                                    CanAddToQuickAccessToolBar="True"
+                                                    Click="btnSetCurrentasStartup_Click"
+                                                    Header="Libraries"
+                                                    Padding="5,0,5,0"
+                                                    Ribbon:KeyTip.Keys="S">
                                                     <Ribbon:Button.ToolTip>
-                                                        <Ribbon:ScreenTip Title="{DynamicResource btnSetCurrentasStartupHCP}"
-												Width="250"
-												IsRibbonAligned="false"
-												Text="{DynamicResource btnSetCurrentasStartupICP}" />
+                                                        <Ribbon:ScreenTip 
+                                                            Title="{DynamicResource btnSetCurrentasStartupHCP}"
+                                                            Width="250"
+                                                            IsRibbonAligned="false"
+                                                            Text="{DynamicResource btnSetCurrentasStartupICP}" 
+                                                        />
                                                     </Ribbon:Button.ToolTip>
                                                 </Ribbon:Button>
                                             </Border>
@@ -422,19 +475,22 @@
                                         <Label x:Name="paddinglbl1" Content="         " />
                                         <Ribbon:SeparatorTabItem x:Name="stiOtherSettings" Margin="0,0,0,15" Header="{DynamicResource stiOtherSettings}" />
                                         <StackPanel Orientation="Horizontal">
-                                            <Ribbon:CheckBox x:Name="chkIsDefault"
-										 Checked="chkIsDefault_CheckChanged"
-										 Header="{DynamicResource chkIsDefault}"
-										 Ribbon:KeyTip.Keys="V"
-										 Unchecked="chkIsDefault_CheckChanged">
+                                            <Ribbon:CheckBox 
+                                                x:Name="chkIsDefault"
+                                                Checked="chkIsDefault_CheckChanged"
+                                                Header="{DynamicResource chkIsDefault}"
+                                                Ribbon:KeyTip.Keys="V"
+                                                Unchecked="chkIsDefault_CheckChanged">
                                                 <Ribbon:CheckBox.ToolTip>
                                                     <!--  Title="{DynamicResource chkIsDefaultHCP}"  -->
-                                                    <Ribbon:ScreenTip Title="{DynamicResource chkIsDefault}"
-                                                                      Width="250"
-                                                                      DisableReason="{DynamicResource chkIsDefault_DisableReason}"
-                                                                      Image="Images\uac48.png"
-                                                                      IsRibbonAligned="false"
-                                                                      Text="{DynamicResource chkIsDefaultICP}" />
+                                                    <Ribbon:ScreenTip 
+                                                        Title="{DynamicResource chkIsDefault}"
+                                                        Width="250"
+                                                        DisableReason="{DynamicResource chkIsDefault_DisableReason}"
+                                                        Image="Images\uac48.png"
+                                                        IsRibbonAligned="false"
+                                                        Text="{DynamicResource chkIsDefaultICP}" 
+                                                />
                                                 </Ribbon:CheckBox.ToolTip>
                                             </Ribbon:CheckBox>
                                             <Image Source="Images\uac16.png" />
@@ -467,17 +523,20 @@
 						</Ribbon:CheckBox.ToolTip>
 						</Ribbon:CheckBox>
 						<Label Name="paddinglbl8" Content="         "/>
-					-->
-                                        <Ribbon:CheckBox Name="chkIsCFO"
-									 Click="chkIsCFO_Click"
-									 Header="Use custom file operations dialog"
-									 IsEnabled="False"
-									 Ribbon:KeyTip.Keys="C">
+                                        -->
+                                        <Ribbon:CheckBox 
+                                            Name="chkIsCFO"
+                                            Click="chkIsCFO_Click"
+									        Header="{DynamicResource chkIsCFO}"
+									        IsEnabled="False"
+									        Ribbon:KeyTip.Keys="C">
                                             <Ribbon:CheckBox.ToolTip>
-                                                <Ribbon:ScreenTip Title="Custom file operations dialog"
-											Width="250"
-											IsRibbonAligned="false"
-											Text="Enables different copy/move/delete dialogs" />
+                                                <Ribbon:ScreenTip 
+                                                    Title="{DynamicResource chkIsCFO_Tooltip_Title}"
+                                                    Width="250"
+                                                    IsRibbonAligned="false"
+                                                    Text="{DynamicResource chkIsCFO_Tooltip_Text}" 
+                                                />
                                             </Ribbon:CheckBox.ToolTip>
                                         </Ribbon:CheckBox>
                                         <Label Name="paddinglbl9" Content="         " />

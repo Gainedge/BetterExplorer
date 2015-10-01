@@ -410,5 +410,10 @@
     <system:String x:Key="txtBugtracker">This redirects you to the bugtracker website where you can post issues.</system:String>
     <system:String x:Key="stiOtherSettings">Other Settings</system:String>
     <system:String x:Key="chkIsDefault_DisableReason">A missing entry in Windows Registry keeps BetterExplorer from knowing or changing this setting. BetterExplorer will continue to work normally.</system:String>
+    <system:String x:Key="beNotifyIcon_ToolTipText">Better Explorer (A better filemanager for windows)</system:String>
+    <system:String x:Key="btnUpdateCheckHCP_DisableReason">Only one window of BetterExplorer can manage updates at any time. Another window may already be managing updates, and you can check for updates on that window. If no other window is open, open a new window to check for updates.</system:String>
+    <system:String x:Key="chkIsCFO">Use custom file operations dialog</system:String>
+    <system:String x:Key="chkIsCFO_Tooltip_Title">Custom file operations dialog</system:String>
+    <system:String x:Key="chkIsCFO_Tooltip_Text">Enables different copy/move/delete dialogs</system:String>
     <system:String x:Key="blank">v</system:String>
 </ResourceDictionary>
