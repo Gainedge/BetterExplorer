@@ -463,8 +463,8 @@ namespace BExplorer.Shell
         private bool _IsCanceledOperation { get; set; }
         private int LastItemForRename { get; set; }
         private System.Runtime.InteropServices.ComTypes.IDataObject dataObject { get; set; }
-        private Boolean _showCheckBoxes = false;
-        private Boolean _ShowHidden;
+        private bool _showCheckBoxes = false;
+        private bool _ShowHidden;
         private F.Timer _ResetTimer = new F.Timer();
         private List<int> DraggedItemIndexes = new List<int>();
         private F.Timer _KeyJumpTimer = new F.Timer();
@@ -490,8 +490,6 @@ namespace BExplorer.Shell
         private ImageList large = new ImageList(ImageListSize.Large);
         private ShellViewStyle m_View;
 
-
-
         private Thread _OverlaysLoadingThread;
         private F.Timer selectionTimer = new F.Timer();
         private SyncQueue<int> shieldQueue = new SyncQueue<int>(); //3000
@@ -510,8 +508,6 @@ namespace BExplorer.Shell
         private SyncQueue<int?> overlayQueue = new SyncQueue<int?>(); //3000
         private SyncQueue<int?> ThumbnailsForCacheLoad = new SyncQueue<int?>(); //5000
         private SyncQueue<int?> waitingThumbnails = new SyncQueue<int?>(); //3000
-
-
 
         #endregion Private Members
 

@@ -17,6 +17,7 @@ using BExplorer.Shell._Plugin_Interfaces;
 namespace BExplorer.Shell
 {
 
+    /*
     public class NodeSorter : IComparer
     {
         public int Compare(object x, object y)
@@ -29,22 +30,10 @@ namespace BExplorer.Shell
             return (tx.Tag as IListItemEx).DisplayName.CompareTo((ty.Tag as IListItemEx).DisplayName);
         }
     }
+    */
 
     public partial class ShellTreeViewEx : UserControl
     {
-
-        /*
-         * Should we use HashSets not Lists?
-         * http://stackoverflow.com/questions/150750/hashset-vs-list-performance
-         * http://blog.goyello.com/2013/01/30/6-more-things-c-developers-should-not-do/
-         * http://www.c-sharpcorner.com/UploadFile/0f68f2/comparative-analysis-of-list-hashset-and-sortedset/
-         * 
-         * 
-         * Performance Test Code!
-         * http://stackoverflow.com/questions/25615764/list-add-vs-hashset-add-for-small-collections-in-c-sharp
-         * 
-         * I think HashSets are actually worse as the lists are to small
-         */
 
         #region Event Handlers
 
@@ -221,6 +210,7 @@ namespace BExplorer.Shell
                 }
             }
         }
+
         public void SelItem(IListItemEx item)
         {
             var node = this.FromItem(item);
@@ -245,10 +235,7 @@ namespace BExplorer.Shell
                 if (itemNode != null) break;
             }
 
-            if (itemNode != null)
-            {
-                itemNode.Remove();
-            }
+            itemNode?.Remove();
         }
 
         public void AddItem(IListItemEx item)
@@ -279,8 +266,7 @@ namespace BExplorer.Shell
                 itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.ParsingName.ToShellParsingName());
                 node.Tag = itemReal;
                 var oldnodearray = itemNode.Nodes.OfType<TreeNode>().ToList();
-                if (oldnodearray.SingleOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(itemReal)) == null)
-                    oldnodearray.Add(node);
+                if (oldnodearray.SingleOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(itemReal)) == null) oldnodearray.Add(node);
                 var newArray = oldnodearray.OrderBy(o => o.Text).ToArray();
                 this.ShellTreeView.BeginUpdate();
                 itemNode.Nodes.Clear();

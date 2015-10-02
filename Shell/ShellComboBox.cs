@@ -329,8 +329,7 @@ namespace BExplorer.Shell
         void m_Combo_DrawItem(object sender, DrawItemEventArgs e)
         {
             int iconWidth = SystemInformation.SmallIconSize.Width;
-            int indent = ((e.State & DrawItemState.ComboBoxEdit) == 0) ?
-                (iconWidth / 2) : 0;
+            int indent = ((e.State & DrawItemState.ComboBoxEdit) == 0) ? (iconWidth / 2) : 0;
 
             if (e.Index != -1)
             {
@@ -355,9 +354,7 @@ namespace BExplorer.Shell
 
                 size = TextRenderer.MeasureText(display, m_Combo.Font);
 
-                textRect = new Rectangle(
-                    e.Bounds.Left + iconWidth + (item.Indent * indent) + 3,
-                    e.Bounds.Y, (int)size.Width, e.Bounds.Height);
+                textRect = new Rectangle(e.Bounds.Left + iconWidth + (item.Indent * indent) + 3, e.Bounds.Y, (int)size.Width, e.Bounds.Height);
                 textOffset = (int)((e.Bounds.Height - size.Height) / 2);
 
                 // If the text is being drawin in the main combo box edit area,
@@ -382,15 +379,14 @@ namespace BExplorer.Shell
                     ControlPaint.DrawFocusRectangle(e.Graphics, textRect);
                 }
 
-                SystemImageList.DrawSmallImage(e.Graphics,
-                    new Point(e.Bounds.Left + (item.Indent * indent),
-                        e.Bounds.Top),
+                SystemImageList.DrawSmallImage(
+                    e.Graphics,
+                    new Point(e.Bounds.Left + (item.Indent * indent), e.Bounds.Top),
                     item.Folder.GetSystemImageListIndex(ShellIconType.SmallIcon,
-                        ShellIconFlags.OverlayIndex),
-                    (e.State & DrawItemState.Selected) != 0);
-                TextRenderer.DrawText(e.Graphics, display, m_Combo.Font,
-                    new Point(textRect.Left, textRect.Top + textOffset),
-                    textColor);
+                    ShellIconFlags.OverlayIndex),
+                    (e.State & DrawItemState.Selected) != 0
+                );
+                TextRenderer.DrawText(e.Graphics, display, m_Combo.Font, new Point(textRect.Left, textRect.Top + textOffset), textColor);
             }
         }
 
