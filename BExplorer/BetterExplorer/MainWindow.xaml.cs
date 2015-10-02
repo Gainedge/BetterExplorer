@@ -1000,20 +1000,57 @@ namespace BetterExplorer
 
         #region Drive Tools / Virtual Disk Tools
 
+        private void btnDefragDrive_Click(object sender, RoutedEventArgs e)
+        {
+            string DriveLetter = "";
+            if (_ShellListView.SelectedItems.Any())
+            {
+                if (Directory.GetLogicalDrives().Contains(_ShellListView.SelectedItems[0].ParsingName))
+                    DriveLetter = _ShellListView.SelectedItems[0].ParsingName;
+                else
+                    DriveLetter = _ShellListView.CurrentFolder.ParsingName;
+            }
+            else
+            {
+                DriveLetter = _ShellListView.CurrentFolder.ParsingName;
+            }
 
-        private void btnDefragDrive_Click(object sender, RoutedEventArgs e) => _ShellListView.DefragDrive();
+            Process.Start(Path.Combine(Environment.SystemDirectory, "dfrgui.exe"), $"/u /v {DriveLetter.Replace("\\", "")}");
+        }
+
         private char GetDriveLetterFromDrivePath(string path) => path.Substring(0, 1).ToCharArray()[0];
 
         private void btnFormatDrive_Click(object sender, RoutedEventArgs e)
         {
             if (MessageBox.Show("Are you sure you want to do this?", FindResource("btnFormatDriveCP").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                var formatDriveThread = new Thread(() => _ShellListView.FormatDrive(IntPtr.Zero));
+                //var formatDriveThread = new Thread(() => _ShellListView.FormatDrive(IntPtr.Zero));
+
+                var formatDriveThread = new Thread(() =>
+                {
+                    string DriveLetter =
+                    _ShellListView.SelectedItems.Any() ?
+                    DriveLetter = Directory.GetLogicalDrives().Contains(_ShellListView.SelectedItems[0].ParsingName) ? _ShellListView.SelectedItems[0].ParsingName : _ShellListView.CurrentFolder.ParsingName
+                    :
+                    DriveLetter = _ShellListView.CurrentFolder.ParsingName;
+
+                    BExplorer.Shell.Interop.Shell32.FormatDrive(IntPtr.Zero, DriveLetter);
+                });
+
                 formatDriveThread.Start();
             }
         }
 
-        private void btnCleanDrive_Click(object sender, RoutedEventArgs e) => _ShellListView.CleanupDrive();
+        private void btnCleanDrive_Click(object sender, RoutedEventArgs e)
+        {
+            string DriveLetter = "";
+            if (_ShellListView.SelectedItems.Any())
+                DriveLetter = Directory.GetLogicalDrives().Contains(_ShellListView.SelectedItems[0].ParsingName) ? _ShellListView.SelectedItems[0].ParsingName : _ShellListView.CurrentFolder.ParsingName;
+            else
+                DriveLetter = _ShellListView.CurrentFolder.ParsingName;
+
+            Process.Start("Cleanmgr.exe", "/d" + DriveLetter.Replace(":\\", ""));
+        }
 
         private void OpenCDTray(char DriveLetter)
         {
@@ -2400,7 +2437,7 @@ namespace BetterExplorer
         void mi_Click(object sender, RoutedEventArgs e)
         {
             var item = (sender as MenuItem);
-            var parentButton = item.Parent as Fluent.DropDownButton;
+            var parentButton = item.Parent as DropDownButton;
             var ascitem = (MenuItem)parentButton.Items[parentButton.Items.IndexOf(misa)];
 
             var Sort = ascitem.IsChecked ? WIN.Forms.SortOrder.Ascending : WIN.Forms.SortOrder.Descending;
@@ -2583,13 +2620,13 @@ namespace BetterExplorer
 
                 if (_ShellListView.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName)
                 {
-                    btnCreateFolder.Header = FindResource("btnNewLibraryCP");   //"New Library";
+                    btnCreateFolder.Header = FindResource("btnNewLibraryCP");       //"New Library";
                     stNewFolder.Title = FindResource("btnNewLibraryCP").ToString(); //"New Library";
                     stNewFolder.Text = "Creates a new library in the current folder.";
                 }
                 else
                 {
-                    btnCreateFolder.Header = FindResource("btnNewFolderCP");    //"New Folder";
+                    btnCreateFolder.Header = FindResource("btnNewFolderCP");        //"New Folder";
                     stNewFolder.Title = FindResource("btnNewFolderCP").ToString();  //"New Folder";
                     stNewFolder.Text = "Creates a new folder in the current folder";
                 }
@@ -2649,8 +2686,8 @@ namespace BetterExplorer
 
             foreach (var item in _ShellListView.SelectedItems)
             {
-                System.Drawing.Bitmap cvt = new Bitmap(item.ParsingName);
-                string namen = Utilities.RemoveExtensionsFromFile(item.ParsingName, new System.IO.FileInfo(item.ParsingName).Extension);
+                var cvt = new Bitmap(item.ParsingName);
+                string namen = Utilities.RemoveExtensionsFromFile(item.ParsingName, new FileInfo(item.ParsingName).Extension);
                 try
                 {
                     AddToLog("Converted Image from " + item.ParsingName + " to new file " + namen + extension);
@@ -4041,7 +4078,7 @@ namespace BetterExplorer
                     }
                     else
                     {
-                        this._ShellListView.ScrollToTop();
+                        //this._ShellListView.ScrollToTop();
                     }
                 }
             }));
