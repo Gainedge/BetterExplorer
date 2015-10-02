@@ -1675,7 +1675,8 @@
 								Width="250"
 								Image="Images\folder_new32.png"
 								IsRibbonAligned="True"
-								Text="Creates a new folder in the current folder" />
+								Text="Creates a new folder in the current folder" 
+                            />
                         </Ribbon:Button.ToolTip>
                     </Ribbon:Button>
                     <Ribbon:DropDownButton x:Name="btnNewItem"
