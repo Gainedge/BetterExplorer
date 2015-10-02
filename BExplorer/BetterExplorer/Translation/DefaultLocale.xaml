@@ -406,7 +406,6 @@
     -->
     <system:String x:Key="btnBugtracker">Report a problem</system:String>
     <system:String x:Key="lbeBugtracker">Report a problem, bug or feature request</system:String>
-
     <system:String x:Key="txtBugtracker">This redirects you to the bugtracker website where you can post issues.</system:String>
     <system:String x:Key="stiOtherSettings">Other Settings</system:String>
     <system:String x:Key="chkIsDefault_DisableReason">A missing entry in Windows Registry keeps BetterExplorer from knowing or changing this setting. BetterExplorer will continue to work normally.</system:String>
@@ -430,10 +429,11 @@
     <system:String x:Key="tmpButtonB">Export Col Data To List</system:String>
     <system:String x:Key="chkShowCheckBoxesCP_Text">Displays a checkbox over items, allowing you to use these checkboxes to select multiple items</system:String>
     <system:String x:Key="sbiSelItemsCount_Title">Selected Items Count</system:String>
-    <system:String x:Key="blank">v</system:String>
-    <system:String x:Key="blank">v</system:String>
-    <system:String x:Key="blank">v</system:String>
-    <system:String x:Key="blank">v</system:String>
-    <system:String x:Key="blank">v</system:String>
-
+    <system:String x:Key="ResizeImage_cbxMaintainRatio">Maintain aspect ratio</system:String>
+    <system:String x:Key="ResizeImage_lbeWidth">Width:</system:String>
+    <system:String x:Key="ResizeImage_lbeHeight">Height:</system:String>
+    <system:String x:Key="ResizeImage_textBlock6">Or set specific size:</system:String>
+    <system:String x:Key="RunExeAsUser_textBlock1">Enter the username you wish to run this app under:</system:String>
+    <system:String x:Key="RunExeAsUser_Title">Run as Another User</system:String>
+    <!--<system:String x:Key="blank"></system:String>-->
 </ResourceDictionary>

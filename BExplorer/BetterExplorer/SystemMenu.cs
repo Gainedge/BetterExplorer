@@ -30,10 +30,8 @@ namespace BetterExplorer
                                   //     are ignored).
     }
 
-    public enum WindowMessages
-    {
-        wmSysCommand = 0x0112
-    }
+
+    //public enum WindowMessages { wmSysCommand = 0x0112 }
 
     /// <summary>
     /// A class that helps to manipulate the system menu
@@ -56,16 +54,12 @@ namespace BetterExplorer
 
         // At first we need the GetSystemMenu() function. 
         // This function does not have an Unicode brother
-        [DllImport("USER32", EntryPoint = "GetSystemMenu", SetLastError = true,
-                CharSet = CharSet.Unicode, ExactSpelling = true,
-                CallingConvention = CallingConvention.Winapi)]
+        [DllImport("USER32", EntryPoint = "GetSystemMenu", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
         private static extern IntPtr apiGetSystemMenu(IntPtr WindowHandle, int bReset);
 
         // And we need the AppendMenu() function. Since .NET uses Unicode
         // we pick the unicode solution.
-        [DllImport("USER32", EntryPoint = "AppendMenuW", SetLastError = true,
-                CharSet = CharSet.Unicode, ExactSpelling = true,
-                CallingConvention = CallingConvention.Winapi)]
+        [DllImport("USER32", EntryPoint = "AppendMenuW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
         private static extern int apiAppendMenu(IntPtr MenuHandle, int Flags, int NewID, String Item);
 
         /*
@@ -78,9 +72,7 @@ namespace BetterExplorer
 
         private IntPtr m_SysMenu = IntPtr.Zero; // Handle to the System Menu
 
-        public SystemMenu()
-        {
-        }
+        //public SystemMenu() { }
 
 
         /*

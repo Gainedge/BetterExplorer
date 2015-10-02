@@ -506,7 +506,7 @@
 						</Ribbon:CheckBox.ToolTip>
 						</Ribbon:CheckBox>
 					-->
-                                        <Label Content="         " Visibility="Collapsed" />
+                                        <Label x:Name="paddinglbl8" Content="         " Visibility="Collapsed" />
                                         <Ribbon:CheckBox 
                                             x:Name="chkLogHistory"
                                             Checked="chkLogHistory_CheckChanged"

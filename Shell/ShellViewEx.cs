@@ -2444,9 +2444,9 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
         public void UpdateItem(int index) { User32.SendMessage(this.LVHandle, Interop.MSG.LVM_UPDATE, index, 0); }
 
         /// <summary> Navigates to the parent of the currently displayed folder. </summary>
-        public void NavigateParent() { Navigate_Full(CurrentFolder.Parent, true, true); }
+        public void NavigateParent() => Navigate_Full(CurrentFolder.Parent, true, true);
 
-        public void RefreshContents() { Navigate_Full(this.CurrentFolder, true, refresh: true); }
+        public void RefreshContents() => Navigate_Full(this.CurrentFolder, true, refresh: true);
 
         public void RefreshItem(int index, Boolean IsForceRedraw = false, Boolean convertName = true)
         {
