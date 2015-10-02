@@ -1416,11 +1416,9 @@ namespace BExplorer.Shell
                     ItemsHashed.Remove(theItem.GetUniqueID());
                     ItemsHashed.Add(obj2.GetUniqueID(), itemIndex);
                     User32.SendMessage(this.LVHandle, MSG.LVM_UPDATE, itemIndex, 0);
-                    if (this.IsGroupsEnabled)
-                    {
-                        this.SetGroupOrder(false);
-                    }
-                    var col = this.AllAvailableColumns.Where(w => w.ID == this.LastSortedColumnId).FirstOrDefault();
+                    if (this.IsGroupsEnabled) this.SetGroupOrder(false);
+
+                    var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
                     this.SetSortCollumn(col, this.LastSortOrder, false);
                     RedrawWindow();
                     var obj2Real = this.Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName);
@@ -1434,6 +1432,7 @@ namespace BExplorer.Shell
                     }
                 }
             }
+
             this.CurrentRefreshedItemIndex = -1;
         }
 
@@ -2069,7 +2068,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                             var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
                             if (this.CurrentFolder != null && objUpdateItem.ParsingName.Contains(this.CurrentFolder.ParsingName))
                             {
-                                var exisitingUItem = this.Items.ToArray().SingleOrDefault(w => w.Equals(objUpdateItem));
+                                var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
                                 if (exisitingUItem != null)
                                     this.RefreshItem(this.Items.IndexOf(exisitingUItem), true);
 
@@ -2089,7 +2088,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                         case ShellNotifications.SHCNE.SHCNE_NETUNSHARE:
                         case ShellNotifications.SHCNE.SHCNE_ATTRIBUTES:
                             var objNetA = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-                            var exisitingItemNetA = this.ItemsHashed.SingleOrDefault(w => w.Key.Equals(objNetA.GetUniqueID()));
+                            var exisitingItemNetA = this.ItemsHashed.FirstOrDefault(w => w.Key.Equals(objNetA.GetUniqueID()));
                             this.RefreshItem(exisitingItemNetA.Value, true);
                             //this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Updated, null, objNetA, exisitingItemNetA.Value);
                             break;
@@ -2217,7 +2216,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
                 foreach (var obj in newItems)
                 {
-                    var existingItem = this.Items.SingleOrDefault(s => s.Equals(obj));
+                    var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
                     if (existingItem == null)
                     {
                         if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder))
@@ -2229,7 +2228,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                         }
                         else
                         {
-                            var affectedItem = this.Items.SingleOrDefault(s => s.Equals(obj.Parent));
+                            var affectedItem = this.Items.FirstOrDefault(s => s.Equals(obj.Parent));
                             if (affectedItem != null)
                             {
                                 var index = this.Items.IndexOf(affectedItem);
@@ -2239,7 +2238,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                     }
                 }
 
-                var col = this.Collumns.Where(w => w.ID == this.LastSortedColumnId).SingleOrDefault();
+                var col = this.Collumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId));
                 this.SetSortCollumn(col, this.LastSortOrder, false);
                 if (this.IsGroupsEnabled)
                 {
@@ -2647,7 +2646,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
         {
             if (Remove)
             {
-                Collumns theColumn = this.Collumns.SingleOrDefault(s => s.pkey.fmtid == col.pkey.fmtid && s.pkey.pid == col.pkey.pid);
+                Collumns theColumn = this.Collumns.FirstOrDefault(s => s.pkey.fmtid == col.pkey.fmtid && s.pkey.pid == col.pkey.pid);
                 if (theColumn != null)
                 {
                     int colIndex = this.Collumns.IndexOf(theColumn);
@@ -2736,7 +2735,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                 var i = 0;
                 this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k.GetUniqueID(), el => i++);
                 User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-                var colIndexReal = this.Collumns.IndexOf(this.Collumns.Where(w => w.ID == this.LastSortedColumnId).SingleOrDefault());
+                var colIndexReal = this.Collumns.IndexOf(this.Collumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId));
                 if (colIndexReal > -1)
                 {
                     User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, colIndexReal, 0);
@@ -2876,7 +2875,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                         this.ItemForRename = -1;
                         this.LastItemForRename = -1;
                         isThereSettings = LoadSettingsFromDatabase(this._RequestedCurrentLocation, out folderSettings);
-                        columns = this.AllAvailableColumns.Where(w => w.ID == folderSettings.SortColumn).SingleOrDefault();
+                        columns = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.SortColumn);
                         this.Invoke((Action)(() =>
                         {
                             this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
@@ -2936,7 +2935,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                 this.ItemForRename = -1;
                 this.LastItemForRename = -1;
                 isThereSettings = LoadSettingsFromDatabase(this._RequestedCurrentLocation, out folderSettings);
-                columns = this.AllAvailableColumns.Where(w => w.ID == folderSettings.SortColumn).SingleOrDefault();
+                columns = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.SortColumn);
                 this.Invoke((Action)(() =>
                 {
                     this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
@@ -2960,7 +2959,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                         this.RemoveAllCollumns();
                         foreach (var collumn in folderSettings.Columns.Elements())
                         {
-                            var theColumn = this.AllAvailableColumns.Where(w => w.ID == collumn.Attribute("ID").Value).Single();
+                            var theColumn = this.AllAvailableColumns.FirstOrDefault(w => w.ID == collumn.Attribute("ID").Value);//.Single();
                             if (this.Collumns.Count(c => c.ID == theColumn.ID) == 0)
                             {
                                 if (collumn.Attribute("Width").Value != "0")
@@ -2977,7 +2976,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                             }
                             else
                             {
-                                int colIndex = this.Collumns.IndexOf(this.Collumns.SingleOrDefault(s => s.ID == theColumn.ID));
+                                int colIndex = this.Collumns.IndexOf(this.Collumns.FirstOrDefault(s => s.ID == theColumn.ID));
                                 this.Collumns.RemoveAt(colIndex);
                                 User32.SendMessage(this.LVHandle, Interop.MSG.LVM_DELETECOLUMN, colIndex, 0);
                                 if (collumn.Attribute("Width").Value != "0")
@@ -3048,7 +3047,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                     User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
                 if (!String.IsNullOrEmpty(folderSettings.GroupCollumn))
                 {
-                    var colData = this.AllAvailableColumns.Where(w => w.ID == folderSettings.GroupCollumn).SingleOrDefault();
+                    var colData = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.GroupCollumn);
                     if (colData != null)
                     {
                         this.EnableGroups();
@@ -4076,13 +4075,13 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
 
 
-                System.Drawing.Color? textColor = null;
+                Color? textColor = null;
                 if (sho != null && this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0 && !String.IsNullOrEmpty(sho.Extension))
                 {
                     var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(sho.Extension)).Count() > 0;
                     if (extItemsAvailable)
                     {
-                        var color = this.LVItemsColorCodes.Where(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).Select(c => c.TextColor).SingleOrDefault();
+                        var color = this.LVItemsColorCodes.SingleOrDefault(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).Select(c => c.TextColor);
                         textColor = color;
                     }
                 }

@@ -185,7 +185,7 @@ namespace BExplorer.Shell
         Stack<IListItemEx> parents = new Stack<IListItemEx>();
         public void FindItem(IListItemEx item)
         {
-            var nodeNext = this.ShellTreeView.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(item));
+            var nodeNext = this.ShellTreeView.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(item));
             if (nodeNext == null)
             {
                 parents.Push(item);
@@ -258,15 +258,11 @@ namespace BExplorer.Shell
             {
                 var node = new TreeNode(item.DisplayName);
                 IListItemEx itemReal = null;
-                //if (item.Parent != null && item.Parent.Parent != null && item.Parent.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
-                //  itemReal = ShellItem.ToShellParsingName(item.ParsingName);
-                //} else {
-                //  itemReal = item;
-                //}
                 itemReal = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, item.ParsingName.ToShellParsingName());
                 node.Tag = itemReal;
                 var oldnodearray = itemNode.Nodes.OfType<TreeNode>().ToList();
-                if (oldnodearray.SingleOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(itemReal)) == null) oldnodearray.Add(node);
+                //if (oldnodearray.FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(itemReal)) == null) oldnodearray.Add(node);
+                if (!oldnodearray.Any(s => s.Tag != null && (s.Tag as IListItemEx).Equals(itemReal))) oldnodearray.Add(node);
                 var newArray = oldnodearray.OrderBy(o => o.Text).ToArray();
                 this.ShellTreeView.BeginUpdate();
                 itemNode.Nodes.Clear();
@@ -274,7 +270,7 @@ namespace BExplorer.Shell
                 this.ShellTreeView.EndUpdate();
                 if (itemNode != null && itemNode.Nodes.Count > 0)
                 {
-                    var newNode = itemNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(itemReal));
+                    var newNode = itemNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(itemReal));
                     if (newNode != null)
                     {
                         SetNodeImage(newNode.Handle, itemReal.PIDL, this.ShellTreeView.Handle, !(newNode.Parent != null && (newNode.Parent.Tag as IListItemEx).ParsingName == KnownFolders.Links.ParsingName));
@@ -1189,7 +1185,7 @@ namespace BExplorer.Shell
                             case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
                             case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
                                 var objDm = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
-                                var exisitingMItem = computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(objDm));
+                                var exisitingMItem = computerNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(objDm));
                                 if (exisitingMItem != null)
                                 {
                                     exisitingMItem.Text = objDm.DisplayName;
@@ -1201,7 +1197,7 @@ namespace BExplorer.Shell
                                 var objDr = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
                                 try
                                 {
-                                    computerNode.Nodes.Remove(computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).ParsingName == objDr.ParsingName));
+                                    computerNode.Nodes.Remove(computerNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).ParsingName == objDr.ParsingName));
                                 }
                                 catch (NullReferenceException)
                                 {
@@ -1212,7 +1208,7 @@ namespace BExplorer.Shell
                             case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
                                 var objDa = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
 
-                                var exisitingItem = computerNode.Nodes.OfType<TreeNode>().SingleOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(objDa));
+                                var exisitingItem = computerNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(objDa));
                                 if (exisitingItem == null && this._PathsToBeAdd.Count(c => c.Equals(objDa.ParsingName, StringComparison.InvariantCultureIgnoreCase)) == 0)
                                 {
                                     this._PathsToBeAdd.Add(objDa.ParsingName);

@@ -567,15 +567,15 @@ namespace BExplorer.Shell
             var collist = new List<Collumns>();
             collist.AddRange(this._ShellView.Collumns);
             collist.Reverse();
-            this.GenerateMenuItem(sortMenu, "Descending", 248, this._ShellView.LastSortOrder == System.Windows.Forms.SortOrder.Descending);
-            this.GenerateMenuItem(sortMenu, "Ascending", 247, this._ShellView.LastSortOrder == System.Windows.Forms.SortOrder.Ascending);
+            this.GenerateMenuItem(sortMenu, "Descending", 248, this._ShellView.LastSortOrder == SortOrder.Descending);
+            this.GenerateMenuItem(sortMenu, "Ascending", 247, this._ShellView.LastSortOrder == SortOrder.Ascending);
             this.GenerateSeparator(sortMenu);
             foreach (Collumns collumn in collist)
             {
-                this.GenerateMenuItem(sortMenu, collumn.Name, colID--, collumn == this._ShellView.Collumns.Where(w => w.ID == this._ShellView.LastSortedColumnId).SingleOrDefault());
+                this.GenerateMenuItem(sortMenu, collumn.Name, colID--, collumn == this._ShellView.Collumns.FirstOrDefault(w => w.ID == this._ShellView.LastSortedColumnId));
             }
-            this.GenerateMenuItem(groupMenu, "Descending", 246, this._ShellView.LastGroupOrder == System.Windows.Forms.SortOrder.Descending);
-            this.GenerateMenuItem(groupMenu, "Ascending", 245, this._ShellView.LastGroupOrder == System.Windows.Forms.SortOrder.Ascending);
+            this.GenerateMenuItem(groupMenu, "Descending", 246, this._ShellView.LastGroupOrder == SortOrder.Descending);
+            this.GenerateMenuItem(groupMenu, "Ascending", 245, this._ShellView.LastGroupOrder == SortOrder.Ascending);
             this.GenerateSeparator(groupMenu);
             foreach (Collumns collumn in collist)
             {
@@ -622,7 +622,7 @@ namespace BExplorer.Shell
             duplicatedSeparators.Reverse();
             duplicatedSeparators.ForEach(a => User32.DeleteMenu(mnu.Handle, a, MF.MF_BYPOSITION));
         }
-        private void RemoveDefaultExplorerItems(ContextMenu mnu, Control control, ref BExplorer.Shell.Interop.MENUITEMINFO itemInfo)
+        private void RemoveDefaultExplorerItems(ContextMenu mnu, Control control, ref MENUITEMINFO itemInfo)
         {
             User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
             User32.DeleteMenu(mnu.Handle, 0, MF.MF_BYPOSITION);
