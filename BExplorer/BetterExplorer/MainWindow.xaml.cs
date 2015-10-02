@@ -3683,8 +3683,9 @@ namespace BetterExplorer
             asw.ShowDialog();
             if (asw.yep)
             {
-                nam.Add(asw.GetNetworkItem());
-                ServerItem ui = new ServerItem();
+                NetworkItem ni = asw.GetNetworkItem();
+                nam.Add(ni);
+                var ui = new ServerItem();
                 ui.RequestRemove += ui_RequestRemove;
                 ui.RequestEdit += ui_RequestEdit;
                 ui.LoadFromNetworkItem(ni);
@@ -3701,7 +3702,8 @@ namespace BetterExplorer
             {
                 nam.Remove(e.NetworkItem);
                 //pnlServers.Children.Remove(sender as ServerItem);
-                nam.Add(asw.GetNetworkItem());
+                NetworkItem ni = asw.GetNetworkItem();
+                nam.Add(ni);
                 ServerItem ui = new ServerItem();
                 ui.RequestRemove += ui_RequestRemove;
                 ui.RequestEdit += ui_RequestEdit;
