@@ -85,7 +85,7 @@ namespace BetterExplorer
                     {
                         foreach (var path in selectedPaths.ToArray())
                         {
-                            var sho = this._ShellListView.Items.Where(w => w.ParsingName == path).SingleOrDefault();
+                            var sho = this._ShellListView.Items.FirstOrDefault(w => w.ParsingName == path);
                             if (sho != null)
                             {
                                 var index = this._ShellListView.ItemsHashed[sho.GetUniqueID()];

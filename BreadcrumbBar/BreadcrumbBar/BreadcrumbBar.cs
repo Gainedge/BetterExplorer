@@ -558,7 +558,7 @@ namespace Odyssey.Controls
                                 item2.Items.Add(key.Item2);
                             }
 
-                            item2.SelectedIndex = item2.Items.IndexOf(item2.Items.OfType<ShellItem>().Where(w => w.GetHashCode() == key.Item2.GetHashCode()).SingleOrDefault());
+                            item2.SelectedIndex = item2.Items.IndexOf(item2.Items.OfType<ShellItem>().FirstOrDefault(w => w.GetHashCode() == key.Item2.GetHashCode()));
                             item2 = item2.SelectedBreadcrumb;
                         }
                         if (item2 != null) item2.SelectedItem = null;

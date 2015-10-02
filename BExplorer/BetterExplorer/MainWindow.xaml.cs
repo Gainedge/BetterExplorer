@@ -432,40 +432,40 @@ namespace BetterExplorer
         void LinksFolderWarcher_Renamed(object sender, RenamedEventArgs e)
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action)(() =>
+                (Action)(() =>
+                {
+                    foreach (MenuItem item in btnFavorites.Items.OfType<MenuItem>())
                     {
-                        foreach (MenuItem item in btnFavorites.Items.OfType<MenuItem>())
-                        {
-                            if ((item.Tag as ShellItem).ParsingName == e.OldFullPath)
-                                item.Header = Path.GetFileNameWithoutExtension(e.Name);
-                        }
-                    }));
+                        if ((item.Tag as ShellItem).ParsingName == e.OldFullPath)
+                            item.Header = Path.GetFileNameWithoutExtension(e.Name);
+                    }
+                }));
         }
 
         void LinksFolderWarcher_Deleted(object sender, FileSystemEventArgs e)
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action)(() =>
-                    {
-                        btnFavorites.Items.Remove(btnFavorites.Items.OfType<MenuItem>().Single(item => item.Header.ToString() == Path.GetFileNameWithoutExtension(e.Name)));
-                    }));
+                (Action)(() =>
+                {
+                    btnFavorites.Items.Remove(btnFavorites.Items.OfType<MenuItem>().Single(item => item.Header.ToString() == Path.GetFileNameWithoutExtension(e.Name)));
+                }));
         }
 
         void LinksFolderWarcher_Created(object sender, FileSystemEventArgs e)
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Normal,
-                    (Action)(() =>
+                (Action)(() =>
+                {
+                    if (Path.GetExtension(e.FullPath).ToLowerInvariant() == ".lnk")
                     {
-                        if (Path.GetExtension(e.FullPath).ToLowerInvariant() == ".lnk")
-                        {
-                            var so = new ShellItem(e.FullPath);
-                            so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                            so.Thumbnail.CurrentSize = new WIN.Size(16, 16);
-                            ImageSource icon = so.Thumbnail.BitmapSource;
+                        var so = new ShellItem(e.FullPath);
+                        so.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
+                        so.Thumbnail.CurrentSize = new WIN.Size(16, 16);
+                        ImageSource icon = so.Thumbnail.BitmapSource;
 
-                            btnFavorites.Items.Add(Utilities.Build_MenuItem(so.DisplayName, so, icon, onClick: mif_Click));
-                        }
-                    }));
+                        btnFavorites.Items.Add(Utilities.Build_MenuItem(so.DisplayName, so, icon, onClick: mif_Click));
+                    }
+                }));
         }
 
         private void SetUpRibbonTabsVisibilityOnSelectOrNavigate(int selectedItemsCount, IListItemEx selectedItem)
@@ -3674,7 +3674,7 @@ namespace BetterExplorer
         private bool DoVerb(FolderItem Item, string Verb)
         {
             //TODO: Test
-            var Found = Item.Verbs().OfType<FolderItemVerb>().SingleOrDefault(FIVerb => FIVerb.Name.ToUpper().Contains(Verb.ToUpper()));
+            var Found = Item.Verbs().OfType<FolderItemVerb>().FirstOrDefault(FIVerb => FIVerb.Name.ToUpper().Contains(Verb.ToUpper()));
             Found?.DoIt();
             return Found != null;
 
@@ -4066,7 +4066,7 @@ namespace BetterExplorer
                     {
                         foreach (var path in selectedPaths.ToArray())
                         {
-                            var sho = this._ShellListView.Items.SingleOrDefault(w => w.ParsingName == path);
+                            var sho = this._ShellListView.Items.FirstOrDefault(w => w.ParsingName == path);
                             if (sho != null)
                             {
                                 var index = this._ShellListView.ItemsHashed[sho.GetUniqueID()];
@@ -4766,7 +4766,7 @@ namespace BetterExplorer
             foreach (MenuItem item in button.Items)
             {
                 var column = item.Tag as Collumns;
-                if (column == this._ShellListView.Collumns.Where(w => w.ID == this._ShellListView.LastSortedColumnId).SingleOrDefault())
+                if (column == this._ShellListView.Collumns.FirstOrDefault(w => w.ID == this._ShellListView.LastSortedColumnId))
                 {
                     item.IsChecked = true;
                     break;
