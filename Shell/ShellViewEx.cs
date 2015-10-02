@@ -597,7 +597,7 @@ namespace BExplorer.Shell
         {
             if (!String.IsNullOrEmpty(e.FullPath))
             {
-                var theItem = this.Items.ToArray().SingleOrDefault(s => s.ParsingName.ToLowerInvariant() == e.FullPath.ToLowerInvariant());
+                var theItem = this.Items.ToArray().FirstOrDefault(s => s.ParsingName.ToLowerInvariant() == e.FullPath.ToLowerInvariant());
                 if (theItem != null)
                 {
                     this.Items.Remove(theItem);
@@ -1379,7 +1379,7 @@ namespace BExplorer.Shell
             if (!Items.Contains(obj) && !String.IsNullOrEmpty(obj.ParsingName))
             {
                 Items.Add(obj);
-                var col = this.AllAvailableColumns.Where(w => w.ID == this.LastSortedColumnId).SingleOrDefault();
+                var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
                 this.SetSortCollumn(col, this.LastSortOrder, false);
                 if (this.IsGroupsEnabled) SetGroupOrder(false);
             }
@@ -1393,14 +1393,14 @@ namespace BExplorer.Shell
         {
             if (this.CurrentRefreshedItemIndex != -1)
             {
-                var tempItem = Items.SingleOrDefault(s => s.ParsingName == obj2.ParsingName);
+                var tempItem = Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName);
                 this.RefreshItem(this.CurrentRefreshedItemIndex);
                 if (tempItem == null)
                 {
                     Items.Insert(this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex, obj2);
                     ItemsHashed.Add(obj2.GetUniqueID(), this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex);
                     if (this.IsGroupsEnabled) this.SetGroupOrder(false);
-                    var col = this.AllAvailableColumns.Where(w => w.ID == this.LastSortedColumnId).SingleOrDefault();
+                    var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
                     this.SetSortCollumn(col, this.LastSortOrder, false);
                     this.ItemUpdated?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj2, null, ItemsHashed[obj2.GetUniqueID()]));
                     this.SelectItemByIndex(ItemsHashed[obj2.GetUniqueID()], true, true);
@@ -1408,7 +1408,7 @@ namespace BExplorer.Shell
             }
             else
             {
-                var theItem = Items.SingleOrDefault(s => s.ParsingName == obj1.ParsingName);
+                var theItem = Items.FirstOrDefault(s => s.ParsingName == obj1.ParsingName);
                 if (theItem != null)
                 {
                     int itemIndex = Items.IndexOf(theItem);
@@ -1420,16 +1420,13 @@ namespace BExplorer.Shell
                     {
                         this.SetGroupOrder(false);
                     }
-                    var col = this.AllAvailableColumns.Where(w => w.ID == this.LastSortedColumnId).SingleOrDefault();
+                    var col = this.AllAvailableColumns.Where(w => w.ID == this.LastSortedColumnId).FirstOrDefault();
                     this.SetSortCollumn(col, this.LastSortOrder, false);
                     RedrawWindow();
-                    var obj2Real = this.Items.SingleOrDefault(s => s.ParsingName == obj2.ParsingName);
-                    if (this.ItemUpdated != null)
+                    var obj2Real = this.Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName);
+                    if (this.ItemUpdated != null && obj2Real != null)
                     {
-                        if (obj2Real != null)
-                        {
-                            this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, ItemsHashed[obj2Real.GetUniqueID()]));
-                        }
+                        this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, ItemsHashed[obj2Real.GetUniqueID()]));
                     }
                     if (obj2Real != null)
                     {

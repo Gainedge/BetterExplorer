@@ -342,9 +342,7 @@ namespace BExplorer.Shell
 
                 this.RemoveDuplicatedSeparators(mnu);
 
-                int command = User32.TrackPopupMenuEx(mnu.Handle,
-                    TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
-                    IntPtr.Zero);
+                int command = User32.TrackPopupMenuEx(mnu.Handle, TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle, IntPtr.Zero);
                 if (command > 0 && command < m_CmdFirst)
                 {
                     switch (command)
@@ -356,12 +354,12 @@ namespace BExplorer.Shell
                             this._ShellView.SetGroupOrder();
                             break;
                         case 247:
-                            var colasc = this._ShellView.Collumns.Where(w => w.ID == this._ShellView.LastSortedColumnId).SingleOrDefault();
-                            this._ShellView.SetSortCollumn(colasc, System.Windows.Forms.SortOrder.Ascending);
+                            var colasc = this._ShellView.Collumns.FirstOrDefault(w => w.ID == this._ShellView.LastSortedColumnId);
+                            this._ShellView.SetSortCollumn(colasc, SortOrder.Ascending);
                             break;
                         case 248:
-                            var coldesc = this._ShellView.Collumns.Where(w => w.ID == this._ShellView.LastSortedColumnId).SingleOrDefault();
-                            this._ShellView.SetSortCollumn(coldesc, System.Windows.Forms.SortOrder.Descending);
+                            var coldesc = this._ShellView.Collumns.FirstOrDefault(w => w.ID == this._ShellView.LastSortedColumnId);
+                            this._ShellView.SetSortCollumn(coldesc, SortOrder.Descending);
                             break;
                         case 249:
                             this._ShellView.PasteAvailableFiles();
