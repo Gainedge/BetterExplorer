@@ -6,7 +6,7 @@
     <Grid>
         <ListBox HorizontalAlignment="Left" x:Name="AllControls" Margin="30,30,0,55" Width="200"/>
         <ListBox x:Name="QATControls" Margin="0,30,90,55" HorizontalAlignment="Right" Width="200"/>
-        <TextBlock HorizontalAlignment="Left" Margin="30,9,0,0" TextWrapping="Wrap" Text="Add or remove items from the Quick Access Toolbar:" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="30,9,0,0" TextWrapping="Wrap" Text="{DynamicResource CustomizeQAT_Textbox1}" VerticalAlignment="Top"/>
         <Grid Margin="0,0,60,25" HorizontalAlignment="Center" VerticalAlignment="Center" Width="70">
             <Button Content="Add »" x:Name="btnAdd" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Click="btnAdd_Click"/>
             <Button Content="« Remove" x:Name="btnRemove" Margin="0,27,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Click="btnRemove_Click"/>
@@ -15,9 +15,9 @@
             <Button Content="Move Up" x:Name="btnMoveUp" Margin="0,0,0,28" Click="btnMoveUp_Click" />
             <Button Content="Move Down" x:Name="btnMoveDown" Margin="0,28,0,0" VerticalAlignment="Top" Click="btnMoveDown_Click" />
         </Grid>
-        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Right" Margin="0,0,10,20" VerticalAlignment="Bottom" Width="75" Click="btnCancel_Click"/>
-        <Button Content="Apply" HorizontalAlignment="Right" Margin="0,0,90,20" VerticalAlignment="Bottom" Width="75" Click="btnApply_Click"/>
-        <Button x:Name="btnOkay" Content="OK" HorizontalAlignment="Right" Margin="0,0,170,20" VerticalAlignment="Bottom" Width="75" Click="btnOkay_Click"/>
+        <Button x:Name="btnCancel" Content="{StaticResource txtCancel}" HorizontalAlignment="Right" Margin="0,0,10,20" VerticalAlignment="Bottom" Width="75" Click="btnCancel_Click"/>
+        <Button Content="{StaticResource txtApply}" HorizontalAlignment="Right" Margin="0,0,90,20" VerticalAlignment="Bottom" Width="75" Click="btnApply_Click"/>
+        <Button x:Name="btnOkay" Content="{StaticResource txtOK}" HorizontalAlignment="Right" Margin="0,0,170,20" VerticalAlignment="Bottom" Width="75" Click="btnOkay_Click"/>
         <TextBlock HorizontalAlignment="Left" Margin="30,281,0,0" TextWrapping="Wrap" Text="Note: This feature is still experimental." VerticalAlignment="Top"/>
     </Grid>
 </Window>

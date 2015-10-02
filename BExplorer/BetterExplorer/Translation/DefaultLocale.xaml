@@ -435,5 +435,8 @@
     <system:String x:Key="ResizeImage_textBlock6">Or set specific size:</system:String>
     <system:String x:Key="RunExeAsUser_textBlock1">Enter the username you wish to run this app under:</system:String>
     <system:String x:Key="RunExeAsUser_Title">Run as Another User</system:String>
+    <system:String x:Key="frmAbout_description">This is a replacement for the standard Windows Explorer, adding a Ribbon, new features, and tabs.</system:String>
+    <system:String x:Key="frmAbout_info">Product details:</system:String>
+    <system:String x:Key="CustomizeQAT_Textbox1">Add or remove items from the Quick Access Toolbar:</system:String>
     <!--<system:String x:Key="blank"></system:String>-->
 </ResourceDictionary>
