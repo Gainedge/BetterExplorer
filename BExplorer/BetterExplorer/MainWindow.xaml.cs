@@ -740,12 +740,12 @@ namespace BetterExplorer
 
         #region Home Tab
 
-        private void btnctDocuments_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Documents.ParsingName, BExplorer.Shell.OperationType.Copy);
-        private void btnctDesktop_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Desktop.ParsingName, BExplorer.Shell.OperationType.Copy);
-        private void btnctDounloads_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Downloads.ParsingName, BExplorer.Shell.OperationType.Copy);
-        private void btnmtDocuments_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Documents.ParsingName, BExplorer.Shell.OperationType.Move);
-        private void btnmtDesktop_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Desktop.ParsingName, BExplorer.Shell.OperationType.Move);
-        private void btnmtDounloads_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Downloads.ParsingName, BExplorer.Shell.OperationType.Move);
+        private void btnctDocuments_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Documents.ParsingName, OperationType.Copy);
+        private void btnctDesktop_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Desktop.ParsingName, OperationType.Copy);
+        private void btnctDounloads_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Downloads.ParsingName, OperationType.Copy);
+        private void btnmtDocuments_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Documents.ParsingName, OperationType.Move);
+        private void btnmtDesktop_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Desktop.ParsingName, OperationType.Move);
+        private void btnmtDounloads_Click(object sender, RoutedEventArgs e) => SetFOperation(KnownFolders.Downloads.ParsingName, OperationType.Move);
         private void btnCopyto_Click(object sender, RoutedEventArgs e) => btnctOther_Click(sender, e);
         private void btnMoveto_Click(object sender, RoutedEventArgs e) => btnmtOther_Click(sender, e);
         private void btnCut_Click(object sender, RoutedEventArgs e) => _ShellListView.CutSelectedFiles();
@@ -759,7 +759,7 @@ namespace BetterExplorer
         private void MenuItem_Click_1(object sender, RoutedEventArgs e) => _ShellListView.DeleteSelectedFiles(false);
         private void btnProperties_Click(object sender, RoutedEventArgs e) => _ShellListView.ShowPropPage(this.Handle, _ShellListView.GetFirstSelectedItem().ParsingName, "");
         private void btnInvSel_Click(object sender, RoutedEventArgs e) => _ShellListView.InvertSelection();
-        private void btnNewWindow_Click(object sender, RoutedEventArgs e) => Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location, "/nw");
+        private void btnNewWindow_Click(object sender, RoutedEventArgs e) => Process.Start(Assembly.GetExecutingAssembly().Location, "/nw");
         void miow_Click(object sender, RoutedEventArgs e) => ((AssociationItem)(sender as MenuItem).Tag).Invoke();
 
 
@@ -807,15 +807,11 @@ namespace BetterExplorer
                     };
 
                     proc.Start();
-                    System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
-                    EndpointAddress address = new EndpointAddress(new Uri("net.tcp://localhost:60000/BEComChannel"));
-                    NetTcpBinding binding = new NetTcpBinding();
-                    binding.MaxReceivedMessageSize = 4000000;
-                    binding.MaxBufferPoolSize = 4000000;
-                    binding.MaxBufferSize = 4000000;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12 | SecurityProtocolType.Ssl3;
+                    var address = new EndpointAddress(new Uri("net.tcp://localhost:60000/BEComChannel"));
+                    var binding = new NetTcpBinding() { MaxReceivedMessageSize = 4000000, MaxBufferPoolSize = 4000000, MaxBufferSize = 4000000 };
                     binding.Security = new NetTcpSecurity() { Mode = SecurityMode.Message };
-                    ChannelFactory<IBetterExplorerCommunication> factory =
-                                                new ChannelFactory<IBetterExplorerCommunication>(binding, address);
+                    var factory = new ChannelFactory<IBetterExplorerCommunication>(binding, address);
                     var beSvc = factory.CreateChannel();
                     try
                     {
@@ -823,7 +819,7 @@ namespace BetterExplorer
                     }
                     finally
                     {
-                        Dispatcher.Invoke(WIN.Threading.DispatcherPriority.Normal,
+                        Dispatcher.Invoke(DispatcherPriority.Normal,
                             (Action)(() =>
                             {
                                 this._ShellListView.UnvalidateDirectory();
@@ -836,7 +832,7 @@ namespace BetterExplorer
                     else
                     {
                         Thread.Sleep(1000);
-                        Dispatcher.Invoke(WIN.Threading.DispatcherPriority.Normal,
+                        Dispatcher.Invoke(DispatcherPriority.Normal,
                             (Action)(() =>
                             {
                                 this._ShellListView.UnvalidateDirectory();
