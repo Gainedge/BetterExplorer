@@ -1020,8 +1020,6 @@ namespace BetterExplorer
         {
             if (MessageBox.Show("Are you sure you want to do this?", FindResource("btnFormatDriveCP").ToString(), MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                //var formatDriveThread = new Thread(() => _ShellListView.FormatDrive(IntPtr.Zero));
-
                 var formatDriveThread = new Thread(() =>
                 {
                     string DriveLetter =
@@ -1522,6 +1520,7 @@ namespace BetterExplorer
         [Obsolete("No Code")]
         void ShellTree_AfterSelect(object sender, NavigatedEventArgs e)
         {
+            //TODO: Remove
             //this.bcbc.Path = this.ShellListView.CurrentFolder.ParsingName;
         }
 
