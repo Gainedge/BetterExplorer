@@ -1799,10 +1799,9 @@ namespace BetterExplorer
                 LinksFolderWarcher.EnableRaisingEvents = true;
 
                 //Set up Favorites Menu
-                Task.Run(() =>
-                {
-                    SetUpFavoritesMenu();
-                });
+
+                //Task.Run(() => SetUpFavoritesMenu());
+                SetUpFavoritesMenu();
 
                 //Load the ShellSettings
                 _IsCalledFromLoading = true;
