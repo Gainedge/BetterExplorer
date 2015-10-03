@@ -2191,13 +2191,12 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
         void _MaintenanceTimer_Tick(object sender, EventArgs e)
         {
-            Thread maintenance = new Thread(() =>
+            new Thread(() =>
             {
                 var curProcess = Process.GetCurrentProcess();
                 if (curProcess.WorkingSet64 > 100 * 1024 * 1024) Shell32.SetProcessWorkingSetSize(curProcess.Handle, -1, -1);
                 curProcess.Dispose();
-            });
-            maintenance.Start();
+            }).Start();
         }
 
         void _UnvalidateTimer_Tick(object sender, EventArgs e)
@@ -2238,21 +2237,18 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                     }
                 }
 
-                var col = this.Collumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId));
+                var col = this.Collumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
                 this.SetSortCollumn(col, this.LastSortOrder, false);
-                if (this.IsGroupsEnabled)
-                {
-                    this.SetGroupOrder(false);
-                }
+                if (this.IsGroupsEnabled) this.SetGroupOrder(false);
             }
             catch (Exception)
             {
                 F.Application.DoEvents();
             }
+
             newItems = null;
             removedItems = null;
             Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-
         }
 
         protected override void OnHandleDestroyed(EventArgs e)
@@ -4081,8 +4077,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                     var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(sho.Extension)).Count() > 0;
                     if (extItemsAvailable)
                     {
-                        var color = this.LVItemsColorCodes.SingleOrDefault(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).Select(c => c.TextColor);
-                        textColor = color;
+                        textColor = this.LVItemsColorCodes.SingleOrDefault(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension))?.TextColor;//.Select(c => c.TextColor);
                     }
                 }
                 #endregion
