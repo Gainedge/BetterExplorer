@@ -14,10 +14,7 @@ namespace BExplorer.Shell
     {
         private FolderProperties knownFolderProperties;
 
-        internal KnownFolderSettings(IKnownFolderNative knownFolderNative)
-        {
-            GetFolderProperties(knownFolderNative);
-        }
+        internal KnownFolderSettings(IKnownFolderNative knownFolderNative) { GetFolderProperties(knownFolderNative); }
 
         #region Private Methods
 

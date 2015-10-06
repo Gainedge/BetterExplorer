@@ -12,49 +12,36 @@ namespace BExplorer.Shell
     /// </summary>
     public class SearchCondition : IDisposable
     {
-        /// <summary>
-        /// A value (in <see cref="System.String"/> format) to which the property is compared. 
-        /// </summary>
-        public string PropertyValue { get; internal set; }
-
-        internal ICondition NativeSearchCondition { get; set; }
+        private PROPERTYKEY propertyKey;
+        private PROPERTYKEY emptyPropertyKey = new PROPERTYKEY();
 
         private string canonicalName;
         /// <summary>The name of a property to be compared or NULL for an unspecified property.</summary>
         public string PropertyCanonicalName => canonicalName;
 
+        /// <summary>
+        /// A value (in <see cref="System.String"/> format) to which the property is compared. 
+        /// </summary>
+        public string PropertyValue { get; internal set; }
+        internal ICondition NativeSearchCondition { get; set; }
 
-        internal SearchCondition(ICondition nativeSearchCondition)
-        {
-            if (nativeSearchCondition == null)
-            {
-                throw new ArgumentNullException("nativeSearchCondition");
-            }
+        private SearchConditionOperation conditionOperation = SearchConditionOperation.Implicit;
 
-            NativeSearchCondition = nativeSearchCondition;
+        /// <summary>
+        /// Search condition operation to be performed on the property/value combination.
+        /// See <see cref="SearchConditionOperation"/> for more details.
+        /// </summary>        
+        public SearchConditionOperation ConditionOperation => conditionOperation;
 
-            HResult hr = NativeSearchCondition.GetConditionType(out conditionType);
 
-            if (hr != HResult.S_OK)
-            {
-                return;
-            }
+        private SearchConditionType conditionType = SearchConditionType.Leaf;
+        /// <summary>
+        /// Represents the condition type for the given node. 
+        /// </summary>        
+        public SearchConditionType ConditionType => conditionType;
 
-            if (ConditionType == SearchConditionType.Leaf)
-            {
-                using (PropVariant propVar = new PropVariant())
-                {
-                    hr = NativeSearchCondition.GetComparisonInfo(out canonicalName, out conditionOperation, propVar);
 
-                    if (hr != HResult.S_OK) return;
 
-                    PropertyValue = propVar.Value.ToString();
-                }
-            }
-        }
-
-        private PROPERTYKEY propertyKey;
-        private PROPERTYKEY emptyPropertyKey = new PROPERTYKEY();
         /// <summary>
         /// The property key for the property that is to be compared.
         /// </summary>        
@@ -71,19 +58,28 @@ namespace BExplorer.Shell
             }
         }
 
+        internal SearchCondition(ICondition nativeSearchCondition)
+        {
+            if (nativeSearchCondition == null) throw new ArgumentNullException("nativeSearchCondition");
 
-        private SearchConditionOperation conditionOperation = SearchConditionOperation.Implicit;
-        /// <summary>
-        /// Search condition operation to be performed on the property/value combination.
-        /// See <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionOperation"/> for more details.
-        /// </summary>        
-        public SearchConditionOperation ConditionOperation => conditionOperation;
+            NativeSearchCondition = nativeSearchCondition;
 
-        private SearchConditionType conditionType = SearchConditionType.Leaf;
-        /// <summary>
-        /// Represents the condition type for the given node. 
-        /// </summary>        
-        public SearchConditionType ConditionType => conditionType;
+            HResult hr = NativeSearchCondition.GetConditionType(out conditionType);
+
+            if (hr != HResult.S_OK) return;
+
+            if (ConditionType == SearchConditionType.Leaf)
+            {
+                using (var propVar = new PropVariant())
+                {
+                    hr = NativeSearchCondition.GetComparisonInfo(out canonicalName, out conditionOperation, propVar);
+
+                    if (hr != HResult.S_OK) return;
+
+                    PropertyValue = propVar.Value.ToString();
+                }
+            }
+        }
 
         /// <summary>
         /// Retrieves an array of the sub-conditions. 
@@ -91,23 +87,20 @@ namespace BExplorer.Shell
         public IEnumerable<SearchCondition> GetSubConditions()
         {
             // Our list that we'll return
-            List<SearchCondition> subConditionsList = new List<SearchCondition>();
+            var subConditionsList = new List<SearchCondition>();
 
             // Get the sub-conditions from the native API
             object subConditionObj;
-            Guid guid = new Guid(InterfaceGuids.IEnumUnknown);
+            var guid = new Guid(InterfaceGuids.IEnumUnknown);
 
             HResult hr = NativeSearchCondition.GetSubConditions(ref guid, out subConditionObj);
 
-            if (hr != HResult.S_OK)
-            {
-                throw new Exception(hr.ToString());
-            }
+            if (hr != HResult.S_OK) throw new Exception(hr.ToString());
 
             // Convert each ICondition to SearchCondition
             if (subConditionObj != null)
             {
-                IEnumUnknown enumUnknown = subConditionObj as IEnumUnknown;
+                var enumUnknown = subConditionObj as IEnumUnknown;
 
                 IntPtr buffer = IntPtr.Zero;
                 uint fetched = 0;

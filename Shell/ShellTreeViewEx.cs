@@ -587,23 +587,16 @@ namespace BExplorer.Shell
                 {
                     this.ShellTreeView.Invoke((Action)(() =>
                     {
-
                         node = TreeNode.FromHandle(ShellTreeView, handle);
                         treeHandle = this.ShellTreeView.Handle;
-                        if (node != null)
-                        {
-                            visible = node.IsVisible;
-                            //if (node.Tag != null)
-                            //  pidl = ((IListItemEx)node.Tag).PIDL;
-                        }
+                        if (node != null) visible = node.IsVisible;
 
                     }));
                 }
 
-                if (!visible)
-                    continue;
+                if (!visible) continue;
 
-                if (node != null && node.Nodes.Count > 0)
+                if (node?.Nodes.Count > 0)
                 {
                     var childItem = node.Nodes[0];
                     if (childItem != null)
@@ -614,10 +607,7 @@ namespace BExplorer.Shell
                         try
                         {
                             var sho = (node.Tag as IListItemEx);
-                            if (!sho.HasSubFolders)
-                            {
-                                User32.SendMessage(treeHandle, MSG.TVM_DELETEITEM, 0, nodeHandle);
-                            }
+                            if (!sho.HasSubFolders) User32.SendMessage(treeHandle, MSG.TVM_DELETEITEM, 0, nodeHandle);
                             this.CheckedFroChilds.Add(handle);
                         }
                         catch (Exception)
@@ -637,7 +627,7 @@ namespace BExplorer.Shell
             }
         }
 
-        public void DoMove(F.IDataObject dataObject, IListItemEx destination)
+        public void DoMove(IDataObject dataObject, IListItemEx destination)
         {
             var handle = this.Handle;
             var thread = new Thread(() =>
@@ -667,7 +657,8 @@ namespace BExplorer.Shell
             thread.Start();
         }
 
-        public void DoCopy(F.IDataObject dataObject, IListItemEx destination)
+        /*
+        public void DoCopy(IDataObject dataObject, IListItemEx destination)
         {
             var handle = this.Handle;
             var thread = new Thread(() =>
@@ -696,12 +687,12 @@ namespace BExplorer.Shell
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
         }
+        */
 
         public void PasteAvailableFiles()
         {
             var selectedItem = this.ShellTreeView.SelectedNode.Tag as IListItemEx;
-            if (selectedItem == null)
-                return;
+            if (selectedItem == null) return;
             var handle = this.Handle;
             var thread = new Thread(() =>
             {
@@ -713,9 +704,9 @@ namespace BExplorer.Shell
                 else
                     items = dataObject.ToShellItemArray().ToArray();
 
-
                 try
                 {
+                    //TODO: Check this for each
                     var fo = new IIFileOperation(handle);
                     foreach (var item in items)
                     {
@@ -1038,36 +1029,36 @@ namespace BExplorer.Shell
 
         private void ShellTreeView_DragOver(object sender, DragEventArgs e)
         {
-            var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
+            var wp = new DataObject.Win32Point() { X = e.X, Y = e.Y };
             ShellView.Drag_SetEffect(e);
-            BExplorer.Shell.DataObject.DropDescription descinvalid = new DataObject.DropDescription();
-            descinvalid.type = (int)BExplorer.Shell.DataObject.DropImageType.Invalid;
+            DataObject.DropDescription descinvalid = new DataObject.DropDescription();
+            descinvalid.type = (int)DataObject.DropImageType.Invalid;
             ((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(descinvalid);
             var node = this.ShellTreeView.GetNodeAt(PointToClient(new Point(e.X, e.Y)));
             if (node != null && !String.IsNullOrEmpty(node.Text) && node.Text != this._EmptyItemString)
             {
-                User32.SendMessage(this.ShellTreeView.Handle, BExplorer.Shell.Interop.MSG.TVM_SETHOT, 0, node.Handle);
-                BExplorer.Shell.DataObject.DropDescription desc = new DataObject.DropDescription();
+                User32.SendMessage(this.ShellTreeView.Handle, MSG.TVM_SETHOT, 0, node.Handle);
+                DataObject.DropDescription desc = new DataObject.DropDescription();
                 switch (e.Effect)
                 {
-                    case System.Windows.Forms.DragDropEffects.Copy:
-                        desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Copy;
+                    case DragDropEffects.Copy:
+                        desc.type = (int)DataObject.DropImageType.Copy;
                         desc.szMessage = "Copy To %1";
                         break;
-                    case System.Windows.Forms.DragDropEffects.Link:
-                        desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Link;
+                    case DragDropEffects.Link:
+                        desc.type = (int)DataObject.DropImageType.Link;
                         desc.szMessage = "Create Link in %1";
                         break;
                     case System.Windows.Forms.DragDropEffects.Move:
-                        desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Move;
+                        desc.type = (int)DataObject.DropImageType.Move;
                         desc.szMessage = "Move To %1";
                         break;
                     case System.Windows.Forms.DragDropEffects.None:
-                        desc.type = (int)BExplorer.Shell.DataObject.DropImageType.None;
+                        desc.type = (int)DataObject.DropImageType.None;
                         desc.szMessage = "";
                         break;
                     default:
-                        desc.type = (int)BExplorer.Shell.DataObject.DropImageType.Invalid;
+                        desc.type = (int)DataObject.DropImageType.Invalid;
                         desc.szMessage = "";
                         break;
                 }
@@ -1081,10 +1072,7 @@ namespace BExplorer.Shell
                 base.OnDragOver(e);
         }
 
-        private void ShellTreeView_DragLeave(object sender, EventArgs e)
-        {
-            DropTargetHelper.Get.Create.DragLeave();
-        }
+        private void ShellTreeView_DragLeave(object sender, EventArgs e) => DropTargetHelper.Get.Create.DragLeave();
 
         private void ShellTreeView_DragDrop(object sender, DragEventArgs e)
         {
@@ -1097,28 +1085,28 @@ namespace BExplorer.Shell
 
             switch (e.Effect)
             {
-                case F.DragDropEffects.Copy:
+                case DragDropEffects.Copy:
                     //this.DoCopy(e.Data, destination);
                     break;
 
-                case F.DragDropEffects.Link:
+                case DragDropEffects.Link:
                     System.Windows.MessageBox.Show("link");
                     break;
 
-                case F.DragDropEffects.Move:
+                case DragDropEffects.Move:
                     this.DoMove(e.Data, destination);
                     break;
 
-                case F.DragDropEffects.All:
-                case F.DragDropEffects.None:
-                case F.DragDropEffects.Scroll:
+                case DragDropEffects.All:
+                case DragDropEffects.None:
+                case DragDropEffects.Scroll:
                     break;
 
                 default:
                     break;
             }
 
-            var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
+            var wp = new DataObject.Win32Point() { X = e.X, Y = e.Y };
 
             if (e.Data.GetDataPresent("DragImageBits"))
                 DropTargetHelper.Get.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
@@ -1150,6 +1138,7 @@ namespace BExplorer.Shell
             this._NotificationGlobal.UnregisterChangeNotify();
             base.OnHandleDestroyed(e);
         }
+
         private List<String> _PathsToBeAdd = new List<String>();
         [HandleProcessCorruptedStateExceptions]
         protected override void WndProc(ref Message m)
@@ -1209,7 +1198,7 @@ namespace BExplorer.Shell
                                 var objDa = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, info.Item1);
 
                                 var exisitingItem = computerNode.Nodes.OfType<TreeNode>().FirstOrDefault(s => s.Tag != null && (s.Tag as IListItemEx).Equals(objDa));
-                                if (exisitingItem == null && this._PathsToBeAdd.Count(c => c.Equals(objDa.ParsingName, StringComparison.InvariantCultureIgnoreCase)) == 0)
+                                if (exisitingItem == null && !this._PathsToBeAdd.Any(c => c.Equals(objDa.ParsingName, StringComparison.InvariantCultureIgnoreCase)))
                                 {
                                     this._PathsToBeAdd.Add(objDa.ParsingName);
                                     var newDrive = new TreeNode(objDa.DisplayName);

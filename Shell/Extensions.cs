@@ -8,47 +8,49 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using BExplorer.Shell._Plugin_Interfaces;
 
-namespace BExplorer.Shell {
-	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-	public struct LVITEM {
-		public LVIF mask;
-		public int iItem;
-		public int iSubItem;
-		public LVIS state;
-		public LVIS stateMask;
-		[MarshalAs(UnmanagedType.LPTStr)]
-		public string pszText;
-		public int cchTextMax;
-		public int iImage;
-		public IntPtr lParam;
-		public int iIndent;
-		public int iGroupId;
-		public int cColumns;
-		public IntPtr puColumns;
-		public int piColFmt;
-		public int iGroup;
-	}
+namespace BExplorer.Shell
+{
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct LVITEM
+    {
+        public LVIF mask;
+        public int iItem;
+        public int iSubItem;
+        public LVIS state;
+        public LVIS stateMask;
+        [MarshalAs(UnmanagedType.LPTStr)]
+        public string pszText;
+        public int cchTextMax;
+        public int iImage;
+        public IntPtr lParam;
+        public int iIndent;
+        public int iGroupId;
+        public int cColumns;
+        public IntPtr puColumns;
+        public int piColFmt;
+        public int iGroup;
+    }
 
-	[StructLayout(LayoutKind.Sequential)]
-	public struct NMHDR {
-		// 12/24
-		public IntPtr hwndFrom;
-		public IntPtr idFrom;
-		public int code;
-	}
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NMHDR
+    {
+        // 12/24
+        public IntPtr hwndFrom;
+        public IntPtr idFrom;
+        public int code;
+    }
 
-	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-	public struct NMLVDISPINFO {
-		public NMHDR hdr;
-		public LVITEM item;
-	}
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct NMLVDISPINFO
+    {
+        public NMHDR hdr;
+        public LVITEM item;
+    }
 
-	/*
+    /*
 [StructLayout(LayoutKind.Sequential)]
 public struct NMLVDISPINFO_NOTEXT {
 	public NMHDR hdr;
@@ -56,7 +58,7 @@ public struct NMLVDISPINFO_NOTEXT {
 }
 */
 
-	/*
+    /*
 [StructLayout(LayoutKind.Sequential)]
 public struct LVITEM_NOTEXT {
 	public LVIF mask;
@@ -73,38 +75,41 @@ public struct LVITEM_NOTEXT {
 */
 
 
-	public enum LVCF {
-		LVCF_FMT = 0x1,
-		LVCF_WIDTH = 0x2,
-		LVCF_TEXT = 0x4,
-		LVCF_SUBITEM = 0x8,
-		LVCF_MINWIDTH = 0x0040
-	}
+    public enum LVCF
+    {
+        LVCF_FMT = 0x1,
+        LVCF_WIDTH = 0x2,
+        LVCF_TEXT = 0x4,
+        LVCF_SUBITEM = 0x8,
+        LVCF_MINWIDTH = 0x0040
+    }
 
-	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-	public struct LVCOLUMN {
-		public LVCF mask;
-		public LVCFMT fmt;
-		public Int32 cx;
-		public String pszText;
-		public Int32 cchTextMax;
-		public Int32 iSubItem;
-		public int iImage;
-		public int iOrder;
-		public int cxMin;
-		public int cxDefault;
-		public int cxIdeal;
-	}
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct LVCOLUMN
+    {
+        public LVCF mask;
+        public LVCFMT fmt;
+        public Int32 cx;
+        public String pszText;
+        public Int32 cchTextMax;
+        public Int32 iSubItem;
+        public int iImage;
+        public int iOrder;
+        public int cxMin;
+        public int cxDefault;
+        public int cxIdeal;
+    }
 
-	[StructLayout(LayoutKind.Sequential)]
-	public struct NMHEADER {
-		public NMHDR hdr;
-		public int iItem;
-		public int iButton;
-		public IntPtr pitem;
-	}
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NMHEADER
+    {
+        public NMHDR hdr;
+        public int iItem;
+        public int iButton;
+        public IntPtr pitem;
+    }
 
-	/*
+    /*
 [StructLayout(LayoutKind.Sequential)]
 public struct NMCUSTOMDRAW {
 	// 48/80	
@@ -118,7 +123,7 @@ public struct NMCUSTOMDRAW {
 }
 */
 
-	/*
+    /*
 //[StructLayout(LayoutKind.Sequential)]
 //public struct NMLVCUSTOMDRAW {
 //	// 104/136  
@@ -137,7 +142,7 @@ public struct NMCUSTOMDRAW {
 //}
 */
 
-	/*
+    /*
 [StructLayout(LayoutKind.Sequential)]
 public struct NMTVCUSTOMDRAW {
 	// 104/136  
@@ -148,58 +153,63 @@ public struct NMTVCUSTOMDRAW {
 }
 */
 
-	[StructLayout(LayoutKind.Sequential)]
-	public struct NMITEMACTIVATE {
-		public NMHDR hdr;
-		public int iItem;
-		public int iSubItem;
-		public uint uNewState;
-		public uint uOldState;
-		public uint uChanged;
-		public Point ptAction;
-		public IntPtr lParam;
-		public uint uKeyFlags;
-	}
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NMITEMACTIVATE
+    {
+        public NMHDR hdr;
+        public int iItem;
+        public int iSubItem;
+        public uint uNewState;
+        public uint uOldState;
+        public uint uChanged;
+        public Point ptAction;
+        public IntPtr lParam;
+        public uint uKeyFlags;
+    }
 
-	[StructLayout(LayoutKind.Sequential)]
-	internal struct NMLISTVIEW {
-		public NMHDR hdr;
-		public int iItem;
-		public int iSubItem;
-		public LVIS uNewState;
-		public LVIS uOldState;
-		public LVIF uChanged;
-		public POINT ptAction;
-		public IntPtr lParam;
-	}
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct NMLISTVIEW
+    {
+        public NMHDR hdr;
+        public int iItem;
+        public int iSubItem;
+        public LVIS uNewState;
+        public LVIS uOldState;
+        public LVIF uChanged;
+        public POINT ptAction;
+        public IntPtr lParam;
+    }
 
-	[StructLayout(LayoutKind.Sequential)]
-	public class NMLVKEYDOWN {
-		public NMHDR hdr;
-		public short wVKey;
-		public uint flags;
-	}
+    [StructLayout(LayoutKind.Sequential)]
+    public class NMLVKEYDOWN
+    {
+        public NMHDR hdr;
+        public short wVKey;
+        public uint flags;
+    }
 
 
-	[StructLayout(LayoutKind.Sequential)]
-	public struct NMLVFINDITEM {
-		public NMHDR hdr;
-		public int iStart;
-		public LVFINDINFO lvfi;
-	}
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NMLVFINDITEM
+    {
+        public NMHDR hdr;
+        public int iStart;
+        public LVFINDINFO lvfi;
+    }
 
-	[StructLayout(LayoutKind.Sequential)]
-	public struct NMLVGETINFOTIP {
-		public NMHDR hdr;
-		public int dwFlags;
-		public IntPtr pszText;
-		public int cchTextMax;
-		public int iItem;
-		public int iSubItem;
-		public IntPtr lParam;
-	}
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NMLVGETINFOTIP
+    {
+        public NMHDR hdr;
+        public int dwFlags;
+        public IntPtr pszText;
+        public int cchTextMax;
+        public int iItem;
+        public int iSubItem;
+        public IntPtr lParam;
+    }
 
-	/*
+    /*
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 public struct LVSETINFOTIP {
 	public int cbSize;
@@ -210,375 +220,409 @@ public struct LVSETINFOTIP {
 }
 */
 
-	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-	public struct LVFINDINFO {
-		public LVFI flags;
-		public string psz;
-		public IntPtr lParam;
-		public int ptX; // was POINT pt
-		public int ptY;
-		public int vkDirection;
-	}
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    public struct LVFINDINFO
+    {
+        public LVFI flags;
+        public string psz;
+        public IntPtr lParam;
+        public int ptX; // was POINT pt
+        public int ptY;
+        public int vkDirection;
+    }
 
 
-	public enum LVFI {
-		LVFI_PARAM = 0x0001,
-		LVFI_STRING = 0x0002,
-		LVFI_SUBSTRING = 0x0004,  // Same as LVFI_PARTIAL
-		LVFI_PARTIAL = 0x0008,
-		LVFI_WRAP = 0x0020,
-		LVFI_NEARESTXY = 0x0040,
-	}
+    public enum LVFI
+    {
+        LVFI_PARAM = 0x0001,
+        LVFI_STRING = 0x0002,
+        LVFI_SUBSTRING = 0x0004,  // Same as LVFI_PARTIAL
+        LVFI_PARTIAL = 0x0008,
+        LVFI_WRAP = 0x0020,
+        LVFI_NEARESTXY = 0x0040,
+    }
 
 
-	public enum LVTVIM {
-		LVTVIM_COLUMNS = 2,
-		LVTVIM_TILESIZE = 1,
-		LVTVIM_LABELMARGIN = 4,
-	}
-
-
-
-	public enum LVTVIF {
-		LVTVIF_AUTOSIZE = 0,
-		LVTVIF_FIXEDHEIGHT = 2,
-		LVTVIF_FIXEDSIZE = 3,
-		LVTVIF_FIXEDWIDTH = 1,
-	}
+    public enum LVTVIM
+    {
+        LVTVIM_COLUMNS = 2,
+        LVTVIM_TILESIZE = 1,
+        LVTVIM_LABELMARGIN = 4,
+    }
 
 
 
-	public struct INTEROP_SIZE {
-		public int cx;
-		public int cy;
-	}
+    public enum LVTVIF
+    {
+        LVTVIF_AUTOSIZE = 0,
+        LVTVIF_FIXEDHEIGHT = 2,
+        LVTVIF_FIXEDSIZE = 3,
+        LVTVIF_FIXEDWIDTH = 1,
+    }
 
 
 
-	[StructLayout(LayoutKind.Sequential)]
-	public struct LVTILEVIEWINFO {
-		public uint cbSize;
-		public uint dwMask;
-		public uint dwFlags;
-		public INTEROP_SIZE sizeTile;
-		public int cLines;
-		public User32.RECT rcLabelMargin;
-	}
+    public struct INTEROP_SIZE
+    {
+        public int cx;
+        public int cy;
+    }
 
 
-	/// <SUMMARY> 
-	/// Inherited child for the class Graphics encapsulating 
-	/// additional functionality for curves and rounded rectangles. 
-	/// </SUMMARY> 
-	public class ExtendedGraphics {
 
-		private Graphics mGraphics;
-		public Graphics Graphics {
-			get { return this.mGraphics; }
-			set { this.mGraphics = value; }
-		}
-
-
-		public ExtendedGraphics(Graphics graphics) {
-			this.Graphics = graphics;
-		}
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LVTILEVIEWINFO
+    {
+        public uint cbSize;
+        public uint dwMask;
+        public uint dwFlags;
+        public INTEROP_SIZE sizeTile;
+        public int cLines;
+        public User32.RECT rcLabelMargin;
+    }
 
 
-		#region Fills a Rounded Rectangle with integers. 
-		public void FillRoundRectangle(System.Drawing.Brush brush,
-				int x, int y,
-				int width, int height, int radius) {
+    /// <SUMMARY> 
+    /// Inherited child for the class Graphics encapsulating 
+    /// additional functionality for curves and rounded rectangles. 
+    /// </SUMMARY> 
+    public class ExtendedGraphics
+    {
 
-			float fx = Convert.ToSingle(x);
-			float fy = Convert.ToSingle(y);
-			float fwidth = Convert.ToSingle(width);
-			float fheight = Convert.ToSingle(height);
-			float fradius = Convert.ToSingle(radius);
-			this.FillRoundRectangle(brush, fx, fy,
-					fwidth, fheight, fradius);
-
-		}
-		#endregion
+        private Graphics mGraphics;
+        public Graphics Graphics
+        {
+            get { return this.mGraphics; }
+            set { this.mGraphics = value; }
+        }
 
 
-		#region Fills a Rounded Rectangle with continuous numbers.
-		public void FillRoundRectangle(System.Drawing.Brush brush,
-				float x, float y,
-				float width, float height, float radius) {
-			RectangleF rectangle = new RectangleF(x, y, width, height);
-			GraphicsPath path = this.GetRoundedRect(rectangle, radius);
-			this.Graphics.FillPath(brush, path);
-		}
-		#endregion
+        public ExtendedGraphics(Graphics graphics)
+        {
+            this.Graphics = graphics;
+        }
 
 
-		#region Draws a Rounded Rectangle border with integers. 
-		public void DrawRoundRectangle(System.Drawing.Pen pen, int x, int y,
-				int width, int height, int radius) {
-			float fx = Convert.ToSingle(x);
-			float fy = Convert.ToSingle(y);
-			float fwidth = Convert.ToSingle(width);
-			float fheight = Convert.ToSingle(height);
-			float fradius = Convert.ToSingle(radius);
-			this.DrawRoundRectangle(pen, fx, fy, fwidth, fheight, fradius);
-		}
-		#endregion
+        #region Fills a Rounded Rectangle with integers. 
+        public void FillRoundRectangle(System.Drawing.Brush brush,
+                int x, int y,
+                int width, int height, int radius)
+        {
+
+            float fx = Convert.ToSingle(x);
+            float fy = Convert.ToSingle(y);
+            float fwidth = Convert.ToSingle(width);
+            float fheight = Convert.ToSingle(height);
+            float fradius = Convert.ToSingle(radius);
+            this.FillRoundRectangle(brush, fx, fy,
+                    fwidth, fheight, fradius);
+
+        }
+        #endregion
 
 
-		#region Draws a Rounded Rectangle border with continuous numbers. 
-		public void DrawRoundRectangle(System.Drawing.Pen pen,
-				float x, float y,
-				float width, float height, float radius) {
-			RectangleF rectangle = new RectangleF(x, y, width, height);
-			GraphicsPath path = this.GetRoundedRect(rectangle, radius);
-			this.Graphics.DrawPath(pen, path);
-		}
-		#endregion
+        #region Fills a Rounded Rectangle with continuous numbers.
+        public void FillRoundRectangle(System.Drawing.Brush brush,
+                float x, float y,
+                float width, float height, float radius)
+        {
+            RectangleF rectangle = new RectangleF(x, y, width, height);
+            GraphicsPath path = this.GetRoundedRect(rectangle, radius);
+            this.Graphics.FillPath(brush, path);
+        }
+        #endregion
 
 
-		#region Get the desired Rounded Rectangle path. 
-		private GraphicsPath GetRoundedRect(RectangleF baseRect,
-				 float radius) {
-			// if corner radius is less than or equal to zero, 
-			// return the original rectangle 
-			if (radius <= 0.0F) {
-				GraphicsPath mPath = new GraphicsPath();
-				mPath.AddRectangle(baseRect);
-				mPath.CloseFigure();
-				return mPath;
-			}
+        #region Draws a Rounded Rectangle border with integers. 
+        public void DrawRoundRectangle(System.Drawing.Pen pen, int x, int y,
+                int width, int height, int radius)
+        {
+            float fx = Convert.ToSingle(x);
+            float fy = Convert.ToSingle(y);
+            float fwidth = Convert.ToSingle(width);
+            float fheight = Convert.ToSingle(height);
+            float fradius = Convert.ToSingle(radius);
+            this.DrawRoundRectangle(pen, fx, fy, fwidth, fheight, fradius);
+        }
+        #endregion
 
-			// if the corner radius is greater than or equal to 
-			// half the width, or height (whichever is shorter) 
-			// then return a capsule instead of a lozenge 
-			if (radius >= (Math.Min(baseRect.Width, baseRect.Height)) / 2.0)
-				return GetCapsule(baseRect);
 
-			// create the arc for the rectangle sides and declare 
-			// a graphics path object for the drawing 
-			float diameter = radius * 2.0F;
-			SizeF sizeF = new SizeF(diameter, diameter);
-			RectangleF arc = new RectangleF(baseRect.Location, sizeF);
-			GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+        #region Draws a Rounded Rectangle border with continuous numbers. 
+        public void DrawRoundRectangle(System.Drawing.Pen pen,
+                float x, float y,
+                float width, float height, float radius)
+        {
+            RectangleF rectangle = new RectangleF(x, y, width, height);
+            GraphicsPath path = this.GetRoundedRect(rectangle, radius);
+            this.Graphics.DrawPath(pen, path);
+        }
+        #endregion
 
-			// top left arc 
-			path.AddArc(arc, 180, 90);
 
-			//// top right arc 
-			//arc.X = baseRect.Right;// - diameter;
-			//path.AddArc(arc, 270, 0);
-			path.AddLine(baseRect.Left + radius, baseRect.Top, baseRect.Right, baseRect.Top);
-			path.AddLine(baseRect.Right, baseRect.Top, baseRect.Right, baseRect.Bottom);
-			// bottom right arc 
-			//arc.Y = baseRect.Bottom - diameter;
-			//path.AddArc(arc, 0, 90);
+        #region Get the desired Rounded Rectangle path. 
+        private GraphicsPath GetRoundedRect(RectangleF baseRect,
+                 float radius)
+        {
+            // if corner radius is less than or equal to zero, 
+            // return the original rectangle 
+            if (radius <= 0.0F)
+            {
+                GraphicsPath mPath = new GraphicsPath();
+                mPath.AddRectangle(baseRect);
+                mPath.CloseFigure();
+                return mPath;
+            }
 
-			path.AddLine(baseRect.Right, baseRect.Bottom, baseRect.Left + radius, baseRect.Bottom);
-			//path.AddLine(baseRect.Right, baseRect.Top, baseRect.Right, baseRect.Bottom);
+            // if the corner radius is greater than or equal to 
+            // half the width, or height (whichever is shorter) 
+            // then return a capsule instead of a lozenge 
+            if (radius >= (Math.Min(baseRect.Width, baseRect.Height)) / 2.0)
+                return GetCapsule(baseRect);
 
-			// bottom left arc
-			//arc.X = baseRect.Left;
-			//path.AddArc(arc, 360, 90);
+            // create the arc for the rectangle sides and declare 
+            // a graphics path object for the drawing 
+            float diameter = radius * 2.0F;
+            SizeF sizeF = new SizeF(diameter, diameter);
+            RectangleF arc = new RectangleF(baseRect.Location, sizeF);
+            GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
 
-			path.AddLine(baseRect.Left, baseRect.Bottom - radius, baseRect.Left, baseRect.Top + radius);
+            // top left arc 
+            path.AddArc(arc, 180, 90);
 
-			path.CloseFigure();
-			return path;
-		}
-		#endregion
+            //// top right arc 
+            //arc.X = baseRect.Right;// - diameter;
+            //path.AddArc(arc, 270, 0);
+            path.AddLine(baseRect.Left + radius, baseRect.Top, baseRect.Right, baseRect.Top);
+            path.AddLine(baseRect.Right, baseRect.Top, baseRect.Right, baseRect.Bottom);
+            // bottom right arc 
+            //arc.Y = baseRect.Bottom - diameter;
+            //path.AddArc(arc, 0, 90);
 
-		#region Gets the desired Capsular path. 
-		private GraphicsPath GetCapsule(RectangleF baseRect) {
-			float diameter;
-			RectangleF arc;
-			GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
-			try {
-				if (baseRect.Width > baseRect.Height) {
-					// return horizontal capsule 
-					diameter = baseRect.Height;
-					SizeF sizeF = new SizeF(diameter, diameter);
-					arc = new RectangleF(baseRect.Location, sizeF);
-					path.AddArc(arc, 90, 180);
-					arc.X = baseRect.Right - diameter;
-					path.AddArc(arc, 270, 180);
-				} else if (baseRect.Width < baseRect.Height) {
-					// return vertical capsule 
-					diameter = baseRect.Width;
-					SizeF sizeF = new SizeF(diameter, diameter);
-					arc = new RectangleF(baseRect.Location, sizeF);
-					path.AddArc(arc, 180, 180);
-					arc.Y = baseRect.Bottom - diameter;
-					path.AddArc(arc, 0, 180);
-				} else {
-					// return circle 
-					path.AddEllipse(baseRect);
-				}
-			} catch (Exception ex) {
-				path.AddEllipse(baseRect);
-			} finally {
-				path.CloseFigure();
-			}
-			return path;
-		}
-		#endregion
-	}
+            path.AddLine(baseRect.Right, baseRect.Bottom, baseRect.Left + radius, baseRect.Bottom);
+            //path.AddLine(baseRect.Right, baseRect.Top, baseRect.Right, baseRect.Bottom);
 
-	public static class Extensions {
+            // bottom left arc
+            //arc.X = baseRect.Left;
+            //path.AddArc(arc, 360, 90);
 
-		///// <summary>
-		///// Angles of a rectangle.
-		///// </summary>
-		//public enum RectAngles
-		//{
-		//	None = 0,
-		//	TopLeft = 1,
-		//	TopRight = 2,
-		//	BottomLeft = 4,
-		//	BottomRight = 8,
-		//	All = TopLeft | TopRight | BottomLeft | BottomRight
-		//}
+            path.AddLine(baseRect.Left, baseRect.Bottom - radius, baseRect.Left, baseRect.Top + radius);
 
-		///// <summary>
-		///// Draw and fill a rounded rectangle.
-		///// </summary>
-		///// <param name="g">The graphics object to use.</param>
-		///// <param name="p">The pen to use to draw the rounded rectangle. If <code>null</code>, the border is not drawn.</param>
-		///// <param name="b">The brush to fill the rounded rectangle. If <code>null</code>, the internal is not filled.</param>
-		///// <param name="r">The rectangle to draw.</param>
-		///// <param name="horizontalDiameter">Horizontal diameter for the rounded angles.</param>
-		///// <param name="verticalDiameter">Vertical diameter for the rounded angles.</param>
-		///// <param name="rectAngles">Angles to round.</param>
-		//public static void DrawAndFillRoundedRectangle(this Graphics g, Pen p, Brush b, Rectangle r, int horizontalDiameter, int verticalDiameter, RectAngles rectAngles)
-		//{
-		//	// get out data
-		//	int x = r.X;
-		//	int y = r.Y;
-		//	int width = r.Width;
-		//	int height = r.Height;
-		//	// adapt horizontal and vertical diameter if the rectangle is too little
-		//	if (width < horizontalDiameter)
-		//		horizontalDiameter = width;
-		//	if (height < verticalDiameter)
-		//		verticalDiameter = height;
-		//	/*
-		//	 * The drawing is the following:
-		//	 *
-		//	 *             a
-		//	 *      P______________Q
-		//	 *    h /              \ b
-		//	 *   W /                \R
-		//	 *    |                  |
-		//	 *  g |                  | c
-		//	 *   V|                  |S
-		//	 *    f\                / d
-		//	 *     U\______________/T
-		//	 *             e
-		//	 */
-		//	bool tl = (rectAngles & RectAngles.TopLeft) != 0,
-		//			tr = (rectAngles & RectAngles.TopRight) != 0,
-		//			br = (rectAngles & RectAngles.BottomRight) != 0,
-		//			bl = (rectAngles & RectAngles.BottomLeft) != 0;
-		//	Point pointP = tl ?
-		//			new Point(x + horizontalDiameter / 2, y) :
-		//			new Point(x, y);
-		//	Point pointQ = tr ?
-		//			new Point(x + width - horizontalDiameter / 2 - 1, y) :
-		//			new Point(x + width - 1, y);
-		//	Point pointR = tr ?
-		//			new Point(x + width - 1, y + verticalDiameter / 2) :
-		//			pointQ;
-		//	Point pointS = br ?
-		//			new Point(x + width - 1, y + height - verticalDiameter / 2 - 1) :
-		//			new Point(x + width - 1, y + height - 1);
-		//	Point pointT = br ?
-		//			new Point(x + width - horizontalDiameter / 2 - 1) :
-		//			pointS;
-		//	Point pointU = bl ?
-		//			new Point(x + horizontalDiameter / 2, y + height - 1) :
-		//			new Point(x, y + height - 1);
-		//	Point pointV = bl ?
-		//			new Point(x, y + height - verticalDiameter / 2 - 1) :
-		//			pointU;
-		//	Point pointW = tl ?
-		//			new Point(x, y + verticalDiameter / 2) :
-		//			pointP;
-		//	using (GraphicsPath gp = new GraphicsPath())
-		//	{
-		//		// a
-		//		gp.AddLine(pointP, pointQ);
-		//		// b
-		//		if (tr)
-		//			gp.AddArc(x + width - horizontalDiameter - 1, y, horizontalDiameter, verticalDiameter, 270, 90);
-		//		// c
-		//		gp.AddLine(pointR, pointS);
-		//		// d
-		//		if (br)
-		//			gp.AddArc(x + width - horizontalDiameter - 1, y + height - verticalDiameter - 1, horizontalDiameter, verticalDiameter, 0, 90);
-		//		// e
-		//		gp.AddLine(pointT, pointU);
-		//		// f
-		//		if (bl)
-		//			gp.AddArc(x, y + height - verticalDiameter - 1, horizontalDiameter, verticalDiameter, 90, 90);
-		//		// g
-		//		gp.AddLine(pointV, pointW);
-		//		// h
-		//		if (tl)
-		//			gp.AddArc(x, y, horizontalDiameter, verticalDiameter, 180, 90);
-		//		// end
-		//		gp.CloseFigure();
-		//		// draw
-		//		if (b != null)
-		//			g.FillPath(b, gp);
-		//		if (p != null)
-		//			g.DrawPath(p, gp);
-		//	}
-		//}
+            path.CloseFigure();
+            return path;
+        }
+        #endregion
 
-		public static LVGROUP2 ToNativeListViewGroup(this ListViewGroupEx group) {
-			LVGROUP2 nativeGroup = new LVGROUP2();
-			nativeGroup.cbSize = (uint)Marshal.SizeOf(typeof(LVGROUP2));
-			nativeGroup.mask = (uint)(GroupMask.LVGF_HEADER ^ GroupMask.LVGF_STATE ^ GroupMask.LVGF_GROUPID);
-			nativeGroup.stateMask = (uint)GroupState.LVGS_COLLAPSIBLE;
-			nativeGroup.state = (uint)GroupState.LVGS_COLLAPSIBLE;
-			nativeGroup.pszHeader = group.Header;
-			nativeGroup.iGroupId = group.Index;
+        #region Gets the desired Capsular path. 
+        private GraphicsPath GetCapsule(RectangleF baseRect)
+        {
+            float diameter;
+            RectangleF arc;
+            GraphicsPath path = new System.Drawing.Drawing2D.GraphicsPath();
+            try
+            {
+                if (baseRect.Width > baseRect.Height)
+                {
+                    // return horizontal capsule 
+                    diameter = baseRect.Height;
+                    SizeF sizeF = new SizeF(diameter, diameter);
+                    arc = new RectangleF(baseRect.Location, sizeF);
+                    path.AddArc(arc, 90, 180);
+                    arc.X = baseRect.Right - diameter;
+                    path.AddArc(arc, 270, 180);
+                }
+                else if (baseRect.Width < baseRect.Height)
+                {
+                    // return vertical capsule 
+                    diameter = baseRect.Width;
+                    SizeF sizeF = new SizeF(diameter, diameter);
+                    arc = new RectangleF(baseRect.Location, sizeF);
+                    path.AddArc(arc, 180, 180);
+                    arc.Y = baseRect.Bottom - diameter;
+                    path.AddArc(arc, 0, 180);
+                }
+                else
+                {
+                    // return circle 
+                    path.AddEllipse(baseRect);
+                }
+            }
+            catch (Exception ex)
+            {
+                path.AddEllipse(baseRect);
+            }
+            finally
+            {
+                path.CloseFigure();
+            }
+            return path;
+        }
+        #endregion
+    }
 
-			if (group.Items.Count() > 0) {
-				nativeGroup.cItems = group.Items.Count();
-				nativeGroup.mask ^= (uint)GroupMask.LVGF_ITEMS;
-			}
+    public static class Extensions
+    {
 
-			return nativeGroup;
-		}
+        ///// <summary>
+        ///// Angles of a rectangle.
+        ///// </summary>
+        //public enum RectAngles
+        //{
+        //	None = 0,
+        //	TopLeft = 1,
+        //	TopRight = 2,
+        //	BottomLeft = 4,
+        //	BottomRight = 8,
+        //	All = TopLeft | TopRight | BottomLeft | BottomRight
+        //}
 
-		public static Collumns ToCollumns(this LVCOLUMN column, PROPERTYKEY pkey, Type type, bool IsColumnHandler, int minWidth) {
-			Collumns col = new Collumns();
-			col.pkey = pkey;
-			col.Name = column.pszText;
-			col.Width = minWidth;
-			col.IsColumnHandler = IsColumnHandler;
-			col.CollumnType = type;
-			col.MinWidth = minWidth;
-			return col;
-		}
+        ///// <summary>
+        ///// Draw and fill a rounded rectangle.
+        ///// </summary>
+        ///// <param name="g">The graphics object to use.</param>
+        ///// <param name="p">The pen to use to draw the rounded rectangle. If <code>null</code>, the border is not drawn.</param>
+        ///// <param name="b">The brush to fill the rounded rectangle. If <code>null</code>, the internal is not filled.</param>
+        ///// <param name="r">The rectangle to draw.</param>
+        ///// <param name="horizontalDiameter">Horizontal diameter for the rounded angles.</param>
+        ///// <param name="verticalDiameter">Vertical diameter for the rounded angles.</param>
+        ///// <param name="rectAngles">Angles to round.</param>
+        //public static void DrawAndFillRoundedRectangle(this Graphics g, Pen p, Brush b, Rectangle r, int horizontalDiameter, int verticalDiameter, RectAngles rectAngles)
+        //{
+        //	// get out data
+        //	int x = r.X;
+        //	int y = r.Y;
+        //	int width = r.Width;
+        //	int height = r.Height;
+        //	// adapt horizontal and vertical diameter if the rectangle is too little
+        //	if (width < horizontalDiameter)
+        //		horizontalDiameter = width;
+        //	if (height < verticalDiameter)
+        //		verticalDiameter = height;
+        //	/*
+        //	 * The drawing is the following:
+        //	 *
+        //	 *             a
+        //	 *      P______________Q
+        //	 *    h /              \ b
+        //	 *   W /                \R
+        //	 *    |                  |
+        //	 *  g |                  | c
+        //	 *   V|                  |S
+        //	 *    f\                / d
+        //	 *     U\______________/T
+        //	 *             e
+        //	 */
+        //	bool tl = (rectAngles & RectAngles.TopLeft) != 0,
+        //			tr = (rectAngles & RectAngles.TopRight) != 0,
+        //			br = (rectAngles & RectAngles.BottomRight) != 0,
+        //			bl = (rectAngles & RectAngles.BottomLeft) != 0;
+        //	Point pointP = tl ?
+        //			new Point(x + horizontalDiameter / 2, y) :
+        //			new Point(x, y);
+        //	Point pointQ = tr ?
+        //			new Point(x + width - horizontalDiameter / 2 - 1, y) :
+        //			new Point(x + width - 1, y);
+        //	Point pointR = tr ?
+        //			new Point(x + width - 1, y + verticalDiameter / 2) :
+        //			pointQ;
+        //	Point pointS = br ?
+        //			new Point(x + width - 1, y + height - verticalDiameter / 2 - 1) :
+        //			new Point(x + width - 1, y + height - 1);
+        //	Point pointT = br ?
+        //			new Point(x + width - horizontalDiameter / 2 - 1) :
+        //			pointS;
+        //	Point pointU = bl ?
+        //			new Point(x + horizontalDiameter / 2, y + height - 1) :
+        //			new Point(x, y + height - 1);
+        //	Point pointV = bl ?
+        //			new Point(x, y + height - verticalDiameter / 2 - 1) :
+        //			pointU;
+        //	Point pointW = tl ?
+        //			new Point(x, y + verticalDiameter / 2) :
+        //			pointP;
+        //	using (GraphicsPath gp = new GraphicsPath())
+        //	{
+        //		// a
+        //		gp.AddLine(pointP, pointQ);
+        //		// b
+        //		if (tr)
+        //			gp.AddArc(x + width - horizontalDiameter - 1, y, horizontalDiameter, verticalDiameter, 270, 90);
+        //		// c
+        //		gp.AddLine(pointR, pointS);
+        //		// d
+        //		if (br)
+        //			gp.AddArc(x + width - horizontalDiameter - 1, y + height - verticalDiameter - 1, horizontalDiameter, verticalDiameter, 0, 90);
+        //		// e
+        //		gp.AddLine(pointT, pointU);
+        //		// f
+        //		if (bl)
+        //			gp.AddArc(x, y + height - verticalDiameter - 1, horizontalDiameter, verticalDiameter, 90, 90);
+        //		// g
+        //		gp.AddLine(pointV, pointW);
+        //		// h
+        //		if (tl)
+        //			gp.AddArc(x, y, horizontalDiameter, verticalDiameter, 180, 90);
+        //		// end
+        //		gp.CloseFigure();
+        //		// draw
+        //		if (b != null)
+        //			g.FillPath(b, gp);
+        //		if (p != null)
+        //			g.DrawPath(p, gp);
+        //	}
+        //}
 
-		public static void SetSplitButton(this Collumns column, IntPtr handle, int index) {
-			var item = new HDITEM {
-				mask = HDITEM.Mask.Format
-			};
+        public static LVGROUP2 ToNativeListViewGroup(this ListViewGroupEx group)
+        {
+            LVGROUP2 nativeGroup = new LVGROUP2();
+            nativeGroup.cbSize = (uint)Marshal.SizeOf(typeof(LVGROUP2));
+            nativeGroup.mask = (uint)(GroupMask.LVGF_HEADER ^ GroupMask.LVGF_STATE ^ GroupMask.LVGF_GROUPID);
+            nativeGroup.stateMask = (uint)GroupState.LVGS_COLLAPSIBLE;
+            nativeGroup.state = (uint)GroupState.LVGS_COLLAPSIBLE;
+            nativeGroup.pszHeader = group.Header;
+            nativeGroup.iGroupId = group.Index;
 
-			if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero) {
-				throw new Win32Exception();
-			}
+            if (group.Items.Count() > 0)
+            {
+                nativeGroup.cItems = group.Items.Count();
+                nativeGroup.mask ^= (uint)GroupMask.LVGF_ITEMS;
+            }
 
-			item.fmt |= HDITEM.Format.HDF_SPLITBUTTON;
+            return nativeGroup;
+        }
 
-			if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_SETITEM, index, ref item) == IntPtr.Zero) {
-				throw new Win32Exception();
-			}
-		}
+        public static Collumns ToCollumns(this LVCOLUMN column, PROPERTYKEY pkey, Type type, bool IsColumnHandler, int minWidth)
+        {
+            Collumns col = new Collumns();
+            col.pkey = pkey;
+            col.Name = column.pszText;
+            col.Width = minWidth;
+            col.IsColumnHandler = IsColumnHandler;
+            col.CollumnType = type;
+            col.MinWidth = minWidth;
+            return col;
+        }
 
-		/*
+        public static void SetSplitButton(this Collumns column, IntPtr handle, int index)
+        {
+            var item = new HDITEM
+            {
+                mask = HDITEM.Mask.Format
+            };
+
+            if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero)
+            {
+                throw new Win32Exception();
+            }
+
+            item.fmt |= HDITEM.Format.HDF_SPLITBUTTON;
+
+            if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_SETITEM, index, ref item) == IntPtr.Zero)
+            {
+                throw new Win32Exception();
+            }
+        }
+
+        /*
 public static void SetFormat(this LVCOLUMN column, IntPtr handle, int index) {
 	var item = new HDITEM {
 		mask = HDITEM.Mask.Format
@@ -597,65 +641,76 @@ public static void SetFormat(this LVCOLUMN column, IntPtr handle, int index) {
 */
 
 
-		/// <summary>
-		/// Converts a File/Folder path into a proper string used to create a <see cref="ShellItem"/>
-		/// </summary>
-		/// <param name="path">The path you want to convert</param>
-		/// <returns></returns>
-		public static String ToShellParsingName(this String path) {
-			if (path.StartsWith("shell::"))
-				return path;
-			if (path.StartsWith("%"))
-				return Environment.ExpandEnvironmentVariables(path);
-			else if (path.StartsWith("::") && !path.StartsWith(@"\\"))
-				return $"shell:{path}";
-			else if (!path.StartsWith(@"\\")) {
-				if (path.Contains(":")) {
-					return String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString());
-				} else {
-					try {
-						return $"{path}{Path.DirectorySeparatorChar}";
-					} catch (Exception) {
-						return @"\\" + $"{path}{Path.DirectorySeparatorChar}";
-						throw;
-					}
-				}
-			} else
-				return path;
-		}
+        /// <summary>
+        /// Converts a File/Folder path into a proper string used to create a <see cref="ShellItem"/>
+        /// </summary>
+        /// <param name="path">The path you want to convert</param>
+        /// <returns></returns>
+        public static String ToShellParsingName(this String path)
+        {
+            if (path.StartsWith("shell::"))
+                return path;
+            if (path.StartsWith("%"))
+                return Environment.ExpandEnvironmentVariables(path);
+            else if (path.StartsWith("::") && !path.StartsWith(@"\\"))
+                return $"shell:{path}";
+            else if (!path.StartsWith(@"\\"))
+            {
+                if (path.Contains(":"))
+                {
+                    return String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString());
+                }
+                else
+                {
+                    try
+                    {
+                        return $"{path}{Path.DirectorySeparatorChar}";
+                    }
+                    catch (Exception)
+                    {
+                        return @"\\" + $"{path}{Path.DirectorySeparatorChar}";
+                        throw;
+                    }
+                }
+            }
+            else
+                return path;
+        }
 
-		public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this IListItemEx[] items, out IntPtr dataObjectPtr) {
-			var parent = items[0].Parent != null ? items[0].Parent : items[0];
+        public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this IListItemEx[] items, out IntPtr dataObjectPtr)
+        {
+            var parent = items[0].Parent != null ? items[0].Parent : items[0];
 
-			IntPtr[] pidls = new IntPtr[items.Length];
-			for (int i = 0; i < items.Length; i++)
-				pidls[i] = items[i].ILPidl;
-			Guid IID_IDataObject = Ole32.IID_IDataObject;
-			parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, ref IID_IDataObject, 0, out dataObjectPtr);
+            IntPtr[] pidls = new IntPtr[items.Length];
+            for (int i = 0; i < items.Length; i++)
+                pidls[i] = items[i].ILPidl;
+            Guid IID_IDataObject = Ole32.IID_IDataObject;
+            parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, ref IID_IDataObject, 0, out dataObjectPtr);
 
-			System.Runtime.InteropServices.ComTypes.IDataObject dataObj =
-							(System.Runtime.InteropServices.ComTypes.IDataObject)
-											Marshal.GetTypedObjectForIUnknown(dataObjectPtr, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
+            System.Runtime.InteropServices.ComTypes.IDataObject dataObj =
+                            (System.Runtime.InteropServices.ComTypes.IDataObject)
+                                            Marshal.GetTypedObjectForIUnknown(dataObjectPtr, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
 
-			return dataObj;
-		}
+            return dataObj;
+        }
 
-		public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this IListItemEx item, out IntPtr dataObjectPtr) {
-			var parent = item.Parent != null ? item.Parent : item;
+        public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this IListItemEx item, out IntPtr dataObjectPtr)
+        {
+            var parent = item.Parent != null ? item.Parent : item;
 
-			IntPtr[] pidls = new IntPtr[1];
-			pidls[0] = item.ILPidl;
-			Guid IID_IDataObject = Ole32.IID_IDataObject;
-			parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, ref IID_IDataObject, 0, out dataObjectPtr);
+            IntPtr[] pidls = new IntPtr[1];
+            pidls[0] = item.ILPidl;
+            Guid IID_IDataObject = Ole32.IID_IDataObject;
+            parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, ref IID_IDataObject, 0, out dataObjectPtr);
 
-			System.Runtime.InteropServices.ComTypes.IDataObject dataObj =
-							(System.Runtime.InteropServices.ComTypes.IDataObject)
-											Marshal.GetTypedObjectForIUnknown(dataObjectPtr, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
+            System.Runtime.InteropServices.ComTypes.IDataObject dataObj =
+                            (System.Runtime.InteropServices.ComTypes.IDataObject)
+                                            Marshal.GetTypedObjectForIUnknown(dataObjectPtr, typeof(System.Runtime.InteropServices.ComTypes.IDataObject));
 
-			return dataObj;
-		}
+            return dataObj;
+        }
 
-		/*
+        /*
 public static void SetSortIcon(this ShellView listViewControl, int columnIndex, SortOrder order) {
 	IntPtr columnHeader = User32.SendMessage(listViewControl.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETHEADER, 0, 0);
 	for (int columnNumber = 0; columnNumber <= listViewControl.Collumns.Count - 1; columnNumber++) {
@@ -690,187 +745,217 @@ public static void SetSortIcon(this ShellView listViewControl, int columnIndex, 
 }
 */
 
-		public static bool HitTest(this ShellView shellView, Point hitPoint, out int row, out int column) {
-			// clear the output values
-			row = column = -1;
+        public static bool HitTest(this ShellView shellView, Point hitPoint, out int row, out int column)
+        {
+            // clear the output values
+            row = column = -1;
 
-			// set up some win32 api constant values
-			const int LVM_FIRST = 0x1000;
-			//const int LVM_SUBITEMHITTEST = (LVM_FIRST + 57);
-			const int LVM_HITTEST = (LVM_FIRST + 18);
+            // set up some win32 api constant values
+            const int LVM_FIRST = 0x1000;
+            //const int LVM_SUBITEMHITTEST = (LVM_FIRST + 57);
+            const int LVM_HITTEST = (LVM_FIRST + 18);
 
-			const int LVHT_NOWHERE = 0x1;
-			const int LVHT_ONITEMICON = 0x2;
-			const int LVHT_ONITEMLABEL = 0x4;
-			const int LVHT_ONITEMSTATEICON = 0x8;
-			const int LVHT_EX_ONCONTENTS = 0x04000000;
-			const int LVHT_ONITEM = (LVHT_ONITEMICON | LVHT_ONITEMLABEL | LVHT_ONITEMSTATEICON | LVHT_EX_ONCONTENTS);
+            const int LVHT_NOWHERE = 0x1;
+            const int LVHT_ONITEMICON = 0x2;
+            const int LVHT_ONITEMLABEL = 0x4;
+            const int LVHT_ONITEMSTATEICON = 0x8;
+            const int LVHT_EX_ONCONTENTS = 0x04000000;
+            const int LVHT_ONITEM = (LVHT_ONITEMICON | LVHT_ONITEMLABEL | LVHT_ONITEMSTATEICON | LVHT_EX_ONCONTENTS);
 
-			// set up the return value
-			bool hitLocationFound = false;
+            // set up the return value
+            bool hitLocationFound = false;
 
-			// initialize a hittest information structure
-			LVHITTESTINFO lvHitTestInfo = new LVHITTESTINFO();
-			lvHitTestInfo.pt.x = hitPoint.X;
-			lvHitTestInfo.pt.y = hitPoint.Y;
+            // initialize a hittest information structure
+            LVHITTESTINFO lvHitTestInfo = new LVHITTESTINFO();
+            lvHitTestInfo.pt.x = hitPoint.X;
+            lvHitTestInfo.pt.y = hitPoint.Y;
 
-			// send the hittest message to find out where the click was
-			if (User32.SendMessage(shellView.LVHandle, LVM_HITTEST, 0, ref lvHitTestInfo) != 0) {
-				bool nowhere = ((lvHitTestInfo.flags & LVHT_NOWHERE) != 0);
-				bool onItem = ((lvHitTestInfo.flags & LVHT_ONITEM) != 0);
+            // send the hittest message to find out where the click was
+            if (User32.SendMessage(shellView.LVHandle, LVM_HITTEST, 0, ref lvHitTestInfo) != 0)
+            {
+                bool nowhere = ((lvHitTestInfo.flags & LVHT_NOWHERE) != 0);
+                bool onItem = ((lvHitTestInfo.flags & LVHT_ONITEM) != 0);
 
-				if (onItem && !nowhere) {
-					row = lvHitTestInfo.iItem;
-					column = lvHitTestInfo.iSubItem;
-					hitLocationFound = true;
-				}
-			} else if (User32.SendMessage(shellView.LVHandle, LVM_FIRST, 0, ref lvHitTestInfo) != 0) {
-				row = 0;
-				hitLocationFound = true;
-			}
+                if (onItem && !nowhere)
+                {
+                    row = lvHitTestInfo.iItem;
+                    column = lvHitTestInfo.iSubItem;
+                    hitLocationFound = true;
+                }
+            }
+            else if (User32.SendMessage(shellView.LVHandle, LVM_FIRST, 0, ref lvHitTestInfo) != 0)
+            {
+                row = 0;
+                hitLocationFound = true;
+            }
 
-			return hitLocationFound;
-		}
+            return hitLocationFound;
+        }
 
-		/// <summary>
-		/// Converts an <see cref="IShellItemArray"/> into a IShellItem[]
-		/// </summary>
-		/// <param name="shellItemArray">The Interface you want to convert</param>
-		/// <returns></returns>
-		public static IShellItem[] ToArray(this IShellItemArray shellItemArray) {
-			var items = new List<IShellItem>();
-			if (shellItemArray != null) {
-				try {
-					uint itemCount = 0;
-					shellItemArray.GetCount(out itemCount);
-					for (uint index = 0; index < itemCount; index++) {
-						IShellItem iShellItem = null;
-						shellItemArray.GetItemAt(index, out iShellItem);
-						items.Add(iShellItem);
-					}
-				} finally {
-					Marshal.ReleaseComObject(shellItemArray);
-				}
-			}
-			return items.ToArray();
-		}
+        /// <summary>
+        /// Converts an <see cref="IShellItemArray"/> into a IShellItem[]
+        /// </summary>
+        /// <param name="shellItemArray">The Interface you want to convert</param>
+        /// <returns></returns>
+        public static IShellItem[] ToArray(this IShellItemArray shellItemArray)
+        {
+            var items = new List<IShellItem>();
+            if (shellItemArray != null)
+            {
+                try
+                {
+                    uint itemCount = 0;
+                    shellItemArray.GetCount(out itemCount);
+                    for (uint index = 0; index < itemCount; index++)
+                    {
+                        IShellItem iShellItem = null;
+                        shellItemArray.GetItemAt(index, out iShellItem);
+                        items.Add(iShellItem);
+                    }
+                }
+                finally
+                {
+                    Marshal.ReleaseComObject(shellItemArray);
+                }
+            }
+            return items.ToArray();
+        }
 
-		public static IListItemEx[] ToIListItemArray(this IShellItemArray shellItemArray) {
-			var items = new List<IListItemEx>();
-			if (shellItemArray != null) {
-				try {
-					uint itemCount = 0;
-					shellItemArray.GetCount(out itemCount);
-					for (uint index = 0; index < itemCount; index++) {
-						IShellItem iShellItem = null;
-						shellItemArray.GetItemAt(index, out iShellItem);
-						items.Add(FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, iShellItem));
-					}
-				} finally {
-					Marshal.ReleaseComObject(shellItemArray);
-				}
-			}
-			return items.ToArray();
-		}
+        public static IListItemEx[] ToIListItemArray(this IShellItemArray shellItemArray)
+        {
+            var items = new List<IListItemEx>();
+            if (shellItemArray != null)
+            {
+                try
+                {
+                    uint itemCount = 0;
+                    shellItemArray.GetCount(out itemCount);
+                    for (uint index = 0; index < itemCount; index++)
+                    {
+                        IShellItem iShellItem = null;
+                        shellItemArray.GetItemAt(index, out iShellItem);
+                        items.Add(FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, iShellItem));
+                    }
+                }
+                finally
+                {
+                    Marshal.ReleaseComObject(shellItemArray);
+                }
+            }
+            return items.ToArray();
+        }
 
-		/// <summary>
-		/// Converts a <see cref="IDataObject"/> into an <see cref="IShellItemArray"/>
-		/// </summary>
-		/// <param name="dataobject">The Interface you want to convert</param>
-		/// <returns></returns>
-		public static IShellItemArray ToShellItemArray(this IDataObject dataobject) {
-			IShellItemArray shellItemArray;
-			var iid = new Guid(InterfaceGuids.IShellItemArray);
-			Shell32.SHCreateShellItemArrayFromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)dataobject, iid, out shellItemArray);
-			return shellItemArray;
-		}
+        /// <summary>
+        /// Converts a <see cref="IDataObject"/> into an <see cref="IShellItemArray"/>
+        /// </summary>
+        /// <param name="dataobject">The Interface you want to convert</param>
+        /// <returns></returns>
+        public static IShellItemArray ToShellItemArray(this IDataObject dataobject)
+        {
+            IShellItemArray shellItemArray;
+            var iid = new Guid(InterfaceGuids.IShellItemArray);
+            Shell32.SHCreateShellItemArrayFromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)dataobject, iid, out shellItemArray);
+            return shellItemArray;
+        }
 
-		/// <summary>
-		/// Converts a <see cref="IDataObject"/> into an <see cref="IShellItemArray"/>
-		/// </summary>
-		/// <param name="dataobject">The Interface you want to convert</param>
-		/// <returns></returns>
-		public static IShellItemArray ToShellItemArray(this System.Windows.IDataObject dataobject) {
-			IShellItemArray shellItemArray;
-			var iid = new Guid(InterfaceGuids.IShellItemArray);
-			Shell32.SHCreateShellItemArrayFromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)dataobject, iid, out shellItemArray);
-			return shellItemArray;
-		}
+        /// <summary>
+        /// Converts a <see cref="IDataObject"/> into an <see cref="IShellItemArray"/>
+        /// </summary>
+        /// <param name="dataobject">The Interface you want to convert</param>
+        /// <returns></returns>
+        public static IShellItemArray ToShellItemArray(this System.Windows.IDataObject dataobject)
+        {
+            IShellItemArray shellItemArray;
+            var iid = new Guid(InterfaceGuids.IShellItemArray);
+            Shell32.SHCreateShellItemArrayFromDataObject((System.Runtime.InteropServices.ComTypes.IDataObject)dataobject, iid, out shellItemArray);
+            return shellItemArray;
+        }
 
-		public static System.Windows.DragDropEffects ToDropEffect(this IDataObject dataObject) {
-			var dragDropEffect = System.Windows.DragDropEffects.Copy;
-			if (dataObject.GetDataPresent("Preferred DropEffect")) {
-				object data = dataObject.GetData("Preferred DropEffect", true);
+        public static System.Windows.DragDropEffects ToDropEffect(this IDataObject dataObject)
+        {
+            var dragDropEffect = System.Windows.DragDropEffects.Copy;
+            if (dataObject.GetDataPresent("Preferred DropEffect"))
+            {
+                object data = dataObject.GetData("Preferred DropEffect", true);
 
-				if (data is System.IO.Stream) {
-					var stream = (Stream)data;
-					var reader = new StreamReader(stream);
-					int value = reader.Read();
-					stream.Position = 0; // This had no apparent effect
+                if (data is System.IO.Stream)
+                {
+                    var stream = (Stream)data;
+                    var reader = new StreamReader(stream);
+                    int value = reader.Read();
+                    stream.Position = 0; // This had no apparent effect
 
-					if ((value & 2) == 2) {
-						dragDropEffect = System.Windows.DragDropEffects.Move;
-					} else {
-						dragDropEffect = dragDropEffect = System.Windows.DragDropEffects.Copy;
-					}
-				}
-			}
-			return dragDropEffect;
-		}
+                    if ((value & 2) == 2)
+                    {
+                        dragDropEffect = System.Windows.DragDropEffects.Move;
+                    }
+                    else
+                    {
+                        dragDropEffect = dragDropEffect = System.Windows.DragDropEffects.Copy;
+                    }
+                }
+            }
+            return dragDropEffect;
+        }
 
-		/*
+        /*
 [DllImport("shell32.dll", CharSet = CharSet.Auto)]
 public static extern IntPtr ILCreateFromPath(string path);
 */
 
-		[DllImport("shell32.dll", CharSet = CharSet.None)]
-		public static extern void ILFree(IntPtr pidl);
+        [DllImport("shell32.dll", CharSet = CharSet.None)]
+        public static extern void ILFree(IntPtr pidl);
 
-		[DllImport("shell32.dll", CharSet = CharSet.None)]
-		public static extern int ILGetSize(IntPtr pidl);
+        [DllImport("shell32.dll", CharSet = CharSet.None)]
+        public static extern int ILGetSize(IntPtr pidl);
 
-		public static void Clear(this ConcurrentBag<Tuple<int, PROPERTYKEY, object>> bag) {
-			Tuple<int, PROPERTYKEY, object> tmp = null;
-			while (!bag.IsEmpty) {
-				bag.TryTake(out tmp);
-				if (tmp != null) tmp = null;
-			}
-		}
+        public static void Clear(this ConcurrentBag<Tuple<int, PROPERTYKEY, object>> bag)
+        {
+            Tuple<int, PROPERTYKEY, object> tmp = null;
+            while (!bag.IsEmpty)
+            {
+                bag.TryTake(out tmp);
+                if (tmp != null) tmp = null;
+            }
+        }
 
-		public static MemoryStream CreateShellIDList(this IListItemEx[] items) {
-			// first convert all files into pidls list
-			int pos = 0;
-			byte[][] pidls = new byte[items.Count()][];
-			foreach (var item in items) {
-				// Get pidl based on name
-				IntPtr pidl = item.PIDL;
-				int pidlSize = ILGetSize(pidl);
-				// Copy over to our managed array
-				pidls[pos] = new byte[pidlSize];
-				Marshal.Copy(pidl, pidls[pos++], 0, pidlSize);
-				ILFree(pidl);
-			}
+        public static MemoryStream CreateShellIDList(this IListItemEx[] items)
+        {
+            // first convert all files into pidls list
+            int pos = 0;
+            byte[][] pidls = new byte[items.Count()][];
+            foreach (var item in items)
+            {
+                // Get pidl based on name
+                IntPtr pidl = item.PIDL;
+                int pidlSize = ILGetSize(pidl);
+                // Copy over to our managed array
+                pidls[pos] = new byte[pidlSize];
+                Marshal.Copy(pidl, pidls[pos++], 0, pidlSize);
+                ILFree(pidl);
+            }
 
-			// Determine where in CIDL we will start pumping PIDLs
-			int pidlOffset = 4 * (items.Count() + 2);
-			// Start the CIDL stream
-			var memStream = new MemoryStream();
-			var sw = new BinaryWriter(memStream);
-			// Initialize CIDL with a count of files
-			sw.Write(items.Count());
-			// Calculate and write relative offsets of every pidl starting with root
-			sw.Write(pidlOffset);
-			pidlOffset += 4; // root is 4 bytes
-			foreach (var pidl in pidls) {
-				sw.Write(pidlOffset);
-				pidlOffset += pidl.Length;
-			}
+            // Determine where in CIDL we will start pumping PIDLs
+            int pidlOffset = 4 * (items.Count() + 2);
+            // Start the CIDL stream
+            var memStream = new MemoryStream();
+            var sw = new BinaryWriter(memStream);
+            // Initialize CIDL with a count of files
+            sw.Write(items.Count());
+            // Calculate and write relative offsets of every pidl starting with root
+            sw.Write(pidlOffset);
+            pidlOffset += 4; // root is 4 bytes
+            foreach (var pidl in pidls)
+            {
+                sw.Write(pidlOffset);
+                pidlOffset += pidl.Length;
+            }
 
-			// Write the root pidl (0) followed by all pidls
-			sw.Write(0);
-			foreach (var pidl in pidls) sw.Write(pidl);
-			// stream now contains the CIDL
-			return memStream;
-		}
-	}
+            // Write the root pidl (0) followed by all pidls
+            sw.Write(0);
+            foreach (var pidl in pidls) sw.Write(pidl);
+            // stream now contains the CIDL
+            return memStream;
+        }
+    }
 }

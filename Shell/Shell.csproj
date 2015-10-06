@@ -239,7 +239,6 @@
     <Compile Include="VirtualGroups\IOwnerDataCallback.cs" />
     <Compile Include="WindowsSearch\SearchCondition.cs" />
     <Compile Include="WindowsSearch\SearchConditionFactory.cs" />
-    <Compile Include="WindowsSearch\ShellSavedSearchCollection.cs" />
     <Compile Include="WindowsSearch\ShellSearchFolder.cs" />
     <Compile Include="_Plugin Interfaces\FileSystemListItem.cs" />
     <Compile Include="_Plugin Interfaces\IListItemEx.cs" />

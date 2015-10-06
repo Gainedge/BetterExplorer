@@ -225,10 +225,7 @@ namespace BExplorer.Shell
         #endregion
 
 
-        FileAttributes IKnownFolder.FileAttributes
-        {
-            get { throw new NotImplementedException(); }
-        }
+        FileAttributes IKnownFolder.FileAttributes { get { throw new NotImplementedException(); } }
 
         public new System.Collections.IEnumerator GetEnumerator()
         {

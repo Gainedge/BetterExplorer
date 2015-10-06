@@ -1937,14 +1937,12 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                         case WNM.LVN_BEGINDRAG:
                             #region Case
                             this.DraggedItemIndexes.Clear();
-                            IntPtr dataObjPtr = IntPtr.Zero;
+                            var dataObjPtr = IntPtr.Zero;
                             dataObject = this.SelectedItems.ToArray().GetIDataObject(out dataObjPtr);
                             //uint ef = 0;
-                            var ishell2 = (BExplorer.Shell.DataObject.IDragSourceHelper2)new DragDropHelper();
+                            var ishell2 = (DataObject.IDragSourceHelper2)new DragDropHelper();
                             ishell2.SetFlags(1);
-                            var wp = new BExplorer.Shell.DataObject.Win32Point();
-                            wp.X = Cursor.Position.X;
-                            wp.Y = Cursor.Position.Y;
+                            var wp = new DataObject.Win32Point() { X = Cursor.Position.X, Y = Cursor.Position.Y };
                             ishell2.InitializeFromWindow(this.Handle, ref wp, dataObject);
                             DoDragDrop(dataObject, F.DragDropEffects.All | F.DragDropEffects.Link);
                             //Shell32.SHDoDragDrop(this.Handle, dataObject, null, unchecked((uint)F.DragDropEffects.All | (uint)F.DragDropEffects.Link), out ef);
@@ -2654,7 +2652,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                     }
                 }
             }
-            else if (this.Collumns.Count(s => s.pkey.fmtid == col.pkey.fmtid && s.pkey.pid == col.pkey.pid) == 0)
+            else if (!this.Collumns.Any(s => s.pkey.fmtid == col.pkey.fmtid && s.pkey.pid == col.pkey.pid))
             {
                 this.Collumns.Add(col);
                 var column = col.ToNativeColumn(this.View == ShellViewStyle.Details);
@@ -2956,7 +2954,7 @@ if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
                         foreach (var collumn in folderSettings.Columns.Elements())
                         {
                             var theColumn = this.AllAvailableColumns.FirstOrDefault(w => w.ID == collumn.Attribute("ID").Value);//.Single();
-                            if (this.Collumns.Count(c => c.ID == theColumn.ID) == 0)
+                            if (!this.Collumns.Any(c => c.ID == theColumn.ID))
                             {
                                 if (collumn.Attribute("Width").Value != "0")
                                 {

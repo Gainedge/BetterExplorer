@@ -922,23 +922,23 @@ namespace BetterExplorer
         {
             var dlg = new FolderSelectDialog();
             if (dlg.ShowDialog())
-                SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Move);
+                SetFOperation(dlg.FileName, OperationType.Move);
         }
 
-        private void SetFOperation(String fileName, BExplorer.Shell.OperationType opType)
+        private void SetFOperation(String fileName, OperationType opType)
         {
             var obj = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, fileName.ToShellParsingName());
-            if (opType == BExplorer.Shell.OperationType.Copy)
+            if (opType == OperationType.Copy)
                 _ShellListView.DoCopy(obj);
-            else if (opType == BExplorer.Shell.OperationType.Move)
+            else if (opType == OperationType.Move)
                 _ShellListView.DoMove(obj);
         }
 
-        private void SetFOperation(IListItemEx obj, BExplorer.Shell.OperationType opType)
+        private void SetFOperation(IListItemEx obj, OperationType opType)
         {
-            if (opType == BExplorer.Shell.OperationType.Copy)
+            if (opType == OperationType.Copy)
                 _ShellListView.DoCopy(obj);
-            else if (opType == BExplorer.Shell.OperationType.Move)
+            else if (opType == OperationType.Move)
                 _ShellListView.DoMove(obj);
         }
 
@@ -946,7 +946,7 @@ namespace BetterExplorer
         {
             var dlg = new FolderSelectDialog();
             if (dlg.ShowDialog())
-                SetFOperation(dlg.FileName, BExplorer.Shell.OperationType.Copy);
+                SetFOperation(dlg.FileName, OperationType.Copy);
 
             _ShellListView.Focus();
         }
@@ -1368,7 +1368,6 @@ namespace BetterExplorer
             }
         }
 
-
         #endregion
 
         #region Updater
@@ -1656,7 +1655,6 @@ namespace BetterExplorer
             asDrive = (int)rks.GetValue("AutoSwitchDriveTools", 1) == 1;
             asVirtualDrive = (int)rks.GetValue("AutoSwitchVirtualDriveTools", 0) == 1;
 
-
             chkFolder.IsChecked = _AsFolder;
             chkArchive.IsChecked = asArchive;
             chkImage.IsChecked = asImage;
@@ -1768,7 +1766,6 @@ namespace BetterExplorer
             }
             catch
             {
-
             }
         }
 
@@ -1783,10 +1780,7 @@ namespace BetterExplorer
             ShellTree.ShellListView = _ShellListView;
             this.ctrlConsole.ShellListView = this._ShellListView;
 
-            //Task.Run(() => {
             UpdateRecycleBinInfos();
-            //});
-
             bool exitApp = false;
 
             try
@@ -1954,7 +1948,7 @@ namespace BetterExplorer
 
         private void RibbonWindow_Closing(object sender, CancelEventArgs e)
         {
-            if (this.OwnedWindows.OfType<BExplorer.Shell.FileOperationDialog>().Any())
+            if (this.OwnedWindows.OfType<FileOperationDialog>().Any())
             {
                 if (MessageBox.Show("Are you sure you want to cancel all running file operation tasks?", "", MessageBoxButton.YesNo) == MessageBoxResult.No)
                 {
@@ -3210,7 +3204,7 @@ namespace BetterExplorer
         private void RibbonWindow_SizeChanged(object sender, SizeChangedEventArgs e) => (tcMain.SelectedItem as Wpf.Controls.TabItem)?.BringIntoView();
         void newt_PreviewMouseDown(object sender, MouseButtonEventArgs e) => tcMain.IsInTabDragDrop = false;
         void newt_Leave(object sender, DragEventArgs e) => DropTargetHelper.Create.DragLeave();
-        void mim_Click(object sender, RoutedEventArgs e) => SetFOperation(((sender as MenuItem).Tag as IListItemEx), BExplorer.Shell.OperationType.Move);
+        void mim_Click(object sender, RoutedEventArgs e) => SetFOperation(((sender as MenuItem).Tag as IListItemEx), OperationType.Move);
 
 
         private void btnUndoClose_Click(object sender, RoutedEventArgs e)
@@ -3323,19 +3317,12 @@ namespace BetterExplorer
 
             if ((sender as Wpf.Controls.TabItem).ShellObject.IsFileSystem)
                 e.Effects = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey ? DragDropEffects.Copy : DragDropEffects.Move;
+            else if (tabItemSource != null)
+                e.Effects = DragDropEffects.Move;
             else
-            {
-                if (tabItemSource != null)
-                {
-                    e.Effects = DragDropEffects.Move;
-                }
-                else
-                {
-                    e.Effects = DragDropEffects.None;
-                }
-            }
-            BExplorer.Shell.DataObject.DropDescription desc = new BExplorer.Shell.DataObject.DropDescription();
+                e.Effects = DragDropEffects.None;
 
+            var desc = new BExplorer.Shell.DataObject.DropDescription();
 
             switch (e.Effects)
             {
@@ -3447,8 +3434,10 @@ namespace BetterExplorer
             {
                 foreach (FrameworkElement m in item.mnu.Items)
                 {
-                    if (m.Tag != null)
-                        if (m.Tag.ToString() == "UCTI") (m as MenuItem).IsEnabled = false;
+                    if (m.Tag?.ToString() == "UCTI") (m as MenuItem).IsEnabled = false;
+
+                    //if (m.Tag != null)
+                    //    if (m.Tag.ToString() == "UCTI") (m as MenuItem).IsEnabled = false;
                 }
             }
         }
@@ -3489,9 +3478,7 @@ namespace BetterExplorer
         {
             e.Handled = true;
             if (e.AddedItems.Count > 0)
-            {
                 (e.AddedItems[0] as SavedTabsListGalleryItem).PerformClickEvent();
-            }
         }
 
         private void btnSavedTabs_DropDownOpened(object sender, EventArgs e)
@@ -3735,7 +3722,7 @@ namespace BetterExplorer
                 //pnlServers.Children.Remove(sender as ServerItem);
                 NetworkItem ni = asw.GetNetworkItem();
                 nam.Add(ni);
-                ServerItem ui = new ServerItem();
+                var ui = new ServerItem();
                 ui.RequestRemove += ui_RequestRemove;
                 ui.RequestEdit += ui_RequestEdit;
                 ui.LoadFromNetworkItem(ni);
@@ -3808,7 +3795,6 @@ namespace BetterExplorer
                 var mln = new MenuItem() { Header = "Create new library" };
                 mln.Click += mln_Click;
                 mnuIncludeInLibrary.Items.Add(mln);
-
                 mnuIncludeInLibrary.IsEnabled = true;
             }
             else
@@ -3902,6 +3888,7 @@ namespace BetterExplorer
                     else
                         tab.SelectedItems = this._ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
                 }
+
                 this.Title = "Better Explorer - " + e.Folder.DisplayName;
             }));
 

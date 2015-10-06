@@ -485,10 +485,10 @@ namespace BExplorer.Shell
 
         private List<string> GetNewContextMenuItems()
         {
-            List<string> newEntrieslist = new List<string>();
+            var newEntrieslist = new List<string>();
             RegistryKey reg = Registry.CurrentUser;
             RegistryKey classesrk = reg.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Explorer\Discardable\PostSetup\ShellNew");
-            string[] classes = (string[])classesrk.GetValue("Classes");
+            var classes = (string[])classesrk.GetValue("Classes");
             newEntrieslist.AddRange(classes);
             classesrk.Close();
             reg.Close();
@@ -503,9 +503,7 @@ namespace BExplorer.Shell
                 using (ContextMenu menu = new ContextMenu())
                 {
                     Populate(menu, CMF.EXPLORE);
-                    int command = User32.TrackPopupMenuEx(menu.Handle,
-                        TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
-                        IntPtr.Zero);
+                    int command = User32.TrackPopupMenuEx(menu.Handle, TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle, IntPtr.Zero);
                     if (command > 0)
                     {
                         int cmdID = command - m_CmdFirst;
@@ -525,14 +523,13 @@ namespace BExplorer.Shell
                     var submenuHandle = User32.GetSubMenu(menu.Handle, 0);
                     if (shouldShow)
                     {
-                        int command = User32.TrackPopupMenuEx(submenuHandle == IntPtr.Zero ? menu.Handle : submenuHandle,
-                            TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle,
-                            IntPtr.Zero);
-                        if (command > 0)
-                        {
-                            InvokeCommand(command - m_CmdFirst, pos);
-                        }
+                        int command = User32.TrackPopupMenuEx(
+                            submenuHandle == IntPtr.Zero ? menu.Handle : submenuHandle, TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle, IntPtr.Zero
+                        );
+
+                        if (command > 0) InvokeCommand(command - m_CmdFirst, pos);
                     }
+
                     return User32.GetMenuItemCount(submenuHandle == IntPtr.Zero ? menu.Handle : submenuHandle);
                 }
             }
@@ -720,15 +717,11 @@ namespace BExplorer.Shell
                     else
                     {
                         parent = items[n].Parent;
-
                     }
                 }
-                else
+                else if (!items[n].Parent.Equals(parent))
                 {
-                    if (!items[n].Parent.Equals(parent))
-                    {
-                        throw new Exception("All shell items must have the same parent");
-                    }
+                    throw new Exception("All shell items must have the same parent");
                 }
             }
 
@@ -742,13 +735,10 @@ namespace BExplorer.Shell
             }
             else
             {
-                parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero,
-                    (uint)pidls.Length, pidls,
-                    typeof(IContextMenu).GUID, 0, out result);
+                parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, typeof(IContextMenu).GUID, 0, out result);
             }
-            m_ComInterface = (IContextMenu)
-                Marshal.GetTypedObjectForIUnknown(result,
-                    typeof(IContextMenu));
+
+            m_ComInterface = (IContextMenu)Marshal.GetTypedObjectForIUnknown(result, typeof(IContextMenu));
             m_ComInterface2 = m_ComInterface as IContextMenu2;
             m_ComInterface3 = m_ComInterface as IContextMenu3;
             m_MessageWindow = new MessageWindow(this);
@@ -763,23 +753,17 @@ namespace BExplorer.Shell
             var view = Marshal.GetObjectForIUnknown(ishellViewPtr) as IShellView;
             view.GetItemObject(SVGIO.SVGIO_BACKGROUND, typeof(IContextMenu).GUID, out result);
             Marshal.ReleaseComObject(view);
-            m_ComInterface = (IContextMenu)
-                Marshal.GetTypedObjectForIUnknown(result,
-                    typeof(IContextMenu));
+            m_ComInterface = (IContextMenu)Marshal.GetTypedObjectForIUnknown(result, typeof(IContextMenu));
             m_ComInterface2 = m_ComInterface as IContextMenu2;
             m_ComInterface3 = m_ComInterface as IContextMenu3;
             IntPtr iShellExtInitPtr;
-            if (Marshal.QueryInterface(
-                result,
-                ref iise,
-                out iShellExtInitPtr) == (int)HResult.S_OK)
+            if (Marshal.QueryInterface(result, ref iise, out iShellExtInitPtr) == (int)HResult.S_OK)
             {
-                IShellExtInit iShellExtInit = Marshal.GetTypedObjectForIUnknown(
-                    iShellExtInitPtr, typeof(IShellExtInit)) as IShellExtInit;
+                var iShellExtInit = Marshal.GetTypedObjectForIUnknown(iShellExtInitPtr, typeof(IShellExtInit)) as IShellExtInit;
 
                 try
                 {
-                    IntPtr hhh = IntPtr.Zero;
+                    var hhh = IntPtr.Zero;
                     iShellExtInit.Initialize(_ShellView.CurrentFolder.PIDL, null, 0);
                     Marshal.ReleaseComObject(iShellExtInit);
                     Marshal.Release(iShellExtInitPtr);
@@ -795,7 +779,7 @@ namespace BExplorer.Shell
         void InvokeCommand(int command, Point pt)
         {
             const int SW_SHOWNORMAL = 1;
-            CMINVOKECOMMANDINFOEX invoke = new CMINVOKECOMMANDINFOEX();
+            var invoke = new CMINVOKECOMMANDINFOEX();
             invoke.cbSize = Marshal.SizeOf(invoke);
             invoke.nShow = SW_SHOWNORMAL;
             invoke.fMask = (int)(CMIC.Unicode | CMIC.PtInvoke);
@@ -807,8 +791,7 @@ namespace BExplorer.Shell
 
         void TagManagedMenuItems(Menu menu, int tag)
         {
-            MENUINFO info = new MENUINFO();
-
+            var info = new MENUINFO();
             info.cbSize = Marshal.SizeOf(info);
             info.fMask = MIM.MIM_MENUDATA;
             info.dwMenuData = tag;
@@ -822,10 +805,10 @@ namespace BExplorer.Shell
         void RemoveShellMenuItems(Menu menu)
         {
             const int tag = 0xAB;
-            List<int> remove = new List<int>();
+            var remove = new List<int>();
             int count = User32.GetMenuItemCount(menu.Handle);
-            MENUINFO menuInfo = new MENUINFO();
-            MENUITEMINFO itemInfo = new MENUITEMINFO();
+            var menuInfo = new MENUINFO();
+            var itemInfo = new MENUITEMINFO();
 
             menuInfo.cbSize = Marshal.SizeOf(menuInfo);
             menuInfo.fMask = MIM.MIM_MENUDATA;
