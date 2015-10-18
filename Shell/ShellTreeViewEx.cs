@@ -999,18 +999,18 @@ namespace BExplorer.Shell
                         break;
                 }
             }
-            if (e.KeyCode == Keys.F2)
+            else if (e.KeyCode == Keys.F2)
             {
                 this.RenameSelectedNode();
             }
-            if (e.KeyCode == Keys.F5)
+            else if (e.KeyCode == Keys.F5)
             {
                 this.RefreshContents();
             }
-            if (e.KeyCode == Keys.Escape)
+            else if (e.KeyCode == Keys.Escape)
             {
                 var item = new TVITEMW() { mask = TVIF.TVIF_STATE, stateMask = TVIS.TVIS_CUT, state = 0, hItem = this.cuttedNode.Handle };
-                User32.SendMessage(this.ShellTreeView.Handle, BExplorer.Shell.Interop.MSG.TVM_SETITEMW, 0, ref item);
+                User32.SendMessage(this.ShellTreeView.Handle, MSG.TVM_SETITEMW, 0, ref item);
                 Clipboard.Clear();
             }
         }
@@ -1018,7 +1018,7 @@ namespace BExplorer.Shell
         private void ShellTreeView_DragEnter(object sender, DragEventArgs e)
         {
             this._DataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data;
-            var wp = new BExplorer.Shell.DataObject.Win32Point() { X = e.X, Y = e.Y };
+            var wp = new DataObject.Win32Point() { X = e.X, Y = e.Y };
             ShellView.Drag_SetEffect(e);
 
             if (e.Data.GetDataPresent("DragImageBits"))
@@ -1031,14 +1031,14 @@ namespace BExplorer.Shell
         {
             var wp = new DataObject.Win32Point() { X = e.X, Y = e.Y };
             ShellView.Drag_SetEffect(e);
-            DataObject.DropDescription descinvalid = new DataObject.DropDescription();
+            var descinvalid = new DataObject.DropDescription();
             descinvalid.type = (int)DataObject.DropImageType.Invalid;
             ((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(descinvalid);
             var node = this.ShellTreeView.GetNodeAt(PointToClient(new Point(e.X, e.Y)));
             if (node != null && !String.IsNullOrEmpty(node.Text) && node.Text != this._EmptyItemString)
             {
                 User32.SendMessage(this.ShellTreeView.Handle, MSG.TVM_SETHOT, 0, node.Handle);
-                DataObject.DropDescription desc = new DataObject.DropDescription();
+                var desc = new DataObject.DropDescription();
                 switch (e.Effect)
                 {
                     case DragDropEffects.Copy:
@@ -1049,11 +1049,11 @@ namespace BExplorer.Shell
                         desc.type = (int)DataObject.DropImageType.Link;
                         desc.szMessage = "Create Link in %1";
                         break;
-                    case System.Windows.Forms.DragDropEffects.Move:
+                    case DragDropEffects.Move:
                         desc.type = (int)DataObject.DropImageType.Move;
                         desc.szMessage = "Move To %1";
                         break;
-                    case System.Windows.Forms.DragDropEffects.None:
+                    case DragDropEffects.None:
                         desc.type = (int)DataObject.DropImageType.None;
                         desc.szMessage = "";
                         break;
@@ -1062,6 +1062,7 @@ namespace BExplorer.Shell
                         desc.szMessage = "";
                         break;
                 }
+
                 desc.szInsert = node.Text;
                 ((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data).SetDropDescription(desc);
             }

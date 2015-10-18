@@ -1371,9 +1371,9 @@ namespace BExplorer.Shell {
 						if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
 
 					/*
-else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW) 
-if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
-*/
+                    else if (nmhdrHeader.hdr.code == (int)HDN.HDN_BEGINTRACKW) 
+                    if (this.View != ShellViewStyle.Details) m.Result = (IntPtr)1;
+                    */
 					#endregion
 
 					var nmhdr = (NMHDR)m.GetLParam(typeof(NMHDR));
