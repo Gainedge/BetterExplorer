@@ -4777,10 +4777,10 @@ namespace BetterExplorer
         {
             this.ShellTree.Refresh();
             this._ShellListView.Refresh();
-            this._ShellListView.Left = 0;
-            this._ShellListView.Top = 0;
-            this._ShellListView.Width = (int)this.ShellViewHost.ActualWidth;
-            this._ShellListView.Height = (int)this.ShellViewHost.ActualHeight;
+            //this._ShellListView.Left = 0;
+            //this._ShellListView.Top = 0;
+            //this._ShellListView.Width = (int)this.ShellViewHost.ActualWidth;
+            //this._ShellListView.Height = (int)this.ShellViewHost.ActualHeight;
         }
 
         private void btnStartPowerShellClick(object sender, RoutedEventArgs e)

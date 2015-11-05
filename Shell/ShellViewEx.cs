@@ -2706,14 +2706,14 @@ namespace BExplorer.Shell {
 				Add_Group("0", "9");
 				Add_Group("A", "H");
 				Add_Group("I", "P");
-				Add_Group("Q", "z");
+				Add_Group("Q", "Z");
 
-				if (reversed) this.Groups.Reverse();
+				//if (reversed) this.Groups.Reverse();
 
-				foreach (var group in this.Groups) {
-					var nativeGroup = group.ToNativeListViewGroup();
-					User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
-				}
+				//foreach (var group in this.Groups) {
+				//	var nativeGroup = group.ToNativeListViewGroup();
+				//	User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
+				//}
 			} else if (col.CollumnType == typeof(long)) {
 				var j = reversed ? 7 : 0;
 
