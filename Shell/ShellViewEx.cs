@@ -236,6 +236,7 @@ namespace BExplorer.Shell {
 		public bool IsNavigationCancelRequested = false;
 		public bool IsNavigationInProgress = false;
 		public Boolean IsGroupsEnabled => LastGroupCollumn != null;
+		public Boolean IsTraditionalNameGrouping { get; set; }
 
 
 		/// <summary> Returns the key jump string as it currently is.</summary>
@@ -2693,33 +2694,52 @@ namespace BExplorer.Shell {
 			this.Groups.Clear();
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
 			if (col.CollumnType == typeof(String)) {
-				var i = reversed ? 3 : 0;
+				if (this.IsTraditionalNameGrouping) {
+					var groups = this.Items.GroupBy(k => k.DisplayName.ToUpperInvariant().First(), e => e).OrderBy(o => o.Key);
+					var i = reversed ? groups.Count() - 1 : 0;
+					foreach (var group in groups) {
+						var groupItems = group.Select(s => s).ToArray();
+						this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{group.Key.ToString()} ({groupItems.Count()})" });
+					}
+				}
+				else {
+					var i = reversed ? 3 : 0;
 
-				Action<string, string> Add_Group = (string Char1, string Char2) => {
-					var testgrn = new ListViewGroupEx();
-					testgrn.Items = this.Items.Where(w => w.DisplayName.ToUpperInvariant().First() >= Char.Parse(Char1) && w.DisplayName.ToUpperInvariant().First() <= Char.Parse(Char2)).ToArray();
-					testgrn.Header = Char1 + " - " + Char2 + $"({ testgrn.Items.Count()})";
-					testgrn.Index = reversed ? i-- : i++;
-					this.Groups.Add(testgrn);
-				};
+					Action<string, string, Boolean> addNameGroup = (string char1, string char2, Boolean isOthers) => {
+						var testgrn = new ListViewGroupEx();
+						if (isOthers) {
+							testgrn.Items =
+								this.Items.Where(
+									w =>
+										w.DisplayName.ToUpperInvariant().First()<Char.Parse("A") ||
+										w.DisplayName.ToUpperInvariant().First()>Char.Parse("Z")).ToArray();
+						}
+						else {
+							testgrn.Items =
+								this.Items.Where(
+									w =>
+										w.DisplayName.ToUpperInvariant().First()>=Char.Parse(char1) &&
+										w.DisplayName.ToUpperInvariant().First()<=Char.Parse(char2)).ToArray();
+						}
+						testgrn.Header = isOthers
+							? char1 + $" ({testgrn.Items.Count()})"
+							: char1 + " - " + char2 + $" ({testgrn.Items.Count()})";
+						testgrn.Index = reversed ? i-- : i++;
+						this.Groups.Add(testgrn);
+					};
 
-				Add_Group("0", "9");
-				Add_Group("A", "H");
-				Add_Group("I", "P");
-				Add_Group("Q", "Z");
-
-				//if (reversed) this.Groups.Reverse();
-
-				//foreach (var group in this.Groups) {
-				//	var nativeGroup = group.ToNativeListViewGroup();
-				//	User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
-				//}
+					addNameGroup("0", "9", false);
+					addNameGroup("A", "H", false);
+					addNameGroup("I", "P", false);
+					addNameGroup("Q", "Z", false);
+					addNameGroup("Others", String.Empty, true);
+				}
 			} else if (col.CollumnType == typeof(long)) {
 				var j = reversed ? 7 : 0;
 
-				/********************************************************
-Upgrade this to use an Action<>
-*********************************************************/
+
+				//TODO: Upgrade next to use an Action<>
+
 
 				var uspec = new ListViewGroupEx();
 				uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
