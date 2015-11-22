@@ -1410,6 +1410,10 @@ namespace BetterExplorer {
 
 			chkIsRestoreTabs.IsChecked = _IsrestoreTabs;
 
+			chkTraditionalNameGrouping.IsChecked = (int) rks.GetValue("IsTraditionalNameGrouping", 0) == 1;
+			this._IsTraditionalNameGrouping = chkTraditionalNameGrouping.IsChecked.Value;
+			_ShellListView.IsTraditionalNameGrouping = chkTraditionalNameGrouping.IsChecked.Value;
+
 			//if this instance has the /norestore switch, do not load tabs from previous session, even if it is set in the Registry
 			if (App.IsStartWithStartupTab) _IsrestoreTabs = false;
 
