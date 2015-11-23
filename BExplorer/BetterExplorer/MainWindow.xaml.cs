@@ -1742,7 +1742,7 @@ namespace BetterExplorer {
 				Settings.Element("DropDownItems").Add(new XElement("Item", item));
 			}
 
-			Settings.Save("Settings.xml");
+			//Settings.Save("Settings.xml");
 		}
 
 		#endregion
