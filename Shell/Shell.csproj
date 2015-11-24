@@ -103,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
+    <Compile Include="ShellItemEqualityComparer.cs" />
     <Compile Include="Custom ContextMenus Remove Soon\FilterMenu_Strings.cs" />
     <Compile Include="FOperationProgressSink.cs" />
     <Compile Include="Icons.cs" />

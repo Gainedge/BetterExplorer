@@ -1307,7 +1307,7 @@ namespace BExplorer.Shell {
 			var lviLe = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
 			var labelBounds = new User32.RECT();
 			labelBounds.Left = mode;
-			User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
+			var res = User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lviLe, ref labelBounds);
 			return new Rect(labelBounds.Left, labelBounds.Top, labelBounds.Right - labelBounds.Left, labelBounds.Bottom - labelBounds.Top);
 		}
 
@@ -2010,8 +2010,8 @@ namespace BExplorer.Shell {
 		public int GetGroupIndex(int itemIndex) {
 			if (itemIndex == -1 || itemIndex >= this.Items.Count) return 0;
 			var item = this.Items[itemIndex];
-			var Found = this.Groups.FirstOrDefault(x => x.Items.Contains(item));
-			return Found == null ? 0 : Found.Index;
+			var found = this.Groups.FirstOrDefault(x => x.Items.Contains(item, new ShellItemEqualityComparer()));
+			return found == null ? 0 : found.Index;
 		}
 
 		public void OpenShareUI() => Shell32.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(this.GetFirstSelectedItem().ParsingName.Replace(@"\\", @"\")));
@@ -2711,8 +2711,8 @@ namespace BExplorer.Shell {
 							testgrn.Items =
 								this.Items.Where(
 									w =>
-										w.DisplayName.ToUpperInvariant().First()<Char.Parse("A") ||
-										w.DisplayName.ToUpperInvariant().First()>Char.Parse("Z")).ToArray();
+										(w.DisplayName.ToUpperInvariant().First()<Char.Parse("A") ||
+										w.DisplayName.ToUpperInvariant().First()>Char.Parse("Z")) && (w.DisplayName.ToUpperInvariant().First() < Char.Parse("0") || w.DisplayName.ToUpperInvariant().First() > Char.Parse("9"))).ToArray();
 						}
 						else {
 							testgrn.Items =
@@ -2836,16 +2836,17 @@ namespace BExplorer.Shell {
 			if (index == null) {
 				return false;
 			} else {
-				var itemBounds = new User32.RECT();
-				var lvi = new LVITEMINDEX() { iItem = index.Value, iGroup = this.GetGroupIndex(index.Value) };
-				User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+				//var itemBounds = new User32.RECT();
+				//var lvi = new LVITEMINDEX() { iItem = index.Value, iGroup = this.GetGroupIndex(index.Value) };
+				//User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 
-				var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+				//var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 
-				if (useComplexCheck)
-					return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
-				else
-					return r.IntersectsWith(this.ClientRectangle);
+				//if (useComplexCheck)
+				//	return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
+				//else
+				//	return r.IntersectsWith(this.ClientRectangle);
+				return true;
 			}
 		}
 
