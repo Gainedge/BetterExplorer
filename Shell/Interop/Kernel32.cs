@@ -36,6 +36,9 @@ namespace BExplorer.Shell.Interop {
 			return IntPtr.Size == 8;
 		}
 
+		[DllImport("kernel32.dll")]
+		public static extern uint GetCurrentThreadId();
+
 		/*
 		[DllImport("kernel32.dll")]
 		public static extern IntPtr GlobalLock(IntPtr hMem);

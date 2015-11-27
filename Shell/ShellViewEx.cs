@@ -1385,7 +1385,9 @@ namespace BExplorer.Shell {
 							if (!String.IsNullOrEmpty(nmlvedit.item.pszText)) {
 								var item = this.Items[nmlvedit.item.iItem];
 								RenameShellItem(item.ComInterface, nmlvedit.item.pszText, (item.DisplayName != Path.GetFileName(item.ParsingName)) && !item.IsFolder, item.Extension);
+								this.EndLabelEdit();
 								this.RedrawWindow();
+
 							}
 							break;
 						#endregion
@@ -1403,11 +1405,12 @@ namespace BExplorer.Shell {
 										nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
 										if (!String.IsNullOrEmpty(this._NewName) && this.GetFirstSelectedItemIndex() == nmlv.item.iItem && this.LastItemForRename == nmlv.item.iItem) {
 											nmlv.item.pszText = this._NewName;
-										} else if (this.ItemForRealName_IsAny) {
-											if (this.GetFirstSelectedItemIndex() == nmlv.item.iItem) {
-												nmlv.item.pszText = String.Empty;
-											}
 										}
+										//else if (this.ItemForRealName_IsAny) {
+										//	if (this.GetFirstSelectedItemIndex() == nmlv.item.iItem) {
+										//		nmlv.item.pszText = String.Empty;
+										//	}
+										//}
 									} catch (Exception) {
 
 									}
@@ -1547,8 +1550,12 @@ namespace BExplorer.Shell {
 						case -175:
 							#region Case
 							var nmlvLe = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
-							RenameItem(nmlvLe.item.iItem);
-							m.Result = (IntPtr)1;
+							//RenameItem(nmlvLe.item.iItem);
+							this.IsFocusAllowed = false;
+							this._IsCanceledOperation = false;
+							this.ItemForRename = nmlvLe.item.iItem;
+							this.BeginItemLabelEdit?.Invoke(this, new RenameEventArgs(nmlvLe.item.iItem));
+							m.Result = (IntPtr)0;
 							break;
 						#endregion
 
@@ -2070,8 +2077,9 @@ namespace BExplorer.Shell {
 			this.IsFocusAllowed = false;
 			this._IsCanceledOperation = false;
 			this.ItemForRename = index;
-			this.BeginItemLabelEdit?.Invoke(this, new RenameEventArgs(index));
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_UPDATE, index, 0);
+			//this.BeginItemLabelEdit?.Invoke(this, new RenameEventArgs(index));
+			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_EDITLABELW, index, 0);
+			//User32.SendMessage(this.LVHandle, Interop.MSG.LVM_UPDATE, index, 0);
 			RedrawWindow();
 		}
 
@@ -2283,14 +2291,19 @@ namespace BExplorer.Shell {
 			var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
 
 			if (deselectOthers) {
-				var lviid = new LVITEMINDEX() { iItem = -1, iGroup = 0 };
+				var lviid = new LVITEMINDEX() { iItem = -1, iGroup = -1 };
 				var lviDeselect = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = 0 };
 				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMINDEXSTATE, ref lviid, ref lviDeselect);
 			}
 
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
-			if (ensureVisisble) User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, index, 0);
 			this.Focus();
+			if (ensureVisisble) {
+				if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, index, 1) != IntPtr.Zero) {
+					var err = Marshal.GetLastWin32Error();
+				}
+			}
+
 		}
 
 		private void UpdateColsInView(bool isDetails = false) {
@@ -2701,8 +2714,7 @@ namespace BExplorer.Shell {
 						var groupItems = group.Select(s => s).ToArray();
 						this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{group.Key.ToString()} ({groupItems.Count()})" });
 					}
-				}
-				else {
+				} else {
 					var i = reversed ? 3 : 0;
 
 					Action<string, string, Boolean> addNameGroup = (string char1, string char2, Boolean isOthers) => {
@@ -2711,15 +2723,14 @@ namespace BExplorer.Shell {
 							testgrn.Items =
 								this.Items.Where(
 									w =>
-										(w.DisplayName.ToUpperInvariant().First()<Char.Parse("A") ||
-										w.DisplayName.ToUpperInvariant().First()>Char.Parse("Z")) && (w.DisplayName.ToUpperInvariant().First() < Char.Parse("0") || w.DisplayName.ToUpperInvariant().First() > Char.Parse("9"))).ToArray();
-						}
-						else {
+										(w.DisplayName.ToUpperInvariant().First() < Char.Parse("A") ||
+										w.DisplayName.ToUpperInvariant().First() > Char.Parse("Z")) && (w.DisplayName.ToUpperInvariant().First() < Char.Parse("0") || w.DisplayName.ToUpperInvariant().First() > Char.Parse("9"))).ToArray();
+						} else {
 							testgrn.Items =
 								this.Items.Where(
 									w =>
-										w.DisplayName.ToUpperInvariant().First()>=Char.Parse(char1) &&
-										w.DisplayName.ToUpperInvariant().First()<=Char.Parse(char2)).ToArray();
+										w.DisplayName.ToUpperInvariant().First() >= Char.Parse(char1) &&
+										w.DisplayName.ToUpperInvariant().First() <= Char.Parse(char2)).ToArray();
 						}
 						testgrn.Header = isOthers
 							? char1 + $" ({testgrn.Items.Count()})"
@@ -3148,13 +3159,13 @@ namespace BExplorer.Shell {
 
 			for (int n = 0; n < itemCount; ++n) {
 				var state = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETITEMSTATE, n, LVIS.LVIS_SELECTED);
-				var item_new = new LVITEM() {
+				var itemNew = new LVITEM() {
 					mask = LVIF.LVIF_STATE,
 					stateMask = LVIS.LVIS_SELECTED,
 					state = (state & LVIS.LVIS_SELECTED) == LVIS.LVIS_SELECTED ? 0 : LVIS.LVIS_SELECTED
 				};
 
-				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, n, ref item_new);
+				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMSTATE, n, ref itemNew);
 			}
 			this.Focus();
 		}
@@ -3344,9 +3355,25 @@ bool retrieved = false;
 									waitingThumbnails.Enqueue(index);
 								}
 							} else {
-								this.DrawDefaultIcons(hdc, sho, iconBounds);
-								sho.IsIconLoaded = false;
-								waitingThumbnails.Enqueue(index);
+								var editControl = User32.SendMessage(this.LVHandle, 0x1018, 0, 0);
+								if (editControl == IntPtr.Zero) {
+									this.DrawDefaultIcons(hdc, sho, iconBounds);
+									sho.IsIconLoaded = false;
+									waitingThumbnails.Enqueue(index);
+								} else {
+									hThumbnail = sho.GetHBitmap(IconSize, false);
+									if (hThumbnail != IntPtr.Zero) {
+										Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
+										Gdi32.NativeDraw(hdc, hThumbnail, iconBounds.Left + (iconBounds.Right - iconBounds.Left - width) / 2, iconBounds.Top + (iconBounds.Bottom - iconBounds.Top - height) / 2, width, height, sho.IsHidden || cutFlag || this._CuttedIndexes.Contains(index));
+									} else {
+										this.DrawDefaultIcons(hdc, sho, iconBounds);
+										sho.IsIconLoaded = false;
+										waitingThumbnails.Enqueue(index);
+									}
+									if ((sho.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) {
+										sho.ShieldedIconIndex = ShieldIconIndex;
+									}
+								}
 							}
 						}
 						using (var g = Graphics.FromHdc(hdc)) {

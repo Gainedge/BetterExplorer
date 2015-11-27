@@ -89,7 +89,6 @@ namespace BetterExplorer {
 		private ClipboardMonitor cbm = new ClipboardMonitor();
 		private ContextMenu cmHistory = new ContextMenu();
 		private WIN.Shell.JumpList AppJL = new WIN.Shell.JumpList();
-		private IntPtr Handle;
 		private List<string> Archives = new List<string>(new[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
 		private List<string> Images = new List<string>(new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
 		private string SelectedArchive = "";
@@ -113,7 +112,7 @@ namespace BetterExplorer {
 		WIN.Forms.Timer focusTimer = new WIN.Forms.Timer() { Interval = 500 };
 
 		#endregion
-
+		public IntPtr Handle;
 		public bool IsMultipleWindowsOpened { get; set; }
 
 		#region Events
@@ -3315,48 +3314,48 @@ return false;
 		#region ShellListView
 
 		void ShellListView_EndItemLabelEdit(object sender, bool e) {
-			_ShellListView.FileNameChangeAttempt(this.txtEditor.Text, e);
-			this.Editor.Visibility = WIN.Visibility.Collapsed;
-			this.Editor.IsOpen = false;
+			//_ShellListView.FileNameChangeAttempt(this.txtEditor.Text, e);
+			//this.Editor.Visibility = WIN.Visibility.Collapsed;
+			//this.Editor.IsOpen = false;
 		}
 
 		void ShellListView_BeginItemLabelEdit(object sender, RenameEventArgs e) {
-			if (this.Editor.IsOpen) return;
-			var isSmall = this._ShellListView.IconSize == 16;
-			if (isSmall) {
-				this.txtEditor.TextWrapping = TextWrapping.WrapWithOverflow;
-				this.txtEditor.TextAlignment = TextAlignment.Left;
-			} else {
-				this.txtEditor.TextWrapping = TextWrapping.Wrap;
-				this.txtEditor.TextAlignment = TextAlignment.Center;
-			}
+			//if (this.Editor.IsOpen) return;
+			//var isSmall = this._ShellListView.IconSize == 16;
+			//if (isSmall) {
+			//	this.txtEditor.TextWrapping = TextWrapping.WrapWithOverflow;
+			//	this.txtEditor.TextAlignment = TextAlignment.Left;
+			//} else {
+			//	this.txtEditor.TextWrapping = TextWrapping.Wrap;
+			//	this.txtEditor.TextAlignment = TextAlignment.Center;
+			//}
 
-			var itemRect = this._ShellListView.GetItemBounds(e.ItemIndex, 0);
-			var itemLabelRect = this._ShellListView.GetItemBounds(e.ItemIndex, 2);
-			this.txtEditor.Text = this._ShellListView.Items[e.ItemIndex].DisplayName;
-			var point = this.ShellViewHost.PointToScreen(new WIN.Point(isSmall ? itemLabelRect.Left : itemRect.Left, itemLabelRect.Top - (isSmall ? 1 : 0)));
-			this.Editor.HorizontalOffset = point.X;
-			this.Editor.VerticalOffset = point.Y;
+			//var itemRect = this._ShellListView.GetItemBounds(e.ItemIndex, 0);
+			//var itemLabelRect = this._ShellListView.GetItemBounds(e.ItemIndex, 2);
+			//this.txtEditor.Text = this._ShellListView.Items[e.ItemIndex].DisplayName;
+			//var point = this.ShellViewHost.PointToScreen(new WIN.Point(isSmall ? itemLabelRect.Left : itemRect.Left, itemLabelRect.Top - (isSmall ? 1 : 0)));
+			//this.Editor.HorizontalOffset = point.X;
+			//this.Editor.VerticalOffset = point.Y;
 
-			this.txtEditor.MaxWidth = isSmall ? Double.PositiveInfinity : itemRect.Width;
-			this.txtEditor.MaxHeight = isSmall ? itemLabelRect.Height + 2 : Double.PositiveInfinity;
+			//this.txtEditor.MaxWidth = isSmall ? Double.PositiveInfinity : itemRect.Width;
+			//this.txtEditor.MaxHeight = isSmall ? itemLabelRect.Height + 2 : Double.PositiveInfinity;
 
-			this.Editor.Width = isSmall ? this.txtEditor.Width : itemRect.Width;
-			this.Editor.Height = this.txtEditor.Height + 2;
-			this.Editor.Visibility = WIN.Visibility.Visible;
-			this.Editor.IsOpen = true;
-			this.txtEditor.Focus();
+			//this.Editor.Width = isSmall ? this.txtEditor.Width : itemRect.Width;
+			//this.Editor.Height = this.txtEditor.Height + 2;
+			//this.Editor.Visibility = WIN.Visibility.Visible;
+			//this.Editor.IsOpen = true;
+			//this.txtEditor.Focus();
 
-			var isCheckedExtensions = this.chkExtensions.IsChecked;
-			if (isCheckedExtensions != null && (isCheckedExtensions.Value & this.txtEditor.Text.Contains(".") && !this._ShellListView.GetFirstSelectedItem().IsFolder)) {
-				var lastIndexOfDot = this.txtEditor.Text.LastIndexOf(".", StringComparison.Ordinal);
-				this.txtEditor.SelectionStart = 0;
-				this.txtEditor.SelectionLength = lastIndexOfDot;
-			} else {
-				this.txtEditor.SelectAll();
-			}
+			//var isCheckedExtensions = this.chkExtensions.IsChecked;
+			//if (isCheckedExtensions != null && (isCheckedExtensions.Value & this.txtEditor.Text.Contains(".") && !this._ShellListView.GetFirstSelectedItem().IsFolder)) {
+			//	var lastIndexOfDot = this.txtEditor.Text.LastIndexOf(".", StringComparison.Ordinal);
+			//	this.txtEditor.SelectionStart = 0;
+			//	this.txtEditor.SelectionLength = lastIndexOfDot;
+			//} else {
+			//	this.txtEditor.SelectAll();
+			//}
 
-			Keyboard.Focus(this.txtEditor);
+			//Keyboard.Focus(this.txtEditor);
 		}
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {

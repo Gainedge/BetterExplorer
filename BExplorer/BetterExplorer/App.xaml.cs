@@ -213,41 +213,67 @@ namespace BetterExplorer {
 
 			Action<bool> d = x => {
 				var win = MainWindow as MainWindow;
-
+				CombinedWindowActivator windowsActivate = new CombinedWindowActivator();
 				if (!x) return;
+				win.StateChanged += Win_StateChanged;
 				if (args?.CommandLineArgs == null || !args.CommandLineArgs.Any()) return;
 				if (win == null) return;
-				if (args.CommandLineArgs[1] == "/nw") {
-					new MainWindow() { IsMultipleWindowsOpened = true }.Show();
+				if (args.CommandLineArgs.Length == 1) {
+					win.Visibility = Visibility.Visible;
+					//if (win.WindowState == WindowState.Minimized) {
+					//	User32.ShowWindow((PresentationSource.FromVisual(win) as HwndSource).Handle, User32.ShowWindowCommands.Restore);
+					//}
+					//User32.ForceForegroundWindow(win);
+					windowsActivate.ActivateForm(win, null, IntPtr.Zero);
 				} else {
-					IListItemEx sho = null;
-					if (args.CommandLineArgs[1] == "t") {
-						win.Visibility = Visibility.Visible;
-						if (win.WindowState == WindowState.Minimized)
-							User32.ShowWindow((PresentationSource.FromVisual(win) as HwndSource).Handle, User32.ShowWindowCommands.Restore);
-
-						sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, startUpLocation);
+					if (args.CommandLineArgs[1] == "/nw") {
+						new MainWindow() { IsMultipleWindowsOpened = true }.Show();
 					} else {
-						sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, args.CommandLineArgs[1]);
-					}
+						IListItemEx sho = null;
+						if (args.CommandLineArgs[1] == "t") {
+							win.Visibility = Visibility.Visible;
+							//if (win.WindowState == WindowState.Minimized)
+							//	User32.ShowWindow((PresentationSource.FromVisual(win) as HwndSource).Handle,
+							//		User32.ShowWindowCommands.Restore);
+							windowsActivate.ActivateForm(win, null, IntPtr.Zero);
 
-					if (!IsStartMinimized || win.tcMain.Items.Count == 0) {
-						CreateInitialTab(win, sho);
-					} else if ((int)Utilities.GetRegistryValue("IsRestoreTabs", "1") == 0) {
-						win.tcMain.Items.Clear();
-						CreateInitialTab(win, sho);
-					} else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
-						String cmd = args.CommandLineArgs[1];
-						sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd);
-						CreateInitialTab(win, sho);
+							sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, startUpLocation.ToShellParsingName());
+						} else {
+							sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, args.CommandLineArgs[1].ToShellParsingName());
+						}
+
+						if (!IsStartMinimized || win.tcMain.Items.Count == 0) {
+							CreateInitialTab(win, sho);
+						} else if ((int)Utilities.GetRegistryValue("IsRestoreTabs", "1") == 0) {
+							win.tcMain.Items.Clear();
+							CreateInitialTab(win, sho);
+						} else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
+							if (args.CommandLineArgs[1] == "t") {
+								CreateInitialTab(win, sho);
+							} else {
+								String cmd = args.CommandLineArgs[1];
+								sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd.ToShellParsingName());
+								CreateInitialTab(win, sho);
+							}
+						} else {
+							CreateInitialTab(win, sho);
+						}
 					}
+					//User32.ForceForegroundWindow(win);
+
+					windowsActivate.ActivateForm(win, null, IntPtr.Zero);
 				}
-				win.Activate();
-				win.Topmost = true;  // important
-				win.Topmost = false; // important
-				win.Focus();         // important				
 			};
 			Dispatcher.BeginInvoke(d, true);
+		}
+
+		private void Win_StateChanged(object sender, EventArgs e) {
+			if ((sender as Window).WindowState != WindowState.Minimized) {
+				(sender as Window).Visibility = Visibility.Visible;
+				CombinedWindowActivator windowsActivate = new CombinedWindowActivator();
+				windowsActivate.ActivateForm(sender as Window, null, IntPtr.Zero);
+				//User32.ForceForegroundWindow(sender as Window);
+			}
 		}
 
 		void newt_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e) {

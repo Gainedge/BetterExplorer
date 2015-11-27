@@ -103,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
+    <Compile Include="WindowActivator.cs" />
     <Compile Include="ShellItemEqualityComparer.cs" />
     <Compile Include="Custom ContextMenus Remove Soon\FilterMenu_Strings.cs" />
     <Compile Include="FOperationProgressSink.cs" />
@@ -133,7 +134,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DragDropHelper.cs" />
-    <Compile Include="ShellTreeViewEx.cs" />
+    <Compile Include="ShellTreeViewEx.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ShellTreeViewEx.Designer.cs">
       <DependentUpon>ShellTreeViewEx.cs</DependentUpon>
     </Compile>
