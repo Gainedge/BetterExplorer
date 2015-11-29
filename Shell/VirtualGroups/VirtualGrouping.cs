@@ -35,32 +35,24 @@ namespace BExplorer.Shell {
 
 
 		public void GetItemGroup(int itemIndex, int occurrenceCount, out int groupIndex) {
-			//TODO: Find out why this use to always returns -1
 			groupIndex = -1;
-
-			//Note: From Aaron Campf, Date 10/3/2015, Commented out code and replaced it with groupIndex = - 1; to make it faster
 
 
 			var itemControlWide = this._VirtualListView.Items[itemIndex];
 
-
-			// //Created 10/3/2015
-			//var Group = this._VirtualListView.Groups.FirstOrDefault(x => x.Items.Any(c => c.ParsingName == itemControlWide.ParsingName));            
-			//if (Group != null)
-			//{
-			//    groupIndex = Group.Index;
-			//}
-
-
-
-			foreach (var group in this._VirtualListView.Groups) {
-				if (group.Items.Any(c => c.Equals(itemControlWide))) {
-					groupIndex = group.Index;
-					break;
+			if (this._VirtualListView.IsGroupsEnabled && itemControlWide.GroupIndex == -1)
+			{
+				foreach (var group in this._VirtualListView.Groups) {
+					if (group.Items.Any(c => c.Equals(itemControlWide))) {
+						groupIndex = group.Index;
+						break;
+					}
 				}
 			}
-
-			//groupIndex = -1;
+			else
+			{
+				groupIndex = itemControlWide.GroupIndex;
+			}
 		}
 	}
 }

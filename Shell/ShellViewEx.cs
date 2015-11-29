@@ -278,16 +278,16 @@ namespace BExplorer.Shell {
 
 		public List<IListItemEx> SelectedItems {
 			get {
-				var Data = this.SelectedIndexes.ToArray();
+				var data = this.SelectedIndexes.ToArray();
 				var selItems = new List<IListItemEx>();
-				DraggedItemIndexes.AddRange(Data);
+				DraggedItemIndexes.AddRange(data);
 
-				foreach (var index in Data) {
-					var Item = this.Items.ElementAtOrDefault(index);
-					if (Item == null)
+				foreach (var index in data) {
+					var item = this.Items.ElementAtOrDefault(index);
+					if (item == null)
 						this.SelectedIndexes.Remove(index);
 					else
-						selItems.Add(Item);
+						selItems.Add(item);
 				}
 				return selItems;
 			}
@@ -2015,10 +2015,16 @@ namespace BExplorer.Shell {
 		#region Public Methods
 
 		public int GetGroupIndex(int itemIndex) {
-			if (itemIndex == -1 || itemIndex >= this.Items.Count) return 0;
+			if (itemIndex == -1 || itemIndex >= this.Items.Count) return -1;
 			var item = this.Items[itemIndex];
-			var found = this.Groups.FirstOrDefault(x => x.Items.Contains(item, new ShellItemEqualityComparer()));
-			return found == null ? 0 : found.Index;
+			//A fallback if for somereason GroupIndex is not set but grouping is enabled
+			if (this.IsGroupsEnabled && item.GroupIndex == -1) {
+				var found = this.Groups.FirstOrDefault(x => x.Items.Contains(item, new ShellItemEqualityComparer()));
+				return found?.Index ?? -1;
+			} else {
+				return item.GroupIndex;
+			}
+
 		}
 
 		public void OpenShareUI() => Shell32.ShowShareFolderUI(this.Handle, Marshal.StringToHGlobalAuto(this.GetFirstSelectedItem().ParsingName.Replace(@"\\", @"\")));
@@ -2050,7 +2056,9 @@ namespace BExplorer.Shell {
 		public void RefreshItem(int index, Boolean IsForceRedraw = false, Boolean convertName = true) {
 			if (IsForceRedraw) {
 				try {
-					this.Items[index] = convertName ? FileSystemListItem.ToFileSystemItem(this.LVHandle, this.Items[index].ParsingName.ToShellParsingName()) : FileSystemListItem.ToFileSystemItem(this.LVHandle, this.Items[index].ParsingName.ToShellParsingName());
+					var newItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, this.Items[index].ParsingName.ToShellParsingName());
+					newItem.GroupIndex = this.Items[index].GroupIndex;
+					this.Items[index] = newItem;
 					this.Items[index].IsNeedRefreshing = true;
 					this.Items[index].IsInvalid = true;
 					this.Items[index].OverlayIconIndex = -1;
@@ -2712,6 +2720,7 @@ namespace BExplorer.Shell {
 					var i = reversed ? groups.Count() - 1 : 0;
 					foreach (var group in groups) {
 						var groupItems = group.Select(s => s).ToArray();
+						groupItems.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 						this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{group.Key.ToString()} ({groupItems.Count()})" });
 					}
 				} else {
@@ -2736,6 +2745,7 @@ namespace BExplorer.Shell {
 							? char1 + $" ({testgrn.Items.Count()})"
 							: char1 + " - " + char2 + $" ({testgrn.Items.Count()})";
 						testgrn.Index = reversed ? i-- : i++;
+						testgrn.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 						this.Groups.Add(testgrn);
 					};
 
@@ -2756,54 +2766,63 @@ namespace BExplorer.Shell {
 				uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
 				uspec.Header = $"Unspecified ({uspec.Items.Count()})";
 				uspec.Index = reversed ? j-- : j++;
+				uspec.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(uspec);
 
 				var testgrn = new ListViewGroupEx();
 				testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) == 0 && !w.IsFolder).ToArray();
 				testgrn.Header = $"Empty ({testgrn.Items.Count()})";
 				testgrn.Index = reversed ? j-- : j++;
+				testgrn.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgrn);
 
 				var testgr = new ListViewGroupEx();
 				testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 10 * 1024).ToArray();
 				testgr.Header = $"Very Small ({testgr.Items.Count()})";
 				testgr.Index = reversed ? j-- : j++;
+				testgr.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr);
 
 				var testgr2 = new ListViewGroupEx();
 				testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 100 * 1024).ToArray();
 				testgr2.Header = $"Small ({testgr2.Items.Count()})";
 				testgr2.Index = reversed ? j-- : j++;
+				testgr2.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr2);
 
 				var testgr3 = new ListViewGroupEx();
 				testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 1 * 1024 * 1024).ToArray();
 				testgr3.Header = $"Medium ({ testgr3.Items.Count()})";
 				testgr3.Index = reversed ? j-- : j++;
+				testgr3.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr3);
 
 				var testgr4 = new ListViewGroupEx();
 				testgr4.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 16 * 1024 * 1024).ToArray();
 				testgr4.Header = $"Big ({testgr4.Items.Count()})";
 				testgr4.Index = reversed ? j-- : j++;
+				testgr4.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr4);
 
 				var testgr5 = new ListViewGroupEx();
 				testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 16 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 128 * 1024 * 1024).ToArray();
 				testgr5.Header = $"Huge ({testgr5.Items.Count()})";
 				testgr5.Index = reversed ? j-- : j++;
+				testgr5.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr5);
 
 				var testgr6 = new ListViewGroupEx();
 				testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 128 * 1024 * 1024).ToArray();
 				testgr6.Header = $"Gigantic ({testgr6.Items.Count()})";
 				testgr6.Index = reversed ? j-- : j++;
+				testgr6.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr6);
 			} else {
 				var groups = this.Items.GroupBy(k => k.GetPropertyValue(col.pkey, typeof(String)).Value, e => e).OrderBy(o => o.Key);
 				var i = reversed ? groups.Count() - 1 : 0;
 				foreach (var group in groups) {
 					var groupItems = group.Select(s => s).ToArray();
+					groupItems.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 					this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{group.Key.ToString()} ({groupItems.Count()})" });
 				}
 
@@ -3171,11 +3190,11 @@ namespace BExplorer.Shell {
 		}
 
 		public void AutosizeAllColumns(int autosizeParam) {
-			this.SuspendLayout();
+			//this.SuspendLayout();
 			for (int i = 0; i < this.Collumns.Count; i++) {
 				AutosizeColumn(i, autosizeParam);
 			}
-			this.ResumeLayout();
+			//this.ResumeLayout();
 		}
 
 		#endregion Public Methods
@@ -3185,8 +3204,8 @@ namespace BExplorer.Shell {
 		internal void OnSelectionChanged() => SelectionChanged?.Invoke(this, EventArgs.Empty);
 		private new void ResumeLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 1, 0);
 		private new void SuspendLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 0, 0);
-		private void RedrawWindow() => User32.InvalidateRect(this.LVHandle, IntPtr.Zero, false);
-		private void RedrawWindow(User32.RECT rect) => User32.InvalidateRect(this.LVHandle, ref rect, false);
+		private void RedrawWindow() { }//User32.InvalidateRect(this.LVHandle, IntPtr.Zero, false);
+		private void RedrawWindow(User32.RECT rect) { }// => User32.InvalidateRect(this.LVHandle, ref rect, false);
 
 		/// <summary>
 		/// Returns the index of the first item whose display name starts with the search string.

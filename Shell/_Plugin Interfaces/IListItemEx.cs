@@ -40,7 +40,9 @@ namespace BExplorer.Shell._Plugin_Interfaces
 
         Int32 OverlayIconIndex { get; set; }
 
-        IntPtr Icon { get; set; }
+				Int32 GroupIndex { get; set; }
+
+				IntPtr Icon { get; set; }
 
         IExtractIconPWFlags IconType { get; set; }
 
