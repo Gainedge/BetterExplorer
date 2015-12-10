@@ -367,10 +367,11 @@ namespace BExplorer.Shell
         public static LVCOLUMN ToNativeColumn(this Collumns col, bool isDetails = false)
         {
             LVCOLUMN column = new LVCOLUMN();
-            column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_MINWIDTH;
+            column.mask = LVCF.LVCF_FMT | LVCF.LVCF_TEXT | LVCF.LVCF_WIDTH | LVCF.LVCF_MINWIDTH | LVCF.LVCF_SUBITEM;
             if (isDetails)
                 column.cx = col.Width;
             column.pszText = col.Name;
+	        column.iSubItem = 1;
             column.fmt = col.CollumnType == typeof(long) ? LVCFMT.RIGHT : LVCFMT.LEFT;
             if (isDetails)
                 column.cxMin = col.MinWidth;

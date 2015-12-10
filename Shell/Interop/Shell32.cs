@@ -141,6 +141,7 @@ namespace BExplorer.Shell.Interop {
 		LAST = 7
 	}
 
+	[Flags]
 	public enum SHCONTF {
 		CHECKING_FOR_CHILDREN = 0x00010,
 		FOLDERS = 0x00020,

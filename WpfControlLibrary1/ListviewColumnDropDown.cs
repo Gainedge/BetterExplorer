@@ -14,6 +14,7 @@ namespace BetterExplorerControls {
         DefaultStyleKeyProperty.OverrideMetadata(
             typeof(ListviewColumnDropDown),
             new FrameworkPropertyMetadata(typeof(ListviewColumnDropDown)));
+			
     }
     public void AddItem(object Item) {
       MenuItem mnuitem = new MenuItem();

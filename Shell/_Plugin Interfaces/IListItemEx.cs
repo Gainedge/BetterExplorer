@@ -8,118 +8,122 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
 
-namespace BExplorer.Shell._Plugin_Interfaces
-{
+namespace BExplorer.Shell._Plugin_Interfaces {
 
-    public interface IListItemEx : IEnumerable<IListItemEx>, IDisposable, IEquatable<IListItemEx>, IEqualityComparer<IListItemEx>
-    {
+	public interface IListItemEx : IEnumerable<IListItemEx>, IDisposable, IEquatable<IListItemEx>, IEqualityComparer<IListItemEx> {
 
-        IShellItem ComInterface { get; }
+		IShellItem ComInterface { get; }
 
-        IListItemEx Parent { get; }
+		IListItemEx Parent { get; }
 
-        String DisplayName { get; set; }
+		String DisplayName { get; set; }
 
-        String Extension { get; set; }
+		String Extension { get; set; }
 
-        String FileSystemPath { get; set; }
+		String FileSystemPath { get; set; }
 
-        Int32 ItemIndex { get; set; }
+		Int32 ItemIndex { get; set; }
 
-        IntPtr ParentHandle { get; set; }
+		IntPtr ParentHandle { get; set; }
 
-        Boolean IsNeedRefreshing { get; set; }
+		Boolean IsNeedRefreshing { get; set; }
 
-        Boolean IsInvalid { get; set; }
+		Boolean IsInvalid { get; set; }
 
-        Boolean IsOnlyLowQuality { get; set; }
+		Boolean IsOnlyLowQuality { get; set; }
 
-        Boolean IsThumbnailLoaded { get; set; }
+		Boolean IsThumbnailLoaded { get; set; }
 
-        Boolean IsInitialised { get; set; }
+		Boolean IsInitialised { get; set; }
 
-        Int32 OverlayIconIndex { get; set; }
+		Int32 OverlayIconIndex { get; set; }
 
-				Int32 GroupIndex { get; set; }
+		Int32 GroupIndex { get; set; }
 
-				IntPtr Icon { get; set; }
+		IntPtr Icon { get; set; }
 
-        IExtractIconPWFlags IconType { get; set; }
+		IExtractIconPWFlags IconType { get; }
 
-        IntPtr ILPidl { get; }
+		IntPtr ILPidl { get; }
 
-        IntPtr PIDL { get; }
+		IntPtr PIDL { get; set; }
 
-        Int32 ShieldedIconIndex { get; set; }
+		IShellFolder IFolder { get; set; }
 
-        Boolean IsIconLoaded { get; set; }
+		Int32 ShieldedIconIndex { get; set; }
 
-        Boolean IsFileSystem { get; set; }
+		Boolean IsIconLoaded { get; set; }
 
-        Boolean IsNetworkPath { get; set; }
+		Boolean IsFileSystem { get; set; }
 
-        Boolean IsDrive { get; set; }
+		Boolean IsNetworkPath { get; set; }
 
-        Boolean IsSearchFolder { get; set; }
+		Boolean IsDrive { get; set; }
 
-        Bitmap Thumbnail(Int32 size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source);
+		Boolean IsSearchFolder { get; set; }
 
-        BitmapSource ThumbnailSource(Int32 size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source);
+		Bitmap Thumbnail(Int32 size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source);
 
-        String ParsingName { get; set; }
+		BitmapSource ThumbnailSource(Int32 size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source);
 
-        Boolean IsBrowsable { get; set; }
+		String ParsingName { get; set; }
 
-        Boolean IsFolder { get; set; }
+		Boolean IsBrowsable { get; set; }
 
-        Boolean HasSubFolders { get; }
+		Boolean IsFolder { get; set; }
 
-        Boolean IsHidden { get; set; }
+		Boolean HasSubFolders { get; }
 
-        Boolean IsLink { get; }
+		Boolean IsHidden { get; set; }
 
-        Boolean IsShared { get; set; }
+		Boolean IsLink { get; }
 
-        void Initialize(IntPtr lvHandle, String path);
+		Boolean IsShared { get; set; }
 
-        void Initialize(IntPtr lvHandle, String path, Int32 index);
+		void Initialize(IntPtr lvHandle, String path);
 
-        void Initialize(IntPtr lvHandle, IntPtr pidl, int index);
+		void Initialize(IntPtr lvHandle, String path, Int32 index);
 
-        void Initialize(IntPtr lvHandle, IntPtr pidl);
+		void Initialize(IntPtr lvHandle, IntPtr pidl, int index);
 
-        void InitializeWithParent(ShellItem parent, IntPtr lvHandle, IntPtr pidl, int index);
+		void Initialize(IntPtr lvHandle, IntPtr pidl);
 
-        PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type);
+		void InitializeWithParent(ShellItem parent, IntPtr lvHandle, IntPtr pidl, int index);
+		void RecreateRCW();
 
-        Dictionary<PROPERTYKEY, Object> ColumnValues { get; set; }
+				PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type);
 
-        IListItemEx[] GetSubItems(Boolean isEnumHidden);
+		Dictionary<PROPERTYKEY, Object> ColumnValues { get; set; }
 
-        IShellFolder GetIShellFolder();
+		IListItemEx[] GetSubItems(Boolean isEnumHidden);
 
-        String ToolTipText { get; }
+		IShellFolder GetIShellFolder();
 
-        IntPtr AbsolutePidl { get; }
+		String ToolTipText { get; }
 
-        DriveInfo GetDriveInfo();
+		IntPtr AbsolutePidl { get; }
 
-        HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false);
+		DriveInfo GetDriveInfo();
 
-        HResult NavigationStatus { get; set; }
+		Boolean IsRCWSet { get; set; }
+		Int32 RCWThread { get; set; }
+		
+		HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false);
 
-        IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false);
+		HResult NavigationStatus { get; set; }
 
-        Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags);
+		IntPtr GetHBitmap(int iconSize, bool isThumbnail, bool isForce = false);
 
-        String GetDisplayName(BExplorer.Shell.Interop.SIGDN type);
+		Boolean RefreshThumb(int iconSize, out WTS_CACHEFLAGS flags);
 
-        IExtractIconPWFlags GetShield();
+		String GetDisplayName(BExplorer.Shell.Interop.SIGDN type);
 
-        int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags);
+		IExtractIconPWFlags GetShield();
 
-        int GetUniqueID();
-        //Work On This and the TODOList
+		int GetSystemImageListIndex(IntPtr pidl, ShellIconType type, ShellIconFlags flags);
 
-    }
+		int GetUniqueID();
+		//Work On This and the TODOList
+
+	}
 }

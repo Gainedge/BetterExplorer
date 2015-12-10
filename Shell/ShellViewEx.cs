@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -235,7 +236,7 @@ namespace BExplorer.Shell {
 		public bool IsCancelRequested;
 		public bool IsNavigationCancelRequested = false;
 		public bool IsNavigationInProgress = false;
-		public Boolean IsGroupsEnabled => LastGroupCollumn != null;
+		public Boolean IsGroupsEnabled { get; set; }
 		public Boolean IsTraditionalNameGrouping { get; set; }
 
 
@@ -249,7 +250,7 @@ namespace BExplorer.Shell {
 		/// </summary>
 		[Browsable(false)]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public bool CanNavigateParent => CurrentFolder != ShellItem.Desktop;
+		public bool CanNavigateParent => CurrentFolder.ParsingName != ShellItem.Desktop.ParsingName;
 
 		/// <summary>
 		/// Gets/sets a <see cref="ShellItem" /> describing the folder currently being browsed by
@@ -262,8 +263,6 @@ namespace BExplorer.Shell {
 
 		public List<IListItemEx> Items { get; private set; }
 
-		public Dictionary<Int32, int> ItemsHashed { get; set; }
-
 		public String LastSortedColumnId { get; private set; }
 
 		public SortOrder LastSortOrder { get; private set; }
@@ -274,10 +273,12 @@ namespace BExplorer.Shell {
 
 		public IntPtr LVHandle { get; private set; }
 
-		public List<LVItemColor> LVItemsColorCodes { get; set; }
+		public ObservableCollectionEx<LVItemColor> LVItemsColorCodes { get; set; }
 
-		public List<IListItemEx> SelectedItems {
-			get {
+		public List<IListItemEx> SelectedItems
+		{
+			get
+			{
 				var data = this.SelectedIndexes.ToArray();
 				var selItems = new List<IListItemEx>();
 				DraggedItemIndexes.AddRange(data);
@@ -293,9 +294,11 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public Boolean ShowCheckboxes {
+		public Boolean ShowCheckboxes
+		{
 			get { return _showCheckBoxes; }
-			set {
+			set
+			{
 				if (value) {
 					User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT, (int)ListViewExtendedStyles.LVS_EX_AUTOCHECKSELECT);
 					User32.SendMessage(this.LVHandle, MSG.LVM_SetExtendedStyle, (int)ListViewExtendedStyles.CheckBoxes, (int)ListViewExtendedStyles.CheckBoxes);
@@ -308,9 +311,11 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public bool ShowHidden {
+		public bool ShowHidden
+		{
 			get { return _ShowHidden; }
-			set {
+			set
+			{
 				_ShowHidden = value;
 				this.RefreshContents();
 			}
@@ -318,9 +323,11 @@ namespace BExplorer.Shell {
 
 		/// <summary> Gets or sets how items are displayed in the control. </summary>
 		[DefaultValue(ShellViewStyle.Medium), Category("Appearance")]
-		public ShellViewStyle View {
+		public ShellViewStyle View
+		{
 			get { return m_View; }
-			set {
+			set
+			{
 				m_View = value;
 				var iconsize = 16;
 				switch (value) {
@@ -366,9 +373,9 @@ namespace BExplorer.Shell {
 
 					case ShellViewStyle.Tile:
 						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_TILE, 0);
-						var tvi = new LVTILEVIEWINFO() { cLines = 3, rcLabelMargin = new User32.RECT() };
+						var tvi = new LVTILEVIEWINFO() { cLines = 3, rcLabelMargin = new User32.RECT() { Left = 2, Right = 0, Bottom = 60, Top = 5 } };
 						tvi.cbSize = (uint)Marshal.SizeOf(typeof(LVTILEVIEWINFO));
-						tvi.dwMask = (uint)LVTVIM.LVTVIM_TILESIZE | (uint)LVTVIM.LVTVIM_COLUMNS;
+						tvi.dwMask = (uint)LVTVIM.LVTVIM_TILESIZE | (uint)LVTVIM.LVTVIM_COLUMNS | (uint)LVTVIM.LVTVIM_LABELMARGIN;
 						tvi.dwFlags = (uint)LVTVIF.LVTVIF_FIXEDSIZE;
 						tvi.sizeTile = new INTEROP_SIZE() { cx = 250, cy = 60 };
 
@@ -400,11 +407,15 @@ namespace BExplorer.Shell {
 		#endregion Public Members
 
 		#region Private Members
+
+		private ListViewEditor _EditorSubclass;
 		private System.Windows.Forms.Timer _UnvalidateTimer = new System.Windows.Forms.Timer();
 		private System.Windows.Forms.Timer _MaintenanceTimer = new System.Windows.Forms.Timer();
 		private string _DBPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite");
-		private List<int> SelectedIndexes {
-			get {
+		private List<int> SelectedIndexes
+		{
+			get
+			{
 				var selItems = new List<int>();
 				int iStart = -1;
 				var lvi = new LVITEMINDEX();
@@ -481,7 +492,6 @@ namespace BExplorer.Shell {
 			this.ItemForRename = -1;
 			InitializeComponent();
 			this.Items = new List<IListItemEx>();
-			this.LVItemsColorCodes = new List<LVItemColor>();
 			this.AllAvailableColumns = this.AvailableColumns();
 			this.AllowDrop = true;
 			_IconLoadingThread = new Thread(_IconsLoadingThreadRun) { IsBackground = true, Priority = ThreadPriority.BelowNormal };
@@ -496,7 +506,7 @@ namespace BExplorer.Shell {
 			_UpdateSubitemValuesThread = new Thread(_UpdateSubitemValuesThreadRun) { Priority = ThreadPriority.BelowNormal };
 			_UpdateSubitemValuesThread.SetApartmentState(ApartmentState.STA);
 			_UpdateSubitemValuesThread.Start();
-			_ResetTimer.Interval = 150;
+			_ResetTimer.Interval = 250;
 			_ResetTimer.Tick += resetTimer_Tick;
 
 			var defIconInfo = new Shell32.SHSTOCKICONINFO() { cbSize = (uint)Marshal.SizeOf(typeof(Shell32.SHSTOCKICONINFO)) };
@@ -1259,8 +1269,7 @@ namespace BExplorer.Shell {
 				if (this.IsGroupsEnabled) SetGroupOrder(false);
 			}
 
-			var itemIndex = Items.Count - 1;
-			if (!ItemsHashed.TryGetValue(obj.GetUniqueID(), out itemIndex)) itemIndex = -1;
+			var itemIndex = obj.ItemIndex;
 			return itemIndex;
 		}
 
@@ -1269,21 +1278,20 @@ namespace BExplorer.Shell {
 				var tempItem = Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName);
 				this.RefreshItem(this.CurrentRefreshedItemIndex);
 				if (tempItem == null) {
+					obj2.ItemIndex = this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex;
 					Items.Insert(this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex, obj2);
-					ItemsHashed.Add(obj2.GetUniqueID(), this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex);
 					if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 					var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
 					this.SetSortCollumn(col, this.LastSortOrder, false);
-					this.ItemUpdated?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj2, null, ItemsHashed[obj2.GetUniqueID()]));
-					this.SelectItemByIndex(ItemsHashed[obj2.GetUniqueID()], true, true);
+					this.ItemUpdated?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj2, null, obj2.ItemIndex));
+					this.SelectItemByIndex(obj2.ItemIndex, true, true);
 				}
 			} else {
 				var theItem = Items.FirstOrDefault(s => s.ParsingName == obj1.ParsingName);
 				if (theItem != null) {
 					int itemIndex = Items.IndexOf(theItem);
+					obj2.ItemIndex = itemIndex;
 					Items[itemIndex] = obj2;
-					ItemsHashed.Remove(theItem.GetUniqueID());
-					ItemsHashed.Add(obj2.GetUniqueID(), itemIndex);
 					User32.SendMessage(this.LVHandle, MSG.LVM_UPDATE, itemIndex, 0);
 					if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 
@@ -1292,10 +1300,10 @@ namespace BExplorer.Shell {
 					RedrawWindow();
 					var obj2Real = this.Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName);
 					if (this.ItemUpdated != null && obj2Real != null) {
-						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, ItemsHashed[obj2Real.GetUniqueID()]));
+						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, obj2Real.ItemIndex));
 					}
 					if (obj2Real != null) {
-						this.SelectItemByIndex(ItemsHashed[obj2Real.GetUniqueID()], true, true);
+						this.SelectItemByIndex(obj2Real.ItemIndex, true, true);
 					}
 				}
 			}
@@ -1379,16 +1387,30 @@ namespace BExplorer.Shell {
 
 					var nmhdr = (NMHDR)m.GetLParam(typeof(NMHDR));
 					switch ((int)nmhdr.code) {
+						case WNM.LVN_GETEMPTYMARKUP:
+							//if (this.IsDisplayEmptyText) {
+							//	var nmlvem = (NMLVEMPTYMARKUP) m.GetLParam(typeof (NMLVEMPTYMARKUP));
+							//	nmlvem.dwFlags = 0x1;
+							//	nmlvem.szMarkup = "There is no Items to display!";
+							//	Marshal.StructureToPtr(nmlvem, m.LParam, false);
+							//	m.Result = (IntPtr) 1;
+							//}
+							break;
 						case WNM.LVN_ENDLABELEDITW:
 							#region Case
 							var nmlvedit = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
 							if (!String.IsNullOrEmpty(nmlvedit.item.pszText)) {
 								var item = this.Items[nmlvedit.item.iItem];
-								RenameShellItem(item.ComInterface, nmlvedit.item.pszText, (item.DisplayName != Path.GetFileName(item.ParsingName)) && !item.IsFolder, item.Extension);
+								if (nmlvedit.item.pszText.ToLowerInvariant() != item.DisplayName.ToLowerInvariant()) {
+
+									RenameShellItem(item.ComInterface, nmlvedit.item.pszText,
+										(item.DisplayName != Path.GetFileName(item.ParsingName)) && !item.IsFolder, item.Extension);
+								}
 								this.EndLabelEdit();
 								this.RedrawWindow();
 
 							}
+							this._EditorSubclass?.DestroyHandle();
 							break;
 						#endregion
 
@@ -1403,9 +1425,10 @@ namespace BExplorer.Shell {
 								if (nmlv.item.iSubItem == 0) {
 									try {
 										nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
-										if (!String.IsNullOrEmpty(this._NewName) && this.GetFirstSelectedItemIndex() == nmlv.item.iItem && this.LastItemForRename == nmlv.item.iItem) {
-											nmlv.item.pszText = this._NewName;
-										}
+										//nmlv.item.pszText = currentItem.DisplayName;
+										//if (!String.IsNullOrEmpty(this._NewName) && this.GetFirstSelectedItemIndex() == nmlv.item.iItem && this.LastItemForRename == nmlv.item.iItem) {
+										//	nmlv.item.pszText = this._NewName;
+										//}
 										//else if (this.ItemForRealName_IsAny) {
 										//	if (this.GetFirstSelectedItemIndex() == nmlv.item.iItem) {
 										//		nmlv.item.pszText = String.Empty;
@@ -1556,6 +1579,12 @@ namespace BExplorer.Shell {
 							this.ItemForRename = nmlvLe.item.iItem;
 							this.BeginItemLabelEdit?.Invoke(this, new RenameEventArgs(nmlvLe.item.iItem));
 							m.Result = (IntPtr)0;
+							var editControl = User32.SendMessage(this.LVHandle, 0x1018, 0, 0);
+							if (this.View == ShellViewStyle.Tile) {
+								User32.SetWindowText(editControl, this.Items[nmlvLe.item.iItem].DisplayName);
+								this._EditorSubclass = new ListViewEditor(editControl);
+							}
+
 							break;
 						#endregion
 
@@ -1585,7 +1614,6 @@ namespace BExplorer.Shell {
 							#region Case
 							this.EndLabelEdit();
 							resetEvent.Reset();
-							this.IsCancelRequested = true;
 							_ResetTimer.Stop();
 							ToolTip.HideTooltip();
 							break;
@@ -1848,8 +1876,8 @@ namespace BExplorer.Shell {
 						case ShellNotifications.SHCNE.SHCNE_NETUNSHARE:
 						case ShellNotifications.SHCNE.SHCNE_ATTRIBUTES:
 							var objNetA = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-							var exisitingItemNetA = this.ItemsHashed.FirstOrDefault(w => w.Key.Equals(objNetA.GetUniqueID()));
-							this.RefreshItem(exisitingItemNetA.Value, true);
+							var exisitingItemNetA = this.Items.FirstOrDefault(w => w.Equals(objNetA));
+							this.RefreshItem(exisitingItemNetA.ItemIndex, true);
 							//this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Updated, null, objNetA, exisitingItemNetA.Value);
 							break;
 						case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
@@ -1867,7 +1895,8 @@ namespace BExplorer.Shell {
 							var objDr = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
 							if (this.CurrentFolder != null && this.CurrentFolder.ParsingName.Equals(KnownFolders.Computer.ParsingName)) {
 								this.Items.Remove(objDr);
-								this.ItemsHashed.Remove(objDr.GetUniqueID());
+								var i = 0;
+								this.Items.ToList().ForEach(e => e.ItemIndex = i++);
 								if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 
 								User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
@@ -1983,7 +2012,7 @@ namespace BExplorer.Shell {
 				this.SetSortCollumn(col, this.LastSortOrder, false);
 				if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 			} catch (Exception) {
-				F.Application.DoEvents();
+				//F.Application.DoEvents();
 			}
 
 			newItems = null;
@@ -2003,6 +2032,10 @@ namespace BExplorer.Shell {
 						_OverlaysLoadingThread.Abort();
 					if (_UpdateSubitemValuesThread.IsAlive)
 						_UpdateSubitemValuesThread.Abort();
+					mre.Reset();
+					foreach (var thread in this.Threads) {
+						if (thread.IsAlive) thread.Abort();
+					}
 				});
 
 				t.Start();
@@ -2017,13 +2050,13 @@ namespace BExplorer.Shell {
 		public int GetGroupIndex(int itemIndex) {
 			if (itemIndex == -1 || itemIndex >= this.Items.Count) return -1;
 			var item = this.Items[itemIndex];
-			//A fallback if for somereason GroupIndex is not set but grouping is enabled
-			if (this.IsGroupsEnabled && item.GroupIndex == -1) {
-				var found = this.Groups.FirstOrDefault(x => x.Items.Contains(item, new ShellItemEqualityComparer()));
-				return found?.Index ?? -1;
-			} else {
-				return item.GroupIndex;
-			}
+			////A fallback if for somereason GroupIndex is not set but grouping is enabled
+			//if (this.IsGroupsEnabled && item.GroupIndex == -1) {
+			//	var found = this.Groups.FirstOrDefault(x => x.Items.Contains(item, new ShellItemEqualityComparer()));
+			//	return found?.Index ?? -1;
+			//} else {
+			return item.GroupIndex;
+			//}
 
 		}
 
@@ -2049,15 +2082,25 @@ namespace BExplorer.Shell {
 		public void UpdateItem(int index) => User32.SendMessage(this.LVHandle, Interop.MSG.LVM_UPDATE, index, 0);
 
 		/// <summary> Navigates to the parent of the currently displayed folder. </summary>
-		public void NavigateParent() => Navigate_Full(CurrentFolder.Parent, true, true);
+		public void NavigateParent() {
+			if (this.CurrentFolder != null) {
+				this.CurrentFolder.RecreateRCW();
+				Navigate_Full(this.CurrentFolder.Parent, true, true);
+			}
+		}
 
-		public void RefreshContents() => Navigate_Full(this.CurrentFolder, true, refresh: true);
+		public void RefreshContents() {
+			if (this.CurrentFolder != null) {
+				Navigate_Full(this.CurrentFolder, true, refresh: true);
+			}
+		}
 
 		public void RefreshItem(int index, Boolean IsForceRedraw = false, Boolean convertName = true) {
 			if (IsForceRedraw) {
 				try {
 					var newItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, this.Items[index].ParsingName.ToShellParsingName());
 					newItem.GroupIndex = this.Items[index].GroupIndex;
+					newItem.ItemIndex = index;
 					this.Items[index] = newItem;
 					this.Items[index].IsNeedRefreshing = true;
 					this.Items[index].IsInvalid = true;
@@ -2267,7 +2310,7 @@ namespace BExplorer.Shell {
 				var ils = new F.ImageList() { ImageSize = new System.Drawing.Size(16, 16) };
 				User32.SendMessage(this.LVHandle, MSG.LVM_SETIMAGELIST, 0, il.Handle);
 				User32.SendMessage(this.LVHandle, MSG.LVM_SETIMAGELIST, 1, ils.Handle);
-				User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, (IntPtr)User32.MAKELONG(value + 28, value + 42));
+				User32.SendMessage(this.LVHandle, MSG.LVM_SETICONSPACING, 0, (IntPtr)User32.MAKELONG(value + 28, value + 40));
 			} catch (Exception) {
 			}
 		}
@@ -2283,7 +2326,8 @@ namespace BExplorer.Shell {
 			foreach (IListItemEx item in ShellObjectArray) {
 				try {
 					var itemIndex = 0;
-					ItemsHashed.TryGetValue(item.GetUniqueID(), out itemIndex);
+					var exestingItem = this.Items.FirstOrDefault(s => s.Equals(item));
+					itemIndex = exestingItem?.ItemIndex ?? -1;
 					var lvii = new LVITEMINDEX() { iItem = itemIndex, iGroup = this.GetGroupIndex(itemIndex) };
 					var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
 					User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
@@ -2316,7 +2360,7 @@ namespace BExplorer.Shell {
 
 		private void UpdateColsInView(bool isDetails = false) {
 			IntPtr headerhandle = User32.SendMessage(this.LVHandle, MSG.LVM_GETHEADER, 0, 0);
-			foreach (var col in this.Collumns) {
+			foreach (var col in this.Collumns.ToArray()) {
 				var colIndex = this.Collumns.IndexOf(col);
 				var colNative = col.ToNativeColumn(isDetails);
 				User32.SendMessage(this.LVHandle, MSG.LVM_SETCOLUMN, colIndex, ref colNative);
@@ -2367,7 +2411,7 @@ namespace BExplorer.Shell {
 
 		public void SetSortCollumn(Collumns column, SortOrder Order, Boolean reverseOrder = true) {
 			try {
-				var itemsArray = this.Items.ToArray();
+				var itemsArray = this.Items;
 				var selectedItems = this.SelectedItems.ToArray();
 				if (column.ID == this.LastSortedColumnId && reverseOrder) {
 					// Reverse the current sort direction for this column.
@@ -2380,20 +2424,52 @@ namespace BExplorer.Shell {
 
 				if (column.CollumnType != typeof(String)) {
 					if (Order == SortOrder.Ascending) {
-						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value).ToList();
+						this.Items =
+							itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden)
+								.OrderByDescending(o => o.IsFolder)
+								.ThenBy(
+									o =>
+										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
+											? "1"
+											: o.GetPropertyValue(column.pkey, typeof(String)).Value)
+								.ToList();
 					} else {
-						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value).ToList();
+						this.Items =
+							itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden)
+								.OrderByDescending(o => o.IsFolder)
+								.ThenByDescending(
+									o =>
+										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
+											? "1"
+											: o.GetPropertyValue(column.pkey, typeof(String)).Value)
+								.ToList();
 					}
 				} else {
 					if (Order == SortOrder.Ascending) {
-						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenBy(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
+						this.Items =
+							itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden)
+								.OrderByDescending(o => o.IsFolder)
+								.ThenBy(
+									o =>
+										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
+											? "1"
+											: o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default)
+								.ToList();
 					} else {
-						this.Items = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder).ThenByDescending(o => o.GetPropertyValue(column.pkey, typeof(String)).Value == null ? "1" : o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default).ToList();
+						this.Items =
+							itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden)
+								.OrderByDescending(o => o.IsFolder)
+								.ThenByDescending(
+									o =>
+										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
+											? "1"
+											: o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default)
+								.ToList();
 					}
 				}
 
 				var i = 0;
-				this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k.GetUniqueID(), el => i++);
+				this.Items.ForEach(e => e.ItemIndex = i++);
 				User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 				var colIndexReal = this.Collumns.IndexOf(this.Collumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId));
 				if (colIndexReal > -1) {
@@ -2408,6 +2484,8 @@ namespace BExplorer.Shell {
 			}
 		}
 
+		private CancellationToken LastToken;
+		private CancellationToken Currenttoken;
 		/// <summary>
 		/// Navigate to a folder, set it as the current folder and optionally save the folder's settings to the database.
 		/// </summary>
@@ -2417,7 +2495,7 @@ namespace BExplorer.Shell {
 		/// <param name="refresh">Should the List be Refreshed?</param>
 		public void Navigate_Full(IListItemEx destination, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false) {
 			this._IsSearchNavigating = false;
-			if (SaveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
+			//if (SaveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
 
 			if (destination == null || !destination.IsFolder) return;
 			if (ToolTip == null) this.ToolTip = new ToolTip(this);
@@ -2458,7 +2536,9 @@ namespace BExplorer.Shell {
 		}
 
 		private IListItemEx _RequestedCurrentLocation { get; set; }
-
+		private Boolean IsDisplayEmptyText = false;
+		private List<Thread> Threads = new List<Thread>();
+		ManualResetEvent mre = new ManualResetEvent(false);
 		/// <summary>
 		/// Navigate to a folder.
 		/// </summary>
@@ -2467,63 +2547,118 @@ namespace BExplorer.Shell {
 		/// <param name="refresh">Should the List be Refreshed?</param>
 		/// <param name="isCancel">  this.IsNavigationCancelRequested = isCancel</param>
 		[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
+		[HandleProcessCorruptedStateExceptions]
 		private void Navigate(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false, bool isCancel = false) {
-			//TODO: Document isCancel Param better
 
-			this._RequestedCurrentLocation = destination;
-			this.IsCancelRequested = true;
-			this.IsNavigationCancelRequested = isCancel;
+			//TODO: Document isCancel Param better
+			if (this._RequestedCurrentLocation == destination && !refresh) return;
+
+			SaveSettingsToDatabase(this._RequestedCurrentLocation);
 			this._UnvalidateTimer.Stop();
-			if (destination.Equals(this.CurrentFolder) && !refresh && !isCancel)
-				return;
+			this.IsDisplayEmptyText = false;
+
+
+			this.ItemForRename = -1;
+			this.LastItemForRename = -1;
+			Items.Clear();
+			ItemsForSubitemsUpdate.Clear();
+			waitingThumbnails.Clear();
+			overlayQueue.Clear();
+			shieldQueue.Clear();
+			this._CuttedIndexes.Clear();
+			this.SubItemValues.Clear();
+			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
+			this.DisableGroups();
+
+			var folderSettings = new FolderSettings();
+			var isThereSettings = false;
+
+			isThereSettings = LoadSettingsFromDatabase(destination, out folderSettings);
+			this._RequestedCurrentLocation = destination;
 			if (!refresh && Navigating != null)
 				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 
-			if (destination == null) return;
+			if (destination.Equals(this.CurrentFolder) && !refresh && !isCancel)
+				return;
+
 			resetEvent.Set();
-			var folderSettings = new FolderSettings();
-			var isThereSettings = false;
+
 			var columns = new Collumns();
 			var isFailed = true;
 			int CurrentI = 0, LastI = 0;
 			this.IsNavigationInProgress = true;
-			TaskScheduler taskScheduler = null;
 
-			try {
-				taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-			} catch (InvalidOperationException) {
-				SynchronizationContext.SetSynchronizationContext(new SynchronizationContext());
-				taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
+
+			_ResetTimer.Stop();
+			if (isThereSettings) {
+				if (folderSettings.Columns != null) {
+					this.RemoveAllCollumns();
+					foreach (var collumn in folderSettings.Columns.Elements()) {
+						var theColumn = this.AllAvailableColumns.FirstOrDefault(w => w.ID == collumn.Attribute("ID").Value);//.Single();
+						if (!this.Collumns.Any(c => c.ID == theColumn.ID)) {
+							if (collumn.Attribute("Width").Value != "0") {
+								theColumn.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
+							}
+							this.Collumns.Add(theColumn);
+							var column = theColumn.ToNativeColumn(folderSettings.View == ShellViewStyle.Details);
+							User32.SendMessage(this.LVHandle, Interop.MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
+							if (folderSettings.View != ShellViewStyle.Details) {
+								this.AutosizeColumn(this.Collumns.Count - 1, -2);
+							}
+						} else {
+							int colIndex = this.Collumns.IndexOf(this.Collumns.FirstOrDefault(s => s.ID == theColumn.ID));
+							this.Collumns.RemoveAt(colIndex);
+							User32.SendMessage(this.LVHandle, Interop.MSG.LVM_DELETECOLUMN, colIndex, 0);
+							if (collumn.Attribute("Width").Value != "0") {
+								theColumn.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
+							}
+							this.Collumns.Add(theColumn);
+							var column = theColumn.ToNativeColumn(folderSettings.View == ShellViewStyle.Details);
+							User32.SendMessage(this.LVHandle, Interop.MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
+							if (folderSettings.View != ShellViewStyle.Details) {
+								this.AutosizeColumn(this.Collumns.Count - 1, -2);
+							}
+						}
+					}
+				}
+			} else {
+				this.RemoveAllCollumns();
+				this.AddDefaultColumns(false, true);
 			}
 
-			var taskk = Task.Factory.StartNew(() => {
-				foreach (var shellItem in this._RequestedCurrentLocation) {
-					F.Application.DoEvents();
-					CurrentI++;
 
+
+			if (!String.IsNullOrEmpty(folderSettings.GroupCollumn)) {
+				var colData = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.GroupCollumn);
+				if (colData != null) {
+					this.EnableGroups();
+
+				} else {
+					this.DisableGroups();
+				}
+			} else {
+				this.DisableGroups();
+			}
+
+			columns = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.SortColumn);
+
+			this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
+			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
+				ResizeIcons(16);
+			else if (folderSettings.IconSize >= 16)
+				this.ResizeIcons(folderSettings.IconSize);
+
+
+
+			Thread tt = new Thread(() => {
+
+				foreach (var shellItem in this._RequestedCurrentLocation) {
+					if (this.IsCancelRequested)
+						break;
+					CurrentI++;
 					if (CurrentI == 1) {
 						isFailed = false;
-						User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
-						Items.Clear();
-						ItemsForSubitemsUpdate.Clear();
-						waitingThumbnails.Clear();
-						overlayQueue.Clear();
-						shieldQueue.Clear();
-						this._CuttedIndexes.Clear();
-						this.SubItemValues.Clear();
-						_ResetTimer.Stop();
-
-						this.ItemForRename = -1;
-						this.LastItemForRename = -1;
-						isThereSettings = LoadSettingsFromDatabase(this._RequestedCurrentLocation, out folderSettings);
-						columns = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.SortColumn);
-						this.Invoke((Action)(() => {
-							this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
-							if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
-								ResizeIcons(16);
-							else if (folderSettings.IconSize >= 16)
-								this.ResizeIcons(folderSettings.IconSize);
-						}));
 					}
 
 					if (!this._RequestedCurrentLocation.Equals(shellItem.Parent) && this.IsNavigationCancelRequested) {
@@ -2531,7 +2666,7 @@ namespace BExplorer.Shell {
 						return;
 					}
 
-					if (this.ShowHidden ? true : !shellItem.IsHidden) {
+					if (this.ShowHidden || !shellItem.IsHidden) {
 						if (this._RequestedCurrentLocation.IsSearchFolder && !this.Items.Contains(shellItem))
 							this.Items.Add(shellItem);
 						else if (!this._RequestedCurrentLocation.IsSearchFolder)
@@ -2539,99 +2674,39 @@ namespace BExplorer.Shell {
 					}
 
 					int delta = CurrentI - LastI;
-					if (delta >= (this._RequestedCurrentLocation.IsSearchFolder ? 50 : 2000)) {
+					if (delta >= (this._RequestedCurrentLocation.IsSearchFolder ? 50 : this.IsGroupsEnabled ? 10000 : 2000)) {
 						LastI = CurrentI;
-						F.Application.DoEvents();
-						if (this._RequestedCurrentLocation.IsSearchFolder)
-							User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-						else
-							this.SetSortCollumn(isThereSettings ? columns : this.Collumns.First(), isThereSettings ? folderSettings.SortOrder : SortOrder.Ascending, false);
+						User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 
 						if (this._RequestedCurrentLocation.IsSearchFolder && delta >= 20)
 							Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 					}
 				}
-			},
-			CancellationToken.None, TaskCreationOptions.None, taskScheduler);
 
-			taskk.Wait();
-			this.IsNavigationInProgress = false;
+				this.IsNavigationInProgress = false;
+				this.IsDisplayEmptyText = true;
 
-			if ((this._RequestedCurrentLocation.NavigationStatus == HResult.S_OK && isFailed) || (this._RequestedCurrentLocation.NavigationStatus == HResult.S_OK && this.Items.Count == 0)) {
-				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
-				Items.Clear();
-				ItemsForSubitemsUpdate.Clear();
-				waitingThumbnails.Clear();
-				overlayQueue.Clear();
-				shieldQueue.Clear();
-				this._CuttedIndexes.Clear();
-				this.SubItemValues.Clear();
-				_ResetTimer.Stop();
-
-				this.ItemForRename = -1;
-				this.LastItemForRename = -1;
-				isThereSettings = LoadSettingsFromDatabase(this._RequestedCurrentLocation, out folderSettings);
-				columns = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.SortColumn);
-				this.Invoke((Action)(() => {
-					this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
-					if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
-						ResizeIcons(16);
-					else if (folderSettings.IconSize >= 16)
-						this.ResizeIcons(folderSettings.IconSize);
-				}));
-			} else if (this._RequestedCurrentLocation.NavigationStatus != HResult.S_OK) {
-				return;
-			}
-
-			this.Invoke((Action)(() => {
-				if (isThereSettings) {
-					if (folderSettings.Columns != null) {
-						this.RemoveAllCollumns();
-						foreach (var collumn in folderSettings.Columns.Elements()) {
-							var theColumn = this.AllAvailableColumns.FirstOrDefault(w => w.ID == collumn.Attribute("ID").Value);//.Single();
-							if (!this.Collumns.Any(c => c.ID == theColumn.ID)) {
-								if (collumn.Attribute("Width").Value != "0") {
-									theColumn.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
-								}
-								this.Collumns.Add(theColumn);
-								var column = theColumn.ToNativeColumn(folderSettings.View == ShellViewStyle.Details);
-								User32.SendMessage(this.LVHandle, Interop.MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
-								if (folderSettings.View != ShellViewStyle.Details) {
-									this.AutosizeColumn(this.Collumns.Count - 1, -2);
-								}
-							} else {
-								int colIndex = this.Collumns.IndexOf(this.Collumns.FirstOrDefault(s => s.ID == theColumn.ID));
-								this.Collumns.RemoveAt(colIndex);
-								User32.SendMessage(this.LVHandle, Interop.MSG.LVM_DELETECOLUMN, colIndex, 0);
-								if (collumn.Attribute("Width").Value != "0") {
-									theColumn.Width = Convert.ToInt32(collumn.Attribute("Width").Value);
-								}
-								this.Collumns.Add(theColumn);
-								var column = theColumn.ToNativeColumn(folderSettings.View == ShellViewStyle.Details);
-								User32.SendMessage(this.LVHandle, Interop.MSG.LVM_INSERTCOLUMN, this.Collumns.Count - 1, ref column);
-								if (folderSettings.View != ShellViewStyle.Details) {
-									this.AutosizeColumn(this.Collumns.Count - 1, -2);
-								}
-							}
-						}
+				if (this._RequestedCurrentLocation.NavigationStatus != HResult.S_OK) {
+					GC.Collect();
+					Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+					if (this.Threads.Count > 1) {
+						mre.Set();
+						this.Threads[0].Abort();
+						this.Threads.RemoveAt(0);
 					}
-				} else {
-					this.RemoveAllCollumns();
-					this.AddDefaultColumns(false, true);
+					return;
 				}
-			}));
 
-			IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
-			for (int i = 0; i < this.Collumns.Count; i++) {
-				this.Collumns[i].SetSplitButton(headerhandle, i);
-			}
+				IntPtr headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
+				for (int i = 0; i < this.Collumns.Count; i++) {
+					this.Collumns[i].SetSplitButton(headerhandle, i);
+				}
 
-			if (this.View != ShellViewStyle.Details) AutosizeAllColumns(-2);
+				if (this.View != ShellViewStyle.Details) AutosizeAllColumns(-2);
 
-			var sortColIndex = this.Collumns.IndexOf(columns);
-			if (sortColIndex > -1) this.SetSortIcon(sortColIndex, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
+				var sortColIndex = this.Collumns.IndexOf(columns);
+				if (sortColIndex > -1) this.SetSortIcon(sortColIndex, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
 
-			this.Invoke((Action)(() => {
 				if (isThereSettings) {
 					if (columns.ID == "A0" && this._RequestedCurrentLocation.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant())
 						this.SetSortCollumn(this.AvailableColumns().Single(s => s.ID == "A180"), SortOrder.Ascending, false);
@@ -2642,13 +2717,11 @@ namespace BExplorer.Shell {
 				else
 					this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
 
-				if (!isThereSettings) {
-					var i = 0;
-					this.ItemsHashed = this.Items.Distinct().ToDictionary(k => k.GetUniqueID(), el => i++);
+				if (this.IsGroupsEnabled) {
+					var colData = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.GroupCollumn);
+					this.GenerateGroupsFromColumn(colData, folderSettings.GroupOrder == SortOrder.Descending);
 				}
-			}));
 
-			this.Invoke((Action)(() => {
 				if (!isThereSettings) {
 					this.LastSortedColumnId = "A0";
 					this.LastSortOrder = SortOrder.Ascending;
@@ -2656,33 +2729,38 @@ namespace BExplorer.Shell {
 					User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, 0, 0);
 				}
 
-				if (!isThereSettings)
-					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-				if (!String.IsNullOrEmpty(folderSettings.GroupCollumn)) {
-					var colData = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.GroupCollumn);
-					if (colData != null) {
-						this.EnableGroups();
-						this.GenerateGroupsFromColumn(colData, folderSettings.GroupOrder == SortOrder.Descending);
-					} else {
-						this.DisableGroups();
-					}
-				} else {
-					this.DisableGroups();
+				//if (!isThereSettings)
+				//	User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+
+
+				this.Invoke((Action)(() => {
+					this.Focus();
+					var NavArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
+					this.CurrentFolder = this._RequestedCurrentLocation;
+					if (!refresh && Navigated != null)
+						Navigated(this, NavArgs);
+				}));
+
+				GC.Collect();
+				Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+				if (this.Threads.Count > 1) {
+					mre.Set();
+					this.Threads[0].Abort();
+					this.Threads.RemoveAt(0);
 				}
 
-				var NavArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
-				this.CurrentFolder = this._RequestedCurrentLocation;
-				if (!refresh && Navigated != null)
-					Navigated(this, NavArgs);
-			}));
+				mre.Reset();
+				mre.WaitOne();
+			});
+			tt.SetApartmentState(ApartmentState.STA);
+			this.Threads.Add(tt);
+			tt.Start();
 
-			GC.Collect();
-			Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-			this.Focus();
 
 		}
 
 		public void DisableGroups() {
+			if (!this.IsGroupsEnabled) return;
 			this.Groups.Clear();
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
 			const int LVM_ENABLEGROUPVIEW = 0x1000 + 157;
@@ -2691,9 +2769,11 @@ namespace BExplorer.Shell {
 			User32.SendMessage(this.LVHandle, LVM_SETOWNERDATACALLBACK, 0, 0);
 			this.LastGroupCollumn = null;
 			this.LastGroupOrder = SortOrder.None;
+			this.IsGroupsEnabled = false;
 		}
 
 		public void EnableGroups() {
+			if (this.IsGroupsEnabled || this._IsSearchNavigating) return;
 			IntPtr ptr = Marshal.GetComInterfaceForObject(new VirtualGrouping(this), typeof(IOwnerDataCallback));
 
 			const int LVM_SETOWNERDATACALLBACK = 0x10BB;
@@ -2702,6 +2782,7 @@ namespace BExplorer.Shell {
 
 			const int LVM_ENABLEGROUPVIEW = 0x1000 + 157;
 			User32.SendMessage(this.LVHandle, LVM_ENABLEGROUPVIEW, 1, 0);
+			this.IsGroupsEnabled = true;
 		}
 
 		/// <summary>
@@ -2709,14 +2790,17 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="col">The column you want to group by</param>
 		/// <param name="reversed">Reverse order (This needs to be explained better)</param>
+		[HandleProcessCorruptedStateExceptions]
 		public void GenerateGroupsFromColumn(Collumns col, Boolean reversed = false) {
 			if (col == null) return;
 			int LVM_INSERTGROUP = 0x1000 + 145;
-			this.Groups.Clear();
+
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_REMOVEALLGROUPS, 0, 0);
+
+			this.Groups.Clear();
 			if (col.CollumnType == typeof(String)) {
 				if (this.IsTraditionalNameGrouping) {
-					var groups = this.Items.GroupBy(k => k.DisplayName.ToUpperInvariant().First(), e => e).OrderBy(o => o.Key);
+					var groups = this.Items.ToArray().GroupBy(k => k.DisplayName.ToUpperInvariant().First(), e => e).OrderBy(o => o.Key);
 					var i = reversed ? groups.Count() - 1 : 0;
 					foreach (var group in groups) {
 						var groupItems = group.Select(s => s).ToArray();
@@ -2745,7 +2829,6 @@ namespace BExplorer.Shell {
 							? char1 + $" ({testgrn.Items.Count()})"
 							: char1 + " - " + char2 + $" ({testgrn.Items.Count()})";
 						testgrn.Index = reversed ? i-- : i++;
-						testgrn.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 						this.Groups.Add(testgrn);
 					};
 
@@ -2766,70 +2849,61 @@ namespace BExplorer.Shell {
 				uspec.Items = this.Items.Where(w => w.IsFolder).ToArray();
 				uspec.Header = $"Unspecified ({uspec.Items.Count()})";
 				uspec.Index = reversed ? j-- : j++;
-				uspec.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(uspec);
 
 				var testgrn = new ListViewGroupEx();
 				testgrn.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) == 0 && !w.IsFolder).ToArray();
 				testgrn.Header = $"Empty ({testgrn.Items.Count()})";
 				testgrn.Index = reversed ? j-- : j++;
-				testgrn.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgrn);
 
 				var testgr = new ListViewGroupEx();
 				testgr.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 0 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 10 * 1024).ToArray();
 				testgr.Header = $"Very Small ({testgr.Items.Count()})";
 				testgr.Index = reversed ? j-- : j++;
-				testgr.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr);
 
 				var testgr2 = new ListViewGroupEx();
 				testgr2.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 10 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 100 * 1024).ToArray();
 				testgr2.Header = $"Small ({testgr2.Items.Count()})";
 				testgr2.Index = reversed ? j-- : j++;
-				testgr2.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr2);
 
 				var testgr3 = new ListViewGroupEx();
 				testgr3.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 100 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 1 * 1024 * 1024).ToArray();
 				testgr3.Header = $"Medium ({ testgr3.Items.Count()})";
 				testgr3.Index = reversed ? j-- : j++;
-				testgr3.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr3);
 
 				var testgr4 = new ListViewGroupEx();
 				testgr4.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 1 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 16 * 1024 * 1024).ToArray();
 				testgr4.Header = $"Big ({testgr4.Items.Count()})";
 				testgr4.Index = reversed ? j-- : j++;
-				testgr4.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr4);
 
 				var testgr5 = new ListViewGroupEx();
 				testgr5.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 16 * 1024 * 1024 && Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) <= 128 * 1024 * 1024).ToArray();
 				testgr5.Header = $"Huge ({testgr5.Items.Count()})";
 				testgr5.Index = reversed ? j-- : j++;
-				testgr5.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr5);
 
 				var testgr6 = new ListViewGroupEx();
 				testgr6.Items = this.Items.Where(w => Convert.ToInt64(w.GetPropertyValue(col.pkey, typeof(long)).Value) > 128 * 1024 * 1024).ToArray();
 				testgr6.Header = $"Gigantic ({testgr6.Items.Count()})";
 				testgr6.Index = reversed ? j-- : j++;
-				testgr6.Items.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 				this.Groups.Add(testgr6);
 			} else {
 				var groups = this.Items.GroupBy(k => k.GetPropertyValue(col.pkey, typeof(String)).Value, e => e).OrderBy(o => o.Key);
 				var i = reversed ? groups.Count() - 1 : 0;
 				foreach (var group in groups) {
 					var groupItems = group.Select(s => s).ToArray();
-					groupItems.ToList().ForEach(c => c.GroupIndex = this.Groups.Count);
 					this.Groups.Add(new ListViewGroupEx() { Items = groupItems, Index = reversed ? i-- : i++, Header = $"{group.Key.ToString()} ({groupItems.Count()})" });
 				}
-
 			}
 
 			if (reversed) this.Groups.Reverse();
 			foreach (var group in this.Groups) {
+				group.Items.ToList().ForEach(e => e.GroupIndex = group.Index);
 				var nativeGroup = group.ToNativeListViewGroup();
 				User32.SendMessage(this.LVHandle, LVM_INSERTGROUP, -1, ref nativeGroup);
 			}
@@ -2837,6 +2911,7 @@ namespace BExplorer.Shell {
 			this.LastGroupCollumn = col;
 			this.LastGroupOrder = reversed ? SortOrder.Descending : SortOrder.Ascending;
 			this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
+			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 		}
 
 		/// <summary>
@@ -2866,36 +2941,32 @@ namespace BExplorer.Shell {
 			if (index == null) {
 				return false;
 			} else {
-				//var itemBounds = new User32.RECT();
-				//var lvi = new LVITEMINDEX() { iItem = index.Value, iGroup = this.GetGroupIndex(index.Value) };
-				//User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
+				var itemBounds = new User32.RECT();
+				var lvi = new LVITEMINDEX() { iItem = index.Value, iGroup = this.GetGroupIndex(index.Value) };
+				User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
 
-				//var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
+				var r = new Rectangle(itemBounds.Left, itemBounds.Top, itemBounds.Right - itemBounds.Left, itemBounds.Bottom - itemBounds.Top);
 
-				//if (useComplexCheck)
-				//	return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
-				//else
-				//	return r.IntersectsWith(this.ClientRectangle);
+				if (useComplexCheck)
+					return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
+				else
+					return r.IntersectsWith(this.ClientRectangle);
 				return true;
 			}
 		}
 
 		public void _OverlaysLoadingThreadRun() {
 			while (true) {
-				try {
-					int? index = 0;
-					if (!ThreadRun_Helper(overlayQueue, false, ref index)) continue;
-					var shoTemp = Items[index.Value];
-					var sho = FileSystemListItem.ToFileSystemItem(shoTemp.ParentHandle, shoTemp.ParsingName.ToShellParsingName());
+				int? index = 0;
+				if (!ThreadRun_Helper(overlayQueue, false, ref index)) continue;
+				var shoTemp = Items[index.Value];
+				var sho = FileSystemListItem.ToFileSystemItem(shoTemp.ParentHandle, shoTemp.ParsingName.ToShellParsingName());
 
-					int overlayIndex = 0;
-					small.GetIconIndexWithOverlay(sho.PIDL, out overlayIndex);
-					shoTemp.OverlayIconIndex = overlayIndex;
-					if (overlayIndex > 0)
-						RedrawItem(index.Value);
-				} catch (Exception) {
-					F.Application.DoEvents();
-				}
+				int overlayIndex = 0;
+				small.GetIconIndexWithOverlay(sho.PIDL, out overlayIndex);
+				shoTemp.OverlayIconIndex = overlayIndex;
+				if (overlayIndex > 0)
+					RedrawItem(index.Value);
 			}
 		}
 
@@ -2940,28 +3011,24 @@ namespace BExplorer.Shell {
 		public void _IconsLoadingThreadRun() {
 			while (true) {
 				if (resetEvent != null) resetEvent.WaitOne();
-				F.Application.DoEvents();
-				try {
-					int? index = 0;
-					if (!ThreadRun_Helper(waitingThumbnails, false, ref index)) continue;
-					var sho = Items[index.Value];
-					if (!sho.IsIconLoaded) {
-						var temp = FileSystemListItem.ToFileSystemItem(sho.ParentHandle, sho.ParsingName.ToShellParsingName());
-						var icon = temp.GetHBitmap(IconSize, false, true);
-						var shieldOverlay = 0;
+				int? index = 0;
+				if (!ThreadRun_Helper(waitingThumbnails, false, ref index)) continue;
+				var sho = Items[index.Value];
+				if (!sho.IsIconLoaded) {
+					var temp = FileSystemListItem.ToFileSystemItem(sho.ParentHandle, sho.ParsingName.ToShellParsingName());
+					var icon = temp.GetHBitmap(IconSize, false, true);
+					var shieldOverlay = 0;
 
-						if (sho.ShieldedIconIndex == -1) {
-							if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = ShieldIconIndex;
-							sho.ShieldedIconIndex = shieldOverlay;
-						}
-
-						if (icon != IntPtr.Zero || shieldOverlay > 0) {
-							sho.IsIconLoaded = true;
-							Gdi32.DeleteObject(icon);
-							this.RedrawItem(index.Value);
-						}
+					if (sho.ShieldedIconIndex == -1) {
+						if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = ShieldIconIndex;
+						sho.ShieldedIconIndex = shieldOverlay;
 					}
-				} catch {
+
+					if (icon != IntPtr.Zero || shieldOverlay > 0) {
+						sho.IsIconLoaded = true;
+						Gdi32.DeleteObject(icon);
+						this.RedrawItem(index.Value);
+					}
 				}
 			}
 		}
@@ -2970,7 +3037,7 @@ namespace BExplorer.Shell {
 			await Task.Run(() => {
 				if (this.IsCancelRequested) return;
 
-				F.Application.DoEvents();
+				//F.Application.DoEvents();
 				var itemBounds = new User32.RECT();
 				var lvi = new LVITEMINDEX() { iItem = index, iGroup = this.GetGroupIndex(index) };
 				User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref itemBounds);
@@ -2995,58 +3062,46 @@ namespace BExplorer.Shell {
 
 		public void _IconCacheLoadingThreadRun() {
 			while (true) {
-				F.Application.DoEvents();
-				Thread.Sleep(1);
 				if (resetEvent != null) resetEvent.WaitOne();
-
-				try {
-					int? index = 0;
-					if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
-					var sho = Items[index.Value];
-					var result = sho.GetHBitmap(IconSize, true, true);
-					sho.IsThumbnailLoaded = true;
-					sho.IsNeedRefreshing = false;
-					if (result != IntPtr.Zero) {
-						var width = 0;
-						var height = 0;
-						Gdi32.ConvertPixelByPixel(result, out width, out height);
-						sho.IsOnlyLowQuality = (width > height && width != IconSize) || (width < height && height != IconSize) || (width == height && width != IconSize); ;
-						this.RefreshItem(index.Value);
-						Gdi32.DeleteObject(result);
-					}
-				} catch {
+				int? index = 0;
+				if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
+				var sho = Items[index.Value];
+				var result = sho.GetHBitmap(IconSize, true, true);
+				sho.IsThumbnailLoaded = true;
+				sho.IsNeedRefreshing = false;
+				if (result != IntPtr.Zero) {
+					var width = 0;
+					var height = 0;
+					Gdi32.ConvertPixelByPixel(result, out width, out height);
+					sho.IsOnlyLowQuality = (width > height && width != IconSize) || (width < height && height != IconSize) || (width == height && width != IconSize); ;
+					this.RefreshItem(index.Value);
+					Gdi32.DeleteObject(result);
 				}
 			}
 		}
 
 		public void _UpdateSubitemValuesThreadRun() {
 			while (true) {
-				//if (resetEvent != null)
-				//	resetEvent.WaitOne();
-				Thread.Sleep(1);
-				F.Application.DoEvents();
+				if (resetEvent != null)
+					resetEvent.WaitOne();
 				var index = ItemsForSubitemsUpdate.Dequeue();
-				try {
-					if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero) {
-						var currentItem = Items[index.Item1];
-						var temp = currentItem;
-						int hash = currentItem.GetHashCode();
-						var isi2 = (IShellItem2)temp.ComInterface;
-						var pvar = new PropVariant();
-						var pk = index.Item3;
-						var guid = new Guid(InterfaceGuids.IPropertyStore);
-						IPropertyStore propStore = null;
-						isi2.GetPropertyStore(GetPropertyStoreOptions.Default, ref guid, out propStore);
-						if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
-							if (!SubItemValues.Any(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid)) {
-								SubItemValues.Add(new Tuple<int, PROPERTYKEY, object>(hash, pk, pvar.Value));
-								this.RedrawItem(index.Item1);
-							}
-							pvar.Dispose();
+				if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ISITEMVISIBLE, index.Item1, 0) != IntPtr.Zero) {
+					var currentItem = Items[index.Item1];
+					var temp = currentItem;
+					int hash = currentItem.GetHashCode();
+					var isi2 = (IShellItem2)temp.ComInterface;
+					var pvar = new PropVariant();
+					var pk = index.Item3;
+					var guid = new Guid(InterfaceGuids.IPropertyStore);
+					IPropertyStore propStore = null;
+					isi2.GetPropertyStore(GetPropertyStoreOptions.Default, ref guid, out propStore);
+					if (propStore != null && propStore.GetValue(ref pk, pvar) == HResult.S_OK) {
+						if (!SubItemValues.Any(c => c.Item1 == hash && c.Item2.fmtid == pk.fmtid && c.Item2.pid == pk.pid)) {
+							SubItemValues.Add(new Tuple<int, PROPERTYKEY, object>(hash, pk, pvar.Value));
+							this.RedrawItem(index.Item1);
 						}
+						pvar.Dispose();
 					}
-				} catch {
-					F.Application.DoEvents();
 				}
 			}
 		}
@@ -3202,8 +3257,8 @@ namespace BExplorer.Shell {
 		#region Private Methods
 
 		internal void OnSelectionChanged() => SelectionChanged?.Invoke(this, EventArgs.Empty);
-		private new void ResumeLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 1, 0);
-		private new void SuspendLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 0, 0);
+		//private new void ResumeLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 1, 0);
+		//private new void SuspendLayout() => User32.SendMessage(this.LVHandle, (int)WM.WM_SETREDRAW, 0, 0);
 		private void RedrawWindow() { }//User32.InvalidateRect(this.LVHandle, IntPtr.Zero, false);
 		private void RedrawWindow(User32.RECT rect) { }// => User32.InvalidateRect(this.LVHandle, ref rect, false);
 
@@ -3380,6 +3435,9 @@ bool retrieved = false;
 									sho.IsIconLoaded = false;
 									waitingThumbnails.Enqueue(index);
 								} else {
+									//var lableBounds = new User32.RECT() { Left = 2 };
+									//User32.SendMessage(this.LVHandle, MSG.LVM_GETITEMINDEXRECT, ref lvi, ref lableBounds);
+									//var res = User32.SetWindowPos(editControl, IntPtr.Zero, 0, -55, 0, 0, User32.SetWindowPosFlags.IgnoreZOrder);
 									hThumbnail = sho.GetHBitmap(IconSize, false);
 									if (hThumbnail != IntPtr.Zero) {
 										Gdi32.ConvertPixelByPixel(hThumbnail, out width, out height);
@@ -3457,7 +3515,7 @@ bool retrieved = false;
 								font.Dispose();
 								textBrush.Dispose();
 
-								if (this.CurrentFolder.ParsingName.Equals(KnownFolders.Computer.ParsingName) && (sho.IsDrive || sho.IsNetworkPath))
+								if (this._RequestedCurrentLocation.ParsingName.Equals(KnownFolders.Computer.ParsingName) && (sho.IsDrive || sho.IsNetworkPath))
 									this.DrawComputerTiledModeView(sho, g, lblrectTiles, fmt);
 								else
 									this.DrawNormalFolderSubitemsInTiledView(sho, lblrectTiles, g, fmt);
@@ -3578,7 +3636,9 @@ bool retrieved = false;
 				if (sho != null && this.LVItemsColorCodes != null && this.LVItemsColorCodes.Count > 0 && !String.IsNullOrEmpty(sho.Extension)) {
 					var extItemsAvailable = this.LVItemsColorCodes.Where(c => c.ExtensionList.Contains(sho.Extension)).Count() > 0;
 					if (extItemsAvailable) {
-						textColor = this.LVItemsColorCodes.SingleOrDefault(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension))?.TextColor;//.Select(c => c.TextColor);
+						var color =
+							this.LVItemsColorCodes.SingleOrDefault(c => c.ExtensionList.ToLowerInvariant().Contains(sho.Extension)).TextColor;
+						textColor = Color.FromArgb(color.A, color.R, color.G, color.B);
 					}
 				}
 				#endregion
@@ -3610,7 +3670,7 @@ bool retrieved = false;
 						if (textColor == null) {
 							m.Result = (IntPtr)(CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
 						} else {
-							nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
+							nmlvcd.clrText = (uint)ColorTranslator.ToWin32(textColor.Value);
 							Marshal.StructureToPtr(nmlvcd, m.LParam, false);
 
 							m.Result = (IntPtr)(CustomDraw.CDRF_NEWFONT | CustomDraw.CDRF_NOTIFYPOSTPAINT | CustomDraw.CDRF_NOTIFYSUBITEMDRAW | 0x40);
@@ -3624,7 +3684,7 @@ bool retrieved = false;
 						if (textColor == null) {
 							m.Result = (IntPtr)CustomDraw.CDRF_DODEFAULT;
 						} else {
-							nmlvcd.clrText = ColorTranslator.ToWin32(textColor.Value);
+							nmlvcd.clrText = (uint)ColorTranslator.ToWin32(textColor.Value);
 							Marshal.StructureToPtr(nmlvcd, m.LParam, false);
 							m.Result = (IntPtr)CustomDraw.CDRF_NEWFONT;
 						}
@@ -3645,6 +3705,10 @@ bool retrieved = false;
 		private Boolean LoadSettingsFromDatabase(IListItemEx directory, out FolderSettings folderSettings) {
 			var result = false;
 			var folderSetting = new FolderSettings();
+			if (directory.IsSearchFolder) {
+				folderSettings = folderSetting;
+				return false;
+			}
 			try {
 				var m_dbConnection = new SQLite.SQLiteConnection("Data Source=" + this._DBPath + ";Version=3;");
 				m_dbConnection.Open();

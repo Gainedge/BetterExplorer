@@ -32,11 +32,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public int OverlayIconIndex { get; set; }
 
-		public Interop.IExtractIconPWFlags IconType { get; set; }
+		public Interop.IExtractIconPWFlags IconType => this._Item.GetIconType();
 
 		public IntPtr ILPidl => this._Item.ILPidl;
 
-		public IntPtr PIDL => this.IsSearchFolder ? Shell32.SHGetIDListFromObject(this.searchFolder.m_SearchComInterface) : this._Item.Pidl;
+		public IntPtr PIDL { get; set; }
 
 		public IntPtr AbsolutePidl => this._Item.AbsolutePidl;
 
@@ -68,10 +68,16 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public Int32 GroupIndex { get; set; }
 
+		public Int32 RCWThread { get; set; } 
+
+		public IShellFolder IFolder { get; set; }
+
 		private void Initialize_Helper(ShellItem folder, IntPtr lvHandle, int index) {
 			this.DisplayName = folder.DisplayName;
 			this.ParsingName = folder.ParsingName;
 			this.ItemIndex = index;
+			this.PIDL = folder.Pidl;
+			//this.IFolder = folder.GetIShellFolder();
 			this.ParentHandle = lvHandle;
 			this.IsFileSystem = folder.IsFileSystem;
 			this.IsNetworkPath = folder.IsNetworkPath;
@@ -81,7 +87,28 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			this.OverlayIconIndex = -1;
 			this.ShieldedIconIndex = -1;
 			this.IsShared = folder.IsShared;
-			this.IconType = folder.IconType;
+			//this.IconType = folder.IconType;
+			this.IsFolder = folder.IsFolder;
+			this.IsSearchFolder = folder.IsSearchFolder;
+			this._Item = folder;
+		}
+
+		private void Initialize_Helper2(ShellItem parent, IntPtr pidl, IntPtr lvHandle, int index) {
+			var folder = new ShellItem(parent, pidl);
+			this.DisplayName = folder.DisplayName;
+			this.ParsingName = folder.ParsingName;
+			this.ItemIndex = index;
+			this.PIDL = folder.Pidl;
+			this.ParentHandle = lvHandle;
+			this.IsFileSystem = folder.IsFileSystem;
+			this.IsNetworkPath = folder.IsNetworkPath;
+			this.Extension = folder.Extension;
+			this.IsDrive = folder.IsDrive;
+			this.IsHidden = folder.IsHidden;
+			this.OverlayIconIndex = -1;
+			this.ShieldedIconIndex = -1;
+			this.IsShared = folder.IsShared;
+			//this.IconType = folder.IconType;
 			this.IsFolder = folder.IsFolder;
 			this.IsSearchFolder = folder.IsSearchFolder;
 			this._Item = folder;
@@ -92,7 +119,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		}
 
 		public void InitializeWithParent(ShellItem parent, IntPtr lvHandle, IntPtr pidl, int index) {
-			Initialize_Helper(new ShellItem(parent, pidl), lvHandle, index);
+			Initialize_Helper2(parent, pidl, lvHandle, index);
 		}
 
 		public void InitializeWithShellItem(ShellSearchFolder item, IntPtr lvHandle, int index) {
@@ -128,9 +155,11 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			this.IsHidden = item.IsHidden;
 			this.OverlayIconIndex = -1;
 			this.ShieldedIconIndex = -1;
+			this.PIDL = item.Pidl;
+			//this.IFolder = item.GetIShellFolder();
 			//this.HasSubFolders = item.HasSubFolders;
 			this.IsShared = item.IsShared;
-			this.IconType = item.IconType;
+			//this.IconType = item.IconType;
 			this.IsFolder = item.IsFolder;
 			this.IsSearchFolder = item.IsSearchFolder;
 			this._Item = item;
@@ -147,6 +176,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public FileSystemListItem() {
 			this.GroupIndex = -1;
+			this.ItemIndex = -1;
 		}
 
 		IListItemEx[] IListItemEx.GetSubItems(bool isEnumHidden) {
@@ -206,8 +236,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		public IEnumerator<IListItemEx> GetEnumerator() {
 			IShellFolder folder = this.GetIShellFolder();
 			HResult navRes;
-			IEnumIDList enumId = ShellItem.GetIEnumIDList(folder, SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.INIT_ON_FIRST_NEXT |
-					SHCONTF.NONFOLDERS | SHCONTF.STORAGE | SHCONTF.ENABLE_ASYNC, out navRes);
+			IEnumIDList enumId = ShellItem.GetIEnumIDList(folder, SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN  | SHCONTF.FASTITEMS |
+					SHCONTF.NONFOLDERS | SHCONTF.ENABLE_ASYNC, out navRes);
 			this.NavigationStatus = navRes;
 			uint count;
 			IntPtr pidl;
@@ -218,20 +248,20 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 			HResult result = enumId.Next(1, out pidl, out count);
 			var i = 0;
-			var parentItem = new ShellItem(this._Item.Pidl); //this._Item;//this.IsSearchFolder ? this._Item : new ShellItem(this.ParsingName.ToShellParsingName());
+			//var parentItem = new ShellItem(this._Item.Pidl); //this._Item;//this.IsSearchFolder ? this._Item : new ShellItem(this.ParsingName.ToShellParsingName());
 			while (result == HResult.S_OK) {
 				var fsi = new FileSystemListItem();
-				fsi.InitializeWithParent(parentItem, this.ParentHandle, pidl, i++);
+				fsi.InitializeWithParent(this._Item, this.ParentHandle, pidl, i++);
 				yield return fsi;
 				Shell32.ILFree(pidl);
 				result = enumId.Next(1, out pidl, out count);
 			}
 
 			if (result != HResult.S_FALSE) {
-				Marshal.ThrowExceptionForHR((int)result);
+				//Marshal.ThrowExceptionForHR((int)result);
 			}
 
-			parentItem.Dispose();
+			//parentItem.Dispose();
 			yield break;
 		}
 
@@ -289,7 +319,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			} else {
 				options |= ThumbnailOptions.IconOnly;
 			}
-			return WindowsThumbnailProvider.GetThumbnail(this._Item.Pidl, iconSize, iconSize, options);
+			return WindowsThumbnailProvider.GetThumbnail(this.PIDL, iconSize, iconSize, options);
 		}
 
 		public static FileSystemListItem ToFileSystemItem(IntPtr parentHandle, String path) {
@@ -333,6 +363,16 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		public IntPtr Icon { get; set; }
 
 		public int GetUniqueID() => this.ParsingName.GetHashCode();
+
+		public Boolean IsRCWSet { get; set; }
+
+		public void RecreateRCW() {
+			if (this.IsSearchFolder) return;
+			//if (this.RCWThread != Thread.CurrentThread.ManagedThreadId) {
+				this._Item = new ShellItem(this.ParsingName.ToShellParsingName());
+			//	this.RCWThread = Thread.CurrentThread.ManagedThreadId;
+			//}
+		}
 
 		#endregion
 

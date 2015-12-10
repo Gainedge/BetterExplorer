@@ -25,12 +25,13 @@ namespace BExplorer.Shell {
 				return;
 			}
 
-			var group = this._VirtualListView.Groups[groupIndex];
-			var itemInGroup = group.Items[n];
-
-			if (!this._VirtualListView.ItemsHashed.TryGetValue(itemInGroup.GetUniqueID(), out itemIndex)) {
+			var group = this._VirtualListView.Groups.SingleOrDefault(w => w.Index == groupIndex);
+			if (group == null) {
 				itemIndex = -1;
+				return;
 			}
+			var itemInGroup = group.Items[n];
+			itemIndex = itemInGroup.ItemIndex;
 		}
 
 
@@ -40,19 +41,19 @@ namespace BExplorer.Shell {
 
 			var itemControlWide = this._VirtualListView.Items[itemIndex];
 
-			if (this._VirtualListView.IsGroupsEnabled && itemControlWide.GroupIndex == -1)
-			{
-				foreach (var group in this._VirtualListView.Groups) {
-					if (group.Items.Any(c => c.Equals(itemControlWide))) {
-						groupIndex = group.Index;
-						break;
-					}
-				}
-			}
-			else
-			{
+			//if (this._VirtualListView.IsGroupsEnabled && itemControlWide.GroupIndex == -1)
+			//{
+			//	foreach (var group in this._VirtualListView.Groups) {
+			//		if (group.Items.Any(c => c.Equals(itemControlWide))) {
+			//			groupIndex = group.Index;
+			//			break;
+			//		}
+			//	}
+			//}
+			//else
+			//{
 				groupIndex = itemControlWide.GroupIndex;
-			}
+			//}
 		}
 	}
 }

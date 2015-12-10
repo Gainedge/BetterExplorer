@@ -259,3 +259,4 @@ packages/log4net.2.0.0/lib/net11-full/log4net.xml
 BExplorer/BetterExplorer/BetterExplorerOperations.exe.CodeAnalysisLog.xml
 *.lastcodeanalysissucceeded
 packages/
+_ReSharper.Caches/

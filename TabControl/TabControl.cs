@@ -390,6 +390,8 @@ namespace Wpf.Controls {
 				if (listItem != null && list != null)
 					list.Remove(listItem);
 			}
+			if (this.SelectedItem == null)
+				this.SelectedItem = this.Items.OfType<TabItem>().ToArray()[this.Items.OfType<TabItem>().Count() - 1];
 		}
 
 		public void CloneTabItem(TabItem theTab) {

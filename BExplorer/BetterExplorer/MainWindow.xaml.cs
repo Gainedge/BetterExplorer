@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -24,6 +25,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using System.Windows.Threading;
+using System.Xml;
 using System.Xml.Linq;
 using BetterExplorer.Networks;
 using BetterExplorer.UsbEject;
@@ -45,6 +47,7 @@ using DropTargetHelper = BExplorer.Shell.DropTargetHelper.Get;
 
 using WIN = System.Windows;
 using BExplorer.Shell._Plugin_Interfaces;
+using Color = System.Drawing.Color;
 
 
 namespace BetterExplorer {
@@ -114,7 +117,7 @@ namespace BetterExplorer {
 		#endregion
 		public IntPtr Handle;
 		public bool IsMultipleWindowsOpened { get; set; }
-
+		public ObservableCollectionEx<LVItemColor> LVItemsColorCol { get; set; }
 		#region Events
 
 		private void btnAbout_Click(object sender, RoutedEventArgs e) => new fmAbout(this).ShowDialog();
@@ -237,9 +240,10 @@ namespace BetterExplorer {
 				if (File.Exists(itemColorSettingsLocation)) {
 					var docs = XDocument.Load(itemColorSettingsLocation);
 
-					this.LVItemsColor = docs.Root.Elements("ItemColorRow")
+					docs.Root.Elements("ItemColorRow")
 															.Select(element => new LVItemColor(element.Elements().ToArray()[0].Value,
-																								 System.Drawing.Color.FromArgb(Convert.ToInt32(element.Elements().ToArray()[1].Value)))).ToList();
+																								 System.Windows.Media.Color.FromArgb(BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[0], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[1], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[2], BitConverter.GetBytes(Convert.ToInt32(element.Elements().ToArray()[1].Value))[3]))).ToList().ForEach(e => this.LVItemsColorCol.Add(e));
+					
 				}
 			});
 		}
@@ -1250,7 +1254,7 @@ namespace BetterExplorer {
 			this._ShellListView.Navigated += ShellListView_Navigated;
 			this._ShellListView.ViewStyleChanged += ShellListView_ViewStyleChanged;
 			this._ShellListView.SelectionChanged += ShellListView_SelectionChanged;
-			this._ShellListView.LVItemsColorCodes = this.LVItemsColor;
+			this._ShellListView.LVItemsColorCodes = this.LVItemsColorCol;
 			this._ShellListView.ItemUpdated += ShellListView_ItemUpdated;
 			this._ShellListView.ColumnHeaderRightClick += ShellListView_ColumnHeaderRightClick;
 			this._ShellListView.KeyJumpKeyDown += ShellListView_KeyJumpKeyDown;
@@ -1270,16 +1274,16 @@ namespace BetterExplorer {
 				Placement = System.Windows.Controls.Primitives.PlacementMode.AbsolutePoint,
 				HorizontalOffset = e.ActionPoint.X,
 				VerticalOffset = e.ActionPoint.Y,
-				IsOpen = true
+				IsOpen = true,
+				StaysOpen = true,
 			};
-
 			var Things = new List<string>();
 			var SelectedColumn = this._ShellListView.Collumns[e.ColumnIndex];
 			if (SelectedColumn.CollumnType == typeof(String)) {
 				Things.AddRange(new[] { "0 - 9", "A - H", "I - P", "Q - Z", "Other" });
 			} else if (SelectedColumn.CollumnType == typeof(DateTime)) {
 				var Container = new ItemsControl();
-				Container.Items.Add(new MenuItem() { Icon = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource, Header = "Select a date or date range:", HorizontalContentAlignment = HorizontalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch });
+				Container.Items.Add(new MenuItem() { Icon = new ImageSourceConverter().ConvertFromString(packUri) as ImageSource, Header = "Select a date or date range:", HorizontalContentAlignment = HorizontalAlignment.Stretch, HorizontalAlignment = HorizontalAlignment.Stretch, IsCheckable = true, StaysOpenOnClick = true});
 				Container.Items.Add(new Calendar() { SelectionMode = CalendarSelectionMode.SingleRange, Margin = new Thickness(30, 0, 0, 0) });
 				menu.AddItem(Container);
 
@@ -1296,10 +1300,16 @@ namespace BetterExplorer {
 					IsCheckable = true,
 					Header = item,
 					HorizontalContentAlignment = HorizontalAlignment.Stretch,
-					HorizontalAlignment = HorizontalAlignment.Stretch
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+					StaysOpenOnClick = true
 				};
+
 				mnuItem.Click += new RoutedEventHandler(delegate (object s, RoutedEventArgs re) {
-					MessageBox.Show(mnuItem.Header.ToString());
+					//MessageBox.Show(mnuItem.Header.ToString());
+					var over = Mouse.DirectlyOver;
+					if (!(over is WIN.Controls.Image)) {
+						menu.IsOpen = false;
+					}
 				});
 				menu.AddItem(mnuItem);
 			}
@@ -1535,6 +1545,7 @@ namespace BetterExplorer {
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e) {
+			this.grdItemTextColor.ItemsSource = this.LVItemsColorCol;
 			_keyjumpTimer.Interval = 1000;
 			_keyjumpTimer.Tick += _keyjumpTimer_Tick;
 			ShellTreeHost.Child = ShellTree;
@@ -1699,6 +1710,23 @@ namespace BetterExplorer {
 		}
 
 		private void RibbonWindow_Closing(object sender, CancelEventArgs e) {
+			var itemColorSettingsLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), @"BExplorer\itemcolors.cfg");
+			XmlDocument doc = new XmlDocument();
+			XmlElement elementRoot = doc.CreateElement(string.Empty, "Root", string.Empty);
+			foreach (var element in this.LVItemsColorCol)
+			{
+				XmlElement elementRow = doc.CreateElement(string.Empty, "ItemColorRow", string.Empty);
+				XmlElement elementExtension = doc.CreateElement(string.Empty, "Extensions", string.Empty);
+				elementExtension.InnerText = element.ExtensionList;
+				XmlElement elementColor = doc.CreateElement(string.Empty, "Color", string.Empty);
+				elementColor.InnerText = BitConverter.ToInt32(new byte[] { element.TextColor.A, element.TextColor.R, element.TextColor.G, element.TextColor.B }, 0).ToString();
+				elementRow.AppendChild(elementExtension);
+				elementRow.AppendChild(elementColor);
+				elementRoot.AppendChild(elementRow);
+			}
+			doc.AppendChild(elementRoot);
+			doc.Save(itemColorSettingsLocation);
+			
 			if (this.OwnedWindows.OfType<FileOperationDialog>().Any()) {
 				if (MessageBox.Show("Are you sure you want to cancel all running file operation tasks?", "", MessageBoxButton.YesNo) == MessageBoxResult.No) {
 					e.Cancel = true;
@@ -2098,7 +2126,7 @@ namespace BetterExplorer {
 		private void zoomSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) => _ShellListView.ResizeIcons((int)e.NewValue);
 
 		void mig_Click(object sender, RoutedEventArgs e) {
-			if (!this._ShellListView.IsGroupsEnabled) this._ShellListView.EnableGroups();
+			this._ShellListView.EnableGroups();
 			this._ShellListView.GenerateGroupsFromColumn((sender as MenuItem).Tag as Collumns);
 		}
 
@@ -3503,8 +3531,8 @@ return false;
 						foreach (var path in selectedPaths.ToArray()) {
 							var sho = this._ShellListView.Items.FirstOrDefault(w => w.ParsingName == path);
 							if (sho != null) {
-								var index = this._ShellListView.ItemsHashed[sho.GetUniqueID()];
-								this._ShellListView.SelectItemByIndex(index, path.Equals(selectedPaths.Last()) || this.IsNeedEnsureVisible);
+								var index = sho.ItemIndex;
+								this._ShellListView.SelectItemByIndex(index, path.Equals(selectedPaths.Last(), StringComparison.InvariantCultureIgnoreCase) || this.IsNeedEnsureVisible);
 								this.IsNeedEnsureVisible = false;
 								selectedPaths.Remove(path);
 							}
@@ -3658,6 +3686,8 @@ return false;
 		#region Misc
 
 		public MainWindow() {
+			this.LVItemsColorCol = new ObservableCollectionEx<LVItemColor>();
+	
 			this.CommandBindings.AddRange(new[]
 			{
 								new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click),
@@ -3774,39 +3804,39 @@ return false;
 		}
 
 		void ShellListView_ViewStyleChanged(object sender, BExplorer.Shell.ViewChangedEventArgs e) {
-			zoomSlider.Value = e.ThumbnailSize;
-			btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
-			btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;
+			//zoomSlider.Value = e.ThumbnailSize;
+			//btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
+			//btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;
 
-			if (e.CurrentView == ShellViewStyle.ExtraLargeIcon) {
-				ViewGallery.SelectedIndex = 0;
-			} else if (e.CurrentView == ShellViewStyle.LargeIcon) {
-				ViewGallery.SelectedIndex = 1;
-			} else if (e.CurrentView == ShellViewStyle.Medium) {
-				ViewGallery.SelectedIndex = 2;
-				btnSbIcons.IsChecked = true;
-			} else if (e.CurrentView == ShellViewStyle.SmallIcon) {
-				ViewGallery.SelectedIndex = 3;
-			} else {
-				btnSbIcons.IsChecked = false;
-			}
+			//if (e.CurrentView == ShellViewStyle.ExtraLargeIcon) {
+			//	ViewGallery.SelectedIndex = 0;
+			//} else if (e.CurrentView == ShellViewStyle.LargeIcon) {
+			//	ViewGallery.SelectedIndex = 1;
+			//} else if (e.CurrentView == ShellViewStyle.Medium) {
+			//	ViewGallery.SelectedIndex = 2;
+			//	btnSbIcons.IsChecked = true;
+			//} else if (e.CurrentView == ShellViewStyle.SmallIcon) {
+			//	ViewGallery.SelectedIndex = 3;
+			//} else {
+			//	btnSbIcons.IsChecked = false;
+			//}
 
-			if (e.CurrentView == ShellViewStyle.List) {
-				ViewGallery.SelectedIndex = 4;
-			} else if (e.CurrentView == ShellViewStyle.Details) {
-				ViewGallery.SelectedIndex = 5;
-				btnSbDetails.IsChecked = true;
-			} else {
-				btnSbDetails.IsChecked = false;
-			}
+			//if (e.CurrentView == ShellViewStyle.List) {
+			//	ViewGallery.SelectedIndex = 4;
+			//} else if (e.CurrentView == ShellViewStyle.Details) {
+			//	ViewGallery.SelectedIndex = 5;
+			//	btnSbDetails.IsChecked = true;
+			//} else {
+			//	btnSbDetails.IsChecked = false;
+			//}
 
-			if (e.CurrentView == ShellViewStyle.Tile) {
-				ViewGallery.SelectedIndex = 6;
-			} else if (e.CurrentView == ShellViewStyle.Content) {
-				ViewGallery.SelectedIndex = 7;
-			} else if (e.CurrentView == ShellViewStyle.Thumbstrip) {
-				ViewGallery.SelectedIndex = 8;
-			}
+			//if (e.CurrentView == ShellViewStyle.Tile) {
+			//	ViewGallery.SelectedIndex = 6;
+			//} else if (e.CurrentView == ShellViewStyle.Content) {
+			//	ViewGallery.SelectedIndex = 7;
+			//} else if (e.CurrentView == ShellViewStyle.Thumbstrip) {
+			//	ViewGallery.SelectedIndex = 8;
+			//}
 		}
 
 		private void btnNewItem_DropDownOpened(object sender, EventArgs e) {
@@ -4118,6 +4148,11 @@ return false;
 		private void chkTraditionalNameGrouping_CheckChanged(Object sender, RoutedEventArgs e) {
 			Utilities.SetRegistryValue("IsTraditionalNameGrouping", e.RoutedEvent.Name == "Checked" ? 1 : 0);
 			this._ShellListView.IsTraditionalNameGrouping = e.RoutedEvent.Name == "Checked";
+		}
+
+		private void GrdItemTextColor_OnRowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+		{
+			//this.save
 		}
 	}
 }

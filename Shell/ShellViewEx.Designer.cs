@@ -1,4 +1,6 @@
-﻿namespace BExplorer.Shell {
+﻿using System.Drawing;
+
+namespace BExplorer.Shell {
 	partial class ShellView {
 		/// <summary> 
 		/// Required designer variable.

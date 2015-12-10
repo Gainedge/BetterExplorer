@@ -16,6 +16,7 @@
 					 xmlns:ni="http://www.hardcodet.net/taskbar"
 					 xmlns:odc="clr-namespace:Odyssey.Controls;assembly=Odyssey"
 					 xmlns:shell="clr-namespace:BExplorer.Shell;assembly=BExplorerShell"
+					 xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
 					 Title="Better Explorer"
 					 MinWidth="640"
 					 MinHeight="480"
@@ -1086,6 +1087,7 @@
 										            Checked="chkTreeExpand_CheckChanged"
 										            Header="{DynamicResource chkTreeExpandCP}"
 										            Ribbon:KeyTip.Keys="T"
+																IsEnabled="False"
 										            Unchecked="chkTreeExpand_CheckChanged">
                           <Ribbon:CheckBox.ToolTip>
                             <Ribbon:ScreenTip 
@@ -1138,6 +1140,19 @@
                                                     />
                         </Ribbon:CheckBox.ToolTip>
                       </Ribbon:CheckBox>
+                      <Ribbon:SeparatorTabItem Margin="0,0,0,5" Header="Item Label Colorizing" />
+                      <DataGrid x:Name="grdItemTextColor" Height="150" HorizontalAlignment="Stretch" AutoGenerateColumns="False" CanUserAddRows="True" ItemsSource="{Binding Path=LVItemsColorCol}">
+                        <DataGrid.Columns>
+                          <DataGridTextColumn Header="Extensions" Width="*" Binding="{Binding ExtensionList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+													<DataGridTemplateColumn Header="Color" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                              <DataTemplate>
+                                <toolkit:ColorPicker SelectedColor="{Binding TextColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></toolkit:ColorPicker>
+                              </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                          </DataGridTemplateColumn>
+												</DataGrid.Columns>
+                      </DataGrid>
                     </StackPanel>
                   </Grid>
                 </TabItem>

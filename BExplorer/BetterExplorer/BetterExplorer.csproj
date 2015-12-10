@@ -703,6 +703,10 @@
       <Project>{6a63405a-b6bb-4095-b48c-e720de021482}</Project>
       <Name>WpfDocumentPreviewer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj">
+      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
+      <Name>Xceed.Wpf.Toolkit</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Explorer.ico" />
