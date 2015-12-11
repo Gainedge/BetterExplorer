@@ -3804,39 +3804,50 @@ return false;
 		}
 
 		void ShellListView_ViewStyleChanged(object sender, BExplorer.Shell.ViewChangedEventArgs e) {
-			//zoomSlider.Value = e.ThumbnailSize;
-			//btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
-			//btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;
+			Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+				(Action) (() => {
+					zoomSlider.Value = e.ThumbnailSize;
+					btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
+					btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;
 
-			//if (e.CurrentView == ShellViewStyle.ExtraLargeIcon) {
-			//	ViewGallery.SelectedIndex = 0;
-			//} else if (e.CurrentView == ShellViewStyle.LargeIcon) {
-			//	ViewGallery.SelectedIndex = 1;
-			//} else if (e.CurrentView == ShellViewStyle.Medium) {
-			//	ViewGallery.SelectedIndex = 2;
-			//	btnSbIcons.IsChecked = true;
-			//} else if (e.CurrentView == ShellViewStyle.SmallIcon) {
-			//	ViewGallery.SelectedIndex = 3;
-			//} else {
-			//	btnSbIcons.IsChecked = false;
-			//}
+					if (e.CurrentView == ShellViewStyle.ExtraLargeIcon) {
+						ViewGallery.SelectedIndex = 0;
+					}
+					else if (e.CurrentView == ShellViewStyle.LargeIcon) {
+						ViewGallery.SelectedIndex = 1;
+					}
+					else if (e.CurrentView == ShellViewStyle.Medium) {
+						ViewGallery.SelectedIndex = 2;
+						btnSbIcons.IsChecked = true;
+					}
+					else if (e.CurrentView == ShellViewStyle.SmallIcon) {
+						ViewGallery.SelectedIndex = 3;
+					}
+					else {
+						btnSbIcons.IsChecked = false;
+					}
 
-			//if (e.CurrentView == ShellViewStyle.List) {
-			//	ViewGallery.SelectedIndex = 4;
-			//} else if (e.CurrentView == ShellViewStyle.Details) {
-			//	ViewGallery.SelectedIndex = 5;
-			//	btnSbDetails.IsChecked = true;
-			//} else {
-			//	btnSbDetails.IsChecked = false;
-			//}
+					if (e.CurrentView == ShellViewStyle.List) {
+						ViewGallery.SelectedIndex = 4;
+					}
+					else if (e.CurrentView == ShellViewStyle.Details) {
+						ViewGallery.SelectedIndex = 5;
+						btnSbDetails.IsChecked = true;
+					}
+					else {
+						btnSbDetails.IsChecked = false;
+					}
 
-			//if (e.CurrentView == ShellViewStyle.Tile) {
-			//	ViewGallery.SelectedIndex = 6;
-			//} else if (e.CurrentView == ShellViewStyle.Content) {
-			//	ViewGallery.SelectedIndex = 7;
-			//} else if (e.CurrentView == ShellViewStyle.Thumbstrip) {
-			//	ViewGallery.SelectedIndex = 8;
-			//}
+					if (e.CurrentView == ShellViewStyle.Tile) {
+						ViewGallery.SelectedIndex = 6;
+					}
+					else if (e.CurrentView == ShellViewStyle.Content) {
+						ViewGallery.SelectedIndex = 7;
+					}
+					else if (e.CurrentView == ShellViewStyle.Thumbstrip) {
+						ViewGallery.SelectedIndex = 8;
+					}
+				}));
 		}
 
 		private void btnNewItem_DropDownOpened(object sender, EventArgs e) {
