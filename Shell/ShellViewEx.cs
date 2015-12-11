@@ -350,8 +350,8 @@ namespace BExplorer.Shell {
 						break;
 
 					case ShellViewStyle.SmallIcon:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_SMALLICON, 0);
 						ResizeIcons(16);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_SMALLICON, 0);
 						iconsize = 16;
 						break;
 
