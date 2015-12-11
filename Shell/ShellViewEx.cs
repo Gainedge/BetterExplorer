@@ -2957,16 +2957,18 @@ namespace BExplorer.Shell {
 
 		public void _OverlaysLoadingThreadRun() {
 			while (true) {
-				int? index = 0;
-				if (!ThreadRun_Helper(overlayQueue, false, ref index)) continue;
-				var shoTemp = Items[index.Value];
-				var sho = FileSystemListItem.ToFileSystemItem(shoTemp.ParentHandle, shoTemp.ParsingName.ToShellParsingName());
+				try {
+					int? index = 0;
+					if (!ThreadRun_Helper(overlayQueue, false, ref index)) continue;
+					var shoTemp = Items[index.Value];
+					var sho = FileSystemListItem.ToFileSystemItem(shoTemp.ParentHandle, shoTemp.ParsingName.ToShellParsingName());
 
-				int overlayIndex = 0;
-				small.GetIconIndexWithOverlay(sho.PIDL, out overlayIndex);
-				shoTemp.OverlayIconIndex = overlayIndex;
-				if (overlayIndex > 0)
-					RedrawItem(index.Value);
+					int overlayIndex = 0;
+					small.GetIconIndexWithOverlay(sho.PIDL, out overlayIndex);
+					shoTemp.OverlayIconIndex = overlayIndex;
+					if (overlayIndex > 0)
+						RedrawItem(index.Value);
+				} catch {}
 			}
 		}
 
