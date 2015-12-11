@@ -2422,12 +2422,11 @@ namespace BExplorer.Shell {
 					this.LastSortOrder = Order;
 				}
 
+				var Items_Query = itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden).OrderByDescending(o => o.IsFolder);
 				if (column.CollumnType != typeof(String)) {
 					if (Order == SortOrder.Ascending) {
 						this.Items =
-							itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden)
-								.OrderByDescending(o => o.IsFolder)
-								.ThenBy(
+							Items_Query.ThenBy(
 									o =>
 										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
 											? "1"
@@ -2435,9 +2434,7 @@ namespace BExplorer.Shell {
 								.ToList();
 					} else {
 						this.Items =
-							itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden)
-								.OrderByDescending(o => o.IsFolder)
-								.ThenByDescending(
+							Items_Query.ThenByDescending(
 									o =>
 										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
 											? "1"
@@ -2447,9 +2444,7 @@ namespace BExplorer.Shell {
 				} else {
 					if (Order == SortOrder.Ascending) {
 						this.Items =
-							itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden)
-								.OrderByDescending(o => o.IsFolder)
-								.ThenBy(
+							Items_Query.ThenBy(
 									o =>
 										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
 											? "1"
@@ -2457,9 +2452,7 @@ namespace BExplorer.Shell {
 								.ToList();
 					} else {
 						this.Items =
-							itemsArray.Where(w => this.ShowHidden ? true : !w.IsHidden)
-								.OrderByDescending(o => o.IsFolder)
-								.ThenByDescending(
+							Items_Query.ThenByDescending(
 									o =>
 										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
 											? "1"
