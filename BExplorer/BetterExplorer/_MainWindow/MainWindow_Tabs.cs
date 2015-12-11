@@ -56,6 +56,7 @@ namespace BetterExplorer {
 
 		private void SelectTab(Wpf.Controls.TabItem tab) {
 			if (tab == null) return;
+			//tab.ShellObject = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, tab.ShellObject.PIDL);
 			if (!tab.ShellObject.Equals(this._ShellListView.CurrentFolder) || tab.ShellObject.IsSearchFolder) {
 				tcMain.isGoingBackOrForward = true;
 				NavigationController(tab.ShellObject);

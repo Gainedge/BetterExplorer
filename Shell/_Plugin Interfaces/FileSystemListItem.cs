@@ -32,7 +32,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public int OverlayIconIndex { get; set; }
 
-		public Interop.IExtractIconPWFlags IconType => this._Item.GetIconType();
+		public Interop.IExtractIconPWFlags IconType {
+			get { return this.IsParentSearchFolder ? IExtractIconPWFlags.GIL_PERINSTANCE : this._Item.GetIconType(); }
+			
+		}
 
 		public IntPtr ILPidl => this._Item.ILPidl;
 
@@ -65,6 +68,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		public bool IsDrive { get; set; }
 
 		public bool IsShared { get; set; }
+
+		public bool IsParentSearchFolder { get; set; }
 
 		public Int32 GroupIndex { get; set; }
 
@@ -213,9 +218,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 					fsi.InitializeWithParent(parentItem, this.ParentHandle, pidl, i++);
 					fsiList.Add(fsi);
 					Shell32.ILFree(pidl);
-					if (this.IsSearchFolder)
-						Thread.Sleep(1);
-					System.Windows.Forms.Application.DoEvents();
+					//if (this.IsSearchFolder)
+					//	Thread.Sleep(1);
+					//System.Windows.Forms.Application.DoEvents();
 					//result = enumId.Next(1, out pidl, out count);
 				}
 
@@ -251,7 +256,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			//var parentItem = new ShellItem(this._Item.Pidl); //this._Item;//this.IsSearchFolder ? this._Item : new ShellItem(this.ParsingName.ToShellParsingName());
 			while (result == HResult.S_OK) {
 				var fsi = new FileSystemListItem();
-				fsi.InitializeWithParent(this._Item, this.ParentHandle, pidl, i++);
+				fsi.InitializeWithParent(this.IsSearchFolder? this.searchFolder : this._Item, this.ParentHandle, pidl, i++);
+				fsi.IsParentSearchFolder = this.IsSearchFolder;
 				yield return fsi;
 				Shell32.ILFree(pidl);
 				result = enumId.Next(1, out pidl, out count);
@@ -274,6 +280,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 				this._Item.GetShellThumbnail(size, format, source);
 
 		public System.Windows.Media.Imaging.BitmapSource ThumbnailSource(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) {
+			
 			if (this.IsSearchFolder)
 				this._Item.ComInterface = this.searchFolder.m_SearchComInterface;
 
@@ -367,6 +374,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		public Boolean IsRCWSet { get; set; }
 
 		public void RecreateRCW() {
+			//return;
 			if (this.IsSearchFolder) return;
 			//if (this.RCWThread != Thread.CurrentThread.ManagedThreadId) {
 				this._Item = new ShellItem(this.ParsingName.ToShellParsingName());

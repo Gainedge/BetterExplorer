@@ -3811,8 +3811,8 @@ return false;
 		}
 
 		void ShellListView_ViewStyleChanged(object sender, BExplorer.Shell.ViewChangedEventArgs e) {
-			Dispatcher.Invoke(DispatcherPriority.Normal,
-				(Action)(() => {
+			Dispatcher.BeginInvoke(DispatcherPriority.Background,
+				(ThreadStart)(() => {
 					this._IsShouldRiseViewChanged = false;
 					zoomSlider.Value = e.ThumbnailSize;
 					this._IsShouldRiseViewChanged = true;

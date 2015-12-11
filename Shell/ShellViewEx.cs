@@ -2645,7 +2645,6 @@ namespace BExplorer.Shell {
 
 
 			Thread tt = new Thread(() => {
-
 				foreach (var shellItem in this._RequestedCurrentLocation) {
 					if (this.IsCancelRequested)
 						break;
@@ -2662,12 +2661,15 @@ namespace BExplorer.Shell {
 					if (this.ShowHidden || !shellItem.IsHidden) {
 						if (this._RequestedCurrentLocation.IsSearchFolder && !this.Items.Contains(shellItem))
 							this.Items.Add(shellItem);
-						else if (!this._RequestedCurrentLocation.IsSearchFolder)
+						else if (!this._RequestedCurrentLocation.IsSearchFolder && !shellItem.IsParentSearchFolder)
 							this.Items.Add(shellItem);
 					}
+					//if (this._IsSearchNavigating) {
+					//	F.Application.DoEvents();
+					//}
 
 					int delta = CurrentI - LastI;
-					if (delta >= (this._RequestedCurrentLocation.IsSearchFolder ? 50 : this.IsGroupsEnabled ? 10000 : 2000)) {
+					if (delta >= (this._RequestedCurrentLocation.IsSearchFolder ? 150 : this.IsGroupsEnabled ? 10000 : 2000)) {
 						LastI = CurrentI;
 						User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 
@@ -2727,20 +2729,21 @@ namespace BExplorer.Shell {
 
 
 				this.Invoke((Action)(() => {
-					this.Focus();
+					//this.Focus();
 					var NavArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
 					this.CurrentFolder = this._RequestedCurrentLocation;
 					if (!refresh && Navigated != null)
 						Navigated(this, NavArgs);
 				}));
-
-				GC.Collect();
-				Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 				if (this.Threads.Count > 1) {
 					mre.Set();
 					this.Threads[0].Abort();
 					this.Threads.RemoveAt(0);
 				}
+
+				GC.Collect();
+				Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+				
 
 				mre.Reset();
 				mre.WaitOne();

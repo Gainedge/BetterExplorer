@@ -80,6 +80,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		Boolean IsShared { get; set; }
 
+		Boolean IsParentSearchFolder { get; set; }
+
 		void Initialize(IntPtr lvHandle, String path);
 
 		void Initialize(IntPtr lvHandle, String path, Int32 index);

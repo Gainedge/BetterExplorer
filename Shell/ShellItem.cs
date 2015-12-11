@@ -437,13 +437,15 @@ namespace BExplorer.Shell {
 			if (this.Extension == ".exe" || this.Extension == ".com" || this.Extension == ".bat" || this.Extension == ".msi")
 				return IExtractIconPWFlags.GIL_PERINSTANCE;
 
+			if (this.Parent == null) return 0;
+
 			if (this.IsFolder) {
 				IExtractIcon iextract = null;
 				IShellFolder ishellfolder = null;
 				StringBuilder str = null;
 				IntPtr result;
 
-				if (this.Parent == null) return 0;
+				
 
 				try {
 					var guid = new Guid("000214fa-0000-0000-c000-000000000046");
