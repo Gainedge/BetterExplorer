@@ -2549,7 +2549,8 @@ namespace BExplorer.Shell {
 			SaveSettingsToDatabase(this._RequestedCurrentLocation);
 			this._UnvalidateTimer.Stop();
 			this.IsDisplayEmptyText = false;
-
+			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
+			this.DisableGroups();
 
 			this.ItemForRename = -1;
 			this.LastItemForRename = -1;
@@ -2560,8 +2561,7 @@ namespace BExplorer.Shell {
 			shieldQueue.Clear();
 			this._CuttedIndexes.Clear();
 			this.SubItemValues.Clear();
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
-			this.DisableGroups();
+			
 
 			var folderSettings = new FolderSettings();
 			var isThereSettings = false;
@@ -2571,8 +2571,8 @@ namespace BExplorer.Shell {
 			if (!refresh && Navigating != null)
 				Navigating(this, new NavigatingEventArgs(destination, isInSameTab));
 
-			if (destination.Equals(this.CurrentFolder) && !refresh && !isCancel)
-				return;
+			//if (destination.Equals(this.CurrentFolder) && !refresh && !isCancel)
+			//	return;
 
 			resetEvent.Set();
 
@@ -2659,9 +2659,9 @@ namespace BExplorer.Shell {
 					}
 
 					if (this.ShowHidden || !shellItem.IsHidden) {
-						if (this._RequestedCurrentLocation.IsSearchFolder && !this.Items.Contains(shellItem))
+						if (destination.IsSearchFolder && !this.Items.Contains(shellItem))
 							this.Items.Add(shellItem);
-						else if (!this._RequestedCurrentLocation.IsSearchFolder && !shellItem.IsParentSearchFolder)
+						else if (!destination.IsSearchFolder && !shellItem.IsParentSearchFolder)
 							this.Items.Add(shellItem);
 					}
 					//if (this._IsSearchNavigating) {
@@ -2707,11 +2707,17 @@ namespace BExplorer.Shell {
 						this.SetSortCollumn(this.AvailableColumns().Single(s => s.ID == "A180"), SortOrder.Ascending, false);
 					else
 						this.SetSortCollumn(columns, folderSettings.SortOrder, false);
-				} else if (this._RequestedCurrentLocation.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant())
+				} else if (this._RequestedCurrentLocation.ParsingName.ToLowerInvariant() == KnownFolders.Computer.ParsingName.ToLowerInvariant()) { 
 					this.Items = this.Items.OrderBy(o => o.ParsingName).ToList();
-				else
+					var i = 0;
+					this.Items.ForEach(e => e.ItemIndex = i++);
+					User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+				} else { 
 					this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
-
+					var i = 0;
+					this.Items.ForEach(e => e.ItemIndex = i++);
+					User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+				}
 				if (this.IsGroupsEnabled) {
 					var colData = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.GroupCollumn);
 					this.GenerateGroupsFromColumn(colData, folderSettings.GroupOrder == SortOrder.Descending);
