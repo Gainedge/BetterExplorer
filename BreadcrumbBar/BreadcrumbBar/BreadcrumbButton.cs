@@ -181,7 +181,9 @@ namespace Odyssey.Controls {
 			base.OnApplyTemplate();
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				var data = this.DataContext as ShellItem;
-				if (data != null && data.ParsingName != KnownFolders.Computer.ParsingName && data.ParsingName != KnownFolders.Desktop.ParsingName && !data.IsSearchFolder) {
+				if (data != null && data.CachedParsingName != KnownFolders.Computer.ParsingName && data.CachedParsingName != KnownFolders.Desktop.ParsingName) {
+					data = new ShellItem(data.CachedParsingName.ToShellParsingName());
+					if (data.IsSearchFolder) return;
 					var aditionalItems = new List<ShellItem>();
           ShellItem.IsCareForMessageHandle = false;
 					foreach (var item in data) {

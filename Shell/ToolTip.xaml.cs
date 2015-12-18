@@ -42,7 +42,7 @@ namespace BExplorer.Shell
 			set
 			{
 				_ShellItem = value;
-				RaisePropertyChanged("CurrentItem");
+				//RaisePropertyChanged("CurrentItem");
 			}
 		}
 

@@ -290,7 +290,7 @@ namespace Odyssey.Controls {
 					} catch (Exception) {
 						isLoaded = IsLoaded;
 					}
-					//var thread = new Thread(() => {
+					var thread = new Thread(() => {
 						BuildBreadcrumbsFromPath(Path);
 
 						if (isLoaded && !breadcrumbItemTraceValueChanged_IsFired && _Path != null) {
@@ -306,9 +306,9 @@ namespace Odyssey.Controls {
 								//FIXME: fix this exception in case of searchfolder!!!!
 							}
 						}
-					//});
-					//thread.SetApartmentState(ApartmentState.STA);
-					//thread.Start();
+					});
+					thread.SetApartmentState(ApartmentState.STA);
+					thread.Start();
 				}
 				//});
 			}
@@ -457,7 +457,7 @@ namespace Odyssey.Controls {
 			try {
 				ShellItem shellItem = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(RemoveLastEmptySeparator(newPathToShellParsingName));
 				if (shellItem == null) return;
-				Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
+				Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
 					BreadcrumbItem item = RootItem;
 					if (item == null) return;
 

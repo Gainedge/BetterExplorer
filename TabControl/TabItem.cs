@@ -91,8 +91,8 @@ namespace Wpf.Controls {
 			e.Handled = true;
 			TabControl tc = Helper.FindParentControl<TabControl>(this);
 			if (tc == null) return;
-			tc.IsSelectionHandled = false;
-			tc.CurrentTabItem = this;
+			//tc.IsSelectionHandled = false;
+			//tc.CurrentTabItem = this;
 			tc.RaiseTabClick(this);
 		}
 

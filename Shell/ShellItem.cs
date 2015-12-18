@@ -429,7 +429,18 @@ namespace BExplorer.Shell {
 				Marshal.FreeCoTaskMem(resultPtr);
 				return result;
 			} catch (Exception) {
-				return "Search.search-ms";
+				try {
+					var shellobj = new ShellItem(this.CachedParsingName.ToShellParsingName());
+					IntPtr resultPtr = shellobj.ComInterface.GetDisplayName(sigdn);
+					string result = Marshal.PtrToStringUni(resultPtr);
+					Marshal.FreeCoTaskMem(resultPtr);
+					return result;
+				}
+				catch (Exception e) {
+					return "Search.search-ms";
+
+				}
+				
 			}
 		}
 

@@ -1639,11 +1639,11 @@ namespace BetterExplorer {
 		//Boolean _IsTabSelectionChangedNotAllowed = true;
 		void tcMain_OnTabClicked(object sender, Wpf.Controls.TabClickEventArgs e) {
 			this.tcMain.IsInTabDragDrop = false;
-			tcMain.SelectedItem = e.ClickedItem;
-			//this._IsTabSelectionChangedNotAllowed = false;
-			this._CurrentlySelectedItem = e.ClickedItem;
-			this.SelectTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
-			this.tcMain.IsInTabDragDrop = true;
+			//tcMain.SelectedItem = e.ClickedItem;
+			////this._IsTabSelectionChangedNotAllowed = false;
+			//this._CurrentlySelectedItem = e.ClickedItem;
+			//this.SelectTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
+			//this.tcMain.IsInTabDragDrop = true;
 			//this._IsTabSelectionChangedAllowed = false;
 		}
 
@@ -3529,6 +3529,11 @@ return false;
 
 			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
 				var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
+				if (selectedItem == null) {
+					this.tcMain.SelectedItem = this.tcMain.Items.OfType<Wpf.Controls.TabItem>().Last();
+					selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
+				}
+				
 				selectedItem.Header = this._ShellListView.CurrentFolder.DisplayName;
 				selectedItem.Icon = this._ShellListView.CurrentFolder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 				selectedItem.ShellObject = this._ShellListView.CurrentFolder;
@@ -3623,9 +3628,11 @@ return false;
 		}
 
 		private bool SetUpNewFolderButtons() {
-			if (_ShellListView.CurrentFolder.Parent == null) {
+			var currentFolder = FileSystemListItem.ToFileSystemItem(_ShellListView.CurrentFolder.ParentHandle,
+				_ShellListView.CurrentFolder.PIDL);
+			if (currentFolder.Parent == null) {
 				return false;
-			} else if (_ShellListView.CurrentFolder.ParsingName == KnownFolders.Libraries.ParsingName) {
+			} else if (currentFolder.ParsingName == KnownFolders.Libraries.ParsingName) {
 				btnCreateFolder.Header = FindResource("btnNewLibraryCP");  //"New Library";
 				stNewFolder.Title = FindResource("btnNewLibraryCP").ToString();//"New Library";
 				stNewFolder.Text = "Creates a new library in the current folder.";
@@ -3634,7 +3641,7 @@ return false;
 				btnCreateFolder.Icon = @"..\Images\newlib16.png";
 
 				return true;
-			} else if (this._ShellListView.CurrentFolder.IsFileSystem || this._ShellListView.CurrentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
+			} else if (currentFolder.IsFileSystem || currentFolder.Parent.ParsingName == KnownFolders.Libraries.ParsingName) {
 				btnCreateFolder.Header = FindResource("btnNewFolderCP");//"New Folder";
 				stNewFolder.Title = FindResource("btnNewFolderCP").ToString(); //"New Folder";
 				stNewFolder.Text = "Creates a new folder in the current folder";
@@ -3927,7 +3934,6 @@ return false;
 
 			url = $"https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business={business}&lc={country}&item_name={description}&currency_code={currency}&bn=PP%2dDonationsBF";
 
-
 			Process.Start(url);
 		}
 
@@ -3939,30 +3945,30 @@ We could easily move this to another project and send that method
 			//Following could be an example of what the most basic plugin could look like
 			//We could also separate plugins so they could be enabled WHEN
 			//Always OR Folder_Selected OR File_Selected 
-			Action<string, string> Plugin_Example_Activate_Basic = (string Plugin_Path, string Current_FileOrFolder) => Process.Start(Plugin_Path, Current_FileOrFolder);
+			Action<string, string> pluginExampleActivateBasic = (string pluginPath, string currentFileOrFolder) => Process.Start(pluginPath, currentFileOrFolder);
 
 			var Tab = new Fluent.RibbonTabItem() { Header = "Plugins", ToolTip = "Plugins" };
 			TheRibbon.Tabs.Add(Tab);
-			var GroupBox1 = new RibbonGroupBox() { Header = "Test" };
-			Tab.Groups.Add(GroupBox1);
+			var groupBox1 = new RibbonGroupBox() { Header = "Test" };
+			Tab.Groups.Add(groupBox1);
 			var XML =
 											@"<Shortcuts>
 						<Shortcut Name='Test' Path = 'C:\Aaron'/>
 					</Shortcuts>";
 
-			var XDoc = XElement.Parse(XML);
-			var Shortcuts = XDoc.Elements("Shortcut");
+			var xDoc = XElement.Parse(XML);
+			var shortcuts = xDoc.Elements("Shortcut");
 
-			var DropDown = new SplitButton();
-			GroupBox1.Items.Add(DropDown);
+			var dropDown = new SplitButton();
+			groupBox1.Items.Add(dropDown);
 
-			foreach (var Node in XDoc.Elements("Shortcut")) {
-				var Item = new MenuItem() { Header = Node.Attribute("Name").Value };
-				Item.Click += (x, y) => {
+			foreach (var Node in xDoc.Elements("Shortcut")) {
+				var item = new MenuItem() { Header = Node.Attribute("Name").Value };
+				item.Click += (x, y) => {
 					Process.Start(Node.Attribute("Path").Value);
 				};
 
-				DropDown.Items.Add(Item);
+				dropDown.Items.Add(item);
 			}
 		}
 
@@ -3985,10 +3991,10 @@ We could easily move this to another project and send that method
 		}
 
 		void tcMain_PreviewSelectionChanged(object p_oSender, Wpf.Controls.PreviewSelectionChangedEventArgs e) {
-			if (tcMain.IsInTabDragDrop) {
-				e.Cancel = true;
-				return;
-			}
+			//if (tcMain.IsInTabDragDrop) {
+			//	e.Cancel = true;
+			//	return;
+			//}
 
 			if (e.RemovedItems.Count > 0) {
 				var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;

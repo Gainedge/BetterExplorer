@@ -69,7 +69,7 @@ namespace BetterExplorer {
 					var selectedPaths = selectedItem.SelectedItems;
 					if (selectedPaths != null && selectedPaths.Any()) {
 						foreach (var path in selectedPaths.ToArray()) {
-							var sho = this._ShellListView.Items.FirstOrDefault(w => w.ParsingName == path);
+							var sho = this._ShellListView.Items.ToArray().FirstOrDefault(w => w.ParsingName == path);
 							if (sho != null) {
 								var index = sho.ItemIndex;
 								this._ShellListView.SelectItemByIndex(index, true);

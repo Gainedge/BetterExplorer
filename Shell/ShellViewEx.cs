@@ -1520,20 +1520,24 @@ namespace BExplorer.Shell {
 							var nmGetInfoTip = (NMLVGETINFOTIP)m.GetLParam(typeof(NMLVGETINFOTIP));
 							if (this.Items.Count == 0)
 								break;
-							var itemInfotip = this.Items[nmGetInfoTip.iItem];
-							char[] charBuf = ("\0").ToCharArray();
-							Marshal.Copy(charBuf, 0, nmGetInfoTip.pszText, Math.Min(charBuf.Length, nmGetInfoTip.cchTextMax));
-							Marshal.StructureToPtr(nmGetInfoTip, m.LParam, false);
+							if (ToolTip == null)
+								ToolTip = new ToolTip(this);
 
-							if (ToolTip.IsVisible)
-								ToolTip.HideTooltip();
+								var itemInfotip = this.Items[nmGetInfoTip.iItem];
+								char[] charBuf = ("\0").ToCharArray();
+								Marshal.Copy(charBuf, 0, nmGetInfoTip.pszText, Math.Min(charBuf.Length, nmGetInfoTip.cchTextMax));
+								Marshal.StructureToPtr(nmGetInfoTip, m.LParam, false);
 
-							ToolTip.CurrentItem = itemInfotip;
-							ToolTip.ItemIndex = nmGetInfoTip.iItem;
-							ToolTip.Type = nmGetInfoTip.dwFlags;
-							ToolTip.Left = -500;
-							ToolTip.Top = -500;
-							ToolTip.ShowTooltip();
+								if (ToolTip.IsVisible)
+									ToolTip.HideTooltip();
+
+								ToolTip.CurrentItem = itemInfotip;
+								ToolTip.ItemIndex = nmGetInfoTip.iItem;
+								ToolTip.Type = nmGetInfoTip.dwFlags;
+								ToolTip.Left = -500;
+								ToolTip.Top = -500;
+								ToolTip.ShowTooltip();
+							
 							break;
 						#endregion
 
@@ -1814,7 +1818,7 @@ namespace BExplorer.Shell {
 				}
 				#endregion
 
-			} catch {
+			} catch (Exception ex) {
 			}
 		}
 
@@ -1825,7 +1829,7 @@ namespace BExplorer.Shell {
 						case ShellNotifications.SHCNE.SHCNE_MKDIR:
 						case ShellNotifications.SHCNE.SHCNE_CREATE:
 							var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-							if (this.CurrentFolder != null && obj.ParsingName.Contains(this.CurrentFolder.ParsingName)) {
+							if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
 								if (this.IsRenameNeeded) {
 									var itemIndex = this.InsertNewItem(obj);
 									this.SelectItemByIndex(itemIndex, true, true);
@@ -1839,7 +1843,7 @@ namespace BExplorer.Shell {
 						case ShellNotifications.SHCNE.SHCNE_RMDIR:
 						case ShellNotifications.SHCNE.SHCNE_DELETE:
 							var objDelete = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-							if (this.CurrentFolder != null && objDelete.ParsingName.Contains(this.CurrentFolder.ParsingName)) {
+							if (this.CurrentFolder != null && (objDelete.Parent != null && objDelete.Parent.Equals(this.CurrentFolder))) {
 								this.UnvalidateDirectory();
 							}
 							this.RaiseRecycleBinUpdated();
@@ -1849,18 +1853,18 @@ namespace BExplorer.Shell {
 							try {
 								objUpdate = FileSystemListItem.ToFileSystemItem(this.LVHandle, Shell32.ILFindLastID(info.Item1));
 							} catch { }
-							if (this.CurrentFolder != null && objUpdate.ParsingName.Equals(this.CurrentFolder.ParsingName)) {
+							if (objUpdate != null && this._RequestedCurrentLocation != null && objUpdate.ParsingName.Equals(this._RequestedCurrentLocation.ParsingName)) {
 								this.UnvalidateDirectory();
 							}
 							break;
 						case ShellNotifications.SHCNE.SHCNE_UPDATEITEM:
-							var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-							if (this.CurrentFolder != null && objUpdateItem.ParsingName.Contains(this.CurrentFolder.ParsingName)) {
+							var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, Shell32.ILFindLastID(info.Item1));
+							if (this._RequestedCurrentLocation != null && objUpdateItem.ParsingName.Contains(this._RequestedCurrentLocation.ParsingName)) {
 								var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
 								if (exisitingUItem != null)
-									this.RefreshItem(this.Items.IndexOf(exisitingUItem), true);
+									this.RefreshItem(exisitingUItem.ItemIndex, true);
 
-								if (objUpdateItem != null && this.CurrentFolder != null && objUpdateItem.Equals(this.CurrentFolder))
+								if (objUpdateItem != null && this._RequestedCurrentLocation != null && objUpdateItem.Equals(this._RequestedCurrentLocation))
 									this.UnvalidateDirectory();
 							}
 							break;
@@ -1983,8 +1987,9 @@ namespace BExplorer.Shell {
 		void _UnvalidateTimer_Tick(object sender, EventArgs e) {
 			this._UnvalidateTimer.Stop();
 			if (this.CurrentFolder == null) return;
+			var items = this.Items.ToArray();
 			var newItems = this.CurrentFolder.Where(w => this.ShowHidden ? true : w.IsHidden == this.ShowHidden).ToArray();
-			var removedItems = this.Items.Except(newItems, new ShellItemComparer());
+			var removedItems = items.Except(newItems, new ShellItemComparer());
 			try {
 				foreach (var obj in removedItems.ToArray()) {
 					Items.Remove(obj);
@@ -1992,16 +1997,17 @@ namespace BExplorer.Shell {
 				}
 
 				foreach (var obj in newItems) {
-					var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
+					var existingItem = items.FirstOrDefault(s => s.Equals(obj));
 					if (existingItem == null) {
 						if (obj.Extension.ToLowerInvariant() != ".tmp" && obj.Parent.Equals(this.CurrentFolder)) {
-							if (!Items.Contains(obj) && !String.IsNullOrEmpty(obj.ParsingName)) {
+							if (!Items.Contains(obj, new ShellItemEqualityComparer()) && !String.IsNullOrEmpty(obj.ParsingName)) {
+								obj.ItemIndex = this.Items.Count;
 								Items.Add(obj);
 							}
 						} else {
-							var affectedItem = this.Items.FirstOrDefault(s => s.Equals(obj.Parent));
+							var affectedItem = items.FirstOrDefault(s => s.Equals(obj.Parent));
 							if (affectedItem != null) {
-								var index = this.Items.IndexOf(affectedItem);
+								var index = affectedItem.ItemIndex;
 								this.RefreshItem(index, true);
 							}
 						}
@@ -2477,32 +2483,30 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		private CancellationToken LastToken;
-		private CancellationToken Currenttoken;
 		/// <summary>
 		/// Navigate to a folder, set it as the current folder and optionally save the folder's settings to the database.
 		/// </summary>
 		/// <param name="destination">The folder you want to navigate to.</param>
-		/// <param name="SaveFolderSettings">Should the folder's settings be saved?</param>
+		/// <param name="saveFolderSettings">Should the folder's settings be saved?</param>
 		/// <param name="isInSameTab"></param>
 		/// <param name="refresh">Should the List be Refreshed?</param>
-		public void Navigate_Full(IListItemEx destination, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false) {
+		public void Navigate_Full(IListItemEx destination, bool saveFolderSettings, bool isInSameTab = false, bool refresh = false) {
 			this._IsSearchNavigating = false;
-			//if (SaveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
+			//if (saveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
 
 			if (destination == null || !destination.IsFolder) return;
-			if (ToolTip == null) this.ToolTip = new ToolTip(this);
+			//if (ToolTip == null) this.ToolTip = new ToolTip(this);
 			resetEvent.Set();
 			Navigate(destination, isInSameTab, refresh, this.IsNavigationInProgress);
 		}
 
 		private Boolean _IsSearchNavigating = false;
 
-		public void Navigate_Full(string query, bool SaveFolderSettings, Boolean isInSameTab = false, bool refresh = false) {
+		public void Navigate_Full(string query, bool saveFolderSettings, Boolean isInSameTab = false, bool refresh = false) {
 			this._IsSearchNavigating = true;
-			if (SaveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
+			if (saveFolderSettings) SaveSettingsToDatabase(this.CurrentFolder);
 
-			if (ToolTip == null) this.ToolTip = new ToolTip(this);
+			//if (ToolTip == null) this.ToolTip = new ToolTip(this);
 			resetEvent.Set();
 			var searchCondition = SearchConditionFactory.ParseStructuredQuery(query);
 			var shellItem = new ShellItem(this.CurrentFolder.PIDL);
@@ -2513,7 +2517,7 @@ namespace BExplorer.Shell {
 		}
 
 		public void UnvalidateDirectory() {
-			Action Worker = () => {
+			Action worker = () => {
 				if (this._UnvalidateTimer.Enabled) {
 					this._UnvalidateTimer.Stop();
 					this._UnvalidateTimer.Start();
@@ -2523,9 +2527,9 @@ namespace BExplorer.Shell {
 			};
 
 			if (this.InvokeRequired)
-				this.Invoke((Action)(() => Worker()));
+				this.Invoke((Action)(() => worker()));
 			else
-				Worker();
+				worker();
 		}
 
 		private IListItemEx _RequestedCurrentLocation { get; set; }
@@ -2542,11 +2546,29 @@ namespace BExplorer.Shell {
 		[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
 		[HandleProcessCorruptedStateExceptions]
 		private void Navigate(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false, bool isCancel = false) {
-
+			SaveSettingsToDatabase(this.CurrentFolder);
 			//TODO: Document isCancel Param better
+			if (destination == null) return;
+			destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
 			if (this._RequestedCurrentLocation == destination && !refresh) return;
+			if (this._RequestedCurrentLocation != destination) {
+				//this.IsCancelRequested = true;
+			}
 
-			SaveSettingsToDatabase(this._RequestedCurrentLocation);
+			resetEvent.Set();
+			
+
+			if (this.Threads.Count > 0) {
+				mre.Set();
+				this.resetEvent.Set();
+				foreach (var thread in this.Threads.ToArray()) {
+					thread.Abort();
+					this.Threads.Remove(thread);
+				}
+				
+			}
+
+			
 			this._UnvalidateTimer.Stop();
 			this.IsDisplayEmptyText = false;
 			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
@@ -2574,7 +2596,9 @@ namespace BExplorer.Shell {
 			//if (destination.Equals(this.CurrentFolder) && !refresh && !isCancel)
 			//	return;
 
-			resetEvent.Set();
+			
+
+			
 
 			var columns = new Collumns();
 			var isFailed = true;
@@ -2645,7 +2669,9 @@ namespace BExplorer.Shell {
 
 
 			Thread tt = new Thread(() => {
-				foreach (var shellItem in this._RequestedCurrentLocation) {
+				destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
+				this._RequestedCurrentLocation = destination;
+				foreach (var shellItem in destination) {
 					if (this.IsCancelRequested)
 						break;
 					CurrentI++;
@@ -2653,15 +2679,17 @@ namespace BExplorer.Shell {
 						isFailed = false;
 					}
 
+					
+
 					if (!this._RequestedCurrentLocation.Equals(shellItem.Parent) && this.IsNavigationCancelRequested) {
 						isFailed = false;
 						return;
 					}
 
 					if (this.ShowHidden || !shellItem.IsHidden) {
-						if (destination.IsSearchFolder && !this.Items.Contains(shellItem))
+						if (this._RequestedCurrentLocation.IsSearchFolder && shellItem.IsParentSearchFolder)
 							this.Items.Add(shellItem);
-						else if (!destination.IsSearchFolder && !shellItem.IsParentSearchFolder)
+						else if (!this._RequestedCurrentLocation.IsSearchFolder && !shellItem.IsParentSearchFolder)
 							this.Items.Add(shellItem);
 					}
 					//if (this._IsSearchNavigating) {
@@ -2669,15 +2697,19 @@ namespace BExplorer.Shell {
 					//}
 
 					int delta = CurrentI - LastI;
-					if (delta >= (this._RequestedCurrentLocation.IsSearchFolder ? 150 : this.IsGroupsEnabled ? 10000 : 2000)) {
+					if (delta >= (this._IsSearchNavigating ? 10 : 2000)) {
+						//if (this._IsSearchNavigating) {
+						//	Thread.Sleep(1);
+						//	F.Application.DoEvents();
+						//}
 						LastI = CurrentI;
 						User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 
-						if (this._RequestedCurrentLocation.IsSearchFolder && delta >= 20)
+						if (this._IsSearchNavigating && delta >= 20)
 							Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 					}
 				}
-
+				this.IsCancelRequested = false;
 				this.IsNavigationInProgress = false;
 				this.IsDisplayEmptyText = true;
 
@@ -2686,6 +2718,7 @@ namespace BExplorer.Shell {
 					Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 					if (this.Threads.Count > 1) {
 						mre.Set();
+						this.resetEvent.Set();
 						this.Threads[0].Abort();
 						this.Threads.RemoveAt(0);
 					}
@@ -2741,11 +2774,7 @@ namespace BExplorer.Shell {
 					if (!refresh && Navigated != null)
 						Navigated(this, NavArgs);
 				}));
-				if (this.Threads.Count > 1) {
-					mre.Set();
-					this.Threads[0].Abort();
-					this.Threads.RemoveAt(0);
-				}
+				
 
 				GC.Collect();
 				Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -3015,24 +3044,31 @@ namespace BExplorer.Shell {
 		public void _IconsLoadingThreadRun() {
 			while (true) {
 				if (resetEvent != null) resetEvent.WaitOne();
+				if (this._IsSearchNavigating) {
+					Thread.Sleep(5);
+					F.Application.DoEvents();
+				}
 				int? index = 0;
 				if (!ThreadRun_Helper(waitingThumbnails, false, ref index)) continue;
 				var sho = Items[index.Value];
 				if (!sho.IsIconLoaded) {
-					var temp = FileSystemListItem.ToFileSystemItem(sho.ParentHandle, sho.ParsingName.ToShellParsingName());
-					var icon = temp.GetHBitmap(IconSize, false, true);
-					var shieldOverlay = 0;
+					try {
+						var temp = FileSystemListItem.ToFileSystemItem(sho.ParentHandle, sho.ParsingName.ToShellParsingName());
+						var icon = temp.GetHBitmap(IconSize, false, true);
+						var shieldOverlay = 0;
 
-					if (sho.ShieldedIconIndex == -1) {
-						if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = ShieldIconIndex;
-						sho.ShieldedIconIndex = shieldOverlay;
-					}
+						if (sho.ShieldedIconIndex == -1) {
+							if ((temp.GetShield() & IExtractIconPWFlags.GIL_SHIELD) != 0) shieldOverlay = ShieldIconIndex;
+							sho.ShieldedIconIndex = shieldOverlay;
+						}
 
-					if (icon != IntPtr.Zero || shieldOverlay > 0) {
-						sho.IsIconLoaded = true;
-						Gdi32.DeleteObject(icon);
-						this.RedrawItem(index.Value);
-					}
+						if (icon != IntPtr.Zero || shieldOverlay > 0) {
+							sho.IsIconLoaded = true;
+							Gdi32.DeleteObject(icon);
+							this.RedrawItem(index.Value);
+						}
+						//Catch File not found exception since it happens if the file is laready deleted
+					} catch (FileNotFoundException) { }
 				}
 			}
 		}

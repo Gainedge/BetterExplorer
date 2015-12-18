@@ -256,7 +256,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			//var parentItem = new ShellItem(this._Item.Pidl); //this._Item;//this.IsSearchFolder ? this._Item : new ShellItem(this.ParsingName.ToShellParsingName());
 			while (result == HResult.S_OK) {
 				var fsi = new FileSystemListItem();
-				fsi.InitializeWithParent(this.IsSearchFolder? this.searchFolder : this._Item, this.ParentHandle, pidl, i++);
+				fsi.InitializeWithParent(this._Item, this.ParentHandle, pidl, i++);
 				fsi.IsParentSearchFolder = this.IsSearchFolder;
 				yield return fsi;
 				Shell32.ILFree(pidl);
@@ -281,8 +281,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public System.Windows.Media.Imaging.BitmapSource ThumbnailSource(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) {
 			
-			if (this.IsSearchFolder)
-				this._Item.ComInterface = this.searchFolder.m_SearchComInterface;
+			//if (this.IsSearchFolder)
+			//	this._Item.ComInterface = this.searchFolder.m_SearchComInterface;
 
 			this._Item.Thumbnail.CurrentSize = new System.Windows.Size(size, size);
 			this._Item.Thumbnail.RetrievalOption = source;
