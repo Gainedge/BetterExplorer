@@ -37,7 +37,8 @@ namespace Wpf.Controls {
 		/// <summary>
 		/// Provides a place to display an Icon on the Header and on the DropDown Context Menu
 		/// </summary>
-		public object Icon {
+		public object Icon
+		{
 			get { return GetValue(IconProperty); }
 			set { SetValue(IconProperty, value); }
 		}
@@ -45,7 +46,8 @@ namespace Wpf.Controls {
 		/// <summary>
 		/// Allow the Header to be Deleted by the end user
 		/// </summary>
-		public bool AllowDelete {
+		public bool AllowDelete
+		{
 			get { return (bool)GetValue(AllowDeleteProperty); }
 			set { SetValue(AllowDeleteProperty, value); }
 		}
@@ -103,7 +105,7 @@ namespace Wpf.Controls {
 		protected override void OnMouseEnter(System.Windows.Input.MouseEventArgs e) {
 			base.OnMouseEnter(e);
 
-      this.ToolTip = this.ShellObject.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING).Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
+			this.ToolTip = this.ShellObject.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING).Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
 			e.Handled = true;
 		}
 
@@ -122,38 +124,37 @@ namespace Wpf.Controls {
 			e.Handled = true;
 			TabControl tc = Helper.FindParentControl<TabControl>(this);
 			if (tc == null) return;
-			tc.IsSelectionHandled = false;
+			//tc.IsSelectionHandled = false;
 		}
 
 		private void TabItem_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e) {
-			TabControl tc = Helper.FindParentControl<TabControl>(this);
+			var tc = Helper.FindParentControl<TabControl>(this);
 			if (tc == null) return;
 
-			TabItem firstItem = tc.Items.OfType<TabItem>().FirstOrDefault();
+			var firstItem = tc.Items.OfType<TabItem>().FirstOrDefault();
 			this.mnu = new ContextMenu();
 
-			Action<string, RoutedEventHandler> Worker = (x, y) => {
-				MenuItem Item = new MenuItem();
-				Item.Header = x;
-				Item.Click += y;
-				this.mnu.Items.Add(Item);
+			Action<string, RoutedEventHandler> worker = (x, y) => {
+				var item = new MenuItem { Header = x };
+				item.Click += y;
+				this.mnu.Items.Add(item);
 			};
 
-			Worker("Close current tab", new RoutedEventHandler((owner, a) => tc.RemoveTabItem(this)));
+			worker("Close current tab", new RoutedEventHandler((owner, a) => tc.RemoveTabItem(this)));
 
-			Worker("Close all tabs", new RoutedEventHandler(
+			worker("Close all tabs", new RoutedEventHandler(
 				(owner, a) => {
 					foreach (TabItem tabItem in tc.Items.OfType<TabItem>().ToArray()) {
 						if (!tabItem.Equals(firstItem)) tc.RemoveTabItem(tabItem);
 					}
 				}));
 
-			Worker("Close all other tabs", new RoutedEventHandler((owner, a) => tc.CloseAllTabsButThis(this)));
+			worker("Close all other tabs", new RoutedEventHandler((owner, a) => tc.CloseAllTabsButThis(this)));
 
 			this.mnu.Items.Add(new Separator());
 
-			Worker("New tab", new RoutedEventHandler((owner, a) => tc.NewTab()));
-			Worker("Clone tab", new RoutedEventHandler((owner, a) => tc.CloneTabItem(this)));
+			worker("New tab", new RoutedEventHandler((owner, a) => tc.NewTab()));
+			worker("Clone tab", new RoutedEventHandler((owner, a) => tc.CloneTabItem(this)));
 
 			this.mnu.Items.Add(new Separator());
 
@@ -166,7 +167,7 @@ namespace Wpf.Controls {
 			this.mnu.Items.Add(miundocloser);
 			this.mnu.Items.Add(new Separator());
 
-			Worker("Open in new window", new RoutedEventHandler(
+			worker("Open in new window", new RoutedEventHandler(
 				(owner, a) => {
 					System.Diagnostics.Process.Start(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName, this.ShellObject.ParsingName + " /nw");
 					tc.RemoveTabItem(this);

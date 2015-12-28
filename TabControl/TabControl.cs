@@ -52,7 +52,7 @@ namespace Wpf.Controls {
 
 		public bool isGoingBackOrForward;
 		public bool IsSelectionHandled = false;
-		public Wpf.Controls.TabItem CurrentTabItem;
+		//public Wpf.Controls.TabItem CurrentTabItem;
 
 		// TemplatePart controls
 		private ToggleButton _toggleButton;
@@ -326,7 +326,7 @@ namespace Wpf.Controls {
 			//TODO: Try to remove this Try Catch
 			try {
 				Items.Add(newt);
-				IsSelectionHandled = false;
+				//IsSelectionHandled = false;
         if (IsNavigate) {
           SelectNewTabOnCreate = true;
           this.SelectedItem = newt;
@@ -539,19 +539,19 @@ namespace Wpf.Controls {
 
 		protected override void OnItemsChanged(NotifyCollectionChangedEventArgs e) {
 			base.OnItemsChanged(e);
-			if (e.Action == NotifyCollectionChangedAction.Add && !SelectNewTabOnCreate) {
-				this.IsSelectionHandled = true;
-			}
-			if (e.Action == NotifyCollectionChangedAction.Add && SelectNewTabOnCreate) {
-				var tabItem = (TabItem)this.ItemContainerGenerator.ContainerFromItem(e.NewItems[e.NewItems.Count - 1]);
-				SelectedItem = tabItem;
+			//if (e.Action == NotifyCollectionChangedAction.Add && !SelectNewTabOnCreate) {
+			//	this.IsSelectionHandled = true;
+			//}
+			//if (e.Action == NotifyCollectionChangedAction.Add && SelectNewTabOnCreate) {
+			//	var tabItem = (TabItem)this.ItemContainerGenerator.ContainerFromItem(e.NewItems[e.NewItems.Count - 1]);
+			//	SelectedItem = tabItem;
 
-				TabPanel itemsHost = Helper.FindVirtualizingTabPanel(this);
-				if (itemsHost != null)
-					itemsHost.MakeVisible(tabItem, Rect.Empty);
+			//	TabPanel itemsHost = Helper.FindVirtualizingTabPanel(this);
+			//	if (itemsHost != null)
+			//		itemsHost.MakeVisible(tabItem, Rect.Empty);
 
-				tabItem.Focus();
-			}
+			//	tabItem.Focus();
+			//}
 		}
 
     protected override void OnSelectionChanged(SelectionChangedEventArgs e) {

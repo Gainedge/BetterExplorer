@@ -139,9 +139,9 @@ namespace BetterExplorer {
 
 			foreach (var item in tcMain.Items.OfType<Wpf.Controls.TabItem>()) {
 				bool IsAdditem = true;
-				item.ShellObject.RecreateRCW();
+				item.ShellObject = item.ShellObject.Clone();
 				foreach (var mii in btnCopyto.Items.OfType<MenuItem>().Where(x => x.Tag != null)) {
-					
+
 
 					if ((mii.Tag as IListItemEx).Equals(item.ShellObject)) {
 						IsAdditem = false;
@@ -171,9 +171,21 @@ namespace BetterExplorer {
 
 		Wpf.Controls.TabItem _CurrentlySelectedItem = null;
 
-		[Obsolete("I do not think we need this")]
 		private void tcMain_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			if (e.RemovedItems.Count > 0) {
+				var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
 
+				if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
+					tab.SelectedItems = this._ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+				}
+			}
+			if (e.AddedItems.Count > 0) {
+				this.SelectTab(e.AddedItems[0] as Wpf.Controls.TabItem);
+			}
+		}
+
+		private void btnResetFolderSettings_OnClick(object sender, RoutedEventArgs e) {
+			this.ResetFolderSettings();
 		}
 	}
 }

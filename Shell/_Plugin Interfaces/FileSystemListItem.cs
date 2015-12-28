@@ -32,9 +32,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public int OverlayIconIndex { get; set; }
 
-		public Interop.IExtractIconPWFlags IconType {
+		public Interop.IExtractIconPWFlags IconType
+		{
 			get { return this.IsParentSearchFolder ? IExtractIconPWFlags.GIL_PERINSTANCE : this._Item.GetIconType(); }
-			
+
 		}
 
 		public IntPtr ILPidl => this._Item.ILPidl;
@@ -73,7 +74,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public Int32 GroupIndex { get; set; }
 
-		public Int32 RCWThread { get; set; } 
+		public Int32 RCWThread { get; set; }
 
 		public IShellFolder IFolder { get; set; }
 
@@ -241,7 +242,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		public IEnumerator<IListItemEx> GetEnumerator() {
 			IShellFolder folder = this.GetIShellFolder();
 			HResult navRes;
-			IEnumIDList enumId = ShellItem.GetIEnumIDList(folder, SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN  | SHCONTF.FASTITEMS |
+			IEnumIDList enumId = ShellItem.GetIEnumIDList(folder, SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.FASTITEMS |
 					SHCONTF.NONFOLDERS | SHCONTF.ENABLE_ASYNC, out navRes);
 			this.NavigationStatus = navRes;
 			uint count;
@@ -280,7 +281,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 				this._Item.GetShellThumbnail(size, format, source);
 
 		public System.Windows.Media.Imaging.BitmapSource ThumbnailSource(int size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source) {
-			
+
 			//if (this.IsSearchFolder)
 			//	this._Item.ComInterface = this.searchFolder.m_SearchComInterface;
 
@@ -292,8 +293,10 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public bool IsSearchFolder { get; set; }
 
-		public IListItemEx Parent {
-			get {
+		public IListItemEx Parent
+		{
+			get
+			{
 				if (this.IsSearchFolder || this._Item.Parent == null) return null;
 
 				var parent = new FileSystemListItem();
@@ -373,13 +376,8 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public Boolean IsRCWSet { get; set; }
 
-		public void RecreateRCW() {
-			//return;
-			if (this.IsSearchFolder) return;
-			//if (this.RCWThread != Thread.CurrentThread.ManagedThreadId) {
-				this._Item = new ShellItem(this.ParsingName.ToShellParsingName());
-			//	this.RCWThread = Thread.CurrentThread.ManagedThreadId;
-			//}
+		public IListItemEx Clone() {
+			return FileSystemListItem.ToFileSystemItem(this.ParentHandle, this.PIDL);
 		}
 
 		#endregion

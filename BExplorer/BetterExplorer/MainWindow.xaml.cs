@@ -90,7 +90,7 @@ namespace BetterExplorer {
 		private bool IsUpdateCheckStartup;
 		private bool IsNeedEnsureVisible;
 		private ClipboardMonitor cbm = new ClipboardMonitor();
-		private ContextMenu cmHistory = new ContextMenu();
+		private ContextMenu _CMHistory = new ContextMenu();
 		private WIN.Shell.JumpList AppJL = new WIN.Shell.JumpList();
 		private List<string> Archives = new List<string>(new[] { ".rar", ".zip", ".7z", ".tar", ".gz", ".xz", ".bz2" });
 		private List<string> Images = new List<string>(new[] { ".jpg", ".jpeg", ".png", ".bmp", ".gif", ".wmf" });
@@ -1638,11 +1638,13 @@ namespace BetterExplorer {
 
 		//Boolean _IsTabSelectionChangedNotAllowed = true;
 		void tcMain_OnTabClicked(object sender, Wpf.Controls.TabClickEventArgs e) {
-			this.tcMain.IsInTabDragDrop = false;
+			//this.tcMain.IsInTabDragDrop = false;
+			//tcMain.IsSelectionHandled = true;
 			//tcMain.SelectedItem = e.ClickedItem;
-			////this._IsTabSelectionChangedNotAllowed = false;
+			//////this._IsTabSelectionChangedNotAllowed = false;
 			//this._CurrentlySelectedItem = e.ClickedItem;
-			//this.SelectTab(tcMain.SelectedItem as Wpf.Controls.TabItem);
+			//this.SelectTab(e.ClickedItem);
+			//tcMain.IsSelectionHandled = false;
 			//this.tcMain.IsInTabDragDrop = true;
 			//this._IsTabSelectionChangedAllowed = false;
 		}
@@ -2082,20 +2084,22 @@ selectedItems.Add(item.ParsingName);
 		}
 
 		private void downArrow_Click(object sender, RoutedEventArgs e) {
-			cmHistory.Items.Clear();
-			NavigationLog nl = (tcMain.SelectedItem as Wpf.Controls.TabItem).log;
-			int i = 0;
+			_CMHistory.Items.Clear();
+			if (tcMain.SelectedItem == null) return;
+			var nl = ((Wpf.Controls.TabItem)tcMain.SelectedItem).log;
+			var i = 0;
 			foreach (var item in nl.HistoryItemsList) {
 				if (item != null) {
-					cmHistory.Items.Add(Utilities.Build_MenuItem(item.DisplayName, item, item.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default),
+					var itemCopy = item.Clone();
+					_CMHistory.Items.Add(Utilities.Build_MenuItem(itemCopy.DisplayName, itemCopy, itemCopy.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default),
 																													 checkable: true, isChecked: i == nl.CurrentLocPos, GroupName: "G1", onClick: miItems_Click));
 				}
 				i++;
 			}
 
-			cmHistory.Placement = PlacementMode.Bottom;
-			cmHistory.PlacementTarget = navBarGrid;
-			cmHistory.IsOpen = true;
+			_CMHistory.Placement = PlacementMode.Bottom;
+			_CMHistory.PlacementTarget = navBarGrid;
+			_CMHistory.IsOpen = true;
 		}
 
 		void miItems_Click(object sender, RoutedEventArgs e) {
@@ -2104,7 +2108,7 @@ selectedItems.Add(item.ParsingName);
 				tcMain.isGoingBackOrForward = true;
 				NavigationLog nl = (tcMain.Items[tcMain.SelectedIndex] as Wpf.Controls.TabItem).log;
 				(sender as MenuItem).IsChecked = true;
-				nl.CurrentLocPos = cmHistory.Items.IndexOf(sender);
+				nl.CurrentLocPos = _CMHistory.Items.IndexOf(sender);
 				NavigationController(item);
 			}
 		}
@@ -2135,6 +2139,7 @@ selectedItems.Add(item.ParsingName);
 
 		private Boolean _IsShouldRiseViewChanged = true;
 		private void StatusBar_Folder_Buttons(object sender, RoutedEventArgs e) {
+			this._IsShouldRiseViewChanged = false;
 			if (_ShellListView == null)
 				return;
 			else if (sender == btnSbDetails)
@@ -2143,6 +2148,7 @@ selectedItems.Add(item.ParsingName);
 				_ShellListView.View = ShellViewStyle.Medium;
 			else if (sender == btnSbTiles)
 				_ShellListView.View = ShellViewStyle.Tile;
+			this._IsShouldRiseViewChanged = true;
 		}
 
 		void mi_Click(object sender, RoutedEventArgs e) {
@@ -2160,10 +2166,12 @@ selectedItems.Add(item.ParsingName);
 		}
 
 		private void inRibbonGallery1_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+			if (!this._IsShouldRiseViewChanged || !this._ShellListView.IsViewSelectionAllowed) return;
 			e.Handled = true;
 			if (e.AddedItems.Count == 0) return;
 			var selectedItem = e.AddedItems[0];
 			var selectedItemIndex = ViewGallery.Items.IndexOf(selectedItem);
+			this._IsShouldRiseViewChanged = false;
 			switch (selectedItemIndex) {
 				case 0:
 					_ShellListView.View = ShellViewStyle.ExtraLargeIcon;
@@ -2195,6 +2203,7 @@ selectedItems.Add(item.ParsingName);
 				default:
 					break;
 			}
+			this._IsShouldRiseViewChanged = true;
 		}
 
 		private void chkHiddenFiles_Checked(object sender, RoutedEventArgs e) {
@@ -2892,6 +2901,7 @@ item.IsChecked = false;
 					tcMain.IsInTabDragDrop = true;
 				}
 			}
+			//tcMain.IsSelectionHandled = false;
 		}
 
 		void newt_DragOver(object sender, DragEventArgs e) {
@@ -2940,6 +2950,7 @@ item.IsChecked = false;
 		System.Runtime.InteropServices.ComTypes.IDataObject _TabDropData;
 		void newt_DragEnter(object sender, DragEventArgs e) {
 			e.Handled = true;
+			this._CurrentlySelectedItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
 			var tabItem = e.Source as Wpf.Controls.TabItem;
 			if (tabItem == null) return;
 
@@ -3394,8 +3405,8 @@ return false;
 		}
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
+			this.bcbc.SetPathWithoutNavigate(e.Folder.IsSearchFolder ? e.Folder.PIDL.ToString() : e.Folder.ParsingName.ToShellParsingName());
 			if (this._ShellListView.CurrentFolder == null) return;
-			if (e.Folder.IsSearchFolder) this.bcbc.SetPathWithoutNavigate(e.Folder.PIDL.ToString());
 			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
 				var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 				if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
@@ -3497,7 +3508,7 @@ return false;
 
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
 			SetupUIOnSelectOrNavigate();
-			this.bcbc.SetPathWithoutNavigate(this._ShellListView.CurrentFolder.IsSearchFolder ? this._ShellListView.CurrentFolder.PIDL.ToString() : this._ShellListView.CurrentFolder.ParsingName.ToShellParsingName());
+
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				SetupColumnsButton();
 				SetSortingAndGroupingButtons();
@@ -3530,10 +3541,10 @@ return false;
 			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
 				var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
 				if (selectedItem == null) {
-					this.tcMain.SelectedItem = this.tcMain.Items.OfType<Wpf.Controls.TabItem>().Last();
+					//this.tcMain.SelectedItem = this.tcMain.Items.OfType<Wpf.Controls.TabItem>().Last();
 					selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
 				}
-				
+
 				selectedItem.Header = this._ShellListView.CurrentFolder.DisplayName;
 				selectedItem.Icon = this._ShellListView.CurrentFolder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 				selectedItem.ShellObject = this._ShellListView.CurrentFolder;
@@ -3597,25 +3608,27 @@ return false;
 		}
 
 		private void SetUpJumpListOnNavComplete() {
-			var pIDL = IntPtr.Zero;
+			var pidl = IntPtr.Zero;
 
 			try {
-				pIDL = this._ShellListView.CurrentFolder.AbsolutePidl;
+				pidl = this._ShellListView.CurrentFolder.AbsolutePidl;
 				var sfi = new SHFILEINFO();
 
 				//TODO: Why do we even have this if(...)
-				if (pIDL != IntPtr.Zero && !_ShellListView.CurrentFolder.IsFileSystem) {
+				if (pidl != IntPtr.Zero && !_ShellListView.CurrentFolder.IsFileSystem) {
 					//if (!ShellListView.CurrentFolder.IsFileSystem) {
-					IntPtr Res = BExplorer.Shell.Interop.Shell32.SHGetFileInfo(pIDL, 0, out sfi, Marshal.SizeOf(sfi), SHGFI.IconLocation | SHGFI.SmallIcon | SHGFI.PIDL);
+					var res = BExplorer.Shell.Interop.Shell32.SHGetFileInfo(pidl, 0, out sfi, Marshal.SizeOf(sfi), SHGFI.IconLocation | SHGFI.SmallIcon | SHGFI.PIDL);
 				}
 
 				if (_ShellListView.CurrentFolder.IsFileSystem) {
 					BExplorer.Shell.Interop.Shell32.SHGetFileInfo(Marshal.StringToHGlobalAuto(_ShellListView.CurrentFolder.ParsingName), 0, out sfi, Marshal.SizeOf(sfi), SHGFI.IconLocation | SHGFI.SmallIcon);
 				}
 
+
 				JumpList.AddToRecentCategory(new JumpTask() {
 					ApplicationPath = Process.GetCurrentProcess().MainModule.FileName,
-					Arguments = $"\"{_ShellListView.CurrentFolder.ParsingName}\"",
+					Arguments = "\"" + _ShellListView.CurrentFolder.ParsingName + "\"",
+					//Arguments = "t",
 					Title = _ShellListView.CurrentFolder.DisplayName,
 					IconResourcePath = sfi.szDisplayName,
 					IconResourceIndex = sfi.iIcon
@@ -3623,7 +3636,7 @@ return false;
 
 				AppJL.Apply();
 			} finally {
-				if (pIDL != IntPtr.Zero) Marshal.FreeCoTaskMem(pIDL);
+				if (pidl != IntPtr.Zero) Marshal.FreeCoTaskMem(pidl);
 			}
 		}
 
@@ -3805,6 +3818,10 @@ return false;
 			// allows user to change language
 		}
 
+		private void ResetFolderSettings() {
+			this._ShellListView.ResetFolderSettings();
+		}
+
 		private void beNotifyIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e) {
 			this.Visibility = Visibility.Visible;
 			if (this.WindowState == WindowState.Minimized) {
@@ -3822,7 +3839,7 @@ return false;
 				(ThreadStart)(() => {
 					this._IsShouldRiseViewChanged = false;
 					zoomSlider.Value = e.ThumbnailSize;
-					this._IsShouldRiseViewChanged = true;
+					
 					btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
 					btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;
 
@@ -3855,6 +3872,7 @@ return false;
 					} else if (e.CurrentView == ShellViewStyle.Thumbstrip) {
 						ViewGallery.SelectedIndex = 8;
 					}
+					this._IsShouldRiseViewChanged = true;
 				}));
 		}
 
@@ -3990,46 +4008,47 @@ We could easily move this to another project and send that method
 			}
 		}
 
-		void tcMain_PreviewSelectionChanged(object p_oSender, Wpf.Controls.PreviewSelectionChangedEventArgs e) {
+		void tcMain_PreviewSelectionChanged(object sender, Wpf.Controls.PreviewSelectionChangedEventArgs e) {
 			//if (tcMain.IsInTabDragDrop) {
 			//	e.Cancel = true;
 			//	return;
 			//}
 
-			if (e.RemovedItems.Count > 0) {
-				var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
+			//if (e.RemovedItems.Count > 0) {
+			//	var tab = e.RemovedItems[0] as Wpf.Controls.TabItem;
 
-				if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
-					tab.SelectedItems = this._ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
-				}
-			}
+			//	if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
+			//		tab.SelectedItems = this._ShellListView.SelectedItems.Select(s => s.ParsingName).ToList();
+			//	}
+			//}
 
-			if (e.AddedItems.Count == 0 || tcMain.SelectNewTabOnCreate == false) return;
-			tcMain.IsInTabDragDrop = true;
-			var newTab = e.AddedItems[0] as Wpf.Controls.TabItem;
-			if (this._ShellListView.CurrentFolder == null || !this._ShellListView.CurrentFolder.Equals(newTab.ShellObject) && tcMain.CurrentTabItem == null) {
-				SelectTab(newTab);
-			} else if (!tcMain.IsSelectionHandled) {
-				SelectTab(newTab);
-				//btnUndoClose
-				btnUndoClose.Items.Clear();
-				foreach (var item in tcMain.ReopenableTabs) {
-					btnUndoClose.Items.Add(item.CurrentLocation);
-				}
-			} else if (e.RemovedItems.Count == 0) {
-				e.Cancel = true;
-				SelectTab(newTab);
-				tcMain.SelectedItem = e.AddedItems[0];
-			} else if (e.RemovedItems[0] == tcMain.CurrentTabItem) {
-				e.Cancel = true;
-				tcMain.IsSelectionHandled = false;
-				tcMain.SelectedItem = e.RemovedItems[0];
-				tcMain.CurrentTabItem = null;
-			}
+			//if (e.AddedItems.Count == 0 || tcMain.SelectNewTabOnCreate == false) return;
+			//tcMain.IsInTabDragDrop = true;
+			//var newTab = e.AddedItems[0] as Wpf.Controls.TabItem;
+			//if (this._ShellListView.CurrentFolder == null || !this._ShellListView.CurrentFolder.Equals(newTab.ShellObject) && tcMain.CurrentTabItem == null) {
+			//	SelectTab(newTab);
+			//} else if (!tcMain.IsSelectionHandled) {
+			//	SelectTab(newTab);
+			//	//btnUndoClose
+			//	btnUndoClose.Items.Clear();
+			//	foreach (var item in tcMain.ReopenableTabs) {
+			//		btnUndoClose.Items.Add(item.CurrentLocation);
+			//	}
+			//}
+			////else if (e.RemovedItems.Count == 0) {
+			////	e.Cancel = true;
+			////	SelectTab(newTab);
+			////	tcMain.SelectedItem = e.AddedItems[0];
+			////} else if (e.RemovedItems[0] == tcMain.CurrentTabItem) {
+			////	e.Cancel = true;
+			////	tcMain.IsSelectionHandled = false;
+			////	tcMain.SelectedItem = e.RemovedItems[0];
+			////	tcMain.CurrentTabItem = null;
+			////}
 
-			tcMain.IsSelectionHandled = false;
-			this._ShellListView.Focus();
-			this._CurrentlySelectedItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
+			//tcMain.IsSelectionHandled = true;
+			//this._ShellListView.Focus();
+			//this._CurrentlySelectedItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
 		}
 
 
@@ -4071,9 +4090,9 @@ We could easily move this to another project and send that method
 		}
 
 		private void RibbonWindow_StateChanged(object sender, EventArgs e) {
-			tcMain.CurrentTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
+			//tcMain.CurrentTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
 			tcMain.IsSelectionHandled = true;
-			if (this.WindowState != WindowState.Minimized && this.IsActive) focusTimer.Start();
+			//if (this.WindowState != WindowState.Minimized && this.IsActive) focusTimer.Start();
 		}
 
 		void focusTimer_Tick(object sender, EventArgs e) {

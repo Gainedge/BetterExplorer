@@ -163,8 +163,8 @@ namespace BetterExplorer {
 			rks.Close();
 			rk.Close();
 
-			if (e.Args != null && e.Args.Any()) {
-				dmi = e.Args.Contains("/nw") || e.Args[0] == "t";
+			if (e.Args.Any()) {
+				dmi = e.Args.Length >= 1;
 				IsStartWithStartupTab = e.Args.Contains("/norestore");
 
 				if (e.Args[0] != "-minimized")
@@ -207,17 +207,17 @@ namespace BetterExplorer {
 		/// <param name="sender">The sender.</param>
 		/// <param name="args">The <see cref="SingleInstanceApplication.InstanceCallbackEventArgs"/> instance containing the event data.</param>
 		/// 
-		private void SingleInstanceCallback(object sender, InstanceCallbackEventArgs args) {
+		private void SingleInstanceCallback(Object sender, InstanceCallbackEventArgs args) {
 			if (args == null || Dispatcher == null) return;
 			var startUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
 
-			Action<bool> d = x => {
+			Action<Boolean> d = x => {
 				var win = MainWindow as MainWindow;
-				CombinedWindowActivator windowsActivate = new CombinedWindowActivator();
+				var windowsActivate = new CombinedWindowActivator();
 				if (!x) return;
+				if (win == null) return;
 				win.StateChanged += Win_StateChanged;
 				if (args?.CommandLineArgs == null || !args.CommandLineArgs.Any()) return;
-				if (win == null) return;
 				if (args.CommandLineArgs.Length == 1) {
 					win.Visibility = Visibility.Visible;
 					//if (win.WindowState == WindowState.Minimized) {
@@ -244,14 +244,14 @@ namespace BetterExplorer {
 
 						if (!IsStartMinimized || win.tcMain.Items.Count == 0) {
 							CreateInitialTab(win, sho);
-						} else if ((int)Utilities.GetRegistryValue("IsRestoreTabs", "1") == 0) {
+						} else if ((Int32)Utilities.GetRegistryValue("IsRestoreTabs", "1") == 0) {
 							win.tcMain.Items.Clear();
 							CreateInitialTab(win, sho);
 						} else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
 							if (args.CommandLineArgs[1] == "t") {
 								CreateInitialTab(win, sho);
 							} else {
-								String cmd = args.CommandLineArgs[1];
+								var cmd = args.CommandLineArgs[1];
 								sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd.ToShellParsingName());
 								CreateInitialTab(win, sho);
 							}

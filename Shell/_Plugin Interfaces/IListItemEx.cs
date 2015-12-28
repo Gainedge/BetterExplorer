@@ -91,9 +91,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		void Initialize(IntPtr lvHandle, IntPtr pidl);
 
 		void InitializeWithParent(ShellItem parent, IntPtr lvHandle, IntPtr pidl, int index);
-		void RecreateRCW();
+		IListItemEx Clone();
 
-				PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type);
+		PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type);
 
 		Dictionary<PROPERTYKEY, Object> ColumnValues { get; set; }
 
@@ -109,7 +109,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		Boolean IsRCWSet { get; set; }
 		Int32 RCWThread { get; set; }
-		
+
 		HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false);
 
 		HResult NavigationStatus { get; set; }

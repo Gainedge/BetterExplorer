@@ -433,141 +433,33 @@ public int iSubItem;
 	}
 
 	public static class Extensions {
-
-		///// <summary>
-		///// Angles of a rectangle.
-		///// </summary>
-		//public enum RectAngles
-		//{
-		//	None = 0,
-		//	TopLeft = 1,
-		//	TopRight = 2,
-		//	BottomLeft = 4,
-		//	BottomRight = 8,
-		//	All = TopLeft | TopRight | BottomLeft | BottomRight
-		//}
-
-		///// <summary>
-		///// Draw and fill a rounded rectangle.
-		///// </summary>
-		///// <param name="g">The graphics object to use.</param>
-		///// <param name="p">The pen to use to draw the rounded rectangle. If <code>null</code>, the border is not drawn.</param>
-		///// <param name="b">The brush to fill the rounded rectangle. If <code>null</code>, the internal is not filled.</param>
-		///// <param name="r">The rectangle to draw.</param>
-		///// <param name="horizontalDiameter">Horizontal diameter for the rounded angles.</param>
-		///// <param name="verticalDiameter">Vertical diameter for the rounded angles.</param>
-		///// <param name="rectAngles">Angles to round.</param>
-		//public static void DrawAndFillRoundedRectangle(this Graphics g, Pen p, Brush b, Rectangle r, int horizontalDiameter, int verticalDiameter, RectAngles rectAngles)
-		//{
-		//	// get out data
-		//	int x = r.X;
-		//	int y = r.Y;
-		//	int width = r.Width;
-		//	int height = r.Height;
-		//	// adapt horizontal and vertical diameter if the rectangle is too little
-		//	if (width < horizontalDiameter)
-		//		horizontalDiameter = width;
-		//	if (height < verticalDiameter)
-		//		verticalDiameter = height;
-		//	/*
-		//	 * The drawing is the following:
-		//	 *
-		//	 *             a
-		//	 *      P______________Q
-		//	 *    h /              \ b
-		//	 *   W /                \R
-		//	 *    |                  |
-		//	 *  g |                  | c
-		//	 *   V|                  |S
-		//	 *    f\                / d
-		//	 *     U\______________/T
-		//	 *             e
-		//	 */
-		//	bool tl = (rectAngles & RectAngles.TopLeft) != 0,
-		//			tr = (rectAngles & RectAngles.TopRight) != 0,
-		//			br = (rectAngles & RectAngles.BottomRight) != 0,
-		//			bl = (rectAngles & RectAngles.BottomLeft) != 0;
-		//	Point pointP = tl ?
-		//			new Point(x + horizontalDiameter / 2, y) :
-		//			new Point(x, y);
-		//	Point pointQ = tr ?
-		//			new Point(x + width - horizontalDiameter / 2 - 1, y) :
-		//			new Point(x + width - 1, y);
-		//	Point pointR = tr ?
-		//			new Point(x + width - 1, y + verticalDiameter / 2) :
-		//			pointQ;
-		//	Point pointS = br ?
-		//			new Point(x + width - 1, y + height - verticalDiameter / 2 - 1) :
-		//			new Point(x + width - 1, y + height - 1);
-		//	Point pointT = br ?
-		//			new Point(x + width - horizontalDiameter / 2 - 1) :
-		//			pointS;
-		//	Point pointU = bl ?
-		//			new Point(x + horizontalDiameter / 2, y + height - 1) :
-		//			new Point(x, y + height - 1);
-		//	Point pointV = bl ?
-		//			new Point(x, y + height - verticalDiameter / 2 - 1) :
-		//			pointU;
-		//	Point pointW = tl ?
-		//			new Point(x, y + verticalDiameter / 2) :
-		//			pointP;
-		//	using (GraphicsPath gp = new GraphicsPath())
-		//	{
-		//		// a
-		//		gp.AddLine(pointP, pointQ);
-		//		// b
-		//		if (tr)
-		//			gp.AddArc(x + width - horizontalDiameter - 1, y, horizontalDiameter, verticalDiameter, 270, 90);
-		//		// c
-		//		gp.AddLine(pointR, pointS);
-		//		// d
-		//		if (br)
-		//			gp.AddArc(x + width - horizontalDiameter - 1, y + height - verticalDiameter - 1, horizontalDiameter, verticalDiameter, 0, 90);
-		//		// e
-		//		gp.AddLine(pointT, pointU);
-		//		// f
-		//		if (bl)
-		//			gp.AddArc(x, y + height - verticalDiameter - 1, horizontalDiameter, verticalDiameter, 90, 90);
-		//		// g
-		//		gp.AddLine(pointV, pointW);
-		//		// h
-		//		if (tl)
-		//			gp.AddArc(x, y, horizontalDiameter, verticalDiameter, 180, 90);
-		//		// end
-		//		gp.CloseFigure();
-		//		// draw
-		//		if (b != null)
-		//			g.FillPath(b, gp);
-		//		if (p != null)
-		//			g.DrawPath(p, gp);
-		//	}
-		//}
-
 		public static LVGROUP2 ToNativeListViewGroup(this ListViewGroupEx group) {
-			LVGROUP2 nativeGroup = new LVGROUP2();
-			nativeGroup.cbSize = (uint)Marshal.SizeOf(typeof(LVGROUP2));
-			nativeGroup.mask = (uint)(GroupMask.LVGF_HEADER ^ GroupMask.LVGF_STATE ^ GroupMask.LVGF_GROUPID);
-			nativeGroup.stateMask = (uint)GroupState.LVGS_COLLAPSIBLE;
-			nativeGroup.state = (uint)GroupState.LVGS_COLLAPSIBLE;
-			nativeGroup.pszHeader = group.Header;
-			nativeGroup.iGroupId = group.Index;
+			LVGROUP2 nativeGroup = new LVGROUP2 {
+				cbSize = (UInt32) Marshal.SizeOf(typeof (LVGROUP2)),
+				mask = (UInt32) (GroupMask.LVGF_HEADER ^ GroupMask.LVGF_STATE ^ GroupMask.LVGF_GROUPID),
+				stateMask = (UInt32) GroupState.LVGS_COLLAPSIBLE,
+				state = (UInt32) GroupState.LVGS_COLLAPSIBLE,
+				pszHeader = @group.Header,
+				iGroupId = @group.Index
+			};
 
-			if (group.Items.Count() > 0) {
+			if (group.Items.Any()) {
 				nativeGroup.cItems = group.Items.Count();
-				nativeGroup.mask ^= (uint)GroupMask.LVGF_ITEMS;
+				nativeGroup.mask ^= (UInt32)GroupMask.LVGF_ITEMS;
 			}
 
 			return nativeGroup;
 		}
 
-		public static Collumns ToCollumns(this LVCOLUMN column, PROPERTYKEY pkey, Type type, bool IsColumnHandler, int minWidth) {
-			Collumns col = new Collumns();
-			col.pkey = pkey;
-			col.Name = column.pszText;
-			col.Width = minWidth;
-			col.IsColumnHandler = IsColumnHandler;
-			col.CollumnType = type;
-			col.MinWidth = minWidth;
+		public static Collumns ToCollumns(this LVCOLUMN column, PROPERTYKEY pkey, Type type, Boolean isColumnHandler, Int32 minWidth) {
+			var col = new Collumns {
+				pkey = pkey,
+				Name = column.pszText,
+				Width = minWidth,
+				IsColumnHandler = isColumnHandler,
+				CollumnType = type,
+				MinWidth = minWidth
+			};
 			return col;
 		}
 
@@ -576,34 +468,12 @@ public int iSubItem;
 				mask = HDITEM.Mask.Format
 			};
 
-			if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero) {
-				//throw new Win32Exception();
-			}
+			User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, index, ref item);
 
 			item.fmt |= HDITEM.Format.HDF_SPLITBUTTON;
 
-			if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_SETITEM, index, ref item) == IntPtr.Zero) {
-				//throw new Win32Exception();
-			}
+			User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_SETITEM, index, ref item);
 		}
-
-		/*
-public static void SetFormat(this LVCOLUMN column, IntPtr handle, int index) {
-var item = new HDITEM {
-mask = HDITEM.Mask.Format
-};
-
-if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, index, ref item) == IntPtr.Zero) {
-throw new Win32Exception();
-}
-
-item.fmt |= HDITEM.Format.HDF_SPLITBUTTON;
-
-if (User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_SETITEM, index, ref item) == IntPtr.Zero) {
-throw new Win32Exception();
-}
-}
-*/
 
 
 		/// <summary>
@@ -612,6 +482,7 @@ throw new Win32Exception();
 		/// <param name="path">The path you want to convert</param>
 		/// <returns></returns>
 		public static String ToShellParsingName(this String path) {
+			if (path.EndsWith("\\") || path.EndsWith("\"")) path = path.TrimEnd(Char.Parse("\\"), Char.Parse("\""));
 			if (path.StartsWith("shell::"))
 				return path;
 			if (path.StartsWith("%"))
@@ -620,7 +491,7 @@ throw new Win32Exception();
 				return $"shell:{path}";
 			else if (!path.StartsWith(@"\\")) {
 				if (path.Contains(":")) {
-					return String.Format("{0}{1}", path, path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString());
+					return $"{path}{(path.EndsWith(@"\") ? String.Empty : Path.DirectorySeparatorChar.ToString())}";
 				} else {
 					try {
 						return $"{path}{Path.DirectorySeparatorChar}";
@@ -634,13 +505,13 @@ throw new Win32Exception();
 		}
 
 		public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this IListItemEx[] items, out IntPtr dataObjectPtr) {
-			var parent = items[0].Parent != null ? items[0].Parent : items[0];
+			var parent = items[0].Parent ?? items[0];
 
-			IntPtr[] pidls = new IntPtr[items.Length];
-			for (int i = 0; i < items.Length; i++)
+			var pidls = new IntPtr[items.Length];
+			for (var i = 0; i < items.Length; i++)
 				pidls[i] = items[i].ILPidl;
-			Guid IID_IDataObject = Ole32.IID_IDataObject;
-			parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (uint)pidls.Length, pidls, ref IID_IDataObject, 0, out dataObjectPtr);
+			var iidIDataObject = Ole32.IID_IDataObject;
+			parent.GetIShellFolder().GetUIObjectOf(IntPtr.Zero, (UInt32)pidls.Length, pidls, ref iidIDataObject, 0, out dataObjectPtr);
 
 			System.Runtime.InteropServices.ComTypes.IDataObject dataObj =
 											(System.Runtime.InteropServices.ComTypes.IDataObject)
@@ -650,7 +521,7 @@ throw new Win32Exception();
 		}
 
 		public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this IListItemEx item, out IntPtr dataObjectPtr) {
-			var parent = item.Parent != null ? item.Parent : item;
+			var parent = item.Parent ?? item;
 
 			IntPtr[] pidls = new IntPtr[1];
 			pidls[0] = item.ILPidl;
@@ -664,40 +535,6 @@ throw new Win32Exception();
 			return dataObj;
 		}
 
-		/*
-public static void SetSortIcon(this ShellView listViewControl, int columnIndex, SortOrder order) {
-IntPtr columnHeader = User32.SendMessage(listViewControl.LVHandle, BExplorer.Shell.Interop.MSG.LVM_GETHEADER, 0, 0);
-for (int columnNumber = 0; columnNumber <= listViewControl.Collumns.Count - 1; columnNumber++) {
-var item = new HDITEM {
-	mask = HDITEM.Mask.Format
-};
-
-if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_GETITEM, columnNumber, ref item) == IntPtr.Zero) {
-	throw new Win32Exception();
-}
-
-if (order != SortOrder.None && columnNumber == columnIndex) {
-	switch (order) {
-		case SortOrder.Ascending:
-			item.fmt &= ~HDITEM.Format.SortDown;
-			item.fmt |= HDITEM.Format.SortUp;
-			break;
-		case SortOrder.Descending:
-			item.fmt &= ~HDITEM.Format.SortUp;
-			item.fmt |= HDITEM.Format.SortDown;
-			break;
-	}
-}
-else {
-	item.fmt &= ~HDITEM.Format.SortDown & ~HDITEM.Format.SortUp;
-}
-
-if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_SETITEM, columnNumber, ref item) == IntPtr.Zero) {
-	throw new Win32Exception();
-}
-}
-}
-*/
 
 		public static bool HitTest(this ShellView shellView, Point hitPoint, out int row, out int column) {
 			// clear the output values
@@ -748,36 +585,34 @@ if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_SETITEM, co
 		/// <returns></returns>
 		public static IShellItem[] ToArray(this IShellItemArray shellItemArray) {
 			var items = new List<IShellItem>();
-			if (shellItemArray != null) {
-				try {
-					uint itemCount = 0;
-					shellItemArray.GetCount(out itemCount);
-					for (uint index = 0; index < itemCount; index++) {
-						IShellItem iShellItem = null;
-						shellItemArray.GetItemAt(index, out iShellItem);
-						items.Add(iShellItem);
-					}
-				} finally {
-					Marshal.ReleaseComObject(shellItemArray);
+			if (shellItemArray == null) return items.ToArray();
+			try {
+				uint itemCount = 0;
+				shellItemArray.GetCount(out itemCount);
+				for (uint index = 0; index < itemCount; index++) {
+					IShellItem iShellItem = null;
+					shellItemArray.GetItemAt(index, out iShellItem);
+					items.Add(iShellItem);
 				}
+			} finally {
+				Marshal.ReleaseComObject(shellItemArray);
 			}
 			return items.ToArray();
 		}
 
 		public static IListItemEx[] ToIListItemArray(this IShellItemArray shellItemArray) {
 			var items = new List<IListItemEx>();
-			if (shellItemArray != null) {
-				try {
-					uint itemCount = 0;
-					shellItemArray.GetCount(out itemCount);
-					for (uint index = 0; index < itemCount; index++) {
-						IShellItem iShellItem = null;
-						shellItemArray.GetItemAt(index, out iShellItem);
-						items.Add(FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, iShellItem));
-					}
-				} finally {
-					Marshal.ReleaseComObject(shellItemArray);
+			if (shellItemArray == null) return items.ToArray();
+			try {
+				uint itemCount = 0;
+				shellItemArray.GetCount(out itemCount);
+				for (uint index = 0; index < itemCount; index++) {
+					IShellItem iShellItem = null;
+					shellItemArray.GetItemAt(index, out iShellItem);
+					items.Add(FileSystemListItem.InitializeWithIShellItem(IntPtr.Zero, iShellItem));
 				}
+			} finally {
+				Marshal.ReleaseComObject(shellItemArray);
 			}
 			return items.ToArray();
 		}
@@ -826,14 +661,6 @@ if (User32.SendMessage(columnHeader, BExplorer.Shell.Interop.MSG.HDM_SETITEM, co
 			}
 			return dragDropEffect;
 		}
-
-		/*
-[DllImport("shell32.dll", CharSet = CharSet.Auto)]
-public static extern IntPtr ILCreateFromPath(string path);
-*/
-
-		[DllImport("shell32.dll", CharSet = CharSet.None)]
-		public static extern void ILFree(IntPtr pidl);
 
 		[DllImport("shell32.dll", CharSet = CharSet.None)]
 		public static extern int ILGetSize(IntPtr pidl);

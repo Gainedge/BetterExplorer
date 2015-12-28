@@ -774,9 +774,12 @@ namespace BExplorer.Shell {
 		}
 
 		private void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
-			if (!this.isFromTreeview) {
+			if (this.isFromTreeview) return;
+			var thread = new Thread(() => {
 				this.SelItem(e.Folder);
-			}
+			});
+			thread.SetApartmentState(ApartmentState.STA);
+			thread.Start();
 		}
 
 		private void ShellTreeView_ItemDrag(object sender, ItemDragEventArgs e) {
