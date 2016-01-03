@@ -12,6 +12,7 @@ using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BExplorer.Shell {
 	public class FOperationProgressSink : FileOperationProgressSink {
+
 		private ShellView _View { get; set; }
 		private IListItemEx CurrentFolder { get; set; }
 

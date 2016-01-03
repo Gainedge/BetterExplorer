@@ -1948,16 +1948,21 @@ namespace BExplorer.Shell {
 				}
 			};
 			this._FsWatcher.Created += (sender, args) => {
-				var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
-				if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
-					if (this.IsRenameNeeded) {
-						var itemIndex = this.InsertNewItem(obj);
-						this.SelectItemByIndex(itemIndex, true, true);
-						this.RenameSelectedItem();
-						this.IsRenameNeeded = false;
-					} else {
-						this.UnvalidateDirectory();
+				try {
+					var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
+					if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
+						if (this.IsRenameNeeded) {
+							var itemIndex = this.InsertNewItem(obj);
+							this.SelectItemByIndex(itemIndex, true, true);
+							this.RenameSelectedItem();
+							this.IsRenameNeeded = false;
+						} else {
+							this.UnvalidateDirectory();
+						}
 					}
+				}
+				catch (FileNotFoundException fileNotFoundException) {
+					this.UnvalidateDirectory();
 				}
 			};
 			this._FsWatcher.Deleted += (sender, args) => {
