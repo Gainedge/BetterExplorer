@@ -84,23 +84,23 @@ namespace BExplorer.Shell {
 				var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
 				//Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
 				//Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
-				Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
-					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+				//Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
+				//	Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
 			}
 			//theNewItem.Dispose();
 			this._View.UnvalidateDirectory();
-			//try {
-			//	if (psiItem != null) {
-			//		Marshal.ReleaseComObject(psiItem);
-			//		psiItem = null;
-			//	}
-			//	if (psiNewlyCreated != null) {
-			//		Marshal.ReleaseComObject(psiNewlyCreated);
-			//		psiNewlyCreated = null;
-			//	}
-			//} catch (Exception) {
+			try {
+				if (psiItem != null) {
+					Marshal.ReleaseComObject(psiItem);
+					psiItem = null;
+				}
+				if (psiNewlyCreated != null) {
+					Marshal.ReleaseComObject(psiNewlyCreated);
+					psiNewlyCreated = null;
+				}
+			} catch (Exception) {
 
-			//}
+			}
 		}
 
 		[HandleProcessCorruptedStateExceptions]
@@ -116,17 +116,17 @@ namespace BExplorer.Shell {
 			//		Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			//theNewItem.Dispose();
 			this._View.UnvalidateDirectory();
-			//try {
-			//	if (psiItem != null) {
-			//		Marshal.ReleaseComObject(psiItem);
-			//		psiItem = null;
-			//	}
-			//	if (psiNewlyCreated != null) {
-			//		Marshal.ReleaseComObject(psiNewlyCreated);
-			//		psiNewlyCreated = null;
-			//	}
-			//} catch (Exception) {
-			//}
+			try {
+				if (psiItem != null) {
+					Marshal.ReleaseComObject(psiItem);
+					psiItem = null;
+				}
+				if (psiNewlyCreated != null) {
+					Marshal.ReleaseComObject(psiNewlyCreated);
+					psiNewlyCreated = null;
+				}
+			} catch (Exception) {
+			}
 		}
 	}
 }

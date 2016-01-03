@@ -413,7 +413,7 @@ namespace BExplorer.Shell {
 		#endregion Public Members
 
 		#region Private Members
-
+		private FileSystemWatcher _FsWatcher = new FileSystemWatcher();
 		private ListViewEditor _EditorSubclass;
 		private System.Windows.Forms.Timer _UnvalidateTimer = new System.Windows.Forms.Timer();
 		private System.Windows.Forms.Timer _MaintenanceTimer = new System.Windows.Forms.Timer();
@@ -1931,6 +1931,50 @@ namespace BExplorer.Shell {
 
 		protected override void OnHandleCreated(EventArgs e) {
 			base.OnHandleCreated(e);
+			this._FsWatcher.Changed += (sender, args) => {
+				try {
+					var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
+					if (this.CurrentFolder != null && objUpdateItem.Parent != null && objUpdateItem.Parent.Equals(this.CurrentFolder)) {
+						var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
+						if (exisitingUItem != null)
+							this.RefreshItem(exisitingUItem.ItemIndex, true);
+
+						if (this._RequestedCurrentLocation != null && objUpdateItem.Equals(this._RequestedCurrentLocation))
+							this.UnvalidateDirectory();
+					}
+				}
+				catch (FileNotFoundException fileNotFoundException) {
+					this.UnvalidateDirectory();
+				}
+			};
+			this._FsWatcher.Created += (sender, args) => {
+				var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
+				if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
+					if (this.IsRenameNeeded) {
+						var itemIndex = this.InsertNewItem(obj);
+						this.SelectItemByIndex(itemIndex, true, true);
+						this.RenameSelectedItem();
+						this.IsRenameNeeded = false;
+					} else {
+						this.UnvalidateDirectory();
+					}
+				}
+			};
+			this._FsWatcher.Deleted += (sender, args) => {
+				//args.FullPath
+				//if (this.CurrentFolder != null && (objDelete.Parent != null && objDelete.Parent.Equals(this.CurrentFolder))) {
+				//	this.UnvalidateDirectory();
+				//}
+				//this.RaiseRecycleBinUpdated();
+			};
+			this._FsWatcher.Renamed += (sender, args) => {
+
+			};
+			this._FsWatcher.IncludeSubdirectories = true;
+			this._FsWatcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName |
+			                               NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
+			                               NotifyFilters.Size;
+			this._FsWatcher.InternalBufferSize = 100*1024*1024;
 			Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
 			this._UnvalidateTimer.Interval = 250;
 			this._UnvalidateTimer.Tick += _UnvalidateTimer_Tick;
@@ -2037,6 +2081,7 @@ namespace BExplorer.Shell {
 
 		protected override void OnHandleDestroyed(EventArgs e) {
 			try {
+				this._FsWatcher.Dispose();
 				this.Notifications.UnregisterChangeNotify();
 				Thread t = new Thread(() => {
 					if (_IconLoadingThread.IsAlive)
@@ -2565,6 +2610,12 @@ namespace BExplorer.Shell {
 					this.Threads.Remove(thread);
 				}
 
+			}
+
+			if (destination.IsFileSystem) {
+				this._FsWatcher.EnableRaisingEvents = false;
+				this._FsWatcher.Path = destination.ParsingName;
+				this._FsWatcher.EnableRaisingEvents = true;
 			}
 
 
