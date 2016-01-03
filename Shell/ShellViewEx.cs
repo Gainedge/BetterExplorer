@@ -32,45 +32,45 @@ namespace BExplorer.Shell {
 	/// <summary> Specifies how list items are displayed in a <see cref="ShellView" /> control. </summary>
 	public enum ShellViewStyle {
 		/// <summary> Items appear in a grid and icon size is 256x256 </summary>
-		ExtraLargeIcon,
+		ExtraLargeIcon = 256,
 
 		/// <summary> Items appear in a grid and icon size is 96x96 </summary>
-		LargeIcon,
+		LargeIcon = 96,
 
 		/// <summary> Each item appears as a full-sized icon with a label below it. </summary>
-		Medium,
+		Medium = 48,
 
 		/// <summary> Each item appears as a small icon with a label to its right. </summary>
-		SmallIcon,
+		SmallIcon = 15,
 
 		/// <summary>
 		/// Each item appears as a small icon with a label to its right. Items are arranged in columns.
 		/// </summary>
-		List,
+		List = 14,
 
 		/// <summary>
 		/// Each item appears on a separate line with further information about each item arranged
 		/// in columns. The left-most column contains a small icon and label.
 		/// </summary>
-		Details,
+		Details = 16,
 
 		/// <summary> Each item appears with a thumbnail picture of the file's content. </summary>
-		Thumbnail,
+		Thumbnail = 0,
 
 		/// <summary>
 		/// Each item appears as a full-sized icon with the item label and file information to the
 		/// right of it.
 		/// </summary>
-		Tile,
+		Tile = 47,
 
 		/// <summary>
 		/// Each item appears in a thumbstrip at the bottom of the control, with a large preview of
 		/// the selected item appearing above.
 		/// </summary>
-		Thumbstrip,
+		Thumbstrip = 46,
 
 		/// <summary> Each item appears in a item that occupy the whole view width </summary>
-		Content,
+		Content = 45,
 	}
 
 	public class RenameEventArgs : EventArgs {
@@ -333,57 +333,58 @@ namespace BExplorer.Shell {
 				this.IsViewSelectionAllowed = false;
 				switch (value) {
 					case ShellViewStyle.ExtraLargeIcon:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(256);
 						iconsize = 256;
 						break;
 
 					case ShellViewStyle.LargeIcon:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(96);
 						iconsize = 96;
 						break;
 
 					case ShellViewStyle.Medium:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(48);
 						iconsize = 48;
 						break;
 
 					case ShellViewStyle.SmallIcon:
 						ResizeIcons(16);
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_SMALLICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_SMALLICON, 0);
 						iconsize = 16;
 						break;
 
 					case ShellViewStyle.List:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_LIST, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_LIST, 0);
 						ResizeIcons(16);
 						iconsize = 16;
 						break;
 
 					case ShellViewStyle.Details:
 						this.UpdateColsInView(true);
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_DETAILS, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_DETAILS, 0);
 						ResizeIcons(16);
 						iconsize = 16;
 						break;
 
 					case ShellViewStyle.Thumbnail:
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_ICON, 0);
 						break;
 
 					case ShellViewStyle.Tile:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_TILE, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_TILE, 0);
 						var tvi = new LVTILEVIEWINFO {
 							cLines = 3,
 							rcLabelMargin = new User32.RECT() { Left = 2, Right = 0, Bottom = 60, Top = 5 },
-							cbSize = (uint)Marshal.SizeOf(typeof(LVTILEVIEWINFO)),
-							dwMask = (uint)LVTVIM.LVTVIM_TILESIZE | (uint)LVTVIM.LVTVIM_COLUMNS | (uint)LVTVIM.LVTVIM_LABELMARGIN,
-							dwFlags = (uint)LVTVIF.LVTVIF_FIXEDSIZE,
+							cbSize = (UInt32)Marshal.SizeOf(typeof(LVTILEVIEWINFO)),
+							dwMask = (UInt32)LVTVIM.LVTVIM_TILESIZE | (UInt32)LVTVIM.LVTVIM_COLUMNS | (UInt32)LVTVIM.LVTVIM_LABELMARGIN,
+							dwFlags = (UInt32)LVTVIF.LVTVIF_FIXEDSIZE,
 							sizeTile = new INTEROP_SIZE() { cx = 250, cy = 60 }
 						};
 
-						var a = User32.SendMessage(this.LVHandle, (int)MSG.LVM_SETTILEVIEWINFO, 0, tvi);
+						var a = User32.SendMessage(this.LVHandle, (Int32)MSG.LVM_SETTILEVIEWINFO, 0, tvi);
 						ResizeIcons(48);
 						iconsize = 48;
 						break;
@@ -403,7 +404,7 @@ namespace BExplorer.Shell {
 					AutosizeAllColumns(-2);
 				}
 
-				ViewStyleChanged?.Invoke(this, new ViewChangedEventArgs(value, iconsize));
+				ViewStyleChanged?.Invoke(this, new ViewChangedEventArgs(value, this.IconSize));
 				this.IsViewSelectionAllowed = true;
 			}
 		}
@@ -2639,12 +2640,28 @@ namespace BExplorer.Shell {
 
 			columns = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.SortColumn);
 			this.IsViewSelectionAllowed = false;
-			this.View = isThereSettings ? folderSettings.View : ShellViewStyle.Medium;
-			this.IsViewSelectionAllowed = true;
-			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon || folderSettings.View == ShellViewStyle.List)
+			if (!isThereSettings) {
+				this.View = ShellViewStyle.Details;
+			}
+
+			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon ||
+			    folderSettings.View == ShellViewStyle.List) {
 				ResizeIcons(16);
-			else if (folderSettings.IconSize >= 16)
+				this.View = folderSettings.View;
+			}
+			else if (folderSettings.IconSize >= 16) {
 				this.ResizeIcons(folderSettings.IconSize);
+				var view = (ShellViewStyle) folderSettings.IconSize;
+				if (folderSettings.IconSize != 48 && folderSettings.IconSize != 96 && folderSettings.IconSize != 256)
+					this.View = ShellViewStyle.Thumbnail;
+				else {
+					this.View = folderSettings.View;
+				}
+			}
+
+			
+
+			this.IsViewSelectionAllowed = true;
 
 
 

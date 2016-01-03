@@ -681,7 +681,7 @@ namespace BExplorer.Shell {
 					imagesQueue.Clear();
 					childsQueue.Clear();
 					var sho = e.Node.Tag as IListItemEx;
-					var lvSho = this.ShellListView != null && this.ShellListView.CurrentFolder != null ? this.ShellListView.CurrentFolder : null;
+					var lvSho = this.ShellListView != null && this.ShellListView.CurrentFolder != null ? this.ShellListView.CurrentFolder.Clone() : null;
 					var node = e.Node;
 					node.Nodes.Add(this._SearchingForFolders);
 					var t = new Thread(() => {

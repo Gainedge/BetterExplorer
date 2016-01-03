@@ -3843,11 +3843,13 @@ return false;
 					btnAutosizeColls.IsEnabled = e.CurrentView == ShellViewStyle.Details;
 					btnSbTiles.IsChecked = e.CurrentView == ShellViewStyle.Tile;
 
-					if (e.CurrentView == ShellViewStyle.ExtraLargeIcon) {
+					this.ViewGallery.SelectedIndex = -1;
+
+					if (e.CurrentView == ShellViewStyle.ExtraLargeIcon && e.ThumbnailSize == 256) {
 						ViewGallery.SelectedIndex = 0;
-					} else if (e.CurrentView == ShellViewStyle.LargeIcon) {
+					} else if (e.CurrentView == ShellViewStyle.LargeIcon && e.ThumbnailSize == 96) {
 						ViewGallery.SelectedIndex = 1;
-					} else if (e.CurrentView == ShellViewStyle.Medium) {
+					} else if (e.CurrentView == ShellViewStyle.Medium && e.ThumbnailSize == 48) {
 						ViewGallery.SelectedIndex = 2;
 						btnSbIcons.IsChecked = true;
 					} else if (e.CurrentView == ShellViewStyle.SmallIcon) {

@@ -257,7 +257,12 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			//var parentItem = new ShellItem(this._Item.Pidl); //this._Item;//this.IsSearchFolder ? this._Item : new ShellItem(this.ParsingName.ToShellParsingName());
 			while (result == HResult.S_OK) {
 				var fsi = new FileSystemListItem();
-				fsi.InitializeWithParent(this._Item, this.ParentHandle, pidl, i++);
+				try {
+					fsi.InitializeWithParent(this._Item, this.ParentHandle, pidl, i++);
+				}
+				catch (Exception e) {
+					continue;
+				}
 				fsi.IsParentSearchFolder = this.IsSearchFolder;
 				yield return fsi;
 				Shell32.ILFree(pidl);
