@@ -241,6 +241,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		public HResult NavigationStatus { get; set; }
 		public IEnumerator<IListItemEx> GetEnumerator() {
 			IShellFolder folder = this.GetIShellFolder();
+			if (folder == null) yield return null;
 			HResult navRes;
 			IEnumIDList enumId = ShellItem.GetIEnumIDList(folder, SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN | SHCONTF.INCLUDESUPERHIDDEN | SHCONTF.FASTITEMS |
 					SHCONTF.NONFOLDERS | SHCONTF.ENABLE_ASYNC, out navRes);

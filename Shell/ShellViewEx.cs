@@ -1942,10 +1942,9 @@ namespace BExplorer.Shell {
 						if (this._RequestedCurrentLocation != null && objUpdateItem.Equals(this._RequestedCurrentLocation))
 							this.UnvalidateDirectory();
 					}
+				} catch (Exception) {
 				}
-				catch (FileNotFoundException fileNotFoundException) {
-					this.UnvalidateDirectory();
-				}
+
 			};
 			this._FsWatcher.Created += (sender, args) => {
 				try {
@@ -1960,10 +1959,8 @@ namespace BExplorer.Shell {
 							this.UnvalidateDirectory();
 						}
 					}
-				}
-				catch (FileNotFoundException fileNotFoundException) {
-					this.UnvalidateDirectory();
-				}
+				} catch (Exception) { }
+
 			};
 			this._FsWatcher.Deleted += (sender, args) => {
 				//args.FullPath
@@ -1977,9 +1974,9 @@ namespace BExplorer.Shell {
 			};
 			this._FsWatcher.IncludeSubdirectories = true;
 			this._FsWatcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName |
-			                               NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
-			                               NotifyFilters.Size;
-			this._FsWatcher.InternalBufferSize = 100*1024*1024;
+																		 NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
+																		 NotifyFilters.Size;
+			this._FsWatcher.InternalBufferSize = 100 * 1024 * 1024;
 			Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
 			this._UnvalidateTimer.Interval = 250;
 			this._UnvalidateTimer.Tick += _UnvalidateTimer_Tick;
@@ -2616,13 +2613,18 @@ namespace BExplorer.Shell {
 				}
 
 			}
+			//var fileSystemChangesThread = new Thread(() => {
+
+
 
 			if (destination.IsFileSystem) {
 				this._FsWatcher.EnableRaisingEvents = false;
 				this._FsWatcher.Path = destination.ParsingName;
 				this._FsWatcher.EnableRaisingEvents = true;
 			}
-
+			//});
+			//fileSystemChangesThread.SetApartmentState(ApartmentState.STA);
+			//fileSystemChangesThread.Start();
 
 			this._UnvalidateTimer.Stop();
 			this.IsDisplayEmptyText = false;
@@ -2701,13 +2703,12 @@ namespace BExplorer.Shell {
 			}
 
 			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon ||
-			    folderSettings.View == ShellViewStyle.List) {
+					folderSettings.View == ShellViewStyle.List) {
 				ResizeIcons(16);
 				this.View = folderSettings.View;
-			}
-			else if (folderSettings.IconSize >= 16) {
+			} else if (folderSettings.IconSize >= 16) {
 				this.ResizeIcons(folderSettings.IconSize);
-				var view = (ShellViewStyle) folderSettings.IconSize;
+				var view = (ShellViewStyle)folderSettings.IconSize;
 				if (folderSettings.IconSize != 48 && folderSettings.IconSize != 96 && folderSettings.IconSize != 256)
 					this.View = ShellViewStyle.Thumbnail;
 				else {
@@ -2715,7 +2716,7 @@ namespace BExplorer.Shell {
 				}
 			}
 
-			
+
 
 			this.IsViewSelectionAllowed = true;
 

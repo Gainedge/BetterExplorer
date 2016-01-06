@@ -886,7 +886,7 @@ namespace Odyssey.Controls {
 				if (this.OnEditModeToggle != null)
 					this.OnEditModeToggle.Invoke(comboBox, new EditModeToggleEventArgs(false));
 				if (this.SelectedBreadcrumb != null && this.SelectedBreadcrumb.Data != null)
-					comboBox.Text = this.SelectedBreadcrumb.Data.GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING);
+					comboBox.Text = new ShellItem(this.SelectedBreadcrumb.Data.CachedParsingName.ToShellParsingName()).GetDisplayName(BExplorer.Shell.Interop.SIGDN.DESKTOPABSOLUTEEDITING);
 				comboBox.Visibility = Visibility.Visible;
 				comboBox.Focus();
 			}
