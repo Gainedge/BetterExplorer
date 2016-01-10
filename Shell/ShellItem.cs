@@ -688,7 +688,6 @@ return info.iIcon;
 			this.OverlayIconIndex = -1;
 		}
 
-		[Obsolete("Try to remove this!!!")]
 		protected ShellItem() { }
 
 		/// <summary>

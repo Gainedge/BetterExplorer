@@ -137,7 +137,7 @@ namespace BExplorer.Shell.Interop {
 												 int idCmdLast, CMF uFlags);
 
 		[PreserveSig]
-		new HResult InvokeCommand(ref CMINVOKECOMMANDINFO pici);
+		HResult InvokeCommand(ref CMINVOKECOMMANDINFO pici);
 
 		[PreserveSig]
 		new HResult GetCommandString(int idcmd, uint uflags, int reserved,

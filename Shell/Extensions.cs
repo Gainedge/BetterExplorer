@@ -422,7 +422,7 @@ public int iSubItem;
 					// return circle 
 					path.AddEllipse(baseRect);
 				}
-			} catch (Exception ex) {
+			} catch {
 				path.AddEllipse(baseRect);
 			} finally {
 				path.CloseFigure();

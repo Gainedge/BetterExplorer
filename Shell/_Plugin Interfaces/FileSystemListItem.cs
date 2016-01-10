@@ -261,7 +261,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 				try {
 					fsi.InitializeWithParent(this._Item, this.ParentHandle, pidl, i++);
 				}
-				catch (Exception e) {
+				catch {
 					continue;
 				}
 				fsi.IsParentSearchFolder = this.IsSearchFolder;
