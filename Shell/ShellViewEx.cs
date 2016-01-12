@@ -644,7 +644,7 @@ namespace BExplorer.Shell {
 				if (e == Keys.Escape)
 					this.EndLabelEdit(true);
 				else if (e == Keys.F2) {
-					//TO_DO: implement a conditional selection inside rename textbox!
+					//TODO: implement a conditional selection inside rename textbox!
 				} else if (e == Keys.Enter)
 					this.EndLabelEdit();
 				else
@@ -666,6 +666,7 @@ namespace BExplorer.Shell {
 					case Keys.B:
 						break;
 					case Keys.Back:
+						this.NavigateParent();
 						break;
 					case Keys.BrowserBack:
 						break;
@@ -1569,12 +1570,6 @@ namespace BExplorer.Shell {
 										this.SelectItemByIndex(selindOver, true, true);
 								}
 							}
-							break;
-						#endregion
-
-						case WNM.LVN_INCREMENTALSEARCH: //TODO: Deal with this useless code
-							#region Case
-							var incrementalSearch = (NMLVFINDITEM)m.GetLParam(typeof(NMLVFINDITEM));
 							break;
 						#endregion
 
@@ -2779,6 +2774,8 @@ namespace BExplorer.Shell {
 				}
 
 				if (this.View != ShellViewStyle.Details) AutosizeAllColumns(-2);
+
+				User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 
 				var sortColIndex = this.Collumns.IndexOf(columns);
 				if (sortColIndex > -1) this.SetSortIcon(sortColIndex, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
