@@ -260,3 +260,4 @@ BExplorer/BetterExplorer/BetterExplorerOperations.exe.CodeAnalysisLog.xml
 *.lastcodeanalysissucceeded
 packages/
 _ReSharper.Caches/
+.vs/
