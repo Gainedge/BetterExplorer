@@ -406,29 +406,29 @@ namespace BExplorer.Shell {
 			yield break;
 		}
 
-		#endregion
+        #endregion
 
 
-		public DriveInfo GetDriveInfo() { return IsDrive || IsNetDrive ? new DriveInfo(ParsingName) : null; }
+        public DriveInfo GetDriveInfo() => IsDrive || IsNetDrive ? new DriveInfo(ParsingName) : null;
 
-		/// <summary>
-		/// Returns the name of the item in the specified style.
-		/// </summary>
-		///
-		/// <param name="sigdn">
-		/// The style of display name to return.
-		/// </param>
-		///
-		/// <returns>
-		/// A string containing the display name of the item.
-		/// </returns>
-		public string GetDisplayName(SIGDN sigdn) {
+        /// <summary>
+        /// Returns the name of the item in the specified style.
+        /// </summary>
+        ///
+        /// <param name="sigdn">
+        /// The style of display name to return.
+        /// </param>
+        ///
+        /// <returns>
+        /// A string containing the display name of the item.
+        /// </returns>
+        public string GetDisplayName(SIGDN sigdn) {
 			try {
 				IntPtr resultPtr = ComInterface.GetDisplayName(sigdn);
 				string result = Marshal.PtrToStringUni(resultPtr);
 				Marshal.FreeCoTaskMem(resultPtr);
 				return result;
-			} catch (Exception) {
+			} catch {
 				try {
 					var shellobj = new ShellItem(this.CachedParsingName.ToShellParsingName());
 					IntPtr resultPtr = shellobj.ComInterface.GetDisplayName(sigdn);
@@ -436,11 +436,9 @@ namespace BExplorer.Shell {
 					Marshal.FreeCoTaskMem(resultPtr);
 					return result;
 				}
-				catch (Exception e) {
+				catch {
 					return "Search.search-ms";
-
-				}
-				
+				}				
 			}
 		}
 
@@ -455,9 +453,7 @@ namespace BExplorer.Shell {
 				IShellFolder ishellfolder = null;
 				StringBuilder str = null;
 				IntPtr result;
-
-				
-
+                
 				try {
 					var guid = new Guid("000214fa-0000-0000-c000-000000000046");
 					uint res = 0;
@@ -472,6 +468,7 @@ namespace BExplorer.Shell {
 							res,
 							out result
 					);
+
 					if (result == IntPtr.Zero) {
 						pidls = null;
 						//Marshal.ReleaseComObject(ishellfolder);
@@ -562,8 +559,8 @@ namespace BExplorer.Shell {
 					var funcpUnk = Marshal.ReadIntPtr(funcs[i]);
 					var getNamepFunc = Marshal.ReadIntPtr(funcpUnk + 3 * IntPtr.Size);
 					var getNameUIpFunc = Marshal.ReadIntPtr(funcpUnk + 4 * IntPtr.Size);
-					Shell32.funcGetName GetName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNamepFunc, typeof(Shell32.funcGetName));
-					Shell32.funcGetName GetUIName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNameUIpFunc, typeof(Shell32.funcGetName));
+					var GetName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNamepFunc, typeof(Shell32.funcGetName));
+					var GetUIName = (Shell32.funcGetName)Marshal.GetDelegateForFunctionPointer(getNameUIpFunc, typeof(Shell32.funcGetName));
 					String path = String.Empty;
 					String displayName = String.Empty;
 					GetName(funcs[i], out path);
@@ -575,9 +572,9 @@ namespace BExplorer.Shell {
 					Marshal.Release(getNameUIpFunc);
 				}
 			}
+
 			Marshal.Release(enumAssocPtr);
 			Marshal.Release(pUnk);
-
 			return assocList;
 		}
 
@@ -591,8 +588,7 @@ namespace BExplorer.Shell {
 				ComInterface.BindToHandler(IntPtr.Zero, BHID.SFObject, typeof(IShellFolder).GUID, out res); //HResult result = 
 				var iShellFolder = (IShellFolder)Marshal.GetTypedObjectForIUnknown(res, typeof(IShellFolder));
 				return iShellFolder;
-			} catch (Exception) {
-
+			} catch {
 				return null;
 			}
 		}
@@ -688,7 +684,6 @@ return info.iIcon;
 			this.OverlayIconIndex = -1;
 		}
 
-		[Obsolete("Try to remove this!!!")]
 		protected ShellItem() { }
 
 		/// <summary>
@@ -1087,9 +1082,8 @@ return info.iIcon;
 						if (lib != null)
 							ComInterface = lib.ComInterface;
 					}
-				} catch (Exception) {
-
-				}
+				} catch {
+                }
 
 				if (restOfPath != string.Empty)
 					ComInterface = this[restOfPath.Replace('/', '\\')].ComInterface;
@@ -1150,7 +1144,6 @@ return info.iIcon;
 
 			return newUri == null ? null : new ShellItem(newUri);
 		}
-
 	}
 
 	public class ShellItemComparer : IEqualityComparer<IListItemEx> {

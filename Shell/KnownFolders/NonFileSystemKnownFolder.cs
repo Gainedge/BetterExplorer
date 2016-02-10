@@ -37,7 +37,7 @@ namespace BExplorer.Shell
 
             Guid guid = new Guid(InterfaceGuids.IShellItem);
             knownFolderNative.GetShellItem(0, ref guid, out nativeShellItem);
-            base.ComInterface = nativeShellItem;
+            ComInterface = nativeShellItem;
 
         }
 

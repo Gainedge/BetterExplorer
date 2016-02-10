@@ -99,8 +99,7 @@ namespace BExplorer.Shell {
 			//open input file
 			try {
 				_infile = new FileStream(_inputfile, FileMode.Open, FileAccess.Read, FileShare.Read, CopyBufferSize, FileFlagNoBuffering);
-			} catch (Exception e) {
-
+			} catch {
 				throw;
 			}
 			//if we have data read it
@@ -116,8 +115,7 @@ namespace BExplorer.Shell {
 					_totalbytesread = _totalbytesread + _bytesRead1;
 					Monitor.PulseAll(Locker1);
 
-				} catch (Exception e) {
-
+				} catch {
 					_readfailed = true;
 					throw;
 				} finally { Monitor.Exit(Locker1); }
@@ -131,28 +129,22 @@ namespace BExplorer.Shell {
 			//open output file set length to prevent growth and file fragmentation and close it.
 			//We do this to prevent file fragmentation and make the write as fast as possible.
 			try {
-
-				_outfile = new FileStream(_outputfile, FileMode.Create, FileAccess.Write, FileShare.None, 8,
-																	FileOptions.WriteThrough);
+				_outfile = new FileStream(_outputfile, FileMode.Create, FileAccess.Write, FileShare.None, 8, FileOptions.WriteThrough);
 
 				//set file size to minimum of one buffer to cut down on fragmentation
 				_outfile.SetLength(_infilesize > CopyBufferSize ? _infilesize : CopyBufferSize);
 
 				_outfile.Close();
 				_outfile.Dispose();
-			} catch (Exception e) {
-
+			} catch {
 				throw;
 			}
 
 			//open file for write unbuffered
 			try {
+				_outfile = new FileStream(_outputfile, FileMode.Open, FileAccess.Write, FileShare.None, 8, FileOptions.WriteThrough | FileFlagNoBuffering);
 
-				_outfile = new FileStream(_outputfile, FileMode.Open, FileAccess.Write, FileShare.None, 8,
-																	FileOptions.WriteThrough | FileFlagNoBuffering);
-
-			} catch (Exception e) {
-
+			} catch { 
 				throw;
 			}
 
@@ -166,7 +158,6 @@ namespace BExplorer.Shell {
 			}
 
 			while ((_totalbyteswritten < _infilesize) && !_readfailed) {
-
 				lock (Locker1) {
 
 					while (!_buffer2Dirty) Monitor.Wait(Locker1);
@@ -197,9 +188,8 @@ namespace BExplorer.Shell {
 				}
 				try {
 					_outfile.Write(Buffer3, 0, CopyBufferSize);
-				} catch (Exception e) {
-
-					throw;
+				} catch {
+                    throw;
 				}
 			}
 
@@ -215,8 +205,7 @@ namespace BExplorer.Shell {
 				_outfile.SetLength(_infilesize);
 				_outfile.Close();
 				_outfile.Dispose();
-			} catch (Exception e) {
-
+			} catch {
 				throw;
 			}
 		}

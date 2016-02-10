@@ -91,7 +91,7 @@ namespace BetterExplorer
                 _sevenZipCompressor.ModifyArchive(_archivePath, fileIndexDictionary);
                 Done();
             }
-            catch (Exception ex)
+            catch
             {
                 /*
 				var dialog = new TaskDialog();
@@ -284,7 +284,7 @@ namespace BetterExplorer
                     Dispose(true);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 /*
 				var dialog = new TaskDialog();

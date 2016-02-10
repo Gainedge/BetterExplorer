@@ -514,7 +514,7 @@ namespace Odyssey.Controls
 
             root.SelectedItem = null;
 
-            HierarchicalDataTemplate hdt = template as HierarchicalDataTemplate;
+            var hdt = template as HierarchicalDataTemplate;
             if (template != null)
             {
                 root.Header = template.LoadContent();
