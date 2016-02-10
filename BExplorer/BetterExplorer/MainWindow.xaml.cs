@@ -1545,6 +1545,7 @@ namespace BetterExplorer {
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e) {
+			TheRibbon.UpdateLayout();
 			this.grdItemTextColor.ItemsSource = this.LVItemsColorCol;
 			_keyjumpTimer.Interval = 1000;
 			_keyjumpTimer.Tick += _keyjumpTimer_Tick;
@@ -1790,10 +1791,14 @@ namespace BetterExplorer {
 
 				Application.Current.Resources.EndInit();
 
-				if (owner != null) {
+				if (owner is RibbonWindow) {
 					owner.Style = null;
 					owner.Style = owner.FindResource("RibbonWindowStyle") as Style;
 					owner.Style = null;
+
+					// Resize Window to work around alignment issues caused by theme change
+					++owner.Width;
+					--owner.Width;
 				}
 
 				Utilities.SetRegistryValue("CurrentTheme", ThemeName);
@@ -2563,10 +2568,10 @@ selectedItems.Add(item.ParsingName);
 			if (!TheRibbon.IsMinimized) {
 			} else if (chkRibbonMinimizedGlass.IsChecked.Value) {
 				var p = ShellViewHost.TransformToAncestor(this).Transform(new WIN.Point(0, 0));
-				this.GlassBorderThickness = new Thickness(8, p.Y, 8, 8);
+				this.GlassFrameThickness = new Thickness(8, p.Y, 8, 8);
 			} else {
 				var p = backstage.TransformToAncestor(this).Transform(new WIN.Point(0, 0));
-				this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
+				this.GlassFrameThickness = new Thickness(8, p.Y + backstage.ActualHeight, 8, 8);
 			}
 		}
 

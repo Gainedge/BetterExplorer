@@ -1155,7 +1155,7 @@
 											</DataGrid>
 											<Ribbon:SeparatorTabItem Margin="0,0,0,5" Header="Folder Settings" />
 											<Border BorderThickness="1" BorderBrush="DarkGray" CornerRadius="2" Margin="5,5,0,0" HorizontalAlignment="Left">
-											<Ribbon:Button x:Name="btnResetFolderSettings"
+												<Ribbon:Button x:Name="btnResetFolderSettings"
 											    Header="Reset DB"
 													Icon="Images\open16.png"
 													SizeDefinition="Middle,Middle,Middle"
@@ -2319,7 +2319,7 @@
 				</Ribbon:RibbonGroupBox>
 			</Ribbon:RibbonTabItem>
 			<Ribbon:RibbonTabItem 
-                Group="{Binding ElementName=ctgLibraries, Mode=OneWay}"
+                Group="{Binding ElementName=ctgLibraries, Mode=OneWay}" Visibility="Collapsed"
 				Header="{DynamicResource tbManageCP}"
 				ReduceOrder="ManageLibrary,ManageLibrary,ManageLibrary"
 				Ribbon:KeyTip.Keys="L">
@@ -2389,7 +2389,7 @@
                     />
 				</Ribbon:RibbonGroupBox>
 			</Ribbon:RibbonTabItem>
-			<Ribbon:RibbonTabItem Group="{Binding ElementName=ctgDrive, Mode=OneWay}" Header="{DynamicResource tabDriveCP}" Ribbon:KeyTip.Keys="D">
+			<Ribbon:RibbonTabItem Group="{Binding ElementName=ctgDrive, Mode=OneWay}" Header="{DynamicResource tabDriveCP}" Ribbon:KeyTip.Keys="D" Visibility="Collapsed">
 				<Ribbon:RibbonGroupBox Header="{DynamicResource tbManageCP}" IsLauncherVisible="False" Ribbon:KeyTip.Keys="M">
 					<Ribbon:Button 
                         x:Name="btnFormatDrive"
@@ -2466,6 +2466,7 @@
 			<Ribbon:RibbonTabItem 
                 Group="{Binding ElementName=ctgExe, Mode=OneWay}" 
                 Header="{DynamicResource tabApplicationCP}"
+				Visibility="Collapsed"
                 Ribbon:KeyTip.Keys="A">
 				<Ribbon:RibbonGroupBox Header="{DynamicResource tgRunCP}" IsLauncherVisible="False" Ribbon:KeyTip.Keys="R">
 					<Ribbon:SplitButton 
@@ -2502,6 +2503,7 @@
 			<Ribbon:RibbonTabItem 
                 Group="{Binding ElementName=ctgVirtualDisk, Mode=OneWay}"
                 Header="{DynamicResource tbManageCP}"
+				Visibility="Collapsed"
                 Ribbon:KeyTip.Keys="V">
 				<Ribbon:RibbonGroupBox>
 					<Ribbon:Button 
@@ -2534,6 +2536,7 @@
 
 			<Ribbon:RibbonTabItem 
                 Group="{Binding ElementName=ctgImage, Mode=OneWay}"
+				Visibility="Collapsed"
 				Header="{DynamicResource tbManageCP}"
 				ReduceOrder="imgView,imgView,imgView,imgEdit"
 				Ribbon:KeyTip.Keys="I">
@@ -2673,7 +2676,7 @@
 				</Ribbon:RibbonGroupBox>
 			</Ribbon:RibbonTabItem>
 			<Ribbon:RibbonTabItem 
-                Group="{Binding ElementName=ctgArchive, Mode=OneWay}"
+                Group="{Binding ElementName=ctgArchive, Mode=OneWay}" Visibility="Collapsed"
 				Header="{DynamicResource tbManageCP}"
 				ReduceOrder="grpExtract,grpManArchive,grpExtract,grpManArchive,grpManArchive"
 				Ribbon:KeyTip.Keys="A">
@@ -2804,7 +2807,7 @@
                     />
 				</Ribbon:RibbonGroupBox>
 			</Ribbon:RibbonTabItem>
-			<Ribbon:RibbonTabItem Group="{Binding ElementName=ctgFolderTools, Mode=OneWay}" Header="{DynamicResource tbManageCP}" Ribbon:KeyTip.Keys="M">
+			<Ribbon:RibbonTabItem Group="{Binding ElementName=ctgFolderTools, Mode=OneWay}" Header="{DynamicResource tbManageCP}" Ribbon:KeyTip.Keys="M" Visibility="Collapsed">
 				<Ribbon:RibbonGroupBox Header="{DynamicResource tgFolderIconCP}" IsLauncherVisible="False" Ribbon:KeyTip.Keys="I">
 					<Ribbon:Button 
                         x:Name="btnChangeFoldericon"
@@ -2838,6 +2841,7 @@
                 x:Name="tbSearch"
 				Group="{Binding ElementName=ctgSearch, Mode=OneWay}"
 				Header="{DynamicResource tabSearchCP}"
+				Visibility="Collapsed"
 				ReduceOrder="tsgKind,tsgKind,tsgOther,tsgOther,tsgKind,tsgOther"
 				Ribbon:KeyTip.Keys="S">
 				<!--
@@ -3016,8 +3020,7 @@
 				</Ribbon:RibbonGroupBox>
 			</Ribbon:RibbonTabItem>
 		</Ribbon:Ribbon>
-		<Button 
-            x:Name="btnUpLevel"
+		<Button x:Name="btnUpLevel"
 			Grid.Row="1"
 			Width="21"
 			Height="21"

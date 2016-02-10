@@ -14,6 +14,7 @@ using BExplorer.Shell;
 using BExplorer.Shell.Interop;
 using BExplorer.Shell._Plugin_Interfaces;
 using System.IO;
+using Fluent;
 
 namespace BetterExplorer {
 	/// <summary>
@@ -139,6 +140,22 @@ namespace BetterExplorer {
 			//// loads current Ribbon color theme
 			try {
 				var Color = Convert.ToString(rks.GetValue("CurrentTheme", "Blue"));
+				var owner = Application.Current.MainWindow;
+				if (owner != null) {
+					owner.Resources.BeginInit();
+
+					if (owner.Resources.MergedDictionaries.Count > 0) {
+						owner.Resources.MergedDictionaries.RemoveAt(0);
+					}
+
+					if (string.IsNullOrEmpty(Color) == false) {
+						owner.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri(Color) });
+					}
+
+					owner.Resources.EndInit();
+				}
+				Application.Current.Resources.BeginInit();
+				
 				Application.Current.Resources.MergedDictionaries.RemoveAt(1);
 
 				switch (Color) {
@@ -154,6 +171,17 @@ namespace BetterExplorer {
 					default:
 						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{Color}.xaml") });
 						break;
+				}
+				Application.Current.Resources.EndInit();
+
+				if (owner is RibbonWindow) {
+					owner.Style = null;
+					owner.Style = owner.FindResource("RibbonWindowStyle") as Style;
+					owner.Style = null;
+
+					// Resize Window to work around alignment issues caused by theme change
+					++owner.Width;
+					--owner.Width;
 				}
 			} catch (Exception ex) {
 				//MessageBox.Show(String.Format("An error occurred while trying to load the theme data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "RibbonTheme Error - " + ex.ToString());
