@@ -42,7 +42,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		IntPtr Icon { get; set; }
 
-		IExtractIconPWFlags IconType { get; }
+		IExtractIconPWFlags IconType { get; set; }
 
 		IntPtr ILPidl { get; }
 

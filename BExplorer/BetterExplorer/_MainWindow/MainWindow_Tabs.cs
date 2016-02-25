@@ -155,7 +155,7 @@ namespace BetterExplorer {
 						btnMoveto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.DisplayName, item.ShellObject,
 																												 bmpSource, onClick: new RoutedEventHandler(mim_Click)));
 
-						btnCopyto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.DisplayName, item.ShellObject, bmpSource));
+						btnCopyto.Items.Add(Utilities.Build_MenuItem(item.ShellObject.DisplayName, item.ShellObject, bmpSource, onClick: new RoutedEventHandler(mico_Click)));
 					} catch {
 						//Do nothing if ShellItem is not available anymore and close the problematic item
 						//tcMain.RemoveTabItem(item);

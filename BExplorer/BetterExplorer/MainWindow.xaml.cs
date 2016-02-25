@@ -2819,6 +2819,7 @@ item.IsChecked = false;
 		void newt_PreviewMouseDown(object sender, MouseButtonEventArgs e) => tcMain.IsInTabDragDrop = false;
 		void newt_Leave(object sender, DragEventArgs e) => DropTargetHelper.Create.DragLeave();
 		void mim_Click(object sender, RoutedEventArgs e) => SetFOperation(((sender as MenuItem).Tag as IListItemEx), OperationType.Move);
+		void mico_Click(object sender, RoutedEventArgs e) => SetFOperation(((sender as MenuItem).Tag as IListItemEx), OperationType.Copy);
 
 
 		private void btnUndoClose_Click(object sender, RoutedEventArgs e) {
@@ -3546,7 +3547,7 @@ return false;
 			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
 				var selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
 				if (selectedItem == null) {
-					//this.tcMain.SelectedItem = this.tcMain.Items.OfType<Wpf.Controls.TabItem>().Last();
+					this.tcMain.SelectedItem = this.tcMain.Items.OfType<Wpf.Controls.TabItem>().Last();
 					selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
 				}
 
@@ -3566,6 +3567,14 @@ return false;
 							}
 						}
 					} else {
+						if (selectedItem.log.CurrentLocPos >= 0 &&
+						    selectedItem.log.CurrentLocPos <= selectedItem.log.HistoryItemsList.Count - 1) {
+							var beforeItem = selectedItem.log.HistoryItemsList[selectedItem.log.CurrentLocPos];
+							var realItem = this._ShellListView.Items.FirstOrDefault(w => w.GetUniqueID() == beforeItem.GetUniqueID());
+							if (realItem != null) {
+								this._ShellListView.SelectItemByIndex(realItem.ItemIndex, true, true);
+							}
+						}
 						//this._ShellListView.ScrollToTop();
 					}
 				}

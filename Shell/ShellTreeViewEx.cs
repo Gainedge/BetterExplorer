@@ -176,7 +176,7 @@ namespace BExplorer.Shell {
 			if (nodeNext == null) {
 				parents.Push(item);
 				if (item.Parent != null) {
-					this.FindItem(item.Parent);
+					this.FindItem(item.Parent.Clone());
 				}
 			} else {
 				while (parents.Count > 0) {
@@ -200,7 +200,7 @@ namespace BExplorer.Shell {
 				return;
 			}
 
-			this.FindItem(item);
+			this.FindItem(item.Clone());
 		}
 
 		public void DeleteItem(IListItemEx item) {

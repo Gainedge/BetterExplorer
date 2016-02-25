@@ -32,9 +32,12 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public int OverlayIconIndex { get; set; }
 
+		private IExtractIconPWFlags _IconType = IExtractIconPWFlags.GIL_PERCLASS;
+
 		public Interop.IExtractIconPWFlags IconType
 		{
-			get { return this.IsParentSearchFolder ? IExtractIconPWFlags.GIL_PERINSTANCE : this._Item.GetIconType(); }
+			get { return this.IsParentSearchFolder ? IExtractIconPWFlags.GIL_PERINSTANCE : this.IsNeedRefreshing ? this._Item.GetIconType() : this._IconType; }
+			set { this._IconType = value; }
 
 		}
 
@@ -97,6 +100,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			this.IsFolder = folder.IsFolder;
 			this.IsSearchFolder = folder.IsSearchFolder;
 			this._Item = folder;
+			this._IconType = folder.GetIconType();
 		}
 
 		private void Initialize_Helper2(ShellItem parent, IntPtr pidl, IntPtr lvHandle, int index) {
@@ -118,6 +122,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			this.IsFolder = folder.IsFolder;
 			this.IsSearchFolder = folder.IsSearchFolder;
 			this._Item = folder;
+			this._IconType = folder.GetIconType();
 		}
 
 		public void Initialize(IntPtr lvHandle, IntPtr pidl, int index) {
@@ -169,6 +174,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			this.IsFolder = item.IsFolder;
 			this.IsSearchFolder = item.IsSearchFolder;
 			this._Item = item;
+			this._IconType = item.GetIconType();
 			//item.Dispose();
 		}
 
