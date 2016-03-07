@@ -26,8 +26,8 @@ namespace BExplorer.Shell {
 
 		public override void UpdateProgress(uint iWorkTotal, uint iWorkSoFar) {
 			//base.UpdateProgress(iWorkTotal, iWorkSoFar);
-			if (iWorkSoFar == iWorkTotal || iWorkSoFar > iWorkTotal * 0.97) {
-				this._View.UnvalidateDirectory();
+			if (iWorkSoFar == iWorkTotal) {
+		  	this._View.UnvalidateDirectory();
 			}
 		}
 		public override void PreDeleteItem(uint dwFlags, IShellItem psiItem) => base.PreDeleteItem(dwFlags, psiItem);
@@ -82,7 +82,7 @@ namespace BExplorer.Shell {
 			//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 			//System.Windows.Forms.Application.DoEvents();
 			if (psiNewlyCreated != null) {
-				var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
+				//var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
 				//Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
 				//Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 				//Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
