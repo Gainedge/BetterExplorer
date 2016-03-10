@@ -461,7 +461,7 @@
 						<Label Name="paddinglbl8" Content="         "/>
                                         -->
 										<Ribbon:CheckBox 
-                                            Name="chkIsCFO"
+                                            x:Name="chkIsCFO"
                                             Click="chkIsCFO_Click"
 									        Header="{DynamicResource chkIsCFO}"
 									        IsEnabled="False"

@@ -3550,10 +3550,11 @@ return false;
 					this.tcMain.SelectedItem = this.tcMain.Items.OfType<Wpf.Controls.TabItem>().Last();
 					selectedItem = this.tcMain.SelectedItem as Wpf.Controls.TabItem;
 				}
-
+				var curentFolder = this._ShellListView.CurrentFolder.Clone();
 				selectedItem.Header = this._ShellListView.CurrentFolder.DisplayName;
-				selectedItem.Icon = this._ShellListView.CurrentFolder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+				selectedItem.Icon = curentFolder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
 				selectedItem.ShellObject = this._ShellListView.CurrentFolder;
+				curentFolder.Dispose();
 				if (selectedItem != null) {
 					var selectedPaths = selectedItem.SelectedItems;
 					if (selectedPaths?.Count > 0) {

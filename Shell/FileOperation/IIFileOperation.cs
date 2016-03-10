@@ -37,26 +37,26 @@ namespace BExplorer.Shell {
 
 		public void CopyItem(IShellItem source, IListItemEx destination) {
 			ThrowIfDisposed();
-			var shellItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, new ShellItem(source).Pidl);
-			if (shellItem.Parent.Equals(destination)) {
-				_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_RENAMEONCOLLISION);
-			}
-			_fileOperation.CopyItem(source, destination.ComInterface, null, null);
+			//var shellItem = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, new ShellItem(source).Pidl);
+			//if (shellItem.Parent.Equals(destination)) {
+			//	_fileOperation.SetOperationFlags(FileOperationFlags.FOF_NOCONFIRMMKDIR | FileOperationFlags.FOF_RENAMEONCOLLISION);
+			//}
+			_fileOperation.CopyItem(source, destination.ComInterface, null, _callbackSink);
 		}
 
 		public void MoveItem(IShellItem source, IShellItem destination, string newName) {
 			ThrowIfDisposed();
-			_fileOperation.MoveItem(source, destination, newName, null);
+			_fileOperation.MoveItem(source, destination, newName, _callbackSink);
 		}
 
 		public void RenameItem(IShellItem source, string newName) {
 			ThrowIfDisposed();
-			_fileOperation.RenameItem(source, newName, null);
+			_fileOperation.RenameItem(source, newName, _callbackSink);
 		}
 
 		public void DeleteItem(IShellItem source) {
 			ThrowIfDisposed();
-			_fileOperation.DeleteItem(source, null);
+			_fileOperation.DeleteItem(source, _callbackSink);
 		}
 
 		public void PerformOperations() {
