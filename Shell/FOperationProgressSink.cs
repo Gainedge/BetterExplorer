@@ -34,7 +34,14 @@ namespace BExplorer.Shell {
 
 		[HandleProcessCorruptedStateExceptions]
 		public override void PostDeleteItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, uint hrDelete, IShellItem psiNewlyCreated) {
-			this._View.UnvalidateDirectory();
+			if (hrDelete == 2555912) {
+				var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
+				Shell32.SHChangeNotify(
+					theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
+					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+				theNewItem.Dispose();
+				this._View.UnvalidateDirectory();
+			}
 			//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 
 			//if (!String.IsNullOrEmpty(obj.ParsingName)) {
@@ -53,23 +60,23 @@ namespace BExplorer.Shell {
 			//	Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, obj.Parent.Pidl, IntPtr.Zero);
 			//Shell32.SHChangeNotify(obj.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
 			//	Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, obj.Pidl, IntPtr.Zero);
-			try {
-				if (psiItem != null) {
-					//var obj = FileSystemListItem.ToFileSystemItem(this._View.LVHandle, new ShellItem(psiItem).Pidl);
-					//Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR,
-					//  Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, obj.Parent.PIDL, IntPtr.Zero);
-					//Shell32.SHChangeNotify(obj.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
-					//  Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, obj.PIDL, IntPtr.Zero);
-					Marshal.ReleaseComObject(psiItem);
-					psiItem = null;
-				}
-				if (psiNewlyCreated != null) {
-					Marshal.ReleaseComObject(psiNewlyCreated);
-					psiNewlyCreated = null;
-				}
-			} catch (Exception) {
+			//try {
+			//	if (psiItem != null) {
+			//		//var obj = FileSystemListItem.ToFileSystemItem(this._View.LVHandle, new ShellItem(psiItem).Pidl);
+			//		//Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR,
+			//		//  Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, obj.Parent.PIDL, IntPtr.Zero);
+			//		//Shell32.SHChangeNotify(obj.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
+			//		//  Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, obj.PIDL, IntPtr.Zero);
+			//		Marshal.ReleaseComObject(psiItem);
+			//		psiItem = null;
+			//	}
+			//	if (psiNewlyCreated != null) {
+			//		Marshal.ReleaseComObject(psiNewlyCreated);
+			//		psiNewlyCreated = null;
+			//	}
+			//} catch (Exception) {
 
-			}
+			//}
 
 		}
 		public override void PreCopyItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName) {
@@ -81,27 +88,27 @@ namespace BExplorer.Shell {
 		public override void PostCopyItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrCopy, IShellItem psiNewlyCreated) {
 			//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 			//System.Windows.Forms.Application.DoEvents();
-			if (psiNewlyCreated != null) {
-				//var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
-				//Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
-				//Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
-				//Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
-				//	Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+			if (hrCopy == 0) {
+				var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
+				Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
+					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+				Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
+					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
 			}
 			//theNewItem.Dispose();
-			this._View.UnvalidateDirectory();
-			try {
-				if (psiItem != null) {
-					Marshal.ReleaseComObject(psiItem);
-					psiItem = null;
-				}
-				if (psiNewlyCreated != null) {
-					Marshal.ReleaseComObject(psiNewlyCreated);
-					psiNewlyCreated = null;
-				}
-			} catch (Exception) {
+			//this._View.UnvalidateDirectory();
+			//try {
+			//	if (psiItem != null) {
+			//		Marshal.ReleaseComObject(psiItem);
+			//		psiItem = null;
+			//	}
+			//	if (psiNewlyCreated != null) {
+			//		Marshal.ReleaseComObject(psiNewlyCreated);
+			//		psiNewlyCreated = null;
+			//	}
+			//} catch (Exception) {
 
-			}
+			//}
 		}
 
 		[HandleProcessCorruptedStateExceptions]
@@ -116,18 +123,26 @@ namespace BExplorer.Shell {
 			//Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_UPDATEDIR : Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 			//		Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			//theNewItem.Dispose();
-			this._View.UnvalidateDirectory();
-			try {
-				if (psiItem != null) {
-					Marshal.ReleaseComObject(psiItem);
-					psiItem = null;
-				}
-				if (psiNewlyCreated != null) {
-					Marshal.ReleaseComObject(psiNewlyCreated);
-					psiNewlyCreated = null;
-				}
-			} catch (Exception) {
+			if (hrMove == 0) {
+				var theOldItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
+				var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
+				Shell32.SHChangeNotify(
+					theOldItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
+					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theOldItem.PIDL, IntPtr.Zero);
+				Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
+					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
 			}
+			//try {
+			//	if (psiItem != null) {
+			//		Marshal.ReleaseComObject(psiItem);
+			//		psiItem = null;
+			//	}
+			//	if (psiNewlyCreated != null) {
+			//		Marshal.ReleaseComObject(psiNewlyCreated);
+			//		psiNewlyCreated = null;
+			//	}
+			//} catch (Exception) {
+			//}
 		}
 	}
 }
