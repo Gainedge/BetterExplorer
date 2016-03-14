@@ -3571,7 +3571,7 @@ return false;
 						if (selectedItem.log.CurrentLocPos >= 0 &&
 						    selectedItem.log.CurrentLocPos <= selectedItem.log.HistoryItemsList.Count - 1) {
 							var beforeItem = selectedItem.log.HistoryItemsList[selectedItem.log.CurrentLocPos];
-							var realItem = this._ShellListView.Items.FirstOrDefault(w => w.GetUniqueID() == beforeItem.GetUniqueID());
+							var realItem = this._ShellListView.Items.ToArray().FirstOrDefault(w => w.GetUniqueID() == beforeItem.GetUniqueID());
 							if (realItem != null) {
 								this._ShellListView.SelectItemByIndex(realItem.ItemIndex, true, true);
 							}

@@ -1966,6 +1966,11 @@ namespace BExplorer.Shell {
 			};
 			this._FsWatcher.Deleted += (sender, args) => {
 				//args.FullPath
+				var existingItem = this.Items.ToArray().FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
+				if (existingItem != null) {
+					this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, existingItem));
+					this.UnvalidateDirectory();
+				}
 				//if (this.CurrentFolder != null && (objDelete.Parent != null && objDelete.Parent.Equals(this.CurrentFolder))) {
 				//	this.UnvalidateDirectory();
 				//}
