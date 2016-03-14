@@ -1929,61 +1929,7 @@ namespace BExplorer.Shell {
 
 		protected override void OnHandleCreated(EventArgs e) {
 			base.OnHandleCreated(e);
-			this._FsWatcher.Changed += (sender, args) => {
-				try {
-					var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
-					if (this.CurrentFolder != null && objUpdateItem.Parent != null && objUpdateItem.Parent.Equals(this.CurrentFolder)) {
-						var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
-						if (exisitingUItem != null)
-							this.RefreshItem(exisitingUItem.ItemIndex, true);
-
-						if (this._RequestedCurrentLocation != null && objUpdateItem.Equals(this._RequestedCurrentLocation))
-							this.UnvalidateDirectory();
-					}
-				} catch (Exception) {
-				}
-
-			};
-			this._FsWatcher.Created += (sender, args) => {
-				try {
-					var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
-					if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
-						if (this.IsRenameNeeded) {
-							var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
-							if (existingItem == null) {
-								var itemIndex = this.InsertNewItem(obj);
-								this.SelectItemByIndex(itemIndex, true, true);
-								this.RenameSelectedItem();
-								this.IsRenameNeeded = false;
-							}
-						} else {
-							this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj));
-							this.UnvalidateDirectory();
-						}
-					}
-				} catch (Exception) { }
-
-			};
-			this._FsWatcher.Deleted += (sender, args) => {
-				//args.FullPath
-				var existingItem = this.Items.ToArray().FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
-				if (existingItem != null) {
-					this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, existingItem));
-					this.UnvalidateDirectory();
-				}
-				//if (this.CurrentFolder != null && (objDelete.Parent != null && objDelete.Parent.Equals(this.CurrentFolder))) {
-				//	this.UnvalidateDirectory();
-				//}
-				//this.RaiseRecycleBinUpdated();
-			};
-			this._FsWatcher.Renamed += (sender, args) => {
-
-			};
-			this._FsWatcher.IncludeSubdirectories = true;
-			this._FsWatcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName |
-																		 NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
-																		 NotifyFilters.Size;
-			this._FsWatcher.InternalBufferSize = 100 * 1024 * 1024;
+			
 			Notifications.RegisterChangeNotify(this.Handle, ShellNotifications.CSIDL.CSIDL_DESKTOP, true);
 			this._UnvalidateTimer.Interval = 150;
 			this._UnvalidateTimer.Tick += _UnvalidateTimer_Tick;
@@ -2650,8 +2596,67 @@ namespace BExplorer.Shell {
 
 
 			if (destination.IsFileSystem) {
-				this._FsWatcher.EnableRaisingEvents = false;
-				this._FsWatcher.Path = destination.ParsingName;
+				if (this._FsWatcher != null) {
+					this._FsWatcher.Dispose();
+					this._FsWatcher = new FileSystemWatcher(destination.ParsingName);
+					this._FsWatcher.Changed += (sender, args) => {
+						try {
+							var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
+							if (this.CurrentFolder != null && objUpdateItem.Parent != null && objUpdateItem.Parent.Equals(this.CurrentFolder)) {
+								var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
+								if (exisitingUItem != null)
+									this.RefreshItem(exisitingUItem.ItemIndex, true);
+
+								if (this._RequestedCurrentLocation != null && objUpdateItem.Equals(this._RequestedCurrentLocation))
+									this.UnvalidateDirectory();
+							}
+						} catch (Exception) {
+						}
+
+					};
+					this._FsWatcher.Created += (sender, args) => {
+						try {
+							var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
+							if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
+								if (this.IsRenameNeeded) {
+									var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
+									if (existingItem == null) {
+										var itemIndex = this.InsertNewItem(obj);
+										this.SelectItemByIndex(itemIndex, true, true);
+										this.RenameSelectedItem();
+										this.IsRenameNeeded = false;
+									}
+								} else {
+									this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj));
+									this.UnvalidateDirectory();
+								}
+							}
+						} catch (Exception) { }
+
+					};
+					this._FsWatcher.Deleted += (sender, args) => {
+						//args.FullPath
+						var existingItem = this.Items.ToArray().FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
+						if (existingItem != null) {
+							this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, existingItem));
+							this.UnvalidateDirectory();
+						}
+						//if (this.CurrentFolder != null && (objDelete.Parent != null && objDelete.Parent.Equals(this.CurrentFolder))) {
+						//	this.UnvalidateDirectory();
+						//}
+						//this.RaiseRecycleBinUpdated();
+					};
+					this._FsWatcher.Renamed += (sender, args) => {
+
+					};
+					this._FsWatcher.IncludeSubdirectories = true;
+					this._FsWatcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName |
+																				 NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
+																				 NotifyFilters.Size;
+					//this._FsWatcher.InternalBufferSize = 100 * 1024 * 1024;
+				}
+				//this._FsWatcher.EnableRaisingEvents = false;
+				//this._FsWatcher.Path = destination.ParsingName;
 				this._FsWatcher.EnableRaisingEvents = true;
 			}
 			//});
@@ -2665,6 +2670,12 @@ namespace BExplorer.Shell {
 
 			this.ItemForRename = -1;
 			this.LastItemForRename = -1;
+			this.Items.ForEach(i => {
+				i.Dispose();
+				i = null;
+			});
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
 			Items.Clear();
 			this._AddedItems.Clear();
 			ItemsForSubitemsUpdate.Clear();
@@ -2774,10 +2785,10 @@ namespace BExplorer.Shell {
 						if (this._AddedItems.Contains(shellItem.PIDL)) continue;
 						if (this._RequestedCurrentLocation.IsSearchFolder && shellItem.IsParentSearchFolder) {
 							this.Items.Add(shellItem);
-							this._AddedItems.Add(shellItem.PIDL);
+							//this._AddedItems.Add(shellItem.PIDL);
 						} else if (!this._RequestedCurrentLocation.IsSearchFolder && !shellItem.IsParentSearchFolder) {
 							this.Items.Add(shellItem);
-							this._AddedItems.Add(shellItem.PIDL);
+							//this._AddedItems.Add(shellItem.PIDL);
 						} else continue;
 					}
 
