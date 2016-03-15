@@ -351,13 +351,13 @@ namespace BetterExplorer {
 
 		void misd_Click(object sender, RoutedEventArgs e) {
 			foreach (var item in btnSort.Items.OfType<MenuItem>().Where(item => item.IsChecked && item != (sender as MenuItem))) {
-				_ShellListView.SetSortCollumn((Collumns)item.Tag, WIN.Forms.SortOrder.Descending);
+				_ShellListView.SetSortCollumn(true, (Collumns)item.Tag, WIN.Forms.SortOrder.Descending);
 			}
 		}
 
 		void misa_Click(object sender, RoutedEventArgs e) {
 			foreach (var item in btnSort.Items.OfType<MenuItem>().Where(item => item.IsChecked && item != (sender as MenuItem))) {
-				_ShellListView.SetSortCollumn((Collumns)item.Tag, WIN.Forms.SortOrder.Ascending);
+				_ShellListView.SetSortCollumn(true, (Collumns)item.Tag, WIN.Forms.SortOrder.Ascending);
 			}
 		}
 
@@ -2162,7 +2162,7 @@ selectedItems.Add(item.ParsingName);
 			var ascitem = (MenuItem)parentButton.Items[parentButton.Items.IndexOf(misa)];
 
 			var Sort = ascitem.IsChecked ? WIN.Forms.SortOrder.Ascending : WIN.Forms.SortOrder.Descending;
-			_ShellListView.SetSortCollumn((Collumns)item.Tag, Sort);
+			_ShellListView.SetSortCollumn(true, (Collumns)item.Tag, Sort);
 		}
 
 		void misng_Click(object sender, RoutedEventArgs e) {

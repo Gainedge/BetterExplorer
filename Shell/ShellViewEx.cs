@@ -568,7 +568,7 @@ namespace BExplorer.Shell {
 					this.Items.Remove(theItem);
 					if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 					var col = this.Collumns.ToArray().FirstOrDefault(w => w.ID == this.LastSortedColumnId);
-					this.SetSortCollumn(col, this.LastSortOrder, false);
+					this.SetSortCollumn(true, col, this.LastSortOrder, false);
 				}
 			}
 		}
@@ -1270,7 +1270,7 @@ namespace BExplorer.Shell {
 				Items.Add(obj);
 				this._AddedItems.Add(obj.PIDL);
 				var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
-				this.SetSortCollumn(col, this.LastSortOrder, false);
+				this.SetSortCollumn(true, col, this.LastSortOrder, false);
 				if (this.IsGroupsEnabled) SetGroupOrder(false);
 			}
 
@@ -1287,7 +1287,7 @@ namespace BExplorer.Shell {
 					Items.Insert(this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex, obj2);
 					if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 					var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
-					this.SetSortCollumn(col, this.LastSortOrder, false);
+					this.SetSortCollumn(true, col, this.LastSortOrder, false);
 					this.ItemUpdated?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj2, null, obj2.ItemIndex));
 					this.SelectItemByIndex(obj2.ItemIndex, true, true);
 				}
@@ -1301,7 +1301,7 @@ namespace BExplorer.Shell {
 					if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 
 					var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
-					this.SetSortCollumn(col, this.LastSortOrder, false);
+					this.SetSortCollumn(true, col, this.LastSortOrder, false);
 					RedrawWindow();
 					var obj2Real = this.Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName);
 					if (this.ItemUpdated != null && obj2Real != null) {
@@ -1510,11 +1510,11 @@ namespace BExplorer.Shell {
 							#region Case
 							var nlcv = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
 							if (!this.IsGroupsEnabled) {
-								SetSortCollumn(this.Collumns[nlcv.iSubItem], this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
+								SetSortCollumn(true, this.Collumns[nlcv.iSubItem], this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
 							} else if (this.LastGroupCollumn == this.Collumns[nlcv.iSubItem]) {
 								this.SetGroupOrder();
 							} else {
-								SetSortCollumn(this.Collumns[nlcv.iSubItem], this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
+								SetSortCollumn(true, this.Collumns[nlcv.iSubItem], this.LastSortOrder == SortOrder.Ascending ? SortOrder.Descending : SortOrder.Ascending);
 								this.SetGroupOrder(false);
 							}
 							break;
@@ -2049,7 +2049,7 @@ namespace BExplorer.Shell {
 					}
 				}
 				var col = this.Collumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
-				this.SetSortCollumn(col, this.LastSortOrder, false);
+				this.SetSortCollumn(true, col, this.LastSortOrder, false);
 				if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 			} catch (Exception) {
 				//F.Application.DoEvents();
@@ -2441,7 +2441,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public void SetSortCollumn(Collumns column, SortOrder order, Boolean reverseOrder = true) {
+		public void SetSortCollumn(Boolean isReorder, Collumns column, SortOrder order, Boolean reverseOrder = true) {
 			try {
 				var itemsArray = this.Items;
 				var selectedItems = this.SelectedItems.ToArray();
@@ -2453,44 +2453,47 @@ namespace BExplorer.Shell {
 					this.LastSortedColumnId = column.ID;
 					this.LastSortOrder = order;
 				}
-
-				var itemsQuery = itemsArray.Where(w => this.ShowHidden || !w.IsHidden).OrderByDescending(o => o.IsFolder);
-				if (column.CollumnType != typeof(String)) {
-					if (order == SortOrder.Ascending) {
-						this.Items =
-							itemsQuery.ThenBy(
+				if (isReorder) {
+					var itemsQuery = itemsArray.Where(w => this.ShowHidden || !w.IsHidden).OrderByDescending(o => o.IsFolder);
+					if (column.CollumnType != typeof (String)) {
+						if (order == SortOrder.Ascending) {
+							this.Items =
+								itemsQuery.ThenBy(
 									o =>
-										o.GetPropertyValue(column.pkey, typeof(String)).Value ?? "1")
-								.ToList();
-					} else {
-						this.Items =
-							itemsQuery.ThenByDescending(
+										o.GetPropertyValue(column.pkey, typeof (String)).Value ?? "1")
+									.ToList();
+						}
+						else {
+							this.Items =
+								itemsQuery.ThenByDescending(
 									o =>
-										o.GetPropertyValue(column.pkey, typeof(String)).Value ?? "1")
-								.ToList();
+										o.GetPropertyValue(column.pkey, typeof (String)).Value ?? "1")
+									.ToList();
+						}
 					}
-				} else {
-					if (order == SortOrder.Ascending) {
-						this.Items =
-							itemsQuery.ThenBy(
+					else {
+						if (order == SortOrder.Ascending) {
+							this.Items =
+								itemsQuery.ThenBy(
 									o =>
-										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
+										o.GetPropertyValue(column.pkey, typeof (String)).Value == null
 											? "1"
-											: o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default)
-								.ToList();
-					} else {
-						this.Items =
-							itemsQuery.ThenByDescending(
+											: o.GetPropertyValue(column.pkey, typeof (String)).Value.ToString(), NaturalStringComparer.Default)
+									.ToList();
+						}
+						else {
+							this.Items =
+								itemsQuery.ThenByDescending(
 									o =>
-										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
+										o.GetPropertyValue(column.pkey, typeof (String)).Value == null
 											? "1"
-											: o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default)
-								.ToList();
+											: o.GetPropertyValue(column.pkey, typeof (String)).Value.ToString(), NaturalStringComparer.Default)
+									.ToList();
+						}
 					}
+					var i = 0;
+					this.Items.ForEach(e => e.ItemIndex = i++);
 				}
-
-				var i = 0;
-				this.Items.ForEach(e => e.ItemIndex = i++);
 				User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 				var colIndexReal = this.Collumns.IndexOf(this.Collumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId));
 				if (colIndexReal > -1) {
@@ -2649,7 +2652,7 @@ namespace BExplorer.Shell {
 					this._FsWatcher.Renamed += (sender, args) => {
 
 					};
-					this._FsWatcher.IncludeSubdirectories = true;
+					this._FsWatcher.IncludeSubdirectories = false;
 					this._FsWatcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName |
 																				 NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
 																				 NotifyFilters.Size;
@@ -2670,12 +2673,12 @@ namespace BExplorer.Shell {
 
 			this.ItemForRename = -1;
 			this.LastItemForRename = -1;
-			this.Items.ForEach(i => {
-				i.Dispose();
-				i = null;
-			});
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
+			//this.Items.ForEach(i => {
+			//	i.Dispose();
+			//	i = null;
+			//});
+			//GC.Collect();
+			//GC.WaitForPendingFinalizers();
 			Items.Clear();
 			this._AddedItems.Clear();
 			ItemsForSubitemsUpdate.Clear();
@@ -2696,7 +2699,7 @@ namespace BExplorer.Shell {
 
 			var columns = new Collumns();
 			var isFailed = true;
-			int CurrentI = 0, LastI = 0;
+			int CurrentI = 0, LastI = 0, K = 0;
 			this.IsNavigationInProgress = true;
 
 
@@ -2768,7 +2771,39 @@ namespace BExplorer.Shell {
 			var navigationThread = new Thread(() => {
 				destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
 				this._RequestedCurrentLocation = destination;
-				foreach (var shellItem in destination.TakeWhile(shellItem => !this.IsCancelRequested)) {
+				var column = columns;
+				var order = folderSettings.SortOrder;
+				IOrderedEnumerable<IListItemEx> content = destination.Where(w => this.ShowHidden || !w.IsHidden).OrderByDescending(o => o.IsFolder);
+				if (column.CollumnType != typeof(String)) {
+					if (order == SortOrder.Ascending) {
+						content =
+							content.ThenBy(
+									o =>
+										o.GetPropertyValue(column.pkey, typeof(String)).Value ?? "1");
+					} else {
+						content =
+							content.ThenByDescending(
+								o =>
+									o.GetPropertyValue(column.pkey, typeof (String)).Value ?? "1");
+					}
+				} else {
+					if (order == SortOrder.Ascending) {
+						content =
+							content.ThenBy(
+									o =>
+										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
+											? "1"
+											: o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default);
+					} else {
+						content =
+							content.ThenByDescending(
+									o =>
+										o.GetPropertyValue(column.pkey, typeof(String)).Value == null
+											? "1"
+											: o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default);
+					}
+				}
+				foreach (var shellItem in content.TakeWhile(shellItem => !this.IsCancelRequested)) {
 					CurrentI++;
 					if (CurrentI == 1) {
 						isFailed = false;
@@ -2783,12 +2818,13 @@ namespace BExplorer.Shell {
 
 					if (this.ShowHidden || !shellItem.IsHidden) {
 						if (this._AddedItems.Contains(shellItem.PIDL)) continue;
+						shellItem.ItemIndex = K++;
 						if (this._RequestedCurrentLocation.IsSearchFolder && shellItem.IsParentSearchFolder) {
 							this.Items.Add(shellItem);
-							//this._AddedItems.Add(shellItem.PIDL);
+							this._AddedItems.Add(shellItem.PIDL);
 						} else if (!this._RequestedCurrentLocation.IsSearchFolder && !shellItem.IsParentSearchFolder) {
 							this.Items.Add(shellItem);
-							//this._AddedItems.Add(shellItem.PIDL);
+							this._AddedItems.Add(shellItem.PIDL);
 						} else continue;
 					}
 
@@ -2830,9 +2866,9 @@ namespace BExplorer.Shell {
 
 				if (isThereSettings) {
 					if (columns?.ID == "A0" && String.Equals(this._RequestedCurrentLocation.ParsingName, KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase))
-						this.SetSortCollumn(this.AvailableColumns().Single(s => s.ID == "A180"), SortOrder.Ascending, false);
+						this.SetSortCollumn(false, this.AvailableColumns().Single(s => s.ID == "A180"), SortOrder.Ascending, false);
 					else
-						this.SetSortCollumn(columns, folderSettings.SortOrder, false);
+						this.SetSortCollumn(false, columns, folderSettings.SortOrder, false);
 				} else if (String.Equals(this._RequestedCurrentLocation.ParsingName, KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase)) {
 					this.Items = this.Items.OrderBy(o => o.ParsingName).ToList();
 					var i = 0;

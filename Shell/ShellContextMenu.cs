@@ -333,11 +333,11 @@ public bool HandleMenuMessage(ref Message m) {
 							break;
 						case 247:
 							var colasc = this._ShellView.Collumns.FirstOrDefault(w => w.ID == this._ShellView.LastSortedColumnId);
-							this._ShellView.SetSortCollumn(colasc, SortOrder.Ascending);
+							this._ShellView.SetSortCollumn(true, colasc, SortOrder.Ascending);
 							break;
 						case 248:
 							var coldesc = this._ShellView.Collumns.FirstOrDefault(w => w.ID == this._ShellView.LastSortedColumnId);
-							this._ShellView.SetSortCollumn(coldesc, SortOrder.Descending);
+							this._ShellView.SetSortCollumn(true, coldesc, SortOrder.Descending);
 							break;
 						case 249:
 							this._ShellView.PasteAvailableFiles();
@@ -381,7 +381,7 @@ public bool HandleMenuMessage(ref Message m) {
 							break;
 					}
 					if (command >= 262 && command <= 262 + this._ShellView.Collumns.Count) {
-						this._ShellView.SetSortCollumn(this._ShellView.Collumns[command - 262], SortOrder.Ascending);
+						this._ShellView.SetSortCollumn(true, this._ShellView.Collumns[command - 262], SortOrder.Ascending);
 					} else if (command > 260) {
 						if (!this._ShellView.IsGroupsEnabled)
 							this._ShellView.EnableGroups();
