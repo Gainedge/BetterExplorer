@@ -1424,7 +1424,7 @@ namespace BExplorer.Shell {
 							var nmlv = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
 							if (Items.Count == 0 || Items.Count - 1 < nmlv.item.iItem)
 								break;
-							var currentItem = Items[nmlv.item.iItem];
+							var currentItem = this._IsSearchNavigating ? Items[nmlv.item.iItem].Clone() : Items[nmlv.item.iItem];
 
 							if ((nmlv.item.mask & LVIF.LVIF_TEXT) == LVIF.LVIF_TEXT) {
 								if (nmlv.item.iSubItem == 0) {
@@ -2745,7 +2745,7 @@ namespace BExplorer.Shell {
 			columns = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.SortColumn);
 			this.IsViewSelectionAllowed = false;
 			if (!isThereSettings) {
-				this.View = ShellViewStyle.Details;
+				this.View = this._IsSearchNavigating ? ShellViewStyle.Details : ShellViewStyle.Details;
 			}
 
 			if (folderSettings.View == ShellViewStyle.Details || folderSettings.View == ShellViewStyle.SmallIcon ||
@@ -2771,7 +2771,8 @@ namespace BExplorer.Shell {
 			var navigationThread = new Thread(() => {
 				destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
 				this._RequestedCurrentLocation = destination;
-				var column = columns;
+
+				var column = columns ?? this.AllAvailableColumns.Single(s => s.ID == "A0");
 				var order = folderSettings.SortOrder;
 				IOrderedEnumerable<IListItemEx> content = destination.Where(w => this.ShowHidden || !w.IsHidden).OrderByDescending(o => o.IsFolder);
 				if (column.CollumnType != typeof(String)) {
@@ -2803,7 +2804,7 @@ namespace BExplorer.Shell {
 											: o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default);
 					}
 				}
-				foreach (var shellItem in content.TakeWhile(shellItem => !this.IsCancelRequested)) {
+				foreach (var shellItem in this._IsSearchNavigating ? destination.TakeWhile(shellItem => !this.IsCancelRequested) : content.TakeWhile(shellItem => !this.IsCancelRequested)) {
 					CurrentI++;
 					if (CurrentI == 1) {
 						isFailed = false;
@@ -2830,12 +2831,15 @@ namespace BExplorer.Shell {
 
 
 					var delta = CurrentI - LastI;
-					if (delta < (this._IsSearchNavigating ? 50 : 2000)) continue;
-					LastI = CurrentI;
-					User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+					if (delta >= (this._IsSearchNavigating ? 50 : 2000)) {
+						LastI = CurrentI;
+						this.Invoke((Action) (() => {
+							User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
 
-					if (this._IsSearchNavigating && delta >= 20)
-						Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+							if (this._IsSearchNavigating && delta >= 20)
+								Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+						}));
+					}
 				}
 				this.IsCancelRequested = false;
 				this.IsNavigationInProgress = false;
@@ -2866,9 +2870,9 @@ namespace BExplorer.Shell {
 
 				if (isThereSettings) {
 					if (columns?.ID == "A0" && String.Equals(this._RequestedCurrentLocation.ParsingName, KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase))
-						this.SetSortCollumn(false, this.AvailableColumns().Single(s => s.ID == "A180"), SortOrder.Ascending, false);
+						this.SetSortCollumn(this._IsSearchNavigating, this.AvailableColumns().Single(s => s.ID == "A180"), SortOrder.Ascending, false);
 					else
-						this.SetSortCollumn(false, columns, folderSettings.SortOrder, false);
+						this.SetSortCollumn(this._IsSearchNavigating, columns, folderSettings.SortOrder, false);
 				} else if (String.Equals(this._RequestedCurrentLocation.ParsingName, KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase)) {
 					this.Items = this.Items.OrderBy(o => o.ParsingName).ToList();
 					var i = 0;
@@ -3558,9 +3562,9 @@ namespace BExplorer.Shell {
 					//resetEvent.Set();
 					if (IconSize != 16) {
 						/*
-WTS_CACHEFLAGS flags;
-bool retrieved = false;
-*/
+						WTS_CACHEFLAGS flags;
+						bool retrieved = false;
+						*/
 
 						IntPtr hThumbnail = IntPtr.Zero;
 						hThumbnail = sho.GetHBitmap(IconSize, true);
@@ -3745,9 +3749,12 @@ bool retrieved = false;
 			var subItemTextBrush = new SolidBrush(System.Drawing.SystemColors.ControlDarkDark);//new SolidBrush(Color.FromArgb(93, 92, 92));
 			g.DrawString(sho.GetPropertyValue(SystemProperties.FileType, typeof(String)).Value.ToString(),
 													subItemFont, subItemTextBrush, lblrectSubiTem2, fmt);
-			var size = sho.GetPropertyValue(SystemProperties.FileSize, typeof(long)).Value;
-			if (size != null) {
-				g.DrawString(ShlWapi.StrFormatByteSize(long.Parse(size.ToString())), subItemFont, subItemTextBrush, lblrectSubiTem3, fmt);
+			if (sho.Parent.IsFileSystem) {
+				var size = sho.GetPropertyValue(SystemProperties.FileSize, typeof (long)).Value;
+				if (size != null) {
+					g.DrawString(ShlWapi.StrFormatByteSize(long.Parse(size.ToString())), subItemFont, subItemTextBrush, lblrectSubiTem3,
+						fmt);
+				}
 			}
 
 			subItemFont.Dispose();

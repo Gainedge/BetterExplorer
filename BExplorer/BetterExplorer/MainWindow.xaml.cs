@@ -3411,9 +3411,15 @@ return false;
 		}
 
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
-			this.bcbc.SetPathWithoutNavigate(e.Folder.IsSearchFolder ? e.Folder.PIDL.ToString() : e.Folder.ParsingName.ToShellParsingName());
+				
 			if (this._ShellListView.CurrentFolder == null) return;
+			if (!e.Folder.IsSearchFolder) {
+				this.bcbc.SetPathWithoutNavigate(e.Folder.IsSearchFolder
+					? e.Folder.PIDL.ToString()
+					: e.Folder.ParsingName.ToShellParsingName());
+			}
 			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
+				
 				var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 				if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
 					if (tab.SelectedItems != null)
