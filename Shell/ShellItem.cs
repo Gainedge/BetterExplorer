@@ -520,10 +520,10 @@ namespace BExplorer.Shell {
 			} catch {
 				return 0;
 			} finally {
-				if (ishellfolder != null)
-					Marshal.ReleaseComObject(ishellfolder);
-				if (iextract != null)
-					Marshal.ReleaseComObject(iextract);
+				//if (ishellfolder != null)
+				//	Marshal.ReleaseComObject(ishellfolder);
+				//if (iextract != null)
+				//	Marshal.ReleaseComObject(iextract);
 				str = null;
 			}
 		}

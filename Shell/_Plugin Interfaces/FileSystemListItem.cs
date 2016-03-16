@@ -36,7 +36,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public Interop.IExtractIconPWFlags IconType
 		{
-			get { return this.IsParentSearchFolder ? IExtractIconPWFlags.GIL_PERINSTANCE : this.IsNeedRefreshing ? this._Item.GetIconType() : this._IconType; }
+			get { return this.IsParentSearchFolder ? IExtractIconPWFlags.GIL_PERINSTANCE : this._Item.GetIconType(); }
 			set { this._IconType = value; }
 
 		}
@@ -122,7 +122,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			this.IsFolder = folder.IsFolder;
 			this.IsSearchFolder = folder.IsSearchFolder;
 			this._Item = folder;
-			this._IconType = folder.GetIconType();
+			//this._IconType = folder.GetIconType();
 		}
 
 		public void Initialize(IntPtr lvHandle, IntPtr pidl, int index) {

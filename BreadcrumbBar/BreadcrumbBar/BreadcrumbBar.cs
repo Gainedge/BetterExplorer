@@ -291,7 +291,7 @@ namespace Odyssey.Controls {
 						isLoaded = IsLoaded;
 					}
 					var thread = new Thread(() => {
-						BuildBreadcrumbsFromPath(Path);
+						BuildBreadcrumbsFromPath(value);
 
 						if (isLoaded && !breadcrumbItemTraceValueChanged_IsFired && _Path != null) {
 							Int64 pidl;
@@ -600,7 +600,7 @@ namespace Odyssey.Controls {
 		private void breadcrumbItemTraceValueChanged(object sender, RoutedEventArgs e) {
 			if (e.OriginalSource == RootItem) {
 				breadcrumbItemTraceValueChanged_IsFired = true;
-				Path = GetDisplayPath();
+				//Path = GetDisplayPath();
 				breadcrumbItemTraceValueChanged_IsFired = false;
 			}
 		}

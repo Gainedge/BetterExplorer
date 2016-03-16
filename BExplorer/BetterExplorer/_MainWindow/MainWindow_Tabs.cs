@@ -33,8 +33,10 @@ namespace BetterExplorer {
 							continue;
 						}
 						var tab = tcMain.NewTab(FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, str.ToShellParsingName()), i == InitialTabs.Length);
-						if (i == InitialTabs.Length)
+						if (i == InitialTabs.Length) {
 							this.SelectTab(tab);
+							bcbc.SetPathWithoutNavigate(str);
+						}
 					} catch {
 						//AddToLog(String.Format("Unable to load {0} into a tab!", str));
 						MessageBox.Show("BetterExplorer is unable to load one of the tabs from your last session. Your other tabs are perfectly okay though! \r\n\r\nThis location was unable to be loaded: " + str, "Unable to Create New Tab", MessageBoxButton.OK, MessageBoxImage.Error);
