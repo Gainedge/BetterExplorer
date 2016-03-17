@@ -3230,22 +3230,28 @@ namespace BExplorer.Shell {
 			});
 		}
 
+		public Boolean IsSupressedTumbGeneration;
+
 		public void _IconCacheLoadingThreadRun() {
 			while (true) {
 				if (resetEvent != null) resetEvent.WaitOne();
 				int? index = 0;
 				if (!ThreadRun_Helper(ThumbnailsForCacheLoad, true, ref index)) continue;
-				var sho = Items[index.Value];
-				var result = sho.GetHBitmap(IconSize, true, true);
-				sho.IsThumbnailLoaded = true;
-				sho.IsNeedRefreshing = false;
-				if (result != IntPtr.Zero) {
-					var width = 0;
-					var height = 0;
-					Gdi32.ConvertPixelByPixel(result, out width, out height);
-					sho.IsOnlyLowQuality = (width > height && width != IconSize) || (width < height && height != IconSize) || (width == height && width != IconSize); ;
-					this.RefreshItem(index.Value);
-					Gdi32.DeleteObject(result);
+				if (ThumbnailsForCacheLoad.Count() > 1 || !this.IsSupressedTumbGeneration) {
+					var sho = Items[index.Value];
+					var result = sho.GetHBitmap(IconSize, true, true);
+					sho.IsThumbnailLoaded = true;
+					sho.IsNeedRefreshing = false;
+					if (result != IntPtr.Zero) {
+						var width = 0;
+						var height = 0;
+						Gdi32.ConvertPixelByPixel(result, out width, out height);
+						sho.IsOnlyLowQuality = (width > height && width != IconSize) || (width < height && height != IconSize) ||
+						                       (width == height && width != IconSize);
+						;
+						this.RefreshItem(index.Value);
+						Gdi32.DeleteObject(result);
+					}
 				}
 			}
 		}

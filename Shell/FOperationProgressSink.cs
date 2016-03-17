@@ -82,6 +82,7 @@ namespace BExplorer.Shell {
 		public override void PreCopyItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName) {
 			//DO NOT REMOVE!!!!
 			//base.PreCopyItem(dwFlags, psiItem, psiDestinationFolder, pszNewName);
+			this._View.IsSupressedTumbGeneration = true;
 		}
 
 		[HandleProcessCorruptedStateExceptions]
@@ -92,6 +93,7 @@ namespace BExplorer.Shell {
 				var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
 				Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
 					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+				this._View.IsSupressedTumbGeneration = false;
 				Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
 					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
 			}
