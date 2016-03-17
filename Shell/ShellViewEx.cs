@@ -2240,6 +2240,7 @@ namespace BExplorer.Shell {
 						throw;
 					}
 				}
+				this.IsSupressedTumbGeneration = false;
 			});
 
 			thread.SetApartmentState(ApartmentState.STA);
