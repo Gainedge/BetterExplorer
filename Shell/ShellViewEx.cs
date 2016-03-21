@@ -1525,8 +1525,13 @@ namespace BExplorer.Shell {
 							var nmGetInfoTip = (NMLVGETINFOTIP)m.GetLParam(typeof(NMLVGETINFOTIP));
 							if (this.Items.Count == 0)
 								break;
-							if (ToolTip == null)
+							if (ToolTip == null) {
 								ToolTip = new ToolTip(this);
+							}
+							//else {
+							//	this.ToolTip.Close();
+							//	ToolTip = new ToolTip(this);
+							//}
 
 							var itemInfotip = this.Items[nmGetInfoTip.iItem];
 							char[] charBuf = ("\0").ToCharArray();

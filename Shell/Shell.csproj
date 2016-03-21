@@ -103,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssociationItem.cs" />
+    <Compile Include="TooltipDataTemplateSelector.cs" />
     <Compile Include="ThreadSafeListWithLock.cs" />
     <Compile Include="ListViewEditor.cs" />
     <Compile Include="ObservableCollectionEx.cs" />

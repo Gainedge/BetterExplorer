@@ -5,6 +5,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
   xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+	xmlns:local="clr-namespace:BExplorer.Shell"
 	mc:Ignorable="d" 
 	SizeToContent="WidthAndHeight" 
 	Focusable="True" 
@@ -17,19 +18,40 @@
 	ScrollViewer.VerticalScrollBarVisibility="Disabled"
 	ShowActivated="False"
 	Topmost="False">
-  <Grid>
-    <theme:SystemDropShadowChrome Name="Shdw" theme:SystemDropShadowChrome.Color="#71000000" theme:SystemDropShadowChrome.CornerRadius="3" SnapsToDevicePixels="True" Margin="0,0,3,3">
-      <Border CornerRadius="3" Margin="1" Padding="3" BorderBrush="DarkGray" BorderThickness="1" >
-        <Border.Background>
-          <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-            <GradientStop Color="Snow" Offset="0.0"/>
-            <GradientStop Color="#FCFCFF" Offset="0.4"/>
-            <GradientStop Color="#FFFDFD" Offset="1.0"/>
-          </LinearGradientBrush>
-        </Border.Background>
-
-        <TextBlock Text="{Binding Contents, UpdateSourceTrigger=PropertyChanged}" Margin="2" TextAlignment="Left" TextWrapping="NoWrap" SizeChanged="TextBlock_SizeChanged"/>
-      </Border>
-    </theme:SystemDropShadowChrome>
-  </Grid>
+	<Window.Resources>
+		<local:TooltipDataTemplateSelector x:Key="TooltipDataTemplateSelector" x:Name="TooltipDataTemplateSelector"></local:TooltipDataTemplateSelector>
+		<DataTemplate x:Key="FSTooltip" x:Name="FSTooltip">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="64"></ColumnDefinition>
+					<ColumnDefinition Width="*"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
+				<Image x:Name="imgIcon" Grid.Column="0" Width="64" Height="64" Stretch="None" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Image, IsAsync=True}"></Image>
+				<TextBlock Grid.Column="1" VerticalAlignment="Center" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Contents, IsAsync=True}" Margin="2" TextAlignment="Left" TextWrapping="NoWrap" SizeChanged="TextBlock_SizeChanged"/>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="FSImageTooltip" x:Name="FSImageTooltip">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"></RowDefinition>
+					<RowDefinition Height="*"></RowDefinition>
+				</Grid.RowDefinitions>
+				<Image Grid.Column="0" Stretch="None" x:Name="imgIconImage" SizeChanged="ImgIconImage_OnSizeChanged" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Image, IsAsync=True}"></Image>
+			</Grid>
+		</DataTemplate>
+	</Window.Resources>
+	<Grid>
+		<theme:SystemDropShadowChrome Name="Shdw" theme:SystemDropShadowChrome.Color="#71000000" theme:SystemDropShadowChrome.CornerRadius="3" SnapsToDevicePixels="True" Margin="0,0,3,3">
+			<Border CornerRadius="3" Margin="1" Padding="3" BorderBrush="DarkGray" BorderThickness="1" >
+				<Border.Background>
+					<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+						<GradientStop Color="Snow" Offset="0.0"/>
+						<GradientStop Color="#FCFCFF" Offset="0.4"/>
+						<GradientStop Color="#FFFDFD" Offset="1.0"/>
+					</LinearGradientBrush>
+				</Border.Background>
+				<ContentControl Content="{Binding CurrentItem}" ContentTemplateSelector="{StaticResource TooltipDataTemplateSelector}"></ContentControl>
+			</Border>
+		</theme:SystemDropShadowChrome>
+	</Grid>
 </Window>
