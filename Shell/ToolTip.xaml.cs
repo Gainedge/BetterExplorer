@@ -19,6 +19,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using BExplorer.Shell._Plugin_Interfaces;
 using BExplorer.Shell.Interop;
+using Path = System.IO.Path;
 
 namespace BExplorer.Shell {
 	/// <summary>
@@ -48,6 +49,9 @@ namespace BExplorer.Shell {
 
 		public Int32 ItemIndex { get; set; }
 		public String Contents { get; set; }
+		public Double Rating { get; set; }
+		public String Dimentions { get; set; }
+		public String FileName { get; set; }
 
 		public ToolTip(ShellView view) {
 			InitializeComponent();
@@ -75,6 +79,14 @@ namespace BExplorer.Shell {
 					image.Freeze();
 					this.Image = image;
 					RaisePropertyChanged("Image");
+					var ratingValue = this.CurrentItem.GetPropertyValue(MediaProperties.Rating, typeof (Double)).Value;
+					var rating = ratingValue == null ? 0 : Convert.ToDouble(ratingValue)/20D;
+					this.Rating = rating;
+					RaisePropertyChanged("Rating");
+					this.Dimentions = (Math.Ceiling(Convert.ToDouble(this.CurrentItem.GetPropertyValue(SystemProperties.FileSize, typeof(double)).Value)) / 1024).ToString("# ### ### ##0") + " KB (" + this.CurrentItem.GetPropertyValue(MediaProperties.Dimensions, typeof (String)).Value.ToString() + " px )";
+					RaisePropertyChanged("Dimentions");
+					this.FileName = Path.GetFileName(this.CurrentItem.ParsingName).Trim();
+					RaisePropertyChanged("FileName");
 				}
 				else {
 					var image = this.CurrentItem.ThumbnailSource(64, ShellThumbnailFormatOption.Default,

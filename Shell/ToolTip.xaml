@@ -6,6 +6,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
   xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
 	xmlns:local="clr-namespace:BExplorer.Shell"
+	xmlns:Stars="clr-namespace:CustomControls;assembly=StarRatingControl"
 	mc:Ignorable="d" 
 	SizeToContent="WidthAndHeight" 
 	Focusable="True" 
@@ -32,11 +33,22 @@
 		</DataTemplate>
 		<DataTemplate x:Key="FSImageTooltip" x:Name="FSImageTooltip">
 			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="100"></ColumnDefinition>
+					<ColumnDefinition Width="*"></ColumnDefinition>
+				</Grid.ColumnDefinitions>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto"></RowDefinition>
-					<RowDefinition Height="*"></RowDefinition>
+					<RowDefinition Height="25"></RowDefinition>
+					<RowDefinition Height="25"></RowDefinition>
 				</Grid.RowDefinitions>
-				<Image Grid.Column="0" Stretch="None" x:Name="imgIconImage" SizeChanged="ImgIconImage_OnSizeChanged" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Image, IsAsync=True}"></Image>
+				<Image Grid.Row="0" Grid.ColumnSpan="2" Stretch="None" x:Name="imgIconImage" SizeChanged="ImgIconImage_OnSizeChanged" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Image, IsAsync=True}"></Image>
+				<Stars:Rating Grid.Row="1" Grid.Column="0" Height="18" Width="100" RatingItemLimit="5"  RatingItemBackground="White" HorizontalAlignment="Left" Margin="5,5,0,0"
+                  RatingItemHighlightColor="Orange"  
+                  RatingItemMouseDownColor="Transparent"  
+                  RatingValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Rating, IsAsync=True}"/>
+				<Label Grid.Row="1" Grid.Column="1" Margin="0" Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.FileName, IsAsync=True}" HorizontalAlignment="Left"></Label>
+				<Label Grid.Row="2" Grid.ColumnSpan="2" Margin="0" Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Dimentions, IsAsync=True}" HorizontalAlignment="Left"></Label>
 			</Grid>
 		</DataTemplate>
 	</Window.Resources>

@@ -314,6 +314,10 @@
       <Project>{bfbd2f46-ed5f-49a3-abad-9ba571ef073e}</Project>
       <Name>RateBar</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rating control\CustomControls\StarRatingControl.csproj">
+      <Project>{2f36cce1-9d03-4518-9bfd-82e36ea1a64e}</Project>
+      <Name>StarRatingControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UnbufferedFO\GS.Common.IO\UnbufferedIO.csproj">
       <Project>{ec0d64f9-9f48-4c35-a3b6-e1d8256b76d9}</Project>
       <Name>UnbufferedIO</Name>

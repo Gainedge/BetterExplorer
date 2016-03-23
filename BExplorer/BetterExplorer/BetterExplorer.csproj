@@ -679,6 +679,10 @@
       <Project>{7ac63864-7638-41c4-969c-d3197ef2bed9}</Project>
       <Name>NotifyIconWpf</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Rating control\CustomControls\StarRatingControl.csproj">
+      <Project>{2f36cce1-9d03-4518-9bfd-82e36ea1a64e}</Project>
+      <Name>StarRatingControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj">
       <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
       <Name>SevenZip2010</Name>
@@ -1159,7 +1163,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

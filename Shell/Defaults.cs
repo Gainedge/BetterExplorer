@@ -373,6 +373,18 @@ namespace BExplorer.Shell {
 		}
 	}
 
+	public static class MediaProperties {
+		public static PROPERTYKEY Rating = new PROPERTYKEY() {
+			fmtid = Guid.Parse("64440492-4c8b-11d1-8b70-080036b11a03"),
+			pid = 9
+		};
+
+		public static PROPERTYKEY Dimensions = new PROPERTYKEY() {
+			fmtid = Guid.Parse("6444048f-4c8b-11d1-8b70-080036b11a03"),
+			pid = 13
+		};
+	}
+
 	public static class SystemProperties {
 		public static PROPERTYKEY FileSize = new PROPERTYKEY() { fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 12 };
 		public static PROPERTYKEY LinkTarget = new PROPERTYKEY() { fmtid = Guid.Parse("b9b4b3fc-2b51-4a42-b5d8-324146afcf25"), pid = 2 };
