@@ -43,12 +43,28 @@
 					<RowDefinition Height="25"></RowDefinition>
 				</Grid.RowDefinitions>
 				<Image Grid.Row="0" Grid.ColumnSpan="2" Stretch="None" x:Name="imgIconImage" SizeChanged="ImgIconImage_OnSizeChanged" Source="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Image, IsAsync=True}"></Image>
-				<Stars:Rating Grid.Row="1" Grid.Column="0" Height="18" Width="100" RatingItemLimit="5"  RatingItemBackground="White" HorizontalAlignment="Left" Margin="5,5,0,0"
-                  RatingItemHighlightColor="Orange"  
+				<Stars:Rating Grid.Row="1" Grid.Column="0" Height="18" Width="100" RatingItemLimit="5"  HorizontalAlignment="Left" Margin="5,5,0,0"
                   RatingItemMouseDownColor="Transparent"  
-                  RatingValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Rating, IsAsync=True}"/>
-				<Label Grid.Row="1" Grid.Column="1" Margin="0" Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.FileName, IsAsync=True}" HorizontalAlignment="Left"></Label>
-				<Label Grid.Row="2" Grid.ColumnSpan="2" Margin="0" Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Dimentions, IsAsync=True}" HorizontalAlignment="Left"></Label>
+                  RatingValue="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Rating, IsAsync=True}">
+					<Stars:Rating.RatingItemBackground>
+						<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+							<GradientStop Color="White" Offset="0.0"/>
+							<GradientStop Color="#E7E4E4" Offset="1"/>
+						</LinearGradientBrush>
+					</Stars:Rating.RatingItemBackground>
+					<Stars:Rating.RatingItemHighlightColor>
+						<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+							<GradientStop Color="Yellow" Offset="0.0"/>
+							<GradientStop Color="Orange" Offset="1"/>
+						</LinearGradientBrush>
+					</Stars:Rating.RatingItemHighlightColor>
+				</Stars:Rating>
+				<Border Grid.Row="1"  Grid.Column="1" BorderBrush="{x:Null}" Height="16" Margin="5,7,5,2" VerticalAlignment="Center">
+					<TextBlock VerticalAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Height="16" FontWeight="Bold" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.FileName, IsAsync=True}" MaxWidth="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.FileNameWidth, IsAsync=True}"></TextBlock>
+				</Border>
+				<Border Grid.Row="2"  Grid.Column="0" Grid.ColumnSpan="2" Margin="5,2,0,5" BorderBrush="{x:Null}" Height="23" VerticalAlignment="Center">
+					<TextBlock VerticalAlignment="Center"  Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Dimentions, IsAsync=True}"></TextBlock>
+				</Border>
 			</Grid>
 		</DataTemplate>
 	</Window.Resources>
@@ -62,7 +78,7 @@
 						<GradientStop Color="#FFFDFD" Offset="1.0"/>
 					</LinearGradientBrush>
 				</Border.Background>
-				<ContentControl Content="{Binding CurrentItem}" ContentTemplateSelector="{StaticResource TooltipDataTemplateSelector}"></ContentControl>
+				<ContentControl x:Name="pnlContents" Content="{Binding CurrentItem}" ContentTemplateSelector="{StaticResource TooltipDataTemplateSelector}"></ContentControl>
 			</Border>
 		</theme:SystemDropShadowChrome>
 	</Grid>

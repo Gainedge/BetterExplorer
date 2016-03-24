@@ -52,6 +52,7 @@ namespace BExplorer.Shell {
 		public Double Rating { get; set; }
 		public String Dimentions { get; set; }
 		public String FileName { get; set; }
+		public Double FileNameWidth { get; set; }
 
 		public ToolTip(ShellView view) {
 			InitializeComponent();
@@ -79,11 +80,13 @@ namespace BExplorer.Shell {
 					image.Freeze();
 					this.Image = image;
 					RaisePropertyChanged("Image");
+					this.FileNameWidth  = this.Image.Width - 110;
+					RaisePropertyChanged("FileNameWidth");
 					var ratingValue = this.CurrentItem.GetPropertyValue(MediaProperties.Rating, typeof (Double)).Value;
 					var rating = ratingValue == null ? 0 : Convert.ToDouble(ratingValue)/20D;
 					this.Rating = rating;
 					RaisePropertyChanged("Rating");
-					this.Dimentions = (Math.Ceiling(Convert.ToDouble(this.CurrentItem.GetPropertyValue(SystemProperties.FileSize, typeof(double)).Value)) / 1024).ToString("# ### ### ##0") + " KB (" + this.CurrentItem.GetPropertyValue(MediaProperties.Dimensions, typeof (String)).Value.ToString() + " px )";
+					this.Dimentions = ((Math.Ceiling(Convert.ToDouble(this.CurrentItem.GetPropertyValue(SystemProperties.FileSize, typeof(double)).Value)) / 1024).ToString("# ### ### ##0") + " KB (" + this.CurrentItem.GetPropertyValue(MediaProperties.Dimensions, typeof (String)).Value.ToString() + " px )").Trim();
 					RaisePropertyChanged("Dimentions");
 					this.FileName = Path.GetFileName(this.CurrentItem.ParsingName).Trim();
 					RaisePropertyChanged("FileName");
