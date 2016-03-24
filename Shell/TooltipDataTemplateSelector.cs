@@ -13,13 +13,18 @@ namespace BExplorer.Shell {
 	public class TooltipDataTemplateSelector : DataTemplateSelector {
 		public override DataTemplate SelectTemplate(object item, DependencyObject container) {
 			var obj = item as IListItemEx;
-			if (obj != null &&
-					((PerceivedType)obj.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType)).Value) ==
-					PerceivedType.Image) {
-				return ((FrameworkElement)container).FindResource("FSImageTooltip") as DataTemplate;
-			} else if (obj != null && obj.IsFileSystem) {
-				return ((FrameworkElement)container).FindResource("FSTooltip") as DataTemplate;
-			} else {
+			try {
+				if (obj != null &&
+				    ((PerceivedType)obj.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType)).Value) ==
+				    PerceivedType.Image && !obj.IsFolder) {
+					return ((FrameworkElement)container).FindResource("FSImageTooltip") as DataTemplate;
+				} else if (obj != null && obj.IsFileSystem) {
+					return ((FrameworkElement)container).FindResource("FSTooltip") as DataTemplate;
+				} else {
+					return ((FrameworkElement)container).FindResource("FSTooltip") as DataTemplate;
+				}
+			}
+			catch (Exception ex) {
 				return ((FrameworkElement)container).FindResource("FSTooltip") as DataTemplate;
 			}
 		}

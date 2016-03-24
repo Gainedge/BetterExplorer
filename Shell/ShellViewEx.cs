@@ -1843,8 +1843,8 @@ namespace BExplorer.Shell {
 										this.IsRenameNeeded = false;
 									}
 								} else {
-									this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj));
-									this.UnvalidateDirectory();
+									if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj)))
+										this.UnvalidateDirectory();
 								}
 							}
 							break;
@@ -1852,8 +1852,10 @@ namespace BExplorer.Shell {
 						case ShellNotifications.SHCNE.SHCNE_DELETE:
 							var objDelete = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
 							if (this.CurrentFolder != null && (objDelete.Parent != null && objDelete.Parent.Equals(this.CurrentFolder))) {
-								this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, objDelete));
-								this.UnvalidateDirectory();
+								if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, objDelete))) {
+									this.UnvalidateDirectory();
+									break;
+								}
 							}
 							this.RaiseRecycleBinUpdated();
 							break;
@@ -1899,7 +1901,7 @@ namespace BExplorer.Shell {
 								var objMedia = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
 								var exisitingItem = this.Items.SingleOrDefault(w => w.Equals(objMedia));
 								if (exisitingItem != null)
-									this.UpdateItem(this.Items.IndexOf(exisitingItem));
+									this.UpdateItem(exisitingItem.ItemIndex);
 							}
 							break;
 						case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
@@ -1994,7 +1996,7 @@ namespace BExplorer.Shell {
 				curProcess.Dispose();
 			}).Start();
 		}
-		SyncQueue<Tuple<ItemUpdateType, IListItemEx>> _ItemsQueue = new SyncQueue<Tuple<ItemUpdateType, IListItemEx>>();
+		QueueEx<Tuple<ItemUpdateType, IListItemEx>> _ItemsQueue = new QueueEx<Tuple<ItemUpdateType, IListItemEx>>();
 		void _UnvalidateTimer_Tick(object sender, EventArgs e) {
 			this._UnvalidateTimer.Stop();
 			if (this.CurrentFolder == null) return;
@@ -2636,8 +2638,8 @@ namespace BExplorer.Shell {
 										this.IsRenameNeeded = false;
 									}
 								} else {
-									this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj));
-									this.UnvalidateDirectory();
+									if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj)))
+										this.UnvalidateDirectory();
 								}
 							}
 						} catch (Exception) { }
@@ -2659,7 +2661,7 @@ namespace BExplorer.Shell {
 
 					};
 					this._FsWatcher.IncludeSubdirectories = false;
-					this._FsWatcher.NotifyFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName |
+					this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName |
 																				 NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
 																				 NotifyFilters.Size;
 					//this._FsWatcher.InternalBufferSize = 100 * 1024 * 1024;
