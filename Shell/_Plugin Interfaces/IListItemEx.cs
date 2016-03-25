@@ -91,7 +91,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		void Initialize(IntPtr lvHandle, IntPtr pidl);
 
 		void InitializeWithParent(ShellItem parent, IntPtr lvHandle, IntPtr pidl, int index);
-		IListItemEx Clone();
+		IListItemEx Clone(Boolean isHardCloning = false);
 
 		PropVariant GetPropertyValue(PROPERTYKEY pkey, Type type);
 

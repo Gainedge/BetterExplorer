@@ -388,7 +388,12 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public Boolean IsRCWSet { get; set; }
 
-		public IListItemEx Clone() {
+		public IListItemEx Clone(Boolean isHardCloning = false) {
+			if (isHardCloning) {
+				var newObj = FileSystemListItem.ToFileSystemItem(this.ParentHandle, this.ParsingName.ToShellParsingName());
+				this.Dispose();
+				return newObj;
+			}
 			return FileSystemListItem.ToFileSystemItem(this.ParentHandle, this.PIDL);
 		}
 

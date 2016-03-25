@@ -1829,98 +1829,105 @@ namespace BExplorer.Shell {
 		private void ProcessShellNotifications(ref Message m) {
 			if (Notifications.NotificationReceipt(m.WParam, m.LParam)) {
 				foreach (NotifyInfos info in Notifications.NotificationsReceived.ToArray()) {
-					switch (info.Notification) {
-						case ShellNotifications.SHCNE.SHCNE_MKDIR:
-						case ShellNotifications.SHCNE.SHCNE_CREATE:
-							var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-							if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
-								if (this.IsRenameNeeded) {
-									var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
-									if (existingItem == null) {
-										var itemIndex = this.InsertNewItem(obj);
-										this.SelectItemByIndex(itemIndex, true, true);
-										this.RenameSelectedItem();
-										this.IsRenameNeeded = false;
+					try {
+						switch (info.Notification) {
+							case ShellNotifications.SHCNE.SHCNE_MKDIR:
+							case ShellNotifications.SHCNE.SHCNE_CREATE:
+								var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
+								if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
+									if (this.IsRenameNeeded) {
+										var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
+										if (existingItem == null) {
+											var itemIndex = this.InsertNewItem(obj.Clone(true));
+											this.SelectItemByIndex(itemIndex, true, true);
+											this.RenameSelectedItem();
+											this.IsRenameNeeded = false;
+										}
+									} else {
+										if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj.Clone(true)))) {
+											this.UnvalidateDirectory();
+										}
 									}
-								} else {
-									if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj)))
+								}
+								break;
+							case ShellNotifications.SHCNE.SHCNE_RMDIR:
+							case ShellNotifications.SHCNE.SHCNE_DELETE:
+								var objDelete = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
+								if (this.CurrentFolder != null && (objDelete.Parent != null && objDelete.Parent.Equals(this.CurrentFolder))) {
+									if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, objDelete.Clone()))) {
 										this.UnvalidateDirectory();
+										objDelete.Dispose();
+										break;
+									}
 								}
-							}
-							break;
-						case ShellNotifications.SHCNE.SHCNE_RMDIR:
-						case ShellNotifications.SHCNE.SHCNE_DELETE:
-							var objDelete = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-							if (this.CurrentFolder != null && (objDelete.Parent != null && objDelete.Parent.Equals(this.CurrentFolder))) {
-								if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, objDelete))) {
+								this.RaiseRecycleBinUpdated();
+								break;
+							case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
+								IListItemEx objUpdate = null;
+								try {
+									objUpdate = FileSystemListItem.ToFileSystemItem(this.LVHandle, Shell32.ILFindLastID(info.Item1));
+								} catch { }
+								if (objUpdate != null && this._RequestedCurrentLocation != null && objUpdate.ParsingName.Equals(this._RequestedCurrentLocation.ParsingName)) {
 									this.UnvalidateDirectory();
-									break;
 								}
-							}
-							this.RaiseRecycleBinUpdated();
-							break;
-						case ShellNotifications.SHCNE.SHCNE_UPDATEDIR:
-							IListItemEx objUpdate = null;
-							try {
-								objUpdate = FileSystemListItem.ToFileSystemItem(this.LVHandle, Shell32.ILFindLastID(info.Item1));
-							} catch { }
-							if (objUpdate != null && this._RequestedCurrentLocation != null && objUpdate.ParsingName.Equals(this._RequestedCurrentLocation.ParsingName)) {
-								this.UnvalidateDirectory();
-							}
-							break;
-						case ShellNotifications.SHCNE.SHCNE_UPDATEITEM:
-							var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-							if (this.CurrentFolder != null && objUpdateItem.Parent != null && objUpdateItem.Parent.Equals(this.CurrentFolder)) {
-								var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
-								if (exisitingUItem != null)
-									this.RefreshItem(exisitingUItem.ItemIndex, true);
+								break;
+							case ShellNotifications.SHCNE.SHCNE_UPDATEITEM:
+								var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
+								if (this.CurrentFolder != null && objUpdateItem.Parent != null && objUpdateItem.Parent.Equals(this.CurrentFolder)) {
+									var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
+									if (exisitingUItem != null)
+										this.RefreshItem(exisitingUItem.ItemIndex, true);
 
-								//if (objUpdateItem != null && this._RequestedCurrentLocation != null && objUpdateItem.Equals(this._RequestedCurrentLocation))
-								//	this.UnvalidateDirectory();
-							}
-							break;
-						case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
-						case ShellNotifications.SHCNE.SHCNE_RENAMEITEM:
-							var obj1 = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-							var obj2 = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item2);
-							if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName))
-								this.UpdateItem(obj1, obj2);
-							this.IsRenameInProgress = false;
-							break;
-						case ShellNotifications.SHCNE.SHCNE_NETSHARE:
-						case ShellNotifications.SHCNE.SHCNE_NETUNSHARE:
-						case ShellNotifications.SHCNE.SHCNE_ATTRIBUTES:
-							var objNetA = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-							var exisitingItemNetA = this.Items.FirstOrDefault(w => w.Equals(objNetA));
-							this.RefreshItem(exisitingItemNetA.ItemIndex, true);
-							//this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Updated, null, objNetA, exisitingItemNetA.Value);
-							break;
-						case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
-						case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
-							if (this.CurrentFolder.ParsingName == KnownFolders.Computer.ParsingName) {
-								var objMedia = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-								var exisitingItem = this.Items.SingleOrDefault(w => w.Equals(objMedia));
-								if (exisitingItem != null)
-									this.UpdateItem(exisitingItem.ItemIndex);
-							}
-							break;
-						case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
-							var objDr = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-							if (this.CurrentFolder != null && this.CurrentFolder.ParsingName.Equals(KnownFolders.Computer.ParsingName)) {
-								this.Items.Remove(objDr);
-								var i = 0;
-								this.Items.ToList().ForEach(e => e.ItemIndex = i++);
-								if (this.IsGroupsEnabled) this.SetGroupOrder(false);
+									//if (objUpdateItem != null && this._RequestedCurrentLocation != null && objUpdateItem.Equals(this._RequestedCurrentLocation))
+									//	this.UnvalidateDirectory();
+								}
+								break;
+							case ShellNotifications.SHCNE.SHCNE_RENAMEFOLDER:
+							case ShellNotifications.SHCNE.SHCNE_RENAMEITEM:
+								var obj1 = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
+								var obj2 = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item2);
+								if (!String.IsNullOrEmpty(obj1.ParsingName) && !String.IsNullOrEmpty(obj2.ParsingName))
+									this.UpdateItem(obj1, obj2);
+								this.IsRenameInProgress = false;
+								break;
+							case ShellNotifications.SHCNE.SHCNE_NETSHARE:
+							case ShellNotifications.SHCNE.SHCNE_NETUNSHARE:
+							case ShellNotifications.SHCNE.SHCNE_ATTRIBUTES:
+								var objNetA = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
+								var exisitingItemNetA = this.Items.FirstOrDefault(w => w.Equals(objNetA));
+								this.RefreshItem(exisitingItemNetA.ItemIndex, true);
+								//this._ParentShellView.RaiseItemUpdated(ItemUpdateType.Updated, null, objNetA, exisitingItemNetA.Value);
+								break;
+							case ShellNotifications.SHCNE.SHCNE_MEDIAINSERTED:
+							case ShellNotifications.SHCNE.SHCNE_MEDIAREMOVED:
+								if (this.CurrentFolder.ParsingName == KnownFolders.Computer.ParsingName) {
+									var objMedia = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
+									var exisitingItem = this.Items.SingleOrDefault(w => w.Equals(objMedia));
+									if (exisitingItem != null)
+										this.UpdateItem(exisitingItem.ItemIndex);
+								}
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DRIVEREMOVED:
+								var objDr = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
+								if (this.CurrentFolder != null && this.CurrentFolder.ParsingName.Equals(KnownFolders.Computer.ParsingName)) {
+									this.Items.Remove(objDr);
+									var i = 0;
+									this.Items.ToList().ForEach(e => e.ItemIndex = i++);
+									if (this.IsGroupsEnabled) this.SetGroupOrder(false);
 
-								User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-							}
-							this.RaiseItemUpdated(ItemUpdateType.DriveRemoved, null, objDr, -1);
-							break;
-						case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
-							if (this.CurrentFolder != null && this.CurrentFolder.ParsingName.Equals(KnownFolders.Computer.ParsingName)) {
-								this.InsertNewItem(FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1));
-							}
-							break;
+									User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+								}
+								this.RaiseItemUpdated(ItemUpdateType.DriveRemoved, null, objDr, -1);
+								break;
+							case ShellNotifications.SHCNE.SHCNE_DRIVEADD:
+								if (this.CurrentFolder != null && this.CurrentFolder.ParsingName.Equals(KnownFolders.Computer.ParsingName)) {
+									this.InsertNewItem(FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1));
+								}
+								break;
+						}
+					}
+					catch (Exception ex) {
+						
 					}
 					Notifications.NotificationsReceived.Remove(info);
 				}
@@ -2606,70 +2613,70 @@ namespace BExplorer.Shell {
 
 
 
-			if (destination.IsFileSystem) {
-				if (this._FsWatcher != null) {
-					this._FsWatcher.Dispose();
-					this._FsWatcher = new FileSystemWatcher(destination.ParsingName);
-					this._FsWatcher.Changed += (sender, args) => {
-						try {
-							var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
-							if (this.CurrentFolder != null && objUpdateItem.Parent != null && objUpdateItem.Parent.Equals(this.CurrentFolder)) {
-								var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
-								if (exisitingUItem != null)
-									this.RefreshItem(exisitingUItem.ItemIndex, true);
+			//if (destination.IsFileSystem) {
+			//	if (this._FsWatcher != null) {
+			//		this._FsWatcher.Dispose();
+			//		this._FsWatcher = new FileSystemWatcher(destination.ParsingName);
+			//		this._FsWatcher.Changed += (sender, args) => {
+			//			try {
+			//				var objUpdateItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
+			//				if (this.CurrentFolder != null && objUpdateItem.Parent != null && objUpdateItem.Parent.Equals(this.CurrentFolder)) {
+			//					var exisitingUItem = this.Items.ToArray().FirstOrDefault(w => w.Equals(objUpdateItem));
+			//					if (exisitingUItem != null)
+			//						this.RefreshItem(exisitingUItem.ItemIndex, true);
 
-								if (this._RequestedCurrentLocation != null && objUpdateItem.Equals(this._RequestedCurrentLocation))
-									this.UnvalidateDirectory();
-							}
-						} catch (Exception) {
-						}
+			//					if (this._RequestedCurrentLocation != null && objUpdateItem.Equals(this._RequestedCurrentLocation))
+			//						this.UnvalidateDirectory();
+			//				}
+			//			} catch (Exception) {
+			//			}
 
-					};
-					this._FsWatcher.Created += (sender, args) => {
-						try {
-							var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
-							if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
-								if (this.IsRenameNeeded) {
-									var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
-									if (existingItem == null) {
-										var itemIndex = this.InsertNewItem(obj);
-										this.SelectItemByIndex(itemIndex, true, true);
-										this.RenameSelectedItem();
-										this.IsRenameNeeded = false;
-									}
-								} else {
-									if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj)))
-										this.UnvalidateDirectory();
-								}
-							}
-						} catch (Exception) { }
+			//		};
+			//		this._FsWatcher.Created += (sender, args) => {
+			//			try {
+			//				var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, args.FullPath.ToShellParsingName());
+			//				if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
+			//					if (this.IsRenameNeeded) {
+			//						var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
+			//						if (existingItem == null) {
+			//							var itemIndex = this.InsertNewItem(obj);
+			//							this.SelectItemByIndex(itemIndex, true, true);
+			//							this.RenameSelectedItem();
+			//							this.IsRenameNeeded = false;
+			//						}
+			//					} else {
+			//						if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj)))
+			//							this.UnvalidateDirectory();
+			//					}
+			//				}
+			//			} catch (Exception) { }
 
-					};
-					this._FsWatcher.Deleted += (sender, args) => {
-						//args.FullPath
-						var existingItem = this.Items.ToArray().FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
-						if (existingItem != null) {
-							this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, existingItem));
-							this.UnvalidateDirectory();
-						}
-						//if (this.CurrentFolder != null && (objDelete.Parent != null && objDelete.Parent.Equals(this.CurrentFolder))) {
-						//	this.UnvalidateDirectory();
-						//}
-						//this.RaiseRecycleBinUpdated();
-					};
-					this._FsWatcher.Renamed += (sender, args) => {
+			//		};
+			//		this._FsWatcher.Deleted += (sender, args) => {
+			//			//args.FullPath
+			//			var existingItem = this.Items.ToArray().FirstOrDefault(s => s.ParsingName.Equals(args.FullPath));
+			//			if (existingItem != null) {
+			//				this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, existingItem));
+			//				this.UnvalidateDirectory();
+			//			}
+			//			//if (this.CurrentFolder != null && (objDelete.Parent != null && objDelete.Parent.Equals(this.CurrentFolder))) {
+			//			//	this.UnvalidateDirectory();
+			//			//}
+			//			//this.RaiseRecycleBinUpdated();
+			//		};
+			//		this._FsWatcher.Renamed += (sender, args) => {
 
-					};
-					this._FsWatcher.IncludeSubdirectories = false;
-					this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName |
-																				 NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
-																				 NotifyFilters.Size;
-					//this._FsWatcher.InternalBufferSize = 100 * 1024 * 1024;
-				}
-				//this._FsWatcher.EnableRaisingEvents = false;
-				//this._FsWatcher.Path = destination.ParsingName;
-				this._FsWatcher.EnableRaisingEvents = true;
-			}
+			//		};
+			//		this._FsWatcher.IncludeSubdirectories = false;
+			//		this._FsWatcher.NotifyFilter = NotifyFilters.CreationTime | NotifyFilters.DirectoryName |
+			//																	 NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Security |
+			//																	 NotifyFilters.Size;
+			//		//this._FsWatcher.InternalBufferSize = 100 * 1024 * 1024;
+			//	}
+			//	//this._FsWatcher.EnableRaisingEvents = false;
+			//	//this._FsWatcher.Path = destination.ParsingName;
+			//	this._FsWatcher.EnableRaisingEvents = true;
+			//}
 			//});
 			//fileSystemChangesThread.SetApartmentState(ApartmentState.STA);
 			//fileSystemChangesThread.Start();
