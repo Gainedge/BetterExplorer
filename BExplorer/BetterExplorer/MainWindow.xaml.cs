@@ -3096,92 +3096,93 @@ item.IsChecked = false;
 			//TODO: Remove Comments
 
 			//return;
-			rb.DoWork += rb_DoWork;
-			if (!rb.IsBusy) rb.RunWorkerAsync();
-			//var allDrives = Directory.GetLogicalDrives();
-			//int count = 0;// (int)sqrbi.i64NumItems;
-			//long size = 0;// sqrbi.i64Size;
-			////Task.Run(() => {
-			//  foreach (var drive in allDrives) {
-			//    BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO sqrbi = new BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO();
-			//    sqrbi.cbSize = 24;// Marshal.SizeOf(typeof(BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO));
-			//    char[] charsToTrim = { Char.Parse(@"\") };
-			//    int hresult = BExplorer.Shell.Interop.Shell32.SHQueryRecycleBin(drive, ref sqrbi);
-			//    count += (int)sqrbi.i64NumItems;
-			//    size += (long)sqrbi.i64Size;
-			//  }
-
-			//  Dispatcher.Invoke(WIN.Threading.DispatcherPriority.Background,
-			//      (Action)(() => {
-			//        //var rbItems = rb.ToArray();
-
-			//        //TODO: Find out if we can remove the Dispatcher.BeginInvoke(...)
-
-			//        if (count > 0) {
-			//          //var size = (long)rbItems.Where(c => c.IsFolder == false || !String.IsNullOrEmpty(Path.GetExtension(c.ParsingName))).Sum(c => c.GetPropertyValue(SystemProperties.FileSize, typeof(long)).IsNullOrEmpty ? 0 : (long)Convert.ToDouble(c.GetPropertyValue(SystemProperties.FileSize, typeof(long)).Value));
-
-			//          miRestoreALLRB.Visibility = Visibility.Visible;
-			//          miEmptyRB.Visibility = Visibility.Visible;
-			//          btnRecycleBin.LargeIcon = @"..\Images\RecycleBinFull32.png";
-			//          btnRecycleBin.Icon = @"..\Images\RecycleBinFull16.png";
-			//          btnRecycleBin.UpdateLayout();
-			//          lblRBItems.Visibility = Visibility.Visible;
-			//          lblRBItems.Text = String.Format("{0} Items", count);
-			//          lblRBSize.Text = ShlWapi.StrFormatByteSize(size);
-			//          lblRBSize.Visibility = Visibility.Visible;
-
-			//        } else {
-			//          miEmptyRB.Visibility = Visibility.Collapsed;
-			//          miRestoreALLRB.Visibility = Visibility.Collapsed;
-			//          miRestoreRBItems.Visibility = Visibility.Collapsed;
-			//          btnRecycleBin.LargeIcon = @"..\Images\RecycleBinEmpty32.png";
-			//          btnRecycleBin.Icon = @"..\Images\RecycleBinEmpty16.png";
-			//          lblRBItems.Text = "0 Items";
-			//          lblRBItems.Visibility = Visibility.Collapsed;
-			//          lblRBSize.Text = "0 bytes";
-			//          lblRBSize.Visibility = Visibility.Collapsed;
-			//        }
-			//      }));
-			////});
-		}
-
-		void rb_DoWork(object sender, DoWorkEventArgs e) {
-			int count = 0; long size = 0;
+			//rb.DoWork += rb_DoWork;
+			//if (!rb.IsBusy) rb.RunWorkerAsync();
 			var allDrives = Directory.GetLogicalDrives();
+			int count = 0;// (int)sqrbi.i64NumItems;
+			long size = 0;// sqrbi.i64Size;
+										//Task.Run(() => {
 			foreach (var drive in allDrives) {
-				var sqrbi = new BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO() { cbSize = 24 };
+				BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO sqrbi = new BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO();
+				sqrbi.cbSize = 24;// Marshal.SizeOf(typeof(BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO));
 				char[] charsToTrim = { Char.Parse(@"\") };
 				int hresult = BExplorer.Shell.Interop.Shell32.SHQueryRecycleBin(drive, ref sqrbi);
 				count += (int)sqrbi.i64NumItems;
 				size += (long)sqrbi.i64Size;
 			}
 
-			Dispatcher.Invoke(DispatcherPriority.Background,
-							(Action)(() => {
-								//TODO: Find out if we can remove the Dispatcher.BeginInvoke(...)
-								if (count > 0) {
-									miRestoreALLRB.Visibility = Visibility.Visible;
-									miEmptyRB.Visibility = Visibility.Visible;
-									btnRecycleBin.LargeIcon = @"..\Images\RecycleBinFull32.png";
-									btnRecycleBin.Icon = @"..\Images\RecycleBinFull16.png";
-									btnRecycleBin.UpdateLayout();
-									lblRBItems.Visibility = Visibility.Visible;
-									lblRBItems.Text = $"{count} Items";
-									lblRBSize.Text = ShlWapi.StrFormatByteSize(size);
-									lblRBSize.Visibility = Visibility.Visible;
+			Dispatcher.Invoke(WIN.Threading.DispatcherPriority.Background,
+					(Action)(() => {
+							//var rbItems = rb.ToArray();
 
-								} else {
-									miEmptyRB.Visibility = Visibility.Collapsed;
-									miRestoreALLRB.Visibility = Visibility.Collapsed;
-									miRestoreRBItems.Visibility = Visibility.Collapsed;
-									btnRecycleBin.LargeIcon = @"..\Images\RecycleBinEmpty32.png";
-									btnRecycleBin.Icon = @"..\Images\RecycleBinEmpty16.png";
-									lblRBItems.Text = "0 Items";
-									lblRBItems.Visibility = Visibility.Collapsed;
-									lblRBSize.Text = "0 bytes";
-									lblRBSize.Visibility = Visibility.Collapsed;
-								}
-							}));
+							//TODO: Find out if we can remove the Dispatcher.BeginInvoke(...)
+
+							if (count > 0) {
+								//var size = (long)rbItems.Where(c => c.IsFolder == false || !String.IsNullOrEmpty(Path.GetExtension(c.ParsingName))).Sum(c => c.GetPropertyValue(SystemProperties.FileSize, typeof(long)).IsNullOrEmpty ? 0 : (long)Convert.ToDouble(c.GetPropertyValue(SystemProperties.FileSize, typeof(long)).Value));
+
+								miRestoreALLRB.Visibility = Visibility.Visible;
+							miEmptyRB.Visibility = Visibility.Visible;
+							btnRecycleBin.LargeIcon = @"..\Images\RecycleBinFull32.png";
+							btnRecycleBin.Icon = @"..\Images\RecycleBinFull16.png";
+							btnRecycleBin.UpdateLayout();
+							lblRBItems.Visibility = Visibility.Visible;
+							lblRBItems.Text = String.Format("{0} Items", count);
+							lblRBSize.Text = ShlWapi.StrFormatByteSize(size);
+							lblRBSize.Visibility = Visibility.Visible;
+
+						} else {
+							miEmptyRB.Visibility = Visibility.Collapsed;
+							miRestoreALLRB.Visibility = Visibility.Collapsed;
+							miRestoreRBItems.Visibility = Visibility.Collapsed;
+							btnRecycleBin.LargeIcon = @"..\Images\RecycleBinEmpty32.png";
+							btnRecycleBin.Icon = @"..\Images\RecycleBinEmpty16.png";
+							lblRBItems.Text = "0 Items";
+							lblRBItems.Visibility = Visibility.Collapsed;
+							lblRBSize.Text = "0 bytes";
+							lblRBSize.Visibility = Visibility.Collapsed;
+						}
+					}));
+			//});
+		}
+
+		void rb_DoWork(object sender, DoWorkEventArgs e) {
+			//int count = 0; long size = 0;
+			//var allDrives = Directory.GetLogicalDrives();
+			//foreach (var drive in allDrives) {
+			//	var sqrbi = new BExplorer.Shell.Interop.Shell32.SHQUERYRBINFO() { cbSize = 24 };
+			//	char[] charsToTrim = { Char.Parse(@"\") };
+			//	int hresult = BExplorer.Shell.Interop.Shell32.SHQueryRecycleBin(drive, ref sqrbi);
+			//	count += (int)sqrbi.i64NumItems;
+			//	size += (long)sqrbi.i64Size;
+			//}
+
+			//Dispatcher.Invoke(DispatcherPriority.Normal,
+			//				(Action)(() => {
+			//					//TODO: Find out if we can remove the Dispatcher.BeginInvoke(...)
+			//					if (count > 0) {
+			//						miRestoreALLRB.Visibility = Visibility.Visible;
+			//						miEmptyRB.Visibility = Visibility.Visible;
+			//						btnRecycleBin.LargeIcon = @"..\Images\RecycleBinFull32.png";
+			//						btnRecycleBin.Icon = @"..\Images\RecycleBinFull16.png";
+			//						btnRecycleBin.UpdateLayout();
+			//						lblRBItems.Visibility = Visibility.Visible;
+			//						lblRBItems.Text = $"{count} Items";
+			//						lblRBSize.Text = ShlWapi.StrFormatByteSize(size);
+			//						lblRBSize.Visibility = Visibility.Visible;
+
+			//					} else {
+			//						miEmptyRB.Visibility = Visibility.Collapsed;
+			//						miRestoreALLRB.Visibility = Visibility.Collapsed;
+			//						miRestoreRBItems.Visibility = Visibility.Collapsed;
+			//						btnRecycleBin.LargeIcon = @"..\Images\RecycleBinEmpty32.png";
+			//						btnRecycleBin.Icon = @"..\Images\RecycleBinEmpty16.png";
+			//						lblRBItems.Text = "0 Items";
+			//						lblRBItems.Visibility = Visibility.Collapsed;
+			//						lblRBSize.Text = "0 bytes";
+			//						lblRBSize.Visibility = Visibility.Collapsed;
+			//					}
+			//				}));
+			rb.CancelAsync();
 			//});
 		}
 

@@ -1857,6 +1857,7 @@ namespace BExplorer.Shell {
 									if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, objDelete.Clone()))) {
 										this.UnvalidateDirectory();
 										objDelete.Dispose();
+										this.RaiseRecycleBinUpdated();
 										break;
 									}
 								}

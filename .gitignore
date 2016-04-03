@@ -261,3 +261,4 @@ BExplorer/BetterExplorer/BetterExplorerOperations.exe.CodeAnalysisLog.xml
 packages/
 _ReSharper.Caches/
 .vs/
+/.nuget
