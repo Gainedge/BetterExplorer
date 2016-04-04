@@ -66,33 +66,35 @@ namespace BExplorer.Shell {
 			_DelayTimer.Stop();
 
 			var t = new Thread(() => {
-				var tooltip = CurrentItem.ToolTipText;
+				var clonedCurrentItem = this.CurrentItem.Clone();
+				var tooltip = clonedCurrentItem.ToolTipText;
 				if (String.IsNullOrEmpty(tooltip) && Type == 1) {
 					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, (ThreadStart)(this.Hide));
 					return;
 				}
-				Contents = Type == 0 ? $"{CurrentItem.DisplayName}\r\n{CurrentItem.ToolTipText}" : CurrentItem.ToolTipText;
+				Contents = Type == 0 ? $"{clonedCurrentItem.DisplayName}\r\n{clonedCurrentItem.ToolTipText}" : clonedCurrentItem.ToolTipText;
 				RaisePropertyChanged("Contents");
-				if (((PerceivedType)CurrentItem.GetPropertyValue(SystemProperties.PerceivedType, typeof (PerceivedType)).Value) ==
+				if (((PerceivedType)clonedCurrentItem.GetPropertyValue(SystemProperties.PerceivedType, typeof (PerceivedType)).Value) ==
 				    PerceivedType.Image) {
-					var image = this.CurrentItem.ThumbnailSource(350, ShellThumbnailFormatOption.Default,
+					var image = clonedCurrentItem.ThumbnailSource(350, ShellThumbnailFormatOption.Default,
 						ShellThumbnailRetrievalOption.Default);
 					image.Freeze();
 					this.Image = image;
 					RaisePropertyChanged("Image");
 					this.FileNameWidth  = this.Image.Width - 110;
 					RaisePropertyChanged("FileNameWidth");
-					var ratingValue = this.CurrentItem.GetPropertyValue(MediaProperties.Rating, typeof (Double)).Value;
+					
+					var ratingValue = clonedCurrentItem.GetPropertyValue(MediaProperties.Rating, typeof (Double)).Value;
 					var rating = ratingValue == null ? 0 : Convert.ToDouble(ratingValue)/20D;
 					this.Rating = rating;
 					RaisePropertyChanged("Rating");
-					this.Dimentions = ((Math.Ceiling(Convert.ToDouble(this.CurrentItem.GetPropertyValue(SystemProperties.FileSize, typeof(double)).Value)) / 1024).ToString("# ### ### ##0") + " KB (" + this.CurrentItem.GetPropertyValue(MediaProperties.Dimensions, typeof (String)).Value.ToString() + " px )").Trim();
+					this.Dimentions = ((Math.Ceiling(Convert.ToDouble(clonedCurrentItem.GetPropertyValue(SystemProperties.FileSize, typeof(double)).Value)) / 1024).ToString("# ### ### ##0") + " KB (" + clonedCurrentItem.GetPropertyValue(MediaProperties.Dimensions, typeof (String)).Value.ToString() + " px )").Trim();
 					RaisePropertyChanged("Dimentions");
-					this.FileName = Path.GetFileName(this.CurrentItem.ParsingName).Trim();
+					this.FileName = Path.GetFileName(clonedCurrentItem.ParsingName)?.Trim();
 					RaisePropertyChanged("FileName");
 				}
 				else {
-					var image = this.CurrentItem.ThumbnailSource(64, ShellThumbnailFormatOption.Default,
+					var image = clonedCurrentItem.ThumbnailSource(64, ShellThumbnailFormatOption.Default,
 						ShellThumbnailRetrievalOption.Default);
 					image.Freeze();
 					this.Image = image;
