@@ -83,13 +83,16 @@ namespace BExplorer.Shell {
 					RaisePropertyChanged("Image");
 					this.FileNameWidth  = this.Image.Width - 110;
 					RaisePropertyChanged("FileNameWidth");
-					
-					var ratingValue = clonedCurrentItem.GetPropertyValue(MediaProperties.Rating, typeof (Double)).Value;
-					var rating = ratingValue == null ? 0 : Convert.ToDouble(ratingValue)/20D;
-					this.Rating = rating;
-					RaisePropertyChanged("Rating");
-					this.Dimentions = ((Math.Ceiling(Convert.ToDouble(clonedCurrentItem.GetPropertyValue(SystemProperties.FileSize, typeof(double)).Value)) / 1024).ToString("# ### ### ##0") + " KB (" + clonedCurrentItem.GetPropertyValue(MediaProperties.Dimensions, typeof (String)).Value.ToString() + " px )").Trim();
-					RaisePropertyChanged("Dimentions");
+
+					try {
+						var ratingValue = clonedCurrentItem.GetPropertyValue(MediaProperties.Rating, typeof (Double)).Value;
+						var rating = ratingValue == null ? 0 : Convert.ToDouble(ratingValue)/20D;
+						this.Rating = rating;
+						RaisePropertyChanged("Rating");
+						this.Dimentions = ((Math.Ceiling(Convert.ToDouble(clonedCurrentItem.GetPropertyValue(SystemProperties.FileSize, typeof(double)).Value)) / 1024).ToString("# ### ### ##0") + " KB (" + clonedCurrentItem.GetPropertyValue(MediaProperties.Dimensions, typeof (String)).Value.ToString() + " px )").Trim();
+						RaisePropertyChanged("Dimentions");
+					}
+					catch (NullReferenceException ex) { }
 					this.FileName = Path.GetFileName(clonedCurrentItem.ParsingName)?.Trim();
 					RaisePropertyChanged("FileName");
 				}

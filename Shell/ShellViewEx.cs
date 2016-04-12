@@ -1582,6 +1582,9 @@ namespace BExplorer.Shell {
 							#region Case
 							var nmlvLe = (NMLVDISPINFO)m.GetLParam(typeof(NMLVDISPINFO));
 							//RenameItem(nmlvLe.item.iItem);
+							if (this.ToolTip != null && this.ToolTip.IsVisible) {
+								this.ToolTip.HideTooltip();
+							}
 							this.IsFocusAllowed = false;
 							this._IsCanceledOperation = false;
 							this.ItemForRename = nmlvLe.item.iItem;
@@ -1807,8 +1810,8 @@ namespace BExplorer.Shell {
 								EndLabelEdit();
 							if (IsGroupsEnabled)
 								RedrawWindow();
-							//if (this.ToolTip != null && this.ToolTip.IsVisible)
-							//	this.ToolTip.HideTooltip();
+							if (this.ToolTip != null && this.ToolTip.IsVisible)
+								this.ToolTip.HideTooltip();
 							//OnLostFocus();
 							this.Focus();
 							break;
