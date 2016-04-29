@@ -1,15 +1,8 @@
 ﻿using BExplorer.Shell.Interop;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace BExplorer.Shell
 {
-
     public class FileOperationProgressSink : IFileOperationProgressSink
     {
 

@@ -11,7 +11,6 @@ namespace BetterExplorer
     /// </summary>
     public class SavedTabsList : List<string>
     {
-
         public static SavedTabsList CreateFromString(string values)
         {
             var o = new SavedTabsList();
@@ -21,7 +20,7 @@ namespace BetterExplorer
 
         public static SavedTabsList LoadTabList(string file)
         {
-            using (StreamReader sr = new StreamReader(file))
+            using (var sr = new StreamReader(file))
             {
                 return SavedTabsList.CreateFromString(sr.ReadLine());
             }
@@ -29,10 +28,11 @@ namespace BetterExplorer
 
         public static void SaveTabList(SavedTabsList locs, string file)
         {
-            using (StreamWriter sw = new StreamWriter(file, false))
+            using (var sw = new StreamWriter(file, false))
             {
-                sw.WriteLine(locs.ListToString());
-            }
+				//sw.WriteLine(locs.ListToString());
+				sw.WriteLine( string.Join("|", locs));
+			}
         }
 
         public new void Add(string loc)
@@ -59,6 +59,7 @@ namespace BetterExplorer
             }
         }
 
+		/*
         public string ListToString()
         {
             string path = null;
@@ -76,5 +77,6 @@ namespace BetterExplorer
             }
             return path;
         }
+		*/
     }
 }

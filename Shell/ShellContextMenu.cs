@@ -67,7 +67,7 @@ namespace BExplorer.Shell {
 	/// </para>
 	/// 
 	/// Standard menu commands can also be invoked from this class, for 
-	/// example <see cref="InvokeDelete"/> and <see cref="InvokeRename"/>.
+	/// example InvokeDelete and InvokeRename.
 	/// </remarks>
 	public class ShellContextMenu {
 
@@ -139,68 +139,7 @@ namespace BExplorer.Shell {
 		}
 
 		#endregion
-
-		/*
-/// <summary>
-/// Handles context menu messages when the <see cref="ShellContextMenu"/>
-/// is displayed on a Form's main menu bar.
-/// </summary>
-/// 
-/// <remarks>
-/// <para>
-/// To display a shell context menu in a Form's main menu, call the
-/// <see cref="Populate"/> method to populate the menu with the shell
-/// item's menu items. In addition, you must intercept a number of
-/// special messages that will be sent to the menu's parent form. To
-/// do this, you must override <see cref="Form.WndProc"/> like so:
-/// </para>
-/// 
-/// <code>
-///     protected override void WndProc(ref Message m) {
-///         if ((m_ContextMenu == null) || (!m_ContextMenu.HandleMenuMessage(ref m))) {
-///             base.WndProc(ref m);
-///         }
-///     }
-/// </code>
-/// 
-/// <para>
-/// Where m_ContextMenu is the <see cref="ShellContextMenu"/> being shown.
-/// </para>
-/// </remarks>
-/// 
-/// <param name="m">
-/// The message to handle.
-/// </param>
-/// 
-/// <returns>
-/// <see langword="true"/> if the message was a Shell Context Menu
-/// message, <see langword="false"/> if not. If the method returns false,
-/// then the message should be passed down to the base class's
-/// <see cref="Form.WndProc"/> method.
-/// </returns>
-public bool HandleMenuMessage(ref Message m) {
-	//For send to menu in the ListView context menu
-	int hr = 0;
-	if (m.Msg == (int)WM.WM_INITMENUPOPUP | m.Msg == (int)WM.WM_MEASUREITEM | m.Msg == (int)WM.WM_DRAWITEM) {
-		if (m.Msg == (int)WM.WM_INITMENUPOPUP && m.WParam == _NewMenuPtr) {
-			_ShellView.IsRenameNeeded = true;
-		}
-		if (m_ComInterface2 != null) {
-			hr = (int)m_ComInterface2.HandleMenuMsg(m.Msg, m.WParam, m.LParam);
-			if (hr == 0) return true;
-		}
-	}
-	else if (m.Msg == (int)WM.WM_MENUCHAR) {
-		if (m_ComInterface3 != null) {
-			var ptr = IntPtr.Zero;
-			hr = (int)m_ComInterface3.HandleMenuMsg2(m.Msg, m.WParam, m.LParam, out ptr);
-			if (hr == 0) return true;
-
-		}
-	}
-	return false;
-}
-*/
+		
 
 		/// <summary>
 		/// Handles context menu messages when the <see cref="ShellContextMenu"/>
@@ -301,8 +240,7 @@ public bool HandleMenuMessage(ref Message m) {
 				itemInfo.cbSize = (uint)Marshal.SizeOf(itemInfo);
 				itemInfo.fMask = MIIM.MIIM_FTYPE | MIIM.MIIM_DATA | MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU;
 				if (User32.GetMenuItemInfo(mnu.Handle, count - 1, true, ref itemInfo)) {
-					var isSep = (itemInfo.fType & 2048) != 0;
-					if (isSep) {
+					if ((itemInfo.fType & 2048) != 0) {
 						User32.DeleteMenu(mnu.Handle, count - 1, MF.MF_BYPOSITION);
 					}
 				}
@@ -436,23 +374,6 @@ public bool HandleMenuMessage(ref Message m) {
 			Marshal.Release(result);
 			result = IntPtr.Zero;
 		}
-
-		/*
-[Obsolete("Never used and should be removed", true)]
-private void mnuItem_Click2(object sender, System.Windows.RoutedEventArgs e) {
-	e.Handled = true;
-	var mnuItem = sender as System.Windows.Controls.MenuItem;
-	var command = (uint)mnuItem.Tag;
-	const int SW_SHOWNORMAL = 1;
-	CMINVOKECOMMANDINFOEX invoke = new CMINVOKECOMMANDINFOEX();
-	invoke.cbSize = Marshal.SizeOf(invoke);
-	invoke.nShow = SW_SHOWNORMAL;
-	invoke.fMask = (int)(CMIC.Unicode);
-	invoke.lpVerb = (IntPtr)(command - m_CmdFirst);
-	invoke.lpVerbW = (IntPtr)(command - m_CmdFirst);
-	m_ComInterface.InvokeCommand(ref invoke);
-}
-*/
 
 		private List<string> GetNewContextMenuItems() {
 			var newEntrieslist = new List<string>();

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -56,31 +55,6 @@ namespace BExplorer.Shell {
 		public LVITEM item;
 	}
 
-	/*
-[StructLayout(LayoutKind.Sequential)]
-public struct NMLVDISPINFO_NOTEXT {
-public NMHDR hdr;
-public LVITEM_NOTEXT item;
-}
-*/
-
-	/*
-[StructLayout(LayoutKind.Sequential)]
-public struct LVITEM_NOTEXT {
-public LVIF mask;
-public Int32 iItem;
-public Int32 iSubItem;
-public LVIS state;
-public LVIS stateMask;
-public IntPtr pszText;
-public Int32 cchTextMax;
-public Int32 iImage;
-public IntPtr lParam;
-public Int32 iIndent;
-}
-*/
-
-
 	public enum LVCF {
 		LVCF_FMT = 0x1,
 		LVCF_WIDTH = 0x2,
@@ -111,50 +85,6 @@ public Int32 iIndent;
 		public int iButton;
 		public IntPtr pitem;
 	}
-
-	/*
-[StructLayout(LayoutKind.Sequential)]
-public struct NMCUSTOMDRAW {
-// 48/80	
-public NMHDR hdr;
-public int dwDrawStage;
-public IntPtr hdc;
-public User32.RECT rc;
-public IntPtr dwItemSpec;
-public CDIS uItemState;
-public IntPtr lItemlParam;
-}
-*/
-
-	/*
-//[StructLayout(LayoutKind.Sequential)]
-//public struct NMLVCUSTOMDRAW {
-//	// 104/136  
-//	public NMCUSTOMDRAW nmcd;
-//	public int clrText;
-//	public int clrTextBk;
-//	public int iSubItem;
-//	public int dwItemType;
-//	public int clrFace;
-//	public int iIconEffect;
-//	public int iIconPhase;
-//	public int iPartId;
-//	public int iStateId;
-//	public User32.RECT rcText;
-//	public int uAlign;
-//}
-*/
-
-	/*
-[StructLayout(LayoutKind.Sequential)]
-public struct NMTVCUSTOMDRAW {
-// 104/136  
-public NMCUSTOMDRAW nmcd;
-public int clrText;
-public int clrTextBk;
-public int iLevel;
-}
-*/
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct NMITEMACTIVATE {
@@ -207,17 +137,6 @@ public int iLevel;
 		public IntPtr lParam;
 	}
 
-	/*
-[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-public struct LVSETINFOTIP {
-public int cbSize;
-public uint dwFlags;
-public string pszText;
-public int iItem;
-public int iSubItem;
-}
-*/
-
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
 	public struct LVFINDINFO {
 		public LVFI flags;
@@ -227,8 +146,7 @@ public int iSubItem;
 		public int ptY;
 		public int vkDirection;
 	}
-
-
+	
 	public enum LVFI {
 		LVFI_PARAM = 0x0001,
 		LVFI_STRING = 0x0002,
@@ -237,15 +155,12 @@ public int iSubItem;
 		LVFI_WRAP = 0x0020,
 		LVFI_NEARESTXY = 0x0040,
 	}
-
-
+	
 	public enum LVTVIM {
 		LVTVIM_COLUMNS = 2,
 		LVTVIM_TILESIZE = 1,
 		LVTVIM_LABELMARGIN = 4,
 	}
-
-
 
 	public enum LVTVIF {
 		LVTVIF_AUTOSIZE = 0,
@@ -254,14 +169,10 @@ public int iSubItem;
 		LVTVIF_FIXEDWIDTH = 1,
 	}
 
-
-
 	public struct INTEROP_SIZE {
 		public int cx;
 		public int cy;
 	}
-
-
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct LVTILEVIEWINFO {
@@ -274,19 +185,18 @@ public int iSubItem;
 	}
 
 
+	/*
 	/// <SUMMARY> 
 	/// Inherited child for the class Graphics encapsulating 
 	/// additional functionality for curves and rounded rectangles. 
 	/// </SUMMARY> 
 	public class ExtendedGraphics {
-
 		private Graphics mGraphics;
 		public Graphics Graphics
 		{
 			get { return this.mGraphics; }
 			set { this.mGraphics = value; }
 		}
-
 
 		public ExtendedGraphics(Graphics graphics) {
 			this.Graphics = graphics;
@@ -431,10 +341,11 @@ public int iSubItem;
 		}
 		#endregion
 	}
+	*/
 
 	public static class Extensions {
 		public static LVGROUP2 ToNativeListViewGroup(this ListViewGroupEx group) {
-			LVGROUP2 nativeGroup = new LVGROUP2 {
+			var nativeGroup = new LVGROUP2 {
 				cbSize = (UInt32) Marshal.SizeOf(typeof (LVGROUP2)),
 				mask = (UInt32) (GroupMask.LVGF_HEADER ^ GroupMask.LVGF_STATE ^ GroupMask.LVGF_GROUPID),
 				stateMask = (UInt32) GroupState.LVGS_COLLAPSIBLE,
@@ -452,7 +363,7 @@ public int iSubItem;
 		}
 
 		public static Collumns ToCollumns(this LVCOLUMN column, PROPERTYKEY pkey, Type type, Boolean isColumnHandler, Int32 minWidth) {
-			var col = new Collumns {
+			return new Collumns {
 				pkey = pkey,
 				Name = column.pszText,
 				Width = minWidth,
@@ -460,19 +371,16 @@ public int iSubItem;
 				CollumnType = type,
 				MinWidth = minWidth
 			};
-			return col;
 		}
 
 		public static void SetSplitButton(this Collumns column, IntPtr handle, int index) {
-			var item = new HDITEM {
-				mask = HDITEM.Mask.Format
-			};
+			var item = new HDITEM { mask = HDITEM.Mask.Format };
 
-			User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_GETITEM, index, ref item);
+			User32.SendMessage(handle, MSG.HDM_GETITEM, index, ref item);
 
 			item.fmt |= HDITEM.Format.HDF_SPLITBUTTON;
 
-			User32.SendMessage(handle, BExplorer.Shell.Interop.MSG.HDM_SETITEM, index, ref item);
+			User32.SendMessage(handle, MSG.HDM_SETITEM, index, ref item);
 		}
 
 
@@ -520,6 +428,7 @@ public int iSubItem;
 			return dataObj;
 		}
 
+		/*
 		public static System.Runtime.InteropServices.ComTypes.IDataObject GetIDataObject(this IListItemEx item, out IntPtr dataObjectPtr) {
 			var parent = item.Parent ?? item;
 
@@ -534,7 +443,7 @@ public int iSubItem;
 
 			return dataObj;
 		}
-
+		*/
 
 		public static bool HitTest(this ShellView shellView, Point hitPoint, out int row, out int column) {
 			// clear the output values
@@ -600,6 +509,7 @@ public int iSubItem;
 			return items.ToArray();
 		}
 
+		/*
 		public static IListItemEx[] ToIListItemArray(this IShellItemArray shellItemArray) {
 			var items = new List<IListItemEx>();
 			if (shellItemArray == null) return items.ToArray();
@@ -616,6 +526,7 @@ public int iSubItem;
 			}
 			return items.ToArray();
 		}
+		*/
 
 		/// <summary>
 		/// Converts a <see cref="IDataObject"/> into an <see cref="IShellItemArray"/>

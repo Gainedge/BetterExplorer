@@ -143,8 +143,6 @@ namespace BetterExplorer {
 				bool IsAdditem = true;
 				item.ShellObject = item.ShellObject.Clone();
 				foreach (var mii in btnCopyto.Items.OfType<MenuItem>().Where(x => x.Tag != null)) {
-
-
 					if ((mii.Tag as IListItemEx).Equals(item.ShellObject)) {
 						IsAdditem = false;
 					}

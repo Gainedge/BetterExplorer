@@ -29,8 +29,6 @@ using System.Windows.Interop;
 using Microsoft.API;
 using Point = System.Drawing.Point;
 
-#pragma warning disable 1591
-
 namespace BExplorer.Shell.Interop {
 	[Flags]
 	public enum LVIF : int {
@@ -1345,13 +1343,13 @@ public static extern bool UpdateWindow(IntPtr hWnd);
 			/// Maximizes the specified window.
 			/// </summary>
 			Maximize = 3, // is this the right value?
-										/// <summary>
-										/// Activates the window and displays it as a maximized window.
-										/// </summary>      
+			/// <summary>
+			/// Activates the window and displays it as a maximized window.
+			/// </summary>      
 			ShowMaximized = 3,
 			/// <summary>
 			/// Displays a window in its most recent size and position. This value
-			/// is similar to <see cref="Win32.ShowWindowCommand.Normal"/>, except
+			/// is similar to Win32.ShowWindowCommand.Normal, except
 			/// the window is not activated.
 			/// </summary>
 			ShowNoActivate = 4,
@@ -1366,13 +1364,13 @@ public static extern bool UpdateWindow(IntPtr hWnd);
 			Minimize = 6,
 			/// <summary>
 			/// Displays the window as a minimized window. This value is similar to
-			/// <see cref="Win32.ShowWindowCommand.ShowMinimized"/>, except the
+			/// Win32.ShowWindowCommand.ShowMinimized, except the
 			/// window is not activated.
 			/// </summary>
 			ShowMinNoActive = 7,
 			/// <summary>
 			/// Displays the window in its current size and position. This value is
-			/// similar to <see cref="Win32.ShowWindowCommand.Show"/>, except the
+			/// similar to Win32.ShowWindowCommand.Show, except the
 			/// window is not activated.
 			/// </summary>
 			ShowNA = 8,

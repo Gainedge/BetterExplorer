@@ -440,7 +440,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// The attributes of an item or folder have changed.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the item or folder that has changed.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -449,7 +449,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// A nonfolder item has been created.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the item that was created.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -458,7 +458,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// A nonfolder item has been deleted.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the item that was deleted.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -467,7 +467,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// A drive has been added.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the root of the drive that was added.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -476,7 +476,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// A drive has been added and the Shell should create a new window for the drive.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the root of the drive that was added.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -484,7 +484,7 @@ namespace BExplorer.Shell.Interop {
 
 			/// <summary>
 			/// A drive has been removed. <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the root of the drive that was removed.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -498,7 +498,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// The amount of free space on a drive has changed.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the root of the drive on which the free space changed.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -507,7 +507,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// Storage media has been inserted into a drive.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the root of the drive that contains the new media.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -516,7 +516,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// Storage media has been removed from a drive.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the root of the drive from which the media was removed.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -524,7 +524,7 @@ namespace BExplorer.Shell.Interop {
 
 			/// <summary>
 			/// A folder has been created. <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/>
-			/// or <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// or HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the folder that was created.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -533,7 +533,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// A folder on the local computer is being shared via the network.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the folder that is being shared.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -542,7 +542,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// A folder on the local computer is no longer being shared via the network.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the folder that is no longer being shared.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -551,7 +551,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// The name of a folder has changed.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the previous pointer to an item identifier list (PIDL) or name of the folder.
 			/// <i>dwItem2</i> contains the new PIDL or name of the folder.
 			/// </summary>
@@ -560,7 +560,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// The name of a nonfolder item has changed.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the previous PIDL or name of the item.
 			/// <i>dwItem2</i> contains the new PIDL or name of the item.
 			/// </summary>
@@ -569,7 +569,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// A folder has been removed.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the folder that was removed.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -578,7 +578,7 @@ namespace BExplorer.Shell.Interop {
 			/// <summary>
 			/// The computer has disconnected from a server.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the server from which the computer was disconnected.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// </summary>
@@ -588,7 +588,7 @@ namespace BExplorer.Shell.Interop {
 			/// The contents of an existing folder have changed,
 			/// but the folder still exists and has not been renamed.
 			/// <see cref="HChangeNotifyFlags.SHCNF_IDLIST"/> or
-			/// <see cref="HChangeNotifyFlags.SHCNF_PATH"/> must be specified in <i>uFlags</i>.
+			/// HChangeNotifyFlags.SHCNF_PATH must be specified in <i>uFlags</i>.
 			/// <i>dwItem1</i> contains the folder that has changed.
 			/// <i>dwItem2</i> is not used and should be <see langword="null"/>.
 			/// If a folder has been created, deleted, or renamed, use SHCNE_MKDIR, SHCNE_RMDIR, or

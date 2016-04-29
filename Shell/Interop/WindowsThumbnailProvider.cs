@@ -2,8 +2,6 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.IO;
-using BExplorer.Shell.Interop;
 
 namespace ThumbnailGenerator {
   [Flags]
@@ -19,6 +17,7 @@ namespace ThumbnailGenerator {
   public class WindowsThumbnailProvider {
     private const string IShellItem2Guid = "7E9FB0D3-919F-4307-AB2E-9B1860310C93";
 
+	/*
     [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     internal static extern int SHCreateItemFromParsingName(
         [MarshalAs(UnmanagedType.LPWStr)] string path,
@@ -26,16 +25,18 @@ namespace ThumbnailGenerator {
         IntPtr pbc,
         ref Guid riid,
         [MarshalAs(UnmanagedType.Interface)] out IShellItem shellItem);
-
+	*/
     [DllImport("shell32.dll", PreserveSig = false)]
     internal static extern int SHCreateItemFromIDList(
         IntPtr pidl,
         ref Guid riid,
         [MarshalAs(UnmanagedType.Interface)] out IShellItem shellItem);
 
+	/*
     [DllImport("gdi32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool DeleteObject(IntPtr hObject);
+	*/
 
     [ComImport]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -99,6 +100,7 @@ namespace ThumbnailGenerator {
       public int Height { set { height = value; } }
     };
 
+	/*
     [StructLayout(LayoutKind.Sequential)]
     public struct RGBQUAD {
       public byte rgbBlue;
@@ -106,7 +108,8 @@ namespace ThumbnailGenerator {
       public byte rgbRed;
       public byte rgbReserved;
     }
-
+	*/
+	/*
     public static Bitmap GetThumbnail(string fileName, int width, int height, ThumbnailOptions options) {
       IntPtr hBitmap = GetHBitmap(Path.GetFullPath(fileName), width, height, options);
 
@@ -118,13 +121,14 @@ namespace ThumbnailGenerator {
         DeleteObject(hBitmap);
       }
     }
-
+	*/
     public static IntPtr GetThumbnail(IntPtr pidl, int width, int height, ThumbnailOptions options) {
       IntPtr hBitmap = GetHBitmap(pidl, width, height, options);
 
       return hBitmap;
     }
 
+	/*
     public static Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap) {
       Bitmap bmp = Bitmap.FromHbitmap(nativeHBitmap);
 
@@ -133,7 +137,9 @@ namespace ThumbnailGenerator {
 
       return CreateAlphaBitmap(bmp, PixelFormat.Format32bppArgb);
     }
+	*/
 
+	/*
     public static Bitmap CreateAlphaBitmap(Bitmap srcBitmap, PixelFormat targetPixelFormat) {
       Bitmap result = new Bitmap(srcBitmap.Width, srcBitmap.Height, targetPixelFormat);
 
@@ -166,6 +172,7 @@ namespace ThumbnailGenerator {
         return srcBitmap;
       }
     }
+	*/
 
     private static IntPtr GetHBitmap(IntPtr pidl, int width, int height, ThumbnailOptions options) {
       IShellItem nativeShellItem;
@@ -190,6 +197,7 @@ namespace ThumbnailGenerator {
       return IntPtr.Zero;
     }
 
+	/*
     private static IntPtr GetHBitmap(string fileName, int width, int height, ThumbnailOptions options) {
       IShellItem nativeShellItem;
       Guid shellItem2Guid = new Guid(IShellItem2Guid);
@@ -211,5 +219,6 @@ namespace ThumbnailGenerator {
 
       throw Marshal.GetExceptionForHR((int)hr);
     }
+	*/
   }
 }

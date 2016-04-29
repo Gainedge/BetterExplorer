@@ -1,11 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BExplorer.Shell.Interop {
 	public class Wallpaper {
@@ -27,7 +23,7 @@ namespace BExplorer.Shell.Interop {
 		}
 
 		public void Set(Uri uri, Style style) {
-			System.IO.Stream s = new System.Net.WebClient().OpenRead(uri.ToString());
+			Stream s = new System.Net.WebClient().OpenRead(uri.ToString());
 
 			System.Drawing.Image img = System.Drawing.Image.FromStream(s);
 			string tempPath = Path.Combine(Path.GetTempPath(), "wallpaper.bmp");

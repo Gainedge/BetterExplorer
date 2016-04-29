@@ -18,9 +18,6 @@
 //
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
-
-#pragma warning disable 1591
 
 namespace BExplorer.Shell.Interop {
 	public enum ILD {

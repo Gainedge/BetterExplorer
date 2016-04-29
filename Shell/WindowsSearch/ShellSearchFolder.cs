@@ -75,17 +75,8 @@ namespace BExplorer.Shell
             }
         }
 
-        /*
-        public IntPtr PIDLS {
-          get {
-            var pidl = IntPtr.Zero;
-            NativeSearchFolderItemFactory.GetIDList(pidl);
-            return pidl;
-          }
-        }
-        */
         /// <summary>
-        /// Gets the <see cref="Microsoft.WindowsAPICodePack.Shell.SearchCondition"/> of the search.
+        /// Gets the Microsoft.WindowsAPICodePack.Shell.SearchCondition of the search.
         /// When this property is not set, the resulting search will have no filters applied.
         /// </summary>
         public SearchCondition SearchCondition
@@ -218,7 +209,7 @@ namespace BExplorer.Shell
             HResult hr = NativeSearchFolderItemFactory.SetFolderLogicalViewMode(mode);
             if (hr != HResult.S_OK) throw new Exception(hr.ToString());
         }
-
+		
         /// <summary>
         /// Creates a new column list whose columns are all visible,
         /// given an array of PropertyKey structures. The default is based on FolderTypeID.

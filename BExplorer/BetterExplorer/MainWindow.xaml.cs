@@ -1878,39 +1878,15 @@ namespace BetterExplorer {
 			if (chkOpenResults.IsChecked == true) tcMain.NewTab(e.OutputLocation);
 		}
 
-		//private void miCreateZIP_Click(object sender, RoutedEventArgs e)
-		//{
-		//    CreateArchive_Show(OutArchiveFormat.Zip);
-		//}
-
-		//private void miCreate7z_Click(object sender, RoutedEventArgs e)
-		//{
-		//    CreateArchive_Show(OutArchiveFormat.SevenZip);
-		//}
-
-		//private void miCreateCAB_Click(object sender, RoutedEventArgs e)
-		//{
-		//    CreateArchive_Show(OutArchiveFormat.Tar);
-		//}
-
-
 		private void miExtractToLocation_Click(object sender, RoutedEventArgs e) {
 			var selectedItems = _ShellListView.SelectedItems.Select(item => item.ParsingName).ToList();
 
-			/*
-var selectedItems = new List<string>();
-foreach (ShellItem item in ShellListView.SelectedItems) {
-selectedItems.Add(item.ParsingName);
-}
-*/
+	
 			try {
 				var CAI = new CreateArchive(selectedItems, false, _ShellListView.GetFirstSelectedItem().ParsingName);
 				CAI.Show(this.GetWin32Window());
-			} catch (Exception exception) {
-				//var dialog = new TaskDialog();
-				//dialog.StandardButtons = TaskDialogStandardButtons.Ok;
-				//dialog.Text = exception.Message;
-				//dialog.Show();
+			} catch {
+
 			}
 		}
 

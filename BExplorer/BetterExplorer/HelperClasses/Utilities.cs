@@ -26,7 +26,6 @@ namespace BetterExplorer {
 		public static void SetRegistryValue(string Name, object Value, RegistryValueKind Kind) {
 			using (RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true)) {
 				rks.SetValue(Name, Value, Kind);
-
 			}
 		}
 

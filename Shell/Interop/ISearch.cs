@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BExplorer.Shell.Interop {
 	/// <summary>
-	/// Provides a set of flags to be used with <see cref="Microsoft.WindowsAPICodePack.Shell.SearchCondition"/> 
-	/// to indicate the operation in <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionFactory"/> methods.
+	/// Provides a set of flags to be used with Microsoft.WindowsAPICodePack.Shell.SearchCondition 
+	/// to indicate the operation in Microsoft.WindowsAPICodePack.Shell.SearchConditionFactory methods.
 	/// </summary>
 	public enum SearchConditionOperation {
 		/// <summary>
@@ -90,7 +86,7 @@ namespace BExplorer.Shell.Interop {
 	}
 
 	/// <summary>
-	/// Set of flags to be used with <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionFactory"/>.
+	/// Set of flags to be used with Microsoft.WindowsAPICodePack.Shell.SearchConditionFactory.
 	/// </summary>
 	public enum SearchConditionType {
 		/// <summary>
@@ -110,7 +106,7 @@ namespace BExplorer.Shell.Interop {
 
 		/// <summary>
 		/// Indicates that the node is a comparison between a property and a 
-		/// constant value using a <see cref="Microsoft.WindowsAPICodePack.Shell.SearchConditionOperation"/>.
+		/// constant value using a Microsoft.WindowsAPICodePack.Shell.SearchConditionOperation.
 		/// </summary>
 		Leaf = 3,
 	}
@@ -529,23 +525,6 @@ namespace BExplorer.Shell.Interop {
 
 	}
 
-	/*
-	[ComImport,
-	Guid(InterfaceGuids.IConditionFactory),
-	CoClass(typeof(ConditionFactoryCoClass))]
-	internal interface INativeConditionFactory : IConditionFactory {
-	}
-	*/
-
-	/*
-	[ComImport,
-	ClassInterface(ClassInterfaceType.None),
-	TypeLibType(TypeLibTypeFlags.FCanCreate),
-	Guid(InterfaceGuids.ConditionFactory)]
-	internal class ConditionFactoryCoClass {
-	}
-	*/
-
 	[ComImport,
 	Guid(InterfaceGuids.ISearchFolderItemFactory),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -591,7 +570,7 @@ namespace BExplorer.Shell.Interop {
 	[ComImport,
 	Guid(InterfaceGuids.ISearchFolderItemFactory),
 	CoClass(typeof(SearchFolderItemFactoryCoClass))]
-	internal interface INativeSearchFolderItemFactory : ISearchFolderItemFactory {
+	internal interface INativeSearchFolderItemFactory : ISearchFolderItemFactory { //TODO: Remove INativeSearchFolderItemFactory if it will never be used
 	}
 	
 
