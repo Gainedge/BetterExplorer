@@ -24,7 +24,7 @@ namespace BExplorer.Shell {
 					return ((FrameworkElement)container).FindResource("FSTooltip") as DataTemplate;
 				}
 			}
-			catch (Exception ex) {
+			catch {
 				return ((FrameworkElement)container).FindResource("FSTooltip") as DataTemplate;
 			}
 		}
