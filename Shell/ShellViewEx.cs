@@ -1747,7 +1747,7 @@ namespace BExplorer.Shell {
 						case WNM.LVN_HOTTRACK:
 							#region Case
 							var nlvHotTrack = (NMLISTVIEW)m.GetLParam(typeof(NMLISTVIEW));
-							if (nlvHotTrack.iItem != ToolTip.ItemIndex) {
+							if (ToolTip != null && nlvHotTrack.iItem != ToolTip.ItemIndex) {
 								ToolTip.HideTooltip();
 								this.Focus();
 							}
