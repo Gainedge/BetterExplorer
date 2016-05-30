@@ -2794,7 +2794,6 @@ item.IsChecked = false;
 		void mim_Click(object sender, RoutedEventArgs e) => SetFOperation(((sender as MenuItem).Tag as IListItemEx), OperationType.Move);
 		void mico_Click(object sender, RoutedEventArgs e) => SetFOperation(((sender as MenuItem).Tag as IListItemEx), OperationType.Copy);
 
-
 		private void btnUndoClose_Click(object sender, RoutedEventArgs e) {
 			tcMain.ReOpenTab(tcMain.ReopenableTabs[tcMain.ReopenableTabs.Count - 1]);
 			btnUndoClose.IsEnabled = tcMain.ReopenableTabs.Any();
@@ -2862,23 +2861,21 @@ item.IsChecked = false;
 				var wpt = new BExplorer.Shell.DataObject.Win32Point() { X = (int)pt.X, Y = (int)pt.Y };
 				DropTargetHelper.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 				this._TabDropData = null;
-			} else {
-				if (!tabItemTarget.Equals(tabItemSource)) {
-					var tabControl = tabItemTarget.Parent as TabControl;
-					int targetIndex = tabControl.Items.IndexOf(tabItemTarget);
+			} else if (!tabItemTarget.Equals(tabItemSource)) {
+				var tabControl = tabItemTarget.Parent as TabControl;
+				int targetIndex = tabControl.Items.IndexOf(tabItemTarget);
 
-					int tabState = tabItemSource == this._CurrentlySelectedItem ? 0 : 1;
+				int tabState = tabItemSource == this._CurrentlySelectedItem ? 0 : 1;
 
-					tabControl.Items.Remove(tabItemSource);
-					tabControl.Items.Insert(targetIndex, tabItemSource);
-					tcMain.IsInTabDragDrop = false;
-					if (tabState == 1)
-						tabControl.SelectedItem = this._CurrentlySelectedItem;
-					else if (tabState == 0)
-						tabControl.SelectedIndex = targetIndex;
+				tabControl.Items.Remove(tabItemSource);
+				tabControl.Items.Insert(targetIndex, tabItemSource);
+				tcMain.IsInTabDragDrop = false;
+				if (tabState == 1)
+					tabControl.SelectedItem = this._CurrentlySelectedItem;
+				else if (tabState == 0)
+					tabControl.SelectedIndex = targetIndex;
 
-					tcMain.IsInTabDragDrop = true;
-				}
+				tcMain.IsInTabDragDrop = true;
 			}
 			//tcMain.IsSelectionHandled = false;
 		}
@@ -3572,11 +3569,18 @@ return false;
 			btnSizeChart.IsEnabled = e.Folder.IsFileSystem;
 			btnAutosizeColls.IsEnabled = _ShellListView.View == ShellViewStyle.Details;
 
+			if (e.Folder.ParsingName != KnownFolders.RecycleBin.ParsingName)
+				miRestoreALLRB.Visibility = Visibility.Collapsed;
+			else if (_ShellListView.Items.Any()) 
+				miRestoreALLRB.Visibility = Visibility.Visible;
+
+			/*
 			if (e.Folder.ParsingName == KnownFolders.RecycleBin.ParsingName) {
 				if (_ShellListView.Items.Any()) miRestoreALLRB.Visibility = Visibility.Visible;
 			} else {
 				miRestoreALLRB.Visibility = Visibility.Collapsed;
 			}
+			*/
 
 			bool isFuncAvail;
 			int selectedItemsCount = _ShellListView.GetSelectedCount();
@@ -3636,8 +3640,7 @@ return false;
 		}
 
 		private bool SetUpNewFolderButtons() {
-			var currentFolder = FileSystemListItem.ToFileSystemItem(_ShellListView.CurrentFolder.ParentHandle,
-				_ShellListView.CurrentFolder.PIDL);
+			var currentFolder = FileSystemListItem.ToFileSystemItem(_ShellListView.CurrentFolder.ParentHandle, _ShellListView.CurrentFolder.PIDL);
 			if (currentFolder.Parent == null) {
 				return false;
 			} else if (currentFolder.ParsingName == KnownFolders.Libraries.ParsingName) {
@@ -3701,8 +3704,7 @@ return false;
 			if (path.EndsWith(@"\")) path = path.Remove(path.Length - 1, 1);
 			return path;
 		}
-
-
+		
 		#endregion
 
 		#region Misc
