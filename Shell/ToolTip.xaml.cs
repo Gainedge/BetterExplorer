@@ -130,7 +130,6 @@ namespace BExplorer.Shell {
 		public ToolTip(String contents) {
 			InitializeComponent();
 			this.DataContext = this;
-
 		}
 
 		public void ShowTooltip() {
@@ -154,9 +153,7 @@ namespace BExplorer.Shell {
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private void RaisePropertyChanged(string propertyName) {
-			var handlers = PropertyChanged;
-
-			handlers(this, new PropertyChangedEventArgs(propertyName));
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 		#endregion
 
