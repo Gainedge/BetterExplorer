@@ -2972,7 +2972,7 @@ item.IsChecked = false;
 
 		private void miSaveCurTabs_Click(object sender, RoutedEventArgs e) {
 			var objs = new List<IListItemEx>(from Wpf.Controls.TabItem x in tcMain.Items select x.ShellObject);
-			String str = PathStringCombiner.CombinePaths(objs, "|");
+			String str = Utilities.CombinePaths(objs, "|");
 			var list = SavedTabsList.CreateFromString(str);
 
 			var Name = BetterExplorer.Tabs.NameTabList.Open(this);

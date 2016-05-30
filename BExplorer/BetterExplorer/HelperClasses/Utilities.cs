@@ -115,5 +115,26 @@ namespace BetterExplorer {
 			string dir = System.IO.Path.GetDirectoryName(CurrentexePath);
 			return System.IO.Path.Combine(dir, FileName);
 		}
+
+		public static string CombinePaths(List<BExplorer.Shell._Plugin_Interfaces.IListItemEx> paths, string separatorvalue = ";", bool checkforfolders = false)
+		{
+			//TODO: Consider inlining this into the two places it is used
+			string ret = "";
+
+			foreach (var item in paths)
+			{
+				if (!checkforfolders)
+					ret += separatorvalue + item.ParsingName.Replace(@"\\", @"\");
+				else if (item.IsFolder)
+					ret += $"{separatorvalue}(f){item.ParsingName.Replace(@"\\", @"\")}";
+				else
+					ret += separatorvalue + item.ParsingName.Replace(@"\\", @"\");
+			}
+
+			if (ret.StartsWith(separatorvalue))
+				ret = ret.Substring(1);
+
+			return ret;
+		}
 	}
 }
