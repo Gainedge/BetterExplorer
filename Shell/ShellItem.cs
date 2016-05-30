@@ -542,16 +542,16 @@ namespace BExplorer.Shell {
 			return this.Thumbnail.Bitmap;
 		}
 
+		/*
 		public List<AssociationItem> GetAssocList() {
 			var assocList = new List<AssociationItem>();
 			IntPtr enumAssocPtr;
-			/*var h = */
 			Shell32.SHAssocEnumHandlers(Path.GetExtension(ParsingName), Shell32.ASSOC_FILTER.ASSOC_FILTER_RECOMMENDED, out enumAssocPtr);
 			IntPtr pUnk = Marshal.ReadIntPtr(enumAssocPtr);
 			IntPtr pFunc = Marshal.ReadIntPtr(pUnk + 3 * IntPtr.Size);
-			Shell32.funcNext Next = (Shell32.funcNext)Marshal.GetDelegateForFunctionPointer(pFunc, typeof(Shell32.funcNext));
+			var Next = (Shell32.funcNext)Marshal.GetDelegateForFunctionPointer(pFunc, typeof(Shell32.funcNext));
 
-			IntPtr[] funcs = new IntPtr[15];
+			var funcs = new IntPtr[15];
 			int num;
 			int res = Next(enumAssocPtr, 15, funcs, out num);
 			if (res == 0) {
@@ -577,6 +577,7 @@ namespace BExplorer.Shell {
 			Marshal.Release(pUnk);
 			return assocList;
 		}
+		*/
 
 		/// <summary>
 		/// Returns an <see cref="IShellFolder"/> representing the

@@ -130,7 +130,7 @@ namespace BExplorer.Shell {
 	/// <summary>
 	/// Uses all the tricks in the book at once to do it...shady
 	/// </summary>
-	public class CombinedWindowActivator : WindowActivator {
+	public class CombinedWindowActivator : WindowActivator {		
 		private const int SW_HIDE = 0;
 		private const int SW_SHOWNORMAL = 1;
 		private const int SW_NORMAL = 1;
@@ -144,7 +144,7 @@ namespace BExplorer.Shell {
 		private const int SW_SHOWNA = 8;
 		private const int SW_RESTORE = 9;
 		private const int SW_SHOWDEFAULT = 10;
-		private const int SW_MAX = 10;
+		private const int SW_MAX = 10;		
 
 		private const uint SPI_GETFOREGROUNDLOCKTIMEOUT = 0x2000;
 		private const uint SPI_SETFOREGROUNDLOCKTIMEOUT = 0x2001;
@@ -185,7 +185,6 @@ namespace BExplorer.Shell {
 						form.Topmost = false;
 						User32.BringWindowToTop(hWnd); // IE 5.5 related hack
 						User32.SetForegroundWindow(hWnd);
-
 						User32.AttachThreadInput(thisThreadId, foregroundThreadId, false);
 					}
 				}
@@ -204,16 +203,10 @@ namespace BExplorer.Shell {
 					User32.SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, Timeout, SPIF_SENDCHANGE);
 				}
 
-
 				Shell32.FlashWindow(fHandle, 0);
-
 			}
-
-
 		}
 	}
 	#endregion
-
-
 	
 }
