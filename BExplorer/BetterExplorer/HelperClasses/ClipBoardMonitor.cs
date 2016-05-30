@@ -72,10 +72,7 @@ namespace BetterExplorer {
 		private void OnClipboardChanged() {
 			try {
 				IDataObject iData = Clipboard.GetDataObject();
-
-				if (ClipboardChanged != null) {
-					ClipboardChanged(this, new Tuple<IDataObject>(iData));
-				}
+				ClipboardChanged?.Invoke(this, new Tuple<IDataObject>(iData));
 			}
 			//catch (Exception e)
 			catch (Exception) {

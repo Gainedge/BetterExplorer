@@ -22,7 +22,7 @@ namespace BetterExplorer
         {
             using (var sr = new StreamReader(file))
             {
-                return SavedTabsList.CreateFromString(sr.ReadLine());
+                return CreateFromString(sr.ReadLine());
             }
         }
 
@@ -30,53 +30,24 @@ namespace BetterExplorer
         {
             using (var sw = new StreamWriter(file, false))
             {
-				//sw.WriteLine(locs.ListToString());
-				sw.WriteLine( string.Join("|", locs));
+				sw.WriteLine(string.Join("|", locs));
 			}
         }
 
         public new void Add(string loc)
         {
             if (!this.Contains(loc))
-            {
                 base.Add(loc);
-            }
             else
-            {
                 throw new ArgumentOutOfRangeException("loc", "This location already exists within this list.");
-            }
         }
 
         public new void Remove(string loc)
         {
             if (this.Contains(loc))
-            {
                 base.Remove(loc);
-            }
             else
-            {
                 throw new ArgumentOutOfRangeException("loc", "This location does not exist in this list and cannot be removed.");
-            }
         }
-
-		/*
-        public string ListToString()
-        {
-            string path = null;
-            foreach (string item in this)
-            {
-                //This way i think is better of making multiple line in .Net ;)
-                if (string.IsNullOrEmpty(path))
-                {
-                    path = item;
-                }
-                else
-                {
-                    path = path + "|" + item;
-                }
-            }
-            return path;
-        }
-		*/
     }
 }

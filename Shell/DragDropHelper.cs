@@ -19,14 +19,14 @@ namespace BExplorer.Shell
         private static extern uint RegisterClipboardFormat(string lpszFormatName);
 
         private const string DropDescriptionFormat = "DropDescription";
-        public static void SetDropDescription(this System.Runtime.InteropServices.ComTypes.IDataObject dataObject, BExplorer.Shell.DataObject.DropDescription dropDescription)
+        public static void SetDropDescription(this System.Runtime.InteropServices.ComTypes.IDataObject dataObject, DataObject.DropDescription dropDescription)
         {
             FORMATETC formatETC;
             FillFormatETC(DropDescriptionFormat, TYMED.TYMED_HGLOBAL, out formatETC);
 
             // We need to set the drop description as an HGLOBAL.
             // Allocate space ...
-            IntPtr pDD = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(BExplorer.Shell.DataObject.DropDescription)));
+            IntPtr pDD = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(DataObject.DropDescription)));
             try
             {
                 // ... and marshal the data
@@ -39,7 +39,7 @@ namespace BExplorer.Shell
                 medium.unionmember = pDD;
 
                 // Set the data
-                var dataObjectCOM = (System.Runtime.InteropServices.ComTypes.IDataObject)dataObject;
+                var dataObjectCOM = dataObject;
                 dataObjectCOM.SetData(ref formatETC, ref medium, true);
             }
             catch (NotImplementedException)
@@ -62,16 +62,16 @@ namespace BExplorer.Shell
         [HandleProcessCorruptedStateExceptions]
         public static object GetDropDescription(this System.Runtime.InteropServices.ComTypes.IDataObject dataObject)
         {
-            System.Runtime.InteropServices.ComTypes.FORMATETC formatETC;
+			FORMATETC formatETC;
             FillFormatETC(DropDescriptionFormat, TYMED.TYMED_HGLOBAL, out formatETC);
 
             if (0 == dataObject.QueryGetData(ref formatETC))
             {
-                System.Runtime.InteropServices.ComTypes.STGMEDIUM medium;
+				STGMEDIUM medium;
                 dataObject.GetData(ref formatETC, out medium);
                 try
                 {
-                    return (BExplorer.Shell.DataObject.DropDescription)Marshal.PtrToStructure(medium.unionmember, typeof(BExplorer.Shell.DataObject.DropDescription));
+                    return (DataObject.DropDescription)Marshal.PtrToStructure(medium.unionmember, typeof(BExplorer.Shell.DataObject.DropDescription));
                 }
                 catch (AccessViolationException)
                 {
@@ -528,86 +528,86 @@ namespace BExplorer.Shell
 
         #endregion // DataObject - Removed
 
-        #region Native structures
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Size = 1044)]
-        public struct DropDescription
-        {
-            public int type;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-            public string szMessage;
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
-            public string szInsert;
-        }
+    #region Native structures
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Size = 1044)]
+    public struct DropDescription
+    {
+        public int type;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+        public string szMessage;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+        public string szInsert;
+    }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct Win32Point { public int X, Y; }
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Win32Point { public int X, Y; }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct Win32Size { public int cx, cy; }
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Win32Size { public int cx, cy; }
 
-        [StructLayout(LayoutKind.Sequential)]
-        public struct ShDragImage
-        {
-            public Win32Size sizeDragImage;
-            public Win32Point ptOffset;
-            public IntPtr hbmpDragImage;
-            public int crColorKey;
-        }
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ShDragImage
+    {
+        public Win32Size sizeDragImage;
+        public Win32Point ptOffset;
+        public IntPtr hbmpDragImage;
+        public int crColorKey;
+    }
 
-        public enum DropImageType
-        {
-            Invalid = -1,
-            None = 0,
-            Copy = (int)DragDropEffects.Copy,
-            Move = (int)DragDropEffects.Move,
-            Link = (int)DragDropEffects.Link,
-            Label = 6,
-            Warning = 7,
-            NoImage = 8
-        }
+    public enum DropImageType
+    {
+        Invalid = -1,
+        None = 0,
+        Copy = (int)DragDropEffects.Copy,
+        Move = (int)DragDropEffects.Move,
+        Link = (int)DragDropEffects.Link,
+        Label = 6,
+        Warning = 7,
+        NoImage = 8
+    }
 
-        #endregion // Native structures
+    #endregion // Native structures
 
-        #region IDragSourceHelper
+    #region IDragSourceHelper
 
-        /*
-		[ComVisible(true)]
-		[ComImport]
-		[Guid("DE5BF786-477A-11D2-839D-00C04FD918D0")]
-		[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-		public interface IDragSourceHelper {
-			void InitializeFromBitmap(
-					[In, MarshalAs(UnmanagedType.Struct)] ref ShDragImage dragImage,
-					[In, MarshalAs(UnmanagedType.Interface)] System.Runtime.InteropServices.ComTypes.IDataObject dataObject);
+    /*
+	[ComVisible(true)]
+	[ComImport]
+	[Guid("DE5BF786-477A-11D2-839D-00C04FD918D0")]
+	[InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	public interface IDragSourceHelper {
+		void InitializeFromBitmap(
+				[In, MarshalAs(UnmanagedType.Struct)] ref ShDragImage dragImage,
+				[In, MarshalAs(UnmanagedType.Interface)] System.Runtime.InteropServices.ComTypes.IDataObject dataObject);
 
-			void InitializeFromWindow(
-					[In] IntPtr hwnd,
-					[In] ref Win32Point pt,
-					[In, MarshalAs(UnmanagedType.Interface)] System.Runtime.InteropServices.ComTypes.IDataObject dataObject);
-		}
-        */
+		void InitializeFromWindow(
+				[In] IntPtr hwnd,
+				[In] ref Win32Point pt,
+				[In, MarshalAs(UnmanagedType.Interface)] System.Runtime.InteropServices.ComTypes.IDataObject dataObject);
+	}
+    */
 
-        [ComVisible(true)]
-        [ComImport]
-        [Guid("83E07D0D-0C5F-4163-BF1A-60B274051E40")]
-        [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-        public interface IDragSourceHelper2
-        {
-            void InitializeFromBitmap(
-                    [In, MarshalAs(UnmanagedType.Struct)] ref ShDragImage dragImage,
-                    [In, MarshalAs(UnmanagedType.Interface)] System.Runtime.InteropServices.ComTypes.IDataObject dataObject);
+    [ComVisible(true)]
+    [ComImport]
+    [Guid("83E07D0D-0C5F-4163-BF1A-60B274051E40")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    public interface IDragSourceHelper2
+    {
+        void InitializeFromBitmap(
+                [In, MarshalAs(UnmanagedType.Struct)] ref ShDragImage dragImage,
+                [In, MarshalAs(UnmanagedType.Interface)] System.Runtime.InteropServices.ComTypes.IDataObject dataObject);
 
-            void InitializeFromWindow(
-                    [In] IntPtr hwnd,
-                    [In] ref Win32Point pt,
-                    [In, MarshalAs(UnmanagedType.Interface)] System.Runtime.InteropServices.ComTypes.IDataObject dataObject);
+        void InitializeFromWindow(
+                [In] IntPtr hwnd,
+                [In] ref Win32Point pt,
+                [In, MarshalAs(UnmanagedType.Interface)] System.Runtime.InteropServices.ComTypes.IDataObject dataObject);
 
-            void SetFlags(
-                    [In] int dwFlags);
-        }
+        void SetFlags(
+                [In] int dwFlags);
+    }
 
 
-        #endregion // IDragSourceHelper
+    #endregion // IDragSourceHelper
 
 
     }

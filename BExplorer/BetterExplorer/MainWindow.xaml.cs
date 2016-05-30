@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -47,10 +46,10 @@ using DropTargetHelper = BExplorer.Shell.DropTargetHelper.Get;
 
 using WIN = System.Windows;
 using BExplorer.Shell._Plugin_Interfaces;
-using Color = System.Drawing.Color;
 
 
-namespace BetterExplorer {
+namespace BetterExplorer
+{
 
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
@@ -1857,7 +1856,6 @@ namespace BetterExplorer {
 			} else {
 				ExtractToLocation(SelectedArchive, txtExtractLocation.Text);
 			}
-
 		}
 
 		private void btnChooseLocation_Click(object sender, RoutedEventArgs e) {
@@ -1880,7 +1878,6 @@ namespace BetterExplorer {
 
 		private void miExtractToLocation_Click(object sender, RoutedEventArgs e) {
 			var selectedItems = _ShellListView.SelectedItems.Select(item => item.ParsingName).ToList();
-
 	
 			try {
 				var CAI = new CreateArchive(selectedItems, false, _ShellListView.GetFirstSelectedItem().ParsingName);

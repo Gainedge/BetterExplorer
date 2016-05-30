@@ -24,7 +24,7 @@ namespace WpfDocumentPreviewer
 
         #region Implement INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
-        public void RaisePropertyChanged(string propertyName) => PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public void RaisePropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         #endregion
 
         private Bitmap imageSrc;
@@ -68,7 +68,7 @@ namespace WpfDocumentPreviewer
                     Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
                       (Action)(() =>
                       {
-                          if (previewGuid != null && previewGuid.Value != Guid.Empty || !Images.Contains(System.IO.Path.GetExtension(fileName)))
+                          if (previewGuid != null && previewGuid.Value != Guid.Empty || !Images.Contains(Path.GetExtension(fileName)))
                           {
                               wb1.Visibility = Visibility.Visible;
                               var activeX = wb1.GetType().InvokeMember("ActiveXInstance", BindingFlags.GetProperty | BindingFlags.Instance |
@@ -81,7 +81,7 @@ namespace WpfDocumentPreviewer
                           else
                           {
                               wb1.Visibility = Visibility.Collapsed;
-                              using (var fs = new System.IO.FileStream(fileName, System.IO.FileMode.Open))
+                              using (var fs = new FileStream(fileName, FileMode.Open))
                               {
                                   imageSrc = (Bitmap)new Bitmap(fs).Clone();
                               }
