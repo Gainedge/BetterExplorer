@@ -247,3 +247,5 @@ BExplorer/BetterExplorer/BEH32.exp
 BExplorer/BetterExplorer/BEH32.ilk
 BExplorer/BetterExplorer/BEH32.lib
 *.tlog
+_ReSharper.Caches/
+packages/
