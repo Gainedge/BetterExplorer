@@ -798,11 +798,11 @@ public static extern int GetWindowLong(IntPtr hwnd, int index);
 		public static extern bool RedrawWindow(IntPtr hWnd, ref RECT lprcUpdate, IntPtr hrgnUpdate, uint flags);
 		*/
 
-		[DllImport("user32.dll")]
-		public static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);
+		//[DllImport("user32.dll")]
+		//public static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);
 
-		[DllImport("user32.dll")]
-		public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
+		//[DllImport("user32.dll")]
+		//public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
 
 		[DllImport("user32.dll")]
 		public static extern void PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
@@ -827,17 +827,17 @@ public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter,
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
-		public static IntPtr getWindowId(string className, string windowName) {
-			return FindWindow(className, windowName);
-		}
+		//public static IntPtr getWindowId(string className, string windowName) {
+		//	return FindWindow(className, windowName);
+		//}
 
 		//For use with WM_COPYDATA and COPYDATASTRUCT
 		[DllImport("User32.dll", EntryPoint = "SendMessage")]
 		public static extern int SendMessage(int hWnd, int Msg, int wParam, ref COPYDATASTRUCT lParam);
 
-		//For use with WM_COPYDATA and COPYDATASTRUCT
-		[DllImport("User32.dll", EntryPoint = "PostMessage")]
-		public static extern int PostMessage(int hWnd, int Msg, int wParam, ref COPYDATASTRUCT lParam);
+		////For use with WM_COPYDATA and COPYDATASTRUCT
+		//[DllImport("User32.dll", EntryPoint = "PostMessage")]
+		//public static extern int PostMessage(int hWnd, int Msg, int wParam, ref COPYDATASTRUCT lParam);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct COPYDATASTRUCT {
@@ -875,37 +875,37 @@ public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter,
 
 		}
 
-		public static int SendWindowsStringMessage(int hWnd, int wParam, string msg,
-						string Share = "", string ShareName = "", string Description = "", string Domain = "", string User = "", int Permis = 0x0) {
-			int result = 0;
+		//public static int SendWindowsStringMessage(int hWnd, int wParam, string msg,
+		//				string Share = "", string ShareName = "", string Description = "", string Domain = "", string User = "", int Permis = 0x0) {
+		//	int result = 0;
 
-			if (hWnd != 0) {
-				ShareInfo shi = new ShareInfo();
-				shi.IsSetPermisions = Permis;
-				shi.lpDescription = Description;
-				shi.lpSharingName = ShareName;
-				shi.lpUserName = User;
-				shi.lpShare = Share;
-				shi.lpDomain = Domain;
-				shi.lpMsg = msg;
+		//	if (hWnd != 0) {
+		//		ShareInfo shi = new ShareInfo();
+		//		shi.IsSetPermisions = Permis;
+		//		shi.lpDescription = Description;
+		//		shi.lpSharingName = ShareName;
+		//		shi.lpUserName = User;
+		//		shi.lpShare = Share;
+		//		shi.lpDomain = Domain;
+		//		shi.lpMsg = msg;
 
-				IntPtr p = Marshal.AllocHGlobal(Marshal.SizeOf(shi));
-				Marshal.StructureToPtr(shi, p, false);
-				string str = msg + ";" + Share + ";" + ShareName + ";" + Domain +
-						";" + User + ";" + Description;
-				byte[] sarr = System.Text.Encoding.Default.GetBytes(str);
-				int len = Marshal.SizeOf(shi);//sarr.Length;
-				COPYDATASTRUCT cds = new COPYDATASTRUCT();
-				cds.dwData = IntPtr.Zero;
-				cds.lpData = p;
-				cds.cbData = len;
-				int res = SendMessage(hWnd, WM_COPYDATA, wParam, ref cds);
-				Marshal.FreeCoTaskMem(p);
-				result = res;//SendMessage(hWnd, WM_COPYDATA, wParam, ref cds);
-			}
+		//		IntPtr p = Marshal.AllocHGlobal(Marshal.SizeOf(shi));
+		//		Marshal.StructureToPtr(shi, p, false);
+		//		string str = msg + ";" + Share + ";" + ShareName + ";" + Domain +
+		//				";" + User + ";" + Description;
+		//		byte[] sarr = System.Text.Encoding.Default.GetBytes(str);
+		//		int len = Marshal.SizeOf(shi);//sarr.Length;
+		//		COPYDATASTRUCT cds = new COPYDATASTRUCT();
+		//		cds.dwData = IntPtr.Zero;
+		//		cds.lpData = p;
+		//		cds.cbData = len;
+		//		int res = SendMessage(hWnd, WM_COPYDATA, wParam, ref cds);
+		//		Marshal.FreeCoTaskMem(p);
+		//		result = res;//SendMessage(hWnd, WM_COPYDATA, wParam, ref cds);
+		//	}
 
-			return result;
-		}
+		//	return result;
+		//}
 
 		public static string LoadResourceString(string libraryName, uint ident, string defaultText) {
 			IntPtr libraryHandle = LoadLibrary(libraryName);
@@ -1415,8 +1415,8 @@ public static extern bool UpdateWindow(IntPtr hWnd);
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool BringWindowToTop(IntPtr hWnd);
 
-		[DllImport("user32.dll", SetLastError = true)]
-		public static extern bool BringWindowToTop(HandleRef hWnd);
+		//[DllImport("user32.dll", SetLastError = true)]
+		//public static extern bool BringWindowToTop(HandleRef hWnd);
 
 		/// <summary>
 		/// SPI_ System-wide parameter - Used in SystemParametersInfo function 
@@ -2640,14 +2640,14 @@ public static extern bool UpdateWindow(IntPtr hWnd);
 		[DllImport("user32.dll")]
 		public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 
-		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		public static extern int SystemParametersInfo(int uAction, int uParam, int lpvParam, int fuWinIni);
+		//[DllImport("user32.dll", CharSet = CharSet.Auto)]
+		//public static extern int SystemParametersInfo(int uAction, int uParam, int lpvParam, int fuWinIni);
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, ref uint pvParam, SPIF fWinIni);
-		[DllImport("user32.dll", SetLastError = true)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, IntPtr pvParam, SPIF fWinIni);
+		////[DllImport("user32.dll", SetLastError = true)]
+		////[return: MarshalAs(UnmanagedType.Bool)]
+		////public static extern bool SystemParametersInfo(SPI uiAction, uint uiParam, IntPtr pvParam, SPIF fWinIni);
 		[DllImport("user32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, IntPtr pvParam, uint fWinIni);
@@ -2658,64 +2658,64 @@ public static extern bool UpdateWindow(IntPtr hWnd);
 		static extern bool AllowSetForegroundWindow(int dwProcessId);
 
 
-		public static void AttachedThreadInputAction(Action action) {
-			var foreThread = GetWindowThreadProcessId(GetForegroundWindow(),
-					IntPtr.Zero);
-			var appThread = Kernel32.GetCurrentThreadId();
-			bool threadsAttached = false;
+		//public static void AttachedThreadInputAction(Action action) {
+		//	var foreThread = GetWindowThreadProcessId(GetForegroundWindow(),
+		//			IntPtr.Zero);
+		//	var appThread = Kernel32.GetCurrentThreadId();
+		//	bool threadsAttached = false;
 
-			try {
-				threadsAttached =
-						foreThread == appThread ||
-						AttachThreadInput(foreThread, appThread, true);
+		//	try {
+		//		threadsAttached =
+		//				foreThread == appThread ||
+		//				AttachThreadInput(foreThread, appThread, true);
 
-				if (threadsAttached) action();
-				else throw new ThreadStateException("AttachThreadInput failed.");
-			} finally {
-				if (threadsAttached)
-					AttachThreadInput(foreThread, appThread, false);
-			}
-		}
+		//		if (threadsAttached) action();
+		//		else throw new ThreadStateException("AttachThreadInput failed.");
+		//	} finally {
+		//		if (threadsAttached)
+		//			AttachThreadInput(foreThread, appThread, false);
+		//	}
+		//}
 
-		public static void ForceForegroundWindow(Window win) {
-			var hWnd = (PresentationSource.FromVisual(win) as HwndSource).Handle;
-			uint foreThread = GetWindowThreadProcessId(GetForegroundWindow(),
-					IntPtr.Zero);
-			uint appThread = Kernel32.GetCurrentThreadId();
-			uint lockTimeout = 0;
+		//public static void ForceForegroundWindow(Window win) {
+		//	var hWnd = (PresentationSource.FromVisual(win) as HwndSource).Handle;
+		//	uint foreThread = GetWindowThreadProcessId(GetForegroundWindow(),
+		//			IntPtr.Zero);
+		//	uint appThread = Kernel32.GetCurrentThreadId();
+		//	uint lockTimeout = 0;
 
-			if (foreThread != appThread) {
-				AttachThreadInput(foreThread, appThread, true);
+		//	if (foreThread != appThread) {
+		//		AttachThreadInput(foreThread, appThread, true);
 				
-				var res = SystemParametersInfo(SPI.SPI_GETFOREGROUNDLOCKTIMEOUT, 0, ref lockTimeout, SPIF.None);
-				//Debug.WriteLine("OLD: " + lockTimeout.ToString() + ", Error:" + Marshal.GetLastWin32Error().ToString());
-				res = SystemParametersInfo(SPI.SPI_SETFOREGROUNDLOCKTIMEOUT, 0, 0, SPIF.SPIF_SENDWININICHANGE | SPIF.SPIF_UPDATEINIFILE);
-				//Debug.WriteLine("RES: " + res.ToString());
+		//		var res = SystemParametersInfo(SPI.SPI_GETFOREGROUNDLOCKTIMEOUT, 0, ref lockTimeout, SPIF.None);
+		//		//Debug.WriteLine("OLD: " + lockTimeout.ToString() + ", Error:" + Marshal.GetLastWin32Error().ToString());
+		//		res = SystemParametersInfo(SPI.SPI_SETFOREGROUNDLOCKTIMEOUT, 0, 0, SPIF.SPIF_SENDWININICHANGE | SPIF.SPIF_UPDATEINIFILE);
+		//		//Debug.WriteLine("RES: " + res.ToString());
 				
-				AllowSetForegroundWindow(Process.GetCurrentProcess().Id);
-				//BringWindowToTop(hWnd);
-				SetForegroundWindow(hWnd);
-				win.Activate();
-				win.Topmost = true;
-				win.Topmost = false;
-				//win.Focus();
-				SystemParametersInfo(SPI.SPI_SETFOREGROUNDLOCKTIMEOUT, 0, (uint)lockTimeout, SPIF.SPIF_SENDWININICHANGE | SPIF.SPIF_UPDATEINIFILE);
-				AttachThreadInput(foreThread, appThread, false);
+		//		AllowSetForegroundWindow(Process.GetCurrentProcess().Id);
+		//		//BringWindowToTop(hWnd);
+		//		SetForegroundWindow(hWnd);
+		//		win.Activate();
+		//		win.Topmost = true;
+		//		win.Topmost = false;
+		//		//win.Focus();
+		//		SystemParametersInfo(SPI.SPI_SETFOREGROUNDLOCKTIMEOUT, 0, (uint)lockTimeout, SPIF.SPIF_SENDWININICHANGE | SPIF.SPIF_UPDATEINIFILE);
+		//		AttachThreadInput(foreThread, appThread, false);
 
 				
-			} else {
-				//win.Show();
-				//win.Activate();
-				//BringWindowToTop(hWnd);
-				SetForegroundWindow(hWnd);
-				//win.Topmost = true;
-				//win.Topmost = false;
-				win.Activate();
-				win.Topmost = true;
-				win.Topmost = false;
-				//win.Focus();
-			}
-		}
+		//	} else {
+		//		//win.Show();
+		//		//win.Activate();
+		//		//BringWindowToTop(hWnd);
+		//		SetForegroundWindow(hWnd);
+		//		//win.Topmost = true;
+		//		//win.Topmost = false;
+		//		win.Activate();
+		//		win.Topmost = true;
+		//		win.Topmost = false;
+		//		//win.Focus();
+		//	}
+		//}
 
 		/*
 		[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]

@@ -326,8 +326,8 @@ namespace BExplorer.Shell.Interop
         {
             [DllImport("Shell32", CharSet = CharSet.Auto)]
             internal extern static int ExtractIconEx(
-                 [MarshalAs(UnmanagedType.LPTStr)]
-            string lpszFile,
+				[MarshalAs(UnmanagedType.LPTStr)]
+			string lpszFile,
                  int nIconIndex,
                  IntPtr[] phIconLarge,
                  IntPtr[] phIconSmall,

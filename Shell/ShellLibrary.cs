@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using BExplorer.Shell.Interop;
 
 namespace BExplorer.Shell
@@ -103,7 +102,7 @@ namespace BExplorer.Shell
             }
 
             this.Name = libraryName;
-            Guid guid = new Guid(InterfaceGuids.Libraries);
+            var guid = new Guid(InterfaceGuids.Libraries);
 
             var flags = overwrite ? LibrarySaveOptions.OverrideExisting : LibrarySaveOptions.FailIfThere;
 
@@ -161,12 +160,8 @@ namespace BExplorer.Shell
             }
 
             this.Name = libraryName;
-
             LibrarySaveOptions flags = overwrite ? LibrarySaveOptions.OverrideExisting : LibrarySaveOptions.FailIfThere;
-
-            Guid guid = new Guid(InterfaceGuids.IShellItem);
-
-            IShellItem shellItemIn = Shell32.SHCreateItemFromParsingName(folderPath, IntPtr.Zero, guid);
+            IShellItem shellItemIn = Shell32.SHCreateItemFromParsingName(folderPath, IntPtr.Zero, new Guid(InterfaceGuids.IShellItem));
 
             nativeShellLibrary = (INativeShellLibrary)new ShellLibraryCoClass();
             nativeShellLibrary.Save(shellItemIn, libraryName, flags, out m_ComInterface);
@@ -365,7 +360,7 @@ namespace BExplorer.Shell
         {
             // Create the shell item path
             string shellItemPath = System.IO.Path.Combine(folderPath, libraryName + FileExtension);
-            IShellItem nativeShellItem = new ShellItem(shellItemPath).ComInterface;
+            var nativeShellItem = new ShellItem(shellItemPath).ComInterface;
             return Load_Helper(nativeShellItem, libraryName, isReadOnly);
         }
 
@@ -617,7 +612,7 @@ namespace BExplorer.Shell
         {
             get
             {
-                List<ShellItem> list = new List<ShellItem>();
+                var list = new List<ShellItem>();
                 IShellItemArray itemArray;
 
                 Guid shellItemArrayGuid = new Guid(InterfaceGuids.IShellItemArray);

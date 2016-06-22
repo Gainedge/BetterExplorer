@@ -92,7 +92,6 @@ namespace BExplorer.Shell {
 		/// </summary>
 		/// <param name="shellView">The ShellView the ContextMenu is associated with</param>
 		/// <param name="Use_GetNewContextMenu"></param>
-		[Obsolete("This is a very bad way to handle creating the menu")]
 		public ShellContextMenu(ShellView shellView, bool Use_GetNewContextMenu) {
 			this._ShellView = shellView;
 

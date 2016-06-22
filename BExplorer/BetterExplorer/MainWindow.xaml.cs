@@ -479,11 +479,15 @@ namespace BetterExplorer
 			ctgImage.Visibility = BooleanToVisibiliy(selectedItemsCount == 1 && !selectedItem.IsFolder && Images.Contains(Path.GetExtension(selectedItem.ParsingName).ToLowerInvariant()));
 			if (ctgImage.Visibility == Visibility.Visible) {
 				try {
-					using (var cvt = new Bitmap(selectedItem.ParsingName)) {
-						imgSizeDisplay.WidthData = cvt.Width.ToString();
-						imgSizeDisplay.HeightData = cvt.Height.ToString();
+					if (new FileInfo(selectedItem.ParsingName).Length != 0)
+					{
+						using (var cvt = new Bitmap(selectedItem.ParsingName))
+						{
+							imgSizeDisplay.WidthData = cvt.Width.ToString();
+							imgSizeDisplay.HeightData = cvt.Height.ToString();
 
-						if (asImage) TheRibbon.SelectedTabItem = ctgImage.Items[0];
+							if (asImage) TheRibbon.SelectedTabItem = ctgImage.Items[0];
+						}
 					}
 				} catch (Exception) {
 					MessageBox.Show("Image was invalid");

@@ -329,64 +329,56 @@ namespace BExplorer.Shell {
 			set
 			{
 				m_View = value;
-				var iconsize = 16;
 				this.IsViewSelectionAllowed = false;
 				switch (value) {
 					case ShellViewStyle.ExtraLargeIcon:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_ICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(256);
-						iconsize = 256;
 						break;
 
 					case ShellViewStyle.LargeIcon:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_ICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(96);
-						iconsize = 96;
 						break;
 
 					case ShellViewStyle.Medium:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_ICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
 						ResizeIcons(48);
-						iconsize = 48;
 						break;
 
 					case ShellViewStyle.SmallIcon:
 						ResizeIcons(16);
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_SMALLICON, 0);
-						iconsize = 16;
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_SMALLICON, 0);
 						break;
 
 					case ShellViewStyle.List:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_LIST, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_LIST, 0);
 						ResizeIcons(16);
-						iconsize = 16;
 						break;
 
 					case ShellViewStyle.Details:
 						this.UpdateColsInView(true);
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_DETAILS, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_DETAILS, 0);
 						ResizeIcons(16);
-						iconsize = 16;
 						break;
 
 					case ShellViewStyle.Thumbnail:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_ICON, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_ICON, 0);
 						break;
 
 					case ShellViewStyle.Tile:
-						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (Int32)LV_VIEW.LV_VIEW_TILE, 0);
+						User32.SendMessage(this.LVHandle, MSG.LVM_SETVIEW, (int)LV_VIEW.LV_VIEW_TILE, 0);
 						var tvi = new LVTILEVIEWINFO {
 							cLines = 3,
 							rcLabelMargin = new User32.RECT() { Left = 2, Right = 0, Bottom = 60, Top = 5 },
-							cbSize = (UInt32)Marshal.SizeOf(typeof(LVTILEVIEWINFO)),
-							dwMask = (UInt32)LVTVIM.LVTVIM_TILESIZE | (UInt32)LVTVIM.LVTVIM_COLUMNS | (UInt32)LVTVIM.LVTVIM_LABELMARGIN,
-							dwFlags = (UInt32)LVTVIF.LVTVIF_FIXEDSIZE,
+							cbSize = (uint)Marshal.SizeOf(typeof(LVTILEVIEWINFO)),
+							dwMask = (uint)LVTVIM.LVTVIM_TILESIZE | (uint)LVTVIM.LVTVIM_COLUMNS | (uint)LVTVIM.LVTVIM_LABELMARGIN,
+							dwFlags = (uint)LVTVIF.LVTVIF_FIXEDSIZE,
 							sizeTile = new INTEROP_SIZE() { cx = 250, cy = 60 }
 						};
 
 						var a = User32.SendMessage(this.LVHandle, (Int32)MSG.LVM_SETTILEVIEWINFO, 0, tvi);
 						ResizeIcons(48);
-						iconsize = 48;
 						break;
 
 					case ShellViewStyle.Thumbstrip:
@@ -415,8 +407,8 @@ namespace BExplorer.Shell {
 		#region Private Members
 		private FileSystemWatcher _FsWatcher = new FileSystemWatcher();
 		private ListViewEditor _EditorSubclass;
-		private System.Windows.Forms.Timer _UnvalidateTimer = new System.Windows.Forms.Timer();
-		private System.Windows.Forms.Timer _MaintenanceTimer = new System.Windows.Forms.Timer();
+		private F.Timer _UnvalidateTimer = new F.Timer();
+		private F.Timer _MaintenanceTimer = new F.Timer();
 		private string _DBPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite");
 		private List<int> SelectedIndexes
 		{
@@ -483,7 +475,7 @@ namespace BExplorer.Shell {
 
 		private List<int> _CuttedIndexes = new List<int>();
 		private int _LastDropHighLightedItemIndex = -1;
-		private String _NewName { get; set; }
+		private string _NewName { get; set; }
 
 		private SyncQueue<int?> overlayQueue = new SyncQueue<int?>(); //3000
 		private SyncQueue<int?> ThumbnailsForCacheLoad = new SyncQueue<int?>(); //5000
@@ -1825,7 +1817,7 @@ namespace BExplorer.Shell {
 				}
 				#endregion
 
-			} catch (Exception ex) {
+			} catch {
 			}
 		}
 
