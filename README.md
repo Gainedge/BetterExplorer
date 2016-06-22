@@ -4,7 +4,7 @@ A Better Explorer filemanager repository
 
 Issues
 ==============
-http://bugtracker.better-explorer.com/
+http://bugs.gainedge.org/public/betterexplorer
 
 Contribute
 ==============
