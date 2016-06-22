@@ -8,7 +8,7 @@ http://bugs.gainedge.org/public/betterexplorer
 
 Contribute
 ==============
-If you want help contributing email us at aaroncampf@gmail.com
+If you want help contributing email us at team@gainedge.org
 
 
 How to build and test Better Explorer
