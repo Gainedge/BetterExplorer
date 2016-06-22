@@ -32,10 +32,17 @@ namespace BExplorer.Shell.Interop
         DATA_S_SAMEFORMATETC = 0x00040130,
         S_OK = 0,
         S_FALSE = 1,
+        E_CANCELED = unchecked((int)0x800704C7),
         E_NOINTERFACE = unchecked((int)0x80004002),
         E_NOTIMPL = unchecked((int)0x80004001),
         OLE_E_ADVISENOTSUPPORTED = unchecked((int)80040003),
         MK_E_NOOBJECT = unchecked((int)0x800401E5),
 				E_INVALIDARG = unchecked((int)0x80070057),
+				WTS_E_FAILEDEXTRACTION = unchecked((int)0x8004b200),
+				WTS_E_EXTRACTIONTIMEDOUT = unchecked((int)0x8004b201),
+				WTS_E_SURROGATEUNAVAILABLE = unchecked((int)0x8004b202),
+				WTS_E_FASTEXTRACTIONNOTSUPPORTED = unchecked((int)0x8004b203),
+				WTS_E_DATAFILEUNAVAILABLE = unchecked((int)0x8004b204),
+				STG_E_FILENOTFOUND = unchecked((int)0x80030002),
     }
 }

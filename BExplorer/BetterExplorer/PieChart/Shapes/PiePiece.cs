@@ -64,7 +64,8 @@ namespace BetterExplorer.PieChart
         public double WedgeAngle
         {
             get { return (double)GetValue(WedgeAngleProperty); }
-            set {
+            set
+            {
                 SetValue(WedgeAngleProperty, value);
                 this.Percentage = (value / 360.0);
             }
@@ -101,7 +102,7 @@ namespace BetterExplorer.PieChart
             new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         /// <summary>
-        /// The Y coordinate of centre of the circle from which this pie piece is cut.
+        /// The Y coordinate of center of the circle from which this pie piece is cut.
         /// </summary>
         public double CentreY
         {
@@ -123,8 +124,7 @@ namespace BetterExplorer.PieChart
         }
 
         public static readonly DependencyProperty PieceValueProperty =
-            DependencyProperty.Register("PieceValueProperty", typeof(double), typeof(PiePiece),
-            new FrameworkPropertyMetadata(0.0));
+            DependencyProperty.Register("PieceValueProperty", typeof(double), typeof(PiePiece), new FrameworkPropertyMetadata(0.0));
 
         /// <summary>
         /// The value that this pie piece represents.
@@ -162,7 +162,7 @@ namespace BetterExplorer.PieChart
         /// Draws the pie piece
         /// </summary>
         private void DrawGeometry(StreamGeometryContext context)
-        {           
+        {
             Point startPoint = new Point(CentreX, CentreY);
 
             Point innerArcStartPoint = Utils.ComputeCartesianCoordinate(RotationAngle, InnerRadius);
@@ -177,7 +177,7 @@ namespace BetterExplorer.PieChart
             Point outerArcEndPoint = Utils.ComputeCartesianCoordinate(RotationAngle + WedgeAngle, Radius);
             outerArcEndPoint.Offset(CentreX, CentreY);
 
-            bool largeArc = WedgeAngle>180.0;
+            bool largeArc = WedgeAngle > 180.0;
 
             if (PushOut > 0)
             {
@@ -199,5 +199,4 @@ namespace BetterExplorer.PieChart
             context.ArcTo(innerArcStartPoint, innerArcSize, 0, largeArc, SweepDirection.Counterclockwise, true, true);
         }
     }
-
 }

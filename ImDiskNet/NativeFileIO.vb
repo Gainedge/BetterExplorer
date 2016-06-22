@@ -556,11 +556,7 @@ Public Class NativeFileIO
     ''' </summary>
     ''' <param name="Value">FileAccess values.</param>
     Private Shared Function GetFileStreamLegalAccessValue(Value As FileAccess) As FileAccess
-        If Value = 0 Then
-            Return FileAccess.Read
-        Else
-            Return Value
-        End If
+        Return If(Value = 0, FileAccess.Read, Value)
     End Function
 
     ''' <summary>
@@ -643,13 +639,13 @@ Public Class NativeFileIO
 
         Dim pinptr = GCHandle.Alloc(State, GCHandleType.Pinned)
         Try
-            Win32Try(Win32API.DeviceIoControl(SafeFileHandle, _
-                                              Win32API.FSCTL_SET_COMPRESSION, _
-                                              pinptr.AddrOfPinnedObject(), _
-                                              2UI, _
-                                              IntPtr.Zero, _
-                                              0UI, _
-                                              Nothing, _
+            Win32Try(Win32API.DeviceIoControl(SafeFileHandle,
+                                              Win32API.FSCTL_SET_COMPRESSION,
+                                              pinptr.AddrOfPinnedObject(),
+                                              2UI,
+                                              IntPtr.Zero,
+                                              0UI,
+                                              Nothing,
                                               IntPtr.Zero))
 
         Finally

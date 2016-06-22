@@ -24,15 +24,9 @@ namespace BetterExplorer.Networks
         private SystemMenu m_SystemMenu;
         private const int m_UrlID = 0x101;
 
-        public AuthWindow()
-        {
-            InitializeComponent();
-        }
+        public AuthWindow() { InitializeComponent(); }
 
-        public void NavigateTo(string url)
-        {
-            wBrowser.Navigate(url);
-        }
+        public void NavigateTo(string url) => wBrowser.Navigate(url);
 
         public delegate void NavigationEventHandler(object sender, NavigationEventArgs e);
 
@@ -41,26 +35,14 @@ namespace BetterExplorer.Networks
         public event NavigationEventHandler Navigated;
 
         // Invoke the Changed event; called whenever list changes:
-        protected virtual void OnNavigated(NavigationEventArgs e)
-        {
-            if (Navigated != null)
-                Navigated(this, e);
-        }
+        protected virtual void OnNavigated(NavigationEventArgs e) => Navigated?.Invoke(this, e);
 
-        private void wBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
-        {
-            OnNavigated(e);
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
+        private void wBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e) => OnNavigated(e);
 
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
-            IntPtr windowHandle = (new WindowInteropHelper(this)).Handle; 
-            HwndSource src = HwndSource.FromHwnd(windowHandle); 
+            IntPtr windowHandle = (new WindowInteropHelper(this)).Handle;
+            HwndSource src = HwndSource.FromHwnd(windowHandle);
             src.AddHook(new HwndSourceHook(WndProc));
             try
             {
@@ -70,26 +52,19 @@ namespace BetterExplorer.Networks
             }
             catch (NoSystemMenuException)
             {
-
             }
         }
 
-        private IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) 
-        { 
-            if (msg == 0x0112) 
-            {
-                if (wParam.ToInt32() == m_UrlID)
-                {
-                    Clipboard.SetText(wBrowser.Source.ToString());
-                }
-            } 
-            return IntPtr.Zero; 
+        private IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == 0x0112 && wParam.ToInt32() == m_UrlID) Clipboard.SetText(wBrowser.Source.ToString());
+            return IntPtr.Zero;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            IntPtr windowHandle = (new WindowInteropHelper(this)).Handle; 
-            HwndSource src = HwndSource.FromHwnd(windowHandle); 
+            IntPtr windowHandle = (new WindowInteropHelper(this)).Handle;
+            HwndSource src = HwndSource.FromHwnd(windowHandle);
             src.RemoveHook(new HwndSourceHook(this.WndProc));
         }
     }

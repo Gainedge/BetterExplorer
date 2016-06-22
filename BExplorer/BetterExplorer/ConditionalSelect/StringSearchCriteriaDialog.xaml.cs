@@ -1,59 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
-namespace BetterExplorer
-{
-    /// <summary>
-    /// Interaction logic for StringSearchCriteriaDialog.xaml
-    /// </summary>
-    public partial class StringSearchCriteriaDialog : Window
-    {
-        public bool Confirm = false;
+namespace BetterExplorer {
 
-        public StringSearchCriteriaDialog()
-        {
-            InitializeComponent();
-        }
+	/// <summary>
+	/// Interaction logic for StringSearchCriteriaDialog.xaml
+	/// </summary>
+	public partial class StringSearchCriteriaDialog : Window {
+		public bool Confirm = false;
 
-        public StringSearchCriteriaDialog(string property, string value, string displayname)
-        {
-            InitializeComponent();
-            SetFilterName(displayname);
-            textBox1.Text = GetValueOnly(property, value);
-            textBox1.Focus();
-        }
+		/*
+		public void SetFilterName(string name) {
+			string title = FindResource("txtSetFilter") as string;
+			textBlock1.Text = title.Replace("(VAL)", name);
+		}
+		*/
 
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-            Confirm = true;
-            this.Close();
-        }
+		public StringSearchCriteriaDialog(string property, string value, string displayname) {
+			InitializeComponent();
+			//SetFilterName(displayname);
 
-        public void SetFilterName(string name)
-        {
-            string title = FindResource("txtSetFilter") as string;
-            textBlock1.Text = title.Replace("(VAL)", name);
-        }
+			string title = FindResource("txtSetFilter") as string;
+			textBlock1.Text = title.Replace("(VAL)", displayname);
 
-        private string GetValueOnly(string property, string value)
-        {
-            return value.Substring(property.Length + 1);
-        }
+			textBox1.Text = Utilities.GetValueOnly(property, value);
+			textBox1.Focus();
+		}
 
-        private void button2_Click(object sender, RoutedEventArgs e)
-        {
-            Confirm = false;
-            this.Close();
-        }
-    }
+		private void button1_Click(object sender, RoutedEventArgs e) {
+			Confirm = true;
+			this.Close();
+		}
+
+		private void button2_Click(object sender, RoutedEventArgs e) {
+			Confirm = false;
+			this.Close();
+		}
+	}
 }

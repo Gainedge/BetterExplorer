@@ -1,29 +1,282 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BExplorer.Shell.Interop
-{
+namespace BExplorer.Shell.Interop {
 
-	public struct PROPERTYKEY
-	{
-		public Guid fmtid;
-		public int pid;
-	}
+	#region Shell Library Enums
 
-	[StructLayout(LayoutKind.Sequential, Pack=2)]
-	public struct REFPROPERTYKEY
-	{
-		public Guid fmtid;
-		public int pid;
+	public enum LibraryFolderFilter {
+		ForceFileSystem = 1,
+		StorageItems = 2,
+		AllItems = 3
 	}
 
 	[Flags]
-	public enum SIIGBF
-	{
+	public enum LibraryOptions {
+		Default = 0,
+		PinnedToNavigationPane = 0x1,
+		MaskAll = 0x1
+	}
+
+	public enum DefaultSaveFolderType {
+		Detect = 1,
+		Private = 2,
+		Public = 3
+	}
+
+	public enum LibrarySaveOptions {
+		FailIfThere = 0,
+		OverrideExisting = 1,
+		MakeUniqueName = 2
+	}
+
+	public enum LibraryManageDialogOptions {
+		Default = 0,
+		NonIndexableLocationWarning = 1
+	}
+
+	public enum LibraryFolderType {
+
+		/// <summary>
+		/// General Items
+		/// </summary>
+		Generic = 0,
+
+		/// <summary>
+		/// Documents
+		/// </summary>
+		Documents,
+
+		/// <summary>
+		/// Music
+		/// </summary>
+		Music,
+
+		/// <summary>
+		/// Pictures
+		/// </summary>
+		Pictures,
+
+		/// <summary>
+		/// Videos
+		/// </summary>
+		Videos
+	}
+
+	#endregion Shell Library Enums
+
+	[Flags]
+	public enum TRANSFER_SOURCE_FLAGS {
+		TSF_NORMAL = 0,
+		TSF_FAIL_EXIST = 0,
+		TSF_RENAME_EXIST = 0x1,
+		TSF_OVERWRITE_EXIST = 0x2,
+		TSF_ALLOW_DECRYPTION = 0x4,
+		TSF_NO_SECURITY = 0x8,
+		TSF_COPY_CREATION_TIME = 0x10,
+		TSF_COPY_WRITE_TIME = 0x20,
+		TSF_USE_FULL_ACCESS = 0x40,
+		TSF_DELETE_RECYCLE_IF_POSSIBLE = 0x80,
+		TSF_COPY_HARD_LINK = 0x100,
+		TSF_COPY_LOCALIZED_NAME = 0x200,
+		TSF_MOVE_AS_COPY_DELETE = 0x400,
+		TSF_SUSPEND_SHELLEVENTS = 0x800
+	}
+
+	/// <summary>
+	/// The STGM constants are flags that indicate
+	/// conditions for creating and deleting the object and access modes
+	/// for the object.
+	///
+	/// You can combine these flags, but you can only choose one flag
+	/// from each group of related flags. Typically one flag from each
+	/// of the access and sharing groups must be specified for all
+	/// functions and methods which use these constants.
+	/// </summary>
+	[Flags]
+	[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1008:EnumsShouldHaveZeroValue", Justification = "Follows native api.")]
+	public enum AccessModes {
+
+		/// <summary>
+		/// Indicates that, in direct mode, each change to a storage
+		/// or stream element is written as it occurs.
+		/// </summary>
+		Direct = 0x00000000,
+
+		/// <summary>
+		/// Indicates that, in transacted mode, changes are buffered
+		/// and written only if an explicit commit operation is called.
+		/// </summary>
+		Transacted = 0x00010000,
+
+		/// <summary>
+		/// Provides a faster implementation of a compound file
+		/// in a limited, but frequently used, case.
+		/// </summary>
+		Simple = 0x08000000,
+
+		/// <summary>
+		/// Indicates that the object is read-only,
+		/// meaning that modifications cannot be made.
+		/// </summary>
+		Read = 0x00000000,
+
+		/// <summary>
+		/// Enables you to save changes to the object,
+		/// but does not permit access to its data.
+		/// </summary>
+		Write = 0x00000001,
+
+		/// <summary>
+		/// Enables access and modification of object data.
+		/// </summary>
+		ReadWrite = 0x00000002,
+
+		/// <summary>
+		/// Specifies that subsequent openings of the object are
+		/// not denied read or write access.
+		/// </summary>
+		ShareDenyNone = 0x00000040,
+
+		/// <summary>
+		/// Prevents others from subsequently opening the object in Read mode.
+		/// </summary>
+		ShareDenyRead = 0x00000030,
+
+		/// <summary>
+		/// Prevents others from subsequently opening the object
+		/// for Write or ReadWrite access.
+		/// </summary>
+		ShareDenyWrite = 0x00000020,
+
+		/// <summary>
+		/// Prevents others from subsequently opening the object in any mode.
+		/// </summary>
+		ShareExclusive = 0x00000010,
+
+		/// <summary>
+		/// Opens the storage object with exclusive access to the most
+		/// recently committed version.
+		/// </summary>
+		Priority = 0x00040000,
+
+		/// <summary>
+		/// Indicates that the underlying file is to be automatically destroyed when the root
+		/// storage object is released. This feature is most useful for creating temporary files.
+		/// </summary>
+		DeleteOnRelease = 0x04000000,
+
+		/// <summary>
+		/// Indicates that, in transacted mode, a temporary scratch file is usually used
+		/// to save modifications until the Commit method is called.
+		/// Specifying NoScratch permits the unused portion of the original file
+		/// to be used as work space instead of creating a new file for that purpose.
+		/// </summary>
+		NoScratch = 0x00100000,
+
+		/// <summary>
+		/// Indicates that an existing storage object
+		/// or stream should be removed before the new object replaces it.
+		/// </summary>
+		Create = 0x00001000,
+
+		/// <summary>
+		/// Creates the new object while preserving existing data in a stream named "Contents".
+		/// </summary>
+		Convert = 0x00020000,
+
+		/// <summary>
+		/// Causes the create operation to fail if an existing object with the specified name exists.
+		/// </summary>
+		FailIfThere = 0x00000000,
+
+		/// <summary>
+		/// This flag is used when opening a storage object with Transacted
+		/// and without ShareExclusive or ShareDenyWrite.
+		/// In this case, specifying NoSnapshot prevents the system-provided
+		/// implementation from creating a snapshot copy of the file.
+		/// Instead, changes to the file are written to the end of the file.
+		/// </summary>
+		NoSnapshot = 0x00200000,
+
+		/// <summary>
+		/// Supports direct mode for single-writer, multireader file operations.
+		/// </summary>
+		DirectSingleWriterMultipleReader = 0x00400000
+	}
+
+	public enum PerceivedType {
+		Application = 8,
+		Audio = 3,
+		Compressed = 5,
+		Contacts = 10,
+		Custom = -3,
+		Document = 6,
+		Folder = -1,
+		GameMedia = 9,
+		Image = 2,
+		System = 7,
+		Text = 1,
+		Unknown = 0,
+		Unspecified = -2,
+		Video = 4,
+	}
+
+	
+	public enum LVBKIF : int {
+		SOURCE_NONE = 0x00000000,
+
+		SOURCE_HBITMAP = 0x00000001,
+
+		SOURCE_URL = 0x00000002,
+
+		SOURCE_MASK = 0x00000003,
+
+		STYLE_NORMAL = 0x00000000,
+
+		STYLE_TILE = 0x00000010,
+
+		STYLE_MASK = 0x00000010,
+
+		FLAG_TILEOFFSET = 0x00000100,
+
+		STYLE_WATERMARK = 0x10000000,
+
+		FLAG_ALPHABLEND = 0x20000000
+	}
+	
+
+	
+	public struct LVBKIMAGE {
+		public LVBKIF ulFlags;
+
+		public IntPtr hbm;
+
+		public IntPtr pszImage;
+
+		public uint cchImageMax;
+
+		public int xOffsetPercent;
+
+		public int yOffsetPercent;
+	};
+	
+
+	public struct PROPERTYKEY {
+		public Guid fmtid;
+		public int pid;
+	}
+
+	/*
+	[StructLayout(LayoutKind.Sequential, Pack = 2)]
+	public struct REFPROPERTYKEY {
+		public Guid fmtid;
+		public int pid;
+	}
+	*/
+
+	[Flags]
+	public enum SIIGBF {
 		ResizeToFit = 0x00,
 		BiggerSizeOk = 0x01,
 		MemoryOnly = 0x02,
@@ -32,16 +285,16 @@ namespace BExplorer.Shell.Interop
 		InCacheOnly = 0x10,
 	}
 
-	public struct Size
-	{
+	public struct Size {
 
 		public int Height { get; set; }
+
 		public int Width { get; set; }
 	}
 
+	/*
 	[Flags]
-	public enum ThumbnailOptions
-	{
+	public enum ThumbnailOptions {
 		Extract = 0x00000000,
 		InCacheOnly = 0x00000001,
 		FastExtract = 0x00000002,
@@ -49,20 +302,49 @@ namespace BExplorer.Shell.Interop
 		SlowReclaim = 0x00000008,
 		ExtractDoNotCache = 0x00000020
 	}
+	*/
 
 	[Flags]
-	public enum ThumbnailCacheOptions
-	{
+	public enum WTS_FLAGS : uint {
+		WTS_EXTRACT = 0x00000000,
+		WTS_INCACHEONLY = 0x00000001,
+		WTS_FASTEXTRACT = 0x00000002,
+		WTS_FORCEEXTRACTION = 0x00000004,
+		WTS_SLOWRECLAIM = 0x00000008,
+		WTS_EXTRACTDONOTCACHE = 0x00000020,
+		WTS_SCALETOREQUESTEDSIZE = 0x00000040,
+		WTS_SKIPFASTEXTRACT = 0x00000080,
+		WTS_EXTRACTINPROC = 0x00000100
+	}
+
+	[Flags]
+	public enum WTS_CACHEFLAGS : uint {
+		WTS_DEFAULT = 0x00000000,
+		WTS_LOWQUALITY = 0x00000001,
+		WTS_CACHED = 0x00000002
+	}
+
+	[StructLayout(LayoutKind.Sequential, Size = 16), Serializable]
+	public struct WTS_THUMBNAILID {
+
+		[MarshalAsAttribute(UnmanagedType.ByValArray, SizeConst = 16)]
+		private byte[] rgbKey;
+	}
+
+	/*
+	[Flags]
+	public enum ThumbnailCacheOptions {
 		Default = 0x00000000,
 		LowQuality = 0x00000001,
 		Cached = 0x00000002,
 	}
+	*/
 
 	/// <summary>
 	/// Thumbnail Alpha Types
 	/// </summary>
-	public enum ThumbnailAlphaType
-	{
+	public enum ThumbnailAlphaType {
+
 		/// <summary>
 		/// Let the system decide.
 		/// </summary>
@@ -79,16 +361,17 @@ namespace BExplorer.Shell.Interop
 		HasAlphaChannel = 2,
 	}
 
+	/*
 	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-	internal struct ThumbnailId
-	{
+	internal struct ThumbnailId {
 		[MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 16)]
 		byte rgbKey;
 	}
+	*/
 
+	/*
 	[StructLayout(LayoutKind.Sequential)]
-	public struct BITMAP
-	{
+	public struct BITMAP {
 		public int bmType;
 		public int bmWidth;
 		public int bmHeight;
@@ -97,18 +380,21 @@ namespace BExplorer.Shell.Interop
 		public ushort bmBitsPixel;
 		public IntPtr bmBits;
 	}
+	*/
 
-	public enum SICHINTF
-	{
+	/*
+	public enum SICHINTF {
 		SICHINT_DISPLAY = 0x00000000,
 		SICHINT_CANONICAL = 0x10000000,
 		SICHINT_TEST_FILESYSPATH_IF_NOT_EQUAL = 0x20000000,
 		SICHINT_ALLFIELDS = unchecked((int)0x80000000)
 	}
+	*/
 
-
-	public enum WM
-	{
+	/// <summary>
+	/// Standard Window messages
+	/// </summary>
+	public enum WM {
 		WM_NULL = 0x0000,
 		WM_CREATE = 0x0001,
 		WM_DESTROY = 0x0002,
@@ -161,16 +447,21 @@ namespace BExplorer.Shell.Interop
 		WM_SETHOTKEY = 0x0032,
 		WM_GETHOTKEY = 0x0033,
 		WM_XBUTTONUP = 0x020C,
+
 		//public const uint WM_FILESYSCHANGE        = 0x0034;
 		//public const uint WM_ISACTIVEICON         = 0x0035;
 		//public const uint WM_QUERYPARKICON        = 0x0036;
 		WM_QUERYDRAGICON = 0x0037,
+
 		WM_COMPAREITEM = 0x0039,
+
 		//public const uint WM_TESTING              = 0x003a;
 		//public const uint WM_OTHERWINDOWCREATED = 0x003c;
 		WM_GETOBJECT = 0x003D,
+
 		//public const uint WM_ACTIVATESHELLWINDOW        = 0x003e;
 		WM_COMPACTING = 0x0041,
+
 		WM_COMMNOTIFY = 0x0044,
 		WM_WINDOWPOSCHANGING = 0x0046,
 		WM_WINDOWPOSCHANGED = 0x0047,
@@ -192,6 +483,7 @@ namespace BExplorer.Shell.Interop
 
 		// Non-Client messages
 		WM_SETICON = 0x0080,
+
 		WM_NCCREATE = 0x0081,
 		WM_NCDESTROY = 0x0082,
 		WM_NCCALCSIZE = 0x0083,
@@ -200,8 +492,10 @@ namespace BExplorer.Shell.Interop
 		WM_NCACTIVATE = 0x0086,
 		WM_GETDLGCODE = 0x0087,
 		WM_SYNCPAINT = 0x0088,
+
 		//public const uint WM_SYNCTASK       = 0x0089;
 		WM_NCMOUSEMOVE = 0x00A0,
+
 		WM_NCLBUTTONDOWN = 0x00A1,
 		WM_NCLBUTTONUP = 0x00A2,
 		WM_NCLBUTTONDBLCLK = 0x00A3,
@@ -211,10 +505,12 @@ namespace BExplorer.Shell.Interop
 		WM_NCMBUTTONDOWN = 0x00A7,
 		WM_NCMBUTTONUP = 0x00A8,
 		WM_NCMBUTTONDBLCLK = 0x00A9,
+
 		//public const uint WM_NCXBUTTONDOWN    = 0x00ab;
 		//public const uint WM_NCXBUTTONUP      = 0x00ac;
 		//public const uint WM_NCXBUTTONDBLCLK  = 0x00ad;
 		WM_KEYDOWN = 0x0100,
+
 		WM_KEYFIRST = 0x0100,
 		WM_KEYUP = 0x0101,
 		WM_CHAR = 0x0102,
@@ -236,8 +532,10 @@ namespace BExplorer.Shell.Interop
 		WM_VSCROLL = 0x0115,
 		WM_INITMENU = 0x0116,
 		WM_INITMENUPOPUP = 0x0117,
+
 		//public const uint WM_SYSTIMER       = 0x0118;
 		WM_MENUSELECT = 0x011F,
+
 		WM_MENUCHAR = 0x0120,
 		WM_ENTERIDLE = 0x0121,
 		WM_MENURBUTTONUP = 0x0122,
@@ -245,12 +543,14 @@ namespace BExplorer.Shell.Interop
 		WM_MENUGETOBJECT = 0x0124,
 		WM_UNINITMENUPOPUP = 0x0125,
 		WM_MENUCOMMAND = 0x0126,
+
 		//public const uint WM_CHANGEUISTATE    = 0x0127;
 		//public const uint WM_UPDATEUISTATE    = 0x0128;
 		//public const uint WM_QUERYUISTATE     = 0x0129;
 		//
 		//public const uint WM_LBTRACKPOINT     = 0x0131;
 		WM_CTLCOLORMSGBOX = 0x0132,
+
 		WM_CTLCOLOREDIT = 0x0133,
 		WM_CTLCOLORLISTBOX = 0x0134,
 		WM_CTLCOLORBTN = 0x0135,
@@ -270,10 +570,12 @@ namespace BExplorer.Shell.Interop
 		WM_MBUTTONDBLCLK = 0x0209,
 		WM_MOUSEWHEEL = 0x020A,
 		WM_MOUSELAST = 0x020D,
+
 		//public const uint WM_XBUTTONDOWN      = 0x020B;
 		//public const uint WM_XBUTTONUP        = 0x020C;
 		//public const uint WM_XBUTTONDBLCLK    = 0x020D;
 		WM_PARENTNOTIFY = 0x0210,
+
 		WM_ENTERMENULOOP = 0x0211,
 		WM_EXITMENULOOP = 0x0212,
 		WM_NEXTMENU = 0x0213,
@@ -293,6 +595,7 @@ namespace BExplorer.Shell.Interop
 		WM_MDIICONARRANGE = 0x0228,
 		WM_MDIGETACTIVE = 0x0229,
 		/* D&D messages */
+
 		//public const uint WM_DROPOBJECT     = 0x022A;
 		//public const uint WM_QUERYDROPOBJECT  = 0x022B;
 		//public const uint WM_BEGINDRAG      = 0x022C;
@@ -300,6 +603,7 @@ namespace BExplorer.Shell.Interop
 		//public const uint WM_DRAGSELECT     = 0x022E;
 		//public const uint WM_DRAGMOVE       = 0x022F;
 		WM_MDISETMENU = 0x0230,
+
 		WM_ENTERSIZEMOVE = 0x0231,
 		WM_EXITSIZEMOVE = 0x0232,
 		WM_DROPFILES = 0x0233,
@@ -347,106 +651,194 @@ namespace BExplorer.Shell.Interop
 
 		// Our "private" ones
 		WM_MOUSE_ENTER = 0x0401,
+
 		WM_MOUSE_LEAVE = 0x0402,
 		WM_ASYNC_MESSAGE = 0x0403,
 		WM_REFLECT = WM_USER + 0x1c00
 	}
 
-	public enum ListViewExtendedStyles
-	{
+	public enum HDN {
+		HDN_FIRST = -300,
+		HDN_LAST = -399,
+		HDN_ITEMCHANGINGA = (HDN_FIRST - 0),
+		HDN_ITEMCHANGINGW = (HDN_FIRST - 20),
+		HDN_ITEMCHANGEDA = (HDN_FIRST - 1),
+		HDN_ITEMCHANGEDW = (HDN_FIRST - 21),
+		HDN_ITEMCLICKA = (HDN_FIRST - 2),
+		HDN_ITEMCLICKW = (HDN_FIRST - 22),
+		HDN_ITEMDBLCLICKA = (HDN_FIRST - 3),
+		HDN_ITEMDBLCLICKW = (HDN_FIRST - 23),
+		HDN_DIVIDERDBLCLICKA = (HDN_FIRST - 5),
+		HDN_DIVIDERDBLCLICKW = (HDN_FIRST - 25),
+		HDN_BEGINTRACKA = (HDN_FIRST - 6),
+		HDN_BEGINTRACKW = (HDN_FIRST - 26),
+		HDN_ENDTRACKA = (HDN_FIRST - 7),
+		HDN_ENDTRACKW = (HDN_FIRST - 27),
+		HDN_TRACKA = (HDN_FIRST - 8),
+		HDN_TRACKW = (HDN_FIRST - 28),
+		HDN_GETDISPINFOA = (HDN_FIRST - 9),
+		HDN_GETDISPINFOW = (HDN_FIRST - 29),
+		HDN_BEGINDRAG = (HDN_FIRST - 10),
+		HDN_ENDDRAG = (HDN_FIRST - 11),
+		HDN_FILTERCHANGE = (HDN_FIRST - 12),
+		HDN_FILTERBTNCLICK = (HDN_FIRST - 13),
+		HDN_BEGINFILTEREDIT = (HDN_FIRST - 14),
+		HDN_ENDFILTEREDIT = (HDN_FIRST - 15),
+		HDN_ITEMSTATEICONCLICK = (HDN_FIRST - 16),
+		HDN_ITEMKEYDOWN = (HDN_FIRST - 17),
+		HDN_DROPDOWN = (HDN_FIRST - 18),
+		HDN_OVERFLOWCLICK = (HDN_FIRST - 19),
+	}
+
+	public enum LVNI {
+		LVNI_ALL = 0x0000,
+		LVNI_FOCUSED = 0x0001,
+		LVNI_SELECTED = 0x0002,
+		LVNI_CUT = 0x0004,
+		LVNI_DROPHILITED = 0x0008,
+		LVNI_STATEMASK = (LVNI_FOCUSED | LVNI_SELECTED | LVNI_CUT | LVNI_DROPHILITED),
+	}
+
+	public enum ListViewExtendedStyles {
 		LVS_EX_AUTOAUTOARRANGE = 0x1000000,
+
 		/// <summary>
 		/// LVS_EX_GRIDLINES
 		/// </summary>
 		GridLines = 0x00000001,
+
 		/// <summary>
 		/// LVS_EX_SUBITEMIMAGES
 		/// </summary>
 		SubItemImages = 0x00000002,
+
 		/// <summary>
 		/// LVS_EX_CHECKBOXES
 		/// </summary>
 		CheckBoxes = 0x00000004,
+
+		LVS_EX_AUTOCHECKSELECT = 0x8000000,
+
 		/// <summary>
 		/// LVS_EX_TRACKSELECT
 		/// </summary>
 		TrackSelect = 0x00000008,
+
 		/// <summary>
 		/// LVS_EX_HEADERDRAGDROP
 		/// </summary>
 		HeaderDragDrop = 0x00000010,
+
 		/// <summary>
 		/// LVS_EX_FULLROWSELECT
 		/// </summary>
 		FullRowSelect = 0x00000020,
+
 		/// <summary>
 		/// LVS_EX_ONECLICKACTIVATE
 		/// </summary>
 		OneClickActivate = 0x00000040,
+
 		/// <summary>
 		/// LVS_EX_TWOCLICKACTIVATE
 		/// </summary>
 		TwoClickActivate = 0x00000080,
+
 		/// <summary>
 		/// LVS_EX_FLATSB
 		/// </summary>
 		FlatsB = 0x00000100,
+
 		/// <summary>
 		/// LVS_EX_REGIONAL
 		/// </summary>
 		Regional = 0x00000200,
+
 		/// <summary>
 		/// LVS_EX_INFOTIP
 		/// </summary>
 		InfoTip = 0x00000400,
+
 		/// <summary>
 		/// LVS_EX_UNDERLINEHOT
 		/// </summary>
 		UnderlineHot = 0x00000800,
+
 		/// <summary>
 		/// LVS_EX_UNDERLINECOLD
 		/// </summary>
 		UnderlineCold = 0x00001000,
+
 		/// <summary>
 		/// LVS_EX_MULTIWORKAREAS
 		/// </summary>
 		MultilWorkAreas = 0x00002000,
+
 		/// <summary>
 		/// LVS_EX_LABELTIP
 		/// </summary>
 		LabelTip = 0x00004000,
+
 		/// <summary>
 		/// LVS_EX_BORDERSELECT
 		/// </summary>
 		BorderSelect = 0x00008000,
+
 		/// <summary>
 		/// LVS_EX_DOUBLEBUFFER
 		/// </summary>
 		DoubleBuffer = 0x00010000,
+
 		/// <summary>
 		/// LVS_EX_HIDELABELS
 		/// </summary>
 		HideLabels = 0x00020000,
+
 		/// <summary>
 		/// LVS_EX_SINGLEROW
 		/// </summary>
 		SingleRow = 0x00040000,
+
 		/// <summary>
 		/// LVS_EX_SNAPTOGRID
 		/// </summary>
 		SnapToGrid = 0x00080000,
+
 		/// <summary>
 		/// LVS_EX_SIMPLESELECT
 		/// </summary>
 		SimpleSelect = 0x00100000,
+
 		/// <summary>
 		/// LVS_EX_AUTOSIZECOLUMNS
 		/// </summary>
 		AutosizeColumns = 0x10000000,
+
 		/// <summary>
 		/// LVS_EX_HEADERINALLVIEWS
 		/// </summary>
 		HeaderInAllViews = 0x2000000,
+
 		LVS_EX_DOUBLEBUFFER = 0x00010000,
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct POINT {
+		public int x;
+		public int y;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct LVITEMINDEX {
+		public int iItem;
+		public int iGroup;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct LVHITTESTINFO {
+		public POINT pt;
+		public uint flags;
+		public int iItem;
+		public int iSubItem;
 	}
 }

@@ -3,7 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="{Binding RelativeSource={RelativeSource Self}, Mode=OneTime, Path=ProductTitle}" 
     x:Uid="idAboutBox"
-    Style="{DynamicResource AboutDialogStyle}" WindowStartupLocation="CenterOwner" Closed="Window_Closed">
+    Style="{DynamicResource AboutDialogStyle}" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <XmlDataProvider x:Key="aboutProvider" XPath="ApplicationInfo" IsAsynchronous="False" IsInitialLoadEnabled="True">
             <x:XData>
@@ -73,10 +73,10 @@
             </StackPanel>
             <Label x:Name="copyright" x:Uid="copyright" Content="{Binding Mode=OneTime, Path=Copyright}"  />
             <Label x:Name="company" x:Uid="company" Content="{Binding Mode=OneTime, Path=Company}" />
-            <Label x:Name="reserved" x:Uid="reserved" Content="Made by Dimitar Cenev and Jayke R. Huempfner" />
+            <Label x:Name="reserved" x:Uid="reserved" Content="Made by Dimitar Cenev, Jayke R. Huempfner and Aaron Campf" />
             <Label x:Name="info" x:Uid="info" Style="{StaticResource ParagraphSeparator}" 
-                   Content="Product details:" />
-            <TextBox x:Name="description" x:Uid="description" Style="{StaticResource ReadOnlyDescStyle}" Text="This is a replacement for the standard Windows Explorer, adding a Ribbon, new features, and tabs." />
+                   Content="{DynamicResource frmAbout_info}" />
+            <TextBox x:Name="description" x:Uid="description" Style="{StaticResource ReadOnlyDescStyle}" Text="{DynamicResource frmAbout_description}" />
             <DockPanel x:Uid="buttonArea">
                 <Button x:Name="okButton" x:Uid="okButton" Style="{StaticResource OkButtonStyle}" 
                         Content="OK" />

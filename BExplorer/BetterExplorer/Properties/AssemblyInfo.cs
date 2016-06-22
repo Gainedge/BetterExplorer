@@ -11,8 +11,8 @@ using System.Windows;
 [assembly: AssemblyDescription("A better file manager.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Dimitar Tsenev / Jayke R. Huempfner")]
-[assembly: AssemblyProduct("Better Explorer Beta 3")]
-[assembly: AssemblyCopyright("Copyright © 2012-2013 Dimitar Tsenev and Jayke R. Huempfner")]
+[assembly: AssemblyProduct("Better Explorer 2.5 RC 1")]
+[assembly: AssemblyCopyright("Copyright © 2012-2015 Dimitar Tsenev and Jayke R. Huempfner")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,6 +51,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.5.0.22052")]
-[assembly: AssemblyFileVersion("2.5.0.22052")]
-[assembly: AssemblyInformationalVersion("2.5.0.131119.22052 Alpha 1")]
+[assembly: AssemblyVersion("2.5.1.21211")]
+[assembly: AssemblyFileVersion("2.5.1.21211")]
+[assembly: AssemblyInformationalVersion("2.5.1.151106.21211 RC1")]

@@ -1,7 +1,7 @@
 ﻿<Window x:Class="BetterExplorer.Networks.AuthWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="AuthWindow" Height="300" Width="300" Loaded="Window_Loaded" SourceInitialized="Window_SourceInitialized" Closing="Window_Closing" >
+        Title="AuthWindow" Height="300" Width="300" SourceInitialized="Window_SourceInitialized" Closing="Window_Closing" >
     <Grid>
         <WebBrowser x:Name="wBrowser" Navigated="wBrowser_Navigated" />
 

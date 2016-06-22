@@ -13,17 +13,18 @@
         <TextBlock HorizontalAlignment="Left" Margin="12,15,0,0" Name="textBlock1" Text="&lt;name&gt;" VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="22,60,0,0" Name="textBlock2" Text="&lt;hv&gt;: &lt;h&gt;" VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="22,40,0,0" Name="textBlock3" Text="&lt;wv&gt;: &lt;w&gt;" VerticalAlignment="Top" />
-        <Button Content="Cancel" Height="23" HorizontalAlignment="Right" Margin="0,237,12,0" Name="button1" VerticalAlignment="Top" Width="75" Click="button1_Click" />
-        <Button Content="Resize" Height="23" HorizontalAlignment="Right" Margin="0,237,93,0" Name="button2" VerticalAlignment="Top" Width="75" Click="button2_Click" />
-        <my:Spinner HorizontalAlignment="Left" Header="Set percentage:" Margin="17,88,0,0" Name="spinner1" VerticalAlignment="Top" Height="26" Width="140" Maximum="500" Minimum="1" CanAddToQuickAccessToolBar="False" Value="100" ValueChanged="spinner1_ValueChanged" Increment="1" Format="" FontSize="12" />
-        <Grid Height="76" Margin="22,154,56,39">
-            <TextBlock HorizontalAlignment="Left" Margin="10,39,0,0" Name="textBlock4" Text="Height:" VerticalAlignment="Top" />
-            <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" Name="textBlock5" Text="Width:" Height="16" VerticalAlignment="Top" />
-            <TextBox Height="23" HorizontalAlignment="Left" Margin="58,7,0,0" Name="textBox1" VerticalAlignment="Top" Width="98" TextChanged="textBox1_TextChanged" Text="1" />
-            <TextBox Height="23" HorizontalAlignment="Left" Margin="58,36,0,0" Name="textBox2" VerticalAlignment="Top" Width="98" TextChanged="textBox1_TextChanged" Text="1" />
+        <Button Content="Cancel" Height="23" HorizontalAlignment="Right" Margin="0,237,12,0" Name="button1" VerticalAlignment="Top" Width="75" Click="btnCancel_Click" />
+        <Button Content="Resize" Height="23" HorizontalAlignment="Right" Margin="0,237,93,0" x:Name="btnResize" VerticalAlignment="Top" Width="75" Click="btnResize_Click" />
+        <my:Spinner HorizontalAlignment="Left" Header="Set percentage:" Margin="17,88,0,0" Name="spinner1" VerticalAlignment="Top" Height="26" Width="199" Maximum="500" Minimum="1" CanAddToQuickAccessToolBar="False" Value="100" ValueChanged="spinner1_ValueChanged" Increment="1" Format="" FontSize="12" />
+        <Grid Height="76" Margin="22,160,25,44">
+            <TextBlock HorizontalAlignment="Left" Margin="10,39,0,0" Name="lbeHeight" Text="{DynamicResource ResizeImage_lbeHeight}" VerticalAlignment="Top" />
+            <TextBlock HorizontalAlignment="Left" Margin="10,10,0,0" Name="lbeWidth" Text="{DynamicResource ResizeImage_lbeWidth}" Height="16" VerticalAlignment="Top" />
+            <TextBox Height="23" HorizontalAlignment="Left" Margin="58,7,0,0" Name="textBox1" VerticalAlignment="Top" Width="141" TextChanged="TextBoxes_Edited" Text="1" />
+            <TextBox Height="23" HorizontalAlignment="Left" Margin="58,36,0,0" Name="textBox2" VerticalAlignment="Top" Width="141" TextChanged="TextBoxes_Edited" Text="1" />
         </Grid>
-        <TextBlock HorizontalAlignment="Left" Margin="22,136,0,0" Name="textBlock6" Text="Or set specific size:" VerticalAlignment="Top" />
-        <TextBlock HorizontalAlignment="Left" Margin="163,93,0,0" Name="textBlock7" Text="%" VerticalAlignment="Top" />
+        <TextBlock HorizontalAlignment="Left" Margin="22,136,0,0" Name="textBlock6" Text="{DynamicResource ResizeImage_textBlock6}" VerticalAlignment="Top" />
+        <TextBlock HorizontalAlignment="Right" Margin="0,91,25,0" Name="textBlock7" Text="%" VerticalAlignment="Top" />
         <Rectangle Height="1" HorizontalAlignment="Left" Margin="17,81,0,0" Name="rectangle1" Stroke="Black" VerticalAlignment="Top" Width="211" />
+        <CheckBox x:Name="cbxMaintainRatio" Content="{DynamicResource ResizeImage_cbxMaintainRatio}" HorizontalAlignment="Left" Margin="22,114,0,0" VerticalAlignment="Top" IsChecked="True"/>
     </Grid>
 </Window>

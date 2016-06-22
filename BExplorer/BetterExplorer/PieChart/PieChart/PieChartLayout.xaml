@@ -1,18 +1,18 @@
 ﻿<UserControl x:Class="BetterExplorer.PieChart.PieChartLayout"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:c="clr-namespace:BetterExplorer.PieChart" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="356" d:DesignWidth="583" SizeChanged="UserControl_SizeChanged">
-    <!-- http://cebla5.spaces.live.com/?_c11_BlogPart_BlogPart=blogview&_c=BlogPart&partqs=cat%3DWPF -->
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition x:Name="clPie"/>
-            <ColumnDefinition Width="250"/>
-        </Grid.ColumnDefinitions>
-        <!--<StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" x:Name="Container" HorizontalAlignment="Stretch">
-            <c:PiePlotter Margin="10,10,10,10" HorizontalAlignment="Left" Width="348"
-                      HoleSize="0.3"/>
-        </StackPanel>-->
-        <c:PiePlotter HoleSize="0.3" x:Name="Pie" Grid.Column="0"/>
-        <c:Legend Grid.Column="1" Margin="0,0,0,43" x:Name="legend1" HorizontalAlignment="Right" Width="240" />
-    </Grid>
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:c="clr-namespace:BetterExplorer.PieChart" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="356" d:DesignWidth="583" SizeChanged="UserControl_SizeChanged">
+		<!-- http://cebla5.spaces.live.com/?_c11_BlogPart_BlogPart=blogview&_c=BlogPart&partqs=cat%3DWPF -->
+		<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition x:Name="clPie" Width="*"/>
+			<ColumnDefinition Width="250"/>
+		</Grid.ColumnDefinitions>
+		<!--<StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" x:Name="Container" HorizontalAlignment="Stretch">
+						<c:PiePlotter Margin="10,10,10,10" HorizontalAlignment="Left" Width="348"
+											HoleSize="0.3"/>
+				</StackPanel>-->
+				<c:PiePlotter HoleSize="0.3" x:Name="Pie" Grid.Column="0"/>
+				<c:Legend Grid.Column="1" x:Name="legend1" HorizontalAlignment="Right" Width="250" VerticalAlignment="Stretch" Height="Auto" />
+		</Grid>
 </UserControl>

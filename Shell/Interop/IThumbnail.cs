@@ -19,28 +19,12 @@ namespace BExplorer.Shell.Interop
 		[Out] out IntPtr phbm);
 	}
 
-	[ComImport,
-	Guid(InterfaceGuids.IThumbnailCache),
-	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	interface IThumbnailCache
-	{
-		void GetThumbnail([In] IShellItem pShellItem,
-		[In] uint cxyRequestedThumbSize,
-		[In] ThumbnailOptions flags,
-		[Out] out ISharedBitmap ppvThumb,
-		[Out] out ThumbnailCacheOptions pOutFlags,
-		[Out] ThumbnailId pThumbnailID);
 
-		void GetThumbnailByID([In] ThumbnailId thumbnailID,
-		[In] uint cxyRequestedThumbSize,
-		[Out] out ISharedBitmap ppvThumb,
-		[Out] out ThumbnailCacheOptions pOutFlags);
-	}
 
 	[ComImport,
 	Guid(InterfaceGuids.ISharedBitmap),
 	InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-	interface ISharedBitmap
+	public interface ISharedBitmap
 	{
 		void GetSharedBitmap([Out] out IntPtr phbm);
 		void GetSize([Out] out Size pSize);

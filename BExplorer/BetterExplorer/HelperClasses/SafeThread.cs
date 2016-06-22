@@ -95,10 +95,10 @@ namespace BetterExplorer
         /// </summary>
         public string Name
         {
-            get 
+            get
             {
                 if (_name == null) { return "SafeThread#" + this.GetHashCode().ToString(); }
-                return _name; 
+                return _name;
             }
             set { _name = value; }
         }
@@ -171,9 +171,9 @@ namespace BetterExplorer
         {
             try
             {
-                if (ex is ThreadAbortException && !ShouldReportThreadAbort) 
+                if (ex is ThreadAbortException && !ShouldReportThreadAbort)
                 {
-                    return; 
+                    return;
                 }
 
                 if (ThreadException != null)

@@ -1,122 +1,102 @@
-﻿
-using BExplorer.Shell;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
+using BExplorer.Shell;
+using System.Linq;
+using System;
+using BExplorer.Shell._Plugin_Interfaces;
 
 namespace BetterExplorerControls
 {
-  /// <summary>
-  /// Interaction logic for PreviewPane.xaml
-  /// </summary>
-  public partial class PreviewPane : UserControl, INotifyPropertyChanged
-  {
-    public ShellView Browser;
-    private BitmapSource _thumbnail;
-    private ShellItem[] SelectedItems;
-    public BitmapSource Thumbnail { 
-      get{
-        return _thumbnail;
-      }
-    }
 
-    
-    public String DisplayName
+    /// <summary> Interaction logic for PreviewPane.xaml </summary>
+    public partial class DetailsPane : UserControl, INotifyPropertyChanged
     {
-      get
-      {
-				//FIXME: fix this here
-        //if (this.Browser.SelectedItems.Count() > 0)
-        //{
-        //  return this.Browser.SelectedItems[0].GetDisplayName(DisplayNameType.Default);
-        //}
-        //else
-        //{
-        //  return String.Empty;
-        //}
-				return String.Empty;
-      }
-    }
 
-    public String FileType
-    {
-      get
-      {
-				//FIXME: fix this here
-        //if (this.Browser.SelectedItems.Count() > 0)
-        //{
-        //  return this.Browser.SelectedItems[0].Properties.System.ItemTypeText != null ? this.Browser.SelectedItems[0].Properties.System.ItemTypeText.Value : String.Empty;
-        //}
-        //else
-        //{
-        //  return String.Empty;
-        //}
-				return string.Empty;
-      }
-    }
-    public PreviewPane()
-    {
-      InitializeComponent();
-      DataContext = this;
-      this.Loaded += PreviewPane_Loaded;
-    }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-    void PreviewPane_Loaded(object sender, RoutedEventArgs e)
-    {
-      this.SizeChanged += PreviewPane_SizeChanged;
-    }
+        public ShellView Browser;
 
+        private IListItemEx SelectedItem => this.Browser != null && this.Browser.GetSelectedCount() > 0 ? this.Browser.SelectedItems[0] : null;
 
-    void PreviewPane_SizeChanged(object sender, SizeChangedEventArgs e)
-    {
-      //Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
-      //{
-        ShellItem selectedItemsFirst = null;
-        if (this.Browser != null && this.Browser.SelectedItems != null && this.Browser.SelectedItems.Count() == 1)
+        public DetailsPane()
         {
-          selectedItemsFirst = this.Browser.SelectedItems.First();
-          selectedItemsFirst.Thumbnail.CurrentSize = new Size(this.ActualHeight - 20, this.ActualHeight - 20);
-          icon.Source = selectedItemsFirst.Thumbnail.BitmapSource;
+            InitializeComponent();
+            DataContext = this;
+            this.Loaded += (sender, e) => this.SizeChanged += PreviewPane_SizeChanged;
         }
 
-      //}));
-    }
+        private void Setup_PreviewPane()
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
+            {
+                if (SelectedItem != null)
+                {
+                    if (!Browser.SelectedItems.Any()) return;
+                    if (this.SelectedItem.IsFolder) return;
+
+                    //http://www.codeproject.com/Articles/7987/Retrieve-detailed-information-of-a-File
+                    var sh = new Shell32.ShellClass();
+                    Shell32.Folder dir = sh.NameSpace(System.IO.Path.GetDirectoryName(SelectedItem.ParsingName));
+                    Shell32.FolderItem item = dir.ParseName(System.IO.Path.GetFileName(SelectedItem.ParsingName));
+
+                    // loop through the Folder Items
+                    for (int i = 0; i < 30; i++)
+                    {
+                        // read the current detail Info from the FolderItem Object
+                        //(Retrieves details about an item in a folder. For example, its size, type, or the time of its last modification.)
+                        // some examples:
+                        // 0 Retrieves the name of the item. 
+                        // 1 Retrieves the size of the item. 
+                        // 2 Retrieves the type of the item. 
+                        // 3 Retrieves the date and time that the item was last modified. 
+                        // 4 Retrieves the attributes of the item. 
+                        // -1 Retrieves the info tip information for the item. 
+                        string colName = dir.GetDetailsOf(String.Empty, i);
+                        string value = dir.GetDetailsOf(item, i);
+                        // Create a helper Object for holding the current Information
+                        // an put it into a ArrayList
+                    }
 
 
-    public void FillPreviewPane(ShellView browser)
-    {
-      Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() =>
-          {
+                    //this.SelectedItem.Thumbnail.CurrentSize = new System.Windows.Size(this.ActualHeight - 20, this.ActualHeight - 20);
+                    //this.SelectedItem.Thumbnail.FormatOption = BExplorer.Shell.Interop.ShellThumbnailFormatOption.Default;
+                    //this.SelectedItem.Thumbnail.RetrievalOption = BExplorer.Shell.Interop.ShellThumbnailRetrievalOption.Default;
+                    //icon.Source = this.SelectedItem.Thumbnail.BitmapSource;
+
+                    //txtDisplayName.Text = SelectedItem.DisplayName;
+                    //txtFileType.Text = "Extension: " + SelectedItem.Extension;
+                    //txtPath.Text = "Location : " + SelectedItem.FileSystemPath;
+
+                    //var OpenWirgList = SelectedItem.GetAssocList();
+                    //if (OpenWirgList.Any()) {
+                    //	txtOpenWith.Text = "Opens With: " + OpenWirgList.First().DisplayName;
+                    //}
+
+                    var File = new System.IO.FileInfo(Browser.SelectedItems[0].ParsingName);
+                    txtFileSize.Text = "Size: " + File.Length.ToString();
+                    txtFileCreated.Text = "Created: " + File.CreationTime.ToLongDateString();
+                    txtFileModified.Text = "Modified: " + File.LastWriteTime.ToLongDateString();
+                }
+            }));
+        }
+
+        private void PreviewPane_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (this.ActualHeight == 0)
+                return;
+
+            Setup_PreviewPane();
+        }
+
+        public void FillPreviewPane(ShellView browser)
+        {
             if (this.Browser == null)
-              this.Browser = browser;
-            
-            if (this.Browser.SelectedItems.Count() == 1){
-                this.SelectedItems = this.Browser.SelectedItems.ToArray();
-                this.SelectedItems[0].Thumbnail.CurrentSize = new Size(this.ActualHeight - 20, this.ActualHeight - 20);
-                icon.Source = this.SelectedItems[0].Thumbnail.BitmapSource;
-            }
+                this.Browser = browser;
 
-            this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("DisplayName"));
-            this.PropertyChanged.Invoke(this, new PropertyChangedEventArgs("FileType"));
-            
-          }));
-      
+            Setup_PreviewPane();
+        }
     }
-
-    public event PropertyChangedEventHandler PropertyChanged;
-  }
 }

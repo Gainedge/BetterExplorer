@@ -29,16 +29,17 @@ namespace BExplorer.Shell.Interop
     [Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")]
     public interface IShellItem
     {
-        IntPtr BindToHandler(IntPtr pbc,
+        HResult BindToHandler(IntPtr pbc,
             [MarshalAs(UnmanagedType.LPStruct)]Guid bhid,
-            [MarshalAs(UnmanagedType.LPStruct)]Guid riid);
+            [MarshalAs(UnmanagedType.LPStruct)]Guid riid, out IntPtr obj);
 
         [PreserveSig]
         HResult GetParent(out IShellItem ppsi);
 
         IntPtr GetDisplayName(SIGDN sigdnName);
 
-        SFGAO GetAttributes(SFGAO sfgaoMask);
+			[PreserveSig]
+				HResult GetAttributes(SFGAO sfgaoMask, out SFGAO psfgaoAttribs);
 
         int Compare(IShellItem psi, SICHINT hint);
     };

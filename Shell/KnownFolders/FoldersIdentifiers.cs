@@ -1,70 +1,76 @@
 //Copyright (c) Microsoft Corporation.  All rights reserved.
 
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 
 namespace BExplorer.Shell
 {
-    /// <summary>
-    /// Contains the GUID identifiers for well-known folders.
-    /// </summary>
-    internal static class FolderIdentifiers
+    ///// <summary>
+    ///// Contains the GUID identifiers for well-known folders.
+    ///// </summary>
+    //internal static class FolderIdentifiers {
+    //	private static Dictionary<Guid, string> folders;
+
+    //	static FolderIdentifiers() {
+    //		folders = new Dictionary<Guid, string>();
+    //		Type folderIDs = typeof(FolderIdentifiers);
+
+    //		FieldInfo[] fields = folderIDs.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
+    //		foreach (FieldInfo f in fields) {
+    //			// Ignore dictionary field.
+    //			if (f.FieldType == typeof(Guid)) {
+    //				Guid id = (Guid)f.GetValue(null);
+    //				string name = f.Name;
+    //				folders.Add(id, name);
+    //			}
+    //		}
+    //	}
+
+    //	/*
+    //	/// <summary>
+    //	/// Returns the friendly name for a specified folder.
+    //	/// </summary>
+    //	/// <param name="folderId">The Guid identifier for a known folder.</param>
+    //	/// <returns>A <see cref="T:System.String"/> value.</returns>
+    //	internal static string NameForGuid(Guid folderId) {
+    //		string folder;
+    //		if (!folders.TryGetValue(folderId, out folder)) {
+    //			throw new ArgumentException("Unknown GUID", "folderId");
+    //		}
+    //		return folder;
+    //	}
+    //	*/
+
+
+    //	/// <summary>
+    //	/// Returns a sorted list of name, guid pairs for 
+    //	/// all known folders.
+    //	/// </summary>
+    //	/// <returns></returns>
+    //	internal static SortedList<string, Guid> GetAllFolders() {
+    //		// Make a copy of the dictionary
+    //		// because the Keys and Values collections
+    //		// are mutable.
+    //		ICollection<Guid> keys = folders.Keys;
+
+    //		SortedList<string, Guid> slist = new SortedList<string, Guid>();
+    //		foreach (Guid g in keys) {
+    //			slist.Add(folders[g], g);
+    //		}
+
+    //		return slist;
+    //	}
+
+    //	#region KnownFolder Guids
+
+    //	#endregion
+
+    //	#region Win7 KnownFolders Guids
+
+    //	#endregion
+    //}
+
+    internal static class Folder_GUIs
     {
-        private static Dictionary<Guid, string> folders;
-
-        static FolderIdentifiers()
-        {
-            folders = new Dictionary<Guid, string>();
-            Type folderIDs = typeof(FolderIdentifiers);
-
-            FieldInfo[] fields = folderIDs.GetFields(BindingFlags.NonPublic | BindingFlags.Static);
-            foreach (FieldInfo f in fields)
-            {
-                // Ignore dictionary field.
-                if (f.FieldType == typeof(Guid))
-                {
-                    Guid id = (Guid)f.GetValue(null);
-                    string name = f.Name;
-                    folders.Add(id, name);
-                }
-            }
-        }
-        /// <summary>
-        /// Returns the friendly name for a specified folder.
-        /// </summary>
-        /// <param name="folderId">The Guid identifier for a known folder.</param>
-        /// <returns>A <see cref="T:System.String"/> value.</returns>
-        internal static string NameForGuid(Guid folderId)
-        {
-            string folder;
-            if (!folders.TryGetValue(folderId, out folder))
-            {
-                throw new ArgumentException("Unknown GUID", "folderId");
-            }
-            return folder;
-        }
-        /// <summary>
-        /// Returns a sorted list of name, guid pairs for 
-        /// all known folders.
-        /// </summary>
-        /// <returns></returns>
-        internal static SortedList<string, Guid> GetAllFolders()
-        {
-            // Make a copy of the dictionary
-            // because the Keys and Values collections
-            // are mutable.
-            ICollection<Guid> keys = folders.Keys;
-
-            SortedList<string, Guid> slist = new SortedList<string, Guid>();
-            foreach (Guid g in keys)
-            {
-                slist.Add(folders[g], g);
-            }
-
-            return slist;
-        }
-
         #region KnownFolder Guids
 
         /// <summary>
@@ -151,6 +157,8 @@ namespace BExplorer.Shell
         /// Recent Items
         /// </summary>
         internal static Guid Recent = new Guid(0xAE50C081, 0xEBD2, 0x438A, 0x86, 0x55, 0x8A, 0x09, 0x2E, 0x34, 0x98, 0x7A);
+
+        internal static Guid RecentPlaces = new Guid("22877a6d-37a1-461a-91b0-dbda5aaebc99");
 
         /// <summary>
         /// SendTo
@@ -510,7 +518,6 @@ namespace BExplorer.Shell
         #endregion
 
         #region Win7 KnownFolders Guids
-
         /// <summary>
         /// UserProgramFiles
         /// </summary>
@@ -585,7 +592,6 @@ namespace BExplorer.Shell
         /// ImplicitAppShortcuts
         /// </summary>
         internal static Guid ImplicitAppShortcuts = new Guid(0xbcb5256f, 0x79f6, 0x4cee, 0xb7, 0x25, 0xdc, 0x34, 0xe4, 0x2, 0xfd, 0x46);
-
         #endregion
     }
 }

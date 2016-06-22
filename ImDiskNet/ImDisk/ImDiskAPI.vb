@@ -108,14 +108,8 @@ Namespace ImDisk
         ''' </summary>
         ''' <param name="ImageFile">Name of disk image file.</param>
         Public Shared Function GetOffsetByFileExt(ImageFile As String) As Long
-
             Dim Offset As Long
-            If DLL.ImDiskGetOffsetByFileExt(ImageFile, Offset) Then
-                Return Offset
-            Else
-                Return 0
-            End If
-
+            Return If(DLL.ImDiskGetOffsetByFileExt(ImageFile, Offset), Offset, 0)
         End Function
 
         Private Shared Function GetStreamReaderFunction(stream As Stream) As DLL.ImDiskReadFileManagedProc
@@ -856,12 +850,7 @@ Namespace ImDisk
             Flags = CType(CreateDataReader.ReadUInt32(), ImDiskFlags)
             DriveLetter = CreateDataReader.ReadChar()
             Dim FilenameLength = CreateDataReader.ReadUInt16()
-            If FilenameLength = 0 Then
-                Filename = Nothing
-            Else
-                Filename = Encoding.Unicode.GetString(CreateDataReader.ReadBytes(FilenameLength))
-            End If
-
+            Filename = If(FilenameLength = 0, DirectCast(Nothing, String), Encoding.Unicode.GetString(CreateDataReader.ReadBytes(FilenameLength)))
         End Sub
 
         ''' <summary>
@@ -869,11 +858,9 @@ Namespace ImDisk
         ''' </summary>
         ''' <param name="DeviceNumber">Device number of ImDisk virtual disk to retrieve properties for.</param>
         Public Shared Function QueryDevice(DeviceNumber As UInt32) As DLL.ImDiskCreateData
-
             Dim CreateDataBuffer As New DLL.ImDiskCreateData
             NativeFileIO.Win32Try(DLL.ImDiskQueryDevice(DeviceNumber, CreateDataBuffer, Marshal.SizeOf(CreateDataBuffer.GetType())))
             Return CreateDataBuffer
-
         End Function
 
         ''' <summary>

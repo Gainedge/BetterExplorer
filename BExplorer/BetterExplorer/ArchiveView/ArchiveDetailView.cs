@@ -8,9 +8,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.WindowsAPICodePack.Dialogs;
+//using Microsoft.WindowsAPICodePack.Dialogs;
 using SevenZip;
 using SystemImageList;
+using BExplorer.Shell.Interop;
 
 namespace BetterExplorer
 {
@@ -29,14 +30,14 @@ namespace BetterExplorer
             //_iconReader = new IconReader();
             //archiveTree.ImageList = new ImageList();
             //_iconReader.ReadIcons(pathIconLibrary).ForEach(o => archiveTree.ImageList.Images.Add(o.Icon));
-            WindowsHelper.WindowsAPI.SetWindowTheme(lvArchiveDetails.Handle, "Explorer", null);
+            UxTheme.SetWindowTheme(lvArchiveDetails.Handle, "Explorer", 0);
             SysImageListHelper.SetListViewImageList(lvArchiveDetails, lst, false);
             SevenZipExtractor.SetLibraryPath(IntPtr.Size == 8 ? "7z64.dll" : "7z32.dll");
             _pathArchive = pathArchive;
-            
+
             Shown += ShowArchiveContent;
         }
-        
+
         public void ShowArchiveContent(object sender, EventArgs args)
         {
             archiveTree.Nodes.Clear();
@@ -61,13 +62,13 @@ namespace BetterExplorer
                 var Splittedname = archiveFileInfos[i].FileName.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
                 if (Splittedname.Length == 1)
                 {
-                    
+
                     ListViewItem lvi = new ListViewItem();
                     lvi.Text = Path.GetFileNameWithoutExtension(Splittedname[0]);
                     lvi.Tag = archiveFileInfos[i].FileName;
                     if (archiveFileInfos[i].IsDirectory)
                     {
-                        lvi.ImageIndex = lst.IconIndex(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup),true);
+                        lvi.ImageIndex = lst.IconIndex(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup), true);
                         lvi.SubItems.Add("Folder");
                     }
                     else
@@ -76,7 +77,7 @@ namespace BetterExplorer
                         lvi.SubItems.Add("File");
                     }
 
-                    
+
                     lvArchiveDetails.Items.Add(lvi);
                 }
             }
@@ -90,7 +91,7 @@ namespace BetterExplorer
             //    childNode.Tag = archiveFileInfos[j];
 
 
-                
+
 
             //    if (archiveFileInfos[j].IsDirectory)
             //    {
@@ -121,7 +122,7 @@ namespace BetterExplorer
             //    //    childNode.ImageIndex = SelectImageIndex(names[names.Length -1]);
             //    //}
 
-                
+
             //    parentNode.Nodes.Add(childNode);
             //}
         }
@@ -135,10 +136,10 @@ namespace BetterExplorer
                 lvArchiveDetails.Items.Add(lvi);
             }
         }
-        
+
         private void btn_extract_Click(object sender, EventArgs e)
         {
-            var files = new List<string>() {_pathArchive };
+            var files = new List<string>() { _pathArchive };
             var directoryName = Path.GetDirectoryName(_pathArchive);
 
             var createArchive = new CreateArchive(files, false, directoryName, only: false);
@@ -148,13 +149,12 @@ namespace BetterExplorer
         private void btn_view_Click(object sender, EventArgs e)
         {
             var selectedNode = archiveTree.SelectedNode;
-            if(selectedNode == null || selectedNode.Nodes.Count != 0)
-                return;
+            if (selectedNode == null || selectedNode.Nodes.Count != 0) return;
 
             var tag = selectedNode.Tag;
             var archiveFileInfo = (ArchiveFileInfo)tag;
             var sevenZipExtractor = new SevenZipExtractor(_pathArchive);
-            var filePath = String.Format("{0}\\{1}", Path.GetTempPath(), archiveFileInfo.FileName.Split('\\').Last());
+            var filePath = $"{Path.GetTempPath()}\\{archiveFileInfo.FileName.Split('\\').Last()}";
             var fileStream = File.Create(filePath);
             sevenZipExtractor.ExtractFile(archiveFileInfo.FileName, fileStream);
             fileStream.Flush();
@@ -168,7 +168,7 @@ namespace BetterExplorer
             var fileAndDirectoryNames = new List<string>();
             if (selectedNode.Nodes.Count > 0)
             {
-                foreach(TreeNode node in selectedNode.Nodes)
+                foreach (TreeNode node in selectedNode.Nodes)
                 {
                     var childTag = node.Tag;
                     var childArchiveFileInfo = (ArchiveFileInfo)childTag;
@@ -184,19 +184,20 @@ namespace BetterExplorer
             var archiveProcressScreen = new ArchiveProcressScreen(fileAndDirectoryNames, _pathArchive, ArchiveAction.RemoveFile);
             archiveProcressScreen.Show();
 
-            ShowArchiveContent(null,null);
+            ShowArchiveContent(null, null);
         }
 
         private void btn_checkarchive_Click(object sender, EventArgs e)
         {
             var sevenZipExtractor = new SevenZipExtractor(_pathArchive);
             var check = sevenZipExtractor.Check();
-            
+            /*
             var dialog = new TaskDialog();
             dialog.Text = check ? CHECK_OKE : CHECK_ERROR;
             dialog.StandardButtons = TaskDialogStandardButtons.Ok;
             
             dialog.Show();
+			*/
         }
 
         private void lvArchiveDetails_ItemActivate(object sender, EventArgs e)
@@ -276,7 +277,7 @@ namespace BetterExplorer
                     lvir.Tag = UpPath;
                     lvArchiveDetails.Items.Add(lvir);
                 }
-                
+
                 foreach (ArchiveFileInfo afinfo in arhiveinfoList)
                 {
                     var splittdname = afinfo.FileName.Split(new[] { '\\' }, StringSplitOptions.RemoveEmptyEntries);
@@ -323,7 +324,7 @@ namespace BetterExplorer
 
         public string FilePath
         {
-            get 
+            get
             {
                 return afile.FileName;
             }

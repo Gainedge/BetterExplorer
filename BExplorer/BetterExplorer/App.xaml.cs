@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Linq;
 using System.Windows;
 using SingleInstanceApplication;
@@ -9,495 +7,308 @@ using System.Reflection;
 using Microsoft.Win32;
 using System.Windows.Threading;
 using System.Threading;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition;
-using Fluent;
 using System.Globalization;
-using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Interop;
-using WindowsHelper;
 using BExplorer.Shell;
 using BExplorer.Shell.Interop;
+using BExplorer.Shell._Plugin_Interfaces;
+using System.IO;
+using Fluent;
 
-namespace BetterExplorer
-{
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
-    public partial class App : Application
-    {
-        private CompositionContainer container;
-        private AggregateCatalog catalog;
-        public static bool isStartMinimized = false;
-        public static bool isStartNewWindows = false;
-        public static bool isStartWithStartupTab = false;
+namespace BetterExplorer {
+	/// <summary>
+	/// Interaction logic for App.xaml
+	/// </summary>
+	public partial class App : Application {
+		public static bool IsStartMinimized, IsStartWithStartupTab;
 
-        //[Import("MainWindow")]
-        //public new Window MainWindow
-        //{
-        //    get { return base.MainWindow; }
-        //    set { base.MainWindow = value; }
-        //}
+		#region Culture
 
-        /// <summary>
-        /// Sets the UI language
-        /// </summary>
-        /// <param name="culture">Language code (ex. "en-EN")</param>
-        public static void SelectCulture(string culture)
-        {
-            // List all our resources      
-            List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>();
-            foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries)
-            {
-                dictionaryList.Add(dictionary);
-            }
-            // We want our specific culture      
-            string requestedCulture = string.Format("Locale.{0}.xaml", culture);
-            ResourceDictionary resourceDictionary = 
-                dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
-            if (resourceDictionary == null)
-            {
-                // If not found, we select our default language        
-                //        
-                requestedCulture = "DefaultLocale.xaml";
-                resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
-            }
+		/// <summary>
+		/// Sets the UI language
+		/// </summary>
+		/// <param name="culture">Language code (ex. "en-EN")</param>
+		public void SelectCulture(string culture) {
+			if (culture == ":null:") culture = CultureInfo.InstalledUICulture.Name;
+			// List all our resources      
+			var dictionaryList = new List<ResourceDictionary>(Application.Current.Resources.MergedDictionaries);
+			// We want our specific culture      
+			string requestedCulture = $"Locale.{culture}.xaml";
+			ResourceDictionary resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
+			if (resourceDictionary == null) {
+				// If not found, we select our default language        
+				//        
+				requestedCulture = "DefaultLocale.xaml";
+				resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
+			}
 
-            // If we have the requested resource, remove it from the list and place at the end.\      
-            // Then this language will be our string table to use.      
-            if (resourceDictionary != null)
-            {
-                Application.Current.Resources.MergedDictionaries.Remove(resourceDictionary);
-                Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
-            }
-            // Inform the threads of the new culture      
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(culture);
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
-        }
+			// If we have the requested resource, remove it from the list and place at the end.\      
+			// Then this language will be our string table to use.      
+			if (resourceDictionary != null) {
+				Application.Current.Resources.MergedDictionaries.Remove(resourceDictionary);
+				Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+			}
+			// Inform the threads of the new culture    
 
-        /// <summary>
-        /// Sets the UI language
-        /// </summary>
-        /// <param name="culture">Language code (ex. "en-EN")</param>
-        /// <param name="filename">The file to load the resources from</param>
-        public static void SelectCulture(string culture, string filename)
-        {
-            // List all our resources      
-            List<ResourceDictionary> dictionaryList = new List<ResourceDictionary>();
-            foreach (ResourceDictionary dictionary in Application.Current.Resources.MergedDictionaries)
-            {
-                dictionaryList.Add(dictionary);
-            }
+			Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(culture);
+			Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
 
-            ResourceDictionary resourceDictionary = ResDictionaryLoader.Load(filename);
-            if (resourceDictionary == null)
-            {
-                // if not found, then try from the application's resources
-                string requestedCulture = string.Format("Locale.{0}.xaml", culture);
-                resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
-                if (resourceDictionary == null)
-                {
-                    // If not found, we select our default language        
-                    //        
-                    requestedCulture = "DefaultLocale.xaml";
-                    resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
-                }
-            }
+		}
 
-            // If we have the requested resource, remove it from the list and place at the end.\      
-            // Then this language will be our string table to use.      
-            if (resourceDictionary != null)
-            {
-                try
-                {
-                    Application.Current.Resources.MergedDictionaries.Remove(resourceDictionary);
-                }
-                catch
-                {
+		/// <summary>
+		/// Sets the UI language
+		/// </summary>
+		/// <param name="culture">Language code (ex. "en-EN")</param>
+		/// <param name="filename">The file to load the resources from</param>
+		public void SelectCulture(string culture, string filename) {
+			if (culture == ":null:") culture = CultureInfo.InstalledUICulture.Name;
+			// List all our resources      
+			var dictionaryList = new List<ResourceDictionary>(Application.Current.Resources.MergedDictionaries);
 
-                }
+			var resourceDictionary = Utilities.Load(filename);
+			if (resourceDictionary == null) {
+				// if not found, then try from the application's resources
+				string requestedCulture = $"Locale.{culture}.xaml";
+				resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
+				if (resourceDictionary == null) {
+					// If not found, we select our default language        
+					//        
+					requestedCulture = "DefaultLocale.xaml";
+					resourceDictionary = dictionaryList.FirstOrDefault(d => d.Source.OriginalString == "/BetterExplorer;component/Translation/" + requestedCulture);
+				}
+			}
 
-                Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
-            }
-            // Inform the threads of the new culture      
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(culture);
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
-        }
+			// If we have the requested resource, remove it from the list and place at the end.\      
+			// Then this language will be our string table to use.      
+			if (resourceDictionary != null) {
+				try {
+					Application.Current.Resources.MergedDictionaries.Remove(resourceDictionary);
+				} catch {
+				}
 
-        protected override void OnSessionEnding(SessionEndingCancelEventArgs e)
-        {
-          Application.Current.Shutdown();
-          base.OnSessionEnding(e);
-        }
+				Application.Current.Resources.MergedDictionaries.Add(resourceDictionary);
+			}
+			// Inform the threads of the new culture      
+			Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(culture);
+			Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+		}
 
-        protected override void OnStartup(StartupEventArgs e)
-        {
+		#endregion
 
-            Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-            SystemEvents.SessionSwitch += SystemEvents_SessionSwitch;
-            SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
+		#region UnhandledException
 
-            try
-            {
-                bool dmi = true;
+		void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) {
+			var lastException = (Exception)e.ExceptionObject;
+			var logger = NLog.LogManager.GetCurrentClassLogger();
+			logger.Fatal(lastException);
+		}
 
-                if (e.Args != null && e.Args.Count() > 0)
-                {
-                    if (e.Args[0] == "/nw")
-                    {
-                        dmi = false;
-                    }
-                    else if (e.Args[0] == "/norestore")
-                    {
-                        isStartWithStartupTab = true;
-                    }
-                    else
-                    {
-                        if (e.Args[0] != "-minimized")
-                        {
-                            //if (e.Args != null && e.Args.Count() > 0)
-                            //{
-                            this.Properties["cmd"] = e.Args[0];
-                            if (e.Args.Count() > 1)
-                            {
-                                if (e.Args[1] == "/nw")
-                                {
-                                    dmi = false;
+		void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e) {
+			var lastException = e.Exception;
+			var logger = NLog.LogManager.GetCurrentClassLogger();
+			logger.Fatal(lastException);
 
-                                    if (e.Args.Count() > 2)
-                                    {
-                                        if (e.Args[2] == "/norestore")
-                                        {
-                                            isStartWithStartupTab = true;
-                                        }
-                                    }
-                                }
-                                else if (e.Args[1] == "/norestore")
-                                {
-                                    isStartWithStartupTab = true;
+			e.Handled = true;
+		}
 
-                                    if (e.Args.Count() > 2)
-                                    {
-                                        if (e.Args[2] == "/nw")
-                                        {
-                                            dmi = false;
-                                        }
-                                    }
-                                }
-                            }
-                            //}
-                        }
-                        else
-                        {
-                            isStartMinimized = true;
-                        }
-
-                        if (dmi == true)
-                        {
-                            isStartNewWindows = false;
-                            if (!ApplicationInstanceManager.CreateSingleInstance(
-                            Assembly.GetExecutingAssembly().GetName().Name,
-                            SingleInstanceCallback)) return; // exit, if same app. is running
-                        }
-                        else
-                        {
-                            isStartNewWindows = true;
-                        }
-                    }
-                }
-                else
-                {
-                    if (!ApplicationInstanceManager.CreateSingleInstance(
-                    Assembly.GetExecutingAssembly().GetName().Name,
-                    SingleInstanceCallback)) return; // exit, if same app. is running
-                }
-            }
-            catch
-            {
-                //MessageBox.Show("There was an error in the startup procedure related to consolidating multiple instances. Please let us know of this issue at http://bugtracker.better-explorer.com/", "Startup Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-            string Locale = "";
-
-            try
-            {
-              
-                base.OnStartup(e);
-
-                
-                RegistryKey rk = Registry.CurrentUser;
-
-                try
-                {
-                    RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
-
-                    if (rks == null)
-                    {
-                        rks = rk.CreateSubKey(@"Software\BExplorer");
-                    }
-                    var regLocale = rks.GetValue(@"Locale", "").ToString();
-                    if (String.IsNullOrEmpty(regLocale))
-                      Locale = CultureInfo.CurrentUICulture.EnglishName;
-                    else
-                      Locale = regLocale;
-
-                    SelectCulture(Locale);
-
-                    rks.Close();
-                }
-                catch
-                {
-        
-                }
-                rk.Close();
-
-               
-            }
-            catch 
-            {
-
-              MessageBox.Show(String.Format("A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {0}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.", Locale));
-              Shutdown();
-            }
-
-            
-            
-
-        }
-
-        void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
-        {
-          //TODO: add code for sleep, resume, etc. modes
-        }
-
-        void SystemEvents_SessionSwitch(object sender, SessionSwitchEventArgs e)
-        {
-          //TODO: Add code for lock and other reasons
-        }
-
-        void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Exception lastException = (Exception)e.ExceptionObject;
-            NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-            logger.Fatal(lastException);
-        }
-
-        void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
-        {
-            Exception lastException = e.Exception;
-            NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-            logger.Fatal(lastException);
-        }
-
-        protected override void OnExit(ExitEventArgs e)
-        {
-            base.OnExit(e);
-
-            //if (container != null)
-            //{
-            //    container.Dispose();
-            //}
-
-            //if (catalog != null)
-            //{
-            //    catalog.Dispose();
-            //}
-        }
-
-        /// <summary>
-        /// Raises the <see cref="E:System.Windows.Application.Activated"/> event.
-        /// </summary>
-        /// <param name="e">An <see cref="T:System.EventArgs"/> that contains the event data.</param>
-        protected override void OnActivated(EventArgs e)
-        {
-            base.OnActivated(e);
-
-            try
-            {
-                var win = MainWindow as MainWindow;
-                if (win == null) return;
-
-                // add 1st args
-                win.ApendArgs(Environment.GetCommandLineArgs());
-            }
-            catch 
-            {
-
-            }
-            
-        }
+		#endregion
 
 
-        
-        /// <summary>
-        /// Single instance callback handler.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="args">The <see cref="SingleInstanceApplication.InstanceCallbackEventArgs"/> instance containing the event data.</param>
-        private void SingleInstanceCallback(object sender, InstanceCallbackEventArgs args)
-        {
-            string StartUpLocation = KnownFolders.Libraries.ParsingName;
-            RegistryKey rk = Registry.CurrentUser;
-            RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", false);
-
-            StartUpLocation =
-                 rks.GetValue(@"StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
-
-            
-
-            if (args == null || Dispatcher == null) return;
+		protected override void OnSessionEnding(SessionEndingCancelEventArgs e) {
+			Application.Current.Shutdown();
+			base.OnSessionEnding(e);
+		}
 
 
-            Action<bool> d = (bool x) =>
-            {
-                var win = MainWindow as MainWindow;
-                if (win == null) return;
-                var hwnd = (HwndSource.FromVisual(win) as HwndSource).Handle;
-                win.ApendArgs(args.CommandLineArgs);
+		protected override void OnStartup(StartupEventArgs e) {
+			string locale = ""; bool dmi = true;
+			Application.Current.DispatcherUnhandledException += new DispatcherUnhandledExceptionEventHandler(Current_DispatcherUnhandledException);
+			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+			//System.AppDomain.CurrentDomain.BaseDirectory
 
-                if (x)
-                {
-                    ShellItem sho = null;
-                    if (args != null && args.CommandLineArgs != null)
-                    {
+			if (!File.Exists(Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite"))) {
+				File.Copy(Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.sqlite"), Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite"));
+			}
 
-                      if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null && args.CommandLineArgs[1] != "-minimized")
-                      {
+			RegistryKey rk = Registry.CurrentUser, rks = rk.OpenSubKey(@"Software\BExplorer", true);
+			if (rks == null) {
+				rk.CreateSubKey(@"Software\BExplorer");
+				rks = rk.OpenSubKey(@"Software\BExplorer", true);
+			}
 
-                        if (args.CommandLineArgs[1] != "t")
-                        {
-                          if (args.CommandLineArgs[1] == "nw")
-                          {
-                            MainWindow g = new MainWindow();
-                            g.Show();
-                            return;
-                          }
-                          else
-                          {
-                            win.Visibility = Visibility.Visible;
-                            if (win.WindowState == WindowState.Minimized)
-                            {
-                              WindowsAPI.ShowWindow(hwnd,
-                                  (int)WindowsAPI.ShowCommands.SW_RESTORE);
-                            }
+			//// loads current Ribbon color theme
+			try {
+				var Color = Convert.ToString(rks.GetValue("CurrentTheme", "Blue"));
+				var owner = Application.Current.MainWindow;
+				if (owner != null) {
+					owner.Resources.BeginInit();
 
-                            String cmd = args.CommandLineArgs[1];
-                            if (cmd.IndexOf("::") == 0)
-                            {
-                              sho = new ShellItem("shell:" + cmd);
-                            }
-                            else
-                              sho = new ShellItem(args.CommandLineArgs[1].Replace("\"", ""));
-                          }
-                        }
-                        else
-                        {
-                          win.Visibility = Visibility.Visible;
-                          if (win.WindowState == WindowState.Minimized)
-                          {
-                            WindowsAPI.ShowWindow(hwnd,
-                                (int)WindowsAPI.ShowCommands.SW_RESTORE);
-                          }
-                          sho = new ShellItem(StartUpLocation);
-                        }
-                      }
-                      else
-                      {
-                        
-                        win.Visibility = Visibility.Visible;
-                        if (win.WindowState == WindowState.Minimized)
-                        {
-                          WindowsAPI.ShowWindow(hwnd,
-                              (int)WindowsAPI.ShowCommands.SW_RESTORE);
-                        }
-                        sho = new ShellItem(StartUpLocation);
-                      }
+					if (owner.Resources.MergedDictionaries.Count > 0) {
+						owner.Resources.MergedDictionaries.RemoveAt(0);
+					}
 
-                      if (!isStartMinimized || win.tabControl1.Items.Count == 0)
-                      {
+					if (string.IsNullOrEmpty(Color) == false) {
+						owner.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = new Uri(Color) });
+					}
 
-                        sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                        sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-                        ClosableTabItem newt = new ClosableTabItem();
-                        newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
-                        newt.TabIcon = sho.Thumbnail.BitmapSource;
-                        newt.PreviewMouseMove += newt_PreviewMouseMove;
-                        newt.ToolTip = sho.ParsingName;
-                        newt.TabSelected += win.newt_TabSelected;
-                        newt.Path = sho;
-                        win.CloneTab(newt);
-                      }
-                      else
-                      {
-                        int RestoreTabs = (int)rks.GetValue(@"IsRestoreTabs", 1);
-                        if (RestoreTabs == 0)
-                        {
-                          win.tabControl1.Items.Clear();
-                          sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                          sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-                          ClosableTabItem newt = new ClosableTabItem();
-													newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
-                          newt.TabIcon = sho.Thumbnail.BitmapSource;
-                          newt.PreviewMouseMove += newt_PreviewMouseMove;
-                          newt.ToolTip = sho.ParsingName;
-                          newt.TabSelected += win.newt_TabSelected;
-                          newt.Path = sho;
-                          win.CloneTab(newt);
-                        }
-                        if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null)
-                        {
-                          String cmd = args.CommandLineArgs[1];
-                          if (cmd.IndexOf("::") == 0)
-                          {
-                            sho = new ShellItem("shell:" + cmd);
-                          }
-                          else
-                            sho = new ShellItem(args.CommandLineArgs[1].Replace("\"", ""));
+					owner.Resources.EndInit();
+				}
+				Application.Current.Resources.BeginInit();
+				
+				Application.Current.Resources.MergedDictionaries.RemoveAt(1);
 
-                          sho.Thumbnail.FormatOption = ShellThumbnailFormatOption.IconOnly;
-                          sho.Thumbnail.CurrentSize = new System.Windows.Size(16, 16);
-                          ClosableTabItem newt = new ClosableTabItem();
-                          newt.Header = sho.GetDisplayName(SIGDN.NORMALDISPLAY);
-                          newt.TabIcon = sho.Thumbnail.BitmapSource;
-                          newt.PreviewMouseMove += newt_PreviewMouseMove;
-                          newt.ToolTip = sho.ParsingName;
-                          newt.TabSelected += win.newt_TabSelected;
-                          newt.Path = sho;
-                          win.CloneTab(newt);
-                        }
-                      }
-                        
-                      rks.Close();
-                      rk.Close();
+				switch (Color) {
+					case "Blue":
+					case "Silver":
+					case "Black":
+					case "Green":
+						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{Color}.xaml") });
+						break;
+					case "Metro":
+						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri("pack://application:,,,/Fluent;component/Themes/Office2013/Generic.xaml") });
+						break;
+					default:
+						Application.Current.Resources.MergedDictionaries.Insert(1, new ResourceDictionary() { Source = new Uri($"pack://application:,,,/Fluent;component/Themes/Office2010/{Color}.xaml") });
+						break;
+				}
+				Application.Current.Resources.EndInit();
 
-                      win.Activate();
-                      win.Topmost = true;  // important
-                      win.Topmost = false; // important
-                      win.Focus();         // important
+				if (owner is RibbonWindow) {
+					owner.Style = null;
+					owner.Style = owner.FindResource("RibbonWindowStyle") as Style;
+					owner.Style = null;
 
-                    }
-                }
-            };
-            Dispatcher.BeginInvoke(d, true);
-        }
+					// Resize Window to work around alignment issues caused by theme change
+					++owner.Width;
+					--owner.Width;
+				}
+			} catch (Exception ex) {
+				//MessageBox.Show(String.Format("An error occurred while trying to load the theme data from the Registry. \n\r \n\r{0}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message), "RibbonTheme Error - " + ex.ToString());
+				MessageBox.Show($"An error occurred while trying to load the theme data from the Registry. \n\r \n\rRibbonTheme Error - {ex.ToString()}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", ex.Message);
+			}
 
-        
+			rks.Close();
+			rk.Close();
 
-        void newt_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e) {
-          var tabItem = e.Source as ClosableTabItem;
+			if (e.Args.Any()) {
+				dmi = e.Args.Length >= 1;
+				IsStartWithStartupTab = e.Args.Contains("/norestore");
 
-          if (tabItem == null)
-            return;
+				if (e.Args[0] != "-minimized")
+					this.Properties["cmd"] = e.Args[0];
+				else
+					IsStartMinimized = true;
+			}
 
-          if (Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed) {
-            DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
-          }
-        }
+			if (dmi && !ApplicationInstanceManager.CreateSingleInstance(Assembly.GetExecutingAssembly().GetName().Name, SingleInstanceCallback))
+				return; // exit, if same app. is running
 
-       
-        
-    }
-    
+			base.OnStartup(e);
+
+			try {
+				var regLocale = Utilities.GetRegistryValue("Locale", "").ToString();
+				locale = String.IsNullOrEmpty(regLocale) ? CultureInfo.CurrentUICulture.Name : regLocale;
+				SelectCulture(locale);
+			} catch {
+				//MessageBox.Show(String.Format("A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {0}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.", Locale));
+				MessageBox.Show($"A problem occurred while loading the locale from the Registry. This was the value in the Registry: \r\n \r\n {locale}\r\n \r\nPlease report this issue at http://bugtracker.better-explorer.com/.");
+
+				Shutdown();
+			}
+		}
+
+		private void CreateInitialTab(MainWindow win, IListItemEx sho) {
+			var bmpSource = sho.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+			var newt = new Wpf.Controls.TabItem(sho) {
+				Header = sho.DisplayName,
+				Icon = bmpSource
+			};
+			newt.PreviewMouseMove += newt_PreviewMouseMove;
+			newt.ToolTip = sho.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
+			win.tcMain.CloneTabItem(newt);
+		}
+
+		/// <summary>
+		/// Single instance callback handler.
+		/// </summary>
+		/// <param name="sender">The sender.</param>
+		/// <param name="args">The <see cref="SingleInstanceApplication.InstanceCallbackEventArgs"/> instance containing the event data.</param>
+		/// 
+		private void SingleInstanceCallback(Object sender, InstanceCallbackEventArgs args) {
+			if (args == null || Dispatcher == null) return;
+			var startUpLocation = Utilities.GetRegistryValue("StartUpLoc", KnownFolders.Libraries.ParsingName).ToString();
+
+			Action<Boolean> d = x => {
+				var win = MainWindow as MainWindow;
+				var windowsActivate = new CombinedWindowActivator();
+				if (!x) return;
+				if (win == null) return;
+				win.StateChanged += Win_StateChanged;
+				if (args?.CommandLineArgs == null || !args.CommandLineArgs.Any()) return;
+				if (args.CommandLineArgs.Length == 1) {
+					win.Visibility = Visibility.Visible;
+					//if (win.WindowState == WindowState.Minimized) {
+					//	User32.ShowWindow((PresentationSource.FromVisual(win) as HwndSource).Handle, User32.ShowWindowCommands.Restore);
+					//}
+					//User32.ForceForegroundWindow(win);
+					windowsActivate.ActivateForm(win, null, IntPtr.Zero);
+				} else {
+					if (args.CommandLineArgs[1] == "/nw") {
+						new MainWindow() { IsMultipleWindowsOpened = true }.Show();
+					} else {
+						IListItemEx sho = null;
+						if (args.CommandLineArgs[1] == "t") {
+							win.Visibility = Visibility.Visible;
+							//if (win.WindowState == WindowState.Minimized)
+							//	User32.ShowWindow((PresentationSource.FromVisual(win) as HwndSource).Handle,
+							//		User32.ShowWindowCommands.Restore);
+							windowsActivate.ActivateForm(win, null, IntPtr.Zero);
+
+							sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, startUpLocation.ToShellParsingName());
+						} else {
+							sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, args.CommandLineArgs[1].ToShellParsingName());
+						}
+
+						if (!IsStartMinimized || win.tcMain.Items.Count == 0) {
+							CreateInitialTab(win, sho);
+						} else if ((Int32)Utilities.GetRegistryValue("IsRestoreTabs", "1") == 0) {
+							win.tcMain.Items.Clear();
+							CreateInitialTab(win, sho);
+						} else if (args.CommandLineArgs.Length > 1 && args.CommandLineArgs[1] != null) {
+							if (args.CommandLineArgs[1] == "t") {
+								CreateInitialTab(win, sho);
+							} else {
+								var cmd = args.CommandLineArgs[1];
+								sho = FileSystemListItem.ToFileSystemItem(IntPtr.Zero, cmd.ToShellParsingName());
+								CreateInitialTab(win, sho);
+							}
+						} else {
+							CreateInitialTab(win, sho);
+						}
+					}
+					//User32.ForceForegroundWindow(win);
+
+					windowsActivate.ActivateForm(win, null, IntPtr.Zero);
+				}
+			};
+			Dispatcher.BeginInvoke(d, true);
+		}
+
+		private void Win_StateChanged(object sender, EventArgs e) {
+			if ((sender as Window).WindowState != WindowState.Minimized) {
+				(sender as Window).Visibility = Visibility.Visible;
+				CombinedWindowActivator windowsActivate = new CombinedWindowActivator();
+				windowsActivate.ActivateForm(sender as Window, null, IntPtr.Zero);
+				//User32.ForceForegroundWindow(sender as Window);
+			}
+		}
+
+		void newt_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e) {
+			var tabItem = e.Source as Wpf.Controls.TabItem;
+
+			if (tabItem != null && Mouse.PrimaryDevice.LeftButton == MouseButtonState.Pressed)
+				DragDrop.DoDragDrop(tabItem, tabItem, DragDropEffects.All);
+		}
+	}
 }

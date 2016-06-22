@@ -17,9 +17,9 @@ namespace BExplorer.Shell
         /// <param name="pidl"></param>
         /// <returns></returns>
         internal static IKnownFolderNative FromPIDL(IntPtr pidl)
-        {            
+        {
             KnownFolderManagerClass knownFolderManager = new KnownFolderManagerClass();
-            
+
             IKnownFolderNative knownFolder;
             HResult hr = knownFolderManager.FindFolderFromIDList(pidl, out knownFolder);
 
@@ -42,10 +42,9 @@ namespace BExplorer.Shell
 
             IKnownFolder kf = GetKnownFolder(knownFolderNative);
             if (kf == null)
-            {
                 throw new ArgumentException("Invalid GUID", "knownFolderId");
-            }
-            return kf;
+            else
+                return kf;
         }
 
         /// <summary>
@@ -78,15 +77,15 @@ namespace BExplorer.Shell
             Guid guid = new Guid(InterfaceGuids.IShellItem);
             HResult hr = knownFolderNative.GetShellItem(0, ref guid, out shellItem);
 
-            if (hr != HResult.S_OK) { return null; }
+            if (hr != HResult.S_OK) return null;
 
             bool isFileSystem = false;
 
             // If we have a valid IShellItem, try to get the FileSystem attribute.
             if (shellItem != null)
             {
-                SFGAO sfgao =
-                shellItem.GetAttributes(SFGAO.FILESYSTEM);
+                SFGAO sfgao;
+                shellItem.GetAttributes(SFGAO.FILESYSTEM, out sfgao);
 
                 // Is this item a FileSystem item?
                 isFileSystem = (sfgao & SFGAO.FILESYSTEM) != 0;
@@ -95,11 +94,10 @@ namespace BExplorer.Shell
             // If it's FileSystem, create a FileSystemKnownFolder, else NonFileSystemKnownFolder
             if (isFileSystem)
             {
-                FileSystemKnownFolder kf = new FileSystemKnownFolder(knownFolderNative);
-                return kf;
+                return FileSystemKnownFolder.Create(knownFolderNative);
             }
 
-            NonFileSystemKnownFolder knownFsFolder = new NonFileSystemKnownFolder(knownFolderNative);
+            var knownFsFolder = new NonFileSystemKnownFolder(knownFolderNative);
             return knownFsFolder;
         }
 
@@ -112,28 +110,28 @@ namespace BExplorer.Shell
         public static IKnownFolder FromCanonicalName(string canonicalName)
         {
             IKnownFolderNative knownFolderNative;
-            IKnownFolderManager knownFolderManager = (IKnownFolderManager)new KnownFolderManagerClass();
+            var knownFolderManager = (IKnownFolderManager)new KnownFolderManagerClass();
 
             knownFolderManager.GetFolderByName(canonicalName, out knownFolderNative);
             IKnownFolder kf = KnownFolderHelper.GetKnownFolder(knownFolderNative);
 
             if (kf == null)
-            {
                 throw new ArgumentException("Invalid canonical name!", "canonicalName");
-            }
-            return kf;
+            else
+                return kf;
         }
 
-        /// <summary>
-        /// Returns a known folder given its shell path, such as <c>C:\users\public\documents</c> or 
-        /// <c>::{645FF040-5081-101B-9F08-00AA002F954E}</c> for the Recycle Bin.
-        /// </summary>
-        /// <param name="path">The path for the requested known folder; either a physical path or a virtual path.</param>
-        /// <returns>A known folder representing the specified name.</returns>
-        public static IKnownFolder FromPath(string path)
-        {
-            return KnownFolderHelper.FromParsingName(path);
-        }
+        /*
+		/// <summary>
+		/// Returns a known folder given its shell path, such as <c>C:\users\public\documents</c> or 
+		/// <c>::{645FF040-5081-101B-9F08-00AA002F954E}</c> for the Recycle Bin.
+		/// </summary>
+		/// <param name="path">The path for the requested known folder; either a physical path or a virtual path.</param>
+		/// <returns>A known folder representing the specified name.</returns>
+		public static IKnownFolder FromPath(string path) {
+			return KnownFolderHelper.FromParsingName(path);
+		}
+		*/
 
         /// <summary>
         /// Returns a known folder given its shell namespace parsing name, such as 
@@ -142,15 +140,26 @@ namespace BExplorer.Shell
         /// <param name="parsingName">The parsing name (or path) for the requested known folder.</param>
         /// <returns>A known folder representing the specified name.</returns>
         /// <exception cref="System.ArgumentException">Thrown if the given parsing name is invalid.</exception>
+        /// 
+        public static IKnownFolder FromParsingNameOnly(string parsingName)
+        {
+            var k = new KnownFolderManagerClass();
+            IKnownFolderNative folder = null;
+            k.FindFolderFromPath(parsingName, 0, out folder);
+            return (IKnownFolder)folder;
+        }
+
+        /// <summary>
+        /// Returns a known folder given its shell path, such as <c>C:\users\public\documents</c> or 
+        /// <c>::{645FF040-5081-101B-9F08-00AA002F954E}</c> for the Recycle Bin.
+        /// </summary>
+        /// <param name="parsingName">The path for the requested known folder; either a physical path or a virtual path.</param>
+        /// <returns>A known folder representing the specified name.</returns>
         public static IKnownFolder FromParsingName(string parsingName)
         {
-            if (parsingName == null)
-            {
-                throw new ArgumentNullException("parsingName");
-            }
+            IntPtr pidl = IntPtr.Zero, pidl2 = IntPtr.Zero;
 
-            IntPtr pidl = IntPtr.Zero;
-            IntPtr pidl2 = IntPtr.Zero;
+            if (parsingName == null) throw new ArgumentNullException("parsingName");
 
             try
             {
@@ -167,10 +176,9 @@ namespace BExplorer.Shell
                 {
                     IKnownFolder kf = KnownFolderHelper.GetKnownFolder(knownFolderNative);
                     if (kf == null)
-                    {
                         throw new ArgumentException("Parsing Name", "parsingName");
-                    }
-                    return kf;
+                    else
+                        return kf;
                 }
 
                 // No physical storage was found for this known folder
@@ -181,13 +189,19 @@ namespace BExplorer.Shell
 
                 if (pidl2 == IntPtr.Zero)
                 {
-									throw new ArgumentException("Parsing Name", "parsingName");
+                    throw new ArgumentException("Parsing Name", "parsingName");
                 }
 
-                IKnownFolder kf2 = KnownFolderHelper.GetKnownFolder(KnownFolderHelper.FromPIDL(pidl));
-                if (kf2 == null)
+                IKnownFolderNative nativeKnownFolder = KnownFolderHelper.FromPIDL(pidl);
+                IKnownFolder kf2 = null;
+                if (nativeKnownFolder != null)
                 {
-									throw new ArgumentException("Parsing Name", "parsingName");
+                    kf2 = KnownFolderHelper.GetKnownFolder(nativeKnownFolder);
+
+                    if (kf2 == null)
+                    {
+                        throw new ArgumentException("Parsing Name", "parsingName");
+                    }
                 }
 
                 return kf2;
@@ -197,7 +211,6 @@ namespace BExplorer.Shell
                 Shell32.ILFree(pidl);
                 Shell32.ILFree(pidl2);
             }
-
         }
     }
 }

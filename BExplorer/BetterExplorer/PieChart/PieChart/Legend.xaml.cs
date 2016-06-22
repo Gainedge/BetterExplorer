@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 using System.ComponentModel;
 using System.Collections.Specialized;
 using System.Threading;
@@ -44,18 +34,6 @@ namespace BetterExplorer.PieChart
         }
 
         #endregion
-
-        public Legend()
-        {
-            // register any dependency property change handlers
-            DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(PieChartLayout.PlottedPropertyProperty, typeof(PiePlotter));
-            dpd.AddValueChanged(this, PlottedPropertyChanged);
-
-            this.DataContextChanged += new DependencyPropertyChangedEventHandler(DataContextChangedHandler);
-
-            InitializeComponent();
-        }
-
 
         #region property change handlers
 
@@ -97,10 +75,7 @@ namespace BetterExplorer.PieChart
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void PlottedPropertyChanged(object sender, EventArgs e)
-        {
-            RefreshView();
-        }
+        private void PlottedPropertyChanged(object sender, EventArgs e) => RefreshView();
 
         /// <summary>
         /// Iterates over the items inthe bound collection, adding handlers for PropertyChanged events
@@ -108,19 +83,19 @@ namespace BetterExplorer.PieChart
         private void ObserveBoundCollectionChanges()
         {
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-                                (ThreadStart)(() =>
-                                {
-                                    CollectionView myCollectionView = (CollectionView)CollectionViewSource.GetDefaultView(this.DataContext);
+                                                    (ThreadStart)(() =>
+                                                    {
+                                                        CollectionView myCollectionView = (CollectionView)CollectionViewSource.GetDefaultView(this.DataContext);
 
-                                    foreach (object item in myCollectionView)
-                                    {
-                                        if (item is INotifyPropertyChanged)
-                                        {
-                                            INotifyPropertyChanged observable = (INotifyPropertyChanged)item;
-                                            observable.PropertyChanged += new PropertyChangedEventHandler(ItemPropertyChanged);
-                                        }
-                                    }
-                                }));
+                                                        foreach (object item in myCollectionView)
+                                                        {
+                                                            if (item is INotifyPropertyChanged)
+                                                            {
+                                                                INotifyPropertyChanged observable = (INotifyPropertyChanged)item;
+                                                                observable.PropertyChanged += new PropertyChangedEventHandler(ItemPropertyChanged);
+                                                            }
+                                                        }
+                                                    }));
         }
 
         /// <summary>
@@ -139,6 +114,18 @@ namespace BetterExplorer.PieChart
 
         #endregion
 
+
+        public Legend()
+        {
+            // register any dependency property change handlers
+            DependencyPropertyDescriptor dpd = DependencyPropertyDescriptor.FromProperty(PieChartLayout.PlottedPropertyProperty, typeof(PiePlotter));
+            dpd.AddValueChanged(this, PlottedPropertyChanged);
+
+            this.DataContextChanged += new DependencyPropertyChangedEventHandler(DataContextChangedHandler);
+
+            InitializeComponent();
+        }
+
         /// <summary>
         /// Refreshes the view, re-computing any value which is derived from the data bindings
         /// </summary>
@@ -149,20 +136,25 @@ namespace BetterExplorer.PieChart
             // Therefore, we use a bit of an ugly hack to fool the legend into thinking the datacontext
             // has changed which causes it to replot itself.
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-                                (ThreadStart)(() =>
-                                {
-                                    object context = legend.DataContext;
-                                    if (context != null)
-                                    {
-                                        legend.DataContext = null;
-                                        legend.DataContext = context;
-                                    }
-                                }));
+                                                    (ThreadStart)(() =>
+                                                    {
+                                                        object context = legend.DataContext;
+                                                        if (context != null)
+                                                        {
+                                                            legend.DataContext = null;
+                                                            legend.DataContext = context;
+                                                        }
+                                                    }));
         }
 
-        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void UserControl_SizeChanged(object sender, SizeChangedEventArgs e) => legend.Height = this.ActualHeight - Head.ActualHeight;
+
+        private void legend_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            legend.Height = this.ActualHeight - Head.ActualHeight;
+            if (e.AddedItems.Count > 0)
+            {
+                (sender as ListBox).ScrollIntoView(e.AddedItems[0]);
+            }
         }
 
     }

@@ -27,8 +27,29 @@ namespace BExplorer.Shell
 {
     class SystemImageList
     {
-        public static void DrawSmallImage(Graphics g, Point point,
-                                          int imageIndex, bool selected)
+        static IntPtr m_SmallImageList;
+        static IntPtr m_LargeImageList;
+
+        static IntPtr SmallImageList
+        {
+            get
+            {
+                if (m_SmallImageList == IntPtr.Zero) InitializeImageLists();
+                return m_SmallImageList;
+            }
+        }
+
+        static IntPtr LargeImageList
+        {
+            get
+            {
+                if (m_LargeImageList == IntPtr.Zero) InitializeImageLists();
+
+                return m_LargeImageList;
+            }
+        }
+
+        public static void DrawSmallImage(Graphics g, Point point, int imageIndex, bool selected)
         {
             uint flags = (uint)(imageIndex >> 16);
             IntPtr hdc = g.GetHdc();
@@ -36,8 +57,7 @@ namespace BExplorer.Shell
             try
             {
                 if (selected) flags |= (int)ILD.BLEND50;
-                ComCtl32.ImageList_Draw(SmallImageList, imageIndex & 0xffff,
-                    hdc, point.X, point.Y, flags);
+                ComCtl32.ImageList_Draw(SmallImageList, imageIndex & 0xffff, hdc, point.X, point.Y, flags);
             }
             finally
             {
@@ -57,7 +77,7 @@ namespace BExplorer.Shell
 
             if (control.SmallImageList == null)
             {
-							control.SmallImageList = new System.Windows.Forms.ImageList();
+                control.SmallImageList = new System.Windows.Forms.ImageList();
             }
 
             Shell32.FileIconInit(true);
@@ -71,53 +91,19 @@ namespace BExplorer.Shell
             ComCtl32.ImageList_GetIconSize(small, out x, out y);
             control.SmallImageList.ImageSize = new System.Drawing.Size(x, y);
 
-            User32.SendMessage(control.Handle, MSG.LVM_SETIMAGELIST,
-                (int)LVSIL.LVSIL_NORMAL, LargeImageList);
-            User32.SendMessage(control.Handle, MSG.LVM_SETIMAGELIST,
-                (int)LVSIL.LVSIL_SMALL, SmallImageList);
+            User32.SendMessage(control.Handle, MSG.LVM_SETIMAGELIST, (int)LVSIL.LVSIL_NORMAL, LargeImageList);
+            User32.SendMessage(control.Handle, MSG.LVM_SETIMAGELIST, (int)LVSIL.LVSIL_SMALL, SmallImageList);
         }
 
-        public static void UseSystemImageList(TreeView control)
-        {
-            User32.SendMessage(control.Handle, MSG.TVM_SETIMAGELIST,
-                0, SmallImageList);
-        }
+        public static void UseSystemImageList(TreeView control) => User32.SendMessage(control.Handle, MSG.TVM_SETIMAGELIST, 0, SmallImageList);
 
         static void InitializeImageLists()
         {
             Shell32.FileIconInit(true);
-            if (!Shell32.Shell_GetImageLists(out m_LargeImageList,
-                    out m_SmallImageList))
+            if (!Shell32.Shell_GetImageLists(out m_LargeImageList, out m_SmallImageList))
             {
                 throw new Exception("Failed to get system image list");
             }
         }
-
-        static IntPtr SmallImageList
-        {
-            get
-            {
-                if (m_SmallImageList == IntPtr.Zero)
-                {
-                    InitializeImageLists();
-                }
-                return m_SmallImageList;
-            }
-        }
-
-        static IntPtr LargeImageList
-        {
-            get
-            {
-                if (m_LargeImageList == IntPtr.Zero)
-                {
-                    InitializeImageLists();
-                }
-                return m_LargeImageList;
-            }
-        }
-
-        static IntPtr m_SmallImageList;
-        static IntPtr m_LargeImageList;
     }
 }

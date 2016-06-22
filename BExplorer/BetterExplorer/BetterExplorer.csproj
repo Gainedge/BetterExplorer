@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BetterExplorer</RootNamespace>
     <AssemblyName>BetterExplorer</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -39,6 +39,10 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -49,7 +53,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
@@ -104,7 +108,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -132,12 +136,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\AutomaticUpdaterWPF.dll</HintPath>
     </Reference>
+    <Reference Include="Fluent, Version=3.5.1.198, Culture=neutral, PublicKeyToken=3e436e32a8c5546f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\FluentRibbon\Fluent.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Live, Version=5.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Microsoft.WindowsAPICodePack.dll</HintPath>
-    </Reference>
     <Reference Include="NAppUpdate.Framework, Version=0.1.0.0, Culture=neutral, PublicKeyToken=d1f1d1f19f9e5a56, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\NAppUpdate.Framework.dll</HintPath>
@@ -149,15 +153,20 @@
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.98.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Data.SQLite.Core.1.0.98.1\lib\net46\System.Data.SQLite.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.Management.Instrumentation" />
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -202,9 +211,6 @@
     <Compile Include="ArchiveView\ArchiveProcressScreen.designer.cs">
       <DependentUpon>ArchiveProcressScreen.cs</DependentUpon>
     </Compile>
-    <Compile Include="ArchiveView\ArchiveViewWindow.xaml.cs">
-      <DependentUpon>ArchiveViewWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Application\AppCommands.cs" />
     <Compile Include="AutoUpload.cs" />
     <Compile Include="ConditionalSelect\ConditionalSelectClasses.cs" />
@@ -214,19 +220,17 @@
     <Compile Include="ConditionalSelect\ConditionalSelectForm.xaml.cs">
       <DependentUpon>ConditionalSelectForm.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Customize\CustomizeQAT.xaml.cs" />
-    <Compile Include="Customize\RibbonItemListDisplay.xaml.cs" />
-    <Compile Include="HelperClasses\FolderStructForSize.cs" />
-    <Compile Include="HelperClasses\NavigationLog.cs" />
-    <Compile Include="HelperClasses\PathStringCombiner.cs" />
-    <Compile Include="MessageReceiver.cs">
-      <SubType>Form</SubType>
+    <Compile Include="Customize\CustomizeQAT.xaml.cs">
+      <DependentUpon>CustomizeQAT.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MessageReceiver.Designer.cs">
-      <DependentUpon>MessageReceiver.cs</DependentUpon>
+    <Compile Include="Customize\RibbonItemListDisplay.xaml.cs">
+      <DependentUpon>RibbonItemListDisplay.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MFTScanning\NtfsUsnJournal.cs" />
-    <Compile Include="MFTScanning\Win32Api.cs" />
+    <Compile Include="HelperClasses\Utilities.cs" />
+    <Compile Include="HelperClasses\WindowExtensions.cs" />
+    <Compile Include="PieChart\PieChart\ColourConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MountIso.xaml.cs">
       <DependentUpon>MountIso.xaml</DependentUpon>
     </Compile>
@@ -252,12 +256,10 @@
       <DependentUpon>BackButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Networks\DropBoxAccount.cs" />
-    <Compile Include="Networks\FileSystem\SharpBoxFileSystem.cs" />
     <Compile Include="Networks\FTPSserver.cs" />
     <Compile Include="Networks\FileSystem\Directory.cs" />
     <Compile Include="Networks\FileSystem\File.cs" />
     <Compile Include="Networks\FileSystem\FileSystemObject.cs" />
-    <Compile Include="Networks\FileSystem\FTPServerFileSystem.cs" />
     <Compile Include="Networks\FileSystem\NetworkFileSystem.cs" />
     <Compile Include="Networks\FileSystem\SymbolicLink.cs" />
     <Compile Include="Networks\FTPserver.cs" />
@@ -269,7 +271,6 @@
     <Compile Include="Networks\SocialMedia\Pastebin.cs" />
     <Compile Include="Networks\WebDAVserver.cs" />
     <Compile Include="PieChart\BaseWPFHelpers.cs" />
-    <Compile Include="PieChart\PieChart\ColourConverter.cs" />
     <Compile Include="PieChart\PieChart\IColorSelector.cs" />
     <Compile Include="PieChart\PieChart\IndexedColourSelector.cs" />
     <Compile Include="PieChart\PieChart\Legend.xaml.cs">
@@ -289,12 +290,10 @@
     <Compile Include="PieChart\Util\FileSizeConverter.cs" />
     <Compile Include="PieChart\Util\FormattingConverter.cs" />
     <Compile Include="PieChart\Util\Utils.cs" />
-    <Compile Include="ResDictionaryLoader.cs" />
     <Compile Include="ResizeImage.xaml.cs">
       <DependentUpon>ResizeImage.xaml</DependentUpon>
     </Compile>
     <Compile Include="SystemMenu.cs" />
-    <Compile Include="Tabs\ClosableTabItem.cs" />
     <Compile Include="Tabs\SavedTabsListGalleryItem.xaml.cs">
       <DependentUpon>SavedTabsListGalleryItem.xaml</DependentUpon>
     </Compile>
@@ -314,7 +313,6 @@
     <Compile Include="ArchiveView\CreateArchive.designer.cs">
       <DependentUpon>CreateArchive.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses\DragDropLib.cs" />
     <Compile Include="fmAbout.xaml.cs">
       <DependentUpon>fmAbout.xaml</DependentUpon>
     </Compile>
@@ -322,12 +320,6 @@
       <DependentUpon>FolderSizeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="HelperClasses\FriendlySizeConverter.cs" />
-    <Compile Include="ItemPop.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ItemPop.Designer.cs">
-      <DependentUpon>ItemPop.cs</DependentUpon>
-    </Compile>
     <Compile Include="ItemPopup.xaml.cs">
       <DependentUpon>ItemPopup.xaml</DependentUpon>
     </Compile>
@@ -350,18 +342,11 @@
     <Compile Include="MoreColumns.Designer.cs">
       <DependentUpon>MoreColumns.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses\NetworkBrowser.cs" />
     <Compile Include="HelperClasses\SafeThread.cs" />
-    <Compile Include="ShareWizzard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ShareWizzard.Designer.cs">
-      <DependentUpon>ShareWizzard.cs</DependentUpon>
-    </Compile>
     <Compile Include="ConditionalSelect\StringSearchCriteriaDialog.xaml.cs">
       <DependentUpon>StringSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses\SysImageList.cs" />
+    <Compile Include="ArchiveView\SysImageList.cs" />
     <Compile Include="Tabs\TabListEditor.xaml.cs">
       <DependentUpon>TabListEditor.xaml</DependentUpon>
     </Compile>
@@ -381,12 +366,10 @@
     <Compile Include="Updater\UpdateWizard.Designer.cs">
       <DependentUpon>UpdateWizard.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses\WindowExtensions.cs" />
-    <Compile Include="HelperClasses\Wpf32Window.cs" />
-    <Page Include="ArchiveView\ArchiveViewWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="_MainWindow\MainWindow_Tabs.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="_MainWindow\MainWindow_Updating.cs" />
     <Page Include="ConditionalSelect\ConditionalSelectComboBoxItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -645,12 +628,6 @@
     <EmbeddedResource Include="ArchiveView\CreateArchive.resx">
       <DependentUpon>CreateArchive.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ItemPop.resx">
-      <DependentUpon>ItemPop.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MessageReceiver.resx">
-      <DependentUpon>MessageReceiver.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="PreviewMedia.resx">
       <DependentUpon>PreviewMedia.cs</DependentUpon>
     </EmbeddedResource>
@@ -664,9 +641,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="ShareWizzard.resx">
-      <DependentUpon>ShareWizzard.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Updater\UpdateWizard.resx">
       <DependentUpon>UpdateWizard.cs</DependentUpon>
     </EmbeddedResource>
@@ -676,6 +650,7 @@
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -687,13 +662,13 @@
       <Project>{6942fb86-f12f-43ae-8e6d-d4186ce7cb81}</Project>
       <Name>BEHelper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\BreadcrumbBar\Odyssey.Controls.csproj">
+      <Project>{333fdc55-6b47-4a64-a2df-a4c5823fac74}</Project>
+      <Name>Odyssey.Controls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ConsoleControl\ConsoleControl.csproj">
       <Project>{737CC7F2-EC7C-4800-B7EB-72637E892C42}</Project>
       <Name>ConsoleControl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\fluent_528456d5eb19\Fluent\Fluent\Fluent dotNET 4.5.csproj">
-      <Project>{d9903e8a-5fc4-43c6-a48d-806742704de8}</Project>
-      <Name>Fluent dotNET 4.5</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ImDiskNet\ImDiskNet.vbproj">
       <Project>{3efcb6f8-ef7e-4f60-a0de-bb197240fcc9}</Project>
@@ -703,6 +678,10 @@
       <Project>{7ac63864-7638-41c4-969c-d3197ef2bed9}</Project>
       <Name>NotifyIconWpf</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Rating control\CustomControls\StarRatingControl.csproj">
+      <Project>{2f36cce1-9d03-4518-9bfd-82e36ea1a64e}</Project>
+      <Name>StarRatingControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SevenZip\SevenZip2010.csproj">
       <Project>{4960DD14-3431-47EC-B9D9-9D2730A98DC3}</Project>
       <Name>SevenZip2010</Name>
@@ -711,13 +690,13 @@
       <Project>{711ccf1f-6b8f-4e97-8d84-0ee679c83b41}</Project>
       <Name>Shell</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TabControl\Wpf.TabControl.csproj">
+      <Project>{509d06bd-aeb6-4e92-8e5b-21188ebdbd9c}</Project>
+      <Name>Wpf.TabControl</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\UsbEject\UsbEject.csproj">
       <Project>{ae269158-dfa5-4dd7-8afc-f45faf2b958c}</Project>
       <Name>UsbEject</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Windows API Code Pack 1.1\source\WindowsAPICodePack\Shell\ShellCodePack.csproj">
-      <Project>{aa0c00cb-8699-4f37-bfae-40ca87acc06d}</Project>
-      <Name>ShellCodePack</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\WpfControlLibrary1\BetterExplorerControls.csproj">
       <Project>{04270710-e358-46d4-83e5-eb7a9323cce7}</Project>
@@ -726,6 +705,10 @@
     <ProjectReference Include="..\..\WpfDocumentPreviewer\WpfDocumentPreviewer.csproj">
       <Project>{6a63405a-b6bb-4095-b48c-e720de021482}</Project>
       <Name>WpfDocumentPreviewer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj">
+      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
+      <Name>Xceed.Wpf.Toolkit</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -744,6 +727,9 @@
     <Content Include="7z64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\stack16.png" />
+    <Resource Include="Images\stack32.png" />
+    <Resource Include="Images\stack48.png" />
     <Resource Include="Translation\Flags\GR.gif" />
     <Resource Include="Images\bexplorerscr.png" />
     <Resource Include="Images\bexplorerlogo.png" />
@@ -890,9 +876,6 @@
     <Resource Include="Images\pics16.png" />
     <Resource Include="Images\browsefldr16.png" />
     <Resource Include="Images\browsefldr32.png" />
-    <Content Include="FileOperation.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Resource Include="Translation\Flags\BG.gif" />
     <Resource Include="Translation\Flags\BR.gif" />
     <Resource Include="Translation\Flags\CN.gif" />
@@ -1004,6 +987,19 @@
     <Resource Include="Images\qmount16.png" />
     <Resource Include="Images\qmount32.png" />
     <Resource Include="Images\qmount48.png" />
+    <Resource Include="Images\sync16.png" />
+    <Resource Include="Images\Sync32.png" />
+    <Resource Include="Images\Sync48.png" />
+    <Resource Include="Images\clear16.png" />
+    <Resource Include="Images\clear32.png" />
+    <Resource Include="Images\clear48.png" />
+    <Resource Include="Images\cmd16.png" />
+    <Resource Include="Images\cmd32.png" />
+    <Resource Include="Images\cmd48.png" />
+    <Resource Include="Images\powershell16.png" />
+    <Resource Include="Images\powershell32.png" />
+    <Resource Include="Images\powershell48.png" />
+    <Resource Include="Images\paypal.png" />
     <Content Include="Ionic.Zip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1044,9 +1040,6 @@
     <Resource Include="Images\right3.png" />
     <Resource Include="Images\right4.png" />
     <Resource Include="Images\downar1.png" />
-    <Content Include="Odyssey.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="SevenZipSharp.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1172,6 +1165,20 @@
       <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+    <Error Condition="!Exists('..\..\packages\System.Data.SQLite.Core.1.0.98.1\build\net46\System.Data.SQLite.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\System.Data.SQLite.Core.1.0.98.1\build\net46\System.Data.SQLite.Core.targets'))" />
+  </Target>
+  <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.98.1\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.98.1\build\net46\System.Data.SQLite.Core.targets')" />
+  <!--   <Import Project="..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target> -->
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

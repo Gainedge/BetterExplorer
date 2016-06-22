@@ -1,453 +1,221 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Fluent;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using Microsoft.WindowsAPICodePack.Shell;
 
-namespace BetterExplorer
-{
-    /// <summary>
-    /// Interaction logic for CustomizeQAT.xaml
-    /// </summary>
-    public partial class CustomizeQAT : Window
-    {
-        public MainWindow MainForm;
+namespace BetterExplorer {
 
-        public bool DirectConfigMode = true;
+	/// <summary> Interaction logic for CustomizeQAT.xaml </summary>
+	public partial class CustomizeQAT : Window {
+		public MainWindow MainForm;
 
-        public CustomizeQAT()
-        {
-            InitializeComponent();
-        }
+		#region Helpers
 
-        public void AddToQAT(IRibbonControl item)
-        {
-            
-            //MainForm.RibbonUI.AddToQuickAccessToolBar((item as UIElement));
-            Refresh();
-        }
+		private RibbonItemListDisplay GetRibbonItemListDisplay(IRibbonControl item) {
+			var rils = new RibbonItemListDisplay() {
+				SourceControl = item,
+				HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch,
+				Header = (item.Header as string),
+				ItemName = (item as FrameworkElement).Name
+			};
 
-        public void RemoveFromQAT(IRibbonControl item)
-        {
-            //MainForm.RibbonUI.RemoveFromQuickAccessToolBar((item as UIElement));
-            Refresh();
-        }
+			if (item.Icon != null) {
+				if (item.Icon is String)
+					rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
+				else
+					rils.Icon = (item.Icon as Image).Source;
+			}
 
-        public void Refresh()
-        {
-            AllControls.Items.Clear();
-            QATControls.Items.Clear();
-            MainForm.RefreshQATDialog(this);
-        }
+			if (item is Fluent.DropDownButton || item is Fluent.SplitButton || item is Fluent.InRibbonGallery) {
+				rils.ShowMenuArrow = true;
+			}
+			else if (item is Fluent.CheckBox) {
+				rils.ShowCheck = true;
+			}
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            if (DirectConfigMode == true)
-            {
-                //int sel = AllControls.SelectedIndex;
-                //AddToQAT((AllControls.SelectedItem as RibbonItemListDisplay).SourceControl);
-                //if (sel != 0)
-                //{
-                //    AllControls.SelectedIndex = sel - 1;
-                //}
-                //else
-                //{
-                //    if (AllControls.Items.Count != 0)
-                //    {
-                //        AllControls.SelectedIndex = 0;
-                //    }
-                //    else
-                //    {
-                //        btnRemove.IsEnabled = true;
-                //        btnAdd.IsEnabled = false;
-                //    }
-                //}
-                int sel = AllControls.SelectedIndex;
-                RibbonItemListDisplay item = AllControls.SelectedValue as RibbonItemListDisplay;
-                AllControls.Items.Remove(item);
-                QATControls.Items.Add(item);
-                //MainForm.QatItems.Add((item.SourceControl as FrameworkElement).Name);
-                //AddToList(item, true);
-                CheckAgainstList();
-                if (sel != 0)
-                {
-                    AllControls.SelectedIndex = sel - 1;
-                }
-                else
-                {
-                    if (AllControls.Items.Count != 0)
-                    {
-                        AllControls.SelectedIndex = 0;
-                    }
-                    else
-                    {
-                        btnRemove.IsEnabled = true;
-                        btnAdd.IsEnabled = false;
-                    }
-                }
-            }
-            else
-            {
-                int sel = AllControls.SelectedIndex;
-                RibbonItemListDisplay item = AllControls.SelectedValue as RibbonItemListDisplay;
-                AllControls.Items.Remove(item);
-                AddToList(item, true);
-                CheckAgainstList();
-                if (sel != 0)
-                {
-                    AllControls.SelectedIndex = sel - 1;
-                }
-                else
-                {
-                    if (AllControls.Items.Count != 0)
-                    {
-                        AllControls.SelectedIndex = 0;
-                    }
-                    else
-                    {
-                        btnRemove.IsEnabled = true;
-                        btnAdd.IsEnabled = false;
-                    }
-                }
-            }
-        }
+			return rils;
+		}
 
-        public void AddToList(RibbonItemListDisplay source, bool qatlist = true)
-        {
-            if (qatlist == true)
-            {
-                IRibbonControl item = source.SourceControl;
-                RibbonItemListDisplay rils = new RibbonItemListDisplay();
-                if (item.Icon != null)
-                {
-                    rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
-                }
-                rils.Header = (item.Header as string);
-                rils.SourceControl = item;
-                rils.ItemName = (item as FrameworkElement).Name;
-                rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                if (item is Fluent.DropDownButton || item is Fluent.SplitButton)
-                {
-                    rils.ShowMenuArrow = true;
-                }
+		private void RefreshQATDialog(Ribbon ribbon) {
+			foreach (IRibbonControl item in GetNonQATButtons(ribbon)) {
+				AllControls.Items.Add(GetRibbonItemListDisplay(item));
+			}
 
-                if (item is Fluent.CheckBox)
-                {
-                    rils.ShowCheck = true;
-                }
-                this.QATControls.Items.Add(rils);
-            }
-            else
-            {
-                IRibbonControl item = source.SourceControl;
-                RibbonItemListDisplay rils = new RibbonItemListDisplay();
-                if (item.Icon != null)
-                {
-                  rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
-                }
-                rils.Header = (item.Header as string);
-                rils.SourceControl = item;
-                rils.ItemName = (item as FrameworkElement).Name;
-                rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                if (item is Fluent.DropDownButton || item is Fluent.SplitButton)
-                {
-                    rils.ShowMenuArrow = true;
-                }
+			#region DO NOT DELETE (yet) [From: Aaron Campf]
+			var AllMenuItems = MainForm.TheRibbon.QuickAccessItems.Select(x => x.Target).ToList();
+			var Controls = (from control in MainForm.TheRibbon.QuickAccessItems
+							select control as Control into newControl
+							where !AllMenuItems.Any(x => x.Name == newControl.Name)
+							select newControl).ToList();
+			#endregion
 
-                if (item is Fluent.CheckBox)
-                {
-                    rils.ShowCheck = true;
-                }
-                this.AllControls.Items.Add(rils);
-            }
-        }
+			AllMenuItems.AddRange(Controls);
+			//Here add visible elements since we want to show in that dialog only visible elements into the QAT.
+			//Maybe have to find a way to show all elements even not visible and do some handling to display them properly
+			foreach (var item in MainForm.TheRibbon.QuickAccessItems.Select(s => s as Control).ToList()) {
+				QATControls.Items.Add(GetRibbonItemListDisplay(item as IRibbonControl));
+			}
+		}
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            if (DirectConfigMode == true)
-            {
-                int sel = QATControls.SelectedIndex;
-                RibbonItemListDisplay item = QATControls.SelectedValue as RibbonItemListDisplay;
-                QATControls.Items.Remove(item);
-                //MainForm.QatItems.Remove((item.SourceControl as FrameworkElement).Name);
-                //AddToList(item, false);
-                this.AllControls.Items.Clear();
-                foreach (IRibbonControl thing in MainForm.GetAllButtons())
-                {
-                    RibbonItemListDisplay rils = new RibbonItemListDisplay();
-                    if (thing.Icon != null)
-                    {
-                      rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + thing.Icon.ToString(), UriKind.Relative));
-                    }
-                    rils.Header = (thing.Header as string);
-                    rils.SourceControl = thing;
-                    rils.ItemName = (thing as FrameworkElement).Name;
-                    rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                    if (thing is Fluent.DropDownButton || thing is Fluent.SplitButton)
-                    {
-                        rils.ShowMenuArrow = true;
-                    }
+		private List<Fluent.IRibbonControl> GetNonQATButtons(Ribbon ribbon) {
+			var rb = new List<Fluent.IRibbonControl>();
+			foreach (RibbonGroupBox itg in ribbon.Tabs.SelectMany(x => x.Groups)) {
+				foreach (object ic in itg.Items) {
+					if (ic is IRibbonControl) {
+						if (!(ribbon.IsInQuickAccessToolBar(ic as UIElement))) {
+							rb.Add(ic as IRibbonControl);
+						}
+					}
+				}
+			}
 
-                    if (thing is Fluent.CheckBox)
-                    {
-                        rils.ShowCheck = true;
-                    }
-                    this.AllControls.Items.Add(rils);
-                }
-                CheckAgainstList();
-                if (sel != 0)
-                {
-                    QATControls.SelectedIndex = sel - 1;
-                }
-                else
-                {
-                    if (QATControls.Items.Count != 0)
-                    {
-                        QATControls.SelectedIndex = 0;
-                    }
-                    else
-                    {
-                        btnRemove.IsEnabled = false;
-                        btnAdd.IsEnabled = true;
-                    }
-                }
-            }
-            else
-            {
-                int sel = QATControls.SelectedIndex;
-                RibbonItemListDisplay item = QATControls.SelectedValue as RibbonItemListDisplay;
-                QATControls.Items.Remove(item);
-                //AddToList(item, false);
-                this.AllControls.Items.Clear();
-                foreach (IRibbonControl thing in MainForm.GetAllButtons())
-                {
-                    RibbonItemListDisplay rils = new RibbonItemListDisplay();
-                    if (thing.Icon != null)
-                    {
-                      rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + thing.Icon.ToString(), UriKind.Relative));
-                    }
-                    rils.Header = (thing.Header as string);
-                    rils.SourceControl = thing;
-                    rils.ItemName = (thing as FrameworkElement).Name;
-                    rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                    if (thing is Fluent.DropDownButton || thing is Fluent.SplitButton)
-                    {
-                        rils.ShowMenuArrow = true;
-                    }
+			return rb.OrderBy(x => x.Header as string).ToList();
+		}
 
-                    if (thing is Fluent.CheckBox)
-                    {
-                        rils.ShowCheck = true;
-                    }
-                    this.AllControls.Items.Add(rils);
-                }
-                CheckAgainstList();
-                if (sel != 0)
-                {
-                    QATControls.SelectedIndex = sel - 1;
-                }
-                else
-                {
-                    if (QATControls.Items.Count != 0)
-                    {
-                        QATControls.SelectedIndex = 0;
-                    }
-                    else
-                    {
-                        btnRemove.IsEnabled = false;
-                        btnAdd.IsEnabled = true;
-                    }
-                }
-            }
-        }
+		private void AddToList(RibbonItemListDisplay source, bool qatlist = true) {
+			if (qatlist) {
+				this.QATControls.Items.Add(GetRibbonItemListDisplay(source.SourceControl));
+			}
+			else {
+				this.AllControls.Items.Add(GetRibbonItemListDisplay(source.SourceControl));
+			}
+		}
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
+		private void CheckAgainstList() {
+			var torem = new List<RibbonItemListDisplay>();
+			foreach (RibbonItemListDisplay item in this.QATControls.Items) {
+				foreach (RibbonItemListDisplay thing in this.AllControls.Items) {
+					if (thing.ItemName == item.ItemName) {
+						torem.Add(thing);
+					}
+				}
+			}
 
-        public void MoveUp()
-        {
-            if (QATControls.SelectedIndex != 0)
-            {
-                RibbonItemListDisplay r1 = (QATControls.SelectedValue as RibbonItemListDisplay);
-                RibbonItemListDisplay r2 = (QATControls.Items[QATControls.SelectedIndex - 1] as RibbonItemListDisplay);
+			foreach (RibbonItemListDisplay item in torem) {
+				this.AllControls.Items.Remove(item);
+			}
+		}
 
-                int sel = QATControls.SelectedIndex;
+		private List<Fluent.IRibbonControl> GetAllButtons() {
+			var rb = new List<Fluent.IRibbonControl>();
+			foreach (RibbonGroupBox itg in MainForm.TheRibbon.Tabs.SelectMany(x => x.Groups)) {
+				foreach (object ic in itg.Items) {
+					if (ic is IRibbonControl) {
+						rb.Add(ic as IRibbonControl);
+					}
+				}
+			}
 
-                Object oItem = QATControls.Items.GetItemAt(sel);
-                QATControls.Items.RemoveAt(sel);
-                QATControls.Items.Insert(sel - 1, oItem);
-                QATControls.SelectedIndex = QATControls.Items.IndexOf(oItem);
-                QATControls.ScrollIntoView(QATControls.SelectedItem);
-                //RibbonItemListDisplay r3 = r1;
-                //r1.Icon = r2.Icon;
-                //r1.SourceControl = r2.SourceControl;
-                //r1.ShowMenuArrow = r2.ShowMenuArrow;
-                //r1.Header = r2.Header;
-                //r1.ItemName = r2.ItemName;
+			return rb;
+		}
 
-                //r2.Icon = r3.Icon;
-                //r2.Header = r3.Header;
-                //r2.SourceControl = r3.SourceControl;
-                //r2.ItemName = r3.ItemName;
-                //r2.ShowMenuArrow = r3.ShowMenuArrow;
-                //QATControls.Items.Remove(r1);
-                //QATControls.Items.Remove(r2);
-                //QATControls.Items[QATControls.SelectedIndex - 1] = r1;
-                //QATControls.Items[QATControls.SelectedIndex] = r2;
-            }
-        }
+		#endregion Helpers
 
-        public void MoveDown()
-        {
-            if (QATControls.SelectedIndex != (QATControls.Items.Count - 1))
-            {
-                RibbonItemListDisplay r1 = (QATControls.SelectedValue as RibbonItemListDisplay);
-                RibbonItemListDisplay r2 = (QATControls.Items[QATControls.SelectedIndex + 1] as RibbonItemListDisplay);
+		#region Buttons
 
-                int sel = QATControls.SelectedIndex;
+		private void btnAdd_Click(object sender, RoutedEventArgs e) {
+			int sel = AllControls.SelectedIndex;
+			RibbonItemListDisplay item = AllControls.SelectedValue as RibbonItemListDisplay;
+			AllControls.Items.Remove(item);
+			AddToList(item, true);
 
-                Object oItem = QATControls.Items.GetItemAt(sel);
-                QATControls.Items.RemoveAt(sel);
-                QATControls.Items.Insert(sel + 1, oItem);
-                QATControls.SelectedIndex = QATControls.Items.IndexOf(oItem);
-                QATControls.ScrollIntoView(QATControls.SelectedItem);
-                //RibbonItemListDisplay r3 = r1;
-                //r1.Icon = r2.Icon;
-                //r1.SourceControl = r2.SourceControl;
-                //r1.ShowMenuArrow = r2.ShowMenuArrow;
-                //r1.Header = r2.Header;
-                //r1.ItemName = r2.ItemName;
+			CheckAgainstList();
+			if (sel != 0) {
+				AllControls.SelectedIndex = sel - 1;
+			}
+			else if (AllControls.Items.Count != 0) {
+				AllControls.SelectedIndex = 0;
+			}
+			else {
+				btnRemove.IsEnabled = true;
+				btnAdd.IsEnabled = false;
+			}
+		}
 
-                //r2.Icon = r3.Icon;
-                //r2.Header = r3.Header;
-                //r2.SourceControl = r3.SourceControl;
-                //r2.ItemName = r3.ItemName;
-                //r2.ShowMenuArrow = r3.ShowMenuArrow;
-                //QATControls.Items.Remove(r1);
-                //QATControls.Items.Remove(r2);
-                //QATControls.Items[QATControls.SelectedIndex + 1] = r1;
-                //QATControls.Items[QATControls.SelectedIndex] = r2;
-            }
-        }
+		private void btnRemove_Click(object sender, RoutedEventArgs e) {
+			int sel = QATControls.SelectedIndex;
+			QATControls.Items.Remove(QATControls.SelectedValue as RibbonItemListDisplay);
+			this.AllControls.Items.Clear();
+			foreach (IRibbonControl thing in GetAllButtons()) {
+				this.AllControls.Items.Add(GetRibbonItemListDisplay(thing));
+			}
 
-        public void LoadIndirectConfigMode(string file)
-        {
-            LoadFile(file);
-            this.AllControls.Items.Clear();
-            foreach (IRibbonControl item in MainForm.GetAllButtons())
-            {
-                RibbonItemListDisplay rils = new RibbonItemListDisplay();
-                if (item.Icon != null)
-                {
-                  rils.Icon = new BitmapImage(new Uri(@"/BetterExplorer;component/" + item.Icon.ToString(), UriKind.Relative));
-                }
-                rils.Header = (item.Header as string);
-                rils.SourceControl = item;
-                rils.ItemName = (item as FrameworkElement).Name;
-                rils.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
-                if (item is Fluent.DropDownButton || item is Fluent.SplitButton)
-                {
-                    rils.ShowMenuArrow = true;
-                }
+			CheckAgainstList();
+			if (sel != 0) {
+				QATControls.SelectedIndex = sel - 1;
+			}
+			else if (QATControls.Items.Count != 0) {
+				QATControls.SelectedIndex = 0;
+			}
+			else {
+				btnRemove.IsEnabled = false;
+				btnAdd.IsEnabled = true;
+			}
+		}
 
-                if (item is Fluent.CheckBox)
-                {
-                    rils.ShowCheck = true;
-                }
-                this.AllControls.Items.Add(rils);
-            }
-            DirectConfigMode = false;
-            CheckAgainstList();
-        }
+		private void btnCancel_Click(object sender, RoutedEventArgs e) {
+			this.Close();
+		}
 
-        public void CheckAgainstList()
-        {
-            List<RibbonItemListDisplay> torem = new List<RibbonItemListDisplay>();
-            foreach (RibbonItemListDisplay item in this.QATControls.Items)
-            {
-                foreach (RibbonItemListDisplay thing in this.AllControls.Items)
-                {
-                    if (thing.ItemName == item.ItemName)
-                    {
-                        torem.Add(thing);
-                    }
-                }
-            }
+		private void btnMoveUp_Click(object sender, RoutedEventArgs e) {
+			if (QATControls.SelectedIndex != 0) {
+				int sel = QATControls.SelectedIndex;
+				Object oItem = QATControls.Items.GetItemAt(sel);
+				QATControls.Items.RemoveAt(sel);
+				QATControls.Items.Insert(sel - 1, oItem);
+				QATControls.SelectedIndex = QATControls.Items.IndexOf(oItem);
+				QATControls.ScrollIntoView(QATControls.SelectedItem);
+			}
+		}
 
-            foreach (RibbonItemListDisplay item in torem)
-            {
-                this.AllControls.Items.Remove(item);
-            }
-        }
+		private void btnMoveDown_Click(object sender, RoutedEventArgs e) {
+			if (QATControls.SelectedIndex != (QATControls.Items.Count - 1)) {
+				int sel = QATControls.SelectedIndex;
+				Object oItem = QATControls.Items.GetItemAt(sel);
+				QATControls.Items.RemoveAt(sel);
+				QATControls.Items.Insert(sel + 1, oItem);
+				QATControls.SelectedIndex = QATControls.Items.IndexOf(oItem);
+				QATControls.ScrollIntoView(QATControls.SelectedItem);
+			}
+		}
 
-        public void LoadFile(string file)
-        {
-            //this.QATControls.Items.Clear();
-            //foreach (RibbonItemListDisplay item in MainForm.ImportQATConfigForEditor(file))
-            //{
-            //    QATControls.Items.Add(item);
-            //}
-        }
+		private void btnApply_Click(object sender, RoutedEventArgs e) {
+			var Item2 = MainForm.TheRibbon.QuickAccessItems.ToList();
+			var list = new List<string>();
+			foreach (RibbonItemListDisplay item in this.QATControls.Items) {
+				list.Add(item.ItemName);
+			}
 
-        public void StoreToFile(string file)
-        {
-            List<string> list = new List<string>();
-            foreach (RibbonItemListDisplay item in this.QATControls.Items)
-            {
-                list.Add(item.ItemName);
-            }
+			MainForm.TheRibbon.ClearQuickAccessToolBar();
+			Dictionary<string, IRibbonControl> items = MainForm.GetAllButtonsAsDictionary();
+			foreach (string item in list) {
+				IRibbonControl ctrl;
+				if (items.TryGetValue(item, out ctrl)) {
+					MainForm.TheRibbon.AddToQuickAccessToolBar(ctrl as UIElement);
+				}
+			}
+		}
 
-            //XMLio.XMLio.WriteFile(file, list);
-        }
+		private void btnOkay_Click(object sender, RoutedEventArgs e) {
+			btnApply_Click(sender, e);
+			this.Close();
+		}
 
-        private void btnMoveUp_Click(object sender, RoutedEventArgs e)
-        {
-            MoveUp();
-        }
+		#endregion Buttons
 
-        private void btnMoveDown_Click(object sender, RoutedEventArgs e)
-        {
-            MoveDown();
-        }
+		private CustomizeQAT() {
+			InitializeComponent();
+		}
 
-        // Apply button
-        private void Button_Click_5(object sender, RoutedEventArgs e)
-        {
-            List<string> list = new List<string>();
-            foreach (RibbonItemListDisplay item in this.QATControls.Items)
-            {
-                list.Add(item.ItemName);
-            }
-
-            MainForm.PutItemsOnQAT(list);
-            //MainForm.LoadInternalList();
-        }
-
-        // OK button
-        private void Button_Click_6(object sender, RoutedEventArgs e)
-        {
-            List<string> list = new List<string>();
-            foreach (RibbonItemListDisplay item in this.QATControls.Items)
-            {
-                list.Add(item.ItemName);
-            }
-
-            MainForm.PutItemsOnQAT(list);
-            //MainForm.LoadInternalList();
-            this.Close();
-        }
-
-    }
+		public static void Open(MainWindow mainWindow, Ribbon ribbon) {
+			CustomizeQAT qal = new CustomizeQAT();
+			qal.Owner = mainWindow;
+			qal.MainForm = mainWindow;
+			qal.RefreshQATDialog(ribbon);
+			qal.ShowDialog();
+		}
+	}
 }

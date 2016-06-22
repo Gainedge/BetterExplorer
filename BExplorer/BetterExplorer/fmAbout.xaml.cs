@@ -110,50 +110,33 @@ namespace BetterExplorer
         /// <summary>
         /// Gets the description about the application.
         /// </summary>
-        public string Description
-        {
-            get { return CalculatePropertyValue<AssemblyDescriptionAttribute>(propertyNameDescription, xPathDescription); }
-        }
+        public string Description => CalculatePropertyValue<AssemblyDescriptionAttribute>(propertyNameDescription, xPathDescription);
 
         /// <summary>
         ///  Gets the product's full name.
         /// </summary>
-        public string Product
-        {
-            get { return CalculatePropertyValue<AssemblyProductAttribute>(propertyNameProduct, xPathProduct); }
-        }
+        public string Product => CalculatePropertyValue<AssemblyProductAttribute>(propertyNameProduct, xPathProduct);
 
         /// <summary>
         /// Gets the copyright information for the product.
         /// </summary>
-        public string Copyright
-        {
-            get { return CalculatePropertyValue<AssemblyCopyrightAttribute>(propertyNameCopyright, xPathCopyright); }
-        }
+        public string Copyright => CalculatePropertyValue<AssemblyCopyrightAttribute>(propertyNameCopyright, xPathCopyright);
 
         /// <summary>
         /// Gets the product's company name.
         /// </summary>
-        public string Company
-        {
-            get { return CalculatePropertyValue<AssemblyCompanyAttribute>(propertyNameCompany, xPathCompany); }
-        }
+        public string Company => CalculatePropertyValue<AssemblyCompanyAttribute>(propertyNameCompany, xPathCompany);
 
         /// <summary>
         /// Gets the link text to display in the About dialog.
         /// </summary>
-        public string LinkText
-        {
-            get { return GetLogicalResourceString(xPathLink); }
-        }
+        public string LinkText => GetLogicalResourceString(xPathLink);
 
         /// <summary>
         /// Gets the link uri that is the navigation target of the link.
         /// </summary>
-        public string LinkUri
-        {
-            get { return GetLogicalResourceString(xPathLinkUri); }
-        }
+        public string LinkUri => GetLogicalResourceString(xPathLinkUri);
+
         #endregion
 
         #region Resource location methods
@@ -243,10 +226,6 @@ namespace BetterExplorer
         }
         #endregion
 
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            
-        }
         #endregion
     }
 }
