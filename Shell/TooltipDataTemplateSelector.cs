@@ -14,9 +14,15 @@ namespace BExplorer.Shell {
 		public override DataTemplate SelectTemplate(object item, DependencyObject container) {
 			var obj = item as IListItemEx;
 			try {
-				if (obj != null &&
-				    ((PerceivedType)obj.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType)).Value) ==
-				    PerceivedType.Image && !obj.IsFolder) {
+				var perceivedType = PerceivedType.Unknown;
+				if (obj != null) {
+					var perceivedTypeProp = obj.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType));
+					if (perceivedTypeProp != null) {
+						perceivedType = (PerceivedType) obj.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType)).Value;
+					}
+				}
+				if (perceivedType ==
+				    PerceivedType.Image && obj != null && !obj.IsFolder) {
 					return ((FrameworkElement)container).FindResource("FSImageTooltip") as DataTemplate;
 				} else if (obj != null && obj.IsFileSystem) {
 					return ((FrameworkElement)container).FindResource("FSTooltip") as DataTemplate;

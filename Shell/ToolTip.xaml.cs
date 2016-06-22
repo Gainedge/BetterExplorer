@@ -75,7 +75,7 @@ namespace BExplorer.Shell {
 				Contents = Type == 0 ? $"{clonedCurrentItem.DisplayName}\r\n{clonedCurrentItem.ToolTipText}" : clonedCurrentItem.ToolTipText;
 				RaisePropertyChanged("Contents");
 				if (((PerceivedType)clonedCurrentItem.GetPropertyValue(SystemProperties.PerceivedType, typeof (PerceivedType)).Value) ==
-				    PerceivedType.Image) {
+				    PerceivedType.Image && !clonedCurrentItem.IsFolder) {
 					var image = clonedCurrentItem.ThumbnailSource(350, ShellThumbnailFormatOption.Default,
 						ShellThumbnailRetrievalOption.Default);
 					image.Freeze();
