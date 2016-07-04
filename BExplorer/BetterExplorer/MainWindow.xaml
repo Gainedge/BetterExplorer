@@ -349,7 +349,7 @@
                                         />
 										<Label x:Name="verNumber" Margin="20,0,50,0" Content="Version Info Data Put Here" FontSize="12"  />
 										<Label  x:Name="lblArchitecture" Margin="20,0,0,0" Content="32-bit Version" FontSize="12" />
-										<Label Margin="20,0,0,0" Content="© 2015. All right reserved." />
+										<Label Margin="20,0,0,0" Content="© 2016. All right reserved." />
 										<Ribbon:SeparatorTabItem Margin="0,20,50,0" Header="Credits" Style="{DynamicResource InnerBackstageSeparatorTabItemStyle}" />
 										<Label Content="Fluent Ribbon Control Suite (fluent.codeplex.com)" />
 										<!--  <Label Content="Qttabbar - a great utility for Windows Explorer"/>  -->
