@@ -643,6 +643,9 @@ public static extern uint RegisterClipboardFormat(string lpszFormat);
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr SendMessage(IntPtr hWnd, MSG Msg, int wParam, int lParam);
 
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, ref Guid wParam, out IntPtr lParam);
+
 		[DllImport("user32.dll")]
 		public extern static int SendMessage(IntPtr hwnd, uint msg, int count, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.I4), In, Out]int[] orderArray);
 

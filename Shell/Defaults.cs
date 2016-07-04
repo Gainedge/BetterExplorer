@@ -232,7 +232,7 @@ namespace BExplorer.Shell {
 						{"A175", new Tuple<String, PROPERTYKEY, Type, int>("Date", new PROPERTYKEY(){fmtid = Guid.Parse("f7db74b4-4287-4103-afba-f1b13dcd75cf"), pid = 100}, typeof(String),75)},
 						{"A176", new Tuple<String, PROPERTYKEY, Type, int>("Folder name", new PROPERTYKEY(){fmtid = Guid.Parse("b725f130-47ef-101a-a5f1-02608c9eebac"), pid = 2}, typeof(String),75)},
 						{"A177", new Tuple<String, PROPERTYKEY, Type, int>("Folder path", new PROPERTYKEY(){fmtid = Guid.Parse("e3e0584c-b788-4a5a-bb20-7f5a44c9acdd"), pid = 6}, typeof(String),75)},
-						{"A178", new Tuple<String, PROPERTYKEY, Type, int>("Folder", new PROPERTYKEY(){fmtid = Guid.Parse("dabd30ed-0043-4789-a7f8-d013a4736622"), pid = 100}, typeof(String),75)},
+						{"A178", new Tuple<String, PROPERTYKEY, Type, int>("Folder", new PROPERTYKEY(){fmtid = Guid.Parse("dabd30ed-0043-4789-a7f8-d013a4736622"), pid = 100}, typeof(Type),75)},
 						{"A179", new Tuple<String, PROPERTYKEY, Type, int>("Participants", new PROPERTYKEY(){fmtid = Guid.Parse("d4d0aa16-9948-41a4-aa85-d97ff9646993"), pid = 100}, typeof(String),75)},
 						{"A180", new Tuple<String, PROPERTYKEY, Type, int>("Path", new PROPERTYKEY(){fmtid = Guid.Parse("e3e0584c-b788-4a5a-bb20-7f5a44c9acdd"), pid = 7}, typeof(String),75)},
 						{"A181", new Tuple<String, PROPERTYKEY, Type, int>("By location", new PROPERTYKEY(){fmtid = Guid.Parse("23620678-ccd4-47c0-9963-95a8405678a3"), pid = 100}, typeof(String),75)},

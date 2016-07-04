@@ -25,7 +25,7 @@ namespace BExplorer.Shell {
 		}
 
 		public override void UpdateProgress(uint iWorkTotal, uint iWorkSoFar) {
-			//base.UpdateProgress(iWorkTotal, iWorkSoFar);
+			base.UpdateProgress(iWorkTotal, iWorkSoFar);
 			if (iWorkSoFar == iWorkTotal) {
 		  	//this._View.UnvalidateDirectory();
 			}
@@ -36,10 +36,12 @@ namespace BExplorer.Shell {
 		public override void PostDeleteItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, uint hrDelete, IShellItem psiNewlyCreated) {
 			if (hrDelete == 2555912) {
 				var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
-				Shell32.SHChangeNotify(
-					theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
-					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
-				theNewItem.Dispose();
+			  if (this._View.CurrentFolder.Equals(theNewItem.Parent)) {
+			    Shell32.SHChangeNotify(
+			      theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
+			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+			  }
+			  theNewItem.Dispose();
 				//this._View.UnvalidateDirectory();
 			}
 			//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -90,13 +92,17 @@ namespace BExplorer.Shell {
 			//Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 			//System.Windows.Forms.Application.DoEvents();
 			if (hrCopy == 0) {
-				var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
-				Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
-					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
-				this._View.IsSupressedTumbGeneration = false;
-				Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
-					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
-				theNewItem.Dispose();
+        var destination = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiDestinationFolder);
+			  if (destination.Equals(this._View.CurrentFolder)) {
+			    var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
+			    Shell32.SHChangeNotify(
+			      theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
+			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+			    this._View.IsSupressedTumbGeneration = false;
+			    Shell32.SHChangeNotify(Shell32.HChangeNotifyEventID.SHCNE_UPDATEITEM,
+			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+			    theNewItem.Dispose();
+			  }
 			}
 			//theNewItem.Dispose();
 			//this._View.UnvalidateDirectory();
@@ -127,16 +133,20 @@ namespace BExplorer.Shell {
 			//		Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.Pidl, IntPtr.Zero);
 			//theNewItem.Dispose();
 			if (hrMove == 0) {
-				var theOldItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
-				var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
-				Shell32.SHChangeNotify(
-					theOldItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
-					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theOldItem.PIDL, IntPtr.Zero);
-				this._View.IsSupressedTumbGeneration = false;
-				Shell32.SHChangeNotify(theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
-					Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
-				theOldItem.Dispose();
-				theNewItem.Dispose();
+        var destination = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiDestinationFolder);
+			  if (destination.Equals(this._View.CurrentFolder)) {
+			    var theOldItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiItem);
+			    var theNewItem = FileSystemListItem.InitializeWithIShellItem(this._View.LVHandle, psiNewlyCreated);
+			    Shell32.SHChangeNotify(
+			      theOldItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_RMDIR : Shell32.HChangeNotifyEventID.SHCNE_DELETE,
+			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theOldItem.PIDL, IntPtr.Zero);
+			    this._View.IsSupressedTumbGeneration = false;
+			    Shell32.SHChangeNotify(
+			      theNewItem.IsFolder ? Shell32.HChangeNotifyEventID.SHCNE_MKDIR : Shell32.HChangeNotifyEventID.SHCNE_CREATE,
+			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
+			    theOldItem.Dispose();
+			    theNewItem.Dispose();
+			  }
 			}
 			//try {
 			//	if (psiItem != null) {

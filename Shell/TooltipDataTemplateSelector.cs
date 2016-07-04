@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,7 +18,7 @@ namespace BExplorer.Shell {
 				var perceivedType = PerceivedType.Unknown;
 				if (obj != null) {
 					var perceivedTypeProp = obj.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType));
-					if (perceivedTypeProp != null) {
+					if (perceivedTypeProp != null && perceivedTypeProp.VarType != VarEnum.VT_EMPTY && perceivedTypeProp.VarType != VarEnum.VT_ERROR) {
 						perceivedType = (PerceivedType) obj.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType)).Value;
 					}
 				}

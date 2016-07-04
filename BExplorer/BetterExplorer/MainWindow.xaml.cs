@@ -4151,7 +4151,7 @@ We could easily move this to another project and send that method
 
 		private void btnSort_DropDownOpened(object sender, EventArgs e) {
 			var button = sender as DropDownButton;
-			foreach (MenuItem item in button.Items) {
+			foreach (MenuItem item in button.Items.OfType<MenuItem>()) {
 				var column = item.Tag as Collumns;
 				if (column == this._ShellListView.Collumns.FirstOrDefault(w => w.ID == this._ShellListView.LastSortedColumnId)) {
 					item.IsChecked = true;
@@ -4164,7 +4164,7 @@ We could easily move this to another project and send that method
 
 		private void btnGroup_DropDownOpened(object sender, EventArgs e) {
 			var button = sender as DropDownButton;
-			foreach (MenuItem item in button.Items) {
+			foreach (MenuItem item in button.Items.OfType<MenuItem>()) {
 				var column = item.Tag as Collumns;
 				if (column == this._ShellListView.LastGroupCollumn) {
 					item.IsChecked = true;
