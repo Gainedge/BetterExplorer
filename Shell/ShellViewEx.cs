@@ -78,6 +78,14 @@ namespace BExplorer.Shell {
 		public RenameEventArgs(int itemIndex) { this.ItemIndex = itemIndex; }
 	}
 
+  public class CollumnsChangedArgs : EventArgs {
+    public Boolean IsRemove { get; set; }
+
+    public CollumnsChangedArgs(Boolean isRemove) {
+      this.IsRemove = isRemove;
+    }
+  }
+
 	public class ListViewColumnDropDownArgs : EventArgs {
 		public int ColumnIndex { get; set; }
 		public DPoint ActionPoint { get; set; }
@@ -190,6 +198,8 @@ namespace BExplorer.Shell {
 		public event EventHandler<NavigatedEventArgs> Navigated;
 
 		public event EventHandler<ListViewColumnDropDownArgs> OnListViewColumnDropDownClicked;
+
+	  public event EventHandler<CollumnsChangedArgs> OnListViewCollumnsChanged;
 
 		/// <summary>
 		/// Occurs when the <see cref="ShellView"/>'s current selection
@@ -2401,6 +2411,9 @@ namespace BExplorer.Shell {
 			for (var i = 0; i < this.Collumns.Count; i++) {
 				this.Collumns[i].SetSplitButton(headerhandle, i);
 			}
+		  if (this.OnListViewCollumnsChanged != null) {
+		    this.OnListViewCollumnsChanged.Invoke(this, new CollumnsChangedArgs(remove));
+		  }
 		}
 
 		public void RemoveAllCollumns() {
@@ -3050,7 +3063,6 @@ namespace BExplorer.Shell {
 			this.LastGroupCollumn = col;
 			this.LastGroupOrder = reversed ? SortOrder.Descending : SortOrder.Ascending;
 			this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
-			
 		}
 
 		/// <summary>

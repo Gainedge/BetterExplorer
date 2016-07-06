@@ -363,7 +363,7 @@ namespace BetterExplorer
 
 		void micm_Click(object sender, RoutedEventArgs e) {
 			var fMoreCollumns = new MoreColumns();
-			fMoreCollumns.PopulateAvailableColumns((List<Collumns>)(sender as FrameworkElement).Tag, _ShellListView, this.PointToScreen(Mouse.GetPosition(this)));
+			fMoreCollumns.PopulateAvailableColumns((List<Collumns>)(sender as FrameworkElement).Tag, this._ShellListView, this.PointToScreen(Mouse.GetPosition(this)));
 		}
 
 		void mic_Click(object sender, RoutedEventArgs e) {
@@ -1267,9 +1267,14 @@ namespace BetterExplorer
 			this._ShellListView.ItemMiddleClick += (sender, e) => tcMain.NewTab(e.Folder, false);
 			this._ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
 			this._ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
+      this._ShellListView.OnListViewCollumnsChanged += _ShellListView_OnListViewCollumnsChanged;
 		}
 
-		void ShellListView_OnListViewColumnDropDownClicked(object sender, ListViewColumnDropDownArgs e) {
+    private void _ShellListView_OnListViewCollumnsChanged(object sender, CollumnsChangedArgs e) {
+      this.SetSortingAndGroupingButtons();
+    }
+
+    void ShellListView_OnListViewColumnDropDownClicked(object sender, ListViewColumnDropDownArgs e) {
 			//TODO: Add Events for when an item's check has been changed
 			var packUri = "pack://application:,,,/BetterExplorer;component/Images/stack16.png";
 			var menu = new ListviewColumnDropDown() {
