@@ -527,57 +527,6 @@ namespace BExplorer.Shell {
 			selectionTimer.Tick += selectionTimer_Tick;
 		}
 
-		void fsw_Changed(object sender, FileSystemEventArgs e) {
-			try {
-				if (e.ChangeType == WatcherChangeTypes.Renamed) this.IsRenameInProgress = false;
-				if (!File.Exists(e.FullPath) && !Directory.Exists(e.FullPath)) return;
-				try {
-					var objUpdate = FileSystemListItem.ToFileSystemItem(this.LVHandle, e.FullPath.ToShellParsingName());
-					var exisitingItem = this.Items.FirstOrDefault(w => w.Equals(objUpdate));
-
-					if (exisitingItem != null) this.RefreshItem(this.Items.IndexOf(exisitingItem), true);
-					if (objUpdate != null && this.CurrentFolder != null && objUpdate.Equals(this.CurrentFolder)) this.UnvalidateDirectory();
-					objUpdate.Dispose();
-				} catch (FileNotFoundException) { }
-			} catch (FileNotFoundException) {
-			} catch (ArgumentOutOfRangeException) {
-			} catch (ArgumentException) {
-			}
-		}
-
-		void fsw_Deleted(object sender, FileSystemEventArgs e) {
-			if (!String.IsNullOrEmpty(e.FullPath)) {
-				var theItem = this.Items.ToArray().FirstOrDefault(s => s.ParsingName.ToLowerInvariant() == e.FullPath.ToLowerInvariant());
-				if (theItem != null) {
-					this.Items.Remove(theItem);
-					if (this.IsGroupsEnabled) this.SetGroupOrder(false);
-					var col = this.Collumns.ToArray().FirstOrDefault(w => w.ID == this.LastSortedColumnId);
-					this.SetSortCollumn(true, col, this.LastSortOrder, false);
-				}
-			}
-		}
-
-		void fsw_Created(object sender, FileSystemEventArgs e) {
-			if (!File.Exists(e.FullPath) && !Directory.Exists(e.FullPath)) return;
-			try {
-				var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, e.FullPath.ToShellParsingName());
-				var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
-				if (existingItem == null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
-					if (obj.Extension.ToLowerInvariant() != ".tmp") {
-						var itemIndex = this.InsertNewItem(obj);
-						this.RaiseItemUpdated(ItemUpdateType.Created, null, obj, itemIndex);
-					} else {
-						var affectedItem = this.Items.FirstOrDefault(s => s.Equals(obj.Parent));
-						if (affectedItem != null) {
-							var index = this.Items.IndexOf(affectedItem);
-							this.RefreshItem(index, true);
-						}
-					}
-				}
-			} catch (Exception) {
-			}
-		}
-
 		#endregion Initializer
 
 		#region Events
@@ -1834,7 +1783,7 @@ namespace BExplorer.Shell {
 									  if (existingItem == null) {
 									    var itemIndex = this.InsertNewItem(obj.Clone(true));
 									    this.SelectItemByIndex(itemIndex, true, true);
-									    this.RenameSelectedItem(itemIndex);
+									    this.RenameSelectedItem();
 									    this.IsRenameNeeded = false;
 									  }
 									  else {
@@ -2175,7 +2124,9 @@ namespace BExplorer.Shell {
 			this._IsCanceledOperation = false;
 			this.ItemForRename = index;
 			var ptr = IntPtr.Zero;
-			this._IIListView.EditLabel(this.ToLvItemIndex(index), IntPtr.Zero, out ptr);
+		  this.BeginInvoke(new MethodInvoker(() => {
+		    this._IIListView.EditLabel(this.ToLvItemIndex(index), IntPtr.Zero, out ptr);
+		  }));
 		}
 
 		public void RenameSelectedItem() => this.RenameItem(this.GetFirstSelectedItemIndex());
@@ -2567,7 +2518,7 @@ namespace BExplorer.Shell {
 			};
 
 			if (this.InvokeRequired)
-				this.Invoke((Action)(() => worker()));
+				this.BeginInvoke((Action)(() => worker()));
 			else
 				worker();
 		}
@@ -2645,18 +2596,21 @@ namespace BExplorer.Shell {
 							if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
 								if (this.IsRenameNeeded) {
 									var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
-									if (existingItem == null) {
-										var itemIndex = this.InsertNewItem(obj);
-										this.SelectItemByIndex(itemIndex, true, true);
-										this.RenameSelectedItem();
-										this.IsRenameNeeded = false;
-									}
+								  if (existingItem == null) {
+								    var itemIndex = this.InsertNewItem(obj);
+								    this.SelectItemByIndex(itemIndex, true, true);
+								    this.RenameSelectedItem(itemIndex);
+								    this.IsRenameNeeded = false;
+								  }
+								  else {
+                    this.RenameSelectedItem(existingItem.ItemIndex);
+                  }
 								} else {
 									if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Created, obj)))
 										this.UnvalidateDirectory();
 								}
 							}
-						} catch (Exception) { }
+						} catch (Exception ex) { }
 
 					};
 					this._FsWatcher.Deleted += (sender, args) => {
@@ -2858,9 +2812,8 @@ namespace BExplorer.Shell {
 					var delta = CurrentI - LastI;
 					if (delta >= (this._IsSearchNavigating ? 50 : 2000)) {
 						LastI = CurrentI;
-						this.Invoke((Action)(() => {
-							User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
-
+						this.BeginInvoke((Action)(() => {
+              this._IIListView.SetItemCount(this.Items.Count, 0);
 							if (this._IsSearchNavigating && delta >= 20)
 								Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 						}));
@@ -2922,7 +2875,7 @@ namespace BExplorer.Shell {
 				}
 
 
-				this.Invoke((Action)(() => {
+				this.BeginInvoke((Action)(() => {
 					var navArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
 					this.CurrentFolder = this._RequestedCurrentLocation;
 					if (!refresh)
@@ -3082,11 +3035,14 @@ namespace BExplorer.Shell {
 			}
 
 			if (reversed) this.Groups.Reverse();
-			foreach (var group in this.Groups.ToArray()) {
+      this.Invoke(new MethodInvoker(() => {
+        this._IIListView.SetItemCount(this.Items.Count, 0);
+      }));
+      foreach (var group in this.Groups.ToArray()) {
 				group.Items.ToList().ForEach(e => e.GroupIndex = group.Index);
 				var nativeGroup = group.ToNativeListViewGroup();
 				var insertedPosition = -1;
-				this.BeginInvoke(new MethodInvoker(() => {
+				this.Invoke(new MethodInvoker(() => {
 					this._IIListView.InsertGroup(-1, nativeGroup, out insertedPosition);
 				}));
 			}
@@ -3094,9 +3050,7 @@ namespace BExplorer.Shell {
 			this.LastGroupCollumn = col;
 			this.LastGroupOrder = reversed ? SortOrder.Descending : SortOrder.Ascending;
 			this.SetSortIcon(this.Collumns.IndexOf(col), this.LastGroupOrder);
-			this.BeginInvoke(new MethodInvoker(() => {
-				this._IIListView.SetItemCount(this.Items.Count, 0);
-			}));
+			
 		}
 
 		/// <summary>
@@ -3336,7 +3290,18 @@ namespace BExplorer.Shell {
 				case ERROR.FILENAME_EXCED_RANGE:
 					throw new IOException("The filename is too long");
 			}
-			return endname;
+    //  var item = FileSystemListItem.ToFileSystemItem(this.LVHandle, endname.Replace("\\\\", @"\"));
+    //  //this.IsRenameNeeded = true;
+		  //if (item != null) {
+		  //  var existingItem = this.Items.FirstOrDefault(s => s.Equals(item));
+		  //  if (existingItem != null) {
+		  //    //var itemIndex = this.InsertNewItem(item.Clone(true));
+		  //    //this.SelectItemByIndex(existingItem.ItemIndex, true, true);
+		  //    this.RenameSelectedItem(existingItem.ItemIndex);
+		  //  }
+		  //}
+		  //item.Dispose();
+      return endname;
 		}
 
 		public ShellLibrary CreateNewLibrary(string name) {
@@ -4029,14 +3994,14 @@ namespace BExplorer.Shell {
 					if (item.DisplayName != NewName) {
 						IsRenameInProgress = true;
 						this._NewName = NewName;
-						this.Invoke((Action)(() => {
+						this.BeginInvoke((Action)(() => {
 							this.RefreshItem(ItemForRename);
 							RenameShellItem(item.ComInterface, NewName, (item.DisplayName != Path.GetFileName(item.ParsingName)) && !item.IsFolder, item.Extension);
 						}));
 					}
 				} else {
 					this._NewName = String.Empty;
-					this.Invoke((Action)(() => {
+					this.BeginInvoke((Action)(() => {
 						this.RefreshItem(ItemForRename);
 					}));
 				}

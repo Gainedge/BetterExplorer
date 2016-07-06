@@ -46,6 +46,7 @@ using DropTargetHelper = BExplorer.Shell.DropTargetHelper.Get;
 
 using WIN = System.Windows;
 using BExplorer.Shell._Plugin_Interfaces;
+using TaskDialogInterop;
 
 
 namespace BetterExplorer
@@ -1163,7 +1164,7 @@ namespace BetterExplorer
 			}
 		}
 
-		private void Button_Click_7(object sender, RoutedEventArgs e) => Process.Start("http://better-explorer.com/");
+		private void Button_Click_7(object sender, RoutedEventArgs e) => Process.Start("http://gainedge.org/better-explorer/");
 
 		#endregion
 
@@ -1194,11 +1195,9 @@ namespace BetterExplorer
 
 			Utilities.SetRegistryValue("CheCkForUpdates", 1);
 			IsUpdateCheck = true;
-			updateCheckTimer.Interval = 3600000 * 3;
-			updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
 			updateCheckTimer.Start();
 
-			if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) CheckForUpdate(false);
+			//if (DateTime.Now.Subtract(LastUpdateCheck).Days >= UpdateCheckInterval) CheckForUpdate(false);
 		}
 
 		private void CheckBox_Unchecked(object sender, RoutedEventArgs e) {
@@ -1506,7 +1505,7 @@ namespace BetterExplorer
 
 			try {
 				autoUpdater.UpdateType = IsUpdateCheck ? UpdateType.OnlyCheck : UpdateType.DoNothing;
-				if (IsUpdateCheckStartup) autoUpdater.ForceCheckForUpdate();
+				if (IsUpdateCheckStartup) this.CheckForUpdate();
 			} catch (IOException) {
 				this.stiUpdate.Content = "Switch to another BetterExplorer window or restart to check for updates.";
 				this.btnUpdateCheck.IsEnabled = false;
@@ -1558,8 +1557,12 @@ namespace BetterExplorer
 
 			ShellTree.ShellListView = _ShellListView;
 			this.ctrlConsole.ShellListView = this._ShellListView;
-
-			UpdateRecycleBinInfos();
+      this.autoUpdater.UpdateAvailable += AutoUpdater_UpdateAvailable;
+      this.updateCheckTimer.Interval = 10000;//3600000 * 3;
+      this.updateCheckTimer.Tick += new EventHandler(updateCheckTimer_Tick);
+      this.updateCheckTimer.Enabled = false;
+		  
+      UpdateRecycleBinInfos();
 			bool exitApp = false;
 
 			try {
@@ -1589,14 +1592,18 @@ namespace BetterExplorer
 				isOnLoad = true;
 
 				//'load from Registry
-				LoadRegistryRelatedSettings();
+				this.LoadRegistryRelatedSettings();
 
 				//'set up Explorer control
 				InitializeExplorerControl();
 
 				ViewGallery.SelectedIndex = 2;
 
-				AddToLog("Session Began");
+        if (this.chkUpdateCheck.IsChecked.Value) {
+          this.updateCheckTimer.Start();
+        }
+
+        AddToLog("Session Began");
 				isOnLoad = false;
 				SetsUpJumpList();
 
@@ -1639,9 +1646,65 @@ namespace BetterExplorer
 			}
 		}
 
+    private void AutoUpdater_UpdateAvailable(object sender, EventArgs e) {
+      if (this._IsCheckUpdateFromTimer && !this._IsUpdateNotificationMessageBoxShown) {
+        this._IsUpdateNotificationMessageBoxShown = true;
+        var newVersion = this.autoUpdater.Version;
+        var changes = this.autoUpdater.Changes;
+        TaskDialogOptions config = new TaskDialogOptions();
 
-		//Boolean _IsTabSelectionChangedNotAllowed = true;
-		void tcMain_OnTabClicked(object sender, Wpf.Controls.TabClickEventArgs e) {
+        config.Owner = this;
+        config.Title = "Update";
+        config.MainInstruction = "There is new updated version " + newVersion + " available!";
+        config.Content = "The new version have the following changes:\r\n" + changes;
+        config.ExpandedInfo = "You can download and install the new version immediately by clicking \"Download & Install\" button.\r\nYou can skip this version from autoupdate check by clicking \"Skip this version\" button.";
+        //config.VerificationText = "Don't show me this message again";
+        config.CustomButtons = new string[] {"&Download & Install", "Skip this version", "&Close"};
+        config.MainIcon = VistaTaskDialogIcon.SecurityWarning;
+        if (newVersion.Contains("RC") || newVersion.Contains("Nightly") || newVersion.Contains("Beta") ||
+            newVersion.Contains("Alpha")) {
+          config.FooterText = "This is an experimental version and may contains bugs. Use at your own risk!";
+          config.FooterIcon = VistaTaskDialogIcon.Warning;
+        }
+        else {
+          config.FooterText = "This is a final version and can be installed safely!";
+          config.FooterIcon = VistaTaskDialogIcon.SecuritySuccess;
+        }
+        config.AllowDialogCancellation = true;
+        config.Callback = taskDialog_Callback;
+
+        TaskDialogResult res = TaskDialog.Show(config);
+        this._IsCheckUpdateFromTimer = false;
+        this._IsUpdateNotificationMessageBoxShown = false;
+      }
+
+    }
+
+    private bool taskDialog_Callback(IActiveTaskDialog dialog, VistaTaskDialogNotificationArgs args, object callbackData) {
+      bool result = false;
+
+      switch (args.Notification) {
+        case VistaTaskDialogNotification.ButtonClicked:
+          if (args.ButtonId == 500) {
+
+            this.autoUpdater.ReadyToBeInstalled += AutoUpdater_ReadyToBeInstalled;
+            this.autoUpdater.InstallNow();
+          } else if (args.ButtonId == 501) {
+            
+          }
+          break;
+      }
+      
+      return result;
+    }
+
+    private void AutoUpdater_ReadyToBeInstalled(object sender, EventArgs e) {
+      this.autoUpdater.ReadyToBeInstalled -= AutoUpdater_ReadyToBeInstalled;
+      this.autoUpdater.InstallNow();
+    }
+
+    //Boolean _IsTabSelectionChangedNotAllowed = true;
+    void tcMain_OnTabClicked(object sender, Wpf.Controls.TabClickEventArgs e) {
 			//this.tcMain.IsInTabDragDrop = false;
 			//tcMain.IsSelectionHandled = true;
 			//tcMain.SelectedItem = e.ClickedItem;
@@ -3468,11 +3531,11 @@ return false;
 					sbiItemsCount.Visibility = itemsCount == 0 ? Visibility.Collapsed : Visibility.Visible;
 					sbiItemsCount.Content = itemsCount == 1 ? "1 item" : itemsCount + " items";
 				}
-				if (e.UpdateType == ItemUpdateType.Created && this._ShellListView.IsRenameNeeded) {
-					_ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
-					_ShellListView.RenameSelectedItem();
-					this._ShellListView.IsRenameNeeded = false;
-				}
+				//if (e.UpdateType == ItemUpdateType.Created && this._ShellListView.IsRenameNeeded) {
+				//	_ShellListView.SelectItemByIndex(e.NewItemIndex, true, true);
+				//	_ShellListView.RenameSelectedItem();
+				//	this._ShellListView.IsRenameNeeded = false;
+				//}
 				if (e.UpdateType == ItemUpdateType.DriveRemoved) {
 					foreach (var tab in this.tcMain.Items.OfType<Wpf.Controls.TabItem>().ToArray().Where(w => w.ShellObject.ParsingName.StartsWith(e.NewItem.ParsingName))) {
 						this.tcMain.RemoveTabItem(tab, false);

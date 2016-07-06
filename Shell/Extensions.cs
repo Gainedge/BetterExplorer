@@ -348,10 +348,10 @@ namespace BExplorer.Shell {
 			var nativeGroup = new LVGROUP2 {
 				cbSize = (UInt32) Marshal.SizeOf(typeof (LVGROUP2)),
 				mask = (UInt32) (GroupMask.LVGF_HEADER ^ GroupMask.LVGF_STATE ^ GroupMask.LVGF_GROUPID),
-				stateMask = (UInt32) GroupState.LVGS_COLLAPSIBLE,
-				state = (UInt32) GroupState.LVGS_COLLAPSIBLE,
-				pszHeader = @group.Header,
-				iGroupId = @group.Index
+				stateMask = (UInt32)GroupState.LVGS_COLLAPSIBLE,
+				state = (UInt32)GroupState.LVGS_COLLAPSIBLE,
+				pszHeader = group.Header,
+				iGroupId = group.Index
 			};
 
 			if (group.Items.Any()) {

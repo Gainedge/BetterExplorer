@@ -694,6 +694,10 @@
       <Project>{509d06bd-aeb6-4e92-8e5b-21188ebdbd9c}</Project>
       <Name>Wpf.TabControl</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\TaskDialog\TaskDialog.csproj">
+      <Project>{37fd53f7-8a8f-4427-8ff4-6299e2933a7e}</Project>
+      <Name>TaskDialog</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\UsbEject\UsbEject.csproj">
       <Project>{ae269158-dfa5-4dd7-8afc-f45faf2b958c}</Project>
       <Name>UsbEject</Name>
@@ -1162,7 +1166,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

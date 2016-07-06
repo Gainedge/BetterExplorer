@@ -181,7 +181,7 @@ namespace BExplorer.Shell {
 			} else {
 				while (parents.Count > 0) {
 					var obj = parents.Pop();
-					this.Invoke((Action)(() => {
+					this.BeginInvoke((Action)(() => {
 						var newNode = this.FromItem(obj);
 						if (newNode != null && !newNode.IsExpanded) {
 							newNode.Expand();
@@ -194,7 +194,7 @@ namespace BExplorer.Shell {
 		public void SelItem(IListItemEx item) {
 			var node = this.FromItem(item);
 			if (node != null) {
-				this.Invoke((Action)(() => {
+				this.BeginInvoke((Action)(() => {
 					this.ShellTreeView.SelectedNode = node;
 				}));
 				return;
@@ -429,7 +429,7 @@ namespace BExplorer.Shell {
 				var pidl = IntPtr.Zero;
 				var visible = false;
 				if (this.ShellTreeView != null) {
-					this.ShellTreeView.Invoke((Action)(() => {
+					this.ShellTreeView.BeginInvoke((Action)(() => {
 						node = TreeNode.FromHandle(ShellTreeView, handle);
 						treeHandle = ShellTreeView.Handle;
 						if (node != null) {
@@ -461,7 +461,7 @@ namespace BExplorer.Shell {
 				var visible = true;
 				//var pidl = IntPtr.Zero;
 				if (ShellTreeView != null) {
-					this.ShellTreeView.Invoke((Action)(() => {
+					this.ShellTreeView.BeginInvoke((Action)(() => {
 						node = TreeNode.FromHandle(ShellTreeView, handle);
 						treeHandle = this.ShellTreeView.Handle;
 						if (node != null)
@@ -502,7 +502,7 @@ namespace BExplorer.Shell {
 				var visible = true;
 				//var pidl = IntPtr.Zero;
 				if (ShellTreeView != null) {
-					this.ShellTreeView.Invoke((Action)(() => {
+					this.ShellTreeView.BeginInvoke((Action)(() => {
 						node = TreeNode.FromHandle(ShellTreeView, handle);
 						treeHandle = this.ShellTreeView.Handle;
 						if (node != null) visible = node.IsVisible;
@@ -720,7 +720,7 @@ namespace BExplorer.Shell {
 						}
 						//return nodesTemp;
 						//});
-						this.Invoke((Action)(() => {
+						this.BeginInvoke((Action)(() => {
 							if (node.Nodes.Count == 1 && node.Nodes[0].Text == _SearchingForFolders)
 								node.Nodes.RemoveAt(0);
 							node.Nodes.AddRange(nodesTemp.ToArray());

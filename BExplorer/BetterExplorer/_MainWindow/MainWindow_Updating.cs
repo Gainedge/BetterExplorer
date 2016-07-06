@@ -10,7 +10,8 @@ namespace BetterExplorer {
 	partial class MainWindow {
 		private BackgroundWorker UpdaterWorker;
 		private int UpdateCheckType;
-
+	  private Boolean _IsCheckUpdateFromTimer = false;
+	  private Boolean _IsUpdateNotificationMessageBoxShown = false;
 		private void CheckForUpdate(bool ShowUpdateUI = true) {
 			this.UpdaterWorker = new BackgroundWorker();
 			this.UpdaterWorker.WorkerSupportsCancellation = true;
@@ -21,39 +22,14 @@ namespace BetterExplorer {
 				this.UpdaterWorker.RunWorkerAsync(ShowUpdateUI);
 			else if (ShowUpdateUI)
 				MessageBox.Show("Update in progress! Please wait!");
-
-			// var informalVersion = (Assembly.GetExecutingAssembly().GetCustomAttributes(
-			//typeof(AssemblyInformationalVersionAttribute), false).FirstOrDefault() as AssemblyInformationalVersionAttribute).InformationalVersion;
 		}
 
 		private void UpdaterWorker_DoWork(object sender, DoWorkEventArgs e) {
-			Updater updater = new Updater("http://update.better-explorer.com/update.xml", 5, UpdateCheckType == 1);
-			if (updater.LoadUpdateFile()) {
-				if ((bool)e.Argument) {
-					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-						(Action)(() => {
-							UpdateWizard updateWizzard = new UpdateWizard(updater);
-							updateWizzard.ShowDialog(this.GetWin32Window());
-						}));
-				}
-				else {
-					Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-						(Action)(() => {
-							stiUpdate.Content = FindResource("stUpdateAvailableCP").ToString().Replace("VER", updater.AvailableUpdates[0].Version);
-							stiUpdate.Foreground = System.Windows.Media.Brushes.Red;
-						}));
-				}
-			}
-			else {
-				Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
-						(Action)(() => {
-							stiUpdate.Content = FindResource("stUpdateNotAvailableCP").ToString();
-							stiUpdate.Foreground = System.Windows.Media.Brushes.Black;
-							if ((bool)e.Argument)
-								MessageBox.Show(FindResource("stUpdateNotAvailableCP").ToString());
-						}));
-			}
-
+		  this._IsCheckUpdateFromTimer = true;
+		  Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal,
+		    (Action) (() => {
+		      autoUpdater.ForceCheckForUpdate(true);
+		    }));
 			Utilities.SetRegistryValue("LastUpdateCheck", DateTime.Now.ToBinary(), RegistryValueKind.QWord);
 			LastUpdateCheck = DateTime.Now;
 		}

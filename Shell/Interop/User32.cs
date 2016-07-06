@@ -796,18 +796,18 @@ public static extern int GetWindowLong(IntPtr hwnd, int index);
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
-		/*
+    /*
 		[DllImport("user32.dll")]
 		public static extern bool RedrawWindow(IntPtr hWnd, ref RECT lprcUpdate, IntPtr hrgnUpdate, uint flags);
 		*/
 
-		//[DllImport("user32.dll")]
-		//public static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);
+    [DllImport("user32.dll")]
+    public static extern bool InvalidateRect(IntPtr hWnd, ref RECT lpRect, bool bErase);
 
-		//[DllImport("user32.dll")]
-		//public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
+    [DllImport("user32.dll")]
+    public static extern bool InvalidateRect(IntPtr hWnd, IntPtr lpRect, bool bErase);
 
-		[DllImport("user32.dll")]
+    [DllImport("user32.dll")]
 		public static extern void PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
 		/*
