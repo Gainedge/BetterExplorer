@@ -2081,7 +2081,7 @@ namespace BExplorer.Shell {
 			itemBounds.Top -= 2;
 			itemBounds.Bottom += 2;
 			itemBounds.Right += 2;
-			this.BeginInvoke(new MethodInvoker(() => {
+			this.Invoke(new MethodInvoker(() => {
 				this._IIListView.RedrawItems(index, index);
 			}));
 			for (int i = 0; i < 1; i++) {
@@ -2823,7 +2823,7 @@ namespace BExplorer.Shell {
 
 
 					var delta = CurrentI - LastI;
-					if (delta >= (this._IsSearchNavigating ? 50 : 2000)) {
+					if (delta >= (this._IsSearchNavigating ? 150 : 2000)) {
 						LastI = CurrentI;
 						this.BeginInvoke((Action)(() => {
               this._IIListView.SetItemCount(this.Items.Count, 0);
@@ -3270,7 +3270,9 @@ namespace BExplorer.Shell {
 							this.RedrawItem(index.Item1);
 						}
 						pvar.Dispose();
+					  Marshal.ReleaseComObject(propStore);
 					}
+          temp.Dispose();
 				}
 			}
 		}

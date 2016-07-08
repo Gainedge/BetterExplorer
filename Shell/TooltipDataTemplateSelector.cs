@@ -17,6 +17,7 @@ namespace BExplorer.Shell {
 			try {
 				var perceivedType = PerceivedType.Unknown;
 				if (obj != null) {
+				  obj = obj.Clone();
 					var perceivedTypeProp = obj.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType));
 					if (perceivedTypeProp != null && perceivedTypeProp.VarType != VarEnum.VT_EMPTY && perceivedTypeProp.VarType != VarEnum.VT_ERROR) {
 						perceivedType = (PerceivedType) obj.GetPropertyValue(SystemProperties.PerceivedType, typeof(PerceivedType)).Value;

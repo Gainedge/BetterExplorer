@@ -121,7 +121,7 @@ namespace BetterExplorer
 		#region Events
 
 		private void btnAbout_Click(object sender, RoutedEventArgs e) => new fmAbout(this).ShowDialog();
-		private void btnBugtracker_Click(object sender, RoutedEventArgs e) => Process.Start("http://bugtracker.better-explorer.com");
+		private void btnBugtracker_Click(object sender, RoutedEventArgs e) => Process.Start("http://bugs.gainedge.org/public/betterexplorer");
 		private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e) => CustomizeQAT.Open(this, TheRibbon);
 
 		private void btnConsolePane_Click(object sender, RoutedEventArgs e) {
@@ -1182,7 +1182,7 @@ namespace BetterExplorer
 					}
 				}
 			} catch (Exception exe) {
-				MessageBox.Show("An error occurred while writing to the log file. This error can be avoided if you disable the action logging feature. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Writing to Log", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show("An error occurred while writing to the log file. This error can be avoided if you disable the action logging feature. Please report this issue at http://bugs.gainedge.org/public/betterexplorer. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Writing to Log", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 		}
 
@@ -1647,7 +1647,7 @@ namespace BetterExplorer
 
 				focusTimer.Tick += focusTimer_Tick;
 			} catch (Exception exe) {
-				MessageBox.Show($"An error occurred while loading the window. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n{exe.Message}\r\n\r\n{exe}", "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show($"An error occurred while loading the window. Please report this issue at http://bugs.gainedge.org/public/betterexplorer. \r\n\r\n Here is some information about the error: \r\n\r\n{exe.Message}\r\n\r\n{exe}", "Error While Loading", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 		}
 
@@ -2631,7 +2631,7 @@ namespace BetterExplorer
 				tcMain.NewTab(logdir);
 				this.backstage.IsOpen = false;
 			} catch (Exception exe) {
-				MessageBox.Show("An error occurred while trying to open the logs folder. Please report this issue at http://bugtracker.better-explorer.com/. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Opening Log Folder", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show("An error occurred while trying to open the logs folder. Please report this issue at http://bugs.gainedge.org/public/betterexplorer. \r\n\r\n Here is some information about the error: \r\n\r\n" + exe.Message + "\r\n\r\n" + exe.ToString(), "Error While Opening Log Folder", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 		}
 
@@ -3828,7 +3828,7 @@ return false;
 						break;
 				}
 			} catch (Exception ex) {
-				MessageBox.Show($"An error occurred while trying to load the theme data from the Registry. \n\r \n\r{ex.Message}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", "RibbonTheme Error - " + ex.ToString());
+				MessageBox.Show($"An error occurred while trying to load the theme data from the Registry. \n\r \n\r{ex.Message}\n\r \n\rPlease let us know of this issue at http://bugs.gainedge.org/public/betterexplorer", "RibbonTheme Error - " + ex.ToString());
 			}
 
 			// loads current UI language (uses en-US if default)
@@ -3837,7 +3837,7 @@ return false;
 				var loc = Convert.ToString(rks.GetValue("Locale", ":null:")) == ":null:" ? Thread.CurrentThread.CurrentUICulture.Name : Convert.ToString(rks.GetValue("Locale", ":null:"));
 				((App)Application.Current).SelectCulture(loc, Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\BExplorer\\translation.xaml");
 			} catch (Exception ex) {
-				MessageBox.Show($"An error occurred while trying to load the locale data from the Registry. \n\r \n\r{ex.Message}\n\r \n\rPlease let us know of this issue at http://bugtracker.better-explorer.com/", "Locale Load Error - " + ex);
+				MessageBox.Show($"An error occurred while trying to load the locale data from the Registry. \n\r \n\r{ex.Message}\n\r \n\rPlease let us know of this issue at http://bugs.gainedge.org/public/betterexplorer", "Locale Load Error - " + ex);
 			}
 
 			// gets values from registry to be applied after initialization
