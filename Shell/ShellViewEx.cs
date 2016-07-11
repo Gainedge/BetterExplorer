@@ -1229,41 +1229,20 @@ namespace BExplorer.Shell {
 		}
 
 		public void UpdateItem(IListItemEx obj1, IListItemEx obj2) {
-			if (this.CurrentRefreshedItemIndex != -1) {
-				var tempItem = Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName);
-				this.RefreshItem(this.CurrentRefreshedItemIndex);
-				if (tempItem == null) {
-					obj2.ItemIndex = this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex;
-					Items.Insert(this.CurrentRefreshedItemIndex == -1 ? 0 : CurrentRefreshedItemIndex, obj2);
-					if (this.IsGroupsEnabled) this.SetGroupOrder(false);
-					var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
-					this.SetSortCollumn(true, col, this.LastSortOrder, false);
-					this.ItemUpdated?.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Created, obj2, null, obj2.ItemIndex));
-					this.SelectItemByIndex(obj2.ItemIndex, true, true);
-				}
-			} else {
-				var theItem = Items.FirstOrDefault(s => s.ParsingName == obj1.ParsingName);
-				if (theItem != null) {
-					int itemIndex = Items.IndexOf(theItem);
-					obj2.ItemIndex = itemIndex;
-					Items[itemIndex] = obj2;
-					this._IIListView.UpdateItem(itemIndex);
-					if (this.IsGroupsEnabled) this.SetGroupOrder(false);
-
-					var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
-					this.SetSortCollumn(true, col, this.LastSortOrder, false);
-					RedrawWindow();
-					var obj2Real = this.Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName);
-					if (this.ItemUpdated != null && obj2Real != null) {
-						this.ItemUpdated.Invoke(this, new ItemUpdatedEventArgs(ItemUpdateType.Renamed, obj2, obj1, obj2Real.ItemIndex));
-					}
-					if (obj2Real != null) {
-						this.SelectItemByIndex(obj2Real.ItemIndex, true, true);
-					}
-				}
-			}
-
-			this.CurrentRefreshedItemIndex = -1;
+		  var oldItem = this.Items.SingleOrDefault(s => s.Equals(obj1) || (obj1.Extension.Equals(".library-ms") && s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj1.ParsingName)))));
+      var theItem = this.Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName || (obj2.Extension.Equals(".library-ms") && s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
+		  if (theItem == null) {
+		    this.Items.Add(obj2.Extension.Equals(".library-ms") ? FileSystemListItem.InitializeWithIShellItem(this.LVHandle, ShellLibrary.Load(obj2.DisplayName, true).ComInterface) : obj2);
+        this.Items.Remove(oldItem);
+        oldItem.Dispose();
+        var col = this.AllAvailableColumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId);
+        this.SetSortCollumn(true, col, this.LastSortOrder, false);
+        if (this.IsGroupsEnabled) this.SetGroupOrder(false);
+        var obj2Real = this.Items.FirstOrDefault(s => s.ParsingName == obj2.ParsingName || (obj2.Extension.Equals(".library-ms") && s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj2.ParsingName)))));
+        this.SelectItemByIndex(obj2Real.ItemIndex, true, true);
+      }
+		  this.IsFocusAllowed = true;
+		  this.Focus();
 		}
 
 		public Rect GetItemBounds(int index, int mode) {
@@ -1787,13 +1766,13 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_MKDIR:
 							case ShellNotifications.SHCNE.SHCNE_CREATE:
 								var obj = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-								if (this.CurrentFolder != null && (obj.Parent != null && obj.Parent.Equals(this.CurrentFolder))) {
+								if (this.CurrentFolder != null && (obj.Parent != null && (obj.Parent.Equals(this.CurrentFolder) || (obj.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName))))) {
 									if (this.IsRenameNeeded) {
 										var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
 									  if (existingItem == null) {
 									    var itemIndex = this.InsertNewItem(obj.Clone(true));
 									    this.SelectItemByIndex(itemIndex, true, true);
-									    this.RenameSelectedItem();
+									    this.RenameSelectedItem(itemIndex);
 									    this.IsRenameNeeded = false;
 									  }
 									  else {
@@ -1809,7 +1788,7 @@ namespace BExplorer.Shell {
 							case ShellNotifications.SHCNE.SHCNE_RMDIR:
 							case ShellNotifications.SHCNE.SHCNE_DELETE:
 								var objDelete = FileSystemListItem.ToFileSystemItem(this.LVHandle, info.Item1);
-								if (this.CurrentFolder != null && (objDelete.Parent != null && objDelete.Parent.Equals(this.CurrentFolder))) {
+								if (this.CurrentFolder != null && (objDelete.Parent != null && (objDelete.Parent.Equals(this.CurrentFolder) || (objDelete.Extension.Equals(".library-ms") && this.CurrentFolder.ParsingName.Equals(KnownFolders.Libraries.ParsingName))))) {
 									if (this._ItemsQueue.Enqueue(new Tuple<ItemUpdateType, IListItemEx>(ItemUpdateType.Deleted, objDelete.Clone()))) {
 										this.UnvalidateDirectory();
 										objDelete.Dispose();
@@ -2001,9 +1980,18 @@ namespace BExplorer.Shell {
 				while (_ItemsQueue.Count() > 0) {
 					var obj = _ItemsQueue.Dequeue();
 					if (obj.Item1 == ItemUpdateType.Deleted) {
-						Items.Remove(obj.Item2);
-						this._AddedItems.Remove(obj.Item2.PIDL);
-						obj.Item2.Dispose();
+					  var itemForDelete =
+					    this.Items.SingleOrDefault(
+					      s =>
+					        s.Equals(obj.Item2) ||
+					        (obj.Item2.Extension.Equals(".library-ms") &&
+					         s.ParsingName.Equals(Path.Combine(KnownFolders.Libraries.ParsingName, Path.GetFileName(obj.Item2.ParsingName)))));
+					  if (itemForDelete != null) {
+					    Items.Remove(itemForDelete);
+					    this._AddedItems.Remove(obj.Item2.PIDL);
+					    itemForDelete.Dispose();
+					  }
+					  obj.Item2.Dispose();
 					} else {
 						var existingItem = this.Items.FirstOrDefault(s => s.Equals(obj));
 						if (existingItem == null) {
@@ -2133,6 +2121,7 @@ namespace BExplorer.Shell {
 			this.IsFocusAllowed = false;
 			this._IsCanceledOperation = false;
 			this.ItemForRename = index;
+		  this.IsRenameInProgress = true;
 			var ptr = IntPtr.Zero;
 		  this.BeginInvoke(new MethodInvoker(() => {
 		    this._IIListView.EditLabel(this.ToLvItemIndex(index), IntPtr.Zero, out ptr);
@@ -2293,7 +2282,8 @@ namespace BExplorer.Shell {
 		}
 
 		public void RenameShellItem(IShellItem item, String newName, Boolean isAddFileExtension, String extension = "") {
-			var fo = new IIFileOperation(this.LVHandle);
+      var sink = new FOperationProgressSink(this);
+      var fo = new IIFileOperation(sink, this.LVHandle, false);
 			fo.RenameItem(item, isAddFileExtension ? newName + extension : newName);
 			fo.PerformOperations();
 			if (fo.GetAnyOperationAborted()) {
@@ -2348,22 +2338,22 @@ namespace BExplorer.Shell {
 		}
 
 		public void SelectItemByIndex(int index, bool ensureVisisble = false, bool deselectOthers = false) {
-			var lvii = new LVITEMINDEX() { iItem = index == -1 ? 0 : index, iGroup = this.GetGroupIndex(index) };
-			var lvi = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = LVIS.LVIS_SELECTED };
+      this.Focus();
+      if (deselectOthers) {
+        this.BeginInvoke((Action)(() => {
+          this._IIListView.SetItemState(-1, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, 0);
+        }));
+      }
+		  this.BeginInvoke((Action) (() => {
+		    this._IIListView.SetItemState(index, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, LVIS.LVIS_SELECTED);
+		  }));
 
-			if (deselectOthers) {
-				var lviid = new LVITEMINDEX() { iItem = -1, iGroup = -1 };
-				var lviDeselect = new LVITEM() { mask = LVIF.LVIF_STATE, stateMask = LVIS.LVIS_SELECTED, state = 0 };
-				User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMINDEXSTATE, ref lviid, ref lviDeselect);
-			}
-
-			User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMINDEXSTATE, ref lvii, ref lvi);
-			this.Focus();
-			if (!ensureVisisble) return;
-			if (User32.SendMessage(this.LVHandle, Interop.MSG.LVM_ENSUREVISIBLE, index, 1) != IntPtr.Zero) {
-				var err = Marshal.GetLastWin32Error();
-			}
-		}
+		  if (ensureVisisble) {
+		    this.BeginInvoke((Action) (() => {
+		      this._IIListView.EnsureItemVisible(this.ToLvItemIndex(index), true);
+		    }));
+		  }
+    }
 
 		private void UpdateColsInView(Boolean isDetails = false) {
 			IntPtr headerhandle = User32.SendMessage(this.LVHandle, MSG.LVM_GETHEADER, 0, 0);
@@ -2473,7 +2463,10 @@ namespace BExplorer.Shell {
 					var i = 0;
 					this.Items.ForEach(e => e.ItemIndex = i++);
 				}
-				User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+			  this.BeginInvoke((Action) (() => {
+			    this._IIListView.SetItemCount(this.Items.Count, 0);
+			  }));
+
 				var colIndexReal = this.Collumns.IndexOf(this.Collumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId));
 				if (colIndexReal > -1) {
 					User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, colIndexReal, 0);
@@ -3383,7 +3376,9 @@ namespace BExplorer.Shell {
 		}
 
 		public void DeSelectAllItems() {
-			this._IIListView.SetItemState(-1, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, 0);
+		  this.BeginInvoke(new MethodInvoker(() => {
+		    this._IIListView.SetItemState(-1, LVIF.LVIF_STATE, LVIS.LVIS_SELECTED, 0);
+		  }));
 			this.Focus();
 		}
 
@@ -3399,7 +3394,7 @@ namespace BExplorer.Shell {
 				this.Invoke(new MethodInvoker(() => {
 					var mainWin = System.Windows.Application.Current.MainWindow;
 					if (mainWin.IsActive || !isActiveCheck) {
-						if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)) User32.SetFocus(this.LVHandle);
+						if (IsFocusAllowed) User32.SetFocus(this.LVHandle);
 					}
 				}));
 			}
@@ -4040,6 +4035,7 @@ namespace BExplorer.Shell {
 				if (isCancel)
 					this._NewName = String.Empty;
 			}
+		  this.Focus();
 		}
 
 		#endregion
