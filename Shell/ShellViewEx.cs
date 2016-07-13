@@ -2816,15 +2816,15 @@ namespace BExplorer.Shell {
 
 
 					var delta = CurrentI - LastI;
-					if (delta >= (this._IsSearchNavigating ? 150 : 2000)) {
+					if (delta >= (this._IsSearchNavigating ? 150 : 1200)) {
 						LastI = CurrentI;
 						this.BeginInvoke((Action)(() => {
-              this._IIListView.SetItemCount(this.Items.Count, 0);
-							if (this._IsSearchNavigating && delta >= 20)
-								Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+              this._IIListView.SetItemCount(this.Items.Count, 0);	
 						}));
 					}
-				}
+          if (this._IsSearchNavigating && delta >= 20)
+            Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+        }
 				this.IsCancelRequested = false;
 				this.IsNavigationInProgress = false;
 				this.IsDisplayEmptyText = true;

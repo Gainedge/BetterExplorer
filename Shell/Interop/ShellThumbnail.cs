@@ -253,16 +253,19 @@ namespace BExplorer.Shell.Interop
             return flags;
         }
 
-        private IntPtr GetHBitmap(System.Windows.Size size)
+        private IntPtr GetHBitmap(System.Windows.Size size, Boolean isCopyItem = false)
         {
             if (shellItemNative == null) return IntPtr.Zero;
             // Create a size structure to pass to the native method
             var nativeSIZE = new Size() { Width = Convert.ToInt32(size.Width), Height = Convert.ToInt32(size.Height) };
+          var nativeItem = isCopyItem
+            ? new ShellItem(this._Item.CachedParsingName.ToShellParsingName()).ComInterface
+            : shellItemNative; 
 
             // Use IShellItemImageFactory to get an icon
             // Options passed in: Resize to fit
             IntPtr hbitmap = IntPtr.Zero;
-            HResult hr = ((IShellItemImageFactory)shellItemNative).GetImage(nativeSIZE, CalculateFlags(), out hbitmap);
+            HResult hr = ((IShellItemImageFactory)nativeItem).GetImage(nativeSIZE, CalculateFlags(), out hbitmap);
             return hr == HResult.S_OK ? hbitmap : IntPtr.Zero;
         }
 
@@ -319,14 +322,14 @@ namespace BExplorer.Shell.Interop
                 FormatOption = ShellThumbnailFormatOption.IconOnly;
                 RetrievalOption = ShellThumbnailRetrievalOption.Default;
             }
-            return GetBitmapSource(FormatOption == ShellThumbnailFormatOption.IconOnly ? iconOnlySize : thumbnailSize);
+            return GetBitmapSource((FormatOption == ShellThumbnailFormatOption.IconOnly ? iconOnlySize : thumbnailSize), thumbnailSize == DefaultThumbnailSize.Small);
         }
 
-        private BitmapSource GetBitmapSource(System.Windows.Size size)
+        private BitmapSource GetBitmapSource(System.Windows.Size size, Boolean isCopyItem = false)
         {
             //FIXME: fix the cache retrieval options
             //RetrievalOption = ShellThumbnailRetrievalOption.Default;
-            IntPtr hBitmap = GetHBitmap(size);
+            IntPtr hBitmap = GetHBitmap(size, isCopyItem);
 
             // return a System.Media.Imaging.BitmapSource
             // Use interop to create a BitmapSource from hBitmap.
