@@ -2464,7 +2464,7 @@ namespace BExplorer.Shell {
 					this.Items.ForEach(e => e.ItemIndex = i++);
 				}
 			  this.BeginInvoke((Action) (() => {
-			    this._IIListView.SetItemCount(this.Items.Count, 0);
+			    this._IIListView.SetItemCount(this.Items.Count, 0x2);
 			  }));
 
 				var colIndexReal = this.Collumns.IndexOf(this.Collumns.FirstOrDefault(w => w.ID == this.LastSortedColumnId));
@@ -2803,23 +2803,16 @@ namespace BExplorer.Shell {
 					}
 
 					if (this.ShowHidden || !shellItem.IsHidden) {
-						if (this._AddedItems.Contains(shellItem.PIDL)) continue;
 						shellItem.ItemIndex = K++;
-						if (this._RequestedCurrentLocation.IsSearchFolder && shellItem.IsParentSearchFolder) {
-							this.Items.Add(shellItem);
-							this._AddedItems.Add(shellItem.PIDL);
-						} else if (!this._RequestedCurrentLocation.IsSearchFolder && !shellItem.IsParentSearchFolder) {
-							this.Items.Add(shellItem);
-							this._AddedItems.Add(shellItem.PIDL);
-						} else continue;
+						this.Items.Add(shellItem);
 					}
 
 
 					var delta = CurrentI - LastI;
-					if (delta >= (this._IsSearchNavigating ? 150 : 1200)) {
+					if (delta >= (this._IsSearchNavigating ? 1 : 5000)) {
 						LastI = CurrentI;
 						this.BeginInvoke((Action)(() => {
-              this._IIListView.SetItemCount(this.Items.Count, 0);	
+              this._IIListView.SetItemCount(this.Items.Count, 0x2);	
 						}));
 					}
           if (this._IsSearchNavigating && delta >= 20)
@@ -2847,7 +2840,7 @@ namespace BExplorer.Shell {
 
 				if (this.View != ShellViewStyle.Details) AutosizeAllColumns(-2);
 
-				User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+				User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
 
 				var sortColIndex = this.Collumns.IndexOf(columns);
 				if (sortColIndex > -1) this.SetSortIcon(sortColIndex, folderSettings.SortOrder == SortOrder.None ? SortOrder.Ascending : folderSettings.SortOrder);
@@ -2861,12 +2854,12 @@ namespace BExplorer.Shell {
 					this.Items = this.Items.OrderBy(o => o.ParsingName).ToList();
 					var i = 0;
 					this.Items.ForEach(e => e.ItemIndex = i++);
-					User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+					User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
 				} else {
 					this.Items = this.Items.OrderByDescending(o => o.IsFolder).ThenBy(o => o.DisplayName).ToList();
 					var i = 0;
 					this.Items.ToList().ForEach(e => e.ItemIndex = i++);
-					User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0);
+					User32.SendMessage(this.LVHandle, MSG.LVM_SETITEMCOUNT, this.Items.Count, 0x2);
 				}
 				if (this.IsGroupsEnabled) {
 					var colData = this.AllAvailableColumns.FirstOrDefault(w => w.ID == folderSettings.GroupCollumn);
@@ -3042,13 +3035,13 @@ namespace BExplorer.Shell {
 
 			if (reversed) this.Groups.Reverse();
       this.Invoke(new MethodInvoker(() => {
-        this._IIListView.SetItemCount(this.Items.Count, 0);
+        this._IIListView.SetItemCount(this.Items.Count, 0x2);
       }));
       foreach (var group in this.Groups.ToArray()) {
 				group.Items.ToList().ForEach(e => e.GroupIndex = group.Index);
 				var nativeGroup = group.ToNativeListViewGroup();
 				var insertedPosition = -1;
-				this.Invoke(new MethodInvoker(() => {
+				this.BeginInvoke(new MethodInvoker(() => {
 					this._IIListView.InsertGroup(-1, nativeGroup, out insertedPosition);
 				}));
 			}
