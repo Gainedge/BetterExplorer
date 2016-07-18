@@ -960,7 +960,11 @@ return info.iIcon;
 		/// <param name="disposing">Whether the object is being disposed</param>
 		public virtual void Dispose(bool disposing) {
 			if (disposing) {
-				if (ComInterface != null) Marshal.FinalReleaseComObject(ComInterface);
+			  if (ComInterface != null) {
+          if (this.Pidl != IntPtr.Zero)
+            Shell32.ILFree(this.Pidl);
+          Marshal.FinalReleaseComObject(ComInterface);
+        }
 				ComInterface = null;
 			}
 		}

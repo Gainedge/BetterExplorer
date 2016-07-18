@@ -3552,7 +3552,8 @@ return false;
 		}
 
 		void ShellListView_SelectionChanged(object sender, EventArgs e) {
-			SetupUIOnSelectOrNavigate();
+      if (!this._ShellListView.IsNavigationInProgress && !this._ShellListView.IsSearchNavigating)
+			  SetupUIOnSelectOrNavigate();
 			if (this.IsInfoPaneEnabled) Task.Run(() => this.DetailsPanel.FillPreviewPane(this._ShellListView));
 			SetUpStatusBarOnSelectOrNavigate(_ShellListView.GetSelectedCount());
 		}

@@ -355,7 +355,7 @@ namespace BetterExplorer
             GC.WaitForPendingFinalizers();
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
             {
-                BExplorer.Shell.Interop.Shell32.SetProcessWorkingSetSize(System.Diagnostics.Process.GetCurrentProcess().Handle, -1, -1);
+              BExplorer.Shell.Interop.Shell32.SetProcessWorkingSetSize(System.Diagnostics.Process.GetCurrentProcess().Handle, -1, -1);
             }
         }
 

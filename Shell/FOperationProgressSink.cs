@@ -25,12 +25,12 @@ namespace BExplorer.Shell {
 		}
 
 		public override void UpdateProgress(uint iWorkTotal, uint iWorkSoFar) {
-			base.UpdateProgress(iWorkTotal, iWorkSoFar);
+			//base.UpdateProgress(iWorkTotal, iWorkSoFar);
 			if (iWorkSoFar == iWorkTotal) {
 		  	//this._View.UnvalidateDirectory();
 			}
 		}
-		public override void PreDeleteItem(uint dwFlags, IShellItem psiItem) => base.PreDeleteItem(dwFlags, psiItem);
+		public override void PreDeleteItem(uint dwFlags, IShellItem psiItem) { }
 
 		[HandleProcessCorruptedStateExceptions]
 		public override void PostDeleteItem(TRANSFER_SOURCE_FLAGS dwFlags, IShellItem psiItem, uint hrDelete, IShellItem psiNewlyCreated) {
@@ -43,8 +43,15 @@ namespace BExplorer.Shell {
 			  }
 			  theNewItem.Dispose();
 			}
+		  //if (psiItem != null) {
+		  //  Marshal.FinalReleaseComObject(psiItem);
+		  //}
 
-		}
+    //  if (psiNewlyCreated != null) {
+    //    Marshal.FinalReleaseComObject(psiNewlyCreated);
+    //  }
+      //Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+    }
 
 		public override void PreCopyItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName) {
 			this._View.IsSupressedTumbGeneration = true;
@@ -64,8 +71,17 @@ namespace BExplorer.Shell {
 			      Shell32.HChangeNotifyFlags.SHCNF_IDLIST | Shell32.HChangeNotifyFlags.SHCNF_FLUSH, theNewItem.PIDL, IntPtr.Zero);
 			    theNewItem.Dispose();
 			  }
+        destination.Dispose();
 			}
-		}
+      //if (psiItem != null) {
+      //  Marshal.FinalReleaseComObject(psiItem);
+      //}
+
+      //if (psiNewlyCreated != null) {
+      //  Marshal.FinalReleaseComObject(psiNewlyCreated);
+      //}
+      //Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+    }
 
 		[HandleProcessCorruptedStateExceptions]
 		public override void PostMoveItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName, uint hrMove, IShellItem psiNewlyCreated) {
@@ -85,7 +101,8 @@ namespace BExplorer.Shell {
 			    theNewItem.Dispose();
 			  }
 			}
-		}
+      //Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+    }
 
 		public override void PreMoveItem(uint dwFlags, IShellItem psiItem, IShellItem psiDestinationFolder, string pszNewName) {
 			this._View.IsSupressedTumbGeneration = true;
