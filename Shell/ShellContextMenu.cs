@@ -72,7 +72,7 @@ namespace BExplorer.Shell {
 	public class ShellContextMenu {
 
 		#region Locals
-		const int m_CmdFirst = 0x8000;
+		const uint m_CmdFirst = 0x8000;
 		MessageWindow m_MessageWindow;
 		IContextMenu m_ComInterface;
 		IContextMenu2 m_ComInterface2;
@@ -210,7 +210,7 @@ namespace BExplorer.Shell {
 		/// <param name="menu">The menu to populate.</param>
 		/// <param name="additionalFlags"></param>
 		public void Populate(Menu menu, CMF additionalFlags) {
-			m_ComInterface.QueryContextMenu(menu.Handle, 0, m_CmdFirst, int.MaxValue, CMF.EXPLORE | additionalFlags | (Control.ModifierKeys == Keys.Shift ? CMF.EXTENDEDVERBS : 0));
+			m_ComInterface.QueryContextMenu(menu.Handle, 0, (int)m_CmdFirst, int.MaxValue, CMF.EXPLORE | additionalFlags | (Control.ModifierKeys == Keys.Shift ? CMF.EXTENDEDVERBS : 0));
 		}
 
 		/// <summary>
@@ -330,7 +330,7 @@ namespace BExplorer.Shell {
 					byte[] bytes = new byte[256];
 					int index;
 
-					m_ComInterface.GetCommandString(command - m_CmdFirst, 4, 0, bytes, 260);
+					m_ComInterface.GetCommandString(command - (int)m_CmdFirst, 4, 0, bytes, 260);
 
 					index = 0;
 					while (index < bytes.Length - 1 && (bytes[index] != 0 || bytes[index + 1] != 0)) { index += 2; }
@@ -339,17 +339,20 @@ namespace BExplorer.Shell {
 						info = Encoding.Unicode.GetString(bytes, 0, index);
 
 					switch (info) {
+            case "open":
+					    (control as ShellView)?.OpenOrNavigateItem();
+					    break;
 						case "rename":
-							if (control is ShellView) (control as ShellView).RenameSelectedItem();
-							break;
+					    (control as ShellView)?.RenameSelectedItem();
+					    break;
 						case "cut":
-							if (control is ShellView) (control as ShellView).CutSelectedFiles();
-							break;
+					    (control as ShellView)?.CutSelectedFiles();
+					    break;
 						case "copy":
-							if (control is ShellView) (control as ShellView).CopySelectedFiles();
-							break;
+					    (control as ShellView)?.CopySelectedFiles();
+					    break;
 						default:
-							InvokeCommand(command - m_CmdFirst, pos);
+							InvokeCommand((IntPtr)(command - m_CmdFirst), pos, (IntPtr)(command - m_CmdFirst));
 							break;
 					}
 				}
@@ -392,11 +395,11 @@ namespace BExplorer.Shell {
 					Populate(menu, CMF.EXPLORE);
 					int command = User32.TrackPopupMenuEx(menu.Handle, TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle, IntPtr.Zero);
 					if (command > 0) {
-						int cmdID = command - m_CmdFirst;
-						var verb = cmdID == 1 ? "newFolder" : cmdID == 2 ? ".lnk" : newItems[cmdID - 3];
-						var item = Marshal.StringToHGlobalAuto(verb);
+						var cmdID = command - m_CmdFirst;
+						var verb = cmdID == 1 ? "newFolder" : cmdID == 2 ? ".lnk" : newItems[(int)cmdID - 3];
+						var item = Marshal.StringToHGlobalUni(verb);
 						this._ShellView.IsRenameNeeded = true;
-						InvokeCommand((int)item, pos);
+						InvokeCommand(item, pos, Marshal.StringToHGlobalAnsi(verb));
 					}
 				}
 				return 0;
@@ -409,7 +412,7 @@ namespace BExplorer.Shell {
 								submenuHandle == IntPtr.Zero ? menu.Handle : submenuHandle, TPM.TPM_RETURNCMD, pos.X, pos.Y, m_MessageWindow.Handle, IntPtr.Zero
 						);
 
-						if (command > 0) InvokeCommand(command - m_CmdFirst, pos);
+						if (command > 0) InvokeCommand((IntPtr)(command - m_CmdFirst), pos, (IntPtr)(command - m_CmdFirst));
 					}
 
 					return User32.GetMenuItemCount(submenuHandle == IntPtr.Zero ? menu.Handle : submenuHandle);
@@ -619,16 +622,16 @@ namespace BExplorer.Shell {
 			}
 			m_MessageWindow = new MessageWindow(this);
 		}
-
-		void InvokeCommand(int command, Point pt) {
+    
+		void InvokeCommand(IntPtr command, Point pt, IntPtr ansiCommand) {
 			const int SW_SHOWNORMAL = 1;
 			var invoke = new CMINVOKECOMMANDINFOEX();
 			invoke.cbSize = Marshal.SizeOf(invoke);
 			invoke.nShow = SW_SHOWNORMAL;
-			invoke.fMask = (int)(CMIC.Unicode | CMIC.PtInvoke);
-			invoke.lpVerb = (IntPtr)(command);
-			invoke.lpVerbW = (IntPtr)(command);
-			invoke.ptInvoke = pt;
+			invoke.fMask = (int)(CMIC.FlagNoUi | CMIC.Unicode);
+			invoke.lpVerb = ansiCommand;
+			invoke.lpVerbW = command;
+			//invoke.ptInvoke = pt;
 			m_ComInterface.InvokeCommand(ref invoke);
 		}
 

@@ -1891,6 +1891,19 @@ namespace BExplorer.Shell {
 
 			var il = new F.ImageList() { ImageSize = new System.Drawing.Size(48, 48) };
 			var ils = new F.ImageList() { ImageSize = new System.Drawing.Size(16, 16) };
+		  this._SearchTimer.Interval = 750;
+		  this._SearchTimer.Enabled = false;
+		  this._SearchTimer.Tick += (sender, args) => {
+		    this.smre.Reset();
+        this.Items = this.Items.OrderBy(o => o.DisplayName).ToList();
+        //for (int j = 0; j < this.Items.Count; j++) {
+        //  this.Items[j].ItemIndex = j;
+        //}
+		    this._IIListView.SetItemCount(this.Items.Count, 0x2);
+        this.smre.Set();
+      };
+      this._SearchTimer.Stop();
+
 			var icc = new ComCtl32.INITCOMMONCONTROLSEX() { dwSize = Marshal.SizeOf(typeof(ComCtl32.INITCOMMONCONTROLSEX)), dwICC = 1 };
 			var res = ComCtl32.InitCommonControlsEx(ref icc);
 
@@ -2051,6 +2064,16 @@ namespace BExplorer.Shell {
 		#endregion Overrides
 
 		#region Public Methods
+
+	  public void OpenOrNavigateItem() {
+	    var selectedItem = this.GetFirstSelectedItem();
+	    if (selectedItem.IsFolder) {
+	      this.Navigate_Full(selectedItem, true, true, false);
+	    }
+	    else {
+	      Process.Start(selectedItem.ParsingName);
+	    }
+	  }
 
 		public int GetGroupIndex(int itemIndex) {
 			if (itemIndex == -1 || itemIndex >= this.Items.Count) return -1;
@@ -2504,12 +2527,12 @@ namespace BExplorer.Shell {
 
 			//if (ToolTip == null) this.ToolTip = new ToolTip(this);
 			resetEvent.Set();
-			var searchCondition = SearchConditionFactory.ParseStructuredQuery(query);
+			var searchCondition = SearchConditionFactory.ParseStructuredQuery(this.PrepareSearchQuery(query));
 			var shellItem = new ShellItem(this.CurrentFolder.PIDL);
 			var searchFolder = new ShellSearchFolder(searchCondition, shellItem);
 			IListItemEx searchItem = null;
 			searchItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, searchFolder);
-			Navigate(searchItem, isInSameTab, refresh, this.IsNavigationInProgress);
+			this.NavigateSearch(searchItem, isInSameTab, refresh, this.IsNavigationInProgress);
 		}
 
 		public void UnvalidateDirectory() {
@@ -2528,6 +2551,14 @@ namespace BExplorer.Shell {
 				worker();
 		}
 
+	  private String PrepareSearchQuery(String query) {
+	    var prefix = "System.Generic.String:";
+	    if (query.StartsWith("*.")) prefix = "fileextension:";
+	    if (query.Contains(":")) prefix = String.Empty;
+	    return prefix + query;
+
+	  }
+
 		private IListItemEx _RequestedCurrentLocation { get; set; }
 		private List<String> _TemporaryFiles = new List<String>();
 		private Boolean IsDisplayEmptyText = false;
@@ -2535,16 +2566,22 @@ namespace BExplorer.Shell {
 		public Boolean IsViewSelectionAllowed = true;
 		ManualResetEvent mre = new ManualResetEvent(false);
 		private HashSet<IntPtr> _AddedItems = new HashSet<IntPtr>();
-		/// <summary>
-		/// Navigate to a folder.
-		/// </summary>
-		/// <param name="destination">The folder you want to navigate to.</param>
-		/// <param name="isInSameTab"></param>
-		/// <param name="refresh">Should the List be Refreshed?</param>
-		/// <param name="isCancel">  this.IsNavigationCancelRequested = isCancel</param>
-		[SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
+    private F.Timer _SearchTimer = new F.Timer();
+    ManualResetEvent smre = new ManualResetEvent(false);
+    /// <summary>
+    /// Navigate to a folder.
+    /// </summary>
+    /// <param name="destination">The folder you want to navigate to.</param>
+    /// <param name="isInSameTab"></param>
+    /// <param name="refresh">Should the List be Refreshed?</param>
+    /// <param name="isCancel">  this.IsNavigationCancelRequested = isCancel</param>
+    [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
 		[HandleProcessCorruptedStateExceptions]
 		private void Navigate(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false, bool isCancel = false) {
+      //if (destination.IsNetworkPath) {
+      //  this.NavigateNet(destination, isInSameTab, refresh, isCancel);
+      //  return;
+      //}
 			SaveSettingsToDatabase(this.CurrentFolder);
 			//TODO: Document isCancel Param better
 			if (destination == null) return;
@@ -2788,7 +2825,14 @@ namespace BExplorer.Shell {
 											: o.GetPropertyValue(column.pkey, typeof(String)).Value.ToString(), NaturalStringComparer.Default);
 					}
 				}
-				foreach (var shellItem in this.IsSearchNavigating ? destination.TakeWhile(shellItem => !this.IsCancelRequested) : content.TakeWhile(shellItem => !this.IsCancelRequested)) {
+        if (this.IsSearchNavigating) {
+          this.Invoke((Action)(() => {
+            if (!this._SearchTimer.Enabled) {
+              this._SearchTimer.Start();
+            }
+          }));
+        }
+        foreach (var shellItem in destination.IsNetworkPath ? destination.TakeWhile(shellItem => !this.IsCancelRequested) : content.TakeWhile(shellItem => !this.IsCancelRequested)) {
 					CurrentI++;
 					if (CurrentI == 1) {
 						isFailed = false;
@@ -2810,9 +2854,9 @@ namespace BExplorer.Shell {
 					var delta = CurrentI - LastI;
 					if (delta >= (this.IsSearchNavigating ? 1 : 5000)) {
 						LastI = CurrentI;
-						this.BeginInvoke((Action)(() => {
-              this._IIListView.SetItemCount(this.Items.Count, 0x2);	
-						}));
+						//this.BeginInvoke((Action)(() => {
+      //        this._IIListView.SetItemCount(this.Items.Count, 0x2);	
+						//}));
 					}
           if (this.IsSearchNavigating && delta >= 20)
             Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -2822,7 +2866,11 @@ namespace BExplorer.Shell {
 				this.IsDisplayEmptyText = true;
 
 				if (this._RequestedCurrentLocation.NavigationStatus != HResult.S_OK) {
-					GC.Collect();
+          this.Invoke((Action)(() => {
+            if (this._SearchTimer.Enabled)
+              this._SearchTimer.Stop();
+          }));
+          GC.Collect();
 					Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
 					if (this.Threads.Count <= 1) return;
 					mre.Set();
@@ -2846,9 +2894,9 @@ namespace BExplorer.Shell {
 
 				if (isThereSettings) {
 					if (columns?.ID == "A0" && String.Equals(this._RequestedCurrentLocation.ParsingName, KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase))
-						this.SetSortCollumn(this.IsSearchNavigating, this.AvailableColumns().Single(s => s.ID == "A180"), SortOrder.Ascending, false);
+						this.SetSortCollumn(destination.IsNetworkPath, this.AvailableColumns().Single(s => s.ID == "A180"), SortOrder.Ascending, false);
 					else
-						this.SetSortCollumn(this.IsSearchNavigating, columns, folderSettings.SortOrder, false);
+						this.SetSortCollumn(destination.IsNetworkPath, columns, folderSettings.SortOrder, false);
 				} else if (String.Equals(this._RequestedCurrentLocation.ParsingName, KnownFolders.Computer.ParsingName, StringComparison.InvariantCultureIgnoreCase)) {
 					this.Items = this.Items.OrderBy(o => o.ParsingName).ToList();
 					var i = 0;
@@ -2883,8 +2931,10 @@ namespace BExplorer.Shell {
 
 				GC.Collect();
 				Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
-
-
+			  this.Invoke((Action) (() => {
+          if (this._SearchTimer.Enabled)
+			      this._SearchTimer.Stop();
+			  }));
 				mre.Reset();
 				mre.WaitOne();
 				this.Focus();
@@ -2896,7 +2946,307 @@ namespace BExplorer.Shell {
 
 		}
 
-		public void DisableGroups() {
+    private void NavigateSearch(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false, bool isCancel = false) {
+      SaveSettingsToDatabase(this.CurrentFolder);
+      //TODO: Document isCancel Param better
+      if (destination == null) return;
+      //destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
+      if (this._RequestedCurrentLocation == destination && !refresh) return;
+      if (this._RequestedCurrentLocation != destination) {
+        //this.IsCancelRequested = true;
+      }
+
+      resetEvent.Set();
+
+
+      if (this.Threads.Count > 0) {
+        mre.Set();
+        this.resetEvent.Set();
+        foreach (var thread in this.Threads.ToArray()) {
+          thread.Abort();
+          this.Threads.Remove(thread);
+        }
+
+      }
+      //var fileSystemChangesThread = new Thread(() => {
+
+      this._UnvalidateTimer.Stop();
+      this.IsDisplayEmptyText = false;
+      User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
+      this.DisableGroups();
+
+      this.ItemForRename = -1;
+      this.LastItemForRename = -1;
+     
+      Items.Clear();
+      this._AddedItems.Clear();
+      ItemsForSubitemsUpdate.Clear();
+      waitingThumbnails.Clear();
+      overlayQueue.Clear();
+      shieldQueue.Clear();
+      this._CuttedIndexes.Clear();
+      this.SubItemValues.Clear();
+      this._RequestedCurrentLocation = destination;
+      if (!refresh)
+        Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab));
+
+      var columns = new Collumns();
+      var isFailed = true;
+      int CurrentI = 0, LastI = 0, K = 0;
+      this.IsNavigationInProgress = true;
+
+
+
+      _ResetTimer.Stop();
+     
+        this.RemoveAllCollumns();
+        this.AddDefaultColumns(false, true);
+     
+
+      this.IsViewSelectionAllowed = true;
+
+
+
+      var navigationThread = new Thread(() => {
+        destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
+        this._RequestedCurrentLocation = destination;
+          this.Invoke((Action)(() => {
+            if (!this._SearchTimer.Enabled) {
+              this._SearchTimer.Start();
+            }
+          }));
+        foreach (var shellItem in destination.TakeWhile(shellItem => !this.IsCancelRequested)) {
+          CurrentI++;
+          if (CurrentI == 1) {
+            isFailed = false;
+          }
+          smre.WaitOne();
+
+          if (this.ShowHidden || !shellItem.IsHidden) {
+            shellItem.ItemIndex = K++;
+            this.Items.Add(shellItem);
+          }
+
+
+          var delta = CurrentI - LastI;
+          if (delta >= (this.IsSearchNavigating ? 1 : 5000)) {
+            LastI = CurrentI;
+            //this.BeginInvoke((Action)(() => {
+            //        this._IIListView.SetItemCount(this.Items.Count, 0x2);	
+            //}));
+          }
+          if (this.IsSearchNavigating && delta >= 20)
+            Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+        }
+        this.IsCancelRequested = false;
+        this.IsNavigationInProgress = false;
+        this.IsDisplayEmptyText = true;
+
+        if (this._RequestedCurrentLocation.NavigationStatus != HResult.S_OK) {
+          this.Invoke((Action)(() => {
+            if (this._SearchTimer.Enabled)
+              this._SearchTimer.Stop();
+          }));
+          GC.Collect();
+          Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+          if (this.Threads.Count <= 1) return;
+          mre.Set();
+          this.resetEvent.Set();
+          this.Threads[0].Abort();
+          this.Threads.RemoveAt(0);
+          return;
+        }
+
+        var headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
+        for (var i = 0; i < this.Collumns.Count; i++) {
+          this.Collumns[i].SetSplitButton(headerhandle, i);
+        }
+
+        if (this.View != ShellViewStyle.Details) AutosizeAllColumns(-2);
+
+        var sortColIndex = 0;
+        if (sortColIndex > -1) this.SetSortIcon(sortColIndex, SortOrder.Ascending);
+
+         this.SetSortCollumn(false, this.Collumns.First(), SortOrder.Ascending, false);
+         
+
+
+        this.BeginInvoke((Action)(() => {
+          var navArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
+          this.CurrentFolder = this._RequestedCurrentLocation;
+          if (!refresh)
+            Navigated?.Invoke(this, navArgs);
+        }));
+
+
+        GC.Collect();
+        Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+        this.Invoke((Action)(() => {
+          if (this._SearchTimer.Enabled)
+            this._SearchTimer.Stop();
+        }));
+        mre.Reset();
+        mre.WaitOne();
+        this.Focus();
+      });
+      navigationThread.SetApartmentState(ApartmentState.STA);
+      this.Threads.Add(navigationThread);
+      navigationThread.Start();
+
+
+    }
+
+    private void NavigateNet(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false, bool isCancel = false) {
+      SaveSettingsToDatabase(this.CurrentFolder);
+      //TODO: Document isCancel Param better
+      if (destination == null) return;
+      //destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
+      if (this._RequestedCurrentLocation == destination && !refresh) return;
+      if (this._RequestedCurrentLocation != destination) {
+        //this.IsCancelRequested = true;
+      }
+
+      resetEvent.Set();
+
+
+      if (this.Threads.Count > 0) {
+        mre.Set();
+        this.resetEvent.Set();
+        foreach (var thread in this.Threads.ToArray()) {
+          thread.Abort();
+          this.Threads.Remove(thread);
+        }
+
+      }
+      //var fileSystemChangesThread = new Thread(() => {
+
+      this._UnvalidateTimer.Stop();
+      this.IsDisplayEmptyText = false;
+      User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
+      this.DisableGroups();
+
+      this.ItemForRename = -1;
+      this.LastItemForRename = -1;
+
+      Items.Clear();
+      this._AddedItems.Clear();
+      ItemsForSubitemsUpdate.Clear();
+      waitingThumbnails.Clear();
+      overlayQueue.Clear();
+      shieldQueue.Clear();
+      this._CuttedIndexes.Clear();
+      this.SubItemValues.Clear();
+      this._RequestedCurrentLocation = destination;
+      if (!refresh)
+        Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab));
+
+      var columns = new Collumns();
+      var isFailed = true;
+      int CurrentI = 0, LastI = 0, K = 0;
+      this.IsNavigationInProgress = true;
+
+
+
+      _ResetTimer.Stop();
+
+      this.RemoveAllCollumns();
+      this.AddDefaultColumns(false, true);
+
+
+      this.IsViewSelectionAllowed = true;
+
+
+
+      var navigationThread = new Thread(() => {
+        destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
+        this._RequestedCurrentLocation = destination;
+        this.Invoke((Action)(() => {
+          if (!this._SearchTimer.Enabled) {
+            this._SearchTimer.Start();
+          }
+        }));
+        foreach (var shellItem in destination.TakeWhile(shellItem => !this.IsCancelRequested)) {
+          CurrentI++;
+          if (CurrentI == 1) {
+            isFailed = false;
+          }
+          smre.WaitOne();
+
+          if (this.ShowHidden || !shellItem.IsHidden) {
+            shellItem.ItemIndex = K++;
+            this.Items.Add(shellItem);
+          }
+
+
+          var delta = CurrentI - LastI;
+          if (delta >= (this.IsSearchNavigating ? 1 : 5000)) {
+            LastI = CurrentI;
+            //this.BeginInvoke((Action)(() => {
+            //        this._IIListView.SetItemCount(this.Items.Count, 0x2);	
+            //}));
+          }
+          if (this.IsSearchNavigating && delta >= 20)
+            Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+        }
+        this.IsCancelRequested = false;
+        this.IsNavigationInProgress = false;
+        this.IsDisplayEmptyText = true;
+
+        if (this._RequestedCurrentLocation.NavigationStatus != HResult.S_OK) {
+          this.Invoke((Action)(() => {
+            if (this._SearchTimer.Enabled)
+              this._SearchTimer.Stop();
+          }));
+          GC.Collect();
+          Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+          if (this.Threads.Count <= 1) return;
+          mre.Set();
+          this.resetEvent.Set();
+          this.Threads[0].Abort();
+          this.Threads.RemoveAt(0);
+          return;
+        }
+
+        var headerhandle = User32.SendMessage(this.LVHandle, Interop.MSG.LVM_GETHEADER, 0, 0);
+        for (var i = 0; i < this.Collumns.Count; i++) {
+          this.Collumns[i].SetSplitButton(headerhandle, i);
+        }
+
+        if (this.View != ShellViewStyle.Details) AutosizeAllColumns(-2);
+
+        var sortColIndex = 0;
+        if (sortColIndex > -1) this.SetSortIcon(sortColIndex, SortOrder.Ascending);
+
+        this.SetSortCollumn(false, this.Collumns.First(), SortOrder.Ascending, false);
+
+
+
+        this.BeginInvoke((Action)(() => {
+          var navArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
+          this.CurrentFolder = this._RequestedCurrentLocation;
+          if (!refresh)
+            Navigated?.Invoke(this, navArgs);
+        }));
+
+
+        GC.Collect();
+        Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
+        this.Invoke((Action)(() => {
+          if (this._SearchTimer.Enabled)
+            this._SearchTimer.Stop();
+        }));
+        mre.Reset();
+        mre.WaitOne();
+        this.Focus();
+      });
+      navigationThread.SetApartmentState(ApartmentState.STA);
+      this.Threads.Add(navigationThread);
+      navigationThread.Start();
+
+
+    }
+
+    public void DisableGroups() {
 			if (!this.IsGroupsEnabled) return;
 			this.Groups.Clear();
 			this._IIListView.RemoveAllGroups();
@@ -3386,7 +3736,7 @@ namespace BExplorer.Shell {
 				this.Invoke(new MethodInvoker(() => {
 					var mainWin = System.Windows.Application.Current.MainWindow;
 					if (mainWin.IsActive || !isActiveCheck) {
-						if (IsFocusAllowed) User32.SetFocus(this.LVHandle);
+						if (IsFocusAllowed && this.Bounds.Contains(Cursor.Position)) User32.SetFocus(this.LVHandle);
 					}
 				}));
 			}
