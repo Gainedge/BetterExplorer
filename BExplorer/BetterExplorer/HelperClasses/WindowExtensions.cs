@@ -14,8 +14,6 @@ namespace BetterExplorer {
 	}
 
 	public static class WindowExtensions {
-		public static System.Windows.Forms.IWin32Window GetWin32Window(this Window parent) {
-			return new Wpf32Window(parent);
-		}
+		public static System.Windows.Forms.IWin32Window GetWin32Window(this Window parent)  => new Wpf32Window(parent);
 	}
 }

@@ -3161,7 +3161,7 @@ item.IsChecked = false;
 				size += (long)sqrbi.i64Size;
 			}
 
-			Dispatcher.Invoke(WIN.Threading.DispatcherPriority.Background,
+			Dispatcher.Invoke(DispatcherPriority.Background,
 					(Action)(() => {
 							//var rbItems = rb.ToArray();
 

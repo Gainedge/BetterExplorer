@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security;
 using System.Security.Cryptography;
 
 namespace BetterExplorer.Networks {
