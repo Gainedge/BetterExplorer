@@ -1895,13 +1895,13 @@ namespace BExplorer.Shell {
 		  this._SearchTimer.Enabled = false;
 		  this._SearchTimer.Tick += (sender, args) => {
 		    this.smre.Reset();
-        this.Items = this.Items.OrderBy(o => o.DisplayName).ToList();
-        //for (int j = 0; j < this.Items.Count; j++) {
-        //  this.Items[j].ItemIndex = j;
-        //}
+		    this.Items = this.Items.OrderBy(o => o.DisplayName).ToList();
+		    for (int j = 0; j < this.Items.Count; j++) {
+		      this.Items[j].ItemIndex = j;
+		    }
 		    this._IIListView.SetItemCount(this.Items.Count, 0x2);
-        this.smre.Set();
-      };
+		    this.smre.Set();
+		  };
       this._SearchTimer.Stop();
 
 			var icc = new ComCtl32.INITCOMMONCONTROLSEX() { dwSize = Marshal.SizeOf(typeof(ComCtl32.INITCOMMONCONTROLSEX)), dwICC = 1 };
@@ -2567,7 +2567,7 @@ namespace BExplorer.Shell {
 		ManualResetEvent mre = new ManualResetEvent(false);
 		private HashSet<IntPtr> _AddedItems = new HashSet<IntPtr>();
     private F.Timer _SearchTimer = new F.Timer();
-    ManualResetEvent smre = new ManualResetEvent(false);
+    ManualResetEvent smre = new ManualResetEvent(true);
     /// <summary>
     /// Navigate to a folder.
     /// </summary>
