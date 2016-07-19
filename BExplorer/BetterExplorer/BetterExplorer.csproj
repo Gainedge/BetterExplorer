@@ -225,6 +225,7 @@
     <Compile Include="Customize\RibbonItemListDisplay.xaml.cs">
       <DependentUpon>RibbonItemListDisplay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HelperClasses\SafeThread.cs" />
     <Compile Include="HelperClasses\Utilities.cs" />
     <Compile Include="HelperClasses\WindowExtensions.cs" />
     <Compile Include="PieChart\PieChart\ColourConverter.cs">
@@ -308,7 +309,6 @@
     <Compile Include="MoreColumns.Designer.cs">
       <DependentUpon>MoreColumns.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelperClasses\SafeThread.cs" />
     <Compile Include="ConditionalSelect\StringSearchCriteriaDialog.xaml.cs">
       <DependentUpon>StringSearchCriteriaDialog.xaml</DependentUpon>
     </Compile>
