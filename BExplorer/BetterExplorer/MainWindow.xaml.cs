@@ -26,7 +26,6 @@ using System.Windows.Shell;
 using System.Windows.Threading;
 using System.Xml;
 using System.Xml.Linq;
-using BetterExplorer.Networks;
 using BetterExplorer.UsbEject;
 using BetterExplorerControls;
 using BEHelper;
@@ -56,9 +55,6 @@ namespace BetterExplorer
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Fluent.RibbonWindow {
-
-		[Obsolete("Try to remove. Items are added and removed but this has no functionality")]
-		NetworkAccountManager nam = new NetworkAccountManager();
 
 		#region DLLImports
 
@@ -3300,63 +3296,6 @@ return false;
 			}
 
 			UpdateRecycleBinInfos();
-		}
-
-		#endregion
-
-		#region Networks and Accounts ("Sharing Options")
-
-		private void btnAddWebServer_Click(object sender, RoutedEventArgs e) {
-			var asw = new AddServer() { Owner = this };
-			asw.ShowDialog();
-			if (asw.yep) {
-				NetworkItem ni = asw.GetNetworkItem();
-				nam.Add(ni);
-				var ui = new ServerItem();
-				ui.RequestRemove += ui_RequestRemove;
-				ui.RequestEdit += ui_RequestEdit;
-				ui.LoadFromNetworkItem(ni);
-				//pnlServers.Children.Add(ui);
-			}
-		}
-
-		void ui_RequestEdit(object sender, NetworkItemEventArgs e) {
-			var asw = new Networks.AddServer() { Owner = this };
-			asw.ImportNetworkItem(e.NetworkItem);
-			asw.ShowDialog();
-			if (asw.yep) {
-				nam.Remove(e.NetworkItem);
-				//pnlServers.Children.Remove(sender as ServerItem);
-				NetworkItem ni = asw.GetNetworkItem();
-				nam.Add(ni);
-				var ui = new ServerItem();
-				ui.RequestRemove += ui_RequestRemove;
-				ui.RequestEdit += ui_RequestEdit;
-				ui.LoadFromNetworkItem(ni);
-				//pnlServers.Children.Add(ui);
-			}
-		}
-
-		void ui_RequestRemove(object sender, NetworkItemEventArgs e) {
-			if (MessageBox.Show("Are you sure you want to remove this account?", "Remove Account", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes) {
-				nam.Remove(e.NetworkItem);
-				//pnlServers.Children.Remove(sender as ServerItem);
-			}
-		}
-
-		private void btnAddStorageService_Click(object sender, RoutedEventArgs e) {
-			var aaw = new AccountAuthWindow();
-			aaw.LoadStorageServices();
-			aaw.LoadSocialMediaServices();
-			aaw.Owner = this;
-			aaw.ShowDialog();
-		}
-
-		private void btnAddSocialMedia_Click(object sender, RoutedEventArgs e) {
-			var aaw = new AccountAuthWindow();
-			aaw.LoadSocialMediaServices();
-			aaw.Owner = this;
-			aaw.ShowDialog();
 		}
 
 		#endregion

@@ -233,42 +233,9 @@
     <Compile Include="MountIso.xaml.cs">
       <DependentUpon>MountIso.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Networks\ActionResult.cs" />
     <Compile Include="RunExeAsUser.xaml.cs">
       <DependentUpon>RunExeAsUser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Networks\AccountAuthWindow.xaml.cs">
-      <DependentUpon>AccountAuthWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Networks\AddAccountEntry.xaml.cs">
-      <DependentUpon>AddAccountEntry.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Networks\AddServer.xaml.cs">
-      <DependentUpon>AddServer.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Networks\AccountData.cs" />
-    <Compile Include="Networks\AuthWindow.xaml.cs">
-      <DependentUpon>AuthWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Networks\Common.cs" />
-    <Compile Include="Networks\BackButton.xaml.cs">
-      <DependentUpon>BackButton.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Networks\DropBoxAccount.cs" />
-    <Compile Include="Networks\FTPSserver.cs" />
-    <Compile Include="Networks\FileSystem\Directory.cs" />
-    <Compile Include="Networks\FileSystem\File.cs" />
-    <Compile Include="Networks\FileSystem\FileSystemObject.cs" />
-    <Compile Include="Networks\FileSystem\NetworkFileSystem.cs" />
-    <Compile Include="Networks\FileSystem\SymbolicLink.cs" />
-    <Compile Include="Networks\FTPserver.cs" />
-    <Compile Include="Networks\NetworkItem.cs" />
-    <Compile Include="Networks\ServerItem.xaml.cs">
-      <DependentUpon>ServerItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Networks\SkyDriveAccount.cs" />
-    <Compile Include="Networks\SocialMedia\Pastebin.cs" />
-    <Compile Include="Networks\WebDAVserver.cs" />
     <Compile Include="PieChart\BaseWPFHelpers.cs" />
     <Compile Include="PieChart\PieChart\IColorSelector.cs" />
     <Compile Include="PieChart\PieChart\IndexedColourSelector.cs" />
@@ -392,30 +359,6 @@
     <Page Include="RunExeAsUser.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Networks\AccountAuthWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Networks\AddAccountEntry.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Networks\AddServer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Networks\AuthWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Networks\BackButton.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Networks\ServerItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PieChart\PieChart\Legend.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1006,12 +949,6 @@
     <Content Include="Ionic.Zip.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Networks\add.ico" />
-    <Resource Include="Networks\back.png" />
-    <Resource Include="Networks\Icons\dropbox.png" />
-    <Resource Include="Networks\Icons\pastebin.png" />
-    <Content Include="Networks\SkyDrive\Microsoft.Live.dll" />
-    <Content Include="Networks\SkyDrive\Microsoft.Live.Web.dll" />
     <Content Include="TAFactory.IconPack.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
