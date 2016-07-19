@@ -3186,12 +3186,15 @@
 				<ColumnDefinition x:Name="breadcrumbBarColumn" Width="484*" MinWidth="200" />
 				<ColumnDefinition x:Name="SearchBarColumn" Width="219" MinWidth="150" />
 			</Grid.ColumnDefinitions>
-			<odc:BreadcrumbBar x:Name="bcbc" Focusable="True" TraceBinding="{Binding DisplayName}" ImageBinding="{Binding Thumbnail.SmallBitmapSource}" BreadcrumbItemDropDownOpened="bcbc_BreadcrumbItemDropDownOpened" BreadcrumbItemDropDownClosed="bcbc_BreadcrumbItemDropDownClosed" OnNavigate="OnBreadcrumbbarNavigate" OnEditModeToggle="bcbc_OnEditModeToggle">
+      <odc:BreadcrumbBar x:Name="bcbc" Focusable="True" TraceBinding="{Binding DisplayName}" ImageBinding="{Binding Thumbnail.SmallBitmapSource}" BreadcrumbItemDropDownOpened="bcbc_BreadcrumbItemDropDownOpened" BreadcrumbItemDropDownClosed="bcbc_BreadcrumbItemDropDownClosed" OnNavigate="OnBreadcrumbbarNavigate" OnEditModeToggle="bcbc_OnEditModeToggle">
 				<odc:BreadcrumbBar.Buttons>
-					<Button Click="btnRefresh_Click">
+					<Button x:Name="btnGoNavigation" Click="btnRefresh_Click">
 						<Image Source="Images\Refresh16.png" Stretch="None" />
 					</Button>
-				</odc:BreadcrumbBar.Buttons>
+          <Button x:Name="btnCancelNavigation" Click="btnCancel_Click" Visibility="Collapsed">
+            <Image Source="Images\cancel.png" Stretch="None" />
+          </Button>
+        </odc:BreadcrumbBar.Buttons>
 				<odc:BreadcrumbBar.DropDownItems>
 				</odc:BreadcrumbBar.DropDownItems>
 			</odc:BreadcrumbBar>

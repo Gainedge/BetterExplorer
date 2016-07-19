@@ -3047,6 +3047,12 @@ namespace BExplorer.Shell {
             if (this._SearchTimer.Enabled)
               this._SearchTimer.Stop();
           }));
+          this.BeginInvoke((Action)(() => {
+            var navArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
+            this.CurrentFolder = this._RequestedCurrentLocation;
+            if (!refresh)
+              Navigated?.Invoke(this, navArgs);
+          }));
           GC.Collect();
           Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
           if (this.Threads.Count <= 1) return;
@@ -3244,6 +3250,20 @@ namespace BExplorer.Shell {
       navigationThread.Start();
 
 
+    }
+
+	  public void CancelNavigation() {
+      this._SearchTimer.Stop();
+	    this.IsCancelRequested = true;
+      if (this.Threads.Count > 0) {
+        mre.Set();
+        this.resetEvent.Set();
+        foreach (var thread in this.Threads.ToArray()) {
+          thread.Abort();
+          this.Threads.Remove(thread);
+        }
+
+      }
     }
 
     public void DisableGroups() {

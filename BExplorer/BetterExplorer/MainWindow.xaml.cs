@@ -113,6 +113,7 @@ namespace BetterExplorer
 		ContextMenu chcm;
 
 		WIN.Forms.Timer focusTimer = new WIN.Forms.Timer() { Interval = 500 };
+    private WIN.Forms.Timer _ProgressTimer  = new WIN.Forms.Timer() { Interval = 1000, Enabled = false };
 
 		#endregion
 		public IntPtr Handle;
@@ -1552,7 +1553,14 @@ namespace BetterExplorer
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e) {
-			TheRibbon.UpdateLayout();
+		  this._ProgressTimer.Tick += (obj, args) => {
+		    if (this.bcbc.ProgressValue + 2 == this.bcbc.ProgressMaximum) {
+		      this.bcbc.ProgressMaximum = this.bcbc.ProgressMaximum + 2;
+		    }
+		    this.bcbc.SetProgressValue(this.bcbc.ProgressValue + 2, TimeSpan.FromMilliseconds(450));
+		  };
+      this._ProgressTimer.Stop();
+      TheRibbon.UpdateLayout();
 			this.grdItemTextColor.ItemsSource = this.LVItemsColorCol;
 			_keyjumpTimer.Interval = 1000;
 			_keyjumpTimer.Tick += _keyjumpTimer_Tick;
@@ -3456,6 +3464,9 @@ return false;
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 				
 			if (this._ShellListView.CurrentFolder == null) return;
+      this.btnCancelNavigation.Visibility = Visibility.Visible;
+      this.btnGoNavigation.Visibility = Visibility.Collapsed;
+      this._ProgressTimer.Start();
 			if (!e.Folder.IsSearchFolder) {
 				this.bcbc.SetPathWithoutNavigate(e.Folder.IsSearchFolder
 					? e.Folder.PIDL.ToString()
@@ -3563,7 +3574,10 @@ return false;
 		#region On Navigated
 
 		void ShellListView_Navigated(object sender, NavigatedEventArgs e) {
-			SetupUIOnSelectOrNavigate();
+      this._ProgressTimer.Stop();
+      this.btnCancelNavigation.Visibility = Visibility.Collapsed;
+      this.btnGoNavigation.Visibility = Visibility.Visible;
+      SetupUIOnSelectOrNavigate();
 
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				SetupColumnsButton();
@@ -3634,8 +3648,16 @@ return false;
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				SetUpStatusBarOnSelectOrNavigate(_ShellListView.SelectedItems == null ? 0 : _ShellListView.GetSelectedCount());
 			}));
-
-			this._ShellListView.Focus();
+      //Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart) (() => {
+      //    Thread.Sleep(1500);
+      if (this.bcbc.ProgressValue > 2)
+        this.bcbc.SetProgressValue(this.bcbc.ProgressMaximum, TimeSpan.FromMilliseconds(750));
+      else 
+        this.bcbc.SetProgressValue(0, TimeSpan.FromSeconds(0));
+      this.bcbc.ProgressMaximum = 100;
+      //this.bcbc.SetProgressValue(0, TimeSpan.FromSeconds(0));
+		  //}));
+      this._ShellListView.Focus();
 		}
 
 		private void SetupUIonNavComplete(NavigatedEventArgs e) {
@@ -4186,9 +4208,19 @@ We could easily move this to another project and send that method
 			return rb;
 		}
 
-		private void btnRefresh_Click(object sender, RoutedEventArgs e) {
-			var da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 1, 100))) { FillBehavior = FillBehavior.Stop };
-			this.bcbc.BeginAnimation(Odyssey.Controls.BreadcrumbBar.ProgressValueProperty, da);
+	  private void btnCancel_Click(object sender, RoutedEventArgs e) {
+	    this._ShellListView.CancelNavigation();
+      this._ProgressTimer.Stop();
+      this.bcbc.SetProgressValue(this.bcbc.ProgressMaximum, TimeSpan.FromMilliseconds(750));
+	    this.bcbc.ProgressMaximum = 100;
+      this.btnCancelNavigation.Visibility = Visibility.Collapsed;
+      this.btnGoNavigation.Visibility = Visibility.Visible;
+	  }
+
+
+	  private void btnRefresh_Click(object sender, RoutedEventArgs e) {
+			//var da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 1, 100))) { FillBehavior = FillBehavior.Stop };
+			//this.bcbc.BeginAnimation(Odyssey.Controls.BreadcrumbBar.ProgressValueProperty, da);
 
 			_ShellListView.RefreshContents();
 			SetSortingAndGroupingButtons();

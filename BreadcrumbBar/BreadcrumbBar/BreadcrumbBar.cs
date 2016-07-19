@@ -14,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using BExplorer.Shell;
 using BExplorer.Shell._Plugin_Interfaces;
@@ -926,6 +927,17 @@ namespace Odyssey.Controls {
 				if (this.OnEditModeToggle != null) this.OnEditModeToggle.Invoke(comboBox, new EditModeToggleEventArgs(true));
 			}
 		}
+
+	  public void SetProgressValue(double value, Duration duration) {
+      DoubleAnimation animation = new DoubleAnimation(this.ProgressValue, value, duration) { FillBehavior = FillBehavior.HoldEnd };
+      animation.Completed += (s, e) =>
+      {
+        if (value == this.ProgressMaximum) {
+          this.SetProgressValue(0, TimeSpan.FromMilliseconds(0));
+        }
+      };
+      this.BeginAnimation(BreadcrumbBar.ProgressValueProperty, animation, HandoffBehavior.Compose);
+    }
 
 		private void comboBox_DropDownClosed(object sender, EventArgs e) {
 			IsDropDownOpen = false;
