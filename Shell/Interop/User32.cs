@@ -18,18 +18,14 @@
 //
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Linq;
-using System.Threading;
-using System.Windows;
-using System.Windows.Interop;
-using Microsoft.API;
 using Point = System.Drawing.Point;
 
-namespace BExplorer.Shell.Interop {
+namespace BExplorer.Shell.Interop
+{
 	[Flags]
 	public enum LVIF : int {
 		LVIF_TEXT = 0x0001,

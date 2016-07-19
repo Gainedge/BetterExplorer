@@ -96,8 +96,9 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="TAFactory.IconPack">
-      <HintPath>..\BExplorer\BetterExplorer\TAFactory.IconPack.dll</HintPath>
+    <Reference Include="TAFactory.IconPack, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\BExplorer\External References\TAFactory.IconPack.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
