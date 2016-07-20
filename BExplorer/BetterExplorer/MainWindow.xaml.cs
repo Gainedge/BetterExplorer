@@ -3403,14 +3403,12 @@ return false;
 		void ShellListView_Navigating(object sender, NavigatingEventArgs e) {
 				
 			if (this._ShellListView.CurrentFolder == null) return;
-      this.btnCancelNavigation.Visibility = Visibility.Visible;
-      this.btnGoNavigation.Visibility = Visibility.Collapsed;
-      this._ProgressTimer.Start();
-			if (!e.Folder.IsSearchFolder) {
-				this.bcbc.SetPathWithoutNavigate(e.Folder.IsSearchFolder
-					? e.Folder.PIDL.ToString()
-					: e.Folder.ParsingName.ToShellParsingName());
-			}
+		  Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => {
+		    this.btnCancelNavigation.Visibility = Visibility.Visible;
+		    this.btnGoNavigation.Visibility = Visibility.Collapsed;
+		    this._ProgressTimer.Start();
+		  }));
+      this.bcbc.SetPathWithoutNavigate(e.Folder.PIDL.ToString());
 			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
 				
 				var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;

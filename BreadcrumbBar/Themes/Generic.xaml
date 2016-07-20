@@ -21,8 +21,8 @@
 		<GradientStop Color="White" Offset="0" />
 		<GradientStop Color="#FFCECECE" Offset="1" />
 	</LinearGradientBrush>
-	<SolidColorBrush x:Key="borderBrush" Color="#C0000000"/>
-	<SolidColorBrush x:Key="borderShadowBrush" Color="#60000000"/>
+  <SolidColorBrush x:Key="borderBrush" Color="#FFCECECE"/>
+	<SolidColorBrush x:Key="borderShadowBrush" Color="#60777777"/>
 	<BooleanToVisibilityConverter x:Key="boolToVisible"/>
 	<ImageSourceConverter x:Key="imgConverter"/>
 
@@ -238,6 +238,7 @@
                                              Minimum="{Binding ProgressMinimum,RelativeSource={RelativeSource TemplatedParent}}" 
                                              Value="{Binding ProgressValue,RelativeSource={RelativeSource TemplatedParent}}" 
                                              Background="Transparent"
+                                             Foreground="LightGreen"
                                              BorderThickness="0"
                                              />
 							

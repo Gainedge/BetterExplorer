@@ -7,8 +7,8 @@
 			 xmlns:my="clr-namespace:Fluent;assembly=Fluent" 
 			 xmlns:local="clr-namespace:BetterExplorerControls"
 			 Height="24" 
-			 BorderBrush="Black" 
-			 Background="#A0FFFFFF" 
+			 BorderBrush="#FFCECECE" 
+			 Background="White" 
 			 BorderThickness="1" 
 			 Focusable="True">
 	<Grid>

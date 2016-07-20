@@ -929,10 +929,10 @@ namespace Odyssey.Controls {
 		}
 
 	  public void SetProgressValue(double value, Duration duration) {
-      DoubleAnimation animation = new DoubleAnimation(this.ProgressValue, value, duration) { FillBehavior = FillBehavior.HoldEnd };
+      DoubleAnimation animation = new DoubleAnimation(this.ProgressValue, value, duration) { FillBehavior = Math.Abs(value - this.ProgressMaximum) < 0.5 ? FillBehavior.Stop : FillBehavior.HoldEnd };
       animation.Completed += (s, e) =>
       {
-        if (value == this.ProgressMaximum) {
+        if (Math.Abs(value - this.ProgressMaximum) < 0.5) {
           this.SetProgressValue(0, TimeSpan.FromMilliseconds(0));
         }
       };
