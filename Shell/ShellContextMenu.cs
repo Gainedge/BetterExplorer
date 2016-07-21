@@ -41,7 +41,7 @@ namespace BExplorer.Shell {
 	/// </para>
 	/// 
 	/// <para>
-	/// To display a popup menu, simply call <see cref="ShowContextMenu"/>
+	/// To display a popup menu, simply call ShowContextMenu(...)/>
 	/// with the parent control and the position at which the menu should
 	/// be shown.
 	/// </para>

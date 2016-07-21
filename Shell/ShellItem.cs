@@ -1012,7 +1012,6 @@ return info.iIcon;
 		/// <param name="name">
 		/// The name of the child item.
 		/// </param>
-		[Obsolete("Inline", false)]
 		public ShellItem(ShellItem parent, string name) {
 			if (parent.IsFileSystem) {
 				// If the parent folder is in the file system, our best
@@ -1160,19 +1159,7 @@ return info.iIcon;
 		// then GetHashCode() must return the same value for these objects.
 
 		public int GetHashCode(IListItemEx product) {
-			//TODO: Clean this Dead Code!!
 			return 0;
-			//Check whether the object is null
-			if (Object.ReferenceEquals(product, null)) return 0;
-
-			//Get hash code for the Name field if it is not null.
-			int hashProductName = product.ParsingName == null ? 0 : product.ParsingName.GetHashCode();
-
-			////Get hash code for the Code field.
-			//int hashProductCode = product.Code.GetHashCode();
-
-			//Calculate the hash code for the product.
-			return hashProductName;
 		}
 	}
 }

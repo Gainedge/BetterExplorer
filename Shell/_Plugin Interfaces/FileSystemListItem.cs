@@ -409,18 +409,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 		public bool Equals(IListItemEx x, IListItemEx y) => x.Equals(y);
 
 		public int GetHashCode(IListItemEx obj) {
-			//TODO: Deal With Dead Code!!
 			return 0;
-			if (Object.ReferenceEquals(obj, null)) return 0;
-
-			//Get hash code for the Name field if it is not null.
-			int hashProductName = obj.ParsingName == null ? 0 : obj.ParsingName.GetHashCode();
-
-			////Get hash code for the Code field.
-			//int hashProductCode = product.Code.GetHashCode();
-
-			//Calculate the hash code for the product.
-			return hashProductName;
 		}
 
 		#endregion

@@ -1552,8 +1552,11 @@ namespace BetterExplorer
 		  this._ProgressTimer.Tick += (obj, args) => {
 		    if (this.bcbc.ProgressValue + 2 == this.bcbc.ProgressMaximum) {
 		      this.bcbc.ProgressMaximum = this.bcbc.ProgressMaximum + 2;
+          this.bcbc.SetProgressValue(this.bcbc.ProgressValue + 2, TimeSpan.FromMilliseconds(0));
+        }
+		    else {
+		      this.bcbc.SetProgressValue(this.bcbc.ProgressValue + 2, TimeSpan.FromMilliseconds(450));
 		    }
-		    this.bcbc.SetProgressValue(this.bcbc.ProgressValue + 2, TimeSpan.FromMilliseconds(450));
 		  };
       this._ProgressTimer.Stop();
       TheRibbon.UpdateLayout();

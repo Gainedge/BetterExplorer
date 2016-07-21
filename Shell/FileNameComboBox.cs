@@ -137,7 +137,7 @@ namespace BExplorer.Shell
             path = Path.GetDirectoryName(Text);
             pattern = Path.GetFileName(Text);
 
-            if (path == null || path == string.Empty && ShellView != null && ShellView.CurrentFolder.IsFileSystem && ShellView.CurrentFolder != ShellItem.Desktop)
+            if (path == null || path == string.Empty && ShellView != null && ShellView.CurrentFolder.IsFileSystem && ShellView.CurrentFolder.ParsingName != ShellItem.Desktop.ParsingName)
             {
                 path = ShellView.CurrentFolder.FileSystemPath;
                 pattern = Text;

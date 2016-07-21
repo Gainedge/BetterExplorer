@@ -258,7 +258,7 @@ namespace BExplorer.Shell.Interop
             if (shellItemNative == null) return IntPtr.Zero;
             // Create a size structure to pass to the native method
             var nativeSIZE = new Size() { Width = Convert.ToInt32(size.Width), Height = Convert.ToInt32(size.Height) };
-          var nativeItem = isCopyItem && !this._Item.IsSearchFolder
+          var nativeItem = isCopyItem && !this._Item.IsSearchFolder && this._Item.Extension != String.Empty && this._Item.Extension != ".search-ms"
             ? new ShellItem(this._Item.CachedParsingName.ToShellParsingName()).ComInterface
             : shellItemNative; 
 
@@ -276,14 +276,6 @@ namespace BExplorer.Shell.Interop
 
             try
             {
-                //for (int y = 0; y <= bmpData.Height - 1; y++)
-                //{
-                //    for (int x = 0; x <= bmpData.Width - 1; x++)
-                //    {
-                //        Color pixelColor = Color.FromArgb(Marshal.ReadInt32(bmpData.Scan0, (bmpData.Stride * y) + (4 * x)));
-                //        if (pixelColor.A >= 0 & pixelColor.A <= 255) return true;
-                //    }
-                //}
                 byte[] bytes = new byte[bmpData.Height * bmpData.Stride];
                 Marshal.Copy(bmpData.Scan0, bytes, 0, bytes.Length);
                 for (var p = 3; p < bytes.Length; p += 4) {

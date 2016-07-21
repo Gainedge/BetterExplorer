@@ -671,7 +671,7 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		private async void ShellTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
+		private void ShellTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e) {
 			if (e.Action == TreeViewAction.Collapse)
 				this._AcceptSelection = false;
 			if (e.Action == TreeViewAction.Expand) {

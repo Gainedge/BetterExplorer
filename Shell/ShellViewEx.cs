@@ -414,6 +414,7 @@ namespace BExplorer.Shell {
 		private ListViewEditor _EditorSubclass;
 		private F.Timer _UnvalidateTimer = new F.Timer();
 		private F.Timer _MaintenanceTimer = new F.Timer();
+	  private F.Timer _NavWaitTimer = new F.Timer() {Interval = 450, Enabled = false};
 		private string _DBPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite");
 		private List<int> SelectedIndexes {
 			get {
@@ -1321,15 +1322,18 @@ namespace BExplorer.Shell {
 					#endregion
 
 					var nmhdr = (NMHDR)m.GetLParam(typeof(NMHDR));
-					switch ((int)nmhdr.code) {
+					switch (nmhdr.code) {
 						case WNM.LVN_GETEMPTYMARKUP:
-							//if (this.IsDisplayEmptyText) {
-							//	var nmlvem = (NMLVEMPTYMARKUP) m.GetLParam(typeof (NMLVEMPTYMARKUP));
-							//	nmlvem.dwFlags = 0x1;
-							//	nmlvem.szMarkup = "There is no Items to display!";
-							//	Marshal.StructureToPtr(nmlvem, m.LParam, false);
-							//	m.Result = (IntPtr) 1;
-							//}
+					    if (this.IsDisplayEmptyText) {
+					      var nmlvem = (NMLVEMPTYMARKUP) m.GetLParam(typeof(NMLVEMPTYMARKUP));
+					      nmlvem.dwFlags = 0x1;
+					      nmlvem.szMarkup = "Working on it...";
+					      Marshal.StructureToPtr(nmlvem, m.LParam, false);
+					      m.Result = (IntPtr) 1;
+					    }
+					    else {
+                m.Result = IntPtr.Zero;
+              }
 							break;
 						case WNM.LVN_ENDLABELEDITW:
 							#region Case
@@ -1885,17 +1889,27 @@ namespace BExplorer.Shell {
 		  this._SearchTimer.Interval = 750;
 		  this._SearchTimer.Enabled = false;
 		  this._SearchTimer.Tick += (sender, args) => {
-		    this.smre.Reset();
-		    this.Items = this.Items.OrderBy(o => o.DisplayName).ToList();
-		    for (int j = 0; j < this.Items.Count; j++) {
-		      this.Items[j].ItemIndex = j;
+		    if (this.Items.Count > 0) {
+		      this.smre.Reset();
+		      this.Items = this.Items.OrderBy(o => o.DisplayName).ToList();
+          for (int j = 0; j < this.Items.Count; j++) {
+            this.Items[j].ItemIndex = j;
+          }
+          this._IIListView.SetItemCount(this.Items.Count, 0x2);
+		      this.smre.Set();
 		    }
-		    this._IIListView.SetItemCount(this.Items.Count, 0x2);
-		    this.smre.Set();
 		  };
       this._SearchTimer.Stop();
 
-			var icc = new ComCtl32.INITCOMMONCONTROLSEX() { dwSize = Marshal.SizeOf(typeof(ComCtl32.INITCOMMONCONTROLSEX)), dwICC = 1 };
+		  this._NavWaitTimer.Tick += (sender, args) => {
+		    this.BeginInvoke((Action) (() => {
+		      this.IsDisplayEmptyText = true;
+		      this._IIListView.ResetEmptyText();
+		    }));
+		  };
+      this._NavWaitTimer.Stop();
+
+      var icc = new ComCtl32.INITCOMMONCONTROLSEX() { dwSize = Marshal.SizeOf(typeof(ComCtl32.INITCOMMONCONTROLSEX)), dwICC = 1 };
 			var res = ComCtl32.InitCommonControlsEx(ref icc);
 
 			this.LVHandle = User32.CreateWindowEx(0, "SysListView32", "", User32.WindowStyles.WS_CHILD | User32.WindowStyles.WS_CLIPCHILDREN | User32.WindowStyles.WS_CLIPSIBLINGS |
@@ -1930,7 +1944,6 @@ namespace BExplorer.Shell {
 			var iid = typeof(IListView).GUID;
 			User32.SendMessage(this.LVHandle, 0x10BD, ref iid, out iiListViewPrt);
 			this._IIListView = (IListView)Marshal.GetTypedObjectForIUnknown(iiListViewPrt, typeof(IListView));
-
 
 			this._IIListView.SetSelectionFlags(1, 1);
 
@@ -2777,8 +2790,10 @@ namespace BExplorer.Shell {
 
 			this.IsViewSelectionAllowed = true;
 
-
-
+      this.Invoke((Action) (() => {
+        this._NavWaitTimer.Start();
+      }));
+      
 			var navigationThread = new Thread(() => {
 				destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
 				this._RequestedCurrentLocation = destination;
@@ -2832,6 +2847,13 @@ namespace BExplorer.Shell {
 					if (this.ShowHidden || !shellItem.IsHidden) {
 						shellItem.ItemIndex = K++;
 						this.Items.Add(shellItem);
+					  if (CurrentI == 1) {
+					    this.Invoke((Action) (() => {
+					      this._NavWaitTimer.Stop();
+                this.IsDisplayEmptyText = false;
+					      this._IIListView.ResetEmptyText();
+					    }));
+					  }
 					}
 
 
@@ -2844,7 +2866,6 @@ namespace BExplorer.Shell {
         }
 				this.IsCancelRequested = false;
 				this.IsNavigationInProgress = false;
-				this.IsDisplayEmptyText = true;
 
 				if (this._RequestedCurrentLocation.NavigationStatus != HResult.S_OK) {
           this.Invoke((Action)(() => {
@@ -2901,7 +2922,7 @@ namespace BExplorer.Shell {
 					User32.SendMessage(this.LVHandle, MSG.LVM_SETSELECTEDCOLUMN, 0, 0);
 				}
 
-
+			  this.IsDisplayEmptyText = false;
 				this.BeginInvoke((Action)(() => {
 					var navArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
 					this.CurrentFolder = this._RequestedCurrentLocation;
@@ -2977,7 +2998,9 @@ namespace BExplorer.Shell {
     this.AddDefaultColumns(false, true);     
 
       this.IsViewSelectionAllowed = true;
-
+      this.Invoke((Action)(() => {
+        this._NavWaitTimer.Start();
+      }));
       var navigationThread = new Thread(() => {
         destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
         this._RequestedCurrentLocation = destination;
@@ -2993,6 +3016,13 @@ namespace BExplorer.Shell {
           if (this.ShowHidden || !shellItem.IsHidden) {
             shellItem.ItemIndex = K++;
             this.Items.Add(shellItem);
+            if (CurrentI == 1) {
+              this.Invoke((Action)(() => {
+                this._NavWaitTimer.Stop();
+                this.IsDisplayEmptyText = false;
+                this._IIListView.ResetEmptyText();
+              }));
+            }
           }
 
 
@@ -3005,7 +3035,6 @@ namespace BExplorer.Shell {
         }
         this.IsCancelRequested = false;
         this.IsNavigationInProgress = false;
-        this.IsDisplayEmptyText = true;
 
         if (this._RequestedCurrentLocation.NavigationStatus != HResult.S_OK) {
           this.Invoke((Action)(() => {
@@ -3151,7 +3180,6 @@ namespace BExplorer.Shell {
         }
         this.IsCancelRequested = false;
         this.IsNavigationInProgress = false;
-        this.IsDisplayEmptyText = true;
 
         if (this._RequestedCurrentLocation.NavigationStatus != HResult.S_OK) {
           this.Invoke((Action)(() => {
@@ -3415,7 +3443,6 @@ namespace BExplorer.Shell {
 					return index < Items.Count && r.IntersectsWith(this.ClientRectangle);
 				else
 					return r.IntersectsWith(this.ClientRectangle);
-				return true;
 			}
 		}
 
