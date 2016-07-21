@@ -260,14 +260,6 @@ namespace Wpf.Controls {
 					child.Dimension = null;
 			}
 
-			//            var tabsCount = tc.GetTabsCount();
-			//            for (int i = 0; i < tabsCount; i++)
-			//            {
-			//                Header ti = tc.GetTabItem(i);
-			//                if (ti != null)
-			//                    ti.Dimension = null;
-			//            }
-
 			TabPanel tp = Helper.FindVirtualizingTabPanel(tc);
 			if (tp != null)
 				tp.InvalidateMeasure();
@@ -610,17 +602,6 @@ namespace Wpf.Controls {
 				return (ItemsSource as IList).IsFixedSize ? false : basevalue;
 			else
 				return false;
-
-			/*
-			if (ItemsSource != null) {
-				var list = ItemsSource as IList;
-				if (list != null) {
-					return list.IsFixedSize ? false : basevalue;
-				}
-				return false;
-			}
-			return basevalue;
-			*/
 		}
 
 		[Obsolete("Exactly the same as OnCoerceAllowAddNewCallback(...)")]
@@ -631,17 +612,6 @@ namespace Wpf.Controls {
 				return (ItemsSource as IList).IsFixedSize ? false : basevalue;
 			else
 				return false;
-
-			/*
-			if (ItemsSource != null) {
-				var list = ItemsSource as IList;
-				if (list != null) {
-					return list.IsFixedSize ? false : basevalue;
-				}
-				return false;
-			}
-			return basevalue;
-			*/
 		}
 
 

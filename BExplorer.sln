@@ -50,14 +50,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Odyssey.Controls", "Breadcr
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "TestProject", "TestProject\TestProject.vbproj", "{11D5F318-66D8-4F1F-83D7-7C917B66DF97}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FluentRibbon", "FluentRibbon", "{FF96A752-2FA1-449B-90EE-DC2E4A22E128}"
-	ProjectSection(SolutionItems) = preProject
-		FluentRibbon\ControlzEx.dll = FluentRibbon\ControlzEx.dll
-		FluentRibbon\Fluent.dll = FluentRibbon\Fluent.dll
-		FluentRibbon\MahApps.Metro.dll = FluentRibbon\MahApps.Metro.dll
-		FluentRibbon\System.Windows.Interactivity.dll = FluentRibbon\System.Windows.Interactivity.dll
-	EndProjectSection
-EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "XAML_Translations_Helper", "XAML_Translations_Helper\XAML_Translations_Helper.vbproj", "{A3CA4B97-17D3-43D7-B0AD-1A9D7821312C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBUpdater", "DBUpdater\DBUpdater.csproj", "{9567508E-8331-4A44-83EB-9D4D18B2E57A}"

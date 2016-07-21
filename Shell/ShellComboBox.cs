@@ -237,8 +237,7 @@ namespace BExplorer.Shell
 
         void CreateItems(ShellItem folder, int indent)
         {
-            IEnumerator<ShellItem> e = folder.GetEnumerator(
-                SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN);
+            IEnumerator<ShellItem> e = folder.GetEnumerator( SHCONTF.FOLDERS | SHCONTF.INCLUDEHIDDEN);
 
             while (e.MoveNext())
             {

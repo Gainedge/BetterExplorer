@@ -92,7 +92,7 @@ namespace BExplorer.Shell {
 						this.Dimentions = ((Math.Ceiling(Convert.ToDouble(clonedCurrentItem.GetPropertyValue(SystemProperties.FileSize, typeof(double)).Value)) / 1024).ToString("# ### ### ##0") + " KB (" + clonedCurrentItem.GetPropertyValue(MediaProperties.Dimensions, typeof (String)).Value.ToString() + " px )").Trim();
 						RaisePropertyChanged("Dimentions");
 					}
-					catch (NullReferenceException ex) { }
+					catch (NullReferenceException) { }
 					this.FileName = Path.GetFileName(clonedCurrentItem.ParsingName)?.Trim();
 					RaisePropertyChanged("FileName");
 				}

@@ -5,10 +5,10 @@ using System.Threading;
 using Microsoft.Win32.SafeHandles;
 
 namespace GS.Common.IO {
+
 	[Serializable]
 	public class OverlappedStreamException : IOException {
-		public OverlappedStreamException() {
-		}
+		public OverlappedStreamException() {}
 
 		public OverlappedStreamException(string message)
 			: base(message) {

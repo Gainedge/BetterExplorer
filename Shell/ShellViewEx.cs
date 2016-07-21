@@ -220,7 +220,7 @@ namespace BExplorer.Shell {
 
 		/// <summary>
 		/// Raised whenever a key is pressed, with the intention of doing a key jump. Please use
-		/// <see cref="KeyDown" /> to catch when any key is pressed.
+		/// KeyDown to catch when any key is pressed.
 		/// </summary>
 		public event KeyEventHandler KeyJumpKeyDown;
 
@@ -1755,7 +1755,7 @@ namespace BExplorer.Shell {
 				}
 				#endregion
 
-			} catch (Exception e) {
+			} catch {
 			}
 		}
 
@@ -1862,7 +1862,7 @@ namespace BExplorer.Shell {
 								}
 								break;
 						}
-					} catch (Exception ex) {
+					} catch {
 
 					}
 					Notifications.NotificationsReceived.Remove(info);
@@ -2652,7 +2652,7 @@ namespace BExplorer.Shell {
 										this.UnvalidateDirectory();
 								}
 							}
-						} catch (Exception ex) { }
+						} catch { }
 
 					};
 					this._FsWatcher.Deleted += (sender, args) => {
@@ -2719,7 +2719,6 @@ namespace BExplorer.Shell {
 				Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab));
 
 			var columns = new Collumns();
-			var isFailed = true;
 			int CurrentI = 0, LastI = 0, K = 0;
 			this.IsNavigationInProgress = true;
 
@@ -2834,14 +2833,8 @@ namespace BExplorer.Shell {
         }
         foreach (var shellItem in destination.IsNetworkPath ? destination.TakeWhile(shellItem => !this.IsCancelRequested) : content.TakeWhile(shellItem => !this.IsCancelRequested)) {
 					CurrentI++;
-					if (CurrentI == 1) {
-						isFailed = false;
-					}
-
-
 
 					if (!this._RequestedCurrentLocation.Equals(shellItem.Parent) && this.IsNavigationCancelRequested) {
-						isFailed = false;
 						return;
 					}
 
@@ -2854,9 +2847,6 @@ namespace BExplorer.Shell {
 					var delta = CurrentI - LastI;
 					if (delta >= (this.IsSearchNavigating ? 1 : 5000)) {
 						LastI = CurrentI;
-						//this.BeginInvoke((Action)(() => {
-      //        this._IIListView.SetItemCount(this.Items.Count, 0x2);	
-						//}));
 					}
           if (this.IsSearchNavigating && delta >= 20)
             Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -2948,12 +2938,9 @@ namespace BExplorer.Shell {
 
     private void NavigateSearch(IListItemEx destination, Boolean isInSameTab = false, bool refresh = false, bool isCancel = false) {
       SaveSettingsToDatabase(this.CurrentFolder);
-      //TODO: Document isCancel Param better
       if (destination == null) return;
-      //destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
       if (this._RequestedCurrentLocation == destination && !refresh) return;
       if (this._RequestedCurrentLocation != destination) {
-        //this.IsCancelRequested = true;
       }
 
       resetEvent.Set();
@@ -2968,7 +2955,6 @@ namespace BExplorer.Shell {
         }
 
       }
-      //var fileSystemChangesThread = new Thread(() => {
 
       this._UnvalidateTimer.Stop();
       this.IsDisplayEmptyText = false;
@@ -2991,21 +2977,15 @@ namespace BExplorer.Shell {
         Navigating?.Invoke(this, new NavigatingEventArgs(destination, isInSameTab));
 
       var columns = new Collumns();
-      var isFailed = true;
       int CurrentI = 0, LastI = 0, K = 0;
       this.IsNavigationInProgress = true;
 
-
-
-      _ResetTimer.Stop();
+    _ResetTimer.Stop();
      
-        this.RemoveAllCollumns();
-        this.AddDefaultColumns(false, true);
-     
+    this.RemoveAllCollumns();
+    this.AddDefaultColumns(false, true);     
 
       this.IsViewSelectionAllowed = true;
-
-
 
       var navigationThread = new Thread(() => {
         destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
@@ -3017,9 +2997,6 @@ namespace BExplorer.Shell {
           }));
         foreach (var shellItem in destination.TakeWhile(shellItem => !this.IsCancelRequested)) {
           CurrentI++;
-          if (CurrentI == 1) {
-            isFailed = false;
-          }
           smre.WaitOne();
 
           if (this.ShowHidden || !shellItem.IsHidden) {
@@ -3031,9 +3008,6 @@ namespace BExplorer.Shell {
           var delta = CurrentI - LastI;
           if (delta >= (this.IsSearchNavigating ? 1 : 5000)) {
             LastI = CurrentI;
-            //this.BeginInvoke((Action)(() => {
-            //        this._IIListView.SetItemCount(this.Items.Count, 0x2);	
-            //}));
           }
           if (this.IsSearchNavigating && delta >= 20)
             Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);
@@ -3075,8 +3049,6 @@ namespace BExplorer.Shell {
 
          this.SetSortCollumn(false, this.Collumns.First(), SortOrder.Ascending, false);
          
-
-
         this.BeginInvoke((Action)(() => {
           var navArgs = new NavigatedEventArgs(this._RequestedCurrentLocation, this.CurrentFolder, isInSameTab);
           this.CurrentFolder = this._RequestedCurrentLocation;
@@ -3106,11 +3078,7 @@ namespace BExplorer.Shell {
       SaveSettingsToDatabase(this.CurrentFolder);
       //TODO: Document isCancel Param better
       if (destination == null) return;
-      //destination = FileSystemListItem.ToFileSystemItem(destination.ParentHandle, destination.PIDL);
       if (this._RequestedCurrentLocation == destination && !refresh) return;
-      if (this._RequestedCurrentLocation != destination) {
-        //this.IsCancelRequested = true;
-      }
 
       resetEvent.Set();
 
@@ -3124,9 +3092,8 @@ namespace BExplorer.Shell {
         }
 
       }
-      //var fileSystemChangesThread = new Thread(() => {
 
-      this._UnvalidateTimer.Stop();
+			this._UnvalidateTimer.Stop();
       this.IsDisplayEmptyText = false;
       User32.SendMessage(this.LVHandle, Interop.MSG.LVM_SETITEMCOUNT, 0, 0);
       this.DisableGroups();
@@ -3187,9 +3154,6 @@ namespace BExplorer.Shell {
           var delta = CurrentI - LastI;
           if (delta >= (this.IsSearchNavigating ? 1 : 5000)) {
             LastI = CurrentI;
-            //this.BeginInvoke((Action)(() => {
-            //        this._IIListView.SetItemCount(this.Items.Count, 0x2);	
-            //}));
           }
           if (this.IsSearchNavigating && delta >= 20)
             Shell32.SetProcessWorkingSetSize(Process.GetCurrentProcess().Handle, -1, -1);

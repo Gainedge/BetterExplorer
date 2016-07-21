@@ -721,11 +721,9 @@ namespace BExplorer.Shell {
 						//return nodesTemp;
 						//});
 						this.BeginInvoke((Action)(() => {
-							if (node.Nodes.Count == 1 && node.Nodes[0].Text == _SearchingForFolders)
-								node.Nodes.RemoveAt(0);
+							if (node.Nodes.Count == 1 && node.Nodes[0].Text == _SearchingForFolders) node.Nodes.RemoveAt(0);
 							node.Nodes.AddRange(nodesTemp.ToArray());
-							if (lvSho != null)
-								this.SelItem(lvSho);
+							if (lvSho != null) this.SelItem(lvSho);
 						}));
 
 					});

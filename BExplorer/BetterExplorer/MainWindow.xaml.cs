@@ -3263,25 +3263,9 @@ item.IsChecked = false;
 		}
 
 		private bool DoVerb(FolderItem Item, string Verb) {
-			//TODO: Test
 			var Found = Item.Verbs().OfType<FolderItemVerb>().FirstOrDefault(FIVerb => FIVerb.Name.ToUpper().Contains(Verb.ToUpper()));
 			Found?.DoIt();
 			return Found != null;
-
-			/**********************************/
-			/**********************************/
-			/*
-foreach (FolderItemVerb FIVerb in Item.Verbs())
-{
-if (FIVerb.Name.ToUpper().Contains(Verb.ToUpper()))
-{
-	FIVerb.DoIt();
-	return true;
-}
-}
-
-return false;
-*/
 		}
 
 		private void miRestoreALLRB_Click(object sender, RoutedEventArgs e) {
@@ -3743,28 +3727,28 @@ return false;
 
 		public MainWindow() {
 			this.LVItemsColorCol = new ObservableCollectionEx<LVItemColor>();
-
 			this.CommandBindings.AddRange(new[]
 			{
-																new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click),
-																new CommandBinding(AppCommands.RoutedNavigateUp, btnUpLevel_Click),
-																new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox),
-																new CommandBinding(AppCommands.RoutedNewTab, (sender, e) => tcMain.NewTab()),
-																new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this._ShellListView.IsFocusAllowed = false; this.bcbc.SetInputState(); }),
-																new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {
-																				int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
-																				tcMain.SelectedItem = tcMain.Items[selIndex];
-																}),
-																new CommandBinding(AppCommands.RoutedCloseTab, (sender, e) => {
-																				if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
-																								Close();
-																								return;
-																				}
-																				int CurSelIndex = tcMain.SelectedIndex;
-																				tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
-																				tcMain.Items.RemoveAt(CurSelIndex);
-																})
-												});
+				new CommandBinding(AppCommands.RoutedNavigateBack, leftNavBut_Click),
+				new CommandBinding(AppCommands.RoutedNavigateUp, btnUpLevel_Click),
+				new CommandBinding(AppCommands.RoutedGotoSearch, GoToSearchBox),
+				new CommandBinding(AppCommands.RoutedNewTab, (sender, e) => tcMain.NewTab()),
+				new CommandBinding(AppCommands.RoutedEnterInBreadCrumbCombo, (sender, e) => { this._ShellListView.IsFocusAllowed = false; this.bcbc.SetInputState(); }),
+				new CommandBinding(AppCommands.RoutedChangeTab, (sender, e) => {
+					int selIndex = tcMain.SelectedIndex == tcMain.Items.Count - 1 ? 0 : tcMain.SelectedIndex + 1;
+					tcMain.SelectedItem = tcMain.Items[selIndex];
+				}),
+				new CommandBinding(AppCommands.RoutedCloseTab, (sender, e) => {
+					if (tcMain.SelectedIndex == 0 && tcMain.Items.Count == 1) {
+						Close();
+						return;
+					}
+
+					int CurSelIndex = tcMain.SelectedIndex;
+					tcMain.SelectedItem = tcMain.SelectedIndex == 0 ? tcMain.Items[1] : tcMain.Items[CurSelIndex - 1];
+					tcMain.Items.RemoveAt(CurSelIndex);
+				})
+			});
 
 			RegistryKey rk = Registry.CurrentUser;
 			RegistryKey rks = rk.OpenSubKey(@"Software\BExplorer", true);
@@ -3988,8 +3972,8 @@ return false;
 
 		private void btnTest_Click(object sender, RoutedEventArgs e) {
 			/*
-We could easily move this to another project and send that method			 
-*/
+			We could easily move this to another project and send that method			 
+			*/
 
 			//Following could be an example of what the most basic plugin could look like
 			//We could also separate plugins so they could be enabled WHEN
@@ -4145,20 +4129,17 @@ We could easily move this to another project and send that method
 			return rb;
 		}
 
-	  private void btnCancel_Click(object sender, RoutedEventArgs e) {
-	    this._ShellListView.CancelNavigation();
-      this._ProgressTimer.Stop();
-      this.bcbc.SetProgressValue(this.bcbc.ProgressMaximum, TimeSpan.FromMilliseconds(750));
-	    this.bcbc.ProgressMaximum = 100;
-      this.btnCancelNavigation.Visibility = Visibility.Collapsed;
-      this.btnGoNavigation.Visibility = Visibility.Visible;
-	  }
+		private void btnCancel_Click(object sender, RoutedEventArgs e) {
+			this._ShellListView.CancelNavigation();
+			this._ProgressTimer.Stop();
+			this.bcbc.SetProgressValue(this.bcbc.ProgressMaximum, TimeSpan.FromMilliseconds(750));
+			this.bcbc.ProgressMaximum = 100;
+			this.btnCancelNavigation.Visibility = Visibility.Collapsed;
+			this.btnGoNavigation.Visibility = Visibility.Visible;
+		}
 
 
 	  private void btnRefresh_Click(object sender, RoutedEventArgs e) {
-			//var da = new DoubleAnimation(100, new Duration(new TimeSpan(0, 0, 0, 1, 100))) { FillBehavior = FillBehavior.Stop };
-			//this.bcbc.BeginAnimation(Odyssey.Controls.BreadcrumbBar.ProgressValueProperty, da);
-
 			_ShellListView.RefreshContents();
 			SetSortingAndGroupingButtons();
 			SetupUIOnSelectOrNavigate();
