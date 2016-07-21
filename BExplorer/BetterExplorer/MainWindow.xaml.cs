@@ -914,12 +914,12 @@ namespace BetterExplorer
 
 		private void OpenCDTray(char DriveLetter) {
 			mciSendString($"open {DriveLetter}: type CDAudio alias drive{DriveLetter}", null, 0, IntPtr.Zero);
-			mciSendString($"set drive{DriveLetter} door closed", null, 0, IntPtr.Zero);
-		}
+      mciSendString($"set drive{DriveLetter} door open", null, 0, IntPtr.Zero);
+    }
 
 		private void CloseCDTray(char DriveLetter) {
-			mciSendString($"open {DriveLetter}: type CDAudio alias drive{DriveLetter}", null, 0, IntPtr.Zero);
-			mciSendString($"set drive{DriveLetter} door closed", null, 0, IntPtr.Zero);
+      mciSendString($"open {DriveLetter}: type CDAudio alias drive{DriveLetter}", null, 0, IntPtr.Zero);
+      mciSendString($"set drive{DriveLetter} door closed", null, 0, IntPtr.Zero);
 		}
 
 		private void btnOpenTray_Click(object sender, RoutedEventArgs e) {

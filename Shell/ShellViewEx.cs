@@ -1360,15 +1360,6 @@ namespace BExplorer.Shell {
 								if (nmlv.item.iSubItem == 0) {
 									try {
 										nmlv.item.pszText = this.View == ShellViewStyle.Tile ? String.Empty : currentItem.DisplayName;
-										//nmlv.item.pszText = currentItem.DisplayName;
-										//if (!String.IsNullOrEmpty(this._NewName) && this.GetFirstSelectedItemIndex() == nmlv.item.iItem && this.LastItemForRename == nmlv.item.iItem) {
-										//	nmlv.item.pszText = this._NewName;
-										//}
-										//else if (this.ItemForRealName_IsAny) {
-										//	if (this.GetFirstSelectedItemIndex() == nmlv.item.iItem) {
-										//		nmlv.item.pszText = String.Empty;
-										//	}
-										//}
 									} catch (Exception) {
 
 									}
@@ -2120,8 +2111,8 @@ namespace BExplorer.Shell {
 			}
 		}
 
-		public void RefreshItem(int index, Boolean IsForceRedraw = false, Boolean convertName = true) {
-			if (IsForceRedraw) {
+		public void RefreshItem(int index, Boolean isForceRedraw = false, Boolean convertName = true) {
+			if (isForceRedraw) {
 				try {
 					var newItem = FileSystemListItem.ToFileSystemItem(this.LVHandle, this.Items[index].PIDL);
 					newItem.GroupIndex = this.Items[index].GroupIndex;

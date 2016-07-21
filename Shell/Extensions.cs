@@ -32,7 +32,26 @@ namespace BExplorer.Shell {
 		public int iGroup;
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
+  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+  public struct LVITEM2 {
+    public uint mask;
+    public int iItem;
+    public int iSubItem;
+    public uint state;
+    public uint stateMask;
+    public IntPtr pszText;
+    public int cchTextMax;
+    public int iImage;
+    public IntPtr lParam;
+    public int iIndent;
+    public int iGroupId;
+    public int cColumns;
+    public IntPtr puColumns;
+    public int piColFmt;
+    public int iGroup;
+  }
+
+  [StructLayout(LayoutKind.Sequential)]
 	public struct NMHDR {
 		// 12/24
 		public IntPtr hwndFrom;
@@ -55,7 +74,13 @@ namespace BExplorer.Shell {
 		public LVITEM item;
 	}
 
-	public enum LVCF {
+  [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+  public struct NMLVDISPINFO2 {
+    public NMHDR hdr;
+    public LVITEM2 item;
+  }
+
+  public enum LVCF {
 		LVCF_FMT = 0x1,
 		LVCF_WIDTH = 0x2,
 		LVCF_TEXT = 0x4,

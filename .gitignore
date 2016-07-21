@@ -249,3 +249,4 @@ BExplorer/BetterExplorer/BEH32.lib
 *.tlog
 _ReSharper.Caches/
 packages/
+.idea.BExplorer/
