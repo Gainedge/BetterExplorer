@@ -130,24 +130,27 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AeroWizard">
-      <HintPath>..\External References\AeroWizard.dll</HintPath>
+      <HintPath>..\..\External References\AeroWizard.dll</HintPath>
     </Reference>
     <Reference Include="AutomaticUpdaterWPF, Version=2.6.18.4, Culture=neutral, PublicKeyToken=3dbca7c1b6b9ada2, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External References\AutomaticUpdaterWPF.dll</HintPath>
+      <HintPath>..\..\External References\AutomaticUpdaterWPF.dll</HintPath>
+    </Reference>
+    <Reference Include="ControlzEx">
+      <HintPath>..\..\External References\FluentRibbon\ControlzEx.dll</HintPath>
     </Reference>
     <Reference Include="Fluent, Version=3.5.1.198, Culture=neutral, PublicKeyToken=3e436e32a8c5546f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\FluentRibbon\Fluent.dll</HintPath>
+      <HintPath>..\..\External References\Fluent.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NAppUpdate.Framework, Version=0.1.0.0, Culture=neutral, PublicKeyToken=d1f1d1f19f9e5a56, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External References\NAppUpdate.Framework.dll</HintPath>
+      <HintPath>..\..\External References\NAppUpdate.Framework.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External References\NLog.dll</HintPath>
+      <HintPath>..\..\External References\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
@@ -174,7 +177,7 @@
     </Reference>
     <Reference Include="TAFactory.IconPack, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\External References\TAFactory.IconPack.dll</HintPath>
+      <HintPath>..\..\External References\TAFactory.IconPack.dll</HintPath>
     </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
@@ -183,7 +186,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsFormsIntegration" />
     <Reference Include="WPFLocalizeExtension">
-      <HintPath>..\External References\WPFLocalizeExtension.dll</HintPath>
+      <HintPath>..\..\External References\WPFLocalizeExtension.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -1087,7 +1090,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

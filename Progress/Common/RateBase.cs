@@ -26,7 +26,7 @@ namespace RateBar
 		/// </summary>
 		static RateBase()
 		{
-			RateChangedEvent = EventManager.RegisterRoutedEvent("RateChanged", RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<double>), typeof(RateBase));
+			RateChangedEvent = EventManager.RegisterRoutedEvent(nameof(RateChanged), RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<double>), typeof(RateBase));
 			RateProperty = DependencyProperty.Register("Rate", typeof(double), typeof(RateBase), new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.Journal | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(RateBase.OnRateChanged)), new ValidateValueCallback(RateBase.IsValidDoubleValue));
 			CaptionProperty = DependencyProperty.Register("Caption", typeof(String), typeof(RateBase), new PropertyMetadata(String.Empty, new PropertyChangedCallback(OnCaptionChanged)));
 			MinimumRateProperty = DependencyProperty.Register("RateMinimum", typeof(double), typeof(RateBase), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(RateBase.OnMinimumRateChanged)), new ValidateValueCallback(RateBase.IsValidDoubleValue));
@@ -68,6 +68,7 @@ namespace RateBar
 		#endregion
 
 		#region Events
+
 
 		/// <summary>
 		/// Occurs when the rate changes.
@@ -165,7 +166,7 @@ namespace RateBar
 		}
 
 		#endregion
-		
+
 		#region Methods
 
 		/// <summary>
@@ -177,10 +178,10 @@ namespace RateBar
 		{
 			RoutedPropertyChangedEventArgs<String> e = new RoutedPropertyChangedEventArgs<String>(oldValue, newValue);
 			e.RoutedEvent = CaptionChangedEvent;
-            if (e.RoutedEvent != null)
-            {
-                base.RaiseEvent(e);
-            }
+			if (e.RoutedEvent != null)
+			{
+				base.RaiseEvent(e);
+			}
 		}
 
 		/// <summary>
@@ -199,7 +200,7 @@ namespace RateBar
 			}
 			return value;
 		}
- 
+
 		/// <summary>
 		/// Called when the <see cref="P:System.Windows.Controls.Primitives.RangeBase.Maximum"/> property changes.
 		/// </summary>

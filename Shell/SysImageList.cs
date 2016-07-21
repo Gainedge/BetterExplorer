@@ -9,8 +9,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace BExplorer.Shell {
-	/// Win32APIðµ¤ÃINXB
-	/// </summary>
+
 	public static class Win32Api {
 		//[DllImport("shell32.dll", EntryPoint = "ExtractIconEx", CharSet = CharSet.Auto)]
 		//public static extern int ExtractIconEx([MarshalAs(UnmanagedType.LPTStr)] string file, int index, out IntPtr largeIconHandle, out IntPtr smallIconHandle, int icons);

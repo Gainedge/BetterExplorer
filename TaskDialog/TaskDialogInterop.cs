@@ -71,14 +71,22 @@ namespace TaskDialogInterop
 		/// Shield icon.
 		/// </summary>
 		Shield = 0xFFFC, // MAKEINTRESOURCEW(-4)
-    Stop = UInt16.MaxValue - 1,
-    Question = 0, //?
-    SecurityWarning = UInt16.MaxValue - 5,
-    SecurityError = UInt16.MaxValue - 6,
-    SecuritySuccess = UInt16.MaxValue - 7,
-    SecurityShield = UInt16.MaxValue - 3,
-    SecurityShieldBlue = UInt16.MaxValue - 4,
-    SecurityShieldGray = UInt16.MaxValue - 8
+		/// <summary></summary>
+		Stop = UInt16.MaxValue - 1,
+		/// <summary></summary>
+		Question = 0, //?
+					  /// <summary></summary>
+		SecurityWarning = UInt16.MaxValue - 5,
+		/// <summary></summary>
+		SecurityError = UInt16.MaxValue - 6,
+		/// <summary></summary>
+		SecuritySuccess = UInt16.MaxValue - 7,
+		/// <summary></summary>
+		SecurityShield = UInt16.MaxValue - 3,
+		/// <summary></summary>
+		SecurityShieldBlue = UInt16.MaxValue - 4,
+		/// <summary></summary>
+		SecurityShieldGray = UInt16.MaxValue - 8
   }
 
   /// <summary>

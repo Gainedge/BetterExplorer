@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace BExplorer.Shell {
+namespace BExplorer.Shell
+{
 	/// <summary>
 	/// Interaction logic for FileOperation.xaml
 	/// </summary>
