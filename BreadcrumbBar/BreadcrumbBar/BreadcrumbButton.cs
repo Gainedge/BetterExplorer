@@ -181,6 +181,7 @@ namespace Odyssey.Controls {
 			base.OnApplyTemplate();
 			Dispatcher.BeginInvoke(DispatcherPriority.Background, (ThreadStart)(() => {
 				var data = this.DataContext as ShellItem;
+			  if (data.DisplayName == "Search.search-ms") return;
 				if (data != null && data.CachedParsingName != KnownFolders.Computer.ParsingName && data.CachedParsingName != KnownFolders.Desktop.ParsingName) {
 					data = new ShellItem(data.CachedParsingName.ToShellParsingName());
 					if (data.IsSearchFolder) return;

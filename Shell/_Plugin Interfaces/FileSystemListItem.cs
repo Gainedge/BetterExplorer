@@ -98,7 +98,7 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 			this.IsFolder = folder.IsFolder;
 			this.IsSearchFolder = folder.IsSearchFolder;
 			this._Item = folder;
-			this._IconType = folder.GetIconType();
+			//this._IconType = folder.GetIconType();
 		}
 
 		private void Initialize_Helper2(ShellItem parent, IntPtr pidl, IntPtr lvHandle, int index) {

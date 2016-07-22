@@ -3394,9 +3394,17 @@ item.IsChecked = false;
 		    this.btnCancelNavigation.Visibility = Visibility.Visible;
 		    this.btnGoNavigation.Visibility = Visibility.Collapsed;
 		    this._ProgressTimer.Start();
-		  }));
-      this.bcbc.SetPathWithoutNavigate(e.Folder.PIDL.ToString());
-			Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
+        
+      }));
+
+      if (this.bcbc.RootItem.Items.OfType<ShellItem>().Last().IsSearchFolder) {
+        this.bcbc.RootItem.Items.RemoveAt(this.bcbc.RootItem.Items.Count - 1);
+      }
+
+      var pidl = e.Folder.PIDL.ToString();
+		    this.bcbc.SetPathWithoutNavigate(pidl);
+
+      Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
 				
 				var tab = tcMain.SelectedItem as Wpf.Controls.TabItem;
 				if (tab != null && this._ShellListView.GetSelectedCount() > 0) {
@@ -3410,16 +3418,21 @@ item.IsChecked = false;
 			}));
 
 			if (e.Folder.IsSearchFolder) {
-				Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
+				Dispatcher.Invoke(DispatcherPriority.Normal, (Action) (() => {
 					var selectedTabItem = tcMain.SelectedItem as Wpf.Controls.TabItem;
 					if (selectedTabItem != null) {
 						selectedTabItem.Header = e.Folder.DisplayName;
-						selectedTabItem.Icon = e.Folder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly, ShellThumbnailRetrievalOption.Default);
+						selectedTabItem.Icon = e.Folder.ThumbnailSource(16, ShellThumbnailFormatOption.IconOnly,
+							ShellThumbnailRetrievalOption.Default);
 						selectedTabItem.ShellObject = e.Folder;
 						selectedTabItem.ToolTip = e.Folder.ParsingName.Replace("%20", " ").Replace("%3A", ":").Replace("%5C", @"\");
 					}
 				}));
 			}
+			else {
+				edtSearchBox.ClearSearchText();
+			}
+			this._ShellListView.Focus();
 		}
 
 		void ShellTree_NodeClick(object sender, WIN.Forms.TreeNodeMouseClickEventArgs e) {
@@ -3581,6 +3594,7 @@ item.IsChecked = false;
       this.bcbc.ProgressMaximum = 100;
       //this.bcbc.SetProgressValue(0, TimeSpan.FromSeconds(0));
 		  //}));
+
       this._ShellListView.Focus();
 		}
 

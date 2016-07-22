@@ -205,8 +205,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Occurs after a BreadcrumbItem is created for which to apply additional properties.
 		/// </summary>
-		public event ApplyPropertiesEventHandler ApplyProperties
-		{
+		public event ApplyPropertiesEventHandler ApplyProperties {
 			add { AddHandler(BreadcrumbBar.ApplyPropertiesEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.ApplyPropertiesEvent, value); }
 		}
@@ -214,8 +213,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Occurs when the selected BreadcrumbItem is changed.
 		/// </summary>
-		public event RoutedEventHandler SelectedBreadcrumbChanged
-		{
+		public event RoutedEventHandler SelectedBreadcrumbChanged {
 			add { AddHandler(BreadcrumbBar.SelectedBreadcrumbChangedEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.SelectedBreadcrumbChangedEvent, value); }
 		}
@@ -247,8 +245,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets whether the selected breadcrumb is the RootItem.
 		/// </summary>
-		public bool IsRootSelected
-		{
+		public bool IsRootSelected {
 			get { return (bool)GetValue(IsRootSelectedProperty); }
 			private set { SetValue(IsRootSelectedPropertyKey, value); }
 		}
@@ -258,8 +255,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the root of the breadcrumb which can be a hierarchical data source or a BreadcrumbItem.
 		/// </summary>
-		public ShellItem Root
-		{
+		public ShellItem Root {
 			get { return (ShellItem)GetValue(RootProperty); }
 			set { SetValue(RootProperty, value); }
 		}
@@ -270,48 +266,45 @@ namespace Odyssey.Controls {
 		/// Gets or sets the selected path.
 		/// </summary>
 		/// <remarks>Nothing will be changed if the new path is the same as the old path</remarks>
-		public string Path
-		{
-			private get
-			{
+		public string Path {
+			private get {
 				return _Path;
 			}
-			set
-			{
+			set {
 				if (_Path == value) return;
 				_Path = value;
 				var isLoaded = false;
 
-				// Task.Run(() => {
-				if (IsInitialized) {
-					try {
-						Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
+				Task.Run(() => {
+					if (IsInitialized) {
+						try {
+							Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
+								isLoaded = IsLoaded;
+							}));
+						} catch (Exception) {
 							isLoaded = IsLoaded;
-						}));
-					} catch (Exception) {
-						isLoaded = IsLoaded;
-					}
-					var thread = new Thread(() => {
-						BuildBreadcrumbsFromPath(value);
+						}
 
-						if (isLoaded && !breadcrumbItemTraceValueChanged_IsFired && _Path != null) {
+						Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
+							BuildBreadcrumbsFromPath(value);
+						}));
+						if (isLoaded && !breadcrumbItemTraceValueChanged_IsFired && value != null) {
 							Int64 pidl;
-							bool isValidPidl = Int64.TryParse(_Path.TrimEnd(Char.Parse(@"\")), out pidl);
+							bool isValidPidl = Int64.TryParse(value.TrimEnd(Char.Parse(@"\")), out pidl);
 							try {
 								var item = isValidPidl ? FileSystemListItem.ToFileSystemItem(IntPtr.Zero, (IntPtr)pidl) : FileSystemListItem.ToFileSystemItem(IntPtr.Zero, _Path.ToShellParsingName());
-								if (item != null && this._ShouldNavigate)
-									OnNavigate(item);
-								else
+								if (item != null && this._ShouldNavigate) {
+									Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)(() => {
+										OnNavigate(item);
+									}));
+								} else
 									this._ShouldNavigate = true;
 							} catch (Exception) {
 								//FIXME: fix this exception in case of searchfolder!!!!
 							}
 						}
-					});
-					thread.SetApartmentState(ApartmentState.STA);
-					thread.Start();
-				}
-				//});
+					}
+				});
 			}
 		}
 		private Boolean _ShouldNavigate = true;
@@ -323,8 +316,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the selected item.
 		/// </summary>
-		public ShellItem SelectedItem
-		{
+		public ShellItem SelectedItem {
 			get { return (ShellItem)GetValue(SelectedItemProperty); }
 			private set { SetValue(SelectedItemProperty, value); }
 		}
@@ -332,8 +324,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets the collapsed traces.
 		/// </summary>
-		public IEnumerable CollapsedTraces
-		{
+		public IEnumerable CollapsedTraces {
 			get { return (IEnumerable)GetValue(CollapsedTracesProperty); }
 			private set { SetValue(CollapsedTracesPropertyKey, value); }
 		}
@@ -343,8 +334,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets the selected BreadcrumbItem
 		/// </summary>
-		public BreadcrumbItem SelectedBreadcrumb
-		{
+		public BreadcrumbItem SelectedBreadcrumb {
 			get { return (BreadcrumbItem)GetValue(SelectedBreadcrumbProperty); }
 			private set { SetValue(SelectedBreadcrumbPropertyKey, value); }
 		}
@@ -352,8 +342,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets the Root BreadcrumbItem.
 		/// </summary>
-		public BreadcrumbItem RootItem
-		{
+		public BreadcrumbItem RootItem {
 			get { return (BreadcrumbItem)GetValue(RootItemProperty); }
 			protected set { SetValue(RootItemPropertyKey, value); }
 		}
@@ -361,8 +350,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets whether the combobox dropdown is opened.
 		/// </summary>
-		public bool IsDropDownOpen
-		{
+		public bool IsDropDownOpen {
 			get { return (bool)GetValue(IsDropDownOpenProperty); }
 			set { SetValue(IsDropDownOpenProperty, value); }
 		}
@@ -391,8 +379,7 @@ namespace Odyssey.Controls {
 		/// Gets whether the dropdown has items.
 		/// </summary>
 		[Obsolete("I want to remove this and just have it always true")]
-		public bool HasDropDownItems
-		{
+		public bool HasDropDownItems {
 			get { return (bool)GetValue(HasDropDownItemsProperty); }
 			private set { SetValue(HasDropDownItemsProperty, value); }
 		}
@@ -458,85 +445,86 @@ namespace Odyssey.Controls {
 			try {
 				ShellItem shellItem = isValidPidl ? new ShellItem((IntPtr)pidl) : new ShellItem(RemoveLastEmptySeparator(newPathToShellParsingName));
 				if (shellItem == null) return;
-				Dispatcher.Invoke(DispatcherPriority.Normal, (Action)(() => {
-					BreadcrumbItem item = RootItem;
-					if (item == null) return;
 
-					newPath = RemoveLastEmptySeparator(newPath);
+				BreadcrumbItem item = RootItem;
+				if (item == null) return;
 
-					var traces = new List<ShellItem>() { shellItem };
-					while (shellItem != null && shellItem.Parent != null) {
-						traces.Add(shellItem.Parent);
-						shellItem = shellItem.Parent;
+				newPath = RemoveLastEmptySeparator(newPath);
+
+				var traces = new List<ShellItem>() { shellItem };
+				while (shellItem != null && shellItem.Parent != null) {
+					traces.Add(shellItem.Parent);
+					shellItem = shellItem.Parent;
+				}
+
+				if (traces.Count == 0) RootItem.SelectedItem = null;
+				traces.Reverse();
+
+				var itemIndex = new List<Tuple<int, ShellItem>>();
+				int index = 0;
+				int length = traces.Count;
+				int max = breadcrumbsToHide;
+				// if the root is specified as first trace, then skip:
+				if (max > 0 && traces[index].GetHashCode() == (shellItem.GetHashCode())) {
+					length--;
+					index++;
+					max--;
+				}
+
+				for (int i = index; i < traces.Count; i++) {
+					//Why do we have [if (item == null) break;] It seems like we add an if to the For(...) or it should NEVER be null
+					if (item == null) break;
+					var trace = traces[i];
+					////OnPopulateItems(item);
+					//pop_items(item);
+					object next = item.GetTraceItem(trace);
+					if (next == null && item.Data.GetHashCode() == trace.Parent.GetHashCode()) {
+						//missingItem = item;
+						//lItem = trace;
+						item.Items.Add(trace);
+
+						next = item.GetTraceItem(trace);
 					}
+					if (next == null) break;
+					itemIndex.Add(new Tuple<int, ShellItem>(item.Items.IndexOf(next), trace));
+					BreadcrumbItem container = item.ContainerFromItem(next);
 
-					if (traces.Count == 0) RootItem.SelectedItem = null;
-					traces.Reverse();
+					item = container;
+				}
 
-					var itemIndex = new List<Tuple<int, ShellItem>>();
-					int index = 0;
-					int length = traces.Count;
-					int max = breadcrumbsToHide;
-					// if the root is specified as first trace, then skip:
-					if (max > 0 && traces[index].GetHashCode() == (shellItem.GetHashCode())) {
-						length--;
-						index++;
-						max--;
-					}
+				if (length != itemIndex.Count) {
+					//recover the last path:
+					Path = GetDisplayPath();
+					return;
+				}
 
-					for (int i = index; i < traces.Count; i++) {
-						//Why do we have [if (item == null) break;] It seems like we add an if to the For(...) or it should NEVER be null
+				// temporarily remove the SelectionChangedEvent handler to minimize processing of events while building the breadcrumb items:
+				RemoveHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
+
+				try {
+					var item2 = RootItem;
+					foreach (var key in itemIndex) {
 						if (item == null) break;
-						var trace = traces[i];
-						////OnPopulateItems(item);
-						//pop_items(item);
-						object next = item.GetTraceItem(trace);
-						if (next == null && item.Data.GetHashCode() == trace.Parent.GetHashCode()) {
-							//missingItem = item;
-							//lItem = trace;
-							item.Items.Add(trace);
-							next = item.GetTraceItem(trace);
-						}
-						if (next == null) break;
-						itemIndex.Add(new Tuple<int, ShellItem>(item.Items.IndexOf(next), trace));
-						BreadcrumbItem container = item.ContainerFromItem(next);
-
-						item = container;
-					}
-
-					if (length != itemIndex.Count) {
-						//recover the last path:
-						Path = GetDisplayPath();
-						return;
-					}
-
-					// temporarily remove the SelectionChangedEvent handler to minimize processing of events while building the breadcrumb items:
-					RemoveHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
-
-					try {
-						var item2 = RootItem;
-						foreach (var key in itemIndex) {
-							if (item == null) break;
-							if (item2.Items.OfType<ShellItem>().Count() == 1) {
-								var firstItem = item2.Items.OfType<ShellItem>().First();
-								if (firstItem.GetHashCode() != key.Item2.GetHashCode()) {
-									item2.Items.Clear();
-									item2.Items.Add(key.Item2);
-								}
-							} else if (item2.Items.OfType<ShellItem>().Count() == 0) {
+						if (item2.Items.OfType<ShellItem>().Count() == 1) {
+							var firstItem = item2.Items.OfType<ShellItem>().First();
+							if (firstItem.CachedParsingName != key.Item2.CachedParsingName) {
+								item2.Items.Clear();
 								item2.Items.Add(key.Item2);
 							}
-
-							item2.SelectedIndex = item2.Items.IndexOf(item2.Items.OfType<ShellItem>().FirstOrDefault(w => w.GetHashCode() == key.Item2.GetHashCode()));
-							item2 = item2.SelectedBreadcrumb;
+						} else if (item2.Items.OfType<ShellItem>().Count() == 0) {
+							item2.Items.Add(key.Item2);
 						}
-						if (item2 != null) item2.SelectedItem = null;
-						SelectedBreadcrumb = item2;
-						SelectedItem = item2 != null ? item2.Data : null;
-					} finally {
-						AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
+
+						item2.SelectedIndex = item2.Items.IndexOf(item2.Items.OfType<ShellItem>().FirstOrDefault(w => w.CachedParsingName == key.Item2.CachedParsingName));
+						item2 = item2.SelectedBreadcrumb;
 					}
-				}));
+					if (item2 != null) item2.SelectedItem = null;
+					SelectedBreadcrumb = item2;
+					SelectedItem = item2 != null ? item2.Data : null;
+				} finally {
+					AddHandler(BreadcrumbItem.SelectionChangedEvent, new RoutedEventHandler(breadcrumbItemSelectedItemChanged));
+				}
+
 			} catch (FileNotFoundException ex) {
 				MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
@@ -631,8 +619,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Occurs when the dropdown of a BreadcrumbItem is opened.
 		/// </summary>
-		public event BreadcrumbItemEventHandler BreadcrumbItemDropDownOpened
-		{
+		public event BreadcrumbItemEventHandler BreadcrumbItemDropDownOpened {
 			add { AddHandler(BreadcrumbBar.BreadcrumbItemDropDownOpenedEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.BreadcrumbItemDropDownOpenedEvent, value); }
 		}
@@ -640,8 +627,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Occurs when the dropdown of a BreadcrumbItem is closed.
 		/// </summary>
-		public event BreadcrumbItemEventHandler BreadcrumbItemDropDownClosed
-		{
+		public event BreadcrumbItemEventHandler BreadcrumbItemDropDownClosed {
 			add { AddHandler(BreadcrumbBar.BreadcrumbItemDropDownClosedEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.BreadcrumbItemDropDownClosedEvent, value); }
 		}
@@ -692,8 +678,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the DataTemplateSelector for the overflow items.
 		/// </summary>
-		public DataTemplateSelector OverflowItemTemplateSelector
-		{
+		public DataTemplateSelector OverflowItemTemplateSelector {
 			get { return (DataTemplateSelector)GetValue(OverflowItemTemplateSelectorProperty); }
 			set { SetValue(OverflowItemTemplateSelectorProperty, value); }
 		}
@@ -701,8 +686,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or set the DataTemplate for the OverflowItem.
 		/// </summary>
-		public DataTemplate OverflowItemTemplate
-		{
+		public DataTemplate OverflowItemTemplate {
 			get { return (DataTemplate)GetValue(OverflowItemTemplateProperty); }
 			set { SetValue(OverflowItemTemplateProperty, value); }
 		}
@@ -755,8 +739,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets whether the Overflow button is pressed.
 		/// </summary>
-		public bool IsOverflowPressed
-		{
+		public bool IsOverflowPressed {
 			get { return (bool)GetValue(IsOverflowPressedProperty); }
 			private set { SetValue(IsOverflowPressedProperty, value); }
 		}
@@ -813,8 +796,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the TemplateSelector for an embedded BreadcrumbItem.
 		/// </summary>
-		public DataTemplateSelector BreadcrumbItemTemplateSelector
-		{
+		public DataTemplateSelector BreadcrumbItemTemplateSelector {
 			get { return (DataTemplateSelector)GetValue(BreadcrumbItemTemplateSelectorProperty); }
 			set { SetValue(BreadcrumbItemTemplateSelectorProperty, value); }
 		}
@@ -822,8 +804,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the Template for an embedded BreadcrumbItem.
 		/// </summary>
-		public DataTemplate BreadcrumbItemTemplate
-		{
+		public DataTemplate BreadcrumbItemTemplate {
 			get { return (DataTemplate)GetValue(BreadcrumbItemTemplateProperty); }
 			set { SetValue(BreadcrumbItemTemplateProperty, value); }
 		}
@@ -831,8 +812,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets the overflow mode for the Overflow BreadcrumbButton (PART_Root).
 		/// </summary>
-		public BreadcrumbButton.ButtonMode OverflowMode
-		{
+		public BreadcrumbButton.ButtonMode OverflowMode {
 			get { return (BreadcrumbButton.ButtonMode)GetValue(OverflowModeProperty); }
 			private set { SetValue(OverflowModePropertyKey, value); }
 		}
@@ -928,16 +908,15 @@ namespace Odyssey.Controls {
 			}
 		}
 
-	  public void SetProgressValue(double value, Duration duration) {
-      DoubleAnimation animation = new DoubleAnimation(this.ProgressValue, value, duration) { FillBehavior = Math.Abs(value - this.ProgressMaximum) < 0.5 ? FillBehavior.Stop : FillBehavior.HoldEnd };
-      animation.Completed += (s, e) =>
-      {
-        if (Math.Abs(value - this.ProgressMaximum) < 0.5) {
-          this.SetProgressValue(0, TimeSpan.FromMilliseconds(0));
-        }
-      };
-      this.BeginAnimation(BreadcrumbBar.ProgressValueProperty, animation, HandoffBehavior.Compose);
-    }
+		public void SetProgressValue(double value, Duration duration) {
+			DoubleAnimation animation = new DoubleAnimation(this.ProgressValue, value, duration) { FillBehavior = Math.Abs(value - this.ProgressMaximum) < 0.5 ? FillBehavior.Stop : FillBehavior.HoldEnd };
+			animation.Completed += (s, e) => {
+				if (Math.Abs(value - this.ProgressMaximum) < 0.5) {
+					this.SetProgressValue(0, TimeSpan.FromMilliseconds(0));
+				}
+			};
+			this.BeginAnimation(BreadcrumbBar.ProgressValueProperty, animation, HandoffBehavior.Compose);
+		}
 
 		private void comboBox_DropDownClosed(object sender, EventArgs e) {
 			IsDropDownOpen = false;
@@ -947,8 +926,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the ItemsPanelTemplate for the DropDownItems of the combobox.
 		/// </summary>
-		public ItemsPanelTemplate DropDownItemsPanel
-		{
+		public ItemsPanelTemplate DropDownItemsPanel {
 			get { return (ItemsPanelTemplate)GetValue(DropDownItemsPanelProperty); }
 			set { SetValue(DropDownItemsPanelProperty, value); }
 		}
@@ -956,8 +934,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the ItemsPanelTemplateSelector for the DropDownItems of the combobox.
 		/// </summary>
-		public DataTemplateSelector DropDownItemTemplateSelector
-		{
+		public DataTemplateSelector DropDownItemTemplateSelector {
 			get { return (DataTemplateSelector)GetValue(DropDownItemTemplateSelectorProperty); }
 			set { SetValue(DropDownItemTemplateSelectorProperty, value); }
 		}
@@ -965,8 +942,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the DataTemplate for the DropDownItems of the combobox.
 		/// </summary>
-		public DataTemplate DropDownItemTemplate
-		{
+		public DataTemplate DropDownItemTemplate {
 			get { return (DataTemplate)GetValue(DropDownItemTemplateProperty); }
 			set { SetValue(DropDownItemTemplateProperty, value); }
 		}
@@ -974,8 +950,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the SelectedIndex of the combobox.
 		/// </summary>
-		public int SelectedDropDownIndex
-		{
+		public int SelectedDropDownIndex {
 			get { return (int)GetValue(SelectedDropDownIndexProperty); }
 			set { SetValue(SelectedDropDownIndexProperty, value); }
 		}
@@ -983,8 +958,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the current progress indicator value.
 		/// </summary>
-		public double ProgressValue
-		{
+		public double ProgressValue {
 			get { return (double)GetValue(ProgressValueProperty); }
 			set { SetValue(ProgressValueProperty, value); }
 		}
@@ -1007,8 +981,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Occurs when the ProgressValue is changed.
 		/// </summary>
-		public event RoutedEventHandler ProgressValueChanged
-		{
+		public event RoutedEventHandler ProgressValueChanged {
 			add { AddHandler(BreadcrumbBar.ProgressValueChangedEvent, value); }
 			remove { RemoveHandler(BreadcrumbBar.ProgressValueChangedEvent, value); }
 		}
@@ -1041,8 +1014,7 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the maximum progress value.
 		/// </summary>
-		public double ProgressMaximum
-		{
+		public double ProgressMaximum {
 			get { return (double)GetValue(ProgressMaximumProperty); }
 			set { SetValue(ProgressMaximumProperty, value); }
 		}
@@ -1050,16 +1022,13 @@ namespace Odyssey.Controls {
 		/// <summary>
 		/// Gets or sets the minimum progress value.
 		/// </summary>
-		public double ProgressMimimum
-		{
+		public double ProgressMimimum {
 			get { return (double)GetValue(ProgressMinimumProperty); }
 			set { SetValue(ProgressMinimumProperty, value); }
 		}
 
-		protected override IEnumerator LogicalChildren
-		{
-			get
-			{
+		protected override IEnumerator LogicalChildren {
+			get {
 				object content = this.RootItem;
 				if (content == null) return base.LogicalChildren;
 

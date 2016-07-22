@@ -258,7 +258,7 @@ namespace BExplorer.Shell.Interop
             if (shellItemNative == null) return IntPtr.Zero;
             // Create a size structure to pass to the native method
             var nativeSIZE = new Size() { Width = Convert.ToInt32(size.Width), Height = Convert.ToInt32(size.Height) };
-          var nativeItem = isCopyItem && !this._Item.IsSearchFolder && this._Item.Extension != String.Empty && this._Item.Extension != ".search-ms"
+          var nativeItem = isCopyItem && !this._Item.IsSearchFolder && this._Item.DisplayName != "Search.search-ms"
             ? new ShellItem(this._Item.CachedParsingName.ToShellParsingName()).ComInterface
             : shellItemNative; 
 
