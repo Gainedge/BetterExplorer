@@ -1025,9 +1025,9 @@ namespace BExplorer.Shell {
 				}
 			}
 			var wp = new DataObject.Win32Point() { X = e.X, Y = e.Y };
-
+      
 			if (e.Data.GetDataPresent("DragImageBits"))
-				Get.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+				DropTarget.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
 			else
 				base.OnDragDrop(e);
 
@@ -1042,7 +1042,7 @@ namespace BExplorer.Shell {
 			} catch {
 			}
 
-			Get.Create.DragLeave();
+			DropTarget.Create.DragLeave();
 		}
 
 		internal static void Drag_SetEffect(F.DragEventArgs e) {
@@ -1126,7 +1126,7 @@ namespace BExplorer.Shell {
 			}
 
 			if (e.Data.GetDataPresent("DragImageBits"))
-				Get.Create.DragOver(ref wp, (int)e.Effect);
+				DropTarget.Create.DragOver(ref wp, (int)e.Effect);
 			else
 				base.OnDragOver(e);
 		}
@@ -1136,7 +1136,7 @@ namespace BExplorer.Shell {
 			Drag_SetEffect(e);
 
 			if (e.Data.GetDataPresent("DragImageBits"))
-				Get.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
+				DropTarget.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wp, (int)e.Effect);
 			else
 				base.OnDragEnter(e);
 		}

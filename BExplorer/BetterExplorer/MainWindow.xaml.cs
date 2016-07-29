@@ -41,8 +41,7 @@ using Clipboards = System.Windows.Forms.Clipboard;
 using ContextMenu = Fluent.ContextMenu;
 using MenuItem = Fluent.MenuItem;
 using BExplorer.Shell.CommonFileDialogs;
-using DropTargetHelper = BExplorer.Shell.DropTargetHelper.Get;
-
+using BExplorer.Shell.DropTargetHelper;
 using WIN = System.Windows;
 using BExplorer.Shell._Plugin_Interfaces;
 using TaskDialogInterop;
@@ -2869,7 +2868,7 @@ item.IsChecked = false;
 		private void btnTabCloseC_Click(object sender, RoutedEventArgs e) => tcMain.RemoveTabItem(tcMain.SelectedItem as Wpf.Controls.TabItem);
 		private void RibbonWindow_SizeChanged(object sender, SizeChangedEventArgs e) => (tcMain.SelectedItem as Wpf.Controls.TabItem)?.BringIntoView();
 		void newt_PreviewMouseDown(object sender, MouseButtonEventArgs e) => tcMain.IsInTabDragDrop = false;
-		void newt_Leave(object sender, DragEventArgs e) => DropTargetHelper.Create.DragLeave();
+		void newt_Leave(object sender, DragEventArgs e) => DropTarget.Create.DragLeave();
 		void mim_Click(object sender, RoutedEventArgs e) => SetFOperation(((sender as MenuItem).Tag as IListItemEx), OperationType.Move);
 		void mico_Click(object sender, RoutedEventArgs e) => SetFOperation(((sender as MenuItem).Tag as IListItemEx), OperationType.Copy);
 
@@ -2938,7 +2937,7 @@ item.IsChecked = false;
 
 				WIN.Point pt = e.GetPosition(sender as IInputElement);
 				var wpt = new BExplorer.Shell.DataObject.Win32Point() { X = (int)pt.X, Y = (int)pt.Y };
-				DropTargetHelper.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+				DropTarget.Create.Drop((System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 				this._TabDropData = null;
 			} else if (!tabItemTarget.Equals(tabItemSource)) {
 				var tabControl = tabItemTarget.Parent as TabControl;
@@ -2999,7 +2998,7 @@ item.IsChecked = false;
 
 			if (e.Data.GetType() != typeof(Wpf.Controls.TabItem)) {
 				var wpt = new BExplorer.Shell.DataObject.Win32Point() { X = ptw.X, Y = ptw.Y };
-				DropTargetHelper.Create.DragOver(ref wpt, (int)e.Effects);
+				DropTarget.Create.DragOver(ref wpt, (int)e.Effects);
 			}
 		}
 		System.Runtime.InteropServices.ComTypes.IDataObject _TabDropData;
@@ -3023,7 +3022,7 @@ item.IsChecked = false;
 
 			if (tabItemSource == null) {
 				var wpt = new BExplorer.Shell.DataObject.Win32Point() { X = ptw.X, Y = ptw.Y };
-				DropTargetHelper.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
+				DropTarget.Create.DragEnter(this.Handle, (System.Runtime.InteropServices.ComTypes.IDataObject)e.Data, ref wpt, (int)e.Effects);
 			} else if (e.Data.GetDataPresent(typeof(Wpf.Controls.TabItem))) {
 				e.Effects = DragDropEffects.Move;
 			}
