@@ -45,6 +45,7 @@ using BExplorer.Shell.DropTargetHelper;
 using WIN = System.Windows;
 using BExplorer.Shell._Plugin_Interfaces;
 using TaskDialogInterop;
+using Image = System.Windows.Controls.Image;
 
 
 namespace BetterExplorer
@@ -109,14 +110,15 @@ namespace BetterExplorer
 
 		WIN.Forms.Timer focusTimer = new WIN.Forms.Timer() { Interval = 500 };
     private WIN.Forms.Timer _ProgressTimer  = new WIN.Forms.Timer() { Interval = 1000, Enabled = false };
-
-		#endregion
-		public IntPtr Handle;
+    private string _DBPath = Path.Combine(KnownFolders.RoamingAppData.ParsingName, @"BExplorer\Settings.sqlite");
+    #endregion
+    public IntPtr Handle;
 		public bool IsMultipleWindowsOpened { get; set; }
 		public ObservableCollectionEx<LVItemColor> LVItemsColorCol { get; set; }
-		#region Events
+    public Dictionary<String, Dictionary<IListItemEx, List<string>>> Badges { get; set; }
+    #region Events
 
-		private void btnAbout_Click(object sender, RoutedEventArgs e) => new fmAbout(this).ShowDialog();
+    private void btnAbout_Click(object sender, RoutedEventArgs e) => new fmAbout(this).ShowDialog();
 		private void btnBugtracker_Click(object sender, RoutedEventArgs e) => Process.Start("http://bugs.gainedge.org/public/betterexplorer");
 		private void TheRibbon_CustomizeQuickAccessToolbar(object sender, EventArgs e) => CustomizeQAT.Open(this, TheRibbon);
 
@@ -511,6 +513,7 @@ namespace BetterExplorer
 		}
 
 		private void SetUpButtonsStateOnSelectOrNavigate(int selectedItemsCount, IListItemEx selectedItem) {
+		  btnBadges.IsEnabled = selectedItemsCount > 0;
 			btnCopy.IsEnabled = selectedItemsCount > 0;
 			btnCopyto.IsEnabled = selectedItemsCount > 0;
 			btnMoveto.IsEnabled = selectedItemsCount > 0;
@@ -1223,11 +1226,49 @@ namespace BetterExplorer
 			UpdateCheckType = rbReleases.IsChecked.Value ? 0 : 1;
 		}
 
-		#endregion
+    #endregion
 
-		#region On Startup
+    #region On Startup
+    private Dictionary<String, Dictionary<IListItemEx, List<string>>> LoadBadgesData() {
+      var result = new Dictionary<String, Dictionary<IListItemEx, List<string>>>();
+      var badgesDirectory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Badges");
+      var badgesIshellItem = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle, badgesDirectory);
+      foreach (var item in badgesIshellItem.Where(w => w.IsFolder)) {
+        var innerDict = new Dictionary<IListItemEx, List<string>>();
+        foreach (var badgeItem in item.Where(w => w.Extension.ToLowerInvariant() == ".ico")) {
+          innerDict.Add(badgeItem, new List<String>());
+        }
+        result.Add(item.DisplayName, innerDict);
+      }
+      try {
+        var m_dbConnection = new System.Data.SQLite.SQLiteConnection("Data Source=" + this._DBPath + ";Version=3;");
+        m_dbConnection.Open();
 
-		private void SetUpFavoritesMenu() {
+        var command1 = new System.Data.SQLite.SQLiteCommand("SELECT * FROM badges", m_dbConnection);
+
+        var Reader = command1.ExecuteReader();
+        while (Reader.Read()) {
+          var values = Reader.GetValues();
+          var path = values.GetValues("Path").Single();
+          var collectionName = values.GetValues("Collection").Single();
+          var badgeName = values.GetValues("Badge").Single();
+          var badgeDBItem = FileSystemListItem.ToFileSystemItem(this._ShellListView.LVHandle,
+            Path.Combine(badgesDirectory, collectionName, badgeName));
+          var collectionDict = result[collectionName];
+          var collectionItemKey =
+            collectionDict.Keys.SingleOrDefault(w => w.ParsingName.Equals(badgeDBItem.ParsingName));
+          if (collectionItemKey != null) {
+            result[collectionName][collectionItemKey].Add(path);
+          }
+        }
+
+        Reader.Close();
+      } catch (Exception) {
+      }
+      return result;
+    }
+
+    private void SetUpFavoritesMenu() {
 			Dispatcher.BeginInvoke(DispatcherPriority.Render, (ThreadStart)(() => {
 				btnFavorites.Visibility = Visibility.Visible;
 
@@ -1264,6 +1305,7 @@ namespace BetterExplorer
 			this._ShellListView.BeginItemLabelEdit += ShellListView_BeginItemLabelEdit;
 			this._ShellListView.EndItemLabelEdit += ShellListView_EndItemLabelEdit;
       this._ShellListView.OnListViewCollumnsChanged += _ShellListView_OnListViewCollumnsChanged;
+		  this._ShellListView.BadgesData = this.Badges;
 		}
 
     private void _ShellListView_OnListViewCollumnsChanged(object sender, CollumnsChangedArgs e) {
@@ -1548,6 +1590,7 @@ namespace BetterExplorer
 		}
 
 		private void Window_Loaded(object sender, RoutedEventArgs e) {
+		  
 		  this._ProgressTimer.Tick += (obj, args) => {
 		    if (this.bcbc.ProgressValue + 2 == this.bcbc.ProgressMaximum) {
 		      this.bcbc.ProgressMaximum = this.bcbc.ProgressMaximum + 2;
@@ -3742,6 +3785,9 @@ item.IsChecked = false;
 		#region Misc
 
 		public MainWindow() {
+      this.Badges = this.LoadBadgesData();
+      this.DataContext = this;
+
 			this.LVItemsColorCol = new ObservableCollectionEx<LVItemColor>();
 			this.CommandBindings.AddRange(new[]
 			{
@@ -4131,7 +4177,50 @@ item.IsChecked = false;
 			focusTimer.Stop();
 		}
 
-		public Dictionary<string, IRibbonControl> GetAllButtonsAsDictionary() {
+    private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+      var badgeIconPath = ((sender as Image)?.Tag as IListItemEx)?.ParsingName;
+      var selectedItemPath = this._ShellListView.GetFirstSelectedItem().ParsingName;
+      this.SaveBadgeForItem(selectedItemPath, badgeIconPath);
+      this.Badges = this.LoadBadgesData();
+      this._ShellListView.BadgesData = this.Badges;
+      this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex(), true);
+      this.btnBadges.IsDropDownOpen = false;
+    }
+
+	  private void SaveBadgeForItem(String itemPath, String badgePath, Boolean isClear = false) {
+      var m_dbConnection = new System.Data.SQLite.SQLiteConnection("Data Source=" + this._DBPath + ";Version=3;");
+      m_dbConnection.Open();
+	    if (isClear) {
+        var command3 = new System.Data.SQLite.SQLiteCommand("DELETE FROM badges WHERE Path=@Path", m_dbConnection);
+        command3.Parameters.AddWithValue("Path", itemPath);
+	      command3.ExecuteNonQuery();
+	    } else {
+	      var command1 = new System.Data.SQLite.SQLiteCommand("SELECT * FROM badges WHERE Path=@Path", m_dbConnection);
+	      command1.Parameters.AddWithValue("Path", itemPath);
+	      var Reader = command1.ExecuteReader();
+	      var sql = Reader.Read()
+	        ? @"UPDATE badges  SET Collection = @Collection, Badge = @Badge	 WHERE Path = @Path"
+	        : @"INSERT INTO badges (Path, Collection, Badge) VALUES (@Path, @Collection, @Badge)";
+
+	      var command2 = new System.Data.SQLite.SQLiteCommand(sql, m_dbConnection);
+	      command2.Parameters.AddWithValue("Path", itemPath);
+	      command2.Parameters.AddWithValue("Collection", Path.GetFileName(Path.GetDirectoryName(badgePath)));
+	      command2.Parameters.AddWithValue("Badge", Path.GetFileName(badgePath));
+	      command2.ExecuteNonQuery();
+        Reader.Close();
+      }
+	    
+      m_dbConnection.Close();
+    }
+
+    private void MenuItem_Click_2(object sender, RoutedEventArgs e) {
+      this.SaveBadgeForItem(this._ShellListView.GetFirstSelectedItem().ParsingName, String.Empty, true);
+      this.Badges = this.LoadBadgesData();
+      this._ShellListView.BadgesData = this.Badges;
+      this._ShellListView.RefreshItem(this._ShellListView.GetFirstSelectedItemIndex(), true);
+    }
+
+    public Dictionary<string, IRibbonControl> GetAllButtonsAsDictionary() {
 			var rb = new Dictionary<string, IRibbonControl>();
 
 			foreach (RibbonTabItem item in TheRibbon.Tabs) {

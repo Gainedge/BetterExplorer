@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.Imaging;
 using BExplorer.Shell.Interop;
 using ThumbnailGenerator;
 
@@ -323,6 +325,12 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		public System.IO.DriveInfo GetDriveInfo() => this._Item.GetDriveInfo();
 
+    public BitmapSource BitmapSource {
+      get {
+        this._Item.Thumbnail.CurrentSize = new System.Windows.Size(48,48);
+        return this._Item.Thumbnail.BitmapSource;
+      }
+	  }
 
 		public HResult ExtractAndDrawThumbnail(IntPtr hdc, uint iconSize, out WTS_CACHEFLAGS flags, User32.RECT iconBounds, out bool retrieved, bool isHidden, bool isRefresh = false) {
 			return this._Item.Thumbnail.ExtractAndDrawThumbnail(hdc, iconSize, out flags, iconBounds, out retrieved, isHidden, isRefresh);

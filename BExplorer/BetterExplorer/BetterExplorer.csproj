@@ -673,6 +673,9 @@
     <Resource Include="Images\Refresh.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\badge16.png" />
+    <Resource Include="Images\badge32.png" />
+    <Resource Include="Images\badge48.png" />
     <Resource Include="Images\stack16.png" />
     <Resource Include="Images\stack32.png" />
     <Resource Include="Images\stack48.png" />
@@ -1090,7 +1093,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_BuildVersioningStyle="None.None.None.Increment" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" BuildVersion_BuildVersioningStyle="None.None.None.Increment" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

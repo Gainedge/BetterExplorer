@@ -1411,7 +1411,7 @@
                 x:Name="HomeTab"
 				Header="{DynamicResource tbHomeCP}"
 				Indent="7"
-				ReduceOrder="Clipboard,Organize,Open,Tabs,Select,Select,Select,Organize,Open,Organize,Clipboard,Tabs,Open,Tabs"
+				ReduceOrder="Clipboard,Organize,Open,Tabs,Select,Select,Select,grpBadges,Organize,Open,Organize,Clipboard,Tabs,Open,Tabs"
 				Ribbon:KeyTip.Keys="H">
 				<Ribbon:RibbonGroupBox x:Name="Clipboard" Header="{DynamicResource tgClipboardCP}">
 					<Ribbon:Button 
@@ -1800,6 +1800,58 @@
                         />
 					</Ribbon:SplitButton>
 				</Ribbon:RibbonGroupBox>
+        <Ribbon:RibbonGroupBox x:Name="grpBadges" Header="Badges">
+          <Ribbon:DropDownButton x:Name="btnBadges" Header="Badges"
+						Icon="Images\Badge16.png"
+            LargeIcon="Images\Badge32.png"
+						IsEnabled="true"
+						Ribbon:KeyTip.Keys="BA"
+						SizeDefinition="Large,Middle,Middle" >
+            <ItemsControl Margin="5" ItemsSource="{ Binding Badges, RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}} }">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Grid>
+                    <Grid.RowDefinitions>
+                      <RowDefinition Height="Auto"/>
+                      <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" BorderBrush="DarkGray" BorderThickness="0,0,0,1" VerticalAlignment="Center" Margin="0,0,0,5">
+                      <ContentControl Content="{Binding Key}" />
+                    </Border>
+                    <ItemsControl Grid.Row="1" MaxWidth="300" ItemsSource="{Binding Value}">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <WrapPanel IsItemsHost="True"/>
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <Grid Width="26" Height="26">
+                            <Border>
+                              <Border.Style>
+                                <Style>
+                                  <Setter Property="Border.CornerRadius" Value="1"/>
+                                  <Setter Property="Border.Background" Value="Transparent"/>
+                                  <Style.Triggers>
+                                    <Trigger Property="Border.IsMouseOver" Value="True">
+                                      <Setter Property="Border.Background" Value="LightGray" />
+                                    </Trigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </Border.Style>
+                              <Image Margin="3.5,0,2,4" Source="{Binding Key.BitmapSource}" Tag="{Binding Key}" HorizontalAlignment="Left" VerticalAlignment="Bottom" Stretch="None" MouseLeftButtonUp="Image_MouseLeftButtonUp"></Image>
+                            </Border>
+                          </Grid>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                  </Grid>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <Ribbon:MenuItem Header="Clear Badge" Click="MenuItem_Click_2"/>
+          </Ribbon:DropDownButton>
+        </Ribbon:RibbonGroupBox>
 				<Ribbon:RibbonGroupBox 
                     x:Name="Tabs"
 				    Header="{DynamicResource tgTabsCP}"

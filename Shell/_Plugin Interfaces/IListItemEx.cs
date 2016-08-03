@@ -66,7 +66,9 @@ namespace BExplorer.Shell._Plugin_Interfaces {
 
 		BitmapSource ThumbnailSource(Int32 size, ShellThumbnailFormatOption format, ShellThumbnailRetrievalOption source);
 
-		String ParsingName { get; set; }
+    BitmapSource BitmapSource { get; }
+
+    String ParsingName { get; set; }
 
 		Boolean IsBrowsable { get; set; }
 
