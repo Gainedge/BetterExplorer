@@ -20,7 +20,6 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using System.Windows.Threading;
@@ -155,23 +154,6 @@ namespace BetterExplorer
 				backstage.IsOpen = true;
 				KeepBackstageOpen = false;
 			}
-		}
-
-		private void TheRibbon_SizeChanged(object sender, SizeChangedEventArgs e) {
-			//TODO: Remove
-
-			//if (TheRibbon.IsMinimized && this.IsGlassOnRibonMinimized) {
-			//	WIN.Point p = ShellViewHost.TransformToAncestor(this).Transform(new WIN.Point(0, 0));
-			//	this.GlassBorderThickness = new Thickness(8, this.WindowState == WindowState.Maximized ? p.Y : p.Y - 2, 8, 8);
-			//} else if (this.IsGlassOnRibonMinimized) {
-			//	WIN.Point p = backstage.TransformToAncestor(this).Transform(new WIN.Point(0, 0));
-			//	this.GlassBorderThickness = new Thickness(8, p.Y + backstage.ActualHeight + 2, 8, 8);
-			//}
-
-			//try {
-			//	this.SetBlur(!TheRibbon.IsMinimized);
-			//} catch (Exception) {
-			//}
 		}
 
 		private void LoadInitialWindowPositionAndState() {
